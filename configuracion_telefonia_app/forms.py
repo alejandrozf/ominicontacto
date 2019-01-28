@@ -25,7 +25,7 @@ from django import forms
 from django.contrib.contenttypes.models import ContentType
 from django.forms.models import (inlineformset_factory, modelformset_factory, BaseInlineFormSet,
                                  BaseModelFormSet)
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from configuracion_telefonia_app.models import (PatronDeDiscado, RutaSaliente, RutaEntrante,
                                                 TroncalSIP, OrdenTroncal, DestinoEntrante, IVR,
@@ -66,6 +66,10 @@ class PatronDeDiscadoForm(forms.ModelForm):
 
 class RutaSalienteForm(forms.ModelForm):
 
+    def __init__(self, *args, **kwargs):
+        super(RutaSalienteForm, self).__init__(*args, **kwargs)
+        self.fields['ring_time'].help_text = _('En segundos')
+
     class Meta:
         model = RutaSaliente
         exclude = ()
@@ -73,6 +77,11 @@ class RutaSalienteForm(forms.ModelForm):
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'ring_time': forms.NumberInput(attrs={'class': 'form-control'}),
             'dial_options': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+        labels = {
+            'nombre': _('Nombre'),
+            'ring_time': _('Ring time'),
+            'dial_options': _('Dial options'),
         }
 
 
@@ -171,6 +180,7 @@ class RutaEntranteForm(forms.ModelForm):
 
     tipo_destino = forms.ChoiceField(
         widget=forms.Select(attrs={'class': 'form-control', 'id': 'tipo_destino'}),
+        label=_('Tipo de destino')
     )
 
     field_order = ('nombre', 'telefono', 'prefijo_caller_id', 'idioma', 'tipo_destino',
@@ -187,8 +197,11 @@ class RutaEntranteForm(forms.ModelForm):
             'destino': forms.Select(attrs={'class': 'form-control', 'id': 'destino'}),
         }
         labels = {
-            'tipo_destino': _('Tipo de destino'),
-            'telefono': _('Número DID')
+            'telefono': _('Número DID'),
+            'nombre': _('Nombre'),
+            'prefijo_caller_id': _('Prefijo caller id'),
+            'idioma': _('Idioma'),
+            'destino': _('Destino')
         }
 
     def __init__(self, *args, **kwargs):
@@ -261,6 +274,15 @@ class IVRForm(forms.ModelForm):
             'time_out_audio': forms.Select(attrs={'class': 'form-control'}),
             'invalid_retries': forms.NumberInput(attrs={'class': 'form-control'}),
             'invalid_audio': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+        help_texts = {
+            'time_out': _('En segundos'),
+        }
+
+        labels = {
+            'nombre': _('Nombre'),
+            'descripcion': _('Descripción')
         }
 
     def _inicializar_ivr_a_modificar(self, *args, **kwargs):

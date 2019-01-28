@@ -140,6 +140,7 @@ class ExportaReporteCalificacionView(UpdateView):
 
 
 def cambiar_estado_agente_view(request):
+    # TODO: Debería ser por POST
     """Vista GET para cambiar el estado del agente"""
     pk_agente = request.GET['pk_agente']
     estado = request.GET['estado']
@@ -166,10 +167,10 @@ def logout_view(request):
                              variables, True, aplication='Hangup')
 
         except AsteriskHttpOriginateError:
-            logger.exception("Originate failed - agente: %s ", agente)
+            logger.exception(_("Originate failed - agente: {0} ".format(agente)))
 
         except Exception as e:
-            logger.exception("Originate failed {0} - agente: {1}".format(e, agente))
+            logger.exception(_("Originate failed {0} - agente: {1}".format(e, agente)))
     logout(request)
     return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
 
@@ -201,10 +202,11 @@ class LlamarContactoView(RedirectView):
                              exten=contacto.telefono, priority=1, timeout=45000)
 
         except AsteriskHttpOriginateError:
-            logger.exception("Originate failed - contacto: %s ", contacto.telefono)
+            logger.exception(_("Originate failed - contacto: {0} ".format(contacto.telefono)))
 
         except Exception as e:
-            logger.exception("Originate failed by {0} - contacto: {1}".format(e, contacto.telefono))
+            logger.exception(_("Originate failed by {0} - contacto: {1}".format(
+                e, contacto.telefono)))
 
     def post(self, request, *args, **kwargs):
         agente = AgenteProfile.objects.get(pk=request.POST['pk_agente'])

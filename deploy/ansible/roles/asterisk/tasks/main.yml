@@ -34,9 +34,26 @@
   when: asterisk_installed|succeeded
   tags: asterisk
 
+- include: packages_installation.yml
+  when: asterisk_installed|failed
+  tags: asterisk
+
 - include: install.yml
   when: asterisk_installed|failed
   tags: asterisk
 
 - include: configuration.yml
   tags: asterisk
+
+- include: gluster-server.yml
+  tags: ['postinstall','asterisk']
+  when: cluster != 0
+
+- include: roles/prerequisitos/tasks/reboot.yml
+  when: cluster != 0 and ansible_os_family == "RedHat"
+
+- name: Wait for the server to finish rebooting
+  become: no
+  local_action: wait_for host="{{ asterisk_ip }}" delay=15 state=started port={{ ansible_ssh_port }} timeout=600
+  tags: reboot
+  when: ansible_os_family == "RedHat" and cluster !=0

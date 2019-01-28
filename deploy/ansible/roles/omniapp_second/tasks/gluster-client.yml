@@ -1,0 +1,42 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
+---
+
+- name: Install glusterfs-client (debian)
+  apt: name=glusterfs-client state=present
+  when: ansible_os_family == "Debian"
+
+- name: Install glusterfs-client (centos)
+  yum: name={{ item }} state=present
+  with_items:
+    - glusterfs
+    - glusterfs-fuse
+  when: ansible_os_family == "RedHat"
+
+- name: Create location of volume mount
+  file: state=directory path={{ asterisk_location }}/var/spool/asterisk/monitor/ owner={{ usuario }} group={{ usuario }} mode=755
+
+- name: Script for mounting the volume after reboot
+  template: src=templates/etc/glusterfs-mount dest=/etc/init.d/glusterfs-mount owner=root group=root mode=755
+  become: true
+  become_method: true
+
+- name: Enable and start of the script
+  service: name=glusterfs-mount state=restarted enabled=yes
+  become: true
+  become_method: true

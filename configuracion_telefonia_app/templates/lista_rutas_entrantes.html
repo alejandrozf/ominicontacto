@@ -27,7 +27,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <table class="table">
         <thead>
             <tr>
-                <th>ID</th>
+                <th>{% trans 'ID' %}</th>
                 <th>{% trans 'Nombre' %}</th>
                 <th>{% trans 'Número DID' %}</th>
                 <th>{% trans 'Prefijo' %}</th>
@@ -68,7 +68,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {% endif %}
 
             <li class="page-item current">
-                Pagina {{ page_obj.number }} de {{ paginator.num_pages }}.
+                {% blocktrans with page_number=page_obj.number num_pages=paginator.num_pages %}
+                    Página {{ page_number }} de {{ num_pages }}
+                {% endblocktrans %}
             </li>
 
             {% if page_obj.has_next %}

@@ -22,46 +22,37 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 {% block head_js %}
 <script type="text/javascript">
-   $(function() {
-                var start = moment();
-                var end = moment();
-                function cb(start, end) {
-                    $('#id_fecha').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-                }
+ $(function() {
+   var start = moment();
+   var end = moment();
+   function cb(start, end) {
+     $('#id_fecha').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+   }
 
- $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
-      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-  });
+   $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
+     $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+   });
 
-  $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
-      $(this).val('');
+   $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
+     $(this).val('');
+   });
+
+   // Init daterange plugin
+   var ranges = get_ranges($('#campana_fecha_inicio').val());
+   $('#id_fecha').daterangepicker(
+     {
+       locale: {
+         format: 'DD/MM/YYYY'
+       },
+
+       startDate: start,
+       endDate: end,
+       ranges: ranges,
+     }, cb);
+
+   cb(start, end);
 });
-
-            // Init daterange plugin
-            $('#id_fecha').daterangepicker(
-                {
-
-                locale: {
-                    format: 'DD/MM/YYYY'
-                 },
-
-                startDate: start,
-                endDate: end,
-                ranges: {
-                    'Hoy': [moment(), moment()],
-                    'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Ultimos 7 Días': [moment().subtract(6, 'days'), moment()],
-                    'Ultimos 30 Días': [moment().subtract(29, 'days'), moment()],
-                    'Este Mes': [moment().startOf('month'), moment().endOf('month')],
-                    'Ultimo Mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                },
-
-        }, cb);
-
-        cb(start, end);
-
-});
-    </script>
+</script>
 {% endblock %}
 {% block content %}
  <script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.min.js' %}"></script>
@@ -70,32 +61,38 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 {% with graficos_estadisticas=graficos_estadisticas %}
-
-<h1>Campaña: {{campana.nombre}}</h1>
+<input id="campana_fecha_inicio" type="hidden" value="{{campana.fecha_inicio|date:"d/m/Y"}}">
+<h1>{% trans 'Campaña:' %} {{campana.nombre}}</h1>
 <div class="jumbotron">
     <div class="form-row">
-        {% if graficos_estadisticas.estadisticas.llamadas_pendientes != None %}   
+        {% if graficos_estadisticas.estadisticas.llamadas_pendientes != None %}
             <div class="col-md-6">
                 <h1 class="display-2">{{graficos_estadisticas.estadisticas.llamadas_pendientes}}</h1>
-                <h3>{% trans 'Llamadas Pendientes' %}</h3>                 
+                <h3>{% trans 'Llamadas Pendientes' %}</h3>
             </div>
         {% endif %}
         {% if graficos_estadisticas.estadisticas.llamadas_realizadas != None %}
             <div class="col-md-6">
                 <h1 class="display-2">{{graficos_estadisticas.estadisticas.llamadas_realizadas}}</h1>
-                <h3>{% trans 'Llamadas Realizadas' %}</h3>
+                <h3>{% trans 'Llamadas Realizadas' %} </h3>
+                {% if campana_entrante %}
+                    <h3>{% trans '(Se muestran las llamadas del día actual)' %} </h3>
+                {% endif %}
             </div>
         {% endif %}
         {% if graficos_estadisticas.estadisticas.llamadas_recibidas != None %}
             <div class="col-md-6">
                 <h1 class="display-2">{{graficos_estadisticas.estadisticas.llamadas_recibidas}}</h1>
                 <h3>{% trans 'Llamadas Recibidas' %}</h3>
+                {% if campana_entrante %}
+                    <h3>{% trans '(Se muestran las llamadas del día actual)' %} </h3>
+                {% endif %}
             </div>
         {% endif %}
     </div>
     <div>
         <a class="btn btn-outline-primary" href="{% url 'campana_reporte_pdf' campana.pk %}" target="_blank">{% trans 'Exportar Reporte(PDF)' %}</a>
-    </div>    
+    </div>
 </div>
 <br>
 <div id="wrapper-search">
@@ -109,25 +106,25 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </div>
             </div>
             <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-                Filtrar por esa fecha
+                {% trans "Filtrar por esa fecha" %}
             </button>
         </form>
     </div>
 </div>
 
 <div>
-    <h2>Reportes de contactados</h2>
-    <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_contactados' campana.pk %}">Exportar Reporte de contactadas(CSV)</a>
+    <h2>{% trans "Reportes de contactados" %}</h2>
+    <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_llamados_contactados' campana.pk %}">{% trans "Exportar Reporte de contactados (CSV)" %}</a>
     <hr>
-    <h3>Cantidad de calificación por campaña</h3>
+    <h3>{% trans "Llamadas conectadas al agente" %}</h3>
     <br>
     <div class="form-row">
         <div class="col-md-6">
             <table class="table table-sm">
                 <thead>
                     <tr>
-                        <th>Calificacion</th>
-                        <th>Cantidad</th>
+                        <th>{% trans "Calificacion" %}</th>
+                        <th>{% trans "Cantidad" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -138,7 +135,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </tr>
                     {% endfor %}
                         <tr>
-                            <td>Total asignados</td>
+                            <td>{% trans "Total asignados" %}</td>
                             <td>{{graficos_estadisticas.total_asignados}}</td>
                         </tr>
                 </tbody>
@@ -152,21 +149,21 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </div>
         </div>
     </div>
-    <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_calificados' campana.pk %}">Exportar Reporte llamadas calificadas(CSV)</a>
+    <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_calificados' campana.pk %}">{% trans "Exportar Reporte de contactos calificadas (CSV)" %}</a>
 </div>
 <br>
 <hr>
 <br>
 <div>
-    <h2>Cantidad de llamados no atendidos</h2>
+    <h2>{% trans "Cantidad de llamados no atendidos" %}</h2>
     <br>
     <div class="form-row">
         <div class="col-md-6">
             <table class="table table-sm">
                 <thead>
                     <tr>
-                        <th>Resultado</th>
-                        <th>Cantidad</th>
+                        <th>{% trans "Resultado" %}</th>
+                        <th>{% trans "Cantidad" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -177,7 +174,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </tr>
                     {% endfor %}
                         <tr>
-                            <td>Total no atendidos</td>
+                            <td>{% trans "Total no atendidos" %}</td>
                             <td>{{graficos_estadisticas.total_no_atendidos}}</td>
                         </tr>
                 </tbody>
@@ -192,7 +189,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </div>
     </div>
     <div>
-        <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_no_atendidos' campana.pk %}">Exportar Reporte llamadas no atendidas(CSV)</a>
+        <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_no_atendidos' campana.pk %}">{% trans "Exportar Reporte llamadas no atendidas (CSV)" %}</a>
     </div>
     <br>
 </div>
@@ -222,7 +219,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </tr>
             {% endfor %}
             <tr>
-                <td>Totales</td>
+                <td>{% trans "Totales" %}</td>
                 <td>{{graficos_estadisticas.total_ventas}}</td>
                 <td colspan="{{ graficos_estadisticas.calificaciones|length }}"></td>
                 <td>{{graficos_estadisticas.total_calificados}}</td>
@@ -234,15 +231,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <hr>
 <br>
 <div>
-    <h2>Detalle de las llamadas</h2>
+    <h2>{% trans "Detalle de las llamadas" %}</h2>
     <br>
     <div class="form-row">
         <div class="col-md-6">
             <table class="table table-sm">
                 <thead>
                     <tr>
-                        <th>Llamadas</th>
-                        <th>Cantidad </th>
+                        <th>{% trans "Llamadas" %}</th>
+                        <th>{% trans "Cantidad" %}</th>
                     </tr>
                 </thead>
                 <tbody>

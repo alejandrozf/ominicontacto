@@ -27,6 +27,7 @@ from django.contrib import messages
 from django.forms.models import BaseInlineFormSet
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 from django.views.generic import ListView, DetailView, DeleteView
 from django.utils.translation import ugettext as _
 
@@ -40,6 +41,7 @@ from ominicontacto_app.models import Campana, ArchivoDeAudio
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 from ominicontacto_app.tests.factories import BaseDatosContactoFactory
+from ominicontacto_app.utiles import cast_datetime_part_date
 
 import logging as logging_
 
@@ -102,6 +104,7 @@ class CampanaTemplateCreateCampanaMixin(object):
                 'timeout': queue.timeout,
                 'retry': queue.retry,
                 'maxlen': queue.maxlen,
+                'wrapuptime': queue.wrapuptime,
                 'servicelevel': queue.servicelevel,
                 'strategy': queue.strategy,
                 'weight': queue.weight,
@@ -250,7 +253,6 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         queue_form.instance.eventwhencalled = True
         queue_form.instance.ringinuse = True
         queue_form.instance.setinterfacevar = True
-        queue_form.instance.wrapuptime = 0
         audio_anuncio_periodico = queue_form.cleaned_data['audios']
         if audio_anuncio_periodico:
             queue_form.instance.announce = audio_anuncio_periodico.audio_asterisk
@@ -264,6 +266,7 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         parametros_extra_web_formset = form_list[int(self.PARAMETROS_EXTRA_WEB_FORM)]
         campana_form.instance.type = Campana.TYPE_ENTRANTE
         campana_form.instance.reported_by = self.request.user
+        campana_form.instance.fecha_inicio = cast_datetime_part_date(timezone.now())
         campana_form.instance.estado = estado
         campana_form = asignar_bd_contactos_defecto_campo_vacio(campana_form)
         campana_form.save()

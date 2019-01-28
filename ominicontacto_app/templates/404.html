@@ -24,7 +24,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Omnileads - Not Found</title>
+<title>{% trans 'Omnileads - Not Found' %}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <!-- Bootstrap -->
 <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >
@@ -37,10 +37,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <body class="wrapper-page-error">
     <div class="page-error-bg"></div>
     <div>
-        <h1>Oops!<span>404</span></h1>
+        <h1>{% trans 'Oops!' %}<span>404</span></h1>
         <hr>
-        <h2>La página u objeto que está buscando no existe.</h2>
-        <p>Puede <a href="javascript:history.go(0);">reintentar</a> o <a href="/">volver a inicio</a>.</p>
+        <h2>{% trans 'La página u objeto que está buscando no existe.' %}</h2>
+        <p>{% trans 'Puede' %}<a href="javascript:history.go(0);">{% trans 'reintentar' %}</a> o <a href="/">{% trans 'volver a inicio' %}</a>.</p>
     </div>
 </body>
 </html>

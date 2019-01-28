@@ -19,6 +19,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 {% block head_js %}
 <script>
     $(document).ready(function() {
@@ -27,12 +28,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </script>
 {% endblock %}
 {% block content %}
-<h1>Nuevo formulario</h1>
+<h1>{% trans 'Nuevo formulario' %}</h1>
 
 <ul class="nav nav-indicators">
-    <li class="disabled"><a>Nuevo Formulario</a></li>
-    <li><a href="{% url 'formulario_field' pk_formulario %}">Campos del formulario</a></li>
-    <li class="active"><a>Vista previa del formulario</a></li>
+    <li class="disabled"><a>{% trans 'Nuevo Formulario' %}</a></li>
+    <li><a href="{% url 'formulario_field' pk_formulario %}">{% trans 'Campos del formulario' %}</a></li>
+    <li class="active"><a>{% trans 'Vista previa del formulario' %}</a></li>
 </ul>
 
 <form action="" enctype="multipart/form-data" method="post">
@@ -40,7 +41,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </form>
 <hr>
     <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#myModal">
-  Finalizar
+    {% trans 'Finalizar' %}
 </button>
 
 <!-- Modal -->
@@ -48,16 +49,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title" id="myModalLabel">Atención</h1>
+        <h1 class="modal-title" id="myModalLabel">{% trans 'Atención' %}</h1>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
       </div>
       <div class="modal-body">
-        <h2>¿Está seguro que desea finalizar la edición del formuario?</h2>
-          <p>Luego de la finalizacion del formulario no podrá editarlo.</p>
+          <h2>{% trans '¿Está seguro que desea finalizar la edición del formuario?' %}</h2>
+          <p>{% trans 'Luego de la finalizacion del formulario no podrá editarlo.' %}</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">NO</button>
-        <a href="{% url 'formulario_list' %}" class="btn btn-primary">SI</a>
+          <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'NO' %}</button>
+          <a href="{% url 'formulario_list' %}" class="btn btn-primary">{% trans 'SI' %}</a>
       </div>
     </div>
   </div>

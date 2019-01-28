@@ -9,7 +9,9 @@ oml-uwsgi.pid
 .idea/
 virtualenv/
 *.pyc
+*.mo
 *~
 /.coverage
 atom-sftp-sync.json
 deployment-config.json
+/deploy/.config

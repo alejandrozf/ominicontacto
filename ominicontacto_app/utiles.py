@@ -32,6 +32,8 @@ import time
 import uuid
 import unicodedata
 import datetime
+
+from django.utils.translation import ugettext as _
 from django.utils import timezone
 
 from django.conf import settings
@@ -272,6 +274,10 @@ def fecha_local(fecha_hora):
     return fecha_hora.astimezone(timezone.get_current_timezone()).date()
 
 
+def fecha_hora_local(fecha_hora):
+    return fecha_hora.astimezone(timezone.get_current_timezone())
+
+
 def convertir_ascii_string(cadena):
     """ Devuelve ascii ignorando caracteres extraños"""
     return cadena.encode('ascii', errors='ignore')
@@ -337,6 +343,6 @@ def validar_nombres_campanas(nombre):
     """
     Valida que no hayan espacios ni caracteres no ASCII en los nombres de campañas
     """
-    error_ascii = 'el nombre no puede contener tildes ni caracteres no ASCII'
-    error_espacios = 'el nombre no puede contener espacios'
+    error_ascii = _('el nombre no puede contener tildes ni caracteres no ASCII')
+    error_espacios = _('el nombre no puede contener espacios')
     validar_solo_ascii_y_sin_espacios(nombre, error_ascii, error_espacios)

@@ -17,43 +17,40 @@
 #
 ---
 # Tasks para instalacion de kamailio, https://www.kamailio.org/wiki/install/4.4.x/git
-# Se clona el repositorio de kamailio
-- name: Clone kamailio repository
-  shell: >
-          git clone --depth 1 --no-single-branch {{ item }} kamailio
-          chdir=/usr/src/
-  with_items:
-          - "{{ kamailio_repo }}"
-  register: command_result
-  changed_when: "command_result.rc == 0"
-  failed_when:
-    - "'already exists' not in command_result.stderr"
-    - "command_result.rc != 0"
+
+# Se crea /opt/omnileads/kamailio directory
+- name: Create prefix directory
+  file: state=directory path={{ install_prefix }} owner={{ usuario }} group={{ usuario }}
+
+  # Descargo kamailio desde la fuente, me descarga un .tar.gz
+- name: Download of Kamailio
+  get_url: url={{ kamailio_repo }} dest=/usr/src/
+  register: destino
   become: true
   become_method: sudo
 
-# Se hace checkout a la rama 4.4
-- name: Checkout de 4.4 kamailio version
-  command: "{{ item }} chdir=/usr/src/kamailio/"
-  with_items:
-          - git checkout -b 4.4 origin/4.4
-  register: command_result
-  failed_when:
-    - "'already exists' not in command_result.stderr"
-    - "command_result.rc != 0"
+  # Untareo el archivo recien descargado
+- name: Untar the file
+  unarchive: "src=/usr/src/kamailio-{{ kamailio_version }}.tar.gz dest=/usr/src/ remote_src=yes"
+  become: true
+  become_method: sudo
+
+  # Borro el tar
+- name: Delete tar file
+  file: "dest=/usr/src/kamailio-{{ kamailio_version }}.tar.gz state=absent"
   become: true
   become_method: sudo
 
 # se hace el make prefix del kamailio.cfg (pasos de instalacion de kamailio desde ceros)
 - name: Make Prefix kamailio.cfg
-  shell: "make PREFIX={{ kamailio_location }} cfg chdir=/usr/src/kamailio"
+  shell: "make PREFIX={{ kamailio_location }} cfg chdir=/usr/src/kamailio-{{ kamailio_version }}"
   become: true
   become_method: sudo
 
 # Se añaden los modulos que se quieren incluir por defecto en la instalacion
 - name: Add the desired modules in modules.lst
   lineinfile:
-          dest: /usr/src/kamailio/modules.lst
+          dest: /usr/src/kamailio-{{ kamailio_version }}/modules.lst
           regexp: '^include_modules='
           insertafter: '^include_modules= '
           line: 'include_modules= presence presence_xml app_python auth_ephemeral db_postgres ndb_redis presence tls uuid websocket'
@@ -62,15 +59,18 @@
 
 # Se hace la copia del Makefile del modulo db_postgres, es necesario porque se customizó
 - name: Copy of kamailio Makefile
-  template: src=templates/etc/Makefile dest=/usr/src/kamailio/modules/db_postgres/ owner=root group=root mode=755
+  template: src=templates/etc/Makefile dest=/usr/src/kamailio-{{ kamailio_version }}/modules/db_postgres/ owner=root group=root mode=755
   become: true
   become_method: sudo
 
 # Se hace el make all y el make install
 - name: Make of kamailio
-  shell: "{{ item }} chdir=/usr/src/kamailio"
+  shell: "{{ item }} chdir=/usr/src/kamailio-{{ kamailio_version }}"
   with_items:
       - make all
       - make install
   become: true
   become_method: sudo
+
+- name: Erase kamailio source
+  file: state=absent path=/usr/src/kamailio-{{ kamailio_version }}

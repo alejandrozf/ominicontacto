@@ -1,0 +1,79 @@
+[omniapp]
+omniapp ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #cluster server do not erase this comment
+[kamailio]
+kamailio ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #cluster server do not erase this comment
+[asterisk]
+asterisk ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #cluster server do not erase this comment
+[database]
+database ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #cluster server do not erase this comment
+[dialer]
+dialer ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #cluster server do not erase this comment
+
+[omnileads-aio]
+hostname ansible_connection=local ansible_user=root ansible_host=X.X.X.X #(this line is for self-hosted installation)
+#hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #(this line is for node-host installation)
+
+
+[omnileads-cluster:children]
+omniapp
+database
+asterisk
+kamailio
+dialer
+
+[everyone:children]
+omnileads-aio
+omnileads-cluster
+
+[everyone:vars]
+localhost=0
+install_prefix=/opt/omnileads/
+
+# Change this variables values as you want
+postgres_password=admin123
+admin_pass=098098ZZZ
+formato_conversion=mp3
+
+#Change this value if you want to change the language of schedule calification
+schedule=Agenda
+
+# Do not change this variables unless you know what you are doing
+ami_user=omnileadsami
+ami_password=5_MeO_DMT
+postgres_database=omnileads
+postgres_user=omnileads
+dialer_user=demoadmin
+dialer_password=demo
+mysql_root_password=098098ZZZ
+sup_ami_user=omnisup
+sup_ami_password=Sup3rst1c10n
+
+[omnileads-aio:vars]
+################ Puerto SSH ##################
+ssh_port="{{ ansible_ssh_port }}"
+###### IP's y FQDN ########
+omni_ip="{{ ansible_host }}"
+omniapp_ip="{{ omni_ip }}"
+asterisk_ip="{{ omni_ip }}"
+kamailio_ip="{{ omni_ip }}"
+database_ip="{{ omni_ip }}"
+dialer_ip="{{ omni_ip }}"
+omni_fqdn="{{ inventory_hostname }}"
+omniapp_fqdn="{{ omni_fqdn }}"
+asterisk_fqdn="{{ omni_fqdn }}"
+kamailio_fqdn="{{ omni_fqdn }}"
+database_fqdn="{{ omni_fqdn }}"
+dialer_fqdn="{{ omni_fqdn }}"
+
+[omnileads-cluster:vars]
+###### IP's y FQDN ########
+omniapp_ip="{{ hostvars[groups['omniapp'][0]].ansible_host }}"
+omniapp_fqdn="{{ hostvars[groups['omniapp'][0]].inventory_hostname }}"
+database_ip="{{ hostvars[groups['database'][0]].ansible_host }}"
+database_fqdn="{{ hostvars[groups['database'][0]].inventory_hostname }}"
+asterisk_ip="{{ hostvars[groups['asterisk'][0]].ansible_host }}"
+asterisk_fqdn="{{ hostvars[groups['asterisk'][0]].inventory_hostname }}"
+kamailio_ip="{{ hostvars[groups['kamailio'][0]].ansible_host }}"
+kamailio_fqdn="{{ hostvars[groups['kamailio'][0]].inventory_hostname }}"
+dialer_ip="{{ hostvars[groups['dialer'][0]].ansible_host }}"
+dialer_fqdn="{{ hostvars[groups['dialer'][0]].inventory_hostname }}"

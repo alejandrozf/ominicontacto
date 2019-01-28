@@ -21,8 +21,13 @@
 Servicio para generar reporte grafico de una campana
 """
 
-import pygal
+from __future__ import unicode_literals
+
+import datetime
+
 import os
+
+import pygal
 
 from collections import OrderedDict
 from pygal.style import LightGreenStyle, DefaultStyle
@@ -30,8 +35,10 @@ from pygal.style import LightGreenStyle, DefaultStyle
 from django.conf import settings
 from django.db.models import Count, Q
 from django.utils.translation import ugettext as _
+from django.utils import timezone
 
-from ominicontacto_app.utiles import datetime_hora_maxima_dia, datetime_hora_minima_dia
+from ominicontacto_app.utiles import (datetime_hora_maxima_dia, datetime_hora_minima_dia,
+                                      fecha_hora_local)
 from ominicontacto_app.models import (AgenteEnContacto, CalificacionCliente, Campana,
                                       OpcionCalificacion)
 from ominicontacto_app.services.campana_service import CampanaService
@@ -161,6 +168,15 @@ class EstadisticasService():
         """
         logs_llamadas_campana = LlamadaLog.objects.filter(campana_id=campana.pk).values(
             'event').annotate(cantidad=Count('event'))
+        if campana.type == Campana.TYPE_ENTRANTE:
+            # en las campañas entrantes solo queremos mostrar las llamadas ocurridas en el día
+            # actual
+            hoy_ahora = fecha_hora_local(timezone.now())
+            hoy = hoy_ahora.date()
+            fecha_desde = datetime.datetime.combine(hoy, datetime.time.min)
+            fecha_hasta = datetime.datetime.combine(hoy_ahora, datetime.time.max)
+            logs_llamadas_campana = logs_llamadas_campana.filter(
+                time__range=(fecha_desde, fecha_hasta))
         dict_eventos_campana = {}
         for evento_cantidad in logs_llamadas_campana:
             evento = evento_cantidad['event']
@@ -180,7 +196,8 @@ class EstadisticasService():
             llamadas_recibidas += llamadas_recibidas_transferidas
         elif campana.type == Campana.TYPE_PREVIEW:
             llamadas_pendientes = AgenteEnContacto.objects.filter(
-                estado=AgenteEnContacto.ESTADO_INICIAL, campana_id=campana.pk).count()
+                estado=AgenteEnContacto.ESTADO_INICIAL, campana_id=campana.pk,
+                es_originario=True).count()
         return llamadas_pendientes, llamadas_realizadas, llamadas_recibidas
 
     def obtener_total_calificacion_agente(self, campana, fecha_desde, fecha_hasta):
@@ -288,12 +305,14 @@ class EstadisticasService():
         reporte = OrderedDict(
             # se cuentan todos los eventos DIAL con 'tipo_llamada' no manual
             [(_('Discadas'), 0),
-             # se cuentan todos los eventos CONNECT con 'tipo_llamada' no manual
-             (_('Conectadas al agente'), 0),
              # se cuentan todos los eventos ANSWER con 'tipo_llamada' no manual
              (_('Atendidas'), 0),
+             # se cuentan todos los eventos CONNECT con 'tipo_llamada' no manual
+             (_('Conectadas al agente'), 0),
              # se cuentan todos los eventos EXITWITHTIMEOUT y ABANDON con 'tipo_llamada' no manual
              (_('Perdidas'), 0),
+             # se cuentan todos los eventos AMD
+             (_('Contestador detectado'), 0),
              # se cuentan todos los eventos DIAL con 'tipo_llamada' manual
              (_('Manuales'), 0),
              # se cuentan todos los eventos ANSWER con 'tipo_llamada' manual
@@ -317,6 +336,8 @@ class EstadisticasService():
                 reporte[_('Atendidas')] += cantidad
             elif evento == 'ANSWER' and tipo_llamada == LlamadaLog.LLAMADA_MANUAL:
                 reporte[_('Manuales atendidas')] = cantidad
+            elif evento == 'AMD':
+                reporte[_('Contestador detectado')] += cantidad
             elif (evento in ['ABANDON', 'EXITWITHTIMEOUT'] and
                   tipo_llamada != LlamadaLog.LLAMADA_MANUAL):
                 reporte[_('Perdidas')] += cantidad
@@ -512,12 +533,12 @@ class EstadisticasService():
         estadisticas = self._calcular_estadisticas(campana, fecha_inferior, fecha_superior)
 
         if estadisticas:
-            logger.info("Generando grafico calificaciones de campana por cliente ")
+            logger.info(_("Generando grafico calificaciones de campana por cliente "))
 
         # Barra: Cantidad de calificacion de cliente
         barra_campana_calificacion = pygal.Bar(  # @UndefinedVariable
             show_legend=False, style=LightGreenStyle)
-        barra_campana_calificacion.title = 'Cantidad de calificacion de cliente '
+        barra_campana_calificacion.title = _('Cantidad de calificacion de cliente ')
 
         barra_campana_calificacion.x_labels = \
             estadisticas['calificaciones_nombre']
@@ -531,7 +552,7 @@ class EstadisticasService():
         barra_campana_no_atendido = pygal.Bar(  # @UndefinedVariable
             show_legend=False,
             style=DefaultStyle(colors=('#b93229',)))
-        barra_campana_no_atendido.title = 'Cantidad de llamadas no atendidos '
+        barra_campana_no_atendido.title = _('Cantidad de llamadas no atendidos ')
 
         barra_campana_no_atendido.x_labels = \
             estadisticas['resultado_nombre']
@@ -543,7 +564,7 @@ class EstadisticasService():
 
         # Barra: Detalles de llamadas por evento de llamada.
         barra_campana_llamadas = pygal.Bar(show_legend=False)
-        barra_campana_llamadas.title = 'Detalles de llamadas '
+        barra_campana_llamadas.title = _('Detalles de llamadas ')
 
         barra_campana_llamadas.x_labels = \
             estadisticas['cantidad_llamadas'][0]

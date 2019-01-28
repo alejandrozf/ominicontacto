@@ -21,8 +21,10 @@
 
 from __future__ import unicode_literals
 
-import requests
 import time
+import unicodedata
+
+import requests
 
 from django.utils.translation import ugettext as _
 
@@ -67,7 +69,7 @@ class CampanaService():
                 metadata_actual.nombres_de_columnas,
                 metadata_modificar.nombres_de_columnas):
             if columna_base != columna_modificar:
-                error = "Los nombres de las columnas no coinciden"
+                error = _("Los nombres de las columnas no coinciden")
 
         return error
 
@@ -80,10 +82,11 @@ class CampanaService():
         """
         nombre_lista = '_'.join([str(campana.id), str(campana.bd_contacto.id),
                                  elimina_espacios(campana.bd_contacto.nombre)])
+        nombre_lista_ascii = unicodedata.normalize('NFKD', nombre_lista).encode('ascii', 'ignore')
         id_lista = None
         results = salida_comando['results']
         for lista in results:
-            if lista["name"] == nombre_lista:
+            if lista["name"] == nombre_lista_ascii:
                 id_lista = lista["listId"]
                 break
 
@@ -224,8 +227,8 @@ class CampanaService():
         service_wombat = WombatService()
         nombre_lista = '_'.join([str(campana.id), str(campana.bd_contacto.id),
                                  elimina_espacios(campana.bd_contacto.nombre)])
-        url_edit = "api/lists/?op=addToList&list={0}".format(
-            nombre_lista)
+        nombre_lista_ascii = unicodedata.normalize('NFKD', nombre_lista).encode('ascii', 'ignore')
+        url_edit = "api/lists/?op=addToList&list={0}".format(nombre_lista_ascii)
         # crea lista de contactos en wombat
         service_wombat.update_lista_wombat("newcampaign_list_contacto.txt", url_edit)
 
@@ -401,7 +404,7 @@ class CampanaService():
         por realizar, si no le quedan las elimino de las campanas corriendo y le cambio
         el estado a eliminadas
         """
-        error_msg = _(u"No se pudo consultar el estado actual de la campaña. "
+        error_msg = _("No se pudo consultar el estado actual de la campaña. "
                       "Consulte con su administrador.")
         error = False
         for campana in campanas:

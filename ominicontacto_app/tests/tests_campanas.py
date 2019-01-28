@@ -36,7 +36,8 @@ from django.utils.translation import ugettext as _
 
 from configuracion_telefonia_app.models import DestinoEntrante
 
-from ominicontacto_app.models import AgenteEnContacto, Campana, QueueMember, OpcionCalificacion
+from ominicontacto_app.models import (AgenteEnContacto, Campana, QueueMember, OpcionCalificacion,
+                                      Formulario)
 from ominicontacto_app.forms import CampanaPreviewForm, TIEMPO_MINIMO_DESCONEXION
 
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, UserFactory,
@@ -45,7 +46,7 @@ from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, 
                                                NombreCalificacionFactory,
                                                OpcionCalificacionFactory, ArchivoDeAudioFactory,
                                                ParametroExtraParaWebformFactory,
-                                               ActuacionVigenteFactory)
+                                               ActuacionVigenteFactory, FormularioFactory)
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, OMLTransaccionBaseTest
 
@@ -56,6 +57,7 @@ from ominicontacto_app.utiles import (
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.services.exportar_base_datos import SincronizarBaseDatosContactosService
+from configuracion_telefonia_app.tests.factories import DestinoEntranteFactory, IVRFactory
 
 
 def test_concurrently(args_list):
@@ -249,8 +251,7 @@ class AgenteCampanaTests(CampanasTests):
         AgenteEnContactoFactory.create(**values)
         kwargs = {'pk_contacto': self.contacto.pk,
                   'pk_campana': self.campana_activa.pk,
-                  'id_agente': self.agente_profile.pk,
-                  'wombat_id': 0}
+                  'id_agente': self.agente_profile.pk}
         url = reverse('calificacion_formulario_update_or_create', kwargs=kwargs)
         post_data = {'opcion_calificacion': [self.opcion_calificacion_noaccion.pk],
                      'agente': [self.agente_profile.pk],
@@ -265,13 +266,9 @@ class AgenteCampanaTests(CampanasTests):
     def test_al_crear_formulario_cliente_finaliza_relacion_agente_contacto(self, post):
         AgenteEnContactoFactory.create(campana_id=self.campana_activa.pk)
         values, url, post_data = self._inicializar_valores_formulario_cliente()
-        base_datos = self.contacto.bd_contacto
-        nombres = base_datos.get_metadata().nombres_de_columnas[1:]
-        datos = json.loads(self.contacto.datos)
-        for nombre, dato in zip(nombres, datos):
-            post_data.update({convertir_ascii_string(nombre): "{0}-modificado".format(dato)})
         self.client.post(url, post_data, follow=True)
         values['estado'] = AgenteEnContacto.ESTADO_FINALIZADO
+        del values['datos_contacto']
         self.assertTrue(AgenteEnContacto.objects.filter(**values).exists())
 
     @patch('requests.post')
@@ -299,12 +296,12 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertTrue(self.campana.objetivo >= 0)
 
     def test_validacion_nombres_de_campana_no_permite_caracteres_no_ASCII(self):
-        error_ascii = "el nombre no puede contener tildes ni caracteres no ASCII"
+        error_ascii = _("el nombre no puede contener tildes ni caracteres no ASCII")
         with self.assertRaisesMessage(ValidationError, error_ascii):
             validar_nombres_campanas("áéíóúñ")
 
     def test_validacion_nombres_de_campana_no_permite_espacios(self):
-        with self.assertRaisesMessage(ValidationError, "el nombre no puede contener espacios"):
+        with self.assertRaisesMessage(ValidationError, _("el nombre no puede contener espacios")):
             validar_nombres_campanas("nombre con espacios")
 
     def test_tipo_campanas_preview(self):
@@ -400,9 +397,8 @@ class SupervisorCampanaTests(CampanasTests):
         url = reverse('campana_preview_supervisors', args=[self.campana_activa.pk])
         self.assertFalse(self.campana_activa.supervisors.all().exists())
         supervisor = UserFactory.create()
-        self.campana_activa.supervisors.add(supervisor)
-        self.campana_activa.save()
         post_data = {'supervisors': [supervisor.pk]}
+        self.assertFalse(self.campana_activa.supervisors.all().exists())
         self.client.post(url, post_data, follow=True)
         self.assertTrue(self.campana_activa.supervisors.all().exists())
 
@@ -413,15 +409,31 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertTemplateUsed(response, u'registration/login.html')
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch("ominicontacto_app.views_queue_member.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_queue_member.adicionar_agente_activo_cola")
     def test_usuario_logueado_agrega_agentes_a_campana_preview(
-            self, _generar_y_recargar_configuracion_asterisk):
-        # anulamos con mock la parte de regeneracion de asterisk pues no se esta
-        # comprobando en este test y ademas necesita conexión a un servidor externo
+            self, adicionar_agente_activo_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            _generar_y_recargar_configuracion_asterisk):
+        # anulamos con mock las partes de regeneracion de asterisk y obtención de sip de agentes
+        # pues no se esta comprobando en este test y ademas necesita conexión a componentes externos
         url = reverse('queue_member_add', args=[self.campana_activa.pk])
         self.assertFalse(QueueMember.objects.all().exists())
         post_data = {'member': self.agente_profile.pk, 'penalty': 1}
         self.client.post(url, post_data, follow=True)
         self.assertTrue(QueueMember.objects.all().exists())
+
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch("ominicontacto_app.views_queue_member.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_queue_member.adicionar_agente_activo_cola")
+    def test_si_se_genera_error_en_activacion_cola_no_se_agrega_agente_a_campana(
+            self, adicionar_agente_activo_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            _generar_y_recargar_configuracion_asterisk):
+        _generar_y_recargar_configuracion_asterisk.side_effect = Exception()
+        url = reverse('queue_member_add', args=[self.campana_activa.pk])
+        self.assertFalse(QueueMember.objects.all().exists())
+        post_data = {'member': self.agente_profile.pk, 'penalty': 1}
+        self.client.post(url, post_data, follow=True)
+        self.assertFalse(QueueMember.objects.all().exists())
 
     def test_relacion_agente_contacto_campanas_preview(self):
         # test que documenta la existencia del modelo que relaciona a agentes
@@ -587,6 +599,7 @@ class SupervisorCampanaTests(CampanasTests):
             '1-servicelevel': 1,
             '1-strategy': 'ringall',
             '1-weight': 1,
+            '1-wrapuptime': 2,
             '1-wait': 1,
             '1-auto_grabacion': 'on',
             '1-audios': audio_ingreso.pk,
@@ -618,7 +631,8 @@ class SupervisorCampanaTests(CampanasTests):
 
         return post_step0_data, post_step1_data, post_step2_data, post_step3_data
 
-    def _obtener_post_data_wizard_creacion_campana_dialer(self, nombre_campana, audio_ingreso):
+    def _obtener_post_data_wizard_creacion_campana_dialer(self, nombre_campana, audio_ingreso,
+                                                          destino):
         fecha_inicio = timezone.now()
         fecha_fin = fecha_inicio + timezone.timedelta(days=5)
         post_step0_data = {
@@ -652,6 +666,8 @@ class SupervisorCampanaTests(CampanasTests):
             '1-name': nombre_campana,
             '1-audio_para_contestadores': audio_ingreso.pk,
             '1-dial_timeout': 25,
+            '1-tipo_destino': destino.tipo,
+            '1-destino': destino.pk,
             'campana_dialer_create_view-current_step': 1,
         }
         post_step2_data = {
@@ -704,9 +720,11 @@ class SupervisorCampanaTests(CampanasTests):
         return (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
                 post_step4_data, post_step5_data, post_step6_data)
 
-    def _obtener_post_data_wizard_modificacion_campana_dialer(self, nombre_campana, audio_ingreso):
+    def _obtener_post_data_wizard_modificacion_campana_dialer(self, nombre_campana, audio_ingreso,
+                                                              destino):
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data, __, __,
-         __) = self._obtener_post_data_wizard_creacion_campana_dialer(nombre_campana, audio_ingreso)
+         __) = self._obtener_post_data_wizard_creacion_campana_dialer(
+            nombre_campana, audio_ingreso, destino)
         post_step0_data.pop('0-tipo_interaccion')
         post_step0_data.pop('0-formulario')
         post_step0_data.pop('campana_dialer_create_view-current_step')
@@ -727,6 +745,8 @@ class SupervisorCampanaTests(CampanasTests):
             '1-initial_predictive_model': 'on',
             '1-initial_boost_factor': 1.0,
             '1-dial_timeout': 25,
+            '1-tipo_destino': destino.tipo,
+            '1-destino': destino.pk,
             'campana_dialer_update_view-current_step': 1,
             '1-campana': self.campana_dialer.pk,
             '1-name': nombre_campana,
@@ -874,13 +894,13 @@ class SupervisorCampanaTests(CampanasTests):
          post_step3_data) = self._obtener_post_data_wizard_creacion_campana_entrante(
              nombre_campana, audio_ingreso)
 
-        self.assertFalse(DestinoEntrante.objects.all().exists())
+        self.assertEqual(DestinoEntrante.objects.all().count(), 1)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
         self.client.post(url, post_step2_data, follow=True)
         self.client.post(url, post_step3_data, follow=True)
-        self.assertTrue(DestinoEntrante.objects.all().exists())
+        self.assertEqual(DestinoEntrante.objects.all().count(), 2)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     def test_creacion_campana_entrante_desde_template_crea_nodo_ruta_entrante(
@@ -902,13 +922,13 @@ class SupervisorCampanaTests(CampanasTests):
              campana_entrante_template, audio_ingreso)
         post_step0_data['0-nombre'] = nombre_campana
         post_step1_data['1-name'] = nombre_campana
-        self.assertFalse(DestinoEntrante.objects.all().exists())
+        self.assertEqual(DestinoEntrante.objects.all().count(), 1)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
         self.client.post(url, post_step2_data, follow=True)
         self.client.post(url, post_step3_data, follow=True)
-        self.assertTrue(DestinoEntrante.objects.all().exists())
+        self.assertEqual(DestinoEntrante.objects.all().count(), 2)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     def test_wizard_crear_campana_manual_sin_bd_crea_y_le_asigna_bd_contactos_defecto(
@@ -965,10 +985,12 @@ class SupervisorCampanaTests(CampanasTests):
         url = reverse('campana_dialer_create')
         nombre_campana = 'campana_dialer_test'
         audio_ingreso = ArchivoDeAudioFactory.create()
+        ivr = IVRFactory.create()
+        destino = DestinoEntranteFactory.create(tipo=DestinoEntrante.IVR, content_object=ivr)
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
          post_step4_data, post_step5_data,
          post_step6_data) = self._obtener_post_data_wizard_creacion_campana_dialer(
-             nombre_campana, audio_ingreso)
+             nombre_campana, audio_ingreso, destino)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
@@ -992,9 +1014,13 @@ class SupervisorCampanaTests(CampanasTests):
         url = reverse('campana_dialer_update', args=[self.campana_dialer.pk])
         nuevo_objetivo = 3
         audio_ingreso = ArchivoDeAudioFactory.create()
+        ivr = IVRFactory.create()
+        destino = DestinoEntranteFactory.create(tipo=DestinoEntrante.IVR, content_object=ivr)
+        self.campana_dialer.queue_campana.destino = destino
+        self.campana_dialer.queue_campana.save()
         (post_step0_data, post_step1_data, post_step2_data,
          post_step3_data) = self._obtener_post_data_wizard_modificacion_campana_dialer(
-             self.campana_dialer.nombre, audio_ingreso)
+             self.campana_dialer.nombre, audio_ingreso, destino)
         self.assertNotEqual(self.campana_dialer.objetivo, nuevo_objetivo)
         post_step0_data['0-objetivo'] = nuevo_objetivo
         # realizamos la creación de la campaña mediante el wizard
@@ -1105,14 +1131,14 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertEqual(param_extra_web_form_clonado.columna, parametro_web_form.columna)
 
     def _obtener_post_data_wizard_creacion_template_campana_dialer(
-            self, nombre_campana, audio_ingreso):
+            self, nombre_campana, audio_ingreso, destino):
         (post_step0_data, post_step1_data,
          post_step2_data,
          post_step3_data,
          post_step4_data,
          post_step5_data,
          post_step6_data) = self._obtener_post_data_wizard_creacion_campana_dialer(
-             nombre_campana, audio_ingreso)
+             nombre_campana, audio_ingreso, destino)
         post_step0_data['campana_dialer_template_create_view-current_step'] = 0
         post_step1_data['campana_dialer_template_create_view-current_step'] = 1
         post_step2_data['campana_dialer_template_create_view-current_step'] = 2
@@ -1135,10 +1161,12 @@ class SupervisorCampanaTests(CampanasTests):
         url = reverse('campana_dialer_template_create')
         nombre_campana = 'campana_dialer_template'
         audio_ingreso = ArchivoDeAudioFactory.create()
+        ivr = IVRFactory.create()
+        destino = DestinoEntranteFactory.create(tipo=DestinoEntrante.IVR, content_object=ivr)
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
          post_step4_data, post_step5_data,
          post_step6_data) = self._obtener_post_data_wizard_creacion_template_campana_dialer(
-             nombre_campana, audio_ingreso)
+             nombre_campana, audio_ingreso, destino)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
@@ -1153,14 +1181,14 @@ class SupervisorCampanaTests(CampanasTests):
             type=Campana.TYPE_DIALER).exists())
 
     def _obtener_post_data_wizard_creacion_campana_dialer_desde_template(
-            self, nombre_campana, audio_ingreso):
+            self, nombre_campana, audio_ingreso, destino):
         (post_step0_data, post_step1_data,
          post_step2_data,
          post_step3_data,
          post_step4_data,
          post_step5_data,
          post_step6_data) = self._obtener_post_data_wizard_creacion_campana_dialer(
-             nombre_campana, audio_ingreso)
+             nombre_campana, audio_ingreso, destino)
         post_step0_data['campana_dialer_template_create_campana_view-current_step'] = 0
         post_step1_data['campana_dialer_template_create_campana_view-current_step'] = 1
         post_step2_data['campana_dialer_template_create_campana_view-current_step'] = 2
@@ -1212,13 +1240,15 @@ class SupervisorCampanaTests(CampanasTests):
         url = reverse('crea_campana_dialer_template', args=[self.campana_dialer.pk, 1])
         nombre_campana = 'campana_dialer_clonada'
         audio_ingreso = ArchivoDeAudioFactory.create()
+        ivr = IVRFactory.create()
+        destino = DestinoEntranteFactory.create(tipo=DestinoEntrante.IVR, content_object=ivr)
         parametro_web_form = ParametroExtraParaWebformFactory(campana=self.campana_dialer)
         opt_calif = self.campana_dialer.opciones_calificacion.get(tipo=OpcionCalificacion.GESTION)
         actuacion_vigente = ActuacionVigenteFactory.create(campana=self.campana_dialer)
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
          post_step4_data, post_step5_data,
          post_step6_data) = self._obtener_post_data_wizard_creacion_campana_dialer_desde_template(
-             nombre_campana, audio_ingreso)
+             nombre_campana, audio_ingreso, destino)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
@@ -1400,3 +1430,16 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertEqual(opt_calif_clonada_gestion.tipo, opt_calif.tipo)
         self.assertEqual(param_extra_web_form_clonado.parametro, param_extra_web_form.parametro)
         self.assertEqual(param_extra_web_form_clonado.columna, param_extra_web_form.columna)
+
+    def test_no_es_posible_eliminar_formulario_asignado_a_campana(self):
+        url = reverse('formulario_eliminar', args=[self.campana.formulario.pk])
+        n_formularios = Formulario.objects.count()
+        self.client.post(url, follow=True)
+        self.assertEqual(Formulario.objects.count(), n_formularios)
+
+    def test_se_puede_eliminar_formulario_no_asignado_a_campana(self):
+        formulario = FormularioFactory()
+        url = reverse('formulario_eliminar', args=[formulario.pk])
+        n_formularios = Formulario.objects.count()
+        self.client.post(url, follow=True)
+        self.assertEqual(Formulario.objects.count(), n_formularios - 1)

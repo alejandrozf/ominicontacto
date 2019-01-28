@@ -17,6 +17,10 @@
 #
 ---
 
+# Se crea /opt/omnileads/kamailio directory
+- name: Create prefix directory
+  file: state=directory path={{ install_prefix }} owner={{ usuario }} group={{ usuario }}
+
 # Se sestean variables de nombre de los targz que se descargan
 - set_fact: asterisk_tar=asterisk-13.22.0.tar.gz
 - set_fact: libpri_tar=libpri-1.6.0.tar.gz
@@ -25,7 +29,7 @@
 - set_fact: iksemel_tar=iksemel-1.5.1.3.zip
 
 # Se descargan los paquetes
-- name: Descarga de paquetes de asterisk
+- name: Download of asterisk sources
   get_url: "url={{ item }} dest=/usr/src/ timeout=120"
   with_items:
         - "{{ dahdi_linux }}"
@@ -37,7 +41,7 @@
   become_method: sudo
 
 # Se descomprimen
-- name: Descompresion de todos los paquetes
+- name: Untar of sources
   unarchive: "src=/usr/src/{{ item }} dest=/usr/src/ remote_src=yes"
   with_items:
       - "{{ asterisk_tar }}"
@@ -49,7 +53,7 @@
   become_method: sudo
 
 # Se borran
-- name: Borrado de los tar
+- name: Erase of tar.gz files
   file: "dest=/usr/src/{{ item }} state=absent"
   with_items:
       - "{{ asterisk_tar }}"
@@ -61,7 +65,7 @@
   become_method: sudo
 
 # Se crea el directorio /opt/omnileads/asterisk
-- name: Create asterisk directory
+- name: Creation of asterisk prefix directory
   file: path={{ install_prefix }}asterisk state=directory owner={{ usuario }} group={{ usuario }}
   become: yes
   become_method: sudo
@@ -91,12 +95,13 @@
   become_method: sudo
 
 # Pasos para instalar dahdi linux
-- name: Instalacion de Dahdi Linux
+- name: Dahdi linux installation
   shell: "{{ item }} chdir=/usr/src/dahdi-linux-complete-2.11.1+2.11.1"
   with_items:
         - "make all"
         - "make install"
         - "make config"
+  when: dahdi_install == 1 and desarrollo == 0
   become: yes
   become_method: sudo
 
@@ -106,17 +111,18 @@
   with_items:
           - "make"
           - "make install"
+  when: dahdi_install == 1 and desarrollo == 0
   become: yes
   become_method: sudo
 
 # Se crea un directorio para jansson
-- name: Create jansson directory
+- name: Create jansson directory prefix
   file: path={{ install_prefix }}jansson-2.7 state=directory owner={{ usuario }} group={{ usuario }}
   become: yes
   become_method: sudo
 
 # Pasos para instalar jansson
-- name: Instalacion de jansson
+- name: Jansson installation
   shell: "{{ item }} chdir=/usr/src/jansson-2.7"
   with_items:
           - "autoreconf -i"
@@ -127,7 +133,7 @@
   become_method: sudo
 
 # Pasos para instalar asterisk  se comienza con el install de prerequisitos y luego con el configure
-- name: Instalacion de asterisk (centos)
+- name: Asterisk installation (centos)
   shell: "{{ item }} chdir=/usr/src/asterisk-13.22.0"
   with_items:
           - contrib/scripts/install_prereq install
@@ -136,15 +142,15 @@
 
 # Esta task es necesaria porque en debian hay un paquete que pregunta cual es el countrycode telefonico del pais donde va a estar asterisk instalado
 # El debconf sirve para confirugarle predeterminadamente la opcion de 59 (country code argentino) y asi no pida el input
-- name: Seteo del countrycode para asterisk
-  debconf: name='libvpb0' question='libvpb0/countrycode' value={{ country_code }} vtype='string'
+- name: Set country code for libvp1 package
+  debconf: name='libvpb0' question='libvpb1/countrycode' value={{ country_code }} vtype='string'
   when: ansible_os_family == "Debian"
 
-- name: Instalacion de asterisk (debian)
+- name: Asterisk installation (debian)
   shell: "{{ item }} chdir=/usr/src/asterisk-13.22.0"
   with_items:
           - echo 'y' | contrib/scripts/install_prereq install
-          - ./configure --libdir={{ install_prefix }}asterisk/lib64 --prefix={{ install_prefix }}asterisk --with-pjproject-bundled
+          - ./configure --libdir={{ install_prefix }}asterisk/lib64 --prefix={{ install_prefix }}asterisk
   when: ansible_os_family == "Debian"
 
 # Se sigue con el la ejecucion de este script para que permita mp3
@@ -158,7 +164,16 @@
 - shell: "{{ item }} chdir=/usr/src/asterisk-13.22.0"
   with_items:
           - make menuselect.makeopts
-          - menuselect/menuselect --enable format_mp3
+          - menuselect/menuselect --enable format_mp3 menuselect.makeopts
+          - menuselect/menuselect --enable CORE-SOUNDS-EN-WAV menuselect.makeopts
+          - menuselect/menuselect --enable CORE-SOUNDS-ES-WAV menuselect.makeopts
+          - menuselect/menuselect --enable CORE-SOUNDS-FR-WAV menuselect.makeopts
+          - menuselect/menuselect --enable CORE-SOUNDS-IT-WAV menuselect.makeopts
+          - menuselect/menuselect --enable CORE-SOUNDS-RU-WAV menuselect.makeopts
+          - menuselect/menuselect --enable CORE-SOUNDS-JA-WAV menuselect.makeopts
+          - menuselect/menuselect --enable CORE-SOUNDS-SV-WAV menuselect.makeopts
+          - menuselect/menuselect --enable EXTRA-SOUNDS-EN-WAV menuselect.makeopts
+          - menuselect/menuselect --enable EXTRA-SOUNDS-FR-WAV menuselect.makeopts
           - make
           - make install
           - make config

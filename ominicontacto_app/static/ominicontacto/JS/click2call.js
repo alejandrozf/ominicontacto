@@ -32,24 +32,18 @@
        $(this).val('.calificacionContacto');
      });
 
+     var localeData = moment.localeData();
+     var calendar = localeData._calendar;
+     ranges = get_ranges();
      // Init daterange plugin
      $('#id_fecha').daterangepicker(
        {
          locale: {
            format: 'DD/MM/YYYY'
          },
-
          startDate: start,
          endDate: end,
-         ranges: {
-           'Hoy': [moment(), moment()],
-           'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-           'Ultimos 7 Días': [moment().subtract(6, 'days'), moment()],
-           'Ultimos 30 Días': [moment().subtract(29, 'days'), moment()],
-           'Este Mes': [moment().startOf('month'), moment().endOf('month')],
-           'Ultimo Mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-         },
-
+         ranges: ranges,
        }, cb);
 
      cb(start, end);

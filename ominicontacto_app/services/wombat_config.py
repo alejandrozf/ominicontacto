@@ -28,6 +28,8 @@ import logging
 import json
 
 from django.conf import settings
+from django.utils.translation import ugettext as _
+
 from ominicontacto_app.utiles import elimina_espacios
 
 logger = logging.getLogger(__name__)
@@ -95,7 +97,7 @@ class CampanaCreator(object):
     def create_json(self, campana):
         """Crea el archivo de json para campana
         """
-        logger.info("Creando json para campana %s", campana.nombre)
+        logger.info(_("Creando json para campana {0}".format(campana.nombre)))
         config_chunk = self._generar_json(campana)
         self._campana_config_file.write(config_chunk)
 
@@ -121,7 +123,7 @@ class TrunkCreator(object):
     def create_json(self, campana):
         """Crea el archivo de json para trunk de campana
         """
-        logger.info("Creando json para trunk  campana %s", campana.nombre)
+        logger.info(_("Creando json para trunk  campana {0}".format(campana.nombre)))
         config_chunk = self._generar_json()
         self._trunk_config_file.write(config_chunk)
 
@@ -149,8 +151,8 @@ class RescheduleRuleCreator(object):
     def create_json(self, campana, parametros):
         """Crea el archivo de json para trunk de campana
         """
-        logger.info("Creando json para regla de reschedule para la campana %s",
-                    campana.nombre)
+        logger.info(_("Creando json para regla de reschedule para la campana {0}".format(
+            campana.nombre)))
         config_chunk = self._generar_json(parametros)
         self._reschedule_config_file.write(config_chunk)
 
@@ -192,8 +194,7 @@ class EndPointCreator(object):
     def create_json(self, campana):
         """Crea el archivo de json para trunk de campana
         """
-        logger.info("Creando json end point para la campana %s",
-                    campana.nombre)
+        logger.info(_("Creando json end point para la campana {0}".format(campana.nombre)))
         config_chunk = self._generar_json(campana)
         self._endpoint_config_file.write(config_chunk)
 
@@ -246,8 +247,7 @@ class CampanaListCreator(object):
     def create_json(self, list):
         """Crea el archivo de json para list de campana
         """
-        logger.info("Creando json para asociacion lista %s campana",
-                    list)
+        logger.info(_("Creando json para asociacion lista {0} campana".format(list)))
         config_chunk = self._generar_json(list)
         self._campana_list_config_file.write(config_chunk)
 
@@ -271,8 +271,7 @@ class CampanaDeleteListCreator(object):
     def create_json(self, cclId):
         """Crea el archivo de json para list de campana
         """
-        logger.info("Creando json para asociacion lista %s campana",
-                    list)
+        logger.info(_("Creando json para asociacion lista {0} campana".format(list)))
         config_chunk = self._generar_json(cclId)
         self._campana_list_config_file.write(config_chunk)
 
@@ -298,8 +297,7 @@ class CampanaEndPointDelete(object):
     def create_json(self, campana):
         """Crea el archivo de json para endpoint de campana
         """
-        logger.info("Creando json para asociacion campana %s endpoint",
-                    campana.nombre)
+        logger.info(_("Creando json para asociacion campana {0} endpoint".format(campana.nombre)))
         config_chunk = self._generar_json(campana)
         self._campana_endpoint_config_file.write(config_chunk)
 
@@ -318,7 +316,7 @@ class ConfigFile(object):
 
             tmp_file_obj.close()
 
-            logger.info("Copiando file config a %s", self._filename)
+            logger.info(_("Copiando file config a {0}".format(self._filename)))
             shutil.copy(tmp_filename, self._filename)
             os.chmod(self._filename, 0644)
 
@@ -326,8 +324,7 @@ class ConfigFile(object):
             try:
                 os.remove(tmp_filename)
             except Exception:
-                logger.exception("Error al intentar borrar temporal %s",
-                                 tmp_filename)
+                logger.exception(_("Error al intentar borrar temporal {0}".format(tmp_filename)))
 
 
 class CampanaConfigFile(ConfigFile):

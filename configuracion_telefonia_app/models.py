@@ -24,7 +24,7 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from ominicontacto_app.models import ArchivoDeAudio, Campana
 
@@ -38,13 +38,17 @@ R_MATCH_PATTERN = r'^[\w|\.|\[|\]|-]+$'
 class TroncalSIP(models.Model):
     """Configuración de Troncal SIP."""
     nombre = models.CharField(
-        max_length=128, unique=True, validators=[RegexValidator(R_ALFANUMERICO)])
+        max_length=128, unique=True, validators=[RegexValidator(R_ALFANUMERICO)],
+        verbose_name=_('Nombre'))
     canales_maximos = models.PositiveIntegerField(
-        validators=[MinValueValidator(0), MaxValueValidator(1000)], default=1000)
+        validators=[MinValueValidator(0), MaxValueValidator(1000)], default=1000,
+        verbose_name=_('Canales máximos'))
     caller_id = models.CharField(
-        max_length=100, validators=[RegexValidator(R_ALFANUMERICO)], blank=True, null=True)
-    register_string = models.CharField(max_length=100, blank=True, null=True)
-    text_config = models.TextField()
+        max_length=100, validators=[RegexValidator(R_ALFANUMERICO)], blank=True, null=True,
+        verbose_name=_('Caller id'))
+    register_string = models.CharField(max_length=100, blank=True, null=True,
+                                       verbose_name=_('Register string'))
+    text_config = models.TextField(verbose_name=_('Text config'))
 
     def __unicode__(self):
         return self.nombre
@@ -134,7 +138,7 @@ class GrupoHorario(models.Model):
     """Representa un grupo de condiciones de tiempo que debe cumplir un nodo de
     ruta entrante de tipo validación de fecha horario
     """
-    nombre = models.CharField(max_length=50, unique=True)
+    nombre = models.CharField(max_length=50, unique=True, verbose_name=_('Nombre'))
 
     def __unicode__(self):
         return self.nombre
@@ -239,17 +243,14 @@ class ValidacionFechaHora(models.Model):
     """Representa la información de un nodo de Validación Fecha/Hora de una ruta entrante"""
     DESTINO_MATCH = 'True'
     DESTINO_NO_MATCH = 'False'
-    nombre = models.CharField(max_length=50, unique=True)
+    nombre = models.CharField(max_length=50, unique=True, verbose_name=_('Nombre'))
     grupo_horario = models.ForeignKey(
-        GrupoHorario, related_name='validaciones_fecha_hora', on_delete=models.PROTECT)
+        GrupoHorario, related_name='validaciones_fecha_hora', on_delete=models.PROTECT,
+        verbose_name=_('Grupo horario'))
 
 
 # TODO: implementar el resto de los modelos de los nodos entrantes según sean especificados
 # class Extension(models.Model):
-#     pass
-
-
-# class Hangup(models.Model):
 #     pass
 
 
@@ -271,6 +272,7 @@ class DestinoEntrante(models.Model):
         (CAMPANA, _('Campaña entrante')),
         (VALIDACION_FECHA_HORA, _('Validación de fecha/hora')),
         (IVR, _('IVR')),
+        (HANGUP, _('HangUp')),
     )
     nombre = models.CharField(max_length=128, unique=True)
     tipo = models.PositiveIntegerField(choices=TIPOS_DESTINOS)
@@ -280,7 +282,7 @@ class DestinoEntrante(models.Model):
     destinos = models.ManyToManyField('DestinoEntrante', through='OpcionDestino')
 
     def __unicode__(self):
-        return _("{0}: {1}".format(self.get_tipo_display(), self.nombre))
+        return unicode(_("{0}: {1}".format(self.get_tipo_display(), self.nombre)))
 
     @classmethod
     def crear_nodo_ruta_entrante(cls, info_nodo_entrante, commit=True):
@@ -292,6 +294,8 @@ class DestinoEntrante(models.Model):
             tipo = cls.IVR
         elif isinstance(info_nodo_entrante, ValidacionFechaHora):
             tipo = cls.VALIDACION_FECHA_HORA
+        elif isinstance(info_nodo_entrante, HangUp):
+            raise(_('Error: El nodo HangUp es único.'))
         kwargs = {
             'nombre': info_nodo_entrante.nombre,
             'tipo': tipo,
@@ -355,9 +359,29 @@ class RutaEntrante(models.Model):
         (EN, _('Inglés')),
         (ES, _('Español')),)
 
+    SIGLAS_IDIOMAS = {
+        EN: 'en',
+        ES: 'es',
+    }
+
     nombre = models.CharField(max_length=30, unique=True)
     telefono = models.CharField(
         max_length=30, unique=True, validators=[RegexValidator(R_MATCH_PATTERN)])
     prefijo_caller_id = models.CharField(max_length=30, blank=True, null=True)
     idioma = models.PositiveIntegerField(choices=TIPOS_IDIOMAS)
     destino = models.ForeignKey(DestinoEntrante, related_name='rutas_entrantes')
+
+    @property
+    def sigla_idioma(self):
+        return RutaEntrante.SIGLAS_IDIOMAS[self.idioma]
+
+
+class HangUp(models.Model):
+
+    @classmethod
+    def load(cls):
+        obj, created = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def __unicode__(self):
+        return _("HangUp")

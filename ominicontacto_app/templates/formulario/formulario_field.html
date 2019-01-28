@@ -19,6 +19,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block head_js %}
 <script type="text/javascript">
@@ -83,55 +84,54 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </script>
 {% endblock %}
 {% block content %}
-<h1>Nuevo formulario</h1>
+
+<h1>{% trans 'Nuevo formulario' %}</h1>
 
 <ul class="nav nav-indicators">
-    <li class="disabled"><a>Nuevo Formulario</a></li>
-    <li class="active"><a>Campos del formulario</a></li>
-    <li class="disabled"><a>Vista previa del formulario</a></li>
+    <li class="disabled"><a>{% trans 'Nuevo Formulario' %}</a></li>
+    <li class="active"><a>{% trans 'Campos del formulario' %}</a></li>
+    <li class="disabled"><a>{% trans 'Vista  previa del formulario' %}</a></li>
 </ul>
 
 <form action="" enctype="multipart/form-data" method="post">
-
                 {% csrf_token %}
-
-                <h2>Nuevo campo</h2>
-                {{ form.non_field_errors }}
+    <h2>{% trans 'Nuevo campo' %}</h2>
+    {{ form.non_field_errors }}
     {{ form.formulario }}
     {{ form.values_select }}
     <div class="form-row">
         <div class="col-md-4">
-            <label for="{{ form.nombre_campo.id_for_label }}">Nombre de campo:</label>
+            <label for="{{ form.nombre_campo.id_for_label }}">{% trans 'Nombre de campo:' %}</label>
             {{ form.nombre_campo }}
             {{ form.nombre_campo.errors }}
         </div>
         <div class="col-md-4">
-            <label for="{{ form.tipo.id_for_label }}">Tipo:</label>
+            <label for="{{ form.tipo.id_for_label }}">{% trans 'Tipo:' %}</label>
             {{ form.tipo}}
             {{ form.tipo.errors }}
         </div>
         <div class="col-md-4">
-            <label for="{{ form.tipo.id_for_label }}">Campo requerido: </label>
+            <label for="{{ form.tipo.id_for_label }}">{% trans 'Campo requerido:' %}</label>
             {{ form.is_required}}
             {{ form.is_required.errors }}
         </div>
     </div>
     <button type="submit" id="id_guardar" class="btn btn-outline-primary ">
-        Agregar campo
-    </button>   
+        {% trans 'Agregar campo' %}
+    </button>
     <br>
-    <br> 
+    <br>
     <hr id="separador_lista_control" style="display: none;">
     <div class="form-row" id="lista_control" style="display: none;">
         <div class="col-md-6">
               {{ form.value_item}}
               <br>
-                <a id="agregar_lista" class="btn btn-outline-primary" disabled="disabled">Agregar item</a>
-                <a id="eliminar_lista" class="btn btn-outline-danger" disabled="disabled">Eliminar seleccionados</a>
+              <a id="agregar_lista" class="btn btn-outline-primary" disabled="disabled">{% trans 'Agregar item' %}</a>
+              <a id="eliminar_lista" class="btn btn-outline-danger" disabled="disabled">{% trans 'Eliminar seleccionados' %}</a>
         </div>
         <div class="col-md-6">
             {{ form.list_values}}
-            {{ form.list_values.errors }}            
+            {{ form.list_values.errors }}
         </div>
     </div>
 
@@ -140,15 +140,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <br>
 <div>
                 {% if formulario %}
-                    <h2>Campos del formulario</h2>
+                    <h2>{% trans 'Campos del formulario' %}</h2>
                     <table class="table">
                         <thead>
                         <tr class="fts-table-bg">
-                            <th>Orden</th>
-                            <th>Nombre de campo</th>
-                            <th>Tipo</th>
-                            <th>Campo requerido</th>
-                            <th>Valores de la lista</th>
+                            <th>{% trans 'Orden' %}</th>
+                            <th>{% trans 'Nombre de campo' %}</th>
+                            <th>{% trans 'Tipo' %}</th>
+                            <th>{% trans 'Campo requerido' %}</th>
+                            <th>{% trans 'Valores de la lista' %}</th>
                             <th></th>
                         </tr>
                         </thead>
@@ -175,31 +175,31 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                     <td>
                                         <div class="dropdown">
                                             <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Opciones
+                                            {% trans 'Opciones' %}
                                             </button>
-                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">  
+                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
                                                 {% if not forloop.last %}
                                                         <button class="dropdown-item orden" data-url="{% url 'campo_formulario_orden' formulario.pk campo.pk %}" data-sentido-orden="{{ ORDEN_SENTIDO_DOWN }}" type="button">
-                                                           <span class="icon icon-chevron-down"></span>Mover abajo
+                                                            <span class="icon icon-chevron-down"></span>{% trans 'Mover abajo' %}
                                                         </button>
                                                 {% endif %}
                                                 {% if not forloop.first %}
                                                     <button class="dropdown-item orden" data-url="{% url 'campo_formulario_orden' formulario.pk campo.pk %}" data-sentido-orden="{{ ORDEN_SENTIDO_UP }}" type="button">
-                                                    <span class="icon icon-chevron-up"></span>Mover arriba
+                                                        <span class="icon icon-chevron-up"></span>{% trans 'Mover arriba' %}
                                                     </button>
-                                                {% endif %}                                                                                     
+                                                {% endif %}
                                                 <a class="dropdown-item" href="{% url 'formulario_field_delete' formulario.pk campo.pk %}">
-                                                    <span class="icon icon-trash" aria-hidden="true"></span>Eliminar
-                                                </a>                                                                                    
+                                                    <span class="icon icon-trash" aria-hidden="true"></span>{% trans 'Eliminar' %}
+                                                </a>
                                             </div>
                                         </div>
-                                    </td>                                      
+                                    </td>
                                 </tr>
                              {% empty %}
                                 <tr>
                                     <td colspan="4">
                                         <p>
-                                            <em>No se encontraron campos creados.</em>
+                                            <em>{% trans 'No se encontraron campos creados.' %}</em>
                                         </p>
                                     </td>
                                 </tr>
@@ -220,7 +220,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <div>
         <hr>
         <a class="btn btn-primary" role="button" href="{% url 'formulario_vista_previa' formulario.pk %}">
-            Continuar
+            {% trans 'Continuar' %}
         </a>
     </div>
 

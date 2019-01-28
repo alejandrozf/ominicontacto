@@ -29,6 +29,8 @@ import datetime
 # Importamos settings para poder tener a la mano la ruta de la carpeta media
 from django.conf import settings
 from django.http import HttpResponse
+from django.utils.translation import ugettext as _
+
 from io import BytesIO
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle
@@ -124,7 +126,7 @@ class ReporteCampanaPDF(View):
         # Dibujamos una cadena en la ubicación X,Y especificada
         pdf.drawString(180, 790, u"Omnileads")
         pdf.setFont("Helvetica", 14)
-        nombre_reporte = u"Reporte de campana: {0}".format(campana.nombre)
+        nombre_reporte = _("Reporte de campana: {0}".format(campana.nombre))
         pdf.drawString(200, 770, nombre_reporte)
 
     def get(self, request, *args, **kwargs):
@@ -207,7 +209,7 @@ class ReporteCampanaPDF(View):
             ]
         ))
         pdf.setFont("Helvetica", 10)
-        pdf.drawString(0.75 * inch, 740, u"Cantidad por calificacion")
+        pdf.drawString(0.75 * inch, 740, _("Cantidad por calificacion"))
         # Establecemos el tamaño de la hoja que ocupará la tabla
         detalle_orden.wrapOn(pdf, 50, 50)
         # Definimos la coordenada donde se dibujará la tabla
@@ -243,7 +245,7 @@ class ReporteCampanaPDF(View):
             ]
         ))
         pdf.setFont("Helvetica", 10)
-        pdf.drawString(0.75 * inch, 430, u"Cantidad de llamados no atendidos")
+        pdf.drawString(0.75 * inch, 430, _("Cantidad de llamados no atendidos"))
         # Establecemos el tamaño de la hoja que ocupará la tabla
         detalle_orden.wrapOn(pdf, 800, 600)
         # Definimos la coordenada donde se dibujará la tabla

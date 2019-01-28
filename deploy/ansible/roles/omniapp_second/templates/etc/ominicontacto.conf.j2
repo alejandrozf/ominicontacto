@@ -1,13 +1,12 @@
 server {
     listen          80;
-    server_name     default_server;
-    #rewrite ^/(.*)  https://172.16.20.241:8000/$1 permanent;
+    server_name     {{ omniapp_fqdn }};
     rewrite ^ https://$http_host$request_uri? permanent;
 }
 
 server {
     listen          443 ssl;
-    server_name     default_server;
+    server_name     {{ omniapp_fqdn }};
     access_log      /var/log/nginx/example.com_access.log combined;
     error_log       /var/log/nginx/example.com_error.log error;
 
@@ -22,7 +21,7 @@ server {
 
     location ~* (ws|wssup) {
         alias {{ install_prefix }}static/ominicontacto/JS/socket.io.js;
-        proxy_pass https://{{ omni_ip }}:14443;
+        proxy_pass https://{{ kamailio_fqdn }}:14443;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
@@ -37,14 +36,9 @@ server {
 
 
     location /grabaciones {
-
-    {% if DOCKER == "false" %}
-    alias {{ install_prefix }}asterisk/var/spool/asterisk/monitor;
-    {% else %}
-    alias /var/lib/docker/volumes/bin_grabaciones/_data;
-    {% endif %}
-    autoindex on;
-    allow all;
+      alias {{ install_prefix }}asterisk/var/spool/asterisk/monitor;
+      autoindex on;
+      allow all;
     }
 
     location / {
@@ -52,7 +46,7 @@ server {
       		add_header "Access-Control-Allow-Origin"  *;
     	}
         include         uwsgi_params;
-        uwsgi_pass      unix:/opt/omnileads/bin/oml.sock;
+        uwsgi_pass      unix:{{ install_prefix }}run/ominicontacto_app.socket;
         uwsgi_send_timeout 600s;
 	      uwsgi_read_timeout 600s;
 	      uwsgi_connect_timeout 600s;

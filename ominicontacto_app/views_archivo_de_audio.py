@@ -67,9 +67,9 @@ class ArchivoDeAudioMixin(object):
             form.instance.audio_original = None
             form.instance.save()
 
-            message = '<strong>Operación Errónea!</strong> \
-            Hubo un inconveniente en la conversión del audio. Por favor \
-            verifique que el archivo subido sea el indicado.'
+            message = _('<strong>Operación Errónea!</strong> ') +\
+                _('Hubo un inconveniente en la conversión del audio. Por favor '
+                  'verifique que el archivo subido sea el indicado.')
             messages.add_message(
                 self.request,
                 messages.ERROR,
@@ -80,11 +80,11 @@ class ArchivoDeAudioMixin(object):
             form.instance.audio_original = None
             form.instance.save()
 
-            logger.warn("convertir_audio_de_archivo_de_audio_globales(): "
-                        "produjo un error inesperado. Detalle: %s", e)
+            logger.warn(_("convertir_audio_de_archivo_de_audio_globales(): "
+                          "produjo un error inesperado. Detalle: {0}".format(e)))
 
-            message = '<strong>Operación Errónea!</strong> \
-            Se produjo un error inesperado en la conversión del audio.'
+            message = _('<strong>Operación Errónea!</strong> ') +\
+                _('Se produjo un error inesperado en la conversión del audio.')
             messages.add_message(
                 self.request,
                 messages.ERROR,
@@ -153,8 +153,8 @@ class ArchivoAudioDeleteView(DeleteView):
         self.object = self.get_object()
         self.object.borrar()
 
-        message = '<strong>Operación Exitosa!</strong>\
-        Se llevó a cabo con éxito la eliminación del Archivo de Audio.'
+        message = _('<strong>Operación Exitosa!</strong> ') +\
+            _('Se llevó a cabo con éxito la eliminación del Archivo de Audio.')
 
         messages.add_message(
             self.request,

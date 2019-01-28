@@ -1,0 +1,79 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-01-17 11:25-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: reciclado_app/resultado_contactacion.py:52
+msgid "No Contesta"
+msgstr ""
+
+#: reciclado_app/resultado_contactacion.py:53
+msgid "Cancelado"
+msgstr ""
+
+#: reciclado_app/resultado_contactacion.py:54
+msgid "Ocupado"
+msgstr ""
+
+#: reciclado_app/resultado_contactacion.py:55
+msgid "Canal no disponible"
+msgstr ""
+
+#: reciclado_app/resultado_contactacion.py:56
+msgid "Otro"
+msgstr ""
+
+#: reciclado_app/resultado_contactacion.py:57
+msgid "Falla"
+msgstr ""
+
+#: reciclado_app/resultado_contactacion.py:58
+msgid "Contestador"
+msgstr ""
+
+#: reciclado_app/resultado_contactacion.py:59
+msgid "Blacklist"
+msgstr ""
+
+#: reciclado_app/resultado_contactacion.py:60
+msgid "Expiradas"
+msgstr ""
+
+#: reciclado_app/resultado_contactacion.py:61
+msgid "Abandono"
+msgstr ""
+
+#: reciclado_app/resultado_contactacion.py:62
+msgid "Congestion"
+msgstr ""
+
+#: reciclado_app/resultado_contactacion.py:63
+msgid "Problema de enrutamiento"
+msgstr ""
+
+#: reciclado_app/resultado_contactacion.py:73
+msgid "Agente no califico"
+msgstr ""
+
+#: reciclado_app/templates/nuevo_reciclado.html:46
+msgid "Como desea reciclar esta campana"
+msgstr ""
+
+#: reciclado_app/templates/nuevo_reciclado.html:55
+msgid "Reciclar"
+msgstr ""

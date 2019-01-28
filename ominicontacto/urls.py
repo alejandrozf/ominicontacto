@@ -33,6 +33,12 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.views.i18n import javascript_catalog
+
+js_info_dict = {
+    'packages': ('ominicontacto_app',),
+}
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -44,4 +50,9 @@ urlpatterns = [
     url(r'^accounts/logout/$', auth_views.logout,
         {'next_page': '/accounts/login/'}, name="logout"),
 
+]
+
+urlpatterns += [
+    url(r'^jsi18n/$', javascript_catalog, js_info_dict, name='javascript-catalog'),
+    url(r'^i18n/', include('django.conf.urls.i18n')),
 ]

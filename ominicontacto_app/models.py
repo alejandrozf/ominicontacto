@@ -49,7 +49,7 @@ from django.core.exceptions import ValidationError, SuspiciousOperation
 from django.core.management import call_command
 from django.core.validators import RegexValidator
 from django.forms.models import model_to_dict
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now, timedelta
 from simple_history.models import HistoricalRecords
 from ominicontacto_app.utiles import (
@@ -130,9 +130,8 @@ class User(AbstractUser):
             try:
                 Session.objects.get(session_key=self.last_session_key).delete()
             except Session.DoesNotExist:
-                logger.exception("Excepcion detectada al obtener session "
-                                 "con el key {0} no existe ".format(self.last_session_key))
-
+                logger.exception(_("Excepción detectada al obtener session "
+                                   "con el key {0} no existe".format(self.last_session_key)))
         self.last_session_key = key
         self.save()
 
@@ -140,7 +139,7 @@ class User(AbstractUser):
         """
         Setea Usuario como BORRADO y is_active como False.
         """
-        logger.info("Seteando Usuario %s como BORRADO", self.id)
+        logger.info(_("Seteando Usuario {0} como BORRADO".format(self.id)))
 
         self.borrado = True
         self.is_active = False
@@ -168,19 +167,19 @@ class User(AbstractUser):
 
 
 class Modulo(models.Model):
-    nombre = models.CharField(max_length=20)
+    nombre = models.CharField(max_length=20, verbose_name=_('Nombre'))
 
     def __unicode__(self):
         return self.nombre
 
 
 class Grupo(models.Model):
-    nombre = models.CharField(max_length=20)
-    auto_attend_ics = models.BooleanField(default=False)
-    auto_attend_inbound = models.BooleanField(default=False)
-    auto_attend_dialer = models.BooleanField(default=False)
-    auto_pause = models.BooleanField(default=True)
-    auto_unpause = models.PositiveIntegerField()
+    nombre = models.CharField(max_length=20, verbose_name=_('Nombre'))
+    auto_attend_ics = models.BooleanField(default=False, verbose_name=_('auto_attend_ics'))
+    auto_attend_inbound = models.BooleanField(default=False, verbose_name=_('auto_attend_inbound'))
+    auto_attend_dialer = models.BooleanField(default=False, verbose_name=_('auto_attend_dialer'))
+    auto_pause = models.BooleanField(default=True, verbose_name=_('auto_pause'))
+    auto_unpause = models.PositiveIntegerField(verbose_name=_('auto_unpause'))
 
     def __unicode__(self):
         return self.nombre
@@ -210,8 +209,8 @@ class AgenteProfileManager(models.Manager):
         # Agentes en: Campañas propias + Campañas asignadas + Campañas de sus supervisores
         else:
             # Supervisor Normal / Comun: Agentes en campañas propias y asignadas.
-            campanas = Campana.objects.filter(Q(reported_by=supervisor.user) |
-                                              Q(supervisors__in=[supervisor.user, ]))
+            campanas = Campana.objects.filter(
+                Q(reported_by=supervisor.user) | Q(supervisors__in=[supervisor.user, ]))
 
         return self.obtener_activos().filter(queue__campana__in=campanas).distinct()
 
@@ -236,8 +235,8 @@ class AgenteProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sip_extension = models.IntegerField(unique=True)
     sip_password = models.CharField(max_length=128, blank=True, null=True)
-    modulos = models.ManyToManyField(Modulo)
-    grupo = models.ForeignKey(Grupo, related_name='agentes')
+    modulos = models.ManyToManyField(Modulo, verbose_name=_("Módulos"))
+    grupo = models.ForeignKey(Grupo, related_name='agentes', verbose_name=_("Grupo"))
     estado = models.PositiveIntegerField(choices=ESTADO_CHOICES, default=ESTADO_OFFLINE)
     reported_by = models.ForeignKey(User, related_name="reportedby")
     is_inactive = models.BooleanField(default=False)
@@ -280,7 +279,7 @@ class AgenteProfile(models.Model):
         """
         Setea Agente como BORRADO y is_inactive True .
         """
-        logger.info("Seteando Agente %s como BORRADO", self.id)
+        logger.info(_("Seteando Agente {0} como BORRADO".format(self.id)))
 
         self.borrado = True
         self.is_inactive = True
@@ -309,7 +308,7 @@ class SupervisorProfile(models.Model):
         """
         Setea Supervisor como BORRADO .
         """
-        logger.info("Seteando Supervisor %s como BORRADO", self.id)
+        logger.info(_("Seteando Supervisor {0} como BORRADO".format(self.id)))
 
         self.borrado = True
         self.save()
@@ -328,7 +327,7 @@ class NombreCalificacionManager(models.Manager):
 
 
 class NombreCalificacion(models.Model):
-    nombre = models.CharField(max_length=50)
+    nombre = models.CharField(max_length=50, verbose_name=_('Nombre'))
     objects = NombreCalificacionManager()
 
     def es_reservada(self):
@@ -341,6 +340,10 @@ class NombreCalificacion(models.Model):
 class Formulario(models.Model):
     nombre = models.CharField(max_length=64)
     descripcion = models.TextField()
+    oculto = models.BooleanField(default=False)
+
+    def tiene_campana_asignada(self):
+        return self.campana_set.all().exists()
 
     def __unicode__(self):
         return self.nombre
@@ -377,10 +380,10 @@ class FieldFormulario(models.Model):
     """Tipo de campo text area"""
 
     TIPO_CHOICES = (
-        (TIPO_TEXTO, 'Texto'),
-        (TIPO_FECHA, 'Fecha'),
-        (TIPO_LISTA, 'Lista'),
-        (TIPO_TEXTO_AREA, 'Caja de Texto de Area'),
+        (TIPO_TEXTO, _('Texto')),
+        (TIPO_FECHA, _('Fecha')),
+        (TIPO_LISTA, _('Lista')),
+        (TIPO_TEXTO_AREA, _('Caja de Texto de Area')),
     )
 
     formulario = models.ForeignKey(Formulario, related_name="campos")
@@ -395,8 +398,8 @@ class FieldFormulario(models.Model):
         unique_together = ("orden", "formulario")
 
     def __unicode__(self):
-        return "campo {0} del formulario {1}".format(self.nombre_campo,
-                                                     self.formulario)
+        return _("campo {0} del formulario {1}".format(self.nombre_campo,
+                                                       self.formulario))
 
     def obtener_campo_anterior(self):
         """
@@ -857,24 +860,24 @@ class Campana(models.Model):
     como tal."""
 
     ESTADOS = (
-        (ESTADO_ACTIVA, 'Activa'),
-        (ESTADO_FINALIZADA, 'Finalizada'),
-        (ESTADO_BORRADA, 'Borrada'),
-        (ESTADO_PAUSADA, 'Pausada'),
-        (ESTADO_INACTIVA, 'Inactiva'),
+        (ESTADO_ACTIVA, _('Activa')),
+        (ESTADO_FINALIZADA, _('Finalizada')),
+        (ESTADO_BORRADA, _('Borrada')),
+        (ESTADO_PAUSADA, _('Pausada')),
+        (ESTADO_INACTIVA, _('Inactiva')),
 
-        (ESTADO_TEMPLATE_ACTIVO, 'Template Activo'),
-        (ESTADO_TEMPLATE_BORRADO, 'Template Borrado'),
+        (ESTADO_TEMPLATE_ACTIVO, _('Template Activo')),
+        (ESTADO_TEMPLATE_BORRADO, _('Template Borrado')),
     )
 
     TYPE_MANUAL = 1
-    TYPE_MANUAL_DISPLAY = 'Manual'
+    TYPE_MANUAL_DISPLAY = _('Manual')
     TYPE_DIALER = 2
-    TYPE_DIALER_DISPLAY = 'Dialer'
+    TYPE_DIALER_DISPLAY = _('Dialer')
     TYPE_ENTRANTE = 3
-    TYPE_ENTRANTE_DISPLAY = 'Entrante'
+    TYPE_ENTRANTE_DISPLAY = _('Entrante')
     TYPE_PREVIEW = 4
-    TYPE_PREVIEW_DISPLAY = 'Preview'
+    TYPE_PREVIEW_DISPLAY = _('Preview')
 
     TYPES_CAMPANA = (
         (TYPE_ENTRANTE, TYPE_ENTRANTE_DISPLAY),
@@ -889,9 +892,12 @@ class Campana(models.Model):
     SITIO_EXTERNO = 2
     "El tipo de interaccion es por sitio externo"
 
+    TIPO_FORMULARIO_DISPLAY = _('Formulario')
+    TIPO_SITIO_EXTERNO_DISPLAY = _('Url externa')
+
     TIPO_INTERACCION = (
-        (FORMULARIO, "Formulario"),
-        (SITIO_EXTERNO, "Url externa")
+        (FORMULARIO, TIPO_FORMULARIO_DISPLAY),
+        (SITIO_EXTERNO, TIPO_SITIO_EXTERNO_DISPLAY)
     )
 
     TIEMPO_ACTUALIZACION_CONTACTOS = 1
@@ -927,6 +933,8 @@ class Campana(models.Model):
     es_manual = models.BooleanField(default=False)
     objetivo = models.PositiveIntegerField(default=0)
     tiempo_desconexion = models.PositiveIntegerField(default=0)  # para uso en campañas preview
+
+    mostrar_nombre = models.BooleanField(default=True)
 
     def __unicode__(self):
         return self.nombre
@@ -964,28 +972,28 @@ class Campana(models.Model):
 
     def play(self):
         """Setea la campaña como ESTADO_ACTIVA"""
-        logger.info("Seteando campana %s como ESTADO_ACTIVA", self.id)
+        logger.info(_("Seteando campana {0} como ESTADO_ACTIVA".format(self.id)))
         # assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_ACTIVA
         self.save()
 
     def pausar(self):
         """Setea la campaña como ESTADO_PAUSADA"""
-        logger.info("Seteando campana %s como ESTADO_PAUSADA", self.id)
+        logger.info("Seteando campana {0} como ESTADO_PAUSADA".format(self.id))
         # assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_PAUSADA
         self.save()
 
     def activar(self):
         """Setea la campaña como ESTADO_ACTIVA"""
-        logger.info("Seteando campana %s como ESTADO_ACTIVA", self.id)
+        logger.info(_("Seteando campana {0} como ESTADO_ACTIVA".format(self.id)))
         # assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_ACTIVA
         self.save()
 
     def remover(self):
         """Setea la campaña como ESTADO_BORRADA"""
-        logger.info("Seteando campana %s como ESTADO_BORRADA", self.id)
+        logger.info(_("Seteando campana {0} como ESTADO_BORRADA".format(self.id)))
         if self.type == Campana.TYPE_PREVIEW:
             # eliminamos el proceso que actualiza las conexiones de agentes a contactos
             # en la campaña
@@ -998,7 +1006,7 @@ class Campana(models.Model):
 
     def finalizar(self):
         """Setea la campaña como ESTADO_FINALIZADA"""
-        logger.info("Seteando campana %s como ESTADO_FINALIZADA", self.id)
+        logger.info(_("Seteando campana {0} como ESTADO_FINALIZADA".format(self.id)))
         # assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_FINALIZADA
         if self.type == Campana.TYPE_PREVIEW:
@@ -1036,7 +1044,7 @@ class Campana(models.Model):
         """
         Setea la campaña como BORRADA
         """
-        logger.info("Seteando campana-->template %s como BORRADA", self.id)
+        logger.info(_("Seteando campana-->template {0} como BORRADA".format(self.id)))
         assert self.estado == Campana.ESTADO_TEMPLATE_ACTIVO
 
         self.estado = Campana.ESTADO_TEMPLATE_BORRADO
@@ -1049,7 +1057,7 @@ class Campana(models.Model):
         try:
             campos_contacto.remove('telefono')
         except ValueError:
-            logger.warning("La BD no tiene campo 'telefono'")
+            logger.warning(_("La BD no tiene campo 'telefono'"))
         return campos_contacto
 
     def establecer_valores_iniciales_agente_contacto(self):
@@ -1111,8 +1119,8 @@ class Campana(models.Model):
             self.finalizar()
 
     def adicionar_agente_en_contacto(self, contacto):
-        """Crea una nueva entrada para relacionar un agentes y un contactos
-        de una campaña preview
+        """Crea una nueva entrada para relacionar un agentes y un contacto
+        nuevo a una campaña preview
         """
         campos_contacto = self._obtener_campos_bd_contacto(self.bd_contacto)
         datos_contacto = literal_eval(contacto.datos)
@@ -1121,7 +1129,8 @@ class Campana(models.Model):
         AgenteEnContacto.objects.create(
             agente_id=-1, contacto_id=contacto.pk, datos_contacto=datos_contacto_json,
             telefono_contacto=contacto.telefono, campana_id=self.pk,
-            estado=AgenteEnContacto.ESTADO_INICIAL)
+            estado=AgenteEnContacto.ESTADO_INICIAL,
+            es_originario=False)
 
     def get_string_queue_asterisk(self):
         if self.queue_campana:
@@ -1175,8 +1184,8 @@ class OpcionCalificacion(models.Model):
     nombre = models.CharField(max_length=50)
 
     def __unicode__(self):
-        return _('Opción "{0}" para campaña "{1}" de tipo "{2}"'.format(
-            self.nombre, self.campana.nombre, self.get_tipo_display()))
+        return unicode(_('Opción "{0}" para campaña "{1}" de tipo "{2}"'.format(
+            self.nombre, self.campana.nombre, self.get_tipo_display())))
 
     def es_agenda(self):
         return self.tipo == self.AGENDA
@@ -1293,6 +1302,10 @@ class Queue(models.Model):
     initial_boost_factor = models.DecimalField(
         default=1.0, max_digits=3, decimal_places=1, blank=True, null=True)
 
+    # destino por failover
+    destino = models.ForeignKey('configuracion_telefonia_app.DestinoEntrante',
+                                related_name='campanas_destino_failover', blank=True, null=True)
+
     # campos que no usamos
     musiconhold = models.CharField(max_length=128, blank=True, null=True)
     context = models.CharField(max_length=128, blank=True, null=True)
@@ -1388,8 +1401,8 @@ class QueueMember(models.Model):
     id_campana = models.CharField(max_length=128)
 
     def __unicode__(self):
-        return "agente: {0} para la campana {1} ".format(
-            self.member.user.get_full_name(), self.queue_name)
+        return _("agente: {0} para la campana {1} ".format(
+            self.member.user.get_full_name(), self.queue_name))
 
     class Meta:
         db_table = 'queue_member_table'
@@ -1408,12 +1421,13 @@ class Pausa(models.Model):
     objects = PausaManager()
 
     TIPO_PRODUCTIVA = 'P'
-    CHOICE_PRODUCTIVA = 'Productiva'
+    CHOICE_PRODUCTIVA = _('Productiva')
     TIPO_RECREATIVA = 'R'
-    CHOICE_RECREATIVA = 'Recreativa'
+    CHOICE_RECREATIVA = _('Recreativa')
     TIPO_CHOICES = ((TIPO_PRODUCTIVA, CHOICE_PRODUCTIVA), (TIPO_RECREATIVA, CHOICE_RECREATIVA))
-    nombre = models.CharField(max_length=20, unique=True)
-    tipo = models.CharField(max_length=1, choices=TIPO_CHOICES, default=TIPO_PRODUCTIVA)
+    nombre = models.CharField(max_length=20, unique=True, verbose_name=_('Nombre'))
+    tipo = models.CharField(max_length=1, choices=TIPO_CHOICES, default=TIPO_PRODUCTIVA,
+                            verbose_name=_('Tipo'))
     eliminada = models.BooleanField(default=False)
 
     def __unicode__(self):
@@ -1469,8 +1483,8 @@ class BaseDatosContactoManager(models.Manager):
                 estado=BaseDatosContacto.ESTADO_EN_DEFINICION).get(
                 pk=base_datos_contacto_id)
         except BaseDatosContacto.DoesNotExist:
-            raise(SuspiciousOperation("No se encontro base datos en "
-                                      "estado ESTADO_EN_DEFINICION"))
+            raise(SuspiciousOperation(_("No se encontro base datos en "
+                                        "estado ESTADO_EN_DEFINICION")))
 
     def obtener_en_actualizada_para_editar(self, base_datos_contacto_id):
         """Devuelve la base datos pasada por ID, siempre que pueda ser editada.
@@ -1482,9 +1496,8 @@ class BaseDatosContactoManager(models.Manager):
             return self.filter(
                 estado__in=definicion).get(pk=base_datos_contacto_id)
         except BaseDatosContacto.DoesNotExist:
-            raise(SuspiciousOperation("No se encontro base datos en "
-                                      "estado ESTADO_EN_DEFINICION o ACTULIZADA"
-                                      ))
+            raise(SuspiciousOperation(_("No se encontro base datos en "
+                                        "estado ESTADO_EN_DEFINICION o ACTULIZADA")))
 
     def obtener_definida_para_depurar(self, base_datos_contacto_id):
         """Devuelve la base datos pasada por ID, siempre que pueda ser
@@ -1496,8 +1509,8 @@ class BaseDatosContactoManager(models.Manager):
                 estado=BaseDatosContacto.ESTADO_DEFINIDA).get(
                 pk=base_datos_contacto_id)
         except BaseDatosContacto.DoesNotExist:
-            raise(SuspiciousOperation("No se encontro base datos en "
-                                      "estado ESTADO_EN_DEFINICION"))
+            raise(SuspiciousOperation(_("No se encontro base datos en "
+                                        "estado ESTADO_EN_DEFINICION")))
 
 
 def upload_to(instance, filename):
@@ -1522,7 +1535,7 @@ class MetadataBaseDatosContactoDTO(object):
         try:
             return self._metadata['cant_col']
         except KeyError:
-            raise(ValueError("La cantidad de columnas no ha sido seteada"))
+            raise(ValueError(_("La cantidad de columnas no ha sido seteada")))
 
     @cantidad_de_columnas.setter
     def cantidad_de_columnas(self, cant):
@@ -1541,7 +1554,7 @@ class MetadataBaseDatosContactoDTO(object):
         try:
             return self._metadata['col_telefono']
         except KeyError:
-            raise(ValueError("No se ha seteado 'columna_con_telefono'"))
+            raise(ValueError(_("No se ha seteado 'columna_con_telefono'")))
 
     @columna_con_telefono.setter
     def columna_con_telefono(self, columna):
@@ -1672,8 +1685,8 @@ class MetadataBaseDatosContactoDTO(object):
         try:
             return self._metadata['prim_fila_enc']
         except KeyError:
-            raise(ValueError("No se ha seteado si primer "
-                             "fila es encabezado"))
+            raise(ValueError(_("No se ha seteado si primer "
+                               "fila es encabezado")))
 
     @primer_fila_es_encabezado.setter
     def primer_fila_es_encabezado(self, es_encabezado):
@@ -1691,9 +1704,9 @@ class MetadataBaseDatosContactoDTO(object):
         try:
             datos = json.loads(datos_json)
         except Exception as e:
-            logger.exception("Error: {0} detectada al desserializar "
-                             "datos extras. Datos extras: '{1}'"
-                             "".format(e.message, datos_json))
+            logger.exception(_("Error: {0} detectada al desserializar "
+                               "datos extras. Datos extras: '{1}'"
+                               "".format(e.message, datos_json)))
             raise
 
         assert len(datos) == self.cantidad_de_columnas
@@ -1714,9 +1727,9 @@ class MetadataBaseDatosContactoDTO(object):
         try:
             datos = json.loads(datos_json)
         except Exception as e:
-            logger.exception("Error: {0} detectada al desserializar "
-                             "datos extras. Datos extras: '{1}'"
-                             "".format(e.message, datos_json))
+            logger.exception(_("Error: {0} detectada al desserializar "
+                               "datos extras. Datos extras: '{1}'"
+                               "".format(e.message, datos_json)))
             raise
 
         # assert len(datos) == self.cantidad_de_columnas
@@ -1820,10 +1833,10 @@ class MetadataBaseDatosContactoDTO(object):
         :raises ValueError: si la columna no existe
         """
         index = self.nombres_de_columnas.index(nombre_de_columna)
-        return not (
-            index in self.columnas_con_hora or
-            index in self.columnas_con_fecha or
-            index == self.columna_con_telefono)
+        index_in_columnas_hora = (index in self.columnas_con_hora)
+        index_in_columnas_fecha = (index in self.columnas_con_fecha)
+        index_columna_telefono = (index == self.columna_con_telefono)
+        return not (index_in_columnas_hora or index_in_columnas_fecha or index_columna_telefono)
 
 
 class MetadataBaseDatosContacto(MetadataBaseDatosContactoDTO):
@@ -1836,8 +1849,8 @@ class MetadataBaseDatosContacto(MetadataBaseDatosContactoDTO):
             try:
                 self._metadata = json.loads(bd.metadata)
             except Exception as e:
-                logger.exception("Error: {0} detectada al desserializar "
-                                 "metadata de la bd {1}".format(e.message, bd.id))
+                logger.exception(_("Error: {0} detectada al desserializar "
+                                   "metadata de la bd {1}".format(e.message, bd.id)))
                 raise
 
     # -----
@@ -1852,22 +1865,22 @@ class MetadataBaseDatosContacto(MetadataBaseDatosContactoDTO):
         try:
             self.bd.metadata = json.dumps(self._metadata)
         except Exception as e:
-            logger.exception("Error: {0} detectada al serializar "
-                             "metadata de la bd {1}".format(e.message, self.bd.id))
+            logger.exception(_("Error: {0} detectada al serializar "
+                               "metadata de la bd {1}".format(e.message, self.bd.id)))
             raise
 
 
 class BaseDatosContacto(models.Model):
     objects = BaseDatosContactoManager()
 
-    DATO_EXTRA_GENERICO = 'GENERICO'
-    DATO_EXTRA_FECHA = 'FECHA'
-    DATO_EXTRA_HORA = 'HORA'
+    DATO_EXTRA_GENERICO = _('GENERICO')
+    DATO_EXTRA_FECHA = _('FECHA')
+    DATO_EXTRA_HORA = _('HORA')
 
     DATOS_EXTRAS = (
-        (DATO_EXTRA_GENERICO, 'Dato Genérico'),
-        (DATO_EXTRA_FECHA, 'Fecha'),
-        (DATO_EXTRA_HORA, 'Hora'),
+        (DATO_EXTRA_GENERICO, _('Dato Genérico')),
+        (DATO_EXTRA_FECHA, _('Fecha')),
+        (DATO_EXTRA_HORA, _('Hora')),
     )
 
     ESTADO_EN_DEFINICION = 0
@@ -1876,25 +1889,26 @@ class BaseDatosContacto(models.Model):
     ESTADO_DEPURADA = 3
     ESTADO_DEFINIDA_ACTUALIZADA = 4
     ESTADOS = (
-        (ESTADO_EN_DEFINICION, 'En Definición'),
-        (ESTADO_DEFINIDA, 'Definida'),
-        (ESTADO_EN_DEPURACION, 'En Depuracion'),
-        (ESTADO_DEPURADA, 'Depurada'),
-        (ESTADO_DEFINIDA_ACTUALIZADA, 'Definida en actualizacion')
+        (ESTADO_EN_DEFINICION, _('En Definición')),
+        (ESTADO_DEFINIDA, _('Definida')),
+        (ESTADO_EN_DEPURACION, _('En Depuracion')),
+        (ESTADO_DEPURADA, _('Depurada')),
+        (ESTADO_DEFINIDA_ACTUALIZADA, _('Definida en actualizacion'))
     )
 
     nombre = models.CharField(
-        max_length=128,
+        max_length=128, verbose_name=_('Nombre')
     )
     fecha_alta = models.DateTimeField(
-        auto_now_add=True,
+        auto_now_add=True, verbose_name=_('Fecha alta')
     )
     archivo_importacion = models.FileField(
         upload_to=upload_to,
         max_length=256,
+        verbose_name=_('Archivo de importación')
     )
     nombre_archivo_importacion = models.CharField(
-        max_length=256,
+        max_length=256, verbose_name=_('Nombre Archivo de importación')
     )
     metadata = models.TextField(null=True, blank=True)
     sin_definir = models.BooleanField(
@@ -1924,7 +1938,7 @@ class BaseDatosContacto(models.Model):
         """
         assert self.estado in (BaseDatosContacto.ESTADO_EN_DEFINICION,
                                BaseDatosContacto.ESTADO_DEFINIDA_ACTUALIZADA)
-        logger.info("Seteando base datos contacto %s como definida", self.id)
+        logger.info(_("Seteando base datos contacto {0} como definida".format(self.id)))
         self.sin_definir = False
 
         self.estado = self.ESTADO_DEFINIDA
@@ -2056,8 +2070,7 @@ class ContactoManager(models.Manager):
 
     def contactos_by_filtro(self, filtro):
         try:
-            return self.filter(Q(telefono__contains=filtro) |
-                               Q(pk__contains=filtro))
+            return self.filter(Q(telefono__contains=filtro) | Q(pk__contains=filtro))
         except Contacto.DoesNotExist:
             raise (SuspiciousOperation("No se encontro contactos con este "
                                        "filtro"))
@@ -2086,15 +2099,15 @@ class ContactoManager(models.Manager):
         try:
             return self.filter(bd_contacto=bd_contacto)
         except Contacto.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro contactos con este "
-                                       "base de datos de contactos"))
+            raise (SuspiciousOperation(_("No se encontro contactos con este "
+                                         "base de datos de contactos")))
 
     def contactos_by_bds_contacto(self, bds_contacto):
         try:
             return self.filter(bd_contacto__in=bds_contacto)
         except Contacto.DoesNotExist:
-            raise (SuspiciousOperation("No se encontraron contactos con esas "
-                                       "bases de datos de contactos"))
+            raise (SuspiciousOperation(_("No se encontraron contactos con esas "
+                                         "bases de datos de contactos")))
 
     # def contactos_by_bd_contacto_sin_duplicar(self, bd_contacto):
     #     try:
@@ -2119,6 +2132,7 @@ class Contacto(models.Model):
         'BaseDatosContacto',
         related_name='contactos', blank=True, null=True
     )
+    es_originario = models.BooleanField(default=True)
 
     def obtener_telefono_y_datos_extras(self, metadata):
         # FIXME: este método no se usa en OML, probablemente debería ser eliminado,
@@ -2131,6 +2145,18 @@ class Contacto(models.Model):
         """
         telefono, extras = metadata.obtener_telefono_y_datos_extras(self.datos)
         return (telefono, extras)
+
+    def _sincronizar_agente_en_contacto(self):
+        AgenteEnContacto.objects.filter(
+            contacto_id=self.pk).update(telefono_contacto=self.telefono, datos_contacto=self.datos)
+
+    def save(self, *args, **kwargs):
+        if self.pk is not None:
+            self._sincronizar_agente_en_contacto()
+        super(Contacto, self).save()
+
+    def lista_de_datos(self):
+        return json.loads(self.datos)
 
     def __unicode__(self):
         return '{0} >> {1}'.format(
@@ -2146,8 +2172,8 @@ class MensajeRecibidoManager(models.Manager):
         try:
             return self.get(remitente=remitente, timestamp=timestamp)
         except MensajeRecibido.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro mensaje recibido con esa"
-                                       " fecha y remitente"))
+            raise (SuspiciousOperation(_("No se encontro mensaje recibido con esa"
+                                         " fecha y remitente")))
 
 
 class MensajeRecibido(models.Model):
@@ -2193,8 +2219,8 @@ class GrabacionManager(models.Manager):
         try:
             return self.filter(fecha=fecha)
         except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro contactos con esa "
-                                       "fecha"))
+            raise (SuspiciousOperation(_("No se encontro contactos con esa "
+                                         "fecha")))
 
     def grabacion_by_fecha_intervalo(self, fecha_inicio, fecha_fin):
         fecha_inicio = datetime_hora_minima_dia(fecha_inicio)
@@ -2202,8 +2228,8 @@ class GrabacionManager(models.Manager):
         try:
             return self.filter(fecha__range=(fecha_inicio, fecha_fin))
         except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro contactos con ese rango "
-                                       "de fechas"))
+            raise (SuspiciousOperation(_("No se encontro contactos con ese rango "
+                                         "de fechas")))
 
     def grabacion_by_fecha_intervalo_campanas(self, fecha_inicio, fecha_fin, campanas):
         fecha_inicio = datetime_hora_minima_dia(fecha_inicio)
@@ -2212,29 +2238,29 @@ class GrabacionManager(models.Manager):
             return self.filter(fecha__range=(fecha_inicio, fecha_fin),
                                campana__in=campanas).order_by('-fecha')
         except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro contactos con ese rango "
-                                       "de fechas"))
+            raise (SuspiciousOperation(_("No se encontro contactos con ese rango "
+                                         "de fechas")))
 
     def grabacion_by_tipo_llamada(self, tipo_llamada):
         try:
             return self.filter(tipo_llamada=tipo_llamada)
         except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro contactos con esa "
-                                       "tipo llamada"))
+            raise (SuspiciousOperation(_("No se encontro contactos con esa "
+                                         "tipo llamada")))
 
     def grabacion_by_id_cliente(self, id_cliente):
         try:
             return self.filter(id_cliente__contains=id_cliente)
         except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro contactos con esa "
-                                       "id cliente"))
+            raise (SuspiciousOperation(_("No se encontro contactos con esa "
+                                         "id cliente")))
 
     def grabacion_by_tel_cliente(self, tel_cliente):
         try:
             return self.filter(tel_cliente__contains=tel_cliente)
         except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro contactos con esa "
-                                       "tel de cliente"))
+            raise (SuspiciousOperation(_("No se encontro contactos con esa "
+                                         "tel de cliente")))
 
     def grabacion_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada,
                             tel_cliente, agente, campana, campanas, marcadas, duracion):
@@ -2266,14 +2292,14 @@ class GrabacionManager(models.Manager):
             return self.values('campana', 'campana__nombre').annotate(
                 cantidad=Count('campana')).order_by('campana')
         except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro grabaciones "))
+            raise (SuspiciousOperation(_("No se encontro grabaciones ")))
 
     def obtener_count_agente(self):
         try:
             return self.values('agente_id').annotate(
                 cantidad=Count('agente_id')).order_by('agente_id')
         except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro grabaciones "))
+            raise (SuspiciousOperation(_("No se encontro grabaciones ")))
 
     def marcadas(self):
         marcaciones = GrabacionMarca.objects.values_list('uid', flat=True)
@@ -2352,8 +2378,8 @@ class AgendaManager(models.Manager):
         try:
             return self.filter(fecha=fecha_local(now()))
         except Agenda.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro evenos en el dia de la "
-                                       "fecha"))
+            raise (SuspiciousOperation(_("No se encontro evenos en el dia de la "
+                                         "fecha")))
 
     def eventos_filtro_fecha(self, fecha_desde, fecha_hasta):
         eventos = self.filter()
@@ -2405,7 +2431,7 @@ class CalificacionClienteManager(models.Manager):
             return self.values('calificacion').annotate(
                 cantidad=Count('calificacion')).filter(opcion_calificacion__campana=campana)
         except CalificacionCliente.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro califacaciones "))
+            raise (SuspiciousOperation(_("No se encontro calificaciones ")))
 
     def obtener_calificaciones_gestion(self):
         """
@@ -2543,8 +2569,8 @@ class AgendaContactoManager(models.Manager):
         try:
             return self.filter(fecha=fecha_local(now()))
         except AgendaContacto.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro evenos en el dia de la "
-                                       "fecha"))
+            raise SuspiciousOperation(_("No se encontraron eventos en el dia de la "
+                                        "fecha"))
 
     def eventos_filtro_fecha(self, fecha_desde, fecha_hasta):
         eventos = self.filter(tipo_agenda=AgendaContacto.TYPE_PERSONAL)
@@ -2692,10 +2718,8 @@ class AbstractActuacion(models.Model):
         if self.hora_desde and self.hora_hasta:
             if self.hora_desde >= self.hora_hasta:
                 raise ValidationError({
-                    'hora_desde': ["La hora desde debe ser\
-                        menor o igual a la hora hasta."],
-                    'hora_hasta': ["La hora hasta debe ser\
-                        mayor a la hora desde."],
+                    'hora_desde': [_("La hora 'desde' debe ser menor o igual a la hora 'hasta'.")],
+                    'hora_hasta': [_("La hora 'hasta' debe ser mayor a la hora 'desde'.")],
                 })
 
             conflicto = self.get_campana().actuacionesdialer.filter(
@@ -2705,10 +2729,8 @@ class AbstractActuacion(models.Model):
             )
             if any(conflicto):
                 raise ValidationError({
-                    'hora_desde': ["Ya esta cubierto el rango horario\
-                        en ese día semanal."],
-                    'hora_hasta': ["Ya esta cubierto el rango horario\
-                        en ese día semanal."],
+                    'hora_desde': [_("Ya esta cubierto el rango horario en ese día semanal.")],
+                    'hora_hasta': [_("Ya esta cubierto el rango horario ese día semanal.")],
                 })
 
 
@@ -2782,17 +2804,18 @@ class ActuacionVigente(models.Model):
 class Backlist(models.Model):
 
     nombre = models.CharField(
-        max_length=128,
+        max_length=128, verbose_name=_('Nombre')
     )
     fecha_alta = models.DateTimeField(
-        auto_now_add=True,
+        auto_now_add=True, verbose_name=_('Fecha alta')
     )
     archivo_importacion = models.FileField(
         upload_to=upload_to,
         max_length=256,
+        verbose_name=_('Archivo de importación')
     )
     nombre_archivo_importacion = models.CharField(
-        max_length=256,
+        max_length=256, verbose_name=_('Nombre Archivo de importación')
     )
 
     sin_definir = models.BooleanField(
@@ -2863,14 +2886,14 @@ class ReglasIncidencia(models.Model):
     "Regla para timeout"
 
     ESTADOS_CHOICES = (
-        (RS_BUSY, "Ocupado"),
-        (TERMINATED, "Contestador"),
-        (RS_NOANSWER, "No atendido"),
-        (RS_REJECTED, "Rechazado"),
-        (RS_TIMEOUT, "Timeout")
+        (RS_BUSY, _("Ocupado")),
+        (TERMINATED, _("Contestador")),
+        (RS_NOANSWER, _("No atendido")),
+        (RS_REJECTED, _("Rechazado")),
+        (RS_TIMEOUT, _("Timeout"))
     )
 
-    ESTADO_PERSONALIZADO_CONTESTADOR = 'CONTESTADOR'
+    ESTADO_PERSONALIZADO_CONTESTADOR = _('CONTESTADOR')
 
     FIXED = 1
 
@@ -2916,8 +2939,8 @@ class ReglasIncidencia(models.Model):
 
 
 class UserApiCrm(models.Model):
-    usuario = models.CharField(max_length=64, unique=True)
-    password = models.CharField(max_length=128)
+    usuario = models.CharField(max_length=64, unique=True, verbose_name=_('Usuario'))
+    password = models.CharField(max_length=128, verbose_name=_('Contraseña'))
 
     def __unicode__(self):
         return self.usuario
@@ -2965,6 +2988,7 @@ class AgenteEnContacto(models.Model):
     campana_id = models.IntegerField()
     estado = models.PositiveIntegerField(choices=ESTADO_CHOICES)
     modificado = models.DateTimeField(auto_now=True, null=True)
+    es_originario = models.BooleanField(default=True)
 
     def __unicode__(self):
         return "Agente de id={0} relacionado con contacto de id={1} con el estado {2}".format(

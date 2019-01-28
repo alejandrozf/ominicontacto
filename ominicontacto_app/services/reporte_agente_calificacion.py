@@ -31,8 +31,10 @@ import datetime
 import json
 
 from django.conf import settings
-from ominicontacto_app.utiles import crear_archivo_en_media_root
 from django.utils.encoding import force_text
+from django.utils.translation import ugettext as _
+
+from ominicontacto_app.utiles import crear_archivo_en_media_root
 
 
 logger = logging.getLogger(__name__)
@@ -58,11 +60,10 @@ class ArchivoDeReporteCsv(object):
         if self.ya_existe():
             # Esto puede suceder si en un intento previo de depuracion, el
             # proceso es abortado, y por lo tanto, el archivo puede existir.
-            logger.warn("ArchivoDeReporteCsv: Ya existe archivo CSV de "
-                        "reporte para el agente %s. Archivo: %s. "
-                        "El archivo sera sobreescrito", self._agente.pk,
-                        self.ruta)
-
+            logger.warn(_("ArchivoDeReporteCsv: Ya existe archivo CSV de "
+                          "reporte para el agente {0}. Archivo: {1}. "
+                          "El archivo sera sobreescrito".format(self._agente.pk,
+                                                                self.ruta)))
         crear_archivo_en_media_root(
             self.nombre_del_directorio,
             self.prefijo_nombre_de_archivo,
@@ -74,11 +75,11 @@ class ArchivoDeReporteCsv(object):
             # Creamos encabezado
             encabezado = []
 
-            encabezado.append("Telefono")
-            encabezado.append("Es una venta")
-            encabezado.append("Calificacion No venta")
-            encabezado.append("Observaciones")
-            encabezado.append("datos del cliente")
+            encabezado.append(_("Telefono"))
+            encabezado.append(_("Es una venta"))
+            encabezado.append(_("Calificacion No venta"))
+            encabezado.append(_("Observaciones"))
+            encabezado.append(_("datos del cliente"))
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -97,9 +98,9 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(calificacion.contacto.telefono)
 
                 if calificacion.es_venta:
-                    lista_opciones.append("SI")
+                    lista_opciones.append(_("SI"))
                 else:
-                    lista_opciones.append("NO")
+                    lista_opciones.append(_("NO"))
                 lista_opciones.append(calificacion.opcion_calificacion.nombre)
                 lista_opciones.append(calificacion.observaciones)
                 datos = json.loads(calificacion.contacto.datos)
@@ -138,8 +139,8 @@ class ReporteAgenteService(object):
             return archivo_de_reporte.url_descarga
 
         # Esto no debería suceder.
-        logger.error("obtener_url_reporte_csv_descargar(): NO existe archivo"
-                     " CSV de descarga para el agente %s", agente.pk)
+        logger.error(_("obtener_url_reporte_csv_descargar(): NO existe archivo"
+                       " CSV de descarga para el agente {0}".format(agente.pk)))
         assert os.path.exists(archivo_de_reporte.url_descarga)
 
     def _obtener_listado_calificaciones_fecha(self, agente, fecha_desde,

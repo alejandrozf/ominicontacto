@@ -19,17 +19,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
-<h1>Supervisores</h1>
+<h1>{% trans 'Supervisores' %}</h1>
 
 <table class="table">
     <thead>
         <tr>
-            <th>id</th>
-            <th>nombre del supervisor</th>
-            <th>sip_extension</th>
-            <th>Es administrador</th>
+            <th>{% trans 'id' %}</th>
+            <th>{% trans 'nombre del supervisor' %}</th>
+            <th>{% trans 'sip_extension' %}</th>
+            <th>{% trans 'Es administrador' %}</th>
         </tr>
     </thead>
     <tbody>
@@ -48,7 +49,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
           </tr>
    {% empty %}
     <tr>
-        <td>No existen supervisores</td>
+        <td>{% trans 'No existen supervisores' %}</td>
     </tr>
     {% endfor %}
     </tbody>

@@ -18,6 +18,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,6 +46,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% include 'messages.html' %}
 
+{% if campana.mostrar_nombre %}
+    <h1>{{ campana.nombre }}</h1>
+{% endif %}
+
 <form id="form-calificacion" action = "" method = "post">
     {% csrf_token %}
     <div>
@@ -53,7 +58,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </div>
     <hr>
     <button type="submit" id="id_guardar" class="btn btn-primary">
-        Guardar
+        {% trans 'Guardar'  %}
     </button>
 </form>
 

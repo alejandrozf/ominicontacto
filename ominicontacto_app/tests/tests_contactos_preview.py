@@ -29,7 +29,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, QueueFactory,
-                                               QueueMemberFactory)
+                                               QueueMemberFactory, AgenteEnContactoFactory)
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 from ominicontacto_app.models import AgenteEnContacto, Campana
 
@@ -208,3 +208,19 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
         self.assertNotEqual(entrega['contacto_id'], self.contacto_1.id)
         # En particular, al ser 2 contactos nada más, solo puede entregar el otro
         self.assertEqual(entrega['contacto_id'], self.contacto_2.id)
+
+    def test_modificacion_contacto_desde_lista_de_contactos_actualiza_agente_en_contacto(self):
+        contacto = ContactoFactory()
+        agente_en_contacto = AgenteEnContactoFactory(
+            contacto_id=contacto.pk, telefono_contacto=contacto.telefono)
+        telefono_nuevo = contacto.telefono + 111
+        self.assertEqual(agente_en_contacto.telefono_contacto, contacto.telefono)
+        url = reverse('contacto_update', args=[contacto.pk])
+        post_data = {
+            'telefono': telefono_nuevo,
+            'datos': str(["xxxxxx", "yyyyy", "CORDOBA", "21000003"]),
+            'bd_contacto': contacto.bd_contacto.pk
+        }
+        self.client.post(url, post_data)
+        agente_en_contacto.refresh_from_db()
+        self.assertEqual(agente_en_contacto.telefono_contacto, unicode(telefono_nuevo))

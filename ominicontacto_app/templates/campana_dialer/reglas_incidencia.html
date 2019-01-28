@@ -41,8 +41,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
     <script type="text/javascript">
      $('.linkFormset').formset({
-       addText: 'Agregar regla',
-       deleteText: 'Remover',
+       addText: AGREGAR_REGLA,
+       deleteText: REMOVER_CAMPO,
        prefix: '{{ wizard.form.prefix }}',
        addCssClass: 'addFormset btn btn-outline-primary',
        deleteCssClass: 'deleteFormset btn btn-outline-danger',
@@ -74,11 +74,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {% if form.instance.pk %}
                     <th>{% trans 'Con estado personalizado' %}</th>
                 {% endif %}
-                <th>{% trans 'Reintentar más tarde' %}</th>
+                <th>{% trans 'Reintentar más tarde(En segundos)' %}</th>
                 {% if form.instance.pk %}
                     <th>{% trans 'Modo de reintento' %} </th>
                 {% endif %}
-                <th>{% trans 'Intento max.' %}</th>
+                <th>{% trans 'Intento max.(En cantidades)' %}</th>
                 <th></th>
             </tr>
         </thead>
@@ -102,7 +102,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </td>
                     {% endif %}
                     <td data-toggle="tooltip" data-placement="top"
-                        title="En segundos">{{ form.reintentar_tarde }}</td>
+                        title="{% trans 'En segundos' %}">{{ form.reintentar_tarde }}</td>
                     {% if form.instance.pk %}
                         <td>{{ form.get_en_modo_display}}</td>
                     {% endif %}

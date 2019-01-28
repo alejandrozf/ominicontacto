@@ -19,14 +19,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
-<h1>Audios</h1>
+<h1>{% trans 'Audios' %}</h1>
 
 <table class="table">
     <thead>
         <tr>
-            <th>Descripcion</th>
+            <th>{% trans 'Descripción' %}</th>
             <th></th>
         </tr>
     </thead>
@@ -36,13 +37,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <td><a href="{% url 'edita_archivo_audio' audio.id %}">{{ audio.descripcion }}</a></td>
             <td>
                 <a class="btn btn-light btn-sm" href="{% url 'eliminar_archivo_audio' audio.pk %}">
-                    Eliminar
+                    {% trans 'Eliminar' %}
                 </a>
             </td>
         </tr>
    {% empty %}
     <tr>
-        <td>No se encontraron Audios</td>
+        <td>{% trans 'No se encontraron Audios' %}</td>
     </tr>
     {% endfor %}
     </tbody>

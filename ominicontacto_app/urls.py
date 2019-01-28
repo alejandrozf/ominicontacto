@@ -115,14 +115,14 @@ urlpatterns = [
         administrador_o_supervisor_requerido(views.GrupoListView.as_view()), name='grupo_list',
         ),
     url(r'^grupo/nuevo/$',
-        administrador_requerido(views.GrupoCreateView.as_view()), name='grupo_nuevo',
+        administrador_o_supervisor_requerido(views.GrupoCreateView.as_view()), name='grupo_nuevo',
         ),
     url(r'^grupo/update/(?P<pk>\d+)/$',
-        administrador_requerido(views.GrupoUpdateView.as_view()),
+        administrador_o_supervisor_requerido(views.GrupoUpdateView.as_view()),
         name='grupo_update',
         ),
     url(r'^grupo/delete/(?P<pk>\d+)/$',
-        administrador_requerido(views.GrupoDeleteView.as_view()),
+        administrador_o_supervisor_requerido(views.GrupoDeleteView.as_view()),
         name='grupo_delete',
         ),
     # ==========================================================================
@@ -245,11 +245,6 @@ urlpatterns = [
             views_base_de_datos_contacto.ActualizaBaseDatosContactoView.as_view()),
         name='actualiza_base_datos_contacto',
         ),
-    # TODO: Verificar que esta vista no va mas y borrarla
-    # url(r'^contacto/nuevo/$',
-    #    login_required(views_contacto.ContactoCreateView.as_view()),
-    #    name='contacto_nuevo',
-    #    ),
     url(r'^contacto/list/$',
         agente_requerido(views_contacto.ContactoListView.as_view()),
         name='contacto_list',
@@ -395,6 +390,11 @@ urlpatterns = [
         administrador_o_supervisor_requerido(views_formulario.FormularioListView.as_view()),
         name='formulario_list',
         ),
+    url(r'^formulario/list/mostrar_ocultos/$',
+        administrador_o_supervisor_requerido(
+            views_formulario.FormularioMostrarOcultosView.as_view()),
+        name='formulario_list_mostrar_ocultos',
+        ),
     url(r'^formulario/nuevo/$',
         administrador_o_supervisor_requerido(views_formulario.FormularioCreateView.as_view()),
         name='formulario_nuevo',
@@ -415,11 +415,25 @@ urlpatterns = [
         administrador_o_supervisor_requerido(views_formulario.FormularioPreviewFormView.as_view()),
         name='formulario_vista_previa',
         ),
+
+    url(r'^formulario/(?P<pk_formulario>\d+)/eliminar/$',
+        administrador_o_supervisor_requerido(views_formulario.FormularioDeleteView.as_view()),
+        name='formulario_eliminar',
+        ),
+
+    url(r'^formulario/(?P<pk_formulario>\d+)/mostrar_ocultar/$',
+        administrador_o_supervisor_requerido(
+            views_formulario.FormularioMostrarOcultarView.as_view()),
+        name='formulario_mostrar_ocultar',
+        ),
+
+    # TODO: Verificar si se usa esta vista.
     url(r'^formulario/(?P<pk_formulario>\d+)/create/(?P<pk_campana>\d+)/(?P<pk_contacto>\d+)'
         r'/(?P<id_agente>\d+)/$',
         administrador_o_supervisor_requerido(views_formulario.FormularioCreateFormView.as_view()),
         name='formulario_create',
         ),
+
     url(r'^formulario/(?P<pk_formulario>\d+)/vista/$',
         administrador_o_supervisor_requerido(views_formulario.FormularioVistaFormView.as_view()),
         name='formulario_vista',
@@ -428,24 +442,24 @@ urlpatterns = [
     # CalificacionCliente / Formulario
     # ==========================================================================
     url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
-        '/update/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/calificacion/$',
+        '/update/(?P<id_agente>\d+)/calificacion/$',
         login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
         kwargs={'from': 'calificacion'},
         name='calificacion_formulario_update_or_create'
         ),
     url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
-        '/update/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/recalificacion/$',
+        '/update/(?P<id_agente>\d+)/recalificacion/$',
         login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
         kwargs={'from': 'recalificacion'},
         name='recalificacion_formulario_update_or_create'
         ),
     url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
-        '/update/(?P<id_agente>\d+)/(?P<wombat_id>\d+)/reporte/$',
+        '/update/(?P<id_agente>\d+)/reporte/$',
         login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
         kwargs={'from': 'reporte'},
         name='calificacion_cliente_actualiza_desde_reporte'
         ),
-    url(r'^campana_manual/(?P<pk_campana>\d+)/calificacion/(?P<id_agente>\d+)/create/'
+    url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<id_agente>\d+)/create/'
         r'(?P<telefono>\d+)/$',
         login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
         kwargs={'from': 'calificacion', 'pk_contacto': None, 'manual': True},

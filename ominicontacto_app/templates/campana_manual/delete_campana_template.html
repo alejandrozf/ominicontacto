@@ -24,7 +24,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block content %}
 
     <form method="post">{% csrf_token %}
-        <h1>Cola "{{ object.nombre }}"</h1>
+        <h1>{% trans 'Cola' %} "{{ object.nombre }}"</h1>
         <p>{% trans '¿Esta seguro que desea eliminar esta Campaña?' %}</p>
         <button type="submit" class="btn btn-danger">
             {% trans 'Eliminar' %}

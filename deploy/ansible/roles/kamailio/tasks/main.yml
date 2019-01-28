@@ -17,6 +17,13 @@
 #
 ---
 
+# Set_fact es para setear variables, aqui seteo el nombre de la carpeta que se crea al descargar rtpengine
+- set_fact: rtpengine_name=rtpengine-mr5.5.3.1
+  tags: kamailio
+# Version de kamailio a instalar
+- set_fact: kamailio_version=4.4.7
+  tags: kamailio
+
 # Detecto si existe el binario de rtpengine y registro el resultado en rtpengine_installed
 - name: Check if Rtpengine is installed
   command: test -f /usr/local/bin/rtpengine
@@ -36,11 +43,15 @@
   when: rtpengine_installed|succeeded
   tags: kamailio
 
+- include: packages_installation.yml
+  tags: kamailio
+  when: rtpengine_installed|failed
+
 #  Si rtpengine_installed es failed incluyo la tarea de instalacion. Osea el sistema detecta cuando rtpengine
 #  está instalado o no y en caso de que no lo  esté lo instala sino omite
 - include: rtpengine_installation.yml
   tags: kamailio
-  when: rtpengine_installed|changed
+  when: rtpengine_installed|failed
 
 - include: rtpengine_configuration.yml
   tags: kamailio
@@ -62,10 +73,14 @@
   tags: kamailio
   when: kamailio_installed|succeeded
 
+- name: Erase certs folder because new are needed
+  file: state=absent path={{ kamailio_location }}/etc/certs
+  tags: ['kamailio','postinstall']
+
 - name: Check if Kamailio certificates exists
   shell: test -d {{ kamailio_location }}/etc/certs || test -d /opt/kamailio/etc/certs
   register: certs_exists
-  tags: kamailio
+  tags: ['kamailio','postinstall']
   become: true
   become_method: sudo
   ignore_errors: yes
@@ -74,12 +89,28 @@
   tags: kamailio
   when: kamailio_installed|failed
 
-- include: postgresql_configuration.yml
-  tags: kamailio
-
 - include: certificate_CA.yml
-  tags: kamailio
+  tags: ['kamailio','postinstall']
   when: certs_exists|failed
 
 - include: kamailio_configuration.yml
   tags: kamailio
+
+#  Se pasan los certificados al host
+- name: Copy of the certificates from kamailio server to omniapp (cluster)
+  fetch: src={{ kamailio_location }}/etc/certs/{{ item.src }} dest=/var/tmp/ansible/{{ item.dest }} flat=yes
+  with_items:
+    - { src: 'demoCA/cert.pem', dest: 'ca_cert.pem'}
+    - { src: 'cert.pem', dest: 'cert.pem' }
+    - { src: 'key.pem', dest: 'key.pem' }
+  when: cluster != 0
+  tags: postinstall
+
+- include: roles/prerequisitos/tasks/reboot.yml
+  when: cluster != 0 and ansible_os_family == "RedHat"
+
+- name: Wait for the server to finish rebooting
+  become: no
+  local_action: wait_for host="{{ kamailio_ip }}" delay=15 state=started port={{ ansible_ssh_port }} timeout=600
+  tags: reboot
+  when: ansible_os_family == "RedHat" and cluster !=0

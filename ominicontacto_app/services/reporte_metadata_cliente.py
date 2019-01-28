@@ -31,6 +31,7 @@ import json
 from django.conf import settings
 from django.utils.encoding import force_text
 from django.utils.timezone import localtime
+from django.utils.translation import ugettext as _
 
 from ominicontacto_app.models import MetadataCliente
 from ominicontacto_app.utiles import crear_archivo_en_media_root
@@ -60,9 +61,9 @@ class ArchivoDeReporteCsv(object):
             # Esto puede suceder si en un intento previo de depuracion, el
             # proceso es abortado, y por lo tanto, el archivo puede existir.
             logger.warn("ArchivoDeReporteCsv: Ya existe archivo CSV de "
-                        "reporte para la campana %s. Archivo: %s. "
-                        "El archivo sera sobreescrito", self._campana.pk,
-                        self.ruta)
+                        "reporte para la campana {0}. Archivo: {1}. "
+                        "El archivo sera sobreescrito".format(self._campana.pk,
+                                                              self.ruta))
 
         crear_archivo_en_media_root(
             self.nombre_del_directorio,
@@ -75,14 +76,14 @@ class ArchivoDeReporteCsv(object):
             # Creamos encabezado
             encabezado = []
 
-            encabezado.append("Fecha-Hora Contacto")
-            encabezado.append("Agente")
-            encabezado.append("Telefono")
+            encabezado.append(_("Fecha-Hora Contacto"))
+            encabezado.append(_("Agente"))
+            encabezado.append(_("Telefono"))
             nombres = campana.bd_contacto.get_metadata().nombres_de_columnas[1:]
             for nombre in nombres:
                 encabezado.append(nombre)
-            encabezado.append("base_datos")
-            encabezado.append("Calificación")
+            encabezado.append(_("base_datos"))
+            encabezado.append(_("Calificación"))
             campos = campana.formulario.campos.all()
 
             for campo in campos:
@@ -111,7 +112,10 @@ class ArchivoDeReporteCsv(object):
                 datos = json.loads(metadata.contacto.datos)
                 for dato in datos:
                     lista_opciones.append(dato)
-                lista_opciones.append(metadata.contacto.bd_contacto)
+                if metadata.contacto.es_originario:
+                    lista_opciones.append(metadata.contacto.bd_contacto)
+                else:
+                    lista_opciones.append(_("Fuera de base"))
                 lista_opciones.append(calificaciones_dict[metadata.contacto.id])
                 datos = json.loads(metadata.metadata)
                 for campo in campos:
@@ -148,15 +152,6 @@ class ReporteMetadataClienteService(object):
             return archivo_de_reporte.url_descarga
 
         # Esto no debería suceder.
-        logger.error("obtener_url_reporte_csv_descargar(): NO existe archivo"
-                     " CSV de descarga para la campana %s", campana.pk)
+        logger.error(_("obtener_url_reporte_csv_descargar(): NO existe archivo"
+                       " CSV de descarga para la campana {0}".format(campana.pk)))
         assert os.path.exists(archivo_de_reporte.url_descarga)
-
-    def _obtener_listado_calificados_fecha(self, campana, fecha_desde, fecha_hasta):
-        return campana.obtener_calificaciones().filter(
-            fecha__range=(fecha_desde, fecha_hasta))
-
-    def _obtener_listado_no_califico_fecha(self, campana, fecha_desde, fecha_hasta):
-        return campana.logswombat.filter(
-            fecha_hora__range=(fecha_desde, fecha_hasta), estado="TERMINATED",
-            calificacion='')

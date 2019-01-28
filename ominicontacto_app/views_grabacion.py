@@ -22,6 +22,9 @@ Aca se encuentran las vistas relacionada con las grabaciones en cuanto a su busq
 ya que el insert lo hace kamailio-debian/asterisk(hablar con fabian como hace el insert )
 """
 
+from __future__ import unicode_literals
+
+from django.utils.translation import ugettext as _
 from django.utils import timezone
 
 from django.views.generic import FormView, View
@@ -143,8 +146,8 @@ class GrabacionDescripcionView(View):
         try:
             grabacion_marca = GrabacionMarca.objects.get(uid=uid)
         except GrabacionMarca.DoesNotExist:
-            response = {u'result': u'No encontrada',
-                        u'descripcion': u'La grabación no tiene descripción asociada'}
+            response = {u'result': _(u'No encontrada'),
+                        u'descripcion': _(u'La grabación no tiene descripción asociada')}
         else:
-            response = {u'result': u'Descripción', u'descripcion': grabacion_marca.descripcion}
+            response = {u'result': _(u'Descripción'), u'descripcion': grabacion_marca.descripcion}
         return JsonResponse(response)

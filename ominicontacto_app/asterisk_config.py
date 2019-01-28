@@ -31,6 +31,8 @@ import tempfile
 import traceback
 
 from django.conf import settings
+from django.utils.translation import ugettext as _
+
 from ominicontacto_app.utiles import (
     elimina_espacios, remplace_espacio_por_guion
 )
@@ -105,16 +107,15 @@ class SipConfigCreator(object):
             agentes = self._obtener_todas_para_generar_config_sip()
         sip = []
         for agente in agentes:
-            logger.info("Creando config sip para agente %s", agente.user.
-                        get_full_name())
+            logger.info(_("Creando config sip para agente {0}".format(agente.user.get_full_name())))
             try:
                 config_chunk = self._generar_config_sip(agente)
-                logger.info("Config sip generado OK para agente %s",
-                            agente.user.get_full_name())
+                logger.info(_("Config sip generado OK para agente {0}".format(
+                    agente.user.get_full_name())))
             except Exception as e:
                 logger.exception(
-                    "Error {0}: No se pudo generar configuracion de "
-                    "Asterisk para la quene {1}".format(e.message, agente.user.get_full_name()))
+                    _("Error {0}: No se pudo generar configuracion de "
+                      "Asterisk para la quene {1}".format(e.message, agente.user.get_full_name())))
 
                 try:
                     traceback_lines = [
@@ -122,8 +123,8 @@ class SipConfigCreator(object):
                         for line in traceback.format_exc().splitlines()]
                     traceback_lines = "\n".join(traceback_lines)
                 except Exception as e:
-                    traceback_lines = "Error {0} al intentar generar traceback".format(e.message)
-                    logger.exception("Error al intentar generar traceback")
+                    traceback_lines = _("Error {0} al intentar generar traceback".format(e.message))
+                    logger.exception(_("Error al intentar generar traceback"))
 
                 # FAILED: Creamos la porción para el fallo del config sip.
                 param_failed = {'oml_queue_name': agente.user.get_full_name(),
@@ -139,16 +140,17 @@ class SipConfigCreator(object):
         supervisores = self._obtener_supervisores_para_generar_config_sip()
 
         for supervisor in supervisores:
-            logger.info("Creando config sip para supervisor %s", supervisor.user.
-                        get_full_name())
+            logger.info(_("Creando config sip para supervisor {0}".format(
+                supervisor.user.get_full_name())))
             try:
                 config_chunk = self._generar_config_sip(supervisor)
-                logger.info("Config sip generado OK para supervisor %s",
-                            supervisor.user.get_full_name())
+                logger.info(_("Config sip generado OK para supervisor {0}".format(
+                    supervisor.user.get_full_name())))
             except Exception as e:
                 logger.exception(
-                    "Error {0}: no se pudo generar configuracion de "
-                    "Asterisk para la queue {0}".format(e.message, supervisor.user.get_full_name()))
+                    _("Error {0}: no se pudo generar configuracion de "
+                      "Asterisk para la queue {1}".format(
+                          e.message, supervisor.user.get_full_name())))
 
                 try:
                     traceback_lines = [
@@ -156,7 +158,7 @@ class SipConfigCreator(object):
                         for line in traceback.format_exc().splitlines()]
                     traceback_lines = "\n".join(traceback_lines)
                 except Exception as e:
-                    traceback_lines = "Error {0} al intentar generar traceback".format(e.message)
+                    traceback_lines = _("Error {0} al intentar generar traceback".format(e.message))
                     logger.exception(traceback_lines)
 
                 # FAILED: Creamos la porción para el fallo del config sip.
@@ -289,15 +291,14 @@ class QueuesCreator(object):
             campanas = self._obtener_todas_para_generar_dialplan()
         dialplan = []
         for campana in campanas:
-            logger.info("Creando dialplan para queue %s", campana.nombre)
+            logger.info(_("Creando dialplan para queue {0}".format(campana.nombre)))
             try:
                 config_chunk = self._generar_dialplan(campana)
-                logger.info("Dialplan generado OK para queue %s",
-                            campana.nombre)
+                logger.info(_("Dialplan generado OK para queue {0}".format(campana.nombre)))
             except Exception as e:
                 logger.exception(
-                    "Error {0}: No se pudo generar configuracion de "
-                    "Asterisk para la queue {1}".format(e.message, campana.nombre))
+                    _("Error {0}: No se pudo generar configuracion de "
+                      "Asterisk para la queue {1}".format(e.message, campana.nombre)))
 
                 try:
                     traceback_lines = [
@@ -305,7 +306,8 @@ class QueuesCreator(object):
                         for line in traceback.format_exc().splitlines()]
                     traceback_lines = "\n".join(traceback_lines)
                 except Exception as e:
-                    traceback_lines = "Error {0}: al intentar generar traceback".format(e.message)
+                    traceback_lines = _("Error {0}: al intentar generar traceback".format(
+                        e.message))
                     logger.exception(traceback)
 
                 # FAILED: Creamos la porción para el fallo del Dialplan.
@@ -320,15 +322,14 @@ class QueuesCreator(object):
             dialplan.append(config_chunk)
         campanas_entrantes = self._obtener_todas_entrante_para_generar_dialplan()
         for campana in campanas_entrantes:
-            logger.info("Creando dialplan para queue %s", campana.nombre)
+            logger.info(_("Creando dialplan para queue {0}".format(campana.nombre)))
             try:
                 config_chunk = self._generar_dialplan_entrantes(campana)
-                logger.info("Dialplan generado OK para queue %s",
-                            campana.nombre)
+                logger.info(_("Dialplan generado OK para queue {0}".format(campana.nombre)))
             except Exception as e:
                 logger.exception(
-                    "Error {0}: no se pudo generar configuracion de "
-                    "Asterisk para la queue {1}".format(e.message, campana.nombre))
+                    _("Error {0}: no se pudo generar configuracion de "
+                      "Asterisk para la queue {1}".format(e.message, campana.nombre)))
 
                 try:
                     traceback_lines = [
@@ -336,7 +337,7 @@ class QueuesCreator(object):
                         for line in traceback.format_exc().splitlines()]
                     traceback_lines = "\n".join(traceback_lines)
                 except Exception as e:
-                    traceback_lines = "Error {0} al intentar generar traceback".format(e.message)
+                    traceback_lines = _("Error {0} al intentar generar traceback".format(e.message))
                     logger.exception(traceback_lines)
 
                 # FAILED: Creamos la porción para el fallo del Dialplan.
@@ -432,16 +433,16 @@ class RutasSalientesConfigCreator(object):
 
         # agrego las rutas con los patrones de discado
         for ruta in rutas:
-            logger.info("Creando config sip para ruta saliente %s", ruta.id)
+            logger.info(_("Creando config sip para ruta saliente {0}".format(ruta.id)))
             rutas_file.append("\n[oml-outr-{0}]\n".format(ruta.id))
             rutas_file.append("include => oml-outr-{0}-custom".format(ruta.id))
             try:
                 config_chunk = self._generar_config(ruta)
-                logger.info("Config generado OK para ruta saliente %s", ruta.id)
+                logger.info(_("Config generado OK para ruta saliente {0}".format(ruta.id)))
             except Exception as e:
                 logger.exception(
-                    "Error {0}: No se pudo generar configuracion de "
-                    "Asterisk para la ruta {1}".format(e.message, ruta.id))
+                    _("Error {0}: No se pudo generar configuracion de "
+                      "Asterisk para la ruta {1}".format(e.message, ruta.id)))
 
                 try:
                     traceback_lines = [
@@ -449,7 +450,8 @@ class RutasSalientesConfigCreator(object):
                         for line in traceback.format_exc().splitlines()]
                     traceback_lines = "\n".join(traceback_lines)
                 except Exception as e:
-                    traceback_lines = "Error {0}: al intentar generar traceback".format(e.message)
+                    traceback_lines = _("Error {0}: al intentar generar traceback".format(
+                        e.message))
                     logger.exception(traceback_lines)
 
                 # FAILED: Creamos la porción para el fallo del config sip.
@@ -499,7 +501,7 @@ class SipTrunksConfigCreator(object):
         trunk_file = []
 
         for trunk in trunks:
-            logger.info("Creando config troncal sip %s", trunk.id)
+            logger.info(_("Creando config troncal sip {0}".format(trunk.id)))
             trunk_file.append("\n[{0}]\n{1}\n".format(
                 trunk.nombre, trunk.text_config.replace("\r", "")))
         self._sip_trunks_config_file.write(trunk_file)
@@ -538,7 +540,7 @@ class SipRegistrationsConfigCreator(object):
         trunk_file = []
 
         for trunk in trunks:
-            logger.info("Creando config troncal sip %s", trunk.id)
+            logger.info(_("Creando config troncal sip {0}".format(trunk.id)))
             trunk_file.append("register=>{0}\n".format(trunk.register_string))
 
         self._sip_registrations_config_file.write(trunk_file)
@@ -559,11 +561,11 @@ class AsteriskConfigReloader(object):
         try:
             subprocess.check_call(settings.OML_RELOAD_CMD,
                                   stdout=stdout_file, stderr=stderr_file)
-            logger.info("Reload de configuracion de Asterisk fue OK")
+            logger.info(_("Reload de configuracion de Asterisk fue OK"))
             return 0
         except subprocess.CalledProcessError, e:
-            logger.warn("Exit status erroneo: %s", e.returncode)
-            logger.warn(" - Comando ejecutado: %s", e.cmd)
+            logger.warn(_("Exit status erroneo: {0}".format(e.returncode)))
+            logger.warn(_(" - Comando ejecutado: {0}".format(e.cmd)))
             try:
                 stdout_file.seek(0)
                 stderr_file.seek(0)
@@ -576,7 +578,8 @@ class AsteriskConfigReloader(object):
                     if line:
                         logger.warn(" STDERR> %s", line)
             except Exception as e:
-                logger.exception("Error {0} al intentar reporter STDERR y STDOUT".format(e.message))
+                logger.exception(_("Error {0} al intentar reporter STDERR y STDOUT".format(
+                    e.message)))
 
             return e.returncode
 
@@ -602,12 +605,12 @@ class ConfigFile(object):
             tmp_file_obj = os.fdopen(tmp_fd, 'w')
             for contenido in contenidos:
                 assert isinstance(contenido, unicode), \
-                    "Objeto NO es unicode: {0}".format(type(contenido))
+                    _("Objeto NO es unicode: {0}".format(type(contenido)))
                 tmp_file_obj.write(contenido.encode('utf-8'))
 
             tmp_file_obj.close()
 
-            logger.info("Copiando file config a %s", self._filename)
+            logger.info(_("Copiando file config a {0}".format(self._filename)))
             shutil.copy(tmp_filename, self._filename)
             os.chmod(self._filename, 0644)
 
@@ -615,8 +618,8 @@ class ConfigFile(object):
             try:
                 os.remove(tmp_filename)
             except Exception as e:
-                logger.exception("Error {0} al intentar borrar temporal {1}".format(
-                    e.message, tmp_filename))
+                logger.exception(_("Error {0} al intentar borrar temporal {1}".format(
+                    e.message, tmp_filename)))
 
     def copy_asterisk(self):
         subprocess.call(['scp', self._filename, ':'.join([self._hostname,

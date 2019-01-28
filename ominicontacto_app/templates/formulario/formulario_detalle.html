@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
+{% load i18n %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,7 +33,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
         <div class="alert alert-danger">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Error!</h4>
+            <h4>{% trans 'Error!' %}</h4>
             {{ message }}
         </div>
 
@@ -39,7 +41,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
         <div class="alert alert-warning">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Atencion!</h4>
+            <h4>{% trans 'Atención!' %}</h4>
             {{ message }}
         </div>
 
@@ -47,7 +49,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
         <div class="alert alert-success">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Finalizado:</h4>
+            <h4>{% trans 'Finalizado:' %}</h4>
             {{ message }}
         </div>
 
@@ -55,21 +57,21 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
         <div class="alert alert-info">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Informacion:</h4>
+            <h4>{% trans 'Información:' %}</h4>
             {{ message }}
         </div>
 
         {% elif "debug" in message.tags %} {# the same as "INFO" #}
         <div class="alert alert-info">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Informacion:</h4>
+            <h4>{% trans 'Información:' %}</h4>
             {{ message }}
         </div>
 
         {% else %} {# the same as "INFO" #}
         <div class="alert alert-info">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
-            <h4>Informacion:</h4>
+            <h4>{% trans 'Información:' %}</h4>
             {{ message }}
         </div>
 
@@ -79,7 +81,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <div class="col-md-9">
         <table class="table table-striped">
             <tr>
-                <td><strong>Telefono</strong></td>
+                <td><strong>{% trans 'Teléfono' %}</strong></td>
                 <td>{{contacto.telefono}}</td>
             </tr>
         {% for datos in mas_datos %}
@@ -89,7 +91,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </tr>
         {% endfor %}
             <tr>
-                <td colspan="2"><strong>Formulario recientemente cargado</strong></td>
+                <td colspan="2"><strong>{% trans 'Formulario recientemente cargado' %}</strong></td>
             </tr>
         {% for key, values in metadata.items %}
             <tr>
@@ -99,7 +101,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% endfor %}
         </table>
     </div>
-
 </div>
 </body>
 </html>

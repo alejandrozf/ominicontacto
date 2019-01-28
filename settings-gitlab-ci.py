@@ -138,6 +138,10 @@ OML_WOMBAT_USER = "demoadmin"
 
 OML_WOMBAT_PASSWORD = "demo"
 
+OML_KAMAILIO_LOCATION = "{{ kamailio_location }}/etc/kamailio/"
+OML_KAMAILIO_CMD = "ssh root@{{ omnivoip_fqdn }} 'rets' |awk -F ' ' '{print $3}' |head -1"
+OML_GENERARSK_CMD = "ssh root@omnivoip 'sed -i \"s/\({0}\).*/{1}!g\\\"/\" {2}kamailio-local.cfg'"
+
 _logging_output_file = os.environ.get("OML_LOGFILE", "django.log")
 assert os.path.split(_logging_output_file)[0] == "",\
     "La variable de entorno OML_LOGFILE solo debe contener " +\
@@ -194,7 +198,7 @@ MONITORFORMAT = 'mp3'
 
 OML_AUDIO_PATH_ASTERISK = "/var/lib/asterisk/sounds/oml/"
 
-CALIFICACION_REAGENDA = 'Agendado'
+CALIFICACION_REAGENDA = 'Agenda'
 
 LOCAL_APPS = []
 
@@ -215,3 +219,4 @@ DURACION_ASIGNACION_CONTACTO_PREVIEW = 30
 CONSTANCE_CONFIG = {}
 MIDDLEWARE_PREPPEND = []
 MIDDLEWARE_APPEND = []
+TEMPLATES_CONTEXT_PROCESORS_APPEND = []

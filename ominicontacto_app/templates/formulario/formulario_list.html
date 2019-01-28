@@ -19,32 +19,63 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
-<h1>Formularios</h1>
+<h1>{% trans 'Formularios' %}</h1>
+
+{% if mostrar_ocultos %}
+    <a href="{% url 'formulario_list' %}">{% trans 'Mostrar solo visibles' %}</a>
+{% else %}
+    <a href="{% url 'formulario_list_mostrar_ocultos' %}">{% trans 'Mostrar ocultos' %}</a>
+{% endif %}
 
 <table class="table">
     <thead>
         <tr>
-            <th>Nombre</th>
-            <th>Descripcion</th>
-            <th>Vista Previa</th>
-
+            <th>{% trans 'Nombre' %}</th>
+            <th>{% trans 'Descripción' %}</th>
+            <th>{% trans 'Vista Previa' %}</th>
+            <th>{% trans 'Acciones' %}</th>
         </tr>
     </thead>
     <tbody>
-    {% for formulario in object_list %}
-        <tr>
-            <td>{{ formulario.nombre }}</td>
-            <td>{{ formulario.descripcion }}</td>
-            <td><a class="btn btn-light" href="{% url 'formulario_vista' formulario.pk %}">Ver</a></td>
-        </tr>
-   {% empty %}
-    <tr>
-        <td>No existen formularios creados</td>
-    </tr>
-    {% endfor %}
+        {% for formulario in object_list %}
+            {% if not formulario.oculto or mostrar_ocultos %}
+                <tr class="formularioElem">
+                    <td>{{ formulario.nombre }}</td>
+                    <td>{{ formulario.descripcion }}</td>
+                    <td><a class="btn btn-light" href="{% url 'formulario_vista' formulario.pk %}">{% trans 'Ver' %}</a></td>
+                    <td colspan="2">
+                        {% if not formulario.tiene_campana_asignada %}
+                            <a href="{% url 'formulario_eliminar' formulario.pk %}">
+                                <span class="icon icon-trash">{% trans 'Eliminar' %}</span>
+                            </a>
+                        {% endif %}
+                        {% if formulario.oculto %}
+                            <div class="mostrarOcultar" id="{{ formulario.pk }}" data-mostrar-ocultos="{{ mostrar_ocultos }}">
+                                <a href="#"><span class="icon icon-eye-slash">{% trans 'Mostrar' %}</span></a>
+                            </div>
+                        {% else %}
+                            <div class="mostrarOcultar" id="{{ formulario.pk }}" data-mostrar-ocultos="{{ mostrar_ocultos }}">
+                                <a href="#"><span class="icon icon-eye">{% trans 'Ocultar' %}</span></a>
+                            </div>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endif %}
+        {% empty %}
+            <tr>
+                <td>{% trans 'No existen formularios creados' %}</td>
+            </tr>
+        {% endfor %}
     </tbody>
 </table>
 
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
+    <script type="text/javascript" src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/formularios.js' %}"></script>
 {% endblock %}

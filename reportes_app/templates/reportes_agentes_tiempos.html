@@ -22,144 +22,135 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 {% block head_js %}
 <script type="text/javascript">
-   $(function() {
-                var start = moment();
-                var end = moment();
-                function cb(start, end) {
-                    $('#id_fecha').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-                }
+ $(function() {
+   var start = moment();
+   var end = moment();
+   function cb(start, end) {
+     $('#id_fecha').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+   }
 
- $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
-      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-  });
+   $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
+     $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+   });
 
-  $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
-      $(this).val('');
-});
+   $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
+     $(this).val('');
+   });
 
-            // Init daterange plugin
-            $('#id_fecha').daterangepicker(
-                {
+   // Init daterange plugin
+   var ranges = get_ranges();
+   $('#id_fecha').daterangepicker(
+     {
+       locale: {
+         format: 'DD/MM/YYYY'
+       },
+       startDate: start,
+       endDate: end,
+       ranges: ranges,
+     }, cb);
 
-                locale: {
-                    format: 'DD/MM/YYYY'
-                 },
+   cb(start, end);
 
-                startDate: start,
-                endDate: end,
-                ranges: {
-                    'Hoy': [moment(), moment()],
-                    'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Ultimos 7 Días': [moment().subtract(6, 'days'), moment()],
-                    'Ultimos 30 Días': [moment().subtract(29, 'days'), moment()],
-                    'Este Mes': [moment().startOf('month'), moment().endOf('month')],
-                    'Ultimo Mes': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                },
+   $("#id_agente").change(function() {
+     if( $("#id_agente").val() == null) {
+       $("#id_grupo_agente").removeAttr('disabled');
+       $("#id_todos_agentes").removeAttr('disabled');
+     } else {
+       $("#id_grupo_agente").attr('disabled', true);
+       $("#id_todos_agentes").attr('disabled', true);
+     }
+   });
 
-        }, cb);
+   $("#id_grupo_agente").change(function() {
+     if( $("#id_grupo_agente").val() == "") {
+       $("#id_agente").removeAttr('disabled');
+       $("#id_todos_agentes").removeAttr('disabled');
+     } else {
+       $("#id_agente").attr('disabled', true);
+       $("#id_todos_agentes").attr('disabled', true);
+     }
+   });
 
-        cb(start, end);
+   $("#id_todos_agentes").change(function() {
 
-        $("#id_agente").change(function() {
-                if( $("#id_agente").val() == null) {
-                    $("#id_grupo_agente").removeAttr('disabled');
-                    $("#id_todos_agentes").removeAttr('disabled');
-                } else {
-                    $("#id_grupo_agente").attr('disabled', true);
-                    $("#id_todos_agentes").attr('disabled', true);
-                }
-            });
+     if( $("#id_todos_agentes").prop("checked") ) {
+       $("#id_agente").attr('disabled', true);
+       $("#id_grupo_agente").attr('disabled', true);
+     } else {
 
-            $("#id_grupo_agente").change(function() {
-                if( $("#id_grupo_agente").val() == "") {
-                    $("#id_agente").removeAttr('disabled');
-                    $("#id_todos_agentes").removeAttr('disabled');
-                } else {
-                    $("#id_agente").attr('disabled', true);
-                    $("#id_todos_agentes").attr('disabled', true);
-                }
-            });
+       $("#id_agente").removeAttr('disabled');
+       $("#id_grupo_agente").removeAttr('disabled');
+     }
+   });
+   $('.tiemposAgenteModal').click(function(event){
+     event.preventDefault();
+     var id_agente;
+     id_agente = $(this).attr("id_agente");
+     var fecha_desde = $(this).attr("fecha_desde");
+     var fecha_hasta = $(this).attr("fecha_hasta");
+     $.ajax(
+       {
+         type:"POST",
+         url: "{% url 'reportes_agente_por_fecha' %}",
+         data:{
+           'id_agente': id_agente,
+           'fecha_desde': fecha_desde,
+           'fecha_hasta': fecha_hasta,
+           'csrfmiddlewaretoken': '{{ csrf_token }}'
+         },
+         success: function (data, textStatus) {
+           $('#output').html(data.tbody); // append to inner html
+           $('#nombre_agente').html(data.nombre_agente);
+           if (data.error)
+           {   mensaje = gettext("Advertencia: se detectan cierres de sesión incorrectos para este agente. Por favor instruya al mísmo a efectuar el deslogueo correctamente. Gracias")
+             txt = '<div id="error" class="alert alert-warning" role="alert">'
+             txt +=  $("<div>").text(mensaje).html() + "</div>";
+             $('#error').html(txt);
+           }
+           else
+           {
+             $('#error').html('');
+           }
+         },
+         error: function(xhr, status, e) {
+           alert(status, e);
+         }
+       })
+   });
 
-        $("#id_todos_agentes").change(function() {
+   $('.tiemposPausaModal').click(function(event){
+     event.preventDefault();
+     var id_agente = $(this).attr("id_agente");
+     var fecha_desde = $(this).attr("fecha_desde");
+     var fecha_hasta = $(this).attr("fecha_hasta");
+     var pausa_id = $(this).attr("pausa_id");
+     $.ajax(
+       {
+         type:"POST",
+         url: "{% url 'reportes_pausa_por_fecha' %}",
+         data:{
+           'id_agente': id_agente,
+           'fecha_desde': fecha_desde,
+           'fecha_hasta': fecha_hasta,
+           'pausa_id': pausa_id,
+           'csrfmiddlewaretoken': '{{ csrf_token }}'
+         },
+         success: function (data, textStatus) {
+          //alert(data, textStatus);
+           $('#output_pausa').html(data.tbody); // append to inner html
+           $('#nombre_agente_pausa').html(data.nombre_agente);
+           $('#nombre_pausa').html(data.pausa);
+         },
+         error: function(xhr, status, e) {
+           alert(status, e);
+         }
+       })
+   });
 
-                if( $("#id_todos_agentes").prop("checked") ) {
-                    $("#id_agente").attr('disabled', true);
-                    $("#id_grupo_agente").attr('disabled', true);
-                } else {
+ });
 
-                    $("#id_agente").removeAttr('disabled');
-                    $("#id_grupo_agente").removeAttr('disabled');
-                }
-            });
-    $('.tiemposAgenteModal').click(function(event){
-    event.preventDefault();
-    var id_agente;
-    id_agente = $(this).attr("id_agente");
-    var fecha_desde = $(this).attr("fecha_desde");
-    var fecha_hasta = $(this).attr("fecha_hasta");
-    $.ajax(
-    {
-        type:"POST",
-        url: "{% url 'reportes_agente_por_fecha' %}",
-        data:{
-                 'id_agente': id_agente,
-                 'fecha_desde': fecha_desde,
-                 'fecha_hasta': fecha_hasta,
-                  'csrfmiddlewaretoken': '{{ csrf_token }}'
-        },
-                success: function (data, textStatus) {
-            $('#output').html(data.tbody); // append to inner html
-             $('#nombre_agente').html(data.nombre_agente);
-            if (data.error)
-            {   mensaje = "Advertencia: se detectan cierres de sesión incorrectos para este agente. Por favor instruya al mísmo a efectuar el deslogueo correctamente. Gracias"
-                txt = '<div id="error" class="alert alert-warning" role="alert">'
-                txt +=  $("<div>").text(mensaje).html() + "</div>";
-               $('#error').html(txt);
-            }
-            else
-            {
-                $('#error').html('');
-            }
-        },
-        error: function(xhr, status, e) {
-            alert(status, e);
-        }
-     })
-});
+</script>
 
-    $('.tiemposPausaModal').click(function(event){
-    event.preventDefault();
-    var id_agente = $(this).attr("id_agente");
-    var fecha_desde = $(this).attr("fecha_desde");
-    var fecha_hasta = $(this).attr("fecha_hasta");
-    var pausa_id = $(this).attr("pausa_id");
-    $.ajax(
-    {
-        type:"POST",
-        url: "{% url 'reportes_pausa_por_fecha' %}",
-        data:{
-                 'id_agente': id_agente,
-                 'fecha_desde': fecha_desde,
-                 'fecha_hasta': fecha_hasta,
-                 'pausa_id': pausa_id,
-                  'csrfmiddlewaretoken': '{{ csrf_token }}'
-        },
-        success: function (data, textStatus) {
-            //alert(data, textStatus);
-            $('#output_pausa').html(data.tbody); // append to inner html
-            $('#nombre_agente_pausa').html(data.nombre_agente);
-            $('#nombre_pausa').html(data.pausa);
-        },
-        error: function(xhr, status, e) {
-            alert(status, e);
-        }
-     })
-});
-
-});
-
-
-    </script>
 <style>
 .modal-lg {
     max-width: 80% !important;
@@ -169,10 +160,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% endblock %}
 {% block content %}
 
-<h1>Agentes</h1>
+<h1>{% trans 'Agentes' %}</h1>
 <div id="wrapper-search">
 
-    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> Buscar</button>
+    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span>{% trans "Buscar" %}</button>
 
     <div id="wrapperSearchForm" class="show">
 
@@ -181,29 +172,29 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {{ form.non_field_errors }}
             <div class="form-row">
                 <div class="col-md-6">
-                    <label for="{{ form.fecha.id_for_label }}">Fecha: </label>
+                    <label for="{{ form.fecha.id_for_label }}">{% trans "Fecha" %}: </label>
                     {{form.fecha}}
                     {{ form.fecha.errors }}
                 </div>
                 <div class="col-md-6">
-                    <label for="{{ form.agente.id_for_label }}">Agente: </label>
+                    <label for="{{ form.agente.id_for_label }}">{% trans "Agente" %}: </label>
                       {{ form.agente }}
                       {{ form.agente.errors }}
                 </div>
                 <div class="col-md-6">
-                    <label for="{{ form.todos_agentes.id_for_label }}">Todos los agentes: </label>
+                    <label for="{{ form.todos_agentes.id_for_label }}">{% trans "Todos los agentes" %}: </label>
                       {{ form.todos_agentes }}
                       {{ form.todos_agentes.errors }}
                 </div>
                 <div class="col-md-6">
-                    <label for="{{ form.agente.id_for_label }}">Grupo de agentes: </label>
+                    <label for="{{ form.agente.id_for_label }}">{% trans "Grupo de agentes" %}: </label>
                       {{ form.grupo_agente }}
                       {{ form.grupo_agente.errors }}
                 </div>
             </div>
 
             <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-                Buscar
+                {% trans "Buscar" %}
             </button>
         </form>
     </div>
@@ -212,21 +203,21 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% if graficos_estadisticas  %}
 
 <div>
-    <h2>Periodo: {{graficos_estadisticas.fecha_desde|date:"d/m/Y"}} - {{graficos_estadisticas.fecha_hasta|date:"d/m/Y"}}</h2>
+    <h2>{% trans 'Período:' %} {{graficos_estadisticas.fecha_desde|date:"d/m/Y"}} - {{graficos_estadisticas.fecha_hasta|date:"d/m/Y"}}</h2>
     <hr>
     <div class="wrapper-table table-responsive">
-        <button class="btn-collapse-table btn btn-light btn-sm" type="button" data-toggle="collapse" data-target=".multi-collapse-stats" aria-expanded="false">Información completa</button>
+        <button class="btn-collapse-table btn btn-light btn-sm" type="button" data-toggle="collapse" data-target=".multi-collapse-stats" aria-expanded="false">{% trans "Información completa" %}</button>
         <hr class="hr-space">
         <div class="wrapper-table table-responsive">
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Agente</th>
-                        <th>Tiempo de session</th>
-                        <th>Porcentaje en llamada</th>
-                        <th>Llamadas procesadas</th>
-                        <th>Tiempo promedio</th>
-                        <th>Intentos fallidos</th>
+                        <th>{% trans "Agente" %}</th>
+                        <th>{% trans "Tiempo de session" %}</th>
+                        <th>{% trans "Porcentaje en llamada" %}</th>
+                        <th>{% trans "Llamadas procesadas" %}</th>
+                        <th>{% trans "Tiempo promedio" %}</th>
+                        <th>{% trans "Intentos fallidos" %}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -236,25 +227,25 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             <br>
                             <a href="#" role="button" class="tiemposAgenteModal" id_agente="{{agente.agente.id}}" data-toggle="modal" data-target="#reporteFechaModal"
                             fecha_desde="{{graficos_estadisticas.fecha_desde|date:'d/m/Y'}}" fecha_hasta="{{graficos_estadisticas.fecha_hasta|date:'d/m/Y'}}">
-             ver por fechas</a>
+             {% trans "ver por fechas" %}</a>
 
                         </td>
                         <td>
                             {% if agente.get_string_tiempo_sesion %}
-                                {{agente.get_string_tiempo_sesion}}hs
+                                {{agente.get_string_tiempo_sesion}}{% trans 'hs' %}
                             {% else %}
-                                0hs
+                                0{% trans 'hs' %}
                             {% endif %}
                             <div class="collapse multi-collapse-stats">
                                 <hr>
                                 {% if agente.get_string_tiempo_pausa %}
-                                    {{agente.get_string_tiempo_pausa}}hs
+                                    {{agente.get_string_tiempo_pausa}}{% trans 'hs' %}
                                 {% else %}
-                                    0hs
+                                    0{% trans 'hs' %}
                                 {% endif %}
-                                <span class="label">pausa</span>,
-                                {{agente.get_string_tiempo_llamada}}hs
-                                <span class="label">llamada</span>
+                                <span class="label">{% trans "pausa" %}</span>,
+                                {{agente.get_string_tiempo_llamada}}{% trans 'hs' %}
+                                <span class="label">{% trans "llamada" %}</span>
                             </div>
                         </td>
                         <td>
@@ -271,18 +262,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             {% else %}
                                 0%
                             {% endif %}
-                            <span class="label">pausa</span>,
+                            <span class="label">{% trans "pausa" %}</span>,
                             {% if agente.tiempo_porcentaje_wait %}
                                 {{agente.tiempo_porcentaje_wait|floatformat:4}}%
                             {% else %}
                                 0%
                             {% endif %}
-                            <span class="label">espera</span>
+                            <span class="label">{% trans "espera" %}</span>
                             </span>
                             </div>
                         </td>
                         <td>{{agente.cantidad_llamadas_procesadas}}</td>
-                        <td>{{agente.tiempo_promedio_llamadas|default_if_none:0}}s</td>
+                        <td>{{agente.tiempo_promedio_llamadas|default_if_none:0}}{% trans 's' %}</td>
                         <td>{{agente.cantidad_intentos_fallidos}}</td>
                     </tr>
                     {% endfor %}
@@ -290,18 +281,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </table>
         </div>
     </div>
-    <a class="btn btn-outline-primary" target="_blank" href="{% url 'reportes_agentes_exporta' tipo_reporte='tiempos_agentes' %}">Exportar reporte de tiempos(CSV)</a>
+    <a class="btn btn-outline-primary" target="_blank" href="{% url 'reportes_agentes_exporta' tipo_reporte='tiempos_agentes' %}">{% trans "Exportar reporte de tiempos(CSV)" %}</a>
 </div>
 <hr>
 <div>
-<div class="wrapper-table table-responsive">
+    <div class="wrapper-table table-responsive">
         <table class="table">
             <thead>
                 <tr>
-                    <th>Agente</th>
-                    <th>Pausa</th>
-                    <th>Tipo</th>
-                    <th>Tiempo</th>
+                    <th>{% trans "Agente" %}</th>
+                    <th>{% trans "Pausa" %}</th>
+                    <th>{% trans "Tipo" %}</th>
+                    <th>{% trans "Tiempo" %}</th>
                 </tr>
             </thead>
             {% for agente in graficos_estadisticas.agente_pausa %}
@@ -310,31 +301,30 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <a href="#" role="button" class="tiemposPausaModal" id_agente="{{agente.id}}" data-toggle="modal" data-target="#reportePausaModal"
                         fecha_desde="{{graficos_estadisticas.fecha_desde|date:'d/m/Y'}}" fecha_hasta="{{graficos_estadisticas.fecha_hasta|date:'d/m/Y'}}"
                         pausa_id="{{agente.pausa_id}}">
-                        ver por fechas</a>
+                        {% trans "ver por fechas" %}</a>
                     </td>
                     <td>{{agente.pausa}}</td>
                     <td>{{agente.tipo_de_pausa}}</td>
-                    <td>{{agente.tiempo}}hs</td>
+                    <td>{{agente.tiempo}}{% trans 'hs' %}</td>
                 </tr>
             {% endfor %}
             <tbody>
 
             </tbody>
         </table>
-</div>
-    <a class="btn btn-outline-primary" target="_blank" href="{% url 'reportes_agentes_exporta' tipo_reporte='pausas_agentes' %}">Exportar reporte de pausas(CSV)</a>
-
+    </div>
+    <a class="btn btn-outline-primary" target="_blank" href="{% url 'reportes_agentes_exporta' tipo_reporte='pausas_agentes' %}">{% trans "Exportar reporte de pausas(CSV)" %}</a>
 </div>
 <hr>
 <div>
-<div class="wrapper-table table-tall table-responsive">
+    <div class="wrapper-table table-tall table-responsive">
         <table class="table">
             <thead>
                 <tr>
-                    <th>Agente</th>
-                    <th>Cola</th>
-                    <th>Tiempo de llamadas</th>
-                    <th>Llamadas procesadas</th>
+                    <th>{% trans "Agente" %}</th>
+                    <th>{% trans "Cola" %}</th>
+                    <th>{% trans "Tiempo de llamadas" %}</th>
+                    <th>{% trans "Llamadas procesadas" %}</th>
 
                 </tr>
             </thead>
@@ -342,7 +332,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <tr>
                     <td>{{agente.0}}</td>
                     <td>{{agente.1}}</td>
-                    <td>{{agente.2}}hs</td>
+                    <td>{{agente.2}}{% trans 'hs' %}</td>
                     <td>{{agente.3}}</td>
 
                 </tr>
@@ -351,27 +341,28 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
             </tbody>
         </table>
-</div>
-<a class="btn btn-outline-primary" target="_blank" href="{% url 'reportes_agentes_exporta' tipo_reporte='llamadas_agentes' %}">Exportar reporte cantidad llamadas(CSV)</a>
+    </div>
+    <a class="btn btn-outline-primary" target="_blank" href="{% url 'reportes_agentes_exporta' tipo_reporte='llamadas_agentes' %}">{% trans "Exportar reporte cantidad llamadas(CSV)" %}</a>
 </div>
 <hr>
 <div>
-    <h2>Cantidad de llamadas por agente</h2>
+    <h2>{% trans "Cantidad de llamadas por agente" %}</h2>
     <br>
     <div class="wrapper-table table-tall table-responsive">
         <table class="table">
             <thead>
             <tr>
-                <th>Agente</th>
-                <th>Total </th>
-                <th>PREVIEW</th>
-                <th>DIALER</th>
-                <th>INBOUND</th>
-                <th>MANUAL</th>
+                <th>{% trans "Agente" %}</th>
+                <th>{% trans "Total" %}</th>
+                <th>{% trans "PREVIEW" %}</th>
+                <th>{% trans "DIALER" %}</th>
+                <th>{% trans "INBOUND" %}</th>
+                <th>{% trans "MANUAL" %}</th>
+                <th>{% trans "TRANSFERIDAS" %}</th>
             </tr>
             </thead>
             <tbody>
-                {% for agente, total_campana, total_preview, total_dialer, total_inbound, total_manual in graficos_estadisticas.dict_agente_counter %}
+                {% for agente, total_campana, total_preview, total_dialer, total_inbound, total_manual, total_transferidas in graficos_estadisticas.dict_agente_counter %}
                     <tr>
                         <td>{{ agente }}</td>
                         <td>{{ total_campana }}</td>
@@ -379,6 +370,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <td>{{ total_dialer }}</td>
                         <td>{{ total_inbound }}</td>
                         <td>{{ total_manual }}</td>
+                        <td>{{ total_transferidas }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -393,7 +385,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </div>
     </div>
 
-    <a class="btn btn-outline-primary" target="_blank" href="{% url 'reportes_agentes_exporta' tipo_reporte='llamadas_tipo_agentes' %}">Exportar reporte de tipo de llamadas(CSV)</a>
+    <a class="btn btn-outline-primary" target="_blank" href="{% url 'reportes_agentes_exporta' tipo_reporte='llamadas_tipo_agentes' %}">{% trans "Exportar reporte de tipo de llamadas(CSV)" %}</a>
 
 </div>
 
@@ -402,7 +394,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title" id="reporteFechaModalLabel">Agente <strong id="nombre_agente"></strong></h1>
+        <h1 class="modal-title" id="reporteFechaModalLabel">{% trans "Agente" %} <strong id="nombre_agente"></strong></h1>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -412,16 +404,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <div class="table-responsive">
                 <table class="table">
                     <tr>
-                        <td>Fecha</td>
-                        <td>Sesión</td>
-                        <td>Pausa</td>
-                        <td>Llamada</td>
-                        <td>% En llamada</td>
-                        <td>% En pausa</td>
-                        <td>% En espera</td>
-                        <td>Llamadas procesadas</td>
-                        <td>Tiempo promedio</td>
-                        <td>Intentos fallidos</td>
+                        <td>{% trans "Fecha" %}</td>
+                        <td>{% trans "Sesión" %}</td>
+                        <td>{% trans "Pausa" %}</td>
+                        <td>{% trans "Llamada" %}</td>
+                        <td>{% trans "% En llamada" %}</td>
+                        <td>{% trans "% En pausa" %}</td>
+                        <td>{% trans "% En espera" %}</td>
+                        <td>{% trans "Llamadas procesadas" %}</td>
+                        <td>{% trans "Tiempo promedio" %}</td>
+                        <td>{% trans "Intentos fallidos" %}</td>
                     </tr>
                     <tbody id="output">
                     </tbody>
@@ -429,7 +421,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Cerrar" %}</button>
       </div>
     </div>
   </div>
@@ -439,7 +431,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title" id="reportePausaModalLabel">Agente <strong id="nombre_agente_pausa"></strong> para la pausa <strong id="nombre_pausa"></strong></h1>
+        <h1 class="modal-title" id="reportePausaModalLabel">{% trans "Agente" %} <strong id="nombre_agente_pausa"></strong> {% trans "para la pausa" %} <strong id="nombre_pausa"></strong></h1>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -448,8 +440,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <div class="table-responsive">
                 <table class="table">
                     <tr>
-                        <td>Fecha</td>
-                        <td>Tiempo</td>
+                        <td>{% trans "Fecha" %}</td>
+                        <td>{% trans "Tiempo" %}</td>
                     </tr>
                     <tbody id="output_pausa">
                     </tbody>
@@ -457,7 +449,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Cerrar" %}</button>
       </div>
     </div>
   </div>

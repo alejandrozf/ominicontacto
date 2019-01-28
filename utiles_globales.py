@@ -19,6 +19,7 @@
 
 from __future__ import unicode_literals
 
+from django.db import connection
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _
 
@@ -52,3 +53,12 @@ def validar_estructura_csv(data_csv_memory, err_message, logger):
     except Exception as e:
         logger.warn("Error: {0}".format(e.message))
         raise(OmlArchivoImportacionInvalidoError(err_message))
+
+
+def obtener_sip_agentes_sesiones_activas_kamailio():
+    cursor = connection.cursor()
+    sql = "select username from location"
+    cursor.execute(sql)
+    values = cursor.fetchall()
+    result = [int(value[0]) for value in values]
+    return result

@@ -19,6 +19,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
+
 {% block head_js %}
 
 <script type="text/javascript">
@@ -32,18 +34,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% endblock %}
 {% block content %}
 
-<h1>Nueva base de datos de contacto</h1>
+<h1>{% trans 'Nueva base de datos de contacto' %}</h1>
 
 <form role="form" method="post" enctype="multipart/form-data" >
     {% include "base_form_fields.html" with form=form %}
     <hr>
     <button type="submit" id="id_registrar" class="btn btn-primary modal_proceso_grande">
-        Definir Base Datos
+        {% trans 'Definir Base Datos' %}
     </button>
 </form>
 <br>
 <div>
-<a class="btn btn-outline-primary" href="/static/ominicontacto/base_datos_ejemplo.csv" target="_blank">bajar base de datos de ejemplo</a>    
+    <a class="btn btn-outline-primary" href="/static/ominicontacto/base_datos_ejemplo.csv" target="_blank">{% trans 'bajar base de datos de ejemplo' %}</a>
 </div>
 
 {% endblock %}

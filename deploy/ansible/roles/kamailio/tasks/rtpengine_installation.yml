@@ -16,8 +16,7 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 ---
-# Set_fact es para setear variables, aqui seteo el nombre de la carpeta que se crea al descargar rtpengine
-- set_fact: rtpengine_name=rtpengine-mr5.5.3.1
+
 # Seteo esta variable que va en un Makefile para instalar en centos
 - set_fact: kernel="/usr/src/kernels/$(shell uname -r)"
   when: ansible_os_family == "RedHat"
@@ -131,14 +130,14 @@
   when: ansible_os_family == "Debian"
 
 # Se hace el buildpackage para generar los debs
-- name: Build of rtpengine with dpkg
+- name: Build of rtpengine with dpkg (debian)
   shell: "dpkg-buildpackage -uc -us chdir=/usr/src/{{ rtpengine_name }}"
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
 
 # Se instalan los debs como tenemos congelada la version de rtpengine no van a cambiar los nombres de loss deb
-- name: Install rtpengine debs
+- name: Install rtpengine debs (debian)
   apt: deb=/usr/src/{{ item }}
   with_items:
     - ngcp-rtpengine-daemon_5.5.3.1+0~mr5.5.3.1_amd64.deb

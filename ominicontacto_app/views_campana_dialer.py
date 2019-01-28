@@ -96,7 +96,7 @@ class PlayCampanaDialerView(RedirectView):
             campana_service.start_campana_wombat(campana)
             campana.play()
             message = _(u'<strong>Operación Exitosa!</strong>\
-                        Se llevó a cabo con éxito la pausa de\
+                        Se llevó a cabo con éxito la activación de\
                         la Campaña.')
 
             messages.add_message(

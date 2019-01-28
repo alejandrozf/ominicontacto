@@ -78,6 +78,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             <label >{{ form.time_out.label_tag }}</label>
                             {{ form.time_out }}
                             {{ form.time_out.errors }}
+                            <small class="form-text text-muted">
+                                {{ form.time_out.help_text }}
+                            </small>
                         </div>
                         <div class="">
                             <label >{{ form.time_out_retries.label_tag }}</label>

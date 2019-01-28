@@ -1,0 +1,127 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
+---
+
+# Se descarga e instala el repositorio epel-release
+- name: Install of epel-release repo (centos and cluster)
+  yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm state=present
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "RedHat" and cluster == 1
+
+# Se instala webtatic repo para instalar php56
+- name: Install of webtatic repo (centos)
+  yum: name=https://mirror.webtatic.com/yum/el7/webtatic-release.rpm state=present validate_certs=no
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+#Se instalan todos los paquetes de php56 -- FIX ME -- se necesitan todos los paquetes? verificar con desarrollo
+- name: Install of php56 (centos)
+  yum: name={{ item }} state=present
+  with_items:
+      - php56w
+      - php56w-pdo
+      - php56w-mbstring
+      - php56w-opcache
+      - php56w-fpm
+      - php56w-pgsql
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+# Se desinstalan paquetes por defecto en debian para que no hinche los huevos
+- name: Uninstall of unnecesary packages (debian)
+  apt: name=apache2 state=absent purge=yes
+  when: ansible_os_family == "Debian"
+
+# Se instalan paquetes de App (centos)
+- name: Install the app and services packages (centos)
+  yum: "name={{ item }} state=present"
+  with_items:
+      - python-psycopg2.x86_64
+      - python2-psycogreen.noarch
+      - python
+      - python-virtualenv
+      - python-devel
+      - nginx
+      - nginx-all-modules
+      - libjpeg-turbo-devel
+      - libffi-devel
+      - libffi
+      - libpqxx
+      - libpqxx-devel
+      - git
+      - rsync
+      - cairo-devel
+      - pycairo
+      - pycairo-devel
+      - cairo
+      - libpqxx
+      - libpqxx-devel
+      - python-pycha
+      - libxslt-devel
+      - libxslt-python
+      - libxslt
+      - python-lxml
+      - libxslt-python
+      - libsass-devel
+      - libsass
+      - python2-pip.noarch
+      - sox
+      - redis
+  become: yes
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+# Intalo los paquetes necesarios para la parte App
+- name: Installation of app dependencies (debian)
+  apt: "name={{ item }} state=present"
+  with_items:
+    - virtualenv
+    - libcairo2-dev
+    - openssl
+    - nginx
+    - python-dev
+    - libxslt1-dev
+    - libldap2-dev
+    - libsasl2-dev
+    - libffi-dev
+    - rsync
+    - sox
+    - python-virtualenv
+    - postgresql-contrib
+    - postgresql-server-dev-9.6
+    - postgresql-plpython-9.6
+    - libjpeg-dev
+    - python-psycopg2
+    - expect
+    - php-fpm
+    - php-pgsql
+    - php-xml
+    - redis-server
+    - git
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
+
+# Habilitamos y empezamos redis. Redis es necesario para rtpengine y para django-defender
+- name: Start and enable redis service
+  service: name=redis state=restarted enabled=yes
+  become: yes
+  become_method: sudo

@@ -27,7 +27,6 @@ $(function() {
   var ua = new JsSIP.UA(configuration);
   var sesion = ua.start();
 
- // 	debugger;
     $("#sendMessage").prop('disabled', false);
     $("#chatMessage").prop('disabled', false);
     $("#modalAccountConfig").modal('hide');

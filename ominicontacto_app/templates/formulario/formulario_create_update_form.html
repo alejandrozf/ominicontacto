@@ -19,14 +19,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "base.html" %}
 {% load static %}
+{% load i18n %}
 
 {% block content %}
-<h1>Nuevo formulario</h1>
+<h1>{% trans 'Nuevo formulario' %}</h1>
 
 <ul class="nav nav-indicators">
-    <li class="active"><a>Nuevo Formulario</a></li>
-    <li class="disabled"><a>Campos del formulario</a></li>
-    <li class="disabled"><a>Vista previa del formulario</a></li>
+    <li class="active"><a>{% trans 'Nuevo Formulario' %}</a></li>
+    <li class="disabled"><a>{% trans 'Campos del formulario' %}</a></li>
+    <li class="disabled"><a>{% trans 'Vista previa del formulario' %}</a></li>
 </ul>
 
 <form action="" enctype="multipart/form-data" method="post">
@@ -34,20 +35,20 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     {{ form.non_field_errors }}
     <div class="form-row">
         <div class="col-md-6">
-            <label for="{{ form.nombre.id_for_label }}">Nombre: </label>
+            <label for="{{ form.nombre.id_for_label }}">{% trans 'Nombre:' %}</label>
             {{ form.nombre }}
             {{ form.nombre.errors }}
         </div>
         <div class="col-md-6">
-            <label for="{{ form.descripcion.id_for_label }}">Descripcion: </label>
+            <label for="{{ form.descripcion.id_for_label }}">{% trans 'Descripción:' %}</label>
             {{ form.descripcion }}
             {{ form.descripcion.errors }}
         </div>
     </div>
     <hr>
     <button type="submit" id="id_guardar" class="btn btn-primary">
-        Guardar Datos Básicos y Continuar
-    </button>    
+        {% trans 'Guardar Datos Básicos y Continuar' %}
+    </button>
 </form>
 
 {% endblock %}

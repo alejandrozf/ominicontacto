@@ -24,7 +24,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% block content %}
 
-        <h1>Templates de campañas manuales</h1>
+    <h1>{% trans 'Templates de campañas manuales' %}</h1>
         <table class="table table-stripped">
             <thead>
                 <tr>
@@ -44,7 +44,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <td width="14%">
                             <div class="dropdown">
                               <button class="btn btn-light dropdown-toggle" type="button" id="dropdownEditMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Opciones
+                              {% trans 'Opciones' %}
                               </button>
                               <div class="dropdown-menu" aria-labelledby="dropdownEditMenu">
                                 <a class="dropdown-item" href="{% url 'campana_manual_template_create_campana' campana.pk %}"><span class="icon icon-plus" aria-hidden="true"></span>{% trans 'Crear Campaña desde Template' %}</a>

@@ -30,8 +30,10 @@ import os
 import datetime
 import json
 
-from django.conf import settings
 from ominicontacto_app.utiles import crear_archivo_en_media_root
+
+from django.conf import settings
+from django.utils.translation import ugettext as _
 from django.utils.encoding import force_text
 
 
@@ -58,10 +60,10 @@ class ArchivoDeReporteCsv(object):
         if self.ya_existe():
             # Esto puede suceder si en un intento previo de depuracion, el
             # proceso es abortado, y por lo tanto, el archivo puede existir.
-            logger.warn("ArchivoDeReporteCsv: Ya existe archivo CSV de "
-                        "reporte para el agente %s. Archivo: %s. "
-                        "El archivo sera sobreescrito", self._agente.pk,
-                        self.ruta)
+            logger.warn(_("ArchivoDeReporteCsv: Ya existe archivo CSV de "
+                          "reporte para el agente {0}. Archivo: {1}. "
+                          "El archivo sera sobreescrito".format(self._agente.pk,
+                                                                self.ruta)))
 
         crear_archivo_en_media_root(
             self.nombre_del_directorio,
@@ -74,8 +76,8 @@ class ArchivoDeReporteCsv(object):
             # Creamos encabezado
             encabezado = []
 
-            encabezado.append("Telefono")
-            encabezado.append("datos del cliente")
+            encabezado.append(_("Telefono"))
+            encabezado.append(_("datos del cliente"))
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -133,8 +135,8 @@ class ReporteFormularioVentaService(object):
             return archivo_de_reporte.url_descarga
 
         # Esto no debería suceder.
-        logger.error("obtener_url_reporte_csv_descargar(): NO existe archivo"
-                     " CSV de descarga para el agente %s", agente.pk)
+        logger.error(_("obtener_url_reporte_csv_descargar(): NO existe archivo"
+                       " CSV de descarga para el agente {0}".format(agente.pk)))
 
     def _obtener_listado_formularios_fecha(self, agente, fecha_desde,
                                            fecha_hasta):

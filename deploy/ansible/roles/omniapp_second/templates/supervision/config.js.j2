@@ -1,0 +1,8 @@
+var KamailioHost = "{{ kamailio_fqdn }}";
+var OmlIp = "{{ omniapp_fqdn }}";
+var WebSocketPort = "443";
+{% if desarrollo == 1 %}
+var OmlPort = "1210";
+{% else %}
+var OmlPort = "443";
+{% endif %}

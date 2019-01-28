@@ -35,9 +35,9 @@ from ominicontacto_app.services.estadisticas_campana import EstadisticasService
 from ominicontacto_app.services.reporte_agente import EstadisticasAgenteService
 from ominicontacto_app.services.reporte_campana_calificacion import ReporteCampanaService
 from ominicontacto_app.services.reporte_campana_pdf import ReporteCampanaPDFService
-from ominicontacto_app.services.reporte_llamados_contactados_csv import ReporteCampanaContactadosCSV
+from reportes_app.reportes.reporte_llamados_contactados_csv import ReporteCampanaContactadosCSV
 from ominicontacto_app.services.reporte_metadata_cliente import ReporteMetadataClienteService
-from ominicontacto_app.utiles import convert_fecha_datetime
+from ominicontacto_app.utiles import convert_fecha_datetime, fecha_hora_local
 
 
 class CampanaReporteCalificacionListView(ListView):
@@ -143,7 +143,7 @@ class CampanaReporteGraficoView(FormView):
             messages.warning(self.request, _(u"Usted no puede acceder a esta campaña."))
             return redirect('index')
         service = EstadisticasService()
-        hoy_ahora = timezone.now()
+        hoy_ahora = fecha_hora_local(timezone.now())
         hoy = hoy_ahora.date()
         # genera reporte de llamadas contactados
         calificados_csv = ReporteCampanaContactadosCSV()
@@ -160,8 +160,9 @@ class CampanaReporteGraficoView(FormView):
     def get_context_data(self, **kwargs):
         context = super(CampanaReporteGraficoView, self).get_context_data(
             **kwargs)
-
-        context['campana'] = self.get_object()
+        campana = self.get_object()
+        context['campana'] = campana
+        context['campana_entrante'] = (campana.type == Campana.TYPE_ENTRANTE)
         return context
 
     def form_valid(self, form):
@@ -201,7 +202,7 @@ class ExportaCampanaReportePDFView(View):
         return redirect(url)
 
 
-class ExportaReporteContactadosView(View):
+class ExportaReporteLlamadosContactadosView(View):
     """
     Esta vista invoca a generar un csv de reporte de la campana.
     """

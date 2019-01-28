@@ -16,16 +16,6 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 ---
-# Esta tarea está medio al pedo porque ya no instalamos sobre sangomaOS pero por si las dudas la dejo
-- name: Apache adjustments
-  shell: "{{ item }}"
-  with_items:
-      - sed -i 's/\(^upload_max_filesize = \).*/\120M/' /etc/php.ini
-      - sed -i 's/^\(User\|Group\).*/\1 asterisk/' /etc/httpd/conf/httpd.conf
-      - sed -i 's/AllowOverride None/AllowOverride All/' /etc/httpd/conf/httpd.conf
-  when: asterisk_location == "" and ansible_os_family == "Sangoma"
-  become: yes
-  become_method: sudo
 
 # Se crea el servicico de asterisk  para systemctl
 - name: Creation of asterisk.service
@@ -39,40 +29,27 @@
   become: yes
   become_method: sudo
 
-# Esto tambien está al pedo es para sangomaOS
-- name: Config of asterisk-freepbx for OML
-  file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{{ item }} force=true owner={{ usuario }} group={{ usuario }}"
-  with_items:
-      - extensions_custom.conf
-      - extensions_fts.conf
-      - sip_custom.conf
-      - extconfig.conf
-      - amd.conf
-      - func_odbc.conf
-      - cdr_adaptive_odbc.conf
-      - http_custom.conf
-      - manager_custom.conf
-      - queues_custom.conf
-      - globals_custom.conf
-      - http_custom.conf
-      - pjsip.transports_custom.conf
-      - res_odbc_custom.conf
-  become: yes
-  become_method: sudo
-  when: asterisk_location == "" or ansible_os_family == "Sangoma"
-
 # Se linkean los .conf de asterisk (los que estan afuera de archivos-no-enlaces) a /opt/omnileads/asterisk/etc/asterisk
-- name: Config of asterisk for OML
+- name: Config of asterisk for OML (aio)
   file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{{ item }} force=true owner={{ usuario }} group={{ usuario }} mode=755"
   with_items:
       - oml_extensions.conf
       - oml_extensions_sub.conf
   become: true
   become_method: sudo
-  when: asterisk_location != ""
+  when: cluster == 0
   tags: postinstall
 
-- name: Config of asterisk for OML
+# Se copian si es un cluster
+- name: Copy of the extensions.conf files (cluster)
+  copy: src=/var/tmp/ominicontacto-build/ominicontacto/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ asterisk_location }}/etc/asterisk owner={{ usuario }} group={{ usuario }}
+  with_items:
+      - oml_extensions.conf
+      - oml_extensions_sub.conf
+  when: cluster != 0
+  tags: postinstall
+
+- name: Copy of asterisk config files
   template: "src=templates/conf/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{{ item }} owner={{ usuario }} group={{ usuario }} mode=755"
   with_items:
       - amd.conf
@@ -101,25 +78,30 @@
       - udptl.conf
   become: true
   become_method: sudo
-  when: asterisk_location != ""
-  tags: postinstall
+  tags: ['postinstall', 'changeip']
 
 # Los archivos-no-enlaces se copian a la a /etc/asterisk
 - name: Copy of all asterisk config files
   copy: "src=templates/conf/archivos-no-enlaces/ dest={{ asterisk_location }}/etc/asterisk/ owner={{ usuario }} group={{ usuario }} mode=755"
-  when: asterisk_location != ""
-  tags: test
+
+- name: Install pyst (Asterisk manager for python) (cluster)
+  pip: name=pyst2 state=present version=0.5.0
+  become: true
+  become_method: sudo
+  when: cluster != 0
+  tags: postinstall
 
 # Genero los agis desde ansible
 - name: Creation of the agis omni-blackist and omni-dialednum
-  template: "src=templates/agi-bin/{{ item }} dest={{ asterisk_location }}/var/lib/asterisk/agi-bin/{{ item }} mode=755 owner={{ usuario }} group={{ usuario }}"
+  template: "src=templates/agi-bin/{{ item.src }} dest={{ asterisk_location }}/var/lib/asterisk/agi-bin/{{ item.dest }} mode=755 owner={{ usuario }} group={{ usuario }}"
   with_items:
-      - omni-asterisk-logout.php
-      - omni-blacklist.php
-      - omni-dialednum.php
-      - omni-grabaciones.php
-      - phpagi-asmanager.php
-      - phpagi.php
+      - { src: ".config", dest: ".config" }
+      - { src: "config.py.j2", dest: "config.py" }
+      - { src: "utiles.py.j2", dest: "utiles.py" }
+      - { src: "omni-asterisk-logout.py.j2", dest: "omni-asterisk-logout.py" }
+      - { src: "omni-blacklist.py.j2", dest: "omni-blacklist.py" }
+      - { src: "omni-dialednum.py.j2", dest: "omni-dialednum.py" }
+      - { src: "omni-grabaciones.py.j2", dest: "omni-grabaciones.py" }
   become: yes
   become_method: sudo
   tags: postinstall
@@ -172,7 +154,7 @@
 
 # Untareo los sonidos de agentes, que vienen desde el repo
 - name: Untar the sounds for agents
-  unarchive: "src={{ install_prefix }}/ominicontacto/ominicontacto_voip/asterisk-files/sounds/{{ item.source }} dest={{ asterisk_location }}/var/lib/asterisk/sounds/{{ item.dest }} remote_src=yes"
+  unarchive: "src=/var/tmp/ominicontacto-build/ominicontacto/ominicontacto_voip/asterisk-files/sounds/{{ item.source }} dest={{ asterisk_location }}/var/lib/asterisk/sounds/{{ item.dest }}"
   with_items:
     - { source: "es-oml.tgz", dest: "es" }
     - { source: "en-oml.tgz", dest: "en" }
@@ -186,23 +168,23 @@
   become: yes
   become_method: sudo
 
+# Borro el archivo de inicio de asterisk en el init.d
+- name: Erase default asterisk init.d service
+  file: state=absent path=/etc/init.d/asterisk
+  become: yes
+  become_method: sudo
+
 # Habilito e inicio asterisk
 - name: Start and enable asterisk
-  command: "{{ item }}"
-  with_items:
-          - "systemctl daemon-reload"
-          - "systemctl enable asterisk"
-          - "service asterisk stop"
-          - "service asterisk start"
+  systemd: name=asterisk state=restarted enabled=yes daemon_reload=yes
   become: true
   become_method: sudo
-  ignore_errors: yes
 
 # Un reload de config no viene mal, no alarmarse si falla
 - name: Reload of asterisk config
   shell: "asterisk -rx 'module reload'"
   become: yes
-  tags: postinstall
+  tags: ['postinstall', 'changeip']
   become_method: sudo
   ignore_errors: yes
 

@@ -23,7 +23,8 @@ from ominicontacto_app.auth.decorators import permiso_administracion_requerido
 
 from reportes_app import views_reportes_agentes
 from reportes_app.views import (ReporteLlamadasFormView, ExportarReporteLlamadasFormView,
-                                ExportarZipReportesLlamadasFormView)
+                                ExportarZipReportesLlamadasFormView,
+                                ReporteDeResultadosView, ReporteDeResultadosCSVView)
 from reportes_app import (views_campanas_preview_reportes, views_campanas_dialer_reportes,
                           views_reportes, views_api_supervision)
 
@@ -95,8 +96,8 @@ urlpatterns = [
         ),
     url(r'^campana/(?P<pk_campana>\d+)/exporta_contactados/$',
         permiso_administracion_requerido(
-            views_reportes.ExportaReporteContactadosView.as_view()),
-        name='exporta_reporte_contactados',
+            views_reportes.ExportaReporteLlamadosContactadosView.as_view()),
+        name='exporta_reporte_llamados_contactados',
         ),
     url(r'^campana_dialer/(?P<pk_campana>\d+)/exporta_calificados/$',
         permiso_administracion_requerido(
@@ -124,6 +125,16 @@ urlpatterns = [
         permiso_administracion_requerido(
             views_campanas_dialer_reportes.CampanaDialerDetailView.as_view()),
         name='campana_dialer_detalle',
+        ),
+    url(r'^reporte_de_resultados/(?P<pk_campana>\d+)/$',
+        permiso_administracion_requerido(
+            ReporteDeResultadosView.as_view()),
+        name='reporte_de_resultados',
+        ),
+    url(r'^reporte_de_resultados_csv/(?P<pk_campana>\d+)/$',
+        permiso_administracion_requerido(
+            ReporteDeResultadosCSVView.as_view()),
+        name='reporte_de_resultados_csv',
         ),
     # ==========================================================================
     # Api Supervision

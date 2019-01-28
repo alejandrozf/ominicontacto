@@ -28,6 +28,7 @@ import logging
 import re
 
 from django.conf import settings
+from django.utils.translation import ugettext as _
 from django.utils.encoding import smart_text
 from ominicontacto_app.errors import\
     (OmlParserCsvDelimiterError, OmlParserMinRowError, OmlParserMaxRowError,
@@ -118,14 +119,14 @@ class ParserCsv(object):
         cantidad_importados = 0
         for i, curr_row in enumerate(workbook):
             if len(curr_row) == 0:
-                logger.info("Ignorando fila vacia %s", i)
+                logger.info(_("Ignorando fila vacia {0}".format(i)))
                 self.vacias += 1
                 continue
 
             if i >= settings.OL_MAX_CANTIDAD_CONTACTOS:
-                raise OmlParserMaxRowError("El archivo CSV "
-                                           "posee mas registros de los "
-                                           "permitidos.")
+                raise OmlParserMaxRowError(_("El archivo CSV "
+                                             "posee mas registros de los "
+                                             "permitidos."))
 
             # La libreria CSV de Python 2 devuelve strings (o sea, bytes)
             # ignorando completamente el tipo de codificacion.
@@ -152,9 +153,8 @@ class ParserCsv(object):
                 fechas = [curr_row[columna]
                           for columna in metadata.columnas_con_fecha]
                 if not validate_fechas(fechas):
-                    logger.warn("Error en la imporación de contactos: No "
-                                "valida el formato fecha en la linea %s",
-                                curr_row)
+                    logger.warn(_("Error en la imporación de contactos: No "
+                                  "valida el formato fecha en la linea {0}".format(curr_row)))
                     raise OmlParserCsvImportacionError(
                         numero_fila=i,
                         numero_columna=metadata.columnas_con_fecha,
@@ -165,9 +165,8 @@ class ParserCsv(object):
                 horas = [curr_row[columna]
                          for columna in metadata.columnas_con_hora]
                 if not validate_horas(horas):
-                    logger.warn("Error en la imporación de contactos: No "
-                                "valida el formato hora en la linea %s",
-                                curr_row)
+                    logger.warn(_("Error en la imporación de contactos: No "
+                                  "valida el formato hora en la linea {0}".format(curr_row)))
                     raise OmlParserCsvImportacionError(
                         numero_fila=i,
                         numero_columna=metadata.columnas_con_hora,
@@ -175,10 +174,10 @@ class ParserCsv(object):
                         valor_celda=horas)
 
             if len(curr_row) != metadata.cantidad_de_columnas:
-                mensaje = ("N/A - la BD esta definida con {0} columnas, "
-                           "pero el archivo posee esta fila con {1} columnas"
-                           "".format(metadata.cantidad_de_columnas,
-                                     len(curr_row)))
+                mensaje = _("N/A - la BD esta definida con {0} columnas, "
+                            "pero el archivo posee esta fila con {1} columnas"
+                            "".format(metadata.cantidad_de_columnas,
+                                      len(curr_row)))
                 raise OmlParserCsvImportacionError(
                     numero_fila=i,
                     numero_columna=0,
@@ -188,8 +187,8 @@ class ParserCsv(object):
             cantidad_importados += 1
             yield curr_row
 
-        logger.info("%s contactos importados - %s valores ignoradas.",
-                    cantidad_importados, self.vacias)
+        logger.info(_("{0} contactos importados - {1} valores ignoradas.".format(
+            cantidad_importados, self.vacias)))
 
     def previsualiza_archivo(self, base_datos_contactos):
         """
@@ -205,14 +204,14 @@ class ParserCsv(object):
             if row:
                 structure_dic.append(row)
 
-            if i == 3:
+            if i == 2:
                 break
 
-        if i < 3:
-            logger.warn("El archivo CSV seleccionado posee menos de 3 "
-                        "filas.")
-            raise OmlParserMinRowError("El archivo CSV posee menos de "
-                                       "3 filas")
+        if i < 2:
+            logger.warn(_("El archivo CSV seleccionado posee menos de 2 "
+                          "filas."))
+            raise OmlParserMinRowError(_("El archivo CSV posee menos de "
+                                         "2 filas"))
         return structure_dic
 
     def _get_dialect(self, file_obj):
@@ -243,23 +242,23 @@ class ParserCsv(object):
 
                 single_column.append(value_valid)
 
-                if i == 3:
+                if i == 2:
                     break
 
-            if i < 3:
-                logger.warn("El archivo CSV seleccionado posee menos de 3 "
-                            "filas.")
-                raise OmlParserMinRowError("El archivo CSV posee menos de "
-                                           "3 filas")
+            if i < 2:
+                logger.warn(_("El archivo CSV seleccionado posee menos de 2 "
+                              "filas."))
+                raise OmlParserMinRowError(_("El archivo CSV posee menos de "
+                                             "2 filas"))
 
             if single_column and all(single_column):
                 file_obj.seek(0, 0)
                 return None
 
-            logger.warn("No se pudo determinar el delimitador del archivo"
-                        " CSV")
-            raise OmlParserCsvDelimiterError("No se pudo determinar el "
-                                             "delimitador del archivo CSV")
+            logger.warn(_("No se pudo determinar el delimitador del archivo"
+                          " CSV"))
+            raise OmlParserCsvDelimiterError(_("No se pudo determinar el "
+                                               "delimitador del archivo CSV"))
         finally:
             file_obj.seek(0, 0)
 
@@ -276,11 +275,11 @@ class ParserCsv(object):
             if row:
                 structure_dic.append(row)
 
-        if i < 3:
-            logger.warn("El archivo CSV seleccionado posee menos de 3 "
-                        "filas.")
-            raise OmlParserMinRowError("El archivo CSV posee menos de "
-                                       "3 filas")
+        if i < 2:
+            logger.warn(_("El archivo CSV seleccionado posee menos de 2 "
+                          "filas."))
+            raise OmlParserMinRowError(_("El archivo CSV posee menos de "
+                                         "2 filas"))
         return structure_dic
 
     def detectar_encoding_csv(self, estructura_archivo):
@@ -312,9 +311,9 @@ class ParserCsv(object):
                     break
 
         if error_iso:
-            logger.warn("No se pudo detectar el encoding del archivo csv")
-            raise OmlParserCsvEncodingError("No se pudo detectar el encoding"
-                                            " del archivo csv")
+            logger.warn(_("No se pudo detectar el encoding del archivo csv"))
+            raise OmlParserCsvEncodingError(_("No se pudo detectar el encoding"
+                                              " del archivo csv"))
         else:
             return "iso-8859-1"
 

@@ -33,15 +33,15 @@ $(document).ready(function(){
   $('#campanasPreviewTable').DataTable( {
     // Convierte a datatable la tabla de campañas preview
     language: {
-      search: "Buscar:",
+      search: gettext("Buscar:"),
       paginate: {
-        first: "Primero",
-        previous: "Anterior",
-        next: "Siguiente",
-        last: "Último"
+        first: gettext("Primero"),
+        previous: gettext("Anterior"),
+        next: gettext("Siguiente"),
+        last: gettext("Último")
       },
-      lengthMenu: "Mostrar _MENU_ entradas",
-      info: "Mostrando _START_ a _END_ de _TOTAL_ entradas",
+      lengthMenu: gettext("Mostrar _MENU_ entradas"),
+      info: gettext("Mostrando _START_ a _END_ de _TOTAL_ entradas"),
     }
   } );
 
@@ -76,8 +76,8 @@ $(document).ready(function(){
       }
       else {
         // se muestra modal con mensaje de error
-        var errorMessage = "OPS, se venció el tiempo de asignación de este contacto.\
-Por favor intente solicitar uno nuevo";
+        var errorMessage = gettext("OPS, se venció el tiempo de asignación de este contacto.\
+Por favor intente solicitar uno nuevo");
         $errorAsignacionContacto.html(errorMessage);
       }
     });
@@ -109,8 +109,8 @@ Por favor intente solicitar uno nuevo";
             $contactoOtrosDatos.html('');
 
             if (data['code'] == 'contacto-asignado'){
-              $errorAsignacionContacto.html('Contacto asignado por llamado previo.\
- Califique el contacto o liberelo para poder recibir un nuevo contacto.');
+              $errorAsignacionContacto.html(gettext('Contacto asignado por llamado previo.\
+ Califique el contacto o liberelo para poder recibir un nuevo contacto.'));
               $('#liberar_contacto').show()
               $('#calificar_contacto').show()
               var url_parameters = [idCampana, data['contacto_id'], data['agente_id']];
@@ -154,14 +154,14 @@ Por favor intente solicitar uno nuevo";
       // antes de llamar
       if (data['status'] == 'OK') {
         $errorAsignacionContacto.html('');
-        $contactoOtrosDatos.html('Contacto Liberado');
+        $contactoOtrosDatos.html(gettext('Contacto Liberado'));
         $('#validar_contacto').hide()
         $('#liberar_contacto').hide()
         $('#calificar_contacto').hide()
       }
       else {
         // se muestra modal con mensaje de error
-        var errorMessage = "No se pudo liberar al contacto. Intente pedir otro.";
+        var errorMessage = gettext("No se pudo liberar al contacto. Intente pedir otro.");
         $errorAsignacionContacto.html(errorMessage);
       }
     });

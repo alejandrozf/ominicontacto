@@ -26,6 +26,7 @@ from __future__ import unicode_literals
 import json
 import logging as logging_
 
+from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.core.urlresolvers import reverse
@@ -154,7 +155,9 @@ class CalificacionClienteFormView(FormView):
         calificacion_form = self.get_form()
 
         return self.render_to_response(self.get_context_data(
-            contacto_form=contacto_form, calificacion_form=calificacion_form))
+            contacto_form=contacto_form,
+            calificacion_form=calificacion_form,
+            campana=self.campana))
 
     def post(self, request, *args, **kwargs):
         """
@@ -167,7 +170,16 @@ class CalificacionClienteFormView(FormView):
         else:
             return self.form_invalid(contacto_form, calificacion_form)
 
+    def _check_metadata_no_accion_delete(self, calificacion):
+        """ En caso que sea una calificacion de no gestion elimina metadatacliente"""
+        if calificacion.opcion_calificacion.tipo is OpcionCalificacion.NO_ACCION \
+                and calificacion.get_venta():
+            calificacion.get_venta().delete()
+
     def form_valid(self, contacto_form, calificacion_form):
+        nuevo_contacto = False
+        if self.contacto is None:
+            nuevo_contacto = True
         self.contacto = contacto_form.save(commit=False)
         # TODO: Pasar esta logica al formulario?
         base_datos = self.campana.bd_contacto
@@ -180,6 +192,8 @@ class CalificacionClienteFormView(FormView):
             datos.append(campo)
         self.contacto.datos = json.dumps(datos)
         self.contacto.bd_contacto = base_datos
+        if nuevo_contacto:
+            self.contacto.es_originario = False
         self.contacto.save()
 
         self.object_calificacion = calificacion_form.save(commit=False)
@@ -201,11 +215,14 @@ class CalificacionClienteFormView(FormView):
         if self.campana.type == Campana.TYPE_PREVIEW and self.object is None:
             self.campana.gestionar_finalizacion_relacion_agente_contacto(self.contacto.id)
 
+        # check metadata en calificaciones de no accion y eliminar
+        self._check_metadata_no_accion_delete(self.object_calificacion)
+
         if self.object_calificacion.es_venta:
             return redirect(self.get_success_url_venta())
         else:
-            message = 'Operación Exitosa!\
-                        Se llevó a cabo con éxito la calificacion del cliente'
+            message = _('Operación Exitosa! '
+                        'Se llevó a cabo con éxito la calificación del cliente')
             messages.success(self.request, message)
         if self.object_calificacion.es_agenda():
             return redirect(self.get_success_url_agenda())
@@ -219,7 +236,8 @@ class CalificacionClienteFormView(FormView):
         Re-renders the context data with the data-filled forms and errors.
         """
         return self.render_to_response(self.get_context_data(contacto_form=contacto_form,
-                                                             calificacion_form=calificacion_form))
+                                                             calificacion_form=calificacion_form,
+                                                             campana=self.campana))
 
     def get_success_url_venta(self):
         return reverse('formulario_venta',
@@ -241,8 +259,7 @@ class CalificacionClienteFormView(FormView):
         return reverse('recalificacion_formulario_update_or_create',
                        kwargs={"pk_campana": self.campana.id,
                                "pk_contacto": self.contacto.id,
-                               "id_agente": self.agente.id,
-                               "wombat_id": 0})
+                               "id_agente": self.agente.id})
 
 
 @csrf_exempt
@@ -394,9 +411,9 @@ class FormularioCreateFormView(CreateView):
         metadata = json.dumps(cleaned_data_venta)
         self.object_venta[0].metadata = metadata
         self.object_venta[0].save()
-        message = 'Operación Exitosa!' \
-                  'Se llevó a cabo con éxito el llenado del formulario del' \
-                  ' cliente'
+        message = _('Operación Exitosa!'
+                    'Se llevó a cabo con éxito el llenado del formulario del'
+                    ' cliente')
         messages.success(self.request, message)
         return HttpResponseRedirect(reverse('formulario_detalle',
                                             kwargs={"pk": self.object_venta[0].pk}))
@@ -561,9 +578,9 @@ class FormularioUpdateFormView(UpdateView):
         metadata = json.dumps(cleaned_data_venta)
         metadata_cliente.metadata = metadata
         metadata_cliente.save()
-        message = 'Operación Exitosa!' \
-                  'Se llevó a cabo con éxito el llenado del formulario del' \
-                  ' cliente'
+        message = _('Operación Exitosa!'
+                    'Se llevó a cabo con éxito el llenado del formulario del'
+                    ' cliente')
         messages.success(self.request, message)
         return HttpResponseRedirect(reverse('formulario_detalle',
                                             kwargs={"pk": metadata_cliente.pk}))

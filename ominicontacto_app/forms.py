@@ -28,7 +28,7 @@ from django.contrib.auth.forms import (
     UserCreationForm
 )
 from django.contrib.auth.password_validation import validate_password
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Field, Layout, MultiField
@@ -43,6 +43,7 @@ from ominicontacto_app.models import (
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
                                       validar_solo_ascii_y_sin_espacios)
+from configuracion_telefonia_app.models import DestinoEntrante
 
 from utiles_globales import validar_extension_archivo_audio
 
@@ -71,8 +72,8 @@ class CustomUserCreationForm(UserCreationForm):
             'username', 'first_name', 'last_name', 'email', 'is_agente',
             'is_supervisor', 'password1', 'password2')
         labels = {
-            'is_agente': 'Es un agente',
-            'is_supervisor': 'Es un supervisor',
+            'is_agente': _('Es un agente'),
+            'is_supervisor': _('Es un supervisor'),
         }
         error_messages = {
             'username': {'unique':
@@ -151,26 +152,6 @@ class AgenteProfileForm(forms.ModelForm):
     the user, but replaces the password field with admin's
     password hash display field.
     """
-    # def __init__(self, *args, **kwargs):
-    #     super(AgenteProfileForm, self).__init__(*args, **kwargs)
-    #
-    #     self.fields['user'].widget.attrs['disabled'] = True
-    #
-    # def clean_user(self):
-    #     if self.instance.is_disabled:
-    #         return self.instance.user
-    #     else:
-    #         return self.cleaned_data.get('user')
-
-    # def clean_sip_extension(self):
-    #     sip_extension = self.cleaned_data['sip_extension']
-    #     if settings.OL_SIP_LIMITE_INFERIOR > sip_extension or\
-    #             sip_extension > settings.OL_SIP_LIMITE_SUPERIOR:
-    #         raise forms.ValidationError("El sip_extension es incorrecto debe "
-    #                                     "ingresar un numero entre {0} y {1}".
-    #                                     format(settings.OL_SIP_LIMITE_INFERIOR,
-    #                                            settings.OL_SIP_LIMITE_SUPERIOR))
-    #     return sip_extension
 
     class Meta:
         model = AgenteProfile
@@ -188,6 +169,9 @@ class QueueEntranteForm(forms.ModelForm):
     """
     El form de cola para las colas
     """
+    tipo_destino = forms.ChoiceField(
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'tipo_destino'}), required=False
+    )
 
     def __init__(self, audios_choices, *args, **kwargs):
         super(QueueEntranteForm, self).__init__(*args, **kwargs)
@@ -196,15 +180,35 @@ class QueueEntranteForm(forms.ModelForm):
         self.fields['announce_frequency'].required = False
         self.fields['audios'].queryset = ArchivoDeAudio.objects.all()
         self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
+        tipo_destino_choices = [EMPTY_CHOICE]
+        tipo_destino_choices.extend(DestinoEntrante.TIPOS_DESTINOS)
+        self.fields['tipo_destino'].choices = tipo_destino_choices
+        instance = getattr(self, 'instance', None)
+        if instance.pk is not None and instance.destino:
+            tipo = instance.destino.tipo
+            self.initial['tipo_destino'] = tipo
+            destinos_qs = DestinoEntrante.get_destinos_por_tipo(tipo)
+            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__unicode__())
+                                                         for dest_entr in destinos_qs]
+            self.fields['destino'].choices = destino_entrante_choices
+        else:
+            self.fields['destino'].choices = ()
+        if not instance.pk:
+            self.initial['wrapuptime'] = 2
 
     class Meta:
         model = Queue
-        fields = ('name', 'timeout', 'retry', 'maxlen', 'servicelevel',
+        fields = ('name', 'timeout', 'retry', 'maxlen', 'wrapuptime', 'servicelevel',
                   'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
-                  'audios', 'announce_frequency', 'audio_de_ingreso', 'campana')
+                  'audios', 'announce_frequency', 'audio_de_ingreso', 'campana',
+                  'tipo_destino', 'destino')
 
         help_texts = {
-            'timeout': """En segundos """,
+            'timeout': _('En segundos'),
+            'retry': _('En segundos'),
+            'announce_frequency': _('En segundos'),
+            'wait': _('En segundos'),
+            'wrapuptime': _('En segundos'),
         }
         widgets = {
             'name': forms.HiddenInput(),
@@ -212,6 +216,7 @@ class QueueEntranteForm(forms.ModelForm):
             'timeout': forms.TextInput(attrs={'class': 'form-control'}),
             'retry': forms.TextInput(attrs={'class': 'form-control'}),
             'maxlen': forms.TextInput(attrs={'class': 'form-control'}),
+            "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
             'servicelevel': forms.TextInput(attrs={'class': 'form-control'}),
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             'weight': forms.TextInput(attrs={'class': 'form-control'}),
@@ -219,6 +224,8 @@ class QueueEntranteForm(forms.ModelForm):
             'audios': forms.Select(attrs={'class': 'form-control'}),
             'announce_frequency': forms.TextInput(attrs={'class': 'form-control'}),
             'audio_de_ingreso': forms.Select(attrs={'class': 'form-control'}),
+            'tipo_destino': forms.Select(attrs={'class': 'form-control'}),
+            'destino': forms.Select(attrs={'class': 'form-control', 'id': 'destino'}),
         }
 
     def clean_maxlen(self):
@@ -235,6 +242,14 @@ class QueueEntranteForm(forms.ModelForm):
             raise forms.ValidationError(
                 _('Debe definir una frecuencia para el Anuncio Periódico'))
         return frequency
+
+    def clean_destino(self):
+        tipo_destino = self.cleaned_data.get('tipo_destino', None)
+        destino = self.cleaned_data.get('destino', None)
+        if tipo_destino and not destino:
+            raise forms.ValidationError(
+                _('Debe seleccionar un destino'))
+        return destino
 
 
 class QueueMemberForm(forms.ModelForm):
@@ -343,25 +358,27 @@ class GrabacionBusquedaForm(forms.Form):
     El form para la busqueda de grabaciones
     """
     fecha = forms.CharField(required=False,
-                            widget=forms.TextInput(attrs={'class': 'form-control'}))
+                            widget=forms.TextInput(attrs={'class': 'form-control'}),
+                            label=_('Fecha'))
     tipo_llamada_choice = list(Grabacion.TYPE_LLAMADA_CHOICES)
     tipo_llamada_choice.insert(0, EMPTY_CHOICE)
     tipo_llamada = forms.ChoiceField(required=False,
-                                     choices=tipo_llamada_choice)
+                                     choices=tipo_llamada_choice, label=_('Tipo de llamada'))
     tel_cliente = forms.CharField(required=False)
     agente = forms.ModelChoiceField(queryset=AgenteProfile.objects.filter(is_inactive=False),
-                                    required=False, label='Agente')
-    campana = forms.ChoiceField(required=False, choices=())
-    pagina = forms.CharField(required=False, widget=forms.HiddenInput())
-    marcadas = forms.BooleanField(required=False)
+                                    required=False, label=_('Agente'))
+    campana = forms.ChoiceField(required=False, choices=(), label=_('Campaña'))
+    pagina = forms.CharField(required=False, widget=forms.HiddenInput(), label=_('Página'))
+    marcadas = forms.BooleanField(required=False, label=_('Marcadas'))
     duracion = forms.IntegerField(required=False, min_value=0, initial=0,
-                                  label=_(u'Duración mínima'),
+                                  label=_('Duración mínima'),
                                   widget=forms.NumberInput(attrs={'class': 'form-control'}))
 
     def __init__(self, campana_choice, *args, **kwargs):
         super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
         campana_choice.insert(0, EMPTY_CHOICE)
         self.fields['campana'].choices = campana_choice
+        self.fields['duracion'].help_text = _('En segundos')
 
 
 class CampanaMixinForm(object):
@@ -431,7 +448,7 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'bd_contacto', 'formulario',
-                  'sitio_externo', 'tipo_interaccion', 'objetivo')
+                  'sitio_externo', 'tipo_interaccion', 'objetivo', 'mostrar_nombre')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -583,7 +600,7 @@ class CalificacionClienteForm(forms.ModelForm):
     """
 
     opcion_calificacion = OpcionCalificacionModelChoiceField(
-        OpcionCalificacion.objects.all(), empty_label='---------')
+        OpcionCalificacion.objects.all(), empty_label='---------', label=_('Calificación'))
 
     def __init__(self, campana, *args, **kwargs):
         super(CalificacionClienteForm, self).__init__(*args, **kwargs)
@@ -595,6 +612,9 @@ class CalificacionClienteForm(forms.ModelForm):
         fields = ('opcion_calificacion', 'observaciones')
         widgets = {
             'opcion_calificacion': forms.Select(attrs={'class': 'form-control'}),
+        }
+        labels = {
+            'observaciones': _('Observaciones'),
         }
 
 
@@ -914,7 +934,7 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin',
                   'bd_contacto', 'formulario', 'sitio_externo',
-                  'tipo_interaccion', 'objetivo')
+                  'tipo_interaccion', 'objetivo', 'mostrar_nombre')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -1048,13 +1068,16 @@ class QueueDialerForm(forms.ModelForm):
     """
     El form de cola para las llamadas
     """
+    tipo_destino = forms.ChoiceField(
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'tipo_destino'}), required=False
+    )
 
     class Meta:
         model = Queue
         fields = ('name', 'maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight',
                   'wait', 'auto_grabacion', 'campana', 'detectar_contestadores',
                   'audio_para_contestadores', 'initial_predictive_model', 'initial_boost_factor',
-                  'dial_timeout')
+                  'dial_timeout', 'tipo_destino', 'destino')
 
         widgets = {
             'campana': forms.HiddenInput(),
@@ -1068,11 +1091,15 @@ class QueueDialerForm(forms.ModelForm):
             "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
             "initial_boost_factor": forms.NumberInput(attrs={'class': 'form-control'}),
             "dial_timeout": forms.NumberInput(attrs={'class': 'form-control'}),
+            'tipo_destino': forms.Select(attrs={'class': 'form-control'}),
+            'destino': forms.Select(attrs={'class': 'form-control', 'id': 'destino'}),
         }
 
         help_texts = {
             'dial_timeout': _(""" Es recomendable que este valor sea menor al dial timeout
-            definido en la ruta saliente"""),
+            definido en la ruta saliente. En segundos"""),
+            'wrapuptime': _('En segundos'),
+            'wait': _('En segundos'),
         }
 
     def clean(self):
@@ -1093,9 +1120,33 @@ class QueueDialerForm(forms.ModelForm):
 
         return self.cleaned_data
 
+    def clean_destino(self):
+        tipo_destino = self.cleaned_data.get('tipo_destino', None)
+        destino = self.cleaned_data.get('destino', None)
+        if tipo_destino and not destino:
+            raise forms.ValidationError(
+                _('Debe seleccionar un destino'))
+        return destino
+
     def __init__(self, *args, **kwargs):
         super(QueueDialerForm, self).__init__(*args, **kwargs)
         self.fields['audio_para_contestadores'].queryset = ArchivoDeAudio.objects.all()
+        tipo_destino_choices = [EMPTY_CHOICE]
+        tipo_destino_choices.extend(DestinoEntrante.TIPOS_DESTINOS)
+        self.fields['tipo_destino'].choices = tipo_destino_choices
+        instance = getattr(self, 'instance', None)
+        if instance.pk is not None and instance.destino:
+            tipo = instance.destino.tipo
+            self.initial['tipo_destino'] = tipo
+            destinos_qs = DestinoEntrante.get_destinos_por_tipo(tipo)
+            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__unicode__())
+                                                         for dest_entr in destinos_qs]
+            self.fields['destino'].choices = destino_entrante_choices
+        else:
+            self.fields['destino'].choices = ()
+
+        if not instance.pk:
+            self.initial['wrapuptime'] = 2
 
 
 class UserApiCrmForm(forms.ModelForm):
@@ -1116,13 +1167,13 @@ class UserApiCrmForm(forms.ModelForm):
         return usuario
 
 
-ROL_CHOICES = ((SupervisorProfile.ROL_GERENTE, _(u'Supervisor Gerente')),
-               (SupervisorProfile.ROL_ADMINISTRADOR, _(u'Administrador')),
-               (SupervisorProfile.ROL_CLIENTE, _(u'Cliente')))
+ROL_CHOICES = ((SupervisorProfile.ROL_GERENTE, _('Supervisor Gerente')),
+               (SupervisorProfile.ROL_ADMINISTRADOR, _('Administrador')),
+               (SupervisorProfile.ROL_CLIENTE, _('Cliente')))
 
 
 class SupervisorProfileForm(forms.ModelForm):
-    rol = forms.ChoiceField(choices=ROL_CHOICES, label=_(u'Rol del usuario'),
+    rol = forms.ChoiceField(choices=ROL_CHOICES, label=_('Rol del usuario'),
                             initial=SupervisorProfile.ROL_GERENTE,
                             widget=forms.Select(attrs={'class': 'form-control'}))
 
@@ -1236,9 +1287,9 @@ class ArchivoDeAudioForm(forms.ModelForm):
             "audio_original": forms.FileInput(attrs={'class': 'form-control'}),
         }
         help_texts = {
-            'audio_original': """Seleccione el archivo de audio que desea para
-            la Campaña. Si ya existe uno y guarda otro, el audio será
-            reemplazado.""",
+            'audio_original': _("Seleccione el archivo de audio que desea para "
+                                "la Campaña. Si ya existe uno y guarda otro, el audio será "
+                                "reemplazado."),
         }
 
     def __init__(self, *args, **kwargs):
@@ -1273,6 +1324,9 @@ class GrupoForm(forms.ModelForm):
                   'auto_attend_dialer')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+        help_texts = {
+            'auto_unpause': _('En segundos'),
         }
 
     def __init__(self, *args, **kwargs):

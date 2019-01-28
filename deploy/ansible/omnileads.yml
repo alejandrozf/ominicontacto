@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-# Playbook de instalacion de Omnileads sin Docker osea si DOCKER=false en el archivo hosts
+# Playbook de instalacion de Omnileads
 # Utilza como variables de entorno el archivo group_vars/all y el archivo de inventario hosts
 # Utiliza como archivo de configuracion /var/tmp/ansible/ansible.cfg
 # Cositas a tener en cuenta:
@@ -25,49 +25,53 @@
 ---
 # hosts: le decimos que seccion del hosts se va  usar: [omnileads]
 - name: Instalacion de Omnileads
-  hosts: omnileads
+  hosts: omnileads-aio
 # variables que vienen exportadas desde el deploy.sh
   vars:
           build_dir: "{{ BUILD_DIR }}"
-          rama: "{{ RAMA }}"
-
 # se piden las variables de superuser y el formato de conversion
 # https://docs.ansible.com/ansible/2.6/user_guide/playbooks_prompts.html
-  vars_prompt:
-      - name: "admin_pass"
-        prompt: "Ingrese contraseña del admin de Omnileads (contraseña con números, letras y caracteres especiales) default: OML3.1415 "
-        private: yes
-        default: OML3.1415
-
-      - name: "admin_pass2"
-        prompt: "Ingrese nuevamente contrasena del admin de Omnileads: "
-        private: yes
-        default: OML3.1415
-
-      - name: "postgres_password"
-        prompt: "Ingrese contrasena de la base de datos postgresql: "
-        private: yes
-
-      - name: "formato_conversion"
-        prompt: "Ingrese el formato de conversión de grabaciones (wav o mp3, default mp3): "
-        default: mp3
-        private: no
-
 # los pre_tasks son para validaciones de los inputs de los usuarios
   pre_tasks:
-      - assert:
-          that:
-            - "'{{ admin_pass }}' | length > 8"
-            - "'{{ postgres_password }}' | length > 8"
-          msg: "La contraseña ingresada es demasiado corta o La contraseña no puede ir vacia"
-      - assert:
-          that: "'{{ admin_pass }}' == '{{ admin_pass2 }}'"
-          msg: "Las contraseñas no son iguales"
-        tags: postinstall
-      - assert:
-          that: "'{{ formato_conversion }}' == 'wav' or '{{ formato_conversion }}' == 'mp3' "
-          msg: "Formato inválido"
-        tags: postinstall
+
+    ## Contraseña de postgresql
+
+    # Checkeo si la base kamailio existe
+      - name: Check if kamailio database exists
+        shell: psql -U {{ postgres_user }} -h {{ database_fqdn }} -c '\l' |grep kamailio |awk -F '|' '{print $1}'
+        environment:
+          PGPASSWORD: "{{ postgres_password }}"
+        register: kamailiodb_exists
+        tags: ['never','postinstall']
+        become: true
+        become_method: sudo
+
+      # tasks para cambiar el nombre de la db
+      - name: Stop kamailio service
+        service: name=kamailio state=stopped
+        when: "'kamailio' in kamailiodb_exists.stdout and cluster == 0"
+        tags: ['never','postinstall']
+
+      - name: Stop omnileads service
+        service: name=omnileads state=stopped
+        when: "'kamailio' in kamailiodb_exists.stdout and cluster == 0"
+        tags: ['never','postinstall']
+
+      - name: Restart postgresql service
+        service: name=postgresql-9.6 state=restarted
+        when: "'kamailio' in kamailiodb_exists.stdout and cluster == 0"
+        tags: ['never','postinstall']
+
+      # Se cambia el nombre de la base de datos
+      - name: Change the database name
+        shell: psql -U postgres -h {{ database_ip }} -c 'ALTER DATABASE kamailio RENAME TO omnileads;'
+        become: true
+        environment:
+          PGPASSWORD: "{{ postgres_password }}"
+        become_user: postgres
+        become_method: sudo
+        when: "'kamailio' in kamailiodb_exists.stdout and cluster == 0"
+        tags: ['never','postinstall']
 
 # el gather_facts es para obtener valores de variables predeterminadas de ansible, la mas usada es ansible_os_family.
 # Esta variable te dice que familia de OS es el servidor a deployar (Debian o RedHat)
@@ -77,9 +81,10 @@
 # Aca comienza la ejecucion de tasks. Las tasks se agrupan en roles, los roles se agrupan dependiendo del componente del sistema
 # https://docs.ansible.com/ansible/2.5/user_guide/playbooks_reuse_roles.html
   roles:
-          - {role: prerequisitos, tags: ['yum']}
-          - {role: oml_server, tags: ['virtualenv']}
-          - asterisk
-          - kamailio
-          - omniapp_second
-          - deploy_supervision
+          - prerequisitos
+          - { role: database, tags: database }
+          - {role: oml_server, tags: omniapp }
+          - { role: asterisk, tags: asterisk }
+          - {role: kamailio, tags: kamailio }
+          - {role: omniapp_second, tags: omiapp }
+          - { role: dialer, tags: dialer }
