@@ -113,7 +113,6 @@ Rama() {
        Branch: $branch_name
        Commit: $commit
        Autor: $author"
-    git checkout $current_directory/inventory
     cat > $TMP/ominicontacto/ominicontacto_app/version.py <<EOF
 
 # -*- coding: utf-8 -*-
@@ -198,16 +197,14 @@ Tag() {
       echo "###############################################################"
       echo ""
       inventory_copy_location="`cd $current_directory/../../.. && pwd`"
-      #if [ $CLUSTER -eq 1 ]; then
-      #  servidor="`sed -n -e 2p $inventory_copy_location/my_inventory |awk -F \" \" '{print $1}'`"
-      #elif [ $CLUSTER -eq 0 ]; then
-      #  servidor="`cat $inventory_copy_location/my_inventory |grep \"omnileads-aio\" -A1 |sed -n -e 2p |awk -F \" \" '{print $1}'`"
-      #fi
-      #echo " You can access the web interface https://$servidor"
+      echo "Creating a copy of inventory file in $inventory_copy_location"
+      my_inventory=$current_directory/../../../my_inventory
+      cp $current_directory/inventory $my_inventory
       echo "Servers installed:"
       cat /var/tmp/servers_installed
       echo " Remember that you have a copy of your inventory file in $inventory_copy_location/my_inventory, this is the file you have to modify"
       echo ""
+      git checkout $current_directory/inventory
     else
       echo ""
       echo "###################################################################################"

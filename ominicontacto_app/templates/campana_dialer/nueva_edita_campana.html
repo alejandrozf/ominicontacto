@@ -25,8 +25,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     {% get_current_language as LANGUAGE_CODE %}
     <script>
      $(document).ready(function() {
+       var fechaInicio = $('#id_fecha_inicio').val();
+       var fechaFinal = $('#id_fecha_fin').val();
        $('#id_fecha_inicio').datetimepicker({format: 'L', locale: '{{ LANGUAGE_CODE }}'});
        $('#id_fecha_fin').datetimepicker({format: 'L', locale: '{{ LANGUAGE_CODE }}'});
+       if (fechaInicio != "" && fechaFinal != "") {
+         /* si los entradas de fecha tenían valor se los restituimos */
+         $('#id_fecha_inicio').val(fechaInicio);
+         $('#id_fecha_fin').val(fechaFinal);
+       }
      });
     </script>
 {% endblock %}

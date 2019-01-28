@@ -34,7 +34,7 @@ class Campana_Model {
     }
 
     function getCampaignsForAdm() {
-      $sql = "select distinct nombre, ac.id from ominicontacto_app_campana ac
+      $sql = "select distinct nombre, ac.id, type from ominicontacto_app_campana ac
       where estado = 2";
       try {
         $cnn = new PDO($this->argPdo, PG_USER);
@@ -49,10 +49,10 @@ class Campana_Model {
     }
 
     function getCampaigns($userId) {
-      $sql = "select nombre, ac.id from ominicontacto_app_campana ac join ominicontacto_app_supervisorprofile sp on ac.reported_by_id = sp.user_id
+      $sql = "select nombre, ac.id, type from ominicontacto_app_campana ac join ominicontacto_app_supervisorprofile sp on ac.reported_by_id = sp.user_id
               where estado = 2 and sp.id = :id
               union
-              select nombre, ac.id from ominicontacto_app_campana ac join ominicontacto_app_campana_supervisors cs on ac.id = cs.campana_id
+              select nombre, ac.id, type from ominicontacto_app_campana ac join ominicontacto_app_campana_supervisors cs on ac.id = cs.campana_id
               join ominicontacto_app_supervisorprofile sp on sp.user_id = cs.user_id
               where ac.estado = 2 and sp.id = :id";
       try {

@@ -36,12 +36,16 @@ $(function () {
     setInterval("actualiza_contenido_objcamp()", 4000);
     setInterval("actualiza_contenido_camp()", 4000);
     setInterval("actualiza_contenido_colas()", 4000);
-    setInterval("actualiza_contenido_wombat()", 1000);
+    var camp_type = $("#campType").val();
+    if (camp_type == 2 ) { // TYPE_DIALER = 2
+      setInterval("actualiza_contenido_wombat()", 1000);
+    }
   }
 });
 
 function actualiza_contenido_agt() {
   var nomcamp = $("#nombreCamp").html();
+  if (!nomcamp) { return false; }
   $.ajax({
     url: 'Controller/Detalle_Campana_Contenido.php',
     type: 'GET',
@@ -64,6 +68,7 @@ function actualiza_contenido_agt() {
 
 function actualiza_contenido_objcamp() {
   var campid = $("#campId").val();
+  if (!campid) { return false; }
   $.ajax({
     url: 'Controller/Detalle_Campana_Contenido.php',
     type: 'GET',
@@ -90,8 +95,8 @@ function actualiza_contenido_objcamp() {
 }
 
 function actualiza_contenido_camp() {
-  var nomcamp = $("#nombreCamp").html();
   var campid = $("#campId").val();
+  if (!campid) { return false; }
   var tabla = document.getElementById('bodyTableCampSummary');
   $.ajax({
     url: 'https://' + OmlIp + ':' + OmlPort + '/api_supervision/llamadas_campana/' + campid + '/',
@@ -121,6 +126,7 @@ function actualiza_contenido_camp() {
       console.log("Error al ejecutar => " + textStatus + " - " + errorThrown);
     }
   });
+
   $.ajax({
     url: 'https://' + OmlIp + ':' + OmlPort + '/api_supervision/calificaciones_campana/'+ campid + '/',
     type: 'GET',
@@ -144,6 +150,7 @@ function actualiza_contenido_camp() {
 function actualiza_contenido_colas() {
   var nomcamp = $("#nombreCamp").html();
   var idcamp = $("#campId").val();
+  if (!nomcamp || !idcamp) { return false; }
   $.ajax({
     url: 'Controller/Detalle_Campana_Contenido.php',
     type: 'GET',
@@ -193,6 +200,7 @@ function actualiza_contenido_colas() {
 
 function actualiza_contenido_wombat() {
   var nomcamp = $("#nombreCamp").html();
+  if (!nomcamp) { return false; }
   $.ajax({
     url: 'Controller/Detalle_Campana_Contenido.php',
     type: 'GET',

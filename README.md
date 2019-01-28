@@ -35,7 +35,7 @@ License
 GPLv3. Every source code file contains the license preamble and copyright details.
 
 Actual version
-1.0.X.
+1.1.X.
 
 Documentation
 Official documentation for the proyect can be found at: https://omnileads.net/.
@@ -48,18 +48,18 @@ At the moment of the creation of this README, OMniLeads (OML) supports the follo
 
 An "step to step" tutorial is located on the section of “Docs & Recursos” at: https://omnileads.net/
 
-The actual installation procedure describe how to deploy an “All In One” (AIO) architecture, it means all the components of OMniLeads (OML) deployed inside one Host Server. There is also the option of run some components or services on differents hosts (for horizontal scalability), but this is not yet described in docs.
+The actual installation procedure describe how to deploy an “All In One” (AIO) architecture, it means all the components of OMniLeads (OML) deployed inside one Host Server. There is also the option of run some components or services on differents hosts (for horizontal scalability), go to the docs to see more information about this.
 
 The selected tool for install & update OMniLeads (OML) is: Ansible(https://www.ansible.com/). The installation has two differents posibilities:
-1- Ansible In One: this is, execute the installation running Ansible on the same host server where you want to install OML
+1- Ansible Self-Hosted mode: this is, execute the installation running Ansible on the same node server where you want to install OML
 
-2- Ansible In Two: this is, execute the installation running Ansible from another workstation (Deployer Host) and indicating as a parameter the IP (Internet Protocol) address of Server Host where you want to install OML.
+2- Ansible Host-Node mode: this is, execute the installation running Ansible from another workstation (Deployer Host) and writing in an inventory file the DNS (Domain Name Server) and IP (Interne Protocol) of Server  where you want to install OML.
 
 The installation script is found inside the software repository. More information can be shown using the help flag “-h”:
 ./deploy.sh -h
 
 For example, this command installs the last stable release
-/deploy.sh -r master -i -t all
+/deploy.sh --install --aio
 
 Please, READ CAREFULLY the Installation Tutorial available in the official page for OMniLeads Project (OML).
 

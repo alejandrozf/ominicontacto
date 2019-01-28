@@ -96,9 +96,9 @@ class BaseDatosContactoCreateView(CreateView):
             creacion_base_datos = CreacionBaseDatosService()
             creacion_base_datos.genera_base_dato_contacto(self.object)
         except OmlArchivoImportacionInvalidoError:
-            message = '<strong>Operación Errónea!</strong> \
-            El archivo especificado para realizar la importación de contactos \
-            no es válido.'
+            message = _('<strong>Operación Errónea!</strong> ') +\
+                _('El archivo especificado para realizar la importación de contactos '
+                  'no es válido.')
 
             messages.add_message(
                 self.request,
@@ -140,9 +140,9 @@ class BaseDatosContactoUpdateView(UpdateView):
             creacion_base_datos = CreacionBaseDatosService()
             creacion_base_datos.genera_base_dato_contacto(self.object)
         except OmlArchivoImportacionInvalidoError:
-            message = '<strong>Operación Errónea!</strong> \
-            El archivo especificado para realizar la importación de contactos \
-            no es válido.'
+            message = _('<strong>Operación Errónea!</strong> ') + \
+                _('El archivo especificado para realizar la importación de contactos '
+                  'no es válido.')
 
             messages.add_message(
                 self.request,
@@ -197,10 +197,10 @@ class DefineBaseDatosContactoView(UpdateView):
                 base_datos_contacto)
 
         except OmlParserCsvDelimiterError:
-            message = '<strong>Operación Errónea!</strong> \
-            No se pudo determinar el delimitador a ser utilizado \
-            en el archivo csv. No se pudo llevar a cabo el procesamiento \
-            de sus datos.'
+            message = _('<strong>Operación Errónea!</strong> '
+                        'No se pudo determinar el delimitador a ser utilizado '
+                        'en el archivo csv. No se pudo llevar a cabo el procesamiento '
+                        'de sus datos.')
 
             messages.add_message(
                 self.request,
@@ -208,9 +208,9 @@ class DefineBaseDatosContactoView(UpdateView):
                 message,
             )
         except OmlParserMinRowError:
-            message = '<strong>Operación Errónea!</strong> \
-            El archivo que seleccionó posee menos de 3 filas.\
-            No se pudo llevar a cabo el procesamiento de sus datos.'
+            message = _('<strong>Operación Errónea!</strong> '
+                        'El archivo que seleccionó posee menos de 3 filas. '
+                        'No se pudo llevar a cabo el procesamiento de sus datos.')
 
             messages.add_message(
                 self.request,
@@ -218,9 +218,8 @@ class DefineBaseDatosContactoView(UpdateView):
                 message,
             )
         except OmlParserOpenFileError:
-            message = '<strong>Operación Errónea!</strong> \
-            El archivo que seleccionó no pudo ser abierto para su \
-            para su procesamiento.'
+            message = _('<strong>Operación Errónea!</strong> '
+                        'El archivo que seleccionó no pudo ser abierto para su procesamiento.')
 
             messages.add_message(
                 self.request,
@@ -399,9 +398,9 @@ class DefineBaseDatosContactoView(UpdateView):
                 form_primer_linea_encabezado=form_primer_linea_encabezado))
 
         except OmlParserMaxRowError:
-            message = '<strong>Operación Errónea!</strong> \
-                      El archivo que seleccionó posee mas registros de los\
-                      permitidos para ser importados.'
+            message = _('<strong>Operación Errónea!</strong> '
+                        'El archivo que seleccionó posee más registros de los '
+                        'permitidos para ser importados.')
 
             messages.add_message(
                 self.request,
@@ -412,9 +411,9 @@ class DefineBaseDatosContactoView(UpdateView):
         else:
             creacion_base_datos.define_base_dato_contacto(self.object)
 
-            message = '<strong>Operación Exitosa!</strong>\
-                      Se llevó a cabo con éxito la creación de\
-                      la Base de Datos de Contactos.'
+            message = _('<strong>Operación Exitosa!</strong> '
+                        'Se llevó a cabo con éxito la creación de '
+                        'la Base de Datos de Contactos.')
 
             messages.add_message(
                 self.request,
@@ -465,10 +464,10 @@ class DepuraBaseDatosContactoView(DeleteView):
         success_url = self.get_success_url()
 
         if self.object.verifica_en_uso():
-            message = _("""<strong>¡Cuidado!</strong>
-            La Base Datos Contacto que intenta depurar esta siendo utilizada
-            por alguna campaña. No se llevará a cabo la depuración la misma
-            mientras esté siendo utilizada.""")
+            message = _('<strong>¡Cuidado!</strong> '
+                        'La Base Datos Contacto que intenta depurar esta siendo utilizada '
+                        'por alguna campaña. No se llevará a cabo la depuración la misma '
+                        'mientras esté siendo utilizada.')
             messages.add_message(
                 self.request,
                 messages.WARNING,
@@ -479,8 +478,8 @@ class DepuraBaseDatosContactoView(DeleteView):
         try:
             self.object.procesa_depuracion()
         except OmlDepuraBaseDatoContactoError:
-            message = """<strong>¡Operación Errónea!</strong>
-            La Base Datos Contacto no se pudo depurar."""
+            message = _('<strong>¡Operación Errónea!</strong> '
+                        'La Base Datos Contacto no se pudo depurar.')
             messages.add_message(
                 self.request,
                 messages.ERROR,
@@ -488,8 +487,8 @@ class DepuraBaseDatosContactoView(DeleteView):
             )
             return HttpResponseRedirect(success_url)
         else:
-            message = '<strong>Operación Exitosa!</strong>\
-            Se llevó a cabo con éxito la depuración de la Base de Datos.'
+            message = _('<strong>Operación Exitosa!</strong> '
+                        'Se llevó a cabo con éxito la depuración de la Base de Datos.')
 
             messages.add_message(
                 self.request,
@@ -542,10 +541,10 @@ class ActualizaBaseDatosContactoView(UpdateView):
                 base_datos_contacto)
 
         except OmlParserCsvDelimiterError:
-            message = '<strong>Operación Errónea!</strong> \
-            No se pudo determinar el delimitador a ser utilizado \
-            en el archivo csv. No se pudo llevar a cabo el procesamiento \
-            de sus datos.'
+            message = _('<strong>Operación Errónea!</strong> '
+                        'No se pudo determinar el delimitador a ser utilizado '
+                        'en el archivo csv. No se pudo llevar a cabo el procesamiento '
+                        'de sus datos.')
 
             messages.add_message(
                 self.request,
@@ -553,9 +552,9 @@ class ActualizaBaseDatosContactoView(UpdateView):
                 message,
             )
         except OmlParserMinRowError:
-            message = '<strong>Operación Errónea!</strong> \
-            El archivo que seleccionó posee menos de 3 filas.\
-            No se pudo llevar a cabo el procesamiento de sus datos.'
+            message = _('<strong>Operación Errónea!</strong> '
+                        'El archivo que seleccionó posee menos de 3 filas. '
+                        'No se pudo llevar a cabo el procesamiento de sus datos.')
 
             messages.add_message(
                 self.request,
@@ -563,9 +562,8 @@ class ActualizaBaseDatosContactoView(UpdateView):
                 message,
             )
         except OmlParserOpenFileError:
-            message = '<strong>Operación Errónea!</strong> \
-            El archivo que seleccionó no pudo ser abierto para su \
-            para su procesamiento.'
+            message = _('<strong>Operación Errónea!</strong> '
+                        'El archivo que seleccionó no pudo ser abierto para su procesamiento.')
 
             messages.add_message(
                 self.request,
@@ -704,9 +702,9 @@ class ActualizaBaseDatosContactoView(UpdateView):
                 form_primer_linea_encabezado=form_primer_linea_encabezado))
 
         except OmlParserMaxRowError:
-            message = '<strong>Operación Errónea!</strong> \
-                      El archivo que seleccionó posee mas registros de los\
-                      permitidos para ser importados.'
+            message = _('<strong>Operación Errónea!</strong> '
+                        'El archivo que seleccionó posee más registros de los '
+                        'permitidos para ser importados.')
 
             messages.add_message(
                 self.request,
@@ -717,9 +715,9 @@ class ActualizaBaseDatosContactoView(UpdateView):
         else:
             creacion_base_datos.define_base_dato_contacto(self.object)
 
-            message = '<strong>Operación Exitosa!</strong>\
-                      Se llevó a cabo con éxito la creación de\
-                      la Base de Datos de Contactos.'
+            message = _('<strong>Operación Exitosa!</strong> '
+                        'Se llevó a cabo con éxito la creación de '
+                        'la Base de Datos de Contactos.')
 
             messages.add_message(
                 self.request,

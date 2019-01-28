@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-17 11:25-0300\n"
+"POT-Creation-Date: 2019-01-24 15:26-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -376,7 +376,7 @@ msgstr ""
 
 #: ominicontacto_app/forms.py:1290
 msgid ""
-"Seleccione el archivo de audio que desea parala Campaña. Si ya existe uno y "
+"Seleccione el archivo de audio que desea para la Campaña. Si ya existe uno y "
 "guarda otro, el audio será reemplazado."
 msgstr ""
 
@@ -389,18 +389,18 @@ msgstr ""
 msgid "Actualizando {0} asignaciones de contactos a agentes en campaña {1}"
 msgstr ""
 
-#: ominicontacto_app/management/commands/service_secretkey.py:58
+#: ominicontacto_app/management/commands/service_secretkey.py:59
 msgid "Opción inválida"
 msgstr ""
 
-#: ominicontacto_app/management/commands/service_secretkey.py:62
+#: ominicontacto_app/management/commands/service_secretkey.py:63
 #, python-brace-format
 msgid "Falló el proceso de agregado de secret_key por {0}"
 msgstr ""
 
 #: ominicontacto_app/models.py:133
 #, python-brace-format
-msgid "Excepcion detectada al obtener session con el key {0} no existe "
+msgid "Excepción detectada al obtener session con el key {0} no existe"
 msgstr ""
 
 #: ominicontacto_app/models.py:142
@@ -534,6 +534,22 @@ msgstr ""
 
 #: ominicontacto_app/models.py:870
 msgid "Template Borrado"
+msgstr ""
+
+#: ominicontacto_app/models.py:874
+msgid "Manual"
+msgstr ""
+
+#: ominicontacto_app/models.py:876
+msgid "Dialer"
+msgstr ""
+
+#: ominicontacto_app/models.py:878
+msgid "Entrante"
+msgstr ""
+
+#: ominicontacto_app/models.py:880
+msgid "Preview"
 msgstr ""
 
 #: ominicontacto_app/models.py:895
@@ -973,107 +989,107 @@ msgstr ""
 
 #: ominicontacto_app/services/back_list.py:64
 #: ominicontacto_app/services/base_de_datos_contactos.py:71
-msgid "El archivo para realizar la importación de contactos no es válido"
+#: ominicontacto_app/services/base_de_datos_contactos.py:77
+#: ominicontacto_app/views_back_list.py:127
+#: ominicontacto_app/views_base_de_datos_contacto.py:100
+#: ominicontacto_app/views_base_de_datos_contacto.py:144
+msgid ""
+"El archivo especificado para realizar la importación de contactos no es "
+"válido."
 msgstr ""
 
-#: ominicontacto_app/services/back_list.py:68
-#: ominicontacto_app/services/base_de_datos_contactos.py:75
+#: ominicontacto_app/services/back_list.py:69
+#: ominicontacto_app/services/base_de_datos_contactos.py:76
 #, python-brace-format
 msgid "La extensión {0} no es CSV. "
 msgstr ""
 
-#: ominicontacto_app/services/back_list.py:143
+#: ominicontacto_app/services/back_list.py:144
 msgid "Archivo .csv con problemas de estructura"
 msgstr ""
 
-#: ominicontacto_app/services/back_list.py:156
-#: ominicontacto_app/services/base_de_datos_contactos.py:276
-#: ominicontacto_app/services/base_de_datos_contactos.py:437
+#: ominicontacto_app/services/back_list.py:157
+#: ominicontacto_app/services/base_de_datos_contactos.py:277
+#: ominicontacto_app/services/base_de_datos_contactos.py:438
 msgid "Se deben proveer al menos 2 lineas para poder inferir los metadatos"
 msgstr ""
 
-#: ominicontacto_app/services/back_list.py:165
-#: ominicontacto_app/services/base_de_datos_contactos.py:285
-#: ominicontacto_app/services/base_de_datos_contactos.py:446
-#: ominicontacto_app/services/base_de_datos_contactos.py:464
-#: ominicontacto_app/services/base_de_datos_contactos.py:671
+#: ominicontacto_app/services/back_list.py:166
+#: ominicontacto_app/services/base_de_datos_contactos.py:286
+#: ominicontacto_app/services/base_de_datos_contactos.py:447
+#: ominicontacto_app/services/base_de_datos_contactos.py:465
+#: ominicontacto_app/services/base_de_datos_contactos.py:672
 msgid "Las lineas recibidas poseen distintas cantidades de columnas"
 msgstr ""
 
-#: ominicontacto_app/services/back_list.py:175
-#: ominicontacto_app/services/base_de_datos_contactos.py:297
-#: ominicontacto_app/services/base_de_datos_contactos.py:458
-#: ominicontacto_app/services/base_de_datos_contactos.py:680
+#: ominicontacto_app/services/back_list.py:176
+#: ominicontacto_app/services/base_de_datos_contactos.py:298
+#: ominicontacto_app/services/base_de_datos_contactos.py:459
+#: ominicontacto_app/services/base_de_datos_contactos.py:681
 msgid "Las lineas no poseen ninguna columna"
 msgstr ""
 
-#: ominicontacto_app/services/back_list.py:179
-#: ominicontacto_app/services/base_de_datos_contactos.py:304
-#: ominicontacto_app/services/base_de_datos_contactos.py:687
-#: ominicontacto_app/views_base_de_datos_contacto.py:340
+#: ominicontacto_app/services/back_list.py:180
+#: ominicontacto_app/services/base_de_datos_contactos.py:305
+#: ominicontacto_app/services/base_de_datos_contactos.py:688
+#: ominicontacto_app/views_base_de_datos_contacto.py:339
 msgid "El nombre de la primera columna debe ser telefono"
 msgstr ""
 
-#: ominicontacto_app/services/base_de_datos_contactos.py:76
-msgid ""
-"El archivo especificado para realizar la importación de contactos no es "
-"válido"
-msgstr ""
-
-#: ominicontacto_app/services/base_de_datos_contactos.py:185
+#: ominicontacto_app/services/base_de_datos_contactos.py:186
 #, python-brace-format
 msgid "ya existe el contacto con el  de id de cliente: {0} la base de datos "
 msgstr ""
 
-#: ominicontacto_app/services/base_de_datos_contactos.py:275
-#: ominicontacto_app/services/base_de_datos_contactos.py:436
+#: ominicontacto_app/services/base_de_datos_contactos.py:276
+#: ominicontacto_app/services/base_de_datos_contactos.py:437
 #, python-brace-format
 msgid "Se deben proveer al menos 2 lineas: {0}"
 msgstr ""
 
-#: ominicontacto_app/services/base_de_datos_contactos.py:283
+#: ominicontacto_app/services/base_de_datos_contactos.py:284
 #, python-brace-format
 msgid "Distintas cantidades de columnas: {0}"
 msgstr ""
 
-#: ominicontacto_app/services/base_de_datos_contactos.py:295
+#: ominicontacto_app/services/base_de_datos_contactos.py:296
 #, python-brace-format
 msgid "Las lineas no poseen ninguna columna: {0}"
 msgstr ""
 
-#: ominicontacto_app/services/base_de_datos_contactos.py:314
+#: ominicontacto_app/services/base_de_datos_contactos.py:315
 #, python-brace-format
 msgid "columnas_con_telefonos: {0}"
 msgstr ""
 
-#: ominicontacto_app/services/base_de_datos_contactos.py:328
+#: ominicontacto_app/services/base_de_datos_contactos.py:329
 msgid "No se encontro columna con telefono"
 msgstr ""
 
-#: ominicontacto_app/services/base_de_datos_contactos.py:332
+#: ominicontacto_app/services/base_de_datos_contactos.py:333
 #, python-brace-format
 msgid "Se detecto: columnas_con_telefonos: {0}"
 msgstr ""
 
-#: ominicontacto_app/services/base_de_datos_contactos.py:336
-#: ominicontacto_app/services/base_de_datos_contactos.py:505
+#: ominicontacto_app/services/base_de_datos_contactos.py:337
+#: ominicontacto_app/services/base_de_datos_contactos.py:506
 msgid ""
 "La columna con telefono tambien esta entre las columnas detectadas como fecha"
 msgstr ""
 
-#: ominicontacto_app/services/base_de_datos_contactos.py:340
-#: ominicontacto_app/services/base_de_datos_contactos.py:509
+#: ominicontacto_app/services/base_de_datos_contactos.py:341
+#: ominicontacto_app/services/base_de_datos_contactos.py:510
 msgid ""
 "La columna con telefono tambien esta entre las columnas detectadas como hora"
 msgstr ""
 
-#: ominicontacto_app/services/base_de_datos_contactos.py:360
-#: ominicontacto_app/services/base_de_datos_contactos.py:529
-#: ominicontacto_app/services/base_de_datos_contactos.py:743
+#: ominicontacto_app/services/base_de_datos_contactos.py:361
+#: ominicontacto_app/services/base_de_datos_contactos.py:530
+#: ominicontacto_app/services/base_de_datos_contactos.py:744
 msgid "No se pudo inferir ningun tipo de dato"
 msgstr ""
 
-#: ominicontacto_app/services/base_de_datos_contactos.py:473
+#: ominicontacto_app/services/base_de_datos_contactos.py:474
 #, python-brace-format
 msgid "El nombre de la  columna {0} no coincide con el guardado en la base "
 msgstr ""
@@ -1184,7 +1200,7 @@ msgstr ""
 
 #: ominicontacto_app/services/estadisticas_campana.py:269
 #: ominicontacto_app/services/estadisticas_campana.py:277
-#: ominicontacto_app/services/estadisticas_campana.py:311
+#: ominicontacto_app/services/estadisticas_campana.py:309
 #: ominicontacto_app/services/estadisticas_campana.py:336
 #: ominicontacto_app/templates/campana/tiempos_llamadas.html:135
 msgid "Atendidas"
@@ -1234,7 +1250,7 @@ msgstr ""
 msgid "Discadas"
 msgstr ""
 
-#: ominicontacto_app/services/estadisticas_campana.py:309
+#: ominicontacto_app/services/estadisticas_campana.py:311
 #: ominicontacto_app/services/estadisticas_campana.py:334
 msgid "Conectadas al agente"
 msgstr ""
@@ -1661,6 +1677,10 @@ msgstr ""
 msgid "Observaciones:"
 msgstr ""
 
+#: ominicontacto_app/templates/agenda_contacto/create_agenda_contacto.html:134
+msgid "Volver a Calificación"
+msgstr ""
+
 #: ominicontacto_app/templates/agenda_contacto/create_agenda_contacto.html:136
 #: ominicontacto_app/templates/agente/base_agente.html:125
 #: ominicontacto_app/templates/agente/contacto_create_update_form.html:33
@@ -1704,6 +1724,7 @@ msgstr ""
 #: ominicontacto_app/templates/busqueda_grabacion.html:89
 #: ominicontacto_app/templates/busqueda_grabacion.html:110
 #: ominicontacto_app/templates/formulario/formulario_list.html:37
+#: ominicontacto_app/views_grabacion.py:152
 msgid "Descripción"
 msgstr ""
 
@@ -2006,6 +2027,19 @@ msgstr ""
 #: ominicontacto_app/templates/contactos/busqueda_contacto.html:63
 #: ominicontacto_app/templates/formulario/formulario_detalle.html:84
 msgid "Teléfono"
+msgstr ""
+
+#: ominicontacto_app/templates/agente/base_agente.html:650
+#: ominicontacto_app/templates/contactos/busqueda_contacto.html:78
+msgid "Llamar"
+msgstr ""
+
+#: ominicontacto_app/templates/agente/base_agente.html:653
+msgid "Finalizar llamada"
+msgstr ""
+
+#: ominicontacto_app/templates/agente/base_agente.html:656
+msgid "Rellamar"
 msgstr ""
 
 #: ominicontacto_app/templates/agente/base_agente.html:659
@@ -3640,7 +3674,7 @@ msgid "Campaña Manual: Parámetros extra para web form"
 msgstr ""
 
 #: ominicontacto_app/templates/campana_preview/campana_list.html:127
-msgid "Ver  Contactos Asignados"
+msgid "Ver Contactos Asignados"
 msgstr ""
 
 #: ominicontacto_app/templates/campana_preview/campana_list.html:159
@@ -3733,10 +3767,6 @@ msgstr ""
 
 #: ominicontacto_app/templates/campana_preview/parametros_extra_web_form.html:25
 msgid "Campaña Preview: Parámetros extra para web form"
-msgstr ""
-
-#: ominicontacto_app/templates/contactos/busqueda_contacto.html:78
-msgid "Llamar"
 msgstr ""
 
 #: ominicontacto_app/templates/contactos/busqueda_contacto.html:81
@@ -4203,6 +4233,16 @@ msgstr ""
 msgid "No existen usuarios api crm"
 msgstr ""
 
+#: ominicontacto_app/tests/tests_campanas.py:299
+#: ominicontacto_app/utiles.py:346
+msgid "el nombre no puede contener tildes ni caracteres no ASCII"
+msgstr ""
+
+#: ominicontacto_app/tests/tests_campanas.py:304
+#: ominicontacto_app/utiles.py:347
+msgid "el nombre no puede contener espacios"
+msgstr ""
+
 #: ominicontacto_app/tests/tests_campanas.py:582
 #, python-brace-format
 msgid "Debe ingresar un minimo de {0} minutos"
@@ -4287,6 +4327,20 @@ msgid ""
 "la reserva"
 msgstr ""
 
+#: ominicontacto_app/views_archivo_de_audio.py:70
+#: ominicontacto_app/views_archivo_de_audio.py:86
+#: ominicontacto_app/views_back_list.py:126
+#: ominicontacto_app/views_base_de_datos_contacto.py:99
+#: ominicontacto_app/views_base_de_datos_contacto.py:143
+msgid "<strong>Operación Errónea!</strong> "
+msgstr ""
+
+#: ominicontacto_app/views_archivo_de_audio.py:71
+msgid ""
+"Hubo un inconveniente en la conversión del audio. Por favor verifique que el "
+"archivo subido sea el indicado."
+msgstr ""
+
 #: ominicontacto_app/views_archivo_de_audio.py:83
 #, python-brace-format
 msgid ""
@@ -4294,28 +4348,95 @@ msgid ""
 "Detalle: {0}"
 msgstr ""
 
-#: ominicontacto_app/views_archivo_de_audio.py:86
-msgid ""
-"<strong>Operación Errónea!</strong>             Se produjo un error "
-"inesperado en la conversión del audio."
+#: ominicontacto_app/views_archivo_de_audio.py:87
+msgid "Se produjo un error inesperado en la conversión del audio."
 msgstr ""
 
 #: ominicontacto_app/views_archivo_de_audio.py:146
 msgid "No está permitido eliminar un audio en uso por un IVR"
 msgstr ""
 
-#: ominicontacto_app/views_base_de_datos_contacto.py:468
-msgid ""
-"<strong>¡Cuidado!</strong>\n"
-"            La Base Datos Contacto que intenta depurar esta siendo "
-"utilizada\n"
-"            por alguna campaña. No se llevará a cabo la depuración la misma\n"
-"            mientras esté siendo utilizada."
+#: ominicontacto_app/views_archivo_de_audio.py:156
+msgid "<strong>Operación Exitosa!</strong> "
 msgstr ""
 
-#: ominicontacto_app/views_base_de_datos_contacto.py:656
+#: ominicontacto_app/views_archivo_de_audio.py:157
+msgid "Se llevó a cabo con éxito la eliminación del Archivo de Audio."
+msgstr ""
+
+#: ominicontacto_app/views_back_list.py:78
+#: ominicontacto_app/views_base_de_datos_contacto.py:200
+#: ominicontacto_app/views_base_de_datos_contacto.py:544
+msgid ""
+"<strong>Operación Errónea!</strong> No se pudo determinar el delimitador a "
+"ser utilizado en el archivo csv. No se pudo llevar a cabo el procesamiento "
+"de sus datos."
+msgstr ""
+
+#: ominicontacto_app/views_back_list.py:89
+#: ominicontacto_app/views_base_de_datos_contacto.py:211
+#: ominicontacto_app/views_base_de_datos_contacto.py:555
+msgid ""
+"<strong>Operación Errónea!</strong> El archivo que seleccionó posee menos de "
+"3 filas. No se pudo llevar a cabo el procesamiento de sus datos."
+msgstr ""
+
+#: ominicontacto_app/views_back_list.py:99
+#: ominicontacto_app/views_base_de_datos_contacto.py:221
+#: ominicontacto_app/views_base_de_datos_contacto.py:565
+msgid ""
+"<strong>Operación Errónea!</strong> El archivo que seleccionó no pudo ser "
+"abierto para su procesamiento."
+msgstr ""
+
+#: ominicontacto_app/views_base_de_datos_contacto.py:401
+#: ominicontacto_app/views_base_de_datos_contacto.py:705
+msgid ""
+"<strong>Operación Errónea!</strong> El archivo que seleccionó posee más "
+"registros de los permitidos para ser importados."
+msgstr ""
+
+#: ominicontacto_app/views_base_de_datos_contacto.py:414
+#: ominicontacto_app/views_base_de_datos_contacto.py:718
+msgid ""
+"<strong>Operación Exitosa!</strong> Se llevó a cabo con éxito la creación de "
+"la Base de Datos de Contactos."
+msgstr ""
+
+#: ominicontacto_app/views_base_de_datos_contacto.py:467
+msgid ""
+"<strong>¡Cuidado!</strong> La Base Datos Contacto que intenta depurar esta "
+"siendo utilizada por alguna campaña. No se llevará a cabo la depuración la "
+"misma mientras esté siendo utilizada."
+msgstr ""
+
+#: ominicontacto_app/views_base_de_datos_contacto.py:481
+msgid ""
+"<strong>¡Operación Errónea!</strong> La Base Datos Contacto no se pudo "
+"depurar."
+msgstr ""
+
+#: ominicontacto_app/views_base_de_datos_contacto.py:490
+msgid ""
+"<strong>Operación Exitosa!</strong> Se llevó a cabo con éxito la depuración "
+"de la Base de Datos."
+msgstr ""
+
+#: ominicontacto_app/views_base_de_datos_contacto.py:654
 #, python-brace-format
 msgid "El nombre de la columna debe ser {0} en vez de {1}"
+msgstr ""
+
+#: ominicontacto_app/views_calificacion_cliente.py:224
+msgid ""
+"Operación Exitosa! Se llevó a cabo con éxito la calificación del cliente"
+msgstr ""
+
+#: ominicontacto_app/views_calificacion_cliente.py:414
+#: ominicontacto_app/views_calificacion_cliente.py:581
+msgid ""
+"Operación Exitosa!Se llevó a cabo con éxito el llenado del formulario del "
+"cliente"
 msgstr ""
 
 #: ominicontacto_app/views_campana.py:58 ominicontacto_app/views_campana.py:123
@@ -4423,6 +4544,12 @@ msgid ""
 "No se pudo modificar la campaña. Por favor contacte un administrador."
 msgstr ""
 
+#: ominicontacto_app/views_campana_dialer_template.py:159
+msgid ""
+"<strong>Operación Exitosa!</strong>Se llevó a cabo con éxito la eliminación "
+"del Template."
+msgstr ""
+
 #: ominicontacto_app/views_campana_preview.py:265
 msgid "No se pudo liberar el contacto. Intente nuevamente."
 msgstr ""
@@ -4431,8 +4558,28 @@ msgstr ""
 msgid "Este agente no esta asignado a ninguna campaña activa"
 msgstr ""
 
+#: ominicontacto_app/views_formulario.py:162
+msgid ""
+"<strong>Operación Exitosa!</strong> Se llevó a cabo con éxito el "
+"reordenamiento de los campos."
+msgstr ""
+
+#: ominicontacto_app/views_formulario.py:172
+msgid ""
+"<strong>Operación Errónea!</strong> No se pudo llevar a cabo el "
+"reordenamiento de los campos."
+msgstr ""
+
 #: ominicontacto_app/views_formulario.py:310
 msgid "No está permitido eliminar un formulario asignado a alguna campaña"
+msgstr ""
+
+#: ominicontacto_app/views_grabacion.py:149
+msgid "No encontrada"
+msgstr ""
+
+#: ominicontacto_app/views_grabacion.py:150
+msgid "La grabación no tiene descripción asociada"
 msgstr ""
 
 #: ominicontacto_app/views_pdf.py:129
@@ -4478,4 +4625,8 @@ msgstr ""
 #: ominicontacto_app/views_user_profiles.py:344
 #, python-brace-format
 msgid "<strong>¡Cuidado!</strong> con el siguiente error{0} ."
+msgstr ""
+
+#: ominicontacto_app/views_user_profiles.py:199
+msgid "El usuario fue actualizado correctamente"
 msgstr ""

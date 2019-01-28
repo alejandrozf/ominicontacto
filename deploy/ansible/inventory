@@ -32,7 +32,9 @@ install_prefix=/opt/omnileads/
 postgres_password=admin123
 admin_pass=098098ZZZ
 formato_conversion=mp3
-schedule=Agenda #Change this value if you want to change the language of schedule calification
+
+#Change this value if you want to change the language of schedule calification
+schedule=Agenda
 
 # Do not change this variables unless you know what you are doing
 ami_user=omnileadsami

@@ -34,6 +34,7 @@
                 <!-- -->
                 <input type="hidden" value="<?= $_GET['supervId'] ?>" id="userId"/>
                 <input type="hidden" value="<?= $_GET['campId'] ?>" id="campId"/>
+                <input type="hidden" value="<?= $_GET['campType'] ?>" id="campType"/>
                 <!-- -->
                 <div class="text-center">
                     <div id="CallStatus"></div>

@@ -36,6 +36,8 @@ class Campana {
         } else {
             $campanas = $this->Campana_Model->getCampaignsForAdm();
         }
+        return $campanas;
+        /* Queda el codigo como referencia * /
         foreach ($campanas as $clave => $valor) {
             if(is_array($valor)) {
                 foreach ($valor as $cla => $val) {
@@ -49,7 +51,7 @@ class Campana {
               $arrData[] = $valor;
             }
         }
-        return $arrData;
+        /**/
     }
 
     function traerLlamadasEnCola($NomCamp) {

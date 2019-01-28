@@ -172,7 +172,7 @@ class PhoneJS {
                                                 self.invite_request,
                                                 e.originator);
 
-            if (self.session_data.is_inbound) {
+            if (self.session_data.is_remote) {
                 self.Sounds("In", "play");
                 if (self.session_data.is_transfered) {
                     self.eventsCallbacks.onTransferReceipt.fire(self.session_data); // Pasar un TransferData?
@@ -195,7 +195,7 @@ class PhoneJS {
                 // Aca si puedo decir que esta establecida
                 phone_logger.log('session: confirmed');
                 if (self.session_data.is_call) {
-                    var phone_number = self.session_data.is_inbound?
+                    var phone_number = self.session_data.is_remote?
                                             self.session_data.from :
                                             self.current_call.numberToCall;
                     self.eventsCallbacks.onCallConnected.fire(phone_number);
@@ -487,7 +487,7 @@ class SessionData {
         this.originator = originator;
     }
 
-    get is_inbound () {
+    get is_remote () {
         return this.originator == 'remote';
     }
 
@@ -533,7 +533,7 @@ class SessionData {
     get is_click2call() {
         return this.origin.indexOf('CLICK2CALL') == 0;
     }
-    get is_dialer() {
+    get is_inbound() {
         return this.origin == 'IN';
     }
 
@@ -550,8 +550,8 @@ class SessionData {
     }
 
     get call_uuid() {
-        if (this.invite_request.headers.Uidgrabacion) {
-            return this.invite_request.headers.Uidgrabacion[0].raw;
+        if (this.invite_request.headers.Omlcallid) {
+            return this.invite_request.headers.Omlcallid[0].raw;
         }
     }
 
@@ -569,6 +569,6 @@ class SessionData {
     }
 
     get is_call() {
-        return this.is_local_call || this.is_inbound;
+        return this.is_local_call || this.is_remote;
     }
 }

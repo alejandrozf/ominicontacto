@@ -31,14 +31,6 @@ SSHtransfer() {
 }
 
 Info() {
-  inventory_copy_location="`cd $current_directory/../../.. && pwd`"
-  echo "Creating a copy of inventory file in $inventory_copy_location"
-  my_inventory=$current_directory/../../../my_inventory
-  if [ ! -f  $my_inventory ]; then
-    cp inventory $my_inventory
-  else
-    cp $my_inventory inventory
-  fi
   cd $current_directory
   if [ "$arg1" == "--aio" ]; then
     servers_ammount="`cat inventory | grep "ansible_host=" | grep -v \"cluster server\" |wc -l`"
