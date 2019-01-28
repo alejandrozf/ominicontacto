@@ -478,8 +478,6 @@ class PhoneJSController {
     }
 
     callDialedNumber() {
-        this.is_inbound = false;
-
         var dialedNumber = this.view.numberDisplay.value;
         if (dialedNumber == "") {
             this.view.numberDisplay.css('border-color', 'red');

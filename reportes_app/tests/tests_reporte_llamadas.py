@@ -110,28 +110,28 @@ class ReporteDeLlamadasVacioTests(BaseReporteDeLlamadasTests):
         for tabla in nombres_tablas:
             self.assertIn(tabla, estadisticas)
             for tipo, display in Campana.TYPES_CAMPANA:
-                self.assertIn(display, estadisticas[tabla])
+                self.assertIn(str(tipo), estadisticas[tabla])
 
     def test_genera_estructura_estadisticas_llamadas_por_tipo(self):
         generador = ReporteDeLlamadas(self.desde, self.hasta, True, self.supervisor.user)
         estadisticas = generador.estadisticas
         llamadas_por_tipo = estadisticas['llamadas_por_tipo']
 
-        data_manual = llamadas_por_tipo[Campana.TYPE_MANUAL_DISPLAY]
+        data_manual = llamadas_por_tipo[str(Campana.TYPE_MANUAL)]
         self.assertIn('total', data_manual)
         self.assertIn('conectadas', data_manual)
         self.assertIn('no_conectadas', data_manual)
-        data_manual = llamadas_por_tipo[Campana.TYPE_DIALER_DISPLAY]
+        data_manual = llamadas_por_tipo[str(Campana.TYPE_DIALER)]
         self.assertIn('total', data_manual)
         self.assertIn('atendidas', data_manual)
         self.assertIn('no_atendidas', data_manual)
         self.assertIn('perdidas', data_manual)
-        data_manual = llamadas_por_tipo[Campana.TYPE_ENTRANTE_DISPLAY]
+        data_manual = llamadas_por_tipo[str(Campana.TYPE_ENTRANTE)]
         self.assertIn('total', data_manual)
         self.assertIn('atendidas', data_manual)
         self.assertIn('expiradas', data_manual)
         self.assertIn('abandonadas', data_manual)
-        data_manual = llamadas_por_tipo[Campana.TYPE_PREVIEW_DISPLAY]
+        data_manual = llamadas_por_tipo[str(Campana.TYPE_PREVIEW)]
         self.assertIn('total', data_manual)
         self.assertIn('conectadas', data_manual)
         self.assertIn('no_conectadas', data_manual)
@@ -155,8 +155,8 @@ class ReporteDeLlamadasVacioTests(BaseReporteDeLlamadasTests):
         estadisticas = generador.estadisticas
         tipos = estadisticas['tipos_de_llamada_por_campana']
 
-        self.assertIn(self.manual.id, tipos[Campana.TYPE_MANUAL_DISPLAY])
-        datos_campana = tipos[Campana.TYPE_MANUAL_DISPLAY][self.manual.id]
+        self.assertIn(self.manual.id, tipos[str(Campana.TYPE_MANUAL)])
+        datos_campana = tipos[str(Campana.TYPE_MANUAL)][self.manual.id]
         self.assertEqual(len(datos_campana), 5)
         self.assertEqual(datos_campana['nombre'], self.manual.nombre)
         self.assertEqual(datos_campana['t_espera_conexion'], 0)
@@ -164,8 +164,8 @@ class ReporteDeLlamadasVacioTests(BaseReporteDeLlamadasTests):
         self.assertEqual(datos_campana['conectadas'], 0)
         self.assertEqual(datos_campana['no_conectadas'], 0)
 
-        self.assertIn(self.dialer.id, tipos[Campana.TYPE_DIALER_DISPLAY])
-        datos_campana = tipos[Campana.TYPE_DIALER_DISPLAY][self.dialer.id]
+        self.assertIn(self.dialer.id, tipos[str(Campana.TYPE_DIALER)])
+        datos_campana = tipos[str(Campana.TYPE_DIALER)][self.dialer.id]
         self.assertEqual(len(datos_campana), 13)
         self.assertEqual(datos_campana['nombre'], self.dialer.nombre)
         self.assertEqual(datos_campana['t_espera_conexion'], 0)
@@ -181,8 +181,8 @@ class ReporteDeLlamadasVacioTests(BaseReporteDeLlamadasTests):
         self.assertEqual(datos_campana['no_conectadas_manuales'], 0)
         self.assertEqual(datos_campana['t_espera_conexion_manuales'], 0)
 
-        self.assertIn(self.entrante.id, tipos[Campana.TYPE_ENTRANTE_DISPLAY])
-        datos_campana = tipos[Campana.TYPE_ENTRANTE_DISPLAY][self.entrante.id]
+        self.assertIn(self.entrante.id, tipos[str(Campana.TYPE_ENTRANTE)])
+        datos_campana = tipos[str(Campana.TYPE_ENTRANTE)][self.entrante.id]
         self.assertEqual(len(datos_campana), 12)
         self.assertEqual(datos_campana['nombre'], self.entrante.nombre)
         self.assertEqual(datos_campana['t_espera_conexion'], 0)
@@ -197,8 +197,8 @@ class ReporteDeLlamadasVacioTests(BaseReporteDeLlamadasTests):
         self.assertEqual(datos_campana['no_conectadas_manuales'], 0)
         self.assertEqual(datos_campana['t_espera_conexion_manuales'], 0)
 
-        self.assertIn(self.preview.id, tipos[Campana.TYPE_PREVIEW_DISPLAY])
-        datos_campana = tipos[Campana.TYPE_PREVIEW_DISPLAY][self.preview.id]
+        self.assertIn(self.preview.id, tipos[str(Campana.TYPE_PREVIEW)])
+        datos_campana = tipos[str(Campana.TYPE_PREVIEW)][self.preview.id]
         self.assertEqual(len(datos_campana), 9)
         self.assertEqual(datos_campana['nombre'], self.preview.nombre)
         self.assertEqual(datos_campana['t_espera_conexion'], 0)
@@ -214,7 +214,7 @@ class ReporteDeLlamadasVacioTests(BaseReporteDeLlamadasTests):
 class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
 
     def test_incremental_llamada_manual(self):
-        tipo = Campana.TYPE_MANUAL_DISPLAY
+        tipo = str(Campana.TYPE_MANUAL)
         campana = self.manual
         generador = GeneradorDeLlamadaLogs()
 
@@ -262,7 +262,7 @@ class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
         self.assertEqual(tipos[campana.id]['no_conectadas'], 1)
 
     def test_incremental_llamada_preview(self):
-        tipo = Campana.TYPE_PREVIEW_DISPLAY
+        tipo = str(Campana.TYPE_PREVIEW)
         campana = self.preview
         generador = GeneradorDeLlamadaLogs()
 
@@ -323,7 +323,7 @@ class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
         self.assertEqual(por_tipo_preview['total'], 3)
         self.assertEqual(por_tipo_preview['conectadas'], 2)
         self.assertEqual(por_tipo_preview['no_conectadas'], 1)
-        por_tipo_manual = estadisticas['llamadas_por_tipo'][Campana.TYPE_MANUAL_DISPLAY]
+        por_tipo_manual = estadisticas['llamadas_por_tipo'][str(Campana.TYPE_MANUAL)]
         self.assertEqual(por_tipo_manual['total'], 2)
         self.assertEqual(por_tipo_manual['conectadas'], 1)
         self.assertEqual(por_tipo_manual['no_conectadas'], 1)
@@ -341,7 +341,7 @@ class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
         self.assertEqual(tipos[campana.id]['t_espera_conexion_manuales'], 6)
 
     def test_incremental_llamada_dialer(self):
-        tipo = Campana.TYPE_DIALER_DISPLAY
+        tipo = str(Campana.TYPE_DIALER)
         campana = self.dialer
         generador = GeneradorDeLlamadaLogs()
 
@@ -464,7 +464,7 @@ class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
         self.assertEqual(por_tipo_dialer['atendidas'], 4)
         self.assertEqual(por_tipo_dialer['no_atendidas'], 1)
         self.assertEqual(por_tipo_dialer['perdidas'], 2)
-        por_tipo_manual = estadisticas['llamadas_por_tipo'][Campana.TYPE_MANUAL_DISPLAY]
+        por_tipo_manual = estadisticas['llamadas_por_tipo'][str(Campana.TYPE_MANUAL)]
         self.assertEqual(por_tipo_manual['total'], 2)
         self.assertEqual(por_tipo_manual['conectadas'], 1)
         self.assertEqual(por_tipo_manual['no_conectadas'], 1)
@@ -486,7 +486,7 @@ class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
         self.assertEqual(tipos[campana.id]['t_espera_conexion_manuales'], 6)
 
     def test_incremental_llamada_entrante(self):
-        tipo = Campana.TYPE_ENTRANTE_DISPLAY
+        tipo = str(Campana.TYPE_ENTRANTE)
         campana = self.entrante
         generador = GeneradorDeLlamadaLogs()
 
@@ -575,7 +575,7 @@ class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
         self.assertEqual(por_tipo_entrante['atendidas'], 1)
         self.assertEqual(por_tipo_entrante['expiradas'], 1)
         self.assertEqual(por_tipo_entrante['abandonadas'], 1)
-        por_tipo_manual = estadisticas['llamadas_por_tipo'][Campana.TYPE_MANUAL_DISPLAY]
+        por_tipo_manual = estadisticas['llamadas_por_tipo'][str(Campana.TYPE_MANUAL)]
         self.assertEqual(por_tipo_manual['total'], 2)
         self.assertEqual(por_tipo_manual['conectadas'], 1)
         self.assertEqual(por_tipo_manual['no_conectadas'], 1)
@@ -677,7 +677,7 @@ class AccesoReportesTests(TestCase):
 class DatosPorFechaReporteLlamadasTests(BaseReporteDeLlamadasTests):
 
     def test_llamadas_de_tipo_por_fecha(self):
-        tipo = Campana.TYPE_ENTRANTE_DISPLAY
+        tipo = str(Campana.TYPE_ENTRANTE)
         campana = self.entrante
         generador = GeneradorDeLlamadaLogs()
         for i in range(5):

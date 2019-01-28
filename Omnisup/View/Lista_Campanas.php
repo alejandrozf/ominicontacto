@@ -29,10 +29,13 @@ if($SupervId) {
         $resul = $Controller_Campana->traerCampanas($SupervId);
     }
 }
-foreach ($resul as $clave => $valor) {
+foreach ($resul as $campana) {
+    $nombre = $campana["nombre"];
+    $id_campana = $campana["id"];
+    $tipo_campana = $campana["type"];
 ?>
 <li>
-    <a href="index.php?page=Detalle_Campana&nomcamp=<?= $valor ?>&supervId=<?= $SupervId ?>&es_admin=<?= $admin ?>&campId=<?= $clave ?>"><?= $valor ?></a>
+    <a href="index.php?page=Detalle_Campana&nomcamp=<?= $nombre ?>&supervId=<?= $SupervId ?>&es_admin=<?= $admin ?>&campId=<?= $id_campana ?>&campType=<?= $tipo_campana ?>"><?= $nombre ?></a>
 </li>
 <?php
 }

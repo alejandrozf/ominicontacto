@@ -294,12 +294,12 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertTrue(self.campana.objetivo >= 0)
 
     def test_validacion_nombres_de_campana_no_permite_caracteres_no_ASCII(self):
-        error_ascii = "el nombre no puede contener tildes ni caracteres no ASCII"
+        error_ascii = _("el nombre no puede contener tildes ni caracteres no ASCII")
         with self.assertRaisesMessage(ValidationError, error_ascii):
             validar_nombres_campanas("áéíóúñ")
 
     def test_validacion_nombres_de_campana_no_permite_espacios(self):
-        with self.assertRaisesMessage(ValidationError, "el nombre no puede contener espacios"):
+        with self.assertRaisesMessage(ValidationError, _("el nombre no puede contener espacios")):
             validar_nombres_campanas("nombre con espacios")
 
     def test_tipo_campanas_preview(self):

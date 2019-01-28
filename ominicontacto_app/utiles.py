@@ -32,6 +32,8 @@ import time
 import uuid
 import unicodedata
 import datetime
+
+from django.utils.translation import ugettext as _
 from django.utils import timezone
 
 from django.conf import settings
@@ -341,8 +343,8 @@ def validar_nombres_campanas(nombre):
     """
     Valida que no hayan espacios ni caracteres no ASCII en los nombres de campañas
     """
-    error_ascii = 'el nombre no puede contener tildes ni caracteres no ASCII'
-    error_espacios = 'el nombre no puede contener espacios'
+    error_ascii = _('el nombre no puede contener tildes ni caracteres no ASCII')
+    error_espacios = _('el nombre no puede contener espacios')
     validar_solo_ascii_y_sin_espacios(nombre, error_ascii, error_espacios)
 
 

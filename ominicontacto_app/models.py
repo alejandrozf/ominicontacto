@@ -130,8 +130,8 @@ class User(AbstractUser):
             try:
                 Session.objects.get(session_key=self.last_session_key).delete()
             except Session.DoesNotExist:
-                logger.exception(_("Excepcion detectada al obtener session "
-                                   "con el key {0} no existe ".format(self.last_session_key)))
+                logger.exception(_("Excepción detectada al obtener session "
+                                   "con el key {0} no existe".format(self.last_session_key)))
         self.last_session_key = key
         self.save()
 
@@ -872,13 +872,13 @@ class Campana(models.Model):
     )
 
     TYPE_MANUAL = 1
-    TYPE_MANUAL_DISPLAY = 'Manual'
+    TYPE_MANUAL_DISPLAY = _('Manual')
     TYPE_DIALER = 2
-    TYPE_DIALER_DISPLAY = 'Dialer'
+    TYPE_DIALER_DISPLAY = _('Dialer')
     TYPE_ENTRANTE = 3
-    TYPE_ENTRANTE_DISPLAY = 'Entrante'
+    TYPE_ENTRANTE_DISPLAY = _('Entrante')
     TYPE_PREVIEW = 4
-    TYPE_PREVIEW_DISPLAY = 'Preview'
+    TYPE_PREVIEW_DISPLAY = _('Preview')
 
     TYPES_CAMPANA = (
         (TYPE_ENTRANTE, TYPE_ENTRANTE_DISPLAY),
@@ -1147,6 +1147,11 @@ class Campana(models.Model):
 
     def obtener_calificaciones(self):
         return CalificacionCliente.objects.filter(opcion_calificacion__campana_id=self.id)
+
+    def obtener_calificaciones_agenda(self):
+        return CalificacionCliente.objects.filter(
+            opcion_calificacion__campana_id=self.id,
+            opcion_calificacion__tipo=OpcionCalificacion.AGENDA)
 
     def update_basedatoscontactos(self, bd_nueva):
         """ Actualizar con nueva base datos de contacto"""

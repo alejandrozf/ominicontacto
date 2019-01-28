@@ -21,6 +21,7 @@
 
 from __future__ import unicode_literals
 
+from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
@@ -74,10 +75,10 @@ class BacklistCreateView(CreateView):
                 back_list)
 
         except OmlParserCsvDelimiterError:
-            message = '<strong>Operación Errónea!</strong> \
-            No se pudo determinar el delimitador a ser utilizado \
-            en el archivo csv. No se pudo llevar a cabo el procesamiento \
-            de sus datos.'
+            message = _('<strong>Operación Errónea!</strong> '
+                        'No se pudo determinar el delimitador a ser utilizado '
+                        'en el archivo csv. No se pudo llevar a cabo el procesamiento '
+                        'de sus datos.')
 
             messages.add_message(
                 self.request,
@@ -85,9 +86,9 @@ class BacklistCreateView(CreateView):
                 message,
             )
         except OmlParserMinRowError:
-            message = '<strong>Operación Errónea!</strong> \
-            El archivo que seleccionó posee menos de 3 filas.\
-            No se pudo llevar a cabo el procesamiento de sus datos.'
+            message = _('<strong>Operación Errónea!</strong> '
+                        'El archivo que seleccionó posee menos de 3 filas. '
+                        'No se pudo llevar a cabo el procesamiento de sus datos.')
 
             messages.add_message(
                 self.request,
@@ -95,9 +96,8 @@ class BacklistCreateView(CreateView):
                 message,
             )
         except OmlParserOpenFileError:
-            message = '<strong>Operación Errónea!</strong> \
-            El archivo que seleccionó no pudo ser abierto para su \
-            para su procesamiento.'
+            message = _('<strong>Operación Errónea!</strong> '
+                        'El archivo que seleccionó no pudo ser abierto para su procesamiento.')
 
             messages.add_message(
                 self.request,
@@ -123,9 +123,9 @@ class BacklistCreateView(CreateView):
             creacion_back_list = CreacionBacklistService()
             creacion_back_list.genera_back_list(self.object)
         except OmlArchivoImportacionInvalidoError:
-            message = '<strong>Operación Errónea!</strong> \
-            El archivo especificado para realizar la importación de contactos \
-            no es válido.'
+            message = _('<strong>Operación Errónea!</strong> ') +\
+                _('El archivo especificado para realizar la importación de contactos '
+                  'no es válido.')
 
             messages.add_message(
                 self.request,

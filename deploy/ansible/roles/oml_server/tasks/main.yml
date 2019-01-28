@@ -27,6 +27,13 @@
 
 #----------------------------------------------------------------------
 
+- name: Check if Ominicontacto repository is cloned in {{ install_prefix }} (develop server)
+  shell: test -d {{ install_prefix }}ominicontacto
+  register: ominicontacto_exists
+  tags: ['omniapp','postinstall']
+  when: desarrollo == 1
+  ignore_errors: yes
+
 - include: packages_installation.yml
   tags: ['omniapp']
 
@@ -34,4 +41,4 @@
   tags: ['postinstall','omniapp']
 
 - include: sshkey_transfer.yml
-  tags: ['postinstall','omniapp']
+  tags: omniapp

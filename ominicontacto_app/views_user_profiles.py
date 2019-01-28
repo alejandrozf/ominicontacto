@@ -196,7 +196,7 @@ class CustomerUserUpdateView(UpdateView):
             updated_user.save()
 
         messages.success(self.request,
-                         'El usuario fue actualizado correctamente')
+                         _('El usuario fue actualizado correctamente'))
 
         return ret
 

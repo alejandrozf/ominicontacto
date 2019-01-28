@@ -73,10 +73,14 @@
   tags: kamailio
   when: kamailio_installed|succeeded
 
+- name: Erase certs folder because new are needed
+  file: state=absent path={{ kamailio_location }}/etc/certs
+  tags: ['kamailio','postinstall']
+
 - name: Check if Kamailio certificates exists
   shell: test -d {{ kamailio_location }}/etc/certs || test -d /opt/kamailio/etc/certs
   register: certs_exists
-  tags: kamailio
+  tags: ['kamailio','postinstall']
   become: true
   become_method: sudo
   ignore_errors: yes
@@ -86,7 +90,7 @@
   when: kamailio_installed|failed
 
 - include: certificate_CA.yml
-  tags: kamailio
+  tags: ['kamailio','postinstall']
   when: certs_exists|failed
 
 - include: kamailio_configuration.yml
