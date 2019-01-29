@@ -29,49 +29,28 @@
 # variables que vienen exportadas desde el deploy.sh
   vars:
           build_dir: "{{ BUILD_DIR }}"
-# se piden las variables de superuser y el formato de conversion
-# https://docs.ansible.com/ansible/2.6/user_guide/playbooks_prompts.html
-# los pre_tasks son para validaciones de los inputs de los usuarios
+# los pre_tasks son para validaciones de de IP y hostname
+
   pre_tasks:
+    - name: Get the hostname of server
+      command: hostname
+      register: hostname
+      tags: always
 
-    ## Contraseña de postgresql
+    - debug: msg={{ ansible_all_ipv4_addresses }}
+      tags: always
 
-    # Checkeo si la base kamailio existe
-      - name: Check if kamailio database exists
-        shell: psql -U {{ postgres_user }} -h {{ database_fqdn }} -c '\l' |grep kamailio |awk -F '|' '{print $1}'
-        environment:
-          PGPASSWORD: "{{ postgres_password }}"
-        register: kamailiodb_exists
-        tags: ['never','postinstall']
-        become: true
-        become_method: sudo
+    - name: Compare if hostname of server is the same as hostname in inventory file
+      assert:
+        that: "'{{ hostname.stdout }}' == '{{ omni_fqdn }}'"
+        msg: "The hostname you inserted in inventory file is wrong, check it"
+      tags: always
 
-      # tasks para cambiar el nombre de la db
-      - name: Stop kamailio service
-        service: name=kamailio state=stopped
-        when: "'kamailio' in kamailiodb_exists.stdout and cluster == 0"
-        tags: ['never','postinstall']
-
-      - name: Stop omnileads service
-        service: name=omnileads state=stopped
-        when: "'kamailio' in kamailiodb_exists.stdout and cluster == 0"
-        tags: ['never','postinstall']
-
-      - name: Restart postgresql service
-        service: name=postgresql-9.6 state=restarted
-        when: "'kamailio' in kamailiodb_exists.stdout and cluster == 0"
-        tags: ['never','postinstall']
-
-      # Se cambia el nombre de la base de datos
-      - name: Change the database name
-        shell: psql -U postgres -h {{ database_ip }} -c 'ALTER DATABASE kamailio RENAME TO omnileads;'
-        become: true
-        environment:
-          PGPASSWORD: "{{ postgres_password }}"
-        become_user: postgres
-        become_method: sudo
-        when: "'kamailio' in kamailiodb_exists.stdout and cluster == 0"
-        tags: ['never','postinstall']
+    - name: Compare if IP in inventory file is configured in the server
+      assert:
+        that: "'{{ omni_ip }}' in ansible_all_ipv4_addresses"
+        msg: "The IP you inserted in inventory file is wrong, check it"
+      tags: always
 
 # el gather_facts es para obtener valores de variables predeterminadas de ansible, la mas usada es ansible_os_family.
 # Esta variable te dice que familia de OS es el servidor a deployar (Debian o RedHat)

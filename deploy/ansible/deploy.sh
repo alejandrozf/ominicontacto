@@ -254,13 +254,13 @@ case $arg1 in
   ;;
   *)
   echo " How to use it:
-          (First options)
+          (First option)
             -u --upgrade: make an upgrade of Omnileads version
             -i --install: make a fresh install of Omnileads
-          (Second options)
+          (Second option)
           -a --aio: install all in one server
           -c --cluster: install cluster mode
           Both options are mandatory
-          Also you can use -d options as second argument to install a development server (just if you are developer)"
+          Also you can use -d as third option to install a development server (just if you are developer)"
   ;;
 esac

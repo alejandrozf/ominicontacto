@@ -29,9 +29,9 @@
     - name: Get the omniapp omnileads ssh key
       shell: cat {{ install_prefix }}.ssh/id_rsa.pub
       register: ssh_key
-      tags: ['omniapp','asterisk']
+      tags: ['omniapp','asterisk','kamailio']
     - set_fact: sshkey={{ ssh_key.stdout }}
-      tags: ['omniapp','asterisk']
+      tags: ['omniapp','asterisk','kamailio']
 
 - name: Database sever installation
   hosts: database
