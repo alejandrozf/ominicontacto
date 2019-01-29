@@ -33,9 +33,9 @@ SSHtransfer() {
 Info() {
   cd $current_directory
   if [ "$arg1" == "--aio" ]; then
-    servers_ammount="`cat inventory | grep "ansible_host=" | grep -v \"cluster server\" |wc -l`"
+    servers_ammount="`cat inventory | grep \"ansible_ssh_port=\" | grep -v \"cluster server\" |wc -l`"
   elif [ "$arg1" == "--cluster" ]; then
-    servers_ammount="`cat inventory | grep "ansible_host=" | grep \"cluster server\" |wc -l`"
+    servers_ammount="`cat inventory | grep \"ansible_ssh_port=\" | grep \"cluster server\" |wc -l`"
   fi
   cat /dev/null > /var/tmp/servers_installed
   for i in `seq 1 $servers_ammount`; do

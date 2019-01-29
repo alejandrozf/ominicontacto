@@ -123,7 +123,7 @@
   service: name=nginx state=restarted enabled=yes
   become: true
   become_method: sudo
-  tags: ['never','postinstall']
+  tags: ['never','postinstall','kamailio']
   when: ansible_os_family == "RedHat"
 
 # Starteo y habilito nginx
@@ -131,5 +131,5 @@
   service: name=nginx state=restarted enabled=yes
   become: true
   become_method: sudo
-  tags: postinstall
+  tags: ['postinstall','kamailio']
   when: ansible_os_family == "Debian"
