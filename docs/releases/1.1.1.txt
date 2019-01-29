@@ -1,0 +1,13 @@
+=========================
+Omnileads 1.1.1 release notes
+=========================
+
+This is a "bugfix" release improving the stability and performance of the codebase.
+
+
+Fixes and improvements
+=========================
+
+
+Installation
+-------------------------
