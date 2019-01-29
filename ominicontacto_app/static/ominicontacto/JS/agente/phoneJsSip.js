@@ -487,7 +487,7 @@ class SessionData {
         this.originator = originator;
         // TODO: En un futuro todas seran inbound. local_call y remote_call pueden pasar a
         // ser call nomas
-        if (this.is_inbound) {
+        if (this.is_remote) {
             this.remote_call = this.setRemoteCallInfo(invite_request);
         }
     }
