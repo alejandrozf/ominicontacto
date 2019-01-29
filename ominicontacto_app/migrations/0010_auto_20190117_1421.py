@@ -19,7 +19,7 @@ def renombrar_migracion_agenda(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0009_cambios_i18n'),
+        ('ominicontacto_app', '0009_auto_20190115_1559'),
     ]
 
     operations = [
