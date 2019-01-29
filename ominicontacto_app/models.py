@@ -1153,6 +1153,13 @@ class Campana(models.Model):
             opcion_calificacion__campana_id=self.id,
             opcion_calificacion__tipo=OpcionCalificacion.AGENDA)
 
+    def obtener_contactos_no_calificados(self):
+        """Devuelve los contactos que no han sido calificados en la campaña"""
+        contactos_calificados_ids = list(self.obtener_calificaciones().values_list(
+            'contacto__pk', flat=True))
+        contactos = self.bd_contacto.contactos.exclude(pk__in=contactos_calificados_ids)
+        return contactos
+
     def update_basedatoscontactos(self, bd_nueva):
         """ Actualizar con nueva base datos de contacto"""
         self.bd_contacto = bd_nueva
