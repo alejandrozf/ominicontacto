@@ -11,3 +11,6 @@ Fixes and improvements
 
 Installation
 -------------------------
+- Fix in the certificate created for nginx. Google chrome 71  in Windows was invalidating the certificate due to
+  the use of sha256 as digital signature algorithm. Changed the algorithm to sha512
+- Validation in hostname and IP inserted in inventory file comparing with IP and hostname of server
