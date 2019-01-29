@@ -3152,7 +3152,7 @@ class ParametrosCrm(models.Model):
         ('agent_id', _('ID de Agente')),
         ('telefono', _('Teléfono')),
         ('id_contacto', _('ID de Cliente')),
-        ('rec_filename', _('Archivo de Grabacion')),
+        ('rec_filename', _('Archivo de Grabación')),
         ('call_wait_duration', _('Tiempo de espera')),
     )
     OPCIONES_LLAMADA_KEYS = [key for key, value in OPCIONES_LLAMADA]

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-24 15:26-0300\n"
+"POT-Creation-Date: 2019-01-29 12:25-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -173,7 +173,7 @@ msgstr "User should be Agent OR Supervisor"
 msgid "Ingrese la nueva contraseña (sólo si desea cambiarla)"
 msgstr "Enter new password (just in case you want to change it)"
 
-#: ominicontacto_app/forms.py:121 ominicontacto_app/models.py:2943
+#: ominicontacto_app/forms.py:121 ominicontacto_app/models.py:2982
 msgid "Contraseña"
 msgstr "Password"
 
@@ -188,9 +188,9 @@ msgstr "Passwords are not the same"
 #: ominicontacto_app/forms.py:207 ominicontacto_app/forms.py:208
 #: ominicontacto_app/forms.py:209 ominicontacto_app/forms.py:210
 #: ominicontacto_app/forms.py:211 ominicontacto_app/forms.py:381
-#: ominicontacto_app/forms.py:1101 ominicontacto_app/forms.py:1102
-#: ominicontacto_app/forms.py:1329
-#: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:105
+#: ominicontacto_app/forms.py:1082 ominicontacto_app/forms.py:1083
+#: ominicontacto_app/forms.py:1314
+#: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:107
 msgid "En segundos"
 msgstr "In seconds"
 
@@ -198,12 +198,12 @@ msgstr "In seconds"
 msgid "Debe definir una frecuencia para el Anuncio Periódico"
 msgstr "You must define a frequency for Periodic Announcement"
 
-#: ominicontacto_app/forms.py:251 ominicontacto_app/forms.py:1128
+#: ominicontacto_app/forms.py:251 ominicontacto_app/forms.py:1109
 msgid "Debe seleccionar un destino"
 msgstr "You must define a destination"
 
 #: ominicontacto_app/forms.py:362 ominicontacto_app/models.py:384
-#: ominicontacto_app/models.py:1882
+#: ominicontacto_app/models.py:1886
 #: ominicontacto_app/templates/agenda_contacto/agenda_agente.html:81
 #: ominicontacto_app/templates/agenda_contacto/agenda_detalle.html:87
 #: ominicontacto_app/templates/agente/agenda_agente.html:103
@@ -227,32 +227,32 @@ msgid "Agente"
 msgstr "Agent"
 
 #: ominicontacto_app/forms.py:370
-#: ominicontacto_app/templates/agente/campanas_preview.html:52
+#: ominicontacto_app/templates/agente/campanas_preview.html:51
 #: ominicontacto_app/templates/busqueda_grabacion.html:87
 #: ominicontacto_app/templates/campana/create_update_queue.html:34
 #: ominicontacto_app/templates/campana/llamadas_activas.html:42
 #: ominicontacto_app/templates/campana/nueva_edita_campana.html:27
 #: ominicontacto_app/templates/campana/opcion_calificacion.html:65
-#: ominicontacto_app/templates/campana/parametros_extra_web_form.html:47
+#: ominicontacto_app/templates/campana/parametros_crm_sitio_externo.html:47
 #: ominicontacto_app/templates/campana/tiempos_llamadas.html:133
 #: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:42
 #: ominicontacto_app/templates/campana_dialer/create_update_queue.html:50
 #: ominicontacto_app/templates/campana_dialer/detalle.html:24
 #: ominicontacto_app/templates/campana_dialer/elimina_actuacion_campana.html:30
-#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:38
+#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:45
 #: ominicontacto_app/templates/campana_dialer/opcion_calificacion.html:27
-#: ominicontacto_app/templates/campana_dialer/parametros_extra_web_form.html:42
+#: ominicontacto_app/templates/campana_dialer/parametros_crm_sitio_externo.html:42
 #: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:57
 #: ominicontacto_app/templates/campana_dialer/sincronizar_lista.html:27
 #: ominicontacto_app/templates/campana_manual/campana_manual_base.html:31
 #: ominicontacto_app/templates/campana_manual/create_update_queue.html:27
 #: ominicontacto_app/templates/campana_manual/delete_campana.html:28
 #: ominicontacto_app/templates/campana_manual/opcion_calificacion.html:27
-#: ominicontacto_app/templates/campana_manual/parametros_extra_web_form.html:42
+#: ominicontacto_app/templates/campana_manual/parametros_crm_sitio_externo.html:42
 #: ominicontacto_app/templates/campana_preview/campana_preview.html:31
 #: ominicontacto_app/templates/campana_preview/detalle.html:25
 #: ominicontacto_app/templates/campana_preview/opcion_calificacion.html:27
-#: ominicontacto_app/templates/campana_preview/parametros_extra_web_form.html:28
+#: ominicontacto_app/templates/campana_preview/parametros_crm_sitio_externo.html:28
 #: ominicontacto_app/templates/queue/create_update_queue.html:28
 msgid "Campaña"
 msgstr "Campaign"
@@ -284,7 +284,7 @@ msgstr "You must select a form"
 msgid "Debe seleccionar un sitio externo"
 msgstr "You must select an external URL"
 
-#: ominicontacto_app/forms.py:443
+#: ominicontacto_app/forms.py:452
 msgid ""
 "Los nombres de las columnas de la nueva base de datos no coinciden con la "
 "anterior"
@@ -292,7 +292,7 @@ msgstr ""
 "The names of the columns for this new database are different from the last "
 "one"
 
-#: ominicontacto_app/forms.py:499
+#: ominicontacto_app/forms.py:508
 #, python-brace-format
 msgid ""
 "El nombre de la opción de calificación '{0}' está reservado para uso interno "
@@ -301,36 +301,36 @@ msgstr ""
 "Name of call disposition {0} is reserved of internal use, please select "
 "another one"
 
-#: ominicontacto_app/forms.py:531
+#: ominicontacto_app/forms.py:540
 #, python-brace-format
 msgid "Debe ingresar al menos {0} opción de calificación"
 msgstr "You must enter at leat {0} call disposition"
 
-#: ominicontacto_app/forms.py:534
+#: ominicontacto_app/forms.py:543
 #, python-brace-format
 msgid "Debe ingresar al menos {0} opciones de calificación"
 msgstr "You must enter at leat {0} call disposition"
 
-#: ominicontacto_app/forms.py:556
+#: ominicontacto_app/forms.py:565
 msgid "Rellene los campos en blanco"
 msgstr "Please fill the fields in blank"
 
-#: ominicontacto_app/forms.py:559
+#: ominicontacto_app/forms.py:568
 msgid "Los nombres de las opciones de calificación deben ser distintos"
 msgstr "The names of call dispositions must be different"
 
-#: ominicontacto_app/forms.py:566
+#: ominicontacto_app/forms.py:575
 msgid "Debe escoger una opción de calificación de tipo gestión por campaña"
 msgstr "You must choose at least one call disposition of type Engaged"
 
-#: ominicontacto_app/forms.py:603
+#: ominicontacto_app/forms.py:612
 #: ominicontacto_app/services/reporte_metadata_cliente.py:86
 #: ominicontacto_app/templates/agente/reporte_agente_calificaciones.html:105
 #: ominicontacto_app/templates/agente/reporte_agente_calificaciones.html:145
 msgid "Calificación"
 msgstr "Call Disposition"
 
-#: ominicontacto_app/forms.py:617
+#: ominicontacto_app/forms.py:626
 #: ominicontacto_app/services/reporte_agente_calificacion.py:81
 #: ominicontacto_app/services/reporte_campana_calificacion.py:85
 #: ominicontacto_app/templates/agenda_contacto/agenda_agente.html:84
@@ -339,11 +339,11 @@ msgstr "Call Disposition"
 msgid "Observaciones"
 msgstr "Comments"
 
-#: ominicontacto_app/forms.py:1058
+#: ominicontacto_app/forms.py:1039
 msgid "Los nombres de los estados de las reglas deben ser distintos"
 msgstr "The names of the rules must be different"
 
-#: ominicontacto_app/forms.py:1099
+#: ominicontacto_app/forms.py:1080
 msgid ""
 " Es recomendable que este valor sea menor al dial timeout\n"
 "            definido en la ruta saliente. En segundos"
@@ -351,73 +351,54 @@ msgstr ""
 "This value should be smaller than Dial Tiemout\n"
 "\t     defined in outbound routes. In seconds"
 
-#: ominicontacto_app/forms.py:1118
+#: ominicontacto_app/forms.py:1099
 msgid ""
 "El valor de dial timeout deberá estar comprendido entre 10 y 90 segundos"
 msgstr "Dial timeout value should be defined between 10 and 90 seconds"
 
-#: ominicontacto_app/forms.py:1166
+#: ominicontacto_app/forms.py:1147
 msgid "El usuario no puede contener espacios"
 msgstr "Username string cannot have spaces"
 
-#: ominicontacto_app/forms.py:1170
+#: ominicontacto_app/forms.py:1151
 msgid "Supervisor Gerente"
 msgstr "Manager Supervisor"
 
-#: ominicontacto_app/forms.py:1171
+#: ominicontacto_app/forms.py:1152
 msgid "Administrador"
 msgstr "Administrator"
 
-#: ominicontacto_app/forms.py:1172
+#: ominicontacto_app/forms.py:1153
 msgid "Cliente"
 msgstr "Customer"
 
-#: ominicontacto_app/forms.py:1176
+#: ominicontacto_app/forms.py:1157
 msgid "Rol del usuario"
 msgstr "User role"
 
-#: ominicontacto_app/forms.py:1275
+#: ominicontacto_app/forms.py:1260
 msgid "Esta calificación está reservada para el sistema"
 msgstr "This call disposition is reserved for internal use"
 
-#: ominicontacto_app/forms.py:1290
+#: ominicontacto_app/forms.py:1275
 msgid ""
 "Seleccione el archivo de audio que desea para la Campaña. Si ya existe uno y "
 "guarda otro, el audio será reemplazado."
 msgstr ""
 "Choose the audio file for the campaign. If there is any, it will be replaced."
 
-#: ominicontacto_app/forms.py:1309
+#: ominicontacto_app/forms.py:1294
 msgid "Escoja una campaña"
 msgstr "Choose a campaign"
 
-#: ominicontacto_app/management/commands/actualizar_campanas_preview.py:53
-#, python-brace-format
-msgid "Actualizando {0} asignaciones de contactos a agentes en campaña {1}"
-msgstr "Updating {0} contact assignment for agents in campaign {1}"
+#: ominicontacto_app/forms.py:1335
+msgid "Valor"
+msgstr "Value"
 
-#: ominicontacto_app/management/commands/service_secretkey.py:59
-msgid "Opción inválida"
-msgstr "Invalid option"
-
-#: ominicontacto_app/management/commands/service_secretkey.py:63
-#, python-brace-format
-msgid "Falló el proceso de agregado de secret_key por {0}"
-msgstr "Secret key process failed {0}"
-
-#: ominicontacto_app/models.py:133
-#, python-brace-format
-msgid "Excepción detectada al obtener session con el key {0} no existe"
-msgstr "Exception detected when getting session with key {0}, not found"
-
-#: ominicontacto_app/models.py:142
-#, python-brace-format
-msgid "Seteando Usuario {0} como BORRADO"
-msgstr "Setting User {0} as DELETED"
-
-#: ominicontacto_app/models.py:170 ominicontacto_app/models.py:177
-#: ominicontacto_app/models.py:330 ominicontacto_app/models.py:1428
-#: ominicontacto_app/models.py:1900 ominicontacto_app/models.py:2807
+#: ominicontacto_app/forms.py:1336 ominicontacto_app/models.py:170
+#: ominicontacto_app/models.py:177 ominicontacto_app/models.py:330
+#: ominicontacto_app/models.py:1438 ominicontacto_app/models.py:1904
+#: ominicontacto_app/models.py:2819 ominicontacto_app/models.py:3145
 #: ominicontacto_app/templates/calificacion/calificacion_list.html:31
 #: ominicontacto_app/templates/campana/campana_list.html:64
 #: ominicontacto_app/templates/campana/campana_list.html:124
@@ -444,6 +425,46 @@ msgstr "Setting User {0} as DELETED"
 #: ominicontacto_app/templates/user/user_list.html:32
 msgid "Nombre"
 msgstr "Name"
+
+#: ominicontacto_app/forms.py:1344
+msgid "El valor debe corresponder a un campo de la base de datos de contactos"
+msgstr "Value must match a contact database field"
+
+#: ominicontacto_app/forms.py:1347
+msgid "El valor debe corresponder a un campo válido de la campaña"
+msgstr "Value must match a valid campaign field"
+
+#: ominicontacto_app/forms.py:1350
+msgid "El valor debe corresponder a un dato válido de la llamada"
+msgstr "Value must match a valid call data"
+
+#: ominicontacto_app/forms.py:1358
+msgid "Debe definir un nombre para el parámetro"
+msgstr "You must define a name for the parameter"
+
+#: ominicontacto_app/management/commands/actualizar_campanas_preview.py:53
+#, python-brace-format
+msgid "Actualizando {0} asignaciones de contactos a agentes en campaña {1}"
+msgstr "Updating {0} contact assignment for agents in campaign {1}"
+
+#: ominicontacto_app/management/commands/service_secretkey.py:59
+msgid "Opción inválida"
+msgstr "Invalid option"
+
+#: ominicontacto_app/management/commands/service_secretkey.py:63
+#, python-brace-format
+msgid "Falló el proceso de agregado de secret_key por {0}"
+msgstr "Secret key process failed {0}"
+
+#: ominicontacto_app/models.py:133
+#, python-brace-format
+msgid "Excepción detectada al obtener session con el key {0} no existe"
+msgstr "Exception detected when getting session with key {0}, not found"
+
+#: ominicontacto_app/models.py:142
+#, python-brace-format
+msgid "Seteando Usuario {0} como BORRADO"
+msgstr "Setting User {0} as DELETED"
 
 #: ominicontacto_app/models.py:178
 #, fuzzy
@@ -525,312 +546,391 @@ msgstr "You cannot delete an audio file being in use by IVR"
 msgid "Seteando ArchivoDeAudio %s como BORRADO"
 msgstr "Setting AudioFile %s as DELETED"
 
-#: ominicontacto_app/models.py:863
+#: ominicontacto_app/models.py:864
 msgid "Activa"
 msgstr "Active"
 
-#: ominicontacto_app/models.py:864
+#: ominicontacto_app/models.py:865
 msgid "Finalizada"
 msgstr "Completed"
 
-#: ominicontacto_app/models.py:865
+#: ominicontacto_app/models.py:866
 msgid "Borrada"
 msgstr "Deleted"
 
-#: ominicontacto_app/models.py:866
+#: ominicontacto_app/models.py:867
 msgid "Pausada"
 msgstr "Paused"
 
-#: ominicontacto_app/models.py:867
+#: ominicontacto_app/models.py:868
 msgid "Inactiva"
 msgstr "Inactive"
 
-#: ominicontacto_app/models.py:869
+#: ominicontacto_app/models.py:870
 msgid "Template Activo"
 msgstr "Active Template"
 
-#: ominicontacto_app/models.py:870
+#: ominicontacto_app/models.py:871
 msgid "Template Borrado"
 msgstr "Deleted Template"
 
-#: ominicontacto_app/models.py:874
+#: ominicontacto_app/models.py:875
 msgid "Manual"
 msgstr "Manual"
 
-#: ominicontacto_app/models.py:876
+#: ominicontacto_app/models.py:877
 msgid "Dialer"
 msgstr "Dialer"
 
-#: ominicontacto_app/models.py:878
+#: ominicontacto_app/models.py:879
 msgid "Entrante"
 msgstr "Inbound"
 
-#: ominicontacto_app/models.py:880
+#: ominicontacto_app/models.py:881
 msgid "Preview"
 msgstr "Preview"
 
-#: ominicontacto_app/models.py:895
+#: ominicontacto_app/models.py:896
+#: ominicontacto_app/templates/campana/nueva_edita_campana.html:61
+#: ominicontacto_app/templates/campana_preview/campana_preview.html:44
 #: ominicontacto_app/templates/formulario/elimina_field_formulario.html:26
 msgid "Formulario"
 msgstr "Campaign Form"
 
-#: ominicontacto_app/models.py:896
+#: ominicontacto_app/models.py:897
 msgid "Url externa"
 msgstr "External url"
 
-#: ominicontacto_app/models.py:975 ominicontacto_app/models.py:989
+#: ominicontacto_app/models.py:976 ominicontacto_app/models.py:990
 #, python-brace-format
 msgid "Seteando campana {0} como ESTADO_ACTIVA"
 msgstr "Setting campaign {0} as ACTIVE_STATE"
 
-#: ominicontacto_app/models.py:996
+#: ominicontacto_app/models.py:997
 #, python-brace-format
 msgid "Seteando campana {0} como ESTADO_BORRADA"
 msgstr "Setting campaign {0} as DELETED_STATE"
 
-#: ominicontacto_app/models.py:1009
+#: ominicontacto_app/models.py:1010
 #, python-brace-format
 msgid "Seteando campana {0} como ESTADO_FINALIZADA"
 msgstr "Setting campaign {0} as COMPLETED_STATE"
 
-#: ominicontacto_app/models.py:1047
+#: ominicontacto_app/models.py:1048
 #, python-brace-format
 msgid "Seteando campana-->template {0} como BORRADA"
 msgstr "Setting campaign --> template {0} as DELETED"
 
-#: ominicontacto_app/models.py:1060
+#: ominicontacto_app/models.py:1061
 msgid "La BD no tiene campo 'telefono'"
 msgstr "Database does not have telephone number"
 
-#: ominicontacto_app/models.py:1173 ominicontacto_app/models.py:1178
+#: ominicontacto_app/models.py:1183 ominicontacto_app/models.py:1188
 #: ominicontacto_app/templates/agente/reporte_agente_calificaciones.html:149
 msgid "Gestión"
 msgstr "Engaged"
 
-#: ominicontacto_app/models.py:1174 ominicontacto_app/models.py:1179
+#: ominicontacto_app/models.py:1184 ominicontacto_app/models.py:1189
 msgid "Sin acción"
 msgstr "Normal"
 
-#: ominicontacto_app/models.py:1175
+#: ominicontacto_app/models.py:1185
 msgid "Agenda"
 msgstr "Agenda"
 
-#: ominicontacto_app/models.py:1187
+#: ominicontacto_app/models.py:1197
 #, python-brace-format
 msgid "Opción \"{0}\" para campaña \"{1}\" de tipo \"{2}\""
 msgstr "Option \"{0}\" for campaign \"{1}\" of type \"{2}\""
 
-#: ominicontacto_app/models.py:1404
+#: ominicontacto_app/models.py:1414
 #, python-brace-format
 msgid "agente: {0} para la campana {1} "
 msgstr "agent: {0} for campaign {1}"
 
-#: ominicontacto_app/models.py:1424
+#: ominicontacto_app/models.py:1434
 msgid "Productiva"
 msgstr "Productive"
 
-#: ominicontacto_app/models.py:1426
+#: ominicontacto_app/models.py:1436
 msgid "Recreativa"
 msgstr "Recreational"
 
-#: ominicontacto_app/models.py:1430
+#: ominicontacto_app/models.py:1440
 #: ominicontacto_app/templates/agenda_contacto/agenda_agente.html:83
 #: ominicontacto_app/templates/agenda_contacto/agenda_detalle.html:95
 #: ominicontacto_app/templates/formulario/formulario_field.html:149
+#: ominicontacto_app/templates/sitio_externo/sitio_externo_list.html:48
 msgid "Tipo"
 msgstr "Type"
 
-#: ominicontacto_app/models.py:1486 ominicontacto_app/models.py:1512
+#: ominicontacto_app/models.py:1490 ominicontacto_app/models.py:1516
 msgid "No se encontro base datos en estado ESTADO_EN_DEFINICION"
 msgstr "There is no database in INPROGRESS_STATE status"
 
-#: ominicontacto_app/models.py:1499
+#: ominicontacto_app/models.py:1503
 msgid "No se encontro base datos en estado ESTADO_EN_DEFINICION o ACTULIZADA"
 msgstr "There is no database in INPROGRESS_STATE or UPDATED status"
 
-#: ominicontacto_app/models.py:1538
+#: ominicontacto_app/models.py:1542
 msgid "La cantidad de columnas no ha sido seteada"
 msgstr "Number of columns not set"
 
-#: ominicontacto_app/models.py:1557
+#: ominicontacto_app/models.py:1561
 msgid "No se ha seteado 'columna_con_telefono'"
 msgstr "No setting for 'columna_con_telefono'"
 
-#: ominicontacto_app/models.py:1688
+#: ominicontacto_app/models.py:1692
 msgid "No se ha seteado si primer fila es encabezado"
 msgstr "No setting for first row as header"
 
-#: ominicontacto_app/models.py:1707 ominicontacto_app/models.py:1730
+#: ominicontacto_app/models.py:1711 ominicontacto_app/models.py:1734
 #, python-brace-format
 msgid "Error: {0} detectada al desserializar datos extras. Datos extras: '{1}'"
 msgstr "Error: {0} detected when de-serializing extra data. Extra data: {1}"
 
-#: ominicontacto_app/models.py:1852
+#: ominicontacto_app/models.py:1856
 #, python-brace-format
 msgid "Error: {0} detectada al desserializar metadata de la bd {1}"
 msgstr "Error: {0} detected when de-serializing database metadata {1}"
 
-#: ominicontacto_app/models.py:1868
+#: ominicontacto_app/models.py:1872
 #, python-brace-format
 msgid "Error: {0} detectada al serializar metadata de la bd {1}"
 msgstr "Error: {0} detected when serializing database metadata {1}"
 
-#: ominicontacto_app/models.py:1876
+#: ominicontacto_app/models.py:1880
 msgid "GENERICO"
 msgstr "GENERIC"
 
-#: ominicontacto_app/models.py:1877
+#: ominicontacto_app/models.py:1881
 msgid "FECHA"
 msgstr "DATE"
 
-#: ominicontacto_app/models.py:1878
+#: ominicontacto_app/models.py:1882
 msgid "HORA"
 msgstr "HOUR"
 
-#: ominicontacto_app/models.py:1881
+#: ominicontacto_app/models.py:1885
 msgid "Dato Genérico"
 msgstr "Generic data"
 
-#: ominicontacto_app/models.py:1883
+#: ominicontacto_app/models.py:1887
 #: ominicontacto_app/templates/agenda_contacto/agenda_agente.html:82
 #: ominicontacto_app/templates/agenda_contacto/agenda_detalle.html:91
 #: ominicontacto_app/templates/agente/agenda_agente.html:104
 msgid "Hora"
 msgstr "Time"
 
-#: ominicontacto_app/models.py:1892
+#: ominicontacto_app/models.py:1896
 msgid "En Definición"
 msgstr "In Definition"
 
-#: ominicontacto_app/models.py:1893
+#: ominicontacto_app/models.py:1897
 msgid "Definida"
 msgstr "Defined"
 
-#: ominicontacto_app/models.py:1894
+#: ominicontacto_app/models.py:1898
 msgid "En Depuracion"
 msgstr "In Depuration"
 
-#: ominicontacto_app/models.py:1895
+#: ominicontacto_app/models.py:1899
 msgid "Depurada"
 msgstr "Depured"
 
-#: ominicontacto_app/models.py:1896
+#: ominicontacto_app/models.py:1900
 msgid "Definida en actualizacion"
 msgstr "Defined in updating process"
 
-#: ominicontacto_app/models.py:1903 ominicontacto_app/models.py:2810
+#: ominicontacto_app/models.py:1907 ominicontacto_app/models.py:2822
 msgid "Fecha alta"
 msgstr "Creation date"
 
-#: ominicontacto_app/models.py:1908 ominicontacto_app/models.py:2815
+#: ominicontacto_app/models.py:1912 ominicontacto_app/models.py:2827
 msgid "Archivo de importación"
 msgstr "Import file"
 
-#: ominicontacto_app/models.py:1911 ominicontacto_app/models.py:2818
+#: ominicontacto_app/models.py:1915 ominicontacto_app/models.py:2830
 msgid "Nombre Archivo de importación"
 msgstr "Import file name"
 
-#: ominicontacto_app/models.py:1941
+#: ominicontacto_app/models.py:1945
 #, python-brace-format
 msgid "Seteando base datos contacto {0} como definida"
 msgstr "Setting contact database {0} as defined"
 
-#: ominicontacto_app/models.py:2102
+#: ominicontacto_app/models.py:2106
 msgid "No se encontro contactos con este base de datos de contactos"
 msgstr "There is no contact for this database"
 
-#: ominicontacto_app/models.py:2109
+#: ominicontacto_app/models.py:2113
 msgid "No se encontraron contactos con esas bases de datos de contactos"
 msgstr "There is no contact for this database"
 
-#: ominicontacto_app/models.py:2175
+#: ominicontacto_app/models.py:2187
 msgid "No se encontro mensaje recibido con esa fecha y remitente"
 msgstr "There is no received message for that datetime and source"
 
-#: ominicontacto_app/models.py:2222
+#: ominicontacto_app/models.py:2234
 msgid "No se encontro contactos con esa fecha"
 msgstr "There is no contact for that date"
 
-#: ominicontacto_app/models.py:2231 ominicontacto_app/models.py:2241
+#: ominicontacto_app/models.py:2243 ominicontacto_app/models.py:2253
 msgid "No se encontro contactos con ese rango de fechas"
 msgstr "There is no contact for that date range"
 
-#: ominicontacto_app/models.py:2248
+#: ominicontacto_app/models.py:2260
 msgid "No se encontro contactos con esa tipo llamada"
 msgstr "There is no contact for that call type"
 
-#: ominicontacto_app/models.py:2255
+#: ominicontacto_app/models.py:2267
 msgid "No se encontro contactos con esa id cliente"
 msgstr "There is no contact for that customer ID"
 
-#: ominicontacto_app/models.py:2262
+#: ominicontacto_app/models.py:2274
 msgid "No se encontro contactos con esa tel de cliente"
 msgstr "There is no contact for that customer telephone number"
 
-#: ominicontacto_app/models.py:2295 ominicontacto_app/models.py:2302
+#: ominicontacto_app/models.py:2307 ominicontacto_app/models.py:2314
 msgid "No se encontro grabaciones "
 msgstr "There are no recording files"
 
-#: ominicontacto_app/models.py:2381
+#: ominicontacto_app/models.py:2393
 msgid "No se encontro evenos en el dia de la fecha"
 msgstr "There are no events for that date"
 
-#: ominicontacto_app/models.py:2434
+#: ominicontacto_app/models.py:2446
 msgid "No se encontro calificaciones "
 msgstr "There are no call dispositions"
 
-#: ominicontacto_app/models.py:2572
+#: ominicontacto_app/models.py:2584
 msgid "No se encontraron eventos en el dia de la fecha"
 msgstr "There are no events for that date"
 
-#: ominicontacto_app/models.py:2721
+#: ominicontacto_app/models.py:2733
 msgid "La hora 'desde' debe ser menor o igual a la hora 'hasta'."
 msgstr "'From' field should be smaller or equal than 'To' "
 
-#: ominicontacto_app/models.py:2722
+#: ominicontacto_app/models.py:2734
 msgid "La hora 'hasta' debe ser mayor a la hora 'desde'."
 msgstr "'To' should be greater than 'From'"
 
-#: ominicontacto_app/models.py:2732
+#: ominicontacto_app/models.py:2744
 msgid "Ya esta cubierto el rango horario en ese día semanal."
 msgstr "Time range already covered for the day"
 
-#: ominicontacto_app/models.py:2733
+#: ominicontacto_app/models.py:2745
 msgid "Ya esta cubierto el rango horario ese día semanal."
 msgstr "Time range already covered for the day"
 
-#: ominicontacto_app/models.py:2889
+#: ominicontacto_app/models.py:2866
+msgid "GET"
+msgstr "GET"
+
+#: ominicontacto_app/models.py:2867
+msgid "POST"
+msgstr "POST"
+
+#: ominicontacto_app/models.py:2868
+msgid "JSON"
+msgstr "JSON"
+
+#: ominicontacto_app/models.py:2875
+msgid "Embebido"
+msgstr "Embedded"
+
+#: ominicontacto_app/models.py:2876
+msgid "Nueva pestaña"
+msgstr "New Tab"
+
+#: ominicontacto_app/models.py:2928
 #: ominicontacto_app/services/estadisticas_campana.py:121
 #: ominicontacto_app/services/estadisticas_campana.py:140
 msgid "Ocupado"
 msgstr "Busy"
 
-#: ominicontacto_app/models.py:2890
+#: ominicontacto_app/models.py:2929
 msgid "Contestador"
 msgstr "Answering Machine detected"
 
-#: ominicontacto_app/models.py:2891
+#: ominicontacto_app/models.py:2930
 msgid "No atendido"
 msgstr "Not attended"
 
-#: ominicontacto_app/models.py:2892
+#: ominicontacto_app/models.py:2931
 msgid "Rechazado"
 msgstr "Rejected"
 
-#: ominicontacto_app/models.py:2893
+#: ominicontacto_app/models.py:2932
 msgid "Timeout"
 msgstr "Timeout"
 
-#: ominicontacto_app/models.py:2896
+#: ominicontacto_app/models.py:2935
 msgid "CONTESTADOR"
 msgstr "Answering Machine detected"
 
-#: ominicontacto_app/models.py:2942
+#: ominicontacto_app/models.py:2981
 #: ominicontacto_app/templates/agente/base_agente.html:303
 #: ominicontacto_app/templates/registration/login.html:52
 #: ominicontacto_app/templates/user/delete_user.html:27
 msgid "Usuario"
 msgstr "User"
+
+#: ominicontacto_app/models.py:3137
+msgid "Dato de Campaña"
+msgstr "Campaign field"
+
+#: ominicontacto_app/models.py:3138
+msgid "Dato de Contacto"
+msgstr "Database Contact "
+
+#: ominicontacto_app/models.py:3139
+msgid "Dato de Llamada"
+msgstr "Call data"
+
+#: ominicontacto_app/models.py:3140
+msgid "Fijo"
+msgstr "Fixed"
+
+#: ominicontacto_app/models.py:3144
+msgid "ID de Campaña"
+msgstr "Campaign ID"
+
+#: ominicontacto_app/models.py:3146
+msgid "Tipo de Campaña"
+msgstr "Campaign type"
+
+#: ominicontacto_app/models.py:3151
+msgid "ID de Llamada"
+msgstr "Call ID"
+
+#: ominicontacto_app/models.py:3152
+msgid "ID de Agente"
+msgstr "Agent ID"
+
+#: ominicontacto_app/models.py:3153
+#: ominicontacto_app/templates/agente/base_agente.html:609
+#: ominicontacto_app/templates/agente/contactos_content.html:56
+#: ominicontacto_app/templates/agente/contactos_telefonos_repetidos.html:53
+#: ominicontacto_app/templates/agente/reporte_agente_calificaciones.html:102
+#: ominicontacto_app/templates/base_datos_contacto/contacto_list_bd_contacto.html:30
+#: ominicontacto_app/templates/campana_preview/contactos_asignados.html:46
+#: ominicontacto_app/templates/contactos/busqueda_contacto.html:63
+#: ominicontacto_app/templates/formulario/formulario_detalle.html:84
+msgid "Teléfono"
+msgstr "Phone Number"
+
+#: ominicontacto_app/models.py:3154
+msgid "ID de Cliente"
+msgstr "Customer ID"
+
+#: ominicontacto_app/models.py:3155
+msgid "Archivo de Grabación"
+msgstr "Recording File"
+
+#: ominicontacto_app/models.py:3156
+msgid "Tiempo de espera"
+msgstr "Waiting Time"
 
 #: ominicontacto_app/parser.py:122
 #, python-brace-format
@@ -1160,8 +1260,8 @@ msgstr "Cancelled"
 
 #: ominicontacto_app/services/estadisticas_campana.py:119
 #: ominicontacto_app/services/estadisticas_campana.py:139
-#: ominicontacto_app/services/estadisticas_campana.py:315
-#: ominicontacto_app/services/estadisticas_campana.py:340
+#: ominicontacto_app/services/estadisticas_campana.py:333
+#: ominicontacto_app/services/estadisticas_campana.py:358
 msgid "Contestador detectado"
 msgstr "Answer Machine Detected"
 
@@ -1192,8 +1292,8 @@ msgstr "Abandoned Calls"
 
 #: ominicontacto_app/services/estadisticas_campana.py:133
 #: ominicontacto_app/services/estadisticas_campana.py:146
-#: ominicontacto_app/services/estadisticas_campana.py:270
-#: ominicontacto_app/services/estadisticas_campana.py:278
+#: ominicontacto_app/services/estadisticas_campana.py:288
+#: ominicontacto_app/services/estadisticas_campana.py:296
 #: ominicontacto_app/templates/campana/tiempos_llamadas.html:136
 msgid "Expiradas"
 msgstr "Expired Calls"
@@ -1206,113 +1306,113 @@ msgstr "Congested Channel"
 msgid "Problema de enrutamiento"
 msgstr "Routing Problem"
 
-#: ominicontacto_app/services/estadisticas_campana.py:267
-#: ominicontacto_app/services/estadisticas_campana.py:275
+#: ominicontacto_app/services/estadisticas_campana.py:285
+#: ominicontacto_app/services/estadisticas_campana.py:293
 #: ominicontacto_app/templates/campana/tiempos_llamadas.html:134
 msgid "Recibidas"
 msgstr "Received Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:268
-#: ominicontacto_app/services/estadisticas_campana.py:276
+#: ominicontacto_app/services/estadisticas_campana.py:286
+#: ominicontacto_app/services/estadisticas_campana.py:294
 msgid "Transferencias recibidas"
 msgstr "Transferred Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:269
-#: ominicontacto_app/services/estadisticas_campana.py:277
-#: ominicontacto_app/services/estadisticas_campana.py:309
-#: ominicontacto_app/services/estadisticas_campana.py:336
+#: ominicontacto_app/services/estadisticas_campana.py:287
+#: ominicontacto_app/services/estadisticas_campana.py:295
+#: ominicontacto_app/services/estadisticas_campana.py:327
+#: ominicontacto_app/services/estadisticas_campana.py:354
 #: ominicontacto_app/templates/campana/tiempos_llamadas.html:135
 msgid "Atendidas"
 msgstr "Answered Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:271
-#: ominicontacto_app/services/estadisticas_campana.py:279
+#: ominicontacto_app/services/estadisticas_campana.py:289
+#: ominicontacto_app/services/estadisticas_campana.py:297
 #: ominicontacto_app/templates/campana/tiempos_llamadas.html:137
 msgid "Abandonadas"
 msgstr "Abandoned Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:272
-#: ominicontacto_app/services/estadisticas_campana.py:280
-#: ominicontacto_app/services/estadisticas_campana.py:317
-#: ominicontacto_app/services/estadisticas_campana.py:332
-#: ominicontacto_app/services/estadisticas_campana.py:393
-#: ominicontacto_app/services/estadisticas_campana.py:415
+#: ominicontacto_app/services/estadisticas_campana.py:290
+#: ominicontacto_app/services/estadisticas_campana.py:298
+#: ominicontacto_app/services/estadisticas_campana.py:335
+#: ominicontacto_app/services/estadisticas_campana.py:350
+#: ominicontacto_app/services/estadisticas_campana.py:411
+#: ominicontacto_app/services/estadisticas_campana.py:433
 #: ominicontacto_app/templates/campana/tiempos_llamadas.html:138
 msgid "Manuales"
 msgstr "Manual Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:273
-#: ominicontacto_app/services/estadisticas_campana.py:281
-#: ominicontacto_app/services/estadisticas_campana.py:319
-#: ominicontacto_app/services/estadisticas_campana.py:338
-#: ominicontacto_app/services/estadisticas_campana.py:395
-#: ominicontacto_app/services/estadisticas_campana.py:407
+#: ominicontacto_app/services/estadisticas_campana.py:291
+#: ominicontacto_app/services/estadisticas_campana.py:299
+#: ominicontacto_app/services/estadisticas_campana.py:337
+#: ominicontacto_app/services/estadisticas_campana.py:356
+#: ominicontacto_app/services/estadisticas_campana.py:413
+#: ominicontacto_app/services/estadisticas_campana.py:425
 #: ominicontacto_app/templates/campana/tiempos_llamadas.html:139
 msgid "Manuales atendidas"
 msgstr "Answered Manual Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:293
-#: ominicontacto_app/services/estadisticas_campana.py:321
-#: ominicontacto_app/services/estadisticas_campana.py:346
-#: ominicontacto_app/services/estadisticas_campana.py:397
-#: ominicontacto_app/services/estadisticas_campana.py:413
+#: ominicontacto_app/services/estadisticas_campana.py:311
+#: ominicontacto_app/services/estadisticas_campana.py:339
+#: ominicontacto_app/services/estadisticas_campana.py:364
+#: ominicontacto_app/services/estadisticas_campana.py:415
+#: ominicontacto_app/services/estadisticas_campana.py:431
 #: ominicontacto_app/templates/campana/tiempos_llamadas.html:140
 msgid "Manuales no atendidas"
 msgstr "No Answered Manual Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:307
-#: ominicontacto_app/services/estadisticas_campana.py:330
-#: ominicontacto_app/services/estadisticas_campana.py:359
-#: ominicontacto_app/services/estadisticas_campana.py:370
-#: ominicontacto_app/services/estadisticas_campana.py:387
-#: ominicontacto_app/services/estadisticas_campana.py:417
+#: ominicontacto_app/services/estadisticas_campana.py:325
+#: ominicontacto_app/services/estadisticas_campana.py:348
+#: ominicontacto_app/services/estadisticas_campana.py:377
+#: ominicontacto_app/services/estadisticas_campana.py:388
+#: ominicontacto_app/services/estadisticas_campana.py:405
+#: ominicontacto_app/services/estadisticas_campana.py:435
 msgid "Discadas"
 msgstr "Dialed Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:311
-#: ominicontacto_app/services/estadisticas_campana.py:334
+#: ominicontacto_app/services/estadisticas_campana.py:329
+#: ominicontacto_app/services/estadisticas_campana.py:352
 msgid "Conectadas al agente"
 msgstr "Calls Connected to Agent"
 
-#: ominicontacto_app/services/estadisticas_campana.py:313
-#: ominicontacto_app/services/estadisticas_campana.py:343
+#: ominicontacto_app/services/estadisticas_campana.py:331
+#: ominicontacto_app/services/estadisticas_campana.py:361
 msgid "Perdidas"
 msgstr "Lost Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:361
-#: ominicontacto_app/services/estadisticas_campana.py:372
+#: ominicontacto_app/services/estadisticas_campana.py:379
+#: ominicontacto_app/services/estadisticas_campana.py:390
 msgid "Discadas atendidas"
 msgstr "Dialed and Answered Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:363
-#: ominicontacto_app/services/estadisticas_campana.py:374
+#: ominicontacto_app/services/estadisticas_campana.py:381
+#: ominicontacto_app/services/estadisticas_campana.py:392
 msgid "Discadas no atendidas"
 msgstr "Dialed No Answered Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:389
-#: ominicontacto_app/services/estadisticas_campana.py:405
+#: ominicontacto_app/services/estadisticas_campana.py:407
+#: ominicontacto_app/services/estadisticas_campana.py:423
 msgid "Conectadas"
 msgstr "Connected Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:391
-#: ominicontacto_app/services/estadisticas_campana.py:410
+#: ominicontacto_app/services/estadisticas_campana.py:409
+#: ominicontacto_app/services/estadisticas_campana.py:428
 msgid "No conectadas"
 msgstr "Calls Not Connected"
 
-#: ominicontacto_app/services/estadisticas_campana.py:536
+#: ominicontacto_app/services/estadisticas_campana.py:554
 #: ominicontacto_app/services/reporte_llamadas_campana.py:80
 msgid "Generando grafico calificaciones de campana por cliente "
 msgstr "Generating graph of campagin disposition per customer"
 
-#: ominicontacto_app/services/estadisticas_campana.py:541
+#: ominicontacto_app/services/estadisticas_campana.py:559
 msgid "Cantidad de calificacion de cliente "
 msgstr "Call Dispositions"
 
-#: ominicontacto_app/services/estadisticas_campana.py:555
+#: ominicontacto_app/services/estadisticas_campana.py:573
 msgid "Cantidad de llamadas no atendidos "
 msgstr "No Answered Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:567
+#: ominicontacto_app/services/estadisticas_campana.py:585
 msgid "Detalles de llamadas "
 msgstr "Call Details"
 
@@ -1354,7 +1454,7 @@ msgstr "use_amd"
 msgid "id_contacto"
 msgstr "id_contact"
 
-#: ominicontacto_app/services/exportar_base_datos.py:152
+#: ominicontacto_app/services/exportar_base_datos.py:150
 #, python-brace-format
 msgid "Creando archivo para asociacion lista {0} campana"
 msgstr "Generating file for mapping list {0} campaign"
@@ -1702,6 +1802,7 @@ msgstr "Time:"
 
 #: ominicontacto_app/templates/agenda_contacto/create_agenda_contacto.html:120
 #: ominicontacto_app/templates/formulario/formulario_field.html:109
+#: ominicontacto_app/templates/sitio_externo/create_update_form.html:45
 msgid "Tipo:"
 msgstr "Type:"
 
@@ -1721,10 +1822,10 @@ msgstr "Back to Call Disposition"
 #: ominicontacto_app/templates/campana_dialer/cambiar_base.html:66
 #: ominicontacto_app/templates/campana_dialer/campana_supervisors.html:40
 #: ominicontacto_app/templates/contactos/nuevo_contacto_campana.html:94
-#: ominicontacto_app/templates/formulario/calificacion_create_update.html:61
+#: ominicontacto_app/templates/formulario/calificacion_create_update.html:66
 #: ominicontacto_app/templates/formulario/formulario_create.html:67
 #: ominicontacto_app/templates/grupo_create_update.html:65
-#: ominicontacto_app/templates/sitio_externo/create_update_form.html:44
+#: ominicontacto_app/templates/sitio_externo/create_update_form.html:57
 #: ominicontacto_app/templates/user/user_create_update_form.html:31
 msgid "Guardar"
 msgstr "Save"
@@ -1871,7 +1972,7 @@ msgstr "Action"
 #: ominicontacto_app/templates/campana_dialer/campana_list.html:312
 #: ominicontacto_app/templates/campana_dialer/campana_list.html:387
 #: ominicontacto_app/templates/campana_dialer/detalle.html:27
-#: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:73
+#: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:75
 #: ominicontacto_app/templates/campana_manual/campana_list_base.html:67
 #: ominicontacto_app/templates/campana_manual/campana_list_base.html:88
 #: ominicontacto_app/templates/campana_preview/campana_list.html:149
@@ -1943,7 +2044,7 @@ msgstr "Phone Number"
 #: ominicontacto_app/templates/modulo_list.html:32
 #: ominicontacto_app/templates/pausa_list.html:33
 #: ominicontacto_app/templates/pausa_list.html:74
-#: ominicontacto_app/templates/sitio_externo/sitio_externo_list.html:48
+#: ominicontacto_app/templates/sitio_externo/sitio_externo_list.html:50
 #: ominicontacto_app/templates/template/lista_template.html:33
 #: ominicontacto_app/templates/user/user_list.html:36
 msgid "Acciones"
@@ -2050,17 +2151,6 @@ msgstr "Pause"
 msgid "Reaundar"
 msgstr "Resume"
 
-#: ominicontacto_app/templates/agente/base_agente.html:609
-#: ominicontacto_app/templates/agente/contactos_content.html:56
-#: ominicontacto_app/templates/agente/contactos_telefonos_repetidos.html:53
-#: ominicontacto_app/templates/agente/reporte_agente_calificaciones.html:102
-#: ominicontacto_app/templates/base_datos_contacto/contacto_list_bd_contacto.html:30
-#: ominicontacto_app/templates/campana_preview/contactos_asignados.html:46
-#: ominicontacto_app/templates/contactos/busqueda_contacto.html:63
-#: ominicontacto_app/templates/formulario/formulario_detalle.html:84
-msgid "Teléfono"
-msgstr "Phone Number"
-
 #: ominicontacto_app/templates/agente/base_agente.html:650
 #: ominicontacto_app/templates/contactos/busqueda_contacto.html:78
 msgid "Llamar"
@@ -2126,36 +2216,36 @@ msgstr "Social Networks"
 msgid "Email"
 msgstr "Email"
 
-#: ominicontacto_app/templates/agente/campanas_preview.html:61
+#: ominicontacto_app/templates/agente/campanas_preview.html:60
 msgid "Haga click para obtener un contacto de la campaña"
 msgstr "Click here to get a campaign contact"
 
-#: ominicontacto_app/templates/agente/campanas_preview.html:66
+#: ominicontacto_app/templates/agente/campanas_preview.html:65
 msgid "No hay campañas"
 msgstr "No Cmapaigns"
 
-#: ominicontacto_app/templates/agente/campanas_preview.html:75
+#: ominicontacto_app/templates/agente/campanas_preview.html:74
 msgid "Datos contacto"
 msgstr "Contact Data"
 
-#: ominicontacto_app/templates/agente/campanas_preview.html:90
+#: ominicontacto_app/templates/agente/campanas_preview.html:89
 msgid "Haga click para llamar al contacto"
 msgstr "Click here to call the contact"
 
-#: ominicontacto_app/templates/agente/campanas_preview.html:95
+#: ominicontacto_app/templates/agente/campanas_preview.html:94
 msgid "Haga click para liberar al contacto"
 msgstr "Click here to release the contact"
 
-#: ominicontacto_app/templates/agente/campanas_preview.html:95
+#: ominicontacto_app/templates/agente/campanas_preview.html:94
 #: ominicontacto_app/templates/campana_preview/contactos_asignados.html:64
 msgid "Liberar"
 msgstr "Release"
 
-#: ominicontacto_app/templates/agente/campanas_preview.html:98
+#: ominicontacto_app/templates/agente/campanas_preview.html:97
 msgid "Haga click para editar la calificación"
 msgstr "Click here to edit call disposition"
 
-#: ominicontacto_app/templates/agente/campanas_preview.html:98
+#: ominicontacto_app/templates/agente/campanas_preview.html:97
 #: ominicontacto_app/templates/agente/contactos_telefonos_repetidos.html:55
 msgid "Calificar"
 msgstr "Call Disposition"
@@ -2186,7 +2276,7 @@ msgstr "Contacts with this phone number:"
 msgid "Datos"
 msgstr "Data"
 
-#: ominicontacto_app/templates/agente/contactos_telefonos_repetidos.html:73
+#: ominicontacto_app/templates/agente/contactos_telefonos_repetidos.html:77
 #: ominicontacto_app/templates/base_datos_contacto/contacto_list_bd_contacto.html:58
 #: ominicontacto_app/templates/contactos/busqueda_contacto.html:89
 msgid "No existen contactos"
@@ -2576,6 +2666,7 @@ msgid "Listado de formularios"
 msgstr "Forms List"
 
 #: ominicontacto_app/templates/base.html:264
+#: ominicontacto_app/templates/sitio_externo/sitio_externo_list.html:38
 msgid "Sitios Externos"
 msgstr "External Sites"
 
@@ -2699,8 +2790,8 @@ msgstr "Add Contacts"
 #: ominicontacto_app/templates/campana_manual/campanas_borradas.html:50
 #: ominicontacto_app/templates/campana_preview/campana_list.html:229
 #: ominicontacto_app/templates/campana_preview/campanas_borradas.html:48
-#: ominicontacto_app/templates/sitio_externo/sitio_externo_list.html:63
-#: ominicontacto_app/templates/sitio_externo/sitios_ocultos.html:33
+#: ominicontacto_app/templates/sitio_externo/sitio_externo_list.html:73
+#: ominicontacto_app/templates/sitio_externo/sitios_ocultos.html:38
 msgid "Hacer visible"
 msgstr "Visible"
 
@@ -2714,8 +2805,8 @@ msgstr "Visible"
 #: ominicontacto_app/templates/campana_preview/campana_list.html:234
 #: ominicontacto_app/templates/campana_preview/campanas_borradas.html:53
 #: ominicontacto_app/templates/formulario/formulario_list.html:61
-#: ominicontacto_app/templates/sitio_externo/sitio_externo_list.html:67
-#: ominicontacto_app/templates/sitio_externo/sitios_ocultos.html:37
+#: ominicontacto_app/templates/sitio_externo/sitio_externo_list.html:77
+#: ominicontacto_app/templates/sitio_externo/sitios_ocultos.html:42
 msgid "Ocultar"
 msgstr "Hide"
 
@@ -2971,8 +3062,8 @@ msgstr "Inbound Campaign: Queue Information"
 #: ominicontacto_app/templates/campana/create_update_queue.html:35
 #: ominicontacto_app/templates/campana/nueva_edita_campana.html:28
 #: ominicontacto_app/templates/campana/opcion_calificacion.html:66
-#: ominicontacto_app/templates/campana/parametros_extra_web_form.html:48
-#: ominicontacto_app/templates/campana_dialer/parametros_extra_web_form.html:43
+#: ominicontacto_app/templates/campana/parametros_crm_sitio_externo.html:48
+#: ominicontacto_app/templates/campana_dialer/parametros_crm_sitio_externo.html:43
 msgid "Datos básicos de la cola"
 msgstr "Queue Basic Information"
 
@@ -2980,134 +3071,132 @@ msgstr "Queue Basic Information"
 #: ominicontacto_app/templates/campana/detalle_campana_template.html:79
 #: ominicontacto_app/templates/campana/nueva_edita_campana.html:29
 #: ominicontacto_app/templates/campana/opcion_calificacion.html:67
-#: ominicontacto_app/templates/campana/parametros_extra_web_form.html:49
+#: ominicontacto_app/templates/campana/parametros_crm_sitio_externo.html:49
 #: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:44
 #: ominicontacto_app/templates/campana_dialer/create_update_queue.html:52
 #: ominicontacto_app/templates/campana_dialer/detalle.html:29
-#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:40
+#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:47
 #: ominicontacto_app/templates/campana_dialer/opcion_calificacion.html:29
-#: ominicontacto_app/templates/campana_dialer/parametros_extra_web_form.html:44
+#: ominicontacto_app/templates/campana_dialer/parametros_crm_sitio_externo.html:44
 #: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:59
 #: ominicontacto_app/templates/campana_dialer/sincronizar_lista.html:29
 #: ominicontacto_app/templates/campana_manual/campana_manual_base.html:32
 #: ominicontacto_app/templates/campana_manual/detalle_campana_template.html:79
 #: ominicontacto_app/templates/campana_manual/opcion_calificacion.html:28
-#: ominicontacto_app/templates/campana_manual/parametros_extra_web_form.html:43
+#: ominicontacto_app/templates/campana_manual/parametros_crm_sitio_externo.html:43
 #: ominicontacto_app/templates/campana_preview/campana_preview.html:32
 #: ominicontacto_app/templates/campana_preview/detalle.html:30
 #: ominicontacto_app/templates/campana_preview/detalle_campana_template.html:79
 #: ominicontacto_app/templates/campana_preview/detalle_express.html:27
 #: ominicontacto_app/templates/campana_preview/opcion_calificacion.html:28
-#: ominicontacto_app/templates/campana_preview/parametros_extra_web_form.html:29
+#: ominicontacto_app/templates/campana_preview/parametros_crm_sitio_externo.html:29
 msgid "Opciones de calificación"
 msgstr "Call Disposition Options"
 
-#: ominicontacto_app/templates/campana/create_update_queue.html:37
-#: ominicontacto_app/templates/campana/nueva_edita_campana.html:30
-#: ominicontacto_app/templates/campana/opcion_calificacion.html:68
-#: ominicontacto_app/templates/campana/parametros_extra_web_form.html:50
-#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:45
-#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:53
-#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:41
-#: ominicontacto_app/templates/campana_dialer/opcion_calificacion.html:30
-#: ominicontacto_app/templates/campana_dialer/parametros_extra_web_form.html:45
-#: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:60
-#: ominicontacto_app/templates/campana_dialer/sincronizar_lista.html:30
-#: ominicontacto_app/templates/campana_manual/campana_manual_base.html:33
-#: ominicontacto_app/templates/campana_manual/opcion_calificacion.html:29
-#: ominicontacto_app/templates/campana_manual/parametros_extra_web_form.html:44
-#: ominicontacto_app/templates/campana_preview/campana_preview.html:33
-#: ominicontacto_app/templates/campana_preview/opcion_calificacion.html:29
-#: ominicontacto_app/templates/campana_preview/parametros_extra_web_form.html:30
-msgid "Parámetros extra web form"
-msgstr "Web Form Extra Parameters"
+#: ominicontacto_app/templates/campana/create_update_queue.html:38
+#: ominicontacto_app/templates/campana/nueva_edita_campana.html:31
+#: ominicontacto_app/templates/campana/opcion_calificacion.html:69
+#: ominicontacto_app/templates/campana/parametros_crm_sitio_externo.html:50
+#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:46
+#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:54
+#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:49
+#: ominicontacto_app/templates/campana_dialer/opcion_calificacion.html:31
+#: ominicontacto_app/templates/campana_dialer/parametros_crm_sitio_externo.html:45
+#: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:61
+#: ominicontacto_app/templates/campana_dialer/sincronizar_lista.html:31
+#: ominicontacto_app/templates/campana_manual/parametros_crm_sitio_externo.html:44
+#: ominicontacto_app/templates/campana_preview/campana_preview.html:34
+#: ominicontacto_app/templates/campana_preview/opcion_calificacion.html:30
+#: ominicontacto_app/templates/campana_preview/parametros_crm_sitio_externo.html:30
+msgid "Interacción con Sitio Externo"
+msgstr "External Site interaction"
 
-#: ominicontacto_app/templates/campana/create_update_queue.html:49
+#: ominicontacto_app/templates/campana/create_update_queue.html:51
 msgid "Tiempo de Ring:"
 msgstr "Rigning Time:"
 
-#: ominicontacto_app/templates/campana/create_update_queue.html:57
+#: ominicontacto_app/templates/campana/create_update_queue.html:59
 msgid "Tiempo de Reintento:"
 msgstr "Agent Callback Time:"
 
-#: ominicontacto_app/templates/campana/create_update_queue.html:65
+#: ominicontacto_app/templates/campana/create_update_queue.html:67
 msgid "Audio de ingreso:"
 msgstr "Welcome Message:"
 
-#: ominicontacto_app/templates/campana/create_update_queue.html:70
-#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:73
+#: ominicontacto_app/templates/campana/create_update_queue.html:72
+#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:75
 #: ominicontacto_app/templates/campana_manual/create_update_queue.html:41
 #: ominicontacto_app/templates/template/template_detalle.html:53
 msgid "Cantidad Max de llamadas:"
 msgstr "Max amount of calls:"
 
-#: ominicontacto_app/templates/campana/create_update_queue.html:74
-#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:77
+#: ominicontacto_app/templates/campana/create_update_queue.html:76
+#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:79
 msgid "Se recomienda un valor mayor o igual a 2"
 msgstr "We strongly recommend a value equal or greater than 2"
 
-#: ominicontacto_app/templates/campana/create_update_queue.html:75
-#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:78
+#: ominicontacto_app/templates/campana/create_update_queue.html:77
+#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:80
 #: ominicontacto_app/templates/campana_manual/create_update_queue.html:48
 #: ominicontacto_app/templates/template/template_detalle.html:57
 msgid "Tiempo de descanso entre llamadas:"
 msgstr "Wrap up time:"
 
-#: ominicontacto_app/templates/campana/create_update_queue.html:83
-#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:86
+#: ominicontacto_app/templates/campana/create_update_queue.html:85
+#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:88
 #: ominicontacto_app/templates/campana_manual/create_update_queue.html:55
 #: ominicontacto_app/templates/template/template_detalle.html:61
 msgid "Nivel de Servicio:"
 msgstr "Service Level:"
 
-#: ominicontacto_app/templates/campana/create_update_queue.html:88
-#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:91
+#: ominicontacto_app/templates/campana/create_update_queue.html:90
+#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:93
 #: ominicontacto_app/templates/campana_manual/create_update_queue.html:62
 #: ominicontacto_app/templates/template/template_detalle.html:65
 msgid "Estrategia de distribución:"
 msgstr "Distribution Strategy:"
 
-#: ominicontacto_app/templates/campana/create_update_queue.html:93
+#: ominicontacto_app/templates/campana/create_update_queue.html:95
 #: ominicontacto_app/templates/campana_manual/create_update_queue.html:69
 #: ominicontacto_app/templates/template/template_detalle.html:69
 msgid "Importancia de campaña:"
 msgstr "Campaign Priority:"
 
-#: ominicontacto_app/templates/campana/create_update_queue.html:98
-#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:101
+#: ominicontacto_app/templates/campana/create_update_queue.html:100
+#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:103
 #: ominicontacto_app/templates/campana_manual/create_update_queue.html:76
 #: ominicontacto_app/templates/template/template_detalle.html:73
 msgid "Tiempo de espera en cola:"
 msgstr "Waiting Time:"
 
-#: ominicontacto_app/templates/campana/create_update_queue.html:106
-#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:109
-#: ominicontacto_app/templates/campana_manual/campana_manual_base.html:69
+#: ominicontacto_app/templates/campana/create_update_queue.html:108
+#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:111
+#: ominicontacto_app/templates/campana_manual/campana_manual_base.html:76
 #: ominicontacto_app/templates/campana_manual/create_update_queue.html:83
 #: ominicontacto_app/templates/template/template_detalle.html:77
 msgid "Grabar llamados:"
 msgstr "Enable Recordings:"
 
-#: ominicontacto_app/templates/campana/create_update_queue.html:111
+#: ominicontacto_app/templates/campana/create_update_queue.html:113
 msgid "Anuncio periódico:"
 msgstr "Periodic Announcement:"
 
-#: ominicontacto_app/templates/campana/create_update_queue.html:116
+#: ominicontacto_app/templates/campana/create_update_queue.html:118
 msgid "Frecuencia del anuncio:"
 msgstr "Announcement Frequency:"
 
-#: ominicontacto_app/templates/campana/create_update_queue.html:124
-#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:142
+#: ominicontacto_app/templates/campana/create_update_queue.html:126
+#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:144
 msgid "Destino en caso de timeout"
 msgstr "Failover Destination:"
 
-#: ominicontacto_app/templates/campana/create_update_queue.html:126
-#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:144
+#: ominicontacto_app/templates/campana/create_update_queue.html:128
+#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:146
 msgid "Tipo destino:"
 msgstr "Destination Type:"
 
-#: ominicontacto_app/templates/campana/create_update_queue.html:131
-#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:149
+#: ominicontacto_app/templates/campana/create_update_queue.html:133
+#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:151
 msgid "Destino:"
 msgstr "Destination:"
 
@@ -3245,43 +3334,42 @@ msgstr "There are no calls"
 msgid "Campaña Entrante: Datos Básicos"
 msgstr "Inbound Campaign: Basic Information"
 
-#: ominicontacto_app/templates/campana/nueva_edita_campana.html:38
+#: ominicontacto_app/templates/campana/nueva_edita_campana.html:40
 #: ominicontacto_app/templates/campana_dialer/detalle_campana.html:37
-#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:57
-#: ominicontacto_app/templates/campana_manual/campana_manual_base.html:42
+#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:66
+#: ominicontacto_app/templates/campana_manual/campana_manual_base.html:47
 #: ominicontacto_app/templates/formulario/formulario_create_update_form.html:38
-#: ominicontacto_app/templates/sitio_externo/create_update_form.html:32
+#: ominicontacto_app/templates/sitio_externo/create_update_form.html:35
 msgid "Nombre:"
 msgstr "Name:"
 
-#: ominicontacto_app/templates/campana/nueva_edita_campana.html:41
-#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:60
-#: ominicontacto_app/templates/campana_manual/campana_manual_base.html:45
+#: ominicontacto_app/templates/campana/nueva_edita_campana.html:43
+#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:69
+#: ominicontacto_app/templates/campana_manual/campana_manual_base.html:50
 msgid ""
 "Los espacios, tildes, ñ-es y otros caracteres no ASCII no están permitidos."
 msgstr "Only ASCII characters are allowed."
 
-#: ominicontacto_app/templates/campana/nueva_edita_campana.html:46
-#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:65
+#: ominicontacto_app/templates/campana/nueva_edita_campana.html:48
+#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:74
 msgid "Mostrar nombre al recibir llamado"
 msgstr "Show campaign name when receiving call"
 
-#: ominicontacto_app/templates/campana/nueva_edita_campana.html:50
+#: ominicontacto_app/templates/campana/nueva_edita_campana.html:52
 #: ominicontacto_app/templates/campana_dialer/cambiar_base.html:32
-#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:81
-#: ominicontacto_app/templates/campana_manual/campana_manual_base.html:50
+#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:90
+#: ominicontacto_app/templates/campana_manual/campana_manual_base.html:55
 msgid "Base de Datos de Contactos:"
 msgstr "Contact Database"
 
-#: ominicontacto_app/templates/campana/nueva_edita_campana.html:56
-#: ominicontacto_app/templates/campana_dialer/edita_campana.html:26
-#: ominicontacto_app/templates/campana_manual/campana_manual_base.html:56
-msgid "Formulario:"
-msgstr "Form:"
+#: ominicontacto_app/templates/campana/nueva_edita_campana.html:68
+#: ominicontacto_app/templates/campana_preview/campana_preview.html:51
+msgid "Sitio Externo"
+msgstr "External Site"
 
-#: ominicontacto_app/templates/campana/nueva_edita_campana.html:69
-#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:99
-#: ominicontacto_app/templates/campana_manual/campana_manual_base.html:74
+#: ominicontacto_app/templates/campana/nueva_edita_campana.html:87
+#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:108
+#: ominicontacto_app/templates/campana_manual/campana_manual_base.html:81
 msgid "Objetivo:"
 msgstr "Scope:"
 
@@ -3289,9 +3377,10 @@ msgstr "Scope:"
 msgid "Campaña Entrante: Opciones de calificación"
 msgstr "Inbound Campaign: Call Disposition Options"
 
-#: ominicontacto_app/templates/campana/parametros_extra_web_form.html:44
-msgid "Campaña Entrante: Parámetros extra para web form"
-msgstr "Inbound Campaign: Extra Web Form Parameters"
+#: ominicontacto_app/templates/campana/parametros_crm_sitio_externo.html:44
+#: ominicontacto_app/templates/campana_dialer/parametros_crm_sitio_externo.html:39
+msgid "Campaña Dialer: Interacción con Sitio Externo"
+msgstr "Dialer Campaign: External Site interaction"
 
 #: ominicontacto_app/templates/campana/tiempos_llamadas.html:76
 msgid "Filtrar por esa fecha"
@@ -3367,7 +3456,7 @@ msgstr "Dialer Campaign: Opening Hours"
 
 #: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:43
 #: ominicontacto_app/templates/campana_dialer/create_update_queue.html:51
-#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:39
+#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:46
 #: ominicontacto_app/templates/campana_dialer/opcion_calificacion.html:28
 #: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:58
 #: ominicontacto_app/templates/campana_dialer/sincronizar_lista.html:28
@@ -3377,74 +3466,74 @@ msgstr "Dialer Campaign: Opening Hours"
 msgid "Cola"
 msgstr "Queue"
 
-#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:46
-#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:55
-#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:43
-#: ominicontacto_app/templates/campana_dialer/opcion_calificacion.html:32
-#: ominicontacto_app/templates/campana_dialer/parametros_extra_web_form.html:47
-#: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:61
-#: ominicontacto_app/templates/campana_dialer/sincronizar_lista.html:31
+#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:48
+#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:57
+#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:52
+#: ominicontacto_app/templates/campana_dialer/opcion_calificacion.html:34
+#: ominicontacto_app/templates/campana_dialer/parametros_crm_sitio_externo.html:47
+#: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:63
+#: ominicontacto_app/templates/campana_dialer/sincronizar_lista.html:33
 msgid "Actuacion"
 msgstr "Opening Hours"
 
-#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:47
-#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:56
-#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:44
-#: ominicontacto_app/templates/campana_dialer/opcion_calificacion.html:33
-#: ominicontacto_app/templates/campana_dialer/parametros_extra_web_form.html:48
-#: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:62
-#: ominicontacto_app/templates/campana_dialer/sincronizar_lista.html:32
+#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:49
+#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:58
+#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:53
+#: ominicontacto_app/templates/campana_dialer/opcion_calificacion.html:35
+#: ominicontacto_app/templates/campana_dialer/parametros_crm_sitio_externo.html:48
+#: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:64
+#: ominicontacto_app/templates/campana_dialer/sincronizar_lista.html:34
 msgid "Reglas Incidencias"
 msgstr "Incidence Rules"
 
-#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:49
-#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:58
-#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:46
-#: ominicontacto_app/templates/campana_dialer/opcion_calificacion.html:35
-#: ominicontacto_app/templates/campana_dialer/parametros_extra_web_form.html:50
-#: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:64
-#: ominicontacto_app/templates/campana_dialer/sincronizar_lista.html:33
+#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:51
+#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:60
+#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:55
+#: ominicontacto_app/templates/campana_dialer/opcion_calificacion.html:37
+#: ominicontacto_app/templates/campana_dialer/parametros_crm_sitio_externo.html:50
+#: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:66
+#: ominicontacto_app/templates/campana_dialer/sincronizar_lista.html:35
 msgid "Sincronizar"
 msgstr "Sync"
 
-#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:60
+#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:62
 msgid "Domingo:"
 msgstr "Sunday:"
 
-#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:65
+#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:67
 msgid "Lunes:"
 msgstr "Monday:"
 
-#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:70
+#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:72
 msgid "Martes:"
 msgstr "Tuesday:"
 
-#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:75
+#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:77
 msgid "Miércoles:"
 msgstr "Wednesday:"
 
-#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:80
+#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:82
 msgid "Jueves:"
 msgstr "Thursday:"
 
-#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:85
+#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:87
 msgid "Viernes:"
 msgstr "Friday:"
 
-#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:90
+#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:92
 msgid "Sábado:"
 msgstr "Saturday:"
 
-#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:97
+#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:99
 msgid "Hora desde:"
 msgstr "From Time:"
 
-#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:102
+#: ominicontacto_app/templates/campana_dialer/actuacion_vigente_campana.html:104
 msgid "Hora hasta:"
 msgstr "To Time:"
 
 #: ominicontacto_app/templates/campana_dialer/cambiar_base.html:39
-#: ominicontacto_app/templates/campana_dialer/sincronizar_lista.html:42
+#: ominicontacto_app/templates/campana_dialer/sincronizar_lista.html:44
 msgid "Evitar duplicados:"
 msgstr "Avoid Duplicated:"
 
@@ -3453,7 +3542,7 @@ msgid "Evitar sin teléfono:"
 msgstr "Avoid empty phone numbers:"
 
 #: ominicontacto_app/templates/campana_dialer/cambiar_base.html:53
-#: ominicontacto_app/templates/campana_dialer/sincronizar_lista.html:52
+#: ominicontacto_app/templates/campana_dialer/sincronizar_lista.html:54
 msgid "Prefijo discador:"
 msgstr "Dialer Prefix:"
 
@@ -3530,35 +3619,35 @@ msgstr "Change Database"
 msgid "Campaña Dialer: Datos de Cola"
 msgstr "Dialer Campaign: Queue Information"
 
-#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:67
+#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:69
 #: ominicontacto_app/templates/campana_manual/create_update_queue.html:33
 #: ominicontacto_app/templates/queue/create_update_queue.html:33
 msgid "Modificar datos de la cola"
 msgstr "Edit queue data"
 
-#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:96
+#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:98
 msgid "Importancia de de campaña:"
 msgstr "Campaign Priority:"
 
-#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:114
+#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:116
 #: ominicontacto_app/templates/campana_manual/create_update_queue.html:90
 #: ominicontacto_app/templates/template/template_detalle.html:87
 msgid "Detectar contestadores:"
 msgstr "Answ Machine Detection:"
 
-#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:119
+#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:121
 msgid "Audio para contestadores:"
 msgstr "Audio for machines detected:"
 
-#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:124
+#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:126
 msgid "Activar predictividad:"
 msgstr "Activate predictivity:"
 
-#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:129
+#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:131
 msgid "Factor de boost inicial:"
 msgstr "Initial Boost Factor:"
 
-#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:134
+#: ominicontacto_app/templates/campana_dialer/create_update_queue.html:136
 msgid "Dial timeout:"
 msgstr "Dial Timeout:"
 
@@ -3608,6 +3697,11 @@ msgstr "Status:"
 msgid "Llamadas efectuadas:"
 msgstr "Calls"
 
+#: ominicontacto_app/templates/campana_dialer/edita_campana.html:26
+#: ominicontacto_app/templates/campana_manual/campana_manual_base.html:62
+msgid "Formulario:"
+msgstr "Form:"
+
 #: ominicontacto_app/templates/campana_dialer/edita_campana.html:32
 msgid "Sitio externo:"
 msgstr "External Site"
@@ -3616,19 +3710,19 @@ msgstr "External Site"
 msgid "¿Está seguro que desea eliminar la Actuación:"
 msgstr "Are you sure you want to delete selected Opening Hours?"
 
-#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:35
+#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:42
 msgid "Campaña Dialer: Datos Básicos"
 msgstr "Dialer Campagin: Basic Information"
 
-#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:35
+#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:42
 msgid "Canales en uso:"
 msgstr "Current Channels:"
 
-#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:70
+#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:79
 msgid "Fecha inicio:"
 msgstr "Initial Date:"
 
-#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:75
+#: ominicontacto_app/templates/campana_dialer/nueva_edita_campana.html:84
 msgid "Fecha fin:"
 msgstr "End Date:"
 
@@ -3636,29 +3730,25 @@ msgstr "End Date:"
 msgid "Campaña Dialer: Opciones de calificación"
 msgstr "Dialer Campaign: Call Disposition Options"
 
-#: ominicontacto_app/templates/campana_dialer/parametros_extra_web_form.html:39
-msgid "Campaña Dialer: Parámetros extra para web form"
-msgstr "Dialer Campaign: Extra Web Form Parameters"
-
 #: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:54
 msgid "Campaña Dialer: Reglas incidencia"
 msgstr "Dialer Campaign: Incidence Rules"
 
-#: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:75
+#: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:77
 #: ominicontacto_app/templates/template/template_detalle.html:113
 msgid "Con estado personalizado"
 msgstr "With custom status"
 
-#: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:77
+#: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:79
 msgid "Reintentar más tarde(En segundos)"
 msgstr "Callback later (in seconds)"
 
-#: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:79
+#: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:81
 #: ominicontacto_app/templates/template/template_detalle.html:115
 msgid "Modo de reintento"
 msgstr "Callback mode"
 
-#: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:81
+#: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:83
 msgid "Intento max.(En cantidades)"
 msgstr "Max number of attempts"
 
@@ -3666,13 +3756,9 @@ msgstr "Max number of attempts"
 msgid "Campaña Dialer: Sincronizar"
 msgstr "Dialer Campaign: Sync"
 
-#: ominicontacto_app/templates/campana_dialer/sincronizar_lista.html:47
+#: ominicontacto_app/templates/campana_dialer/sincronizar_lista.html:49
 msgid "Evitar sin telefono:"
 msgstr "Avoid empty phone numbers:"
-
-#: ominicontacto_app/templates/campana_dialer/sincronizar_lista.html:58
-msgid "Columnas:"
-msgstr "Columns:"
 
 #: ominicontacto_app/templates/campana_manual/campana_list_base.html:79
 msgid "Campañas eliminadas"
@@ -3702,7 +3788,7 @@ msgstr "Manual Campaign: Basic Information"
 msgid "Campaña Manual: Opciones de calificación"
 msgstr "Manual Campaign: Call Disposition Options"
 
-#: ominicontacto_app/templates/campana_manual/parametros_extra_web_form.html:39
+#: ominicontacto_app/templates/campana_manual/parametros_crm_sitio_externo.html:39
 msgid "Campaña Manual: Parámetros extra para web form"
 msgstr "Manual Campaign: Extra Web Form Parameters"
 
@@ -3736,11 +3822,11 @@ msgstr "Preview Campaign: Basic Information"
 msgid "Campaña Preview: Datos básicos"
 msgstr "Preview Campaign: Basic Information"
 
-#: ominicontacto_app/templates/campana_preview/campana_preview.html:40
+#: ominicontacto_app/templates/campana_preview/campana_preview.html:73
 msgid "Tiempo de desconexión:"
 msgstr "Disconnection Time:"
 
-#: ominicontacto_app/templates/campana_preview/campana_preview.html:47
+#: ominicontacto_app/templates/campana_preview/campana_preview.html:80
 msgid ""
 "A partir de este tiempo en minutos, un agente será desconectado de cualquier "
 "contacto que tenga asignado y no haya atendido."
@@ -3800,7 +3886,7 @@ msgstr "There are no templates for preview campaigns"
 msgid "Campaña Preview: Opciones de calificación"
 msgstr "Preview Campaign: Call Disposition Options"
 
-#: ominicontacto_app/templates/campana_preview/parametros_extra_web_form.html:25
+#: ominicontacto_app/templates/campana_preview/parametros_crm_sitio_externo.html:25
 msgid "Campaña Preview: Parámetros extra para web form"
 msgstr "Preview Campaign: Extra Web Form Parameters"
 
@@ -3862,6 +3948,10 @@ msgstr "Are you sure you want to delete this Pause?"
 #: ominicontacto_app/templates/pausa_list.html:92
 msgid "Reactivar"
 msgstr "Reactivate"
+
+#: ominicontacto_app/templates/formulario/calificacion_create_update.html:54
+msgid "Interacción CRM"
+msgstr "CRM Interaction"
 
 #: ominicontacto_app/templates/formulario/elimina_field_formulario.html:27
 msgid "¿Está  seguro que desea eliminar el campo:"
@@ -4105,13 +4195,21 @@ msgstr "Invalid Username/Password, please try again"
 msgid "Clave"
 msgstr "Password"
 
-#: ominicontacto_app/templates/sitio_externo/create_update_form.html:25
+#: ominicontacto_app/templates/sitio_externo/create_update_form.html:26
+msgid "Editar sitio externo"
+msgstr "Edit External Site"
+
+#: ominicontacto_app/templates/sitio_externo/create_update_form.html:28
 msgid "Nuevo sitio externo"
 msgstr "New External Site"
 
-#: ominicontacto_app/templates/sitio_externo/create_update_form.html:37
+#: ominicontacto_app/templates/sitio_externo/create_update_form.html:40
 msgid "Url:"
 msgstr "URL:"
+
+#: ominicontacto_app/templates/sitio_externo/create_update_form.html:50
+msgid "Método:"
+msgstr "Method:"
 
 #: ominicontacto_app/templates/sitio_externo/sitio_externo_list.html:46
 msgid "Sitio externo"
@@ -4121,8 +4219,12 @@ msgstr "External Site"
 msgid "Url"
 msgstr "URL"
 
-#: ominicontacto_app/templates/sitio_externo/sitio_externo_list.html:76
-#: ominicontacto_app/templates/sitio_externo/sitios_ocultos.html:46
+#: ominicontacto_app/templates/sitio_externo/sitio_externo_list.html:49
+msgid "Método"
+msgstr "Method"
+
+#: ominicontacto_app/templates/sitio_externo/sitio_externo_list.html:86
+#: ominicontacto_app/templates/sitio_externo/sitios_ocultos.html:51
 msgid "No se encontraron sitios externos creados."
 msgstr "There are no External Sites"
 
@@ -4268,17 +4370,17 @@ msgstr "user"
 msgid "No existen usuarios api crm"
 msgstr "There are not API users"
 
-#: ominicontacto_app/tests/tests_campanas.py:299
+#: ominicontacto_app/tests/tests_campanas.py:297
 #: ominicontacto_app/utiles.py:346
 msgid "el nombre no puede contener tildes ni caracteres no ASCII"
 msgstr "name string cannot have accents or non ASCII characters"
 
-#: ominicontacto_app/tests/tests_campanas.py:304
+#: ominicontacto_app/tests/tests_campanas.py:302
 #: ominicontacto_app/utiles.py:347
 msgid "el nombre no puede contener espacios"
 msgstr "name string cannot have spaces"
 
-#: ominicontacto_app/tests/tests_campanas.py:582
+#: ominicontacto_app/tests/tests_campanas.py:580
 #, python-brace-format
 msgid "Debe ingresar un minimo de {0} minutos"
 msgstr "You must enter a minimum of {0} minutes"
@@ -4288,12 +4390,12 @@ msgstr "You must enter a minimum of {0} minutes"
 msgid "El Contacto ha sido liberado."
 msgstr "Contact has been released."
 
-#: ominicontacto_app/tests/tests_creacion_usuarios.py:69
+#: ominicontacto_app/tests/tests_creacion_usuarios.py:70
 #: ominicontacto_app/views_user_profiles.py:89
 msgid "Nuevo Usuario: Perfil de Supervisor"
 msgstr "New User: Supervisor profile"
 
-#: ominicontacto_app/tests/tests_creacion_usuarios.py:105
+#: ominicontacto_app/tests/tests_creacion_usuarios.py:106
 #: ominicontacto_app/views_user_profiles.py:91
 msgid "Nuevo Usuario: Perfil de Agente"
 msgstr "New User: Agent profile"
@@ -4476,13 +4578,13 @@ msgstr "<strong>Success!</strong> Contact Database successfully processed."
 msgid "El nombre de la columna debe ser {0} en vez de {1}"
 msgstr "The column name must be {0} instead of {1}"
 
-#: ominicontacto_app/views_calificacion_cliente.py:224
+#: ominicontacto_app/views_calificacion_cliente.py:255
 msgid ""
 "Operación Exitosa! Se llevó a cabo con éxito la calificación del cliente"
 msgstr "Sucess! Client disposition registered."
 
-#: ominicontacto_app/views_calificacion_cliente.py:414
-#: ominicontacto_app/views_calificacion_cliente.py:581
+#: ominicontacto_app/views_calificacion_cliente.py:447
+#: ominicontacto_app/views_calificacion_cliente.py:614
 msgid ""
 "Operación Exitosa!Se llevó a cabo con éxito el llenado del formulario del "
 "cliente"
@@ -4509,7 +4611,7 @@ msgstr "You cannot delete a campaign that is being in use by a Call Flow"
 msgid "Este agente no esta asignado a ninguna campaña "
 msgstr "This agent is not assigned to any campaign"
 
-#: ominicontacto_app/views_campana_creacion.py:149
+#: ominicontacto_app/views_campana_creacion.py:153
 msgid ""
 "Operación Exitosa:        se llevó a cabo con éxito la eliminación del "
 "Template."
@@ -4574,11 +4676,11 @@ msgid ""
 "erronea. "
 msgstr "<strong>Error!</strong> Invalid database."
 
-#: ominicontacto_app/views_campana_dialer_creacion.py:229
+#: ominicontacto_app/views_campana_dialer_creacion.py:197
 msgid "Se ha creado la nueva campaña."
 msgstr "Campaign has been created."
 
-#: ominicontacto_app/views_campana_dialer_creacion.py:234
+#: ominicontacto_app/views_campana_dialer_creacion.py:202
 msgid ""
 "<strong>¡ATENCIÓN!</strong> El servicio Discador no se encuentra disponible. "
 "No se pudo crear la campaña. Por favor contacte un administrador."
@@ -4586,11 +4688,11 @@ msgstr ""
 "<strong>Warning!</strong> Dialer Service seems to be down, campaign could "
 "not be created. Please contact Administrator."
 
-#: ominicontacto_app/views_campana_dialer_creacion.py:297
+#: ominicontacto_app/views_campana_dialer_creacion.py:267
 msgid "Se ha modificado la campaña."
 msgstr "Campagin has been modified."
 
-#: ominicontacto_app/views_campana_dialer_creacion.py:302
+#: ominicontacto_app/views_campana_dialer_creacion.py:272
 msgid ""
 "<strong>¡ATENCIÓN!</strong> El servicio Discador no se encuentra disponible. "
 "No se pudo modificar la campaña. Por favor contacte un administrador."
@@ -4608,7 +4710,7 @@ msgstr "<strong>Success!</strong> Template deleted."
 msgid "No se pudo liberar el contacto. Intente nuevamente."
 msgstr "Contact could not be released. Please try it again."
 
-#: ominicontacto_app/views_contacto.py:327
+#: ominicontacto_app/views_contacto.py:330
 msgid "Este agente no esta asignado a ninguna campaña activa"
 msgstr "This agent is not assigned to an active campaign"
 
@@ -4685,3 +4787,15 @@ msgstr "<strong>Warning!</strong> with the following error{0} "
 #: ominicontacto_app/views_user_profiles.py:199
 msgid "El usuario fue actualizado correctamente"
 msgstr "User updated successfully"
+
+#~ msgid "Parámetros extra web form"
+#~ msgstr "Web Form Extra Parameters"
+
+#~ msgid "Campaña Entrante: Parámetros extra para web form"
+#~ msgstr "Inbound Campaign: Extra Web Form Parameters"
+
+#~ msgid "Campaña Dialer: Parámetros extra para web form"
+#~ msgstr "Dialer Campaign: Extra Web Form Parameters"
+
+#~ msgid "Columnas:"
+#~ msgstr "Columns:"
