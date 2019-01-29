@@ -41,13 +41,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% endblock %}
 
 {% block nav %}
-    <h1>{% trans 'Campaña Entrante: Parámetros extra para web form' %}</h1>
+    <h1>{% trans 'Campaña Dialer: Interacción con Sitio Externo' %}</h1>
 
     <ul class="nav nav-indicators">
         <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
         <li class="disabled"><a>{% trans 'Datos básicos de la cola' %}</a></li>
         <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
-        <li class="active"><a>{% trans 'Parámetros extra web form' %}</a></li>
+        <li class="active"><a>{% trans 'Interacción con Sitio Externo' %}</a></li>
     </ul>
 {% endblock %}
 
@@ -60,20 +60,23 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {% endfor %}
             {% endif %}
             {% for form in wizard.form.forms %}
-                {{ form.errors }}
                 <tr class="linkFormset">
                     <td>
                         {% if form.instance.pk %}
                             {{ form.DELETE }}
                         {% endif %}
                     </td>
-                    <td>
-                        {{ form.parametro.errors }}
-                        {{ form.parametro|add_class:"form-control" }}
+                    <td class="tipo">
+                        {{ form.tipo.errors }}
+                        {{ form.tipo|add_class:"form-control" }}
                     </td>
-                    <td>
-                        {{ form.columna.errors }}
-                        {{ form.columna|add_class:"form-control fieldsFormset" }}
+                    <td class="valor">
+                        {{ form.valor.errors }}
+                        {{ form.valor|add_class:"form-control fieldsFormset" }}
+                    </td>
+                    <td class="nombre">
+                        {{ form.nombre.errors }}
+                        {{ form.nombre|add_class:"form-control fieldsFormset" }}
                     </td>
                     <td>{{ form.id }}</td>
                 </tr>
@@ -82,3 +85,4 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </table>
     {{ wizard.form.management_form }}
 {% endblock %}
+

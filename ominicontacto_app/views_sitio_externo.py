@@ -25,9 +25,9 @@ el sitio externo el cual va abrirse en una pestaña
 from __future__ import unicode_literals
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.generic.edit import (
-    CreateView
+    CreateView, UpdateView
 )
 from django.views.generic import (
     ListView
@@ -42,9 +42,15 @@ class SitioExternoCreateView(CreateView):
     model = SitioExterno
     template_name = 'sitio_externo/create_update_form.html'
     form_class = SitioExternoForm
+    success_url = reverse_lazy('sitio_externo_list')
 
-    def get_success_url(self):
-        return reverse('sitio_externo_list')
+
+class SitioExternoUpdateView(UpdateView):
+    """Vista para modificar un sitio externo"""
+    model = SitioExterno
+    template_name = 'sitio_externo/create_update_form.html'
+    form_class = SitioExternoForm
+    success_url = reverse_lazy('sitio_externo_list')
 
 
 class SitioExternoListView(ListView):

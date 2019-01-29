@@ -31,7 +31,7 @@ from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana,
                                       NombreCalificacion, Formulario, Grabacion, GrabacionMarca,
                                       SitioExterno, User, Contacto, SupervisorProfile, Modulo,
                                       AgenteEnContacto, QueueMember, CalificacionCliente,
-                                      OpcionCalificacion, ArchivoDeAudio, ParametroExtraParaWebform,
+                                      OpcionCalificacion, ArchivoDeAudio, ParametrosCrm,
                                       ActuacionVigente, Pausa, MetadataCliente)
 from reportes_app.models import LlamadaLog, ActividadAgenteLog
 
@@ -79,6 +79,8 @@ class SitioExternoFactory(DjangoModelFactory):
 
     nombre = lazy_attribute(lambda a: faker.text(15))
     url = lazy_attribute(lambda a: "http://{0}.com".format(a.nombre.replace(" ", "_")))
+    tipo = lazy_attribute(lambda a: faker.random_int(1, 3))
+    metodo = lazy_attribute(lambda a: faker.random_int(1, 2))
 
 
 class GrupoFactory(DjangoModelFactory):
@@ -115,6 +117,9 @@ class SupervisorProfileFactory(DjangoModelFactory):
     #  TODO: hacer atributo 'sip_password'
 
 
+COLUMNAS_DB_DEFAULT = ['telefono', 'nombre', 'apellido', 'dni', 'telefono2', 'telefono3']
+
+
 class BaseDatosContactoFactory(DjangoModelFactory):
     class Meta:
         model = BaseDatosContacto
@@ -122,8 +127,8 @@ class BaseDatosContactoFactory(DjangoModelFactory):
     nombre = lazy_attribute(lambda a: "BD_contacto_{0}".format(uuid4()))
 
     nombre_archivo_importacion = Sequence(lambda n: "file_{0}.dat".format(n))
-    metadata = '{"prim_fila_enc": false, "cant_col": 6, "nombres_de_columnas": ["telefono",' + \
-               ' "nombre", "apellido", "dni", "telefono2", "telefono3"],' + \
+    metadata = '{"prim_fila_enc": false, "cant_col": 6, "nombres_de_columnas": '\
+               '["' + '", "'.join(COLUMNAS_DB_DEFAULT) + '"],' + \
                ' "cols_telefono": [0, 4, 5]}'
     estado = BaseDatosContacto.ESTADO_DEFINIDA
 
@@ -152,10 +157,11 @@ class CampanaFactory(DjangoModelFactory):
     fecha_inicio = lazy_attribute(lambda a: timezone.now())
     fecha_fin = lazy_attribute(lambda a: a.fecha_inicio)
     bd_contacto = SubFactory(BaseDatosContactoFactory)
+    tipo_interaccion = Campana.FORMULARIO
     formulario = SubFactory(FormularioFactory)
     campaign_id_wombat = lazy_attribute(lambda a: faker.random_number(7))
     type = lazy_attribute(lambda a: faker.random_int(1, 3))
-    sitio_externo = SubFactory(SitioExternoFactory)
+    sitio_externo = None
     reported_by = SubFactory(UserFactory)
     nombre_template = lazy_attribute(lambda a: faker.text(max_nb_chars=6))
 
@@ -268,13 +274,14 @@ class ArchivoDeAudioFactory(DjangoModelFactory):
     descripcion = lazy_attribute(lambda a: "descripcion_{0}".format(uuid4()))
 
 
-class ParametroExtraParaWebformFactory(DjangoModelFactory):
+class ParametrosCrmFactory(DjangoModelFactory):
     class Meta:
-        model = ParametroExtraParaWebform
+        model = ParametrosCrm
 
     campana = SubFactory(CampanaFactory)
-    parametro = Sequence(lambda n: "parametro_{0}".format(n))
-    columna = Sequence(lambda n: "columna_{0}".format(n))
+    tipo = ParametrosCrm.CUSTOM
+    nombre = Sequence(lambda n: "nombre_{0}".format(n))
+    valor = Sequence(lambda n: "valor_{0}".format(n))
 
 
 class ActuacionVigenteFactory(DjangoModelFactory):

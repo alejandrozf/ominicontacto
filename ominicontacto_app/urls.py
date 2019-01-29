@@ -300,7 +300,8 @@ urlpatterns = [
         login_required(
             views_contacto.CampanaBusquedaContactoFormView.as_view()),
         name="campana_busqueda_contacto"),
-    url(r'^campana/(?P<pk_campana>\d+)/contactos_telefono_repetido/(?P<telefono>\d+)$',
+    url(r'^campana/(?P<pk_campana>\d+)/contactos_telefono_repetido/(?P<telefono>\d+)'
+        r'/(?P<call_data_json>.+)$',
         agente_requerido(
             views_contacto.ContactosTelefonosRepetidosView.as_view()),
         name="campana_contactos_telefono_repetido"),
@@ -439,28 +440,42 @@ urlpatterns = [
         name='formulario_vista',
         ),
     # ==========================================================================
-    # CalificacionCliente / Formulario
+    # Proceso de Calificación
+    # CalificacionCliente / Formulario de Calif. de Gestión
     # ==========================================================================
+    url(r'^agente/calificar_llamada/(?P<call_data_json>.+)$',
+        agente_requerido(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
+        kwargs={'from': 'calificacion'},
+        name='calificar_llamada'
+        ),
+    url(r'^agente/calificar_llamada_con_contacto/(?P<pk_contacto>\d+)/(?P<call_data_json>.+)$',
+        agente_requerido(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
+        kwargs={'from': 'calificacion'},
+        name='calificar_llamada_con_contacto'
+        ),
+
     url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
-        '/update/(?P<id_agente>\d+)/calificacion/$',
+        '/update_calificacion/$',
         login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
         kwargs={'from': 'calificacion'},
         name='calificacion_formulario_update_or_create'
         ),
     url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
-        '/update/(?P<id_agente>\d+)/recalificacion/$',
+        '/update_recalificacion/$',
         login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
         kwargs={'from': 'recalificacion'},
         name='recalificacion_formulario_update_or_create'
         ),
     url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
-        '/update/(?P<id_agente>\d+)/reporte/$',
+        '/update_reporte/$',
         login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
         kwargs={'from': 'reporte'},
         name='calificacion_cliente_actualiza_desde_reporte'
         ),
-    url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<id_agente>\d+)/create/'
-        r'(?P<telefono>\d+)/$',
+
+    # TODO: Una vez que todas las manuales sean click to call ya no existirá esta vista
+    # Mientras, quedará para ser usada únicamente en llamadas manuales
+    url(r'^formulario/(?P<pk_campana>\d+)/calificacion_create/(?P<telefono>\d+)/$',
         login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
         kwargs={'from': 'calificacion', 'pk_contacto': None, 'manual': True},
         name="calificar_por_telefono"),
@@ -469,6 +484,7 @@ urlpatterns = [
         views_calificacion_cliente.calificacion_cliente_externa_view,
         name='calificacion_cliente_externa'
         ),
+    # Formulario de Calificación de Gestión
     url(r'^formulario/(?P<pk_campana>\d+)/venta/(?P<pk_contacto>\d+)/(?P<id_agente>\d+)/$',
         login_required(views_calificacion_cliente.FormularioCreateFormView.as_view()),
         name='formulario_venta'
@@ -735,6 +751,9 @@ urlpatterns = [
     url(r'^sitio_externo/sitios_ocultos/$',
         administrador_requerido(views_sitio_externo.mostrar_sitio_externos_ocultos_view),
         name='mostrar_sitios_externo_ocultos', ),
+    url(r'^sitio_externo/(?P<pk>\d+)/update/$',
+        administrador_requerido(views_sitio_externo.SitioExternoUpdateView.as_view()),
+        name='modificar_sitio_externo', ),
     # ==========================================================================
     # QueueMember
     # ==========================================================================

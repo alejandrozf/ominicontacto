@@ -21,13 +21,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 
 {% block tipo_interaccion %}
-    {% if form.tipo_interaccion.value == 1 %}
+    {% if form.instance.tipo_interaccion == 1 %}
         <div class="col-md-6">
             <label>{% trans 'Formulario:' %} </label>
             {{ form.formulario }}
         </div>
     {% endif %}
-    {% if form.tipo_interaccion.value == 2 %}
+    {% if form.instance.tipo_interaccion == 2 %}
         <div class="col-md-6">
             <label>{% trans 'Sitio externo:' %}</label>
             {{ form.sitio_externo }}

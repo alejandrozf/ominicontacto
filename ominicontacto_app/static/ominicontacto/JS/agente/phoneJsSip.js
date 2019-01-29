@@ -168,7 +168,7 @@ class PhoneJS {
             self.invite_request = e.request;
             self.currentSession = e.session;
             self.session_data = new SessionData(self.currentSession,
-                                                self.current_call,
+                                                self.local_call,
                                                 self.invite_request,
                                                 e.originator);
 
@@ -197,7 +197,7 @@ class PhoneJS {
                 if (self.session_data.is_call) {
                     var phone_number = self.session_data.is_remote?
                                             self.session_data.from :
-                                            self.current_call.numberToCall;
+                                            self.local_call.numberToCall;
                     self.eventsCallbacks.onCallConnected.fire(phone_number);
                 }
             });
@@ -259,7 +259,7 @@ class PhoneJS {
 
     makeCall(numberToCall, campaign_id=undefined, campaign_type=undefined) {
         var self = this;
-        this.current_call = new LocalCall(numberToCall);
+        this.local_call = new LocalCall(numberToCall);
         phone_logger.log('makeCall: ' + numberToCall);
 
         // Luego de 60 segundos sin respuesta, stop al ringback y cuelga discado
@@ -272,13 +272,13 @@ class PhoneJS {
             'confirmed': function(e) {
                 phone_logger.log('makeCall: confirmed');
                 clearTimeout(self.callTimeoutHandler);
-                if (self.current_call.is_unpause) {
+                if (self.local_call.is_unpause) {
                     self.eventsCallbacks.onAgentUnpaused.fire();
                 }
-                else if (self.current_call.is_login) {
+                else if (self.local_call.is_login) {
                     self.eventsCallbacks.onAgentLogged.fire();
                 }
-                else if (self.current_call.is_pause) {
+                else if (self.local_call.is_pause) {
                     self.eventsCallbacks.onAgentPaused.fire();
                 }
             },/**/
@@ -293,14 +293,14 @@ class PhoneJS {
             'failed': function(data) {
                 phone_logger.log('makeCall: failed - ' + numberToCall);
                 clearTimeout(self.callTimeoutHandler);
-                if (self.current_call.is_login) {
+                if (self.local_call.is_login) {
                     self.eventsCallbacks.onAgentLoginFail.fire(self);
-                } else if (self.current_call.is_unpause) {
+                } else if (self.local_call.is_unpause) {
                     self.eventsCallbacks.onAgentUnPauseFail.fire(self);
-                } else if (self.current_call.is_pause) {
+                } else if (self.local_call.is_pause) {
                     self.eventsCallbacks.onAgentPauseFail.fire(self);
                 } else {
-                    // (self.current_call.is_call)
+                    // (self.local_call.is_call)
                     self.eventsCallbacks.onOutCallFailed.fire(data.cause);
                     if (data.cause === JsSIP.C.causes.BUSY) {
                         self.Sounds("", "stop");
@@ -322,7 +322,7 @@ class PhoneJS {
                 rtcpMuxPolicy: 'negotiate'
             },
         };
-        if (campaign_id !== null ) {
+        if (campaign_id !== undefined ) {
             opciones.extraHeaders = ['Idcamp:' + campaign_id,
                                      'Tipocamp:' + campaign_type, ]
         }
@@ -460,7 +460,7 @@ class PhoneJS {
     cleanLastCallData() {
         self.currentSession = undefined;
         self.session_data = undefined;
-        self.current_call = undefined;
+        self.local_call = undefined;
     }
 
 };
@@ -480,11 +480,41 @@ class LocalCall {
  *       Ver de generalizarla y extenderla para cada Controller particular
 /**/
 class SessionData {
-    constructor (session, current_call, invite_request, originator) {
+    constructor (session, local_call, invite_request, originator) {
         this.RTCSession = session;
-        this.current_call = current_call;
+        this.local_call = local_call;
         this.invite_request = invite_request;
         this.originator = originator;
+        // TODO: En un futuro todas seran inbound. local_call y remote_call pueden pasar a
+        // ser call nomas
+        if (this.is_inbound) {
+            this.remote_call = this.setRemoteCallInfo(invite_request);
+        }
+    }
+
+    setRemoteCallInfo(invite_request) {
+        console.log(invite_request);
+        var call_data = {}
+        call_data.id_campana = invite_request.headers.Idcamp[0].raw;
+        call_data.campana_type = invite_request.headers.Omlcamptype[0].raw;
+        call_data.telefono = invite_request.headers.Omloutnum[0].raw;
+        if (!this.is_local_call) {
+            call_data.call_id = invite_request.headers.Omlcallid[0].raw;
+        }
+        call_data.call_type = invite_request.headers.Omlcalltypeidtype[0].raw;
+        if (invite_request.headers.Idcliente)
+            call_data.id_contacto = invite_request.headers.Idcliente[0].raw;
+        else
+            call_data.id_contacto = '';
+        if (invite_request.headers.Omlrecfilename)
+            call_data.rec_filename = invite_request.headers.Omlrecfilename[0].raw;
+        else
+            call_data.rec_filename = '';
+        if (invite_request.headers.Omlcallwaitduration)
+            call_data.call_wait_duration = invite_request.headers.Omlcallwaitduration[0].raw;
+        else
+            call_data.call_wait_duration = '';
+        return call_data;
     }
 
     get is_remote () {
@@ -516,8 +546,8 @@ class SessionData {
 
     get is_local_call () {
         return this.originator == 'local' &&
-               this.current_call !== undefined &&
-               this.current_call.is_call;
+               this.local_call !== undefined &&
+               this.local_call.is_call;
     }
 
     get origin() {
@@ -546,12 +576,6 @@ class SessionData {
     get campaign_id() {
         if (this.invite_request.headers.Idcamp) {
             return this.invite_request.headers.Idcamp[0].raw;
-        }
-    }
-
-    get call_uuid() {
-        if (this.invite_request.headers.Omlcallid) {
-            return this.invite_request.headers.Omlcallid[0].raw;
         }
     }
 

@@ -141,7 +141,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                       {% trans 'Opciones' %}
                                       </button>
                                       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
-                                          <a class="dropdown-item" href="{% url 'calificacion_cliente_actualiza_desde_reporte' calificacion_cliente.opcion_calificacion.campana_id calificacion_cliente.contacto_id agente.pk%}">
+                                          <a class="dropdown-item" href="{% url 'calificacion_cliente_actualiza_desde_reporte' calificacion_cliente.opcion_calificacion.campana_id calificacion_cliente.contacto_id %}">
                                               <span class="icon icon-pencil"></span>{% trans 'Calificación' %}
                                           </a>
                                           {% if calificacion_cliente.get_venta %}

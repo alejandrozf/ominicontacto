@@ -67,10 +67,10 @@ class CalificacionClienteFormView(FormView):
         contactos_info = list(self.campana.bd_contacto.contactos.filter(telefono=telefono))
         return contactos_info
 
-    def get_contacto(self):
-        if 'pk_contacto' in self.kwargs and self.kwargs['pk_contacto'] is not None:
+    def get_contacto(self, id_contacto):
+        if id_contacto is not None:
             try:
-                return self.campana.bd_contacto.contactos.get(pk=self.kwargs['pk_contacto'])
+                return self.campana.bd_contacto.contactos.get(pk=id_contacto)
             except Contacto.DoesNotExist:
                 return None
         return None
@@ -86,10 +86,25 @@ class CalificacionClienteFormView(FormView):
         return None
 
     def dispatch(self, *args, **kwargs):
-        self.agente = AgenteProfile.objects.get(pk=kwargs['id_agente'])
-        self.campana = Campana.objects.get(pk=kwargs['pk_campana'])
-        self.contacto = self.get_contacto()
-        telefono = kwargs.get('telefono', False)
+        self.agente = self.request.user.get_agente_profile()
+        id_contacto = None
+        self.call_data = None
+        call_data_json = None
+        if 'call_data_json' in kwargs:
+            call_data_json = kwargs['call_data_json']
+            self.call_data = json.loads(call_data_json)
+            self.campana = Campana.objects.get(pk=self.call_data['id_campana'])
+            telefono = self.call_data['telefono']
+            if self.call_data['id_contacto']:
+                id_contacto = self.call_data['id_contacto']
+        else:
+            self.campana = Campana.objects.get(pk=kwargs['pk_campana'])
+            telefono = kwargs.get('telefono', False)
+
+        if 'pk_contacto' in kwargs:
+            id_contacto = kwargs['pk_contacto']
+        self.contacto = self.get_contacto(id_contacto)
+
         if telefono and self.contacto is None:
             # se dispara desde una llamada desde el webphone
             contacto_info = self.get_info_telefonos(telefono)
@@ -101,8 +116,18 @@ class CalificacionClienteFormView(FormView):
             else:
                 return HttpResponseRedirect(
                     reverse('campana_contactos_telefono_repetido',
-                            kwargs={'pk_campana': self.campana.pk, 'telefono': telefono}))
+                            kwargs={'pk_campana': self.campana.pk,
+                                    'telefono': telefono,
+                                    'call_data_json': call_data_json}))
         self.object = self.get_object()
+
+        self.url_sitio_externo = ''
+        if self.campana.tiene_interaccion_con_sitio_externo:
+            self.url_sitio_externo = self.campana.sitio_externo.get_url_interaccion(self.agente,
+                                                                                    self.campana,
+                                                                                    self.contacto,
+                                                                                    self.call_data)
+
         return super(CalificacionClienteFormView, self).dispatch(*args, **kwargs)
 
     def get_calificacion_form_kwargs(self):
@@ -123,7 +148,11 @@ class CalificacionClienteFormView(FormView):
         if self.contacto is not None:
             kwargs['instance'] = self.contacto
         else:
-            initial['telefono'] = self.kwargs['telefono']
+            if 'call_data_json' in self.kwargs:
+                initial['telefono'] = self.call_data['telefono']
+            else:
+                # TODO: Cuando las manuales vengan con call_data sacar esto
+                initial['telefono'] = self.kwargs['telefono']
 
         if self.request.method == 'GET':
             # TODO: Pasar esta logica al formulario?
@@ -157,7 +186,8 @@ class CalificacionClienteFormView(FormView):
         return self.render_to_response(self.get_context_data(
             contacto_form=contacto_form,
             calificacion_form=calificacion_form,
-            campana=self.campana))
+            campana=self.campana,
+            url_sitio_externo=self.url_sitio_externo))
 
     def post(self, request, *args, **kwargs):
         """
@@ -218,7 +248,8 @@ class CalificacionClienteFormView(FormView):
         # check metadata en calificaciones de no accion y eliminar
         self._check_metadata_no_accion_delete(self.object_calificacion)
 
-        if self.object_calificacion.es_venta:
+        if self.object_calificacion.es_venta and \
+                not self.campana.tiene_interaccion_con_sitio_externo:
             return redirect(self.get_success_url_venta())
         else:
             message = _('Operación Exitosa! '
@@ -235,9 +266,12 @@ class CalificacionClienteFormView(FormView):
         """
         Re-renders the context data with the data-filled forms and errors.
         """
-        return self.render_to_response(self.get_context_data(contacto_form=contacto_form,
-                                                             calificacion_form=calificacion_form,
-                                                             campana=self.campana))
+        return self.render_to_response(self.get_context_data(
+            contacto_form=contacto_form,
+            calificacion_form=calificacion_form,
+            campana=self.campana,
+            url_sitio_externo=self.url_sitio_externo)
+        )
 
     def get_success_url_venta(self):
         return reverse('formulario_venta',
@@ -258,8 +292,7 @@ class CalificacionClienteFormView(FormView):
     def get_success_url(self):
         return reverse('recalificacion_formulario_update_or_create',
                        kwargs={"pk_campana": self.campana.id,
-                               "pk_contacto": self.contacto.id,
-                               "id_agente": self.agente.id})
+                               "pk_contacto": self.contacto.id})
 
 
 @csrf_exempt

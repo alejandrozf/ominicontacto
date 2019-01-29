@@ -38,7 +38,7 @@ from ominicontacto_app.models import (
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
     ReglasIncidencia, UserApiCrm, SupervisorProfile, ArchivoDeAudio,
-    NombreCalificacion, OpcionCalificacion, ParametroExtraParaWebform
+    NombreCalificacion, OpcionCalificacion, ParametrosCrm
 )
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
@@ -416,6 +416,12 @@ class CampanaMixinForm(object):
         validar_nombres_campanas(nombre)
         return nombre
 
+    def clean_tipo_interaccion(self):
+        tipo_interaccion = self.cleaned_data.get('tipo_interaccion', None)
+        if self.instance and self.instance.pk:
+            return self.instance.tipo_interaccion
+        return tipo_interaccion
+
 
 class CampanaForm(CampanaMixinForm, forms.ModelForm):
 
@@ -427,6 +433,9 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
         else:
             self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].required = True
+            self.fields['formulario'].disabled = True
+            self.fields['tipo_interaccion'].disabled = True
+            self.fields['tipo_interaccion'].required = False
 
     def requiere_bd_contacto(self):
         return False
@@ -720,15 +729,6 @@ class SincronizaDialerForm(forms.Form):
     evitar_sin_telefono = forms.BooleanField(required=False)
     prefijo_discador = forms.CharField(required=False, widget=forms.TextInput(
         attrs={'class': 'class-fecha form-control'}))
-    columnas = forms.MultipleChoiceField(
-        required=False,
-        widget=forms.CheckboxSelectMultiple,
-        choices=(),
-    )
-
-    def __init__(self, tts_choices, *args, **kwargs):
-        super(SincronizaDialerForm, self).__init__(*args, **kwargs)
-        self.fields['columnas'].choices = tts_choices
 
 
 class FormularioNuevoContacto(forms.ModelForm):
@@ -948,27 +948,6 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         }
 
 
-class ParametroExtraParaWebformForm(forms.ModelForm):
-    class Meta:
-        model = ParametroExtraParaWebform
-        fields = ('campana', 'parametro', 'columna')
-
-    def clean_parametro(self):
-        parametro = self.cleaned_data['parametro']
-        validar_solo_ascii_y_sin_espacios(parametro)
-        return parametro
-
-    def clean_columna(self):
-        columna = self.cleaned_data['columna']
-        validar_solo_ascii_y_sin_espacios(columna)
-        return columna
-
-
-ParametroExtraParaWebformFormSet = inlineformset_factory(
-    Campana, ParametroExtraParaWebform,
-    form=ParametroExtraParaWebformForm, can_delete=True, extra=1)
-
-
 class ActuacionVigenteForm(forms.ModelForm):
     """
     El form de miembro de una cola
@@ -1013,11 +992,13 @@ class SitioExternoForm(forms.ModelForm):
 
     class Meta:
         model = SitioExterno
-        fields = ('nombre', 'url')
+        fields = ('nombre', 'url', 'tipo', 'metodo')
 
         widgets = {
             "nombre": forms.TextInput(attrs={'class': 'form-control'}),
             "url": forms.TextInput(attrs={'class': 'form-control'}),
+            "tipo": forms.Select(attrs={'class': 'form-control'}),
+            "metodo": forms.Select(attrs={'class': 'form-control'}),
         }
 
 
@@ -1209,6 +1190,7 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
         else:
             self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].required = True
+            self.fields['formulario'].disabled = True
 
     class Meta:
         model = Campana
@@ -1237,6 +1219,9 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
             self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].disabled = True
             self.fields['tiempo_desconexion'].disabled = True
+            self.fields['formulario'].disabled = True
+            self.fields['tipo_interaccion'].disabled = True
+            self.fields['tipo_interaccion'].required = False
 
     class Meta:
         model = Campana
@@ -1332,3 +1317,48 @@ class GrupoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(GrupoForm, self).__init__(*args, **kwargs)
         self.fields['auto_unpause'].required = False
+
+
+class ParametrosCrmForm(forms.ModelForm):
+
+    def __init__(self, columnas_bd, *args, **kwargs):
+        super(ParametrosCrmForm, self).__init__(*args, **kwargs)
+        self.columnas_bd = columnas_bd
+        self.columnas_bd_keys = [x[0] for x in columnas_bd]
+
+    class Meta:
+        model = ParametrosCrm
+        fields = ('tipo', 'valor', 'nombre')
+
+        widgets = {
+            'tipo': forms.Select(attrs={'class': 'form-control'}),
+            'valor': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _(u'Valor')}),
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': _(u'Nombre')}),
+        }
+
+    def clean_valor(self):
+        tipo = self.cleaned_data.get('tipo')
+        valor = self.cleaned_data.get('valor')
+        if tipo == ParametrosCrm.DATO_CONTACTO and valor not in self.columnas_bd_keys:
+            raise forms.ValidationError(
+                _('El valor debe corresponder a un campo de la base de datos de contactos'))
+        if tipo == ParametrosCrm.DATO_CAMPANA and valor not in ParametrosCrm.OPCIONES_CAMPANA_KEYS:
+            raise forms.ValidationError(
+                _('El valor debe corresponder a un campo válido de la campaña'))
+        if tipo == ParametrosCrm.DATO_LLAMADA and valor not in ParametrosCrm.OPCIONES_LLAMADA_KEYS:
+            raise forms.ValidationError(
+                _('El valor debe corresponder a un dato válido de la llamada'))
+        if tipo == ParametrosCrm.CUSTOM:
+            validar_solo_ascii_y_sin_espacios(valor)
+        return valor
+
+    def clean_nombre(self):
+        nombre = self.cleaned_data.get('nombre', '')
+        if not nombre:
+            raise forms.ValidationError(_('Debe definir un nombre para el parámetro'))
+        validar_solo_ascii_y_sin_espacios(nombre)
+        return nombre
+
+
+ParametrosCrmFormSet = inlineformset_factory(
+    Campana, ParametrosCrm, form=ParametrosCrmForm, extra=1, can_delete=True)

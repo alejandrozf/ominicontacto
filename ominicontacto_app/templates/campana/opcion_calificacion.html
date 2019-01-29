@@ -54,7 +54,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
      });
      /* oculta los links de eliminación para los formularios de opciones de calificación
         que no deben ser eliminados */
-     $('.readOnly>td').find('.deleteFormset').attr('class', 'hidden')
+     $('.readOnly>td').find('.deleteFormset').attr('class', 'hidden');
     </script>
 {% endblock %}
 
@@ -65,7 +65,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
             <li class="disabled"><a>{% trans 'Datos básicos de la cola' %}</a></li>
             <li class="active"><a>{% trans 'Opciones de calificación' %}</a></li>
-            <li class="disabled"><a>{% trans 'Parámetros extra web form' %}</a></li>
+            {% if interaccion_crm %}
+                <li class="disabled"><a>{% trans 'Interacción con Sitio Externo' %}</a></li>
+            {% endif %}
     </ul>
 {% endblock %}
 
