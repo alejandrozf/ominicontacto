@@ -361,3 +361,41 @@ class CalificacionTests(OMLBaseTest):
         self.assertContains(response, sitio_externo.url)
         self.assertContains(response, parametro1.nombre + '=' + parametro1.valor)
         self.assertContains(response, parametro2.nombre + '=' + call_id)
+
+    def test_se_muestra_historico_calificaciones_contacto_llamada_entrante(self):
+        self.campana.type = Campana.TYPE_ENTRANTE
+        self.campana.save()
+        observacion_anterior = self.calificacion_cliente.observaciones
+        self.calificacion_cliente.observaciones = "NUEVA OBSERVACION"
+        self.calificacion_cliente.save()
+        call_id = '123456789'
+        call_data = {"id_campana": self.campana.id,
+                     "campana_type": self.campana.type,
+                     "telefono": "3512349992",
+                     "call_id": call_id,
+                     "call_type": str(self.campana.type),
+                     "id_contacto": self.contacto.id,
+                     "rec_filename": "",
+                     "call_wait_duration": ""}
+        url = reverse('calificar_llamada', kwargs={'call_data_json': json.dumps(call_data)})
+        response = self.client.get(url)
+        self.assertContains(response, observacion_anterior)
+
+    def test_no_se_muestra_historico_calificaciones_contacto_llamada_no_entrante(self):
+        self.campana.type = Campana.TYPE_PREVIEW
+        self.campana.save()
+        observacion_anterior = self.calificacion_cliente.observaciones
+        self.calificacion_cliente.observaciones = "NUEVA OBSERVACION"
+        self.calificacion_cliente.save()
+        call_id = '123456789'
+        call_data = {"id_campana": self.campana.id,
+                     "campana_type": self.campana.type,
+                     "telefono": "3512349992",
+                     "call_id": call_id,
+                     "call_type": str(self.campana.type),
+                     "id_contacto": self.contacto.id,
+                     "rec_filename": "",
+                     "call_wait_duration": ""}
+        url = reverse('calificar_llamada', kwargs={'call_data_json': json.dumps(call_data)})
+        response = self.client.get(url)
+        self.assertNotContains(response, observacion_anterior)

@@ -265,6 +265,7 @@ class CalificacionClienteFactory(DjangoModelFactory):
     contacto = SubFactory(ContactoFactory)
     agente = SubFactory(AgenteProfileFactory)
     fecha = lazy_attribute(lambda a: timezone.now())
+    observaciones = lazy_attribute(lambda a: faker.text(15))
 
 
 class ArchivoDeAudioFactory(DjangoModelFactory):

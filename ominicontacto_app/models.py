@@ -1162,6 +1162,10 @@ class Campana(models.Model):
     def tiene_interaccion_con_sitio_externo(self):
         return self.tipo_interaccion == self.SITIO_EXTERNO
 
+    @property
+    def es_entrante(self):
+        return self.type == self.TYPE_ENTRANTE
+
 
 class OpcionCalificacion(models.Model):
     """
