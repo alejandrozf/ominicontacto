@@ -89,8 +89,12 @@ class ContactoListView(FormView):
     def form_valid(self, form):
         campana_pk = form.cleaned_data.get('campana')
         campana = Campana.objects.get(pk=campana_pk)
+        total_contactos = campana.bd_contacto.contactos.count()
+        total_no_calificados = campana.obtener_contactos_no_calificados().count()
+        total_calificados = total_contactos - total_no_calificados
         return self.render_to_response(self.get_context_data(
-            form=form, campana=campana))
+            form=form, campana=campana, total_contactos=total_contactos,
+            total_no_calificados=total_no_calificados, total_calificados=total_calificados))
 
 
 class ContactosTelefonosRepetidosView(TemplateView):
