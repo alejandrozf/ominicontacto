@@ -35,6 +35,16 @@ OSValidation(){
   PIP=`which pip`
 }
 
+UserValidation(){
+  whoami="`whoami`"
+  if [ "$whoami" == "root" ]; then
+    echo "You have the permise to run the script, continue"
+  else
+    echo "You need to be root or have sudo permission to run this script, exiting"
+    exit 1
+  fi
+}
+
 Rama() {
     if [ "$arg1" == "--install" ] || [ "$arg1" == "-i" ]; then
       tag="all"
@@ -60,6 +70,7 @@ Rama() {
     echo "##          Welcome to omnileads deployment script           ##"
     echo "###############################################################"
     echo ""
+    UserValidation
     OSValidation
     echo "Servers to install:"
     cat /var/tmp/servers_installed
@@ -214,7 +225,7 @@ Tag() {
       cp $current_directory/inventory $my_inventory
       echo "Servers installed:"
       cat /var/tmp/servers_installed
-      echo " Remember that you have a copy of your inventory file in $inventory_copy_location/my_inventory, this is the file you have to modify"
+      echo " Remember that you have a copy of your inventory file in $inventory_copy_location/my_inventory with the variables you used for your OML installation"
       echo ""
       git checkout $current_directory/inventory
     else
