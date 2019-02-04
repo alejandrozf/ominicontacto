@@ -80,10 +80,18 @@ class EstadisticasService():
         calificaciones_cantidad - cantidad de llamadas por calificacion
         total_asignados - cantidad total de calificaciones
         """
-        calificaciones_query = CalificacionCliente.objects.filter(
-            opcion_calificacion__campana=campana,
-            fecha__range=(fecha_desde, fecha_hasta)).values('opcion_calificacion__nombre').annotate(
-                cantidad=Count('opcion_calificacion__nombre'))
+        if not campana.es_entrante:
+            calificaciones_query = CalificacionCliente.objects.filter(
+                opcion_calificacion__campana=campana,
+                fecha__range=(fecha_desde, fecha_hasta)).values(
+                    'opcion_calificacion__nombre').annotate(
+                    cantidad=Count('opcion_calificacion__nombre'))
+        else:
+            calificaciones_query = CalificacionCliente.history.filter(
+                opcion_calificacion__campana=campana,
+                history_date__range=(fecha_desde, fecha_hasta)).values(
+                    'opcion_calificacion__nombre').annotate(
+                    cantidad=Count('opcion_calificacion__nombre')).order_by()
         calificaciones_nombre = []
         calificaciones_cantidad = []
         total_calificados = 0
@@ -238,9 +246,13 @@ class EstadisticasService():
         for opcion_calificacion in opciones_calificaciones:
             dict_calificaciones.update({opcion_calificacion.nombre: 0})
 
-        calificaciones_campana_qs = CalificacionCliente.objects.filter(
-            opcion_calificacion__campana=campana, fecha__range=(fecha_desde, fecha_hasta))
-
+        if not campana.es_entrante:
+            calificaciones_campana_qs = CalificacionCliente.objects.filter(
+                opcion_calificacion__campana=campana, fecha__range=(fecha_desde, fecha_hasta))
+        else:
+            calificaciones_campana_qs = CalificacionCliente.history.filter(
+                opcion_calificacion__campana=campana,
+                history_date__range=(fecha_desde, fecha_hasta)).order_by()
         calificaciones_agentes_dict = calificaciones_campana_qs.values(
             'agente__user__first_name', 'agente__user__last_name', 'agente',
             'opcion_calificacion__nombre', 'opcion_calificacion__tipo').annotate(

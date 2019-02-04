@@ -100,6 +100,14 @@ class ArchivoDeReporteCsv(object):
             return json.loads(contacto.datos)
         return [""] * len(campos_contacto)
 
+    def _obtener_venta_reporte(self, campana, calificacion):
+        # se hace necesario este método para diferenciar si tenemos una instancia de
+        # CalificacionCliente ,cuando la campaña es entrante, o de una calificación del histórica
+        # en caso contrario
+        if campana.type == Campana.TYPE_ENTRANTE:
+            return calificacion.history_object.get_venta()
+        return calificacion.get_venta()
+
     def escribir_archivo_contactados_csv(self, campana, llamadas, calificaciones_dict):
         # TODO: Debe listar los llamadas contactados: EVENTOS_FIN_CONEXION
         # Agregarle a los llamadas los datos del (posible) contacto
@@ -111,7 +119,6 @@ class ArchivoDeReporteCsv(object):
             encabezado.extend(campos_contacto)
             encabezado.append(_("Fecha-Hora Contacto"))
             encabezado.append(_("Tel status"))
-            encabezado.append(_("Tel contactado"))
             encabezado.append(_("Calificado"))
             encabezado.append(_("Observaciones"))
             encabezado.append(_("Agente"))
@@ -128,7 +135,8 @@ class ArchivoDeReporteCsv(object):
             # Iteramos sobre los llamadas
             for llamada_log in llamadas:
                 datos_contacto = [''] * len(campos_contacto)
-                contacto = self.contactos_dict.get(llamada_log.contacto_id, None)
+                calificacion = calificaciones_dict.get(llamada_log.callid, None)
+                contacto = calificacion.contacto if calificacion is not None else None
                 tel_status = _('Fuera de base')
                 bd_contacto = _('Fuera de base')
                 if contacto is not None:
@@ -136,7 +144,6 @@ class ArchivoDeReporteCsv(object):
                     if contacto.es_originario:
                         tel_status = _('Contactado')
                         bd_contacto = contacto.bd_contacto
-                calificacion = calificaciones_dict.get(llamada_log.contacto_id, None)
                 # TODO: Si no hay contacto_id, ver de asociar la calificacion con el nro de telefono
                 datos_gestion = []
                 if calificacion is None:
@@ -147,7 +154,7 @@ class ArchivoDeReporteCsv(object):
                     datos_calificacion = [calificacion.opcion_calificacion.nombre,
                                           calificacion.observaciones,
                                           calificacion.agente]
-                    datos_formulario_gestion = calificacion.get_venta()
+                    datos_formulario_gestion = self._obtener_venta_reporte(campana, calificacion)
                     if (calificacion.es_venta and campana.tipo_interaccion is Campana.FORMULARIO and
                             datos_formulario_gestion is not None):
                         datos = json.loads(datos_formulario_gestion.metadata)
@@ -233,10 +240,15 @@ class ArchivoDeReporteCsv(object):
             self._escribir_csv_writer_utf_8(csvwiter, encabezado)
 
             # Iteramos cada uno de las metadata de la gestion del formulario
-            for calificacion in calificaciones:
+            for calificacion_val in calificaciones:
                 lista_opciones = []
                 # --- Buscamos datos
-                calificacion_fecha_local = localtime(calificacion.fecha)
+                if campana.es_entrante:
+                    calificacion = calificacion_val.history_object
+                    calificacion_fecha_local = localtime(calificacion_val.history_date)
+                else:
+                    calificacion = calificacion_val
+                    calificacion_fecha_local = localtime(calificacion.fecha)
                 lista_opciones.append(calificacion.contacto.telefono)
                 datos = json.loads(calificacion.contacto.datos)
                 lista_opciones.extend(datos)
@@ -319,7 +331,7 @@ class ReporteCampanaContactadosCSV(object):
         llamadas = self._obtener_llamadas_conectadas(campana, fecha_desde, fecha_hasta)
         calificaciones_dict = {}
         for calificacion in calificaciones:
-            calificaciones_dict[calificacion.contacto_id] = calificacion
+            calificaciones_dict[calificacion.callid] = calificacion
         # Reporte contactados
         archivo_de_reporte = ArchivoDeReporteCsv(
             campana, "contactados", agentes_dict, contactos_dict)
@@ -351,8 +363,11 @@ class ReporteCampanaContactadosCSV(object):
     def _obtener_listado_calificaciones_fecha(self, campana, fecha_desde, fecha_hasta):
         """
         Obtiene todos las calificaciones en el rango de fechas definidas para la campaña
-        especificada
+        especificada, se usan calificaciones históricas en caso de que la campaña sea entrante
         """
+        if campana.type == Campana.TYPE_ENTRANTE:
+            return campana.obtener_historico_calificaciones().filter(
+                history_date__range=(fecha_desde, fecha_hasta))
         return campana.obtener_calificaciones().filter(
             fecha__range=(fecha_desde, fecha_hasta))
 

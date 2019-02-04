@@ -240,9 +240,15 @@ class CalificacionClienteFormView(FormView):
                 and calificacion.get_venta():
             calificacion.get_venta().delete()
 
+    def _obtener_call_id(self):
+        if self.call_data is not None:
+            return self.call_data.get('call_id')
+        return None
+
     def _calificar_form(self, calificacion_form):
         self.object_calificacion = calificacion_form.save(commit=False)
         self.object_calificacion.set_es_venta()
+        self.object_calificacion.callid = self._obtener_call_id()
         self.object_calificacion.agente = self.agente
         self.object_calificacion.contacto = self.contacto
 
