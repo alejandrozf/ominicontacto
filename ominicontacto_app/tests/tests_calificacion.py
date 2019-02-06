@@ -399,3 +399,21 @@ class CalificacionTests(OMLBaseTest):
         url = reverse('calificar_llamada', kwargs={'call_data_json': json.dumps(call_data)})
         response = self.client.get(url)
         self.assertNotContains(response, observacion_anterior)
+
+    def test_llamada_entrante_con_numero_privado_inicializa_nuevo_contacto(self):
+        self.campana.type = Campana.TYPE_ENTRANTE
+        self.campana.save()
+        call_id = "123456789.34"
+        telefono = "NUMERO PRIVADO"
+        call_data = {"id_campana": self.campana.id,
+                     "campana_type": self.campana.type,
+                     "telefono": str(telefono),
+                     "call_id": call_id,
+                     "id_contacto": self.contacto.pk,
+                     "call_type": str(self.campana.type),
+                     "rec_filename": "",
+                     "call_wait_duration": ""}
+        url = reverse('calificar_llamada', kwargs={'call_data_json': json.dumps(call_data)})
+        response = self.client.get(url)
+        contacto_form = response.context_data['contacto_form']
+        self.assertEqual(contacto_form.instance.pk, None)
