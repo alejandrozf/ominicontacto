@@ -165,7 +165,7 @@ CREATE TABLE public.active_watchers (
     record_route text,
     expires integer NOT NULL,
     status integer DEFAULT 2 NOT NULL,
-    reason character varying(64) NOT NULL,
+    reason character varying(64),
     version integer DEFAULT 0 NOT NULL,
     socket_info character varying(64) NOT NULL,
     local_contact character varying(128) NOT NULL,
@@ -174,7 +174,7 @@ CREATE TABLE public.active_watchers (
     updated integer NOT NULL,
     updated_winfo integer NOT NULL,
     flags integer DEFAULT 0 NOT NULL,
-    user_agent character varying(255) DEFAULT ''::character varying NOT NULL
+    user_agent character varying(255) DEFAULT ''::character varying
 );
 
 
@@ -584,7 +584,7 @@ CREATE TABLE public.dialplan (
     match_exp character varying(64) NOT NULL,
     match_len integer NOT NULL,
     subst_exp character varying(64) NOT NULL,
-    repl_exp character varying(64) NOT NULL,
+    repl_exp character varying(256) NOT NULL,
     attrs character varying(64) NOT NULL
 );
 
@@ -1173,6 +1173,7 @@ CREATE TABLE public.lcr_rule (
     prefix character varying(16) DEFAULT NULL::character varying,
     from_uri character varying(64) DEFAULT NULL::character varying,
     request_uri character varying(64) DEFAULT NULL::character varying,
+    mt_tvalue character varying(128) DEFAULT NULL::character varying,
     stopper integer DEFAULT 0 NOT NULL,
     enabled integer DEFAULT 1 NOT NULL
 );
@@ -1247,7 +1248,7 @@ CREATE TABLE public.location (
     ruid character varying(64) DEFAULT ''::character varying NOT NULL,
     username character varying(64) DEFAULT ''::character varying NOT NULL,
     domain character varying(64) DEFAULT NULL::character varying,
-    contact character varying(255) DEFAULT ''::character varying NOT NULL,
+    contact character varying(512) DEFAULT ''::character varying NOT NULL,
     received character varying(128) DEFAULT NULL::character varying,
     path character varying(512) DEFAULT NULL::character varying,
     expires timestamp without time zone DEFAULT '2030-05-28 21:32:15'::timestamp without time zone NOT NULL,
@@ -1841,6 +1842,43 @@ ALTER SEQUENCE public.rls_watchers_id_seq OWNED BY public.rls_watchers.id;
 
 
 --
+-- Name: rtpengine; Type: TABLE; Schema: public; Owner: omnileads
+--
+
+CREATE TABLE public.rtpengine (
+    id integer NOT NULL,
+    setid integer DEFAULT 0 NOT NULL,
+    url character varying(64) NOT NULL,
+    weight integer DEFAULT 1 NOT NULL,
+    disabled integer DEFAULT 0 NOT NULL,
+    stamp timestamp without time zone DEFAULT '1900-01-01 00:00:01'::timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE public.rtpengine OWNER TO omnileads;
+
+--
+-- Name: rtpengine_id_seq; Type: SEQUENCE; Schema: public; Owner: omnileads
+--
+
+CREATE SEQUENCE public.rtpengine_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.rtpengine_id_seq OWNER TO omnileads;
+
+--
+-- Name: rtpengine_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: omnileads
+--
+
+ALTER SEQUENCE public.rtpengine_id_seq OWNED BY public.rtpengine.id;
+
+
+--
 -- Name: rtpproxy; Type: TABLE; Schema: public; Owner: omnileads
 --
 
@@ -1894,7 +1932,8 @@ CREATE TABLE public.sca_subscriptions (
     to_tag character varying(64) NOT NULL,
     record_route text,
     notify_cseq integer NOT NULL,
-    subscribe_cseq integer NOT NULL
+    subscribe_cseq integer NOT NULL,
+    server_id integer DEFAULT 0 NOT NULL
 );
 
 
@@ -2057,11 +2096,11 @@ CREATE TABLE public.subscriber (
     id integer NOT NULL,
     username character varying(64) DEFAULT ''::character varying NOT NULL,
     domain character varying(64) DEFAULT ''::character varying NOT NULL,
-    password character varying(25) DEFAULT ''::character varying NOT NULL,
-    email_address character varying(64) DEFAULT ''::character varying NOT NULL,
-    ha1 character varying(64) DEFAULT ''::character varying NOT NULL,
-    ha1b character varying(64) DEFAULT ''::character varying NOT NULL,
-    rpid character varying(64) DEFAULT NULL::character varying
+    password character varying(64) DEFAULT ''::character varying NOT NULL,
+    ha1 character varying(128) DEFAULT ''::character varying NOT NULL,
+    ha1b character varying(128) DEFAULT ''::character varying NOT NULL,
+    email_address character varying(128) DEFAULT NULL::character varying,
+    rpid character varying(128) DEFAULT NULL::character varying
 );
 
 
@@ -2245,13 +2284,14 @@ CREATE TABLE public.uacreg (
     id integer NOT NULL,
     l_uuid character varying(64) DEFAULT ''::character varying NOT NULL,
     l_username character varying(64) DEFAULT ''::character varying NOT NULL,
-    l_domain character varying(128) DEFAULT ''::character varying NOT NULL,
+    l_domain character varying(64) DEFAULT ''::character varying NOT NULL,
     r_username character varying(64) DEFAULT ''::character varying NOT NULL,
-    r_domain character varying(128) DEFAULT ''::character varying NOT NULL,
+    r_domain character varying(64) DEFAULT ''::character varying NOT NULL,
     realm character varying(64) DEFAULT ''::character varying NOT NULL,
     auth_username character varying(64) DEFAULT ''::character varying NOT NULL,
     auth_password character varying(64) DEFAULT ''::character varying NOT NULL,
-    auth_proxy character varying(64) DEFAULT ''::character varying NOT NULL,
+    auth_ha1 character varying(128) DEFAULT ''::character varying NOT NULL,
+    auth_proxy character varying(128) DEFAULT ''::character varying NOT NULL,
     expires integer DEFAULT 0 NOT NULL,
     flags integer DEFAULT 0 NOT NULL,
     reg_delay integer DEFAULT 0 NOT NULL
@@ -2799,6 +2839,13 @@ ALTER TABLE ONLY public.rls_watchers ALTER COLUMN id SET DEFAULT nextval('public
 
 
 --
+-- Name: rtpengine id; Type: DEFAULT; Schema: public; Owner: omnileads
+--
+
+ALTER TABLE ONLY public.rtpengine ALTER COLUMN id SET DEFAULT nextval('public.rtpengine_id_seq'::regclass);
+
+
+--
 -- Name: rtpproxy id; Type: DEFAULT; Schema: public; Owner: omnileads
 --
 
@@ -3327,7 +3374,7 @@ SELECT pg_catalog.setval('public.lcr_gw_id_seq', 1, false);
 -- Data for Name: lcr_rule; Type: TABLE DATA; Schema: public; Owner: omnileads
 --
 
-COPY public.lcr_rule (id, lcr_id, prefix, from_uri, request_uri, stopper, enabled) FROM stdin;
+COPY public.lcr_rule (id, lcr_id, prefix, from_uri, request_uri, mt_tvalue, stopper, enabled) FROM stdin;
 \.
 
 
@@ -3579,6 +3626,21 @@ SELECT pg_catalog.setval('public.rls_watchers_id_seq', 1, false);
 
 
 --
+-- Data for Name: rtpengine; Type: TABLE DATA; Schema: public; Owner: omnileads
+--
+
+COPY public.rtpengine (id, setid, url, weight, disabled, stamp) FROM stdin;
+\.
+
+
+--
+-- Name: rtpengine_id_seq; Type: SEQUENCE SET; Schema: public; Owner: omnileads
+--
+
+SELECT pg_catalog.setval('public.rtpengine_id_seq', 1, false);
+
+
+--
 -- Data for Name: rtpproxy; Type: TABLE DATA; Schema: public; Owner: omnileads
 --
 
@@ -3597,7 +3659,7 @@ SELECT pg_catalog.setval('public.rtpproxy_id_seq', 1, false);
 -- Data for Name: sca_subscriptions; Type: TABLE DATA; Schema: public; Owner: omnileads
 --
 
-COPY public.sca_subscriptions (id, subscriber, aor, event, expires, state, app_idx, call_id, from_tag, to_tag, record_route, notify_cseq, subscribe_cseq) FROM stdin;
+COPY public.sca_subscriptions (id, subscriber, aor, event, expires, state, app_idx, call_id, from_tag, to_tag, record_route, notify_cseq, subscribe_cseq, server_id) FROM stdin;
 \.
 
 
@@ -3657,7 +3719,7 @@ SELECT pg_catalog.setval('public.speed_dial_id_seq', 1, false);
 -- Data for Name: subscriber; Type: TABLE DATA; Schema: public; Owner: omnileads
 --
 
-COPY public.subscriber (id, username, domain, password, email_address, ha1, ha1b, rpid) FROM stdin;
+COPY public.subscriber (id, username, domain, password, ha1, ha1b, email_address, rpid) FROM stdin;
 \.
 
 
@@ -3717,7 +3779,7 @@ SELECT pg_catalog.setval('public.trusted_id_seq', 1, false);
 -- Data for Name: uacreg; Type: TABLE DATA; Schema: public; Owner: omnileads
 --
 
-COPY public.uacreg (id, l_uuid, l_username, l_domain, r_username, r_domain, realm, auth_username, auth_password, auth_proxy, expires, flags, reg_delay) FROM stdin;
+COPY public.uacreg (id, l_uuid, l_username, l_domain, r_username, r_domain, realm, auth_username, auth_password, auth_ha1, auth_proxy, expires, flags, reg_delay) FROM stdin;
 \.
 
 
@@ -3784,7 +3846,7 @@ acc_cdrs	2
 missed_calls	4
 lcr_gw	3
 lcr_rule_target	1
-lcr_rule	2
+lcr_rule	3
 domain	2
 domain_attrs	1
 grp	2
@@ -3792,14 +3854,14 @@ re_grp	1
 trusted	6
 address	6
 aliases	8
-location	8
+location	9
 location_attrs	1
 silo	8
 dbaliases	1
 uri	1
 speed_dial	2
 usr_preferences	2
-subscriber	6
+subscriber	7
 pdt	1
 dialog	7
 dialog_vars	1
@@ -3831,14 +3893,15 @@ userblacklist	1
 globalblacklist	1
 htable	2
 purplemap	1
-uacreg	2
+uacreg	3
 pl_pipes	1
 mtree	1
 mtrees	2
-sca_subscriptions	1
+sca_subscriptions	2
 mohqcalls	1
 mohqueues	1
 rtpproxy	1
+rtpengine	1
 \.
 
 
@@ -4006,14 +4069,6 @@ ALTER TABLE ONLY public.dialplan
 
 ALTER TABLE ONLY public.dispatcher
     ADD CONSTRAINT dispatcher_pkey PRIMARY KEY (id);
-
-
---
--- Name: domain_attrs domain_attrs_domain_attrs_idx; Type: CONSTRAINT; Schema: public; Owner: omnileads
---
-
-ALTER TABLE ONLY public.domain_attrs
-    ADD CONSTRAINT domain_attrs_domain_attrs_idx UNIQUE (did, name, value);
 
 
 --
@@ -4409,6 +4464,22 @@ ALTER TABLE ONLY public.rls_watchers
 
 
 --
+-- Name: rtpengine rtpengine_pkey; Type: CONSTRAINT; Schema: public; Owner: omnileads
+--
+
+ALTER TABLE ONLY public.rtpengine
+    ADD CONSTRAINT rtpengine_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: rtpengine rtpengine_rtpengine_nodes; Type: CONSTRAINT; Schema: public; Owner: omnileads
+--
+
+ALTER TABLE ONLY public.rtpengine
+    ADD CONSTRAINT rtpengine_rtpengine_nodes UNIQUE (setid, url);
+
+
+--
 -- Name: rtpproxy rtpproxy_pkey; Type: CONSTRAINT; Schema: public; Owner: omnileads
 --
 
@@ -4684,6 +4755,13 @@ CREATE INDEX dialog_vars_hash_idx ON public.dialog_vars USING btree (hash_entry,
 
 
 --
+-- Name: domain_attrs_domain_attrs_idx; Type: INDEX; Schema: public; Owner: omnileads
+--
+
+CREATE INDEX domain_attrs_domain_attrs_idx ON public.domain_attrs USING btree (did, name);
+
+
+--
 -- Name: domainpolicy_rule_idx; Type: INDEX; Schema: public; Owner: omnileads
 --
 
@@ -4848,7 +4926,7 @@ CREATE INDEX rls_watchers_updated_idx ON public.rls_watchers USING btree (update
 -- Name: sca_subscriptions_sca_expires_idx; Type: INDEX; Schema: public; Owner: omnileads
 --
 
-CREATE INDEX sca_subscriptions_sca_expires_idx ON public.sca_subscriptions USING btree (expires);
+CREATE INDEX sca_subscriptions_sca_expires_idx ON public.sca_subscriptions USING btree (server_id, expires);
 
 
 --
@@ -4908,6 +4986,20 @@ CREATE INDEX topos_d_a_callid_idx ON public.topos_d USING btree (a_callid);
 
 
 --
+-- Name: topos_d_a_uuid_idx; Type: INDEX; Schema: public; Owner: omnileads
+--
+
+CREATE INDEX topos_d_a_uuid_idx ON public.topos_d USING btree (a_uuid);
+
+
+--
+-- Name: topos_d_b_uuid_idx; Type: INDEX; Schema: public; Owner: omnileads
+--
+
+CREATE INDEX topos_d_b_uuid_idx ON public.topos_d USING btree (b_uuid);
+
+
+--
 -- Name: topos_d_rectime_idx; Type: INDEX; Schema: public; Owner: omnileads
 --
 
@@ -4922,10 +5014,24 @@ CREATE INDEX topos_t_a_callid_idx ON public.topos_t USING btree (a_callid);
 
 
 --
+-- Name: topos_t_a_uuid_idx; Type: INDEX; Schema: public; Owner: omnileads
+--
+
+CREATE INDEX topos_t_a_uuid_idx ON public.topos_t USING btree (a_uuid);
+
+
+--
 -- Name: topos_t_rectime_idx; Type: INDEX; Schema: public; Owner: omnileads
 --
 
 CREATE INDEX topos_t_rectime_idx ON public.topos_t USING btree (rectime);
+
+
+--
+-- Name: topos_t_x_vbranch_idx; Type: INDEX; Schema: public; Owner: omnileads
+--
+
+CREATE INDEX topos_t_x_vbranch_idx ON public.topos_t USING btree (x_vbranch);
 
 
 --
@@ -4981,798 +5087,847 @@ CREATE INDEX xcap_account_doc_uri_idx ON public.xcap USING btree (username, doma
 -- Name: TABLE acc; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.acc TO kamailioro;
+GRANT SELECT ON TABLE public.acc TO omnileadsro;
 
 
 --
 -- Name: TABLE acc_cdrs; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.acc_cdrs TO kamailioro;
+GRANT SELECT ON TABLE public.acc_cdrs TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE acc_cdrs_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.acc_cdrs_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.acc_cdrs_id_seq TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE acc_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.acc_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.acc_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE active_watchers; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.active_watchers TO kamailioro;
+GRANT SELECT ON TABLE public.active_watchers TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE active_watchers_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.active_watchers_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.active_watchers_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE address; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.address TO kamailioro;
+GRANT SELECT ON TABLE public.address TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE address_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.address_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.address_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE aliases; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.aliases TO kamailioro;
+GRANT SELECT ON TABLE public.aliases TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE aliases_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.aliases_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.aliases_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE carrier_name; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.carrier_name TO kamailioro;
+GRANT SELECT ON TABLE public.carrier_name TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE carrier_name_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.carrier_name_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.carrier_name_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE carrierfailureroute; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.carrierfailureroute TO kamailioro;
+GRANT SELECT ON TABLE public.carrierfailureroute TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE carrierfailureroute_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.carrierfailureroute_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.carrierfailureroute_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE carrierroute; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.carrierroute TO kamailioro;
+GRANT SELECT ON TABLE public.carrierroute TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE carrierroute_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.carrierroute_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.carrierroute_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE cpl; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.cpl TO kamailioro;
+GRANT SELECT ON TABLE public.cpl TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE cpl_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.cpl_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.cpl_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE dbaliases; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.dbaliases TO kamailioro;
+GRANT SELECT ON TABLE public.dbaliases TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE dbaliases_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.dbaliases_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.dbaliases_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE dialog; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.dialog TO kamailioro;
+GRANT SELECT ON TABLE public.dialog TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE dialog_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.dialog_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.dialog_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE dialog_vars; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.dialog_vars TO kamailioro;
+GRANT SELECT ON TABLE public.dialog_vars TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE dialog_vars_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.dialog_vars_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.dialog_vars_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE dialplan; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.dialplan TO kamailioro;
+GRANT SELECT ON TABLE public.dialplan TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE dialplan_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.dialplan_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.dialplan_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE dispatcher; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.dispatcher TO kamailioro;
+GRANT SELECT ON TABLE public.dispatcher TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE dispatcher_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.dispatcher_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.dispatcher_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE domain; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.domain TO kamailioro;
+GRANT SELECT ON TABLE public.domain TO omnileadsro;
 
 
 --
 -- Name: TABLE domain_attrs; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.domain_attrs TO kamailioro;
+GRANT SELECT ON TABLE public.domain_attrs TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE domain_attrs_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.domain_attrs_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.domain_attrs_id_seq TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE domain_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.domain_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.domain_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE domain_name; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.domain_name TO kamailioro;
+GRANT SELECT ON TABLE public.domain_name TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE domain_name_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.domain_name_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.domain_name_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE domainpolicy; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.domainpolicy TO kamailioro;
+GRANT SELECT ON TABLE public.domainpolicy TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE domainpolicy_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.domainpolicy_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.domainpolicy_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE dr_gateways; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.dr_gateways TO kamailioro;
+GRANT SELECT ON TABLE public.dr_gateways TO omnileadsro;
+
+
+--
+-- Name: TABLE dr_groups; Type: ACL; Schema: public; Owner: omnileads
+--
+
+GRANT SELECT ON TABLE public.dr_groups TO omnileadsro;
+
+
+--
+-- Name: SEQUENCE dr_groups_id_seq; Type: ACL; Schema: public; Owner: omnileads
+--
+
+GRANT SELECT ON SEQUENCE public.dr_groups_id_seq TO omnileadsro;
+
+
+--
+-- Name: TABLE dr_gw_lists; Type: ACL; Schema: public; Owner: omnileads
+--
+
+GRANT SELECT ON TABLE public.dr_gw_lists TO omnileadsro;
+
+
+--
+-- Name: SEQUENCE dr_gw_lists_id_seq; Type: ACL; Schema: public; Owner: omnileads
+--
+
+GRANT SELECT ON SEQUENCE public.dr_gw_lists_id_seq TO omnileadsro;
+
+
+--
+-- Name: TABLE dr_rules; Type: ACL; Schema: public; Owner: omnileads
+--
+
+GRANT SELECT ON TABLE public.dr_rules TO omnileadsro;
 
 
 --
 -- Name: TABLE globalblacklist; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.globalblacklist TO kamailioro;
+GRANT SELECT ON TABLE public.globalblacklist TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE globalblacklist_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.globalblacklist_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.globalblacklist_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE grp; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.grp TO kamailioro;
+GRANT SELECT ON TABLE public.grp TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE grp_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.grp_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.grp_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE htable; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.htable TO kamailioro;
+GRANT SELECT ON TABLE public.htable TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE htable_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.htable_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.htable_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE imc_members; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.imc_members TO kamailioro;
+GRANT SELECT ON TABLE public.imc_members TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE imc_members_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.imc_members_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.imc_members_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE imc_rooms; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.imc_rooms TO kamailioro;
+GRANT SELECT ON TABLE public.imc_rooms TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE imc_rooms_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.imc_rooms_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.imc_rooms_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE lcr_gw; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.lcr_gw TO kamailioro;
+GRANT SELECT ON TABLE public.lcr_gw TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE lcr_gw_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.lcr_gw_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.lcr_gw_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE lcr_rule; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.lcr_rule TO kamailioro;
+GRANT SELECT ON TABLE public.lcr_rule TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE lcr_rule_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.lcr_rule_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.lcr_rule_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE lcr_rule_target; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.lcr_rule_target TO kamailioro;
+GRANT SELECT ON TABLE public.lcr_rule_target TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE lcr_rule_target_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.lcr_rule_target_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.lcr_rule_target_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE location; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.location TO kamailioro;
+GRANT SELECT ON TABLE public.location TO omnileadsro;
 
 
 --
 -- Name: TABLE location_attrs; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.location_attrs TO kamailioro;
+GRANT SELECT ON TABLE public.location_attrs TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE location_attrs_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.location_attrs_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.location_attrs_id_seq TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE location_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.location_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.location_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE missed_calls; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.missed_calls TO kamailioro;
+GRANT SELECT ON TABLE public.missed_calls TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE missed_calls_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.missed_calls_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.missed_calls_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE mohqcalls; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.mohqcalls TO kamailioro;
+GRANT SELECT ON TABLE public.mohqcalls TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE mohqcalls_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.mohqcalls_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.mohqcalls_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE mohqueues; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.mohqueues TO kamailioro;
+GRANT SELECT ON TABLE public.mohqueues TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE mohqueues_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.mohqueues_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.mohqueues_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE mtree; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.mtree TO kamailioro;
+GRANT SELECT ON TABLE public.mtree TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE mtree_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.mtree_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.mtree_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE mtrees; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.mtrees TO kamailioro;
+GRANT SELECT ON TABLE public.mtrees TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE mtrees_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.mtrees_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.mtrees_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE pdt; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.pdt TO kamailioro;
+GRANT SELECT ON TABLE public.pdt TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE pdt_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.pdt_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.pdt_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE pl_pipes; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.pl_pipes TO kamailioro;
+GRANT SELECT ON TABLE public.pl_pipes TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE pl_pipes_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.pl_pipes_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.pl_pipes_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE presentity; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.presentity TO kamailioro;
+GRANT SELECT ON TABLE public.presentity TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE presentity_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.presentity_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.presentity_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE pua; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.pua TO kamailioro;
+GRANT SELECT ON TABLE public.pua TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE pua_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.pua_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.pua_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE purplemap; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.purplemap TO kamailioro;
+GRANT SELECT ON TABLE public.purplemap TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE purplemap_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.purplemap_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.purplemap_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE re_grp; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.re_grp TO kamailioro;
+GRANT SELECT ON TABLE public.re_grp TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE re_grp_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.re_grp_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.re_grp_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE rls_presentity; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.rls_presentity TO kamailioro;
+GRANT SELECT ON TABLE public.rls_presentity TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE rls_presentity_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.rls_presentity_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.rls_presentity_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE rls_watchers; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.rls_watchers TO kamailioro;
+GRANT SELECT ON TABLE public.rls_watchers TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE rls_watchers_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.rls_watchers_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.rls_watchers_id_seq TO omnileadsro;
+
+
+--
+-- Name: TABLE rtpengine; Type: ACL; Schema: public; Owner: omnileads
+--
+
+GRANT SELECT ON TABLE public.rtpengine TO omnileadsro;
+
+
+--
+-- Name: SEQUENCE rtpengine_id_seq; Type: ACL; Schema: public; Owner: omnileads
+--
+
+GRANT SELECT ON SEQUENCE public.rtpengine_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE rtpproxy; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.rtpproxy TO kamailioro;
+GRANT SELECT ON TABLE public.rtpproxy TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE rtpproxy_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.rtpproxy_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.rtpproxy_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE sca_subscriptions; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.sca_subscriptions TO kamailioro;
+GRANT SELECT ON TABLE public.sca_subscriptions TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE sca_subscriptions_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.sca_subscriptions_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.sca_subscriptions_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE silo; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.silo TO kamailioro;
+GRANT SELECT ON TABLE public.silo TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE silo_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.silo_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.silo_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE sip_trace; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.sip_trace TO kamailioro;
+GRANT SELECT ON TABLE public.sip_trace TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE sip_trace_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.sip_trace_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.sip_trace_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE speed_dial; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.speed_dial TO kamailioro;
+GRANT SELECT ON TABLE public.speed_dial TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE speed_dial_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.speed_dial_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.speed_dial_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE subscriber; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.subscriber TO kamailioro;
+GRANT SELECT ON TABLE public.subscriber TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE subscriber_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.subscriber_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.subscriber_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE topos_d; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.topos_d TO kamailioro;
+GRANT SELECT ON TABLE public.topos_d TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE topos_d_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.topos_d_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.topos_d_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE topos_t; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.topos_t TO kamailioro;
+GRANT SELECT ON TABLE public.topos_t TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE topos_t_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.topos_t_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.topos_t_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE trusted; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.trusted TO kamailioro;
+GRANT SELECT ON TABLE public.trusted TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE trusted_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.trusted_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.trusted_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE uacreg; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.uacreg TO kamailioro;
+GRANT SELECT ON TABLE public.uacreg TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE uacreg_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.uacreg_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.uacreg_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE uri; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.uri TO kamailioro;
+GRANT SELECT ON TABLE public.uri TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE uri_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.uri_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.uri_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE userblacklist; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.userblacklist TO kamailioro;
+GRANT SELECT ON TABLE public.userblacklist TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE userblacklist_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.userblacklist_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.userblacklist_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE usr_preferences; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.usr_preferences TO kamailioro;
+GRANT SELECT ON TABLE public.usr_preferences TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE usr_preferences_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.usr_preferences_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.usr_preferences_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE version; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.version TO kamailioro;
+GRANT SELECT ON TABLE public.version TO omnileadsro;
 
 
 --
 -- Name: TABLE watchers; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.watchers TO kamailioro;
+GRANT SELECT ON TABLE public.watchers TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE watchers_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.watchers_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.watchers_id_seq TO omnileadsro;
 
 
 --
 -- Name: TABLE xcap; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON TABLE public.xcap TO kamailioro;
+GRANT SELECT ON TABLE public.xcap TO omnileadsro;
 
 
 --
 -- Name: SEQUENCE xcap_id_seq; Type: ACL; Schema: public; Owner: omnileads
 --
 
-GRANT SELECT ON SEQUENCE public.xcap_id_seq TO kamailioro;
+GRANT SELECT ON SEQUENCE public.xcap_id_seq TO omnileadsro;
 
 
 --

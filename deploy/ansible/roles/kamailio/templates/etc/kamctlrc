@@ -122,10 +122,10 @@ INSTALL_DBUID_TABLES=yes
 
 ## control engine: FIFO or UNIXSOCK
 ## - default FIFO
-# CTLENGINE="FIFO"
+CTLENGINE="UNIXSOCK"
 
 ## path to FIFO file
-FIFOPATH="/tmp/kamailio_fifo"
+3FIFOPATH="/tmp/kamailio_fifo"
 
 ## check ACL names; default on (1); off (0)
 # VERIFY_ACL=1
