@@ -84,7 +84,9 @@ class ArchivoDeReporteCsv(object):
                 encabezado.append(nombre)
             encabezado.append(_("base_datos"))
             encabezado.append(_("Calificación"))
-            campos = campana.formulario.campos.all()
+            campos = []
+            if not campana.tiene_interaccion_con_sitio_externo:
+                campos = campana.formulario.campos.all()
 
             for campo in campos:
                 encabezado.append(campo.nombre_campo)
