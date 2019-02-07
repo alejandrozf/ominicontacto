@@ -46,6 +46,8 @@ from ominicontacto_app.models import (
     OpcionCalificacion, UserApiCrm)
 from ominicontacto_app.utiles import convertir_ascii_string
 
+from reportes_app.models import LlamadaLog
+
 
 logger = logging_.getLogger(__name__)
 
@@ -138,8 +140,9 @@ class CalificacionClienteFormView(FormView):
             calificacion_kwargs['data'] = self.request.POST
         return calificacion_kwargs
 
-    def get_form(self):
+    def get_form(self, historico_calificaciones=False):
         kwargs = self.get_calificacion_form_kwargs()
+        kwargs['historico_calificaciones'] = historico_calificaciones
         return CalificacionClienteForm(campana=self.campana, **kwargs)
 
     def get_contacto_form_kwargs(self):
@@ -179,14 +182,27 @@ class CalificacionClienteFormView(FormView):
         return FormularioContactoCalificacion(campos=self.get_campos_formulario_contacto(),
                                               **self.get_contacto_form_kwargs())
 
+    def _formulario_llamada_entrante(self):
+        """Determina si estamos en presencia de un formulario
+        generado por una llamada entrante
+        """
+        tipo_llamada = None
+        if self.call_data is not None:
+            tipo_llamada = int(self.call_data['call_type'])
+        llamada_entrante = (tipo_llamada == LlamadaLog.LLAMADA_ENTRANTE)
+        return llamada_entrante
+
     def get(self, request, *args, **kwargs):
+        formulario_llamada_entrante = self._formulario_llamada_entrante()
+
         contacto_form = self.get_contacto_form()
-        calificacion_form = self.get_form()
+        calificacion_form = self.get_form(historico_calificaciones=formulario_llamada_entrante)
 
         return self.render_to_response(self.get_context_data(
             contacto_form=contacto_form,
             calificacion_form=calificacion_form,
             campana=self.campana,
+            llamada_entrante=formulario_llamada_entrante,
             url_sitio_externo=self.url_sitio_externo))
 
     def post(self, request, *args, **kwargs):
@@ -195,7 +211,18 @@ class CalificacionClienteFormView(FormView):
         """
         contacto_form = self.get_contacto_form()
         calificacion_form = self.get_form()
-        if contacto_form.is_valid() and calificacion_form.is_valid():
+        contacto_form_valid = contacto_form.is_valid()
+        calificacion_form_valid = calificacion_form.is_valid()
+        self.usuario_califica = request.POST.get('usuario_califica', 'false') == 'true'
+        formulario_llamada_entrante = self._formulario_llamada_entrante()
+        # cuando el formulario es generado por una llamada entrante y el usuario no desea
+        # calificar al contacto, solo validamos el formulario del contacto, ya que el de
+        # calificación permanece oculto (en las dos siguientes validaciones)
+        if formulario_llamada_entrante and not self.usuario_califica and contacto_form_valid:
+            return self.form_valid(contacto_form)
+        if formulario_llamada_entrante and not self.usuario_califica and not contacto_form_valid:
+            return self.form_invalid(contacto_form)
+        if contacto_form_valid and calificacion_form_valid:
             return self.form_valid(contacto_form, calificacion_form)
         else:
             return self.form_invalid(contacto_form, calificacion_form)
@@ -206,26 +233,7 @@ class CalificacionClienteFormView(FormView):
                 and calificacion.get_venta():
             calificacion.get_venta().delete()
 
-    def form_valid(self, contacto_form, calificacion_form):
-        nuevo_contacto = False
-        if self.contacto is None:
-            nuevo_contacto = True
-        self.contacto = contacto_form.save(commit=False)
-        # TODO: Pasar esta logica al formulario?
-        base_datos = self.campana.bd_contacto
-        metadata = base_datos.get_metadata()
-        nombres = metadata.nombres_de_columnas
-        datos = []
-        nombres.remove('telefono')
-        for nombre in nombres:
-            campo = contacto_form.cleaned_data.get(convertir_ascii_string(nombre))
-            datos.append(campo)
-        self.contacto.datos = json.dumps(datos)
-        self.contacto.bd_contacto = base_datos
-        if nuevo_contacto:
-            self.contacto.es_originario = False
-        self.contacto.save()
-
+    def _calificar_form(self, calificacion_form):
         self.object_calificacion = calificacion_form.save(commit=False)
         self.object_calificacion.set_es_venta()
         self.object_calificacion.agente = self.agente
@@ -261,6 +269,35 @@ class CalificacionClienteFormView(FormView):
             return redirect(self.get_success_url_reporte())
         else:
             return redirect(self.get_success_url())
+
+    def form_valid(self, contacto_form, calificacion_form=None):
+        nuevo_contacto = False
+        if self.contacto is None:
+            nuevo_contacto = True
+        self.contacto = contacto_form.save(commit=False)
+        # TODO: Pasar esta logica al formulario?
+        base_datos = self.campana.bd_contacto
+        metadata = base_datos.get_metadata()
+        nombres = metadata.nombres_de_columnas
+        datos = []
+        nombres.remove('telefono')
+        for nombre in nombres:
+            campo = contacto_form.cleaned_data.get(convertir_ascii_string(nombre))
+            datos.append(campo)
+        self.contacto.datos = json.dumps(datos)
+        self.contacto.bd_contacto = base_datos
+        if nuevo_contacto:
+            self.contacto.es_originario = False
+        self.contacto.save()
+        if calificacion_form is not None:
+            # el formulario de calificación no es generado por una llamada entrante
+            return self._calificar_form(calificacion_form)
+        else:
+            # en el caso de una campaña entrante que el usuario no desea calificar
+            message = _('Operación Exitosa! '
+                        'Se llevó a cabo con éxito la creación del contacto')
+            messages.success(self.request, message)
+            return redirect(self.get_success_url())  # TODO: revisar a dónde va a ir en este caso
 
     def form_invalid(self, contacto_form, calificacion_form):
         """

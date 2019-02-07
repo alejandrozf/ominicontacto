@@ -148,6 +148,7 @@ class LlamadaLog(models.Model):
     """
 
     LLAMADA_MANUAL = 1
+    LLAMADA_ENTRANTE = 3
 
     EVENTOS_NO_CONTACTACION = ('NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL', 'FAIL', 'OTHER',
                                'BLACKLIST', 'CONGESTION', 'NONDIALPLAN')

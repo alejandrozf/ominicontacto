@@ -612,8 +612,10 @@ class CalificacionClienteForm(forms.ModelForm):
         OpcionCalificacion.objects.all(), empty_label='---------', label=_('Calificación'))
 
     def __init__(self, campana, *args, **kwargs):
+        historico_calificaciones = kwargs.pop('historico_calificaciones')
         super(CalificacionClienteForm, self).__init__(*args, **kwargs)
         self.campana = campana
+        self.historico_calificaciones = historico_calificaciones
         self.fields['opcion_calificacion'].queryset = campana.opciones_calificacion.all()
 
     class Meta:
