@@ -101,4 +101,30 @@ class OMLAPI {
             }
         });
     };
+
+    startClick2Call(agent_id, campaign_id, campaign_type, contact_id, phone, click2call_type) {
+        // {{ url' agente_llamar_contacto' }}
+        var URl = "/agente/llamar/";
+        var post_data = {
+            "pk_agente": agent_id,
+            "pk_campana": campaign_id,
+            "tipo_campana": campaign_type,
+            "pk_contacto": contact_id,
+            "telefono": phone,
+            "click2call_type": click2call_type,
+        };
+        $.ajax({
+            url: URl,
+            type: 'POST',
+            data: post_data,
+            succes: function(msg) {
+
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
+                alert(gettext("No se pudo iniciar la llamada. Intente Nuevamente."))
+            }
+        });
+    };
+
 }

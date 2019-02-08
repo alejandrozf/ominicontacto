@@ -46,6 +46,7 @@ from ominicontacto_app.forms import ReporteForm
 from ominicontacto_app.services.reporte_agente_calificacion import ReporteAgenteService
 from ominicontacto_app.services.reporte_agente_venta import ReporteFormularioVentaService
 from ominicontacto_app.utiles import convert_fecha_datetime
+from ominicontacto_app.services.click2call import Click2CallOriginator
 from ominicontacto_app.services.asterisk_ami_http import (
     AsteriskHttpClient, AsteriskHttpOriginateError
 )
@@ -177,44 +178,21 @@ def logout_view(request):
 
 class LlamarContactoView(RedirectView):
     """
-    Esta vista realiza originate hacia wombate
+    Esta vista realiza originate hacia Asterisk
     """
 
     pattern_name = 'view_blanco'
 
-    def _call_originate(self, request, campana_id, campana_nombre, agente, contacto,
-                        click2call_type, tipo_campana):
-        variables = {
-            'IdCamp': str(campana_id),
-            'codCli': str(contacto.pk),
-            'CAMPANA': campana_nombre,
-            'origin': click2call_type,
-            'Tipocamp': tipo_campana,
-            'FTSAGENTE': "{0}_{1}".format(agente.id,
-                                          request.user.get_full_name())
-        }
-        channel = "Local/{0}@click2call/n".format(agente.sip_extension)
-        # Genero la llamada via originate por AMI
-        try:
-            client = AsteriskHttpClient()
-            client.login()
-            client.originate(channel, "from-internal", False, variables, True,
-                             exten=contacto.telefono, priority=1, timeout=45000)
-
-        except AsteriskHttpOriginateError:
-            logger.exception(_("Originate failed - contacto: {0} ".format(contacto.telefono)))
-
-        except Exception as e:
-            logger.exception(_("Originate failed by {0} - contacto: {1}".format(
-                e, contacto.telefono)))
-
     def post(self, request, *args, **kwargs):
+        # TODO: Analizar bien el caso de que se este agregando un contacto
         agente = AgenteProfile.objects.get(pk=request.POST['pk_agente'])
         contacto = Contacto.objects.get(pk=request.POST['pk_contacto'])
         click2call_type = request.POST.get('click2call_type', 'false')
         tipo_campana = request.POST.get('tipo_campana')
         campana_id = request.POST.get('pk_campana')
-        campana_nombre = request.POST.get('campana_nombre')
+        telefono = request.POST.get('telefono', '')
+        if not telefono:
+            telefono = contacto.telefono
 
         if campana_id == '':
             calificacion_cliente = CalificacionCliente.objects.filter(
@@ -222,7 +200,6 @@ class LlamarContactoView(RedirectView):
             if calificacion_cliente.exists():
                 campana = calificacion_cliente[0].campana
                 campana_id = str(campana.pk)
-                campana_nombre = campana.nombre
                 tipo_campana = str(campana.type)
 
         elif click2call_type == 'preview':
@@ -236,9 +213,10 @@ class LlamarContactoView(RedirectView):
                 return HttpResponseRedirect(
                     reverse('agenda_agente_list'))
 
-        self._call_originate(
-            request, campana_id, campana_nombre, agente, contacto, click2call_type, tipo_campana)
-        return super(LlamarContactoView, self).post(request, *args, **kwargs)
+        originator = Click2CallOriginator()
+        originator.call_originate(
+            agente, campana_id, tipo_campana, contacto.id, telefono, click2call_type)
+        return HttpResponseRedirect(reverse('view_blanco'))
 
 
 class LiberarContactoAsignado(View):

@@ -1,0 +1,143 @@
+<!--
+Copyright (C) 2018 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% load staticfiles %}
+{% load compress %}
+{% load i18n %}
+{% load util_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <!-- Stylesheets -->
+        <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
+        <!-- Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-solid.css' %}">
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-regular.css' %}">
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fontawesome.css' %}">
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
+        <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+        {% compress js %}
+        <!-- Scripts -->
+        <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
+        <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
+        {% endcompress %}
+        <script type="text/javascript">
+            function makeClick2Call(contact_id, phone) {
+                // Utilizar click2call manager para intentar llamar.
+                var campaign_id = '{{ campana.pk }}';
+                var campaign_type = '{{ campana.type }}';
+
+                // Ver si tengo acceso
+                if (window.parent.hasOwnProperty('click2call')){
+                    var click2call = window.parent.click2call;
+                    click2call.call_contact(campaign_id, campaign_type,
+                                            contact_id, phone, 'contactos');
+
+                } else {
+                    console.log('Alertar al usuario que no es posible hacer una click2call');
+                }
+            };
+        </script>
+    </head>
+    <body>
+        <h1>
+            {% trans 'Identificar Contacto a llamar' %} 
+        </h1>
+        <h2>
+            {% trans "Contactos Sugeridos" %}
+        </h2>
+        <div>
+            <form action="" method="POST">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                <div class="form-row">
+                    <div class="col-md-6">
+                        {{ form.buscar }}
+                        {{ form.buscar.errors }}
+                    </div>
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-primary">
+                            {% trans "Buscar" %}
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>{% trans 'Teléfono' %}</th>
+                    {% for campo in campos_bd %}
+                        <th>{{ campo }}</th>
+                    {% endfor %}
+                    <th>{% trans 'Acciones' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% if  contacto_sugerido %}
+                <tr>
+                    <td>{{ contacto_sugerido.telefono }}</td>
+                    {% for campo in campos_bd %}
+                        <td>{{campo}}  {{ contacto|get_item:campo }}</td>
+                    {% endfor %}
+                    <td>
+                        <button class="contacto-lista btn btn-light btn-sm">
+                            <span class="icon-phone" aria-hidden="true" title="{% trans 'Llamar' %}" onclick="makeClick2Call('{{ contacto_sugerido.id }}', '{{telefono}}');"></span>
+                            
+                        </button>
+                    </td>
+                </tr>
+            {% endif %}
+            {% for  contacto in contactos_busqueda %}
+                <tr>
+                    <td>
+                        <a class="btn btn-submit btn-outline-primary" href="javascript:;" onclick="makeClick2Call('{{ contacto.id }}', '{{ contacto.telefono }}');">
+                            {{ contacto.telefono }}
+                        </a>
+                    </td>
+                    {% for campo in campos_bd %}
+                        <td>{{ contacto.obtener_datos|get_item:campo }}</td>
+                    {% endfor %}
+                    <td>
+                        <button class="contacto-lista btn btn-light btn-sm">
+                            <span class="icon-phone" aria-hidden="true" title="{% trans 'Llamar' %}" onclick="makeClick2Call('{{ contacto.id }}', '{{ telefono }}');"></span>
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+
+        
+        <div>
+            <a href="{% url 'nuevo_contacto_campana_a_llamar' campana.pk telefono %}">
+                <button type="button" id="id_buscar_btn" class="btn btn-primary">
+                    {% trans "Es contacto nuevo" %}
+                </button>
+            </a>
+        </div>
+
+    </body>
+</html>

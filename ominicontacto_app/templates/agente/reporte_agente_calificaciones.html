@@ -44,7 +44,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <script type="text/javascript" src="{% static 'ominicontacto/JS/bootstrap-datetimepicker.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/daterangepicker.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/ranges-datepicker.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/click2call.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/config_datetimepicker.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/agente/make_click2call.js' %}"></script>
     {% endcompress %}
 
     <!-- TODO: REMOVER - FIX HASTA CAMBIAR BS3 por BS4 -->
@@ -88,74 +89,63 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </div>
 </div>
 
- <form id="form_llamar" role="form" method="post" >
-        {% csrf_token %}
-     <input type="hidden" id="pk_agente" name="pk_agente">
-     <input type="hidden" id="pk_contacto" name="pk_contacto">
-     <input type="hidden" id="pk_campana" name="pk_campana">
-     <input type="hidden" id="campana_nombre" name="campana_nombre">
-     <input type="hidden" id="click2call_type" name="click2call_type" value="calificaciones">
-     <input type="hidden" id="tipo_campana" name="tipo_campana">
-                <table class="table">
-                    <thead>
-                      <tr class="fts-table-bg">
-                        <th>{% trans 'Teléfono' %}</th>
-                        <th>{% trans 'Datos' %}</th>
-                        <th>{% trans 'Gestionado' %}</th>
-                        <th>{% trans 'Calificación' %}</th>
-                        <th>{% trans 'Observaciones' %}</th>
-                        <th>{% trans 'Acciones' %}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                        {% for calificacion_cliente in listado_calificaciones %}
-                            <tr>
-                                <td>
-                                    <a class="btn btn-submit btn-outline-primary" pk_contacto="{{ calificacion_cliente.contacto.pk }}"
-                                       tipo_campana="{{ calificacion_cliente.opcion_calificacion.campana.type }}"
-                                       campana_nombre="{{ calificacion_cliente.opcion_calificacion.campana.nombre }}"
-                                       pk_campana="{{ calificacion_cliente.opcion_calificacion.campana.pk }}"
-                                       agente="{{agente.pk}}" name="{% url 'agente_llamar_contacto' %}">{{ calificacion_cliente.contacto.telefono }}</a>
-                                </td>
-                                <td>
-                                    {{ calificacion_cliente.contacto.datos}}
-                                </td>
-                                <td>
-                                    {% if calificacion_cliente.es_venta %}
-                                        <span class="icon icon-check" aria-hidden="true"></span>
-                                    {% else %}
-                                        <span class="icon icon-cancel" aria-hidden="true"></span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                  {{ calificacion_cliente.opcion_calificacion.nombre }}
-                                </td>
-                                <td>
-                                    {% if calificacion_cliente.observaciones %}
-                                        {{ calificacion_cliente.observaciones }}
-                                    {% endif %}
-                                </td>
-                                <td>
-                                  <div class="dropdown">
-                                      <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                      {% trans 'Opciones' %}
-                                      </button>
-                                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
-                                          <a class="dropdown-item" href="{% url 'calificacion_cliente_actualiza_desde_reporte' calificacion_cliente.opcion_calificacion.campana_id calificacion_cliente.contacto_id %}">
-                                              <span class="icon icon-pencil"></span>{% trans 'Calificación' %}
-                                          </a>
-                                          {% if calificacion_cliente.get_venta %}
-                                              <a class="dropdown-item" href="{% url 'formulario_venta_update' calificacion_cliente.get_venta.pk %}">
-                                              <span class="icon icon-pencil"></span>{% trans 'Gestión' %}
-                                              </a>
-                                          {% endif %}
-                                      </div>
-                                  </div>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-     </form>
+<table class="table">
+    <thead>
+      <tr class="fts-table-bg">
+        <th>{% trans 'Teléfono' %}</th>
+        <th>{% trans 'Datos' %}</th>
+        <th>{% trans 'Gestionado' %}</th>
+        <th>{% trans 'Calificación' %}</th>
+        <th>{% trans 'Observaciones' %}</th>
+        <th>{% trans 'Acciones' %}</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for calificacion_cliente in listado_calificaciones %}
+            <tr>
+                <td>
+                    <a class="btn btn-submit btn-outline-primary" href="javascript:;"
+                      onclick="makeClick2Call('{{ calificacion_cliente.opcion_calificacion.campana.pk }}', '{{ calificacion_cliente.opcion_calificacion.campana.type }}', '{{calificacion_cliente.contacto.pk}}', '{{ calificacion_cliente.contacto.telefono }}', 'calificaciones');">{{ calificacion_cliente.contacto.telefono }}</a>
+                </td>
+                <td>
+                    {{ calificacion_cliente.contacto.datos}}
+                </td>
+                <td>
+                    {% if calificacion_cliente.es_venta %}
+                        <span class="icon icon-check" aria-hidden="true"></span>
+                    {% else %}
+                        <span class="icon icon-cancel" aria-hidden="true"></span>
+                    {% endif %}
+                </td>
+                <td>
+                  {{ calificacion_cliente.opcion_calificacion.nombre }}
+                </td>
+                <td>
+                    {% if calificacion_cliente.observaciones %}
+                        {{ calificacion_cliente.observaciones }}
+                    {% endif %}
+                </td>
+                <td>
+                  <div class="dropdown">
+                      <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      {% trans 'Opciones' %}
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
+                          <a class="dropdown-item" href="{% url 'calificacion_cliente_actualiza_desde_reporte' calificacion_cliente.opcion_calificacion.campana_id calificacion_cliente.contacto_id %}">
+                              <span class="icon icon-pencil"></span>{% trans 'Calificación' %}
+                          </a>
+                          {% if calificacion_cliente.get_venta %}
+                              <a class="dropdown-item" href="{% url 'formulario_venta_update' calificacion_cliente.get_venta.pk %}">
+                              <span class="icon icon-pencil"></span>{% trans 'Gestión' %}
+                              </a>
+                          {% endif %}
+                      </div>
+                  </div>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
 </body>
 </html>

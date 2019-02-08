@@ -107,7 +107,7 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
                         campana_id=self.campana_preview.id,
                         estado=AgenteEnContacto.ESTADO_ASIGNADO).exists())
 
-    @patch('ominicontacto_app.views_agente.LlamarContactoView._call_originate')
+    @patch('ominicontacto_app.services.click2call.Click2CallOriginator.call_originate')
     def test_c2c_con_reserva_asigna_de_contacto(self, _call_originate):
         # Al llamar contacto reservado asigna el contacto
         AgenteEnContacto.objects.filter(contacto_id=self.contacto_1.id).update(
@@ -117,8 +117,7 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
                      'pk_agente': self.agente_1.id,
                      'pk_contacto': self.contacto_1.id,
                      'click2call_type': 'preview',
-                     'tipo_campana': '',
-                     'campana_nombre': ''}
+                     'tipo_campana': ''}
         response = self.client.post(reverse('agente_llamar_contacto'), post_data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(_call_originate.called)
@@ -128,15 +127,14 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
                         campana_id=self.campana_preview.id,
                         estado=AgenteEnContacto.ESTADO_ASIGNADO).exists())
 
-    @patch('ominicontacto_app.views_agente.LlamarContactoView._call_originate')
+    @patch('ominicontacto_app.services.click2call.Click2CallOriginator.call_originate')
     def test_c2c_sin_reserva_de_contacto_agente_no_puede_llamar(self, _call_originate):
         # Un contacto asignado a otro agente no puede ser llamado
         post_data = {'pk_campana': self.campana_preview.id,
                      'pk_agente': self.agente_1.id,
                      'pk_contacto': self.contacto_1.id,
                      'click2call_type': 'preview',
-                     'tipo_campana': '',
-                     'campana_nombre': ''}
+                     'tipo_campana': ''}
         response = self.client.post(reverse('agente_llamar_contacto'), post_data, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertFalse(_call_originate.called)

@@ -21,31 +21,34 @@
 // url(r'^agente/llamar/$',
 
 class Click2CallDispatcher {
-	/*
-	 *  Esta clase será la encargada de despachar los pedidos de click to call que ejecute el
-	 *  usuario. Se deshabilita mientras el UserAgent no este registrado, cuando haya una llamada
-	 *  en curso, etc...
-	 */
-	constructor (oml_api) {
-		this.enabled = false;
-		this.oml_api = oml_api;
-	}
+    /*
+    *  Esta clase será la encargada de despachar los pedidos de click to call que ejecute el
+    *  usuario. Se deshabilita mientras el UserAgent no este registrado, cuando haya una llamada
+    *  en curso, etc...
+    */
+    constructor (oml_api, agent_id) {
+        this.enabled = false;
+        this.oml_api = oml_api;
+        this.agent_id = agent_id;
+    }
 
-	enable() {
-		this.enabled = true;
-	};
+    enable() {
+        this.enabled = true;
+        $('#sumTime').css("background-color", "palegreen");
+    };
 
-	disable() {
-		this.enabled = false;
-	};
+    disable() {
+        this.enabled = false;
+        $('#sumTime').css("background-color", "forestgreen");
+    };
 
-	call(agent_id, contact_id, campaign_type, campaign_id, campaign_name, phone) {
-		if (this.enabled) {
-			// Cargar los datos en el form.
-	        // $("#click2call_form").submit();
-		}
-		else {
-			console.log('Alertar al usuario que no es posible hacer una click2call');
-		}
-	}
+    call_contact(campaign_id, campaign_type, contact_id, phone, click2call_type='click2call') {
+        if (this.enabled) {
+            this.oml_api.startClick2Call(this.agent_id, campaign_id, campaign_type,
+                                         contact_id, phone, click2call_type);
+        }
+        else {
+            console.log('Alertar al usuario que no es posible hacer una click2call');
+        }
+    }
 }

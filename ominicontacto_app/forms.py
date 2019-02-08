@@ -348,7 +348,7 @@ class BusquedaContactoForm(forms.Form):
     buscar = forms.CharField(
         required=False,
         widget=forms.TextInput(
-            attrs={'class': 'form-control', 'placeholder': 'search pattern'}
+            attrs={'class': 'form-control', 'placeholder': _('texto a buscar')}
         )
     )
 

@@ -37,6 +37,7 @@ from ominicontacto_app.forms import (BusquedaContactoForm, FormularioCampanaCont
                                      ContactoForm, FormularioNuevoContacto, EscogerCampanaForm)
 from ominicontacto_app.models import Campana, Contacto, BaseDatosContacto
 from ominicontacto_app.utiles import convertir_ascii_string
+from ominicontacto_app.services.click2call import Click2CallOriginator
 
 
 class ContactoUpdateView(UpdateView):
@@ -279,6 +280,7 @@ class ContactoBDContactoDeleteView(DeleteView):
                        kwargs={'bd_contacto': self.object.bd_contacto.pk})
 
 
+# TODO: Verificar si se usa esta vista y el template
 class CampanaBusquedaContactoFormView(FormView):
     """Vista realiza la busqueda de contacto en una campana dialer
     """
@@ -328,9 +330,7 @@ class FormularioSeleccionCampanaFormView(FormView):
     template_name = 'contactos/seleccion_campana_form.html'
 
     def dispatch(self, request, *args, **kwargs):
-        if self.request.user.is_authenticated()\
-                and self.request.user.get_agente_profile():
-            agente = self.request.user.get_agente_profile()
+        agente = self.request.user.get_agente_profile()
         if not agente.get_campanas_activas_miembro():
             message = _("Este agente no esta asignado a ninguna campaña activa")
             messages.warning(self.request, message)
@@ -363,20 +363,30 @@ class FormularioNuevoContactoFormView(FormView):
     form_class = FormularioNuevoContacto
     template_name = 'contactos/nuevo_contacto_campana.html'
 
-    def get_form(self):
-        self.form_class = self.get_form_class()
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        base_datos = campana.bd_contacto
+    def dispatch(self, request, *args, **kwargs):
+        self.accion = self.kwargs.get('accion', 'calificar')
+        self.campana = get_object_or_404(Campana, pk=self.kwargs.get('pk_campana', '0'))
+        self.telefono = self.kwargs.get('telefono', '')
+        return super(FormularioNuevoContactoFormView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(FormularioNuevoContactoFormView, self).get_context_data(**kwargs)
+        context['accion'] = self.accion
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super(FormularioNuevoContactoFormView, self).get_form_kwargs()
+        kwargs['initial']['telefono'] = self.kwargs.get('telefono', '')
+        base_datos = self.campana.bd_contacto
         metadata = base_datos.get_metadata()
-        campos = metadata.nombres_de_columnas
-        return self.form_class(campos=campos, **self.get_form_kwargs())
+        kwargs['campos'] = metadata.nombres_de_columnas
+        return kwargs
 
     def form_valid(self, form):
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        base_datos = campana.bd_contacto
+        base_datos = self.campana.bd_contacto
         metadata = base_datos.get_metadata()
         nombres = metadata.nombres_de_columnas
-        telefono = form.cleaned_data.get('telefono')
+        telefono = str(form.cleaned_data.get('telefono'))
 
         datos = []
         nombres.remove('telefono')
@@ -389,13 +399,76 @@ class FormularioNuevoContactoFormView(FormView):
             bd_contacto=base_datos,
             es_originario=False)
 
-        if campana.type == Campana.TYPE_PREVIEW:
-            campana.adicionar_agente_en_contacto(contacto)
+        if self.campana.type == Campana.TYPE_PREVIEW:
+            self.campana.adicionar_agente_en_contacto(contacto)
 
-        return HttpResponseRedirect(
-            reverse('calificacion_formulario_update_or_create',
-                    kwargs={"pk_campana": self.kwargs['pk_campana'],
-                            "pk_contacto": contacto.pk}))
+        if self.accion == 'calificar':
+            return HttpResponseRedirect(
+                reverse('calificacion_formulario_update_or_create',
+                        kwargs={"pk_campana": self.kwargs['pk_campana'],
+                                "pk_contacto": contacto.pk}))
+        else:
+            agente = self.request.user.get_agente_profile()
+            click2call_type = 'contactos'
+            if self.telefono:
+                telefono = self.telefono
+
+            originator = Click2CallOriginator()
+            originator.call_originate(agente, self.campana.id, str(self.campana.type),
+                                      contacto.id, telefono, click2call_type)
+            message = _("Contacto creado satisfactoriamente. Efectuando llamada.")
+            messages.success(self.request, message)
+            return super(FormularioNuevoContactoFormView, self).form_valid(form)
 
     def get_success_url(self):
         reverse('view_blanco')
+
+
+class IdentificarContactoView(FormView):
+    """
+    Vista para identificar Contactos de llamadas entrantes, manuales o redials.
+    Si son de llamadas entrantes deben ir a calificar. Manuales y redials van a edicion del contacto
+    con click to call.
+    Si no se sabe el id del contacto:
+    - Listar los contactos de la campaña que tengan ese teléfono en alguno de sus campos
+    - Si viene un id de contacto de sugerencia (por redial) ofrecer el ultimo contacto llamado
+    - Ofrecer buscar contacto
+    - Ofrecer para crear un contacto nuevo
+    """
+    template_name = 'agente/identificar_contacto.html'
+    form_class = BusquedaContactoForm
+
+    def dispatch(self, request, *args, **kwargs):
+        pk_campana = kwargs.get('pk_campana', False)
+        self.campana = get_object_or_404(Campana, pk=pk_campana)
+        pk_campana = kwargs.get('pk_campana', False)
+        # Validar formato de telefono??
+        self.telefono = kwargs.get('telefono', False)
+        self.call_data_json = kwargs.get('call_data_json', '')
+
+        return super(IdentificarContactoView, self).dispatch(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super(IdentificarContactoView, self).get_form_kwargs()
+        kwargs['initial']['buscar'] = self.telefono
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(IdentificarContactoView, self).get_context_data(**kwargs)
+        context['campana'] = self.campana
+        context['campos_bd'] = self.campana.bd_contacto.get_metadata().nombres_de_columnas[1:4]
+        context['telefono'] = self.telefono
+        context['call_data_json'] = self.call_data_json
+        if 'contactos_encontrados' in kwargs:
+            context['contactos_busqueda'] = kwargs['contactos_encontrados']
+        else:
+            context['contactos_busqueda'] = Contacto.objects.contactos_by_filtro_bd_contacto(
+                bd_contacto=self.campana.bd_contacto, filtro=self.telefono)
+        return context
+
+    def form_valid(self, form):
+        buscar = form.cleaned_data.get('buscar', '')
+        contactos_encontrados = Contacto.objects.contactos_by_filtro_bd_contacto(
+            bd_contacto=self.campana.bd_contacto, filtro=buscar)
+        context = self.get_context_data(form=form, contactos_encontrados=contactos_encontrados)
+        return self.render_to_response(context)
