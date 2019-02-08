@@ -40,8 +40,20 @@ Rama() {
       tag="all"
     elif [ "$arg1" == "--upgrade" ] || [ "$arg1" == "-u" ]; then
       tag="postinstall"
+    elif [ "$arg1" == "--kamailio" ] || [ "$arg1" == "-k" ]; then
+      tag="kamailio"
+    elif [ "$arg1" == "--asterisk" ] || [ "$arg1" == "-a" ]; then
+      tag="asterisk"
+    elif [ "$arg1" == "--omniapp" ] || [ "$arg1" == "-o" ]; then
+      tag="omniapp"
+    elif [ "$arg1" == "--changeip" ] || [ "$arg1" == "-c" ]; then
+      tag="changeip"
+    elif [ "$arg1" == "--dialer" ] || [ "$arg1" == "-di" ]; then
+      tag="dialer"
+    elif [ "$arg1" == "--database" ] || [ "$arg1" == "-da" ]; then
+      tag="database"
     else
-      tag=$arg1
+      echo "Invalid first option, use ./deploy.sh -h to see valid options"
     fi
     echo -e "\n"
     echo "###############################################################"
@@ -219,7 +231,7 @@ rm -rf $TMP
 }
 
 case $arg1 in
-  --upgrade|-u|--install|-i|kamailio|asterisk|omniapp|omnivoip|dialer|database|changeip|reboot)
+  --upgrade|-u|--install|-i|--kamailio|-k|--asterisk|-a|--omniapp|-o|--omnivoip|--dialer|-di|--database|-da|--changeip|-c)
     case $arg2 in
       --aio|-a)
           ./keytransfer.sh --aio
@@ -254,10 +266,19 @@ case $arg1 in
     Tag
   ;;
   *)
-  echo " How to use it:
+  echo "
+    Omnileads installation script
+
+    How to use it:
           (First option)
             -u --upgrade: make an upgrade of Omnileads version
             -i --install: make a fresh install of Omnileads
+            -k --kamailio: execute kamailio related tasks
+            -a --asterisk: execute asterisk related tasks
+            -o --omniapp: execute omniapp related tasks
+            -c --changeip: execute tasks needed when you change the IP of OML system
+            -d --database: execute tasks related to database
+            -d --dialer: execute tasks related to dialer (Wombat Dialer)
           (Second option)
           -a --aio: install all in one server
           -c --cluster: install cluster mode

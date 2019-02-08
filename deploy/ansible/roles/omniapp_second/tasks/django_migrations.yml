@@ -32,7 +32,7 @@
   tags: ['never','postinstall']
 
 # Se corre un compendio de comandos de django con manage.py  https://docs.ansible.com/ansible/2.5/modules/django_manage_module.html#django-manage-module
-- name: Run Django migrations
+- name: Run Django migrations and compilemessages
   django_manage: >
           command={{ item }}
           app_path={{ install_prefix }}ominicontacto
@@ -40,13 +40,7 @@
           virtualenv={{ install_prefix }}virtualenv
   with_items:
           - migrate
-          - collectstatic
-    # https://github.com/ierror/django-js-reverse
-          - collectstatic_js_reverse
-    # https://django-compressor.readthedocs.io/en/stable/
-          - compress
-          - regenerar_asterisk
-          - populate_history --auto
+          - populate_history
           - compilemessages
   environment:
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
@@ -54,13 +48,23 @@
   become_method: su
   become_user: "{{ usuario }}"
 
+- name: Run collectstatic, compress and regenerar_asterisk commands
+  django_manage: command={{ item }} app_path={{ install_prefix }}ominicontacto settings=ominicontacto.settings virtualenv={{ install_prefix }}virtualenv
+  with_items:
+    - collectstatic
+    - collectstatic_js_reverse
+    - compress
+    - regenerar_asterisk
+  environment:
+    PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
+  become: true
+  become_method: su
+  become_user: "{{ usuario }}"
+  tags: changeip
+
 # Se crea el usuario admin
 - name: Create admin superuser
-  django_manage: >
-          command="createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com"
-          app_path={{ install_prefix }}ominicontacto
-          settings=ominicontacto.settings
-          virtualenv={{ install_prefix }}virtualenv
+  django_manage: command="createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com" app_path={{ install_prefix }}ominicontacto settings=ominicontacto.settings virtualenv={{ install_prefix }}virtualenv
   environment:
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
   register: result

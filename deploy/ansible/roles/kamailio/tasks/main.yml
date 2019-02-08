@@ -82,10 +82,6 @@
   when: kamailio_installed.stdout != "5.1.4"
   tags: postinstall
 
-- name: Erase certs folder because new are needed
-  file: state=absent path={{ kamailio_location }}/etc/certs
-  tags: ['kamailio','postinstall']
-
 - name: Check if Kamailio certificates exists
   shell: test -d {{ kamailio_location }}/etc/certs || test -d /opt/kamailio/etc/certs
   register: certs_exists

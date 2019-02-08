@@ -3,11 +3,12 @@
 import os
 
 {% if desarrollo == 1 %}
+COMPRESS_ENABLED = False
 DEBUG = True
 {% else %}
+COMPRESS_ENABLED = True
 DEBUG = False
 {% endif %}
-COMPRESS_ENABLED = True
 TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = [
