@@ -417,3 +417,7 @@ class CalificacionTests(OMLBaseTest):
         response = self.client.get(url)
         contacto_form = response.context_data['contacto_form']
         self.assertEqual(contacto_form.instance.pk, None)
+
+    def test_metodo_contactos_no_calificados_devuelve_valores_correctos(self):
+        contactos_no_calificados_count = self.campana.obtener_contactos_no_calificados().count()
+        self.assertEqual(contactos_no_calificados_count, 0)
