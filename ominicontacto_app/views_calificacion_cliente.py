@@ -87,6 +87,11 @@ class CalificacionClienteFormView(FormView):
                 return None
         return None
 
+    def _es_numero_privado(self, telefono):
+        if not telefono:
+            return False
+        return not telefono.isdigit()
+
     def dispatch(self, *args, **kwargs):
         self.agente = self.request.user.get_agente_profile()
         id_contacto = None
@@ -107,7 +112,9 @@ class CalificacionClienteFormView(FormView):
             id_contacto = kwargs['pk_contacto']
         self.contacto = self.get_contacto(id_contacto)
 
-        if telefono and self.contacto is None:
+        if self._es_numero_privado(telefono):
+            self.contacto = None
+        elif telefono and self.contacto is None:
             # se dispara desde una llamada desde el webphone
             contacto_info = self.get_info_telefonos(telefono)
             len_contacto_info = len(contacto_info)
