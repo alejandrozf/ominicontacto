@@ -69,6 +69,7 @@
   become: true
   become_method: sudo
   tags: changeip
+  when: desarrollo == 0
 
 # El concatenate.sh es un script chamullero que sirve para poner en un solo archivo (voip.cert) el certificado de CA concatenado con el cert de nodo
 # Así evitamos la advertencia de seguridad de los browsers.
