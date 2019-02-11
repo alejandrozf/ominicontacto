@@ -44,6 +44,7 @@
           - compilemessages
   environment:
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
+    PGPASSWORD: "{{ postgres_password }}"
   become: true
   become_method: su
   become_user: "{{ usuario }}"
@@ -53,7 +54,7 @@
   with_items:
     - collectstatic
     - collectstatic_js_reverse
-    - compress
+    - compress --force
     - regenerar_asterisk
   environment:
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
@@ -90,6 +91,6 @@
   tags: postinstall
 
 # Se borra ese script del sistema
-#- name: Erase the script for changing superuser password
-#  file: path={{ install_prefix }}ominicontacto/changepassword.sh state=absent
-#  tags: postinstall
+- name: Erase the script for changing superuser password
+  file: path={{ install_prefix }}ominicontacto/changepassword.sh state=absent
+  tags: postinstall

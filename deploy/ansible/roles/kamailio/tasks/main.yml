@@ -95,7 +95,7 @@
   when: kamailio_installed.stdout != "5.1.4"
 
 - include: certificate_CA.yml
-  tags: ['kamailio','postinstall']
+  tags: kamailio
   when: certs_exists|failed
 
 - include: kamailio_configuration.yml
