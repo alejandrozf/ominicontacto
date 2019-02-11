@@ -27,6 +27,18 @@
   become_method: sudo
   when: ansible_os_family == "RedHat"
 
+- name: Add the postgresql repository key (ubuntu )
+  apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc validate_certs=no state=present
+  become: true
+  become_method: sudo
+  when: ansible_distribution == "Ubuntu"
+
+- name: Download postgresql-9.6 repository
+  apt_repository: repo="deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" filename=pgdg state=present update_cache=yes
+  become: true
+  become_method: sudo
+  when: ansible_distribution == "Ubuntu"
+
 #Se intala postgresql debian
 - name: Install of postgresql 9.6
   apt: name={{ item }} state=present

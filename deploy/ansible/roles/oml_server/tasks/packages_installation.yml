@@ -120,6 +120,14 @@
   become_method: sudo
   when: ansible_os_family == "Debian"
 
+- name: Add php7.2 utils repository on ubuntu
+  apt_repository: repo="ppa:ondrej/php" state=present update_cache=yes
+  when: ansible_distribution == "Ubuntu"
+
+- name: Install extra packages por Ubuntu-server
+  apt: name=libelf-dev state=present
+  when: ansible_distribution == "Ubuntu"
+
 # Habilitamos y empezamos redis. Redis es necesario para rtpengine y para django-defender
 - name: Start and enable redis service
   service: name=redis state=restarted enabled=yes
