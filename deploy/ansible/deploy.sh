@@ -31,6 +31,13 @@ OSValidation(){
   elif [ "$os" == '"Debian GNU/Linux"' ]; then
     echo "Installing python2-pip and sudo"
     apt-get install python-pip sudo -y
+  elif [ "$os" == '"Ubuntu"' ]; then
+    echo "Adding the universe repository"
+    add-apt-repository universe
+    echo "Installing python2 and python-pip"
+    apt-get install python-minimal python-pip -y
+  else
+    echo "The OS you are trying to install is not supported to install this software."
   fi
   PIP=`which pip`
 }

@@ -55,6 +55,10 @@
   when: cluster == 0
   tags: always
 
+##################################
+###        Centos tasks         ##
+##################################
+
 - name: Configure yum for ansible (centos)
   ini_file: path=/etc/yum.conf section=main option="{{ item.option }}" no_extra_spaces=yes value="{{ item.value }}" state=present
   with_items:
@@ -83,24 +87,6 @@
       - systemctl stop firewalld
       - systemctl disable firewalld
   when: ansible_os_family == "RedHat"
-
-# Se instala este paquete necesario antes de hacer update
-- name: Install apt-transport-https (debian)
-  apt: name=apt-transport-https state=present
-  when: ansible_os_family == "Debian"
-
-# Update/upgrade, https://docs.ansible.com/ansible/latest/modules/apt_module.html
-#- name: Update/upgrade of debian (debian)
-#  apt: "update_cache=yes cache_valid_time=12 upgrade=yes dpkg_options='force-confdef'"
-#  when: ansible_os_family == "Debian"
-
-# Instalo linux-headers del kernel  en cuestion
-- name: Install linux linux-headers (debian)
-  shell: "apt-get install -y linux-headers-$(uname -r)"
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "Debian"
-  ignore_errors: True
 
 # Update/upgrade del sistema, osea si se ejecuta como deployed - deployer
 # https://docs.ansible.com/ansible/2.5/modules/yum_module.html#yum-module
@@ -154,6 +140,39 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
+
+##################################
+###        Debian tasks         ##
+##################################
+
+# Se desinstala apache2 por defecto viene instalado en debian
+- name: Uninstall of apache2
+  apt: name=apache2 state=absent purge=yes
+  when: ansible_os_family == "Debian"
+  become: true
+  become_method: sudo
+
+# Se añade el repositorio universe para ubuntu
+- name: Add universal repository (ubuntu)
+  apt_repository: repo={{ item }} state=present update_cache=yes
+  with_items:
+    - "deb http://archive.ubuntu.com/ubuntu/ bionic universe"
+    - "deb http://archive.ubuntu.com/ubuntu/ bionic-updates universe"
+    - "deb http://security.ubuntu.com/ubuntu/ bionic-security universe"
+  when: ansible_distribution == "Ubuntu"
+
+# Se instala este paquete necesario antes de hacer update
+- name: Install apt-transport-https (debian)
+  apt: name=apt-transport-https state=present
+  when: ansible_os_family == "Debian"
+
+# Instalo linux-headers del kernel  en cuestion
+- name: Install linux linux-headers (debian)
+  shell: "apt-get install -y linux-headers-$(uname -r)"
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
+  ignore_errors: True
 
 - name: Install of dependencies (debian)
   apt: name={{ item }} state=present

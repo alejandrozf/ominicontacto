@@ -64,7 +64,7 @@
 
   # Intalo los paquetes necesarios para la parte VoIP
 - name: Installation of asterisk packages (debian)
-  apt: "name={{ item }} state=present"
+  apt: "name={{ item }} state=present dpkg_options=no-triggers"
   with_items:
     - build-essential
     - net-tools
@@ -112,7 +112,7 @@
     - postgresql-client
     - vim
     - curl
-    - mysql-client
+    - mariadb-client
     - sox
     - libncurses5-dev
     - libssl-dev
@@ -133,7 +133,6 @@
     - libsrtp0-dev
     - libspandsp-dev
     - sudo
-    - glusterfs-server
     #- libmyodbc
     - subversion
     - odbc-postgresql
@@ -142,3 +141,7 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
+
+- name: Install of glusterfs-server package (debian cluster)
+  apt: name=glusterfs-server state=present
+  when: ansible_distribution == "Debian"
