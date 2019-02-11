@@ -89,8 +89,7 @@
   tags: postinstall
 
 - name: Restore of kamailio tables in database
-  command: pg_restore -d omnileads -c -F t /tmp/kamailio-tables.tar.gz
-  #postgresql_db: name={{ postgres_database }} state=restore target=/tmp/kamailio-tables.sql login_user={{ postgres_user }} login_password={{ postgres_password }} owner={{ postgres_user }} login_host={{ database_fqdn }} target_opts=c
+  command: pg_restore -d {{ postgres_database }} -c -F t /tmp/kamailio-tables.tar.gz
   environment:
     PGPASSWORD: "{{ postgres_password }}"
   tags: postinstall
