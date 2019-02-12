@@ -309,8 +309,12 @@ class CalificacionClienteFormView(FormView):
             # en el caso de una campaña entrante que el usuario no desea calificar
             message = _('Operación Exitosa! '
                         'Se llevó a cabo con éxito la creación del contacto')
+            self.call_data['id_contacto'] = self.contacto.pk
+            self.call_data['telefono'] = self.contacto.telefono
+            url_calificar_llamada_entrante = reverse(
+                'calificar_llamada', kwargs={'call_data_json': json.dumps(self.call_data)})
             messages.success(self.request, message)
-            return redirect(self.get_success_url())  # TODO: revisar a dónde va a ir en este caso
+            return redirect(url_calificar_llamada_entrante)
 
     def form_invalid(self, contacto_form, calificacion_form):
         """
