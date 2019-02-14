@@ -123,12 +123,12 @@ class RecicladoTest(OMLBaseTest):
                                           'no_contacta', 'no_llama'])
 
             if contactacion == 'contacta_califica':
-                generador.generar_log(self.campana, False, 'COMPLETECALLER', contacto.telefono,
+                generador.generar_log(self.campana, False, 'COMPLETEOUTNUM', contacto.telefono,
                                       self.agente, contacto, 1, 1)
                 opcion_calificacion = random.choice(opciones_calificacion)
                 self.crear_calificacion_cliente(self.agente, contacto, opcion_calificacion)
             if contactacion == 'contacta_no_califica':
-                generador.generar_log(self.campana, False, 'COMPLETECALLER', contacto.telefono,
+                generador.generar_log(self.campana, False, 'COMPLETEOUTNUM', contacto.telefono,
                                       self.agente, contacto, 1, 1)
             if contactacion == 'no_contacta':
                 estado = random.choice(estados)

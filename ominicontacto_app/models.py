@@ -1148,6 +1148,9 @@ class Campana(models.Model):
     def obtener_calificaciones(self):
         return CalificacionCliente.objects.filter(opcion_calificacion__campana_id=self.id)
 
+    def obtener_historico_calificaciones(self):
+        return CalificacionCliente.history.filter(opcion_calificacion__campana_id=self.id)
+
     def obtener_calificaciones_agenda(self):
         return CalificacionCliente.objects.filter(
             opcion_calificacion__campana_id=self.id,
@@ -2475,6 +2478,7 @@ class CalificacionCliente(models.Model):
     agente = models.ForeignKey(AgenteProfile, related_name="calificaciones")
     observaciones = models.TextField(blank=True, null=True)
     agendado = models.BooleanField(default=False)
+    callid = models.CharField(max_length=32, blank=True, null=True)
 
     # Campo agregado para diferenciar entre CalificacionCliente y CalificacionManual
     es_calificacion_manual = models.BooleanField(default=False)

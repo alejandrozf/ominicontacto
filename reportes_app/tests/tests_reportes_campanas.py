@@ -38,13 +38,15 @@ from ominicontacto_app.models import Campana, CalificacionCliente, OpcionCalific
 from ominicontacto_app.services.estadisticas_campana import EstadisticasService
 from ominicontacto_app.services.reporte_campana_calificacion import ReporteCampanaService
 from ominicontacto_app.services.reporte_campana_pdf import ReporteCampanaPDFService
-from reportes_app.reportes.reporte_llamados_contactados_csv import ReporteCampanaContactadosCSV
+from reportes_app.reportes.reporte_llamados_contactados_csv import (
+    ReporteCampanaContactadosCSV, ArchivoDeReporteCsv)
 from ominicontacto_app.services.reporte_metadata_cliente import ReporteMetadataClienteService
 from ominicontacto_app.tests.factories import (AgenteProfileFactory, ActividadAgenteLogFactory,
                                                CalificacionClienteFactory, ContactoFactory,
                                                CampanaFactory, NombreCalificacionFactory,
                                                OpcionCalificacionFactory, UserFactory)
 from ominicontacto_app.utiles import fecha_hora_local, fecha_local
+from reportes_app.models import LlamadaLog
 from reportes_app.tests.utiles import GeneradorDeLlamadaLogs
 
 
@@ -80,13 +82,6 @@ class BaseTestDeReportes(TestCase):
             tipo=OpcionCalificacion.GESTION)
         self.opcion_calificacion_noaccion = OpcionCalificacionFactory.create(
             campana=self.campana_activa, nombre=self.nombre_calificacion.nombre)
-        self.calif_gestion = CalificacionClienteFactory.create(
-            opcion_calificacion=self.opcion_calificacion_gestion, agente=self.agente_profile,
-            contacto=self.contacto_calificado_gestion)
-        self.calif_no_accion = CalificacionClienteFactory.create(
-            opcion_calificacion=self.opcion_calificacion_noaccion, agente=self.agente_profile,
-            contacto=self.contacto_calificado_no_accion)
-        CalificacionCliente.history.all().update(history_change_reason='calificacion')
 
         self.telefono1 = self.contacto_calificado_gestion.telefono
         self.telefono2 = self.contacto_calificado_no_accion.telefono
@@ -104,8 +99,19 @@ class BaseTestDeReportes(TestCase):
             self.campana_activa, True, 'NOANSWER', self.telefono3, agente=self.agente_profile,
             contacto=self.contacto_no_atendido)
         self.generador_log_llamadas.generar_log(
-            self.campana_activa, True, 'COMPLETECALLER', self.telefono4, agente=self.agente_profile,
+            self.campana_activa, True, 'COMPLETEOUTNUM', self.telefono4, agente=self.agente_profile,
             contacto=self.contacto_no_calificado, duracion_llamada=0)
+        callid_gestion = LlamadaLog.objects.get(
+            contacto_id=self.contacto_calificado_gestion.pk, event='COMPLETEAGENT').callid
+        callid_no_accion = LlamadaLog.objects.get(
+            contacto_id=self.contacto_calificado_no_accion.pk, event='COMPLETEAGENT').callid
+        self.calif_gestion = CalificacionClienteFactory.create(
+            opcion_calificacion=self.opcion_calificacion_gestion, agente=self.agente_profile,
+            contacto=self.contacto_calificado_gestion, callid=callid_gestion)
+        self.calif_no_accion = CalificacionClienteFactory.create(
+            opcion_calificacion=self.opcion_calificacion_noaccion, agente=self.agente_profile,
+            contacto=self.contacto_calificado_no_accion, callid=callid_no_accion)
+        CalificacionCliente.history.all().update(history_change_reason='calificacion')
 
         self.client.login(username=self.usuario_admin_supervisor.username, password=self.PWD)
 
@@ -241,7 +247,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
         self.generador_log_llamadas.generar_log(
             campana_entrante, False, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
-            campana_entrante, False, 'COMPLETECALLER', self.telefono2, agente=self.agente_profile)
+            campana_entrante, False, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
             campana_entrante, False, 'EXITWITHTIMEOUT', self.telefono3, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
@@ -249,7 +255,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
         self.generador_log_llamadas.generar_log(
             campana_entrante, True, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
-            campana_entrante, True, 'COMPLETECALLER', self.telefono2, agente=self.agente_profile)
+            campana_entrante, True, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile)
         estadisticas_service = EstadisticasService()
         hoy = fecha_local(timezone.now())
         reporte = estadisticas_service.calcular_cantidad_llamadas(campana_entrante, hoy, hoy)
@@ -270,7 +276,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
             campana_entrante, False, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile,
             time=ayer)
         self.generador_log_llamadas.generar_log(
-            campana_entrante, False, 'COMPLETECALLER', self.telefono2, agente=self.agente_profile,
+            campana_entrante, False, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile,
             time=hoy)
         estadisticas_service = EstadisticasService()
         hoy = fecha_local(timezone.now())
@@ -286,7 +292,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
             campana_entrante, True, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile,
             time=ayer)
         self.generador_log_llamadas.generar_log(
-            campana_entrante, True, 'COMPLETECALLER', self.telefono2, agente=self.agente_profile,
+            campana_entrante, True, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile,
             time=hoy)
         estadisticas_service = EstadisticasService()
         hoy = fecha_local(timezone.now())
@@ -298,7 +304,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
         self.generador_log_llamadas.generar_log(
             campana_dialer, False, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
-            campana_dialer, False, 'COMPLETECALLER', self.telefono2, agente=self.agente_profile)
+            campana_dialer, False, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
             campana_dialer, False, 'ABANDON', self.telefono3, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
@@ -308,7 +314,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
         self.generador_log_llamadas.generar_log(
             campana_dialer, True, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
-            campana_dialer, True, 'COMPLETECALLER', self.telefono2, agente=self.agente_profile)
+            campana_dialer, True, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
             campana_dialer, True, 'NOANSWER', self.telefono2, agente=self.agente_profile)
         estadisticas_service = EstadisticasService()
@@ -327,7 +333,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
         self.generador_log_llamadas.generar_log(
             campana_manual, True, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
-            campana_manual, True, 'COMPLETECALLER', self.telefono2, agente=self.agente_profile)
+            campana_manual, True, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
             campana_manual, True, 'FAIL', self.telefono3, agente=self.agente_profile)
         estadisticas_service = EstadisticasService()
@@ -496,3 +502,52 @@ class ReportesCampanasTests(BaseTestDeReportes):
         estadisticas_service = EstadisticasService()
         llamadas_pendientes, _, _ = estadisticas_service.obtener_total_llamadas(campana_manual)
         self.assertEqual(llamadas_pendientes, 1)
+
+    @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
+    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_contactados_csv')
+    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_no_atendidos_csv')
+    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_calificado_csv')
+    def test_reporte_contactados_campanas_entrantes_linkean_calificaciones_llamadas(
+            self, escribir_archivo_calificado_csv, escribir_archivo_no_atendidos_csv,
+            escribir_archivo_contactados_csv, crea_reporte_pdf):
+        self.campana_activa.type = Campana.TYPE_ENTRANTE
+        self.campana_activa.save()
+        self.calif_gestion.callid = '000000'
+        self.calif_gestion.save()
+        url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
+        self.client.get(url, follow=True)
+        calificados_dict = escribir_archivo_contactados_csv.call_args[0][2]
+        # muestra el histórico de calificacions
+        self.assertEqual(len(calificados_dict), 3)
+
+    @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
+    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_contactados_csv')
+    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_no_atendidos_csv')
+    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_calificado_csv')
+    def test_reporte_contactados_campanas_no_entrantes_muestran_valor_calificacion_final(
+            self, escribir_archivo_calificado_csv, escribir_archivo_no_atendidos_csv,
+            escribir_archivo_contactados_csv, crea_reporte_pdf):
+        url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
+        self.calif_gestion.callid = '000000'
+        self.calif_gestion.save()
+        self.client.get(url, follow=True)
+        calificados_dict = escribir_archivo_contactados_csv.call_args[0][2]
+        # muestra los valores finales de las calificaciones
+        self.assertEqual(len(calificados_dict), 2)
+
+    @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
+    @patch.object(ReporteCampanaContactadosCSV, 'crea_reporte_csv')
+    @patch.object(Bar, 'render_to_png')
+    def test_datos_reporte_grafico_campana_entrantes_totales_calificaciones_contabiliza_historico(
+            self, render_to_png, crea_reporte_pdf, crea_reporte_csv):
+        self.campana_activa.type = Campana.TYPE_ENTRANTE
+        self.campana_activa.save()
+        self.calif_gestion.callid = '000000'
+        self.calif_gestion.save()
+        self.calif_no_accion.callid = '111111'
+        self.calif_no_accion.save()
+        url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
+        response = self.client.get(url, follow=True)
+        estadisticas = response.context_data['graficos_estadisticas']['estadisticas']
+        total_calificados = estadisticas['total_calificados']
+        self.assertEqual(total_calificados, 4)

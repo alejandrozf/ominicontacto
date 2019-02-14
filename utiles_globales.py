@@ -35,7 +35,7 @@ def validar_extension_archivo_audio(valor):
 def obtener_cantidad_no_calificados(total_llamadas_qs, fecha_desde, fecha_hasta, campana):
     total_llamadas_campanas = total_llamadas_qs.count()
     total_calificados = CalificacionCliente.history.filter(
-        fecha__range=(fecha_desde, fecha_hasta),
+        history_date__range=(fecha_desde, fecha_hasta),
         opcion_calificacion__campana=campana, history_change_reason='calificacion').count()
     total_atendidas_sin_calificacion = total_llamadas_campanas - total_calificados
     if total_atendidas_sin_calificacion < 0:

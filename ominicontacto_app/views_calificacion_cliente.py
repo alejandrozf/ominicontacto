@@ -240,9 +240,15 @@ class CalificacionClienteFormView(FormView):
                 and calificacion.get_venta():
             calificacion.get_venta().delete()
 
+    def _obtener_call_id(self):
+        if self.call_data is not None:
+            return self.call_data.get('call_id')
+        return None
+
     def _calificar_form(self, calificacion_form):
         self.object_calificacion = calificacion_form.save(commit=False)
         self.object_calificacion.set_es_venta()
+        self.object_calificacion.callid = self._obtener_call_id()
         self.object_calificacion.agente = self.agente
         self.object_calificacion.contacto = self.contacto
 
@@ -303,8 +309,12 @@ class CalificacionClienteFormView(FormView):
             # en el caso de una campaña entrante que el usuario no desea calificar
             message = _('Operación Exitosa! '
                         'Se llevó a cabo con éxito la creación del contacto')
+            self.call_data['id_contacto'] = self.contacto.pk
+            self.call_data['telefono'] = self.contacto.telefono
+            url_calificar_llamada_entrante = reverse(
+                'calificar_llamada', kwargs={'call_data_json': json.dumps(self.call_data)})
             messages.success(self.request, message)
-            return redirect(self.get_success_url())  # TODO: revisar a dónde va a ir en este caso
+            return redirect(url_calificar_llamada_entrante)
 
     def form_invalid(self, contacto_form, calificacion_form):
         """

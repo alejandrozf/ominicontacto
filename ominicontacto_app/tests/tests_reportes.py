@@ -62,7 +62,7 @@ class TriggerQueuelogTest(OMLBaseTest):
             'ANSWER',
             'CONNECT',
             'COMPLETEAGENT',
-            'COMPLETECALLER',
+            'COMPLETEOUTNUM',
             'ENTERQUEUE',
             'EXITWITHTIMEOUT',
             'ABANDON',
