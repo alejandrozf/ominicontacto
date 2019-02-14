@@ -24,7 +24,7 @@ from ominicontacto_app.tests.factories import LlamadaLogFactory
 # LlamadaLog.EVENTOS_NO_CONTACTACION
 NOCONNECT = ['NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL', 'FAIL', 'OTHER', 'AMD', 'BLACKLIST',
              'CONGESTION', 'NONDIALPLAN']
-CONNECT = ['COMPLETEAGENT', 'COMPLETECALLER']
+CONNECT = ['COMPLETEAGENT', 'COMPLETEOUTNUM']
 # LlamadaLog.EVENTOS_NO_DIALOGO
 NO_DIALOG = ['EXITWITHTIMEOUT', 'ABANDON']
 FINALIZACIONES = NOCONNECT + CONNECT + NO_DIALOG
@@ -116,7 +116,7 @@ class GeneradorDeLlamadaLogs():
                               time=time)
             if tipo_llamada in [Campana.TYPE_MANUAL, Campana.TYPE_PREVIEW]:
                 assert finalizacion in CONNECT, \
-                    'Una llamada Manual con ANSWER debe terminar en COMPLETEAGENT o COMPLETECALLER'
+                    'Una llamada Manual con ANSWER debe terminar en COMPLETEAGENT o COMPLETEOUTNUM'
                 LlamadaLogFactory(event=finalizacion,
                                   campana_id=campana.id,
                                   tipo_campana=campana.type,
@@ -136,7 +136,7 @@ class GeneradorDeLlamadaLogs():
                     if finalizacion == 'EXITWITHTIMEOUT':
                         finalizacion_pata_dial = 'COMPLETEAGENT'
                     if finalizacion == 'ABANDON':
-                        finalizacion_pata_dial = 'COMPLETECALLER'
+                        finalizacion_pata_dial = 'COMPLETEOUTNUM'
                     LlamadaLogFactory(event=finalizacion_pata_dial,
                                       campana_id=campana.id,
                                       tipo_campana=campana.type,

@@ -99,7 +99,7 @@ class BaseTestDeReportes(TestCase):
             self.campana_activa, True, 'NOANSWER', self.telefono3, agente=self.agente_profile,
             contacto=self.contacto_no_atendido)
         self.generador_log_llamadas.generar_log(
-            self.campana_activa, True, 'COMPLETECALLER', self.telefono4, agente=self.agente_profile,
+            self.campana_activa, True, 'COMPLETEOUTNUM', self.telefono4, agente=self.agente_profile,
             contacto=self.contacto_no_calificado, duracion_llamada=0)
         callid_gestion = LlamadaLog.objects.get(
             contacto_id=self.contacto_calificado_gestion.pk, event='COMPLETEAGENT').callid
@@ -247,7 +247,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
         self.generador_log_llamadas.generar_log(
             campana_entrante, False, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
-            campana_entrante, False, 'COMPLETECALLER', self.telefono2, agente=self.agente_profile)
+            campana_entrante, False, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
             campana_entrante, False, 'EXITWITHTIMEOUT', self.telefono3, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
@@ -255,7 +255,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
         self.generador_log_llamadas.generar_log(
             campana_entrante, True, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
-            campana_entrante, True, 'COMPLETECALLER', self.telefono2, agente=self.agente_profile)
+            campana_entrante, True, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile)
         estadisticas_service = EstadisticasService()
         hoy = fecha_local(timezone.now())
         reporte = estadisticas_service.calcular_cantidad_llamadas(campana_entrante, hoy, hoy)
@@ -276,7 +276,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
             campana_entrante, False, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile,
             time=ayer)
         self.generador_log_llamadas.generar_log(
-            campana_entrante, False, 'COMPLETECALLER', self.telefono2, agente=self.agente_profile,
+            campana_entrante, False, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile,
             time=hoy)
         estadisticas_service = EstadisticasService()
         hoy = fecha_local(timezone.now())
@@ -292,7 +292,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
             campana_entrante, True, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile,
             time=ayer)
         self.generador_log_llamadas.generar_log(
-            campana_entrante, True, 'COMPLETECALLER', self.telefono2, agente=self.agente_profile,
+            campana_entrante, True, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile,
             time=hoy)
         estadisticas_service = EstadisticasService()
         hoy = fecha_local(timezone.now())
@@ -304,7 +304,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
         self.generador_log_llamadas.generar_log(
             campana_dialer, False, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
-            campana_dialer, False, 'COMPLETECALLER', self.telefono2, agente=self.agente_profile)
+            campana_dialer, False, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
             campana_dialer, False, 'ABANDON', self.telefono3, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
@@ -314,7 +314,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
         self.generador_log_llamadas.generar_log(
             campana_dialer, True, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
-            campana_dialer, True, 'COMPLETECALLER', self.telefono2, agente=self.agente_profile)
+            campana_dialer, True, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
             campana_dialer, True, 'NOANSWER', self.telefono2, agente=self.agente_profile)
         estadisticas_service = EstadisticasService()
@@ -333,7 +333,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
         self.generador_log_llamadas.generar_log(
             campana_manual, True, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
-            campana_manual, True, 'COMPLETECALLER', self.telefono2, agente=self.agente_profile)
+            campana_manual, True, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
             campana_manual, True, 'FAIL', self.telefono3, agente=self.agente_profile)
         estadisticas_service = EstadisticasService()

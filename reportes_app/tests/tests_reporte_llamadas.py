@@ -238,10 +238,10 @@ class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
         self.assertEqual(tipos[campana.id]['conectadas'], 0)
         self.assertEqual(tipos[campana.id]['no_conectadas'], 1)
 
-        # Genero una llamada manual que termina en COMPLETEAGENT y otra en COMPLETECALLER
+        # Genero una llamada manual que termina en COMPLETEAGENT y otra en COMPLETEOUTNUM
         generador.generar_log(campana, True, 'COMPLETEAGENT', '1234', self.agente1,
                               bridge_wait_time=4, duracion_llamada=20)
-        generador.generar_log(campana, True, 'COMPLETECALLER', '1234', self.agente1,
+        generador.generar_log(campana, True, 'COMPLETEOUTNUM', '1234', self.agente1,
                               bridge_wait_time=6, duracion_llamada=40)
         self.hasta = now()
         reporte = ReporteDeLlamadas(self.desde, self.hasta, True, self.supervisor.user)
@@ -286,10 +286,10 @@ class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
         self.assertEqual(tipos[campana.id]['conectadas'], 0)
         self.assertEqual(tipos[campana.id]['no_conectadas'], 1)
 
-        # Genero una llamada preview que termina en COMPLETEAGENT y otra en COMPLETECALLER
+        # Genero una llamada preview que termina en COMPLETEAGENT y otra en COMPLETEOUTNUM
         generador.generar_log(campana, False, 'COMPLETEAGENT', '1234', self.agente1,
                               bridge_wait_time=4, duracion_llamada=20)
-        generador.generar_log(campana, False, 'COMPLETECALLER', '1234', self.agente1,
+        generador.generar_log(campana, False, 'COMPLETEOUTNUM', '1234', self.agente1,
                               bridge_wait_time=6, duracion_llamada=40)
         self.hasta = now()
         reporte = ReporteDeLlamadas(self.desde, self.hasta, True, self.supervisor.user)
@@ -309,10 +309,10 @@ class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
         self.assertEqual(tipos[campana.id]['conectadas'], 2)
         self.assertEqual(tipos[campana.id]['no_conectadas'], 1)
 
-        # Genero llamadas preview manuales que terminan en BUSY y en COMPLETECALLER
+        # Genero llamadas preview manuales que terminan en BUSY y en COMPLETEOUTNUM
         generador.generar_log(campana, True, 'BUSY', '1234', self.agente1,
                               bridge_wait_time=4)
-        generador.generar_log(campana, True, 'COMPLETECALLER', '1234', self.agente1,
+        generador.generar_log(campana, True, 'COMPLETEOUTNUM', '1234', self.agente1,
                               bridge_wait_time=8, duracion_llamada=40)
         self.hasta = now()
         reporte = ReporteDeLlamadas(self.desde, self.hasta, True, self.supervisor.user)
@@ -421,10 +421,10 @@ class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
         self.assertEqual(tipos[campana.id]['t_espera_atencion'], 4)
         self.assertEqual(tipos[campana.id]['t_abandono'], 5)
 
-        # Genero dos llamadas DIALER que terminan en COMPLETEAGENT y COMPLETECALLER
+        # Genero dos llamadas DIALER que terminan en COMPLETEAGENT y COMPLETEOUTNUM
         generador.generar_log(campana, False, 'COMPLETEAGENT', '123', self.agente1,
                               bridge_wait_time=8, duracion_llamada=18)
-        generador.generar_log(campana, False, 'COMPLETECALLER', '123', self.agente1,
+        generador.generar_log(campana, False, 'COMPLETEOUTNUM', '123', self.agente1,
                               bridge_wait_time=10, duracion_llamada=22)
         self.hasta = now()
         reporte = ReporteDeLlamadas(self.desde, self.hasta, True, self.supervisor.user)
@@ -449,10 +449,10 @@ class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
         self.assertEqual(tipos[campana.id]['t_espera_atencion'], 6)
         self.assertEqual(tipos[campana.id]['t_abandono'], 5)
 
-        # Genero llamadas dialer Manuales CANCEL, COMPLETECALLER
+        # Genero llamadas dialer Manuales CANCEL, COMPLETEOUTNUM
         generador.generar_log(campana, True, 'CANCEL', '123', self.agente1,
                               bridge_wait_time=4)
-        generador.generar_log(campana, True, 'COMPLETECALLER', '123', self.agente1,
+        generador.generar_log(campana, True, 'COMPLETEOUTNUM', '123', self.agente1,
                               bridge_wait_time=8, duracion_llamada=30)
         self.hasta = now()
         reporte = ReporteDeLlamadas(self.desde, self.hasta, True, self.supervisor.user)
@@ -537,8 +537,8 @@ class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
         self.assertEqual(tipos[campana.id]['t_espera_conexion'], 0)
         self.assertEqual(tipos[campana.id]['t_abandono'], 5)
 
-        # Genero una llamada ENTRANTE que termina en COMPLETECALLER
-        generador.generar_log(campana, False, 'COMPLETECALLER', '123', self.agente1,
+        # Genero una llamada ENTRANTE que termina en COMPLETEOUTNUM
+        generador.generar_log(campana, False, 'COMPLETEOUTNUM', '123', self.agente1,
                               bridge_wait_time=7, duracion_llamada=30)
         self.hasta = now()
         reporte = ReporteDeLlamadas(self.desde, self.hasta, True, self.supervisor.user)
@@ -561,10 +561,10 @@ class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
         self.assertEqual(tipos[campana.id]['t_espera_conexion'], 7)
         self.assertEqual(tipos[campana.id]['t_abandono'], 5)
 
-        # Genero llamadas diaer manuales CANCEL, COMPLETECALLER
+        # Genero llamadas diaer manuales CANCEL, COMPLETEOUTNUM
         generador.generar_log(campana, True, 'CANCEL', '123', self.agente1,
                               bridge_wait_time=5)
-        generador.generar_log(campana, True, 'COMPLETECALLER', '123', self.agente1,
+        generador.generar_log(campana, True, 'COMPLETEOUTNUM', '123', self.agente1,
                               bridge_wait_time=7, duracion_llamada=30)
         self.hasta = now()
         reporte = ReporteDeLlamadas(self.desde, self.hasta, True, self.supervisor.user)
@@ -681,7 +681,7 @@ class DatosPorFechaReporteLlamadasTests(BaseReporteDeLlamadasTests):
         campana = self.entrante
         generador = GeneradorDeLlamadaLogs()
         for i in range(5):
-            generador.generar_log(campana, False, 'COMPLETECALLER', '123',
+            generador.generar_log(campana, False, 'COMPLETEOUTNUM', '123',
                                   self.agente1, bridge_wait_time=4, time=self.durante)
         for i in range(3):
             generador.generar_log(campana, False, 'COMPLETEAGENT', '123',

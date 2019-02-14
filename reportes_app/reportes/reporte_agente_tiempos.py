@@ -626,7 +626,7 @@ class TiemposAgente(object):
     def calcular_tiempo_llamada_agente_fecha(self, agente, fecha_inferior,
                                              fecha_superior, agente_fecha):
         """ Calcula el tiempo de llamada teniendo en cuenta los eventos
-        COMPLETECALLER y COMPLETEAGENT, por fecha dia a dia para el agente"""
+        COMPLETECALLER y COMPLETEOUTNUM, por fecha dia a dia para el agente"""
 
         eventos_llamadas = list(LlamadaLog.EVENTOS_FIN_CONEXION)
 
