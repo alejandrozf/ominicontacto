@@ -72,9 +72,31 @@
     option='download-cache'
     value='{{ install_prefix }}.pip/cache'
 
+#----------------------------------------------------------------------
+# ics_app installed, do this
+#----------------------------------------------------------------------
+
+- name: Get the ics_settings settings in temp file
+  shell: cat {{ install_prefix }}local/oml_settings_local.py | grep "#ICS" -A200 > /tmp/oml_settings_local.py2
+  tags: deploy
+
 # El codigo que está en /var/tmp/ominicontacto_build/ se pasa a /opt/omnileeads/ominicontacto
 - name: Upload built (rsync to /ominicontacto)
-  synchronize: "src={{ build_dir }} dest={{ install_prefix }} delete=yes checksum=yes times=no"
+  synchronize: "src={{ build_dir }}/{{ item }} dest={{ install_prefix }}ominicontacto/ delete=yes checksum=yes times=no"
+  with_items:
+    - api_app
+    - configuracion_telefonia_app
+    - manage.py
+    - ominicontacto
+    - ominicontacto_app
+    - ominicontacto_voip
+    - Omnisup
+    - reciclado_app
+    - reportes_app
+    - requirements.txt
+    - utiles_globales.py
+    - test
+    - tests
   when: desarrollo == 0
 
 # Se clona el repo si es un entorno de desarrollo
@@ -149,6 +171,11 @@
 - name: Upload oml_settings_local.py
   template: src=templates/oml_settings_local.py.j2 dest={{ install_prefix }}local/oml_settings_local.py
   tags: ['omniapp', 'changeip']
+
+- name: Copy the content of of ics_settings in oml_settings_local
+  shell: "cat /tmp/oml_settings_local.py2 >> oml_settings_local.py"
+  args:
+    chdir: "{{ install_prefix }}/local"
 
 # Se hace el link simbolico del archivo oml_settings_local a ominicontacto/, para que se pueda hacer manage.py
 - name: Creation of simbolic link of oml_settings_local.py
