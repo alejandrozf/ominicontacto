@@ -72,7 +72,7 @@ class RutaSalienteForm(forms.ModelForm):
 
     class Meta:
         model = RutaSaliente
-        exclude = ()
+        exclude = ('orden', )
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'ring_time': forms.NumberInput(attrs={'class': 'form-control'}),
