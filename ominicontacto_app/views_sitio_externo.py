@@ -26,8 +26,9 @@ from __future__ import unicode_literals
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.core.urlresolvers import reverse, reverse_lazy
+from django.contrib import messages
 from django.views.generic.edit import (
-    CreateView, UpdateView
+    CreateView, UpdateView, DeleteView
 )
 from django.views.generic import (
     ListView
@@ -66,6 +67,27 @@ class SitioExternoListView(ListView):
     def get_queryset(self):
         queryset = SitioExterno.objects.filter(oculto=False)
         return queryset
+
+
+class SitioExternoDeleteView(DeleteView):
+    """
+    Esta vista es para eliminar un sitio externo.
+    """
+    model = SitioExterno
+    template_name = 'delete_sitio_externo.html'
+
+    def dispatch(self, request, *args, **kwargs):
+
+        sitioexterno = SitioExterno.objects.get(pk=self.kwargs['pk'])
+
+        if sitioexterno.campana_set.exists():
+            message = ("No está permitido eliminar un sitio externo asociado a una campaña")
+            messages.warning(self.request, message)
+            return HttpResponseRedirect(reverse('sitio_externo_list'))
+        return super(SitioExternoDeleteView, self).dispatch(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse('sitio_externo_list')
 
 
 class OcultarSitioExternoView(RedirectView):

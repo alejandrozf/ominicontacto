@@ -771,6 +771,9 @@ urlpatterns = [
     url(r'^sitio_externo/(?P<pk>\d+)/update/$',
         administrador_requerido(views_sitio_externo.SitioExternoUpdateView.as_view()),
         name='modificar_sitio_externo', ),
+    url(r'^sitio_externo/(?P<pk>\d+)/delete/$',
+        administrador_requerido(views_sitio_externo.SitioExternoDeleteView.as_view()),
+        name='sitio_externo_delete'),
     # ==========================================================================
     # QueueMember
     # ==========================================================================
