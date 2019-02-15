@@ -163,20 +163,8 @@ EOF
 
     #echo "Validando version.py - Commit:"
     python $TMP/ominicontacto/ominicontacto_app/version.py > /dev/null 2>&1
-
     # ----------
     export DO_CHECKS="${DO_CHECKS:-no}"
-    if [ -z $desarrollo ] && ([ "$arg1" == "--install" ] || [ "$arg1" == "-i" ]); then
-      echo "Do you want to install dahdi linux driver? (type yes or no)"; read dahdi_install
-      if [ "$dahdi_install" == "yes" ] && ( [ "$arg1" == "--install" ] || [ "$arg1" == "-i" ]); then
-        sed -i "s/\(^dahdi_install\).*/dahdi_install: 1/" $TMP_ANSIBLE/group_vars/all
-      elif [ "$dahdi_install" == "no" ]; then
-        echo ""
-      else
-        echo "Wrong, type yes or no, exiting"
-        exit 1
-      fi
-    fi
 }
 
 Desarrollo() {
