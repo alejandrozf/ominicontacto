@@ -9,7 +9,7 @@ User={{ usuario }}
 Environment=PYTHONPATH={{ install_prefix }}
 ExecStartPre=/bin/bash -c 'source {{ install_prefix }}virtualenv/bin/activate'
 ExecStart={{ install_prefix }}virtualenv/bin/uwsgi --ini {{ install_prefix }}run/oml_uwsgi.ini
-ExecReload={{ install_prefix }}virtualenv/bin/uwsgi --reload {{ install_prefix }}run/oml_uwgsi.pid
+ExecReload={{ install_prefix }}virtualenv/bin/uwsgi --reload {{ install_prefix }}run/oml_uwsgi.pid
 ExecStop=/opt/omnileads/virtualenv/bin/uwsgi --stop {{ install_prefix }}run/oml_uwsgi.pid
 PIDFile={{ install_prefix }}run/oml_uwsgi.pid
 RuntimeDirectory=run

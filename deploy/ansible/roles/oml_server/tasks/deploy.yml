@@ -79,6 +79,7 @@
 - name: Get the ics_settings settings in temp file
   shell: cat {{ install_prefix }}local/oml_settings_local.py | grep "#ICS" -A200 > /tmp/oml_settings_local.py2
   tags: deploy
+  when: ics_exists|succeeded
 
 # El codigo que está en /var/tmp/ominicontacto_build/ se pasa a /opt/omnileeads/ominicontacto
 - name: Upload built (rsync to /ominicontacto)
@@ -176,6 +177,8 @@
   shell: "cat /tmp/oml_settings_local.py2 >> oml_settings_local.py"
   args:
     chdir: "{{ install_prefix }}/local"
+  when: ics_exists|succeeded
+
 
 # Se hace el link simbolico del archivo oml_settings_local a ominicontacto/, para que se pueda hacer manage.py
 - name: Creation of simbolic link of oml_settings_local.py

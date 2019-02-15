@@ -102,7 +102,7 @@
   when: ansible_os_family == "RedHat"
 
 - name: Install kernel release devel package (centos)
-  yum: "name=ftp://ftp.riken.jp/Linux/cern/centos/7/updates/x86_64/Packages/kernel-devel-{{ kernel_release.stdout }}.rpm state=present"
+  yum: "name=http://ftp.riken.jp/Linux/cern/centos/7/updates/x86_64/Packages/kernel-devel-{{ kernel_release.stdout }}.rpm state=present"
   any_errors_fatal: true
   become: true
   become_method: sudo
