@@ -2086,13 +2086,6 @@ class ContactoManager(models.Manager):
             raise (SuspiciousOperation("No se encontro contactos con este "
                                        "número télefonico"))
 
-    def contactos_by_filtro(self, filtro):
-        try:
-            return self.filter(Q(telefono__contains=filtro) | Q(pk__contains=filtro))
-        except Contacto.DoesNotExist:
-            raise (SuspiciousOperation("No se encontro contactos con este "
-                                       "filtro"))
-
     def contactos_by_filtro_bd_contacto(self, bd_contacto, filtro):
         """ Busqueda en todos los campos relevantes """
         try:

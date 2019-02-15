@@ -97,6 +97,7 @@ $(document).ready(function(){
       },
       serverSide: true,
       processing: true,
+      // {% url 'api_contactos_campana' %}
       ajax: '/api/campana/' + pk_campana + '/contactos/',
       ordering: false,
       paging: true,

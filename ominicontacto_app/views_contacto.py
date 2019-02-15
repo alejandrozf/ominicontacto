@@ -122,9 +122,13 @@ class API_ObtenerContactosCampanaView(View):
         search = request.GET['search[value]']
         contactos_calificados_ids = list(campana.obtener_calificaciones().values_list(
             'contacto__pk', flat=True))
-        contactos = campana.bd_contacto.contactos.exclude(pk__in=contactos_calificados_ids)
         if search != '':
-            contactos = contactos.filter(telefono__iregex=search)
+            contactos = Contacto.objects.contactos_by_filtro_bd_contacto(
+                campana.bd_contacto, filtro=search)
+            contactos = contactos.exclude(pk__in=contactos_calificados_ids)
+        else:
+            contactos = campana.bd_contacto.contactos.exclude(pk__in=contactos_calificados_ids)
+
         return contactos
 
     def _procesar_contactos_salida(self, request, campana, contactos_filtrados):
