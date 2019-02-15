@@ -34,6 +34,12 @@
   when: desarrollo == 1
   ignore_errors: yes
 
+- name: Check if ics_app is installed in server
+  shell: test -d {{ install_prefix }}ominicontacto/ics_app
+  register: ics_exists
+  tags: ['omniapp','postinstall']
+  ignore_errors: yes
+
 - include: packages_installation.yml
   tags: ['omniapp']
 
