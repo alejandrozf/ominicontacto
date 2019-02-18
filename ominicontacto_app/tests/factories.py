@@ -261,6 +261,7 @@ class CalificacionClienteFactory(DjangoModelFactory):
     class Meta:
         model = CalificacionCliente
 
+    callid = lazy_attribute(lambda a: faker.ean8())
     opcion_calificacion = SubFactory(OpcionCalificacionFactory)
     contacto = SubFactory(ContactoFactory)
     agente = SubFactory(AgenteProfileFactory)

@@ -29,9 +29,11 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.timezone import now, timedelta
 
-from ominicontacto_app.models import Grabacion, GrabacionMarca
+from ominicontacto_app.models import Grabacion, GrabacionMarca, OpcionCalificacion
 
-from ominicontacto_app.tests.factories import GrabacionFactory, GrabacionMarcaFactory, UserFactory
+from ominicontacto_app.tests.factories import (GrabacionFactory, GrabacionMarcaFactory, UserFactory,
+                                               CalificacionClienteFactory, CampanaFactory,
+                                               OpcionCalificacionFactory)
 from ominicontacto_app.tests.utiles import OMLBaseTest
 
 from ominicontacto_app.utiles import fecha_hora_local
@@ -47,13 +49,20 @@ class BaseGrabacionesTests(OMLBaseTest):
         self.usuario_admin_supervisor.save()
 
         self.user_agente = self.crear_user_agente()
+        self.campana = CampanaFactory()
         self.agente_profile = self.crear_agente_profile(self.user_agente)
-
-        self.grabacion1 = GrabacionFactory.create(duracion=0, agente=self.agente_profile)
-        self.grabacion2 = GrabacionFactory.create(duracion=0, agente=self.agente_profile)
-        self.grabacion3 = GrabacionFactory.create(duracion=0, agente=self.agente_profile)
-        self.marca_campana1 = GrabacionMarcaFactory.create(uid=self.grabacion1.uid)
-        self.marca_campana2 = GrabacionMarcaFactory.create(uid=self.grabacion2.uid)
+        self.opcion_calificacion = OpcionCalificacionFactory(
+            campana=self.campana, tipo=OpcionCalificacion.GESTION)
+        self.calificacion = CalificacionClienteFactory(opcion_calificacion=self.opcion_calificacion)
+        self.grabacion1 = GrabacionFactory.create(
+            duracion=0, agente=self.agente_profile, uid=self.calificacion.callid,
+            campana=self.campana)
+        self.grabacion2 = GrabacionFactory(
+            duracion=0, agente=self.agente_profile, campana=self.campana)
+        self.grabacion3 = GrabacionFactory(
+            duracion=0, agente=self.agente_profile, campana=self.campana)
+        self.marca_campana1 = GrabacionMarcaFactory(uid=self.grabacion1.uid)
+        self.marca_campana2 = GrabacionMarcaFactory(uid=self.grabacion2.uid)
 
         self.client.login(username=self.usuario_admin_supervisor.username,
                           password=self.PWD)
@@ -171,3 +180,21 @@ class FiltrosGrabacionesTests(BaseGrabacionesTests):
         self.assertNotContains(response, '42222222')
         self.assertContains(response, '41111111')
         self.assertContains(response, '43333333')
+
+    def test_filtro_grabaciones_calificadas_gestion_muestra_gestionadas(self):
+        url = reverse('grabacion_buscar', kwargs={'pagina': 1})
+        post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'agente': '',
+                     'campana': '', 'marcadas': '', 'duracion': '0', 'gestion': True}
+        response = self.client.post(url, post_data, follow=True)
+        self.assertContains(response, self.grabacion1.tel_cliente)
+        self.assertNotContains(response, self.grabacion2.tel_cliente)
+        self.assertNotContains(response, self.grabacion3.tel_cliente)
+
+    def test_filtro_grabaciones_calificadas_gestion_excluye_no_gestionadas(self):
+        url = reverse('grabacion_buscar', kwargs={'pagina': 1})
+        post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'agente': '',
+                     'campana': '', 'marcadas': '', 'duracion': '0', 'gestion': False}
+        response = self.client.post(url, post_data, follow=True)
+        self.assertContains(response, self.grabacion1.tel_cliente)
+        self.assertContains(response, self.grabacion2.tel_cliente)
+        self.assertContains(response, self.grabacion3.tel_cliente)
