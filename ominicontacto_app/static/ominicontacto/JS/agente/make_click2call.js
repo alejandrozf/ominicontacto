@@ -25,6 +25,6 @@ function makeClick2Call(campaign_id, campaign_type, contact_id, phone, call_type
         var click2call = window.parent.click2call;
         click2call.call_contact(campaign_id, campaign_type, contact_id, phone, call_type);
     } else {
-        console.log('Alertar al usuario que no es posible hacer una click2call');
+        // console.log('Alertar al usuario que no es posible hacer una click2call');
     }
 };

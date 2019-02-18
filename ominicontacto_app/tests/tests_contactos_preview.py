@@ -211,7 +211,7 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
         contacto = ContactoFactory()
         agente_en_contacto = AgenteEnContactoFactory(
             contacto_id=contacto.pk, telefono_contacto=contacto.telefono)
-        telefono_nuevo = contacto.telefono + 111
+        telefono_nuevo = contacto.telefono + '111'
         self.assertEqual(agente_en_contacto.telefono_contacto, contacto.telefono)
         url = reverse('contacto_update', args=[contacto.pk])
         post_data = {

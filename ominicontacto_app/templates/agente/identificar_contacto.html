@@ -41,24 +41,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <!-- Scripts -->
         <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
         <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'ominicontacto/JS/agente/make_click2call.js' %}"></script>
         {% endcompress %}
-        <script type="text/javascript">
-            function makeClick2Call(contact_id, phone) {
-                // Utilizar click2call manager para intentar llamar.
-                var campaign_id = '{{ campana.pk }}';
-                var campaign_type = '{{ campana.type }}';
-
-                // Ver si tengo acceso
-                if (window.parent.hasOwnProperty('click2call')){
-                    var click2call = window.parent.click2call;
-                    click2call.call_contact(campaign_id, campaign_type,
-                                            contact_id, phone, 'contactos');
-
-                } else {
-                    console.log('Alertar al usuario que no es posible hacer una click2call');
-                }
-            };
-        </script>
     </head>
     <body>
         <h1>
@@ -95,24 +79,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </tr>
             </thead>
             <tbody>
-            {% if  contacto_sugerido %}
-                <tr>
-                    <td>{{ contacto_sugerido.telefono }}</td>
-                    {% for campo in campos_bd %}
-                        <td>{{campo}}  {{ contacto|get_item:campo }}</td>
-                    {% endfor %}
-                    <td>
-                        <button class="contacto-lista btn btn-light btn-sm">
-                            <span class="icon-phone" aria-hidden="true" title="{% trans 'Llamar' %}" onclick="makeClick2Call('{{ contacto_sugerido.id }}', '{{telefono}}');"></span>
-                            
-                        </button>
-                    </td>
-                </tr>
-            {% endif %}
             {% for  contacto in contactos_busqueda %}
                 <tr>
                     <td>
-                        <a class="btn btn-submit btn-outline-primary" href="javascript:;" onclick="makeClick2Call('{{ contacto.id }}', '{{ contacto.telefono }}');">
+                        <a class="btn btn-submit btn-outline-primary" href="javascript:;" onclick="makeClick2Call('{{ campana.pk }}', '{{ campana.type }}', '{{ contacto.id }}', '{{ contacto.telefono }}', 'contactos');">
                             {{ contacto.telefono }}
                         </a>
                     </td>
@@ -121,7 +91,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {% endfor %}
                     <td>
                         <button class="contacto-lista btn btn-light btn-sm">
-                            <span class="icon-phone" aria-hidden="true" title="{% trans 'Llamar' %}" onclick="makeClick2Call('{{ contacto.id }}', '{{ telefono }}');"></span>
+                            <span class="icon-phone" aria-hidden="true" title="{% trans 'Llamar' %}" onclick="makeClick2Call('{{ campana.pk }}', '{{ campana.type }}', '{{ contacto.id }}', '{{ telefono }}', 'contactos');"></span>
                         </button>
                     </td>
                 </tr>

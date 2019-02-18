@@ -200,7 +200,7 @@ class ContactoFactory(DjangoModelFactory):
     class Meta:
         model = Contacto
 
-    telefono = lazy_attribute(lambda a: faker.random_number(10))
+    telefono = lazy_attribute(lambda a: str(faker.random_number(10)))
     datos = lazy_attribute(lambda a: '["{0}", "{1}", "{2}", "{3}", "{4}"]'.format(
         faker.name(), faker.name(), faker.random_number(7), faker.phone_number(),
         faker.phone_number()))
