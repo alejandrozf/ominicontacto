@@ -2283,7 +2283,7 @@ class GrabacionManager(models.Manager):
                                          "tel de cliente")))
 
     def grabacion_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada,
-                            tel_cliente, agente, campana, campanas, marcadas, duracion):
+                            tel_cliente, agente, campana, campanas, marcadas, duracion, gestion):
         grabaciones = self.filter(campana__in=campanas)
 
         if fecha_desde and fecha_hasta:
@@ -2304,6 +2304,12 @@ class GrabacionManager(models.Manager):
         if marcadas:
             total_grabaciones_marcadas = Grabacion.objects.marcadas()
             grabaciones = grabaciones & total_grabaciones_marcadas
+        if gestion:
+            calificaciones_gestion_campanas = CalificacionCliente.obtener_califs_gestion_campanas(
+                campanas)
+            callids_calificaciones_gestion = list(calificaciones_gestion_campanas.values_list(
+                'callid', flat=True))
+            grabaciones = grabaciones.filter(uid__in=callids_calificaciones_gestion)
 
         return grabaciones.order_by('-fecha')
 
@@ -2501,6 +2507,17 @@ class CalificacionCliente(models.Model):
         # TODO: Usar metodo de OpcionCalificacion.es_agenda()
         # return self.opcion_calificacion.es_agenda()
         return self.opcion_calificacion.tipo == OpcionCalificacion.AGENDA
+
+    @classmethod
+    def obtener_califs_gestion_campanas(cls, campanas):
+        """Obtiene las calificaciones históricas de gestión de un conjunto de
+        campañas en un rango de fechas definido
+        """
+        ids_campanas = list(campanas.values_list('pk', flat=True))
+        calificaciones = cls.history.filter(
+            opcion_calificacion__campana__pk__in=ids_campanas)
+        calificaciones = calificaciones.filter(opcion_calificacion__tipo=OpcionCalificacion.GESTION)
+        return calificaciones
 
 
 class DuracionDeLlamada(models.Model):
