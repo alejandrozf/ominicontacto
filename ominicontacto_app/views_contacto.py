@@ -112,6 +112,8 @@ class ContactosTelefonosRepetidosView(TemplateView):
         campana = get_object_or_404(Campana, pk=pk_campana)
         if call_data_json:
             context['call_data_json'] = call_data_json
+            context['call_data'] = json.loads(call_data_json)
+
         context['campana'] = campana
         context['contactos'] = campana.bd_contacto.contactos.filter(telefono=telefono)
         return context

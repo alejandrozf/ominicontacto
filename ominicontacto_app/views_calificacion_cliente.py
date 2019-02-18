@@ -96,7 +96,7 @@ class CalificacionClienteFormView(FormView):
         self.agente = self.request.user.get_agente_profile()
         id_contacto = None
         self.call_data = None
-        call_data_json = None
+        call_data_json = 'false'
         if 'call_data_json' in kwargs:
             call_data_json = kwargs['call_data_json']
             self.call_data = json.loads(call_data_json)
@@ -210,6 +210,7 @@ class CalificacionClienteFormView(FormView):
             calificacion_form=calificacion_form,
             campana=self.campana,
             llamada_entrante=formulario_llamada_entrante,
+            call_data=self.call_data,
             url_sitio_externo=self.url_sitio_externo))
 
     def post(self, request, *args, **kwargs):
@@ -326,6 +327,7 @@ class CalificacionClienteFormView(FormView):
             contacto_form=contacto_form,
             calificacion_form=calificacion_form,
             campana=self.campana,
+            call_data=self.call_data,
             url_sitio_externo=self.url_sitio_externo)
         )
 

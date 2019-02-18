@@ -434,23 +434,24 @@ class PhoneJS {
     ///----------
 
     Sounds(callType, action) {
+        // Los "catch" son por si se da el caso de que el agente no haya interactuado con la pagina.
         var ring = null;
         if (action === "play") {
             if (callType === "In") {
                 ring = document.getElementById('RingIn');
-                ring.play();
+                ring.play().catch(function() { });
                 ring.onended = function() {
-                    ring.play();
+                    ring.play().catch(function() { });
                 };
             } else if (callType === "Out") {
                 ring = document.getElementById('RingOut');
-                ring.play();
+                ring.play().catch(function() { });
                 ring.onended = function() {
-                    ring.play();
+                    ring.play().catch(function() { });
                 };
             } else {
                 ring = document.getElementById('RingBusy');
-                ring.play();
+                ring.play().catch(function() { });
             }
         } else {
             ring = document.getElementById('RingIn');
@@ -519,6 +520,15 @@ class SessionData {
             call_data.call_wait_duration = invite_request.headers.Omlcallwaitduration[0].raw;
         else
             call_data.call_wait_duration = '';
+
+        // Extra ICS Headers.
+        if (invite_request.headers.Ics)
+            call_data.ics = invite_request.headers.Ics[0].raw;
+        if (invite_request.headers.Idcontactics)
+            call_data.id_contacto_ics = invite_request.headers.Idcontactics[0].raw;
+        if (invite_request.headers.Namecontactics)
+            call_data.nombre_contacto_ics = invite_request.headers.Namecontactics[0].raw;
+
         return call_data;
     }
 

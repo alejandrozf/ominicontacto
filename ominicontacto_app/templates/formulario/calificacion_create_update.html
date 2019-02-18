@@ -50,6 +50,12 @@
             <h1>{{ campana.nombre }}</h1>
         {% endif %}
 
+        {% if call_data and call_data.ics %}
+            <div><b>{% trans "Nombre Contacto ICS:" %}</b> {{ call_data.nombre_contacto_ics }}</div>
+            <div><b>{% trans "ID Contacto ICS:" %}</b> {{ call_data.id_contacto_ics }}</div>
+            <br>
+        {% endif %}
+
         {% if campana.tiene_interaccion_con_sitio_externo %}
             <div>
                 <a href="{{ url_sitio_externo }}" target="_blank">{% trans "Interacción CRM" %}</a>
