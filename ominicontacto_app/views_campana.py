@@ -32,7 +32,7 @@ from django.views.generic.base import RedirectView
 from django.utils.translation import ugettext_lazy as _
 
 from ominicontacto_app.forms import (
-    ReporteForm, FormularioCampanaContacto, CampanaSupervisorUpdateForm
+    ReporteForm, CampanaSupervisorUpdateForm
 )
 from ominicontacto_app.models import (
     Campana, Queue, SupervisorProfile
@@ -139,44 +139,6 @@ class CampanaDeleteView(DeleteNodoDestinoMixin, CampanasDeleteMixin, DeleteView)
 
     def get_sincronizador_de_configuracion(self):
         return SincronizadorDummy()
-
-
-# TODO: DEPRECATED? Verificar si se debe eliminar
-class FormularioSeleccionCampanaFormView(FormView):
-    """Vista para seleccionar una campana a la cual se le agregar un nuevo contacto"""
-    form_class = FormularioCampanaContacto
-    template_name = 'agente/seleccion_campana_form.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        if self.request.user.is_authenticated()\
-                and self.request.user.get_agente_profile():
-            agente = self.request.user.get_agente_profile()
-        if not agente.campana_member.all():
-            message = _("Este agente no esta asignado a ninguna campaña ")
-            messages.warning(self.request, message)
-        return super(FormularioSeleccionCampanaFormView,
-                     self).dispatch(request, *args, **kwargs)
-
-    def get_form(self):
-        self.form_class = self.get_form_class()
-        if self.request.user.is_authenticated()\
-                and self.request.user.get_agente_profile():
-            agente = self.request.user.get_agente_profile()
-            campanas = [queue.queue_name.campana
-                        for queue in agente.campana_member.all()]
-
-        campana_choice = [(campana.id, campana.nombre) for campana in
-                          campanas]
-        return self.form_class(campana_choice=campana_choice, **self.get_form_kwargs())
-
-    def form_valid(self, form):
-        campana = form.cleaned_data.get('campana')
-        return HttpResponseRedirect(
-            reverse('nuevo_contacto_campana',
-                    kwargs={"pk_campana": campana}))
-
-    def get_success_url(self):
-        reverse('view_blanco')
 
 
 class OcultarCampanaView(RedirectView):

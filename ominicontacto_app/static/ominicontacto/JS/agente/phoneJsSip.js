@@ -38,6 +38,7 @@ var ORIGIN_DIALER = 'DIALER-FORM';
 var ORIGIN_CLICK2CALL = 'CLICK2CALL';
 var ORIGIN_CLICK2CALL_PREVIEW = 'CLICK2CALLPREVIEW';
 var ORIGIN_MANUAL = 'Manual-Call';
+var ORIGIN_INTERNAL = 'Internal';
 
 var ORIGIN_IDS = {};
 ORIGIN_IDS[ORIGIN_DIALER] = 2;
@@ -45,6 +46,9 @@ ORIGIN_IDS[ORIGIN_INBOUND] = 3;
 ORIGIN_IDS[ORIGIN_CLICK2CALL] = 4;
 ORIGIN_IDS[ORIGIN_CLICK2CALL_PREVIEW] = 4;
 ORIGIN_IDS[ORIGIN_MANUAL] = 1;
+
+/* NOTA: Ver si es necesario */
+ORIGIN_IDS[ORIGIN_INTERNAL] = 5;    // NOTA: Ver cual es el codigo que tendran
 
 class PhoneJS {
     constructor(agent_id, sipExtension, sipSecret, KamailioHost, WebSocketPort, WebSocketHost,
@@ -257,7 +261,9 @@ class PhoneJS {
         this.currentSession.unhold();
     }
 
-    makeCall(numberToCall, campaign_id=undefined, campaign_type=undefined) {
+    // TODO: En principio sólo se va a usar para Login, Pause y Unpause.
+    //       Más adelante tal vez se use para llamadas fuera de campaña entre agentes.
+    makeCall(numberToCall) {
         var self = this;
         this.local_call = new LocalCall(numberToCall);
         phone_logger.log('makeCall: ' + numberToCall);
@@ -299,8 +305,11 @@ class PhoneJS {
                     self.eventsCallbacks.onAgentUnPauseFail.fire(self);
                 } else if (self.local_call.is_pause) {
                     self.eventsCallbacks.onAgentPauseFail.fire(self);
-                } else {
-                    // (self.local_call.is_call)
+                }
+                // TODO: Este caso no se va a dar más para llamadas de campañas
+                // Probablemente quede solo para llamadas internas entre agentes 
+                else {
+                    // (self.local_call.is_internal_call)
                     self.eventsCallbacks.onOutCallFailed.fire(data.cause);
                     if (data.cause === JsSIP.C.causes.BUSY) {
                         self.Sounds("", "stop");
@@ -322,10 +331,6 @@ class PhoneJS {
                 rtcpMuxPolicy: 'negotiate'
             },
         };
-        if (campaign_id !== undefined ) {
-            opciones.extraHeaders = ['Idcamp:' + campaign_id,
-                                     'Tipocamp:' + campaign_type, ]
-        }
 
         // Finalmente Mando el invite/llamada
         this.userAgent.call('sip:' + numberToCall + '@' + this.KamailioHost, opciones);
@@ -472,7 +477,8 @@ class LocalCall {
         this.is_login = numberToCall == LOGIN_CODE;
         this.is_pause = !this.is_unpause && !this.is_login &&
                         numberToCall.startsWith(SPECIAL_CODE_PREFIX);
-        this.is_call = !numberToCall.startsWith(SPECIAL_CODE_PREFIX);
+        // TODO: Ver utilidad en caso de llamada entre agentes.
+        // this.is_internal_call = !numberToCall.startsWith(SPECIAL_CODE_PREFIX);
     }
 }
 
@@ -493,12 +499,11 @@ class SessionData {
     }
 
     setRemoteCallInfo(invite_request) {
-        console.log(invite_request);
         var call_data = {}
         call_data.id_campana = invite_request.headers.Idcamp[0].raw;
         call_data.campana_type = invite_request.headers.Omlcamptype[0].raw;
         call_data.telefono = invite_request.headers.Omloutnum[0].raw;
-        if (!this.is_local_call) {
+        if (!this.is_internal_call) {
             call_data.call_id = invite_request.headers.Omlcallid[0].raw;
         }
         call_data.call_type = invite_request.headers.Omlcalltypeidtype[0].raw;
@@ -544,10 +549,10 @@ class SessionData {
         }
     }
 
-    get is_local_call () {
+    get is_internal_call () {
         return this.originator == 'local' &&
                this.local_call !== undefined &&
-               this.local_call.is_call;
+               this.local_call.is_internal_call;
     }
 
     get origin() {
@@ -587,12 +592,12 @@ class SessionData {
     }
 
     get call_type_id() {
-        if (this.is_local_call)
-            return ORIGIN_IDS[ORIGIN_MANUAL];
+        if (this.is_internal_call)
+            return ORIGIN_IDS[ORIGIN_INTERNAL];
         return ORIGIN_IDS[this.origin];
     }
 
     get is_call() {
-        return this.is_local_call || this.is_remote;
+        return this.is_internal_call || this.is_remote;
     }
 }

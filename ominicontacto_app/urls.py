@@ -245,18 +245,6 @@ urlpatterns = [
             views_base_de_datos_contacto.ActualizaBaseDatosContactoView.as_view()),
         name='actualiza_base_datos_contacto',
         ),
-    url(r'^contacto/list/$',
-        agente_requerido(views_contacto.ContactoListView.as_view()),
-        name='contacto_list',
-        ),
-    url(r'^contacto/(?P<pk_contacto>\d+)/update/$',
-        agente_requerido(views_contacto.ContactoUpdateView.as_view()),
-        name='contacto_update',
-        ),
-    url(r'^api/campana/(?P<pk_campana>\d+)/contactos/$',
-        agente_requerido(views_contacto.API_ObtenerContactosCampanaView.as_view()),
-        name='api_contactos_campana',
-        ),
 
     url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/list_contacto/$',
         administrador_o_supervisor_requerido(views_contacto.ContactoBDContactoListView.as_view()),
@@ -283,21 +271,41 @@ urlpatterns = [
                                              mostrar_bases_datos_borradas_ocultas_view),
         name='mostrar_bases_datos_ocultas', ),
 
+    #  ===== Vistas de contacto para agente ====
+    url(r'^contacto/list/$',
+        agente_requerido(views_contacto.ContactoListView.as_view()),
+        name='contacto_list',
+        ),
+    url(r'^contacto/(?P<pk_contacto>\d+)/update/$',
+        agente_requerido(views_contacto.ContactoUpdateView.as_view()),
+        name='contacto_update',
+        ),
+    url(r'^api/campana/(?P<pk_campana>\d+)/contactos/$',
+        agente_requerido(views_contacto.API_ObtenerContactosCampanaView.as_view()),
+        name='api_contactos_campana',
+        ),
+
     # ==========================================================================
-    #  Vistas de manipulación de contactos de una campaña
+    #  Vistas de manipulación de contactos de una campaña / Para agente
     # ==========================================================================
     url(r'^campana/selecciona/$',
-        login_required(
+        agente_requerido(
             views_contacto.FormularioSeleccionCampanaFormView.as_view()),
         name='seleccion_campana_adicion_contacto',
         ),
     url(r'^campana/(?P<pk_campana>\d+)/nuevo_contacto/$',
-        login_required(
+        agente_requerido(
             views_contacto.FormularioNuevoContactoFormView.as_view()),
         name='nuevo_contacto_campana',
         ),
+    url(r'^campana/(?P<pk_campana>\d+)/nuevo_contacto_a_llamar/(?P<telefono>\d+)/$',
+        agente_requerido(
+            views_contacto.FormularioNuevoContactoFormView.as_view()),
+        name='nuevo_contacto_campana_a_llamar', kwargs={'accion': 'llamar'}
+        ),
+    # TODO: Ver si se usa esa vista para algo
     url(r'^campana/(?P<pk_campana>\d+)/busqueda_contacto/$',
-        login_required(
+        agente_requerido(
             views_contacto.CampanaBusquedaContactoFormView.as_view()),
         name="campana_busqueda_contacto"),
     url(r'^campana/(?P<pk_campana>\d+)/contactos_telefono_repetido/(?P<telefono>\d+)'
@@ -305,6 +313,13 @@ urlpatterns = [
         agente_requerido(
             views_contacto.ContactosTelefonosRepetidosView.as_view()),
         name="campana_contactos_telefono_repetido"),
+
+    url(r'^campana/(?P<pk_campana>\d+)/identificar_contacto_a_llamar'
+        r'/(?P<telefono>\d+)/$',
+        agente_requerido(
+            views_contacto.IdentificarContactoView.as_view()),
+        name="identificar_contacto_a_llamar"),
+
 
     # ==========================================================================
     #  Templates Campana Entrante

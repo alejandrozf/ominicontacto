@@ -252,6 +252,8 @@ class CalificacionClienteFormView(FormView):
         self.object_calificacion.agente = self.agente
         self.object_calificacion.contacto = self.contacto
 
+        # TODO: Ver si hace falta guardar que es una llamada manual
+        # El parametro manual no viene mas
         if self.object is None:
             es_calificacion_manual = 'manual' in self.kwargs and self.kwargs['manual']
             self.object_calificacion.es_calificacion_manual = es_calificacion_manual
