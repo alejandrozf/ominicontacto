@@ -36,6 +36,7 @@ class PhoneJSView {
         this.pauseMenu = $("#modalPause");
         this.changeCampaignButton = $("#changeCampAssocManualCall");
         this.changeCampaignMenu = $("#modalSelectCmp");
+        this.timebar = $('#timeBar');
         this.callButton = $("#call");
         this.numberDisplay = $("#numberToCall");
         this.redialButton = $("#redial");
@@ -216,10 +217,11 @@ class PhoneJSView {
         return this.numberDisplay.value;
     }
 
-    setInputDisabledStatus(state_name) {
+    setStateInputStatus(state_name) {
         var status_config = this.getStateConfig(state_name);
         this.setKeypadButtonsEnabled(status_config.keypad_enabled);
         this.setInputsEnabled(status_config.enabled_buttons);
+        this.setStateColors(status_config.color);
     }
 
     setKeypadButtonsEnabled(enabled) {
@@ -234,6 +236,10 @@ class PhoneJSView {
             var id = this.inputs_ids[i];
             $('#' + id).prop('disabled', enabled_ones.indexOf(id) == -1);
         }
+    }
+
+    setStateColors(color) {
+        this.timebar.css('background-color', color);
     }
 
     closeAllModalMenus() {
@@ -252,42 +258,52 @@ var PHONE_STATUS_CONFIGS = {
     'Initial': {
         keypad_enabled: false,
         enabled_buttons: [],
+        color: '#888888',
     },
     'End': {
         keypad_enabled: false,
         enabled_buttons: [],
+        color: '#888888',
     },
     'Ready': {
         keypad_enabled: true,
         enabled_buttons: ['Pause', 'changeCampAssocManualCall', 'call', 'numberToCall', 'redial'],
+        color: '#ECEEEA',
     },
     'Paused': {
         keypad_enabled: true,
         enabled_buttons: ['Resume', 'changeCampAssocManualCall', 'call', 'numberToCall', 'redial'],
+        color: '#e0b93d',
     },
     'Calling': {
         keypad_enabled: false,
         enabled_buttons: ['endCall'],
+        color: '#bfef7a',
     },
     'OnCall': {
         keypad_enabled: true,
         enabled_buttons: ['onHold', 'Transfer', 'endCall', 'SignCall'],
+        color: '#8fc641',
     },
     'DialingTransfer': {
         keypad_enabled: false,
         enabled_buttons: [],
+        color: '#bfef7a',
     },
     'Transfering': {
         keypad_enabled: false,
         enabled_buttons: ['EndTransfer', 'SignCall', 'endCall'],
+        color: '#bfef7a',
     },
     'ReceivingCall': {
         keypad_enabled: false,
         enabled_buttons: [],
+        color: '#bfef7a',
     },
     'OnHold': {
         keypad_enabled: false,
         enabled_buttons: ['onHold', 'endCall'],
+        color: '#9ab97b',
     },
 }
 
