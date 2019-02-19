@@ -2309,7 +2309,7 @@ class GrabacionManager(models.Manager):
                 campanas)
             callids_calificaciones_gestion = list(calificaciones_gestion_campanas.values_list(
                 'callid', flat=True))
-            grabaciones = grabaciones.filter(uid__in=callids_calificaciones_gestion)
+            grabaciones = grabaciones.filter(callid__in=callids_calificaciones_gestion)
 
         return grabaciones.order_by('-fecha')
 
@@ -2328,8 +2328,8 @@ class GrabacionManager(models.Manager):
             raise (SuspiciousOperation(_("No se encontro grabaciones ")))
 
     def marcadas(self):
-        marcaciones = GrabacionMarca.objects.values_list('uid', flat=True)
-        return self.filter(uid__in=marcaciones)
+        marcaciones = GrabacionMarca.objects.values_list('callid', flat=True)
+        return self.filter(callid__in=marcaciones)
 
 
 class Grabacion(models.Model):
@@ -2363,7 +2363,7 @@ class Grabacion(models.Model):
     grabacion = models.CharField(max_length=255)
     agente = models.ForeignKey(AgenteProfile, related_name='grabaciones')
     campana = models.ForeignKey(Campana, related_name='grabaciones')
-    uid = models.CharField(max_length=45, blank=True, null=True)
+    callid = models.CharField(max_length=45, blank=True, null=True)
     duracion = models.IntegerField(default=0)
 
     def __unicode__(self):
@@ -2387,12 +2387,12 @@ class GrabacionMarca(models.Model):
     """
     Contiene los atributos de una grabación marcada
     """
-    uid = models.CharField(max_length=45)
+    callid = models.CharField(max_length=45)
     descripcion = models.TextField()
 
     def __unicode__(self):
         return "Grabacion con uid={0} marcada con descripcion={1}".format(
-            self.uid, self.descripcion)
+            self.callid, self.descripcion)
 
     class Meta:
         db_table = 'ominicontacto_app_grabacion_marca'

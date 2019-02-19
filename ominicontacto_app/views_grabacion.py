@@ -125,10 +125,10 @@ class MarcarGrabacionView(View):
     """
 
     def post(self, *args, **kwargs):
-        uid = self.request.POST.get('uid', False)
+        callid = self.request.POST.get('callid', False)
         descripcion = self.request.POST.get('descripcion', '')
         try:
-            grabacion_marca, _ = GrabacionMarca.objects.get_or_create(uid=uid)
+            grabacion_marca, _ = GrabacionMarca.objects.get_or_create(callid=callid)
         except Exception as e:
             return JsonResponse({'result': 'failed by {0}'.format(e.message)})
         else:
@@ -143,9 +143,9 @@ class GrabacionDescripcionView(View):
     """
 
     def get(self, *args, **kwargs):
-        uid = kwargs.get('uid', False)
+        callid = kwargs.get('callid', False)
         try:
-            grabacion_marca = GrabacionMarca.objects.get(uid=uid)
+            grabacion_marca = GrabacionMarca.objects.get(callid=callid)
         except GrabacionMarca.DoesNotExist:
             response = {u'result': _(u'No encontrada'),
                         u'descripcion': _(u'La grabación no tiene descripción asociada')}

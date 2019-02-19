@@ -166,7 +166,7 @@ urlpatterns = [
         login_required(views_grabacion.MarcarGrabacionView.as_view()),
         name='grabacion_marcar',
         ),
-    url(r'^grabacion/descripcion/(?P<uid>[\d .]+)/$',
+    url(r'^grabacion/descripcion/(?P<callid>[\d .]+)/$',
         login_required(views_grabacion.GrabacionDescripcionView.as_view()),
         name='grabacion_descripcion',
         ),

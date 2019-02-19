@@ -55,14 +55,14 @@ class BaseGrabacionesTests(OMLBaseTest):
             campana=self.campana, tipo=OpcionCalificacion.GESTION)
         self.calificacion = CalificacionClienteFactory(opcion_calificacion=self.opcion_calificacion)
         self.grabacion1 = GrabacionFactory.create(
-            duracion=0, agente=self.agente_profile, uid=self.calificacion.callid,
+            duracion=0, agente=self.agente_profile, callid=self.calificacion.callid,
             campana=self.campana)
         self.grabacion2 = GrabacionFactory(
             duracion=0, agente=self.agente_profile, campana=self.campana)
         self.grabacion3 = GrabacionFactory(
             duracion=0, agente=self.agente_profile, campana=self.campana)
-        self.marca_campana1 = GrabacionMarcaFactory(uid=self.grabacion1.uid)
-        self.marca_campana2 = GrabacionMarcaFactory(uid=self.grabacion2.uid)
+        self.marca_campana1 = GrabacionMarcaFactory(callid=self.grabacion1.callid)
+        self.marca_campana2 = GrabacionMarcaFactory(callid=self.grabacion2.callid)
 
         self.client.login(username=self.usuario_admin_supervisor.username,
                           password=self.PWD)
@@ -73,37 +73,37 @@ class GrabacionesTests(BaseGrabacionesTests):
     def test_vista_creacion_grabaciones_marcadas(self):
         url = reverse('grabacion_marcar')
         descripcion = 'descripcion de prueba'
-        post_data = {'uid': self.grabacion3.uid,
+        post_data = {'callid': self.grabacion3.callid,
                      'descripcion': descripcion}
         self.client.post(url, post_data)
 
         self.assertTrue(GrabacionMarca.objects.filter(
-            uid=self.grabacion3.uid, descripcion=descripcion).exists())
+            callid=self.grabacion3.callid, descripcion=descripcion).exists())
 
     def test_usuarios_no_logueados_no_acceden_a_vista_creacion_grabaciones_marcadas(self):
         self.client.logout()
         url = reverse('grabacion_marcar')
         descripcion = 'descripcion de prueba'
-        post_data = {'uid': self.grabacion3.uid,
+        post_data = {'callid': self.grabacion3.callid,
                      'descripcion': descripcion}
         self.client.post(url, post_data)
         self.assertFalse(GrabacionMarca.objects.filter(
-            uid=self.grabacion3.uid, descripcion=descripcion).exists())
+            callid=self.grabacion3.callid, descripcion=descripcion).exists())
 
     def test_usuarios_no_logueados_no_acceden_a_obtener_descripciones_grabaciones(self):
         self.client.logout()
-        url = reverse('grabacion_descripcion', kwargs={'uid': self.grabacion1.uid})
+        url = reverse('grabacion_descripcion', kwargs={'callid': self.grabacion1.callid})
         response = self.client.get(url, follow=True)
         self.assertEqual(response.template_name, 'registration/login.html')
 
     def test_respuesta_api_descripciones_grabaciones_marcadas(self):
-        url = reverse('grabacion_descripcion', kwargs={'uid': self.grabacion2.uid})
+        url = reverse('grabacion_descripcion', kwargs={'callid': self.grabacion2.callid})
         response = self.client.get(url, follow=True)
         data_response = json.loads(response.content)
         self.assertEqual(data_response['result'], 'Descripción')
 
     def test_respuesta_api_descripciones_grabaciones_no_marcadas(self):
-        url = reverse('grabacion_descripcion', kwargs={'uid': self.grabacion3.uid})
+        url = reverse('grabacion_descripcion', kwargs={'callid': self.grabacion3.callid})
         response = self.client.get(url, follow=True)
         data_response = json.loads(response.content)
         self.assertEqual(data_response['result'], 'No encontrada')
