@@ -203,70 +203,70 @@ class PhoneJSController {
                 self.view.setSipStatus("NO_ACCOUNT");
                 self.view.setUserStatus("label label-success", gettext("Conectado"));
                 self.view.closeAllModalMenus();
-                self.view.setInputDisabledStatus('Initial');
+                self.view.setStateInputStatus('Initial');
                 self.phone.startSipSession();
                 self.click_2_call_dispatcher.disable();
             },
             onEnd: function() {
                 self.view.setUserStatus("label label-success", gettext("Desconectado"));
                 self.view.closeAllModalMenus();
-                self.view.setInputDisabledStatus('End');
+                self.view.setStateInputStatus('End');
                 self.click_2_call_dispatcher.disable();
             },
             onReady: function() {
                 phone_logger.log('FSM: onReady')
                 self.view.setUserStatus("label label-success", gettext("Conectado"));
                 self.view.closeAllModalMenus();
-                self.view.setInputDisabledStatus('Ready');
+                self.view.setStateInputStatus('Ready');
                 self.click_2_call_dispatcher.enable();
             },
             onPaused: function() {
                 phone_logger.log('FSM: onPaused')
                 self.view.setUserStatus("label label-danger", self.pause_manager.pause_name);
                 self.view.closeAllModalMenus();
-                self.view.setInputDisabledStatus('Paused');
+                self.view.setStateInputStatus('Paused');
                 self.click_2_call_dispatcher.enable();
             },
             onCalling: function() {
                 phone_logger.log('FSM: onCalling')
                 self.view.setUserStatus("label label-success", gettext("Llamando"));
                 self.view.closeAllModalMenus();
-                self.view.setInputDisabledStatus('Calling');
+                self.view.setStateInputStatus('Calling');
                 self.click_2_call_dispatcher.disable();
             },
             onOncall: function() {
                 phone_logger.log('FSM: onOncall')
                 self.view.setUserStatus("label label-success", gettext("En llamado"));
                 self.view.closeAllModalMenus();
-                self.view.setInputDisabledStatus('OnCall');
+                self.view.setStateInputStatus('OnCall');
                 self.click_2_call_dispatcher.disable();
             },
             onDialingtransfer: function() {
                 phone_logger.log('FSM: onDialingTransfer')
                 self.view.setUserStatus("label label-success", gettext("Transfiriendo"));
                 self.view.closeAllModalMenus();
-                self.view.setInputDisabledStatus('DialingTransfer');
+                self.view.setStateInputStatus('DialingTransfer');
                 self.click_2_call_dispatcher.disable();
             },
             onTransfering: function() {
                 phone_logger.log('FSM: onTransfering')
                 self.view.setUserStatus("label label-success", gettext("Transfiriendo"));
                 self.view.closeAllModalMenus();
-                self.view.setInputDisabledStatus('Transfering');
+                self.view.setStateInputStatus('Transfering');
                 self.click_2_call_dispatcher.disable();
             },
             onReceivingcall: function() {
                 phone_logger.log('FSM: onReceivingCall')
                 self.view.setUserStatus("label label-success", gettext("Recibiendo llamado"));
                 self.view.closeAllModalMenus();
-                self.view.setInputDisabledStatus('ReceivingCall');
+                self.view.setStateInputStatus('ReceivingCall');
                 self.click_2_call_dispatcher.disable();
             },
             onOnhold: function() {
                 phone_logger.log('FSM: onOnHold')
                 self.view.setUserStatus("label label-success", gettext("En espera"));
                 self.view.closeAllModalMenus();
-                self.view.setInputDisabledStatus('OnHold');
+                self.view.setStateInputStatus('OnHold');
                 self.click_2_call_dispatcher.disable();
             },
         });
