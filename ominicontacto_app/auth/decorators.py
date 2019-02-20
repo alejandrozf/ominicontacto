@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright (C) 2018 Freetech Solutions
 
 # This file is part of OMniLeads
@@ -178,17 +179,17 @@ def supervisor_o_customer_requerido(function=None,
 
 def agente_requerido(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login_url=None):
     """
-    Decorator que verifica que el usuario es un Agente.
+    Decorator que verifica que el usuario es un Agente Activo.
     """
-    def is_agente(user):
+    def is_agente_activo(user):
         if not user.is_authenticated():
             return False
         elif user.get_is_agente():
-            return True
+            return not user.get_agente_profile().is_inactive
         else:
             raise PermissionDenied
     actual_decorator = user_passes_test(
-        lambda u: is_agente(u),
+        lambda u: is_agente_activo(u),
         login_url=login_url,
         redirect_field_name=redirect_field_name
     )
