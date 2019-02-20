@@ -56,14 +56,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
             {{ form.tipo_interaccion.errors }}
             {% if form.instance.pk %} 
-                {% if form.instance.tipo_interaccion = 1 %}
+                {% if form.instance.tipo_interaccion == 1 %}
                     <div class="col-md-6">
                         <label>{% trans "Formulario" %}</label>
                         {{ form.formulario }}
                         {{ form.formulario.errors }}
                     </div>
                 {% endif %}
-                {% if form.instance.tipo_interaccion = 2 %}
+                {% if form.instance.tipo_interaccion == 2 %}
                     <div class="col-md-6">
                         <label>{% trans "Sitio Externo" %}</label>
                         {{ form.sitio_externo }}

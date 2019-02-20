@@ -145,7 +145,9 @@ urlpatterns = [
         name='pausa_delete',
         ),
 
-    url(r'^node/$', login_required(views.node_view), name='view_node'),
+    url(r'^node/$',
+        agente_requerido(views.ConsolaAgenteView.as_view()),
+        name='view_node'),
 
     url(r'^smsThread/$',
         login_required(views.mensajes_recibidos_enviado_remitente_view),
@@ -154,7 +156,7 @@ urlpatterns = [
         login_required(views.mensajes_recibidos_view),
         name='view_sms_get_all'),
     url(r'^blanco/$',
-        login_required(views.blanco_view),
+        login_required(views.BlancoView.as_view()),
         name='view_blanco'),
 
     # ==========================================================================

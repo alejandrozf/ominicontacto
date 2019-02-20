@@ -325,40 +325,43 @@ class PausaToggleDeleteView(SincronizarPausaMixin, TemplateView):
 ##################
 # Vista de Agente
 ##################
-def node_view(request):
-    """Esta vista renderiza la pantalla del agente"""
-    registro = []
-    campanas_preview_activas = []
-    agente_profile = request.user.get_agente_profile()
-    if request.user.is_authenticated() and agente_profile and not agente_profile.is_inactive:
-        sip_usuario = request.user.generar_usuario(agente_profile.sip_extension)
-        sip_password = request.user.generar_contrasena(sip_usuario)
+
+class ConsolaAgenteView(TemplateView):
+    template_name = "agente/base_agente.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        agente_profile = request.user.get_agente_profile()
+        if agente_profile.is_inactive:
+            message = _("El agente con el cuál ud intenta loguearse está inactivo, contactese con"
+                        " su supervisor")
+            messages.warning(request, message)
+            logout(request)
+
+        return super(ConsolaAgenteView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(ConsolaAgenteView, self).get_context_data(**kwargs)
+        registro = []
+        campanas_preview_activas = []
+        usuario_agente = self.request.user
+        agente_profile = usuario_agente.get_agente_profile()
+        sip_usuario = usuario_agente.generar_usuario(agente_profile.sip_extension)
+        sip_password = usuario_agente.generar_contrasena(sip_usuario)
         registro = DuracionDeLlamada.objects.filter(
-            agente=request.user.get_agente_profile(),
+            agente=agente_profile,
             tipo_llamada__in=(DuracionDeLlamada.TYPE_INBOUND,
                               DuracionDeLlamada.TYPE_MANUAL)
         ).order_by("-fecha_hora_llamada")[:10]
         campanas_preview_activas = \
             agente_profile.has_campanas_preview_activas_miembro()
-        context = {
-            'pausas': Pausa.objects.activas,
-            'registro': registro,
-            'campanas_preview_activas': campanas_preview_activas,
-            'agente_profile': agente_profile,
-            'sip_usuario': sip_usuario,
-            'sip_password': sip_password,
-        }
-        return render_to_response(
-            'agente/base_agente.html',
-            context,
-            context_instance=RequestContext(request)
-        )
-    if agente_profile.is_inactive:
-        message = _("El agente con el cuál ud intenta loguearse está inactivo, contactese con"
-                    " su supervisor")
-        messages.warning(request, message)
-        logout(request)
-    return HttpResponseRedirect(reverse('login'))
+        context['pausas'] = Pausa.objects.activas
+        context['registro'] = registro
+        context['campanas_preview_activas'] = campanas_preview_activas
+        context['agente_profile'] = agente_profile
+        context['sip_usuario'] = sip_usuario
+        context['sip_password'] = sip_password
+
+        return context
 
 
 def mensajes_recibidos_enviado_remitente_view(request):
@@ -382,9 +385,8 @@ def mensajes_recibidos_view(request):
     return response
 
 
-def blanco_view(request):
-    return render_to_response('blanco.html',
-                              context_instance=RequestContext(request))
+class BlancoView(TemplateView):
+    template_name = 'blanco.html'
 
 
 def nuevo_evento_agenda_view(request):
