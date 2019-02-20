@@ -44,6 +44,12 @@
         {% endcompress %}
     </head>
     <body>
+        {% if call_data and call_data.ics %}
+            <div><b>{% trans "Nombre Contacto ICS:" %}</b> {{ call_data.nombre_contacto_ics }}</div>
+            <div><b>{% trans "ID Contacto ICS:" %}</b> {{ call_data.id_contacto_ics }}</div>
+            <br>
+        {% endif %}
+
         <h1>{% trans 'Contactos con este teléfono:' %}</h1>
 
         <div>
