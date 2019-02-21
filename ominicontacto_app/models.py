@@ -2283,7 +2283,7 @@ class GrabacionManager(models.Manager):
                                          "tel de cliente")))
 
     def grabacion_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada,
-                            tel_cliente, agente, campana, campanas, marcadas, duracion):
+                            tel_cliente, agente, campana, campanas, marcadas, duracion, gestion):
         grabaciones = self.filter(campana__in=campanas)
 
         if fecha_desde and fecha_hasta:
@@ -2304,6 +2304,12 @@ class GrabacionManager(models.Manager):
         if marcadas:
             total_grabaciones_marcadas = Grabacion.objects.marcadas()
             grabaciones = grabaciones & total_grabaciones_marcadas
+        if gestion:
+            calificaciones_gestion_campanas = CalificacionCliente.obtener_califs_gestion_campanas(
+                campanas)
+            callids_calificaciones_gestion = list(calificaciones_gestion_campanas.values_list(
+                'callid', flat=True))
+            grabaciones = grabaciones.filter(callid__in=callids_calificaciones_gestion)
 
         return grabaciones.order_by('-fecha')
 
@@ -2322,8 +2328,8 @@ class GrabacionManager(models.Manager):
             raise (SuspiciousOperation(_("No se encontro grabaciones ")))
 
     def marcadas(self):
-        marcaciones = GrabacionMarca.objects.values_list('uid', flat=True)
-        return self.filter(uid__in=marcaciones)
+        marcaciones = GrabacionMarca.objects.values_list('callid', flat=True)
+        return self.filter(callid__in=marcaciones)
 
 
 class Grabacion(models.Model):
@@ -2357,7 +2363,7 @@ class Grabacion(models.Model):
     grabacion = models.CharField(max_length=255)
     agente = models.ForeignKey(AgenteProfile, related_name='grabaciones')
     campana = models.ForeignKey(Campana, related_name='grabaciones')
-    uid = models.CharField(max_length=45, blank=True, null=True)
+    callid = models.CharField(max_length=45, blank=True, null=True)
     duracion = models.IntegerField(default=0)
 
     def __unicode__(self):
@@ -2381,12 +2387,12 @@ class GrabacionMarca(models.Model):
     """
     Contiene los atributos de una grabación marcada
     """
-    uid = models.CharField(max_length=45)
+    callid = models.CharField(max_length=45)
     descripcion = models.TextField()
 
     def __unicode__(self):
         return "Grabacion con uid={0} marcada con descripcion={1}".format(
-            self.uid, self.descripcion)
+            self.callid, self.descripcion)
 
     class Meta:
         db_table = 'ominicontacto_app_grabacion_marca'
@@ -2501,6 +2507,17 @@ class CalificacionCliente(models.Model):
         # TODO: Usar metodo de OpcionCalificacion.es_agenda()
         # return self.opcion_calificacion.es_agenda()
         return self.opcion_calificacion.tipo == OpcionCalificacion.AGENDA
+
+    @classmethod
+    def obtener_califs_gestion_campanas(cls, campanas):
+        """Obtiene las calificaciones históricas de gestión de un conjunto de
+        campañas en un rango de fechas definido
+        """
+        ids_campanas = list(campanas.values_list('pk', flat=True))
+        calificaciones = cls.history.filter(
+            opcion_calificacion__campana__pk__in=ids_campanas)
+        calificaciones = calificaciones.filter(opcion_calificacion__tipo=OpcionCalificacion.GESTION)
+        return calificaciones
 
 
 class DuracionDeLlamada(models.Model):

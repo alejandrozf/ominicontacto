@@ -105,6 +105,7 @@ class BusquedaGrabacionFormView(FormView):
         campana = form.cleaned_data.get('campana')
         marcadas = form.cleaned_data.get('marcadas', False)
         duracion = form.cleaned_data.get('duracion', 0)
+        gestion = form.cleaned_data.get('gestion', False)
         campanas = Campana.objects.all()
         if self.request.user.get_is_supervisor_customer():
             user = self.request.user
@@ -112,7 +113,7 @@ class BusquedaGrabacionFormView(FormView):
         pagina = form.cleaned_data.get('pagina')
         listado_de_grabaciones = Grabacion.objects.grabacion_by_filtro(
             fecha_desde, fecha_hasta, tipo_llamada, tel_cliente, agente, campana, campanas,
-            marcadas, duracion)
+            marcadas, duracion, gestion)
 
         return self.render_to_response(self.get_context_data(
             listado_de_grabaciones=listado_de_grabaciones, pagina=pagina))
@@ -124,10 +125,10 @@ class MarcarGrabacionView(View):
     """
 
     def post(self, *args, **kwargs):
-        uid = self.request.POST.get('uid', False)
+        callid = self.request.POST.get('callid', False)
         descripcion = self.request.POST.get('descripcion', '')
         try:
-            grabacion_marca, _ = GrabacionMarca.objects.get_or_create(uid=uid)
+            grabacion_marca, _ = GrabacionMarca.objects.get_or_create(callid=callid)
         except Exception as e:
             return JsonResponse({'result': 'failed by {0}'.format(e.message)})
         else:
@@ -142,9 +143,9 @@ class GrabacionDescripcionView(View):
     """
 
     def get(self, *args, **kwargs):
-        uid = kwargs.get('uid', False)
+        callid = kwargs.get('callid', False)
         try:
-            grabacion_marca = GrabacionMarca.objects.get(uid=uid)
+            grabacion_marca = GrabacionMarca.objects.get(callid=callid)
         except GrabacionMarca.DoesNotExist:
             response = {u'result': _(u'No encontrada'),
                         u'descripcion': _(u'La grabación no tiene descripción asociada')}
