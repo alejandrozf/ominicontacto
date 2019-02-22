@@ -106,6 +106,9 @@
   become_method: sudo
   tags: postinstall
 
+- name: Creation of agis-errors.log file
+  file: path={{ asterisk_location }}/var/log/asterisk/agis-errors.log state=touch mode=755 owner={{ usuario }} group={{ usuario }}
+
 # Aca creo la carpeta parselog
 - name: Create /usr/local/parselog
   file: dest=/usr/local/parselog state=directory mode=0755 owner={{ usuario }} group={{ usuario }}

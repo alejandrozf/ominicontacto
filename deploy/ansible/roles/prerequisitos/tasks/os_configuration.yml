@@ -96,13 +96,13 @@
   become_method: sudo
   when: ansible_os_family == "RedHat"
 
-- name: Get the current kernel release. (centos)
-  command: uname -r
-  register: kernel_release
-  when: ansible_os_family == "RedHat"
+#- name: Get the current kernel release. (centos)
+#  command: uname -r
+#  register: kernel_release
+#  when: ansible_os_family == "RedHat"
 
-- name: Install kernel release devel package (centos)
-  yum: "name=http://ftp.riken.jp/Linux/cern/centos/7/updates/x86_64/Packages/kernel-devel-{{ kernel_release.stdout }}.rpm state=present"
+- name: Install kernel-devel package (centos)
+  shell: "yum install \"kernel-devel-uname-r == $(uname -r)\" -y"
   any_errors_fatal: true
   become: true
   become_method: sudo
