@@ -11,7 +11,7 @@
   become: no
   local_action: wait_for host="{{ omni_ip }}" delay=15 state=started port={{ ansible_ssh_port }} timeout=600
   tags: reboot
-  when: ansible_os_family == "RedHat" and ansible_connection == "local"
+  when: ansible_os_family == "RedHat" and ansible_connection != "local"
 
 - name: Wait for the server to finish rebooting (cluster)
   become: no
