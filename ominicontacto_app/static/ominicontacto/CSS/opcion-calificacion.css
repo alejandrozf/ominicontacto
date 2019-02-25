@@ -9,3 +9,11 @@
 .addFormset {
     margin-bottom: 5px;
 }
+
+#gruposAgentes {
+    margin-bottom: 10px;
+}
+
+th {
+    padding-right: 50px !important;
+}

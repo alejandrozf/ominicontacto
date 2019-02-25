@@ -37,6 +37,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% if interaccion_crm %}
             <li class="disabled"><a>{% trans 'Interacción con Sitio Externo' %}</a></li>
         {% endif %}
+        {% if not es_template and create %}
+            <li class="disabled"><a>{% trans 'Dar permiso a supervisores' %}</a></li>
+            <li class="disabled"><a>{% trans 'Agregar agentes' %}</a></li>
+        {% endif %}
     </ul>
 {% endblock %}
 

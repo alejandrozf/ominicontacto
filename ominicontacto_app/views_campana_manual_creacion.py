@@ -30,7 +30,8 @@ from django.views.generic import DetailView, ListView, DeleteView
 from formtools.wizard.views import SessionWizardView
 
 from ominicontacto_app.forms import (CampanaManualForm, OpcionCalificacionFormSet,
-                                     ParametrosCrmFormSet)
+                                     ParametrosCrmFormSet, CampanaSupervisorUpdateForm,
+                                     QueueMemberFormset)
 from ominicontacto_app.models import Campana, Queue
 from ominicontacto_app.views_campana_creacion import (CampanaWizardMixin,
                                                       CampanaTemplateCreateMixin,
@@ -50,14 +51,20 @@ class CampanaManualMixin(CampanaWizardMixin):
     COLA = None
     OPCIONES_CALIFICACION = '1'
     PARAMETROS_CRM = '2'
+    ADICION_SUPERVISORES = '3'
+    ADICION_AGENTES = '4'
 
     FORMS = [(INICIAL, CampanaManualForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
-             (PARAMETROS_CRM, ParametrosCrmFormSet)]
+             (PARAMETROS_CRM, ParametrosCrmFormSet),
+             (ADICION_SUPERVISORES, CampanaSupervisorUpdateForm),
+             (ADICION_AGENTES, QueueMemberFormset)]
 
     TEMPLATES = {INICIAL: "campana_manual/nueva_edita_campana.html",
                  OPCIONES_CALIFICACION: "campana_manual/opcion_calificacion.html",
-                 PARAMETROS_CRM: "campana_manual/parametros_crm_sitio_externo.html"}
+                 PARAMETROS_CRM: "campana_manual/parametros_crm_sitio_externo.html",
+                 ADICION_SUPERVISORES: "campana_manual/adicionar_supervisores.html",
+                 ADICION_AGENTES: "campana_manual/adicionar_agentes.html"}
 
     form_list = FORMS
 
@@ -70,6 +77,11 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
     """
     Esta vista crea una campaña de tipo manual
     """
+
+    def get_context_data(self, form, *args, **kwargs):
+        context = super(CampanaManualCreateView, self).get_context_data(form, *args, **kwargs)
+        context['create'] = True
+        return context
 
     def _save_forms(self, form_list, estado, tipo):
         campana_form = form_list[int(self.INICIAL)]
@@ -107,6 +119,9 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
 
     def done(self, form_list, **kwargs):
         queue = self._save_forms(form_list, Campana.ESTADO_ACTIVA, Campana.TYPE_MANUAL)
+        # salvamos los supervisores y  agentes asignados a la campaña
+        self.save_supervisores(form_list, -2)
+        self.save_agentes(form_list, -1)
         self._insert_queue_asterisk(queue)
         return HttpResponseRedirect(reverse('campana_manual_list'))
 
@@ -115,6 +130,21 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
     """
     Esta vista actualiza una campaña de tipo manual.
     """
+
+    INICIAL = '0'
+    COLA = None
+    OPCIONES_CALIFICACION = '1'
+    PARAMETROS_CRM = '2'
+
+    FORMS = [(INICIAL, CampanaManualForm),
+             (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
+             (PARAMETROS_CRM, ParametrosCrmFormSet)]
+
+    TEMPLATES = {INICIAL: "campana_manual/nueva_edita_campana.html",
+                 OPCIONES_CALIFICACION: "campana_manual/opcion_calificacion.html",
+                 PARAMETROS_CRM: "campana_manual/parametros_crm_sitio_externo.html"}
+
+    form_list = FORMS
 
     def get_form_initial(self, step):
         initial = super(CampanaManualUpdateView, self).get_form_initial(step)
@@ -164,6 +194,22 @@ class CampanaManualTemplateCreateView(CampanaTemplateCreateMixin, CampanaManualC
     Crea una campaña sin acción en el sistema, sólo con el objetivo de servir de
     template base para agilizar la creación de las campañas manuales
     """
+
+    INICIAL = '0'
+    COLA = None
+    OPCIONES_CALIFICACION = '1'
+    PARAMETROS_CRM = '2'
+
+    FORMS = [(INICIAL, CampanaManualForm),
+             (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
+             (PARAMETROS_CRM, ParametrosCrmFormSet)]
+
+    TEMPLATES = {INICIAL: "campana_manual/nueva_edita_campana.html",
+                 OPCIONES_CALIFICACION: "campana_manual/opcion_calificacion.html",
+                 PARAMETROS_CRM: "campana_manual/parametros_crm_sitio_externo.html"}
+
+    form_list = FORMS
+
     def done(self, form_list, **kwargs):
         self._save_forms(form_list, Campana.ESTADO_TEMPLATE_ACTIVO, Campana.TYPE_MANUAL)
         return HttpResponseRedirect(reverse('campana_manual_template_list'))

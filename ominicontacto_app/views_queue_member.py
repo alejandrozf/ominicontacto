@@ -72,7 +72,7 @@ def adicionar_agente_activo_cola(queue_member, campana, sip_agentes_logueados):
         adicionar_agente_cola(agente, queue_member, campana)
 
 
-def activar_cola(request):
+def activar_cola():
     activacion_queue_service = ActivacionQueueService()
     activacion_queue_service.activar()
 
@@ -108,18 +108,19 @@ class QueueMemberCreateView(FormView):
         else:
             try:
                 with transaction.atomic():
+                    agente = self.object.member
+                    queue_member_defaults = QueueMember.get_defaults(agente, campana)
                     self.object.queue_name = campana.queue_campana
-                    self.object.id_campana = "{0}_{1}".format(campana.id,
-                                                              elimina_espacios(campana.nombre))
-                    self.object.membername = self.object.member.user.get_full_name()
-                    self.object.interface = """Local/{0}@from-queue/n""".format(
-                        self.object.member.sip_extension)
-                    self.object.paused = 0  # por ahora no lo definimos
+                    self.object.id_campana = queue_member_defaults['id_campana']
+                    self.object.membername = queue_member_defaults['membername']
+                    self.object.interface = queue_member_defaults['interface']
+                    # por ahora no definimos 'paused'
+                    self.object.paused = queue_member_defaults['paused']
                     self.object.save()
                     # adicionamos el agente a la cola actual que esta corriendo
                     sip_agentes_logueados = obtener_sip_agentes_sesiones_activas_kamailio()
                     adicionar_agente_activo_cola(self.object, campana, sip_agentes_logueados)
-                    activar_cola(self.request)
+                    activar_cola()
             except Exception as e:
                 message = _("<strong>Operación Errónea!</strong> "
                             "No se pudo confirmar la creación del dialplan debido "
@@ -181,16 +182,10 @@ class GrupoAgenteCreateView(FormView):
                     queue_member, created = QueueMember.objects.get_or_create(
                         member=agente,
                         queue_name=campana.queue_campana,
-                        defaults={'membername': agente.user.get_full_name(),
-                                  'interface': """Local/{0}@from-queue/n""".format(
-                                      agente.sip_extension),
-                                  'penalty': 0,
-                                  'paused': 0,
-                                  'id_campana': "{0}_{1}".format(
-                                      campana.id, elimina_espacios(campana.nombre))})
+                        defaults=QueueMember.get_defaults(agente, campana))
                     if created and (agente in agentes_logueados_grupo):
                         adicionar_agente_cola(agente, queue_member, campana)
-                activar_cola(self.request)
+                activar_cola()
         except Exception as e:
                 message = _("<strong>Operación Errónea!</strong> "
                             "No se pudo confirmar la creación del dialplan debido "
@@ -273,7 +268,7 @@ def queue_member_delete_view(request, pk_queuemember, pk_campana):
         except AsteriskHttpQueueRemoveError:
             logger.exception(_("QueueRemove failed - agente: {0} de la campana: {1} ".format(
                 agente, campana)))
-    activar_cola(request)
+    activar_cola()
 
     return HttpResponseRedirect(
         reverse('queue_member_campana',

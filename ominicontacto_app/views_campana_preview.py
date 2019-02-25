@@ -31,7 +31,8 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import ListView, View, DetailView, DeleteView, TemplateView
 
 from ominicontacto_app.forms import (CampanaPreviewForm, OpcionCalificacionFormSet,
-                                     ParametrosCrmFormSet)
+                                     ParametrosCrmFormSet, CampanaSupervisorUpdateForm,
+                                     QueueMemberFormset)
 from ominicontacto_app.models import AgenteEnContacto, Campana, AgenteProfile, Contacto
 from ominicontacto_app.views_campana_creacion import (CampanaWizardMixin,
                                                       CampanaTemplateCreateMixin,
@@ -51,14 +52,20 @@ class CampanaPreviewMixin(CampanaWizardMixin):
     COLA = None
     OPCIONES_CALIFICACION = '1'
     PARAMETROS_CRM = '2'
+    ADICION_SUPERVISORES = '3'
+    ADICION_AGENTES = '4'
 
     FORMS = [(INICIAL, CampanaPreviewForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
-             (PARAMETROS_CRM, ParametrosCrmFormSet)]
+             (PARAMETROS_CRM, ParametrosCrmFormSet),
+             (ADICION_SUPERVISORES, CampanaSupervisorUpdateForm),
+             (ADICION_AGENTES, QueueMemberFormset)]
 
     TEMPLATES = {INICIAL: "campana_preview/campana_preview.html",
                  OPCIONES_CALIFICACION: "campana_preview/opcion_calificacion.html",
-                 PARAMETROS_CRM: "campana_preview/parametros_crm_sitio_externo.html"}
+                 PARAMETROS_CRM: "campana_preview/parametros_crm_sitio_externo.html",
+                 ADICION_SUPERVISORES: "campana_preview/adicionar_supervisores.html",
+                 ADICION_AGENTES: "campana_preview/adicionar_agentes.html"}
 
     form_list = FORMS
 
@@ -68,8 +75,16 @@ class CampanaPreviewCreateView(CampanaPreviewMixin, CampanaManualCreateView):
     Crea una campaña de tipo Preview
     """
 
+    def get_context_data(self, form, *args, **kwargs):
+        context = super(CampanaPreviewCreateView, self).get_context_data(form, *args, **kwargs)
+        context['create'] = True
+        return context
+
     def done(self, form_list, **kwargs):
         queue = self._save_forms(form_list, Campana.ESTADO_ACTIVA, Campana.TYPE_PREVIEW)
+        # salvamos los supervisores y agentes asignados a la campaña
+        self.save_supervisores(form_list, -2)
+        self.save_agentes(form_list, -1)
         # rellenar la tabla que relación agentes y contactos con los valores iniciales
         queue.campana.establecer_valores_iniciales_agente_contacto()
         # crear(sobreescribir) archivo de crontab con la configuración de llamadas al procedimiento
@@ -83,6 +98,21 @@ class CampanaPreviewUpdateView(CampanaPreviewMixin, CampanaManualUpdateView):
     """
     Modifica una campaña de tipo Preview
     """
+
+    INICIAL = '0'
+    COLA = None
+    OPCIONES_CALIFICACION = '1'
+    PARAMETROS_CRM = '2'
+
+    FORMS = [(INICIAL, CampanaPreviewForm),
+             (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
+             (PARAMETROS_CRM, ParametrosCrmFormSet)]
+
+    TEMPLATES = {INICIAL: "campana_preview/campana_preview.html",
+                 OPCIONES_CALIFICACION: "campana_preview/opcion_calificacion.html",
+                 PARAMETROS_CRM: "campana_preview/parametros_crm_sitio_externo.html"}
+
+    form_list = FORMS
 
     def done(self, form_list, **kwargs):
         queue = self._save_forms(form_list, **kwargs)
@@ -107,6 +137,11 @@ class CampanaPreviewTemplateCreateView(CampanaTemplateCreateMixin, CampanaPrevie
     Crea una campaña sin acción en el sistema, sólo con el objetivo de servir de
     template base para agilizar la creación de las campañas preview
     """
+
+    FORMS = CampanaPreviewCreateView.FORMS[:-2]
+
+    form_list = FORMS
+
     def done(self, form_list, **kwargs):
         self._save_forms(form_list, Campana.ESTADO_TEMPLATE_ACTIVO, Campana.TYPE_PREVIEW)
         return HttpResponseRedirect(reverse('campana_preview_template_list'))
