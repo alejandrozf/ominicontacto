@@ -88,14 +88,6 @@
       - systemctl disable firewalld
   when: ansible_os_family == "RedHat"
 
-# Update/upgrade del sistema, osea si se ejecuta como deployed - deployer
-# https://docs.ansible.com/ansible/2.5/modules/yum_module.html#yum-module
-- name: Update/upgrade of centos (centos)
-  yum: name='*' state=latest update_cache=yes skip_broken=yes
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "RedHat"
-
 #- name: Get the current kernel release. (centos)
 #  command: uname -r
 #  register: kernel_release
@@ -104,6 +96,14 @@
 - name: Install kernel-devel package (centos)
   shell: "yum install \"kernel-devel-uname-r == $(uname -r)\" -y"
   any_errors_fatal: true
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+# Update/upgrade del sistema, osea si se ejecuta como deployed - deployer
+# https://docs.ansible.com/ansible/2.5/modules/yum_module.html#yum-module
+- name: Update/upgrade of centos (centos)
+  yum: name='*' state=latest update_cache=yes skip_broken=yes
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
