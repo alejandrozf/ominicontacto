@@ -32,24 +32,34 @@
 # los pre_tasks son para validaciones de de IP y hostname
 
   pre_tasks:
+
+    - name: Detection if host is a docker container
+      shell: cat /proc/self/cgroup |awk -F "/" '{print $2}' |head -1
+      register: is_docker
+      tags: always
+
     - name: Get the hostname of server
       command: hostname
       register: hostname
+      when: is_docker.stdout != "docker"
       tags: always
 
     - debug: msg={{ ansible_all_ipv4_addresses }}
+      when: is_docker.stdout != "docker"
       tags: always
 
     - name: Compare if hostname of server is the same as hostname in inventory file
       assert:
         that: "'{{ hostname.stdout }}' == '{{ omni_fqdn }}'"
         msg: "The hostname you inserted in inventory file is wrong, check it"
+      when: is_docker.stdout != "docker"
       tags: always
 
     - name: Compare if IP in inventory file is configured in the server
       assert:
         that: "'{{ omni_ip }}' in ansible_all_ipv4_addresses"
         msg: "The IP you inserted in inventory file is wrong, check it"
+      when: is_docker.stdout != "docker"
       tags: always
 
 # el gather_facts es para obtener valores de variables predeterminadas de ansible, la mas usada es ansible_os_family.

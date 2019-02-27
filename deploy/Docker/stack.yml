@@ -1,0 +1,86 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
+version: '3.7'
+services:
+  omnileads:
+    cap_add:
+      - SYS_ADMIN
+    command:
+      - /sbin/init
+    container_name: omnileads
+    hostname: omnileads.example.com
+    dns: 8.8.8.8
+    environment:
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - TZ=America/Argentina/Cordoba
+    image: freetechsolutions/devenv:1.0
+    logging:
+      driver: syslog
+    networks:
+      default:
+        ipv4_address: 172.16.0.2
+    privileged: true
+    ports:
+     - "443:443/tcp"
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - type: volume
+        source: grabaciones
+        target: /opt/omnileads/asterisk/var/spool/asterisk/monitor/
+      - type: volume
+        source: database
+        target: /var/lib/postgresql/9.6/main/
+      - type: bind
+        source: "$PWD/../.."
+        target: /opt/omnileads/ominicontacto/
+    working_dir: /opt/omnileads/ominicontacto
+  pbx-emulator:
+    cap_add:
+      - SYS_ADMIN
+    command:
+      - /sbin/init
+    container_name: pbx-emulator
+    hostname: pbx-emulator.example.com
+    dns: 8.8.8.8
+    environment:
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - TZ=America/Argentina/Cordoba
+    image: freetechsolutions/pbx-emulator:1.0
+    logging:
+      driver: syslog
+    networks:
+      default:
+        ipv4_address: 172.16.0.3
+    ports:
+      - 5060:5060
+      - 10000-10020:10000-10020
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.0.0/24
+volumes:
+  grabaciones:
+  ominicontacto:
+  database:

@@ -1,0 +1,17 @@
+FROM ubuntu:bionic
+ENV VERSION=develop
+RUN apt-get update && apt-get upgrade -y && apt-get install -y locales && rm -rf /var/lib/apt/lists/* \
+    && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+ENV LANG en_US.utf8
+RUN apt-get update
+RUN apt-get install git python-pip sudo python-minimal init vim net-tools openssh-server rsyslog -y
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && service ssh restart
+WORKDIR /var/tmp
+RUN git clone https://gitlab.com/omnileads/ominicontacto.git
+RUN cd /var/tmp/ominicontacto && git fetch && git checkout $VERSION && git pull && git log  --pretty=oneline | head -n 10
+WORKDIR /var/tmp/ominicontacto/deploy/ansible
+RUN sed -i "s/\(^hostname ansible_connection=local\).*/omnileads.example.com ansible_connection=local ansible_user=root ansible_host=172.16.0.2/" inventory
+
+EXPOSE 443/tcp
+
+CMD ["/sbin/init"]
