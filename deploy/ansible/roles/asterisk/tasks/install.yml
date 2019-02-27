@@ -80,7 +80,7 @@
   shell: "{{ item }} chdir=/usr/src/asterisk-13.22.0"
   with_items:
           - contrib/scripts/install_prereq install
-          - ./configure --libdir={{ install_prefix }}asterisk/lib64 --prefix={{ install_prefix }}asterisk --with-pjproject-bundled
+          - ./configure CC="gcc -O3" CFLAGS="-O3" --libdir={{ install_prefix }}asterisk/lib64 --prefix={{ install_prefix }}asterisk --with-pjproject-bundled
   when: ansible_os_family == "RedHat"
 
 # Esta task es necesaria porque en debian hay un paquete que pregunta cual es el countrycode telefonico del pais donde va a estar asterisk instalado
@@ -117,12 +117,16 @@
           - menuselect/menuselect --enable CORE-SOUNDS-SV-WAV menuselect.makeopts
           - menuselect/menuselect --enable EXTRA-SOUNDS-EN-WAV menuselect.makeopts
           - menuselect/menuselect --enable EXTRA-SOUNDS-FR-WAV menuselect.makeopts
-          - make
-          - make install
-          - make config
-          - ldconfig
- # become: yes
- # become_method: sudo
+
+- shell: "menuselect/menuselect --enable DONT_OPTIMIZE menuselect.makeopts chdir=/usr/src/asterisk-13.22.0"
+  when: desarrollo == 1
+
+- shell: "{{ item }} chdir=/usr/src/asterisk-13.22.0"
+  with_items:
+    - make
+    - make install
+    - make config
+    - ldconfig
 
 # Se mueven los directorios de jansson e iksemel a /opt/omnileads/asterisk -- FIX ME -- hay mejor forma de hacer mv?
 - name: Organizing the asterisk directories

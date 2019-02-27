@@ -129,6 +129,10 @@
   when: ansible_distribution == "Ubuntu"
 
 # Habilitamos y empezamos redis. Redis es necesario para rtpengine y para django-defender
+- name: Modify bind port for redis
+  lineinfile: path=/etc/redis/redis.conf regexp=^bind line="bind 127.0.0.1" state=present
+  when: is_docker.stdout == "docker"
+  
 - name: Start and enable redis service
   service: name=redis state=restarted enabled=yes
   become: yes
