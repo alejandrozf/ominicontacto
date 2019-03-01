@@ -34,6 +34,7 @@
         <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
         <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
         <script src="{% static 'ominicontacto/JS/agente/formularioCalificacion.js' %}"></script>
+        <script src="{% static 'ominicontacto/JS/agente/make_click2call.js' %}"></script>
 
         <!-- TODO: REMOVER - FIX HASTA CAMBIAR BS3 por BS4 -->
         <style type="text/css">
@@ -74,7 +75,20 @@
             {% endif %}
             <div class="row mt-3">
                 <div class="col-md-6">
-                    {{contacto_form.as_table}}
+
+                    {% for field in contacto_form %}
+                        <tr>
+                            <th>{{ field.label_tag }}</th>
+                            <th>{{ field.errors }}</th>
+                            <td> {{ field }} 
+                            {% if contacto and field.name in campos_telefono %}
+                                    <a class="btn btn-submit btn-outline-primary" href="javascript:;" onclick="makeClick2Call('{{ campana.id }}', '{{ campana.type }}', '{{ contacto.id }}', '{{ field.value }}', 'agendas');" name="click2call">{{ field.value }}</a>
+                            {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+
                     <div {% if llamada_entrante %}class="hidden"{% endif %} data="toHide">
                         {{calificacion_form.as_table}}
                     </div>

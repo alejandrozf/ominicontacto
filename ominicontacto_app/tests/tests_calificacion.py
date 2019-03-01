@@ -440,3 +440,21 @@ class CalificacionTests(OMLBaseTest):
         self.calificacion_cliente.opcion_calificacion = self.opcion_calificacion_no_accion
         self.calificacion_cliente.save()
         self.assertTrue(AgendaContacto.objects.exists())
+
+    def test_vista_calificar_contacto_muestra_botones_click2call(self):
+        url = reverse('calificacion_formulario_update_or_create',
+                      kwargs={'pk_campana': self.campana.pk,
+                              'pk_contacto': self.contacto.pk})
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, 'formulario/calificacion_create_update.html')
+        click2call = "makeClick2Call('%s', '%s', '%s', '%s', 'agendas')" % \
+            (self.campana.id, self.campana.type, self.contacto.id, self.contacto.telefono)
+        self.assertContains(response, click2call)
+        bd_metadata = self.contacto.bd_contacto.get_metadata()
+        campos_telefono = bd_metadata.nombres_de_columnas_de_telefonos
+        datos_contacto = self.contacto.obtener_datos()
+        for campo_telefono in campos_telefono:
+            telefono = datos_contacto[campo_telefono]
+            click2call = "makeClick2Call('%s', '%s', '%s', '%s', 'agendas')" % \
+                (self.campana.id, self.campana.type, self.contacto.id, telefono)
+        self.assertContains(response, click2call)

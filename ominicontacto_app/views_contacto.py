@@ -48,6 +48,14 @@ class ContactoUpdateView(UpdateView):
     def get_object(self, queryset=None):
         return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
 
+    # TODO: Cuando cada base de datos solo pueda tener una campaña, se podrán mostrar
+    #       los telefonos como click2call
+    # def get_context_data(self, **kwargs):
+    #     context = super(ContactoUpdateView, self).get_context_data(**kwargs)
+    #     bd_metadata = self.object.bd_contacto.get_metadata()
+    #     context['campos_telefono'] = bd_metadata.nombres_de_columnas_de_telefonos + ['telefono']
+    #     return context
+
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.datos = form.get_datos_json()
@@ -195,7 +203,7 @@ class ContactoBDContactoCreateView(CreateView):
 
         # TODO: OML-1016
         # TODO: En caso de que la base corresponda a una campaña Dialer, agregar en Wombat
-        # TODO: En caso de que la base corresponda a una campaña Dialer, agregar AgenteEnContacto
+        # TODO: En caso de que la base corresponda a una campaña Preview, agregar AgenteEnContacto
 
         return super(ContactoBDContactoCreateView, self).form_valid(form)
 

@@ -35,7 +35,8 @@ $(document).ready(function(){
     var $modificar_contacto = create_node('a', {
           'class': 'btn btn-light btn-sm',
           'role': 'button',
-          'href': '/contacto/'+ pk_contacto + '/update/',
+          // {% url 'contacto_update' pk_contacto %}
+          'href': Urls.contacto_update(pk_contacto),
         });
     var $span_modificar_contacto = create_node('span', {
           'class': 'icon-pencil',

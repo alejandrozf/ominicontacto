@@ -1687,6 +1687,10 @@ class MetadataBaseDatosContactoDTO(object):
         self._metadata['nombres_de_columnas'] = columnas
 
     @property
+    def nombres_de_columnas_de_telefonos(self):
+        return [self.nombres_de_columnas[i] for i in self.columnas_con_telefono]
+
+    @property
     def nombres_de_columnas_de_datos(self):
         if not hasattr(self, '_nombres_de_columnas_de_datos'):
             try:

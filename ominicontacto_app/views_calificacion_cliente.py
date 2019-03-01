@@ -32,7 +32,7 @@ from django.contrib.auth.hashers import check_password
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.views.generic.detail import DetailView
 from django.views.decorators.csrf import csrf_exempt
@@ -70,12 +70,7 @@ class CalificacionClienteFormView(FormView):
 
     def get_contacto(self, id_contacto):
         if id_contacto is not None:
-            # TODO: Analizar en que caso puede no haber un contacto.
-            # try:
-            #     return self.campana.bd_contacto.contactos.get(pk=id_contacto)
-            # except Contacto.DoesNotExist:
-            #     return None
-            return Contacto.objects.get(pk=id_contacto)
+            return get_object_or_404(Contacto, pk=id_contacto)
         return None
 
     def get_object(self):
@@ -190,8 +185,12 @@ class CalificacionClienteFormView(FormView):
 
         contacto_form = self.get_contacto_form()
         calificacion_form = self.get_form(historico_calificaciones=formulario_llamada_entrante)
+        bd_metadata = self.campana.bd_contacto.get_metadata()
+        campos_telefono = bd_metadata.nombres_de_columnas_de_telefonos + ['telefono']
 
         return self.render_to_response(self.get_context_data(
+            contacto=self.contacto,
+            campos_telefono=campos_telefono,
             contacto_form=contacto_form,
             calificacion_form=calificacion_form,
             campana=self.campana,
@@ -302,7 +301,12 @@ class CalificacionClienteFormView(FormView):
         """
         Re-renders the context data with the data-filled forms and errors.
         """
+        bd_metadata = self.campana.bd_contacto.get_metadata()
+        campos_telefono = bd_metadata.nombres_de_columnas_de_telefonos + ['telefono']
+
         return self.render_to_response(self.get_context_data(
+            contacto=self.contacto,
+            campos_telefono=campos_telefono,
             contacto_form=contacto_form,
             calificacion_form=calificacion_form,
             campana=self.campana,
