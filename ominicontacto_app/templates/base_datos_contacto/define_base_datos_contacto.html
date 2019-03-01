@@ -43,7 +43,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         {% if error_predictor_encabezado %}
                             <div class="bs-callout bs-callout-danger">
                                 <h4>{% trans 'Falló predictor de CSV.' %}</h4>
-                                <p>{% trans 'No se pudo predecir el formato del archivo csv subido. El nombre de la primera columna debe llamarse teléfono' %}</p>
+                                <p>{% trans 'No se pudo predecir el formato del archivo csv subido.' %}</p>
                             </div>
                         {% endif %}
 
@@ -87,6 +87,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 {% endfor %}
                                 </tbody>
                             </table>
+
+                            {{ form_campos_telefonicos.as_table }}
+
                             {% if error %}
                                 <p class="text-danger">{% trans 'Es requerido que seleccione la columna que contengan los números de Teléfono.' %}</p>
                             {% endif %}
@@ -95,9 +98,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
                         <br>
                         <a href="{% url 'nueva_base_datos_contacto' %}">
-                                            <button type="button" class="btn btn-danger btn-sm">
-                                                {% trans 'Volver a nueva base de datos' %}
-                                            </button>
+                            <button type="button" class="btn btn-danger btn-sm">
+                                {% trans 'Volver a nueva base de datos' %}
+                            </button>
                         </a>
                         <button type="submit" id="id_guardar" class="btn btn-success btn-lg modal_proceso_grande">
                             {% trans 'Guardar Base Datos' %}

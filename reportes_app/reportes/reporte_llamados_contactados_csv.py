@@ -120,7 +120,7 @@ class ArchivoDeReporteCsv(object):
             # Creamos encabezado
             encabezado = []
             encabezado.append(_("Telefono"))
-            campos_contacto = campana.bd_contacto.get_metadata().nombres_de_columnas[1:]
+            campos_contacto = campana.bd_contacto.get_metadata().nombres_de_columnas_de_datos
             encabezado.extend(campos_contacto)
             encabezado.append(_("Fecha-Hora Contacto"))
             encabezado.append(_("Tel status"))
@@ -177,7 +177,7 @@ class ArchivoDeReporteCsv(object):
             # Creamos encabezado
             encabezado = []
             encabezado.append(_("Telefono"))
-            campos_contacto = campana.bd_contacto.get_metadata().nombres_de_columnas[1:]
+            campos_contacto = campana.bd_contacto.get_metadata().nombres_de_columnas_de_datos
             encabezado.extend(campos_contacto)
             encabezado.append(_("Fecha-Hora Contacto"))
             encabezado.append(_("Tel status"))
@@ -217,7 +217,7 @@ class ArchivoDeReporteCsv(object):
             # Creamos encabezado
             encabezado = []
             encabezado.append(_("Telefono"))
-            campos_contacto = campana.bd_contacto.get_metadata().nombres_de_columnas[1:]
+            campos_contacto = campana.bd_contacto.get_metadata().nombres_de_columnas_de_datos
             encabezado.extend(campos_contacto)
             encabezado.append(_("Fecha-Hora Contacto"))
             encabezado.append(_("Tel status"))

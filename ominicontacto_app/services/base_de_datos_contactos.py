@@ -49,6 +49,7 @@ logger = logging.getLogger(__name__)
 
 class CreacionBaseDatosService(object):
 
+    # TODO: Antes de crear la base de datos debería validar un poco la estructura
     def genera_base_dato_contacto(self, base_datos_contacto):
         """
         Primer paso de la creación de una BaseDatoContacto.
@@ -81,7 +82,22 @@ class CreacionBaseDatosService(object):
 
         base_datos_contacto.save()
 
-    def importa_contactos(self, base_datos_contacto):
+    def obtener_telefono_y_datos(self, encoding, lista_dato, posicion_primer_telefono):
+        if len(lista_dato) > 1:
+            item = []
+            for i, valor in enumerate(lista_dato):
+                if i == posicion_primer_telefono:
+                    telefono = valor
+                else:
+                    item.append(valor.decode(encoding))
+        else:
+            telefono = lista_dato[0]
+            item = ['']
+
+        datos = json.dumps(item)
+        return telefono, datos
+
+    def importa_contactos(self, base_datos_contacto, campos_telefonicos):
         """
         Tercer paso de la creación de una BaseDatosContacto.
         Este método se encarga de generar los objectos Contacto por cada linea
@@ -92,12 +108,11 @@ class CreacionBaseDatosService(object):
                 (BaseDatosContacto.ESTADO_EN_DEFINICION,
                  BaseDatosContacto.ESTADO_DEFINIDA_ACTUALIZADA))
 
-        base_datos_contacto.get_metadata()
-
         # FIXME: este metodo valida la consistencia de los metadatos, y
         # lanza una excepcion ante cualquier problema. OJO! Esto no implica
         # que los metadatos sean correctos y consistentes con los datos,
         # pero al menos validan la consistencia "interna" de los metadatos
+        # metadata = base_datos_contacto.get_metadata()
         # metadata.validar_metadatos()
 
         # Antes que nada, borramos los contactos preexistentes
@@ -107,21 +122,20 @@ class CreacionBaseDatosService(object):
 
         try:
             estructura_archivo = parser.get_estructura_archivo(base_datos_contacto)
+            posicion_primer_telefono = estructura_archivo[0].index(campos_telefonicos[0])
             encoding = parser.detectar_encoding_csv(estructura_archivo)
             cantidad_contactos = 0
 
             if base_datos_contacto.cantidad_contactos:
                 cantidad_contactos = base_datos_contacto.cantidad_contactos
             for lista_dato in estructura_archivo[1:]:
-                if len(lista_dato) > 1:
-                    item = [value.decode(encoding) for value in lista_dato[1:]]
-                    datos = json.dumps(item)
-                else:
-                    item = ['']
-                    datos = json.dumps(item)
+                telefono, datos = self.obtener_telefono_y_datos(encoding,
+                                                                lista_dato,
+                                                                posicion_primer_telefono)
                 cantidad_contactos += 1
+
                 Contacto.objects.create(
-                    telefono=lista_dato[0],
+                    telefono=telefono,
                     datos=datos,
                     bd_contacto=base_datos_contacto,
                 )
@@ -300,10 +314,10 @@ class PredictorMetadataService(object):
 
         metadata.cantidad_de_columnas = len(primer_linea)
 
-        # chequeamos que el nombre de la primera columna sea telefono
-        if primer_linea[0] != 'telefono':
-            raise (NoSePuedeInferirMetadataErrorEncabezado(_("El nombre de la primera "
-                                                             "columna debe ser telefono")))
+        # NO chequeamos que el nombre de la primera columna sea telefono
+        # if primer_linea[0] != 'telefono':
+        #     raise (NoSePuedeInferirMetadataErrorEncabezado(_("El nombre de la primera "
+        #                                                      "columna debe ser telefono")))
 
         # ======================================================================
         # Primero detectamos columnas de datos

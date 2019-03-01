@@ -120,6 +120,13 @@ class OmlParserCsvDelimiterError(OmlError):
     pass
 
 
+class OmlParserRepeatedColumnsError(OmlError):
+    """
+    El archivo a procesar tiene nombres de columnas repetidos.
+    """
+    pass
+
+
 class OmlParserMinRowError(OmlError):
     """
     El archivo querido Parsear tiene menos de 3 filas.

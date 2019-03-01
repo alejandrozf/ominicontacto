@@ -79,7 +79,7 @@ class ArchivoDeReporteRespuestaFormularioCsv(object):
             encabezado.append(_("Fecha-Hora Contacto"))
             encabezado.append(_("Agente"))
             encabezado.append(_("Telefono"))
-            nombres = campana.bd_contacto.get_metadata().nombres_de_columnas[1:]
+            nombres = campana.bd_contacto.get_metadata().nombres_de_columnas_de_datos
             for nombre in nombres:
                 encabezado.append(nombre)
             encabezado.append(_("base_datos"))

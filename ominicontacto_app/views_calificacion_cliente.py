@@ -39,12 +39,11 @@ from django.views.decorators.csrf import csrf_exempt
 
 from simple_history.utils import update_change_reason
 
-from ominicontacto_app.forms import (CalificacionClienteForm, FormularioContactoCalificacion,
+from ominicontacto_app.forms import (CalificacionClienteForm, FormularioNuevoContacto,
                                      RespuestaFormularioGestionForm)
 from ominicontacto_app.models import (
     Contacto, Campana, CalificacionCliente, AgenteProfile, RespuestaFormularioGestion,
     OpcionCalificacion, UserApiCrm)
-from ominicontacto_app.utiles import convertir_ascii_string
 
 from reportes_app.models import LlamadaLog
 
@@ -71,10 +70,12 @@ class CalificacionClienteFormView(FormView):
 
     def get_contacto(self, id_contacto):
         if id_contacto is not None:
-            try:
-                return self.campana.bd_contacto.contactos.get(pk=id_contacto)
-            except Contacto.DoesNotExist:
-                return None
+            # TODO: Analizar en que caso puede no haber un contacto.
+            # try:
+            #     return self.campana.bd_contacto.contactos.get(pk=id_contacto)
+            # except Contacto.DoesNotExist:
+            #     return None
+            return Contacto.objects.get(pk=id_contacto)
         return None
 
     def get_object(self):
@@ -164,30 +165,15 @@ class CalificacionClienteFormView(FormView):
                 # TODO: Cuando las manuales vengan con call_data sacar esto
                 initial['telefono'] = self.kwargs['telefono']
 
-        if self.request.method == 'GET':
-            # TODO: Pasar esta logica al formulario?
-            base_datos = self.campana.bd_contacto
-            nombres = base_datos.get_metadata().nombres_de_columnas[1:]
-            datos = [''] * len(nombres)
-            if self.contacto is not None:
-                datos = json.loads(self.contacto.datos)
-            for nombre, dato in zip(nombres, datos):
-                initial.update({convertir_ascii_string(nombre): dato})
-            kwargs['initial'] = initial
-        elif self.request.method == 'POST':
+        kwargs['initial'] = initial
+
+        if self.request.method == 'POST':
             kwargs['data'] = self.request.POST
         return kwargs
 
-    def get_campos_formulario_contacto(self):
-        # TODO: Pasar esta logica al formulario?
-        base_datos = self.campana.bd_contacto
-        metadata = base_datos.get_metadata()
-        campos = metadata.nombres_de_columnas
-        return campos
-
     def get_contacto_form(self):
-        return FormularioContactoCalificacion(campos=self.get_campos_formulario_contacto(),
-                                              **self.get_contacto_form_kwargs())
+        return FormularioNuevoContacto(bd_metadata=self.campana.bd_contacto.get_metadata(),
+                                       **self.get_contacto_form_kwargs())
 
     def _formulario_llamada_entrante(self):
         """Determina si estamos en presencia de un formulario
@@ -291,17 +277,10 @@ class CalificacionClienteFormView(FormView):
         if self.contacto is None:
             nuevo_contacto = True
         self.contacto = contacto_form.save(commit=False)
-        # TODO: Pasar esta logica al formulario?
-        base_datos = self.campana.bd_contacto
-        metadata = base_datos.get_metadata()
-        nombres = metadata.nombres_de_columnas
-        datos = []
-        nombres.remove('telefono')
-        for nombre in nombres:
-            campo = contacto_form.cleaned_data.get(convertir_ascii_string(nombre))
-            datos.append(campo)
-        self.contacto.datos = json.dumps(datos)
-        self.contacto.bd_contacto = base_datos
+        if nuevo_contacto:
+            self.contacto.bd_contacto = self.campana.bd_contacto
+        self.contacto.datos = contacto_form.get_datos_json()
+        # TODO: OML-1016 Verificar bien que hacer aca o si ya se hizo
         if nuevo_contacto:
             self.contacto.es_originario = False
         self.contacto.save()
@@ -338,8 +317,7 @@ class CalificacionClienteFormView(FormView):
     def get_success_url_agenda(self):
         return reverse('agenda_contacto_create',
                        kwargs={"pk_campana": self.campana.id,
-                               "pk_contacto": self.contacto.id,
-                               "id_agente": self.agente.id})
+                               "pk_contacto": self.contacto.id})
 
     def get_success_url_reporte(self):
         return reverse('reporte_agente_calificaciones',
@@ -419,7 +397,7 @@ class RespuestaFormularioDetailView(DetailView):
         respuesta = RespuestaFormularioGestion.objects.get(pk=self.kwargs['pk'])
         contacto = respuesta.calificacion.contacto
         bd_contacto = contacto.bd_contacto
-        nombres = bd_contacto.get_metadata().nombres_de_columnas[1:]
+        nombres = bd_contacto.get_metadata().nombres_de_columnas_de_datos
         datos = json.loads(contacto.datos)
         mas_datos = []
         for nombre, dato in zip(nombres, datos):
@@ -444,24 +422,14 @@ class RespuestaFormularioFormViewMixin(object):
 
     def get_contacto_form_kwargs(self):
         kwargs = {'instance': self.contacto,
-                  'prefix': 'contacto_form'}
+                  'prefix': 'contacto_form',
+                  'initial': {}}
         if self.request.method == "POST":
             kwargs['data'] = self.request.POST
-        else:
-            initial = {}
-            base_datos = self.contacto.bd_contacto
-            nombres = base_datos.get_metadata().nombres_de_columnas[1:]
-            datos = json.loads(self.contacto.datos)
-            for nombre, dato in zip(nombres, datos):
-                initial.update({convertir_ascii_string(nombre): dato})
-            kwargs['initial'] = initial
         return kwargs
 
     def get_contacto_form(self):
-        base_datos = self.contacto.bd_contacto
-        metadata = base_datos.get_metadata()
-        campos = metadata.nombres_de_columnas
-        return FormularioContactoCalificacion(campos=campos, **self.get_contacto_form_kwargs())
+        return FormularioNuevoContacto(**self.get_contacto_form_kwargs())
 
     def get_form_kwargs(self):
         kwargs = super(RespuestaFormularioFormViewMixin, self).get_form_kwargs()
@@ -477,17 +445,9 @@ class RespuestaFormularioFormViewMixin(object):
             form=form, contacto_form=contacto_form))
 
     def form_valid(self, form, contacto_form):
-        contacto = contacto_form.save(commit=False)
-        base_datos = self.contacto.bd_contacto
-        metadata = base_datos.get_metadata()
-        nombres = metadata.nombres_de_columnas
-        datos = []
-        nombres.remove('telefono')
-        for nombre in nombres:
-            campo = contacto_form.cleaned_data.get(convertir_ascii_string(nombre))
-            datos.append(campo)
-        contacto.datos = json.dumps(datos)
-        contacto.save()
+        self.contacto = contacto_form.save(commit=False)
+        self.contacto.datos = contacto_form.get_datos_json()
+        self.contacto.save()
 
         self.object = form.save(commit=False)
         cleaned_data_respuesta = form.cleaned_data
@@ -532,12 +492,6 @@ class RespuestaFormularioFormViewMixin(object):
             form=form, contacto_form=contacto_form))
 
     def get_success_url(self):
-        # reverse('formulario_detalle',
-        #         kwargs={"pk": self.kwargs['pk_campana'],
-        #                 "pk_contacto": self.kwargs['pk_contacto'],
-        #                 "id_agente": self.kwargs['id_agente']
-        #                 }
-        #         )
         reverse('view_blanco')
 
 

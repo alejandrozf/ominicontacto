@@ -1027,16 +1027,6 @@ class Campana(models.Model):
         self.estado = Campana.ESTADO_TEMPLATE_BORRADO
         self.save()
 
-    def _obtener_campos_bd_contacto(self, contacto):
-        base_datos = self.bd_contacto
-        metadata = base_datos.get_metadata()
-        campos_contacto = metadata.nombres_de_columnas
-        try:
-            campos_contacto.remove('telefono')
-        except ValueError:
-            logger.warning(_("La BD no tiene campo 'telefono'"))
-        return campos_contacto
-
     def establecer_valores_iniciales_agente_contacto(self):
         """
         Rellena con valores iniciales la tabla que informa el estado de los contactos
@@ -1046,7 +1036,8 @@ class Campana(models.Model):
         campana_contactos = self.bd_contacto.contactos.all()
 
         # obtenemos los campos de la BD del contacto
-        campos_contacto = self._obtener_campos_bd_contacto(self.bd_contacto)
+        metadata = self.bd_contacto.get_metadata()
+        campos_contacto = metadata.nombres_de_columnas_de_datos
 
         # creamos los objetos del modelo AgenteEnContacto a crear
         agente_en_contacto_list = []
@@ -1099,7 +1090,8 @@ class Campana(models.Model):
         """Crea una nueva entrada para relacionar un agentes y un contacto
         nuevo a una campaña preview
         """
-        campos_contacto = self._obtener_campos_bd_contacto(self.bd_contacto)
+        metadata = self.bd_contacto.get_metadata()
+        campos_contacto = metadata.nombres_de_columnas_de_datos
         datos_contacto = literal_eval(contacto.datos)
         datos_contacto = dict(zip(campos_contacto, datos_contacto))
         datos_contacto_json = json.dumps(datos_contacto)
@@ -1662,6 +1654,14 @@ class MetadataBaseDatosContactoDTO(object):
     # -----
 
     @property
+    def nombre_campo_telefono(self):
+        try:
+            indice_campo_telefono = self._metadata['cols_telefono'][0]
+            return self._metadata['nombres_de_columnas'][indice_campo_telefono]
+        except KeyError:
+            return []
+
+    @property
     def nombres_de_columnas(self):
         try:
             return self._metadata['nombres_de_columnas']
@@ -1685,6 +1685,18 @@ class MetadataBaseDatosContactoDTO(object):
                                                                       self.cantidad_de_columnas))
 
         self._metadata['nombres_de_columnas'] = columnas
+
+    @property
+    def nombres_de_columnas_de_datos(self):
+        if not hasattr(self, '_nombres_de_columnas_de_datos'):
+            try:
+                nombres_de_columnas = self._metadata['nombres_de_columnas']
+                self._nombres_de_columnas_de_datos = [x for x in nombres_de_columnas
+                                                      if not x == self.nombre_campo_telefono]
+            except KeyError:
+                return []
+
+        return self._nombres_de_columnas_de_datos
 
     @property
     def primer_fila_es_encabezado(self):
@@ -1719,35 +1731,6 @@ class MetadataBaseDatosContactoDTO(object):
 
         telefono = datos[col_telefono]
         return telefono
-
-    def obtener_telefono_y_datos_extras(self, datos_json):
-        # FIXME: este método no se usa en OML, probablemente debería ser eliminado,
-        # y los addons que lo utilicen crear su propia versión de acuerdo a los datos que manejen
-        """Devuelve tupla con (1) el numero telefonico del contacto,
-        y (2) un dict con los datos extras del contacto
-
-        :param datos: atribuito 'datos' del contacto, o sea, valores de
-                      las columnas codificadas con json
-        """
-        # Decodificamos JSON
-        try:
-            datos = json.loads(datos_json)
-        except Exception as e:
-            logger.exception(_("Error: {0} detectada al desserializar "
-                               "datos extras. Datos extras: '{1}'"
-                               "".format(e.message, datos_json)))
-            raise
-
-        # assert len(datos) == self.cantidad_de_columnas
-
-        # Obtenemos telefono
-        telefono = 0
-
-        # Obtenemos datos extra
-        datos_extra = dict(zip(self.nombres_de_columnas,
-                               datos))
-
-        return telefono, datos_extra
 
     def validar_metadatos(self):
         """Valida que los datos de metadatos estan completos"""
@@ -1813,7 +1796,7 @@ class MetadataBaseDatosContactoDTO(object):
 
     def dato_extra_es_telefono(self, nombre_de_columna):
         """
-        Devuelve True si el dato extra correspondiente a la columna
+        Devuelve True si el dato extra correspondiente a una columna
         con numero telefonico.
 
         Este metodo no realiza ningun tipo de sanitizacion del nombre
@@ -1823,7 +1806,7 @@ class MetadataBaseDatosContactoDTO(object):
         :raises ValueError: si la columna no existe
         """
         index = self.nombres_de_columnas.index(nombre_de_columna)
-        return index == self.columna_con_telefono
+        return index in self.columnas_con_telefono
 
     def dato_extra_es_generico(self, nombre_de_columna):
         """
@@ -2134,23 +2117,14 @@ class Contacto(models.Model):
     )
     es_originario = models.BooleanField(default=True)
 
-    def obtener_telefono_y_datos_extras(self, metadata):
-        # FIXME: este método no se usa en OML, probablemente debería ser eliminado,
-        # y los addons que lo utilicen crear su propia versión de acuerdo a los datos que manejen
-        """Devuelve lista con (telefono, datos_extras) utilizando
-        la informacion de metadata pasada por parametro.
-
-        Recibimos `metadata` por parametro por una cuestion de
-        performance.
-        """
-        telefono, extras = metadata.obtener_telefono_y_datos_extras(self.datos)
-        return (telefono, extras)
-
     def obtener_datos(self):
+        """ Devuelve un diccionario con todos los datos, incluido el telefono """
         if not hasattr(self, 'datos_contacto'):
-            columnas = self.bd_contacto.get_metadata().nombres_de_columnas
+            bd_metadata = self.bd_contacto.get_metadata()
+            columnas = bd_metadata.nombres_de_columnas
             datos = self.lista_de_datos()
-            datos.insert(0, self.telefono)
+            pos_primer_telefono = bd_metadata.columnas_con_telefono[0]
+            datos.insert(pos_primer_telefono, self.telefono)
             self.datos_contacto = dict(zip(columnas, datos))
         return self.datos_contacto
 

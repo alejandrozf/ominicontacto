@@ -344,6 +344,24 @@ class PrimerLineaEncabezadoForm(forms.Form):
         self.helper.layout = Layout(Field('es_encabezado'))
 
 
+class CamposDeTelefonoForm(forms.Form):
+    campos = forms.MultipleChoiceField(
+        required=True,
+        label=_('Campos de teléfono'),
+        widget=forms.CheckboxSelectMultiple())
+
+    def __init__(self, nombres_campos, *args, **kwargs):
+        super(CamposDeTelefonoForm, self).__init__(*args, **kwargs)
+        self.nombres_campos = nombres_campos
+        self.fields['campos'].choices = tuple([(x, x) for x in nombres_campos])
+
+    @property
+    def columnas_de_telefonos(self):
+        # Guardo los indices de los nombres de las columnas que tienen telefonos
+        seleccionados = self.cleaned_data.get('campos', [])
+        return [i for i, x in enumerate(self.nombres_campos) if x in seleccionados]
+
+
 class BusquedaContactoForm(forms.Form):
     buscar = forms.CharField(
         required=False,
@@ -586,19 +604,6 @@ class OpcionCalificacionBaseFormset(BaseInlineFormSet):
         super(OpcionCalificacionBaseFormset, self).save()
 
 
-class ContactoForm(forms.ModelForm):
-    datos = forms.CharField(
-        widget=forms.Textarea(attrs={'readonly': 'readonly'})
-    )
-
-    class Meta:
-        model = Contacto
-        fields = ('telefono', 'datos', 'bd_contacto')
-        widgets = {
-            'bd_contacto': forms.HiddenInput(),
-        }
-
-
 class OpcionCalificacionModelChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.nombre
@@ -736,37 +741,62 @@ class SincronizaDialerForm(forms.Form):
 
 class FormularioNuevoContacto(forms.ModelForm):
 
-    def __init__(self, campos, *args, **kwargs):
+    class Meta:
+        model = Contacto
+        fields = ('telefono',)
+        widgets = {
+            "telefono": forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, bd_metadata=None, *args, **kwargs):
+        if 'instance' in kwargs and kwargs['instance'] is not None:
+            contacto = kwargs['instance']
+            bd_metadata = contacto.bd_contacto.get_metadata()
+            datos = json.loads(contacto.datos)
+            for nombre, dato in zip(bd_metadata.nombres_de_columnas_de_datos, datos):
+                kwargs['initial'].update({self.get_nombre_input(nombre): dato})
+
         super(FormularioNuevoContacto, self).__init__(*args, **kwargs)
-        for campo in campos:
-            self.fields[convertir_ascii_string(campo)] = forms.CharField(
-                label=campo, widget=forms.TextInput(
-                    attrs={'class': 'form-control'}))
+        nombre_campo_telefono = bd_metadata.nombre_campo_telefono
+        for campo in bd_metadata.nombres_de_columnas:
+            if campo == nombre_campo_telefono:
+                nombre_campo = convertir_ascii_string(campo)
+                self.fields['telefono'].label = nombre_campo
+            else:
+                nombre_campo = self.get_nombre_input(campo)
+                self.fields[nombre_campo] = forms.CharField(
+                    required=False,
+                    label=campo, widget=forms.TextInput(
+                        attrs={'class': 'form-control'}))
+        self.bd_metadata = bd_metadata
 
-    class Meta:
-        model = Contacto
-        fields = ('telefono',)
-        widgets = {
-            "telefono": forms.TextInput(attrs={'class': 'form-control'}),
-        }
+    def get_nombre_input(self, nombre_campo):
+        """
+        Además del Encode modifico el nombre del input correspondiente a un campo de datos
+        de nombre "telefono" para que no se solape con el input 'telefono' correspondiente al campo
+        del modelo Contacto
+        """
+        nombre_input = convertir_ascii_string(nombre_campo)
+        if nombre_input == 'telefono':
+            # NOTA: Se asume que ninguna base de datos vendra con un campo con el nombre devuelto
+            return "input_telefono_en_datos_OML"
+        return nombre_input
 
+    def get_datos_json(self):
+        """ Devuelve datos en json listos para guardar en el modelo Contacto """
+        datos = []
+        for nombre in self.bd_metadata.nombres_de_columnas_de_datos:
+            campo = self.cleaned_data.get(self.get_nombre_input(nombre))
+            datos.append(campo)
+        return json.dumps(datos)
 
-class FormularioContactoCalificacion(forms.ModelForm):
-
-    def __init__(self, campos, *args, **kwargs):
-        super(FormularioContactoCalificacion, self).__init__(*args, **kwargs)
-        for campo in campos:
-            self.fields[convertir_ascii_string(campo)] = forms.CharField(
-                required=False,
-                label=campo, widget=forms.TextInput(
-                    attrs={'class': 'form-control'}))
-
-    class Meta:
-        model = Contacto
-        fields = ('telefono',)
-        widgets = {
-            "telefono": forms.TextInput(attrs={'class': 'form-control'}),
-        }
+    def es_campo_telefonico(self, nombre_input):
+        """ Devuelve si el nombre del input corresponde a una columna con telefono o no """
+        for i in self.bd_metadata.columnas_con_telefono:
+            nombre_campo = self.bd_metadata.nombres_de_columnas[i]
+            if nombre_input == self.get_nombre_input(nombre_campo):
+                return True
+        return False
 
 
 class FormularioCampanaContacto(forms.Form):

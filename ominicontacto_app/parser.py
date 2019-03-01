@@ -32,7 +32,7 @@ from django.utils.translation import ugettext as _
 from django.utils.encoding import smart_text
 from ominicontacto_app.errors import\
     (OmlParserCsvDelimiterError, OmlParserMinRowError, OmlParserMaxRowError,
-     OmlParserCsvImportacionError, OmlParserCsvEncodingError)
+     OmlParserCsvImportacionError, OmlParserCsvEncodingError, OmlParserRepeatedColumnsError)
 from ominicontacto_app.models import MetadataBaseDatosContactoDTO
 
 
@@ -212,6 +212,12 @@ class ParserCsv(object):
                           "filas."))
             raise OmlParserMinRowError(_("El archivo CSV posee menos de "
                                          "2 filas"))
+
+        # Validar que no se repiten las columnas
+        if not len(structure_dic[0]) == len(set(structure_dic[0])):
+            raise OmlParserRepeatedColumnsError(_("El archivo a procesar tiene nombres de columnas "
+                                                  "repetidos."))
+
         return structure_dic
 
     def _get_dialect(self, file_obj):
@@ -282,6 +288,8 @@ class ParserCsv(object):
                                          "2 filas"))
         return structure_dic
 
+    # TODO: OPTIMIZAR - Verificar ambos encodings en el mismo loop sobre estructura_archivo
+    # x Ej. Usar un flag para ver si falló cada encoding
     def detectar_encoding_csv(self, estructura_archivo):
         """
         Detecta el encoding la estructura pasada por parametro
@@ -317,6 +325,7 @@ class ParserCsv(object):
         else:
             return "iso-8859-1"
 
+    # TODO: Ponerle un nombre más declarativo a este metodo... Que hace?
     def visualizar_estructura_template(self, estructura_archivo, encoding):
 
         transformado = []
