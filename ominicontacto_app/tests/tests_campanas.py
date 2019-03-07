@@ -207,6 +207,7 @@ class CampanasTests(OMLBaseTest):
         self.contacto = ContactoFactory.create(bd_contacto=self.campana_activa.bd_contacto)
         self.campana_activa.bd_contacto.contactos.add(self.contacto)
         self.queue = QueueFactory.create(campana=self.campana_activa)
+        QueueFactory.create(campana=self.campana)
 
 
 class AgenteCampanaTests(CampanasTests):
@@ -1444,3 +1445,30 @@ class SupervisorCampanaTests(CampanasTests):
         n_formularios = Formulario.objects.count()
         self.client.post(url, follow=True)
         self.assertEqual(Formulario.objects.count(), n_formularios - 1)
+
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_no_se_puede_eliminar_campana_entrante_failover_de_otra(
+            self, _generar_y_recargar_configuracion_asterisk):
+        self.campana_activa.type = Campana.TYPE_ENTRANTE
+        self.campana_activa.save()
+        self.campana.type = Campana.TYPE_ENTRANTE
+        self.campana.save()
+        destino_entrante = DestinoEntranteFactory(content_object=self.campana_activa)
+        destino_entrante.campanas_destino_failover.add(self.campana.queue_campana)
+        url = reverse('campana_elimina', args=[self.campana_activa.pk])
+        self.assertEqual(self.campana_activa.estado, Campana.ESTADO_ACTIVA)
+        self.client.post(url, follow=True)
+        self.campana_activa.refresh_from_db()
+        self.assertEqual(self.campana_activa.estado, Campana.ESTADO_ACTIVA)
+
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_se_puede_eliminar_campana_entrante_no_failover_de_otra(
+            self, _generar_y_recargar_configuracion_asterisk):
+        DestinoEntranteFactory(content_object=self.campana_activa)
+        self.campana_activa.type = Campana.TYPE_ENTRANTE
+        self.campana_activa.save()
+        url = reverse('campana_elimina', args=[self.campana_activa.pk])
+        self.assertEqual(self.campana_activa.estado, Campana.ESTADO_ACTIVA)
+        self.client.post(url)
+        self.campana_activa.refresh_from_db()
+        self.assertEqual(self.campana_activa.estado, Campana.ESTADO_BORRADA)

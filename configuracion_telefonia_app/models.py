@@ -336,6 +336,11 @@ class DestinoEntrante(models.Model):
         """ Obtiene el nodo destino correspondiente al valor de una relacion entre dos nodos """
         return self.destinos_siguientes.get(valor=valor)
 
+    def es_destino_failover(self):
+        """Determina si el nodo destino es usado como failover de alguna campaña
+        """
+        return self.campanas_destino_failover.exists()
+
 
 class OpcionDestino(models.Model):
     """Representa una relación entre dos nodos de una ruta entrante de una llamada"""
