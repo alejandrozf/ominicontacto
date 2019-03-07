@@ -2488,6 +2488,15 @@ class CalificacionCliente(models.Model):
         return "Calificacion para la campana {0} para el contacto " \
                "{1} ".format(self.opcion_calificacion.campana, self.contacto)
 
+    def save(self, *args, **kwargs):
+        if self.opcion_calificacion.tipo != OpcionCalificacion.AGENDA:
+            # eliminamos las agendas existentes (si hubiera alguna)
+            AgendaContacto.objects.filter(
+                agente=self.agente, contacto=self.contacto,
+                campana=self.opcion_calificacion.campana,
+                tipo_agenda=AgendaContacto.TYPE_PERSONAL).delete()
+        super(CalificacionCliente, self).save(*args, **kwargs)
+
     def get_venta(self):
         try:
             return MetadataCliente.objects.get(campana=self.opcion_calificacion.campana,
