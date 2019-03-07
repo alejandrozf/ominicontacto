@@ -788,7 +788,6 @@ class DeleteNodoDestinoMixin(object):
     Vista genérica para ser implementada por cada Nodo de Flujos de llamada
     """
     imposible_eliminar = _('No se puede eliminar un objeto que es destino en un flujo de llamada.')
-    imposible_failover = _('No se puede eliminar un objeto destino failover de otra campaña.')
     nodo_eliminado = _(u'Se ha eliminado el Nodo.')
 
     def eliminar_nodos_y_asociaciones(self):
@@ -815,7 +814,11 @@ class DeleteNodoDestinoMixin(object):
             permitido_eliminar = False
         elif nodo.es_destino_failover():
             permitido_eliminar = False
-            message = self.imposible_failover
+            campanas_failover = nodo.campanas_destino_failover.values_list('name', flat=True)
+            imposible_failover = _(
+                'No se puede eliminar la campaña. Es usada como destino failover de las campañas:'
+                ' {0}'.format(",".join(campanas_failover)))
+            message = imposible_failover
         if not permitido_eliminar:
             messages.add_message(
                 self.request,
@@ -835,7 +838,11 @@ class DeleteNodoDestinoMixin(object):
             messages.error(request, self.imposible_eliminar)
         elif nodo.es_destino_failover():
             permitido_eliminar = False
-            messages.error(request, self.imposible_failover)
+            campanas_failover = nodo.campanas_destino_failover.values_list('nombre', flat=True)
+            imposible_failover = _(
+                'No se puede eliminar la campaña. Es usada como destino failover de las campañas:'
+                ' {0}'.format(",".join(campanas_failover)))
+            messages.error(request, imposible_failover)
         if not permitido_eliminar:
             return redirect(self.url_eliminar_name, self.get_object().id)
 
