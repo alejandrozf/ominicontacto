@@ -34,9 +34,7 @@ from django.utils.translation import ugettext_lazy as _
 from ominicontacto_app.forms import (
     ReporteForm, CampanaSupervisorUpdateForm
 )
-from ominicontacto_app.models import (
-    Campana, Queue, SupervisorProfile
-)
+from ominicontacto_app.models import Campana, SupervisorProfile
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 
@@ -117,7 +115,7 @@ class CampanaDeleteView(DeleteNodoDestinoMixin, CampanasDeleteMixin, DeleteView)
     """
     # TODO: realizar refactor aquí, la vista de eliminación no debería tener dos métodos
     # 'delete'
-    model = Queue
+    model = Campana
     template_name = 'campana/delete_campana.html'
     imposible_eliminar = _('No se puede eliminar una Campaña que es destino en un flujo de llamada')
     nodo_eliminado = _(u'<strong>Operación Exitosa!</strong>\

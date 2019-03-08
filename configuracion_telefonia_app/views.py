@@ -808,8 +808,18 @@ class DeleteNodoDestinoMixin(object):
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
         nodo = DestinoEntrante.get_nodo_ruta_entrante(self.object)
+        permitido_eliminar = True
         if nodo.es_destino_en_flujo_de_llamada():
-            message = (self.imposible_eliminar)
+            message = self.imposible_eliminar
+            permitido_eliminar = False
+        elif nodo.es_destino_failover():
+            permitido_eliminar = False
+            campanas_failover = nodo.campanas_destino_failover.values_list('name', flat=True)
+            imposible_failover = _(
+                'No se puede eliminar la campaña. Es usada como destino failover de las campañas:'
+                ' {0}'.format(",".join(campanas_failover)))
+            message = imposible_failover
+        if not permitido_eliminar:
             messages.add_message(
                 self.request,
                 messages.ERROR,
@@ -819,9 +829,21 @@ class DeleteNodoDestinoMixin(object):
         return super(DeleteNodoDestinoMixin, self).dispatch(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
+        # TODO: analizar si se puede eliminar el código de validación de eliminación del objeto
+        # pues es muy similar al del método 'dispatch' y al parecer no sería necesario
         nodo = DestinoEntrante.get_nodo_ruta_entrante(self.object)
+        permitido_eliminar = True
         if nodo.es_destino_en_flujo_de_llamada():
+            permitido_eliminar = False
             messages.error(request, self.imposible_eliminar)
+        elif nodo.es_destino_failover():
+            permitido_eliminar = False
+            campanas_failover = nodo.campanas_destino_failover.values_list('nombre', flat=True)
+            imposible_failover = _(
+                'No se puede eliminar la campaña. Es usada como destino failover de las campañas:'
+                ' {0}'.format(",".join(campanas_failover)))
+            messages.error(request, imposible_failover)
+        if not permitido_eliminar:
             return redirect(self.url_eliminar_name, self.get_object().id)
 
         try:
