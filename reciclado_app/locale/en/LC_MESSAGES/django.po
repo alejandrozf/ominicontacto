@@ -47,7 +47,7 @@ msgstr "Answering machine detected"
 
 #: reciclado_app/resultado_contactacion.py:59
 msgid "Blacklist"
-msgstr ""
+msgstr "Blacklist"
 
 #: reciclado_app/resultado_contactacion.py:60
 msgid "Expiradas"
