@@ -55,4 +55,4 @@ test:
     DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
   script:
     - flake8
-    - python manage.py test
+    - python manage.py test --failfast
