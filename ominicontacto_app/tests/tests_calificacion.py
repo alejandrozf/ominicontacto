@@ -36,7 +36,8 @@ from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory, Use
                                                SitioExternoFactory, ParametrosCrmFactory,
                                                CalificacionClienteFactory,
                                                NombreCalificacionFactory,
-                                               OpcionCalificacionFactory, MetadataClienteFactory)
+                                               OpcionCalificacionFactory, MetadataClienteFactory,
+                                               AgendaContactoFactory)
 
 from ominicontacto_app.models import (AgendaContacto, NombreCalificacion, Campana,
                                       OpcionCalificacion, CalificacionCliente, ParametrosCrm)
@@ -421,3 +422,25 @@ class CalificacionTests(OMLBaseTest):
     def test_metodo_contactos_no_calificados_devuelve_valores_correctos(self):
         contactos_no_calificados_count = self.campana.obtener_contactos_no_calificados().count()
         self.assertEqual(contactos_no_calificados_count, 0)
+
+    def test_calificacion_cliente_cambio_a_no_agenda_elimina_agendas__globales_existentes(self):
+        self.calificacion_cliente.opcion_calificacion = self.opcion_calificacion_agenda
+        self.calificacion_cliente.save()
+        AgendaContactoFactory(
+            agente=self.agente_profile, contacto=self.contacto, campana=self.campana,
+            tipo_agenda=AgendaContacto.TYPE_PERSONAL)
+        self.assertTrue(AgendaContacto.objects.exists())
+        self.calificacion_cliente.opcion_calificacion = self.opcion_calificacion_no_accion
+        self.calificacion_cliente.save()
+        self.assertFalse(AgendaContacto.objects.exists())
+
+    def test_calificacion_cliente_cambio_a_no_agenda_no_elimina_agendas_personales_existentes(self):
+        self.calificacion_cliente.opcion_calificacion = self.opcion_calificacion_agenda
+        self.calificacion_cliente.save()
+        AgendaContactoFactory(
+            agente=self.agente_profile, contacto=self.contacto, campana=self.campana,
+            tipo_agenda=AgendaContacto.TYPE_GLOBAL)
+        self.assertTrue(AgendaContacto.objects.exists())
+        self.calificacion_cliente.opcion_calificacion = self.opcion_calificacion_no_accion
+        self.calificacion_cliente.save()
+        self.assertTrue(AgendaContacto.objects.exists())
