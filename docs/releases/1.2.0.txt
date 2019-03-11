@@ -1,0 +1,46 @@
+=========================
+Omnileads (OML) 1.2.0 release notes
+=========================
+
+*March 11, 2019*
+
+What's new
+=========================
+
+
+Installation tasks
+-------------------------------
+- Fix on link to download CENTOS
+- Asterisk optional component (Dahdi) was removed
+- Fixes for developers environment
+- OML can be installed now in Ubuntu (Server & Desktop) since 18.04 version
+- Check about sudo permission to run installation script was added
+- Kamailio component was updated to 5.1 version
+
+
+OML admin
+------------------------
+- A new filter for call recordings was added, it select only recordings from calls mark as 'engaged' in its qualifications.
+- Outbound routes can be ordered now from UI and this impact directly on AstDB
+- Calls are now linked to its call dispositions (if exists)
+- Actions for deleted campaigns were removed
+- External CRM support was added
+- Call disposition marked as 'scheduled' are count like pending calls for every campaign reports
+
+
+OML agent
+------------------------
+- Better visualization of agent statuses
+- Manual calls now are internally handled as click2calls
+- Campaign contacts list hides contacts in call dispositions
+- Call disposition forms now are initialized for create new contact when the inbound phone number is private
+- Call disposition form for inbound calls shows historical contact call dispositions
+
+
+OML supervision
+------------------------
+
+
+
+Asterisk
+------------------------
