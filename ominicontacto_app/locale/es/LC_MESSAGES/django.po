@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-08 16:38-0300\n"
+"POT-Creation-Date: 2019-03-12 12:10-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -174,7 +174,7 @@ msgstr ""
 msgid "Ingrese la nueva contraseña (sólo si desea cambiarla)"
 msgstr ""
 
-#: ominicontacto_app/forms.py:121 ominicontacto_app/models.py:3008
+#: ominicontacto_app/forms.py:121 ominicontacto_app/models.py:3017
 msgid "Contraseña"
 msgstr ""
 
@@ -402,7 +402,7 @@ msgstr ""
 #: ominicontacto_app/forms.py:1339 ominicontacto_app/models.py:170
 #: ominicontacto_app/models.py:177 ominicontacto_app/models.py:330
 #: ominicontacto_app/models.py:1452 ominicontacto_app/models.py:1918
-#: ominicontacto_app/models.py:2845 ominicontacto_app/models.py:3171
+#: ominicontacto_app/models.py:2854 ominicontacto_app/models.py:3180
 #: ominicontacto_app/templates/calificacion/calificacion_list.html:31
 #: ominicontacto_app/templates/campana/campana_list.html:64
 #: ominicontacto_app/templates/campana/campana_list.html:124
@@ -736,15 +736,15 @@ msgstr ""
 msgid "Definida en actualizacion"
 msgstr ""
 
-#: ominicontacto_app/models.py:1921 ominicontacto_app/models.py:2848
+#: ominicontacto_app/models.py:1921 ominicontacto_app/models.py:2857
 msgid "Fecha alta"
 msgstr ""
 
-#: ominicontacto_app/models.py:1926 ominicontacto_app/models.py:2853
+#: ominicontacto_app/models.py:1926 ominicontacto_app/models.py:2862
 msgid "Archivo de importación"
 msgstr ""
 
-#: ominicontacto_app/models.py:1929 ominicontacto_app/models.py:2856
+#: ominicontacto_app/models.py:1929 ominicontacto_app/models.py:2865
 msgid "Nombre Archivo de importación"
 msgstr ""
 
@@ -797,112 +797,112 @@ msgstr ""
 msgid "No se encontro calificaciones "
 msgstr ""
 
-#: ominicontacto_app/models.py:2610
+#: ominicontacto_app/models.py:2619
 msgid "No se encontraron eventos en el dia de la fecha"
 msgstr ""
 
-#: ominicontacto_app/models.py:2759
+#: ominicontacto_app/models.py:2768
 msgid "La hora 'desde' debe ser menor o igual a la hora 'hasta'."
 msgstr ""
 
-#: ominicontacto_app/models.py:2760
+#: ominicontacto_app/models.py:2769
 msgid "La hora 'hasta' debe ser mayor a la hora 'desde'."
 msgstr ""
 
-#: ominicontacto_app/models.py:2770
+#: ominicontacto_app/models.py:2779
 msgid "Ya esta cubierto el rango horario en ese día semanal."
 msgstr ""
 
-#: ominicontacto_app/models.py:2771
+#: ominicontacto_app/models.py:2780
 msgid "Ya esta cubierto el rango horario ese día semanal."
 msgstr ""
 
-#: ominicontacto_app/models.py:2892
+#: ominicontacto_app/models.py:2901
 msgid "GET"
 msgstr ""
 
-#: ominicontacto_app/models.py:2893
+#: ominicontacto_app/models.py:2902
 msgid "POST"
 msgstr ""
 
-#: ominicontacto_app/models.py:2894
+#: ominicontacto_app/models.py:2903
 msgid "JSON"
 msgstr ""
 
-#: ominicontacto_app/models.py:2901
+#: ominicontacto_app/models.py:2910
 msgid "Embebido"
 msgstr ""
 
-#: ominicontacto_app/models.py:2902
+#: ominicontacto_app/models.py:2911
 msgid "Nueva pestaña"
 msgstr ""
 
-#: ominicontacto_app/models.py:2954
+#: ominicontacto_app/models.py:2963
 #: ominicontacto_app/services/estadisticas_campana.py:129
 #: ominicontacto_app/services/estadisticas_campana.py:148
 msgid "Ocupado"
 msgstr ""
 
-#: ominicontacto_app/models.py:2955
+#: ominicontacto_app/models.py:2964
 msgid "Contestador"
 msgstr ""
 
-#: ominicontacto_app/models.py:2956
+#: ominicontacto_app/models.py:2965
 msgid "No atendido"
 msgstr ""
 
-#: ominicontacto_app/models.py:2957
+#: ominicontacto_app/models.py:2966
 msgid "Rechazado"
 msgstr ""
 
-#: ominicontacto_app/models.py:2958
+#: ominicontacto_app/models.py:2967
 msgid "Timeout"
 msgstr ""
 
-#: ominicontacto_app/models.py:2961
+#: ominicontacto_app/models.py:2970
 msgid "CONTESTADOR"
 msgstr ""
 
-#: ominicontacto_app/models.py:3007
+#: ominicontacto_app/models.py:3016
 #: ominicontacto_app/templates/agente/base_agente.html:303
 #: ominicontacto_app/templates/registration/login.html:52
 #: ominicontacto_app/templates/user/delete_user.html:27
 msgid "Usuario"
 msgstr ""
 
-#: ominicontacto_app/models.py:3163
+#: ominicontacto_app/models.py:3172
 msgid "Dato de Campaña"
 msgstr ""
 
-#: ominicontacto_app/models.py:3164
+#: ominicontacto_app/models.py:3173
 msgid "Dato de Contacto"
 msgstr ""
 
-#: ominicontacto_app/models.py:3165
+#: ominicontacto_app/models.py:3174
 msgid "Dato de Llamada"
 msgstr ""
 
-#: ominicontacto_app/models.py:3166
+#: ominicontacto_app/models.py:3175
 msgid "Fijo"
 msgstr ""
 
-#: ominicontacto_app/models.py:3170
+#: ominicontacto_app/models.py:3179
 msgid "ID de Campaña"
 msgstr ""
 
-#: ominicontacto_app/models.py:3172
+#: ominicontacto_app/models.py:3181
 msgid "Tipo de Campaña"
 msgstr ""
 
-#: ominicontacto_app/models.py:3177
+#: ominicontacto_app/models.py:3186
 msgid "ID de Llamada"
 msgstr ""
 
-#: ominicontacto_app/models.py:3178
+#: ominicontacto_app/models.py:3187
 msgid "ID de Agente"
 msgstr ""
 
-#: ominicontacto_app/models.py:3179
+#: ominicontacto_app/models.py:3188
 #: ominicontacto_app/templates/agente/base_agente.html:609
 #: ominicontacto_app/templates/agente/contactos_content.html:61
 #: ominicontacto_app/templates/agente/contactos_telefonos_repetidos.html:59
@@ -915,15 +915,15 @@ msgstr ""
 msgid "Teléfono"
 msgstr ""
 
-#: ominicontacto_app/models.py:3180
+#: ominicontacto_app/models.py:3189
 msgid "ID de Cliente"
 msgstr ""
 
-#: ominicontacto_app/models.py:3181
+#: ominicontacto_app/models.py:3190
 msgid "Archivo de Grabación"
 msgstr ""
 
-#: ominicontacto_app/models.py:3182
+#: ominicontacto_app/models.py:3191
 msgid "Tiempo de espera"
 msgstr ""
 

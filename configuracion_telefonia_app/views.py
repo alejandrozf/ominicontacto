@@ -817,7 +817,7 @@ class DeleteNodoDestinoMixin(object):
             campanas_failover = nodo.campanas_destino_failover.values_list('name', flat=True)
             imposible_failover = _(
                 'No se puede eliminar la campaña. Es usada como destino failover de las campañas:'
-                ' {0}'.format(",".join(campanas_failover)))
+                ' {0}').format(",".join(campanas_failover))
             message = imposible_failover
         if not permitido_eliminar:
             messages.add_message(
@@ -841,7 +841,7 @@ class DeleteNodoDestinoMixin(object):
             campanas_failover = nodo.campanas_destino_failover.values_list('nombre', flat=True)
             imposible_failover = _(
                 'No se puede eliminar la campaña. Es usada como destino failover de las campañas:'
-                ' {0}'.format(",".join(campanas_failover)))
+                ' {0}').format(",".join(campanas_failover))
             messages.error(request, imposible_failover)
         if not permitido_eliminar:
             return redirect(self.url_eliminar_name, self.get_object().id)
