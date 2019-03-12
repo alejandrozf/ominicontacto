@@ -25,7 +25,8 @@ OML admin
 - Calls are now linked to its call dispositions (if exists)
 - Actions for deleted campaigns were removed
 - External CRM support was added
-- Call disposition marked as 'scheduled' are count like pending calls for every campaign reports
+- Call disposition marked as 'scheduled' are count like pending calls for campaign global reports
+- Validation for avoid delete an inbound campaign that is used as a failover destination was added
 
 
 OML agent
@@ -35,6 +36,7 @@ OML agent
 - Campaign contacts list hides contacts in call dispositions
 - Call disposition forms now are initialized for create new contact when the inbound phone number is private
 - Call disposition form for inbound calls shows historical contact call dispositions
+- Personal scheduled for agents are now deleted when its related call dispositions change its values to another call dispositions type different than 'Schedule'
 
 
 OML supervision
