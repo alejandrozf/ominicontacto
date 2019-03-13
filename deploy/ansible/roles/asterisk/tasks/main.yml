@@ -46,7 +46,7 @@
   tags: asterisk
 
 - include: gluster-server.yml
-  tags: ['postinstall','asterisk']
+  tags: ['asterisk']
   when: cluster != 0
 
 - include: roles/prerequisitos/tasks/reboot.yml

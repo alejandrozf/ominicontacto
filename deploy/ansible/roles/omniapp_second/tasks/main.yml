@@ -17,28 +17,22 @@
 #
 ---
 
-#----------------------------------------------------------------------
-# Deploy de la app
-#
-# Tags mas utiles:
-#  - virtualenv: setup de virtualenv & requirements
-#  - deploy: deploy de la APP (EXCEPTUANDO cambios en otros
-#       compoenentes)
-
-#----------------------------------------------------------------------
+# Se setea esta variable que se va a usar en estos playbooks
+- set_fact: static_route={{ install_prefix }}ominicontacto/ominicontacto_app/static/ominicontacto
+  tags: postinstall
 
 - include: django_migrations.yml
-  tags: ['postinstall','omniapp']
+  tags: [omniapp']
 
 - include: omniapp_second.yml
-  tags: ['postinstall','omniapp']
+  tags: ['omniapp']
 
 - include: gluster-client.yml
-  tags: ['postinstall','omniapp']
+  tags: ['omniapp']
   when: cluster != 0
 
 - include: supervision.yml
-  tags: ['postinstall','omniapp']
+  tags: ['omniapp']
 
 - include: roles/prerequisitos/tasks/reboot.yml
   when: cluster != 0 and ansible_os_family == "RedHat"

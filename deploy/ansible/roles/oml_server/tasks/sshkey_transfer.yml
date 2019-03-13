@@ -31,7 +31,6 @@
 # Se cambian los permisos de la llave privada
 - name: Change permissions on id_rsa
   file: state=file path={{ install_prefix }}/.ssh/id_rsa owner={{ usuario }} group={{ usuario }} mode=0700
-  tags: postinstall
 
 # Se realiza el primer ssh login con el argoumento -o para que no haga el chequeo de host
 - name: Try first ssh login
