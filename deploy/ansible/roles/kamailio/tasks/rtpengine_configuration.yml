@@ -22,14 +22,13 @@
   template: src=templates/systemd/sysconfig_rtpengine.j2 dest=/etc/rtpengine-config.conf
   become: true
   become_method: sudo
-  tags: ['postinstall','changeip']
+  tags: [changeip']
 
 # Se copia el archivo para el systemd, (revisarlo y revisar systemd para mas informacion)
 - name: Copy of rtpengine service file to systemd
   template: src=templates/systemd/rtpengine.service dest=/etc/systemd/system owner=root group=root mode=650
   become: true
   become_method: sudo
-  tags: ['postinstall']
 
 # Tengo un template de rsyslog modificado para tener logs de rtpengine y kamailio en sus propios archivos (ver template para mas info)
 - name: Modify of /etc/rsyslog.conf
@@ -63,4 +62,4 @@
   service: name=rtpengine state=restarted enabled=yes
   become: true
   become_method: sudo
-  tags: ['postinstall','changeip']
+  tags: ['changeip']

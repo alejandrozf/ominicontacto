@@ -43,7 +43,7 @@
       {{ database_ip }} {{ database_fqdn }}
       {{ dialer_ip }} {{ dialer_fqdn }}
   when: cluster != 0
-  tags: always
+  tags: changeip
 
 - name: Write the /etc/hosts of server (aio)
   blockinfile:
@@ -53,7 +53,7 @@
     block: |
       {{ omni_ip }} {{ omni_fqdn }}
   when: cluster == 0
-  tags: always
+  tags: changeip
 
 ##################################
 ###        Centos tasks         ##
@@ -146,7 +146,7 @@
 ##################################
 
 # Se desinstala apache2 por defecto viene instalado en debian
-- name: Uninstall of apache2
+- name: Uninstall of apache2 (debian)
   apt: name=apache2 state=absent purge=yes
   when: ansible_os_family == "Debian"
   become: true
@@ -164,6 +164,10 @@
 # Se instala este paquete necesario antes de hacer update
 - name: Install apt-transport-https (debian)
   apt: name=apt-transport-https state=present
+  when: ansible_os_family == "Debian"
+
+- name: Update / upgrade of system (debian)
+  apt: update_cache=yes upgrade=dist
   when: ansible_os_family == "Debian"
 
 # Instalo linux-headers del kernel  en cuestion

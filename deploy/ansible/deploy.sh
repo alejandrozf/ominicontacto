@@ -283,8 +283,8 @@ case $arg1 in
             -a --asterisk: execute asterisk related tasks
             -o --omniapp: execute omniapp related tasks
             -c --changeip: execute tasks needed when you change the IP of OML system
-            -d --database: execute tasks related to database
-            -d --dialer: execute tasks related to dialer (Wombat Dialer)
+            -da --database: execute tasks related to database
+            -di --dialer: execute tasks related to dialer (Wombat Dialer)
           (Second option)
           -a --aio: install all in one server
           -c --cluster: install cluster mode

@@ -85,7 +85,7 @@
 - name: Check if Kamailio certificates exists
   shell: test -d {{ kamailio_location }}/etc/certs || test -d /opt/kamailio/etc/certs
   register: certs_exists
-  tags: ['kamailio','postinstall']
+  tags: ['kamailio']
   become: true
   become_method: sudo
   ignore_errors: yes
@@ -99,7 +99,7 @@
   when: certs_exists|failed
 
 - include: kamailio_configuration.yml
-  tags: ['kamailio','postinstall']
+  tags: ['kamailio']
 
 #  Se pasan los certificados al host
 - name: Copy of the certificates from kamailio server to omniapp (cluster)
@@ -109,7 +109,6 @@
     - { src: 'cert.pem', dest: 'cert.pem' }
     - { src: 'key.pem', dest: 'key.pem' }
   when: cluster != 0
-  tags: postinstall
 
 - include: roles/prerequisitos/tasks/reboot.yml
   when: cluster != 0 and ansible_os_family == "RedHat"

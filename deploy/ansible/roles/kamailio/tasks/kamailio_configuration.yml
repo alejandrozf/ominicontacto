@@ -48,14 +48,6 @@
 # Se crea el archivo de systemd para el servicio kamailio
 - name: Creation of kamailio.service file in systemd
   template: src=templates/systemd/kamailio.service.j2 dest=/etc/systemd/system/kamailio.service owner=root group=root mode=650
-  tags: postinstall
-
-# Se restartea rsyslog se habilita kamailio y se hace el daemon-reload.
-- name: Restart de rsyslog
-  service: name=rsyslog.service state=restarted enabled=yes
-  tags: postinstall
-  become: true
-  become_method: sudo
 
 - name: Change owner of kamailio directory
   file: state=directory path={{ kamailio_location }} owner={{ usuario }} group={{ usuario }} recurse=yes
@@ -72,14 +64,15 @@
 # Se borra el kamailio.cfg que se crea por default a  la  hora de instalar
 - name: Erase of default kamailio.cfg file
   shell: rm -rf {{ kamailio_location }}/etc/kamailio/kamailio.cfg
+  tags: postinstall
 
 # Se linkea el kamailio.cfg de omnileads a su ubicacion /etc/kamailio
 - name: Link kamailio.cfg repo file to {{ kamailio_location }} (aio)
   file: state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg dest={{ kamailio_location }}/etc/kamailio/kamailio.cfg force=true owner={{ usuario }} group={{ usuario }} mode=644
-  tags: postinstall
   become: true
   become_method: sudo
   when: cluster == 0
+  tags: postinstall
 
 # Se copia si es un cluster
 - name: Copy of the kamailio.cfg file (cluster)
@@ -105,4 +98,11 @@
 - name: Start and enable redis service
   service: name=redis state=restarted enabled=yes
   become: yes
+  become_method: sudo
+
+# Se restartea rsyslog se habilita kamailio y se hace el daemon-reload.
+- name: Restart de rsyslog
+  service: name=rsyslog.service state=restarted enabled=yes
+  tags: postinstall
+  become: true
   become_method: sudo
