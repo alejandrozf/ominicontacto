@@ -68,8 +68,8 @@ logger = logging.getLogger(__name__)
 
 
 def index_view(request):
-    return render_to_response('index.html',
-                              context_instance=RequestContext(request))
+    response = redirect('/accounts/login')
+    return response
 
 
 def login_view(request):
