@@ -32,7 +32,7 @@ from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana,
                                       SitioExterno, User, Contacto, SupervisorProfile, Modulo,
                                       AgenteEnContacto, QueueMember, CalificacionCliente,
                                       OpcionCalificacion, ArchivoDeAudio, ParametrosCrm,
-                                      ActuacionVigente, Pausa, MetadataCliente)
+                                      ActuacionVigente, Pausa, MetadataCliente, Backlist)
 from reportes_app.models import LlamadaLog, ActividadAgenteLog
 
 faker = faker.Factory.create()
@@ -81,6 +81,16 @@ class SitioExternoFactory(DjangoModelFactory):
     url = lazy_attribute(lambda a: "http://{0}.com".format(a.nombre.replace(" ", "_")))
     tipo = lazy_attribute(lambda a: faker.random_int(1, 3))
     metodo = lazy_attribute(lambda a: faker.random_int(1, 2))
+
+
+class BlackListFactory(DjangoModelFactory):
+    class Meta:
+        model = Backlist
+
+    nombre = lazy_attribute(lambda a: faker.text(15))
+    fecha_alta = lazy_attribute(lambda a: timezone.now())
+    nombre_archivo_importacion = Sequence(lambda n: "file_{0}.dat".format(n))
+    cantidad_contactos = lazy_attribute(lambda a: faker.random_number(2))
 
 
 class GrupoFactory(DjangoModelFactory):

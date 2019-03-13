@@ -29,7 +29,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <table class="table">
     <thead>
       <tr class="fts-table-bg">
-        <th>{% trans 'Backlist' %}</th>
+        <th>{% trans 'Blacklist' %}</th>
         <th>{% trans 'Creada' %}</th>
         <th>{% trans 'Cantidad Contactos' %}</th>
       </tr>
@@ -41,7 +41,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {{ backlist.nombre }}
                 </td>
                 <td>
-                    {{ backlist.fecha_alta|date:"d/m/Y" }}
+                    {{ backlist.fecha_alta|date:"d/m/Y - H:i:s" }}
                 </td>
                 <td>
                     {{ backlist.cantidad_contactos }}

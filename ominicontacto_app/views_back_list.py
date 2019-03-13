@@ -55,6 +55,13 @@ class BackListView(ListView):
     context_object_name = 'back_lists'
     model = Backlist
 
+    def get_queryset(self):
+
+        queryset = super(BackListView, self).get_queryset()
+        queryset = queryset.order_by('-fecha_alta')
+        queryset = queryset[:1]
+        return queryset
+
 
 class BacklistCreateView(CreateView):
     """
