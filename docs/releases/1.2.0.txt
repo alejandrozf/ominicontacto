@@ -2,7 +2,7 @@
 Omnileads (OML) 1.2.0 release notes
 =========================
 
-*March 11, 2019*
+*March 14, 2019*
 
 What's new
 =========================
@@ -39,10 +39,6 @@ OML agent
 - Personal scheduled for agents are now deleted when its related call dispositions change its values to another call dispositions type different than 'Schedule'
 
 
-OML supervision
-------------------------
-
-
-
 Asterisk
 ------------------------
+- Fixed bug that logged ABANDON instead of EXPIRE when a queue is failover destination of another and the call expires in both queues
