@@ -72,23 +72,39 @@
     option='download-cache'
     value='{{ install_prefix }}.pip/cache'
 
+#----------------------------------------------------------------------
+# ics_app installed, do this
+#----------------------------------------------------------------------
+
+- name: Get the ics_settings settings in temp file
+  shell: cat {{ install_prefix }}local/oml_settings_local.py | grep "#ICS" -A200 > /tmp/oml_settings_local.py2
+  tags: postinstall
+  when: ics_exists|succeeded
+
 # El codigo que está en /var/tmp/ominicontacto_build/ se pasa a /opt/omnileeads/ominicontacto
 - name: Upload built (rsync to /ominicontacto)
-  synchronize: "src={{ build_dir }} dest={{ install_prefix }} delete=yes checksum=yes times=no"
+  synchronize: "src={{ build_dir }}/{{ item }} dest={{ install_prefix }}ominicontacto/ delete=yes checksum=yes times=no"
+  with_items:
+    - api_app
+    - configuracion_telefonia_app
+    - manage.py
+    - ominicontacto
+    - ominicontacto_app
+    - ominicontacto_voip
+    - Omnisup
+    - reciclado_app
+    - reportes_app
+    - requirements.txt
+    - utiles_globales.py
+    - test
+    - tests
   when: desarrollo == 0
+  tags: postinstall
 
 # Se clona el repo si es un entorno de desarrollo
 - name: Clone of OML repository (develop server)
-  git: repo=https://gitlab.com/omnileads/ominicontacto.git dest={{ install_prefix }}ominicontacto/ accept_hostkey=yes force=yes
-  when: desarrollo == 1
-  ignore_errors: yes
-
-- name: Checkout of desired branch (develop server)
-  git: repo=https://gitlab.com/omnileads/ominicontacto.git clone=no version={{ rama }} dest={{ install_prefix }}ominicontacto/ accept_hostkey=yes
-  when: desarrollo == 1
-  become: true
-  become_method: sudo
-  ignore_errors: yes
+  git: repo=https://gitlab.com/omnileads/ominicontacto.git dest={{ install_prefix }}ominicontacto/ accept_hostkey=yes force=yes accept_hostkey=yes version={{ rama }}
+  when: desarrollo == 1 and ominicontacto_exists|failed
 
 # Seteo posesion de ominicontacto al usuario omnileads
 - name: Change owner and group of ominicontacto
@@ -149,14 +165,21 @@
 - name: Add the aliases to the .bashrc home file (develop server)
   lineinfile: path={{ install_prefix }}.bashrc line={{ item }} state=present
   with_items:
-    - "alias django-server='sudo -u omnileads /bin/bash -c \"~/virtualenv/bin/python ~/ominicontacto/manage.py runsslserver 0.0.0.0:1210\"'"
+    - "alias django-server='sudo -u omnileads /bin/bash -c \"~/virtualenv/bin/python ~/ominicontacto/manage.py runsslserver 0.0.0.0:1210 --certificate {{ install_prefix }}nginx_certs/cert.pem --key {{ install_prefix }}nginx_certs/key.pem\"'"
     - "alias kill1210=\"fuser -k -n tcp 1210\""
   when: desarrollo == 1
 
 # Se sube el archivo oml_settings_local.py
 - name: Upload oml_settings_local.py
   template: src=templates/oml_settings_local.py.j2 dest={{ install_prefix }}local/oml_settings_local.py
-  tags: ['omniapp', 'changeip']
+  tags: ['omniapp', 'changeip','postinstall']
+
+- name: Copy the content of of ics_settings in oml_settings_local
+  shell: "cat /tmp/oml_settings_local.py2 >> oml_settings_local.py"
+  args:
+    chdir: "{{ install_prefix }}/local"
+  when: ics_exists|succeeded
+  tags: postinstall
 
 # Se hace el link simbolico del archivo oml_settings_local a ominicontacto/, para que se pueda hacer manage.py
 - name: Creation of simbolic link of oml_settings_local.py

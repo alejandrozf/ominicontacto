@@ -148,6 +148,7 @@ class LlamadaLog(models.Model):
     """
 
     LLAMADA_MANUAL = 1
+    LLAMADA_ENTRANTE = 3
 
     EVENTOS_NO_CONTACTACION = ('NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL', 'FAIL', 'OTHER',
                                'BLACKLIST', 'CONGESTION', 'NONDIALPLAN')
@@ -157,7 +158,7 @@ class LlamadaLog(models.Model):
     EVENTOS_NO_CONEXION = EVENTOS_NO_CONTACTACION + EVENTOS_NO_DIALOGO
 
     # Eventos que marcan el fin de la conexion con un agente. (Puede ser por conectar con otro)
-    EVENTOS_FIN_CONEXION = ['COMPLETEAGENT', 'COMPLETECALLER',
+    EVENTOS_FIN_CONEXION = ['COMPLETEAGENT', 'COMPLETEOUTNUM',
                             'BT-TRY', 'COMPLETE-BT',
                             'CAMPT-COMPLETE', 'CAMPT-FAIL', 'COMPLETE-CAMPT',
                             'CT-COMPLETE', 'COMPLETE-CT',

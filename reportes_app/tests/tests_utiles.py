@@ -119,10 +119,10 @@ class GeneradorDeLlamadaLogsTests(TestCase):
 
     def test_genera_dialer_manual_completa(self):
         generador = GeneradorDeLlamadaLogs()
-        generador.generar_log(self.dialer, True, 'COMPLETECALLER', '123', self.agente1,
+        generador.generar_log(self.dialer, True, 'COMPLETEOUTNUM', '123', self.agente1,
                               bridge_wait_time=5, duracion_llamada=44, archivo_grabacion='archi')
         logs_generados = LlamadaLog.objects.filter(campana_id=self.dialer.id)
-        eventos_esperados = set(('DIAL', 'ANSWER', 'COMPLETECALLER'))
+        eventos_esperados = set(('DIAL', 'ANSWER', 'COMPLETEOUTNUM'))
         self.assertEqual(self.set_de_eventos(logs_generados), eventos_esperados)
 
         dial = logs_generados.get(event='DIAL')
@@ -138,7 +138,7 @@ class GeneradorDeLlamadaLogsTests(TestCase):
         self.assertEqual(answer.agente_id, self.agente1.id)
         self.assertEqual(answer.bridge_wait_time, 5)
 
-        complete = logs_generados.get(event='COMPLETECALLER')
+        complete = logs_generados.get(event='COMPLETEOUTNUM')
         self.assertEqual(complete.campana_id, self.dialer.id)
         self.assertEqual(complete.tipo_campana, self.dialer.type)
         self.assertEqual(complete.tipo_llamada, Campana.TYPE_MANUAL)
@@ -177,7 +177,7 @@ class GeneradorDeLlamadaLogsTests(TestCase):
                               bridge_wait_time=5, duracion_llamada=44)
         logs_generados = LlamadaLog.objects.filter(campana_id=self.dialer.id)
         # ASUMO que al ser abandon, la pata dial detecta que el cliente abandonó
-        eventos_esperados = set(('DIAL', 'ANSWER', 'COMPLETECALLER', 'ENTERQUEUE', 'ABANDON'))
+        eventos_esperados = set(('DIAL', 'ANSWER', 'COMPLETEOUTNUM', 'ENTERQUEUE', 'ABANDON'))
         self.assertEqual(self.set_de_eventos(logs_generados), eventos_esperados)
 
         dial = logs_generados.get(event='DIAL')
@@ -196,7 +196,7 @@ class GeneradorDeLlamadaLogsTests(TestCase):
         self.assertEqual(answer.contacto_id, self.contacto_d.id)
         self.assertEqual(answer.bridge_wait_time, 5)
 
-        complete = logs_generados.get(event='COMPLETECALLER', agente_id=-1)
+        complete = logs_generados.get(event='COMPLETEOUTNUM', agente_id=-1)
         self.assertEqual(complete.campana_id, self.dialer.id)
         self.assertEqual(complete.tipo_campana, self.dialer.type)
         self.assertEqual(complete.tipo_llamada, self.dialer.type)

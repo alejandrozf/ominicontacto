@@ -201,7 +201,7 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         generador = GeneradorDeLlamadaLogs()
         generador.generar_log(self.manual, True, 'COMPLETEAGENT', '123',
                               self.agente, duracion_llamada=44)
-        generador.generar_log(self.dialer, False, 'COMPLETECALLER', '123',
+        generador.generar_log(self.dialer, False, 'COMPLETEOUTNUM', '123',
                               self.agente, self.contacto_d, duracion_llamada=105,
                               )
         generador.generar_log(self.preview, False, 'COMPLETEAGENT', '123',
@@ -284,7 +284,7 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         generador = GeneradorDeLlamadaLogs()
         generador.generar_log(self.manual, True, 'COMPLETEAGENT', '123',
                               self.agente, duracion_llamada=44)
-        generador.generar_log(self.dialer, False, 'COMPLETECALLER', '123',
+        generador.generar_log(self.dialer, False, 'COMPLETEOUTNUM', '123',
                               self.agente, self.contacto_d, duracion_llamada=105,
                               )
         generador.generar_log(self.preview, False, 'COMPLETEAGENT', '123',
@@ -362,7 +362,7 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
                               self.agente, self.contacto_p,
                               bridge_wait_time=5
                               )
-        generador.generar_log(self.dialer, False, 'COMPLETECALLER', '123',
+        generador.generar_log(self.dialer, False, 'COMPLETEOUTNUM', '123',
                               self.agente, self.contacto_d, duracion_llamada=105,
                               )
         generador.generar_log(self.preview, False, 'FAIL', '12334645',
@@ -464,10 +464,10 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
                               self.agente, duracion_llamada=61)
         generador.generar_log(self.manual, True, 'COMPLETEAGENT', '123',
                               self.agente, duracion_llamada=44)
-        generador.generar_log(self.dialer, False, 'COMPLETECALLER', '123',
+        generador.generar_log(self.dialer, False, 'COMPLETEOUTNUM', '123',
                               self.agente, self.contacto_d, duracion_llamada=105,
                               )
-        generador.generar_log(self.dialer, False, 'COMPLETECALLER', '123',
+        generador.generar_log(self.dialer, False, 'COMPLETEOUTNUM', '123',
                               self.agente, self.contacto_d, duracion_llamada=65,
                               )
         generador.generar_log(self.preview, False, 'COMPLETEAGENT', '123',
@@ -518,10 +518,10 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
                               self.agente, duracion_llamada=61)
         generador.generar_log(self.manual, True, 'COMPLETEAGENT', '123',
                               self.agente, duracion_llamada=44)
-        generador.generar_log(self.dialer, False, 'COMPLETECALLER', '123',
+        generador.generar_log(self.dialer, False, 'COMPLETEOUTNUM', '123',
                               self.agente, self.contacto_d, duracion_llamada=105,
                               )
-        generador.generar_log(self.dialer, False, 'COMPLETECALLER', '123',
+        generador.generar_log(self.dialer, False, 'COMPLETEOUTNUM', '123',
                               self.agente, self.contacto_d, duracion_llamada=65,
                               )
         generador.generar_log(self.preview, False, 'COMPLETEAGENT', '123',
@@ -545,7 +545,7 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         generador.generar_log(self.entrante, False, 'COMPLETEAGENT', '123',
                               self.agente1, self.contacto_e, duracion_llamada=29
                               )
-        generador.generar_log(self.dialer, False, 'COMPLETECALLER', '123',
+        generador.generar_log(self.dialer, False, 'COMPLETEOUTNUM', '123',
                               self.agente1, self.contacto_d, duracion_llamada=65,
                               )
 
@@ -746,7 +746,7 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
             tipo_llamada=self.dialer.type, agente_id=self.agente.id,
             duracion_llamada=44)
         LlamadaLogFactory(
-            time=fecha_llamada, event='COMPLETECALLER', campana_id=self.preview.id,
+            time=fecha_llamada, event='COMPLETEOUTNUM', campana_id=self.preview.id,
             numero_marcado='456892344', tipo_campana=self.preview.type,
             tipo_llamada=self.preview.type, agente_id=self.agente.id,
             duracion_llamada=62)
@@ -791,7 +791,7 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
             numero_marcado='456892344', tipo_campana=self.preview.type,
             tipo_llamada=self.preview.type, agente_id=self.agente.id)
         LlamadaLogFactory(
-            time=fecha_llamada, event='COMPLETECALLER', campana_id=self.preview.id,
+            time=fecha_llamada, event='COMPLETEOUTNUM', campana_id=self.preview.id,
             numero_marcado='456892344', tipo_campana=self.preview.type,
             tipo_llamada=self.preview.type, agente_id=self.agente.id,
             duracion_llamada=62)
@@ -874,7 +874,7 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
             tipo_llamada=self.dialer.type, agente_id=self.agente.id,
             duracion_llamada=44)
         LlamadaLogFactory(
-            time=fecha_llamada, event='COMPLETECALLER', campana_id=self.preview.id,
+            time=fecha_llamada, event='COMPLETEOUTNUM', campana_id=self.preview.id,
             numero_marcado='456892344', tipo_campana=self.preview.type,
             tipo_llamada=self.preview.type, agente_id=self.agente.id,
             duracion_llamada=62)

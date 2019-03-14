@@ -24,6 +24,7 @@ from __future__ import unicode_literals
 
 import json
 
+from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, QueueFactory,
@@ -45,10 +46,10 @@ class AgentesContactosTests(OMLBaseTest):
         self.campana_entrante, self.contacto_camp_entrante = \
             self._agregar_campana_y_contacto(
                 self.usuario_agente, Campana.TYPE_ENTRANTE)
-        self.campana_manual, self.contacto_camp_entrante = \
+        self.campana_manual, self.contacto_camp_manual = \
             self._agregar_campana_y_contacto(
                 self.usuario_agente, Campana.TYPE_MANUAL)
-        self.campana_preview, self.contacto_camp_entrante = \
+        self.campana_preview, self.contacto_camp_preview = \
             self._agregar_campana_y_contacto(
                 self.usuario_agente, Campana.TYPE_PREVIEW)
         self.client.login(username=self.usuario_agente.username, password=self.PWD)
@@ -180,7 +181,9 @@ class AgentesContactosTests(OMLBaseTest):
         campana_dialer = self.campana_dialer
         contacto = campana_dialer.bd_contacto.contactos.first()
         url = reverse(
-            'campana_contactos_telefono_repetido', args=[campana_dialer.pk, contacto.telefono])
+            'campana_contactos_telefono_repetido', args=[campana_dialer.pk,
+                                                         contacto.telefono,
+                                                         'false'])
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed(response, 'registration/login.html')
 
@@ -188,7 +191,9 @@ class AgentesContactosTests(OMLBaseTest):
         campana_dialer = self.campana_dialer
         contacto = campana_dialer.bd_contacto.contactos.first()
         url = reverse(
-            'campana_contactos_telefono_repetido', args=[campana_dialer.pk, contacto.telefono])
+            'campana_contactos_telefono_repetido', args=[campana_dialer.pk,
+                                                         contacto.telefono,
+                                                         'false'])
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed(response, 'agente/contactos_telefonos_repetidos.html')
 
@@ -199,7 +204,32 @@ class AgentesContactosTests(OMLBaseTest):
         ContactoFactory.create_batch(
             n_contactos_repetidos, bd_contacto=campana_dialer.bd_contacto, telefono=telefono)
         url = reverse(
-            'campana_contactos_telefono_repetido', args=[campana_dialer.pk, telefono])
+            'campana_contactos_telefono_repetido', args=[campana_dialer.pk, telefono, 'false'])
         response = self.client.get(url, follow=True)
         self.assertEqual(campana_dialer.bd_contacto.contactos.count(), n_contactos_repetidos + 1)
         self.assertEqual(response.context_data['contactos'].count(), n_contactos_repetidos)
+
+    def test_vista_identificar_contacto_muestra_contacto_telefono_parecido(self):
+        contacto = self.contacto_camp_manual
+        telefono = contacto.telefono[:-1]
+        url = reverse('identificar_contacto_a_llamar',
+                      args=[self.campana_manual.pk, telefono])
+        response = self.client.get(url, follow=True)
+        command = "makeClick2Call('%s', '%s', '%s', '%s', 'contactos');" % \
+            (self.campana_manual.pk, self.campana_manual.type, contacto.id, telefono)
+        self.assertContains(response, command)
+        command = "makeClick2Call('%s', '%s', '%s', '%s', 'contactos');" % \
+            (self.campana_manual.pk, self.campana_manual.type, contacto.id, contacto.telefono)
+        self.assertContains(response, command)
+
+        url_nuevo = reverse('nuevo_contacto_campana_a_llamar',
+                            args=[self.campana_manual.pk, telefono])
+        self.assertContains(response, url_nuevo)
+
+    def test_vista_nuevo_contacto_con_boton_guardar_y_llamar(self):
+        telefono = '35111112234'
+        url = reverse('nuevo_contacto_campana_a_llamar',
+                      args=[self.campana_manual.pk, telefono])
+        response = self.client.get(url, follow=True)
+        self.assertContains(response, 'value="%s"' % telefono)
+        self.assertContains(response, _('Guardar y llamar'))

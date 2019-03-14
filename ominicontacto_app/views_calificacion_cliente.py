@@ -46,6 +46,8 @@ from ominicontacto_app.models import (
     OpcionCalificacion, UserApiCrm)
 from ominicontacto_app.utiles import convertir_ascii_string
 
+from reportes_app.models import LlamadaLog
+
 
 logger = logging_.getLogger(__name__)
 
@@ -67,10 +69,10 @@ class CalificacionClienteFormView(FormView):
         contactos_info = list(self.campana.bd_contacto.contactos.filter(telefono=telefono))
         return contactos_info
 
-    def get_contacto(self):
-        if 'pk_contacto' in self.kwargs and self.kwargs['pk_contacto'] is not None:
+    def get_contacto(self, id_contacto):
+        if id_contacto is not None:
             try:
-                return self.campana.bd_contacto.contactos.get(pk=self.kwargs['pk_contacto'])
+                return self.campana.bd_contacto.contactos.get(pk=id_contacto)
             except Contacto.DoesNotExist:
                 return None
         return None
@@ -85,12 +87,34 @@ class CalificacionClienteFormView(FormView):
                 return None
         return None
 
+    def _es_numero_privado(self, telefono):
+        if not telefono:
+            return False
+        return not telefono.isdigit()
+
     def dispatch(self, *args, **kwargs):
-        self.agente = AgenteProfile.objects.get(pk=kwargs['id_agente'])
-        self.campana = Campana.objects.get(pk=kwargs['pk_campana'])
-        self.contacto = self.get_contacto()
-        telefono = kwargs.get('telefono', False)
-        if telefono and self.contacto is None:
+        self.agente = self.request.user.get_agente_profile()
+        id_contacto = None
+        self.call_data = None
+        call_data_json = 'false'
+        if 'call_data_json' in kwargs:
+            call_data_json = kwargs['call_data_json']
+            self.call_data = json.loads(call_data_json)
+            self.campana = Campana.objects.get(pk=self.call_data['id_campana'])
+            telefono = self.call_data['telefono']
+            if self.call_data['id_contacto']:
+                id_contacto = self.call_data['id_contacto']
+        else:
+            self.campana = Campana.objects.get(pk=kwargs['pk_campana'])
+            telefono = kwargs.get('telefono', False)
+
+        if 'pk_contacto' in kwargs:
+            id_contacto = kwargs['pk_contacto']
+        self.contacto = self.get_contacto(id_contacto)
+
+        if self._es_numero_privado(telefono):
+            self.contacto = None
+        elif telefono and self.contacto is None:
             # se dispara desde una llamada desde el webphone
             contacto_info = self.get_info_telefonos(telefono)
             len_contacto_info = len(contacto_info)
@@ -101,8 +125,18 @@ class CalificacionClienteFormView(FormView):
             else:
                 return HttpResponseRedirect(
                     reverse('campana_contactos_telefono_repetido',
-                            kwargs={'pk_campana': self.campana.pk, 'telefono': telefono}))
+                            kwargs={'pk_campana': self.campana.pk,
+                                    'telefono': telefono,
+                                    'call_data_json': call_data_json}))
         self.object = self.get_object()
+
+        self.url_sitio_externo = ''
+        if self.campana.tiene_interaccion_con_sitio_externo and self.call_data is not None:
+            self.url_sitio_externo = self.campana.sitio_externo.get_url_interaccion(self.agente,
+                                                                                    self.campana,
+                                                                                    self.contacto,
+                                                                                    self.call_data)
+
         return super(CalificacionClienteFormView, self).dispatch(*args, **kwargs)
 
     def get_calificacion_form_kwargs(self):
@@ -113,8 +147,9 @@ class CalificacionClienteFormView(FormView):
             calificacion_kwargs['data'] = self.request.POST
         return calificacion_kwargs
 
-    def get_form(self):
+    def get_form(self, historico_calificaciones=False):
         kwargs = self.get_calificacion_form_kwargs()
+        kwargs['historico_calificaciones'] = historico_calificaciones
         return CalificacionClienteForm(campana=self.campana, **kwargs)
 
     def get_contacto_form_kwargs(self):
@@ -123,7 +158,11 @@ class CalificacionClienteFormView(FormView):
         if self.contacto is not None:
             kwargs['instance'] = self.contacto
         else:
-            initial['telefono'] = self.kwargs['telefono']
+            if 'call_data_json' in self.kwargs:
+                initial['telefono'] = self.call_data['telefono']
+            else:
+                # TODO: Cuando las manuales vengan con call_data sacar esto
+                initial['telefono'] = self.kwargs['telefono']
 
         if self.request.method == 'GET':
             # TODO: Pasar esta logica al formulario?
@@ -150,14 +189,29 @@ class CalificacionClienteFormView(FormView):
         return FormularioContactoCalificacion(campos=self.get_campos_formulario_contacto(),
                                               **self.get_contacto_form_kwargs())
 
+    def _formulario_llamada_entrante(self):
+        """Determina si estamos en presencia de un formulario
+        generado por una llamada entrante
+        """
+        tipo_llamada = None
+        if self.call_data is not None:
+            tipo_llamada = int(self.call_data['call_type'])
+        llamada_entrante = (tipo_llamada == LlamadaLog.LLAMADA_ENTRANTE)
+        return llamada_entrante
+
     def get(self, request, *args, **kwargs):
+        formulario_llamada_entrante = self._formulario_llamada_entrante()
+
         contacto_form = self.get_contacto_form()
-        calificacion_form = self.get_form()
+        calificacion_form = self.get_form(historico_calificaciones=formulario_llamada_entrante)
 
         return self.render_to_response(self.get_context_data(
             contacto_form=contacto_form,
             calificacion_form=calificacion_form,
-            campana=self.campana))
+            campana=self.campana,
+            llamada_entrante=formulario_llamada_entrante,
+            call_data=self.call_data,
+            url_sitio_externo=self.url_sitio_externo))
 
     def post(self, request, *args, **kwargs):
         """
@@ -165,7 +219,18 @@ class CalificacionClienteFormView(FormView):
         """
         contacto_form = self.get_contacto_form()
         calificacion_form = self.get_form()
-        if contacto_form.is_valid() and calificacion_form.is_valid():
+        contacto_form_valid = contacto_form.is_valid()
+        calificacion_form_valid = calificacion_form.is_valid()
+        self.usuario_califica = request.POST.get('usuario_califica', 'false') == 'true'
+        formulario_llamada_entrante = self._formulario_llamada_entrante()
+        # cuando el formulario es generado por una llamada entrante y el usuario no desea
+        # calificar al contacto, solo validamos el formulario del contacto, ya que el de
+        # calificación permanece oculto (en las dos siguientes validaciones)
+        if formulario_llamada_entrante and not self.usuario_califica and contacto_form_valid:
+            return self.form_valid(contacto_form)
+        if formulario_llamada_entrante and not self.usuario_califica and not contacto_form_valid:
+            return self.form_invalid(contacto_form)
+        if contacto_form_valid and calificacion_form_valid:
             return self.form_valid(contacto_form, calificacion_form)
         else:
             return self.form_invalid(contacto_form, calificacion_form)
@@ -176,7 +241,52 @@ class CalificacionClienteFormView(FormView):
                 and calificacion.get_venta():
             calificacion.get_venta().delete()
 
-    def form_valid(self, contacto_form, calificacion_form):
+    def _obtener_call_id(self):
+        if self.call_data is not None:
+            return self.call_data.get('call_id')
+        return None
+
+    def _calificar_form(self, calificacion_form):
+        self.object_calificacion = calificacion_form.save(commit=False)
+        self.object_calificacion.set_es_venta()
+        self.object_calificacion.callid = self._obtener_call_id()
+        self.object_calificacion.agente = self.agente
+        self.object_calificacion.contacto = self.contacto
+
+        # TODO: Ver si hace falta guardar que es una llamada manual
+        # El parametro manual no viene mas
+        if self.object is None:
+            es_calificacion_manual = 'manual' in self.kwargs and self.kwargs['manual']
+            self.object_calificacion.es_calificacion_manual = es_calificacion_manual
+
+        self.object_calificacion.save()
+        # modificamos la entrada de la modificación en la instancia para así diferenciar
+        # cambios realizados directamente desde una llamada de las otras modificaciones
+        update_change_reason(self.object_calificacion, self.kwargs.get('from'))
+
+        # Finalizar relacion de contacto con agente
+        # Optimizacion: si ya hay calificacion ya se termino la relacion agente contacto antes.
+        if self.campana.type == Campana.TYPE_PREVIEW and self.object is None:
+            self.campana.gestionar_finalizacion_relacion_agente_contacto(self.contacto.id)
+
+        # check metadata en calificaciones de no accion y eliminar
+        self._check_metadata_no_accion_delete(self.object_calificacion)
+
+        if self.object_calificacion.es_venta and \
+                not self.campana.tiene_interaccion_con_sitio_externo:
+            return redirect(self.get_success_url_venta())
+        else:
+            message = _('Operación Exitosa! '
+                        'Se llevó a cabo con éxito la calificación del cliente')
+            messages.success(self.request, message)
+        if self.object_calificacion.es_agenda():
+            return redirect(self.get_success_url_agenda())
+        elif self.kwargs['from'] == 'reporte':
+            return redirect(self.get_success_url_reporte())
+        else:
+            return redirect(self.get_success_url())
+
+    def form_valid(self, contacto_form, calificacion_form=None):
         nuevo_contacto = False
         if self.contacto is None:
             nuevo_contacto = True
@@ -195,49 +305,31 @@ class CalificacionClienteFormView(FormView):
         if nuevo_contacto:
             self.contacto.es_originario = False
         self.contacto.save()
-
-        self.object_calificacion = calificacion_form.save(commit=False)
-        self.object_calificacion.set_es_venta()
-        self.object_calificacion.agente = self.agente
-        self.object_calificacion.contacto = self.contacto
-
-        if self.object is None:
-            es_calificacion_manual = 'manual' in self.kwargs and self.kwargs['manual']
-            self.object_calificacion.es_calificacion_manual = es_calificacion_manual
-
-        self.object_calificacion.save()
-        # modificamos la entrada de la modificación en la instancia para así diferenciar
-        # cambios realizados directamente desde una llamada de las otras modificaciones
-        update_change_reason(self.object_calificacion, self.kwargs.get('from'))
-
-        # Finalizar relacion de contacto con agente
-        # Optimizacion: si ya hay calificacion ya se termino la relacion agente contacto antes.
-        if self.campana.type == Campana.TYPE_PREVIEW and self.object is None:
-            self.campana.gestionar_finalizacion_relacion_agente_contacto(self.contacto.id)
-
-        # check metadata en calificaciones de no accion y eliminar
-        self._check_metadata_no_accion_delete(self.object_calificacion)
-
-        if self.object_calificacion.es_venta:
-            return redirect(self.get_success_url_venta())
+        if calificacion_form is not None:
+            # el formulario de calificación no es generado por una llamada entrante
+            return self._calificar_form(calificacion_form)
         else:
+            # en el caso de una campaña entrante que el usuario no desea calificar
             message = _('Operación Exitosa! '
-                        'Se llevó a cabo con éxito la calificación del cliente')
+                        'Se llevó a cabo con éxito la creación del contacto')
+            self.call_data['id_contacto'] = self.contacto.pk
+            self.call_data['telefono'] = self.contacto.telefono
+            url_calificar_llamada_entrante = reverse(
+                'calificar_llamada', kwargs={'call_data_json': json.dumps(self.call_data)})
             messages.success(self.request, message)
-        if self.object_calificacion.es_agenda():
-            return redirect(self.get_success_url_agenda())
-        elif self.kwargs['from'] == 'reporte':
-            return redirect(self.get_success_url_reporte())
-        else:
-            return redirect(self.get_success_url())
+            return redirect(url_calificar_llamada_entrante)
 
     def form_invalid(self, contacto_form, calificacion_form):
         """
         Re-renders the context data with the data-filled forms and errors.
         """
-        return self.render_to_response(self.get_context_data(contacto_form=contacto_form,
-                                                             calificacion_form=calificacion_form,
-                                                             campana=self.campana))
+        return self.render_to_response(self.get_context_data(
+            contacto_form=contacto_form,
+            calificacion_form=calificacion_form,
+            campana=self.campana,
+            call_data=self.call_data,
+            url_sitio_externo=self.url_sitio_externo)
+        )
 
     def get_success_url_venta(self):
         return reverse('formulario_venta',
@@ -258,8 +350,7 @@ class CalificacionClienteFormView(FormView):
     def get_success_url(self):
         return reverse('recalificacion_formulario_update_or_create',
                        kwargs={"pk_campana": self.campana.id,
-                               "pk_contacto": self.contacto.id,
-                               "id_agente": self.agente.id})
+                               "pk_contacto": self.contacto.id})
 
 
 @csrf_exempt

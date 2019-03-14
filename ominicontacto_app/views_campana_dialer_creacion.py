@@ -21,7 +21,6 @@
 
 from __future__ import unicode_literals
 
-from django import forms
 from django.db import transaction
 from django.utils.translation import ugettext as _
 from django.contrib import messages
@@ -29,7 +28,8 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from ominicontacto_app.forms import (QueueDialerForm, SincronizaDialerForm, ActuacionVigenteForm,
                                      ReglasIncidenciaFormSet, CampanaDialerForm,
-                                     OpcionCalificacionFormSet, ParametroExtraParaWebformFormSet)
+                                     OpcionCalificacionFormSet,
+                                     ParametrosCrmFormSet)
 from ominicontacto_app.models import Campana
 
 from ominicontacto_app.services.campana_service import CampanaService
@@ -48,7 +48,7 @@ class CampanaDialerMixin(CampanaWizardMixin):
     INICIAL = '0'
     COLA = '1'
     OPCIONES_CALIFICACION = '2'
-    PARAMETROS_EXTRA_WEB_FORM = '3'
+    PARAMETROS_CRM = '3'
     ACTUACION_VIGENTE = '4'
     REGLAS_INCIDENCIA = '5'
     SINCRONIZAR = '6'
@@ -56,7 +56,7 @@ class CampanaDialerMixin(CampanaWizardMixin):
     FORMS = [(INICIAL, CampanaDialerForm),
              (COLA, QueueDialerForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
-             (PARAMETROS_EXTRA_WEB_FORM, ParametroExtraParaWebformFormSet),
+             (PARAMETROS_CRM, ParametrosCrmFormSet),
              (ACTUACION_VIGENTE, ActuacionVigenteForm),
              (REGLAS_INCIDENCIA, ReglasIncidenciaFormSet),
              (SINCRONIZAR, SincronizaDialerForm)]
@@ -64,45 +64,12 @@ class CampanaDialerMixin(CampanaWizardMixin):
     TEMPLATES = {INICIAL: 'campana_dialer/nueva_edita_campana.html',
                  COLA: 'campana_dialer/create_update_queue.html',
                  OPCIONES_CALIFICACION: 'campana_dialer/opcion_calificacion.html',
-                 PARAMETROS_EXTRA_WEB_FORM: 'campana_dialer/parametros_extra_web_form.html',
+                 PARAMETROS_CRM: 'campana_dialer/parametros_crm_sitio_externo.html',
                  ACTUACION_VIGENTE: 'campana_dialer/actuacion_vigente_campana.html',
                  REGLAS_INCIDENCIA: 'campana_dialer/reglas_incidencia.html',
                  SINCRONIZAR: 'campana_dialer/sincronizar_lista.html'}
 
     form_list = FORMS
-
-    def get_form(self, step=None, data=None, files=None):
-        if step is None:
-            step = self.steps.current
-        if step == self.SINCRONIZAR:
-            # se mantiene la mayor parte del código existente en el plug-in 'formtools
-            # con la excepción de que se le pasa el argumento 'tts_choices' para instanciar
-            # con éxito el formulario correspondiente pues formtools no es lo suficientemente
-            # flexible y sólo usa kwargs para instanciar
-            campana = self.get_cleaned_data_for_step(self.INICIAL)
-            bd_contacto = campana['bd_contacto']
-            if bd_contacto is None:
-                tts_choices = []
-            else:
-                metadata = bd_contacto.get_metadata()
-                nombres_de_columnas = metadata.nombres_de_columnas
-                nombres_de_columnas.remove('telefono')
-                tts_choices = [(columna, columna) for columna in
-                               nombres_de_columnas]
-            form_class = self.form_list[step]
-            kwargs = self.get_form_kwargs(step)
-            kwargs.update({
-                'data': data,
-                'files': files,
-                'prefix': self.get_form_prefix(step, form_class),
-                'initial': self.get_form_initial(step),
-            })
-            if issubclass(form_class, (forms.ModelForm, forms.models.BaseInlineFormSet)):
-                kwargs.setdefault('instance', self.get_form_instance(step))
-            elif issubclass(form_class, forms.models.BaseModelFormSet):
-                kwargs.setdefault('queryset', self.get_form_instance(step))
-            return form_class(tts_choices, **kwargs)
-        return super(CampanaDialerMixin, self).get_form(step, data, files)
 
 
 class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
@@ -122,17 +89,12 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
         current_step = self.steps.current
         if current_step == self.INICIAL:
             context['canales_en_uso'] = Campana.objects.obtener_canales_dialer_en_uso()
-        elif current_step == self.SINCRONIZAR:
-            cleaned_data_step_initial = self.get_cleaned_data_for_step(self.INICIAL)
-            context['tipo_interaccion'] = cleaned_data_step_initial['tipo_interaccion']
         elif current_step == self.REGLAS_INCIDENCIA and form.forms == []:
             # reiniciamos el formset para que el usuario si no tiene formularios
             # para que el usuario tenga posibilidad de agregar nuevos formularios
             new_formset = ReglasIncidenciaFormSet()
             new_formset.prefix = form.prefix
             context['wizard']['form'] = new_formset
-        return context
-
         return context
 
     def _save_campana(self, campana_form, estado):
@@ -156,10 +118,9 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
         evitar_duplicados = sincronizar_form.cleaned_data.get('evitar_duplicados')
         evitar_sin_telefono = sincronizar_form.cleaned_data.get('evitar_sin_telefono')
         prefijo_discador = sincronizar_form.cleaned_data.get('prefijo_discador')
-        columnas = sincronizar_form.cleaned_data.get('columnas')
         service_base = SincronizarBaseDatosContactosService()
         # Crea un achivo con la lista de contactos para importar a wombat
-        service_base.crear_lista(campana, columnas, evitar_duplicados,
+        service_base.crear_lista(campana, evitar_duplicados,
                                  evitar_sin_telefono, prefijo_discador)
         campana_service = CampanaService()
         # crear campana en wombat
@@ -186,20 +147,25 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
         campana_form = form_list[int(self.INICIAL)]
         queue_form = form_list[int(self.COLA)]
         opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
-        parametros_extra_web_formset = form_list[int(self.PARAMETROS_EXTRA_WEB_FORM)]
-        actuacion_vigente_form = form_list[int(self.ACTUACION_VIGENTE)]
-        reglas_incidencia_form = form_list[int(self.REGLAS_INCIDENCIA)]
 
         campana = self._save_campana(campana_form, estado)
+
+        # Agrego este offset por si form_list no contiene el formulario de PARAMETROS_CRM
+        offset = 1
+        if campana.tipo_interaccion == Campana.SITIO_EXTERNO:
+            offset = 0
+            parametros_crm_formset = form_list[int(self.PARAMETROS_CRM)]
+            parametros_crm_formset.instance = campana
+            parametros_crm_formset.save()
+
+        actuacion_vigente_form = form_list[int(self.ACTUACION_VIGENTE) - offset]
+        reglas_incidencia_form = form_list[int(self.REGLAS_INCIDENCIA) - offset]
 
         queue_form.instance.campana = campana
         self._save_queue(queue_form)
 
         opciones_calificacion_formset.instance = campana
         opciones_calificacion_formset.save()
-
-        parametros_extra_web_formset.instance = campana
-        parametros_extra_web_formset.save()
 
         actuacion_vigente_form.instance.campana = campana
         actuacion_vigente_form.save()
@@ -213,8 +179,10 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
         success = False
         try:
             with transaction.atomic():
-                sincronizar_form = form_list[int(self.SINCRONIZAR)]
                 campana = self._save_forms(form_list, Campana.ESTADO_INACTIVA)
+                # Agrego este offset por si form_list no contiene el formulario de PARAMETROS_CRM
+                offset = 0 if campana.tipo_interaccion == Campana.SITIO_EXTERNO else 1
+                sincronizar_form = form_list[int(self.SINCRONIZAR) - offset]
                 self._sincronizar_campana(sincronizar_form, campana)
                 self._insert_queue_asterisk(campana.queue_campana)
                 success = True
@@ -244,17 +212,17 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
     INICIAL = '0'
     COLA = '1'
     OPCIONES_CALIFICACION = '2'
-    PARAMETROS_EXTRA_WEB_FORM = '3'
+    PARAMETROS_CRM = '3'
 
     FORMS = [(INICIAL, CampanaDialerForm),
              (COLA, QueueDialerForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
-             (PARAMETROS_EXTRA_WEB_FORM, ParametroExtraParaWebformFormSet)]
+             (PARAMETROS_CRM, ParametrosCrmFormSet)]
 
     TEMPLATES = {INICIAL: 'campana_dialer/edita_campana.html',
                  COLA: 'campana_dialer/create_update_queue.html',
                  OPCIONES_CALIFICACION: 'campana_dialer/opcion_calificacion.html',
-                 PARAMETROS_EXTRA_WEB_FORM: 'campana_dialer/parametros_extra_web_form.html'}
+                 PARAMETROS_CRM: 'campana_dialer/parametros_crm_sitio_externo.html'}
 
     form_list = FORMS
 
@@ -270,12 +238,14 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
                 campana_form = form_list[int(self.INICIAL)]
                 queue_form = form_list[int(self.COLA)]
                 opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
-                parametros_extra_web_formset = form_list[int(self.PARAMETROS_EXTRA_WEB_FORM)]
 
                 campana = campana_form.save()
                 queue = self._save_queue(queue_form)
                 opciones_calificacion_formset.save()
-                parametros_extra_web_formset.save()
+
+                if campana.tipo_interaccion == Campana.SITIO_EXTERNO:
+                    parametros_crm_formset = form_list[int(self.PARAMETROS_CRM)]
+                    parametros_crm_formset.save()
 
                 self._insert_queue_asterisk(queue)
                 campana_service = CampanaService()

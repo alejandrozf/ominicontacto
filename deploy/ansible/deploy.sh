@@ -31,8 +31,25 @@ OSValidation(){
   elif [ "$os" == '"Debian GNU/Linux"' ]; then
     echo "Installing python2-pip and sudo"
     apt-get install python-pip sudo -y
+  elif [ "$os" == '"Ubuntu"' ]; then
+    echo "Adding the universe repository"
+    add-apt-repository universe
+    echo "Installing python2 and python-pip"
+    apt-get install python-minimal python-pip -y
+  else
+    echo "The OS you are trying to install is not supported to install this software."
   fi
   PIP=`which pip`
+}
+
+UserValidation(){
+  whoami="`whoami`"
+  if [ "$whoami" == "root" ]; then
+    echo "You have the permise to run the script, continue"
+  else
+    echo "You need to be root or have sudo permission to run this script, exiting"
+    exit 1
+  fi
 }
 
 Rama() {
@@ -40,15 +57,30 @@ Rama() {
       tag="all"
     elif [ "$arg1" == "--upgrade" ] || [ "$arg1" == "-u" ]; then
       tag="postinstall"
+    elif [ "$arg1" == "--kamailio" ] || [ "$arg1" == "-k" ]; then
+      tag="kamailio"
+    elif [ "$arg1" == "--asterisk" ] || [ "$arg1" == "-a" ]; then
+      tag="asterisk"
+    elif [ "$arg1" == "--omniapp" ] || [ "$arg1" == "-o" ]; then
+      tag="omniapp"
+    elif [ "$arg1" == "--changeip" ] || [ "$arg1" == "-c" ]; then
+      tag="changeip"
+    elif [ "$arg1" == "--dialer" ] || [ "$arg1" == "-di" ]; then
+      tag="dialer"
+    elif [ "$arg1" == "--database" ] || [ "$arg1" == "-da" ]; then
+      tag="database"
     else
-      tag=$arg1
+      echo "Invalid first option, use ./deploy.sh -h to see valid options"
     fi
     echo -e "\n"
     echo "###############################################################"
     echo "##          Welcome to omnileads deployment script           ##"
     echo "###############################################################"
     echo ""
+    UserValidation
     OSValidation
+    echo "Servers to install:"
+    cat /var/tmp/servers_installed
     sleep 2
     echo "Detecting if Ansible 2.5 is installed"
     if [ -z "$IS_ANSIBLE" ] ; then
@@ -131,20 +163,8 @@ EOF
 
     #echo "Validando version.py - Commit:"
     python $TMP/ominicontacto/ominicontacto_app/version.py > /dev/null 2>&1
-
     # ----------
     export DO_CHECKS="${DO_CHECKS:-no}"
-    if [ -z $desarrollo ] && ([ "$arg1" == "--install" ] || [ "$arg1" == "-i" ]); then
-      echo "Do you want to install dahdi linux driver? (type yes or no)"; read dahdi_install
-      if [ "$dahdi_install" == "yes" ] && ( [ "$arg1" == "--install" ] || [ "$arg1" == "-i" ]); then
-        sed -i "s/\(^dahdi_install\).*/dahdi_install: 1/" $TMP_ANSIBLE/group_vars/all
-      elif [ "$dahdi_install" == "no" ]; then
-        echo ""
-      else
-        echo "Wrong, type yes or no, exiting"
-        exit 1
-      fi
-    fi
 }
 
 Desarrollo() {
@@ -198,12 +218,8 @@ Tag() {
       echo "Creating a copy of inventory file in $inventory_copy_location"
       my_inventory=$current_directory/../../../my_inventory
       cp $current_directory/inventory $my_inventory
-      if [ $CLUSTER -eq 1 ]; then
-        servidor="`sed -n -e 2p $inventory_copy_location/my_inventory |awk -F \" \" '{print $1}'`"
-      elif [ $CLUSTER -eq 0 ]; then
-        servidor="`cat $inventory_copy_location/my_inventory |grep \"omnileads-aio\" -A1 |sed -n -e 2p |awk -F \" \" '{print $1}'`"
-      fi
-      echo " You can access the web interface https://$servidor"
+      echo "Servers installed:"
+      cat /var/tmp/servers_installed
       echo " Remember that you have a copy of your inventory file in $inventory_copy_location/my_inventory with the variables you used for your OML installation"
       echo ""
       git checkout $current_directory/inventory
@@ -216,19 +232,22 @@ Tag() {
     fi
 
 echo "Deleting temporal files created"
-rm -rf /var/tmp/ansible
-rm -rf /var/tmp/ominicontacto-build
+rm -rf $TMP_ANSIBLE
+rm -rf $TMP
 }
 
 case $arg1 in
-  --upgrade|-u|--install|-i|kamailio|asterisk|omniapp|omnivoip|dialer|database|changeip)
+  --upgrade|-u|--install|-i|--kamailio|-k|--asterisk|-a|--omniapp|-o|--omnivoip|--dialer|-di|--database|-da|--changeip|-c)
     case $arg2 in
       --aio|-a)
           ./keytransfer.sh --aio
+
+          #./keytransfer.sh --aio
           ResultadoKeyTransfer=`echo $?`
           if [ "$ResultadoKeyTransfer" != 0 ]; then
             echo "It seems that you don't have generated keys in the server you are executing this script"
             echo "Try with ssh-keygen or check the ssh port configured in server"
+            rm -rf /var/tmp/servers_installed
             exit 1
           fi
           CLUSTER=0
@@ -253,10 +272,19 @@ case $arg1 in
     Tag
   ;;
   *)
-  echo " How to use it:
+  echo "
+    Omnileads installation script
+
+    How to use it:
           (First option)
             -u --upgrade: make an upgrade of Omnileads version
             -i --install: make a fresh install of Omnileads
+            -k --kamailio: execute kamailio related tasks
+            -a --asterisk: execute asterisk related tasks
+            -o --omniapp: execute omniapp related tasks
+            -c --changeip: execute tasks needed when you change the IP of OML system
+            -da --database: execute tasks related to database
+            -di --dialer: execute tasks related to dialer (Wombat Dialer)
           (Second option)
           -a --aio: install all in one server
           -c --cluster: install cluster mode

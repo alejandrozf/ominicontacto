@@ -11,11 +11,7 @@ NAME=db_postgres.so
 
 ifeq ($(CROSS_COMPILE),)
 #PGCFG=$(shell which pg_config)
-{% if ansible_os_family == "RedHat" %}
-PGCFG=/usr/pgsql-9.6/bin/pg_config
-{% else %}
 PGCFG=/usr/bin/pg_config
-{% endif %}
 endif
 
 ifneq ($(PGCFG),)

@@ -21,8 +21,8 @@
 - set_fact: rtpengine_name=rtpengine-mr5.5.3.1
   tags: kamailio
 # Version de kamailio a instalar
-- set_fact: kamailio_version=4.4.7
-  tags: kamailio
+- set_fact: kamailio_version=5.1.4
+  tags: ['kamailio','postinstall']
 
 # Detecto si existe el binario de rtpengine y registro el resultado en rtpengine_installed
 - name: Check if Rtpengine is installed
@@ -57,44 +57,49 @@
   tags: kamailio
 
 # Lo mismo se hace con kamailio
-- name: Check if Kamailio is installed
-  shell: test -f {{ kamailio_location }}/sbin/kamailio
+- name: Check if Kamailio version is 5.1.4
+  shell: "{{ kamailio_location }}/sbin/kamailio -v |head -1 |awk -F \" \" '{print $3}'"
   register: kamailio_installed
-  tags: kamailio
+  tags: ['kamailio','postinstall']
   become: true
   become_method: sudo
   ignore_errors: yes
 
-- debug: msg="Kamailio no está instalado, se procede a la instalación"
-  tags: kamailio
-  when: kamailio_installed|failed
-
-- debug: msg="Kamailio ya se encuentra instalado se omite instalación"
-  tags: kamailio
-  when: kamailio_installed|succeeded
-
-- name: Erase certs folder because new are needed
-  file: state=absent path={{ kamailio_location }}/etc/certs
+- debug: msg="Kamailio 5.1.4 is not installed, proceeding to install"
   tags: ['kamailio','postinstall']
+  when: kamailio_installed.stdout != "5.1.4"
+
+- debug: msg="Kamailio is already installed in version 5.1.4, skipping installation steps"
+  tags: ['kamailio','postinstall']
+  when: kamailio_installed.stdout == "5.1.4"
+
+- name: Uninstall actual kamailio version
+  file: state=absent path={{ kamailio_location }}/{{ item }}
+  with_items:
+    - sbin
+    - etc/kamailio
+    - lib64
+  when: kamailio_installed.stdout != "5.1.4"
+  tags: postinstall
 
 - name: Check if Kamailio certificates exists
   shell: test -d {{ kamailio_location }}/etc/certs || test -d /opt/kamailio/etc/certs
   register: certs_exists
-  tags: ['kamailio','postinstall']
+  tags: ['kamailio']
   become: true
   become_method: sudo
   ignore_errors: yes
 
 - include: kamailio_installation.yml
-  tags: kamailio
-  when: kamailio_installed|failed
+  tags: ['kamailio','postinstall']
+  when: kamailio_installed.stdout != "5.1.4"
 
 - include: certificate_CA.yml
-  tags: ['kamailio','postinstall']
+  tags: kamailio
   when: certs_exists|failed
 
 - include: kamailio_configuration.yml
-  tags: kamailio
+  tags: ['kamailio']
 
 #  Se pasan los certificados al host
 - name: Copy of the certificates from kamailio server to omniapp (cluster)
@@ -104,7 +109,6 @@
     - { src: 'cert.pem', dest: 'cert.pem' }
     - { src: 'key.pem', dest: 'key.pem' }
   when: cluster != 0
-  tags: postinstall
 
 - include: roles/prerequisitos/tasks/reboot.yml
   when: cluster != 0 and ansible_os_family == "RedHat"

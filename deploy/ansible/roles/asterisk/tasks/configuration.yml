@@ -20,7 +20,6 @@
 # Se crea el servicico de asterisk  para systemctl
 - name: Creation of asterisk.service
   template: src=templates/asterisk.service dest=/etc/systemd/system/asterisk.service owner=root group=root mode=650
-  tags: postinstall
 
 # Linkeo el binario a /usr/sbin
 - name: Create simbolic link of asterisk binarie
@@ -38,7 +37,6 @@
   become: true
   become_method: sudo
   when: cluster == 0
-  tags: postinstall
 
 # Se copian si es un cluster
 - name: Copy of the extensions.conf files (cluster)
@@ -78,7 +76,7 @@
       - udptl.conf
   become: true
   become_method: sudo
-  tags: ['postinstall', 'changeip']
+  tags: [changeip']
 
 # Los archivos-no-enlaces se copian a la a /etc/asterisk
 - name: Copy of all asterisk config files
@@ -89,7 +87,6 @@
   become: true
   become_method: sudo
   when: cluster != 0
-  tags: postinstall
 
 # Genero los agis desde ansible
 - name: Creation of the agis omni-blackist and omni-dialednum
@@ -106,24 +103,25 @@
   become_method: sudo
   tags: postinstall
 
+- name: Creation of agis-errors.log file
+  file: path={{ asterisk_location }}/var/log/asterisk/agis-errors.log state=touch mode=755 owner={{ usuario }} group={{ usuario }}
+  tags: postinstall
+  
 # Aca creo la carpeta parselog
 - name: Create /usr/local/parselog
   file: dest=/usr/local/parselog state=directory mode=0755 owner={{ usuario }} group={{ usuario }}
   become: yes
   become_method: sudo
-  tags: postinstall
 
 # Creo el script de conversion lo deje en parselog por convencion heredada de asternic
 - name: Link the conversor.sh file
   template: src=templates/conversor.sh dest=/usr/local/parselog/conversor.sh owner={{ usuario }} group={{ usuario }} mode=755
   when: asterisk_location != ""
-  tags: postinstall
 
 # Se añade el cron de omnileads
 - name: Copy the cron-omnileads file
   template: src=templates/cron-omnileads dest=/etc/cron.d/cron-omnileads owner=root group=root
   when: asterisk_location != ""
-  tags: postinstall
 
 # Para debian toca linkear esta libreria a a /usr/lib/postgresql/9.6 es una libreria de unixODBC
 - name: Link odbc librarie to postgresql libs
@@ -131,7 +129,6 @@
   when: ansible_os_family == "Debian"
   become: true
   become_method: sudo
-  tags: postinstall
 
 # Creo el archivo odbcinst.ini desde ansible
 - name: Creation of odbcinst.ini file
@@ -141,7 +138,6 @@
     - odbc.ini
   become: true
   become_method: sudo
-  tags: postinstall
 
 # Creo los directorios que tendran los sonidos de agentes
 - name: Make of the sounds dirs
@@ -150,7 +146,6 @@
     - es
     - en
     - oml
-  tags: postinstall
 
 # Untareo los sonidos de agentes, que vienen desde el repo
 - name: Untar the sounds for agents
@@ -158,13 +153,11 @@
   with_items:
     - { source: "es-oml.tgz", dest: "es" }
     - { source: "en-oml.tgz", dest: "en" }
-  tags: postinstall
 
 # Permiso de usuario a la carpeta de asterisk
 - name: Set up permissions of asterisk
   file: state=directory path={{ asterisk_location }} owner={{ usuario }} group={{ usuario }} recurse=yes
   when: asterisk_location != ""
-  tags: postinstall
   become: yes
   become_method: sudo
 

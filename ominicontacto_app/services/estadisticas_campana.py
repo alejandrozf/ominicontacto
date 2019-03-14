@@ -80,10 +80,18 @@ class EstadisticasService():
         calificaciones_cantidad - cantidad de llamadas por calificacion
         total_asignados - cantidad total de calificaciones
         """
-        calificaciones_query = CalificacionCliente.objects.filter(
-            opcion_calificacion__campana=campana,
-            fecha__range=(fecha_desde, fecha_hasta)).values('opcion_calificacion__nombre').annotate(
-                cantidad=Count('opcion_calificacion__nombre'))
+        if not campana.es_entrante:
+            calificaciones_query = CalificacionCliente.objects.filter(
+                opcion_calificacion__campana=campana,
+                fecha__range=(fecha_desde, fecha_hasta)).values(
+                    'opcion_calificacion__nombre').annotate(
+                    cantidad=Count('opcion_calificacion__nombre'))
+        else:
+            calificaciones_query = CalificacionCliente.history.filter(
+                opcion_calificacion__campana=campana,
+                history_date__range=(fecha_desde, fecha_hasta)).values(
+                    'opcion_calificacion__nombre').annotate(
+                    cantidad=Count('opcion_calificacion__nombre')).order_by()
         calificaciones_nombre = []
         calificaciones_cantidad = []
         total_calificados = 0
@@ -160,11 +168,30 @@ class EstadisticasService():
                 total_no_atendidos += cantidad
         return reporte.keys(), reporte.values(), total_no_atendidos
 
-    def obtener_total_llamadas(self, campana):
+    def _convertir_eventos_values_dict(self, logs_llamadas_campana):
+        dict_eventos_campana = {}
+        for evento_cantidad in logs_llamadas_campana:
+            evento = evento_cantidad['event']
+            cantidad = evento_cantidad['cantidad']
+            dict_eventos_campana[evento] = cantidad
+        return dict_eventos_campana
+
+    def _adicionar_agendas_pendientes(self, campana, llamadas_pendientes):
+        """Adiciona el número de contactos con calificaciones de agenda a las
+        llamadas pendientes
         """
-        Obtiene los totales de llamadas realizadas y pendiente por la campana
+        # FIXME: este cálculo de las agendas pendientes se hace desde las calificaciones de
+        # la campaña pero hay que tener en cuenta que el sistema actualmente no exige la
+        # creación de una agenda luego de crear una calificación (ver OML-956)
+        contactos_agendados_count = campana.obtener_calificaciones_agenda().count()
+        if llamadas_pendientes is None:
+            return contactos_agendados_count
+        return contactos_agendados_count + llamadas_pendientes
+
+    def obtener_total_llamadas(self, campana):
+        """Obtiene los totales de llamadas realizadas y pendiente por la campaña
         :param campana: campana la cual se obtiene los totales
-        :return: lso totales de llamadas realizadas y pendiente de la campana
+        :return: los totales de llamadas realizadas y pendientes de la campaña
         """
         logs_llamadas_campana = LlamadaLog.objects.filter(campana_id=campana.pk).values(
             'event').annotate(cantidad=Count('event'))
@@ -177,11 +204,9 @@ class EstadisticasService():
             fecha_hasta = datetime.datetime.combine(hoy_ahora, datetime.time.max)
             logs_llamadas_campana = logs_llamadas_campana.filter(
                 time__range=(fecha_desde, fecha_hasta))
-        dict_eventos_campana = {}
-        for evento_cantidad in logs_llamadas_campana:
-            evento = evento_cantidad['event']
-            cantidad = evento_cantidad['cantidad']
-            dict_eventos_campana[evento] = cantidad
+        # obtenemos los eventos en formato más sencillo para indexar
+        dict_eventos_campana = self._convertir_eventos_values_dict(logs_llamadas_campana)
+        # calculamos los contadores de cada tipo de llamada
         llamadas_pendientes, llamadas_realizadas, llamadas_recibidas = (None,) * 3
         llamadas_realizadas = dict_eventos_campana.get('DIAL', 0)
         if campana.type == Campana.TYPE_DIALER:
@@ -198,6 +223,7 @@ class EstadisticasService():
             llamadas_pendientes = AgenteEnContacto.objects.filter(
                 estado=AgenteEnContacto.ESTADO_INICIAL, campana_id=campana.pk,
                 es_originario=True).count()
+        llamadas_pendientes = self._adicionar_agendas_pendientes(campana, llamadas_pendientes)
         return llamadas_pendientes, llamadas_realizadas, llamadas_recibidas
 
     def obtener_total_calificacion_agente(self, campana, fecha_desde, fecha_hasta):
@@ -220,9 +246,13 @@ class EstadisticasService():
         for opcion_calificacion in opciones_calificaciones:
             dict_calificaciones.update({opcion_calificacion.nombre: 0})
 
-        calificaciones_campana_qs = CalificacionCliente.objects.filter(
-            opcion_calificacion__campana=campana, fecha__range=(fecha_desde, fecha_hasta))
-
+        if not campana.es_entrante:
+            calificaciones_campana_qs = CalificacionCliente.objects.filter(
+                opcion_calificacion__campana=campana, fecha__range=(fecha_desde, fecha_hasta))
+        else:
+            calificaciones_campana_qs = CalificacionCliente.history.filter(
+                opcion_calificacion__campana=campana,
+                history_date__range=(fecha_desde, fecha_hasta)).order_by()
         calificaciones_agentes_dict = calificaciones_campana_qs.values(
             'agente__user__first_name', 'agente__user__last_name', 'agente',
             'opcion_calificacion__nombre', 'opcion_calificacion__tipo').annotate(

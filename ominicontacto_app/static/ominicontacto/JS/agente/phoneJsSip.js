@@ -38,6 +38,7 @@ var ORIGIN_DIALER = 'DIALER-FORM';
 var ORIGIN_CLICK2CALL = 'CLICK2CALL';
 var ORIGIN_CLICK2CALL_PREVIEW = 'CLICK2CALLPREVIEW';
 var ORIGIN_MANUAL = 'Manual-Call';
+var ORIGIN_INTERNAL = 'Internal';
 
 var ORIGIN_IDS = {};
 ORIGIN_IDS[ORIGIN_DIALER] = 2;
@@ -45,6 +46,9 @@ ORIGIN_IDS[ORIGIN_INBOUND] = 3;
 ORIGIN_IDS[ORIGIN_CLICK2CALL] = 4;
 ORIGIN_IDS[ORIGIN_CLICK2CALL_PREVIEW] = 4;
 ORIGIN_IDS[ORIGIN_MANUAL] = 1;
+
+/* NOTA: Ver si es necesario */
+ORIGIN_IDS[ORIGIN_INTERNAL] = 5;    // NOTA: Ver cual es el codigo que tendran
 
 class PhoneJS {
     constructor(agent_id, sipExtension, sipSecret, KamailioHost, WebSocketPort, WebSocketHost,
@@ -168,7 +172,7 @@ class PhoneJS {
             self.invite_request = e.request;
             self.currentSession = e.session;
             self.session_data = new SessionData(self.currentSession,
-                                                self.current_call,
+                                                self.local_call,
                                                 self.invite_request,
                                                 e.originator);
 
@@ -197,7 +201,7 @@ class PhoneJS {
                 if (self.session_data.is_call) {
                     var phone_number = self.session_data.is_remote?
                                             self.session_data.from :
-                                            self.current_call.numberToCall;
+                                            self.local_call.numberToCall;
                     self.eventsCallbacks.onCallConnected.fire(phone_number);
                 }
             });
@@ -257,9 +261,11 @@ class PhoneJS {
         this.currentSession.unhold();
     }
 
-    makeCall(numberToCall, campaign_id=undefined, campaign_type=undefined) {
+    // TODO: En principio sólo se va a usar para Login, Pause y Unpause.
+    //       Más adelante tal vez se use para llamadas fuera de campaña entre agentes.
+    makeCall(numberToCall) {
         var self = this;
-        this.current_call = new LocalCall(numberToCall);
+        this.local_call = new LocalCall(numberToCall);
         phone_logger.log('makeCall: ' + numberToCall);
 
         // Luego de 60 segundos sin respuesta, stop al ringback y cuelga discado
@@ -272,13 +278,13 @@ class PhoneJS {
             'confirmed': function(e) {
                 phone_logger.log('makeCall: confirmed');
                 clearTimeout(self.callTimeoutHandler);
-                if (self.current_call.is_unpause) {
+                if (self.local_call.is_unpause) {
                     self.eventsCallbacks.onAgentUnpaused.fire();
                 }
-                else if (self.current_call.is_login) {
+                else if (self.local_call.is_login) {
                     self.eventsCallbacks.onAgentLogged.fire();
                 }
-                else if (self.current_call.is_pause) {
+                else if (self.local_call.is_pause) {
                     self.eventsCallbacks.onAgentPaused.fire();
                 }
             },/**/
@@ -293,14 +299,17 @@ class PhoneJS {
             'failed': function(data) {
                 phone_logger.log('makeCall: failed - ' + numberToCall);
                 clearTimeout(self.callTimeoutHandler);
-                if (self.current_call.is_login) {
+                if (self.local_call.is_login) {
                     self.eventsCallbacks.onAgentLoginFail.fire(self);
-                } else if (self.current_call.is_unpause) {
+                } else if (self.local_call.is_unpause) {
                     self.eventsCallbacks.onAgentUnPauseFail.fire(self);
-                } else if (self.current_call.is_pause) {
+                } else if (self.local_call.is_pause) {
                     self.eventsCallbacks.onAgentPauseFail.fire(self);
-                } else {
-                    // (self.current_call.is_call)
+                }
+                // TODO: Este caso no se va a dar más para llamadas de campañas
+                // Probablemente quede solo para llamadas internas entre agentes 
+                else {
+                    // (self.local_call.is_internal_call)
                     self.eventsCallbacks.onOutCallFailed.fire(data.cause);
                     if (data.cause === JsSIP.C.causes.BUSY) {
                         self.Sounds("", "stop");
@@ -322,10 +331,6 @@ class PhoneJS {
                 rtcpMuxPolicy: 'negotiate'
             },
         };
-        if (campaign_id !== null ) {
-            opciones.extraHeaders = ['Idcamp:' + campaign_id,
-                                     'Tipocamp:' + campaign_type, ]
-        }
 
         // Finalmente Mando el invite/llamada
         this.userAgent.call('sip:' + numberToCall + '@' + this.KamailioHost, opciones);
@@ -429,23 +434,24 @@ class PhoneJS {
     ///----------
 
     Sounds(callType, action) {
+        // Los "catch" son por si se da el caso de que el agente no haya interactuado con la pagina.
         var ring = null;
         if (action === "play") {
             if (callType === "In") {
                 ring = document.getElementById('RingIn');
-                ring.play();
+                ring.play().catch(function() { });
                 ring.onended = function() {
-                    ring.play();
+                    ring.play().catch(function() { });
                 };
             } else if (callType === "Out") {
                 ring = document.getElementById('RingOut');
-                ring.play();
+                ring.play().catch(function() { });
                 ring.onended = function() {
-                    ring.play();
+                    ring.play().catch(function() { });
                 };
             } else {
                 ring = document.getElementById('RingBusy');
-                ring.play();
+                ring.play().catch(function() { });
             }
         } else {
             ring = document.getElementById('RingIn');
@@ -460,7 +466,7 @@ class PhoneJS {
     cleanLastCallData() {
         self.currentSession = undefined;
         self.session_data = undefined;
-        self.current_call = undefined;
+        self.local_call = undefined;
     }
 
 };
@@ -472,7 +478,8 @@ class LocalCall {
         this.is_login = numberToCall == LOGIN_CODE;
         this.is_pause = !this.is_unpause && !this.is_login &&
                         numberToCall.startsWith(SPECIAL_CODE_PREFIX);
-        this.is_call = !numberToCall.startsWith(SPECIAL_CODE_PREFIX);
+        // TODO: Ver utilidad en caso de llamada entre agentes.
+        // this.is_internal_call = !numberToCall.startsWith(SPECIAL_CODE_PREFIX);
     }
 }
 
@@ -480,11 +487,49 @@ class LocalCall {
  *       Ver de generalizarla y extenderla para cada Controller particular
 /**/
 class SessionData {
-    constructor (session, current_call, invite_request, originator) {
+    constructor (session, local_call, invite_request, originator) {
         this.RTCSession = session;
-        this.current_call = current_call;
+        this.local_call = local_call;
         this.invite_request = invite_request;
         this.originator = originator;
+        // TODO: En un futuro todas seran inbound. local_call y remote_call pueden pasar a
+        // ser call nomas
+        if (this.is_remote) {
+            this.remote_call = this.setRemoteCallInfo(invite_request);
+        }
+    }
+
+    setRemoteCallInfo(invite_request) {
+        var call_data = {}
+        call_data.id_campana = invite_request.headers.Idcamp[0].raw;
+        call_data.campana_type = invite_request.headers.Omlcamptype[0].raw;
+        call_data.telefono = invite_request.headers.Omloutnum[0].raw;
+        if (!this.is_internal_call) {
+            call_data.call_id = invite_request.headers.Omlcallid[0].raw;
+        }
+        call_data.call_type = invite_request.headers.Omlcalltypeidtype[0].raw;
+        if (invite_request.headers.Idcliente)
+            call_data.id_contacto = invite_request.headers.Idcliente[0].raw;
+        else
+            call_data.id_contacto = '';
+        if (invite_request.headers.Omlrecfilename)
+            call_data.rec_filename = invite_request.headers.Omlrecfilename[0].raw;
+        else
+            call_data.rec_filename = '';
+        if (invite_request.headers.Omlcallwaitduration)
+            call_data.call_wait_duration = invite_request.headers.Omlcallwaitduration[0].raw;
+        else
+            call_data.call_wait_duration = '';
+
+        // Extra ICS Headers.
+        if (invite_request.headers.Ics)
+            call_data.ics = invite_request.headers.Ics[0].raw;
+        if (invite_request.headers.Idcontactics)
+            call_data.id_contacto_ics = invite_request.headers.Idcontactics[0].raw;
+        if (invite_request.headers.Namecontactics)
+            call_data.nombre_contacto_ics = invite_request.headers.Namecontactics[0].raw;
+
+        return call_data;
     }
 
     get is_remote () {
@@ -514,10 +559,10 @@ class SessionData {
         }
     }
 
-    get is_local_call () {
+    get is_internal_call () {
         return this.originator == 'local' &&
-               this.current_call !== undefined &&
-               this.current_call.is_call;
+               this.local_call !== undefined &&
+               this.local_call.is_internal_call;
     }
 
     get origin() {
@@ -549,12 +594,6 @@ class SessionData {
         }
     }
 
-    get call_uuid() {
-        if (this.invite_request.headers.Omlcallid) {
-            return this.invite_request.headers.Omlcallid[0].raw;
-        }
-    }
-
     get from() {
         var fromUser = this.invite_request.headers.From[0].raw;
         var endPos = fromUser.indexOf("@");
@@ -563,12 +602,12 @@ class SessionData {
     }
 
     get call_type_id() {
-        if (this.is_local_call)
-            return ORIGIN_IDS[ORIGIN_MANUAL];
+        if (this.is_internal_call)
+            return ORIGIN_IDS[ORIGIN_INTERNAL];
         return ORIGIN_IDS[this.origin];
     }
 
     get is_call() {
-        return this.is_local_call || this.is_remote;
+        return this.is_internal_call || this.is_remote;
     }
 }

@@ -1,66 +1,96 @@
 <!--
-Copyright (C) 2018 Freetech Solutions
+     Copyright (C) 2018 Freetech Solutions
 
-This file is part of OMniLeads
+     This file is part of OMniLeads
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+     This program is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see http://www.gnu.org/licenses/.
+     You should have received a copy of the GNU General Public License
+     along with this program.  If not, see http://www.gnu.org/licenses/.
 
--->
+   -->
 {% load static %}
 {% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
-    <!-- Scripts -->
-    <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
-    <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
+    <head>
+        <meta charset="UTF-8">
+        <!-- Stylesheets -->
+        <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
+        <!-- Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
+        <!-- Scripts -->
+        <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
+        <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'ominicontacto/JS/agente/formularioCalificacion.js' %}"></script>
 
-    <!-- TODO: REMOVER - FIX HASTA CAMBIAR BS3 por BS4 -->
-    <style type="text/css">
-      .fade {
-        opacity: 1;
-      }
-    </style>
+        <!-- TODO: REMOVER - FIX HASTA CAMBIAR BS3 por BS4 -->
+        <style type="text/css">
+         .fade {
+           opacity: 1;
+         }
+        </style>
 
-</head>
-<body>
+    </head>
+    <body>
+        {% include 'messages.html' %}
 
-{% include 'messages.html' %}
+        {% if campana.mostrar_nombre %}
+            <h1>{{ campana.nombre }}</h1>
+        {% endif %}
 
-{% if campana.mostrar_nombre %}
-    <h1>{{ campana.nombre }}</h1>
-{% endif %}
+        {% if call_data and call_data.ics %}
+            <div><b>{% trans "Nombre Contacto ICS:" %}</b> {{ call_data.nombre_contacto_ics }}</div>
+            <div><b>{% trans "ID Contacto ICS:" %}</b> {{ call_data.id_contacto_ics }}</div>
+            <br>
+        {% endif %}
 
-<form id="form-calificacion" action = "" method = "post">
-    {% csrf_token %}
-    <div>
-        <tr>{{contacto_form.as_table}}</tr>
-        <tr>{{calificacion_form.as_table}}</tr>
-    </div>
-    <hr>
-    <button type="submit" id="id_guardar" class="btn btn-primary">
-        {% trans 'Guardar'  %}
-    </button>
-</form>
+        {% if campana.tiene_interaccion_con_sitio_externo %}
+            <div>
+                <a href="{{ url_sitio_externo }}" target="_blank">{% trans "Interacción CRM" %}</a>
+            </div>
+        {% endif %}
 
-</body>
+        <form id="form-calificacion" action = "" method = "post">
+            {% csrf_token %}
+            {% if llamada_entrante %}
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="false" id="mostrarFormCalificacion" name="usuario_califica">
+                    <label class="form-check-label" for="mostrarFormCalificacion">
+                        {% trans '¿Desea calificar al contacto?' %}
+                    </label>
+                </div>
+            {% endif %}
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    {{contacto_form.as_table}}
+                    <div {% if llamada_entrante %}class="hidden"{% endif %} data="toHide">
+                        {{calificacion_form.as_table}}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div {% if llamada_entrante %}class="hidden"{% endif %} data="toHide">
+                        {% if calificacion_form.historico_calificaciones %}
+                            {% include 'historico_calificaciones.html' with calificaciones=calificacion_form.instance.history.all %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <button type="submit" id="id_guardar" class="btn btn-primary">
+                {% trans 'Guardar'  %}
+            </button>
+        </form>
+    </body>
 </html>

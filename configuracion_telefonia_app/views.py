@@ -19,6 +19,7 @@
 
 from __future__ import unicode_literals
 
+import json
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
@@ -26,6 +27,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
+from django.db.models import Case, When, Max, Min
 
 from configuracion_telefonia_app.forms import (RutaSalienteForm, TroncalSIPForm, RutaEntranteForm,
                                                PatronDeDiscadoFormset, OrdenTroncalFormset,
@@ -255,10 +257,42 @@ class TroncalSIPDeleteView(DeleteView):
 class RutaSalienteListView(ListView):
     """Vista para listar las rutas salientes"""
     model = RutaSaliente
-    paginate_by = 40
     context_object_name = 'rutas_salientes'
     template_name = 'lista_rutas_salientes.html'
-    ordering = ['id']
+    ordering = ['orden']
+
+
+class OrdenarRutasSalientesView(View):
+    http_method_names = ['post', ]
+
+    def post(self, request):
+        orden = request.POST.get('orden', '')
+        if not orden:
+            messages.warning(request, _(u'No se pudo guardar el orden'))
+            return redirect('lista_rutas_salientes')
+
+        orden = json.loads(orden)
+        preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(orden)])
+        rutas_ordenadas = RutaSaliente.objects.filter(pk__in=orden).order_by(preserved)
+
+        cantidad = rutas_ordenadas.count()
+        mayor = RutaSaliente.objects.aggregate(Max('orden'))['orden__max']
+        menor = RutaSaliente.objects.aggregate(Min('orden'))['orden__min']
+        # Con esto aseguro no repetir ordenes en la base
+        i = mayor + 1
+        # Para que el valor no se vaya muy alto vuelvo a empezar desde el 1
+        if cantidad < (menor - 1):
+            i = 1
+        # TODO: Ver la manera de utilizar un bulk_update para no hacer 1 query por cada Ruta
+        for ruta in rutas_ordenadas:
+            ruta.orden = i
+            ruta.save()
+            i += 1
+
+        sincronizador = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
+        sincronizador._generar_y_recargar_archivos_conf_asterisk()
+        messages.success(request, _(u'Orden guardado satisfactoriamente'))
+        return redirect('lista_rutas_salientes')
 
 
 class RutaSalienteMixin(object):
@@ -774,8 +808,18 @@ class DeleteNodoDestinoMixin(object):
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
         nodo = DestinoEntrante.get_nodo_ruta_entrante(self.object)
+        permitido_eliminar = True
         if nodo.es_destino_en_flujo_de_llamada():
-            message = (self.imposible_eliminar)
+            message = self.imposible_eliminar
+            permitido_eliminar = False
+        elif nodo.es_destino_failover():
+            permitido_eliminar = False
+            campanas_failover = nodo.campanas_destino_failover.values_list('name', flat=True)
+            imposible_failover = _(
+                'No se puede eliminar la campaña. Es usada como destino failover de las campañas:'
+                ' {0}').format(",".join(campanas_failover))
+            message = imposible_failover
+        if not permitido_eliminar:
             messages.add_message(
                 self.request,
                 messages.ERROR,
@@ -785,9 +829,21 @@ class DeleteNodoDestinoMixin(object):
         return super(DeleteNodoDestinoMixin, self).dispatch(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
+        # TODO: analizar si se puede eliminar el código de validación de eliminación del objeto
+        # pues es muy similar al del método 'dispatch' y al parecer no sería necesario
         nodo = DestinoEntrante.get_nodo_ruta_entrante(self.object)
+        permitido_eliminar = True
         if nodo.es_destino_en_flujo_de_llamada():
+            permitido_eliminar = False
             messages.error(request, self.imposible_eliminar)
+        elif nodo.es_destino_failover():
+            permitido_eliminar = False
+            campanas_failover = nodo.campanas_destino_failover.values_list('nombre', flat=True)
+            imposible_failover = _(
+                'No se puede eliminar la campaña. Es usada como destino failover de las campañas:'
+                ' {0}').format(",".join(campanas_failover))
+            messages.error(request, imposible_failover)
+        if not permitido_eliminar:
             return redirect(self.url_eliminar_name, self.get_object().id)
 
         try:

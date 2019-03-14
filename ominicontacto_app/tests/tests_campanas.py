@@ -45,7 +45,6 @@ from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, 
                                                AgenteEnContactoFactory, QueueMemberFactory,
                                                NombreCalificacionFactory,
                                                OpcionCalificacionFactory, ArchivoDeAudioFactory,
-                                               ParametroExtraParaWebformFactory,
                                                ActuacionVigenteFactory, FormularioFactory)
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, OMLTransaccionBaseTest
@@ -208,6 +207,7 @@ class CampanasTests(OMLBaseTest):
         self.contacto = ContactoFactory.create(bd_contacto=self.campana_activa.bd_contacto)
         self.campana_activa.bd_contacto.contactos.add(self.contacto)
         self.queue = QueueFactory.create(campana=self.campana_activa)
+        QueueFactory.create(campana=self.campana)
 
 
 class AgenteCampanaTests(CampanasTests):
@@ -250,8 +250,7 @@ class AgenteCampanaTests(CampanasTests):
         }
         AgenteEnContactoFactory.create(**values)
         kwargs = {'pk_contacto': self.contacto.pk,
-                  'pk_campana': self.campana_activa.pk,
-                  'id_agente': self.agente_profile.pk}
+                  'pk_campana': self.campana_activa.pk}
         url = reverse('calificacion_formulario_update_or_create', kwargs=kwargs)
         post_data = {'opcion_calificacion': [self.opcion_calificacion_noaccion.pk],
                      'agente': [self.agente_profile.pk],
@@ -620,8 +619,9 @@ class SupervisorCampanaTests(CampanasTests):
         }
         post_step3_data = {
             'campana_entrante_create_view-current_step': 3,
-            '3-0-parametro': '',
-            '3-0-columna': '',
+            '3-0-tipo': '4',
+            '3-0-nombre': 'fijo_1',
+            '3-0-valor': 'valor_1',
             '3-0-id': '',
             '3-TOTAL_FORMS': 1,
             '3-INITIAL_FORMS': 0,
@@ -682,8 +682,9 @@ class SupervisorCampanaTests(CampanasTests):
         }
         post_step3_data = {
             'campana_dialer_create_view-current_step': 3,
-            '3-0-parametro': '',
-            '3-0-columna': '',
+            '3-0-tipo': '4',
+            '3-0-nombre': 'fijo_1',
+            '3-0-valor': 'valor_1',
             '3-0-id': '',
             '3-TOTAL_FORMS': 1,
             '3-INITIAL_FORMS': 0,
@@ -789,8 +790,9 @@ class SupervisorCampanaTests(CampanasTests):
         }
         post_step2_data = {
             'campana_manual_create_view-current_step': 2,
-            '2-0-parametro': '',
-            '2-0-columna': '',
+            '2-0-tipo': '4',
+            '2-0-nombre': 'fijo_1',
+            '2-0-valor': 'valor_1',
             '2-0-id': '',
             '2-TOTAL_FORMS': 1,
             '2-INITIAL_FORMS': 0,
@@ -914,7 +916,7 @@ class SupervisorCampanaTests(CampanasTests):
         OpcionCalificacionFactory.create(
             tipo=OpcionCalificacion.GESTION, nombre=self.calificacion.nombre,
             campana=campana_entrante_template)
-        ParametroExtraParaWebformFactory(campana=campana_entrante_template)
+        # ParametroExtraParaWebformFactory(campana=campana_entrante_template)
         audio_ingreso = ArchivoDeAudioFactory.create()
         (post_step0_data, post_step1_data,
          post_step2_data,
@@ -995,7 +997,7 @@ class SupervisorCampanaTests(CampanasTests):
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
         self.client.post(url, post_step2_data, follow=True)
-        self.client.post(url, post_step3_data, follow=True)
+        # self.client.post(url, post_step3_data, follow=True)
         self.client.post(url, post_step4_data, follow=True)
         self.client.post(url, post_step5_data, follow=True)
         response = self.client.post(url, post_step6_data, follow=True)
@@ -1023,11 +1025,11 @@ class SupervisorCampanaTests(CampanasTests):
              self.campana_dialer.nombre, audio_ingreso, destino)
         self.assertNotEqual(self.campana_dialer.objetivo, nuevo_objetivo)
         post_step0_data['0-objetivo'] = nuevo_objetivo
-        # realizamos la creación de la campaña mediante el wizard
+        # realizamos la modificación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
-        self.client.post(url, post_step2_data, follow=True)
-        response = self.client.post(url, post_step3_data, follow=True)
+        response = self.client.post(url, post_step2_data, follow=True)
+        # response = self.client.post(url, post_step3_data, follow=True)
         self.assertNotContains(response, 'El servicio Discador no se encuentra disponible')
         self.campana_dialer.refresh_from_db()
         self.assertEqual(self.campana_dialer.objetivo, nuevo_objetivo)
@@ -1065,11 +1067,11 @@ class SupervisorCampanaTests(CampanasTests):
         post_step3_data.pop('campana_entrante_create_view-current_step')
         post_step1_data['1-strategy'] = campana.queue_campana.strategy
         opt_calif = campana.opciones_calificacion.first()
-        param_extra_web_form = campana.parametros_extra_para_webform.first()
+        # param_extra_web_form = campana.parametros_extra_para_webform.first()
         post_step2_data['2-0-nombre'] = opt_calif.nombre
         post_step2_data['2-0-tipo'] = opt_calif.tipo
-        post_step3_data['3-0-parametro'] = param_extra_web_form.parametro
-        post_step3_data['3-0-columna'] = param_extra_web_form.columna
+        # post_step3_data['3-0-parametro'] = param_extra_web_form.parametro
+        # post_step3_data['3-0-columna'] = param_extra_web_form.columna
 
         return post_step0_data, post_step1_data, post_step2_data, post_step3_data
 
@@ -1104,7 +1106,7 @@ class SupervisorCampanaTests(CampanasTests):
         opt_calif = OpcionCalificacionFactory.create(
             tipo=OpcionCalificacion.GESTION, nombre=self.calificacion.nombre,
             campana=campana_entrante_template)
-        parametro_web_form = ParametroExtraParaWebformFactory(campana=campana_entrante_template)
+        # parametro_web_form = ParametroExtraParaWebformFactory(campana=campana_entrante_template)
         audio_ingreso = ArchivoDeAudioFactory.create()
         (post_step0_data, post_step1_data,
          post_step2_data,
@@ -1116,19 +1118,19 @@ class SupervisorCampanaTests(CampanasTests):
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
         self.client.post(url, post_step2_data, follow=True)
-        self.client.post(url, post_step3_data, follow=True)
+        # self.client.post(url, post_step3_data, follow=True)
         campana_clonada = Campana.objects.get(nombre=nombre_campana)
         opt_calif_clonada_gestion = campana_clonada.opciones_calificacion.get(
             tipo=OpcionCalificacion.GESTION)
-        param_extra_web_form_clonado = campana_clonada.parametros_extra_para_webform.first()
+        # param_extra_web_form_clonado = campana_clonada.parametros_extra_para_webform.first()
         # chequeamos que la campaña clonada contenga iguales valores en opciones de calificacion
         # y parametros extra, entre otros a la campaña template
         self.assertNotEqual(campana_clonada.pk, campana_entrante_template.pk)
         self.assertEqual(campana_clonada.queue_campana.strategy, queue.strategy)
         self.assertEqual(opt_calif_clonada_gestion.nombre, opt_calif.nombre)
         self.assertEqual(opt_calif_clonada_gestion.tipo, opt_calif.tipo)
-        self.assertEqual(param_extra_web_form_clonado.parametro, parametro_web_form.parametro)
-        self.assertEqual(param_extra_web_form_clonado.columna, parametro_web_form.columna)
+        # self.assertEqual(param_extra_web_form_clonado.parametro, parametro_web_form.parametro)
+        # self.assertEqual(param_extra_web_form_clonado.columna, parametro_web_form.columna)
 
     def _obtener_post_data_wizard_creacion_template_campana_dialer(
             self, nombre_campana, audio_ingreso, destino):
@@ -1171,10 +1173,10 @@ class SupervisorCampanaTests(CampanasTests):
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
         self.client.post(url, post_step2_data, follow=True)
-        self.client.post(url, post_step3_data, follow=True)
+        # self.client.post(url, post_step3_data, follow=True)
         self.client.post(url, post_step4_data, follow=True)
         self.client.post(url, post_step5_data, follow=True)
-        self.client.post(url, post_step6_data, follow=True)
+        # self.client.post(url, post_step6_data, follow=True)
 
         self.assertTrue(Campana.objects.filter(
             nombre=nombre_campana, estado=Campana.ESTADO_TEMPLATE_ACTIVO,
@@ -1208,11 +1210,11 @@ class SupervisorCampanaTests(CampanasTests):
         post_step1_data['1-strategy'] = self.campana_dialer.queue_campana.strategy
         opt_calif = self.campana_dialer.opciones_calificacion.first()
         actuacion_vigente = self.campana_dialer.actuacionvigente
-        param_extra_web_form = self.campana_dialer.parametros_extra_para_webform.first()
+        # param_extra_web_form = self.campana_dialer.parametros_extra_para_webform.first()
         post_step2_data['2-0-nombre'] = opt_calif.nombre
         post_step2_data['2-0-tipo'] = opt_calif.tipo
-        post_step3_data['3-0-parametro'] = param_extra_web_form.parametro
-        post_step3_data['3-0-columna'] = param_extra_web_form.columna
+        # post_step3_data['3-0-parametro'] = param_extra_web_form.parametro
+        # post_step3_data['3-0-columna'] = param_extra_web_form.columna
         post_step4_data['4-lunes'] = actuacion_vigente.lunes
         hora_desde = actuacion_vigente.hora_desde.time()
         hora_hasta = actuacion_vigente.hora_hasta.time()
@@ -1242,7 +1244,7 @@ class SupervisorCampanaTests(CampanasTests):
         audio_ingreso = ArchivoDeAudioFactory.create()
         ivr = IVRFactory.create()
         destino = DestinoEntranteFactory.create(tipo=DestinoEntrante.IVR, content_object=ivr)
-        parametro_web_form = ParametroExtraParaWebformFactory(campana=self.campana_dialer)
+        # parametro_web_form = ParametroExtraParaWebformFactory(campana=self.campana_dialer)
         opt_calif = self.campana_dialer.opciones_calificacion.get(tipo=OpcionCalificacion.GESTION)
         actuacion_vigente = ActuacionVigenteFactory.create(campana=self.campana_dialer)
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
@@ -1253,7 +1255,7 @@ class SupervisorCampanaTests(CampanasTests):
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
         self.client.post(url, post_step2_data, follow=True)
-        self.client.post(url, post_step3_data, follow=True)
+        # self.client.post(url, post_step3_data, follow=True)
         self.client.post(url, post_step4_data, follow=True)
         self.client.post(url, post_step5_data, follow=True)
         self.client.post(url, post_step6_data, follow=True)
@@ -1261,7 +1263,7 @@ class SupervisorCampanaTests(CampanasTests):
         campana_clonada = Campana.objects.get(nombre=nombre_campana)
         opt_calif_clonada_gestion = campana_clonada.opciones_calificacion.get(
             tipo=OpcionCalificacion.GESTION)
-        param_extra_web_form_clonado = campana_clonada.parametros_extra_para_webform.first()
+        # param_extra_web_form_clonado = campana_clonada.parametros_extra_para_webform.first()
         actuacion_vigente_clonada = campana_clonada.actuacionvigente
         # chequeamos que la campaña clonada contenga iguales valores en opciones de calificacion
         # y parametros extra, entre otros a la campaña template
@@ -1270,8 +1272,8 @@ class SupervisorCampanaTests(CampanasTests):
             campana_clonada.queue_campana.strategy, self.campana_dialer.queue_campana.strategy)
         self.assertEqual(opt_calif_clonada_gestion.nombre, opt_calif.nombre)
         self.assertEqual(opt_calif_clonada_gestion.tipo, opt_calif.tipo)
-        self.assertEqual(param_extra_web_form_clonado.parametro, parametro_web_form.parametro)
-        self.assertEqual(param_extra_web_form_clonado.columna, parametro_web_form.columna)
+        # self.assertEqual(param_extra_web_form_clonado.parametro, parametro_web_form.parametro)
+        # self.assertEqual(param_extra_web_form_clonado.columna, parametro_web_form.columna)
         self.assertEqual(actuacion_vigente_clonada.lunes, actuacion_vigente.lunes)
         self.assertEqual(actuacion_vigente_clonada.hora_desde.strftime("%H:%M"),
                          actuacion_vigente.hora_desde.strftime("%H:%M"))
@@ -1326,7 +1328,7 @@ class SupervisorCampanaTests(CampanasTests):
         opt_calif = OpcionCalificacionFactory.create(
             campana=campana, tipo=OpcionCalificacion.GESTION,
             nombre=self.calificacion.nombre)
-        param_extra_web_form = ParametroExtraParaWebformFactory.create(campana=campana)
+        # param_extra_web_form = ParametroExtraParaWebformFactory.create(campana=campana)
         url = reverse('campana_manual_template_create_campana', args=[campana.pk])
         nombre_campana = 'campana_manual_clonada'
         (post_step0_data, post_step1_data,
@@ -1335,8 +1337,8 @@ class SupervisorCampanaTests(CampanasTests):
         post_step0_data['0-nombre'] = nombre_campana
         post_step1_data['1-0-nombre'] = opt_calif.nombre
         post_step1_data['1-0-tipo'] = opt_calif.tipo
-        post_step2_data['2-0-parametro'] = param_extra_web_form.parametro
-        post_step2_data['2-0-columna'] = param_extra_web_form.columna
+        # post_step2_data['2-0-parametro'] = param_extra_web_form.parametro
+        # post_step2_data['2-0-columna'] = param_extra_web_form.columna
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
@@ -1344,15 +1346,15 @@ class SupervisorCampanaTests(CampanasTests):
         campana_clonada = Campana.objects.get(nombre=nombre_campana)
         opt_calif_clonada_gestion = campana_clonada.opciones_calificacion.get(
             tipo=OpcionCalificacion.GESTION)
-        param_extra_web_form_clonado = campana_clonada.parametros_extra_para_webform.first()
+        # param_extra_web_form_clonado = campana_clonada.parametros_extra_para_webform.first()
         # chequeamos que la campaña clonada contenga iguales valores en opciones de calificacion
         # y parametros extra, entre otros a la campaña template
         self.assertNotEqual(campana_clonada.pk, self.campana_dialer.pk)
         self.assertEqual(campana_clonada.queue_campana.strategy, queue.strategy)
         self.assertEqual(opt_calif_clonada_gestion.nombre, opt_calif.nombre)
         self.assertEqual(opt_calif_clonada_gestion.tipo, opt_calif.tipo)
-        self.assertEqual(param_extra_web_form_clonado.parametro, param_extra_web_form.parametro)
-        self.assertEqual(param_extra_web_form_clonado.columna, param_extra_web_form.columna)
+        # self.assertEqual(param_extra_web_form_clonado.parametro, param_extra_web_form.parametro)
+        # self.assertEqual(param_extra_web_form_clonado.columna, param_extra_web_form.columna)
 
     def _obtener_post_data_wizard_creacion_template_campana_preview(self, nombre_campana):
         (post_step0_data, post_step1_data,
@@ -1403,7 +1405,7 @@ class SupervisorCampanaTests(CampanasTests):
         opt_calif = OpcionCalificacionFactory.create(
             campana=campana, tipo=OpcionCalificacion.GESTION,
             nombre=self.calificacion.nombre)
-        param_extra_web_form = ParametroExtraParaWebformFactory.create(campana=campana)
+        # param_extra_web_form = ParametroExtraParaWebformFactory.create(campana=campana)
         url = reverse('campana_preview_template_create_campana', args=[campana.pk])
         nombre_campana = 'campana_preview_clonada'
         (post_step0_data, post_step1_data,
@@ -1412,24 +1414,24 @@ class SupervisorCampanaTests(CampanasTests):
         post_step0_data['0-nombre'] = nombre_campana
         post_step1_data['1-0-nombre'] = opt_calif.nombre
         post_step1_data['1-0-tipo'] = opt_calif.tipo
-        post_step2_data['2-0-parametro'] = param_extra_web_form.parametro
-        post_step2_data['2-0-columna'] = param_extra_web_form.columna
+        # post_step2_data['2-0-parametro'] = param_extra_web_form.parametro
+        # post_step2_data['2-0-columna'] = param_extra_web_form.columna
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
         self.client.post(url, post_step1_data, follow=True)
-        self.client.post(url, post_step2_data, follow=True)
+        # self.client.post(url, post_step2_data, follow=True)
         campana_clonada = Campana.objects.get(nombre=nombre_campana)
         opt_calif_clonada_gestion = campana_clonada.opciones_calificacion.get(
             tipo=OpcionCalificacion.GESTION)
-        param_extra_web_form_clonado = campana_clonada.parametros_extra_para_webform.first()
+        # param_extra_web_form_clonado = campana_clonada.parametros_extra_para_webform.first()
         # chequeamos que la campaña clonada contenga iguales valores en opciones de calificacion
         # y parametros extra, entre otros a la campaña template
         self.assertNotEqual(campana_clonada.pk, self.campana_dialer.pk)
         self.assertEqual(campana_clonada.queue_campana.strategy, queue.strategy)
         self.assertEqual(opt_calif_clonada_gestion.nombre, opt_calif.nombre)
         self.assertEqual(opt_calif_clonada_gestion.tipo, opt_calif.tipo)
-        self.assertEqual(param_extra_web_form_clonado.parametro, param_extra_web_form.parametro)
-        self.assertEqual(param_extra_web_form_clonado.columna, param_extra_web_form.columna)
+        # self.assertEqual(param_extra_web_form_clonado.parametro, param_extra_web_form.parametro)
+        # self.assertEqual(param_extra_web_form_clonado.columna, param_extra_web_form.columna)
 
     def test_no_es_posible_eliminar_formulario_asignado_a_campana(self):
         url = reverse('formulario_eliminar', args=[self.campana.formulario.pk])
@@ -1443,3 +1445,30 @@ class SupervisorCampanaTests(CampanasTests):
         n_formularios = Formulario.objects.count()
         self.client.post(url, follow=True)
         self.assertEqual(Formulario.objects.count(), n_formularios - 1)
+
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_no_se_puede_eliminar_campana_entrante_failover_de_otra(
+            self, _generar_y_recargar_configuracion_asterisk):
+        self.campana_activa.type = Campana.TYPE_ENTRANTE
+        self.campana_activa.save()
+        self.campana.type = Campana.TYPE_ENTRANTE
+        self.campana.save()
+        destino_entrante = DestinoEntranteFactory(content_object=self.campana_activa)
+        destino_entrante.campanas_destino_failover.add(self.campana.queue_campana)
+        url = reverse('campana_elimina', args=[self.campana_activa.pk])
+        self.assertEqual(self.campana_activa.estado, Campana.ESTADO_ACTIVA)
+        self.client.post(url, follow=True)
+        self.campana_activa.refresh_from_db()
+        self.assertEqual(self.campana_activa.estado, Campana.ESTADO_ACTIVA)
+
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    def test_se_puede_eliminar_campana_entrante_no_failover_de_otra(
+            self, _generar_y_recargar_configuracion_asterisk):
+        DestinoEntranteFactory(content_object=self.campana_activa)
+        self.campana_activa.type = Campana.TYPE_ENTRANTE
+        self.campana_activa.save()
+        url = reverse('campana_elimina', args=[self.campana_activa.pk])
+        self.assertEqual(self.campana_activa.estado, Campana.ESTADO_ACTIVA)
+        self.client.post(url)
+        self.campana_activa.refresh_from_db()
+        self.assertEqual(self.campana_activa.estado, Campana.ESTADO_BORRADA)

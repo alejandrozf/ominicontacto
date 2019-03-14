@@ -19,7 +19,8 @@
 
 /* Requirements: 			*/
 /* 		- Timers.js 		*/
-/* 		- omlAPI.js 		*/
+/*      - omlAPI.js         */
+/* 		- click2Call.js     */
 /* DEBUG*/
 $('#wrapperWebphone').toggleClass('active');
 
@@ -43,7 +44,7 @@ $(function () {
     
     var oml_api = new OMLAPI();
 
-    click2call = new Click2CallDispatcher(oml_api);
+    click2call = new Click2CallDispatcher(oml_api, agent_id);
     phone_controller = new PhoneJSController(agent_id, sipExtension, sipSecret, timers, click2call);
 
     subscribirEventosBotonesGenerales(oml_api, agent_id, timers);

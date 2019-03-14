@@ -5,9 +5,9 @@ import os
 {% if desarrollo == 1 %}
 DEBUG = True
 {% else %}
+COMPRESS_ENABLED = True
 DEBUG = False
 {% endif %}
-COMPRESS_ENABLED = True
 TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = [
@@ -53,7 +53,7 @@ OML_ASTERISK_REMOTEPATH = "{{ asterisk_location }}/etc/asterisk/"
 OML_BACKLIST_REMOTEPATH  = "{{ asterisk_location }}/var/spool/asterisk/"
 
 OML_KAMAILIO_LOCATION = "{{ kamailio_location }}/etc/kamailio/"
-OML_KAMAILIO_CMD = "ssh root@{{ kamailio_fqdn }} 'kamctl mi autheph.dump_secrets' |awk -F ' ' '{print $3}' |head -1"
+OML_KAMAILIO_CMD = "ssh root@{{ kamailio_fqdn }} 'kamcmd -s {{ kamailio_location }}/run/kamailio/kamailio_ctl autheph.dump_secrets' |awk -F ' ' '{print $3}' |head -1"
 OML_GENERARSK_CMD = "ssh root@{{ kamailio_fqdn }} 'sed -i \"s/\({0}\).*/{1}!g\\\"/\" {2}kamailio-local.cfg'"
 
 ASTERISK = {
@@ -149,6 +149,13 @@ DJANGO_CORS_HEADERS = True
 DJANGO_DEBUG_TOOLBAR = True
 if DJANGO_DEBUG_TOOLBAR:
     INTERNAL_IPS = ['127.0.0.1', OML_OMNILEADS_IP]
+    def show_toolbar(request):
+        return True
+    DEBUG_TOOLBAR_CONFIG = {
+        "SHOW_TOOLBAR_CALLBACK" : show_toolbar,
+    }
+    LOCAL_APPS += ['debug_toolbar']
+
 {% else %}
 LOCAL_APPS = []
 DJANGO_DEBUG_TOOLBAR = False
@@ -156,7 +163,6 @@ DJANGO_CORS_HEADERS = False
 if DJANGO_DEBUG_TOOLBAR:
     INTERNAL_IPS = ['127.0.0.1']
 {% endif %}
-    LOCAL_APPS += ['debug_toolbar']
 
 CONSTANCE_CONFIG = {}
 MIDDLEWARE_PREPPEND = []

@@ -4,8 +4,8 @@ Contribution guide
 If you want to contribute to OMniLeads development you can open an issue at https://gitlab.com/omnileads/ominicontacto/issues (1) and ,optionally, a merge-request with the proposal code to solve it, following the next steps:
 
   * Create development environment from an installed system (see installation instructions)
-  * Clone the repository locally
   * Create an issue in (1) and take its number (_issue-number_ for the rest of the text)
+  * Fork and clone the repository locally
   * Create a branch from the last 'develop' version in the repository
       * Write clear, concise and well documented code
       * Name the  branch following the schema _oml-ext-issue-number-clear-description_

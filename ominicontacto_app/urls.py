@@ -145,7 +145,9 @@ urlpatterns = [
         name='pausa_delete',
         ),
 
-    url(r'^node/$', login_required(views.node_view), name='view_node'),
+    url(r'^node/$',
+        agente_requerido(views.ConsolaAgenteView.as_view()),
+        name='view_node'),
 
     url(r'^smsThread/$',
         login_required(views.mensajes_recibidos_enviado_remitente_view),
@@ -154,7 +156,7 @@ urlpatterns = [
         login_required(views.mensajes_recibidos_view),
         name='view_sms_get_all'),
     url(r'^blanco/$',
-        login_required(views.blanco_view),
+        login_required(views.BlancoView.as_view()),
         name='view_blanco'),
 
     # ==========================================================================
@@ -164,7 +166,7 @@ urlpatterns = [
         login_required(views_grabacion.MarcarGrabacionView.as_view()),
         name='grabacion_marcar',
         ),
-    url(r'^grabacion/descripcion/(?P<uid>[\d .]+)/$',
+    url(r'^grabacion/descripcion/(?P<callid>[\d .]+)/$',
         login_required(views_grabacion.GrabacionDescripcionView.as_view()),
         name='grabacion_descripcion',
         ),
@@ -245,18 +247,6 @@ urlpatterns = [
             views_base_de_datos_contacto.ActualizaBaseDatosContactoView.as_view()),
         name='actualiza_base_datos_contacto',
         ),
-    url(r'^contacto/list/$',
-        agente_requerido(views_contacto.ContactoListView.as_view()),
-        name='contacto_list',
-        ),
-    url(r'^contacto/(?P<pk_contacto>\d+)/update/$',
-        agente_requerido(views_contacto.ContactoUpdateView.as_view()),
-        name='contacto_update',
-        ),
-    url(r'^api/campana/(?P<pk_campana>\d+)/contactos/$',
-        agente_requerido(views_contacto.API_ObtenerContactosCampanaView.as_view()),
-        name='api_contactos_campana',
-        ),
 
     url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/list_contacto/$',
         administrador_o_supervisor_requerido(views_contacto.ContactoBDContactoListView.as_view()),
@@ -283,27 +273,55 @@ urlpatterns = [
                                              mostrar_bases_datos_borradas_ocultas_view),
         name='mostrar_bases_datos_ocultas', ),
 
+    #  ===== Vistas de contacto para agente ====
+    url(r'^contacto/list/$',
+        agente_requerido(views_contacto.ContactoListView.as_view()),
+        name='contacto_list',
+        ),
+    url(r'^contacto/(?P<pk_contacto>\d+)/update/$',
+        agente_requerido(views_contacto.ContactoUpdateView.as_view()),
+        name='contacto_update',
+        ),
+    url(r'^api/campana/(?P<pk_campana>\d+)/contactos/$',
+        agente_requerido(views_contacto.API_ObtenerContactosCampanaView.as_view()),
+        name='api_contactos_campana',
+        ),
+
     # ==========================================================================
-    #  Vistas de manipulación de contactos de una campaña
+    #  Vistas de manipulación de contactos de una campaña / Para agente
     # ==========================================================================
     url(r'^campana/selecciona/$',
-        login_required(
+        agente_requerido(
             views_contacto.FormularioSeleccionCampanaFormView.as_view()),
         name='seleccion_campana_adicion_contacto',
         ),
     url(r'^campana/(?P<pk_campana>\d+)/nuevo_contacto/$',
-        login_required(
+        agente_requerido(
             views_contacto.FormularioNuevoContactoFormView.as_view()),
         name='nuevo_contacto_campana',
         ),
+    url(r'^campana/(?P<pk_campana>\d+)/nuevo_contacto_a_llamar/(?P<telefono>\d+)/$',
+        agente_requerido(
+            views_contacto.FormularioNuevoContactoFormView.as_view()),
+        name='nuevo_contacto_campana_a_llamar', kwargs={'accion': 'llamar'}
+        ),
+    # TODO: Ver si se usa esa vista para algo
     url(r'^campana/(?P<pk_campana>\d+)/busqueda_contacto/$',
-        login_required(
+        agente_requerido(
             views_contacto.CampanaBusquedaContactoFormView.as_view()),
         name="campana_busqueda_contacto"),
-    url(r'^campana/(?P<pk_campana>\d+)/contactos_telefono_repetido/(?P<telefono>\d+)$',
+    url(r'^campana/(?P<pk_campana>\d+)/contactos_telefono_repetido/(?P<telefono>\d+)'
+        r'/(?P<call_data_json>.+)$',
         agente_requerido(
             views_contacto.ContactosTelefonosRepetidosView.as_view()),
         name="campana_contactos_telefono_repetido"),
+
+    url(r'^campana/(?P<pk_campana>\d+)/identificar_contacto_a_llamar'
+        r'/(?P<telefono>\d+)/$',
+        agente_requerido(
+            views_contacto.IdentificarContactoView.as_view()),
+        name="identificar_contacto_a_llamar"),
+
 
     # ==========================================================================
     #  Templates Campana Entrante
@@ -439,28 +457,42 @@ urlpatterns = [
         name='formulario_vista',
         ),
     # ==========================================================================
-    # CalificacionCliente / Formulario
+    # Proceso de Calificación
+    # CalificacionCliente / Formulario de Calif. de Gestión
     # ==========================================================================
+    url(r'^agente/calificar_llamada/(?P<call_data_json>.+)$',
+        agente_requerido(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
+        kwargs={'from': 'calificacion'},
+        name='calificar_llamada'
+        ),
+    url(r'^agente/calificar_llamada_con_contacto/(?P<pk_contacto>\d+)/(?P<call_data_json>.+)$',
+        agente_requerido(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
+        kwargs={'from': 'calificacion'},
+        name='calificar_llamada_con_contacto'
+        ),
+
     url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
-        '/update/(?P<id_agente>\d+)/calificacion/$',
+        '/update_calificacion/$',
         login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
         kwargs={'from': 'calificacion'},
         name='calificacion_formulario_update_or_create'
         ),
     url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
-        '/update/(?P<id_agente>\d+)/recalificacion/$',
+        '/update_recalificacion/$',
         login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
         kwargs={'from': 'recalificacion'},
         name='recalificacion_formulario_update_or_create'
         ),
     url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
-        '/update/(?P<id_agente>\d+)/reporte/$',
+        '/update_reporte/$',
         login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
         kwargs={'from': 'reporte'},
         name='calificacion_cliente_actualiza_desde_reporte'
         ),
-    url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<id_agente>\d+)/create/'
-        r'(?P<telefono>\d+)/$',
+
+    # TODO: Una vez que todas las manuales sean click to call ya no existirá esta vista
+    # Mientras, quedará para ser usada únicamente en llamadas manuales
+    url(r'^formulario/(?P<pk_campana>\d+)/calificacion_create/(?P<telefono>\d+)/$',
         login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
         kwargs={'from': 'calificacion', 'pk_contacto': None, 'manual': True},
         name="calificar_por_telefono"),
@@ -469,6 +501,7 @@ urlpatterns = [
         views_calificacion_cliente.calificacion_cliente_externa_view,
         name='calificacion_cliente_externa'
         ),
+    # Formulario de Calificación de Gestión
     url(r'^formulario/(?P<pk_campana>\d+)/venta/(?P<pk_contacto>\d+)/(?P<id_agente>\d+)/$',
         login_required(views_calificacion_cliente.FormularioCreateFormView.as_view()),
         name='formulario_venta'
@@ -735,6 +768,9 @@ urlpatterns = [
     url(r'^sitio_externo/sitios_ocultos/$',
         administrador_requerido(views_sitio_externo.mostrar_sitio_externos_ocultos_view),
         name='mostrar_sitios_externo_ocultos', ),
+    url(r'^sitio_externo/(?P<pk>\d+)/update/$',
+        administrador_requerido(views_sitio_externo.SitioExternoUpdateView.as_view()),
+        name='modificar_sitio_externo', ),
     # ==========================================================================
     # QueueMember
     # ==========================================================================

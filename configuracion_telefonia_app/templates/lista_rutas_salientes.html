@@ -21,8 +21,30 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 {% load i18n %}
 
+{% block head_js %}
+<script type="text/javascript" src="{% static 'ominicontacto/JS/jquery-ui.min.js' %}"></script>
+<script type="text/javascript">
+
+    function guardarOrden() {
+        var orden = $("#rutas_salientes").sortable("toArray");
+        $("#orden").val(JSON.stringify(orden));
+        $("#form_ordenar").submit();
+    };
+
+    $( function() {
+        $("#rutas_salientes").sortable();
+    });
+
+</script>
+{% endblock %}
+
 {% block content %}
 <h1>{% trans 'Rutas Salientes' %}</h1>
+
+<form id="form_ordenar" action="{% url 'ordenar_rutas_salientes' %}" method="post"> 
+    {% csrf_token %}
+    <input type="hidden" name="orden" id="orden">
+</form>
 
 <table class="table">
     <thead>
@@ -33,9 +55,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <th colspan="2">{% trans 'Opciones de discado' %}</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody id="rutas_salientes">
     {% for ruta_saliente in rutas_salientes %}
-        <tr>
+        <tr id="{{ ruta_saliente.id }}">
             <td>{{ ruta_saliente.id }}</td>
             <td><a href="{% url 'editar_ruta_saliente' ruta_saliente.id %}">{{ ruta_saliente.nombre }}</a></td>
             <td>{{ ruta_saliente.ring_time }}</td>
@@ -54,31 +76,5 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </tbody>
 </table>
 <a class="btn btn-light btn-sm" href="{% url 'crear_ruta_saliente' %}" >{% trans 'Agregar ruta saliente' %}</a>
-<nav aria-label="Page navigation">
-    <ul class="pagination">
-        {% if page_obj.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="{% url 'user_list' page=page_obj.previous_page_number%}" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                    <span class="sr-only">{% trans 'Anterior' %}</span>
-                </a>
-            </li>
-        {% endif %}
-
-        <li class="page-item current">
-            {% blocktrans with page_number=page_obj.number num_pages=paginator.num_pages %}
-                Página {{ page_number }} de {{ num_pages }}
-            {% endblocktrans %}
-        </li>
-
-        {% if page_obj.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="{% url 'user_list' page=page_obj.next_page_number %}" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                    <span class="sr-only">{% trans 'Siguiente' %}</span>
-                </a>
-            </li>
-        {% endif %}
-    </ul>
-</nav>
+<a class="btn btn-light btn-sm" href="javascript:;" onclick="guardarOrden();">{% trans 'Guardar Orden' %}</a>
 {% endblock %}

@@ -50,7 +50,7 @@
 # Se añaden los modulos que se quieren incluir por defecto en la instalacion
 - name: Add the desired modules in modules.lst
   lineinfile:
-          dest: /usr/src/kamailio-{{ kamailio_version }}/modules.lst
+          dest: /usr/src/kamailio-{{ kamailio_version }}/src/modules.lst
           regexp: '^include_modules='
           insertafter: '^include_modules= '
           line: 'include_modules= presence presence_xml app_python auth_ephemeral db_postgres ndb_redis presence tls uuid websocket'
@@ -60,6 +60,12 @@
 # Se hace la copia del Makefile del modulo db_postgres, es necesario porque se customizó
 - name: Copy of kamailio Makefile
   template: src=templates/etc/Makefile dest=/usr/src/kamailio-{{ kamailio_version }}/modules/db_postgres/ owner=root group=root mode=755
+  become: true
+  become_method: sudo
+
+- name: Link the pg_config bin in /usr/bin (centos)
+  file: state=link src=/usr/pgsql-9.6/bin/pg_config dest=/usr/bin/pg_config mode=755 force=true
+  when: ansible_os_family == "RedHat"
   become: true
   become_method: sudo
 

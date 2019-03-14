@@ -28,6 +28,7 @@
   template: src=templates/etc/ominicontacto.conf.j2 dest=/etc/nginx/conf.d/ominicontacto.conf owner={{ usuario }} group={{ usuario }}
   become: true
   become_method: sudo
+  tags: postinstall
 
 # Se pasan los certificados creados en kamailio a la carpeta nginx_certs
 - name: Copy of the certificates in nginx (aio)
@@ -62,13 +63,14 @@
   template: src=templates/omnileads.service dest=/etc/systemd/system/omnileads.service owner=root group=root mode=650
   become: true
   become_method: sudo
+  tags: postinstall
 
 # Se inicia y habilita el servicio
 - name: Start the omnileads-daemon service
   systemd: name=omnileads state=restarted enabled=yes daemon_reload=yes
   become: true
   become_method: sudo
-  tags: changeip
+  when: desarrollo == 0
 
 # El concatenate.sh es un script chamullero que sirve para poner en un solo archivo (voip.cert) el certificado de CA concatenado con el cert de nodo
 # Así evitamos la advertencia de seguridad de los browsers.
@@ -101,3 +103,11 @@
 # Se sube el script de backup-restore
 - name: Generate backup-restore.sh script
   template: src=templates/bin/backup-restore.sh.j2 dest={{ install_prefix }}bin/backup-restore.sh owner={{ usuario }} group={{ usuario }} mode=755
+
+# Se inicia y habilita el servicio
+- name: Reload the omnileads-daemon service
+  systemd: name=omnileads state=reloaded enabled=yes daemon_reload=yes
+  become: true
+  become_method: sudo
+  tags: ['postinstall','changeip']
+  when: desarrollo == 0

@@ -17,11 +17,10 @@
 #
 ---
 
-- set_fact: static_route={{ install_prefix }}ominicontacto/ominicontacto_app/static/ominicontacto
-
 # Se cambia la IP en el acrhivo de config del webphone
-- name: Change the ip address in config.js
+- name: Creation of config.js file
   template: "src=templates/config.js.j2 dest={{ static_route }}/JS/config.js owner={{ usuario }} group={{ usuario }}"
+  tags: ['postinstall','changeip']
 
 # Se borra el cache de javascript, esto solo se hace cuando es postinstall
 - name: Erase the javascript cache files (if exists)
@@ -32,7 +31,7 @@
   tags: ['never','postinstall']
 
 # Se corre un compendio de comandos de django con manage.py  https://docs.ansible.com/ansible/2.5/modules/django_manage_module.html#django-manage-module
-- name: Run Django migrations
+- name: Run Django migrations and compilemessages
   django_manage: >
           command={{ item }}
           app_path={{ install_prefix }}ominicontacto
@@ -40,27 +39,33 @@
           virtualenv={{ install_prefix }}virtualenv
   with_items:
           - migrate
-          - collectstatic
-    # https://github.com/ierror/django-js-reverse
-          - collectstatic_js_reverse
-    # https://django-compressor.readthedocs.io/en/stable/
-          - compress
-          - regenerar_asterisk
-          - populate_history --auto
+          - populate_history
           - compilemessages
+  environment:
+    PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
+    PGPASSWORD: "{{ postgres_password }}"
+  become: true
+  become_method: su
+  become_user: "{{ usuario }}"
+  tags: postinstall
+
+- name: Run collectstatic, compress and regenerar_asterisk commands
+  django_manage: command={{ item }} app_path={{ install_prefix }}ominicontacto settings=ominicontacto.settings virtualenv={{ install_prefix }}virtualenv
+  with_items:
+    - collectstatic
+    - collectstatic_js_reverse
+    - compress --force
+    - regenerar_asterisk
   environment:
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
   become: true
   become_method: su
   become_user: "{{ usuario }}"
+  tags: ['changeip','postinstall']
 
 # Se crea el usuario admin
 - name: Create admin superuser
-  django_manage: >
-          command="createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com"
-          app_path={{ install_prefix }}ominicontacto
-          settings=ominicontacto.settings
-          virtualenv={{ install_prefix }}virtualenv
+  django_manage: command="createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com" app_path={{ install_prefix }}ominicontacto settings=ominicontacto.settings virtualenv={{ install_prefix }}virtualenv
   environment:
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
   register: result
@@ -72,7 +77,6 @@
 # Se crea un pequeño script que utiliza expect para setear automaticamente la password del superusuario
 - name: Change password of superuser
   template: "src=templates/bin/changepassword.sh.j2 dest={{ install_prefix }}ominicontacto/changepassword.sh mode=0755"
-  tags: postinstall
 
 # Se ejecuta el script (verlo en templates para mas info)
 - name: Change password
@@ -83,9 +87,7 @@
   become: true
   become_user: "{{ usuario }}"
   become_method: su
-  tags: postinstall
 
 # Se borra ese script del sistema
-#- name: Erase the script for changing superuser password
-#  file: path={{ install_prefix }}ominicontacto/changepassword.sh state=absent
-#  tags: postinstall
+- name: Erase the script for changing superuser password
+  file: path={{ install_prefix }}ominicontacto/changepassword.sh state=absent

@@ -248,10 +248,10 @@ class AbstractConfiguracionAsterisk(object):
             else:
                 generador_family.regenerar_family(family_member)
         except Exception as e:
-            logger.exception(_("Error {0} en la families {1} "
-                               "intentar regenerar_family()".format(e.message, nombre_families)))
+            logger.exception(_("Error {0} en la family {1} "
+                               "al intentar regenerar_family()".format(e.message, nombre_families)))
             mensaje_error += _("Hubo un inconveniente al insertar los registros de la family {0} "
-                               "la base de datos de Asterisk. ".format(nombre_families))
+                               "en la base de datos de Asterisk. ".format(nombre_families))
             raise (RestablecerConfiguracionTelefonicaError(mensaje_error))
 
     def _eliminar_family_en_astdb(self, family_member):
@@ -261,10 +261,10 @@ class AbstractConfiguracionAsterisk(object):
         try:
             generador_family.delete_family(family_member)
         except Exception as e:
-            logger.exception(_("Error {0} en la families {1} al"
+            logger.exception(_("Error {0} en la family {1} al "
                                "intentar delete_family()".format(e.message, nombre_families)))
-            mensaje_error += _("Hubo un inconveniente al eliminar los registros de la families {0}"
-                               "la base de datos de Asterisk. ".format(nombre_families))
+            mensaje_error += _("Hubo un inconveniente al eliminar los registros de la family {0} "
+                               "en la base de datos de Asterisk. ".format(nombre_families))
             raise (RestablecerConfiguracionTelefonicaError(mensaje_error))
 
     def regenerar_asterisk(self, family_member=None):

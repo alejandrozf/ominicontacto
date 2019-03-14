@@ -17,6 +17,10 @@
 #
 ---
 
+##################
+## Centos tasks ##
+##################
+
 # Se excluye postgres de la lista de repositorios base y updates
 - name: Exclude postgres in list of repositories
   ini_file: "path=/etc/yum.repos.d/CentOS-Base.repo section={{ item }} option=exclude no_extra_spaces=yes value=postgres* state=present"
@@ -27,17 +31,6 @@
   become_method: sudo
   when: ansible_os_family == "RedHat"
 
-#Se intala postgresql debian
-- name: Install of postgresql 9.6
-  apt: name={{ item }} state=present
-  with_items:
-    - postgresql-plpython-9.6
-    #- postgresql-libs
-    - postgresql-9.6
-    - python-psycopg2
-    #- postgresql-devel
-  when: ansible_os_family == "Debian"
-
 # Se instala el repo de postgresql9.6
 - name: Install of postgresql-9.6 repository
   yum: "name={{ postgresql_url }} state=present validate_certs=no "
@@ -46,7 +39,7 @@
   when: ansible_os_family == "RedHat"
 
   #Se instalan todos los paquetes de postgresql96
-- name: Install of postgresql-9.6
+- name: Install of postgresql-9.6 (centos)
   yum: name={{ item }} state=present
   with_items:
     - postgresql96*
@@ -54,3 +47,28 @@
   become: yes
   become_method: sudo
   when: ansible_os_family == "RedHat"
+
+############################
+## Ubuntu / Debian tasks ##
+###########################
+
+- name: Add the postgresql repository key (ubuntu )
+  apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc validate_certs=no state=present
+  become: true
+  become_method: sudo
+  when: ansible_distribution == "Ubuntu"
+
+- name: Download postgresql-9.6 repository
+  apt_repository: repo="deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" filename=pgdg state=present update_cache=yes
+  become: true
+  become_method: sudo
+  when: ansible_distribution == "Ubuntu"
+
+#Se intala postgresql debian
+- name: Install of postgresql 9.6
+  apt: name={{ item }} state=present
+  with_items:
+    - postgresql-plpython-9.6
+    - postgresql-9.6
+    - python-psycopg2
+  when: ansible_os_family == "Debian"

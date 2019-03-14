@@ -54,6 +54,13 @@ class TroncalSIP(models.Model):
         return self.nombre
 
 
+def max_orden_ruta_saliente():
+    max = RutaSaliente.objects.aggregate(models.Max('orden'))['orden__max']
+    if max is None:
+        return 1
+    return max + 1
+
+
 class RutaSaliente(models.Model):
     """
     Configuración de Ruta Saliente.
@@ -65,6 +72,7 @@ class RutaSaliente(models.Model):
         validators=[MaxValueValidator(3600), MinValueValidator(1)], default=25)
     dial_options = models.CharField(
         max_length=512, validators=[RegexValidator(R_DIAL_OPT)], default='Tt')
+    orden = models.PositiveIntegerField(unique=True, default=max_orden_ruta_saliente)
 
     def __unicode__(self):
         return self.nombre
@@ -327,6 +335,11 @@ class DestinoEntrante(models.Model):
     def get_opcion_destino_por_valor(self, valor):
         """ Obtiene el nodo destino correspondiente al valor de una relacion entre dos nodos """
         return self.destinos_siguientes.get(valor=valor)
+
+    def es_destino_failover(self):
+        """Determina si el nodo destino es usado como failover de alguna campaña
+        """
+        return self.campanas_destino_failover.exists()
 
 
 class OpcionDestino(models.Model):

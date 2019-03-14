@@ -20,7 +20,7 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
-  tags: postinstall
+  tags: changeip
 
 # Esto es para debian
 - name: Modify of pg_hba.conf file (debian)
@@ -28,20 +28,18 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
-  tags: postinstall
+  tags: changeip
 
 
 #Se modifica la ip en la que escucha postgres
 - name: Modify postgresql listen address
   lineinfile: path=/etc/postgresql/9.6/main/postgresql.conf regexp="^#listen_addresses" line="listen_addresses = '*'" state=present
   when: ansible_os_family == "Debian"
-  tags: postinstall
 
 #Se modifica la ip en la que escucha postgres
 - name: Modify postgresql listen address
   lineinfile: path=/var/lib/pgsql/9.6/data/postgresql.conf regexp="^#listen_addresses" line="listen_addresses = '*'" state=present
   when: ansible_os_family == "RedHat"
-  tags: postinstall
 
 # Restarteamos servicio
 - name: Restart postgres service (centos)
@@ -49,15 +47,12 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
-  tags: postinstall
-
 
 - name: Restart postgres service (debian)
   service: name=postgresql state=restarted enabled=yes
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
-  tags: postinstall
 
 # Se crea el usuario de postgres
 - name: Create rw postgres user
@@ -65,7 +60,6 @@
   become: yes
   become_method: sudo
   become_user: postgres
-  tags: postinstall
 
 # Se crea el usuario de postgres
 - name: Create ro postgres user
@@ -73,7 +67,6 @@
   become: yes
   become_method: sudo
   become_user: postgres
-  tags: postinstall
 
 # Se crea base de datos omnileads
 - name: Create of the database
@@ -85,14 +78,18 @@
   become_method: sudo
 
 - name: Copy of kamailio-tables restore file
-  copy: src=/var/tmp/ominicontacto-build/ominicontacto/ominicontacto_voip/kamailio-files/kamailio-tables.sql dest=/tmp/kamailio-tables.sql
+  copy: src=/var/tmp/ominicontacto-build/ominicontacto/ominicontacto_voip/kamailio-files/kamailio-tables.tar.gz dest=/tmp/kamailio-tables.tar.gz
+  tags: postinstall
 
 - name: Restore of kamailio tables in database
-  postgresql_db: name={{ postgres_database }} state=restore target=/tmp/kamailio-tables.sql login_user={{ postgres_user }} login_password={{ postgres_password }} owner={{ postgres_user }} login_host={{ database_fqdn }}
+  command: pg_restore -d {{ postgres_database }} -c -F t /tmp/kamailio-tables.tar.gz
   environment:
     PGPASSWORD: "{{ postgres_password }}"
+  tags: postinstall
+  ignore_errors: yes
   become: true
-  become_method: sudo
+  become_method: su
+  become_user: "{{ usuario }}"
 
 # Se crea el lenguaje plpythonu a las bases de datos mencionadas.
 - name: Createlang of the database

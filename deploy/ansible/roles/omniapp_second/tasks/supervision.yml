@@ -19,6 +19,7 @@
 # En este grupo de tasks se deploya la supervision
 
 - set_fact: omnisup_dir={{ install_prefix }}
+  tags: postinstall
 
 # Esto tengo que hacerlo para debian porque viene por defecto con php7.0 y a veces en el update no se porque me lo sube a 7.2
 # Obtengo la version de php
@@ -66,8 +67,9 @@
   when: ansible_os_family == "Debian"
 
 # Añado el archivo config.js que tiene una serie de variables con IP's y puertos
-- name: Modify of config.js in /static/Js
+- name: Creation of config.js in /static/Js
   template: "src=templates/supervision/config.js.j2 dest={{ omnisup_dir }}ominicontacto/Omnisup/static/Js/config.js"
+  tags: postinstall
 
 # Linkeo el codigo de la carpeta Omnisup a /opt/omnileads/
 - name: Create simbolic link of Omnisup directory
@@ -76,6 +78,7 @@
 # Genero archivo config.php
 - name: Creation of config.php file
   template: src=templates/supervision/config.php dest={{ omnisup_dir }}/ominicontacto/Omnisup/config.php owner={{ usuario }} group={{ usuario }} mode=755
+  tags: postinstall
 
 # Habilito e inicio php-fpm
 - name: Enable and start of php-fpm service (centos)
@@ -85,10 +88,11 @@
   when: ansible_os_family == "RedHat"
 
 - name: Enable and start of php-fpm service (debian)
-  service: name=php{{ php_version }}-fpm state=started enabled=yes
+  service: name=php{{ php_version }}-fpm state=restarted enabled=yes
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
+  tags: postinstall
 
 # Cambio permiso al  archivo .sock creado
 - name: Change permission of the php-fpm.sock (centos)
@@ -119,17 +123,15 @@
   when: ansible_os_family == "RedHat"
 
 # Starteo y habilito nginx
-- name: Restart of nginx (centos)
-  service: name=nginx state=restarted enabled=yes
-  become: true
-  become_method: sudo
-  tags: ['never','postinstall','kamailio']
-  when: ansible_os_family == "RedHat"
-
-# Starteo y habilito nginx
 - name: Restart of nginx (debian)
   service: name=nginx state=restarted enabled=yes
   become: true
   become_method: sudo
-  tags: ['postinstall','kamailio']
   when: ansible_os_family == "Debian"
+
+# Starteo y habilito nginx
+- name: Reload of nginx
+  service: name=nginx state=reloaded enabled=yes
+  become: true
+  become_method: sudo
+  tags: ['never','postinstall','kamailio','changeip']

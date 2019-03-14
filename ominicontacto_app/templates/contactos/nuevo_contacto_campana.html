@@ -91,7 +91,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </table>
     <hr>
     <button type="submit"  class="btn btn-primary">
-        {% trans 'Guardar' %}
+        {% if accion == 'llamar' %}
+            {% trans 'Guardar y llamar' %}
+        {% else %}
+            {% trans 'Guardar' %}
+        {% endif %}
     </button>
 </form>
 

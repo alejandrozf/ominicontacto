@@ -44,7 +44,7 @@ class PhoneJSController {
 
         /* Local Variables */
         this.agent_id = agent_id;
-        this.lastDialedNumber = undefined;
+        this.lastDialedCall = undefined;
         this.call_after_campaign_selection = false;
         this.manual_campaign_id = undefined;
         this.campaign_id = null;
@@ -126,12 +126,13 @@ class PhoneJSController {
         });
 
         $("#SaveSignedCall").click(function() {
-            // TODO: Verificar si solo se pueden marcar Entrantes, ya que para las salientes
-            //       no se esta guardando un call_uuid
-            var descripcion = $("#SignDescription").val(); // sign subject
-            self.oml_api.marcarLlamada(descripcion, self.phone.session_data.call_uuid);
-            $("#SignDescription").val(null);
-            self.view.tagCallMenu.modal('hide');
+            if (self.phone.session_data.remote_call) {
+                var descripcion = $("#SignDescription").val(); // sign subject
+                var call_id = self.phone.session_data.remote_call.call_id;
+                self.oml_api.marcarLlamada(descripcion, call_id);
+                $("#SignDescription").val(null);
+                self.view.tagCallMenu.modal('hide');
+            }
         });
 
         $("#CallList").click(function() {
@@ -202,70 +203,70 @@ class PhoneJSController {
                 self.view.setSipStatus("NO_ACCOUNT");
                 self.view.setUserStatus("label label-success", gettext("Conectado"));
                 self.view.closeAllModalMenus();
-                self.view.setInputDisabledStatus('Initial');
+                self.view.setStateInputStatus('Initial');
                 self.phone.startSipSession();
                 self.click_2_call_dispatcher.disable();
             },
             onEnd: function() {
                 self.view.setUserStatus("label label-success", gettext("Desconectado"));
                 self.view.closeAllModalMenus();
-                self.view.setInputDisabledStatus('End');
+                self.view.setStateInputStatus('End');
                 self.click_2_call_dispatcher.disable();
             },
             onReady: function() {
                 phone_logger.log('FSM: onReady')
                 self.view.setUserStatus("label label-success", gettext("Conectado"));
                 self.view.closeAllModalMenus();
-                self.view.setInputDisabledStatus('Ready');
+                self.view.setStateInputStatus('Ready');
                 self.click_2_call_dispatcher.enable();
             },
             onPaused: function() {
                 phone_logger.log('FSM: onPaused')
                 self.view.setUserStatus("label label-danger", self.pause_manager.pause_name);
                 self.view.closeAllModalMenus();
-                self.view.setInputDisabledStatus('Paused');
+                self.view.setStateInputStatus('Paused');
                 self.click_2_call_dispatcher.enable();
             },
             onCalling: function() {
                 phone_logger.log('FSM: onCalling')
                 self.view.setUserStatus("label label-success", gettext("Llamando"));
                 self.view.closeAllModalMenus();
-                self.view.setInputDisabledStatus('Calling');
+                self.view.setStateInputStatus('Calling');
                 self.click_2_call_dispatcher.disable();
             },
             onOncall: function() {
                 phone_logger.log('FSM: onOncall')
                 self.view.setUserStatus("label label-success", gettext("En llamado"));
                 self.view.closeAllModalMenus();
-                self.view.setInputDisabledStatus('OnCall');
+                self.view.setStateInputStatus('OnCall');
                 self.click_2_call_dispatcher.disable();
             },
             onDialingtransfer: function() {
                 phone_logger.log('FSM: onDialingTransfer')
                 self.view.setUserStatus("label label-success", gettext("Transfiriendo"));
                 self.view.closeAllModalMenus();
-                self.view.setInputDisabledStatus('DialingTransfer');
+                self.view.setStateInputStatus('DialingTransfer');
                 self.click_2_call_dispatcher.disable();
             },
             onTransfering: function() {
                 phone_logger.log('FSM: onTransfering')
                 self.view.setUserStatus("label label-success", gettext("Transfiriendo"));
                 self.view.closeAllModalMenus();
-                self.view.setInputDisabledStatus('Transfering');
+                self.view.setStateInputStatus('Transfering');
                 self.click_2_call_dispatcher.disable();
             },
             onReceivingcall: function() {
                 phone_logger.log('FSM: onReceivingCall')
                 self.view.setUserStatus("label label-success", gettext("Recibiendo llamado"));
                 self.view.closeAllModalMenus();
-                self.view.setInputDisabledStatus('ReceivingCall');
+                self.view.setStateInputStatus('ReceivingCall');
                 self.click_2_call_dispatcher.disable();
             },
             onOnhold: function() {
                 phone_logger.log('FSM: onOnHold')
                 self.view.setUserStatus("label label-success", gettext("En espera"));
                 self.view.closeAllModalMenus();
-                self.view.setInputDisabledStatus('OnHold');
+                self.view.setStateInputStatus('OnHold');
                 self.click_2_call_dispatcher.disable();
             },
         });
@@ -496,25 +497,19 @@ class PhoneJSController {
         clearTimeout(this.ACW_pause_timeout_handler);
         // Dialed number OK and Campaign selected
         var dialedNumber = this.view.numberDisplay.val();
-        this.lastDialedNumber = dialedNumber;
-
-        this.phone.makeCall(dialedNumber,
-                            this.manual_campaign_id,
-                            this.manual_campaign_type);
-        this.getNewContactForm(this.manual_campaign_id,
-                                      this.agent_id,
-                                      dialedNumber);
-        this.view.numberDisplay.val("");
-        var message = interpolate(gettext("Llamando: %(dialedNumber)s"),
-                                  {dialedNumber: dialedNumber}, true);
-        this.view.setCallStatus(message, "yellowgreen");
-        this.phone_fsm.startCall();
+        this.getSelectContactForm(this.manual_campaign_id, dialedNumber);
     }
 
     redial() {
-        if (this.lastDialedNumber !== undefined) {
+        if (this.lastDialedCall !== undefined) {
+            // Ejecutar un click2call para el redial para ese contacto.
+            var campaign_id = this.lastDialedCall.id_campana;
+            var campaign_type = this.lastDialedCall.campana_type;
+            var contact_id = this.lastDialedCall.id_contacto;
+            var phone = this.lastDialedCall.telefono;
+            this.click_2_call_dispatcher.call_contact(campaign_id, campaign_type,
+                                                      contact_id, phone, 'contactos');
             this.view.numberDisplay.val(this.lastDialedNumber);
-            this.makeDialedNumberCall();
         }
         else {
             phone_logger.log('Redial button should be disabled!!')
@@ -582,7 +577,15 @@ class PhoneJSController {
             clearTimeout(this.ACW_pause_timeout_handler);   // Por las dudas
             this.phone_fsm.acceptCall();
             this.phone.acceptCall();
+            var fromUser = session_data.from;
+            var message = interpolate(gettext("Conectado a %(fromUser)s"), {fromUser:fromUser}, true);
+            this.view.setCallStatus(message, "orange");
             this.manageContact(session_data);
+
+            if (session_data.is_click2call) {
+                // Seteo datos para redial
+                this.lastDialedCall = session_data.remote_call;
+            }
         } else {
             var from = session_data.from;
             $("#callerid").text(from);
@@ -604,34 +607,19 @@ class PhoneJSController {
     }
 
     manageContact(session_data) {
-        var from = session_data.from;
-        if (session_data.requires_crm_treatment){
-            // Definir pasos a seguir con CRM
-            // var linkaddress = e.request.headers.Sitioexterno[0].raw;
-            // self.getIframe(linkaddress);
-        } else {
-            var campaign_id = session_data.campaign_id;
-            var contact_id = session_data.contact_id;
-            if (campaign_id !== undefined && campaign_id != '') {
-                if (contact_id !== undefined && contact_id != '') {
-                    this.getContactForm(campaign_id, contact_id, this.agent_id);
-                } else {
-                    this.getNewContactForm(campaign_id, this.agent_id, from);
-                }
-            }
-        }
-        // Muestra el formulario correspondiente, o abre el link del CRM
-
+        var call_data = session_data.remote_call
+        this.getQualificationForm(call_data);
     }
 
     saveCall() {
         var duracion = this.timers.llamada.get_time_str();
         var numero_telefono = undefined;
-        if (this.phone.session_data.is_local_call) {
-            numero_telefono = this.lastDialedNumber;
-        } else {
-            numero_telefono = this.phone.session_data.from;
+        // NOTA: No guardo la duracion de llamadas entre agentes (internal). ( Ver si es deseable )
+        if (this.phone.session_data.is_internal_call) {
+            return;
         }
+
+        numero_telefono = this.phone.session_data.from;
         var tipo_llamada = this.phone.session_data.call_type_id;
         phone_logger.log('saveCall: tipo:' + tipo_llamada + ', numero: ' + numero_telefono);
         this.oml_api.guardarDuracionLlamada(duracion,
@@ -641,16 +629,19 @@ class PhoneJSController {
                                             function(msg){$("#call_list").html(msg);});
     }
 
-    getContactForm(campid, contactid, agentid) {
-        var url = "/formulario/" + campid + "/calificacion/" + contactid + "/update/" + agentid + "/calificacion/";
+    getQualificationForm(call_data) {
+        // 'calificar_llamada'
+        var call_data_json = JSON.stringify(call_data);
+        var url = '/agente/calificar_llamada/' + encodeURIComponent(call_data_json);
         $("#dataView").attr('src', url);
     }
 
-    getNewContactForm(idcamp, idagt, tel) {
+    getSelectContactForm(id_camp, tel) {
         // Elimino los caracteres no numericos
         var telephone = tel.replace(/\D+/g, '');
         telephone = telephone == '' ? 0 : telephone;
-        var url = "/formulario/" + idcamp + "/calificacion/" + idagt + "/create/" + telephone + "/";
+        // {% url 'identificar_contacto_a_llamar' %}
+        var url = '/campana/' + id_camp + '/identificar_contacto_a_llamar/' + telephone +'/'
         $("#dataView").attr('src', url);
     }
 
