@@ -50,7 +50,7 @@ grabacion = sys.argv[4]
 agente_id = sys.argv[5]
 campana = sys.argv[6]
 fecha = sys.argv[7]
-uid = sys.argv[8]
+callid = sys.argv[8]
 duracion = sys.argv[9]
 
 # conectando con BD
@@ -63,9 +63,9 @@ except Exception as e:
 
 # se realiza la inserción de los parámetros de la grabación en la BD
 query = ("INSERT INTO ominicontacto_app_grabacion (fecha,tipo_llamada,id_cliente,tel_cliente,"
-         "grabacion,agente_id,campana_id,uid,duracion) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}',"
+         "grabacion,agente_id,campana_id,callid,duracion) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}',"
          "'{6}','{7}','{8}');".format(
-             fecha, tipo_llamada, id_cliente, tel_cliente, grabacion, agente_id, campana, uid,
+             fecha, tipo_llamada, id_cliente, tel_cliente, grabacion, agente_id, campana, callid,
              duracion))
 cur = conn.cursor()
 try:

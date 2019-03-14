@@ -10,7 +10,7 @@ servidores=()
 SSHtransfer() {
   while true; do
       echo -e "Transfering the public key to $servidor server \n"
-      ssh-copy-id -p $ssh_port -i ~/.ssh/id_rsa.pub -o ConnectTimeout=10 root@$ip
+      ssh-copy-id -p $ssh_port -i /root/.ssh/id_rsa.pub -o ConnectTimeout=10 root@$ip
       ResultadoSSH=`echo $?`
       sleep 2
       if [ $ResultadoSSH -eq 0 ];then

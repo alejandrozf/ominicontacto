@@ -364,10 +364,10 @@ class CampanaService():
 
         Deuda Tecnica mover a otro servico la creacion del archivo con  la lista
         """
+        # TODO: el parámetro 'telefonos' no se usa, removerlo
         service_base = SincronizarBaseDatosContactosService()
         # crea archivo con lista de contactos para crear lista de contactos en wombat
-        service_base.crear_lista(campana, telefonos, evitar_duplicados,
-                                 evitar_sin_telefono, prefijo_discador)
+        service_base.crear_lista(campana, evitar_duplicados, evitar_sin_telefono, prefijo_discador)
 
         # remueve la campana de las campanas corriendo en wombat
         resultado = self.remove_campana_wombat(campana)
@@ -375,7 +375,7 @@ class CampanaService():
             campana.remover()
         else:
             pass  # TODO: Verificar si se debe seguir con estos pasos o no!
-        time.sleep(30)
+        time.sleep(30)          # FIXME: por qué este sleep ??
         # elimina la lista de contactos de la campana en wombat
         self.desasociacion_campana_wombat(campana)
         # crea la lista de contactos en wombat

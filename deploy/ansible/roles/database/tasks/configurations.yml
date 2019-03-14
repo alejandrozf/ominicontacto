@@ -20,7 +20,7 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
-  tags: postinstall
+  tags: changeip
 
 # Esto es para debian
 - name: Modify of pg_hba.conf file (debian)
@@ -28,20 +28,18 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
-  tags: postinstall
+  tags: changeip
 
 
 #Se modifica la ip en la que escucha postgres
 - name: Modify postgresql listen address
   lineinfile: path=/etc/postgresql/9.6/main/postgresql.conf regexp="^#listen_addresses" line="listen_addresses = '*'" state=present
   when: ansible_os_family == "Debian"
-  tags: postinstall
 
 #Se modifica la ip en la que escucha postgres
 - name: Modify postgresql listen address
   lineinfile: path=/var/lib/pgsql/9.6/data/postgresql.conf regexp="^#listen_addresses" line="listen_addresses = '*'" state=present
   when: ansible_os_family == "RedHat"
-  tags: postinstall
 
 # Restarteamos servicio
 - name: Restart postgres service (centos)
@@ -49,15 +47,12 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
-  tags: postinstall
-
 
 - name: Restart postgres service (debian)
   service: name=postgresql state=restarted enabled=yes
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
-  tags: postinstall
 
 # Se crea el usuario de postgres
 - name: Create rw postgres user
@@ -65,7 +60,6 @@
   become: yes
   become_method: sudo
   become_user: postgres
-  tags: postinstall
 
 # Se crea el usuario de postgres
 - name: Create ro postgres user
@@ -73,7 +67,6 @@
   become: yes
   become_method: sudo
   become_user: postgres
-  tags: postinstall
 
 # Se crea base de datos omnileads
 - name: Create of the database

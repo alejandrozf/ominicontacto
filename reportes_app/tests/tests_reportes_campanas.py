@@ -524,7 +524,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
     @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_contactados_csv')
     @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_no_atendidos_csv')
     @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_calificado_csv')
-    def test_reporte_contactados_campanas_no_entrantes_muestran_valor_calificacion_final(
+    def test_reporte_contactados_campanas_no_entrantes_muestran_valor_calificacion_historica(
             self, escribir_archivo_calificado_csv, escribir_archivo_no_atendidos_csv,
             escribir_archivo_contactados_csv, crea_reporte_pdf):
         url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
@@ -533,7 +533,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
         self.client.get(url, follow=True)
         calificados_dict = escribir_archivo_contactados_csv.call_args[0][2]
         # muestra los valores finales de las calificaciones
-        self.assertEqual(len(calificados_dict), 2)
+        self.assertEqual(len(calificados_dict), 3)
 
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
     @patch.object(ReporteCampanaContactadosCSV, 'crea_reporte_csv')

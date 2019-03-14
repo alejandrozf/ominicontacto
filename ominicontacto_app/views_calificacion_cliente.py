@@ -131,7 +131,7 @@ class CalificacionClienteFormView(FormView):
         self.object = self.get_object()
 
         self.url_sitio_externo = ''
-        if self.campana.tiene_interaccion_con_sitio_externo:
+        if self.campana.tiene_interaccion_con_sitio_externo and self.call_data is not None:
             self.url_sitio_externo = self.campana.sitio_externo.get_url_interaccion(self.agente,
                                                                                     self.campana,
                                                                                     self.contacto,

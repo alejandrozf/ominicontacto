@@ -116,6 +116,7 @@
     - php-xml
     - redis-server
     - git
+    - gettext
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
@@ -137,3 +138,12 @@
   service: name=redis state=restarted enabled=yes
   become: yes
   become_method: sudo
+
+#Esto es para ubuntu se desinstala el postgresql-11 que se instala por defecto
+- name: Stop of postgresql-11 service
+  service: name=postgresql@11-main state=stopped
+  when: ansible_distribution == "Ubuntu"
+
+- name: Uninstall of postgresql-11
+  apt: name=postgresql-11 state=absent purge=yes
+  when: ansible_distribution == "Ubuntu"

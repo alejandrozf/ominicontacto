@@ -43,7 +43,7 @@
       {{ database_ip }} {{ database_fqdn }}
       {{ dialer_ip }} {{ dialer_fqdn }}
   when: cluster != 0 and is_docker.stdout != "docker"
-  tags: always
+  tags: changeip
 
 - name: Write the /etc/hosts of server (aio)
   blockinfile:
@@ -53,7 +53,7 @@
     block: |
       {{ omni_ip }} {{ omni_fqdn }}
   when: cluster == 0 and is_docker.stdout != "docker"
-  tags: always
+  tags: changeip
 
 ##################################
 ###        Centos tasks         ##
@@ -88,14 +88,6 @@
       - systemctl disable firewalld
   when: ansible_os_family == "RedHat"
 
-# Update/upgrade del sistema, osea si se ejecuta como deployed - deployer
-# https://docs.ansible.com/ansible/2.5/modules/yum_module.html#yum-module
-- name: Update/upgrade of centos (centos)
-  yum: name='*' state=latest update_cache=yes skip_broken=yes
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "RedHat"
-
 #- name: Get the current kernel release. (centos)
 #  command: uname -r
 #  register: kernel_release
@@ -104,6 +96,14 @@
 - name: Install kernel-devel package (centos)
   shell: "yum install \"kernel-devel-uname-r == $(uname -r)\" -y"
   any_errors_fatal: true
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+# Update/upgrade del sistema, osea si se ejecuta como deployed - deployer
+# https://docs.ansible.com/ansible/2.5/modules/yum_module.html#yum-module
+- name: Update/upgrade of centos (centos)
+  yum: name='*' state=latest update_cache=yes skip_broken=yes
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
@@ -146,7 +146,7 @@
 ##################################
 
 # Se desinstala apache2 por defecto viene instalado en debian
-- name: Uninstall of apache2
+- name: Uninstall of apache2 (debian)
   apt: name=apache2 state=absent purge=yes
   when: ansible_os_family == "Debian"
   become: true
@@ -164,6 +164,10 @@
 # Se instala este paquete necesario antes de hacer update
 - name: Install apt-transport-https (debian)
   apt: name=apt-transport-https state=present
+  when: ansible_os_family == "Debian"
+
+- name: Update / upgrade of system (debian)
+  apt: update_cache=yes upgrade=dist
   when: ansible_os_family == "Debian"
 
 # Instalo linux-headers del kernel  en cuestion

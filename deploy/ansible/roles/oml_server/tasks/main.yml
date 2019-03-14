@@ -44,7 +44,7 @@
   tags: ['omniapp']
 
 - include: deploy.yml
-  tags: ['postinstall','omniapp']
+  tags: [omniapp']
 
 - include: sshkey_transfer.yml
   tags: omniapp
