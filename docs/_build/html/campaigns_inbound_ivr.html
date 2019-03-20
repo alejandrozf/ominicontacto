@@ -1,0 +1,278 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>IVR - Interactive Voice Response &mdash; OMniLeads develop documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Enrutamiento condicionado por fechas y horas" href="campaigns_inbound_timeconditions.html" />
+    <link rel="prev" title="Enrutamiento de llamadas entrantes desde un PBX hacia OMniLeads" href="campaigns_inbound_routes_frompbx.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> OMniLeads
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html">WebRTC; la tecnología subyacente de OMniLeads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">Plataforma de Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#compania-de-servicios-de-customer-contact">Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#carriers-o-proveedores-de-cloud-pbx">Carriers ó Proveedores de Cloud PBX</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Procedimientos de instalación</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="initial_settings.html">Configuración Inicial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="telephony.html">Configuración de acceso a la PSTN</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="campaigns.html">Campañas Telefónicas</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#calificaciones">Calificaciones</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#base-de-contactos">Base de contactos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#formularios">Formularios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#interaccion-con-un-crm-externo">Interacción con un CRM externo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#campanas-manuales">Campañas Manuales</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#campanas-preview">Campañas Preview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#campanas-con-discador-predictivo">Campañas con discador predictivo</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="campaigns.html#campanas-entrantes">Campañas Entrantes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="campaigns_inbound.html">Campañas entrantes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="campaigns_inbound_routes.html">Enrutamiento de llamadas entrantes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="campaigns_inbound_routes_frompbx.html">Enrutamiento de llamadas entrantes desde un PBX hacia OMniLeads</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">IVR - Interactive Voice Response</a></li>
+<li class="toctree-l3"><a class="reference internal" href="campaigns_inbound_timeconditions.html">Enrutamiento condicionado por fechas y horas</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reports.html">Metricas, grabaciones y supervicion</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="maintance.html">OMniLeads Maintenance</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OMniLeads</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="campaigns.html">Campañas Telefónicas</a> &raquo;</li>
+        
+      <li>IVR - Interactive Voice Response</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/campaigns_inbound_ivr.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ivr-interactive-voice-response">
+<h1>IVR - Interactive Voice Response<a class="headerlink" href="#ivr-interactive-voice-response" title="Permalink to this headline">¶</a></h1>
+<p>Los IVRs hacen posible que la persona que realiza una llamada entrante pueda seleccionar un destino apropiado en base a informar los mismos a través de una grabación y aguardando la interacción a través de los tonos de teclado DTMF.
+Con esta herramienta un adminitrador puede enrutar llamadas entrantes hacia un IVR y configurar el mismo para que diferentes DTMFs se conmuten hacia diferetentes campañas entrantes, IVRs o Condicionales de fecha y hora.</p>
+<p>Para generar un nuevo IVR se necesita como mínimo un audio a reproducir (disponible en la biblioteca de audios) y además un destino por defecto hacia a donde enviar la llamadas que pasen por nuestro IVR.</p>
+<p>Para añadir un IVR se debe acceder al punto de menú <em>Telephony -&gt; IVR</em>, seleccionar Agregar IVR.</p>
+<p>Se despliega una pantalla similar a la Figura 1.</p>
+<img alt="_images/campaigns_in_ivr.png" src="_images/campaigns_in_ivr.png" />
+<p><em>Figure 1: IVR parameters</em></p>
+<p>El formulario se puede dividir en tres secciones. En la primera contiene los campos:</p>
+<ul class="simple">
+<li><strong>Nombre:</strong> es el nombre del objeto, con este nombre se lista en el listado de IVR.</li>
+<li><strong>Descripción:</strong> campo opcional dedicado un comentario aclaratorio sobre el objeto.</li>
+<li><strong>Archivo de OML:</strong> se selecciona esta opción en caso de querer seleccionar como audio principal del IVR, un archivo previamente subido por el módulo de Audios.</li>
+<li><strong>Archivo externo:</strong> se selecciona esta opción en caso de querer seleccionar como audio principal del IVR, un archivo y subirlo en el mismo instante al sistema.</li>
+</ul>
+<p>Luego sigue las secciones para configurar acciones de timeout y opciones inválidas.</p>
+<ul class="simple">
+<li><strong>Time out:</strong> es la cantidad de segundos que se aguarda a que el “llamante” introduzca un DTMF a partir de la finalización de la reproducción del audio del IVR.</li>
+<li><strong>Time out retries:</strong> son la cantidad de intentos que el IVR ofrece al “llamante” a la hora de dar falla por “timeout”. Es decir se permite una cierta cantidad de intentos fallidos por timeout, para luego ejecutar la acción de timeout por defecto (Tipo de destino time out).</li>
+<li><strong>Time out audio:</strong> cada vez que se da un timeout por no ingreso de DTMF, se puede reproducir un audio subido previamente al módulo de audio de OML, que indique el error.</li>
+<li><strong>Time out ext audio:</strong> cada vez que se da un timeout por no ingreso de DTMF, se puede reproducir un audio que se puede seleccionar y subir en el momento, que indique el error.</li>
+<li><strong>Tipo de destino time out:</strong> en caso de cumplire la cantidad de “retries” de timeout, la llamada es enviada por el IVR hacia el tipo de destino por defecto para los timeout de IVR. En este campo se indica dicha clase de destino.</li>
+<li><strong>Destino time out:</strong> finalmente se selecciona puntualmente el objeto dentro de la familia de tipo de destino.</li>
+<li><strong>Invalid retries:</strong> son la cantidad de intentos que el IVR ofrece al “llamante” a la hora de dar falla de destino ingresado inválido. Es decir se permite una cierta cantidad de intentos fallidos por opción inválida, para luego ejecutar la acción de opción inválida, por defecto (Tipo de destino invalid).</li>
+<li><strong>Invalid audio:</strong> cada vez que se da un ingreso de opción inválida, se puede reproducir un audio subido previamente al módulo de audio de OML, que indique el error.</li>
+<li><strong>Invalid ext audio:</strong> cada vez que se da un ingreso de opción inválida, se puede reproducir un audio que se puede seleccionar y subir en el momento, que indique el error.</li>
+<li><strong>Tipo de destino opción incorrecta:</strong>  en caso de cumplire la cantidad de “retries” de opción incorrecta, la llamada es enviada por el IVR hacia el tipo de destino por defecto para los ingresos de opciones incorrectas del IVR. En este campo se indica dicha clase de destino.</li>
+<li><strong>Destino para opción incorrecta:</strong> finalmente se selecciona puntualmente el objeto dentro de la familia de tipo de destino.</li>
+</ul>
+<p>Finalmente la tercera sección despliega tantas filas como opciones de DMTF implique el IVR.
+Por cada fila, se puede asignar un DTMF a un destino de conmutación de la llamada.</p>
+<p>Como bien se conoce, la idea es seleccionar un “tipo de destino” y un “destino particular dentro del tipo”, para cada DTMF del IVR que se brinda como opción.</p>
+<p>Finalmente al seleccionar el botón guardar, se dispondrá del IVR.</p>
+<p>Nota: es posible anidar diferentes IVRs.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="campaigns_inbound_timeconditions.html" class="btn btn-neutral float-right" title="Enrutamiento condicionado por fechas y horas" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="campaigns_inbound_routes_frompbx.html" class="btn btn-neutral float-left" title="Enrutamiento de llamadas entrantes desde un PBX hacia OMniLeads" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, omnileads
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

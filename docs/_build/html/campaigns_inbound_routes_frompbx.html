@@ -1,0 +1,263 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Enrutamiento de llamadas entrantes desde un PBX hacia OMniLeads &mdash; OMniLeads develop documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="IVR - Interactive Voice Response" href="campaigns_inbound_ivr.html" />
+    <link rel="prev" title="Enrutamiento de llamadas entrantes" href="campaigns_inbound_routes.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> OMniLeads
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html">WebRTC; la tecnología subyacente de OMniLeads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">Plataforma de Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#compania-de-servicios-de-customer-contact">Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#carriers-o-proveedores-de-cloud-pbx">Carriers ó Proveedores de Cloud PBX</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Procedimientos de instalación</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="initial_settings.html">Configuración Inicial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="telephony.html">Configuración de acceso a la PSTN</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="campaigns.html">Campañas Telefónicas</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#calificaciones">Calificaciones</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#base-de-contactos">Base de contactos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#formularios">Formularios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#interaccion-con-un-crm-externo">Interacción con un CRM externo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#campanas-manuales">Campañas Manuales</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#campanas-preview">Campañas Preview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#campanas-con-discador-predictivo">Campañas con discador predictivo</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="campaigns.html#campanas-entrantes">Campañas Entrantes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="campaigns_inbound.html">Campañas entrantes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="campaigns_inbound_routes.html">Enrutamiento de llamadas entrantes</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Enrutamiento de llamadas entrantes desde un PBX hacia OMniLeads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="campaigns_inbound_ivr.html">IVR - Interactive Voice Response</a></li>
+<li class="toctree-l3"><a class="reference internal" href="campaigns_inbound_timeconditions.html">Enrutamiento condicionado por fechas y horas</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reports.html">Metricas, grabaciones y supervicion</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="maintance.html">OMniLeads Maintenance</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OMniLeads</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="campaigns.html">Campañas Telefónicas</a> &raquo;</li>
+        
+      <li>Enrutamiento de llamadas entrantes desde un PBX hacia OMniLeads</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/campaigns_inbound_routes_frompbx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="enrutamiento-de-llamadas-entrantes-desde-un-pbx-hacia-omnileads">
+<h1>Enrutamiento de llamadas entrantes desde un PBX hacia OMniLeads<a class="headerlink" href="#enrutamiento-de-llamadas-entrantes-desde-un-pbx-hacia-omnileads" title="Permalink to this headline">¶</a></h1>
+<p>A la hora de enrutar llamadas desde un PBX (en nuestro ejemplo Asterisk), pero los concepto se pueden extender a cualquier tipo o marca.</p>
+<p>Lo primero que se debe definir es la numeración asignada a la ruta entrante que conmute la llamada hacia un destino de OMniLeads, ya que este número (DID de la ruta) debe ser invocado desde el PBX a la hora
+de derivar llamadas (desde una ruta entrante, opción del IVR o failover de alguna cola/ring group, etc.) hacia OMniLeads o bien si una extensión desea llamar o transferir una llamada hacia OMniLeads.</p>
+<img alt="_images/campaigns_in_route_frompbx.png" src="_images/campaigns_in_route_frompbx.png" />
+<p><em>Figure 1: Inbound route parameters</em></p>
+<p>Tomando como ejemplo el número “123456” utilizado en la figura anterior, entonces una forma de integrar esta ruta en un PBX basado en Asteisk sería que desde dicho PBX se genere una llamada hacia el
+número mencionado, cada vez que algún recurso del PBX necesite ser conmutado hacia este destino de OMniLeads.</p>
+<p>Si nuestro PBX Asterisk dispone de una interfaz web de configuración entonces simplemente puedo generar una <em>Nueva extensión</em> y hacer que la misma apunte a; <em>SIP/trunkomnileads/123456</em> , donde “trunkomnileads” es el nombre elegido (en el PBX) para el troncal SIP con OMniLeads.
+La idea de extensión apuntando hacia OMniLeads se ejemplifica en la figura 2.</p>
+<img alt="_images/campaigns_in_route_frompbx2.png" src="_images/campaigns_in_route_frompbx2.png" />
+<p><em>Figure 2: OMniLeads PBX custom extension</em></p>
+<p>Si bien la extension en el PBX puede tener cualquier numeración (en la figura es 2222), lo importante es enviar “123456” (en nuestro ejemplo) hacia OMniLeads como se resalta en la figura 3.</p>
+<img alt="_images/campaigns_in_route_frompbx3.png" src="_images/campaigns_in_route_frompbx3.png" />
+<p><em>Figure 3: OMniLeads PBX custom extension</em></p>
+<p>Una vez disponible la extension en el PBX, solo es cuestión de invocarla desde los elementos del PBX, como por ejemplo un IVR.</p>
+<img alt="_images/campaigns_in_route_frompbx4.png" src="_images/campaigns_in_route_frompbx4.png" />
+<p><em>Figure 4: from IVR to OMniLeads</em></p>
+<p>Si bien en la figura 4 se ejemplifica la derivación de llamadas hacia campañas entrantes de OMniLeads, desde un IVR del PBX. Podemos concluir en que también las extensiones del PBX pueden marcar o transferir llamadas a las extensiones que mapean el PBX con campañas entrantes de OMniLeads.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="campaigns_inbound_ivr.html" class="btn btn-neutral float-right" title="IVR - Interactive Voice Response" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="campaigns_inbound_routes.html" class="btn btn-neutral float-left" title="Enrutamiento de llamadas entrantes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, omnileads
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
