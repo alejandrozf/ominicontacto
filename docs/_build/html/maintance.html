@@ -1,0 +1,330 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>OMniLeads Maintenance &mdash; OMniLeads develop documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Metricas, grabaciones y supervicion" href="reports.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> OMniLeads
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html">WebRTC; la tecnología subyacente de OMniLeads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">Plataforma de Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#compania-de-servicios-de-customer-contact">Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#carriers-o-proveedores-de-cloud-pbx">Carriers ó Proveedores de Cloud PBX</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Procedimientos de instalación</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="initial_settings.html">Configuración Inicial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="telephony.html">Configuración de acceso a la PSTN</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="campaigns.html">Campañas Telefónicas</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reports.html">Metricas, grabaciones y supervicion</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">OMniLeads Maintenance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#configuracion-del-modulo-de-discador-predictivo">Configuración del módulo de <em>Discador predictivo</em></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#back-restore">Back &amp; Restore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#actualizaciones">Actualizaciones</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cambio-de-direccion-ip-de-la-plataforma">Cambio de dirección IP de la plataforma</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OMniLeads</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>OMniLeads Maintenance</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/maintance.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="omnileads-maintenance">
+<h1>OMniLeads Maintenance<a class="headerlink" href="#omnileads-maintenance" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="configuracion-del-modulo-de-discador-predictivo">
+<h2>Configuración del módulo de <em>Discador predictivo</em><a class="headerlink" href="#configuracion-del-modulo-de-discador-predictivo" title="Permalink to this headline">¶</a></h2>
+<p>Antes que nada se notifica que si la instancia de OML desplegada en los pasos anteriores, NO contemplan el uso de campañas con discado saliente predictivo, este paso puede ser omitido.</p>
+<p>El core-dialer de OML es un una herramienta basada en licencias e incorporada de manera opcional. Este dialer se llama Wombat Dialer (propiedad de Loway - loway.com) y como se mencionó, es el componente encargado de discar registros de manera progresiva/predictiva.</p>
+<p>Si se desean correr campañas predictivas, se debe generar la siguiente configuración básica de Wombat Dialer . Esto se consigue ingresando a la dirección IP del host OML.</p>
+<p><a class="reference external" href="http://omnileads.yourdomain:8080/wombat">http://omnileads.yourdomain:8080/wombat</a></p>
+<p>Al ingresar se despliega una pantalla como la siguiente, donde deberá presionar los botones indicado en la imagen.</p>
+<p>Se debe proceder con la creación de la base de datos para Wombat Dialer. Hacer click en botón remarcado en la figura 4.</p>
+<p>Figura 14: Crear base de datos Wombat Dialer</p>
+<p>Luego es el momento de ingresar la clave del usuario root de MySQL y hacer click en botón remarcado en la figura 6. Nota; el password fue configurado dentro del archivo “inventory” antes de activar la instalación del sistema. (En el mismo directorio en el que clonó el repositorio de OML).</p>
+<p>Figura 15: copia del archivo “invenory” de la última ejecución del script</p>
+<p>Figura 16: passwords del componente Wombat Dialer</p>
+<p>Procedemos entonces con la creación de la base de datos MySQL que utilizará de ahora en más el componente de tercero Wombat Dialer.</p>
+<p>Figura 17: Crear base de datos Wombat Dialer</p>
+<p>Una vez creada la base de datos MySQL que utiliza Wombat Dialer, se procede con el primer login.</p>
+<p>Figura 18: Crear base de datos Wombat Dialer</p>
+<p>A continuación se debe realizar un login en la interfaz de administración de Wombat Dialer para avanzar con la configuración de parámetros necesarios para la interacción con OML.</p>
+<p>Datos disponibles también en el archivo “inventory”, generado en el deploy.</p>
+<p>Usuario: demoadmin
+Pass: demo</p>
+<p>Figura 19: Login en Wombat Dialer</p>
+<p>Para ello simplemente se debe seguir paso a paso, la configuración expuesta en las siguientes figuras: 8, 9, 10 y 11.</p>
+<p>Figura 20: Configuración de base WD</p>
+<p>En este paso debeŕa ingresar la contraseña AMI ingresada en la instalación. El usuario es: omnileadsami y en caso de de haber dejada la contraseña por defecto (5_MeO_DMT) en el archivo inventory.</p>
+<p>Figura 21: Configuración de base WD - Asterisk server</p>
+<p>En el siguiente punto, se configura una Troncal utilizando un “Nombre de la troncal” arbitrario, pero con la cadena de llamado marcada en la figura. <a class="reference external" href="mailto:Local/${num}&#37;&#52;&#48;from-oml/n">Local/${num}<span>&#64;</span>from-oml/n</a></p>
+<p>Figura 22: Configuración de base WD - Troncal</p>
+<p>Finalmente debemos observar que nuestra configuración luzca como la figura 12.</p>
+<p>Figura 23: Configuración de base WD - Resultado final</p>
+<p>Por último, recuerde dar “play” al servicio de dialer, tal como lo indica la siguiente figura:</p>
+<p>Figura 24: Iniciar el Marcador.</p>
+<p>Finalmente la plataforma se encuentra habilitada para gestionar llamadas predictivas. La instalación por defecto cuenta con una licencia de Wombat Dialer demo de un canal Recuerde acceder a la página del fabricante y comprar canales de discador dependiendo de sus necesidades (<a class="reference external" href="https://www.wombatdialer.com/purchase.jsp">https://www.wombatdialer.com/purchase.jsp</a>).</p>
+</div>
+<div class="section" id="back-restore">
+<h2>Back &amp; Restore<a class="headerlink" href="#back-restore" title="Permalink to this headline">¶</a></h2>
+<p>OMniLeads dispone de un script para llevar a cabo las tareas de backup/restore.</p>
+<p>Para realizar un backup:</p>
+<p>Debemos acceder por ssh al host donde tenemos corriendo OMniLeads.
+Una vez dentro del host:</p>
+<p>su omnileads -
+cd /opt/omnileads/bin
+./backup-restore.sh -b</p>
+<p>La ejecución del script arroja una salida similar a la de la figura 19.</p>
+<p>figura 19: procedimiento de backup</p>
+<p>Como se puede observar, nos indica cómo realizar el restore de dicho backup.</p>
+<p>Dentro del path /opt/omnileads/backup, se generan los archivos “.tgz” que contienen los backups ejecutados.</p>
+<p>Si el restore se realiza en nuevo host, entonces se debe dejar disponible el archivo generado en el backup dentro del path /opt/omnileads/backup.</p>
+<p>Para llevar a cabo un restore, se debe ejecutar:</p>
+<p>./backup-restore.sh -r nombre_del_archivo_de_backup</p>
+<p>Por ejemplo: ./backup-restore.sh -r 20190211_database.tgz</p>
+<p>figura 20: restore de un backup</p>
+</div>
+<div class="section" id="actualizaciones">
+<h2>Actualizaciones<a class="headerlink" href="#actualizaciones" title="Permalink to this headline">¶</a></h2>
+<p>OML es forjada bajo el paradigma de lanzamientos de releases continuos, lo cual implica un flujo de actualizaciones constantes. Por ello es muy importante llevar a cabo de manera limpia las actualizaciones.</p>
+<p>A continuación se exponen los pasos a seguir para llevar a cabo una nueva actualización de la plataforma. Y como ya se puede sospechar, esta tarea también se realiza con el script “deploy.sh”.</p>
+<p>Las actualizaciones se anuncian por los canales de comunicaciones, oficiales del proyecto.</p>
+<p>Dependiendo el método de instalación que se haya seleccionado:</p>
+<p>Instalación Self-Hosted</p>
+<p>Acceder como root al host omnileads
+Posicionarse sobre el directorio donde reside el script “deploy.sh”
+cd ominicontacto/deploy/ansible</p>
+<p>Realizar un “git checkout” sobre la rama a actualizar
+git checkout release-X.X.X</p>
+<p>Donde X.X.X se corresponde con versión de OML (por ej: 1.1.1).</p>
+<p>A continuación se ejecuta el script con el parámetro -u (update). Esta ejecución tomará unos minutos e implica llevar a la plataforma OML a la versión previamente seleccionada en el git checkout.
+./deploy.sh -u -a</p>
+<p>Si todo fluye correctamente, al finalizar la ejecución de la tarea veremos una pantalla como muestra la figura X.</p>
+<p>Figura 18: Actualización exitosa</p>
+<p>Instalación desde workstation Linux remoto</p>
+<p>Se debe acceder al repositorio clonado en nuestra maquina workstation, para desde allí correr la actualización sobre el host Linux OMniLeads.</p>
+<p>cd PATH_repo_OML
+cd ominicontacto/deploy/ansible</p>
+<dl class="docutils">
+<dt>Para seleccionar el release a utilizar para actualizar, utilizamos git checkout</dt>
+<dd>git checkout release-X.X.X</dd>
+</dl>
+<p>Donde X.X.X se corresponde con versión de OML (por ej: 1.1.1).</p>
+<p>A continuación y como en cada ejecución del script “deploy.sh”, se debe repasar el archivo de inventory, velando por la coincidencia del parámetro hostname y dirección IP respecto al host donde corre OML.</p>
+<p>[omnileads-aio]
+hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #(this line is for node-host installation)</p>
+<p>Nota: tener en cuenta que para instalación remota, se debe utilizar la línea con el parámetro “ansible_ssh_port=22” dentro del contexto [omnileads-aio]</p>
+<p>Finalmente, la plataforma queda actualizada a la versión “release-X.X.X”.</p>
+<blockquote>
+<div>./deploy.sh -u -a</div></blockquote>
+</div>
+<div class="section" id="cambio-de-direccion-ip-de-la-plataforma">
+<h2>Cambio de dirección IP de la plataforma<a class="headerlink" href="#cambio-de-direccion-ip-de-la-plataforma" title="Permalink to this headline">¶</a></h2>
+<p>OMniLeads es un sistema complejo, con varios servicios orientados a las comunicaciones real-time corriendo en el Linux Host. Esto implica que un cambio de dirección IP del host conlleva cierta complejidad.</p>
+<p>Para llevar a cabo esta tarea, debemos ejecutar nuevamente el script “deploy.sh”, el mismo que fue utilizado para llevar a cabo la instalación de la plataforma.</p>
+<p>Debemos ingresar con el usuario root al sistema, cambiar la dirección IP a nivel sistema operativo y asegurarnos de que el host tomó la nueva IP.</p>
+<p>Luego continuamos con el cambio de IP sobre OML, para ellos debemos pararnos sobre el directorio donde se clonó el repositorio de OML, para luego acceder al directorio donde se ubica dicho script.</p>
+<p>Allí debemos editar nuevamente el archivo “inventory” y repasar el hostname para que coincida con el hostname del host y allí también debemos configurar la nueva dirección IP.</p>
+<p>[omnileads-aio]
+hostname ansible_connection=local ansible_user=root ansible_host=X.X.X.X #(this line is for self-hosted installation)</p>
+<p>Se guardan los cambios sobre el archivo y finalmente se ejecuta el script deploy.sh.</p>
+<p>cd ominicontacto/deploy/ansible
+./deploy.sh –changeip -a</p>
+<p>Por último se ejecuta un reinicio de la plataforma. Luego podemos comenzar a utilizar OML en la nueva dirección IP.</p>
+<p>reboot</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="reports.html" class="btn btn-neutral float-left" title="Metricas, grabaciones y supervicion" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, omnileads
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

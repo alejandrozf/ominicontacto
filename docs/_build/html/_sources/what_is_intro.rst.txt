@@ -1,0 +1,36 @@
+Qué es OMniLeads
+================
+
+OMniLeads es una solución de Software Open Source (GPL V3) destinada a soportar la gestión, operación y administración de un Contact Center.
+
+OMniLeads ofrece funcionalidades que permiten desarrollar operaciones de Call Center tanto Inbound como Outbound
+(Campañas preview, manuales y predictivas). En pocos pasos se puede montar toda una operación de Contact Center ya sea dentro del marco
+de una empresa/institución que necesita su propio Contact Center conectado a la PBX así como tambien en el marco de una compañía
+del rubro BPO que brinda servicios de Customer Contact.
+
+De gestión y operación 100% Web, los agentes disponen de una interfaz basada en WebRTC para la gestión de comunicaciones mientras que los supervisores
+utilizan WebRTC para realizar acciones de channel spy, coaching de agentes, gestión de QA o three way conferences. Por otro lado, los administradores
+cuentan con una interfaz que permite administrar usuarios, campañas, bases de datos, a su vez extraer métricas y estadísticas, gestionar las grabaciones
+de las comunicaciones entre otras funcionalidades.
+
+
+
+
+Cómo se puede implementar ?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OMniLeads puede desplegarse libre y gratuitamente sobre las distribuciones GNU/Linux; CentOS, Red Hat, Debian & Ubuntu-Server. Solo basta clonar el repositorio (https://gitlab.com/omnileads/ominicontacto) y correr un Ansible deploy.
+
+Principales características:
+Gestión de campañas Entrantes y Salientes; Discador predictivo, Preview & IVR Blaster.
+Consola de agente WebRTC (no se requiere instalar ninguna aplicación ni plugin, 100% Browser).
+Opus ® como codec por defecto para todas las comunicaciones de Agente.
+Consola de supervisión WebRTC; detalle de estados de agentes y campañas.
+Reportes de productividad de agentes y campañas.
+Búsqueda de grabaciones con filtros de campaña, agente, llamadas "observadas", etc.
+Reciclado de bases por calificación de agente y/o status telefónico.
+Cambio de base de contactos sobre la misma campaña.
+Detección de contestadores con reproducción de mensaje de audio.
+Listo para virtualizar ! OML fue concebido como una tecnología orientada a los entornos de virtualización.
+Listo para escalar ! La escalabilidad es posible debido al hecho utilizar tecnologías subyacentes muy potentes como Postgres, Nginx, Rtpengine, que a su vez pueden correr en hosts independientes (escalabilidad horizontal) con una mínima configuración.
+Addons complementarios que dotan a la plataforma de funcionalidades extras y/o para segmentos verticales.
+100% orientado a Contact Center. No se trata de un software de PBX con agregados de reportería y/o supervisión. OML fue concebida desde cero, como una plataforma orientada y optimizada para el Contact Center.
