@@ -20,7 +20,6 @@
 from __future__ import unicode_literals
 
 import datetime
-import time
 import getpass
 import json
 import logging
@@ -28,13 +27,11 @@ import os
 import re
 import sys
 import uuid
-import hmac
-from hashlib import sha1
+
 
 from ast import literal_eval
 
 from crontab import CronTab
-from StringIO import StringIO
 from random import choice
 
 from django.contrib.auth.models import AbstractUser
@@ -46,7 +43,6 @@ from django.db.models import Max, Q, Count, Sum
 from django.db.utils import DatabaseError
 from django.conf import settings
 from django.core.exceptions import ValidationError, SuspiciousOperation
-from django.core.management import call_command
 from django.core.validators import RegexValidator
 from django.forms.models import model_to_dict
 from django.utils.translation import ugettext_lazy as _
@@ -143,26 +139,6 @@ class User(AbstractUser):
 
         self.borrado = True
         self.is_active = False
-        self.save()
-
-    def generar_usuario(self, sip_extension):
-        ttl = 28800
-        date = time.time()
-        self.timestamp = date + ttl
-        user_ephemeral = str(self.timestamp).split('.')[0] + ":" + str(sip_extension)
-        return user_ephemeral
-
-    def generar_contrasena(self, sip_extension):
-        out = StringIO()
-        call_command('service_secretkey', 'consultar', stdout=out)
-        secret_key = out.getvalue()[:-1]
-#        var = ':'.join(x.encode('hex') for x in secret_key)
-        password_hashed = hmac.new(secret_key, sip_extension, sha1)
-        password_ephemeral = password_hashed.digest().encode("base64").rstrip('\n')
-        return password_ephemeral
-
-    def regenerar_credenciales(self, sip_extension):
-        self.sip_password = self.generar_contrasena(sip_extension)
         self.save()
 
 

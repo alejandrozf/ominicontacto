@@ -228,7 +228,7 @@ OML_DUMP_HTTP_AMI_RESPONSES = False
 # ==============================================================================
 
 OML_OMNILEADS_IP = None
-"""IP donde se encuentra kamailio-debian
+"""IP donde se encuentra kamailio
 
 Ejemplo:
     OML_OMNILEADS_IP = "172.16.20.241"
@@ -276,6 +276,33 @@ ASTERISK = {
     # Ej:
     #    "http://1.2.3.4:7088"
 }
+
+######################
+# Defender variables #
+######################
+
+DEFENDER_BEHIND_REVERSE_PROXY = None
+#Variable obligatoria, se tiene que saber que el defender está detras de un proxy
+
+#######################################
+# Ephemeral SIP credentials variables #
+#######################################
+
+EPHEMERAL_USER_TTL = None
+# Tiempo de duración de credenciales efimeras
+
+OML_KAMAILIO_HOSTNAME = None
+#Hostname para conectarse a Kamailio
+
+OML_KAMAILIO_CMD = None
+
+"""Comando para obtener el secret_key de kamailio y asi poder generar la SIP password
+
+Ejemplo:
+
+    OML_KAMAILIO_CMD = "kamcmd -s /opt/omnileads/kamailio/run/kamailio/kamailio_ctl autheph.dump_secrets"
+
+"""
 
 TMPL_OML_AUDIO_CONVERSOR = None
 """Comando para convertir audios (wav a gsm)
@@ -429,6 +456,10 @@ except ImportError as e:
 
 # ~~~~~ Check OML_ASTERISK_HOSTNAME
 
+assert DEFENDER_BEHIND_REVERSE_PROXY is not None, \
+    "Falta definir setting para DEFENDER_BEHIND_REVERSE_PROXY"
+# ~~~~~ Check OML_ASTERISK_HOSTNAME
+
 assert OML_ASTERISK_HOSTNAME is not None, \
     "Falta definir setting para OML_ASTERISK_HOSTNAME"
 
@@ -473,10 +504,25 @@ assert OML_GRABACIONES_URL is not None, \
 assert OML_SUPERVISION_URL is not None, \
     "Falta definir setting para OML_SUPERVISION_URL"
 
+# ~~~~~ Check EPHEMERAL_USER_TTL
+
+assert EPHEMERAL_USER_TTL is not None, \
+    "Falta definir setting para EPHEMERAL_USER_TTL"
+
 # ~~~~~ Check OML_KAMAILIO_IP
 
 assert OML_KAMAILIO_IP is not None, \
     "Falta definir setting para OML_KAMAILIO_IP"
+
+# ~~~~~ Check OML_KAMAILIO_HOSTNAME
+
+assert OML_KAMAILIO_HOSTNAME is not None, \
+    "Falta definir setting para OML_KAMAILIO_HOSTNAME"
+
+# ~~~~~ Check OML_KAMAILIO_CMD
+
+assert OML_KAMAILIO_CMD is not None, \
+    "Falta definir setting para OML_KAMAILIO_CMD"
 
 # ~~~~~ Check OML_WOMBAT_URL
 

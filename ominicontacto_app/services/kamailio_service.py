@@ -18,59 +18,43 @@
 #
 
 """
-Servicio para conexion base de datos de kamailio-debian lo importante en este módulo es la
-inserción en subscriber de las cuentas sip
+Servicio para generar credenciales SIP efimeras para autenticar usuario en kamailio
 """
 
 from __future__ import unicode_literals
 
-from django.db import connection
+import hmac
+import logging
+import subprocess
+import time
+
+from hashlib import sha1
+from django.conf import settings
+
+logger = logging.getLogger(__name__)
 
 
 class KamailioService():
 
-    def crear_agente_kamailio(self, agente):
-        """
-        insert agente en subscriber
-        """
-        with connection.cursor() as cursor:
-            sql = """INSERT INTO subscriber (id, username, password)
-            VALUES (%(id)s, %(name)s, %(kamailiopass)s)
-            """
-            params = {
-                'id': agente.user.id,
-                'name': agente.sip_extension,
-                'kamailiopass': agente.sip_password
-            }
-            cursor.execute(sql, params)
+    def generar_sip_timestamp(self):
+        ttl = settings.EPHEMERAL_USER_TTL
+        date = time.time()
+        return date + ttl
 
-    def update_agente_kamailio(self, agente):
-        """
-        update subscriber
-        """
+    def generar_sip_user(self, sip_extension, timestamp=None):
+        if timestamp is None:
+            timestamp = self.generar_sip_timestamp()
+        user_ephemeral = str(timestamp).split('.')[0] + ":" + str(sip_extension)
+        return user_ephemeral
 
-        with connection.cursor() as cursor:
-            sql = """UPDATE subscriber SET username=%(name)s,
-                  password=%(kamailiopass)s
-                  WHERE id=%(id)s"""
-            params = {
-                'id': agente.user.id,
-                'name': agente.sip_extension,
-                'kamailiopass': agente.sip_password
-            }
-            cursor.execute(sql, params)
-            row = cursor.fetchone()
-
-        return row
-
-    def delete_agente_kamailio(self, agente):
-        """
-        delete registro en subscriber
-        """
-
-        with connection.cursor() as cursor:
-            sql = """DELETE from subscriber WHERE username like %(username)s"""
-            params = {
-                'username': str(agente.sip_extension)
-            }
-            cursor.execute(sql, params)
+    def generar_sip_password(self, sip_usuario):
+        try:
+            cmd = subprocess.check_output(['ssh', settings.OML_KAMAILIO_HOSTNAME,
+                                          settings.OML_KAMAILIO_CMD])
+            secret_key = str(cmd[cmd.find(':') + 2:].rstrip('\n')).splitlines()[0]
+            password_hashed = hmac.new(secret_key, sip_usuario, sha1)
+            password_ephemeral = password_hashed.digest().encode("base64").rstrip('\n')
+            return password_ephemeral
+        except subprocess.CalledProcessError as e:
+            logger.error('Hubo un problema al obtener la secret_key, verificar el comando {0}'.
+                         format(e.cmd))

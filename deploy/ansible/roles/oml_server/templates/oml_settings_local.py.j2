@@ -60,8 +60,11 @@ OML_QUEUES_FILENAME = "{{ asterisk_location }}/etc/asterisk/oml_queues.conf"
 OML_RUTAS_SALIENTES_FILENAME="{{ asterisk_location }}/etc/asterisk/oml_extensions_outr.conf"
 OML_ASTERISK_REMOTEPATH = "{{ asterisk_location }}/etc/asterisk/"
 OML_BACKLIST_REMOTEPATH  = "{{ asterisk_location }}/var/spool/asterisk/"
-OML_KAMAILIO_LOCATION = "{{ kamailio_location }}/etc/kamailio/"
 OML_WOMBAT_FILENAME = "{{ install_prefix }}wombat-json/"
+
+EPHEMERAL_USER_TTL = 28800
+OML_KAMAILIO_HOSTNAME = "root@{{ kamailio_fqdn }}"
+OML_KAMAILIO_CMD = "kamcmd -s {{ kamailio_location }}/run/kamailio/kamailio_ctl autheph.dump_secrets"
 
 # Credenciales de AMI
 ASTERISK = {
