@@ -33,7 +33,7 @@ from django.utils.encoding import force_text
 from django.utils.timezone import localtime
 from django.utils.translation import ugettext as _
 
-from ominicontacto_app.models import RespuestaFormularioGestion
+from ominicontacto_app.models import RespuestaFormularioGestion, OpcionCalificacion
 from ominicontacto_app.utiles import crear_archivo_en_media_root
 
 
@@ -84,12 +84,22 @@ class ArchivoDeReporteRespuestaFormularioCsv(object):
                 encabezado.append(nombre)
             encabezado.append(_("base_datos"))
             encabezado.append(_("Calificación"))
-            campos = []
-            if not campana.tiene_interaccion_con_sitio_externo:
-                campos = campana.formulario.campos.all()
 
-            for campo in campos:
-                encabezado.append(campo.nombre_campo)
+            # Para cada formulario, poner una columna vacia con su nombre seguida de los nombres
+            # de las columnas de cada campo
+            if not campana.tiene_interaccion_con_sitio_externo:
+                campos_formulario_opciones = {}
+                posicion_opciones = {}
+                for opcion in campana.opciones_calificacion.filter(
+                        tipo=OpcionCalificacion.GESTION):
+                    if opcion.nombre not in posicion_opciones:
+                        posicion_opciones[opcion.id] = len(encabezado)
+                        campos = opcion.formulario.campos.all()
+                        campos_formulario_opciones[opcion.id] = campos
+                        encabezado.append(opcion.nombre)
+                        for campo in campos:
+                            nombre = campo.nombre_campo
+                            encabezado.append(nombre)
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -119,7 +129,17 @@ class ArchivoDeReporteRespuestaFormularioCsv(object):
                 else:
                     lista_opciones.append(_("Fuera de base"))
                 lista_opciones.append(respuesta.calificacion.opcion_calificacion.nombre)
+
+                # Datos de la respuesta
                 datos = json.loads(respuesta.metadata)
+                id_opcion = respuesta.calificacion.opcion_calificacion_id
+                posicion = posicion_opciones[id_opcion]
+                # Relleno las posiciones vacias anteriores (de columnas de otro formulario)
+                posiciones_vacias = posicion - len(lista_opciones)
+                lista_opciones = lista_opciones + [''] * posiciones_vacias
+                # Columna vacia correspondiente al nombre de la Opcion de calificacion
+                lista_opciones.append('')
+                campos = campos_formulario_opciones[id_opcion]
                 for campo in campos:
                     lista_opciones.append(datos[campo.nombre_campo])
 

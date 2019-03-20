@@ -437,8 +437,8 @@ class RespuestaFormularioFormViewMixin(object):
 
     def get_form_kwargs(self):
         kwargs = super(RespuestaFormularioFormViewMixin, self).get_form_kwargs()
-        campana = self.calificacion.opcion_calificacion.campana
-        campos = campana.formulario.campos.all()
+        formulario = self.calificacion.opcion_calificacion.formulario
+        campos = formulario.campos.all()
         kwargs['campos'] = campos
         return kwargs
 
@@ -460,8 +460,6 @@ class RespuestaFormularioFormViewMixin(object):
         self.object.metadata = metadata
         self.object.calificacion = self.calificacion
         self.object.save()
-        self.calificacion.agente = self.request.user.get_agente_profile()
-        self.calificacion.save()
         message = _('Operación Exitosa!'
                     'Se llevó a cabo con éxito el llenado del formulario del'
                     ' cliente')

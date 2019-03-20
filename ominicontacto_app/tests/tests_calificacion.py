@@ -37,6 +37,7 @@ from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory, Use
                                                CalificacionClienteFactory,
                                                NombreCalificacionFactory,
                                                OpcionCalificacionFactory,
+                                               FormularioFactory, FieldFormularioFactory,
                                                RespuestaFormularioGestionFactory,
                                                AgendaContactoFactory)
 
@@ -57,9 +58,11 @@ class CalificacionTests(OMLBaseTest):
         self.nombre_opcion_gestion = NombreCalificacionFactory.create(nombre=self.campana.gestion)
         self.nombre_calificacion_agenda = NombreCalificacion.objects.get(
             nombre=settings.CALIFICACION_REAGENDA)
+        self.formulario = FormularioFactory()
+        self.campo_formulario = FieldFormularioFactory(formulario=self.formulario)
         self.opcion_calificacion_gestion = OpcionCalificacionFactory.create(
             campana=self.campana, nombre=self.nombre_opcion_gestion.nombre,
-            tipo=OpcionCalificacion.GESTION)
+            tipo=OpcionCalificacion.GESTION, formulario=self.formulario)
         self.opcion_calificacion_agenda = OpcionCalificacionFactory.create(
             campana=self.campana, nombre=self.nombre_calificacion_agenda.nombre,
             tipo=OpcionCalificacion.AGENDA)
@@ -135,6 +138,26 @@ class CalificacionTests(OMLBaseTest):
         post_data['opcion_calificacion'] = self.opcion_calificacion_gestion.pk
         response = self.client.post(url, post_data, follow=True)
         self.assertTemplateUsed(response, 'formulario/respuesta_formulario_create.html')
+        self.assertTrue(self.campo_formulario.nombre_campo in response.context_data['form'].fields)
+
+    @patch('requests.post')
+    def test_calificacion_cliente_creacion_redirecciona_a_otro_formulario_gestion(self, post):
+        nuevo_formulario = FormularioFactory()
+        campo_formulario = FieldFormularioFactory(
+            formulario=nuevo_formulario, nombre_campo='otro_campo')
+        nombre_opcion = NombreCalificacionFactory.create(nombre='otra opcion')
+        opcion_calificacion = OpcionCalificacionFactory.create(
+            campana=self.campana, nombre=nombre_opcion,
+            tipo=OpcionCalificacion.GESTION, formulario=nuevo_formulario)
+        url = reverse('calificacion_formulario_update_or_create',
+                      kwargs={'pk_campana': self.campana.pk,
+                              'pk_contacto': self.contacto.pk})
+        post_data = self._obtener_post_data_calificacion_cliente()
+        post_data['opcion_calificacion'] = opcion_calificacion.pk
+        response = self.client.post(url, post_data, follow=True)
+        self.assertTemplateUsed(response, 'formulario/respuesta_formulario_create.html')
+        self.assertTrue(campo_formulario.nombre_campo in response.context_data['form'].fields)
+        self.assertFalse(self.campo_formulario.nombre_campo in response.context_data['form'].fields)
 
     @patch('requests.post')
     def test_calificacion_cliente_modificacion_redirecciona_formulario_gestion(self, post):

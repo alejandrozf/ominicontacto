@@ -85,7 +85,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% endif %}
        {% endfor %}
 
-<form target="crm" action = "" method = "post"> {% csrf_token %}
+<form action = "" method = "post"> {% csrf_token %}
     <table class="table">
         {{form.as_table}}
     </table>

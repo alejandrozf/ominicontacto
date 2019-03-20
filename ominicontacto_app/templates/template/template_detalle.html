@@ -37,12 +37,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <td>{{object.calificacion_campana}}</td>
             </tr>
             <tr>
-                <td>{% trans 'Tipo de interacción' %} {{object.get_tipo_interaccion_display}}: </td>
+                <td>{% trans 'Tipo de interacción' %} {{object.get_tipo_interaccion_display}} </td>
                 <td>
-                    {% if object.tipo_interaccion == 1 %}
-                    {{ object.formulario }}
-                    {% else %}
-                    {{ object.sitio_externo }}
+                    {% if object.tipo_interaccion == 2 %}
+                        {{ object.sitio_externo }}
                     {% endif %}
                 </td>
             </tr>

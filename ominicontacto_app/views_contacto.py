@@ -409,7 +409,7 @@ class FormularioNuevoContactoFormView(FormView):
             return super(FormularioNuevoContactoFormView, self).form_valid(form)
 
     def get_success_url(self):
-        reverse('view_blanco')
+        return reverse('view_blanco')
 
 
 class IdentificarContactoView(FormView):

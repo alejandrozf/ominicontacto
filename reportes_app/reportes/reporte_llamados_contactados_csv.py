@@ -34,7 +34,7 @@ from django.utils.encoding import force_text
 from django.utils.timezone import localtime
 from django.utils.translation import ugettext as _
 
-from ominicontacto_app.models import AgenteProfile, Campana, Contacto
+from ominicontacto_app.models import AgenteProfile, Campana, Contacto, OpcionCalificacion
 from ominicontacto_app.utiles import crear_archivo_en_media_root
 
 from reportes_app.models import LlamadaLog
@@ -134,10 +134,25 @@ class ArchivoDeReporteCsv(object):
             encabezado.append(_("Observaciones"))
             encabezado.append(_("Agente"))
             encabezado.append(_("base de datos"))
-            # agrego el encabezado para los campos del formulario
+
+            # agrego el encabezado para los campos de los formularios
             if campana.tipo_interaccion is Campana.FORMULARIO:
-                campos_formulario = campana.formulario.campos.values_list('nombre_campo', flat=True)
-                encabezado.extend(campos_formulario)
+                campos_formulario_opciones = {}
+                posicion_opciones = {}
+                cant_campos_gestion = 0
+                for opcion in campana.opciones_calificacion.filter(
+                        tipo=OpcionCalificacion.GESTION):
+                    if opcion.id not in posicion_opciones:
+                        posicion_opciones[opcion.id] = cant_campos_gestion
+                        campos = opcion.formulario.campos.all()
+                        campos_formulario_opciones[opcion.id] = campos
+                        encabezado.append(opcion.nombre)
+                        cant_campos_gestion += 1
+                        for campo in campos:
+                            nombre = campo.nombre_campo
+                            encabezado.append(nombre)
+                            cant_campos_gestion += 1
+
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
             # guardamos encabezado
@@ -158,12 +173,23 @@ class ArchivoDeReporteCsv(object):
                     datos_calificacion = [calificacion.opcion_calificacion.nombre,
                                           calificacion.observaciones,
                                           calificacion.agente]
-                    datos_formulario_gestion = calificacion.history_object.get_venta()
+                    # TODO: ver la forma de relacionar con respuestas vieja.
+                    respuesta_formulario_gestion = calificacion.history_object.get_venta()
                     if (calificacion.es_venta and campana.tipo_interaccion is Campana.FORMULARIO and
-                            datos_formulario_gestion is not None):
-                        datos = json.loads(datos_formulario_gestion.metadata)
-                        for campo in campos_formulario:
-                            datos_gestion.append(datos[campo])
+                            respuesta_formulario_gestion is not None):
+
+                        # Agrego Datos de la respuesta del formulario
+                        datos = json.loads(respuesta_formulario_gestion.metadata)
+                        id_opcion = respuesta_formulario_gestion.calificacion.opcion_calificacion_id
+                        posicion = posicion_opciones[id_opcion]
+                        # Relleno las posiciones vacias anteriores (de columnas de otro formulario)
+                        posiciones_vacias = posicion - len(datos_gestion)
+                        datos_gestion = datos_gestion + [''] * posiciones_vacias
+                        # Columna vacia correspondiente al nombre de la Opcion de calificacion
+                        datos_gestion.append('')
+                        campos = campos_formulario_opciones[id_opcion]
+                        for campo in campos:
+                            datos_gestion.append(datos[campo.nombre_campo])
 
                 fecha_local_llamada = localtime(llamada_log.time)
                 registro = []
@@ -245,10 +271,21 @@ class ArchivoDeReporteCsv(object):
             encabezado.append(_("Observaciones"))
             encabezado.append(_("Agente"))
             encabezado.append(_("base de datos"))
-            # agrego el encabezado para los campos del formulario
+
+            # agrego el encabezado para los campos de los formularios
             if campana.tipo_interaccion is Campana.FORMULARIO:
-                campos_formulario = campana.formulario.campos.values_list('nombre_campo', flat=True)
-                encabezado.extend(campos_formulario)
+                campos_formulario_opciones = {}
+                posicion_opciones = {}
+                for opcion in campana.opciones_calificacion.filter(
+                        tipo=OpcionCalificacion.GESTION):
+                    if opcion.id not in posicion_opciones:
+                        posicion_opciones[opcion.id] = len(encabezado)
+                        campos = opcion.formulario.campos.all()
+                        campos_formulario_opciones[opcion.id] = campos
+                        encabezado.append(opcion.nombre)
+                        for campo in campos:
+                            nombre = campo.nombre_campo
+                            encabezado.append(nombre)
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -281,12 +318,23 @@ class ArchivoDeReporteCsv(object):
                     lista_opciones.append(calificacion.contacto.bd_contacto)
                 else:
                     lista_opciones.append(_("Fuera de base"))
-                datos_formulario_gestion = calificacion.get_venta()
+                respuesta_formulario_gestion = calificacion.get_venta()
                 if (calificacion.es_venta and campana.tipo_interaccion is Campana.FORMULARIO and
-                        datos_formulario_gestion is not None):
-                    datos = json.loads(datos_formulario_gestion.metadata)
-                    for campo in campos_formulario:
-                        lista_opciones.append(datos[campo])
+                        respuesta_formulario_gestion is not None):
+                    datos = json.loads(respuesta_formulario_gestion.metadata)
+
+                    # Agrego Datos de la respuesta del formulario
+                    datos = json.loads(respuesta_formulario_gestion.metadata)
+                    id_opcion = respuesta_formulario_gestion.calificacion.opcion_calificacion_id
+                    posicion = posicion_opciones[id_opcion]
+                    # Relleno las posiciones vacias anteriores (de columnas de otro formulario)
+                    posiciones_vacias = posicion - len(lista_opciones)
+                    lista_opciones = lista_opciones + [''] * posiciones_vacias
+                    # Columna vacia correspondiente al nombre de la Opcion de calificacion
+                    lista_opciones.append('')
+                    campos = campos_formulario_opciones[id_opcion]
+                    for campo in campos:
+                        lista_opciones.append(datos[campo.nombre_campo])
 
                 # --- Finalmente, escribimos la linea
                 self._escribir_csv_writer_utf_8(csvwiter, lista_opciones)

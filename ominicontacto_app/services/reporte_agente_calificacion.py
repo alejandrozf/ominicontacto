@@ -77,7 +77,7 @@ class ArchivoDeReporteCsv(object):
 
             encabezado.append(_("Telefono"))
             encabezado.append(_("Es una venta"))
-            encabezado.append(_("Calificacion No venta"))
+            encabezado.append(_("Calificacion"))
             encabezado.append(_("Observaciones"))
             encabezado.append(_("datos del cliente"))
 
