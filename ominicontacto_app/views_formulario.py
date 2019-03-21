@@ -39,7 +39,6 @@ from ominicontacto_app.forms import (
 from ominicontacto_app.services.campos_formulario import (
     OrdenCamposCampanaService
 )
-from ominicontacto_app.utiles import elimina_tildes
 import logging as logging_
 
 logger = logging_.getLogger(__name__)
@@ -99,24 +98,21 @@ class FieldFormularioCreateView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        self.object.nombre_campo = elimina_tildes(self.object.nombre_campo)
         self.object.orden = \
             FieldFormulario.objects.obtener_siguiente_orden(
                 self.kwargs['pk_formulario'])
-        if self.object.tipo is not FieldFormulario.TIPO_LISTA:
-            self.object.values_select = None
         self.object.save()
         return redirect(self.get_success_url())
 
     def form_invalid(self, form):
-        message = '<strong>Operación Errónea!</strong> \
-                   No se pudo llevar a cabo la creacion de campo.'
+        message = _('<strong>Operación Errónea!</strong> ') + \
+            _('No se pudo llevar a cabo la creacion de campo.')
         messages.add_message(
             self.request,
             messages.ERROR,
             message,
         )
-        return redirect(self.get_success_url())
+        return super(FieldFormularioCreateView, self).form_invalid(form)
 
     def get_success_url(self):
         return reverse('formulario_field',
@@ -219,6 +215,17 @@ class FormularioPreviewFormView(FormView):
     """Vista para ver el formulario una vez finalizado"""
     form_class = FormularioCRMForm
     template_name = 'formulario/formulario_preview.html'
+
+    def dispatch(self, *args, **kwargs):
+        formulario = Formulario.objects.get(pk=self.kwargs['pk_formulario'])
+        campos = formulario.campos.all()
+
+        if not campos.exists():
+            message = _("No está permitido crear un formulario vacio.")
+            messages.error(self.request, message)
+            return redirect(reverse('formulario_field',
+                                    kwargs={"pk_formulario": self.kwargs['pk_formulario']}))
+        return super(FormularioPreviewFormView, self).dispatch(*args, **kwargs)
 
     def get_form(self):
         self.form_class = self.get_form_class()

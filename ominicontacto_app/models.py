@@ -374,8 +374,8 @@ class FieldFormulario(models.Model):
         unique_together = ("orden", "formulario")
 
     def __unicode__(self):
-        return _("campo {0} del formulario {1}".format(self.nombre_campo,
-                                                       self.formulario))
+        return unicode(_("campo {0} del formulario {1}".format(self.nombre_campo,
+                                                               self.formulario)))
 
     def obtener_campo_anterior(self):
         """
