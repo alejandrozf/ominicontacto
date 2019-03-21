@@ -19,7 +19,6 @@ procesando comunicaciones.
 - En términos de seguridad todas las comunicaciones viajan cifradas en términos de señalización y media
 
 
-
 Características y funcionalidades de OMniLeads
 **********************************************
 - Gestión de campañas Entrantes y Salientes; Discador predictivo, Preview & IVR Blaster.

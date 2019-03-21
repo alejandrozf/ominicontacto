@@ -1,19 +1,12 @@
 ************************************
-Metricas, grabaciones y supervicion
+Metricas, grabaciones y supervisión
 ************************************
 
 Grabaciones
 ***********
 Todas las campañas que operen con la opción de grabación de llamadas habilitada generan sus archivos con grabaciones para posterior escucha o descarga.
-El módulo de *Grabaciones* de OMniLeads permite la búsqueda de grabaciones utilizando los filtros
+El módulo de *Grabaciones* de OMniLeads permite la búsqueda de grabaciones utilizando los filtros como criterio de búsqueda.
 
-
-
-Como criterio de búsqueda de grabaciones.
-
-
-Grabaciones
-***********
 output_recordings.rst
 
 Output de las campañas entrantes

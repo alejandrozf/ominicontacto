@@ -14,6 +14,11 @@ Cada elemento de este tipo generado, puede ser invocado por otros como el destin
 - el failover de una campaña entrante
 - otro elemento similar
 
+.. image:: images/campaigns_in_tc_diagrama.png
+
+*Figure 1: Time conditions*
+
+
 Para llevar a cabo este tipo de configuiraciones se disponen de dos módulos que trabajan juntos.
 
 - **Grupos horarios**
@@ -21,11 +26,11 @@ Para llevar a cabo este tipo de configuiraciones se disponen de dos módulos que
 Este módulo permite agrupar patrones de fechas y horas así también como fechas y horarios puntuales dentro de un elemento interno de OMniLeasds, para luego puede ser invocado por los condicionales de tiempo, módulo complementario que permite realizar un enrutamiento comparando la fecha/hora de la llamada con la de un grupo de éstos.
 Para definir o editar grupos de horarios, se debe acceder al punto de menú **Telefonía -> Grupos horarios**. Para añadir un nuevo grupo se debe presionar el botón "Agregar nuevo grupo".
 
-La pantalla de grupos horarios se expone en la figura 1.
+La pantalla de grupos horarios se expone en la figura 2.
 
 .. image:: images/campaigns_in_tc1.png
 
-*Figure 1: Time groups*
+*Figure 2: Time groups*
 
 Una vez generados los *Grupos de tiempos* podemos invocarlos desde el módulo complementario *Condicionales de tiempos*
 
@@ -35,10 +40,10 @@ Este módulo permite comparar la fecha y hora en el momento de procesar una llam
 
 Para generar un elemento Condicional de tiempo, se debe acceder a **Telephony -> Time conditions**
 
-La pantalla de configuración es similar a la figura 2.
+La pantalla de configuración es similar a la figura 3.
 
 .. image:: images/campaigns_in_tc2.png
 
-*Figure 2: Time conditions*
+*Figure 3: Time conditions*
 
 Finalmente tenemos disponible este elemento de enrutamiento para ser utilizado por ejemple como destino de una ruta entrante.

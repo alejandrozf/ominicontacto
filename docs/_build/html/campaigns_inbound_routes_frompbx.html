@@ -115,14 +115,16 @@
 <li class="toctree-l3"><a class="reference internal" href="campaigns_inbound_timeconditions.html">Enrutamiento condicionado por fechas y horas</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#plantillas-de-campana">Plantillas de Campaña</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#agentes-llamadas-y-calificaciones">Agentes, llamadas y calificaciones</a></li>
 </ul>
 </li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reports.html">Metricas, grabaciones y supervicion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="maintance.html">OMniLeads Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
 </ul>
 
             
@@ -192,22 +194,24 @@
   <div class="section" id="enrutamiento-de-llamadas-entrantes-desde-un-pbx-hacia-omnileads">
 <h1>Enrutamiento de llamadas entrantes desde un PBX hacia OMniLeads<a class="headerlink" href="#enrutamiento-de-llamadas-entrantes-desde-un-pbx-hacia-omnileads" title="Permalink to this headline">¶</a></h1>
 <p>A la hora de enrutar llamadas desde un PBX (en nuestro ejemplo Asterisk), pero los concepto se pueden extender a cualquier tipo o marca.</p>
+<img alt="_images/campaigns_in_route_frompbx_ivr.png" src="_images/campaigns_in_route_frompbx_ivr.png" />
+<p><em>Figure 1: Inbound route parameters</em></p>
 <p>Lo primero que se debe definir es la numeración asignada a la ruta entrante que conmute la llamada hacia un destino de OMniLeads, ya que este número (DID de la ruta) debe ser invocado desde el PBX a la hora
 de derivar llamadas (desde una ruta entrante, opción del IVR o failover de alguna cola/ring group, etc.) hacia OMniLeads o bien si una extensión desea llamar o transferir una llamada hacia OMniLeads.</p>
 <img alt="_images/campaigns_in_route_frompbx.png" src="_images/campaigns_in_route_frompbx.png" />
-<p><em>Figure 1: Inbound route parameters</em></p>
+<p><em>Figure 2: Inbound route parameters</em></p>
 <p>Tomando como ejemplo el número “123456” utilizado en la figura anterior, entonces una forma de integrar esta ruta en un PBX basado en Asteisk sería que desde dicho PBX se genere una llamada hacia el
 número mencionado, cada vez que algún recurso del PBX necesite ser conmutado hacia este destino de OMniLeads.</p>
 <p>Si nuestro PBX Asterisk dispone de una interfaz web de configuración entonces simplemente puedo generar una <em>Nueva extensión</em> y hacer que la misma apunte a; <em>SIP/trunkomnileads/123456</em> , donde “trunkomnileads” es el nombre elegido (en el PBX) para el troncal SIP con OMniLeads.
 La idea de extensión apuntando hacia OMniLeads se ejemplifica en la figura 2.</p>
 <img alt="_images/campaigns_in_route_frompbx2.png" src="_images/campaigns_in_route_frompbx2.png" />
-<p><em>Figure 2: OMniLeads PBX custom extension</em></p>
+<p><em>Figure 3: OMniLeads PBX custom extension</em></p>
 <p>Si bien la extension en el PBX puede tener cualquier numeración (en la figura es 2222), lo importante es enviar “123456” (en nuestro ejemplo) hacia OMniLeads como se resalta en la figura 3.</p>
 <img alt="_images/campaigns_in_route_frompbx3.png" src="_images/campaigns_in_route_frompbx3.png" />
-<p><em>Figure 3: OMniLeads PBX custom extension</em></p>
+<p><em>Figure 4: OMniLeads PBX custom extension</em></p>
 <p>Una vez disponible la extension en el PBX, solo es cuestión de invocarla desde los elementos del PBX, como por ejemplo un IVR.</p>
 <img alt="_images/campaigns_in_route_frompbx4.png" src="_images/campaigns_in_route_frompbx4.png" />
-<p><em>Figure 4: from IVR to OMniLeads</em></p>
+<p><em>Figure 5: from IVR to OMniLeads</em></p>
 <p>Si bien en la figura 4 se ejemplifica la derivación de llamadas hacia campañas entrantes de OMniLeads, desde un IVR del PBX. Podemos concluir en que también las extensiones del PBX pueden marcar o transferir llamadas a las extensiones que mapean el PBX con campañas entrantes de OMniLeads.</p>
 </div>
 

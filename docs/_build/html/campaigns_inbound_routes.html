@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Enrutamiento de llamadas entrantes desde Asterisk" href="campaigns_inbound_routes_frompbx.html" />
+    <link rel="next" title="Enrutamiento de llamadas entrantes desde un PBX hacia OMniLeads" href="campaigns_inbound_routes_frompbx.html" />
     <link rel="prev" title="Campañas entrantes" href="campaigns_inbound.html" /> 
 </head>
 
@@ -110,19 +110,21 @@
 <li class="toctree-l2 current"><a class="reference internal" href="campaigns.html#campanas-entrantes">Campañas Entrantes</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="campaigns_inbound.html">Campañas entrantes</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Enrutamiento de llamadas entrantes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="campaigns_inbound_routes_frompbx.html">Enrutamiento de llamadas entrantes desde Asterisk</a></li>
+<li class="toctree-l3"><a class="reference internal" href="campaigns_inbound_routes_frompbx.html">Enrutamiento de llamadas entrantes desde un PBX hacia OMniLeads</a></li>
 <li class="toctree-l3"><a class="reference internal" href="campaigns_inbound_ivr.html">IVR - Interactive Voice Response</a></li>
 <li class="toctree-l3"><a class="reference internal" href="campaigns_inbound_timeconditions.html">Enrutamiento condicionado por fechas y horas</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#plantillas-de-campana">Plantillas de Campaña</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#agentes-llamadas-y-calificaciones">Agentes, llamadas y calificaciones</a></li>
 </ul>
 </li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reports.html">Metricas, grabaciones y supervicion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="maintance.html">OMniLeads Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
 </ul>
 
             
@@ -193,10 +195,12 @@
 <h1>Enrutamiento de llamadas entrantes<a class="headerlink" href="#enrutamiento-de-llamadas-entrantes" title="Permalink to this headline">¶</a></h1>
 <p>Una vez disponible nuestra campaña entrante, se debe proceder con la vinculación de un número telefónico “DID” disponible en alguno de los troncales SIP por los que llegarían las solicitudes de llamadas
 con la campaña entrante en cuestión. Es decir la asignación del número y la campaña campaña entrante hacia a donde derivar a todas las llamadas que ingresen a OMniLeads sobre dicho número DID.</p>
+<img alt="_images/campaigns_in_routes.png" src="_images/campaigns_in_routes.png" />
+<p><em>Figure 1: Inbound routes</em></p>
 <p>Para generar una nueva ruta de llamadas entrantes, debemos acceder al punto de menú <strong>Telephony -&gt; Inbound routes</strong> en donde se listan las rutas creadas y además se pueden añadir nuevas.</p>
-<p>En la figura 1 se puede visualizar una <em>ruta entrante</em> en su pantalla de configuración.</p>
+<p>En la figura 2 se puede visualizar una <em>ruta entrante</em> en su pantalla de configuración.</p>
 <img alt="_images/campaigns_in_route.png" src="_images/campaigns_in_route.png" />
-<p><em>Figure 1: Inbound route parameters</em></p>
+<p><em>Figure 2: Inbound route parameters</em></p>
 <p>Vamos a definir cada campo:</p>
 <ul class="simple">
 <li><strong>Name:</strong> es el asignado a la ruta (alfanumérico sin espacios)</li>
@@ -217,7 +221,7 @@ con la campaña entrante en cuestión. Es decir la asignación del número y la 
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="campaigns_inbound_routes_frompbx.html" class="btn btn-neutral float-right" title="Enrutamiento de llamadas entrantes desde Asterisk" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="campaigns_inbound_routes_frompbx.html" class="btn btn-neutral float-right" title="Enrutamiento de llamadas entrantes desde un PBX hacia OMniLeads" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="campaigns_inbound.html" class="btn btn-neutral float-left" title="Campañas entrantes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

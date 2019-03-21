@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>OMniLeads Maintenance &mdash; OMniLeads develop documentation</title>
+  <title>Gestiones del administrador IT &mdash; OMniLeads develop documentation</title>
   
 
   
@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Metricas, grabaciones y supervicion" href="reports.html" /> 
+    <link rel="prev" title="Metricas, grabaciones y supervisión" href="output.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -101,10 +101,10 @@
 <li class="toctree-l1"><a class="reference internal" href="campaigns.html">Campañas Telefónicas</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reports.html">Metricas, grabaciones y supervicion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
 </ul>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">OMniLeads Maintenance</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Gestiones del administrador IT</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#configuracion-del-modulo-de-discador-predictivo">Configuración del módulo de <em>Discador predictivo</em></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#back-restore">Back &amp; Restore</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#actualizaciones">Actualizaciones</a></li>
@@ -156,7 +156,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>OMniLeads Maintenance</li>
+      <li>Gestiones del administrador IT</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -175,108 +175,166 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="omnileads-maintenance">
-<h1>OMniLeads Maintenance<a class="headerlink" href="#omnileads-maintenance" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="gestiones-del-administrador-it">
+<h1>Gestiones del administrador IT<a class="headerlink" href="#gestiones-del-administrador-it" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="configuracion-del-modulo-de-discador-predictivo">
 <h2>Configuración del módulo de <em>Discador predictivo</em><a class="headerlink" href="#configuracion-del-modulo-de-discador-predictivo" title="Permalink to this headline">¶</a></h2>
-<p>Antes que nada se notifica que si la instancia de OML desplegada en los pasos anteriores, NO contemplan el uso de campañas con discado saliente predictivo, este paso puede ser omitido.</p>
-<p>El core-dialer de OML es un una herramienta basada en licencias e incorporada de manera opcional. Este dialer se llama Wombat Dialer (propiedad de Loway - loway.com) y como se mencionó, es el componente encargado de discar registros de manera progresiva/predictiva.</p>
-<p>Si se desean correr campañas predictivas, se debe generar la siguiente configuración básica de Wombat Dialer . Esto se consigue ingresando a la dirección IP del host OML.</p>
-<p><a class="reference external" href="http://omnileads.yourdomain:8080/wombat">http://omnileads.yourdomain:8080/wombat</a></p>
-<p>Al ingresar se despliega una pantalla como la siguiente, donde deberá presionar los botones indicado en la imagen.</p>
-<p>Se debe proceder con la creación de la base de datos para Wombat Dialer. Hacer click en botón remarcado en la figura 4.</p>
-<p>Figura 14: Crear base de datos Wombat Dialer</p>
-<p>Luego es el momento de ingresar la clave del usuario root de MySQL y hacer click en botón remarcado en la figura 6. Nota; el password fue configurado dentro del archivo “inventory” antes de activar la instalación del sistema. (En el mismo directorio en el que clonó el repositorio de OML).</p>
-<p>Figura 15: copia del archivo “invenory” de la última ejecución del script</p>
-<p>Figura 16: passwords del componente Wombat Dialer</p>
-<p>Procedemos entonces con la creación de la base de datos MySQL que utilizará de ahora en más el componente de tercero Wombat Dialer.</p>
-<p>Figura 17: Crear base de datos Wombat Dialer</p>
-<p>Una vez creada la base de datos MySQL que utiliza Wombat Dialer, se procede con el primer login.</p>
-<p>Figura 18: Crear base de datos Wombat Dialer</p>
-<p>A continuación se debe realizar un login en la interfaz de administración de Wombat Dialer para avanzar con la configuración de parámetros necesarios para la interacción con OML.</p>
-<p>Datos disponibles también en el archivo “inventory”, generado en el deploy.</p>
-<p>Usuario: demoadmin
-Pass: demo</p>
-<p>Figura 19: Login en Wombat Dialer</p>
-<p>Para ello simplemente se debe seguir paso a paso, la configuración expuesta en las siguientes figuras: 8, 9, 10 y 11.</p>
-<p>Figura 20: Configuración de base WD</p>
-<p>En este paso debeŕa ingresar la contraseña AMI ingresada en la instalación. El usuario es: omnileadsami y en caso de de haber dejada la contraseña por defecto (5_MeO_DMT) en el archivo inventory.</p>
-<p>Figura 21: Configuración de base WD - Asterisk server</p>
-<p>En el siguiente punto, se configura una Troncal utilizando un “Nombre de la troncal” arbitrario, pero con la cadena de llamado marcada en la figura. <a class="reference external" href="mailto:Local/${num}&#37;&#52;&#48;from-oml/n">Local/${num}<span>&#64;</span>from-oml/n</a></p>
-<p>Figura 22: Configuración de base WD - Troncal</p>
-<p>Finalmente debemos observar que nuestra configuración luzca como la figura 12.</p>
-<p>Figura 23: Configuración de base WD - Resultado final</p>
-<p>Por último, recuerde dar “play” al servicio de dialer, tal como lo indica la siguiente figura:</p>
-<p>Figura 24: Iniciar el Marcador.</p>
-<p>Finalmente la plataforma se encuentra habilitada para gestionar llamadas predictivas. La instalación por defecto cuenta con una licencia de Wombat Dialer demo de un canal Recuerde acceder a la página del fabricante y comprar canales de discador dependiendo de sus necesidades (<a class="reference external" href="https://www.wombatdialer.com/purchase.jsp">https://www.wombatdialer.com/purchase.jsp</a>).</p>
+<p>Antes que nada se notifica que si la instancia de OML desplegada en los pasos anteriores, NO contemplan el uso de campañas con discado saliente predictivo, este paso puede ser omitido.
+OMniLeads necesita de una herramienta de terceros para implementar las campañas con discador predictivo. Esta herramienta se basa en licencias de software comerciales que deben
+ser gestionadas con el fabricante.</p>
+<p>De todas maneras el sistema puede ser utilizado con un canal de pruebas que otorga como demo. Por lo tanto podemos configurar el componente y correr pruebas de concepto
+antes de adquirir licencias para una operación real.</p>
+<p>Si se desean correr campañas predictivas, se debe generar la siguiente configuración básica de Wombat Dialer .
+Para generar esta configuración debemos seguir una serie de pasos que comienzan con el acceso a la URL correspondiente.</p>
+<dl class="docutils">
+<dt><a class="reference external" href="http://omnileads.yourdomain:8080/wombat">http://omnileads.yourdomain:8080/wombat</a></dt>
+<dd>ó</dd>
+</dl>
+<p><a class="reference external" href="http://XXX.XXX.XXX.OML:8080/wombat">http://XXX.XXX.XXX.OML:8080/wombat</a></p>
+<p>Al ingresar por primera vez, se debe proceder con la creación de la base de datos MariaDB que utiliza Wombat Dialer.
+Hacer click en botón remarcado en la figura 2.</p>
+<img alt="_images/maintance_wd_2.png" src="_images/maintance_wd_2.png" />
+<p><em>Figure 1: DB create</em></p>
+<p>Luego es el momento de ingresar la clave del usuario root de MySQL y hacer click en botón remarcado en la figura 3.
+Nota: el password del motor MariaDB fue configurado dentro del archivo “inventory” antes de activar la instalación del sistema. (En el mismo directorio en el que clonó el repositorio de OML).</p>
+<img alt="_images/install_my_inventory.png" src="_images/install_my_inventory.png" />
+<img alt="_images/maintance_wd_mariadb_pass.png" src="_images/maintance_wd_mariadb_pass.png" />
+<p><em>Figure 2: MariaDB root password</em></p>
+<p>Procedemos entonces con la creación de la base de datos MariaDB que utilizará de ahora en más el componente Wombat Dialer.</p>
+<img alt="_images/maintance_wd_mariadb_create.png" src="_images/maintance_wd_mariadb_create.png" />
+<p><em>Figure 3: MariaDB root password</em></p>
+<p>Una vez creada la base de datos MariaDB que utiliza Wombat Dialer, se procede con el primer login.</p>
+<img alt="_images/maintance_wd_mariadb_post_create.png" src="_images/maintance_wd_mariadb_post_create.png" />
+<p><em>Figure 4: Login post db create</em></p>
+<p>A continuación se debe realizar un login en la interfaz de administración de Wombat Dialer para avanzar con la configuración
+de parámetros necesarios para la interacción con OML.</p>
+<p>Al ingresar se despliega una pantalla como la siguiente, donde debemos acceder con el usuario y passwords que se generaron en la instalación.
+Recordar que éstas variables se encuentran en la copia del archivo inventory (my_inventory).</p>
+<img alt="_images/maintance_wd_1.png" src="_images/maintance_wd_1.png" />
+<p><em>Figure 5: Access to WD</em></p>
+<p>Una vez adentro del sistema, se procede con la configuración de dos parámetros básicos necesarios para dejar lista la integración con OMniLeads.
+Para ello debemos acceder al menú de “Configuración básica” como se indica en la figura 6.</p>
+<img alt="_images/maintance_wd_config1.png" src="_images/maintance_wd_config1.png" />
+<p><em>Figure 6: WD basic config</em></p>
+<p>En este menú se debe generar en primer lugar se debe generar una nueva instancia de conexión dentro de la sección “Asterisk Servers”
+como se expone en la figura 7.</p>
+<img alt="_images/maintance_wd_config2.png" src="_images/maintance_wd_config2.png" />
+<p><em>Figure 7: WD basic config - AMI Asterisk</em></p>
+<p>En este paso debeŕa ingresar el usuario y contraseña AMI disponible en el archivo <em>inventory</em> utilizado en la instalación.</p>
+<img alt="_images/maintance_wd_config_inventory.png" src="_images/maintance_wd_config_inventory.png" />
+<p><em>Figure 9: WD basic config - AMI Asterisk user &amp; pass</em></p>
+<p>En el siguiente punto, se configura un Troncal utilizando un “Nombre del troncal” arbitrario, pero con la cadena de llamado marcada
+en la figura 9. <a class="reference external" href="mailto:Local/${num}&#37;&#52;&#48;from-oml/n">Local/${num}<span>&#64;</span>from-oml/n</a></p>
+<img alt="_images/maintance_wd_config3.png" src="_images/maintance_wd_config3.png" />
+<p><em>Figure 9: WD basic config - Asterisk Trunk</em></p>
+<p>Por último, recuerde dar “play” al servicio de dialer, tal como lo indica la siguiente figura 10.</p>
+<img alt="_images/maintance_wd_config4.png" src="_images/maintance_wd_config4.png" />
+<p><em>Figure 10: WD activate</em></p>
+<p>Finalmente la plataforma se encuentra habilitada para gestionar llamadas predictivas. La instalación por defecto cuenta con una licencia de Wombat Dialer demo de un canal.</p>
 </div>
 <div class="section" id="back-restore">
 <h2>Back &amp; Restore<a class="headerlink" href="#back-restore" title="Permalink to this headline">¶</a></h2>
 <p>OMniLeads dispone de un script para llevar a cabo las tareas de backup/restore.</p>
 <p>Para realizar un backup:</p>
 <p>Debemos acceder por ssh al host donde tenemos corriendo OMniLeads.
-Una vez dentro del host:</p>
-<p>su omnileads -
-cd /opt/omnileads/bin
-./backup-restore.sh -b</p>
-<p>La ejecución del script arroja una salida similar a la de la figura 19.</p>
-<p>figura 19: procedimiento de backup</p>
+Una vez dentro del host se ejecutan los siguiente comandos.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">su</span> <span class="n">omnileads</span> <span class="o">-</span>
+<span class="n">cd</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">omnileads</span><span class="o">/</span><span class="nb">bin</span>
+<span class="o">./</span><span class="n">backup</span><span class="o">-</span><span class="n">restore</span><span class="o">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">b</span>
+</pre></div>
+</div>
+<p>La ejecución del script arroja una salida similar a la de la figura 11.</p>
+<img alt="_images/maintance_backup_1.png" src="_images/maintance_backup_1.png" />
+<p><em>Figure 11: backup</em></p>
 <p>Como se puede observar, nos indica cómo realizar el restore de dicho backup.</p>
-<p>Dentro del path /opt/omnileads/backup, se generan los archivos “.tgz” que contienen los backups ejecutados.</p>
-<p>Si el restore se realiza en nuevo host, entonces se debe dejar disponible el archivo generado en el backup dentro del path /opt/omnileads/backup.</p>
+<p>Dentro del path <strong>/opt/omnileads/backup</strong>, se generan los archivos “.tgz” que contienen los backups ejecutados.</p>
+<p>Si el restore se realiza en nuevo host, entonces se debe dejar disponible el archivo generado en el backup dentro del path <strong>/opt/omnileads/backup</strong>.</p>
 <p>Para llevar a cabo un restore, se debe ejecutar:</p>
-<p>./backup-restore.sh -r nombre_del_archivo_de_backup</p>
-<p>Por ejemplo: ./backup-restore.sh -r 20190211_database.tgz</p>
-<p>figura 20: restore de un backup</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">backup</span><span class="o">-</span><span class="n">restore</span><span class="o">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">r</span> <span class="n">nombre_del_archivo_de_backup</span>
+</pre></div>
+</div>
+<p>Por ejemplo:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">backup</span><span class="o">-</span><span class="n">restore</span><span class="o">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">r</span> <span class="mi">20190211</span><span class="n">_database</span><span class="o">.</span><span class="n">tgz</span>
+</pre></div>
+</div>
+<p>Un restore exitoso arroja una salida similar a la figura 12.</p>
+<blockquote>
+<div><img alt="_images/maintance_backup_2.png" src="_images/maintance_backup_2.png" />
+<p><em>Figure 12: restore</em></p>
+</div></blockquote>
 </div>
 <div class="section" id="actualizaciones">
 <h2>Actualizaciones<a class="headerlink" href="#actualizaciones" title="Permalink to this headline">¶</a></h2>
-<p>OML es forjada bajo el paradigma de lanzamientos de releases continuos, lo cual implica un flujo de actualizaciones constantes. Por ello es muy importante llevar a cabo de manera limpia las actualizaciones.</p>
-<p>A continuación se exponen los pasos a seguir para llevar a cabo una nueva actualización de la plataforma. Y como ya se puede sospechar, esta tarea también se realiza con el script “deploy.sh”.</p>
-<p>Las actualizaciones se anuncian por los canales de comunicaciones, oficiales del proyecto.</p>
-<p>Dependiendo el método de instalación que se haya seleccionado:</p>
-<p>Instalación Self-Hosted</p>
+<p>OMniLeads es forjado bajo un paradigma de releases continuos, lo cual implica un flujo de actualizaciones constantes.
+Por ello es muy importante llevar a cabo de manera limpia las actualizaciones.</p>
+<p>A continuación se exponen los pasos a seguir para llevar a cabo una nueva actualización de la plataforma. Esta tarea también se realiza
+con el script “deploy.sh”.</p>
+<p>Las actualizaciones se anuncian por los canales de comunicaciones oficiales del proyecto.
+Dependiendo el método de instalación que se haya seleccionado:</p>
+<p><strong>Instalación Self-Hosted</strong></p>
 <p>Acceder como root al host omnileads
-Posicionarse sobre el directorio donde reside el script “deploy.sh”
-cd ominicontacto/deploy/ansible</p>
-<p>Realizar un “git checkout” sobre la rama a actualizar
-git checkout release-X.X.X</p>
-<p>Donde X.X.X se corresponde con versión de OML (por ej: 1.1.1).</p>
-<p>A continuación se ejecuta el script con el parámetro -u (update). Esta ejecución tomará unos minutos e implica llevar a la plataforma OML a la versión previamente seleccionada en el git checkout.
-./deploy.sh -u -a</p>
-<p>Si todo fluye correctamente, al finalizar la ejecución de la tarea veremos una pantalla como muestra la figura X.</p>
-<p>Figura 18: Actualización exitosa</p>
-<p>Instalación desde workstation Linux remoto</p>
+Posicionarse sobre el directorio donde reside el script “deploy.sh”</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">ominicontacto</span><span class="o">/</span><span class="n">deploy</span><span class="o">/</span><span class="n">ansible</span>
+</pre></div>
+</div>
+<p>Asumiendo que estamos trabajando sobre los release estables (master)
+Se debe ejecutar un “git pull origin master” para traernos las actualizaciones del repositorio.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">pull</span> <span class="n">origin</span> <span class="n">master</span>
+</pre></div>
+</div>
+<p>A continuación se ejecuta el script con el parámetro -u (update). Esta ejecución tomará unos minutos e implica ejecutar todas las actualizaciones
+descargadas sobre nuestra instancia de OMniLeads.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">deploy</span><span class="o">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">u</span> <span class="o">-</span><span class="n">a</span>
+</pre></div>
+</div>
+<p>Si todo fluye correctamente, al finalizar la ejecución de la tarea veremos una pantalla como muestra la figura 13.</p>
+<img alt="_images/maintance_updates_ok.png" src="_images/maintance_updates_ok.png" />
+<p><em>Figure 14: updates OK</em></p>
+<p><strong>Instalación desde workstation Linux remoto</strong></p>
 <p>Se debe acceder al repositorio clonado en nuestra maquina workstation, para desde allí correr la actualización sobre el host Linux OMniLeads.</p>
-<p>cd PATH_repo_OML
-cd ominicontacto/deploy/ansible</p>
-<dl class="docutils">
-<dt>Para seleccionar el release a utilizar para actualizar, utilizamos git checkout</dt>
-<dd>git checkout release-X.X.X</dd>
-</dl>
-<p>Donde X.X.X se corresponde con versión de OML (por ej: 1.1.1).</p>
-<p>A continuación y como en cada ejecución del script “deploy.sh”, se debe repasar el archivo de inventory, velando por la coincidencia del parámetro hostname y dirección IP respecto al host donde corre OML.</p>
-<p>[omnileads-aio]
-hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #(this line is for node-host installation)</p>
-<p>Nota: tener en cuenta que para instalación remota, se debe utilizar la línea con el parámetro “ansible_ssh_port=22” dentro del contexto [omnileads-aio]</p>
-<p>Finalmente, la plataforma queda actualizada a la versión “release-X.X.X”.</p>
-<blockquote>
-<div>./deploy.sh -u -a</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">PATH_repo_OML</span>
+<span class="n">git</span> <span class="n">pull</span> <span class="n">origin</span> <span class="n">master</span>
+<span class="n">cd</span> <span class="n">ominicontacto</span><span class="o">/</span><span class="n">deploy</span><span class="o">/</span><span class="n">ansible</span>
+</pre></div>
+</div>
+<p>A continuación y como en cada ejecución del script “deploy.sh”, se debe repasar el archivo de inventory, velando por la coincidencia del
+parámetro hostname y dirección IP respecto al host donde corre OMniLeads y vamos a actualizar.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">omnileads</span><span class="o">-</span><span class="n">aio</span><span class="p">]</span>
+<span class="n">hostname</span> <span class="n">ansible_ssh_port</span><span class="o">=</span><span class="mi">22</span> <span class="n">ansible_user</span><span class="o">=</span><span class="n">root</span> <span class="n">ansible_host</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">X</span> <span class="c1">#(this line is for node-host installation)</span>
+</pre></div>
+</div>
+<p>Nota: se debe tener en cuenta que para instalación remota, se debe utilizar la línea con el parámetro “ansible_ssh_port=22” dentro de la
+sección [omnileads-aio]</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">deploy</span><span class="o">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">u</span> <span class="o">-</span><span class="n">a</span>
+</pre></div>
+</div>
+<p>Finalmente, la plataforma queda actualizada a la última versión estable “master”</p>
+<img alt="_images/maintance_updates_ok.png" src="_images/maintance_updates_ok.png" />
+<p><em>Figure 15: updates from ansible remote OK</em></p>
 </div>
 <div class="section" id="cambio-de-direccion-ip-de-la-plataforma">
 <h2>Cambio de dirección IP de la plataforma<a class="headerlink" href="#cambio-de-direccion-ip-de-la-plataforma" title="Permalink to this headline">¶</a></h2>
-<p>OMniLeads es un sistema complejo, con varios servicios orientados a las comunicaciones real-time corriendo en el Linux Host. Esto implica que un cambio de dirección IP del host conlleva cierta complejidad.</p>
-<p>Para llevar a cabo esta tarea, debemos ejecutar nuevamente el script “deploy.sh”, el mismo que fue utilizado para llevar a cabo la instalación de la plataforma.</p>
-<p>Debemos ingresar con el usuario root al sistema, cambiar la dirección IP a nivel sistema operativo y asegurarnos de que el host tomó la nueva IP.</p>
-<p>Luego continuamos con el cambio de IP sobre OML, para ellos debemos pararnos sobre el directorio donde se clonó el repositorio de OML, para luego acceder al directorio donde se ubica dicho script.</p>
-<p>Allí debemos editar nuevamente el archivo “inventory” y repasar el hostname para que coincida con el hostname del host y allí también debemos configurar la nueva dirección IP.</p>
-<p>[omnileads-aio]
-hostname ansible_connection=local ansible_user=root ansible_host=X.X.X.X #(this line is for self-hosted installation)</p>
-<p>Se guardan los cambios sobre el archivo y finalmente se ejecuta el script deploy.sh.</p>
-<p>cd ominicontacto/deploy/ansible
-./deploy.sh –changeip -a</p>
+<p>OMniLeads es un sistema complejo, con varios servicios orientados a las comunicaciones real-time corriendo en el Linux Host.
+Esto implica que un cambio de dirección IP del host conlleva cierta complejidad.</p>
+<p>Para llevar a cabo esta tarea, debemos ejecutar nuevamente el script “deploy.sh”, el mismo que fue utilizado para llevar a cabo la
+instalación de la plataforma.</p>
+<p>Debemos ingresar con el usuario root al sistema, cambiar la dirección IP a nivel <strong>sistema operativo</strong> y asegurarnos de que el host tomó la nueva IP.</p>
+<p>Luego continuamos con el cambio de IP sobre OML, para ellos debemos pararnos sobre el directorio donde se clonó el repositorio de OML,
+para luego acceder al directorio donde se ubica dicho script.</p>
+<p>Allí debemos editar nuevamente el archivo <em>inventory</em> y repasar el hostname para que coincida con el hostname del host y allí también debemos configurar la nueva dirección IP.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">omnileads</span><span class="o">-</span><span class="n">aio</span><span class="p">]</span>
+<span class="n">hostname</span> <span class="n">ansible_connection</span><span class="o">=</span><span class="n">local</span> <span class="n">ansible_user</span><span class="o">=</span><span class="n">root</span> <span class="n">ansible_host</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">X</span> <span class="c1">#(this line is for self-hosted installation)</span>
+</pre></div>
+</div>
+<p>Se guardan los cambios sobre el archivo y finalmente se ejecuta el script <em>deploy.sh</em>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">ominicontacto</span><span class="o">/</span><span class="n">deploy</span><span class="o">/</span><span class="n">ansible</span>
+<span class="o">./</span><span class="n">deploy</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">changeip</span> <span class="o">-</span><span class="n">a</span>
+</pre></div>
+</div>
 <p>Por último se ejecuta un reinicio de la plataforma. Luego podemos comenzar a utilizar OML en la nueva dirección IP.</p>
-<p>reboot</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">reboot</span>
+</pre></div>
+</div>
 </div>
 </div>
 
@@ -289,7 +347,7 @@ hostname ansible_connection=local ansible_user=root ansible_host=X.X.X.X #(this 
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="reports.html" class="btn btn-neutral float-left" title="Metricas, grabaciones y supervicion" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="output.html" class="btn btn-neutral float-left" title="Metricas, grabaciones y supervisión" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
