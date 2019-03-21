@@ -127,7 +127,6 @@ Campañas con discador predictivo
 
 
  campaigns_dialer.rst
- campaigns_dialer_recycle.rst
 
 
 Campañas Entrantes

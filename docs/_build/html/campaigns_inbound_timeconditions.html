@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Metricas, grabaciones y supervicion" href="reports.html" />
+    <link rel="next" title="Metricas, grabaciones y supervisión" href="output.html" />
     <link rel="prev" title="IVR - Interactive Voice Response" href="campaigns_inbound_ivr.html" /> 
 </head>
 
@@ -115,14 +115,16 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Enrutamiento condicionado por fechas y horas</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#plantillas-de-campana">Plantillas de Campaña</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#agentes-llamadas-y-calificaciones">Agentes, llamadas y calificaciones</a></li>
 </ul>
 </li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="reports.html">Metricas, grabaciones y supervicion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="maintance.html">OMniLeads Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
 </ul>
 
             
@@ -201,24 +203,26 @@ si una llamada debe ir hacia un destino u otro basandonos en dicha comparación.
 <li>el failover de una campaña entrante</li>
 <li>otro elemento similar</li>
 </ul>
+<img alt="_images/campaigns_in_tc_diagrama.png" src="_images/campaigns_in_tc_diagrama.png" />
+<p><em>Figure 1: Time conditions</em></p>
 <p>Para llevar a cabo este tipo de configuiraciones se disponen de dos módulos que trabajan juntos.</p>
 <ul class="simple">
 <li><strong>Grupos horarios</strong></li>
 </ul>
 <p>Este módulo permite agrupar patrones de fechas y horas así también como fechas y horarios puntuales dentro de un elemento interno de OMniLeasds, para luego puede ser invocado por los condicionales de tiempo, módulo complementario que permite realizar un enrutamiento comparando la fecha/hora de la llamada con la de un grupo de éstos.
 Para definir o editar grupos de horarios, se debe acceder al punto de menú <strong>Telefonía -&gt; Grupos horarios</strong>. Para añadir un nuevo grupo se debe presionar el botón “Agregar nuevo grupo”.</p>
-<p>La pantalla de grupos horarios se expone en la figura 1.</p>
+<p>La pantalla de grupos horarios se expone en la figura 2.</p>
 <img alt="_images/campaigns_in_tc1.png" src="_images/campaigns_in_tc1.png" />
-<p><em>Figure 1: Time groups</em></p>
+<p><em>Figure 2: Time groups</em></p>
 <p>Una vez generados los <em>Grupos de tiempos</em> podemos invocarlos desde el módulo complementario <em>Condicionales de tiempos</em></p>
 <ul class="simple">
 <li><strong>Validaciones de tiempo</strong></li>
 </ul>
 <p>Este módulo permite comparar la fecha y hora en el momento de procesar una llamada, con un grupo horario asignado como patrón de comparación. Luego en base a la coincidencia o no con alguna franja de fecha/hora del grupo, la llamada se envía hacia el destino positivo o negativo de la comparación.</p>
 <p>Para generar un elemento Condicional de tiempo, se debe acceder a <strong>Telephony -&gt; Time conditions</strong></p>
-<p>La pantalla de configuración es similar a la figura 2.</p>
+<p>La pantalla de configuración es similar a la figura 3.</p>
 <img alt="_images/campaigns_in_tc2.png" src="_images/campaigns_in_tc2.png" />
-<p><em>Figure 2: Time conditions</em></p>
+<p><em>Figure 3: Time conditions</em></p>
 <p>Finalmente tenemos disponible este elemento de enrutamiento para ser utilizado por ejemple como destino de una ruta entrante.</p>
 </div>
 
@@ -230,7 +234,7 @@ Para definir o editar grupos de horarios, se debe acceder al punto de menú <str
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="reports.html" class="btn btn-neutral float-right" title="Metricas, grabaciones y supervicion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="output.html" class="btn btn-neutral float-right" title="Metricas, grabaciones y supervisión" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="campaigns_inbound_ivr.html" class="btn btn-neutral float-left" title="IVR - Interactive Voice Response" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

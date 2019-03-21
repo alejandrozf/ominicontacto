@@ -18,7 +18,8 @@ de las comunicaciones entre otras funcionalidades.
 OMniLeads cuenta con su propio engine e interfaz de configuración de funciones de telefonía, permitiendo adminsitrar múltiples troncales SIP y su enrutamiento de llamadas salientes de acuerdo
 a reglas/patrones de marcado así como también enrutamiento de llamadas entrantes con la posibilidad de utilizar IVRs y/o Condicionales de tiempo a la hora de encaminar una numeración *DID* hacia una campaña entrante.
 
-Por si quedan dudas: **OMniLeads NO es un módulo de "call center" que añade reportería y  supervisión a un sistema PBX. OMniLeads fue concebido desde cero, como una plataforma orientada y optimizada para el manejo de campañas telefónicas en el marco del Contact Center**
+Por si quedan dudas: **OMniLeads NO es un módulo de "call center" que añade reportería y  supervisión a un sistema PBX.
+OMniLeads fue concebido desde cero, como una plataforma Standalone orientada y optimizada para el manejo de campañas telefónicas en el marco del Contact Center**
 
 
 .. image:: images/what_is.png
@@ -125,9 +126,8 @@ Para profundizar al respecto se recomienda leer el resto del capítulo.
 
 
 ********
-Campañas
+CAMPAÑAS
 ********
-
 Todo procesamiento de comunicaciones entre "el exterior" y un agente de OMniLeads es encapsulado sobre una campaña. En este capítulo se aborda todo lo inherente a la gestión de campañas Entrantes y Salientes (manuales, preview y dialer)
 
 En el video se expone una introducción conceptual a las campañas en OMniLeads, ejemplificando además paso a paso la creación de:
@@ -150,20 +150,22 @@ En el resto del capítulo cubrimos cada tipo de campaña.
    campaigns.rst
 
 
-****************************************************
-Métricas, reportes, grabaciones y supervisión online
-****************************************************
-
-
+*********************************************
+METRICAS, REPORTES, GRABACIONES Y SUPERVISION
+*********************************************
+Dentro de este capítulo se aborda todo lo inherente a la extracción de informarción que arroja el sistema respecto a estadísticas,
+métricas, reportes, grabaciones, supervisión en tiempo real, etc.
 
   .. toctree::
    :maxdepth: 2
 
    output.rst
 
-
-Maintenance
-***********
+*******************************
+GESTIONES DEL ADMINISTRADOR IT
+*******************************
+En esta sección se cubren algunas tareas inherentes al administrador técnico de OMniLeads. Cuestiones como la configuración de bajo nivel
+del módulo de discador predictivo, gestión de actualizaciones, backup & restore y cambio de dirección IP de la plataforma.
 
   .. toctree::
    :maxdepth: 2

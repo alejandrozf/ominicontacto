@@ -1,5 +1,5 @@
-Plataforma de Contact Center integrado a un PBX basado en SIP
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OML como Contact Center integrado a un PBX basado en SIP
+*********************************************************
 
 
 OMniLeads resulta ideal para las compañías demandantes de funcionalidades típicas de Contact Center, herramientas para medir, monitorear y gestionar un caudal comunicaciones más intensivo y con personal asignado 100% a la atención / generación de comunicaciones.
@@ -16,8 +16,8 @@ Este esquema plantea romper con el paradigma tradicional de adquisición de un s
 .. image:: images/oml_and_pbx.png
         :align: center
 
-Compañia de servicios de Customer Contact
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OML en una Compañia de servicios de Customer Contact
+*****************************************************
 
 En este escenario, OMniLeads puede trabajar como núcleo de comunicaciones de un Contact Center con agentes entre las decenas y centenas.
 El acceso a la PSTN es a través de SIP Trunks con carriers de telefonía o bien a través de SBC o GWs. En este escenario OMniLeads puede
@@ -30,8 +30,8 @@ conectados trabajando en simultánea.
         :align: center
 
 
-Carriers ó Proveedores de Cloud PBX
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OML para Carriers ó Proveedores de Cloud PBX
+********************************************
 
 Por últimp, este perfil de usuarios es muy viable a partir de la ventaja otorgada por WebRTC como tecnología base de OMniLeads, en este caso
 la performance del audio y video de los agentes es optimizada a partir de contar con Opus y VP8 como codecs de media por un lado y además
@@ -42,5 +42,5 @@ A parir del hecho de utilizar Kamailio como proxy y autenticador de agentes, la 
 
 
 
-
-IMAGEN
+.. image:: images/what_is_webrtc_oml.png
+        :align: center

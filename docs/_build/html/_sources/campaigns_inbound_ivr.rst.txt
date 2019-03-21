@@ -5,6 +5,11 @@ IVR - Interactive Voice Response
 Los IVRs hacen posible que la persona que realiza una llamada entrante pueda seleccionar un destino apropiado en base a informar los mismos a través de una grabación y aguardando la interacción a través de los tonos de teclado DTMF.
 Con esta herramienta un adminitrador puede enrutar llamadas entrantes hacia un IVR y configurar el mismo para que diferentes DTMFs se conmuten hacia diferetentes campañas entrantes, IVRs o Condicionales de fecha y hora.
 
+.. image:: images/campaigns_in_ivr_diagrama.png
+
+*Figure 1: IVR - Interactive Voice Response*
+
+
 Para generar un nuevo IVR se necesita como mínimo un audio a reproducir (disponible en la biblioteca de audios) y además un destino por defecto hacia a donde enviar la llamadas que pasen por nuestro IVR.
 
 Para añadir un IVR se debe acceder al punto de menú *Telephony -> IVR*, seleccionar Agregar IVR.
@@ -13,7 +18,7 @@ Se despliega una pantalla similar a la Figura 1.
 
 .. image:: images/campaigns_in_ivr.png
 
-*Figure 1: IVR parameters*
+*Figure 2: IVR parameters*
 
 
 El formulario se puede dividir en tres secciones. En la primera contiene los campos:
