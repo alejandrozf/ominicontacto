@@ -559,6 +559,12 @@ class SessionData {
         }
     }
 
+    get transfer_agent_name() {
+        if (this.invite_request.headers.Omlfromagent)
+            return this.invite_request.headers.Omlfromagent[0].raw;
+        return '';
+    }
+
     get is_internal_call () {
         return this.originator == 'local' &&
                this.local_call !== undefined &&
