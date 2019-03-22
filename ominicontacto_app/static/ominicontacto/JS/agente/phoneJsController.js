@@ -340,6 +340,7 @@ class PhoneJSController {
 
         this.phone.eventsCallbacks.onTransferReceipt.add(function(session_data) {
             self.phone_fsm.receiveCall();
+            $("#callerid").html(session_data.transfer_agent_name);
             $("#extraInfo").html(session_data.transfer_type_str);
             $("#modalReceiveCalls").modal('show');
         });
