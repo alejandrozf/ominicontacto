@@ -18,7 +18,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
 {% load staticfiles %}
-{% load compress %}
 {% load i18n %}
 
 <!DOCTYPE html>
@@ -28,44 +27,40 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <!-- Stylesheets -->
     <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/bootstrap-datetimepicker.min.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
-    {% compress js %}
-    <!-- Scripts -->
-    <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
-    <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/moment.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/bootstrap-datetimepicker.min.js' %}"></script>
-    {% endcompress %}
-
-    <!-- TODO: REMOVER - FIX HASTA CAMBIAR BS3 por BS4 -->
-    <style type="text/css">
-      .fade {
-        opacity: 1;
-      }
-    </style>
 
 </head>
 <body>
-<script>
-    $(document).ready(function() {
-            $('.class-fecha').datetimepicker({format: 'DD/MM/YYYY'});
-    });
-</script>
+
 {% include 'messages.html' %}
-<form action="" enctype="multipart/form-data" method="post">
-    {% csrf_token %}
-    <div style="position: relative;">
-        {{form.as_table}}
-        {{venta_form.as_table}}
+
+<div class="row">
+    <div class="col-md-9">
+        <table class="table table-striped">
+            <tr>
+                <td><strong>{% trans 'Teléfono' %}</strong></td>
+                <td>{{contacto.telefono}}</td>
+            </tr>
+        {% for datos in mas_datos %}
+            <tr>
+                <td><strong>{{datos.0|title}}</strong></td>
+                <td>{{datos.1}}</td>
+            </tr>
+        {% endfor %}
+            <tr>
+                <td colspan="2"><strong>{% trans 'Formulario recientemente cargado' %}</strong></td>
+            </tr>
+        {% for key, values in metadata.items %}
+            <tr>
+                <td><strong>{{key|title}}</strong></td>
+                <td>{{values}}</td>
+            </tr>
+        {% endfor %}
+        </table>
     </div>
-    <hr>
-    <button type="submit"  class="btn btn-primary">
-        {% trans 'Guardar'  %}
-    </button>
-</form>
+</div>
 </body>
 </html>

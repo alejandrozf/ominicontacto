@@ -33,14 +33,14 @@ from django.utils.encoding import force_text
 from django.utils.timezone import localtime
 from django.utils.translation import ugettext as _
 
-from ominicontacto_app.models import MetadataCliente
+from ominicontacto_app.models import RespuestaFormularioGestion
 from ominicontacto_app.utiles import crear_archivo_en_media_root
 
 
 logger = logging.getLogger(__name__)
 
 
-class ArchivoDeReporteCsv(object):
+class ArchivoDeReporteRespuestaFormularioCsv(object):
     def __init__(self, campana):
         self._campana = campana
         self.nombre_del_directorio = 'reporte_campana'
@@ -99,27 +99,27 @@ class ArchivoDeReporteCsv(object):
                                       for item in encabezado]
             csvwiter.writerow(lista_encabezados_utf8)
 
-            # Iteramos cada uno de las metadata de la gestion del formulario
-            metadata_qs, calificaciones_dict = MetadataCliente.obtener_metadata_nombre_calificacion(
-                campana.id)
-            for metadata in metadata_qs:
+            # Iteramos cada una de las respuestas de la gestion del formulario
+            respuestas = RespuestaFormularioGestion.objects.filter(
+                calificacion__opcion_calificacion__campana=campana)
+            for respuesta in respuestas:
                 lista_opciones = []
 
                 # --- Buscamos datos
-                metadata_fecha_local = localtime(metadata.fecha)
+                metadata_fecha_local = localtime(respuesta.fecha)
                 lista_opciones.append(metadata_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
-                lista_opciones.append(metadata.agente)
-                lista_opciones.append(metadata.contacto.telefono)
-
-                datos = json.loads(metadata.contacto.datos)
+                lista_opciones.append(respuesta.calificacion.agente)
+                lista_opciones.append(respuesta.calificacion.contacto.telefono)
+                contacto = respuesta.calificacion.contacto
+                datos = json.loads(contacto.datos)
                 for dato in datos:
                     lista_opciones.append(dato)
-                if metadata.contacto.es_originario:
-                    lista_opciones.append(metadata.contacto.bd_contacto)
+                if contacto.es_originario:
+                    lista_opciones.append(contacto.bd_contacto)
                 else:
                     lista_opciones.append(_("Fuera de base"))
-                lista_opciones.append(calificaciones_dict[metadata.contacto.id])
-                datos = json.loads(metadata.metadata)
+                lista_opciones.append(respuesta.calificacion.opcion_calificacion.nombre)
+                datos = json.loads(respuesta.metadata)
                 for campo in campos:
                     lista_opciones.append(datos[campo.nombre_campo])
 
@@ -133,12 +133,12 @@ class ArchivoDeReporteCsv(object):
         return os.path.exists(self.ruta)
 
 
-class ReporteMetadataClienteService(object):
+class ReporteRespuestaFormularioGestionService(object):
 
     def crea_reporte_csv(self, campana):
         # assert campana.estado == Campana.ESTADO_ACTIVA
 
-        archivo_de_reporte = ArchivoDeReporteCsv(campana)
+        archivo_de_reporte = ArchivoDeReporteRespuestaFormularioCsv(campana)
 
         archivo_de_reporte.crear_archivo_en_directorio()
 
@@ -149,7 +149,7 @@ class ReporteMetadataClienteService(object):
     def obtener_url_reporte_csv_descargar(self, campana):
         # assert campana.estado == Campana.ESTADO_DEPURADA
 
-        archivo_de_reporte = ArchivoDeReporteCsv(campana)
+        archivo_de_reporte = ArchivoDeReporteRespuestaFormularioCsv(campana)
         if archivo_de_reporte.ya_existe():
             return archivo_de_reporte.url_descarga
 

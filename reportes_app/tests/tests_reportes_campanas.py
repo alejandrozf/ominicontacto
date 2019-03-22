@@ -40,7 +40,8 @@ from ominicontacto_app.services.reporte_campana_calificacion import ReporteCampa
 from ominicontacto_app.services.reporte_campana_pdf import ReporteCampanaPDFService
 from reportes_app.reportes.reporte_llamados_contactados_csv import (
     ReporteCampanaContactadosCSV, ArchivoDeReporteCsv)
-from ominicontacto_app.services.reporte_metadata_cliente import ReporteMetadataClienteService
+from ominicontacto_app.services.reporte_respuestas_formulario import (
+    ReporteRespuestaFormularioGestionService)
 from ominicontacto_app.tests.factories import (AgenteProfileFactory, ActividadAgenteLogFactory,
                                                CalificacionClienteFactory, ContactoFactory,
                                                CampanaFactory, NombreCalificacionFactory,
@@ -141,7 +142,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
         self.client.get(url, follow=True)
         self.assertTrue(crea_reporte_csv.called)
 
-    @patch.object(ReporteMetadataClienteService, 'crea_reporte_csv')
+    @patch.object(ReporteRespuestaFormularioGestionService, 'crea_reporte_csv')
     def test_reporte_calificaciones_campana_exporta_archivo_csv_gestionados(self, crea_reporte_csv):
         url = reverse('campana_reporte_calificacion', args=[self.campana_activa.pk])
         self.client.get(url, follow=True)

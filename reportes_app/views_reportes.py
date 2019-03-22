@@ -36,7 +36,8 @@ from ominicontacto_app.services.reporte_agente import EstadisticasAgenteService
 from ominicontacto_app.services.reporte_campana_calificacion import ReporteCampanaService
 from ominicontacto_app.services.reporte_campana_pdf import ReporteCampanaPDFService
 from reportes_app.reportes.reporte_llamados_contactados_csv import ReporteCampanaContactadosCSV
-from ominicontacto_app.services.reporte_metadata_cliente import ReporteMetadataClienteService
+from ominicontacto_app.services.reporte_respuestas_formulario import (
+    ReporteRespuestaFormularioGestionService)
 from ominicontacto_app.utiles import convert_fecha_datetime, fecha_hora_local
 
 
@@ -68,7 +69,7 @@ class CampanaReporteCalificacionListView(ListView):
             **kwargs)
 
         service = ReporteCampanaService()
-        service_formulario = ReporteMetadataClienteService()
+        service_formulario = ReporteRespuestaFormularioGestionService()
 
         service.crea_reporte_csv(self.campana)
         service_formulario.crea_reporte_csv(self.campana)
@@ -110,7 +111,7 @@ class ExportaReporteFormularioVentaView(View):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        service = ReporteMetadataClienteService()
+        service = ReporteRespuestaFormularioGestionService()
         url = service.obtener_url_reporte_csv_descargar(self.object)
 
         return redirect(url)

@@ -36,7 +36,8 @@ from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory, Use
                                                SitioExternoFactory, ParametrosCrmFactory,
                                                CalificacionClienteFactory,
                                                NombreCalificacionFactory,
-                                               OpcionCalificacionFactory, MetadataClienteFactory,
+                                               OpcionCalificacionFactory,
+                                               RespuestaFormularioGestionFactory,
                                                AgendaContactoFactory)
 
 from ominicontacto_app.models import (AgendaContacto, NombreCalificacion, Campana,
@@ -133,7 +134,7 @@ class CalificacionTests(OMLBaseTest):
         post_data = self._obtener_post_data_calificacion_cliente()
         post_data['opcion_calificacion'] = self.opcion_calificacion_gestion.pk
         response = self.client.post(url, post_data, follow=True)
-        self.assertTemplateUsed(response, 'formulario/formulario_create.html')
+        self.assertTemplateUsed(response, 'formulario/respuesta_formulario_create.html')
 
     @patch('requests.post')
     def test_calificacion_cliente_modificacion_redirecciona_formulario_gestion(self, post):
@@ -143,17 +144,16 @@ class CalificacionTests(OMLBaseTest):
         post_data = self._obtener_post_data_calificacion_cliente()
         post_data['opcion_calificacion'] = self.opcion_calificacion_gestion.pk
         response = self.client.post(url, post_data, follow=True)
-        self.assertTemplateUsed(response, 'formulario/formulario_create.html')
+        self.assertTemplateUsed(response, 'formulario/respuesta_formulario_create.html')
 
     @patch('requests.post')
     def test_calificacion_cliente_modificacion_gestion_por_no_accion(self, post):
         contacto_califica = ContactoFactory.create()
         self.campana.bd_contacto.contactos.add(contacto_califica)
-        CalificacionClienteFactory(
+        calificacion = CalificacionClienteFactory(
             opcion_calificacion=self.opcion_calificacion_gestion, agente=self.agente_profile,
             contacto=contacto_califica)
-        MetadataClienteFactory(
-            agente=self.agente_profile, contacto=contacto_califica, campana=self.campana)
+        RespuestaFormularioGestionFactory(calificacion=calificacion)
         # Se modifica la calificacion por una de no accion
         url_calificacion = reverse('calificacion_formulario_update_or_create',
                                    kwargs={'pk_campana': self.campana.pk,
@@ -273,8 +273,8 @@ class CalificacionTests(OMLBaseTest):
         telefono = str(self.contacto.telefono) + '11'
         post_data = {
             'opcion_calificacion': self.opcion_calificacion_gestion.pk,
-            'telefono': telefono,
-            'nombre': 'Nuevo Contacto'
+            'contacto_form-telefono': telefono,
+            'contacto_form-nombre': 'Nuevo Contacto'
         }
 
         url = reverse('calificar_por_telefono',
