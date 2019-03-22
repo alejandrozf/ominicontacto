@@ -38,7 +38,7 @@
           settings=ominicontacto.settings
           virtualenv={{ install_prefix }}virtualenv
   with_items:
-          - migrate
+          - migrate --noinput
           - populate_history
           - compilemessages
   environment:
