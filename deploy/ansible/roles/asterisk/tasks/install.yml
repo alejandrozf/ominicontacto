@@ -22,7 +22,7 @@
   file: state=directory path={{ install_prefix }} owner={{ usuario }} group={{ usuario }}
 
 # Se sestean variables de nombre de los targz que se descargan
-- set_fact: asterisk_tar=asterisk-13.22.0.tar.gz
+- set_fact: asterisk_tar=asterisk-{{ asterisk_version }}.tar.gz
 - set_fact: jansson_tar=jansson-2.7.tar.gz
 
 # Se descargan los paquetes
@@ -76,35 +76,45 @@
   become_method: sudo
 
 # Pasos para instalar asterisk  se comienza con el install de prerequisitos y luego con el configure
-- name: Asterisk installation (centos)
-  shell: "{{ item }} chdir=/usr/src/asterisk-13.22.0"
+- name: Installation of prerequisites packages (centos)
+  shell: "{{ item }} chdir=/usr/src/asterisk-{{ asterisk_version }}"
   with_items:
           - contrib/scripts/install_prereq install
-          - ./configure CC="gcc -O3" CFLAGS="-O3" --libdir={{ install_prefix }}asterisk/lib64 --prefix={{ install_prefix }}asterisk --with-pjproject-bundled
   when: ansible_os_family == "RedHat"
 
 # Esta task es necesaria porque en debian hay un paquete que pregunta cual es el countrycode telefonico del pais donde va a estar asterisk instalado
 # El debconf sirve para confirugarle predeterminadamente la opcion de 59 (country code argentino) y asi no pida el input
-- name: Set country code for libvp1 package
+- name: Set country code for libvp0 package
   debconf: name='libvpb0' question='libvpb1/countrycode' value={{ country_code }} vtype='string'
   when: ansible_os_family == "Debian"
 
-- name: Asterisk installation (debian)
-  shell: "{{ item }} chdir=/usr/src/asterisk-13.22.0"
-  with_items:
-          - echo 'y' | contrib/scripts/install_prereq install
-          - ./configure --libdir={{ install_prefix }}asterisk/lib64 --prefix={{ install_prefix }}asterisk
+# Toca pasarle el echo 'y' a este script porque pide confirmacion de paquetes en debian
+- name: Installation of prerequisites packages (debian)
+  shell: "echo 'y' | contrib/scripts/install_prereq install chdir=/usr/src/asterisk-{{ asterisk_version }}"
   when: ansible_os_family == "Debian"
 
-# Se sigue con el la ejecucion de este script para que permita mp3
-- shell: "contrib/scripts/get_mp3_source.sh chdir=/usr/src/asterisk-13.22.0"
+# Se sigue con el la ejecucion del configure, esto para el PE
+- name: Configure of asterisk (PE)
+  shell: "./configure --libdir={{ install_prefix }}asterisk/lib64 --prefix={{ install_prefix }}asterisk --with-pjproject-bundled chdir=/usr/src/asterisk-{{ asterisk_version }}"
+  when: is_docker.stdout != "docker"
+
+# Se sigue con el la ejecucion del configure, esto para el DE
+- name: Configure of asterisk (DE)
+  shell: "./configure {{ cflags }} --libdir={{ install_prefix }}asterisk/lib64 --prefix={{ install_prefix }}asterisk --with-pjproject-bundled chdir=/usr/src/asterisk-{{ asterisk_version }}"
+  when: is_docker.stdout == "docker"
+
+# Se obtienen las fuentes mp3
+- shell: "contrib/scripts/get_mp3_source.sh chdir=/usr/src/asterisk-{{ asterisk_version }}"
   register: command_result
+  failed_when:
+    - "'to already be present' not in command_result.stdout"
+    - command_result.rc != 0
   become: yes
   become_method: sudo
-  ignore_errors: yes
 
 # Se hace la instalacion de asterisk
-- shell: "{{ item }} chdir=/usr/src/asterisk-13.22.0"
+- name: Make and make install of Asterisk
+  shell: "{{ item }} chdir=/usr/src/asterisk-{{ asterisk_version }}"
   with_items:
           - make menuselect.makeopts
           - menuselect/menuselect --enable format_mp3 menuselect.makeopts
@@ -117,16 +127,10 @@
           - menuselect/menuselect --enable CORE-SOUNDS-SV-WAV menuselect.makeopts
           - menuselect/menuselect --enable EXTRA-SOUNDS-EN-WAV menuselect.makeopts
           - menuselect/menuselect --enable EXTRA-SOUNDS-FR-WAV menuselect.makeopts
-
-- shell: "menuselect/menuselect --enable DONT_OPTIMIZE menuselect.makeopts chdir=/usr/src/asterisk-13.22.0"
-  when: desarrollo == 1
-
-- shell: "{{ item }} chdir=/usr/src/asterisk-13.22.0"
-  with_items:
-    - make
-    - make install
-    - make config
-    - ldconfig
+          - make -j 10
+          - make install
+          - make config
+          - ldconfig
 
 # Se mueven los directorios de jansson e iksemel a /opt/omnileads/asterisk -- FIX ME -- hay mejor forma de hacer mv?
 - name: Organizing the asterisk directories
@@ -136,5 +140,5 @@
 - name: Erase the downloaded directories of asterisk
   file: path=/usr/src/{{ item }} state=absent
   with_items:
-    - asterisk-13.22.0
+    - asterisk-{{ asterisk_version }}
     - jansson-2.7

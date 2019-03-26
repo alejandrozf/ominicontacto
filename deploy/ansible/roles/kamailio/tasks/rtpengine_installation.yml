@@ -22,26 +22,23 @@
   when: ansible_os_family == "RedHat"
 
 # Descargo rtpengine desde la fuente, me descarga un .tar.gz
-- name: Download of RTPengine-mr5.5.3.1
+- name: Download of RTPengine-{{ rtpengine_version }}
   get_url: url={{ rtpengine_repo }} dest=/usr/src/
   register: destino
   become: true
   become_method: sudo
-  when: rtpengine_installed|failed
 
 # Untareo el archivo recien descargado
 - name: Untar the file
   unarchive: "src=/usr/src/{{ rtpengine_name }}.tar.gz dest=/usr/src/ remote_src=yes"
   become: true
   become_method: sudo
-  when: rtpengine_installed|failed
 
 # Borro el tar
 - name: Delete tar file
   file: "dest=/usr/src/{{ rtpengine_name }}.tar.gz state=absent"
   become: true
   become_method: sudo
-  when: rtpengine_installed|failed
 
 ###### Begin install in centos #####
 # Comienzo a instalar para  centos, toca asi porque los procesos son diferentes
@@ -52,14 +49,14 @@
   rpm_key: state=present key=http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro validate_certs=no
   become: true
   become_method: sudo
-  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat"
 
 # Instalo el repositorio
 - name: Install of ffmpeg repository (centos)
   yum: name=http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm state=present
   become: true
   become_method: sudo
-  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat"
 
 # Instalo los paquetes que se necesitan
 - name: Install of ffmpeg (centos)
@@ -69,28 +66,28 @@
       - ffmpeg-devel
   become: true
   become_method: sudo
-  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat"
 
 # Make de rtpengine en /usr/src/rtpengine/daemon
 - name: Installation of RTPengine (centos)
   shell: "make chdir=/usr/src/{{ rtpengine_name }}/daemon"
   become: true
   become_method: sudo
-  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat"
 
 # Aca hago la modificacion del makefile del modulo de kernel, uso la variable que setee en el set_fact
 - name: Modify of the RTPengine kernel module to let it know where is our kernel (centos)
   lineinfile: "path=/usr/src/{{ rtpengine_name }}/kernel-module/Makefile regexp=\"^KSRC\" line=\"KSRC   ?= {{ kernel }}\""
   become: true
   become_method: sudo
-  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat"
 
 # Se hace el make del modulo de kernel
 - name: Installation of RTPengine kernel module (centos)
   shell: "make chdir=/usr/src/{{ rtpengine_name }}/kernel-module"
   become: true
   become_method: sudo
-  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat"
 
 # Se inserta el modulo creado
 - name: Insert the kernel module created for RTPengine (centos)
@@ -101,21 +98,21 @@
     - "command_result.rc != 0"
   become: true
   become_method: sudo
-  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat"
 
 # Se hace make de una cosa llamada iptables-extension
 - name: Installation of IPtables extensions (centos)
   shell: "make chdir=/usr/src/{{ rtpengine_name }}/iptables-extension"
   become: true
   become_method: sudo
-  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat"
 
 # El so creado se mete a xtables no se bien para que pero supongo que para cargar las reglas de iptables para rtpengine
 - name: Copy of iptables library to lib64/xtables (centos)
   copy: src=/usr/src/{{ rtpengine_name }}/iptables-extension/libxt_RTPENGINE.so dest=/lib64/xtables remote_src=yes
   become: true
   become_method: sudo
-  when: rtpengine_installed|failed and ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat"
 
 ####### End of install in centos #########
 
@@ -140,13 +137,13 @@
 - name: Install rtpengine debs (debian)
   apt: deb=/usr/src/{{ item }}
   with_items:
-    - ngcp-rtpengine-daemon_5.5.3.1+0~mr5.5.3.1_amd64.deb
-    - ngcp-rtpengine-iptables_5.5.3.1+0~mr5.5.3.1_amd64.deb
-    - ngcp-rtpengine-dbg_5.5.3.1+0~mr5.5.3.1_amd64.deb
-    - ngcp-rtpengine-utils_5.5.3.1+0~mr5.5.3.1_all.deb
-    - ngcp-rtpengine-kernel-dkms_5.5.3.1+0~mr5.5.3.1_all.deb
-    - ngcp-rtpengine-recording-daemon_5.5.3.1+0~mr5.5.3.1_amd64.deb
-    - ngcp-rtpengine_5.5.3.1+0~mr5.5.3.1_all.deb
+    - ngcp-rtpengine-daemon_{{ rtpengine_version }}+0~mr{{ rtpengine_version }}_amd64.deb
+    - ngcp-rtpengine-iptables_{{ rtpengine_version }}+0~mr{{ rtpengine_version }}_amd64.deb
+    - ngcp-rtpengine-dbg_{{ rtpengine_version }}+0~mr{{ rtpengine_version }}_amd64.deb
+    - ngcp-rtpengine-utils_{{ rtpengine_version }}+0~mr{{ rtpengine_version }}_all.deb
+    - ngcp-rtpengine-kernel-dkms_{{ rtpengine_version }}+0~mr{{ rtpengine_version }}_all.deb
+    - ngcp-rtpengine-recording-daemon_{{ rtpengine_version }}+0~mr{{ rtpengine_version }}_amd64.deb
+    - ngcp-rtpengine_{{ rtpengine_version }}+0~mr{{ rtpengine_version }}_all.deb
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"

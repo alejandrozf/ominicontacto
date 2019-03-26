@@ -63,7 +63,6 @@
   template: src=templates/omnileads.service dest=/etc/systemd/system/omnileads.service owner=root group=root mode=650
   become: true
   become_method: sudo
-  tags: postinstall
 
 # Se inicia y habilita el servicio
 - name: Start the omnileads-daemon service

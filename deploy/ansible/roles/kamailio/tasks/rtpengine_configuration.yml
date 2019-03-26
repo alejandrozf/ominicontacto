@@ -59,7 +59,7 @@
 
 # Inicio y habilito el servicio
 - name: Start and enable rtpengine service
-  service: name=rtpengine state=restarted enabled=yes
+  systemd: name=rtpengine state=restarted enabled=yes daemon_reload=yes
   become: true
   become_method: sudo
   tags: ['changeip']

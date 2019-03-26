@@ -1,0 +1,16 @@
+FROM ubuntu:bionic
+ENV VERSION=develop
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get upgrade -y && apt-get install -y locales && rm -rf /var/lib/apt/lists/* \
+    && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+ENV LANG en_US.utf8
+RUN apt-get update
+RUN apt-get install git python-pip sudo python-minimal vim net-tools dnsutils inetutils-ping openssh-server rsyslog tzdata -y
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config && service ssh restart
+COPY systemctl.py.j2 /bin/systemctl
+RUN chmod +x /bin/systemctl
+RUN echo "root:toor123" | chpasswd
+
+EXPOSE 443/tcp
+
+CMD ["/bin/systemctl"]

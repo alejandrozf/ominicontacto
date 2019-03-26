@@ -48,6 +48,11 @@
 # Se crea el archivo de systemd para el servicio kamailio
 - name: Creation of kamailio.service file in systemd
   template: src=templates/systemd/kamailio.service.j2 dest=/etc/systemd/system/kamailio.service owner=root group=root mode=650
+  when: is_docker.stdout != "docker"
+
+- name: Creation of kamailio.service file in systemd (docker container)
+  template: src=templates/init.d/kamailio dest=/etc/init.d/kamailio owner=root group=root mode=650
+  when: is_docker.stdout == "docker"
 
 - name: Change owner of kamailio directory
   file: state=directory path={{ kamailio_location }} owner={{ usuario }} group={{ usuario }} recurse=yes
@@ -57,14 +62,13 @@
 # Se crea el archivo kamailio-local, Este archivo contiene las variables que usa el kamailio.cfg
 - name: Creation of kamailio-local.cfg file
   template: src=templates/etc/kamailio-local.cfg dest={{ kamailio_location }}/etc/kamailio/ owner={{ usuario }} group={{ usuario }}
-  tags: ['postinstall', 'changeip']
+  tags: changeip
   become: true
   become_method: sudo
 
 # Se borra el kamailio.cfg que se crea por default a  la  hora de instalar
 - name: Erase of default kamailio.cfg file
   shell: rm -rf {{ kamailio_location }}/etc/kamailio/kamailio.cfg
-  tags: postinstall
 
 # Se linkea el kamailio.cfg de omnileads a su ubicacion /etc/kamailio
 - name: Link kamailio.cfg repo file to {{ kamailio_location }} (aio)
@@ -72,12 +76,11 @@
   become: true
   become_method: sudo
   when: cluster == 0
-  tags: postinstall
 
 # Se copia si es un cluster
 - name: Copy of the kamailio.cfg file (cluster)
   copy: src=/var/tmp/ominicontacto-build/ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg dest={{ kamailio_location }}/etc/kamailio/ owner={{ usuario }} group={{ usuario }}
-  when: cluster != 0
+  when: cluster != 0 and is_docker.stdout != "docker"
   tags: postinstall
 
 # Linkeamos dos binarios de kamailio que son necesarios para el buen funcionamiento del proceso de autenticacion
@@ -87,22 +90,37 @@
 - name: Link kamctl binarie to /usr/sbin
   file: state=link src={{ kamailio_location }}/sbin/kamctl dest=/usr/sbin/kamctl mode=755 force=true
 
-# Restarteo kamailio
-- name: Restart kamailio service
-  systemd: name=kamailio state=restarted enabled=yes daemon_reload=yes
-  tags: ['postinstall', 'changeip']
-  become: true
-  become_method: sudo
+# Habilitamos y empezamos redis. Redis es necesario para rtpengine y para django-defender
+- name: Modify bind port for redis
+  lineinfile: path=/etc/redis/redis.conf regexp=^bind line="bind 127.0.0.1" state=present
+  when: is_docker.stdout == "docker"
 
 # Habilitamos y empezamos redis. Redis es necesario para rtpengine y para django-defender
 - name: Start and enable redis service
   service: name=redis state=restarted enabled=yes
   become: yes
   become_method: sudo
+  when: is_docker.stdout != "docker"
+
+# Habilitamos y empezamos redis. Redis es necesario para rtpengine y para django-defender
+- name: Start and enable redis service (container)
+  service: name=redis-server state=restarted enabled=yes
+  become: yes
+  become_method: sudo
+  when: is_docker.stdout == "docker"
+
+# Restarteo kamailio
+- name: Restart kamailio service
+  systemd: name=kamailio state=restarted enabled=yes daemon_reload=yes
+  tags: ['changeip']
+  become: true
+  become_method: sudo
+  when: is_docker.stdout != "docker"
 
 # Se restartea rsyslog se habilita kamailio y se hace el daemon-reload.
 - name: Restart de rsyslog
   service: name=rsyslog.service state=restarted enabled=yes
-  tags: postinstall
+  tags: changeip
+  when: is_docker.stdout != "docker"
   become: true
   become_method: sudo

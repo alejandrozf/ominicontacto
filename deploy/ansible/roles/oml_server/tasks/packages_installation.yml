@@ -54,37 +54,34 @@
 - name: Install the app and services packages (centos)
   yum: "name={{ item }} state=present"
   with_items:
-      - python-psycopg2.x86_64
-      - python2-psycogreen.noarch
-      - python
-      - python-virtualenv
-      - python-devel
-      - nginx
-      - nginx-all-modules
-      - libjpeg-turbo-devel
-      - libffi-devel
-      - libffi
-      - libpqxx
-      - libpqxx-devel
-      - git
-      - rsync
-      - cairo-devel
-      - pycairo
-      - pycairo-devel
-      - cairo
-      - libpqxx
-      - libpqxx-devel
-      - python-pycha
-      - libxslt-devel
-      - libxslt-python
-      - libxslt
-      - python-lxml
-      - libxslt-python
-      - libsass-devel
-      - libsass
-      - python2-pip.noarch
-      - sox
-      - redis
+    - cairo
+    - cairo-devel
+    - expect
+    - git
+    - libxslt-devel
+    - libxslt-python
+    - libxslt
+    - libjpeg-turbo-devel
+    - libffi-devel
+    - libffi
+    - libpqxx
+    - libpqxx-devel
+    - libsass-devel
+    - libsass
+    - nginx
+    - nginx-all-modules
+    - pycairo
+    - pycairo-devel
+    - python
+    - python-pycha
+    - python2-pip.noarch
+    - python2-psycogreen.noarch
+    - python-lxml
+    - python-psycopg2.x86_64
+    - python-virtualenv
+    - redis
+    - rsync
+    - sox
   become: yes
   become_method: sudo
   when: ansible_os_family == "RedHat"
@@ -93,30 +90,30 @@
 - name: Installation of app dependencies (debian)
   apt: "name={{ item }} state=present"
   with_items:
-    - virtualenv
+    - expect
+    - gettext
+    - git
     - libcairo2-dev
-    - openssl
-    - nginx
-    - python-dev
-    - libxslt1-dev
+    - libffi-dev
+    - libjpeg-dev
     - libldap2-dev
     - libsasl2-dev
-    - libffi-dev
-    - rsync
-    - sox
-    - python-virtualenv
-    - postgresql-contrib
-    - postgresql-server-dev-9.6
-    - postgresql-plpython-9.6
-    - libjpeg-dev
-    - python-psycopg2
-    - expect
+    - libxslt1-dev
+    - nginx
+    - openssl
     - php-fpm
     - php-pgsql
     - php-xml
+    - postgresql-contrib
+    - postgresql-plpython-{{ postgresql_version }}
+    - postgresql-server-dev-{{ postgresql_version }}
+    - python-dev
+    - python-psycopg2
+    - python-virtualenv
     - redis-server
-    - git
-    - gettext
+    - rsync
+    - sox
+    - virtualenv
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
@@ -133,17 +130,25 @@
 - name: Modify bind port for redis
   lineinfile: path=/etc/redis/redis.conf regexp=^bind line="bind 127.0.0.1" state=present
   when: is_docker.stdout == "docker"
-  
+
 - name: Start and enable redis service
   service: name=redis state=restarted enabled=yes
   become: yes
   become_method: sudo
+  when: is_docker.stdout != "docker"
+
+# Habilitamos y empezamos redis. Redis es necesario para rtpengine y para django-defender
+- name: Start and enable redis service (container)
+  service: name=redis-server state=restarted enabled=yes
+  become: yes
+  become_method: sudo
+  when: is_docker.stdout == "docker"
 
 #Esto es para ubuntu se desinstala el postgresql-11 que se instala por defecto
 - name: Stop of postgresql-11 service
   service: name=postgresql@11-main state=stopped
-  when: ansible_distribution == "Ubuntu"
+  when: ansible_distribution == "Ubuntu" and is_docker.stdout != "docker"
 
 - name: Uninstall of postgresql-11
   apt: name=postgresql-11 state=absent purge=yes
-  when: ansible_distribution == "Ubuntu"
+  when: ansible_distribution == "Ubuntu" and is_docker.stdout != "docker"

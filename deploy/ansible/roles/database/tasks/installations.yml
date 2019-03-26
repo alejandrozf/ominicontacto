@@ -32,14 +32,14 @@
   when: ansible_os_family == "RedHat"
 
 # Se instala el repo de postgresql9.6
-- name: Install of postgresql-9.6 repository
+- name: Install of postgresql-{{ postgresql_version }} repository
   yum: "name={{ postgresql_url }} state=present validate_certs=no "
   become: yes
   become_method: sudo
   when: ansible_os_family == "RedHat"
 
   #Se instalan todos los paquetes de postgresql96
-- name: Install of postgresql-9.6 (centos)
+- name: Install of postgresql-{{ postgresql_version }} (centos)
   yum: name={{ item }} state=present
   with_items:
     - postgresql96*
@@ -58,17 +58,17 @@
   become_method: sudo
   when: ansible_distribution == "Ubuntu"
 
-- name: Download postgresql-9.6 repository
+- name: Download postgresql-{{ postgresql_version }} repository
   apt_repository: repo="deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" filename=pgdg state=present update_cache=yes
   become: true
   become_method: sudo
   when: ansible_distribution == "Ubuntu"
 
 #Se intala postgresql debian
-- name: Install of postgresql 9.6
+- name: Install of postgresql {{ postgresql_version }}
   apt: name={{ item }} state=present
   with_items:
-    - postgresql-plpython-9.6
-    - postgresql-9.6
+    - postgresql-plpython-{{ postgresql_version }}
+    - postgresql-{{ postgresql_version }}
     - python-psycopg2
   when: ansible_os_family == "Debian"
