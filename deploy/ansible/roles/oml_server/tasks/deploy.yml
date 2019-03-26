@@ -80,7 +80,7 @@
 - name: Get the ics_settings settings in temp file
   shell: cat {{ install_prefix }}local/oml_settings_local.py | grep "#ICS" -A200 > /tmp/oml_settings_local.py2
   tags: postinstall
-  when: ics_exists|succeeded
+  when: ics_exists.rc == 0
 
 # El codigo que está en /var/tmp/ominicontacto_build/ se pasa a /opt/omnileeads/ominicontacto
 - name: Upload built (rsync to /ominicontacto)
@@ -105,7 +105,7 @@
 # Se clona el repo si es un entorno de desarrollo
 - name: Clone of OML repository (develop server)
   git: repo=https://gitlab.com/omnileads/ominicontacto.git dest={{ install_prefix }}ominicontacto/ accept_hostkey=yes force=yes accept_hostkey=yes version={{ rama }}
-  when: desarrollo == 1 and ominicontacto_exists|failed
+  when: desarrollo == 1 and ominicontacto_exists.rc == 1
 
 # Seteo posesion de ominicontacto al usuario omnileads
 - name: Change owner and group of ominicontacto
@@ -120,7 +120,7 @@
     virtualenv_command=/usr/bin/virtualenv
     extra_args=--upgrade
   environment:
-    PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin"
+    PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-{{ postgresql_version }}/bin"
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
   become: true
   become_method: su
@@ -133,8 +133,7 @@
     virtualenv={{ install_prefix }}virtualenv
     virtualenv_command=/usr/bin/virtualenv
   environment:
-      #PATH: /usr/pgsql-9.6/bin/:{{ lookup('env', 'PATH') }}:{{ install_prefix }}ominicontacto/virtualenv/bin
-      PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin"
+      PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-{{ postgresql_version }}/bin"
       PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
   become: true
   become_method: su
@@ -155,7 +154,7 @@
     - django-extensions==1.9.8
     - django-cors-headers==2.4.0
   environment:
-      PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-9.6/bin"
+      PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-{{ postgresql_version }}/bin"
       PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
   become: true
   become_method: su
@@ -179,8 +178,9 @@
   shell: "cat /tmp/oml_settings_local.py2 >> oml_settings_local.py"
   args:
     chdir: "{{ install_prefix }}/local"
-  when: ics_exists|succeeded
   tags: postinstall
+  when: ics_exists.rc == 0
+
 
 # Se hace el link simbolico del archivo oml_settings_local a ominicontacto/, para que se pueda hacer manage.py
 - name: Creation of simbolic link of oml_settings_local.py

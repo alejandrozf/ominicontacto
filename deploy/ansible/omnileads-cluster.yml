@@ -18,7 +18,7 @@
 ---
 
 - name: Run prerequisites in all  servers
-  hosts: ['asterisk','kamailio','omniapp']
+  hosts: ['asterisk','kamailio','omniapp','database','dialer']
   gather_facts: True
   roles:
     - prerequisitos
@@ -37,7 +37,6 @@
   hosts: database
   gather_facts: True
   roles:
-    - { role: prerequisitos, tags: database }
     - { role: database, tags: database }
 
 - name: Asterisk server installation
@@ -50,7 +49,6 @@
       authorized_key: "user=root key={{ ssh_key }} state=present manage_dir=yes"
       tags: ['omniapp','asterisk']
   roles:
-    #- { role: prerequisitos, tags: ['asterisk'] }
     - { role: asterisk, tags: asterisk }
 
 - name: Kamailio server installation
@@ -62,7 +60,6 @@
     - name: Print omniapp omnileads user key in kamailio's root
       authorized_key: "user=root key={{ ssh_key }} state=present manage_dir=yes"
   roles:
-  #  - { role: prerequisitos, tags: ['kamailio'] }
     - { role: kamailio, tags: [kamailio'] }
 
 - name: Omniapp server installation
@@ -71,7 +68,6 @@
           build_dir: "{{ BUILD_DIR }}"
   gather_facts: True
   roles:
-  #  - { role: prerequisitos, tags: omniapp }
     - { role: oml_server, tags: omniapp }
     - { role: omniapp_second, tags: omniapp }
 
@@ -79,5 +75,4 @@
   hosts: dialer
   gather_facts: True
   roles:
-    - { role: prerequisitos, tags: dialer }
     - { role: dialer, tags: dialer }

@@ -16,6 +16,7 @@ TMP_ANSIBLE='/var/tmp/ansible'
 export ANSIBLE_CONFIG=$TMP_ANSIBLE
 IS_ANSIBLE="`find ~/.local -name ansible 2>/dev/null |grep \"/bin/ansible\" |head -1`"
 DESARROLLO=0
+SUDO_USER="`who | awk '{print $1}'`"
 arg1=$1
 arg2=$2
 desarrollo=$3
@@ -168,6 +169,7 @@ EOF
 }
 
 Desarrollo() {
+    current_user="`who | awk -F " " '{print $1}'`"
     echo ""
     echo "#############################################################################"
     echo "##   You chose -d option, that means you are installing a develop server   ##"
@@ -223,6 +225,7 @@ Tag() {
       echo " Remember that you have a copy of your inventory file in $inventory_copy_location/my_inventory with the variables you used for your OML installation"
       echo ""
       git checkout $current_directory/inventory
+      chown $SUDO_USER. $current_directory/inventory
     else
       echo ""
       echo "###################################################################################"

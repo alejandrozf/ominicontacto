@@ -18,85 +18,45 @@
 ---
 
 # Set_fact es para setear variables, aqui seteo el nombre de la carpeta que se crea al descargar rtpengine
-- set_fact: rtpengine_name=rtpengine-mr5.5.3.1
+- set_fact: rtpengine_name=rtpengine-mr{{ rtpengine_version }}
   tags: kamailio
-# Version de kamailio a instalar
-- set_fact: kamailio_version=5.1.4
-  tags: ['kamailio','postinstall']
-
-# Detecto si existe el binario de rtpengine y registro el resultado en rtpengine_installed
-- name: Check if Rtpengine is installed
-  command: test -f /usr/local/bin/rtpengine
-  register: rtpengine_installed
-  tags: kamailio
-  become: true
-  become_method: sudo
-  ignore_errors: yes
 
 # mensaje para mostrar si rtpengine no está instalado
 - debug: msg="RTPengine no está instalado, se procede a la instalación"
-  when: rtpengine_installed|failed
+  when: rtpengine_installed.stdout != rtpengine_version
   tags: kamailio
 
 # mensaje si rtpengine está instalado
 - debug: msg="RTPengine ya se encuentra instalado se omite instalación"
-  when: rtpengine_installed|succeeded
-  tags: kamailio
+  when: rtpengine_installed.stdout == rtpengine_version
 
 - include: packages_installation.yml
   tags: kamailio
-  when: rtpengine_installed|failed
+  when: rtpengine_installed.stdout != rtpengine_version
 
-#  Si rtpengine_installed es failed incluyo la tarea de instalacion. Osea el sistema detecta cuando rtpengine
-#  está instalado o no y en caso de que no lo  esté lo instala sino omite
+#  Si rtpengine_installed es failed incluyo la tarea de instalacion. Osea el sistema detecta cuando rtpengine está instalado o no y en caso de que no lo  esté lo instala sino omite
 - include: rtpengine_installation.yml
   tags: kamailio
-  when: rtpengine_installed|failed
+  when: rtpengine_installed.stdout != rtpengine_version
 
 - include: rtpengine_configuration.yml
   tags: kamailio
 
-# Lo mismo se hace con kamailio
-- name: Check if Kamailio version is 5.1.4
-  shell: "{{ kamailio_location }}/sbin/kamailio -v |head -1 |awk -F \" \" '{print $3}'"
-  register: kamailio_installed
-  tags: ['kamailio','postinstall']
-  become: true
-  become_method: sudo
-  ignore_errors: yes
+- debug: msg="Kamailio {{ kamailio_version }} is not installed, proceeding to install"
+  tags: kamailio
+  when: kamailio_installed.stdout != kamailio_version
 
-- debug: msg="Kamailio 5.1.4 is not installed, proceeding to install"
-  tags: ['kamailio','postinstall']
-  when: kamailio_installed.stdout != "5.1.4"
-
-- debug: msg="Kamailio is already installed in version 5.1.4, skipping installation steps"
-  tags: ['kamailio','postinstall']
-  when: kamailio_installed.stdout == "5.1.4"
-
-- name: Uninstall actual kamailio version
-  file: state=absent path={{ kamailio_location }}/{{ item }}
-  with_items:
-    - sbin
-    - etc/kamailio
-    - lib64
-  when: kamailio_installed.stdout != "5.1.4"
-  tags: postinstall
-
-- name: Check if Kamailio certificates exists
-  shell: test -d {{ kamailio_location }}/etc/certs || test -d /opt/kamailio/etc/certs
-  register: certs_exists
-  tags: ['kamailio']
-  become: true
-  become_method: sudo
-  ignore_errors: yes
+- debug: msg="Kamailio is already installed in version {{ kamailio_version }}, skipping installation steps"
+  tags: kamailio
+  when: kamailio_installed.stdout == kamailio_version
 
 - include: kamailio_installation.yml
-  tags: ['kamailio','postinstall']
-  when: kamailio_installed.stdout != "5.1.4"
+  tags: kamailio
+  when: kamailio_installed.stdout != kamailio_version
 
 - include: certificate_CA.yml
   tags: kamailio
-  when: certs_exists|failed
+  when: certs_exists.rc == 1
 
 - include: kamailio_configuration.yml
   tags: ['kamailio']

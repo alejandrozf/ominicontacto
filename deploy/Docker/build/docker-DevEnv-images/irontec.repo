@@ -1,3 +1,0 @@
-[irontec]
-name=Irontec RPMs repository
-baseurl=http://packages.irontec.com/centos/$releasever/$basearch/

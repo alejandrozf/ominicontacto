@@ -44,6 +44,7 @@
   environment:
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
     PGPASSWORD: "{{ postgres_password }}"
+    LANG: en_US.UTF8
   become: true
   become_method: su
   become_user: "{{ usuario }}"
@@ -82,8 +83,8 @@
 - name: Change password
   shell: "./changepassword.sh chdir={{ install_prefix }}ominicontacto"
   environment:
-          DJANGO_SETTINGS_MODULE: "ominicontacto.settings"
-          PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
+    DJANGO_SETTINGS_MODULE: "ominicontacto.settings"
+    PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
   become: true
   become_user: "{{ usuario }}"
   become_method: su

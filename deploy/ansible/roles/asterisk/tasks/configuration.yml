@@ -20,6 +20,7 @@
 # Se crea el servicico de asterisk  para systemctl
 - name: Creation of asterisk.service
   template: src=templates/asterisk.service dest=/etc/systemd/system/asterisk.service owner=root group=root mode=650
+  when: is_docker.stdout != "docker"
 
 # Linkeo el binario a /usr/sbin
 - name: Create simbolic link of asterisk binarie
@@ -44,7 +45,7 @@
   with_items:
       - oml_extensions.conf
       - oml_extensions_sub.conf
-  when: cluster != 0
+  when: cluster != 0 and is_docker != "docker"
   tags: postinstall
 
 - name: Copy of asterisk config files
@@ -101,12 +102,10 @@
       - { src: "omni-grabaciones.py.j2", dest: "omni-grabaciones.py" }
   become: yes
   become_method: sudo
-  tags: postinstall
 
 - name: Creation of agis-errors.log file
   file: path={{ asterisk_location }}/var/log/asterisk/agis-errors.log state=touch mode=755 owner={{ usuario }} group={{ usuario }}
-  tags: postinstall
-  
+
 # Aca creo la carpeta parselog
 - name: Create /usr/local/parselog
   file: dest=/usr/local/parselog state=directory mode=0755 owner={{ usuario }} group={{ usuario }}
@@ -123,9 +122,9 @@
   template: src=templates/cron-omnileads dest=/etc/cron.d/cron-omnileads owner=root group=root
   when: asterisk_location != ""
 
-# Para debian toca linkear esta libreria a a /usr/lib/postgresql/9.6 es una libreria de unixODBC
+# Para debian toca linkear esta libreria a a /usr/lib/postgresql/{{ postgresql_version }} es una libreria de unixODBC
 - name: Link odbc librarie to postgresql libs
-  file: state=link src=/usr/lib/x86_64-linux-gnu/odbc/psqlodbcw.so dest=/usr/lib/postgresql/9.6/lib/psqlodbcw.so owner=root group=root mode=700
+  file: state=link src=/usr/lib/x86_64-linux-gnu/odbc/psqlodbcw.so dest=/usr/lib/postgresql/{{ postgresql_version }}/lib/psqlodbcw.so owner=root group=root mode=700
   when: ansible_os_family == "Debian"
   become: true
   become_method: sudo
@@ -167,19 +166,16 @@
   become: yes
   become_method: sudo
 
+# Se crea el servicico de asterisk  para docker
+- name: Creation of asterisk init.d service (docker)
+  template: src=templates/init.d/asterisk dest=/etc/init.d/asterisk owner=root group=root mode=650
+  when: is_docker.stdout == "docker"
+
 # Habilito e inicio asterisk
 - name: Start and enable asterisk
   systemd: name=asterisk state=restarted enabled=yes daemon_reload=yes
   become: true
   become_method: sudo
-
-# Un reload de config no viene mal, no alarmarse si falla
-- name: Reload of asterisk config
-  shell: "asterisk -rx 'module reload'"
-  become: yes
-  tags: ['postinstall', 'changeip']
-  become_method: sudo
-  ignore_errors: yes
 
 # Añado un archivo para el logrotate
 - name: Configuration of logrotate
