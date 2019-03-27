@@ -2498,14 +2498,7 @@ class CalificacionCliente(models.Model):
         super(CalificacionCliente, self).save(*args, **kwargs)
 
     def get_venta(self):
-        try:
-            return MetadataCliente.objects.get(campana=self.opcion_calificacion.campana,
-                                               agente=self.agente,
-                                               contacto=self.contacto)
-        except MetadataCliente.DoesNotExist:
-            return None
-        except MetadataCliente.MultipleObjectsReturned:
-            return None
+        return self.respuesta_formulario_gestion.first()
 
     def set_es_venta(self):
         # TODO: Usar metodo de OpcionCalificacion.es_gestion()
@@ -2559,37 +2552,23 @@ class DuracionDeLlamada(models.Model):
     duracion = models.TimeField()
 
 
-class MetadataCliente(models.Model):
+class RespuestaFormularioGestion(models.Model):
     """Representa información del formulario de gestión completado en una Calificacion"""
     # FIXME: este modelo debería tener una relación directa con CalificacionCliente (ver OML-434),
     # lo cual generaría un refactor de la exportación a csv de las calificaciones y haría obsoleto
     # a 'obtener_metadata_con_nombre_calificacion' que es en un hack para poder acceder al nombre
     # de la calificacion por el momento
 
-    agente = models.ForeignKey(AgenteProfile, related_name="metadataagente")
-    campana = models.ForeignKey(Campana, related_name="metadatacliente")
-    contacto = models.ForeignKey(Contacto, on_delete=models.CASCADE)
+    calificacion = models.ForeignKey(CalificacionCliente,
+                                     related_name='respuesta_formulario_gestion',
+                                     on_delete=models.CASCADE)
     metadata = models.TextField()
     fecha = models.DateTimeField(auto_now_add=True)
 
-    @classmethod
-    def obtener_metadata_nombre_calificacion(cls, campana_id):
-        metadata_qs = cls.objects.filter(
-            campana_id=campana_id,
-            campana__opciones_calificacion__tipo=OpcionCalificacion.GESTION).distinct()
-        calificaciones = CalificacionCliente.objects.obtener_calificaciones_gestion().filter(
-            opcion_calificacion__campana_id=campana_id).values(
-                'opcion_calificacion__nombre', 'contacto_id')
-        calificaciones_dict = {}
-        for calificacion in calificaciones:
-            contacto_id = calificacion['contacto_id']
-            nombre_calificacion = calificacion['opcion_calificacion__nombre']
-            calificaciones_dict[contacto_id] = nombre_calificacion
-        return metadata_qs, calificaciones_dict
-
     def __unicode__(self):
-        return "Metadata para el contacto {0} de la campana{1} " \
-               "{1} ".format(self.contacto, self.campana)
+        return "Respuesta del Formulario para el contacto {0} de la campana{1} " \
+               "{1} ".format(self.calificacion.contacto,
+                             self.calificacion.opcion_calificacion.campana)
 
 
 class Chat(models.Model):

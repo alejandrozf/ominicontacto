@@ -1,0 +1,65 @@
+<!--
+Copyright (C) 2018 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% load staticfiles %}
+{% load compress %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/bootstrap-datetimepicker.min.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
+    {% compress js %}
+    <!-- Scripts -->
+    <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
+    <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/moment.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/bootstrap-datetimepicker.min.js' %}"></script>
+    {% endcompress %}
+    
+    <script>
+        $(document).ready(function() {
+                $('.class-fecha').datetimepicker({format: 'DD/MM/YYYY'});
+        });
+    </script>
+
+</head>
+<body>
+{% include 'messages.html' %}
+<form action="" enctype="multipart/form-data" method="post">
+    {% csrf_token %}
+    <div style="position: relative;">
+        {{contacto_form.as_table}}
+        {{form.as_table}}
+    </div>
+    <hr>
+    <button type="submit"  class="btn btn-primary">
+        {% trans 'Guardar'  %}
+    </button>
+</form>
+</body>
+</html>

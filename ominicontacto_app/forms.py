@@ -36,7 +36,7 @@ from crispy_forms.layout import Field, Layout, MultiField
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
-    MetadataCliente, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
+    RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
     ReglasIncidencia, UserApiCrm, SupervisorProfile, ArchivoDeAudio,
     NombreCalificacion, OpcionCalificacion, ParametrosCrm
 )
@@ -827,10 +827,10 @@ OpcionCalificacionFormSet = inlineformset_factory(
     formset=OpcionCalificacionBaseFormset, extra=0, min_num=1)
 
 
-class FormularioVentaForm(forms.ModelForm):
+class RespuestaFormularioGestionForm(forms.ModelForm):
 
     def __init__(self, campos, *args, **kwargs):
-        super(FormularioVentaForm, self).__init__(*args, **kwargs)
+        super(RespuestaFormularioGestionForm, self).__init__(*args, **kwargs)
 
         for campo in campos:
             if campo.tipo is FieldFormulario.TIPO_TEXTO:
@@ -858,18 +858,11 @@ class FormularioVentaForm(forms.ModelForm):
                     required=campo.is_required)
 
     class Meta:
-        model = MetadataCliente
-        fields = ('campana', 'contacto', 'agente')
+        model = RespuestaFormularioGestion
+        fields = ('calificacion', )
         widgets = {
-            'campana': forms.HiddenInput(),
-            'contacto': forms.HiddenInput(),
-            'agente': forms.HiddenInput(),
+            'calificacion': forms.HiddenInput(),
         }
-
-
-FormularioVentaFormSet = inlineformset_factory(
-    Contacto, MetadataCliente, form=FormularioVentaForm,
-    can_delete=False, extra=1, max_num=1)
 
 
 class AgendaContactoForm(forms.ModelForm):
