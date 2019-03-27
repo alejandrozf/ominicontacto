@@ -87,6 +87,7 @@ INSTALLED_APPS = [
     'ominicontacto_app',
     'reciclado_app',
     'reportes_app',
+    'supervision_app',
     'simple_history',
     'widget_tweaks',
     'rest_framework',
@@ -409,6 +410,7 @@ try:
         os.path.join(BASE_DIR, 'ominicontacto_app/locale'),
         os.path.join(BASE_DIR, 'reportes_app/locale'),
         os.path.join(BASE_DIR, 'reciclado_app/locale'),
+        os.path.join(BASE_DIR, 'supervision_app/locale'),
     )
 
     LANGUAGES = (
