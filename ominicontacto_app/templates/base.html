@@ -341,7 +341,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <a class="menu-header" href="#menuSupervise" role="button" data-toggle="collapse" aria-expanded="false">Supervision</a>
                     <ul class="collapse list-unstyled submenu" id="menuSupervise" data-parent="#nav-main-menu">
                         <li>
-                            <a href="{% url 'supervision_externa_url' %}">{% trans 'Llamadas Activas' %}</a>
+                            <a href="{% url 'supervision_agentes' %}">{% trans 'Agentes' %}</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'supervision_campanas_entrantes' %}">{% trans 'Campañas Entrantes' %}</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'supervision_campanas_salientes' %}">{% trans 'Campañas Salientes' %}</a>
                         </li>
                     </ul>
                 </li>
