@@ -31,6 +31,8 @@ usuario: omnileads
 session_cookie_age: 3600
 asterisk_location: "{{ install_prefix }}asterisk"
 kamailio_location: "{{ install_prefix }}kamailio"
+static_route: "{{ install_prefix }}ominicontacto/ominicontacto_app/static/ominicontacto"
+
 
 #### Para setear si el postinstall es para desarrollo o para produccion #####
 desarrollo: 0

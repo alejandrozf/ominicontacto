@@ -76,7 +76,7 @@
       - udptl.conf
   become: true
   become_method: sudo
-  tags: [changeip']
+  tags: changeip
 
 # Los archivos-no-enlaces se copian a la a /etc/asterisk
 - name: Copy of all asterisk config files
@@ -106,7 +106,7 @@
 - name: Creation of agis-errors.log file
   file: path={{ asterisk_location }}/var/log/asterisk/agis-errors.log state=touch mode=755 owner={{ usuario }} group={{ usuario }}
   tags: postinstall
-  
+
 # Aca creo la carpeta parselog
 - name: Create /usr/local/parselog
   file: dest=/usr/local/parselog state=directory mode=0755 owner={{ usuario }} group={{ usuario }}
