@@ -17,10 +17,6 @@
 #
 ---
 
-# Se setea esta variable que se va a usar en estos playbooks
-- set_fact: static_route={{ install_prefix }}ominicontacto/ominicontacto_app/static/ominicontacto
-  tags: postinstall
-
 - include: django_migrations.yml
   tags: [omniapp']
 
