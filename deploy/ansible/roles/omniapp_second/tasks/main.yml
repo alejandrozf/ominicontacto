@@ -17,10 +17,6 @@
 #
 ---
 
-# Se setea esta variable que se va a usar en estos playbooks
-- set_fact: static_route={{ install_prefix }}ominicontacto/ominicontacto_app/static/ominicontacto
-  tags: postinstall
-
 # Esto tengo que hacerlo para debian porque viene por defecto con php7.0 y para ubuntu viene
 # Obtengo la version de php
 - name: Set php-fpm version (debian)

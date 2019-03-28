@@ -20,7 +20,6 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
-  tags: changeip
 
 # Esto es para debian
 - name: Modify of pg_hba.conf file (debian)
@@ -28,8 +27,6 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
-  tags: changeip
-
 
 #Se modifica la ip en la que escucha postgres
 - name: Modify postgresql listen address
