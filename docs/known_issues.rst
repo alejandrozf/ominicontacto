@@ -1,4 +1,7 @@
-- Calification form not showing up when receiving a transfer call
+Known Issues
+************
+
+- disposition form not showing up when receiving a transfer call
 - Pause times are not separated by date
 - Supervision calls capture is broken
 - Recycle over recycled campaign duplicates records to call

@@ -1,14 +1,14 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Enrutamiento de llamadas entrantes desde un PBX hacia OMniLeads &mdash; OMniLeads develop documentation</title>
+  <title>Enrutamiento de llamadas entrantes desde un PBX hacia OMniLeads &mdash; documentación de OMniLeads - develop</title>
   
 
   
@@ -25,6 +25,7 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -33,8 +34,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
     <link rel="next" title="IVR - Interactive Voice Response" href="campaigns_inbound_ivr.html" />
     <link rel="prev" title="Enrutamiento de llamadas entrantes" href="campaigns_inbound_routes.html" /> 
 </head>
@@ -85,9 +86,9 @@
 <li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">Plataforma de Contact Center integrado a un PBX basado en SIP</a></li>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#compania-de-servicios-de-customer-contact">Compañia de servicios de Customer Contact</a></li>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#carriers-o-proveedores-de-cloud-pbx">Carriers ó Proveedores de Cloud PBX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">OML como Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-en-una-compania-de-servicios-de-customer-contact">OML en una Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-para-carriers-o-proveedores-de-cloud-pbx">OML para Carriers ó Proveedores de Cloud PBX</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Procedimientos de instalación</a></li>
@@ -192,7 +193,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="enrutamiento-de-llamadas-entrantes-desde-un-pbx-hacia-omnileads">
-<h1>Enrutamiento de llamadas entrantes desde un PBX hacia OMniLeads<a class="headerlink" href="#enrutamiento-de-llamadas-entrantes-desde-un-pbx-hacia-omnileads" title="Permalink to this headline">¶</a></h1>
+<h1>Enrutamiento de llamadas entrantes desde un PBX hacia OMniLeads<a class="headerlink" href="#enrutamiento-de-llamadas-entrantes-desde-un-pbx-hacia-omnileads" title="Enlazar permanentemente con este título">¶</a></h1>
 <p>A la hora de enrutar llamadas desde un PBX (en nuestro ejemplo Asterisk), pero los concepto se pueden extender a cualquier tipo o marca.</p>
 <img alt="_images/campaigns_in_route_frompbx_ivr.png" src="_images/campaigns_in_route_frompbx_ivr.png" />
 <p><em>Figure 1: Inbound route parameters</em></p>
@@ -200,13 +201,13 @@
 de derivar llamadas (desde una ruta entrante, opción del IVR o failover de alguna cola/ring group, etc.) hacia OMniLeads o bien si una extensión desea llamar o transferir una llamada hacia OMniLeads.</p>
 <img alt="_images/campaigns_in_route_frompbx.png" src="_images/campaigns_in_route_frompbx.png" />
 <p><em>Figure 2: Inbound route parameters</em></p>
-<p>Tomando como ejemplo el número “123456” utilizado en la figura anterior, entonces una forma de integrar esta ruta en un PBX basado en Asteisk sería que desde dicho PBX se genere una llamada hacia el
+<p>Tomando como ejemplo el número «123456» utilizado en la figura anterior, entonces una forma de integrar esta ruta en un PBX basado en Asteisk sería que desde dicho PBX se genere una llamada hacia el
 número mencionado, cada vez que algún recurso del PBX necesite ser conmutado hacia este destino de OMniLeads.</p>
-<p>Si nuestro PBX Asterisk dispone de una interfaz web de configuración entonces simplemente puedo generar una <em>Nueva extensión</em> y hacer que la misma apunte a; <em>SIP/trunkomnileads/123456</em> , donde “trunkomnileads” es el nombre elegido (en el PBX) para el troncal SIP con OMniLeads.
+<p>Si nuestro PBX Asterisk dispone de una interfaz web de configuración entonces simplemente puedo generar una <em>Nueva extensión</em> y hacer que la misma apunte a; <em>SIP/trunkomnileads/123456</em> , donde «trunkomnileads» es el nombre elegido (en el PBX) para el troncal SIP con OMniLeads.
 La idea de extensión apuntando hacia OMniLeads se ejemplifica en la figura 2.</p>
 <img alt="_images/campaigns_in_route_frompbx2.png" src="_images/campaigns_in_route_frompbx2.png" />
 <p><em>Figure 3: OMniLeads PBX custom extension</em></p>
-<p>Si bien la extension en el PBX puede tener cualquier numeración (en la figura es 2222), lo importante es enviar “123456” (en nuestro ejemplo) hacia OMniLeads como se resalta en la figura 3.</p>
+<p>Si bien la extension en el PBX puede tener cualquier numeración (en la figura es 2222), lo importante es enviar «123456» (en nuestro ejemplo) hacia OMniLeads como se resalta en la figura 3.</p>
 <img alt="_images/campaigns_in_route_frompbx3.png" src="_images/campaigns_in_route_frompbx3.png" />
 <p><em>Figure 4: OMniLeads PBX custom extension</em></p>
 <p>Una vez disponible la extension en el PBX, solo es cuestión de invocarla desde los elementos del PBX, como por ejemplo un IVR.</p>

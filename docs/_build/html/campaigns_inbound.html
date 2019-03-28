@@ -1,14 +1,14 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Campañas entrantes &mdash; OMniLeads develop documentation</title>
+  <title>Campañas entrantes &mdash; documentación de OMniLeads - develop</title>
   
 
   
@@ -25,6 +25,7 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -33,8 +34,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
     <link rel="next" title="Enrutamiento de llamadas entrantes" href="campaigns_inbound_routes.html" />
     <link rel="prev" title="Campañas con discador predictivo" href="campaigns_dialer.html" /> 
 </head>
@@ -85,9 +86,9 @@
 <li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">Plataforma de Contact Center integrado a un PBX basado en SIP</a></li>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#compania-de-servicios-de-customer-contact">Compañia de servicios de Customer Contact</a></li>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#carriers-o-proveedores-de-cloud-pbx">Carriers ó Proveedores de Cloud PBX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">OML como Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-en-una-compania-de-servicios-de-customer-contact">OML en una Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-para-carriers-o-proveedores-de-cloud-pbx">OML para Carriers ó Proveedores de Cloud PBX</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Procedimientos de instalación</a></li>
@@ -128,7 +129,7 @@
 <li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="maintance.html">OMniLeads Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
 </ul>
 
             
@@ -196,9 +197,9 @@
            <div itemprop="articleBody">
             
   <div class="section" id="campanas-entrantes">
-<h1>Campañas entrantes<a class="headerlink" href="#campanas-entrantes" title="Permalink to this headline">¶</a></h1>
+<h1>Campañas entrantes<a class="headerlink" href="#campanas-entrantes" title="Enlazar permanentemente con este título">¶</a></h1>
 <div class="section" id="como-crear-una-nueva-campana">
-<h2>Cómo crear una nueva campaña<a class="headerlink" href="#como-crear-una-nueva-campana" title="Permalink to this headline">¶</a></h2>
+<h2>Cómo crear una nueva campaña<a class="headerlink" href="#como-crear-una-nueva-campana" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>Para crear una nueva campaña, se debe ir a Campaña → Campañas Entrantes → Nueva campaña.</p>
 <p>Se debe completar la primera pantalla del wizard, como lo expone la figura 1.</p>
 <img alt="_images/campaigns_in_wizard1.png" src="_images/campaigns_in_wizard1.png" />
@@ -206,7 +207,7 @@
 <ul class="simple">
 <li><strong>Name:</strong> nombre de la campaña.</li>
 <li><strong>Contact database:</strong> (campo opcional) se utiliza para desplegar datos a partir del número de teléfono que realiza la llamada entrante al sistema.</li>
-<li><strong>Campaign form:</strong> campo de selección del formulario que se desplegará cada vez que un agente califique un contacto con la calificación “de gestión”.</li>
+<li><strong>Campaign form:</strong> campo de selección del formulario que se desplegará cada vez que un agente califique un contacto con la calificación «de gestión».</li>
 <li><strong>External URL:</strong> URL a disparar cada vez que el agente lo indique.</li>
 <li><strong>Enable recordings:</strong> habilitar que todas las llamadas de la campaña sean grabadas.</li>
 <li><strong>Scope:</strong> se define como la cantidad de gestiones positivas que se esperan para la campaña. En la supervisión de la campaña se muestra en tiempo real el porcentaje de avence de la campaña respecto al objetivo definido.</li>
@@ -219,7 +220,7 @@ En este caso, la base de contactos es utilizada si deseamos que cada vez que un 
 <ul class="simple">
 <li><strong>Ring time:</strong> es el tiempo (en segundos) que el teléfono de la consola de agente sonará alertando una nueva llamada.</li>
 <li><strong>Agent callback time:</strong> es el tiempo (en segundos) que la llamada quedará en la cola de espera, hasta volver a intentar conectarla con otro agente disponible.</li>
-<li><strong>Welcome message:</strong> permite definir si se reproducirá algún audio sobre la llamada entrante, al ingresar a la cola de espera de nuestra campaña. Para que esté disponible en el selector desplegable debe cargarse previamente el archivo desde el menú “Audios”.</li>
+<li><strong>Welcome message:</strong> permite definir si se reproducirá algún audio sobre la llamada entrante, al ingresar a la cola de espera de nuestra campaña. Para que esté disponible en el selector desplegable debe cargarse previamente el archivo desde el menú «Audios».</li>
 <li><strong>Max amount of calls:</strong> es el número de llamadas que se permiten poner en cola de espera. Por encima de ese número, la llamada será enviada a la acción “failover”.</li>
 <li><strong>Service level:</strong> es un parámetro para medir cuántas de las llamadas fueron contestadas dentro de esa franja de tiempo. El valor se expresa en segundos.</li>
 <li><strong>Distribution strategy:</strong> método de distribución de llamadas que usará la campaña sobre los agentes. Para campañas salientes, se recomienda RRmemory.</li>
@@ -230,7 +231,7 @@ En este caso, la base de contactos es utilizada si deseamos que cada vez que un 
 <li><strong>Announcement frequency:</strong> cantidad de segundos entre cada reproducción de un anuncio periódico.</li>
 <li><strong>Failover dst:</strong> destino hacia el cual se enviarán las llamadas que hayan sido expiradas (superó el tiempo de espera asociado).</li>
 </ul>
-<p><strong>Nota 2:</strong> Los parámetros Ring time y Agent callback time, quedan sin efecto en las llamadas que reciban agentes donde su grupo está configurado el atributo de “auto-atención” de llamadas entrantes.</p>
+<p><strong>Nota 2:</strong> Los parámetros Ring time y Agent callback time, quedan sin efecto en las llamadas que reciban agentes donde su grupo está configurado el atributo de «auto-atención» de llamadas entrantes.</p>
 <p>En la tercera pantalla se deben asignar las calificaciones que se requieran para que los agentes úedan clasificar cada llamada de contacto.</p>
 <img alt="_images/campaigns_in_wizard3.png" src="_images/campaigns_in_wizard3.png" />
 <p><em>Figure 3: Campaign dispositions</em></p>
@@ -240,14 +241,14 @@ En este caso, la base de contactos es utilizada si deseamos que cada vez que un 
 <p>En el resto del capítulo se detalla todo acerca del enrutamiento de las llamadas desde los vínculos troncales hacia nustras campañas entrantes.</p>
 </div>
 <div class="section" id="ringing-vs-atencion-automatica-de-llamadas-entrantes">
-<h2>Ringing VS Atención automática de llamadas entrantes<a class="headerlink" href="#ringing-vs-atencion-automatica-de-llamadas-entrantes" title="Permalink to this headline">¶</a></h2>
+<h2>Ringing VS Atención automática de llamadas entrantes<a class="headerlink" href="#ringing-vs-atencion-automatica-de-llamadas-entrantes" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>El comportamiento del Webphone del agente frente a una llamada proveniente de una campaña entrante puede ser:</p>
 <ul class="simple">
-<li><strong>Ringing normal</strong> y con una duración asociada al parámetro “Ring time” presente en la creación de la campaña entrante. Durante ese tiempo el teléfono del agente notifica la llamada entrante, aguardando la acción del agente que determine la atención o no de la llamada.</li>
-<li><strong>Atención automática de la llamada</strong>. Este comportamiento implica que cada llamada entrante enviada a un agente sea atendida automáticamente por el teléfono del agente notificando a éste con un “beep” antes de dejarlo definitivamente en linea con la contraparte de la llamada.</li>
+<li><strong>Ringing normal</strong> y con una duración asociada al parámetro «Ring time» presente en la creación de la campaña entrante. Durante ese tiempo el teléfono del agente notifica la llamada entrante, aguardando la acción del agente que determine la atención o no de la llamada.</li>
+<li><strong>Atención automática de la llamada</strong>. Este comportamiento implica que cada llamada entrante enviada a un agente sea atendida automáticamente por el teléfono del agente notificando a éste con un «beep» antes de dejarlo definitivamente en linea con la contraparte de la llamada.</li>
 </ul>
-<p>Dicho comportamiento depende de la configuración a nivel “Grupo de Agentes” que posea el agente vinculado a la campaña entrante. Entonces si el grupo tiene activada la Atención Automática de llamadas entrantes, el agente responderá de dicha manera ante cada llamada entrante de cualquier campaña, quedando
-sin efecto los parámetros “Ring time” y “Agent callback time” como se mencionó en la “Nota 2” de esta sección.</p>
+<p>Dicho comportamiento depende de la configuración a nivel «Grupo de Agentes» que posea el agente vinculado a la campaña entrante. Entonces si el grupo tiene activada la Atención Automática de llamadas entrantes, el agente responderá de dicha manera ante cada llamada entrante de cualquier campaña, quedando
+sin efecto los parámetros «Ring time» y «Agent callback time» como se mencionó en la «Nota 2» de esta sección.</p>
 <img alt="_images/users_group_config.png" src="_images/users_group_config.png" />
 <p><em>Figure 5: agent group config</em></p>
 </div>

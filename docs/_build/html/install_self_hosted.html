@@ -1,14 +1,14 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Ansible Self-Hosted Install &mdash; OMniLeads develop documentation</title>
+  <title>Ansible Self-Hosted Install &mdash; documentación de OMniLeads - develop</title>
   
 
   
@@ -25,6 +25,7 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -33,8 +34,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
     <link rel="next" title="Primer acceso a OMniLeads:" href="install_first_access.html" />
     <link rel="prev" title="Procedimientos de instalación" href="install.html" /> 
 </head>
@@ -85,9 +86,9 @@
 <li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">Plataforma de Contact Center integrado a un PBX basado en SIP</a></li>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#compania-de-servicios-de-customer-contact">Compañia de servicios de Customer Contact</a></li>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#carriers-o-proveedores-de-cloud-pbx">Carriers ó Proveedores de Cloud PBX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">OML como Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-en-una-compania-de-servicios-de-customer-contact">OML en una Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-para-carriers-o-proveedores-de-cloud-pbx">OML para Carriers ó Proveedores de Cloud PBX</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="install.html">Procedimientos de instalación</a><ul class="current">
@@ -120,7 +121,13 @@
 <li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="maintance.html">OMniLeads Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
 </ul>
 
             
@@ -188,13 +195,13 @@
            <div itemprop="articleBody">
             
   <div class="section" id="ansible-self-hosted-install">
-<h1>Ansible Self-Hosted Install<a class="headerlink" href="#ansible-self-hosted-install" title="Permalink to this headline">¶</a></h1>
-<p>Cuando decimos “Ansible Self-Hosted” nos referimos a instalar OMniLeads sobre un OS de forma monolítica (todos los servicios corriendo en dicho host) y
+<h1>Ansible Self-Hosted Install<a class="headerlink" href="#ansible-self-hosted-install" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>Cuando decimos «Ansible Self-Hosted» nos referimos a instalar OMniLeads sobre un OS de forma monolítica (todos los servicios corriendo en dicho host) y
 descargando el proyecto en el OS destino de la instalación, para posteriormente ejecutar el script de instalación desde el propio host.</p>
 <img alt="_images/install_gitlab_repo.png" src="_images/install_gitlab_repo.png" />
 <p><em>Figure 1: self-hosted install</em></p>
 <div class="section" id="pre-requisitos">
-<h2>Pre-requisitos:<a class="headerlink" href="#pre-requisitos" title="Permalink to this headline">¶</a></h2>
+<h2>Pre-requisitos:<a class="headerlink" href="#pre-requisitos" title="Enlazar permanentemente con este título">¶</a></h2>
 <ul class="simple">
 <li>Una instancia de GNU/Linux CentOS 7 (minimal), Debian 9 (netinstall) ó Ubuntu Server 18.04</li>
 <li>20 GB de espacio en disco</li>
@@ -204,28 +211,26 @@ descargando el proyecto en el OS destino de la instalación, para posteriormente
 </ul>
 </div>
 <div class="section" id="ajustes-necesarios-antes-de-la-ejecucion-de-script">
-<h2>Ajustes necesarios antes  de la ejecución de script:<a class="headerlink" href="#ajustes-necesarios-antes-de-la-ejecucion-de-script" title="Permalink to this headline">¶</a></h2>
+<h2>Ajustes necesarios antes  de la ejecución de script:<a class="headerlink" href="#ajustes-necesarios-antes-de-la-ejecucion-de-script" title="Enlazar permanentemente con este título">¶</a></h2>
 <ul class="simple">
 <li>Debemos contar con el paquete git para luego clonar el repositorio del protyecto y seleccionar el release a instalar</li>
 </ul>
 <p>Ubuntu - Debian:</p>
-<dl class="docutils">
-<dt>::</dt>
-<dd>apt install git
-git clone <a class="reference external" href="https://gitlab.com/omnileads/ominicontacto.git">https://gitlab.com/omnileads/ominicontacto.git</a>
-cd ominicontacto
-git checkout master</dd>
-</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">apt</span> <span class="n">install</span> <span class="n">git</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">gitlab</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">omnileads</span><span class="o">/</span><span class="n">ominicontacto</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">ominicontacto</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">master</span>
+</pre></div>
+</div>
 <p>CentOS:</p>
-<dl class="docutils">
-<dt>::</dt>
-<dd>yum install git
-git clone <a class="reference external" href="https://gitlab.com/omnileads/ominicontacto.git">https://gitlab.com/omnileads/ominicontacto.git</a>
-cd ominicontacto
-git checkout master</dd>
-</dl>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">yum</span> <span class="n">install</span> <span class="n">git</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">gitlab</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">omnileads</span><span class="o">/</span><span class="n">ominicontacto</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">ominicontacto</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">master</span>
+</pre></div>
+</div>
 <ul class="simple">
-<li>La instalación se trabaja en el directorio “deploy/ansible”, disponible desde la raíz del proyecto (PATH/ominicontacto/deploy/ansible):</li>
+<li>La instalación se trabaja en el directorio «deploy/ansible», disponible desde la raíz del proyecto (PATH/ominicontacto/deploy/ansible):</li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">deploy</span><span class="o">/</span><span class="n">ansible</span>
 </pre></div>
@@ -244,9 +249,9 @@ git checkout master</dd>
 <ul class="simple">
 <li>En este paso, se debe editar el archivo <em>inventory</em> (PATH/ominicontacto/deploy/ansible).</li>
 </ul>
-<p>Nota: OMniLeads utiliza ansible para realizar la instalación, por lo tanto existe un “archivo de inventario” que debe ser modificado de acuerdo a los
+<p>Nota: OMniLeads utiliza ansible para realizar la instalación, por lo tanto existe un «archivo de inventario» que debe ser modificado de acuerdo a los
 parámetros del host sobre el que estamos trabajando.</p>
-<p>Modificar la cadena ‘hostname’ por el que hemos configurado a nuestro servidor. También en esta línea, se debe editar el parámetro ‘X.X.X.X’
+<p>Modificar la cadena “hostname” por el que hemos configurado a nuestro servidor. También en esta línea, se debe editar el parámetro “X.X.X.X”
 con la dirección IP del host sobre el que estamos trabajando.</p>
 <img alt="_images/install_inventory_file_net.png" src="_images/install_inventory_file_net.png" />
 <p><em>Figure 4: inventory file network params section</em></p>
@@ -254,15 +259,15 @@ con la dirección IP del host sobre el que estamos trabajando.</p>
 que vienen por defecto en el sistema.</p>
 <img alt="_images/install_inventory_passwords.png" src="_images/install_inventory_passwords.png" />
 <p><em>Figure 5: Passwords and parameters of services</em></p>
-<p>Es importante aclarar que cada vez que se corre el script “./deploy.sh” ya sea para instalar, re-instalar, actualizar, modificar la dirección IP de OML, etc.,
-el archivo de inventory se vuelve a “cero”. No obstante se genera una copia del archivo (my_inventory), de manera tal que se cuente con los parámetros
+<p>Es importante aclarar que cada vez que se corre el script «./deploy.sh» ya sea para instalar, re-instalar, actualizar, modificar la dirección IP de OML, etc.,
+el archivo de inventory se vuelve a «cero». No obstante se genera una copia del archivo (my_inventory), de manera tal que se cuente con los parámetros
 del sistema utilizados en la última ejecución del script.
-La copia en cuestión se ubica en el path donde ha sido clonado el repositorio de OML y bajo el nombre de “my_inventory” como lo expone la figura 6.</p>
+La copia en cuestión se ubica en el path donde ha sido clonado el repositorio de OML y bajo el nombre de «my_inventory» como lo expone la figura 6.</p>
 <img alt="_images/install_my_inventory.png" src="_images/install_my_inventory.png" />
 <p><em>Figure 6: inevntory copy, my_inventory file</em></p>
 </div>
 <div class="section" id="ejecucion-del-script-de-instalacion">
-<h2>Ejecución del script de instalación:<a class="headerlink" href="#ejecucion-del-script-de-instalacion" title="Permalink to this headline">¶</a></h2>
+<h2>Ejecución del script de instalación:<a class="headerlink" href="#ejecucion-del-script-de-instalacion" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>La instalación de OMniLeads se realiza mediante el script <em>deploy.sh</em>, ubicado dentro de la carpeta deploy/ansible con respecto a la carpeta
 raíz del proyecto (ominicontacto).</p>
 <p>Una vez configuradas las variables citadas, se procede con la ejecución del script de instalación (como usuario root):</p>
@@ -278,7 +283,7 @@ varios paquetes correspondientes a los diferentes componentes de software que co
 <p><em>Figure 8: OMniLeads installation ended succesfuly</em></p>
 </div>
 <div class="section" id="primer-acceso-a-omnileads">
-<h2>Primer acceso a OMniLeads:<a class="headerlink" href="#primer-acceso-a-omnileads" title="Permalink to this headline">¶</a></h2>
+<h2>Primer acceso a OMniLeads:<a class="headerlink" href="#primer-acceso-a-omnileads" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>Si la ejecución de la instalación fue exitosa, entonces vamos por el primer acceso a OMniLeads.</p>
 <div class="toctree-wrapper compound">
 <ul>
@@ -287,7 +292,7 @@ varios paquetes correspondientes a los diferentes componentes de software que co
 </div>
 </div>
 <div class="section" id="errores-comunes">
-<h2>Errores comunes:<a class="headerlink" href="#errores-comunes" title="Permalink to this headline">¶</a></h2>
+<h2>Errores comunes:<a class="headerlink" href="#errores-comunes" title="Enlazar permanentemente con este título">¶</a></h2>
 <ul class="simple">
 <li>El server no tiene internet o no resuelve dominios (configuración de DNS).</li>
 </ul>
