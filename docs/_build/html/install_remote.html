@@ -1,14 +1,14 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Instalación desde ansible remoto &mdash; OMniLeads develop documentation</title>
+  <title>Instalación desde ansible remoto &mdash; documentación de OMniLeads - develop</title>
   
 
   
@@ -25,6 +25,7 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -33,8 +34,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
     <link rel="next" title="Horizontal Cluster Installation" href="install_cluster.html" />
     <link rel="prev" title="Primer acceso a OMniLeads:" href="install_first_access.html" /> 
 </head>
@@ -85,9 +86,9 @@
 <li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">Plataforma de Contact Center integrado a un PBX basado en SIP</a></li>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#compania-de-servicios-de-customer-contact">Compañia de servicios de Customer Contact</a></li>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#carriers-o-proveedores-de-cloud-pbx">Carriers ó Proveedores de Cloud PBX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">OML como Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-en-una-compania-de-servicios-de-customer-contact">OML en una Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-para-carriers-o-proveedores-de-cloud-pbx">OML para Carriers ó Proveedores de Cloud PBX</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="install.html">Procedimientos de instalación</a><ul class="current">
@@ -121,7 +122,13 @@
 <li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="maintance.html">OMniLeads Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
 </ul>
 
             
@@ -189,14 +196,14 @@
            <div itemprop="articleBody">
             
   <div class="section" id="instalacion-desde-ansible-remoto">
-<h1>Instalación desde ansible remoto<a class="headerlink" href="#instalacion-desde-ansible-remoto" title="Permalink to this headline">¶</a></h1>
+<h1>Instalación desde ansible remoto<a class="headerlink" href="#instalacion-desde-ansible-remoto" title="Enlazar permanentemente con este título">¶</a></h1>
 <p>Este tipo de instalación implica que la descarga del proyecto desde el repositorio y la ejecución del script de instalación se realiza desde
 la estación de trabajo del sysadmin, ya que precisamente al estar basada en Ansible la instalación se hace viable éste método.</p>
-<p>La ventaja principal de esta opción es que el sysadmin puede instalar y mantener varias instancias de OMniLeads desde un único nodo “deployer”.</p>
+<p>La ventaja principal de esta opción es que el sysadmin puede instalar y mantener varias instancias de OMniLeads desde un único nodo «deployer».</p>
 <img alt="_images/install_ansible_remote.png" src="_images/install_ansible_remote.png" />
 <p><em>Figure 1: remote ansible install</em></p>
 <div class="section" id="pre-requisitos">
-<h2>Pre-requisitos:<a class="headerlink" href="#pre-requisitos" title="Permalink to this headline">¶</a></h2>
+<h2>Pre-requisitos:<a class="headerlink" href="#pre-requisitos" title="Enlazar permanentemente con este título">¶</a></h2>
 <ul class="simple">
 <li>Una instancia de GNU/Linux CentOS 7 (minimal), Debian 9 (netinstall) ó Ubuntu Server 18.04</li>
 <li>20 GB de espacio en disco</li>
@@ -214,7 +221,7 @@ la estación de trabajo del sysadmin, ya que precisamente al estar basada en Ans
 </ul>
 </div>
 <div class="section" id="preparacion-en-la-maquina-que-ejecuta-la-instalacion-remota">
-<h2>Preparación en la máquina que ejecuta la instalación remota:<a class="headerlink" href="#preparacion-en-la-maquina-que-ejecuta-la-instalacion-remota" title="Permalink to this headline">¶</a></h2>
+<h2>Preparación en la máquina que ejecuta la instalación remota:<a class="headerlink" href="#preparacion-en-la-maquina-que-ejecuta-la-instalacion-remota" title="Enlazar permanentemente con este título">¶</a></h2>
 <ul class="simple">
 <li>Debemos contar con el paquete git para luego clonar el repositorio del protyecto y seleccionar el release a instalar.</li>
 </ul>
@@ -261,29 +268,29 @@ la estación de trabajo del sysadmin, ya que precisamente al estar basada en Ans
 <p><em>Figure 4: ip a command output</em></p>
 </div>
 <div class="section" id="preparacion-del-archivo-inventory">
-<h2>Preparación del archivo <em>inventory</em>:<a class="headerlink" href="#preparacion-del-archivo-inventory" title="Permalink to this headline">¶</a></h2>
+<h2>Preparación del archivo <em>inventory</em>:<a class="headerlink" href="#preparacion-del-archivo-inventory" title="Enlazar permanentemente con este título">¶</a></h2>
 <ul class="simple">
 <li>En este paso, se debe editar el archivo <em>inventory</em> (PATH/ominicontacto/deploy/ansible). El mismo reside dentro del repositorio del proyecto, que se generó en la PC del sysadmin que ejecuta el deploy remoto.</li>
 </ul>
-<p>Nota: OMniLeads utiliza ansible para realizar la instalación, por lo tanto existe un “archivo de inventario” que debe ser modificado de acuerdo a los
+<p>Nota: OMniLeads utiliza ansible para realizar la instalación, por lo tanto existe un «archivo de inventario» que debe ser modificado de acuerdo a los
 parámetros del host sobre el que estamos trabajando.</p>
-<p>Localizar la sección <em>[omnileads-aio]</em> y modificar la cadena ‘hostname’ por el hostname de nuestro servidor destino de la instalción. También en
-esta sección se debe editar el parámetro ‘X.X.X.X’ con la dirección IP del servidor.</p>
+<p>Localizar la sección <em>[omnileads-aio]</em> y modificar la cadena “hostname” por el hostname de nuestro servidor destino de la instalción. También en
+esta sección se debe editar el parámetro “X.X.X.X” con la dirección IP del servidor.</p>
 <img alt="_images/install_inventory_file_net_remote.png" src="_images/install_inventory_file_net_remote.png" />
 <p><em>Figure 5: inventory file network params section</em></p>
 <p>Además dentro del mismo archivo, unas líneas debajo encontraremos la sección <em>[everyyone:vars]</em>, en la cual se pueden alterar variables y contraseñas
 que vienen por defecto en el sistema.</p>
 <img alt="_images/install_inventory_passwords.png" src="_images/install_inventory_passwords.png" />
 <p><em>Figure 6: Passwords and parameters of services</em></p>
-<p>Es importante aclarar que cada vez que se corre el script “./deploy.sh” ya sea para instalar, re-instalar, actualizar, modificar la dirección IP de OML, etc.,
-el archivo de inventory se vuelve a “cero”. No obstante se genera una copia del archivo (my_inventory), de manera tal que se cuente con los parámetros
+<p>Es importante aclarar que cada vez que se corre el script «./deploy.sh» ya sea para instalar, re-instalar, actualizar, modificar la dirección IP de OML, etc.,
+el archivo de inventory se vuelve a «cero». No obstante se genera una copia del archivo (my_inventory), de manera tal que se cuente con los parámetros
 del sistema utilizados en la última ejecución del script.
-La copia en cuestión se ubica en el path donde ha sido clonado el repositorio de OML y bajo el nombre de “my_inventory” como lo expone la figura 6.</p>
+La copia en cuestión se ubica en el path donde ha sido clonado el repositorio de OML y bajo el nombre de «my_inventory» como lo expone la figura 6.</p>
 <img alt="_images/install_remote_my_inventory.png" src="_images/install_remote_my_inventory.png" />
 <p><em>Figure 7: inevntory copy, my_inventory file</em></p>
 </div>
 <div class="section" id="ejecucion-del-script-de-instalacion">
-<h2>Ejecución del script de instalación:<a class="headerlink" href="#ejecucion-del-script-de-instalacion" title="Permalink to this headline">¶</a></h2>
+<h2>Ejecución del script de instalación:<a class="headerlink" href="#ejecucion-del-script-de-instalacion" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>La instalación de OMniLeads se realiza mediante el script <em>deploy.sh</em>, ubicado dentro de la carpeta deploy/ansible con respecto a la carpeta
 raíz del proyecto (ominicontacto).</p>
 <p>Una vez configuradas las variables citadas, se procede con la ejecución del script de instalación (uitilizando sudo).</p>
@@ -292,7 +299,7 @@ raíz del proyecto (ominicontacto).</p>
 </div>
 <img alt="_images/install_deploysh_remote.png" src="_images/install_deploysh_remote.png" />
 <p><em>Figure 7: remote root password</em></p>
-<p>La diferencia respecto de la instalación ‘Self-Hosted’, es que el script nos pide la contraseña del usuario <em>root</em> del host
+<p>La diferencia respecto de la instalación “Self-Hosted”, es que el script nos pide la contraseña del usuario <em>root</em> del host
 destino de la instalación.</p>
 <p>El tiempo de instalación dependerá mayormente de la velocidad de conexión a internet del host sobre ek que se está corriendo el deplot de  OML,
 ya que se deben descargar, instalar y configurar varios paquetes correspondientes a los diferentes componentes de software que conforman el sistema.</p>
@@ -301,7 +308,7 @@ ya que se deben descargar, instalar y configurar varios paquetes correspondiente
 <p><em>Figure 8: OMniLeads installation ended succesfuly</em></p>
 </div>
 <div class="section" id="primer-acceso-a-omnileads">
-<h2>Primer acceso a OMniLeads:<a class="headerlink" href="#primer-acceso-a-omnileads" title="Permalink to this headline">¶</a></h2>
+<h2>Primer acceso a OMniLeads:<a class="headerlink" href="#primer-acceso-a-omnileads" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>Si la ejecución de la instalación fue exitosa, entonces vamos por el primer acceso a OMniLeads.</p>
 <div class="toctree-wrapper compound">
 <ul>
@@ -310,7 +317,7 @@ ya que se deben descargar, instalar y configurar varios paquetes correspondiente
 </div>
 </div>
 <div class="section" id="errores-comunes">
-<h2>Errores comunes:<a class="headerlink" href="#errores-comunes" title="Permalink to this headline">¶</a></h2>
+<h2>Errores comunes:<a class="headerlink" href="#errores-comunes" title="Enlazar permanentemente con este título">¶</a></h2>
 <ul class="simple">
 <li>El server no tiene internet o no resuelve dominios (configuración de DNS).</li>
 </ul>

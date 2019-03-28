@@ -1,14 +1,14 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Troncal SIP entre OMniLeads y un PBX &mdash; OMniLeads develop documentation</title>
+  <title>Troncal SIP entre OMniLeads y un PBX &mdash; documentación de OMniLeads - develop</title>
   
 
   
@@ -25,6 +25,7 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -33,8 +34,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
     <link rel="next" title="Troncal SIP con proveedor de acceso PSTN" href="telephony_settings_bpo.html" />
     <link rel="prev" title="Configuración de acceso a la PSTN" href="telephony.html" /> 
 </head>
@@ -85,9 +86,9 @@
 <li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">Plataforma de Contact Center integrado a un PBX basado en SIP</a></li>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#compania-de-servicios-de-customer-contact">Compañia de servicios de Customer Contact</a></li>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#carriers-o-proveedores-de-cloud-pbx">Carriers ó Proveedores de Cloud PBX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">OML como Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-en-una-compania-de-servicios-de-customer-contact">OML en una Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-para-carriers-o-proveedores-de-cloud-pbx">OML para Carriers ó Proveedores de Cloud PBX</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Procedimientos de instalación</a></li>
@@ -119,7 +120,7 @@
 <li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="maintance.html">OMniLeads Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
 </ul>
 
             
@@ -187,14 +188,14 @@
            <div itemprop="articleBody">
             
   <div class="section" id="troncal-sip-entre-omnileads-y-un-pbx">
-<h1>Troncal SIP entre OMniLeads y un PBX<a class="headerlink" href="#troncal-sip-entre-omnileads-y-un-pbx" title="Permalink to this headline">¶</a></h1>
+<h1>Troncal SIP entre OMniLeads y un PBX<a class="headerlink" href="#troncal-sip-entre-omnileads-y-un-pbx" title="Enlazar permanentemente con este título">¶</a></h1>
 <p>El esquema que se repasa en esta sección es el que presenta la figura 1.</p>
 <img alt="_images/oml_and_pbx.png" class="align-center" src="_images/oml_and_pbx.png" />
 <p><em>Figure 1: OML and PBX integration</em></p>
 <div class="section" id="parametros-para-el-troncal-sip-en-el-pbx">
-<h2>Parámetros para el troncal SIP en el PBX<a class="headerlink" href="#parametros-para-el-troncal-sip-en-el-pbx" title="Permalink to this headline">¶</a></h2>
+<h2>Parámetros para el troncal SIP en el PBX<a class="headerlink" href="#parametros-para-el-troncal-sip-en-el-pbx" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>Se debe considerar el hecho de que nombramos (Trunk Name) al troncal como <em>omnileads</em></p>
-<p>En la sección “PEER Details” del formulario de nuevo troncal SIP dentro del PBX, se consideran los siguientes parámetros:</p>
+<p>En la sección «PEER Details» del formulario de nuevo troncal SIP dentro del PBX, se consideran los siguientes parámetros:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="o">=</span><span class="n">friend</span>
 <span class="n">host</span><span class="o">=</span><span class="n">XXX</span><span class="o">.</span><span class="n">XXX</span><span class="o">.</span><span class="n">XXX</span><span class="o">.</span><span class="n">OML</span>
 <span class="n">port</span><span class="o">=</span><span class="mi">5160</span>
@@ -214,9 +215,9 @@
 <p><em>Figure 2: PBX side - SIP trunk</em></p>
 </div>
 <div class="section" id="parametros-para-el-troncal-sip-en-omnileads">
-<h2>Parámetros para el troncal SIP en OMniLeads<a class="headerlink" href="#parametros-para-el-troncal-sip-en-omnileads" title="Permalink to this headline">¶</a></h2>
+<h2>Parámetros para el troncal SIP en OMniLeads<a class="headerlink" href="#parametros-para-el-troncal-sip-en-omnileads" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>Se debe considerar el hecho de que nombramos (Trunk Name) al troncal como <em>asteriskpbx</em></p>
-<p>En la sección “Trunk Details” del formulario de nuevo troncal SIP dentro de OMniLeads, se consideran los siguientes parámetros:</p>
+<p>En la sección «Trunk Details» del formulario de nuevo troncal SIP dentro de OMniLeads, se consideran los siguientes parámetros:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="o">=</span><span class="n">friend</span>
 <span class="n">host</span><span class="o">=</span><span class="n">XXX</span><span class="o">.</span><span class="n">XXX</span><span class="o">.</span><span class="n">XXX</span><span class="o">.</span><span class="n">PBX</span>
 <span class="n">port</span><span class="o">=</span><span class="mi">5060</span>
@@ -235,7 +236,7 @@
 <p><em>Figure 3: OMniLeads side - SIP trunk</em></p>
 </div>
 <div class="section" id="comprobacion-del-estado-del-troncal">
-<h2>Comprobación del estado del troncal<a class="headerlink" href="#comprobacion-del-estado-del-troncal" title="Permalink to this headline">¶</a></h2>
+<h2>Comprobación del estado del troncal<a class="headerlink" href="#comprobacion-del-estado-del-troncal" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>En este punto simplemente se accede a cada nodo (OMniLeads y PBX) por medio de una sesión SSH y desde cada conexión se debe ejecutar el comando de Asterisk</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">asterisk</span> <span class="o">-</span><span class="n">rx</span> <span class="s1">&#39;sip show peers&#39;</span>
 </pre></div>

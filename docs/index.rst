@@ -171,3 +171,22 @@ del módulo de discador predictivo, gestión de actualizaciones, backup & restor
    :maxdepth: 2
 
    maintance.rst
+
+************
+KNOWN ISSUES
+************
+
+.. toctree::
+ :maxdepth: 2
+
+ known_issues.rst
+
+
+*************
+RELEASE NOTES
+*************
+
+.. toctree::
+ :maxdepth: 2
+
+ release_notes.rst

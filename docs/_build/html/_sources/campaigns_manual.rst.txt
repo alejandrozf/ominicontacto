@@ -34,19 +34,20 @@ En la figura 3 y 4 se ejemplifica una asignación de agentes a una campaña.
 
 .. image:: images/campaigns_prev_ag2.png
 
-*Figure 4: agent assignment*
+*Figure 3: agent assignment*
 
 Finalmente cuando un agente asignado a la campaña realice un login a la plataforma, debería disponer de la campaña manual a la hora de seleccionar a qué campaña asignar cada llamada manual desde el webphone, tal como se expone en la figura 5.
 
 
 .. image:: images/campaigns_manual_agconsole1.png
 
-*Figure 5: Preview agents view*
+*Figure 4: Preview agents view*
 
 
-Cuando un agente se encuentra online y marca un teléfono correspondiente a un contacto de la base de la campaña, el contacto cuyo teléfono coincide con por el marcado por el agente es desplegado como opción a seleccionar, en esta pantalla
-también se permite generar un nuevo contacto. Entonces el agente puede o bien confirmar que la llamada se dispara hacia el contacto listado o sino crear un nuevo contacto y marcarlo.
- entonces los datos (extras al teléfono) del contacto son desplegados en la pantalla de agente, teniendo éste ultimo que
+Cuando un agente se encuentra online y marca un teléfono correspondiente a un contacto de la base de la campaña, el contacto cuyo teléfono coincide con por el marcado por el agente
+es desplegado como opción a seleccionar en esta pantalla, también se permite generar un nuevo contacto. Entonces el agente puede o bien confirmar que la llamada se dispara hacia
+el contacto listado o sino también crear un nuevo contacto y marcarlo.
+Los datos (extras al teléfono) del contacto son desplegados en la pantalla de agente
 
 .. image:: images/campaigns_manual_agconsole2.png
 
@@ -70,12 +71,12 @@ de una campaña sin base de contactos, entonces cada llamado que realice un agen
 
 .. image:: images/campaigns_manual_agconsole5.png
 
-*Figure 6: new contact add to campaign database screen 1*
+*Figure 8: new contact add to campaign database screen 1*
 
 
 .. image:: images/campaigns_manual_agconsole6.png
 
-*Figure 7: new contact add to campaign database screen 2*
+*Figure 9: new contact add to campaign database screen 2*
 
 Entonces al momento de marcar a un número que no devuelva un contacto. el agente pasará por una vista en la que primero el agente debe añadir el contacto como un registro de la base de la campaña para luego marcar.
 Finalmente se despliegan el nuevo contacto y la opción de clasificar la llamada con alguna calificación (figura 8).
@@ -83,4 +84,4 @@ Finalmente se despliegan el nuevo contacto y la opción de clasificar la llamada
 
 .. image:: images/campaigns_manual_agconsole7.png
 
-*Figure 8: new contact called*
+*Figure 10: new contact called*

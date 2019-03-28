@@ -1,14 +1,14 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Gestiones del administrador IT &mdash; OMniLeads develop documentation</title>
+  <title>Gestiones del administrador IT &mdash; documentación de OMniLeads - develop</title>
   
 
   
@@ -25,6 +25,7 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -33,9 +34,10 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Metricas, grabaciones y supervisión" href="output.html" /> 
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="Known Issues" href="known_issues.html" />
+    <link rel="prev" title="Telephony" href="output_supervision.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -84,9 +86,9 @@
 <li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">Plataforma de Contact Center integrado a un PBX basado en SIP</a></li>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#compania-de-servicios-de-customer-contact">Compañia de servicios de Customer Contact</a></li>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#carriers-o-proveedores-de-cloud-pbx">Carriers ó Proveedores de Cloud PBX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">OML como Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-en-una-compania-de-servicios-de-customer-contact">OML en una Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-para-carriers-o-proveedores-de-cloud-pbx">OML para Carriers ó Proveedores de Cloud PBX</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Procedimientos de instalación</a></li>
@@ -111,6 +113,12 @@
 <li class="toctree-l2"><a class="reference internal" href="#cambio-de-direccion-ip-de-la-plataforma">Cambio de dirección IP de la plataforma</a></li>
 </ul>
 </li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
 </ul>
 
             
@@ -176,9 +184,9 @@
            <div itemprop="articleBody">
             
   <div class="section" id="gestiones-del-administrador-it">
-<h1>Gestiones del administrador IT<a class="headerlink" href="#gestiones-del-administrador-it" title="Permalink to this headline">¶</a></h1>
+<h1>Gestiones del administrador IT<a class="headerlink" href="#gestiones-del-administrador-it" title="Enlazar permanentemente con este título">¶</a></h1>
 <div class="section" id="configuracion-del-modulo-de-discador-predictivo">
-<h2>Configuración del módulo de <em>Discador predictivo</em><a class="headerlink" href="#configuracion-del-modulo-de-discador-predictivo" title="Permalink to this headline">¶</a></h2>
+<h2>Configuración del módulo de <em>Discador predictivo</em><a class="headerlink" href="#configuracion-del-modulo-de-discador-predictivo" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>Antes que nada se notifica que si la instancia de OML desplegada en los pasos anteriores, NO contemplan el uso de campañas con discado saliente predictivo, este paso puede ser omitido.
 OMniLeads necesita de una herramienta de terceros para implementar las campañas con discador predictivo. Esta herramienta se basa en licencias de software comerciales que deben
 ser gestionadas con el fabricante.</p>
@@ -186,17 +194,13 @@ ser gestionadas con el fabricante.</p>
 antes de adquirir licencias para una operación real.</p>
 <p>Si se desean correr campañas predictivas, se debe generar la siguiente configuración básica de Wombat Dialer .
 Para generar esta configuración debemos seguir una serie de pasos que comienzan con el acceso a la URL correspondiente.</p>
-<dl class="docutils">
-<dt><a class="reference external" href="http://omnileads.yourdomain:8080/wombat">http://omnileads.yourdomain:8080/wombat</a></dt>
-<dd>ó</dd>
-</dl>
-<p><a class="reference external" href="http://XXX.XXX.XXX.OML:8080/wombat">http://XXX.XXX.XXX.OML:8080/wombat</a></p>
+<p><a class="reference external" href="http://omnileads.yourdomain:8080/wombat">http://omnileads.yourdomain:8080/wombat</a> ó <a class="reference external" href="http://XXX.XXX.XXX.OML:8080/wombat">http://XXX.XXX.XXX.OML:8080/wombat</a></p>
 <p>Al ingresar por primera vez, se debe proceder con la creación de la base de datos MariaDB que utiliza Wombat Dialer.
 Hacer click en botón remarcado en la figura 2.</p>
 <img alt="_images/maintance_wd_2.png" src="_images/maintance_wd_2.png" />
 <p><em>Figure 1: DB create</em></p>
 <p>Luego es el momento de ingresar la clave del usuario root de MySQL y hacer click en botón remarcado en la figura 3.
-Nota: el password del motor MariaDB fue configurado dentro del archivo “inventory” antes de activar la instalación del sistema. (En el mismo directorio en el que clonó el repositorio de OML).</p>
+Nota: el password del motor MariaDB fue configurado dentro del archivo «inventory» antes de activar la instalación del sistema. (En el mismo directorio en el que clonó el repositorio de OML).</p>
 <img alt="_images/install_my_inventory.png" src="_images/install_my_inventory.png" />
 <img alt="_images/maintance_wd_mariadb_pass.png" src="_images/maintance_wd_mariadb_pass.png" />
 <p><em>Figure 2: MariaDB root password</em></p>
@@ -213,27 +217,27 @@ Recordar que éstas variables se encuentran en la copia del archivo inventory (m
 <img alt="_images/maintance_wd_1.png" src="_images/maintance_wd_1.png" />
 <p><em>Figure 5: Access to WD</em></p>
 <p>Una vez adentro del sistema, se procede con la configuración de dos parámetros básicos necesarios para dejar lista la integración con OMniLeads.
-Para ello debemos acceder al menú de “Configuración básica” como se indica en la figura 6.</p>
+Para ello debemos acceder al menú de «Configuración básica» como se indica en la figura 6.</p>
 <img alt="_images/maintance_wd_config1.png" src="_images/maintance_wd_config1.png" />
 <p><em>Figure 6: WD basic config</em></p>
-<p>En este menú se debe generar en primer lugar se debe generar una nueva instancia de conexión dentro de la sección “Asterisk Servers”
+<p>En este menú se debe generar en primer lugar se debe generar una nueva instancia de conexión dentro de la sección «Asterisk Servers»
 como se expone en la figura 7.</p>
 <img alt="_images/maintance_wd_config2.png" src="_images/maintance_wd_config2.png" />
 <p><em>Figure 7: WD basic config - AMI Asterisk</em></p>
 <p>En este paso debeŕa ingresar el usuario y contraseña AMI disponible en el archivo <em>inventory</em> utilizado en la instalación.</p>
 <img alt="_images/maintance_wd_config_inventory.png" src="_images/maintance_wd_config_inventory.png" />
 <p><em>Figure 9: WD basic config - AMI Asterisk user &amp; pass</em></p>
-<p>En el siguiente punto, se configura un Troncal utilizando un “Nombre del troncal” arbitrario, pero con la cadena de llamado marcada
+<p>En el siguiente punto, se configura un Troncal utilizando un «Nombre del troncal» arbitrario, pero con la cadena de llamado marcada
 en la figura 9. <a class="reference external" href="mailto:Local/${num}&#37;&#52;&#48;from-oml/n">Local/${num}<span>&#64;</span>from-oml/n</a></p>
 <img alt="_images/maintance_wd_config3.png" src="_images/maintance_wd_config3.png" />
 <p><em>Figure 9: WD basic config - Asterisk Trunk</em></p>
-<p>Por último, recuerde dar “play” al servicio de dialer, tal como lo indica la siguiente figura 10.</p>
+<p>Por último, recuerde dar «play» al servicio de dialer, tal como lo indica la siguiente figura 10.</p>
 <img alt="_images/maintance_wd_config4.png" src="_images/maintance_wd_config4.png" />
 <p><em>Figure 10: WD activate</em></p>
 <p>Finalmente la plataforma se encuentra habilitada para gestionar llamadas predictivas. La instalación por defecto cuenta con una licencia de Wombat Dialer demo de un canal.</p>
 </div>
 <div class="section" id="back-restore">
-<h2>Back &amp; Restore<a class="headerlink" href="#back-restore" title="Permalink to this headline">¶</a></h2>
+<h2>Back &amp; Restore<a class="headerlink" href="#back-restore" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>OMniLeads dispone de un script para llevar a cabo las tareas de backup/restore.</p>
 <p>Para realizar un backup:</p>
 <p>Debemos acceder por ssh al host donde tenemos corriendo OMniLeads.
@@ -247,7 +251,7 @@ Una vez dentro del host se ejecutan los siguiente comandos.</p>
 <img alt="_images/maintance_backup_1.png" src="_images/maintance_backup_1.png" />
 <p><em>Figure 11: backup</em></p>
 <p>Como se puede observar, nos indica cómo realizar el restore de dicho backup.</p>
-<p>Dentro del path <strong>/opt/omnileads/backup</strong>, se generan los archivos “.tgz” que contienen los backups ejecutados.</p>
+<p>Dentro del path <strong>/opt/omnileads/backup</strong>, se generan los archivos «.tgz» que contienen los backups ejecutados.</p>
 <p>Si el restore se realiza en nuevo host, entonces se debe dejar disponible el archivo generado en el backup dentro del path <strong>/opt/omnileads/backup</strong>.</p>
 <p>Para llevar a cabo un restore, se debe ejecutar:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">backup</span><span class="o">-</span><span class="n">restore</span><span class="o">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">r</span> <span class="n">nombre_del_archivo_de_backup</span>
@@ -264,11 +268,11 @@ Una vez dentro del host se ejecutan los siguiente comandos.</p>
 </div></blockquote>
 </div>
 <div class="section" id="actualizaciones">
-<h2>Actualizaciones<a class="headerlink" href="#actualizaciones" title="Permalink to this headline">¶</a></h2>
+<h2>Actualizaciones<a class="headerlink" href="#actualizaciones" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>OMniLeads es forjado bajo un paradigma de releases continuos, lo cual implica un flujo de actualizaciones constantes.
 Por ello es muy importante llevar a cabo de manera limpia las actualizaciones.</p>
 <p>A continuación se exponen los pasos a seguir para llevar a cabo una nueva actualización de la plataforma. Esta tarea también se realiza
-con el script “deploy.sh”.</p>
+con el script «deploy.sh».</p>
 <p>Las actualizaciones se anuncian por los canales de comunicaciones oficiales del proyecto.
 Dependiendo el método de instalación que se haya seleccionado:</p>
 <p><strong>Instalación Self-Hosted</strong></p>
@@ -278,7 +282,7 @@ Posicionarse sobre el directorio donde reside el script “deploy.sh”</p>
 </pre></div>
 </div>
 <p>Asumiendo que estamos trabajando sobre los release estables (master)
-Se debe ejecutar un “git pull origin master” para traernos las actualizaciones del repositorio.</p>
+Se debe ejecutar un «git pull origin master» para traernos las actualizaciones del repositorio.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">pull</span> <span class="n">origin</span> <span class="n">master</span>
 </pre></div>
 </div>
@@ -297,23 +301,23 @@ descargadas sobre nuestra instancia de OMniLeads.</p>
 <span class="n">cd</span> <span class="n">ominicontacto</span><span class="o">/</span><span class="n">deploy</span><span class="o">/</span><span class="n">ansible</span>
 </pre></div>
 </div>
-<p>A continuación y como en cada ejecución del script “deploy.sh”, se debe repasar el archivo de inventory, velando por la coincidencia del
+<p>A continuación y como en cada ejecución del script «deploy.sh», se debe repasar el archivo de inventory, velando por la coincidencia del
 parámetro hostname y dirección IP respecto al host donde corre OMniLeads y vamos a actualizar.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">omnileads</span><span class="o">-</span><span class="n">aio</span><span class="p">]</span>
 <span class="n">hostname</span> <span class="n">ansible_ssh_port</span><span class="o">=</span><span class="mi">22</span> <span class="n">ansible_user</span><span class="o">=</span><span class="n">root</span> <span class="n">ansible_host</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">X</span> <span class="c1">#(this line is for node-host installation)</span>
 </pre></div>
 </div>
-<p>Nota: se debe tener en cuenta que para instalación remota, se debe utilizar la línea con el parámetro “ansible_ssh_port=22” dentro de la
+<p>Nota: se debe tener en cuenta que para instalación remota, se debe utilizar la línea con el parámetro «ansible_ssh_port=22» dentro de la
 sección [omnileads-aio]</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">deploy</span><span class="o">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">u</span> <span class="o">-</span><span class="n">a</span>
 </pre></div>
 </div>
-<p>Finalmente, la plataforma queda actualizada a la última versión estable “master”</p>
+<p>Finalmente, la plataforma queda actualizada a la última versión estable «master»</p>
 <img alt="_images/maintance_updates_ok.png" src="_images/maintance_updates_ok.png" />
 <p><em>Figure 15: updates from ansible remote OK</em></p>
 </div>
 <div class="section" id="cambio-de-direccion-ip-de-la-plataforma">
-<h2>Cambio de dirección IP de la plataforma<a class="headerlink" href="#cambio-de-direccion-ip-de-la-plataforma" title="Permalink to this headline">¶</a></h2>
+<h2>Cambio de dirección IP de la plataforma<a class="headerlink" href="#cambio-de-direccion-ip-de-la-plataforma" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>OMniLeads es un sistema complejo, con varios servicios orientados a las comunicaciones real-time corriendo en el Linux Host.
 Esto implica que un cambio de dirección IP del host conlleva cierta complejidad.</p>
 <p>Para llevar a cabo esta tarea, debemos ejecutar nuevamente el script “deploy.sh”, el mismo que fue utilizado para llevar a cabo la
@@ -346,8 +350,10 @@ para luego acceder al directorio donde se ubica dicho script.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="known_issues.html" class="btn btn-neutral float-right" title="Known Issues" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-        <a href="output.html" class="btn btn-neutral float-left" title="Metricas, grabaciones y supervisión" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+        <a href="output_supervision.html" class="btn btn-neutral float-left" title="Telephony" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
