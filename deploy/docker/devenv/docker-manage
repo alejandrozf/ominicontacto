@@ -2,7 +2,7 @@
 
 DOCKER_COMPOSE="`which docker-compose`"
 DOCKER="`which docker`"
-REPO_LOCATION="` git rev-parse --show-toplevel`"
+REPO_LOCATION="`git rev-parse --show-toplevel`"
 AST_LOCATION="/opt/omnileads/asterisk"
 KAM_LOCATION="/opt/omnileads/kamailio"
 KAM_EXEC="$DOCKER exec -i kamailio /bin/bash -c"
@@ -43,6 +43,7 @@ StartCommands() {
 RunCommands() {
   $OMNIAPP_EXEC "/opt/omnileads/bin/manage.sh migrate"
   $AST_EXEC "service asterisk reload"
+  $OMNIAPP_EXEC "/opt/omnileads/bin/manage.sh collectstatic_js_reverse"
   $OMNIAPP_EXEC "django-server"
 }
 

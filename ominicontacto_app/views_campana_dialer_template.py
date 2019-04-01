@@ -68,7 +68,7 @@ class CampanaDialerTemplateCreateView(CampanaTemplateCreateMixin, CampanaDialerC
 
     # FIXME: esto debería hacerse de forma más elegante usando herencia,
     # pero necesita un refactor
-    FORMS = CampanaDialerCreateView.FORMS[:-1]
+    FORMS = CampanaDialerCreateView.FORMS[:-3]
 
     form_list = FORMS
 

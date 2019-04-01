@@ -1165,7 +1165,8 @@ class SupervisorProfileForm(forms.ModelForm):
 
 class CampanaSupervisorUpdateForm(forms.ModelForm):
 
-    def __init__(self, supervisors_choices, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
+        supervisors_choices = kwargs.pop('supervisors_choices', [])
         super(CampanaSupervisorUpdateForm, self).__init__(*args, **kwargs)
         self.fields['supervisors'].choices = supervisors_choices
 
@@ -1356,5 +1357,26 @@ class ParametrosCrmForm(forms.ModelForm):
         return nombre
 
 
+class QueueMemberBaseFomset(BaseInlineFormSet):
+
+    def clean(self):
+        """Realiza la  validación de que no existan miembros de cola repetidas para una misma
+        cola de campaña
+        """
+        if any(self.errors):
+            return
+        members = []
+        for form in self.forms:
+            member = form.cleaned_data.get('member')
+            if member in members:
+                raise forms.ValidationError(
+                    _("Los agentes deben ser distintos"))
+            members.append(member)
+
+
 ParametrosCrmFormSet = inlineformset_factory(
     Campana, ParametrosCrm, form=ParametrosCrmForm, extra=1, can_delete=True)
+
+QueueMemberFormset = inlineformset_factory(
+    Queue, QueueMember, formset=QueueMemberBaseFomset, form=QueueMemberForm, extra=0,
+    can_delete=True, min_num=1)

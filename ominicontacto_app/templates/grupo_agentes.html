@@ -1,0 +1,15 @@
+{% load i18n %}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card" id="gruposAgentes">
+            <div class="card-header">
+                {% trans 'Agregar grupo de agentes' %}
+            </div>
+            <div class="card-body">
+                {{ grupos_form.as_table }}
+                <a href="#" class="btn btn-outline-primary" id="adicionarAgente">{% trans 'Agregar grupo' %}</a>
+            </div>
+        </div>
+    </div>
+</div>

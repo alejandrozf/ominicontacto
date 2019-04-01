@@ -1428,6 +1428,18 @@ class QueueMember(models.Model):
         return _("agente: {0} para la campana {1} ".format(
             self.member.user.get_full_name(), self.queue_name))
 
+    @classmethod
+    def get_defaults(cls, agente, campana):
+        """Devuelve los valores por defecto que se asigan al momento de adicionar
+        un agente a una campaña
+        """
+        return {'membername': agente.user.get_full_name(),
+                'interface': """Local/{0}@from-queue/n""".format(
+                    agente.sip_extension),
+                'penalty': 0,
+                'paused': 0,
+                'id_campana': "{0}_{1}".format(campana.id, campana.nombre)}
+
     class Meta:
         db_table = 'queue_member_table'
         unique_together = ('queue_name', 'member',)

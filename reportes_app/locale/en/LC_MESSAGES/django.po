@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-12 12:10-0300\n"
+"POT-Creation-Date: 2019-04-01 12:10-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1138,6 +1138,6 @@ msgid ""
 msgstr ""
 "Unable to get  current campaign status. Please reach your Administrator."
 
-#: reportes_app/views_reportes.py:61 reportes_app/views_reportes.py:143
+#: reportes_app/views_reportes.py:62 reportes_app/views_reportes.py:144
 msgid "Usted no puede acceder a esta campaña."
 msgstr "You are not allowed to access to this campaign."
