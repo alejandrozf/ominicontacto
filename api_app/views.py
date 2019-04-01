@@ -2,12 +2,17 @@
 
 from __future__ import unicode_literals
 
+from django.views.generic import View
+from django.http import JsonResponse
 from rest_framework import viewsets
 from rest_framework.permissions import BasePermission, IsAuthenticated
 
 from api_app.serializers import CampanaSerializer, AgenteProfileSerializer
 
 from ominicontacto_app.models import Campana, AgenteProfile
+from reportes_app.reportes.reporte_llamadas_supervision import (
+    ReporteDeLLamadasEntrantesDeSupervision
+)
 
 
 class EsSupervisorPermiso(BasePermission):
@@ -53,3 +58,10 @@ class AgentesActivosGrupoViewSet(viewsets.ModelViewSet):
         grupo_pk = self.kwargs.get('pk_grupo')
         queryset = queryset.filter(grupo__pk=grupo_pk)
         return queryset
+
+
+class StatusCampanasView(View):
+    def get(self, request):
+        reporte = ReporteDeLLamadasEntrantesDeSupervision(request.user)
+        return JsonResponse({'errors': None,
+                             'data': reporte.estadisticas})
