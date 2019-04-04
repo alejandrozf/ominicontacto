@@ -16,6 +16,8 @@ El módulo de *Grabaciones* de OMniLeads permite la búsqueda de grabaciones uti
 Output de las campañas entrantes
 ********************************
 
+En esta sección se expone y analiza todo lo inherente al "output" generado por las campañas de llamadas entrantes.
+
 .. toctree::
  :maxdepth: 2
 
@@ -24,13 +26,17 @@ Output de las campañas entrantes
 Output de las campañas salientes
 ********************************
 
+En esta sección se expone y analiza todo lo inherente al "output" generado por las campañas de llamadas salientes.
+
 .. toctree::
  :maxdepth: 2
 
  output_outbound_camp.rst
 
-Reportes generales de llamadas
+Reportes general de llamadas
 ******************************
+
+Esta sección repasa cada informe generado por el reporte general de llamadas. *Reportes -- Llamadas*
 
 .. toctree::
  :maxdepth: 2
@@ -40,6 +46,8 @@ Reportes generales de llamadas
 Reportes de agentes
 *******************
 
+Esta sección repasa cada informe generado por el reporte general de actividad de agente. *Reportes – Agentes*
+
 .. toctree::
  :maxdepth: 2
 
@@ -47,6 +55,8 @@ Reportes de agentes
 
 Supervisión relatime
 ********************
+
+Esta sección repasa el módulo de supervisión de OMniLeads. 
 
 .. toctree::
  :maxdepth: 2

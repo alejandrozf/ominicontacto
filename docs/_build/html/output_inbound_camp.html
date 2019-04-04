@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Telephony &mdash; documentación de OMniLeads - develop</title>
+  <title>Reporte general de una campaña entrante &mdash; documentación de OMniLeads - develop</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Búsqueda" href="search.html" />
-    <link rel="next" title="Telephony" href="output_outbound_camp.html" />
-    <link rel="prev" title="Metricas, grabaciones y supervisión" href="output.html" /> 
+    <link rel="next" title="Reporte general de una campaña saliente" href="output_outbound_camp.html" />
+    <link rel="prev" title="Grabaciones" href="output_recordings.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -106,11 +106,13 @@
 <li class="toctree-l1 current"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="output.html#grabaciones">Grabaciones</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="output.html#output-de-las-campanas-entrantes">Output de las campañas entrantes</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Telephony</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Reporte general de una campaña entrante</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reporte-de-calificaciones">Reporte de calificaciones</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#resultados-de-la-base-de-contactos">Resultados de la base de contactos</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="output.html#output-de-las-campanas-salientes">Output de las campañas salientes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="output.html#reportes-generales-de-llamadas">Reportes generales de llamadas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output.html#reportes-general-de-llamadas">Reportes general de llamadas</a></li>
 <li class="toctree-l2"><a class="reference internal" href="output.html#reportes-de-agentes">Reportes de agentes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="output.html#supervision-relatime">Supervisión relatime</a></li>
 </ul>
@@ -118,6 +120,12 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
 </ul>
 
             
@@ -165,7 +173,7 @@
         
           <li><a href="output.html">Metricas, grabaciones y supervisión</a> &raquo;</li>
         
-      <li>Telephony</li>
+      <li>Reporte general de una campaña entrante</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -184,8 +192,82 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="telephony">
-<h1>Telephony<a class="headerlink" href="#telephony" title="Enlazar permanentemente con este título">¶</a></h1>
+  <p>En esta sección se cubren todos los reportes disponibles para una campaña de llamadas entrantes.</p>
+<img alt="_images/output_incamp_reports.png" src="_images/output_incamp_reports.png" />
+<p><em>Figure 1: Campaign Reports view</em></p>
+<div class="section" id="reporte-general-de-una-campana-entrante">
+<h1>Reporte general de una campaña entrante<a class="headerlink" href="#reporte-general-de-una-campana-entrante" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>Este reporte nos brinda un resumen de varios aspectos de la campaña. Cuestiones como cantidad de llamadas recibidas (atendidas y no) y realizadas desde la campaña
+dispuestas en detalle con respecto a las calificaciones generadas por agentes.</p>
+<p>Para acceder a este reporte, se debe ingresar a la opción «Reportes» dentro de la campaña.</p>
+<p>La primera información que nos arroja la vista son las «llamadas que ingresaron» y las «llamadas realizadas» dentro la campaña.</p>
+<p>Recordemos que en OMniLeads un agente puede procesar una llamada manual y asociarla a una campaña entrante, por ejemplo si estaba atendiendo una llamada y
+la misma se corta, el agente podrá marcar al número desde la campaña entrante pese a que se trata de una llamada manual saliente.</p>
+<img alt="_images/output_incamp_reports_1.png" src="_images/output_incamp_reports_1.png" />
+<p><em>Figure 2: Inbound calls / Performed calls</em></p>
+<p>Siguiendo el recorrido por la presente pantalla, nos vamos a encontrar con el primer botón de exportación de información
+a CSV. En este caso el botón nos permite exportar a «CSV / Planilla de cálculos» todas las llamadas atendidas en la campaña.</p>
+<img alt="_images/output_incamp_csv_contacted.png" src="_images/output_incamp_csv_contacted.png" />
+<p><em>Figure 3: Attended calls CSV</em></p>
+<p>Como se puede apreciar, el archivo presenta como primer columna el teléfono desde el que se llamó a la campaña. Si bien el contacto puede tener
+asociado más de un teléfono en este reporte la columna «Phone number» hace referencia al teléfono que originó la comunicación hacia la campaña
+y al cual se asocia la calificación de agente (columna calificación).</p>
+<p>Volvemos a recarcar el hecho de que en campañas entrantes no siempre se asocia un contacto a una base de contactos. Cuando una llamada entrante
+no tiene un contacto asociado o la campaña directamente no tiene una base asociada, entonces los mismos se listan con la etiqueta «fuera de base» en
+la columna base de datos de nuestra planilla de cálculos (figura3).</p>
+<p>Debajo del botón de exportar llamadas atendidas, encontramos un informe que se representa la contabilización de las diferentes calificaciones que realizaron
+los agentes sobre las llamadas atendidas en la campaña (figura 4).</p>
+<p>En este caso y en general toda información tabulada puede generarse como una exportación a CSV para poder disponer de los datos sobre
+una planilla de cálculos.</p>
+<img alt="_images/output_incamp_reports_2.png" src="_images/output_incamp_reports_2.png" />
+<p><em>Figure 4: Dispositions</em></p>
+<p>Continuando con la sucesión de informes presentados en la pantalla de reportes de la campaña, nos vamos a topar con un
+listado que contibiliza todas las llamadas que no fueron atendidas en la campaña, es decir intentos fallidos clasificados
+de acuerdo a si fueron llamadas abandonadas o llamadas expiradas por tiempo de espera agotado.</p>
+<img alt="_images/output_incamp_reports_3.png" src="_images/output_incamp_reports_3.png" />
+<p><em>Figure 5: Not attended calls</em></p>
+<p>A continuación se presenta un informe sobre la performance de cada agente que trabajó en la campaña. Se expone mediante
+la contabilización de cada calificación generada por cada agente. Además se cuenta con un link que permite saltar a
+una pantalla con un informe más detallado sobre el agente en cuestión y su performance en la campaña en cuestión.</p>
+<img alt="_images/output_incamp_reports_4.png" src="_images/output_incamp_reports_4.png" />
+<p><em>Figure 6: Contacts pending / Performed calls</em></p>
+<p>Entonces si se hace click sobre uno de los agentes, se despliega una nueva pantalla con mayor detalle, en la que se
+contempla por ejemplo la información de:</p>
+<ul class="simple">
+<li>Tiempo acumulado en la campaña</li>
+<li>Tiempo en pausa dentro de la campaña</li>
+<li>Tiempo efectivo en llamadas dentro de la campaña</li>
+<li>Cantidad de llamadas procesadas</li>
+<li>Tiempo promedio de llamada</li>
+<li>Cantidad de intentos de llamadas fallidas</li>
+<li>Procentajes de efectividad</li>
+</ul>
+<img alt="_images/output_outcamp_5.png" src="_images/output_outcamp_5.png" />
+<p><em>Figure 8: Agent performance detail</em></p>
+<p>Regresando al reporte de la campaña, como último ítem se presenta un listado de todas las llamadas procesadas en la campaña
+y su resultado. Se expone de manera separada todas las llamadas manuales que se hayan hecho en la campaña.
+Recordemos que en cualquier tipo de campaña, se pueden generar paralelamente llamadas manuales.</p>
+<img alt="_images/output_incamp_reports_5.png" src="_images/output_incamp_reports_5.png" />
+<p><em>Figure 9: Call details</em></p>
+</div>
+<div class="section" id="reporte-de-calificaciones">
+<h1>Reporte de calificaciones<a class="headerlink" href="#reporte-de-calificaciones" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>Este reporte presenta cada contacto gestionado en la campaña junto a la calificación que ha recibido por parte del agente
+que procesó la llamada asociada al contacto. Además se puede generar un archivo CSV con las calificaciones ordinarias
+por un lado y otro con los contactos cuya calificación recibida fue del tipo «gestión».</p>
+<img alt="_images/output_incamp_calldispositions.png" src="_images/output_incamp_calldispositions.png" />
+<p><em>Figure 10: Call dispositions detail</em></p>
+<p>Es importante aclarar que en este listado también se contemplan aquellos contactos introducidos dinámicamente en la campaña
+por los agentes. Por ejemplo contactos que llamaron a la campaña y no estaban en la base de contactos.</p>
+</div>
+<div class="section" id="resultados-de-la-base-de-contactos">
+<h1>Resultados de la base de contactos<a class="headerlink" href="#resultados-de-la-base-de-contactos" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>Aquí se presenta un listado plano de la base de contactos asociada a la campaña y el resultado de la última llamada realizada por el contacto a la campaña entrante.
+La diferencia con el reporte anterior es que aquí NO se listan los contactos que fueron introducidos en el transcurso de la campaña, sino que se busca hacer un mapeo entre
+la base de contactos asignada a la campaña y el resultado al ser procesada por la campaña.</p>
+<p>NOTA: es importante remarcar que este reporte es de suma utilidad en campañas preview y predictivas, siendo quizás no muy irrelevante en campañas entrantes.</p>
+<img alt="_images/output_outcamp_dbresult.png" src="_images/output_outcamp_dbresult.png" />
+<p><em>Figure 11: DB result</em></p>
 </div>
 
 
@@ -196,10 +278,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="output_outbound_camp.html" class="btn btn-neutral float-right" title="Telephony" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="output_outbound_camp.html" class="btn btn-neutral float-right" title="Reporte general de una campaña saliente" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="output.html" class="btn btn-neutral float-left" title="Metricas, grabaciones y supervisión" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="output_recordings.html" class="btn btn-neutral float-left" title="Grabaciones" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
