@@ -38,9 +38,10 @@ from django.utils.translation import ugettext as _
 
 from ominicontacto_app.errors import (
     OmlParserCsvDelimiterError, OmlParserMinRowError, OmlParserOpenFileError,
-    OmlParserMaxRowError, OmlDepuraBaseDatoContactoError,
+    OmlParserMaxRowError, OmlDepuraBaseDatoContactoError, OmlParserRepeatedColumnsError,
     OmlParserCsvImportacionError, OmlArchivoImportacionInvalidoError)
-from ominicontacto_app.forms import BaseDatosContactoForm, PrimerLineaEncabezadoForm
+from ominicontacto_app.forms import (
+    BaseDatosContactoForm, PrimerLineaEncabezadoForm, CamposDeTelefonoForm, )
 from ominicontacto_app.models import BaseDatosContacto, UserApiCrm
 from ominicontacto_app.parser import ParserCsv
 from ominicontacto_app.services.base_de_datos_contactos import (
@@ -163,8 +164,8 @@ class DefineBaseDatosContactoView(UpdateView):
     """
     Esta vista se obtiene un resumen de la estructura
     del archivo a importar y la presenta al usuario para
-    que seleccione en que columna se encuentra el teléfono.
-    Guarda la posición de la columna como entero y llama a
+    que seleccione en que columnas se encuentran los teléfonos.
+    Guarda las posiciónes de la columnas como enteros y llama a
     importar los teléfono del archivo que se guardo.
     Si la importación resulta bien, llama a definir el objeto
     BaseDatosContacto para que esté disponible.
@@ -177,13 +178,9 @@ class DefineBaseDatosContactoView(UpdateView):
 
     # @@@@@@@@@@@@@@@@@@@@
 
-    def dispatch(self, request, *args, **kwargs):
-        self.base_datos_contacto = \
-            BaseDatosContacto.objects.obtener_en_actualizada_para_editar(
-                self.kwargs['pk'])
-        return super(DefineBaseDatosContactoView, self).dispatch(request,
-                                                                 *args,
-                                                                 **kwargs)
+    def get_object(self, *args, **kwargs):
+        return BaseDatosContacto.objects.obtener_en_actualizada_para_editar(
+            self.kwargs['pk'])
 
     def obtiene_previsualizacion_archivo(self, base_datos_contacto):
         """
@@ -191,16 +188,19 @@ class DefineBaseDatosContactoView(UpdateView):
         primeras 3 lineas del csv.
         """
 
+        # TODO: OML-1012
+        #       Estas validaciones deberían realizarse antes de crear la Base de datos
+        #       Sino queda una instancia creada inutilizable
         try:
             parser = ParserCsv()
             estructura_archivo = parser.previsualiza_archivo(
                 base_datos_contacto)
 
         except OmlParserCsvDelimiterError:
-            message = _('<strong>Operación Errónea!</strong> '
-                        'No se pudo determinar el delimitador a ser utilizado '
-                        'en el archivo csv. No se pudo llevar a cabo el procesamiento '
-                        'de sus datos.')
+            message = _('<strong>Operación Errónea!</strong> ') +\
+                _('No se pudo determinar el delimitador a ser utilizado '
+                  'en el archivo csv. No se pudo llevar a cabo el procesamiento '
+                  'de sus datos.')
 
             messages.add_message(
                 self.request,
@@ -208,9 +208,9 @@ class DefineBaseDatosContactoView(UpdateView):
                 message,
             )
         except OmlParserMinRowError:
-            message = _('<strong>Operación Errónea!</strong> '
-                        'El archivo que seleccionó posee menos de 3 filas. '
-                        'No se pudo llevar a cabo el procesamiento de sus datos.')
+            message = _('<strong>Operación Errónea!</strong> ') +\
+                _('El archivo que seleccionó posee menos de 3 filas. '
+                  'No se pudo llevar a cabo el procesamiento de sus datos.')
 
             messages.add_message(
                 self.request,
@@ -218,9 +218,16 @@ class DefineBaseDatosContactoView(UpdateView):
                 message,
             )
         except OmlParserOpenFileError:
-            message = _('<strong>Operación Errónea!</strong> '
-                        'El archivo que seleccionó no pudo ser abierto para su procesamiento.')
+            message = _('<strong>Operación Errónea!</strong> ') +\
+                _('El archivo que seleccionó no pudo ser abierto para su procesamiento.')
 
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+        except OmlParserRepeatedColumnsError, e:
+            message = _('<strong>Operación Errónea!</strong> ') + e.message
             messages.add_message(
                 self.request,
                 messages.ERROR,
@@ -233,13 +240,13 @@ class DefineBaseDatosContactoView(UpdateView):
         self.object = self.get_object()
 
         estructura_archivo = self.obtiene_previsualizacion_archivo(self.object)
-
         if estructura_archivo:
             parser = ParserCsv()
             encoding = parser.detectar_encoding_csv(estructura_archivo)
             estructura_archivo_transformada = parser.visualizar_estructura_template(
                 estructura_archivo, encoding
             )
+
             try:
                 error_predictor = False
                 error_predictor_encabezado = False
@@ -272,21 +279,24 @@ class DefineBaseDatosContactoView(UpdateView):
 
             form_primer_linea_encabezado = PrimerLineaEncabezadoForm(
                 initial=initial_predecido_encabezado)
+            form_campos_telefonicos = CamposDeTelefonoForm(nombres_campos=estructura_archivo[0])
 
             return self.render_to_response(self.get_context_data(
                 error_predictor_encabezado=error_predictor_encabezado,
                 error_predictor=error_predictor,
                 estructura_archivo=estructura_archivo_transformada,
-                form_primer_linea_encabezado=form_primer_linea_encabezado
+                form_primer_linea_encabezado=form_primer_linea_encabezado,
+                form_campos_telefonicos=form_campos_telefonicos
             ))
 
         return redirect(reverse('nueva_base_datos_contacto'))
 
     def form_invalid(self, estructura_archivo,
-                     form_primer_linea_encabezado, error=None):
+                     form_primer_linea_encabezado,
+                     form_campos_telefonicos):
 
-        message = '<strong>Operación Errónea!</strong> \
-                  Verifique el archivo cargado. {0}'.format(error)
+        message = _('<strong>Operación Errónea!</strong> ') +\
+            _('No se pudo efectuar la carga.')
 
         messages.add_message(
             self.request,
@@ -296,10 +306,12 @@ class DefineBaseDatosContactoView(UpdateView):
 
         return self.render_to_response(self.get_context_data(
             estructura_archivo=estructura_archivo,
-            form_primer_linea_encabezado=form_primer_linea_encabezado))
+            form_primer_linea_encabezado=form_primer_linea_encabezado,
+            form_campos_telefonicos=form_campos_telefonicos))
 
     def form_valid(self, estructura_archivo,
-                   form_primer_linea_encabezado):
+                   form_primer_linea_encabezado,
+                   form_campos_telefonicos):
         # columna_con_telefono = int(form_columna_telefono.cleaned_data.get(
         #                            'telefono', None))
         # cantidad_columnas = len(form_nombre_columnas.fields)
@@ -331,29 +343,30 @@ class DefineBaseDatosContactoView(UpdateView):
         #
         #     lista_nombre_columnas.append(nombre_columna)
 
-        lista_columnas_encabezado = estructura_archivo[0]
-
-        error = None
-
-        if lista_columnas_encabezado[0] != 'telefono':
-            error = _("El nombre de la primera columna debe ser telefono")
-
-        if error:
-            return self.form_invalid(estructura_archivo,
-                                     form_primer_linea_encabezado, error=error)
+        # error = None
+        # lista_columnas_encabezado = estructura_archivo[0]
+        # if lista_columnas_encabezado[0] != 'telefono':
+        #     error = _("El nombre de la primera columna debe ser telefono")
+        # if error:
+        #     return self.form_invalid(estructura_archivo,
+        #                             form_primer_linea_encabezado,
+        #                             form_campos_telefonicos, error=error)
 
         parser = ParserCsv()
         # Detecto el encondig de la base de datoss recientemente subida
         encoding = parser.detectar_encoding_csv(estructura_archivo)
         metadata = self.object.get_metadata()
         metadata.cantidad_de_columnas = cantidad_columnas
-        predictor_metadata = PredictorMetadataService()
-        columnas_con_telefonos = predictor_metadata.inferir_columnas_telefono(
-            estructura_archivo[1:], encoding)
-        metadata.columnas_con_telefono = columnas_con_telefonos
+
+        # predictor_metadata = PredictorMetadataService()
+        # columnas_con_telefonos = predictor_metadata.inferir_columnas_telefono(
+        #     estructura_archivo[1:], encoding)
+        campos_telefonicos = form_campos_telefonicos.cleaned_data.get('campos')
+        columnas_con_telefono = form_campos_telefonicos.columnas_de_telefonos
+        metadata.columnas_con_telefono = columnas_con_telefono
+
         metadata.nombres_de_columnas = [value.decode(encoding)
                                         for value in estructura_archivo[0]]
-
         es_encabezado = False
         if self.request.POST.get('es_encabezado', False):
             es_encabezado = True
@@ -364,14 +377,14 @@ class DefineBaseDatosContactoView(UpdateView):
 
         try:
             # creacion_base_datos.valida_contactos(self.object)
-            creacion_base_datos.importa_contactos(self.object)
+            creacion_base_datos.importa_contactos(self.object, campos_telefonicos)
         except OmlParserCsvImportacionError as e:
 
-            message = '<strong>Operación Errónea!</strong>\
-                      El archivo que seleccionó posee registros inválidos.<br>\
-                      <u>Línea Inválida:</u> {0}<br> <u>Contenido Línea:</u>\
-                      {1}<br><u>Contenido Inválido:</u> {2}'.format(
-                      e.numero_fila, e.fila, e.valor_celda)
+            message = _('<strong>Operación Errónea!</strong> ') +\
+                _('El archivo que seleccionó posee registros inválidos.<br>'
+                  '<u>Línea Inválida:</u> {0}<br> <u>Contenido Línea:</u>'
+                  '{1}<br><u>Contenido Inválido:</u> {2}').format(
+                e.numero_fila, e.fila, e.valor_celda)
 
             messages.add_message(
                 self.request,
@@ -382,10 +395,10 @@ class DefineBaseDatosContactoView(UpdateView):
 
         except ContactoExistenteError as e:
 
-            message = '<strong>Operación Errónea!</strong>\
-                          El archivo que seleccionó posee registros inválidos.<br>\
-                           ERROR: {0}. Vuelva cargar nuevamente la base de datos ' \
-                      ' sin el contacto existente '.format(e)
+            message = _('<strong>Operación Errónea!</strong> ') +\
+                _('El archivo que seleccionó posee registros inválidos.<br>'
+                  'ERROR: {0}. Vuelva cargar nuevamente la base de datos '
+                  ' sin el contacto existente ').format(e)
 
             messages.add_message(
                 self.request,
@@ -395,12 +408,13 @@ class DefineBaseDatosContactoView(UpdateView):
 
             return self.render_to_response(self.get_context_data(
                 estructura_archivo=estructura_archivo,
-                form_primer_linea_encabezado=form_primer_linea_encabezado))
+                form_primer_linea_encabezado=form_primer_linea_encabezado,
+                form_campos_telefonicos=form_campos_telefonicos))
 
         except OmlParserMaxRowError:
-            message = _('<strong>Operación Errónea!</strong> '
-                        'El archivo que seleccionó posee más registros de los '
-                        'permitidos para ser importados.')
+            message = _('<strong>Operación Errónea!</strong> ') +\
+                _('El archivo que seleccionó posee más registros de los '
+                  'permitidos para ser importados.')
 
             messages.add_message(
                 self.request,
@@ -411,9 +425,9 @@ class DefineBaseDatosContactoView(UpdateView):
         else:
             creacion_base_datos.define_base_dato_contacto(self.object)
 
-            message = _('<strong>Operación Exitosa!</strong> '
-                        'Se llevó a cabo con éxito la creación de '
-                        'la Base de Datos de Contactos.')
+            message = _('<strong>Operación Exitosa!</strong> ') +\
+                _('Se llevó a cabo con éxito la creación de '
+                  'la Base de Datos de Contactos.')
 
             messages.add_message(
                 self.request,
@@ -423,19 +437,23 @@ class DefineBaseDatosContactoView(UpdateView):
             return redirect(self.get_success_url())
 
     def post(self, request, *args, **kwargs):
-
         self.object = self.get_object()
 
         estructura_archivo = self.obtiene_previsualizacion_archivo(self.object)
         if estructura_archivo:
-            form_primer_linea_encabezado = PrimerLineaEncabezadoForm(
-                request.POST)
+            form_primer_linea_encabezado = PrimerLineaEncabezadoForm(request.POST)
+            form_campos_telefonicos = CamposDeTelefonoForm(data=request.POST,
+                                                           nombres_campos=estructura_archivo[0])
 
-            if form_primer_linea_encabezado.is_valid():
-
-                return self.form_valid(estructura_archivo, form_primer_linea_encabezado)
+            if form_campos_telefonicos.is_valid() and form_primer_linea_encabezado.is_valid():
+                return self.form_valid(estructura_archivo,
+                                       form_primer_linea_encabezado,
+                                       form_campos_telefonicos)
             else:
-                return self.form_invalid(estructura_archivo, form_primer_linea_encabezado)
+                return self.form_invalid(estructura_archivo,
+                                         form_primer_linea_encabezado,
+                                         form_campos_telefonicos)
+
         return redirect(reverse('nueva_base_datos_contacto'))
 
     def get_success_url(self):
@@ -464,10 +482,10 @@ class DepuraBaseDatosContactoView(DeleteView):
         success_url = self.get_success_url()
 
         if self.object.verifica_en_uso():
-            message = _('<strong>¡Cuidado!</strong> '
-                        'La Base Datos Contacto que intenta depurar esta siendo utilizada '
-                        'por alguna campaña. No se llevará a cabo la depuración la misma '
-                        'mientras esté siendo utilizada.')
+            message = _('<strong>¡Cuidado!</strong> ') +\
+                _('La Base Datos Contacto que intenta depurar esta siendo utilizada '
+                  'por alguna campaña. No se llevará a cabo la depuración la misma '
+                  'mientras esté siendo utilizada.')
             messages.add_message(
                 self.request,
                 messages.WARNING,
@@ -478,8 +496,8 @@ class DepuraBaseDatosContactoView(DeleteView):
         try:
             self.object.procesa_depuracion()
         except OmlDepuraBaseDatoContactoError:
-            message = _('<strong>¡Operación Errónea!</strong> '
-                        'La Base Datos Contacto no se pudo depurar.')
+            message = _('<strong>¡Operación Errónea!</strong> ') +\
+                _('La Base Datos Contacto no se pudo depurar.')
             messages.add_message(
                 self.request,
                 messages.ERROR,
@@ -487,8 +505,8 @@ class DepuraBaseDatosContactoView(DeleteView):
             )
             return HttpResponseRedirect(success_url)
         else:
-            message = _('<strong>Operación Exitosa!</strong> '
-                        'Se llevó a cabo con éxito la depuración de la Base de Datos.')
+            message = _('<strong>Operación Exitosa!</strong> ') +\
+                _('Se llevó a cabo con éxito la depuración de la Base de Datos.')
 
             messages.add_message(
                 self.request,
@@ -541,10 +559,10 @@ class ActualizaBaseDatosContactoView(UpdateView):
                 base_datos_contacto)
 
         except OmlParserCsvDelimiterError:
-            message = _('<strong>Operación Errónea!</strong> '
-                        'No se pudo determinar el delimitador a ser utilizado '
-                        'en el archivo csv. No se pudo llevar a cabo el procesamiento '
-                        'de sus datos.')
+            message = _('<strong>Operación Errónea!</strong> ') +\
+                _('No se pudo determinar el delimitador a ser utilizado '
+                  'en el archivo csv. No se pudo llevar a cabo el procesamiento '
+                  'de sus datos.')
 
             messages.add_message(
                 self.request,
@@ -552,9 +570,9 @@ class ActualizaBaseDatosContactoView(UpdateView):
                 message,
             )
         except OmlParserMinRowError:
-            message = _('<strong>Operación Errónea!</strong> '
-                        'El archivo que seleccionó posee menos de 3 filas. '
-                        'No se pudo llevar a cabo el procesamiento de sus datos.')
+            message = _('<strong>Operación Errónea!</strong> ') +\
+                _('El archivo que seleccionó posee menos de 3 filas. '
+                  'No se pudo llevar a cabo el procesamiento de sus datos.')
 
             messages.add_message(
                 self.request,
@@ -562,8 +580,8 @@ class ActualizaBaseDatosContactoView(UpdateView):
                 message,
             )
         except OmlParserOpenFileError:
-            message = _('<strong>Operación Errónea!</strong> '
-                        'El archivo que seleccionó no pudo ser abierto para su procesamiento.')
+            message = _('<strong>Operación Errónea!</strong> ') +\
+                _('El archivo que seleccionó no pudo ser abierto para su procesamiento.')
 
             messages.add_message(
                 self.request,
@@ -623,8 +641,8 @@ class ActualizaBaseDatosContactoView(UpdateView):
     def form_invalid(self, estructura_archivo,
                      form_primer_linea_encabezado, error=None):
 
-        message = '<strong>Operación Errónea!</strong> \
-                  Verifique el archivo cargado. {0}'.format(error)
+        message = _('<strong>Operación Errónea!</strong> ') +\
+            _('Verifique el archivo cargado. {0}').format(error)
 
         messages.add_message(
             self.request,
@@ -668,14 +686,15 @@ class ActualizaBaseDatosContactoView(UpdateView):
 
         try:
             # creacion_base_datos.valida_contactos(self.object)
-            creacion_base_datos.importa_contactos(self.object)
+            columnas_con_telefono = self.object.get_metadata().nombres_de_columnas_de_telefonos
+            creacion_base_datos.importa_contactos(self.object, columnas_con_telefono)
         except OmlParserCsvImportacionError as e:
 
-            message = '<strong>Operación Errónea!</strong>\
-                      El archivo que seleccionó posee registros inválidos.<br>\
-                      <u>Línea Inválida:</u> {0}<br> <u>Contenido Línea:</u>\
-                      {1}<br><u>Contenido Inválido:</u> {2}'.format(
-                      e.numero_fila, e.fila, e.valor_celda)
+            message = _('<strong>Operación Errónea!</strong> ') +\
+                _('El archivo que seleccionó posee registros inválidos.<br> '
+                  '<u>Línea Inválida:</u> {0}<br> <u>Contenido Línea:</u>'
+                  '{1}<br><u>Contenido Inválido:</u> {2}').format(
+                e.numero_fila, e.fila, e.valor_celda)
 
             messages.add_message(
                 self.request,
@@ -686,10 +705,10 @@ class ActualizaBaseDatosContactoView(UpdateView):
 
         except ContactoExistenteError as e:
 
-            message = '<strong>Operación Errónea!</strong>\
-                          El archivo que seleccionó posee registros inválidos.<br>\
-                           ERROR: {0}. Vuelva cargar nuevamente la base de datos ' \
-                      ' sin el contacto existente '.format(e)
+            message = _('<strong>Operación Errónea!</strong>') +\
+                _('El archivo que seleccionó posee registros inválidos.<br> '
+                  'ERROR: {0}. Vuelva cargar nuevamente la base de datos '
+                  'sin el contacto existente ').format(e)
 
             messages.add_message(
                 self.request,
@@ -702,9 +721,9 @@ class ActualizaBaseDatosContactoView(UpdateView):
                 form_primer_linea_encabezado=form_primer_linea_encabezado))
 
         except OmlParserMaxRowError:
-            message = _('<strong>Operación Errónea!</strong> '
-                        'El archivo que seleccionó posee más registros de los '
-                        'permitidos para ser importados.')
+            message = _('<strong>Operación Errónea!</strong> ') +\
+                _('El archivo que seleccionó posee más registros de los '
+                  'permitidos para ser importados.')
 
             messages.add_message(
                 self.request,
@@ -715,9 +734,8 @@ class ActualizaBaseDatosContactoView(UpdateView):
         else:
             creacion_base_datos.define_base_dato_contacto(self.object)
 
-            message = _('<strong>Operación Exitosa!</strong> '
-                        'Se llevó a cabo con éxito la creación de '
-                        'la Base de Datos de Contactos.')
+            message = _('<strong>Operación Exitosa!</strong> ') +\
+                _('Se llevó a cabo con éxito la creación de la Base de Datos de Contactos.')
 
             messages.add_message(
                 self.request,
@@ -826,10 +844,10 @@ def cargar_base_datos_view(request):
                                               received_json_data['datos'])
                     base_datos.define()
                 except OmlParserCsvImportacionError as e:
-                    message = '<strong>Operación Errónea!</strong>\
-                               El archivo que seleccionó posee registros inválidos.<br>\
-                               <u>Línea Inválida:</u> {0}<br> <u>Contenido Línea:</u>\
-                               {1}<br><u>Contenido Inválido:</u> {2}'.format(
+                    message = ('<strong>Operación Errónea!</strong> ') +\
+                        _('El archivo que seleccionó posee registros inválidos.<br> '
+                          '<u>Línea Inválida:</u> {0}<br> <u>Contenido Línea:</u> '
+                          '{1}<br><u>Contenido Inválido:</u> {2}').format(
                         e.numero_fila, e.fila, e.valor_celda)
 
                 logger.error(message)

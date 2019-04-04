@@ -259,6 +259,10 @@ class AgenteCampanaTests(CampanasTests):
                      'campana': [self.campana_activa.pk],
                      'contacto': [self.contacto.pk],
                      'id': ['']}
+        # Agrego campos de contacto:
+        for key, value in self.contacto.obtener_datos().items():
+            post_data['contacto_form-' + key] = value
+
         return values, url, post_data
 
     @patch('requests.post')
@@ -276,7 +280,7 @@ class AgenteCampanaTests(CampanasTests):
             self, eliminar_tarea_actualizacion, post):
         values, url, post_data = self._inicializar_valores_formulario_cliente()
         base_datos = self.contacto.bd_contacto
-        nombres = base_datos.get_metadata().nombres_de_columnas[1:]
+        nombres = base_datos.get_metadata().nombres_de_columnas_de_datos
         datos = json.loads(self.contacto.datos)
         for nombre, dato in zip(nombres, datos):
             post_data.update({convertir_ascii_string(nombre): "{0}-modificado".format(dato)})

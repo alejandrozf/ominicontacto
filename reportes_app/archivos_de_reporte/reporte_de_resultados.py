@@ -64,8 +64,9 @@ class ReporteDeResultadosCSV(object):
             # Creamos encabezado
             encabezado = []
 
+            # TODO: Discutir si Poner mismo nombre del campo telefono en la base de datos?
             encabezado.append(_("Teléfono"))
-            nombres = self.campana.bd_contacto.get_metadata().nombres_de_columnas[1:]
+            nombres = self.campana.bd_contacto.get_metadata().nombres_de_columnas_de_datos
             for nombre in nombres:
                 encabezado.append(nombre)
             encabezado.append(_("Calificación"))

@@ -188,7 +188,8 @@ class ReporteDeResultadosView(TemplateView):
         reporte = ReporteDeResultadosDeCampana(self.campana)
 
         context['campana'] = self.campana
-        context['columnas_datos'] = self.campana.bd_contacto.get_metadata().nombres_de_columnas[1:]
+        metadata = self.campana.bd_contacto.get_metadata()
+        context['columnas_datos'] = metadata.nombres_de_columnas_de_datos
         context['reporte'] = reporte
 
         # Crear el archivo ahora para no repetir los cálculos.

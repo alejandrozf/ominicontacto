@@ -100,7 +100,7 @@ class CalificacionTests(OMLBaseTest):
         if contacto is None:
             contacto = self.contacto
         post_data = {
-            'telefono': contacto.telefono,
+            'contacto_form-telefono': contacto.telefono,
             'campana': campana.pk,
             'contacto': contacto.pk,
             'agente': self.agente_profile.pk,
@@ -197,8 +197,7 @@ class CalificacionTests(OMLBaseTest):
         self.calificacion_cliente.agendado = False
         self.calificacion_cliente.save()
         url = reverse('agenda_contacto_create',
-                      kwargs={'id_agente': self.agente_profile.pk,
-                              'pk_campana': self.campana.pk,
+                      kwargs={'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk})
         post_data = self._obtener_post_data_agenda()
         self.assertFalse(self.calificacion_cliente.agendado)
@@ -230,8 +229,7 @@ class CalificacionTests(OMLBaseTest):
         self.calificacion_cliente.save()
 
         url = reverse('agenda_contacto_create',
-                      kwargs={'id_agente': self.agente_profile.pk,
-                              'pk_campana': self.campana.pk,
+                      kwargs={'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk})
         post_data = self._obtener_post_data_agenda()
         post_data['tipo_agenda'] = AgendaContacto.TYPE_GLOBAL
@@ -246,8 +244,7 @@ class CalificacionTests(OMLBaseTest):
         self.calificacion_cliente.opcion_calificacion = self.opcion_calificacion_agenda
         self.calificacion_cliente.save()
         url = reverse('agenda_contacto_create',
-                      kwargs={'id_agente': self.agente_profile.pk,
-                              'pk_campana': self.campana.pk,
+                      kwargs={'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk})
         post_data = self._obtener_post_data_agenda()
         post_data['tipo_agenda'] = AgendaContacto.TYPE_GLOBAL
@@ -258,8 +255,7 @@ class CalificacionTests(OMLBaseTest):
     def test_creacion_agenda_contacto_adiciona_campo_campana(self, post):
         self.calificacion_cliente.opcion_calificacion_gestion = self.opcion_calificacion_agenda
         url = reverse('agenda_contacto_create',
-                      kwargs={'id_agente': self.agente_profile.pk,
-                              'pk_campana': self.campana.pk,
+                      kwargs={'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk})
         post_data = self._obtener_post_data_agenda()
         self.client.post(url, post_data, follow=True)
@@ -298,7 +294,7 @@ class CalificacionTests(OMLBaseTest):
         response = self.client.get(url, follow=True)
         contacto_form = response.context_data['contacto_form']
         datos_contacto_form = set(contacto_form.initial.values())
-        self.assertEqual(datos_contacto_form, set(['', telefono]))
+        self.assertEqual(datos_contacto_form, set([telefono]))
 
     def test_llamada_manual_telefono_con_1_contacto_muestra_datos_contacto_formulario(self):
         contacto = self.contacto
@@ -444,3 +440,21 @@ class CalificacionTests(OMLBaseTest):
         self.calificacion_cliente.opcion_calificacion = self.opcion_calificacion_no_accion
         self.calificacion_cliente.save()
         self.assertTrue(AgendaContacto.objects.exists())
+
+    def test_vista_calificar_contacto_muestra_botones_click2call(self):
+        url = reverse('calificacion_formulario_update_or_create',
+                      kwargs={'pk_campana': self.campana.pk,
+                              'pk_contacto': self.contacto.pk})
+        response = self.client.get(url)
+        self.assertTemplateUsed(response, 'formulario/calificacion_create_update.html')
+        click2call = "makeClick2Call('%s', '%s', '%s', '%s', 'agendas')" % \
+            (self.campana.id, self.campana.type, self.contacto.id, self.contacto.telefono)
+        self.assertContains(response, click2call)
+        bd_metadata = self.contacto.bd_contacto.get_metadata()
+        campos_telefono = bd_metadata.nombres_de_columnas_de_telefonos
+        datos_contacto = self.contacto.obtener_datos()
+        for campo_telefono in campos_telefono:
+            telefono = datos_contacto[campo_telefono]
+            click2call = "makeClick2Call('%s', '%s', '%s', '%s', 'agendas')" % \
+                (self.campana.id, self.campana.type, self.contacto.id, telefono)
+        self.assertContains(response, click2call)
