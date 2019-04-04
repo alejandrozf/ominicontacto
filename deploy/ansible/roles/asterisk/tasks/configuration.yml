@@ -78,7 +78,7 @@
       - udptl.conf
   become: true
   become_method: sudo
-  tags: ['changeip','postinstall']
+  tags: ['changenetwork','changepassword']
 
 # Los archivos-no-enlaces se copian a la a /etc/asterisk
 - name: Copy of all asterisk config files
@@ -103,6 +103,7 @@
       - { src: "omni-grabaciones.py.j2", dest: "omni-grabaciones.py" }
   become: yes
   become_method: sudo
+  tags: ['changenetwork','changepassword']
 
 - name: Creation of agis-errors.log file
   file: path={{ asterisk_location }}/var/log/asterisk/agis-errors.log state=touch mode=755 owner={{ usuario }} group={{ usuario }}
@@ -138,6 +139,7 @@
     - odbc.ini
   become: true
   become_method: sudo
+  tags: ['changenetwork','changepassword']
 
 # Creo los directorios que tendran los sonidos de agentes
 - name: Make of the sounds dirs

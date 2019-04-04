@@ -118,4 +118,4 @@
   service: name=nginx state=reloaded enabled=yes
   become: true
   become_method: sudo
-  tags: ['never','postinstall','kamailio','changeip']
+  tags: ['never','postinstall','kamailio','changenetwork']

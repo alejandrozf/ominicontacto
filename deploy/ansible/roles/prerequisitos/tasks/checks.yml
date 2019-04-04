@@ -82,7 +82,7 @@
   shell: "[ -d {{ kamailio_location }}/etc/certs ]"
   failed_when: false
   register: certs_exists
-  tags: ['kamailio']
+  tags: always
   become: true
   become_method: sudo
 
@@ -91,7 +91,7 @@
   shell: "[ -d {{ install_prefix }}ominicontacto ]"
   failed_when: false
   register: ominicontacto_exists
-  tags: ['omniapp','postinstall']
+  tags: always
   when: desarrollo == 1
 
 # Chequeo si ics_app existe
@@ -99,7 +99,7 @@
   shell: "[-d {{ install_prefix }}ominicontacto/ics_app]"
   failed_when: false
   register: ics_exists
-  tags: ['omniapp','postinstall']
+  tags: always
 
 # Chequea si timezone esta definido
 - name: Check if TimeZone variable is defined

@@ -20,6 +20,7 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
+  tags: changenetwork
 
 # Esto es para debian
 - name: Modify of pg_hba.conf file (debian)
@@ -27,6 +28,7 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
+  tags: changenetwork
 
 #Se modifica la ip en la que escucha postgres
 - name: Modify postgresql listen address
@@ -44,12 +46,14 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
+  tags: changenetwork
 
 - name: Restart postgres service (debian)
   service: name=postgresql state=restarted enabled=yes
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
+  tags: changenetwork
 
 # Se crea el usuario de postgres
 - name: Create rw postgres user
@@ -57,6 +61,7 @@
   become: yes
   become_method: sudo
   become_user: postgres
+  tags: changepassword
 
 # Se crea el usuario de postgres
 - name: Create ro postgres user
@@ -81,7 +86,6 @@
   command: pg_restore -d {{ postgres_database }} -c -F t /tmp/kamailio-tables.tar.gz
   environment:
     PGPASSWORD: "{{ postgres_password }}"
-  register: restore_result
   failed_when: false
   become: true
   become_method: su

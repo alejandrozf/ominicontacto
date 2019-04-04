@@ -48,7 +48,7 @@
   with_items:
     - "{{ install_prefix }}"
     - /root/
-  tags: ['database','asterisk','kamailio','omniapp']
+  tags: ['database','asterisk','kamailio','omniapp','changepassword','changenetwork']
 
 # primeras configuraciones de servidores
 - name: First configuration in server or servers
