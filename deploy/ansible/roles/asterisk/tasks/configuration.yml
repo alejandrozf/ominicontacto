@@ -52,6 +52,7 @@
   template: "src=templates/conf/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{{ item }} owner={{ usuario }} group={{ usuario }} mode=755"
   with_items:
       - amd.conf
+      - asterisk.conf
       - chan_dahdi.conf
       - extconfig.conf
       - extensions.conf
@@ -77,7 +78,7 @@
       - udptl.conf
   become: true
   become_method: sudo
-  tags: changeip
+  tags: ['changeip','postinstall']
 
 # Los archivos-no-enlaces se copian a la a /etc/asterisk
 - name: Copy of all asterisk config files

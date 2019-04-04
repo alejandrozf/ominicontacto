@@ -70,6 +70,7 @@ DATABASES = {
     }
 }
 
+DEFENDER_BEHIND_REVERSE_PROXY = True
 STATIC_ROOT = "/opt/omnileads/static"
 MEDIA_ROOT = "/opt/omnileads/media_root"
 
@@ -138,9 +139,9 @@ OML_WOMBAT_USER = "demoadmin"
 
 OML_WOMBAT_PASSWORD = "demo"
 
-OML_KAMAILIO_LOCATION = "{{ kamailio_location }}/etc/kamailio/"
-OML_KAMAILIO_CMD = "ssh root@{{ omnivoip_fqdn }} 'rets' |awk -F ' ' '{print $3}' |head -1"
-OML_GENERARSK_CMD = "ssh root@omnivoip 'sed -i \"s/\({0}\).*/{1}!g\\\"/\" {2}kamailio-local.cfg'"
+EPHEMERAL_USER_TTL = 28800
+OML_KAMAILIO_HOSTNAME = "root@{{ kamailio_fqdn }}"
+OML_KAMAILIO_CMD = "kamcmd -s {{ kamailio_location }}/run/kamailio/kamailio_ct autheph.dump_secrets"
 
 _logging_output_file = os.environ.get("OML_LOGFILE", "django.log")
 assert os.path.split(_logging_output_file)[0] == "",\
