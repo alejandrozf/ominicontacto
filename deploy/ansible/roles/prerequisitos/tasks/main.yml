@@ -30,6 +30,10 @@
   become: yes
   become_method: sudo
 
+# Se setea el timezone
+- name: Set timezone of server
+  timezone: name={{ TZ }}
+
 # se crea el grupo de usuario omnileads
 - name: Creation of {{ usuario }} group
   group: name={{ usuario }} state=present

@@ -36,10 +36,10 @@ country_code: 54
 admin_user: admin
 usuario: omnileads
 session_cookie_age: 3600
+install_prefix: /opt/omnileads/
 asterisk_location: "{{ install_prefix }}asterisk"
 kamailio_location: "{{ install_prefix }}kamailio"
 static_route: "{{ install_prefix }}ominicontacto/ominicontacto_app/static/ominicontacto"
-
 
 #### Para saber si es una install para devenv o cluster #####
 desarrollo: 0
