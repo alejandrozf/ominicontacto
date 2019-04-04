@@ -100,3 +100,9 @@
   failed_when: false
   register: ics_exists
   tags: ['omniapp','postinstall']
+
+# Chequea si timezone esta definido
+- name: Check if TimeZone variable is defined
+  fail:
+    msg: TimeZone variable undefined, edit it in the inventory file
+  when: TZ is not defined
