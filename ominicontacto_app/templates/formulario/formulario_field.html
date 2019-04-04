@@ -24,7 +24,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block head_js %}
 <script type="text/javascript">
     $(function(){
-        /* Maneja el submit del ordenamiento.*/
+            /* Maneja el submit del ordenamiento.*/
             $(".orden").click(function (){
                 var sentido_orden = $(this).attr('data-sentido-orden');
 
@@ -34,19 +34,26 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 $("#form-orden-campos").attr('action', url);
                 $("#form-orden-campos").submit();
             });
-
+    
+            /* Maneja la adicion de un item a la lista */
             $("#agregar_lista").click(function (){
+                $('#value_item_error').hide();
                 var item = $('#id_value_item').val();
+                var list = $('#id_list_values').val();
 
-                $('#id_list_values').append($("<option>").val(item).html(item));
+                if (item == ''){
+                    $('#value_item_error').show();
+                }
+                else {
+                    $('#id_list_values').append($("<option>").val(item).html(item));
+                    $('#id_value_item').val("");
 
-                $('#id_value_item').val("");
-
-                var lista = [];
-                $('#id_list_values').find('option').each(function(){  lista.push($(this).val()); });
-                $("#id_values_select").val(JSON.stringify(lista));
-
+                    var lista = [];
+                    $('#id_list_values').find('option').each(function(){  lista.push($(this).val()); });
+                    $("#id_values_select").val(JSON.stringify(lista));
+                }
             });
+
             $("#eliminar_lista").click(function (){
                 var list_values = document.getElementById("id_list_values");
                 var opt_seleccionados = list_values.selectedOptions;
@@ -124,6 +131,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </button>
     <br>
     <br>
+    <span id="value_item_error" class="alert alert-danger" style="display: none;">
+        {% trans "No ingrese un item vacío" %}
+    </span>
     <hr id="separador_lista_control" style="display: none;">
     <div class="form-row" id="lista_control" style="display: none;">
         <div class="col-md-6">
