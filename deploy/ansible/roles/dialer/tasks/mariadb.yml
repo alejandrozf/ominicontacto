@@ -52,6 +52,7 @@
   template: src=templates/my.cnf.j2 dest=/root/.my.cnf owner=root group=root mode=0600
   become: true
   become_method: sudo
+  tags: changepassword
 
 - name: Set root Password
   mysql_user: name=root host={{ item }} host_all=yes password={{ mysql_root_password }} check_implicit_admin=true state=present
@@ -62,6 +63,7 @@
     MYSQL_PWD: "{{ mysql_root_password }}"
   become: true
   become_method: sudo
+  tags: changepassword
 
 - name: Reload privilege tables
   command: 'mysql -ne "{{ item }}"'

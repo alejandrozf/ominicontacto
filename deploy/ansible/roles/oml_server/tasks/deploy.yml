@@ -79,7 +79,7 @@
 
 - name: Get the ics_settings settings in temp file
   shell: cat {{ install_prefix }}local/oml_settings_local.py | grep "#ICS" -A200 > /tmp/oml_settings_local.py2
-  tags: postinstall
+  tags: ['postinstall','changenetwork','changepassword']
   when: ics_exists.rc == 0
 
 # El codigo que está en /var/tmp/ominicontacto_build/ se pasa a /opt/omnileeads/ominicontacto
@@ -172,15 +172,14 @@
 # Se sube el archivo oml_settings_local.py
 - name: Upload oml_settings_local.py
   template: src=templates/oml_settings_local.py.j2 dest={{ install_prefix }}local/oml_settings_local.py
-  tags: ['omniapp', 'changeip','postinstall']
+  tags: ['omniapp', 'changenetwork','postinstall','changepassword']
 
 - name: Copy the content of of ics_settings in oml_settings_local
   shell: "cat /tmp/oml_settings_local.py2 >> oml_settings_local.py"
   args:
     chdir: "{{ install_prefix }}/local"
-  tags: postinstall
+  tags: ['changenetwork','postinstall','changepassword']
   when: ics_exists.rc == 0
-
 
 # Se hace el link simbolico del archivo oml_settings_local a ominicontacto/, para que se pueda hacer manage.py
 - name: Creation of simbolic link of oml_settings_local.py

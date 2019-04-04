@@ -62,7 +62,7 @@
 # Se crea el archivo kamailio-local, Este archivo contiene las variables que usa el kamailio.cfg
 - name: Creation of kamailio-local.cfg file
   template: src=templates/etc/kamailio-local.cfg dest={{ kamailio_location }}/etc/kamailio/ owner={{ usuario }} group={{ usuario }}
-  tags: changeip
+  tags: changenetwork
   become: true
   become_method: sudo
 
@@ -112,7 +112,7 @@
 # Restarteo kamailio
 - name: Restart kamailio service
   systemd: name=kamailio state=restarted enabled=yes daemon_reload=yes
-  tags: ['changeip']
+  tags: changenetwork
   become: true
   become_method: sudo
   when: is_docker.stdout != "docker"
@@ -120,7 +120,7 @@
 # Se restartea rsyslog se habilita kamailio y se hace el daemon-reload.
 - name: Restart de rsyslog
   service: name=rsyslog.service state=restarted enabled=yes
-  tags: changeip
+  tags: changenetwork
   when: is_docker.stdout != "docker"
   become: true
   become_method: sudo

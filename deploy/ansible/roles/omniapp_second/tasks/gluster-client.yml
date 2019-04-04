@@ -35,6 +35,7 @@
   template: src=templates/etc/glusterfs-mount dest=/etc/init.d/glusterfs-mount owner=root group=root mode=755
   become: true
   become_method: true
+  tags: changenetwork
 
 - name: Enable and start of the script
   service: name=glusterfs-mount state=restarted enabled=yes
