@@ -2,9 +2,12 @@
 
 from __future__ import unicode_literals
 
+from mock import patch
 
 from django.core.urlresolvers import reverse
 from django.test import TestCase
+
+from api_app.views import AgentesStatusAPIView
 
 from ominicontacto_app.models import Campana
 from ominicontacto_app.tests.factories import (CampanaFactory, SupervisorProfileFactory,
@@ -61,3 +64,33 @@ class APITest(TestCase):
         url = reverse('supervisor_campanas-list', kwargs={'format': 'json'})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
+
+    def test_servicio_agentes_activos_usuario_no_logueado_no_accede_a_servicio(self):
+        url = reverse('api_agentes_activos')
+        response = self.client.get(url, follow=True)
+        self.assertTemplateUsed(response, 'registration/login.html')
+
+    def _generar_ami_response_agentes(self):
+        # genera datos que simulan lo más aproximadamente posible las lineas de output de
+        # los estados de los agentes obtenidos por el comando AMI 'database show OML/AGENT'
+        linea_agente = '/OML/AGENT/{0}/NAME                                 : agente{0}'
+        linea_sip = '/OML/AGENT/{0}/SIP                                  : 100{0}'
+        linea_status = '/OML/AGENT/{0}/STATUS                               : {1}:155439223'
+        response = []
+        datos_agentes = [{'id': 1, 'status': 'READY'}, {'id': 2, 'status': 'PAUSE'},
+                         {'id': 3, 'status': 'OFFLINE'}]
+        for datos_agente in datos_agentes:
+            id_agente = datos_agente['id']
+            status_agente = datos_agente['status']
+            response.extend([linea_agente.format(id_agente), linea_sip.format(id_agente),
+                             linea_status.format(id_agente, status_agente)])
+        return '\n'.join(response)
+
+    @patch('api_app.views.Manager')
+    @patch.object(AgentesStatusAPIView, "_ami_obtener_agentes")
+    def test_servicio_agentes_activos_muestra_activos(self, _ami_obtener_agentes, manager):
+        self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
+        _ami_obtener_agentes.return_value = self._generar_ami_response_agentes()
+        url = reverse('api_agentes_activos')
+        response = self.client.get(url)
+        self.assertEqual(len(response.json()['agentes']), 3)
