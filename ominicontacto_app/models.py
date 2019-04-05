@@ -649,7 +649,6 @@ class CampanaManager(models.Manager):
             bd_contacto=base_datos_sugerida,
             gestion=campana.gestion,
             type=campana.type,
-            formulario=campana.formulario,
             sitio_externo=campana.sitio_externo,
             tipo_interaccion=campana.tipo_interaccion,
             reported_by=campana.reported_by,
@@ -891,8 +890,8 @@ class Campana(models.Model):
         null=True, blank=True,
         related_name="%(class)ss"
     )
-    formulario = models.ForeignKey(Formulario, null=True, blank=True)
     oculto = models.BooleanField(default=False)
+    # TODO: Sacar este campo
     gestion = models.CharField(max_length=128, default="Venta")
     campaign_id_wombat = models.IntegerField(null=True, blank=True)
     type = models.PositiveIntegerField(choices=TYPES_CAMPANA)
@@ -1174,6 +1173,7 @@ class OpcionCalificacion(models.Model):
         Campana, on_delete=models.CASCADE, related_name='opciones_calificacion')
     tipo = models.IntegerField(choices=FORMULARIO_CHOICES, default=NO_ACCION)
     nombre = models.CharField(max_length=50)
+    formulario = models.ForeignKey(Formulario, null=True, blank=True)
 
     def __unicode__(self):
         return unicode(_('Opción "{0}" para campaña "{1}" de tipo "{2}"'.format(
@@ -2520,11 +2520,6 @@ class DuracionDeLlamada(models.Model):
 
 class RespuestaFormularioGestion(models.Model):
     """Representa información del formulario de gestión completado en una Calificacion"""
-    # FIXME: este modelo debería tener una relación directa con CalificacionCliente (ver OML-434),
-    # lo cual generaría un refactor de la exportación a csv de las calificaciones y haría obsoleto
-    # a 'obtener_metadata_con_nombre_calificacion' que es en un hack para poder acceder al nombre
-    # de la calificacion por el momento
-
     calificacion = models.ForeignKey(CalificacionCliente,
                                      related_name='respuesta_formulario_gestion',
                                      on_delete=models.CASCADE)

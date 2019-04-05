@@ -381,7 +381,7 @@ class DefineBaseDatosContactoView(UpdateView):
         except OmlParserCsvImportacionError as e:
 
             message = _('<strong>Operación Errónea!</strong> ') +\
-                _('El archivo que seleccionó posee registros inválidos.<br>'
+                _('El archivo que seleccionó posee registros inválidos.<br> '
                   '<u>Línea Inválida:</u> {0}<br> <u>Contenido Línea:</u>'
                   '{1}<br><u>Contenido Inválido:</u> {2}').format(
                 e.numero_fila, e.fila, e.valor_celda)
@@ -396,9 +396,9 @@ class DefineBaseDatosContactoView(UpdateView):
         except ContactoExistenteError as e:
 
             message = _('<strong>Operación Errónea!</strong> ') +\
-                _('El archivo que seleccionó posee registros inválidos.<br>'
-                  'ERROR: {0}. Vuelva cargar nuevamente la base de datos '
-                  ' sin el contacto existente ').format(e)
+                _('El archivo que seleccionó posee registros inválidos.<br> '
+                  'ERROR: {0}. Vuelva a cargar nuevamente la base de datos '
+                  'sin el contacto existente ').format(e)
 
             messages.add_message(
                 self.request,
@@ -705,9 +705,9 @@ class ActualizaBaseDatosContactoView(UpdateView):
 
         except ContactoExistenteError as e:
 
-            message = _('<strong>Operación Errónea!</strong>') +\
+            message = _('<strong>¡Operación Errónea!</strong> ') +\
                 _('El archivo que seleccionó posee registros inválidos.<br> '
-                  'ERROR: {0}. Vuelva cargar nuevamente la base de datos '
+                  'ERROR: {0}. Vuelva a cargar nuevamente la base de datos '
                   'sin el contacto existente ').format(e)
 
             messages.add_message(
@@ -846,7 +846,7 @@ def cargar_base_datos_view(request):
                 except OmlParserCsvImportacionError as e:
                     message = ('<strong>Operación Errónea!</strong> ') +\
                         _('El archivo que seleccionó posee registros inválidos.<br> '
-                          '<u>Línea Inválida:</u> {0}<br> <u>Contenido Línea:</u> '
+                          '<u>Línea Inválida:</u> {0}<br> <u>Contenido Línea:</u>'
                           '{1}<br><u>Contenido Inválido:</u> {2}').format(
                         e.numero_fila, e.fila, e.valor_celda)
 

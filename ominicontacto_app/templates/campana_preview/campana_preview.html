@@ -43,13 +43,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block interaccion %}
     {{ form.tipo_interaccion.errors }}
     {% if form.instance.pk %}
-        {% if form.instance.tipo_interaccion == 1 %}
-            <div class="col-md-6">
-                <label>{% trans "Formulario" %}</label>
-                {{ form.formulario }}
-                {{ form.formulario.errors }}
-            </div>
-        {% endif %}
         {% if form.instance.tipo_interaccion == 2 %}
             <div class="col-md-6">
                 <label>{% trans "Sitio Externo" %}</label>
@@ -58,15 +51,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </div>
         {% endif %}
     {% else %}
+        {{ form.tipo_interaccion.errors }}
         <div class="col-md-6">
-            <label><div class="myradio">{{ form.tipo_interaccion.0 }}</div></label>
-            {{ form.formulario }}
-            {{ form.formulario.errors }}
+          <label> {% trans "Tipo de Interacción" %}</label>
+            <div class="myradio">{{ form.tipo_interaccion.0 }}</div>
+            <div class="myradio">{{ form.tipo_interaccion.1 }}</div>
         </div>
         <div class="col-md-6">
-            <label><div class="myradio">{{ form.tipo_interaccion.1 }}</div> </label>
-            {{ form.sitio_externo }}
+            <label><div class="myradio">{% trans "Url Externa" %}</div> </label>
             {{ form.sitio_externo.errors }}
+            {{ form.sitio_externo }}
         </div>
     {% endif %}
 {% endblock interaccion %}

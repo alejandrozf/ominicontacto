@@ -418,15 +418,10 @@ class CampanaMixinForm(object):
                         "configurar una campana")
             self.add_error('bd_contacto', message)
             raise forms.ValidationError(message, code='invalid')
-        if self.cleaned_data.get('tipo_interaccion') is Campana.FORMULARIO and \
-                not self.cleaned_data.get('formulario'):
-            message = _("Debe seleccionar un formulario")
-            self.add_error('formulario', message)
-            raise forms.ValidationError(message, code='invalid')
-        elif self.cleaned_data.get('tipo_interaccion') is Campana.SITIO_EXTERNO and \
+        if self.cleaned_data.get('tipo_interaccion') is Campana.SITIO_EXTERNO and \
                 not self.cleaned_data.get('sitio_externo'):
             message = _("Debe seleccionar un sitio externo")
-            self.add_error('formulario', message)
+            self.add_error('sitio_externo', message)
             raise forms.ValidationError(message, code='invalid')
         return super(CampanaMixinForm, self).clean()
 
@@ -452,7 +447,6 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
         else:
             self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].required = True
-            self.fields['formulario'].disabled = True
             self.fields['tipo_interaccion'].disabled = True
             self.fields['tipo_interaccion'].required = False
 
@@ -475,7 +469,7 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'bd_contacto', 'formulario',
+        fields = ('nombre', 'bd_contacto',
                   'sitio_externo', 'tipo_interaccion', 'objetivo', 'mostrar_nombre')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
@@ -484,7 +478,6 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
-            'formulario': forms.Select(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
@@ -494,7 +487,7 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
 class OpcionCalificacionForm(forms.ModelForm):
     class Meta:
         model = OpcionCalificacion
-        fields = ('tipo', 'nombre', 'campana')
+        fields = ('tipo', 'nombre', 'formulario', 'campana')
 
         widgets = {
             'nombre': forms.Select(),
@@ -503,6 +496,7 @@ class OpcionCalificacionForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         nombres_calificaciones = kwargs.pop('nombres_calificaciones')
+        con_formulario = kwargs.pop('con_formulario')
         super(OpcionCalificacionForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
@@ -517,8 +511,12 @@ class OpcionCalificacionForm(forms.ModelForm):
         if instance and instance.pk and instance.no_editable():
             self.fields['nombre'].disabled = True
             self.fields['tipo'].disabled = True
+            self.fields['formulario'].disabled = True
         else:
             self.fields['tipo'].choices = OpcionCalificacion.FORMULARIO_CHOICES_NO_AGENDA
+
+        if not con_formulario:
+            self.fields.pop('formulario')
 
     def clean_nombre(self):
         instance = getattr(self, 'instance', None)
@@ -537,6 +535,21 @@ class OpcionCalificacionForm(forms.ModelForm):
             return instance.tipo
         else:
             return self.cleaned_data['tipo']
+
+    def clean_formulario(self):
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk and instance.no_editable():
+            return instance.formulario
+        else:
+            tipo = self.cleaned_data.get('tipo', None)
+            if tipo == OpcionCalificacion.GESTION:
+                # TODO: Solo si se eligio tipo_interaccion Formulario!!!
+                # TODO: Solo si se eligio tipo_interaccion Formulario!!!
+                formulario = self.cleaned_data.get('formulario', None)
+                if not formulario:
+                    raise forms.ValidationError(_("Debe elegir un formulario para la gestión."))
+                return formulario
+            return None
 
 
 class OpcionCalificacionBaseFormset(BaseInlineFormSet):
@@ -602,6 +615,11 @@ class OpcionCalificacionBaseFormset(BaseInlineFormSet):
         if campana.estado != Campana.ESTADO_TEMPLATE_ACTIVO:
             campana.gestionar_opcion_calificacion_agenda()
         super(OpcionCalificacionBaseFormset, self).save()
+
+
+OpcionCalificacionFormSet = inlineformset_factory(
+    Campana, OpcionCalificacion, form=OpcionCalificacionForm,
+    formset=OpcionCalificacionBaseFormset, extra=0, min_num=1)
 
 
 class OpcionCalificacionModelChoiceField(ModelChoiceField):
@@ -852,10 +870,6 @@ FormularioCalificacionFormSet = inlineformset_factory(
     Contacto, CalificacionCliente, form=CalificacionClienteForm,
     can_delete=False, extra=1, max_num=1)
 
-OpcionCalificacionFormSet = inlineformset_factory(
-    Campana, OpcionCalificacion, form=OpcionCalificacionForm,
-    formset=OpcionCalificacionBaseFormset, extra=0, min_num=1)
-
 
 class RespuestaFormularioGestionForm(forms.ModelForm):
 
@@ -936,7 +950,6 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         if self.instance.pk:
             self.fields['nombre'].disabled = not es_template
             self.fields['bd_contacto'].disabled = True
-            self.fields['formulario'].disabled = True
             self.fields['tipo_interaccion'].required = False
 
     def requiere_bd_contacto(self):
@@ -949,17 +962,10 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         else:
             return self.cleaned_data['bd_contacto']
 
-    def clean_formulario(self):
-        instance = getattr(self, 'instance', None)
-        if instance and instance.pk:
-            return instance.formulario
-        else:
-            return self.cleaned_data['formulario']
-
     class Meta:
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin',
-                  'bd_contacto', 'formulario', 'sitio_externo',
+                  'bd_contacto', 'sitio_externo',
                   'tipo_interaccion', 'objetivo', 'mostrar_nombre')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
@@ -967,7 +973,6 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
-            'formulario': forms.Select(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
@@ -1217,15 +1222,13 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
         else:
             self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].required = True
-            self.fields['formulario'].disabled = True
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'formulario', 'bd_contacto',
+        fields = ('nombre', 'bd_contacto',
                   'sitio_externo', 'tipo_interaccion', 'objetivo')
 
         widgets = {
-            'formulario': forms.Select(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
@@ -1246,19 +1249,17 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
             self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].disabled = True
             self.fields['tiempo_desconexion'].disabled = True
-            self.fields['formulario'].disabled = True
             self.fields['tipo_interaccion'].disabled = True
             self.fields['tipo_interaccion'].required = False
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'formulario',
+        fields = ('nombre',
                   'sitio_externo', 'tipo_interaccion', 'objetivo', 'bd_contacto',
                   'tiempo_desconexion')
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
-            'formulario': forms.Select(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),

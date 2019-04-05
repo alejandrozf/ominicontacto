@@ -301,7 +301,7 @@ class FormularioDeleteView(DeleteView):
     def dispatch(self, request, *args, **kwargs):
         formulario = self.get_object()
 
-        if formulario.campana_set.all().exists():
+        if formulario.opcioncalificacion_set.all().exists():
             message = _("No está permitido eliminar un formulario asignado a alguna campaña")
             messages.error(self.request, message)
             return HttpResponseRedirect(

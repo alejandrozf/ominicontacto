@@ -28,7 +28,8 @@ from factory import DjangoModelFactory, lazy_attribute, SubFactory, Sequence, po
 from django.utils import timezone
 
 from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana, Grupo, Queue,
-                                      NombreCalificacion, Formulario, Grabacion, GrabacionMarca,
+                                      NombreCalificacion, Formulario, FieldFormulario,
+                                      Grabacion, GrabacionMarca,
                                       SitioExterno, User, Contacto, SupervisorProfile, Modulo,
                                       AgenteEnContacto, QueueMember, CalificacionCliente,
                                       OpcionCalificacion, ArchivoDeAudio, ParametrosCrm,
@@ -152,6 +153,19 @@ class FormularioFactory(DjangoModelFactory):
     descripcion = lazy_attribute(lambda a: faker.paragraph(10))
 
 
+class FieldFormularioFactory(DjangoModelFactory):
+    class Meta:
+        model = FieldFormulario
+
+    formulario = SubFactory(FormularioFactory)
+    nombre_campo = lazy_attribute(lambda a: "campo_{0}".format(uuid4()))
+    # Cuidado al crear con este orden aleatorio
+    orden = lazy_attribute(lambda a: faker.random_int(1, 1000))
+    tipo = FieldFormulario.TIPO_TEXTO
+    values_select = None
+    is_required = False
+
+
 class NombreCalificacionFactory(DjangoModelFactory):
     class Meta:
         model = NombreCalificacion
@@ -169,7 +183,6 @@ class CampanaFactory(DjangoModelFactory):
     fecha_fin = lazy_attribute(lambda a: a.fecha_inicio)
     bd_contacto = SubFactory(BaseDatosContactoFactory)
     tipo_interaccion = Campana.FORMULARIO
-    formulario = SubFactory(FormularioFactory)
     campaign_id_wombat = lazy_attribute(lambda a: faker.random_number(7))
     type = lazy_attribute(lambda a: faker.random_int(1, 3))
     sitio_externo = None
@@ -265,7 +278,9 @@ class OpcionCalificacionFactory(DjangoModelFactory):
         model = OpcionCalificacion
 
     campana = SubFactory(CampanaFactory)
+    tipo = lazy_attribute(lambda a: faker.random_int(0, 1))
     nombre = lazy_attribute(lambda a: faker.text(15))
+    formulario = SubFactory(FormularioFactory)
 
 
 class CalificacionClienteFactory(DjangoModelFactory):

@@ -97,7 +97,6 @@ class CampanaTemplateCreateCampanaMixin(object):
                 'nombre': campana_nombre,
                 'bd_contacto': campana_template.bd_contacto,
                 'tipo_interaccion': campana_template.tipo_interaccion,
-                'formulario': campana_template.formulario,
                 'sitio_externo': campana_template.sitio_externo,
                 'gestion': campana_template.gestion,
                 'objetivo': campana_template.objetivo,
@@ -134,7 +133,9 @@ class CampanaTemplateCreateCampanaMixin(object):
         if current_step == self.OPCIONES_CALIFICACION:
             initial_data = campana_template.opciones_calificacion.values('nombre', 'tipo')
             opts_calif_init_formset = context['wizard']['form']
-            calif_init_formset = OpcionCalificacionFormSet(initial=initial_data)
+            form_kwargs = self.get_form_kwargs(current_step)['form_kwargs']
+            calif_init_formset = OpcionCalificacionFormSet(
+                initial=initial_data, form_kwargs=form_kwargs)
             calif_init_formset.extra = len(initial_data) - 1
             calif_init_formset.prefix = opts_calif_init_formset.prefix
             context['wizard']['form'] = calif_init_formset
@@ -150,6 +151,14 @@ class CampanaTemplateCreateCampanaMixin(object):
             param_crms_formset.prefix = params_crm_init_formset.prefix
             context['wizard']['form'] = param_crms_formset
         return context
+
+    def get_form_kwargs(self, step):
+        kwargs = super(CampanaTemplateCreateCampanaMixin, self).get_form_kwargs(step)
+        if step == self.OPCIONES_CALIFICACION:
+            cleaned_data = self.get_cleaned_data_for_step(self.INICIAL)
+            con_formulario = cleaned_data.get('tipo_interaccion') == Campana.FORMULARIO
+            return {'form_kwargs': {'con_formulario': con_formulario}}
+        return kwargs
 
 
 class CampanaTemplateDeleteMixin(object):
@@ -224,6 +233,10 @@ class CampanaWizardMixin(object):
         if step == self.ADICION_AGENTES:
             members = AgenteProfile.objects.obtener_activos()
             return {'form_kwargs': {'members': members}}
+        if step == self.OPCIONES_CALIFICACION:
+            cleaned_data = self.get_cleaned_data_for_step(self.INICIAL)
+            con_formulario = cleaned_data.get('tipo_interaccion') == Campana.FORMULARIO
+            return {'form_kwargs': {'con_formulario': con_formulario}}
         else:
             return {}
 

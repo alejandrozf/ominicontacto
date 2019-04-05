@@ -82,7 +82,8 @@ class BaseTestDeReportes(TestCase):
             campana=self.campana_activa, nombre=self.nombre_calificacion_gestion.nombre,
             tipo=OpcionCalificacion.GESTION)
         self.opcion_calificacion_noaccion = OpcionCalificacionFactory.create(
-            campana=self.campana_activa, nombre=self.nombre_calificacion.nombre)
+            campana=self.campana_activa, nombre=self.nombre_calificacion.nombre,
+            tipo=OpcionCalificacion.NO_ACCION)
 
         self.telefono1 = self.contacto_calificado_gestion.telefono
         self.telefono2 = self.contacto_calificado_no_accion.telefono

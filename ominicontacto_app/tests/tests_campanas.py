@@ -37,7 +37,7 @@ from django.utils.translation import ugettext as _
 from configuracion_telefonia_app.models import DestinoEntrante
 
 from ominicontacto_app.models import (AgenteEnContacto, Campana, QueueMember, OpcionCalificacion,
-                                      Formulario)
+                                      Formulario, ParametrosCrm)
 from ominicontacto_app.forms import CampanaPreviewForm, TIEMPO_MINIMO_DESCONEXION
 
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, UserFactory,
@@ -45,7 +45,8 @@ from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, 
                                                AgenteEnContactoFactory, QueueMemberFactory,
                                                NombreCalificacionFactory,
                                                OpcionCalificacionFactory, ArchivoDeAudioFactory,
-                                               ActuacionVigenteFactory, FormularioFactory)
+                                               ActuacionVigenteFactory, FormularioFactory,
+                                               SitioExternoFactory)
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, OMLTransaccionBaseTest
 
@@ -102,12 +103,17 @@ class CampanasThreadsTests(OMLTransaccionBaseTest):
         self.usuario_admin_supervisor.set_password(self.PWD)
         self.usuario_admin_supervisor.save()
 
+        self.formulario = FormularioFactory()
+
         self.campana = CampanaFactory.create()
         self.campana_activa = CampanaFactory.create(
             estado=Campana.ESTADO_ACTIVA, type=Campana.TYPE_PREVIEW)
 
         self.campana_borrada = CampanaFactory.create(
             estado=Campana.ESTADO_BORRADA, oculto=False, type=Campana.TYPE_PREVIEW)
+        self.opcion_calificacion = OpcionCalificacionFactory(campana=self.campana,
+                                                             tipo=OpcionCalificacion.GESTION,
+                                                             formulario=self.formulario)
 
         self.contacto = ContactoFactory.create(bd_contacto=self.campana_activa.bd_contacto)
         self.campana_activa.bd_contacto.contactos.add(self.contacto)
@@ -176,11 +182,13 @@ class CampanasTests(OMLBaseTest):
 
         calificacion_gestion = NombreCalificacionFactory.create(nombre=self.GESTION)
 
+        self.formulario = FormularioFactory()
+
         self.campana = CampanaFactory.create()
         self.campana_dialer = CampanaFactory.create(type=Campana.TYPE_DIALER)
         self.opcion_calificacion_gestion_dialer = OpcionCalificacionFactory(
             campana=self.campana_dialer, nombre=calificacion_nombre,
-            tipo=OpcionCalificacion.GESTION)
+            tipo=OpcionCalificacion.GESTION, formulario=self.formulario)
         self.opcion_calificacion_agenda_dialer = OpcionCalificacionFactory(
             campana=self.campana_dialer, nombre=settings.CALIFICACION_REAGENDA,
             tipo=OpcionCalificacion.AGENDA)
@@ -191,18 +199,19 @@ class CampanasTests(OMLBaseTest):
             tiempo_desconexion=self.tiempo_desconexion, gestion=self.GESTION)
         self.opcion_calificacion_gestion = OpcionCalificacionFactory.create(
             campana=self.campana_activa, nombre=calificacion_gestion.nombre,
-            tipo=OpcionCalificacion.GESTION)
+            tipo=OpcionCalificacion.GESTION, formulario=self.formulario)
         self.opcion_calificacion_agenda = OpcionCalificacionFactory.create(
             campana=self.campana_activa, nombre=settings.CALIFICACION_REAGENDA,
             tipo=OpcionCalificacion.AGENDA)
         self.opcion_calificacion_noaccion = OpcionCalificacionFactory.create(
-            campana=self.campana_activa, nombre=calificacion_nombre)
+            campana=self.campana_activa, nombre=calificacion_nombre,
+            tipo=OpcionCalificacion.NO_ACCION)
         self.campana_borrada = CampanaFactory.create(
             estado=Campana.ESTADO_BORRADA, oculto=False, type=Campana.TYPE_PREVIEW,
             gestion=self.GESTION)
         OpcionCalificacionFactory.create(
             campana=self.campana_borrada, nombre=calificacion_nombre,
-            tipo=OpcionCalificacion.GESTION)
+            tipo=OpcionCalificacion.GESTION, formulario=self.formulario)
 
         self.contacto = ContactoFactory.create(bd_contacto=self.campana_activa.bd_contacto)
         self.campana_activa.bd_contacto.contactos.add(self.contacto)
@@ -598,7 +607,6 @@ class SupervisorCampanaTests(CampanasTests):
         campana_preview_data = {'nombre': nombre_campana,
                                 'bd_contacto': self.campana_activa.bd_contacto.pk,
                                 'tipo_interaccion': Campana.FORMULARIO,
-                                'formulario': self.campana.formulario.pk,
                                 'auto_grabacion': True,
                                 'objetivo': 1,
                                 'tiempo_desconexion': tiempo_desconexion}
@@ -611,7 +619,6 @@ class SupervisorCampanaTests(CampanasTests):
             '0-nombre': nombre_campana,
             '0-bd_contacto': '',
             '0-tipo_interaccion': self.campana.tipo_interaccion,
-            '0-formulario': self.campana.formulario.pk,
             '0-objetivo': 0,
             'campana_entrante_create_view-current_step': 0,
         }
@@ -635,7 +642,8 @@ class SupervisorCampanaTests(CampanasTests):
         post_step2_data = {
             'campana_entrante_create_view-current_step': 2,
             '2-0-nombre': 'Venta',
-            '2-0-tipo': 1,
+            '2-0-tipo': OpcionCalificacion.GESTION,
+            '2-0-formulario': self.formulario.pk,
             '2-0-id': '',
             '2-TOTAL_FORMS': 1,
             '2-INITIAL_FORMS': 0,
@@ -644,7 +652,7 @@ class SupervisorCampanaTests(CampanasTests):
         }
         post_step3_data = {
             'campana_entrante_create_view-current_step': 3,
-            '3-0-tipo': '4',
+            '3-0-tipo': ParametrosCrm.CUSTOM,
             '3-0-nombre': 'fijo_1',
             '3-0-valor': 'valor_1',
             '3-0-id': '',
@@ -680,7 +688,6 @@ class SupervisorCampanaTests(CampanasTests):
             '0-nombre': nombre_campana,
             '0-bd_contacto': self.campana_activa.bd_contacto.pk,
             '0-tipo_interaccion': self.campana.tipo_interaccion,
-            '0-formulario': self.campana.formulario.pk,
             '0-objetivo': 0,
             '0-fecha_inicio': fecha_inicio.date().strftime("%d/%m/%Y"),
             '0-fecha_fin': fecha_fin.date().strftime("%d/%m/%Y"),
@@ -714,7 +721,8 @@ class SupervisorCampanaTests(CampanasTests):
         post_step2_data = {
             'campana_dialer_create_view-current_step': 2,
             '2-0-nombre': 'Venta',
-            '2-0-tipo': 1,
+            '2-0-tipo': OpcionCalificacion.GESTION,
+            '2-0-formulario': self.formulario.pk,
             '2-0-id': '',
             '2-TOTAL_FORMS': 1,
             '2-INITIAL_FORMS': 0,
@@ -723,7 +731,7 @@ class SupervisorCampanaTests(CampanasTests):
         }
         post_step3_data = {
             'campana_dialer_create_view-current_step': 3,
-            '3-0-tipo': '4',
+            '3-0-tipo': ParametrosCrm.CUSTOM,
             '3-0-nombre': 'fijo_1',
             '3-0-valor': 'valor_1',
             '3-0-id': '',
@@ -784,7 +792,6 @@ class SupervisorCampanaTests(CampanasTests):
          post_step7_data, __) = self._obtener_post_data_wizard_creacion_campana_dialer(
             nombre_campana, audio_ingreso, destino)
         post_step0_data.pop('0-tipo_interaccion')
-        post_step0_data.pop('0-formulario')
         post_step0_data.pop('campana_dialer_create_view-current_step')
         post_step2_data.pop('campana_dialer_create_view-current_step')
         post_step3_data.pop('campana_dialer_create_view-current_step')
@@ -813,6 +820,7 @@ class SupervisorCampanaTests(CampanasTests):
             'campana_dialer_update_view-current_step': 2,
             '2-0-nombre': self.opcion_calificacion_gestion_dialer.nombre,
             '2-0-tipo': OpcionCalificacion.GESTION,
+            '2-0-formulario': self.formulario.pk,
             '2-0-id': self.opcion_calificacion_gestion_dialer.pk,
             '2-1-nombre': self.opcion_calificacion_agenda_dialer.nombre,
             '2-1-tipo': OpcionCalificacion.AGENDA,
@@ -843,14 +851,14 @@ class SupervisorCampanaTests(CampanasTests):
             '0-nombre': nombre_campana,
             '0-bd_contacto': '',
             '0-tipo_interaccion': self.campana.tipo_interaccion,
-            '0-formulario': self.campana.formulario.pk,
             '0-objetivo': 0,
             'campana_manual_create_view-current_step': 0,
         }
         post_step1_data = {
             'campana_manual_create_view-current_step': 1,
             '1-0-nombre': 'Venta',
-            '1-0-tipo': 1,
+            '1-0-tipo': OpcionCalificacion.GESTION,
+            '1-0-formulario': self.formulario.pk,
             '1-0-id': '',
             '1-TOTAL_FORMS': 1,
             '1-INITIAL_FORMS': 0,
@@ -859,7 +867,7 @@ class SupervisorCampanaTests(CampanasTests):
         }
         post_step2_data = {
             'campana_manual_create_view-current_step': 2,
-            '2-0-tipo': '4',
+            '2-0-tipo': ParametrosCrm.CUSTOM,
             '2-0-nombre': 'fijo_1',
             '2-0-valor': 'valor_1',
             '2-0-id': '',
@@ -928,6 +936,7 @@ class SupervisorCampanaTests(CampanasTests):
             'campana_preview_update_view-current_step': 1,
             '1-0-nombre': self.opcion_calificacion_gestion.nombre,
             '1-0-tipo': OpcionCalificacion.GESTION,
+            '1-0-formulario': self.formulario.pk,
             '1-0-id': self.opcion_calificacion_gestion.pk,
             '1-1-nombre': self.opcion_calificacion_agenda.nombre,
             '1-1-tipo': OpcionCalificacion.AGENDA,
@@ -1032,7 +1041,7 @@ class SupervisorCampanaTests(CampanasTests):
         QueueFactory.create(campana=campana_entrante_template, pk=campana_entrante_template.nombre)
         OpcionCalificacionFactory.create(
             tipo=OpcionCalificacion.GESTION, nombre=self.calificacion.nombre,
-            campana=campana_entrante_template)
+            campana=campana_entrante_template, formulario=self.formulario)
         # ParametroExtraParaWebformFactory(campana=campana_entrante_template)
         audio_ingreso = ArchivoDeAudioFactory.create()
         (post_step0_data, post_step1_data,
@@ -1256,7 +1265,7 @@ class SupervisorCampanaTests(CampanasTests):
             campana=campana_entrante_template, pk=campana_entrante_template.nombre)
         opt_calif = OpcionCalificacionFactory.create(
             tipo=OpcionCalificacion.GESTION, nombre=self.calificacion.nombre,
-            campana=campana_entrante_template)
+            campana=campana_entrante_template, formulario=self.formulario)
         # parametro_web_form = ParametroExtraParaWebformFactory(campana=campana_entrante_template)
         audio_ingreso = ArchivoDeAudioFactory.create()
         (post_step0_data, post_step1_data,
@@ -1497,7 +1506,7 @@ class SupervisorCampanaTests(CampanasTests):
             campana=campana, pk=campana.nombre)
         opt_calif = OpcionCalificacionFactory.create(
             campana=campana, tipo=OpcionCalificacion.GESTION,
-            nombre=self.calificacion.nombre)
+            nombre=self.calificacion.nombre, formulario=self.formulario)
         # param_extra_web_form = ParametroExtraParaWebformFactory.create(campana=campana)
         url = reverse('campana_manual_template_create_campana', args=[campana.pk])
         nombre_campana = 'campana_manual_clonada'
@@ -1584,7 +1593,7 @@ class SupervisorCampanaTests(CampanasTests):
             campana=campana, pk=campana.nombre)
         opt_calif = OpcionCalificacionFactory.create(
             campana=campana, tipo=OpcionCalificacion.GESTION,
-            nombre=self.calificacion.nombre)
+            nombre=self.calificacion.nombre, formulario=self.formulario)
         # param_extra_web_form = ParametroExtraParaWebformFactory.create(campana=campana)
         url = reverse('campana_preview_template_create_campana', args=[campana.pk])
         nombre_campana = 'campana_preview_clonada'
@@ -1616,7 +1625,7 @@ class SupervisorCampanaTests(CampanasTests):
         # self.assertEqual(param_extra_web_form_clonado.columna, param_extra_web_form.columna)
 
     def test_no_es_posible_eliminar_formulario_asignado_a_campana(self):
-        url = reverse('formulario_eliminar', args=[self.campana.formulario.pk])
+        url = reverse('formulario_eliminar', args=[self.formulario.pk])
         n_formularios = Formulario.objects.count()
         self.client.post(url, follow=True)
         self.assertEqual(Formulario.objects.count(), n_formularios)
@@ -1762,3 +1771,29 @@ class SupervisorCampanaTests(CampanasTests):
         # comprobamos que se asigno supervisor a la campaña creada
         nueva_campana = Campana.objects.get(nombre=nombre_campana)
         self.assertTrue(nueva_campana.supervisors.exists())
+
+    def test_formsets_opciones_calificacion_interaccion_crm_no_tiene_campo_formulario(self):
+        url = reverse('campana_preview_create')
+        nombre_campana = 'campana_preview_test'
+        (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
+         post_step4_data) = self._obtener_post_data_wizard_creacion_campana_preview(
+             nombre_campana)
+        post_step0_data['0-tipo_interaccion'] = Campana.SITIO_EXTERNO
+        sitio_externo = SitioExternoFactory()
+        post_step0_data['0-sitio_externo'] = sitio_externo.id
+        response = self.client.post(url, post_step0_data, follow=True)
+        opcion_calificacion_form = response.context_data['form'].forms[0]
+        self.assertFalse('formulario' in opcion_calificacion_form.fields)
+
+    def test_campana_interaccion_formulario_requiere_campo_formulario(self):
+        url = reverse('campana_preview_create')
+        nombre_campana = 'campana_preview_test'
+        (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
+         post_step4_data) = self._obtener_post_data_wizard_creacion_campana_preview(
+             nombre_campana)
+        self.client.post(url, post_step0_data, follow=True)
+        post_step1_data['1-0-formulario'] = ''
+        response = self.client.post(url, post_step1_data, follow=True)
+        opcion_calificacion_form = response.context_data['form'].forms[0]
+        self.assertEqual(opcion_calificacion_form.errors['formulario'],
+                         [_("Debe elegir un formulario para la gestión.")])

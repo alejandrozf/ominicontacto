@@ -42,6 +42,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
          $(row.find('.nombre > select')).prop( "disabled", false );
          var $tipo = $(row.find('.tipo > select'));
          $tipo.prop( "disabled", false );
+         // Crea las opciones de tipo, para que no aparezca la de agenda.
          var tipoOpciones = {};
          tipoOpciones[SIN_ACCION] = "0";
          tipoOpciones[GESTION] = "1";
@@ -50,6 +51,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
            $tipo.append($("<option></option>")
              .attr("value", value).text(key));
          });
+         var $formulario = $(row.find('.formulario > select'));
+         $formulario.prop( "disabled", false );
        },
      });
      /* oculta los links de eliminación para los formularios de opciones de calificación
@@ -105,8 +108,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     </td>
                     <td class="tipo">
                         {{ form.tipo.errors }}
-                        {{ form.tipo|add_class:"form-control fieldsFormset" }}
+                        {{ form.tipo|add_class:"form-control" }}
                     </td>
+                    {% if form.formulario %}
+                        <td class="formulario">
+                            {{ form.formulario.errors }}
+                            {{ form.formulario|add_class:"form-control fieldsFormset" }}
+                        </td>
+                    {% endif %}
+
                     <td>{{ form.id }}</td>
                 </tr>
             {% endfor %}
