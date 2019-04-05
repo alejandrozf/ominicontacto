@@ -42,5 +42,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
       <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
       <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
       <li class="active"><a>{% trans 'Interacción con Sitio Externo' %}</a></li>
+      {% if not es_template and create %}
+          <li class="disabled"><a>{% trans 'Dar permiso a supervisores' %}</a></li>
+          <li class="disabled"><a>{% trans 'Adicionar agentes' %}</a></li>
+      {% endif %}
     </ul>
 {% endblock %}

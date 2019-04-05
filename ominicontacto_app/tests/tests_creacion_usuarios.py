@@ -48,7 +48,7 @@ class CreacionUsuariosTest(OMLBaseTest):
         # self.supervisor1
 
     @patch.object(ActivacionAgenteService, 'activar')
-    @patch('ominicontacto_app.management.commands.service_secretkey.Command.generar_secret_key')
+    @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_password')
     def test_crear_supervisor(self, generar_secret_key, activar):
         self.client.login(username=self.admin.username, password=PASSWORD)
         url = reverse('user_nuevo')

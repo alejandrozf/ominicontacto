@@ -14,10 +14,7 @@ antes de adquirir licencias para una operación real.
 Si se desean correr campañas predictivas, se debe generar la siguiente configuración básica de Wombat Dialer .
 Para generar esta configuración debemos seguir una serie de pasos que comienzan con el acceso a la URL correspondiente.
 
-http://omnileads.yourdomain:8080/wombat
- ó
-http://XXX.XXX.XXX.OML:8080/wombat
-
+http://omnileads.yourdomain:8080/wombat ó http://XXX.XXX.XXX.OML:8080/wombat
 
 Al ingresar por primera vez, se debe proceder con la creación de la base de datos MariaDB que utiliza Wombat Dialer.
 Hacer click en botón remarcado en la figura 2.

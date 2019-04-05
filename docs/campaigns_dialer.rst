@@ -161,9 +161,11 @@ Para reciclar una campaña finalizada, debemos seleccionar la campaña e ingresa
 Allí se despliegan dos opciones:
 
  - *Reciclar sobre la misma campaña*
+
  Esta vía nos lleva a volver a marcar a los contactos seleccionados en el reciclado, sobre la misma campaña desde la que se genera el reciclado.
 
  - *Reciclar en una nueva campaña*
+
  Esta vía nos lleva a volver a marcar a los contactos seleccionados en el reciclado, en una nueva campaña cuya base de contactos serán los contactos reciclados de la campaña.
 
 Para completar el reciclado se deben seleccionar las calificaciones que se deasean volver a llamar para luego pasar por las etapas del wizard de campañas dialer para ajustar cualquier inherente

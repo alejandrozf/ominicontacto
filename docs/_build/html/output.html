@@ -1,14 +1,14 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Metricas, grabaciones y supervisión &mdash; OMniLeads develop documentation</title>
+  <title>Metricas, grabaciones y supervisión &mdash; documentación de OMniLeads - develop</title>
   
 
   
@@ -25,6 +25,7 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -33,9 +34,9 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Gestiones del administrador IT" href="maintance.html" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="Grabaciones" href="output_recordings.html" />
     <link rel="prev" title="Enrutamiento condicionado por fechas y horas" href="campaigns_inbound_timeconditions.html" /> 
 </head>
 
@@ -85,9 +86,9 @@
 <li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">Plataforma de Contact Center integrado a un PBX basado en SIP</a></li>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#compania-de-servicios-de-customer-contact">Compañia de servicios de Customer Contact</a></li>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#carriers-o-proveedores-de-cloud-pbx">Carriers ó Proveedores de Cloud PBX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">OML como Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-en-una-compania-de-servicios-de-customer-contact">OML en una Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-para-carriers-o-proveedores-de-cloud-pbx">OML para Carriers ó Proveedores de Cloud PBX</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Procedimientos de instalación</a></li>
@@ -103,17 +104,45 @@
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Metricas, grabaciones y supervisión</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#grabaciones">Grabaciones</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#output-de-las-campanas-entrantes">Output de las campañas entrantes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#output-de-las-campanas-salientes">Output de las campañas salientes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#reportes-generales-de-llamadas">Reportes generales de llamadas</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#reportes-de-agentes">Reportes de agentes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#supervision-relatime">Supervisión relatime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#grabaciones">Grabaciones</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="output_recordings.html">Grabaciones</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#output-de-las-campanas-entrantes">Output de las campañas entrantes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="output_inbound_camp.html">Reporte general de una campaña entrante</a></li>
+<li class="toctree-l3"><a class="reference internal" href="output_inbound_camp.html#reporte-de-calificaciones">Reporte de calificaciones</a></li>
+<li class="toctree-l3"><a class="reference internal" href="output_inbound_camp.html#resultados-de-la-base-de-contactos">Resultados de la base de contactos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#output-de-las-campanas-salientes">Output de las campañas salientes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="output_outbound_camp.html">Reporte general de una campaña saliente</a></li>
+<li class="toctree-l3"><a class="reference internal" href="output_outbound_camp.html#reporte-de-calificaciones">Reporte de calificaciones</a></li>
+<li class="toctree-l3"><a class="reference internal" href="output_outbound_camp.html#resultados-de-la-base-de-contactos">Resultados de la base de contactos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#reportes-general-de-llamadas">Reportes general de llamadas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="output_reports_general.html">Reporte general de llamadas</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#reportes-de-agentes">Reportes de agentes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="output_reports_agents.html">Métricas de agente</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#supervision-relatime">Supervisión relatime</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="output_supervision.html">Supervision</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
 </ul>
 
             
@@ -179,32 +208,65 @@
            <div itemprop="articleBody">
             
   <div class="section" id="metricas-grabaciones-y-supervision">
-<h1>Metricas, grabaciones y supervisión<a class="headerlink" href="#metricas-grabaciones-y-supervision" title="Permalink to this headline">¶</a></h1>
+<h1>Metricas, grabaciones y supervisión<a class="headerlink" href="#metricas-grabaciones-y-supervision" title="Enlazar permanentemente con este título">¶</a></h1>
 <div class="section" id="grabaciones">
-<h2>Grabaciones<a class="headerlink" href="#grabaciones" title="Permalink to this headline">¶</a></h2>
+<h2>Grabaciones<a class="headerlink" href="#grabaciones" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>Todas las campañas que operen con la opción de grabación de llamadas habilitada generan sus archivos con grabaciones para posterior escucha o descarga.
 El módulo de <em>Grabaciones</em> de OMniLeads permite la búsqueda de grabaciones utilizando los filtros como criterio de búsqueda.</p>
-<p>output_recordings.rst</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="output_recordings.html">Grabaciones</a></li>
+</ul>
+</div>
 </div>
 <div class="section" id="output-de-las-campanas-entrantes">
-<h2>Output de las campañas entrantes<a class="headerlink" href="#output-de-las-campanas-entrantes" title="Permalink to this headline">¶</a></h2>
-<p>output_inbound_camp.rst</p>
+<h2>Output de las campañas entrantes<a class="headerlink" href="#output-de-las-campanas-entrantes" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>En esta sección se expone y analiza todo lo inherente al «output» generado por las campañas de llamadas entrantes.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="output_inbound_camp.html">Reporte general de una campaña entrante</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output_inbound_camp.html#reporte-de-calificaciones">Reporte de calificaciones</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output_inbound_camp.html#resultados-de-la-base-de-contactos">Resultados de la base de contactos</a></li>
+</ul>
+</div>
 </div>
 <div class="section" id="output-de-las-campanas-salientes">
-<h2>Output de las campañas salientes<a class="headerlink" href="#output-de-las-campanas-salientes" title="Permalink to this headline">¶</a></h2>
-<p>output_outbound_camp.rst</p>
+<h2>Output de las campañas salientes<a class="headerlink" href="#output-de-las-campanas-salientes" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>En esta sección se expone y analiza todo lo inherente al «output» generado por las campañas de llamadas salientes.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="output_outbound_camp.html">Reporte general de una campaña saliente</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output_outbound_camp.html#reporte-de-calificaciones">Reporte de calificaciones</a></li>
+<li class="toctree-l1"><a class="reference internal" href="output_outbound_camp.html#resultados-de-la-base-de-contactos">Resultados de la base de contactos</a></li>
+</ul>
 </div>
-<div class="section" id="reportes-generales-de-llamadas">
-<h2>Reportes generales de llamadas<a class="headerlink" href="#reportes-generales-de-llamadas" title="Permalink to this headline">¶</a></h2>
-<p>output_reports_general.rst</p>
+</div>
+<div class="section" id="reportes-general-de-llamadas">
+<h2>Reportes general de llamadas<a class="headerlink" href="#reportes-general-de-llamadas" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Esta sección repasa cada informe generado por el reporte general de llamadas. <em>Reportes – Llamadas</em></p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="output_reports_general.html">Reporte general de llamadas</a></li>
+</ul>
+</div>
 </div>
 <div class="section" id="reportes-de-agentes">
-<h2>Reportes de agentes<a class="headerlink" href="#reportes-de-agentes" title="Permalink to this headline">¶</a></h2>
-<p>output_reports_agents.rst</p>
+<h2>Reportes de agentes<a class="headerlink" href="#reportes-de-agentes" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Esta sección repasa cada informe generado por el reporte general de actividad de agente. <em>Reportes – Agentes</em></p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="output_reports_agents.html">Métricas de agente</a></li>
+</ul>
+</div>
 </div>
 <div class="section" id="supervision-relatime">
-<h2>Supervisión relatime<a class="headerlink" href="#supervision-relatime" title="Permalink to this headline">¶</a></h2>
-<p>output_supervision.rst</p>
+<h2>Supervisión relatime<a class="headerlink" href="#supervision-relatime" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Esta sección repasa el módulo de supervisión de OMniLeads.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="output_supervision.html">Supervision</a></li>
+</ul>
+</div>
 </div>
 </div>
 
@@ -216,7 +278,7 @@ El módulo de <em>Grabaciones</em> de OMniLeads permite la búsqueda de grabacio
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="maintance.html" class="btn btn-neutral float-right" title="Gestiones del administrador IT" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="output_recordings.html" class="btn btn-neutral float-right" title="Grabaciones" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="campaigns_inbound_timeconditions.html" class="btn btn-neutral float-left" title="Enrutamiento condicionado por fechas y horas" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

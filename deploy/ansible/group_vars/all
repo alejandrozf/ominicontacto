@@ -14,24 +14,33 @@ ca_locality: CBA
 ca_organization: FTS
 ca_organizationalunit: Freetech Solutions
 
+################# Versiones de aplicaciones ####################
+
+asterisk_version: 13.22.0
+kamailio_version: 5.1.4
+postgresql_version: 9.6
+rtpengine_version: 5.5.3.1
+
 ################ URL's ############################
 
 #URLS para descargar asterisk
-asterisk_v13: https://downloads.asterisk.org/pub/telephony/asterisk/old-releases/asterisk-13.22.0.tar.gz
+asterisk_v13: https://downloads.asterisk.org/pub/telephony/asterisk/old-releases/asterisk-{{ asterisk_version }}.tar.gz
 jansson: https://github.com/akheron/jansson/archive/v2.7.tar.gz
 wombat: http://downloads.loway.ch/wd/WombatDialer-18.08.1-223.tar.gz
-rtpengine_repo: https://github.com/sipwise/rtpengine/archive/mr5.5.3.1.tar.gz
-kamailio_repo: https://github.com/kamailio/kamailio/archive/5.1.4.tar.gz
-postgresql_url: https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-redhat96-9.6-3.noarch.rpm
+rtpengine_repo: https://github.com/sipwise/rtpengine/archive/mr{{ rtpengine_version }}.tar.gz
+kamailio_repo: https://github.com/kamailio/kamailio/archive/{{ kamailio_version }}.tar.gz
+postgresql_url: https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7-x86_64/pgdg-redhat96-{{ postgresql_version }}-3.noarch.rpm
 
 ##Parametros de la aplicación
 country_code: 54
 admin_user: admin
 usuario: omnileads
 session_cookie_age: 3600
+install_prefix: /opt/omnileads/
 asterisk_location: "{{ install_prefix }}asterisk"
 kamailio_location: "{{ install_prefix }}kamailio"
+static_route: "{{ install_prefix }}ominicontacto/ominicontacto_app/static/ominicontacto"
 
-#### Para setear si el postinstall es para desarrollo o para produccion #####
+#### Para saber si es una install para devenv o cluster #####
 desarrollo: 0
 cluster: 0

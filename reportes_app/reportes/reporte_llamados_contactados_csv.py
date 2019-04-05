@@ -34,7 +34,7 @@ from django.utils.encoding import force_text
 from django.utils.timezone import localtime
 from django.utils.translation import ugettext as _
 
-from ominicontacto_app.models import AgenteProfile, Campana, Contacto
+from ominicontacto_app.models import AgenteProfile, Campana, Contacto, OpcionCalificacion
 from ominicontacto_app.utiles import crear_archivo_en_media_root
 
 from reportes_app.models import LlamadaLog
@@ -95,32 +95,38 @@ class ArchivoDeReporteCsv(object):
         csvwriter.writerow(lista_datos_utf8)
 
     def _obtener_datos_contacto(self, contacto_id, campos_contacto):
+        telefono_contacto = ''
         contacto = self.contactos_dict.get(contacto_id, -1)
         if contacto != -1:
-            return json.loads(contacto.datos)
-        return [""] * len(campos_contacto)
+            telefono_contacto = contacto.telefono
+            return json.loads(contacto.datos), telefono_contacto
+        return [""] * len(campos_contacto), telefono_contacto
 
     def _obtener_datos_contacto_contactados(self, llamada_log, calificacion, datos_contacto):
         tel_status = _('Fuera de base')
         bd_contacto = _('Fuera de base')
+        telefono_contacto = ''
         contacto = calificacion.contacto if calificacion is not None else None
         if contacto is None:
             contacto = self.contactos_dict.get(llamada_log.contacto_id)
         if contacto is not None:
+            telefono_contacto = contacto.telefono
             tel_status = _('Contactado')
             datos_contacto = json.loads(contacto.datos)
             if contacto.es_originario:
                 bd_contacto = contacto.bd_contacto
-        return tel_status, bd_contacto, datos_contacto
+        return tel_status, bd_contacto, datos_contacto, telefono_contacto
 
     def escribir_archivo_contactados_csv(self, campana, llamadas, calificaciones_dict):
         # TODO: Debe listar los llamadas contactados: EVENTOS_FIN_CONEXION
         # Agregarle a los llamadas los datos del (posible) contacto
         with open(self.ruta, 'wb') as csvfile:
             # Creamos encabezado
+            bd_metadata = campana.bd_contacto.get_metadata()
             encabezado = []
-            encabezado.append(_("Telefono"))
-            campos_contacto = campana.bd_contacto.get_metadata().nombres_de_columnas[1:]
+            encabezado.append(_("Telefono contactado"))
+            campos_contacto = bd_metadata.nombre_campo_telefono
+            campos_contacto = bd_metadata.nombres_de_columnas
             encabezado.extend(campos_contacto)
             encabezado.append(_("Fecha-Hora Contacto"))
             encabezado.append(_("Tel status"))
@@ -128,10 +134,25 @@ class ArchivoDeReporteCsv(object):
             encabezado.append(_("Observaciones"))
             encabezado.append(_("Agente"))
             encabezado.append(_("base de datos"))
-            # agrego el encabezado para los campos del formulario
+
+            # agrego el encabezado para los campos de los formularios
             if campana.tipo_interaccion is Campana.FORMULARIO:
-                campos_formulario = campana.formulario.campos.values_list('nombre_campo', flat=True)
-                encabezado.extend(campos_formulario)
+                campos_formulario_opciones = {}
+                posicion_opciones = {}
+                cant_campos_gestion = 0
+                for opcion in campana.opciones_calificacion.filter(
+                        tipo=OpcionCalificacion.GESTION):
+                    if opcion.id not in posicion_opciones:
+                        posicion_opciones[opcion.id] = cant_campos_gestion
+                        campos = opcion.formulario.campos.all()
+                        campos_formulario_opciones[opcion.id] = campos
+                        encabezado.append(opcion.nombre)
+                        cant_campos_gestion += 1
+                        for campo in campos:
+                            nombre = campo.nombre_campo
+                            encabezado.append(nombre)
+                            cant_campos_gestion += 1
+
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
             # guardamos encabezado
@@ -141,8 +162,8 @@ class ArchivoDeReporteCsv(object):
             for llamada_log in llamadas:
                 datos_contacto = [''] * len(campos_contacto)
                 calificacion = calificaciones_dict.get(llamada_log.callid, None)
-                tel_status, bd_contacto, datos_contacto = self._obtener_datos_contacto_contactados(
-                    llamada_log, calificacion, datos_contacto)
+                tel_status, bd_contacto, datos_contacto, telefono_contacto = self.\
+                    _obtener_datos_contacto_contactados(llamada_log, calificacion, datos_contacto)
                 datos_gestion = []
                 if calificacion is None:
                     datos_calificacion = [_("Llamada Atendida sin calificacion"),
@@ -152,16 +173,28 @@ class ArchivoDeReporteCsv(object):
                     datos_calificacion = [calificacion.opcion_calificacion.nombre,
                                           calificacion.observaciones,
                                           calificacion.agente]
-                    datos_formulario_gestion = calificacion.history_object.get_venta()
+                    # TODO: ver la forma de relacionar con respuestas vieja.
+                    respuesta_formulario_gestion = calificacion.history_object.get_venta()
                     if (calificacion.es_venta and campana.tipo_interaccion is Campana.FORMULARIO and
-                            datos_formulario_gestion is not None):
-                        datos = json.loads(datos_formulario_gestion.metadata)
-                        for campo in campos_formulario:
-                            datos_gestion.append(datos[campo])
+                            respuesta_formulario_gestion is not None):
+
+                        # Agrego Datos de la respuesta del formulario
+                        datos = json.loads(respuesta_formulario_gestion.metadata)
+                        id_opcion = respuesta_formulario_gestion.calificacion.opcion_calificacion_id
+                        posicion = posicion_opciones[id_opcion]
+                        # Relleno las posiciones vacias anteriores (de columnas de otro formulario)
+                        posiciones_vacias = posicion - len(datos_gestion)
+                        datos_gestion = datos_gestion + [''] * posiciones_vacias
+                        # Columna vacia correspondiente al nombre de la Opcion de calificacion
+                        datos_gestion.append('')
+                        campos = campos_formulario_opciones[id_opcion]
+                        for campo in campos:
+                            datos_gestion.append(datos[campo.nombre_campo])
 
                 fecha_local_llamada = localtime(llamada_log.time)
                 registro = []
                 registro.append(llamada_log.numero_marcado)
+                registro.append(telefono_contacto)
                 registro.extend(datos_contacto)
                 registro.append(fecha_local_llamada.strftime("%Y/%m/%d %H:%M:%S"))
                 registro.append(tel_status)
@@ -175,9 +208,11 @@ class ArchivoDeReporteCsv(object):
     def escribir_archivo_no_atendidos_csv(self, campana, no_contactados):
         with open(self.ruta, 'wb') as csvfile:
             # Creamos encabezado
+            bd_metadata = campana.bd_contacto.get_metadata()
             encabezado = []
-            encabezado.append(_("Telefono"))
-            campos_contacto = campana.bd_contacto.get_metadata().nombres_de_columnas[1:]
+            encabezado.append(_("Telefono de llamada"))
+            encabezado.append(bd_metadata.nombre_campo_telefono)
+            campos_contacto = bd_metadata.nombres_de_columnas_de_datos
             encabezado.extend(campos_contacto)
             encabezado.append(_("Fecha-Hora Contacto"))
             encabezado.append(_("Tel status"))
@@ -197,7 +232,9 @@ class ArchivoDeReporteCsv(object):
                 estado = NO_CONECTADO_DESCRIPCION.get(log_no_contactado.event, "")
                 lista_opciones.append(log_no_contactado.numero_marcado)
                 contacto_id = log_no_contactado.contacto_id
-                datos_contacto = self._obtener_datos_contacto(contacto_id, campos_contacto)
+                datos_contacto, telefono_contacto = self._obtener_datos_contacto(
+                    contacto_id, campos_contacto)
+                lista_opciones.append(telefono_contacto)
                 lista_opciones.extend(datos_contacto)
                 lista_opciones.append(log_no_contactado_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
                 lista_opciones.append(estado)
@@ -212,12 +249,20 @@ class ArchivoDeReporteCsv(object):
                 # --- Finalmente, escribimos la linea
                 self._escribir_csv_writer_utf_8(csvwiter, lista_opciones)
 
+    def _obtener_numero_marcado(self, calificacion):
+        callid = calificacion.callid
+        if not callid:
+            return ''
+        llamada = LlamadaLog.objects.filter(callid=calificacion.callid).first()
+        return llamada.numero_marcado
+
     def escribir_archivo_calificado_csv(self, campana, calificaciones):
         with open(self.ruta, 'wb') as csvfile:
             # Creamos encabezado
+            bd_metadata = campana.bd_contacto.get_metadata()
             encabezado = []
-            encabezado.append(_("Telefono"))
-            campos_contacto = campana.bd_contacto.get_metadata().nombres_de_columnas[1:]
+            encabezado.append(bd_metadata.nombre_campo_telefono)
+            campos_contacto = bd_metadata.nombres_de_columnas_de_datos
             encabezado.extend(campos_contacto)
             encabezado.append(_("Fecha-Hora Contacto"))
             encabezado.append(_("Tel status"))
@@ -226,10 +271,21 @@ class ArchivoDeReporteCsv(object):
             encabezado.append(_("Observaciones"))
             encabezado.append(_("Agente"))
             encabezado.append(_("base de datos"))
-            # agrego el encabezado para los campos del formulario
+
+            # agrego el encabezado para los campos de los formularios
             if campana.tipo_interaccion is Campana.FORMULARIO:
-                campos_formulario = campana.formulario.campos.values_list('nombre_campo', flat=True)
-                encabezado.extend(campos_formulario)
+                campos_formulario_opciones = {}
+                posicion_opciones = {}
+                for opcion in campana.opciones_calificacion.filter(
+                        tipo=OpcionCalificacion.GESTION):
+                    if opcion.id not in posicion_opciones:
+                        posicion_opciones[opcion.id] = len(encabezado)
+                        campos = opcion.formulario.campos.all()
+                        campos_formulario_opciones[opcion.id] = campos
+                        encabezado.append(opcion.nombre)
+                        for campo in campos:
+                            nombre = campo.nombre_campo
+                            encabezado.append(nombre)
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -252,7 +308,9 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.extend(datos)
                 lista_opciones.append(calificacion_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
                 lista_opciones.append(_("Contactado"))
-                lista_opciones.append(calificacion.contacto.telefono)
+
+                numero_marcado = self._obtener_numero_marcado(calificacion)
+                lista_opciones.append(numero_marcado)
                 lista_opciones.append(calificacion.opcion_calificacion.nombre)
                 lista_opciones.append(calificacion.observaciones)
                 lista_opciones.append(calificacion.agente)
@@ -260,12 +318,23 @@ class ArchivoDeReporteCsv(object):
                     lista_opciones.append(calificacion.contacto.bd_contacto)
                 else:
                     lista_opciones.append(_("Fuera de base"))
-                datos_formulario_gestion = calificacion.get_venta()
+                respuesta_formulario_gestion = calificacion.get_venta()
                 if (calificacion.es_venta and campana.tipo_interaccion is Campana.FORMULARIO and
-                        datos_formulario_gestion is not None):
-                    datos = json.loads(datos_formulario_gestion.metadata)
-                    for campo in campos_formulario:
-                        lista_opciones.append(datos[campo])
+                        respuesta_formulario_gestion is not None):
+                    datos = json.loads(respuesta_formulario_gestion.metadata)
+
+                    # Agrego Datos de la respuesta del formulario
+                    datos = json.loads(respuesta_formulario_gestion.metadata)
+                    id_opcion = respuesta_formulario_gestion.calificacion.opcion_calificacion_id
+                    posicion = posicion_opciones[id_opcion]
+                    # Relleno las posiciones vacias anteriores (de columnas de otro formulario)
+                    posiciones_vacias = posicion - len(lista_opciones)
+                    lista_opciones = lista_opciones + [''] * posiciones_vacias
+                    # Columna vacia correspondiente al nombre de la Opcion de calificacion
+                    lista_opciones.append('')
+                    campos = campos_formulario_opciones[id_opcion]
+                    for campo in campos:
+                        lista_opciones.append(datos[campo.nombre_campo])
 
                 # --- Finalmente, escribimos la linea
                 self._escribir_csv_writer_utf_8(csvwiter, lista_opciones)

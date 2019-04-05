@@ -32,19 +32,18 @@ from django.contrib.auth.hashers import check_password
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
 from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.views.generic.detail import DetailView
 from django.views.decorators.csrf import csrf_exempt
 
 from simple_history.utils import update_change_reason
 
-from ominicontacto_app.forms import (CalificacionClienteForm,
-                                     FormularioContactoCalificacion, FormularioVentaFormSet)
+from ominicontacto_app.forms import (CalificacionClienteForm, FormularioNuevoContacto,
+                                     RespuestaFormularioGestionForm)
 from ominicontacto_app.models import (
-    Contacto, Campana, CalificacionCliente, AgenteProfile, MetadataCliente,
+    Contacto, Campana, CalificacionCliente, AgenteProfile, RespuestaFormularioGestion,
     OpcionCalificacion, UserApiCrm)
-from ominicontacto_app.utiles import convertir_ascii_string
 
 from reportes_app.models import LlamadaLog
 
@@ -71,10 +70,7 @@ class CalificacionClienteFormView(FormView):
 
     def get_contacto(self, id_contacto):
         if id_contacto is not None:
-            try:
-                return self.campana.bd_contacto.contactos.get(pk=id_contacto)
-            except Contacto.DoesNotExist:
-                return None
+            return get_object_or_404(Contacto, pk=id_contacto)
         return None
 
     def get_object(self):
@@ -153,7 +149,7 @@ class CalificacionClienteFormView(FormView):
         return CalificacionClienteForm(campana=self.campana, **kwargs)
 
     def get_contacto_form_kwargs(self):
-        kwargs = {}
+        kwargs = {'prefix': 'contacto_form'}
         initial = {}
         if self.contacto is not None:
             kwargs['instance'] = self.contacto
@@ -164,30 +160,15 @@ class CalificacionClienteFormView(FormView):
                 # TODO: Cuando las manuales vengan con call_data sacar esto
                 initial['telefono'] = self.kwargs['telefono']
 
-        if self.request.method == 'GET':
-            # TODO: Pasar esta logica al formulario?
-            base_datos = self.campana.bd_contacto
-            nombres = base_datos.get_metadata().nombres_de_columnas[1:]
-            datos = [''] * len(nombres)
-            if self.contacto is not None:
-                datos = json.loads(self.contacto.datos)
-            for nombre, dato in zip(nombres, datos):
-                initial.update({convertir_ascii_string(nombre): dato})
-            kwargs['initial'] = initial
-        elif self.request.method == 'POST':
+        kwargs['initial'] = initial
+
+        if self.request.method == 'POST':
             kwargs['data'] = self.request.POST
         return kwargs
 
-    def get_campos_formulario_contacto(self):
-        # TODO: Pasar esta logica al formulario?
-        base_datos = self.campana.bd_contacto
-        metadata = base_datos.get_metadata()
-        campos = metadata.nombres_de_columnas
-        return campos
-
     def get_contacto_form(self):
-        return FormularioContactoCalificacion(campos=self.get_campos_formulario_contacto(),
-                                              **self.get_contacto_form_kwargs())
+        return FormularioNuevoContacto(bd_metadata=self.campana.bd_contacto.get_metadata(),
+                                       **self.get_contacto_form_kwargs())
 
     def _formulario_llamada_entrante(self):
         """Determina si estamos en presencia de un formulario
@@ -204,8 +185,12 @@ class CalificacionClienteFormView(FormView):
 
         contacto_form = self.get_contacto_form()
         calificacion_form = self.get_form(historico_calificaciones=formulario_llamada_entrante)
+        bd_metadata = self.campana.bd_contacto.get_metadata()
+        campos_telefono = bd_metadata.nombres_de_columnas_de_telefonos + ['telefono']
 
         return self.render_to_response(self.get_context_data(
+            contacto=self.contacto,
+            campos_telefono=campos_telefono,
             contacto_form=contacto_form,
             calificacion_form=calificacion_form,
             campana=self.campana,
@@ -291,17 +276,10 @@ class CalificacionClienteFormView(FormView):
         if self.contacto is None:
             nuevo_contacto = True
         self.contacto = contacto_form.save(commit=False)
-        # TODO: Pasar esta logica al formulario?
-        base_datos = self.campana.bd_contacto
-        metadata = base_datos.get_metadata()
-        nombres = metadata.nombres_de_columnas
-        datos = []
-        nombres.remove('telefono')
-        for nombre in nombres:
-            campo = contacto_form.cleaned_data.get(convertir_ascii_string(nombre))
-            datos.append(campo)
-        self.contacto.datos = json.dumps(datos)
-        self.contacto.bd_contacto = base_datos
+        if nuevo_contacto:
+            self.contacto.bd_contacto = self.campana.bd_contacto
+        self.contacto.datos = contacto_form.get_datos_json()
+        # TODO: OML-1016 Verificar bien que hacer aca o si ya se hizo
         if nuevo_contacto:
             self.contacto.es_originario = False
         self.contacto.save()
@@ -323,7 +301,12 @@ class CalificacionClienteFormView(FormView):
         """
         Re-renders the context data with the data-filled forms and errors.
         """
+        bd_metadata = self.campana.bd_contacto.get_metadata()
+        campos_telefono = bd_metadata.nombres_de_columnas_de_telefonos + ['telefono']
+
         return self.render_to_response(self.get_context_data(
+            contacto=self.contacto,
+            campos_telefono=campos_telefono,
             contacto_form=contacto_form,
             calificacion_form=calificacion_form,
             campana=self.campana,
@@ -333,15 +316,12 @@ class CalificacionClienteFormView(FormView):
 
     def get_success_url_venta(self):
         return reverse('formulario_venta',
-                       kwargs={"pk_campana": self.campana.id,
-                               "pk_contacto": self.contacto.id,
-                               "id_agente": self.agente.id})
+                       kwargs={"pk_calificacion": self.object_calificacion.id})
 
     def get_success_url_agenda(self):
         return reverse('agenda_contacto_create',
                        kwargs={"pk_campana": self.campana.id,
-                               "pk_contacto": self.contacto.id,
-                               "id_agente": self.agente.id})
+                               "pk_contacto": self.contacto.id})
 
     def get_success_url_reporte(self):
         return reverse('reporte_agente_calificaciones',
@@ -407,314 +387,149 @@ def calificacion_cliente_externa_view(request):
         return JsonResponse({'status': 'este es un metodo post'})
 
 
-class FormularioCreateFormView(CreateView):
-    # TODO: Refactor FormularioUpdateFormView y FormularioCreateFormView
-    #       Comparten mucho codigo. Unificar o extender de una misma base.
-    """En esta vista se crea el formulario de gestion"""
-    template_name = 'formulario/formulario_create.html'
-    model = MetadataCliente
-    form_class = FormularioContactoCalificacion
+######################################
+# Respuesta de Formulario de Gestión #
+######################################
+class RespuestaFormularioDetailView(DetailView):
+    """Vista muestra el formulario de gestion recientemente creado"""
+    template_name = 'formulario/respuesta_formulario_detalle.html'
+    model = RespuestaFormularioGestion
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            RespuestaFormularioDetailView, self).get_context_data(**kwargs)
+        respuesta = RespuestaFormularioGestion.objects.get(pk=self.kwargs['pk'])
+        contacto = respuesta.calificacion.contacto
+        bd_contacto = contacto.bd_contacto
+        nombres = bd_contacto.get_metadata().nombres_de_columnas_de_datos
+        datos = json.loads(contacto.datos)
+        mas_datos = []
+        for nombre, dato in zip(nombres, datos):
+            mas_datos.append((nombre, dato))
+
+        context['contacto'] = contacto
+        context['mas_datos'] = mas_datos
+        context['metadata'] = json.loads(respuesta.metadata)
+
+        return context
+
+
+class RespuestaFormularioFormViewMixin(object):
+    template_name = 'formulario/respuesta_formulario_create.html'
+    model = RespuestaFormularioGestion
+    form_class = RespuestaFormularioGestionForm
 
     def dispatch(self, *args, **kwargs):
-        metadatas = MetadataCliente.objects.filter(
-            contacto_id=self.kwargs['pk_contacto'],
-            campana_id=self.kwargs['pk_campana'],
-            agente_id=self.kwargs['id_agente'],
+        self.calificacion = self.get_object_calificacion()
+        self.contacto = self.calificacion.contacto
+        return super(RespuestaFormularioFormViewMixin, self).dispatch(*args, **kwargs)
+
+    def get_contacto_form_kwargs(self):
+        kwargs = {'instance': self.contacto,
+                  'prefix': 'contacto_form',
+                  'initial': {}}
+        if self.request.method == "POST":
+            kwargs['data'] = self.request.POST
+        return kwargs
+
+    def get_contacto_form(self):
+        return FormularioNuevoContacto(**self.get_contacto_form_kwargs())
+
+    def get_form_kwargs(self):
+        kwargs = super(RespuestaFormularioFormViewMixin, self).get_form_kwargs()
+        formulario = self.calificacion.opcion_calificacion.formulario
+        campos = formulario.campos.all()
+        kwargs['campos'] = campos
+        return kwargs
+
+    def get(self, request, *args, **kwargs):
+        contacto_form = self.get_contacto_form()
+        form = self.get_form()
+        return self.render_to_response(self.get_context_data(
+            form=form, contacto_form=contacto_form))
+
+    def form_valid(self, form, contacto_form):
+        self.contacto = contacto_form.save(commit=False)
+        self.contacto.datos = contacto_form.get_datos_json()
+        self.contacto.save()
+
+        self.object = form.save(commit=False)
+        cleaned_data_respuesta = form.cleaned_data
+        del cleaned_data_respuesta['calificacion']
+        metadata = json.dumps(cleaned_data_respuesta)
+        self.object.metadata = metadata
+        self.object.calificacion = self.calificacion
+        self.object.save()
+        message = _('Operación Exitosa!'
+                    'Se llevó a cabo con éxito el llenado del formulario del'
+                    ' cliente')
+        messages.success(self.request, message)
+        return HttpResponseRedirect(reverse('formulario_detalle',
+                                            kwargs={"pk": self.object.pk}))
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance and its inline
+        formsets with the passed POST variables and then checking them for validity.
+        """
+        contacto_form = self.get_contacto_form()
+        form = self.get_form()
+
+        if form.is_valid() and contacto_form.is_valid():
+                return self.form_valid(form, contacto_form)
+        else:
+            return self.form_invalid(form, contacto_form)
+
+    def form_invalid(self, form, contacto_form):
+
+        message = '<strong>Operación Errónea!</strong> \
+                  Error en el formulario revise bien los datos llenados.'
+
+        messages.add_message(
+            self.request,
+            messages.WARNING,
+            message,
         )
-        if metadatas.count() > 0:
+        return self.render_to_response(self.get_context_data(
+            form=form, contacto_form=contacto_form))
+
+    def get_success_url(self):
+        reverse('view_blanco')
+
+
+class RespuestaFormularioCreateFormView(RespuestaFormularioFormViewMixin, CreateView):
+    """En esta vista se crea el formulario de gestion"""
+
+    def dispatch(self, *args, **kwargs):
+        self.object = None
+        respuestas = RespuestaFormularioGestion.objects.filter(
+            calificacion_id=self.kwargs['pk_calificacion'])
+        if respuestas.count() > 0:
             return HttpResponseRedirect(reverse('formulario_venta_update',
-                                                kwargs={"pk_metadata": metadatas[0].id}))
-        return super(FormularioCreateFormView, self).dispatch(*args, **kwargs)
+                                                kwargs={"pk": respuestas[0].id}))
+        return super(RespuestaFormularioCreateFormView, self).dispatch(*args, **kwargs)
 
-    def get_object(self, queryset=None):
-        return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
+    def get_object_calificacion(self):
+        return CalificacionCliente.objects.get(id=self.kwargs['pk_calificacion'])
 
-    def get_initial(self):
-        initial = super(FormularioCreateFormView, self).get_initial()
-        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
-        base_datos = contacto.bd_contacto
-        nombres = base_datos.get_metadata().nombres_de_columnas[1:]
-        datos = json.loads(contacto.datos)
-        for nombre, dato in zip(nombres, datos):
-            initial.update({convertir_ascii_string(nombre): dato})
-        return initial
-
-    def get_form(self):
-        self.form_class = self.get_form_class()
-        self.object = self.get_object()
-        base_datos = self.object.bd_contacto
-        metadata = base_datos.get_metadata()
-        campos = metadata.nombres_de_columnas
-        return self.form_class(campos=campos, **self.get_form_kwargs())
-
-    def get(self, request, *args, **kwargs):
-        agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        self.object = self.get_object()
-        form = self.get_form()
-        venta_form = FormularioVentaFormSet(initial=[
-            {'campana': campana.id,
-             'contacto': self.object.id,
-             'agente': agente.id}],
-            form_kwargs={'campos': campana.formulario.campos.all()}
-        )
-
-        return self.render_to_response(self.get_context_data(
-            form=form, venta_form=venta_form))
-
-    def get_context_data(self, **kwargs):
-        context = super(
-            FormularioCreateFormView, self).get_context_data(**kwargs)
-
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        context['pk_formulario'] = campana.formulario.pk
-        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
-        bd_contacto = campana.bd_contacto
-        nombres = bd_contacto.get_metadata().nombres_de_columnas[1:]
-        datos = json.loads(contacto.datos)
-        mas_datos = []
-        for nombre, dato in zip(nombres, datos):
-            mas_datos.append((nombre, dato))
-        context['contacto'] = contacto
-        context['mas_datos'] = mas_datos
-
-        return context
-
-    def form_valid(self, form, venta_form):
-        self.object = form.save(commit=False)
-        contacto = self.get_object()
-        base_datos = contacto.bd_contacto
-        metadata = base_datos.get_metadata()
-        nombres = metadata.nombres_de_columnas
-        datos = []
-        nombres.remove('telefono')
-        for nombre in nombres:
-            campo = form.cleaned_data.get(convertir_ascii_string(nombre))
-            datos.append(campo)
-        self.object.datos = json.dumps(datos)
-        self.object.save()
-        self.object_venta = venta_form.save(commit=False)
-        cleaned_data_venta = venta_form.cleaned_data[0]
-        del cleaned_data_venta['agente']
-        del cleaned_data_venta['campana']
-        del cleaned_data_venta['contacto']
-        del cleaned_data_venta['id']
-        metadata = json.dumps(cleaned_data_venta)
-        self.object_venta[0].metadata = metadata
-        self.object_venta[0].save()
-        message = _('Operación Exitosa!'
-                    'Se llevó a cabo con éxito el llenado del formulario del'
-                    ' cliente')
-        messages.success(self.request, message)
-        return HttpResponseRedirect(reverse('formulario_detalle',
-                                            kwargs={"pk": self.object_venta[0].pk}))
-
-    def post(self, request, *args, **kwargs):
-        """
-        Handles POST requests, instantiating a form instance and its inline
-        formsets with the passed POST variables and then checking them for validity.
-        """
-        self.object = self.get_object()
-        form = self.get_form()
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        venta_form = FormularioVentaFormSet(
-            self.request.POST, form_kwargs={'campos': campana.formulario.campos.all()},
-            instance=self.object)
-
-        if form.is_valid():
-            if venta_form.is_valid():
-                return self.form_valid(form, venta_form)
-            else:
-                return self.form_invalid(form, venta_form)
-        else:
-            return self.form_invalid(form, venta_form)
-
-    def form_invalid(self, form, venta_form):
-
-        message = '<strong>Operación Errónea!</strong> \
-                  Error en el formulario revise bien los datos llenados.'
-
-        messages.add_message(
-            self.request,
-            messages.WARNING,
-            message,
-        )
-        return self.render_to_response(self.get_context_data(
-            form=form, venta_form=venta_form))
-
-    def get_success_url(self):
-        # reverse('formulario_detalle',
-        #         kwargs={"pk": self.kwargs['pk_campana'],
-        #                 "pk_contacto": self.kwargs['pk_contacto'],
-        #                 "id_agente": self.kwargs['id_agente']
-        #                 }
-        #         )
-        reverse('view_blanco')
+    def get_form_kwargs(self):
+        kwargs = super(RespuestaFormularioCreateFormView, self).get_form_kwargs()
+        kwargs['initial'].update({'calificacion': self.calificacion.id, })
+        return kwargs
 
 
-class FormularioDetailView(DetailView):
-    """Vista muestra el formulario de gestion recientemente creado"""
-    template_name = 'formulario/formulario_detalle.html'
-    model = MetadataCliente
-
-    def get_context_data(self, **kwargs):
-        context = super(
-            FormularioDetailView, self).get_context_data(**kwargs)
-        metadata = MetadataCliente.objects.get(pk=self.kwargs['pk'])
-        campana = Campana.objects.get(pk=metadata.campana.pk)
-        contacto = Contacto.objects.get(pk=metadata.contacto.pk)
-        bd_contacto = campana.bd_contacto
-        nombres = bd_contacto.get_metadata().nombres_de_columnas[1:]
-        datos = json.loads(contacto.datos)
-        mas_datos = []
-        for nombre, dato in zip(nombres, datos):
-            mas_datos.append((nombre, dato))
-
-        context['contacto'] = contacto
-        context['mas_datos'] = mas_datos
-        context['metadata'] = json.loads(metadata.metadata)
-
-        return context
-
-
-class FormularioUpdateFormView(UpdateView):
-    # TODO: Refactor FormularioUpdateFormView y FormularioCreateFormView
-    #       Comparten mucho codigo. Unificar o extender de una misma base.
+class RespuestaFormularioUpdateFormView(RespuestaFormularioFormViewMixin, UpdateView):
     """Vista para actualizar un formulario de gestion"""
-    template_name = 'formulario/formulario_create.html'
-    model = MetadataCliente
-    form_class = FormularioContactoCalificacion
 
-    def get_object(self, queryset=None):
-        metadata = MetadataCliente.objects.get(pk=self.kwargs['pk_metadata'])
-        return metadata.contacto
-
-    def get_initial(self):
-        initial = super(FormularioUpdateFormView, self).get_initial()
-        metadata = MetadataCliente.objects.get(pk=self.kwargs['pk_metadata'])
-        contacto = metadata.contacto
-        base_datos = contacto.bd_contacto
-        nombres = base_datos.get_metadata().nombres_de_columnas[1:]
-        datos = json.loads(contacto.datos)
-        for nombre, dato in zip(nombres, datos):
-            initial.update({convertir_ascii_string(nombre): dato})
-        return initial
-
-    def get_form(self):
-        self.form_class = self.get_form_class()
-        metadata = MetadataCliente.objects.get(pk=self.kwargs['pk_metadata'])
+    def dispatch(self, *args, **kwargs):
         self.object = self.get_object()
-        base_datos = self.object.bd_contacto
-        metadata = base_datos.get_metadata()
-        campos = metadata.nombres_de_columnas
-        return self.form_class(campos=campos, **self.get_form_kwargs())
+        return super(RespuestaFormularioUpdateFormView, self).dispatch(*args, **kwargs)
 
-    def get_context_data(self, **kwargs):
-        context = super(
-            FormularioUpdateFormView, self).get_context_data(**kwargs)
-        metadata = MetadataCliente.objects.get(pk=self.kwargs['pk_metadata'])
+    def get_object_calificacion(self):
+        return self.object.calificacion
 
-        context['pk_formulario'] = metadata.campana.formulario.pk
-
-        bd_contacto = metadata.campana.bd_contacto
-        nombres = bd_contacto.get_metadata().nombres_de_columnas[2:]
-        datos = json.loads(metadata.contacto.datos)
-        mas_datos = []
-        for nombre, dato in zip(nombres, datos):
-            mas_datos.append((nombre, dato))
-        context['contacto'] = metadata.contacto
-        context['mas_datos'] = mas_datos
-
-        return context
-
-    def get(self, request, *args, **kwargs):
-        metadata = MetadataCliente.objects.get(pk=self.kwargs['pk_metadata'])
-        self.object = self.get_object()
-        form = self.get_form()
-        initial = {
-            'campana': metadata.campana.id,
-            'contacto': self.object.id,
-            'agente': metadata.agente.id
-        }
-        for clave, valor in json.loads(metadata.metadata).items():
-            initial.update({clave: valor})
-        venta_form = FormularioVentaFormSet(
-            initial=[initial],
-            form_kwargs={'campos': metadata.campana.formulario.campos.all()},
-        )
-
-        return self.render_to_response(self.get_context_data(
-            form=form, venta_form=venta_form))
-
-    def form_valid(self, form, venta_form):
-        self.object = form.save(commit=False)
-        contacto = self.get_object()
-        base_datos = contacto.bd_contacto
-        metadata = base_datos.get_metadata()
-        nombres = metadata.nombres_de_columnas
-        datos = []
-        nombres.remove('telefono')
-        for nombre in nombres:
-            campo = form.cleaned_data.get(convertir_ascii_string(nombre))
-            datos.append(campo)
-        self.object.datos = json.dumps(datos)
-        self.object.save()
-        self.object_venta = venta_form.save(commit=False)
-        metadata_cliente = MetadataCliente.objects.get(pk=self.kwargs['pk_metadata'])
-        cleaned_data_venta = venta_form.cleaned_data[0]
-        del cleaned_data_venta['agente']
-        del cleaned_data_venta['campana']
-        del cleaned_data_venta['contacto']
-        del cleaned_data_venta['id']
-        metadata = json.dumps(cleaned_data_venta)
-        metadata_cliente.metadata = metadata
-        metadata_cliente.save()
-        message = _('Operación Exitosa!'
-                    'Se llevó a cabo con éxito el llenado del formulario del'
-                    ' cliente')
-        messages.success(self.request, message)
-        return HttpResponseRedirect(reverse('formulario_detalle',
-                                            kwargs={"pk": metadata_cliente.pk}))
-
-    def post(self, request, *args, **kwargs):
-        """
-        Handles POST requests, instantiating a form instance and its inline
-        formsets with the passed POST variables and then checking them for validity.
-        """
-        self.object = self.get_object()
-        form = self.get_form()
-        metadata = MetadataCliente.objects.get(pk=self.kwargs['pk_metadata'])
-        campana = metadata.campana
-        venta_form = FormularioVentaFormSet(
-            self.request.POST, form_kwargs={'campos': campana.formulario.campos.all()},
-            instance=self.object)
-
-        if form.is_valid():
-            if venta_form.is_valid():
-                return self.form_valid(form, venta_form)
-            else:
-                return self.form_invalid(form, venta_form)
-        else:
-            return self.form_invalid(form, venta_form)
-
-    def form_invalid(self, form, venta_form):
-
-        message = '<strong>Operación Errónea!</strong> \
-                  Error en el formulario revise bien los datos llenados.'
-
-        messages.add_message(
-            self.request,
-            messages.WARNING,
-            message,
-        )
-        return self.render_to_response(self.get_context_data(
-            form=form, venta_form=venta_form))
-
-    def get_success_url(self):
-        # reverse('formulario_detalle',
-        #         kwargs={"pk": self.kwargs['pk_campana'],
-        #                 "pk_contacto": self.kwargs['pk_contacto'],
-        #                 "id_agente": self.kwargs['id_agente']
-        #                 }
-        #         )
-        reverse('view_blanco')
+    def get_form_kwargs(self):
+        kwargs = super(RespuestaFormularioUpdateFormView, self).get_form_kwargs()
+        for clave, valor in json.loads(self.object.metadata).items():
+            kwargs['initial'].update({clave: valor})
+        return kwargs

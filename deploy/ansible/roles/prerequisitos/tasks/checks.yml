@@ -1,0 +1,108 @@
+---
+
+##########
+# Checks #
+##########
+
+# Detecto si el host es un container o no
+- name: Detection if node is a docker container
+  shell: cat /proc/self/cgroup |awk -F "/" '{print $2}' |head -1
+  register: is_docker
+  tags: always
+
+# Obtengo hostname del nodo
+- name: Get the hostname of node
+  command: hostname
+  register: hostname
+  when: is_docker.stdout != "docker" and cluster == 0
+  tags: always
+
+# Obtengo IP del nodo
+- name: Get IP adress of node
+  debug: msg={{ ansible_all_ipv4_addresses }}
+  when: is_docker.stdout != "docker" and cluster == 0
+  tags: always
+
+# Comparo si el hostname ingresado en el inventory es el mismo  de el nodo
+- name: Compare if hostname of server is the same as hostname in inventory file
+  assert:
+    that: "'{{ hostname.stdout }}' == '{{ omni_fqdn }}'"
+    msg: "The hostname you inserted in inventory file is wrong, check it"
+  when: is_docker.stdout != "docker" and cluster == 0
+  tags: always
+
+# Comparo si la IP ingresada en el inventory es el mismo  de el nodo
+- name: Compare if IP in inventory file is configured in the server
+  assert:
+    that: "'{{ omni_ip }}' in ansible_all_ipv4_addresses"
+    msg: "The IP you inserted in inventory file is wrong, check it"
+  when: is_docker.stdout != "docker" and cluster == 0
+  tags: always
+
+# nos aseguramos q' "omni_distribution" esté dentro de los SO permitidos. Si no es asi, esta task generara un error
+- name: Print omni_distribution
+  debug: msg="omni_distribution es {{ ansible_os_family }}"
+  tags: always
+
+- name: Check omni_distribution
+  fail: msg="omni_distribution con valor {{ ansible_os_family }} es invalida"
+  when: (
+      ansible_os_family != "RedHat" and
+      ansible_os_family != "Sangoma" and
+      ansible_os_family != "Debian"
+      )
+  tags: always
+
+# Chequeo si la version de asterisk instalada es {{ asterisk_version }}
+- name: Check if Asterisk {{ asterisk_version }} is installed
+  shell: asterisk -V |awk -F " " '{print $2}'
+  register: asterisk_installed
+  tags: asterisk
+  become: true
+  become_method: sudo
+
+# Chequeo si la version de rtpengine instalada es {{ rtpengine_version }}
+- name: Check if Rtpengine-mr{{ rtpengine_version }} is installed
+  shell: rtpengine -v 2>&1 |awk -F "~" '{print $2}'|cut -c 3-
+  register: rtpengine_installed
+  tags: kamailio
+  become: true
+  become_method: sudo
+
+# Chequeo si la version de kamailio instalada es {{ kamailio_version }}
+- name: Check if Kamailio {{ kamailio_version }} is installed
+  shell: "{{ kamailio_location }}/sbin/kamailio -v |head -1 |awk -F \" \" '{print $3}'"
+  register: kamailio_installed
+  tags: ['kamailio']
+  become: true
+  become_method: sudo
+
+# Chequeo si el folder de certificado existe
+- name: Check if certificates folder exists
+  shell: "[ -d {{ kamailio_location }}/etc/certs ]"
+  failed_when: false
+  register: certs_exists
+  tags: always
+  become: true
+  become_method: sudo
+
+# Chequeo si el repositorio ya está clonado en DE
+- name: Check if Ominicontacto repository is cloned in {{ install_prefix }} (develop server)
+  shell: "[ -d {{ install_prefix }}ominicontacto ]"
+  failed_when: false
+  register: ominicontacto_exists
+  tags: always
+  when: desarrollo == 1
+
+# Chequeo si ics_app existe
+- name: Check if ics_app is installed in server
+  shell: "[-d {{ install_prefix }}ominicontacto/ics_app]"
+  failed_when: false
+  register: ics_exists
+  tags: always
+
+# Chequea si timezone esta definido
+- name: Check if TimeZone variable is defined
+  fail:
+    msg: TimeZone variable undefined, edit it in the inventory file
+  when: TZ is not defined

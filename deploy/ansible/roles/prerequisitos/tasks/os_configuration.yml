@@ -26,11 +26,6 @@
   become: true
   become_method: sudo
 
-#- name: Do not verify ssl on repositories
-#  ini_file: path=/etc/yum.conf section=main option=sslverify no_extra_spaces=yes value=0 state=present
-#  become: true
-#  become_method: sudo
-
 - name: Write the /etc/hosts of server (cluster)
   blockinfile:
     path: /etc/hosts
@@ -43,7 +38,7 @@
       {{ database_ip }} {{ database_fqdn }}
       {{ dialer_ip }} {{ dialer_fqdn }}
   when: cluster != 0 and is_docker.stdout != "docker"
-  tags: changeip
+  tags: changenetwork
 
 - name: Write the /etc/hosts of server (aio)
   blockinfile:
@@ -53,7 +48,7 @@
     block: |
       {{ omni_ip }} {{ omni_fqdn }}
   when: cluster == 0 and is_docker.stdout != "docker"
-  tags: changeip
+  tags: changenetwork
 
 ##################################
 ###        Centos tasks         ##
@@ -69,16 +64,6 @@
   become: true
   become_method: sudo
 
-# Exluimos paquete librrabitmq para que no haga un upgrade este paquete
-- name: Exclude librabbitmq in list of repositories (centos)
-  ini_file: "path=/etc/yum.repos.d/CentOS-Base.repo section={{ item }} option=exclude no_extra_spaces=yes value=librabbitmq* state=absent"
-  with_items:
-      - base
-      - updates
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "RedHat"
-
 # Se para y deshabilita firewalld
 # https://docs.ansible.com/ansible/2.5/modules/shell_module.html#shell-module
 - name: Stop firewalld (centos)
@@ -88,10 +73,13 @@
       - systemctl disable firewalld
   when: ansible_os_family == "RedHat"
 
-#- name: Get the current kernel release. (centos)
-#  command: uname -r
-#  register: kernel_release
-#  when: ansible_os_family == "RedHat"
+# Update/upgrade del sistema, osea si se ejecuta como deployed - deployer
+# https://docs.ansible.com/ansible/2.5/modules/yum_module.html#yum-module
+- name: Update/upgrade of centos (centos)
+  yum: name='*' state=latest update_cache=yes skip_broken=yes
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
 
 - name: Install kernel-devel package (centos)
   shell: "yum install \"kernel-devel-uname-r == $(uname -r)\" -y"
@@ -123,20 +111,13 @@
       - gdb
       - which
       - vim
-      - uuid-devel
       - net-tools
       - gnutls-devel
       - python-devel
       - texinfo
-      - expect.x86_64
-      - expect-devel.x86_64
       - kernel-headers
       - acl
-      - webkitgtk3-devel.x86_64
-      - perl*
-      - librabbitmq*
-      - pcre-devel
-      - libpcap-devel
+  #    - librabbitmq*
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
@@ -161,6 +142,19 @@
     - "deb http://security.ubuntu.com/ubuntu/ bionic-security universe"
   when: ansible_distribution == "Ubuntu"
 
+# Cuando el cluster tenga ubuntu se hace esto
+- name: Add the postgresql repository key (ubuntu )
+  apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc validate_certs=no state=present
+  become: true
+  become_method: sudo
+  when: ansible_distribution == "Ubuntu" and cluster != 0
+
+- name: Download postgresql-{{ postgresql_version }} repository
+  apt_repository: repo="deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" filename=pgdg state=present update_cache=yes
+  become: true
+  become_method: sudo
+  when: ansible_distribution == "Ubuntu" and cluster != 0
+
 # Se instala este paquete necesario antes de hacer update
 - name: Install apt-transport-https (debian)
   apt: name=apt-transport-https state=present
@@ -175,7 +169,7 @@
   shell: "apt-get install -y linux-headers-$(uname -r)"
   become: true
   become_method: sudo
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family == "Debian" and is_docker.stdout != "docker"
   ignore_errors: True
 
 - name: Install of dependencies (debian)
@@ -184,6 +178,11 @@
       - build-essential
       - vim
       - net-tools
+      - gcc
+      - curl
+      - sudo
+      - wget
+      - unzip
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"

@@ -20,7 +20,6 @@
 from __future__ import unicode_literals
 
 import datetime
-import time
 import getpass
 import json
 import logging
@@ -28,13 +27,11 @@ import os
 import re
 import sys
 import uuid
-import hmac
-from hashlib import sha1
+
 
 from ast import literal_eval
 
 from crontab import CronTab
-from StringIO import StringIO
 from random import choice
 
 from django.contrib.auth.models import AbstractUser
@@ -46,7 +43,6 @@ from django.db.models import Max, Q, Count, Sum
 from django.db.utils import DatabaseError
 from django.conf import settings
 from django.core.exceptions import ValidationError, SuspiciousOperation
-from django.core.management import call_command
 from django.core.validators import RegexValidator
 from django.forms.models import model_to_dict
 from django.utils.translation import ugettext_lazy as _
@@ -143,26 +139,6 @@ class User(AbstractUser):
 
         self.borrado = True
         self.is_active = False
-        self.save()
-
-    def generar_usuario(self, sip_extension):
-        ttl = 28800
-        date = time.time()
-        self.timestamp = date + ttl
-        user_ephemeral = str(self.timestamp).split('.')[0] + ":" + str(sip_extension)
-        return user_ephemeral
-
-    def generar_contrasena(self, sip_extension):
-        out = StringIO()
-        call_command('service_secretkey', 'consultar', stdout=out)
-        secret_key = out.getvalue()[:-1]
-#        var = ':'.join(x.encode('hex') for x in secret_key)
-        password_hashed = hmac.new(secret_key, sip_extension, sha1)
-        password_ephemeral = password_hashed.digest().encode("base64").rstrip('\n')
-        return password_ephemeral
-
-    def regenerar_credenciales(self, sip_extension):
-        self.sip_password = self.generar_contrasena(sip_extension)
         self.save()
 
 
@@ -673,7 +649,6 @@ class CampanaManager(models.Manager):
             bd_contacto=base_datos_sugerida,
             gestion=campana.gestion,
             type=campana.type,
-            formulario=campana.formulario,
             sitio_externo=campana.sitio_externo,
             tipo_interaccion=campana.tipo_interaccion,
             reported_by=campana.reported_by,
@@ -915,8 +890,8 @@ class Campana(models.Model):
         null=True, blank=True,
         related_name="%(class)ss"
     )
-    formulario = models.ForeignKey(Formulario, null=True, blank=True)
     oculto = models.BooleanField(default=False)
+    # TODO: Sacar este campo
     gestion = models.CharField(max_length=128, default="Venta")
     campaign_id_wombat = models.IntegerField(null=True, blank=True)
     type = models.PositiveIntegerField(choices=TYPES_CAMPANA)
@@ -1051,16 +1026,6 @@ class Campana(models.Model):
         self.estado = Campana.ESTADO_TEMPLATE_BORRADO
         self.save()
 
-    def _obtener_campos_bd_contacto(self, contacto):
-        base_datos = self.bd_contacto
-        metadata = base_datos.get_metadata()
-        campos_contacto = metadata.nombres_de_columnas
-        try:
-            campos_contacto.remove('telefono')
-        except ValueError:
-            logger.warning(_("La BD no tiene campo 'telefono'"))
-        return campos_contacto
-
     def establecer_valores_iniciales_agente_contacto(self):
         """
         Rellena con valores iniciales la tabla que informa el estado de los contactos
@@ -1070,7 +1035,8 @@ class Campana(models.Model):
         campana_contactos = self.bd_contacto.contactos.all()
 
         # obtenemos los campos de la BD del contacto
-        campos_contacto = self._obtener_campos_bd_contacto(self.bd_contacto)
+        metadata = self.bd_contacto.get_metadata()
+        campos_contacto = metadata.nombres_de_columnas_de_datos
 
         # creamos los objetos del modelo AgenteEnContacto a crear
         agente_en_contacto_list = []
@@ -1123,7 +1089,8 @@ class Campana(models.Model):
         """Crea una nueva entrada para relacionar un agentes y un contacto
         nuevo a una campaña preview
         """
-        campos_contacto = self._obtener_campos_bd_contacto(self.bd_contacto)
+        metadata = self.bd_contacto.get_metadata()
+        campos_contacto = metadata.nombres_de_columnas_de_datos
         datos_contacto = literal_eval(contacto.datos)
         datos_contacto = dict(zip(campos_contacto, datos_contacto))
         datos_contacto_json = json.dumps(datos_contacto)
@@ -1206,6 +1173,7 @@ class OpcionCalificacion(models.Model):
         Campana, on_delete=models.CASCADE, related_name='opciones_calificacion')
     tipo = models.IntegerField(choices=FORMULARIO_CHOICES, default=NO_ACCION)
     nombre = models.CharField(max_length=50)
+    formulario = models.ForeignKey(Formulario, null=True, blank=True)
 
     def __unicode__(self):
         return unicode(_('Opción "{0}" para campaña "{1}" de tipo "{2}"'.format(
@@ -1427,6 +1395,18 @@ class QueueMember(models.Model):
     def __unicode__(self):
         return _("agente: {0} para la campana {1} ".format(
             self.member.user.get_full_name(), self.queue_name))
+
+    @classmethod
+    def get_defaults(cls, agente, campana):
+        """Devuelve los valores por defecto que se asigan al momento de adicionar
+        un agente a una campaña
+        """
+        return {'membername': agente.user.get_full_name(),
+                'interface': """Local/{0}@from-queue/n""".format(
+                    agente.sip_extension),
+                'penalty': 0,
+                'paused': 0,
+                'id_campana': "{0}_{1}".format(campana.id, campana.nombre)}
 
     class Meta:
         db_table = 'queue_member_table'
@@ -1674,6 +1654,14 @@ class MetadataBaseDatosContactoDTO(object):
     # -----
 
     @property
+    def nombre_campo_telefono(self):
+        try:
+            indice_campo_telefono = self._metadata['cols_telefono'][0]
+            return self._metadata['nombres_de_columnas'][indice_campo_telefono]
+        except KeyError:
+            return []
+
+    @property
     def nombres_de_columnas(self):
         try:
             return self._metadata['nombres_de_columnas']
@@ -1697,6 +1685,22 @@ class MetadataBaseDatosContactoDTO(object):
                                                                       self.cantidad_de_columnas))
 
         self._metadata['nombres_de_columnas'] = columnas
+
+    @property
+    def nombres_de_columnas_de_telefonos(self):
+        return [self.nombres_de_columnas[i] for i in self.columnas_con_telefono]
+
+    @property
+    def nombres_de_columnas_de_datos(self):
+        if not hasattr(self, '_nombres_de_columnas_de_datos'):
+            try:
+                nombres_de_columnas = self._metadata['nombres_de_columnas']
+                self._nombres_de_columnas_de_datos = [x for x in nombres_de_columnas
+                                                      if not x == self.nombre_campo_telefono]
+            except KeyError:
+                return []
+
+        return self._nombres_de_columnas_de_datos
 
     @property
     def primer_fila_es_encabezado(self):
@@ -1731,35 +1735,6 @@ class MetadataBaseDatosContactoDTO(object):
 
         telefono = datos[col_telefono]
         return telefono
-
-    def obtener_telefono_y_datos_extras(self, datos_json):
-        # FIXME: este método no se usa en OML, probablemente debería ser eliminado,
-        # y los addons que lo utilicen crear su propia versión de acuerdo a los datos que manejen
-        """Devuelve tupla con (1) el numero telefonico del contacto,
-        y (2) un dict con los datos extras del contacto
-
-        :param datos: atribuito 'datos' del contacto, o sea, valores de
-                      las columnas codificadas con json
-        """
-        # Decodificamos JSON
-        try:
-            datos = json.loads(datos_json)
-        except Exception as e:
-            logger.exception(_("Error: {0} detectada al desserializar "
-                               "datos extras. Datos extras: '{1}'"
-                               "".format(e.message, datos_json)))
-            raise
-
-        # assert len(datos) == self.cantidad_de_columnas
-
-        # Obtenemos telefono
-        telefono = 0
-
-        # Obtenemos datos extra
-        datos_extra = dict(zip(self.nombres_de_columnas,
-                               datos))
-
-        return telefono, datos_extra
 
     def validar_metadatos(self):
         """Valida que los datos de metadatos estan completos"""
@@ -1825,7 +1800,7 @@ class MetadataBaseDatosContactoDTO(object):
 
     def dato_extra_es_telefono(self, nombre_de_columna):
         """
-        Devuelve True si el dato extra correspondiente a la columna
+        Devuelve True si el dato extra correspondiente a una columna
         con numero telefonico.
 
         Este metodo no realiza ningun tipo de sanitizacion del nombre
@@ -1835,7 +1810,7 @@ class MetadataBaseDatosContactoDTO(object):
         :raises ValueError: si la columna no existe
         """
         index = self.nombres_de_columnas.index(nombre_de_columna)
-        return index == self.columna_con_telefono
+        return index in self.columnas_con_telefono
 
     def dato_extra_es_generico(self, nombre_de_columna):
         """
@@ -2146,23 +2121,14 @@ class Contacto(models.Model):
     )
     es_originario = models.BooleanField(default=True)
 
-    def obtener_telefono_y_datos_extras(self, metadata):
-        # FIXME: este método no se usa en OML, probablemente debería ser eliminado,
-        # y los addons que lo utilicen crear su propia versión de acuerdo a los datos que manejen
-        """Devuelve lista con (telefono, datos_extras) utilizando
-        la informacion de metadata pasada por parametro.
-
-        Recibimos `metadata` por parametro por una cuestion de
-        performance.
-        """
-        telefono, extras = metadata.obtener_telefono_y_datos_extras(self.datos)
-        return (telefono, extras)
-
     def obtener_datos(self):
+        """ Devuelve un diccionario con todos los datos, incluido el telefono """
         if not hasattr(self, 'datos_contacto'):
-            columnas = self.bd_contacto.get_metadata().nombres_de_columnas
+            bd_metadata = self.bd_contacto.get_metadata()
+            columnas = bd_metadata.nombres_de_columnas
             datos = self.lista_de_datos()
-            datos.insert(0, self.telefono)
+            pos_primer_telefono = bd_metadata.columnas_con_telefono[0]
+            datos.insert(pos_primer_telefono, self.telefono)
             self.datos_contacto = dict(zip(columnas, datos))
         return self.datos_contacto
 
@@ -2498,14 +2464,7 @@ class CalificacionCliente(models.Model):
         super(CalificacionCliente, self).save(*args, **kwargs)
 
     def get_venta(self):
-        try:
-            return MetadataCliente.objects.get(campana=self.opcion_calificacion.campana,
-                                               agente=self.agente,
-                                               contacto=self.contacto)
-        except MetadataCliente.DoesNotExist:
-            return None
-        except MetadataCliente.MultipleObjectsReturned:
-            return None
+        return self.respuesta_formulario_gestion.first()
 
     def set_es_venta(self):
         # TODO: Usar metodo de OpcionCalificacion.es_gestion()
@@ -2559,37 +2518,18 @@ class DuracionDeLlamada(models.Model):
     duracion = models.TimeField()
 
 
-class MetadataCliente(models.Model):
+class RespuestaFormularioGestion(models.Model):
     """Representa información del formulario de gestión completado en una Calificacion"""
-    # FIXME: este modelo debería tener una relación directa con CalificacionCliente (ver OML-434),
-    # lo cual generaría un refactor de la exportación a csv de las calificaciones y haría obsoleto
-    # a 'obtener_metadata_con_nombre_calificacion' que es en un hack para poder acceder al nombre
-    # de la calificacion por el momento
-
-    agente = models.ForeignKey(AgenteProfile, related_name="metadataagente")
-    campana = models.ForeignKey(Campana, related_name="metadatacliente")
-    contacto = models.ForeignKey(Contacto, on_delete=models.CASCADE)
+    calificacion = models.ForeignKey(CalificacionCliente,
+                                     related_name='respuesta_formulario_gestion',
+                                     on_delete=models.CASCADE)
     metadata = models.TextField()
     fecha = models.DateTimeField(auto_now_add=True)
 
-    @classmethod
-    def obtener_metadata_nombre_calificacion(cls, campana_id):
-        metadata_qs = cls.objects.filter(
-            campana_id=campana_id,
-            campana__opciones_calificacion__tipo=OpcionCalificacion.GESTION).distinct()
-        calificaciones = CalificacionCliente.objects.obtener_calificaciones_gestion().filter(
-            opcion_calificacion__campana_id=campana_id).values(
-                'opcion_calificacion__nombre', 'contacto_id')
-        calificaciones_dict = {}
-        for calificacion in calificaciones:
-            contacto_id = calificacion['contacto_id']
-            nombre_calificacion = calificacion['opcion_calificacion__nombre']
-            calificaciones_dict[contacto_id] = nombre_calificacion
-        return metadata_qs, calificaciones_dict
-
     def __unicode__(self):
-        return "Metadata para el contacto {0} de la campana{1} " \
-               "{1} ".format(self.contacto, self.campana)
+        return "Respuesta del Formulario para el contacto {0} de la campana{1} " \
+               "{1} ".format(self.calificacion.contacto,
+                             self.calificacion.opcion_calificacion.campana)
 
 
 class Chat(models.Model):

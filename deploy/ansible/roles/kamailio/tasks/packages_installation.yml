@@ -1,7 +1,7 @@
 ---
 
 # Se instala el repo de postgresql9.6
-- name: Download of postgresql 9.6 repository (redhat and cluster)
+- name: Download of postgresql {{ postgresql_version }} repository (redhat and cluster)
   yum: "name={{ postgresql_url }} state=present validate_certs=no"
   become: yes
   become_method: sudo
@@ -14,37 +14,72 @@
   become_method: sudo
   when: ansible_os_family == "RedHat" and cluster == 1
 
-# Instalo paquetes de kamailio
-- name: Installation of kamailio packages (redhat)
+# Instalo paquetes de kamailio/rtpengine en centos
+- name: Installation of kamailio/rtpengine packages (redhat)
   yum: name={{ item }} state=present
   with_items:
-    - libevent-devel
-    - gcc
-    - gcc-c++
     - bison
     - bison-devel
-    - flex
     - expat
     - expat-devel
-    - libuuid
-    - libuuid-devel
-    - xmlrpc-c-devel
-    - lynx
-    - pcre
-    - postgresql96-devel
-    - pcre-devel
-    - libtool-ltdl-devel
+    - flex
+    - gcc
+    - gcc-c++
+    - glib2-devel
+    - hiredis
+    - hiredis-devel
     - iptables-devel
     - iptables-services
-    - libpcap-devel
-    - glib2-devel
     - json-glib-devel
-    - redis
-    - hiredis
-    - git
-    - hiredis-devel
+    - libevent-devel
+    - libpcap-devel
+    - libtool-ltdl-devel
     - libunistring-devel.x86_64
+    - libuuid
+    - libuuid-devel
+    - lynx
+    - pcre
+    - pcre-devel
+    - postgresql96-devel
+    - redis
+    - xmlrpc-c-devel
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
   tags: ['kamailio']
+
+# Instalo los paquetes necesarios para kamailio/rtpengine en debian
+- name: Installation of kamailio/rtpengine packages (debian)
+  apt: "name={{ item }} state=present dpkg_options=no-triggers"
+  with_items:
+    - autoconf
+    - bison
+    - debhelper
+    - default-libmysqlclient-dev
+    - flex
+    - iptables-dev
+    - libavfilter-dev
+    - libavformat-dev
+    - libavresample-dev
+    - libcurl4-openssl-dev
+    - libevent-dev
+    - libhiredis-dev
+    - libjson-glib-dev
+    - libpcre3-dev
+    - libssl-dev
+    - libunistring-dev
+    - libxml2-dev
+    - libxmlrpc-core-c3-dev
+    - markdown
+    - redis-server
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
+
+- name: Install extra packages (debian cluster)
+  apt: name={{ item }} state=present dpkg_options=no-triggers
+  with_items:
+    - libpcap-dev
+    - libpq-dev
+    - uuid-dev 
+  when: ansible_os_family == "Debian" and cluster != 0

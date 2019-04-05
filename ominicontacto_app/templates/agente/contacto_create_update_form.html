@@ -18,11 +18,21 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
 {% load i18n %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
+    <!-- Scripts -->
+    <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
+    <script src="{% static 'ominicontacto/JS/agente/make_click2call.js' %}"></script>
 </head>
 <body>
 <form target="crm" action = "" method = "post"> {% csrf_token %}

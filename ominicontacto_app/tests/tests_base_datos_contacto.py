@@ -36,6 +36,7 @@ class SetUpForMetadataBaseDatosContactoMixin():
         metadata = MetadataBaseDatosContactoDTO()
         metadata.cantidad_de_columnas = 5
         metadata.columna_con_telefono = 2
+        metadata.columnas_con_telefono = [2]
         metadata.columnas_con_fecha = [0, 4]
         metadata.columnas_con_hora = [1]
         metadata.nombres_de_columnas = ["F_ALTA",

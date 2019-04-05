@@ -50,6 +50,7 @@ from ominicontacto_app.models import (
     Chat, MensajeChat
 )
 from ominicontacto_app.forms import AgendaBusquedaForm, PausaForm, GrupoForm
+from ominicontacto_app.services.kamailio_service import KamailioService
 from ominicontacto_app.utiles import convert_string_in_boolean,\
     convert_fecha_datetime
 from ominicontacto_app import version
@@ -345,8 +346,9 @@ class ConsolaAgenteView(TemplateView):
         campanas_preview_activas = []
         usuario_agente = self.request.user
         agente_profile = usuario_agente.get_agente_profile()
-        sip_usuario = usuario_agente.generar_usuario(agente_profile.sip_extension)
-        sip_password = usuario_agente.generar_contrasena(sip_usuario)
+        kamailio_service = KamailioService()
+        sip_usuario = kamailio_service.generar_sip_user(agente_profile.sip_extension)
+        sip_password = kamailio_service.generar_sip_password(sip_usuario)
         registro = DuracionDeLlamada.objects.filter(
             agente=agente_profile,
             tipo_llamada__in=(DuracionDeLlamada.TYPE_INBOUND,
@@ -520,10 +522,11 @@ def supervision_url_externa(request):
     if user.get_es_administrador_o_supervisor_normal() or user.get_is_supervisor_customer():
         supervisor = user.get_supervisor_profile()
         sip_extension = supervisor.sip_extension
-        timestamp = user.generar_usuario(sip_extension).split(':')[0]
-        sip_usuario = timestamp + ":" + str(sip_extension)
+        kamailio_service = KamailioService()
+        timestamp = int(kamailio_service.generar_sip_timestamp())
+        sip_usuario = kamailio_service.generar_sip_user(sip_extension, timestamp)
         supervisor.timestamp = timestamp
-        supervisor.sip_password = request.user.generar_contrasena(sip_usuario)
+        supervisor.sip_password = kamailio_service.generar_sip_password(sip_usuario)
         supervisor.save()
         url = settings.OML_SUPERVISION_URL + str(supervisor.pk)
         if supervisor.is_administrador:

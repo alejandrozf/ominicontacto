@@ -43,11 +43,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
         <script src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
         <script src="{% static 'ominicontacto/JS/constantes.js' %}"></script>
+        <script type="text/javascript" src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
         <script src="{% static 'ominicontacto/JS/contactosList.js' %}"></script>
         {% endcompress %}
     </head>
     <body>
         <h1>{% trans 'Contactos' %}</h1>
+            {% include 'messages.html' %}
 
         <div>
             {% if campanas %}

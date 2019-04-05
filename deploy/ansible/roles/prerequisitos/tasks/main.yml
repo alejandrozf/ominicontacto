@@ -17,21 +17,9 @@
 #
 ---
 
-# nos aseguramos q' "omni_distribution" esté dentro de los SO permitidos.
-# si no es asi, esta task generara un error
-
-- name: Print omni_distribution
-  debug: msg="omni_distribution es {{ ansible_os_family }}"
-  tags: always
-
-- name: Check omni_distribution
-  fail: msg="omni_distribution con valor {{ ansible_os_family }} es invalida"
-  when: (
-      ansible_os_family != "RedHat" and
-      ansible_os_family != "Sangoma" and
-      ansible_os_family != "Debian"
-      )
-  tags: always
+# Chequeos internos
+- name: Check if Omnileads has been installed previously
+  include: checks.yml
 
 # Se añaden los binarios que no van a necesitar password al hacerlos con sudo
 - name: Edit sudoers to execute binaries withouth password
@@ -41,6 +29,10 @@
     - "{{ usuario }} ALL=(ALL) NOPASSWD: /usr/bin/docker, /usr/bin/rsync, /usr/sbin/asterisk"
   become: yes
   become_method: sudo
+
+# Se setea el timezone
+- name: Set timezone of server
+  timezone: name={{ TZ }}
 
 # se crea el grupo de usuario omnileads
 - name: Creation of {{ usuario }} group
@@ -52,8 +44,11 @@
   user: name={{ usuario }} group={{ usuario }} create_home=yes shell=/bin/bash home=/opt/{{ usuario }} generate_ssh_key=yes ssh_key_bits=2048 state=present
 
 - name: Create of .pgpass file
-  template: src=templates/.pgpass dest={{ install_prefix }}.pgpass mode=0600 owner={{ usuario }} group={{ usuario }}
-  tags: ['database','asterisk','kamailio','omniapp']
+  template: src=templates/.pgpass dest={{ item }}.pgpass mode=0600 owner={{ usuario }} group={{ usuario }}
+  with_items:
+    - "{{ install_prefix }}"
+    - /root/
+  tags: ['database','asterisk','kamailio','omniapp','changepassword','changenetwork']
 
 # primeras configuraciones de servidores
 - name: First configuration in server or servers

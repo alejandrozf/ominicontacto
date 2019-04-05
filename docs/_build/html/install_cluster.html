@@ -1,14 +1,14 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Horizontal Cluster Installation &mdash; OMniLeads develop documentation</title>
+  <title>Horizontal Cluster Installation &mdash; documentación de OMniLeads - develop</title>
   
 
   
@@ -25,6 +25,7 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -33,8 +34,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
     <link rel="next" title="Configuración Inicial" href="initial_settings.html" />
     <link rel="prev" title="Instalación desde ansible remoto" href="install_remote.html" /> 
 </head>
@@ -85,9 +86,9 @@
 <li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">Plataforma de Contact Center integrado a un PBX basado en SIP</a></li>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#compania-de-servicios-de-customer-contact">Compañia de servicios de Customer Contact</a></li>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#carriers-o-proveedores-de-cloud-pbx">Carriers ó Proveedores de Cloud PBX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">OML como Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-en-una-compania-de-servicios-de-customer-contact">OML en una Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-para-carriers-o-proveedores-de-cloud-pbx">OML para Carriers ó Proveedores de Cloud PBX</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="install.html">Procedimientos de instalación</a><ul class="current">
@@ -123,7 +124,13 @@
 <li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="maintance.html">OMniLeads Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
 </ul>
 
             
@@ -191,12 +198,12 @@
            <div itemprop="articleBody">
             
   <div class="section" id="horizontal-cluster-installation">
-<h1>Horizontal Cluster Installation<a class="headerlink" href="#horizontal-cluster-installation" title="Permalink to this headline">¶</a></h1>
+<h1>Horizontal Cluster Installation<a class="headerlink" href="#horizontal-cluster-installation" title="Enlazar permanentemente con este título">¶</a></h1>
 <p>OMniLeads puede ser desplegado de manera tal que los componentes queden separados en diferentes hosts. A diferencia de la instalación AIO (All In One)
 que despliega todo OMniLeads en un único host, este método de instalación permite dividir la carga de los servicios en más de un host.</p>
 <p>Puntualmente existen dos formas de instalar en cluster horizontal:</p>
 <div class="section" id="omnileads-in-two">
-<h2>OMniLeads in two:<a class="headerlink" href="#omnileads-in-two" title="Permalink to this headline">¶</a></h2>
+<h2>OMniLeads in two:<a class="headerlink" href="#omnileads-in-two" title="Enlazar permanentemente con este título">¶</a></h2>
 <ul class="simple">
 <li>Host1 (omlvoip): Asterisk y Kamailio + rtpengine</li>
 <li>Host2 (omlapp): Aplicación web, Postgres y Dialer</li>
@@ -205,7 +212,7 @@ que despliega todo OMniLeads en un único host, este método de instalación per
 <p><em>Figure 1: Cluster in 2 hosts</em></p>
 </div>
 <div class="section" id="omnileads-in-five">
-<h2>OMniLeads in five:<a class="headerlink" href="#omnileads-in-five" title="Permalink to this headline">¶</a></h2>
+<h2>OMniLeads in five:<a class="headerlink" href="#omnileads-in-five" title="Enlazar permanentemente con este título">¶</a></h2>
 <ul class="simple">
 <li>Host1 (omlapp): Aplicación web</li>
 <li>Host2 (kamailio): Kamailio + rtpengine</li>
@@ -217,7 +224,7 @@ que despliega todo OMniLeads en un único host, este método de instalación per
 <p><em>Figure 2: Cluster in 5 hosts</em></p>
 </div>
 <div class="section" id="pre-requisitos">
-<h2>Pre-requisitos<a class="headerlink" href="#pre-requisitos" title="Permalink to this headline">¶</a></h2>
+<h2>Pre-requisitos<a class="headerlink" href="#pre-requisitos" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>Los hosts sobre los cuales vamos a desplegar los servicios en cluster deben cumplir con los siguitens requisitos:</p>
 <ul class="simple">
 <li>GNU/Linux CentOS 7 (minimal), Debian 9 (netinstall) ó Ubuntu Server 18.04</li>
@@ -236,15 +243,15 @@ que despliega todo OMniLeads en un único host, este método de instalación per
 </ul>
 </div>
 <div class="section" id="preparacion-en-la-maquina-que-ejecuta-la-instalacion-remota">
-<h2>Preparación en la máquina que ejecuta la instalación remota:<a class="headerlink" href="#preparacion-en-la-maquina-que-ejecuta-la-instalacion-remota" title="Permalink to this headline">¶</a></h2>
-<p>Al igual que en la instalación “desde ansible remoto”, para desplegar OMniLeads en cualquiera de los dos tipos de clusters, debemos proceder con la ejecución
+<h2>Preparación en la máquina que ejecuta la instalación remota:<a class="headerlink" href="#preparacion-en-la-maquina-que-ejecuta-la-instalacion-remota" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Al igual que en la instalación «desde ansible remoto», para desplegar OMniLeads en cualquiera de los dos tipos de clusters, debemos proceder con la ejecución
 del script de deploy a partir de contar con el proyecto clonado sobre una estación de trabajo con GNU/Linux (deployer). Desde la misma se ejecuta la instalación
-del cluster. Para generar nuestro host “deployer”, sugerimos repasar el ítem “Preparación en la máquina que ejecuta la instalación remota” dentro de la sección
-“instalación desde ansible remoto”.</p>
+del cluster. Para generar nuestro host «deployer», sugerimos repasar el ítem «Preparación en la máquina que ejecuta la instalación remota» dentro de la sección
+«instalación desde ansible remoto».</p>
 <p>Se considera entonces que el usuario dispone del repositorio clonado en su Linux Workstation (OMniLeads deployer) !</p>
 </div>
 <div class="section" id="preparacion-del-archivo-inventory">
-<h2>Preparación del archivo <em>inventory</em>:<a class="headerlink" href="#preparacion-del-archivo-inventory" title="Permalink to this headline">¶</a></h2>
+<h2>Preparación del archivo <em>inventory</em>:<a class="headerlink" href="#preparacion-del-archivo-inventory" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>Para este tipo de despliegue, se deben configurar los parámetros <em>hostname</em> y <em>dirección IP</em> de cada host-componente de nuestro cluster.</p>
 <ul class="simple">
 <li>Ejemplo para <em>OMniLeads in two</em></li>
@@ -263,15 +270,15 @@ bajo un host dedicado e independiente.</p>
 <p>Al igual que en las otras instalaciones, las variables y passwords de los diferentes componentes se pueden modificar en la sección  <em>[everyyone:vars]</em></p>
 <img alt="_images/install_inventory_passwords.png" src="_images/install_inventory_passwords.png" />
 <p><em>Figure 5: Passwords and parameters of services</em></p>
-<p>Es importante aclarar que cada vez que se corre el script “./deploy.sh” ya sea para instalar, re-instalar, actualizar, modificar la dirección IP de OML, etc.,
-el archivo de inventory se vuelve a “cero”. No obstante se genera una copia del archivo (my_inventory), de manera tal que se cuente con los parámetros
+<p>Es importante aclarar que cada vez que se corre el script «./deploy.sh» ya sea para instalar, re-instalar, actualizar, modificar la dirección IP de OML, etc.,
+el archivo de inventory se vuelve a «cero». No obstante se genera una copia del archivo (my_inventory), de manera tal que se cuente con los parámetros
 del sistema utilizados en la última ejecución del script.
-La copia en cuestión se ubica en el path donde ha sido clonado el repositorio de OML y bajo el nombre de “my_inventory” como lo expone la figura 6.</p>
+La copia en cuestión se ubica en el path donde ha sido clonado el repositorio de OML y bajo el nombre de «my_inventory» como lo expone la figura 6.</p>
 <img alt="_images/install_remote_my_inventory.png" src="_images/install_remote_my_inventory.png" />
 <p><em>Figure 6: inevntory copy, my_inventory file</em></p>
 </div>
 <div class="section" id="ejecucion-del-script-de-instalacion">
-<h2>Ejecución del script de instalación:<a class="headerlink" href="#ejecucion-del-script-de-instalacion" title="Permalink to this headline">¶</a></h2>
+<h2>Ejecución del script de instalación:<a class="headerlink" href="#ejecucion-del-script-de-instalacion" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>La instalación de OMniLeads se realiza mediante el script <em>deploy.sh</em>, ubicado dentro de la carpeta deploy/ansible con respecto a la carpeta
 raíz del proyecto (ominicontacto).</p>
 <p>Una vez configuradas las variables citadas, se procede con la ejecución del script de instalación (uitilizando sudo).</p>
@@ -289,7 +296,7 @@ ya que se deben descargar, instalar y configurar varios paquetes correspondiente
 <p><em>Figure 8: OMniLeads installation ended succesfuly</em></p>
 </div>
 <div class="section" id="primer-acceso-a-omnileads">
-<h2>Primer acceso a OMniLeads:<a class="headerlink" href="#primer-acceso-a-omnileads" title="Permalink to this headline">¶</a></h2>
+<h2>Primer acceso a OMniLeads:<a class="headerlink" href="#primer-acceso-a-omnileads" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>Si la ejecución de la instalación fue exitosa, entonces vamos por el primer acceso a OMniLeads.</p>
 <div class="toctree-wrapper compound">
 <ul>
@@ -298,7 +305,7 @@ ya que se deben descargar, instalar y configurar varios paquetes correspondiente
 </div>
 </div>
 <div class="section" id="errores-comunes">
-<h2>Errores comunes:<a class="headerlink" href="#errores-comunes" title="Permalink to this headline">¶</a></h2>
+<h2>Errores comunes:<a class="headerlink" href="#errores-comunes" title="Enlazar permanentemente con este título">¶</a></h2>
 <ul class="simple">
 <li>Alguno de los hosts no tiene internet o no resuelve dominios (configuración de DNS).</li>
 </ul>

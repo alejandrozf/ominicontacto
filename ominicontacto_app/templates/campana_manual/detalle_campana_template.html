@@ -30,11 +30,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <tr>
                 <td>{% trans 'Tipo de interación' %}</td>
                 <td>
-                    {{object.get_tipo_interaccion_display}}:
-                    {% if object.tipo_interaccion == 1 %}
-                        {{ object.formulario }}
-                    {% else %}
-                        {{ object.sitio_externo }}
+                    {{object.get_tipo_interaccion_display}}
+                    {% if object.tipo_interaccion == 2 %}
+                        : {{ object.sitio_externo }}
                     {% endif %}
                 </td>
             </tr>

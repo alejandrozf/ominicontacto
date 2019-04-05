@@ -1,14 +1,14 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Troncal SIP con proveedor de acceso PSTN &mdash; OMniLeads develop documentation</title>
+  <title>Troncal SIP con proveedor de acceso PSTN &mdash; documentación de OMniLeads - develop</title>
   
 
   
@@ -25,6 +25,7 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -33,8 +34,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
     <link rel="next" title="Campañas Telefónicas" href="campaigns.html" />
     <link rel="prev" title="Troncal SIP entre OMniLeads y un PBX" href="telephony_settings_pbx.html" /> 
 </head>
@@ -85,9 +86,9 @@
 <li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">Plataforma de Contact Center integrado a un PBX basado en SIP</a></li>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#compania-de-servicios-de-customer-contact">Compañia de servicios de Customer Contact</a></li>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#carriers-o-proveedores-de-cloud-pbx">Carriers ó Proveedores de Cloud PBX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">OML como Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-en-una-compania-de-servicios-de-customer-contact">OML en una Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-para-carriers-o-proveedores-de-cloud-pbx">OML para Carriers ó Proveedores de Cloud PBX</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Procedimientos de instalación</a></li>
@@ -118,7 +119,7 @@
 <li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="maintance.html">OMniLeads Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
 </ul>
 
             
@@ -186,14 +187,14 @@
            <div itemprop="articleBody">
             
   <div class="section" id="troncal-sip-con-proveedor-de-acceso-pstn">
-<h1>Troncal SIP con proveedor de acceso PSTN<a class="headerlink" href="#troncal-sip-con-proveedor-de-acceso-pstn" title="Permalink to this headline">¶</a></h1>
+<h1>Troncal SIP con proveedor de acceso PSTN<a class="headerlink" href="#troncal-sip-con-proveedor-de-acceso-pstn" title="Enlazar permanentemente con este título">¶</a></h1>
 <p>El esquema descripto en este insiso se puede representar con la figura 1.</p>
 <img alt="_images/oml_bpo_simple.png" class="align-center" src="_images/oml_bpo_simple.png" />
 <p><em>Figure 1: SIP trunk provider and OMniLeads</em></p>
 <p>Vamos a considerar entonces que un proveedor de troncales SIP nos facilita un acceso a la PSTN. En este escenario se plantea una plantilla
 de configuración muy similar a la siguiente.</p>
 <div class="section" id="parametros-para-el-troncal-sip">
-<h2>Parámetros para el troncal SIP<a class="headerlink" href="#parametros-para-el-troncal-sip" title="Permalink to this headline">¶</a></h2>
+<h2>Parámetros para el troncal SIP<a class="headerlink" href="#parametros-para-el-troncal-sip" title="Enlazar permanentemente con este título">¶</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">defaultuser</span><span class="o">=</span><span class="n">account_user</span>
 <span class="n">secret</span><span class="o">=</span><span class="n">account_password</span>
 <span class="n">host</span><span class="o">=</span><span class="n">XXX</span><span class="o">.</span><span class="n">XXX</span><span class="o">.</span><span class="n">XXX</span><span class="o">.</span><span class="n">PROVIDER</span>
@@ -205,7 +206,7 @@ de configuración muy similar a la siguiente.</p>
 <span class="n">permit</span><span class="o">=</span><span class="n">XXX</span><span class="o">.</span><span class="n">XXX</span><span class="o">.</span><span class="n">XXX</span><span class="o">.</span><span class="n">PROVIDER</span><span class="o">/</span><span class="mf">255.255</span><span class="o">.</span><span class="mf">255.255</span>
 </pre></div>
 </div>
-<p>NOTA: ponemos énfasis en el parámetro “<strong>context=from-pstn</strong>”. Es imprescindible que sea especificado.</p>
+<p>NOTA: ponemos énfasis en el parámetro «<strong>context=from-pstn</strong>». Es imprescindible que sea especificado.</p>
 <p>Debemos recordar que la sintaxis utilizada para especificar los parámetros del troncal está basada en el módulo chan_sip.so de Asterisk.
 Para mayor información sobre los parámetros <a class="reference external" href="https://www.voip-info.org/asterisk-config-sipconf/">https://www.voip-info.org/asterisk-config-sipconf/</a></p>
 <p>Una configuración ejemplar podría ser la de la figura 2.</p>
@@ -213,7 +214,7 @@ Para mayor información sobre los parámetros <a class="reference external" href
 <p><em>Figure 2: SIP trunk provider config</em></p>
 </div>
 <div class="section" id="comprobacion-del-estado-del-troncal">
-<h2>Comprobación del estado del troncal<a class="headerlink" href="#comprobacion-del-estado-del-troncal" title="Permalink to this headline">¶</a></h2>
+<h2>Comprobación del estado del troncal<a class="headerlink" href="#comprobacion-del-estado-del-troncal" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>En este punto simplemente se accede por medio de una sesión SSH a OMniLeads y desde dicha conexión se debe ejecutar el comando de Asterisk</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">asterisk</span> <span class="o">-</span><span class="n">rx</span> <span class="s1">&#39;sip show peers&#39;</span>
 </pre></div>

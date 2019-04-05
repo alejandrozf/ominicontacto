@@ -32,6 +32,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% endif %}
         <li class="disabled"><a>{% trans 'Actuacion' %}</a></li>
         <li class="disabled"><a>{% trans 'Reglas Incidencias' %}</a></li>
+        {% if create %}
+            <li class="disabled"><a>{% trans 'Dar permiso a supervisores' %}</a></li>
+            <li class="disabled"><a>{% trans 'Adicionar agentes' %}</a></li>
+        {% endif %}
         <li class="active"><a>{% trans 'Sincronizar' %}</a></li>
     </ul>
 {% endblock %}

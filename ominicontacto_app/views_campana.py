@@ -236,8 +236,9 @@ class CampanaSupervisorUpdateView(UpdateView):
         supervisores = SupervisorProfile.objects.exclude(borrado=True)
         supervisors_choices = [(supervisor.user.pk, supervisor.user) for supervisor in
                                supervisores]
-        return self.form_class(supervisors_choices=supervisors_choices,
-                               **self.get_form_kwargs())
+        kwargs = self.get_form_kwargs()
+        kwargs['supervisors_choices'] = supervisors_choices
+        return self.form_class(**kwargs)
 
     def get_success_url(self):
         return reverse('campana_list')

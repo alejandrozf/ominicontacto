@@ -5,7 +5,7 @@
 
 # El initdb de postgres toca ejecutarlo solo para centos
 - name: Setup of postgresql
-  command: "/usr/pgsql-9.6/bin/postgresql96-setup initdb"
+  command: "/usr/pgsql-{{ postgresql_version }}/bin/postgresql96-setup initdb"
   register: commandresult
   failed_when:
     - "'is not empty' not in commandresult.stdout"
@@ -16,43 +16,44 @@
 
 # Se modifica el pg_hba.conf
 - name: Modify of pg_hba.conf file (centos)
-  template: src=templates/pg_hba.conf.j2 dest=/var/lib/pgsql/9.6/data/pg_hba.conf
+  template: src=templates/pg_hba.conf.j2 dest=/var/lib/pgsql/{{ postgresql_version }}/data/pg_hba.conf
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
-  tags: changeip
+  tags: changenetwork
 
 # Esto es para debian
 - name: Modify of pg_hba.conf file (debian)
-  template: src=templates/pg_hba.conf.j2 dest=/etc/postgresql/9.6/main/pg_hba.conf
+  template: src=templates/pg_hba.conf.j2 dest=/etc/postgresql/{{ postgresql_version }}/main/pg_hba.conf
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
-  tags: changeip
-
+  tags: changenetwork
 
 #Se modifica la ip en la que escucha postgres
 - name: Modify postgresql listen address
-  lineinfile: path=/etc/postgresql/9.6/main/postgresql.conf regexp="^#listen_addresses" line="listen_addresses = '*'" state=present
+  lineinfile: path=/etc/postgresql/{{ postgresql_version }}/main/postgresql.conf regexp="^#listen_addresses" line="listen_addresses = '*'" state=present
   when: ansible_os_family == "Debian"
 
 #Se modifica la ip en la que escucha postgres
 - name: Modify postgresql listen address
-  lineinfile: path=/var/lib/pgsql/9.6/data/postgresql.conf regexp="^#listen_addresses" line="listen_addresses = '*'" state=present
+  lineinfile: path=/var/lib/pgsql/{{ postgresql_version }}/data/postgresql.conf regexp="^#listen_addresses" line="listen_addresses = '*'" state=present
   when: ansible_os_family == "RedHat"
 
 # Restarteamos servicio
 - name: Restart postgres service (centos)
-  service: name=postgresql-9.6 state=restarted enabled=yes
+  service: name=postgresql-{{ postgresql_version }} state=restarted enabled=yes
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
+  tags: changenetwork
 
 - name: Restart postgres service (debian)
   service: name=postgresql state=restarted enabled=yes
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
+  tags: changenetwork
 
 # Se crea el usuario de postgres
 - name: Create rw postgres user
@@ -60,6 +61,7 @@
   become: yes
   become_method: sudo
   become_user: postgres
+  tags: changepassword
 
 # Se crea el usuario de postgres
 - name: Create ro postgres user
@@ -79,14 +81,12 @@
 
 - name: Copy of kamailio-tables restore file
   copy: src=/var/tmp/ominicontacto-build/ominicontacto/ominicontacto_voip/kamailio-files/kamailio-tables.tar.gz dest=/tmp/kamailio-tables.tar.gz
-  tags: postinstall
 
 - name: Restore of kamailio tables in database
   command: pg_restore -d {{ postgres_database }} -c -F t /tmp/kamailio-tables.tar.gz
   environment:
     PGPASSWORD: "{{ postgres_password }}"
-  tags: postinstall
-  ignore_errors: yes
+  failed_when: false
   become: true
   become_method: su
   become_user: "{{ usuario }}"

@@ -36,15 +36,23 @@
   become_method: sudo
 
 # En estas tasks se hacen tareas de segurizacion de mariadb, es como hacer un mariadb-secure no voy a explicar una por una, nunca fallan
-- name: Enable and start MariaDB
-  systemd: name=mariadb enabled=yes state=started
+- name: Enable and start MariaDB (centos)
+  service: name=mariadb enabled=yes state=started
   become: true
   become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+- name: Enable and start MariaDB (debian)
+  service: name=mysql enabled=yes state=started
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
 
 - name: Add .my.cnf
   template: src=templates/my.cnf.j2 dest=/root/.my.cnf owner=root group=root mode=0600
   become: true
   become_method: sudo
+  tags: changepassword
 
 - name: Set root Password
   mysql_user: name=root host={{ item }} host_all=yes password={{ mysql_root_password }} check_implicit_admin=true state=present
@@ -55,6 +63,7 @@
     MYSQL_PWD: "{{ mysql_root_password }}"
   become: true
   become_method: sudo
+  tags: changepassword
 
 - name: Reload privilege tables
   command: 'mysql -ne "{{ item }}"'
@@ -98,7 +107,14 @@
   become: true
   become_method: sudo
 
-- name: Restart mariadb
-  service: name=mariadb state=restarted enabled=yes
+- name: Enable and start MariaDB (centos)
+  service: name=mariadb enabled=yes state=started
   become: true
   become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+- name: Enable and start MariaDB (debian)
+  service: name=mysql enabled=yes state=started
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"

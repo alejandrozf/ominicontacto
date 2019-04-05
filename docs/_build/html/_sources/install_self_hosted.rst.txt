@@ -28,6 +28,7 @@ Ajustes necesarios antes  de la ejecución de script:
 Ubuntu - Debian:
 
 ::
+
   apt install git
   git clone https://gitlab.com/omnileads/ominicontacto.git
   cd ominicontacto
@@ -36,6 +37,7 @@ Ubuntu - Debian:
 CentOS:
 
 ::
+
   yum install git
   git clone https://gitlab.com/omnileads/ominicontacto.git
   cd ominicontacto

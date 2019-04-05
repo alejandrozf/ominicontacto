@@ -17,9 +17,17 @@
 #
 ---
 
-# Se setea esta variable que se va a usar en estos playbooks
-- set_fact: static_route={{ install_prefix }}ominicontacto/ominicontacto_app/static/ominicontacto
+# Esto tengo que hacerlo para debian porque viene por defecto con php7.0 y para ubuntu viene
+# Obtengo la version de php
+- name: Set php-fpm version (debian)
+  set_fact: php_version=7.0
   tags: postinstall
+  when: ansible_distribution == "Debian"
+
+- name: Set php-fpm version (ubuntu)
+  set_fact: php_version=7.2
+  tags: postinstall
+  when: ansible_distribution == "Ubuntu"
 
 - include: django_migrations.yml
   tags: [omniapp']
@@ -29,7 +37,7 @@
 
 - include: gluster-client.yml
   tags: ['omniapp']
-  when: cluster != 0
+  when: cluster != 0 and is_docker.stdout != "docker"
 
 - include: supervision.yml
   tags: ['omniapp']

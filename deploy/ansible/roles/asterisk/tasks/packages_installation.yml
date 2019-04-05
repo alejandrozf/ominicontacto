@@ -1,12 +1,5 @@
 ---
 
-# Se instala las Development Tools
-- name: Install Development tools
-  command: "yum -y groupinstall core base \"Development Tools\""
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "RedHat"
-
 # Se crea el repo de sngrep desde el template https://docs.ansible.com/ansible/2.5/modules/template_module.html#template-module
 #  https://docs.ansible.com/ansible-container/container_yml/template.html
 - name: Creation of sngrep repo
@@ -38,26 +31,13 @@
 - name: Installation of asterisk packages (centos)
   yum: name={{ item }} state=present update_cache=yes
   with_items:
-      - ncurses-devel
-      - ncurses-libs
-      - libxml2
-      - libxml2-devel
-      - sqlite-devel
-      - newt-devel
-      - glusterfs-server
-      - net-snmp-devel
-      - unixODBC
-      - unixODBC-devel
-      - libtiff-devel
-      - audiofile-devel
-      - gtk2-devel
-      - subversion
-      - lame
-      - unixODBC
-      - http://mirror.centos.org/centos/7/os/x86_64/Packages/postgresql-odbc-09.03.0100-2.el7.x86_64.rpm
-      - sngrep
-      - python-pip
-      - python-psycopg2.x86_64
+    - dh-autoreconf
+    - http://mirror.centos.org/centos/7/os/x86_64/Packages/postgresql-odbc-09.03.0100-2.el7.x86_64.rpm
+    - lame
+    - sqlite-devel
+    - sngrep
+    - subversion
+    - unixODBC
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
@@ -66,82 +46,37 @@
 - name: Installation of asterisk packages (debian)
   apt: "name={{ item }} state=present dpkg_options=no-triggers"
   with_items:
-    - build-essential
-    - net-tools
-    - debhelper
-    - iptables-dev
-    - libcurl4-openssl-dev
-    - libpcre3-dev
-    - libxmlrpc-core-c3-dev
-    - markdown
-    - libglib2.0-dev
-    - libhiredis-dev
-    - dkms
-    - git
-    - libevent-dev
-    - libbencode-perl
-    - libcrypt-rijndael-perl
-    - libdigest-hmac-perl
-    - libio-socket-inet6-perl
-    - libsocket6-perl
-    - libb-hooks-op-check-perl
-    - libexporter-tidy-perl
-    - libpcap0.8-dev
-    - libpcap-dev
-    - libio-socket-ip-perl
+    - dh-autoreconf
+    - lame
     - libavcodec-dev
-    - libavfilter-dev
-    - libavformat-dev
-    - libavresample-dev
-    - libavutil-dev
-    - gcc
-    - flex
-    - bison
-    - mariadb-server
-    - default-libmysqlclient-dev
-    - make
-    - libxml2-dev
-    - libpcre3-dev
-    - libpq-dev
-    - libpq5
-    - redis-server
-    - uuid
-    - uuid-dev
-    - libunistring-dev
-    - libjson-glib-dev
-    - postgresql-client
-    - vim
-    - curl
-    - mariadb-client
-    - sox
-    - libncurses5-dev
-    - libssl-dev
     - mpg123
-    - libnewt-dev
-    - sqlite3
-    - libsqlite3-dev
-    - pkg-config
-    - automake
-    - libtool
-    - autoconf
-    - unixodbc-dev
-    - libasound2-dev
-    - libogg-dev
-    - libvorbis-dev
-    - libical-dev
-    - libneon27-dev
-    - libsrtp0-dev
-    - libspandsp-dev
-    - sudo
-    #- libmyodbc
-    - subversion
     - odbc-postgresql
-    - wget
-    - unzip
+    - postgresql-client
+    - sox
+    - subversion
+    - unixodbc-dev
+    - uuid
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
 
-- name: Install of glusterfs-server package (debian cluster)
+- name: Install of cluster packages (centos cluster)
+  yum: name={{ item }} state=present
+  with_items:
+    - python-pip
+    - python-psycopg2.x86_64
+    - glusterfs-server
+  when: ansible_os_family == "RedHat" and cluster != 0
+
+- name: Install of glusterfs-server (debian cluster)
   apt: name=glusterfs-server state=present
-  when: ansible_distribution == "Debian"
+  when: ansible_os_family == "Debian" and is_docker.stdout != "docker" and cluster != 0
+
+- name: Install of cluster packages (debian cluster)
+  apt: name={{ item }} state=present
+  with_items:
+    - postgresql-server-dev-{{ postgresql_version }}
+    - python
+    - python-pip
+    - python-psycopg2
+  when: ansible_os_family == "Debian" and cluster != 0 and is_docker.stdout == "docker"

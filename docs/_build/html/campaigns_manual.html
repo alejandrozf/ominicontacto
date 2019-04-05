@@ -1,14 +1,14 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Manual Call Campaign &mdash; OMniLeads develop documentation</title>
+  <title>Manual Call Campaign &mdash; documentación de OMniLeads - develop</title>
   
 
   
@@ -25,6 +25,7 @@
         <script type="text/javascript" src="_static/underscore.js"></script>
         <script type="text/javascript" src="_static/doctools.js"></script>
         <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -33,8 +34,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
     <link rel="next" title="Preview Campaigns" href="campaigns_preview.html" />
     <link rel="prev" title="Campañas Telefónicas" href="campaigns.html" /> 
 </head>
@@ -85,9 +86,9 @@
 <li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">Plataforma de Contact Center integrado a un PBX basado en SIP</a></li>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#compania-de-servicios-de-customer-contact">Compañia de servicios de Customer Contact</a></li>
-<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#carriers-o-proveedores-de-cloud-pbx">Carriers ó Proveedores de Cloud PBX</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">OML como Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-en-una-compania-de-servicios-de-customer-contact">OML en una Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-para-carriers-o-proveedores-de-cloud-pbx">OML para Carriers ó Proveedores de Cloud PBX</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Procedimientos de instalación</a></li>
@@ -120,7 +121,13 @@
 <li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="maintance.html">OMniLeads Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
 </ul>
 
             
@@ -188,7 +195,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="manual-call-campaign">
-<h1>Manual Call Campaign<a class="headerlink" href="#manual-call-campaign" title="Permalink to this headline">¶</a></h1>
+<h1>Manual Call Campaign<a class="headerlink" href="#manual-call-campaign" title="Enlazar permanentemente con este título">¶</a></h1>
 <p>Para crear una nueva campaña manual se debe ingresar al punto de menú <em>Manual Campaigns -&gt; New  Campaign</em>. El proceso de creación consta de
 un wizard de dos pantallas.</p>
 <p>La primera pantalla nos invita a indicar una serie de parámtros de la campaña, como lo indica la figura 1.</p>
@@ -197,7 +204,7 @@ un wizard de dos pantallas.</p>
 <ul class="simple">
 <li><strong>Name:</strong> nombre de la campaña</li>
 <li><strong>Contact database:</strong> se utiliza para desplegar datos a partir del número de teléfono origen que realiza la llamada entrante al sistema.</li>
-<li><strong>Campaign form:</strong> campo de selección del formulario que se desplegará cada vez que un agente califique un contacto con la calificación “de gestión”.</li>
+<li><strong>Campaign form:</strong> campo de selección del formulario que se desplegará cada vez que un agente califique un contacto con la calificación «de gestión».</li>
 <li><strong>External URL:</strong> URL a disparar cada vez que el agente lo indique.</li>
 <li><strong>Enable recordings:</strong> habilitar que todas las llamadas de la campaña sean grabadas.</li>
 <li><strong>Scope:</strong> se define como la cantidad de gestiones positivas que se esperan para la campaña. En la supervisión de la campaña se muestra en tiempo real el porcentaje de avence de la campaña respecto al objetivo definido.</li>
@@ -210,14 +217,14 @@ En este caso, la base de contactos es utilizada si deseamos que cada vez que un 
 <p>Una vez lista la campaña solo resta asignar a los agentes que podrán trabajar en la misma, opteniendo contactos para marcar.
 En la figura 3 y 4 se ejemplifica una asignación de agentes a una campaña.</p>
 <img alt="_images/campaigns_prev_ag2.png" src="_images/campaigns_prev_ag2.png" />
-<p><em>Figure 4: agent assignment</em></p>
+<p><em>Figure 3: agent assignment</em></p>
 <p>Finalmente cuando un agente asignado a la campaña realice un login a la plataforma, debería disponer de la campaña manual a la hora de seleccionar a qué campaña asignar cada llamada manual desde el webphone, tal como se expone en la figura 5.</p>
 <img alt="_images/campaigns_manual_agconsole1.png" src="_images/campaigns_manual_agconsole1.png" />
-<p><em>Figure 5: Preview agents view</em></p>
-<p>Cuando un agente se encuentra online y marca un teléfono correspondiente a un contacto de la base de la campaña, el contacto cuyo teléfono coincide con por el marcado por el agente es desplegado como opción a seleccionar, en esta pantalla
-también se permite generar un nuevo contacto. Entonces el agente puede o bien confirmar que la llamada se dispara hacia el contacto listado o sino crear un nuevo contacto y marcarlo.</p>
-<blockquote>
-<div>entonces los datos (extras al teléfono) del contacto son desplegados en la pantalla de agente, teniendo éste ultimo que</div></blockquote>
+<p><em>Figure 4: Preview agents view</em></p>
+<p>Cuando un agente se encuentra online y marca un teléfono correspondiente a un contacto de la base de la campaña, el contacto cuyo teléfono coincide con por el marcado por el agente
+es desplegado como opción a seleccionar en esta pantalla, también se permite generar un nuevo contacto. Entonces el agente puede o bien confirmar que la llamada se dispara hacia
+el contacto listado o sino también crear un nuevo contacto y marcarlo.
+Los datos (extras al teléfono) del contacto son desplegados en la pantalla de agente</p>
 <img alt="_images/campaigns_manual_agconsole2.png" src="_images/campaigns_manual_agconsole2.png" />
 <p><em>Figure 5: agent assignment</em></p>
 <p>Si se selecciona llamar al contacto listado, entonces los datos del mismo son desplegados en pantalla, como lo expone la figura 6.</p>
@@ -229,13 +236,13 @@ también se permite generar un nuevo contacto. Entonces el agente puede o bien c
 <p>Por otro lado, si el teléfono marcado no corresponde a ningún contacto de la base entonces el sitema permite al agente buscar el contacto en la base o generar un nuevo contacto. En caso de tratarse
 de una campaña sin base de contactos, entonces cada llamado que realice un agente implica que se genere el contacto asociado a la llamada marcada (figura 5 y 6).</p>
 <img alt="_images/campaigns_manual_agconsole5.png" src="_images/campaigns_manual_agconsole5.png" />
-<p><em>Figure 6: new contact add to campaign database screen 1</em></p>
+<p><em>Figure 8: new contact add to campaign database screen 1</em></p>
 <img alt="_images/campaigns_manual_agconsole6.png" src="_images/campaigns_manual_agconsole6.png" />
-<p><em>Figure 7: new contact add to campaign database screen 2</em></p>
+<p><em>Figure 9: new contact add to campaign database screen 2</em></p>
 <p>Entonces al momento de marcar a un número que no devuelva un contacto. el agente pasará por una vista en la que primero el agente debe añadir el contacto como un registro de la base de la campaña para luego marcar.
 Finalmente se despliegan el nuevo contacto y la opción de clasificar la llamada con alguna calificación (figura 8).</p>
 <img alt="_images/campaigns_manual_agconsole7.png" src="_images/campaigns_manual_agconsole7.png" />
-<p><em>Figure 8: new contact called</em></p>
+<p><em>Figure 10: new contact called</em></p>
 </div>
 
 

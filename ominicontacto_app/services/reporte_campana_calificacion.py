@@ -78,7 +78,7 @@ class ArchivoDeReporteCsv(object):
             encabezado.append(_("Agente"))
             encabezado.append(_("Tel status"))
             encabezado.append(_("Tel contactado"))
-            nombres = campana.bd_contacto.get_metadata().nombres_de_columnas[1:]
+            nombres = campana.bd_contacto.get_metadata().nombres_de_columnas_de_datos
             for nombre in nombres:
                 encabezado.append(nombre)
             encabezado.append(_("Calificado"))
