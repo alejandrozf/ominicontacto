@@ -261,6 +261,7 @@ class QueueMemberForm(forms.ModelForm):
         super(QueueMemberForm, self).__init__(*args, **kwargs)
 
         self.fields['member'].queryset = members
+        self.initial['penalty'] = 0
 
     class Meta:
         model = QueueMember
@@ -1222,8 +1223,10 @@ class CampanaSupervisorUpdateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         supervisors_choices = kwargs.pop('supervisors_choices', [])
+        supervisors_required = kwargs.pop('supervisors_required', False)
         super(CampanaSupervisorUpdateForm, self).__init__(*args, **kwargs)
         self.fields['supervisors'].choices = supervisors_choices
+        self.fields['supervisors'].required = supervisors_required
 
     class Meta:
         model = Campana
@@ -1429,5 +1432,5 @@ ParametrosCrmFormSet = inlineformset_factory(
     Campana, ParametrosCrm, form=ParametrosCrmForm, extra=1, can_delete=True)
 
 QueueMemberFormset = inlineformset_factory(
-    Queue, QueueMember, formset=QueueMemberBaseFomset, form=QueueMemberForm, extra=0,
-    can_delete=True, min_num=1)
+    Queue, QueueMember, formset=QueueMemberBaseFomset, form=QueueMemberForm, extra=1,
+    can_delete=True, min_num=0)

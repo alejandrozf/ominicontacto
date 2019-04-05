@@ -238,6 +238,7 @@ class CampanaSupervisorUpdateView(UpdateView):
                                supervisores]
         kwargs = self.get_form_kwargs()
         kwargs['supervisors_choices'] = supervisors_choices
+        kwargs['supervisors_required'] = True
         return self.form_class(**kwargs)
 
     def get_success_url(self):
