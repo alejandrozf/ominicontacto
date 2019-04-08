@@ -21,7 +21,29 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 {% load i18n %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.dataTables.min.css' %}">
+    <link rel="stylesheet" href="{% static 'supervision_app/CSS/supervision.css' %}">
+{% endblock %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/utiles.js' %}"></script>
+    <script type="text/javascript" src="{% static 'supervision_app/JS/supervision.js' %}"></script>
+{% endblock %}
+
 {% block content %}
-<h1>{% trans 'Agentes' %}</h1>
+    <h1>{% trans 'Agentes' %}</h1>
+
+    <table id="tableAgentes" class="table">
+        <thead>
+            <tr>
+                <th>{% trans 'Nombre' %}</th>
+                <th>{% trans 'Status' %}</th>
+                <th>{% trans 'Tiempo' %}</th>
+                <th>{% trans 'Acciones' %}</th>
+            </tr>
+        </thead>
+    </table>
 
 {% endblock content %}

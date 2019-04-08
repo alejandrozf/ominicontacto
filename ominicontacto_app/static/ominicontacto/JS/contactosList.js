@@ -22,11 +22,6 @@ $(document).ready(function(){
   var pk_campana = $('#pk_campana').attr('value');
   var tipo_campana = $('#campana_tipo').attr('value');
 
-  function create_node (type, attrs) {
-    var $node = $("<" + type + "/>", attrs);
-    return $node;
-  }
-
   function obtener_nodos_acciones (row, data, index) {
     var pk_contacto = data[0];
     var nodos_acciones = [];
