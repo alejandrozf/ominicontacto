@@ -315,28 +315,30 @@ class CampanaWizardMixin(object):
         campana = campana_form.instance
         queue_member_formset = form_list[index_form_agentes]
         queue_member_formset.instance = campana.queue_campana
+        if queue_member_formset.is_valid():
+            # obtenemos los agentes que estan logueados
+            sip_agentes_logueados = obtener_sip_agentes_sesiones_activas_kamailio()
 
-        # obtenemos los agentes que estan logueados
-        sip_agentes_logueados = obtener_sip_agentes_sesiones_activas_kamailio()
+            # se asignan valores por defecto en cada una de las instancias
+            # de QueueMember a salvar y se adicionan a sus respectivas colas en asterisk
+            for queue_form in queue_member_formset.forms:
+                if queue_form.cleaned_data != {}:
+                    # no se tienen en cuenta formularios vacíos
+                    agente = queue_form.instance.member
+                    queue_member_defaults = QueueMember.get_defaults(agente, campana)
+                    queue_form.instance.id_campana = queue_member_defaults['id_campana']
+                    queue_form.instance.membername = queue_member_defaults['membername']
+                    queue_form.instance.interface = queue_member_defaults['interface']
+                    # por ahora no definimos 'paused'
+                    queue_form.instance.paused = queue_member_defaults['paused']
+                    queue_form_created = True
+                    if queue_form.instance.pk is not None:
+                        queue_form_created = False
+                    queue_form.save(commit=False)
+                    if (agente.sip_extension in sip_agentes_logueados) and queue_form_created:
+                        adicionar_agente_cola(agente, queue_form.instance, campana)
 
-        # se asignan valores por defecto en cada una de las instancias
-        # de QueueMember a salvar y se adicionan a sus respectivas colas en asterisk
-        for queue_form in queue_member_formset.forms:
-            agente = queue_form.instance.member
-            queue_member_defaults = QueueMember.get_defaults(agente, campana)
-            queue_form.instance.id_campana = queue_member_defaults['id_campana']
-            queue_form.instance.membername = queue_member_defaults['membername']
-            queue_form.instance.interface = queue_member_defaults['interface']
-            # por ahora no definimos 'paused'
-            queue_form.instance.paused = queue_member_defaults['paused']
-            queue_form_created = True
-            if queue_form.instance.pk is not None:
-                queue_form_created = False
-            queue_form.save(commit=False)
-            if (agente.sip_extension in sip_agentes_logueados) and queue_form_created:
-                adicionar_agente_cola(agente, queue_form.instance, campana)
-
-        queue_member_formset.save()
+            queue_member_formset.save()
 
 
 class CampanaEntranteMixin(CampanaWizardMixin):
