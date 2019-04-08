@@ -69,9 +69,9 @@ class CalificacionClienteFormView(FormView):
         return contactos_info
 
     def get_contacto(self, id_contacto):
-        if id_contacto is not None:
-            return get_object_or_404(Contacto, pk=id_contacto)
-        return None
+        if id_contacto is None or id_contacto == '-1':
+            return None
+        return get_object_or_404(Contacto, pk=id_contacto)
 
     def get_object(self):
         if self.contacto is not None:
