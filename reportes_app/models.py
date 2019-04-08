@@ -195,7 +195,7 @@ class LlamadaLog(models.Model):
     contacto_id = models.IntegerField(blank=True, null=True)
     bridge_wait_time = models.IntegerField(blank=True, null=True)
     duracion_llamada = models.IntegerField(blank=True, null=True)
-    archivo_grabacion = models.CharField(max_length=50, blank=True, null=True)
+    archivo_grabacion = models.CharField(max_length=100, blank=True, null=True)
 
     # campos sólo para algunos logs transferencias
     agente_extra_id = models.IntegerField(db_index=True, blank=True, null=True)
