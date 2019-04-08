@@ -42,7 +42,7 @@ from ominicontacto_app.models import (
 )
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
-                                      validar_solo_ascii_y_sin_espacios)
+                                      validar_solo_ascii_y_sin_espacios, elimina_tildes)
 from configuracion_telefonia_app.models import DestinoEntrante
 
 from utiles_globales import validar_extension_archivo_audio
@@ -709,6 +709,26 @@ class FieldFormularioForm(forms.ModelForm):
             "nombre_campo": forms.TextInput(attrs={'class': 'form-control'}),
             'values_select': forms.HiddenInput(),
         }
+
+    def clean_nombre_campo(self):
+        nombre_campo = self.cleaned_data.get('nombre_campo')
+        return elimina_tildes(nombre_campo)
+
+    def clean_values_select(self):
+        tipo = self.cleaned_data.get('tipo')
+        if not tipo == FieldFormulario.TIPO_LISTA:
+            return None
+
+        values_select = self.cleaned_data.get('values_select')
+        if values_select is '':
+            raise forms.ValidationError(_('La lista no puede estar vacía'))
+        try:
+            lista_values_select = json.loads(values_select)
+        except ValueError:
+            raise forms.ValidationError(_('Formato inválido'))
+        if lista_values_select is list:
+            raise forms.ValidationError(_('Formato inválido'))
+        return values_select
 
 
 class OrdenCamposForm(forms.Form):

@@ -116,8 +116,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {{ form.is_required.errors }}
         </div>
     </div>
+    {{form.values_select}}
+    {{form.values_select.errors}}
     <button type="submit" id="id_guardar" class="btn btn-outline-primary ">
         {% trans 'Agregar campo' %}
+        
     </button>
     <br>
     <br>
