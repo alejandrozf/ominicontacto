@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-04 17:07-0300\n"
+"POT-Creation-Date: 2019-04-09 15:44-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -187,9 +187,9 @@ msgstr "Passwords are not the same"
 
 #: ominicontacto_app/forms.py:207 ominicontacto_app/forms.py:208
 #: ominicontacto_app/forms.py:209 ominicontacto_app/forms.py:210
-#: ominicontacto_app/forms.py:211 ominicontacto_app/forms.py:400
-#: ominicontacto_app/forms.py:1113 ominicontacto_app/forms.py:1114
-#: ominicontacto_app/forms.py:1342
+#: ominicontacto_app/forms.py:211 ominicontacto_app/forms.py:401
+#: ominicontacto_app/forms.py:1134 ominicontacto_app/forms.py:1135
+#: ominicontacto_app/forms.py:1365
 #: ominicontacto_app/templates/campana_dialer/reglas_incidencia.html:111
 msgid "En segundos"
 msgstr "In seconds"
@@ -198,19 +198,19 @@ msgstr "In seconds"
 msgid "Debe definir una frecuencia para el Anuncio Periódico"
 msgstr "You must define a frequency for Periodic Announcement"
 
-#: ominicontacto_app/forms.py:251 ominicontacto_app/forms.py:1140
+#: ominicontacto_app/forms.py:251 ominicontacto_app/forms.py:1161
 msgid "Debe seleccionar un destino"
 msgstr "You must define a destination"
 
-#: ominicontacto_app/forms.py:350
+#: ominicontacto_app/forms.py:351
 msgid "Campos de teléfono"
 msgstr "Phone fields"
 
-#: ominicontacto_app/forms.py:369
+#: ominicontacto_app/forms.py:370
 msgid "texto a buscar"
 msgstr "search"
 
-#: ominicontacto_app/forms.py:380 ominicontacto_app/models.py:360
+#: ominicontacto_app/forms.py:381 ominicontacto_app/models.py:360
 #: ominicontacto_app/models.py:1875
 #: ominicontacto_app/templates/agenda_contacto/agenda_agente.html:74
 #: ominicontacto_app/templates/agenda_contacto/agenda_detalle.html:87
@@ -221,12 +221,12 @@ msgstr "search"
 msgid "Fecha"
 msgstr "Date"
 
-#: ominicontacto_app/forms.py:384
+#: ominicontacto_app/forms.py:385
 #: ominicontacto_app/templates/busqueda_grabacion.html:84
 msgid "Tipo de llamada"
 msgstr "Call type"
 
-#: ominicontacto_app/forms.py:387
+#: ominicontacto_app/forms.py:388
 #: ominicontacto_app/services/reporte_campana_calificacion.py:78
 #: ominicontacto_app/services/reporte_respuestas_formulario.py:80
 #: ominicontacto_app/templates/busqueda_grabacion.html:86
@@ -240,7 +240,7 @@ msgstr "Call type"
 msgid "Agente"
 msgstr "Agent"
 
-#: ominicontacto_app/forms.py:388
+#: ominicontacto_app/forms.py:389
 #: ominicontacto_app/templates/agente/campanas_preview.html:51
 #: ominicontacto_app/templates/busqueda_grabacion.html:87
 #: ominicontacto_app/templates/campana/adicionar_agentes.html:52
@@ -279,34 +279,34 @@ msgstr "Agent"
 msgid "Campaña"
 msgstr "Campaign"
 
-#: ominicontacto_app/forms.py:389
+#: ominicontacto_app/forms.py:390
 #: ominicontacto_app/templates/user/user_list.html:96
 msgid "Página"
 msgstr "Page"
 
-#: ominicontacto_app/forms.py:390
+#: ominicontacto_app/forms.py:391
 msgid "Marcadas"
 msgstr "Checked"
 
-#: ominicontacto_app/forms.py:392
+#: ominicontacto_app/forms.py:393
 msgid "Duración mínima"
 msgstr "Minimum duration"
 
-#: ominicontacto_app/forms.py:394
+#: ominicontacto_app/forms.py:395
 msgid "Calificada como gestión"
 msgstr "With Engaged Call Disposition"
 
-#: ominicontacto_app/forms.py:417
+#: ominicontacto_app/forms.py:418
 msgid ""
 "Debe cargar una base de datos antes de comenzar a configurar una campana"
 msgstr ""
 "You must upload a contact database prior to start campaign configuration"
 
-#: ominicontacto_app/forms.py:423
+#: ominicontacto_app/forms.py:424
 msgid "Debe seleccionar un sitio externo"
 msgstr "You must select an external URL"
 
-#: ominicontacto_app/forms.py:465
+#: ominicontacto_app/forms.py:466
 msgid ""
 "Los nombres de las columnas de la nueva base de datos no coinciden con la "
 "anterior"
@@ -314,7 +314,7 @@ msgstr ""
 "The names of the columns for this new database are different from the last "
 "one"
 
-#: ominicontacto_app/forms.py:525
+#: ominicontacto_app/forms.py:526
 #, python-brace-format
 msgid ""
 "El nombre de la opción de calificación '{0}' está reservado para uso interno "
@@ -323,34 +323,34 @@ msgstr ""
 "Name of call disposition {0} is reserved of internal use, please select "
 "another one"
 
-#: ominicontacto_app/forms.py:550
+#: ominicontacto_app/forms.py:551
 #: ominicontacto_app/tests/tests_campanas.py:1799
 msgid "Debe elegir un formulario para la gestión."
 msgstr "You must select a form to engage"
 
-#: ominicontacto_app/forms.py:572
+#: ominicontacto_app/forms.py:573
 #, python-brace-format
 msgid "Debe ingresar al menos {0} opción de calificación"
 msgstr "You must enter at leat {0} call disposition"
 
-#: ominicontacto_app/forms.py:575
+#: ominicontacto_app/forms.py:576
 #, python-brace-format
 msgid "Debe ingresar al menos {0} opciones de calificación"
 msgstr "You must enter at leat {0} call disposition"
 
-#: ominicontacto_app/forms.py:597
+#: ominicontacto_app/forms.py:598
 msgid "Rellene los campos en blanco"
 msgstr "Please fill the fields in blank"
 
-#: ominicontacto_app/forms.py:600
+#: ominicontacto_app/forms.py:601
 msgid "Los nombres de las opciones de calificación deben ser distintos"
 msgstr "The names of call dispositions must be different"
 
-#: ominicontacto_app/forms.py:607
+#: ominicontacto_app/forms.py:608
 msgid "Debe escoger una opción de calificación de tipo gestión por campaña"
 msgstr "You must choose at least one call disposition of type Engaged"
 
-#: ominicontacto_app/forms.py:636
+#: ominicontacto_app/forms.py:637
 #: ominicontacto_app/services/reporte_respuestas_formulario.py:86
 #: ominicontacto_app/templates/agente/reporte_agente_calificaciones.html:98
 #: ominicontacto_app/templates/agente/reporte_agente_calificaciones.html:135
@@ -358,7 +358,7 @@ msgstr "You must choose at least one call disposition of type Engaged"
 msgid "Calificación"
 msgstr "Call Disposition"
 
-#: ominicontacto_app/forms.py:652
+#: ominicontacto_app/forms.py:653
 #: ominicontacto_app/services/reporte_agente_calificacion.py:81
 #: ominicontacto_app/services/reporte_campana_calificacion.py:85
 #: ominicontacto_app/templates/agenda_contacto/agenda_agente.html:77
@@ -368,11 +368,19 @@ msgstr "Call Disposition"
 msgid "Observaciones"
 msgstr "Comments"
 
-#: ominicontacto_app/forms.py:1070
+#: ominicontacto_app/forms.py:725 ominicontacto_app/tests/test_formulario.py:54
+msgid "La lista no puede estar vacía"
+msgstr "The list cannot be empty"
+
+#: ominicontacto_app/forms.py:729 ominicontacto_app/forms.py:731
+msgid "Formato inválido"
+msgstr "Invalid Format"
+
+#: ominicontacto_app/forms.py:1091
 msgid "Los nombres de los estados de las reglas deben ser distintos"
 msgstr "The names of the rules must be different"
 
-#: ominicontacto_app/forms.py:1111
+#: ominicontacto_app/forms.py:1132
 msgid ""
 " Es recomendable que este valor sea menor al dial timeout\n"
 "            definido en la ruta saliente. En segundos"
@@ -380,51 +388,51 @@ msgstr ""
 "This value should be smaller than Dial Tiemout\n"
 "\t     defined in outbound routes. In seconds"
 
-#: ominicontacto_app/forms.py:1130
+#: ominicontacto_app/forms.py:1151
 msgid ""
 "El valor de dial timeout deberá estar comprendido entre 10 y 90 segundos"
 msgstr "Dial timeout value should be defined between 10 and 90 seconds"
 
-#: ominicontacto_app/forms.py:1178
+#: ominicontacto_app/forms.py:1199
 msgid "El usuario no puede contener espacios"
 msgstr "Username string cannot have spaces"
 
-#: ominicontacto_app/forms.py:1182
+#: ominicontacto_app/forms.py:1203
 msgid "Supervisor Gerente"
 msgstr "Manager Supervisor"
 
-#: ominicontacto_app/forms.py:1183
+#: ominicontacto_app/forms.py:1204
 msgid "Administrador"
 msgstr "Administrator"
 
-#: ominicontacto_app/forms.py:1184
+#: ominicontacto_app/forms.py:1205
 msgid "Cliente"
 msgstr "Customer"
 
-#: ominicontacto_app/forms.py:1188
+#: ominicontacto_app/forms.py:1209
 msgid "Rol del usuario"
 msgstr "User role"
 
-#: ominicontacto_app/forms.py:1288
+#: ominicontacto_app/forms.py:1311
 msgid "Esta calificación está reservada para el sistema"
 msgstr "This call disposition is reserved for internal use"
 
-#: ominicontacto_app/forms.py:1303
+#: ominicontacto_app/forms.py:1326
 msgid ""
 "Seleccione el archivo de audio que desea para la Campaña. Si ya existe uno y "
 "guarda otro, el audio será reemplazado."
 msgstr ""
 "Choose the audio file for the campaign. If there is any, it will be replaced."
 
-#: ominicontacto_app/forms.py:1322
+#: ominicontacto_app/forms.py:1345
 msgid "Escoja una campaña"
 msgstr "Choose a campaign"
 
-#: ominicontacto_app/forms.py:1363
+#: ominicontacto_app/forms.py:1386
 msgid "Valor"
 msgstr "Value"
 
-#: ominicontacto_app/forms.py:1364 ominicontacto_app/models.py:146
+#: ominicontacto_app/forms.py:1387 ominicontacto_app/models.py:146
 #: ominicontacto_app/models.py:153 ominicontacto_app/models.py:306
 #: ominicontacto_app/models.py:1432 ominicontacto_app/models.py:1893
 #: ominicontacto_app/models.py:2794 ominicontacto_app/models.py:3120
@@ -455,23 +463,23 @@ msgstr "Value"
 msgid "Nombre"
 msgstr "Name"
 
-#: ominicontacto_app/forms.py:1372
+#: ominicontacto_app/forms.py:1395
 msgid "El valor debe corresponder a un campo de la base de datos de contactos"
 msgstr "Value must match a contact database field"
 
-#: ominicontacto_app/forms.py:1375
+#: ominicontacto_app/forms.py:1398
 msgid "El valor debe corresponder a un campo válido de la campaña"
 msgstr "Value must match a valid campaign field"
 
-#: ominicontacto_app/forms.py:1378
+#: ominicontacto_app/forms.py:1401
 msgid "El valor debe corresponder a un dato válido de la llamada"
 msgstr "Value must match a valid call data"
 
-#: ominicontacto_app/forms.py:1386
+#: ominicontacto_app/forms.py:1409
 msgid "Debe definir un nombre para el parámetro"
 msgstr "You must define a name for the parameter"
 
-#: ominicontacto_app/forms.py:1404
+#: ominicontacto_app/forms.py:1427
 msgid "Los agentes deben ser distintos"
 msgstr "The agents must be differents"
 
@@ -677,7 +685,7 @@ msgstr "Recreational"
 #: ominicontacto_app/models.py:1434
 #: ominicontacto_app/templates/agenda_contacto/agenda_agente.html:76
 #: ominicontacto_app/templates/agenda_contacto/agenda_detalle.html:95
-#: ominicontacto_app/templates/formulario/formulario_field.html:149
+#: ominicontacto_app/templates/formulario/formulario_field.html:162
 #: ominicontacto_app/templates/sitio_externo/sitio_externo_list.html:48
 msgid "Tipo"
 msgstr "Type"
@@ -1828,7 +1836,7 @@ msgid "Hora:"
 msgstr "Time:"
 
 #: ominicontacto_app/templates/agenda_contacto/create_agenda_contacto.html:120
-#: ominicontacto_app/templates/formulario/formulario_field.html:109
+#: ominicontacto_app/templates/formulario/formulario_field.html:116
 #: ominicontacto_app/templates/sitio_externo/create_update_form.html:45
 msgid "Tipo:"
 msgstr "Type:"
@@ -2394,7 +2402,7 @@ msgstr "Engaged"
 #: ominicontacto_app/templates/campana_preview/campanas_borradas.html:30
 #: ominicontacto_app/templates/campana_preview/lista_template.html:47
 #: ominicontacto_app/templates/contactos/busqueda_contacto.html:74
-#: ominicontacto_app/templates/formulario/formulario_field.html:178
+#: ominicontacto_app/templates/formulario/formulario_field.html:191
 #: ominicontacto_app/templates/grupo_list.html:72
 #: ominicontacto_app/templates/modulo_list.html:43
 #: ominicontacto_app/templates/pausa_list.html:44
@@ -2503,7 +2511,7 @@ msgstr "Are you sure you want to delete this audio?"
 #: ominicontacto_app/templates/delete_sitio_externo.html:29
 #: ominicontacto_app/templates/formulario/elimina_field_formulario.html:29
 #: ominicontacto_app/templates/formulario/formulario_eliminar.html:29
-#: ominicontacto_app/templates/formulario/formulario_field.html:192
+#: ominicontacto_app/templates/formulario/formulario_field.html:205
 #: ominicontacto_app/templates/formulario/formulario_list.html:52
 #: ominicontacto_app/templates/grupo_list.html:79
 #: ominicontacto_app/templates/modulo_list.html:50
@@ -2728,7 +2736,7 @@ msgstr "Forms"
 
 #: ominicontacto_app/templates/base.html:252
 #: ominicontacto_app/templates/formulario/formulario_create_update_form.html:25
-#: ominicontacto_app/templates/formulario/formulario_field.html:88
+#: ominicontacto_app/templates/formulario/formulario_field.html:95
 #: ominicontacto_app/templates/formulario/formulario_preview.html:31
 msgid "Nuevo formulario"
 msgstr "New Form"
@@ -4124,7 +4132,7 @@ msgid "Campana:"
 msgstr "Campaign:"
 
 #: ominicontacto_app/templates/contactos/seleccion_campana_form.html:92
-#: ominicontacto_app/templates/formulario/formulario_field.html:223
+#: ominicontacto_app/templates/formulario/formulario_field.html:236
 msgid "Continuar"
 msgstr "Continue"
 
@@ -4186,14 +4194,14 @@ msgid "¿Está  seguro que desea eliminar el campo:"
 msgstr "Are you sure you want to delete this field?"
 
 #: ominicontacto_app/templates/formulario/formulario_create_update_form.html:28
-#: ominicontacto_app/templates/formulario/formulario_field.html:91
+#: ominicontacto_app/templates/formulario/formulario_field.html:98
 #: ominicontacto_app/templates/formulario/formulario_preview.html:34
 msgid "Nuevo Formulario"
 msgstr "New Form"
 
 #: ominicontacto_app/templates/formulario/formulario_create_update_form.html:29
-#: ominicontacto_app/templates/formulario/formulario_field.html:92
-#: ominicontacto_app/templates/formulario/formulario_field.html:143
+#: ominicontacto_app/templates/formulario/formulario_field.html:99
+#: ominicontacto_app/templates/formulario/formulario_field.html:156
 #: ominicontacto_app/templates/formulario/formulario_preview.html:35
 msgid "Campos del formulario"
 msgstr "Form Fields"
@@ -4216,59 +4224,63 @@ msgstr "Form \"%(nombre)s\""
 msgid "¿Está seguro que desea eliminar este formulario?"
 msgstr "Are you sure you want to delete this form?"
 
-#: ominicontacto_app/templates/formulario/formulario_field.html:93
+#: ominicontacto_app/templates/formulario/formulario_field.html:100
 msgid "Vista  previa del formulario"
 msgstr "Form Preview"
 
-#: ominicontacto_app/templates/formulario/formulario_field.html:98
+#: ominicontacto_app/templates/formulario/formulario_field.html:105
 msgid "Nuevo campo"
 msgstr "New Field"
 
-#: ominicontacto_app/templates/formulario/formulario_field.html:104
+#: ominicontacto_app/templates/formulario/formulario_field.html:111
 msgid "Nombre de campo:"
 msgstr "Field Name:"
 
-#: ominicontacto_app/templates/formulario/formulario_field.html:114
+#: ominicontacto_app/templates/formulario/formulario_field.html:121
 msgid "Campo requerido:"
 msgstr "Mandatory Field:"
 
-#: ominicontacto_app/templates/formulario/formulario_field.html:120
+#: ominicontacto_app/templates/formulario/formulario_field.html:129
 msgid "Agregar campo"
 msgstr "Add Field"
 
-#: ominicontacto_app/templates/formulario/formulario_field.html:129
+#: ominicontacto_app/templates/formulario/formulario_field.html:135
+msgid "No ingrese un item vacío"
+msgstr "Don't insert an empty item"
+
+#: ominicontacto_app/templates/formulario/formulario_field.html:142
 msgid "Agregar item"
 msgstr "Add Item"
 
-#: ominicontacto_app/templates/formulario/formulario_field.html:130
+#: ominicontacto_app/templates/formulario/formulario_field.html:143
 msgid "Eliminar seleccionados"
 msgstr "Delete selected fields"
 
-#: ominicontacto_app/templates/formulario/formulario_field.html:147
+#: ominicontacto_app/templates/formulario/formulario_field.html:160
 msgid "Orden"
 msgstr "Order"
 
-#: ominicontacto_app/templates/formulario/formulario_field.html:148
+#: ominicontacto_app/templates/formulario/formulario_field.html:161
 msgid "Nombre de campo"
 msgstr "Field Name"
 
-#: ominicontacto_app/templates/formulario/formulario_field.html:150
+#: ominicontacto_app/templates/formulario/formulario_field.html:163
 msgid "Campo requerido"
 msgstr "Mandatory Field"
 
-#: ominicontacto_app/templates/formulario/formulario_field.html:151
+#: ominicontacto_app/templates/formulario/formulario_field.html:164
 msgid "Valores de la lista"
 msgstr "List Values"
 
-#: ominicontacto_app/templates/formulario/formulario_field.html:183
+#: ominicontacto_app/templates/formulario/formulario_field.html:196
 msgid "Mover abajo"
 msgstr "Move down"
 
-#: ominicontacto_app/templates/formulario/formulario_field.html:188
+#: ominicontacto_app/templates/formulario/formulario_field.html:201
 msgid "Mover arriba"
 msgstr "Move up"
 
-#: ominicontacto_app/templates/formulario/formulario_field.html:202
+#: ominicontacto_app/templates/formulario/formulario_field.html:215
 msgid "No se encontraron campos creados."
 msgstr "There are no created fields."
 
@@ -4560,6 +4572,16 @@ msgstr "user"
 msgid "No existen usuarios api crm"
 msgstr "There are not API users"
 
+#: ominicontacto_app/tests/test_formulario.py:52
+#: ominicontacto_app/views_formulario.py:109
+msgid "No se pudo llevar a cabo la creacion de campo."
+msgstr "The field couldn't be created"
+
+#: ominicontacto_app/tests/test_formulario.py:59
+#: ominicontacto_app/views_formulario.py:224
+msgid "No está permitido crear un formulario vacio."
+msgstr "You cannot create an empty form"
+
 #: ominicontacto_app/tests/tests_campanas.py:311
 #: ominicontacto_app/utiles.py:346
 msgid "el nombre no puede contener tildes ni caracteres no ASCII"
@@ -4669,6 +4691,7 @@ msgstr ""
 #: ominicontacto_app/views_base_de_datos_contacto.py:644
 #: ominicontacto_app/views_base_de_datos_contacto.py:693
 #: ominicontacto_app/views_base_de_datos_contacto.py:724
+#: ominicontacto_app/views_formulario.py:108
 msgid "<strong>Operación Errónea!</strong> "
 msgstr "<strong>Error!</strong> "
 
@@ -4964,19 +4987,19 @@ msgstr "This agent is not assigned to an active campaign"
 msgid "Contacto creado satisfactoriamente. Efectuando llamada."
 msgstr "Contact created. Calling."
 
-#: ominicontacto_app/views_formulario.py:157
+#: ominicontacto_app/views_formulario.py:153
 msgid ""
 "<strong>Operación Exitosa!</strong> Se llevó a cabo con éxito el "
 "reordenamiento de los campos."
 msgstr "<strong>Success!</strong> New Fields order saved."
 
-#: ominicontacto_app/views_formulario.py:167
+#: ominicontacto_app/views_formulario.py:163
 msgid ""
 "<strong>Operación Errónea!</strong> No se pudo llevar a cabo el "
 "reordenamiento de los campos."
 msgstr "<strong>Error!</strong> Unable to reorder fields."
 
-#: ominicontacto_app/views_formulario.py:305
+#: ominicontacto_app/views_formulario.py:312
 msgid "No está permitido eliminar un formulario asignado a alguna campaña"
 msgstr "You cannot delete a form being in use by a campaign"
 
@@ -5029,7 +5052,7 @@ msgstr "New User: Basic Information"
 
 #: ominicontacto_app/views_user_profiles.py:132
 #: ominicontacto_app/views_user_profiles.py:152
-#: ominicontacto_app/views_user_profiles.py:339
+#: ominicontacto_app/views_user_profiles.py:333
 #, python-brace-format
 msgid "<strong>¡Cuidado!</strong> con el siguiente error{0} ."
 msgstr "<strong>Warning!</strong> with the following error{0} "
