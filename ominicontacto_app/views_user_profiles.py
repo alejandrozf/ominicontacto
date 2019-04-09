@@ -272,12 +272,6 @@ class SupervisorProfileUpdateView(UpdateView):
             self.object.is_administrador = True
         elif rol == SupervisorProfile.ROL_CLIENTE:
             self.object.is_customer = True
-
-        sip_extension = self.object.sip_extension
-        self.object.timestamp = self.object.user.generar_usuario(sip_extension).split(':')[0]
-        timestamp = self.object.timestamp
-        sip_usuario = timestamp + ":" + str(sip_extension)
-        self.object.sip_password = self.object.user.generar_contrasena(sip_usuario)
         self.object.save()
         return super(SupervisorProfileUpdateView, self).form_valid(form)
 
