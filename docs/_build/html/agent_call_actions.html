@@ -1,0 +1,342 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Poner en espera una llamada &mdash; documentación de OMniLeads - develop</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="Listado de contactos de la campaña" href="agent_contact_managment.html" />
+    <link rel="prev" title="Atención de llamadas entrantes" href="agent_inbound.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> OMniLeads
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html">WebRTC; la tecnología subyacente de OMniLeads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">OML como Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-en-una-compania-de-servicios-de-customer-contact">OML en una Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-para-carriers-o-proveedores-de-cloud-pbx">OML para Carriers ó Proveedores de Cloud PBX</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Procedimientos de instalación</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="initial_settings.html">Configuración Inicial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="telephony.html">Configuración de acceso a la PSTN</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="campaigns.html">Campañas Telefónicas</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="agent.html">Gestiones del agente</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="agent.html#sesion-del-agente">Sesión del agente</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#campanas-manuales">Campañas manuales</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#campanas-preview">Campañas preview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#campanas-dialer">Campañas dialer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#campanas-entrantes">Campañas entrantes</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="agent.html#acciones-sobre-las-llamadas">Acciones sobre las llamadas</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Poner en espera una llamada</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#transferencias-de-llamados">Transferencias de llamados</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#observar-grabacion-de-llamada">Observar grabación de llamada</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#agendamiento-de-llamadas">Agendamiento de llamadas</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#agendas-calificaciones-y-contactos">Agendas, calificaciones y contactos</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OMniLeads</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="agent.html">Gestiones del agente</a> &raquo;</li>
+        
+      <li>Poner en espera una llamada</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/agent_call_actions.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="poner-en-espera-una-llamada">
+<h1>Poner en espera una llamada<a class="headerlink" href="#poner-en-espera-una-llamada" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>En medio de cualquier tipo de llamada en curso, el agente puede poner en espera al teléfono en el otro extremo
+de la comunicación. Esto se logra hundiendo el botón «hold» del webphone de agente.</p>
+<img alt="_images/about_agent_callactions_hold_1.png" src="_images/about_agent_callactions_hold_1.png" />
+<p><em>Figure 1: call on hold</em></p>
+<p>Al disparar la acción de hold, el otro extremo de la llamada que escuchando la música de espera, mientras que el agente puede volver a retomar la llamada cuando desee
+simplemente hundiendo el botón de unhold, tal como se indica en la figura 2.</p>
+<img alt="_images/about_agent_callactions_hold_2.png" src="_images/about_agent_callactions_hold_2.png" />
+<p><em>Figure 2: unhold</em></p>
+<p>Esta funcionalidad puede ser utilizada en cualquier tipo de llamada.</p>
+</div>
+<div class="section" id="transferencias-de-llamados">
+<h1>Transferencias de llamados<a class="headerlink" href="#transferencias-de-llamados" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>Dentro del abanico de posibilidades de transferencias de llamadas que se pueden realizar en el sistema, tenemos las siguientes:</p>
+<p><strong>Transferencia directa hacia otro agente</strong></p>
+<p>El «agente A» se encuentra en una llamada activa y desea transferir la llamada hacia el «agente B» de manera directa.
+En este caso se hunde el botón de transferencia disponible en el webphone y luego se selecciona «blind transfer» como tipo de transferencia y se puede elegir al agente destino.</p>
+<img alt="_images/about_agent_callactions_ag2ag_bt.png" src="_images/about_agent_callactions_ag2ag_bt.png" />
+<p><em>Figure 3: «Agent A» to «Agent B» blind transfer</em></p>
+<p>En este caso, la llamada automáticamente es despachada hacia el agente B, quedando liberado el webphone del «agente A». Una vez disparada esta transferencia, no se puede volver
+a recuperar la llamada original, ni tampoco el «agente A» puede conocer si la llamada fue atendida o no por el «agente B»</p>
+<p><strong>Transferencia directa a número externo</strong></p>
+<p>El «agente A» se encuentra en una llamada activa y desea transferir la llamada hacia un «Teléfono» externo a OMniLeads de manera directa. Cuando decimos externo, nos referimos
+a una llamada que se genera hacia afuera del sistema, puede ser una extensión del PBX de la compañía o bien un teléfono externo de la PSTN.</p>
+<p>En este caso se hunde el botón de transferencia disponible en el webphone y luego se selecciona «blind transfer» como tipo de transferencia y se debe introducir el número destino en recuadro
+como lo indica la figura 4.</p>
+<img alt="_images/about_agent_callactions_ag2out_bt.png" src="_images/about_agent_callactions_ag2out_bt.png" />
+<p><em>Figure 4: «Agent A» to «External telephone» blind transfer</em></p>
+<p>En este caso, la llamada automáticamente es despachada hacia el teléfono destino, quedando liberado el webphone del «agente A». Una vez disparada esta transferencia, no se puede volver
+a recuperar la llamada original, ni tampoco el «agente A» puede conocer si la llamada fue atendida o no por el teléfono destino de la transferencia.</p>
+<p><strong>Transferencia con consulta hacia otro agente</strong></p>
+<p>El «agente A» se encuentra en una llamada activa y desea transferir la llamada hacia el «agente B» de manera consultativa, es decir logrando que el teléfono externo quede
+en espera mientras el «agente A» abre un nuevo canal hacia el «agente B», si la llamada entre ambos se establece y el «agente B» desea recibir la transferencia, entonces
+el «agente A» corta la llamada y automáticamente el teléfono externo queda unido en una llamada con el «agente B».</p>
+<img alt="_images/about_agent_callactions_ag2ag_ct.png" src="_images/about_agent_callactions_ag2ag_ct.png" />
+<p><em>Figure 5: «Agent A» to «Agent B» consultative transfer</em></p>
+<p>En este escenario también puede ocurrir:</p>
+<ul class="simple">
+<li>Que no se logre contactar al «agente B», entonces el «agente A» puede cancelar la transferencia durante el ring hacia el «agente B» con el botón «cancel transfer» del webphone.</li>
+<li>Se logra el contacto con el «agente B» pero éste no pueda/quiera proceder con la transferencia, por lo tanto el «agente B» debe cortar la llamada y atomáticamente vuelve a quedar el «agente A» con el teléfono externo enlazados.</li>
+</ul>
+<p><strong>Transferencia con consulta a número externo</strong></p>
+<p>El «agente A» se encuentra en una llamada activa y desea transferir la llamada hacia un «teléfono» externo de manera consultativa, es decir logrando que «telefono externo A» quede
+en espera mientras el «agente A» abre un nuevo canal hacia el «teléfono externo B», si la llamada entre ambos se establece y el «teléfono externo B» desea recibir la transferencia, entonces
+el «agente A» corta la llamada y automáticamente el «teléfono externo A» queda unido en una llamada con el «teléfono externo B».</p>
+<img alt="_images/about_agent_callactions_ag2out_ct.png" src="_images/about_agent_callactions_ag2out_ct.png" />
+<p><em>Figure 6: «Agent A» to «External telephone» consultative transfer</em></p>
+<p>En este escenario también puede ocurrir:</p>
+<ul class="simple">
+<li>Que no se logre contactar al «teléfono externo B», entonces el «agente A» puede cancelar la transferencia durante el ring hacia el «teléfono externo B» con el botón «cancel transfer» del webphone.</li>
+<li>Se logra el contacto con el «telefono externo B» pero éste no pueda/quiera proceder con la transferencia, por lo tanto el «teléfono externo B» debe cortar la llamada y atomáticamente vuelve a quedar el «agente A» con el «teléfono externo A» enlazados.</li>
+</ul>
+<p><strong>Transferencia a otra campaña</strong></p>
+<p>Bajo este escenario el «agente A» se encuentra en una llamada activa y desea transferir la llamada hacia una campaña entrante. A la hora de seleccionar el tipo de transferencia
+se debe marcar «blind transfer» ya que la llamada es lanzada sobre la cola de espera de la campaña destino.</p>
+<img alt="_images/about_agent_callactions_ag2camp.png" src="_images/about_agent_callactions_ag2camp.png" />
+<p><em>Figure 7: «Agent A» to «inbound campaign» transfer</em></p>
+<p>Como se trata de una transferencia directa, la llamada automáticamente es despachada hacia el teléfono destino, quedando liberado el webphone del «agente A». Una vez disparada esta transferencia, no se puede volver
+a recuperar la llamada original, ni tampoco el «agente A» puede conocer si la llamada fue atendida o no</p>
+</div>
+<div class="section" id="observar-grabacion-de-llamada">
+<h1>Observar grabación de llamada<a class="headerlink" href="#observar-grabacion-de-llamada" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>Esta funcionalidad del webphone de agente, permite a éste poder generar una marca sobre la grabación de la llamada. La idea es que luego desde el módulo de busqueda de grabaciones
+se pueda recuperar grabaciones «observadas» por los agentes y allí también desplegar la observación que realizó el agente sobre la grabación de la llamada.</p>
+<img alt="_images/about_agent_callactions_tag_call.png" src="_images/about_agent_callactions_tag_call.png" />
+<p><em>Figure 8: call recording tag</em></p>
+<p>Como se indica en la figura 8, luego de hundir el botón para marcar la llamada, se depliega un campo de texto para que el agente pueda describir la situación.</p>
+<p>Finalmente en el módulo de grabación de OMniLeads, se puede recuperar dicha grabación y observar lo que el agente escribió al respecto.</p>
+</div>
+<div class="section" id="agendamiento-de-llamadas">
+<h1>Agendamiento de llamadas<a class="headerlink" href="#agendamiento-de-llamadas" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>La funcionalidad de agendamiento de llamadas permite al sistema volver a procesar un contacto hacia el futuro. La idea es no descartar al mismo, sino seguirlo gestionando.</p>
+<p><strong>Agendamiento personal:</strong></p>
+<p>Cuando el agente requiere volver a llamar a un contacto determinado, puede generar un recordatorio en su agenda personal, para luego al listar dicha agenda contar con
+la entrada que le recuerda el horario y contacto que debe llamar.</p>
+<p>El agendamiento de llamadas es una calificación que se encuentra por defecto siempre como calificación de contacto.</p>
+<img alt="_images/about_agent_callactions_agenda_1.png" src="_images/about_agent_callactions_agenda_1.png" />
+<p><em>Figure 9: agenda personal</em></p>
+<p>Luego de guardar la calificación, se despliega un formulario para seleccionar la fecha, hora y motivo de la agenda personal del contacto.</p>
+<img alt="_images/about_agent_callactions_agenda_2.png" src="_images/about_agent_callactions_agenda_2.png" />
+<p><em>Figure 10: detalles de la agenda personal</em></p>
+<p>Finalmente, la entrada en la agenda personal del agente quedará disponible ingresando al punto de menú Agendas:</p>
+<img alt="_images/about_agent_callactions_agenda_3.png" src="_images/about_agent_callactions_agenda_3.png" />
+<p><em>Figure 11: detalles de la agenda personal</em></p>
+<p><strong>Agendamiento global de llamadas predictivas</strong></p>
+<p>Este tipo de agendamiento es solo aplicable a campañas con discador predictivo ya que tiene como finalidad volver a colocar al contacto dentro de la lista de números
+a llamar por el discador. En este escenario el discador simplemente vuelve a llamar a dicho número agendado hacia el final de la campaña, es decir no se puede elegir
+ni una fecha u horario ni tampoco sobre qué agente va a caer el contacto llamado nuevamente por el discador.</p>
+<p>Se trata de una funcionalidad que permite no descartar al contacto, pero sin implicar un seguimiento personal por parte del agente.</p>
+<p>Para generar una agenda de este tipo, se debe calificar al contacto con la calificación «agenda» pero luego seleccionar «global» en el menú de selección del tipo de agenda.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="agent_contact_managment.html" class="btn btn-neutral float-right" title="Listado de contactos de la campaña" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="agent_inbound.html" class="btn btn-neutral float-left" title="Atención de llamadas entrantes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, omnileads
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

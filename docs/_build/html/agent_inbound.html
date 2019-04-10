@@ -1,0 +1,273 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Atención de llamadas entrantes &mdash; documentación de OMniLeads - develop</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="Poner en espera una llamada" href="agent_call_actions.html" />
+    <link rel="prev" title="Agente en modo predictivo" href="agent_dialer.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> OMniLeads
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html">WebRTC; la tecnología subyacente de OMniLeads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">OML como Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-en-una-compania-de-servicios-de-customer-contact">OML en una Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-para-carriers-o-proveedores-de-cloud-pbx">OML para Carriers ó Proveedores de Cloud PBX</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Procedimientos de instalación</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="initial_settings.html">Configuración Inicial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="telephony.html">Configuración de acceso a la PSTN</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="campaigns.html">Campañas Telefónicas</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="agent.html">Gestiones del agente</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="agent.html#sesion-del-agente">Sesión del agente</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#campanas-manuales">Campañas manuales</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#campanas-preview">Campañas preview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#campanas-dialer">Campañas dialer</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="agent.html#campanas-entrantes">Campañas entrantes</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Atención de llamadas entrantes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gestion-de-contactos">Gestión de contactos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#acciones-sobre-las-llamadas">Acciones sobre las llamadas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#agendas-calificaciones-y-contactos">Agendas, calificaciones y contactos</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OMniLeads</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="agent.html">Gestiones del agente</a> &raquo;</li>
+        
+      <li>Atención de llamadas entrantes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/agent_inbound.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="atencion-de-llamadas-entrantes">
+<h1>Atención de llamadas entrantes<a class="headerlink" href="#atencion-de-llamadas-entrantes" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>Como bien sabemos de la sección de «Configuración inicial», el sistema se puede configurar para que las llamadas
+entrantes generen un «Ring» sobre el webphone del agente, brindando a éste último la posibilidad de elegir atender
+o no la llamada, o bien configurar para que las llamadas entrantes ingresen y conecten directamente sobre el agente
+con una indicación de audio tipo «beep», para luego dejar a ambos extremos de la llamada en linea.</p>
+<p>En la figura 1 exponemos el comportamiento con Ring.</p>
+<img alt="_images/about_agent_in_camp_1.png" src="_images/about_agent_in_camp_1.png" />
+<p><em>Figure 1: inbound call ring</em></p>
+<p>Si en cambio la configuración asociada al agente implica que la llamada se enlace directamente, entonces al
+igual que en las campañas predictivas, el agente escuchará el «beep» que anuncia la nueva llamada conectada y
+también se informa en la pantalla el nombre de la campaña entrante a la cual pertenece la llamada conectada.</p>
+<img alt="_images/about_agent_in_camp_2.png" src="_images/about_agent_in_camp_2.png" />
+<p><em>Figure 2: inbound call campaign</em></p>
+</div>
+<div class="section" id="gestion-de-contactos">
+<h1>Gestión de contactos<a class="headerlink" href="#gestion-de-contactos" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>Como las llamadas entrantes dependen de que el número de teléfono desde el cual se origina la llamada esté por un lado
+cargado en el sistema como base de contactos y además de que el número llegue al sistema como fue cargado, suele
+ser normal que el agente se encuentre sin datos de la persona que llama, al momento de conectarse la llamada.</p>
+<img alt="_images/about_agent_in_camp_3.png" src="_images/about_agent_in_camp_3.png" />
+<p><em>Figure 3: inbound call without contact</em></p>
+<p>En este caso, el agente puede elegir calificar o no la llamada. En el caso positivo entonces se procede con la carga
+del contacto y posterior calificación de la llamada.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="agent_call_actions.html" class="btn btn-neutral float-right" title="Poner en espera una llamada" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="agent_dialer.html" class="btn btn-neutral float-left" title="Agente en modo predictivo" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, omnileads
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

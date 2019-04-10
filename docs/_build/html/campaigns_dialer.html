@@ -104,6 +104,7 @@
 <li class="toctree-l2"><a class="reference internal" href="campaigns.html#calificaciones">Calificaciones</a></li>
 <li class="toctree-l2"><a class="reference internal" href="campaigns.html#base-de-contactos">Base de contactos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="campaigns.html#formularios">Formularios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#campanas-vs-calificaciones-vs-formularios">Campañas VS Calificaciones VS Formularios</a></li>
 <li class="toctree-l2"><a class="reference internal" href="campaigns.html#interaccion-con-un-crm-externo">Interacción con un CRM externo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="campaigns.html#campanas-manuales">Campañas Manuales</a></li>
 <li class="toctree-l2"><a class="reference internal" href="campaigns.html#campanas-preview">Campañas Preview</a></li>
@@ -117,12 +118,14 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="campaigns.html#campanas-entrantes">Campañas Entrantes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="campaigns.html#plantillas-de-campana">Plantillas de Campaña</a></li>
-<li class="toctree-l2"><a class="reference internal" href="campaigns.html#agentes-llamadas-y-calificaciones">Agentes, llamadas y calificaciones</a></li>
 </ul>
 </li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="agent.html">Gestiones del agente</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
@@ -217,7 +220,7 @@ con</strong> <a class="reference external" href="https://www.wombatdialer.com/">
 <li><strong>Initial date:</strong> es la fecha en la que, estando activa la campaña y con agentes conectados, comenzará a discar.</li>
 <li><strong>End date:</strong> es la fecha en la que, estando activa la campaña y con agentes conectados, dejará de discar, aunque haya aún números pendientes de marcar.</li>
 <li><strong>Contact database:</strong> la base de contactos que utilzará el discador a la hora de generar llamadas</li>
-<li><strong>Campaign form:</strong> campo de selección del formulario que se desplegará cada vez que un agente califique un contacto con la calificación «de gestión».</li>
+<li><strong>Tipo interacción:</strong> aquí se selecciona si la campaña va a operar con un formulario o solamente utilizando un llamo a un CRM externo Web».</li>
 <li><strong>External URL:</strong> URL a disparar cada vez que el agente lo indique.</li>
 <li><strong>Scope:</strong> se define como la cantidad de gestiones positivas que se esperan para la campaña. En la supervisión de la campaña se muestra en tiempo real el porcentaje de avence de la campaña respecto al objetivo definido.</li>
 </ul>
@@ -279,6 +282,8 @@ Además, se deberá indicar si se trata de una calificación de «Engaged» o de
 <p>Luego de activar nuestra campaña, automáticamente  pasamos a visualizarla en la sección de campaña activas (figura 10)</p>
 <img alt="_images/campaigns_dialer_ready.png" src="_images/campaigns_dialer_ready.png" />
 <p><em>Figure 10: Active campaigns</em></p>
+<p>En el momento en que un agente asignado a nuestra campaña predictiva ingrese a la plataforma, mientras estemos dentro del rango de fecha y horario activo de la campaña, entonces
+el discador debe comenzar a generar llamadas y entregar a los agentes activos y disponibles en la campaña.</p>
 <div class="section" id="finalizacion-de-campanas-dialer">
 <h2>Finalización de campañas dialer<a class="headerlink" href="#finalizacion-de-campanas-dialer" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>Para determinar cuando una campaña dialer se queda sin registros, se debe consultar el estado de la misma haciendo click en el nombre de la campaña (figura 11).</p>

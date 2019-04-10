@@ -8,9 +8,9 @@ y administración de un Contact Center.
 OMniLeads ofrece funcionalidades que permiten desarrollar operaciones de Call Center tanto Inbound como Outbound
 (campañas preview, manuales y predictivas). A partir de una instalación sencilla, se puede montar toda una operación de
 Contact Center ya sea dentro del marco de una compañia u organización que necesita su propio Contact Center integrado al PBX operativo dentro de su sistema de telefonía, así como
-también funcionando como Núcleo de Comunicaciones de una compañía que brinda servicios de Customer Contact (Business Outsorocing Process - BPO).
+también funcionando como Núcleo de Comunicaciones de una compañía que brinda servicios de Customer Contact (Business Outsourcing Process - BPO).
 
-De gestión y operación 100% Web, los agentes disponen de una interfaz basada `WebRTC <https://www.webrtc.org/>`_ para la gestión de comunicaciones mientras que los supervisores
+De gestión y operación 100% Web, los agentes disponen de una interfaz basada en `WebRTC <https://www.webrtc.org/>`_ para la gestión de comunicaciones mientras que los supervisores
 utilizan WebRTC para realizar acciones de channel spy, coaching de agentes, gestión de QA o three way conferences. Por otro lado, los administradores
 cuentan con una interfaz que permite mantener usuarios, campañas, bases de datos, a su vez extraer métricas y estadísticas, gestionar las grabaciones
 de las comunicaciones entre otras funcionalidades.
@@ -137,12 +137,15 @@ En el video se expone una introducción conceptual a las campañas en OMniLeads,
 - Formulario de campaña
 - Agentes
 
+
 .. raw:: html
 
         <iframe src="https://player.vimeo.com/video/320946591" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 
 
-En el resto del capítulo cubrimos cada tipo de campaña.
+
+En el resto del capítulo formulamos campañas a partir de contar con los cuatro elementos constituidos en el video anterior, así nos adentramos
+en los detalles de cada uno de los tipos de campañas disponibles en OMniLeads.
 
   .. toctree::
    :maxdepth: 2
@@ -160,6 +163,19 @@ métricas, reportes, grabaciones, supervisión en tiempo real, etc.
    :maxdepth: 2
 
    output.rst
+
+
+****************
+MANUAL DE AGENTE
+****************
+En esta sección se repasan todas las acciones que un agente de OMniLeads pueda realizar dentro de una operación. Cuestiones que van desde la atención/generación de
+una llamada, calificaciones, agendamiento, macación de grabaciones, transferencias de llamadas y mucho más, son tratadas en este capítulo de la documentación.
+
+ .. toctree::
+  :maxdepth: 2
+
+  agent.rst
+
 
 *******************************
 GESTIONES DEL ADMINISTRADOR IT

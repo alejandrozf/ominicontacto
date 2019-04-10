@@ -86,6 +86,11 @@ que vienen por defecto en el sistema.
 
 *Figure 5: Passwords and parameters of services*
 
+- Introducir el parámetro "time zone" adecuado para su instanacia. Es **Importante** que realice este paso o la instalación no se va a poder realizar.
+
+.. image:: images/install_inventory_timezone.png
+
+*Figure 6: inevntory - Time Zone parameter*
 
 Es importante aclarar que cada vez que se corre el script "./deploy.sh" ya sea para instalar, re-instalar, actualizar, modificar la dirección IP de OML, etc.,
 el archivo de inventory se vuelve a "cero". No obstante se genera una copia del archivo (my_inventory), de manera tal que se cuente con los parámetros
@@ -94,7 +99,7 @@ La copia en cuestión se ubica en el path donde ha sido clonado el repositorio d
 
 .. image:: images/install_my_inventory.png
 
-*Figure 6: inevntory copy, my_inventory file*
+*Figure 7: inevntory copy, my_inventory file*
 
 
 Ejecución del script de instalación:
@@ -116,13 +121,13 @@ varios paquetes correspondientes a los diferentes componentes de software que co
 
 .. image:: images/install_deploysh.png
 
-*Figure 7: install runing*
+*Figure 8: install runing*
 
 Si la ejecución de la instalación finaliza exitosamente, se despliega una vista como la de la figura 8.
 
 .. image:: images/install_ok.png
 
-*Figure 8: OMniLeads installation ended succesfuly*
+*Figure 9: OMniLeads installation ended succesfuly*
 
 
 Primer acceso a OMniLeads:
