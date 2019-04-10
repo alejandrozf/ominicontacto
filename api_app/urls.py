@@ -5,7 +5,8 @@ from __future__ import unicode_literals
 from django.conf.urls import url, include
 from rest_framework import routers
 from api_app.views import (
-    SupervisorCampanasActivasViewSet, AgentesActivosGrupoViewSet, StatusCampanasView
+    SupervisorCampanasActivasViewSet, AgentesActivosGrupoViewSet,
+    StatusCampanasEntrantesView, StatusCampanasSalientesView
 )
 
 from ominicontacto_app.auth.decorators import supervisor_requerido
@@ -26,6 +27,9 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     url('api/v1/supervision/status_campanas/entrantes/$',
-        supervisor_requerido(StatusCampanasView.as_view()),
+        supervisor_requerido(StatusCampanasEntrantesView.as_view()),
         name='api_supervision_campanas_entrantes'),
+    url('api/v1/supervision/status_campanas/salientes/$',
+        supervisor_requerido(StatusCampanasSalientesView.as_view()),
+        name='api_supervision_campanas_salientes'),
 ]

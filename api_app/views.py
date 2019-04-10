@@ -11,7 +11,7 @@ from api_app.serializers import CampanaSerializer, AgenteProfileSerializer
 
 from ominicontacto_app.models import Campana, AgenteProfile
 from reportes_app.reportes.reporte_llamadas_supervision import (
-    ReporteDeLLamadasEntrantesDeSupervision
+    ReporteDeLLamadasEntrantesDeSupervision, ReporteDeLLamadasSalientesDeSupervision
 )
 
 
@@ -60,8 +60,15 @@ class AgentesActivosGrupoViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-class StatusCampanasView(View):
+class StatusCampanasEntrantesView(View):
     def get(self, request):
         reporte = ReporteDeLLamadasEntrantesDeSupervision(request.user)
+        return JsonResponse({'errors': None,
+                             'data': reporte.estadisticas})
+
+
+class StatusCampanasSalientesView(View):
+    def get(self, request):
+        reporte = ReporteDeLLamadasSalientesDeSupervision(request.user)
         return JsonResponse({'errors': None,
                              'data': reporte.estadisticas})

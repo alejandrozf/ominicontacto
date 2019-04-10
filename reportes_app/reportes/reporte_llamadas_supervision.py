@@ -25,18 +25,8 @@ from ominicontacto_app.models import Campana, OpcionCalificacion, CalificacionCl
 from reportes_app.models import LlamadaLog
 from ominicontacto_app.utiles import datetime_hora_maxima_dia, datetime_hora_minima_dia
 
-INICIALES = {
-    'recibidas': 0,
-    'atendidas': 0,
-    'expiradas': 0,
-    'abandonadas': 0,
-    'gestiones': 0,     # Contactos gestionados? Respuestas de formulario del dia?
-}
 
-EVENTOS_LLAMADA = ['ENTERQUEUE', 'ENTERQUEUE-TRANSFER', 'CONNECT', 'EXITWITHTIMEOUT', 'ABANDON']
-
-
-class ReporteDeLLamadasEntrantesDeSupervision(object):
+class ReporteDeLlamadasDeSupervision(object):
     def __init__(self, user_supervisor):
         campanas = self._obtener_campanas(user_supervisor)
         self.campanas_ids = list(campanas.values_list('id', flat=True))
@@ -50,30 +40,11 @@ class ReporteDeLLamadasEntrantesDeSupervision(object):
         self._contabilizar_estadisticas_de_llamadas()
         self._contabilizar_gestiones()
 
-    def _obtener_campanas(self, user_supervisor):
-        campanas = Campana.objects.obtener_all_activas_finalizadas()
-        campanas = campanas.filter(type=Campana.TYPE_ENTRANTE)
-        if not user_supervisor.get_is_administrador():
-            return Campana.objects.obtener_campanas_vista_by_user(campanas, user_supervisor)
-        else:
-            return campanas
-
     def _inicializar_conteo_de_estadisticas(self, campanas):
         for campana in campanas:
-            datos_campana = INICIALES.copy()
+            datos_campana = self.INICIALES.copy()
             datos_campana['nombre'] = force_text(campana.nombre)
             self.estadisticas[campana.id] = datos_campana
-
-    def _contabilizar_estadisticas_de_llamadas(self):
-        # Contabilizo las llamadas
-        logs = LlamadaLog.objects.filter(time__gte=self.desde,
-                                         time__lte=self.hasta,
-                                         campana_id__in=self.campanas_ids,
-                                         event__in=EVENTOS_LLAMADA,
-                                         tipo_llamada=LlamadaLog.LLAMADA_ENTRANTE)
-        for log in logs:
-            estadisticas_campana = self.estadisticas[log.campana_id]
-            self._contabilizar_tipos_de_llamada_por_campana_entrante(estadisticas_campana, log)
 
     def _contabilizar_gestiones(self):
         # Contabilizo las gestiones
@@ -89,7 +60,52 @@ class ReporteDeLLamadasEntrantesDeSupervision(object):
             campana_id = cantidad['opcion_calificacion__campana_id']
             self.estadisticas[campana_id]['gestiones'] = cantidad['cantidad']
 
-    def _contabilizar_tipos_de_llamada_por_campana_entrante(self, datos_campana, log):
+    def _contabilizar_estadisticas_de_llamadas(self):
+        logs = self._obtener_logs_de_llamadas()
+        for log in logs:
+            estadisticas_campana = self.estadisticas[log.campana_id]
+            self._contabilizar_tipos_de_llamada_por_campana(estadisticas_campana, log)
+
+    @property
+    def INICIALES(self):
+        raise NotImplemented
+
+    def _obtener_campanas(user_supervisor):
+        raise NotImplemented
+
+    def _obtener_logs_de_llamadas(self):
+        raise NotImplemented
+
+    def _contabilizar_tipos_de_llamada_por_campana(self, datos_campana, log):
+        raise NotImplemented
+
+
+class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
+    INICIALES = {
+        'recibidas': 0,
+        'atendidas': 0,
+        'expiradas': 0,
+        'abandonadas': 0,
+        'gestiones': 0,
+    }
+    EVENTOS_LLAMADA = ['ENTERQUEUE', 'ENTERQUEUE-TRANSFER', 'CONNECT', 'EXITWITHTIMEOUT', 'ABANDON']
+
+    def _obtener_campanas(self, user_supervisor):
+        campanas = Campana.objects.obtener_all_activas_finalizadas()
+        campanas = campanas.filter(type=Campana.TYPE_ENTRANTE)
+        if not user_supervisor.get_is_administrador():
+            return Campana.objects.obtener_campanas_vista_by_user(campanas, user_supervisor)
+        else:
+            return campanas
+
+    def _obtener_logs_de_llamadas(self):
+        return LlamadaLog.objects.filter(time__gte=self.desde,
+                                         time__lte=self.hasta,
+                                         campana_id__in=self.campanas_ids,
+                                         event__in=self.EVENTOS_LLAMADA,
+                                         tipo_llamada=LlamadaLog.LLAMADA_ENTRANTE)
+
+    def _contabilizar_tipos_de_llamada_por_campana(self, datos_campana, log):
         if log.event == 'ENTERQUEUE':
             datos_campana['recibidas'] += 1
         elif log.event == 'ENTERQUEUE-TRANSFER':
@@ -100,3 +116,45 @@ class ReporteDeLLamadasEntrantesDeSupervision(object):
             datos_campana['expiradas'] += 1
         elif log.event == 'ABANDON':
             datos_campana['abandonadas'] += 1
+
+
+class ReporteDeLLamadasSalientesDeSupervision(ReporteDeLlamadasDeSupervision):
+    INICIALES = {
+        'efectuadas': 0,
+        'conectadas': 0,
+        'no_conectadas': 0,
+        'gestiones': 0,
+    }
+    EVENTOS_LLAMADA = ('DIAL', 'CONNECT', 'ANSWER') + LlamadaLog.EVENTOS_NO_CONEXION
+
+    def _obtener_campanas(self, user_supervisor):
+        campanas = Campana.objects.obtener_all_activas_finalizadas()
+        campanas = campanas.filter(type__in=[Campana.TYPE_DIALER,
+                                             Campana.TYPE_PREVIEW,
+                                             Campana.TYPE_MANUAL])
+        if not user_supervisor.get_is_administrador():
+            return Campana.objects.obtener_campanas_vista_by_user(campanas, user_supervisor)
+        else:
+            return campanas
+
+    def _obtener_logs_de_llamadas(self):
+        return LlamadaLog.objects.filter(time__gte=self.desde,
+                                         time__lte=self.hasta,
+                                         campana_id__in=self.campanas_ids,
+                                         event__in=self.EVENTOS_LLAMADA)
+
+    def _contabilizar_tipos_de_llamada_por_campana(self, datos_campana, log):
+        if log.event == 'DIAL':
+            datos_campana['efectuadas'] += 1
+        elif log.event in LlamadaLog.EVENTOS_NO_CONEXION:
+            datos_campana['no_conectadas'] += 1
+        # Si es DIALER:
+        elif log.tipo_campana == Campana.TYPE_DIALER:
+            # Si es CONNECT en DIALER
+            if log.event == 'CONNECT':
+                datos_campana['conectadas'] += 1
+            elif log.event == 'ANSWER' and log.tipo_llamada == Campana.TYPE_MANUAL:
+                datos_campana['conectadas'] += 1
+        # Si es MANUAL o PREVIEW
+        elif log.event == 'ANSWER':
+            datos_campana['conectadas'] += 1
