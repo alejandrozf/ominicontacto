@@ -4,7 +4,11 @@ from __future__ import unicode_literals
 
 from django.conf.urls import url, include
 from rest_framework import routers
-from api_app.views import SupervisorCampanasActivasViewSet, AgentesActivosGrupoViewSet
+from api_app.views import (
+    SupervisorCampanasActivasViewSet, AgentesActivosGrupoViewSet, StatusCampanasView
+)
+
+from ominicontacto_app.auth.decorators import supervisor_requerido
 
 router = routers.DefaultRouter()
 router.register(
@@ -19,5 +23,9 @@ router.register(
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+
+    url('api/v1/supervision/status_campanas/entrantes/$',
+        supervisor_requerido(StatusCampanasView.as_view()),
+        name='api_supervision_campanas_entrantes'),
 ]
