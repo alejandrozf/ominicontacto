@@ -1,0 +1,354 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Manual de agente &mdash; documentación de OMniLeads - develop</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="Login" href="agent_session.html" />
+    <link rel="prev" title="Supervision" href="output_supervision.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> OMniLeads
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html">WebRTC; la tecnología subyacente de OMniLeads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">OML como Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-en-una-compania-de-servicios-de-customer-contact">OML en una Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-para-carriers-o-proveedores-de-cloud-pbx">OML para Carriers ó Proveedores de Cloud PBX</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Procedimientos de instalación</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="initial_settings.html">Configuración Inicial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="telephony.html">Configuración de acceso a la PSTN</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="campaigns.html">Campañas Telefónicas</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Manual de agente</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#sesion-del-agente">Sesión del agente</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="agent_session.html">Login</a></li>
+<li class="toctree-l3"><a class="reference internal" href="agent_session.html#la-consola-de-agente">La consola de agente</a></li>
+<li class="toctree-l3"><a class="reference internal" href="agent_session.html#pausas">Pausas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="agent_session.html#logout">Logout</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#campanas-manuales">Campañas manuales</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="agent_manual.html">Llamadas manuales desde listado de contactos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="agent_manual.html#llamadas-manuales-marcando-desde-el-webphone">Llamadas manuales marcando desde el webphone</a></li>
+<li class="toctree-l3"><a class="reference internal" href="agent_manual.html#llamadas-a-numeros-sin-contacto-existente">Llamadas a números sin contacto existente</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#campanas-preview">Campañas preview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="agent_preview.html">Campañas preview</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#campanas-dialer">Campañas dialer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="agent_dialer.html">Agente en modo predictivo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="agent_dialer.html#como-realizar-una-llamada-manual">Como realizar una llamada manual</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#campanas-entrantes">Campañas entrantes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="agent_inbound.html">Atención de llamadas entrantes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="agent_inbound.html#gestion-de-contactos">Gestión de contactos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#acciones-sobre-las-llamadas">Acciones sobre las llamadas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="agent_call_actions.html">Poner en espera una llamada</a></li>
+<li class="toctree-l3"><a class="reference internal" href="agent_call_actions.html#transferencias-de-llamados">Transferencias de llamados</a></li>
+<li class="toctree-l3"><a class="reference internal" href="agent_call_actions.html#observar-grabacion-de-llamada">Observar grabación de llamada</a></li>
+<li class="toctree-l3"><a class="reference internal" href="agent_call_actions.html#agendamiento-de-llamadas">Agendamiento de llamadas</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#agendas-calificaciones-y-contactos">Agendas, calificaciones y contactos</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="agent_contact_managment.html">Listado de contactos de la campaña</a></li>
+<li class="toctree-l3"><a class="reference internal" href="agent_contact_managment.html#agendas-pendientes">Agendas pendientes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="agent_contact_managment.html#historico-de-calificaciones-del-agente">Histórico de calificaciones del agente</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OMniLeads</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Manual de agente</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/agent.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="manual-de-agente">
+<h1>Manual de agente<a class="headerlink" href="#manual-de-agente" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>Vamos a dividir el manual de gestión del agente en los diferentes tópicos citados debajo.</p>
+<div class="section" id="sesion-del-agente">
+<h2>Sesión del agente<a class="headerlink" href="#sesion-del-agente" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Todo lo inherente a la sesión del agente describimos en este inciso.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="agent_session.html">Login</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agent_session.html#la-consola-de-agente">La consola de agente</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agent_session.html#pausas">Pausas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agent_session.html#logout">Logout</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="campanas-manuales">
+<h2>Campañas manuales<a class="headerlink" href="#campanas-manuales" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>El agente y la operación en campañas manuales.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="agent_manual.html">Llamadas manuales desde listado de contactos</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agent_manual.html#llamadas-manuales-marcando-desde-el-webphone">Llamadas manuales marcando desde el webphone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agent_manual.html#llamadas-a-numeros-sin-contacto-existente">Llamadas a números sin contacto existente</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="campanas-preview">
+<h2>Campañas preview<a class="headerlink" href="#campanas-preview" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>El agente y la operación en campañas preview.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="agent_preview.html">Campañas preview</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="campanas-dialer">
+<h2>Campañas dialer<a class="headerlink" href="#campanas-dialer" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>El agente y la operación en campañas con discador predictivo.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="agent_dialer.html">Agente en modo predictivo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agent_dialer.html#como-realizar-una-llamada-manual">Como realizar una llamada manual</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="campanas-entrantes">
+<h2>Campañas entrantes<a class="headerlink" href="#campanas-entrantes" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>El agente y la operación en campañas entrantes.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="agent_inbound.html">Atención de llamadas entrantes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agent_inbound.html#gestion-de-contactos">Gestión de contactos</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="acciones-sobre-las-llamadas">
+<h2>Acciones sobre las llamadas<a class="headerlink" href="#acciones-sobre-las-llamadas" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Cuando un agente se encuentra en una llamada cuenta con diferentes funcionalidades que optimizan la gestión de llamadas.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="agent_call_actions.html">Poner en espera una llamada</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agent_call_actions.html#transferencias-de-llamados">Transferencias de llamados</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agent_call_actions.html#observar-grabacion-de-llamada">Observar grabación de llamada</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agent_call_actions.html#agendamiento-de-llamadas">Agendamiento de llamadas</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="agendas-calificaciones-y-contactos">
+<h2>Agendas, calificaciones y contactos<a class="headerlink" href="#agendas-calificaciones-y-contactos" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>El agente cuenta con diferentes menúes para el manejo de los contactos de las campañas.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="agent_contact_managment.html">Listado de contactos de la campaña</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agent_contact_managment.html#agendas-pendientes">Agendas pendientes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agent_contact_managment.html#historico-de-calificaciones-del-agente">Histórico de calificaciones del agente</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="agent_session.html" class="btn btn-neutral float-right" title="Login" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="output_supervision.html" class="btn btn-neutral float-left" title="Supervision" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, omnileads
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

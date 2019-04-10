@@ -37,7 +37,7 @@
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Búsqueda" href="search.html" />
     <link rel="next" title="Known Issues" href="known_issues.html" />
-    <link rel="prev" title="Telephony" href="output_supervision.html" /> 
+    <link rel="prev" title="Listado de contactos de la campaña" href="agent_contact_managment.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -105,12 +105,15 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
 </ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="agent.html">Gestiones del agente</a></li>
+</ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Gestiones del administrador IT</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#configuracion-del-modulo-de-discador-predictivo">Configuración del módulo de <em>Discador predictivo</em></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#back-restore">Back &amp; Restore</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#actualizaciones">Actualizaciones</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#cambio-de-direccion-ip-de-la-plataforma">Cambio de dirección IP de la plataforma</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cambios-de-los-parametros-de-red-hostname-y-o-direccion-ip">Cambios de los parámetros de red (Hostname y/o Dirección IP)</a></li>
 </ul>
 </li>
 </ul>
@@ -283,11 +286,17 @@ Posicionarse sobre el directorio donde reside el script “deploy.sh”</p>
 </div>
 <p>Asumiendo que estamos trabajando sobre los release estables (master)
 Se debe ejecutar un «git pull origin master» para traernos las actualizaciones del repositorio.</p>
+<p><strong>IMPORTANTE</strong>: debe ajustar el archivo «inventory» de acuerdo a su hostname y dirección IP, para que la actualización pueda ser ejecutada.
+Observar que el parámetro <em>hostname</em> y <em>dirección IP</em> tiene que coincidir respecto a lo que tenga cargado el host donde corre OMniLeads.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">omnileads</span><span class="o">-</span><span class="n">aio</span><span class="p">]</span>
+<span class="n">oml</span><span class="o">-</span><span class="n">dev</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span> <span class="n">ansible_ssh_connection</span><span class="o">=</span><span class="n">local</span> <span class="n">ansible_user</span><span class="o">=</span><span class="n">root</span> <span class="n">ansible_host</span><span class="o">=</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">95.155</span>
+</pre></div>
+</div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">pull</span> <span class="n">origin</span> <span class="n">master</span>
 </pre></div>
 </div>
-<p>A continuación se ejecuta el script con el parámetro -u (update). Esta ejecución tomará unos minutos e implica ejecutar todas las actualizaciones
-descargadas sobre nuestra instancia de OMniLeads.</p>
+<p>A continuación se ejecuta el script con el parámetro -u (update). Esta ejecución tomará unos minutos e implica el aplicar todas las actualizaciones
+descargadas con el «git pull origin master» sobre nuestra instancia de OMniLeads.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">deploy</span><span class="o">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">u</span> <span class="o">-</span><span class="n">a</span>
 </pre></div>
 </div>
@@ -304,11 +313,13 @@ descargadas sobre nuestra instancia de OMniLeads.</p>
 <p>A continuación y como en cada ejecución del script «deploy.sh», se debe repasar el archivo de inventory, velando por la coincidencia del
 parámetro hostname y dirección IP respecto al host donde corre OMniLeads y vamos a actualizar.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">omnileads</span><span class="o">-</span><span class="n">aio</span><span class="p">]</span>
-<span class="n">hostname</span> <span class="n">ansible_ssh_port</span><span class="o">=</span><span class="mi">22</span> <span class="n">ansible_user</span><span class="o">=</span><span class="n">root</span> <span class="n">ansible_host</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">X</span> <span class="c1">#(this line is for node-host installation)</span>
+<span class="n">oml</span><span class="o">-</span><span class="n">dev</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span> <span class="n">ansible_ssh_port</span><span class="o">=</span><span class="mi">22</span> <span class="n">ansible_user</span><span class="o">=</span><span class="n">root</span> <span class="n">ansible_host</span><span class="o">=</span><span class="mf">10.10</span><span class="o">.</span><span class="mf">1.100</span>
 </pre></div>
 </div>
-<p>Nota: se debe tener en cuenta que para instalación remota, se debe utilizar la línea con el parámetro «ansible_ssh_port=22» dentro de la
-sección [omnileads-aio]</p>
+<p>Nota: se debe tener en cuenta que para instalación remota, se debe utilizar la línea con el parámetro «ansible_ssh_port=22» (donde 22 es el puerto por defecto, pero es normal
+tambien que se utilice otro puerto) dentro de la sección [omnileads-aio]</p>
+<p>Se ejecuta el script con el parámetro -u (update). Esta ejecución tomará unos minutos e implica el aplicar todas las actualizaciones
+descargadas con el «git pull origin master» sobre nuestra instancia de OMniLeads.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">deploy</span><span class="o">.</span><span class="n">sh</span> <span class="o">-</span><span class="n">u</span> <span class="o">-</span><span class="n">a</span>
 </pre></div>
 </div>
@@ -316,15 +327,17 @@ sección [omnileads-aio]</p>
 <img alt="_images/maintance_updates_ok.png" src="_images/maintance_updates_ok.png" />
 <p><em>Figure 15: updates from ansible remote OK</em></p>
 </div>
-<div class="section" id="cambio-de-direccion-ip-de-la-plataforma">
-<h2>Cambio de dirección IP de la plataforma<a class="headerlink" href="#cambio-de-direccion-ip-de-la-plataforma" title="Enlazar permanentemente con este título">¶</a></h2>
+<div class="section" id="cambios-de-los-parametros-de-red-hostname-y-o-direccion-ip">
+<h2>Cambios de los parámetros de red (Hostname y/o Dirección IP)<a class="headerlink" href="#cambios-de-los-parametros-de-red-hostname-y-o-direccion-ip" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>OMniLeads es un sistema complejo, con varios servicios orientados a las comunicaciones real-time corriendo en el Linux Host.
-Esto implica que un cambio de dirección IP del host conlleva cierta complejidad.</p>
-<p>Para llevar a cabo esta tarea, debemos ejecutar nuevamente el script “deploy.sh”, el mismo que fue utilizado para llevar a cabo la
+Esto implica que un cambio de <em>dirección IP</em> o <em>hostname</em> del host conlleva cierta complejidad.</p>
+<p>Para llevar a cabo éstas tareas, debemos ejecutar nuevamente el script «deploy.sh», el mismo que fue utilizado para llevar a cabo la
 instalación de la plataforma.</p>
-<p>Debemos ingresar con el usuario root al sistema, cambiar la dirección IP a nivel <strong>sistema operativo</strong> y asegurarnos de que el host tomó la nueva IP.</p>
-<p>Luego continuamos con el cambio de IP sobre OML, para ellos debemos pararnos sobre el directorio donde se clonó el repositorio de OML,
-para luego acceder al directorio donde se ubica dicho script.</p>
+<p>Debemos ingresar con el usuario root al sistema, cambiar la dirección IP a nivel <strong>sistema operativo</strong> y/o el hostname y asegurarnos de que el host tomó los cambios. Se recomienda
+un <em>reboot</em> del sistema.</p>
+<p>Luego continuamos con los cambios sobre OML, para ellos debemos pararnos sobre el directorio donde se clonó el repositorio de OML (si fue una instalación self-hosted será
+dentro del host remoto, si fue una instalación desde ansible-remoto será en la máquina <em>deployer</em>), para luego acceder al directorio <em>deploy/ansible</em>, donde tenemos los
+archivos <em>deploy.sh</em> e <em>inventory</em>.</p>
 <p>Allí debemos editar nuevamente el archivo <em>inventory</em> y repasar el hostname para que coincida con el hostname del host y allí también debemos configurar la nueva dirección IP.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">omnileads</span><span class="o">-</span><span class="n">aio</span><span class="p">]</span>
 <span class="n">hostname</span> <span class="n">ansible_connection</span><span class="o">=</span><span class="n">local</span> <span class="n">ansible_user</span><span class="o">=</span><span class="n">root</span> <span class="n">ansible_host</span><span class="o">=</span><span class="n">X</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">X</span> <span class="c1">#(this line is for self-hosted installation)</span>
@@ -332,13 +345,14 @@ para luego acceder al directorio donde se ubica dicho script.</p>
 </div>
 <p>Se guardan los cambios sobre el archivo y finalmente se ejecuta el script <em>deploy.sh</em>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">ominicontacto</span><span class="o">/</span><span class="n">deploy</span><span class="o">/</span><span class="n">ansible</span>
-<span class="o">./</span><span class="n">deploy</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">changeip</span> <span class="o">-</span><span class="n">a</span>
+<span class="o">./</span><span class="n">deploy</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">change</span><span class="o">-</span><span class="n">network</span> <span class="o">-</span><span class="n">a</span>
 </pre></div>
 </div>
 <p>Por último se ejecuta un reinicio de la plataforma. Luego podemos comenzar a utilizar OML en la nueva dirección IP.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">reboot</span>
 </pre></div>
 </div>
+<p><strong>NOTA:</strong> si está resolviendo el nombre del host de OMniLeads con su archivo <em>hosts</em> de su maquina de trabajo, no olvide tambien cambiar los parámetros.</p>
 </div>
 </div>
 
@@ -353,7 +367,7 @@ para luego acceder al directorio donde se ubica dicho script.</p>
         <a href="known_issues.html" class="btn btn-neutral float-right" title="Known Issues" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="output_supervision.html" class="btn btn-neutral float-left" title="Telephony" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="agent_contact_managment.html" class="btn btn-neutral float-left" title="Listado de contactos de la campaña" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
