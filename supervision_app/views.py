@@ -19,7 +19,7 @@
 
 from django.views.generic import TemplateView
 from reportes_app.reportes.reporte_llamadas_supervision import \
-    ReporteDeLLamadasEntrantesDeSupervision
+    ReporteDeLLamadasEntrantesDeSupervision, ReporteDeLLamadasSalientesDeSupervision
 
 
 class SupervisionAgentesView(TemplateView):
@@ -38,3 +38,9 @@ class SupervisionCampanasEntrantesView(TemplateView):
 
 class SupervisionCampanasSalientesView(TemplateView):
     template_name = 'supervision_campanas_salientes.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SupervisionCampanasSalientesView, self).get_context_data(**kwargs)
+        reporte = ReporteDeLLamadasSalientesDeSupervision(self.request.user)
+        context['estadisticas'] = reporte.estadisticas
+        return context
