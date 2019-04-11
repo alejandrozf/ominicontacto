@@ -21,7 +21,37 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 {% load i18n %}
 
+{% block head_js %}
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/supervision/campanas_entrantes.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 <h1>{% trans 'Campañas Entrantes' %}</h1>
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>{% trans 'Nombre' %}</th>
+                <th>{% trans 'Llamadas' %}</th>
+                <th>{% trans 'Atendidas' %}</th>
+                <th>{% trans 'Abandonadas' %}</th>
+                <th>{% trans 'Expiradas' %}</th>
+                <th>{% trans 'Gestiones' %}</th>
+            </tr>
+        </thead>
+        <tbody id="table-campanas">
+            {% for datos_campana in estadisticas.values %}
+                <tr>
+                    <td>{{ datos_campana.nombre }}</td>
+                    <td>{{ datos_campana.recibidas }}</td>
+                    <td>{{ datos_campana.atendidas }}</td>
+                    <td>{{ datos_campana.abandonadas }}</td>
+                    <td>{{ datos_campana.expiradas }}</td>
+                    <td>{{ datos_campana.gestiones }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 {% endblock content %}
