@@ -40,7 +40,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 $('#value_item_error').hide();
                 var item = $('#id_value_item').val();
                 var list = $('#id_list_values').val();
-
                 if (item == ''){
                     $('#value_item_error').show();
                 }
@@ -106,6 +105,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     {{ form.non_field_errors }}
     {{ form.formulario }}
     {{ form.values_select }}
+    {{form.values_select.errors}}
     <div class="form-row">
         <div class="col-md-4">
             <label for="{{ form.nombre_campo.id_for_label }}">{% trans 'Nombre de campo:' %}</label>
@@ -123,8 +123,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {{ form.is_required.errors }}
         </div>
     </div>
-    {{form.values_select}}
-    {{form.values_select.errors}}
     <button type="submit" id="id_guardar" class="btn btn-outline-primary ">
         {% trans 'Agregar campo' %}
         
