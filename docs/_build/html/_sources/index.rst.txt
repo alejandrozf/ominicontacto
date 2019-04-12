@@ -171,10 +171,10 @@ MANUAL DE AGENTE
 En esta sección se repasan todas las acciones que un agente de OMniLeads pueda realizar dentro de una operación. Cuestiones que van desde la atención/generación de
 una llamada, calificaciones, agendamiento, macación de grabaciones, transferencias de llamadas y mucho más, son tratadas en este capítulo de la documentación.
 
- .. toctree::
-  :maxdepth: 2
+  .. toctree::
+   :maxdepth: 2
 
-  agent.rst
+   agent.rst
 
 
 *******************************
