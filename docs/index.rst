@@ -172,9 +172,9 @@ En esta sección se repasan todas las acciones que un agente de OMniLeads pueda 
 una llamada, calificaciones, agendamiento, macación de grabaciones, transferencias de llamadas y mucho más, son tratadas en este capítulo de la documentación.
 
   .. toctree::
-  :maxdepth: 2
+   :maxdepth: 2
 
-  agent.rst
+   agent.rst
 
 
 *******************************
