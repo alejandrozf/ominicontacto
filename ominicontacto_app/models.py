@@ -456,6 +456,8 @@ class ArchivoDeAudio(models.Model):
         """
         if self.usado_en_ivr():
             raise ValidationError(_(u'No se puede borrar un Archivo de Audio en uso por IVR'))
+        if self.usado_en_queue():
+            raise ValidationError(_(u'No se puede borrar un Archivo de Audio en uso en Campañas'))
 
         logger.info(_("Seteando ArchivoDeAudio %s como BORRADO"), self.id)
 
@@ -498,6 +500,17 @@ class ArchivoDeAudio(models.Model):
         return self.audio_principal_ivrs.exists() or \
             self.audio_time_out_ivrs.exists() or \
             self.audio_invalid_ivrs.exists()
+
+    def usado_en_queue(self):
+        # Si esta usado en alguna Queue no se puede borrar.
+
+        # TODO: OML-496 - Asumo que el valor de announce es el path del anuncio periodico (audios)
+        #       En caso de q no sea asi, agregar las siguientes lineas
+        # if Queue.objects.filter(announce=self.audio_asterisk).exists():
+        #    return True
+        return self.queues_contestadores.exists() or \
+            self.queues_ingreso.exists() or \
+            self.queues_anuncio_periodico.exists()
 
 
 class CampanaManager(models.Manager):
@@ -696,6 +709,7 @@ class CampanaManager(models.Manager):
             wait=campana.queue_campana.wait,
             auto_grabacion=campana.queue_campana.auto_grabacion,
             detectar_contestadores=campana.queue_campana.detectar_contestadores,
+            # TODO: OML-496
             announce=campana.queue_campana.announce,
             announce_frequency=campana.queue_campana.announce_frequency,
             audio_para_contestadores=campana.queue_campana.audio_para_contestadores,
@@ -1274,6 +1288,7 @@ class Queue(models.Model):
     detectar_contestadores = models.BooleanField(default=False)
     ep_id_wombat = models.IntegerField(null=True, blank=True)
 
+    # TODO: OML-496 Borrar, usar 'audios.audio_asterisk.name'
     # announcements
     announce = models.CharField(max_length=128, blank=True, null=True)
     announce_frequency = models.BigIntegerField(blank=True, null=True)
