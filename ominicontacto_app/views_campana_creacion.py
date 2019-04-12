@@ -463,6 +463,8 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
         audio_anuncio_periodico = queue_form.cleaned_data['audios']
         if audio_anuncio_periodico:
             queue_form.instance.announce = audio_anuncio_periodico.audio_asterisk
+        else:
+            queue_form.instance.announce = None
         queue_form.instance.save()
 
         campana = campana_form.instance
