@@ -1408,8 +1408,8 @@ class QueueMember(models.Model):
     id_campana = models.CharField(max_length=128)
 
     def __unicode__(self):
-        return _("agente: {0} para la campana {1} ".format(
-            self.member.user.get_full_name(), self.queue_name))
+        return unicode(_("agente: {0} para la campana {1} ".format(
+            self.member.user.get_full_name(), self.queue_name)))
 
     @classmethod
     def get_defaults(cls, agente, campana):
