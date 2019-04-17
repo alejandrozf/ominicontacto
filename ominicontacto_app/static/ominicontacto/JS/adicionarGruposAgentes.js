@@ -3,6 +3,15 @@
  (queue_member)
 */
 
+function eliminarPrimeraFilaVacia(data) {
+    // esta función elimina la primera fila de la tabla una vez que se han
+    // añadido filas de los agentes de un grupo, si esta fila está vacía
+    var $firstRow = $('.linkFormset').first();
+    var $selectMember = $firstRow.find('.member>select');
+    if (($selectMember.val() == "") && (data.length != 0)) {
+        $firstRow.find('.deleteFormset').click();
+    }
+}
 
 function obtenerAgentesGrupos() {
     var $grupoSelect = $('#gruposAgentes').find('select');
@@ -32,7 +41,7 @@ function asociarDatosRow(row) {
             }
         });
         if (count > 1) {
-            row.remove();
+            row.find('.deleteFormset').click();
         }
     }
 }
