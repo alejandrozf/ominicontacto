@@ -131,25 +131,28 @@ class CampanaTemplateCreateCampanaMixin(object):
         campana_template = get_object_or_404(Campana, pk=pk)
         current_step = self.steps.current
         if current_step == self.OPCIONES_CALIFICACION:
-            initial_data = campana_template.opciones_calificacion.values('nombre', 'tipo')
             opts_calif_init_formset = context['wizard']['form']
-            form_kwargs = self.get_form_kwargs(current_step)['form_kwargs']
-            calif_init_formset = OpcionCalificacionFormSet(
-                initial=initial_data, form_kwargs=form_kwargs)
-            calif_init_formset.extra = len(initial_data) - 1
-            calif_init_formset.prefix = opts_calif_init_formset.prefix
-            context['wizard']['form'] = calif_init_formset
+            if not opts_calif_init_formset.is_bound:
+                initial_data = campana_template.opciones_calificacion.values(
+                    'nombre', 'tipo', 'formulario')
+                form_kwargs = self.get_form_kwargs(current_step)['form_kwargs']
+                calif_init_formset = OpcionCalificacionFormSet(
+                    initial=initial_data, form_kwargs=form_kwargs)
+                calif_init_formset.extra = len(initial_data) - 1
+                calif_init_formset.prefix = opts_calif_init_formset.prefix
+                context['wizard']['form'] = calif_init_formset
         if current_step == self.PARAMETROS_CRM:
-            initial_data = campana_template.parametros_crm.values(
-                'tipo', 'valor', 'nombre')
-            bd_contacto = campana_template.bd_contacto
-            columnas_bd = obtener_opciones_columnas_bd(bd_contacto, COLUMNAS_DB_DEFAULT)
             params_crm_init_formset = context['wizard']['form']
-            param_crms_formset = ParametrosCrmFormSet(
-                initial=initial_data, form_kwargs={'columnas_bd': columnas_bd})
-            param_crms_formset.extra = len(initial_data) + 1
-            param_crms_formset.prefix = params_crm_init_formset.prefix
-            context['wizard']['form'] = param_crms_formset
+            if not params_crm_init_formset.is_bound:
+                initial_data = campana_template.parametros_crm.values(
+                    'tipo', 'valor', 'nombre')
+                bd_contacto = campana_template.bd_contacto
+                columnas_bd = obtener_opciones_columnas_bd(bd_contacto, COLUMNAS_DB_DEFAULT)
+                param_crms_formset = ParametrosCrmFormSet(
+                    initial=initial_data, form_kwargs={'columnas_bd': columnas_bd})
+                param_crms_formset.extra = len(initial_data)
+                param_crms_formset.prefix = params_crm_init_formset.prefix
+                context['wizard']['form'] = param_crms_formset
         return context
 
     def get_form_kwargs(self, step):
