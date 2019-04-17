@@ -38,7 +38,8 @@
        addCssClass: 'addFormset btn btn-outline-primary',
        deleteCssClass: 'deleteFormset btn btn-outline-danger',
        addMultRows: {'button': $adicionarAgente,
-                     'function': obtenerAgentesGrupos},
+                     'function': obtenerAgentesGrupos,
+                     'post_function': eliminarPrimeraFilaVacia},
        added: function (row) {asociarDatosRow(row);}
      });
     </script>
