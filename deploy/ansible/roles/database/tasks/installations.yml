@@ -31,6 +31,10 @@
   become_method: sudo
   when: ansible_os_family == "RedHat"
 
+- name: Download postgresql-{{ postgresql_version }} key
+  rpm_key: key="{{ postgresql_key }}" state=present validate_certs=no
+  when: ansible_os_family == "RedHat"
+
 # Se instala el repo de postgresql9.6
 - name: Install of postgresql-{{ postgresql_version }} repository
   yum: "name={{ postgresql_url }} state=present validate_certs=no "
@@ -42,7 +46,7 @@
 - name: Install of postgresql-{{ postgresql_version }} (centos)
   yum: name={{ item }} state=present
   with_items:
-    - postgresql96*
+    - postgresql{{ postgres_version_nodot }}*
     - python-psycopg2.x86_64
   become: yes
   become_method: sudo
