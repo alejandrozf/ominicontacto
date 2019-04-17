@@ -147,6 +147,11 @@ class ArchivoAudioDeleteView(DeleteView):
             messages.warning(self.request, message)
             return HttpResponseRedirect(
                 reverse('lista_archivo_audio'))
+        if archivo.usado_en_queue():
+            message = _("No se puede borrar un Archivo de Audio en uso en Campañas")
+            messages.warning(self.request, message)
+            return HttpResponseRedirect(
+                reverse('lista_archivo_audio'))
         return super(ArchivoAudioDeleteView, self).dispatch(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):

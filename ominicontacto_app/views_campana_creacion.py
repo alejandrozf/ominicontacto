@@ -383,6 +383,7 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         queue_form.instance.eventwhencalled = True
         queue_form.instance.ringinuse = True
         queue_form.instance.setinterfacevar = True
+        # TODO: OML-496
         audio_anuncio_periodico = queue_form.cleaned_data['audios']
         if audio_anuncio_periodico:
             queue_form.instance.announce = audio_anuncio_periodico.audio_asterisk
@@ -460,6 +461,7 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
         campana_form.instance.save()
 
         queue_form = form_list[int(self.COLA)]
+        # TODO: OML-496
         audio_anuncio_periodico = queue_form.cleaned_data['audios']
         if audio_anuncio_periodico:
             queue_form.instance.announce = audio_anuncio_periodico.audio_asterisk
