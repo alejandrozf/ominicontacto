@@ -712,8 +712,12 @@ class FieldFormularioForm(forms.ModelForm):
         }
 
     def clean_nombre_campo(self):
+        formulario = self.cleaned_data.get('formulario')
         nombre_campo = self.cleaned_data.get('nombre_campo')
-        return elimina_tildes(nombre_campo)
+        nombre_campo = elimina_tildes(nombre_campo)
+        if formulario.campos.filter(nombre_campo=nombre_campo).exists():
+            raise forms.ValidationError(_('No se puede crear un campo ya existente'))
+        return nombre_campo
 
     def clean_values_select(self):
         tipo = self.cleaned_data.get('tipo')
