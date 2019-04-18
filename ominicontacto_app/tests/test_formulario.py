@@ -26,7 +26,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
-from ominicontacto_app.tests.factories import FormularioFactory
+from ominicontacto_app.tests.factories import FormularioFactory, FieldFormularioFactory
 from ominicontacto_app.models import FieldFormulario
 
 
@@ -59,3 +59,16 @@ class TestsFormulario(OMLBaseTest):
         self.assertContains(response, _('No está permitido crear un formulario vacio.'))
         field_url = reverse('formulario_field', args=[self.formulario.pk])
         self.assertRedirects(response, field_url)
+
+    def test_no_crear_campos_con_mismos_nombres(self):
+        nombre_campo = 'test'
+        field = FieldFormularioFactory(nombre_campo=nombre_campo)
+        url = reverse('formulario_field', args=[field.formulario.pk])
+        post_data = {'formulario': field.formulario.pk,
+                     'nombre_campo': nombre_campo,
+                     'tipo': FieldFormulario.TIPO_FECHA, 'values_select': '',
+                     'is_required': True}
+        response = self.client.post(url, post_data, follow=True)
+        self.assertContains(response, _('No se pudo llevar a cabo la creacion de campo.'))
+        self.assertEqual(response.context_data['form'].errors['nombre_campo'],
+                         [_('No se puede crear un campo ya existente')])
