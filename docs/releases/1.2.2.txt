@@ -1,14 +1,17 @@
-Release Notes
-*************
+=========================
+Omnileads (OML) 1.2.2 release notes
+=========================
 
 *April 18, 2019*
 
 What's new
 =========================
 
+Documentation now are on repository, it can be built using Sphinx and also is hosted on ReadTheDocs.
+
 
 Installation tasks
--------------------------------
+------------------------
 - Omnileads has been Dockerized!, see the README.md in deploy/docker/devenv
 - Added timezone setup in installation, the timezone is now set as a variable for ansible
 - Added the options --change-network and --change-passwords in deploy.sh to change network parameters or passswords of services
@@ -32,8 +35,7 @@ OML admin
 - Added posibility to remove non used external sites objects
 
 
-
-OML agent
+OML agent view
 ------------------------
 - Added ability to make multi-phone-numbers calls
 - Added fix in agent cronometers calculation when group unpause has value = 0
