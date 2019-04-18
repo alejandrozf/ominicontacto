@@ -78,6 +78,7 @@ class ReporteDeResultadosDeCampana(object):
             filtro_calificados += "')"
         filtro_eventos = " AND event IN ('"
         filtro_eventos += "','".join(LlamadaLog.EVENTOS_NO_CONEXION)
+        filtro_eventos += "','"
         filtro_eventos += "','".join(LlamadaLog.EVENTOS_FIN_CONEXION)
         filtro_eventos += "')"
         params = {'campana_id': self.campana.id,
