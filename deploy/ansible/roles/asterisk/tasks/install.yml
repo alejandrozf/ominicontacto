@@ -106,9 +106,7 @@
 # Se obtienen las fuentes mp3
 - shell: "contrib/scripts/get_mp3_source.sh chdir=/usr/src/asterisk-{{ asterisk_version }}"
   register: command_result
-  failed_when:
-    - "'to already be present' not in command_result.stdout"
-    - command_result.rc != 0
+  failed_when: false
   become: yes
   become_method: sudo
 
