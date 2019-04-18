@@ -414,6 +414,7 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
 
     def done(self, form_list, **kwargs):
         queue = self._save_forms(form_list, Campana.ESTADO_ACTIVA)
+        self._insert_queue_asterisk(queue)
         # salvamos los supervisores y agentes asignados a la campaña
         self.save_supervisores(form_list, -2)
         self.save_agentes(form_list, -1)
@@ -421,7 +422,6 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         # configurar un acceso en alguna ruta entrante
         DestinoEntrante.crear_nodo_ruta_entrante(queue.campana)
         # se insertan los datos de la campaña en asterisk
-        self._insert_queue_asterisk(queue)
         return HttpResponseRedirect(reverse('campana_list'))
 
     def get_form_initial(self, step):

@@ -188,13 +188,13 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
         try:
             with transaction.atomic():
                 campana = self._save_forms(form_list, Campana.ESTADO_INACTIVA)
-                self.save_supervisores(form_list, -3)
-                self.save_agentes(form_list, -2)
                 # Agrego este offset por si form_list no contiene el formulario de PARAMETROS_CRM
                 offset = 0 if campana.tipo_interaccion == Campana.SITIO_EXTERNO else 1
                 sincronizar_form = form_list[int(self.SINCRONIZAR) - offset]
                 self._sincronizar_campana(sincronizar_form, campana)
                 self._insert_queue_asterisk(campana.queue_campana)
+                self.save_supervisores(form_list, -3)
+                self.save_agentes(form_list, -2)
                 success = True
 
         except Exception:
