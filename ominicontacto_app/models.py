@@ -676,7 +676,7 @@ class CampanaManager(models.Manager):
                 # debe crearse cuando se crea la campaña desde el wizard
                 opcion_calificacion_replicada = OpcionCalificacion(
                     campana=campana_replicada, nombre=opcion_calificacion.nombre,
-                    tipo=opcion_calificacion.tipo)
+                    tipo=opcion_calificacion.tipo, formulario=opcion_calificacion.formulario)
                 opciones_calificacion.append(opcion_calificacion_replicada)
         OpcionCalificacion.objects.bulk_create(opciones_calificacion)
 
