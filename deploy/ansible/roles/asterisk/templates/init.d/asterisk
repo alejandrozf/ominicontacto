@@ -1,0 +1,91 @@
+#! /bin/sh
+#
+# asterisk
+#
+# chkconfig: - 90 10
+
+# Source function library.
+. /lib/lsb/init-functions
+
+RETVAL=0
+USER={{ usuario }}
+GROUP={{ usuario }}
+CMD=/usr/sbin/asterisk
+
+# See how we were called.
+
+start() {
+    echo -n "Starting asterisk... "
+    $CMD -U $USER -G $GROUP -g
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]
+    then
+            log_end_msg
+    else
+            log_failure_msg
+    fi
+    echo
+}
+
+stop() {
+    echo -n "Stopping asterisk... "
+    su -l -s /bin/bash -c "$CMD -x 'core stop now'" $USER
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]
+    then
+            log_end_msg
+    else
+            log_failure_msg
+    fi
+    echo
+}
+reload() {
+    echo -n "Reloading asterisk... "
+    su -l -s /bin/bash -c "$CMD -x 'module reload'" $USER
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]
+    then
+            log_end_msg
+    else
+            log_failure_msg
+    fi
+    echo
+}
+status() {
+    echo -n "Asterisk - Llamadas en curso: "
+    su -l -s /bin/bash -c "$CMD -x 'core show calls'" $USER
+    RETVAL=$?
+    if [ $RETVAL -eq 0 ]
+    then
+            log_end_msg
+    else
+            log_failure_msg
+    fi
+    echo
+}
+restart() {
+    stop
+    start
+}
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  reload)
+        reload
+        ;;
+  status)
+        status
+        ;;
+  restart)
+        restart
+        ;;
+  *)
+        echo "Usage: $0 start|stop|status|reload|restart"
+        exit 1
+esac
+
+exit $RETVAL

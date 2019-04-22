@@ -1,0 +1,44 @@
+<!--
+     Copyright (C) 2018 Freetech Solutions
+
+     This file is part of OMniLeads
+
+     This program is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program.  If not, see http://www.gnu.org/licenses/.
+
+   -->
+{% extends "campana/wizard_base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block nav %}
+    <h1>{% trans 'Campaña Manual: Adicionar supervisores' %}</h1>
+
+    <ul class="nav nav-indicators">
+        <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
+        <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
+        <li class="active"><a>{% trans 'Dar permiso a supervisores' %}</a></li>
+        <li class="disabled"><a>{% trans 'Adicionar agentes' %}</a></li>
+    </ul>
+{% endblock %}
+
+{% block form_render %}
+    {{ form.non_field_errors }}
+    <div class="form-row">
+        <div class="col-md-6">
+            <label for="{{ form.bd_contacto.id_for_label }}">{% trans 'Supervisores' %}:</label>
+            {{ form.supervisors }}
+            {{ form.supervisors.errors }}
+        </div>
+    </div>
+{% endblock %}

@@ -31,9 +31,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.views.generic import CreateView, FormView
 from django.views.generic.detail import DetailView
-from ominicontacto_app.models import (
-    AgendaContacto, Contacto, AgenteProfile, Campana, CalificacionCliente
-)
+from ominicontacto_app.models import AgendaContacto, Contacto, Campana, CalificacionCliente
 from ominicontacto_app.forms import AgendaContactoForm, AgendaBusquedaForm
 from ominicontacto_app.utiles import convert_fecha_datetime
 
@@ -48,7 +46,7 @@ class AgendaContactoCreateView(CreateView):
     def get_initial(self):
         initial = super(AgendaContactoCreateView, self).get_initial()
         contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
-        agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
+        agente = self.request.user.get_agente_profile()
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         initial.update({'contacto': contacto,
                         'agente': agente,
@@ -63,6 +61,7 @@ class AgendaContactoCreateView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        self.object.agente = self.request.user.get_agente_profile()
         campana = form.instance.campana
         if self.object.tipo_agenda == AgendaContacto.TYPE_GLOBAL and \
            campana.type == Campana.TYPE_DIALER:
@@ -79,7 +78,7 @@ class AgendaContactoCreateView(CreateView):
         # Después de agendado el contacto se marca como agendado en la calificación
         CalificacionCliente.objects.filter(
             opcion_calificacion__campana=campana, contacto__pk=self.kwargs['pk_contacto'],
-            agente__pk=self.kwargs['id_agente']).update(agendado=True)
+            agente__pk=self.object.agente.id).update(agendado=True)
         return super(AgendaContactoCreateView, self).form_valid(form)
 
     def get_success_url(self):

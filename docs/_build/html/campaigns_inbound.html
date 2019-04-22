@@ -1,0 +1,315 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Campañas entrantes &mdash; documentación de OMniLeads - develop</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="Enrutamiento de llamadas entrantes" href="campaigns_inbound_routes.html" />
+    <link rel="prev" title="Campañas con discador predictivo" href="campaigns_dialer.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> OMniLeads
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html">WebRTC; la tecnología subyacente de OMniLeads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">OML como Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-en-una-compania-de-servicios-de-customer-contact">OML en una Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-para-carriers-o-proveedores-de-cloud-pbx">OML para Carriers ó Proveedores de Cloud PBX</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Procedimientos de instalación</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="initial_settings.html">Configuración Inicial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="telephony.html">Configuración de acceso a la PSTN</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="campaigns.html">Campañas Telefónicas</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#calificaciones">Calificaciones</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#base-de-contactos">Base de contactos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#formularios">Formularios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#campanas-vs-calificaciones-vs-formularios">Campañas VS Calificaciones VS Formularios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#interaccion-con-un-crm-externo">Interacción con un CRM externo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#campanas-manuales">Campañas Manuales</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#campanas-preview">Campañas Preview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#campanas-con-discador-predictivo">Campañas con discador predictivo</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="campaigns.html#campanas-entrantes">Campañas Entrantes</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Campañas entrantes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#como-crear-una-nueva-campana">Cómo crear una nueva campaña</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ringing-vs-atencion-automatica-de-llamadas-entrantes">Ringing VS Atención automática de llamadas entrantes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="campaigns_inbound_routes.html">Enrutamiento de llamadas entrantes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="campaigns_inbound_routes_frompbx.html">Enrutamiento de llamadas entrantes desde un PBX hacia OMniLeads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="campaigns_inbound_ivr.html">IVR - Interactive Voice Response</a></li>
+<li class="toctree-l3"><a class="reference internal" href="campaigns_inbound_timeconditions.html">Enrutamiento condicionado por fechas y horas</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#plantillas-de-campana">Plantillas de Campaña</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="agent.html">Manual de agente</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OMniLeads</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="campaigns.html">Campañas Telefónicas</a> &raquo;</li>
+        
+      <li>Campañas entrantes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/campaigns_inbound.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="campanas-entrantes">
+<h1>Campañas entrantes<a class="headerlink" href="#campanas-entrantes" title="Enlazar permanentemente con este título">¶</a></h1>
+<div class="section" id="como-crear-una-nueva-campana">
+<h2>Cómo crear una nueva campaña<a class="headerlink" href="#como-crear-una-nueva-campana" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Para crear una nueva campaña, se debe ir a Campaña → Campañas Entrantes → Nueva campaña.</p>
+<p>Se debe completar la primera pantalla del wizard, como lo expone la figura 1.</p>
+<img alt="_images/campaigns_in_wizard1.png" src="_images/campaigns_in_wizard1.png" />
+<p><em>Figure 1: Campaigns parameters</em></p>
+<ul class="simple">
+<li><strong>Name:</strong> nombre de la campaña.</li>
+<li><strong>Contact database:</strong> (campo opcional) se utiliza para desplegar datos a partir del número de teléfono que realiza la llamada entrante al sistema.</li>
+<li><strong>Campaign form:</strong> campo de selección del formulario que se desplegará cada vez que un agente califique un contacto con la calificación «de gestión».</li>
+<li><strong>External URL:</strong> URL a disparar cada vez que el agente lo indique.</li>
+<li><strong>Enable recordings:</strong> habilitar que todas las llamadas de la campaña sean grabadas.</li>
+<li><strong>Scope:</strong> se define como la cantidad de gestiones positivas que se esperan para la campaña. En la supervisión de la campaña se muestra en tiempo real el porcentaje de avence de la campaña respecto al objetivo definido.</li>
+</ul>
+<p><strong>Nota 1:</strong> El tema de la base de contactos en las campañas entrantes (y también manuales) plantea un escenario flexible, ya que es Opcional el asignar una base de contactos a este tipo de campañas.
+En este caso, la base de contactos es utilizada si deseamos que cada vez que un contacto realice una comunicación entrante, en base a su “callerid” poder recuperar los datos del mismo, si es que se encuentra registrado el teléfono desde donde llama, dentro de la base de contactos asociada a la campaña.</p>
+<p>Para continuar se debe hacer click en “Paso Siguiente” y avanzar con los campos de la segunda pantalla.</p>
+<img alt="_images/campaigns_in_wizard2.png" src="_images/campaigns_in_wizard2.png" />
+<p><em>Figure 2: Campaigns parameters</em></p>
+<ul class="simple">
+<li><strong>Ring time:</strong> es el tiempo (en segundos) que el teléfono de la consola de agente sonará alertando una nueva llamada.</li>
+<li><strong>Agent callback time:</strong> es el tiempo (en segundos) que la llamada quedará en la cola de espera, hasta volver a intentar conectarla con otro agente disponible.</li>
+<li><strong>Welcome message:</strong> permite definir si se reproducirá algún audio sobre la llamada entrante, al ingresar a la cola de espera de nuestra campaña. Para que esté disponible en el selector desplegable debe cargarse previamente el archivo desde el menú «Audios».</li>
+<li><strong>Max amount of calls:</strong> es el número de llamadas que se permiten poner en cola de espera. Por encima de ese número, la llamada será enviada a la acción “failover”.</li>
+<li><strong>Service level:</strong> es un parámetro para medir cuántas de las llamadas fueron contestadas dentro de esa franja de tiempo. El valor se expresa en segundos.</li>
+<li><strong>Distribution strategy:</strong> método de distribución de llamadas que usará la campaña sobre los agentes. Para campañas salientes, se recomienda RRmemory.</li>
+<li><strong>Campaign priority:</strong> Es un parámetro lineal en la escala del 1 al 10, que implica cuán importante son las llamadas de esta campaña respecto a otras. Establece prioridades para los agentes que trabajan en varias campañas en simultáneo. Si se deja el valor en “0” (por defecto) se mantiene una equidad con el resto de las campañas.</li>
+<li><strong>Tiempo de espera en cola:</strong> es el tiempo (en segundos), que la llamada contactada quedará en cola de espera, aguardando que un agente se libere para conectarle la misma.</li>
+<li><strong>Enable recordings:</strong> se debe tildar este check en caso de requerir que los llamados sean grabados.</li>
+<li><strong>Periodic Announcement:</strong> podemos seleccionar algún audio de nuestro repositorio para reproducir como un anuncio periódico sobre la llamada en espera.</li>
+<li><strong>Announcement frequency:</strong> cantidad de segundos entre cada reproducción de un anuncio periódico.</li>
+<li><strong>Failover dst:</strong> destino hacia el cual se enviarán las llamadas que hayan sido expiradas (superó el tiempo de espera asociado).</li>
+</ul>
+<p><strong>Nota 2:</strong> Los parámetros Ring time y Agent callback time, quedan sin efecto en las llamadas que reciban agentes donde su grupo está configurado el atributo de «auto-atención» de llamadas entrantes.</p>
+<p>En la tercera pantalla se deben asignar las calificaciones que se requieran para que los agentes úedan clasificar cada llamada de contacto.</p>
+<img alt="_images/campaigns_in_wizard3.png" src="_images/campaigns_in_wizard3.png" />
+<p><em>Figure 3: Campaign dispositions</em></p>
+<p>Finalmente, los agentes pueden ser asignados a la campaña.</p>
+<img alt="_images/campaigns_prev_ag2.png" src="_images/campaigns_prev_ag2.png" />
+<p><em>Figure 4: agent assignment</em></p>
+<p>En el resto del capítulo se detalla todo acerca del enrutamiento de las llamadas desde los vínculos troncales hacia nustras campañas entrantes.</p>
+</div>
+<div class="section" id="ringing-vs-atencion-automatica-de-llamadas-entrantes">
+<h2>Ringing VS Atención automática de llamadas entrantes<a class="headerlink" href="#ringing-vs-atencion-automatica-de-llamadas-entrantes" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>El comportamiento del Webphone del agente frente a una llamada proveniente de una campaña entrante puede ser:</p>
+<ul class="simple">
+<li><strong>Ringing normal</strong> y con una duración asociada al parámetro «Ring time» presente en la creación de la campaña entrante. Durante ese tiempo el teléfono del agente notifica la llamada entrante, aguardando la acción del agente que determine la atención o no de la llamada.</li>
+<li><strong>Atención automática de la llamada</strong>. Este comportamiento implica que cada llamada entrante enviada a un agente sea atendida automáticamente por el teléfono del agente notificando a éste con un «beep» antes de dejarlo definitivamente en linea con la contraparte de la llamada.</li>
+</ul>
+<p>Dicho comportamiento depende de la configuración a nivel «Grupo de Agentes» que posea el agente vinculado a la campaña entrante. Entonces si el grupo tiene activada la Atención Automática de llamadas entrantes, el agente responderá de dicha manera ante cada llamada entrante de cualquier campaña, quedando
+sin efecto los parámetros «Ring time» y «Agent callback time» como se mencionó en la «Nota 2» de esta sección.</p>
+<img alt="_images/users_group_config.png" src="_images/users_group_config.png" />
+<p><em>Figure 5: agent group config</em></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="campaigns_inbound_routes.html" class="btn btn-neutral float-right" title="Enrutamiento de llamadas entrantes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="campaigns_dialer.html" class="btn btn-neutral float-left" title="Campañas con discador predictivo" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, omnileads
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

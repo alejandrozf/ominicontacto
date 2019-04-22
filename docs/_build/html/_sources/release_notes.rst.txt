@@ -1,0 +1,41 @@
+Release Notes
+*************
+
+*April 18, 2019*
+
+What's new
+=========================
+
+
+Installation tasks
+-------------------------------
+- Omnileads has been Dockerized!, see the README.md in deploy/docker/devenv
+- Added timezone setup in installation, the timezone is now set as a variable for ansible
+- Added the options --change-network and --change-passwords in deploy.sh to change network parameters or passswords of services
+- Default valid time of SIP ephemeral credentials now can be configured in EPHEMERAL_USER_TTL django setting
+- Fix dependency of OS system language when running ansible tasks
+- Fix changing obsolete Postgresql repository for CENTOS installation
+
+
+OML admin
+------------------------
+- Added the posibility to use differents campaign forms for engaged qualifications options when rate a contact
+- Campaign creations wizards now has ability to add supervisors and agents on new steps
+- Fix on error raised on original database results report after recall an re-qualify agended contact
+- The system now does not allowed to delete recording objects using on campaigns
+- Fix inconsistency when removing periodic announcement on inbound queue related to its queue.conf generated file
+- Added validations to not allow create campaign forms with empty fields
+- Fix error when update supervisor profile
+- Fix events log insertion error when recording file name exceeds 50 characters
+- Removed initial extra page before login, now login its the first page
+- Blacklist view now shows only one object, the current blacklist set for OML
+- Added posibility to remove non used external sites objects
+
+
+
+OML agent
+------------------------
+- Added ability to make multi-phone-numbers calls
+- Added fix in agent cronometers calculation when group unpause has value = 0
+- Added fix on 404 response when manual calling out of base contact
+- The system now shows calling agent name when receiving a transfer call on pop-up

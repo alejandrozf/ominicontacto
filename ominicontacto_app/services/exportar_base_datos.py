@@ -154,38 +154,29 @@ class SincronizarBaseDatosContactosService(object):
 
     def escribir_lista(self, contactos, metadata, campana, prefijo_discador):
 
-        nombres = metadata.nombres_de_columnas
-        nombres.remove('telefono')
         list_multinum = []
-        for columna in nombres:
-            if "MULTINUM" in columna:
-                list_multinum.append((columna, nombres.index(columna)))
-        # NOTA: Dejo el codigo acá por si hace falta volver a mandarle campos a Wombat
-        # list_columnas = []
-        # for nombre in nombres:
-        #    for columna in columnas:
-        #        if columna in nombre:
-        #            list_columnas.append((nombre, nombres.index(columna)))
+        n_multinum = 0
+        # Itero por los otros campos con telefonos (menos el primero que esta en contacto.telefono)
+        indices_telefonos = metadata.columnas_con_telefono[1:]
+        for indice in indices_telefonos:
+            n_multinum += 1
+            # El indice indica cual es la posicion en la lista de "nombres" de las columnas
+            # Como en la lista de "datos" no aparece el primer telefono, le resto 1 a la posicion
+            posicion_en_datos = indice - 1
+            list_multinum.append(('MULTINUM' + str((n_multinum)), posicion_en_datos))
 
         lista_contactos = "numbers="
         for contacto in contactos:
-            dato_contacto = ""
-
+            dato_contacto = []
             # --- Buscamos datos
-            dato_contacto += prefijo_discador + contacto.telefono + ","
-            dato_contacto += "id_cliente:" + str(contacto.pk) + ","
-            dato_contacto += "id_campana:" + str(campana.id) + ","
+            dato_contacto.append(prefijo_discador + contacto.telefono)
+            dato_contacto.append("id_cliente:" + str(contacto.pk))
+            dato_contacto.append("id_campana:" + str(campana.id))
             if list_multinum:
                 datos = json.loads(contacto.datos)
-                for item in list_multinum:
-                    dato_contacto += "," + item[0] + ":" + datos[item[1]]
-            # if list_columnas:
-            #    datos = json.loads(contacto.datos)
-            #    for item in list_columnas:
-            #        dato_contacto += "," + item[0] + ":" + datos[item[1]]
+                for nombre, posicion_en_datos in list_multinum:
+                    dato_contacto.append(nombre + ":" + datos[posicion_en_datos])
 
-            dato_contacto += "|"
-
-            lista_contactos += dato_contacto
+            lista_contactos += ",".join(dato_contacto) + "|"
 
         return lista_contactos

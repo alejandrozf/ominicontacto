@@ -348,16 +348,12 @@ def validar_nombres_campanas(nombre):
     validar_solo_ascii_y_sin_espacios(nombre, error_ascii, error_espacios)
 
 
-def obtener_columnas_bd(bd_contacto, columnas_bd_default):
+def obtener_opciones_columnas_bd(bd_contacto, columnas_bd_default):
     """Obtiene los nombres de las columnas de una base de contactos.
     En caso de recibir None como parámetro devuelve una lista de columnas fijas
     """
     if bd_contacto is None:
         nombres_de_columnas = columnas_bd_default
-        nombres_de_columnas = nombres_de_columnas[:]
     else:
-        metadata = bd_contacto.get_metadata()
-        nombres_de_columnas = metadata.nombres_de_columnas
-    nombres_de_columnas.remove('telefono')
-    columnas_bd = [(columna, columna) for columna in nombres_de_columnas]
-    return columnas_bd
+        nombres_de_columnas = bd_contacto.get_metadata().nombres_de_columnas
+    return zip(nombres_de_columnas, nombres_de_columnas)

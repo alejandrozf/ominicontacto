@@ -21,18 +21,6 @@
 - set_fact: omnisup_dir={{ install_prefix }}
   tags: postinstall
 
-# Esto tengo que hacerlo para debian porque viene por defecto con php7.0 y a veces en el update no se porque me lo sube a 7.2
-# Obtengo la version de php
-- name: Get php-fpm version (debian)
-  shell: php --version |head -1 | awk -F  "." '{print $1 "." $2}' | awk -F " " '{print $2}'
-  register: command_result
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "Debian"
-
-# Seteo un par de variables segun el resultado de la tarea anterior
-- set_fact: php_version={{ command_result.stdout }}
-  when: ansible_os_family == "Debian"
 # En debian el php-fpm se ubica en un path totalmente diferente al de centos
 - set_fact: phpfpm_path=/etc/php/{{ php_version }}/fpm/
   when: ansible_os_family == "Debian"
@@ -83,25 +71,21 @@
 # Habilito e inicio php-fpm
 - name: Enable and start of php-fpm service (centos)
   service: name=php-fpm state=started enabled=yes
-  become: true
-  become_method: sudo
   when: ansible_os_family == "RedHat"
 
-- name: Enable and start of php-fpm service (debian)
+- name: Enable and start of php{{ php_version }}-fpm service (debian)
   service: name=php{{ php_version }}-fpm state=restarted enabled=yes
-  become: true
-  become_method: sudo
   when: ansible_os_family == "Debian"
   tags: postinstall
 
 # Cambio permiso al  archivo .sock creado
-- name: Change permission of the php-fpm.sock (centos)
-  file: path=/var/run/php-fpm/php-fpm.sock owner={{ usuario }} group={{ usuario }}
-  when: ansible_os_family == "RedHat"
+#- name: Change permission of the php-fpm.sock (centos)
+#  file: path=/var/run/php-fpm/php-fpm.sock owner={{ usuario }} group={{ usuario }}
+#  when: ansible_os_family == "RedHat"
 
-- name: Change permission of the php-fpm.sock (debian)
-  file: path=/var/run/php/php{{ php_version }}-fpm.sock owner={{ usuario }} group={{ usuario }}
-  when: ansible_os_family == "Debian"
+#- name: Change permission of the php-fpm.sock (debian)
+#  file: path=/var/run/php/php{{ php_version }}-fpm.sock owner={{ usuario }} group={{ usuario }}
+#  when: ansible_os_family == "Debian"
 
 # Esta carpeta tambien necesita ser cambiada de dueño
 - name: Set permissions of required to {{ usuario }}'s user
@@ -134,4 +118,4 @@
   service: name=nginx state=reloaded enabled=yes
   become: true
   become_method: sudo
-  tags: ['never','postinstall','kamailio','changeip']
+  tags: ['never','postinstall','kamailio','changenetwork']

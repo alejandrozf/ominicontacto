@@ -22,8 +22,6 @@ caso de que califica como gestion(que generalmente vulgarmente llamada venta)"""
 
 from __future__ import unicode_literals
 
-import json
-
 from django.contrib import messages
 from django.http import HttpResponseRedirect, JsonResponse
 from django.core.urlresolvers import reverse
@@ -34,17 +32,13 @@ from django.views.generic import (
 from django.views.generic.edit import BaseUpdateView
 from django.utils.translation import ugettext as _
 
-from ominicontacto_app.models import (
-    Formulario, FieldFormulario, MetadataCliente, Campana, AgenteProfile,
-    Contacto
-)
+from ominicontacto_app.models import Formulario, FieldFormulario
 from ominicontacto_app.forms import (
     FormularioForm, FieldFormularioForm, OrdenCamposForm, FormularioCRMForm
 )
 from ominicontacto_app.services.campos_formulario import (
     OrdenCamposCampanaService
 )
-from ominicontacto_app.utiles import elimina_tildes
 import logging as logging_
 
 logger = logging_.getLogger(__name__)
@@ -104,24 +98,21 @@ class FieldFormularioCreateView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        self.object.nombre_campo = elimina_tildes(self.object.nombre_campo)
         self.object.orden = \
             FieldFormulario.objects.obtener_siguiente_orden(
                 self.kwargs['pk_formulario'])
-        if self.object.tipo is not FieldFormulario.TIPO_LISTA:
-            self.object.values_select = None
         self.object.save()
         return redirect(self.get_success_url())
 
     def form_invalid(self, form):
-        message = '<strong>Operación Errónea!</strong> \
-                   No se pudo llevar a cabo la creacion de campo.'
+        message = _('<strong>Operación Errónea!</strong> ') + \
+            _('No se pudo llevar a cabo la creacion de campo.')
         messages.add_message(
             self.request,
             messages.ERROR,
             message,
         )
-        return redirect(self.get_success_url())
+        return super(FieldFormularioCreateView, self).form_invalid(form)
 
     def get_success_url(self):
         return reverse('formulario_field',
@@ -225,6 +216,17 @@ class FormularioPreviewFormView(FormView):
     form_class = FormularioCRMForm
     template_name = 'formulario/formulario_preview.html'
 
+    def dispatch(self, *args, **kwargs):
+        formulario = Formulario.objects.get(pk=self.kwargs['pk_formulario'])
+        campos = formulario.campos.all()
+
+        if not campos.exists():
+            message = _("No está permitido crear un formulario vacio.")
+            messages.error(self.request, message)
+            return redirect(reverse('formulario_field',
+                                    kwargs={"pk_formulario": self.kwargs['pk_formulario']}))
+        return super(FormularioPreviewFormView, self).dispatch(*args, **kwargs)
+
     def get_form(self):
         self.form_class = self.get_form_class()
         formulario = Formulario.objects.get(pk=self.kwargs['pk_formulario'])
@@ -256,44 +258,44 @@ class FormularioVistaFormView(FormView):
         return context
 
 
-class FormularioCreateFormView(FormView):
-    form_class = FormularioCRMForm
-    template_name = 'formulario/formulario_create.html'
+# class FormularioCreateFormView(FormView):
+#     form_class = FormularioCRMForm
+#     template_name = 'formulario/formulario_create.html'
 
-    def get_form(self):
-        self.form_class = self.get_form_class()
-        formulario = Formulario.objects.get(pk=self.kwargs['pk_formulario'])
-        campos = formulario.campos.all()
-        return self.form_class(campos=campos, **self.get_form_kwargs())
+#     def get_form(self):
+#         self.form_class = self.get_form_class()
+#         formulario = Formulario.objects.get(pk=self.kwargs['pk_formulario'])
+#         campos = formulario.campos.all()
+#         return self.form_class(campos=campos, **self.get_form_kwargs())
 
-    def get_context_data(self, **kwargs):
-        context = super(
-            FormularioCreateFormView, self).get_context_data(**kwargs)
-        context['pk_formulario'] = self.kwargs['pk_formulario']
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
-        bd_contacto = campana.bd_contacto
-        nombres = bd_contacto.get_metadata().nombres_de_columnas[2:]
-        datos = json.loads(contacto.datos)
-        mas_datos = []
-        for nombre, dato in zip(nombres, datos):
-            mas_datos.append((nombre, dato))
-        context['contacto'] = contacto
-        context['mas_datos'] = mas_datos
+#     def get_context_data(self, **kwargs):
+#         context = super(
+#             FormularioCreateFormView, self).get_context_data(**kwargs)
+#         context['pk_formulario'] = self.kwargs['pk_formulario']
+#         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+#         contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
+#         bd_contacto = campana.bd_contacto
+#         nombres = bd_contacto.get_metadata().nombres_de_columnas[2:]
+#         datos = json.loads(contacto.datos)
+#         mas_datos = []
+#         for nombre, dato in zip(nombres, datos):
+#             mas_datos.append((nombre, dato))
+#         context['contacto'] = contacto
+#         context['mas_datos'] = mas_datos
 
-        return context
+#         return context
 
-    def form_valid(self, form):
-        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
-        agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
-        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
-        metadata = json.dumps(form.cleaned_data)
-        MetadataCliente.objects.create(campana=campana, agente=agente,
-                                       contacto=contacto, metadata=metadata)
-        return HttpResponseRedirect('/blanco/')
+#     def form_valid(self, form):
+#         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+#         agente = AgenteProfile.objects.get(pk=self.kwargs['id_agente'])
+#         contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
+#         metadata = json.dumps(form.cleaned_data)
+#         RespuestaFormularioGestion.objects.create(campana=campana, agente=agente,
+#                                        contacto=contacto, metadata=metadata)
+#         return HttpResponseRedirect('/blanco/')
 
-    def get_success_url(self):
-        reverse('view_blanco')
+#     def get_success_url(self):
+#         reverse('view_blanco')
 
 
 class FormularioDeleteView(DeleteView):
@@ -306,7 +308,7 @@ class FormularioDeleteView(DeleteView):
     def dispatch(self, request, *args, **kwargs):
         formulario = self.get_object()
 
-        if formulario.campana_set.all().exists():
+        if formulario.opcioncalificacion_set.all().exists():
             message = _("No está permitido eliminar un formulario asignado a alguna campaña")
             messages.error(self.request, message)
             return HttpResponseRedirect(

@@ -124,11 +124,6 @@ class CustomUserWizard(SessionWizardView):
 
         supervisor.user = user
         supervisor.sip_extension = 1000 + user.id
-        sip_extension = supervisor.sip_extension
-        supervisor.timestamp = supervisor.user.generar_usuario(sip_extension).split(':')[0]
-        timestamp = supervisor.timestamp
-        sip_usuario = timestamp + ":" + str(sip_extension)
-        supervisor.sip_password = supervisor.user.generar_contrasena(sip_usuario)
         supervisor.save()
         asterisk_sip_service = ActivacionAgenteService()
         try:
@@ -214,7 +209,7 @@ class UserDeleteView(DeleteView):
 
     def dispatch(self, request, *args, **kwargs):
         usuario = User.objects.get(pk=self.kwargs['pk'])
-        if usuario.id is 1:
+        if usuario.id == 1:
             return HttpResponseRedirect(
                 reverse('user_list', kwargs={"page": 1}))
         return super(UserDeleteView, self).dispatch(request, *args, **kwargs)
@@ -277,12 +272,6 @@ class SupervisorProfileUpdateView(UpdateView):
             self.object.is_administrador = True
         elif rol == SupervisorProfile.ROL_CLIENTE:
             self.object.is_customer = True
-
-        sip_extension = self.object.sip_extension
-        self.object.timestamp = self.object.user.generar_usuario(sip_extension).split(':')[0]
-        timestamp = self.object.timestamp
-        sip_usuario = timestamp + ":" + str(sip_extension)
-        self.object.sip_password = self.object.user.generar_contrasena(sip_usuario)
         self.object.save()
         return super(SupervisorProfileUpdateView, self).form_valid(form)
 

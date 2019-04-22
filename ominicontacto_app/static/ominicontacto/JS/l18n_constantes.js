@@ -3,6 +3,7 @@ var REMOVER_CAMPO = gettext("Remover");
 var SIN_ACCION = gettext("Sin Acción");
 var GESTION = gettext("Gestión");
 var AGREGAR_PARAMETRO = gettext("Agregar parámetro");
+var AGREGAR_AGENTE = gettext("Agregar agente");
 var AGREGAR_REGLA = gettext("Agregar regla");
 var AGREGAR_PATRON_DISCADO = gettext("Agregar patron de discado");
 var AGREGAR_TRONCAL = gettext("Agregar troncal");

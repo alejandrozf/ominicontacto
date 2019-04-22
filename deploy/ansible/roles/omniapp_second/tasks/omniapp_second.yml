@@ -28,7 +28,7 @@
   template: src=templates/etc/ominicontacto.conf.j2 dest=/etc/nginx/conf.d/ominicontacto.conf owner={{ usuario }} group={{ usuario }}
   become: true
   become_method: sudo
-  tags: postinstall
+  tags: ['postinstall','changenetwork']
 
 # Se pasan los certificados creados en kamailio a la carpeta nginx_certs
 - name: Copy of the certificates in nginx (aio)
@@ -38,7 +38,7 @@
       - key.pem
   become: true
   become_method: sudo
-  tags: kamailio
+  tags: ['kamailio','changenetwork']
   when: cluster == 0
 
 # Se pasan los certificados creados en kamailio a la carpeta nginx_certs
@@ -49,6 +49,7 @@
     - cert.pem
     - key.pem
   when: cluster != 0
+  tags: changenetwork
 
 # Se crea el archivo .ini de uwsgi. Para mas info revisar documentacion de uwsgi
 - name: Create of oml_uwgsi.ini script
@@ -63,7 +64,6 @@
   template: src=templates/omnileads.service dest=/etc/systemd/system/omnileads.service owner=root group=root mode=650
   become: true
   become_method: sudo
-  tags: postinstall
 
 # Se inicia y habilita el servicio
 - name: Start the omnileads-daemon service
@@ -71,21 +71,6 @@
   become: true
   become_method: sudo
   when: desarrollo == 0
-
-# El concatenate.sh es un script chamullero que sirve para poner en un solo archivo (voip.cert) el certificado de CA concatenado con el cert de nodo
-# Así evitamos la advertencia de seguridad de los browsers.
-- name: Creation of voip.cert file
-  template: src=templates/bin/concatenate.sh dest={{ install_prefix }}bin/concatenate.sh mode=755
-  ignore_errors: yes
-  tags: kamailio
-  become: true
-  become_method: sudo
-
-- shell: "bash concatenate.sh chdir={{ install_prefix }}bin"
-  tags: kamailio
-  become: true
-  become_method: sudo
-  become_user: "{{ usuario }}"
 
 # Se ejecuta una funcion de sql que hizo ale, esto es para los reportes
 - name: Add queuelog trigger to database
@@ -103,11 +88,12 @@
 # Se sube el script de backup-restore
 - name: Generate backup-restore.sh script
   template: src=templates/bin/backup-restore.sh.j2 dest={{ install_prefix }}bin/backup-restore.sh owner={{ usuario }} group={{ usuario }} mode=755
-
+  tags: postinstall
+  
 # Se inicia y habilita el servicio
 - name: Reload the omnileads-daemon service
   systemd: name=omnileads state=reloaded enabled=yes daemon_reload=yes
   become: true
   become_method: sudo
-  tags: ['postinstall','changeip']
+  tags: ['postinstall','changenetwork','changepassword']
   when: desarrollo == 0

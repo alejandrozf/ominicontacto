@@ -1,0 +1,9 @@
+DevEnv Image versions:
+
+0.1
+  - Initial settings of the image with all devenv functional and running
+
+pbx-emulator image versions:
+
+0.1
+  - Initial settings of the image with all pbx-emulator functions described in README.txt

@@ -446,11 +446,11 @@ urlpatterns = [
         ),
 
     # TODO: Verificar si se usa esta vista.
-    url(r'^formulario/(?P<pk_formulario>\d+)/create/(?P<pk_campana>\d+)/(?P<pk_contacto>\d+)'
-        r'/(?P<id_agente>\d+)/$',
-        administrador_o_supervisor_requerido(views_formulario.FormularioCreateFormView.as_view()),
-        name='formulario_create',
-        ),
+    # url(r'^formulario/(?P<pk_formulario>\d+)/create/(?P<pk_campana>\d+)/(?P<pk_contacto>\d+)'
+    #     r'/(?P<id_agente>\d+)/$',
+    #     administrador_o_supervisor_requerido(views_formulario.FormularioCreateFormView.as_view()),
+    #     name='formulario_create',
+    #     ),
 
     url(r'^formulario/(?P<pk_formulario>\d+)/vista/$',
         administrador_o_supervisor_requerido(views_formulario.FormularioVistaFormView.as_view()),
@@ -501,19 +501,20 @@ urlpatterns = [
         views_calificacion_cliente.calificacion_cliente_externa_view,
         name='calificacion_cliente_externa'
         ),
-    # Formulario de Calificación de Gestión
-    url(r'^formulario/(?P<pk_campana>\d+)/venta/(?P<pk_contacto>\d+)/(?P<id_agente>\d+)/$',
-        login_required(views_calificacion_cliente.FormularioCreateFormView.as_view()),
-        name='formulario_venta'
-        ),
-    url(r'^formulario/(?P<pk>\d+)/detalle/$',
-        login_required(
-            views_calificacion_cliente.FormularioDetailView.as_view()),
+
+    # Respuesta de Formulario para Calificación de Gestión
+    url(r'^formulario/venta/(?P<pk>\d+)/detalle/$',
+        agente_requerido(
+            views_calificacion_cliente.RespuestaFormularioDetailView.as_view()),
         name='formulario_detalle'
         ),
-    url(r'^formulario/(?P<pk_metadata>\d+)/metadata/$',
-        login_required(
-            views_calificacion_cliente.FormularioUpdateFormView.as_view()),
+    url(r'^formulario/venta/(?P<pk_calificacion>\d+)/$',
+        agente_requerido(views_calificacion_cliente.RespuestaFormularioCreateFormView.as_view()),
+        name='formulario_venta'
+        ),
+    url(r'^formulario/venta/(?P<pk>\d+)/update/$',
+        agente_requerido(
+            views_calificacion_cliente.RespuestaFormularioUpdateFormView.as_view()),
         name='formulario_venta_update'
         ),
     # ==========================================================================
@@ -552,8 +553,8 @@ urlpatterns = [
     # ==========================================================================
     # Agenda Contacto
     # ==========================================================================
-    url(r'^agenda_contacto/(?P<pk_contacto>\d+)/create/(?P<id_agente>\d+)/(?P<pk_campana>\d+)/$',
-        login_required(views_agenda_contacto.AgendaContactoCreateView.as_view()),
+    url(r'^agenda_contacto/(?P<pk_contacto>\d+)/create/(?P<pk_campana>\d+)/$',
+        agente_requerido(views_agenda_contacto.AgendaContactoCreateView.as_view()),
         name="agenda_contacto_create"),
     url(r'^agenda_contacto/(?P<pk>\d+)/detalle/$',
         login_required(views_agenda_contacto.AgendaContactoDetailView.as_view()),
@@ -771,6 +772,9 @@ urlpatterns = [
     url(r'^sitio_externo/(?P<pk>\d+)/update/$',
         administrador_requerido(views_sitio_externo.SitioExternoUpdateView.as_view()),
         name='modificar_sitio_externo', ),
+    url(r'^sitio_externo/(?P<pk>\d+)/delete/$',
+        administrador_requerido(views_sitio_externo.SitioExternoDeleteView.as_view()),
+        name='sitio_externo_delete'),
     # ==========================================================================
     # QueueMember
     # ==========================================================================

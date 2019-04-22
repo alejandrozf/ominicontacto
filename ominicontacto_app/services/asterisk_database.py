@@ -155,11 +155,6 @@ class CampanaFamily(AbstractFamily):
                 settings.OML_AUDIO_FOLDER,
                 campana.queue_campana.audio_de_ingreso.get_filename_audio_asterisk())})
 
-        if campana.formulario:
-            dict_campana.update({'IDFORM': campana.formulario.pk})
-        else:
-            dict_campana.update({'IDFORM': ""})
-
         if campana.sitio_externo:
             dict_campana.update({'IDEXTERNALURL': campana.sitio_externo.pk})
         else:

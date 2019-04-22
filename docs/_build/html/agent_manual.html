@@ -1,0 +1,306 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Llamadas manuales desde listado de contactos &mdash; documentación de OMniLeads - develop</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="Campañas preview" href="agent_preview.html" />
+    <link rel="prev" title="Login" href="agent_session.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> OMniLeads
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html">WebRTC; la tecnología subyacente de OMniLeads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">OML como Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-en-una-compania-de-servicios-de-customer-contact">OML en una Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-para-carriers-o-proveedores-de-cloud-pbx">OML para Carriers ó Proveedores de Cloud PBX</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Procedimientos de instalación</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="initial_settings.html">Configuración Inicial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="telephony.html">Configuración de acceso a la PSTN</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="campaigns.html">Campañas Telefónicas</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="agent.html">Manual de agente</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="agent.html#sesion-del-agente">Sesión del agente</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="agent.html#campanas-manuales">Campañas manuales</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Llamadas manuales desde listado de contactos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#llamadas-manuales-marcando-desde-el-webphone">Llamadas manuales marcando desde el webphone</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#llamadas-a-numeros-sin-contacto-existente">Llamadas a números sin contacto existente</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#campanas-preview">Campañas preview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#campanas-dialer">Campañas dialer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#campanas-entrantes">Campañas entrantes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#acciones-sobre-las-llamadas">Acciones sobre las llamadas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#agendas-calificaciones-y-contactos">Agendas, calificaciones y contactos</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OMniLeads</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="agent.html">Manual de agente</a> &raquo;</li>
+        
+      <li>Llamadas manuales desde listado de contactos</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/agent_manual.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="llamadas-manuales-desde-listado-de-contactos">
+<h1>Llamadas manuales desde listado de contactos<a class="headerlink" href="#llamadas-manuales-desde-listado-de-contactos" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>Cuando un agente trabaja dentro de una campaña manual puede generar los llamados a partir de listar los contactos
+de la campaña, esto es ingresando a Contacts -&gt; Contact list y allí se puede seleccionar
+la campaña manual sobre la cual buscar el contacto a marcar. como se muestra en la figura 1</p>
+<img alt="_images/about_agent_manual_camp_1.png" src="_images/about_agent_manual_camp_1.png" />
+<p><em>Figure 1: contact list</em></p>
+<p>Si se hace click en Mostrar los contactos, aparecen los mismos listados como lo indica la figura 2.</p>
+<img alt="_images/about_agent_manual_camp_2.png" src="_images/about_agent_manual_camp_2.png" />
+<p><em>Figure 2: contact list</em></p>
+<p>Entonces, el agente puede generar una llamada hacia uno de los teléfonos listados, a partir de realizar un click
+sobre el ícono del teléfono. A partir de ese momento se presenta la información del contacto en la pantalla de agente
+y seguidamente se comienza a marcar su teléfono.</p>
+<img alt="_images/about_agent_manual_camp_3.png" src="_images/about_agent_manual_camp_3.png" />
+<p><em>Figure 3: call contact</em></p>
+<p>Si la comunicación a finalizado o bien el teléfono no pudo ser contactado, entonces el agente puede intentar marcar
+a otro de los números del contacto (si es que el contacto tiene más de un teléfono cargado). Si este es el caso,
+entonces el agente puede hacer click sobre cualquiera de los teléfonos extras y automáticamente se buscará contactar
+al nuevo teléfono.</p>
+<img alt="_images/about_agent_manual_camp_4.png" src="_images/about_agent_manual_camp_4.png" />
+<p><em>Figure 4: re-call contact</em></p>
+<p>Finalmente, el agente debe calificar al contacto a través del combo de calificaciones. Este listado de calificaciones
+fue generado por el administrador para cada campaña.</p>
+<img alt="_images/about_agent_manual_camp_5.png" src="_images/about_agent_manual_camp_5.png" />
+<p><em>Figure 5: call disposition</em></p>
+</div>
+<div class="section" id="llamadas-manuales-marcando-desde-el-webphone">
+<h1>Llamadas manuales marcando desde el webphone<a class="headerlink" href="#llamadas-manuales-marcando-desde-el-webphone" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>El agente puede marcar llamadas directamente sobre el webphone. Es común a veces distribuir las llamadas a realizar
+por los agentes, a través de una planilla de cálculo o buscando los datos en un CRM externo. La idea es que si un agente
+marca una llamada desde el webphone - Figura 6.</p>
+<img alt="_images/about_agent_manual_camp_6.png" src="_images/about_agent_manual_camp_6.png" />
+<p><em>Figure 6: webphone manual call</em></p>
+<p>Con un <em>enter</em> o disparando el llamado desde el botón <em>dial</em>, si aún no tiene una campaña pre-seleccionada, el sistema
+pregunta por qué campaña procesar la nueva llamada.</p>
+<img alt="_images/about_agent_manual_camp_7.png" src="_images/about_agent_manual_camp_7.png" />
+<p><em>Figure 7: campaign selection</em></p>
+<p>OMnileads busca primero si el teléfono marcado existe como asignado sobre algún contacto del sistema, si el mismo existe se despliegan los contactos que posean
+dicho teléfono y entonces el agente puede indicar marcar a dicho contacto, en este caso la llamada se lanza y los datos
+del contacto son desplegados sobre la consola de agente.</p>
+<img alt="_images/about_agent_manual_camp_8.png" src="_images/about_agent_manual_camp_8.png" />
+<p><em>Figure 8: contact selection</em></p>
+<img alt="_images/about_agent_manual_camp_9.png" src="_images/about_agent_manual_camp_9.png" />
+<p><em>Figure 9: contact call</em></p>
+</div>
+<div class="section" id="llamadas-a-numeros-sin-contacto-existente">
+<h1>Llamadas a números sin contacto existente<a class="headerlink" href="#llamadas-a-numeros-sin-contacto-existente" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>También puede suceder de que el teléfono marcado desde el webphone no coincida con ningún contacto. Figura 10.</p>
+<img alt="_images/about_agent_manual_camp_10.png" src="_images/about_agent_manual_camp_10.png" />
+<p><em>Figure 10: no contact for the number dialed</em></p>
+<p>y entonces allí el agente puede o bien directamente marcar el teléfono y luego cargar el contacto - Figura 11.</p>
+<img alt="_images/about_agent_manual_camp_11.png" src="_images/about_agent_manual_camp_11.png" />
+<p><em>Figure 11: call without load contact</em></p>
+<p>o bien cargar el nuevo contacto a la campaña antes de contactar el teléfono como lo indica la figura 12.</p>
+<img alt="_images/about_agent_manual_camp_12.png" src="_images/about_agent_manual_camp_12.png" />
+<p><em>Figure 12: load contact and call</em></p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="agent_preview.html" class="btn btn-neutral float-right" title="Campañas preview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="agent_session.html" class="btn btn-neutral float-left" title="Login" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, omnileads
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

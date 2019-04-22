@@ -41,3 +41,4 @@
   become: yes
   become_user: "{{ usuario }}"
   become_method: su
+  tags: changenetwork

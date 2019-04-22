@@ -186,11 +186,17 @@ class LlamarContactoView(RedirectView):
     def post(self, request, *args, **kwargs):
         # TODO: Analizar bien el caso de que se este agregando un contacto
         agente = AgenteProfile.objects.get(pk=request.POST['pk_agente'])
-        contacto = Contacto.objects.get(pk=request.POST['pk_contacto'])
         click2call_type = request.POST.get('click2call_type', 'false')
         tipo_campana = request.POST.get('tipo_campana')
         campana_id = request.POST.get('pk_campana')
         telefono = request.POST.get('telefono', '')
+
+        # Si el pk es 0 es porque no se quiere identificar al contacto.
+        # El tipo de click2call no será "preview".
+        contacto_id = request.POST['pk_contacto']
+        if not contacto_id == '-1':
+            contacto = Contacto.objects.get(pk=contacto_id)
+
         if not telefono:
             telefono = contacto.telefono
 
@@ -215,7 +221,7 @@ class LlamarContactoView(RedirectView):
 
         originator = Click2CallOriginator()
         originator.call_originate(
-            agente, campana_id, tipo_campana, contacto.id, telefono, click2call_type)
+            agente, campana_id, tipo_campana, contacto_id, telefono, click2call_type)
         return HttpResponseRedirect(reverse('view_blanco'))
 
 

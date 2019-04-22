@@ -30,7 +30,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     {% endblock %}
     <br>
     <div>
-        <form action="" method="post" id="wizardForm">{% csrf_token %}
+        <form action="" method="post" id="wizardForm">
+            {% csrf_token %}
+            {% block extra_content %}{% endblock %}
             <table>
                 {{ wizard.management_form }}
                 {% if wizard.form.forms %}

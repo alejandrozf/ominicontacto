@@ -52,6 +52,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <li class="disabled"><a>{% trans 'Actuacion' %}</a></li>
             <li class="disabled"><a>{% trans 'Reglas Incidencias' %}</a></li>
             {% if not es_template %}
+                <li class="disabled"><a>{% trans 'Dar permiso a supervisores' %}</a></li>
+                <li class="disabled"><a>{% trans 'Adicionar agentes' %}</a></li>
                 <li class="disabled"><a>{% trans 'Sincronizar' %}</a></li>
             {% endif %}
         {% endif %}
@@ -94,12 +96,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% block tipo_interaccion %}
             {{ form.tipo_interaccion.errors }}
             <div class="col-md-6">
-              <label><div class="myradio">{{ form.tipo_interaccion.0 }}</div> </label>
-                {{ form.formulario }}
-                {{ form.formulario.errors }}
+              <label> {% trans "Tipo de Interacción" %}</label>
+                <div class="myradio">{{ form.tipo_interaccion.0 }}</div>
+                <div class="myradio">{{ form.tipo_interaccion.1 }}</div>
             </div>
             <div class="col-md-6">
-                <label><div class="myradio">{{ form.tipo_interaccion.1 }}</div> </label>
+                <label><div class="myradio">{% trans "Url Externa" %}</div> </label>
                 {{ form.sitio_externo.errors }}
                 {{ form.sitio_externo }}
             </div>

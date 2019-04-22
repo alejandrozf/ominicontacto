@@ -29,7 +29,8 @@ from django.http import HttpResponseRedirect
 from ominicontacto_app.forms import (QueueDialerForm, SincronizaDialerForm, ActuacionVigenteForm,
                                      ReglasIncidenciaFormSet, CampanaDialerForm,
                                      OpcionCalificacionFormSet,
-                                     ParametrosCrmFormSet)
+                                     ParametrosCrmFormSet, CampanaSupervisorUpdateForm,
+                                     QueueMemberFormset)
 from ominicontacto_app.models import Campana
 
 from ominicontacto_app.services.campana_service import CampanaService
@@ -51,7 +52,9 @@ class CampanaDialerMixin(CampanaWizardMixin):
     PARAMETROS_CRM = '3'
     ACTUACION_VIGENTE = '4'
     REGLAS_INCIDENCIA = '5'
-    SINCRONIZAR = '6'
+    ADICION_SUPERVISORES = '6'
+    ADICION_AGENTES = '7'
+    SINCRONIZAR = '8'
 
     FORMS = [(INICIAL, CampanaDialerForm),
              (COLA, QueueDialerForm),
@@ -59,6 +62,8 @@ class CampanaDialerMixin(CampanaWizardMixin):
              (PARAMETROS_CRM, ParametrosCrmFormSet),
              (ACTUACION_VIGENTE, ActuacionVigenteForm),
              (REGLAS_INCIDENCIA, ReglasIncidenciaFormSet),
+             (ADICION_SUPERVISORES, CampanaSupervisorUpdateForm),
+             (ADICION_AGENTES, QueueMemberFormset),
              (SINCRONIZAR, SincronizaDialerForm)]
 
     TEMPLATES = {INICIAL: 'campana_dialer/nueva_edita_campana.html',
@@ -67,6 +72,8 @@ class CampanaDialerMixin(CampanaWizardMixin):
                  PARAMETROS_CRM: 'campana_dialer/parametros_crm_sitio_externo.html',
                  ACTUACION_VIGENTE: 'campana_dialer/actuacion_vigente_campana.html',
                  REGLAS_INCIDENCIA: 'campana_dialer/reglas_incidencia.html',
+                 ADICION_SUPERVISORES: "campana_dialer/adicionar_supervisores.html",
+                 ADICION_AGENTES: "campana_dialer/adicionar_agentes.html",
                  SINCRONIZAR: 'campana_dialer/sincronizar_lista.html'}
 
     form_list = FORMS
@@ -87,6 +94,7 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
     def get_context_data(self, form, *args, **kwargs):
         context = super(CampanaDialerCreateView, self).get_context_data(form, *args, **kwargs)
         current_step = self.steps.current
+        context['create'] = True
         if current_step == self.INICIAL:
             context['canales_en_uso'] = Campana.objects.obtener_canales_dialer_en_uso()
         elif current_step == self.REGLAS_INCIDENCIA and form.forms == []:
@@ -185,6 +193,8 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
                 sincronizar_form = form_list[int(self.SINCRONIZAR) - offset]
                 self._sincronizar_campana(sincronizar_form, campana)
                 self._insert_queue_asterisk(campana.queue_campana)
+                self.save_supervisores(form_list, -3)
+                self.save_agentes(form_list, -2)
                 success = True
 
         except Exception:
@@ -238,7 +248,6 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
                 campana_form = form_list[int(self.INICIAL)]
                 queue_form = form_list[int(self.COLA)]
                 opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
-
                 campana = campana_form.save()
                 queue = self._save_queue(queue_form)
                 opciones_calificacion_formset.save()

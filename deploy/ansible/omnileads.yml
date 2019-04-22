@@ -29,28 +29,6 @@
 # variables que vienen exportadas desde el deploy.sh
   vars:
           build_dir: "{{ BUILD_DIR }}"
-# los pre_tasks son para validaciones de de IP y hostname
-
-  pre_tasks:
-    - name: Get the hostname of server
-      command: hostname
-      register: hostname
-      tags: always
-
-    - debug: msg={{ ansible_all_ipv4_addresses }}
-      tags: always
-
-    - name: Compare if hostname of server is the same as hostname in inventory file
-      assert:
-        that: "'{{ hostname.stdout }}' == '{{ omni_fqdn }}'"
-        msg: "The hostname you inserted in inventory file is wrong, check it"
-      tags: always
-
-    - name: Compare if IP in inventory file is configured in the server
-      assert:
-        that: "'{{ omni_ip }}' in ansible_all_ipv4_addresses"
-        msg: "The IP you inserted in inventory file is wrong, check it"
-      tags: always
 
 # el gather_facts es para obtener valores de variables predeterminadas de ansible, la mas usada es ansible_os_family.
 # Esta variable te dice que familia de OS es el servidor a deployar (Debian o RedHat)

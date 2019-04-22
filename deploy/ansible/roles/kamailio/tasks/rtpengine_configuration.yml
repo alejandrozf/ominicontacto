@@ -22,7 +22,7 @@
   template: src=templates/systemd/sysconfig_rtpengine.j2 dest=/etc/rtpengine-config.conf
   become: true
   become_method: sudo
-  tags: changeip
+  tags: changenetwork
 
 # Se copia el archivo para el systemd, (revisarlo y revisar systemd para mas informacion)
 - name: Copy of rtpengine service file to systemd
@@ -59,7 +59,7 @@
 
 # Inicio y habilito el servicio
 - name: Start and enable rtpengine service
-  service: name=rtpengine state=restarted enabled=yes
+  systemd: name=rtpengine state=restarted enabled=yes daemon_reload=yes
   become: true
   become_method: sudo
-  tags: changeip
+  tags: changenetwork

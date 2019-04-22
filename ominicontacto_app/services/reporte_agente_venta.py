@@ -31,6 +31,7 @@ import datetime
 import json
 
 from ominicontacto_app.utiles import crear_archivo_en_media_root
+from ominicontacto_app.models import RespuestaFormularioGestion
 
 from django.conf import settings
 from django.utils.translation import ugettext as _
@@ -70,7 +71,7 @@ class ArchivoDeReporteCsv(object):
             self.prefijo_nombre_de_archivo,
             self.sufijo_nombre_de_archivo)
 
-    def escribir_archivo_csv(self, formularios):
+    def escribir_archivo_csv(self, respuestas):
 
         with open(self.ruta, 'wb') as csvfile:
             # Creamos encabezado
@@ -88,17 +89,17 @@ class ArchivoDeReporteCsv(object):
             csvwiter.writerow(lista_encabezados_utf8)
 
             # Iteramos cada una de las calificaciones del agente
-            for metadata in formularios:
+            for respuesta in respuestas:
                 lista_opciones = []
 
                 # --- Buscamos datos
+                contacto = respuesta.calificacion.contacto
+                lista_opciones.append(contacto.telefono)
 
-                lista_opciones.append(metadata.contacto.telefono)
-
-                datos = json.loads(metadata.contacto.datos)
+                datos = json.loads(contacto.datos)
                 for dato in datos:
                     lista_opciones.append(dato)
-                datos = json.loads(metadata.metadata)
+                datos = json.loads(respuesta.metadata)
                 for clave, valor in datos.items():
                     lista_opciones.append(valor)
 
@@ -121,11 +122,11 @@ class ReporteFormularioVentaService(object):
 
         archivo_de_reporte.crear_archivo_en_directorio()
 
-        formularios = self._obtener_listado_formularios_fecha(agente,
-                                                              fecha_desde,
-                                                              fecha_hasta)
+        respuestas = self._obtener_respuestas_formularios_fecha(agente,
+                                                                fecha_desde,
+                                                                fecha_hasta)
 
-        archivo_de_reporte.escribir_archivo_csv(formularios)
+        archivo_de_reporte.escribir_archivo_csv(respuestas)
 
     def obtener_url_reporte_csv_descargar(self, agente):
         # assert campana.estado == Campana.ESTADO_DEPURADA
@@ -138,8 +139,9 @@ class ReporteFormularioVentaService(object):
         logger.error(_("obtener_url_reporte_csv_descargar(): NO existe archivo"
                        " CSV de descarga para el agente {0}".format(agente.pk)))
 
-    def _obtener_listado_formularios_fecha(self, agente, fecha_desde,
-                                           fecha_hasta):
+    def _obtener_respuestas_formularios_fecha(self, agente, fecha_desde,
+                                              fecha_hasta):
         fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
-        return agente.metadataagente.filter(fecha__range=(fecha_desde, fecha_hasta))
+        return RespuestaFormularioGestion.objects.filter(
+            calificacion__agente=agente, fecha__range=(fecha_desde, fecha_hasta))

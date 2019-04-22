@@ -1,0 +1,292 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Campañas preview &mdash; documentación de OMniLeads - develop</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="Campañas con discador predictivo" href="campaigns_dialer.html" />
+    <link rel="prev" title="Campañas manuales" href="campaigns_manual.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> OMniLeads
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html">WebRTC; la tecnología subyacente de OMniLeads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">OML como Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-en-una-compania-de-servicios-de-customer-contact">OML en una Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-para-carriers-o-proveedores-de-cloud-pbx">OML para Carriers ó Proveedores de Cloud PBX</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Procedimientos de instalación</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="initial_settings.html">Configuración Inicial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="telephony.html">Configuración de acceso a la PSTN</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="campaigns.html">Campañas Telefónicas</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#calificaciones">Calificaciones</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#base-de-contactos">Base de contactos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#formularios">Formularios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#campanas-vs-calificaciones-vs-formularios">Campañas VS Calificaciones VS Formularios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#interaccion-con-un-crm-externo">Interacción con un CRM externo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#campanas-manuales">Campañas Manuales</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="campaigns.html#campanas-preview">Campañas Preview</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Campañas preview</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#campanas-con-discador-predictivo">Campañas con discador predictivo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#campanas-entrantes">Campañas Entrantes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="campaigns.html#plantillas-de-campana">Plantillas de Campaña</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="agent.html">Manual de agente</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OMniLeads</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="campaigns.html">Campañas Telefónicas</a> &raquo;</li>
+        
+      <li>Campañas preview</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/campaigns_preview.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="campanas-preview">
+<h1>Campañas preview<a class="headerlink" href="#campanas-preview" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>Para crear una nueva campaña preview se debe ingresar al punto de menú <em>Campaigns -&gt; New  Campaign</em>. El proceso de creación consta de
+un wizard de dos pantallas.</p>
+<p>La primera pantalla nos invita a indicar una serie de parámtros de la campaña, como lo indica la figura 1.</p>
+<img alt="_images/campaigns_prev_wizard_1.png" src="_images/campaigns_prev_wizard_1.png" />
+<p><em>Figure 1: Campaigns parameters</em></p>
+<ul class="simple">
+<li><strong>Name:</strong> nombre de la campaña</li>
+<li><strong>Contact database:</strong> la base de contactos que utilzará el discador preview a la hora de entregar llamadas a los agentes</li>
+<li><strong>Tipo interacción:</strong> aquí se selecciona si la campaña va a operar con un formulario o solamente utilizando un llamo a un CRM externo Web».</li>
+<li><strong>External URL:</strong> URL a disparar cada vez que el agente lo indique.</li>
+<li><strong>Enable recordings:</strong> habilitar que todas las llamadas de la campaña sean grabadas.</li>
+<li><strong>Scope:</strong> se define como la cantidad de gestiones positivas que se esperan para la campaña. En la supervisión de la campaña se muestra en tiempo real el porcentaje de avence de la campaña respecto al objetivo definido.</li>
+<li><strong>Disconection time:</strong> es el tiempo que el discador preview reserva un contacto a un agente, hasta ser liberado de manera tal que pueda ser demandado por otro agente.</li>
+</ul>
+<p>En la segunda pantalla se deben asignar las calificaciones que se requieran como disponibles para los agentes a la hora de clasificar cada llamada de cada contacto.</p>
+<img alt="_images/campaigns_prev_wizard_2.png" src="_images/campaigns_prev_wizard_2.png" />
+<p><em>Figure 2: Call dispositions</em></p>
+<p>Luego resta asignar a los supervisores y agentes que podrán trabajar en la misma.
+En la figura 3 y 4 se ejemplifica una asignación de agentes a una campaña.</p>
+<img alt="_images/campaigns_prev_wizard_3.png" src="_images/campaigns_prev_wizard_3.png" />
+<p><em>Figure 3: supervisor assignment</em></p>
+<img alt="_images/campaigns_prev_wizard_4.png" src="_images/campaigns_prev_wizard_4.png" />
+<p><em>Figure 4: agent assignment</em></p>
+<p>Finalmente nuestra campañas queda disponible para comenzar a operar. Por lo tanto cuando los agentes asignados a la misma realicen un login a la plataforma, deberían
+disponer de la campaña preview tal como se expone en la figura 5.</p>
+<img alt="_images/campaigns_prev_agconsole1.png" src="_images/campaigns_prev_agconsole1.png" />
+<p><em>Figure 5: Preview agents view</em></p>
+<p>Si el agente hace click sobre el teléfono entonces se dispara la llamada, se visualizan los datos (extras al teléfono) del contacto llamado, en la vista de agente
+y permitiendo a su vez al agente clasificar la llamada con alguna de las calificaciones asignadas a la campaña.</p>
+<img alt="_images/campaigns_prev_agconsole2.png" src="_images/campaigns_prev_agconsole2.png" />
+<p><em>Figure 6: Contact called</em></p>
+<p><strong>Campaña con base de datos Multinum</strong></p>
+<p>Como sabemos, OMniLeads admite que cada contacto de una base posea «n» números de teléfono de contacto, de manera tal que si el contacto no es encontrado en su número principal
+(el primero de nuestro archivo CSV de base), pueda ser contactado a los demás números. En este caso, cada número de teléfono (que indicamos en la carga de la base) se genera
+como un link dentro de los datos del contacto presentados sobre la pantalla de agente. Al hacer click sobre dicho link, se dispara una llamada hacia ekl número de teléfono extra
+del contacto. En la figura 7 se muestra dicho escenario.</p>
+<img alt="_images/campaigns_prev_agconsole3.png" src="_images/campaigns_prev_agconsole3.png" />
+<p><em>Figure 7: Multinum contact database</em></p>
+<p>Por lo tanto, el agente puede intentar contactar a todos los números disponibles como «link» en la ficha del contacto, hasta finalmente calificar y pasar a uno nuevo.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="campaigns_dialer.html" class="btn btn-neutral float-right" title="Campañas con discador predictivo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="campaigns_manual.html" class="btn btn-neutral float-left" title="Campañas manuales" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, omnileads
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

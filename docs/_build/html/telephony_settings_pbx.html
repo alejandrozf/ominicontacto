@@ -1,0 +1,306 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Troncal SIP entre OMniLeads y un PBX &mdash; documentación de OMniLeads - develop</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="Troncal SIP con proveedor de acceso PSTN" href="telephony_settings_bpo.html" />
+    <link rel="prev" title="Configuración de acceso a la PSTN" href="telephony.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> OMniLeads
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html">WebRTC; la tecnología subyacente de OMniLeads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">OML como Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-en-una-compania-de-servicios-de-customer-contact">OML en una Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-para-carriers-o-proveedores-de-cloud-pbx">OML para Carriers ó Proveedores de Cloud PBX</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Procedimientos de instalación</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="initial_settings.html">Configuración Inicial</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="telephony.html">Configuración de acceso a la PSTN</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="telephony.html#explicacion-del-abm-de-troncales">Explicación del ABM de troncales</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="telephony.html#troncal-sip-entre-omnileads-y-un-sistema-pbx">Troncal SIP entre OMniLeads y un sistema PBX</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Troncal SIP entre OMniLeads y un PBX</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#parametros-para-el-troncal-sip-en-el-pbx">Parámetros para el troncal SIP en el PBX</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#parametros-para-el-troncal-sip-en-omnileads">Parámetros para el troncal SIP en OMniLeads</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#comprobacion-del-estado-del-troncal">Comprobación del estado del troncal</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="telephony.html#troncal-sip-entre-omnileads-y-un-proveedor-de-acceso-a-la-pstn">Troncal SIP entre OMniLeads y un proveedor de acceso a la PSTN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="telephony.html#configuracion-de-enrutamiento-de-llamadas-salientes">Configuración de enrutamiento de llamadas salientes</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="campaigns.html">Campañas Telefónicas</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="agent.html">Manual de agente</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OMniLeads</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="telephony.html">Configuración de acceso a la PSTN</a> &raquo;</li>
+        
+      <li>Troncal SIP entre OMniLeads y un PBX</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/telephony_settings_pbx.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="troncal-sip-entre-omnileads-y-un-pbx">
+<h1>Troncal SIP entre OMniLeads y un PBX<a class="headerlink" href="#troncal-sip-entre-omnileads-y-un-pbx" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>El esquema que se repasa en esta sección es el que presenta la figura 1.</p>
+<img alt="_images/oml_and_pbx.png" class="align-center" src="_images/oml_and_pbx.png" />
+<p><em>Figure 1: OML and PBX integration</em></p>
+<div class="section" id="parametros-para-el-troncal-sip-en-el-pbx">
+<h2>Parámetros para el troncal SIP en el PBX<a class="headerlink" href="#parametros-para-el-troncal-sip-en-el-pbx" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Se debe considerar el hecho de que nombramos (Trunk Name) al troncal como <em>omnileads</em></p>
+<p>En la sección «PEER Details» del formulario de nuevo troncal SIP dentro del PBX, se consideran los siguientes parámetros:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="o">=</span><span class="n">friend</span>
+<span class="n">host</span><span class="o">=</span><span class="n">XXX</span><span class="o">.</span><span class="n">XXX</span><span class="o">.</span><span class="n">XXX</span><span class="o">.</span><span class="n">OML</span>
+<span class="n">port</span><span class="o">=</span><span class="mi">5160</span>
+<span class="n">defaultuser</span><span class="o">=</span><span class="n">asteriskpbx</span>
+<span class="n">qualify</span><span class="o">=</span><span class="n">yes</span>
+<span class="n">disallow</span><span class="o">=</span><span class="nb">all</span>
+<span class="n">allow</span><span class="o">=</span><span class="n">alaw</span>
+<span class="n">context</span><span class="o">=</span><span class="n">from</span><span class="o">-</span><span class="n">internal</span>
+<span class="n">insecure</span><span class="o">=</span><span class="n">invite</span>
+<span class="n">deny</span><span class="o">=</span><span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span><span class="o">/</span><span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span>
+<span class="n">permit</span><span class="o">=</span><span class="n">XXX</span><span class="o">.</span><span class="n">XXX</span><span class="o">.</span><span class="n">XXX</span><span class="o">.</span><span class="n">OML</span><span class="o">/</span><span class="mf">255.255</span><span class="o">.</span><span class="mf">255.255</span>
+</pre></div>
+</div>
+<p>NOTA: tener en cuenta que el puerto SIP en OMniLeads es <em>5160</em>.</p>
+<p>En la figura 2, se expone dicha configuración.</p>
+<img alt="_images/telephony_oml_pbx_siptrunk.png" src="_images/telephony_oml_pbx_siptrunk.png" />
+<p><em>Figure 2: PBX side - SIP trunk</em></p>
+</div>
+<div class="section" id="parametros-para-el-troncal-sip-en-omnileads">
+<h2>Parámetros para el troncal SIP en OMniLeads<a class="headerlink" href="#parametros-para-el-troncal-sip-en-omnileads" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Se debe considerar el hecho de que nombramos (Trunk Name) al troncal como <em>asteriskpbx</em></p>
+<p>En la sección «Trunk Details» del formulario de nuevo troncal SIP dentro de OMniLeads, se consideran los siguientes parámetros:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="o">=</span><span class="n">friend</span>
+<span class="n">host</span><span class="o">=</span><span class="n">XXX</span><span class="o">.</span><span class="n">XXX</span><span class="o">.</span><span class="n">XXX</span><span class="o">.</span><span class="n">PBX</span>
+<span class="n">port</span><span class="o">=</span><span class="mi">5060</span>
+<span class="n">defaultuser</span><span class="o">=</span><span class="n">omnileads</span>
+<span class="n">qualify</span><span class="o">=</span><span class="n">yes</span>
+<span class="n">disallow</span><span class="o">=</span><span class="nb">all</span>
+<span class="n">allow</span><span class="o">=</span><span class="n">alaw</span>
+<span class="n">context</span><span class="o">=</span><span class="n">from</span><span class="o">-</span><span class="n">pstn</span>
+<span class="n">insecure</span><span class="o">=</span><span class="n">invite</span>
+<span class="n">deny</span><span class="o">=</span><span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span><span class="o">/</span><span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span>
+<span class="n">permit</span><span class="o">=</span><span class="n">XXX</span><span class="o">.</span><span class="n">XXX</span><span class="o">.</span><span class="n">XXX</span><span class="o">.</span><span class="n">PBX</span><span class="o">/</span><span class="mf">255.255</span><span class="o">.</span><span class="mf">255.255</span>
+</pre></div>
+</div>
+<p>En la figura 3, se expone dicha configuración.</p>
+<img alt="_images/telephony_oml_pbx_siptrunk-omlside.png" class="align-center" src="_images/telephony_oml_pbx_siptrunk-omlside.png" />
+<p><em>Figure 3: OMniLeads side - SIP trunk</em></p>
+</div>
+<div class="section" id="comprobacion-del-estado-del-troncal">
+<h2>Comprobación del estado del troncal<a class="headerlink" href="#comprobacion-del-estado-del-troncal" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>En este punto simplemente se accede a cada nodo (OMniLeads y PBX) por medio de una sesión SSH y desde cada conexión se debe ejecutar el comando de Asterisk</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">asterisk</span> <span class="o">-</span><span class="n">rx</span> <span class="s1">&#39;sip show peers&#39;</span>
+</pre></div>
+</div>
+<p>Esto listará todos los <em>peers SIP</em> y su estado, como lo expone la figura 4.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="telephony_settings_bpo.html" class="btn btn-neutral float-right" title="Troncal SIP con proveedor de acceso PSTN" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="telephony.html" class="btn btn-neutral float-left" title="Configuración de acceso a la PSTN" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, omnileads
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

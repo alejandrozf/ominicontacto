@@ -16,6 +16,7 @@ TMP_ANSIBLE='/var/tmp/ansible'
 export ANSIBLE_CONFIG=$TMP_ANSIBLE
 IS_ANSIBLE="`find ~/.local -name ansible 2>/dev/null |grep \"/bin/ansible\" |head -1`"
 DESARROLLO=0
+SUDO_USER="`who | awk '{print $1}'`"
 arg1=$1
 arg2=$2
 desarrollo=$3
@@ -53,18 +54,20 @@ UserValidation(){
 }
 
 Rama() {
-    if [ "$arg1" == "--install" ] || [ "$arg1" == "-i" ]; then
+    if [ "$arg1" == "--asterisk" ] || [ "$arg1" == "-a" ]; then
+      tag="asterisk"
+    elif [ "$arg1" == "--install" ] || [ "$arg1" == "-i" ]; then
       tag="all"
     elif [ "$arg1" == "--upgrade" ] || [ "$arg1" == "-u" ]; then
       tag="postinstall"
     elif [ "$arg1" == "--kamailio" ] || [ "$arg1" == "-k" ]; then
       tag="kamailio"
-    elif [ "$arg1" == "--asterisk" ] || [ "$arg1" == "-a" ]; then
-      tag="asterisk"
     elif [ "$arg1" == "--omniapp" ] || [ "$arg1" == "-o" ]; then
       tag="omniapp"
-    elif [ "$arg1" == "--changeip" ] || [ "$arg1" == "-c" ]; then
-      tag="changeip"
+    elif [ "$arg1" == "--change-network" ] || [ "$arg1" == "-cnet" ]; then
+      tag="changenetwork"
+    elif [ "$arg1" == "--change-passwords" ] || [ "$arg1" == "-cp" ]; then
+      tag="changepassword"
     elif [ "$arg1" == "--dialer" ] || [ "$arg1" == "-di" ]; then
       tag="dialer"
     elif [ "$arg1" == "--database" ] || [ "$arg1" == "-da" ]; then
@@ -168,6 +171,7 @@ EOF
 }
 
 Desarrollo() {
+    current_user="`who | awk -F " " '{print $1}'`"
     echo ""
     echo "#############################################################################"
     echo "##   You chose -d option, that means you are installing a develop server   ##"
@@ -223,6 +227,7 @@ Tag() {
       echo " Remember that you have a copy of your inventory file in $inventory_copy_location/my_inventory with the variables you used for your OML installation"
       echo ""
       git checkout $current_directory/inventory
+      chown $SUDO_USER. $current_directory/inventory
     else
       echo ""
       echo "###################################################################################"
@@ -237,7 +242,7 @@ rm -rf $TMP
 }
 
 case $arg1 in
-  --upgrade|-u|--install|-i|--kamailio|-k|--asterisk|-a|--omniapp|-o|--omnivoip|--dialer|-di|--database|-da|--changeip|-c)
+  --upgrade|-u|--install|-i|--kamailio|-k|--asterisk|-a|--omniapp|-o|--omnivoip|--dialer|-di|--database|-da|--change-network|-cnet|--change-passwords|-cp)
     case $arg2 in
       --aio|-a)
           ./keytransfer.sh --aio
@@ -282,7 +287,8 @@ case $arg1 in
             -k --kamailio: execute kamailio related tasks
             -a --asterisk: execute asterisk related tasks
             -o --omniapp: execute omniapp related tasks
-            -c --changeip: execute tasks needed when you change the IP of OML system
+            -cnet --change-network: execute tasks needed when you change the network settings of OML system
+            -cp --change-passwords: execute tasks needed when you change any of the passwords of your OML system
             -da --database: execute tasks related to database
             -di --dialer: execute tasks related to dialer (Wombat Dialer)
           (Second option)

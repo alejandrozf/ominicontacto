@@ -34,23 +34,40 @@ from django.views.generic import (View, ListView, CreateView, UpdateView, FormVi
 from django.utils.translation import ugettext as _
 
 from ominicontacto_app.forms import (BusquedaContactoForm, FormularioCampanaContacto,
-                                     ContactoForm, FormularioNuevoContacto, EscogerCampanaForm)
+                                     FormularioNuevoContacto, EscogerCampanaForm)
 from ominicontacto_app.models import Campana, Contacto, BaseDatosContacto
-from ominicontacto_app.utiles import convertir_ascii_string
 from ominicontacto_app.services.click2call import Click2CallOriginator
 
 
 class ContactoUpdateView(UpdateView):
-    """Vista para modificar un contacto"""
+    """Vista de agente para modificar un contacto"""
     model = Contacto
     template_name = 'agente/contacto_create_update_form.html'
-    form_class = ContactoForm
+    form_class = FormularioNuevoContacto
 
     def get_object(self, queryset=None):
         return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
 
+    # TODO: Cuando cada base de datos solo pueda tener una campaña, se podrán mostrar
+    #       los telefonos como click2call
+    # def get_context_data(self, **kwargs):
+    #     context = super(ContactoUpdateView, self).get_context_data(**kwargs)
+    #     bd_metadata = self.object.bd_contacto.get_metadata()
+    #     context['campos_telefono'] = bd_metadata.nombres_de_columnas_de_telefonos + ['telefono']
+    #     return context
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.datos = form.get_datos_json()
+        self.object.save()
+        # TODO: OML-1016
+        # TODO: Ver si no hay que modificar AgenteEnContacto o algo en Wombat
+        message = _('Se han guardado los cambios en el contacto.')
+        messages.success(self.request, message)
+        return super(ContactoUpdateView, self).form_valid(form)
+
     def get_success_url(self):
-        return reverse('view_blanco')
+        return reverse('contacto_list')
 
 
 class ContactoListView(FormView):
@@ -171,25 +188,23 @@ class ContactoBDContactoCreateView(CreateView):
         self.form_class = self.get_form_class()
         base_datos = BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
         metadata = base_datos.get_metadata()
-        campos = metadata.nombres_de_columnas
-        return self.form_class(campos=campos, **self.get_form_kwargs())
+        return self.form_class(bd_metadata=metadata, **self.get_form_kwargs())
 
     def form_valid(self, form):
+        # TODO: Decidir si esto lo tiene que hacer el form o la vista
         self.object = form.save(commit=False)
         base_datos = BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
         base_datos.cantidad_contactos += 1
         base_datos.save()
         self.object.bd_contacto = base_datos
 
-        metadata = base_datos.get_metadata()
-        nombres = metadata.nombres_de_columnas
-        datos = []
-        nombres.remove('telefono')
-        for nombre in nombres:
-            campo = form.cleaned_data.get(convertir_ascii_string(nombre))
-            datos.append(campo)
-        self.object.datos = json.dumps(datos)
+        self.object.datos = form.get_datos_json()
         self.object.save()
+
+        # TODO: OML-1016
+        # TODO: En caso de que la base corresponda a una campaña Dialer, agregar en Wombat
+        # TODO: En caso de que la base corresponda a una campaña Preview, agregar AgenteEnContacto
+
         return super(ContactoBDContactoCreateView, self).form_valid(form)
 
     def get_success_url(self):
@@ -219,41 +234,15 @@ class ContactoBDContactoUpdateView(UpdateView):
     template_name = 'base_create_update_form.html'
     form_class = FormularioNuevoContacto
 
-    def get_initial(self):
-        initial = super(ContactoBDContactoUpdateView, self).get_initial()
-        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
-        base_datos = contacto.bd_contacto
-        nombres = base_datos.get_metadata().nombres_de_columnas[1:]
-        datos = json.loads(contacto.datos)
-        for nombre, dato in zip(nombres, datos):
-            initial.update({convertir_ascii_string(nombre): dato})
-        return initial
-
-    def get_form(self):
-        self.form_class = self.get_form_class()
-        contacto = Contacto.objects.get(pk=self.kwargs['pk_contacto'])
-        base_datos = contacto.bd_contacto
-        metadata = base_datos.get_metadata()
-        campos = metadata.nombres_de_columnas
-
-        return self.form_class(campos=campos, **self.get_form_kwargs())
-
     def get_object(self, queryset=None):
         return Contacto.objects.get(pk=self.kwargs['pk_contacto'])
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        contacto = self.get_object()
-        base_datos = contacto.bd_contacto
-        metadata = base_datos.get_metadata()
-        nombres = metadata.nombres_de_columnas
-        datos = []
-        nombres.remove('telefono')
-        for nombre in nombres:
-            campo = form.cleaned_data.get(convertir_ascii_string(nombre))
-            datos.append(campo)
-        self.object.datos = json.dumps(datos)
+        self.object.datos = form.get_datos_json()
         self.object.save()
+        # TODO: OML-1016
+        # TODO: Ver si no hay que modificar AgenteEnContacto o algo en Wombat
         return super(ContactoBDContactoUpdateView, self).form_valid(form)
 
     def get_success_url(self):
@@ -261,6 +250,7 @@ class ContactoBDContactoUpdateView(UpdateView):
                        kwargs={'bd_contacto': self.object.bd_contacto.pk})
 
 
+# TODO: Validar bien que se pueda borrar el contacto. Ver relaciones.
 class ContactoBDContactoDeleteView(DeleteView):
     """
     Esta vista se encarga de la eliminación de un contacto
@@ -383,28 +373,20 @@ class FormularioNuevoContactoFormView(FormView):
     def get_form_kwargs(self):
         kwargs = super(FormularioNuevoContactoFormView, self).get_form_kwargs()
         kwargs['initial']['telefono'] = self.kwargs.get('telefono', '')
-        base_datos = self.campana.bd_contacto
-        metadata = base_datos.get_metadata()
-        kwargs['campos'] = metadata.nombres_de_columnas
+        kwargs['bd_metadata'] = self.campana.bd_contacto.get_metadata()
         return kwargs
 
     def form_valid(self, form):
         base_datos = self.campana.bd_contacto
-        metadata = base_datos.get_metadata()
-        nombres = metadata.nombres_de_columnas
         telefono = str(form.cleaned_data.get('telefono'))
 
-        datos = []
-        nombres.remove('telefono')
-
-        for nombre in nombres:
-            campo = form.cleaned_data.get(convertir_ascii_string(nombre))
-            datos.append(campo)
+        datos_json = form.get_datos_json()
         contacto = Contacto.objects.create(
-            telefono=telefono, datos=json.dumps(datos),
+            telefono=telefono, datos=datos_json,
             bd_contacto=base_datos,
             es_originario=False)
 
+        # TODO: OML-1016 Tener en cuenta esto al hacer esta card.
         if self.campana.type == Campana.TYPE_PREVIEW:
             self.campana.adicionar_agente_en_contacto(contacto)
 
@@ -427,7 +409,7 @@ class FormularioNuevoContactoFormView(FormView):
             return super(FormularioNuevoContactoFormView, self).form_valid(form)
 
     def get_success_url(self):
-        reverse('view_blanco')
+        return reverse('view_blanco')
 
 
 class IdentificarContactoView(FormView):
@@ -462,7 +444,8 @@ class IdentificarContactoView(FormView):
     def get_context_data(self, **kwargs):
         context = super(IdentificarContactoView, self).get_context_data(**kwargs)
         context['campana'] = self.campana
-        context['campos_bd'] = self.campana.bd_contacto.get_metadata().nombres_de_columnas[1:4]
+        bd_metadata = self.campana.bd_contacto.get_metadata()
+        context['campos_bd'] = bd_metadata.nombres_de_columnas_de_datos[:3]
         context['telefono'] = self.telefono
         context['call_data_json'] = self.call_data_json
         if 'contactos_encontrados' in kwargs:

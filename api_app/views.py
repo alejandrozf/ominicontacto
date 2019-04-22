@@ -5,9 +5,9 @@ from __future__ import unicode_literals
 from rest_framework import viewsets
 from rest_framework.permissions import BasePermission, IsAuthenticated
 
-from api_app.serializers import CampanaSerializer
+from api_app.serializers import CampanaSerializer, AgenteProfileSerializer
 
-from ominicontacto_app.models import Campana
+from ominicontacto_app.models import Campana, AgenteProfile
 
 
 class EsSupervisorPermiso(BasePermission):
@@ -17,6 +17,14 @@ class EsSupervisorPermiso(BasePermission):
         super(EsSupervisorPermiso, self).has_permission(request, view)
         superv_profile = request.user.get_supervisor_profile()
         return superv_profile is not None
+
+
+class EsAdminPermiso(BasePermission):
+    """Permiso para aplicar a vistas solo para administradores"""
+
+    def has_permission(self, request, view):
+        super(EsAdminPermiso, self).has_permission(request, view)
+        return request.user.get_is_administrador()
 
 
 class SupervisorCampanasActivasViewSet(viewsets.ModelViewSet):
@@ -32,3 +40,16 @@ class SupervisorCampanasActivasViewSet(viewsets.ModelViewSet):
         if superv_profile.is_administrador:
             return super(SupervisorCampanasActivasViewSet, self).get_queryset()
         return superv_profile.obtener_campanas_activas_asignadas()
+
+
+class AgentesActivosGrupoViewSet(viewsets.ModelViewSet):
+    """Servicio que devuelve las agentes activos de un grupo
+    """
+    serializer_class = AgenteProfileSerializer
+    permission_classes = (IsAuthenticated, EsAdminPermiso,)
+
+    def get_queryset(self):
+        queryset = AgenteProfile.objects.obtener_activos()
+        grupo_pk = self.kwargs.get('pk_grupo')
+        queryset = queryset.filter(grupo__pk=grupo_pk)
+        return queryset

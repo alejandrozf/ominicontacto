@@ -42,6 +42,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <span class="icon icon-eye-slash" aria-hidden="true" title="ocultar"></span>{% trans 'Ocultar' %}
                     </a>
                     {% endif %}
+                    
+                    <a class="btn btn-light" href="{% url 'sitio_externo_delete' sitio.pk %}"><span class="icon" aria-hidden="true" title="visible"></span>{%trans 'Eliminar'%}
 
                 </td>
             </tr>

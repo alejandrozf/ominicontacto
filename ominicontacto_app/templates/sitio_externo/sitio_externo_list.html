@@ -78,6 +78,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     </a>
                     {% endif %}
 
+                    <a class="btn btn-light" href="{% url 'sitio_externo_delete' sitio.pk %}"><span class="icon" aria-hidden="true" title="visible"></span>{%trans 'Eliminar'%}
+
                 </td>
             </tr>
         {% empty %}

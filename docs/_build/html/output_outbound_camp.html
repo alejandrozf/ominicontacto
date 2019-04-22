@@ -1,0 +1,327 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Reporte general de una campaña saliente &mdash; documentación de OMniLeads - develop</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="Reporte general de llamadas" href="output_reports_general.html" />
+    <link rel="prev" title="Reporte general de una campaña entrante" href="output_inbound_camp.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> OMniLeads
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html">WebRTC; la tecnología subyacente de OMniLeads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">OML como Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-en-una-compania-de-servicios-de-customer-contact">OML en una Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-para-carriers-o-proveedores-de-cloud-pbx">OML para Carriers ó Proveedores de Cloud PBX</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Procedimientos de instalación</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="initial_settings.html">Configuración Inicial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="telephony.html">Configuración de acceso a la PSTN</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="campaigns.html">Campañas Telefónicas</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="output.html#grabaciones">Grabaciones</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output.html#output-de-las-campanas-entrantes">Output de las campañas entrantes</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="output.html#output-de-las-campanas-salientes">Output de las campañas salientes</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Reporte general de una campaña saliente</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reporte-de-calificaciones">Reporte de calificaciones</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#resultados-de-la-base-de-contactos">Resultados de la base de contactos</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="output.html#reportes-general-de-llamadas">Reportes general de llamadas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output.html#reportes-de-agentes">Reportes de agentes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="output.html#supervision-relatime">Supervisión relatime</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="agent.html">Manual de agente</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OMniLeads</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="output.html">Metricas, grabaciones y supervisión</a> &raquo;</li>
+        
+      <li>Reporte general de una campaña saliente</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/output_outbound_camp.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p>En esta sección se cubren todos los reportes disponibles para una campaña de llamadas salientes.</p>
+<img alt="_images/output-outcamp.png" src="_images/output-outcamp.png" />
+<p><em>Figure 1: Campaign Reports view</em></p>
+<div class="section" id="reporte-general-de-una-campana-saliente">
+<h1>Reporte general de una campaña saliente<a class="headerlink" href="#reporte-general-de-una-campana-saliente" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>Este reporte nos brinda un resumen de varios aspectos de la campaña. Cuestiones como cantidad de llamadas pendientes
+para finalizar la campaña, cantidad y detalle de todas las llamada, de los registros contactados y calificados, no contactados y
+de las calificaciones generadas por agente.</p>
+<p>Para acceder a este reporte, se debe ingresar a la opción «Reportes» dentro de la campaña.</p>
+<p>La primera información que nos arroja la vista son los «Contactos pendientes de gestionar» VS «total de llamadas realizadas» en
+la campaña. Éstas llamadas contemplan el hecho de que se pueder realizar más de una llamada a cada contacto de la base. Por lo tanto
+es de esperar que el número de llamadas realizadas sea superior a la cantidad de contactos que existen en la base de la campaña.</p>
+<img alt="_images/output_outbound_camp_reports_1.png" src="_images/output_outbound_camp_reports_1.png" />
+<p><em>Figure 2: Contacts pending / Performed calls</em></p>
+<p>Siguiendo el recorrido por la presente pantalla, nos vamos a encontrar con el primer botón de exportación de información
+a CSV. En este caso el botón nos permite exportar a «CSV / Planilla de cálculos» todos los teléfonos contactados (que atendieron)
+dentro de la campaña junto a su calificación.</p>
+<img alt="_images/output_outbound_camp_reports_2.png" src="_images/output_outbound_camp_reports_2.png" />
+<p><em>Figure 3: Contacted calls</em></p>
+<p>La información generada se presenta como lo indica la figura 4.</p>
+<img alt="_images/output_outcamp_csv_contacted.png" src="_images/output_outcamp_csv_contacted.png" />
+<p><em>Figure 4: Contacted calls CSV</em></p>
+<p>Como se puede apreciar, el archivo presenta como primer columna el teléfono contactado. Si bien el contacto puede tener
+asociado más de un teléfono en este reporte la columna «Phone number» hace referencia al teléfono contactado por la campaña
+y al cual se asocia la calificación de agente (columna calificación).</p>
+<p>El próximo informe que se presenta, tiene que ver con la contabilización de las diferentes calificaciones que realizaron
+los agentes sobre las llamadas generadas en la campaña (figura 5).</p>
+<p>En este caso y en general toda información tabulada tiene su exportación a CSV para poder disponer de los datos sobre
+una planilla de cálculos.</p>
+<img alt="_images/output_outcamp_1.png" src="_images/output_outcamp_1.png" />
+<p><em>Figure 5: Call dispositions list</em></p>
+<p>Continuando con la sucesión de informes presentados en la pantalla de reportes de la campaña, nos vamos a topar con un
+listado que contibiliza todas las llamadas que no fueron contactadas en la campaña, es decir intentos fallidos clasificados
+de acuerdo a lo que el sistema detecta como respuesta del proveedor de telefonía sobre el que se coloca la llamada.</p>
+<img alt="_images/output_outcamp_2.png" src="_images/output_outcamp_2.png" />
+<p><em>Figure 6: Call failed details</em></p>
+<p>A continuación se presenta un informe sobre la performance de cada agente que trabajó en la campaña. Se expone mediante
+la contabilización de cada calificación generada por cada agente. Además se cuenta con un link que permite saltar a
+una pantalla con un informe más detallado sobre el agente en cuestión y su performance en la campaña en cuestión.</p>
+<img alt="_images/output_outcamp_3.png" src="_images/output_outcamp_3.png" />
+<p><em>Figure 7: Agent performance</em></p>
+<p>Entonces si se hace click sobre uno de los agentes, se despliega una nueva pantalla con mayor detalle, en la que se
+contempla por ejemplo la información de:</p>
+<ul class="simple">
+<li>Tiempo acumulado en la campaña</li>
+<li>Tiempo en pausa dentro de la campaña</li>
+<li>Tiempo efectivo en llamadas dentro de la campaña</li>
+<li>Cantidad de llamadas procesadas</li>
+<li>Tiempo promedio de llamada</li>
+<li>Cantidad de intentos de llamadas fallidas</li>
+<li>Procentajes de efectividad</li>
+</ul>
+<img alt="_images/output_outcamp_5.png" src="_images/output_outcamp_5.png" />
+<p><em>Figure 8: Agent performance detail</em></p>
+<p>Regresando al reporte de la campaña, como último ítem se presenta un listado de todas las llamadas generadas por la campaña
+y su resultado. Se expone de manera separada todas las llamadas manuales que se hayan hecho en la campaña.
+Recordemos que en cualquier tipo de campaña, se pueden generar paralelamente llamadas manuales.</p>
+<img alt="_images/output_outcamp_4.png" src="_images/output_outcamp_4.png" />
+<p><em>Figure 9: Total calls</em></p>
+</div>
+<div class="section" id="reporte-de-calificaciones">
+<h1>Reporte de calificaciones<a class="headerlink" href="#reporte-de-calificaciones" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>Este reporte presenta cada contacto gestionado en la campaña junto a la calificación que ha recibido por parte del agente
+que procesó la llamada asociada al contacto. Además se puede generar un archivo CSV con las calificaciones ordinarias
+por un lado y otro con los contactos cuya calificación recibida fue del tipo «gestión».</p>
+<img alt="_images/output_outcamp_calldispositions.png" src="_images/output_outcamp_calldispositions.png" />
+<p><em>Figure 10: Call dispositions detail</em></p>
+<p>Es importante aclarar que en este listado también se contemplan aquellos contactos introducidos dinámicamente en la campaña
+por los agentes. Por ejemplo contactos referidos de otro contacto.</p>
+</div>
+<div class="section" id="resultados-de-la-base-de-contactos">
+<h1>Resultados de la base de contactos<a class="headerlink" href="#resultados-de-la-base-de-contactos" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>Aquí se presenta un listado plano de la base de contactos asociada a la campaña y el resultado en la medida que avanza
+la campaña. La diferencia con el reporte anterior es que aquí NO se listan los contactos que fueron introducidos en
+el transcurso de la campaña, sino que se busca hacer un mapeo entre la campaña asignada a la campaña y el resultado
+al ser procesada por la campaña.</p>
+<img alt="_images/output_outcamp_dbresult.png" src="_images/output_outcamp_dbresult.png" />
+<p><em>Figure 11: DB result</em></p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="output_reports_general.html" class="btn btn-neutral float-right" title="Reporte general de llamadas" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="output_inbound_camp.html" class="btn btn-neutral float-left" title="Reporte general de una campaña entrante" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, omnileads
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

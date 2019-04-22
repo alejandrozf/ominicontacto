@@ -30,6 +30,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% if interaccion_crm %}
             <li class="disabled"><a>{% trans 'Interacción con Sitio Externo' %}</a></li>
         {% endif %}
+        {% if not es_template and create %}
+            <li class="disabled"><a>{% trans 'Dar permiso a supervisores' %}</a></li>
+            <li class="disabled"><a>{% trans 'Adicionar agentes' %}</a></li>
+        {% endif %}
     </ul>
 {% endblock %}
 
@@ -55,14 +59,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </div>
 
             {{ form.tipo_interaccion.errors }}
-            {% if form.instance.pk %} 
-                {% if form.instance.tipo_interaccion == 1 %}
-                    <div class="col-md-6">
-                        <label>{% trans "Formulario" %}</label>
-                        {{ form.formulario }}
-                        {{ form.formulario.errors }}
-                    </div>
-                {% endif %}
+            {% if form.instance.pk %}
                 {% if form.instance.tipo_interaccion == 2 %}
                     <div class="col-md-6">
                         <label>{% trans "Sitio Externo" %}</label>
@@ -72,14 +69,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {% endif %}
             {% else %}
                 <div class="col-md-6">
-                    <label><div class="myradio">{{ form.tipo_interaccion.0 }}</div></label>
-                    {{ form.formulario }}
-                    {{ form.formulario.errors }}
+                  <label> {% trans "Tipo de Interacción" %}</label>
+                    <div class="myradio">{{ form.tipo_interaccion.0 }}</div>
+                    <div class="myradio">{{ form.tipo_interaccion.1 }}</div>
                 </div>
                 <div class="col-md-6">
-                    <label><div class="myradio">{{ form.tipo_interaccion.1 }}</div> </label>
-                    {{ form.sitio_externo }}
+                    <label><div class="myradio">{% trans "Url Externa" %}</div> </label>
                     {{ form.sitio_externo.errors }}
+                    {{ form.sitio_externo }}
                 </div>
             {% endif %}
 

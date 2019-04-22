@@ -13,11 +13,13 @@ server {
     ssl_certificate         {{ install_prefix }}nginx_certs/cert.pem;
     ssl_certificate_key     {{ install_prefix }}nginx_certs/key.pem;
 
+{% if desarrollo == 0 %}
     location /static/ {
          alias {{ install_prefix }}static/;
          autoindex on;
          allow all;
     }
+{% endif %}
 
     location ~* (ws|wssup) {
         alias {{ install_prefix }}static/ominicontacto/JS/socket.io.js;

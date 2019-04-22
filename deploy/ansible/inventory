@@ -13,7 +13,6 @@ dialer ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #cluster serve
 hostname ansible_connection=local ansible_user=root ansible_host=X.X.X.X  #(this line is for self-hosted installation)
 #hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #(this line is for node-host installation)
 
-
 [omnileads-cluster:children]
 omniapp
 database
@@ -26,26 +25,36 @@ omnileads-aio
 omnileads-cluster
 
 [everyone:vars]
-install_prefix=/opt/omnileads/
 
-# Change this variables values as you want
+###############
+# Credentials #
+###############
+
+# Database
+postgres_database=omnileads
+postgres_user=omnileads
 postgres_password=admin123
+# Admin web
 admin_pass=098098ZZZ
+# AMI for wombat dialer
+ami_user=omnileadsami
+ami_password=5_MeO_DMT
+# Wombat dialer web
+dialer_user=demoadmin
+dialer_password=demo
+# MySQL (ONLY CHANGE THIS PASSWORD IN FIRST INSTALLATION) 
+mysql_root_password=098098ZZZ
+# AMI for supervision
+sup_ami_user=omnisup
+sup_ami_password=Sup3rst1c10n
+#Set the timezone where the nodes are UNCOMMENT and set this if you are doing a fresh install
+TZ=America/Argentina/Cordoba
+
+# Change this value if the recordings are not converted to mp3
 formato_conversion=mp3
 
 #Change this value if you want to change the language of schedule calification
 schedule=Agenda
-
-# Do not change this variables unless you know what you are doing
-ami_user=omnileadsami
-ami_password=5_MeO_DMT
-postgres_database=omnileads
-postgres_user=omnileads
-dialer_user=demoadmin
-dialer_password=demo
-mysql_root_password=098098ZZZ
-sup_ami_user=omnisup
-sup_ami_password=Sup3rst1c10n
 
 [omnileads-aio:vars]
 ################ Puerto SSH ##################
