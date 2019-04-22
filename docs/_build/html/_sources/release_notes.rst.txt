@@ -1,7 +1,7 @@
 Release Notes
 *************
 
-*March 14, 2019*
+*April 18, 2019*
 
 What's new
 =========================
@@ -9,35 +9,33 @@ What's new
 
 Installation tasks
 -------------------------------
-- Fix on link to download CENTOS
-- Asterisk optional component (Dahdi) was removed
-- Fixes for developers environment
-- OML can be installed now in Ubuntu (Server & Desktop) since 18.04 version
-- Check about sudo permission to run installation script was added
-- Kamailio component was updated to 5.1 version
+- Omnileads has been Dockerized!, see the README.md in deploy/docker/devenv
+- Added timezone setup in installation, the timezone is now set as a variable for ansible
+- Added the options --change-network and --change-passwords in deploy.sh to change network parameters or passswords of services
+- Default valid time of SIP ephemeral credentials now can be configured in EPHEMERAL_USER_TTL django setting
+- Fix dependency of OS system language when running ansible tasks
+- Fix changing obsolete Postgresql repository for CENTOS installation
 
 
 OML admin
 ------------------------
-- A new filter for call recordings was added, it select only recordings from calls mark as 'engaged' in its qualifications.
-- Outbound routes can be ordered now from UI and this impact directly on AstDB
-- Calls are now linked to its call dispositions (if exists)
-- Actions for deleted campaigns were removed
-- External CRM support was added
-- Call disposition marked as 'scheduled' are count like pending calls for campaign global reports
-- Validation for avoid delete an inbound campaign that is used as a failover destination was added
+- Added the posibility to use differents campaign forms for engaged qualifications options when rate a contact
+- Campaign creations wizards now has ability to add supervisors and agents on new steps
+- Fix on error raised on original database results report after recall an re-qualify agended contact
+- The system now does not allowed to delete recording objects using on campaigns
+- Fix inconsistency when removing periodic announcement on inbound queue related to its queue.conf generated file
+- Added validations to not allow create campaign forms with empty fields
+- Fix error when update supervisor profile
+- Fix events log insertion error when recording file name exceeds 50 characters
+- Removed initial extra page before login, now login its the first page
+- Blacklist view now shows only one object, the current blacklist set for OML
+- Added posibility to remove non used external sites objects
+
 
 
 OML agent
 ------------------------
-- Better visualization of agent statuses
-- Manual calls now are internally handled as click2calls
-- Campaign contacts list hides contacts in call dispositions
-- Call disposition forms now are initialized for create new contact when the inbound phone number is private
-- Call disposition form for inbound calls shows historical contact call dispositions
-- Personal scheduled for agents are now deleted when its related call dispositions change its values to another call dispositions type different than 'Schedule'
-
-
-Asterisk
-------------------------
-- Fixed bug that logged ABANDON instead of EXPIRE when a queue is failover destination of another and the call expires in both queues
+- Added ability to make multi-phone-numbers calls
+- Added fix in agent cronometers calculation when group unpause has value = 0
+- Added fix on 404 response when manual calling out of base contact
+- The system now shows calling agent name when receiving a transfer call on pop-up

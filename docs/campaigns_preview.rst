@@ -1,5 +1,5 @@
 *****************
-Preview Campaigns
+Campañas preview
 *****************
 
 Para crear una nueva campaña preview se debe ingresar al punto de menú *Campaigns -> New  Campaign*. El proceso de creación consta de
