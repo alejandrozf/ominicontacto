@@ -88,7 +88,8 @@
 # Se sube el script de backup-restore
 - name: Generate backup-restore.sh script
   template: src=templates/bin/backup-restore.sh.j2 dest={{ install_prefix }}bin/backup-restore.sh owner={{ usuario }} group={{ usuario }} mode=755
-
+  tags: postinstall
+  
 # Se inicia y habilita el servicio
 - name: Reload the omnileads-daemon service
   systemd: name=omnileads state=reloaded enabled=yes daemon_reload=yes

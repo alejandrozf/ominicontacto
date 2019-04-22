@@ -12,17 +12,25 @@ Backup() {
     echo "Making backup of asterisk files"
     mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/etc
     mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/agi-bin
-  #  mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/sounds
-    cp -a --preserve=links {{ asterisk_location }}/etc/asterisk/* /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/etc
+    mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/sounds
+    cp -a --preserve=links {{ asterisk_location }}/etc/asterisk/oml_extensions* /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/etc
     cp {{ asterisk_location }}/var/lib/asterisk/agi-bin/*.py /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/agi-bin
-    #cp -a {{ asterisk_location }}/var/lib/asterisk/sounds/* /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/sounds
+    cp -a {{ asterisk_location }}/var/lib/asterisk/sounds/oml/ /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/sounds
     cp /usr/local/parselog/conversor.sh /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk
     tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/* > /dev/null 2>&1
     rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/
     sleep 3
 
+    #Omniapp files
+    echo "Making backup of csv's and system audios"
+    mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup/omniapp
+    cp -a {{ install_prefix }}media_root/ /tmp/omnileads-backup/$FECHA-omnileads-backup/omniapp/
+    tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/omniapp.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/omniapp/* > /dev/null 2>&1
+    rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/omniapp/
+    sleep 3
+
     #Kamailio Files
-    echo "Making backup of kamailio files and certificates"
+    echo "Making backup of kamailio configuration file"
     mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio
     cp -a --preserve=links {{ kamailio_location }}/etc/ /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio
     tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio/* > /dev/null 2>&1
@@ -49,35 +57,40 @@ Backup() {
 
 Restore() {
     set -e
-    ARRAY=(asterisk.tgz kamailio.tgz postgres_database.tgz)
+    ARRAY=(asterisk.tgz kamailio.tgz postgres_database.tgz omniapp.tgz)
     tar_backup=$1
     tar_directory=`echo $1 | awk -F "." '{print $1}'`
     cd {{ install_prefix }}backup
     tar xzvf $tar_backup > /dev/null 2>&1
     cd $tar_directory
-    for counter in {0..2}; do
+    for counter in {0..3}; do
         tar xzvf ${ARRAY[counter]} > /dev/null 2>&1
     done
     cd tmp/omnileads-backup/$tar_directory/
 
     #Restore of asterisk files
-    echo "Restoring asterisk files"
+    echo "Restoring asterisk files and audios"
     cd asterisk
     cp -a agi-bin/* {{ asterisk_location }}/var/lib/asterisk/agi-bin/
-    cp -a --preserve=links etc/* {{ asterisk_location }}/etc/asterisk/
+    cp -a --preserve=links etc/oml_extensions* {{ asterisk_location }}/etc/asterisk/
     cp -a conversor.sh /usr/local/parselog
-  #  cp -a sounds/* {{ asterisk_location }}/var/lib/asterisk/sounds/
+    cp -a sounds/* {{ asterisk_location }}/var/lib/asterisk/sounds/
+
+    #Restore of omniapp files
+    echo "Restoring omniapp csv's and system audios"
+    cd ../omniapp
+    cp -a media_root/* {{ install_prefix }}/media_root
 
     #Restore of kamailio files
     echo "Restoring kamailio files"
     cd ../kamailio/etc
-    cp -a certs {{ kamailio_location }}/etc/certs > /dev/null 2>&1
+  #  cp -a certs {{ kamailio_location }}/etc/certs > /dev/null 2>&1
     cp -a --preserve=links kamailio {{ kamailio_location }}/etc/kamailio > /dev/null 2>&1
 
     #Restore of Database
     echo "Restoring {{ postgres_database }} database"
     cd ../../postgres_database
-    pg_restore -F t -d {{ postgres_database }} base_backup > /dev/null 2>&1
+    pg_restore -F t -d {{ postgres_database }} base_backup -c
 
     rm -rf {{ install_prefix }}backup/$tar_directory
 
