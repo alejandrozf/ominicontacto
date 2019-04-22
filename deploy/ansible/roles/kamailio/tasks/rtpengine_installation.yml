@@ -93,9 +93,7 @@
 - name: Insert the kernel module created for RTPengine (centos)
   shell: "insmod xt_RTPENGINE.ko chdir=/usr/src/{{ rtpengine_name }}/kernel-module"
   register: command_result
-  failed_when:
-    - "'File exists' not in command_result.stderr"
-    - "command_result.rc != 0"
+  failed_when: false
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"

@@ -94,7 +94,15 @@
 <li class="toctree-l1"><a class="reference internal" href="install.html">Procedimientos de instalación</a></li>
 </ul>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuración Inicial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuración Inicial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#crear-usuario-supervisor">Crear usuario supervisor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#crear-modulo-de-telefonia">Crear módulo de telefonía</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#crear-grupo-de-agentes">Crear grupo de agentes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#crear-agentes">Crear agentes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#crear-pausas-de-agente">Crear pausas de agente</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#primer-login-de-agente">Primer login de agente</a></li>
+</ul>
+</li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="telephony.html">Configuración de acceso a la PSTN</a></li>
@@ -182,16 +190,93 @@
             
   <div class="section" id="configuracion-inicial">
 <h1>Configuración Inicial<a class="headerlink" href="#configuracion-inicial" title="Enlazar permanentemente con este título">¶</a></h1>
-<p>En el vídeo se plantea una típica configuración posterior a la instalación de OMniLeads.
-En el mismo se repasa el manejo de usuarios, pausas de agente, calificaciones del sistema,
-creación de formularios de campañas y se ejecuta un primer login como agente.</p>
-<iframe src="https://player.vimeo.com/video/319574451" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe><p>Al finalizar la configuración expuesta en el video, disponemos en el sistema de:</p>
+<p>Nuestra plataforma se encuentra instalada y por lo tanto disponible para comenzar a configurar todo lo necesario para montar nuetra operación de Contact Center.
+En esta sección vamos a avanzar con los pasos iniciales como crear nuestro primer usuario supervisor, generar grupos de agentes, agentes y sus pausas, para finalmente
+concluir el capítulo con un login de agente.</p>
+<div class="section" id="crear-usuario-supervisor">
+<h2>Crear usuario supervisor<a class="headerlink" href="#crear-usuario-supervisor" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Lo primero que vamos a realizar es generar un usuario supervisor con el cual desde ahora en más vamos a realizar todas las tareas administrativas del sistema, dejando relegado
+al usuario «admin» como acceso de último recurso y para el personal de IT.</p>
+<p>Para generar un nuevo usuario debemos acceder al punto de menú <em>User list -&gt; New user</em></p>
+<p>Allí completamos los campos solicitados como se ilustra en la figura 1.</p>
+<blockquote>
+<div><img alt="_images/initial_settings_01.png" src="_images/initial_settings_01.png" />
+</div></blockquote>
+<p><em>Figure 1: new supervisor user</em></p>
+<p>En el paso siguiente del wizard debemos seleccionar el perfil de supervisor, siendo posible seleccionar:</p>
 <ul class="simple">
-<li>Un usuario supervisor.</li>
-<li>Un grupo de agentes.</li>
-<li>Dos agentes disponibles para login.</li>
-<li>Un listado de pausas de agente.</li>
+<li><strong>Supervisor gerente:</strong> este perfil de usuario puede gestionar casi todos los menúes de la paltaforma a excepción de las configuraciones de parámetros de telefonía como por ejemplo troncales SIP y enrutamiento de llamadas.</li>
+<li><strong>Administrador:</strong> es un super-usuario que posee los mismo permisos que el usuario «admin»</li>
+<li><strong>Cliente:</strong> es un perfil que tan solo puede acceder a la supervisión de tiempo real y grabaciones de llamadas sobre las campañas que le fueron asignadas como permitidas.</li>
 </ul>
+<img alt="_images/initial_settings_02.png" src="_images/initial_settings_02.png" />
+<p><em>Figure 2: supervisor / admin</em></p>
+<p>En nuestro caso generamos un usuario supervisor / administrador. A continuación nos logueamos con dicho usuario para continuar las gestiones.</p>
+</div>
+<div class="section" id="crear-modulo-de-telefonia">
+<h2>Crear módulo de telefonía<a class="headerlink" href="#crear-modulo-de-telefonia" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>En este punto se debe generar cada módulo de sistema, actualmente se dispone de la funcionalidad de telefonía, por lo que vamos a añadir dicho módulo. No obstante hacia el futuro
+se estarían añadiendo SMS y Chat.</p>
+<p>Para generar el módulo de telefonía debemos acceder a <em>Modules -&gt; Enable module</em></p>
+<img alt="_images/initial_settings_04.png" src="_images/initial_settings_04.png" />
+<p><em>Figure 3: Enable telephony module</em></p>
+<p>Guardamos los cambios y avanzamos !</p>
+</div>
+<div class="section" id="crear-grupo-de-agentes">
+<h2>Crear grupo de agentes<a class="headerlink" href="#crear-grupo-de-agentes" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Llega el turno de crear los grupos de agentes de nuestro contact center. Para generar un nuevo grupo <em>Usuarios y grupos -&gt; Nuevo grupo de agentes</em> y se desplegará
+un formulario similar al de la figura 4.</p>
+<img alt="_images/initial_settings_05.png" src="_images/initial_settings_05.png" />
+<p><em>Figure 4: New agent group</em></p>
+<p>Los campos allí desplegados son:</p>
+<ul class="simple">
+<li><strong>Name:</strong> es el nombre que se desea asignar al grupo de agentes.</li>
+<li><strong>Auto_unpause:</strong> para comprender este parámetro debemos explicar que en OMniLeads luego de cada llamada procesada por un agente (de cualquier naturaleza), el agente es forzado a ingresar en una pausa ACW (after call work), en la cual permanece inactivo para las campañas asignadas de manera tal que pueda completar la calificación de la llamada actual y recién seguir operando. Ahora bien, para salir de dicha pausa inducida por el sistema existen dos posibilidades y allí entra nuestro parámetro, ya que por un lado si dejamos el valor en «0» el agente debe salir de la pausa, ahora si colocamos un número (por ejemplo 5 segundos), esto implicará que el agente asignado a este grupo luego de caer en una pausa inducida ACW, el sistema lo vuelva a dejar online a los X segundos (según lo indicado en este parámetro).</li>
+<li><strong>Auto_attend_ics:</strong> si este valor está checkeado entonces las llamadas provenientes del Addon de OMniLeads ICS (Interactive Contact System), llamadas derivadas del IVR blaster press-one serán atendidas automáticamente por el agente sin dar la posibilidad de que exista ring en su webphone.</li>
+<li><strong>Auto_attend_inbound:</strong> si este valor está checkeado entonces las llamadas provenientes de campañas entrantes serán conectadas al agente sin brindar la posibilidad de ring y answer por parte del agente.</li>
+<li><strong>Auto_attend_dialer:</strong> si este valor está checkeado entonces las llamadas provenientes de campañas con discador predictivo serán conectadas al agente sin brindar la posibilidad de ring y answer por parte del agente.</li>
+</ul>
+</div>
+<div class="section" id="crear-agentes">
+<h2>Crear agentes<a class="headerlink" href="#crear-agentes" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Una vez disponibles los grupos de agentes y su configuración, podemos proceder con la creación de usuario agentes del contact center.</p>
+<img alt="_images/initial_settings_06.png" src="_images/initial_settings_06.png" />
+<p><em>Figure 5: New agent</em></p>
+<p>Se debe seleccionar el grupo de agentes y los módulos disponibles para nuestro nuevo agente.</p>
+<img alt="_images/initial_settings_07.png" src="_images/initial_settings_07.png" />
+<p><em>Figure 6: New agent</em></p>
+<p>Podemos listar nuestros usuarios, deberíamos contar con al menos un par de agentes.</p>
+<img alt="_images/initial_settings_08.png" src="_images/initial_settings_08.png" />
+<p><em>Figure 7: Users</em></p>
+</div>
+<div class="section" id="crear-pausas-de-agente">
+<h2>Crear pausas de agente<a class="headerlink" href="#crear-pausas-de-agente" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Los agentes pueden entrar en una pausa cada vez que quieran quedar indispuestos para el procesamiento de llamados, de esta manera se evita que una campaña entrante o con discador
+le asigne una nueva llamada. Además los estados de pausa son útiles para registrar productividad y medir los tiempos de sesión del agente.</p>
+<p>Las pausas las pueden generar los supervisores y se clasifican en pausas Recreativas y Productivas.</p>
+<img alt="_images/initial_settings_09.png" src="_images/initial_settings_09.png" />
+<p><em>Figure 8: New pause</em></p>
+<p>A la hora de presentar los reportes de sesión de agente, las pausas totalizadas se dividen en pausas recreativas y pausas productivas. Esto permite medir la productividad de nuestros agentes
+de una manera más exacta.</p>
+<img alt="_images/initial_settings_10.png" src="_images/initial_settings_10.png" />
+<p><em>Figure 9: New pauses</em></p>
+<p>Una vez generados nuestros agentes, podemos proceder con nuestro primero login de agente !</p>
+</div>
+<div class="section" id="primer-login-de-agente">
+<h2>Primer login de agente<a class="headerlink" href="#primer-login-de-agente" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Finalmente tenemos todo listo para probar nuestro primer agente.</p>
+<p><strong>IMPORTANTE:</strong> tener en cuenta que para obtener un login exitoso debemos contemplar dos aspectos, si alguno de ellos no se cumple entonces el login será defectuoso.</p>
+<ul class="simple">
+<li><strong>Micrófono disponible:</strong> el dispositivo desde el cual opere el agente, deberá contar con un micrófono disponible y configurado a nivel sistema operativo.</li>
+<li><strong>Acceso al sistema por hostname:</strong> como bien indicamos en la sección de «primer acceso a OMniLeads», es menester que el acceso a la plataforma sea mediante <em>hostname</em>. Esto quiere decir que para indicar al navegador la dirección de OMniLedas NO se deben utilizar una dirección IP, sino un nombre de host.</li>
+</ul>
+<p>Una vez que accedemos con nuestro agente, si todo va bien deberemos toparnos con un popup que solicita el permiso de tomar el control del micrófono, como se ilustra en la figura 10.</p>
+<img alt="_images/initial_settings_11.png" src="_images/initial_settings_11.png" />
+<p><em>Figure 10: First login - microphone webrtc</em></p>
+<p>Al habilitar el permiso, debemos escuchar un audio que el sistema reproduce indicando el login exitoso y además la pantalla de agente debe lucir como la figura 11.</p>
+<img alt="_images/initial_settings_12.png" src="_images/initial_settings_12.png" />
+<p><em>Figure 11: First login - webphone connected</em></p>
+</div>
 </div>
 
 

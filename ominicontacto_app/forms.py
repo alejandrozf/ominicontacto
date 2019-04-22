@@ -723,16 +723,17 @@ class FieldFormularioForm(forms.ModelForm):
         tipo = self.cleaned_data.get('tipo')
         if not tipo == FieldFormulario.TIPO_LISTA:
             return None
-
         values_select = self.cleaned_data.get('values_select')
-        if values_select is '':
+        if values_select == '':
             raise forms.ValidationError(_('La lista no puede estar vacía'))
         try:
             lista_values_select = json.loads(values_select)
         except ValueError:
             raise forms.ValidationError(_('Formato inválido'))
-        if lista_values_select is list:
+        if type(lista_values_select) is not list:
             raise forms.ValidationError(_('Formato inválido'))
+        if len(lista_values_select) == 0:
+            raise forms.ValidationError(_('La lista no puede estar vacía'))
         return values_select
 
 

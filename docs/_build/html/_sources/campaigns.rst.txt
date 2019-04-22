@@ -129,13 +129,6 @@ el formulario asociado a la calificación dentro de la campaña.
 
 *Figure 11: Engaged dispostions and forms*
 
-En el siguiente video ilustramos a los dos tipos de calificaciones y su comportamiento.
-
-.. raw:: html
-
-        <iframe src="https://player.vimeo.com/video/320941143" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-
-
 Interacción con un CRM externo
 ******************************
 Esta funcionalidad permite lanzar una petición "HTTP - Get" utilizando datos de la llamada actual, desde OMniLeads hacia un CRM basado en tecnología web (requisito excluyente),
@@ -153,7 +146,7 @@ Entre otros parámetros.
 Campañas Manuales
 *****************
 
-Dentro de este insiso se ejemplifica el paso a paso de cómo generar una campaña de llamadas manuales.
+Dentro de este inciso se ejemplifica el paso a paso de cómo generar una campaña de llamadas manuales.
 
 .. toctree::
  :maxdepth: 2
@@ -164,14 +157,7 @@ Dentro de este insiso se ejemplifica el paso a paso de cómo generar una campañ
 Campañas Preview
 ****************
 
-En el siguiente video se expone paso a paso la creación y puesta en marcha de una campaña preview. Además se ejemplifica la operación del agente dentro de la misma.
-
-.. raw:: html
-
-        <iframe src="https://player.vimeo.com/video/320950602" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-
-
-Para profundizar en el asunto ingresar al link, donde se explica cada pantalla de configuración detalladamente.
+En este inciso nos adentramos en el mundo de las campañas preview.
 
 .. toctree::
  :maxdepth: 2
@@ -181,6 +167,8 @@ Para profundizar en el asunto ingresar al link, donde se explica cada pantalla d
 
 Campañas con discador predictivo
 ********************************
+
+En este apartado desplegamos todo lo inherente a las campañas con discador predictivo.
 
 .. toctree::
  :maxdepth: 2
@@ -193,22 +181,6 @@ Campañas Entrantes
 ******************
 En este capítulo se repasan todas las funcionalidades asociadas al tratamiento de llamadas entrantes.
 
-En el siguiente video se expone paso a paso la creación y puesta en marcha de una campaña entrante.
-
-.. raw:: html
-
-        <iframe src="https://player.vimeo.com/video/320941143" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-
-
-En este siguiente video se ejemplifica cómo configurar un PBX basado en Asterisk para derivar llamadas hacia campañas entrantes de OMniLeads, desde un IVR del PBX. Aunque la configuración expuesta también permite
-derivar llamadas desde cualquier elemento del PBX, incluyendo las llamadas generadas o transferidas desde extensiones del PBX con destino en alguna campaña de OMniLeads.
-
-.. raw:: html
-
-        <iframe src="https://player.vimeo.com/video/320955286" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
-
-
-Para profundizar en cada una de las funcionalidaes pertinentes al mundo de las llamadas entrantes, se recomienda ingresar a cada uno de los links expuestos debajo.
 
 .. toctree::
  :maxdepth: 2

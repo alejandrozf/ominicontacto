@@ -127,6 +127,8 @@ Para llevar a cabo un restore, se debe ejecutar:
 
 ::
 
+  su omnileads
+  cd /opt/omnileads/bin/
  ./backup-restore.sh -r nombre_del_archivo_de_backup
 
 
@@ -134,8 +136,11 @@ Por ejemplo:
 
 ::
 
+  su omnileads
+  cd /opt/omnileads/bin/
  ./backup-restore.sh -r 20190211_database.tgz
 
+No hace falta agregar el path completo de ubicación del backup.
 
 Un restore exitoso arroja una salida similar a la figura 12.
 
@@ -143,6 +148,11 @@ Un restore exitoso arroja una salida similar a la figura 12.
 
  *Figure 12: restore*
 
+Una vez finalizado el restore, ejecutar el siguiente comando para regenerar los archivos de configuración y valores de AstDB de la instancia que se restoreó:
+
+::
+
+ /opt/omnileads/bin/manage.sh regenerar_asterisk
 
 Actualizaciones
 ***************

@@ -229,6 +229,7 @@ class QueuesCreator(object):
         if campana.queue_campana.retry:
             retry = campana.queue_campana.retry
 
+        # TODO: OML-496
         audio_asterisk = campana.queue_campana.announce
         if audio_asterisk:
             audio_split = audio_asterisk.split("/")

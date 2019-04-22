@@ -82,6 +82,7 @@ class CampanaPreviewCreateView(CampanaPreviewMixin, CampanaManualCreateView):
 
     def done(self, form_list, **kwargs):
         queue = self._save_forms(form_list, Campana.ESTADO_ACTIVA, Campana.TYPE_PREVIEW)
+        self._insert_queue_asterisk(queue)
         # salvamos los supervisores y agentes asignados a la campaña
         self.save_supervisores(form_list, -2)
         self.save_agentes(form_list, -1)
@@ -90,7 +91,6 @@ class CampanaPreviewCreateView(CampanaPreviewMixin, CampanaManualCreateView):
         # crear(sobreescribir) archivo de crontab con la configuración de llamadas al procedimiento
         # de actualización de las asignaciones de agente a contactos
         queue.campana.crear_tarea_actualizacion()
-        self._insert_queue_asterisk(queue)
         return HttpResponseRedirect(reverse('campana_preview_list'))
 
 

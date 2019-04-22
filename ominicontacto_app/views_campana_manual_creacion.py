@@ -119,10 +119,10 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
 
     def done(self, form_list, **kwargs):
         queue = self._save_forms(form_list, Campana.ESTADO_ACTIVA, Campana.TYPE_MANUAL)
+        self._insert_queue_asterisk(queue)
         # salvamos los supervisores y  agentes asignados a la campaña
         self.save_supervisores(form_list, -2)
         self.save_agentes(form_list, -1)
-        self._insert_queue_asterisk(queue)
         return HttpResponseRedirect(reverse('campana_manual_list'))
 
 

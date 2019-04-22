@@ -1,5 +1,9 @@
 ---
 
+- name: Download postgresql-{{ postgresql_version }} key
+  rpm_key: key="{{ postgresql_key }}" state=present validate_certs=no
+  when: ansible_os_family == "RedHat" and cluster != 0
+
 # Se instala el repo de postgresql9.6
 - name: Download of postgresql {{ postgresql_version }} repository (redhat and cluster)
   yum: "name={{ postgresql_url }} state=present validate_certs=no"
@@ -81,5 +85,5 @@
   with_items:
     - libpcap-dev
     - libpq-dev
-    - uuid-dev 
+    - uuid-dev
   when: ansible_os_family == "Debian" and cluster != 0
