@@ -150,7 +150,7 @@ class CampanaTemplateCreateCampanaMixin(object):
                 columnas_bd = obtener_opciones_columnas_bd(bd_contacto, COLUMNAS_DB_DEFAULT)
                 param_crms_formset = ParametrosCrmFormSet(
                     initial=initial_data, form_kwargs={'columnas_bd': columnas_bd})
-                param_crms_formset.extra = len(initial_data)
+                param_crms_formset.extra = max(len(initial_data), 1)
                 param_crms_formset.prefix = params_crm_init_formset.prefix
                 context['wizard']['form'] = param_crms_formset
         return context
