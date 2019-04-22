@@ -48,7 +48,7 @@ mysql_root_password=098098ZZZ
 sup_ami_user=omnisup
 sup_ami_password=Sup3rst1c10n
 #Set the timezone where the nodes are UNCOMMENT and set this if you are doing a fresh install
-#TZ=America/Argentina/Cordoba
+TZ=America/Argentina/Cordoba
 
 # Change this value if the recordings are not converted to mp3
 formato_conversion=mp3
