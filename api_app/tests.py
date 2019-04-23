@@ -7,7 +7,7 @@ from mock import patch
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
-from api_app.views import AgentesStatusAPIView
+from api_app.utiles import EstadoAgentesService
 
 from ominicontacto_app.models import Campana
 from ominicontacto_app.tests.factories import (CampanaFactory, SupervisorProfileFactory,
@@ -86,11 +86,11 @@ class APITest(TestCase):
                              linea_status.format(id_agente, status_agente)])
         return '\n'.join(response)
 
-    @patch('api_app.views.Manager')
-    @patch.object(AgentesStatusAPIView, "_ami_obtener_agentes")
+    @patch('api_app.utiles.Manager')
+    @patch.object(EstadoAgentesService, "_ami_obtener_agentes")
     def test_servicio_agentes_activos_muestra_activos(self, _ami_obtener_agentes, manager):
         self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
         _ami_obtener_agentes.return_value = self._generar_ami_response_agentes()
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
-        self.assertEqual(len(response.json()['agentes']), 3)
+        self.assertEqual(len(response.json()), 3)

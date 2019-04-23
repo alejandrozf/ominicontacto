@@ -81,3 +81,10 @@ Use this trunk configuration in you Omnileads environment to connect with the pb
 And this in the register chain:
 
   01177660010:OMLtraining72@172.16.0.7
+
+******************************
+*Outbound route configuration*
+******************************
+
+With the previous sip trunk created you must create an outbound route for outbound calls.
+You can customize the parameters values for your needs but we recommend, for quickly setup of develop enviromment, to type any value for field 'name', leave defaults values for fields 'Ring time' and 'Dial options' and type "X." for field "Dial pattern". Then select the trunk previously created for field 'Trunks sequence' and save the outbound route.
