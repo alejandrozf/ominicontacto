@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-01 12:10-0300\n"
+"POT-Creation-Date: 2019-04-09 15:20-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -185,12 +185,12 @@ msgid "Último"
 msgstr "Lastest"
 
 #: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:43
-#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:113
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:114
 msgid "Mostrar _MENU_ entradas"
 msgstr "Show _MENU_ entries"
 
 #: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:44
-#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:114
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:115
 msgid "Mostrando _START_ a _END_ de _TOTAL_ entradas"
 msgstr "Showing _START_ to _END_ of _TOTAL_ entries"
 
@@ -216,39 +216,39 @@ msgstr "Contact Released"
 msgid "No se pudo liberar al contacto. Intente pedir otro."
 msgstr "Unable to release contact. Please select a new one."
 
-#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:43
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:44
 msgid "Modificar"
 msgstr "Edit"
 
-#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:56
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:57
 msgid "Llamar"
 msgstr "Call"
 
-#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:83
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:84
 msgid "Enviar email"
 msgstr "Send Email"
 
-#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:105
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:106
 msgid "Buscar: "
 msgstr "Search: "
 
-#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:106
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:107
 msgid "(filtrando de un total de _MAX_ contactos)"
 msgstr "(filtering from a total of _MAX_ contactos)"
 
-#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:108
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:109
 msgid "Primero "
 msgstr "First"
 
-#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:109
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:110
 msgid "Anterior "
 msgstr "Last"
 
-#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:110
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:111
 msgid " Siguiente"
 msgstr "Next"
 
-#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:111
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:112
 msgid " Último"
 msgstr "Lastest"
 

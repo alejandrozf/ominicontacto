@@ -1,0 +1,275 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Campañas preview &mdash; documentación de OMniLeads - develop</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="Agente en modo predictivo" href="agent_dialer.html" />
+    <link rel="prev" title="Llamadas manuales desde listado de contactos" href="agent_manual.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> OMniLeads
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html">WebRTC; la tecnología subyacente de OMniLeads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">OML como Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-en-una-compania-de-servicios-de-customer-contact">OML en una Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-para-carriers-o-proveedores-de-cloud-pbx">OML para Carriers ó Proveedores de Cloud PBX</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Procedimientos de instalación</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="initial_settings.html">Configuración Inicial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="telephony.html">Configuración de acceso a la PSTN</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="campaigns.html">Campañas Telefónicas</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="agent.html">Manual de agente</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="agent.html#sesion-del-agente">Sesión del agente</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#campanas-manuales">Campañas manuales</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="agent.html#campanas-preview">Campañas preview</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Campañas preview</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#campanas-dialer">Campañas dialer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#campanas-entrantes">Campañas entrantes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#acciones-sobre-las-llamadas">Acciones sobre las llamadas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#agendas-calificaciones-y-contactos">Agendas, calificaciones y contactos</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OMniLeads</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="agent.html">Manual de agente</a> &raquo;</li>
+        
+      <li>Campañas preview</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/agent_preview.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="campanas-preview">
+<h1>Campañas preview<a class="headerlink" href="#campanas-preview" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>Cuando un agente trabaja dentro de una campaña preview, antes que nada debe acceder al botón de campañas preview.</p>
+<img alt="_images/about_agent_prev_camp_1.png" src="_images/about_agent_prev_camp_1.png" />
+<p><em>Figure 1: preview campaigns list</em></p>
+<p>Allí se van a desplegar todas las campañas preview sobre las que el agente se encuentre asignado. Entonces el agente
+debe seleccionar una campaña y ésta le devolverá un contacto para gestionar.</p>
+<img alt="_images/about_agent_prev_camp_2.png" src="_images/about_agent_prev_camp_2.png" />
+<p><em>Figure 2: pull new contact</em></p>
+<img alt="_images/about_agent_prev_camp_3.png" src="_images/about_agent_prev_camp_3.png" />
+<p><em>Figure 3: contact delivered</em></p>
+<p>Con el contacto entregado, el agente puede o bien marcar el teléfono del mismo, haciendo click sobre el número, o bien
+hacer un nuevo click sobre la campaña preview para que la misma entregue otro contacto.</p>
+<p>Suponiendo que se llama a un contacto, simplemente al dar click sobre el teléfono se realiza el llamada y paralelamente
+se despliegan los datos del contacto sobre la vista del agente, tal como vimos en las llamadas manuales.</p>
+<img alt="_images/about_agent_prev_camp_4.png" src="_images/about_agent_prev_camp_4.png" />
+<p><em>Figure 4: contact called</em></p>
+<p>Si la comunicación a finalizado o bien el teléfono no pudo ser contactado, entonces el agente puede intentar marcar
+a otro de los números del contacto (si es que el contacto tiene más de un teléfono cargado). Si este es el caso,
+entonces el agente puede hacer click sobre cualquiera de los teléfonos extras y automáticamente se buscará contactar
+al nuevo teléfono.</p>
+<img alt="_images/about_agent_manual_camp_4.png" src="_images/about_agent_manual_camp_4.png" />
+<p><em>Figure 5: re-call contact</em></p>
+<p>Finalmente, el agente debe calificar al contacto a través del combo de calificaciones. Este listado de calificaciones
+fue generado por el administrador para cada campaña.</p>
+<img alt="_images/about_agent_manual_camp_5.png" src="_images/about_agent_manual_camp_5.png" />
+<p><em>Figure 6: call disposition</em></p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="agent_dialer.html" class="btn btn-neutral float-right" title="Agente en modo predictivo" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="agent_manual.html" class="btn btn-neutral float-left" title="Llamadas manuales desde listado de contactos" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, omnileads
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

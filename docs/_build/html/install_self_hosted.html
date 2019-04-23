@@ -121,6 +121,9 @@
 <li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
 </ul>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="agent.html">Manual de agente</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
 </ul>
 <ul>
@@ -259,12 +262,17 @@ con la dirección IP del host sobre el que estamos trabajando.</p>
 que vienen por defecto en el sistema.</p>
 <img alt="_images/install_inventory_passwords.png" src="_images/install_inventory_passwords.png" />
 <p><em>Figure 5: Passwords and parameters of services</em></p>
+<ul class="simple">
+<li>Introducir el parámetro «time zone» adecuado para su instanacia. Es <strong>Importante</strong> que realice este paso o la instalación no se va a poder realizar.</li>
+</ul>
+<img alt="_images/install_inventory_timezone.png" src="_images/install_inventory_timezone.png" />
+<p><em>Figure 6: inevntory - Time Zone parameter</em></p>
 <p>Es importante aclarar que cada vez que se corre el script «./deploy.sh» ya sea para instalar, re-instalar, actualizar, modificar la dirección IP de OML, etc.,
 el archivo de inventory se vuelve a «cero». No obstante se genera una copia del archivo (my_inventory), de manera tal que se cuente con los parámetros
 del sistema utilizados en la última ejecución del script.
 La copia en cuestión se ubica en el path donde ha sido clonado el repositorio de OML y bajo el nombre de «my_inventory» como lo expone la figura 6.</p>
 <img alt="_images/install_my_inventory.png" src="_images/install_my_inventory.png" />
-<p><em>Figure 6: inevntory copy, my_inventory file</em></p>
+<p><em>Figure 7: inevntory copy, my_inventory file</em></p>
 </div>
 <div class="section" id="ejecucion-del-script-de-instalacion">
 <h2>Ejecución del script de instalación:<a class="headerlink" href="#ejecucion-del-script-de-instalacion" title="Enlazar permanentemente con este título">¶</a></h2>
@@ -277,10 +285,10 @@ raíz del proyecto (ominicontacto).</p>
 <p>El tiempo de instalación dependerá mayormente de la velocidad de conexión a internet del host OML, ya que se deben descargar, instalar y configurar
 varios paquetes correspondientes a los diferentes componentes de software que conforman el sistema.</p>
 <img alt="_images/install_deploysh.png" src="_images/install_deploysh.png" />
-<p><em>Figure 7: install runing</em></p>
+<p><em>Figure 8: install runing</em></p>
 <p>Si la ejecución de la instalación finaliza exitosamente, se despliega una vista como la de la figura 8.</p>
 <img alt="_images/install_ok.png" src="_images/install_ok.png" />
-<p><em>Figure 8: OMniLeads installation ended succesfuly</em></p>
+<p><em>Figure 9: OMniLeads installation ended succesfuly</em></p>
 </div>
 <div class="section" id="primer-acceso-a-omnileads">
 <h2>Primer acceso a OMniLeads:<a class="headerlink" href="#primer-acceso-a-omnileads" title="Enlazar permanentemente con este título">¶</a></h2>

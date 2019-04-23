@@ -127,6 +127,8 @@ Para llevar a cabo un restore, se debe ejecutar:
 
 ::
 
+  su omnileads
+  cd /opt/omnileads/bin/
  ./backup-restore.sh -r nombre_del_archivo_de_backup
 
 
@@ -134,8 +136,11 @@ Por ejemplo:
 
 ::
 
+  su omnileads
+  cd /opt/omnileads/bin/
  ./backup-restore.sh -r 20190211_database.tgz
 
+No hace falta agregar el path completo de ubicación del backup.
 
 Un restore exitoso arroja una salida similar a la figura 12.
 
@@ -143,6 +148,11 @@ Un restore exitoso arroja una salida similar a la figura 12.
 
  *Figure 12: restore*
 
+Una vez finalizado el restore, ejecutar el siguiente comando para regenerar los archivos de configuración y valores de AstDB de la instancia que se restoreó:
+
+::
+
+ /opt/omnileads/bin/manage.sh regenerar_asterisk
 
 Actualizaciones
 ***************
@@ -169,12 +179,21 @@ Posicionarse sobre el directorio donde reside el script “deploy.sh”
 Asumiendo que estamos trabajando sobre los release estables (master)
 Se debe ejecutar un "git pull origin master" para traernos las actualizaciones del repositorio.
 
+**IMPORTANTE**: debe ajustar el archivo "inventory" de acuerdo a su hostname y dirección IP, para que la actualización pueda ser ejecutada.
+Observar que el parámetro *hostname* y *dirección IP* tiene que coincidir respecto a lo que tenga cargado el host donde corre OMniLeads.
+
+::
+
+ [omnileads-aio]
+ oml-dev.example.com ansible_ssh_connection=local ansible_user=root ansible_host=192.168.95.155
+
+
 ::
 
  git pull origin master
 
-A continuación se ejecuta el script con el parámetro -u (update). Esta ejecución tomará unos minutos e implica ejecutar todas las actualizaciones
-descargadas sobre nuestra instancia de OMniLeads.
+A continuación se ejecuta el script con el parámetro -u (update). Esta ejecución tomará unos minutos e implica el aplicar todas las actualizaciones
+descargadas con el "git pull origin master" sobre nuestra instancia de OMniLeads.
 
 ::
 
@@ -203,11 +222,14 @@ parámetro hostname y dirección IP respecto al host donde corre OMniLeads y vam
 ::
 
  [omnileads-aio]
- hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #(this line is for node-host installation)
+ oml-dev.example.com ansible_ssh_port=22 ansible_user=root ansible_host=10.10.1.100
 
 
-Nota: se debe tener en cuenta que para instalación remota, se debe utilizar la línea con el parámetro "ansible_ssh_port=22" dentro de la
-sección [omnileads-aio]
+Nota: se debe tener en cuenta que para instalación remota, se debe utilizar la línea con el parámetro "ansible_ssh_port=22" (donde 22 es el puerto por defecto, pero es normal
+tambien que se utilice otro puerto) dentro de la sección [omnileads-aio]
+
+Se ejecuta el script con el parámetro -u (update). Esta ejecución tomará unos minutos e implica el aplicar todas las actualizaciones
+descargadas con el "git pull origin master" sobre nuestra instancia de OMniLeads.
 
 ::
 
@@ -220,19 +242,21 @@ Finalmente, la plataforma queda actualizada a la última versión estable "maste
 
 *Figure 15: updates from ansible remote OK*
 
-Cambio de dirección IP de la plataforma
-***************************************
+Cambios de los parámetros de red (Hostname y/o Dirección IP)
+************************************************************
 
 OMniLeads es un sistema complejo, con varios servicios orientados a las comunicaciones real-time corriendo en el Linux Host.
-Esto implica que un cambio de dirección IP del host conlleva cierta complejidad.
+Esto implica que un cambio de *dirección IP* o *hostname* del host conlleva cierta complejidad.
 
-Para llevar a cabo esta tarea, debemos ejecutar nuevamente el script “deploy.sh”, el mismo que fue utilizado para llevar a cabo la
+Para llevar a cabo éstas tareas, debemos ejecutar nuevamente el script "deploy.sh", el mismo que fue utilizado para llevar a cabo la
 instalación de la plataforma.
 
-Debemos ingresar con el usuario root al sistema, cambiar la dirección IP a nivel **sistema operativo** y asegurarnos de que el host tomó la nueva IP.
+Debemos ingresar con el usuario root al sistema, cambiar la dirección IP a nivel **sistema operativo** y/o el hostname y asegurarnos de que el host tomó los cambios. Se recomienda
+un *reboot* del sistema.
 
-Luego continuamos con el cambio de IP sobre OML, para ellos debemos pararnos sobre el directorio donde se clonó el repositorio de OML,
-para luego acceder al directorio donde se ubica dicho script.
+Luego continuamos con los cambios sobre OML, para ellos debemos pararnos sobre el directorio donde se clonó el repositorio de OML (si fue una instalación self-hosted será
+dentro del host remoto, si fue una instalación desde ansible-remoto será en la máquina *deployer*), para luego acceder al directorio *deploy/ansible*, donde tenemos los
+archivos *deploy.sh* e *inventory*.
 
 Allí debemos editar nuevamente el archivo *inventory* y repasar el hostname para que coincida con el hostname del host y allí también debemos configurar la nueva dirección IP.
 
@@ -246,10 +270,12 @@ Se guardan los cambios sobre el archivo y finalmente se ejecuta el script *deplo
 ::
 
  cd ominicontacto/deploy/ansible
- ./deploy.sh --changeip -a
+ ./deploy.sh --change-network -a
 
 Por último se ejecuta un reinicio de la plataforma. Luego podemos comenzar a utilizar OML en la nueva dirección IP.
 
 ::
 
  reboot
+
+**NOTA:** si está resolviendo el nombre del host de OMniLeads con su archivo *hosts* de su maquina de trabajo, no olvide tambien cambiar los parámetros.

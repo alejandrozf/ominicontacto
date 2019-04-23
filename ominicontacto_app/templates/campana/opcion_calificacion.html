@@ -53,11 +53,40 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
          });
          var $formulario = $(row.find('.formulario > select'));
          $formulario.prop( "disabled", false );
+         /* Suscribo al control que deshabilita el campo formulario segun el tipo */
+         subscribeToChangeControl($tipo);
        },
      });
      /* oculta los links de eliminación para los formularios de opciones de calificación
         que no deben ser eliminados */
      $('.readOnly>td').find('.deleteFormset').attr('class', 'hidden');
+
+      /* Suscribo al control que deshabilita el campo formulario segun el tipo */
+      $(function() {
+        $('[name$=-tipo]').each(function() {
+            subscribeToChangeControl(this);
+        })
+      });
+
+      function subscribeToChangeControl(type_input) {
+        setAssociatedFormDisabledStatus(type_input);
+        $(type_input).change(function(){
+            setAssociatedFormDisabledStatus(type_input);
+        });
+      }
+
+      function setAssociatedFormDisabledStatus(type_input){
+        var type = $(type_input).val();
+        var form_input_name = $(type_input).prop('name').slice(0,-4) + 'formulario';
+        if (type == '1'){
+            $('#id_' + form_input_name).prop('disabled', false);
+        }
+        else {
+            $('#id_' + form_input_name).prop('disabled', true);
+            $('#id_' + form_input_name).val('');
+        }
+      }
+
     </script>
 {% endblock %}
 

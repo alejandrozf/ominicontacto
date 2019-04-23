@@ -24,29 +24,40 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block head_js %}
 <script type="text/javascript">
     $(function(){
-        /* Maneja el submit del ordenamiento.*/
+            /* Maneja el submit del ordenamiento.*/
             $(".orden").click(function (){
                 var sentido_orden = $(this).attr('data-sentido-orden');
-
                 $("#id_sentido_orden").val(sentido_orden);
-
                 var url = $(this).attr('data-url');
                 $("#form-orden-campos").attr('action', url);
                 $("#form-orden-campos").submit();
             });
-
+    
+            /* Maneja la adicion de un item a la lista */
             $("#agregar_lista").click(function (){
+                $('#value_item_error').hide();
+                $('#repeticion_item_error').hide();
                 var item = $('#id_value_item').val();
-
-                $('#id_list_values').append($("<option>").val(item).html(item));
-
-                $('#id_value_item').val("");
-
-                var lista = [];
-                $('#id_list_values').find('option').each(function(){  lista.push($(this).val()); });
-                $("#id_values_select").val(JSON.stringify(lista));
-
+                var list = $('#id_list_values').val();
+                if (item == ''){
+                    $('#value_item_error').show();
+                }
+                else {
+                    var lista = [];
+                    $('#id_list_values').find('option').each(function(){  lista.push($(this).val()); });
+                    if (lista.indexOf(item)== -1){
+                        $('#id_list_values').append($("<option>").val(item).html(item));
+                        $('#id_value_item').val("");
+                        lista.push(item);
+                        $("#id_values_select").val(JSON.stringify(lista));        
+                    }
+                    else {
+                        $('#repeticion_item_error').show();
+                    }
+                    
+                }
             });
+
             $("#eliminar_lista").click(function (){
                 var list_values = document.getElementById("id_list_values");
                 var opt_seleccionados = list_values.selectedOptions;
@@ -99,6 +110,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     {{ form.non_field_errors }}
     {{ form.formulario }}
     {{ form.values_select }}
+    {{form.values_select.errors}}
     <div class="form-row">
         <div class="col-md-4">
             <label for="{{ form.nombre_campo.id_for_label }}">{% trans 'Nombre de campo:' %}</label>
@@ -118,9 +130,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </div>
     <button type="submit" id="id_guardar" class="btn btn-outline-primary ">
         {% trans 'Agregar campo' %}
+        
     </button>
     <br>
     <br>
+    <span id="value_item_error" class="alert alert-danger" style="display: none;">
+        {% trans "No ingrese un item vacío" %}
+    </span>
+    <span id="repeticion_item_error" class="alert alert-danger" style="display: none;">
+        {% trans "No se puede agregar items repetidos " %}
+    </span>
     <hr id="separador_lista_control" style="display: none;">
     <div class="form-row" id="lista_control" style="display: none;">
         <div class="col-md-6">

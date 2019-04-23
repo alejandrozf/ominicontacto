@@ -28,6 +28,9 @@ from reportes_app.models import LlamadaLog
 
 
 class ReporteDeResultadosDeCampana(object):
+    """
+    Reporte sobre los resultados de las contactaciones de los contactos ORIGINIARIOS.
+    """
 
     def __init__(self, campana):
         self.campana = campana
@@ -35,8 +38,10 @@ class ReporteDeResultadosDeCampana(object):
         self.contactaciones = OrderedDict()
         contactos = self.campana.bd_contacto.contactos.filter(es_originario=True)
         contactos_ids = self._inicializar_datos_de_contactacion(contactos)
-        calificados_ids = self._registrar_calificaciones(contactos_ids)
-        self._registrar_no_calificados(contactos_ids, calificados_ids)
+        # Si no hay contactos originarios el reporte quedará vacío.
+        if len(contactos_ids) > 0:
+            calificados_ids = self._registrar_calificaciones(contactos_ids)
+            self._registrar_no_calificados(contactos_ids, calificados_ids)
 
     def _inicializar_datos_de_contactacion(self, contactos):
         ids = []
@@ -63,11 +68,9 @@ class ReporteDeResultadosDeCampana(object):
 
     def _registrar_no_calificados(self, contactos_ids, calificados_ids):
         # Ver como fue la contactacion. Si fue o no contactado.
-        filtro_contactos = ''
-        if len(contactos_ids) > 0:
-            filtro_contactos = " AND contacto_id IN ('"
-            filtro_contactos += "','".join([str(x) for x in contactos_ids])
-            filtro_contactos += "')"
+        filtro_contactos = " AND contacto_id IN ('"
+        filtro_contactos += "','".join([str(x) for x in contactos_ids])
+        filtro_contactos += "')"
         filtro_calificados = ''
         if len(calificados_ids) > 0:
             filtro_calificados = " AND contacto_id NOT IN ('"
@@ -75,6 +78,7 @@ class ReporteDeResultadosDeCampana(object):
             filtro_calificados += "')"
         filtro_eventos = " AND event IN ('"
         filtro_eventos += "','".join(LlamadaLog.EVENTOS_NO_CONEXION)
+        filtro_eventos += "','"
         filtro_eventos += "','".join(LlamadaLog.EVENTOS_FIN_CONEXION)
         filtro_eventos += "')"
         params = {'campana_id': self.campana.id,

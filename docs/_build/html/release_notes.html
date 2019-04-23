@@ -105,6 +105,9 @@
 <li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
 </ul>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="agent.html">Manual de agente</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
 </ul>
 <ul>
@@ -116,7 +119,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#installation-tasks">Installation tasks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#oml-admin">OML admin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#oml-agent">OML agent</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#asterisk">Asterisk</a></li>
 </ul>
 </li>
 </ul>
@@ -187,47 +189,43 @@
             
   <div class="section" id="release-notes">
 <h1>Release Notes<a class="headerlink" href="#release-notes" title="Enlazar permanentemente con este título">¶</a></h1>
-<p><em>March 14, 2019</em></p>
+<p><em>April 18, 2019</em></p>
 <div class="section" id="what-s-new">
 <h2>What’s new<a class="headerlink" href="#what-s-new" title="Enlazar permanentemente con este título">¶</a></h2>
 <div class="section" id="installation-tasks">
 <h3>Installation tasks<a class="headerlink" href="#installation-tasks" title="Enlazar permanentemente con este título">¶</a></h3>
 <ul class="simple">
-<li>Fix on link to download CENTOS</li>
-<li>Asterisk optional component (Dahdi) was removed</li>
-<li>Fixes for developers environment</li>
-<li>OML can be installed now in Ubuntu (Server &amp; Desktop) since 18.04 version</li>
-<li>Check about sudo permission to run installation script was added</li>
-<li>Kamailio component was updated to 5.1 version</li>
+<li>Omnileads has been Dockerized!, see the README.md in deploy/docker/devenv</li>
+<li>Added timezone setup in installation, the timezone is now set as a variable for ansible</li>
+<li>Added the options –change-network and –change-passwords in deploy.sh to change network parameters or passswords of services</li>
+<li>Default valid time of SIP ephemeral credentials now can be configured in EPHEMERAL_USER_TTL django setting</li>
+<li>Fix dependency of OS system language when running ansible tasks</li>
+<li>Fix changing obsolete Postgresql repository for CENTOS installation</li>
 </ul>
 </div>
 <div class="section" id="oml-admin">
 <h3>OML admin<a class="headerlink" href="#oml-admin" title="Enlazar permanentemente con este título">¶</a></h3>
 <ul class="simple">
-<li>A new filter for call recordings was added, it select only recordings from calls mark as “engaged” in its qualifications.</li>
-<li>Outbound routes can be ordered now from UI and this impact directly on AstDB</li>
-<li>Calls are now linked to its call dispositions (if exists)</li>
-<li>Actions for deleted campaigns were removed</li>
-<li>External CRM support was added</li>
-<li>Call disposition marked as “scheduled” are count like pending calls for campaign global reports</li>
-<li>Validation for avoid delete an inbound campaign that is used as a failover destination was added</li>
+<li>Added the posibility to use differents campaign forms for engaged qualifications options when rate a contact</li>
+<li>Campaign creations wizards now has ability to add supervisors and agents on new steps</li>
+<li>Fix on error raised on original database results report after recall an re-qualify agended contact</li>
+<li>The system now does not allowed to delete recording objects using on campaigns</li>
+<li>Fix inconsistency when removing periodic announcement on inbound queue related to its queue.conf generated file</li>
+<li>Added validations to not allow create campaign forms with empty fields</li>
+<li>Fix error when update supervisor profile</li>
+<li>Fix events log insertion error when recording file name exceeds 50 characters</li>
+<li>Removed initial extra page before login, now login its the first page</li>
+<li>Blacklist view now shows only one object, the current blacklist set for OML</li>
+<li>Added posibility to remove non used external sites objects</li>
 </ul>
 </div>
 <div class="section" id="oml-agent">
 <h3>OML agent<a class="headerlink" href="#oml-agent" title="Enlazar permanentemente con este título">¶</a></h3>
 <ul class="simple">
-<li>Better visualization of agent statuses</li>
-<li>Manual calls now are internally handled as click2calls</li>
-<li>Campaign contacts list hides contacts in call dispositions</li>
-<li>Call disposition forms now are initialized for create new contact when the inbound phone number is private</li>
-<li>Call disposition form for inbound calls shows historical contact call dispositions</li>
-<li>Personal scheduled for agents are now deleted when its related call dispositions change its values to another call dispositions type different than “Schedule”</li>
-</ul>
-</div>
-<div class="section" id="asterisk">
-<h3>Asterisk<a class="headerlink" href="#asterisk" title="Enlazar permanentemente con este título">¶</a></h3>
-<ul class="simple">
-<li>Fixed bug that logged ABANDON instead of EXPIRE when a queue is failover destination of another and the call expires in both queues</li>
+<li>Added ability to make multi-phone-numbers calls</li>
+<li>Added fix in agent cronometers calculation when group unpause has value = 0</li>
+<li>Added fix on 404 response when manual calling out of base contact</li>
+<li>The system now shows calling agent name when receiving a transfer call on pop-up</li>
 </ul>
 </div>
 </div>

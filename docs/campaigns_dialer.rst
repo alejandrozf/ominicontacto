@@ -27,7 +27,7 @@ La primera pantalla luce como la figura 1.
 - **Initial date:** es la fecha en la que, estando activa la campaña y con agentes conectados, comenzará a discar.
 - **End date:** es la fecha en la que, estando activa la campaña y con agentes conectados, dejará de discar, aunque haya aún números pendientes de marcar.
 - **Contact database:** la base de contactos que utilzará el discador a la hora de generar llamadas
-- **Campaign form:** campo de selección del formulario que se desplegará cada vez que un agente califique un contacto con la calificación "de gestión".
+- **Tipo interacción:** aquí se selecciona si la campaña va a operar con un formulario o solamente utilizando un llamo a un CRM externo Web".
 - **External URL:** URL a disparar cada vez que el agente lo indique.
 - **Scope:** se define como la cantidad de gestiones positivas que se esperan para la campaña. En la supervisión de la campaña se muestra en tiempo real el porcentaje de avence de la campaña respecto al objetivo definido.
 
@@ -122,6 +122,9 @@ Luego de activar nuestra campaña, automáticamente  pasamos a visualizarla en l
 .. image:: images/campaigns_dialer_ready.png
 
 *Figure 10: Active campaigns*
+
+En el momento en que un agente asignado a nuestra campaña predictiva ingrese a la plataforma, mientras estemos dentro del rango de fecha y horario activo de la campaña, entonces
+el discador debe comenzar a generar llamadas y entregar a los agentes activos y disponibles en la campaña.
 
 
 Finalización de campañas dialer

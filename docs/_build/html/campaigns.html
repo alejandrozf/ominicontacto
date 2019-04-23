@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Índice" href="genindex.html" />
     <link rel="search" title="Búsqueda" href="search.html" />
-    <link rel="next" title="Manual Call Campaign" href="campaigns_manual.html" />
+    <link rel="next" title="Campañas manuales" href="campaigns_manual.html" />
     <link rel="prev" title="Troncal SIP con proveedor de acceso PSTN" href="telephony_settings_bpo.html" /> 
 </head>
 
@@ -104,13 +104,14 @@
 <li class="toctree-l2"><a class="reference internal" href="#calificaciones">Calificaciones</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#base-de-contactos">Base de contactos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#formularios">Formularios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#campanas-vs-calificaciones-vs-formularios">Campañas VS Calificaciones VS Formularios</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#interaccion-con-un-crm-externo">Interacción con un CRM externo</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#campanas-manuales">Campañas Manuales</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="campaigns_manual.html">Manual Call Campaign</a></li>
+<li class="toctree-l3"><a class="reference internal" href="campaigns_manual.html">Campañas manuales</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#campanas-preview">Campañas Preview</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="campaigns_preview.html">Preview Campaigns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="campaigns_preview.html">Campañas preview</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#campanas-con-discador-predictivo">Campañas con discador predictivo</a><ul>
@@ -126,12 +127,14 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#plantillas-de-campana">Plantillas de Campaña</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#agentes-llamadas-y-calificaciones">Agentes, llamadas y calificaciones</a></li>
 </ul>
 </li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="agent.html">Manual de agente</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
@@ -211,8 +214,8 @@
 <ul class="simple">
 <li>Un grupo de agentes procesando llamadas en un sentido (outbound o inbound).</li>
 <li>Una base de contactos asociada a la campaña.</li>
-<li>Un listado de calificaciones que se despliegan a la hora de tipificar la llamada gestionada por el agente.</li>
-<li>Un formulario de campaña, a ser desplegado si el agente asigna la calificación de “gestión” sobre la llamada en curso. El formulario es desplegado por dicha calificación y el agente puede completar el mismo según los datos del contacto en curso.</li>
+<li>Un listado de calificaciones que se despliegan a la hora de clasificar la llamada gestionada por el agente.</li>
+<li>Uno o varios formularios de campaña, a ser desplegados en caso de que el agente asigne una calificación de «gestión» asociada a alguno de los formularios, sobre la llamada en curso. El formulario es desplegado por dicha calificación y el agente puede completar el mismo según los datos del contacto en curso.</li>
 </ul>
 <p>En la figura 1, se ilustra todo lo citado en los ítems.</p>
 <img alt="_images/campaigns_elements.png" src="_images/campaigns_elements.png" />
@@ -224,7 +227,7 @@ Podemos contar con diferentes campañas de diferente naturaleza (predictivas, pr
 <div class="section" id="calificaciones">
 <h2>Calificaciones<a class="headerlink" href="#calificaciones" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>Las calificaciones constituyen un listado de etiquetas disponibles para ser vinculadas a cualquier campaña, de manera tal que luego las llamadas procesadas dentro de una campaña pueda ofrecer dichas calificaciones al agente
-afectado a una llamada de manera tal que éste ultimo pueda cerrar (temporal o definitivamente) la gestión de la llamada utilizando una de las calificaciones disponibles en la campaña como etiqueta para tipiicar la gestión.</p>
+afectado a una llamada i así éste ultimo pueda cerrar (temporal o definitivamente) la gestión de la llamada utilizando una de las calificaciones disponibles en la campaña como etiqueta para tipiicar la gestión.</p>
 <p>Las calificaciones las define el supervisor o administrador y se pueden relacionar a varios aspectos, por ejemplo:</p>
 <ul class="simple">
 <li>El estado del contacto (respondió, no atendió, numero equivocado, etc.)</li>
@@ -239,55 +242,91 @@ afectado a una llamada de manera tal que éste ultimo pueda cerrar (temporal o d
 <div class="section" id="base-de-contactos">
 <h2>Base de contactos<a class="headerlink" href="#base-de-contactos" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>Las bases de datos son utilizadas tanto para las campañas entrantes como salientes. En las campañas salientes, los datos que requiere el discador predictivo/preview se extraen de la base de contactos afectada a la campaña, mientras que en las campañas entrantes aportan los datos que se despliegan en la pantalla del agente cada vez que ingresa al sistema alguna comunicación</p>
-<p>Deben estar almacenadas en archivos con formato CSV con los campos separados con coma y además generadas en la codificacipón UTF8. Además, es requisito que el primer campo se llame explícitamente «telefono» almacenando a su vez el teléfono principal del contacto, el resto de las columnas puede contener diferentes valores arbitrarios y complementarios al teléfono principal.
-Estas columnas adicionales, serán desplegadas en la pantalla del agente cuando se establezca la comunicación con un cliente cuyo registro se encuentre dentro de la base de contactos de la campaña.</p>
-<img alt="_images/campaigns_contactdb.png" src="_images/campaigns_contactdb.png" />
-<p><em>Figure 4: Contacts CSV file</em></p>
-<p>Disponiendo entonces de una base de contactos, se puede proceder con la carga del archivo en el sistema accediendo al punto de menú; <em>Contacts → New contacts database</em></p>
+<p>Deben estar almacenadas en archivos con formato CSV con los campos separados con coma y además generadas en la codificacipón UTF-8 (requisito excluyente). Debe existir al menos una columna
+que contenga un teléfono de cada contacto (registro) del archivo, el resto de las columnas puede contener cualquier contenido, generalmente cada registro cuenta con datos complementarios
+al teléfono principal. Éstos datos son expuestos en la pantalla de agente a la hora de establecer una comunicación entre ambos (agente y contacto de la base).</p>
+<img alt="_images/campaigns_contactdb_1.png" src="_images/campaigns_contactdb_1.png" />
+<p><em>Figure 4: Contacts CSV file - text editor view</em></p>
+<img alt="_images/campaigns_contactdb_2.png" src="_images/campaigns_contactdb_2.png" />
+<p><em>Figure 5: Contacts CSV file - libreoffice excel view</em></p>
+<p>Se dispone entonces de una base de contactos (csv) para proceder con la carga del archivo en el sistema accediendo al punto de menú; <em>Contacts → New contacts database</em></p>
 <img alt="_images/campaigns_upload_contacts.png" src="_images/campaigns_upload_contacts.png" />
-<p><em>Figure 5: New contact database</em></p>
+<p><em>Figure 6: New contact database</em></p>
+<p>Se debe indicar con un check, cuales columnas son las que almacenan teléfonos, como se indica en la figura 7.</p>
+<img alt="_images/campaigns_upload_contacts_2.png" src="_images/campaigns_upload_contacts_2.png" />
+<p><em>Figure 7: Tel check</em></p>
+<p>Finalmente se salva el archivo y el mismo queda disponible como una base de contactos del sistema instanciable por cualquier tipo de campaña.</p>
 </div>
 <div class="section" id="formularios">
 <h2>Formularios<a class="headerlink" href="#formularios" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>Los formularios de campaña constituyen un elemento que permite recolectar información de la llamada. Son diseñados dentro de OMniLeads conjugando en una vista estática diferentes tipos campos (texto, fecha, de multiple selección y área de texto).</p>
+<p>Los formularios de campaña constituyen un elemento que permite recolectar información de la interacción con la persona detrás de la comunicación establecida.
+Son diseñados dentro de OMniLeads conjugando en una vista estática diferentes tipos campos (texto, fecha, de multiple selección y área de texto).</p>
 <p>Para crear formularios se debe acceder al punto de menú; <em>Campaigns → New form</em>. Allí</p>
-<img alt="_images/campaigns_newform.png" src="_images/campaigns_newform.png" />
-<p><em>Figure 6: New capaign form</em></p>
+<p>Los formularios pueden contener campos del tipo:</p>
+<ul class="simple">
+<li><strong>Texto</strong></li>
+<li><strong>Fecha</strong></li>
+<li><strong>Combo de selección múltiple</strong></li>
+<li><strong>Campo de complementarios</strong></li>
+</ul>
+<p>En la figura 8 se ejemplifica un campo del tipo «combo» dentro de la creación de un formulario.</p>
+<img alt="_images/campaigns_newform_1.png" src="_images/campaigns_newform_1.png" />
+<p><em>Figure 8: New campaign form</em></p>
+<p>Podemos generar un formulario de ejemplo de encuesta de satisfacción con el aspecto de la figura 9.</p>
+<img alt="_images/campaigns_newform_2.png" src="_images/campaigns_newform_2.png" />
+<p><em>Figure 9: Survey campaign form</em></p>
+</div>
+<div class="section" id="campanas-vs-calificaciones-vs-formularios">
+<h2>Campañas VS Calificaciones VS Formularios<a class="headerlink" href="#campanas-vs-calificaciones-vs-formularios" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>Para explicar la relación entre éstos componenetes, debemos recordar que múltiples formularios pueden ser asignados a una campaña. La idea es que diferentes calificaciones de una campaña
+pueden disparar diferentes formularios, permitiendo así a la operación de recolectar mediante formularios previamentes diseñados, información asociada a la interacción entre el
+agente de OMniLeads y la persona en el otro extremo de la comunicación dentro de la campaña.</p>
+<p>Resulta importante explicar conceptualmrnte cómo se utilizan los formularios de campaña en OMniLeads. Antes que nada aclarar que en el marco de una campaña a la hora de asignar
+calificaciones, se van a poder definir calificaciones normales y calificaciones «de gestión» o «engaged». Éstas últimas son las que disparan los formularios de campaña.</p>
+<img alt="_images/campaigns_calldispositions_add.png" src="_images/campaigns_calldispositions_add.png" />
+<p><em>Figure 10: Call dispositions inside campaign</em></p>
+<p>En el ejemplo de la figura 10, contamos con dos calificaciones del tipo engaged, por un lado la calificación «Survey on demand client»
+que tiene asociado el formulario «Survey On Demand» y por el otro la calificación «Survey» que dispara el formulario «Survey Clients».</p>
+<p>Siempre que haya una llamada activa entre un agente y un contacto de la base de la campaña, el agente dispone de los datos complementarios al teléfono del contacto en su pantalla
+junto al combo de selección de calificación para el contacto actual. Si el agente selecciona y guarda una calificación del tipo «gestión», entonces se dispara en la pantalla de agente
+el formulario asociado a la calificación dentro de la campaña.</p>
+<img alt="_images/campaigns_dispositions_engaged.png" src="_images/campaigns_dispositions_engaged.png" />
+<p><em>Figure 11: Engaged dispostions and forms</em></p>
 </div>
 <div class="section" id="interaccion-con-un-crm-externo">
 <h2>Interacción con un CRM externo<a class="headerlink" href="#interaccion-con-un-crm-externo" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>Esta funcionalidad permite lanzar una petición «get» con datos del contacto y la llamada desde OMniLeads hacia un CRM basado en tecnología web (requisito), permitiendo así que cada agente del call center disponga automáticamente
-de una vista del CRM asociada a los datos del contacto asociado a la comunicación actual.</p>
+<p>Esta funcionalidad permite lanzar una petición «HTTP - Get» utilizando datos de la llamada actual, desde OMniLeads hacia un CRM basado en tecnología web (requisito excluyente),
+permitiendo así que cada agente del call center disponga automáticamente de una vista del contacto de la comunicación actual, sobre el CRM Web externo.</p>
 <p>En cada llamada al CRM se pueden enviar datos de la llamada y el contacto como por ejemplo:</p>
 <ul class="simple">
-<li>El path a la grabación de la llamada</li>
-<li>El «id» del agente</li>
-<li>El «id» de la campaña</li>
-<li>Cualquiera de las columnas de la base asociada a la campaña</li>
+<li>El «path» de la grabación de la llamada.</li>
+<li>El «id» del agente.</li>
+<li>El «id» de la campaña.</li>
+<li>Cualquiera de las columnas de la base asociada a la campaña.</li>
 </ul>
 <p>Entre otros parámetros.</p>
 </div>
 <div class="section" id="campanas-manuales">
 <h2>Campañas Manuales<a class="headerlink" href="#campanas-manuales" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>Dentro de este insiso se ejemplifica el paso a paso de una creación</p>
+<p>Dentro de este inciso se ejemplifica el paso a paso de cómo generar una campaña de llamadas manuales.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="campaigns_manual.html">Manual Call Campaign</a></li>
+<li class="toctree-l1"><a class="reference internal" href="campaigns_manual.html">Campañas manuales</a></li>
 </ul>
 </div>
 </div>
 <div class="section" id="campanas-preview">
 <h2>Campañas Preview<a class="headerlink" href="#campanas-preview" title="Enlazar permanentemente con este título">¶</a></h2>
-<p>En el siguiente video se expone paso a paso la creación y puesta en marcha de una campaña preview. Además se ejemplifica la operación del agente dentro de la misma.</p>
-<iframe src="https://player.vimeo.com/video/320950602" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe><p>Para profundizar en el asunto ingresar al link, donde se explica cada pantalla de configuración detalladamente.</p>
+<p>En este inciso nos adentramos en el mundo de las campañas preview.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="campaigns_preview.html">Preview Campaigns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="campaigns_preview.html">Campañas preview</a></li>
 </ul>
 </div>
 </div>
 <div class="section" id="campanas-con-discador-predictivo">
 <h2>Campañas con discador predictivo<a class="headerlink" href="#campanas-con-discador-predictivo" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>En este apartado desplegamos todo lo inherente a las campañas con discador predictivo.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="campaigns_dialer.html">Campañas con discador predictivo</a><ul>
@@ -301,10 +340,6 @@ de una vista del CRM asociada a los datos del contacto asociado a la comunicaci�
 <div class="section" id="campanas-entrantes">
 <h2>Campañas Entrantes<a class="headerlink" href="#campanas-entrantes" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>En este capítulo se repasan todas las funcionalidades asociadas al tratamiento de llamadas entrantes.</p>
-<p>En el siguiente video se expone paso a paso la creación y puesta en marcha de una campaña entrante.</p>
-<iframe src="https://player.vimeo.com/video/320941143" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe><p>En este siguiente video se ejemplifica cómo configurar un PBX basado en Asterisk para derivar llamadas hacia campañas entrantes de OMniLeads, desde un IVR del PBX. Aunque la configuración expuesta también permite
-derivar llamadas desde cualquier elemento del PBX, incluyendo las llamadas generadas o transferidas desde extensiones del PBX con destino en alguna campaña de OMniLeads.</p>
-<iframe src="https://player.vimeo.com/video/320955286" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe><p>Para profundizar en cada una de las funcionalidaes pertinentes al mundo de las llamadas entrantes, se recomienda ingresar a cada uno de los links expuestos debajo.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="campaigns_inbound.html">Campañas entrantes</a><ul>
@@ -327,12 +362,7 @@ o el supervisor agignado. Entonces en lugar de tener que crear campañas myu sim
 <p>A partir de generar un template (que se genera como una campaña), se pasa a disponer del mismo, de manera tal que simplemente seleccionando el template y la opción <em>Create campaign from template</em> se genera
 una nueva campaña con todos los parámetros especificados en el template como configurados en la nueva campaña.</p>
 <img alt="_images/campaigns_template.png" src="_images/campaigns_template.png" />
-<p><em>Figure 6: templates</em></p>
-</div>
-<div class="section" id="agentes-llamadas-y-calificaciones">
-<h2>Agentes, llamadas y calificaciones<a class="headerlink" href="#agentes-llamadas-y-calificaciones" title="Enlazar permanentemente con este título">¶</a></h2>
-<img alt="_images/campaigns_dispositions_engaged.png" src="_images/campaigns_dispositions_engaged.png" />
-<p><em>Figure 6: Dispositions and agents</em></p>
+<p><em>Figure 13: templates</em></p>
 </div>
 </div>
 
@@ -344,7 +374,7 @@ una nueva campaña con todos los parámetros especificados en el template como c
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="campaigns_manual.html" class="btn btn-neutral float-right" title="Manual Call Campaign" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="campaigns_manual.html" class="btn btn-neutral float-right" title="Campañas manuales" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="telephony_settings_bpo.html" class="btn btn-neutral float-left" title="Troncal SIP con proveedor de acceso PSTN" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -131,25 +131,28 @@ class CampanaTemplateCreateCampanaMixin(object):
         campana_template = get_object_or_404(Campana, pk=pk)
         current_step = self.steps.current
         if current_step == self.OPCIONES_CALIFICACION:
-            initial_data = campana_template.opciones_calificacion.values('nombre', 'tipo')
             opts_calif_init_formset = context['wizard']['form']
-            form_kwargs = self.get_form_kwargs(current_step)['form_kwargs']
-            calif_init_formset = OpcionCalificacionFormSet(
-                initial=initial_data, form_kwargs=form_kwargs)
-            calif_init_formset.extra = len(initial_data) - 1
-            calif_init_formset.prefix = opts_calif_init_formset.prefix
-            context['wizard']['form'] = calif_init_formset
+            if not opts_calif_init_formset.is_bound:
+                initial_data = campana_template.opciones_calificacion.values(
+                    'nombre', 'tipo', 'formulario')
+                form_kwargs = self.get_form_kwargs(current_step)['form_kwargs']
+                calif_init_formset = OpcionCalificacionFormSet(
+                    initial=initial_data, form_kwargs=form_kwargs)
+                calif_init_formset.extra = len(initial_data) - 1
+                calif_init_formset.prefix = opts_calif_init_formset.prefix
+                context['wizard']['form'] = calif_init_formset
         if current_step == self.PARAMETROS_CRM:
-            initial_data = campana_template.parametros_crm.values(
-                'tipo', 'valor', 'nombre')
-            bd_contacto = campana_template.bd_contacto
-            columnas_bd = obtener_opciones_columnas_bd(bd_contacto, COLUMNAS_DB_DEFAULT)
             params_crm_init_formset = context['wizard']['form']
-            param_crms_formset = ParametrosCrmFormSet(
-                initial=initial_data, form_kwargs={'columnas_bd': columnas_bd})
-            param_crms_formset.extra = len(initial_data) + 1
-            param_crms_formset.prefix = params_crm_init_formset.prefix
-            context['wizard']['form'] = param_crms_formset
+            if not params_crm_init_formset.is_bound:
+                initial_data = campana_template.parametros_crm.values(
+                    'tipo', 'valor', 'nombre')
+                bd_contacto = campana_template.bd_contacto
+                columnas_bd = obtener_opciones_columnas_bd(bd_contacto, COLUMNAS_DB_DEFAULT)
+                param_crms_formset = ParametrosCrmFormSet(
+                    initial=initial_data, form_kwargs={'columnas_bd': columnas_bd})
+                param_crms_formset.extra = max(len(initial_data), 1)
+                param_crms_formset.prefix = params_crm_init_formset.prefix
+                context['wizard']['form'] = param_crms_formset
         return context
 
     def get_form_kwargs(self, step):
@@ -315,28 +318,30 @@ class CampanaWizardMixin(object):
         campana = campana_form.instance
         queue_member_formset = form_list[index_form_agentes]
         queue_member_formset.instance = campana.queue_campana
+        if queue_member_formset.is_valid():
+            # obtenemos los agentes que estan logueados
+            sip_agentes_logueados = obtener_sip_agentes_sesiones_activas_kamailio()
 
-        # obtenemos los agentes que estan logueados
-        sip_agentes_logueados = obtener_sip_agentes_sesiones_activas_kamailio()
+            # se asignan valores por defecto en cada una de las instancias
+            # de QueueMember a salvar y se adicionan a sus respectivas colas en asterisk
+            for queue_form in queue_member_formset.forms:
+                if queue_form.cleaned_data != {}:
+                    # no se tienen en cuenta formularios vacíos
+                    agente = queue_form.instance.member
+                    queue_member_defaults = QueueMember.get_defaults(agente, campana)
+                    queue_form.instance.id_campana = queue_member_defaults['id_campana']
+                    queue_form.instance.membername = queue_member_defaults['membername']
+                    queue_form.instance.interface = queue_member_defaults['interface']
+                    # por ahora no definimos 'paused'
+                    queue_form.instance.paused = queue_member_defaults['paused']
+                    queue_form_created = True
+                    if queue_form.instance.pk is not None:
+                        queue_form_created = False
+                    queue_form.save(commit=False)
+                    if (agente.sip_extension in sip_agentes_logueados) and queue_form_created:
+                        adicionar_agente_cola(agente, queue_form.instance, campana)
 
-        # se asignan valores por defecto en cada una de las instancias
-        # de QueueMember a salvar y se adicionan a sus respectivas colas en asterisk
-        for queue_form in queue_member_formset.forms:
-            agente = queue_form.instance.member
-            queue_member_defaults = QueueMember.get_defaults(agente, campana)
-            queue_form.instance.id_campana = queue_member_defaults['id_campana']
-            queue_form.instance.membername = queue_member_defaults['membername']
-            queue_form.instance.interface = queue_member_defaults['interface']
-            # por ahora no definimos 'paused'
-            queue_form.instance.paused = queue_member_defaults['paused']
-            queue_form_created = True
-            if queue_form.instance.pk is not None:
-                queue_form_created = False
-            queue_form.save(commit=False)
-            if (agente.sip_extension in sip_agentes_logueados) and queue_form_created:
-                adicionar_agente_cola(agente, queue_form.instance, campana)
-
-        queue_member_formset.save()
+            queue_member_formset.save()
 
 
 class CampanaEntranteMixin(CampanaWizardMixin):
@@ -381,6 +386,7 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         queue_form.instance.eventwhencalled = True
         queue_form.instance.ringinuse = True
         queue_form.instance.setinterfacevar = True
+        # TODO: OML-496
         audio_anuncio_periodico = queue_form.cleaned_data['audios']
         if audio_anuncio_periodico:
             queue_form.instance.announce = audio_anuncio_periodico.audio_asterisk
@@ -411,6 +417,7 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
 
     def done(self, form_list, **kwargs):
         queue = self._save_forms(form_list, Campana.ESTADO_ACTIVA)
+        self._insert_queue_asterisk(queue)
         # salvamos los supervisores y agentes asignados a la campaña
         self.save_supervisores(form_list, -2)
         self.save_agentes(form_list, -1)
@@ -418,7 +425,6 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         # configurar un acceso en alguna ruta entrante
         DestinoEntrante.crear_nodo_ruta_entrante(queue.campana)
         # se insertan los datos de la campaña en asterisk
-        self._insert_queue_asterisk(queue)
         return HttpResponseRedirect(reverse('campana_list'))
 
     def get_form_initial(self, step):
@@ -458,9 +464,12 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
         campana_form.instance.save()
 
         queue_form = form_list[int(self.COLA)]
+        # TODO: OML-496
         audio_anuncio_periodico = queue_form.cleaned_data['audios']
         if audio_anuncio_periodico:
             queue_form.instance.announce = audio_anuncio_periodico.audio_asterisk
+        else:
+            queue_form.instance.announce = None
         queue_form.instance.save()
 
         campana = campana_form.instance

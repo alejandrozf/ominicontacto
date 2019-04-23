@@ -84,9 +84,7 @@
   args:
           chdir: "{{ kamailio_location }}/etc/certs"
   register: command_result
-  failed_when:
-    - "'already been issued' not in command_result.stderr"
-    - "command_result.rc != 0"
+  failed_when: false
   become: true
   become_method: sudo
 #- set_fact: static_route=/home/freetech/ominicontacto/ominicontacto_app/static/ominicontacto

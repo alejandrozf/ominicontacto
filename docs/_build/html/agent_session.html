@@ -1,0 +1,343 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="es" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="es" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Login &mdash; documentación de OMniLeads - develop</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Índice" href="genindex.html" />
+    <link rel="search" title="Búsqueda" href="search.html" />
+    <link rel="next" title="Llamadas manuales desde listado de contactos" href="agent_manual.html" />
+    <link rel="prev" title="Manual de agente" href="agent.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> OMniLeads
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html">WebRTC; la tecnología subyacente de OMniLeads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_extra.html#caracteristicas-y-funcionalidades-de-omnileads">Características y funcionalidades de OMniLeads</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html">OML como Contact Center integrado a un PBX basado en SIP</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-en-una-compania-de-servicios-de-customer-contact">OML en una Compañia de servicios de Customer Contact</a></li>
+<li class="toctree-l1"><a class="reference internal" href="what_is_use_cases.html#oml-para-carriers-o-proveedores-de-cloud-pbx">OML para Carriers ó Proveedores de Cloud PBX</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Procedimientos de instalación</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="initial_settings.html">Configuración Inicial</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="telephony.html">Configuración de acceso a la PSTN</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="campaigns.html">Campañas Telefónicas</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="output.html">Metricas, grabaciones y supervisión</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="agent.html">Manual de agente</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="agent.html#sesion-del-agente">Sesión del agente</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Login</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#la-consola-de-agente">La consola de agente</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pausas">Pausas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#logout">Logout</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#campanas-manuales">Campañas manuales</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#campanas-preview">Campañas preview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#campanas-dialer">Campañas dialer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#campanas-entrantes">Campañas entrantes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#acciones-sobre-las-llamadas">Acciones sobre las llamadas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agent.html#agendas-calificaciones-y-contactos">Agendas, calificaciones y contactos</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="maintance.html">Gestiones del administrador IT</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="known_issues.html">Known Issues</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">OMniLeads</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="agent.html">Manual de agente</a> &raquo;</li>
+        
+      <li>Login</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/agent_session.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="login">
+<h1>Login<a class="headerlink" href="#login" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>Para acceder a la aplicación se ingresa el URL de su instancia de OMniLeads en su browser.</p>
+<p>Si la instancia de OMniLeads no dispone de certificados comerciales, al ingresar al sistema el usuario
+se topa con la advertencia de seguridad correspondiente al ingreso a un sitio <em>https</em> con un certificado auto-firmado.</p>
+<p>En ese caso, simplemente debe aceptar la advertencia y continuar, como lo indican las figuras 1 y 2.</p>
+<img alt="_images/about_agent_login_1.png" src="_images/about_agent_login_1.png" />
+<p><em>Figure 1: certificate is not trusted</em></p>
+<img alt="_images/about_agent_login_2.png" src="_images/about_agent_login_2.png" />
+<p><em>Figure 2: certificate is not trusted</em></p>
+<p>Al avanzar sobre el sitio, se despliega la pantalla de login, en donde el agente deberá ingresar su usuario y contraseña
+para acceder a la aplicación.</p>
+<img alt="_images/about_agent_login_4.png" src="_images/about_agent_login_4.png" />
+<p><em>Figure 3: login screen</em></p>
+<p>Luego de un login exitoso, se despliega la interfaz de agente. Lo primero que debe suceder es una advertencia
+del browser que notifica que OMniLeads desea acceder al micrófono del ordenador. Por supuesto, el usuario debe
+permitir esta acción, ya que precisa del micrófono para utilizar la aplicación a la hora de gestionar llamadas.</p>
+<img alt="_images/about_agent_login_5.png" src="_images/about_agent_login_5.png" />
+<p><em>Figure 4: OMniLeads wants to use your microphone</em></p>
+<p>Al permir el acceso al micrófono, entonces se procede con el resto del login. Esto implica la reproducción
+de un «audio» sobre el auricular del agente anunciando el login exitoso.</p>
+<p>Además el agente debe visualizar el webphone desplegado y en estado «Registered» como lo indica la figura 5.</p>
+<img alt="_images/about_agent_login_3.png" src="_images/about_agent_login_3.png" />
+<p><em>Figure 5: Succesful agent login</em></p>
+</div>
+<div class="section" id="la-consola-de-agente">
+<h1>La consola de agente<a class="headerlink" href="#la-consola-de-agente" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>La consola de agente es el componente sobre el cual el agente de OMniLeads puede realizar toda la gestión.
+En la figura 6 se puede observar su aspecto y además se diseccionó en sub-componentes que son explicados
+a continuación.</p>
+<img alt="_images/about_agent_console.png" src="_images/about_agent_console.png" />
+<p><em>Figure 6: the OMniLeads agent console</em></p>
+<p><strong>(1) Gestión de contactos</strong></p>
+<p>En esta sección encontramos las funcionalidades que permiten navegar entre los contactos de la base de las campañas,
+visualizar los contactos agendados para ser llamados en el futuro, listar el histórico de todas las calificaciones
+que fue realizando el agente y además acceder a las campañas del tipo Preview para solicitar contactos para gestionar.</p>
+<p>Todos estos aspectos serán ampliados en las próximas secciones.</p>
+<ol class="arabic simple" start="2">
+<li>Barra de estado</li>
+</ol>
+<p>En esta barra tenemos información sobre la sesión.</p>
+<img alt="_images/about_agent_console_statusbar.png" src="_images/about_agent_console_statusbar.png" />
+<p><em>Figure 7: status bar</em></p>
+<p>En la barra de estado hay dos cronómetros que van contabilizando la suma del tiempo de agente en pausa y en estado
+de Ready. Su color cambia de acuerdo a si el agente está en estado Ready (gris), En llamada (verde) o En pausa (amarillo)
+y además el estado también aparce como leyenda. Finalmente aparecen los botones de pausa y des-pausa, para que el agente
+pueda irse a pausa y salir de la misma.</p>
+<ol class="arabic simple" start="3">
+<li>Área de información dinámica</li>
+</ol>
+<p>En esta sección de la pantalla aparece toda la información que el agente va solicitando mientras navega en la gestión
+de contactos, así como también los datos de los contactos en el momento en que el agente procesa una nueva llamada.</p>
+<p><strong>(4) Webphone</strong></p>
+<p>El webphone OMniLeads es el componente pricipal dentro del módulo de telefonía. A continuación
+vamos a repasar los botones del mismo.</p>
+<img alt="_images/about_agent_console_webphone.png" src="_images/about_agent_console_webphone.png" />
+<p><em>Figure 8: Webphone</em></p>
+<blockquote>
+<div><ul class="simple">
+<li>a Estado del webphone. Debe siempre figurar como <em>Registered</em>. En caso contrario debe comunicarse con el administrador.</li>
+<li>b Allí se indica a qué número realizar una llamada manual.</li>
+<li>c Estos botones permiten disparar la acción de: llamar, cortar, re-llamar al último número y marcar una grabación. El botón de marcar una grabación será explicado más adelante.</li>
+<li>d Este botón permite modificar la campaña sobre la cual se procesa cada llamada manual. También se abordará más adelante en la sección «campañas manuales».</li>
+</ul>
+</div></blockquote>
+<p><strong>(5) Dock</strong></p>
+<p>El dock expone cada herramienta de comunicación. En la versión actual SOLAMENTE está funcional el webphone ya que
+OMniLeads actualmente soporta solamente llamadas telefónicas, en versiones futuras se comenzarán a activar otros componentes.</p>
+</div>
+<div class="section" id="pausas">
+<h1>Pausas<a class="headerlink" href="#pausas" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>El agente puede ingresar en modo pausa para que ninguna llamada de campañas entrantes o predictivas pueda ingresarle.
+Como bien se explica en la sección de «Configuración inicial», existen diferentes tipos de pausas que el administrador
+puede generar y mantener en el sistema. Por lo tanto el agente al ingresar en el estado de pausa, debe indicar
+a qué tipo de pausa.</p>
+<p>Para ingresar en una pausa se debe hacer click en el botón «Pausa» dentro de la barra de estado del agente.</p>
+<img alt="_images/about_agent_login_7.png" src="_images/about_agent_login_7.png" />
+<p><em>Figure 8: Pause</em></p>
+<p>Se despliega entonces el menú de selección del tipo de pausa.</p>
+<img alt="_images/about_agent_login_8.png" src="_images/about_agent_login_8.png" />
+<p><em>Figure 9: Pause class</em></p>
+<p>Finalmente, el agente entra en pausa. Debe notarse como cambia hacia el color «amarillo» la barra de estado,
+además en la barra se puede leer el tipo de pausa actual y finalmente se puede observar que
+el cronómetro de tiempo de pausa comienza a correr, mientras que el de tiempo de operación se frena.</p>
+<img alt="_images/about_agent_login_9.png" src="_images/about_agent_login_9.png" />
+<p><em>Figure 10: On Pause</em></p>
+</div>
+<div class="section" id="logout">
+<h1>Logout<a class="headerlink" href="#logout" title="Enlazar permanentemente con este título">¶</a></h1>
+<p>Para efectuar un logout se debe acceder al vértice superior izquierdo, tal como lo expone la figura 9.</p>
+<img alt="_images/about_agent_login_6.png" src="_images/about_agent_login_6.png" />
+<p><em>Figure 11: agent logout</em></p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="agent_manual.html" class="btn btn-neutral float-right" title="Llamadas manuales desde listado de contactos" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="agent.html" class="btn btn-neutral float-left" title="Manual de agente" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, omnileads
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

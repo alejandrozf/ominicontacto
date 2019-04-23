@@ -42,7 +42,7 @@ from ominicontacto_app.models import (
 )
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
-                                      validar_solo_ascii_y_sin_espacios)
+                                      validar_solo_ascii_y_sin_espacios, elimina_tildes)
 from configuracion_telefonia_app.models import DestinoEntrante
 
 from utiles_globales import validar_extension_archivo_audio
@@ -261,6 +261,7 @@ class QueueMemberForm(forms.ModelForm):
         super(QueueMemberForm, self).__init__(*args, **kwargs)
 
         self.fields['member'].queryset = members
+        self.initial['penalty'] = 0
 
     class Meta:
         model = QueueMember
@@ -708,6 +709,31 @@ class FieldFormularioForm(forms.ModelForm):
             "nombre_campo": forms.TextInput(attrs={'class': 'form-control'}),
             'values_select': forms.HiddenInput(),
         }
+
+    def clean_nombre_campo(self):
+        formulario = self.cleaned_data.get('formulario')
+        nombre_campo = self.cleaned_data.get('nombre_campo')
+        nombre_campo = elimina_tildes(nombre_campo)
+        if formulario.campos.filter(nombre_campo=nombre_campo).exists():
+            raise forms.ValidationError(_('No se puede crear un campo ya existente'))
+        return nombre_campo
+
+    def clean_values_select(self):
+        tipo = self.cleaned_data.get('tipo')
+        if not tipo == FieldFormulario.TIPO_LISTA:
+            return None
+        values_select = self.cleaned_data.get('values_select')
+        if values_select == '':
+            raise forms.ValidationError(_('La lista no puede estar vacía'))
+        try:
+            lista_values_select = json.loads(values_select)
+        except ValueError:
+            raise forms.ValidationError(_('Formato inválido'))
+        if type(lista_values_select) is not list:
+            raise forms.ValidationError(_('Formato inválido'))
+        if len(lista_values_select) == 0:
+            raise forms.ValidationError(_('La lista no puede estar vacía'))
+        return values_select
 
 
 class OrdenCamposForm(forms.Form):
@@ -1201,8 +1227,10 @@ class CampanaSupervisorUpdateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         supervisors_choices = kwargs.pop('supervisors_choices', [])
+        supervisors_required = kwargs.pop('supervisors_required', False)
         super(CampanaSupervisorUpdateForm, self).__init__(*args, **kwargs)
         self.fields['supervisors'].choices = supervisors_choices
+        self.fields['supervisors'].required = supervisors_required
 
     class Meta:
         model = Campana
@@ -1408,5 +1436,5 @@ ParametrosCrmFormSet = inlineformset_factory(
     Campana, ParametrosCrm, form=ParametrosCrmForm, extra=1, can_delete=True)
 
 QueueMemberFormset = inlineformset_factory(
-    Queue, QueueMember, formset=QueueMemberBaseFomset, form=QueueMemberForm, extra=0,
-    can_delete=True, min_num=1)
+    Queue, QueueMember, formset=QueueMemberBaseFomset, form=QueueMemberForm, extra=1,
+    can_delete=True, min_num=0)

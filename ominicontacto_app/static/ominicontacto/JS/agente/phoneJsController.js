@@ -429,7 +429,6 @@ class PhoneJSController {
                     m_seconds
                 );
             } else {
-                this.timers.operacion.start();
                 this.phone.cleanLastCallData();
             }
         } else {
