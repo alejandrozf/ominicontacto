@@ -18,12 +18,23 @@
 #
 
 from django.views.generic import TemplateView
+from ominicontacto_app.services.kamailio_service import KamailioService
 from reportes_app.reportes.reporte_llamadas_supervision import \
     ReporteDeLLamadasEntrantesDeSupervision, ReporteDeLLamadasSalientesDeSupervision
 
 
 class SupervisionAgentesView(TemplateView):
     template_name = 'supervision_agentes.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SupervisionAgentesView, self).get_context_data(**kwargs)
+        supervisor = self.request.user.get_supervisor_profile()
+        kamailio_service = KamailioService()
+        sip_usuario = kamailio_service.generar_sip_user(supervisor.sip_extension)
+        sip_password = kamailio_service.generar_sip_password(sip_usuario)
+        context['sip_usuario'] = sip_usuario
+        context['sip_password'] = sip_password
+        return context
 
 
 class SupervisionCampanasEntrantesView(TemplateView):

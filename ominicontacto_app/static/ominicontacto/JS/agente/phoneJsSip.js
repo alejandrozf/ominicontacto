@@ -62,7 +62,6 @@ class PhoneJS {
         this.WebSocketHost = WebSocketHost;
 
         /* Components / Colaborators */
-        this.oml_api = new OMLAPI();
         this.userAgent = undefined;
         this.currentSession = undefined;
 
@@ -166,9 +165,13 @@ class PhoneJS {
         */
         this.userAgent.on("newRTCSession", function(e) {
             phone_logger.log('newRTCSession');
-            // TODO: En realidad pueden caer varias sessiones a la vez.
-            //       Si ya existe alguna debería rechazarse la siguiente hasta saber manejar
-            //       multiples
+            // Si cae una nueva session mientras hay otra activa se la rechaza.
+            if (self.currentSession !== undefined){
+                e.session.terminate();
+                return;
+            }
+
+
             self.invite_request = e.request;
             self.currentSession = e.session;
             self.session_data = new SessionData(self.currentSession,
@@ -218,6 +221,9 @@ class PhoneJS {
                 if (self.session_data.is_call){
                     phone_logger.log('PhoneJS: onCallEnded');
                     self.eventsCallbacks.onCallEnded.fire();
+                }
+                else {
+                    self.cleanLastCallData();
                 }
             });
             // TODO: SACAR ESTO, SOLO ESTA PARA DEBUG
@@ -464,9 +470,9 @@ class PhoneJS {
     }
 
     cleanLastCallData() {
-        self.currentSession = undefined;
-        self.session_data = undefined;
-        self.local_call = undefined;
+        this.currentSession = undefined;
+        this.session_data = undefined;
+        this.local_call = undefined;
     }
 
 };
@@ -501,13 +507,17 @@ class SessionData {
 
     setRemoteCallInfo(invite_request) {
         var call_data = {}
-        call_data.id_campana = invite_request.headers.Idcamp[0].raw;
-        call_data.campana_type = invite_request.headers.Omlcamptype[0].raw;
-        call_data.telefono = invite_request.headers.Omloutnum[0].raw;
-        if (!this.is_internal_call) {
+        if (invite_request.headers.Idcamp)
+            call_data.id_campana = invite_request.headers.Idcamp[0].raw;
+        if (invite_request.headers.Omlcamptype)
+            call_data.campana_type = invite_request.headers.Omlcamptype[0].raw;
+        if (invite_request.headers.Omloutnum)
+            call_data.telefono = invite_request.headers.Omloutnum[0].raw;
+        if (!this.is_internal_call && invite_request.headers.Omlcallid) {
             call_data.call_id = invite_request.headers.Omlcallid[0].raw;
         }
-        call_data.call_type = invite_request.headers.Omlcalltypeidtype[0].raw;
+        if (invite_request.headers.Omlcalltypeidtype)
+            call_data.call_type = invite_request.headers.Omlcalltypeidtype[0].raw;
         if (invite_request.headers.Idcliente)
             call_data.id_contacto = invite_request.headers.Idcliente[0].raw;
         else
