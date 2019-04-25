@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-01 12:10-0300\n"
+"POT-Creation-Date: 2019-04-25 18:37-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,23 +18,37 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: configuracion_telefonia_app/forms.py:62
+#: configuracion_telefonia_app/forms.py:55
+#, fuzzy
+#| msgid "Nombre"
+msgid "Nombre Troncal"
+msgstr "Nombre Troncal"
+
+#: configuracion_telefonia_app/forms.py:56
+msgid "Parámetros SIP"
+msgstr "Parámetros SIP"
+
+#: configuracion_telefonia_app/forms.py:57
+msgid "Cadena de registración"
+msgstr ""
+
+#: configuracion_telefonia_app/forms.py:67
 msgid "Patrón de discado"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:63
+#: configuracion_telefonia_app/forms.py:68
 #: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:33
 msgid "Prefijo"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:71
-#: configuracion_telefonia_app/forms.py:280
+#: configuracion_telefonia_app/forms.py:76
+#: configuracion_telefonia_app/forms.py:285
 msgid "En segundos"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:82
-#: configuracion_telefonia_app/forms.py:201
-#: configuracion_telefonia_app/forms.py:284
+#: configuracion_telefonia_app/forms.py:87
+#: configuracion_telefonia_app/forms.py:206
+#: configuracion_telefonia_app/forms.py:289
 #: configuracion_telefonia_app/models.py:42
 #: configuracion_telefonia_app/models.py:149
 #: configuracion_telefonia_app/models.py:254
@@ -45,108 +59,108 @@ msgstr ""
 #: configuracion_telefonia_app/templates/lista_troncal_sip.html:31
 #: configuracion_telefonia_app/templates/lista_validaciones_fecha_hora.html:32
 msgid "Nombre"
-msgstr ""
+msgstr "Nombre"
 
-#: configuracion_telefonia_app/forms.py:83
+#: configuracion_telefonia_app/forms.py:88
 msgid "Ring time"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:84
+#: configuracion_telefonia_app/forms.py:89
 msgid "Dial options"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:101
+#: configuracion_telefonia_app/forms.py:106
 msgid "Debe ingresar al menos un patrón de discado"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:109
+#: configuracion_telefonia_app/forms.py:114
 msgid "Los patrones de discado deben ser diferentes"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:148
+#: configuracion_telefonia_app/forms.py:153
 msgid "Debe ingresar al menos un troncal"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:154
+#: configuracion_telefonia_app/forms.py:159
 msgid "Los troncales deben ser distintos"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:183
-#: configuracion_telefonia_app/forms.py:435
-#: configuracion_telefonia_app/forms.py:476
+#: configuracion_telefonia_app/forms.py:188
+#: configuracion_telefonia_app/forms.py:440
+#: configuracion_telefonia_app/forms.py:481
 msgid "Tipo de destino"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:200
+#: configuracion_telefonia_app/forms.py:205
 #: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:32
 msgid "Número DID"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:202
+#: configuracion_telefonia_app/forms.py:207
 msgid "Prefijo caller id"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:203
+#: configuracion_telefonia_app/forms.py:208
 #: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:34
 msgid "Idioma"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:204
-#: configuracion_telefonia_app/forms.py:443
-#: configuracion_telefonia_app/forms.py:483
+#: configuracion_telefonia_app/forms.py:209
+#: configuracion_telefonia_app/forms.py:448
+#: configuracion_telefonia_app/forms.py:488
 msgid "Destino"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:228
+#: configuracion_telefonia_app/forms.py:233
 msgid "Archivo de OML"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:228
+#: configuracion_telefonia_app/forms.py:233
 msgid "Archivo externo"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:238
+#: configuracion_telefonia_app/forms.py:243
 msgid "Destino time out:"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:241
+#: configuracion_telefonia_app/forms.py:246
 msgid "Tipo de destino para time out:"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:248
+#: configuracion_telefonia_app/forms.py:253
 msgid "Destino inválido:"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:251
+#: configuracion_telefonia_app/forms.py:256
 msgid "Tipo de destino para destino inválido:"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:285
+#: configuracion_telefonia_app/forms.py:290
 msgid "Descripción"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:340
+#: configuracion_telefonia_app/forms.py:345
 msgid "Debe escoger un audio como archivo externo"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:343
-#: configuracion_telefonia_app/forms.py:351
+#: configuracion_telefonia_app/forms.py:348
+#: configuracion_telefonia_app/forms.py:356
 msgid "Debe escoger un archivo de OML"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:426
+#: configuracion_telefonia_app/forms.py:431
 msgid "Los valores de DTMF deben ser distintos"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:442
+#: configuracion_telefonia_app/forms.py:447
 msgid "DTMF"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:462
+#: configuracion_telefonia_app/forms.py:467
 msgid "El valor del DTMF debe ser un dígito o alguno de: #, -, *"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:518
+#: configuracion_telefonia_app/forms.py:523
 msgid "Los destinos deben ser distintos"
 msgstr ""
 
@@ -164,7 +178,7 @@ msgstr ""
 
 #: configuracion_telefonia_app/models.py:51
 msgid "Text config"
-msgstr ""
+msgstr "Text config"
 
 #: configuracion_telefonia_app/models.py:162
 msgid "Lunes"
@@ -858,3 +872,6 @@ msgstr ""
 #: configuracion_telefonia_app/views.py:885
 msgid "Se ha eliminado la Validación Fecha Hora."
 msgstr ""
+
+#~ msgid "Detalles SIP"
+#~ msgstr "Detalles SIP"
