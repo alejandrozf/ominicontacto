@@ -478,7 +478,7 @@ class EstadisticasService():
 
         if campana.type == Campana.TYPE_ENTRANTE:
             serie = [
-                {'value': cantidad_llamadas[1][0], 'color': 'gree'},
+                {'value': cantidad_llamadas[1][0], 'color': 'yellow'},
                 {'value': cantidad_llamadas[1][1], 'color': 'green'},
                 {'value': cantidad_llamadas[1][2], 'color': 'green'},
                 {'value': cantidad_llamadas[1][3], 'color': 'red'},
