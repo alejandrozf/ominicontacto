@@ -1,4 +1,4 @@
-/oml_settings_local.py
+/ominicontacto/settings/oml_settings_local.py
 /ominicontacto_app/static/ominicontacto/JS/config.js
 /ominicontacto_app/static/ominicontacto/voip.cert
 /Omnisup/config.php

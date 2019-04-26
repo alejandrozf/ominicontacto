@@ -9,7 +9,7 @@ KAM_EXEC="$DOCKER exec -i kamailio /bin/bash -c"
 AST_EXEC="$DOCKER exec -i asterisk /bin/bash -c"
 DB_EXEC="$DOCKER exec -i database /bin/bash -c"
 OMNIAPP_EXEC="$DOCKER exec -it -u omnileads omniapp /bin/bash -c"
-CP_EXEC="$DOCKER cp omniapp:/opt/omnileads/local/oml_settings_local.py $REPO_LOCATION"
+CP_EXEC="$DOCKER cp omniapp:/opt/omnileads/local/oml_settings_local.py $REPO_LOCATION/ominicontacto/settings/"
 
 if [ -z $DOCKER ];then
   echo "Docker not installed or configured, exiting"

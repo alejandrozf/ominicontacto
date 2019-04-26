@@ -45,7 +45,7 @@ before_script:
   - touch sox
   - chmod +x sox
   - mv sox /usr/bin/
-  - pip install -r requirements.txt
+  - pip install -r requirements/tests.txt
 
 test:
   variables:
@@ -53,6 +53,7 @@ test:
     POSTGRES_USER: omnileads
     POSTGRES_PASSWORD: omnileadsrw
     DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
+    DJANGO_SETTINGS_MODULE: "ominicontacto.settings.production"
   script:
     - flake8
     - python manage.py test --failfast

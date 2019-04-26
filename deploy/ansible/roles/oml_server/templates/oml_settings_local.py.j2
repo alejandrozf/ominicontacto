@@ -2,16 +2,6 @@
 
 import os
 
-#Se setea debug True o False, dependiendo de desarrollo
-
-{% if desarrollo == 1 %}
-DEBUG = True
-{% else %}
-COMPRESS_ENABLED = True
-DEBUG = False
-{% endif %}
-TEMPLATE_DEBUG = DEBUG
-
 ALLOWED_HOSTS = [
     "*",
 ]
@@ -34,7 +24,7 @@ DATABASES = {
 
 # Ubicaciones de staticos y media
 STATIC_ROOT = "{{ install_prefix }}static"
-MEDIA_ROOT =    "{{ install_prefix }}media_root"
+MEDIA_ROOT = "{{ install_prefix }}media_root"
 
 # IPs y hostnames
 OML_OMNILEADS_IP = "{{ omniapp_fqdn }}"
@@ -56,9 +46,9 @@ SESSION_COOKIE_AGE = {{ session_cookie_age }}
 # Ubicaciones de archivos
 OML_SIP_FILENAME = "{{ asterisk_location }}/etc/asterisk/oml_sip_endpoints.conf"
 OML_QUEUES_FILENAME = "{{ asterisk_location }}/etc/asterisk/oml_queues.conf"
-OML_RUTAS_SALIENTES_FILENAME="{{ asterisk_location }}/etc/asterisk/oml_extensions_outr.conf"
+OML_RUTAS_SALIENTES_FILENAME = "{{ asterisk_location }}/etc/asterisk/oml_extensions_outr.conf"
 OML_ASTERISK_REMOTEPATH = "{{ asterisk_location }}/etc/asterisk/"
-OML_BACKLIST_REMOTEPATH  = "{{ asterisk_location }}/var/spool/asterisk/"
+OML_BACKLIST_REMOTEPATH = "{{ asterisk_location }}/var/spool/asterisk/"
 OML_WOMBAT_FILENAME = "{{ install_prefix }}wombat-json/"
 
 EPHEMERAL_USER_TTL = 28800
@@ -88,7 +78,7 @@ LOGGING = {
     'formatters': {
         'verbose': {
             'format': ('%(asctime)-15s [%(levelname)7s] '
-                '%(name)20s - %(message)s')
+                       '%(name)20s - %(message)s')
         },
     },
     'filters': {
@@ -116,23 +106,23 @@ LOGGING = {
             'level': 'INFO',
         },
     },
-   'django.security.DisallowedHost': {
+    'django.security.DisallowedHost': {
         'handlers': ['mail_admins'],
         'level': 'CRITICAL',
         'propagate': False,
     },
 }
 
-#Defender variables
+# Defender variables
 DEFENDER_BEHIND_REVERSE_PROXY = True
 DEFENDER_LOGIN_FAILURE_LIMIT = 1
 DEFENDER_DISABLE_IP_LOCKOUT = True
-DURACION_ASIGNACION_CONTACTO_PREVIEW=30
+DURACION_ASIGNACION_CONTACTO_PREVIEW = 30
 
 # Comando y paths de audios del sistema
 TMPL_OML_AUDIO_CONVERSOR = ["sox", "-t", "wav", "<INPUT_FILE>",
-    "-r", "8k", "-c", "1", "-e", "signed-integer",
-    "-t", "wav", "<OUTPUT_FILE>"]
+                            "-r", "8k", "-c", "1", "-e", "signed-integer",
+                            "-t", "wav", "<OUTPUT_FILE>"]
 TMPL_OML_AUDIO_CONVERSOR_EXTENSION = ".wav"
 ASTERISK_AUDIO_PATH = "{{ asterisk_location }}/var/lib/asterisk/sounds/"
 OML_AUDIO_FOLDER = "oml/"
@@ -142,29 +132,4 @@ MONITORFORMAT = '{{ formato_conversion }}'
 # Calificacion de agenda
 CALIFICACION_REAGENDA = '{{ schedule }}'
 
-{% if desarrollo == 1 %}
-CORS_ORIGIN_ALLOW_ALL = True
-LOCAL_APPS = ['sslserver', 'django_extensions', 'corsheaders']
-DJANGO_CORS_HEADERS = True
-DJANGO_DEBUG_TOOLBAR = True
-if DJANGO_DEBUG_TOOLBAR:
-    INTERNAL_IPS = ['127.0.0.1', OML_OMNILEADS_IP]
-    def show_toolbar(request):
-        return True
-    DEBUG_TOOLBAR_CONFIG = {
-        "SHOW_TOOLBAR_CALLBACK" : show_toolbar,
-    }
-    LOCAL_APPS += ['debug_toolbar']
-
-{% else %}
-LOCAL_APPS = []
-DJANGO_DEBUG_TOOLBAR = False
-DJANGO_CORS_HEADERS = False
-if DJANGO_DEBUG_TOOLBAR:
-    INTERNAL_IPS = ['127.0.0.1']
-{% endif %}
-
 CONSTANCE_CONFIG = {}
-MIDDLEWARE_PREPPEND = []
-MIDDLEWARE_APPEND = []
-TEMPLATES_CONTEXT_PROCESORS_APPEND = []

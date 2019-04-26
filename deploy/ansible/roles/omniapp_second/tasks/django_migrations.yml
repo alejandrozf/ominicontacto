@@ -35,7 +35,6 @@
   django_manage: >
           command={{ item }}
           app_path={{ install_prefix }}ominicontacto
-          settings=ominicontacto.settings
           virtualenv={{ install_prefix }}virtualenv
   with_items:
           - migrate --noinput
@@ -51,7 +50,7 @@
   tags: postinstall
 
 - name: Run collectstatic, compress and regenerar_asterisk commands
-  django_manage: command={{ item }} app_path={{ install_prefix }}ominicontacto settings=ominicontacto.settings virtualenv={{ install_prefix }}virtualenv
+  django_manage: command={{ item }} app_path={{ install_prefix }}ominicontacto virtualenv={{ install_prefix }}virtualenv
   with_items:
     - collectstatic
     - collectstatic_js_reverse
@@ -66,7 +65,7 @@
 
 # Se crea el usuario admin
 - name: Create admin superuser
-  django_manage: command="createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com" app_path={{ install_prefix }}ominicontacto settings=ominicontacto.settings virtualenv={{ install_prefix }}virtualenv
+  django_manage: command="createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com" app_path={{ install_prefix }}ominicontacto virtualenv={{ install_prefix }}virtualenv
   environment:
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
   register: result

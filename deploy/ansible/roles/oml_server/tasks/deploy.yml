@@ -127,6 +127,10 @@
   become_method: su
   become_user: "{{ usuario }}"
 
+- name: Generate requirements.txt file
+  template: src=roles/oml_server/templates/requirements.txt dest={{ install_prefix }}ominicontacto owner={{ usuario }} group={{ usuario }}
+  tags: postinstall
+
 # Se instalan los paquetes que hay en el requirements.txt usando pip
 - name: Setup virtualenv
   pip:
@@ -182,7 +186,11 @@
   tags: ['changenetwork','postinstall','changepassword']
   when: ics_exists.rc == 0
 
+- name: Erase old simbolic link of settings
+  file: path={{ install_prefix }}ominicontact/oml_settings_local.py state=absent
+  tags: ['never','postinstall']
+
 # Se hace el link simbolico del archivo oml_settings_local a ominicontacto/, para que se pueda hacer manage.py
 - name: Creation of simbolic link of oml_settings_local.py
-  file: state=link src={{ install_prefix }}local/oml_settings_local.py dest={{ install_prefix }}ominicontacto/oml_settings_local.py owner={{ usuario }} group={{ usuario }} force=true
-  tags: omniapp
+  file: state=link src={{ install_prefix }}local/oml_settings_local.py dest={{ install_prefix }}ominicontacto/ominicontacto/settings/oml_settings_local.py owner={{ usuario }} group={{ usuario }} force=true
+  tags: ['omniapp','postinstall']

@@ -1,4 +1,9 @@
 #!/bin/bash
+{% if desarrollo == 1 %}
+export DJANGO_SETTINGS_MODULE=ominicontacto.settings.develop
+{% else %}
+export DJANGO_SETTINGS_MODULE=ominicontacto.settings.production
+{% endif %}
 
 export PYTHONPATH={{ install_prefix}}ominicontacto:{{ install_prefix}}local
 

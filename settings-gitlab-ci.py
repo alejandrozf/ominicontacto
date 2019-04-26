@@ -48,7 +48,7 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-
+COMPRESS_ENABLED = False
 
 ALLOWED_HOSTS = [
     "*",
@@ -203,8 +203,6 @@ CALIFICACION_REAGENDA = 'Agenda'
 
 LOCAL_APPS = []
 
-DJANGO_DEBUG_TOOLBAR = False
-
 OML_QUEUE_FILENAME = ""
 
 OML_RUTAS_SALIENTES_FILENAME = "/opt/omnileads/asterisk/etc/asterisk/oml_extensions_outr.conf"
@@ -212,8 +210,6 @@ OML_RUTAS_SALIENTES_FILENAME = "/opt/omnileads/asterisk/etc/asterisk/oml_extensi
 ASTERISK_AUDIO_PATH = "/var/lib/asterisk/sounds/"
 
 OML_AUDIO_FOLDER = "oml/"
-
-DJANGO_CORS_HEADERS = False
 
 DURACION_ASIGNACION_CONTACTO_PREVIEW = 30
 

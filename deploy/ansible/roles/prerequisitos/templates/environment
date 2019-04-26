@@ -1,0 +1,3 @@
+{% if desarrollo == 0 %}
+DJANGO_SETTINGS_MODULE=ominicontacto.settings.production
+{% endif %}
