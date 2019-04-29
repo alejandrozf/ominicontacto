@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-01 12:10-0300\n"
+"POT-Creation-Date: 2019-04-25 18:37-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,23 +17,35 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: configuracion_telefonia_app/forms.py:62
+#: configuracion_telefonia_app/forms.py:55
+msgid "Nombre Troncal"
+msgstr "Trunk Name"
+
+#: configuracion_telefonia_app/forms.py:56
+msgid "Parámetros SIP"
+msgstr "SIP details"
+
+#: configuracion_telefonia_app/forms.py:57
+msgid "Cadena de registración"
+msgstr "Register String"
+
+#: configuracion_telefonia_app/forms.py:67
 msgid "Patrón de discado"
 msgstr "Dial pattern"
 
-#: configuracion_telefonia_app/forms.py:63
+#: configuracion_telefonia_app/forms.py:68
 #: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:33
 msgid "Prefijo"
 msgstr "Prefix"
 
-#: configuracion_telefonia_app/forms.py:71
-#: configuracion_telefonia_app/forms.py:280
+#: configuracion_telefonia_app/forms.py:76
+#: configuracion_telefonia_app/forms.py:285
 msgid "En segundos"
 msgstr "In seconds"
 
-#: configuracion_telefonia_app/forms.py:82
-#: configuracion_telefonia_app/forms.py:201
-#: configuracion_telefonia_app/forms.py:284
+#: configuracion_telefonia_app/forms.py:87
+#: configuracion_telefonia_app/forms.py:206
+#: configuracion_telefonia_app/forms.py:289
 #: configuracion_telefonia_app/models.py:42
 #: configuracion_telefonia_app/models.py:149
 #: configuracion_telefonia_app/models.py:254
@@ -46,106 +58,106 @@ msgstr "In seconds"
 msgid "Nombre"
 msgstr "Name"
 
-#: configuracion_telefonia_app/forms.py:83
+#: configuracion_telefonia_app/forms.py:88
 msgid "Ring time"
 msgstr "Ring time"
 
-#: configuracion_telefonia_app/forms.py:84
+#: configuracion_telefonia_app/forms.py:89
 msgid "Dial options"
 msgstr "Dial options"
 
-#: configuracion_telefonia_app/forms.py:101
+#: configuracion_telefonia_app/forms.py:106
 msgid "Debe ingresar al menos un patrón de discado"
 msgstr "At least a dial pattern is required"
 
-#: configuracion_telefonia_app/forms.py:109
+#: configuracion_telefonia_app/forms.py:114
 msgid "Los patrones de discado deben ser diferentes"
 msgstr "Dial patterns must be different"
 
-#: configuracion_telefonia_app/forms.py:148
+#: configuracion_telefonia_app/forms.py:153
 msgid "Debe ingresar al menos un troncal"
 msgstr "At least a trunk is required"
 
-#: configuracion_telefonia_app/forms.py:154
+#: configuracion_telefonia_app/forms.py:159
 msgid "Los troncales deben ser distintos"
 msgstr "Trunks must be different"
 
-#: configuracion_telefonia_app/forms.py:183
-#: configuracion_telefonia_app/forms.py:435
-#: configuracion_telefonia_app/forms.py:476
+#: configuracion_telefonia_app/forms.py:188
+#: configuracion_telefonia_app/forms.py:440
+#: configuracion_telefonia_app/forms.py:481
 msgid "Tipo de destino"
 msgstr "Destination type"
 
-#: configuracion_telefonia_app/forms.py:200
+#: configuracion_telefonia_app/forms.py:205
 #: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:32
 msgid "Número DID"
 msgstr "DID number"
 
-#: configuracion_telefonia_app/forms.py:202
+#: configuracion_telefonia_app/forms.py:207
 msgid "Prefijo caller id"
 msgstr "Caller id prefix"
 
-#: configuracion_telefonia_app/forms.py:203
+#: configuracion_telefonia_app/forms.py:208
 #: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:34
 msgid "Idioma"
 msgstr "Language"
 
-#: configuracion_telefonia_app/forms.py:204
-#: configuracion_telefonia_app/forms.py:443
-#: configuracion_telefonia_app/forms.py:483
+#: configuracion_telefonia_app/forms.py:209
+#: configuracion_telefonia_app/forms.py:448
+#: configuracion_telefonia_app/forms.py:488
 msgid "Destino"
 msgstr "Destination"
 
-#: configuracion_telefonia_app/forms.py:228
+#: configuracion_telefonia_app/forms.py:233
 msgid "Archivo de OML"
 msgstr "OML file"
 
-#: configuracion_telefonia_app/forms.py:228
+#: configuracion_telefonia_app/forms.py:233
 msgid "Archivo externo"
 msgstr "External file"
 
-#: configuracion_telefonia_app/forms.py:238
+#: configuracion_telefonia_app/forms.py:243
 msgid "Destino time out:"
 msgstr "Time out destination"
 
-#: configuracion_telefonia_app/forms.py:241
+#: configuracion_telefonia_app/forms.py:246
 msgid "Tipo de destino para time out:"
 msgstr "Time out destination type"
 
-#: configuracion_telefonia_app/forms.py:248
+#: configuracion_telefonia_app/forms.py:253
 msgid "Destino inválido:"
 msgstr "Invalid destination:"
 
-#: configuracion_telefonia_app/forms.py:251
+#: configuracion_telefonia_app/forms.py:256
 msgid "Tipo de destino para destino inválido:"
 msgstr "Invalid destination type:"
 
-#: configuracion_telefonia_app/forms.py:285
+#: configuracion_telefonia_app/forms.py:290
 msgid "Descripción"
 msgstr "Description"
 
-#: configuracion_telefonia_app/forms.py:340
+#: configuracion_telefonia_app/forms.py:345
 msgid "Debe escoger un audio como archivo externo"
 msgstr "You must choose an audio file from an external source"
 
-#: configuracion_telefonia_app/forms.py:343
-#: configuracion_telefonia_app/forms.py:351
+#: configuracion_telefonia_app/forms.py:348
+#: configuracion_telefonia_app/forms.py:356
 msgid "Debe escoger un archivo de OML"
 msgstr "You must choose an OML file"
 
-#: configuracion_telefonia_app/forms.py:426
+#: configuracion_telefonia_app/forms.py:431
 msgid "Los valores de DTMF deben ser distintos"
 msgstr "DTMF values must be different"
 
-#: configuracion_telefonia_app/forms.py:442
+#: configuracion_telefonia_app/forms.py:447
 msgid "DTMF"
 msgstr "DTMF"
 
-#: configuracion_telefonia_app/forms.py:462
+#: configuracion_telefonia_app/forms.py:467
 msgid "El valor del DTMF debe ser un dígito o alguno de: #, -, *"
 msgstr "DTMF value must be a digit number or a character like: #, -, *"
 
-#: configuracion_telefonia_app/forms.py:518
+#: configuracion_telefonia_app/forms.py:523
 msgid "Los destinos deben ser distintos"
 msgstr "Destinations must be different"
 
@@ -867,6 +879,9 @@ msgstr ""
 #: configuracion_telefonia_app/views.py:885
 msgid "Se ha eliminado la Validación Fecha Hora."
 msgstr "Time Condition deleted"
+
+#~ msgid "Detalles SIP"
+#~ msgstr "SIP Details"
 
 #~ msgid ""
 #~ "\n"

@@ -69,8 +69,11 @@ logger = logging.getLogger(__name__)
 
 
 def index_view(request):
-    response = redirect('/accounts/login')
-    return response
+    template_name = "base.html"
+    if not request.user.is_authenticated():
+        return redirect('login')
+    else:
+        return TemplateResponse(request, template_name)
 
 
 def login_view(request):
@@ -107,15 +110,19 @@ def login_view(request):
                     return HttpResponseRedirect(reverse('view_node'))
                 else:
                     return HttpResponseRedirect(reverse('index'))
+
     else:
-        form = AuthenticationForm(request)
-    context = {
-        'form': form,
-        'detail': detail,
-        'user_is_blocked': user_is_blocked,
-    }
-    template_name = 'registration/login.html'
-    return TemplateResponse(request, template_name, context)
+        if request.user.is_authenticated():
+                return HttpResponseRedirect(reverse('index'))
+        else:
+            form = AuthenticationForm(request)
+            context = {
+                'form': form,
+                'detail': detail,
+                'user_is_blocked': user_is_blocked,
+            }
+            template_name = 'registration/login.html'
+            return TemplateResponse(request, template_name, context)
 
 
 ####################

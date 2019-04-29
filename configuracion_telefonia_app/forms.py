@@ -51,6 +51,11 @@ class TroncalSIPForm(forms.ModelForm):
             'register_string': forms.TextInput(attrs={'class': 'form-control'}),
             'text_config': forms.Textarea(attrs={'class': 'form-control'}),
         }
+        labels = {
+            'nombre': _('Nombre Troncal'),
+            'text_config': _('Parámetros SIP'),
+            'register_string': _('Cadena de registración')
+        }
 
 
 class PatronDeDiscadoForm(forms.ModelForm):
