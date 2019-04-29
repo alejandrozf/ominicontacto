@@ -311,7 +311,7 @@ class PhoneJSController {
             self.view.setCallStatus(message, "red");
             self.phone_fsm.unpause();
             // Arrancar de nuevo timer de operacion
-            self.timers.pause.stop();
+            self.timers.pausa.stop();
             self.timers.operacion.start();
             self.pause_manager.leavePause();
         });
@@ -324,7 +324,7 @@ class PhoneJSController {
             self.phone_fsm.startPause();
             // Arrancar de nuevo timer de pausa
             self.timers.operacion.stop();
-            self.timers.pause.start();
+            self.timers.pausa.start();
         });
 
         /** Calls **/
@@ -421,6 +421,7 @@ class PhoneJSController {
 
         if (this.agent_config.auto_pause) {
             var self = this;
+            this.phone.cleanLastCallData();
             this.setPause(ACW_PAUSE_ID, ACW_PAUSE_NAME);
             if (this.agent_config.auto_unpause > 0) {
                 var m_seconds = this.agent_config.auto_unpause * 1000;
@@ -462,7 +463,10 @@ class PhoneJSController {
         this.timers.pausa.start();
         this.timers.operacion.stop();
 
-        this.phone.makePauseCall(pause_id);
+        // TODO: Investigar por que falla la llamada si se la cancela directamente.
+        // this.phone.makePauseCall(pause_id);
+        var self = this;
+        setTimeout(function(){ self.phone.makePauseCall(pause_id)}, 10);
     }
 
     leavePause() {

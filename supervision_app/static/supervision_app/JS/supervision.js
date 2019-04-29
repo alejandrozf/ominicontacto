@@ -17,13 +17,13 @@
 
 */
 
-function obtenerNodosAcciones(data) {
-    var pkContacto = data;
+function obtenerNodosAcciones(pk_agent, status) {
 
     var $whisper = create_node('a', {
         'class': 'btn btn-light btn-sm',
         'role': 'button',
-        'href': "#"
+        'href': "#",
+        'onclick': "executeSupervisorAction('" + pk_agent + "', 'CHANSPYWISHPER')"
     });
     var $spanWhisper = create_node('span', {
         'class': 'fas fa-comment',
@@ -35,7 +35,8 @@ function obtenerNodosAcciones(data) {
     var $spy = create_node('a', {
         'class': 'btn btn-light btn-sm',
         'role': 'button',
-        'href': "#"
+        'href': "#",
+        'onclick': "executeSupervisorAction('" + pk_agent + "', 'CHANSPY')"
     });
     var $spanSpy = create_node('span', {
         'class': 'fas fa-user-secret',
@@ -44,22 +45,27 @@ function obtenerNodosAcciones(data) {
     });
     $spy.append($spanSpy);
 
+    var in_pause = status.indexOf('PAUSE') == 0;
+    var pause_action = in_pause?'AGENTUNPAUSE':'AGENTPAUSE';
+    var pause_text = in_pause?'Unpause':'Pause';
     var $pause = create_node('a', {
         'class': 'btn btn-light btn-sm',
         'role': 'button',
-        'href': "#"
+        'href': "#",
+        'onclick': "executeSupervisorAction('" + pk_agent + "', '" + pause_action + "')"
     });
     var $spanPause = create_node('span', {
         'class': 'fas fa-pause-circle',
         'aria-hidden': 'true',
-        'title': gettext('Pause'),
+        'title': gettext(pause_text),
     });
     $pause.append($spanPause);
 
     var $logout = create_node('a', {
         'class': 'btn btn-light btn-sm',
         'role': 'button',
-        'href': "#"
+        'href': "#",
+        'onclick': "executeSupervisorAction('" + pk_agent + "', 'AGENTLOGOUT')"
     });
     var $spanLogout = create_node('span', {
         'class': 'fas fa-sign-out-alt',
@@ -109,7 +115,7 @@ function assignToColumns(data) {
             },
             {'data' : 'id',
              'render': function ( data, type, row, meta ) {
-                 return obtenerNodosAcciones(data);
+                 return obtenerNodosAcciones(row['id'], row['status']);
              },
             }
         ],
@@ -128,21 +134,24 @@ function assignToColumns(data) {
     })
 }
 
+function refreshActiveAgentsTable() {
+    if ( $.fn.DataTable.isDataTable('#tableAgentes') ) {
+        $('#tableAgentes').DataTable().destroy();
+    }
+    $.ajax({
+        url: Urls.api_agentes_activos(),
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            assignToColumns(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
+        },
+    });    
+}
+
 $(document).ready(function () {
-    setInterval(function () {
-        if ( $.fn.DataTable.isDataTable('#tableAgentes') ) {
-            $('#tableAgentes').DataTable().destroy();
-        }
-        $.ajax({
-            url : Urls.api_agentes_activos(),
-            type : 'GET',
-            dataType : 'json',
-            success : function(data) {
-                assignToColumns(data);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
-            },
-        });
-    }, 5000);
+    refreshActiveAgentsTable()
+    setInterval(refreshActiveAgentsTable, 5000);
 });

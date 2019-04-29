@@ -17,6 +17,10 @@
 
 */
 
+/* Requirements:                        */
+/*      - state-machine-min.js          */
+
+
 var PhoneFSM = new StateMachine.factory({
     init: 'Inactive',
     transitions: [

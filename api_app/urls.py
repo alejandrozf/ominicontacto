@@ -7,7 +7,7 @@ from rest_framework import routers
 
 from api_app.views import (SupervisorCampanasActivasViewSet, AgentesStatusAPIView,
                            AgentesActivosGrupoViewSet, StatusCampanasEntrantesView,
-                           StatusCampanasSalientesView)
+                           StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView)
 from ominicontacto_app.auth.decorators import administrador_o_supervisor_requerido
 
 router = routers.DefaultRouter()
@@ -32,6 +32,9 @@ urlpatterns = [
         administrador_o_supervisor_requerido(StatusCampanasSalientesView.as_view()),
         name='api_supervision_campanas_salientes'),
     url(r'api/v1/supervision/agentes',
-        administrador_o_supervisor_requerido(
-            AgentesStatusAPIView.as_view()), name='api_agentes_activos'),
+        administrador_o_supervisor_requerido(AgentesStatusAPIView.as_view()),
+        name='api_agentes_activos'),
+    url(r'api/v1/supervision/accion_sobre_agente/(?P<pk>\d+)/$',
+        administrador_o_supervisor_requerido(InteraccionDeSupervisorSobreAgenteView.as_view()),
+        name='api_accion_sobre_agente'),
 ]

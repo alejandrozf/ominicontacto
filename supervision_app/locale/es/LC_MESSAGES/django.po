@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-23 13:08-0300\n"
+"POT-Creation-Date: 2019-04-29 17:12-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,25 +18,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: supervision_app/templates/supervision_agentes.html:36
+#: supervision_app/templates/supervision_agentes.html:47
 msgid "Agentes"
 msgstr ""
 
-#: supervision_app/templates/supervision_agentes.html:41
+#: supervision_app/templates/supervision_agentes.html:72
+msgid "Finalizar"
+msgstr ""
+
+#: supervision_app/templates/supervision_agentes.html:79
 #: supervision_app/templates/supervision_campanas_entrantes.html:34
 #: supervision_app/templates/supervision_campanas_salientes.html:34
 msgid "Nombre"
 msgstr ""
 
-#: supervision_app/templates/supervision_agentes.html:42
+#: supervision_app/templates/supervision_agentes.html:80
 msgid "Status"
 msgstr ""
 
-#: supervision_app/templates/supervision_agentes.html:43
+#: supervision_app/templates/supervision_agentes.html:81
 msgid "Tiempo"
 msgstr ""
 
-#: supervision_app/templates/supervision_agentes.html:44
+#: supervision_app/templates/supervision_agentes.html:82
 msgid "Acciones"
 msgstr ""
 
