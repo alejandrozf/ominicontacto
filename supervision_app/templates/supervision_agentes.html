@@ -64,15 +64,20 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </audio>
     <!-- FIN Contenido oculto necesario para el PhoneJS -->
 
-    <div id="timebar">
-        <span id="UserStatus"></span>
-        <div id="CallStatus"></div>
-        <div id="SipStatus"></div>
-        <button type="button" placeholder='finalizar' id="endCall" class="btn btn-outline-danger btn-block">
-            {% trans "Finalizar" %}
-        </button>
+    <div class="container py-3">
+        <div class="row" id="timebar">
+            <div class="col col-xs-9 col-md-9 col-lg-9">
+                <div id="CallStatus"></div>
+                <div id="SipStatus"></div>
+            </div>
+            <div class="col col-xs-3 col-md-3 col-lg-3">
+                <button class="btn btn-danger" id="endCall" type="button" placeholder='finalizar' >
+                {% trans "Finalizar" %}
+                </button>
+            </div> 
+        </div> 
     </div>
-
+    
     <table id="tableAgentes" class="table">
         <thead>
             <tr>
