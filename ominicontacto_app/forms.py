@@ -545,7 +545,6 @@ class OpcionCalificacionForm(forms.ModelForm):
             tipo = self.cleaned_data.get('tipo', None)
             if tipo == OpcionCalificacion.GESTION:
                 # TODO: Solo si se eligio tipo_interaccion Formulario!!!
-                # TODO: Solo si se eligio tipo_interaccion Formulario!!!
                 formulario = self.cleaned_data.get('formulario', None)
                 if not formulario:
                     raise forms.ValidationError(_("Debe elegir un formulario para la gestión."))

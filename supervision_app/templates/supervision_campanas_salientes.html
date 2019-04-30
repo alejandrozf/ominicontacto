@@ -1,0 +1,55 @@
+<!--
+Copyright (C) 2018 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/supervision/campanas_salientes.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+<h1>{% trans 'Campañas Salientes' %}</h1>
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>{% trans 'Nombre' %}</th>
+                <th>{% trans 'Llamadas discadas' %}</th>
+                <th>{% trans 'Atendidas' %}</th>
+                <th>{% trans 'No atendidas' %}</th>
+                <th>{% trans 'Gestiones' %}</th>
+            </tr>
+        </thead>
+        <tbody id="table-campanas">
+            {% for datos_campana in estadisticas.values %}
+                <tr>
+                    <td>{{ datos_campana.nombre }}</td>
+                    <td>{{ datos_campana.efectuadas }}</td>
+                    <td>{{ datos_campana.conectadas }}</td>
+                    <td>{{ datos_campana.no_conectadas }}</td>
+                <td>{{ datos_campana.gestiones }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}

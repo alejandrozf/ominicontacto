@@ -1,0 +1,178 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-04-29 17:11-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:60
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:65
+#: supervision_app/static/supervision_app/JS/phoneJsView.js:89
+msgid "Desconectado"
+msgstr "Disconnected"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:70
+msgid "Conectado"
+msgstr "Connected"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:80
+msgid "Llamando"
+msgstr "Calling"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:85
+msgid "En llamado"
+msgstr "On call"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:90
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:95
+msgid "Transfiriendo"
+msgstr "Transfering"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:100
+msgid "Recibiendo llamado"
+msgstr "Receiving call"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:106
+msgid "En espera"
+msgstr "On Hold"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:119
+msgid "Supervisor registrado"
+msgstr "Supervisor registered"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:166
+msgid "Conectado a %(fromUser)s"
+msgstr "Connected to %(fromUser)s"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:182
+msgid "Disponible"
+msgstr "Available"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:195
+msgid "Ocupado, intente maás tarde"
+msgstr "Busy, try again later"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:198
+msgid "Rechazado, intente maás tarde"
+msgstr "Rejected, try again later"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:201
+msgid "No disponible, contacte a su administrador"
+msgstr "Not Available, contact your Administrator"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:205
+msgid "Error, verifique el número marcado"
+msgstr "Error, please check the number and try again"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:209
+msgid "Error de autenticación, contacte a su administrador"
+msgstr "Authentication Error, contact your Administrator"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:212
+msgid "Error, Falta SDP"
+msgstr "Error, Missing SDP"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:215
+msgid "Dirección incompleta"
+msgstr "Address Incomplete"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:219
+msgid "Servicio no disponible, contacte a su administrador"
+msgstr "Service Unavailable, contact your Administrator"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:223
+msgid "Error WebRTC: El usuario no permite acceso al medio"
+msgstr "WebRTC Error: Unable to access media"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:226
+msgid "Error: Llamado fallido"
+msgstr "Errorr: Failed Attempt"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:233
+msgid "Conectado a llamada"
+msgstr "Connected to call"
+
+#: supervision_app/static/supervision_app/JS/phoneJsView.js:90
+msgid "Registrado"
+msgstr "Registered"
+
+#: supervision_app/static/supervision_app/JS/phoneJsView.js:91
+msgid "No Registrado"
+msgstr "Not Registered"
+
+#: supervision_app/static/supervision_app/JS/phoneJsView.js:93
+msgid "El SIP Proxy no responde, contacte a su administrador"
+msgstr "SIP Proxy not responding, contact your Administrator"
+
+#: supervision_app/static/supervision_app/JS/phoneJsView.js:97
+msgid "Fallo en la registración, contacte a su administrador"
+msgstr "Registration Failed, contact your Administrator"
+
+#: supervision_app/static/supervision_app/JS/supervision.js:31
+msgid "Susurrar"
+msgstr "Whisper"
+
+#: supervision_app/static/supervision_app/JS/supervision.js:44
+msgid "Espiar"
+msgstr "Spy"
+
+#: supervision_app/static/supervision_app/JS/supervision.js:73
+msgid "Logout"
+msgstr "Logout"
+
+#: supervision_app/static/supervision_app/JS/supervision.js:123
+msgid "Buscar: "
+msgstr "Search:"
+
+#: supervision_app/static/supervision_app/JS/supervision.js:124
+msgid "(filtrando de un total de _MAX_ contactos)"
+msgstr "(filtering a total of _MAX_ contacts)"
+
+#: supervision_app/static/supervision_app/JS/supervision.js:126
+msgid "Primero "
+msgstr "First"
+
+#: supervision_app/static/supervision_app/JS/supervision.js:127
+msgid "Anterior "
+msgstr "Previous"
+
+#: supervision_app/static/supervision_app/JS/supervision.js:128
+msgid " Siguiente"
+msgstr "Next"
+
+#: supervision_app/static/supervision_app/JS/supervision.js:129
+msgid " Último"
+msgstr "Last"
+
+#: supervision_app/static/supervision_app/JS/supervision.js:131
+msgid "Mostrar _MENU_ entradas"
+msgstr "Show _MENU_ entries"
+
+#: supervision_app/static/supervision_app/JS/supervision.js:132
+msgid "Mostrando _START_ a _END_ de _TOTAL_ entradas"
+msgstr "Showing _START_ to _END_ of _TOTAL_ entries"
+
+#: supervision_app/static/supervision_app/JS/supervision.js:149
+#: supervision_app/static/supervision_app/JS/supervision_agentes.js:48
+msgid "Error al ejecutar => "
+msgstr "Error when executing =>"
+
+#: supervision_app/static/supervision_app/JS/supervision_agentes.js:34
+msgid "Atención!"
+msgstr "Attention!"
+
+#: supervision_app/static/supervision_app/JS/supervision_agentes.js:35
+msgid "Debe finalizar la acción actual antes de realizar otra."
+msgstr "You must end current action before executing another."

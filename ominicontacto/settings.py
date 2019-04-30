@@ -87,6 +87,7 @@ INSTALLED_APPS = [
     'ominicontacto_app',
     'reciclado_app',
     'reportes_app',
+    'supervision_app',
     'simple_history',
     'widget_tweaks',
     'rest_framework',
@@ -361,17 +362,6 @@ Ejemplo:
 """
 
 # ==============================================================================
-# URL DE SUPERVISION
-# ==============================================================================
-
-OML_SUPERVISION_URL = None
-"""Url de donde se encuentra la supervision
-
-Ejemplo:
-    OML_SUPERVISION_URL = "http://172.16.20.222:8090/Omnisup/index.php"
-"""
-
-# ==============================================================================
 # WOMBAT Config
 # ==============================================================================
 
@@ -436,6 +426,7 @@ try:
         os.path.join(BASE_DIR, 'ominicontacto_app/locale'),
         os.path.join(BASE_DIR, 'reportes_app/locale'),
         os.path.join(BASE_DIR, 'reciclado_app/locale'),
+        os.path.join(BASE_DIR, 'supervision_app/locale'),
     )
 
     LANGUAGES = (
@@ -498,11 +489,6 @@ assert OML_RELOAD_CMD is not None, \
 
 assert OML_GRABACIONES_URL is not None, \
     "Falta definir setting para OML_GRABACIONES_URL"
-
-# ~~~~~ Check OML_GRABACIONES_URL
-
-assert OML_SUPERVISION_URL is not None, \
-    "Falta definir setting para OML_SUPERVISION_URL"
 
 # ~~~~~ Check EPHEMERAL_USER_TTL
 
