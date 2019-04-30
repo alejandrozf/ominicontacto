@@ -89,7 +89,7 @@
 - name: Generate backup-restore.sh script
   template: src=templates/bin/backup-restore.sh.j2 dest={{ install_prefix }}bin/backup-restore.sh owner={{ usuario }} group={{ usuario }} mode=755
   tags: postinstall
-  
+
 # Se inicia y habilita el servicio
 - name: Reload the omnileads-daemon service
   systemd: name=omnileads state=reloaded enabled=yes daemon_reload=yes
@@ -97,3 +97,31 @@
   become_method: sudo
   tags: ['postinstall','changenetwork','changepassword']
   when: desarrollo == 0
+
+- name: Erase files related to php supervision
+  file: state=absent path={{ item }}
+  with_items:
+    - /etc/nginx/conf.d/supervision.conf
+    - "{{ install_prefix }}Omnisup"
+  tags: ['never','postinstall']
+
+# Toca hacer esta tarea aparte para que no salga el error de nginx que se soluciona al rebotear el server
+- name: Enable of nginx
+  command: systemctl enable nginx
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+
+# Starteo y habilito nginx
+- name: Restart of nginx (debian)
+  service: name=nginx state=restarted enabled=yes
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
+
+# Starteo y habilito nginx
+- name: Reload of nginx
+  service: name=nginx state=reloaded enabled=yes
+  become: true
+  become_method: sudo
+  tags: ['never','postinstall','kamailio','changenetwork']

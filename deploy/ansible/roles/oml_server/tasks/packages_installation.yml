@@ -18,29 +18,8 @@
 ---
 
 # Se descarga e instala el repositorio epel-release
-- name: Install of epel-release repo (centos and cluster)
+- name: Install of epel-release repo (centos)
   yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm state=present
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "RedHat" and cluster == 1
-
-# Se instala webtatic repo para instalar php56
-- name: Install of webtatic repo (centos)
-  yum: name=https://mirror.webtatic.com/yum/el7/webtatic-release.rpm state=present validate_certs=no
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "RedHat"
-
-#Se instalan todos los paquetes de php56 -- FIX ME -- se necesitan todos los paquetes? verificar con desarrollo
-- name: Install of php56 (centos)
-  yum: name={{ item }} state=present
-  with_items:
-      - php56w
-      - php56w-pdo
-      - php56w-mbstring
-      - php56w-opcache
-      - php56w-fpm
-      - php56w-pgsql
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
@@ -51,7 +30,7 @@
   when: ansible_os_family == "Debian"
 
 # Se instalan paquetes de App (centos)
-- name: Install the app and services packages (centos)
+- name: Install omniapp packages (centos)
   yum: "name={{ item }} state=present"
   with_items:
     - cairo
@@ -87,7 +66,7 @@
   when: ansible_os_family == "RedHat"
 
 # Intalo los paquetes necesarios para la parte App
-- name: Installation of app dependencies (debian)
+- name: Install omniapp packages (debian)
   apt: "name={{ item }} state=present"
   with_items:
     - expect
@@ -101,9 +80,6 @@
     - libxslt1-dev
     - nginx
     - openssl
-    - php-fpm
-    - php-pgsql
-    - php-xml
     - postgresql-contrib
     - postgresql-plpython-{{ postgresql_version }}
     - postgresql-server-dev-{{ postgresql_version }}
@@ -117,14 +93,6 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
-
-- name: Add php7.2 utils repository on ubuntu
-  apt_repository: repo="ppa:ondrej/php" state=present update_cache=yes
-  when: ansible_distribution == "Ubuntu"
-
-- name: Install extra packages por Ubuntu-server
-  apt: name=libelf-dev state=present
-  when: ansible_distribution == "Ubuntu"
 
 # Habilitamos y empezamos redis. Redis es necesario para rtpengine y para django-defender
 - name: Modify bind port for redis

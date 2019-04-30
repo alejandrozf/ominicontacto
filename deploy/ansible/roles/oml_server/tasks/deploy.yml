@@ -92,13 +92,13 @@
     - ominicontacto
     - ominicontacto_app
     - ominicontacto_voip
-    - Omnisup
     - reciclado_app
     - reportes_app
     - requirements.txt
-    - utiles_globales.py
+    - supervision_app
     - test
     - tests
+    - utiles_globales.py
   when: desarrollo == 0
   tags: postinstall
 
@@ -111,7 +111,7 @@
 - name: Change owner and group of ominicontacto
   file: "path={{ install_prefix }}ominicontacto owner={{ usuario }} group={{ usuario }} recurse=yes"
   tags: postinstall
-  
+
 # Se hace el upgrade de python setuptools usando pip. https://docs.ansible.com/ansible/2.5/modules/pip_module.html#pip-module
 # El environment sirve para setear variables de entorno necesarias
 - name: Upgrade of python setuptools
