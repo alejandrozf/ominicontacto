@@ -27,24 +27,22 @@ UpCommands() {
   $KAM_EXEC "if [ ! -f $KAM_LOCATION/etc/kamailio/kamailio.cfg ]; then ln -s /var/tmp/kamfiles/kamailio.cfg $KAM_LOCATION/etc/kamailio/kamailio.cfg; fi"
   $AST_EXEC "chown -R omnileads. /opt/omnileads/asterisk/var/spool/asterisk/ && chown -R omnileads. /opt/omnileads/asterisk/etc/asterisk"
   $KAM_EXEC "chown -R omnileads. /opt/omnileads/kamailio/etc/kamailio/kamailio.cfg"
-  if [ ! -f $REPO_LOCATION/oml_settings_local.py ]; then
-    $CP_EXEC
-    $OMNIAPP_EXEC "rm -rf /opt/omnileads/local/oml_settings_local.py"
-  fi
+#  $CP_EXEC
+#  $OMNIAPP_EXEC "rm -rf /opt/omnileads/local/oml_settings_local.py"
 }
 
 StartCommands() {
   $DB_EXEC "service postgresql restart"
   $KAM_EXEC "service kamailio restart"
   $AST_EXEC "service asterisk restart"
-  $OMNIAPP_EXEC "/opt/omnileads/bin/manage.sh regenerar_asterisk"
+  $OMNIAPP_EXEC "DJANGO_SETTINGS_MODULE=ominicontacto.settings.develop /opt/omnileads/bin/manage.sh regenerar_asterisk"
 }
 
 RunCommands() {
-  $OMNIAPP_EXEC "/opt/omnileads/bin/manage.sh migrate"
+  $OMNIAPP_EXEC "DJANGO_SETTINGS_MODULE=ominicontacto.settings.develop /opt/omnileads/bin/manage.sh migrate"
   $AST_EXEC "service asterisk reload"
-  $OMNIAPP_EXEC "/opt/omnileads/bin/manage.sh collectstatic_js_reverse"
-  $OMNIAPP_EXEC "django-server"
+  $OMNIAPP_EXEC "DJANGO_SETTINGS_MODULE=ominicontacto.settings.develop /opt/omnileads/bin/manage.sh collectstatic_js_reverse"
+  $OMNIAPP_EXEC "DJANGO_SETTINGS_MODULE=ominicontacto.settings.develop django-server"
 }
 
 KillRun(){

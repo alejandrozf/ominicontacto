@@ -27,7 +27,7 @@ services:
     environment:
       - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       - TZ=America/Argentina/Cordoba
-    image: freetechsolutions/asterisk:de0.1
+    image: freetechsolutions/asterisk:de0.2
     logging:
       driver: syslog
     networks:
@@ -51,7 +51,7 @@ services:
     dns: 8.8.8.8
     environment:
       - TZ=America/Argentina/Cordoba
-    image: freetechsolutions/database:de0.1
+    image: freetechsolutions/database:de0.2
     logging:
       driver: syslog
     networks:
@@ -72,7 +72,7 @@ services:
     environment:
       - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       - TZ=America/Argentina/Cordoba
-    image: freetechsolutions/dialer:de0.1
+    image: freetechsolutions/dialer:de0.2
     logging:
       driver: syslog
     networks:
@@ -81,6 +81,10 @@ services:
     privileged: true
     restart: on-failure
     stop_grace_period: 1m30s
+    volumes:
+      - type: volume
+        source: database_dialer
+        target: /var/lib/mysql/
 
   kamailio:
     container_name: kamailio
@@ -97,7 +101,7 @@ services:
       start_period: 50s
       retries: 1
     hostname: kamailio
-    image: freetechsolutions/kamailio:de0.1
+    image: freetechsolutions/kamailio:de0.2
     logging:
       driver: syslog
     networks:
@@ -122,7 +126,7 @@ services:
     environment:
       - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       - TZ=America/Argentina/Cordoba
-    image: freetechsolutions/omniapp:de0.1
+    image: freetechsolutions/omniapp:de0.2
     logging:
       driver: syslog
     networks:
@@ -173,3 +177,4 @@ volumes:
   grabaciones:
   ominicontacto:
   database:
+  database_dialer:

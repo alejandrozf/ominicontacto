@@ -2,6 +2,9 @@ DevEnv Image versions:
 
 0.1
   - Initial settings of the image with all devenv functional and running
+0.2
+  - Settings structure separating production settings with develop settings
+  - Develop post release-1.2.2
 
 pbx-emulator image versions:
 

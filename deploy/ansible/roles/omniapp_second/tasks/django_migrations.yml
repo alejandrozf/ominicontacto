@@ -30,6 +30,16 @@
     - manifest.json
   tags: ['never','postinstall']
 
+- name: Set the DJANGO_SETTINGS_MODULE for ansible tasks (devenv)
+  set_fact: settings=develop
+  when: desarrollo == 1
+  tags: postinstall
+
+- name: Set the DJANGO_SETTINGS_MODULE for ansible tasks (prodenv)
+  set_fact: settings=production
+  when: desarrollo == 0
+  tags: postinstall
+
 # Se corre un compendio de comandos de django con manage.py  https://docs.ansible.com/ansible/2.5/modules/django_manage_module.html#django-manage-module
 - name: Run Django migrations and compilemessages
   django_manage: >
@@ -44,6 +54,7 @@
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
     PGPASSWORD: "{{ postgres_password }}"
     LANG: en_US.UTF8
+    DJANGO_SETTINGS_MODULE: "ominicontacto.settings.{{ settings }}"
   become: true
   become_method: su
   become_user: "{{ usuario }}"
@@ -57,6 +68,7 @@
     - compress --force
     - regenerar_asterisk
   environment:
+    DJANGO_SETTINGS_MODULE: "ominicontacto.settings.{{ settings }}"
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
   become: true
   become_method: su
@@ -67,6 +79,7 @@
 - name: Create admin superuser
   django_manage: command="createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com" app_path={{ install_prefix }}ominicontacto virtualenv={{ install_prefix }}virtualenv
   environment:
+    DJANGO_SETTINGS_MODULE: "ominicontacto.settings.{{ settings }}"
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
   register: result
   failed_when: false
@@ -83,7 +96,7 @@
 - name: Change password
   shell: "./changepassword.sh chdir={{ install_prefix }}ominicontacto"
   environment:
-    DJANGO_SETTINGS_MODULE: "ominicontacto.settings"
+    DJANGO_SETTINGS_MODULE: "ominicontacto.settings.{{ settings }}"
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
   become: true
   become_user: "{{ usuario }}"

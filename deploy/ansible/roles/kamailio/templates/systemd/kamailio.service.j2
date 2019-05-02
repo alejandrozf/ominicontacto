@@ -1,7 +1,7 @@
 [Unit]
 Description=Kamailio SIP Server
 Documentation=man:kamailio(8) http://www.kamailio.org/
-After=syslog.target network-online.target postgresql.service
+After=syslog.target network-online.target redis.service
 
 [Service]
 Type=forking
