@@ -37,7 +37,7 @@ from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 from ominicontacto_app.utiles import elimina_espacios
 from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
     AsteriskHttpQueueRemoveError, AsteriskHttpQueueAddError
-from utiles_globales import obtener_sip_agentes_sesiones_activas_kamailio
+from utiles_globales import obtener_sip_agentes_sesiones_activas
 
 
 import logging as logging_
@@ -118,7 +118,7 @@ class QueueMemberCreateView(FormView):
                     self.object.paused = queue_member_defaults['paused']
                     self.object.save()
                     # adicionamos el agente a la cola actual que esta corriendo
-                    sip_agentes_logueados = obtener_sip_agentes_sesiones_activas_kamailio()
+                    sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
                     adicionar_agente_activo_cola(self.object, campana, sip_agentes_logueados)
                     activar_cola()
             except Exception as e:
@@ -171,7 +171,7 @@ class GrupoAgenteCreateView(FormView):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         grupo_id = form.cleaned_data.get('grupo')
         grupo = Grupo.objects.get(pk=grupo_id)
-        sip_agentes_logueados = obtener_sip_agentes_sesiones_activas_kamailio()
+        sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
         # agentes = grupo.agentes.filter(reported_by=self.request.user)
         agentes = grupo.agentes.filter(is_inactive=False)
         agentes_logueados_grupo = agentes.filter(sip_extension__in=sip_agentes_logueados)
@@ -258,7 +258,7 @@ def queue_member_delete_view(request, pk_queuemember, pk_campana):
     # ahora vamos a remover el agente de la cola de asterisk
     queue = "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre))
     interface = "SIP/{0}".format(agente.sip_extension)
-    sip_agentes_logueados = obtener_sip_agentes_sesiones_activas_kamailio()
+    sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
     if agente.sip_extension in sip_agentes_logueados:
         try:
             client = AsteriskHttpClient()
