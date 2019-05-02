@@ -45,7 +45,7 @@ from ominicontacto_app.tests.factories import BaseDatosContactoFactory, COLUMNAS
 from ominicontacto_app.utiles import cast_datetime_part_date, obtener_opciones_columnas_bd
 from ominicontacto_app.views_queue_member import adicionar_agente_cola
 
-from utiles_globales import obtener_sip_agentes_sesiones_activas_kamailio
+from utiles_globales import obtener_sip_agentes_sesiones_activas
 
 
 import logging as logging_
@@ -320,7 +320,7 @@ class CampanaWizardMixin(object):
         queue_member_formset.instance = campana.queue_campana
         if queue_member_formset.is_valid():
             # obtenemos los agentes que estan logueados
-            sip_agentes_logueados = obtener_sip_agentes_sesiones_activas_kamailio()
+            sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
 
             # se asignan valores por defecto en cada una de las instancias
             # de QueueMember a salvar y se adicionan a sus respectivas colas en asterisk
