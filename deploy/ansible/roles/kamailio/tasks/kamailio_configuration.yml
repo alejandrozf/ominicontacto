@@ -36,11 +36,6 @@
   become: true
   become_method: sudo
 
-# Se hace el template kamctlrc a /opt/omnileads/kamailio/etc/kamailio
-# Ver archivo kamctlrc para mas info
-- name: Copy of oml/kamailio-files to the desired destinations
-  template: src=templates/etc/kamctlrc dest={{ kamailio_location }}/etc/kamailio/kamctlrc mode=755 owner={{ usuario }} group={{ usuario }}
-
 # Se cre el archivo kamailio en /etc/default este archivo contiene variables que va a usar systemctl para levantar kamailio
 - name: Creation of kamailio file in /etc/default
   template: src=templates/systemd/kamailio.j2 dest=/etc/default/kamailio owner=root group=root mode=755
@@ -62,13 +57,14 @@
 # Se crea el archivo kamailio-local, Este archivo contiene las variables que usa el kamailio.cfg
 - name: Creation of kamailio-local.cfg file
   template: src=templates/etc/kamailio-local.cfg dest={{ kamailio_location }}/etc/kamailio/ owner={{ usuario }} group={{ usuario }}
-  tags: changenetwork
+  tags: ['changenetwork','postinstall']
   become: true
   become_method: sudo
 
 # Se borra el kamailio.cfg que se crea por default a  la  hora de instalar
 - name: Erase of default kamailio.cfg file
   shell: rm -rf {{ kamailio_location }}/etc/kamailio/kamailio.cfg
+  tags: postinstall
 
 # Se linkea el kamailio.cfg de omnileads a su ubicacion /etc/kamailio
 - name: Link kamailio.cfg repo file to {{ kamailio_location }} (aio)
@@ -76,6 +72,7 @@
   become: true
   become_method: sudo
   when: cluster == 0
+  tags: postinstall
 
 # Se copia si es un cluster
 - name: Copy of the kamailio.cfg file (cluster)
@@ -112,7 +109,7 @@
 # Restarteo kamailio
 - name: Restart kamailio service
   systemd: name=kamailio state=restarted enabled=yes daemon_reload=yes
-  tags: changenetwork
+  tags: ['changenetwork','postinstall']
   become: true
   become_method: sudo
   when: is_docker.stdout != "docker"

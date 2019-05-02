@@ -17,7 +17,7 @@ ca_organizationalunit: Freetech Solutions
 ################# Versiones de aplicaciones ####################
 
 asterisk_version: 13.22.0
-kamailio_version: 5.1.4
+kamailio_version: 5.2.0
 postgresql_version: 9.6
 postgres_version_nodot: 96
 rtpengine_version: 5.5.3.1
