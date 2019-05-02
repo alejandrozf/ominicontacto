@@ -44,6 +44,7 @@
 - name: Creation of kamailio.service file in systemd
   template: src=templates/systemd/kamailio.service.j2 dest=/etc/systemd/system/kamailio.service owner=root group=root mode=650
   when: is_docker.stdout != "docker"
+  tags: postinstall
 
 - name: Creation of kamailio.service file in systemd (docker container)
   template: src=templates/init.d/kamailio dest=/etc/init.d/kamailio owner=root group=root mode=650

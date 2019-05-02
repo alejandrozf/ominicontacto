@@ -26,6 +26,10 @@
   become: true
   become_method: sudo
 
+- name: Set environment variables for this installation
+  template: src=templates/environment dest=/etc/environment mode=644 owner=root group=root
+  tags: postinstall
+
 - name: Write the /etc/hosts of server (cluster)
   blockinfile:
     path: /etc/hosts

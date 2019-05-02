@@ -1,13 +1,13 @@
 [omniapp]
-omniapp ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #cluster server do not erase this comment
+hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #cluster server do not erase this comment
 [kamailio]
-kamailio ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #cluster server do not erase this comment
+hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #cluster server do not erase this comment
 [asterisk]
-asterisk ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #cluster server do not erase this comment
+hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #cluster server do not erase this comment
 [database]
-database ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #cluster server do not erase this comment
+hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #cluster server do not erase this comment
 [dialer]
-dialer ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #cluster server do not erase this comment
+hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #cluster server do not erase this comment
 
 [omnileads-aio]
 hostname ansible_connection=local ansible_user=root ansible_host=X.X.X.X  #(this line is for self-hosted installation)

@@ -921,7 +921,7 @@ urlpatterns = [
 
 urlpatterns += [url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}), ]
 
-if settings.DJANGO_DEBUG_TOOLBAR:
+if settings.DEBUG:
     #     # static files (images, css, javascript, etc.)
     #     urlpatterns += patterns('',
     #         (r'^media/(?P<path>.*)$', 'django.views.static.serve', {

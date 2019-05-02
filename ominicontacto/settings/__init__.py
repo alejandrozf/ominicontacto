@@ -1,4 +1,4 @@
-"""
+# -*- coding: utf-8 -*-
 # Copyright (C) 2018 Freetech Solutions
 
 # This file is part of OMniLeads
@@ -16,14 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-WSGI config for ominicontacto project.
 
-It exposes the WSGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/1.9/howto/deployment/wsgi/
-"""
-
-from django.core.wsgi import get_wsgi_application
-
-application = get_wsgi_application()
+# por defecto se cargan los settings de desarrollo, si se quiere correr la versión de producción
+# apuntar la variable de entorno DJANGO_SETTINGS_MODULE a 'settings.production'

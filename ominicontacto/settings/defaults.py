@@ -30,30 +30,6 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
-import subprocess
-
-
-def check_not_duplicated_values(list_values, setting_name):
-    not_duplicated_values = len(list_values) == len(
-        set(list_values))
-    assert not_duplicated_values, "Hay valores duplicados para {0}".format(setting_name)
-
-
-def check_template_context_processor_structure(template_context_processors_list):
-    """Valida que la estructura de la lista de procesador de contextos en los templates
-    esté correcta
-    """
-    # de momento solo chequeamos que la estructura no contenga middlewares duplicados
-    # la idea es más adelante realizar más chequeos
-    check_not_duplicated_values(template_context_processors_list, "TEMPLATE_CONTEXT_PROCESSORS")
-
-
-def check_middleware_structure(MIDDLEWARE_CLASSES_STRUCTURE):
-    """Valida que la estructura en los middleware esté correcta"""
-    # de momento solo chequeamos que la estructura no contenga middlewares duplicados
-    # la idea es más adelante realizar más chequeos
-    check_not_duplicated_values(MIDDLEWARE_CLASSES_STRUCTURE, "MIDDLEWARE_CLASSES")
-
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -172,8 +148,6 @@ SESSION_SAVE_EVERY_REQUEST = True
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
-LANGUAGE_CODE = 'es-ar'
-
 TIME_ZONE = 'America/Argentina/Cordoba'
 
 USE_I18N = True
@@ -277,6 +251,10 @@ ASTERISK = {
     # Ej:
     #    "http://1.2.3.4:7088"
 }
+
+CONSTANCE_CONFIG = {}
+
+DJANGO_DEBUG_TOOLBAR = None
 
 ######################
 # Defender variables #
@@ -391,207 +369,6 @@ Ejemplo:
 
 CALIFICACION_REAGENDA = None
 
-# ==============================================================================
-# Import de `oml_settings_local`
-# ==============================================================================
-
-try:
-    from oml_settings_local import *
-    # definir LOCAL_APPS en oml_settings_local, para insertar plugins de django que
-    # sólo serán usados en ambientes de desarrollo y de testing, si no se tienen plugins
-    # dejar LOCAL_APPS = []
-    INSTALLED_APPS += LOCAL_APPS
-
-    if DJANGO_DEBUG_TOOLBAR:
-        MIDDLEWARE_CLASSES += [
-            'debug_toolbar.middleware.DebugToolbarMiddleware',
-        ]
-    if DJANGO_CORS_HEADERS:
-        MIDDLEWARE_CLASSES = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE_CLASSES
-
-    # para los addons que tienen middleware
-    MIDDLEWARE_CLASSES_STRUCTURE = MIDDLEWARE_PREPPEND + MIDDLEWARE_CLASSES
-    MIDDLEWARE_CLASSES_STRUCTURE.extend(MIDDLEWARE_APPEND)
-
-    check_middleware_structure(MIDDLEWARE_CLASSES_STRUCTURE)
-
-    MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES_STRUCTURE
-
-    # para los addons que tienen templates_context_processors propios
-    TEMPLATES[0]['OPTIONS']['context_processors'].extend(TEMPLATES_CONTEXT_PROCESORS_APPEND)
-    check_template_context_processor_structure(TEMPLATES[0]['OPTIONS']['context_processors'])
-
-    LOCALE_PATHS = (
-        os.path.join(BASE_DIR, 'configuracion_telefonia_app/locale'),
-        os.path.join(BASE_DIR, 'ominicontacto_app/locale'),
-        os.path.join(BASE_DIR, 'reportes_app/locale'),
-        os.path.join(BASE_DIR, 'reciclado_app/locale'),
-        os.path.join(BASE_DIR, 'supervision_app/locale'),
-    )
-
-    LANGUAGES = (
-        ('en', 'English'),
-        ('es', 'Spanish'),
-    )
-
-    LANGUAGE_CODE = 'es'
-
-except ImportError as e:
-    print "# "
-    print "# ERROR"
-    print "# "
-    print "#   No se pudo importar el modulo"
-    print "#       `oml_settings_local`"
-    print "# "
-    raise Exception("No se pudo importar oml_settings_local")
-
-# ~~~~~ Check OML_ASTERISK_HOSTNAME
-
-assert DEFENDER_BEHIND_REVERSE_PROXY is not None, \
-    "Falta definir setting para DEFENDER_BEHIND_REVERSE_PROXY"
-# ~~~~~ Check OML_ASTERISK_HOSTNAME
-
-assert OML_ASTERISK_HOSTNAME is not None, \
-    "Falta definir setting para OML_ASTERISK_HOSTNAME"
-
-# ~~~~~ Check OML_ASTERISK_REMOTEPATH
-
-assert OML_ASTERISK_REMOTEPATH is not None, \
-    "Falta definir setting para OML_ASTERISK_REMOTEPATH"
-
-# ~~~~~ Check OML_SIP_FILENAME
-
-assert OML_SIP_FILENAME is not None, \
-    "Falta definir setting para OML_SIP_FILENAME"
-
-# ~~~~~ Check OML_QUEUES_FILENAME
-
-assert OML_QUEUES_FILENAME is not None, \
-    "Falta definir setting para OML_QUEUES_FILENAME"
-
-# ~~~~~ Check ASTERISK
-
-for key in ('AMI_USERNAME', 'AMI_PASSWORD', 'HTTP_AMI_URL'):
-    assert key in ASTERISK, \
-        "Falta key '{0}' en configuracion de ASTERISK".\
-        format(key)
-    assert ASTERISK[key] is not None, \
-        "Falta key '{0}' en configuracion de ASTERISK".\
-        format(key)
-
-# ~~~~~ Check OML_RELOAD_CMD
-
-assert OML_RELOAD_CMD is not None, \
-    "Falta definir setting para OML_RELOAD_CMD"
-
-
-# ~~~~~ Check OML_GRABACIONES_URL
-
-assert OML_GRABACIONES_URL is not None, \
-    "Falta definir setting para OML_GRABACIONES_URL"
-
-# ~~~~~ Check EPHEMERAL_USER_TTL
-
-assert EPHEMERAL_USER_TTL is not None, \
-    "Falta definir setting para EPHEMERAL_USER_TTL"
-
-# ~~~~~ Check OML_KAMAILIO_IP
-
-assert OML_KAMAILIO_IP is not None, \
-    "Falta definir setting para OML_KAMAILIO_IP"
-
-# ~~~~~ Check OML_KAMAILIO_HOSTNAME
-
-assert OML_KAMAILIO_HOSTNAME is not None, \
-    "Falta definir setting para OML_KAMAILIO_HOSTNAME"
-
-# ~~~~~ Check OML_KAMAILIO_CMD
-
-assert OML_KAMAILIO_CMD is not None, \
-    "Falta definir setting para OML_KAMAILIO_CMD"
-
-# ~~~~~ Check OML_WOMBAT_URL
-
-assert OML_WOMBAT_URL is not None, \
-    "Falta definir setting para OML_WOMBAT_URL"
-
-# ~~~~~ Check OML_WOMBAT_FILENAME
-
-assert OML_WOMBAT_FILENAME is not None, \
-    "Falta definir setting para OML_WOMBAT_FILENAME"
-
-# ~~~~~ Check OML_RUTAS_SALIENTES_FILENAME
-
-assert OML_RUTAS_SALIENTES_FILENAME is not None, \
-    "Falta definir setting para OML_RUTAS_SALIENTES_FILENAME"
-
-# ~~~~~ Check OML_WOMBAT_USER
-
-assert OML_WOMBAT_USER is not None, \
-    "Falta definir setting para OML_WOMBAT_USER"
-
-# ~~~~~ Check OML_WOMBAT_PASSWORD
-
-assert OML_WOMBAT_PASSWORD is not None, \
-    "Falta definir setting para OML_WOMBAT_PASSWORD"
-
-
-# ~~~~~ Check OML_OMNILEADS_IP
-
-assert OML_OMNILEADS_IP is not None, \
-    "Falta definir setting para OML_OMNILEADS_IP"
-
-
-# ~~~~~ Check OML_BACKLIST_REMOTEPATH
-
-assert OML_BACKLIST_REMOTEPATH is not None, \
-    "Falta definir setting para OML_BACKLIST_REMOTEPATH"
-
-
-# ~~~~~ Check TMPL_OML_AUDIO_CONVERSOR
-
-assert TMPL_OML_AUDIO_CONVERSOR is not None, \
-    "Falta definir setting para TMPL_OML_AUDIO_CONVERSOR"
-
-assert "<INPUT_FILE>" in TMPL_OML_AUDIO_CONVERSOR, \
-    "Falta definir <INPUT_FILE> en TMPL_OML_AUDIO_CONVERSOR"
-
-assert "<OUTPUT_FILE>" in TMPL_OML_AUDIO_CONVERSOR, \
-    "Falta definir <OUTPUT_FILE> en TMPL_OML_AUDIO_CONVERSOR"
-
-# 3 elementos como minimo: (1) comando (2/3) INPUT/OUTPUT
-assert len(TMPL_OML_AUDIO_CONVERSOR) >= 3, \
-    "TMPL_OML_AUDIO_CONVERSOR debe tener al menos 3 elementos"
-
-ret = subprocess.call('which {0} > /dev/null 2> /dev/null'.format(
-    TMPL_OML_AUDIO_CONVERSOR[0]), shell=True)
-
-assert ret == 0, "No se ha encontrado el ejecutable configurado " +\
-    "en TMPL_OML_AUDIO_CONVERSOR: '{0}'".format(TMPL_OML_AUDIO_CONVERSOR[0])
-
-# ~~~~~ Check TMPL_OML_AUDIO_CONVERSOR
-
-assert TMPL_OML_AUDIO_CONVERSOR_EXTENSION is not None, \
-    "Falta definir setting para TMPL_OML_AUDIO_CONVERSOR"
-
-# ~~~~~ Check ASTERISK_AUDIO_PATH
-
-assert ASTERISK_AUDIO_PATH is not None, \
-    "Falta definir setting para ASTERISK_AUDIO_PATH"
-
-# ~~~~~ Check OML_AUDIO_FOLDER
-
-assert OML_AUDIO_FOLDER is not None, \
-    "Falta definir setting para OML_AUDIO_FOLDER"
-
-# Una vez que tengo ASTERISK_AUDIO_PATH y OML_AUDIO_FOLDER puedo calcular OML_AUDIO_PATH_ASTERISK
-OML_AUDIO_PATH_ASTERISK = ASTERISK_AUDIO_PATH + OML_AUDIO_FOLDER
-
-# ~~~~~ Check CALIFICACION_REAGENDA
-
-assert CALIFICACION_REAGENDA is not None, \
-    "Falta definir setting para CALIFICACION_REAGENDA"
-
 # configuración de Django Rest Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -602,7 +379,16 @@ REST_FRAMEWORK = {
     )
 }
 
-# ~~~~~ Check DURACION_ASIGNACION_CONTACTO_PREVIEW
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'configuracion_telefonia_app/locale'),
+    os.path.join(BASE_DIR, 'ominicontacto_app/locale'),
+    os.path.join(BASE_DIR, 'reportes_app/locale'),
+    os.path.join(BASE_DIR, 'reciclado_app/locale'),
+)
 
-assert DURACION_ASIGNACION_CONTACTO_PREVIEW is not None, \
-    "Falta definir setting para DURACION_ASIGNACION_CONTACTO_PREVIEW"
+LANGUAGES = (
+    ('en', 'English'),
+    ('es', 'Spanish'),
+)
+
+LANGUAGE_CODE = 'es'

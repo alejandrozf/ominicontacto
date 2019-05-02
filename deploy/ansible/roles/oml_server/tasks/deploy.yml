@@ -94,7 +94,7 @@
     - ominicontacto_voip
     - reciclado_app
     - reportes_app
-    - requirements.txt
+    - requirements
     - supervision_app
     - test
     - tests
@@ -106,6 +106,7 @@
 - name: Clone of OML repository (develop server)
   git: repo=https://gitlab.com/omnileads/ominicontacto.git dest={{ install_prefix }}ominicontacto/ accept_hostkey=yes force=yes accept_hostkey=yes version={{ rama }}
   when: desarrollo == 1 and ominicontacto_exists.rc == 1
+  tags: postinstall
 
 # Seteo posesion de ominicontacto al usuario omnileads
 - name: Change owner and group of ominicontacto
@@ -127,6 +128,10 @@
   become_method: su
   become_user: "{{ usuario }}"
 
+- name: Generate requirements.txt file
+  template: src=roles/oml_server/templates/requirements.txt dest={{ install_prefix }}ominicontacto owner={{ usuario }} group={{ usuario }}
+  tags: postinstall
+
 # Se instalan los paquetes que hay en el requirements.txt usando pip
 - name: Setup virtualenv
   pip:
@@ -139,28 +144,10 @@
   become: true
   become_method: su
   become_user: "{{ usuario }}"
+  tags: postinstall
 - meta: clear_host_errors
 
 ##### Entorno de desarrollo
-
-# Instalo los paquetes extras necesarios:
-- name: Install extra packages for development (develop server)
-  pip:
-    name={{ item }}
-    virtualenv={{ install_prefix }}virtualenv
-    virtualenv_command=/usr/bin/virtualenv
-  with_items:
-    - django-sslserver==0.20
-    - django-debug-toolbar==1.9.1
-    - django-extensions==1.9.8
-    - django-cors-headers==2.4.0
-  environment:
-      PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-{{ postgresql_version }}/bin"
-      PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
-  become: true
-  become_method: su
-  become_user: "{{ usuario }}"
-  when: desarrollo == 1
 
 # Agrego el comando django-server y 1210 para levantar y matar el entorno de omnileadsdesarrollo
 - name: Add django-server and kill-django-server scripts (develop server)
@@ -169,6 +156,7 @@
     - django-server
     - kill-django-server
   when: desarrollo == 1
+  tags: postinstall
 
 # Se sube el archivo oml_settings_local.py
 - name: Upload oml_settings_local.py
@@ -182,7 +170,11 @@
   tags: ['changenetwork','postinstall','changepassword']
   when: ics_exists.rc == 0
 
+- name: Erase old simbolic link of settings
+  file: path={{ install_prefix }}ominicontacto/oml_settings_local.py state=absent
+  tags: ['never','postinstall']
+
 # Se hace el link simbolico del archivo oml_settings_local a ominicontacto/, para que se pueda hacer manage.py
 - name: Creation of simbolic link of oml_settings_local.py
-  file: state=link src={{ install_prefix }}local/oml_settings_local.py dest={{ install_prefix }}ominicontacto/oml_settings_local.py owner={{ usuario }} group={{ usuario }} force=true
-  tags: omniapp
+  file: state=link src={{ install_prefix }}local/oml_settings_local.py dest={{ install_prefix }}ominicontacto/ominicontacto/settings/oml_settings_local.py owner={{ usuario }} group={{ usuario }} force=true
+  tags: ['omniapp','postinstall']
