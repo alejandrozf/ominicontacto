@@ -37,6 +37,7 @@ from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
+    SistemaExterno,
     ReglasIncidencia, UserApiCrm, SupervisorProfile, ArchivoDeAudio,
     NombreCalificacion, OpcionCalificacion, ParametrosCrm
 )
@@ -1042,6 +1043,13 @@ class BacklistForm(forms.ModelForm):
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'archivo_importacion': forms.FileInput(attrs={'class': 'form-control'}),
         }
+
+
+class SistemaExternoForm(forms.ModelForm):
+
+    class Meta:
+        model = SistemaExterno
+        fields = ('nombre', )
 
 
 class SitioExternoForm(forms.ModelForm):

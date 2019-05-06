@@ -29,7 +29,7 @@ from ominicontacto_app import (
     views_agenda_contacto, views_campana_dialer_creacion, views_campana_dialer,
     views_back_list, views_sitio_externo, views_queue_member, views_user_api_crm,
     views_campana_dialer_template, views_campana_manual_creacion, views_campana_manual,
-    views_campana_preview, views_archivo_de_audio, views_user_profiles,
+    views_campana_preview, views_archivo_de_audio, views_user_profiles, views_sistema_externo
 )
 
 from ominicontacto_app.views_utils import (
@@ -750,6 +750,18 @@ urlpatterns = [
     url(r'^backlist/lista/$',
         administrador_requerido(views_back_list.BackListView.as_view()),
         name="back_list_list"),
+    # ==========================================================================
+    # Sistema Externo
+    # ==========================================================================
+    url(r'^sistema_externo/list/$',
+        administrador_requerido(views_sistema_externo.SistemaExternoListView.as_view()),
+        name="sistema_externo_list"),
+    url(r'^sistema_externo/nuevo/$',
+        administrador_requerido(views_sistema_externo.SistemaExternoCreateView.as_view()),
+        name="sistema_externo_create"),
+    url(r'^sistema_externo/(?P<pk>\d+)/update/$',
+        administrador_requerido(views_sistema_externo.SistemaExternoUpdateView.as_view()),
+        name='modificar_sistema_externo', ),
     # ==========================================================================
     # Sitio Externo
     # ==========================================================================

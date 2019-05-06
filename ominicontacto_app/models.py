@@ -2894,6 +2894,10 @@ class SitioExterno(models.Model):
         return self.url + '?' + '&'.join([key + '=' + val for (key, val) in parametros.items()])
 
 
+class SistemaExterno(models.Model):
+    nombre = models.CharField(unique=True, max_length=128)
+
+
 class ReglasIncidencia(models.Model):
     """
     Reglas de llamada de wombat para las campañas dialer
