@@ -41,13 +41,13 @@ from ominicontacto_app.errors import (
     OmlParserMaxRowError, OmlDepuraBaseDatoContactoError, OmlParserRepeatedColumnsError,
     OmlParserCsvImportacionError, OmlArchivoImportacionInvalidoError)
 from ominicontacto_app.forms import (
-    BaseDatosContactoForm, PrimerLineaEncabezadoForm, CamposDeTelefonoForm, )
+    BaseDatosContactoForm, PrimerLineaEncabezadoForm, CamposDeBaseDeDatosForm, )
 from ominicontacto_app.models import BaseDatosContacto, UserApiCrm
 from ominicontacto_app.parser import ParserCsv
 from ominicontacto_app.services.base_de_datos_contactos import (
     CreacionBaseDatosService, PredictorMetadataService,
     NoSePuedeInferirMetadataError, NoSePuedeInferirMetadataErrorEncabezado,
-    ContactoExistenteError, CreacionBaseDatosApiService)
+    ContactoExistenteError, CreacionBaseDatosApiService, CreacionBaseDatosServiceIdExternoError)
 from django.views.decorators.csrf import csrf_exempt
 import logging as logging_
 
@@ -279,7 +279,7 @@ class DefineBaseDatosContactoView(UpdateView):
 
             form_primer_linea_encabezado = PrimerLineaEncabezadoForm(
                 initial=initial_predecido_encabezado)
-            form_campos_telefonicos = CamposDeTelefonoForm(nombres_campos=estructura_archivo[0])
+            form_campos_telefonicos = CamposDeBaseDeDatosForm(nombres_campos=estructura_archivo[0])
 
             return self.render_to_response(self.get_context_data(
                 error_predictor_encabezado=error_predictor_encabezado,
@@ -361,9 +361,12 @@ class DefineBaseDatosContactoView(UpdateView):
         # predictor_metadata = PredictorMetadataService()
         # columnas_con_telefonos = predictor_metadata.inferir_columnas_telefono(
         #     estructura_archivo[1:], encoding)
-        campos_telefonicos = form_campos_telefonicos.cleaned_data.get('campos')
+        campos_telefonicos = form_campos_telefonicos.cleaned_data.get('campos_telefonicos')
         columnas_con_telefono = form_campos_telefonicos.columnas_de_telefonos
         metadata.columnas_con_telefono = columnas_con_telefono
+        columna_id_externo = form_campos_telefonicos.columna_id_externo
+        if columna_id_externo is not None:
+            metadata.columna_id_externo = columna_id_externo
 
         metadata.nombres_de_columnas = [value.decode(encoding)
                                         for value in estructura_archivo[0]]
@@ -377,7 +380,26 @@ class DefineBaseDatosContactoView(UpdateView):
 
         try:
             # creacion_base_datos.valida_contactos(self.object)
-            creacion_base_datos.importa_contactos(self.object, campos_telefonicos)
+            creacion_base_datos.importa_contactos(self.object,
+                                                  campos_telefonicos,
+                                                  columna_id_externo)
+        except CreacionBaseDatosServiceIdExternoError as e:
+            message = _('<strong>Operación Errónea!</strong> ') +\
+                _('El archivo que seleccionó posee contactos con identificadores externos '
+                  'repetidos.<br> '
+                  '<u>Línea Inválida:</u> {0}<br> <u>Contenido Línea:</u>'
+                  ' {1}<br><u>ID repetido:</u> {2}').format(
+                e.numero_fila, e.fila, e.valor_celda)
+
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+            return self.render_to_response(self.get_context_data(
+                estructura_archivo=estructura_archivo,
+                form_primer_linea_encabezado=form_primer_linea_encabezado))
+
         except OmlParserCsvImportacionError as e:
 
             message = _('<strong>Operación Errónea!</strong> ') +\
@@ -442,8 +464,8 @@ class DefineBaseDatosContactoView(UpdateView):
         estructura_archivo = self.obtiene_previsualizacion_archivo(self.object)
         if estructura_archivo:
             form_primer_linea_encabezado = PrimerLineaEncabezadoForm(request.POST)
-            form_campos_telefonicos = CamposDeTelefonoForm(data=request.POST,
-                                                           nombres_campos=estructura_archivo[0])
+            form_campos_telefonicos = CamposDeBaseDeDatosForm(data=request.POST,
+                                                              nombres_campos=estructura_archivo[0])
 
             if form_campos_telefonicos.is_valid() and form_primer_linea_encabezado.is_valid():
                 return self.form_valid(estructura_archivo,
@@ -686,8 +708,30 @@ class ActualizaBaseDatosContactoView(UpdateView):
 
         try:
             # creacion_base_datos.valida_contactos(self.object)
-            columnas_con_telefono = self.object.get_metadata().nombres_de_columnas_de_telefonos
-            creacion_base_datos.importa_contactos(self.object, columnas_con_telefono)
+            bd_metadata = self.object.get_metadata()
+            columnas_con_telefono = bd_metadata.nombres_de_columnas_de_telefonos
+            columna_id_externo = bd_metadata.columna_id_externo
+
+            creacion_base_datos.importa_contactos(self.object,
+                                                  columnas_con_telefono,
+                                                  columna_id_externo)
+        except CreacionBaseDatosServiceIdExternoError as e:
+            message = _('<strong>Operación Errónea!</strong> ') +\
+                _('El archivo que seleccionó posee contactos con identificadores externos '
+                  'repetidos.<br> '
+                  '<u>Línea Inválida:</u> {0}<br> <u>Contenido Línea:</u>'
+                  ' {1}<br><u>ID repetido:</u> {2}').format(
+                e.numero_fila, e.fila, e.valor_celda)
+
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+            return self.render_to_response(self.get_context_data(
+                estructura_archivo=estructura_archivo,
+                form_primer_linea_encabezado=form_primer_linea_encabezado))
+
         except OmlParserCsvImportacionError as e:
 
             message = _('<strong>Operación Errónea!</strong> ') +\
@@ -701,7 +745,9 @@ class ActualizaBaseDatosContactoView(UpdateView):
                 messages.ERROR,
                 message,
             )
-            # FIXME: Ver bien que hacer acá.
+            return self.render_to_response(self.get_context_data(
+                estructura_archivo=estructura_archivo,
+                form_primer_linea_encabezado=form_primer_linea_encabezado))
 
         except ContactoExistenteError as e:
 

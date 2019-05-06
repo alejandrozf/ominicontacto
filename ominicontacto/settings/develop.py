@@ -17,6 +17,7 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
+import sys
 from defaults import *
 from addons import *
 from checks import (check_settings_variables, process_middleware_settings,
@@ -27,7 +28,8 @@ TEMPLATE_DEBUG = DEBUG
 
 INSTALLED_APPS += ['debug_toolbar', 'sslserver', 'django_extensions', 'corsheaders']
 MIDDLEWARE_CLASSES = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE_CLASSES
-MIDDLEWARE_CLASSES += ['debug_toolbar.middleware.DebugToolbarMiddleware']
+if 'test' not in sys.argv:
+    MIDDLEWARE_CLASSES += ['debug_toolbar.middleware.DebugToolbarMiddleware']
 DJANGO_CORS_HEADERS = True
 CORS_ORIGIN_ALLOW_ALL = True
 

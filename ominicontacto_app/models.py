@@ -1608,6 +1608,32 @@ class MetadataBaseDatosContactoDTO(object):
 
         self._metadata['cols_telefono'] = columnas
 
+    # -----
+
+    @property
+    def columna_id_externo(self):
+        try:
+            return self._metadata['col_id_externo']
+        except KeyError:
+            return None
+
+    @columna_id_externo.setter
+    def columna_id_externo(self, columna_id_externo):
+        """
+        Parametros:
+        - Un entero que indica la columna con campo id externo.
+        """
+        assert isinstance(columna_id_externo, int), ("'columna_id_externo' debe ser int. "
+                                                     "Se recibio: {0}"
+                                                     "".format(type(columna_id_externo)))
+        self._metadata['col_id_externo'] = columna_id_externo
+
+    @property
+    def nombre_campo_id_externo(self):
+        if self.columna_id_externo is not None:
+            return self._metadata['nombres_de_columnas'][self.columna_id_externo]
+        return None
+
     # ----
 
     @property
@@ -1711,7 +1737,8 @@ class MetadataBaseDatosContactoDTO(object):
             try:
                 nombres_de_columnas = self._metadata['nombres_de_columnas']
                 self._nombres_de_columnas_de_datos = [x for x in nombres_de_columnas
-                                                      if not x == self.nombre_campo_telefono]
+                                                      if not x == self.nombre_campo_telefono and
+                                                      not x == self.nombre_campo_id_externo]
             except KeyError:
                 return []
 
@@ -2134,6 +2161,7 @@ class Contacto(models.Model):
         'BaseDatosContacto',
         related_name='contactos', blank=True, null=True
     )
+    id_externo = models.CharField(max_length=128, null=True)
     es_originario = models.BooleanField(default=True)
 
     def obtener_datos(self):
@@ -2143,7 +2171,17 @@ class Contacto(models.Model):
             columnas = bd_metadata.nombres_de_columnas
             datos = self.lista_de_datos()
             pos_primer_telefono = bd_metadata.columnas_con_telefono[0]
-            datos.insert(pos_primer_telefono, self.telefono)
+            if bd_metadata.columna_id_externo is not None:
+                # Inserto primero el de menor indice para que se respete el orden
+                if (pos_primer_telefono < bd_metadata.columna_id_externo):
+                    datos.insert(pos_primer_telefono, self.telefono)
+                    datos.insert(bd_metadata.columna_id_externo, self.id_externo)
+                else:
+                    datos.insert(bd_metadata.columna_id_externo, self.id_externo)
+                    datos.insert(pos_primer_telefono, self.telefono)
+            else:
+                datos.insert(pos_primer_telefono, self.telefono)
+
             self.datos_contacto = dict(zip(columnas, datos))
         return self.datos_contacto
 

@@ -60,6 +60,7 @@ class TestGeneraBaseDatosContacto(OMLBaseTest):
         metadata.cantidad_de_columnas = 3
         metadata.columna_con_telefono = 0
         metadata.columnas_con_telefono = [0, 2]
+        metadata.columna_id_externo = 1
         metadata.nombres_de_columnas = ["telefono",
                                         "nombre",
                                         "celular"]
@@ -68,9 +69,11 @@ class TestGeneraBaseDatosContacto(OMLBaseTest):
         # -----
 
         creacion_base_de_datos_service = CreacionBaseDatosService()
-        creacion_base_de_datos_service.importa_contactos(bd, ["telefono", "celular"])
+        creacion_base_de_datos_service.importa_contactos(bd, ["telefono", "celular"], 1)
 
         self.assertEqual(bd.contactos.count(), 4)
+        for contacto in bd.contactos.all():
+            self.assertIsNotNone(contacto.id_externo)
 
     def test_define_base_dato_contacto(self):
         bd = BaseDatosContacto(id=1)
@@ -224,7 +227,7 @@ class TestImportarDesdeCsvNoAscii(OMLBaseTest):
         metadata.primer_fila_es_encabezado = True
         metadata.save()
 
-        service.importa_contactos(bd, ['telefono'])
+        service.importa_contactos(bd, ['telefono'], None)
 
         self.assertEquals(Contacto.objects.count(), 2)
         contactos = list(Contacto.objects.all())

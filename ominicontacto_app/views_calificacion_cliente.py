@@ -167,7 +167,7 @@ class CalificacionClienteFormView(FormView):
         return kwargs
 
     def get_contacto_form(self):
-        return FormularioNuevoContacto(bd_metadata=self.campana.bd_contacto.get_metadata(),
+        return FormularioNuevoContacto(base_datos=self.campana.bd_contacto,
                                        **self.get_contacto_form_kwargs())
 
     def _formulario_llamada_entrante(self):
