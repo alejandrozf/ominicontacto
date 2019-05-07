@@ -34,7 +34,7 @@ from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana,
                                       AgenteEnContacto, QueueMember, CalificacionCliente,
                                       OpcionCalificacion, ArchivoDeAudio, ParametrosCrm,
                                       ActuacionVigente, Pausa, RespuestaFormularioGestion, Backlist,
-                                      AgendaContacto)
+                                      AgendaContacto, SistemaExterno)
 
 from reportes_app.models import LlamadaLog, ActividadAgenteLog
 
@@ -359,3 +359,11 @@ class AgendaContactoFactory(DjangoModelFactory):
 
     class Meta:
         model = AgendaContacto
+
+
+class SistemaExternoFactory(DjangoModelFactory):
+
+    nombre = Sequence(lambda n: "Sistema_Externo_{0}".format(n))
+
+    class Meta:
+        model = SistemaExterno
