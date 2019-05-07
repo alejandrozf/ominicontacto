@@ -113,16 +113,16 @@ def login_view(request):
 
     else:
         if request.user.is_authenticated():
-                return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect(reverse('index'))
         else:
             form = AuthenticationForm(request)
-            context = {
-                'form': form,
-                'detail': detail,
-                'user_is_blocked': user_is_blocked,
-            }
-            template_name = 'registration/login.html'
-            return TemplateResponse(request, template_name, context)
+    context = {
+        'form': form,
+        'detail': detail,
+        'user_is_blocked': user_is_blocked,
+    }
+    template_name = 'registration/login.html'
+    return TemplateResponse(request, template_name, context)
 
 
 ####################
