@@ -62,19 +62,19 @@
 # Se crea el archivo kamailio-local, Este archivo contiene las variables que usa el kamailio.cfg
 - name: Creation of kamailio-local.cfg file
   template: src=templates/etc/kamailio-local.cfg dest={{ kamailio_location }}/etc/kamailio/ owner={{ usuario }} group={{ usuario }}
-  tags: changenetwork
+  tags: ['changenetwork','postinstall']
   become: true
   become_method: sudo
 
 # Se borra el kamailio.cfg que se crea por default a  la  hora de instalar
 - name: Erase of default kamailio.cfg file
   shell: rm -rf {{ kamailio_location }}/etc/kamailio/kamailio.cfg
+  tags: postinstall
 
 # Se linkea el kamailio.cfg de omnileads a su ubicacion /etc/kamailio
 - name: Link kamailio.cfg repo file to {{ kamailio_location }} (aio)
   file: state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg dest={{ kamailio_location }}/etc/kamailio/kamailio.cfg force=true owner={{ usuario }} group={{ usuario }} mode=644
-  become: true
-  become_method: sudo
+  tags: postinstall
   when: cluster == 0
 
 # Se copia si es un cluster
@@ -112,7 +112,7 @@
 # Restarteo kamailio
 - name: Restart kamailio service
   systemd: name=kamailio state=restarted enabled=yes daemon_reload=yes
-  tags: changenetwork
+  tags: ['changenetwork','postinstall']
   become: true
   become_method: sudo
   when: is_docker.stdout != "docker"

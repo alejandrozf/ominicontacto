@@ -43,15 +43,15 @@
   tags: kamailio
 
 - debug: msg="Kamailio {{ kamailio_version }} is not installed, proceeding to install"
-  tags: kamailio
+  tags: ['kamailio','postinstall']
   when: kamailio_installed.stdout != kamailio_version
 
 - debug: msg="Kamailio is already installed in version {{ kamailio_version }}, skipping installation steps"
-  tags: kamailio
+  tags: ['kamailio','postinstall']
   when: kamailio_installed.stdout == kamailio_version
 
 - include: kamailio_installation.yml
-  tags: kamailio
+  tags: ['kamailio','postinstall']
   when: kamailio_installed.stdout != kamailio_version
 
 - include: certificate_CA.yml

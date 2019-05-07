@@ -62,8 +62,7 @@
 # Se crea el arhivo de systemd para omnileads daemon
 - name: Create of omnileads service
   template: src=templates/omnileads.service dest=/etc/systemd/system/omnileads.service owner=root group=root mode=650
-  become: true
-  become_method: sudo
+  tags: postinstall
 
 # Se inicia y habilita el servicio
 - name: Start the omnileads-daemon service
@@ -89,7 +88,7 @@
 - name: Generate backup-restore.sh script
   template: src=templates/bin/backup-restore.sh.j2 dest={{ install_prefix }}bin/backup-restore.sh owner={{ usuario }} group={{ usuario }} mode=755
   tags: postinstall
-  
+
 # Se inicia y habilita el servicio
 - name: Reload the omnileads-daemon service
   systemd: name=omnileads state=reloaded enabled=yes daemon_reload=yes
