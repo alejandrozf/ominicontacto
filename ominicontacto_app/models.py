@@ -2933,7 +2933,30 @@ class SitioExterno(models.Model):
 
 
 class SistemaExterno(models.Model):
+    """Representa un sistema eterno que se comunica con OML a través de sus CRMs
+    y la API de OML
+    """
     nombre = models.CharField(unique=True, max_length=128)
+    agentes = models.ManyToManyField(
+        AgenteProfile, through="AgenteEnSistemaExterno", verbose_name=_("Agentes"))
+
+    def __unicode__(self):
+        return "Sistema Externo: {0}".format(self.nombre)
+
+
+class AgenteEnSistemaExterno(models.Model):
+    """Representa la relación entre un agente de OML y un sistema externo"""
+    agente = models.ForeignKey(AgenteProfile)
+    sistema_externo = models.ForeignKey(SistemaExterno)
+    id_externo_agente = models.CharField(max_length=128)
+
+    def __unicode__(self):
+        return "Agente: {0} en Sistema Externo: {1} con id_externo: {2}".format(
+            self.agente, self.sistema_externo, self.id_externo_agente)
+
+    class Meta:
+        unique_together = (('sistema_externo', 'id_externo_agente'),
+                           ('sistema_externo', 'agente'))
 
 
 class ReglasIncidencia(models.Model):

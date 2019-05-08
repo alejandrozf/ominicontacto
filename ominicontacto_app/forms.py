@@ -39,7 +39,7 @@ from ominicontacto_app.models import (
     RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
     SistemaExterno,
     ReglasIncidencia, UserApiCrm, SupervisorProfile, ArchivoDeAudio,
-    NombreCalificacion, OpcionCalificacion, ParametrosCrm
+    NombreCalificacion, OpcionCalificacion, ParametrosCrm, AgenteEnSistemaExterno
 )
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
@@ -1501,3 +1501,7 @@ ParametrosCrmFormSet = inlineformset_factory(
 QueueMemberFormset = inlineformset_factory(
     Queue, QueueMember, formset=QueueMemberBaseFomset, form=QueueMemberForm, extra=1,
     can_delete=True, min_num=0)
+
+AgenteEnSistemaExternoFormset = inlineformset_factory(
+    SistemaExterno, AgenteEnSistemaExterno, fields=('agente', 'id_externo_agente'),
+    extra=1, can_delete=True, min_num=0)
