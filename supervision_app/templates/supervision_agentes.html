@@ -30,7 +30,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/utiles.js' %}"></script>
     <script type="text/javascript" src="{% static 'supervision_app/JS/supervision.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/config.js' %}"></script>
+    {% include 'config.html' %}
     <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/jssip.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/state-machine-min.js' %}"></script>
@@ -74,10 +74,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <button class="btn btn-danger" id="endCall" type="button" placeholder='finalizar' >
                 {% trans "Finalizar" %}
                 </button>
-            </div> 
-        </div> 
+            </div>
+        </div>
     </div>
-    
+
     <table id="tableAgentes" class="table">
         <thead>
             <tr>

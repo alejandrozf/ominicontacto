@@ -19,6 +19,7 @@
 
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _
 
@@ -64,3 +65,13 @@ def obtener_sip_agentes_sesiones_activas():
         if agente['status'] != 'OFFLINE':
             sips_agentes.append(int(agente['sip']))
     return sips_agentes
+
+
+class AddSettingsContextMixin(object):
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AddSettingsContextMixin, self).get_context_data(*args, **kwargs)
+        context['KAMAILIO_HOSTNAME'] = settings.KAMAILIO_HOSTNAME
+        context['NGINX_HOSTNAME'] = settings.NGINX_HOSTNAME
+        context['EXTERNAL_PORT'] = settings.OML_EXTERNAL_PORT
+        return context

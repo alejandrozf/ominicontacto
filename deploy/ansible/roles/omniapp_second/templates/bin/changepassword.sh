@@ -1,0 +1,11 @@
+#!/bin/bash
+
+source /etc/profile.d/omnileads_envars.sh
+
+python manage.py shell << EOF
+from ominicontacto_app.models import User
+u = User.objects.get(username='{{ admin_user }}')
+u.set_password('{{ admin_pass }}')
+u.save()
+exit()
+EOF

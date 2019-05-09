@@ -42,17 +42,17 @@ ami_password=5_MeO_DMT
 # Wombat dialer web
 dialer_user=demoadmin
 dialer_password=demo
-# MySQL (ONLY CHANGE THIS PASSWORD IN FIRST INSTALLATION) 
+# MySQL (ONLY CHANGE THIS PASSWORD IN FIRST INSTALLATION)
 mysql_root_password=098098ZZZ
 # AMI for supervision
 sup_ami_user=omnisup
 sup_ami_password=Sup3rst1c10n
 #Set the timezone where the nodes are UNCOMMENT and set this if you are doing a fresh install
-TZ=America/Argentina/Cordoba
-
+#TZ=America/Argentina/Cordoba
+#External port is the port where OML web server will listen requests. By default is 443
+external_port=443
 # Change this value if the recordings are not converted to mp3
 formato_conversion=mp3
-
 #Change this value if you want to change the language of schedule calification
 schedule=Agenda
 

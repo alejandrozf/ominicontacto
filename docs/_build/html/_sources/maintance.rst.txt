@@ -160,8 +160,7 @@ Actualizaciones
 OMniLeads es forjado bajo un paradigma de releases continuos, lo cual implica un flujo de actualizaciones constantes.
 Por ello es muy importante llevar a cabo de manera limpia las actualizaciones.
 
-A continuación se exponen los pasos a seguir para llevar a cabo una nueva actualización de la plataforma. Esta tarea también se realiza
-con el script "deploy.sh".
+A continuación se exponen los pasos a seguir para llevar a cabo una nueva actualización de la plataforma. Esta tarea también se realiza con el script "deploy.sh".
 
 Las actualizaciones se anuncian por los canales de comunicaciones oficiales del proyecto.
 Dependiendo el método de instalación que se haya seleccionado:
@@ -179,7 +178,14 @@ Posicionarse sobre el directorio donde reside el script “deploy.sh”
 Asumiendo que estamos trabajando sobre los release estables (master)
 Se debe ejecutar un "git pull origin master" para traernos las actualizaciones del repositorio.
 
-**IMPORTANTE**: debe ajustar el archivo "inventory" de acuerdo a su hostname y dirección IP, para que la actualización pueda ser ejecutada.
+.. important::
+
+  Cuando se instala el sistema, se guarda una copia del archivo de inventario en la ubicación descrita al finalizar el script, el mensaje indica:
+
+  **Remember that you have a copy of your inventory file in /root/my_inventory with the variables you used for your OML installation**
+
+  Utilizar este archivo de inventario para realizar la actualización del sistema. Es importante debido a que este archivo guarda las contraseñas que se usaron para la instalación.
+
 Observar que el parámetro *hostname* y *dirección IP* tiene que coincidir respecto a lo que tenga cargado el host donde corre OMniLeads.
 
 ::
@@ -279,3 +285,45 @@ Por último se ejecuta un reinicio de la plataforma. Luego podemos comenzar a ut
  reboot
 
 **NOTA:** si está resolviendo el nombre del host de OMniLeads con su archivo *hosts* de su maquina de trabajo, no olvide tambien cambiar los parámetros.
+
+Modificación de passwords de servicios
+***************************************
+
+En caso de querer modificar las contraseñas usadas en los servicios, basta con modificar dicha contraseña dentro del archivo de inventario. Una vez seteadas ahi se procede a ejecutar el *deploy.sh* así:
+
+::
+
+  cd ominicontacto/deploy/ansible
+  ./deploy.sh --change-passwords -a
+
+Desbloqueo de usuarios
+***********************
+
+OMniLeads cuenta con un sistema de bloqueo de usuarios, cuando alguno ingresa la contraseña erronea tres veces. Esta es una medida de seguridad implementada para evitar ataques de fuerza bruta en la consola de Login de la plataforma. El usuario administrador tiene la posibilidad de desbloquar algún usuario que haya sido bloqueado por ingresar su contraseña errónea sin querer.
+
+Para desbloquearlo se ingresa a la siguiente URL: https://omnileads-hostname/admin, esta URL despliega la llamada **Consola de Administración de Django**.
+
+.. image:: images/django_admin.png
+
+*Figure 16: Django admin console*
+
+
+Allí, ingresar las credenciales del usuario admin. Luego hacer click en el botón **Defender**
+
+.. image:: images/defender.png
+
+*Figure 17: Defender in django admin*
+
+Esto abre la administración de **Django Defender** (https://github.com/kencochrane/django-defender) que es el plugin de Django usado para manejar esto. Hacer click en **Blocked Users**
+
+.. image:: images/blocked_users.png
+
+*Figure 18: Blocked users view*
+
+Se observará el usuario bloqueado. Basta con hacer click en **Unblock** para desbloquearlo.
+
+.. image:: images/unblock.png
+
+*Figure 19: Unblock user view*
+
+Ya el usuario podrá loguearse sin problema.

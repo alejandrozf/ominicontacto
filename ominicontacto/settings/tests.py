@@ -41,8 +41,9 @@ Para utilizar estos settings, crear ``fts_web_settings_local``
 Y luego de eso, las customizaciones.
 
 """
-
 import os
+
+from defaults import *
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -60,11 +61,11 @@ SECRET_KEY = 's1+*bfrvb@=k@c&9=pm!0sijjewneu5p5rojil#q+!a2y&as-4'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'HOST': 'plpython',
+        'HOST': 'database',
         'PORT': 5432,
         'NAME': 'omnileads',
         'USER': 'omnileads',
-        'PASSWORD': 'omnileadsrw',
+        'PASSWORD': 'admin123',
         'CONN_MAX_AGE': 300,
         'ATOMIC_REQUESTS': True,
     }
@@ -73,8 +74,6 @@ DATABASES = {
 DEFENDER_BEHIND_REVERSE_PROXY = True
 STATIC_ROOT = "/opt/omnileads/static"
 MEDIA_ROOT = "/opt/omnileads/media_root"
-
-OML_OMNILEADS_IP = "172.16.20.241"
 
 # Tiempo de session en segundo por ejemplo 10 minutos=600
 SESSION_COOKIE_AGE = 600

@@ -114,6 +114,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#back-restore">Back &amp; Restore</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#actualizaciones">Actualizaciones</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#cambios-de-los-parametros-de-red-hostname-y-o-direccion-ip">Cambios de los parámetros de red (Hostname y/o Dirección IP)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#modificacion-de-passwords-de-servicios">Modificación de passwords de servicios</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#desbloqueo-de-usuarios">Desbloqueo de usuarios</a></li>
 </ul>
 </li>
 </ul>
@@ -283,8 +285,7 @@ Una vez dentro del host se ejecutan los siguiente comandos.</p>
 <h2>Actualizaciones<a class="headerlink" href="#actualizaciones" title="Enlazar permanentemente con este título">¶</a></h2>
 <p>OMniLeads es forjado bajo un paradigma de releases continuos, lo cual implica un flujo de actualizaciones constantes.
 Por ello es muy importante llevar a cabo de manera limpia las actualizaciones.</p>
-<p>A continuación se exponen los pasos a seguir para llevar a cabo una nueva actualización de la plataforma. Esta tarea también se realiza
-con el script «deploy.sh».</p>
+<p>A continuación se exponen los pasos a seguir para llevar a cabo una nueva actualización de la plataforma. Esta tarea también se realiza con el script «deploy.sh».</p>
 <p>Las actualizaciones se anuncian por los canales de comunicaciones oficiales del proyecto.
 Dependiendo el método de instalación que se haya seleccionado:</p>
 <p><strong>Instalación Self-Hosted</strong></p>
@@ -295,8 +296,13 @@ Posicionarse sobre el directorio donde reside el script “deploy.sh”</p>
 </div>
 <p>Asumiendo que estamos trabajando sobre los release estables (master)
 Se debe ejecutar un «git pull origin master» para traernos las actualizaciones del repositorio.</p>
-<p><strong>IMPORTANTE</strong>: debe ajustar el archivo «inventory» de acuerdo a su hostname y dirección IP, para que la actualización pueda ser ejecutada.
-Observar que el parámetro <em>hostname</em> y <em>dirección IP</em> tiene que coincidir respecto a lo que tenga cargado el host donde corre OMniLeads.</p>
+<div class="admonition important">
+<p class="first admonition-title">Importante</p>
+<p>Cuando se instala el sistema, se guarda una copia del archivo de inventario en la ubicación descrita al finalizar el script, el mensaje indica:</p>
+<p><strong>Remember that you have a copy of your inventory file in /root/my_inventory with the variables you used for your OML installation</strong></p>
+<p class="last">Utilizar este archivo de inventario para realizar la actualización del sistema. Es importante debido a que este archivo guarda las contraseñas que se usaron para la instalación.</p>
+</div>
+<p>Observar que el parámetro <em>hostname</em> y <em>dirección IP</em> tiene que coincidir respecto a lo que tenga cargado el host donde corre OMniLeads.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">omnileads</span><span class="o">-</span><span class="n">aio</span><span class="p">]</span>
 <span class="n">oml</span><span class="o">-</span><span class="n">dev</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span> <span class="n">ansible_ssh_connection</span><span class="o">=</span><span class="n">local</span> <span class="n">ansible_user</span><span class="o">=</span><span class="n">root</span> <span class="n">ansible_host</span><span class="o">=</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">95.155</span>
 </pre></div>
@@ -362,6 +368,31 @@ archivos <em>deploy.sh</em> e <em>inventory</em>.</p>
 </pre></div>
 </div>
 <p><strong>NOTA:</strong> si está resolviendo el nombre del host de OMniLeads con su archivo <em>hosts</em> de su maquina de trabajo, no olvide tambien cambiar los parámetros.</p>
+</div>
+<div class="section" id="modificacion-de-passwords-de-servicios">
+<h2>Modificación de passwords de servicios<a class="headerlink" href="#modificacion-de-passwords-de-servicios" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>En caso de querer modificar las contraseñas usadas en los servicios, basta con modificar dicha contraseña dentro del archivo de inventario. Una vez seteadas ahi se procede a ejecutar el <em>deploy.sh</em> así:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">ominicontacto</span><span class="o">/</span><span class="n">deploy</span><span class="o">/</span><span class="n">ansible</span>
+<span class="o">./</span><span class="n">deploy</span><span class="o">.</span><span class="n">sh</span> <span class="o">--</span><span class="n">change</span><span class="o">-</span><span class="n">passwords</span> <span class="o">-</span><span class="n">a</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="desbloqueo-de-usuarios">
+<h2>Desbloqueo de usuarios<a class="headerlink" href="#desbloqueo-de-usuarios" title="Enlazar permanentemente con este título">¶</a></h2>
+<p>OMniLeads cuenta con un sistema de bloqueo de usuarios, cuando alguno ingresa la contraseña erronea tres veces. Esta es una medida de seguridad implementada para evitar ataques de fuerza bruta en la consola de Login de la plataforma. El usuario administrador tiene la posibilidad de desbloquar algún usuario que haya sido bloqueado por ingresar su contraseña errónea sin querer.</p>
+<p>Para desbloquearlo se ingresa a la siguiente URL: <a class="reference external" href="https://omnileads-hostname/admin">https://omnileads-hostname/admin</a>, esta URL despliega la llamada <strong>Consola de Administración de Django</strong>.</p>
+<img alt="_images/django_admin.png" src="_images/django_admin.png" />
+<p><em>Figure 16: Django admin console</em></p>
+<p>Allí, ingresar las credenciales del usuario admin. Luego hacer click en el botón <strong>Defender</strong></p>
+<img alt="_images/defender.png" src="_images/defender.png" />
+<p><em>Figure 17: Defender in django admin</em></p>
+<p>Esto abre la administración de <strong>Django Defender</strong> (<a class="reference external" href="https://github.com/kencochrane/django-defender">https://github.com/kencochrane/django-defender</a>) que es el plugin de Django usado para manejar esto. Hacer click en <strong>Blocked Users</strong></p>
+<img alt="_images/blocked_users.png" src="_images/blocked_users.png" />
+<p><em>Figure 18: Blocked users view</em></p>
+<p>Se observará el usuario bloqueado. Basta con hacer click en <strong>Unblock</strong> para desbloquearlo.</p>
+<img alt="_images/unblock.png" src="_images/unblock.png" />
+<p><em>Figure 19: Unblock user view</em></p>
+<p>Ya el usuario podrá loguearse sin problema.</p>
 </div>
 </div>
 

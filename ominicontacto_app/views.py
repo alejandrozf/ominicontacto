@@ -57,6 +57,8 @@ from ominicontacto_app import version
 from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     RestablecerConfiguracionTelefonicaError, SincronizadorDeConfiguracionPausaAsterisk)
 
+from utiles_globales import AddSettingsContextMixin
+
 logger = logging.getLogger(__name__)
 
 # def mensajes_recibidos_view(request):
@@ -334,7 +336,7 @@ class PausaToggleDeleteView(SincronizarPausaMixin, TemplateView):
 # Vista de Agente
 ##################
 
-class ConsolaAgenteView(TemplateView):
+class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
     template_name = "agente/base_agente.html"
 
     def dispatch(self, request, *args, **kwargs):

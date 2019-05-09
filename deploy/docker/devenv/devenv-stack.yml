@@ -118,6 +118,8 @@ services:
 
   omniapp:
     container_name: omniapp
+    env_file:
+      - envars.env
     hostname: omniapp
     depends_on:
       - database
