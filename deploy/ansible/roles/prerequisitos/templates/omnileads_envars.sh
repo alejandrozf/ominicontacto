@@ -1,0 +1,31 @@
+AMI_USER={{ ami_user }}
+AMI_PASSWORD={{ ami_password }}
+ASTERISK_IP={{ asterisk_ip }}
+ASTERISK_HOSTNAME={{ asterisk_fqdn }}
+ASTERISK_LOCATION={{ asterisk_location }}
+CALIFICACION_REAGENDA={{ schedule }}
+{% if desarrollo == 0 %}
+DJANGO_SETTINGS_MODULE=ominicontacto.settings.production
+{% else %}
+DJANGO_SETTINGS_MODULE=ominicontacto.settings.develop
+{% endif %}
+EPHEMERAL_USER_TTL=28800
+EXTERNAL_PORT={{ external_port }}
+INSTALL_PREFIX={{ install_prefix}}
+KAMAILIO_IP={{ kamailio_ip }}
+KAMAILIO_HOSTNAME={{ kamailio_fqdn }}
+KAMAILIO_LOCATION={{ kamailio_location }}
+NGINX_HOSTNAME={{ omniapp_fqdn }}
+OMNILEADS_IP={{ omniapp_ip }}
+OMNILEADS_HOSTNAME={{ omniapp_fqdn }}
+PGHOST={{ database_fqdn }}
+PGDATABASE={{ postgres_database }}
+PGUSER={{ postgres_user }}
+PGPASS={{ postgres_password }}
+PYTHONPATH=$INSTALL_PREFIX
+SESSION_COOKIE_AGE=3600
+WOMBAT_HOSTNAME={{ dialer_fqdn }}
+WOMBAT_USER={{ dialer_user }}
+WOMBAT_PASSWORD={{ dialer_password }}
+
+export AMI_USER AMI_PASSWORD ASTERISK_IP ASTERISK_HOSTNAME ASTERISK_LOCATION CALIFICACION_REAGENDA DJANGO_SETTINGS_MODULE EPHEMERAL_USER_TTL EXTERNAL_PORT INSTALL_PREFIX KAMAILIO_IP KAMAILIO_HOSTNAME KAMAILIO_LOCATION NGINX_HOSTNAME OMNILEADS_IP OMNILEADS_HOSTNAME PGHOST PGDATABASE PGUSER PGPASS PYTHONPATH SESSION_COOKIE_AGE WOMBAT_HOSTNAME WOMBAT_USER WOMBAT_PASSWORD

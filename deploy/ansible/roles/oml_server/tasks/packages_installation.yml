@@ -35,7 +35,6 @@
   with_items:
     - cairo
     - cairo-devel
-    - expect
     - git
     - libxslt-devel
     - libxslt-python
@@ -69,7 +68,6 @@
 - name: Install omniapp packages (debian)
   apt: "name={{ item }} state=present"
   with_items:
-    - expect
     - gettext
     - git
     - libcairo2-dev

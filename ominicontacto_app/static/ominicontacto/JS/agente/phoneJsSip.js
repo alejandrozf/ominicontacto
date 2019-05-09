@@ -313,7 +313,7 @@ class PhoneJS {
                     self.eventsCallbacks.onAgentPauseFail.fire(self);
                 }
                 // TODO: Este caso no se va a dar más para llamadas de campañas
-                // Probablemente quede solo para llamadas internas entre agentes 
+                // Probablemente quede solo para llamadas internas entre agentes
                 else {
                     // (self.local_call.is_internal_call)
                     self.eventsCallbacks.onOutCallFailed.fire(data.cause);

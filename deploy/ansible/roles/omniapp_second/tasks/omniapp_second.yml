@@ -59,19 +59,11 @@
 - name: Create of ominicontacto_app.ini script
   template: src=templates/run/ominicontacto_app.ini dest={{ install_prefix }}run/ominicontacto_app.ini mode=755 owner={{ usuario }} group={{ usuario }}
   tags: postinstall
-  
+
 # Se crea el arhivo de systemd para omnileads daemon
 - name: Create of omnileads service
   template: src=templates/omnileads.service dest=/etc/systemd/system/omnileads.service owner=root group=root mode=650
-  become: true
-  become_method: sudo
-
-# Se inicia y habilita el servicio
-- name: Start the omnileads-daemon service
-  systemd: name=omnileads state=restarted enabled=yes daemon_reload=yes
-  become: true
-  become_method: sudo
-  when: desarrollo == 0
+  tags: postinstall
 
 # Se ejecuta una funcion de sql que hizo ale, esto es para los reportes
 - name: Add queuelog trigger to database
@@ -82,22 +74,16 @@
   tags: ['never','postinstall']
   become_method: sudo
 
-# Este script sirve para hacer comandos de manage.py sin necesidad de activar virualenv primero
-- name: Generate manage.sh script
-  template: src=templates/bin/manage.sh.j2 dest={{ install_prefix }}bin/manage.sh owner={{ usuario }} group={{ usuario }} mode=755
-
 # Se sube el script de backup-restore
 - name: Generate backup-restore.sh script
   template: src=templates/bin/backup-restore.sh.j2 dest={{ install_prefix }}bin/backup-restore.sh owner={{ usuario }} group={{ usuario }} mode=755
   tags: postinstall
 
 # Se inicia y habilita el servicio
-- name: Reload the omnileads-daemon service
-  systemd: name=omnileads state=reloaded enabled=yes daemon_reload=yes
-  become: true
-  become_method: sudo
-  tags: ['postinstall','changenetwork','changepassword']
+- name: Start the omnileads-daemon service
+  systemd: name=omnileads state=restarted enabled=yes daemon_reload=yes
   when: desarrollo == 0
+  tags: postinstall
 
 - name: Erase files related to php supervision
   file: state=absent path={{ item }}

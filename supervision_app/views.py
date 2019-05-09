@@ -22,8 +22,10 @@ from ominicontacto_app.services.kamailio_service import KamailioService
 from reportes_app.reportes.reporte_llamadas_supervision import \
     ReporteDeLLamadasEntrantesDeSupervision, ReporteDeLLamadasSalientesDeSupervision
 
+from utiles_globales import AddSettingsContextMixin
 
-class SupervisionAgentesView(TemplateView):
+
+class SupervisionAgentesView(AddSettingsContextMixin, TemplateView):
     template_name = 'supervision_agentes.html'
 
     def get_context_data(self, **kwargs):

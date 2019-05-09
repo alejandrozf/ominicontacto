@@ -3,6 +3,7 @@ cairocffi==0.8.0
 CairoSVG==1.0.22
 cffi==1.9.1
 coverage==4.4.1
+cryptography==2.4.2
 cssselect==1.0.1
 decorator==4.0.10
 Django==1.9.7
@@ -17,6 +18,7 @@ django-simple-history==1.9.1
 django-widget-tweaks==1.4.1
 djangorestframework==3.6.2
 enum34==1.1.6
+fabric==2.4.0
 factory-boy==2.9.2
 ipython==5.1.0
 ipython-genutils==0.1.0
