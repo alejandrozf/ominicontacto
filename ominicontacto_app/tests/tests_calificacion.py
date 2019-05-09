@@ -329,6 +329,7 @@ class CalificacionTests(OMLBaseTest):
         contacto_form = response.context_data['contacto_form']
         datos_contacto_form = set(contacto_form.initial.values())
         datos_contacto_model = set(json.loads(contacto.datos) + [str(telefono)])
+        datos_contacto_model.add(contacto.id_externo)
         self.assertEqual(datos_contacto_form, datos_contacto_model)
 
     def test_llamada_manual_telefono_con_n_contactos_redirecciona_vista_escoger_contacto(self):

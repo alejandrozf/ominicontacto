@@ -226,6 +226,7 @@ class ContactoFactory(DjangoModelFactory):
         model = Contacto
 
     telefono = lazy_attribute(lambda a: str(faker.random_number(10)))
+    id_externo = None
     datos = lazy_attribute(lambda a: '["{0}", "{1}", "{2}", "{3}", "{4}"]'.format(
         faker.name(), faker.name(), faker.random_number(7), faker.phone_number(),
         faker.phone_number()))

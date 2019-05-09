@@ -346,22 +346,45 @@ class PrimerLineaEncabezadoForm(forms.Form):
         self.helper.layout = Layout(Field('es_encabezado'))
 
 
-class CamposDeTelefonoForm(forms.Form):
-    campos = forms.MultipleChoiceField(
+class CamposDeBaseDeDatosForm(forms.Form):
+    """ Formulario para identificar campos especiales de la base de datos """
+    campos_telefonicos = forms.MultipleChoiceField(
         required=True,
         label=_('Campos de teléfono'),
         widget=forms.CheckboxSelectMultiple())
+    id_externo = forms.ChoiceField(required=False,
+                                   widget=forms.Select(attrs={'class': 'form-control'}))
 
     def __init__(self, nombres_campos, *args, **kwargs):
-        super(CamposDeTelefonoForm, self).__init__(*args, **kwargs)
+        super(CamposDeBaseDeDatosForm, self).__init__(*args, **kwargs)
         self.nombres_campos = nombres_campos
-        self.fields['campos'].choices = tuple([(x, x) for x in nombres_campos])
+        self.fields['campos_telefonicos'].choices = tuple([(x, x) for x in nombres_campos])
+        id_externo_choices = [EMPTY_CHOICE]
+        id_externo_choices.extend(tuple([(x, x) for x in nombres_campos]))
+        self.fields['id_externo'].choices = id_externo_choices
+
+    def clean(self):
+        campos_telefonicos = self.cleaned_data.get('campos_telefonicos', [])
+        if len(campos_telefonicos) > 0:
+            id_externo = self.cleaned_data.get('id_externo')
+            if id_externo in campos_telefonicos:
+                msg = _('No se puede elegir un campo telefónico como id_externo')
+                raise forms.ValidationError(msg)
+        return super(CamposDeBaseDeDatosForm, self).clean()
 
     @property
     def columnas_de_telefonos(self):
         # Guardo los indices de los nombres de las columnas que tienen telefonos
-        seleccionados = self.cleaned_data.get('campos', [])
+        seleccionados = self.cleaned_data.get('campos_telefonicos', [])
         return [i for i, x in enumerate(self.nombres_campos) if x in seleccionados]
+
+    @property
+    def columna_id_externo(self):
+        # Devuelvo el indice del nombre de la columnas del id externo
+        seleccionado = self.cleaned_data.get('id_externo', '')
+        if seleccionado in self.nombres_campos:
+            return self.nombres_campos.index(seleccionado)
+        return None
 
 
 class BusquedaContactoForm(forms.Form):
@@ -410,7 +433,7 @@ class CampanaMixinForm(object):
             self.fields['bd_contacto'].queryset = BaseDatosContacto.objects.obtener_definidas()
 
     def requiere_bd_contacto(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     def clean(self):
         bd_contacto_field = self.fields.get('bd_contacto', False)
@@ -787,31 +810,45 @@ class FormularioNuevoContacto(forms.ModelForm):
 
     class Meta:
         model = Contacto
-        fields = ('telefono',)
+        fields = ('telefono', 'id_externo')
         widgets = {
             "telefono": forms.TextInput(attrs={'class': 'form-control'}),
+            "id_externo": forms.TextInput(attrs={'class': 'form-control'}),
         }
 
-    def __init__(self, bd_metadata=None, *args, **kwargs):
+    def __init__(self, base_datos=None, *args, **kwargs):
         if 'instance' in kwargs and kwargs['instance'] is not None:
             contacto = kwargs['instance']
+            self.base_datos = contacto.bd_contacto
             bd_metadata = contacto.bd_contacto.get_metadata()
             datos = json.loads(contacto.datos)
             for nombre, dato in zip(bd_metadata.nombres_de_columnas_de_datos, datos):
                 kwargs['initial'].update({self.get_nombre_input(nombre): dato})
+        else:
+            self.base_datos = base_datos
+            bd_metadata = base_datos.get_metadata()
 
         super(FormularioNuevoContacto, self).__init__(*args, **kwargs)
         nombre_campo_telefono = bd_metadata.nombre_campo_telefono
+        nombre_campo_id_externo = bd_metadata.nombre_campo_id_externo
         for campo in bd_metadata.nombres_de_columnas:
             if campo == nombre_campo_telefono:
                 nombre_campo = convertir_ascii_string(campo)
                 self.fields['telefono'].label = nombre_campo
+            elif campo == nombre_campo_id_externo:
+                nombre_campo = convertir_ascii_string(campo)
+                self.fields['id_externo'].label = nombre_campo
+                self.fields['id_externo'].required = False
             else:
                 nombre_campo = self.get_nombre_input(campo)
                 self.fields[nombre_campo] = forms.CharField(
                     required=False,
                     label=campo, widget=forms.TextInput(
                         attrs={'class': 'form-control'}))
+
+        if nombre_campo_id_externo is None:
+            self.fields.pop('id_externo')
+
         self.bd_metadata = bd_metadata
 
     def get_nombre_input(self, nombre_campo):
@@ -841,6 +878,24 @@ class FormularioNuevoContacto(forms.ModelForm):
             if nombre_input == self.get_nombre_input(nombre_campo):
                 return True
         return False
+
+    def clean_id_externo(self):
+        id_externo = self.cleaned_data.get('id_externo')
+        # Si el campo no esta vacío
+        if not id_externo == '' or id_externo is not None:
+            # Validar que no este repetido
+            contacto_con_id_externo = self.base_datos.contactos.filter(id_externo=id_externo)
+            if self.instance.id:
+                contacto_con_id_externo = contacto_con_id_externo.exclude(id=self.instance.id)
+            if contacto_con_id_externo.exists():
+                msg = _("Ya existe un contacto con ese id externo en la campaña")
+                raise forms.ValidationError(msg)
+        return id_externo
+
+    def clean(self):
+        if not self.instance.id:
+            self.instance.bd_contacto = self.base_datos
+        return super(FormularioNuevoContacto, self).clean()
 
 
 class FormularioCampanaContacto(forms.Form):
@@ -1019,7 +1074,7 @@ class ActuacionVigenteForm(forms.ModelForm):
         viernes = self.cleaned_data.get('viernes')
         sabado = self.cleaned_data.get('sabado')
         if domingo == lunes == martes == miercoles == jueves == viernes == sabado is False:
-            raise forms.ValidationError('debe seleccionar algun día')
+            raise forms.ValidationError(_('Debe seleccionar algun día'))
 
         return self.cleaned_data
 

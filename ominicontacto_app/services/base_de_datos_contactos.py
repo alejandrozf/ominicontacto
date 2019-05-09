@@ -82,12 +82,16 @@ class CreacionBaseDatosService(object):
 
         base_datos_contacto.save()
 
-    def obtener_telefono_y_datos(self, encoding, lista_dato, posicion_primer_telefono):
+    def obtener_telefono_y_datos(self, encoding, lista_dato, posicion_primer_telefono,
+                                 columna_id_externo):
+        id_externo = None
         if len(lista_dato) > 1:
             item = []
             for i, valor in enumerate(lista_dato):
                 if i == posicion_primer_telefono:
                     telefono = valor
+                elif i == columna_id_externo:
+                    id_externo = valor
                 else:
                     item.append(valor.decode(encoding))
         else:
@@ -95,9 +99,9 @@ class CreacionBaseDatosService(object):
             item = ['']
 
         datos = json.dumps(item)
-        return telefono, datos
+        return telefono, datos, id_externo
 
-    def importa_contactos(self, base_datos_contacto, campos_telefonicos):
+    def importa_contactos(self, base_datos_contacto, campos_telefonicos, columna_id_externo):
         """
         Tercer paso de la creación de una BaseDatosContacto.
         Este método se encarga de generar los objectos Contacto por cada linea
@@ -120,6 +124,10 @@ class CreacionBaseDatosService(object):
 
         parser = ParserCsv()
 
+        ids_externos = base_datos_contacto.contactos.values_list('id_externo', flat=True)
+        ids_externos = set(ids_externos)
+        ids_nuevos_contactos = []
+
         try:
             estructura_archivo = parser.get_estructura_archivo(base_datos_contacto)
             posicion_primer_telefono = estructura_archivo[0].index(campos_telefonicos[0])
@@ -128,23 +136,38 @@ class CreacionBaseDatosService(object):
 
             if base_datos_contacto.cantidad_contactos:
                 cantidad_contactos = base_datos_contacto.cantidad_contactos
+            numero_fila = 0
             for lista_dato in estructura_archivo[1:]:
-                telefono, datos = self.obtener_telefono_y_datos(encoding,
-                                                                lista_dato,
-                                                                posicion_primer_telefono)
+                numero_fila += 1
+                telefono, datos, id_externo = self.obtener_telefono_y_datos(
+                    encoding, lista_dato, posicion_primer_telefono, columna_id_externo)
                 cantidad_contactos += 1
 
-                Contacto.objects.create(
+                if id_externo is not None and id_externo != '':
+                    # El id_externo no puede estar repetido
+                    if id_externo in ids_externos:
+                        base_datos_contacto.contactos.filter(id__in=ids_nuevos_contactos).delete()
+                        raise(CreacionBaseDatosServiceIdExternoError(numero_fila,
+                                                                     columna_id_externo,
+                                                                     lista_dato,
+                                                                     id_externo))
+                    else:
+                        ids_externos.add(id_externo)
+
+                contacto = Contacto.objects.create(
                     telefono=telefono,
                     datos=datos,
                     bd_contacto=base_datos_contacto,
+                    id_externo=id_externo
                 )
+                ids_nuevos_contactos.append(contacto.id)
+
         except OmlParserMaxRowError:
-            base_datos_contacto.elimina_contactos()
+            base_datos_contacto.contactos.filter(id__in=ids_nuevos_contactos).delete()
             raise
 
         except OmlParserCsvImportacionError:
-            base_datos_contacto.elimina_contactos()
+            base_datos_contacto.contactos.filter(id__in=ids_nuevos_contactos).delete()
             raise
 
         base_datos_contacto.cantidad_contactos = cantidad_contactos
@@ -223,6 +246,13 @@ class NoSePuedeInferirMetadataErrorEncabezado(OmlError):
 
 class ContactoExistenteError(OmlError):
     """este contacto con este id de cliente ya existe"""
+    pass
+
+
+class CreacionBaseDatosServiceIdExternoError(OmlParserCsvImportacionError):
+    """
+    Error en la importación de los contactos del archivo csv. El id externo ya existe.
+    """
     pass
 
 

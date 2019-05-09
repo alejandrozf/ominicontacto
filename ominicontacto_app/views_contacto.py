@@ -184,11 +184,11 @@ class ContactoBDContactoCreateView(CreateView):
         initial = super(ContactoBDContactoCreateView, self).get_initial()
         initial.update({'bd_contacto': self.kwargs['bd_contacto']})
 
-    def get_form(self):
-        self.form_class = self.get_form_class()
+    def get_form_kwargs(self):
+        kwargs = super(ContactoBDContactoCreateView, self).get_form_kwargs()
         base_datos = BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
-        metadata = base_datos.get_metadata()
-        return self.form_class(bd_metadata=metadata, **self.get_form_kwargs())
+        kwargs['base_datos'] = base_datos
+        return kwargs
 
     def form_valid(self, form):
         # TODO: Decidir si esto lo tiene que hacer el form o la vista
@@ -196,8 +196,6 @@ class ContactoBDContactoCreateView(CreateView):
         base_datos = BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
         base_datos.cantidad_contactos += 1
         base_datos.save()
-        self.object.bd_contacto = base_datos
-
         self.object.datos = form.get_datos_json()
         self.object.save()
 
@@ -354,7 +352,8 @@ class FormularioSeleccionCampanaFormView(FormView):
 
 
 class FormularioNuevoContactoFormView(FormView):
-    """Esta vista agrega un nuevo contacto para la campana seleccionada
+    """
+        Vista de Agente para agregar un nuevo contacto para la campana seleccionada
     """
     form_class = FormularioNuevoContacto
     template_name = 'contactos/nuevo_contacto_campana.html'
@@ -373,18 +372,14 @@ class FormularioNuevoContactoFormView(FormView):
     def get_form_kwargs(self):
         kwargs = super(FormularioNuevoContactoFormView, self).get_form_kwargs()
         kwargs['initial']['telefono'] = self.kwargs.get('telefono', '')
-        kwargs['bd_metadata'] = self.campana.bd_contacto.get_metadata()
+        kwargs['base_datos'] = self.campana.bd_contacto
         return kwargs
 
     def form_valid(self, form):
-        base_datos = self.campana.bd_contacto
-        telefono = str(form.cleaned_data.get('telefono'))
-
-        datos_json = form.get_datos_json()
-        contacto = Contacto.objects.create(
-            telefono=telefono, datos=datos_json,
-            bd_contacto=base_datos,
-            es_originario=False)
+        contacto = form.save(commit=False)
+        contacto.datos = form.get_datos_json()
+        contacto.es_originario = False
+        contacto.save()
 
         # TODO: OML-1016 Tener en cuenta esto al hacer esta card.
         if self.campana.type == Campana.TYPE_PREVIEW:
