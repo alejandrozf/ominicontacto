@@ -81,15 +81,15 @@
 
 - name: Copy of kamailio-tables restore file
   copy: src=/var/tmp/ominicontacto-build/ominicontacto/ominicontacto_voip/kamailio-files/kamailio-tables.tar.gz dest=/tmp/kamailio-tables.tar.gz
+  tags: postinstall
 
 - name: Restore of kamailio tables in database
   command: pg_restore -d {{ postgres_database }} -c -F t /tmp/kamailio-tables.tar.gz
   environment:
     PGPASSWORD: "{{ postgres_password }}"
   failed_when: false
-  become: true
-  become_method: su
   become_user: "{{ usuario }}"
+  tags: postinstall
 
 # Se crea el lenguaje plpythonu a las bases de datos mencionadas.
 - name: Createlang of the database

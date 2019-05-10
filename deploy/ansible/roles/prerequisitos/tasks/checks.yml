@@ -73,7 +73,7 @@
 - name: Check if Kamailio {{ kamailio_version }} is installed
   shell: "{{ kamailio_location }}/sbin/kamailio -v |head -1 |awk -F \" \" '{print $3}'"
   register: kamailio_installed
-  tags: ['kamailio']
+  tags: ['kamailio','postinstall']
   become: true
   become_method: sudo
 
