@@ -461,6 +461,22 @@ class CampanaMixinForm(object):
             return self.instance.tipo_interaccion
         return tipo_interaccion
 
+    def clean_id_externo(self):
+        sistema_externo = self.cleaned_data.get('sistema_externo', None)
+        id_externo = self.cleaned_data.get('id_externo', '')
+        if sistema_externo and id_externo:
+            # Validar que no este repetido
+            campana_con_id_externo = sistema_externo.campanas.filter(id_externo=id_externo)
+            if self.instance.id:
+                campana_con_id_externo = campana_con_id_externo.exclude(id=self.instance.id)
+            if campana_con_id_externo.exists():
+                msg = _("Ya existe una Campaña con ese id externo para el Sistema Externo elegido")
+                raise forms.ValidationError(msg)
+        if id_externo and not sistema_externo:
+            msg = _("No puede indicar un id externo sin elegir un Sistema Externo")
+            raise forms.ValidationError(msg)
+        return id_externo
+
 
 class CampanaForm(CampanaMixinForm, forms.ModelForm):
 
@@ -494,7 +510,7 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'bd_contacto',
+        fields = ('nombre', 'bd_contacto', 'sistema_externo', 'id_externo',
                   'sitio_externo', 'tipo_interaccion', 'objetivo', 'mostrar_nombre')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
@@ -503,6 +519,8 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
+            'id_externo': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
@@ -888,7 +906,7 @@ class FormularioNuevoContacto(forms.ModelForm):
             if self.instance.id:
                 contacto_con_id_externo = contacto_con_id_externo.exclude(id=self.instance.id)
             if contacto_con_id_externo.exists():
-                msg = _("Ya existe un contacto con ese id externo en la campaña")
+                msg = _("Ya existe un contacto con ese id externo en la base de datos")
                 raise forms.ValidationError(msg)
         return id_externo
 
@@ -1046,7 +1064,7 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin',
-                  'bd_contacto', 'sitio_externo',
+                  'bd_contacto', 'sitio_externo', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'objetivo', 'mostrar_nombre')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
@@ -1054,6 +1072,8 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
+            'id_externo': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
@@ -1315,10 +1335,12 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'bd_contacto',
+        fields = ('nombre', 'bd_contacto', 'sistema_externo', 'id_externo',
                   'sitio_externo', 'tipo_interaccion', 'objetivo')
 
         widgets = {
+            'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
+            'id_externo': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
@@ -1344,12 +1366,14 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre',
+        fields = ('nombre', 'sistema_externo', 'id_externo',
                   'sitio_externo', 'tipo_interaccion', 'objetivo', 'bd_contacto',
                   'tiempo_desconexion')
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
+            'id_externo': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
