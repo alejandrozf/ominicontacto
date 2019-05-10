@@ -2889,30 +2889,54 @@ class SitioExterno(models.Model):
     """
     sitio externo para embeber en el agente
     """
+    BOTON = 1
+    AUTOMATICO = 2
+    SERVER = 3
+
+    DISPARADORES = (
+        (BOTON, _('Agente')),
+        (AUTOMATICO, _('Automático')),
+        (SERVER, _('Servidor')),
+    )
+
     GET = 1
     POST = 2
-    JSON = 3
 
-    TIPOS = (
+    METODOS = (
         (GET, _('GET')),
         (POST, _('POST')),
-        (JSON, _('JSON')),
+    )
+
+    MULTIPART = 1
+    WWW_FORM = 2
+    TEXT_PLAIN = 3
+    JSON = 4
+
+    FORMATOS = (
+        (MULTIPART, 'multipart/form-data'),
+        (WWW_FORM, 'application/x-www-form-urlencoded'),
+        (TEXT_PLAIN, 'text/plain'),
+        (JSON, 'application/json'),
     )
 
     EMBEBIDO = 1
     NUEVA_PESTANA = 2
 
-    METODOS = (
+    OBJETIVOS = (
         (EMBEBIDO, _('Embebido')),
         (NUEVA_PESTANA, _('Nueva pestaña')),
-
     )
 
     nombre = models.CharField(max_length=128)
     url = models.CharField(max_length=256)
     oculto = models.BooleanField(default=False)
-    tipo = models.PositiveIntegerField(choices=TIPOS, default=GET)
-    metodo = models.PositiveIntegerField(choices=METODOS, default=EMBEBIDO)
+    disparador = models.PositiveIntegerField(choices=DISPARADORES, default=SERVER)
+    metodo = models.PositiveIntegerField(choices=METODOS, default=GET)
+    formato = models.PositiveIntegerField(choices=FORMATOS, default=MULTIPART,
+                                          blank=True, null=True,
+                                          verbose_name='Content-Type')
+    objetivo = models.PositiveIntegerField(choices=OBJETIVOS, default=EMBEBIDO,
+                                           blank=True, null=True)
 
     def __unicode__(self):
         return "Sitio: {0} - url: {1}".format(self.nombre, self.url)
@@ -2927,12 +2951,30 @@ class SitioExterno(models.Model):
         self.oculto = False
         self.save()
 
-    def get_url_interaccion(self, agente, campana, contacto, datos_de_llamada):
+    def get_parametros(self, agente, campana, contacto, datos_de_llamada):
         parametros = {}
         for parametro in campana.parametros_crm.all():
             valor = parametro.obtener_valor(agente, contacto, datos_de_llamada)
             parametros[parametro.nombre] = str(valor)
-        return self.url + '?' + '&'.join([key + '=' + val for (key, val) in parametros.items()])
+        return parametros
+
+    def get_url_interaccion(self, agente, campana, contacto, datos_de_llamada, completa=False):
+        if completa:
+            parametros = self.get_parametros(agente, campana, contacto, datos_de_llamada)
+            return self.url + '?' + '&'.join([key + '=' + val for (key, val) in parametros.items()])
+        else:
+            return self.url
+
+    def get_configuracion_de_interaccion(self, agente, campana, contacto, datos_de_llamada):
+        return {
+            'dispara_agente': self.disparador == self.BOTON,
+            'formato': self.get_formato_display(),
+            'formato_es_JSON': self.formato == self.JSON,
+            'url': self.get_url_interaccion(agente, campana, contacto, datos_de_llamada),
+            'abre_pestana': self.objetivo == self.NUEVA_PESTANA,
+            'metodo': 'GET' if self.metodo == self.GET else 'POST',
+            'parametros': self.get_parametros(agente, campana, contacto, datos_de_llamada),
+        }
 
 
 class SistemaExterno(models.Model):
@@ -3236,7 +3278,7 @@ class ParametrosCrm(models.Model):
 
     def obtener_valor_de_campana(self):
         if self.valor == 'tipo':
-            return dict(Campana.TYPES_CAMPANA)[self.campana.type]
+            return self.campana.get_type_display()
         return getattr(self.campana, self.valor)
 
     def obtener_valor_de_contacto(self, contacto):

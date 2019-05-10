@@ -43,7 +43,9 @@ from ominicontacto_app.forms import (CalificacionClienteForm, FormularioNuevoCon
                                      RespuestaFormularioGestionForm)
 from ominicontacto_app.models import (
     Contacto, Campana, CalificacionCliente, AgenteProfile, RespuestaFormularioGestion,
-    OpcionCalificacion, UserApiCrm)
+    OpcionCalificacion, UserApiCrm, SitioExterno)
+from ominicontacto_app.services.sistema_externo.interaccion_sistema_externo import (
+    InteraccionConSistemaExterno)
 
 from reportes_app.models import LlamadaLog
 
@@ -126,12 +128,40 @@ class CalificacionClienteFormView(FormView):
                                     'call_data_json': call_data_json}))
         self.object = self.get_object()
 
-        self.url_sitio_externo = ''
-        if self.campana.tiene_interaccion_con_sitio_externo and self.call_data is not None:
-            self.url_sitio_externo = self.campana.sitio_externo.get_url_interaccion(self.agente,
-                                                                                    self.campana,
-                                                                                    self.contacto,
-                                                                                    self.call_data)
+        self.configuracion_sitio_externo = None
+        # Si no hay call data no puedo interactuar con el sitio_externo
+        if not self.call_data or self.campana.sitio_externo is None:
+            return super(CalificacionClienteFormView, self).dispatch(*args, **kwargs)
+
+        # Analizar interaccion con Sitio Externo
+        en_recepcion_de_llamada = self.request.method == 'GET'
+        sitio_externo = self.campana.sitio_externo
+        # Metodo      Disparador            Formato         Target
+        # GET/POST    Agente/JS/Server      HTML/JSON       Iframe/NewTab
+        if sitio_externo.disparador == SitioExterno.SERVER:
+            # Sólo disparar al recibir la llamada.
+            if en_recepcion_de_llamada:
+                servicio = InteraccionConSistemaExterno()
+                error = servicio.ejecutar_interaccion(sitio_externo,
+                                                      self.agente,
+                                                      self.campana,
+                                                      self.contacto,
+                                                      self.call_data)
+                if error is not None:
+                    pass
+        else:
+            if sitio_externo.disparador == SitioExterno.AUTOMATICO:
+                if sitio_externo.metodo == SitioExterno.GET and \
+                        sitio_externo.objetivo == SitioExterno.EMBEBIDO:
+                    return redirect(sitio_externo.get_url_interaccion(
+                        self.agente, self.campana, self.contacto, self.call_data, True))
+                elif en_recepcion_de_llamada:
+                    self.configuracion_sitio_externo = \
+                        sitio_externo.get_configuracion_de_interaccion(
+                            self.agente, self.campana, self.contacto, self.call_data)
+            else:
+                self.configuracion_sitio_externo = sitio_externo.get_configuracion_de_interaccion(
+                    self.agente, self.campana, self.contacto, self.call_data)
 
         return super(CalificacionClienteFormView, self).dispatch(*args, **kwargs)
 
@@ -196,7 +226,7 @@ class CalificacionClienteFormView(FormView):
             campana=self.campana,
             llamada_entrante=formulario_llamada_entrante,
             call_data=self.call_data,
-            url_sitio_externo=self.url_sitio_externo))
+            configuracion_sitio_externo=json.dumps(self.configuracion_sitio_externo)))
 
     def post(self, request, *args, **kwargs):
         """
@@ -311,7 +341,7 @@ class CalificacionClienteFormView(FormView):
             calificacion_form=calificacion_form,
             campana=self.campana,
             call_data=self.call_data,
-            url_sitio_externo=self.url_sitio_externo)
+            configuracion_sitio_externo=json.dumps(self.configuracion_sitio_externo))
         )
 
     def get_success_url_venta(self):
@@ -476,7 +506,7 @@ class RespuestaFormularioFormViewMixin(object):
         form = self.get_form()
 
         if form.is_valid() and contacto_form.is_valid():
-                return self.form_valid(form, contacto_form)
+            return self.form_valid(form, contacto_form)
         else:
             return self.form_invalid(form, contacto_form)
 

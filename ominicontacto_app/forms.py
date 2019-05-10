@@ -1133,14 +1133,44 @@ class SitioExternoForm(forms.ModelForm):
 
     class Meta:
         model = SitioExterno
-        fields = ('nombre', 'url', 'tipo', 'metodo')
+        fields = ('nombre', 'url', 'disparador', 'metodo', 'formato', 'objetivo')
 
         widgets = {
             "nombre": forms.TextInput(attrs={'class': 'form-control'}),
             "url": forms.TextInput(attrs={'class': 'form-control'}),
-            "tipo": forms.Select(attrs={'class': 'form-control'}),
+            "disparador": forms.Select(attrs={'class': 'form-control'}),
             "metodo": forms.Select(attrs={'class': 'form-control'}),
+            "formato": forms.Select(attrs={'class': 'form-control'}),
+            "objetivo": forms.Select(attrs={'class': 'form-control'}),
         }
+
+    def clean_objetivo(self):
+        disparador = self.cleaned_data.get('disparador')
+        objetivo = self.cleaned_data.get('objetivo')
+        formato = self.cleaned_data.get('formato')
+        if disparador == SitioExterno.SERVER:
+            if objetivo:
+                msg = _('Si el disparador es el servidor, no puede haber un objetivo.')
+                raise forms.ValidationError(msg)
+        elif formato == SitioExterno.JSON:
+            if objetivo:
+                msg = _('Si el formato JSON, no puede haber un objetivo.')
+                raise forms.ValidationError(msg)
+        elif objetivo == '':
+            raise forms.ValidationError(_('Debe indicar un objetivo.'))
+        return objetivo
+
+    def clean_formato(self):
+        metodo = self.cleaned_data.get('metodo')
+        formato = self.cleaned_data.get('formato')
+        if metodo == SitioExterno.GET:
+            if formato:
+                msg = _('Si el método es GET, no debe indicarse formato.')
+                raise forms.ValidationError(msg)
+        elif formato == '':
+            msg = _('Si el método es POST, debe seleccionar un formato válido.')
+            raise forms.ValidationError(msg)
+        return formato
 
 
 class ReglasIncidenciaForm(forms.ModelForm):

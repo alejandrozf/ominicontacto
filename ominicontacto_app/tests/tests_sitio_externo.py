@@ -20,16 +20,17 @@
 from __future__ import unicode_literals
 
 from django.core.urlresolvers import reverse
-from ominicontacto_app.models import SitioExterno
+from ominicontacto_app.models import SitioExterno, ParametrosCrm
 from ominicontacto_app.tests.utiles import OMLBaseTest
-from ominicontacto_app.tests.factories import SitioExternoFactory, CampanaFactory
+from ominicontacto_app.tests.factories import (
+    SitioExternoFactory, CampanaFactory, ParametrosCrmFactory, ContactoFactory, COLUMNAS_DB_DEFAULT)
 
 
-class TestsSitioExterno(OMLBaseTest):
+class TestsABMSitioExterno(OMLBaseTest):
     PWD = u'admin123'
 
     def setUp(self, *args, **kwargs):
-        super(TestsSitioExterno, self).setUp(*args, **kwargs)
+        super(TestsABMSitioExterno, self).setUp(*args, **kwargs)
 
         self.admin = self.crear_administrador()
         self.agente = self.crear_user_agente()
@@ -41,9 +42,11 @@ class TestsSitioExterno(OMLBaseTest):
     def _obtener_post_sitio_externo(self):
         return {
             'nombre': 'test_ruta_entrante',
-            'tipo': SitioExterno.GET,
             'url': 'http://www.infobae.com/',
-            'metodo': SitioExterno.EMBEBIDO,
+            'disparador': SitioExterno.BOTON,
+            'metodo': SitioExterno.GET,
+            # 'formato': None,
+            'objetivo': SitioExterno.EMBEBIDO,
         }
 
     def test_crear_sitio_externo(self):
@@ -85,8 +88,82 @@ class TestsSitioExterno(OMLBaseTest):
         self.client.post(url, follow=True)
         self.assertEqual(SitioExterno.objects.count(), n_sitio_externo)
 
-    def usuario_no_admin_no_puede_eliminar_sitio_externo(self):
+    def test_usuario_no_admin_no_puede_eliminar_sitio_externo(self):
         self.client.login(username=self.agente.username, password=self.PWD)
         url = reverse('sitio_externo_delete', args=[self.sitio_externo.pk])
         response = self.client.post(url, follow=True)
-        self.assertTemplateUsed(response, u'registration/login.html')
+        self.assertTemplateUsed(response, '403.html')
+
+
+class TestsSitioExterno(OMLBaseTest):
+    PWD = u'admin123'
+
+    def setUp(self, *args, **kwargs):
+        self.agente = self.crear_agente_profile()
+        self.sitio_externo = SitioExternoFactory()
+        self.campana = CampanaFactory(sitio_externo=self.sitio_externo)
+        self.contacto = ContactoFactory()
+        self.call_data = {
+            'call_id': '1234',
+            'agent_id': str(self.agente.id),
+            'telefono': '351351351',
+            'id_contacto': str(self.contacto.id),
+            'rec_filename': 'rec_filename',
+            'call_wait_duration': '44',
+        }
+        super(TestsSitioExterno, self).setUp(*args, **kwargs)
+
+    def test_obtener_parametros_campana(self):
+        nombres = ['id', 'nombre', 'tipo']
+        for nombre in nombres:
+            ParametrosCrmFactory(campana=self.campana, tipo=ParametrosCrm.DATO_CAMPANA,
+                                 nombre=nombre, valor=nombre)
+        parametros = self.sitio_externo.get_parametros(self.agente, self.campana, self.contacto,
+                                                       self.call_data)
+        self.assertEqual(len(parametros), len(nombres))
+        for nombre in nombres:
+            self.assertIn(nombre, parametros)
+        self.assertEqual(parametros['id'], str(self.campana.id))
+        self.assertEqual(parametros['nombre'], self.campana.nombre)
+        self.assertEqual(parametros['tipo'], self.campana.get_type_display())
+
+    def test_obtener_parametros_llamada(self):
+        nombres = ['call_id', 'agent_id', 'telefono', 'id_contacto', 'rec_filename',
+                   'call_wait_duration']
+        for nombre in nombres:
+            ParametrosCrmFactory(campana=self.campana, tipo=ParametrosCrm.DATO_LLAMADA,
+                                 nombre=nombre, valor=nombre)
+        parametros = self.sitio_externo.get_parametros(self.agente, self.campana, self.contacto,
+                                                       self.call_data)
+        self.assertEqual(len(parametros), len(nombres))
+        for nombre in nombres:
+            self.assertIn(nombre, parametros)
+        self.assertEqual(parametros['call_id'], self.call_data['call_id'])
+        self.assertEqual(parametros['agent_id'], self.call_data['agent_id'])
+        self.assertEqual(parametros['telefono'], self.call_data['telefono'])
+        self.assertEqual(parametros['id_contacto'], self.call_data['id_contacto'])
+        self.assertEqual(parametros['rec_filename'], self.call_data['rec_filename'])
+        self.assertEqual(parametros['call_wait_duration'], self.call_data['call_wait_duration'])
+
+    def test_obtener_parametros_contacto(self):
+        for nombre in COLUMNAS_DB_DEFAULT:
+            ParametrosCrmFactory(campana=self.campana, tipo=ParametrosCrm.DATO_CONTACTO,
+                                 nombre=nombre, valor=nombre)
+        parametros = self.sitio_externo.get_parametros(self.agente, self.campana, self.contacto,
+                                                       self.call_data)
+        self.assertEqual(len(parametros), len(COLUMNAS_DB_DEFAULT))
+        for nombre in COLUMNAS_DB_DEFAULT:
+            self.assertIn(nombre, parametros)
+
+    def test_obtener_parametros_custom(self):
+        ParametrosCrmFactory(campana=self.campana, tipo=ParametrosCrm.CUSTOM,
+                             nombre='nombre_1', valor='valor_1')
+        ParametrosCrmFactory(campana=self.campana, tipo=ParametrosCrm.CUSTOM,
+                             nombre='nombre_2', valor='valor_2')
+        parametros = self.sitio_externo.get_parametros(self.agente, self.campana, self.contacto,
+                                                       self.call_data)
+        self.assertEqual(len(parametros), 2)
+        self.assertIn('nombre_1', parametros)
+        self.assertIn('nombre_2', parametros)
+        self.assertEqual(parametros['nombre_1'], 'valor_1')
+        self.assertEqual(parametros['nombre_2'], 'valor_2')

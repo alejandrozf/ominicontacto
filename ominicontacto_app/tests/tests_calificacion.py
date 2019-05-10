@@ -41,8 +41,8 @@ from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory, Use
                                                RespuestaFormularioGestionFactory,
                                                AgendaContactoFactory)
 
-from ominicontacto_app.models import (AgendaContacto, NombreCalificacion, Campana,
-                                      OpcionCalificacion, CalificacionCliente, ParametrosCrm)
+from ominicontacto_app.models import (AgendaContacto, NombreCalificacion, Campana, SitioExterno,
+                                      OpcionCalificacion, CalificacionCliente)
 
 
 class CalificacionTests(OMLBaseTest):
@@ -358,6 +358,17 @@ class CalificacionTests(OMLBaseTest):
         response = self.client.get(url, follow=True)
         self.assertNotContains(response, self.campana.nombre)
 
+    def get_call_data(self):
+        call_data = {"id_campana": self.campana.id,
+                     "campana_type": self.campana.type,
+                     "telefono": "3512349992",
+                     "call_id": '123456789',
+                     "call_type": "4",
+                     "id_contacto": self.contacto.id,
+                     "rec_filename": "",
+                     "call_wait_duration": ""}
+        return call_data
+
     def test_muestra_link_sitio_externo(self):
         self.campana.type = Campana.TYPE_PREVIEW
         self.campana.tipo_interaccion = Campana.SITIO_EXTERNO
@@ -365,23 +376,51 @@ class CalificacionTests(OMLBaseTest):
         self.campana.sitio_externo = sitio_externo
         self.campana.save()
         parametro1 = ParametrosCrmFactory(campana=self.campana)
-        parametro2 = ParametrosCrmFactory(campana=self.campana, tipo=ParametrosCrm.DATO_LLAMADA,
-                                          nombre='call_id', valor='call_id')
-        call_id = '123456789'
-        call_data = {"id_campana": self.campana.id,
-                     "campana_type": self.campana.type,
-                     "telefono": "3512349992",
-                     "call_id": call_id,
-                     "call_type": "4",
-                     "id_contacto": self.contacto.id,
-                     "rec_filename": "",
-                     "call_wait_duration": ""}
+        call_data = self.get_call_data()
         url = reverse('calificar_llamada', kwargs={'call_data_json': json.dumps(call_data)})
 
         response = self.client.get(url)
         self.assertContains(response, sitio_externo.url)
-        self.assertContains(response, parametro1.nombre + '=' + parametro1.valor)
-        self.assertContains(response, parametro2.nombre + '=' + call_id)
+        self.assertContains(response, '"%s": "%s"' % (parametro1.nombre, parametro1.valor))
+
+    def test_redirecciona_a_sitio_externo(self):
+        self.campana.type = Campana.TYPE_PREVIEW
+        self.campana.tipo_interaccion = Campana.SITIO_EXTERNO
+        sitio_externo = SitioExternoFactory(disparador=SitioExterno.AUTOMATICO,
+                                            metodo=SitioExterno.GET,
+                                            objetivo=SitioExterno.EMBEBIDO)
+        self.campana.sitio_externo = sitio_externo
+        self.campana.save()
+        parametro1 = ParametrosCrmFactory(campana=self.campana)
+
+        call_data = self.get_call_data()
+        url = reverse('calificar_llamada', kwargs={'call_data_json': json.dumps(call_data)})
+
+        response = self.client.get(url, follow=False)
+        self.assertEqual(response.status_code, 302)
+        param_1 = '%s=%s' % (parametro1.nombre, parametro1.valor)
+        equal_url = (response.url == '%s?%s' % (sitio_externo.url, param_1))
+        self.assertTrue(equal_url)
+
+    @patch('requests.get')
+    def test_hace_peticion_sitio_externo_en_servidor(self, request_get):
+        self.campana.type = Campana.TYPE_PREVIEW
+        self.campana.tipo_interaccion = Campana.SITIO_EXTERNO
+        sitio_externo = SitioExternoFactory(disparador=SitioExterno.SERVER,
+                                            metodo=SitioExterno.GET,
+                                            objetivo=None, formato=None)
+        self.campana.sitio_externo = sitio_externo
+        self.campana.save()
+        ParametrosCrmFactory(campana=self.campana)
+        call_data = self.get_call_data()
+        url = reverse('calificar_llamada', kwargs={'call_data_json': json.dumps(call_data)})
+
+        self.client.get(url)
+        parametros = sitio_externo.get_parametros(self.agente_profile,
+                                                  self.campana,
+                                                  self.contacto,
+                                                  call_data)
+        request_get.assert_called_with(sitio_externo.url, params=parametros)
 
     def test_se_muestra_historico_calificaciones_contacto_llamada_entrante(self):
         self.campana.type = Campana.TYPE_ENTRANTE
@@ -389,15 +428,9 @@ class CalificacionTests(OMLBaseTest):
         observacion_anterior = self.calificacion_cliente.observaciones
         self.calificacion_cliente.observaciones = "NUEVA OBSERVACION"
         self.calificacion_cliente.save()
-        call_id = '123456789'
-        call_data = {"id_campana": self.campana.id,
-                     "campana_type": self.campana.type,
-                     "telefono": "3512349992",
-                     "call_id": call_id,
-                     "call_type": str(self.campana.type),
-                     "id_contacto": self.contacto.id,
-                     "rec_filename": "",
-                     "call_wait_duration": ""}
+        call_data = self.get_call_data()
+        call_data["call_type"] = str(self.campana.type)
+
         url = reverse('calificar_llamada', kwargs={'call_data_json': json.dumps(call_data)})
         response = self.client.get(url)
         self.assertContains(response, observacion_anterior)
@@ -408,15 +441,9 @@ class CalificacionTests(OMLBaseTest):
         observacion_anterior = self.calificacion_cliente.observaciones
         self.calificacion_cliente.observaciones = "NUEVA OBSERVACION"
         self.calificacion_cliente.save()
-        call_id = '123456789'
-        call_data = {"id_campana": self.campana.id,
-                     "campana_type": self.campana.type,
-                     "telefono": "3512349992",
-                     "call_id": call_id,
-                     "call_type": str(self.campana.type),
-                     "id_contacto": self.contacto.id,
-                     "rec_filename": "",
-                     "call_wait_duration": ""}
+        call_data = self.get_call_data()
+        call_data["call_type"] = str(self.campana.type)
+
         url = reverse('calificar_llamada', kwargs={'call_data_json': json.dumps(call_data)})
         response = self.client.get(url)
         self.assertNotContains(response, observacion_anterior)
@@ -426,14 +453,11 @@ class CalificacionTests(OMLBaseTest):
         self.campana.save()
         call_id = "123456789.34"
         telefono = "NUMERO PRIVADO"
-        call_data = {"id_campana": self.campana.id,
-                     "campana_type": self.campana.type,
-                     "telefono": str(telefono),
-                     "call_id": call_id,
-                     "id_contacto": self.contacto.pk,
-                     "call_type": str(self.campana.type),
-                     "rec_filename": "",
-                     "call_wait_duration": ""}
+        call_data = self.get_call_data()
+        call_data["telefono"] = str(telefono)
+        call_data["call_id"] = call_id
+        call_data["call_type"] = str(self.campana.type)
+
         url = reverse('calificar_llamada', kwargs={'call_data_json': json.dumps(call_data)})
         response = self.client.get(url)
         contacto_form = response.context_data['contacto_form']
