@@ -23,6 +23,7 @@ import logging as _logging
 
 from django.contrib.auth import authenticate
 from django.http import JsonResponse, Http404
+from django.utils.translation import ugettext as _
 from django.views.generic import View
 from django.shortcuts import get_object_or_404
 
@@ -35,11 +36,13 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.status import (HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND,
                                    HTTP_200_OK)
 from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer
 
 from api_app.authentication import token_expire_handler, expires_in, ExpiringTokenAuthentication
 from api_app.serializers import (CampanaSerializer, AgenteProfileSerializer, UserSigninSerializer,
                                  UserSerializer, OpcionCalificacionSerializer)
 from api_app.utiles import EstadoAgentesService
+from api_app.forms import Click2CallOMLParametersForm, Click2CallExternalSiteParametersForm
 
 from ominicontacto_app.models import Campana, AgenteProfile, Contacto, SistemaExterno
 from reportes_app.reportes.reporte_llamadas_supervision import (
@@ -48,6 +51,7 @@ from reportes_app.reportes.reporte_llamadas_supervision import (
 from ominicontacto_app.services.asterisk.interaccion_supervisor_agente import (
     AccionesDeSupervisorSobreAgente
 )
+from ominicontacto_app.services.click2call import Click2CallOriginator
 
 logger = _logging.getLogger(__name__)
 
@@ -91,7 +95,7 @@ def login(request):
             {'detail': 'Invalid Credentials or activate account'}, status=HTTP_404_NOT_FOUND)
 
     # TOKEN STUFF
-    token, _ = Token.objects.get_or_create(user=user)
+    token, __ = Token.objects.get_or_create(user=user)
 
     # token_expire_handler will check, if the token is expired it will generate new one
     is_expired, token = token_expire_handler(token)
@@ -262,3 +266,62 @@ class API_ObtenerContactosCampanaView(APIView):
         contactos = self._procesar_api(request, campana)
         result_dict = self._procesar_contactos_salida(request, campana, contactos)
         return Response(result_dict)
+
+
+class Click2CallView(APIView):
+    """
+        Vista para ejecutar un click2call desde un sistema externo
+        Params:
+        - idExternalSystem (opcional)
+        - idCampaign, idAgent, idContact, phone
+    """
+    permission_classes = (IsAuthenticated, EsAgentePermiso, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+
+    def post(self, request):
+        self.sistema_externo = None
+        if 'idExternalSystem' in request.data:
+            try:
+                id_external_system = request.data['idExternalSystem']
+                self.sistema_externo = SistemaExterno.objects.get(id=id_external_system)
+            except SistemaExterno.DoesNotExist:
+                return Response(data={
+                    'status': 'ERROR',
+                    'message': _('Hubo errores en los datos recibidos'),
+                    'errors': {'idExternalSystem': [_('Sistema externo inexistente.')]}
+                })
+            form = Click2CallExternalSiteParametersForm(sistema_externo=self.sistema_externo,
+                                                        data=request.data)
+        else:
+            form = Click2CallOMLParametersForm(request.data)
+
+        if form.is_valid():
+            agente = form.get_agente()
+            campana = form.get_campana()
+            contacto_id = form.get_contacto_id()
+            telefono = form.cleaned_data.get('phone')
+            click2call_type = 'contactos'       # TODO: Consultar con Fabian
+
+            originator = Click2CallOriginator()
+            error = originator.call_originate(
+                agente, campana.id, str(campana.type), contacto_id, telefono, click2call_type)
+            if error is None:
+                return Response(data={
+                    'status': 'OK',
+                })
+            else:
+                return Response(data={
+                    'status': 'ERROR',
+                    'message': _('Error al ejecutar la llamada'),
+                    'errors': [error]
+                })
+            return Response(data={
+                'status': 'OK',
+            })
+        else:
+            return Response(data={
+                'status': 'ERROR',
+                'message': _('Hubo errores en los datos recibidos'),
+                'errors': form.errors
+            })

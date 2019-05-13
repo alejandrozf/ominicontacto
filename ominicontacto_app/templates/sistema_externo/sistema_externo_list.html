@@ -28,12 +28,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <table class="table">
     <thead>
       <tr class="fts-table-bg">
+        <th>{% trans 'ID' %}</th>
         <th>{% trans 'Sistema externo' %}</th>
       </tr>
     </thead>
     <tbody id="t_body_ocultas">
         {% for sistema in object_list %}
             <tr>
+                <td>
+                    {{ sistema.id }}
+                </td>
                 <td>
                     <a  href="{% url 'modificar_sistema_externo' sistema.id %}">
                         {{ sistema.nombre }}

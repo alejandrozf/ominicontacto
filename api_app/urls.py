@@ -25,7 +25,8 @@ from rest_framework import routers
 from api_app.views import (SupervisorCampanasActivasViewSet, AgentesStatusAPIView,
                            AgentesActivosGrupoViewSet, StatusCampanasEntrantesView,
                            StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView,
-                           login, API_ObtenerContactosCampanaView, OpcionesCalificacionViewSet)
+                           login, API_ObtenerContactosCampanaView, OpcionesCalificacionViewSet,
+                           Click2CallView)
 from ominicontacto_app.auth.decorators import administrador_o_supervisor_requerido
 
 router = routers.DefaultRouter()
@@ -64,4 +65,8 @@ urlpatterns = [
     url(r'^api/v1/campaign/(?P<pk_campana>\d+)/contacts/$',
         API_ObtenerContactosCampanaView.as_view(), name='api_contactos_campana'),
     url(r'api/v1/login', login, name='api_login'),
+
+    url(r'api/v1/makeCall/$',
+        Click2CallView.as_view(),
+        name='api_click2call'),
 ]
