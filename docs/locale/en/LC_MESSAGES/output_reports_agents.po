@@ -1,0 +1,94 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, omnileads
+# This file is distributed under the same license as the OMniLeads package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OMniLeads \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-05-06 16:26-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+# 9150f461a7c04e93b8af343f5003eed9
+#: ../../output_reports_agents.rst:2
+msgid "Métricas de agente"
+msgstr ""
+
+# ac085817893b44a19b72334bfd312695
+#: ../../output_reports_agents.rst:4
+msgid ""
+"Al acceder al menú *Reportes -> Agentes* se despliega una vista que nos "
+"permite seleccionar el agente o grupo de agentes por un lado y la fecha o"
+" rango de fechas por el otro. Que nos permite filtrar la salida del "
+"reporte de actividad de agentes."
+msgstr ""
+
+# ac5ca30af10a4c16aa2d1506073c2889
+#: ../../output_reports_agents.rst:9
+msgid "*Figure 1: Choice of date and agents*"
+msgstr ""
+
+# a3d127248c3f4d3f92df2af9352b9eca
+#: ../../output_reports_agents.rst:11
+msgid ""
+"Una vez ejecutada la búsqueda, se despliega como primera información una "
+"tabla con el resumen de toda la actividad realizada por los agentes."
+msgstr ""
+
+# f384f36011a1402087ee158293427216
+#: ../../output_reports_agents.rst:15
+msgid "*Figure 2: Agent activity summary*"
+msgstr ""
+
+# 8fe5c26eb8d94eb48075dcbfff5e3aeb
+#: ../../output_reports_agents.rst:17
+msgid ""
+"A partir de nuestro resumen se comienza a desglozar la información como "
+"por ejemplo el tiempo acumulado en pausa. Entoces la segunda tabla que "
+"presenta la vista es un reporte detallado de las pausas y el tiempo de "
+"cada una, en las que cada agente estuvo detenido."
+msgstr ""
+
+# 4fdb43af6a024287bfaa703ffcb6ebd2
+#: ../../output_reports_agents.rst:22
+msgid "*Figure 3: Pause details*"
+msgstr ""
+
+# 5569baa7497640aa8094ab24d3a26752
+#: ../../output_reports_agents.rst:24
+msgid ""
+"El próximo parámetro que se desgloza tiene que ver con la cantidad de "
+"llamadas procesadas por cada agente en términos de campañas. Es decir se "
+"presenta un detalle por agente de cuantas llamadas y qué tiempo le dedicó"
+" a cada una de las campañas sobre las que procesó sus llamadas."
+msgstr ""
+
+# 2e72b72a0186467c8540581c7e9dd754
+#: ../../output_reports_agents.rst:29
+msgid "*Figure 4: Calls & Campaigns*"
+msgstr ""
+
+# 8bf6bcb95f3445f4b93aa55e6d9f31f1
+#: ../../output_reports_agents.rst:31
+msgid ""
+"Finalmente se presenta una tabla en la que se detalla la cantidad de "
+"llamadas de cada tipo (manual, preview, dialer y entrantes), en las que "
+"estuvo vinculado el agente."
+msgstr ""
+
+# 7d28f3ca045245fba77d5f3d269c057b
+#: ../../output_reports_agents.rst:35
+msgid "*Figure 5: Call types*"
+msgstr ""
+
+#~ msgid "Telephony"
+#~ msgstr ""
+

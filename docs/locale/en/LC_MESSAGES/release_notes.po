@@ -1,0 +1,274 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, omnileads
+# This file is distributed under the same license as the OMniLeads package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OMniLeads \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-05-06 16:26-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+# 591552be7a0b4c64a4c4f954a2235887
+#: ../../release_notes.rst:2
+msgid "Release Notes"
+msgstr ""
+
+# 00ccc213ae9e46b9902ee3ff98e73212
+#: ../../release_notes.rst:4
+msgid "*April 18, 2019*"
+msgstr ""
+
+# 71ec1f9a01834f659c2f8e4556d39454
+#: ../../release_notes.rst:7
+msgid "What's new"
+msgstr ""
+
+# 243846beee794265bcbe8e2cb15ba266
+#: ../../release_notes.rst:11
+msgid "Installation tasks"
+msgstr ""
+
+# f281c36167f04ef1a65581da7a0f71f9
+#: ../../release_notes.rst:12
+msgid "Omnileads has been Dockerized!, see the README.md in deploy/docker/devenv"
+msgstr ""
+
+# 057d86a6956d4d0aa47eb42afe098bac
+#: ../../release_notes.rst:13
+msgid ""
+"Added timezone setup in installation, the timezone is now set as a "
+"variable for ansible"
+msgstr ""
+
+# cd97b57168bb4205a3eabe61f1a52fb6
+#: ../../release_notes.rst:14
+msgid ""
+"Added the options --change-network and --change-passwords in deploy.sh to"
+" change network parameters or passswords of services"
+msgstr ""
+
+# 3c9798e5fa2e48da8e6a7ec18d022d1f
+#: ../../release_notes.rst:15
+msgid ""
+"Default valid time of SIP ephemeral credentials now can be configured in "
+"EPHEMERAL_USER_TTL django setting"
+msgstr ""
+
+# 2e1f8acd29664186bbad8e6be1abbf8d
+#: ../../release_notes.rst:16
+msgid "Fix dependency of OS system language when running ansible tasks"
+msgstr ""
+
+# f43094a38d8a449386f8b644fed83eb4
+#: ../../release_notes.rst:17
+msgid "Fix changing obsolete Postgresql repository for CENTOS installation"
+msgstr ""
+
+# 54fc835abe73421787aa4afa18cec305
+#: ../../release_notes.rst:21
+msgid "OML admin"
+msgstr ""
+
+# c974ca408bec47a39ef3d6e14cf53552
+#: ../../release_notes.rst:22
+msgid ""
+"Added the posibility to use differents campaign forms for engaged "
+"qualifications options when rate a contact"
+msgstr ""
+
+# df7ee5c8d31f4a6d9af17c4cc8d59786
+#: ../../release_notes.rst:23
+msgid ""
+"Campaign creations wizards now has ability to add supervisors and agents "
+"on new steps"
+msgstr ""
+
+# 59acae277adc4942a1441314db9f6875
+#: ../../release_notes.rst:24
+msgid ""
+"Fix on error raised on original database results report after recall an "
+"re-qualify agended contact"
+msgstr ""
+
+# 59e8cb1d0dd24b7795a28739f26db5bb
+#: ../../release_notes.rst:25
+msgid ""
+"The system now does not allowed to delete recording objects using on "
+"campaigns"
+msgstr ""
+
+# 3cc6e801ca794be9b4e4e0c8031e259b
+#: ../../release_notes.rst:26
+msgid ""
+"Fix inconsistency when removing periodic announcement on inbound queue "
+"related to its queue.conf generated file"
+msgstr ""
+
+# 2ac58c109c0642609ab290fb72770545
+#: ../../release_notes.rst:27
+msgid "Added validations to not allow create campaign forms with empty fields"
+msgstr ""
+
+# 6996f4bfb69a4b7683762ceb24622773
+#: ../../release_notes.rst:28
+msgid "Fix error when update supervisor profile"
+msgstr ""
+
+# 647c2939d43f42d3b69900b74d3c91b8
+#: ../../release_notes.rst:29
+msgid ""
+"Fix events log insertion error when recording file name exceeds 50 "
+"characters"
+msgstr ""
+
+# 5212555be0f44577b6f3205ed8ac3775
+#: ../../release_notes.rst:30
+msgid "Removed initial extra page before login, now login its the first page"
+msgstr ""
+
+# b6020cce3e5a44af8166395cc18ce3df
+#: ../../release_notes.rst:31
+msgid ""
+"Blacklist view now shows only one object, the current blacklist set for "
+"OML"
+msgstr ""
+
+# 08d41ef76ed54e11b0b2632b3e0aebdd
+#: ../../release_notes.rst:32
+msgid "Added posibility to remove non used external sites objects"
+msgstr ""
+
+# 76871018b0b24233b91c3f7ac44fde02
+#: ../../release_notes.rst:37
+msgid "OML agent"
+msgstr ""
+
+# beba5b3f803b46e79e076a5ca17ab24b
+#: ../../release_notes.rst:38
+msgid "Added ability to make multi-phone-numbers calls"
+msgstr ""
+
+# 0e47f52b37014aa78ea35b01ed3fc6d0
+#: ../../release_notes.rst:39
+msgid ""
+"Added fix in agent cronometers calculation when group unpause has value ="
+" 0"
+msgstr ""
+
+# ae75236e3ed44684a8d1e0187b1a0bcf
+#: ../../release_notes.rst:40
+msgid "Added fix on 404 response when manual calling out of base contact"
+msgstr ""
+
+# b7e0b6e2a8dd4c5abc2e5ff527a1a52e
+#: ../../release_notes.rst:41
+msgid ""
+"The system now shows calling agent name when receiving a transfer call on"
+" pop-up"
+msgstr ""
+
+#~ msgid "*March 14, 2019*"
+#~ msgstr ""
+
+#~ msgid "Fix on link to download CENTOS"
+#~ msgstr ""
+
+#~ msgid "Asterisk optional component (Dahdi) was removed"
+#~ msgstr ""
+
+#~ msgid "Fixes for developers environment"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "OML can be installed now in Ubuntu"
+#~ " (Server & Desktop) since 18.04 "
+#~ "version"
+#~ msgstr ""
+
+#~ msgid "Check about sudo permission to run installation script was added"
+#~ msgstr ""
+
+#~ msgid "Kamailio component was updated to 5.1 version"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "A new filter for call recordings "
+#~ "was added, it select only recordings "
+#~ "from calls mark as 'engaged' in "
+#~ "its qualifications."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Outbound routes can be ordered now "
+#~ "from UI and this impact directly "
+#~ "on AstDB"
+#~ msgstr ""
+
+#~ msgid "Calls are now linked to its call dispositions (if exists)"
+#~ msgstr ""
+
+#~ msgid "Actions for deleted campaigns were removed"
+#~ msgstr ""
+
+#~ msgid "External CRM support was added"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Call disposition marked as 'scheduled' "
+#~ "are count like pending calls for "
+#~ "campaign global reports"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Validation for avoid delete an inbound"
+#~ " campaign that is used as a "
+#~ "failover destination was added"
+#~ msgstr ""
+
+#~ msgid "Better visualization of agent statuses"
+#~ msgstr ""
+
+#~ msgid "Manual calls now are internally handled as click2calls"
+#~ msgstr ""
+
+#~ msgid "Campaign contacts list hides contacts in call dispositions"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Call disposition forms now are "
+#~ "initialized for create new contact when"
+#~ " the inbound phone number is private"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Call disposition form for inbound calls"
+#~ " shows historical contact call dispositions"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Personal scheduled for agents are now"
+#~ " deleted when its related call "
+#~ "dispositions change its values to "
+#~ "another call dispositions type different "
+#~ "than 'Schedule'"
+#~ msgstr ""
+
+#~ msgid "Asterisk"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Fixed bug that logged ABANDON instead"
+#~ " of EXPIRE when a queue is "
+#~ "failover destination of another and the"
+#~ " call expires in both queues"
+#~ msgstr ""
+

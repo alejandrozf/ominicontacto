@@ -1,0 +1,84 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, omnileads
+# This file is distributed under the same license as the OMniLeads package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OMniLeads \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-04-01 12:13-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../telephony_settings_bpo.rst:2
+msgid "Troncal SIP con proveedor de acceso PSTN"
+msgstr ""
+
+#: ../../telephony_settings_bpo.rst:3
+msgid "El esquema descripto en este insiso se puede representar con la figura 1."
+msgstr ""
+
+#: ../../telephony_settings_bpo.rst:8
+msgid "*Figure 1: SIP trunk provider and OMniLeads*"
+msgstr ""
+
+#: ../../telephony_settings_bpo.rst:10
+msgid ""
+"Vamos a considerar entonces que un proveedor de troncales SIP nos "
+"facilita un acceso a la PSTN. En este escenario se plantea una plantilla "
+"de configuración muy similar a la siguiente."
+msgstr ""
+
+#: ../../telephony_settings_bpo.rst:14
+msgid "Parámetros para el troncal SIP"
+msgstr ""
+
+#: ../../telephony_settings_bpo.rst:28
+msgid ""
+"NOTA: ponemos énfasis en el parámetro \"**context=from-pstn**\". Es "
+"imprescindible que sea especificado."
+msgstr ""
+
+#: ../../telephony_settings_bpo.rst:30
+msgid ""
+"Debemos recordar que la sintaxis utilizada para especificar los "
+"parámetros del troncal está basada en el módulo chan_sip.so de Asterisk. "
+"Para mayor información sobre los parámetros `<https://www.voip-info.org"
+"/asterisk-config-sipconf/>`_"
+msgstr ""
+
+#: ../../telephony_settings_bpo.rst:33
+msgid "Una configuración ejemplar podría ser la de la figura 2."
+msgstr ""
+
+#: ../../telephony_settings_bpo.rst:38
+msgid "*Figure 2: SIP trunk provider config*"
+msgstr ""
+
+#: ../../telephony_settings_bpo.rst:41
+msgid "Comprobación del estado del troncal"
+msgstr ""
+
+#: ../../telephony_settings_bpo.rst:43
+msgid ""
+"En este punto simplemente se accede por medio de una sesión SSH a "
+"OMniLeads y desde dicha conexión se debe ejecutar el comando de Asterisk"
+msgstr ""
+
+#: ../../telephony_settings_bpo.rst:49
+msgid ""
+"Esto listará todos los *peers SIP* y su estado, como lo expone la figura "
+"3."
+msgstr ""
+
+#: ../../telephony_settings_bpo.rst:53
+msgid "*Figure 3: SIP trunk check state*"
+msgstr ""
+

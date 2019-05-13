@@ -1,0 +1,134 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, omnileads
+# This file is distributed under the same license as the OMniLeads package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OMniLeads \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-04-01 12:13-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../campaigns_inbound_timeconditions.rst:3
+msgid "Enrutamiento condicionado por fechas y horas"
+msgstr ""
+
+#: ../../campaigns_inbound_timeconditions.rst:5
+msgid ""
+"OMniLeads permite configurar el enrutamiento de llamadas entrantes hacia "
+"diferentes destinos internos a partir de comparar la fecha/hora en que se"
+" procesa una llamada y un patrón configurado, de manera tal que se pueda "
+"planificar de antemano si una llamada debe ir hacia un destino u otro "
+"basandonos en dicha comparación."
+msgstr ""
+
+#: ../../campaigns_inbound_timeconditions.rst:8
+msgid ""
+"Por ejemplo una llamada podria ir hacia una campaña entrante \"en fechas "
+"y horas de atención al cliente\" y hacia un IVR fuera de ese rango "
+"definido."
+msgstr ""
+
+#: ../../campaigns_inbound_timeconditions.rst:10
+msgid ""
+"Cada elemento de este tipo generado, puede ser invocado por otros como el"
+" destino de:"
+msgstr ""
+
+#: ../../campaigns_inbound_timeconditions.rst:12
+msgid "una ruta entrante"
+msgstr ""
+
+#: ../../campaigns_inbound_timeconditions.rst:13
+msgid "una opción de un IVR"
+msgstr ""
+
+#: ../../campaigns_inbound_timeconditions.rst:14
+msgid "el failover de una campaña entrante"
+msgstr ""
+
+#: ../../campaigns_inbound_timeconditions.rst:15
+msgid "otro elemento similar"
+msgstr ""
+
+#: ../../campaigns_inbound_timeconditions.rst:19
+msgid "*Figure 1: Time conditions*"
+msgstr ""
+
+#: ../../campaigns_inbound_timeconditions.rst:22
+msgid ""
+"Para llevar a cabo este tipo de configuiraciones se disponen de dos "
+"módulos que trabajan juntos."
+msgstr ""
+
+#: ../../campaigns_inbound_timeconditions.rst:24
+msgid "**Grupos horarios**"
+msgstr ""
+
+#: ../../campaigns_inbound_timeconditions.rst:26
+msgid ""
+"Este módulo permite agrupar patrones de fechas y horas así también como "
+"fechas y horarios puntuales dentro de un elemento interno de OMniLeasds, "
+"para luego puede ser invocado por los condicionales de tiempo, módulo "
+"complementario que permite realizar un enrutamiento comparando la "
+"fecha/hora de la llamada con la de un grupo de éstos. Para definir o "
+"editar grupos de horarios, se debe acceder al punto de menú **Telefonía "
+"-> Grupos horarios**. Para añadir un nuevo grupo se debe presionar el "
+"botón \"Agregar nuevo grupo\"."
+msgstr ""
+
+#: ../../campaigns_inbound_timeconditions.rst:29
+msgid "La pantalla de grupos horarios se expone en la figura 2."
+msgstr ""
+
+#: ../../campaigns_inbound_timeconditions.rst:33
+msgid "*Figure 2: Time groups*"
+msgstr ""
+
+#: ../../campaigns_inbound_timeconditions.rst:35
+msgid ""
+"Una vez generados los *Grupos de tiempos* podemos invocarlos desde el "
+"módulo complementario *Condicionales de tiempos*"
+msgstr ""
+
+#: ../../campaigns_inbound_timeconditions.rst:37
+msgid "**Validaciones de tiempo**"
+msgstr ""
+
+#: ../../campaigns_inbound_timeconditions.rst:39
+msgid ""
+"Este módulo permite comparar la fecha y hora en el momento de procesar "
+"una llamada, con un grupo horario asignado como patrón de comparación. "
+"Luego en base a la coincidencia o no con alguna franja de fecha/hora del "
+"grupo, la llamada se envía hacia el destino positivo o negativo de la "
+"comparación."
+msgstr ""
+
+#: ../../campaigns_inbound_timeconditions.rst:41
+msgid ""
+"Para generar un elemento Condicional de tiempo, se debe acceder a "
+"**Telephony -> Time conditions**"
+msgstr ""
+
+#: ../../campaigns_inbound_timeconditions.rst:43
+msgid "La pantalla de configuración es similar a la figura 3."
+msgstr ""
+
+#: ../../campaigns_inbound_timeconditions.rst:47
+msgid "*Figure 3: Time conditions*"
+msgstr ""
+
+#: ../../campaigns_inbound_timeconditions.rst:49
+msgid ""
+"Finalmente tenemos disponible este elemento de enrutamiento para ser "
+"utilizado por ejemple como destino de una ruta entrante."
+msgstr ""
+

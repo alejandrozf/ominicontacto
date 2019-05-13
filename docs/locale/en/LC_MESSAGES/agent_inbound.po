@@ -1,0 +1,79 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, omnileads
+# This file is distributed under the same license as the OMniLeads package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OMniLeads \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-05-06 16:12-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../agent_inbound.rst:2
+msgid "Atención de llamadas entrantes"
+msgstr ""
+
+#: ../../agent_inbound.rst:4
+msgid ""
+"Como bien sabemos de la sección de \"Configuración inicial\", el sistema "
+"se puede configurar para que las llamadas entrantes generen un \"Ring\" "
+"sobre el webphone del agente, brindando a éste último la posibilidad de "
+"elegir atender o no la llamada, o bien configurar para que las llamadas "
+"entrantes ingresen y conecten directamente sobre el agente con una "
+"indicación de audio tipo \"beep\", para luego dejar a ambos extremos de "
+"la llamada en linea."
+msgstr ""
+
+#: ../../agent_inbound.rst:9
+msgid "En la figura 1 exponemos el comportamiento con Ring."
+msgstr ""
+
+#: ../../agent_inbound.rst:13
+msgid "*Figure 1: inbound call ring*"
+msgstr ""
+
+#: ../../agent_inbound.rst:15
+msgid ""
+"Si en cambio la configuración asociada al agente implica que la llamada "
+"se enlace directamente, entonces al igual que en las campañas "
+"predictivas, el agente escuchará el \"beep\" que anuncia la nueva llamada"
+" conectada y también se informa en la pantalla el nombre de la campaña "
+"entrante a la cual pertenece la llamada conectada."
+msgstr ""
+
+#: ../../agent_inbound.rst:22
+msgid "*Figure 2: inbound call campaign*"
+msgstr ""
+
+#: ../../agent_inbound.rst:25
+msgid "Gestión de contactos"
+msgstr ""
+
+#: ../../agent_inbound.rst:27
+msgid ""
+"Como las llamadas entrantes dependen de que el número de teléfono desde "
+"el cual se origina la llamada esté por un lado cargado en el sistema como"
+" base de contactos y además de que el número llegue al sistema como fue "
+"cargado, suele ser normal que el agente se encuentre sin datos de la "
+"persona que llama, al momento de conectarse la llamada."
+msgstr ""
+
+#: ../../agent_inbound.rst:33
+msgid "*Figure 3: inbound call without contact*"
+msgstr ""
+
+#: ../../agent_inbound.rst:35
+msgid ""
+"En este caso, el agente puede elegir calificar o no la llamada. En el "
+"caso positivo entonces se procede con la carga del contacto y posterior "
+"calificación de la llamada."
+msgstr ""
+
