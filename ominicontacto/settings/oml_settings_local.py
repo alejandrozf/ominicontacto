@@ -147,13 +147,3 @@ OML_AUDIO_FOLDER = "oml/"
 MONITORFORMAT = os.getenv('MONITORFORMAT')
 # Calificacion de agenda
 CALIFICACION_REAGENDA = os.getenv('CALIFICACION_REAGENDA')
-
-CONSTANCE_CONFIG = {
-    'KEYS_SERVER_HOST': ('', 'KEYS_SERVER_HOST', str),
-    'SSL_CERT_FILE': ('', 'SSL_CERT_FILE', str),
-    'CLIENT_NAME': ('', 'CLIENT_NAME', str),
-    'CLIENT_KEY': ('', 'CLIENT_KEY', str),
-    'CLIENT_PASSWORD': ('', 'CLIENT_PASSWORD', str),
-    'CLIENT_EMAIL': ('', 'CLIENT_EMAIL', str),
-    'CLIENT_PHONE': ('', 'CLIENT_PHONE', str),
-}

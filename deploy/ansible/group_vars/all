@@ -32,7 +32,7 @@ rtpengine_repo: https://github.com/sipwise/rtpengine/archive/mr{{ rtpengine_vers
 kamailio_repo: https://github.com/kamailio/kamailio/archive/{{ kamailio_version }}.tar.gz
 postgresql_key: https://ftp.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-{{ postgres_version_nodot }}
 postgresql_url: https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7.6-x86_64/pgdg-redhat-repo-latest.noarch.rpm
-
+registrar_server: https://keys-server.freetech.com.ar:20852/cert
 ##Parametros de la aplicación
 country_code: 54
 admin_user: admin
