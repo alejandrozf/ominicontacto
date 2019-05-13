@@ -1,0 +1,148 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, omnileads
+# This file is distributed under the same license as the OMniLeads package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OMniLeads \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-05-06 16:26-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+# d404b9dd118e44b18a8a8c88cc3d07f2
+#: ../../output_reports_general.rst:2
+msgid "Reporte general de llamadas"
+msgstr ""
+
+# 87fbd537dad348f197b76e6868d5d6b1
+#: ../../output_reports_general.rst:4
+msgid ""
+"El reporte se puede correr como en todos los casos, sobre una fecha o "
+"rango de fechas. El mismo expone información sobre todas las llamadas "
+"transaccionadas por la plataforma dentro de la fecha acotada."
+msgstr ""
+
+# 42a446c40ccd4365bebcbe931e9414c3
+#: ../../output_reports_general.rst:7
+msgid ""
+"El primer informe que se nos presenta tiene que ver con esa totalidad de "
+"llamadas transaccionadas por la plataforma clasificadas en:"
+msgstr ""
+
+# a3d6cd2a06a54ae7bbd23507485bbc37
+#: ../../output_reports_general.rst:10
+msgid "Llamadas manuales"
+msgstr ""
+
+# 157755b3b2ca4f169754ccd2430b889d
+#: ../../output_reports_general.rst:11
+msgid "Llamadas de campañas preview"
+msgstr ""
+
+# 1653d0d0ddaa4f56852ed0203482d135
+#: ../../output_reports_general.rst:12
+msgid "Llamadas de campañas predictivas"
+msgstr ""
+
+# f1e6186cf5cf4baf8bfb45b5d07ff0f1
+#: ../../output_reports_general.rst:13
+msgid "Llamadas de campañas entrantes"
+msgstr ""
+
+# b7e1fc8726ed4412a2ecf6954177a3f1
+#: ../../output_reports_general.rst:17
+msgid "*Figure 1: Call types*"
+msgstr ""
+
+# bdab065d70bd4520baabe010aef9e07e
+#: ../../output_reports_general.rst:19
+msgid ""
+"Además se detalla la información en términos de si las llamadas fueron o "
+"no \"conectadas\"."
+msgstr ""
+
+# a38e6d491bd94cdf8de4e9b6cf82c65c
+#: ../../output_reports_general.rst:21
+msgid ""
+"Luego aparecen un par de gráficos que representan las estadísticas arriba"
+" mencionadas."
+msgstr ""
+
+# 2674d8776d764083b53c9035d4033f2c
+#: ../../output_reports_general.rst:25
+msgid "*Figure 2: Call types graphic*"
+msgstr ""
+
+# 9fd4402ca0ea4557ab3fcfa446549c16
+#: ../../output_reports_general.rst:27
+msgid ""
+"La siguiente información se presenta como una tabla en la que se "
+"descopone granularmente a todas las llamadas transaccionadas por la "
+"plataforma en términos de las campañas por donde fueron procesadas las "
+"mismas."
+msgstr ""
+
+# 0f738852e7374dce8e1021042413c2d2
+#: ../../output_reports_general.rst:32
+msgid "*Figure 3: Calls and campaigns*"
+msgstr ""
+
+# 1a3ab4c51d1840498230699eebe38fea
+#: ../../output_reports_general.rst:34
+msgid ""
+"En las siguientes tres secciones se presenta de manera tabular y gráfica "
+"una descomposición de todas las llamadas procesadas por OMniLeads en "
+"términos de su naturaleza (entrantes, manuales, preview y predictivas) y "
+"a su vez dentro de cada una de estas clasificaciones se descompone en las"
+" campañas puntuales de cada tipo de llamada."
+msgstr ""
+
+# 657bcefe15fd4967aedc23bed3a92ac5
+#: ../../output_reports_general.rst:38
+msgid ""
+"De esta manera se puede deducir rápidamente la efectividad de cada "
+"campaña a partir de la exposición de la información tanto tabular como "
+"gráficamente."
+msgstr ""
+
+# df045ade68e6486dbee4ffde84a4ade8
+#: ../../output_reports_general.rst:41
+msgid "Llamadas predictivas"
+msgstr ""
+
+# 85ec53d46510400a878207bd5c6c5ba0
+#: ../../output_reports_general.rst:45
+msgid "*Figure 4: Dialer calls*"
+msgstr ""
+
+# 8a374092f5be432292845bc92889714b
+#: ../../output_reports_general.rst:47
+msgid "Llamadas preview"
+msgstr ""
+
+# e111999bab6841e7a3dea600c09a0591
+#: ../../output_reports_general.rst:51
+msgid "*Figure 5: Preview calls*"
+msgstr ""
+
+# 36c49e6fe9bc43eca0ab7e60abcc283a
+#: ../../output_reports_general.rst:53
+msgid "Llamadas entrantes"
+msgstr ""
+
+# c9f0c4304bd144c4bb0f8168018d0aad
+#: ../../output_reports_general.rst:58
+msgid "*Figure 6: Inbound calls*"
+msgstr ""
+
+#~ msgid "Telephony"
+#~ msgstr ""
+

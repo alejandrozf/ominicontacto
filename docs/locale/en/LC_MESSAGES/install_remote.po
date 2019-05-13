@@ -1,0 +1,384 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, omnileads
+# This file is distributed under the same license as the OMniLeads package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OMniLeads \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-05-06 16:26-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+# 14d79f650be64dc8967854ad4b590b51
+#: ../../install_remote.rst:3
+msgid "Instalación desde ansible remoto"
+msgstr ""
+
+# 4caec3a99da040dda0434a487d04bd0f
+#: ../../install_remote.rst:5
+msgid ""
+"Este tipo de instalación implica que la descarga del proyecto desde el "
+"repositorio y la ejecución del script de instalación se realiza desde la "
+"estación de trabajo del sysadmin, ya que precisamente al estar basada en "
+"Ansible la instalación se hace viable éste método."
+msgstr ""
+
+# 625960b98b0f4936a900fde50eef0b43
+#: ../../install_remote.rst:8
+msgid ""
+"La ventaja principal de esta opción es que el sysadmin puede instalar y "
+"mantener varias instancias de OMniLeads desde un único nodo \"deployer\"."
+msgstr ""
+
+# 4a0e38b925df44d1993aac147fe54a0c
+#: ../../install_remote.rst:12
+msgid "*Figure 1: remote ansible install*"
+msgstr ""
+
+# 42a496bac8294c91bff5be61c3ac691f
+#: ../../install_remote.rst:15
+msgid "Pre-requisitos:"
+msgstr ""
+
+# 5c449ecb77194ab3b3b845a61312bb6b
+#: ../../install_remote.rst:17
+msgid ""
+"Una instancia de GNU/Linux CentOS 7 (minimal), Debian 9 (netinstall) ó "
+"Ubuntu Server 18.04"
+msgstr ""
+
+# cd34b9f7f04e4f1287bd091f9fbbedfb
+#: ../../install_remote.rst:18
+msgid "20 GB de espacio en disco"
+msgstr ""
+
+# 050b3aac8ed0426cab64c6920a35e26a
+#: ../../install_remote.rst:19
+msgid "4 GB de memoria RAM"
+msgstr ""
+
+# 3f7f660f2f8e462db947ee5f358cc596
+#: ../../install_remote.rst:20
+msgid ""
+"En *Ubuntu / Debian*; Instalar el paquete sudo, openssh-server y phyton-"
+"minimal, permitir login SSH con el usuario root y reiniciar el servicio "
+"de ssh para que se tomen los cambios:"
+msgstr ""
+
+# a1e92537936444d9a7af4868d7996b71
+#: ../../install_remote.rst:28
+msgid "Es muy importante dejar la hora correctamente configurada en el host."
+msgstr ""
+
+# 770de26d8e9548b5bf2409ca36ef5304
+#: ../../install_remote.rst:29
+msgid ""
+"Configurar una *dirección IP* y un *hostname* fijo en el host destino de "
+"la instalación."
+msgstr ""
+
+# 4f62ae5d90c2481eb3014f57515f0b8f
+#: ../../install_remote.rst:33
+msgid "Preparación en la máquina que ejecuta la instalación remota:"
+msgstr ""
+
+# 2215588965554a69b876e7fd3f23c6ff
+#: ../../install_remote.rst:35
+msgid ""
+"Debemos contar con el paquete git para luego clonar el repositorio del "
+"protyecto y seleccionar el release a instalar."
+msgstr ""
+
+# 0be07a337d4d4cec9fdb95e65e17b6fe
+#: ../../install_remote.rst:37
+msgid "Ubuntu - Debian:"
+msgstr ""
+
+# 29b4d17b1d024f22b92798c545fd6a7a
+#: ../../install_remote.rst:46
+msgid "CentOS:"
+msgstr ""
+
+# 6b35d61864b7499f9bbddc793c385497
+#: ../../install_remote.rst:55
+msgid ""
+"Debemos asegurarnos de contar con una clave pública generada en la "
+"carpeta /root/.ssh/"
+msgstr ""
+
+# f5aa2cb6dae8452bb423596246479570
+#: ../../install_remote.rst:61
+msgid ""
+"Es probable ya contemos con una clave pública (id_rsa.pub), como se "
+"aprecia en la *figura 1*."
+msgstr ""
+
+# ee78e4d0c48b42f397b9cdf38a578ffc
+#: ../../install_remote.rst:65
+msgid "*Figure 1: ls -a /root/.ssh command output*"
+msgstr ""
+
+# fada0134351243589c9bc9887f1ec16f
+#: ../../install_remote.rst:67
+msgid ""
+"En caso de NO disponer de una, se puede generar rápidamente con el "
+"siguiente comando:"
+msgstr ""
+
+# ec15f87a92544e9dbbca673d17fb3049
+#: ../../install_remote.rst:75
+msgid "*Figure 2: ssh-keygen command output*"
+msgstr ""
+
+# d59b9c060c0243539fe9c8948c279edf
+#: ../../install_remote.rst:77
+msgid ""
+"Este comando genera nuestra clave *id_rsa.pub* que mencionamos "
+"anteriormente."
+msgstr ""
+
+# e666ff8f0810498cbc770ad331ce6b68
+#: ../../install_remote.rst:79
+msgid ""
+"Se comprueba la *dirección IP* y *hostname* que posee el host destino de "
+"la instalación, para luego ajustar el archivo *inventory* que se utiliza "
+"a la hora de tomar los parámetros de la instalación."
+msgstr ""
+
+# 8c2877193caf4af4bfcf389019041617
+#: ../../install_remote.rst:88
+msgid "*Figure 3: hostname command output*"
+msgstr ""
+
+# bc03ea71967c4301b43faa1e97c9cd3e
+#: ../../install_remote.rst:93
+msgid "*Figure 4: ip a command output*"
+msgstr ""
+
+# 8a36f913b69e442f8fe8722ef19d607d
+#: ../../install_remote.rst:96
+msgid "Preparación del archivo *inventory*:"
+msgstr ""
+
+# 9f203d23310d4e9fbae639be2f66ce43
+#: ../../install_remote.rst:98
+msgid ""
+"En este paso, se debe editar el archivo *inventory* "
+"(PATH/ominicontacto/deploy/ansible). El mismo reside dentro del "
+"repositorio del proyecto, que se generó en la PC del sysadmin que ejecuta"
+" el deploy remoto."
+msgstr ""
+
+# d42cbf64a0c84e0eac808515d6fa570f
+#: ../../install_remote.rst:100
+msgid ""
+"Nota: OMniLeads utiliza ansible para realizar la instalación, por lo "
+"tanto existe un \"archivo de inventario\" que debe ser modificado de "
+"acuerdo a los parámetros del host sobre el que estamos trabajando."
+msgstr ""
+
+# bf922b6340b1437da4c2fd2ad3e25d1a
+#: ../../install_remote.rst:103
+msgid ""
+"Localizar la sección *[omnileads-aio]* y modificar la cadena 'hostname' "
+"por el hostname de nuestro servidor destino de la instalción. También en "
+"esta sección se debe editar el parámetro 'X.X.X.X' con la dirección IP "
+"del servidor."
+msgstr ""
+
+# 54899405e728496c9a648bfb6f717f12
+#: ../../install_remote.rst:109
+msgid "*Figure 5: inventory file network params section*"
+msgstr ""
+
+# 9225309e93194dcf9c284976a5187131
+#: ../../install_remote.rst:111
+msgid ""
+"Además dentro del mismo archivo, unas líneas debajo encontraremos la "
+"sección *[everyyone:vars]*, en la cual se pueden alterar variables y "
+"contraseñas que vienen por defecto en el sistema."
+msgstr ""
+
+# 41ca8f4e453b43b0a5e44b35b7541071
+#: ../../install_remote.rst:116
+msgid "*Figure 6: Passwords and parameters of services*"
+msgstr ""
+
+# ec7f0e78ad31492284e76d6965ddc4ab
+#: ../../install_remote.rst:118
+msgid ""
+"Introducir el parámetro \"time zone\" adecuado para su instanacia. Es "
+"**Importante** que realice este paso o la instalación no se va a poder "
+"realizar."
+msgstr ""
+
+# a1a5537cdf5d45e7bfb0f85c6271e799
+#: ../../install_remote.rst:122
+msgid "*Figure 7: inevntory - Time Zone parameter*"
+msgstr ""
+
+# ba16db2baee14331a339798edd298795
+#: ../../install_remote.rst:124
+msgid ""
+"Es importante aclarar que cada vez que se corre el script \"./deploy.sh\""
+" ya sea para instalar, re-instalar, actualizar, modificar la dirección IP"
+" de OML, etc., el archivo de inventory se vuelve a \"cero\". No obstante "
+"se genera una copia del archivo (my_inventory), de manera tal que se "
+"cuente con los parámetros del sistema utilizados en la última ejecución "
+"del script. La copia en cuestión se ubica en el path donde ha sido "
+"clonado el repositorio de OML y bajo el nombre de \"my_inventory\" como "
+"lo expone la figura 6."
+msgstr ""
+
+# a1a5537cdf5d45e7bfb0f85c6271e799
+#: ../../install_remote.rst:131
+msgid "*Figure 8: inevntory copy, my_inventory file*"
+msgstr ""
+
+# a0f1617ca7114b33b77a6750c7a0b533
+#: ../../install_remote.rst:135
+msgid "Ejecución del script de instalación:"
+msgstr ""
+
+# 1164e042b81a4a29a9bad874bf0a8ecf
+#: ../../install_remote.rst:137
+msgid ""
+"La instalación de OMniLeads se realiza mediante el script *deploy.sh*, "
+"ubicado dentro de la carpeta deploy/ansible con respecto a la carpeta "
+"raíz del proyecto (ominicontacto)."
+msgstr ""
+
+# 1d26c11d2e144432b624f88cf9b1bdc8
+#: ../../install_remote.rst:140
+msgid ""
+"Una vez configuradas las variables citadas, se procede con la ejecución "
+"del script de instalación (uitilizando sudo)."
+msgstr ""
+
+# 45156f6101c14d699424284a6c3d589d
+#: ../../install_remote.rst:148
+msgid "*Figure 9: remote root password*"
+msgstr ""
+
+# 00a4b30054fe441c98379b0c0a9d62cb
+#: ../../install_remote.rst:150
+msgid ""
+"La diferencia respecto de la instalación 'Self-Hosted', es que el script "
+"nos pide la contraseña del usuario *root* del host destino de la "
+"instalación."
+msgstr ""
+
+# d355e15841ce4756a8520803f064d098
+#: ../../install_remote.rst:154
+msgid ""
+"El tiempo de instalación dependerá mayormente de la velocidad de conexión"
+" a internet del host sobre ek que se está corriendo el deplot de  OML, ya"
+" que se deben descargar, instalar y configurar varios paquetes "
+"correspondientes a los diferentes componentes de software que conforman "
+"el sistema."
+msgstr ""
+
+# 023155e0002a4f4397c6b706a4ab358b
+#: ../../install_remote.rst:157
+msgid ""
+"Si la ejecución de la instalación finaliza exitosamente, se despliega una"
+" vista como la de la figura 8."
+msgstr ""
+
+# f4120f1ad6244f95aea6d4ecabf0ef87
+#: ../../install_remote.rst:161
+msgid "*Figure 10: OMniLeads installation ended succesfuly*"
+msgstr ""
+
+# 84d08c03b728475a85222b53078feecd
+#: ../../install_remote.rst:165
+msgid "Primer acceso a OMniLeads:"
+msgstr ""
+
+# 91cc731fc4594f93b909a8f122aae659
+#: ../../install_remote.rst:167
+msgid ""
+"Si la ejecución de la instalación fue exitosa, entonces vamos por el "
+"primer acceso a OMniLeads."
+msgstr ""
+
+# 70fdcaa161124de79a300ac43ed1a12b
+#: ../../install_remote.rst:175
+msgid "Errores comunes:"
+msgstr ""
+
+# 5ad421693dc74b8dacc0ede0a95fe625
+#: ../../install_remote.rst:177
+msgid "El server no tiene internet o no resuelve dominios (configuración de DNS)."
+msgstr ""
+
+# c1d8fb4195f54253b6bd163df2f0ede5
+#: ../../install_remote.rst:179
+msgid ""
+"*Compruebe el acceso a internet del host (por ej: actualizando paquetes -"
+" apt-get update | yum update).*"
+msgstr ""
+
+# a4501e4df3c244ea8c8a5a9d4262246a
+#: ../../install_remote.rst:181
+msgid ""
+"Timeout de algún paquete que se intenta bajar. Puede volver a intentar "
+"ejecutar el deploy y si vuelve a fallar, la opción puede ser"
+msgstr ""
+
+# 284ffeec778b44e6aa51e8e058333057
+#: ../../install_remote.rst:183
+msgid "*Instalar el paquete desde la terminal.*"
+msgstr ""
+
+# f1211337d034430aa878084ce80fc4fc
+#: ../../install_remote.rst:185
+msgid ""
+"Falla por mala sintaxis o falta de definición de *hostname* y *dirección "
+"IP* en el archivo *inventory*."
+msgstr ""
+
+# b0a29800f9de41f0a10c30e909a5277e
+#: ../../install_remote.rst:187
+msgid "*Revisar archivo inventorys*"
+msgstr ""
+
+# 417b947d2eef4c2e96f91431f126d24c
+#: ../../install_remote.rst:189
+msgid ""
+"No se configuró correctamente el acceso ssh del host destino de la "
+"instalación."
+msgstr ""
+
+# 720975ad2dc74cbfa191dccad6699ba4
+#: ../../install_remote.rst:191
+msgid ""
+"*Revisar estado del firewall. Comprobar acceso remoto por ssh con el "
+"usuario root*"
+msgstr ""
+
+# 5c6d369c04db4280a27b9f3a46c074fc
+#: ../../install_remote.rst:193
+msgid ""
+"En caso de contar con algún host Ubuntu-Debian, recordar que se deben "
+"instalar paquetes como *sudo, openssh-server o python-minimal* antes de "
+"correr el script de *deploy.sh*"
+msgstr ""
+
+#~ msgid "*Figure 7: inevntory copy, my_inventory file*"
+#~ msgstr ""
+
+#~ msgid "*Figure 7: remote root password*"
+#~ msgstr ""
+
+#~ msgid "*Figure 8: OMniLeads installation ended succesfuly*"
+#~ msgstr ""
+

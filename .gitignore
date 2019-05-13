@@ -1,5 +1,6 @@
 requirements.txt
 /ominicontacto_app/static/ominicontacto/JS/config.js
+/docs/_build
 .idea/
 *.pyc
 *.mo
