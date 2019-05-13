@@ -909,6 +909,9 @@ class Campana(models.Model):
     gestion = models.CharField(max_length=128, default="Venta")
     campaign_id_wombat = models.IntegerField(null=True, blank=True)
     type = models.PositiveIntegerField(choices=TYPES_CAMPANA)
+    sistema_externo = models.ForeignKey("SistemaExterno", null=True, blank=True,
+                                        on_delete=models.SET_NULL, related_name='campanas')
+    id_externo = models.CharField(max_length=128, null=True, blank=True)
     sitio_externo = models.ForeignKey("SitioExterno", null=True, blank=True)
     tipo_interaccion = models.PositiveIntegerField(
         choices=TIPO_INTERACCION,
