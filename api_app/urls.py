@@ -25,7 +25,8 @@ from rest_framework import routers
 from api_app.views import (SupervisorCampanasActivasViewSet, AgentesStatusAPIView,
                            AgentesActivosGrupoViewSet, StatusCampanasEntrantesView,
                            StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView,
-                           login, API_ObtenerContactosCampanaView, OpcionesCalificacionViewSet,
+                           login, API_ObtenerContactosCampanaView, ApiCalificacionClienteView,
+                           ApiCalificacionClienteCreateView, OpcionesCalificacionViewSet,
                            Click2CallView)
 from ominicontacto_app.auth.decorators import administrador_o_supervisor_requerido
 
@@ -42,6 +43,10 @@ router.register(
 router.register(
     r'api/v1/campaign/(?P<campaign>\w+)/dispositionOptions',
     OpcionesCalificacionViewSet, base_name='api_campana_opciones_calificacion_intern')
+router.register(r'api/v1/disposition', ApiCalificacionClienteView, base_name='disposition')
+router.register(
+    r'api/v1/new_contact/disposition', ApiCalificacionClienteCreateView,
+    base_name='disposition_new_contact')
 
 
 # Wire up our API using automatic URL routing.

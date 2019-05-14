@@ -31,11 +31,13 @@ from rest_framework.test import APIClient
 from api_app.utiles import EstadoAgentesService
 from api_app.views import login
 
-from ominicontacto_app.models import Campana, User
+from ominicontacto_app.models import Campana, User, Contacto
 from ominicontacto_app.tests.factories import (CampanaFactory, SupervisorProfileFactory,
-                                               AgenteProfileFactory, ContactoFactory,
-                                               OpcionCalificacionFactory, QueueFactory,
-                                               SistemaExternoFactory, QueueMemberFactory)
+                                               AgenteProfileFactory, SistemaExternoFactory,
+                                               AgenteEnSistemaExternoFactory,
+                                               OpcionCalificacionFactory, ContactoFactory,
+                                               CalificacionCliente, QueueFactory,
+                                               QueueMemberFactory, CalificacionClienteFactory)
 
 
 class APITest(TestCase):
@@ -63,11 +65,13 @@ class APITest(TestCase):
         self.campana_activa_supervisor = CampanaFactory.create(estado=Campana.ESTADO_ACTIVA)
         self.campana_activa_supervisor.supervisors.add(self.supervisor.user)
         self.campana_finalizada = CampanaFactory(estado=Campana.ESTADO_FINALIZADA)
-
         self.queue = QueueFactory.create(campana=self.campana_activa)
         QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
         self.sistema_externo = SistemaExternoFactory()
         self.opcion_calificacion = OpcionCalificacionFactory(campana=self.campana_activa)
+
+        self.calificacion_cliente = CalificacionClienteFactory(
+            opcion_calificacion=self.opcion_calificacion, agente=self.agente_profile)
 
         for user in User.objects.all():
             Token.objects.create(user=user)
@@ -197,7 +201,7 @@ class APITest(TestCase):
         return '\n'.join(response)
 
     @patch('api_app.utiles.Manager')
-    @patch.object(EstadoAgentesService, "_ami_obtener_agentes")
+    @patch.object(EstadoAgentesService, '_ami_obtener_agentes')
     def test_servicio_agentes_activos_muestra_activos(self, _ami_obtener_agentes, manager):
         self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
         _ami_obtener_agentes.return_value = self._generar_ami_response_agentes()
@@ -206,12 +210,12 @@ class APITest(TestCase):
         self.assertEqual(len(response.json()), 3)
 
     def test_api_login_devuelve_token_asociado_al_usuario_password(self):
-        url = "https://{0}{1}".format(settings.OML_OMNILEADS_IP, reverse('api_login'))
+        url = 'https://{0}{1}'.format(settings.OML_OMNILEADS_IP, reverse('api_login'))
         user = self.supervisor_admin.user
         password = self.PWD
         post_data = {
-            "username": user.username,
-            "password": password,
+            'username': user.username,
+            'password': password,
         }
         request = self.factory.post(url, data=post_data)
         response = login(request)
@@ -237,3 +241,144 @@ class APITest(TestCase):
         response = client.get(url, {'search[value]': 1, 'start': 1, 'length': 10, 'draw': 10},
                               format='json')
         self.assertEqual(response.status_code, 403)
+
+    def test_api_adiciona_calificacion_ids_internos(self):
+        token_agente = Token.objects.get(user=self.agente_profile.user).key
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_agente)
+        observaciones = 'calificacion externa'
+        contacto = ContactoFactory(bd_contacto=self.campana_activa.bd_contacto)
+        url = reverse('disposition-list')
+        post_data = {
+            'idContact': contacto.pk,
+            'idDispositionOption': self.opcion_calificacion.pk,
+            'comments': observaciones
+        }
+        calificaciones_count = CalificacionCliente.objects.count()
+        client.post(url, post_data)
+        self.assertEqual(CalificacionCliente.objects.count(), calificaciones_count + 1)
+
+    def test_api_adiciona_calificacion_ids_externos(self):
+        self.client.login(username=self.agente_profile.user.username, password=self.PWD)
+        observaciones = 'calificacion externa'
+        id_contacto_externo = 'contacto_externo_1'
+        AgenteEnSistemaExternoFactory(
+            agente=self.agente_profile, sistema_externo=self.sistema_externo)
+        ContactoFactory(bd_contacto=self.campana_activa.bd_contacto,
+                        id_externo=id_contacto_externo)
+        url = reverse('disposition-list')
+        post_data = {
+            'idExternalSystem': self.sistema_externo.pk,
+            'idContact': id_contacto_externo,
+            'idDispositionOption': self.opcion_calificacion.pk,
+            'comments': observaciones
+        }
+        calificaciones_count = CalificacionCliente.objects.count()
+        self.client.post(url, post_data)
+        self.assertEqual(CalificacionCliente.objects.count(), calificaciones_count + 1)
+
+    def test_api_adiciona_calificacion_ids_internos_no_se_accede_credenciales_no_agente(self):
+        observaciones = 'calificacion externa'
+        contacto = ContactoFactory(bd_contacto=self.campana_activa.bd_contacto)
+        url = reverse('disposition-list')
+        post_data = {
+            'idContact': contacto.pk,
+            'idAgent': self.agente_profile.pk,
+            'idDispositionOption': self.opcion_calificacion.pk,
+            'comments': observaciones
+        }
+        token_supervisor = Token.objects.get(user=self.supervisor_admin.user).key
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_supervisor)
+        url = reverse('disposition-list')
+        response = client.post(url, post_data)
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_crea_nueva_calificacion_con_nuevo_contacto_metadata_vacia(self):
+        self.client.login(username=self.agente_profile.user.username, password=self.PWD)
+        observaciones = 'calificacion externa'
+        phone = '1232343523'
+        id_contacto_externo = 'contacto_externo_1'
+        url = reverse('disposition_new_contact-list')
+        post_data = {
+            'phone': phone,
+            'idExternalContact': id_contacto_externo,
+            'idDispositionOption': self.opcion_calificacion.pk,
+            'comments': observaciones
+        }
+        calificaciones_count = CalificacionCliente.objects.count()
+        contactos_count = Contacto.objects.count()
+        self.client.post(url, post_data)
+        self.assertEqual(CalificacionCliente.objects.count(), calificaciones_count + 1)
+        self.assertEqual(Contacto.objects.count(), contactos_count + 1)
+
+    def test_api_crea_nueva_calificacion_con_nuevo_contacto_con_valores_metadata(self):
+        token_agente = Token.objects.get(user=self.agente_profile.user).key
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_agente)
+        observaciones = 'calificacion externa'
+        phone = '1232343523'
+        id_contacto_externo = 'contacto_externo_1'
+        url = reverse('disposition_new_contact-list')
+        post_data = {
+            'phone': phone,
+            'idExternalContact': id_contacto_externo,
+            'idDispositionOption': self.opcion_calificacion.pk,
+            'comments': observaciones,
+        }
+        contacto_a_crear = ContactoFactory.build(bd_contacto=self.campana_activa.bd_contacto)
+        post_data.update(contacto_a_crear.obtener_datos())
+        post_data.pop('telefono')
+        calificaciones_count = CalificacionCliente.objects.count()
+        contactos_count = Contacto.objects.count()
+        client.post(url, post_data)
+        self.assertEqual(CalificacionCliente.objects.count(), calificaciones_count + 1)
+        self.assertEqual(Contacto.objects.count(), contactos_count + 1)
+        self.assertTrue(Contacto.objects.filter(datos=contacto_a_crear.datos).exists())
+
+    def test_api_crear_calificacion_impide_calificar_mas_de_una_vez_contacto_campana(self):
+        token_agente = Token.objects.get(user=self.agente_profile.user).key
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_agente)
+        observaciones = 'calificacion externa'
+        post_data = {
+            'idContact': self.calificacion_cliente.contacto.pk,
+            'idAgent': self.agente_profile.pk,
+            'idDispositionOption': self.opcion_calificacion.pk,
+            'comments': observaciones
+        }
+        url = reverse('disposition-list')
+        response = client.post(url, post_data)
+        self.assertEqual(response.status_code, 400)
+
+    def test_api_modificar_calificacion_impide_calificar_mas_de_una_vez_contacto_campana(self):
+        contacto_nuevo = ContactoFactory(bd_contacto=self.campana_activa.bd_contacto)
+        CalificacionClienteFactory(
+            opcion_calificacion=self.opcion_calificacion, contacto=contacto_nuevo)
+        token_agente = Token.objects.get(user=self.agente_profile.user).key
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_agente)
+        observaciones = 'calificacion externa'
+        post_data = {
+            'id': self.calificacion_cliente.pk,
+            'idContact': contacto_nuevo.pk,
+            'idAgent': self.agente_profile.pk,
+            'idDispositionOption': self.opcion_calificacion.pk,
+            'comments': observaciones
+        }
+        url = reverse('disposition-detail', args=(self.calificacion_cliente.pk,))
+        response = client.put(url, post_data)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data['status'], 'ERROR')
+
+    def test_api_muestra_solo_las_calificaciones_que_ha_hecho_el_agente_que_accede(self):
+        contacto_nuevo = ContactoFactory(bd_contacto=self.campana_activa.bd_contacto)
+        CalificacionClienteFactory(
+            opcion_calificacion=self.opcion_calificacion, contacto=contacto_nuevo)
+        token_agente = Token.objects.get(user=self.agente_profile.user).key
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_agente)
+        url = reverse('disposition-list')
+        response = client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)

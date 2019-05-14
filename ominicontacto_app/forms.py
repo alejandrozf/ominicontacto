@@ -871,7 +871,8 @@ class FormularioNuevoContacto(forms.ModelForm):
 
         self.bd_metadata = bd_metadata
 
-    def get_nombre_input(self, nombre_campo):
+    @classmethod
+    def get_nombre_input(cls, nombre_campo):
         """
         Además del Encode modifico el nombre del input correspondiente a un campo de datos
         de nombre "telefono" para que no se solape con el input 'telefono' correspondiente al campo
@@ -902,7 +903,7 @@ class FormularioNuevoContacto(forms.ModelForm):
     def clean_id_externo(self):
         id_externo = self.cleaned_data.get('id_externo')
         # Si el campo no esta vacío
-        if not id_externo == '' or id_externo is not None:
+        if not id_externo == '' and id_externo is not None:
             # Validar que no este repetido
             contacto_con_id_externo = self.base_datos.contactos.filter(id_externo=id_externo)
             if self.instance.id:

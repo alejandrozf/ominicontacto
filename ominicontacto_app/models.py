@@ -1152,6 +1152,9 @@ class Campana(models.Model):
         self.bd_contacto = bd_nueva
         self.save()
 
+    def obtener_agentes(self):
+        return self.queue_campana.members.all()
+
     @property
     def tiene_interaccion_con_sitio_externo(self):
         return self.tipo_interaccion == self.SITIO_EXTERNO
@@ -2489,7 +2492,6 @@ class CalificacionClienteManager(models.Manager):
 
 
 class CalificacionCliente(models.Model):
-    # TODO: Discutir Modelo: (campana, contacto) deberia ser clave candidata de la relación?
     objects = CalificacionClienteManager()
 
     contacto = models.ForeignKey(Contacto)
@@ -2510,7 +2512,30 @@ class CalificacionCliente(models.Model):
         return "Calificacion para la campana {0} para el contacto " \
                "{1} ".format(self.opcion_calificacion.campana, self.contacto)
 
+    def _validar_unicidad_calificacion(self):
+        # validamos que no exista otra calificación para este contacto en la
+        # campaña
+        msg_validation_error = _('Ya existe una calificación para este contacto en la campaña')
+        campana = self.opcion_calificacion.campana
+        contacto = self.contacto
+        if self.pk is None and CalificacionCliente.objects.filter(
+                contacto=contacto, opcion_calificacion__campana=campana).exists():
+            raise ValidationError(msg_validation_error)
+        if self.pk is not None:
+            # verificamos que si se está modificando la calificación y se cambia
+            # el valor de la campaña asociada o el contacto no resulte en dos
+            # calificaciones para el mismo contacto en la misma campaña
+            calificacion_bd = CalificacionCliente.objects.get(pk=self.pk)
+            contacto_bd = calificacion_bd.contacto
+            campana_bd = calificacion_bd.opcion_calificacion.campana
+            if ((contacto_bd.pk != contacto.pk) or (campana_bd.pk != campana.pk)):
+                if CalificacionCliente.objects.filter(
+                        contacto=contacto, opcion_calificacion__campana=campana).exists():
+                    raise ValidationError(msg_validation_error)
+
     def save(self, *args, **kwargs):
+        self._validar_unicidad_calificacion()
+        # gestionamos las agendas
         if self.opcion_calificacion.tipo != OpcionCalificacion.AGENDA:
             # eliminamos las agendas existentes (si hubiera alguna)
             AgendaContacto.objects.filter(
@@ -2978,7 +3003,7 @@ class SitioExterno(models.Model):
 
 
 class SistemaExterno(models.Model):
-    """Representa un sistema eterno que se comunica con OML a través de sus CRMs
+    """Representa un sistema externo que se comunica con OML a través de sus CRMs
     y la API de OML
     """
     nombre = models.CharField(unique=True, max_length=128)

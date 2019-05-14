@@ -40,11 +40,14 @@ from rest_framework.renderers import JSONRenderer
 
 from api_app.authentication import token_expire_handler, expires_in, ExpiringTokenAuthentication
 from api_app.serializers import (CampanaSerializer, AgenteProfileSerializer, UserSigninSerializer,
-                                 UserSerializer, OpcionCalificacionSerializer)
+                                 UserSerializer, CalificacionClienteSerializer,
+                                 CalificacionClienteNuevoContactoSerializer,
+                                 OpcionCalificacionSerializer)
 from api_app.utiles import EstadoAgentesService
 from api_app.forms import Click2CallOMLParametersForm, Click2CallExternalSiteParametersForm
 
-from ominicontacto_app.models import Campana, AgenteProfile, Contacto, SistemaExterno
+from ominicontacto_app.models import (Campana, AgenteProfile, Contacto, CalificacionCliente,
+                                      SistemaExterno)
 from reportes_app.reportes.reporte_llamadas_supervision import (
     ReporteDeLLamadasEntrantesDeSupervision, ReporteDeLLamadasSalientesDeSupervision
 )
@@ -325,3 +328,23 @@ class Click2CallView(APIView):
                 'message': _('Hubo errores en los datos recibidos'),
                 'errors': form.errors
             })
+
+
+class ApiCalificacionClienteView(viewsets.ModelViewSet):
+    """Vista que permite gestionar calificaciones """
+
+    permission_classes = (IsAuthenticated, EsAgentePermiso)
+    serializer_class = CalificacionClienteSerializer
+    http_method_names = ['get', 'post', 'put']
+
+    def get_queryset(self):
+        agente = self.request.user.agenteprofile
+        calificaciones_agente = CalificacionCliente.objects.filter(agente=agente)
+        return calificaciones_agente
+
+
+class ApiCalificacionClienteCreateView(viewsets.ModelViewSet):
+    """Vista que permite crear una calificación"""
+    permission_classes = (IsAuthenticated, EsAgentePermiso)
+    serializer_class = CalificacionClienteNuevoContactoSerializer
+    http_method_names = ['post']
