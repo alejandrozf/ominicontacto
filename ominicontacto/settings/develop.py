@@ -17,15 +17,15 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-from defaults import *
 from addons import *
+from defaults import *
 from checks import (check_settings_variables, process_middleware_settings,
                     check_asterisk_connect_settings, check_audio_conversor_settings)
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-INSTALLED_APPS += ['debug_toolbar', 'sslserver', 'django_extensions', 'corsheaders']
+INSTALLED_APPS += ['debug_toolbar', 'sslserver', 'django_extensions', 'corsheaders'] + ADDONS_APPS
 MIDDLEWARE_CLASSES = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE_CLASSES
 MIDDLEWARE_CLASSES += ['debug_toolbar.middleware.DebugToolbarMiddleware']
 DJANGO_CORS_HEADERS = True

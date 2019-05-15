@@ -16,8 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-from defaults import *
 from addons import *
+from defaults import *
 from checks import (check_settings_variables, process_middleware_settings,
                     check_asterisk_connect_settings, check_audio_conversor_settings)
 
@@ -25,6 +25,8 @@ COMPRESS_ENABLED = True
 TEMPLATE_DEBUG = DEBUG
 DJANGO_CORS_HEADERS = False
 INTERNAL_IPS = ['127.0.0.1']
+
+INSTALLED_APPS += ADDONS_APPS
 
 try:
     from oml_settings_local import *

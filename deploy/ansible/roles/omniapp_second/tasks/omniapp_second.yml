@@ -51,6 +51,10 @@
   when: cluster != 0
   tags: changenetwork
 
+- name: Get register server certificate
+  get_url: url={{ registrar_server }} dest={{ install_prefix }} validate_certs=False
+  tags: postinstall
+
 # Se crea el archivo .ini de uwsgi. Para mas info revisar documentacion de uwsgi
 - name: Create of oml_uwgsi.ini script
   template: src=templates/run/oml_uwsgi.ini dest={{ install_prefix }}run/oml_uwsgi.ini mode=755 owner={{ usuario }} group={{ usuario }}
