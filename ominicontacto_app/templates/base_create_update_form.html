@@ -27,9 +27,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <form action = "" method = "post">
         {% include "base_form_fields.html" with form=form %}
         <hr>
-        <button type="submit" id="id_registrar" class="btn btn-primary">
-            {% trans 'Guardar' %}
-        </button>
+        {% block submit_button %}
+            <button type="submit" id="id_registrar" class="btn btn-primary">
+                {% trans 'Guardar' %}
+            </button>
+        {% endblock %}
     </form>
 
 </div>

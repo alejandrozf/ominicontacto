@@ -40,8 +40,6 @@
   with_items:
       # Directorio que contiene configuracion de pip
           - "{{ install_prefix }}.pip"
-      # Directorio donde se guarda el archivo de settings de django
-          - "{{ install_prefix }}local"
       # Directorio donde se crean los json para hablar con la api de wombat
           - "{{ install_prefix }}wombat-json"
       # Directorio que guarda scripts de bash y de inicio del sericio omnileads
@@ -67,12 +65,8 @@
 
 # Opcion para agregar al pip
 - name: Setup pip
-  ini_file: >
-    dest={{ install_prefix }}.pip/pip.conf
-    section=install
-    option='download-cache'
-    value='{{ install_prefix }}.pip/cache'
-
+  template: src=templates/pip.conf dest={{ install_prefix }}.pip owner=root group=root mode=644
+  tags: postinstall
 #----------------------------------------------------------------------
 # ics_app installed, do this
 #----------------------------------------------------------------------
@@ -158,11 +152,6 @@
   when: desarrollo == 1
   tags: postinstall
 
-# Se sube el archivo oml_settings_local.py
-- name: Upload oml_settings_local.py
-  template: src=templates/oml_settings_local.py.j2 dest={{ install_prefix }}local/oml_settings_local.py
-  tags: ['omniapp', 'changenetwork','postinstall','changepassword']
-
 - name: Copy the content of of ics_settings in oml_settings_local
   shell: "cat /tmp/oml_settings_local.py2 >> oml_settings_local.py"
   args:
@@ -170,11 +159,6 @@
   tags: ['changenetwork','postinstall','changepassword']
   when: ics_exists.rc == 0
 
-- name: Erase old simbolic link of settings
-  file: path={{ install_prefix }}ominicontacto/oml_settings_local.py state=absent
+- name: Erase old folder of settings
+  file: path={{ install_prefix }}ominicontacto/local/ state=absent
   tags: ['never','postinstall']
-
-# Se hace el link simbolico del archivo oml_settings_local a ominicontacto/, para que se pueda hacer manage.py
-- name: Creation of simbolic link of oml_settings_local.py
-  file: state=link src={{ install_prefix }}local/oml_settings_local.py dest={{ install_prefix }}ominicontacto/ominicontacto/settings/oml_settings_local.py owner={{ usuario }} group={{ usuario }} force=true
-  tags: ['omniapp','postinstall']

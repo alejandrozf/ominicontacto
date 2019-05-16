@@ -19,6 +19,19 @@
 
 # Módulo para configurar settings de addons
 
+CONSTANCE_CONFIG = {
+    'KEYS_SERVER_HOST': ('https://keys-server.freetech.com.ar:20852', 'KEYS_SERVER_HOST', str),
+    'SSL_CERT_FILE': ('/opt/omnileads/cert', 'SSL_CERT_FILE', str),
+    'CLIENT_NAME': ('', 'CLIENT_NAME', str),
+    'CLIENT_KEY': ('', 'CLIENT_KEY', str),
+    'CLIENT_PASSWORD': ('', 'CLIENT_PASSWORD', str),
+    'CLIENT_EMAIL': ('', 'CLIENT_EMAIL', str),
+    'CLIENT_PHONE': ('', 'CLIENT_PHONE', str),
+}
+
+ADDONS_APPS = []
 MIDDLEWARE_PREPPEND = []
 MIDDLEWARE_APPEND = []
 TEMPLATES_CONTEXT_PROCESORS_APPEND = []
+
+# A partir de aquí se deben adicionar los settings que necesita cada addon

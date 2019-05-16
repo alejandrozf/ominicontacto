@@ -1,0 +1,97 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, omnileads
+# This file is distributed under the same license as the OMniLeads package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OMniLeads \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-05-06 16:26-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+# 0b2c3af7d4e2469e8231301904469cd0
+#: ../../output_recordings.rst:2
+msgid "Grabaciones"
+msgstr ""
+
+# e72e844ac17b46e2a1c98fb6fec391b0
+#: ../../output_recordings.rst:4
+msgid ""
+"Para acceder al buscador de grabaciones debemos llegar al punto de menú "
+"*Grabaciones*. A continuación se depliega la vista del módulo, donde se "
+"listan las grabaciones del día de la fecha y un conjunto de parámetros "
+"que nos permiten filtrar y recuperar grabaciones de acuerdo a criterios "
+"como:"
+msgstr ""
+
+# ae1487356da144a5bc5cf53c422b8000
+#: ../../output_recordings.rst:8
+msgid ""
+"**Fecha:** permite acotar la búsqueda a una fecja o rango de fechas en "
+"particular."
+msgstr ""
+
+# 1e84032750fb4f12b05ec347bfca2593
+#: ../../output_recordings.rst:9
+msgid ""
+"**Tipo de llamada:** se puede filtrar por tipo de llamada (manua, "
+"entrante, preview o de discador predictivo)."
+msgstr ""
+
+# 91bfa4b78bd74b35b2f06e2d9a91ebc9
+#: ../../output_recordings.rst:10
+msgid ""
+"**Teléfono del contacto:** este campo permite acotar la búsqueda a "
+"llamadas en las que un teléfono puntual esté involucrado."
+msgstr ""
+
+# 223f1e6eeb9c44ffa551162d1ef25cbe
+#: ../../output_recordings.rst:11
+msgid ""
+"**Agente:** se puede acotar la búsqueda a llamadas en las que un agente "
+"puntual esté involucrado en la grabación."
+msgstr ""
+
+# 881fd75f31104b49a37385e9ddd3707a
+#: ../../output_recordings.rst:12
+msgid "**Campaña:** filtro para listar llamadas asociadas a una cierta campaña."
+msgstr ""
+
+# b3825a0ef1024e99a2b3a5bfc5a70a2b
+#: ../../output_recordings.rst:13
+msgid ""
+"**Llamada observada:** este check sirve para recuperar grabaciones de "
+"llamadas que hayan sido observadas por el agente mediante el botón "
+"pertinente de su consola."
+msgstr ""
+
+# ba6c541771cf440c8b860421412fa291
+#: ../../output_recordings.rst:14
+msgid ""
+"**Duración mínima:** este campo sirve para acotar la búsqueda a "
+"grabaciones que una cirta duración mínima."
+msgstr ""
+
+# 5a75ec490ebc46509bc0ff1fb23d847e
+#: ../../output_recordings.rst:15
+msgid ""
+"**Llamadas asociadas a una gestión positiva:** como bien sabemos, en "
+"OMniLeads existen calificaciones ordinarias y calificaicones \"de "
+"gestión\" que son las que disparan los formularios de campaña. En este "
+"caso, este check permite recuperar llamadas calificadas con dicho tipo de"
+" calificación. (por ejemplo; ventas, encuesta, etc.)"
+msgstr ""
+
+# e50abbeb04b14ef092314d084f2a90fe
+#: ../../output_recordings.rst:19
+msgid "*Figure 1: recordings*"
+msgstr ""
+
