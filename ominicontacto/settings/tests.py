@@ -212,7 +212,15 @@ OML_AUDIO_FOLDER = "oml/"
 
 DURACION_ASIGNACION_CONTACTO_PREVIEW = 30
 
-CONSTANCE_CONFIG = {}
+CONSTANCE_CONFIG = {
+    'CLIENT_NAME': ('', 'Nombre usuario'),
+    'CLIENT_PASSWORD': ('', 'Contraseña usuario'),
+    'CLIENT_KEY': ('', 'Llave para acceder a addons'),
+    'CLIENT_EMAIL': ('', 'Dirección de email'),
+    'CLIENT_PHONE': ('', 'Teléfono'),
+    'KEYS_SERVER_HOST': ('', 'Dirección url base para acceder a los addons')
+}
+
 MIDDLEWARE_PREPPEND = []
 MIDDLEWARE_APPEND = []
 TEMPLATES_CONTEXT_PROCESORS_APPEND = []
