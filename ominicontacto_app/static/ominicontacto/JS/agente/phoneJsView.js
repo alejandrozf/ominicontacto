@@ -42,6 +42,7 @@ class PhoneJSView {
         this.redialButton = $("#redial");
         this.holdButton = $("#onHold");
         this.transferButton = $("#Transfer");
+        this.conferButton = $("#Confer");
         this.endTransferButton = $("#EndTransfer");
         this.transferOutMenu = $("#modalTransfer");
         this.inboundCallMenu = $("#modalReceiveCalls");
@@ -52,7 +53,7 @@ class PhoneJSView {
                                    'asterisk', 'hashtag']
         this.inputs_ids = ["Resume", "Pause", "changeCampAssocManualCall",
                            "call", "numberToCall", "redial", "onHold", "Transfer",
-                           "EndTransfer", "SignCall", "endCall"]
+                           "Confer", "EndTransfer", "SignCall", "endCall"]
         this.modal_menus_ids = ["modalPause", "modalSelectCmp",
                                 "modalTransfer", "modalReceiveCalls", ]
         
@@ -292,7 +293,7 @@ var PHONE_STATUS_CONFIGS = {
     },
     'Transfering': {
         keypad_enabled: false,
-        enabled_buttons: ['EndTransfer', 'SignCall', 'endCall'],
+        enabled_buttons: ['EndTransfer', 'SignCall', 'endCall', 'Confer'],
         color: '#bfef7a',
     },
     'ReceivingCall': {

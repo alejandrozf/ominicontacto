@@ -160,6 +160,10 @@ class PhoneJSController {
             self.phone.endTransfer();
         });
 
+        this.view.conferButton.click(function() {
+            self.phone.confer();
+        });
+
         this.subscribeToKeypadEvents();
 
         // TODO: a variables de instancia
