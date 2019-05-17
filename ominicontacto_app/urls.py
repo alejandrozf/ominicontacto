@@ -286,10 +286,6 @@ urlpatterns = [
         agente_requerido(views_contacto.ContactoUpdateView.as_view()),
         name='contacto_update',
         ),
-    url(r'^api/campana/(?P<pk_campana>\d+)/contactos/$',
-        agente_requerido(views_contacto.API_ObtenerContactosCampanaView.as_view()),
-        name='api_contactos_campana',
-        ),
 
     # ==========================================================================
     #  Vistas de manipulación de contactos de una campaña / Para agente
