@@ -182,7 +182,6 @@ class PhoneJSController {
 
         refuseCallButton.onclick = function() {
             $("#modalReceiveCalls").modal('hide');
-            self.phone_fsm.refuseCall();
             self.phone.refuseCall();
         }
 
@@ -359,6 +358,7 @@ class PhoneJSController {
                 phone_logger.log('Desde ReceivingCall!');
                 self.phone_fsm.refuseCall();
                 $("#modalReceiveCalls").modal('hide');
+                self.phone.cleanLastCallData();
             } else if (self.phone_fsm.state == 'OnCall') {
                 phone_logger.log('Desde OnCall!');
                 self.phone_fsm.endCall();
