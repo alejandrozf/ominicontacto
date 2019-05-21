@@ -1,17 +1,39 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 
 from __future__ import unicode_literals
 
 from mock import patch
 
+from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.test import TestCase
+from django.test import TestCase, RequestFactory
+
+from rest_framework.authtoken.models import Token
+from rest_framework.test import APIClient
 
 from api_app.utiles import EstadoAgentesService
+from api_app.views import login
 
-from ominicontacto_app.models import Campana
+from ominicontacto_app.models import Campana, User
 from ominicontacto_app.tests.factories import (CampanaFactory, SupervisorProfileFactory,
-                                               AgenteProfileFactory)
+                                               AgenteProfileFactory, ContactoFactory)
 
 
 class APITest(TestCase):
@@ -20,6 +42,8 @@ class APITest(TestCase):
     PWD = u'generica123'
 
     def setUp(self):
+        self.factory = RequestFactory()
+
         self.supervisor_admin = SupervisorProfileFactory(is_administrador=True)
         self.supervisor_admin.user.set_password(self.PWD)
         self.supervisor_admin.user.save()
@@ -30,12 +54,16 @@ class APITest(TestCase):
 
         self.agente_profile = AgenteProfileFactory()
         self.agente_profile.user.set_password(self.PWD)
+        self.agente_profile.user.is_agente = True
         self.agente_profile.user.save()
 
         self.campana_activa = CampanaFactory.create(estado=Campana.ESTADO_ACTIVA)
         self.campana_activa_supervisor = CampanaFactory.create(estado=Campana.ESTADO_ACTIVA)
         self.campana_activa_supervisor.supervisors.add(self.supervisor.user)
         self.campana_finalizada = CampanaFactory(estado=Campana.ESTADO_FINALIZADA)
+
+        for user in User.objects.all():
+            Token.objects.create(user=user)
 
     def test_api_campanas_supervisor_usuario_supervisor_admin_obtiene_todas_campanas_activas(
             self):
@@ -94,3 +122,36 @@ class APITest(TestCase):
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
         self.assertEqual(len(response.json()), 3)
+
+    def test_api_login_devuelve_token_asociado_al_usuario_password(self):
+        url = "https://{0}{1}".format(settings.OML_OMNILEADS_IP, reverse('api_login'))
+        user = self.supervisor_admin.user
+        password = self.PWD
+        post_data = {
+            "username": user.username,
+            "password": password,
+        }
+        request = self.factory.post(url, data=post_data)
+        response = login(request)
+        token_obj = Token.objects.get(user=user)
+        self.assertEqual(response.data['token'], token_obj.key)
+
+    def test_api_vista_contactos_campanas_es_accessible_usando_token_agente(self):
+        ContactoFactory(bd_contacto=self.campana_activa.bd_contacto)
+        token_agente = Token.objects.get(user=self.agente_profile.user).key
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_agente)
+        url = reverse('api_contactos_campana', args=(self.campana_activa.pk,))
+        response = client.get(url, {'search[value]': 1, 'start': 1, 'length': 10, 'draw': 10},
+                              format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['recordsTotal'], 1)
+
+    def test_api_vista_contactos_campanas_no_es_accessible_usando_token_no_agente(self):
+        token_agente = Token.objects.get(user=self.supervisor_admin.user).key
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_agente)
+        url = reverse('api_contactos_campana', args=(self.campana_activa.pk,))
+        response = client.get(url, {'search[value]': 1, 'start': 1, 'length': 10, 'draw': 10},
+                              format='json')
+        self.assertEqual(response.status_code, 403)

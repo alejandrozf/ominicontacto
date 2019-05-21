@@ -83,7 +83,6 @@ $(document).ready(function(){
 
     return nodos_acciones;
   }
-
   $('#agenteContactosTable')
     .DataTable( {
       // Convierte a datatable la tabla de contactos
@@ -94,7 +93,7 @@ $(document).ready(function(){
       serverSide: true,
       processing: true,
       // {% url 'api_contactos_campana' %}
-      ajax: '/api/campana/' + pk_campana + '/contactos/',
+      ajax: Urls.api_contactos_campana(pk_campana),
       ordering: false,
       paging: true,
       language: {
