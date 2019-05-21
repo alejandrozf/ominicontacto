@@ -19,6 +19,10 @@ def eliminar_tokens_usuarios(apps, schema_editor):
 
 class Migration(migrations.Migration):
 
+    dependencies = [
+        ('authtoken', '0002_auto_20160226_1747'),
+    ]
+
     operations = [
         migrations.RunPython(adicionar_tokens_usuarios, eliminar_tokens_usuarios),
     ]
