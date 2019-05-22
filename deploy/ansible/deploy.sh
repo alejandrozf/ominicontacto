@@ -118,12 +118,18 @@ Rama() {
     mkdir -p /var/tmp/log
     touch /var/tmp/log/oml_install
     #sleep 2
+    current_tag="`git tag -l --points-at HEAD`"
+    release_name="`git show ${current_tag} | awk 'FNR == 5 {print}'`"
     branch_name="`git branch | grep \* | cut -d ' ' -f2`"
+    if [ -z "$current_tag" ]
+    then
+        release_name=$branch_name
+    fi
     cd ../..
     echo "Checking the release to install"
     set -e
     echo ""
-    echo "      Version: $branch_name"
+    echo "      Version: $release_name"
     echo ""
     TMP=/var/tmp/ominicontacto-build
     if [ -e $TMP ] ; then
@@ -143,7 +149,7 @@ Rama() {
     commit="$(git rev-parse HEAD)"
     author="$(id -un)@$(hostname)"
     echo -e "Creating version file
-       Branch: $branch_name
+       Branch: $release_name
        Commit: $commit
        Autor: $author"
     cat > $TMP/ominicontacto/ominicontacto_app/version.py <<EOF
@@ -154,7 +160,7 @@ Rama() {
 #### Archivo autogenerado ####
 ##############################
 
-OML_BRANCH="${branch_name}"
+OML_BRANCH="${release_name}"
 OML_COMMIT="${commit}"
 OML_BUILD_DATE="$(env LC_hosts=C LC_TIME=C date)"
 OML_AUTHOR="${author}"
