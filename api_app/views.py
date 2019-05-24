@@ -22,8 +22,9 @@ from __future__ import unicode_literals
 import logging as _logging
 
 from django.contrib.auth import authenticate
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.views.generic import View
+from django.shortcuts import get_object_or_404
 
 from rest_framework.views import APIView
 from rest_framework import viewsets
@@ -37,10 +38,10 @@ from rest_framework.response import Response
 
 from api_app.authentication import token_expire_handler, expires_in, ExpiringTokenAuthentication
 from api_app.serializers import (CampanaSerializer, AgenteProfileSerializer, UserSigninSerializer,
-                                 UserSerializer)
+                                 UserSerializer, OpcionCalificacionSerializer)
 from api_app.utiles import EstadoAgentesService
 
-from ominicontacto_app.models import Campana, AgenteProfile, Contacto
+from ominicontacto_app.models import Campana, AgenteProfile, Contacto, SistemaExterno
 from reportes_app.reportes.reporte_llamadas_supervision import (
     ReporteDeLLamadasEntrantesDeSupervision, ReporteDeLLamadasSalientesDeSupervision
 )
@@ -131,6 +132,47 @@ class AgentesActivosGrupoViewSet(viewsets.ModelViewSet):
         grupo_pk = self.kwargs.get('pk_grupo')
         queryset = queryset.filter(grupo__pk=grupo_pk)
         return queryset
+
+
+class OpcionesCalificacionViewSet(viewsets.ModelViewSet):
+    """Servicio que devuelve las opciones de calificación de una campaña
+    """
+    serializer_class = OpcionCalificacionSerializer
+    permission_classes = (IsAuthenticated, EsAgentePermiso)
+    http_method_names = ['get']
+
+    def _validar_parametros(self, pk_campana, pk_sistema_externo):
+        # Validamos que los ids de campaña y sistema externo tengan consistencia
+        # esto es, si se pasa el parámetro 'pk_sistema_externo' entonces el
+        # parámetro 'pk_campana' podría ser cualquier cadena pero 'pk_sistema_externo'
+        # debe ser entero. En caso de que no se pase parámetro de sistema externo
+        # entonces 'pk_campana' debe ser un entero que corresponde a un id de campaña
+        # de OML
+        if pk_sistema_externo is not None:
+            try:
+                int(pk_sistema_externo)
+            except ValueError:
+                raise Http404
+        else:
+            try:
+                int(pk_campana)
+            except ValueError:
+                raise Http404
+
+    def get_queryset(self):
+        pk_campana = self.kwargs.get('campaign')
+        pk_sistema_externo = self.kwargs.get('externalSystem')
+        self._validar_parametros(pk_campana, pk_sistema_externo)
+        if pk_sistema_externo:
+            sistema_externo = get_object_or_404(SistemaExterno, pk=pk_sistema_externo)
+            campana = sistema_externo.campanas.filter(id_externo=pk_campana).first()
+        else:
+            campana = get_object_or_404(Campana, pk=pk_campana)
+        if campana is not None:
+            queryset = campana.opciones_calificacion.all()
+            return queryset
+        else:
+            raise Http404
 
 
 class StatusCampanasEntrantesView(View):

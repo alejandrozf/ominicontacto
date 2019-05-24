@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 
 from rest_framework import serializers
 
-from ominicontacto_app.models import Campana, AgenteProfile, User
+from ominicontacto_app.models import Campana, AgenteProfile, User, OpcionCalificacion
 
 
 class CampanaSerializer(serializers.HyperlinkedModelSerializer):
@@ -57,3 +57,12 @@ class UserSigninSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'password')
+
+
+class OpcionCalificacionSerializer(serializers.ModelSerializer):
+
+    name = serializers.CharField(source='nombre')
+
+    class Meta:
+        model = OpcionCalificacion
+        fields = ('id', 'name')

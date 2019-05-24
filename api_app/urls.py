@@ -25,7 +25,7 @@ from rest_framework import routers
 from api_app.views import (SupervisorCampanasActivasViewSet, AgentesStatusAPIView,
                            AgentesActivosGrupoViewSet, StatusCampanasEntrantesView,
                            StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView,
-                           login, API_ObtenerContactosCampanaView)
+                           login, API_ObtenerContactosCampanaView, OpcionesCalificacionViewSet)
 from ominicontacto_app.auth.decorators import administrador_o_supervisor_requerido
 
 router = routers.DefaultRouter()
@@ -35,6 +35,12 @@ router.register(
 router.register(
     r'api/v1/grupo/(?P<pk_grupo>\d+)/agentes_activos', AgentesActivosGrupoViewSet,
     base_name='grupo_agentes_activos')
+router.register(
+    r'api/v1/campaign/(?P<campaign>\w+)/dispositionOptions/(?P<externalSystem>\w+)',
+    OpcionesCalificacionViewSet, base_name='api_campana_opciones_calificacion')
+router.register(
+    r'api/v1/campaign/(?P<campaign>\w+)/dispositionOptions',
+    OpcionesCalificacionViewSet, base_name='api_campana_opciones_calificacion_intern')
 
 
 # Wire up our API using automatic URL routing.

@@ -33,7 +33,9 @@ from api_app.views import login
 
 from ominicontacto_app.models import Campana, User
 from ominicontacto_app.tests.factories import (CampanaFactory, SupervisorProfileFactory,
-                                               AgenteProfileFactory, ContactoFactory)
+                                               AgenteProfileFactory, ContactoFactory,
+                                               OpcionCalificacionFactory, QueueFactory,
+                                               SistemaExternoFactory, QueueMemberFactory)
 
 
 class APITest(TestCase):
@@ -61,6 +63,11 @@ class APITest(TestCase):
         self.campana_activa_supervisor = CampanaFactory.create(estado=Campana.ESTADO_ACTIVA)
         self.campana_activa_supervisor.supervisors.add(self.supervisor.user)
         self.campana_finalizada = CampanaFactory(estado=Campana.ESTADO_FINALIZADA)
+
+        self.queue = QueueFactory.create(campana=self.campana_activa)
+        QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
+        self.sistema_externo = SistemaExternoFactory()
+        self.opcion_calificacion = OpcionCalificacionFactory(campana=self.campana_activa)
 
         for user in User.objects.all():
             Token.objects.create(user=user)
@@ -97,6 +104,81 @@ class APITest(TestCase):
         url = reverse('api_agentes_activos')
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed(response, 'registration/login.html')
+
+    def test_servicio_opciones_calificaciones_usuario_no_logueado_no_accede_a_servicio(self):
+        url = reverse('api_campana_opciones_calificacion-list', args=[self.campana_activa.pk, 1])
+        response = self.client.get(url, follow=True)
+        self.assertEqual(response.status_code, 403)
+
+    def test_servicio_opciones_calificaciones_usuario_no_agente_no_accede_a_servicio(self):
+        url = reverse('api_campana_opciones_calificacion-list', args=[self.campana_activa.pk, 1])
+        self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
+        response = self.client.get(url, follow=True)
+        self.assertEqual(response.status_code, 403)
+
+    def test_servicio_opciones_calificaciones_usuario_agente_accede_a_servicio(self):
+        id_externo = "id_externo_campana_activa"
+        self.sistema_externo.campanas.add(self.campana_activa)
+        self.campana_activa.id_externo = id_externo
+        self.campana_activa.save()
+        self.client.login(username=self.agente_profile.user.username, password=self.PWD)
+        url = reverse(
+            'api_campana_opciones_calificacion-list', args=[id_externo, self.sistema_externo.pk])
+        response = self.client.get(url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()[0]['name'], self.opcion_calificacion.nombre)
+
+    def test_servicio_opciones_calificaciones_usuario_agente_accede_a_servicio_via_token(self):
+        token_agente = Token.objects.get(user=self.agente_profile.user).key
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_agente)
+        id_externo = "id_externo_campana_activa"
+        self.sistema_externo.campanas.add(self.campana_activa)
+        self.campana_activa.id_externo = id_externo
+        self.campana_activa.save()
+        url = reverse(
+            'api_campana_opciones_calificacion-list', args=[id_externo, self.sistema_externo.pk])
+        response = client.get(url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()[0]['name'], self.opcion_calificacion.nombre)
+
+    def test_api_vista_opciones_calificaciones_no_es_accessible_usando_token_no_agente(self):
+        token_supervisor = Token.objects.get(user=self.supervisor_admin.user).key
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_supervisor)
+        url = reverse(
+            'api_campana_opciones_calificacion-list', args=[1, self.sistema_externo.pk])
+        response = client.get(url)
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_opciones_calificacion_devuelve_404_si_sistema_externo_no_es_entero(self):
+        token_agente = Token.objects.get(user=self.agente_profile.user).key
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_agente)
+        url = reverse(
+            'api_campana_opciones_calificacion-list', args=(1, 1))
+        response = client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_api_opciones_calificacion_sin_sistema_externo_devuelve_404_id_campana_no_entero(self):
+        token_agente = Token.objects.get(user=self.agente_profile.user).key
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_agente)
+        url = reverse(
+            'api_campana_opciones_calificacion_intern-list', args=("campana_id_str",))
+        response = client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_api_opciones_calificacion_sin_sistema_externo_usa_id_campana_oml(self):
+        token_agente = Token.objects.get(user=self.agente_profile.user).key
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_agente)
+        url = reverse(
+            'api_campana_opciones_calificacion_intern-list', args=(self.campana_activa.pk,))
+
+        response = client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()[0]['name'], self.opcion_calificacion.nombre)
 
     def _generar_ami_response_agentes(self):
         # genera datos que simulan lo más aproximadamente posible las lineas de output de
