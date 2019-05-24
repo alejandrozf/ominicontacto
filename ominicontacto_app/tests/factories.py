@@ -86,6 +86,13 @@ class SitioExternoFactory(DjangoModelFactory):
     metodo = lazy_attribute(lambda a: faker.random_int(1, 2))
 
 
+class SistemaExternoFactory(DjangoModelFactory):
+    class Meta:
+        model = SistemaExterno
+
+    nombre = Sequence(lambda n: "Sistema_Externo_{0}".format(n))
+
+
 class BlackListFactory(DjangoModelFactory):
     class Meta:
         model = Backlist
@@ -359,11 +366,3 @@ class AgendaContactoFactory(DjangoModelFactory):
 
     class Meta:
         model = AgendaContacto
-
-
-class SistemaExternoFactory(DjangoModelFactory):
-
-    nombre = Sequence(lambda n: "Sistema_Externo_{0}".format(n))
-
-    class Meta:
-        model = SistemaExterno
