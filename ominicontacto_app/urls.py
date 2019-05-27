@@ -384,6 +384,11 @@ urlpatterns = [
             views_agente.LlamarContactoView.as_view()),
         name='agente_llamar_contacto',
         ),
+    url(r'^agente/llamar_sin_campana/$',
+        agente_requerido(
+            views_agente.LlamarFueraDeCampanaView.as_view()),
+        name='agente_llamar_sin_campana',
+        ),
     # ==========================================================================
     # Calificacion
     # ==========================================================================

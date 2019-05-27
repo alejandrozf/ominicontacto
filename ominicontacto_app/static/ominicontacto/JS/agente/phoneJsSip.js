@@ -38,7 +38,8 @@ var ORIGIN_DIALER = 'DIALER-FORM';
 var ORIGIN_CLICK2CALL = 'CLICK2CALL';
 var ORIGIN_CLICK2CALL_PREVIEW = 'CLICK2CALLPREVIEW';
 var ORIGIN_MANUAL = 'Manual-Call';
-var ORIGIN_INTERNAL = 'Internal';
+var ORIGIN_OFF_CAMPAIGN = 'withoutCamp';
+var ORIGIN_AGENT_CALL = 'agentCall';
 
 var ORIGIN_IDS = {};
 ORIGIN_IDS[ORIGIN_DIALER] = 2;
@@ -48,7 +49,11 @@ ORIGIN_IDS[ORIGIN_CLICK2CALL_PREVIEW] = 4;
 ORIGIN_IDS[ORIGIN_MANUAL] = 1;
 
 /* NOTA: Ver si es necesario */
-ORIGIN_IDS[ORIGIN_INTERNAL] = 5;    // NOTA: Ver cual es el codigo que tendran
+ORIGIN_IDS[ORIGIN_OFF_CAMPAIGN] = 5;    // NOTA: Ver cual es el codigo que tendran
+ORIGIN_IDS[ORIGIN_AGENT_CALL] = 6;    // NOTA: Ver cual es el codigo que tendran
+
+DESTINATION_AGENT = 1;
+DESTINATION_EXTERNAL = 2;
 
 class PhoneJS {
     constructor(agent_id, sipExtension, sipSecret, KamailioHost, WebSocketPort, WebSocketHost,
@@ -312,10 +317,10 @@ class PhoneJS {
                 } else if (self.local_call.is_pause) {
                     self.eventsCallbacks.onAgentPauseFail.fire(self);
                 }
-                // TODO: Este caso no se va a dar más para llamadas de campañas
-                // Probablemente quede solo para llamadas internas entre agentes
+                // NOTA: Este caso no debería darse más, salvo que se agreguen maneras locales
+                //       de generar llamadas
                 else {
-                    // (self.local_call.is_internal_call)
+                    // (self.local_call.is_other_internal_call)
                     self.eventsCallbacks.onOutCallFailed.fire(data.cause);
                     if (data.cause === JsSIP.C.causes.BUSY) {
                         self.Sounds("", "stop");
@@ -489,8 +494,9 @@ class LocalCall {
         this.is_login = numberToCall == LOGIN_CODE;
         this.is_pause = !this.is_unpause && !this.is_login &&
                         numberToCall.startsWith(SPECIAL_CODE_PREFIX);
-        // TODO: Ver utilidad en caso de llamada entre agentes.
-        // this.is_internal_call = !numberToCall.startsWith(SPECIAL_CODE_PREFIX);
+
+        // NOTA: En caso de que se agreguen maneras locales de generar llamadas podria ser asi
+        // this.is_other_internal_call = !numberToCall.startsWith(SPECIAL_CODE_PREFIX);
     }
 }
 
@@ -503,8 +509,6 @@ class SessionData {
         this.local_call = local_call;
         this.invite_request = invite_request;
         this.originator = originator;
-        // TODO: En un futuro todas seran inbound. local_call y remote_call pueden pasar a
-        // ser call nomas
         if (this.is_remote) {
             this.remote_call = this.setRemoteCallInfo(invite_request);
         }
@@ -518,7 +522,7 @@ class SessionData {
             call_data.campana_type = invite_request.headers.Omlcamptype[0].raw;
         if (invite_request.headers.Omloutnum)
             call_data.telefono = invite_request.headers.Omloutnum[0].raw;
-        if (!this.is_internal_call && invite_request.headers.Omlcallid) {
+        if (this.is_remote && invite_request.headers.Omlcallid) {
             call_data.call_id = invite_request.headers.Omlcallid[0].raw;
         }
         if (invite_request.headers.Omlcalltypeidtype)
@@ -535,6 +539,10 @@ class SessionData {
             call_data.call_wait_duration = invite_request.headers.Omlcallwaitduration[0].raw;
         else
             call_data.call_wait_duration = '';
+
+        // For outside campaign calls
+        if (invite_request.headers.withoutCamp)
+            call_data.outside_campaign = true;
 
         // Extra ICS Headers.
         if (invite_request.headers.Ics)
@@ -574,16 +582,10 @@ class SessionData {
         }
     }
 
-    get transfer_agent_name() {
+    get from_agent_name() {
         if (this.invite_request.headers.Omlfromagent)
             return this.invite_request.headers.Omlfromagent[0].raw;
         return '';
-    }
-
-    get is_internal_call () {
-        return this.originator == 'local' &&
-               this.local_call !== undefined &&
-               this.local_call.is_internal_call;
     }
 
     get origin() {
@@ -603,6 +605,14 @@ class SessionData {
         return this.origin == 'IN';
     }
 
+    get is_off_campaign() {
+        return this.origin == ORIGIN_OFF_CAMPAIGN;
+    }
+
+    get is_from_agent(){
+        return this.origin == ORIGIN_AGENT_CALL;
+    }
+
     get contact_id() {
         if (this.invite_request.headers.Idcliente) {
             return this.invite_request.headers.Idcliente[0].raw;
@@ -616,6 +626,11 @@ class SessionData {
     }
 
     get from() {
+        if (this.is_from_agent) {
+            var from_agent_name = this.from_agent_name;
+            if (from_agent_name)
+                return from_agent_name;
+        }
         var fromUser = this.invite_request.headers.From[0].raw;
         var endPos = fromUser.indexOf("@");
         var startPos = fromUser.indexOf(":");
@@ -623,12 +638,13 @@ class SessionData {
     }
 
     get call_type_id() {
-        if (this.is_internal_call)
-            return ORIGIN_IDS[ORIGIN_INTERNAL];
+        // TODO: Probablemente no haga falta setear si la llamada es fuera de campaña
+        if (this.is_off_campaign)
+            return ORIGIN_IDS[ORIGIN_OFF_CAMPAIGN];
         return ORIGIN_IDS[this.origin];
     }
 
     get is_call() {
-        return this.is_internal_call || this.is_remote;
+        return this.is_off_campaign || this.is_remote;
     }
 }
