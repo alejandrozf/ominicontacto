@@ -195,6 +195,7 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
                 self._insert_queue_asterisk(campana.queue_campana)
                 self.save_supervisores(form_list, -3)
                 self.save_agentes(form_list, -2)
+                self.alertas_por_sistema_externo(campana)
                 success = True
 
         except Exception:

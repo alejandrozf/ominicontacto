@@ -91,6 +91,8 @@ class CampanaPreviewCreateView(CampanaPreviewMixin, CampanaManualCreateView):
         # crear(sobreescribir) archivo de crontab con la configuración de llamadas al procedimiento
         # de actualización de las asignaciones de agente a contactos
         queue.campana.crear_tarea_actualizacion()
+        campana = queue.campana
+        self.alertas_por_sistema_externo(campana)
         return HttpResponseRedirect(reverse('campana_preview_list'))
 
 

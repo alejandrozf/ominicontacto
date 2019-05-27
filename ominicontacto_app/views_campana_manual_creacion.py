@@ -123,6 +123,8 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
         # salvamos los supervisores y  agentes asignados a la campaña
         self.save_supervisores(form_list, -2)
         self.save_agentes(form_list, -1)
+        campana = queue.campana
+        self.alertas_por_sistema_externo(campana)
         return HttpResponseRedirect(reverse('campana_manual_list'))
 
 
