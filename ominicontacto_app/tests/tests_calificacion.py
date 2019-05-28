@@ -26,7 +26,7 @@ from mock import patch
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
-
+from django.forms import ValidationError
 from django.utils import timezone
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
@@ -506,3 +506,18 @@ class CalificacionTests(OMLBaseTest):
             click2call = "makeClick2Call('%s', '%s', '%s', '%s', 'agendas')" % \
                 (self.campana.id, self.campana.type, self.contacto.id, telefono)
         self.assertContains(response, click2call)
+
+    def test_no_se_admite_mas_de_una_calificacion_para_un_contacto_en_una_campana_creacion(self):
+        opcion_calificacion = self.calificacion_cliente.opcion_calificacion
+        contacto = self.contacto
+        self.assertRaises(ValidationError, lambda: CalificacionClienteFactory(
+            opcion_calificacion=opcion_calificacion, contacto=contacto))
+
+    def test_no_se_admite_mas_de_una_calificacion_para_un_contacto_en_una_campana_modificacion(
+            self):
+        def modificar_calificacion():
+            calificacion = CalificacionClienteFactory(
+                opcion_calificacion=self.opcion_calificacion_no_accion)
+            calificacion.contacto = self.contacto
+            calificacion.save()
+        self.assertRaises(ValidationError, modificar_calificacion)

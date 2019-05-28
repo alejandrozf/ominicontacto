@@ -90,10 +90,9 @@ class RecicladoTest(OMLBaseTest):
         """
 
         contactos = self.campana.bd_contacto.contactos.all()
+        opciones_calificacion = self.campana.opciones_calificacion.all()
 
-        for _ in range(0, 100):
-            contacto = random.choice(contactos)
-            opciones_calificacion = self.campana.opciones_calificacion.all()
+        for contacto in contactos:
             opcion_calificacion = random.choice(opciones_calificacion)
             self.crear_calificacion_cliente(self.agente, contacto, opcion_calificacion)
 
@@ -117,8 +116,7 @@ class RecicladoTest(OMLBaseTest):
         opciones_calificacion = self.campana.opciones_calificacion.all()
 
         generador = GeneradorDeLlamadaLogs()
-        for _ in range(0, 100):
-            contacto = random.choice(contactos)
+        for contacto in contactos:
             contactacion = random.choice(['contacta_califica', 'contacta_no_califica',
                                           'no_contacta', 'no_llama'])
 
