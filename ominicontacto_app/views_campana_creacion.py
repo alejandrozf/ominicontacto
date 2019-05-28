@@ -62,7 +62,17 @@ def asignar_bd_contactos_defecto_campo_vacio(campana_form):
     """
     if (campana_form.cleaned_data['bd_contacto'] is None and
             not campana_form.initial.get('es_template', False)):
-        campana_form.instance.bd_contacto = BaseDatosContactoFactory.create()
+        bd_contacto = BaseDatosContactoFactory.build()
+        sistema_externo = campana_form.cleaned_data.get('sistema_externo', False)
+        if sistema_externo:
+            columna_dni = 3
+            metadata = bd_contacto.get_metadata()
+            metadata.columna_id_externo = columna_dni
+            metadata.save()
+            bd_contacto = metadata.bd
+        else:
+            bd_contacto.save()
+        campana_form.instance.bd_contacto = bd_contacto
     return campana_form
 
 
