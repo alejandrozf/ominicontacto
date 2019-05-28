@@ -16,13 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-
+from __future__ import unicode_literals
 from django.views.generic import ListView, CreateView, UpdateView
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render
 
 from ominicontacto_app.forms import AgenteEnSistemaExternoFormset
-from ominicontacto_app.models import SistemaExterno
+from ominicontacto_app.models import SistemaExterno, AgenteProfile
+from django.utils.translation import ugettext as _
+from django.contrib import messages
 
 
 class SistemaExternoMixin(object):
@@ -74,6 +76,17 @@ class SistemaExternoUpdateView(SistemaExternoMixin, UpdateView):
         agente_en_sistema_externo_formset = self._inicializar_agentes_en_sistema(sistema_externo)
         context = super(SistemaExternoUpdateView, self).get_context_data()
         context['agente_en_sistema_externo_formset'] = agente_en_sistema_externo_formset
+        if sistema_externo.campanas.exists():
+            if not set(AgenteProfile.objects.filter(
+                campana_member__queue_name__campana__sistema_externo=sistema_externo)).issubset(
+               sistema_externo.agentes.all()):
+                agentes_campana = set(AgenteProfile.objects.filter(
+                    campana_member__queue_name__campana__sistema_externo=sistema_externo))
+                agentes_sin_id_externo = agentes_campana - set(sistema_externo.agentes.all())
+                message = _("Existen agentes asignados a una campaña que no tienen un \
+                        id externo y son: ")
+                messages.warning(self.request, message + ','.join([
+                    str(agente) for agente in agentes_sin_id_externo]))
         return context
 
     def get_success_url(self):
