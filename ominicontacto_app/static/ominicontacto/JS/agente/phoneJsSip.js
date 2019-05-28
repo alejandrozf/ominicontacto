@@ -420,6 +420,11 @@ class PhoneJS {
         this.currentSession.sendDTMF("1");
     }
 
+    confer () {
+        this.currentSession.sendDTMF("*");
+        this.currentSession.sendDTMF("3");
+    }
+
     acceptCall() {
         var options = {
             'mediaConstraints': {
