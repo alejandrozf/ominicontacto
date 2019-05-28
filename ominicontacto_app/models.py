@@ -1905,6 +1905,7 @@ class MetadataBaseDatosContacto(MetadataBaseDatosContactoDTO):
         # Ahora guardamos
         try:
             self.bd.metadata = json.dumps(self._metadata)
+            self.bd.save()
         except Exception as e:
             logger.exception(_("Error: {0} detectada al serializar "
                                "metadata de la bd {1}".format(e.message, self.bd.id)))

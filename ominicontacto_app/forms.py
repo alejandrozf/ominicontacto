@@ -439,6 +439,12 @@ class CampanaMixinForm(object):
 
     def clean(self):
         bd_contacto_field = self.fields.get('bd_contacto', False)
+        sistema_externo = self.cleaned_data.get('sistema_externo', False)
+        bd_contacto = self.cleaned_data.get('bd_contacto', False)
+        if sistema_externo and bd_contacto and not bd_contacto.get_metadata().columna_id_externo:
+            message = _("Una campaña asignada a un sistema externo debe usar una"
+                        " base de contactos con campo de id externo definido")
+            raise forms.ValidationError(message, code='invalid')
         if (bd_contacto_field and not bd_contacto_field.queryset.filter and
                 self.requiere_bd_contacto()):
             message = _("Debe cargar una base de datos antes de comenzar a "
