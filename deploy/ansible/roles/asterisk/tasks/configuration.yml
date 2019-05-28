@@ -33,18 +33,29 @@
 - name: Config of asterisk for OML (aio)
   file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ asterisk_location }}/etc/asterisk/{{ item }} force=true owner={{ usuario }} group={{ usuario }} mode=755"
   with_items:
-      - oml_extensions.conf
-      - oml_extensions_sub.conf
+    - oml_extensions_agent_session.conf
+    - oml_extensions_bridgecall.conf
+    - oml_extensions_commonsub.conf
+    - oml_extensions_modules.conf
+    - oml_extensions_postcall.conf
+    - oml_extensions_precall.conf
+    - oml_extensions.conf
   become: true
   become_method: sudo
   when: cluster == 0
+  tags: postinstall
 
 # Se copian si es un cluster
 - name: Copy of the extensions.conf files (cluster)
   copy: src=/var/tmp/ominicontacto-build/ominicontacto/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ asterisk_location }}/etc/asterisk owner={{ usuario }} group={{ usuario }}
   with_items:
-      - oml_extensions.conf
-      - oml_extensions_sub.conf
+    - oml_extensions_agent_session.conf
+    - oml_extensions_bridgecall.conf
+    - oml_extensions_commonsub.conf
+    - oml_extensions_modules.conf
+    - oml_extensions_postcall.conf
+    - oml_extensions_precall.conf
+    - oml_extensions.conf
   when: cluster != 0 and is_docker != "docker"
   tags: postinstall
 
@@ -78,11 +89,12 @@
       - udptl.conf
   become: true
   become_method: sudo
-  tags: ['changenetwork','changepassword']
+  tags: ['changenetwork','changepassword','postinstall']
 
 # Los archivos-no-enlaces se copian a la a /etc/asterisk
 - name: Copy of all asterisk config files
   copy: "src=templates/conf/archivos-no-enlaces/ dest={{ asterisk_location }}/etc/asterisk/ owner={{ usuario }} group={{ usuario }} mode=755"
+  tags: postinstall
 
 - name: Install pyst (Asterisk manager for python) (cluster)
   pip: name=pyst2 state=present version=0.5.0
