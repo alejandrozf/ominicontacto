@@ -187,14 +187,14 @@ class GrupoAgenteCreateView(FormView):
                         adicionar_agente_cola(agente, queue_member, campana)
                 activar_cola()
         except Exception as e:
-                message = _("<strong>Operación Errónea!</strong> "
-                            "No se pudo confirmar la creación del dialplan debido "
-                            "al siguiente error: {0}".format(e))
-                messages.add_message(
-                    self.request,
-                    messages.ERROR,
-                    message,
-                )
+            message = _("<strong>Operación Errónea!</strong> "
+                        "No se pudo confirmar la creación del dialplan debido "
+                        "al siguiente error: {0}".format(e))
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
         return super(GrupoAgenteCreateView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -245,6 +245,18 @@ class QueueMemberCampanaView(TemplateView):
             context['url_finalizar'] = 'campana_manual_list'
         elif campana.type is Campana.TYPE_PREVIEW:
             context['url_finalizar'] = 'campana_preview_list'
+
+        if campana.sistema_externo:
+            agentes_sin_id_externo = campana.queue_campana.members.exclude(
+                id__in=campana.sistema_externo.agentes.values_list('id', flat=True))
+            if agentes_sin_id_externo.exists():
+                msg = _('Los siguientes agentes no tienen identificador externo:<ul>')
+                for agente in agentes_sin_id_externo:
+                    nombre = agente.user.get_full_name()
+                    msg += '<li>' + nombre + '</li>'
+                msg += '</ul>'
+                messages.warning(self.request, msg)
+
         return context
 
 
