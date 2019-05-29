@@ -212,7 +212,7 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
                 messages.ERROR,
                 _('<strong>¡ATENCIÓN!</strong> El servicio Discador no se encuentra disponible. '
                   'No se pudo crear la campaña. Por favor contacte un administrador.'))
-
+        self.alertas_por_sistema_externo(campana)
         return HttpResponseRedirect(reverse('campana_dialer_list'))
 
 

@@ -176,6 +176,7 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
     def done(self, form_list, **kwargs):
         queue = self._save_forms(form_list, **kwargs)
         self._insert_queue_asterisk(queue)
+        self.alertas_por_sistema_externo(queue.campana)
         return HttpResponseRedirect(reverse('campana_manual_list'))
 
 

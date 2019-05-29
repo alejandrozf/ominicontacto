@@ -366,10 +366,22 @@ class CampanaWizardMixin(object):
             messages.warning(self.request, message)
 
     def alerta_base_de_datos_en_sistema_externo(self, campana):
-        pass
+        if campana.sistema_externo:
+            query = Campana.objects.filter(bd_contacto=campana.bd_contacto)
+            query = query.exclude(sistema_externo=campana.sistema_externo)
+            campanas_con_misma_bd_y_otro_sistema = query.exclude(sistema_externo__isnull=True)
+            if (campanas_con_misma_bd_y_otro_sistema.exists()):
+                message = _('La base de datos seleccionada esta asociada a otro sistema externo.')
+                messages.warning(self.request, message)
 
     def alerta_sitio_externo_en_otras_campanas(self, campana):
-        pass
+        if campana.sistema_externo and campana.sitio_externo:
+            query = Campana.objects.filter(sitio_externo=campana.sitio_externo)
+            query = query.exclude(sistema_externo=campana.sistema_externo)
+            campanas_con_mismo_sitio_y_otro_sistema = query.exclude(sistema_externo__isnull=True)
+            if (campanas_con_mismo_sitio_y_otro_sistema.exists()):
+                message = _('El sitio externo seleccionado esta asociado a otro sistema externo.')
+                messages.warning(self.request, message)
 
 
 class CampanaEntranteMixin(CampanaWizardMixin):
@@ -511,6 +523,7 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
             parametros_crm_formset.instance = campana
             parametros_crm_formset.save()
         self._insert_queue_asterisk(queue_form.instance)
+        self.alertas_por_sistema_externo(campana)
         return HttpResponseRedirect(reverse('campana_list'))
 
 
