@@ -76,17 +76,15 @@ class SistemaExternoUpdateView(SistemaExternoMixin, UpdateView):
         agente_en_sistema_externo_formset = self._inicializar_agentes_en_sistema(sistema_externo)
         context = super(SistemaExternoUpdateView, self).get_context_data()
         context['agente_en_sistema_externo_formset'] = agente_en_sistema_externo_formset
-        if sistema_externo.campanas.exists():
-            if not set(AgenteProfile.objects.filter(
-                campana_member__queue_name__campana__sistema_externo=sistema_externo)).issubset(
-               sistema_externo.agentes.all()):
-                agentes_campana = set(AgenteProfile.objects.filter(
-                    campana_member__queue_name__campana__sistema_externo=sistema_externo))
-                agentes_sin_id_externo = agentes_campana - set(sistema_externo.agentes.all())
-                message = _("Existen agentes asignados a una campaña que no tienen un \
-                        id externo y son: ")
-                messages.warning(self.request, message + ','.join([
-                    str(agente) for agente in agentes_sin_id_externo]))
+        agentes_sin_id = list(AgenteProfile.objects.filter(
+            campana_member__queue_name__campana__sistema_externo=sistema_externo).exclude(
+                id__in=sistema_externo.agentes.values_list('id', flat=True)))
+        if len(agentes_sin_id) > 0:
+            message = _("Los siguientes agentes están asignados a campañas relacionadas a este "
+                        "sistema externo y no tienen identificador: <ul>")
+            message += ''.join(['<li>' + str(agente) + '</li>' for agente in agentes_sin_id])
+            message += '</ul>'
+            messages.warning(self.request, message)
         return context
 
     def get_success_url(self):
