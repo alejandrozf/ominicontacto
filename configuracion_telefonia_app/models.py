@@ -261,9 +261,48 @@ class ValidacionFechaHora(models.Model):
 # class Extension(models.Model):
 #     pass
 
+class IdentificadorCliente(models.Model):
+    """Representa una forma de identificar a un contacto a partir de los datos ingresados
+    por un usuario en una llamada
+    """
+    DESTINO_MATCH = 'True'
+    DESTINO_NO_MATCH = 'False'
+    # el propio código de dialplan determina a partir de la entrada del usuario
+    # qué acción tomar
+    SIN_INTERACCION_EXTERNA = 0
 
-# class Encuesta(models.Model):
-#     pass
+    # el dialplan consultará al sitio externo especificado por 'url' pasandole como
+    # parámetro la entrada del usuario y de acuerdo a la respuesta recibida ("True" o "False")
+    # determinará que acción tomar
+    INTERACCION_EXTERNA_1 = 1
+
+    # el dialplan consultará al sitio externo especificado por 'url' pasandole como
+    # parámetro la entrada del usuario y de acuerdo a la respuesta recibida ((X, Y) o "False")
+    # donde X es el tipo de node destino y Y el id del objeto dentro del nodo destino
+    # determinará que acción tomar
+    INTERACCION_EXTERNA_2 = 2
+
+    TIPOS_INTERACCIONES = (
+        (SIN_INTERACCION_EXTERNA, _('Sin interacción externa')),
+        (INTERACCION_EXTERNA_1, _('Interacción externa tipo 1')),
+        (INTERACCION_EXTERNA_2, _('Interacción externa tipo 2')),
+    )
+
+    nombre = models.CharField(max_length=50, unique=True, verbose_name=_('Nombre'))
+    tipo_interaccion = models.PositiveIntegerField(
+        choices=TIPOS_INTERACCIONES, help_text=_('Tipo de interacción'),
+        default=SIN_INTERACCION_EXTERNA)
+    url = models.CharField(
+        max_length=128, blank=True, null=True,
+        verbose_name=_('Url servicio identificación'))
+    audio = models.ForeignKey(
+        ArchivoDeAudio, on_delete=models.PROTECT, related_name="identificadores_cliente")
+    longitud_id_esperado = models.IntegerField()
+    timeout = models.IntegerField()
+    intentos = models.IntegerField()
+
+    def __unicode__(self):
+        return unicode(_("{0}: {1}".format(self.nombre, self.url)))
 
 
 class DestinoEntrante(models.Model):
