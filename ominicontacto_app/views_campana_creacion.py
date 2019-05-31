@@ -353,6 +353,36 @@ class CampanaWizardMixin(object):
 
             queue_member_formset.save()
 
+    def alertas_por_sistema_externo(self, campana):
+        if campana.sistema_externo:
+            self.alerta_agentes_en_sistema_externo(campana)
+            self.alerta_base_de_datos_en_sistema_externo(campana)
+            self.alerta_sitio_externo_en_otras_campanas(campana)
+
+    def alerta_agentes_en_sistema_externo(self, campana):
+        if not set(campana.queue_campana.members.values_list('pk')).issubset(
+                set(campana.sistema_externo.agentes.values_list('pk'))):
+            message = _("La campaña tiene agentes no asociados al sistema externo.")
+            messages.warning(self.request, message)
+
+    def alerta_base_de_datos_en_sistema_externo(self, campana):
+        if campana.sistema_externo:
+            query = Campana.objects.filter(bd_contacto=campana.bd_contacto)
+            query = query.exclude(sistema_externo=campana.sistema_externo)
+            campanas_con_misma_bd_y_otro_sistema = query.exclude(sistema_externo__isnull=True)
+            if (campanas_con_misma_bd_y_otro_sistema.exists()):
+                message = _('La base de datos seleccionada esta asociada a otro sistema externo.')
+                messages.warning(self.request, message)
+
+    def alerta_sitio_externo_en_otras_campanas(self, campana):
+        if campana.sistema_externo and campana.sitio_externo:
+            query = Campana.objects.filter(sitio_externo=campana.sitio_externo)
+            query = query.exclude(sistema_externo=campana.sistema_externo)
+            campanas_con_mismo_sitio_y_otro_sistema = query.exclude(sistema_externo__isnull=True)
+            if (campanas_con_mismo_sitio_y_otro_sistema.exists()):
+                message = _('El sitio externo seleccionado esta asociado a otro sistema externo.')
+                messages.warning(self.request, message)
+
 
 class CampanaEntranteMixin(CampanaWizardMixin):
     def get_form(self, step=None, data=None, files=None):
@@ -435,6 +465,8 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         # configurar un acceso en alguna ruta entrante
         DestinoEntrante.crear_nodo_ruta_entrante(queue.campana)
         # se insertan los datos de la campaña en asterisk
+        campana = queue.campana
+        self.alertas_por_sistema_externo(campana)
         return HttpResponseRedirect(reverse('campana_list'))
 
     def get_form_initial(self, step):
@@ -491,6 +523,7 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
             parametros_crm_formset.instance = campana
             parametros_crm_formset.save()
         self._insert_queue_asterisk(queue_form.instance)
+        self.alertas_por_sistema_externo(campana)
         return HttpResponseRedirect(reverse('campana_list'))
 
 
