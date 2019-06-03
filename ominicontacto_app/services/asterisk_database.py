@@ -373,6 +373,7 @@ class GlobalsFamily(AbstractFamily):
             'OBJ/6': 'sub-oml-module-survey,s,1',
             'OBJ/7': 'sub-oml-module-custom-dst,s,1',
             'OBJ/8': 'sub-oml-module-voicemail,s,1',
+            'OBJ/9': 'sub-oml-module-custmer-id,s,1',
             'RECFILEPATH': '/var/spool/asterisk/monitor',
             'TYPECALL/1': 'manualCall',
             'TYPECALL/2': 'dialerCall',
