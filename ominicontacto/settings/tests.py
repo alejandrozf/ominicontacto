@@ -61,7 +61,7 @@ SECRET_KEY = 's1+*bfrvb@=k@c&9=pm!0sijjewneu5p5rojil#q+!a2y&as-4'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'HOST': 'database',
+        'HOST': 'oml-postgresql',
         'PORT': 5432,
         'NAME': 'omnileads',
         'USER': 'omnileads',
