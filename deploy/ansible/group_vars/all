@@ -17,17 +17,17 @@ ca_organizationalunit: Freetech Solutions
 ################# Versiones de aplicaciones ####################
 
 asterisk_version: 13.22.0
-kamailio_version: 5.2.0
+kamailio_version: 5.2.2
 postgresql_version: 9.6
 postgres_version_nodot: 96
 rtpengine_version: 5.5.3.1
-
+wombat_version: 18.08.3-232
 ################ URL's ############################
 
 #URLS para descargar asterisk
 asterisk_v13: https://downloads.asterisk.org/pub/telephony/asterisk/old-releases/asterisk-{{ asterisk_version }}.tar.gz
 jansson: https://github.com/akheron/jansson/archive/v2.7.tar.gz
-wombat: http://downloads.loway.ch/wd/WombatDialer-18.08.1-223.tar.gz
+wombat: http://downloads.loway.ch/WombatDialer-{{ wombat_version }}.tar.gz
 rtpengine_repo: https://github.com/sipwise/rtpengine/archive/mr{{ rtpengine_version }}.tar.gz
 kamailio_repo: https://github.com/kamailio/kamailio/archive/{{ kamailio_version }}.tar.gz
 postgresql_key: https://ftp.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-{{ postgres_version_nodot }}
@@ -40,9 +40,12 @@ usuario: omnileads
 session_cookie_age: 3600
 install_prefix: /opt/omnileads/
 asterisk_location: "{{ install_prefix }}asterisk"
+ast_agis_location: "{{ asterisk_location }}/var/lib/asterisk/agi-bin"
+ast_conf_location: "{{ asterisk_location }}/etc/asterisk"
+ast_logs_location: "{{ asterisk_location }}/var/log/asterisk"
+ast_sounds_location: "{{ asterisk_location }}/var/lib/asterisk/sounds"
+certs_location: "{{ kamailio_location }}/etc/certs"
+conversor_location: /usr/local/parselog
 kamailio_location: "{{ install_prefix }}kamailio"
 static_route: "{{ install_prefix }}ominicontacto/ominicontacto_app/static/ominicontacto"
-
-#### Para saber si es una install para devenv o cluster #####
-desarrollo: 0
-cluster: 0
+odbc_location: /etc/

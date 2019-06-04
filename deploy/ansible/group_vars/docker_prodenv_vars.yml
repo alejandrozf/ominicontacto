@@ -1,0 +1,23 @@
+---
+
+# Docker hosts at beginning is localhost because the base containers are raised up in localhost to install the application. Uncomment the line if you want to install DE or PE
+# If you are installing a devenv (DE) AIO uncomment these line
+# If you are installing a devenv (DE) AIO uncomment these line
+
+version: release-1.2.4
+customer: taxis
+
+# Container names
+asterisk_fqdn: oml-asterisk
+dialer_fqdn: oml-dialer
+kamailio_fqdn: oml-kamailio
+mariadb_fqdn: oml-mariadb
+nginx_fqdn: oml-nginx
+omniapp_fqdn: oml-omniapp
+postgresql_fqdn: oml-postgresql
+redis_fqdn: oml-redis
+rtpengine_fqdn: oml-rtpengine
+database_fqdn: "{{ postgresql_fqdn }}"
+asterisk_ip: 0.0.0.0
+kamailio_ip: 0.0.0.0
+dialer_ip: 0.0.0.0

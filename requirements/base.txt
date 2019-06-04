@@ -28,11 +28,11 @@ pathlib2==2.1.0
 pexpect==4.2.1
 pickleshare==0.7.4
 Pillow==4.0.0
-#pkg-resources==0.0.0
 prompt-toolkit==1.0.7
 psycopg2==2.7.5
 ptyprocess==0.5.1
 py2-ipaddress==3.4.1
+pycha==0.7.0
 pycparser==2.17
 pygal==2.3.0
 pyst2==0.5.0
@@ -45,5 +45,4 @@ six==1.10.0
 tinycss==0.4
 traitlets==4.3.1
 unicodecsv==0.14.1
-uWSGI==2.0.15
 wcwidth==0.1.7

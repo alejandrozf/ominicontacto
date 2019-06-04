@@ -3,31 +3,33 @@
 #########################################################
 
 You can have the software running in your system with this simple steps:
-  1. Install Docker CE for Ubuntu: https://docs.docker.com/install/linux/docker-ce/ubuntu/
+  1. Install Docker CE for your SO: https://docs.docker.com/install/
   2. Install docker-compose
       As docker CE follow the installation steps: https://docs.docker.com/compose/install/
   3. Follow docker post-installations steps: https://docs.docker.com/install/linux/linux-postinstall/
 
 NOTE: never raise up containers with root user or root privileges
 
-  4. Change the TZ environment file in the devenv-stack.yml to raise up containers with the timezone you want
-  5. Go to deploy/docker/devenv/ and run:
-      - ./docker-manage up
+  4. Open he ansible inventory file and:
+    * Uncomment the line below [devenv-container] to let ansible know you want to deploy a devenv
+        [devenv-container]
+        #localhost ansible_connection=local
+    * Change the TZ variable to raise up containers with the timezone you want
 
-This will create and start the containers and open de django-server shell. There are another options for this script:
-  * start: use it every time you boot your computer. This will restart some services inside containers and will also open the django-server shell
-  * killrun: to kill the django-server inside omniapp container
-  * run: this just will open the django-server shell
-  * stop: stop all containers
-  * down: stop and kill all containers
+
+  5. Go to deploy/ansible and run:
+      - sudo ./deploy.sh --docker-deploy
+
+This will deploy the required settings for the environment. Once finished you can use docker ps to see that you have 10 containers up and running.
+A new service is created for raising up or down the environment: service omnileads-devenv
+
+Wait some time until the omniapp container finish some tasks. You can see the progress with: docker attach oml-omniapp
 
 The devenv-stack file links the OML repository into the container so any change you make in the repository will be reflected in the devenv inmediately
 
 To access omnileads via web browser:
-  1. Edit you /etc/hosts file with:
-      172.16.0.6 omniapp
-  2. Acces with your favorite browser:
-      https://omniapp
+  1. https://YOUR_HOSTNAME
+
 
 #########################################################
 ###                   PBX-emulator                    ###
@@ -53,7 +55,7 @@ You can simulate inbound calls registering an extension from the pbx-emulator. Y
 
   username: 01155001122
   secret: OMLtraining72
-  domanin: 172.16.0.7
+  domanin: pbx-emulator
 
 After registering the extension you can call this numbers for receiving the call to a Omnileads inbound campaign (check manuals to configure inbound campaign and inbound routing)
 
@@ -69,7 +71,7 @@ Also you will have these two numbers to call from Omnileads to your softphone: 0
 Use this trunk configuration in you Omnileads environment to connect with the pbx-emulator
 
   type=friend
-  host=172.16.0.7
+  host=pbx-emulator
   defaultuser=01177660010
   secret=OMLtraining72
   qualify=yes
@@ -80,7 +82,7 @@ Use this trunk configuration in you Omnileads environment to connect with the pb
 
 And this in the register chain:
 
-  01177660010:OMLtraining72@172.16.0.7
+  01177660010:OMLtraining72@pbx-emulator
 
 ******************************
 *Outbound route configuration*

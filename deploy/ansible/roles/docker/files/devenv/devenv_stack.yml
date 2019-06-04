@@ -1,0 +1,179 @@
+
+
+version: '3.7'
+services:
+  asterisk:
+    entrypoint:
+      - /home/run_asterisk.sh
+    container_name: {{ asterisk_fqdn }}
+    depends_on:
+      - postgresql
+    dns: 8.8.8.8
+    environment:
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - TZ={{ TZ }}
+      - PGPASSWORD={{ postgres_password }}
+      - PGHOST={{ postgresql_fqdn }}
+      - PGUSER={{ postgres_user }}
+    image: freetechsolutions/asterisk:16
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - grabaciones:/var/spool/asterisk/monitor/
+      - ./asterisk/conf/:/etc/asterisk/
+      - ./asterisk/agis/:/var/lib/asterisk/agi-bin/
+      - sounds:/var/lib/asterisk/sounds/
+      - ./asterisk/odbc.ini:/etc/odbc.ini
+      - ./asterisk/odbcinst.ini:/etc/odbcinst.ini
+      - ./asterisk/others/:/home/
+      - {{ repo_location }}/ominicontacto_voip/asterisk-files/conf/:/var/tmp/
+    working_dir: /etc/asterisk
+
+  dialer:
+    container_name: {{ dialer_fqdn }}
+    depends_on:
+      - mariadb
+    dns: 8.8.8.8
+    environment:
+      - TZ={{ TZ }}
+      - MYSQL_PWD={{ mysql_root_password }}
+    image: freetechsolutions/dialer:{{ wombat_version }}
+    ports:
+      - "4442:8080/tcp"
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+
+  kamailio:
+    container_name: {{ kamailio_fqdn }}
+    depends_on:
+      - redis
+      - asterisk
+    dns: 8.8.8.8
+    environment:
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - TZ={{ TZ }}
+    image: {{ kamailio_image }}
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - {{ repo_location }}/ominicontacto_voip/kamailio-files:/etc/kamailio
+      - ./certs/:/etc/kamailio/certs/
+
+  mariadb:
+    container_name: {{ mariadb_fqdn }}
+    dns: 8.8.8.8
+    environment:
+      - TZ={{ TZ }}
+      - MARIADB_ROOT_PASSWORD={{ mysql_root_password }}
+      - MARIADB_DATABASE=wombat
+      - MARIADB_USER=wombat
+      - MARIADB_PASSWORD=dials
+    image: {{ mariadb_image }}
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - mariadb_data:/bitnami
+
+  nginx:
+    container_name: {{ nginx_fqdn }}
+    dns: 8.8.8.8
+    environment:
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - TZ={{ TZ }}
+    image: {{ nginx_image }}
+    privileged: true
+    ports:
+     - "{{ external_port }}:443/tcp"
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - ./certs:/etc/nginx/certs/
+      - ./nginx/:/etc/nginx/
+      - grabaciones:{{ asterisk_location }}/var/spool/asterisk/monitor
+
+  omniapp:
+    command:
+      - {{ install_prefix }}run/run_omniapp.sh
+    container_name: {{ omniapp_fqdn }}
+    dns: 8.8.8.8
+    env_file:
+      - .env
+    environment:
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - TZ={{ TZ }}
+    image: freetechsolutions/omniapp:{{ version }}
+    privileged: true
+    restart: on-failure
+    stdin_open: true
+    stop_grace_period: 1m30s
+    tty: true
+    user: omnileads
+    volumes:
+      - {{ repo_location }}:{{ install_prefix }}ominicontacto/
+      - ./omniapp/.ssh/:{{ install_prefix }}.ssh
+      - ./omniapp/:{{ install_prefix }}run/
+    working_dir: {{ install_prefix}}ominicontacto
+
+  postgresql:
+    container_name: {{ postgresql_fqdn }}
+    dns: 8.8.8.8
+    environment:
+      - TZ={{ TZ }}
+      - POSTGRES_USER={{ postgres_user }}
+      - POSTGRES_PASSWORD={{ postgres_password }}
+      - POSTGRES_DB={{ postgres_database}}
+    image: freetechsolutions/postgresql:{{ postgresql_version }}
+    ports:
+     - "4444:5432/tcp"
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+
+  pbx-emulator:
+    container_name: pbx-emulator
+    hostname: pbx-emulator
+    dns: 8.8.8.8
+    environment:
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - TZ={{ TZ }}
+    image: freetechsolutions/pbx-emulator:0.1
+    ports:
+      - 5060:5060
+      - 10000-10020:10000-10020
+    privileged: true
+    restart: on-failure
+    stdin_open: true
+    stop_grace_period: 1m30s
+    tty: true
+
+  redis:
+    container_name: {{ redis_fqdn }}
+    dns: 8.8.8.8
+    environment:
+      - TZ={{ TZ }}
+    image: {{ redis_image }}
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+
+  rtpengine:
+    container_name: {{ rtpengine_fqdn }}
+    dns: 8.8.8.8
+    environment:
+      - TZ={{ TZ }}
+    image: freetechsolutions/rtpengine:{{ rtpengine_version }}
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+
+volumes:
+  grabaciones:
+  mariadb_data:
+  postgresql_data:
+  sounds:

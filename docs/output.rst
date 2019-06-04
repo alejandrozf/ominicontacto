@@ -53,10 +53,10 @@ Esta sección repasa cada informe generado por el reporte general de actividad d
 
  output_reports_agents.rst
 
-Supervisión relatime
+Supervisión realtime
 ********************
 
-Esta sección repasa el módulo de supervisión de OMniLeads. 
+Esta sección repasa el módulo de supervisión de OMniLeads.
 
 .. toctree::
  :maxdepth: 2

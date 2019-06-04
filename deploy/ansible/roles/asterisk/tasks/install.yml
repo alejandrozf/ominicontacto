@@ -94,14 +94,8 @@
   when: ansible_os_family == "Debian"
 
 # Se sigue con el la ejecucion del configure, esto para el PE
-- name: Configure of asterisk (PE)
+- name: Configure of asterisk
   shell: "./configure --libdir={{ install_prefix }}asterisk/lib64 --prefix={{ install_prefix }}asterisk --with-pjproject-bundled chdir=/usr/src/asterisk-{{ asterisk_version }}"
-  when: is_docker.stdout != "docker"
-
-# Se sigue con el la ejecucion del configure, esto para el DE
-- name: Configure of asterisk (DE)
-  shell: "./configure {{ cflags }} --libdir={{ install_prefix }}asterisk/lib64 --prefix={{ install_prefix }}asterisk --with-pjproject-bundled chdir=/usr/src/asterisk-{{ asterisk_version }}"
-  when: is_docker.stdout == "docker"
 
 # Se obtienen las fuentes mp3
 - shell: "contrib/scripts/get_mp3_source.sh chdir=/usr/src/asterisk-{{ asterisk_version }}"

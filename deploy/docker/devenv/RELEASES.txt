@@ -5,6 +5,10 @@ DevEnv Image versions:
 0.2
   - Settings structure separating production settings with develop settings
   - Develop post release-1.2.2
+1.0
+  - DevEnv divided in microservices changing these services versions:
+    Asterisk 16, Kamailio 5.2.2
+  - Deploy of the environment using ansible  
 
 pbx-emulator image versions:
 

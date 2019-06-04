@@ -1,5 +1,5 @@
 requirements.txt
-/ominicontacto_app/static/ominicontacto/JS/config.js
+ominicontacto_voip/kamailio-files/kamailio-local.cfg
 /docs/_build
 .idea/
 *.pyc

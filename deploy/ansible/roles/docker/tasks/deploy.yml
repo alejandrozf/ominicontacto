@@ -1,0 +1,64 @@
+---
+
+- name: Get the hostname of host
+  command: hostname
+  register: hostname
+
+# Chequeo si el folder de certificado existe
+- name: Check if certificates folder exists
+  shell: "[ -d {{ certs_location}} ]"
+  failed_when: false
+  register: certs_exists
+
+- name: Creation of deploy folders structure
+  file: "dest={{ item }} state=directory owner={{ docker_user }} group={{ docker_user }} mode=0755 recurse=yes"
+  with_items:
+    - "{{ ast_conf_location }}"
+    - "{{ ast_agis_location }}"
+    - "{{ ast_logs_location }}"
+    - "{{ omniapp_location }}"
+    - "{{ nginx_location }}/conf.d"
+    - "{{ ast_other_location }}"
+    - "{{ efk_location }}"
+
+- name: Creation of asterisk deploy content
+  include: roles/asterisk/tasks/configuration.yml
+
+- include: roles/kamailio/tasks/certificate_CA.yml
+  when: certs_exists.rc == 1
+
+- name: Change ownership of certs folder
+  file: path={{ certs_location }} state=directory owner={{ docker_user }} group={{ docker_user }} recurse=yes
+
+- name: Generate denvenv-stack.yml docker-compose file and run_omnileads.sh script
+  template: src=roles/{{ item.src }} dest={{ item.dest }} mode=755 owner={{ docker_user }} group={{ docker_user }}
+  with_items:
+    - { src: docker/files/devenv/devenv_stack.yml, dest: "{{ deploy_location }}/devenv_stack.yml"}
+    - { src: docker/files/devenv/run_omnileads.sh, dest: "{{ deploy_location }}/run_omnileads.sh"}
+    - { src: docker/files/scripts/run_asterisk.sh, dest: "{{ ast_other_location }}/run_asterisk.sh"}
+    - { src: docker/files/scripts/run_omniapp.sh, dest: "{{ omniapp_location }}/run_omniapp.sh"}
+    - { src: docker/files/scripts/oml_uwsgi.ini, dest: "{{ omniapp_location }}/oml_uwsgi.ini"}
+    - { src: omniapp_second/templates/etc/ominicontacto.conf, dest: "{{ nginx_location }}/conf.d"}
+    - { src: omniapp_second/templates/etc/nginx.conf.j2, dest: "{{ nginx_location }}/nginx.conf"}
+    - { src: docker/files/scripts/mime.types, dest: "{{ nginx_location }}/mime.types"}
+
+- name: Generate EFK docker-compose file and configuration files
+  template: src=roles/docker/files/efk_infra/{{ item.src }} dest={{ item.dest }} mode=755 owner={{ docker_user }} group={{ docker_user }}
+  with_items:
+    - { src: kibana.conf, dest: "{{ efk_location }}/kibana.conf"}
+    - { src: fluent.conf, dest: "{{ efk_location }}/fluent.conf"}
+    - { src: logging_stack.yml, dest: "{{ deploy_location }}"}
+
+# Se añade el cron de omnileads
+- name: Copy the cron-omnileads file
+  template: src=roles/asterisk/templates/cron-omnileads dest=/etc/cron.d/cron-omnileads-{{ customer }} owner=root group=root
+
+# Se crea el archivo kamailio-local, Este archivo contiene las variables que usa el kamailio.cfg
+- name: Creation of kamailio-local.cfg file
+  template: src=roles/kamailio/templates/etc/kamailio-local.cfg dest={{ repo_location }}/ominicontacto_voip/kamailio-files/ owner={{ docker_user }} group={{ docker_user }}
+
+- name: Create omnileads-devenv systemd service
+  template: src=files/devenv/omnileads-devenv.service mode=644 dest=/etc/systemd/system/
+
+- name: Start and enable service
+  systemd: name=omnileads-devenv state=restarted enabled=yes daemon_reload=yes

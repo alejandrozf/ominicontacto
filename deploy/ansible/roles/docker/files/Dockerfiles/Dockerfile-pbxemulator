@@ -1,0 +1,13 @@
+FROM alpine:latest
+ENV LANG en_US.utf8
+
+RUN apk update \
+    && apk add vim sngrep ngrep asterisk openrc openntpd
+COPY pbxemulator-files/*.conf /etc/asterisk/
+COPY pbxemulator-files/interfaces /etc/network/
+COPY pbxemulator-files/audios/* /var/lib/asterisk/sounds/
+
+EXPOSE 5060/udp 10000-10020/udp
+ADD asterisk-files/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]

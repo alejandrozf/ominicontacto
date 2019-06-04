@@ -1,0 +1,15 @@
+[Unit]
+Description=Omnileads devenv Application Service
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory={{ deploy_location }}/
+ExecStart={{ deploy_location }}/run_omnileads.sh up
+ExecStop={{ deploy_location }}/run_omnileads.sh down
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target
