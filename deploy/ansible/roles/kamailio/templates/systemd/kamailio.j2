@@ -1,13 +1,8 @@
 RUN_KAMAILIO=yes
 USER={{ usuario }}
 GROUP={{ usuario }}
-{% if is_docker.stdout != "docker" %}
 SHM_MEMORY=64
 PKG_MEMORY=8
-{% else %}
-SHM_MEMORY=32
-PKG_MEMORY=4
-{% endif %}
 PIDFILE={{ kamailio_location }}/run/kamailio/kamailio.pid
 CFGFILE={{ kamailio_location }}/etc/kamailio/kamailio.cfg
 DUMP_CORE=yes

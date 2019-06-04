@@ -32,32 +32,24 @@ SSHtransfer() {
 
 Info() {
   cd $current_directory
-  if [ "$arg1" == "--aio" ]; then
-    servers_ammount="`cat inventory | grep \"ansible_user=\" | grep -v \"cluster server\" |wc -l`"
-  elif [ "$arg1" == "--cluster" ]; then
-    servers_ammount="`cat inventory | grep \"ansible_user=\" | grep \"cluster server\" |wc -l`"
-  fi
   cat /dev/null > /var/tmp/servers_installed
-  for i in `seq 1 $servers_ammount`; do
-    if [ "$arg1" == "--aio" ]; then
-      line="`cat inventory | grep ansible_host | grep -v \"cluster server\" | sed -n ${i}p`"
-    elif [ "$arg1" == "--cluster" ]; then
-      line="`cat inventory | grep ansible_ssh_port | grep \"cluster server\" | sed -n ${i}p`"
-    fi
-    servidor="`echo $line |awk -F \" \" '{print $1}'`"
-    ip="`echo $line |awk -F \" \" '{print $4}' |awk -F "=" '{print $2}' `"
-    ssh_port="`echo $line |grep ansible_ssh_port |awk -F " " '{print $2}'|awk -F "=" '{print $2}'`"
-    ips[i]=$ip
-    servidores[i]=$servidor
-    if [[ $line = \#* ]]; then
-      continue
-    else
-      echo -e "    Hostname: ${servidores[i]} -  IP: ${ips[i]}" >> /var/tmp/servers_installed
-      if [[ $line != *"ansible_connection=local"* ]]; then
+  IFS=$'\n'
+  servers=( $(cat inventory | grep ansible_user=) )
+  for i in ${servers[@]}; do
+    if [[ ! $i = \#* ]]; then
+      let "servers_ammount=servers_ammount+1"
+      if [[ $i != *"ansible_connection=local"* ]]; then
+        servidor="`echo $i |awk -F \" \" '{print $1}'`"
+        ip="`echo $i |awk -F \" \" '{print $4}' |awk -F "=" '{print $2}' `"
+        ssh_port="`echo $i |grep ansible_ssh_port |awk -F " " '{print $2}'|awk -F "=" '{print $2}'`"
         SSHtransfer
       fi
-    fi
+      for j in `seq 1 $servers_ammount`; do
+        ips[j]=$ip
+        servidores[j]=$servidor
+        echo -e "    Hostname: ${servidores[j]} -  IP: ${ips[j]}" >> /var/tmp/servers_installed
+      done
+      fi
   done
-  printf "\033c"
 }
 Info

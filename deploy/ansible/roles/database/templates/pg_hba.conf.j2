@@ -3,10 +3,10 @@
 # "local" is for Unix domain socket connections only
 local   all             all                                     peer
 # IPv4 local connections:
-{% if cluster == 0 and is_docker.stdout != "docker" %}
+{% if cluster == 0 %}
 host    all             all             127.0.0.1/32             md5
 host    all             all             {{ omni_fqdn }}          md5
-{% elif cluster != 0 and is_docker.stdout != "docker" %}
+{% elif cluster != 0 %}
 host    all             all             127.0.0.1/32             md5
 host    all             all             {{ omniapp_fqdn }}       md5
 host    all             all             {{ asterisk_fqdn }}      md5

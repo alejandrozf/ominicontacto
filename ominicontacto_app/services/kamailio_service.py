@@ -49,9 +49,9 @@ class KamailioService():
 
     def generar_sip_password(self, sip_usuario):
         try:
-            cmd = subprocess.check_output(['ssh', settings.OML_KAMAILIO_HOSTNAME,
-                                          settings.OML_KAMAILIO_CMD])
-            secret_key = str(cmd[cmd.find(':') + 2:].rstrip('\n')).splitlines()[0]
+            # cmd = subprocess.check_output(['ssh', settings.OML_KAMAILIO_HOSTNAME,
+            #                              settings.OML_KAMAILIO_CMD])
+            secret_key = settings.SIP_SECRET_KEY
             password_hashed = hmac.new(secret_key, sip_usuario, sha1)
             password_ephemeral = password_hashed.digest().encode("base64").rstrip('\n')
             return password_ephemeral

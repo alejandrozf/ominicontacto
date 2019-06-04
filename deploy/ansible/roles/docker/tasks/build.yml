@@ -1,0 +1,43 @@
+---
+
+- name: Create directory to copy Omnileads-Docker folders
+  file: path=/etc/docker/omnileads/build/scripts state=directory recurse=yes owner={{ docker_user }} group={{ docker_user }}
+
+- name: Generate Dockerfiles images
+  template: src=roles/docker/files/Dockerfiles/Dockerfile-{{ item }} dest=/etc/docker/omnileads/build/ owner={{ docker_user }} group={{ docker_user }}
+  with_items:
+    - asterisk
+    - dialer
+    - omniapp
+    - pbxemulator
+    - postgresql
+    - rtpengine
+
+- name: Copy extra folders
+  copy: src={{ item }} dest=/etc/docker/omnileads/build/ owner={{ docker_user }} group={{ docker_user }}
+  with_items:
+    - /var/tmp/ansible/roles/docker/files/pbxemulator-files
+    - "{{ repo_location }}/requirements"
+
+- name: Generate Dockerfiles content
+  template: src={{ item.src }} dest=/etc/docker/omnileads/build/{{ item.dest }} mode=755 owner={{ docker_user }} group={{ docker_user }}
+  with_items:
+    - { src: roles/docker/files/scripts/create_language.sh, dest: scripts }
+    - { src: roles/oml_server/templates/pip.conf, dest: scripts }
+    - { src: roles/oml_server/templates/requirements.txt, dest: scripts }
+    - { src: roles/docker/files/scripts/run_rtpengine.sh, dest: scripts }
+
+- name: Log into DockerHub
+  docker_login:
+    username: "{{ docker_login_user }}"
+    password: "{{ docker_login_pass }}"
+    email: "{{ docker_login_email }}"
+
+- name: Build {{ version }} images
+  docker_image: path=/etc/docker/omnileads/build/ dockerfile=Dockerfile-{{ item.dockerfile }} state=present name=freetechsolutions/{{ item.image }} tag={{ item.version }} force=yes push=yes
+  with_items:
+    - { dockerfile: "asterisk", image: "asterisk", version: "16" }
+    - { dockerfile: "dialer", image: "dialer", version: "{{ wombat_version }}" }
+    - { dockerfile: "omniapp", image: "omniapp", version: "{{ version }}" }
+    - { dockerfile: "postgresql", image: "postgresql", version: "{{ postgresql_version }}" }
+    - { dockerfile: "rtpengine", image: "rtpengine", version: "{{ rtpengine_version }}" }

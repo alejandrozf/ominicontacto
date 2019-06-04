@@ -266,13 +266,14 @@ DEFENDER_BEHIND_REVERSE_PROXY = None
 # Ephemeral SIP credentials variables #
 #######################################
 
+SIP_SECRET_KEY = None
+# Secret key usada para SIP credentials
+
 EPHEMERAL_USER_TTL = None
 # Tiempo de duración de credenciales efimeras
 
 OML_KAMAILIO_HOSTNAME = None
 #Hostname para conectarse a Kamailio
-
-OML_KAMAILIO_CMD = None
 
 """Comando para obtener el secret_key de kamailio y asi poder generar la SIP password
 

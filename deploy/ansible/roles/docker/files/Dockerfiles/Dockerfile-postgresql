@@ -1,0 +1,7 @@
+FROM {{ postgres_image }}
+RUN apt-get update \
+    && apt-get install -y python-psycopg2 postgresql-plpython-{{ postgresql_version }}
+
+COPY scripts/create_language.sh /docker-entrypoint-initdb.d
+
+EXPOSE 5432

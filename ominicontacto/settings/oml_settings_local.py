@@ -20,6 +20,8 @@ POSTGRES_USER = os.getenv('PGUSER')
 OML_OMNILEADS_IP = os.getenv('OMNILEADS_IP')
 OML_EXTERNAL_PORT = int(os.getenv('EXTERNAL_PORT'))
 NGINX_HOSTNAME = os.getenv('NGINX_HOSTNAME')
+REDIS_HOSTNAME = os.getenv('REDIS_HOSTNAME')
+RTPENGINE_HOSTNAME = os.getenv('RTPENGINE_HOSTNAME')
 SESSION_COOKIE_AGE = int(os.getenv('SESSION_COOKIE_AGE'))
 KAMAILIO_MODULES_LOCATION = os.getenv('KAMAILIO_MODULES_LOCATION')
 
@@ -35,6 +37,7 @@ ALLOWED_HOSTS = [
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 's1+*bfrvb@=k@c&9=pm!0sijjewneu5p5rojil#q+!a2y&as-4'
+SIP_SECRET_KEY = 'SUp3rS3cr3tK3y'
 
 # Datos de conexión de base db postgresql
 DATABASES = {
@@ -73,8 +76,6 @@ OML_BACKLIST_REMOTEPATH = "{0}/var/spool/asterisk/".format(ASTERISK_LOCATION)
 OML_WOMBAT_FILENAME = "{0}wombat-json/".format(INSTALL_PREFIX)
 
 OML_KAMAILIO_HOSTNAME = "root@{0}".format(KAMAILIO_HOSTNAME)
-OML_KAMAILIO_CMD = "kamcmd -s {0}/run/kamailio/kamailio_ctl autheph.dump_secrets".format(
-    KAMAILIO_LOCATION)
 
 # Credenciales de AMI
 ASTERISK = {
@@ -134,6 +135,7 @@ DEFENDER_BEHIND_REVERSE_PROXY = True
 DEFENDER_LOGIN_FAILURE_LIMIT = 1
 DEFENDER_DISABLE_IP_LOCKOUT = True
 DURACION_ASIGNACION_CONTACTO_PREVIEW = 30
+DEFENDER_REDIS_URL="redis://{0}:6379/0".format(REDIS_HOSTNAME)
 
 # Comando y paths de audios del sistema
 TMPL_OML_AUDIO_CONVERSOR = ["sox", "-t", "wav", "<INPUT_FILE>",
