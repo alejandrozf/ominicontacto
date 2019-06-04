@@ -63,6 +63,33 @@ class Command(BaseCommand):
         self._escribir_archivo(
             config_asterisk_oml_manager, ruta_archivo, settings.ASTERISK_HOSTNAME)
 
+    def _actualizar_template_asterisk_oml_sip_general(self):
+        template_asterisk_oml_sip_general = (
+            "context=default\n"
+            "allowguest=no\n"
+            "allowtransfer=yes\n"
+            "tlsenable=no\n"
+            "tcpenable=no\n"
+            "udpbindaddr=0.0.0.0:5160\n"
+            "transport=udp\n"
+            "maxexpiry=3600\n"
+            "minexpiry=60\n"
+            "qualifyfreq=60\n"
+            "disallow=all\n"
+            "allow=ulaw\n"
+            "useragent=OML-Asterisk\n"
+            "dtmfmode=info\n"
+            "alwaysauthreject=yes\n"
+            "rtptimeout=60\n"
+            "permit={0}/255.255.255.255\n"
+            "deny=0.0.0.0/0.0.0.0\n"
+        )
+        config_asterisk_oml_sip_general = template_asterisk_oml_sip_general.format(
+            settings.KAMAILIO_IP)
+        ruta_archivo = '{0}/etc/asterisk/oml_sip_general.conf'.format(settings.ASTERISK_LOCATION)
+        self._escribir_archivo(
+            config_asterisk_oml_sip_general, ruta_archivo, settings.ASTERISK_HOSTNAME)
+
     def _actualizar_archivos_config_agis(self):
         template_config_agis = (
             "# Do not change this variables unless you know what you are doing\n"
@@ -73,13 +100,14 @@ class Command(BaseCommand):
             "POSTGRES_DATABASE={2}\n"
             "POSTGRES_USER={3}\n"
             "POSTGRES_HOST={4}\n"
-            "ASTERISK_LISTS={5}/var/spool/asterisk\n"
-            "BLACK_LIST_FIlE={5}/var/spool/asterisk/oml_backlist.txt"
+            "LOG_FILE=/var/log/asterisk/agis-errors.log\n"
+            "ASTERISK_LISTS=/var/spool/asterisk\n"
+            "BLACK_LIST_FIlE=/var/spool/asterisk/oml_backlist.txt"
         )
         config_agis = template_config_agis.format(
             settings.AMI_USER, settings.AMI_PASSWORD, settings.POSTGRES_DATABASE,
-            settings.POSTGRES_USER, settings.POSTGRES_HOST, settings.INSTALL_PREFIX)
-        ruta_archivo = '{0}/var/lib/asterisk/agi-bin/.config'.format(settings.ASTERISK_LOCATION)
+            settings.POSTGRES_USER, settings.POSTGRES_HOST)
+        ruta_archivo = '/var/lib/asterisk/agi-bin/.config'
         self._escribir_archivo(config_agis, ruta_archivo, settings.ASTERISK_HOSTNAME)
 
     def _actualizar_archivos_kamailio(self):
@@ -87,9 +115,10 @@ class Command(BaseCommand):
             "#!substdef \"!MY_IP_ADDR!{0}!g\"\n"
             "#!substdef \"!MY_DOMAIN!{1}!g\"\n"
             "#!substdef \"!MY_ASTERISK!{2}!g\"\n"
-            "#!substdef \"!MY_DB!{3}!g\"\n"
-            "#!substdef \"!MY_POSTGRES_DB!{4}!g\"\n"
-            "#!substdef \"!MY_POSTGRES_USER!{5}!g\"\n"
+            "#!substdef \"!USER!root!g\"\n"
+            "#!substdef \"!RTPENGINE_HOST!{3}!g\"\n"
+            "#!substdef \"!REDIS_URL!{4}!g\"\n"
+
             "#!substdef \"!MY_UDP_PORT!5060!g\"\n"
             "#!substdef \"!MY_TCP_PORT!5060!g\"\n"
             "#!substdef \"!MY_TLS_PORT!5061!g\"\n"
@@ -107,30 +136,28 @@ class Command(BaseCommand):
             "#!substdef \"!MY_MSRPTCP_ADDR!tcp:MY_IP_ADDR:MY_MSRPTCP_PORT!g\"\n"
             "#!substdef \"!MSRP_MIN_EXPIRES!1800!g\"\n"
             "#!substdef \"!MSRP_MAX_EXPIRES!3600!g\"\n"
-            "#!substdef \"!KAMAILIO_LOCATION!{6}!g\"\n"
-            "#!substdef \"!MODULES_LOCATION!{7}!g\"\n"
-            "#!substdef \"!PKEY_LOCATION!KAMAILIO_LOCATION/etc/certs/key.pem!g\"\n"
-            "#!substdef \"!CERT_LOCATION!KAMAILIO_LOCATION/etc/certs/cert.pem!g\"\n"
-            "#!substdef \"!CA_LOCATION!KAMAILIO_LOCATION/etc/certs/demoCA/cert.pem!g\"\n"
-            "#!substdef \"!SECRET_KEY!{8}!g\""
+            "#!substdef \"!INSTALL_PREFIX!!g\"\n"
+            "#!substdef \"!MODULES_LOCATION!/usr/lib/x86_64-linux-gnu/kamailio/modules/!g\"\n"
+            "#!substdef \"!PKEY_LOCATION!/etc/kamailio/certs/key.pem!g\"\n"
+            "#!substdef \"!CERT_LOCATION!/etc/kamailio/certs/cert.pem!g\"\n"
+            "#!substdef \"!CA_LOCATION!/etc/kamailio/certs/demoCA/cert.pem!g\"\n"
+            "#!substdef \"!SECRET_KEY!SUp3rS3cr3tK3y!g\""
         )
-        config_kamailio = template_config_kamailio.format(settings.KAMAILIO_IP,
+        config_kamailio = template_config_kamailio.format(settings.KAMAILIO_HOSTNAME,
                                                           settings.KAMAILIO_HOSTNAME,
-                                                          settings.ASTERISK_IP,
-                                                          settings.POSTGRES_HOST,
-                                                          settings.POSTGRES_DATABASE,
-                                                          settings.POSTGRES_USER,
-                                                          settings.KAMAILIO_LOCATION,
-                                                          settings.KAMAILIO_MODULES_LOCATION,
-                                                          settings.SECRET_KEY)
+                                                          settings.ASTERISK_HOSTNAME,
+                                                          settings.RTPENGINE_HOSTNAME,
+                                                          settings.REDIS_HOSTNAME
+                                                          )
         ruta_archivo = '{0}/etc/kamailio/kamailio-local.cfg'.format(settings.KAMAILIO_LOCATION)
         self._escribir_archivo(config_kamailio, ruta_archivo, settings.KAMAILIO_HOSTNAME)
 
     def handle(self, *args, **options):
         try:
             self._actualizar_archivos_config_agis()
-            self._actualizar_archivos_kamailio()
+            # self._actualizar_archivos_kamailio()
             self._actualizar_template_asterisk_oml_manager()
+            self._actualizar_template_asterisk_oml_sip_general()
             # regeneramos asterisk con la nueva configuracion
             asterisk_reloader = AsteriskConfigReloader()
             asterisk_reloader.reload_asterisk()

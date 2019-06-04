@@ -25,7 +25,7 @@
 
 # Se sube el archivo de configuracion de omnileads para nginx
 - name: Create of ominicontacto.conf
-  template: src=templates/etc/ominicontacto.conf.j2 dest=/etc/nginx/conf.d/ominicontacto.conf owner={{ usuario }} group={{ usuario }}
+  template: src=templates/etc/ominicontacto.conf dest=/etc/nginx/conf.d/ominicontacto.conf owner={{ usuario }} group={{ usuario }}
   become: true
   become_method: sudo
   tags: ['postinstall','changenetwork']
@@ -69,6 +69,12 @@
   template: src=templates/omnileads.service dest=/etc/systemd/system/omnileads.service owner=root group=root mode=650
   tags: postinstall
 
+# Se inicia y habilita el servicio
+- name: Start the omnileads-daemon service
+  systemd: name=omnileads state=restarted enabled=yes daemon_reload=yes
+  become: true
+  become_method: sudo
+
 # Se ejecuta una funcion de sql que hizo ale, esto es para los reportes
 - name: Add queuelog trigger to database
   shell: psql -U {{ postgres_user}} -h {{ database_fqdn }} -d {{ postgres_database }} -c '\i {{ install_prefix }}ominicontacto/reportes_app/sql/plpython/replace_insert_queue_log_ominicontacto_queue_log.sql'
@@ -81,12 +87,6 @@
 # Se sube el script de backup-restore
 - name: Generate backup-restore.sh script
   template: src=templates/bin/backup-restore.sh.j2 dest={{ install_prefix }}bin/backup-restore.sh owner={{ usuario }} group={{ usuario }} mode=755
-  tags: postinstall
-
-# Se inicia y habilita el servicio
-- name: Start the omnileads-daemon service
-  systemd: name=omnileads state=restarted enabled=yes daemon_reload=yes
-  when: desarrollo == 0
   tags: postinstall
 
 - name: Erase files related to php supervision

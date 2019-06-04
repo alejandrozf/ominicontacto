@@ -100,7 +100,7 @@ class PhoneJS {
     }
 
     startSipSession() {
-        var socket = new JsSIP.WebSocketInterface('wss://' + this.WebSocketHost + ':' + this.WebSocketPort + '/ws');
+        var socket = new JsSIP.WebSocketInterface('wss://' + this.WebSocketHost + ':' + this.WebSocketPort + '/ws' );
         var config = {
                 sockets: [ socket ],
                 uri: "sip:" + this.sipExtension + "@" + this.KamailioHost,

@@ -3,24 +3,18 @@
 ##########
 # Checks #
 ##########
-
-# Detecto si el host es un container o no
-- name: Detection if node is a docker container
-  shell: cat /proc/self/cgroup |awk -F "/" '{print $2}' |head -1
-  register: is_docker
-  tags: always
-
+  
 # Obtengo hostname del nodo
 - name: Get the hostname of node
   command: hostname
   register: hostname
-  when: is_docker.stdout != "docker" and cluster == 0
+  when: cluster == 0
   tags: always
 
 # Obtengo IP del nodo
 - name: Get IP adress of node
   debug: msg={{ ansible_all_ipv4_addresses }}
-  when: is_docker.stdout != "docker" and cluster == 0
+  when: cluster == 0
   tags: always
 
 # Comparo si el hostname ingresado en el inventory es el mismo  de el nodo
@@ -28,7 +22,7 @@
   assert:
     that: "'{{ hostname.stdout }}' == '{{ omni_fqdn }}'"
     msg: "The hostname you inserted in inventory file is wrong, check it"
-  when: is_docker.stdout != "docker" and cluster == 0
+  when: cluster == 0
   tags: always
 
 # Comparo si la IP ingresada en el inventory es el mismo  de el nodo
@@ -36,7 +30,7 @@
   assert:
     that: "'{{ omni_ip }}' in ansible_all_ipv4_addresses"
     msg: "The IP you inserted in inventory file is wrong, check it"
-  when: is_docker.stdout != "docker" and cluster == 0
+  when: cluster == 0
   tags: always
 
 # nos aseguramos q' "omni_distribution" esté dentro de los SO permitidos. Si no es asi, esta task generara un error
@@ -47,8 +41,8 @@
 - name: Check omni_distribution
   fail: msg="omni_distribution con valor {{ ansible_os_family }} es invalida"
   when: (
+      ansible_os_family != "Alpine" and
       ansible_os_family != "RedHat" and
-      ansible_os_family != "Sangoma" and
       ansible_os_family != "Debian"
       )
   tags: always
@@ -85,14 +79,6 @@
   tags: always
   become: true
   become_method: sudo
-
-# Chequeo si el repositorio ya está clonado en DE
-- name: Check if Ominicontacto repository is cloned in {{ install_prefix }} (develop server)
-  shell: "[ -d {{ install_prefix }}ominicontacto ]"
-  failed_when: false
-  register: ominicontacto_exists
-  tags: always
-  when: desarrollo == 1
 
 # Chequeo si ics_app existe
 - name: Check if ics_app is installed in server

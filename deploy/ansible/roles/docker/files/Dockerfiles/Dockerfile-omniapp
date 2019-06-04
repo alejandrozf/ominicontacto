@@ -1,0 +1,25 @@
+FROM {{ base_image }}
+
+ENV INSTALL_LOCATION {{ install_prefix }}ominicontacto
+
+RUN apk update \
+    && apk add postgresql-client bash curl gettext libsasl libxslt libsass libjpeg-turbo openssl openssh-client py-pip sox postgresql-dev sed busybox-suid py-cairo py-lxml libffi py-lxml py-libxslt \
+    && apk add --virtual .build-deps build-base python-dev libxslt-dev libjpeg-turbo-dev jpeg-dev libffi-dev libass-dev py-cairo-dev libxslt-dev cairo-dev libffi-dev \
+    && addgroup -g 1000 -S omnileads &&  adduser -u 1000 -S omnileads -G omnileads -h {{ install_prefix }} -s /bin/bash \
+    && cd {{ install_prefix }} \
+    && mkdir -p .pip wombat-json bin backup media_root/reporte_campana static log run
+
+COPY scripts/pip.conf  {{ install_prefix }}.pip
+COPY requirements/* $INSTALL_LOCATION/requirements/
+COPY scripts/requirements.txt $INSTALL_LOCATION
+
+RUN pip install setuptools --upgrade \
+    && pip install -r $INSTALL_LOCATION/requirements.txt \
+    && rm -rf $INSTALL_LOCATION \
+    && apk del .build-deps build-base python-dev libxslt-dev jpeg-dev libffi-dev \
+    && chown -R omnileads. {{ install_prefix }} \
+    && sed -i 's/#   StrictHostKeyChecking ask/   StrictHostKeyChecking no/' /etc/ssh/ssh_config \
+    && sed -i 's/#   CheckHostIP yes/   CheckHostIP no/' /etc/ssh/ssh_config \
+    && echo "   UserKnownHostsFile /dev/null" >> /etc/ssh/ssh_config \
+    && mkdir /etc/asterisk && chown omnileads. /etc/asterisk \
+    && touch /var/spool/cron/crontabs/omnileads

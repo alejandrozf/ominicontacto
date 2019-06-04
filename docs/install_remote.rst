@@ -19,7 +19,11 @@ Pre-requisitos:
 - 4 GB de memoria RAM
 - En *Ubuntu / Debian*; Instalar el paquete sudo, openssh-server y phyton-minimal, permitir login SSH con el usuario root y reiniciar el servicio de ssh para que se tomen los cambios:
 
-::
+.. note::
+
+   En versiones menores a CentOS 7.6 es necesario primero hacer un yum update y luego reebotear el server
+
+.. code-block:: bash
 
   apt-get install sudo openssh-server python-minimal -y
   sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -36,7 +40,7 @@ Preparación en la máquina que ejecuta la instalación remota:
 
 Ubuntu - Debian:
 
-::
+.. code-block:: bash
 
   apt install git
   git clone https://gitlab.com/omnileads/ominicontacto.git
@@ -45,7 +49,7 @@ Ubuntu - Debian:
 
 CentOS:
 
-::
+.. code-block:: bash
 
   yum install git
   git clone https://gitlab.com/omnileads/ominicontacto.git
@@ -54,11 +58,12 @@ CentOS:
 
 - Debemos asegurarnos de contar con una clave pública generada en la carpeta /root/.ssh/
 
-::
+.. code-block:: bash
 
+   code content
    sudo ls -l /root/.ssh/
 
-Es probable ya contemos con una clave pública (id_rsa.pub), como se aprecia en la *figura 1*.
+Es probable que ya contemos con una clave pública (id_rsa.pub), como se aprecia en la *figura 1*.
 
 .. image:: images/install_id_rsa.png
 
@@ -68,7 +73,7 @@ En caso de NO disponer de una, se puede generar rápidamente con el siguiente co
 
 ::
 
- sudo ssh-keygen/install_sshkeygen_remote.png
+ sudo ssh-keygen
 
 .. image:: images/install_sshkeygen_remote.png
 
@@ -97,16 +102,15 @@ Preparación del archivo *inventory*:
 
 - En este paso, se debe editar el archivo *inventory* (PATH/ominicontacto/deploy/ansible). El mismo reside dentro del repositorio del proyecto, que se generó en la PC del sysadmin que ejecuta el deploy remoto.
 
-Nota: OMniLeads utiliza ansible para realizar la instalación, por lo tanto existe un "archivo de inventario" que debe ser modificado de acuerdo a los
-parámetros del host sobre el que estamos trabajando.
+.. note::
 
-Localizar la sección *[omnileads-aio]* y modificar la cadena 'hostname' por el hostname de nuestro servidor destino de la instalción. También en
-esta sección se debe editar el parámetro 'X.X.X.X' con la dirección IP del servidor.
+  OMniLeads utiliza ansible para realizar la instalación, por lo tanto existe un "archivo de inventario" que debe ser modificado de acuerdo a los parámetros del host sobre el que estamos trabajando.
 
+Localizar la sección *[omnileads-aio]* y modificar la cadena 'hostname' por el hostname de nuestro servidor destino de la instalción. También en esta sección se debe editar el parámetro 'X.X.X.X' con la dirección IP del servidor.
 
 .. image:: images/install_inventory_file_net_remote.png
 
-*Figure 5: inventory file network params section*
+*Figure 5: inventory file network parameters section*
 
 Además dentro del mismo archivo, unas líneas debajo encontraremos la sección *[everyyone:vars]*, en la cual se pueden alterar variables y contraseñas
 que vienen por defecto en el sistema.
@@ -119,12 +123,9 @@ que vienen por defecto en el sistema.
 
 .. image:: images/install_inventory_timezone.png
 
-*Figure 7: inevntory - Time Zone parameter*
+*Figure 7: inventory - Time Zone parameter*
 
-Es importante aclarar que cada vez que se corre el script "./deploy.sh" ya sea para instalar, re-instalar, actualizar, modificar la dirección IP de OML, etc.,
-el archivo de inventory se vuelve a "cero". No obstante se genera una copia del archivo (my_inventory), de manera tal que se cuente con los parámetros
-del sistema utilizados en la última ejecución del script.
-La copia en cuestión se ubica en el path donde ha sido clonado el repositorio de OML y bajo el nombre de "my_inventory" como lo expone la figura 6.
+Es importante aclarar que cada vez que se corre el script "./deploy.sh" ya sea para instalar, re-instalar, actualizar, modificar la dirección IP de OML, etc., el archivo de inventory se vuelve a "cero". No obstante se genera una copia del archivo (my_inventory), de manera tal que se cuente con los parámetros del sistema utilizados en la última ejecución del script. La copia en cuestión se ubica en el path donde ha sido clonado el repositorio de OML y bajo el nombre de "my_inventory" como lo expone la figura 6.
 
 .. image:: images/install_remote_my_inventory.png
 
@@ -139,9 +140,9 @@ raíz del proyecto (ominicontacto).
 
 Una vez configuradas las variables citadas, se procede con la ejecución del script de instalación (uitilizando sudo).
 
-::
+.. code-block:: bash
 
-  sudo ./deploy.sh -i -a
+  sudo ./deploy.sh -i
 
 .. image:: images/install_deploysh_remote.png
 
@@ -174,20 +175,12 @@ Si la ejecución de la instalación fue exitosa, entonces vamos por el primer ac
 Errores comunes:
 ^^^^^^^^^^^^^^^^
 
-- El server no tiene internet o no resuelve dominios (configuración de DNS).
+- El server no tiene internet o no resuelve dominios (configuración de DNS).*Compruebe el acceso a internet del host (por ej: actualizando paquetes - apt-get update | yum update).*
 
-*Compruebe el acceso a internet del host (por ej: actualizando paquetes - apt-get update | yum update).*
+- Timeout de algún paquete que se intenta bajar. Puede volver a intentar ejecutar el deploy y si vuelve a fallar, la opción puede ser. *Instalar el paquete desde la terminal.*
 
-- Timeout de algún paquete que se intenta bajar. Puede volver a intentar ejecutar el deploy y si vuelve a fallar, la opción puede ser
+- Falla por mala sintaxis o falta de definición de *hostname* y *dirección IP* en el archivo *inventory*. *Revisar archivo inventory*
 
-*Instalar el paquete desde la terminal.*
-
-- Falla por mala sintaxis o falta de definición de *hostname* y *dirección IP* en el archivo *inventory*.
-
-*Revisar archivo inventorys*
-
-- No se configuró correctamente el acceso ssh del host destino de la instalación.
-
-*Revisar estado del firewall. Comprobar acceso remoto por ssh con el usuario root*
+- No se configuró correctamente el acceso ssh del host destino de la instalación. *Revisar estado del firewall. Comprobar acceso remoto por ssh con el usuario root*
 
 - En caso de contar con algún host Ubuntu-Debian, recordar que se deben instalar paquetes como *sudo, openssh-server o python-minimal* antes de correr el script de *deploy.sh*

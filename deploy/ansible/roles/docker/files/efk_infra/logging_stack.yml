@@ -1,0 +1,55 @@
+---
+version: '2.4'
+services:
+  elasticsearch:
+    image: {{ elasticsearch_image }}
+    restart: always
+    environment:
+      - 'node.name=HEYJUDE'
+      - 'discovery.type=single-node'
+      - 'bootstrap.memory_lock=true'
+      - 'ES_JAVA_OPTS=-Xms256m -Xmx256m'
+    ports:
+      - 9200:9200
+  #   - 9300:9300
+    volumes:
+      - type: bind
+        source: /var/lib/elasticsearch
+        target: /usr/share/elasticsearch/data
+    networks:
+      - net
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        fluentd-async-connect: 'true'
+        fluentd-retry-wait: '1s'
+        fluentd-max-retries: '30'
+        tag: alpha.efk.elasticsearch
+
+  kibana:
+    image: {{ kibana_image }}
+    restart: always
+    depends_on:
+      - elasticsearch
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        fluentd-async-connect: 'true'
+        fluentd-retry-wait: '1s'
+        fluentd-max-retries: '30'
+        tag: alpha.efk.elasticsearch
+
+  fluentd:
+    image: {{ fluentd_image }}
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    volumes:
+      - ./efk:/fluentd/etc
+    logging:
+      driver: "json-file"
+      options:
+          max-size: "1G"
+          max-file: "2"

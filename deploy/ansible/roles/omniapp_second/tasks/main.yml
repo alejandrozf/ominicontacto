@@ -25,7 +25,7 @@
 
 - include: gluster-client.yml
   tags: ['omniapp']
-  when: cluster != 0 and is_docker.stdout != "docker"
+  when: cluster != 0
 
 - include: roles/prerequisitos/tasks/reboot.yml
   when: cluster != 0 and ansible_os_family == "RedHat"
