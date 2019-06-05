@@ -314,12 +314,14 @@ class DestinoEntrante(models.Model):
     HANGUP = 5
     SURVEY = 6
     VOICEMAIL = 7
+    IDENTIFICADOR_CLIENTE = 8
 
     TIPOS_DESTINOS = (
         (CAMPANA, _('Campaña entrante')),
         (VALIDACION_FECHA_HORA, _('Validación de fecha/hora')),
         (IVR, _('IVR')),
         (HANGUP, _('HangUp')),
+        (IDENTIFICADOR_CLIENTE, _('Identificador cliente')),
     )
     nombre = models.CharField(max_length=128, unique=True)
     tipo = models.PositiveIntegerField(choices=TIPOS_DESTINOS)
@@ -341,6 +343,8 @@ class DestinoEntrante(models.Model):
             tipo = cls.IVR
         elif isinstance(info_nodo_entrante, ValidacionFechaHora):
             tipo = cls.VALIDACION_FECHA_HORA
+        elif isinstance(info_nodo_entrante, IdentificadorCliente):
+            tipo = cls.IDENTIFICADOR_CLIENTE
         elif isinstance(info_nodo_entrante, HangUp):
             raise(_('Error: El nodo HangUp es único.'))
         kwargs = {
