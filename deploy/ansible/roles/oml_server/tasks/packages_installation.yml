@@ -51,7 +51,6 @@
     - pycairo
     - pycairo-devel
     - python
-    - python-pycha
     - python2-pip.noarch
     - python2-psycogreen.noarch
     - python-lxml
@@ -92,29 +91,16 @@
   become_method: sudo
   when: ansible_os_family == "Debian"
 
-# Habilitamos y empezamos redis. Redis es necesario para rtpengine y para django-defender
-- name: Modify bind port for redis
-  lineinfile: path=/etc/redis/redis.conf regexp=^bind line="bind 127.0.0.1" state=present
-  when: is_docker.stdout == "docker"
-
 - name: Start and enable redis service
   service: name=redis state=restarted enabled=yes
   become: yes
   become_method: sudo
-  when: is_docker.stdout != "docker"
-
-# Habilitamos y empezamos redis. Redis es necesario para rtpengine y para django-defender
-- name: Start and enable redis service (container)
-  service: name=redis-server state=restarted enabled=yes
-  become: yes
-  become_method: sudo
-  when: is_docker.stdout == "docker"
 
 #Esto es para ubuntu se desinstala el postgresql-11 que se instala por defecto
 - name: Stop of postgresql-11 service
   service: name=postgresql@11-main state=stopped
-  when: ansible_distribution == "Ubuntu" and is_docker.stdout != "docker"
+  when: ansible_distribution == "Ubuntu"
 
 - name: Uninstall of postgresql-11
   apt: name=postgresql-11 state=absent purge=yes
-  when: ansible_distribution == "Ubuntu" and is_docker.stdout != "docker"
+  when: ansible_distribution == "Ubuntu"

@@ -43,7 +43,7 @@
   become: true
   become_method: su
   become_user: "{{ usuario }}"
-  tags: postinstall
+  tags: ['changenetwork','postinstall','changepassword']
 
 # Se crea el usuario admin
 - name: Create admin superuser
@@ -56,7 +56,7 @@
 
 # Se crea un pequeño script que utiliza expect para setear automaticamente la password del superusuario
 - name: Change password of superuser
-  template: "src=templates/bin/changepassword.sh dest={{ install_prefix }}ominicontacto/changepassword.sh mode=0755"
+  template: "src=roles/omniapp_second/templates/bin/changepassword.sh dest={{ install_prefix }}ominicontacto/changepassword.sh mode=0755"
   tags: changepassword
 
 # Se ejecuta el script (verlo en templates para mas info)

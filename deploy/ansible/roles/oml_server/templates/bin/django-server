@@ -4,4 +4,4 @@
 
 export DJANGO_SETTINGS_MODULE=ominicontacto.settings.develop
 
-~/virtualenv/bin/python ~/ominicontacto/manage.py runsslserver 0.0.0.0:1210 --certificate /opt/omnileads/nginx_certs/cert.pem --key /opt/omnileads/nginx_certs/key.pem
+~/virtualenv/bin/python ~/ominicontacto/manage.py runsslserver 0.0.0.0:1210 --certificate {{ install_prefix}}certs/cert.pem --key {{ install_prefix}}certs/key.pem

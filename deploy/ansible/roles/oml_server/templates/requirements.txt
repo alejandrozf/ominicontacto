@@ -1,4 +1,4 @@
-{% if desarrollo == 1 %}
+{% if devenv == 1 %}
 -r requirements/develop.txt
 {% else %}
 -r requirements/production.txt

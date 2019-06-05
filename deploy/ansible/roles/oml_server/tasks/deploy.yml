@@ -24,14 +24,11 @@
 # Se crea la llave publica y privada del usuario omnileads #https://docs.ansible.com/ansible/2.5/modules/user_module.html
 - name: Create {{ usuario }} user and public key
   user: name={{ usuario }} generate_ssh_key=yes group={{ usuario }} ssh_key_bits=2048 state=present shell=/bin/bash
-  become: true
-  become_method: sudo
   tags: omniapp
 
 # Creo directorio padre, home del usuario omnileads
 - name: Create the ominicontacto directorie
   file: "dest={{ install_prefix }} state=directory owner={{ usuario }} group={{ usuario }} recurse=yes"
-  when: desarrollo == 0
   tags: omniapp
 
 # Se crean los directorios basicos
@@ -55,9 +52,10 @@
       # DOnde se guardan los logs uwsgi.log y django.log
           - "{{ install_prefix }}log"
           - "{{ install_prefix }}run"
-          - "{{ install_prefix }}asterisk/etc/asterisk"
+          - "{{ asterisk_location }}/etc/asterisk"
           - "{{ install_prefix}}virtualenv"
   tags: omniapp
+  ignore_errors: true
 
 #----------------------------------------------------------------------
 # pip / virtualenv
@@ -71,10 +69,10 @@
 # ics_app installed, do this
 #----------------------------------------------------------------------
 
-- name: Get the ics_settings settings in temp file
-  shell: cat {{ install_prefix }}local/oml_settings_local.py | grep "#ICS" -A200 > /tmp/oml_settings_local.py2
-  tags: ['postinstall','changenetwork','changepassword']
-  when: ics_exists.rc == 0
+#- name: Get the ics_settings settings in temp file
+#  shell: cat {{ install_prefix }}local/oml_settings_local.py | grep "#ICS" -A200 > /tmp/oml_settings_local.py2
+#  tags: ['postinstall','changenetwork','changepassword']
+#  when: ics_exists.rc == 0 or ics_exists is defined
 
 # El codigo que está en /var/tmp/ominicontacto_build/ se pasa a /opt/omnileeads/ominicontacto
 - name: Upload built (rsync to /ominicontacto)
@@ -93,13 +91,6 @@
     - test
     - tests
     - utiles_globales.py
-  when: desarrollo == 0
-  tags: postinstall
-
-# Se clona el repo si es un entorno de desarrollo
-- name: Clone of OML repository (develop server)
-  git: repo=https://gitlab.com/omnileads/ominicontacto.git dest={{ install_prefix }}ominicontacto/ accept_hostkey=yes force=yes accept_hostkey=yes version={{ rama }}
-  when: desarrollo == 1 and ominicontacto_exists.rc == 1
   tags: postinstall
 
 # Seteo posesion de ominicontacto al usuario omnileads
@@ -141,24 +132,17 @@
   tags: postinstall
 - meta: clear_host_errors
 
-##### Entorno de desarrollo
-
-# Agrego el comando django-server y 1210 para levantar y matar el entorno de omnileadsdesarrollo
-- name: Add django-server and kill-django-server scripts (develop server)
-  template: src=templates/bin/{{ item }} dest=/usr/bin/{{ item }} mode=755
-  with_items:
-    - django-server
-    - kill-django-server
-  when: desarrollo == 1
-  tags: postinstall
-
-- name: Copy the content of of ics_settings in oml_settings_local
-  shell: "cat /tmp/oml_settings_local.py2 >> oml_settings_local.py"
-  args:
-    chdir: "{{ install_prefix }}/local"
-  tags: ['changenetwork','postinstall','changepassword']
-  when: ics_exists.rc == 0
+#- name: Copy the content of of ics_settings in oml_settings_local
+#  shell: "cat /tmp/oml_settings_local.py2 >> oml_settings_local.py"
+#  args:
+#    chdir: "{{ install_prefix }}/local"
+#  tags: ['changenetwork','postinstall','changepassword']
+#  when: ics_exists.rc == 0 or ics_exists is defined
 
 - name: Erase old folder of settings
-  file: path={{ install_prefix }}ominicontacto/local/ state=absent
+  file: path={{ install_prefix }}{{ item }} state=absent
+  with_items:
+    - ominicontacto/oml_settings_local.py
+    - ominicontacto/oml_settings_local.pyc
+    - local/
   tags: ['never','postinstall']
