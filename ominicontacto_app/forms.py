@@ -1152,6 +1152,26 @@ class SitioExternoForm(forms.ModelForm):
             "objetivo": forms.Select(attrs={'class': 'form-control'}),
         }
 
+    def clean_url(self):
+        url = self.cleaned_data.get('url', None)
+        if url:
+            # Verificar que los placeholders están bien formados
+            # y tienen la forma la forma '{x}' con x digito
+            bien = url.count('{') == url.count('}')
+            if bien:
+                # omito el principio hasta el primer placehodler
+                subs = url.split('{')[1:]
+                # Las subcadenas restantes debe ser de la forma 'x}___'
+                for sub in subs:
+                    end = sub.find('}')
+                    bien = bien and end > 0 and sub[0:end].isdigit()
+                    if not bien:
+                        raise forms.ValidationError(_('Formato inválido'))
+
+            if bien:
+                return url
+            raise forms.ValidationError(_('Formato inválido'))
+
     def clean_objetivo(self):
         disparador = self.cleaned_data.get('disparador')
         objetivo = self.cleaned_data.get('objetivo')

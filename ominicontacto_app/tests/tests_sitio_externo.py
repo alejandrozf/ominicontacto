@@ -167,3 +167,21 @@ class TestsSitioExterno(OMLBaseTest):
         self.assertIn('nombre_2', parametros)
         self.assertEqual(parametros['nombre_1'], 'valor_1')
         self.assertEqual(parametros['nombre_2'], 'valor_2')
+
+    def test_obtener_beautiful_url_con_parametros(self):
+        self.sitio_externo.url = 'https://oml.com/{1}/{2}/{3}/{4}'
+        ParametrosCrmFactory(campana=self.campana, tipo=ParametrosCrm.DATO_CONTACTO,
+                             nombre='{1}', valor='telefono')
+        ParametrosCrmFactory(campana=self.campana, tipo=ParametrosCrm.DATO_CAMPANA,
+                             nombre='{2}', valor='id')
+        ParametrosCrmFactory(campana=self.campana, tipo=ParametrosCrm.DATO_LLAMADA,
+                             nombre='{3}', valor='call_id')
+        ParametrosCrmFactory(campana=self.campana, tipo=ParametrosCrm.CUSTOM,
+                             nombre='{4}', valor='valor_1')
+        url = self.sitio_externo.get_url_interaccion(self.agente, self.campana, self.contacto,
+                                                     self.call_data)
+        self.assertEqual(url,
+                         'https://oml.com/' + self.contacto.telefono + '/' + str(self.campana.id) +
+                         '/' + self.call_data['call_id'] + '/valor_1')
+        self.assertEqual(self.sitio_externo.get_parametros(self.agente, self.campana, self.contacto,
+                                                           self.call_data), {})
