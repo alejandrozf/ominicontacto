@@ -269,18 +269,18 @@ class IdentificadorCliente(models.Model):
     DESTINO_NO_MATCH = 'False'
     # el propio código de dialplan determina a partir de la entrada del usuario
     # qué acción tomar
-    SIN_INTERACCION_EXTERNA = 0
+    SIN_INTERACCION_EXTERNA = 1
 
     # el dialplan consultará al sitio externo especificado por 'url' pasandole como
     # parámetro la entrada del usuario y de acuerdo a la respuesta recibida ("True" o "False")
     # determinará que acción tomar
-    INTERACCION_EXTERNA_1 = 1
+    INTERACCION_EXTERNA_1 = 2
 
     # el dialplan consultará al sitio externo especificado por 'url' pasandole como
     # parámetro la entrada del usuario y de acuerdo a la respuesta recibida ((X, Y) o "False")
     # donde X es el tipo de node destino y Y el id del objeto dentro del nodo destino
     # determinará que acción tomar
-    INTERACCION_EXTERNA_2 = 2
+    INTERACCION_EXTERNA_2 = 3
 
     TIPOS_INTERACCIONES = (
         (SIN_INTERACCION_EXTERNA, _('Sin interacción externa')),
