@@ -56,6 +56,7 @@ ALLOWED_HOSTS = [
 ]
 
 OML_OMNILEADS_IP = os.getenv('OMNILEADS_IP')
+POSTGRES_HOST = os.getenv('PGHOST')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 's1+*bfrvb@=k@c&9=pm!0sijjewneu5p5rojil#q+!a2y&as-4'
@@ -63,7 +64,7 @@ SECRET_KEY = 's1+*bfrvb@=k@c&9=pm!0sijjewneu5p5rojil#q+!a2y&as-4'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'HOST': 'database',
+        'HOST': POSTGRES_HOST,
         'PORT': 5432,
         'NAME': 'omnileads',
         'USER': 'omnileads',
