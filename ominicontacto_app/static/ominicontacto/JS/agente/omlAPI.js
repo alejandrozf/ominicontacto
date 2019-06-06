@@ -23,12 +23,15 @@ class OMLAPI {
 
 	};
 
-    changeStatus(status, idagente) {
+    changeStatus(status, id_agente) {
+        // {% url 'agente_cambiar_estado'%}
+        var URL = Urls.agente_cambiar_estado(status, id_agente);
     	// TODO: Este request debería ser por POST
     	// {% url 'agente_cambiar_estado' status id_agente %}
         $.ajax({
             type: "get",
-            url: "/agente/cambiar_estado?estado=" + status + "&pk_agente=" + idagente,
+            url: URL,
+//            url: "/agente/cambiar_estado?estado=" + status + "&pk_agente=" + idagente,
             contentType: "text/html",
             success: function(msg) {
 
@@ -40,9 +43,11 @@ class OMLAPI {
     };
 
     getCampanasActivas(callback) {
+        // {% url 'service_campanas_activas'%}
+        var URL = Urls.service_campanas_activas();
         $.ajax({
             type: "get",
-            url: "/service/campana/activas/",
+            url: URL,
             contentType: "text/html",
             success: function(msg) {
             	callback(msg.campanas);
@@ -54,9 +59,11 @@ class OMLAPI {
     };
 
     getAgentes(callback) {
+        // {% url 'service_agentes_de_grupo'%}
+        var URL = Urls.service_agentes_de_grupo();
         $.ajax({
             type: "get",
-            url: "/service/agente/otros_agentes_de_grupo/",
+            url: URL,
             contentType: "text/html",
             success: function(msg) {
             	callback(msg.agentes);
@@ -68,13 +75,15 @@ class OMLAPI {
     };
 
     marcarLlamada(descripcion, uuid_llamada) {
-        var URl = "grabacion/marcar/";
+        // {% url 'grabacion_marcar'%}
+        var URL = Urls.grabacion_marcar();
+        // var URL = "grabacion/marcar/";
         var post_data = {
             "uid": uuid_llamada,
             "descripcion": descripcion
         };
         $.ajax({
-            url: URl,
+            url: URL,
             type: 'POST',
             dataType: 'json',
             data: post_data,
@@ -88,11 +97,20 @@ class OMLAPI {
     };
 
     guardarDuracionLlamada(duracion, idagt, numero_telefono, tipo_llamada, callback) {
-        $.ajax({
+         // {% url 'nueva_duracion_llamada'%}
+        var URL = Urls.nueva_duracion_llamada();
+       $.ajax({
             type: "get",
-            url: "/duracion/llamada/",
+            url: URL,
+            //url: "/duracion/llamada/",
             contentType: "text/html",
-            data: "duracion=" + duracion + "&agente=" + idagt + "&numero_telefono=" + numero_telefono + "&tipo_llamada=" + tipo_llamada,
+            data: {
+                duracion: duracion,
+                agente: idagt,
+                numero_telefono: numero_telefono,
+                tipo_llamada: tipo_llamada
+            },
+            //data: "duracion=" + duracion + "&agente=" + idagt + "&numero_telefono=" + numero_telefono + "&tipo_llamada=" + tipo_llamada,
             success: function(msg) {
             	callback(msg);
             },
@@ -103,8 +121,8 @@ class OMLAPI {
     };
 
     startClick2Call(agent_id, campaign_id, campaign_type, contact_id, phone, click2call_type) {
-        // {{ url' agente_llamar_contacto' }}
-        var URl = "/agente/llamar/";
+        // {% url 'agente_llamar_contacto'%}
+        var URL = Urls.agente_llamar_contacto();
         var post_data = {
             "pk_agente": agent_id,
             "pk_campana": campaign_id,
@@ -114,7 +132,28 @@ class OMLAPI {
             "click2call_type": click2call_type,
         };
         $.ajax({
-            url: URl,
+            url: URL,
+            type: 'POST',
+            data: post_data,
+            succes: function(msg) {
+
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
+                alert(gettext("No se pudo iniciar la llamada. Intente Nuevamente."))
+            }
+        });
+    };
+
+    startCallOutsideCampaign(destination_type, destination) {
+        // {% url 'agente_llamar_sin_campana'%}
+        var URL = Urls.agente_llamar_sin_campana();
+        var post_data = {
+            "tipo_destino": destination_type,
+            "destino": destination,
+        };
+        $.ajax({
+            url: URL,
             type: 'POST',
             data: post_data,
             succes: function(msg) {

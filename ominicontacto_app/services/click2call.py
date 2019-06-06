@@ -31,6 +31,8 @@ logger = _logging.getLogger(__name__)
 
 
 class Click2CallOriginator(object):
+    AGENT = 'AGENT'
+    EXTERNAL = 'EXTERNAL'
 
     def call_originate(self, agente, campana_id, tipo_campana,
                        contacto_id, telefono,
@@ -58,5 +60,48 @@ class Click2CallOriginator(object):
 
         except Exception as e:
             error = _("Originate failed by {0} - contacto: {1}".format(e, telefono))
+            logger.exception(error)
+            return error
+
+    def call_agent(self, agente_origen, agente_destino):
+        return self._call_without_campaign(agente_origen, self.AGENT, str(agente_destino.id))
+
+    def call_external(self, agente, numero):
+        return self._call_without_campaign(agente, self.EXTERNAL, numero)
+
+    def _call_without_campaign(self, agente, tipo_destino, numero):
+        variables = {
+            'origin': 'withoutCamp',
+            'FTSAGENTE': "{0}_{1}".format(agente.id,
+                                          agente.user.get_full_name())
+        }
+        if tipo_destino == self.AGENT:
+            context = 'oml-dial-internal'
+            exten = self.AGENT
+            variables['agent2Call'] = numero
+        else:   # tipo_destino == self.EXTERNAL
+            context = 'oml-dial-out'
+            exten = numero
+
+        channel = "Local/{0}@click2call/n".format(agente.sip_extension)
+
+        # Genero la llamada via originate por AMI
+        try:
+            client = AsteriskHttpClient()
+            client.login()
+            client.originate(channel, context, False, variables, True,
+                             exten=exten, priority=1, timeout=45000)
+
+        except AsteriskHttpOriginateError:
+            error = _("Originate failed - tipo_destino: {0}  - numero {1}".format(
+                tipo_destino, numero))
+            logger.exception(error)
+            return error
+
+        except Exception as e:
+            error = _("Originate failed - tipo_destino: {0}  - numero {0}".format(
+                tipo_destino, numero))
+            error = _("Originate failed by {0} - tipo_destino: {1}  - numero {2}".format(
+                e, tipo_destino, numero))
             logger.exception(error)
             return error
