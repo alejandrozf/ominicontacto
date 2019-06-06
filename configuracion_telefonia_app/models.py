@@ -392,8 +392,8 @@ class OpcionDestino(models.Model):
     destino_siguiente = models.ForeignKey(DestinoEntrante, related_name='destinos_anteriores')
 
     def __unicode__(self):
-        return _("Desde nodo {0} a nodo {1}".format(
-            self.destino_anterior.nombre, self.destino_siguiente.nombre))
+        return unicode(_("Desde nodo {0} a nodo {1}".format(
+            self.destino_anterior.nombre, self.destino_siguiente.nombre)))
 
     @classmethod
     def crear_opcion_destino(cls, destino_anterior, destino_siguiente, valor):

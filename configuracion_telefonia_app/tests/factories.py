@@ -159,6 +159,7 @@ class IdentificadorClienteFactory(DjangoModelFactory):
 
     nombre = Sequence(lambda n: "Identificador cliente {0}".format(n))
     url = Sequence(lambda n: "https://url{0}.net".format(n))
+    tipo_interaccion = lazy_attribute(lambda a: faker.random_int(1, 3))
     audio = SubFactory(ArchivoDeAudioFactory)
     longitud_id_esperado = lazy_attribute(lambda a: faker.random_int(3, 10))
     timeout = lazy_attribute(lambda a: faker.random_int(3, 7))
