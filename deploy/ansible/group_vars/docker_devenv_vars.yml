@@ -4,8 +4,9 @@
 # If you are installing a devenv (DE) AIO uncomment these line
 # If you are installing a devenv (DE) AIO uncomment these line
 
-version: de1.0
+version: de1.1
 customer: devenv
+root_password: toor123
 
 # Container names
 asterisk_fqdn: oml-asterisk

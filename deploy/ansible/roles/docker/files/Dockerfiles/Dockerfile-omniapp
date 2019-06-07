@@ -23,3 +23,9 @@ RUN pip install setuptools --upgrade \
     && echo "   UserKnownHostsFile /dev/null" >> /etc/ssh/ssh_config \
     && mkdir /etc/asterisk && chown omnileads. /etc/asterisk \
     && touch /var/spool/cron/crontabs/omnileads
+
+{% if devenv == 1 %}
+RUN apk add sudo \
+    && echo "omnileads ALL=(ALL:ALL) ALL" >> /etc/sudoers \
+    && echo 'omnileads:{{ root_password }}' | chpasswd
+{% endif %}

@@ -3,7 +3,7 @@
 # Docker hosts general variable
 
 # Images used
-asterisk_image: andrius/asterisk:debian-buster-slim-16-current
+asterisk_image: lionite/asterisk:16
 base_image: alpine:3.9
 dialer_image: tomcat:8.5-alpine
 kamailio_image: kamailio/kamailio-ci:5.2

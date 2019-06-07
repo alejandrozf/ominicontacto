@@ -8,8 +8,10 @@ DevEnv Image versions:
 1.0
   - DevEnv divided in microservices changing these services versions:
     Asterisk 16, Kamailio 5.2.2
-  - Deploy of the environment using ansible  
-
+  - Deploy of the environment using ansible
+1.1
+  - Omniapp container has root access using sudo
+  
 pbx-emulator image versions:
 
 0.1
