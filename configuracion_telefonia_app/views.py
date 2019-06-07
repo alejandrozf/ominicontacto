@@ -32,18 +32,20 @@ from django.db.models import Case, When, Max, Min
 from configuracion_telefonia_app.forms import (RutaSalienteForm, TroncalSIPForm, RutaEntranteForm,
                                                PatronDeDiscadoFormset, OrdenTroncalFormset,
                                                OpcionDestinoIVRFormset, IVRForm,
-                                               ValidacionTiempoFormset,
+                                               ValidacionTiempoFormset, IdentificadorClienteForm,
                                                OpcionDestinoValidacionFechaHoraFormset)
 from configuracion_telefonia_app.models import (RutaSaliente, RutaEntrante, TroncalSIP,
                                                 OrdenTroncal, DestinoEntrante, IVR, OpcionDestino,
-                                                GrupoHorario, ValidacionFechaHora)
+                                                GrupoHorario, ValidacionFechaHora,
+                                                IdentificadorCliente)
 from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     SincronizadorDeConfiguracionTroncalSipEnAsterisk, RestablecerConfiguracionTelefonicaError,
     SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk,
     SincronizadorDeConfiguracionRutaEntranteAsterisk,
     SincronizadorDeConfiguracionIVRAsterisk,
     SincronizadorDeConfiguracionValidacionFechaHoraAsterisk,
-    SincronizadorDeConfiguracionGrupoHorarioAsterisk
+    SincronizadorDeConfiguracionGrupoHorarioAsterisk,
+    SincronizadorDeConfiguracionIdentificadorClienteAsterisk
 )
 
 
@@ -800,10 +802,10 @@ class DeleteNodoDestinoMixin(object):
 
     @property
     def url_eliminar_name(self):
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def get_sincronizador_de_configuracion(self):
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -883,3 +885,133 @@ class ValidacionFechaHoraDeleteView(ValidacionFechaHoraMixin, DeleteNodoDestinoM
     imposible_eliminar = _('No se puede eliminar una Validación Fecha Hora mientras sea'
                            ' destino en un flujo de llamada.')
     nodo_eliminado = _(u'Se ha eliminado la Validación Fecha Hora.')
+
+
+class IdentificadorClienteListView(ListView):
+    """Lista los nodos de validación fecha/hora existentes"""
+    model = IdentificadorCliente
+    template_name = 'lista_identificador_cliente.html'
+    context_object_name = 'identificadores_cliente'
+    paginate_by = 40
+    ordering = ['id']
+
+
+class IdentificadorClienteMixin(object):
+
+    def get_success_url(self):
+        return reverse('lista_identificador_cliente')
+
+    def get_sincronizador_de_configuracion(self):
+        sincronizador = SincronizadorDeConfiguracionIdentificadorClienteAsterisk()
+        return sincronizador
+
+
+class IdentificadorClienteCreateView(IdentificadorClienteMixin, CreateView):
+    """Crea un IdentificadorCliente """
+    model = IdentificadorCliente
+    form_class = IdentificadorClienteForm
+    template_name = "crear_identificacion_cliente.html"
+    message = _('Se ha creado el Identificador de clientes con éxito')
+
+    def get_context_data(self, **kwargs):
+        context = super(IdentificadorClienteCreateView, self).get_context_data(**kwargs)
+        empty_queryset = OpcionDestino.objects.none()
+        initial_data = [{'valor': IdentificadorCliente.DESTINO_MATCH},
+                        {'valor': IdentificadorCliente.DESTINO_NO_MATCH}]
+        identificacion_cliente_formset = OpcionDestinoValidacionFechaHoraFormset(
+            prefix='identificacion_cliente', queryset=empty_queryset, initial=initial_data)
+        context['identificacion_cliente_formset'] = identificacion_cliente_formset
+        return context
+
+    def form_valid(self, form):
+        identificacion_cliente_formset = OpcionDestinoValidacionFechaHoraFormset(
+            self.request.POST, prefix='identificacion_cliente')
+
+        validacion_ok = False
+        salvar_opciones = False
+        if form.is_valid():
+            tipo_interaccion = form.cleaned_data.get('tipo_interaccion')
+            if tipo_interaccion == IdentificadorCliente.INTERACCION_EXTERNA_2:
+                validacion_ok = True
+            elif identificacion_cliente_formset.is_valid():
+                validacion_ok = True
+                salvar_opciones = True
+
+        if validacion_ok:
+            identificador = form.save()
+            nodo_identificador = DestinoEntrante.crear_nodo_ruta_entrante(identificador)
+            if salvar_opciones:
+                _asignar_destino_anterior(identificacion_cliente_formset, nodo_identificador)
+                identificacion_cliente_formset.save()
+
+            # escribe el nodo creado y sus relaciones en asterisk
+            sincronizador = self.get_sincronizador_de_configuracion()
+            escribir_nodo_entrante_config(self, identificador, sincronizador)
+            # muestra mensaje de éxito
+            messages.add_message(self.request, messages.SUCCESS, self.message)
+            return redirect(self.get_success_url())
+
+        else:
+            return render(
+                self.request, self.template_name,
+                {'form': form, 'identificacion_cliente_formset': identificacion_cliente_formset})
+
+
+class IdentificadorClienteUpdateView(IdentificadorClienteMixin, UpdateView):
+    """Edita un IdentificadorCliente"""
+    model = IdentificadorCliente
+    form_class = IdentificadorClienteForm
+    template_name = "editar_identificacion_cliente.html"
+    message = _('Se ha modificado el Identificador de clientes con éxito')
+
+    def get_context_data(self, **kwargs):
+        context = super(IdentificadorClienteUpdateView, self).get_context_data(**kwargs)
+        identificador = context['form'].instance
+        nodo_identificador = DestinoEntrante.objects.get(
+            object_id=identificador.pk,
+            content_type=ContentType.objects.get_for_model(identificador))
+        if identificador.tipo_interaccion == IdentificadorCliente.INTERACCION_EXTERNA_2:
+            empty_queryset = OpcionDestino.objects.none()
+            identificacion_cliente_formset = OpcionDestinoValidacionFechaHoraFormset(
+                prefix='identificacion_cliente', queryset=empty_queryset)
+        else:
+            queryset = nodo_identificador.destinos_siguientes.all()
+            identificacion_cliente_formset = OpcionDestinoValidacionFechaHoraFormset(
+                prefix='identificacion_cliente', queryset=queryset)
+        context['identificacion_cliente_formset'] = identificacion_cliente_formset
+        return context
+
+    def form_valid(self, form):
+        identificacion_cliente_formset = OpcionDestinoValidacionFechaHoraFormset(
+            self.request.POST, prefix='identificacion_cliente')
+
+        validacion_ok = False
+        salvar_opciones = False
+        if form.is_valid():
+            tipo_interaccion = form.cleaned_data.get('tipo_interaccion')
+            if tipo_interaccion == IdentificadorCliente.INTERACCION_EXTERNA_2:
+                validacion_ok = True
+            elif identificacion_cliente_formset.is_valid():
+                validacion_ok = True
+                salvar_opciones = True
+
+        if validacion_ok:
+            identificador = form.save()
+            nodo_identificador = DestinoEntrante.objects.get(
+                object_id=identificador.pk,
+                content_type=ContentType.objects.get_for_model(identificador))
+            if salvar_opciones:
+                _asignar_destino_anterior(identificacion_cliente_formset, nodo_identificador)
+                identificacion_cliente_formset.save()
+            else:
+                OpcionDestino.objects.filter(destino_anterior=nodo_identificador).delete()
+
+            # escribe el nodo creado y sus relaciones en asterisk
+            sincronizador = self.get_sincronizador_de_configuracion()
+            escribir_nodo_entrante_config(self, identificador, sincronizador)
+            # muestra mensaje de éxito
+            messages.add_message(self.request, messages.SUCCESS, self.message)
+            return redirect(self.get_success_url())
+        return render(
+            self.request, self.template_name,
+            {'form': form, 'identificacion_cliente_formset': identificacion_cliente_formset})

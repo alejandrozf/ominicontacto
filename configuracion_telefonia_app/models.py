@@ -323,12 +323,15 @@ class DestinoEntrante(models.Model):
         (HANGUP, _('HangUp')),
         (IDENTIFICADOR_CLIENTE, _('Identificador cliente')),
     )
-    nombre = models.CharField(max_length=128, unique=True)
+    nombre = models.CharField(max_length=128)
     tipo = models.PositiveIntegerField(choices=TIPOS_DESTINOS)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
     destinos = models.ManyToManyField('DestinoEntrante', through='OpcionDestino')
+
+    class Meta:
+        unique_together = ('tipo', 'object_id')
 
     def __unicode__(self):
         return unicode(_("{0}: {1}".format(self.get_tipo_display(), self.nombre)))
