@@ -2980,16 +2980,28 @@ class SitioExterno(models.Model):
     def get_parametros(self, agente, campana, contacto, datos_de_llamada):
         parametros = {}
         for parametro in campana.parametros_crm.all():
-            valor = parametro.obtener_valor(agente, contacto, datos_de_llamada)
-            parametros[parametro.nombre] = str(valor)
+            if not parametro.es_placeholder():
+                valor = parametro.obtener_valor(agente, contacto, datos_de_llamada)
+                parametros[parametro.nombre] = str(valor)
         return parametros
 
     def get_url_interaccion(self, agente, campana, contacto, datos_de_llamada, completa=False):
-        if completa:
-            parametros = self.get_parametros(agente, campana, contacto, datos_de_llamada)
-            return self.url + '?' + '&'.join([key + '=' + val for (key, val) in parametros.items()])
+        # Beauty
+        # Tomar parametros de tipo placeholder y reemplazarlos en la url
+        url = self.url
+        valores = {}
+        for parametro in campana.parametros_crm.all():
+            valor = str(parametro.obtener_valor(agente, contacto, datos_de_llamada))
+            if parametro.es_placeholder():
+                url = url.replace(parametro.nombre, valor)
+            else:
+                valores[parametro.nombre] = valor
+
+        valores = '&'.join([key + '=' + val for (key, val) in valores.items()])
+        if completa and valores:
+            return url + '?' + valores
         else:
-            return self.url
+            return url
 
     def get_configuracion_de_interaccion(self, agente, campana, contacto, datos_de_llamada):
         return {
@@ -3291,6 +3303,9 @@ class ParametrosCrm(models.Model):
     def __unicode__(self):
         return "Variable {0} con valor: {1} para la campana {2}".format(
             self.nombre, self.valor, self.campana)
+
+    def es_placeholder(self):
+        return self.nombre[0] == '{' and self.nombre[-1] == '}' and self.nombre[1:-1].isdigit()
 
     def obtener_valor(self, agente, contacto, datos_de_llamada):
         if self.tipo == ParametrosCrm.DATO_CAMPANA:
