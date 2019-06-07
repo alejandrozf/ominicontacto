@@ -2,7 +2,7 @@
 
 DOCKER="`which docker`"
 DOCKER_COMPOSE="`which docker-compose`"
-KAM_EXEC="$DOCKER exec -i {{ kamailio_fqdn}} bash -c"
+KAM_EXEC="$DOCKER exec -i {{ kamailio_fqdn}} sh -c"
 AST_EXEC="$DOCKER exec -i {{ asterisk_fqdn }} bash -c"
 OMNIAPP_EXEC="$DOCKER exec -i {{ omniapp_fqdn }} bash -c"
 
@@ -20,7 +20,7 @@ UpCommands() {
   else
     echo "SSH keys already created"
   fi
-  chmod 600 {{ omniapp_location }}/.ssh/id_rsa && chown -R {{ docker_user }}. {{ deploy_location }}
+  chmod 600 {{ omniapp_location }}/.ssh/id_rsa && chown -R {{ docker_user }}. {{ omniapp_location }}
 
   cd {{ deploy_location }}
   if [ ! -f .env ]; then
@@ -38,8 +38,6 @@ UpCommands() {
   for i in $(seq 0 6); do
     $AST_EXEC "if [ ! -f /etc/asterisk/${array[i]} ]; then ln -s /var/tmp/${array[i]} /etc/asterisk/${array[i]}; fi"
   done
-  echo "Creating symlink of kamailio.cfg file"
-  $KAM_EXEC "if [ ! -f /etc/kamailio/kamailio.cfg ]; then ln -s /var/tmp/kamailio.cfg /etc/asterisk/kamailio.cfg; fi"
   ast_ip=$(docker inspect -f {% raw %} "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" {% endraw %} {{ asterisk_fqdn }})
   dialer_ip=$(docker inspect -f {% raw %} "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" {% endraw %} {{ dialer_fqdn }})
   kam_ip=$(docker inspect -f {% raw %} "{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}" {% endraw %} {{ kamailio_fqdn }})
