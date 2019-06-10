@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-06 16:26-0300\n"
+"POT-Creation-Date: 2019-06-03 21:27-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,17 +17,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.6.0\n"
 
-# 7a015654d4c445fa9d7ecc21fc04a62a
+# e61aef3af88446e69deb9496fd08da8f
 #: ../../output.rst:3
 msgid "Metricas, grabaciones y supervisión"
 msgstr ""
 
-# 306900c82fc44595a8dad659ee6085ee
+# 8b791ea7cb5f485e9d7860a51427fecd
 #: ../../output.rst:6
 msgid "Grabaciones"
 msgstr ""
 
-# 42cb41958be04085a918d700251de0cd
+# 2056882f028844759f3d46bd7abe9fdb
 #: ../../output.rst:7
 msgid ""
 "Todas las campañas que operen con la opción de grabación de llamadas "
@@ -36,64 +36,68 @@ msgid ""
 "grabaciones utilizando los filtros como criterio de búsqueda."
 msgstr ""
 
-# dd91c996dbeb4b258dfca0e2a223b333
+# 2f42e0d984d748edbb241933d7968a0c
 #: ../../output.rst:17
 msgid "Output de las campañas entrantes"
 msgstr ""
 
-# 35dae743199b45a8bf0b247d07ffeb2d
+# 69e691a089e743a098463e6ca31281b2
 #: ../../output.rst:19
 msgid ""
 "En esta sección se expone y analiza todo lo inherente al \"output\" "
 "generado por las campañas de llamadas entrantes."
 msgstr ""
 
-# b6129959dabb4d839ad1e46dfac478dc
+# 5c33eeaa041c46059c32f7b705aedc4e
 #: ../../output.rst:27
 msgid "Output de las campañas salientes"
 msgstr ""
 
-# 0b9d4c5dfcda45e5ab9a53c104b64583
+# 69c9566e6841400db0090bffa8b3c35c
 #: ../../output.rst:29
 msgid ""
 "En esta sección se expone y analiza todo lo inherente al \"output\" "
 "generado por las campañas de llamadas salientes."
 msgstr ""
 
-# 31fcf4a7a7ad47d495554f829ccd1606
+# e1c969bf9ff94a88b8db04ce4eb3cf9e
 #: ../../output.rst:37
 msgid "Reportes general de llamadas"
 msgstr ""
 
-# 647cc7a2e71546e4bd86d5d7abadb0a4
+# 1c5b9909c20b4dc8981fed555303a479
 #: ../../output.rst:39
 msgid ""
 "Esta sección repasa cada informe generado por el reporte general de "
 "llamadas. *Reportes -- Llamadas*"
 msgstr ""
 
-# d2c1166e45194809b215f10821d33c7c
+# cf2cb66f11ed43238633a3cf05c6bd14
 #: ../../output.rst:47
 msgid "Reportes de agentes"
 msgstr ""
 
-# 3103569d56e240fa95094bab9657c3d8
+# 6e1e0cee896141d0864a047f3b5e4072
 #: ../../output.rst:49
 msgid ""
 "Esta sección repasa cada informe generado por el reporte general de "
 "actividad de agente. *Reportes – Agentes*"
 msgstr ""
 
-# d59f27f874b64a7f8014df243a355615
+# 5821d49cf54743808023758599243684
 #: ../../output.rst:57
-msgid "Supervisión relatime"
+msgid "Supervisión realtime"
 msgstr ""
 
-# 15cfa96387fb4eebb10edfaeacc09e3f
+# 141b394967c14d5194503df14ceec740
 #: ../../output.rst:59
 msgid "Esta sección repasa el módulo de supervisión de OMniLeads."
 msgstr ""
 
 #~ msgid "Reportes generales de llamadas"
+#~ msgstr ""
+
+# d59f27f874b64a7f8014df243a355615
+#~ msgid "Supervisión relatime"
 #~ msgstr ""
 

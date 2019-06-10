@@ -1,3 +1,5 @@
+.. _about_usecase_pbx:
+
 OML como Contact Center integrado a un PBX basado en SIP
 *********************************************************
 
@@ -16,6 +18,9 @@ Este esquema plantea romper con el paradigma tradicional de adquisición de un s
 .. image:: images/oml_and_pbx.png
         :align: center
 
+
+.. _about_usecase_bpo:
+
 OML en una Compañia de servicios de Customer Contact
 *****************************************************
 
@@ -29,6 +34,8 @@ conectados trabajando en simultánea.
 .. image:: images/oml_bpo.png
         :align: center
 
+
+.. _about_usecase_cloud:
 
 OML para Carriers ó Proveedores de Cloud PBX
 ********************************************

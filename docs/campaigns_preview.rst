@@ -1,3 +1,5 @@
+.. _about_previewcamp:
+
 *****************
 Campañas preview
 *****************

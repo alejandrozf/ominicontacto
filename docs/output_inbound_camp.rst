@@ -1,3 +1,8 @@
+.. _about_inbound_camp_reports:
+
+Reportes de Campañas Entrantes
+******************************
+
 En esta sección se cubren todos los reportes disponibles para una campaña de llamadas entrantes.
 
 .. image:: images/output_incamp_reports.png

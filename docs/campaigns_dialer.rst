@@ -1,11 +1,14 @@
+.. _about_dialercamp:
+
 ********************************
 Campañas con discador predictivo
 ********************************
 
 Omnileads pone a disposición el concepto de campañas de discado automático a través de un discador predictivo.
 
-**Importante: No se provee la funcionalidad de discador automático dentro de las prestaciones del software, para este tipo de campañas está contemplada la integración
-con** `Wombat Dialer <https://www.wombatdialer.com/>`_ . **La utilización de ese software está supeditada a la adquisición de la correspondiente licencia con el fabricante de Wombat Dialer.**
+.. important::
+
+  No se provee la funcionalidad de discador automático dentro de las prestaciones del software, para este tipo de campañas está contemplada la integración con `Wombat Dialer <https://www.wombatdialer.com/>`_.  La utilización de ese software está supeditada a la adquisición de la correspondiente licencia con el fabricante del software.
 
 Aclarado el tema del componente "engine dialer", se procede con la explicación de los parámetros en juego a la hora de generar una campaña con discado predictivo.
 
