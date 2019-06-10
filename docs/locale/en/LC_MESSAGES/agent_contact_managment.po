@@ -26,7 +26,8 @@ msgid ""
 "El agente puede ingresar a los contactos de cada campaña a la que se "
 "encuentra asignado. Esto se hace ingresando al punto de menú \"Contact - "
 "Contact list\"."
-msgstr ""
+msgstr "The agent can list all the contacts of each campaign to which it is assigned. This is achieved by entering the menu item \"Contact - "
+"Contact list\"."
 
 #: ../../agent_contact_managment.rst:7
 msgid ""
@@ -121,4 +122,3 @@ msgid ""
 "calificación o del formulario, en caso de tratarse de un contacto "
 "calificado con una calificación \"de gestión\"."
 msgstr ""
-

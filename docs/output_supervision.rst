@@ -1,3 +1,5 @@
+.. _about_supervision:
+
 Supervision
 ***********
 
@@ -7,14 +9,15 @@ Este módulo permite visualizar el estado de las campañas entrantes, campañas 
 
 *Figure 1: Choices for supervision*
 
-* **Agentes:**
+Visualización de status de Agentes
+***********************************
 
 En la sección de agentes se observan todos los agentes logueados en el sistema y el estado en el que se encuentran (READY, OnCall, Paused, Dialing, Offline) .
 
 .. important::
 
   * Un agente debe estar asignado al menos a una campaña para que aparezca en este módulo
-  * Luego de unos segundos un agente en estad Offline desaparece de la vista de agentes y vuelve a aparecer al reloguearse
+  * Cuando un agente pasa al estado "Offline" permanece solo unos segundos en dicho estado y luego desaparece del listado de agentes.
 
 .. image:: images/output_supervision_agentes.png
 
@@ -31,17 +34,19 @@ Un supervisor puede tomar acciones sobre cada agente. Para ello son los cuatro b
 
    El supervisor cuenta con un pequeño webphone. Para poder hacer estas acciones es necesario que aparezca el mensaje de **Supervisor Registrado**.
 
-* **Campañas entrantes:**
+Visualización de campañas entrantes
+***********************************
 
-Esta vista muestra como van la campañas entrantes en cuanto número de llamadas recibidas, atendidas, abandonadas, expiradas y cuantas gestiones se han hecho en el día:
+Esta vista expone un resumen de todas las campañas entrantes productivas, en término de los resultados acumulados del día de la operación; llamadas recibidas, atendidas, abandonadas, expiradas y gestiones (*) positivas dentro de cada campaña.
 
 .. image:: images/output_supervision_camp_entrantes.png
 
 *Figure3: view of realtime inbound campaigns*
 
-* **Campañas salientes:**
+Visualización de campañas salientes
+***********************************
 
-Esta vista muestra el total de atendidas, no atendidas y cuantas gestiones se han hecho de las campañas salientes, en el día.
+Al igual que en el punto anterior, las campañas salientes tambien cuentan con un resumen actualizado en tiempo real, de los resultados de cada campaña; llamadas discadas, atendidas, no atendidas y las gestiones (*) positivas de cada una.
 
 .. image:: images/output_supervision_camp_salientes.png
 
@@ -50,3 +55,7 @@ Esta vista muestra el total de atendidas, no atendidas y cuantas gestiones se ha
 .. note::
 
    Se entiende por día el día a dia de operación desde las 00:00 hasta las 23:59. En el siguiente día las estadísticas de campañas entrantes y salientes se resetean.
+
+.. note::
+
+  Se entiende por Gestión positiva a una llamada que el agente calificó con una calificación de gestión, calificación capaz de ejecutar un formulario de campaña.

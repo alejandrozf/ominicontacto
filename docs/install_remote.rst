@@ -1,3 +1,5 @@
+.. _about_install_remote:
+
 ********************************
 Instalación desde ansible remoto
 ********************************
@@ -165,12 +167,8 @@ Si la ejecución de la instalación finaliza exitosamente, se despliega una vist
 Primer acceso a OMniLeads:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Si la ejecución de la instalación fue exitosa, entonces vamos por el primer acceso a OMniLeads.
+Si la ejecución de la instalación fue exitosa, entonces podemos realizar un :ref:`about_first_access`.
 
-.. toctree::
-   :maxdepth: 2
-
-   install_first_access.rst
 
 Errores comunes:
 ^^^^^^^^^^^^^^^^

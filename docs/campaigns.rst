@@ -9,7 +9,7 @@ Una campaña representa una manera de clasificar dentro de la plataforma a una o
 - Un grupo de agentes procesando llamadas en un sentido (outbound o inbound).
 - Una base de contactos asociada a la campaña.
 - Un listado de calificaciones que se despliegan a la hora de clasificar la llamada gestionada por el agente.
-- Uno o varios formularios de campaña, a ser desplegados en caso de que el agente asigne una calificación de "gestión" asociada a alguno de los formularios, sobre la llamada en curso. El formulario es desplegado por dicha calificación y el agente puede completar el mismo según los datos del contacto en curso.
+- Uno o varios formularios de campaña, a ser desplegados en caso de que el agente asigne una calificación de "gestión" asociada a alguno de los formularios, sobre la llamada en curso. El formulario es desplegado por dicha calificación y el agente puede completar el mismo según los datos del contacto de la llamada en curso.
 
 En la figura 1, se ilustra todo lo citado en los ítems.
 
@@ -32,11 +32,11 @@ Calificaciones
 Las calificaciones constituyen un listado de etiquetas disponibles para ser vinculadas a cualquier campaña, de manera tal que luego las llamadas procesadas dentro de una campaña pueda ofrecer dichas calificaciones al agente
 afectado a una llamada i así éste ultimo pueda cerrar (temporal o definitivamente) la gestión de la llamada utilizando una de las calificaciones disponibles en la campaña como etiqueta para tipiicar la gestión.
 
-Las calificaciones las define el supervisor o administrador y se pueden relacionar a varios aspectos, por ejemplo:
+Las calificaciones las define el supervisor o administrador y se pueden relacionar con varios aspectos, por ejemplo:
 
 - El estado del contacto (respondió, no atendió, numero equivocado, etc.)
 - El resultado de la gestión (interesado, no interesado, se ofreció producto, se vendió, etc.)
-- La predisposición del contactado o el resultado de una encuesta de satisfacción (cliente conforme, enojado, etc.)
+- La predisposición del contactado o el resultado de una encuesta de satisfacción (cliente satisfecho/insatisfecho, etc.)
 
 Las calificaciones pueden ser totalmente arbitrarias y para generarlas se debe ingresar al punto de menú; *Campaigns → Call Dispositions → New Call Dispositions*.
 
@@ -103,7 +103,7 @@ Podemos generar un formulario de ejemplo de encuesta de satisfacción con el asp
 *Figure 9: Survey campaign form*
 
 
-Campañas VS Calificaciones VS Formularios
+Campañas, Calificaciones & Formularios
 *****************************************
 
 Para explicar la relación entre éstos componenetes, debemos recordar que múltiples formularios pueden ser asignados a una campaña. La idea es que diferentes calificaciones de una campaña
@@ -129,68 +129,35 @@ el formulario asociado a la calificación dentro de la campaña.
 
 *Figure 11: Engaged dispostions and forms*
 
-Interacción con un CRM externo
-******************************
-Esta funcionalidad permite lanzar una petición "HTTP - Get" utilizando datos de la llamada actual, desde OMniLeads hacia un CRM basado en tecnología web (requisito excluyente),
-permitiendo así que cada agente del call center disponga automáticamente de una vista del contacto de la comunicación actual, sobre el CRM Web externo.
-
-En cada llamada al CRM se pueden enviar datos de la llamada y el contacto como por ejemplo:
-
-- El "path" de la grabación de la llamada.
-- El "id" del agente.
-- El "id" de la campaña.
-- Cualquiera de las columnas de la base asociada a la campaña.
-
-Entre otros parámetros.
-
 Campañas Manuales
 *****************
 
-Dentro de este inciso se ejemplifica el paso a paso de cómo generar una campaña de llamadas manuales.
-
-.. toctree::
- :maxdepth: 2
-
- campaigns_manual.rst
+Dentro de este inciso se ejemplifica el paso a paso de cómo administrar :ref:`about_manualcamp`.
 
 
 Campañas Preview
 ****************
 
-En este inciso nos adentramos en el mundo de las campañas preview.
-
-.. toctree::
- :maxdepth: 2
-
- campaigns_preview.rst
-
+Dentro de este inciso se ejemplifica el paso a paso de cómo administrar :ref:`about_previewcamp`.
 
 Campañas con discador predictivo
 ********************************
 
-En este apartado desplegamos todo lo inherente a las campañas con discador predictivo.
-
-.. toctree::
- :maxdepth: 2
-
-
- campaigns_dialer.rst
-
+Dentro de este inciso se ejemplifica el paso a paso de cómo administrar :ref:`about_dialercamp`.
 
 Campañas Entrantes
 ******************
-En este capítulo se repasan todas las funcionalidades asociadas al tratamiento de llamadas entrantes.
 
+Al hablar de llamadas entrantes nos toca desplegar cada funcionalidad aplicable al flujo de llamadas entrantes, como bien sabemos una llamada entrante
+puede pasar por una serie "nodos" hasta finalmente conectar con un agente de atención. Por lo tanto vamos a ampliar el concepto de "campañas entrantes"
+a los siguientes ítems de configuración.
 
-.. toctree::
- :maxdepth: 2
+* :ref:`about_inboundcamp`.
+* :ref:`about_inboundroutes`.
+* :ref:`about_inboundroutespbx`.
+* :ref:`about_timeconditions`.
+* :ref:`about_ivr`.
 
-
- campaigns_inbound.rst
- campaigns_inbound_routes.rst
- campaigns_inbound_routes_frompbx.rst
- campaigns_inbound_ivr.rst
- campaigns_inbound_timeconditions.rst
 
 
 Plantillas de Campaña
@@ -208,3 +175,18 @@ una nueva campaña con todos los parámetros especificados en el template como c
 .. image:: images/campaigns_template.png
 
 *Figure 13: templates*
+
+Campañas e Interacción con CRM
+*******************************
+
+OMniLeads está diseñado desde una perspectiva en la que se prioriza una integración con el sistema de gestión predilecto del usuario. En lugar de forzar al mismo
+a tener que pasar su operación sobre un CRM propio del stack de contact center.
+
+Entre las funcionalidades contempladas se pueden listar:
+
+* Abrir una vista concreta del CRM en una comunicación entrante o saliente, utilizando parámetros de la comunicación (id del agente, id del contacto, id de la campaña, etc.) como información dinámica para invocar al CRM.
+* Permitir realizar una llamada "click to call" desde una vista de contacto en el CRM y accionar así una llamada a través de una campaña y agente de OMniLeads.
+* Permitir calificar la gestión de un contacto del CRM y que la calificación se impacte en OMniLeads, de manera tal que exista una correlación entre el sistema CRM y el sistema de Contact Center dentro de cada campaña.
+* OMniLeads en las llamadas entrantes puede solicitar el ID del llamante y notificar al CRM para que éste decida sobre que campaña de OMniLeads encaminar una llamada.
+
+Ampliamos todos estos conceptos y configuraciones en el siguiente link :ref:`about_crm`.

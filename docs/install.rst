@@ -1,11 +1,10 @@
+.. _about_install:
+
 ******************************
-Procedimientos de instalación
+Instalación de OMniLeads
 ******************************
 En este capítulo se detallan los tre tipos de instalación de OMniLeads
 
-.. toctree::
-   :maxdepth: 2
-
-   install_self_hosted.rst
-   install_remote.rst
-   install_cluster.rst
+* :ref:`about_install_selfhosted`.
+* :ref:`about_install_remote`.
+* :ref:`about_install_cluster`.

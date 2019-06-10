@@ -1,3 +1,5 @@
+.. _about_install_cluster:
+
 *******************************
 Horizontal Cluster Installation
 *******************************
@@ -135,12 +137,7 @@ Si la ejecución de la instalación finaliza exitosamente, se despliega una vist
 Primer acceso a OMniLeads:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Si la ejecución de la instalación fue exitosa, entonces vamos por el primer acceso a OMniLeads.
-
-.. toctree::
-   :maxdepth: 2
-
-   install_first_access.rst
+Si la ejecución de la instalación fue exitosa, entonces podemos realizar un :ref:`about_first_access`.
 
 Errores comunes:
 ^^^^^^^^^^^^^^^^
