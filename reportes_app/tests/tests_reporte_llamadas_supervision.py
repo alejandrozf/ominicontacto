@@ -50,12 +50,7 @@ class ReporteDeLLamadasEntrantesDeSupervisionTest(TestCase):
 
     def test_reporte_vacio(self):
         reporte = ReporteDeLLamadasEntrantesDeSupervision(self.supervisor.user)
-        self.assertIn(self.entrante1.id, reporte.estadisticas)
-        self.assertEqual(reporte.estadisticas[self.entrante1.id]['recibidas'], 0)
-        self.assertEqual(reporte.estadisticas[self.entrante1.id]['atendidas'], 0)
-        self.assertEqual(reporte.estadisticas[self.entrante1.id]['expiradas'], 0)
-        self.assertEqual(reporte.estadisticas[self.entrante1.id]['abandonadas'], 0)
-        self.assertEqual(reporte.estadisticas[self.entrante1.id]['gestiones'], 0)
+        self.assertNotIn(self.entrante1.id, reporte.estadisticas)
         self.assertNotIn(self.entrante2.id, reporte.estadisticas)
 
     def test_contabiliza_atendidas(self):
@@ -134,11 +129,7 @@ class ReporteDeLLamadasSalientesDeSupervisionTest(TestCase):
     def test_reporte_vacio(self):
         reporte = ReporteDeLLamadasSalientesDeSupervision(self.supervisor.user)
         for id_campana in [self.manual.id, self.dialer.id, self.preview.id]:
-            self.assertIn(id_campana, reporte.estadisticas)
-            self.assertEqual(reporte.estadisticas[id_campana]['efectuadas'], 0)
-            self.assertEqual(reporte.estadisticas[id_campana]['conectadas'], 0)
-            self.assertEqual(reporte.estadisticas[id_campana]['no_conectadas'], 0)
-            self.assertEqual(reporte.estadisticas[id_campana]['gestiones'], 0)
+            self.assertNotIn(id_campana, reporte.estadisticas)
         self.assertNotIn(self.manual2.id, reporte.estadisticas)
         self.assertNotIn(self.dialer2.id, reporte.estadisticas)
         self.assertNotIn(self.preview2.id, reporte.estadisticas)

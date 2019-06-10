@@ -28,56 +28,60 @@ from ominicontacto_app.utiles import datetime_hora_maxima_dia, datetime_hora_min
 
 class ReporteDeLlamadasDeSupervision(object):
     def __init__(self, user_supervisor):
-        campanas = self._obtener_campanas(user_supervisor)
-        self.campanas_ids = list(campanas.values_list('id', flat=True))
+        query_campanas = self._obtener_campanas(user_supervisor)
+        self.campanas = {}
+        for campana in query_campanas:
+            self.campanas[campana.id] = campana
 
         hoy = now().date()
         self.desde = datetime_hora_minima_dia(hoy)
         self.hasta = datetime_hora_maxima_dia(hoy)
 
         self.estadisticas = {}
-        self._inicializar_conteo_de_estadisticas(campanas)
         self._contabilizar_estadisticas_de_llamadas()
         self._contabilizar_gestiones()
 
-    def _inicializar_conteo_de_estadisticas(self, campanas):
-        for campana in campanas:
-            datos_campana = self.INICIALES.copy()
-            datos_campana['nombre'] = force_text(campana.nombre)
-            self.estadisticas[campana.id] = datos_campana
+    def _inicializar_conteo_de_campana(self, campana):
+        datos_campana = self.INICIALES.copy()
+        datos_campana['nombre'] = force_text(campana.nombre)
+        self.estadisticas[campana.id] = datos_campana
 
     def _contabilizar_gestiones(self):
         # Contabilizo las gestiones
         calificaciones = CalificacionCliente.objects.filter(
             fecha__gte=self.desde,
             fecha__lte=self.hasta,
-            opcion_calificacion__campana_id__in=self.campanas_ids,
+            opcion_calificacion__campana_id__in=self.campanas.keys(),
             opcion_calificacion__tipo=OpcionCalificacion.GESTION
         ).values('opcion_calificacion__campana_id').annotate(
             cantidad=Count('opcion_calificacion__campana_id'))
 
         for cantidad in calificaciones:
             campana_id = cantidad['opcion_calificacion__campana_id']
+            if campana_id not in self.estadisticas:
+                self._inicializar_conteo_de_campana(self.campanas[campana_id])
             self.estadisticas[campana_id]['gestiones'] = cantidad['cantidad']
 
     def _contabilizar_estadisticas_de_llamadas(self):
         logs = self._obtener_logs_de_llamadas()
         for log in logs:
+            if log.campana_id not in self.estadisticas:
+                self._inicializar_conteo_de_campana(self.campanas[log.campana_id])
             estadisticas_campana = self.estadisticas[log.campana_id]
             self._contabilizar_tipos_de_llamada_por_campana(estadisticas_campana, log)
 
     @property
     def INICIALES(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     def _obtener_campanas(user_supervisor):
-        raise NotImplemented
+        raise NotImplementedError
 
     def _obtener_logs_de_llamadas(self):
-        raise NotImplemented
+        raise NotImplementedError
 
     def _contabilizar_tipos_de_llamada_por_campana(self, datos_campana, log):
-        raise NotImplemented
+        raise NotImplementedError
 
 
 class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
@@ -101,7 +105,7 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
     def _obtener_logs_de_llamadas(self):
         return LlamadaLog.objects.filter(time__gte=self.desde,
                                          time__lte=self.hasta,
-                                         campana_id__in=self.campanas_ids,
+                                         campana_id__in=self.campanas.keys(),
                                          event__in=self.EVENTOS_LLAMADA,
                                          tipo_llamada=LlamadaLog.LLAMADA_ENTRANTE)
 
@@ -140,7 +144,7 @@ class ReporteDeLLamadasSalientesDeSupervision(ReporteDeLlamadasDeSupervision):
     def _obtener_logs_de_llamadas(self):
         return LlamadaLog.objects.filter(time__gte=self.desde,
                                          time__lte=self.hasta,
-                                         campana_id__in=self.campanas_ids,
+                                         campana_id__in=self.campanas.keys(),
                                          event__in=self.EVENTOS_LLAMADA)
 
     def _contabilizar_tipos_de_llamada_por_campana(self, datos_campana, log):
