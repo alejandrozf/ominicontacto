@@ -1,4 +1,6 @@
-Primer acceso a OMniLeads:
+.. _about_first_access:
+
+Primer acceso a OMniLeads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Para acceder al sistema OMniLeads debe ingresar a:

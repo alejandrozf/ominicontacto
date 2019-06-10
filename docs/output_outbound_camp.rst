@@ -1,3 +1,8 @@
+.. _about_outbound_camp_reports:
+
+Reportes de Campañas Salientes
+*******************************
+
 En esta sección se cubren todos los reportes disponibles para una campaña de llamadas salientes.
 
 

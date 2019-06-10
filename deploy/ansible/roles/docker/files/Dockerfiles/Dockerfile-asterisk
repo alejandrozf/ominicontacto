@@ -10,13 +10,19 @@ RUN apt-get update -y \
     && apt-get update -y \
     && apt-get install sngrep -y \
     && cd /var/lib/asterisk/ \
+    && rm -rf /var/lib/asterisk/sounds/ \
     && wget https://freetech.com.ar:20851/sounds/sounds.tar.gz --no-check-certificate \
     && tar xzvf sounds.tar.gz \
     && rm -rf /var/lib/asterisk/sounds.tar.gz \
-    && mkdir /var/lib/asterisk/sounds/oml/ \
     && mkdir /run/sshd \
     && sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config \
     && sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd \
     && echo "export VISIBLE=now" >> /etc/profile
 
+VOLUME /var/lib/asterisk/sounds
+
+{% if devenv == 1 %}
+EXPOSE 22 5038/tcp 7088/tcp
+{% else %}
 EXPOSE 22
+{% endif %}
