@@ -39,8 +39,7 @@ from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
-    SistemaExterno,
-    ReglasIncidencia, UserApiCrm, SupervisorProfile, ArchivoDeAudio,
+    SistemaExterno, ReglasIncidencia, SupervisorProfile, ArchivoDeAudio,
     NombreCalificacion, OpcionCalificacion, ParametrosCrm, AgenteEnSistemaExterno
 )
 from ominicontacto_app.services.campana_service import CampanaService
@@ -1327,24 +1326,6 @@ class QueueDialerForm(forms.ModelForm):
 
         if not instance.pk:
             self.initial['wrapuptime'] = 2
-
-
-class UserApiCrmForm(forms.ModelForm):
-
-    class Meta:
-        model = UserApiCrm
-        fields = ('usuario', 'password')
-
-        widgets = {
-            "usuario": forms.TextInput(attrs={'class': 'form-control'}),
-            "password": forms.PasswordInput(attrs={'class': 'form-control'}),
-        }
-
-    def clean_usuario(self):
-        usuario = self.cleaned_data['usuario']
-        if ' ' in usuario:
-            raise forms.ValidationError(_('El usuario no puede contener espacios'))
-        return usuario
 
 
 ROL_CHOICES = ((SupervisorProfile.ROL_GERENTE, _('Supervisor Gerente')),

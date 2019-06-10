@@ -28,22 +28,19 @@ import logging as logging_
 
 from django.utils.translation import ugettext as _
 from django.contrib import messages
-from django.contrib.auth.hashers import check_password
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
-from django.http import JsonResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.views.generic.detail import DetailView
-from django.views.decorators.csrf import csrf_exempt
 
 from simple_history.utils import update_change_reason
 
 from ominicontacto_app.forms import (CalificacionClienteForm, FormularioNuevoContacto,
                                      RespuestaFormularioGestionForm)
 from ominicontacto_app.models import (
-    Contacto, Campana, CalificacionCliente, AgenteProfile, RespuestaFormularioGestion,
-    OpcionCalificacion, UserApiCrm, SitioExterno)
+    Contacto, Campana, CalificacionCliente, RespuestaFormularioGestion,
+    OpcionCalificacion, SitioExterno)
 from ominicontacto_app.services.sistema_externo.interaccion_sistema_externo import (
     InteraccionConSistemaExterno)
 
@@ -361,60 +358,6 @@ class CalificacionClienteFormView(FormView):
         return reverse('recalificacion_formulario_update_or_create',
                        kwargs={"pk_campana": self.campana.id,
                                "pk_contacto": self.contacto.id})
-
-
-@csrf_exempt
-def calificacion_cliente_externa_view(request):
-    """Servicio externo para calificar via post"""
-    if request.method == 'POST':
-        received_json_data = json.loads(request.body)
-        # tener en cuenta que se espera json con estas claves
-        data_esperada = ['pk_campana', 'id_cliente', 'id_calificacion', 'id_agente',
-                         'user_api', 'password_api']
-        for data in data_esperada:
-            if data not in received_json_data.keys():
-                return JsonResponse({'status': 'Error en falta {0}'.format(data)})
-
-        try:
-            usuario = UserApiCrm.objects.get(
-                usuario=received_json_data['user_api'])
-            received_password = received_json_data['password_api']
-            if check_password(received_password, usuario.password):
-                campana = Campana.objects.get(pk=received_json_data['pk_campana'])
-                contacto = Contacto.objects.get(pk=received_json_data['id_cliente'])
-                opcion_calificacion = OpcionCalificacion.objects.get(
-                    pk=received_json_data['id_calificacion'])
-                agente = AgenteProfile.objects.get(pk=received_json_data['id_agente'])
-                try:
-                    calificacion = CalificacionCliente.objects.get(
-                        contacto=contacto, opcion_calificacion__campana=campana)
-                    calificacion.opcion_calificacion = opcion_calificacion
-                    calificacion.agente = agente
-                    calificacion.save()
-                except CalificacionCliente.DoesNotExist:
-                    calificacion = CalificacionCliente.objects.create(
-                        campana=campana, contacto=contacto, opcion_calificacion=opcion_calificacion,
-                        agente=agente)
-            else:
-                return JsonResponse({'status': 'no coinciden usuario y/o password'})
-        except UserApiCrm.DoesNotExist:
-            return JsonResponse({'status': 'no existe este usuario {0}'.format(
-                received_json_data['user_api'])})
-        except Campana.DoesNotExist:
-            return JsonResponse({'status': 'no existe esta campaña {0}'.format(
-                received_json_data['pk_campana'])})
-        except Contacto.DoesNotExist:
-            return JsonResponse({'status': 'no existe este contacto {0}'.format(
-                received_json_data['id_cliente'])})
-        except CalificacionCliente.DoesNotExist:
-            return JsonResponse({'status': 'no existe esta calificación {0}'.format(
-                received_json_data['id_calificacion'])})
-        except AgenteProfile.DoesNotExist:
-            return JsonResponse({'status': 'no existe este perfil de agente {0}'.format(
-                received_json_data['id_agente'])})
-        return JsonResponse({'status': 'OK'})
-    else:
-        return JsonResponse({'status': 'este es un metodo post'})
 
 
 ######################################

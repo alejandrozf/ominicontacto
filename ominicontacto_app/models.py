@@ -3115,14 +3115,6 @@ class ReglasIncidencia(models.Model):
             return ""
 
 
-class UserApiCrm(models.Model):
-    usuario = models.CharField(max_length=64, unique=True, verbose_name=_('Usuario'))
-    password = models.CharField(max_length=128, verbose_name=_('Contraseña'))
-
-    def __unicode__(self):
-        return self.usuario
-
-
 class AgenteEnContactoManager(models.Manager):
 
     def contacto_asignado(self, agente_id, campana_id):

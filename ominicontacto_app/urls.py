@@ -27,7 +27,7 @@ from ominicontacto_app import (
     views_grabacion, views_calificacion, views_formulario, views_agente,
     views_calificacion_cliente, views_campana, views_campana_reportes, views_pdf,
     views_agenda_contacto, views_campana_dialer_creacion, views_campana_dialer,
-    views_back_list, views_sitio_externo, views_queue_member, views_user_api_crm,
+    views_back_list, views_sitio_externo, views_queue_member,
     views_campana_dialer_template, views_campana_manual_creacion, views_campana_manual,
     views_campana_preview, views_archivo_de_audio, views_user_profiles, views_sistema_externo
 )
@@ -502,11 +502,6 @@ urlpatterns = [
         kwargs={'from': 'calificacion', 'pk_contacto': None, 'manual': True},
         name="calificar_por_telefono"),
 
-    url(r'^calificacion_cliente/externa/$',
-        views_calificacion_cliente.calificacion_cliente_externa_view,
-        name='calificacion_cliente_externa'
-        ),
-
     # Respuesta de Formulario para Calificación de Gestión
     url(r'^formulario/venta/(?P<pk>\d+)/detalle/$',
         agente_requerido(
@@ -812,25 +807,6 @@ urlpatterns = [
         administrador_o_supervisor_requerido(views_queue_member.queue_member_delete_view),
         name='queue_member_elimina',
     ),
-    # ==========================================================================
-    # UserApiCrm
-    # ==========================================================================
-    url(r'^user_api_crm/create/$',
-        administrador_requerido(views_user_api_crm.UserApiCrmCreateView.as_view()),
-        name='user_api_crm_create',
-        ),
-    url(r'^user_api_crm/(?P<pk>\d+)/update/$',
-        administrador_requerido(views_user_api_crm.UserApiCrmUpdateView.as_view()),
-        name='user_api_crm_update',
-        ),
-    url(r'^user_api_crm/(?P<pk>\d+)/delete/$',
-        login_required(views_user_api_crm.UserApiCrmDeleteView.as_view()),
-        name='user_api_crm_delete',
-        ),
-    url(r'^user_api_crm/list/$',
-        administrador_requerido(views_user_api_crm.UserApiCrmListView.as_view()),
-        name='user_api_crm_list',
-        ),
 
     # ==========================================================================
     # Campana Dialer Template
@@ -903,12 +879,6 @@ urlpatterns = [
             views_campana_preview.CampanaPreviewTemplateDeleteView.as_view()),
         name="campana_preview_template_delete"),
 
-    # ==========================================================================
-    # API para Base de Datos de Contactos
-    # ==========================================================================
-    url(r'^base_de_datos/cargar_nueva/$',
-        views_base_de_datos_contacto.cargar_base_datos_view,
-        name="cargar_base_datos_api"),
     # ==========================================================================
     # Archivo de Audio
     # ==========================================================================

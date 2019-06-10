@@ -102,15 +102,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             </ul>
                         </li>
 
-                        {% if user.get_is_administrador %}
-                        <li>
-                            <a href="{% url 'user_api_crm_list' %}">{% trans 'Usuarios api crm' %}</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'user_api_crm_create' %}">{% trans 'Nuevo usuario api crm' %}</a>
-                        </li>
-                        {% endif %}
-
                         <li>
                             <a href="{% url 'grupo_list' %}">{% trans 'Grupos de agentes' %}</a>
                         </li>
