@@ -1015,3 +1015,12 @@ class IdentificadorClienteUpdateView(IdentificadorClienteMixin, UpdateView):
         return render(
             self.request, self.template_name,
             {'form': form, 'identificacion_cliente_formset': identificacion_cliente_formset})
+
+
+class IdentificadorClienteDeleteView(IdentificadorClienteMixin, DeleteNodoDestinoMixin, DeleteView):
+    model = IdentificadorCliente
+    template_name = 'eliminar_identificador_cliente.html'
+    url_eliminar_name = 'eliminar_identificador_cliente'
+    imposible_eliminar = _('No se puede eliminar un Identificador de clientes '
+                           'que es destino en un flujo de llamada.')
+    nodo_eliminado = _(u'Se ha eliminado el Identificador de Clientes.')

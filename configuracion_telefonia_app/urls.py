@@ -145,7 +145,7 @@ urlpatterns = [
         name='editar_identificador_cliente',
         ),
     url(r'^configuracion_telefonia/identificador_cliente/(?P<pk>\d+)/eliminar/$',
-        administrador_o_supervisor_requerido(views.IdentificadorClienteUpdateView.as_view()),
+        administrador_o_supervisor_requerido(views.IdentificadorClienteDeleteView.as_view()),
         name='eliminar_identificador_cliente',
         ),
 ]
