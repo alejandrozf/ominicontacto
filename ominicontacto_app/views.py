@@ -376,6 +376,7 @@ class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
         context['agente_profile'] = agente_profile
         context['sip_usuario'] = sip_usuario
         context['sip_password'] = sip_password
+        context['agentes'] = AgenteProfile.objects.obtener_activos().exclude(id=agente_profile.id)
 
         return context
 
@@ -604,7 +605,7 @@ class RegistroFormView(FormView):
         except AttributeError:
             msg = _('No tiene settings de conexión configurados')
             logger.error(msg)
-            return {'status': _('ERROR'), 'msg': msg}
+            return {'status': 'ERROR', 'msg': msg}
         post_data = {'client': client, 'password': password, 'email': email, 'phone': telefono}
         try:
             result = requests.post(

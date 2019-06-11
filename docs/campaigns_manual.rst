@@ -1,6 +1,8 @@
-********************
+.. _about_manualcamp:
+
+*****************
 Campañas manuales
-********************
+*****************
 
 Para crear una nueva campaña manual se debe ingresar al punto de menú *Manual Campaigns -> New  Campaign*. El proceso de creación consta de
 un wizard de dos pantallas.

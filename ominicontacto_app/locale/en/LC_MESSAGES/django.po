@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-14 16:23-0300\n"
+"POT-Creation-Date: 2019-06-11 18:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -215,7 +215,7 @@ msgstr "search"
 #: ominicontacto_app/templates/agenda_contacto/agenda_agente.html:74
 #: ominicontacto_app/templates/agenda_contacto/agenda_detalle.html:87
 #: ominicontacto_app/templates/agente/agenda_agente.html:103
-#: ominicontacto_app/templates/agente/base_agente.html:345
+#: ominicontacto_app/templates/agente/base_agente.html:371
 #: ominicontacto_app/templates/busqueda_grabacion.html:83
 #: ominicontacto_app/templates/historico_calificaciones.html:29
 msgid "Fecha"
@@ -922,7 +922,7 @@ msgid "CONTESTADOR"
 msgstr "Answering Machine detected"
 
 #: ominicontacto_app/models.py:2971
-#: ominicontacto_app/templates/agente/base_agente.html:303
+#: ominicontacto_app/templates/agente/base_agente.html:329
 #: ominicontacto_app/templates/registration/login.html:52
 #: ominicontacto_app/templates/user/delete_user.html:27
 msgid "Usuario"
@@ -961,7 +961,7 @@ msgid "ID de Agente"
 msgstr "Agent ID"
 
 #: ominicontacto_app/models.py:3143
-#: ominicontacto_app/templates/agente/base_agente.html:609
+#: ominicontacto_app/templates/agente/base_agente.html:635
 #: ominicontacto_app/templates/agente/contactos_content.html:61
 #: ominicontacto_app/templates/agente/contactos_telefonos_repetidos.html:59
 #: ominicontacto_app/templates/agente/identificar_contacto.html:74
@@ -1300,15 +1300,25 @@ msgstr "Unable to find next field to change order."
 msgid "No se encontro un campo anterior para cambiar el orden."
 msgstr "Unable to find precedent field to change order."
 
-#: ominicontacto_app/services/click2call.py:55
+#: ominicontacto_app/services/click2call.py:57
 #, python-brace-format
 msgid "Originate failed - contacto: {0} "
 msgstr "Originate failed - contact: {0}"
 
-#: ominicontacto_app/services/click2call.py:60
+#: ominicontacto_app/services/click2call.py:62
 #, python-brace-format
 msgid "Originate failed by {0} - contacto: {1}"
 msgstr "Originate failed by {0} - contact: {1}"
+
+#: ominicontacto_app/services/click2call.py:96
+#, python-brace-format
+msgid "Originate failed - tipo_destino: {0}  - numero {1}"
+msgstr "Originate failed - destiny type: '{0}' - number: {1} "
+
+#: ominicontacto_app/services/click2call.py:102
+#, python-brace-format
+msgid "Originate failed by {0} - tipo_destino: {1}  - numero {2}"
+msgstr "Originate failed by {0} - destiny type: '{1}' - number: {2}"
 
 #: ominicontacto_app/services/creacion_queue.py:60
 #: ominicontacto_app/services/regeneracion_asterisk.py:71
@@ -1784,14 +1794,12 @@ msgid "volver a inicio."
 msgstr "Go back to home page"
 
 #: ominicontacto_app/templates/acerca/acerca.html:26
-#, fuzzy
-#| msgid "Acerca  de la Aplicación"
 msgid "Acerca de la Aplicación"
 msgstr "About Application"
 
 #: ominicontacto_app/templates/acerca/acerca.html:28
 msgid "Rama"
-msgstr ""
+msgstr "Branch"
 
 #: ominicontacto_app/templates/acerca/acerca.html:30
 msgid "Commit"
@@ -1892,7 +1900,7 @@ msgid "Volver a Calificación"
 msgstr "Back to Call Disposition"
 
 #: ominicontacto_app/templates/agenda_contacto/create_agenda_contacto.html:136
-#: ominicontacto_app/templates/agente/base_agente.html:125
+#: ominicontacto_app/templates/agente/base_agente.html:126
 #: ominicontacto_app/templates/agente/contacto_create_update_form.html:43
 #: ominicontacto_app/templates/archivo_audio/nuevo_edita_archivo_audio.html:54
 #: ominicontacto_app/templates/base_create_update_form.html:32
@@ -1908,7 +1916,7 @@ msgid "Guardar"
 msgstr "Save"
 
 #: ominicontacto_app/templates/agente/agenda_agente.html:80
-#: ominicontacto_app/templates/agente/base_agente.html:490
+#: ominicontacto_app/templates/agente/base_agente.html:516
 msgid "Agendas"
 msgstr "Agenda"
 
@@ -1950,96 +1958,108 @@ msgstr "There are no events for today"
 msgid "OmniLeads"
 msgstr "Omnileads"
 
-#: ominicontacto_app/templates/agente/base_agente.html:69
+#: ominicontacto_app/templates/agente/base_agente.html:70
 msgid "Tomar Pausa"
 msgstr "Pause"
 
-#: ominicontacto_app/templates/agente/base_agente.html:82
+#: ominicontacto_app/templates/agente/base_agente.html:83
 #: ominicontacto_app/templates/campana_dialer/campana_list.html:287
 #: ominicontacto_app/templates/campana_dialer/campana_list.html:358
 msgid "Iniciar"
 msgstr "Start"
 
-#: ominicontacto_app/templates/agente/base_agente.html:93
+#: ominicontacto_app/templates/agente/base_agente.html:94
 msgid "Llamada Entrante"
 msgstr "Incoming Call"
 
-#: ominicontacto_app/templates/agente/base_agente.html:98
+#: ominicontacto_app/templates/agente/base_agente.html:99
 msgid "De:"
 msgstr "From:"
 
-#: ominicontacto_app/templates/agente/base_agente.html:100
+#: ominicontacto_app/templates/agente/base_agente.html:101
 msgid "Info extra:"
 msgstr "Extra Info:"
 
-#: ominicontacto_app/templates/agente/base_agente.html:105
+#: ominicontacto_app/templates/agente/base_agente.html:106
 msgid "Responder"
 msgstr "Reply"
 
-#: ominicontacto_app/templates/agente/base_agente.html:106
+#: ominicontacto_app/templates/agente/base_agente.html:107
 msgid "Rechazar"
 msgstr "Reject"
 
-#: ominicontacto_app/templates/agente/base_agente.html:117
+#: ominicontacto_app/templates/agente/base_agente.html:118
 msgid "Marcación de Llamada"
 msgstr "Tag Call"
 
-#: ominicontacto_app/templates/agente/base_agente.html:136
+#: ominicontacto_app/templates/agente/base_agente.html:137
 msgid "Llam.  Manual a Campaña"
 msgstr "Manual Call to Campaign"
 
-#: ominicontacto_app/templates/agente/base_agente.html:148
+#: ominicontacto_app/templates/agente/base_agente.html:149
 msgid "Ok"
 msgstr "Ok"
 
-#: ominicontacto_app/templates/agente/base_agente.html:159
+#: ominicontacto_app/templates/agente/base_agente.html:160
+msgid "Llamada fuera de Campaña"
+msgstr "Out of Campaign Call"
+
+#: ominicontacto_app/templates/agente/base_agente.html:169
+msgid "Llamar Agente"
+msgstr "Call Agent"
+
+#: ominicontacto_app/templates/agente/base_agente.html:174
+msgid "Llamar numero"
+msgstr "Dial number"
+
+#: ominicontacto_app/templates/agente/base_agente.html:185
 msgid "Transferir"
 msgstr "Transfer"
 
-#: ominicontacto_app/templates/agente/base_agente.html:164
+#: ominicontacto_app/templates/agente/base_agente.html:190
 msgid "Tipo de transferencia:"
 msgstr "Transfer Type"
 
-#: ominicontacto_app/templates/agente/base_agente.html:167
+#: ominicontacto_app/templates/agente/base_agente.html:193
 msgid "Ciega"
 msgstr "Blind"
 
-#: ominicontacto_app/templates/agente/base_agente.html:173
+#: ominicontacto_app/templates/agente/base_agente.html:199
 msgid "Asistida"
 msgstr "Consultative"
 
-#: ominicontacto_app/templates/agente/base_agente.html:182
+#: ominicontacto_app/templates/agente/base_agente.html:208
 msgid "a Número"
 msgstr "To Number"
 
-#: ominicontacto_app/templates/agente/base_agente.html:192
+#: ominicontacto_app/templates/agente/base_agente.html:218
 msgid "a Campaña"
 msgstr "To Campaign"
 
-#: ominicontacto_app/templates/agente/base_agente.html:203
+#: ominicontacto_app/templates/agente/base_agente.html:229
 msgid "a Agente"
 msgstr "To Agent"
 
-#: ominicontacto_app/templates/agente/base_agente.html:211
+#: ominicontacto_app/templates/agente/base_agente.html:237
 msgid "Hecho"
 msgstr "Done"
 
-#: ominicontacto_app/templates/agente/base_agente.html:268
+#: ominicontacto_app/templates/agente/base_agente.html:294
 msgid "WebChat"
 msgstr "WebChat"
 
-#: ominicontacto_app/templates/agente/base_agente.html:287
-#: ominicontacto_app/templates/agente/base_agente.html:354
-#: ominicontacto_app/templates/agente/base_agente.html:386
-#: ominicontacto_app/templates/agente/base_agente.html:437
+#: ominicontacto_app/templates/agente/base_agente.html:313
+#: ominicontacto_app/templates/agente/base_agente.html:380
+#: ominicontacto_app/templates/agente/base_agente.html:412
+#: ominicontacto_app/templates/agente/base_agente.html:463
 msgid "Enviar"
 msgstr "Send"
 
-#: ominicontacto_app/templates/agente/base_agente.html:293
+#: ominicontacto_app/templates/agente/base_agente.html:319
 msgid "Acción"
 msgstr "Action"
 
-#: ominicontacto_app/templates/agente/base_agente.html:302
+#: ominicontacto_app/templates/agente/base_agente.html:328
 #: ominicontacto_app/templates/campana/campana_list.html:66
 #: ominicontacto_app/templates/campana/campana_list.html:126
 #: ominicontacto_app/templates/campana/llamadas_activas.html:44
@@ -2059,44 +2079,44 @@ msgstr "Action"
 msgid "Estado"
 msgstr "Status"
 
-#: ominicontacto_app/templates/agente/base_agente.html:304
+#: ominicontacto_app/templates/agente/base_agente.html:330
 msgid "Chatear"
 msgstr "Chat"
 
-#: ominicontacto_app/templates/agente/base_agente.html:321
-#: ominicontacto_app/templates/agente/base_agente.html:330
+#: ominicontacto_app/templates/agente/base_agente.html:347
+#: ominicontacto_app/templates/agente/base_agente.html:356
 msgid "Mensajes"
 msgstr "Messages"
 
-#: ominicontacto_app/templates/agente/base_agente.html:333
-#: ominicontacto_app/templates/agente/base_agente.html:612
+#: ominicontacto_app/templates/agente/base_agente.html:359
+#: ominicontacto_app/templates/agente/base_agente.html:638
 msgid "Registro"
 msgstr "History"
 
-#: ominicontacto_app/templates/agente/base_agente.html:342
+#: ominicontacto_app/templates/agente/base_agente.html:368
 msgid "Desde"
 msgstr "From"
 
-#: ominicontacto_app/templates/agente/base_agente.html:343
+#: ominicontacto_app/templates/agente/base_agente.html:369
 msgid "A"
 msgstr "To"
 
-#: ominicontacto_app/templates/agente/base_agente.html:344
-#: ominicontacto_app/templates/agente/base_agente.html:365
-#: ominicontacto_app/templates/agente/base_agente.html:382
+#: ominicontacto_app/templates/agente/base_agente.html:370
+#: ominicontacto_app/templates/agente/base_agente.html:391
+#: ominicontacto_app/templates/agente/base_agente.html:408
 msgid "Mensaje"
 msgstr "Message"
 
-#: ominicontacto_app/templates/agente/base_agente.html:353
+#: ominicontacto_app/templates/agente/base_agente.html:379
 msgid "El contenido de tu mensaje de texto aqui"
 msgstr "Please write the message content here"
 
-#: ominicontacto_app/templates/agente/base_agente.html:364
-#: ominicontacto_app/templates/agente/base_agente.html:378
+#: ominicontacto_app/templates/agente/base_agente.html:390
+#: ominicontacto_app/templates/agente/base_agente.html:404
 msgid "Tel"
 msgstr "Phone Number"
 
-#: ominicontacto_app/templates/agente/base_agente.html:366
+#: ominicontacto_app/templates/agente/base_agente.html:392
 #: ominicontacto_app/templates/agente/contactos_content.html:62
 #: ominicontacto_app/templates/agente/identificar_contacto.html:78
 #: ominicontacto_app/templates/agente/reporte_agente_calificaciones.html:100
@@ -2128,15 +2148,15 @@ msgstr "Phone Number"
 msgid "Acciones"
 msgstr "Actions"
 
-#: ominicontacto_app/templates/agente/base_agente.html:383
+#: ominicontacto_app/templates/agente/base_agente.html:409
 msgid "El contenido de tu mensaje de texto aquí"
 msgstr "Please write the message content here"
 
-#: ominicontacto_app/templates/agente/base_agente.html:387
+#: ominicontacto_app/templates/agente/base_agente.html:413
 msgid "Nuevos:"
 msgstr "New:"
 
-#: ominicontacto_app/templates/agente/base_agente.html:397
+#: ominicontacto_app/templates/agente/base_agente.html:423
 #: ominicontacto_app/templates/busqueda_grabacion.html:159
 #: ominicontacto_app/templates/campana/campana_list.html:152
 #: ominicontacto_app/templates/campana/detalle_campana.html:54
@@ -2148,39 +2168,39 @@ msgstr "New:"
 msgid "Cerrar"
 msgstr "Close"
 
-#: ominicontacto_app/templates/agente/base_agente.html:409
+#: ominicontacto_app/templates/agente/base_agente.html:435
 msgid "Facebook"
 msgstr "Facebook"
 
-#: ominicontacto_app/templates/agente/base_agente.html:419
+#: ominicontacto_app/templates/agente/base_agente.html:445
 msgid "Conversaciones"
 msgstr "Chats"
 
-#: ominicontacto_app/templates/agente/base_agente.html:434
+#: ominicontacto_app/templates/agente/base_agente.html:460
 msgid "Escribe un mensaje..."
 msgstr "Write a message..."
 
-#: ominicontacto_app/templates/agente/base_agente.html:443
+#: ominicontacto_app/templates/agente/base_agente.html:469
 msgid "Fin"
 msgstr "End"
 
-#: ominicontacto_app/templates/agente/base_agente.html:477
+#: ominicontacto_app/templates/agente/base_agente.html:503
 #: ominicontacto_app/templates/agente/contacto_list.html:52
 #: ominicontacto_app/templates/base.html:299
 msgid "Contactos"
 msgstr "Contacts"
 
-#: ominicontacto_app/templates/agente/base_agente.html:481
+#: ominicontacto_app/templates/agente/base_agente.html:507
 msgid "Nuevo contacto"
 msgstr "New contact"
 
-#: ominicontacto_app/templates/agente/base_agente.html:484
+#: ominicontacto_app/templates/agente/base_agente.html:510
 #: ominicontacto_app/templates/base_datos_contacto/base_datos_ocultas.html:42
 #: ominicontacto_app/templates/base_datos_contacto/lista_base_datos_contacto.html:77
 msgid "Lista de contactos"
 msgstr "Contact List"
 
-#: ominicontacto_app/templates/agente/base_agente.html:494
+#: ominicontacto_app/templates/agente/base_agente.html:520
 #: ominicontacto_app/templates/base.html:242
 #: ominicontacto_app/templates/calificacion/calificacion_list.html:26
 #: ominicontacto_app/templates/campana/campana_list.html:93
@@ -2201,97 +2221,105 @@ msgstr "Contact List"
 msgid "Calificaciones"
 msgstr "Call Dispositions"
 
-#: ominicontacto_app/templates/agente/base_agente.html:499
+#: ominicontacto_app/templates/agente/base_agente.html:525
 #: ominicontacto_app/templates/base.html:181
 #: ominicontacto_app/templates/campana_preview/campana_list.html:88
 msgid "Campañas preview"
 msgstr "Preview Campaigns"
 
-#: ominicontacto_app/templates/agente/base_agente.html:554
+#: ominicontacto_app/templates/agente/base_agente.html:580
 #: ominicontacto_app/templates/base.html:418
 msgid "Salir"
 msgstr "Exit"
 
-#: ominicontacto_app/templates/agente/base_agente.html:565
+#: ominicontacto_app/templates/agente/base_agente.html:591
 msgid "Operación:"
 msgstr "Operation:"
 
-#: ominicontacto_app/templates/agente/base_agente.html:569
+#: ominicontacto_app/templates/agente/base_agente.html:595
 msgid "Pausa:"
 msgstr "Pause"
 
-#: ominicontacto_app/templates/agente/base_agente.html:580
+#: ominicontacto_app/templates/agente/base_agente.html:606
 #: ominicontacto_app/templates/campana_dialer/campana_list.html:142
 msgid "Pausar"
 msgstr "Pause"
 
-#: ominicontacto_app/templates/agente/base_agente.html:583
+#: ominicontacto_app/templates/agente/base_agente.html:609
 msgid "Reaundar"
 msgstr "Resume"
 
-#: ominicontacto_app/templates/agente/base_agente.html:650
+#: ominicontacto_app/templates/agente/base_agente.html:676
 #: ominicontacto_app/templates/agente/identificar_contacto.html:94
 #: ominicontacto_app/templates/contactos/busqueda_contacto.html:78
 msgid "Llamar"
 msgstr "Dial"
 
-#: ominicontacto_app/templates/agente/base_agente.html:653
+#: ominicontacto_app/templates/agente/base_agente.html:679
 msgid "Finalizar llamada"
 msgstr "End Call"
 
-#: ominicontacto_app/templates/agente/base_agente.html:656
+#: ominicontacto_app/templates/agente/base_agente.html:682
 msgid "Rellamar"
 msgstr "Redial"
 
-#: ominicontacto_app/templates/agente/base_agente.html:659
+#: ominicontacto_app/templates/agente/base_agente.html:685
 msgid "Marcar Llamada"
 msgstr "Tag Call"
 
-#: ominicontacto_app/templates/agente/base_agente.html:672
+#: ominicontacto_app/templates/agente/base_agente.html:698
 msgid "Transfer"
 msgstr "Transfer"
 
-#: ominicontacto_app/templates/agente/base_agente.html:673
+#: ominicontacto_app/templates/agente/base_agente.html:699
+msgid "Confer"
+msgstr "Confer"
+
+#: ominicontacto_app/templates/agente/base_agente.html:702
 msgid "Cancel Transfer"
 msgstr "Cancel Transfer"
 
-#: ominicontacto_app/templates/agente/base_agente.html:674
+#: ominicontacto_app/templates/agente/base_agente.html:703
 msgid "Hold"
 msgstr "Hold"
 
-#: ominicontacto_app/templates/agente/base_agente.html:677
-msgid "campaña: "
+#: ominicontacto_app/templates/agente/base_agente.html:706
+msgid "Campaña: "
 msgstr "Campaign: "
 
-#: ominicontacto_app/templates/agente/base_agente.html:685
+#: ominicontacto_app/templates/agente/base_agente.html:709
+msgid "Llamar Fuera de Campaña: "
+msgstr "Call Out of Campaign"
+
+#: ominicontacto_app/templates/agente/base_agente.html:717
 msgid "tipo"
 msgstr "type"
 
-#: ominicontacto_app/templates/agente/base_agente.html:685
+#: ominicontacto_app/templates/agente/base_agente.html:717
 msgid "número"
 msgstr "phone number"
 
-#: ominicontacto_app/templates/agente/base_agente.html:685
+#: ominicontacto_app/templates/agente/base_agente.html:717
 msgid "fecha"
 msgstr "date"
 
-#: ominicontacto_app/templates/agente/base_agente.html:737
+#: ominicontacto_app/templates/agente/base_agente.html:769
 msgid "SMS"
 msgstr "SMS"
 
-#: ominicontacto_app/templates/agente/base_agente.html:743
+#: ominicontacto_app/templates/agente/base_agente.html:775
 msgid "Webphone"
 msgstr "Webphone"
 
-#: ominicontacto_app/templates/agente/base_agente.html:749
+#: ominicontacto_app/templates/agente/base_agente.html:781
 msgid "Webchat"
 msgstr "WebChat"
 
-#: ominicontacto_app/templates/agente/base_agente.html:755
+#: ominicontacto_app/templates/agente/base_agente.html:787
 msgid "Social chat"
 msgstr "Social Networks"
 
-#: ominicontacto_app/templates/agente/base_agente.html:762
+#: ominicontacto_app/templates/agente/base_agente.html:794
 msgid "Email"
 msgstr "Email"
 
@@ -4442,7 +4470,7 @@ msgstr "Queue Basic Information"
 
 #: ominicontacto_app/templates/queue/queue_member.html:60
 msgid "SIP id"
-msgstr ""
+msgstr "SIP id"
 
 #: ominicontacto_app/templates/registration/login.html:24
 msgid "Logueo Usuario"
@@ -4461,10 +4489,8 @@ msgid "Ingresar"
 msgstr "Log In"
 
 #: ominicontacto_app/templates/registro.html:11
-#, fuzzy
-#| msgid "No se encontraron reglas creadas."
 msgid "Ya se encuentra registrado"
-msgstr "There are no rules"
+msgstr "Already registered"
 
 #: ominicontacto_app/templates/sitio_externo/create_update_form.html:26
 msgid "Editar sitio externo"
@@ -4719,24 +4745,20 @@ msgid ""
 msgstr ""
 "Agent that is trying to login with is inactive. Please reach your supervisor."
 
-#: ominicontacto_app/views.py:553
+#: ominicontacto_app/views.py:554
 msgid "Supervision: Funcion valida para usuario tipo supervisor!!!"
 msgstr "Supervision: valid function for supervisor user!"
 
-#: ominicontacto_app/views.py:605
+#: ominicontacto_app/views.py:606
 msgid "No tiene settings de conexión configurados"
 msgstr "You don't have connection settings configured"
 
-#: ominicontacto_app/views.py:607
-msgid "ERROR"
-msgstr ""
-
-#: ominicontacto_app/views.py:613
+#: ominicontacto_app/views.py:614
 #, python-brace-format
 msgid "Error en el intento de conexión a: {0} debido {1}"
 msgstr "Connection error to: {0} due to {1}"
 
-#: ominicontacto_app/views.py:624
+#: ominicontacto_app/views.py:625
 msgid "Credenciales creadas para esta instancia"
 msgstr "Created credentials for this instance"
 
@@ -5147,9 +5169,3 @@ msgstr "<strong>Warning!</strong> with the following error{0} "
 #: ominicontacto_app/views_user_profiles.py:194
 msgid "El usuario fue actualizado correctamente"
 msgstr "User updated successfully"
-
-#~ msgid "Branch"
-#~ msgstr "Branch"
-
-#~ msgid "Llamadas Activas"
-#~ msgstr "Active Calls"

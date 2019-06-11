@@ -50,6 +50,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <script type="text/javascript" src="{% static 'ominicontacto/JS/daterangepicker.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/ranges-datepicker.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/config_datetimepicker.js' %}"></script>
+    <script type="text/javascript" src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
     {% endcompress %}
     <script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
     <!-- librerías opcionales que activan el soporte de HTML5 para IE8 -->
@@ -146,6 +147,31 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </div>
             <div class="modal-footer">
                 <button type="button" id="SelectCamp" class="btn btn-primary">{% trans 'Ok' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal que se despliega al dar clic en Marcar Llamada Fuera de Campaña -->
+<div id="modalCallOffCamp" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" style="max-width:400px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">{% trans 'Llamada fuera de Campaña' %}</h2>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-footer">
+                <select class="form-control" id="agente_off_camp">
+                    {% for agente in agentes %}
+                        <option value = "{{ agente.id }}"> {{ agente.user.get_full_name }} </option>
+                    {% endfor %}
+                </select>
+                <button type="button" id="call_agent" class="btn btn-primary">{% trans 'Llamar Agente' %}</button>
+            </div>
+            <div class="modal-footer">
+                <label for="number_off_camp" ></label>
+                <input type="text" id="phone_off_camp" id="phone_off_camp" class="form-control"/>
+                <button type="button" id="call_phone_off_campaign" class="btn btn-primary">{% trans 'Llamar numero' %}</button>
             </div>
         </div>
     </div>
@@ -677,7 +703,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                     <button id="onHold" value="*198" class="btn btn-outline-secondary" disabled="disabled">{% trans 'Hold' %}</button>
                                 </div>
                                 <button id="changeCampAssocManualCall" class="btn btn-outline-secondary btn-sm">
-                                    {% trans 'campaña: ' %}<span id="campAssocManualCall"></span>
+                                    {% trans 'Campaña: ' %}<span id="campAssocManualCall"></span>
+                                </button>
+                                <button id="call_off_campaign_menu" class="btn btn-outline-secondary btn-sm">
+                                    {% trans 'Llamar Fuera de Campaña: ' %}
                                 </button>
                             </div>
                         </div>

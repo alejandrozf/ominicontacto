@@ -1,3 +1,21 @@
+Llamadas hacia otros agentes
+*****************************
+
+Para ejecutar una llamada hacia otro agente de OMniLeads, debemos acudir al botón "Llamar fuera de campaña" disponible en la parte inferior del webphone.
+Al hundir dicho botón se despliega una ventana que nos facilita la selección de un agente del listado total para luego ejecutar la llamada (Figura 1).
+
+Llamadas externas sin campaña asociada
+***************************************
+
+A veces es necesario ejecutar una llamada hacia el exterior (número de abonado o extensión de la central PBX), sin la necesidad de gestionar el contacto,
+sin más bien lanzar la llamada sin más. Esto se permite a partir de hundir el botón "Llamar fuera de campaña" disponible en la parte inferior del webphone.
+La ventana desplegada cuenta con un campo para introducir el número a marcar (figura 1).
+
+
+.. image:: images/about_agent_withoutcamp_calls.png
+
+*Figure 1: without camp calls*
+
 Poner en espera una llamada
 ***************************
 
@@ -6,19 +24,19 @@ de la comunicación. Esto se logra hundiendo el botón "hold" del webphone de ag
 
 .. image:: images/about_agent_callactions_hold_1.png
 
-*Figure 1: call on hold*
+*Figure 2: call on hold*
 
 Al disparar la acción de hold, el otro extremo de la llamada que escuchando la música de espera, mientras que el agente puede volver a retomar la llamada cuando desee
-simplemente hundiendo el botón de unhold, tal como se indica en la figura 2.
+simplemente hundiendo el botón de unhold, tal como se indica en la figura 3.
 
 .. image:: images/about_agent_callactions_hold_2.png
 
-*Figure 2: unhold*
+*Figure 3: unhold*
 
 Esta funcionalidad puede ser utilizada en cualquier tipo de llamada.
 
-Transferencias de llamados
-**************************
+Transferencias y conferencias
+******************************
 
 Dentro del abanico de posibilidades de transferencias de llamadas que se pueden realizar en el sistema, tenemos las siguientes:
 
@@ -30,22 +48,22 @@ En este caso se hunde el botón de transferencia disponible en el webphone y lue
 
 .. image:: images/about_agent_callactions_ag2ag_bt.png
 
-*Figure 3: "Agent A" to "Agent B" blind transfer*
+*Figure 4: "Agent A" to "Agent B" blind transfer*
 
 En este caso, la llamada automáticamente es despachada hacia el agente B, quedando liberado el webphone del "agente A". Una vez disparada esta transferencia, no se puede volver
 a recuperar la llamada original, ni tampoco el "agente A" puede conocer si la llamada fue atendida o no por el "agente B"
 
-**Transferencia directa a número externo**
+**Transferencia directa hacia teléfono externo**
 
 El "agente A" se encuentra en una llamada activa y desea transferir la llamada hacia un "Teléfono" externo a OMniLeads de manera directa. Cuando decimos externo, nos referimos
 a una llamada que se genera hacia afuera del sistema, puede ser una extensión del PBX de la compañía o bien un teléfono externo de la PSTN.
 
 En este caso se hunde el botón de transferencia disponible en el webphone y luego se selecciona "blind transfer" como tipo de transferencia y se debe introducir el número destino en recuadro
-como lo indica la figura 4.
+como lo indica la figura 5.
 
 .. image:: images/about_agent_callactions_ag2out_bt.png
 
-*Figure 4: "Agent A" to "External telephone" blind transfer*
+*Figure 5: "Agent A" to "External telephone" blind transfer*
 
 En este caso, la llamada automáticamente es despachada hacia el teléfono destino, quedando liberado el webphone del "agente A". Una vez disparada esta transferencia, no se puede volver
 a recuperar la llamada original, ni tampoco el "agente A" puede conocer si la llamada fue atendida o no por el teléfono destino de la transferencia.
@@ -58,7 +76,7 @@ el "agente A" corta la llamada y automáticamente el teléfono externo queda uni
 
 .. image:: images/about_agent_callactions_ag2ag_ct.png
 
-*Figure 5: "Agent A" to "Agent B" consultative transfer*
+*Figure 6: "Agent A" to "Agent B" consultative transfer*
 
 En este escenario también puede ocurrir:
 
@@ -67,15 +85,28 @@ En este escenario también puede ocurrir:
 
 - Se logra el contacto con el "agente B" pero éste no pueda/quiera proceder con la transferencia, por lo tanto el "agente B" debe cortar la llamada y atomáticamente vuelve a quedar el "agente A" con el teléfono externo enlazados.
 
-**Transferencia con consulta a número externo**
+
+**Conferencia de a tres entre el número externo, agente A y agente B**
+
+Este caso es un escenario posible dentro de una transferencia consultativa, ya que la acción a ejecutar por el agente que impulsa la conferencia "agente A", es en un principio
+una transferencia consultativa, solo que al momento de entablar conversación del "agente A" hacia el "agente B" (mientras la persona externa "numero externo" se encuentra en espera)
+el "agente A" debe hundir el botón de "Confer" disponible en el Webphone de agente y de esta manera quedan las tres partes en un salón de conferencia.
+
+
+.. image:: images/about_agent_callactions_3way_confer_internal.png
+
+*Figure 7: "Agent A", "Agent B" and External number three way conference*
+
+**Transferencia con consulta hacia teléfono externo**
 
 El "agente A" se encuentra en una llamada activa y desea transferir la llamada hacia un "teléfono" externo de manera consultativa, es decir logrando que "telefono externo A" quede
 en espera mientras el "agente A" abre un nuevo canal hacia el "teléfono externo B", si la llamada entre ambos se establece y el "teléfono externo B" desea recibir la transferencia, entonces
 el "agente A" corta la llamada y automáticamente el "teléfono externo A" queda unido en una llamada con el "teléfono externo B".
 
+
 .. image:: images/about_agent_callactions_ag2out_ct.png
 
-*Figure 6: "Agent A" to "External telephone" consultative transfer*
+*Figure 8: "Agent A" to "External telephone" consultative transfer*
 
 En este escenario también puede ocurrir:
 
@@ -85,6 +116,24 @@ En este escenario también puede ocurrir:
 - Se logra el contacto con el "telefono externo B" pero éste no pueda/quiera proceder con la transferencia, por lo tanto el "teléfono externo B" debe cortar la llamada y atomáticamente vuelve a quedar el "agente A" con el "teléfono externo A" enlazados.
 
 
+**Conferencia de a tres entre el número externo A, agente y un número externo B**
+
+Bajo este escenario el "agente A" puede armar una conferencia de a tres entre el "número externo A", es decir la persona que inicialmente se encuentra
+en llamada con "agente A" y un "numero externo B", que puede ser la extensión de un PBX o un abonado de la PSTN, de manera tal que queden las tres partes
+en una sala de conferencias.
+
+Para llevar a cabo esta acción, el "agente A" debe iniciar una *transferencia consultativa* hacia el "numero externo B" y una vez en llamada con éste último
+el agente debe hundir el botón de "Confer" de su webphone (Figura 9).
+
+.. image:: images/about_agent_callactions_3way_confer_out.png
+
+*Figure 9: "Agent A", "Subscriber A" and "Subscriber B" three way conference*
+
+.. image:: images/about_agent_callactions_3way_confer_switch.png
+
+*Figure 10: Webphone confer switch*
+
+
 **Transferencia a otra campaña**
 
 Bajo este escenario el "agente A" se encuentra en una llamada activa y desea transferir la llamada hacia una campaña entrante. A la hora de seleccionar el tipo de transferencia
@@ -92,10 +141,11 @@ se debe marcar "blind transfer" ya que la llamada es lanzada sobre la cola de es
 
 .. image:: images/about_agent_callactions_ag2camp.png
 
-*Figure 7: "Agent A" to "inbound campaign" transfer*
+*Figure 11: "Agent A" to "inbound campaign" transfer*
 
 Como se trata de una transferencia directa, la llamada automáticamente es despachada hacia el teléfono destino, quedando liberado el webphone del "agente A". Una vez disparada esta transferencia, no se puede volver
 a recuperar la llamada original, ni tampoco el "agente A" puede conocer si la llamada fue atendida o no
+
 
 Observar grabación de llamada
 *****************************
@@ -105,11 +155,12 @@ se pueda recuperar grabaciones "observadas" por los agentes y allí también des
 
 .. image:: images/about_agent_callactions_tag_call.png
 
-*Figure 8: call recording tag*
+*Figure 12: call recording tag*
 
-Como se indica en la figura 8, luego de hundir el botón para marcar la llamada, se depliega un campo de texto para que el agente pueda describir la situación.
+Como se indica en la figura 12, luego de hundir el botón para marcar la llamada, se depliega un campo de texto para que el agente pueda describir la situación.
 
 Finalmente en el módulo de grabación de OMniLeads, se puede recuperar dicha grabación y observar lo que el agente escribió al respecto.
+
 
 Agendamiento de llamadas
 ************************
@@ -125,19 +176,19 @@ El agendamiento de llamadas es una calificación que se encuentra por defecto si
 
 .. image:: images/about_agent_callactions_agenda_1.png
 
-*Figure 9: agenda personal*
+*Figure 13: agenda personal*
 
 Luego de guardar la calificación, se despliega un formulario para seleccionar la fecha, hora y motivo de la agenda personal del contacto.
 
 .. image:: images/about_agent_callactions_agenda_2.png
 
-*Figure 10: detalles de la agenda personal*
+*Figure 14: detalles de la agenda personal*
 
 Finalmente, la entrada en la agenda personal del agente quedará disponible ingresando al punto de menú Agendas:
 
 .. image:: images/about_agent_callactions_agenda_3.png
 
-*Figure 11: detalles de la agenda personal*
+*Figure 15: detalles de la agenda personal*
 
 **Agendamiento global de llamadas predictivas**
 

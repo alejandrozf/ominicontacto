@@ -1,4 +1,6 @@
-WebRTC; la tecnología subyacente de OMniLeads
+.. _about_webrtc:
+
+WebRTC - Tecnología subyacente de OMniLeads
 *********************************************
 Antes de de citar los casos de uso, ponemos énfasis en repasar los beneficios de la tecnología WebRTC; núcleo de OMniLeads.
 
@@ -18,6 +20,8 @@ procesando comunicaciones.
 - Trabaja con el codec de audio Opus y video VP8, ambos concebidos para la performance en real-time & cloud
 - En términos de seguridad todas las comunicaciones viajan cifradas en términos de señalización y media
 
+
+.. _about_omlfeatures:
 
 Características y funcionalidades de OMniLeads
 **********************************************

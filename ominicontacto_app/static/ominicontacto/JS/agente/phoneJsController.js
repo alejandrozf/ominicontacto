@@ -93,9 +93,16 @@ class PhoneJSController {
             self.leavePause()
         });
 
-        this.view.pauseButton.click(function () {
-            self.view.pauseMenu.modal('show');
-        });
+        if ($("#pauseType").find('option').length > 0){
+            this.view.pauseButton.click(function () {
+                self.view.pauseMenu.modal('show');
+            });
+        }
+        else {
+            this.view.pauseButton.click(function () {
+                alert('No tiene pausas definidas.');
+            });
+        }
 
         this.view.setPauseButton.click(function() {
             var pause_id = $("#pauseType").val();
@@ -123,6 +130,24 @@ class PhoneJSController {
             } else {
                 phone_logger.log('Error');
             }
+        });
+
+        /* Off Campaign */
+        this.view.callOffCampaignMenuButton.click(function() {
+            self.view.callOffCampaignMenu.modal('show');
+            if ($('#agente_off_camp').find('option').length == 0){
+                self.view.callAgentButton.prop('disabled', true);
+            }
+        });
+
+        this.view.callAgentButton.click(function() {
+            var agent_id = $('#agente_off_camp').val();
+            click2call.call_agent(agent_id);
+        });
+
+        this.view.callPhoneOffCampaignButton.click(function() {
+            var phone = $('#phone_off_camp').val();
+            click2call.call_external(phone);
         });
 
         $("#SaveSignedCall").click(function() {
@@ -343,7 +368,7 @@ class PhoneJSController {
 
         this.phone.eventsCallbacks.onTransferReceipt.add(function(session_data) {
             self.phone_fsm.receiveCall();
-            $("#callerid").html(session_data.transfer_agent_name);
+            $("#callerid").html(session_data.from_agent_name);
             $("#extraInfo").html(session_data.transfer_type_str);
             $("#modalReceiveCalls").modal('show');
         });
@@ -589,7 +614,6 @@ class PhoneJSController {
             var message = interpolate(gettext("Conectado a %(fromUser)s"), {fromUser:fromUser}, true);
             this.view.setCallStatus(message, "orange");
             this.manageContact(session_data);
-
             if (session_data.is_click2call) {
                 // Seteo datos para redial
                 this.lastDialedCall = session_data.remote_call;
@@ -611,11 +635,16 @@ class PhoneJSController {
         if (session_data.is_inbound && this.agent_config.auto_attend_IN) {
             return true;
         }
+        if (session_data.is_off_campaign) {
+            return true;
+        }
         return false;
     }
 
     manageContact(session_data) {
         var call_data = session_data.remote_call
+        if (session_data.is_from_agent || session_data.is_off_campaign)
+            return;
         this.getQualificationForm(call_data);
     }
 
@@ -623,7 +652,7 @@ class PhoneJSController {
         var duracion = this.timers.llamada.get_time_str();
         var numero_telefono = undefined;
         // NOTA: No guardo la duracion de llamadas entre agentes (internal). ( Ver si es deseable )
-        if (this.phone.session_data.is_internal_call) {
+        if (this.phone.session_data.is_off_campaign) {
             return;
         }
 

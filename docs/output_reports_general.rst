@@ -1,3 +1,5 @@
+.. _about_general_reports:
+
 Reporte general de llamadas
 ****************************
 
