@@ -58,10 +58,12 @@ ALLOWED_HOSTS = [
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 's1+*bfrvb@=k@c&9=pm!0sijjewneu5p5rojil#q+!a2y&as-4'
 
+POSTGRES_HOST = os.getenv('PGHOST')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'HOST': 'database',
+        'HOST': POSTGRES_HOST,
         'PORT': 5432,
         'NAME': 'omnileads',
         'USER': 'omnileads',
@@ -224,3 +226,10 @@ CONSTANCE_CONFIG = {
 MIDDLEWARE_PREPPEND = []
 MIDDLEWARE_APPEND = []
 TEMPLATES_CONTEXT_PROCESORS_APPEND = []
+
+REDIS_HOSTNAME = os.getenv('REDIS_HOSTNAME')
+CONSTANCE_REDIS_CONNECTION = {
+    'host': REDIS_HOSTNAME,
+    'port': 6379,
+    'db': 0,
+}
