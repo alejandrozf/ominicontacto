@@ -99,8 +99,6 @@ class Click2CallOriginator(object):
             return error
 
         except Exception as e:
-            error = _("Originate failed - tipo_destino: {0}  - numero {0}".format(
-                tipo_destino, numero))
             error = _("Originate failed by {0} - tipo_destino: {1}  - numero {2}".format(
                 e, tipo_destino, numero))
             logger.exception(error)
