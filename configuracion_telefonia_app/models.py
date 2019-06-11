@@ -297,9 +297,12 @@ class IdentificadorCliente(models.Model):
         verbose_name=_('Url servicio identificación'))
     audio = models.ForeignKey(
         ArchivoDeAudio, on_delete=models.PROTECT, related_name="identificadores_cliente")
-    longitud_id_esperado = models.IntegerField()
-    timeout = models.IntegerField()
-    intentos = models.IntegerField()
+    longitud_id_esperado = models.PositiveIntegerField(validators=[MaxValueValidator(30)],
+                                                       blank=True, null=True)
+    timeout = models.PositiveIntegerField(default=5, validators=[MaxValueValidator(60)])
+    intentos = models.PositiveIntegerField(default=1,
+                                           validators=[MinValueValidator(1),
+                                                       MaxValueValidator(20)])
 
     def __unicode__(self):
         return unicode(_("{0}: {1}".format(self.nombre, self.url)))
