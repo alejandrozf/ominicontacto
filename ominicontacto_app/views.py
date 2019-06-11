@@ -605,7 +605,7 @@ class RegistroFormView(FormView):
         except AttributeError:
             msg = _('No tiene settings de conexión configurados')
             logger.error(msg)
-            return {'status': _('ERROR'), 'msg': msg}
+            return {'status': 'ERROR', 'msg': msg}
         post_data = {'client': client, 'password': password, 'email': email, 'phone': telefono}
         try:
             result = requests.post(
