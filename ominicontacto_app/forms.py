@@ -436,6 +436,7 @@ class CampanaMixinForm(object):
             self.fields['bd_contacto'].queryset = BaseDatosContacto.objects.obtener_definidas()
 
     def requiere_bd_contacto(self):
+<<<<<<< HEAD
         raise NotImplementedError()
 
     def clean(self):
@@ -449,6 +450,14 @@ class CampanaMixinForm(object):
             raise forms.ValidationError(message, code='invalid')
         if (bd_contacto_field and not bd_contacto_field.queryset.filter and
                 self.requiere_bd_contacto()):
+=======
+        raise NotImplementedError
+
+    def clean(self):
+        bd_contacto_field = self.fields.get('bd_contacto', False)
+        requiere_bd_contacto = self.requiere_bd_contacto()
+        if (bd_contacto_field and not bd_contacto_field.queryset.filter and requiere_bd_contacto):
+>>>>>>> Validacion vista y test
             message = _("Debe cargar una base de datos antes de comenzar a "
                         "configurar una campana")
             self.add_error('bd_contacto', message)
@@ -466,10 +475,13 @@ class CampanaMixinForm(object):
         return nombre
 
     def clean_tipo_interaccion(self):
-        tipo_interaccion = self.cleaned_data.get('tipo_interaccion', None)
-        if self.instance and self.instance.pk:
-            return self.instance.tipo_interaccion
-        return tipo_interaccion
+        if Campana != 1:
+            tipo_interaccion = self.cleaned_data['tipo_interaccion']
+            sitio_externo = self.cleaned_data['sitio_externo']
+            if tipo_interaccion == 1 and sitio_externo is not None:
+                msg = _('No se puede elegir un URL externo si selecciono un formulario.')
+                raise forms.ValidationError(msg)
+            return tipo_interaccion
 
     def clean_id_externo(self):
         sistema_externo = self.cleaned_data.get('sistema_externo', None)
@@ -1432,6 +1444,15 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
             msg = 'Debe ingresar un minimo de {0} minutos'.format(TIEMPO_MINIMO_DESCONEXION)
             raise forms.ValidationError(msg)
         return tiempo_desconexion
+
+    def clean_tipo_interaccion(self):
+        if Campana != 1:
+            tipo_interaccion = self.cleaned_data['tipo_interaccion']
+            sitio_externo = self.cleaned_data['sitio_externo']
+            if tipo_interaccion == 1 and sitio_externo is not None:
+                msg = _('No se puede elegir un URL externo si selecciono un formulario.')
+                raise forms.ValidationError(msg)
+            return tipo_interaccion
 
 
 class CalificacionForm(forms.ModelForm):

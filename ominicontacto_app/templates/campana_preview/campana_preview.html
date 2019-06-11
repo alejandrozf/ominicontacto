@@ -41,7 +41,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% endblock %}
 
 {% block interaccion %}
-    {{ form.tipo_interaccion.errors }}
     {% if form.instance.pk %}
         {% if form.instance.tipo_interaccion == 2 %}
             <div class="col-md-6">
