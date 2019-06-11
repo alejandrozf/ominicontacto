@@ -17,19 +17,41 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='IdentificadorCliente',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False,
+                                        verbose_name='ID')),
                 ('nombre', models.CharField(max_length=50, unique=True, verbose_name='Nombre')),
-                ('tipo_interaccion', models.PositiveIntegerField(choices=[(1, 'Sin interacci\xf3n externa'), (2, 'Interacci\xf3n externa tipo 1'), (3, 'Interacci\xf3n externa tipo 2')], default=1, help_text='Tipo de interacci\xf3n')),
-                ('url', models.CharField(blank=True, max_length=128, null=True, verbose_name='Url servicio identificaci\xf3n')),
-                ('longitud_id_esperado', models.IntegerField()),
-                ('timeout', models.IntegerField()),
-                ('intentos', models.IntegerField()),
-                ('audio', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='identificadores_cliente', to='ominicontacto_app.ArchivoDeAudio')),
+                ('tipo_interaccion', models.PositiveIntegerField(
+                    choices=[(1, 'Sin interacci\xf3n externa'),
+                             (2, 'Interacci\xf3n externa tipo 1'),
+                             (3, 'Interacci\xf3n externa tipo 2')],
+                    default=1,
+                    help_text='Tipo de interacci\xf3n')),
+                ('url', models.CharField(blank=True, max_length=128, null=True,
+                                         verbose_name='Url servicio identificaci\xf3n')),
+                ('longitud_id_esperado', models.PositiveIntegerField(
+                    blank=True,
+                    null=True,
+                    validators=[django.core.validators.MaxValueValidator(30)])),
+                ('timeout', models.PositiveIntegerField(
+                    default=5,
+                    validators=[django.core.validators.MaxValueValidator(60)])),
+                ('intentos', models.PositiveIntegerField(
+                    default=1,
+                    validators=[django.core.validators.MinValueValidator(1),
+                                django.core.validators.MaxValueValidator(20)])),
+                ('audio', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT,
+                                            related_name='identificadores_cliente',
+                                            to='ominicontacto_app.ArchivoDeAudio')),
             ],
         ),
         migrations.AlterField(
             model_name='destinoentrante',
             name='tipo',
-            field=models.PositiveIntegerField(choices=[(1, 'Campa\xf1a entrante'), (2, 'Validaci\xf3n de fecha/hora'), (3, 'IVR'), (5, 'HangUp'), (8, 'Identificador cliente')]),
+            field=models.PositiveIntegerField(
+                choices=[(1, 'Campa\xf1a entrante'),
+                         (2, 'Validaci\xf3n de fecha/hora'),
+                         (3, 'IVR'),
+                         (5, 'HangUp'),
+                         (8, 'Identificador cliente')]),
         ),
     ]
