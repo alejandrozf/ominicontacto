@@ -169,7 +169,10 @@ class AsteriskXmlParser(object):
                 logger.info("_parse_and_check(): found 'response' == 'Error'. "
                             " response_dict: '%s' - XML:\n%s", str(self.response_dict), xml)
                 if check_errors:
-                    raise exception_for_error()
+                    if 'message' in self.response_dict:
+                        raise exception_for_error(message=self.response_dict['message'])
+                    else:
+                        raise exception_for_error()
             elif self.response_value == 'success':
                 pass
             else:
@@ -480,14 +483,14 @@ class AsteriskHttpClient(object):
         parser.parse(response_body)
         return parser
 
-    def originate(self, channel, context, es_aplication, variables_de_canal, async,
+    def originate(self, channel, context, es_aplication, variables_de_canal, is_async,
                   aplication=None, exten=None, priority=None, timeout=None):
         """
         Send an ORIGINATE action.
         Parameters:
             - channel, context, exten, priority: ORIGINATE parameters
             - timeout: (int) timeout of the originate action (in ms)
-            - async: (bool)
+            - is_async: (bool)
 
         Returns:
             - the parser instance
@@ -501,8 +504,8 @@ class AsteriskHttpClient(object):
         #  originates con async=False. Una vez q' finalicemos la refactori-
         #  zacion, hay que eliminar el argumento de la funcoin, y todos estos
         #  asserts.
-        assert type(async) == bool
-        assert async
+        assert type(is_async) == bool
+        assert is_async
 
         request_timeout = 5
         logger.debug("AsteriskHttpClient.originate(): async=True - "
@@ -543,7 +546,7 @@ class AsteriskHttpClient(object):
                 'channel': channel,
                 'context': context,
                 'application': aplication,
-                'async': async,
+                'async': is_async,
                 'variable': ",".join(lista_de_variables),
 
             }, timeout=request_timeout)
@@ -555,7 +558,7 @@ class AsteriskHttpClient(object):
                 'exten': exten,
                 'priority': priority,
                 'timeout': timeout,
-                'async': async,
+                'async': is_async,
                 'Callerid': exten,
                 'variable': ",".join(lista_de_variables),
             }, timeout=request_timeout)
