@@ -291,18 +291,22 @@ class IdentificadorCliente(models.Model):
     nombre = models.CharField(max_length=50, unique=True, verbose_name=_('Nombre'))
     tipo_interaccion = models.PositiveIntegerField(
         choices=TIPOS_INTERACCIONES, help_text=_('Tipo de interacción'),
-        default=SIN_INTERACCION_EXTERNA)
+        default=SIN_INTERACCION_EXTERNA, verbose_name=_('Tipo de interacción'))
     url = models.CharField(
         max_length=128, blank=True, null=True,
         verbose_name=_('Url servicio identificación'))
     audio = models.ForeignKey(
         ArchivoDeAudio, on_delete=models.PROTECT, related_name="identificadores_cliente")
     longitud_id_esperado = models.PositiveIntegerField(validators=[MaxValueValidator(30)],
-                                                       blank=True, null=True)
-    timeout = models.PositiveIntegerField(default=5, validators=[MaxValueValidator(60)])
+                                                       blank=True, null=True,
+                                                       verbose_name=_('Longitud de id esperado'))
+    timeout = models.PositiveIntegerField(default=5,
+                                          validators=[MaxValueValidator(60)],
+                                          verbose_name=_('Timeout'))
     intentos = models.PositiveIntegerField(default=1,
                                            validators=[MinValueValidator(1),
-                                                       MaxValueValidator(20)])
+                                                       MaxValueValidator(20)],
+                                           verbose_name=_('Intentos'))
 
     def __unicode__(self):
         return unicode(_("{0}: {1}".format(self.nombre, self.url)))
