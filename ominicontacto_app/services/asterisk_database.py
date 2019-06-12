@@ -77,13 +77,15 @@ class AbstractFamily(object):
     def _get_nombre_family(self, family_member):
         raise (NotImplementedError())
 
-    def _delete_tree_family(self, family):
+    def _delete_tree_family(self, family, ignorar_error_no_encontrado=False):
         """Elimina el tree de la family pasada por parametro"""
         try:
             client = AsteriskHttpClient()
             client.login()
             client.asterisk_db_deltree(family)
-        except AsteriskHttpAsteriskDBError:
+        except AsteriskHttpAsteriskDBError, e:
+            if (e.message == u'Database entry not found' and ignorar_error_no_encontrado):
+                return
             logger.exception(_("Error al intentar DBDelTree de {0}".format(family)))
 
     def _obtener_una_key(self):
@@ -116,7 +118,7 @@ class AbstractFamily(object):
 
     def regenerar_families(self):
         """regenera la family"""
-        self._delete_tree_family(self.get_nombre_families())
+        self._delete_tree_family(self.get_nombre_families(), True)
         self._create_families()
 
     def regenerar_family(self, family_member):
