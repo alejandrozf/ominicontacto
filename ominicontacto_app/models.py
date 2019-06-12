@@ -1150,7 +1150,14 @@ class Campana(models.Model):
     def update_basedatoscontactos(self, bd_nueva):
         """ Actualizar con nueva base datos de contacto"""
         self.bd_contacto = bd_nueva
-        self.save()
+        self.save
+
+    def save(self, *args, **kwargs):
+        if self.tipo_interaccion == Campana.FORMULARIO and self.sitio_externo is not None:
+            raise ValidationError(_('No se puede elegir un URL externo '
+                                    'si selecciono un formulario.'))
+        else:
+            super(Campana, self).save(*args, **kwargs)
 
     def obtener_agentes(self):
         return self.queue_campana.members.all()

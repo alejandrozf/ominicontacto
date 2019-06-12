@@ -436,7 +436,6 @@ class CampanaMixinForm(object):
             self.fields['bd_contacto'].queryset = BaseDatosContacto.objects.obtener_definidas()
 
     def requiere_bd_contacto(self):
-<<<<<<< HEAD
         raise NotImplementedError()
 
     def clean(self):
@@ -450,14 +449,6 @@ class CampanaMixinForm(object):
             raise forms.ValidationError(message, code='invalid')
         if (bd_contacto_field and not bd_contacto_field.queryset.filter and
                 self.requiere_bd_contacto()):
-=======
-        raise NotImplementedError
-
-    def clean(self):
-        bd_contacto_field = self.fields.get('bd_contacto', False)
-        requiere_bd_contacto = self.requiere_bd_contacto()
-        if (bd_contacto_field and not bd_contacto_field.queryset.filter and requiere_bd_contacto):
->>>>>>> Validacion vista y test
             message = _("Debe cargar una base de datos antes de comenzar a "
                         "configurar una campana")
             self.add_error('bd_contacto', message)
@@ -465,7 +456,6 @@ class CampanaMixinForm(object):
         if self.cleaned_data.get('tipo_interaccion') is Campana.SITIO_EXTERNO and \
                 not self.cleaned_data.get('sitio_externo'):
             message = _("Debe seleccionar un sitio externo")
-            self.add_error('sitio_externo', message)
             raise forms.ValidationError(message, code='invalid')
         return super(CampanaMixinForm, self).clean()
 
@@ -474,14 +464,13 @@ class CampanaMixinForm(object):
         validar_nombres_campanas(nombre)
         return nombre
 
-    def clean_tipo_interaccion(self):
-        if Campana != 1:
-            tipo_interaccion = self.cleaned_data['tipo_interaccion']
-            sitio_externo = self.cleaned_data['sitio_externo']
-            if tipo_interaccion == 1 and sitio_externo is not None:
-                msg = _('No se puede elegir un URL externo si selecciono un formulario.')
-                raise forms.ValidationError(msg)
-            return tipo_interaccion
+    def clean_sitio_externo(self):
+        sitio_externo = self.cleaned_data.get('sitio_externo')
+        tipo_interaccion = self.cleaned_data.get('tipo_interaccion')
+        if tipo_interaccion == Campana.FORMULARIO and sitio_externo is not None:
+            msg = _('No se puede elegir un URL externo si selecciono un formulario.')
+            raise forms.ValidationError(msg)
+        return sitio_externo
 
     def clean_id_externo(self):
         sistema_externo = self.cleaned_data.get('sistema_externo', None)
@@ -533,7 +522,7 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'bd_contacto', 'sistema_externo', 'id_externo',
-                  'sitio_externo', 'tipo_interaccion', 'objetivo', 'mostrar_nombre')
+                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -1087,8 +1076,8 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin',
-                  'bd_contacto', 'sitio_externo', 'sistema_externo', 'id_externo',
-                  'tipo_interaccion', 'objetivo', 'mostrar_nombre')
+                  'bd_contacto', 'sistema_externo', 'id_externo',
+                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -1391,7 +1380,7 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'bd_contacto', 'sistema_externo', 'id_externo',
-                  'sitio_externo', 'tipo_interaccion', 'objetivo')
+                  'tipo_interaccion', 'sitio_externo', 'objetivo')
 
         widgets = {
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
@@ -1422,7 +1411,7 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'sistema_externo', 'id_externo',
-                  'sitio_externo', 'tipo_interaccion', 'objetivo', 'bd_contacto',
+                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'bd_contacto',
                   'tiempo_desconexion')
 
         widgets = {
@@ -1444,15 +1433,6 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
             msg = 'Debe ingresar un minimo de {0} minutos'.format(TIEMPO_MINIMO_DESCONEXION)
             raise forms.ValidationError(msg)
         return tiempo_desconexion
-
-    def clean_tipo_interaccion(self):
-        if Campana != 1:
-            tipo_interaccion = self.cleaned_data['tipo_interaccion']
-            sitio_externo = self.cleaned_data['sitio_externo']
-            if tipo_interaccion == 1 and sitio_externo is not None:
-                msg = _('No se puede elegir un URL externo si selecciono un formulario.')
-                raise forms.ValidationError(msg)
-            return tipo_interaccion
 
 
 class CalificacionForm(forms.ModelForm):
