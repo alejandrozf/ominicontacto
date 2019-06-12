@@ -23,63 +23,28 @@
 
 # Se sestean variables de nombre de los targz que se descargan
 - set_fact: asterisk_tar=asterisk-{{ asterisk_version }}.tar.gz
-- set_fact: jansson_tar=jansson-2.7.tar.gz
 
 # Se descargan los paquetes
 - name: Download of asterisk sources
-  get_url: "url={{ item }} dest=/usr/src/ timeout=120"
-  with_items:
-        - "{{ asterisk_v13 }}"
-        - "{{ jansson }}"
-  become: yes
-  become_method: sudo
+  get_url: "url={{ asterisk_repo }} dest=/usr/src/ timeout=120"
 
 # Se descomprimen
 - name: Untar of sources
-  unarchive: "src=/usr/src/{{ item }} dest=/usr/src/ remote_src=yes"
-  with_items:
-      - "{{ asterisk_tar }}"
-      - "{{ jansson_tar }}"
-  become: yes
-  become_method: sudo
+  unarchive: "src=/usr/src/{{ asterisk_tar }} dest=/usr/src/ remote_src=yes"
 
 # Se borran
 - name: Erase of tar.gz files
-  file: "dest=/usr/src/{{ item }} state=absent"
-  with_items:
-      - "{{ asterisk_tar }}"
-      - "{{ jansson_tar }}"
-  become: yes
-  become_method: sudo
+  file: "dest=/usr/src/{{ asterisk_tar }} state=absent"
 
 # Se crea el directorio /opt/omnileads/asterisk
 - name: Creation of asterisk prefix directory
   file: path={{ install_prefix }}asterisk state=directory owner={{ usuario }} group={{ usuario }}
-  become: yes
-  become_method: sudo
-
-# Se crea un directorio para jansson
-- name: Create jansson directory prefix
-  file: path={{ install_prefix }}jansson-2.7 state=directory owner={{ usuario }} group={{ usuario }}
-  become: yes
-  become_method: sudo
-
-# Pasos para instalar jansson
-- name: Jansson installation
-  shell: "{{ item }} chdir=/usr/src/jansson-2.7"
-  with_items:
-          - "autoreconf -i"
-          - "./configure --libdir={{ install_prefix }}jansson-2.7/lib64 --prefix={{ install_prefix }}jansson-2.7"
-          - "make"
-          - "make install"
-  become: yes
-  become_method: sudo
 
 # Pasos para instalar asterisk  se comienza con el install de prerequisitos y luego con el configure
 - name: Installation of prerequisites packages (centos)
   shell: "{{ item }} chdir=/usr/src/asterisk-{{ asterisk_version }}"
   with_items:
-          - contrib/scripts/install_prereq install
+    - contrib/scripts/install_prereq install
   when: ansible_os_family == "RedHat"
 
 # Esta task es necesaria porque en debian hay un paquete que pregunta cual es el countrycode telefonico del pais donde va a estar asterisk instalado
@@ -95,7 +60,7 @@
 
 # Se sigue con el la ejecucion del configure, esto para el PE
 - name: Configure of asterisk
-  shell: "./configure --libdir={{ install_prefix }}asterisk/lib64 --prefix={{ install_prefix }}asterisk --with-pjproject-bundled chdir=/usr/src/asterisk-{{ asterisk_version }}"
+  shell: "./configure --libdir={{ install_prefix }}asterisk/lib64 --prefix={{ install_prefix }}asterisk --with-jansson-bundled chdir=/usr/src/asterisk-{{ asterisk_version }}"
 
 # Se obtienen las fuentes mp3
 - shell: "contrib/scripts/get_mp3_source.sh chdir=/usr/src/asterisk-{{ asterisk_version }}"
@@ -110,6 +75,7 @@
   with_items:
           - make menuselect.makeopts
           - menuselect/menuselect --enable format_mp3 menuselect.makeopts
+          - menuselect/menuselect --enable codec_opus menuselect.makeopts
           - menuselect/menuselect --enable CORE-SOUNDS-EN-WAV menuselect.makeopts
           - menuselect/menuselect --enable CORE-SOUNDS-ES-WAV menuselect.makeopts
           - menuselect/menuselect --enable CORE-SOUNDS-FR-WAV menuselect.makeopts
@@ -124,13 +90,6 @@
           - make config
           - ldconfig
 
-# Se mueven los directorios de jansson e iksemel a /opt/omnileads/asterisk -- FIX ME -- hay mejor forma de hacer mv?
-- name: Organizing the asterisk directories
-  shell: "mv jansson-2.7 asterisk/ chdir={{ install_prefix }}"
-
 # Se borran los paquetes descargados
 - name: Erase the downloaded directories of asterisk
-  file: path=/usr/src/{{ item }} state=absent
-  with_items:
-    - asterisk-{{ asterisk_version }}
-    - jansson-2.7
+  file: path=/usr/src/asterisk-{{ asterisk_version }} state=absent

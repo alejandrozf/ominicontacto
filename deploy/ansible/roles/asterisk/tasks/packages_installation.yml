@@ -38,8 +38,8 @@
     - sngrep
     - subversion
     - unixODBC
-  become: true
-  become_method: sudo
+    - unzip
+  tags: postinstall
   when: ansible_os_family == "RedHat"
 
   # Intalo los paquetes necesarios para la parte VoIP
@@ -56,8 +56,8 @@
     - subversion
     - unixodbc-dev
     - uuid
-  become: true
-  become_method: sudo
+    - unzip
+  tags: postinstall
   when: ansible_os_family == "Debian"
 
 - name: Install of cluster packages (centos cluster)

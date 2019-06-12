@@ -51,7 +51,7 @@
 - name: Check if Asterisk {{ asterisk_version }} is installed
   shell: asterisk -V |awk -F " " '{print $2}'
   register: asterisk_installed
-  tags: asterisk
+  tags: ['asterisk','postinstall']
   become: true
   become_method: sudo
 

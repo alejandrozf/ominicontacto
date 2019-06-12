@@ -3,6 +3,7 @@ ignore = []
 max-line-length = 100
 exclude =
     .git,
+    src/*
     ominicontacto/settings/*
     ominicontacto_app/asterisk_config_generador_de_partes.py
     ominicontacto_app/version.py

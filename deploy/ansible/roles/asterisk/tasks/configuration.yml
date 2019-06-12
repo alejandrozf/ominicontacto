@@ -26,6 +26,7 @@
 - name: Create simbolic link of asterisk binarie
   file: state=link src={{ asterisk_location }}/sbin/asterisk dest=/usr/sbin/asterisk force=true
   when: is_docker == "false"
+  tags: postinstall
 
 # Se linkean los .conf de asterisk (los que estan afuera de archivos-no-enlaces) a /opt/omnileads/asterisk/etc/asterisk
 - name: Config of asterisk for OML (aio)
@@ -114,11 +115,12 @@
       - { src: "omni-grabaciones.py.j2", dest: "omni-grabaciones.py" }
   become: yes
   become_method: sudo
-  tags: ['changenetwork','changepassword']
+  tags: ['changenetwork','changepassword','postinstall']
 
 - name: Creation of agis-errors.log file
   file: path={{ ast_logs_location }}/agis-errors.log state=touch mode=755 owner={{ usuario }} group={{ usuario }}
   when: is_docker == "false"
+  tags: postinstall
 
 # Aca creo la carpeta parselog
 - name: Create {{ conversor_location }}
@@ -169,11 +171,13 @@
 - name: Set up permissions of asterisk
   file: state=directory path={{ asterisk_location }} owner={{ usuario }} group={{ usuario }} recurse=yes
   when: is_docker == "false"
+  tags: postinstall
 
 # Borro el archivo de inicio de asterisk en el init.d
 - name: Erase default asterisk init.d service
   file: state=absent path=/etc/init.d/asterisk
   when: is_docker == "false"
+  tags: postinstall
 
 # Habilito e inicio asterisk
 - name: Start and enable asterisk

@@ -43,9 +43,10 @@ class EstadoAgentesService:
 
     def _parsear_datos_agentes_pasada_1(self, datos):
         # para filtrar entradas que no nos interesan, como ids de pausas
-        lineas = datos.split('\n')
+        lineas = datos.split('\r\n')
         lineas_result = []
-        for linea in lineas:
+        for linea_raw in lineas:
+            linea = linea_raw.replace('Output: ', '')
             try:
                 clave, valor = linea.split(': ')
             except ValueError:
