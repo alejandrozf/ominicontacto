@@ -73,9 +73,9 @@ class APITest(TestCase):
     def _generar_ami_response_agentes(self):
         # genera datos que simulan lo más aproximadamente posible las lineas de output de
         # los estados de los agentes obtenidos por el comando AMI 'database show OML/AGENT'
-        linea_agente = '/OML/AGENT/{0}/NAME                                 : agente{0}'
-        linea_sip = '/OML/AGENT/{0}/SIP                                  : 100{0}'
-        linea_status = '/OML/AGENT/{0}/STATUS                               : {1}:155439223'
+        linea_agente = 'Output: /OML/AGENT/{0}/NAME                                 : agente{0}'
+        linea_sip = 'Output:/OML/AGENT/{0}/SIP                                  : 100{0}'
+        linea_status = 'Output: /OML/AGENT/{0}/STATUS                               : {1}:155439223'
         response = []
         datos_agentes = [{'id': 1, 'status': 'READY'}, {'id': 2, 'status': 'PAUSE'},
                          {'id': 3, 'status': 'OFFLINE'}]
@@ -84,7 +84,7 @@ class APITest(TestCase):
             status_agente = datos_agente['status']
             response.extend([linea_agente.format(id_agente), linea_sip.format(id_agente),
                              linea_status.format(id_agente, status_agente)])
-        return '\n'.join(response)
+        return '\r\n'.join(response)
 
     @patch('api_app.utiles.Manager')
     @patch.object(EstadoAgentesService, "_ami_obtener_agentes")
