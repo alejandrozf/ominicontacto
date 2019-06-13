@@ -40,8 +40,8 @@ def logout_inactive_users(users_activity_list, manager):
     for activity_line in users_activity_list.splitlines():
         if activity_line.find("Unavailable") != -1:
             fields_activity = activity_line.split()
-            id_user = fields_activity[0]
-            sip_number = fields_activity[1].replace("(SIP/", "").replace(")", "")
+            id_user = fields_activity[1]
+            sip_number = fields_activity[2].replace("(SIP/", "").replace(")", "")
             channel = 'Local/066LOGOUT@oml-agent-actions/n'
             exten = ''
             # context = ''
