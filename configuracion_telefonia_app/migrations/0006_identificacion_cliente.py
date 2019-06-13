@@ -56,6 +56,6 @@ class Migration(migrations.Migration):
                          (2, 'Validaci\xf3n de fecha/hora'),
                          (3, 'IVR'),
                          (5, 'HangUp'),
-                         (8, 'Identificador cliente')]),
+                         (9, 'Identificador cliente')]),
         ),
     ]

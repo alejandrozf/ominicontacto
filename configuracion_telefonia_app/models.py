@@ -320,8 +320,9 @@ class DestinoEntrante(models.Model):
     EXTENSION = 4
     HANGUP = 5
     SURVEY = 6
-    VOICEMAIL = 7
-    IDENTIFICADOR_CLIENTE = 8
+    CUSTOM_DST = 7
+    VOICEMAIL = 8
+    IDENTIFICADOR_CLIENTE = 9
 
     TIPOS_DESTINOS = (
         (CAMPANA, _('Campaña entrante')),
