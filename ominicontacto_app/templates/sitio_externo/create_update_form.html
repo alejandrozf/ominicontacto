@@ -21,6 +21,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 {% load i18n %}
 
+{% block head_js %}
+  <script type="text/javascript" 
+          src="{% static 'ominicontacto/JS/supervision/formularioSitioExterno.js' %}">
+  </script>
+    
+{% endblock head_js %}
+
 {% block content %}
     {% if form.instance.id %}
         <h1>{% trans 'Editar sitio externo' %}</h1>
@@ -42,14 +49,24 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {{ form.url.errors }}
         </div>
         <div class="col-md-6">
-            <label for="{{ form.tipo.id_for_label }}">{% trans 'Tipo:' %}</label>
-            {{ form.tipo }}
-            {{ form.tipo.errors }}
+            <label for="{{ form.disparador.id_for_label }}">{% trans 'Disparador:' %}</label>
+            {{ form.disparador }}
+            {{ form.disparador.errors }}
         </div>
         <div class="col-md-6">
             <label for="{{ form.metodo.id_for_label }}">{% trans 'Método:' %}</label>
             {{ form.metodo }}
             {{ form.metodo.errors }}
+        </div>
+        <div class="col-md-6">
+            <label for="{{ form.formato.id_for_label }}">{% trans 'Formato:' %}</label>
+            {{ form.formato }}
+            {{ form.formato.errors }}
+        </div>
+        <div class="col-md-6">
+            <label for="{{ form.objetivo.id_for_label }}">{% trans 'Objetivo:' %}</label>
+            {{ form.objetivo }}
+            {{ form.objetivo.errors }}
         </div>
     </div>
     <hr>

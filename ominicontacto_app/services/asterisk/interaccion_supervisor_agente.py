@@ -48,7 +48,7 @@ class AccionesDeSupervisorSobreAgente(object):
                              context="oml-sup-actions",
                              es_aplication=False,
                              variables_de_canal={'OMLAGENTID': str(agente_id), },
-                             async=True,
+                             is_async=True,
                              aplication=None,
                              exten=accion,
                              priority=1,

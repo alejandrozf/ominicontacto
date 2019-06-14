@@ -46,7 +46,7 @@ from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, 
                                                NombreCalificacionFactory,
                                                OpcionCalificacionFactory, ArchivoDeAudioFactory,
                                                ActuacionVigenteFactory, FormularioFactory,
-                                               SitioExternoFactory)
+                                               SitioExternoFactory, SistemaExternoFactory)
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, OMLTransaccionBaseTest
 
@@ -975,6 +975,34 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertTrue(Campana.objects.filter(nombre=nombre_campana).exists())
         campana = Campana.objects.get(nombre=nombre_campana)
         self.assertTrue(campana.bd_contacto is not None)
+        self.assertTrue(campana.bd_contacto.get_metadata().columna_id_externo is None)
+
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
+    @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
+    def test_wizard_crear_campana_entrante_sin_bd_y_sistema_externo_crea_bd_con_id_externo(
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
+            _generar_y_recargar_configuracion_asterisk):
+        url = reverse('campana_nuevo')
+        nombre_campana = 'campana_name'
+        audio_ingreso = ArchivoDeAudioFactory.create()
+        (post_step0_data, post_step1_data, post_step2_data,
+         post_step3_data, post_step4_data,
+         post_step5_data) = self._obtener_post_data_wizard_creacion_campana_entrante(
+             nombre_campana, audio_ingreso)
+        post_step0_data['0-sistema_externo'] = SistemaExternoFactory().pk
+        post_step0_data['0-id_externo'] = "camp_manual_bd_vacia"
+        # realizamos la creación de la campaña mediante el wizard
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
+        # self.client.post(url, post_step3_data, follow=True)
+        self.client.post(url, post_step4_data, follow=True)
+        self.client.post(url, post_step5_data, follow=True)
+
+        self.assertTrue(Campana.objects.filter(nombre=nombre_campana).exists())
+        campana = Campana.objects.get(nombre=nombre_campana)
+        self.assertTrue(campana.bd_contacto.get_metadata().columna_id_externo is not None)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
@@ -1083,6 +1111,7 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertTrue(Campana.objects.filter(nombre=nombre_campana).exists())
         campana = Campana.objects.get(nombre=nombre_campana)
         self.assertTrue(campana.bd_contacto is not None)
+        self.assertTrue(campana.bd_contacto.get_metadata().columna_id_externo is None)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
@@ -1108,6 +1137,31 @@ class SupervisorCampanaTests(CampanasTests):
         self.contacto = ContactoFactory.create(bd_contacto=campana.bd_contacto)
         campana.bd_contacto.contactos.add(self.contacto)
         self.assertEqual(campana.bd_contacto.contactos.count(), 1)
+
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
+    @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
+    def test_wizard_crear_campana_manual_sin_bd_y_sistema_externo_crea_bd_con_id_externo(
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
+            _generar_y_recargar_configuracion_asterisk):
+        url = reverse('campana_manual_create')
+        nombre_campana = 'campana_nombre'
+        (post_step0_data, post_step1_data,
+         post_step2_data, post_step3_data,
+         post_step4_data) = self._obtener_post_data_wizard_creacion_campana_manual(
+             nombre_campana)
+        post_step0_data['0-sistema_externo'] = SistemaExternoFactory().pk
+        post_step0_data['0-id_externo'] = "camp_manual_bd_vacia"
+        # realizamos la creación de la campaña mediante el wizard
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        # self.client.post(url, post_step2_data, follow=True)
+        self.client.post(url, post_step3_data, follow=True)
+        self.client.post(url, post_step4_data, follow=True)
+
+        self.assertTrue(Campana.objects.filter(nombre=nombre_campana).exists())
+        campana = Campana.objects.get(nombre=nombre_campana)
+        self.assertTrue(campana.bd_contacto.get_metadata().columna_id_externo is not None)
 
     @patch.object(CampanaService, 'crear_campana_wombat')
     @patch.object(CampanaService, 'crear_trunk_campana_wombat')

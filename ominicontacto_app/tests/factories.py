@@ -35,7 +35,7 @@ from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana,
                                       AgenteEnContacto, QueueMember, CalificacionCliente,
                                       OpcionCalificacion, ArchivoDeAudio, ParametrosCrm,
                                       ActuacionVigente, Pausa, RespuestaFormularioGestion, Backlist,
-                                      AgendaContacto)
+                                      AgendaContacto, SistemaExterno, AgenteEnSistemaExterno)
 
 from reportes_app.models import LlamadaLog, ActividadAgenteLog
 
@@ -83,8 +83,17 @@ class SitioExternoFactory(DjangoModelFactory):
 
     nombre = lazy_attribute(lambda a: faker.text(15))
     url = lazy_attribute(lambda a: "http://{0}.com".format(a.nombre.replace(" ", "_")))
-    tipo = lazy_attribute(lambda a: faker.random_int(1, 3))
-    metodo = lazy_attribute(lambda a: faker.random_int(1, 2))
+    disparador = SitioExterno.BOTON
+    metodo = SitioExterno.GET
+    formato = None
+    objetivo = lazy_attribute(lambda a: faker.random_int(1, 2))
+
+
+class SistemaExternoFactory(DjangoModelFactory):
+    class Meta:
+        model = SistemaExterno
+
+    nombre = Sequence(lambda n: "Sistema_Externo_{0}".format(n))
 
 
 class BlackListFactory(DjangoModelFactory):
@@ -145,6 +154,18 @@ class BaseDatosContactoFactory(DjangoModelFactory):
                '["' + '", "'.join(COLUMNAS_DB_DEFAULT) + '"],' + \
                ' "cols_telefono": [0, 4, 5]}'
     estado = BaseDatosContacto.ESTADO_DEFINIDA
+
+
+class ContactoFactory(DjangoModelFactory):
+    class Meta:
+        model = Contacto
+
+    telefono = lazy_attribute(lambda a: str(faker.random_number(10)))
+    id_externo = None
+    datos = lazy_attribute(lambda a: '["{0}", "{1}", "{2}", "{3}", "{4}"]'.format(
+        faker.name(), faker.name(), faker.random_number(7), faker.phone_number(),
+        faker.phone_number()))
+    bd_contacto = SubFactory(BaseDatosContactoFactory)
 
 
 class FormularioFactory(DjangoModelFactory):
@@ -220,17 +241,6 @@ class GrabacionMarcaFactory(DjangoModelFactory):
 
     callid = lazy_attribute(lambda a: format(uuid4().int))
     descripcion = lazy_attribute(lambda a: faker.text(5))
-
-
-class ContactoFactory(DjangoModelFactory):
-    class Meta:
-        model = Contacto
-
-    telefono = lazy_attribute(lambda a: str(faker.random_number(10)))
-    datos = lazy_attribute(lambda a: '["{0}", "{1}", "{2}", "{3}", "{4}"]'.format(
-        faker.name(), faker.name(), faker.random_number(7), faker.phone_number(),
-        faker.phone_number()))
-    bd_contacto = SubFactory(BaseDatosContactoFactory)
 
 
 class QueueFactory(DjangoModelFactory):
@@ -361,3 +371,13 @@ class AgendaContactoFactory(DjangoModelFactory):
 
     class Meta:
         model = AgendaContacto
+
+
+class AgenteEnSistemaExternoFactory(DjangoModelFactory):
+
+    agente = SubFactory(AgenteProfileFactory)
+    sistema_externo = SubFactory(SistemaExternoFactory)
+    id_externo_agente = Sequence(lambda n: "id_externo_agente_{0}".format(n))
+
+    class Meta:
+        model = AgenteEnSistemaExterno

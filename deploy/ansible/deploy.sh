@@ -257,8 +257,8 @@ case $arg1 in
           rm -rf /var/tmp/servers_installed
           exit 1
         fi
-      VersionGeneration
       CodeCopy
+      VersionGeneration
       AnsibleExec
   ;;
   --docker-build|--docker-deploy)

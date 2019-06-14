@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'simple_history',
     'widget_tweaks',
     'rest_framework',
+    'rest_framework.authtoken',
     'api_app',
     'constance',
     'django_js_reverse',
@@ -373,6 +374,7 @@ CALIFICACION_REAGENDA = None
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
+        'api_app.authentication.ExpiringTokenAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -392,3 +394,5 @@ LANGUAGES = (
 )
 
 LANGUAGE_CODE = 'es'
+
+TOKEN_EXPIRED_AFTER_SECONDS = None

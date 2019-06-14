@@ -102,15 +102,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             </ul>
                         </li>
 
-                        {% if user.get_is_administrador %}
-                        <li>
-                            <a href="{% url 'user_api_crm_list' %}">{% trans 'Usuarios api crm' %}</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'user_api_crm_create' %}">{% trans 'Nuevo usuario api crm' %}</a>
-                        </li>
-                        {% endif %}
-
                         <li>
                             <a href="{% url 'grupo_list' %}">{% trans 'Grupos de agentes' %}</a>
                         </li>
@@ -273,6 +264,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 </li>
                                 <li>
                                     <a href="{% url 'sitio_externo_list' %}">{% trans 'Listado de sitios' %}</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#menuSystems" role="button" data-toggle="collapse" aria-expanded="false">{% trans 'Sistemas Externos' %}</a>
+                            <ul class="collapse list-unstyled submenu-two" id="menuSystems" data-parent=".nav-submenu">
+                                <li>
+                                    <a href="{% url 'sistema_externo_create' %}">{% trans 'Nuevo sistema' %}</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'sistema_externo_list' %}">{% trans 'Listado de sistemas' %}</a>
                                 </li>
                             </ul>
                         </li>

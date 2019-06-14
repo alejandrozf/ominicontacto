@@ -21,13 +21,9 @@
 
 from __future__ import unicode_literals
 
-import json
-
 from django.contrib import messages
-from django.contrib.auth.hashers import check_password
 from django.core.urlresolvers import reverse
 from django.http.response import HttpResponseRedirect
-from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.views.generic.edit import (
     CreateView, UpdateView, DeleteView
@@ -41,14 +37,14 @@ from ominicontacto_app.errors import (
     OmlParserMaxRowError, OmlDepuraBaseDatoContactoError, OmlParserRepeatedColumnsError,
     OmlParserCsvImportacionError, OmlArchivoImportacionInvalidoError)
 from ominicontacto_app.forms import (
-    BaseDatosContactoForm, PrimerLineaEncabezadoForm, CamposDeTelefonoForm, )
-from ominicontacto_app.models import BaseDatosContacto, UserApiCrm
+    BaseDatosContactoForm, PrimerLineaEncabezadoForm, CamposDeBaseDeDatosForm, )
+from ominicontacto_app.models import BaseDatosContacto
 from ominicontacto_app.parser import ParserCsv
 from ominicontacto_app.services.base_de_datos_contactos import (
     CreacionBaseDatosService, PredictorMetadataService,
     NoSePuedeInferirMetadataError, NoSePuedeInferirMetadataErrorEncabezado,
-    ContactoExistenteError, CreacionBaseDatosApiService)
-from django.views.decorators.csrf import csrf_exempt
+    ContactoExistenteError, CreacionBaseDatosServiceIdExternoError)
+
 import logging as logging_
 
 
@@ -226,7 +222,7 @@ class DefineBaseDatosContactoView(UpdateView):
                 messages.ERROR,
                 message,
             )
-        except OmlParserRepeatedColumnsError, e:
+        except OmlParserRepeatedColumnsError as e:
             message = _('<strong>Operación Errónea!</strong> ') + e.message
             messages.add_message(
                 self.request,
@@ -279,7 +275,7 @@ class DefineBaseDatosContactoView(UpdateView):
 
             form_primer_linea_encabezado = PrimerLineaEncabezadoForm(
                 initial=initial_predecido_encabezado)
-            form_campos_telefonicos = CamposDeTelefonoForm(nombres_campos=estructura_archivo[0])
+            form_campos_telefonicos = CamposDeBaseDeDatosForm(nombres_campos=estructura_archivo[0])
 
             return self.render_to_response(self.get_context_data(
                 error_predictor_encabezado=error_predictor_encabezado,
@@ -361,9 +357,12 @@ class DefineBaseDatosContactoView(UpdateView):
         # predictor_metadata = PredictorMetadataService()
         # columnas_con_telefonos = predictor_metadata.inferir_columnas_telefono(
         #     estructura_archivo[1:], encoding)
-        campos_telefonicos = form_campos_telefonicos.cleaned_data.get('campos')
+        campos_telefonicos = form_campos_telefonicos.cleaned_data.get('campos_telefonicos')
         columnas_con_telefono = form_campos_telefonicos.columnas_de_telefonos
         metadata.columnas_con_telefono = columnas_con_telefono
+        columna_id_externo = form_campos_telefonicos.columna_id_externo
+        if columna_id_externo is not None:
+            metadata.columna_id_externo = columna_id_externo
 
         metadata.nombres_de_columnas = [value.decode(encoding)
                                         for value in estructura_archivo[0]]
@@ -377,7 +376,26 @@ class DefineBaseDatosContactoView(UpdateView):
 
         try:
             # creacion_base_datos.valida_contactos(self.object)
-            creacion_base_datos.importa_contactos(self.object, campos_telefonicos)
+            creacion_base_datos.importa_contactos(self.object,
+                                                  campos_telefonicos,
+                                                  columna_id_externo)
+        except CreacionBaseDatosServiceIdExternoError as e:
+            message = _('<strong>Operación Errónea!</strong> ') +\
+                _('El archivo que seleccionó posee contactos con identificadores externos '
+                  'repetidos.<br> '
+                  '<u>Línea Inválida:</u> {0}<br> <u>Contenido Línea:</u>'
+                  ' {1}<br><u>ID repetido:</u> {2}').format(
+                e.numero_fila, e.fila, e.valor_celda)
+
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+            return self.render_to_response(self.get_context_data(
+                estructura_archivo=estructura_archivo,
+                form_primer_linea_encabezado=form_primer_linea_encabezado))
+
         except OmlParserCsvImportacionError as e:
 
             message = _('<strong>Operación Errónea!</strong> ') +\
@@ -442,8 +460,8 @@ class DefineBaseDatosContactoView(UpdateView):
         estructura_archivo = self.obtiene_previsualizacion_archivo(self.object)
         if estructura_archivo:
             form_primer_linea_encabezado = PrimerLineaEncabezadoForm(request.POST)
-            form_campos_telefonicos = CamposDeTelefonoForm(data=request.POST,
-                                                           nombres_campos=estructura_archivo[0])
+            form_campos_telefonicos = CamposDeBaseDeDatosForm(data=request.POST,
+                                                              nombres_campos=estructura_archivo[0])
 
             if form_campos_telefonicos.is_valid() and form_primer_linea_encabezado.is_valid():
                 return self.form_valid(estructura_archivo,
@@ -686,8 +704,30 @@ class ActualizaBaseDatosContactoView(UpdateView):
 
         try:
             # creacion_base_datos.valida_contactos(self.object)
-            columnas_con_telefono = self.object.get_metadata().nombres_de_columnas_de_telefonos
-            creacion_base_datos.importa_contactos(self.object, columnas_con_telefono)
+            bd_metadata = self.object.get_metadata()
+            columnas_con_telefono = bd_metadata.nombres_de_columnas_de_telefonos
+            columna_id_externo = bd_metadata.columna_id_externo
+
+            creacion_base_datos.importa_contactos(self.object,
+                                                  columnas_con_telefono,
+                                                  columna_id_externo)
+        except CreacionBaseDatosServiceIdExternoError as e:
+            message = _('<strong>Operación Errónea!</strong> ') +\
+                _('El archivo que seleccionó posee contactos con identificadores externos '
+                  'repetidos.<br> '
+                  '<u>Línea Inválida:</u> {0}<br> <u>Contenido Línea:</u>'
+                  ' {1}<br><u>ID repetido:</u> {2}').format(
+                e.numero_fila, e.fila, e.valor_celda)
+
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+            return self.render_to_response(self.get_context_data(
+                estructura_archivo=estructura_archivo,
+                form_primer_linea_encabezado=form_primer_linea_encabezado))
+
         except OmlParserCsvImportacionError as e:
 
             message = _('<strong>Operación Errónea!</strong> ') +\
@@ -701,7 +741,9 @@ class ActualizaBaseDatosContactoView(UpdateView):
                 messages.ERROR,
                 message,
             )
-            # FIXME: Ver bien que hacer acá.
+            return self.render_to_response(self.get_context_data(
+                estructura_archivo=estructura_archivo,
+                form_primer_linea_encabezado=form_primer_linea_encabezado))
 
         except ContactoExistenteError as e:
 
@@ -798,64 +840,3 @@ def mostrar_bases_datos_borradas_ocultas_view(request):
         'bases_datos_contacto': bases_datos_contacto,
     }
     return render(request, 'base_datos_contacto/base_datos_ocultas.html', data)
-
-
-@csrf_exempt
-def cargar_base_datos_view(request):
-    """Servicio externo para cargar una base de datos via post"""
-    if request.method == 'POST':
-        received_json_data = json.loads(request.body)
-        # tener en cuenta que se espera json con estas claves
-        data_esperada = ['nombre', 'datos', 'columnas', 'user_api',
-                         'password_api']
-        for data in data_esperada:
-            if data not in received_json_data.keys():
-                return JsonResponse({'status': 'Error en falta {0}'.format(data)
-                                     })
-
-        try:
-            usuario = UserApiCrm.objects.get(
-                usuario=received_json_data['user_api'])
-            received_password = received_json_data['password_api']
-            if check_password(received_password, usuario.password):
-                service = CreacionBaseDatosApiService()
-                base_datos = service.crear_base_datos_api(
-                    received_json_data['nombre'])
-
-                predictor = service.inferir_metadata_desde_lineas(
-                    received_json_data['columnas'], received_json_data['datos'])
-
-                metadata = base_datos.get_metadata()
-                metadata.cantidad_de_columnas = predictor.cantidad_de_columnas
-
-                columnas_con_telefonos = service.inferir_columnas_telefono(
-                    received_json_data['datos'])
-                metadata.columnas_con_telefono = columnas_con_telefonos
-                metadata.nombres_de_columnas = received_json_data['columnas']
-
-                es_encabezado = False
-
-                metadata.primer_fila_es_encabezado = es_encabezado
-                metadata.save()
-                base_datos.save()
-
-                try:
-                    service.importa_contactos(base_datos,
-                                              received_json_data['datos'])
-                    base_datos.define()
-                except OmlParserCsvImportacionError as e:
-                    message = ('<strong>Operación Errónea!</strong> ') +\
-                        _('El archivo que seleccionó posee registros inválidos.<br> '
-                          '<u>Línea Inválida:</u> {0}<br> <u>Contenido Línea:</u>'
-                          '{1}<br><u>Contenido Inválido:</u> {2}').format(
-                        e.numero_fila, e.fila, e.valor_celda)
-
-                logger.error(message)
-            else:
-                return JsonResponse({'status': 'no coinciden usuario y/o password'})
-        except UserApiCrm.DoesNotExist:
-            return JsonResponse({'status': 'no existe este usuario {0}'.format(
-                received_json_data['user_api'])})
-        return JsonResponse({'status': 'OK'})
-    else:
-        return JsonResponse({'status': 'este es un metodo post'})

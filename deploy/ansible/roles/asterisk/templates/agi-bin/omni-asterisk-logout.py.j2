@@ -36,48 +36,12 @@ from utiles import write_time_stderr
 sys.stderr = open('{{ asterisk_location }}/var/log/asterisk/agis-errors.log', 'a')
 
 
-class CustomManager(Manager):
-    # El código original de pyst2 no contenía los parámetros 'application' y 'data' en el momento
-    # de desarrollar esta funcionalidad por lo que se hizo necesario customizar el método para
-    # añadir estos parámetros (ver https://github.com/rdegges/pyst2/issues/41 )
-    def originate(self, channel, exten, context='', priority='', timeout='', application='',
-                  data='', caller_id='', async=False, account='', variables={}):
-        """Originate a call"""
-
-        cdict = {'Action': 'Originate'}
-        cdict['Channel'] = channel
-        cdict['Exten'] = exten
-        if context:
-            cdict['Context'] = context
-        if priority:
-            cdict['Priority'] = priority
-        if timeout:
-            cdict['Timeout'] = timeout
-        if application:
-            cdict['Application'] = application
-        if data:
-            cdict['Data'] = data
-        if caller_id:
-            cdict['CallerID'] = caller_id
-        if async:
-            cdict['Async'] = 'yes'
-        if account:
-            cdict['Account'] = account
-        if variables:
-            cdict['Variable'] = ['='.join(
-                (str(key), str(value))) for key, value in variables.items()]
-
-        response = self.send_action(cdict)
-
-        return response
-
-
 def logout_inactive_users(users_activity_list, manager):
     for activity_line in users_activity_list.splitlines():
         if activity_line.find("Unavailable") != -1:
             fields_activity = activity_line.split()
-            id_user = fields_activity[0]
-            sip_number = fields_activity[1].replace("(SIP/", "").replace(")", "")
+            id_user = fields_activity[1]
+            sip_number = fields_activity[2].replace("(SIP/", "").replace(")", "")
             channel = 'Local/066LOGOUT@oml-agent-actions/n'
             exten = ''
             # context = ''
@@ -91,7 +55,7 @@ def logout_inactive_users(users_activity_list, manager):
                               caller_id=caller_id, variables=variables)
 
 
-manager = CustomManager()
+manager = Manager()
 
 ami_manager_user = configParser.get('OML', 'AMI_USER')
 ami_manager_pass = configParser.get('OML', 'AMI_PASS')

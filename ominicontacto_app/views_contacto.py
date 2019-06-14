@@ -27,9 +27,9 @@ import json
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.views.generic import (View, ListView, CreateView, UpdateView, FormView, DeleteView,
+from django.views.generic import (ListView, CreateView, UpdateView, FormView, DeleteView,
                                   TemplateView)
 from django.utils.translation import ugettext as _
 
@@ -136,44 +136,6 @@ class ContactosTelefonosRepetidosView(TemplateView):
         return context
 
 
-class API_ObtenerContactosCampanaView(View):
-    def _procesar_api(self, request, campana):
-        search = request.GET['search[value]']
-        contactos_calificados_ids = list(campana.obtener_calificaciones().values_list(
-            'contacto__pk', flat=True))
-        if search != '':
-            contactos = Contacto.objects.contactos_by_filtro_bd_contacto(
-                campana.bd_contacto, filtro=search)
-            contactos = contactos.exclude(pk__in=contactos_calificados_ids)
-        else:
-            contactos = campana.bd_contacto.contactos.exclude(pk__in=contactos_calificados_ids)
-
-        return contactos
-
-    def _procesar_contactos_salida(self, request, campana, contactos_filtrados):
-        total_contactos = campana.bd_contacto.contactos.count()
-        total_contactos_filtrados = contactos_filtrados.count()
-        start = int(request.GET['start'])
-        length = int(request.GET['length'])
-        draw = int(request.GET['draw'])
-        data = [[pk, telefono, ''] for pk, telefono
-                in contactos_filtrados.values_list('pk', 'telefono')]
-        result_dict = {
-            'draw': draw,
-            'recordsTotal': total_contactos,
-            'recordsFiltered': total_contactos_filtrados,
-            'data': data[start:start + length],
-        }
-        return result_dict
-
-    def get(self, request, *args, **kwargs):
-        pk_campana = kwargs.get('pk_campana')
-        campana = Campana.objects.get(pk=pk_campana)
-        contactos = self._procesar_api(request, campana)
-        result_dict = self._procesar_contactos_salida(request, campana, contactos)
-        return JsonResponse(result_dict)
-
-
 class ContactoBDContactoCreateView(CreateView):
     """Vista para agregar un contacto a una base de datos ya existente"""
     model = Contacto
@@ -184,11 +146,11 @@ class ContactoBDContactoCreateView(CreateView):
         initial = super(ContactoBDContactoCreateView, self).get_initial()
         initial.update({'bd_contacto': self.kwargs['bd_contacto']})
 
-    def get_form(self):
-        self.form_class = self.get_form_class()
+    def get_form_kwargs(self):
+        kwargs = super(ContactoBDContactoCreateView, self).get_form_kwargs()
         base_datos = BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
-        metadata = base_datos.get_metadata()
-        return self.form_class(bd_metadata=metadata, **self.get_form_kwargs())
+        kwargs['base_datos'] = base_datos
+        return kwargs
 
     def form_valid(self, form):
         # TODO: Decidir si esto lo tiene que hacer el form o la vista
@@ -196,8 +158,6 @@ class ContactoBDContactoCreateView(CreateView):
         base_datos = BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
         base_datos.cantidad_contactos += 1
         base_datos.save()
-        self.object.bd_contacto = base_datos
-
         self.object.datos = form.get_datos_json()
         self.object.save()
 
@@ -354,7 +314,8 @@ class FormularioSeleccionCampanaFormView(FormView):
 
 
 class FormularioNuevoContactoFormView(FormView):
-    """Esta vista agrega un nuevo contacto para la campana seleccionada
+    """
+        Vista de Agente para agregar un nuevo contacto para la campana seleccionada
     """
     form_class = FormularioNuevoContacto
     template_name = 'contactos/nuevo_contacto_campana.html'
@@ -373,18 +334,14 @@ class FormularioNuevoContactoFormView(FormView):
     def get_form_kwargs(self):
         kwargs = super(FormularioNuevoContactoFormView, self).get_form_kwargs()
         kwargs['initial']['telefono'] = self.kwargs.get('telefono', '')
-        kwargs['bd_metadata'] = self.campana.bd_contacto.get_metadata()
+        kwargs['base_datos'] = self.campana.bd_contacto
         return kwargs
 
     def form_valid(self, form):
-        base_datos = self.campana.bd_contacto
-        telefono = str(form.cleaned_data.get('telefono'))
-
-        datos_json = form.get_datos_json()
-        contacto = Contacto.objects.create(
-            telefono=telefono, datos=datos_json,
-            bd_contacto=base_datos,
-            es_originario=False)
+        contacto = form.save(commit=False)
+        contacto.datos = form.get_datos_json()
+        contacto.es_originario = False
+        contacto.save()
 
         # TODO: OML-1016 Tener en cuenta esto al hacer esta card.
         if self.campana.type == Campana.TYPE_PREVIEW:
