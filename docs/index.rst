@@ -111,18 +111,6 @@ de campañas Entrantes y Salientes (manuales, preview y dialer)
 
    campaigns.rst
 
-*********************
-INTEGRACION CON CRM
-*********************
-
-OMniLeads permite integrarse con sistemas Web CRM, de manera tal que se puede configurar para enviar notificaciones y peticiones desde OMniLeads
-hacia el sistema CRM y viceversa a traves de la API del sistema.
-
- .. toctree::
-  :maxdepth: 2
-
-  crm_integration.rst
-
 
 *********************************************
 METRICAS, REPORTES, GRABACIONES Y SUPERVISION
@@ -158,6 +146,29 @@ del módulo de discador predictivo, gestión de actualizaciones, backup & restor
    :maxdepth: 2
 
    maintance.rst
+
+*********************
+INTEGRACION CON CRM
+*********************
+
+OMniLeads permite integrarse con sistemas Web CRM, de manera tal que se puede configurar para enviar notificaciones y peticiones desde OMniLeads
+hacia el sistema CRM y viceversa a traves de la API del sistema.
+
+.. toctree::
+ :maxdepth: 2
+
+ crm_integration.rst
+
+
+********
+OML API
+********
+En esta sección vamos a encontrar toda la especificación de la API Rest del sistema.
+
+  .. toctree::
+   :maxdepth: 2
+
+   api.rst
 
 ************
 KNOWN ISSUES
