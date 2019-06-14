@@ -55,6 +55,9 @@ ALLOWED_HOSTS = [
     "*",
 ]
 
+OML_OMNILEADS_IP = os.getenv('OMNILEADS_IP')
+POSTGRES_HOST = os.getenv('PGHOST')
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 's1+*bfrvb@=k@c&9=pm!0sijjewneu5p5rojil#q+!a2y&as-4'
 
@@ -226,6 +229,8 @@ CONSTANCE_CONFIG = {
 MIDDLEWARE_PREPPEND = []
 MIDDLEWARE_APPEND = []
 TEMPLATES_CONTEXT_PROCESORS_APPEND = []
+
+TOKEN_EXPIRED_AFTER_SECONDS = 360
 
 REDIS_HOSTNAME = os.getenv('REDIS_HOSTNAME')
 CONSTANCE_REDIS_CONNECTION = {

@@ -19,7 +19,7 @@ del CRM involucre parámetros de la llamada, del contacto y/o parámetros person
 A su vez dependiendo de la configuración aplicada en la campaña, el resultado del URL invocado puede estar embebido dentro de la consola de agente, puede dispararse
 una nueva pestaña en el navegador por cada llamada o bien simplemente enviar un HTTP-Post JSON hacia el CRM.
 
-.. image:: images/crm_oml2crm_call_crm.png
+.. image:: images/crm_camp_embedded.png
 
 *Figure 2: CRM and agent console*
 

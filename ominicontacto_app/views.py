@@ -288,7 +288,7 @@ class SincronizarPausaMixin(object):
                 sincronizador.regenerar_asterisk(pausa)
                 message = (_(u"La pausa se ha guardado exitosamente."))
             messages.add_message(self.request, messages.SUCCESS, message)
-        except RestablecerConfiguracionTelefonicaError, e:
+        except RestablecerConfiguracionTelefonicaError as e:
             message = _("Operación Errónea! "
                         "No se realizo de manera correcta la sincronización de los  "
                         "datos en asterisk según el siguiente error: {0}".format(e))
@@ -635,6 +635,6 @@ class RegistroFormView(FormView):
 # TEST para probar sitio externo
 def profile_page(request, username):
     prueba = request.GET.get('q', '')
-    print prueba
+    print(prueba)
     return render_to_response('blanco.html',
                               context_instance=RequestContext(request))

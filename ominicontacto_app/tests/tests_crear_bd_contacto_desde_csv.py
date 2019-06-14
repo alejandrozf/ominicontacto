@@ -58,7 +58,7 @@ class TestWorkflowCreacionBdContactoDesdeCsv(OMLBaseTest):
         metadata.save()
 
         creacion_base_datos_service = CreacionBaseDatosService()
-        creacion_base_datos_service.importa_contactos(bd_contacto, ["telefono"])
+        creacion_base_datos_service.importa_contactos(bd_contacto, ["telefono"], None)
         creacion_base_datos_service.define_base_dato_contacto(bd_contacto)
 
         # ----- checks
@@ -105,7 +105,7 @@ class TestWorkflowCreacionBdContactoDesdeCsv(OMLBaseTest):
             metadata.save()
 
             creacion_base_datos_service = CreacionBaseDatosService()
-            creacion_base_datos_service.importa_contactos(bd_contacto, ["telefono"])
+            creacion_base_datos_service.importa_contactos(bd_contacto, ["telefono"], None)
             creacion_base_datos_service.define_base_dato_contacto(bd_contacto)
 
             # ----- checks

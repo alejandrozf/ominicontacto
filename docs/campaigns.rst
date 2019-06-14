@@ -129,6 +129,7 @@ el formulario asociado a la calificación dentro de la campaña.
 
 *Figure 11: Engaged dispostions and forms*
 
+
 Campañas Manuales
 *****************
 
@@ -176,11 +177,10 @@ una nueva campaña con todos los parámetros especificados en el template como c
 
 *Figure 13: templates*
 
-Campañas e Interacción con CRM
-*******************************
+Campañas e Interacción con Sistemas Externos
+********************************************
 
-OMniLeads está diseñado desde una perspectiva en la que se prioriza una integración con el sistema de gestión predilecto del usuario. En lugar de forzar al mismo
-a tener que pasar su operación sobre un CRM propio del stack de contact center.
+OMniLeads está diseñado desde una perspectiva en la que se prioriza una integración con el sistema de gestión predilecto del usuario. Esto permite a un usuario integrar con la plataforma su propio CRM.
 
 Entre las funcionalidades contempladas se pueden listar:
 
