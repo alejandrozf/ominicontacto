@@ -408,7 +408,9 @@ class GrabacionBusquedaForm(forms.Form):
     tipo_llamada_choice.insert(0, EMPTY_CHOICE)
     tipo_llamada = forms.ChoiceField(required=False,
                                      choices=tipo_llamada_choice, label=_('Tipo de llamada'))
-    tel_cliente = forms.CharField(required=False)
+    tel_cliente = forms.CharField(required=False, label=_('Teléfono Cliente'))
+    callid = forms.CharField(required=False, label=_('Call ID'),
+                             widget=forms.TextInput(attrs={'class': 'form-control'}))
     agente = forms.ModelChoiceField(queryset=AgenteProfile.objects.filter(is_inactive=False),
                                     required=False, label=_('Agente'))
     campana = forms.ChoiceField(required=False, choices=(), label=_('Campaña'))
@@ -434,7 +436,7 @@ class CampanaMixinForm(object):
             self.fields['bd_contacto'].queryset = BaseDatosContacto.objects.obtener_definidas()
 
     def requiere_bd_contacto(self):
-        raise NotImplementedError
+        raise NotImplementedError()
 
     def clean(self):
         bd_contacto_field = self.fields.get('bd_contacto', False)
@@ -1181,7 +1183,7 @@ class SitioExternoForm(forms.ModelForm):
                 raise forms.ValidationError(msg)
         elif formato == SitioExterno.JSON:
             if objetivo:
-                msg = _('Si el formato JSON, no puede haber un objetivo.')
+                msg = _('Si el formato es JSON, no puede haber un objetivo.')
                 raise forms.ValidationError(msg)
         elif objetivo == '':
             raise forms.ValidationError(_('Debe indicar un objetivo.'))

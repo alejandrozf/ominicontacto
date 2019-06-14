@@ -286,7 +286,7 @@ msgstr "Page"
 
 #: ominicontacto_app/forms.py:393
 msgid "Marcadas"
-msgstr "Checked"
+msgstr "Tagged"
 
 #: ominicontacto_app/forms.py:395
 msgid "Duración mínima"
