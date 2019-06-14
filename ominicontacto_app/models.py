@@ -2308,8 +2308,8 @@ class GrabacionManager(models.Manager):
             raise (SuspiciousOperation(_("No se encontro contactos con esa "
                                          "tel de cliente")))
 
-    def grabacion_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada,
-                            tel_cliente, agente, campana, campanas, marcadas, duracion, gestion):
+    def grabacion_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada, tel_cliente, callid,
+                            agente, campana, campanas, marcadas, duracion, gestion):
         grabaciones = self.filter(campana__in=campanas)
 
         if fecha_desde and fecha_hasta:
@@ -2321,6 +2321,8 @@ class GrabacionManager(models.Manager):
             grabaciones = grabaciones.filter(tipo_llamada=tipo_llamada)
         if tel_cliente:
             grabaciones = grabaciones.filter(tel_cliente__contains=tel_cliente)
+        if callid:
+            grabaciones = grabaciones.filter(callid=callid)
         if agente:
             grabaciones = grabaciones.filter(agente=agente)
         if campana:
