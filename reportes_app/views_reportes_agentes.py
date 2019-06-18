@@ -21,13 +21,15 @@ from __future__ import unicode_literals
 
 from django.template import loader
 from django.http import JsonResponse
-from django.views.generic import FormView
+from django.views.generic import FormView, TemplateView
 from django.shortcuts import redirect, render
+from django.utils.timezone import now
 from ominicontacto_app.models import AgenteProfile, Grupo
 from reportes_app.forms import ReporteAgentesForm
-from ominicontacto_app.utiles import convert_fecha_datetime
+from ominicontacto_app.utiles import convert_fecha_datetime, fecha_local
 from reportes_app.reportes.reporte_agente_tiempos import TiemposAgente
 from reportes_app.reportes.reporte_agente_tiempos_csv import ReporteAgenteCSVService
+from reportes_app.models import LlamadaLog
 
 
 class ReportesTiemposAgente(FormView):
@@ -159,3 +161,19 @@ def reporte_por_fecha_pausa_modal_agente_view(request):
             return JsonResponse(data, safe=True)
 
     return render(request)
+
+
+class HistoricoDeLlamadasView(TemplateView):
+    """
+    Devuelve el html del las llamadas del día para el agente
+    """
+    template_name = 'agente/historico_llamadas_del_dia.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(HistoricoDeLlamadasView, self).get_context_data(*args, **kwargs)
+        agente_profile = self.request.user.get_agente_profile()
+        hoy = fecha_local(now())
+        logs = LlamadaLog.objects.obtener_llamadas_finalizadas_del_dia(agente_profile.id, hoy)
+        context['registros'] = logs
+        context['tipos_salientes'] = LlamadaLog.TIPOS_LLAMADAS_SALIENTES
+        return context

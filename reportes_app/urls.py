@@ -19,7 +19,7 @@
 
 from django.conf.urls import url
 
-from ominicontacto_app.auth.decorators import permiso_administracion_requerido
+from ominicontacto_app.auth.decorators import permiso_administracion_requerido, agente_requerido
 
 from reportes_app import views_reportes_agentes
 from reportes_app.views import (ReporteLlamadasFormView, ExportarReporteLlamadasFormView,
@@ -48,6 +48,10 @@ urlpatterns = [
         permiso_administracion_requerido(
             views_reportes_agentes.reporte_por_fecha_pausa_modal_agente_view),
         name='reportes_pausa_por_fecha'),
+    url(r'^reportes/historico_llamadas_del_dia/$',
+        agente_requerido(views_reportes_agentes.HistoricoDeLlamadasView.as_view()),
+        name='historico_de_llamadas_de_agente',
+        ),
     # ==========================================================================
     # Reportes generales llamadas
     # ==========================================================================

@@ -96,23 +96,15 @@ class OMLAPI {
         });
     };
 
-    guardarDuracionLlamada(duracion, idagt, numero_telefono, tipo_llamada, callback) {
-         // {% url 'nueva_duracion_llamada'%}
-        var URL = Urls.nueva_duracion_llamada();
-       $.ajax({
+    updateCallHistory(callback) {
+        // {% url 'historico_de_llamadas_de_agente'%}
+        var URL = Urls.historico_de_llamadas_de_agente();
+        $.ajax({
             type: "get",
             url: URL,
-            //url: "/duracion/llamada/",
             contentType: "text/html",
-            data: {
-                duracion: duracion,
-                agente: idagt,
-                numero_telefono: numero_telefono,
-                tipo_llamada: tipo_llamada
-            },
-            //data: "duracion=" + duracion + "&agente=" + idagt + "&numero_telefono=" + numero_telefono + "&tipo_llamada=" + tipo_llamada,
             success: function(msg) {
-            	callback(msg);
+                callback(msg);
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);

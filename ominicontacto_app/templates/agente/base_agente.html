@@ -717,25 +717,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                     <th>{% trans 'tipo' %}</th><th>{% trans 'número' %}</th><th>{% trans 'fecha' %}</th><th style="text-align:center">hora</th><!--<th>Llamar</th>-->
                                 </thead>
                                 <tbody id="call_list">
-                                    {% for regs in registro %}
-                                    <tr>
-                                        <td><img height='15' width='15'
-                                        {%if regs.tipo_llamada == 3 %}
-                                        src="{% static 'ominicontacto/Img/incomingCall.png' %}"
-                                                                {% else %}
-                                                                src="{% static 'ominicontacto/Img/outgoingCall.png' %}"
-                                                                {% endif %}
-                                        /></td>
-                                        <td>{{ regs.numero_telefono }}</td>
-                                        <td>{{ regs.fecha_hora_llamada | date:"d-m" }}</td>
-                                        <td>{{ regs.fecha_hora_llamada | date:"H:i:s" }}</td>
-                                        <!--<td style="align:right">
-                                            <button type="button" class="btn btn-success btn-xs call">
-                                                <span class="glyphicon glyphicon-earphone"></span>
-                                            </button>
-                                        </td>-->
-                                    </tr>
-                                    {% endfor %}
+                                    {% include "agente/historico_llamadas_del_dia.html" %}
                                 </tbody>
                             </table>
                         </div>

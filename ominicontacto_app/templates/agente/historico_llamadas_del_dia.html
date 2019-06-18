@@ -19,16 +19,20 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% load static %}
 {% for registro in registros %}
- <tr>
-     <td><img height='15' width='15'
-              {%if registro.tipo_llamada == 3 %}
-                        src="{% static 'ominicontacto/Img/incomingCall.png' %}" 
+  <tr>
+    <td><img height='15' width='15'
+              {%if registro.tipo_llamada in tipos_salientes %}
+                src="{% static 'ominicontacto/Img/incomingCall.png' %}" 
               {% else %}
-              src="{% static 'ominicontacto/Img/outgoingCall.png' %}"
+                src="{% static 'ominicontacto/Img/outgoingCall.png' %}"
               {% endif %}
-     /></td>
-     <td>{{ registro.numero_telefono }}</td>
-     <td>{{ registro.fecha_hora_llamada | date:"d-m" }}</td>
-     <td>{{ registro.fecha_hora_llamada | date:"H:i:s" }}</td>
- </tr>
+    /></td>
+    <td>
+      <a class="btn btn-submit btn-outline-primary" href="javascript:;" onclick="click2call.call_contact('{{ registro.campana_id }}', '{{ registro.tipo_campana }}', '{{ registro.contacto_id }}', '{{ registro.numero_marcado }}', 'contactos');">
+        {{ registro.numero_marcado }}
+      </a>
+    </td>
+    <td>{{ registro.time | date:"d-m" }}</td>
+    <td>{{ registro.time | date:"H:i:s" }}</td>
+  </tr>
 {% endfor %}
