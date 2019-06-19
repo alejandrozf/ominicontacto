@@ -3,7 +3,7 @@ INTRODUCCION A OMNILEADS
 ************************
 
 
-`OMniLeads <https://www.omnileads.net/>`_ es Software `GPLV3  <https://www.gnu.org/licenses/gpl-3.0.en.html/>`_ para Contact Centers basado en `WebRTC <https://www.webrtc.org/>`_ ,
+`OMniLeads <https://www.omnileads.net/>`_ es un Software `GPLV3  <https://www.gnu.org/licenses/gpl-3.0.en.html/>`_ para Contact Centers basado en `WebRTC <https://www.webrtc.org/>`_ ,
 que permite implementar y gestionar un Contact Center administrando operaciones entrantes y salientes, con acceso a métricas, reportes e indicadores, supervisión real-time de agentes y demás funcionalidades avanzadas de QA y gestión de contactos y campañas.
 
 A partir de ejecutar una sencilla :ref:`about_install`, y unos pocos pasos de Configuración posteriores, se deja funcional a una instancia

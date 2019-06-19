@@ -111,7 +111,8 @@ Una vez descriptos cada parámetro del sistema, se observa en la *figura 5* que 
 Ejemplo 1: invocación a un CRM utilizando GET
 *********************************************
 
-Vamos a suponer que se desea ejecutar el URL: **https://my_crm.domain.com?idClient=321321321&idCamp=11&lang=es&recordingFile=blablabla**
+Vamos a suponer que se desea ejecutar el URL: **https://my_crm.domain.com?idClient=321321321&idCamp=11&lang=es&recordingFile=prev-115-20190604-2-4149014-1559667982.424.wav**
+
 Como se puede leer en nuestra URL de ejemplo, en cada ejecución se debe facilitar como parámetros:
 
 * ID del contacto
@@ -144,4 +145,46 @@ El último paso tiene que ver con la asignación de los parámetros necesarios p
 
 *Figure 8: Campaign CRM parameters*
 
-Finalmente resaltamos la relación entra las columnas 2 y 3 de cada parámetrom, ya que hacen a la asignación de los parámetros del sistema bajo los nombres de parámetros esperados del lado del CRM.
+Finalmente resaltamos la relación entra las columnas 2 y 3 de cada parámetro, ya que hacen a la asignación de los parámetros del sistema bajo los nombres de parámetros esperados del lado del CRM.
+
+
+
+Ejemplo 2: invocación a un CRM utilizando GET y Clean URLs
+***********************************************************
+
+Vamos a suponer que se desea ejecutar una `Clean URL <https://en.wikipedia.org/wiki/Clean_URL>`_  : **https://my_crm.domain.com/idClient/idCamp/lang/recordingFile**
+
+por ejemplo:
+https://my_crm.domain.com/321321321/11/es/prev-115-20190604-2-4149014-1559667982.424.wav
+
+Como se puede leer en nuestra URL de ejemplo, en cada ejecución se debe facilitar como parámetros:
+
+* ID del contacto
+* ID de la campaña que invoca al crm
+* Un parámetro "lang=es"
+* La grabación de la llamada actual
+
+Cómo implementaríamos entonces este requerimiento desde lo que hemos cubierto en este capítulo ?
+
+**Generar el nuevo CRM**
+
+En la *figura 9* se ejemplifica la implementación del CRM propuesto como ejemplo.
+
+.. image:: images/crm_oml2crm_newcrm_example_2.png
+
+*Figure 9: CRM definition with clean URL*
+
+En la figura se resaltan los "holders" necesarios para trabajar con Clean URLs. A la hora de generar el URL a ejecutar, se deben especificar los parámetros
+entre llaves que van a ser generados en la petición. Parámetros que luego se asignarán a la hora de generar la campaña que invocará el CRM externo.
+
+Por lo tanto ahora pasamos a ejemplificar la configuración de la campaña para que invoque al CRM con los parámetros especificados arriba.
+
+La diferencia respecto a las URLs estándares (HTTP GET) que se expuso en el *ejemplo 1*, es que a la hora de asignar parámetros en la campaña, se deben
+utilizar "los holders" en lugar de los "Nombres de parámetros", como se ejemplifica en la *figura 10*.
+
+
+.. image:: images/crm_oml2crm_campcrm_example_2.png
+
+*Figure 10: Campaign and CRM parameters*
+
+Finalmente resaltamos la relación entra las columnas 2 y 3 de cada parámetro, en el marco de las "clean URLs" .
