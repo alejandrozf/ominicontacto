@@ -238,3 +238,7 @@ CONSTANCE_REDIS_CONNECTION = {
     'port': 6379,
     'db': 0,
 }
+
+KAMAILIO_HOSTNAME = 'trash'
+NGINX_HOSTNAME = 'trash'
+OML_EXTERNAL_PORT = 'trash'
