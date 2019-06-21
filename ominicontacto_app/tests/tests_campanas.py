@@ -38,8 +38,8 @@ from configuracion_telefonia_app.models import DestinoEntrante
 
 from ominicontacto_app.models import (AgenteEnContacto, Campana, QueueMember, OpcionCalificacion,
                                       Formulario, ParametrosCrm)
-from ominicontacto_app.forms import CampanaPreviewForm, TIEMPO_MINIMO_DESCONEXION
-
+from ominicontacto_app.forms import (CampanaPreviewForm, TIEMPO_MINIMO_DESCONEXION,
+                                     CampanaDialerForm, CampanaForm)
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, UserFactory,
                                                QueueFactory, AgenteProfileFactory,
                                                AgenteEnContactoFactory, QueueMemberFactory,
@@ -217,6 +217,56 @@ class CampanasTests(OMLBaseTest):
         self.campana_activa.bd_contacto.contactos.add(self.contacto)
         self.queue = QueueFactory.create(campana=self.campana_activa)
         QueueFactory.create(campana=self.campana)
+
+    def test_campana_preview_imposibilitar_Url_externo_si_la_interaccion_es_formulario(self):
+        sitio_externo = SitioExternoFactory()
+        campana_preview_data = {'nombre': 'test',
+                                'bd_contacto': self.contacto.bd_contacto,
+                                'tipo_interaccion': Campana.FORMULARIO,
+                                'objetivo': 1,
+                                'sitio_externo': sitio_externo.pk,
+                                'tiempo_desconexion': 2}
+        campana_preview_form = CampanaPreviewForm(data=campana_preview_data)
+        message = _('No se puede elegir un URL externo si selecciono un formulario.')
+        self.assertEqual(campana_preview_form.errors['sitio_externo'], [message])
+
+    def test_campana_dailer_imposibilitar_Url_externo_si_la_interaccion_es_formulario(self):
+        sitio_externo = SitioExternoFactory()
+        campana_dailer_data = {'nombre': 'test',
+                               'bd_contacto': self.contacto.bd_contacto,
+                               'tipo_interaccion': Campana.FORMULARIO,
+                               'objetivo': 1,
+                               'sitio_externo': sitio_externo.pk,
+                               'tiempo_desconexion': 2}
+        campana_dailer_form = CampanaDialerForm(data=campana_dailer_data)
+        message = _('No se puede elegir un URL externo si selecciono un formulario.')
+        self.assertEqual(campana_dailer_form.errors['sitio_externo'], [message])
+
+    def test_campana_entrante_imposibilitar_Url_externo_si_la_interaccion_es_formulario(self):
+        sitio_externo = SitioExternoFactory()
+        campana_entrante_data = {'nombre': 'test',
+                                 'bd_contacto': self.contacto.bd_contacto,
+                                 'tipo_interaccion': Campana.FORMULARIO,
+                                 'objetivo': 1,
+                                 'sitio_externo': sitio_externo.pk,
+                                 'tiempo_desconexion': 2}
+        campana_entrante_form = CampanaForm(data=campana_entrante_data)
+        message = _('No se puede elegir un URL externo si selecciono un formulario.')
+        self.assertEqual(campana_entrante_form.errors['sitio_externo'], [message])
+
+    def test_campana_no_guardar_url_externo_si_interaccion_es_formulario(self):
+        msg = _('No se puede elegir un URL externo si selecciono un formulario.')
+        with self.assertRaisesMessage(ValidationError, msg):
+            sitio_externo = SitioExternoFactory()
+            campana = Campana(nombre='test',
+                              bd_contacto=self.contacto.bd_contacto,
+                              tipo_interaccion=Campana.FORMULARIO,
+                              objetivo=1,
+                              type=Campana.TYPE_DIALER,
+                              sitio_externo=sitio_externo,
+                              reported_by=UserFactory(),
+                              tiempo_desconexion=2)
+            campana.save()
 
 
 class AgenteCampanaTests(CampanasTests):

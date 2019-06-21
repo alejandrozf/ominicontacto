@@ -83,7 +83,7 @@ class TestsABMSitioExterno(OMLBaseTest):
     def test_no_se_permite_eliminar_sitio_externo_asociado_campana(self):
         url = reverse('sitio_externo_delete', args=[self.sitio_externo.pk])
         self.client.login(username=self.admin.username, password=self.PWD)
-        CampanaFactory.create(sitio_externo=self.sitio_externo)
+        CampanaFactory.create(sitio_externo=self.sitio_externo, tipo_interaccion=2)
         n_sitio_externo = SitioExterno.objects.count()
         self.client.post(url, follow=True)
         self.assertEqual(SitioExterno.objects.count(), n_sitio_externo)
@@ -101,7 +101,8 @@ class TestsSitioExterno(OMLBaseTest):
     def setUp(self, *args, **kwargs):
         self.agente = self.crear_agente_profile()
         self.sitio_externo = SitioExternoFactory()
-        self.campana = CampanaFactory(sitio_externo=self.sitio_externo)
+        self.campana = CampanaFactory(sitio_externo=self.sitio_externo,
+                                      tipo_interaccion=2)
         self.contacto = ContactoFactory()
         self.call_data = {
             'call_id': '1234',

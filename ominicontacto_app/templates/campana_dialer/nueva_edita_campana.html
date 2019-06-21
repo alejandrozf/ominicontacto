@@ -42,6 +42,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
      });
     </script>
 {% endblock %}
+{% block extra_js %}
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/interaccionsitioexterno.js' %}"></script>
+    <script type="text/javascript">
+        $(function(){
+            interaccionUrl();
+        });
+    </script>
+{% endblock %}
 
 {% block nav %}
     <h1>{% trans 'Campaña Dialer: Datos Básicos' %} {% if not form.instance.pk %}<span style="color:red;">- {% trans 'Canales en uso:' %} {{ canales_en_uso }}{% endif %}</h1>
@@ -114,8 +122,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {{ form.tipo_interaccion.errors }}
             <div class="col-md-6">
               <label> {% trans "Tipo de Interacción" %}</label>
-                <div class="myradio">{{ form.tipo_interaccion.0 }}</div>
-                <div class="myradio">{{ form.tipo_interaccion.1 }}</div>
+                <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.0 }}</div>
+                <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.1 }}</div>
             </div>
             <div class="col-md-6">
                 <label><div class="myradio">{% trans "Url Externa" %}</div> </label>

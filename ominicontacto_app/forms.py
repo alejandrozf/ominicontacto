@@ -456,7 +456,6 @@ class CampanaMixinForm(object):
         if self.cleaned_data.get('tipo_interaccion') is Campana.SITIO_EXTERNO and \
                 not self.cleaned_data.get('sitio_externo'):
             message = _("Debe seleccionar un sitio externo")
-            self.add_error('sitio_externo', message)
             raise forms.ValidationError(message, code='invalid')
         return super(CampanaMixinForm, self).clean()
 
@@ -465,11 +464,13 @@ class CampanaMixinForm(object):
         validar_nombres_campanas(nombre)
         return nombre
 
-    def clean_tipo_interaccion(self):
-        tipo_interaccion = self.cleaned_data.get('tipo_interaccion', None)
-        if self.instance and self.instance.pk:
-            return self.instance.tipo_interaccion
-        return tipo_interaccion
+    def clean_sitio_externo(self):
+        sitio_externo = self.cleaned_data.get('sitio_externo')
+        tipo_interaccion = self.cleaned_data.get('tipo_interaccion')
+        if tipo_interaccion == Campana.FORMULARIO and sitio_externo is not None:
+            msg = _('No se puede elegir un URL externo si selecciono un formulario.')
+            raise forms.ValidationError(msg)
+        return sitio_externo
 
     def clean_id_externo(self):
         sistema_externo = self.cleaned_data.get('sistema_externo', None)
@@ -521,7 +522,7 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'bd_contacto', 'sistema_externo', 'id_externo',
-                  'sitio_externo', 'tipo_interaccion', 'objetivo', 'mostrar_nombre')
+                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -1075,8 +1076,8 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin',
-                  'bd_contacto', 'sitio_externo', 'sistema_externo', 'id_externo',
-                  'tipo_interaccion', 'objetivo', 'mostrar_nombre')
+                  'bd_contacto', 'sistema_externo', 'id_externo',
+                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -1379,7 +1380,7 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'bd_contacto', 'sistema_externo', 'id_externo',
-                  'sitio_externo', 'tipo_interaccion', 'objetivo')
+                  'tipo_interaccion', 'sitio_externo', 'objetivo')
 
         widgets = {
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
@@ -1410,7 +1411,7 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'sistema_externo', 'id_externo',
-                  'sitio_externo', 'tipo_interaccion', 'objetivo', 'bd_contacto',
+                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'bd_contacto',
                   'tiempo_desconexion')
 
         widgets = {
