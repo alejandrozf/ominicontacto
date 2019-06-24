@@ -261,9 +261,55 @@ class ValidacionFechaHora(models.Model):
 # class Extension(models.Model):
 #     pass
 
+class IdentificadorCliente(models.Model):
+    """Representa una forma de identificar a un contacto a partir de los datos ingresados
+    por un usuario en una llamada
+    """
+    DESTINO_MATCH = 'True'
+    DESTINO_NO_MATCH = 'False'
+    # el propio código de dialplan determina a partir de la entrada del usuario
+    # qué acción tomar
+    SIN_INTERACCION_EXTERNA = 1
 
-# class Encuesta(models.Model):
-#     pass
+    # el dialplan consultará al sitio externo especificado por 'url' pasandole como
+    # parámetro la entrada del usuario y de acuerdo a la respuesta recibida ("True" o "False")
+    # determinará que acción tomar
+    INTERACCION_EXTERNA_1 = 2
+
+    # el dialplan consultará al sitio externo especificado por 'url' pasandole como
+    # parámetro la entrada del usuario y de acuerdo a la respuesta recibida ((X, Y) o "False")
+    # donde X es el tipo de node destino y Y el id del objeto dentro del nodo destino
+    # determinará que acción tomar
+    INTERACCION_EXTERNA_2 = 3
+
+    TIPOS_INTERACCIONES = (
+        (SIN_INTERACCION_EXTERNA, _('Sin interacción externa')),
+        (INTERACCION_EXTERNA_1, _('Interacción externa tipo 1')),
+        (INTERACCION_EXTERNA_2, _('Interacción externa tipo 2')),
+    )
+
+    nombre = models.CharField(max_length=50, unique=True, verbose_name=_('Nombre'))
+    tipo_interaccion = models.PositiveIntegerField(
+        choices=TIPOS_INTERACCIONES, help_text=_('Tipo de interacción'),
+        default=SIN_INTERACCION_EXTERNA, verbose_name=_('Tipo de interacción'))
+    url = models.CharField(
+        max_length=128, blank=True, null=True,
+        verbose_name=_('Url servicio identificación'))
+    audio = models.ForeignKey(
+        ArchivoDeAudio, on_delete=models.PROTECT, related_name="identificadores_cliente")
+    longitud_id_esperado = models.PositiveIntegerField(validators=[MaxValueValidator(30)],
+                                                       blank=True, null=True,
+                                                       verbose_name=_('Longitud de id esperado'))
+    timeout = models.PositiveIntegerField(default=5,
+                                          validators=[MaxValueValidator(60)],
+                                          verbose_name=_('Timeout'))
+    intentos = models.PositiveIntegerField(default=1,
+                                           validators=[MinValueValidator(1),
+                                                       MaxValueValidator(20)],
+                                           verbose_name=_('Intentos'))
+
+    def __unicode__(self):
+        return unicode(_("{0}: {1}".format(self.nombre, self.url)))
 
 
 class DestinoEntrante(models.Model):
@@ -274,20 +320,26 @@ class DestinoEntrante(models.Model):
     EXTENSION = 4
     HANGUP = 5
     SURVEY = 6
-    VOICEMAIL = 7
+    CUSTOM_DST = 7
+    VOICEMAIL = 8
+    IDENTIFICADOR_CLIENTE = 9
 
     TIPOS_DESTINOS = (
         (CAMPANA, _('Campaña entrante')),
         (VALIDACION_FECHA_HORA, _('Validación de fecha/hora')),
         (IVR, _('IVR')),
         (HANGUP, _('HangUp')),
+        (IDENTIFICADOR_CLIENTE, _('Identificador cliente')),
     )
-    nombre = models.CharField(max_length=128, unique=True)
+    nombre = models.CharField(max_length=128)
     tipo = models.PositiveIntegerField(choices=TIPOS_DESTINOS)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
     destinos = models.ManyToManyField('DestinoEntrante', through='OpcionDestino')
+
+    class Meta:
+        unique_together = ('tipo', 'object_id')
 
     def __unicode__(self):
         return unicode(_("{0}: {1}".format(self.get_tipo_display(), self.nombre)))
@@ -302,6 +354,8 @@ class DestinoEntrante(models.Model):
             tipo = cls.IVR
         elif isinstance(info_nodo_entrante, ValidacionFechaHora):
             tipo = cls.VALIDACION_FECHA_HORA
+        elif isinstance(info_nodo_entrante, IdentificadorCliente):
+            tipo = cls.IDENTIFICADOR_CLIENTE
         elif isinstance(info_nodo_entrante, HangUp):
             raise(_('Error: El nodo HangUp es único.'))
         kwargs = {
@@ -349,8 +403,8 @@ class OpcionDestino(models.Model):
     destino_siguiente = models.ForeignKey(DestinoEntrante, related_name='destinos_anteriores')
 
     def __unicode__(self):
-        return _("Desde nodo {0} a nodo {1}".format(
-            self.destino_anterior.nombre, self.destino_siguiente.nombre))
+        return unicode(_("Desde nodo {0} a nodo {1}".format(
+            self.destino_anterior.nombre, self.destino_siguiente.nombre)))
 
     @classmethod
     def crear_opcion_destino(cls, destino_anterior, destino_siguiente, valor):

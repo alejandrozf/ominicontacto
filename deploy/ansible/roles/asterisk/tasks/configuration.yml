@@ -90,7 +90,8 @@
 - name: Copy of asterisk logger config file
   template: "src=roles/asterisk/templates/conf/logger.conf dest={{ ast_conf_location }}/logger.conf owner={{ usuario }} group={{ usuario }} mode=755"
   when: is_docker == "false"
-
+  tags: postinstall
+  
 # Los archivos-no-enlaces se copian a la a /etc/asterisk
 - name: Copy of all asterisk config files
   copy: "src=roles/asterisk/templates/conf/archivos-no-enlaces/ dest={{ ast_conf_location }}/ owner={{ usuario }} group={{ usuario }} mode=755"
@@ -149,14 +150,17 @@
     - es
     - en
     - oml
+  when: is_docker == "false"
+  tags: postinstall
 
 # Untareo los sonidos de agentes, que vienen desde el repo
 - name: Untar the sounds for agents
   unarchive: "src=/var/tmp/ominicontacto-build/ominicontacto/ominicontacto_voip/asterisk-files/sounds/{{ item.source }} dest={{ ast_sounds_location }}/{{ item.dest }}"
   with_items:
-    - { source: "es-oml.tgz", dest: "es" }
-    - { source: "en-oml.tgz", dest: "en" }
+    - { source: "es-oml.tar.gz", dest: "es" }
+    - { source: "en-oml.tar.gz", dest: "en" }
   when: is_docker == "false"
+  tags: postinstall
 
 # Permiso de usuario a la carpeta de asterisk
 - name: Set up permissions of asterisk

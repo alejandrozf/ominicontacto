@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-11 18:41+0000\n"
+"POT-Creation-Date: 2019-06-11 19:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1074,25 +1074,25 @@ msgstr ""
 msgid "SI parseado - campana: {0} - contactos: {1}"
 msgstr ""
 
-#: ominicontacto_app/services/asterisk_database.py:50
+#: ominicontacto_app/services/asterisk_database.py:51
 #, python-brace-format
 msgid "Creando familys para la family  {0}"
 msgstr ""
 
-#: ominicontacto_app/services/asterisk_database.py:56
-#: ominicontacto_app/services/asterisk_database.py:302
+#: ominicontacto_app/services/asterisk_database.py:57
+#: ominicontacto_app/services/asterisk_database.py:303
 #, python-brace-format
 msgid ""
 "Error al intentar DBPut al insertar en la family {0} la siguiente key={1} y "
 "val={2}"
 msgstr ""
 
-#: ominicontacto_app/services/asterisk_database.py:87
+#: ominicontacto_app/services/asterisk_database.py:88
 #, python-brace-format
 msgid "Error al intentar DBDelTree de {0}"
 msgstr ""
 
-#: ominicontacto_app/services/asterisk_database.py:292
+#: ominicontacto_app/services/asterisk_database.py:293
 #, python-brace-format
 msgid "Creando familys para troncales {0}"
 msgstr ""
@@ -1726,12 +1726,12 @@ msgid "Omnileads - Permission Denied"
 msgstr ""
 
 #: ominicontacto_app/templates/403.html:40
-#: ominicontacto_app/templates/base.html:432
+#: ominicontacto_app/templates/base.html:435
 msgid "Permiso denegado"
 msgstr ""
 
 #: ominicontacto_app/templates/403.html:42
-#: ominicontacto_app/templates/base.html:433
+#: ominicontacto_app/templates/base.html:436
 msgid "Ud. no posee los permisos requeridos para acceder a esta pagina."
 msgstr ""
 
@@ -2196,7 +2196,7 @@ msgid "Campañas preview"
 msgstr ""
 
 #: ominicontacto_app/templates/agente/base_agente.html:580
-#: ominicontacto_app/templates/base.html:418
+#: ominicontacto_app/templates/base.html:421
 msgid "Salir"
 msgstr ""
 
@@ -2886,20 +2886,24 @@ msgstr ""
 msgid "Validaciones Horarias"
 msgstr ""
 
-#: ominicontacto_app/templates/base.html:392
+#: ominicontacto_app/templates/base.html:387
+msgid "Identificación de Clientes"
+msgstr ""
+
+#: ominicontacto_app/templates/base.html:395
 msgid "Ayuda"
 msgstr ""
 
-#: ominicontacto_app/templates/base.html:396
+#: ominicontacto_app/templates/base.html:399
 #: ominicontacto_app/templates/registro.html:8
 msgid "Registrarse"
 msgstr ""
 
-#: ominicontacto_app/templates/base.html:400
+#: ominicontacto_app/templates/base.html:403
 msgid "Acerca de"
 msgstr ""
 
-#: ominicontacto_app/templates/base.html:418
+#: ominicontacto_app/templates/base.html:421
 msgid "Deslogueo"
 msgstr ""
 

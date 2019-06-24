@@ -26,7 +26,7 @@ Vamos a definir cada campo:
 - **DID number:** es el número entrante que se valida como disparador del encaminamiento de la llamada sobre el destino seleccionado por la propia ruta.
 - **Callerid prefix:** el valor que se configure en en este campo, aparecerá ccomo prefijo del callerid que llega en cada llamada por el troncal correspondiente.
 - **Language:** el idioma que se utiliza a la hora de repoducir locuciones por defecto del sistema sobre los canales que ingresan por la ruta.
-- **Destination type:** el tipo de destino a donde se enviarán las llamadas ingresadas por dicha ruta. Dentro de los tipos de destinos existen (Campañas entrantes, IVR, condicionales de tiempo)
-- **Destination:** destino al cual enviar los canales.
+- **Destination type:** el tipo de destino a donde se enviarán las llamadas ingresadas por dicha ruta. Dentro de los tipos de destinos existen (Campañas entrantes, IVR, condicionales de tiempo, identificación de llamante)
+- **Destination:** destino puntual al cual enviar los canales.
 
 Es importante aclarar que se permiten que varias rutas pueden tener el mismo destino.

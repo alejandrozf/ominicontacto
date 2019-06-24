@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-11 18:41+0000\n"
+"POT-Creation-Date: 2019-06-11 19:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1092,25 +1092,25 @@ msgstr "NOT parsed: {0}"
 msgid "SI parseado - campana: {0} - contactos: {1}"
 msgstr "Parsed - campaign: {0} - contacts: {1}"
 
-#: ominicontacto_app/services/asterisk_database.py:50
+#: ominicontacto_app/services/asterisk_database.py:51
 #, python-brace-format
 msgid "Creando familys para la family  {0}"
 msgstr "Generating familys for family {0}"
 
-#: ominicontacto_app/services/asterisk_database.py:56
-#: ominicontacto_app/services/asterisk_database.py:302
+#: ominicontacto_app/services/asterisk_database.py:57
+#: ominicontacto_app/services/asterisk_database.py:303
 #, python-brace-format
 msgid ""
 "Error al intentar DBPut al insertar en la family {0} la siguiente key={1} y "
 "val={2}"
 msgstr "Error when attepting DBPut of key={1} and val={2} in family {0}"
 
-#: ominicontacto_app/services/asterisk_database.py:87
+#: ominicontacto_app/services/asterisk_database.py:88
 #, python-brace-format
 msgid "Error al intentar DBDelTree de {0}"
 msgstr "Error when attempting DBDelTree of {0}"
 
-#: ominicontacto_app/services/asterisk_database.py:292
+#: ominicontacto_app/services/asterisk_database.py:293
 #, python-brace-format
 msgid "Creando familys para troncales {0}"
 msgstr "Generating familys for trunks {0}"
@@ -1756,12 +1756,12 @@ msgid "Omnileads - Permission Denied"
 msgstr "Omnileads - Permission Denied"
 
 #: ominicontacto_app/templates/403.html:40
-#: ominicontacto_app/templates/base.html:432
+#: ominicontacto_app/templates/base.html:435
 msgid "Permiso denegado"
 msgstr "Permission Denied"
 
 #: ominicontacto_app/templates/403.html:42
-#: ominicontacto_app/templates/base.html:433
+#: ominicontacto_app/templates/base.html:436
 msgid "Ud. no posee los permisos requeridos para acceder a esta pagina."
 msgstr "You don't have correct permissions to access this web page."
 
@@ -2228,7 +2228,7 @@ msgid "Campañas preview"
 msgstr "Preview Campaigns"
 
 #: ominicontacto_app/templates/agente/base_agente.html:580
-#: ominicontacto_app/templates/base.html:418
+#: ominicontacto_app/templates/base.html:421
 msgid "Salir"
 msgstr "Exit"
 
@@ -2918,20 +2918,24 @@ msgstr "Group of Hours"
 msgid "Validaciones Horarias"
 msgstr "Time Conditions"
 
-#: ominicontacto_app/templates/base.html:392
+#: ominicontacto_app/templates/base.html:387
+msgid "Identificación de Clientes"
+msgstr "Client Identification"
+
+#: ominicontacto_app/templates/base.html:395
 msgid "Ayuda"
 msgstr "Help"
 
-#: ominicontacto_app/templates/base.html:396
+#: ominicontacto_app/templates/base.html:399
 #: ominicontacto_app/templates/registro.html:8
 msgid "Registrarse"
 msgstr "Register"
 
-#: ominicontacto_app/templates/base.html:400
+#: ominicontacto_app/templates/base.html:403
 msgid "Acerca de"
 msgstr "About"
 
-#: ominicontacto_app/templates/base.html:418
+#: ominicontacto_app/templates/base.html:421
 msgid "Deslogueo"
 msgstr "Logoff"
 
