@@ -4,10 +4,10 @@ Requires=docker.service
 After=docker.service
 
 [Service]
-Type=oneshot
 User={{ docker_user }}
+Type=oneshot
 RemainAfterExit=yes
-Environment=COMPOSE_FILE={{ deploy_location }}/devenv_stack.yml
+Environment=COMPOSE_FILE={{ deploy_location }}/prodenv_stack.yml
 ExecReload=/usr/local/bin/docker-compose up -d
 ExecStart=/usr/local/bin/docker-compose up -d
 ExecStop=/usr/local/bin/docker-compose down

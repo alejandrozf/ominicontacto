@@ -81,34 +81,14 @@ class Command(BaseCommand):
             "dtmfmode=info\n"
             "alwaysauthreject=yes\n"
             "rtptimeout=60\n"
-            "permit={0}/255.255.255.255\n"
             "deny=0.0.0.0/0.0.0.0\n"
+            "permit={0}/255.255.255.255\n"
         )
         config_asterisk_oml_sip_general = template_asterisk_oml_sip_general.format(
             settings.KAMAILIO_IP)
         ruta_archivo = '{0}/etc/asterisk/oml_sip_general.conf'.format(settings.ASTERISK_LOCATION)
         self._escribir_archivo(
             config_asterisk_oml_sip_general, ruta_archivo, settings.ASTERISK_HOSTNAME)
-
-    def _actualizar_archivos_config_agis(self):
-        template_config_agis = (
-            "# Do not change this variables unless you know what you are doing\n"
-            "\n"
-            "AMI_USER={0}\n"
-            "AMI_PASS={1}\n"
-            "AMI_HOST=127.0.0.1\n"
-            "POSTGRES_DATABASE={2}\n"
-            "POSTGRES_USER={3}\n"
-            "POSTGRES_HOST={4}\n"
-            "LOG_FILE=/var/log/asterisk/agis-errors.log\n"
-            "ASTERISK_LISTS=/var/spool/asterisk\n"
-            "BLACK_LIST_FIlE=/var/spool/asterisk/oml_backlist.txt"
-        )
-        config_agis = template_config_agis.format(
-            settings.AMI_USER, settings.AMI_PASSWORD, settings.POSTGRES_DATABASE,
-            settings.POSTGRES_USER, settings.POSTGRES_HOST)
-        ruta_archivo = '/var/lib/asterisk/agi-bin/.config'
-        self._escribir_archivo(config_agis, ruta_archivo, settings.ASTERISK_HOSTNAME)
 
     def _actualizar_archivos_kamailio(self):
         template_config_kamailio = (
@@ -154,7 +134,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            self._actualizar_archivos_config_agis()
             # self._actualizar_archivos_kamailio()
             self._actualizar_template_asterisk_oml_manager()
             self._actualizar_template_asterisk_oml_sip_general()

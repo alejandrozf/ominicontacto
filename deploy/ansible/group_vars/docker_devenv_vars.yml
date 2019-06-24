@@ -4,21 +4,28 @@
 # If you are installing a devenv (DE) AIO uncomment these line
 # If you are installing a devenv (DE) AIO uncomment these line
 
-version: de1.1
+version: de1.2
+asterisk_version: 16.4.0-res_json
 customer: devenv
 root_password: toor123
 
-# Container names
-asterisk_fqdn: oml-asterisk
-dialer_fqdn: oml-dialer
-kamailio_fqdn: oml-kamailio
-mariadb_fqdn: oml-mariadb
-nginx_fqdn: oml-nginx
-omniapp_fqdn: oml-omniapp
-postgresql_fqdn: oml-postgresql
-redis_fqdn: oml-redis
-rtpengine_fqdn: oml-rtpengine
-database_fqdn: "{{ postgresql_fqdn }}"
-asterisk_ip: 0.0.0.0
-kamailio_ip: 0.0.0.0
-dialer_ip: 0.0.0.0
+# Networking settings
+dev_subnet: 172.20.0.0/24
+dialer_ip: 172.20.0.10
+kamailio_ip: 172.20.0.11
+omniapp_ip: 172.20.0.12
+nginx_external_port: 443
+pg_external_port: 4444
+wd_external_port: 4442
+
+# Folder locations
+asterisk_location:
+ast_local_location: "{{ deploy_location }}/asterisk"
+ast_agis_location: "{{ ast_local_location }}/agis"
+ast_conf_location: "{{ ast_local_location }}/conf"
+ast_other_location: "{{ ast_local_location }}/others"
+build_location: "{{ docker_root }}/omnileads/build"
+certs_location: "{{ deploy_location }}/certs"
+deploy_location: "{{ docker_root }}/omnileads/{{ customer }}"
+nginx_location: "{{ deploy_location }}/nginx"
+omniapp_location: "{{ deploy_location }}/omniapp"

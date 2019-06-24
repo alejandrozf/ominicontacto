@@ -44,7 +44,6 @@ ast_conf_location: "{{ asterisk_location }}/etc/asterisk"
 ast_logs_location: "{{ asterisk_location }}/var/log/asterisk"
 ast_sounds_location: "{{ asterisk_location }}/var/lib/asterisk/sounds"
 certs_location: "{{ kamailio_location }}/etc/certs"
-conversor_location: /usr/local/parselog
 kamailio_location: "{{ install_prefix }}kamailio"
 static_route: "{{ install_prefix }}ominicontacto/ominicontacto_app/static/ominicontacto"
 odbc_location: /etc/

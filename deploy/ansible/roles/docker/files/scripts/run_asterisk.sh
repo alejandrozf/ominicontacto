@@ -1,10 +1,24 @@
-#!/bin/sh
+#!/bin/bash
 
 # run as user asterisk by default
 ASTERISK_USER=${ASTERISK_USER:-asterisk}
 
 if [ "$1" = "" ]; then
   /usr/sbin/sshd
+  mkdir /root/.ssh/
+  touch /root/.ssh/authorized_keys
+{% if prodenv == 1 %}
+  cat /var/tmp/id_rsa.pub > /root/.ssh/authorized_keys
+{% else %}
+  cat /opt/sshkeys/id_rsa.pub > /root/.ssh/authorized_keys
+  echo "Creating symlink of asterisk dialplan files"
+  array=(oml_extensions_agent_session.conf oml_extensions_bridgecall.conf oml_extensions_commonsub.conf oml_extensions_modules.conf oml_extensions_postcall.conf oml_extensions_precall.conf oml_extensions.conf)
+  for i in $(seq 0 6); do
+    if [ ! -f /etc/asterisk/${array[i]} ]; then ln -s /var/tmp/${array[i]} /etc/asterisk/${array[i]}; fi
+  done
+{% endif %}
+  rm -rf /etc/localtime
+  ln -s /usr/share/zoneinfo/$TZ /etc/localtime
   COMMAND="/usr/sbin/asterisk -T -U ${ASTERISK_USER} -p -vvvvvvvf"
 else
   COMMAND="$@"
@@ -16,7 +30,6 @@ if [ "${ASTERISK_UID}" != "" ] && [ "${ASTERISK_GID}" != "" ]; then
 
   deluser asterisk && \
   adduser --gecos "" --no-create-home --uid ${ASTERISK_UID} --disabled-password ${ASTERISK_USER} || exit
-
   chown -R ${ASTERISK_UID}:${ASTERISK_UID} /etc/asterisk \
                                            /var/*/asterisk \
                                            /usr/*/asterisk

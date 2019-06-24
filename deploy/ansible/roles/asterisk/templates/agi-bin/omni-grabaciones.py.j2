@@ -25,23 +25,29 @@
 # Este script se ejecuta como AGI desde 'oml_extensions_sub.conf' para insertar una instancia del
 # modelo grabación según se requiera en el sistema
 
+import os
+import psycopg2
 import sys
 
-import psycopg2
-
 from socket import setdefaulttimeout
-
-from config import configParser
 from utiles import write_time_stderr
 
-sys.stderr = open('{{ asterisk_location }}/var/log/asterisk/agis-errors.log', 'a')
+ASTERISK_LOCATION = os.getenv('ASTERISK_LOCATION')
+GRABACIONES_AGI_LOG = '{0}/var/log/asterisk/grabaciones-agi-errors.log'.format(ASTERISK_LOCATION)
+
+if os.path.exists(GRABACIONES_AGI_LOG):
+    append_write = 'a' # append if already exists
+else:
+    append_write = 'w' # make a new file if not
+
+sys.stderr = open(GRABACIONES_AGI_LOG, append_write)
 
 setdefaulttimeout(30)
 
 # obtenemos los valores de las variables de configuración necesarias
-OML_DB_HOST = configParser.get('OML', 'POSTGRES_HOST')
-OML_DB_NAME = configParser.get('OML', 'POSTGRES_DATABASE')
-OML_DB_USER = configParser.get('OML', 'POSTGRES_USER')
+OML_DB_HOST = os.getenv('PGHOST')
+OML_DB_NAME = os.getenv('PGDATABASE')
+OML_DB_USER = os.getenv('PGUSER')
 
 tipo_llamada = sys.argv[1]
 id_cliente = sys.argv[2]

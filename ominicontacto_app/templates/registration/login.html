@@ -45,7 +45,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <form role="form" method="post" action="">
                 {% csrf_token %}
                 <div>
-                    <img src="{% static 'ominicontacto/Img/ic_logo_full.svg' %}" alt="FtsLogo" width="240">
+                    <img src="{% static 'ominicontacto/Img/ic_logo_full.svg' %}" onerror="{% static 'ominicontacto/Img/ic_logo_full.png' %}" alt="FtsLogo" width="240">
                 </div>
 
                 <div class="form-group">

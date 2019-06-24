@@ -24,6 +24,7 @@ ipython==5.1.0
 ipython-genutils==0.1.0
 lxml==3.6.4
 olefile==0.44
+paramiko==2.4.2
 pathlib2==2.1.0
 pexpect==4.2.1
 pickleshare==0.7.4

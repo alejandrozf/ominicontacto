@@ -16,6 +16,7 @@ PIP=`which pip`
 TMP_ANSIBLE='/var/tmp/ansible'
 TMP_OMINICONTACTO='/var/tmp/ominicontacto-build/ominicontacto'
 REPO_LOCATION="`git rev-parse --show-toplevel`"
+USER_HOME=$(eval echo ~${SUDO_USER})
 export ANSIBLE_CONFIG=$TMP_ANSIBLE
 IS_ANSIBLE="`find ~/.local -name ansible 2>/dev/null |grep \"/bin/ansible\" |head -1`"
 SUDO_USER="`who | awk '{print $1}'`"
@@ -107,6 +108,8 @@ AnsibleInstall() {
     echo "Installing 2.5.0 version"
     $PIP install 'ansible==2.5' --user
   fi
+  echo "Detecting if docker-py is installed"
+  $PIP install 'docker-py==1.10.6' --user > /dev/null 2>&1 
   cd $current_directory
   sleep 2
   echo "Creating ansible temporal directory"
@@ -192,7 +195,7 @@ AnsibleExec() {
     fi
     echo "Beginning the Omnileads installation with Ansible, this can take a long time"
     echo ""
-    ${IS_ANSIBLE}-playbook $verbose -s $TMP_ANSIBLE/omnileads.yml --extra-vars "build_dir=$TMP_OMINICONTACTO repo_location=$REPO_LOCATION" --tags "$tag" -i $TMP_ANSIBLE/inventory
+    ${IS_ANSIBLE}-playbook $verbose -s $TMP_ANSIBLE/omnileads.yml --extra-vars "build_dir=$TMP_OMINICONTACTO repo_location=$REPO_LOCATION docker_root=$USER_HOME" --tags "$tag" -i $TMP_ANSIBLE/inventory
     ResultadoAnsible=`echo $?`
     if [ $ResultadoAnsible == 0 ];then
       echo "
@@ -225,8 +228,6 @@ AnsibleExec() {
       echo "Creating a copy of inventory file in $inventory_copy_location"
       my_inventory=$current_directory/../../../my_inventory
       cp $current_directory/inventory $my_inventory
-      echo "Servers installed:"
-      cat /var/tmp/servers_installed
       echo " Remember that you have a copy of your inventory file in $inventory_copy_location/my_inventory with the variables you used for your OML installation"
       echo ""
       git checkout $current_directory/inventory
@@ -266,6 +267,8 @@ case $arg1 in
     OSValidation
     TagCheck
     AnsibleInstall
+    CodeCopy
+    VersionGeneration
     AnsibleExec
   ;;
   *)
