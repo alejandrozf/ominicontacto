@@ -150,15 +150,20 @@ class Modulo(models.Model):
 
 
 class Grupo(models.Model):
-    nombre = models.CharField(max_length=20, verbose_name=_('Nombre'))
-    auto_attend_ics = models.BooleanField(default=False, verbose_name=_('auto_attend_ics'))
-    auto_attend_inbound = models.BooleanField(default=False, verbose_name=_('auto_attend_inbound'))
-    auto_attend_dialer = models.BooleanField(default=False, verbose_name=_('auto_attend_dialer'))
-    auto_pause = models.BooleanField(default=True, verbose_name=_('auto_pause'))
-    auto_unpause = models.PositiveIntegerField(verbose_name=_('auto_unpause'))
+    nombre = models.CharField(max_length=20, unique=True, verbose_name=_('Nombre'))
+    auto_attend_ics = models.BooleanField(default=False, verbose_name=_('Auto atender ics'))
+    auto_attend_inbound = models.BooleanField(default=False, verbose_name=_(
+        'Auto atender entrantes'))
+    auto_attend_dialer = models.BooleanField(default=False, verbose_name=_('Auto atender dailer'))
+    auto_pause = models.BooleanField(default=True, verbose_name=_('Pausar automaticamente'))
+    auto_unpause = models.PositiveIntegerField(verbose_name=_('Despausar automaticamente'))
 
     def __unicode__(self):
         return self.nombre
+
+    class Meta:
+        verbose_name = _('Grupo')
+        verbose_name_plural = _('Grupos')
 
 
 class AgenteProfileManager(models.Manager):
