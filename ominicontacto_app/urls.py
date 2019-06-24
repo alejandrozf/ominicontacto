@@ -145,9 +145,9 @@ urlpatterns = [
         name='pausa_delete',
         ),
 
-    url(r'^node/$',
+    url(r'^consola/$',
         agente_requerido(views.ConsolaAgenteView.as_view()),
-        name='view_node'),
+        name='consola_de_agente'),
 
     url(r'^smsThread/$',
         login_required(views.mensajes_recibidos_enviado_remitente_view),

@@ -80,6 +80,8 @@ def index_view(request):
     if not request.user.is_authenticated():
         return redirect('login')
     else:
+        if request.user.is_agente:
+            return HttpResponseRedirect(reverse('consola_de_agente'))
         return TemplateResponse(request, template_name)
 
 
@@ -113,14 +115,21 @@ def login_view(request):
             if form.is_valid():
                 login(request, user)
                 user.set_session_key(request.session.session_key)
+                if 'next' in request.GET:
+                    return redirect(request.GET.get('next'))
                 if user.is_agente:
-                    return HttpResponseRedirect(reverse('view_node'))
+                    return HttpResponseRedirect(reverse('consola_de_agente'))
                 else:
                     return HttpResponseRedirect(reverse('index'))
 
     else:
         if request.user.is_authenticated():
-            return HttpResponseRedirect(reverse('index'))
+            if 'next' in request.GET:
+                return redirect(request.GET.get('next'))
+            if request.user.is_agente:
+                return HttpResponseRedirect(reverse('consola_de_agente'))
+            else:
+                return HttpResponseRedirect(reverse('index'))
         else:
             form = AuthenticationForm(request)
     context = {
