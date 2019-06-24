@@ -27,11 +27,17 @@ import sys
 from socket import setdefaulttimeout
 
 from asterisk.agi import AGI
-
-from config import configParser
 from utiles import write_time_stderr
 
-sys.stderr = open('{{ asterisk_location }}/var/log/asterisk/agis-errors.log', 'a')
+ASTERISK_LOCATION = os.getenv('ASTERISK_LOCATION')
+DIALEDNUM_AGI_LOG = '{0}/var/log/asterisk/dialednum-agi-errors.log'.format(ASTERISK_LOCATION)
+
+if os.path.exists(DIALEDNUM_AGI_LOG):
+    append_write = 'a' # append if already exists
+else:
+    append_write = 'w' # make a new file if not
+
+sys.stderr = open(DIALEDNUM_AGI_LOG, append_write)
 
 setdefaulttimeout(20)
 

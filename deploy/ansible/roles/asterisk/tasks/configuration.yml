@@ -29,7 +29,7 @@
   tags: postinstall
 
 # Se linkean los .conf de asterisk (los que estan afuera de archivos-no-enlaces) a /opt/omnileads/asterisk/etc/asterisk
-- name: Config of asterisk for OML (aio)
+- name: Copy of asterisk dialplan files for OML (aio)
   file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ ast_conf_location }}/{{ item }} force=true owner={{ usuario }} group={{ usuario }} mode=755"
   with_items:
     - oml_extensions_agent_session.conf
@@ -43,7 +43,7 @@
   tags: postinstall
 
 # Se copian si es un cluster
-- name: Copy of the extensions.conf files (cluster)
+- name: Copy of asterisk dialplan files for OML (cluster)
   copy: src={{ repo_location }}/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ ast_conf_location }} owner={{ usuario }} group={{ usuario }}
   with_items:
     - oml_extensions_agent_session.conf
@@ -53,7 +53,7 @@
     - oml_extensions_postcall.conf
     - oml_extensions_precall.conf
     - oml_extensions.conf
-  when: cluster != 0 and is_docker == "false"
+  when: prodenv == 1 and cluster != 0
   tags: postinstall
 
 - name: Copy of asterisk config files
@@ -106,10 +106,7 @@
 - name: Creation of the agis omni-blackist and omni-dialednum
   template: "src=roles/asterisk/templates/agi-bin/{{ item.src }} dest={{ ast_agis_location }}/{{ item.dest }} mode=755 owner={{ usuario }} group={{ usuario }}"
   with_items:
-      - { src: ".config", dest: ".config" }
-      - { src: "config.py.j2", dest: "config.py" }
       - { src: "utiles.py.j2", dest: "utiles.py" }
-      - { src: "omni-asterisk-logout.py.j2", dest: "omni-asterisk-logout.py" }
       - { src: "omni-blacklist.py.j2", dest: "omni-blacklist.py" }
       - { src: "omni-dialednum.py.j2", dest: "omni-dialednum.py" }
       - { src: "omni-grabaciones.py.j2", dest: "omni-grabaciones.py" }
@@ -117,26 +114,20 @@
   become_method: sudo
   tags: ['changenetwork','changepassword','postinstall']
 
-- name: Creation of agis-errors.log file
-  file: path={{ ast_logs_location }}/agis-errors.log state=touch mode=755 owner={{ usuario }} group={{ usuario }}
+- name: Erase omnileads crontab.d task
+  file: state=absent path=/etc/cron.d/cron-omnileads
   when: is_docker == "false"
   tags: postinstall
 
-# Aca creo la carpeta parselog
-- name: Create {{ conversor_location }}
-  file: dest={{ conversor_location }} state=directory mode=0755 owner={{ usuario }} group={{ usuario }}
-  become: yes
-  become_method: sudo
-  when: is_docker == "false"
-
-# Creo el script de conversion lo deje en parselog por convencion heredada de asternic
-- name: Generate the conversor.sh file
-  template: src=roles/asterisk/templates/conversor.sh dest={{ conversor_location }} owner={{ usuario }} group={{ usuario }} mode=755
+- name: Create crontab file
+  file: state=touch path=/var/spool/cron/omnileads owner=root group={{ usuario }} mode=600
+  tags: postinstall
 
 # Se añade el cron de omnileads
-- name: Copy the cron-omnileads file
-  template: src=roles/asterisk/templates/cron-omnileads dest=/etc/cron.d owner=root group=root
+- name: Create cronjob for conversor.sh
+  cron: minute="0" hour="1" weekday="*" name="Conversion of recordings to mp3 (every day)" cron_file="/var/spool/cron/{{ usuario }}" user="{{ usuario }}" job="{{ install_prefix }}bin/conversor.sh 1 0 >> {{ install_prefix }}log/conversor.log"
   when: is_docker == "false"
+  tags: postinstall
 
 # Para debian toca linkear esta libreria a a /usr/lib/postgresql/{{ postgresql_version }} es una libreria de unixODBC
 - name: Link odbc librarie to postgresql libs

@@ -16,18 +16,8 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 ---
 
-# Chequea si timezone esta definido
-- name: Check if TimeZone variable is defined
-  fail:
-    msg: TimeZone variable undefined, edit it in the inventory file
-  when: TZ is not defined
-  tags: always
-
-- debug: msg="{{ docker_user }}"
-  tags: always
-
 - name: Create root path of docker omnileads
-  file: path=/etc/docker/omnileads/ state=directory recurse=yes owner={{ docker_user }} group={{ docker_user }}
+  file: path={{ docker_root }}/omnileads/ state=directory recurse=yes owner={{ docker_user }} group={{ docker_user }}
 
 - name: Include docker global variables
   include_vars: group_vars/docker_general_vars.yml
@@ -43,8 +33,25 @@
   when: prodenv == 1
   tags: ['docker_build','docker_deploy']
 
+# Chequea si timezone esta definido
+- name: Check if TimeZone variable is defined
+  fail:
+    msg: TimeZone variable undefined, edit it in the inventory file
+  when: TZ is not defined
+  tags: always
+
+# Chequeo si el folder de certificado existe
+- name: Check if certificates folder exists
+  shell: "[ -d {{ certs_location }} ]"
+  failed_when: false
+  register: certs_exists
+  tags: always
+
 - include: build.yml
   tags: docker_build
 
 - include: deploy.yml
   tags: docker_deploy
+
+- name: Change ownership of {{ docker_root }}/omnileads folder
+  file: state=directory owner={{ docker_user }} group={{ docker_user }} path={{ docker_root }}/omnileads recurse=yes

@@ -1,6 +1,6 @@
-#########################################################
-### DevEnv. Omnileads Docker container for developers ###
-#########################################################
+###########################################################
+### DevEnv. Omnileads Docker environment for developers ###
+###########################################################
 
 You can have the software running in your system with this simple steps:
   1. Install Docker CE for your SO: https://docs.docker.com/install/
@@ -15,17 +15,20 @@ NOTE: never raise up containers with root user or root privileges
         [devenv-container]
         #localhost ansible_connection=local
     * Change the TZ variable to raise up containers with the timezone you want
-
-
-  5. Go to deploy/ansible and run:
+  5. Check the network assgined to devenv in group_vars/docker_devenv_vars.yml. By default the subnet 172.20.0.0/24 is assgined to the environment. Change the subnet and the IP's assigned to some containers if you need it.
+  6. Go to deploy/ansible and run:
       - sudo ./deploy.sh --docker-deploy
 
 This will deploy the required settings for the environment. Once finished you can use docker ps to see that you have 10 containers up and running.
-A new service is created for raising up or down the environment: service omnileads-devenv
+A new service is created for raising up or down the environment. Init the service:
 
-Wait some time until the omniapp container finish some tasks. You can see the progress with: docker attach oml-omniapp
+  * service omnileads-devenv start
 
-The devenv-stack file links the OML repository into the container so any change you make in the repository will be reflected in the devenv inmediately
+Wait some time until the omniapp container finish some tasks. You can see the progress with:
+
+  * docker attach oml-omniapp
+
+The devenv_stack file links the OML repository into the container so any change you make in the repository will be reflected in the devenv inmediately
 
 To access omnileads via web browser:
   1. https://YOUR_HOSTNAME

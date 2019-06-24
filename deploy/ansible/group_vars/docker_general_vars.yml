@@ -3,7 +3,7 @@
 # Docker hosts general variable
 
 # Images used
-asterisk_image: lionite/asterisk:16
+asterisk_image: debian:buster-slim
 base_image: alpine:3.9
 dialer_image: tomcat:8.5-alpine
 kamailio_image: kamailio/kamailio-ci:5.2
@@ -19,20 +19,21 @@ kibana_image: kibana:7.1.0
 
 # Settings of folder structure
 usuario: "{{ docker_user }}"
-deploy_location: "/etc/docker/omnileads/{{ customer }}"
-asterisk_location:
-ast_local_location: "{{ deploy_location }}/asterisk"
-ast_agis_location: "{{ ast_local_location }}/agis"
-ast_conf_location: "{{ ast_local_location }}/conf"
-ast_other_location: "{{ ast_local_location }}/others"
-certs_location: "{{ deploy_location }}/certs"
-conversor_location: "{{ ast_other_location }}"
 efk_location: "{{ deploy_location }}/efk"
-nginx_location: "{{ deploy_location }}/nginx"
-omniapp_location: "{{ deploy_location }}/omniapp"
 odbc_location: "{{ ast_local_location }}"
 
 # Docker hub credentials to push images
 docker_login_user:
 docker_login_email:
 docker_login_pass:
+
+asterisk_fqdn: asterisk
+dialer_fqdn: dialer
+kamailio_fqdn: kamailio
+mariadb_fqdn: mariadb
+nginx_fqdn: nginx
+omniapp_fqdn: omniapp
+postgresql_fqdn: postgresql
+redis_fqdn: redis
+rtpengine_fqdn: rtpengine
+database_fqdn: "{{ postgresql_fqdn }}"

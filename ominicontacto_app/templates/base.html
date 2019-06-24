@@ -70,8 +70,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <nav id="sidebar">
             <div class="sidebar-header">
                 <a href="{% url 'index' %}">
-                    <img id="nav-logo" src="{% static 'ominicontacto/Img/ic_logo.svg' %}">
-                    <img id="nav-logo-symbol" src="{% static 'ominicontacto/Img/ic_logo_symbol.svg' %}">
+                  <img src="{% static 'ominicontacto/Img/ic_logo.svg' %}" onerror="{% static 'ominicontacto/Img/ic_logo.png' %}" id="nav-logo">
+                  <img src="{% static 'ominicontacto/Img/ic_logo_symbol.svg' %}" onerror="{% static 'ominicontacto/Img/ic_logo.png' %}" id="nav-logo-symbol">
                 </a>
             </div>
 

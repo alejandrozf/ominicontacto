@@ -1,31 +1,43 @@
 FROM {{ base_image }}
 
 ENV INSTALL_LOCATION {{ install_prefix }}ominicontacto
+ENV INSTALL_PREFIX {{ install_prefix }}
 
 RUN apk update \
-    && apk add postgresql-client bash curl gettext libsasl libxslt libsass libjpeg-turbo openssl openssh-client py-pip sox postgresql-dev sed busybox-suid py-cairo py-lxml libffi py-lxml py-libxslt \
+    && apk add bash busybox-suid coreutils curl gettext git lame libsasl libxslt libsass libffi libjpeg-turbo openssl openssh-client pcre postgresql-client postgresql-dev py-cairo py-lxml py-libxslt py-pip sed sox tzdata \
     && apk add --virtual .build-deps build-base python-dev libxslt-dev libjpeg-turbo-dev jpeg-dev libffi-dev libass-dev py-cairo-dev libxslt-dev cairo-dev libffi-dev \
     && addgroup -g 1000 -S omnileads &&  adduser -u 1000 -S omnileads -G omnileads -h {{ install_prefix }} -s /bin/bash \
     && cd {{ install_prefix }} \
     && mkdir -p .pip wombat-json bin backup media_root/reporte_campana static log run
 
+{% if prodenv == 1 %}
+COPY omniapp/ominicontacto $INSTALL_LOCATION
+COPY omniapp/*.ini omniapp/run_omniapp.sh {{ install_prefix }}run/
+COPY omniapp/conversor.sh omniapp/*.py {{ install_prefix }}bin/
+{% endif %}
+
 COPY scripts/pip.conf  {{ install_prefix }}.pip
+{% if devenv == 1 %}
 COPY requirements/* $INSTALL_LOCATION/requirements/
+{% endif %}
 COPY scripts/requirements.txt $INSTALL_LOCATION
 
-RUN pip install setuptools --upgrade \
+RUN mkdir /opt/omnileads/.ssh/ \
+    && ssh-keygen -f /opt/omnileads/.ssh/id_rsa -b 4096 -t rsa -N '' -m PEM \
+    && pip install setuptools --upgrade \
     && pip install -r $INSTALL_LOCATION/requirements.txt \
-    && rm -rf $INSTALL_LOCATION \
     && apk del .build-deps build-base python-dev libxslt-dev jpeg-dev libffi-dev \
-    && chown -R omnileads. {{ install_prefix }} \
     && sed -i 's/#   StrictHostKeyChecking ask/   StrictHostKeyChecking no/' /etc/ssh/ssh_config \
     && sed -i 's/#   CheckHostIP yes/   CheckHostIP no/' /etc/ssh/ssh_config \
     && echo "   UserKnownHostsFile /dev/null" >> /etc/ssh/ssh_config \
     && mkdir /etc/asterisk && chown omnileads. /etc/asterisk \
-    && touch /var/spool/cron/crontabs/omnileads
+    && chown -R omnileads.omnileads {{ install_prefix }} /var/spool/cron/ /var/spool/cron/crontabs/
 
-{% if devenv == 1 %}
 RUN apk add sudo \
     && echo "omnileads ALL=(ALL:ALL) ALL" >> /etc/sudoers \
-    && echo 'omnileads:{{ root_password }}' | chpasswd
+    && echo "omnileads   ALL= NOPASSWD: /usr/sbin/crond, /bin/chown, /bin/ln" >> /etc/sudoers \
+    && echo 'omnileads:{{ root_password }}' | chpasswd \
+    && echo 'root:{{ root_password }}' | chpasswd \
+{% if devenv == 1 %}
+    && rm -rf $INSTALL_LOCATION \
 {% endif %}

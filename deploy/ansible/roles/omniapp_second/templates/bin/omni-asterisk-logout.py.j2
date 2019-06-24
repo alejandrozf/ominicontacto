@@ -25,16 +25,25 @@
 # este script es invocado como una tarea programada para desloguear a los agentes que no lo hayan
 # hecho manualmente después de un determinado tiempo
 
+import os
 import sys
 
 from asterisk.manager import Manager, ManagerSocketException, ManagerAuthException, ManagerException
+from datetime import datetime
 
-from config import configParser
+INSTALL_PREFIX = os.getenv('INSTALL_PREFIX')
+LOGOUT_AGI_LOG = '{0}log/logout-agi-errors.log'.format(INSTALL_PREFIX)
 
-from utiles import write_time_stderr
+if os.path.exists(LOGOUT_AGI_LOG):
+    append_write = 'a' # append if already exists
+else:
+    append_write = 'w' # make a new file if not
 
-sys.stderr = open('{{ asterisk_location }}/var/log/asterisk/agis-errors.log', 'a')
+sys.stderr = open(LOGOUT_AGI_LOG, append_write)
 
+def write_time_stderr(str_value):
+    fecha = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S.%f')
+    sys.stderr.write("{0}: {1}".format(fecha, str_value))
 
 def logout_inactive_users(users_activity_list, manager):
     for activity_line in users_activity_list.splitlines():
@@ -54,12 +63,11 @@ def logout_inactive_users(users_activity_list, manager):
             manager.originate(channel, exten, application=application, timeout=timeout,
                               caller_id=caller_id, variables=variables)
 
-
 manager = Manager()
 
-ami_manager_user = configParser.get('OML', 'AMI_USER')
-ami_manager_pass = configParser.get('OML', 'AMI_PASS')
-ami_manager_host = configParser.get('OML', 'AMI_HOST')
+ami_manager_user = os.getenv('AMI_USER')
+ami_manager_pass = os.getenv('AMI_PASSWORD')
+ami_manager_host = os.getenv('ASTERISK_HOSTNAME')
 
 try:
     manager.connect(ami_manager_host)

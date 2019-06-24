@@ -14,10 +14,14 @@ IP=$3 # server remoto para enviar audios
 Path_remoto=$4 # carpeta remota a la que se quieren pasar los audios
 
 #Path donde estan las grabaciones en .wav, verlo en el nginx.conf, alias grabaciones
-Path_origen={{ asterisk_location }}/var/spool/asterisk/monitor/${Ano}-${Mes}-${Dia}
-Path_destino={{ asterisk_location }}/var/spool/asterisk/oml
-
-if [ ! -d ${Path_destino} ]; then
+{% if is_docker == "false" %}
+Path_origen=$ASTERISK_LOCATION/var/spool/asterisk/monitor/${Ano}-${Mes}-${Dia}
+Path_destino=$ASTERISK_LOCATION/var/spool/asterisk/oml
+{% else %}
+Path_origen={{ install_prefix }}grabaciones/${Ano}-${Mes}-${Dia}
+Path_destino={{ install_prefix }}grabaciones
+{% endif %}
+if [ ! -d ${Path_destino} ] && [ $Mover_audios == 1 ]; then
   mkdir -p ${Path_destino}
 fi
 

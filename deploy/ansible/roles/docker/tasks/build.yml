@@ -1,31 +1,85 @@
 ---
 
 - name: Create directory to copy Omnileads-Docker folders
-  file: path=/etc/docker/omnileads/build/scripts state=directory recurse=yes owner={{ docker_user }} group={{ docker_user }}
+  file: path={{ item }} state=directory recurse=yes owner={{ docker_user }} group={{ docker_user }}
+  with_items:
+    - "{{ build_location }}/scripts"
+
+- name: Create directories for build
+  file: path={{ item }} state=directory recurse=yes owner={{ docker_user }} group={{ docker_user }}
+  with_items:
+    - "{{ ast_conf_location }}"
+    - "{{ ast_agis_location }}"
+    - "{{ ast_other_location }}"
+    - "{{ kamailio_location }}"
+    - "{{ nginx_location }}/conf.d"
+    - "{{ omniapp_location }}/ominicontacto"
 
 - name: Generate Dockerfiles images
-  template: src=roles/docker/files/Dockerfiles/Dockerfile-{{ item }} dest=/etc/docker/omnileads/build/ owner={{ docker_user }} group={{ docker_user }}
+  template: src=roles/docker/files/Dockerfiles/Dockerfile-{{ item }} dest={{ build_location}} owner={{ docker_user }} group={{ docker_user }}
   with_items:
     - asterisk
     - dialer
+    - kamailio
+    - nginx
     - omniapp
     - pbxemulator
     - postgresql
     - rtpengine
 
-- name: Copy extra folders
-  copy: src={{ item }} dest=/etc/docker/omnileads/build/ owner={{ docker_user }} group={{ docker_user }}
+- name: Creation of asterisk build content
+  include: roles/asterisk/tasks/configuration.yml
+  when: prodenv == 1
+
+- name: Creation of certificates
+  include: roles/kamailio/tasks/certificate_CA.yml
+  when: certs_exists.rc == 1 and prodenv == 1
+
+- name: Upload built (rsync to /ominicontacto)
+  synchronize: "src={{ build_dir }}/{{ item }} dest={{ omniapp_location }}/ominicontacto delete=yes checksum=yes times=no"
   with_items:
-    - /var/tmp/ansible/roles/docker/files/pbxemulator-files
-    - "{{ repo_location }}/requirements"
+    - api_app
+    - configuracion_telefonia_app
+    - manage.py
+    - ominicontacto
+    - ominicontacto_app
+    - ominicontacto_voip
+    - reciclado_app
+    - reportes_app
+    - requirements
+    - supervision_app
+    - test
+    - tests
+    - utiles_globales.py
+  become: true
+  become_method: su
+  become_user: "{{ docker_user }}"
+  when: prodenv == 1
+
+- name: Copy of Dockerfiles content
+  copy: src={{ item.src }} dest={{ item.dest }}/ owner={{ docker_user }} group={{ docker_user }}
+  with_items:
+    - { src: /var/tmp/ansible/roles/docker/files/pbxemulator-files, dest: "{{ build_location }}" }
+    - { src: "{{ repo_location }}/requirements", dest: "{{ build_location }}" }
+    - { src: "{{ repo_location }}/ominicontacto_voip/kamailio-files/kamailio.cfg", dest: "{{ kamailio_location }}" }
 
 - name: Generate Dockerfiles content
-  template: src={{ item.src }} dest=/etc/docker/omnileads/build/{{ item.dest }} mode=755 owner={{ docker_user }} group={{ docker_user }}
+  template: src={{ item.src }} dest={{ item.dest }} mode=755 owner={{ docker_user }} group={{ docker_user }}
   with_items:
-    - { src: roles/docker/files/scripts/create_language.sh, dest: scripts }
-    - { src: roles/oml_server/templates/pip.conf, dest: scripts }
-    - { src: roles/oml_server/templates/requirements.txt, dest: scripts }
-    - { src: roles/docker/files/scripts/run_rtpengine.sh, dest: scripts }
+    - { src: roles/docker/files/scripts/build-asterisk.sh, dest: "{{ build_location }}/scripts" }
+    - { src: roles/docker/files/scripts/create_language.sh, dest: "{{ build_location }}/scripts" }
+    - { src: roles/oml_server/templates/pip.conf, dest: "{{ build_location }}/scripts" }
+    - { src: roles/oml_server/templates/requirements.txt, dest: "{{ build_location }}/scripts" }
+    - { src: roles/docker/files/scripts/run_asterisk.sh, dest: "{{ build_location }}/scripts" }
+    - { src: roles/docker/files/scripts/run_rtpengine.sh, dest: "{{ build_location }}/scripts" }
+    - { src: roles/docker/files/scripts/run_omniapp.sh, dest: "{{ omniapp_location }}/run_omniapp.sh"}
+    - { src: roles/omniapp_second/templates/bin/conversor.sh, dest: "{{ omniapp_location }}" }
+    - { src: roles/omniapp_second/templates/bin/omni-asterisk-logout.py.j2, dest: "{{ omniapp_location }}/omni-asterisk-logout.py" }
+    - { src: roles/omniapp_second/templates/run/oml_uwsgi.ini, dest: "{{ omniapp_location }}/oml_uwsgi.ini"}
+    - { src: roles/omniapp_second/templates/etc/ominicontacto.conf, dest: "{{ nginx_location }}/conf.d"}
+    - { src: roles/omniapp_second/templates/etc/nginx.conf.j2, dest: "{{ nginx_location }}/nginx.conf"}
+    - { src: roles/docker/files/scripts/mime.types, dest: "{{ nginx_location }}/mime.types"}
+    - { src: roles/kamailio/templates/etc/kamailio-local.cfg, dest: "{{ kamailio_location }}" }
 
 - name: Log into DockerHub
   docker_login:
@@ -33,11 +87,18 @@
     password: "{{ docker_login_pass }}"
     email: "{{ docker_login_email }}"
 
-- name: Build {{ version }} images
-  docker_image: path=/etc/docker/omnileads/build/ dockerfile=Dockerfile-{{ item.dockerfile }} state=present name=freetechsolutions/{{ item.image }} tag={{ item.version }} force=yes push=yes
+- name: Build images for PE and DE
+  docker_image: path={{ build_location }} dockerfile=Dockerfile-{{ item.dockerfile }} state=present name=freetechsolutions/{{ item.image }} tag={{ item.version }} force=yes push=yes
   with_items:
-    - { dockerfile: "asterisk", image: "asterisk", version: "16" }
+    - { dockerfile: "asterisk", image: "asterisk", version: "{{ asterisk_version }}" }
     - { dockerfile: "dialer", image: "dialer", version: "{{ wombat_version }}" }
     - { dockerfile: "omniapp", image: "omniapp", version: "{{ version }}" }
     - { dockerfile: "postgresql", image: "postgresql", version: "{{ postgresql_version }}" }
     - { dockerfile: "rtpengine", image: "rtpengine", version: "{{ rtpengine_version }}" }
+
+- name: Build {{ version }} images (PE)
+  docker_image: path={{ build_location }} dockerfile=Dockerfile-{{ item.dockerfile }} state=present name=freetechsolutions/{{ item.image }} tag={{ item.version }} force=yes push=yes
+  with_items:
+    - { dockerfile: "kamailio", image: "kamailio", version: "{{ version }}" }
+    - { dockerfile: "nginx", image: "nginx", version: "{{ version }}" }
+  when: prodenv == 1

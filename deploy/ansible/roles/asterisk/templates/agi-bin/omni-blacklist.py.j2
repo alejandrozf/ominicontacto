@@ -26,23 +26,29 @@
 # discado está en una lista negra (no está permitido llamar), cuyo valor escribe en el canal
 # correspondiente en la variable BLACKLIST
 
+import os
 import sys
 from socket import setdefaulttimeout
 
 from asterisk.agi import AGI
-
-from config import configParser
 from utiles import write_time_stderr
 
+ASTERISK_LOCATION = os.getenv('ASTERISK_LOCATION')
+BLACKLIST_AGI_LOG = '{0}/var/log/asterisk/blacklist-agi-errors.log'.format(ASTERISK_LOCATION)
 
-sys.stderr = open('{{ asterisk_location }}/var/log/asterisk/agis-errors.log', 'a')
+if os.path.exists(BLACKLIST_AGI_LOG):
+    append_write = 'a' # append if already exists
+else:
+    append_write = 'w' # make a new file if not
+
+sys.stderr = open(BLACKLIST_AGI_LOG, append_write)
 
 setdefaulttimeout(20)
 
 agi = AGI()
 
 phone_number = sys.argv[1]
-black_list_file = configParser.get('OML', 'BLACK_LIST_FIlE')
+black_list_file = '{0}/var/spool/asterisk/oml_backlist.txt'.format(ASTERISK_LOCATION)
 
 with open(black_list_file, 'r') as f:
     is_black_listed = int(f.read().find(phone_number) != -1)

@@ -5,19 +5,30 @@
 # If you are installing a devenv (DE) AIO uncomment these line
 
 version: release-1.2.4
-customer: taxis
+customer: prodenv
 
-# Container names
-asterisk_fqdn: oml-asterisk
-dialer_fqdn: oml-dialer
-kamailio_fqdn: oml-kamailio
-mariadb_fqdn: oml-mariadb
-nginx_fqdn: oml-nginx
-omniapp_fqdn: oml-omniapp
-postgresql_fqdn: oml-postgresql
-redis_fqdn: oml-redis
-rtpengine_fqdn: oml-rtpengine
-database_fqdn: "{{ postgresql_fqdn }}"
-asterisk_ip: 0.0.0.0
-kamailio_ip: 0.0.0.0
-dialer_ip: 0.0.0.0
+asterisk_version: "{{ version }}"
+kamailio_version: "{{ version }}"
+root_password: toor123
+
+# Networking settings
+prod_subnet: 192.168.15.0/24
+dialer_ip: 192.168.15.10
+kamailio_ip: 192.168.15.11
+omniapp_ip: 192.168.15.12
+nginx_external_port: 444
+pg_external_port: 446
+wd_external_port: 442
+
+# Folder locations
+asterisk_location:
+ast_local_location: "{{ build_location }}/asterisk"
+ast_agis_location: "{{ ast_local_location }}/agis"
+ast_conf_location: "{{ ast_local_location }}/conf"
+ast_other_location: "{{ build_location }}/scripts"
+build_location: "{{ docker_root }}/omnileads/build"
+certs_location: "{{ build_location }}/certs"
+deploy_location: "/{{ docker_root }}/omnileads/{{ customer }}"
+kamailio_location: "{{ build_location }}/kamailio"
+nginx_location: "{{ build_location }}/nginx"
+omniapp_location: "{{ build_location }}/omniapp"

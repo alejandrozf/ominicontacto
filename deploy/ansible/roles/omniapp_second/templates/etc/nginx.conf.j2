@@ -3,7 +3,7 @@
 #   * Official Russian Documentation: http://nginx.org/ru/docs/
 
 {% if is_docker == "true" %}
-user nginx;
+user root;
 {% else %}
 user {{ usuario }};
 {% endif %}
