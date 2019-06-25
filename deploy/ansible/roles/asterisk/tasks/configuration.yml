@@ -21,7 +21,8 @@
 - name: Creation of asterisk.service
   template: src=templates/asterisk.service dest=/etc/systemd/system/asterisk.service owner=root group=root mode=650
   when: is_docker == "false"
-
+  tags: postinstall
+  
 # Linkeo el binario a /usr/sbin
 - name: Create simbolic link of asterisk binarie
   file: state=link src={{ asterisk_location }}/sbin/asterisk dest=/usr/sbin/asterisk force=true
@@ -91,7 +92,7 @@
   template: "src=roles/asterisk/templates/conf/logger.conf dest={{ ast_conf_location }}/logger.conf owner={{ usuario }} group={{ usuario }} mode=755"
   when: is_docker == "false"
   tags: postinstall
-  
+
 # Los archivos-no-enlaces se copian a la a /etc/asterisk
 - name: Copy of all asterisk config files
   copy: "src=roles/asterisk/templates/conf/archivos-no-enlaces/ dest={{ ast_conf_location }}/ owner={{ usuario }} group={{ usuario }} mode=755"
