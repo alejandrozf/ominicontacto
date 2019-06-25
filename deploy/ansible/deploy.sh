@@ -109,7 +109,7 @@ AnsibleInstall() {
     $PIP install 'ansible==2.5' --user
   fi
   echo "Detecting if docker-py is installed"
-  $PIP install 'docker-py==1.10.6' --user > /dev/null 2>&1 
+  $PIP install 'docker-py==1.10.6' --user > /dev/null 2>&1
   cd $current_directory
   sleep 2
   echo "Creating ansible temporal directory"
@@ -189,7 +189,7 @@ EOF
 
 AnsibleExec() {
     echo "Checking if there are hosts to deploy from inventory file"
-    if ${IS_ANSIBLE} all --list-hosts -i $TMP_ANSIBLE/inventory | grep -q '0'; then
+    if ${IS_ANSIBLE} all --list-hosts -i $TMP_ANSIBLE/inventory | grep -q '(0)'; then
       echo "All hosts in inventory file are commented, please check the file according to documentation"
       exit 1
     fi
