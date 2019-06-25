@@ -1951,7 +1951,7 @@ class BaseDatosContacto(models.Model):
     )
 
     nombre = models.CharField(
-        max_length=128, verbose_name=_('Nombre')
+        max_length=128, unique=True, verbose_name=_('Nombre')
     )
     fecha_alta = models.DateTimeField(
         auto_now_add=True, verbose_name=_('Fecha alta')
@@ -1976,6 +1976,10 @@ class BaseDatosContacto(models.Model):
         default=ESTADO_EN_DEFINICION,
     )
     oculto = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = _("Base de datos")
+        verbose_name_plural = _("Base de datos")
 
     def __unicode__(self):
         return "{0}: ({1} contactos)".format(self.nombre,
