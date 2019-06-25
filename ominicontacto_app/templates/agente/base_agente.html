@@ -712,14 +712,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </div>
 
                         <div class="tab-pane fade" id="phoneRegistryContent" role="tabpanel" aria-labelledby="phoneRegistryTab">
-                            <table class="table table-condensed table-hover table-striped">
-                                <thead>
-                                    <th>{% trans 'tipo' %}</th><th>{% trans 'número' %}</th><th>{% trans 'fecha' %}</th><th style="text-align:center">hora</th><!--<th>Llamar</th>-->
-                                </thead>
-                                <tbody id="call_list">
+                            <div class="container">
+                                <div class="row" style="background:lightgrey; margin-bottom: 1rem;">
+                                    <div class="col-lg-2 col-md-2 col-xs-2">
+                                        <strong>{% trans 'Tipo' %}</strong>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-xs-4">
+                                        <strong>{% trans 'Número' %}</strong>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-xs-6">
+                                        <div><strong>{% trans 'Fecha' %} / {% trans 'Hora' %}</strong></div>
+                                    </div>
+                                </div>
+                                <div class="row" id="call_list">
                                     {% include "agente/historico_llamadas_del_dia.html" %}
-                                </tbody>
-                            </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
