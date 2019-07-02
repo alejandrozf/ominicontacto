@@ -2552,7 +2552,6 @@ class CalificacionCliente(models.Model):
     objects = CalificacionClienteManager()
 
     contacto = models.ForeignKey(Contacto)
-    es_venta = models.BooleanField(default=False)
     opcion_calificacion = models.ForeignKey(
         OpcionCalificacion, blank=False, related_name='calificaciones_cliente')
     fecha = models.DateTimeField(auto_now_add=True)
@@ -2604,10 +2603,9 @@ class CalificacionCliente(models.Model):
     def get_venta(self):
         return self.respuesta_formulario_gestion.first()
 
-    def set_es_venta(self):
+    def es_gestion(self):
         # TODO: Usar metodo de OpcionCalificacion.es_gestion()
-        # self.es_venta = self.opcion_calificacion.es_gestion()
-        self.es_venta = self.opcion_calificacion.tipo == OpcionCalificacion.GESTION
+        return self.opcion_calificacion.tipo == OpcionCalificacion.GESTION
 
     def es_agenda(self):
         # TODO: Usar metodo de OpcionCalificacion.es_agenda()

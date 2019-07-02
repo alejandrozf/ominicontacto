@@ -260,7 +260,7 @@ class CalificacionClienteFormView(FormView):
 
     def _calificar_form(self, calificacion_form):
         self.object_calificacion = calificacion_form.save(commit=False)
-        self.object_calificacion.set_es_venta()
+        self.object_calificacion.es_gestion()
         self.object_calificacion.callid = self._obtener_call_id()
         self.object_calificacion.agente = self.agente
         self.object_calificacion.contacto = self.contacto
@@ -284,7 +284,7 @@ class CalificacionClienteFormView(FormView):
         # check metadata en calificaciones de no accion y eliminar
         self._check_metadata_no_accion_delete(self.object_calificacion)
 
-        if self.object_calificacion.es_venta and \
+        if self.object_calificacion.es_gestion() and \
                 not self.campana.tiene_interaccion_con_sitio_externo:
             return redirect(self.get_success_url_venta())
         else:
