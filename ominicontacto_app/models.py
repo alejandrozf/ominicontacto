@@ -2584,36 +2584,6 @@ class CalificacionCliente(models.Model):
         return calificaciones
 
 
-class DuracionDeLlamada(models.Model):
-    """Representa la duración de las llamdas de las campanas, con el fin
-        de contar con los datos para búsquedas y estadísticas"""
-
-    TYPE_MANUAL = 1
-    """Tipo de llamada manual"""
-
-    TYPE_DIALER = 2
-    """Tipo de llamada DIALER"""
-
-    TYPE_INBOUND = 3
-    """Tipo de llamada inbound"""
-
-    TYPE_PREVIEW = 4
-    """Tipo de llamada inbound"""
-
-    TYPE_LLAMADA_CHOICES = (
-        (TYPE_PREVIEW, 'PREVIEW'),
-        (TYPE_DIALER, 'DIALER'),
-        (TYPE_INBOUND, 'INBOUND'),
-        (TYPE_MANUAL, 'MANUAL'),
-    )
-
-    agente = models.ForeignKey(AgenteProfile, related_name="llamadas")
-    numero_telefono = models.CharField(max_length=20)
-    fecha_hora_llamada = models.DateTimeField(auto_now=True)
-    tipo_llamada = models.PositiveIntegerField(choices=TYPE_LLAMADA_CHOICES)
-    duracion = models.TimeField()
-
-
 class RespuestaFormularioGestion(models.Model):
     """Representa información del formulario de gestión completado en una Calificacion"""
     calificacion = models.ForeignKey(CalificacionCliente,

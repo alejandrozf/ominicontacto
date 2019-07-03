@@ -30,6 +30,7 @@ import requests
 
 from services.sms_services import SmsManager
 from django.utils.translation import ugettext_lazy as _
+from django.utils.timezone import now
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render_to_response, redirect
@@ -51,16 +52,17 @@ from defender import utils
 from defender import config
 
 from ominicontacto_app.models import (
-    User, AgenteProfile, Modulo, Grupo, Pausa, DuracionDeLlamada, Agenda,
+    User, AgenteProfile, Modulo, Grupo, Pausa, Agenda,
     Chat, MensajeChat
 )
 from ominicontacto_app.forms import AgendaBusquedaForm, PausaForm, GrupoForm, RegistroForm
 from ominicontacto_app.services.kamailio_service import KamailioService
 from ominicontacto_app.utiles import convert_string_in_boolean,\
-    convert_fecha_datetime
+    convert_fecha_datetime, fecha_local
 from ominicontacto_app import version
 from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     RestablecerConfiguracionTelefonicaError, SincronizadorDeConfiguracionPausaAsterisk)
+from reportes_app.models import LlamadaLog
 
 from utiles_globales import AddSettingsContextMixin
 
@@ -365,22 +367,20 @@ class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ConsolaAgenteView, self).get_context_data(**kwargs)
-        registro = []
         campanas_preview_activas = []
         usuario_agente = self.request.user
         agente_profile = usuario_agente.get_agente_profile()
         kamailio_service = KamailioService()
         sip_usuario = kamailio_service.generar_sip_user(agente_profile.sip_extension)
         sip_password = kamailio_service.generar_sip_password(sip_usuario)
-        registro = DuracionDeLlamada.objects.filter(
-            agente=agente_profile,
-            tipo_llamada__in=(DuracionDeLlamada.TYPE_INBOUND,
-                              DuracionDeLlamada.TYPE_MANUAL)
-        ).order_by("-fecha_hora_llamada")[:10]
+
+        hoy = fecha_local(now())
+        registros = LlamadaLog.objects.obtener_llamadas_finalizadas_del_dia(agente_profile.id, hoy)
         campanas_preview_activas = \
             agente_profile.has_campanas_preview_activas_miembro()
         context['pausas'] = Pausa.objects.activas
-        context['registro'] = registro
+        context['registros'] = registros
+        context['tipos_salientes'] = LlamadaLog.TIPOS_LLAMADAS_SALIENTES
         context['campanas_preview_activas'] = campanas_preview_activas
         context['agente_profile'] = agente_profile
         context['sip_usuario'] = sip_usuario
@@ -482,29 +482,6 @@ class AgenteEventosFormView(FormView):
                                                                  fecha_hasta)
         return self.render_to_response(self.get_context_data(
             listado_de_eventos=listado_de_eventos))
-
-
-def nuevo_duracion_llamada_view(request):
-    """Vista para crear una nueva duracion de llamada"""
-    agente = request.GET['agente']
-    numero_telefono = request.GET['numero_telefono']
-    tipo_llamada = request.GET['tipo_llamada']
-    duracion = request.GET['duracion']
-
-    agente = AgenteProfile.objects.get(pk=int(agente))
-    DuracionDeLlamada.objects.create(agente=agente,
-                                     numero_telefono=numero_telefono,
-                                     tipo_llamada=tipo_llamada,
-                                     duracion=duracion)
-    ctx = {
-        'registros': DuracionDeLlamada.objects.filter(
-            agente=request.user.get_agente_profile(),
-            tipo_llamada__in=(DuracionDeLlamada.TYPE_INBOUND,
-                              DuracionDeLlamada.TYPE_MANUAL)).order_by(
-            "-fecha_hora_llamada")[:10]
-    }
-    return render_to_response('agente/update_registros_llamadas.html', ctx,
-                              context_instance=RequestContext(request))
 
 
 def mensaje_chat_view(request):
