@@ -53,9 +53,8 @@ class CalificacionTests(OMLBaseTest):
         self.usuario_agente = UserFactory(is_agente=True)
         self.usuario_agente.set_password(self.PWD)
         self.usuario_agente.save()
-
         self.campana = CampanaFactory.create()
-        self.nombre_opcion_gestion = NombreCalificacionFactory.create(nombre=self.campana.gestion)
+        self.nombre_opcion_gestion = NombreCalificacionFactory.create()
         self.nombre_calificacion_agenda = NombreCalificacion.objects.get(
             nombre=settings.CALIFICACION_REAGENDA)
         self.formulario = FormularioFactory()

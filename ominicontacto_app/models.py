@@ -665,7 +665,6 @@ class CampanaManager(models.Manager):
             fecha_inicio=campana.fecha_inicio,
             fecha_fin=campana.fecha_fin,
             bd_contacto=base_datos_sugerida,
-            gestion=campana.gestion,
             type=campana.type,
             sitio_externo=campana.sitio_externo,
             tipo_interaccion=campana.tipo_interaccion,
@@ -911,7 +910,6 @@ class Campana(models.Model):
     )
     oculto = models.BooleanField(default=False)
     # TODO: Sacar este campo
-    gestion = models.CharField(max_length=128, default="Venta")
     campaign_id_wombat = models.IntegerField(null=True, blank=True)
     type = models.PositiveIntegerField(choices=TYPES_CAMPANA)
     sistema_externo = models.ForeignKey("SistemaExterno", null=True, blank=True,

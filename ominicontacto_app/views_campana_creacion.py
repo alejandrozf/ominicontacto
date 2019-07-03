@@ -108,7 +108,6 @@ class CampanaTemplateCreateCampanaMixin(object):
                 'bd_contacto': campana_template.bd_contacto,
                 'tipo_interaccion': campana_template.tipo_interaccion,
                 'sitio_externo': campana_template.sitio_externo,
-                'gestion': campana_template.gestion,
                 'objetivo': campana_template.objetivo,
                 'es_template': False}
         elif step == self.COLA:
