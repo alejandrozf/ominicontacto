@@ -99,6 +99,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                     <a href="{% url 'supervisor_list' %}">{% trans 'Supervisores' %}</a>
                                 </li>
                                 {% endif %}
+                                {% if WEBPHONE_CLIENT_ENABLED %}
+                                    <li>
+                                        <a href="{% url 'cliente_webphone_list' %}">{% trans 'Clientes WebPhone' %}</a>
+                                    </li>
+                                {% endif %}
                             </ul>
                         </li>
 

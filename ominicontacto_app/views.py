@@ -53,7 +53,7 @@ from defender import config
 
 from ominicontacto_app.models import (
     User, AgenteProfile, Modulo, Grupo, Pausa, Agenda,
-    Chat, MensajeChat
+    Chat, MensajeChat, ClienteWebPhoneProfile
 )
 from ominicontacto_app.forms import AgendaBusquedaForm, PausaForm, GrupoForm, RegistroForm
 from ominicontacto_app.services.kamailio_service import KamailioService
@@ -113,6 +113,12 @@ def login_view(request):
                                       username=username)
         user_not_blocked = utils.check_request(request, login_unsuccessful=login_unsuccessful,
                                                username=username)
+
+        # TODO: Si es cliente webphone lo bloqueo
+        if ClienteWebPhoneProfile.objects.filter(user__username=username).exists():
+            user_is_blocked = True
+            detail = _("Este tipo de usuario no puede loguearse en este momento.")
+
         if user_not_blocked and not user_is_blocked and not login_unsuccessful:
             if form.is_valid():
                 login(request, user)
