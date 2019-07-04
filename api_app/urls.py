@@ -28,7 +28,7 @@ from api_app.views import (SupervisorCampanasActivasViewSet, AgentesStatusAPIVie
                            login, API_ObtenerContactosCampanaView, ApiCalificacionClienteView,
                            ApiCalificacionClienteCreateView, OpcionesCalificacionViewSet,
                            Click2CallView)
-from ominicontacto_app.auth.decorators import administrador_o_supervisor_requerido
+from ominicontacto_app.auth.decorators import supervisor_requerido
 
 router = routers.DefaultRouter()
 router.register(
@@ -56,16 +56,16 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     url('api/v1/supervision/status_campanas/entrantes/$',
-        administrador_o_supervisor_requerido(StatusCampanasEntrantesView.as_view()),
+        supervisor_requerido(StatusCampanasEntrantesView.as_view()),
         name='api_supervision_campanas_entrantes'),
     url('api/v1/supervision/status_campanas/salientes/$',
-        administrador_o_supervisor_requerido(StatusCampanasSalientesView.as_view()),
+        supervisor_requerido(StatusCampanasSalientesView.as_view()),
         name='api_supervision_campanas_salientes'),
     url(r'api/v1/supervision/agentes',
-        administrador_o_supervisor_requerido(AgentesStatusAPIView.as_view()),
+        supervisor_requerido(AgentesStatusAPIView.as_view()),
         name='api_agentes_activos'),
     url(r'api/v1/supervision/accion_sobre_agente/(?P<pk>\d+)/$',
-        administrador_o_supervisor_requerido(InteraccionDeSupervisorSobreAgenteView.as_view()),
+        supervisor_requerido(InteraccionDeSupervisorSobreAgenteView.as_view()),
         name='api_accion_sobre_agente'),
     url(r'^api/v1/campaign/(?P<pk_campana>\d+)/contacts/$',
         API_ObtenerContactosCampanaView.as_view(), name='api_contactos_campana'),
