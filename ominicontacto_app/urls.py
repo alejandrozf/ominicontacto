@@ -82,6 +82,12 @@ urlpatterns = [
         administrador_requerido(views_user_profiles.AgenteProfileUpdateView.as_view()),
         name='agenteprofile_update',
         ),
+    url(r'^agente/(?P<pk_agente>\d+)/activar/$',
+        administrador_o_supervisor_requerido(views_user_profiles.ActivarAgenteView.as_view()),
+        name="agente_activar"),
+    url(r'^agente/(?P<pk_agente>\d+)/desactivar/$',
+        administrador_o_supervisor_requerido(views_user_profiles.DesactivarAgenteView.as_view()),
+        name="agente_desactivar"),
     # Perfil Supervisor  =======================================================
     url(r'^supervisor/list/$',
         administrador_requerido(views_user_profiles.SupervisorListView.as_view()),
@@ -91,6 +97,15 @@ urlpatterns = [
         administrador_requerido(views_user_profiles.SupervisorProfileUpdateView.as_view()),
         name='supervisor_update',
         ),
+    # Perfil Webphone Cliente  ================================================
+    url(r'^cliente_webphone/list/$',
+        administrador_requerido(views_user_profiles.ClienteWebPhoneListView.as_view()),
+        name='cliente_webphone_list',
+        ),
+    url(r'^agente/(?P<pk>\d+)/cambiar_estado_activacion/$',
+        administrador_o_supervisor_requerido(
+            views_user_profiles.ToggleActivarClienteWebPhoneView.as_view()),
+        name="cliente_webphone_toggle_activacion"),
     # ==========================================================================
     # Módulos
     # ==========================================================================
@@ -520,12 +535,6 @@ urlpatterns = [
         views_agente.cambiar_estado_agente_view,
         name='agente_cambiar_estado',
         ),
-    url(r'^agente/(?P<pk_agente>\d+)/activar/$',
-        administrador_o_supervisor_requerido(views_user_profiles.ActivarAgenteView.as_view()),
-        name="agente_activar"),
-    url(r'^agente/(?P<pk_agente>\d+)/desactivar/$',
-        administrador_o_supervisor_requerido(views_user_profiles.DesactivarAgenteView.as_view()),
-        name="agente_desactivar"),
     # ==========================================================================
     # Supervision
     # ==========================================================================

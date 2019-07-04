@@ -343,7 +343,7 @@ class GeneradorParaAgente(GeneradorDePedazoDeAgenteSip):
         [{oml_agente_sip}]
         type=friend
         insecure=invite
-        context=from-oml
+        context={context}
         host=dynamic
         qualify=yes
         notifyringing=yes

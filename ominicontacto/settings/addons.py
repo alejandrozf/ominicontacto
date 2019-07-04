@@ -27,11 +27,18 @@ CONSTANCE_CONFIG = {
     'CLIENT_PASSWORD': ('', 'CLIENT_PASSWORD', str),
     'CLIENT_EMAIL': ('', 'CLIENT_EMAIL', str),
     'CLIENT_PHONE': ('', 'CLIENT_PHONE', str),
+    'CLIENT_PHONE': ('', 'CLIENT_PHONE', str),
+    'WEBPHONE_CLIENT_ENABLED': (False, 'WEBPHONE_CLIENT_ENABLED', bool),
 }
 
 ADDONS_APPS = []
 MIDDLEWARE_PREPPEND = []
 MIDDLEWARE_APPEND = []
 TEMPLATES_CONTEXT_PROCESORS_APPEND = []
+
+ADDON_URLPATTERNS = [
+    # (r'^', 'my_addon_app.urls'),
+]
+
 
 # A partir de aquí se deben adicionar los settings que necesita cada addon

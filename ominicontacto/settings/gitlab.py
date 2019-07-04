@@ -218,7 +218,8 @@ CONSTANCE_CONFIG = {
     'CLIENT_KEY': ('', 'Llave para acceder a addons'),
     'CLIENT_EMAIL': ('', 'Dirección de email'),
     'CLIENT_PHONE': ('', 'Teléfono'),
-    'KEYS_SERVER_HOST': ('', 'Dirección url base para acceder a los addons')
+    'KEYS_SERVER_HOST': ('', 'Dirección url base para acceder a los addons'),
+    'WEBPHONE_CLIENT_ENABLED': (False, 'WEBPHONE_CLIENT_ENABLED', bool),
 }
 
 MIDDLEWARE_PREPPEND = []

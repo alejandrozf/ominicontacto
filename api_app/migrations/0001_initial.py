@@ -21,6 +21,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('authtoken', '0002_auto_20160226_1747'),
+        ('ominicontacto_app', '0032_cliente_webphone'),
     ]
 
     operations = [

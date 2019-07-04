@@ -62,6 +62,7 @@ SUBSITUTE_ALFANUMERICO = re.compile(r'[^\w]')
 class User(AbstractUser):
     is_agente = models.BooleanField(default=False)
     is_supervisor = models.BooleanField(default=False)
+    is_cliente_webphone = models.BooleanField(default=False)
     last_session_key = models.CharField(blank=True, null=True, max_length=40)
     borrado = models.BooleanField(default=False, editable=False)
 
@@ -99,6 +100,17 @@ class User(AbstractUser):
     def get_is_supervisor_normal(self):
         supervisor = self.get_supervisor_profile()
         if supervisor and not supervisor.is_customer and not supervisor.is_administrador:
+            return True
+        return False
+
+    def get_cliente_webphone_profile(self):
+        cliente_webphone_profile = None
+        if hasattr(self, 'clientewebphoneprofile'):
+            cliente_webphone_profile = self.clientewebphoneprofile
+        return cliente_webphone_profile
+
+    def get_is_cliente_webphone(self):
+        if self.is_cliente_webphone and self.get_cliente_webphone_profile():
             return True
         return False
 
@@ -296,6 +308,34 @@ class SupervisorProfile(models.Model):
 
     def obtener_campanas_activas_asignadas(self):
         return self.user.campanasupervisors.filter(estado=Campana.ESTADO_ACTIVA)
+
+
+class ClienteWebPhoneProfileManager(models.Manager):
+    def obtener_activos(self):
+        return self.exclude(is_inactive=True)
+
+
+class ClienteWebPhoneProfile(models.Model):
+    objects = ClienteWebPhoneProfileManager()
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    sip_extension = models.IntegerField(unique=True)
+    is_inactive = models.BooleanField(default=False)
+    borrado = models.BooleanField(default=False)
+
+    def toggle_is_inactive(self):
+        self.is_inactive = not self.is_inactive
+        self.save()
+
+    def borrar(self):
+        """
+        Setea Cliente Webphone como BORRADO .
+        """
+        logger.info(_("Seteando Cliente Webphone {0} como BORRADO".format(self.id)))
+
+        self.is_inactive = True
+        self.borrado = True
+        self.save()
 
 
 class NombreCalificacionManager(models.Manager):
