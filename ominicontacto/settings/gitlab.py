@@ -43,6 +43,7 @@ Y luego de eso, las customizaciones.
 """
 import os
 
+from addons import *
 from defaults import *
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))

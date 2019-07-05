@@ -4,16 +4,16 @@ from __future__ import unicode_literals
 
 from django.db import migrations
 
-from rest_framework.authtoken.models import Token
-from ominicontacto_app.models import User
-
 
 def adicionar_tokens_usuarios(apps, schema_editor):
+    User = apps.get_model("ominicontacto_app", "User")
+    Token = apps.get_model("authtoken", "Token")
     for user in User.objects.all():
         Token.objects.create(user=user)
 
 
 def eliminar_tokens_usuarios(apps, schema_editor):
+    Token = apps.get_model("authtoken", "Token")
     Token.objects.all().delete()
 
 
@@ -21,7 +21,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('authtoken', '0002_auto_20160226_1747'),
-        ('ominicontacto_app', '0032_cliente_webphone'),
     ]
 
     operations = [
