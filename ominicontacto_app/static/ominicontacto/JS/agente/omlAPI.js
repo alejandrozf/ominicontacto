@@ -79,7 +79,7 @@ class OMLAPI {
         var URL = Urls.grabacion_marcar();
         // var URL = "grabacion/marcar/";
         var post_data = {
-            "uid": uuid_llamada,
+            "callid": uuid_llamada,
             "descripcion": descripcion
         };
         $.ajax({
