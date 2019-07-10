@@ -175,7 +175,8 @@ class ArchivoDeReporteCsv(object):
                                           calificacion.agente]
                     # TODO: ver la forma de relacionar con respuestas vieja.
                     respuesta_formulario_gestion = calificacion.history_object.get_venta()
-                    if (calificacion.es_venta and campana.tipo_interaccion is Campana.FORMULARIO and
+                    if (calificacion.es_gestion() and
+                        campana.tipo_interaccion is Campana.FORMULARIO and
                             respuesta_formulario_gestion is not None):
 
                         # Agrego Datos de la respuesta del formulario
@@ -319,7 +320,8 @@ class ArchivoDeReporteCsv(object):
                 else:
                     lista_opciones.append(_("Fuera de base"))
                 respuesta_formulario_gestion = calificacion.get_venta()
-                if (calificacion.es_venta and campana.tipo_interaccion is Campana.FORMULARIO and
+                if (calificacion.es_gestion() and
+                    campana.tipo_interaccion is Campana.FORMULARIO and
                         respuesta_formulario_gestion is not None):
                     datos = json.loads(respuesta_formulario_gestion.metadata)
 

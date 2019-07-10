@@ -474,11 +474,10 @@ class OMLTestUtilsMixin(object):
         regla.save()
 
     def crear_calificacion_cliente(self, agente, contacto,
-                                   opcion_calificacion, es_venta=False):
+                                   opcion_calificacion):
         calificacioncliente = CalificacionCliente(
             agente=agente,
             contacto=contacto,
-            es_venta=es_venta,
             opcion_calificacion=opcion_calificacion
         )
         calificacioncliente.save()

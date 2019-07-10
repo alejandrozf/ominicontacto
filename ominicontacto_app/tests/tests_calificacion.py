@@ -196,7 +196,6 @@ class CalificacionTests(OMLBaseTest):
             'agente': self.agente_profile.pk,
             'calificacion': '',
             'observaciones': 'test',
-            'es_venta': False,
             'campana': self.campana.pk,
             'agendado': False,
             'telefono': self.contacto.pk
