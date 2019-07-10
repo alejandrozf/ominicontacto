@@ -128,7 +128,7 @@ def procesar_datos_transferencias():
         # en los eventos de transferencias con un solo valor que contiene el id de un agente
         # solo se mantiene el valor de 'agente_id'
         agente_id_modificado = valor_transf_1
-    return agente_id_modificado, agente_extra_id, campana_extra_id, numero_extra
+    return str(agente_id_modificado), agente_extra_id, campana_extra_id, numero_extra
 
 
 if event in EVENTOS_AGENTE and queuename == 'ALL':
@@ -136,7 +136,14 @@ if event in EVENTOS_AGENTE and queuename == 'ALL':
     plan_agente_log = plpy.prepare(
         "INSERT INTO reportes_app_actividadagentelog(time, agente_id, event, pausa_id) VALUES($1 ,$2, $3, $4)",
         ["timestamp with time zone", "int", "text", "text"])
-    plpy.execute(plan_agente_log, [fecha, agente_id, event, data1])
+    try:
+        if agente_id.isdigit() or agente_id == "-1":
+            plpy.execute(plan_agente_log, [fecha, agente_id, event, data1])
+    except Exception as e:
+        entrada = "time={0},\nagente_id={1},\nevent={2},\ndata={3}.\n".format(
+            time, agente_id, event, data1)
+        plpy.error("Error ({0}) trying to insert input ({1})".format(e, entrada))
+
 elif event in EVENTOS:
     # es un log que forma parte de una llamada
     try:
@@ -153,10 +160,23 @@ elif event in EVENTOS:
         "INSERT INTO reportes_app_llamadalog(time, callid, campana_id, tipo_campana, tipo_llamada, agente_id, event, numero_marcado, contacto_id, bridge_wait_time, duracion_llamada, archivo_grabacion, agente_extra_id, campana_extra_id, numero_extra) VALUES($1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)",
         ["timestamp with time zone", "text", "int", "int", "int", "int", "text", "text", "int",
          "int", "int", "text", "int", "int", "text"])
-    plpy.execute(plan_llamadas_log, [fecha, callid, campana_id, tipo_campana, tipo_llamada,
-                                     agente_id, event, data1, contacto_id, bridge_wait_time,
-                                     duracion_llamada, archivo_grabacion, agente_extra_id,
-                                     campana_extra_id, numero_extra])
+    try:
+        if agente_id.isdigit() or agente_id == "-1":
+            plpy.execute(plan_llamadas_log, [fecha, callid, campana_id, tipo_campana, tipo_llamada,
+                                             agente_id, event, data1, contacto_id, bridge_wait_time,
+                                             duracion_llamada, archivo_grabacion, agente_extra_id,
+                                             campana_extra_id, numero_extra])
+    except Exception as e:
+        entrada = ("fecha={0},\ncallid={1},\ncampana_id={2},\ntipo_campana={3},\n"
+                   "tipo_llamada={4},\nagente_id={5},\nevent={6},\ndata1={7},\n"
+                   "contacto_id={8},\nbridge_wait_time={9},\nduracion_llamada={10},\n"
+                   "archivo_grabacion={11},\nagente_extraid={12},\ncampana_extra_id={13},\n"
+                   "numero_extra={14}.\n".format(
+                       fecha, callid, campana_id, tipo_campana, tipo_llamada,
+                       agente_id, event, data1, contacto_id, bridge_wait_time,
+                       duracion_llamada, archivo_grabacion, agente_extra_id,
+                       campana_extra_id, numero_extra))
+        plpy.error("Error ({0}) trying to insert input ({1})".format(e, entrada))
 else:
     # no insertamos logs de estos eventos de momento
     pass
