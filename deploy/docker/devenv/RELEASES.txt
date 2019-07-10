@@ -13,6 +13,8 @@ Omniapp:
   - Fix in mount on recordings folder
   - Change the docker-compose file to have a custom network
   - Removed run_omnileads.sh script.
+1.2.1
+  - Added the cert of the Registrar Server for testing Omnileads Addons
 
 Asterisk:
 

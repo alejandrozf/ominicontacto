@@ -1,8 +1,10 @@
 FROM {{ rtpengine_image }}
 
+ARG DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update \
     && apt-get -y install gcc net-tools curl wget unzip ffmpeg procps \
-    && apt-get -y install libhiredis-dev debhelper default-libmysqlclient-dev libavfilter-dev libavformat-dev libavresample-dev libcurl4-openssl-dev libevent-dev libhiredis-dev libjson-glib-dev libpcre3-dev libssl-dev libxmlrpc-core-c3-dev markdown iptables-dev libpcap-dev libbencode-perl libcrypt-rijndael-perl libdigest-hmac-perl libio-socket-inet6-perl libsocket6-perl netcat-openbsd netcat dkms nfs-common \
+    && apt-get -y install linux-headers-$(uname -r) linux-image-$(uname -r) libhiredis-dev debhelper default-libmysqlclient-dev libavfilter-dev libavformat-dev libavresample-dev libcurl4-openssl-dev libevent-dev libhiredis-dev libjson-glib-dev libpcre3-dev libssl-dev libxmlrpc-core-c3-dev markdown iptables-dev libpcap-dev libbencode-perl libcrypt-rijndael-perl libdigest-hmac-perl libio-socket-inet6-perl libsocket6-perl netcat-openbsd netcat dkms nfs-common module-assistant \
     && cd /usr/src \
     && wget {{ rtpengine_repo }} \
     && tar xzvf mr{{ rtpengine_version }}.tar.gz \
@@ -16,7 +18,8 @@ RUN apt-get update \
     && dpkg -i ngcp-rtpengine-kernel-dkms_{{ rtpengine_version }}+0~mr{{ rtpengine_version }}_all.deb \
     && dpkg -i ngcp-rtpengine-recording-daemon_{{ rtpengine_version }}+0~mr{{ rtpengine_version }}_amd64.deb \
     && dpkg -i ngcp-rtpengine_{{ rtpengine_version }}+0~mr{{ rtpengine_version }}_all.deb \
-    && apt-get -y remove gcc libhiredis-dev debhelper default-libmysqlclient-dev libavfilter-dev libavformat-dev libavresample-dev libcurl4-openssl-dev libevent-dev libhiredis-dev libjson-glib-dev libpcre3-dev libssl-dev libxmlrpc-core-c3-dev markdown iptables-dev libpcap-dev libbencode-perl libcrypt-rijndael-perl libdigest-hmac-perl libio-socket-inet6-perl libsocket6-perl netcat-openbsd netcat dkms nfs-common --purge
+    && apt-get -y remove libhiredis-dev default-libmysqlclient-dev libavfilter-dev libavformat-dev libavresample-dev libcurl4-openssl-dev libevent-dev libhiredis-dev libjson-glib-dev libpcre3-dev libssl-dev libxmlrpc-core-c3-dev markdown iptables-dev libpcap-dev libbencode-perl libcrypt-rijndael-perl libdigest-hmac-perl libio-socket-inet6-perl libsocket6-perl netcat-openbsd netcat dkms nfs-common module-assistant linux-headers-$(uname -r) linux-image-$(uname -r) debhelper gcc --purge \
+    && apt autoremove -y
 
 # We need some environment variables to work please review and modify
 ENV RUN_RTPENGINE=yes

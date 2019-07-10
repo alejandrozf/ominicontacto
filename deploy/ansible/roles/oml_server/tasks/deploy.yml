@@ -65,6 +65,11 @@
 - name: Setup pip
   template: src=templates/pip.conf dest={{ install_prefix }}.pip owner=root group=root mode=644
   tags: postinstall
+
+- name: Upgrade pip
+  pip: name=pip extra_args=--upgrade virtualenv={{ install_prefix }}virtualenv virtualenv_command=/usr/bin/virtualenv
+  tags: postinstall
+
 #----------------------------------------------------------------------
 # ics_app installed, do this
 #----------------------------------------------------------------------
@@ -109,6 +114,7 @@
   environment:
     PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-{{ postgresql_version }}/bin"
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
+    PIP_DEFAULT_TIMEOUT: 100
   become: true
   become_method: su
   become_user: "{{ usuario }}"
@@ -124,8 +130,9 @@
     virtualenv={{ install_prefix }}virtualenv
     virtualenv_command=/usr/bin/virtualenv
   environment:
-      PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-{{ postgresql_version }}/bin"
-      PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
+    PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-{{ postgresql_version }}/bin"
+    PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
+    PIP_DEFAULT_TIMEOUT: 100
   become: true
   become_method: su
   become_user: "{{ usuario }}"
