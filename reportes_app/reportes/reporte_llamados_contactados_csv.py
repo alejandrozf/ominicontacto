@@ -125,8 +125,10 @@ class ArchivoDeReporteCsv(object):
             bd_metadata = campana.bd_contacto.get_metadata()
             encabezado = []
             encabezado.append(_("Telefono contactado"))
-            campos_contacto = bd_metadata.nombre_campo_telefono
             campos_contacto = bd_metadata.nombres_de_columnas
+            # campos sin telefono
+            # TODO: hacer más prolija esta parte, para evitar futuros desfasajes
+            campos_contacto_datos = bd_metadata.nombres_de_columnas_de_datos
             encabezado.extend(campos_contacto)
             encabezado.append(_("Fecha-Hora Contacto"))
             encabezado.append(_("Tel status"))
@@ -160,7 +162,7 @@ class ArchivoDeReporteCsv(object):
 
             # Iteramos sobre los llamadas
             for llamada_log in llamadas:
-                datos_contacto = [''] * len(campos_contacto)
+                datos_contacto = [''] * len(campos_contacto_datos)
                 calificacion = calificaciones_dict.get(llamada_log.callid, None)
                 tel_status, bd_contacto, datos_contacto, telefono_contacto = self.\
                     _obtener_datos_contacto_contactados(llamada_log, calificacion, datos_contacto)
