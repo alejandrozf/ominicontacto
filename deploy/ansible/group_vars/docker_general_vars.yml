@@ -10,7 +10,7 @@ kamailio_image: kamailio/kamailio-ci:5.2
 mariadb_image: bitnami/mariadb:latest
 nginx_image: nginx:mainline-alpine
 postgres_image: postgres:{{ postgresql_version }}
-rtpengine_image: bitnami/minideb
+rtpengine_image: ubuntu:18.04
 redis_image: redis:5-alpine
 # Images for EFK
 elasticsearch_image: elasticsearch:7.1.0

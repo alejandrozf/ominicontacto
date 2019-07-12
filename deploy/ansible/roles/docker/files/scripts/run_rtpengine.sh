@@ -5,7 +5,6 @@ RUNTIME=${1:-rtpengine}
 if [ -n "${UNLOAD_MODULE}" ] ; then
   rmmod xt_RTPENGINE
 fi
-apt-get install lsmod modprobe -y
 if lsmod | grep xt_RTPENGINE || modprobe xt_RTPENGINE; then
   echo "rtpengine kernel module already loaded."
 else
