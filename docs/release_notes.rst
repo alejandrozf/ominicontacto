@@ -10,18 +10,18 @@ What's new
 =========================
 
 - New phone configuration option to specify custom identification on inbound calls
-- Asterisk version was updated to 16.4.0, and 'chan_sip' module was added
+- Asterisk version was updated to 16.4.0
 - Supervision version was rewritten from scratch in Python/Django
 - CRM integrations are completely implemented to interact from-to OML
-- Added installation option to have a production enviroment based on docker
+- Added installation option to have a production environment based on docker
 
 
 
 Installation tasks
 ---------------------------------------------------------------
 - Added .pgpass file for root user on bare-metal installations
-- Fixed bug that inhibits to specify a localhost containing the digit "0" on inventory
-- Added pip upgrade task on bare-metal installations
+- Fixed bug that inhibits to specify a hostname containing the digit "0" on inventory
+- Added pip upgrade task on bare-metal installations, only for post-installations tasks
 - Fixed bug that made user to execute sometimes twice deploy script on bare-metal installations
 - Fixed permission error when uploading audio files
 - Kamailio now is configured to not generate debug logs on bare metal installations
@@ -32,8 +32,7 @@ Installation tasks
 OML admin
 -------------------------
 - Fixed aesthetical error on contactation report
-- Added validation in first campaign creation step to prevent fill external url field if user has not selected
-this interaction type
+- Added validation in first campaign creation step to prevent fill external url field if user has not selected this interaction type
 - Added callid-based for calls recordings filter
 - The admin view now shows current release on "About" section
 - A section to register an OML installation was added
@@ -55,8 +54,7 @@ Asterisk dialplan
 - Fixed sintax error on DB insertion
 - Fixed bug on expired call on failover
 - Fixed bug that keeps agents on BUSY state when she doesn't attend an inbound or transfer call
-- Fixed bug that makes insertions on recording DB table even for dialer campaigns even if the campaing
-wasn't configured to make recordings
+- Fixed bug that makes insertions on recording DB table even for dialer campaigns even if the campaing wasn't configured to make recordings
 - Fixed inconsistency on 'queue_log' logs table when a client hangs in a middle of a consultative transfer call
 
 Misc

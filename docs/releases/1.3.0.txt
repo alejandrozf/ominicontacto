@@ -8,17 +8,17 @@ What's new
 =========================
 
 - New phone configuration option to specify custom identification on inbound calls
-- Asterisk version was updated to 16.4.0, and 'chan_sip' module was added
+- Asterisk version was updated to 16.4.0
 - Supervision version was rewritten from scratch in Python/Django
 - CRM integrations are completely implemented to interact from-to OML
-- Added installation option to have a production enviroment based on docker
+- Added installation option to have a production environment based on docker
 
 
 
 Installation tasks
 ------------------------
-- Added .pgpass file for root user on bare-metal installations
-- Fixed bug that inhibits to specify a localhost containing the digit "0" on inventory
+- Added .pgpass file for root user on bare-metal installations, only for post-installations tasks
+- Fixed bug that inhibits to specify a hostname containing the digit "0" on inventory
 - Added pip upgrade task on bare-metal installations
 - Fixed bug that made user to execute sometimes twice deploy script on bare-metal installations
 - Fixed permission error when uploading audio files
