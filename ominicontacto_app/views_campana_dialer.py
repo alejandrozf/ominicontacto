@@ -49,7 +49,7 @@ class CampanaDialerListView(ListView):
     Vista copiada
     """
 
-    template_name = 'campana_dialer/campana_list.html'
+    template_name = 'campanas/campana_dialer/campana_list.html'
     context_object_name = 'campanas'
     model = Campana
 
@@ -212,7 +212,7 @@ class CampanaDialerDeleteView(CampanasDeleteMixin, DeleteView):
     Esta vista se encarga de la eliminación de una campana
     """
     model = Campana
-    template_name = 'campana_dialer/delete_campana.html'
+    template_name = 'campanas/campana_dialer/delete_campana.html'
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -363,7 +363,7 @@ class CampanaDialerBorradasListView(CampanaDialerListView):
     Vista que lista las campañas dialer pero de incluyendo las borradas ocultas
     """
 
-    template_name = 'campana_dialer/campanas_borradas.html'
+    template_name = 'campanas/campana_dialer/campanas_borradas.html'
 
     def get_context_data(self, **kwargs):
         context = super(CampanaDialerBorradasListView, self).get_context_data(**kwargs)

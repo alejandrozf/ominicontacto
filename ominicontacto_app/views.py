@@ -208,7 +208,7 @@ class GrupoCreateView(CreateView):
     DT: eliminar fields de la vista crear un form para ello
     """
     model = Grupo
-    template_name = 'grupo_create_update.html'
+    template_name = 'usuarios_grupos/grupo_create_update.html'
     form_class = GrupoForm
 
     def form_valid(self, form):
@@ -227,7 +227,7 @@ class GrupoUpdateView(UpdateView):
         DT: eliminar fields de la vista crear un form para ello
         """
     model = Grupo
-    template_name = 'grupo_create_update.html'
+    template_name = 'usuarios_grupos/grupo_create_update.html'
     form_class = GrupoForm
 
     def form_valid(self, form):
@@ -245,7 +245,7 @@ class GrupoUpdateView(UpdateView):
 class GrupoListView(ListView):
     """Vista para listar los grupos"""
     model = Grupo
-    template_name = 'grupo_list.html'
+    template_name = 'usuarios_grupos/grupo_list.html'
 
 
 class GrupoDeleteView(DeleteView):
@@ -254,7 +254,7 @@ class GrupoDeleteView(DeleteView):
     objeto grupo
     """
     model = Grupo
-    template_name = 'delete_grupo.html'
+    template_name = 'usuarios_grupos/delete_grupo.html'
 
     def dispatch(self, request, *args, **kwargs):
         grupo = Grupo.objects.get(pk=self.kwargs['pk'])

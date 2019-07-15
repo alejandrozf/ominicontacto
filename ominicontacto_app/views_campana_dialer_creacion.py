@@ -66,15 +66,15 @@ class CampanaDialerMixin(CampanaWizardMixin):
              (ADICION_AGENTES, QueueMemberFormset),
              (SINCRONIZAR, SincronizaDialerForm)]
 
-    TEMPLATES = {INICIAL: 'campana_dialer/nueva_edita_campana.html',
-                 COLA: 'campana_dialer/create_update_queue.html',
-                 OPCIONES_CALIFICACION: 'campana_dialer/opcion_calificacion.html',
-                 PARAMETROS_CRM: 'campana_dialer/parametros_crm_sitio_externo.html',
-                 ACTUACION_VIGENTE: 'campana_dialer/actuacion_vigente_campana.html',
-                 REGLAS_INCIDENCIA: 'campana_dialer/reglas_incidencia.html',
-                 ADICION_SUPERVISORES: "campana_dialer/adicionar_supervisores.html",
-                 ADICION_AGENTES: "campana_dialer/adicionar_agentes.html",
-                 SINCRONIZAR: 'campana_dialer/sincronizar_lista.html'}
+    TEMPLATES = {INICIAL: 'campanas/campana_dialer/nueva_edita_campana.html',
+                 COLA: 'campanas/campana_dialer/create_update_queue.html',
+                 OPCIONES_CALIFICACION: 'campanas/campana_dialer/opcion_calificacion.html',
+                 PARAMETROS_CRM: 'campanas/campana_dialer/parametros_crm_sitio_externo.html',
+                 ACTUACION_VIGENTE: 'campanas/campana_dialer/actuacion_vigente_campana.html',
+                 REGLAS_INCIDENCIA: 'campanas/campana_dialer/reglas_incidencia.html',
+                 ADICION_SUPERVISORES: "campanas/campana_dialer/adicionar_supervisores.html",
+                 ADICION_AGENTES: "campanas/campana_dialer/adicionar_agentes.html",
+                 SINCRONIZAR: 'campanas/campana_dialer/sincronizar_lista.html'}
 
     form_list = FORMS
 
@@ -230,10 +230,10 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (PARAMETROS_CRM, ParametrosCrmFormSet)]
 
-    TEMPLATES = {INICIAL: 'campana_dialer/edita_campana.html',
-                 COLA: 'campana_dialer/create_update_queue.html',
-                 OPCIONES_CALIFICACION: 'campana_dialer/opcion_calificacion.html',
-                 PARAMETROS_CRM: 'campana_dialer/parametros_crm_sitio_externo.html'}
+    TEMPLATES = {INICIAL: 'campanas/campana_dialer/edita_campana.html',
+                 COLA: 'campanas/campana_dialer/create_update_queue.html',
+                 OPCIONES_CALIFICACION: 'campanas/campana_dialer/opcion_calificacion.html',
+                 PARAMETROS_CRM: 'campanas/campana_dialer/parametros_crm_sitio_externo.html'}
 
     form_list = FORMS
 

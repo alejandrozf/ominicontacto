@@ -74,7 +74,7 @@ class SitioExternoDeleteView(DeleteView):
     Esta vista es para eliminar un sitio externo.
     """
     model = SitioExterno
-    template_name = 'delete_sitio_externo.html'
+    template_name = 'sitio_externo/delete_sitio_externo.html'
 
     def dispatch(self, request, *args, **kwargs):
 
