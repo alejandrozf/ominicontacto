@@ -38,9 +38,9 @@
 # Database
 postgres_database=omnileads
 postgres_user=omnileads
-postgres_password=admin123
+postgres_password=my_very_strong_pass
 # Admin web
-admin_pass=098098ZZZ
+admin_pass=my_very_strong_pass
 # AMI for wombat dialer
 ami_user=omnileadsami
 ami_password=5_MeO_DMT
@@ -48,7 +48,7 @@ ami_password=5_MeO_DMT
 dialer_user=demoadmin
 dialer_password=demo
 # MySQL (ONLY CHANGE THIS PASSWORD IN FIRST INSTALLATION)
-mysql_root_password=098098ZZZ
+mysql_root_password=my_very_strong_pass
 # AMI for supervision
 sup_ami_user=omnisup
 sup_ami_password=Sup3rst1c10n
