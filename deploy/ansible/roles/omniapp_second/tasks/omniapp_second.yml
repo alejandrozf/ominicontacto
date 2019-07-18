@@ -51,8 +51,8 @@
   when: cluster != 0
   tags: changenetwork
 
-- name: Get register server certificate
-  get_url: url={{ registrar_server }} dest={{ install_prefix }} validate_certs=False
+- name: Copy register server certificate in default location
+  copy: src=/var/tmp/ansible/cert dest={{ install_prefix }} owner={{ usuario }} group={{ usuario }}
   tags: postinstall
 
 # Se crea el archivo .ini de uwsgi. Para mas info revisar documentacion de uwsgi
