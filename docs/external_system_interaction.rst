@@ -34,9 +34,11 @@ Para poder identificar a una Campaña con un identificador externo a la hora de 
 Con estos valores configurados ya se pueden identificar agentes, campañas y contactos con sus correspondientes en el sistema externo. Para asistir en la configuración de identificadores externos se mostrarán notificaciones en caso de que se detecten situaciones que posiblemente puedan llegar a indicar una configuración errónea.
 
 Cuando se asigna un Sistema Externo a una Campaña estas notificaciones aparecerán en caso de que:
+
  - A la campaña se le asignen agentes que no tengan identificador externo en el Sistema Externo seleccionado.
  - A la campaña se le asigne una base de datos que ya este asignada a una campaña asociada a OTRO Sistema Externo.
  - A la campaña se le asigne un Sitio Externo que ya esté siendo utilizado en una campaña asociada a OTRO Sistema Externo.
+ 
  También aparecerán notificaciones en caso de que al editar un Sistema Externo falte asignar identificadores externos a Agentes utilizados en Campañas relacionadas con el Sistema Externo.
 
 

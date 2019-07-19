@@ -9,7 +9,7 @@ DJANGO_SETTINGS_MODULE=ominicontacto.settings.production
 {% else %}
 DJANGO_SETTINGS_MODULE=ominicontacto.settings.develop
 {% endif %}
-EPHEMERAL_USER_TTL=28800
+EPHEMERAL_USER_TTL={{ ECCTL }}
 EXTERNAL_PORT={{ external_port }}
 INSTALL_PREFIX={{ install_prefix}}
 KAMAILIO_IP={{ kamailio_ip }}
@@ -24,7 +24,7 @@ PGUSER={{ postgres_user }}
 PGPASS={{ postgres_password }}
 PYTHONPATH=$INSTALL_PREFIX
 REDIS_HOSTNAME=localhost
-SESSION_COOKIE_AGE=3600
+SESSION_COOKIE_AGE={{ SCA }}
 TZ={{ TZ }}
 WOMBAT_HOSTNAME={{ dialer_fqdn }}
 WOMBAT_USER={{ dialer_user }}

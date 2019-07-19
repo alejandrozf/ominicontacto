@@ -66,10 +66,6 @@
   template: src=templates/pip.conf dest={{ install_prefix }}.pip owner=root group=root mode=644
   tags: postinstall
 
-- name: Upgrade pip
-  pip: name=pip extra_args=--upgrade virtualenv={{ install_prefix }}virtualenv virtualenv_command=/usr/bin/virtualenv
-  tags: postinstall
-
 #----------------------------------------------------------------------
 # ics_app installed, do this
 #----------------------------------------------------------------------

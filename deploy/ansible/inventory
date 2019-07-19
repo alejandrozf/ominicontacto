@@ -56,6 +56,10 @@ sup_ami_password=Sup3rst1c10n
 #TZ=America/Argentina/Cordoba
 #External port is the port where OML web server will listen requests. By default is 443
 external_port=443
+# Session Cookie Age (SCA) is the time in seconds that will last the https session when inactivity is detected in the session (by default is 1 hour)
+SCA=3600
+# Ephemeral Credentials TTL (ECTTL) is the time in seconds that will last the SIP credentials used to authenticate a SIP user in the telephony system (by default 8 hours)
+ECCTL=28800
 # Change this value if the recordings are not converted to mp3
 formato_conversion=mp3
 #Change this value if you want to change the language of schedule calification
