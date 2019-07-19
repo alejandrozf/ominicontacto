@@ -1,0 +1,200 @@
+version: '3.7'
+services:
+  asterisk:
+    entrypoint:
+      - /home/run_asterisk.sh
+    container_name: oml-asterisk-prodenv
+    depends_on:
+      - postgresql
+    dns: 8.8.8.8
+    environment:
+      - ASTERISK_LOCATION=${ASTERISK_LOCATION}
+      - PATH=${PATH}
+      - PGPASSWORD=${PGPASSWORD}
+      - PGHOST=${PGHOST}
+      - PGUSER=${PGUSER}
+      - TZ=${TZ}
+    image: freetechsolutions/asterisk:${RELEASE}
+    networks:
+      - prod_net
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - ./recordings:/var/spool/asterisk/monitor/
+      - ./sounds:/var/lib/asterisk/sounds/oml/
+      - ssh_keys:/var/tmp/
+    working_dir: /etc/asterisk
+
+  dialer:
+    container_name: oml-dialer-prodenv
+    depends_on:
+      - mariadb
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+      - MYSQL_PWD=${MYSQL_ROOT_PASS}
+    image: freetechsolutions/dialer:${DIALER_VERSION}
+    networks:
+      prod_net:
+        ipv4_address: ${DIALER_IP}
+    ports:
+      - ${WD_EXT_PORT}:8080/tcp
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+
+  kamailio:
+    container_name: oml-kamailio-prodenv
+    depends_on:
+      - redis
+      - asterisk
+    dns: 8.8.8.8
+    environment:
+      - PATH=${PATH}
+      - TZ=${TZ}
+    image: freetechsolutions/kamailio:${RELEASE}
+    networks:
+      prod_net:
+        ipv4_address: ${KAMAILIO_IP}
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+
+  mariadb:
+    container_name: oml-mariadb-prodenv
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+      - MARIADB_ROOT_PASSWORD=${MYSQL_ROOT_PASS}
+      - MARIADB_DATABASE=${WOMBAT_DB}
+      - MARIADB_USER=${WOMBAT_DB_USER}
+      - MARIADB_PASSWORD=${WOMBAT_DB_PASS}
+    image: bitnami/mariadb:latest
+    networks:
+      - prod_net
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - ./mariadb_data:/bitnami
+
+  nginx:
+    container_name: oml-nginx-prodenv
+    dns: 8.8.8.8
+    environment:
+      - PATH=${PATH}
+      - TZ=${TZ}
+    image: freetechsolutions/nginx:${RELEASE}
+    networks:
+      - prod_net
+    privileged: true
+    ports:
+     - ${NGINX_EXT_PORT}:443/tcp
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - ./recordings:/var/spool/asterisk/monitor
+
+  omniapp:
+    command:
+      - /opt/omnileads/run/run_omniapp.sh
+    container_name: oml-omniapp-prodenv
+    dns: 8.8.8.8
+    environment:
+      - DJANGO_ADMIN_PASS=${DJANGO_PASS}
+      - AMI_USER=${AMI_USER}
+      - AMI_PASSWORD=${AMI_PASSWORD}
+      - ASTERISK_HOSTNAME=${ASTERISK_HOSTNAME}
+      - ASTERISK_LOCATION=${ASTERISK_LOCATION}
+      - CALIFICACION_REAGENDA=${CALIFICACION_REAGENDA}
+      - DIALER_IP=${DIALER_IP}
+      - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
+      - NGINX_HOSTNAME=${DOCKER_HOSTNAME}
+      - EPHEMERAL_USER_TTL=${ECTTL}
+      - EXTERNAL_PORT=${NGINX_EXT_PORT}
+      - INSTALL_PREFIX=${INSTALL_PREFIX}
+      - KAMAILIO_IP=${KAMAILIO_IP}
+      - KAMAILIO_HOSTNAME=${KAMAILIO_HOSTNAME}
+      - KAMAILIO_LOCATION=${KAMAILIO_LOCATION}
+      - OMNILEADS_IP=${OMNILEADS_IP}
+      - OMNILEADS_HOSTNAME=${OMNILEADS_HOSTNAME}
+      - PATH=${PATH}
+      - PGHOST=${PGHOST}
+      - PGDATABASE=${PGDATABASE}
+      - PGUSER=${PGUSER}
+      - PGPASSWORD=${PGPASSWORD}
+      - PYTHONPATH=${PYTHONPATH}
+      - REDIS_HOSTNAME=${REDIS_HOSTNAME}
+      - RTPENGINE_HOSTNAME=${RTPENGINE_HOSTNAME}
+      - SESSION_COOKIE_AGE=${SCA}
+      - TZ=${TZ}
+      - WOMBAT_HOSTNAME=${WOMBAT_HOSTNAME}
+      - WOMBAT_USER=${WOMBAT_USER}
+      - WOMBAT_PASSWORD=${WOMBAT_PASSWORD}
+    image: freetechsolutions/omniapp:${RELEASE}
+    networks:
+      prod_net:
+        ipv4_address: ${OMNILEADS_IP}
+    privileged: true
+    restart: on-failure
+    stdin_open: true
+    stop_grace_period: 1m30s
+    tty: true
+    user: omnileads
+    volumes:
+      - ./recordings:/opt/omnileads/grabaciones
+      - ssh_keys:/opt/omnileads/.ssh/
+    working_dir: /opt/omnileads/ominicontacto
+
+  postgresql:
+    container_name: oml-postgresql-prodenv
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+      - POSTGRES_USER=${PGUSER}
+      - POSTGRES_PASSWORD=${PGPASSWORD}
+      - POSTGRES_DB=${PGDATABASE}
+    image: freetechsolutions/postgresql:${POSTGRES_VERSION}
+    networks:
+      - prod_net
+    ports:
+     - ${PG_EXT_PORT}:5432/tcp
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - ./postgresql_data:/var/lib/postgresql/data
+
+  redis:
+    container_name: oml-redis-prodenv
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+    image: redis:5-alpine
+    networks:
+      - prod_net
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+
+  rtpengine:
+    container_name: oml-rtpengine-prodenv
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+    image: freetechsolutions/rtpengine:${RTPENGINE_VERSION}
+    networks:
+      - prod_net
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+
+networks:
+  prod_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: ${SUBNET}
+volumes:
+  ssh_keys:

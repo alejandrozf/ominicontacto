@@ -9,7 +9,7 @@ customer: prodenv
 
 asterisk_version: "{{ version }}"
 kamailio_version: "{{ version }}"
-root_password: toor123
+root_password: Sup3rS3cr3tP4ssw0rd
 
 # Networking settings
 prod_subnet: 192.168.15.0/24

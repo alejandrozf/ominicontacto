@@ -25,11 +25,11 @@ SHELL=/bin/bash
 EOF
   fi
   $COMMAND migrate --noinput
-  $COMMAND createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com || true
+  $COMMAND createsuperuser --noinput --username=admin --email=admin@example.com || true
   $COMMAND shell << EOF
   from ominicontacto_app.models import User
-  u = User.objects.get(username='{{ admin_user }}')
-  u.set_password('{{ admin_pass }}')
+  u = User.objects.get(username='admin')
+  u.set_password('${DJANGO_ADMIN_PASS}')
   u.save()
   exit()
 EOF
