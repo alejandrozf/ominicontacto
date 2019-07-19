@@ -59,18 +59,3 @@
 - name: Enable omnileads-devenv service
   systemd: name=omnileads-devenv enabled=yes daemon_reload=yes
   when: devenv == 1
-
-- name: Creation of {{ customer }} folder
-  file: "dest={{ deploy_location }} state=directory owner={{ docker_user }} group={{ docker_user }} mode=0755 recurse=yes"
-  when: prodenv == 1
-
-- name: Create {{ customer }} deploy files
-  template: src=roles/{{ item.src }} mode=644 dest={{ item.dest }} owner={{ item. user }} group={{ item.user }}
-  with_items:
-    - { src: "docker/files/prodenv/prodenv_stack.yml", dest: "{{ deploy_location }}/prodenv_stack.yml", user: "{{ docker_user }}" }
-    - { src: "docker/files/prodenv/omnileads-prodenv.service", dest: "/etc/systemd/system/omnileads-{{ customer}}.service", user: root }
-  when: prodenv == 1
-
-- name: Enable omnileads-{{ customer }} service
-  systemd: name=omnileads-{{ customer }} enabled=yes daemon_reload=yes
-  when: prodenv == 1
