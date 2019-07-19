@@ -37,8 +37,7 @@ OML admin
 - The admin view now shows current release on "About" section
 - A section to register an OML installation was added
 - A section to allow user to send feedback about OML was added
-- Agent interface information (on view that adds agents to campaign) was modified in
-order to make it more clear to users
+- Agent interface information (on view that adds agents to campaign) was modified in order to make it more clear to users
 - Better colors were added for inbound campaigns reports
 - Fav icon was added
 - Validations on campaign forms creation were added
@@ -51,6 +50,7 @@ OML agent view
 
 Asterisk dialplan
 ------------------------
+- Changed structure of dialplan making it more intuitive
 - Fixed sintax error on DB insertion
 - Fixed bug on expired call on failover
 - Fixed bug that keeps agents on BUSY state when she doesn't attend an inbound or transfer call

@@ -83,18 +83,17 @@ Modificar y descomentar la cadena 'hostname' por el que hemos configurado a nues
 
 *Figure 4: inventory file network params section*
 
-Además dentro del mismo archivo, unas líneas debajo encontraremos la sección *[everyyone:vars]*, en la cual se pueden alterar variables y contraseñas
-que vienen por defecto en el sistema.
+Además dentro del mismo archivo, unas líneas debajo encontraremos la sección *[everyyone:vars]*, en la cual se pueden alterar variables y contraseñas que vienen por defecto en el sistema. Introducir el parámetro "time zone" adecuado para su instanacia. Es **Importante** que realice este paso o la instalación no se va a poder realizar.
 
 .. image:: images/install_inventory_passwords.png
 
 *Figure 5: Passwords and parameters of services*
 
-- Introducir el parámetro "time zone" adecuado para su instanacia. Es **Importante** que realice este paso o la instalación no se va a poder realizar.
+En caso de haber olvidado ingresar la instancia a instalar el script mostrará este mensaje
 
-.. image:: images/install_inventory_timezone.png
+.. image:: images/install_inventory_nohosts.png
 
-*Figure 6: inevntory - Time Zone parameter*
+*Figure 6: deploy - No hosts in inventory*
 
 Es importante aclarar que cada vez que se corre el script *./deploy.sh* ya sea para instalar, re-instalar, actualizar, modificar la dirección IP de OML, etc., el archivo de inventory se vuelve a "cero". No obstante se genera una copia del archivo **(my_inventory)**, de manera tal que se cuente con los parámetros del sistema utilizados en la última ejecución del script. La copia en cuestión se ubica en el path donde ha sido clonado el repositorio de OML y bajo el nombre de "my_inventory" como lo expone la figura 6.
 
@@ -121,15 +120,21 @@ El tiempo de instalación dependerá mayormente de la velocidad de conexión a i
 
 *Figure 8: install running*
 
-Si se olvidó incluir algún host en el archivo de inventario saldrá este mensaje:
-
-.. image:: images/install_no_hosts_matched.png
-
 Si la ejecución de la instalación finaliza exitosamente, se despliega una vista como la de la figura 8.
 
 .. image:: images/install_ok.png
 
 *Figure 9: OMniLeads installation ended succesfuly*
+
+.. important::
+
+  **Para Debian:** En caso de que ocurra este error durante la ejecución del script:
+
+  *"ERROR! Unexpected Exception, this is probably a bug: (cryptography 1.7.1 (/usr/lib/python2.7/
+  dist-packages), Requirement.parse('cryptography>=2.5'), set(['paramiko']))"*
+
+  Verificar que no exista el paquete python-cryptography, en caso de existir, desinstalarlo. Esto es debido a un bug conocido durante la instalación de Ansible: https://github.com/ansible/ansible/issues/29084
+
 
 Primer acceso a OMniLeads:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -76,7 +76,7 @@
   become_method: sudo
 
 # Se hace la instalacion de asterisk
-- name: Make and make install of Asterisk
+- name: Make menuselect opts and make install of Asterisk
   shell: "{{ item }} chdir=/usr/src/asterisk-{{ asterisk_version }}"
   with_items:
     - make menuselect.makeopts

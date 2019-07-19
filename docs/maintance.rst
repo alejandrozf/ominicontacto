@@ -99,10 +99,16 @@ Back & Restore
 **************
 OMniLeads dispone de un script para llevar a cabo las tareas de backup/restore.
 
+.. important::
+
+  En caso de hacer el restore en una nueva máquina, es necesario que dicha máquina:
+  
+  * Tenga OMniLeads instalado en la misma version que la maquina productiva
+  * Tenga la misma IP y el mismo hostname de la maquina productiva
+
 Para realizar un backup:
 
-Debemos acceder por ssh al host donde tenemos corriendo OMniLeads.
-Una vez dentro del host se ejecutan los siguiente comandos.
+Debemos acceder por ssh al host donde tenemos corriendo OMniLeads. Una vez dentro del host se ejecutan los siguiente comandos.
 
 ::
 
@@ -115,7 +121,6 @@ La ejecución del script arroja una salida similar a la de la figura 11.
 .. image:: images/maintance_backup_1.png
 
 *Figure 11: backup*
-
 
 Como se puede observar, nos indica cómo realizar el restore de dicho backup.
 
@@ -157,8 +162,22 @@ Una vez finalizado el restore, ejecutar el siguiente comando para regenerar los 
 Actualizaciones
 ***************
 
+.. important::
+
+  Para realizar el upgrade de la plataforma es **IMPRESCINDIBLE** contar con las contraseñas de *postgresql*, *mysql* y *django admin* que se usaron durante la instalación. Dichas contraseñas las podrá ver en el archivo *my_inventory*, y tendrá que asignarlas nuevamente en el archivo *inventory*. Si no se utilizan las mismas contraseñas que se usaron para la instalación el upgrade puede fallar
+
 OMniLeads es forjado bajo un paradigma de releases continuos, lo cual implica un flujo de actualizaciones constantes.
 Por ello es muy importante llevar a cabo de manera limpia las actualizaciones.
+
+El equipo de OMniLeads ha realizado el testeo de upgrades de la plataforma en los siguientes escenarios. Se recomienda acoplarse a estos escenarios.
+
+===================  =============================
+Linux Distro         Upgrade soportado y testeado
+===================  =============================
+CentOS 7.6            Desde 1.1.1 a 1.3.0
+Debian 9.3            Desde 1.2.2 a 1.3.0
+Ubuntu Server 18.04   No soportado
+===================  =============================
 
 A continuación se exponen los pasos a seguir para llevar a cabo una nueva actualización de la plataforma. Esta tarea también se realiza con el script "deploy.sh".
 
@@ -178,21 +197,12 @@ Posicionarse sobre el directorio donde reside el script “deploy.sh”
 Asumiendo que estamos trabajando sobre los release estables (master)
 Se debe ejecutar un "git pull origin master" para traernos las actualizaciones del repositorio.
 
-.. important::
-
-  Cuando se instala el sistema, se guarda una copia del archivo de inventario en la ubicación descrita al finalizar el script, el mensaje indica:
-
-  **Remember that you have a copy of your inventory file in /root/my_inventory with the variables you used for your OML installation**
-
-  Utilizar este archivo de inventario para realizar la actualización del sistema. Es importante debido a que este archivo guarda las contraseñas que se usaron para la instalación.
-
 Observar que el parámetro *hostname* y *dirección IP* tiene que coincidir respecto a lo que tenga cargado el host donde corre OMniLeads.
 
 ::
 
  [omnileads-aio]
  oml-dev.example.com ansible_ssh_connection=local ansible_user=root ansible_host=192.168.95.155
-
 
 ::
 
@@ -203,7 +213,7 @@ descargadas con el "git pull origin master" sobre nuestra instancia de OMniLeads
 
 ::
 
- ./deploy.sh -u -a
+ ./deploy.sh -u
 
 Si todo fluye correctamente, al finalizar la ejecución de la tarea veremos una pantalla como muestra la figura 13.
 
@@ -222,24 +232,22 @@ Se debe acceder al repositorio clonado en nuestra maquina workstation, para desd
  git pull origin master
  cd ominicontacto/deploy/ansible
 
-A continuación y como en cada ejecución del script "deploy.sh", se debe repasar el archivo de inventory, velando por la coincidencia del
-parámetro hostname y dirección IP respecto al host donde corre OMniLeads y vamos a actualizar.
+A continuación y como en cada ejecución del script "deploy.sh", se debe repasar el archivo de inventory, velando por la coincidencia del parámetro hostname y dirección IP respecto al host donde corre OMniLeads y vamos a actualizar.
 
 ::
 
  [omnileads-aio]
  oml-dev.example.com ansible_ssh_port=22 ansible_user=root ansible_host=10.10.1.100
 
+.. note::
 
-Nota: se debe tener en cuenta que para instalación remota, se debe utilizar la línea con el parámetro "ansible_ssh_port=22" (donde 22 es el puerto por defecto, pero es normal
-tambien que se utilice otro puerto) dentro de la sección [omnileads-aio]
+  Se debe tener en cuenta que para instalación remota, se debe utilizar la línea con el parámetro "ansible_ssh_port=22" (donde 22 es el puerto por defecto, pero es normal tambien que se utilice otro puerto) dentro de la sección [omnileads-aio]
 
-Se ejecuta el script con el parámetro -u (update). Esta ejecución tomará unos minutos e implica el aplicar todas las actualizaciones
-descargadas con el "git pull origin master" sobre nuestra instancia de OMniLeads.
+  Se ejecuta el script con el parámetro -u (update). Esta ejecución tomará unos minutos e implica el aplicar todas las actualizaciones descargadas con el "git pull origin master" sobre nuestra instancia de OMniLeads.
 
 ::
 
-	./deploy.sh -u -a
+	./deploy.sh -u
 
 
 Finalmente, la plataforma queda actualizada a la última versión estable "master"

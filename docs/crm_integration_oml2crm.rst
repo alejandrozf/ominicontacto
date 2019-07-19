@@ -94,8 +94,7 @@ Dichos parámetros disponibles se agrupan en cuatro familias:
      * **id_contacto**: es el id interno del contacto en la campaña.
      * **rec_filename**: el nombre del archivo que contiene la grabación de la llamada conectada al agente.
 
-* **Dato de base de contactos**, serian parámetros disponibles a partir de las columnas de la base de contactos de campaña actual.
-Entonces quiere decir que podemos citar a cualquier columna de la base como parámetro a enviar en una llamada al CRM.
+* **Dato de base de contactos**, serian parámetros disponibles a partir de las columnas de la base de contactos de campaña actual. Entonces quiere decir que podemos citar a cualquier columna de la base como parámetro a enviar en una llamada al CRM.
 
 * **Parámetro Fijo**, se puede fijar un parámetro a enviar en cada llamada.
 

@@ -296,8 +296,7 @@ Este POST enviado hacia el sistema de gestión CRM tiene el siguiente aspecto
 
 .. image:: images/api_customerid_post.png
 
-Como podemos observar el "User-Agent" debe llegar como "OMniLeads" y en el cuerpo del Post el número de identificación ingresado en la llamada
-se envía como "idContact".
+Como podemos observar el "User-Agent" debe llegar como "OMniLeads" y en el cuerpo del Post el número de identificación ingresado en la llamada se envía como "idContact".
 
 **Respuesta que debe generar el servicio web del sistema de gestión CRM**
 
@@ -306,11 +305,9 @@ El sistema tiene la posibilidad de generar tres tipos de respuestas:
 
 * **true**
 * **false**
-* **X,Y**: donde "X" es un número entero y corresponde con el tipo de destino hacia a donde enviar la llamada identificada e "Y" es el destino puntual
-para ese tipo de destino. Por ejemplo (1,3) indica que la llamada será enrutada hacia una campaña entrante (1) y puntualmente hacia la campaña
-entrante cuyo id es (3).
+* **X,Y**: donde "X" es un número entero y corresponde con el tipo de destino hacia a donde enviar la llamada identificada e "Y" es el destino puntual para ese tipo de destino. Por ejemplo (1,3) indica que la llamada será enrutada hacia una campaña entrante (1) y puntualmente hacia la campaña entrante cuyo id es (3). La clave asociada a la respuesta es "response"
 
-La clave asociada a la respuesta es "response". El formato de respuesta debe ser "JSON".
+El formato de respuesta debe ser "JSON".
 
 * Respuesta JSON
 
