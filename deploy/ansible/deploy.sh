@@ -236,7 +236,7 @@ AnsibleExec() {
 
 echo "Deleting temporal files created"
 rm -rf $TMP_ANSIBLE
-rm -rf $TMP
+rm -rf $TMP_OMINICONTACTO
 }
 case $arg1 in
   --upgrade|-u|--install|-i|--kamailio|-k|--asterisk|-a|--omniapp|-o|--omnivoip|--dialer|-di|--database|-da|--change-network|-cnet|--change-passwords|-cp)
