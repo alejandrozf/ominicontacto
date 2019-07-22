@@ -102,7 +102,7 @@ OMniLeads dispone de un script para llevar a cabo las tareas de backup/restore.
 .. important::
 
   En caso de hacer el restore en una nueva máquina, es necesario que dicha máquina:
-  
+
   * Tenga OMniLeads instalado en la misma version que la maquina productiva
   * Tenga la misma IP y el mismo hostname de la maquina productiva
 
@@ -255,6 +255,10 @@ Finalmente, la plataforma queda actualizada a la última versión estable "maste
 .. image:: images/maintance_updates_ok.png
 
 *Figure 15: updates from ansible remote OK*
+
+.. note::
+
+  Los nuevos releases suelen traer nuevo codigo JavaScript. El browser mantiene el código viejo en su cache por lo que se **recomienda** instalar en el browser un addon para borrar la cache. *Clear cache* para *Google Chrome*, por ejemplo
 
 Cambios de los parámetros de red (Hostname y/o Dirección IP)
 ************************************************************
