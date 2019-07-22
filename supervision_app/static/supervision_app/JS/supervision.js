@@ -85,6 +85,9 @@ function obtenerNodosAcciones(pk_agent, status) {
 
 
 function assignToColumns(data_sin_filtrar) {
+    if ( $.fn.DataTable.isDataTable('#tableAgentes') ) {
+        $('#tableAgentes').DataTable().destroy();
+    }
     var data = data_sin_filtrar.filter(function (val) {return val['status'] != 'OFFLINE'});
     var table = $('#tableAgentes').dataTable({
         bAutoWidth : false,
@@ -136,9 +139,6 @@ function assignToColumns(data_sin_filtrar) {
 }
 
 function refreshActiveAgentsTable() {
-    if ( $.fn.DataTable.isDataTable('#tableAgentes') ) {
-        $('#tableAgentes').DataTable().destroy();
-    }
     $.ajax({
         url: Urls.api_agentes_activos(),
         type: 'GET',
