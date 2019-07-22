@@ -29,7 +29,7 @@
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.growl.css' %}">
         <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/google-font.css' %}">
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
         <!-- Scripts -->
         <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
@@ -86,7 +86,7 @@
                         <tr>
                             <th>{{ field.label_tag }}</th>
                             <th>{{ field.errors }}</th>
-                            <td> {{ field }} 
+                            <td> {{ field }}
                             {% if contacto and field.name in campos_telefono %}
                                     <a class="btn btn-submit btn-outline-primary" href="javascript:;" onclick="makeClick2Call('{{ campana.id }}', '{{ campana.type }}', '{{ contacto.id }}', '{{ field.value }}', 'agendas');" name="click2call">{{ field.value }}</a>
                             {% endif %}

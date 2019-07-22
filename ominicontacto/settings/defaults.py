@@ -110,6 +110,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'ominicontacto_app.context_processors.global_settings'
             ],
         },
     },
@@ -396,3 +397,5 @@ LANGUAGES = (
 LANGUAGE_CODE = 'es'
 
 TOKEN_EXPIRED_AFTER_SECONDS = None
+
+ALLOW_FEEDBACK = False

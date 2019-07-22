@@ -31,7 +31,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <!-- Custom CSS -->
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
         <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/google-font.css' %}">
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-solid.css' %}">
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-regular.css' %}">
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fontawesome.css' %}">
@@ -46,7 +46,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </head>
     <body>
         <h1>
-            {% trans 'Identificar Contacto a llamar' %} 
+            {% trans 'Identificar Contacto a llamar' %}
         </h1>
         <h2>
             {% trans "Contactos Sugeridos" %}
@@ -100,7 +100,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </tbody>
         </table>
 
-        
+
         <div>
             <a href="{% url 'nuevo_contacto_campana_a_llamar' campana.pk telefono %}">
                 <button type="button" id="id_buscar_btn" class="btn btn-primary">
