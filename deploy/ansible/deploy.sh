@@ -1,10 +1,22 @@
 #!/bin/bash
 
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 #
 # Shell script para facilitar el deploy de la aplicación
-#
-# Autor: Andres Felipe Macias
-# Colaborador:  Federico Peker
 #
 # Que hace este shell script?
 # 1. Instala ansible
@@ -109,7 +121,7 @@ AnsibleInstall() {
     $PIP install 'ansible==2.5' --user
   fi
   echo "Detecting if docker-py is installed"
-  $PIP install 'docker-py==1.10.6' --user > /dev/null 2>&1 
+  $PIP install 'docker-py==1.10.6' --user > /dev/null 2>&1
   cd $current_directory
   sleep 2
   echo "Creating ansible temporal directory"
@@ -230,8 +242,10 @@ AnsibleExec() {
       cp $current_directory/inventory $my_inventory
       echo " Remember that you have a copy of your inventory file in $inventory_copy_location/my_inventory with the variables you used for your OML installation"
       echo ""
-      git checkout $current_directory/inventory
-      chown $SUDO_USER. $current_directory/inventory
+      if [ -z $IS_CICD ]; then
+          git checkout $current_directory/inventory
+          chown $SUDO_USER. $current_directory/inventory
+      fi
     else
       echo ""
       echo "###################################################################################"
@@ -250,14 +264,16 @@ case $arg1 in
       OSValidation
       TagCheck
       AnsibleInstall
-      ./keytransfer.sh
-      ResultadoKeyTransfer=`echo $?`
+      if [ -z $IS_CICD ]; then
+        ./keytransfer.sh
+        ResultadoKeyTransfer=`echo $?`
         if [ "$ResultadoKeyTransfer" != 0 ]; then
-          echo "It seems that you don't have generated keys in the server you are executing this s#cript"
-          echo "Try with ssh-keygen or check the ssh port configured in server"
-          rm -rf /var/tmp/servers_installed
-          exit 1
+            echo "It seems that you don't have generated keys in the server you are executing this s#cript"
+            echo "Try with ssh-keygen or check the ssh port configured in server"
+            rm -rf /var/tmp/servers_installed
+            exit 1
         fi
+      fi
       CodeCopy
       VersionGeneration
       AnsibleExec
