@@ -34,8 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
            var $show_node = $(this);
            var $show_state = $show_node.attr('data');
            var campana_pk = $(this).find('input').attr('value');
-           var url = '{% url 'campana_mostrar_ocultar' '00000' %}';
-           $.post('/campana/mostrar_ocultar/' + campana_pk + '/')
+           $.post(Urls.campana_mostrar_ocultar(campana_pk))
             .done(function() {
               console.log('Done');
               if ($show_state == 'ocultar') {
@@ -58,7 +57,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
      }
 
      function mostrar_campanas_preview_ocultas() {
-       $.get('{% url 'campana_preview_mostrar_ocultas' %}',
+       $.get(Urls.campana_preview_mostrar_ocultas(),
              function (data) {
                if (data.result == 'desconectado'){
                  //mostramos modal informativo de que el usuario está desconectado
@@ -74,8 +73,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
      function mostrar_detalle_campana(pk_campana) {
        var $reporteModal = $('#reporteModal');
        var $modalContent = $reporteModal.find(".modal-body");
-       var url = "{% url 'campana_preview_detalle_express' '0000000' %}";
-       $.get('/campana_preview/' + pk_campana + '/detalle_express/',
+       $.get(Urls.campana_preview_detalle_express(pk_campana),
              function (data) {
                $modalContent.html(data);
                $reporteModal.modal('show');

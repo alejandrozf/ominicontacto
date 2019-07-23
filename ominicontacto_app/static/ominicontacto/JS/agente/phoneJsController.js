@@ -658,7 +658,7 @@ class PhoneJSController {
     getQualificationForm(call_data) {
         // 'calificar_llamada'
         var call_data_json = JSON.stringify(call_data);
-        var url = '/agente/calificar_llamada/' + encodeURIComponent(call_data_json);
+        var url = Urls.calificar_llamada(encodeURIComponent(call_data_json));
         $("#dataView").attr('src', url);
     }
 
@@ -667,7 +667,7 @@ class PhoneJSController {
         var telephone = tel.replace(/\D+/g, '');
         telephone = telephone == '' ? 0 : telephone;
         // {% url 'identificar_contacto_a_llamar' %}
-        var url = '/campana/' + id_camp + '/identificar_contacto_a_llamar/' + telephone +'/'
+        var url = Urls.identificar_contacto_a_llamar(id_camp, telephone);
         $("#dataView").attr('src', url);
     }
 

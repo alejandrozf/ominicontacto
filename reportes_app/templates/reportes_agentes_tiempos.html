@@ -91,7 +91,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
      $.ajax(
        {
          type:"POST",
-         url: "{% url 'reportes_agente_por_fecha' %}",
+         url: Urls.reportes_agente_por_fecha(),
          data:{
            'id_agente': id_agente,
            'fecha_desde': fecha_desde,
@@ -127,7 +127,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
      $.ajax(
        {
          type:"POST",
-         url: "{% url 'reportes_pausa_por_fecha' %}",
+         url: Urls.reportes_pausa_por_fecha(),
          data:{
            'id_agente': id_agente,
            'fecha_desde': fecha_desde,

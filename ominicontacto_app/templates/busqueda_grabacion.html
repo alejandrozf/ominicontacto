@@ -185,7 +185,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
          var button = $(event.relatedTarget)
          var uid_val = button.data('uid');
          var modal = $(this);
-         var URL = "/grabacion/descripcion/" + uid_val + "/";
+         var URL = Urls.grabacion_descripcion(uid_val);
          $.get( URL, function( data ) {
            $('#descripcionModalLabel').text(data.result);
            $('#descripcion-text').text(data.descripcion);

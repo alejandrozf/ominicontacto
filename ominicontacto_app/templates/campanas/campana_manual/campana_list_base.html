@@ -40,7 +40,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
      function mostrar_campanas_ocultas() {
 
-       $.get('{% url  'campana_manual_mostrar_ocultas' %}',
+       $.get(Urls.campana_manual_mostrar_ocultas(),
              function (data) {
                $('#t_body_borradas').html(data);
 
