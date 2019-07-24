@@ -55,6 +55,7 @@ NO_CONECTADO_DESCRIPCION = {
     'EXITWITHTIMEOUT': _('Expirada'),
     'CONGESTION': _('Canal congestionado'),
     'NONDIALPLAN': _('Problema de enrutamiento'),
+    'ABANDONWEL': _('Abandonadas durante anuncio'),
 }
 
 

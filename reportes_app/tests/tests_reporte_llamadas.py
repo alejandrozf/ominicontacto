@@ -183,12 +183,13 @@ class ReporteDeLlamadasVacioTests(BaseReporteDeLlamadasTests):
 
         self.assertIn(self.entrante.id, tipos[str(Campana.TYPE_ENTRANTE)])
         datos_campana = tipos[str(Campana.TYPE_ENTRANTE)][self.entrante.id]
-        self.assertEqual(len(datos_campana), 12)
+        self.assertEqual(len(datos_campana), 13)
         self.assertEqual(datos_campana['nombre'], self.entrante.nombre)
         self.assertEqual(datos_campana['t_espera_conexion'], 0)
         self.assertEqual(datos_campana['atendidas'], 0)
         self.assertEqual(datos_campana['expiradas'], 0)
         self.assertEqual(datos_campana['abandonadas'], 0)
+        self.assertEqual(datos_campana['abandonadas_anuncio'], 0)
         self.assertEqual(datos_campana['t_abandono'], 0)
         self.assertEqual(datos_campana['recibidas'], 0)
         self.assertEqual(datos_campana['recibidas_transferencias'], 0)

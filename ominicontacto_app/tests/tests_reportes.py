@@ -77,6 +77,7 @@ class TriggerQueuelogTest(OMLBaseTest):
             'RINGNOANSWER',
             'CONGESTION',
             'NONDIALPLAN',
+            'ABANDONWEL',
         ]
         evento = choice(EVENTOS_LLAMADAS)
         self._aplicar_sql_query(queuename, event=evento)

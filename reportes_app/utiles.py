@@ -78,7 +78,7 @@ ESTILO_VERDE_GRIS_NEGRO = Style(
     opacity='1',
     opacity_hover='.6',
     transition='400ms ease-in',
-    colors=('#5cb85c', '#a2a7a1', '#161201')
+    colors=('#5cb85c', '#a2a7a1', '#161201', '#aeffbf')
 )
 
 ESTILO_VERDE_ROJO = Style(
