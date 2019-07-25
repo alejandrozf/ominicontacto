@@ -31,7 +31,7 @@ from ominicontacto_app.services.campana_service import CampanaService
 
 class CampanaDialerDetailView(DetailView):
     """Detalle de una campana dialer"""
-    template_name = 'campana_dialer/detalle.html'
+    template_name = 'campanas/campana_dialer/detalle.html'
     model = Campana
     context_object_name = 'campana'
 
@@ -88,4 +88,4 @@ def detalle_campana_dialer_view(request):
             'error_consulta': _(u"No se pudo consultar el estado actual de la campaña. "
                                 "Consulte con su administrador.")
         }
-    return render(request, 'campana_dialer/detalle_campana.html', data)
+    return render(request, 'campanas/campana_dialer/detalle_campana.html', data)

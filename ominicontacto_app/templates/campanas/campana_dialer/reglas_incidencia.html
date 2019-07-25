@@ -1,0 +1,122 @@
+<!--
+Copyright (C) 2018 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% extends "campanas/wizard_base.html" %}
+{% load i18n %}
+{% load static %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/opcion-calificacion.css' %}"></link>
+{% endblock %}
+
+{% block head_js %}
+    <script>
+     $(document).ready(function() {
+       $('#id_hora_desde').datetimepicker({
+         format: 'HH:mm',
+       });
+       $('#id_hora_hasta').datetimepicker({
+         format: 'HH:mm',
+       });
+     });
+    </script>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
+    <script type="text/javascript">
+     $('.linkFormset').formset({
+       addText: AGREGAR_REGLA,
+       deleteText: REMOVER_CAMPO,
+       prefix: '{{ wizard.form.prefix }}',
+       addCssClass: 'addFormset btn btn-outline-primary',
+       deleteCssClass: 'deleteFormset btn btn-outline-danger',
+     });
+    </script>
+{% endblock %}
+
+{% block nav %}
+    <h1>{% trans 'Campaña Dialer: Reglas incidencia'  %} </h1>
+
+    <ul class="nav nav-indicators">
+        <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
+        <li class="disabled"><a>{% trans 'Cola' %}</a></li>
+        <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
+        {% if interaccion_crm %}
+            <li class="disabled"><a>{% trans 'Interacción con Sitio Externo' %}</a></li>
+        {% endif %}
+        <li class="disabled"><a>{% trans 'Actuacion' %}</a></li>
+        <li class="active"><a>{% trans 'Reglas Incidencias' %}</a></li>
+        {% if not es_template %}
+            {% if create %}
+                <li class="disabled"><a>{% trans 'Dar permiso a supervisores' %}</a></li>
+                <li class="disabled"><a>{% trans 'Adicionar agentes' %}</a></li>
+            {% endif %}
+            <li class="disabled"><a>{% trans 'Sincronizar' %}</a></li>
+        {% endif %}
+    </ul>
+{% endblock %}
+
+{% block formset_render %}
+    <table class="table campana-reglas">
+        <thead>
+            <tr class="fts-table-bg">
+                <th>{% trans 'Estado' %}</th>
+                {% if form.instance.pk %}
+                    <th>{% trans 'Con estado personalizado' %}</th>
+                {% endif %}
+                <th>{% trans 'Reintentar más tarde(En segundos)' %}</th>
+                {% if form.instance.pk %}
+                    <th>{% trans 'Modo de reintento' %} </th>
+                {% endif %}
+                <th>{% trans 'Intento max.(En cantidades)' %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if wizard.form.non_form_errors %}
+                {% for error in wizard.form.non_form_errors %}
+                    <div class="alert alert-warning">{{ error|escape }}</div>
+                {% endfor %}
+            {% endif %}
+            {% for form in wizard.form.forms %}
+                {% if form.errors  %}
+                    <div class="alert alert-warning">{{ form.errors|escape }}</div>
+                {% endif %}
+                <tr class="linkFormset">
+                    <td>{{ form.estado }}</td>
+                    {% if form.instance.pk %}
+                        <td>
+                            {% if form.estado_personalizado %}
+                                {{ form.estado_personalizado }}
+                            {% endif %}
+                        </td>
+                    {% endif %}
+                    <td data-toggle="tooltip" data-placement="top"
+                        title="{% trans 'En segundos' %}">{{ form.reintentar_tarde }}</td>
+                    {% if form.instance.pk %}
+                        <td>{{ form.get_en_modo_display}}</td>
+                    {% endif %}
+                    <td>{{ form.intento_max }}</td>
+                    <td class="td-remove"></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {{ wizard.form.management_form }}
+{% endblock %}

@@ -1,0 +1,42 @@
+<!--
+     Copyright (C) 2018 Freetech Solutions
+
+     This file is part of OMniLeads
+
+     This program is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program.  If not, see http://www.gnu.org/licenses/.
+
+   -->
+{% extends "campanas/adicionar_agentes_base.html" %}
+{% load i18n %}
+
+{% block nav %}
+    <h1>{% trans 'Campaña Entrante: Adicionar agentes' %}</h1>
+
+    <ul class="nav nav-indicators">
+        <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
+        <li class="disabled"><a>{% trans 'Datos básicos de la cola' %}</a></li>
+        <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
+        {% if interaccion_crm %}
+            <li class="disabled"><a>{% trans 'Interacción con Sitio Externo' %}</a></li>
+        {% endif %}
+        {% if not es_template %}
+            <li class="disabled"><a>{% trans 'Dar permiso a supervisores' %}</a></li>
+            <li class="active"><a>{% trans 'Adicionar agentes' %}</a></li>
+        {% endif %}
+    </ul>
+{% endblock %}
+
+{% block extra_content %}
+    {% include 'grupo_agentes.html' %}
+{% endblock %}

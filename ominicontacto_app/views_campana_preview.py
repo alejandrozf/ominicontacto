@@ -61,11 +61,11 @@ class CampanaPreviewMixin(CampanaWizardMixin):
              (ADICION_SUPERVISORES, CampanaSupervisorUpdateForm),
              (ADICION_AGENTES, QueueMemberFormset)]
 
-    TEMPLATES = {INICIAL: "campana_preview/campana_preview.html",
-                 OPCIONES_CALIFICACION: "campana_preview/opcion_calificacion.html",
-                 PARAMETROS_CRM: "campana_preview/parametros_crm_sitio_externo.html",
-                 ADICION_SUPERVISORES: "campana_preview/adicionar_supervisores.html",
-                 ADICION_AGENTES: "campana_preview/adicionar_agentes.html"}
+    TEMPLATES = {INICIAL: "campanas/campana_preview/campana_preview.html",
+                 OPCIONES_CALIFICACION: "campanas/campana_preview/opcion_calificacion.html",
+                 PARAMETROS_CRM: "campanas/campana_preview/parametros_crm_sitio_externo.html",
+                 ADICION_SUPERVISORES: "campanas/campana_preview/adicionar_supervisores.html",
+                 ADICION_AGENTES: "campanas/campana_preview/adicionar_agentes.html"}
 
     form_list = FORMS
 
@@ -110,9 +110,9 @@ class CampanaPreviewUpdateView(CampanaPreviewMixin, CampanaManualUpdateView):
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (PARAMETROS_CRM, ParametrosCrmFormSet)]
 
-    TEMPLATES = {INICIAL: "campana_preview/campana_preview.html",
-                 OPCIONES_CALIFICACION: "campana_preview/opcion_calificacion.html",
-                 PARAMETROS_CRM: "campana_preview/parametros_crm_sitio_externo.html"}
+    TEMPLATES = {INICIAL: "campanas/campana_preview/campana_preview.html",
+                 OPCIONES_CALIFICACION: "campanas/campana_preview/opcion_calificacion.html",
+                 PARAMETROS_CRM: "campanas/campana_preview/parametros_crm_sitio_externo.html"}
 
     form_list = FORMS
 
@@ -127,7 +127,7 @@ class CampanaPreviewTemplateListView(ListView):
     """
     Vista que muestra todos los templates de campañas entrantes activos
     """
-    template_name = "campana_preview/lista_template.html"
+    template_name = "campanas/campana_preview/lista_template.html"
     context_object_name = 'templates_activos_preview'
     model = Campana
 
@@ -169,7 +169,7 @@ class CampanaPreviewTemplateDetailView(DetailView):
     """
     Muestra el detalle de un template para crear una campaña preview
     """
-    template_name = "campana_preview/detalle_campana_template.html"
+    template_name = "campanas/campana_preview/detalle_campana_template.html"
     model = Campana
 
 
@@ -179,7 +179,7 @@ class CampanaPreviewTemplateDeleteView(CampanaTemplateDeleteMixin, DeleteView):
     objeto Campana Preview-->Template.
     """
     model = Campana
-    template_name = "campana_preview/delete_campana_template.html"
+    template_name = "campanas/campana_preview/delete_campana_template.html"
 
     def get_success_url(self):
         return reverse("campana_preview_template_list")
@@ -190,7 +190,7 @@ class CampanaPreviewDeleteView(CampanaManualDeleteView):
     Esta vista se encarga de la eliminación de una campana
     """
     model = Campana
-    template_name = 'campana_preview/delete_campana.html'
+    template_name = 'campanas/campana_preview/delete_campana.html'
 
     def get_success_url(self):
         return reverse('campana_preview_list')
@@ -200,7 +200,7 @@ class CampanaPreviewListView(CampanaManualListView):
     """
     Vista que lista las campañas preview
     """
-    template_name = 'campana_preview/campana_list.html'
+    template_name = 'campanas/campana_preview/campana_list.html'
 
     def _get_campanas(self):
         return Campana.objects.obtener_campanas_preview()
@@ -217,7 +217,7 @@ class CampanaPreviewBorradasListView(CampanaPreviewListView):
     Vista que lista las campañas preview pero de incluyendo las borradas ocultas
     """
 
-    template_name = 'campana_preview/campanas_borradas.html'
+    template_name = 'campanas/campana_preview/campanas_borradas.html'
 
     def get_context_data(self, **kwargs):
         context = super(CampanaPreviewBorradasListView, self).get_context_data(**kwargs)
@@ -255,7 +255,7 @@ class CampanaPreviewContactosAsignados(TemplateView):
     """
     Vista que muestra todos los contactos asignados a algun agente.
     """
-    template_name = "campana_preview/contactos_asignados.html"
+    template_name = "campanas/campana_preview/contactos_asignados.html"
 
     def dispatch(self, request, *args, **kwargs):
         # TODO: Permisos - Verificar que el supervisor tiene acceso a la campaña

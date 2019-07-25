@@ -43,7 +43,7 @@ class CampanaManualListView(ListView):
     Vista copiada
     """
 
-    template_name = 'campana_manual/campana_list.html'
+    template_name = 'campanas/campana_manual/campana_list.html'
     context_object_name = 'campanas'
     model = Campana
 
@@ -73,7 +73,7 @@ class CampanaManualDeleteView(CampanasDeleteMixin, DeleteView):
     Esta vista se encarga de la eliminación de una campana
     """
     model = Campana
-    template_name = 'campana_manual/delete_campana.html'
+    template_name = 'campanas/campana_manual/delete_campana.html'
 
     def delete(self, request, *args, **kwargs):
         success_url = self.get_success_url()
@@ -128,7 +128,7 @@ class CampanaManualBorradasListView(CampanaManualListView):
     Vista que lista las campañas manual pero de incluyendo las borradas ocultas
     """
 
-    template_name = 'campana_manual/campanas_borradas.html'
+    template_name = 'campanas/campana_manual/campanas_borradas.html'
 
     def get_context_data(self, **kwargs):
         context = super(CampanaManualBorradasListView, self).get_context_data(**kwargs)

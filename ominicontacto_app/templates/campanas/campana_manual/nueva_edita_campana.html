@@ -17,24 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
-{% extends "campanas/wizard_base.html" %}
+{% extends "campanas/campana_manual/campana_manual_base.html" %}
 {% load i18n %}
 {% load static %}
-
-{% block nav %}
-    <h1>{{ titulo }}</h1>
-
-    <ul class="nav nav-indicators">
-    	{% if wizard.steps.current == '0' %}
-	        <li class="active"><a>{% trans 'Datos Básicos' %}</a></li>
-	        <li class="disabled"><a>{% trans 'Perfil' %}</a></li>
-        {% else %}
-	        <li class="disabled"><a>{% trans 'Datos Básicos' %}</a></li>
-	        <li class="active"><a>{% trans 'Perfil' %}</a></li>
-    	{% endif %}
-    </ul>
-{% endblock %}
-
-{% block form_render %}
-	{% include "base_form_fields.html" with form=form %}
+{% block title_campana %}
+    <h1>{% trans 'Campaña Manual: Datos Básicos' %}</h1>
 {% endblock %}

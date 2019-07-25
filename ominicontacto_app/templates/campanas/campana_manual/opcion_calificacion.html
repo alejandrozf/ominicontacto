@@ -17,24 +17,21 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
-{% extends "campanas/wizard_base.html" %}
+{% extends "campanas/opcion_calificacion_base.html" %}
 {% load i18n %}
-{% load static %}
 
 {% block nav %}
-    <h1>{{ titulo }}</h1>
+    <h1>{% trans 'Campaña Manual: Opciones de calificación' %}</h1>
 
     <ul class="nav nav-indicators">
-    	{% if wizard.steps.current == '0' %}
-	        <li class="active"><a>{% trans 'Datos Básicos' %}</a></li>
-	        <li class="disabled"><a>{% trans 'Perfil' %}</a></li>
-        {% else %}
-	        <li class="disabled"><a>{% trans 'Datos Básicos' %}</a></li>
-	        <li class="active"><a>{% trans 'Perfil' %}</a></li>
-    	{% endif %}
+        <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
+        <li class="active"><a>{% trans 'Opciones de calificación' %}</a></li>
+        {% if not es_template and create %}
+            <li class="disabled"><a>{% trans 'Dar permiso a supervisores' %}</a></li>
+            <li class="disabled"><a>{% trans 'Adicionar agentes' %}</a></li>
+        {% endif %}
+        {% comment %}
+        <li class="disabled"><a>{% trans 'Interacción con Sitio Externo' %}</a></li>
+        {% endcomment %}
     </ul>
-{% endblock %}
-
-{% block form_render %}
-	{% include "base_form_fields.html" with form=form %}
 {% endblock %}

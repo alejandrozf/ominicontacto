@@ -304,7 +304,7 @@ class SupervisorProfileUpdateView(UpdateView):
 class SupervisorListView(ListView):
     """Vista lista los supervisores """
     model = SupervisorProfile
-    template_name = 'supervisor_profile_list.html'
+    template_name = 'usuarios_grupos/supervisor_profile_list.html'
 
     def get_queryset(self):
         """Returns Supervisor excluyendo los borrados"""
@@ -314,7 +314,7 @@ class SupervisorListView(ListView):
 class AgenteListView(ListView):
     """Vista para listar los agentes"""
     model = AgenteProfile
-    template_name = 'agente_profile_list.html'
+    template_name = 'usuarios_grupos/agente_profile_list.html'
 
     def get_context_data(self, **kwargs):
         context = super(AgenteListView, self).get_context_data(
