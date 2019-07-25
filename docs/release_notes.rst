@@ -1,7 +1,7 @@
 Release Notes
 *************
 
-*July 15, 2019*
+*July 25, 2019*
 
 Release 1.3.0 details
 =========================
@@ -65,3 +65,5 @@ Misc
 - A Restfull API with a few initial endpoint was added
 - A django command for update system components settings was added
 - Django settings were refactored to allow distinct configurations in an easy way
+- The web interface of the system now can run without internet.
+- Fixed bug that generates inconsistency on inbound campaings & callings reports, it didn't count client abandon calls on welcome message. A new event in Asterisk logs (ABANDONWEL) was introduced to solve this bug and all related reports now shows that information based on that event
