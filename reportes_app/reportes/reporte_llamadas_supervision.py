@@ -90,9 +90,11 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
         'atendidas': 0,
         'expiradas': 0,
         'abandonadas': 0,
+        'abandonadas_anuncio': 0,
         'gestiones': 0,
     }
-    EVENTOS_LLAMADA = ['ENTERQUEUE', 'ENTERQUEUE-TRANSFER', 'CONNECT', 'EXITWITHTIMEOUT', 'ABANDON']
+    EVENTOS_LLAMADA = ['ENTERQUEUE', 'ENTERQUEUE-TRANSFER', 'CONNECT', 'EXITWITHTIMEOUT', 'ABANDON',
+                       'ABANDONWEL']
 
     def _obtener_campanas(self, user_supervisor):
         campanas = Campana.objects.obtener_all_activas_finalizadas()
@@ -120,6 +122,9 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
             datos_campana['expiradas'] += 1
         elif log.event == 'ABANDON':
             datos_campana['abandonadas'] += 1
+        elif log.event == 'ABANDONWEL':
+            datos_campana['abandonadas_anuncio'] += 1
+            datos_campana['recibidas'] += 1
 
 
 class ReporteDeLLamadasSalientesDeSupervision(ReporteDeLlamadasDeSupervision):
