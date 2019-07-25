@@ -33,9 +33,7 @@ import traceback
 from django.conf import settings
 from django.utils.translation import ugettext as _
 
-from ominicontacto_app.utiles import (
-    elimina_espacios, remplace_espacio_por_guion
-)
+from ominicontacto_app.utiles import remplace_espacio_por_guion
 from ominicontacto_app.models import (
     AgenteProfile, SupervisorProfile, ClienteWebPhoneProfile, Campana
 )
@@ -236,8 +234,7 @@ class QueuesCreator(object):
 
         partes = []
         param_generales = {
-            'oml_queue_name': "{0}_{1}".format(campana.id,
-                                               elimina_espacios(campana.nombre)),
+            'oml_queue_name': "{0}_{1}".format(campana.id, campana.nombre),
             'oml_queue_type': campana.type,
             'oml_strategy': campana.queue_campana.strategy,
             'oml_timeout': campana.queue_campana.timeout,
@@ -281,8 +278,7 @@ class QueuesCreator(object):
             periodic_announce = ""
         partes = []
         param_generales = {
-            'oml_queue_name': "{0}_{1}".format(campana.id,
-                                               elimina_espacios(campana.nombre)),
+            'oml_queue_name': "{0}_{1}".format(campana.id, campana.nombre),
             'oml_queue_type': campana.type,
             'oml_strategy': campana.queue_campana.strategy,
             'oml_timeout': campana.queue_campana.timeout,

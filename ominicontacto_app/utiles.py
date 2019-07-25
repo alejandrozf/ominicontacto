@@ -82,15 +82,6 @@ def elimina_espacios_parentesis_guiones(cadena):
     return re.sub(r"\(?\)?\s?\-?", "", cadena)
 
 
-def elimina_espacios(cadena):
-    """
-    Elimina espacios de la cadena recibida por parametro
-    La cadena debe ser una instancia de unicode
-    """
-    assert isinstance(cadena, unicode), "'cadena' debe ser una instancia de unicode"
-    return re.sub(r"\s?", "", cadena)
-
-
 def remplace_espacio_por_guion(cadena):
     """
     Remplaza espacio por guion en cadaena recibida por parametro

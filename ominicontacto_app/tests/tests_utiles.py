@@ -31,7 +31,7 @@ from django.utils import timezone
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.utiles import (
     upload_to, crear_archivo_en_media_root, elimina_espacios_parentesis_guiones,
-    elimina_espacios, remplace_espacio_por_guion, elimina_coma, elimina_comillas,
+    remplace_espacio_por_guion, elimina_coma, elimina_comillas,
     convert_string_in_boolean, convert_fecha_datetime, convertir_ascii_string
 )
 import os
@@ -123,10 +123,6 @@ class UtilesTest(OMLBaseTest):
     def test_elimina_espacios_parentesis_guiones(self):
         cadena = elimina_espacios_parentesis_guiones(" asdfg32432 ñ(899) -781")
         self.assertEqual(cadena, "asdfg32432ñ899781")
-
-    def test_elimina_espacios(self):
-        cadena = elimina_espacios(" asdfg32432 ñ(899) -781")
-        self.assertEqual(cadena, "asdfg32432ñ(899)-781")
 
     def test_remplace_espacios_por_guien(self):
         cadena = remplace_espacio_por_guion(" asdfg32432 ñ(899)  781")

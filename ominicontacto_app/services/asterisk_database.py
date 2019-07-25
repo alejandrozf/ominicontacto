@@ -22,7 +22,7 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.utils.translation import ugettext as _
 
-from ominicontacto_app.utiles import elimina_espacios, convert_audio_asterisk_path_astdb
+from ominicontacto_app.utiles import convert_audio_asterisk_path_astdb
 from ominicontacto_app.models import Campana, AgenteProfile, Pausa
 from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
     AsteriskHttpAsteriskDBError
@@ -133,7 +133,7 @@ class CampanaFamily(AbstractFamily):
     def _create_dict(self, campana):
 
         dict_campana = {
-            'QNAME': "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre)),
+            'QNAME': "{0}_{1}".format(campana.id, campana.nombre),
             'TYPE': campana.type,
             'REC': campana.queue_campana.auto_grabacion,
             'AMD': campana.queue_campana.detectar_contestadores,
