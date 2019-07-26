@@ -60,8 +60,10 @@ external_port=443
 SCA=3600
 # Ephemeral Credentials TTL (ECTTL) is the time in seconds that will last the SIP credentials used to authenticate a SIP user in the telephony system (by default 8 hours)
 ECCTL=28800
-# Change this value if the recordings are not converted to mp3
-formato_conversion=mp3
+# MONITORFORMAT refers to the format that your recordings will be converted. Mp3 is the preferred format because the small size of file. If you want your
+# recordings in format "wav" (asterisk default recording format), change this variable to wav 
+# The conversion of recordings is scheduled to be done at 01:00 am everyday you can edit this changing crontab of omnileads user
+MONITORFORMAT=mp3
 #Change this value if you want to change the language of schedule calification
 schedule=Agenda
 
