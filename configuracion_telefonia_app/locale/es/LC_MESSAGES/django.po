@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-12 19:14+0000\n"
+"POT-Creation-Date: 2019-07-25 15:12-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,40 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: api_app/forms.py:53 api_app/forms.py:98
+#: api_app/tests/tests_api_click2call.py:136
+#: api_app/tests/tests_api_click2call.py:208
+msgid "El agente no participa en la campaña."
+msgstr ""
+
+#: api_app/forms.py:62 api_app/tests/tests_api_click2call.py:144
+msgid "El contacto no corresponde a la campaña."
+msgstr ""
+
+#: api_app/forms.py:100 api_app/tests/tests_api_click2call.py:174
+#: api_app/tests/tests_api_click2call.py:196
+msgid "El agente no corresponde al sistema externo."
+msgstr ""
+
+#: api_app/tests/tests_api_click2call.py:105
+#: api_app/tests/tests_api_click2call.py:113
+#: api_app/tests/tests_api_click2call.py:121
+#: api_app/tests/tests_api_click2call.py:166
+msgid "Escoja una opción válida. Esa opción no está entre las disponibles."
+msgstr ""
+
+#: api_app/tests/tests_api_click2call.py:158 api_app/views.py:295
+msgid "Sistema externo inexistente."
+msgstr ""
+
+#: api_app/views.py:294 api_app/views.py:328
+msgid "Hubo errores en los datos recibidos"
+msgstr ""
+
+#: api_app/views.py:319
+msgid "Error al ejecutar la llamada"
+msgstr ""
 
 #: configuracion_telefonia_app/forms.py:56
 msgid "Nombre Troncal"
@@ -330,46 +364,46 @@ msgid "Intentos"
 msgstr ""
 
 #: configuracion_telefonia_app/models.py:312
-#: configuracion_telefonia_app/models.py:344
+#: configuracion_telefonia_app/models.py:345
 #, python-brace-format
 msgid "{0}: {1}"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:327
+#: configuracion_telefonia_app/models.py:328
 msgid "Campaña entrante"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:328
+#: configuracion_telefonia_app/models.py:329
 msgid "Validación de fecha/hora"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:329
+#: configuracion_telefonia_app/models.py:330
 msgid "IVR"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:330
-#: configuracion_telefonia_app/models.py:453
+#: configuracion_telefonia_app/models.py:331
+#: configuracion_telefonia_app/models.py:454
 msgid "HangUp"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:331
+#: configuracion_telefonia_app/models.py:332
 msgid "Identificador cliente"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:359
+#: configuracion_telefonia_app/models.py:360
 msgid "Error: El nodo HangUp es único."
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:405
+#: configuracion_telefonia_app/models.py:406
 #, python-brace-format
 msgid "Desde nodo {0} a nodo {1}"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:425
+#: configuracion_telefonia_app/models.py:426
 msgid "Inglés"
 msgstr ""
 
-#: configuracion_telefonia_app/models.py:426
+#: configuracion_telefonia_app/models.py:427
 msgid "Español"
 msgstr ""
 
