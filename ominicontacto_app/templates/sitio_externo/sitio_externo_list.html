@@ -20,12 +20,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
+{% load js_reverse %}
 {% block head_js %}
     <script type="text/javascript">
-
+        {% js_reverse_inline %}
         function mostrar_sitios_ocultos() {
 
-            $.get('{% url  'mostrar_sitios_externo_ocultos' %}',
+            $.get(Urls.mostrar_sitios_externo_ocultos(),
                     function (data) {
                         $('#t_body_ocultas').html(data);
                     });

@@ -20,8 +20,6 @@
  * Funciones JS para ser usadas en los distintos ABMs de creación de nodos y rutas entrantes
  */
 /* exported nodosEntrantesCambioPorTipo */
-
-var url_obtener_destinos_tipo = '/configuracion_telefonia/ruta_entrante/obtener_destinos_tipo/';
 var opcionEnBlanco = '<option value="">---------</option>';
 
 function asignarNodosEntrantesPorTipo($tipoDestino, $destinoEntrante) {
@@ -33,7 +31,7 @@ function asignarNodosEntrantesPorTipo($tipoDestino, $destinoEntrante) {
     $destinoEntrante.attr('tipo', tipo_destino);
   }
   else {
-    $.get(url_obtener_destinos_tipo + tipo_destino, function (data) {
+    $.get(Urls.obtener_destinos_tipo(tipo_destino), function (data) {
       $destinoEntrante.html('');
       $destinoEntrante.append(opcionEnBlanco);
       $.each(data, function (key, value) {

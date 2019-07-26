@@ -60,7 +60,7 @@ $(document).ready(function(){
   }
 
   $('#validar_contacto').on('click', function(){
-    var url = "/campana_preview/validar_contacto_asignado/";
+    var url = Urls.validar_contacto_asignado();
     var data = {
       'pk_agente': $inputAgente.val(),
       'pk_campana': $inputCampana.val(),
@@ -88,7 +88,7 @@ Por favor intente solicitar uno nuevo");
       var $button = $(this);
       var nombreCampana = $button.text();
       var idCampana = $button.attr('data-campana');
-      var url = '/campana_preview/'+ idCampana +'/contacto/obtener/';
+      var url = Urls.campana_preview_dispatcher(idCampana);
       $.post(url)
         .success(function (data) {
           if (data['result'] != 'OK') {

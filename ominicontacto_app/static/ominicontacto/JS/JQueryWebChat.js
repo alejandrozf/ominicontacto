@@ -93,7 +93,7 @@ var chatId =  $("#conversationId").val();
 
     $.ajax({
 
-		  url: '/chat/mensaje',
+		  url: Urls.nueva_mensaje_chat(),
     	type: 'GET',
     	contentType: 'application/json',
     	data: "sender="+user+"&to="+receiver+"&mensaje="+mensaje+"&chat="+chatId,

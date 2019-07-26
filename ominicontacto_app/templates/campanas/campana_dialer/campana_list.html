@@ -60,7 +60,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         ;
         function mostrar_campanas_dialer_ocultas() {
 
-            $.get('{% url  'campana_dialer_mostrar_ocultas' %}',
+            $.get(Urls.campana_dialer_mostrar_ocultas(),
                     function (data) {
                         $('#t_body_borradas').html(data);
 
