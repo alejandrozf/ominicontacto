@@ -17,8 +17,10 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 from __future__ import unicode_literals
+
+from datetime import datetime
+
 from django.utils.encoding import force_text
-from django.utils.timezone import now
 from django.db.models import Count
 
 from ominicontacto_app.models import Campana, OpcionCalificacion, CalificacionCliente
@@ -33,7 +35,7 @@ class ReporteDeLlamadasDeSupervision(object):
         for campana in query_campanas:
             self.campanas[campana.id] = campana
 
-        hoy = now().date()
+        hoy = datetime.now()
         self.desde = datetime_hora_minima_dia(hoy)
         self.hasta = datetime_hora_maxima_dia(hoy)
 
