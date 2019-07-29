@@ -19,13 +19,14 @@ msgstr ""
 
 #: ../../agent_preview.rst:2
 msgid "Campañas preview"
-msgstr ""
+msgstr "Preview Campagins"
 
 #: ../../agent_preview.rst:4
 msgid ""
 "Cuando un agente trabaja dentro de una campaña preview, antes que nada "
 "debe acceder al botón de campañas preview."
 msgstr ""
+"When an agent is assigned to a Preview Campaign, Preview menu needs to be used."
 
 #: ../../agent_preview.rst:8
 msgid "*Figure 1: preview campaigns list*"
@@ -37,6 +38,9 @@ msgid ""
 "agente se encuentre asignado. Entonces el agente debe seleccionar una "
 "campaña y ésta le devolverá un contacto para gestionar."
 msgstr ""
+"All assigned Preview Campaigns are listed here. "
+"Agent must select one of them "
+"and this will return a contact to manage."
 
 #: ../../agent_preview.rst:15
 msgid "*Figure 2: pull new contact*"
@@ -52,6 +56,9 @@ msgid ""
 "mismo, haciendo click sobre el número, o bien hacer un nuevo click sobre "
 "la campaña preview para que la misma entregue otro contacto."
 msgstr ""
+"Once the contact is delivered, the agent can either dial the phone number "
+"by clicking on the number, or by clicking again on "
+"the preview campaign in order to retrieve another contact. The last one will be released."
 
 #: ../../agent_preview.rst:24
 msgid ""
@@ -60,6 +67,10 @@ msgid ""
 "del contacto sobre la vista del agente, tal como vimos en las llamadas "
 "manuales."
 msgstr ""
+"Assuming a contact is called by clicking on it, "
+"contact information is displayed "
+"on the agent's view, as we have seen in Manual Calls "
+"section."
 
 #: ../../agent_preview.rst:29
 msgid "*Figure 4: contact called*"
@@ -74,6 +85,11 @@ msgid ""
 "cualquiera de los teléfonos extras y automáticamente se buscará contactar"
 " al nuevo teléfono."
 msgstr ""
+"If the communication has ended or the phone could not be "
+"contacted, then the agent can try again with another phone number "
+"(if the contact has more than one phone "
+"loaded). If this is the case, then the agent can click on "
+"any of the extra telephones and will automatically dial the contact to the new number."
 
 #: ../../agent_preview.rst:38
 msgid "*Figure 5: re-call contact*"
@@ -85,6 +101,8 @@ msgid ""
 "calificaciones. Este listado de calificaciones fue generado por el "
 "administrador para cada campaña."
 msgstr ""
+"Finally, the agent is able to disposition the call through the combo of"
+" Call Dispositions. This list has been generated from the Admin view."
 
 #: ../../agent_preview.rst:45
 msgid "*Figure 6: call disposition*"

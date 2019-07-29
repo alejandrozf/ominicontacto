@@ -8,26 +8,27 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-01 12:13-0300\n"
+"POT-Creation-Date: 2019-07-17 14:37-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.7.0\n"
 
-#: ../../what_is_extra.rst:2
-msgid "WebRTC; la tecnología subyacente de OMniLeads"
+# 1eba610a30a944c5b5a559b084f49257
+#: ../../what_is_extra.rst:4
+msgid "WebRTC - Tecnología subyacente de OMniLeads"
 msgstr ""
 
-#: ../../what_is_extra.rst:3
+#: ../../what_is_extra.rst:5
 msgid ""
 "Antes de de citar los casos de uso, ponemos énfasis en repasar los "
 "beneficios de la tecnología WebRTC; núcleo de OMniLeads."
 msgstr ""
 
-#: ../../what_is_extra.rst:5
+#: ../../what_is_extra.rst:7
 msgid ""
 "WebRTC dota a un navegador web de la posibilidad de mantener "
 "comunicaciones real time de voz, video, chat y compartición de pantalla. "
@@ -38,83 +39,83 @@ msgid ""
 "línea procesando comunicaciones."
 msgstr ""
 
-#: ../../what_is_extra.rst:14
+#: ../../what_is_extra.rst:16
 msgid "**Otras ventajas de WebRTC**"
 msgstr ""
 
-#: ../../what_is_extra.rst:16
+#: ../../what_is_extra.rst:18
 msgid "Se minimizan los punto de fallo en las esrtaciones de trabajo"
 msgstr ""
 
-#: ../../what_is_extra.rst:17
+#: ../../what_is_extra.rst:19
 msgid "Se minimizan las tareas del helpdesk y personal de soporte"
 msgstr ""
 
-#: ../../what_is_extra.rst:18
+#: ../../what_is_extra.rst:20
 msgid ""
 "Trabaja con el codec de audio Opus y video VP8, ambos concebidos para la "
 "performance en real-time & cloud"
 msgstr ""
 
-#: ../../what_is_extra.rst:19
+#: ../../what_is_extra.rst:21
 msgid ""
 "En términos de seguridad todas las comunicaciones viajan cifradas en "
 "términos de señalización y media"
 msgstr ""
 
-#: ../../what_is_extra.rst:23
+#: ../../what_is_extra.rst:27
 msgid "Características y funcionalidades de OMniLeads"
 msgstr ""
 
-#: ../../what_is_extra.rst:24
+#: ../../what_is_extra.rst:28
 msgid ""
 "Gestión de campañas Entrantes y Salientes; Discador predictivo, Preview &"
 " IVR Blaster."
 msgstr ""
 
-#: ../../what_is_extra.rst:25
+#: ../../what_is_extra.rst:29
 msgid ""
 "Consola de agente WebRTC (no se requiere instalar ninguna aplicación ni "
 "plugin, 100% Browser)."
 msgstr ""
 
-#: ../../what_is_extra.rst:26
+#: ../../what_is_extra.rst:30
 msgid "Opus ® como codec por defecto para todas las comunicaciones de Agente."
 msgstr ""
 
-#: ../../what_is_extra.rst:27
+#: ../../what_is_extra.rst:31
 msgid "Consola de supervisión WebRTC; detalle de estados de agentes y campañas."
 msgstr ""
 
-#: ../../what_is_extra.rst:28
+#: ../../what_is_extra.rst:32
 msgid "Reportes de productividad de agentes y campañas."
 msgstr ""
 
-#: ../../what_is_extra.rst:29
+#: ../../what_is_extra.rst:33
 msgid ""
 "Búsqueda de grabaciones con filtros de campaña, agente, llamadas "
 "\"observadas\", etc."
 msgstr ""
 
-#: ../../what_is_extra.rst:30
+#: ../../what_is_extra.rst:34
 msgid "Reciclado de bases por calificación de agente y/o status telefónico."
 msgstr ""
 
-#: ../../what_is_extra.rst:31
+#: ../../what_is_extra.rst:35
 msgid "Cambio de base de contactos sobre la misma campaña."
 msgstr ""
 
-#: ../../what_is_extra.rst:32
+#: ../../what_is_extra.rst:36
 msgid "Detección de contestadores con reproducción de mensaje de audio."
 msgstr ""
 
-#: ../../what_is_extra.rst:33
+#: ../../what_is_extra.rst:37
 msgid ""
 "Listo para virtualizar ! OML fue concebido como una tecnología orientada "
 "a los entornos de virtualización."
 msgstr ""
 
-#: ../../what_is_extra.rst:34
+#: ../../what_is_extra.rst:38
 msgid ""
 "Listo para escalar ! La escalabilidad es posible debido al hecho utilizar"
 " tecnologías subyacentes muy potentes como Postgres, Nginx, Rtpengine, "
@@ -122,17 +123,20 @@ msgid ""
 "horizontal) con una mínima configuración."
 msgstr ""
 
-#: ../../what_is_extra.rst:35
+#: ../../what_is_extra.rst:39
 msgid ""
 "Addons complementarios que dotan a la plataforma de funcionalidades "
 "extras y/o para segmentos verticales."
 msgstr ""
 
-#: ../../what_is_extra.rst:36
+#: ../../what_is_extra.rst:40
 #, python-format
 msgid ""
 "100% orientado a Contact Center. No se trata de un software de PBX con "
 "agregados de reportería y/o supervisión. OML fue concebida desde cero, "
 "como una plataforma orientada y optimizada para el Contact Center."
 msgstr ""
+
+#~ msgid "WebRTC; la tecnología subyacente de OMniLeads"
+#~ msgstr ""
 

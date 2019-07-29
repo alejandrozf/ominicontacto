@@ -8,57 +8,58 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-01 12:13-0300\n"
+"POT-Creation-Date: 2019-07-17 14:37-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.7.0\n"
 
-#: ../../install_first_access.rst:2
-msgid "Primer acceso a OMniLeads:"
-msgstr ""
-
+# 206374ae02dd441e9db04e29b9b10255
 #: ../../install_first_access.rst:4
-msgid "Para acceder al sistema OMniLeads debe ingresar a:"
+msgid "Primer acceso a OMniLeads"
 msgstr ""
 
 #: ../../install_first_access.rst:6
-msgid "https://omnileads-hostname"
+msgid "Para acceder al sistema OMniLeads debe ingresar a:"
 msgstr ""
 
 #: ../../install_first_access.rst:8
+msgid "https://omnileads-hostname"
+msgstr ""
+
+#: ../../install_first_access.rst:10
 msgid ""
 "Nota: El acceso web a OMniLeads debe ser a través del hostname.domain del"
 " host. Por lo tanto existen dos posibilidades a la hora de resolver el "
 "hostname:"
 msgstr ""
 
-#: ../../install_first_access.rst:11
+#: ../../install_first_access.rst:13
 msgid ""
 "1 - Que los DNS de la red lo hagan. 2 - Añadir el hostname.domain del "
 "host, dentro del archivo de *hosts* (Windows, Linux o Mac de cada PC que "
 "tenga que acceder a OMniLeads."
 msgstr ""
 
-#: ../../install_first_access.rst:16
+#: ../../install_first_access.rst:18
 msgid "*Figure 1: hosts file*"
 msgstr ""
 
-#: ../../install_first_access.rst:18
+#: ../../install_first_access.rst:20
 msgid ""
 "Al encontrarnos con la pantalla de login, simplemente se debe ingresar el"
 " usuario admin y la clave generada durante la instalación (my_inventory),"
 " como se expone en las figura 10."
 msgstr ""
 
-#: ../../install_first_access.rst:23
+#: ../../install_first_access.rst:25
 msgid "*Figure 2: First login*"
 msgstr ""
 
-#: ../../install_first_access.rst:25
+#: ../../install_first_access.rst:27
 msgid ""
 "En caso de no recordar la contraseña de admin, recuerde que quedó la "
 "copia del archivo *inventory* en el archivo *my_inventory* ubicado en el "
@@ -66,4 +67,7 @@ msgid ""
 " Allí entre otras cosas, cuenta con la contraseña generada para el "
 "usuario admin."
 msgstr ""
+
+#~ msgid "Primer acceso a OMniLeads:"
+#~ msgstr ""
 

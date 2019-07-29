@@ -8,82 +8,87 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-06 16:12-0300\n"
+"POT-Creation-Date: 2019-07-22 11:27-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 #: ../../agent.rst:3
 msgid "Manual de agente"
-msgstr ""
+msgstr "Agent Manual"
 
 #: ../../agent.rst:5
 msgid ""
 "Vamos a dividir el manual de gestión del agente en los diferentes tópicos"
 " citados debajo."
-msgstr ""
+msgstr "We will split Manual Agent in the following topics stated below."
 
 #: ../../agent.rst:8
 msgid "Sesión del agente"
-msgstr ""
+msgstr "Agent Session"
 
 #: ../../agent.rst:10
 msgid "Todo lo inherente a la sesión del agente describimos en este inciso."
-msgstr ""
+msgstr "All related to agent session is decribed in this piece."
 
 #: ../../agent.rst:19
 msgid "Campañas manuales"
-msgstr ""
+msgstr "Manual Campaigns"
 
 #: ../../agent.rst:20
 msgid "El agente y la operación en campañas manuales."
-msgstr ""
+msgstr "Agent and Operation in Manual Campaigns."
 
 #: ../../agent.rst:28
 msgid "Campañas preview"
-msgstr ""
+msgstr "Preview Campaigns"
 
 #: ../../agent.rst:29
 msgid "El agente y la operación en campañas preview."
-msgstr ""
+msgstr "Agent and Operation in Preview Campaigns."
 
 #: ../../agent.rst:37
 msgid "Campañas dialer"
-msgstr ""
+msgstr "Outbound Dialer Campaigns"
 
 #: ../../agent.rst:38
 msgid "El agente y la operación en campañas con discador predictivo."
-msgstr ""
+msgstr "Agent and Operation in Predictive Dialer Campaigns."
 
 #: ../../agent.rst:47
 msgid "Campañas entrantes"
-msgstr ""
+msgstr "Inbound Campaigns"
 
 #: ../../agent.rst:49
 msgid "El agente y la operación en campañas entrantes."
-msgstr ""
+msgstr "Agent and Operation in Inbound Campaigns."
 
 #: ../../agent.rst:58
 msgid "Acciones sobre las llamadas"
-msgstr ""
+msgstr "Call Actions"
 
 #: ../../agent.rst:59
 msgid ""
 "Cuando un agente se encuentra en una llamada cuenta con diferentes "
 "funcionalidades que optimizan la gestión de llamadas."
 msgstr ""
+"When Agent is on call, it counts on with multiple features that improve the call management."
 
 #: ../../agent.rst:67
 msgid "Agendas, calificaciones y contactos"
-msgstr ""
+msgstr "Agendas, Call Dispositions and Contacts"
 
 #: ../../agent.rst:68
 msgid ""
 "El agente cuenta con diferentes menúes para el manejo de los contactos de"
 " las campañas."
 msgstr ""
+"Agent has different menues to work with campaign contacts."
+
+#~ msgid "Sesión del agente"
+#~ msgstr ""
 

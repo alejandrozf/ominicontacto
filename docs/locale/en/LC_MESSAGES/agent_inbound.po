@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../../agent_inbound.rst:2
 msgid "Atención de llamadas entrantes"
-msgstr ""
+msgstr "Incoming Call Distribution"
 
 #: ../../agent_inbound.rst:4
 msgid ""
@@ -31,10 +31,16 @@ msgid ""
 "indicación de audio tipo \"beep\", para luego dejar a ambos extremos de "
 "la llamada en linea."
 msgstr ""
+"As we well know from the \"Initial configuration\" section, the system "
+"can be configured for incoming calls to generate a \"Ring\" "
+"on the agent's webphone, giving the possibility of "
+"deciding whether or not to answer the call. Or can be configured to directly "
+"connect incoming calls to agents (that is to say, auto-answer the call)."
+
 
 #: ../../agent_inbound.rst:9
 msgid "En la figura 1 exponemos el comportamiento con Ring."
-msgstr ""
+msgstr "Behavior can be seen in figure 1."
 
 #: ../../agent_inbound.rst:13
 msgid "*Figure 1: inbound call ring*"
@@ -48,6 +54,9 @@ msgid ""
 " conectada y también se informa en la pantalla el nombre de la campaña "
 "entrante a la cual pertenece la llamada conectada."
 msgstr ""
+"If the configuration is in auto-answer mode (like a predictive campaign) "
+", the agent will hear a \"beep\" message once the call is connected and will see "
+"the name of the campaign the call belongs to."
 
 #: ../../agent_inbound.rst:22
 msgid "*Figure 2: inbound call campaign*"
@@ -55,7 +64,7 @@ msgstr ""
 
 #: ../../agent_inbound.rst:25
 msgid "Gestión de contactos"
-msgstr ""
+msgstr "Contact Management"
 
 #: ../../agent_inbound.rst:27
 msgid ""
@@ -65,6 +74,7 @@ msgid ""
 "cargado, suele ser normal que el agente se encuentre sin datos de la "
 "persona que llama, al momento de conectarse la llamada."
 msgstr ""
+"Incoming calls can be associated to contacts already available in database, or new contacts to be saved."
 
 #: ../../agent_inbound.rst:33
 msgid "*Figure 3: inbound call without contact*"
@@ -76,4 +86,7 @@ msgid ""
 "caso positivo entonces se procede con la carga del contacto y posterior "
 "calificación de la llamada."
 msgstr ""
+"In this case, the agent can decide whether to disposition the call or not. In the "
+"positive case, then the agent can proceed with the contact information upload and subsequent "
+"call disposition."
 
