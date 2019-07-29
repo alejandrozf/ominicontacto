@@ -29,7 +29,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from configuracion_telefonia_app.models import (PatronDeDiscado, RutaSaliente, RutaEntrante,
                                                 TroncalSIP, OrdenTroncal, DestinoEntrante, IVR,
-                                                OpcionDestino, ValidacionTiempo, GrupoHorario)
+                                                OpcionDestino, ValidacionTiempo, GrupoHorario,
+                                                IdentificadorCliente)
 from ominicontacto_app.models import ArchivoDeAudio
 from ominicontacto_app.views_archivo_de_audio import convertir_archivo_audio
 
@@ -50,6 +51,11 @@ class TroncalSIPForm(forms.ModelForm):
             'caller_id': forms.TextInput(attrs={'class': 'form-control'}),
             'register_string': forms.TextInput(attrs={'class': 'form-control'}),
             'text_config': forms.Textarea(attrs={'class': 'form-control'}),
+        }
+        labels = {
+            'nombre': _('Nombre Troncal'),
+            'text_config': _('Parámetros SIP'),
+            'register_string': _('Cadena de registración')
         }
 
 
@@ -87,48 +93,48 @@ class RutaSalienteForm(forms.ModelForm):
 
 class PatronDeDiscadoBaseFormset(BaseInlineFormSet):
 
-        def clean(self):
-            """
-            Realiza los validaciones relacionadas con los patrones de discado asignados a una ruta
-            saliente
-            """
-            if any(self.errors):
-                return
-            deleted_forms = self.deleted_forms
-            save_candidates_forms = set(self.forms) - set(deleted_forms)
-            if len(save_candidates_forms) == 0:
+    def clean(self):
+        """
+        Realiza los validaciones relacionadas con los patrones de discado asignados a una ruta
+        saliente
+        """
+        if any(self.errors):
+            return
+        deleted_forms = self.deleted_forms
+        save_candidates_forms = set(self.forms) - set(deleted_forms)
+        if len(save_candidates_forms) == 0:
+            raise forms.ValidationError(
+                _('Debe ingresar al menos un patrón de discado'), code='invalid')
+
+        patrones_discado = []
+        for form in save_candidates_forms:
+            prefix = form.cleaned_data.get('prefix', False)
+            patron_discado = form.cleaned_data.get('match_pattern', False)
+            if (prefix, patron_discado) in patrones_discado:
                 raise forms.ValidationError(
-                    _('Debe ingresar al menos un patrón de discado'), code='invalid')
+                    _('Los patrones de discado deben ser diferentes'), code='invalid')
+            patrones_discado.append((prefix, patron_discado))
 
-            patrones_discado = []
-            for form in save_candidates_forms:
-                prefix = form.cleaned_data.get('prefix', False)
-                patron_discado = form.cleaned_data.get('match_pattern', False)
-                if (prefix, patron_discado) in patrones_discado:
-                    raise forms.ValidationError(
-                        _('Los patrones de discado deben ser diferentes'), code='invalid')
-                patrones_discado.append((prefix, patron_discado))
-
-        def save(self):
-            """
-            Salva el formset de los troncales actualizando el orden de acuerdo a los
-            cambios realizados en la interfaz
-            """
-            if not self.instance.patrones_de_discado.exists():
-                max_orden = 0
-            else:
-                max_orden = self.instance.patrones_de_discado.last().orden
-            forms = self.forms
-            for i, form in enumerate(forms, max_orden + 1):
-                # asignamos nuevos ordenes a partir del máximo número de orden para
-                # evitar clashes de integridad al salvar los formsets
-                form.instance.orden = i
-                if (form.instance.pk is not None) and not form.has_changed():
-                    # si algun patrón no ha sufrido cambios en una edición se fuerza
-                    # el salvado del numero de orden desde la instancia para evitar
-                    # problemas de orden
-                    form.instance.save()
-            super(PatronDeDiscadoBaseFormset, self).save()
+    def save(self):
+        """
+        Salva el formset de los troncales actualizando el orden de acuerdo a los
+        cambios realizados en la interfaz
+        """
+        if not self.instance.patrones_de_discado.exists():
+            max_orden = 0
+        else:
+            max_orden = self.instance.patrones_de_discado.last().orden
+        forms = self.forms
+        for i, form in enumerate(forms, max_orden + 1):
+            # asignamos nuevos ordenes a partir del máximo número de orden para
+            # evitar clashes de integridad al salvar los formsets
+            form.instance.orden = i
+            if (form.instance.pk is not None) and not form.has_changed():
+                # si algun patrón no ha sufrido cambios en una edición se fuerza
+                # el salvado del numero de orden desde la instancia para evitar
+                # problemas de orden
+                form.instance.save()
+        super(PatronDeDiscadoBaseFormset, self).save()
 
 
 class OrdenTroncalBaseFormset(BaseInlineFormSet):
@@ -468,6 +474,20 @@ class ValidacionTiempoForm(forms.ModelForm):
     class Meta:
         model = ValidacionTiempo
         exclude = ()
+
+
+class IdentificadorClienteForm(forms.ModelForm):
+    class Meta:
+        model = IdentificadorCliente
+        exclude = ()
+
+    def clean_url(self):
+        url = self.cleaned_data.get('url')
+        tipo_interaccion = self.cleaned_data.get('tipo_interaccion')
+        if not tipo_interaccion == IdentificadorCliente.SIN_INTERACCION_EXTERNA:
+            if not url:
+                raise forms.ValidationError(_('Debe indicar una url.'))
+            return url
 
 
 class OpcionDestinoValidacionFechaHoraForm(forms.ModelForm):

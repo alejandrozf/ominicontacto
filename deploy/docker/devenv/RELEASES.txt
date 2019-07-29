@@ -1,0 +1,27 @@
+DevEnv Image versions:
+
+Omniapp:
+
+1.0
+  - DevEnv divided in microservices changing these services versions:
+    Asterisk 16, Kamailio 5.2.2
+  - Deploy of the environment using ansible
+1.1
+  - Omniapp container has root access using sudo
+1.2
+  - Omniapp container with pyst2 fork made by @alejandrozf to work this library with ast16
+  - Fix in mount on recordings folder
+  - Change the docker-compose file to have a custom network
+  - Removed run_omnileads.sh script.
+1.2.1
+  - Added the cert of the Registrar Server for testing Omnileads Addons
+
+Asterisk:
+
+16-res_json
+  - Based on andrius/asterisk image it builds asterisk with res_json module
+
+pbx-emulator image versions:
+
+0.1
+  - Initial settings of the image with all pbx-emulator functions described in README.txt

@@ -1,8 +1,0 @@
-What is OMniLeads
-=================
-
-The agent session
-into one campaign and can also take calls from one or more in-groups(or inbound queues) at the same
-time they are placing/taking outbound calls. ViciDial can function as an ACD, Predictive Dialer and
-can do many of the functions of a standard PBX as well. There are hundreds of features and options
-available within ViciDial, and they are covered here in this manual.

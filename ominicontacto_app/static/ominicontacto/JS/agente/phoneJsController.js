@@ -93,9 +93,16 @@ class PhoneJSController {
             self.leavePause()
         });
 
-        this.view.pauseButton.click(function () {
-            self.view.pauseMenu.modal('show');
-        });
+        if ($("#pauseType").find('option').length > 0){
+            this.view.pauseButton.click(function () {
+                self.view.pauseMenu.modal('show');
+            });
+        }
+        else {
+            this.view.pauseButton.click(function () {
+                alert('No tiene pausas definidas.');
+            });
+        }
 
         this.view.setPauseButton.click(function() {
             var pause_id = $("#pauseType").val();
@@ -123,6 +130,24 @@ class PhoneJSController {
             } else {
                 phone_logger.log('Error');
             }
+        });
+
+        /* Off Campaign */
+        this.view.callOffCampaignMenuButton.click(function() {
+            self.view.callOffCampaignMenu.modal('show');
+            if ($('#agente_off_camp').find('option').length == 0){
+                self.view.callAgentButton.prop('disabled', true);
+            }
+        });
+
+        this.view.callAgentButton.click(function() {
+            var agent_id = $('#agente_off_camp').val();
+            click2call.call_agent(agent_id);
+        });
+
+        this.view.callPhoneOffCampaignButton.click(function() {
+            var phone = $('#phone_off_camp').val();
+            click2call.call_external(phone);
         });
 
         $("#SaveSignedCall").click(function() {
@@ -160,6 +185,10 @@ class PhoneJSController {
             self.phone.endTransfer();
         });
 
+        this.view.conferButton.click(function() {
+            self.phone.confer();
+        });
+
         this.subscribeToKeypadEvents();
 
         // TODO: a variables de instancia
@@ -178,7 +207,6 @@ class PhoneJSController {
 
         refuseCallButton.onclick = function() {
             $("#modalReceiveCalls").modal('hide');
-            self.phone_fsm.refuseCall();
             self.phone.refuseCall();
         }
 
@@ -311,7 +339,7 @@ class PhoneJSController {
             self.view.setCallStatus(message, "red");
             self.phone_fsm.unpause();
             // Arrancar de nuevo timer de operacion
-            self.timers.pause.stop();
+            self.timers.pausa.stop();
             self.timers.operacion.start();
             self.pause_manager.leavePause();
         });
@@ -324,7 +352,7 @@ class PhoneJSController {
             self.phone_fsm.startPause();
             // Arrancar de nuevo timer de pausa
             self.timers.operacion.stop();
-            self.timers.pause.start();
+            self.timers.pausa.start();
         });
 
         /** Calls **/
@@ -340,7 +368,7 @@ class PhoneJSController {
 
         this.phone.eventsCallbacks.onTransferReceipt.add(function(session_data) {
             self.phone_fsm.receiveCall();
-            $("#callerid").html(session_data.transfer_agent_name);
+            $("#callerid").html(session_data.from_agent_name);
             $("#extraInfo").html(session_data.transfer_type_str);
             $("#modalReceiveCalls").modal('show');
         });
@@ -355,6 +383,7 @@ class PhoneJSController {
                 phone_logger.log('Desde ReceivingCall!');
                 self.phone_fsm.refuseCall();
                 $("#modalReceiveCalls").modal('hide');
+                self.phone.cleanLastCallData();
             } else if (self.phone_fsm.state == 'OnCall') {
                 phone_logger.log('Desde OnCall!');
                 self.phone_fsm.endCall();
@@ -421,6 +450,7 @@ class PhoneJSController {
 
         if (this.agent_config.auto_pause) {
             var self = this;
+            this.phone.cleanLastCallData();
             this.setPause(ACW_PAUSE_ID, ACW_PAUSE_NAME);
             if (this.agent_config.auto_unpause > 0) {
                 var m_seconds = this.agent_config.auto_unpause * 1000;
@@ -462,7 +492,10 @@ class PhoneJSController {
         this.timers.pausa.start();
         this.timers.operacion.stop();
 
-        this.phone.makePauseCall(pause_id);
+        // TODO: Investigar por que falla la llamada si se la cancela directamente.
+        // this.phone.makePauseCall(pause_id);
+        var self = this;
+        setTimeout(function(){ self.phone.makePauseCall(pause_id)}, 10);
     }
 
     leavePause() {
@@ -581,7 +614,6 @@ class PhoneJSController {
             var message = interpolate(gettext("Conectado a %(fromUser)s"), {fromUser:fromUser}, true);
             this.view.setCallStatus(message, "orange");
             this.manageContact(session_data);
-
             if (session_data.is_click2call) {
                 // Seteo datos para redial
                 this.lastDialedCall = session_data.remote_call;
@@ -603,11 +635,16 @@ class PhoneJSController {
         if (session_data.is_inbound && this.agent_config.auto_attend_IN) {
             return true;
         }
+        if (session_data.is_off_campaign) {
+            return true;
+        }
         return false;
     }
 
     manageContact(session_data) {
         var call_data = session_data.remote_call
+        if (session_data.is_from_agent || session_data.is_off_campaign)
+            return;
         this.getQualificationForm(call_data);
     }
 
@@ -615,7 +652,7 @@ class PhoneJSController {
         var duracion = this.timers.llamada.get_time_str();
         var numero_telefono = undefined;
         // NOTA: No guardo la duracion de llamadas entre agentes (internal). ( Ver si es deseable )
-        if (this.phone.session_data.is_internal_call) {
+        if (this.phone.session_data.is_off_campaign) {
             return;
         }
 

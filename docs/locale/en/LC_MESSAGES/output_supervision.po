@@ -1,0 +1,234 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, omnileads
+# This file is distributed under the same license as the OMniLeads package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OMniLeads \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-06-03 21:27-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+# 66450c38b36d467db467517f65c397e3
+#: ../../output_supervision.rst:2
+msgid "Supervision"
+msgstr ""
+
+# fb1653301c314aa79e2ff7b7939f2876
+#: ../../output_supervision.rst:4
+msgid ""
+"Este módulo permite visualizar el estado de las campañas entrantes, "
+"campañas salientes (Manual, Dialer y Preview) y agentes."
+msgstr ""
+
+# 8690e25346954f4c8a49f4f91f3fa8bd
+#: ../../output_supervision.rst:8
+msgid "*Figure 1: Choices for supervision*"
+msgstr ""
+
+# cfcc3f940dea45be8d51c388fcca2438
+#: ../../output_supervision.rst:11
+msgid "Visualización de status de Agentes"
+msgstr ""
+
+# 1d9c6a92611945d8adb02f2e7867be07
+#: ../../output_supervision.rst:13
+msgid ""
+"En la sección de agentes se observan todos los agentes logueados en el "
+"sistema y el estado en el que se encuentran (READY, OnCall, Paused, "
+"Dialing, Offline) ."
+msgstr ""
+
+# d2e413431ff24855bafe5e584dc44193
+#: ../../output_supervision.rst:17
+msgid ""
+"Un agente debe estar asignado al menos a una campaña para que aparezca en"
+" este módulo"
+msgstr ""
+
+# edcb34ae35d1495da944747160144467
+#: ../../output_supervision.rst:18
+msgid ""
+"Cuando un agente pasa al estado \"Offline\" permanece solo unos segundos "
+"en dicho estado y luego desaparece del listado de agentes."
+msgstr ""
+
+# affb587df10b4538b6b7bc65b0f60c3d
+#: ../../output_supervision.rst:22
+msgid "*Figure2: View of realtime supervision*"
+msgstr ""
+
+# 6caecaa844cc4917bb9d8a8bb8e0a2e8
+#: ../../output_supervision.rst:24
+msgid ""
+"Un supervisor puede tomar acciones sobre cada agente. Para ello son los "
+"cuatro botones que aparecen al lado del estado. A continuación se "
+"describe la función de cada uno (de izquierda a derecha):"
+msgstr ""
+
+# a2898782bbb640fdb44d080fa1dd9893
+#: ../../output_supervision.rst:26
+msgid ""
+"**Espiar:** el supervisor escucha la **llamada activa** entre agente y "
+"cliente. Hacer click en el botón *Finalizar* para terminar de escuchar, "
+"en cualquier momento"
+msgstr ""
+
+# 459259db6f484023a078d2daad94bd12
+#: ../../output_supervision.rst:27
+msgid ""
+"**Espiar y susurrar:** el supervisor puede hablar al agente sin que el "
+"cliente lo perciba, durante una **llamada activa**. Hacer click en el "
+"botón *Finalizar* para terminar de escuchar, en cualquier momento"
+msgstr ""
+
+# 351a2c0588a04b44ad8a2a5dba441869
+#: ../../output_supervision.rst:28
+msgid ""
+"**Pausar agente:** suponiendo que el agente se fue a break y se le olvidó"
+" ponerse en pausa, el supervisor puede con este botón inducir una pausa "
+"para que no reciba llamadas. Puede despausar oprimiendo nuevamente este "
+"botón."
+msgstr ""
+
+# 2ea609208af049d18400392bab63a042
+#: ../../output_supervision.rst:29
+msgid ""
+"**Desloguear agente:** suponiendo que el agente terminó su sesión y no se"
+" deslogueó correctamente del sistema (no presionó su nombre y dió click "
+"en salir, extremo derecho superior de la consola de agente), el "
+"supervisor puede desloguear al agente con este botón. Es importante hacer"
+" este proceso para no tener tiempos de sesión incoherentes en el reporte "
+"de agentes."
+msgstr ""
+
+# 47a4c76ba5b046508a8c173c5a131783
+#: ../../output_supervision.rst:33
+msgid ""
+"El supervisor cuenta con un pequeño webphone. Para poder hacer estas "
+"acciones es necesario que aparezca el mensaje de **Supervisor "
+"Registrado**."
+msgstr ""
+
+# a087724f64794be78e1a16aab5ed712e
+#: ../../output_supervision.rst:36
+msgid "Visualización de campañas entrantes"
+msgstr ""
+
+# 43033086c56b48a390a8e9f0ff215216
+#: ../../output_supervision.rst:38
+msgid ""
+"Esta vista expone un resumen de todas las campañas entrantes productivas,"
+" en término de los resultados acumulados del día de la operación; "
+"llamadas recibidas, atendidas, abandonadas, expiradas y gestiones (*) "
+"positivas dentro de cada campaña."
+msgstr ""
+
+# f25b139122384d0286a8abb39ee0890f
+#: ../../output_supervision.rst:42
+msgid "*Figure3: view of realtime inbound campaigns*"
+msgstr ""
+
+# 76863a78aced4542ae7438c45438d114
+#: ../../output_supervision.rst:45
+msgid "Visualización de campañas salientes"
+msgstr ""
+
+# 6c76c3d3c7eb433f9d6060721935749c
+#: ../../output_supervision.rst:47
+msgid ""
+"Al igual que en el punto anterior, las campañas salientes tambien cuentan"
+" con un resumen actualizado en tiempo real, de los resultados de cada "
+"campaña; llamadas discadas, atendidas, no atendidas y las gestiones (*) "
+"positivas de cada una."
+msgstr ""
+
+# 8180f01288674ad4b692f8a05e757092
+#: ../../output_supervision.rst:51
+msgid "*Figure4: view of realtime outbound campaigns*"
+msgstr ""
+
+# fb4e60601d0543b482323c1e66201ed4
+#: ../../output_supervision.rst:55
+msgid ""
+"Se entiende por día el día a dia de operación desde las 00:00 hasta las "
+"23:59. En el siguiente día las estadísticas de campañas entrantes y "
+"salientes se resetean."
+msgstr ""
+
+# 988cd24aa16a400cbe63a191ee6cfc10
+#: ../../output_supervision.rst:59
+msgid ""
+"Se entiende por Gestión positiva a una llamada que el agente calificó con"
+" una calificación de gestión, calificación capaz de ejecutar un "
+"formulario de campaña."
+msgstr ""
+
+#~ msgid "Telephony"
+#~ msgstr ""
+
+# 9c2896f9d2e24fbeb91ea62c38fc59d0
+#~ msgid ""
+#~ "Este módulo permite visualizar el estado"
+#~ " de las campañas y agentes. Al "
+#~ "ingresar a la supervisión se debe "
+#~ "seleccionar la campaña a monitorear. Una"
+#~ " vez seleccionada la campaña el "
+#~ "sistema redirecciona a la pantalla de"
+#~ " supervisión en tiempo real."
+#~ msgstr ""
+
+# a8d580cf09124fcb9b7899866e01c76f
+#~ msgid ""
+#~ "La vista de la supervisión en "
+#~ "tiempo real está compuesta por cuatro"
+#~ " secciones:"
+#~ msgstr ""
+
+# 90e0608f234c440981db562ce593b9f9
+#~ msgid ""
+#~ "Agentes: el estado de cada agente "
+#~ "y las acciones que puede realizar "
+#~ "el supervisor sobre cada uno de "
+#~ "ellos:"
+#~ msgstr ""
+
+# df60dd8ff5044e69a36bf0b5f6effc90
+#~ msgid "Espiar la llamada activa."
+#~ msgstr ""
+
+# 368754a2a1a54c948414d519ac812ef8
+#~ msgid "Espiar y susurrar al agente sin que el cliente lo perciba."
+#~ msgstr ""
+
+# 4da8d6e24a204776a4dd055dba752983
+#~ msgid "Realizar conferencia entre agente y cliente."
+#~ msgstr ""
+
+# d6bab48600aa4ac198a7fdbd54ffea95
+#~ msgid "Sacar al agente del sistema"
+#~ msgstr ""
+
+# ec8e03566fb040388a0f943a8bc42152
+#~ msgid ""
+#~ "Líneas: son los canales del discador "
+#~ "que se están utilizando y el "
+#~ "estado de cada canal."
+#~ msgstr ""
+
+# 289989a6fed84a2393f37f46277ddbab
+#~ msgid "En Espera: son las llamadas aguardando ser conectadas a un agente."
+#~ msgstr ""
+
+# c20b096f20ba4600be42faf9277455ea
+#~ msgid "Llamadas: expone el avance de la campaña."
+#~ msgstr ""
+

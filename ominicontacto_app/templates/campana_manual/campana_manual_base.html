@@ -18,9 +18,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
 {% extends "campana/wizard_base.html" %}
-{% load static %}
 {% load i18n %}
+{% load static %}
 {% load widget_tweaks %}
+
+{% block head_js %}
+  <script type="text/javascript" 
+          src="{% static 'ominicontacto/JS/agente/formularioNuevaEditaCampana.js' %}">
+  </script>
+{% endblock head_js %}
 
 {% block title_campana %}{% endblock %}
 
@@ -59,6 +65,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ form.bd_contacto }}
                 {{ form.bd_contacto.errors }}
             </div>
+
+            <div class="col-md-6">
+                <label for="{{ form.sistema_externo.id_for_label }}">{% trans 'Sistema externo:' %}</label>
+                {{ form.sistema_externo }}
+                {{ form.sistema_externo.errors }}
+            </div>
+            <div class="col-md-6">
+                <label for="{{ form.id_externo.id_for_label }}">{% trans 'ID en sistema externo:' %}</label>
+                {{ form.id_externo }}
+                {{ form.id_externo.errors }}
+            </div>
+
             {% block interaccion %}
                 {{ form.tipo_interaccion.errors }}
                 <div class="myradio hidden">{{ form.tipo_interaccion.0 }}</div>

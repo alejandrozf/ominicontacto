@@ -23,8 +23,14 @@ Servicio de regenarción de archivos de asterisk y reload del mismo
 
 from __future__ import unicode_literals
 
+import getpass
 import logging
+import os
+import sys
 
+from crontab import CronTab
+
+from django.conf import settings
 from django.utils.translation import ugettext as _
 
 from ominicontacto_app.errors import OmlError
@@ -61,6 +67,10 @@ class RegeneracionAsteriskService(object):
         # Llama al comando que reinicia Asterisk
         self.reload_asterisk_config = AsteriskConfigReloader()
 
+        # parámetros de script que desloguea agentes inactivos
+        self.tarea_programada_logout_id = 'asterisk_logout_script'
+        self.TIEMPO_CHEQUEO_CONTACTOS_INACTIVOS = 2
+
     def _generar_y_recargar_configuracion_asterisk(self):
         proceso_ok = True
         mensaje_error = ""
@@ -94,5 +104,30 @@ class RegeneracionAsteriskService(object):
             self.asterisk_database.regenerar_asterisk()
             self.reload_asterisk_config.reload_asterisk()
 
+    def _generar_tarea_script_logout_agentes_inactivos(self):
+        """Adiciona una tarea programada que llama al script de que desloguea
+        agentes inactivos
+        """
+        # conectar con cron
+        crontab = CronTab(user=getpass.getuser())
+        ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python')
+        ruta_script_logout = os.path.join(settings.INSTALL_PREFIX, 'bin/omni-asterisk-logout.py')
+        # adicionar nuevo cron job para esta tarea si no existe anteriormente
+        job = crontab.find_comment(self.tarea_programada_logout_id)
+        if list(job) == []:
+            install_prefix = 'INSTALL_PREFIX={0}'.format(settings.INSTALL_PREFIX)
+            ami_user = 'AMI_USER={0}'.format(settings.AMI_USER)
+            ami_password = 'AMI_PASSWORD={0}'.format(settings.AMI_PASSWORD)
+            asterisk_hostname = 'ASTERISK_HOSTNAME={0}'.format(settings.ASTERISK_HOSTNAME)
+            job = crontab.new(
+                command='{0} {1} {2} {3} {4} {5}'.format(
+                    install_prefix, ami_user, ami_password, asterisk_hostname,
+                    ruta_python_virtualenv, ruta_script_logout),
+                comment=self.tarea_programada_logout_id)
+            # adicionar tiempo de print()eriodicidad al cron job
+            job.minute.every(self.TIEMPO_CHEQUEO_CONTACTOS_INACTIVOS)
+            crontab.write_to_user(user=getpass.getuser())
+
     def regenerar(self):
         self._generar_y_recargar_configuracion_asterisk()
+        self._generar_tarea_script_logout_agentes_inactivos()

@@ -178,7 +178,7 @@ def logout_view(request):
 
 class LlamarContactoView(RedirectView):
     """
-    Esta vista realiza originate hacia Asterisk
+    Esta vista realiza originate hacia Asterisk para llamar dentro de una campaña
     """
 
     pattern_name = 'view_blanco'
@@ -222,6 +222,37 @@ class LlamarContactoView(RedirectView):
         originator = Click2CallOriginator()
         originator.call_originate(
             agente, campana_id, tipo_campana, contacto_id, telefono, click2call_type)
+        return HttpResponseRedirect(reverse('view_blanco'))
+
+
+class LlamarFueraDeCampanaView(RedirectView):
+    """
+    Esta vista realiza originate hacia Asterisk para llamar por fuera de una campaña
+    """
+
+    pattern_name = 'view_blanco'
+
+    def post(self, request, *args, **kwargs):
+        agente = self.request.user.get_agente_profile()
+        tipo_destino = request.POST.get('tipo_destino')
+        destino = request.POST.get('destino', '')
+
+        originator = Click2CallOriginator()
+        if tipo_destino == Click2CallOriginator.AGENT:
+            try:
+                agente_destino = AgenteProfile.objects.get(id=destino)
+            except AgenteProfile.DoesNotExist:
+                # TODO: Deberia devolver json con error de agente incorrecto?
+                pass
+            else:
+                originator.call_agent(agente, agente_destino)
+        elif tipo_destino == Click2CallOriginator.EXTERNAL:
+            # TODO: Validar destino como un numero valido?
+            originator.call_external(agente, destino)
+        else:
+            # TODO: Devolver Json con error de tipo destino incorrecto?
+            pass
+
         return HttpResponseRedirect(reverse('view_blanco'))
 
 

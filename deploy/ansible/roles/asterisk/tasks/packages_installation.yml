@@ -38,8 +38,8 @@
     - sngrep
     - subversion
     - unixODBC
-  become: true
-  become_method: sudo
+    - unzip
+  tags: postinstall
   when: ansible_os_family == "RedHat"
 
   # Intalo los paquetes necesarios para la parte VoIP
@@ -56,8 +56,8 @@
     - subversion
     - unixodbc-dev
     - uuid
-  become: true
-  become_method: sudo
+    - unzip
+  tags: postinstall
   when: ansible_os_family == "Debian"
 
 - name: Install of cluster packages (centos cluster)
@@ -70,7 +70,7 @@
 
 - name: Install of glusterfs-server (debian cluster)
   apt: name=glusterfs-server state=present
-  when: ansible_os_family == "Debian" and is_docker.stdout != "docker" and cluster != 0
+  when: ansible_os_family == "Debian" and cluster != 0
 
 - name: Install of cluster packages (debian cluster)
   apt: name={{ item }} state=present
@@ -79,4 +79,4 @@
     - python
     - python-pip
     - python-psycopg2
-  when: ansible_os_family == "Debian" and cluster != 0 and is_docker.stdout == "docker"
+  when: ansible_os_family == "Debian" and cluster != 0

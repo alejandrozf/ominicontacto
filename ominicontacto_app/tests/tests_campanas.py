@@ -38,15 +38,15 @@ from configuracion_telefonia_app.models import DestinoEntrante
 
 from ominicontacto_app.models import (AgenteEnContacto, Campana, QueueMember, OpcionCalificacion,
                                       Formulario, ParametrosCrm)
-from ominicontacto_app.forms import CampanaPreviewForm, TIEMPO_MINIMO_DESCONEXION
-
+from ominicontacto_app.forms import (CampanaPreviewForm, TIEMPO_MINIMO_DESCONEXION,
+                                     CampanaDialerForm, CampanaForm)
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, UserFactory,
                                                QueueFactory, AgenteProfileFactory,
                                                AgenteEnContactoFactory, QueueMemberFactory,
                                                NombreCalificacionFactory,
                                                OpcionCalificacionFactory, ArchivoDeAudioFactory,
                                                ActuacionVigenteFactory, FormularioFactory,
-                                               SitioExternoFactory)
+                                               SitioExternoFactory, SistemaExternoFactory)
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, OMLTransaccionBaseTest
 
@@ -218,6 +218,56 @@ class CampanasTests(OMLBaseTest):
         self.queue = QueueFactory.create(campana=self.campana_activa)
         QueueFactory.create(campana=self.campana)
 
+    def test_campana_preview_imposibilitar_Url_externo_si_la_interaccion_es_formulario(self):
+        sitio_externo = SitioExternoFactory()
+        campana_preview_data = {'nombre': 'test',
+                                'bd_contacto': self.contacto.bd_contacto,
+                                'tipo_interaccion': Campana.FORMULARIO,
+                                'objetivo': 1,
+                                'sitio_externo': sitio_externo.pk,
+                                'tiempo_desconexion': 2}
+        campana_preview_form = CampanaPreviewForm(data=campana_preview_data)
+        message = _('No se puede elegir un URL externo si selecciono un formulario.')
+        self.assertEqual(campana_preview_form.errors['sitio_externo'], [message])
+
+    def test_campana_dailer_imposibilitar_Url_externo_si_la_interaccion_es_formulario(self):
+        sitio_externo = SitioExternoFactory()
+        campana_dailer_data = {'nombre': 'test',
+                               'bd_contacto': self.contacto.bd_contacto,
+                               'tipo_interaccion': Campana.FORMULARIO,
+                               'objetivo': 1,
+                               'sitio_externo': sitio_externo.pk,
+                               'tiempo_desconexion': 2}
+        campana_dailer_form = CampanaDialerForm(data=campana_dailer_data)
+        message = _('No se puede elegir un URL externo si selecciono un formulario.')
+        self.assertEqual(campana_dailer_form.errors['sitio_externo'], [message])
+
+    def test_campana_entrante_imposibilitar_Url_externo_si_la_interaccion_es_formulario(self):
+        sitio_externo = SitioExternoFactory()
+        campana_entrante_data = {'nombre': 'test',
+                                 'bd_contacto': self.contacto.bd_contacto,
+                                 'tipo_interaccion': Campana.FORMULARIO,
+                                 'objetivo': 1,
+                                 'sitio_externo': sitio_externo.pk,
+                                 'tiempo_desconexion': 2}
+        campana_entrante_form = CampanaForm(data=campana_entrante_data)
+        message = _('No se puede elegir un URL externo si selecciono un formulario.')
+        self.assertEqual(campana_entrante_form.errors['sitio_externo'], [message])
+
+    def test_campana_no_guardar_url_externo_si_interaccion_es_formulario(self):
+        msg = _('No se puede elegir un URL externo si selecciono un formulario.')
+        with self.assertRaisesMessage(ValidationError, msg):
+            sitio_externo = SitioExternoFactory()
+            campana = Campana(nombre='test',
+                              bd_contacto=self.contacto.bd_contacto,
+                              tipo_interaccion=Campana.FORMULARIO,
+                              objetivo=1,
+                              type=Campana.TYPE_DIALER,
+                              sitio_externo=sitio_externo,
+                              reported_by=UserFactory(),
+                              tiempo_desconexion=2)
+            campana.save()
+
 
 class AgenteCampanaTests(CampanasTests):
 
@@ -358,10 +408,10 @@ class SupervisorCampanaTests(CampanasTests):
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     @patch.object(Campana, "crear_tarea_actualizacion")
-    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
     def test_usuario_logueado_puede_crear_campana_preview(
-            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
             crear_tarea_actualizacion, _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
@@ -377,10 +427,10 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertTrue(Campana.objects.get(nombre=nombre_campana))
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
-    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
     def test_usuario_logueado_puede_modificar_campana_preview(
-            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
             _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_preview_update', args=[self.campana_activa.pk])
         nuevo_objetivo = 3
@@ -432,10 +482,10 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertTemplateUsed(response, u'registration/login.html')
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
-    @patch("ominicontacto_app.views_queue_member.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_queue_member.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_queue_member.adicionar_agente_cola")
     def test_usuario_logueado_agrega_agentes_a_campana_preview(
-            self, adicionar_agente_activo_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            self, adicionar_agente_activo_cola, obtener_sip_agentes_sesiones_activas,
             _generar_y_recargar_configuracion_asterisk):
         # anulamos con mock las partes de regeneracion de asterisk y obtención de sip de agentes
         # pues no se esta comprobando en este test y ademas necesita conexión a componentes externos
@@ -446,10 +496,10 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertTrue(QueueMember.objects.all().exists())
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
-    @patch("ominicontacto_app.views_queue_member.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_queue_member.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_queue_member.adicionar_agente_activo_cola")
     def test_si_se_genera_error_en_activacion_cola_no_se_agrega_agente_a_campana(
-            self, adicionar_agente_activo_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            self, adicionar_agente_activo_cola, obtener_sip_agentes_sesiones_activas,
             _generar_y_recargar_configuracion_asterisk):
         _generar_y_recargar_configuracion_asterisk.side_effect = Exception()
         url = reverse('queue_member_add', args=[self.campana_activa.pk])
@@ -466,10 +516,10 @@ class SupervisorCampanaTests(CampanasTests):
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     @patch.object(Campana, "crear_tarea_actualizacion")
-    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
     def test_creacion_campana_preview_inicializa_relacion_agente_contacto(
-            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
             crear_tarea_actualizacion, _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
@@ -569,10 +619,10 @@ class SupervisorCampanaTests(CampanasTests):
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     @patch.object(Campana, "crear_tarea_actualizacion")
-    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
     def test_crear_campana_preview_adiciona_tarea_programada_actualizacion_contactos(
-            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
             crear_tarea_actualizacion, _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
@@ -952,10 +1002,10 @@ class SupervisorCampanaTests(CampanasTests):
                 post_step4_data)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
-    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
     def test_wizard_crear_campana_entrante_sin_bd_le_asigna_bd_contactos_defecto(
-            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
             _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_nuevo')
         nombre_campana = 'campana_name'
@@ -975,12 +1025,40 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertTrue(Campana.objects.filter(nombre=nombre_campana).exists())
         campana = Campana.objects.get(nombre=nombre_campana)
         self.assertTrue(campana.bd_contacto is not None)
+        self.assertTrue(campana.bd_contacto.get_metadata().columna_id_externo is None)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
-    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
+    @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
+    def test_wizard_crear_campana_entrante_sin_bd_y_sistema_externo_crea_bd_con_id_externo(
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
+            _generar_y_recargar_configuracion_asterisk):
+        url = reverse('campana_nuevo')
+        nombre_campana = 'campana_name'
+        audio_ingreso = ArchivoDeAudioFactory.create()
+        (post_step0_data, post_step1_data, post_step2_data,
+         post_step3_data, post_step4_data,
+         post_step5_data) = self._obtener_post_data_wizard_creacion_campana_entrante(
+             nombre_campana, audio_ingreso)
+        post_step0_data['0-sistema_externo'] = SistemaExternoFactory().pk
+        post_step0_data['0-id_externo'] = "camp_manual_bd_vacia"
+        # realizamos la creación de la campaña mediante el wizard
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        self.client.post(url, post_step2_data, follow=True)
+        # self.client.post(url, post_step3_data, follow=True)
+        self.client.post(url, post_step4_data, follow=True)
+        self.client.post(url, post_step5_data, follow=True)
+
+        self.assertTrue(Campana.objects.filter(nombre=nombre_campana).exists())
+        campana = Campana.objects.get(nombre=nombre_campana)
+        self.assertTrue(campana.bd_contacto.get_metadata().columna_id_externo is not None)
+
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
     def test_wizard_es_posible_asignar_contacto_a_bd_por_defecto_en_campana_entrante(
-            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
             _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_nuevo')
         nombre_campana = 'campana_name'
@@ -1004,10 +1082,10 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertEqual(campana.bd_contacto.contactos.count(), 1)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
-    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
     def test_creacion_campana_entrante_crea_nodo_ruta_entrante(
-            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
             _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_nuevo')
         nombre_campana = 'campana_name'
@@ -1028,10 +1106,10 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertEqual(DestinoEntrante.objects.all().count(), 2)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
-    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
     def test_creacion_campana_entrante_desde_template_crea_nodo_ruta_entrante(
-            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
             _generar_y_recargar_configuracion_asterisk):
         campana_entrante_template = CampanaFactory.create(
             type=Campana.TYPE_ENTRANTE, estado=Campana.ESTADO_TEMPLATE_ACTIVO)
@@ -1062,10 +1140,10 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertEqual(DestinoEntrante.objects.all().count(), 2)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
-    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
     def test_wizard_crear_campana_manual_sin_bd_crea_y_le_asigna_bd_contactos_defecto(
-            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
             _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_manual_create')
         nombre_campana = 'campana_nombre'
@@ -1083,12 +1161,13 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertTrue(Campana.objects.filter(nombre=nombre_campana).exists())
         campana = Campana.objects.get(nombre=nombre_campana)
         self.assertTrue(campana.bd_contacto is not None)
+        self.assertTrue(campana.bd_contacto.get_metadata().columna_id_externo is None)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
-    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
     def test_wizard_es_posible_asignar_contacto_a_bd_por_defecto_en_campana_manual(
-            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
             _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_manual_create')
         nombre_campana = 'campana_nombre'
@@ -1109,6 +1188,31 @@ class SupervisorCampanaTests(CampanasTests):
         campana.bd_contacto.contactos.add(self.contacto)
         self.assertEqual(campana.bd_contacto.contactos.count(), 1)
 
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
+    @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
+    def test_wizard_crear_campana_manual_sin_bd_y_sistema_externo_crea_bd_con_id_externo(
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
+            _generar_y_recargar_configuracion_asterisk):
+        url = reverse('campana_manual_create')
+        nombre_campana = 'campana_nombre'
+        (post_step0_data, post_step1_data,
+         post_step2_data, post_step3_data,
+         post_step4_data) = self._obtener_post_data_wizard_creacion_campana_manual(
+             nombre_campana)
+        post_step0_data['0-sistema_externo'] = SistemaExternoFactory().pk
+        post_step0_data['0-id_externo'] = "camp_manual_bd_vacia"
+        # realizamos la creación de la campaña mediante el wizard
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        # self.client.post(url, post_step2_data, follow=True)
+        self.client.post(url, post_step3_data, follow=True)
+        self.client.post(url, post_step4_data, follow=True)
+
+        self.assertTrue(Campana.objects.filter(nombre=nombre_campana).exists())
+        campana = Campana.objects.get(nombre=nombre_campana)
+        self.assertTrue(campana.bd_contacto.get_metadata().columna_id_externo is not None)
+
     @patch.object(CampanaService, 'crear_campana_wombat')
     @patch.object(CampanaService, 'crear_trunk_campana_wombat')
     @patch.object(CampanaService, 'crear_reschedule_campana_wombat')
@@ -1119,10 +1223,10 @@ class SupervisorCampanaTests(CampanasTests):
     @patch.object(CampanaService, 'chequear_campanas_finalizada_eliminarlas')
     @patch.object(SincronizarBaseDatosContactosService, 'crear_lista')
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
-    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
     def test_usuario_logueado_puede_crear_campana_dialer(
-            self, adicionar_agente_activo_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            self, adicionar_agente_activo_cola, obtener_sip_agentes_sesiones_activas,
             crear_campana_wombat, crear_trunk_campana_wombat, crear_reschedule_campana_wombat,
             crear_endpoint_campana_wombat, crear_endpoint_asociacion_campana_wombat,
             crear_lista_contactos_wombat, crear_lista_asociacion_campana_wombat,
@@ -1157,10 +1261,10 @@ class SupervisorCampanaTests(CampanasTests):
     @patch.object(CampanaService, 'update_endpoint')
     @patch.object(ActivacionQueueService, '_generar_y_recargar_configuracion_asterisk')
     @patch.object(CampanaService, 'chequear_campanas_finalizada_eliminarlas')
-    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
     def test_usuario_logueado_puede_modificar_campana_dialer(
-            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
             activar, crear_campana_wombat, update_endpoint,
             _generar_y_recargar_configuracion_asterisk, chequear_campanas_finalizada_eliminarlas):
         url = reverse('campana_dialer_update', args=[self.campana_dialer.pk])
@@ -1251,10 +1355,10 @@ class SupervisorCampanaTests(CampanasTests):
             type=Campana.TYPE_ENTRANTE).exists())
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
-    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
     def test_usuario_logueado_puede_crear_campana_entrante_desde_template(
-            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
             _generar_y_recargar_configuracion_asterisk):
         campana_entrante_template = CampanaFactory.create(
             type=Campana.TYPE_ENTRANTE, estado=Campana.ESTADO_TEMPLATE_ACTIVO)
@@ -1392,10 +1496,10 @@ class SupervisorCampanaTests(CampanasTests):
     @patch.object(SincronizarBaseDatosContactosService, 'crear_lista')
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     @patch.object(CampanaService, 'chequear_campanas_finalizada_eliminarlas')
-    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
     def test_usuario_logueado_puede_crear_campana_dialer_desde_template(
-            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
             crear_campana_wombat, crear_trunk_campana_wombat, crear_reschedule_campana_wombat,
             crear_endpoint_campana_wombat, crear_endpoint_asociacion_campana_wombat,
             crear_lista_contactos_wombat, crear_lista_asociacion_campana_wombat, crear_lista,
@@ -1496,10 +1600,10 @@ class SupervisorCampanaTests(CampanasTests):
                 post_step4_data)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
-    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
     def test_usuario_logueado_puede_crear_campana_manual_desde_template(
-            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
             _generar_y_recargar_configuracion_asterisk):
         campana = CampanaFactory.create(type=Campana.TYPE_MANUAL)
         queue = QueueFactory.create(
@@ -1583,10 +1687,10 @@ class SupervisorCampanaTests(CampanasTests):
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     @patch.object(Campana, "crear_tarea_actualizacion")
-    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
     def test_usuario_logueado_puede_crear_campana_preview_desde_template(
-            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
             crear_tarea_actualizacion, _generar_y_recargar_configuracion_asterisk):
         campana = CampanaFactory.create(type=Campana.TYPE_PREVIEW)
         queue = QueueFactory.create(
@@ -1665,10 +1769,10 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertEqual(self.campana_activa.estado, Campana.ESTADO_BORRADA)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
-    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
     def test_creacion_campana_incluye_etapa_asignacion_agentes(
-            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
             _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_manual_create')
         nombre_campana = 'campana_nombre'
@@ -1688,10 +1792,10 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertEqual(QueueMember.objects.count(), count_queue_members + 1)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
-    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
     def test_creacion_campana_desde_template_incluye_etapa_asignacion_agentes(
-            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
             _generar_y_recargar_configuracion_asterisk):
         campana = CampanaFactory.create(type=Campana.TYPE_MANUAL)
         QueueFactory.create(campana=campana, pk=campana.nombre)
@@ -1718,10 +1822,10 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertEqual(QueueMember.objects.count(), count_queue_members + 1)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
-    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
     def test_creacion_campana_incluye_etapa_asignacion_supervisores(
-            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
             _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_manual_create')
         nombre_campana = 'campana_nombre'
@@ -1742,10 +1846,10 @@ class SupervisorCampanaTests(CampanasTests):
         self.assertTrue(campana.supervisors.exists())
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
-    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas_kamailio")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
     def test_creacion_campana_desde_template_incluye_etapa_asignacion_supervisores(
-            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas_kamailio,
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
             _generar_y_recargar_configuracion_asterisk):
         campana = CampanaFactory.create(type=Campana.TYPE_MANUAL)
         QueueFactory.create(campana=campana, pk=campana.nombre)

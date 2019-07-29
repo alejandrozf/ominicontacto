@@ -198,3 +198,13 @@ class FiltrosGrabacionesTests(BaseGrabacionesTests):
         self.assertContains(response, self.grabacion1.tel_cliente)
         self.assertContains(response, self.grabacion2.tel_cliente)
         self.assertContains(response, self.grabacion3.tel_cliente)
+
+    def test_buscar_grabaciones_por_callid(self):
+        Grabacion.objects.filter(id=self.grabacion1.id).update(callid='1')
+        url = reverse('grabacion_buscar', kwargs={'pagina': 1})
+        post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'agente': '',
+                     'campana': '', 'marcadas': '', 'duracion': '', 'callid': '1'}
+        response = self.client.post(url, post_data, follow=True)
+        self.assertContains(response, self.grabacion1.tel_cliente)
+        self.assertNotContains(response, self.grabacion2.tel_cliente)
+        self.assertNotContains(response, self.grabacion3.tel_cliente)

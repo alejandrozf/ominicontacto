@@ -26,6 +26,7 @@ DT:Mover la creacion de agente a otra vista
 from __future__ import unicode_literals
 
 import logging
+import requests
 
 from services.sms_services import SmsManager
 from django.utils.translation import ugettext_lazy as _
@@ -39,9 +40,13 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView
 )
+
+from constance import config as config_constance
+
 from defender import utils
 from defender import config
 
@@ -49,13 +54,15 @@ from ominicontacto_app.models import (
     User, AgenteProfile, Modulo, Grupo, Pausa, DuracionDeLlamada, Agenda,
     Chat, MensajeChat
 )
-from ominicontacto_app.forms import AgendaBusquedaForm, PausaForm, GrupoForm
+from ominicontacto_app.forms import AgendaBusquedaForm, PausaForm, GrupoForm, RegistroForm
 from ominicontacto_app.services.kamailio_service import KamailioService
 from ominicontacto_app.utiles import convert_string_in_boolean,\
     convert_fecha_datetime
 from ominicontacto_app import version
 from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     RestablecerConfiguracionTelefonicaError, SincronizadorDeConfiguracionPausaAsterisk)
+
+from utiles_globales import AddSettingsContextMixin
 
 logger = logging.getLogger(__name__)
 
@@ -69,8 +76,11 @@ logger = logging.getLogger(__name__)
 
 
 def index_view(request):
-    response = redirect('/accounts/login')
-    return response
+    template_name = "base.html"
+    if not request.user.is_authenticated():
+        return redirect('login')
+    else:
+        return TemplateResponse(request, template_name)
 
 
 def login_view(request):
@@ -107,8 +117,12 @@ def login_view(request):
                     return HttpResponseRedirect(reverse('view_node'))
                 else:
                     return HttpResponseRedirect(reverse('index'))
+
     else:
-        form = AuthenticationForm(request)
+        if request.user.is_authenticated():
+            return HttpResponseRedirect(reverse('index'))
+        else:
+            form = AuthenticationForm(request)
     context = {
         'form': form,
         'detail': detail,
@@ -274,7 +288,7 @@ class SincronizarPausaMixin(object):
                 sincronizador.regenerar_asterisk(pausa)
                 message = (_(u"La pausa se ha guardado exitosamente."))
             messages.add_message(self.request, messages.SUCCESS, message)
-        except RestablecerConfiguracionTelefonicaError, e:
+        except RestablecerConfiguracionTelefonicaError as e:
             message = _("Operación Errónea! "
                         "No se realizo de manera correcta la sincronización de los  "
                         "datos en asterisk según el siguiente error: {0}".format(e))
@@ -327,7 +341,7 @@ class PausaToggleDeleteView(SincronizarPausaMixin, TemplateView):
 # Vista de Agente
 ##################
 
-class ConsolaAgenteView(TemplateView):
+class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
     template_name = "agente/base_agente.html"
 
     def dispatch(self, request, *args, **kwargs):
@@ -362,6 +376,7 @@ class ConsolaAgenteView(TemplateView):
         context['agente_profile'] = agente_profile
         context['sip_usuario'] = sip_usuario
         context['sip_password'] = sip_password
+        context['agentes'] = AgenteProfile.objects.obtener_activos().exclude(id=agente_profile.id)
 
         return context
 
@@ -552,7 +567,6 @@ class AcercaTemplateView(TemplateView):
     """
 
     template_name = 'acerca/acerca.html'
-    context_object_name = 'acerca'
 
     def get_context_data(self, **kwargs):
         context = super(
@@ -564,9 +578,63 @@ class AcercaTemplateView(TemplateView):
         return context
 
 
+class RegistroFormView(FormView):
+    """Vista que se encarga de registrar un usuario en el servidor de llaves y crear al usuario
+    settings para que los pueda usar en los accesos a funcionalidades
+    """
+
+    template_name = 'registro.html'
+    form_class = RegistroForm
+
+    def get_success_url(self):
+        return reverse('registrar_usuario')
+
+    def get_context_data(self, **kwargs):
+        context = super(RegistroFormView, self).get_context_data(**kwargs)
+        registered = (config_constance.CLIENT_NAME != '' and config_constance.CLIENT_KEY != '')
+        context['registered'] = registered
+        return context
+
+    def _create_credentials(self, form):
+        create_url = '{0}/retrieve_key/'.format(config_constance.KEYS_SERVER_HOST)
+        try:
+            client = form.cleaned_data['nombre']
+            password = form.cleaned_data['password']
+            email = form.cleaned_data['email']
+            telefono = form.cleaned_data['telefono']
+        except AttributeError:
+            msg = _('No tiene settings de conexión configurados')
+            logger.error(msg)
+            return {'status': 'ERROR', 'msg': msg}
+        post_data = {'client': client, 'password': password, 'email': email, 'phone': telefono}
+        try:
+            result = requests.post(
+                create_url, json=post_data, verify=config_constance.SSL_CERT_FILE)
+        except requests.exceptions.RequestException as e:
+            msg = _('Error en el intento de conexión a: {0} debido {1}'.format(create_url, e))
+            logger.error(msg)
+            return {'status': 'ERROR', 'msg': msg}
+        return result.json()
+
+    def form_valid(self, form):
+        result = self._create_credentials(form)
+        if result['status'] == 'ERROR':
+            message = result['msg']
+            messages.error(self.request, message)
+            return render(self.request, 'registro.html', {'form': form})
+        message = _('Credenciales creadas para esta instancia')
+        messages.success(self.request, message)
+        config_constance.CLIENT_NAME = result['user_name']
+        config_constance.CLIENT_PASSWORD = form.cleaned_data['password']
+        config_constance.CLIENT_KEY = result['user_key']
+        config_constance.CLIENT_EMAIL = result['user_email']
+        config_constance.CLIENT_PHONE = result['user_phone']
+        return super(RegistroFormView, self).form_valid(form)
+
+
 # TEST para probar sitio externo
 def profile_page(request, username):
     prueba = request.GET.get('q', '')
-    print prueba
+    print(prueba)
     return render_to_response('blanco.html',
                               context_instance=RequestContext(request))

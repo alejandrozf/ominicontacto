@@ -27,14 +27,18 @@
         <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >
         <!-- Custom CSS -->
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.growl.css' %}">
         <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/google-font.css' %}">
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
         <!-- Scripts -->
+        <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
         <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
         <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.growl.js' %}"></script>
         <script src="{% static 'ominicontacto/JS/agente/formularioCalificacion.js' %}"></script>
         <script src="{% static 'ominicontacto/JS/agente/make_click2call.js' %}"></script>
+        <script src="{% static 'ominicontacto/JS/agente/interaccionSitioExterno.js' %}"></script>
 
         <!-- TODO: REMOVER - FIX HASTA CAMBIAR BS3 por BS4 -->
         <style type="text/css">
@@ -42,6 +46,10 @@
            opacity: 1;
          }
         </style>
+
+        <script type="text/javascript">
+            var configuracion_sitio_externo = {{ configuracion_sitio_externo|safe }};
+        </script>
 
     </head>
     <body>
@@ -57,11 +65,9 @@
             <br>
         {% endif %}
 
-        {% if campana.tiene_interaccion_con_sitio_externo %}
-            <div>
-                <a href="{{ url_sitio_externo }}" target="_blank">{% trans "Interacción CRM" %}</a>
-            </div>
-        {% endif %}
+        <form id="form_sitio_externo">
+            <input id="submit_interaccion" type="hidden" name="" value="{% trans 'Interacción CRM' %}">
+        </form>
 
         <form id="form-calificacion" action = "" method = "post">
             {% csrf_token %}
@@ -80,7 +86,7 @@
                         <tr>
                             <th>{{ field.label_tag }}</th>
                             <th>{{ field.errors }}</th>
-                            <td> {{ field }} 
+                            <td> {{ field }}
                             {% if contacto and field.name in campos_telefono %}
                                     <a class="btn btn-submit btn-outline-primary" href="javascript:;" onclick="makeClick2Call('{{ campana.id }}', '{{ campana.type }}', '{{ contacto.id }}', '{{ field.value }}', 'agendas');" name="click2call">{{ field.value }}</a>
                             {% endif %}

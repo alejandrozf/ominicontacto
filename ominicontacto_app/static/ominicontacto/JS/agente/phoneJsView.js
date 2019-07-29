@@ -38,10 +38,14 @@ class PhoneJSView {
         this.changeCampaignMenu = $("#modalSelectCmp");
         this.timebar = $('#timeBar');
         this.callButton = $("#call");
+        this.callOffCampaignMenuButton = $("#call_off_campaign_menu");
+        this.callAgentButton = $("#call_agent");
+        this.callPhoneOffCampaignButton = $("#call_phone_off_campaign");
         this.numberDisplay = $("#numberToCall");
         this.redialButton = $("#redial");
         this.holdButton = $("#onHold");
         this.transferButton = $("#Transfer");
+        this.conferButton = $("#Confer");
         this.endTransferButton = $("#EndTransfer");
         this.transferOutMenu = $("#modalTransfer");
         this.inboundCallMenu = $("#modalReceiveCalls");
@@ -52,9 +56,10 @@ class PhoneJSView {
                                    'asterisk', 'hashtag']
         this.inputs_ids = ["Resume", "Pause", "changeCampAssocManualCall",
                            "call", "numberToCall", "redial", "onHold", "Transfer",
-                           "EndTransfer", "SignCall", "endCall"]
+                           "Confer", "EndTransfer", "SignCall", "endCall",
+                           "call_off_campaign_menu"]
         this.modal_menus_ids = ["modalPause", "modalSelectCmp",
-                                "modalTransfer", "modalReceiveCalls", ]
+                                "modalTransfer", "modalReceiveCalls", "modalCallOffCamp"]
         
         /* Outputs */
         this.sipStatus = $('#SipStatus');
@@ -66,6 +71,7 @@ class PhoneJSView {
         this.setPauseButton = $("#setPause");
         this.tagCallMenu = $("#modalSignCall");
         this.makeTransferButton = $("#makeTransfer");
+        this.callOffCampaignMenu = $("#modalCallOffCamp");
 
         this.startKeypad();
         this.startTransferMenu();
@@ -267,12 +273,14 @@ var PHONE_STATUS_CONFIGS = {
     },
     'Ready': {
         keypad_enabled: true,
-        enabled_buttons: ['Pause', 'changeCampAssocManualCall', 'call', 'numberToCall', 'redial'],
+        enabled_buttons: ['Pause', 'changeCampAssocManualCall', 'call', 'numberToCall', 'redial',
+                          'call_off_campaign_menu'],
         color: '#ECEEEA',
     },
     'Paused': {
         keypad_enabled: true,
-        enabled_buttons: ['Resume', 'changeCampAssocManualCall', 'call', 'numberToCall', 'redial'],
+        enabled_buttons: ['Resume', 'changeCampAssocManualCall', 'call', 'numberToCall', 'redial',
+                          'call_off_campaign_menu'],
         color: '#e0b93d',
     },
     'Calling': {
@@ -292,7 +300,7 @@ var PHONE_STATUS_CONFIGS = {
     },
     'Transfering': {
         keypad_enabled: false,
-        enabled_buttons: ['EndTransfer', 'SignCall', 'endCall'],
+        enabled_buttons: ['EndTransfer', 'SignCall', 'endCall', 'Confer'],
         color: '#bfef7a',
     },
     'ReceivingCall': {

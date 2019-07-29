@@ -1,7 +1,7 @@
 [Unit]
 Description=Kamailio SIP Server
 Documentation=man:kamailio(8) http://www.kamailio.org/
-After=syslog.target network-online.target postgresql.service
+After=syslog.target network-online.target redis.service
 
 [Service]
 Type=forking
@@ -9,6 +9,7 @@ User={{ usuario }}
 Environment=SHM_SIZE=64
 Environment=PKG_SIZE=8
 ExecStartPre={{ kamailio_location }}/sbin/kamailio -c
+ExecStartPre=/usr/bin/redis-cli -n 1 FLUSHALL
 ExecStart={{ kamailio_location }}/sbin/kamailio -m $SHM_SIZE -M $PKG_SIZE -P {{ kamailio_location }}/run/kamailio/kamailio.pid
 {% if ansible_os_family == "RedHat" %}
 ExecStop=/usr/bin/rm -f {{ kamailio_location }}/run/kamailio/kamailio.pid

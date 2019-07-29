@@ -19,12 +19,14 @@
 
 from __future__ import unicode_literals
 
-from django.db import connection
+from django.conf import settings
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _
 
 from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError
 from ominicontacto_app.models import CalificacionCliente
+
+from api_app.utiles import EstadoAgentesService
 
 
 def validar_extension_archivo_audio(valor):
@@ -55,10 +57,21 @@ def validar_estructura_csv(data_csv_memory, err_message, logger):
         raise(OmlArchivoImportacionInvalidoError(err_message))
 
 
-def obtener_sip_agentes_sesiones_activas_kamailio():
-    cursor = connection.cursor()
-    sql = "select username from location"
-    cursor.execute(sql)
-    values = cursor.fetchall()
-    result = [int(value[0]) for value in values]
-    return result
+def obtener_sip_agentes_sesiones_activas():
+    agentes_activos_service = EstadoAgentesService()
+    agentes = list(agentes_activos_service._obtener_agentes_activos_ami())
+    sips_agentes = []
+    for agente in agentes:
+        if agente['status'] != 'OFFLINE':
+            sips_agentes.append(int(agente['sip']))
+    return sips_agentes
+
+
+class AddSettingsContextMixin(object):
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AddSettingsContextMixin, self).get_context_data(*args, **kwargs)
+        context['KAMAILIO_HOSTNAME'] = settings.KAMAILIO_HOSTNAME
+        context['NGINX_HOSTNAME'] = settings.NGINX_HOSTNAME
+        context['EXTERNAL_PORT'] = settings.OML_EXTERNAL_PORT
+        return context

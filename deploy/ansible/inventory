@@ -1,29 +1,34 @@
-[omniapp]
-omniapp ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #cluster server do not erase this comment
-[kamailio]
-kamailio ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #cluster server do not erase this comment
-[asterisk]
-asterisk ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #cluster server do not erase this comment
-[database]
-database ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #cluster server do not erase this comment
-[dialer]
-dialer ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #cluster server do not erase this comment
+#############################################
+# Omnileads inventory .ini file for ansible #
+#############################################
 
-[omnileads-aio]
-hostname ansible_connection=local ansible_user=root ansible_host=X.X.X.X  #(this line is for self-hosted installation)
+
+# If you are installing a prodenv (PE) AIO y bare-metal, change the IP and hostname here
+[prodenv-aio]
+#hostname ansible_connection=local ansible_user=root ansible_host=X.X.X.X #(this line is for self-hosted installation)
 #hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #(this line is for node-host installation)
 
-[omnileads-cluster:children]
-omniapp
-database
-asterisk
-kamailio
-dialer
+# Docker host is localhost because the application is deployed in localhost. Uncomment the line if you want to deploy DE or PE
+# If you are installing a devenv (PE) uncomment
+[prodenv-container]
+#localhost ansible_connection=local
+# If you are installing a devenv (DE) uncomment
+[devenv-container]
+#localhost ansible_connection=local
 
-[everyone:children]
-omnileads-aio
-omnileads-cluster
+# If you  are installing a cluster in bare-metal uncomment this lines and change IP and hostnames of servers
+[omniapp]
+#hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X
+[kamailio]
+#hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X
+[asterisk]
+#hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X
+[database]
+#hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X
+[dialer]
+#hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X
 
+# These are the variables used for every kind of installation
 [everyone:vars]
 
 ###############
@@ -33,33 +38,57 @@ omnileads-cluster
 # Database
 postgres_database=omnileads
 postgres_user=omnileads
-postgres_password=admin123
+postgres_password=my_very_strong_pass
 # Admin web
-admin_pass=098098ZZZ
+admin_pass=my_very_strong_pass
 # AMI for wombat dialer
 ami_user=omnileadsami
 ami_password=5_MeO_DMT
 # Wombat dialer web
 dialer_user=demoadmin
 dialer_password=demo
-# MySQL (ONLY CHANGE THIS PASSWORD IN FIRST INSTALLATION) 
-mysql_root_password=098098ZZZ
+# MySQL (ONLY CHANGE THIS PASSWORD IN FIRST INSTALLATION)
+mysql_root_password=my_very_strong_pass
 # AMI for supervision
 sup_ami_user=omnisup
 sup_ami_password=Sup3rst1c10n
 #Set the timezone where the nodes are UNCOMMENT and set this if you are doing a fresh install
-TZ=America/Argentina/Cordoba
-
-# Change this value if the recordings are not converted to mp3
-formato_conversion=mp3
-
+#TZ=America/Argentina/Cordoba
+#External port is the port where OML web server will listen requests. By default is 443
+external_port=443
+# Session Cookie Age (SCA) is the time in seconds that will last the https session when inactivity is detected in the session (by default is 1 hour)
+SCA=3600
+# Ephemeral Credentials TTL (ECTTL) is the time in seconds that will last the SIP credentials used to authenticate a SIP user in the telephony system (by default 8 hours)
+ECCTL=28800
+# MONITORFORMAT refers to the format that your recordings will be converted. Mp3 is the preferred format because the small size of file. If you want your
+# recordings in format "wav" (asterisk default recording format), change this variable to wav 
+# The conversion of recordings is scheduled to be done at 01:00 am everyday you can edit this changing crontab of omnileads user
+MONITORFORMAT=mp3
 #Change this value if you want to change the language of schedule calification
 schedule=Agenda
 
-[omnileads-aio:vars]
-################ Puerto SSH ##################
+###############################################
+# From here to below DO NOT CHANGE THE VALUES #
+###############################################
+
+# These are the vars used for docker deploys.
+[devenv-container:vars]
+devenv=1
+prodenv=0
+
+[prodenv-container:vars]
+devenv=0
+prodenv=1
+
+[docker:vars]
+aio=0
+cluster=1
+is_docker=true
+docker_user='{{ lookup("env","SUDO_USER") }}'
+
+# These are the vars used for AIO installations.
+[prodenv-aio:vars]
 ssh_port="{{ ansible_ssh_port }}"
-###### IP's y FQDN ########
 omni_ip="{{ ansible_host }}"
 omniapp_ip="{{ omni_ip }}"
 asterisk_ip="{{ omni_ip }}"
@@ -72,9 +101,13 @@ asterisk_fqdn="{{ omni_fqdn }}"
 kamailio_fqdn="{{ omni_fqdn }}"
 database_fqdn="{{ omni_fqdn }}"
 dialer_fqdn="{{ omni_fqdn }}"
+cluster=0
+devenv=0
+prodenv=1
+is_docker=false
 
-[omnileads-cluster:vars]
-###### IP's y FQDN ########
+# These are the vars used for cluster horizontal installations.
+[prodenv-cluster:vars]
 omniapp_ip="{{ hostvars[groups['omniapp'][0]].ansible_host }}"
 omniapp_fqdn="{{ hostvars[groups['omniapp'][0]].inventory_hostname }}"
 database_ip="{{ hostvars[groups['database'][0]].ansible_host }}"
@@ -85,3 +118,24 @@ kamailio_ip="{{ hostvars[groups['kamailio'][0]].ansible_host }}"
 kamailio_fqdn="{{ hostvars[groups['kamailio'][0]].inventory_hostname }}"
 dialer_ip="{{ hostvars[groups['dialer'][0]].ansible_host }}"
 dialer_fqdn="{{ hostvars[groups['dialer'][0]].inventory_hostname }}"
+cluster=1
+devenv=0
+prodenv=1
+is_docker=false
+
+[prodenv-cluster:children]
+omniapp
+database
+asterisk
+kamailio
+dialer
+
+[docker:children]
+devenv-container
+prodenv-container
+
+[everyone:children]
+prodenv-cluster
+prodenv-aio
+devenv-container
+prodenv-container

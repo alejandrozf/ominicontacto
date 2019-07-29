@@ -1,0 +1,11 @@
+.ready {
+    color: green;
+}
+
+.paused {
+    color: yellow;
+}
+
+.oncall {
+    color: red;
+}

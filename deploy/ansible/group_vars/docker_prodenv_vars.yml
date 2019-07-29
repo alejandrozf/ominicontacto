@@ -1,0 +1,34 @@
+---
+
+# Docker hosts at beginning is localhost because the base containers are raised up in localhost to install the application. Uncomment the line if you want to install DE or PE
+# If you are installing a devenv (DE) AIO uncomment these line
+# If you are installing a devenv (DE) AIO uncomment these line
+
+version: release-1.3.0
+customer: prodenv
+
+asterisk_version: "{{ version }}"
+kamailio_version: "{{ version }}"
+root_password: Sup3rS3cr3tP4ssw0rd
+
+# Networking settings
+prod_subnet: 192.168.15.0/24
+dialer_ip: 192.168.15.10
+kamailio_ip: 192.168.15.11
+omniapp_ip: 192.168.15.12
+nginx_external_port: 444
+pg_external_port: 446
+wd_external_port: 442
+
+# Folder locations
+asterisk_location:
+ast_local_location: "{{ build_location }}/asterisk"
+ast_agis_location: "{{ ast_local_location }}/agis"
+ast_conf_location: "{{ ast_local_location }}/conf"
+ast_other_location: "{{ build_location }}/scripts"
+build_location: "{{ docker_root }}/omnileads/build"
+certs_location: "{{ build_location }}/certs"
+deploy_location: "/{{ docker_root }}/omnileads/{{ customer }}"
+kamailio_location: "{{ build_location }}/kamailio"
+nginx_location: "{{ build_location }}/nginx"
+omniapp_location: "{{ build_location }}/omniapp"

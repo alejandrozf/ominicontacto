@@ -158,6 +158,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <td>{% trans 'Abandonadas' %}</td>
                 <td width="10%">{{ llamadas_por_tipo.3.abandonadas }}</td>
               </tr>
+              <tr>
+                  <td>{% trans 'Abandonadas durante anuncio' %}</td>
+                  <td width="10%">{{ llamadas_por_tipo.3.abandonadas_anuncio }}</td>
+              </tr>
             </table>
             {% if estadisticas_por_fecha.llamadas_por_tipo.3 %}
               <button class="btn btn-light" onclick="mostrarLlamadasPorFecha('Entrante');">
@@ -460,6 +464,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {{ campana.atendidas }}<span class="label">{% trans 'atendidas' %}</span>,
                     {{ campana.expiradas }}<span class="label">{% trans 'expiradas' %}</span>,
                     {{ campana.abandonadas }}<span class="label">{% trans 'abandonadas' %}</span>
+                    {{ campana.abandonadas_anuncio }}<span class="label">{% trans 'abandonadas en anuncio' %}</span>
                 </div>
             </td>
             <td>
@@ -490,6 +495,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         {{ llamadas.atendidas }}<span class="label">{% trans 'atendidas' %}</span>,
                         {{ llamadas.expiradas }}<span class="label">{% trans 'expiradas' %}</span>,
                         {{ llamadas.abandonadas }}<span class="label">{% trans 'abandonadas' %}</span>
+                        {{ llamadas.abandonadas_anuncio }}<span class="label">{% trans 'abandonadas en anuncio' %}</span>
                     </div>
                 </td>
                 <td>
@@ -780,6 +786,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <td>{% trans 'Atendidas' %}</td>
                     <td>{% trans 'Expiradas' %}</td>
                     <td>{% trans 'Abandonadas' %}</td>
+                    <td>{% trans 'Abandonadas durante anuncio' %}</td>
                     <td><strong>{% trans 'Total' %}</strong></td>
                   </tr>
                   {% for fecha, llamadas in llamadas_por_tipo.3.items %}
@@ -788,6 +795,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                       <td>{{ llamadas.atendidas }}</td>
                       <td>{{ llamadas.expiradas }}</td>
                       <td>{{ llamadas.abandonadas }}</td>
+                      <td>{{ llamadas.abandonadas_anuncio }}</td>
                       <td>{{ llamadas.total }}</td>
                     </tr>
                   {% endfor %}

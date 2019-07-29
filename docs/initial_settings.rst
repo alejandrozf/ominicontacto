@@ -6,6 +6,8 @@ Nuestra plataforma se encuentra instalada y por lo tanto disponible para comenza
 En esta sección vamos a avanzar con los pasos iniciales como crear nuestro primer usuario supervisor, generar grupos de agentes, agentes y sus pausas, para finalmente
 concluir el capítulo con un login de agente.
 
+.. _about_supervisor_user:
+
 Crear usuario supervisor
 ************************
 
@@ -63,6 +65,8 @@ Los campos allí desplegados son:
 - **Auto_attend_ics:** si este valor está checkeado entonces las llamadas provenientes del Addon de OMniLeads ICS (Interactive Contact System), llamadas derivadas del IVR blaster press-one serán atendidas automáticamente por el agente sin dar la posibilidad de que exista ring en su webphone.
 - **Auto_attend_inbound:** si este valor está checkeado entonces las llamadas provenientes de campañas entrantes serán conectadas al agente sin brindar la posibilidad de ring y answer por parte del agente.
 - **Auto_attend_dialer:** si este valor está checkeado entonces las llamadas provenientes de campañas con discador predictivo serán conectadas al agente sin brindar la posibilidad de ring y answer por parte del agente.
+
+.. _about_agent_user:
 
 Crear agentes
 *************

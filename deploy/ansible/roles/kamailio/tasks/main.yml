@@ -50,6 +50,15 @@
   tags: ['kamailio','postinstall']
   when: kamailio_installed.stdout == kamailio_version
 
+- name: Uninstall actual kamailio version
+  file: state=absent path={{ kamailio_location }}/{{ item }}
+  with_items:
+    - sbin
+    - etc/kamailio
+    - lib64
+  when: kamailio_installed.stdout != kamailio_version
+  tags: postinstall
+
 - include: kamailio_installation.yml
   tags: ['kamailio','postinstall']
   when: kamailio_installed.stdout != kamailio_version

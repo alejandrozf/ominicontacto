@@ -1,9 +1,12 @@
 [flake8]
-ignore = []
+ignore = 
+    W503
+    W504
 max-line-length = 100
 exclude =
     .git,
-    ominicontacto/settings.py
+    src/*
+    ominicontacto/settings/*
     ominicontacto_app/asterisk_config_generador_de_partes.py
     ominicontacto_app/version.py
     configuracion_telefonia_app/migrations/*

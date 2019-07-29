@@ -24,14 +24,11 @@
 # Se crea la llave publica y privada del usuario omnileads #https://docs.ansible.com/ansible/2.5/modules/user_module.html
 - name: Create {{ usuario }} user and public key
   user: name={{ usuario }} generate_ssh_key=yes group={{ usuario }} ssh_key_bits=2048 state=present shell=/bin/bash
-  become: true
-  become_method: sudo
   tags: omniapp
 
 # Creo directorio padre, home del usuario omnileads
 - name: Create the ominicontacto directorie
   file: "dest={{ install_prefix }} state=directory owner={{ usuario }} group={{ usuario }} recurse=yes"
-  when: desarrollo == 0
   tags: omniapp
 
 # Se crean los directorios basicos
@@ -40,8 +37,6 @@
   with_items:
       # Directorio que contiene configuracion de pip
           - "{{ install_prefix }}.pip"
-      # Directorio donde se guarda el archivo de settings de django
-          - "{{ install_prefix }}local"
       # Directorio donde se crean los json para hablar con la api de wombat
           - "{{ install_prefix }}wombat-json"
       # Directorio que guarda scripts de bash y de inicio del sericio omnileads
@@ -57,9 +52,10 @@
       # DOnde se guardan los logs uwsgi.log y django.log
           - "{{ install_prefix }}log"
           - "{{ install_prefix }}run"
-          - "{{ install_prefix }}asterisk/etc/asterisk"
+          - "{{ asterisk_location }}/etc/asterisk"
           - "{{ install_prefix}}virtualenv"
   tags: omniapp
+  ignore_errors: true
 
 #----------------------------------------------------------------------
 # pip / virtualenv
@@ -67,20 +63,17 @@
 
 # Opcion para agregar al pip
 - name: Setup pip
-  ini_file: >
-    dest={{ install_prefix }}.pip/pip.conf
-    section=install
-    option='download-cache'
-    value='{{ install_prefix }}.pip/cache'
+  template: src=templates/pip.conf dest={{ install_prefix }}.pip owner=root group=root mode=644
+  tags: postinstall
 
 #----------------------------------------------------------------------
 # ics_app installed, do this
 #----------------------------------------------------------------------
 
-- name: Get the ics_settings settings in temp file
-  shell: cat {{ install_prefix }}local/oml_settings_local.py | grep "#ICS" -A200 > /tmp/oml_settings_local.py2
-  tags: ['postinstall','changenetwork','changepassword']
-  when: ics_exists.rc == 0
+#- name: Get the ics_settings settings in temp file
+#  shell: cat {{ install_prefix }}local/oml_settings_local.py | grep "#ICS" -A200 > /tmp/oml_settings_local.py2
+#  tags: ['postinstall','changenetwork','changepassword']
+#  when: ics_exists.rc == 0 or ics_exists is defined
 
 # El codigo que está en /var/tmp/ominicontacto_build/ se pasa a /opt/omnileeads/ominicontacto
 - name: Upload built (rsync to /ominicontacto)
@@ -92,26 +85,20 @@
     - ominicontacto
     - ominicontacto_app
     - ominicontacto_voip
-    - Omnisup
     - reciclado_app
     - reportes_app
-    - requirements.txt
-    - utiles_globales.py
+    - requirements
+    - supervision_app
     - test
     - tests
-  when: desarrollo == 0
+    - utiles_globales.py
   tags: postinstall
-
-# Se clona el repo si es un entorno de desarrollo
-- name: Clone of OML repository (develop server)
-  git: repo=https://gitlab.com/omnileads/ominicontacto.git dest={{ install_prefix }}ominicontacto/ accept_hostkey=yes force=yes accept_hostkey=yes version={{ rama }}
-  when: desarrollo == 1 and ominicontacto_exists.rc == 1
 
 # Seteo posesion de ominicontacto al usuario omnileads
 - name: Change owner and group of ominicontacto
   file: "path={{ install_prefix }}ominicontacto owner={{ usuario }} group={{ usuario }} recurse=yes"
   tags: postinstall
-  
+
 # Se hace el upgrade de python setuptools usando pip. https://docs.ansible.com/ansible/2.5/modules/pip_module.html#pip-module
 # El environment sirve para setear variables de entorno necesarias
 - name: Upgrade of python setuptools
@@ -123,9 +110,14 @@
   environment:
     PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-{{ postgresql_version }}/bin"
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
+    PIP_DEFAULT_TIMEOUT: 100
   become: true
   become_method: su
   become_user: "{{ usuario }}"
+
+- name: Generate requirements.txt file
+  template: src=roles/oml_server/templates/requirements.txt dest={{ install_prefix }}ominicontacto owner={{ usuario }} group={{ usuario }}
+  tags: postinstall
 
 # Se instalan los paquetes que hay en el requirements.txt usando pip
 - name: Setup virtualenv
@@ -134,55 +126,26 @@
     virtualenv={{ install_prefix }}virtualenv
     virtualenv_command=/usr/bin/virtualenv
   environment:
-      PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-{{ postgresql_version }}/bin"
-      PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
+    PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-{{ postgresql_version }}/bin"
+    PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
+    PIP_DEFAULT_TIMEOUT: 100
   become: true
   become_method: su
   become_user: "{{ usuario }}"
+  tags: postinstall
 - meta: clear_host_errors
 
-##### Entorno de desarrollo
+#- name: Copy the content of of ics_settings in oml_settings_local
+#  shell: "cat /tmp/oml_settings_local.py2 >> oml_settings_local.py"
+#  args:
+#    chdir: "{{ install_prefix }}/local"
+#  tags: ['changenetwork','postinstall','changepassword']
+#  when: ics_exists.rc == 0 or ics_exists is defined
 
-# Instalo los paquetes extras necesarios:
-- name: Install extra packages for development (develop server)
-  pip:
-    name={{ item }}
-    virtualenv={{ install_prefix }}virtualenv
-    virtualenv_command=/usr/bin/virtualenv
+- name: Erase old folder of settings
+  file: path={{ install_prefix }}{{ item }} state=absent
   with_items:
-    - django-sslserver==0.20
-    - django-debug-toolbar==1.9.1
-    - django-extensions==1.9.8
-    - django-cors-headers==2.4.0
-  environment:
-      PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-{{ postgresql_version }}/bin"
-      PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
-  become: true
-  become_method: su
-  become_user: "{{ usuario }}"
-  when: desarrollo == 1
-
-# Agrego el comando django-server y 1210 para levantar y matar el entorno de omnileadsdesarrollo
-- name: Add django-server and kill-django-server scripts (develop server)
-  template: src=templates/bin/{{ item }} dest=/usr/bin/{{ item }} mode=755
-  with_items:
-    - django-server
-    - kill-django-server
-  when: desarrollo == 1
-
-# Se sube el archivo oml_settings_local.py
-- name: Upload oml_settings_local.py
-  template: src=templates/oml_settings_local.py.j2 dest={{ install_prefix }}local/oml_settings_local.py
-  tags: ['omniapp', 'changenetwork','postinstall','changepassword']
-
-- name: Copy the content of of ics_settings in oml_settings_local
-  shell: "cat /tmp/oml_settings_local.py2 >> oml_settings_local.py"
-  args:
-    chdir: "{{ install_prefix }}/local"
-  tags: ['changenetwork','postinstall','changepassword']
-  when: ics_exists.rc == 0
-
-# Se hace el link simbolico del archivo oml_settings_local a ominicontacto/, para que se pueda hacer manage.py
-- name: Creation of simbolic link of oml_settings_local.py
-  file: state=link src={{ install_prefix }}local/oml_settings_local.py dest={{ install_prefix }}ominicontacto/oml_settings_local.py owner={{ usuario }} group={{ usuario }} force=true
-  tags: omniapp
+    - ominicontacto/oml_settings_local.py
+    - ominicontacto/oml_settings_local.pyc
+    - local/
+  tags: ['never','postinstall']

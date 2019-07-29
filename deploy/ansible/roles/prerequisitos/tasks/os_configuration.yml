@@ -16,6 +16,11 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 ---
+
+##################################
+##         Centos tasks         ##
+##################################
+
 # se deshabilita selinux https://docs.ansible.com/ansible/2.5/modules/command_module.html
 - name: Disable Selinux (centos)
   command: "{{ item }}"
@@ -23,8 +28,10 @@
       - sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/sysconfig/selinux
       - sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/selinux/config
   when: ansible_os_family == "RedHat"
-  become: true
-  become_method: sudo
+
+- name: Set environment variables for this installation
+  template: src=templates/omnileads_envars.sh dest=/etc/profile.d/ mode=644 owner=root group=root
+  tags: postinstall
 
 - name: Write the /etc/hosts of server (cluster)
   blockinfile:
@@ -37,7 +44,7 @@
       {{ kamailio_ip }} {{ kamailio_fqdn }}
       {{ database_ip }} {{ database_fqdn }}
       {{ dialer_ip }} {{ dialer_fqdn }}
-  when: cluster != 0 and is_docker.stdout != "docker"
+  when: cluster != 0
   tags: changenetwork
 
 - name: Write the /etc/hosts of server (aio)
@@ -47,8 +54,21 @@
     state: present
     block: |
       {{ omni_ip }} {{ omni_fqdn }}
-  when: cluster == 0 and is_docker.stdout != "docker"
+  when: cluster == 0
   tags: changenetwork
+
+# Se añaden los binarios que no van a necesitar password al hacerlos con sudo
+- name: Edit sudoers to execute binaries withouth password
+  lineinfile: dest=/etc/sudoers line={{ item }}
+  with_items:
+    - "{{ usuario }} ALL=(ALL:ALL)  ALL"
+    - "{{ usuario }} ALL=(ALL) NOPASSWD: /usr/bin/rsync, /usr/sbin/asterisk"
+  become: yes
+  become_method: sudo
+
+# Se setea el timezone
+- name: Set timezone of server
+  timezone: name={{ TZ }}
 
 ##################################
 ###        Centos tasks         ##
@@ -61,8 +81,6 @@
     - { option: "timeout", value: "300" }
     - { option: "minrate", value: "100" }
   when: ansible_os_family == "RedHat"
-  become: true
-  become_method: sudo
 
 # Se para y deshabilita firewalld
 # https://docs.ansible.com/ansible/2.5/modules/shell_module.html#shell-module
@@ -76,8 +94,6 @@
 - name: Install kernel-devel package (centos)
   shell: "yum install \"kernel-devel-uname-r == $(uname -r)\" -y"
   any_errors_fatal: true
-  become: true
-  become_method: sudo
   when: ansible_os_family == "RedHat"
 
 # Update/upgrade del sistema, osea si se ejecuta como deployed - deployer
@@ -109,9 +125,6 @@
       - texinfo
       - kernel-headers
       - acl
-  #    - librabbitmq*
-  become: true
-  become_method: sudo
   when: ansible_os_family == "RedHat"
 
 ##################################
@@ -122,8 +135,6 @@
 - name: Uninstall of apache2 (debian)
   apt: name=apache2 state=absent purge=yes
   when: ansible_os_family == "Debian"
-  become: true
-  become_method: sudo
 
 # Se añade el repositorio universe para ubuntu
 - name: Add universal repository (ubuntu)
@@ -137,14 +148,10 @@
 # Cuando el cluster tenga ubuntu se hace esto
 - name: Add the postgresql repository key (ubuntu )
   apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc validate_certs=no state=present
-  become: true
-  become_method: sudo
   when: ansible_distribution == "Ubuntu" and cluster != 0
 
 - name: Download postgresql-{{ postgresql_version }} repository
   apt_repository: repo="deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" filename=pgdg state=present update_cache=yes
-  become: true
-  become_method: sudo
   when: ansible_distribution == "Ubuntu" and cluster != 0
 
 # Se instala este paquete necesario antes de hacer update
@@ -159,9 +166,7 @@
 # Instalo linux-headers del kernel  en cuestion
 - name: Install linux linux-headers (debian)
   shell: "apt-get install -y linux-headers-$(uname -r)"
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "Debian" and is_docker.stdout != "docker"
+  when: ansible_os_family == "Debian"
   ignore_errors: True
 
 - name: Install of dependencies (debian)
@@ -175,6 +180,4 @@
       - sudo
       - wget
       - unzip
-  become: true
-  become_method: sudo
   when: ansible_os_family == "Debian"

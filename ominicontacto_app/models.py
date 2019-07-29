@@ -909,6 +909,9 @@ class Campana(models.Model):
     gestion = models.CharField(max_length=128, default="Venta")
     campaign_id_wombat = models.IntegerField(null=True, blank=True)
     type = models.PositiveIntegerField(choices=TYPES_CAMPANA)
+    sistema_externo = models.ForeignKey("SistemaExterno", null=True, blank=True,
+                                        on_delete=models.SET_NULL, related_name='campanas')
+    id_externo = models.CharField(max_length=128, null=True, blank=True)
     sitio_externo = models.ForeignKey("SitioExterno", null=True, blank=True)
     tipo_interaccion = models.PositiveIntegerField(
         choices=TIPO_INTERACCION,
@@ -1147,7 +1150,17 @@ class Campana(models.Model):
     def update_basedatoscontactos(self, bd_nueva):
         """ Actualizar con nueva base datos de contacto"""
         self.bd_contacto = bd_nueva
-        self.save()
+        self.save
+
+    def save(self, *args, **kwargs):
+        if self.tipo_interaccion == Campana.FORMULARIO and self.sitio_externo is not None:
+            raise ValidationError(_('No se puede elegir un URL externo '
+                                    'si selecciono un formulario.'))
+        else:
+            super(Campana, self).save(*args, **kwargs)
+
+    def obtener_agentes(self):
+        return self.queue_campana.members.all()
 
     @property
     def tiene_interaccion_con_sitio_externo(self):
@@ -1608,6 +1621,32 @@ class MetadataBaseDatosContactoDTO(object):
 
         self._metadata['cols_telefono'] = columnas
 
+    # -----
+
+    @property
+    def columna_id_externo(self):
+        try:
+            return self._metadata['col_id_externo']
+        except KeyError:
+            return None
+
+    @columna_id_externo.setter
+    def columna_id_externo(self, columna_id_externo):
+        """
+        Parametros:
+        - Un entero que indica la columna con campo id externo.
+        """
+        assert isinstance(columna_id_externo, int), ("'columna_id_externo' debe ser int. "
+                                                     "Se recibio: {0}"
+                                                     "".format(type(columna_id_externo)))
+        self._metadata['col_id_externo'] = columna_id_externo
+
+    @property
+    def nombre_campo_id_externo(self):
+        if self.columna_id_externo is not None:
+            return self._metadata['nombres_de_columnas'][self.columna_id_externo]
+        return None
+
     # ----
 
     @property
@@ -1711,7 +1750,8 @@ class MetadataBaseDatosContactoDTO(object):
             try:
                 nombres_de_columnas = self._metadata['nombres_de_columnas']
                 self._nombres_de_columnas_de_datos = [x for x in nombres_de_columnas
-                                                      if not x == self.nombre_campo_telefono]
+                                                      if not x == self.nombre_campo_telefono and
+                                                      not x == self.nombre_campo_id_externo]
             except KeyError:
                 return []
 
@@ -1872,6 +1912,7 @@ class MetadataBaseDatosContacto(MetadataBaseDatosContactoDTO):
         # Ahora guardamos
         try:
             self.bd.metadata = json.dumps(self._metadata)
+            self.bd.save()
         except Exception as e:
             logger.exception(_("Error: {0} detectada al serializar "
                                "metadata de la bd {1}".format(e.message, self.bd.id)))
@@ -2134,6 +2175,7 @@ class Contacto(models.Model):
         'BaseDatosContacto',
         related_name='contactos', blank=True, null=True
     )
+    id_externo = models.CharField(max_length=128, null=True)
     es_originario = models.BooleanField(default=True)
 
     def obtener_datos(self):
@@ -2143,7 +2185,17 @@ class Contacto(models.Model):
             columnas = bd_metadata.nombres_de_columnas
             datos = self.lista_de_datos()
             pos_primer_telefono = bd_metadata.columnas_con_telefono[0]
-            datos.insert(pos_primer_telefono, self.telefono)
+            if bd_metadata.columna_id_externo is not None:
+                # Inserto primero el de menor indice para que se respete el orden
+                if (pos_primer_telefono < bd_metadata.columna_id_externo):
+                    datos.insert(pos_primer_telefono, self.telefono)
+                    datos.insert(bd_metadata.columna_id_externo, self.id_externo)
+                else:
+                    datos.insert(bd_metadata.columna_id_externo, self.id_externo)
+                    datos.insert(pos_primer_telefono, self.telefono)
+            else:
+                datos.insert(pos_primer_telefono, self.telefono)
+
             self.datos_contacto = dict(zip(columnas, datos))
         return self.datos_contacto
 
@@ -2263,8 +2315,8 @@ class GrabacionManager(models.Manager):
             raise (SuspiciousOperation(_("No se encontro contactos con esa "
                                          "tel de cliente")))
 
-    def grabacion_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada,
-                            tel_cliente, agente, campana, campanas, marcadas, duracion, gestion):
+    def grabacion_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada, tel_cliente, callid,
+                            agente, campana, campanas, marcadas, duracion, gestion):
         grabaciones = self.filter(campana__in=campanas)
 
         if fecha_desde and fecha_hasta:
@@ -2276,6 +2328,8 @@ class GrabacionManager(models.Manager):
             grabaciones = grabaciones.filter(tipo_llamada=tipo_llamada)
         if tel_cliente:
             grabaciones = grabaciones.filter(tel_cliente__contains=tel_cliente)
+        if callid:
+            grabaciones = grabaciones.filter(callid=callid)
         if agente:
             grabaciones = grabaciones.filter(agente=agente)
         if campana:
@@ -2448,7 +2502,6 @@ class CalificacionClienteManager(models.Manager):
 
 
 class CalificacionCliente(models.Model):
-    # TODO: Discutir Modelo: (campana, contacto) deberia ser clave candidata de la relación?
     objects = CalificacionClienteManager()
 
     contacto = models.ForeignKey(Contacto)
@@ -2469,7 +2522,30 @@ class CalificacionCliente(models.Model):
         return "Calificacion para la campana {0} para el contacto " \
                "{1} ".format(self.opcion_calificacion.campana, self.contacto)
 
+    def _validar_unicidad_calificacion(self):
+        # validamos que no exista otra calificación para este contacto en la
+        # campaña
+        msg_validation_error = _('Ya existe una calificación para este contacto en la campaña')
+        campana = self.opcion_calificacion.campana
+        contacto = self.contacto
+        if self.pk is None and CalificacionCliente.objects.filter(
+                contacto=contacto, opcion_calificacion__campana=campana).exists():
+            raise ValidationError(msg_validation_error)
+        if self.pk is not None:
+            # verificamos que si se está modificando la calificación y se cambia
+            # el valor de la campaña asociada o el contacto no resulte en dos
+            # calificaciones para el mismo contacto en la misma campaña
+            calificacion_bd = CalificacionCliente.objects.get(pk=self.pk)
+            contacto_bd = calificacion_bd.contacto
+            campana_bd = calificacion_bd.opcion_calificacion.campana
+            if ((contacto_bd.pk != contacto.pk) or (campana_bd.pk != campana.pk)):
+                if CalificacionCliente.objects.filter(
+                        contacto=contacto, opcion_calificacion__campana=campana).exists():
+                    raise ValidationError(msg_validation_error)
+
     def save(self, *args, **kwargs):
+        self._validar_unicidad_calificacion()
+        # gestionamos las agendas
         if self.opcion_calificacion.tipo != OpcionCalificacion.AGENDA:
             # eliminamos las agendas existentes (si hubiera alguna)
             AgendaContacto.objects.filter(
@@ -2848,30 +2924,54 @@ class SitioExterno(models.Model):
     """
     sitio externo para embeber en el agente
     """
+    BOTON = 1
+    AUTOMATICO = 2
+    SERVER = 3
+
+    DISPARADORES = (
+        (BOTON, _('Agente')),
+        (AUTOMATICO, _('Automático')),
+        (SERVER, _('Servidor')),
+    )
+
     GET = 1
     POST = 2
-    JSON = 3
 
-    TIPOS = (
+    METODOS = (
         (GET, _('GET')),
         (POST, _('POST')),
-        (JSON, _('JSON')),
+    )
+
+    MULTIPART = 1
+    WWW_FORM = 2
+    TEXT_PLAIN = 3
+    JSON = 4
+
+    FORMATOS = (
+        (MULTIPART, 'multipart/form-data'),
+        (WWW_FORM, 'application/x-www-form-urlencoded'),
+        (TEXT_PLAIN, 'text/plain'),
+        (JSON, 'application/json'),
     )
 
     EMBEBIDO = 1
     NUEVA_PESTANA = 2
 
-    METODOS = (
+    OBJETIVOS = (
         (EMBEBIDO, _('Embebido')),
         (NUEVA_PESTANA, _('Nueva pestaña')),
-
     )
 
     nombre = models.CharField(max_length=128)
     url = models.CharField(max_length=256)
     oculto = models.BooleanField(default=False)
-    tipo = models.PositiveIntegerField(choices=TIPOS, default=GET)
-    metodo = models.PositiveIntegerField(choices=METODOS, default=EMBEBIDO)
+    disparador = models.PositiveIntegerField(choices=DISPARADORES, default=SERVER)
+    metodo = models.PositiveIntegerField(choices=METODOS, default=GET)
+    formato = models.PositiveIntegerField(choices=FORMATOS, default=MULTIPART,
+                                          blank=True, null=True,
+                                          verbose_name='Content-Type')
+    objetivo = models.PositiveIntegerField(choices=OBJETIVOS, default=EMBEBIDO,
+                                           blank=True, null=True)
 
     def __unicode__(self):
         return "Sitio: {0} - url: {1}".format(self.nombre, self.url)
@@ -2886,12 +2986,69 @@ class SitioExterno(models.Model):
         self.oculto = False
         self.save()
 
-    def get_url_interaccion(self, agente, campana, contacto, datos_de_llamada):
+    def get_parametros(self, agente, campana, contacto, datos_de_llamada):
         parametros = {}
         for parametro in campana.parametros_crm.all():
-            valor = parametro.obtener_valor(agente, contacto, datos_de_llamada)
-            parametros[parametro.nombre] = str(valor)
-        return self.url + '?' + '&'.join([key + '=' + val for (key, val) in parametros.items()])
+            if not parametro.es_placeholder():
+                valor = parametro.obtener_valor(agente, contacto, datos_de_llamada)
+                parametros[parametro.nombre] = str(valor)
+        return parametros
+
+    def get_url_interaccion(self, agente, campana, contacto, datos_de_llamada, completa=False):
+        # Beauty
+        # Tomar parametros de tipo placeholder y reemplazarlos en la url
+        url = self.url
+        valores = {}
+        for parametro in campana.parametros_crm.all():
+            valor = str(parametro.obtener_valor(agente, contacto, datos_de_llamada))
+            if parametro.es_placeholder():
+                url = url.replace(parametro.nombre, valor)
+            else:
+                valores[parametro.nombre] = valor
+
+        valores = '&'.join([key + '=' + val for (key, val) in valores.items()])
+        if completa and valores:
+            return url + '?' + valores
+        else:
+            return url
+
+    def get_configuracion_de_interaccion(self, agente, campana, contacto, datos_de_llamada):
+        return {
+            'dispara_agente': self.disparador == self.BOTON,
+            'formato': self.get_formato_display(),
+            'formato_es_JSON': self.formato == self.JSON,
+            'url': self.get_url_interaccion(agente, campana, contacto, datos_de_llamada),
+            'abre_pestana': self.objetivo == self.NUEVA_PESTANA,
+            'metodo': 'GET' if self.metodo == self.GET else 'POST',
+            'parametros': self.get_parametros(agente, campana, contacto, datos_de_llamada),
+        }
+
+
+class SistemaExterno(models.Model):
+    """Representa un sistema externo que se comunica con OML a través de sus CRMs
+    y la API de OML
+    """
+    nombre = models.CharField(unique=True, max_length=128)
+    agentes = models.ManyToManyField(
+        AgenteProfile, through="AgenteEnSistemaExterno", verbose_name=_("Agentes"))
+
+    def __unicode__(self):
+        return "Sistema Externo: {0}".format(self.nombre)
+
+
+class AgenteEnSistemaExterno(models.Model):
+    """Representa la relación entre un agente de OML y un sistema externo"""
+    agente = models.ForeignKey(AgenteProfile)
+    sistema_externo = models.ForeignKey(SistemaExterno)
+    id_externo_agente = models.CharField(max_length=128)
+
+    def __unicode__(self):
+        return "Agente: {0} en Sistema Externo: {1} con id_externo: {2}".format(
+            self.agente, self.sistema_externo, self.id_externo_agente)
+
+    class Meta:
+        unique_together = (('sistema_externo', 'id_externo_agente'),
+                           ('sistema_externo', 'agente'))
 
 
 class ReglasIncidencia(models.Model):
@@ -2965,14 +3122,6 @@ class ReglasIncidencia(models.Model):
             return "MULT"
         else:
             return ""
-
-
-class UserApiCrm(models.Model):
-    usuario = models.CharField(max_length=64, unique=True, verbose_name=_('Usuario'))
-    password = models.CharField(max_length=128, verbose_name=_('Contraseña'))
-
-    def __unicode__(self):
-        return self.usuario
 
 
 class AgenteEnContactoManager(models.Manager):
@@ -3156,6 +3305,9 @@ class ParametrosCrm(models.Model):
         return "Variable {0} con valor: {1} para la campana {2}".format(
             self.nombre, self.valor, self.campana)
 
+    def es_placeholder(self):
+        return self.nombre[0] == '{' and self.nombre[-1] == '}' and self.nombre[1:-1].isdigit()
+
     def obtener_valor(self, agente, contacto, datos_de_llamada):
         if self.tipo == ParametrosCrm.DATO_CAMPANA:
             return self.obtener_valor_de_campana()
@@ -3168,7 +3320,7 @@ class ParametrosCrm(models.Model):
 
     def obtener_valor_de_campana(self):
         if self.valor == 'tipo':
-            return dict(Campana.TYPES_CAMPANA)[self.campana.type]
+            return self.campana.get_type_display()
         return getattr(self.campana, self.valor)
 
     def obtener_valor_de_contacto(self, contacto):

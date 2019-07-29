@@ -45,8 +45,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
       <tr class="fts-table-bg">
         <th>{% trans 'Sitio externo' %}</th>
         <th>{% trans 'Url' %}</th>
-        <th>{% trans 'Tipo' %}</th>
+        <th>{% trans 'Disparador' %}</th>
         <th>{% trans 'Método' %}</th>
+        <th>{% trans 'Formato' %}</th>
+        <th>{% trans 'Objetivo' %}</th>
         <th>{% trans 'Acciones' %}</th>
       </tr>
     </thead>
@@ -62,10 +64,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {{ sitio.url }}
                 </td>
                 <td>
-                    {{ sitio.get_tipo_display }}
+                    {{ sitio.get_disparador_display }}
                 </td>
                 <td>
                     {{ sitio.get_metodo_display }}
+                </td>
+                <td>
+                    {{ sitio.get_formato_display }}
+                </td>
+                <td>
+                    {{ sitio.get_objetivo_display }}
                 </td>
                 <td>
                     {% if sitio.oculto %}

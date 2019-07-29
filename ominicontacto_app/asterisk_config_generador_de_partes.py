@@ -351,8 +351,6 @@ class GeneradorParaAgente(GeneradorDePedazoDeAgenteSip):
         callcounter=yes
         callerid={oml_agente_name} <{oml_agente_sip}>
         secret=
-        deny=0.0.0.0/0.0.0.0
-        permit={oml_kamailio_ip}
         rtcp_mux=yes
         """
 

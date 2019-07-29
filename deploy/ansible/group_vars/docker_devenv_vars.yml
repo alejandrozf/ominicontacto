@@ -1,0 +1,31 @@
+---
+
+# Docker hosts at beginning is localhost because the base containers are raised up in localhost to install the application. Uncomment the line if you want to install DE or PE
+# If you are installing a devenv (DE) AIO uncomment these line
+# If you are installing a devenv (DE) AIO uncomment these line
+
+version: de1.2.1
+asterisk_version: 16.4.0-res_json
+customer: devenv
+root_password: toor123
+
+# Networking settings
+dev_subnet: 172.20.0.0/24
+dialer_ip: 172.20.0.10
+kamailio_ip: 172.20.0.11
+omniapp_ip: 172.20.0.12
+nginx_external_port: 443
+pg_external_port: 4444
+wd_external_port: 4442
+
+# Folder locations
+asterisk_location:
+ast_local_location: "{{ deploy_location }}/asterisk"
+ast_agis_location: "{{ ast_local_location }}/agis"
+ast_conf_location: "{{ ast_local_location }}/conf"
+ast_other_location: "{{ ast_local_location }}/others"
+build_location: "{{ docker_root }}/omnileads/build"
+certs_location: "{{ deploy_location }}/certs"
+deploy_location: "{{ docker_root }}/omnileads/{{ customer }}"
+nginx_location: "{{ deploy_location }}/nginx"
+omniapp_location: "{{ deploy_location }}/omniapp"

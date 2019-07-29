@@ -90,13 +90,21 @@ vamos a repasar los botones del mismo.
 
 *Figure 8: Webphone*
 
-  - a Estado del webphone. Debe siempre figurar como *Registered*. En caso contrario debe comunicarse con el administrador.
+Vamos a dividir al webphone en 5 partes:
 
-  - b Allí se indica a qué número realizar una llamada manual.
+  - (1) Estado del webphone. Debe siempre figurar como *Registered*. En caso contrario debe comunicarse con el administrador.
 
-  - c Estos botones permiten disparar la acción de: llamar, cortar, re-llamar al último número y marcar una grabación. El botón de marcar una grabación será explicado más adelante.
+  - (2) Dialpad para marcar llamados manuales o enviar DTMF sobre una llamada conectada.
 
-  - d Este botón permite modificar la campaña sobre la cual se procesa cada llamada manual. También se abordará más adelante en la sección "campañas manuales".
+  - (3) Estos botones permiten disparar las acciones de: llamar, cortar, re-llamar al último número por un lado, siendo el cuarto botón un método para "marcar" la grabación de la llamada con un comentario.
+
+  - (4) Esta serie de botones permiten al agente efectuar las acciones de: realizar una transferencia de llamada, efectuar una conferencia con una tercera parte y poner la llamada en esepra.
+
+  - (5) Este botón permite modificar la campaña sobre la cual se procesa cada llamada manual. También se abordará más adelante en la sección "campañas manuales".
+
+  - (6) Este botón permite efectuar una llamada hacia otro agente, así como también lanzar una llamada saliente a un número externo SIN asociarse a ninguna campaña.
+
+La mayoría de estas funcionalidades son ampliadas en las secciones permitentes de esta documentación.
 
 **(5) Dock**
 

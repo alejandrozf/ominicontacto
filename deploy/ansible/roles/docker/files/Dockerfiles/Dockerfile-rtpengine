@@ -1,0 +1,44 @@
+FROM {{ rtpengine_image }}
+
+ARG DEBIAN_FRONTEND=noninteractive
+ARG SUDO_FORCE_REMOVE=yes
+
+RUN apt-get update \
+    && apt-get -y install gcc net-tools curl wget unzip ffmpeg procps \
+    && apt-get -y install linux-headers-$(uname -r) linux-image-$(uname -r) libhiredis-dev debhelper default-libmysqlclient-dev libavfilter-dev libavformat-dev libavresample-dev libcurl4-openssl-dev libevent-dev libhiredis-dev libjson-glib-dev libpcre3-dev libssl-dev libxmlrpc-core-c3-dev markdown iptables-dev libpcap-dev libbencode-perl libcrypt-rijndael-perl libdigest-hmac-perl libio-socket-inet6-perl libsocket6-perl netcat-openbsd netcat dkms nfs-common module-assistant \
+    && cd /usr/src \
+    && wget {{ rtpengine_repo }} \
+    && tar xzvf mr{{ rtpengine_version }}.tar.gz \
+    && cd rtpengine-mr{{ rtpengine_version }} \
+    && dpkg-buildpackage -uc -us \
+    && cd .. \
+    && dpkg -i ngcp-rtpengine-daemon_{{ rtpengine_version }}+0~mr{{ rtpengine_version }}_amd64.deb \
+    && dpkg -i ngcp-rtpengine-iptables_{{ rtpengine_version }}+0~mr{{ rtpengine_version }}_amd64.deb \
+    && dpkg -i ngcp-rtpengine-dbg_{{ rtpengine_version }}+0~mr{{ rtpengine_version }}_amd64.deb \
+    && dpkg -i ngcp-rtpengine-utils_{{ rtpengine_version }}+0~mr{{ rtpengine_version }}_all.deb \
+    && dpkg -i ngcp-rtpengine-kernel-dkms_{{ rtpengine_version }}+0~mr{{ rtpengine_version }}_all.deb \
+    && dpkg -i ngcp-rtpengine-recording-daemon_{{ rtpengine_version }}+0~mr{{ rtpengine_version }}_amd64.deb \
+    && dpkg -i ngcp-rtpengine_{{ rtpengine_version }}+0~mr{{ rtpengine_version }}_all.deb \
+    && apt-get -y remove libhiredis-dev default-libmysqlclient-dev libavfilter-dev libavformat-dev libavresample-dev libcurl4-openssl-dev libevent-dev libhiredis-dev libjson-glib-dev libpcre3-dev libssl-dev libxmlrpc-core-c3-dev markdown iptables-dev libpcap-dev libbencode-perl libcrypt-rijndael-perl libdigest-hmac-perl libio-socket-inet6-perl libsocket6-perl netcat-openbsd netcat dkms nfs-common --purge \
+    && apt autoremove -y
+
+# We need some environment variables to work please review and modify
+ENV RUN_RTPENGINE=yes
+ENV LISTEN_TCP=25060
+ENV LISTEN_UDP=12222
+ENV LISTEN_NG=22222
+ENV LISTEN_CLI=9900
+ENV TIMEOUT=60
+ENV SILENT_TIMEOUT=3600
+ENV PIDFILE=/var/run/ngcp-rtpengine-daemon.pid
+ENV FORK=no
+ENV TABLE=0
+ENV PORT_MIN=16384
+ENV PORT_MAX=16485
+ENV LOG_LEVEL=7
+
+# Get the startup script.  It's long and complicated
+COPY scripts/run_rtpengine.sh /run_rtpengine.sh
+RUN chmod 755 /run_rtpengine.sh
+
+ENTRYPOINT ["/run_rtpengine.sh"]

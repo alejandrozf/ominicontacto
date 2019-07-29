@@ -73,23 +73,9 @@
 # Se crea base de datos omnileads
 - name: Create of the database
   postgresql_db: name={{ postgres_database }} state=present login_user={{ postgres_user }} login_password={{ postgres_password }} owner={{ postgres_user }} login_host={{ database_fqdn }}
-  environment:
-    PGPASSWORD: "{{ postgres_password }}"
   register: command_result
   become: true
   become_method: sudo
-
-- name: Copy of kamailio-tables restore file
-  copy: src=/var/tmp/ominicontacto-build/ominicontacto/ominicontacto_voip/kamailio-files/kamailio-tables.tar.gz dest=/tmp/kamailio-tables.tar.gz
-  tags: postinstall
-
-- name: Restore of kamailio tables in database
-  command: pg_restore -d {{ postgres_database }} -c -F t /tmp/kamailio-tables.tar.gz
-  environment:
-    PGPASSWORD: "{{ postgres_password }}"
-  failed_when: false
-  become_user: "{{ usuario }}"
-  tags: postinstall
 
 # Se crea el lenguaje plpythonu a las bases de datos mencionadas.
 - name: Createlang of the database

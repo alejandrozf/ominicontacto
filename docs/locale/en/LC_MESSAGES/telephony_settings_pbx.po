@@ -1,0 +1,100 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, omnileads
+# This file is distributed under the same license as the OMniLeads package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OMniLeads \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-04-01 12:13-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: ../../telephony_settings_pbx.rst:3
+msgid "Troncal SIP entre OMniLeads y un PBX"
+msgstr ""
+
+#: ../../telephony_settings_pbx.rst:5
+msgid "El esquema que se repasa en esta sección es el que presenta la figura 1."
+msgstr ""
+
+#: ../../telephony_settings_pbx.rst:10
+msgid "*Figure 1: OML and PBX integration*"
+msgstr ""
+
+#: ../../telephony_settings_pbx.rst:14
+msgid "Parámetros para el troncal SIP en el PBX"
+msgstr ""
+
+#: ../../telephony_settings_pbx.rst:16
+msgid ""
+"Se debe considerar el hecho de que nombramos (Trunk Name) al troncal como"
+" *omnileads*"
+msgstr ""
+
+#: ../../telephony_settings_pbx.rst:18
+msgid ""
+"En la sección \"PEER Details\" del formulario de nuevo troncal SIP dentro"
+" del PBX, se consideran los siguientes parámetros: ::"
+msgstr ""
+
+#: ../../telephony_settings_pbx.rst:33
+msgid "NOTA: tener en cuenta que el puerto SIP en OMniLeads es *5160*."
+msgstr ""
+
+#: ../../telephony_settings_pbx.rst:35
+msgid "En la figura 2, se expone dicha configuración."
+msgstr ""
+
+#: ../../telephony_settings_pbx.rst:39
+msgid "*Figure 2: PBX side - SIP trunk*"
+msgstr ""
+
+#: ../../telephony_settings_pbx.rst:43
+msgid "Parámetros para el troncal SIP en OMniLeads"
+msgstr ""
+
+#: ../../telephony_settings_pbx.rst:45
+msgid ""
+"Se debe considerar el hecho de que nombramos (Trunk Name) al troncal como"
+" *asteriskpbx*"
+msgstr ""
+
+#: ../../telephony_settings_pbx.rst:47
+msgid ""
+"En la sección \"Trunk Details\" del formulario de nuevo troncal SIP "
+"dentro de OMniLeads, se consideran los siguientes parámetros:"
+msgstr ""
+
+#: ../../telephony_settings_pbx.rst:64
+msgid "En la figura 3, se expone dicha configuración."
+msgstr ""
+
+#: ../../telephony_settings_pbx.rst:69
+msgid "*Figure 3: OMniLeads side - SIP trunk*"
+msgstr ""
+
+#: ../../telephony_settings_pbx.rst:73
+msgid "Comprobación del estado del troncal"
+msgstr ""
+
+#: ../../telephony_settings_pbx.rst:75
+msgid ""
+"En este punto simplemente se accede a cada nodo (OMniLeads y PBX) por "
+"medio de una sesión SSH y desde cada conexión se debe ejecutar el comando"
+" de Asterisk"
+msgstr ""
+
+#: ../../telephony_settings_pbx.rst:81
+msgid ""
+"Esto listará todos los *peers SIP* y su estado, como lo expone la figura "
+"4."
+msgstr ""
+

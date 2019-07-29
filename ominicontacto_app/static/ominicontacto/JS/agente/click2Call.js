@@ -17,9 +17,6 @@
 
 */
 
-// url_name = 'agente_llamar_contacto'
-// url(r'^agente/llamar/$',
-
 class Click2CallDispatcher {
     /*
     *  Esta clase será la encargada de despachar los pedidos de click to call que ejecute el
@@ -27,6 +24,8 @@ class Click2CallDispatcher {
     *  en curso, etc...
     */
     constructor (oml_api, agent_id) {
+        this.AGENT = 'AGENT';
+        this.EXTERNAL = 'EXTERNAL';
         this.enabled = false;
         this.oml_api = oml_api;
         this.agent_id = agent_id;
@@ -46,6 +45,24 @@ class Click2CallDispatcher {
         if (this.enabled) {
             this.oml_api.startClick2Call(this.agent_id, campaign_id, campaign_type,
                                          contact_id, phone, click2call_type);
+        }
+        else {
+            console.log('Alertar al usuario que no es posible hacer una click2call');
+        }
+    }
+
+    call_agent(agent_id) {
+        if (this.enabled) {
+            this.oml_api.startCallOutsideCampaign(this.AGENT, agent_id);
+        }
+        else {
+            console.log('Alertar al usuario que no es posible hacer una click2call');
+        }
+    }
+
+    call_external(phone) {
+        if (this.enabled) {
+            this.oml_api.startCallOutsideCampaign(this.EXTERNAL, phone);
         }
         else {
             console.log('Alertar al usuario que no es posible hacer una click2call');

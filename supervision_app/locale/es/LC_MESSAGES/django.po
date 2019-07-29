@@ -1,0 +1,87 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-07-26 11:06-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: supervision_app/templates/supervision_agentes.html:47
+msgid "Agentes"
+msgstr ""
+
+#: supervision_app/templates/supervision_agentes.html:75
+msgid "Finalizar"
+msgstr ""
+
+#: supervision_app/templates/supervision_agentes.html:84
+#: supervision_app/templates/supervision_campanas_entrantes.html:35
+#: supervision_app/templates/supervision_campanas_salientes.html:35
+msgid "Nombre"
+msgstr ""
+
+#: supervision_app/templates/supervision_agentes.html:85
+msgid "Status"
+msgstr ""
+
+#: supervision_app/templates/supervision_agentes.html:86
+msgid "Tiempo"
+msgstr ""
+
+#: supervision_app/templates/supervision_agentes.html:87
+msgid "Acciones"
+msgstr ""
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:30
+msgid "Campañas Entrantes"
+msgstr ""
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:36
+msgid "Llamadas"
+msgstr ""
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:37
+#: supervision_app/templates/supervision_campanas_salientes.html:37
+msgid "Atendidas"
+msgstr ""
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:38
+msgid "Abandonadas"
+msgstr ""
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:39
+msgid "Abandonadas en anuncio"
+msgstr ""
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:40
+msgid "Expiradas"
+msgstr ""
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:41
+#: supervision_app/templates/supervision_campanas_salientes.html:39
+msgid "Gestiones"
+msgstr ""
+
+#: supervision_app/templates/supervision_campanas_salientes.html:30
+msgid "Campañas Salientes"
+msgstr ""
+
+#: supervision_app/templates/supervision_campanas_salientes.html:36
+msgid "Llamadas discadas"
+msgstr ""
+
+#: supervision_app/templates/supervision_campanas_salientes.html:38
+msgid "No atendidas"
+msgstr ""

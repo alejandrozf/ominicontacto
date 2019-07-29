@@ -35,27 +35,28 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/bootstrap-datetimepicker.min.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}">
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/google-font.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-solid.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-regular.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fontawesome.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
     <!-- Scripts -->
     <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+    {% include 'config.html' %}
     {% compress js %}
     <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
     <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/config.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/daterangepicker.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/ranges-datepicker.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/config_datetimepicker.js' %}"></script>
+    <script type="text/javascript" src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
     {% endcompress %}
     <script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
     <!-- librerías opcionales que activan el soporte de HTML5 para IE8 -->
     <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <script src="{% static 'ominicontacto/JS/html5shiv-3.7.0.js' %}"></script>
+        <script src="{% static 'ominicontacto/JS/respond-1.4.2.min.js' %}"></script>
     <![endif]-->
 </head>
 
@@ -146,6 +147,31 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </div>
             <div class="modal-footer">
                 <button type="button" id="SelectCamp" class="btn btn-primary">{% trans 'Ok' %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal que se despliega al dar clic en Marcar Llamada Fuera de Campaña -->
+<div id="modalCallOffCamp" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" style="max-width:400px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">{% trans 'Llamada fuera de Campaña' %}</h2>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-footer">
+                <select class="form-control" id="agente_off_camp">
+                    {% for agente in agentes %}
+                        <option value = "{{ agente.id }}"> {{ agente.user.get_full_name }} </option>
+                    {% endfor %}
+                </select>
+                <button type="button" id="call_agent" class="btn btn-primary">{% trans 'Llamar Agente' %}</button>
+            </div>
+            <div class="modal-footer">
+                <label for="number_off_camp" ></label>
+                <input type="text" id="phone_off_camp" id="phone_off_camp" class="form-control"/>
+                <button type="button" id="call_phone_off_campaign" class="btn btn-primary">{% trans 'Llamar numero' %}</button>
             </div>
         </div>
     </div>
@@ -469,7 +495,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <ul id="navMainMenu" class="list-unstyled">
             <div class="row">
                 <div class="col-md-3">
-                    <img id="nav-logo" src="{% static 'ominicontacto/Img/ic_logo.svg' %}">
+                  <img src="{% static 'ominicontacto/Img/ic_logo.png' %}" id="nav-logo">
                 </div>
             </div>
             <li class="main-menu-li">
@@ -670,11 +696,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 </div>
                                 <div class="btn-group" data-toggle="buttons">
                                     <button id="Transfer" class="btn btn-outline-secondary" disabled="disabled">{% trans 'Transfer' %}</button>
+                                    <button id="Confer" class="btn btn-outline-secondary" disabled="disabled">{% trans 'Confer' %}</button>
+                                </div>
+                                <div class="btn-group" data-toggle="buttons">
                                     <button id="EndTransfer" class="btn btn-outline-secondary" disabled="disabled">{% trans 'Cancel Transfer' %}</button>
                                     <button id="onHold" value="*198" class="btn btn-outline-secondary" disabled="disabled">{% trans 'Hold' %}</button>
                                 </div>
                                 <button id="changeCampAssocManualCall" class="btn btn-outline-secondary btn-sm">
-                                    {% trans 'campaña: ' %}<span id="campAssocManualCall"></span>
+                                    {% trans 'Campaña: ' %}<span id="campAssocManualCall"></span>
+                                </button>
+                                <button id="call_off_campaign_menu" class="btn btn-outline-secondary btn-sm">
+                                    {% trans 'Llamar Fuera de Campaña: ' %}
                                 </button>
                             </div>
                         </div>

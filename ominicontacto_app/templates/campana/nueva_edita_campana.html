@@ -19,6 +19,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% extends "campana/wizard_base.html" %}
 {% load i18n %}
+{% load static %}
+
+{% block head_js %}
+  <script type="text/javascript" 
+          src="{% static 'ominicontacto/JS/agente/formularioNuevaEditaCampana.js' %}">
+  </script>
+{% endblock head_js %}
+
+{% block extra_js %}
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/interaccionsitioexterno.js' %}"></script>
+    <script type="text/javascript">
+        $(function(){
+            interaccionUrl();
+        });
+    </script>
+{% endblock %}
 
 {% block nav %}
     <h1>{% trans 'Campaña Entrante: Datos Básicos' %}</h1>
@@ -39,6 +55,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% block form_render %}
     {% with form as form %}
+    {{ form.non_field_errors }}
         <div class="form-row">
             <div class="col-md-6">
                 <label for="{{ form.nombre.id_for_label }}">{% trans 'Nombre:' %}</label>
@@ -58,6 +75,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ form.bd_contacto.errors }}
             </div>
 
+            <div class="col-md-6">
+                <label for="{{ form.sistema_externo.id_for_label }}">{% trans 'Sistema externo:' %}</label>
+                {{ form.sistema_externo }}
+                {{ form.sistema_externo.errors }}
+            </div>
+            <div class="col-md-6">
+                <label for="{{ form.id_externo.id_for_label }}">{% trans 'ID en sistema externo:' %}</label>
+                {{ form.id_externo }}
+                {{ form.id_externo.errors }}
+            </div>
+
             {{ form.tipo_interaccion.errors }}
             {% if form.instance.pk %}
                 {% if form.instance.tipo_interaccion == 2 %}
@@ -70,8 +98,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {% else %}
                 <div class="col-md-6">
                   <label> {% trans "Tipo de Interacción" %}</label>
-                    <div class="myradio">{{ form.tipo_interaccion.0 }}</div>
-                    <div class="myradio">{{ form.tipo_interaccion.1 }}</div>
+                    <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.0 }}</div>
+                    <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.1 }}</div>
                 </div>
                 <div class="col-md-6">
                     <label><div class="myradio">{% trans "Url Externa" %}</div> </label>

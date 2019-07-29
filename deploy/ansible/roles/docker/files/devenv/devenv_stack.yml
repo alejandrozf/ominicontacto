@@ -1,0 +1,243 @@
+
+
+version: '3.7'
+services:
+  asterisk:
+    entrypoint:
+      - /home/run_asterisk.sh
+    container_name: oml-{{ asterisk_fqdn }}-devenv
+    depends_on:
+      - postgresql
+    dns: 8.8.8.8
+    environment:
+      - ASTERISK_UID=1000
+      - ASTERISK_GID=1000
+      - ASTERISK_LOCATION=
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - PGPASSWORD={{ postgres_password }}
+      - PGHOST={{ postgresql_fqdn }}
+      - PGUSER={{ postgres_user }}
+      - TZ={{ TZ }}
+    image: freetechsolutions/asterisk:16
+    networks:
+      - dev_net
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    #user: asterisk
+    volumes:
+      - grabaciones:/var/spool/asterisk/monitor/
+      - ./asterisk/conf/:/etc/asterisk/
+      - ./asterisk/agis/:/var/lib/asterisk/agi-bin/
+      - sounds:/var/lib/asterisk/sounds/oml/
+      - ./asterisk/odbc.ini:/etc/odbc.ini
+      - ./asterisk/odbcinst.ini:/etc/odbcinst.ini
+      - ./asterisk/others/:/home/
+      - {{ repo_location }}/ominicontacto_voip/asterisk-files/conf/:/var/tmp/
+      - ssh_keys_devenv:/opt/sshkeys
+    working_dir: /etc/asterisk
+
+  dialer:
+    container_name: oml-{{ dialer_fqdn }}-devenv
+    depends_on:
+      - mariadb
+    dns: 8.8.8.8
+    environment:
+      - TZ={{ TZ }}
+      - MYSQL_PWD={{ mysql_root_password }}
+    image: freetechsolutions/dialer:{{ wombat_version }}
+    networks:
+      dev_net:
+        ipv4_address: {{ dialer_ip }}
+    ports:
+      - "{{ wd_external_port }}:8080/tcp"
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+
+  kamailio:
+    container_name: oml-{{ kamailio_fqdn }}-devenv
+    depends_on:
+      - redis
+      - asterisk
+    dns: 8.8.8.8
+    environment:
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - TZ={{ TZ }}
+    image: {{ kamailio_image }}
+    networks:
+      dev_net:
+        ipv4_address: {{ kamailio_ip }}
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - {{ repo_location }}/ominicontacto_voip/kamailio-files:/etc/kamailio
+      - ./certs/:/etc/kamailio/certs/
+
+  mariadb:
+    container_name: oml-{{ mariadb_fqdn }}-devenv
+    dns: 8.8.8.8
+    environment:
+      - TZ={{ TZ }}
+      - MARIADB_ROOT_PASSWORD={{ mysql_root_password }}
+      - MARIADB_DATABASE=wombat
+      - MARIADB_USER=wombat
+      - MARIADB_PASSWORD=dials
+    image: {{ mariadb_image }}
+    networks:
+      - dev_net
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - mariadb_data:/bitnami
+
+  nginx:
+    container_name: oml-{{ nginx_fqdn }}-devenv
+    dns: 8.8.8.8
+    environment:
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - TZ={{ TZ }}
+    image: {{ nginx_image }}
+    networks:
+      - dev_net
+    privileged: true
+    ports:
+     - "{{ nginx_external_port }}:443/tcp"
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - ./certs:/etc/nginx/certs/
+      - ./nginx/:/etc/nginx/
+      - grabaciones:/var/spool/asterisk/monitor/
+
+  omniapp:
+    command:
+      - {{ install_prefix }}run/run_omniapp.sh
+    container_name: oml-{{ omniapp_fqdn }}-devenv
+    dns: 8.8.8.8
+    environment:
+      - AMI_USER={{ ami_user }}
+      - AMI_PASSWORD={{ ami_password }}
+      - ASTERISK_HOSTNAME={{ asterisk_fqdn }}
+      - ASTERISK_LOCATION=
+      - CALIFICACION_REAGENDA={{ schedule }}
+      - DIALER_IP={{ dialer_ip }}
+      - DJANGO_SETTINGS_MODULE=ominicontacto.settings.develop
+      - EPHEMERAL_USER_TTL=28800
+      - EXTERNAL_PORT={{ external_port }}
+      - INSTALL_PREFIX={{ install_prefix }}
+      - KAMAILIO_IP={{ kamailio_ip }}
+      - KAMAILIO_HOSTNAME={{ kamailio_fqdn }}
+      - KAMAILIO_LOCATION=
+      - NGINX_HOSTNAME={{ hostname.stdout }}
+      - OMNILEADS_IP={{ omniapp_ip }}
+      - OMNILEADS_HOSTNAME={{ omniapp_fqdn }}
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - PGHOST={{ database_fqdn }}
+      - PGDATABASE={{ postgres_database }}
+      - PGUSER={{ postgres_user }}
+      - PGPASSWORD={{ postgres_password }}
+      - PYTHONPATH={{ install_prefix }}ominicontacto
+      - REDIS_HOSTNAME={{ redis_fqdn }}
+      - RTPENGINE_HOSTNAME={{ rtpengine_fqdn }}
+      - SESSION_COOKIE_AGE=3600
+      - TZ={{ TZ }}
+      - WOMBAT_HOSTNAME={{ dialer_fqdn }}
+      - WOMBAT_USER={{ dialer_user }}
+      - WOMBAT_PASSWORD={{ dialer_password }}
+    image: freetechsolutions/omniapp:{{ version }}
+    networks:
+      dev_net:
+        ipv4_address: {{ omniapp_ip }}
+    privileged: true
+    restart: on-failure
+    stdin_open: true
+    stop_grace_period: 1m30s
+    tty: true
+    user: omnileads
+    volumes:
+      - {{ repo_location }}:{{ install_prefix }}ominicontacto/
+      - ssh_keys_devenv:{{ install_prefix }}.ssh/
+      - ./omniapp/:{{ install_prefix }}run/
+      - ./omniapp/conversor.sh:{{ install_prefix }}bin/conversor.sh
+      - ./omniapp/omni-asterisk-logout.py:{{ install_prefix }}bin/omni-asterisk-logout.py
+      - grabaciones:{{ install_prefix }}grabaciones
+    working_dir: {{ install_prefix}}ominicontacto
+
+  postgresql:
+    container_name: oml-{{ postgresql_fqdn }}-devenv
+    dns: 8.8.8.8
+    environment:
+      - TZ={{ TZ }}
+      - POSTGRES_USER={{ postgres_user }}
+      - POSTGRES_PASSWORD={{ postgres_password }}
+      - POSTGRES_DB={{ postgres_database}}
+    image: freetechsolutions/postgresql:{{ postgresql_version }}
+    networks:
+      - dev_net
+    ports:
+     - "{{ pg_external_port }}:5432/tcp"
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+
+  pbx-emulator:
+    container_name: pbx-emulator
+    hostname: pbx-emulator
+    dns: 8.8.8.8
+    environment:
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - TZ={{ TZ }}
+    image: freetechsolutions/pbx-emulator:0.1
+    networks:
+      - dev_net
+    ports:
+      - 5060:5060/udp
+      - 10000-10020:10000-10020/udp
+    privileged: true
+    restart: on-failure
+    stdin_open: true
+    stop_grace_period: 1m30s
+    tty: true
+
+  redis:
+    container_name: oml-{{ redis_fqdn }}-devenv
+    dns: 8.8.8.8
+    environment:
+      - TZ={{ TZ }}
+    networks:
+      - dev_net
+    image: {{ redis_image }}
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+
+  rtpengine:
+    container_name: oml-{{ rtpengine_fqdn }}-devenv
+    dns: 8.8.8.8
+    environment:
+      - TZ={{ TZ }}
+    image: freetechsolutions/rtpengine:{{ rtpengine_version }}
+    networks:
+      - dev_net
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+
+networks:
+  dev_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "{{ dev_subnet }}"
+
+volumes:
+  grabaciones:
+  mariadb_data:
+  postgresql_data:
+  sounds:
+  ssh_keys_devenv:

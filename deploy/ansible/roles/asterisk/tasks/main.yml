@@ -17,13 +17,23 @@
 #
 ---
 
-- debug: msg="Asterisk no está instalado, se procede a la instalación"
+- debug: msg="Asterisk {{ asterisk_version }} is nost installed, proceeding to install"
   when: asterisk_installed.stdout != asterisk_version
-  tags: asterisk
+  tags: ['asterisk','postinstall']
 
-- debug: msg="Asterisk ya se encuentra instalado se omite instalación"
+- debug: msg="Asterisk is already installed in version {{ asterisk_version }}, skipping installation steps"
   when: asterisk_installed.stdout == asterisk_version
-  tags: asterisk
+  tags: ['asterisk','postinstall']
+
+- name: Uninstall previous asterisk version
+  file: state=absent path={{ item }}
+  with_items:
+    - "{{ asterisk_location }}/sbin/"
+    - "{{ asterisk_location }}/var/lib/"
+    - "{{ asterisk_location }}/lib64/"
+    - /usr/sbin/asterisk
+  when: asterisk_installed.stdout != asterisk_version
+  tags: ['never','postinstall']
 
 - include: packages_installation.yml
 #  when: asterisk_installed.stdout != asterisk_version
@@ -31,14 +41,14 @@
 
 - include: install.yml
   when: asterisk_installed.stdout != asterisk_version
-  tags: asterisk
+  tags: ['asterisk','postinstall']
 
 - include: configuration.yml
   tags: asterisk
 
 - include: gluster-server.yml
   tags: ['asterisk']
-  when: cluster != 0 and is_docker.stdout != "docker"
+  when: cluster != 0
 
 - include: roles/prerequisitos/tasks/reboot.yml
   when: cluster != 0 and ansible_os_family == "RedHat"

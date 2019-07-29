@@ -33,12 +33,14 @@ from django.utils.translation import ugettext_lazy as _
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Field, Layout, MultiField
 
+from constance import config
+
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
-    ReglasIncidencia, UserApiCrm, SupervisorProfile, ArchivoDeAudio,
-    NombreCalificacion, OpcionCalificacion, ParametrosCrm
+    SistemaExterno, ReglasIncidencia, SupervisorProfile, ArchivoDeAudio,
+    NombreCalificacion, OpcionCalificacion, ParametrosCrm, AgenteEnSistemaExterno
 )
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
@@ -345,22 +347,45 @@ class PrimerLineaEncabezadoForm(forms.Form):
         self.helper.layout = Layout(Field('es_encabezado'))
 
 
-class CamposDeTelefonoForm(forms.Form):
-    campos = forms.MultipleChoiceField(
+class CamposDeBaseDeDatosForm(forms.Form):
+    """ Formulario para identificar campos especiales de la base de datos """
+    campos_telefonicos = forms.MultipleChoiceField(
         required=True,
         label=_('Campos de teléfono'),
         widget=forms.CheckboxSelectMultiple())
+    id_externo = forms.ChoiceField(required=False,
+                                   widget=forms.Select(attrs={'class': 'form-control'}))
 
     def __init__(self, nombres_campos, *args, **kwargs):
-        super(CamposDeTelefonoForm, self).__init__(*args, **kwargs)
+        super(CamposDeBaseDeDatosForm, self).__init__(*args, **kwargs)
         self.nombres_campos = nombres_campos
-        self.fields['campos'].choices = tuple([(x, x) for x in nombres_campos])
+        self.fields['campos_telefonicos'].choices = tuple([(x, x) for x in nombres_campos])
+        id_externo_choices = [EMPTY_CHOICE]
+        id_externo_choices.extend(tuple([(x, x) for x in nombres_campos]))
+        self.fields['id_externo'].choices = id_externo_choices
+
+    def clean(self):
+        campos_telefonicos = self.cleaned_data.get('campos_telefonicos', [])
+        if len(campos_telefonicos) > 0:
+            id_externo = self.cleaned_data.get('id_externo')
+            if id_externo in campos_telefonicos:
+                msg = _('No se puede elegir un campo telefónico como id_externo')
+                raise forms.ValidationError(msg)
+        return super(CamposDeBaseDeDatosForm, self).clean()
 
     @property
     def columnas_de_telefonos(self):
         # Guardo los indices de los nombres de las columnas que tienen telefonos
-        seleccionados = self.cleaned_data.get('campos', [])
+        seleccionados = self.cleaned_data.get('campos_telefonicos', [])
         return [i for i, x in enumerate(self.nombres_campos) if x in seleccionados]
+
+    @property
+    def columna_id_externo(self):
+        # Devuelvo el indice del nombre de la columnas del id externo
+        seleccionado = self.cleaned_data.get('id_externo', '')
+        if seleccionado in self.nombres_campos:
+            return self.nombres_campos.index(seleccionado)
+        return None
 
 
 class BusquedaContactoForm(forms.Form):
@@ -383,7 +408,9 @@ class GrabacionBusquedaForm(forms.Form):
     tipo_llamada_choice.insert(0, EMPTY_CHOICE)
     tipo_llamada = forms.ChoiceField(required=False,
                                      choices=tipo_llamada_choice, label=_('Tipo de llamada'))
-    tel_cliente = forms.CharField(required=False)
+    tel_cliente = forms.CharField(required=False, label=_('Teléfono Cliente'))
+    callid = forms.CharField(required=False, label=_('Call ID'),
+                             widget=forms.TextInput(attrs={'class': 'form-control'}))
     agente = forms.ModelChoiceField(queryset=AgenteProfile.objects.filter(is_inactive=False),
                                     required=False, label=_('Agente'))
     campana = forms.ChoiceField(required=False, choices=(), label=_('Campaña'))
@@ -409,10 +436,17 @@ class CampanaMixinForm(object):
             self.fields['bd_contacto'].queryset = BaseDatosContacto.objects.obtener_definidas()
 
     def requiere_bd_contacto(self):
-        raise NotImplemented
+        raise NotImplementedError()
 
     def clean(self):
         bd_contacto_field = self.fields.get('bd_contacto', False)
+        sistema_externo = self.cleaned_data.get('sistema_externo', False)
+        bd_contacto = self.cleaned_data.get('bd_contacto', False)
+        if sistema_externo and bd_contacto \
+                and bd_contacto.get_metadata().columna_id_externo is None:
+            message = _("Una campaña asignada a un sistema externo debe usar una"
+                        " base de contactos con campo de id externo definido")
+            raise forms.ValidationError(message, code='invalid')
         if (bd_contacto_field and not bd_contacto_field.queryset.filter and
                 self.requiere_bd_contacto()):
             message = _("Debe cargar una base de datos antes de comenzar a "
@@ -422,7 +456,6 @@ class CampanaMixinForm(object):
         if self.cleaned_data.get('tipo_interaccion') is Campana.SITIO_EXTERNO and \
                 not self.cleaned_data.get('sitio_externo'):
             message = _("Debe seleccionar un sitio externo")
-            self.add_error('sitio_externo', message)
             raise forms.ValidationError(message, code='invalid')
         return super(CampanaMixinForm, self).clean()
 
@@ -431,11 +464,29 @@ class CampanaMixinForm(object):
         validar_nombres_campanas(nombre)
         return nombre
 
-    def clean_tipo_interaccion(self):
-        tipo_interaccion = self.cleaned_data.get('tipo_interaccion', None)
-        if self.instance and self.instance.pk:
-            return self.instance.tipo_interaccion
-        return tipo_interaccion
+    def clean_sitio_externo(self):
+        sitio_externo = self.cleaned_data.get('sitio_externo')
+        tipo_interaccion = self.cleaned_data.get('tipo_interaccion')
+        if tipo_interaccion == Campana.FORMULARIO and sitio_externo is not None:
+            msg = _('No se puede elegir un URL externo si selecciono un formulario.')
+            raise forms.ValidationError(msg)
+        return sitio_externo
+
+    def clean_id_externo(self):
+        sistema_externo = self.cleaned_data.get('sistema_externo', None)
+        id_externo = self.cleaned_data.get('id_externo', '')
+        if sistema_externo and id_externo:
+            # Validar que no este repetido
+            campana_con_id_externo = sistema_externo.campanas.filter(id_externo=id_externo)
+            if self.instance.id:
+                campana_con_id_externo = campana_con_id_externo.exclude(id=self.instance.id)
+            if campana_con_id_externo.exists():
+                msg = _("Ya existe una Campaña con ese id externo para el Sistema Externo elegido")
+                raise forms.ValidationError(msg)
+        if id_externo and not sistema_externo:
+            msg = _("No puede indicar un id externo sin elegir un Sistema Externo")
+            raise forms.ValidationError(msg)
+        return id_externo
 
 
 class CampanaForm(CampanaMixinForm, forms.ModelForm):
@@ -470,8 +521,8 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'bd_contacto',
-                  'sitio_externo', 'tipo_interaccion', 'objetivo', 'mostrar_nombre')
+        fields = ('nombre', 'bd_contacto', 'sistema_externo', 'id_externo',
+                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -479,6 +530,8 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
+            'id_externo': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
@@ -544,7 +597,6 @@ class OpcionCalificacionForm(forms.ModelForm):
         else:
             tipo = self.cleaned_data.get('tipo', None)
             if tipo == OpcionCalificacion.GESTION:
-                # TODO: Solo si se eligio tipo_interaccion Formulario!!!
                 # TODO: Solo si se eligio tipo_interaccion Formulario!!!
                 formulario = self.cleaned_data.get('formulario', None)
                 if not formulario:
@@ -712,8 +764,12 @@ class FieldFormularioForm(forms.ModelForm):
         }
 
     def clean_nombre_campo(self):
+        formulario = self.cleaned_data.get('formulario')
         nombre_campo = self.cleaned_data.get('nombre_campo')
-        return elimina_tildes(nombre_campo)
+        nombre_campo = elimina_tildes(nombre_campo)
+        if formulario.campos.filter(nombre_campo=nombre_campo).exists():
+            raise forms.ValidationError(_('No se puede crear un campo ya existente'))
+        return nombre_campo
 
     def clean_values_select(self):
         tipo = self.cleaned_data.get('tipo')
@@ -783,34 +839,49 @@ class FormularioNuevoContacto(forms.ModelForm):
 
     class Meta:
         model = Contacto
-        fields = ('telefono',)
+        fields = ('telefono', 'id_externo')
         widgets = {
             "telefono": forms.TextInput(attrs={'class': 'form-control'}),
+            "id_externo": forms.TextInput(attrs={'class': 'form-control'}),
         }
 
-    def __init__(self, bd_metadata=None, *args, **kwargs):
+    def __init__(self, base_datos=None, *args, **kwargs):
         if 'instance' in kwargs and kwargs['instance'] is not None:
             contacto = kwargs['instance']
+            self.base_datos = contacto.bd_contacto
             bd_metadata = contacto.bd_contacto.get_metadata()
             datos = json.loads(contacto.datos)
             for nombre, dato in zip(bd_metadata.nombres_de_columnas_de_datos, datos):
                 kwargs['initial'].update({self.get_nombre_input(nombre): dato})
+        else:
+            self.base_datos = base_datos
+            bd_metadata = base_datos.get_metadata()
 
         super(FormularioNuevoContacto, self).__init__(*args, **kwargs)
         nombre_campo_telefono = bd_metadata.nombre_campo_telefono
+        nombre_campo_id_externo = bd_metadata.nombre_campo_id_externo
         for campo in bd_metadata.nombres_de_columnas:
             if campo == nombre_campo_telefono:
                 nombre_campo = convertir_ascii_string(campo)
                 self.fields['telefono'].label = nombre_campo
+            elif campo == nombre_campo_id_externo:
+                nombre_campo = convertir_ascii_string(campo)
+                self.fields['id_externo'].label = nombre_campo
+                self.fields['id_externo'].required = False
             else:
                 nombre_campo = self.get_nombre_input(campo)
                 self.fields[nombre_campo] = forms.CharField(
                     required=False,
                     label=campo, widget=forms.TextInput(
                         attrs={'class': 'form-control'}))
+
+        if nombre_campo_id_externo is None:
+            self.fields.pop('id_externo')
+
         self.bd_metadata = bd_metadata
 
-    def get_nombre_input(self, nombre_campo):
+    @classmethod
+    def get_nombre_input(cls, nombre_campo):
         """
         Además del Encode modifico el nombre del input correspondiente a un campo de datos
         de nombre "telefono" para que no se solape con el input 'telefono' correspondiente al campo
@@ -837,6 +908,24 @@ class FormularioNuevoContacto(forms.ModelForm):
             if nombre_input == self.get_nombre_input(nombre_campo):
                 return True
         return False
+
+    def clean_id_externo(self):
+        id_externo = self.cleaned_data.get('id_externo')
+        # Si el campo no esta vacío
+        if not id_externo == '' and id_externo is not None:
+            # Validar que no este repetido
+            contacto_con_id_externo = self.base_datos.contactos.filter(id_externo=id_externo)
+            if self.instance.id:
+                contacto_con_id_externo = contacto_con_id_externo.exclude(id=self.instance.id)
+            if contacto_con_id_externo.exists():
+                msg = _("Ya existe un contacto con ese id externo en la base de datos")
+                raise forms.ValidationError(msg)
+        return id_externo
+
+    def clean(self):
+        if not self.instance.id:
+            self.instance.bd_contacto = self.base_datos
+        return super(FormularioNuevoContacto, self).clean()
 
 
 class FormularioCampanaContacto(forms.Form):
@@ -987,14 +1076,16 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin',
-                  'bd_contacto', 'sitio_externo',
-                  'tipo_interaccion', 'objetivo', 'mostrar_nombre')
+                  'bd_contacto', 'sistema_externo', 'id_externo',
+                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
+            'id_externo': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
@@ -1015,7 +1106,7 @@ class ActuacionVigenteForm(forms.ModelForm):
         viernes = self.cleaned_data.get('viernes')
         sabado = self.cleaned_data.get('sabado')
         if domingo == lunes == martes == miercoles == jueves == viernes == sabado is False:
-            raise forms.ValidationError('debe seleccionar algun día')
+            raise forms.ValidationError(_('Debe seleccionar algun día'))
 
         return self.cleaned_data
 
@@ -1041,18 +1132,75 @@ class BacklistForm(forms.ModelForm):
         }
 
 
+class SistemaExternoForm(forms.ModelForm):
+
+    class Meta:
+        model = SistemaExterno
+        fields = ('nombre', )
+
+
 class SitioExternoForm(forms.ModelForm):
 
     class Meta:
         model = SitioExterno
-        fields = ('nombre', 'url', 'tipo', 'metodo')
+        fields = ('nombre', 'url', 'disparador', 'metodo', 'formato', 'objetivo')
 
         widgets = {
             "nombre": forms.TextInput(attrs={'class': 'form-control'}),
             "url": forms.TextInput(attrs={'class': 'form-control'}),
-            "tipo": forms.Select(attrs={'class': 'form-control'}),
+            "disparador": forms.Select(attrs={'class': 'form-control'}),
             "metodo": forms.Select(attrs={'class': 'form-control'}),
+            "formato": forms.Select(attrs={'class': 'form-control'}),
+            "objetivo": forms.Select(attrs={'class': 'form-control'}),
         }
+
+    def clean_url(self):
+        url = self.cleaned_data.get('url', None)
+        if url:
+            # Verificar que los placeholders están bien formados
+            # y tienen la forma la forma '{x}' con x digito
+            bien = url.count('{') == url.count('}')
+            if bien:
+                # omito el principio hasta el primer placehodler
+                subs = url.split('{')[1:]
+                # Las subcadenas restantes debe ser de la forma 'x}___'
+                for sub in subs:
+                    end = sub.find('}')
+                    bien = bien and end > 0 and sub[0:end].isdigit()
+                    if not bien:
+                        raise forms.ValidationError(_('Formato inválido'))
+
+            if bien:
+                return url
+            raise forms.ValidationError(_('Formato inválido'))
+
+    def clean_objetivo(self):
+        disparador = self.cleaned_data.get('disparador')
+        objetivo = self.cleaned_data.get('objetivo')
+        formato = self.cleaned_data.get('formato')
+        if disparador == SitioExterno.SERVER:
+            if objetivo:
+                msg = _('Si el disparador es el servidor, no puede haber un objetivo.')
+                raise forms.ValidationError(msg)
+        elif formato == SitioExterno.JSON:
+            if objetivo:
+                msg = _('Si el formato es JSON, no puede haber un objetivo.')
+                raise forms.ValidationError(msg)
+        elif objetivo == '':
+            raise forms.ValidationError(_('Debe indicar un objetivo.'))
+        return objetivo
+
+    def clean_formato(self):
+        metodo = self.cleaned_data.get('metodo')
+        formato = self.cleaned_data.get('formato')
+        if metodo == SitioExterno.GET:
+            if formato:
+                msg = _('Si el método es GET, no debe indicarse formato.')
+                raise forms.ValidationError(msg)
+        elif formato == '':
+            msg = _('Si el método es POST, debe seleccionar un formato válido.')
+            raise forms.ValidationError(msg)
+        return formato
 
 
 class ReglasIncidenciaForm(forms.ModelForm):
@@ -1183,24 +1331,6 @@ class QueueDialerForm(forms.ModelForm):
             self.initial['wrapuptime'] = 2
 
 
-class UserApiCrmForm(forms.ModelForm):
-
-    class Meta:
-        model = UserApiCrm
-        fields = ('usuario', 'password')
-
-        widgets = {
-            "usuario": forms.TextInput(attrs={'class': 'form-control'}),
-            "password": forms.PasswordInput(attrs={'class': 'form-control'}),
-        }
-
-    def clean_usuario(self):
-        usuario = self.cleaned_data['usuario']
-        if ' ' in usuario:
-            raise forms.ValidationError(_('El usuario no puede contener espacios'))
-        return usuario
-
-
 ROL_CHOICES = ((SupervisorProfile.ROL_GERENTE, _('Supervisor Gerente')),
                (SupervisorProfile.ROL_ADMINISTRADOR, _('Administrador')),
                (SupervisorProfile.ROL_CLIENTE, _('Cliente')))
@@ -1249,10 +1379,12 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre', 'bd_contacto',
-                  'sitio_externo', 'tipo_interaccion', 'objetivo')
+        fields = ('nombre', 'bd_contacto', 'sistema_externo', 'id_externo',
+                  'tipo_interaccion', 'sitio_externo', 'objetivo')
 
         widgets = {
+            'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
+            'id_externo': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
@@ -1278,12 +1410,14 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
 
     class Meta:
         model = Campana
-        fields = ('nombre',
-                  'sitio_externo', 'tipo_interaccion', 'objetivo', 'bd_contacto',
+        fields = ('nombre', 'sistema_externo', 'id_externo',
+                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'bd_contacto',
                   'tiempo_desconexion')
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
+            'id_externo': forms.TextInput(attrs={'class': 'form-control'}),
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
@@ -1435,3 +1569,30 @@ ParametrosCrmFormSet = inlineformset_factory(
 QueueMemberFormset = inlineformset_factory(
     Queue, QueueMember, formset=QueueMemberBaseFomset, form=QueueMemberForm, extra=1,
     can_delete=True, min_num=0)
+
+AgenteEnSistemaExternoFormset = inlineformset_factory(
+    SistemaExterno, AgenteEnSistemaExterno, fields=('agente', 'id_externo_agente'),
+    extra=1, can_delete=True, min_num=0)
+
+
+class RegistroForm(forms.Form):
+    nombre = forms.CharField(label=_("Inserte su nombre o empresa"),
+                             widget=forms.TextInput(attrs={'class': 'form-control'}),
+                             required=True)
+    password = forms.CharField(label=_("Inserte su contraseña de acceso"),
+                               widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+                               required=True)
+    email = forms.CharField(label=_("Inserte su correo electrónico"),
+                            widget=forms.TextInput(attrs={'class': 'form-control'}),
+                            required=True)
+    telefono = forms.CharField(label=_("Inserte su teléfono"),
+                               widget=forms.TextInput(attrs={'class': 'form-control'}),
+                               required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(RegistroForm, self).__init__(*args, **kwargs)
+        self.initial = {
+            'nombre': config.CLIENT_NAME,
+            'email': config.CLIENT_EMAIL,
+            'telefono': config.CLIENT_PHONE,
+        }

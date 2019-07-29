@@ -1,0 +1,488 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, omnileads
+# This file is distributed under the same license as the OMniLeads package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OMniLeads \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-06-03 21:27-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+# 0f9ab972f1b9407aa92f6158dcdc0997
+#: ../../agent_call_actions.rst:2
+msgid "Poner en espera una llamada"
+msgstr "Hold call"
+
+# 49a3717611f54c7f9a7ebb3b58c5a95f
+#: ../../agent_call_actions.rst:4
+msgid ""
+"En medio de cualquier tipo de llamada en curso, el agente puede poner en "
+"espera al teléfono en el otro extremo de la comunicación. Esto se logra "
+"hundiendo el botón \"hold\" del webphone de agente."
+msgstr ""
+"When is a call taking place, the agent can hold the call with a customer."
+" Click the \"hold\" button in agent's webphone"
+
+# 5bcd3079b65949b9bf1c4396ef33cc80
+#: ../../agent_call_actions.rst:9
+msgid "*Figure 1: call on hold*"
+msgstr "*Figure 1: call on hold*"
+
+# bc7ac9d7415d4ac48e3f7965e80147cd
+#: ../../agent_call_actions.rst:11
+msgid ""
+"Al disparar la acción de hold, el otro extremo de la llamada que "
+"escuchando la música de espera, mientras que el agente puede volver a "
+"retomar la llamada cuando desee simplemente hundiendo el botón de unhold,"
+" tal como se indica en la figura 2."
+msgstr ""
+"When hold button is clicked, the customer will listen hold music, while "
+"the agent can unhold the call when he wishes, justo clicking in unhold, "
+"as seen in figure 2."
+
+# 310896aff981406c895a5305c88f18ca
+#: ../../agent_call_actions.rst:16
+msgid "*Figure 2: unhold*"
+msgstr "*Figure 2: unhold*"
+
+# e3f68460748f463b92a3500a129bb3b0
+#: ../../agent_call_actions.rst:18
+msgid "Esta funcionalidad puede ser utilizada en cualquier tipo de llamada."
+msgstr "This functionality can be used with any call type"
+
+# dbd70385a7174347842c2b58e5db8157
+#: ../../agent_call_actions.rst:21
+#, fuzzy
+msgid "Transferencias y conferencias"
+msgstr "Call transfer"
+
+# f694255f89c649e7adbd7d3fc5205ac4
+#: ../../agent_call_actions.rst:23
+msgid ""
+"Dentro del abanico de posibilidades de transferencias de llamadas que se "
+"pueden realizar en el sistema, tenemos las siguientes:"
+msgstr "The possible transfers than can be done are:"
+
+# e3ad54abffc241ae94f74ac608d019a0
+#: ../../agent_call_actions.rst:26
+msgid "**Transferencia directa hacia otro agente**"
+msgstr "Direct transfer to other agent"
+
+# 8dca503979784b299469e403b3d940e4
+#: ../../agent_call_actions.rst:28
+msgid ""
+"El \"agente A\" se encuentra en una llamada activa y desea transferir la "
+"llamada hacia el \"agente B\" de manera directa. En este caso se hunde el"
+" botón de transferencia disponible en el webphone y luego se selecciona "
+"\"blind transfer\" como tipo de transferencia y se puede elegir al agente"
+" destino."
+msgstr ""
+"Supose that \"agent A\" has an active call and he wishes to transfer the "
+"call to \"agent B\", directly. In this case he click the transfer button,"
+" inside the webphone and the selects \"blind transfer\", after that, he "
+"can select the agent."
+
+# e737b83aa014454baaaf4c2257b83f3d
+#: ../../agent_call_actions.rst:33
+msgid "*Figure 3: \"Agent A\" to \"Agent B\" blind transfer*"
+msgstr "*Figure 3: \"Agent A\" to \"Agent B\" blind transfer*"
+
+# 64af8eabb5bf4e2e9382d4d49b63202a
+#: ../../agent_call_actions.rst:35
+msgid ""
+"En este caso, la llamada automáticamente es despachada hacia el agente B,"
+" quedando liberado el webphone del \"agente A\". Una vez disparada esta "
+"transferencia, no se puede volver a recuperar la llamada original, ni "
+"tampoco el \"agente A\" puede conocer si la llamada fue atendida o no por"
+" el \"agente B\""
+msgstr ""
+"In this case the call is automatically transferred to \"agent B\", "
+"leaving free \"agent A\". Once made the transfer, it cannot be recovered,"
+" neither \"agent A\" can know if the transfer was attended by  \"agent "
+"B\""
+
+# 525b3ecd9e2b4f22a0445cece0d55ff7
+#: ../../agent_call_actions.rst:38
+#, fuzzy
+msgid "**Transferencia directa hacia teléfono externo**"
+msgstr "Direct transfer to other agent"
+
+# 194ab2d257a2454cb670a55cc876f840
+#: ../../agent_call_actions.rst:40
+msgid ""
+"El \"agente A\" se encuentra en una llamada activa y desea transferir la "
+"llamada hacia un \"Teléfono\" externo a OMniLeads de manera directa. "
+"Cuando decimos externo, nos referimos a una llamada que se genera hacia "
+"afuera del sistema, puede ser una extensión del PBX de la compañía o bien"
+" un teléfono externo de la PSTN."
+msgstr ""
+
+# 2c987fe353374733abb7badc3b7f2d45
+#: ../../agent_call_actions.rst:43
+msgid ""
+"En este caso se hunde el botón de transferencia disponible en el webphone"
+" y luego se selecciona \"blind transfer\" como tipo de transferencia y se"
+" debe introducir el número destino en recuadro como lo indica la figura "
+"4."
+msgstr ""
+
+# e926888f57db458d9776310585701bd1
+#: ../../agent_call_actions.rst:48
+msgid "*Figure 4: \"Agent A\" to \"External telephone\" blind transfer*"
+msgstr ""
+
+# ebc373ee8afe44afbc8b57b8d9634dfb
+#: ../../agent_call_actions.rst:50
+msgid ""
+"En este caso, la llamada automáticamente es despachada hacia el teléfono "
+"destino, quedando liberado el webphone del \"agente A\". Una vez "
+"disparada esta transferencia, no se puede volver a recuperar la llamada "
+"original, ni tampoco el \"agente A\" puede conocer si la llamada fue "
+"atendida o no por el teléfono destino de la transferencia."
+msgstr ""
+
+# e166eef8d5ed49f295903f6b85c0206e
+#: ../../agent_call_actions.rst:53
+msgid "**Transferencia con consulta hacia otro agente**"
+msgstr ""
+
+# f08c121854b246f1940fd7621fec6f51
+#: ../../agent_call_actions.rst:55
+msgid ""
+"El \"agente A\" se encuentra en una llamada activa y desea transferir la "
+"llamada hacia el \"agente B\" de manera consultativa, es decir logrando "
+"que el teléfono externo quede en espera mientras el \"agente A\" abre un "
+"nuevo canal hacia el \"agente B\", si la llamada entre ambos se establece"
+" y el \"agente B\" desea recibir la transferencia, entonces el \"agente "
+"A\" corta la llamada y automáticamente el teléfono externo queda unido en"
+" una llamada con el \"agente B\"."
+msgstr ""
+
+# 43c4100156a3406bb52c486788b40104
+#: ../../agent_call_actions.rst:61
+msgid "*Figure 5: \"Agent A\" to \"Agent B\" consultative transfer*"
+msgstr ""
+
+# 6c6183d7379c49a78f969c5611b260bb
+# 27f75fc282c341d8b06247c1651cd110
+#: ../../agent_call_actions.rst:63 ../../agent_call_actions.rst:94
+msgid "En este escenario también puede ocurrir:"
+msgstr ""
+
+# 75ff64278e884dd488e9f4e1a7dff531
+#: ../../agent_call_actions.rst:65
+msgid ""
+"Que no se logre contactar al \"agente B\", entonces el \"agente A\" puede"
+" cancelar la transferencia durante el ring hacia el \"agente B\" con el "
+"botón \"cancel transfer\" del webphone."
+msgstr ""
+
+# a1929e8b4ad74bea8af85d6fc043d449
+#: ../../agent_call_actions.rst:68
+msgid ""
+"Se logra el contacto con el \"agente B\" pero éste no pueda/quiera "
+"proceder con la transferencia, por lo tanto el \"agente B\" debe cortar "
+"la llamada y atomáticamente vuelve a quedar el \"agente A\" con el "
+"teléfono externo enlazados."
+msgstr ""
+
+# de3b8c42d45440329d5baa5a06da215d
+#: ../../agent_call_actions.rst:71
+msgid "**Conferencia de a tres entre el número externo, agente A y agente B**"
+msgstr ""
+
+# 76772bc75563457ca3a43063f453d6dc
+#: ../../agent_call_actions.rst:73
+msgid ""
+"Este caso es un escenario posible dentro de una transferencia "
+"consultativa, ya que la acción a ejecutar por el agente que impulsa la "
+"conferencia \"agente A\", es en un principio una transferencia "
+"consultativa, solo que al momento de entablar conversación del \"agente "
+"A\" hacia el \"agente B\" (mientras la persona externa \"numero externo\""
+" se encuentra en espera) el \"agente A\" debe hundir el botón de "
+"\"Confer\" disponible en el Webphone de agente y de esta manera quedan "
+"las tres partes en un salón de conferencia."
+msgstr ""
+
+# 41d756e6578948adaa0a3f233b6de42f
+#: ../../agent_call_actions.rst:81
+msgid ""
+"*Figure 6: \"Agent A\", \"Agent B\" and External number three way "
+"conference*"
+msgstr ""
+
+# 9eda81f536fc47ad84cd117e5bc7d4e0
+#: ../../agent_call_actions.rst:83
+#, fuzzy
+msgid "**Transferencia con consulta hacia teléfono externo**"
+msgstr "Direct transfer to other agent"
+
+# 2e49edaed12647cfbd26394bbc0110e1
+#: ../../agent_call_actions.rst:85
+msgid ""
+"El \"agente A\" se encuentra en una llamada activa y desea transferir la "
+"llamada hacia un \"teléfono\" externo de manera consultativa, es decir "
+"logrando que \"telefono externo A\" quede en espera mientras el \"agente "
+"A\" abre un nuevo canal hacia el \"teléfono externo B\", si la llamada "
+"entre ambos se establece y el \"teléfono externo B\" desea recibir la "
+"transferencia, entonces el \"agente A\" corta la llamada y "
+"automáticamente el \"teléfono externo A\" queda unido en una llamada con "
+"el \"teléfono externo B\"."
+msgstr ""
+
+# 8ee36129be9c4983a0fb10e673f5cecd
+#: ../../agent_call_actions.rst:92
+#, fuzzy
+msgid "*Figure 7: \"Agent A\" to \"External telephone\" consultative transfer*"
+msgstr "*Figure 3: \"Agent A\" to \"Agent B\" blind transfer*"
+
+# 011acd2e96474884ad2eaf49596a088d
+#: ../../agent_call_actions.rst:96
+msgid ""
+"Que no se logre contactar al \"teléfono externo B\", entonces el \"agente"
+" A\" puede cancelar la transferencia durante el ring hacia el \"teléfono "
+"externo B\" con el botón \"cancel transfer\" del webphone."
+msgstr ""
+
+# d99e6d1afa174f35a53b852e149039c0
+#: ../../agent_call_actions.rst:99
+msgid ""
+"Se logra el contacto con el \"telefono externo B\" pero éste no "
+"pueda/quiera proceder con la transferencia, por lo tanto el \"teléfono "
+"externo B\" debe cortar la llamada y atomáticamente vuelve a quedar el "
+"\"agente A\" con el \"teléfono externo A\" enlazados."
+msgstr ""
+
+# 58a5e2fd60a14ee58b3e99d71d032c95
+#: ../../agent_call_actions.rst:102
+msgid ""
+"**Conferencia de a tres entre el número externo A, agente y un número "
+"externo B**"
+msgstr ""
+
+# 04a8e40ccd514e17b21d7c60ba2ca692
+#: ../../agent_call_actions.rst:104
+msgid ""
+"Bajo este escenario el \"agente A\" puede armar una conferencia de a tres"
+" entre el \"número externo A\", es decir la persona que inicialmente se "
+"encuentra en llamada con \"agente A\" y un \"numero externo B\", que "
+"puede ser la extensión de un PBX o un abonado de la PSTN, de manera tal "
+"que queden las tres partes en una sala de conferencias."
+msgstr ""
+
+# ad04971dd9a24f419a3f6b56db022a55
+#: ../../agent_call_actions.rst:108
+msgid ""
+"Para llevar a cabo esta acción, el \"agente A\" debe iniciar una "
+"*transferencia consultativa* hacia el \"numero externo B\" y una vez en "
+"llamada con éste último el agente debe hundir el botón de \"Confer\" de "
+"su webphone (Figura 9)."
+msgstr ""
+
+# 8a728b5ba0a3498f983bfdfacae2117b
+#: ../../agent_call_actions.rst:113
+msgid ""
+"*Figure 8: \"Agent A\", \"Subscriber A\" and \"Subscriber B\" three way "
+"conference*"
+msgstr ""
+
+# d9e8a7ef1d624c01bfd0f01a9eb3f077
+#: ../../agent_call_actions.rst:117
+msgid "*Figure 9: Webphone confer switch*"
+msgstr ""
+
+# 969d73ba87d64204888f3394293809f4
+#: ../../agent_call_actions.rst:120
+msgid "**Transferencia a otra campaña**"
+msgstr ""
+
+# f13d32f31c3a4233b01853e3e814f778
+#: ../../agent_call_actions.rst:122
+msgid ""
+"Bajo este escenario el \"agente A\" se encuentra en una llamada activa y "
+"desea transferir la llamada hacia una campaña entrante. A la hora de "
+"seleccionar el tipo de transferencia se debe marcar \"blind transfer\" ya"
+" que la llamada es lanzada sobre la cola de espera de la campaña destino."
+msgstr ""
+
+# 6bd6fcaa07054706aed6354c07c03c0c
+#: ../../agent_call_actions.rst:127
+#, fuzzy
+msgid "*Figure 10: \"Agent A\" to \"inbound campaign\" transfer*"
+msgstr "*Figure 3: \"Agent A\" to \"Agent B\" blind transfer*"
+
+# 93e5dd51ae854bef8ba2e1fc3a9ac71e
+#: ../../agent_call_actions.rst:129
+msgid ""
+"Como se trata de una transferencia directa, la llamada automáticamente es"
+" despachada hacia el teléfono destino, quedando liberado el webphone del "
+"\"agente A\". Una vez disparada esta transferencia, no se puede volver a "
+"recuperar la llamada original, ni tampoco el \"agente A\" puede conocer "
+"si la llamada fue atendida o no"
+msgstr ""
+
+# a9c65bb472984698b2c82aad6987aae7
+#: ../../agent_call_actions.rst:134
+msgid "Observar grabación de llamada"
+msgstr ""
+
+# 84caaff45e4c43ecae37cf06513ad115
+#: ../../agent_call_actions.rst:136
+msgid ""
+"Esta funcionalidad del webphone de agente, permite a éste poder generar "
+"una marca sobre la grabación de la llamada. La idea es que luego desde el"
+" módulo de busqueda de grabaciones se pueda recuperar grabaciones "
+"\"observadas\" por los agentes y allí también desplegar la observación "
+"que realizó el agente sobre la grabación de la llamada."
+msgstr ""
+
+# cd1f1a56e993427abc58da8db5281ba9
+#: ../../agent_call_actions.rst:141
+#, fuzzy
+msgid "*Figure 11: call recording tag*"
+msgstr "*Figure 1: call on hold*"
+
+# 252fb573be35467580330383232b49bc
+#: ../../agent_call_actions.rst:143
+msgid ""
+"Como se indica en la figura 8, luego de hundir el botón para marcar la "
+"llamada, se depliega un campo de texto para que el agente pueda describir"
+" la situación."
+msgstr ""
+
+# ed05080e949340c5ae75d74986704be2
+#: ../../agent_call_actions.rst:145
+msgid ""
+"Finalmente en el módulo de grabación de OMniLeads, se puede recuperar "
+"dicha grabación y observar lo que el agente escribió al respecto."
+msgstr ""
+
+# e6af18411051473aa5d7436a12c0ab6d
+#: ../../agent_call_actions.rst:149
+msgid "Agendamiento de llamadas"
+msgstr ""
+
+# ad0924a001804d76a98983a455094b83
+#: ../../agent_call_actions.rst:151
+msgid ""
+"La funcionalidad de agendamiento de llamadas permite al sistema volver a "
+"procesar un contacto hacia el futuro. La idea es no descartar al mismo, "
+"sino seguirlo gestionando."
+msgstr ""
+
+# 0ddd61877e604f0d8cba3fcfee0230fb
+#: ../../agent_call_actions.rst:153
+msgid "**Agendamiento personal:**"
+msgstr ""
+
+# d98bc428a2794a06bef263d45ccf3e50
+#: ../../agent_call_actions.rst:155
+msgid ""
+"Cuando el agente requiere volver a llamar a un contacto determinado, "
+"puede generar un recordatorio en su agenda personal, para luego al listar"
+" dicha agenda contar con la entrada que le recuerda el horario y contacto"
+" que debe llamar."
+msgstr ""
+
+# 1d32414268dd4dfebf254ce46ff682ab
+#: ../../agent_call_actions.rst:158
+msgid ""
+"El agendamiento de llamadas es una calificación que se encuentra por "
+"defecto siempre como calificación de contacto."
+msgstr ""
+
+# 0a03d773fae24d3b8be11c2e2e0a7bce
+#: ../../agent_call_actions.rst:162
+#, fuzzy
+msgid "*Figure 12: agenda personal*"
+msgstr "*Figure 2: unhold*"
+
+# b89c71c0655d4ab4850434891d16de16
+#: ../../agent_call_actions.rst:164
+msgid ""
+"Luego de guardar la calificación, se despliega un formulario para "
+"seleccionar la fecha, hora y motivo de la agenda personal del contacto."
+msgstr ""
+
+# 1db85f73e92d4a49aa7228ac69159a89
+#: ../../agent_call_actions.rst:168
+msgid "*Figure 13: detalles de la agenda personal*"
+msgstr ""
+
+# 36678bf181214628a03462cfb173a461
+#: ../../agent_call_actions.rst:170
+msgid ""
+"Finalmente, la entrada en la agenda personal del agente quedará "
+"disponible ingresando al punto de menú Agendas:"
+msgstr ""
+
+# cab6e277580c4def89552f557bfe93ef
+#: ../../agent_call_actions.rst:174
+msgid "*Figure 14: detalles de la agenda personal*"
+msgstr ""
+
+# 822444287c664573988c7b372f871328
+#: ../../agent_call_actions.rst:176
+msgid "**Agendamiento global de llamadas predictivas**"
+msgstr ""
+
+# 4eaa2ce2cab24be0b22012eb34a410e6
+#: ../../agent_call_actions.rst:178
+msgid ""
+"Este tipo de agendamiento es solo aplicable a campañas con discador "
+"predictivo ya que tiene como finalidad volver a colocar al contacto "
+"dentro de la lista de números a llamar por el discador. En este escenario"
+" el discador simplemente vuelve a llamar a dicho número agendado hacia el"
+" final de la campaña, es decir no se puede elegir ni una fecha u horario "
+"ni tampoco sobre qué agente va a caer el contacto llamado nuevamente por "
+"el discador."
+msgstr ""
+
+# b064c2a8f0d74ac2a09a14f0efb01146
+#: ../../agent_call_actions.rst:182
+msgid ""
+"Se trata de una funcionalidad que permite no descartar al contacto, pero "
+"sin implicar un seguimiento personal por parte del agente."
+msgstr ""
+
+# 0707f723d121492281c51cc2183ef37b
+#: ../../agent_call_actions.rst:184
+msgid ""
+"Para generar una agenda de este tipo, se debe calificar al contacto con "
+"la calificación \"agenda\" pero luego seleccionar \"global\" en el menú "
+"de selección del tipo de agenda."
+msgstr ""
+
+#~ msgid "**Transferencia directa a número externo**"
+#~ msgstr ""
+
+#~ msgid "**Transferencia con consulta a número externo**"
+#~ msgstr ""
+
+#~ msgid "*Figure 6: \"Agent A\" to \"External telephone\" consultative transfer*"
+#~ msgstr ""
+
+#~ msgid "*Figure 7: \"Agent A\" to \"inbound campaign\" transfer*"
+#~ msgstr ""
+
+#~ msgid "*Figure 8: call recording tag*"
+#~ msgstr ""
+
+#~ msgid "*Figure 9: agenda personal*"
+#~ msgstr ""
+
+#~ msgid "*Figure 10: detalles de la agenda personal*"
+#~ msgstr ""
+
+#~ msgid "*Figure 11: detalles de la agenda personal*"
+#~ msgstr ""
+

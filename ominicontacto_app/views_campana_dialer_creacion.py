@@ -195,6 +195,7 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
                 self._insert_queue_asterisk(campana.queue_campana)
                 self.save_supervisores(form_list, -3)
                 self.save_agentes(form_list, -2)
+                self.alertas_por_sistema_externo(campana)
                 success = True
 
         except Exception:
@@ -211,7 +212,7 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
                 messages.ERROR,
                 _('<strong>¡ATENCIÓN!</strong> El servicio Discador no se encuentra disponible. '
                   'No se pudo crear la campaña. Por favor contacte un administrador.'))
-
+        self.alertas_por_sistema_externo(campana)
         return HttpResponseRedirect(reverse('campana_dialer_list'))
 
 

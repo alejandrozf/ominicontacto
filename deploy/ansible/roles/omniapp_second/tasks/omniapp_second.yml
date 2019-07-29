@@ -25,7 +25,7 @@
 
 # Se sube el archivo de configuracion de omnileads para nginx
 - name: Create of ominicontacto.conf
-  template: src=templates/etc/ominicontacto.conf.j2 dest=/etc/nginx/conf.d/ominicontacto.conf owner={{ usuario }} group={{ usuario }}
+  template: src=templates/etc/ominicontacto.conf dest=/etc/nginx/conf.d/ominicontacto.conf owner={{ usuario }} group={{ usuario }}
   become: true
   become_method: sudo
   tags: ['postinstall','changenetwork']
@@ -51,6 +51,10 @@
   when: cluster != 0
   tags: changenetwork
 
+- name: Get register server certificate
+  get_url: url={{ registrar_server }} dest={{ install_prefix }} validate_certs=False
+  tags: postinstall
+
 # Se crea el archivo .ini de uwsgi. Para mas info revisar documentacion de uwsgi
 - name: Create of oml_uwgsi.ini script
   template: src=templates/run/oml_uwsgi.ini dest={{ install_prefix }}run/oml_uwsgi.ini mode=755 owner={{ usuario }} group={{ usuario }}
@@ -58,6 +62,7 @@
 # Se crea el archivo .ini de uwsgi. Para mas info revisar documentacion de uwsgi
 - name: Create of ominicontacto_app.ini script
   template: src=templates/run/ominicontacto_app.ini dest={{ install_prefix }}run/ominicontacto_app.ini mode=755 owner={{ usuario }} group={{ usuario }}
+  tags: postinstall
 
 # Se crea el arhivo de systemd para omnileads daemon
 - name: Create of omnileads service
@@ -67,9 +72,7 @@
 # Se inicia y habilita el servicio
 - name: Start the omnileads-daemon service
   systemd: name=omnileads state=restarted enabled=yes daemon_reload=yes
-  become: true
-  become_method: sudo
-  when: desarrollo == 0
+  tags: postinstall
 
 # Se ejecuta una funcion de sql que hizo ale, esto es para los reportes
 - name: Add queuelog trigger to database
@@ -80,19 +83,43 @@
   tags: ['never','postinstall']
   become_method: sudo
 
-# Este script sirve para hacer comandos de manage.py sin necesidad de activar virualenv primero
-- name: Generate manage.sh script
-  template: src=templates/bin/manage.sh.j2 dest={{ install_prefix }}bin/manage.sh owner={{ usuario }} group={{ usuario }} mode=755
-
 # Se sube el script de backup-restore
-- name: Generate backup-restore.sh script
-  template: src=templates/bin/backup-restore.sh.j2 dest={{ install_prefix }}bin/backup-restore.sh owner={{ usuario }} group={{ usuario }} mode=755
+- name: Generate extra scripts
+  template: src=templates/bin/{{ item.src }} dest={{ install_prefix }}bin/{{ item.dest }} owner={{ usuario }} group={{ usuario }} mode=755
+  with_items:
+    - { src: backup-restore.sh, dest: backup-restore.sh }
+    - { src: conversor.sh, dest: conversor.sh }
+    - { src: omni-asterisk-logout.py.j2, dest: omni-asterisk-logout.py }
   tags: postinstall
 
-# Se inicia y habilita el servicio
-- name: Reload the omnileads-daemon service
-  systemd: name=omnileads state=reloaded enabled=yes daemon_reload=yes
+- name: Erase files related to php supervision
+  file: state=absent path={{ item }}
+  with_items:
+    - /etc/nginx/conf.d/supervision.conf
+    - "{{ install_prefix }}Omnisup"
+  tags: ['never','postinstall']
+
+# Toca hacer esta tarea aparte para que no salga el error de nginx que se soluciona al rebotear el server
+- name: Enable of nginx
+  command: systemctl enable nginx
   become: true
   become_method: sudo
-  tags: ['postinstall','changenetwork','changepassword']
-  when: desarrollo == 0
+  when: ansible_os_family == "RedHat"
+
+# Starteo y habilito nginx
+- name: Restart of nginx (debian)
+  service: name=nginx state=restarted enabled=yes
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
+
+# Starteo y habilito nginx
+- name: Reload of nginx
+  service: name=nginx state=reloaded enabled=yes
+  become: true
+  become_method: sudo
+  tags: ['never','postinstall','kamailio','changenetwork']
+
+- name: Change ownership of /var/lib/nginx/tmp/
+  file: state=directory owner={{ usuario }} group={{ usuario }} path=/var/lib/nginx recurse=yes
+  tags: postinstall
