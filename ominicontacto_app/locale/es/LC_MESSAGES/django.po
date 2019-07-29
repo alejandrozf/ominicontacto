@@ -608,11 +608,6 @@ msgstr ""
 msgid "Grupos"
 msgstr ""
 
-#: ominicontacto_app/models.py:219 ominicontacto_app/templates/base.html:121
-#: ominicontacto_app/templates/modulo_list.html:25
-msgid "Módulos"
-msgstr ""
-
 #: ominicontacto_app/models.py:263
 #, python-brace-format
 msgid "Seteando Agente {0} como BORRADO"
