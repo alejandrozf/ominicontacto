@@ -88,7 +88,3 @@ msgid ""
 " las campañas."
 msgstr ""
 "Agent has different menues to work with campaign contacts."
-
-#~ msgid "Sesión del agente"
-#~ msgstr ""
-
