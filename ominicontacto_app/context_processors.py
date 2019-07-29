@@ -19,6 +19,7 @@
 
 from __future__ import unicode_literals
 
+from django.conf import settings
 
 from constance import config
 
@@ -32,3 +33,9 @@ def admin_supervisor(request):
             'WEBPHONE_CLIENT_ENABLED': config.WEBPHONE_CLIENT_ENABLED,
         }
     return {}
+
+
+def global_settings(request):
+    return {
+        'ALLOW_FEEDBACK': settings.ALLOW_FEEDBACK,
+    }

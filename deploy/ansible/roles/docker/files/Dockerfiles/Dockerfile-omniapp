@@ -31,7 +31,9 @@ RUN mkdir /opt/omnileads/.ssh/ \
     && sed -i 's/#   CheckHostIP yes/   CheckHostIP no/' /etc/ssh/ssh_config \
     && echo "   UserKnownHostsFile /dev/null" >> /etc/ssh/ssh_config \
     && mkdir /etc/asterisk && chown omnileads. /etc/asterisk \
-    && chown -R omnileads.omnileads {{ install_prefix }} /var/spool/cron/ /var/spool/cron/crontabs/
+    && chown -R omnileads.omnileads {{ install_prefix }} /var/spool/cron/ /var/spool/cron/crontabs/ \
+    && cd /opt/omnileads/ \
+    && wget https://keys-server.freetech.com.ar:20852/cert --no-check-certificate
 
 RUN apk add sudo \
     && echo "omnileads ALL=(ALL:ALL) ALL" >> /etc/sudoers \

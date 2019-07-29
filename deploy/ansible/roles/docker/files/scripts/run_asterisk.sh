@@ -24,15 +24,12 @@ else
   COMMAND="$@"
 fi
 
-if [ "${ASTERISK_UID}" != "" ] && [ "${ASTERISK_GID}" != "" ]; then
-  # recreate user and group for asterisk
-  # if they've sent as env variables (i.e. to macth with host user to fix permissions for mounted folders
+# recreate user and group for asterisk
+# if they've sent as env variables (i.e. to macth with host user to fix permissions for mounted folders
 
-  deluser asterisk && \
-  adduser --gecos "" --no-create-home --uid ${ASTERISK_UID} --disabled-password ${ASTERISK_USER} || exit
-  chown -R ${ASTERISK_UID}:${ASTERISK_UID} /etc/asterisk \
-                                           /var/*/asterisk \
-                                           /usr/*/asterisk
-fi
-
+deluser asterisk && \
+adduser --gecos "" --no-create-home --uid 1000 --disabled-password ${ASTERISK_USER} || exit
+chown -R 1000:1000 /etc/asterisk \
+                                         /var/*/asterisk \
+                                         /usr/*/asterisk
 exec ${COMMAND}

@@ -84,17 +84,17 @@ Como se puede apreciar en la figura 3, se agrupan los componentes Aplicación we
 Como se puede apreciar en la figura 4, se separan todos los componentes Aplicación web, Database, Dialer diferentes *hostname* y *dirección IP*, ya que cada componente corre
 bajo un host dedicado e independiente.
 
-Al igual que en las otras instalaciones, las variables y passwords de los diferentes componentes se pueden modificar en la sección  *[everyyone:vars]*
+Al igual que en las otras instalaciones, las variables y passwords de los diferentes componentes se pueden modificar en la sección  *[everyyone:vars]*. Introducir el parámetro "time zone" adecuado para su instanacia. Es **Importante** que realice este paso o la instalación no se va a poder realizar.
 
 .. image:: images/install_inventory_passwords.png
 
 *Figure 5: Passwords and parameters of services*
 
-- Introducir el parámetro "time zone" adecuado para su instanacia. Es **Importante** que realice este paso o la instalación no se va a poder realizar.
+En caso de haber olvidado ingresar la instancia a instalar el script mostrará este mensaje
 
-.. image:: images/install_inventory_timezone.png
+.. image:: images/install_inventory_nohosts.png
 
-*Figure 6: inevntory - Time Zone parameter*
+*Figure 6: deploy - No hosts in inventory*
 
 Es importante aclarar que cada vez que se corre el script "./deploy.sh" ya sea para instalar, re-instalar, actualizar, modificar la dirección IP de OML, etc.,
 el archivo de inventory se vuelve a "cero". No obstante se genera una copia del archivo (my_inventory), de manera tal que se cuente con los parámetros

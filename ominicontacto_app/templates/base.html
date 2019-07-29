@@ -36,7 +36,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/admin.css' %}">
     {% block extra_css %}{% endblock %}
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Asap:400,500" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/google-font.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-solid.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-regular.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fontawesome.css' %}">
@@ -45,7 +45,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <!-- jquery UI -->
     <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
     <script src="{% static 'ominicontacto/JS/l18n_constantes.js' %}"></script>
-    <script type="text/javascript" src="https://freetechsolutions.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e-T/-wkh05n/b/48/a44af77267a987a660377e5c46e0fb64/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=55b63c95"></script>
+    {% if ALLOW_FEEDBACK  %}
+        <script type="text/javascript" src="https://freetechsolutions.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e-T/-wkh05n/b/48/a44af77267a987a660377e5c46e0fb64/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=55b63c95"></script>
+    {% endif %}
     {% compress js %}
     <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
     <!-- Bootstrap -->
@@ -70,8 +72,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <nav id="sidebar">
             <div class="sidebar-header">
                 <a href="{% url 'index' %}">
-                  <img src="{% static 'ominicontacto/Img/ic_logo.svg' %}" onerror="{% static 'ominicontacto/Img/ic_logo.png' %}" id="nav-logo">
-                  <img src="{% static 'ominicontacto/Img/ic_logo_symbol.svg' %}" onerror="{% static 'ominicontacto/Img/ic_logo.png' %}" id="nav-logo-symbol">
+                  <img src="{% static 'ominicontacto/Img/ic_logo.png' %}" id="nav-logo">
+                  <img src="{% static 'ominicontacto/Img/ic_logo_symbol.png' %}" id="nav-logo-symbol">
                 </a>
             </div>
 

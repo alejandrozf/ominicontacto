@@ -28,14 +28,19 @@ Cómo lo obtengo ?
 
 Donde se puede instalar ?
 *************************
-OMniLeads puede correr sobre las distribuciones de GNU/Linux; CentOS7, Debian-9 y Ubuntu Server 18.04.
+OMniLeads ha sido testeado en su totalidad en las siguientes distribuciones de GNU/Linux:
 
+* **CentOS 7.6.1810 minimal ISO** - http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1810.iso
+* **Debian 9.3 netinstall ISO** - https://cdimage.debian.org/mirror/cdimage/archive/9.3.0/amd64/iso-cd/debian-9.3.0-amd64-netinst.iso
+* **Ubuntu Server 18.04.2 LTS ISO** - https://ubuntu.com/download/server/thank-you?version=18.04.2&architecture=amd64
+
+.. important::
+
+  Remitirse a estas versiones de las distribuciones y sus correspondientes ISO para lograr una instalación exitosa
 
 Cómo lo instalo ?
 *****************
-Dentro del código del proyecto, se dispone de un script de instalación basado en `Ansible <https://www.ansible.com/>`_ que permite instalar el producto sobre cualquiera de los
-Sistemas Operativos citados previamente. En la sección :ref:`about_install` de esta documentación, se detalla dicho proceso.
-
+La instalación de omnileads está basada en el uso de un script de bash que setea un entorno para la ejecución de  `Ansible <https://www.ansible.com/>`_. Dentro del código del proyecto, se dispone de dicho script que permite instalar el producto sobre cualquiera de los Sistemas Operativos citados previamente. En la sección :ref:`about_install` de esta documentación, se detalla dicho proceso.
 
 Características y funcionalidades de OMniLeads
 **********************************************

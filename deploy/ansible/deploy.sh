@@ -31,7 +31,7 @@ REPO_LOCATION="`git rev-parse --show-toplevel`"
 USER_HOME=$(eval echo ~${SUDO_USER})
 export ANSIBLE_CONFIG=$TMP_ANSIBLE
 IS_ANSIBLE="`find ~/.local -name ansible 2>/dev/null |grep \"/bin/ansible\" |head -1`"
-SUDO_USER="`who | awk '{print $1}'`"
+SUDO_USER="`who | awk '{print $1}'| head -1`"
 arg1=$1
 arg2=$2
 verbose=$3
@@ -54,6 +54,7 @@ OSValidation(){
       apt-get install python-minimal python-pip -y
     else
       echo "The OS you are trying to install is not supported to install this software."
+      exit 1
     fi
   PIP=`which pip`
   fi
@@ -106,22 +107,15 @@ TagCheck() {
 AnsibleInstall() {
   echo "Detecting if Ansible 2.5 is installed"
   if [ -z "$IS_ANSIBLE" ] ; then
-    echo "Ansible 2.5 is not installed"
-    echo "Installing Ansible 2.5"
-	  echo ""
-	  $PIP install 'ansible==2.5' --user
-    IS_ANSIBLE="`find ~/.local -name ansible |grep \"/bin/ansible\" |head -1 2> /dev/null`"
-	fi
-  ANS_VERSION=`"$IS_ANSIBLE" --version |grep ansible |head -1`
-	if [ "$ANS_VERSION" = 'ansible 2.5.0' ] ; then
-    echo "Ansible is already installed"
-  else
-    echo "You have an Ansible version different than 2.5.0"
-    echo "Installing 2.5.0 version"
+    echo "Ansible 2.5 is not installed, installing it"
+    echo ""
     $PIP install 'ansible==2.5' --user
+    IS_ANSIBLE="`find ~/.local -name ansible |grep \"/bin/ansible\" |head -1 2> /dev/null`"
+  else
+    echo "Ansible 2.5 is already installed"
   fi
-  echo "Detecting if docker-py is installed"
-  $PIP install 'docker-py==1.10.6' --user > /dev/null 2>&1
+  #  echo "Detecting if docker-py is installed"
+  #  $PIP install 'docker-py==1.10.6' --user > /dev/null 2>&1
   cd $current_directory
   sleep 2
   echo "Creating ansible temporal directory"
@@ -201,7 +195,7 @@ EOF
 
 AnsibleExec() {
     echo "Checking if there are hosts to deploy from inventory file"
-    if ${IS_ANSIBLE} all --list-hosts -i $TMP_ANSIBLE/inventory | grep -q '0'; then
+    if ${IS_ANSIBLE} all --list-hosts -i $TMP_ANSIBLE/inventory | grep -q '(0)'; then
       echo "All hosts in inventory file are commented, please check the file according to documentation"
       exit 1
     fi
@@ -256,7 +250,7 @@ AnsibleExec() {
 
 echo "Deleting temporal files created"
 rm -rf $TMP_ANSIBLE
-rm -rf $TMP
+rm -rf $TMP_OMINICONTACTO
 }
 case $arg1 in
   --upgrade|-u|--install|-i|--kamailio|-k|--asterisk|-a|--omniapp|-o|--omnivoip|--dialer|-di|--database|-da|--change-network|-cnet|--change-passwords|-cp)

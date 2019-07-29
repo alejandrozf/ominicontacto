@@ -47,14 +47,14 @@ class RecicladoTest(OMLBaseTest):
         user_agente = self.crear_user_agente()
         self.agente = self.crear_agente_profile(user_agente)
 
+        # estados no contactados (no incluye ABANDONWEL porque es solo de entrantes):
+        self.estados = LlamadaLog.EVENTOS_NO_CONEXION[:-1]
+
     def test_devuelve_correctamente_no_contactacion(self):
         """
         este test testea todos los resultados las cantidad de los no
         contactdos chequeando que devuelva correctamente
         """
-
-        # estados no contactados:
-        estados = LlamadaLog.EVENTOS_NO_CONEXION
 
         contactos = self.campana.bd_contacto.contactos.all()
 
@@ -62,11 +62,11 @@ class RecicladoTest(OMLBaseTest):
         cant_llamados = 100
         for _ in range(0, cant_llamados):
             contacto = random.choice(contactos)
-            estado = random.choice(estados)
+            estado = random.choice(self.estados)
             generador.generar_log(self.campana, False, estado, contacto.telefono, None, contacto)
 
         cantidades = {}
-        for estado in estados:
+        for estado in self.estados:
             cantidades[EstadisticasContactacion.MAP_ESTADO_ID[estado]] = 0
 
         no_llamados = cant_llamados
@@ -74,7 +74,7 @@ class RecicladoTest(OMLBaseTest):
             logs = LlamadaLog.objects.filter(contacto_id=contacto.id).order_by('-id')
             if logs:
                 log = logs[0]
-                self.assertIn(log.event, estados)
+                self.assertIn(log.event, self.estados)
                 cantidades[EstadisticasContactacion.MAP_ESTADO_ID[log.event]] += 1
                 no_llamados -= 1
 
@@ -136,9 +136,7 @@ class RecicladoTest(OMLBaseTest):
                 pass
 
     def test_obtiene_contactos_reciclados_contactados_calificados(self):
-        # estados no contactados:
-        estados = LlamadaLog.EVENTOS_NO_CONEXION
-        self._generar_llamadas_y_calificaciones(estados)
+        self._generar_llamadas_y_calificaciones(self.estados)
         reciclador = RecicladorContactosCampanaDIALER()
 
         # vamos a chequear que sea la misma cantidad de contactos reciclados
@@ -152,9 +150,7 @@ class RecicladoTest(OMLBaseTest):
             self.assertEquals(calificaciones_query.count(), len(contactos_reciclados))
 
     def test_obtiene_contactos_reciclados_contactados_no_calificados(self):
-        # estados no contactados:
-        estados = LlamadaLog.EVENTOS_NO_CONEXION
-        self._generar_llamadas_y_calificaciones(estados)
+        self._generar_llamadas_y_calificaciones(self.estados)
         reciclador = RecicladorContactosCampanaDIALER()
 
         # ahora chequeamos para agente no califico
@@ -169,12 +165,10 @@ class RecicladoTest(OMLBaseTest):
         self.assertEqual(set(no_calificados_reciclados), set(contactados_no_calificados))
 
     def test_obtiene_contactos_reciclados_no_contactados(self):
-        # estados no contactados:
-        estados = LlamadaLog.EVENTOS_NO_CONEXION
         reciclador = RecicladorContactosCampanaDIALER()
 
         # ahora vamos a chequear para los no contactados
-        for estado in estados:
+        for estado in self.estados:
             id_estado = EstadisticasContactacion.MAP_ESTADO_ID[estado]
             no_contactados_reciclados = reciclador._obtener_contactos_no_contactados(
                 self.campana, [id_estado, ])

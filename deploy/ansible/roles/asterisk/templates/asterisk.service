@@ -5,9 +5,9 @@ After=syslog.target network-online.target
 [Service]
 Type=forking
 User=omnileads
+EnvironmentFile=/etc/profile.d/omnileads_envars.sh
 Environment=USER={{ usuario }}
-Environment=GROUP={{ usuario }}
-ExecStart=/usr/sbin/asterisk -U $USER -G $GROUP -g
+ExecStart=/usr/sbin/asterisk -U $USER -G $USER -g
 ExecReload=/usr/sbin/asterisk -x 'core restart gracefully'
 ExecStop=/usr/sbin/asterisk -x 'core stop now'
 PIDFile={{ asterisk_location }}/var/run/asterisk/asterisk.pid

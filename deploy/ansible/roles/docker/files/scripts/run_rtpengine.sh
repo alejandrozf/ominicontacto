@@ -5,7 +5,6 @@ RUNTIME=${1:-rtpengine}
 if [ -n "${UNLOAD_MODULE}" ] ; then
   rmmod xt_RTPENGINE
 fi
-
 if lsmod | grep xt_RTPENGINE || modprobe xt_RTPENGINE; then
   echo "rtpengine kernel module already loaded."
 else
@@ -13,11 +12,14 @@ else
     # Build the kernel module for the docker run host
     apt-get update -y
     export DEBIAN_FRONTEND=noninteractive
-    apt-get install -y linux-headers-$(uname -r) linux-image-$(uname -r)
 
+    apt-get install -y linux-headers-$(uname -r) linux-image-$(uname -r) debhelper gcc module-assistant
+    cd /usr/src
+    dpkg -i ngcp-rtpengine-kernel-source_5.5.3.1+0~mr5.5.3.1_all.deb
     module-assistant update
     module-assistant auto-install ngcp-rtpengine-kernel-source
     modprobe xt_RTPENGINE
+    apt-get remove -y linux-headers-$(uname -r) linux-image-$(uname -r) debhelper gcc --purge
   else
     if which dnf || which yum ; then
       cd /rtpengine/daemon

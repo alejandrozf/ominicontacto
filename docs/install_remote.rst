@@ -114,18 +114,18 @@ Localizar la sección *[omnileads-aio]* y modificar la cadena 'hostname' por el 
 
 *Figure 5: inventory file network parameters section*
 
-Además dentro del mismo archivo, unas líneas debajo encontraremos la sección *[everyyone:vars]*, en la cual se pueden alterar variables y contraseñas
-que vienen por defecto en el sistema.
+Además dentro del mismo archivo, unas líneas debajo encontraremos la sección *[everyyone:vars]*, en la cual se pueden alterar variables y contraseñas que vienen por defecto en el sistema. Introducir el parámetro "time zone" adecuado para su instanacia. Es **Importante** que realice este paso o la instalación no se va a poder realizar.
 
 .. image:: images/install_inventory_passwords.png
 
 *Figure 6: Passwords and parameters of services*
 
-- Introducir el parámetro "time zone" adecuado para su instanacia. Es **Importante** que realice este paso o la instalación no se va a poder realizar.
+En caso de haber olvidado ingresar la instancia a instalar el script mostrará este mensaje
 
-.. image:: images/install_inventory_timezone.png
+.. image:: images/install_inventory_nohosts.png
 
-*Figure 7: inventory - Time Zone parameter*
+
+*Figure 7: deploy - No hosts in inventory*
 
 Es importante aclarar que cada vez que se corre el script "./deploy.sh" ya sea para instalar, re-instalar, actualizar, modificar la dirección IP de OML, etc., el archivo de inventory se vuelve a "cero". No obstante se genera una copia del archivo (my_inventory), de manera tal que se cuente con los parámetros del sistema utilizados en la última ejecución del script. La copia en cuestión se ubica en el path donde ha sido clonado el repositorio de OML y bajo el nombre de "my_inventory" como lo expone la figura 6.
 

@@ -25,11 +25,11 @@ SHELL=/bin/bash
 EOF
   fi
   $COMMAND migrate --noinput
-  $COMMAND createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com || true
+  $COMMAND createsuperuser --noinput --username=admin --email=admin@example.com || true
   $COMMAND shell << EOF
   from ominicontacto_app.models import User
-  u = User.objects.get(username='{{ admin_user }}')
-  u.set_password('{{ admin_pass }}')
+  u = User.objects.get(username='admin')
+  u.set_password('${DJANGO_ADMIN_PASS}')
   u.save()
   exit()
 EOF
@@ -39,6 +39,7 @@ EOF
   $COMMAND collectstatic_js_reverse
   $COMMAND compress --force
   $COMMAND actualizar_configuracion
+  psql -U $PGUSER -h $PGHOST -d $PGDATABASE -c '\i {{ install_prefix }}ominicontacto/reportes_app/sql/plpython/replace_insert_queue_log_ominicontacto_queue_log.sql'
   $COMMAND regenerar_asterisk
   sudo /usr/sbin/crond -l 0 -L /opt/omnileads/log/crond.log
   sudo chown -R omnileads. ${INSTALL_PREFIX}

@@ -21,6 +21,7 @@
 - name: Creation of asterisk.service
   template: src=templates/asterisk.service dest=/etc/systemd/system/asterisk.service owner=root group=root mode=650
   when: is_docker == "false"
+  tags: postinstall
 
 # Linkeo el binario a /usr/sbin
 - name: Create simbolic link of asterisk binarie
@@ -91,10 +92,26 @@
   template: "src=roles/asterisk/templates/conf/logger.conf dest={{ ast_conf_location }}/logger.conf owner={{ usuario }} group={{ usuario }} mode=755"
   when: is_docker == "false"
   tags: postinstall
-  
+
 # Los archivos-no-enlaces se copian a la a /etc/asterisk
 - name: Copy of all asterisk config files
   copy: "src=roles/asterisk/templates/conf/archivos-no-enlaces/ dest={{ ast_conf_location }}/ owner={{ usuario }} group={{ usuario }} mode=755"
+
+- name: Copy of dialplan custom and override files
+  copy: "src=roles/asterisk/templates/conf/archivos-no-enlaces/{{ item }} dest={{ ast_conf_location }}/ owner={{ usuario }} group={{ usuario }} mode=755"
+  with_items:
+    - oml_extensions_agent_session_custom.conf
+    - oml_extensions_bridgecall_custom.conf
+    - oml_extensions_commonsub_custom.conf
+    - oml_extensions_modules_custom.conf
+    - oml_extensions_postcall_custom.conf
+    - oml_extensions_precall_custom.conf
+    - oml_extensions_agent_session_override.conf
+    - oml_extensions_bridgecall_override.conf
+    - oml_extensions_commonsub_override.conf
+    - oml_extensions_modules_override.conf
+    - oml_extensions_postcall_override.conf
+    - oml_extensions_precall_override.conf
   tags: postinstall
 
 - name: Install pyst (Asterisk manager for python) (cluster)
@@ -117,18 +134,13 @@
 
 - name: Erase omnileads crontab.d task
   file: state=absent path=/etc/cron.d/cron-omnileads
-  when: is_docker == "false"
+  when: is_docker == "false" and MONITORFORMAT == "mp3"
   tags: postinstall
 
 - name: Create crontab file
-  file: state=touch path=/var/spool/cron/omnileads owner=root group={{ usuario }} mode=600
+  template: src=templates/cron-grabaciones dest=/var/spool/cron/omnileads owner={{ usuario }} group={{ usuario }} mode=600
   tags: postinstall
-
-# Se añade el cron de omnileads
-- name: Create cronjob for conversor.sh
-  cron: minute="0" hour="1" weekday="*" name="Conversion of recordings to mp3 (every day)" cron_file="/var/spool/cron/{{ usuario }}" user="{{ usuario }}" job="{{ install_prefix }}bin/conversor.sh 1 0 >> {{ install_prefix }}log/conversor.log"
-  when: is_docker == "false"
-  tags: postinstall
+  when: MONITORFORMAT == "mp3" and is_docker == "false"
 
 # Para debian toca linkear esta libreria a a /usr/lib/postgresql/{{ postgresql_version }} es una libreria de unixODBC
 - name: Link odbc librarie to postgresql libs

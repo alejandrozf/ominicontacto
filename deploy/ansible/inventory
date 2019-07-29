@@ -38,9 +38,9 @@
 # Database
 postgres_database=omnileads
 postgres_user=omnileads
-postgres_password=admin123
+postgres_password=my_very_strong_pass
 # Admin web
-admin_pass=098098ZZZ
+admin_pass=my_very_strong_pass
 # AMI for wombat dialer
 ami_user=omnileadsami
 ami_password=5_MeO_DMT
@@ -48,7 +48,7 @@ ami_password=5_MeO_DMT
 dialer_user=demoadmin
 dialer_password=demo
 # MySQL (ONLY CHANGE THIS PASSWORD IN FIRST INSTALLATION)
-mysql_root_password=098098ZZZ
+mysql_root_password=my_very_strong_pass
 # AMI for supervision
 sup_ami_user=omnisup
 sup_ami_password=Sup3rst1c10n
@@ -56,8 +56,14 @@ sup_ami_password=Sup3rst1c10n
 #TZ=America/Argentina/Cordoba
 #External port is the port where OML web server will listen requests. By default is 443
 external_port=443
-# Change this value if the recordings are not converted to mp3
-formato_conversion=mp3
+# Session Cookie Age (SCA) is the time in seconds that will last the https session when inactivity is detected in the session (by default is 1 hour)
+SCA=3600
+# Ephemeral Credentials TTL (ECTTL) is the time in seconds that will last the SIP credentials used to authenticate a SIP user in the telephony system (by default 8 hours)
+ECCTL=28800
+# MONITORFORMAT refers to the format that your recordings will be converted. Mp3 is the preferred format because the small size of file. If you want your
+# recordings in format "wav" (asterisk default recording format), change this variable to wav 
+# The conversion of recordings is scheduled to be done at 01:00 am everyday you can edit this changing crontab of omnileads user
+MONITORFORMAT=mp3
 #Change this value if you want to change the language of schedule calification
 schedule=Agenda
 

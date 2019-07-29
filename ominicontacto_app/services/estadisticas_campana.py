@@ -137,6 +137,8 @@ class EstadisticasService():
              (_('Blacklist'), 0),
              # se cuentan todos los eventos ABANDON
              (_('Abandonadas por el cliente'), 0),
+             # se cuentan todos los eventos ABANDONWEL
+             (_('Abandonadas durante anuncio'), 0),
              # se cuentan todos los eventos EXITWITHTIMEOUT
              (_('Expiradas'), 0)]
         )
@@ -151,6 +153,7 @@ class EstadisticasService():
             'OTHER': _('Otro'),
             'BLACKLIST': _('Blacklist'),
             'ABANDON': _('Abandonadas por el cliente'),
+            'ABANDONWEL': _('Abandonadas durante anuncio'),
             'EXITWITHTIMEOUT': _('Expiradas'),
             'CONGESTION': _('Canal congestionado'),
             'NONDIALPLAN': _('Problema de enrutamiento'),
@@ -216,7 +219,8 @@ class EstadisticasService():
             if dato_campana:
                 llamadas_pendientes = dato_campana.get('n_est_remaining_calls', 0)
         elif campana.type == Campana.TYPE_ENTRANTE:
-            llamadas_recibidas = dict_eventos_campana.get('ENTERQUEUE', 0)
+            llamadas_recibidas = dict_eventos_campana.get('ENTERQUEUE', 0) +\
+                dict_eventos_campana.get('ABANDONWEL', 0)
             llamadas_recibidas_transferidas = dict_eventos_campana.get('ENTERQUEUE-TRANSFER', 0)
             llamadas_recibidas += llamadas_recibidas_transferidas
         elif campana.type == Campana.TYPE_PREVIEW:
@@ -299,6 +303,7 @@ class EstadisticasService():
              (_('Atendidas'), 0),
              (_('Expiradas'), 0),
              (_('Abandonadas'), 0),
+             (_('Abandonadas durante anuncio'), 0),
              (_('Manuales'), 0),
              (_('Manuales atendidas'), 0)])
         eventos_headers = {
@@ -307,6 +312,7 @@ class EstadisticasService():
             'CONNECT': _('Atendidas'),
             'EXITWITHTIMEOUT': _('Expiradas'),
             'ABANDON': _('Abandonadas'),
+            'ABANDONWEL': _('Abandonadas durante anuncio'),
             'DIAL': _('Manuales'),
             'ANSWER': _('Manuales atendidas')}
         logs_campana_agrupados_eventos = logs_llamadas_campana.values('event').annotate(
@@ -321,6 +327,7 @@ class EstadisticasService():
             elif not evento_header and (evento in LlamadaLog.EVENTOS_NO_CONEXION):
                 manuales_no_atendidas += cantidad
         reporte[_('Manuales no atendidas')] = manuales_no_atendidas
+        reporte[_('Recibidas')] += reporte[_('Abandonadas durante anuncio')]
 
         return reporte
 

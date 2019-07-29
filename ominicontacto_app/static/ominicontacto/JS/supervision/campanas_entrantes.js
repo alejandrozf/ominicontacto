@@ -42,13 +42,14 @@ function cargarEstadisticasEntrantes(estadisticas) {
     Object.keys(estadisticas).forEach(function(id_campana) {
         var datos_campana = estadisticas[id_campana];
         $("#table-campanas").html();
-        tabla.append('<tr>' + 
-                       '<td>' + datos_campana['nombre'] + '</td>' + 
-                       '<td>' + datos_campana['recibidas'] + '</td>' + 
-                       '<td>' + datos_campana['atendidas'] + '</td>' + 
-                       '<td>' + datos_campana['abandonadas'] + '</td>' + 
-                       '<td>' + datos_campana['expiradas'] + '</td>' + 
-                       '<td>' + datos_campana['gestiones'] + '</td>' + 
+        tabla.append('<tr>' +
+                       '<td>' + datos_campana['nombre'] + '</td>' +
+                       '<td>' + datos_campana['recibidas'] + '</td>' +
+                       '<td>' + datos_campana['atendidas'] + '</td>' +
+                       '<td>' + datos_campana['abandonadas'] + '</td>' +
+                       '<td>' + datos_campana['abandonadas_anuncio'] + '</td>' +
+                       '<td>' + datos_campana['expiradas'] + '</td>' +
+                       '<td>' + datos_campana['gestiones'] + '</td>' +
                      '</tr>');
     });
 }

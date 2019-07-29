@@ -84,7 +84,11 @@ function obtenerNodosAcciones(pk_agent, status) {
 }
 
 
-function assignToColumns(data) {
+function assignToColumns(data_sin_filtrar) {
+    if ( $.fn.DataTable.isDataTable('#tableAgentes') ) {
+        $('#tableAgentes').DataTable().destroy();
+    }
+    var data = data_sin_filtrar.filter(function (val) {return val['status'] != 'OFFLINE'});
     var table = $('#tableAgentes').dataTable({
         bAutoWidth : false,
         aaData : data,
@@ -131,13 +135,10 @@ function assignToColumns(data) {
             lengthMenu: gettext("Mostrar _MENU_ entradas"),
             info: gettext("Mostrando _START_ a _END_ de _TOTAL_ entradas"),
         }
-    })
+    });
 }
 
 function refreshActiveAgentsTable() {
-    if ( $.fn.DataTable.isDataTable('#tableAgentes') ) {
-        $('#tableAgentes').DataTable().destroy();
-    }
     $.ajax({
         url: Urls.api_agentes_activos(),
         type: 'GET',
@@ -148,7 +149,7 @@ function refreshActiveAgentsTable() {
         error: function(jqXHR, textStatus, errorThrown) {
             console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
         },
-    });    
+    });
 }
 
 $(document).ready(function () {

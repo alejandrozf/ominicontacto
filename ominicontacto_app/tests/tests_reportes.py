@@ -43,7 +43,7 @@ ARCHIVO_GRABACION = 'grabacion.mp3'
 class TriggerQueuelogTest(OMLBaseTest):
 
     def _aplicar_sql_query(self, queuename, time=timezone.now().strftime('%Y-%m-%d %H:%M:%S.%f'),
-                           callid=CALLID, agent=1, event=EVENT, data1=TELEFONO,
+                           callid=CALLID, agent="1", event=EVENT, data1=TELEFONO,
                            data2=CONTACTO_ID, data3=BRIDGE_WAIT_TIME, data4=DURACION_LLAMADA,
                            data5=ARCHIVO_GRABACION):
         fields = "(time, callid, queuename, agent, event, data1, data2, data3, data4, data5)"
@@ -77,6 +77,7 @@ class TriggerQueuelogTest(OMLBaseTest):
             'RINGNOANSWER',
             'CONGESTION',
             'NONDIALPLAN',
+            'ABANDONWEL',
         ]
         evento = choice(EVENTOS_LLAMADAS)
         self._aplicar_sql_query(queuename, event=evento)

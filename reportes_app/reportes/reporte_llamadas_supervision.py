@@ -17,8 +17,10 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 from __future__ import unicode_literals
+
+from datetime import datetime
+
 from django.utils.encoding import force_text
-from django.utils.timezone import now
 from django.db.models import Count
 
 from ominicontacto_app.models import Campana, OpcionCalificacion, CalificacionCliente
@@ -33,7 +35,7 @@ class ReporteDeLlamadasDeSupervision(object):
         for campana in query_campanas:
             self.campanas[campana.id] = campana
 
-        hoy = now().date()
+        hoy = datetime.now()
         self.desde = datetime_hora_minima_dia(hoy)
         self.hasta = datetime_hora_maxima_dia(hoy)
 
@@ -90,9 +92,11 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
         'atendidas': 0,
         'expiradas': 0,
         'abandonadas': 0,
+        'abandonadas_anuncio': 0,
         'gestiones': 0,
     }
-    EVENTOS_LLAMADA = ['ENTERQUEUE', 'ENTERQUEUE-TRANSFER', 'CONNECT', 'EXITWITHTIMEOUT', 'ABANDON']
+    EVENTOS_LLAMADA = ['ENTERQUEUE', 'ENTERQUEUE-TRANSFER', 'CONNECT', 'EXITWITHTIMEOUT', 'ABANDON',
+                       'ABANDONWEL']
 
     def _obtener_campanas(self, user_supervisor):
         campanas = Campana.objects.obtener_all_activas_finalizadas()
@@ -120,6 +124,9 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
             datos_campana['expiradas'] += 1
         elif log.event == 'ABANDON':
             datos_campana['abandonadas'] += 1
+        elif log.event == 'ABANDONWEL':
+            datos_campana['abandonadas_anuncio'] += 1
+            datos_campana['recibidas'] += 1
 
 
 class ReporteDeLLamadasSalientesDeSupervision(ReporteDeLlamadasDeSupervision):

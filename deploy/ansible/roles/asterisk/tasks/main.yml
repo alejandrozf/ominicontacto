@@ -28,7 +28,9 @@
 - name: Uninstall previous asterisk version
   file: state=absent path={{ item }}
   with_items:
-    - "{{ asterisk_location }}"
+    - "{{ asterisk_location }}/sbin/"
+    - "{{ asterisk_location }}/var/lib/"
+    - "{{ asterisk_location }}/lib64/"
     - /usr/sbin/asterisk
   when: asterisk_installed.stdout != asterisk_version
   tags: ['never','postinstall']

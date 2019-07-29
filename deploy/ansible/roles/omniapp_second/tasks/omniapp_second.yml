@@ -99,10 +99,6 @@
     - "{{ install_prefix }}Omnisup"
   tags: ['never','postinstall']
 
-- name: Change ownership of /var/lib/nginx/tmp/
-  file: state=directory owner={{ usuario }} group={{ usuario }} path=/var/lib/nginx/tmp recurse=yes
-  tags: postinstall
-
 # Toca hacer esta tarea aparte para que no salga el error de nginx que se soluciona al rebotear el server
 - name: Enable of nginx
   command: systemctl enable nginx
@@ -123,3 +119,7 @@
   become: true
   become_method: sudo
   tags: ['never','postinstall','kamailio','changenetwork']
+
+- name: Change ownership of /var/lib/nginx/tmp/
+  file: state=directory owner={{ usuario }} group={{ usuario }} path=/var/lib/nginx recurse=yes
+  tags: postinstall
