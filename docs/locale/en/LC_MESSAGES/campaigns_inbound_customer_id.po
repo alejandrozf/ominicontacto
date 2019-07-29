@@ -1,0 +1,344 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, omnileads
+# This file is distributed under the same license as the OMniLeads package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OMniLeads \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-07-17 14:37-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.7.0\n"
+
+# 8ed6723e7b33449cacd044b338fdbaea
+#: ../../campaigns_inbound_customer_id.rst:6
+msgid "Enrutamiento por identificación de llamada entrante"
+msgstr ""
+
+# 98061f22ce4349a989ffe8e20aa29782
+#: ../../campaigns_inbound_customer_id.rst:8
+msgid "**INTRODUCCIÓN**"
+msgstr ""
+
+# 068775c136e946d9ac626a9d264a4d6f
+#: ../../campaigns_inbound_customer_id.rst:10
+msgid ""
+"Esta funcionalidad es un posible nodo dentro del \"flow\" de la llamada "
+"entrante, que permite lanzar una \"solicitud de identificación\" sobre "
+"cada llamada entrante derivada implementando a su vez la posibilidad de "
+"que el sistema de gestión CRM tome la decisión de encaminamiento de las "
+"llamadas entrantes provenientes del exterior a través de una interacción "
+"entre OMniLeads y dicho sistema de gestión."
+msgstr ""
+
+# 41aa1d64a610407dbc8a2983778996fa
+#: ../../campaigns_inbound_customer_id.rst:14
+msgid ""
+"En su funcionalidad más básica el módulo implementa la posibilidad de "
+"solicitar la identificación de un cliente que se ha comunicado a la "
+"compañía a través de los tonos del teléfono (DTMF) y si la misma es "
+"válida entonces encaminar la llamada hacia un destino concreto, mientras "
+"que sino lo es, rumbo hacia otro destino indicado."
+msgstr ""
+
+# b10ffb86be4f434984eca43dcc0f290e
+#: ../../campaigns_inbound_customer_id.rst:17
+msgid ""
+"En ambos escenarios (el más básico y el interactivo con CRM), se consigue"
+" que la llamada ingrese al Agente con el \"ID del cliente\" como índice "
+"para obtener toda la información del cliente sobre el Formulario o CRM "
+"implicado en la campaña."
+msgstr ""
+
+# 6a54fcb61793468b84b74fbca8031262
+#: ../../campaigns_inbound_customer_id.rst:22
+msgid "Modos de configuración"
+msgstr ""
+
+# e606c64ecd19425cb733b6b597f69958
+#: ../../campaigns_inbound_customer_id.rst:24
+msgid ""
+"El módulo viene disponible para ser configurado en distintos modos de "
+"funcionamiento;"
+msgstr ""
+
+# 3f465c3c0a4144f2a5bea75fece7195f
+#: ../../campaigns_inbound_customer_id.rst:26
+msgid "**Solamente solicitar identificación**"
+msgstr ""
+
+# f65f282c964349699fba401395efada9
+#: ../../campaigns_inbound_customer_id.rst:28
+msgid ""
+"Bajo esta configuración cuando una llamada entrante es enviada hacia este"
+" módulo, se ejecuta una solicitud de identificación a través de un audio "
+"reproducido sobre el canal telefónico del cliente que originó la llamada "
+"para luego validar la credencial ingresada y tomar una decisión de "
+"encaminamiento hacia las dos alternativas posibles; \"destino  A\", si se"
+" ha ingresado una identificación y \"destino B\" si el llamante no lo "
+"hizo o lo hizo de manera errática."
+msgstr ""
+
+# a78bcb67d77540c4aa636753795992bf
+#: ../../campaigns_inbound_customer_id.rst:35
+msgid "*Figure 1: Customer id without CRM interaction*"
+msgstr ""
+
+# 21ad0e7fbfe74ad39d8199ec29892808
+#: ../../campaigns_inbound_customer_id.rst:38
+msgid ""
+"**Solicitar identificación, notificar al CRM y aguardar respuesta \"true "
+"/ false\"**"
+msgstr ""
+
+# 5e6223732bd7407b9c2256e6de4ea708
+#: ../../campaigns_inbound_customer_id.rst:40
+msgid ""
+"Bajo esta configuración cuando una llamada entrante es enviada hacia este"
+" módulo, se ejecuta una solicitud de identificación a través de un audio "
+"reproducido sobre el canal telefónico del cliente que originó la llamada "
+"para luego ejecutar una consulta hacia un servicio web previamente "
+"configurado."
+msgstr ""
+
+# 2817b72bdec94687a1990adb60135c9f
+#: ../../campaigns_inbound_customer_id.rst:46
+msgid "*Figure 2: Customer id with CRM interaction true/false*"
+msgstr ""
+
+# 55c5a83ab340463db454d84c7c0970bb
+#: ../../campaigns_inbound_customer_id.rst:48
+msgid ""
+"El sistema de gestión CRM toma partido respecto al encaminamiento de un "
+"cliente que se comunica a la compañía, ya que a partir de recibir desde "
+"OMniLeads la clave de identificación del llamante, se pueden encaminar "
+"las llamadas hacia cada uno de los dos posibles destinos posibles de "
+"acuerdo a lo que se responda (true/false) a dicha credencial recibida."
+msgstr ""
+
+# 7d25585ee2e24a8eb6cac94f501aa8e7
+#: ../../campaigns_inbound_customer_id.rst:52
+msgid ""
+"Un ejemplo podría ser el de una compañía que comprueba si el \"número de "
+"cliente\" se encuentra al día con los pagos del servicio y en base a ello"
+" encaminar la llamada hacia una campaña con mayor o menor prioridad en "
+"términos de tiempo en cola de espera."
+msgstr ""
+
+# bfc25aa11b0948b0bde2f9808e2b85df
+#: ../../campaigns_inbound_customer_id.rst:56
+msgid ""
+"**Solicitar identificación, notificar al CRM y aguardar respuesta "
+"\"destino de la llamada\"**"
+msgstr ""
+
+# c83d0b92a2564cbcab82450845436acd
+#: ../../campaigns_inbound_customer_id.rst:58
+msgid ""
+"Bajo este modo, cuando una llamada entrante invoca la ejecución del "
+"módulo, éste último procede con la solicitud de identificación para luego"
+" validar si el cliente ingresó o no un valor, en caso de haber ingresado "
+"se ejecuta una consulta hacia un servicio web previamente configurado."
+msgstr ""
+
+# 36d00eb946224af68a337d16a39b732c
+#: ../../campaigns_inbound_customer_id.rst:63
+msgid "*Figure 3: Customer id with interaction and destination chosen by CRM*"
+msgstr ""
+
+# 5a0f904fb23d49a6ac24523019bc1cfe
+#: ../../campaigns_inbound_customer_id.rst:65
+msgid ""
+"El sistema de gestión CRM toma partido respecto al encaminamiento de un "
+"cliente que se comunica a la compañía, ya que a partir de recibir de "
+"OMniLeads en tiempo real la clave de identificación del llamante, puede "
+"encaminar las llamadas hacia cualquier destino (o nodo) de OMniLeads "
+"siendo posibles una campaña entrante, un IVR, una validación de tiempo, "
+"etc."
+msgstr ""
+
+# fa0e82b0b4924f579e9b50c1bb982bfb
+#: ../../campaigns_inbound_customer_id.rst:69
+msgid ""
+"Un ejemplo aplicación podría ser comprobar en base al \"número de "
+"cliente\" que plan de suscripción tiene contratado, que plan de salud, "
+"etc. y en base a ello encaminar la llamada hacia la campaña en OMniLeads "
+"que mejor se ajuste."
+msgstr ""
+
+# 4a6cea9505be4304be7b8e3d3d9505b3
+#: ../../campaigns_inbound_customer_id.rst:76
+msgid "Crear un nuevo punto de solicitud de identificación de clientes"
+msgstr ""
+
+# 1d05483bfb6c4bd98e829c3678a008d4
+#: ../../campaigns_inbound_customer_id.rst:78
+msgid ""
+"Para generar un nuevo nodo, se debe acceder al punto de menú: \"Telefonía"
+" - Identificación de clientes\""
+msgstr ""
+
+# 76ebea0dbf0b45ee8aa2bd3a7bd5dae4
+#: ../../campaigns_inbound_customer_id.rst:82
+msgid "*Figure 4: New customer id node*"
+msgstr ""
+
+# 60b8023817d44cefa99bc8f29cf04e63
+#: ../../campaigns_inbound_customer_id.rst:84
+msgid "A continuación se detallan los campos del formulario:"
+msgstr ""
+
+# 9c0f9e070c4d48ce88996dceb7d80e18
+#: ../../campaigns_inbound_customer_id.rst:87
+msgid "Campo"
+msgstr ""
+
+# 31a2bdf2540a47fbb00ba204bd58c8b7
+#: ../../campaigns_inbound_customer_id.rst:87
+msgid "Descripción"
+msgstr ""
+
+# 69b38285cf654ecdb23c1f28b6907278
+#: ../../campaigns_inbound_customer_id.rst:89
+msgid "Nombre"
+msgstr ""
+
+# bf5900a5680e4e10b224bdf4abbc9ed4
+#: ../../campaigns_inbound_customer_id.rst:89
+msgid "Nombre de referencia del nodo"
+msgstr ""
+
+# 621e9ce5980f40899b4f2026a20677a3
+#: ../../campaigns_inbound_customer_id.rst:91
+msgid "Tipo de interacción"
+msgstr ""
+
+# 7d71321c26e046c18ed2aa5ee616dea4
+#: ../../campaigns_inbound_customer_id.rst:91
+msgid "Sin Interacción: solo se comprueba si hubo o no un ingreso y su logitud"
+msgstr ""
+
+# ab52e3dcb09f4603b2e3c82f08c2bd4b
+#: ../../campaigns_inbound_customer_id.rst:92
+msgid ""
+"Interacción externa tipo 1: se envía id de cliente y se espera "
+"\"true/false\" como respuesta"
+msgstr ""
+
+# e385b16551484eb8bde3ec1fb9eefd81
+#: ../../campaigns_inbound_customer_id.rst:93
+msgid ""
+"Interacción externa tipo 2:se envía id de cliente y se espera un destino "
+"como respuesta"
+msgstr ""
+
+# 45d5ba48c36247fb90d1c5bddfb09bf8
+#: ../../campaigns_inbound_customer_id.rst:95
+msgid "URL servicio ident"
+msgstr ""
+
+# c26b4f8e2227409282f19fe2ecd8f461
+#: ../../campaigns_inbound_customer_id.rst:95
+msgid ""
+"Aquí se indica la dirección del servicio web hacia donde enviar el número"
+" de identificación"
+msgstr ""
+
+# d86a2e7a6a7b44d2be9386456ee05f6b
+#: ../../campaigns_inbound_customer_id.rst:97
+msgid "Audio"
+msgstr ""
+
+# 0a178cf9672a4d6b962db12ba330ef5a
+#: ../../campaigns_inbound_customer_id.rst:97
+msgid ""
+"Se trata del audio que se reproduce sobre la llamada entrantes, para "
+"solicitar la identificación"
+msgstr ""
+
+# 435bd2d9eab84fb1a00843e2b2b79560
+#: ../../campaigns_inbound_customer_id.rst:100
+msgid "Logitud id esperado"
+msgstr ""
+
+# 3bc4664199c4424eabc193ee065d12f7
+#: ../../campaigns_inbound_customer_id.rst:100
+msgid "Se puede indicar el largo esperado de código de identificación"
+msgstr ""
+
+# 47c9f3e6c7ac4f3dbe49951dd3266199
+#: ../../campaigns_inbound_customer_id.rst:102
+msgid "Timeout"
+msgstr ""
+
+# 188f8706ed3e4781bc9141c935c3c718
+#: ../../campaigns_inbound_customer_id.rst:102
+msgid ""
+"El tiempo en segudos que el sistema espera a que se ingrese la "
+"identificación, en caso de exirar este tiempo, se comprueba si ya se han "
+"sobrepasados los re-intentos para en base a ello ejecutar una nueva "
+"petición o derivar la llamada hacia el destino no exitoso"
+msgstr ""
+
+# 9f098e5364cb496e8d15154eeafcf5c1
+#: ../../campaigns_inbound_customer_id.rst:106
+msgid "Intentos"
+msgstr ""
+
+# 37dd79a4d2764c708d4f844b4fc857d8
+#: ../../campaigns_inbound_customer_id.rst:106
+msgid "Cantidad de intentos no efectivos de autenticación"
+msgstr ""
+
+# 6ee009ee31ff4da4810f66afd4e78920
+#: ../../campaigns_inbound_customer_id.rst:108
+msgid "Destino Identificación exitosa"
+msgstr ""
+
+# 8801fcf79b9c45bd937b590dfc602579
+#: ../../campaigns_inbound_customer_id.rst:108
+msgid ""
+"Tipo de destino y destino puntual para dicho tipo al que se derivan las "
+"llamadas \"positivas\" en los tipo de interacción \"sin interacción\" e "
+"\"interacción tipo 1\""
+msgstr ""
+
+# 97a21e2a71f2401d9ef3d5208672f683
+#: ../../campaigns_inbound_customer_id.rst:111
+msgid "Destino Identificación no exitosa"
+msgstr ""
+
+# 5a3a942e24bb4629b7ee5b216cb7a748
+#: ../../campaigns_inbound_customer_id.rst:111
+msgid ""
+"Tipo de destino y destino puntual para dicho tipo al que se derivan las "
+"llamadas \"negativas\" en los tipo de interacción \"sin interacción\" e "
+"\"interacción tipo 1\""
+msgstr ""
+
+# 6f64cf11186147aeb1966696b7a194ef
+#: ../../campaigns_inbound_customer_id.rst:118
+msgid ""
+"Para poder implementar los modos que implican enviar la identificación "
+"hacia un servicio web externo, aguardando una respuesta del mismo para "
+"luego ejecutar el encaminamiento de la llamada, depende de que el sistema"
+" de gestión implemente un servicio web para recibir las peticiones de "
+"este tipo."
+msgstr ""
+
+# c58c961b7de24de8ad021b5133ae0d8c
+#: ../../campaigns_inbound_customer_id.rst:123
+msgid ""
+"Para los desarrolladores que deseen habilitar en el sistema de gestión "
+"este tipo de interacción, pueden encontrar formato en que OMniLeads envía"
+" la identificación hacia el servicio web se encuentra dentro de la "
+"sección  :ref:`about_customer_id_request`."
+msgstr ""
+

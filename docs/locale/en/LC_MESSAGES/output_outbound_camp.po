@@ -8,34 +8,39 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-06 16:26-0300\n"
+"POT-Creation-Date: 2019-07-17 14:37-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.7.0\n"
+
+# d93d391529734bd4a919737156684b9d
+#: ../../output_outbound_camp.rst:4
+msgid "Reportes de Campañas Salientes"
+msgstr ""
 
 # 9a33b04a10ef4be29a287a126d2d4241
-#: ../../output_outbound_camp.rst:1
+#: ../../output_outbound_camp.rst:6
 msgid ""
 "En esta sección se cubren todos los reportes disponibles para una campaña"
 " de llamadas salientes."
 msgstr ""
 
 # de944bf459b241248a1032cb42cfa7ef
-#: ../../output_outbound_camp.rst:6
+#: ../../output_outbound_camp.rst:11
 msgid "*Figure 1: Campaign Reports view*"
 msgstr ""
 
 # 378a3fef1cf14d5b81eb6e5787e37867
-#: ../../output_outbound_camp.rst:10
+#: ../../output_outbound_camp.rst:15
 msgid "Reporte general de una campaña saliente"
 msgstr ""
 
 # 82d9c8f3d4734a7596478fd1ea357eeb
-#: ../../output_outbound_camp.rst:12
+#: ../../output_outbound_camp.rst:17
 msgid ""
 "Este reporte nos brinda un resumen de varios aspectos de la campaña. "
 "Cuestiones como cantidad de llamadas pendientes para finalizar la "
@@ -45,14 +50,14 @@ msgid ""
 msgstr ""
 
 # 1947ad32ecf24e4bb5a91d7b07736291
-#: ../../output_outbound_camp.rst:16
+#: ../../output_outbound_camp.rst:21
 msgid ""
 "Para acceder a este reporte, se debe ingresar a la opción \"Reportes\" "
 "dentro de la campaña."
 msgstr ""
 
 # e5b779977e814ee6b985efdccf8fec88
-#: ../../output_outbound_camp.rst:18
+#: ../../output_outbound_camp.rst:23
 msgid ""
 "La primera información que nos arroja la vista son los \"Contactos "
 "pendientes de gestionar\" VS \"total de llamadas realizadas\" en la "
@@ -63,12 +68,12 @@ msgid ""
 msgstr ""
 
 # 5fe4550ce44d44f589f0e72eee5bb825
-#: ../../output_outbound_camp.rst:24
+#: ../../output_outbound_camp.rst:29
 msgid "*Figure 2: Contacts pending / Performed calls*"
 msgstr ""
 
 # 011f8b76075743f28ff912762650d9f7
-#: ../../output_outbound_camp.rst:26
+#: ../../output_outbound_camp.rst:31
 msgid ""
 "Siguiendo el recorrido por la presente pantalla, nos vamos a encontrar "
 "con el primer botón de exportación de información a CSV. En este caso el "
@@ -78,22 +83,22 @@ msgid ""
 msgstr ""
 
 # f7243ecc0d734b5fad514a9ceca68380
-#: ../../output_outbound_camp.rst:32
+#: ../../output_outbound_camp.rst:37
 msgid "*Figure 3: Contacted calls*"
 msgstr ""
 
 # d15662fdd1a04dc9b6b339c18be91361
-#: ../../output_outbound_camp.rst:34
+#: ../../output_outbound_camp.rst:39
 msgid "La información generada se presenta como lo indica la figura 4."
 msgstr ""
 
 # 0af50693d68f46fd8218e9bc4d9696b8
-#: ../../output_outbound_camp.rst:38
+#: ../../output_outbound_camp.rst:43
 msgid "*Figure 4: Contacted calls CSV*"
 msgstr ""
 
 # 12fc7b527ff6457eb051d976a79e420e
-#: ../../output_outbound_camp.rst:40
+#: ../../output_outbound_camp.rst:45
 msgid ""
 "Como se puede apreciar, el archivo presenta como primer columna el "
 "teléfono contactado. Si bien el contacto puede tener asociado más de un "
@@ -103,7 +108,7 @@ msgid ""
 msgstr ""
 
 # adafc9e0d4c04989a8abe7500892fb5d
-#: ../../output_outbound_camp.rst:44
+#: ../../output_outbound_camp.rst:49
 msgid ""
 "El próximo informe que se presenta, tiene que ver con la contabilización "
 "de las diferentes calificaciones que realizaron los agentes sobre las "
@@ -111,19 +116,19 @@ msgid ""
 msgstr ""
 
 # 0a8ad5fc153b493fad18cc3982d6d010
-#: ../../output_outbound_camp.rst:47
+#: ../../output_outbound_camp.rst:52
 msgid ""
 "En este caso y en general toda información tabulada tiene su exportación "
 "a CSV para poder disponer de los datos sobre una planilla de cálculos."
 msgstr ""
 
 # bea55107aeee4708bc1fe13b119f11c6
-#: ../../output_outbound_camp.rst:52
+#: ../../output_outbound_camp.rst:57
 msgid "*Figure 5: Call dispositions list*"
 msgstr ""
 
 # d18f9b231213466aa0a955399b5c5682
-#: ../../output_outbound_camp.rst:54
+#: ../../output_outbound_camp.rst:59
 msgid ""
 "Continuando con la sucesión de informes presentados en la pantalla de "
 "reportes de la campaña, nos vamos a topar con un listado que contibiliza "
@@ -134,12 +139,12 @@ msgid ""
 msgstr ""
 
 # cc97a0c7f4a6483ba7015647e2573b17
-#: ../../output_outbound_camp.rst:60
+#: ../../output_outbound_camp.rst:65
 msgid "*Figure 6: Call failed details*"
 msgstr ""
 
 # 4d9a7991735d48658907fb16fc28dcc1
-#: ../../output_outbound_camp.rst:62
+#: ../../output_outbound_camp.rst:67
 msgid ""
 "A continuación se presenta un informe sobre la performance de cada agente"
 " que trabajó en la campaña. Se expone mediante la contabilización de cada"
@@ -149,12 +154,12 @@ msgid ""
 msgstr ""
 
 # aa4f429a84fc42a39364470702c9aab6
-#: ../../output_outbound_camp.rst:68
+#: ../../output_outbound_camp.rst:73
 msgid "*Figure 7: Agent performance*"
 msgstr ""
 
 # dd5075258005444bb1a97b380ce98478
-#: ../../output_outbound_camp.rst:70
+#: ../../output_outbound_camp.rst:75
 msgid ""
 "Entonces si se hace click sobre uno de los agentes, se despliega una "
 "nueva pantalla con mayor detalle, en la que se contempla por ejemplo la "
@@ -162,47 +167,47 @@ msgid ""
 msgstr ""
 
 # a8635dc3190e405492d6521015e0ac2c
-#: ../../output_outbound_camp.rst:73
+#: ../../output_outbound_camp.rst:78
 msgid "Tiempo acumulado en la campaña"
 msgstr ""
 
 # ada4b355ec994a0a9e4e2488b1649629
-#: ../../output_outbound_camp.rst:74
+#: ../../output_outbound_camp.rst:79
 msgid "Tiempo en pausa dentro de la campaña"
 msgstr ""
 
 # d0211265c798499d8ee5e64df9ac5e52
-#: ../../output_outbound_camp.rst:75
+#: ../../output_outbound_camp.rst:80
 msgid "Tiempo efectivo en llamadas dentro de la campaña"
 msgstr ""
 
 # 9f00131669894648a046128fe8a0b4c6
-#: ../../output_outbound_camp.rst:76
+#: ../../output_outbound_camp.rst:81
 msgid "Cantidad de llamadas procesadas"
 msgstr ""
 
 # 5d0ce189f17f498f82adf4f1903ff71e
-#: ../../output_outbound_camp.rst:77
+#: ../../output_outbound_camp.rst:82
 msgid "Tiempo promedio de llamada"
 msgstr ""
 
 # 38363e1c3ea4403a9162d551daaa37a7
-#: ../../output_outbound_camp.rst:78
+#: ../../output_outbound_camp.rst:83
 msgid "Cantidad de intentos de llamadas fallidas"
 msgstr ""
 
 # 43ee537de5ae4675a0b9d709c8bc7f29
-#: ../../output_outbound_camp.rst:79
+#: ../../output_outbound_camp.rst:84
 msgid "Procentajes de efectividad"
 msgstr ""
 
 # 059fe0b5877d49bebae53031ce73efed
-#: ../../output_outbound_camp.rst:83
+#: ../../output_outbound_camp.rst:88
 msgid "*Figure 8: Agent performance detail*"
 msgstr ""
 
 # 608afc67948d43da89d72d9c838172c1
-#: ../../output_outbound_camp.rst:85
+#: ../../output_outbound_camp.rst:90
 msgid ""
 "Regresando al reporte de la campaña, como último ítem se presenta un "
 "listado de todas las llamadas generadas por la campaña y su resultado. Se"
@@ -212,17 +217,17 @@ msgid ""
 msgstr ""
 
 # 6e4aed83fe54464b810e22f248137839
-#: ../../output_outbound_camp.rst:93
+#: ../../output_outbound_camp.rst:98
 msgid "*Figure 9: Total calls*"
 msgstr ""
 
 # 2a1e38d0b8264f1f9c632f766445a8f1
-#: ../../output_outbound_camp.rst:96
+#: ../../output_outbound_camp.rst:101
 msgid "Reporte de calificaciones"
 msgstr ""
 
 # a9699908a1a84e12aadcdea2ea5fa9a1
-#: ../../output_outbound_camp.rst:98
+#: ../../output_outbound_camp.rst:103
 msgid ""
 "Este reporte presenta cada contacto gestionado en la campaña junto a la "
 "calificación que ha recibido por parte del agente que procesó la llamada "
@@ -232,12 +237,12 @@ msgid ""
 msgstr ""
 
 # d4dbcd1f00784094b7bb4fae147da91c
-#: ../../output_outbound_camp.rst:104
+#: ../../output_outbound_camp.rst:109
 msgid "*Figure 10: Call dispositions detail*"
 msgstr ""
 
 # a8dbd1ea7bf3453c97c85fe9f90f4df8
-#: ../../output_outbound_camp.rst:106
+#: ../../output_outbound_camp.rst:111
 msgid ""
 "Es importante aclarar que en este listado también se contemplan aquellos "
 "contactos introducidos dinámicamente en la campaña por los agentes. Por "
@@ -245,12 +250,12 @@ msgid ""
 msgstr ""
 
 # 7e6d92483f3d43ac882f0267223fc88c
-#: ../../output_outbound_camp.rst:111
+#: ../../output_outbound_camp.rst:116
 msgid "Resultados de la base de contactos"
 msgstr ""
 
 # 404bf4bec6eb4a69907dc269f1efad6e
-#: ../../output_outbound_camp.rst:113
+#: ../../output_outbound_camp.rst:118
 msgid ""
 "Aquí se presenta un listado plano de la base de contactos asociada a la "
 "campaña y el resultado en la medida que avanza la campaña. La diferencia "
@@ -261,7 +266,7 @@ msgid ""
 msgstr ""
 
 # b5b2035b96a147d7bc8f06e4c011f363
-#: ../../output_outbound_camp.rst:120
+#: ../../output_outbound_camp.rst:125
 msgid "*Figure 11: DB result*"
 msgstr ""
 

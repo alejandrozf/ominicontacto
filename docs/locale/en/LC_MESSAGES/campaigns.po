@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-03 21:27-0300\n"
+"POT-Creation-Date: 2019-07-17 14:37-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 # 506d381cfb5344249e6418a979a89324
 #: ../../campaigns.rst:4
@@ -291,9 +291,9 @@ msgstr ""
 msgid "*Figure 9: Survey campaign form*"
 msgstr ""
 
-# c341e7a00faa40e8a7c9c08c089622b6
+# 8946d877ff5b4e9d96ed281cd3a5ddb2
 #: ../../campaigns.rst:107
-msgid "Campañas VS Calificaciones VS Formularios"
+msgid "Campañas, Calificaciones & Formularios"
 msgstr ""
 
 # 36b9be4e7719450f81f8d33dff57ca76
@@ -349,117 +349,94 @@ msgstr ""
 msgid "*Figure 11: Engaged dispostions and forms*"
 msgstr ""
 
-# 60a66cbd3a374b64826a02b823e391df
-#: ../../campaigns.rst:133
-msgid "Campañas VS sistema CRM externo"
-msgstr ""
-
-# 878f029220944bdea34514023571ae4d
-#: ../../campaigns.rst:135
-msgid ""
-"OMniLeads está diseñado desde una perspectiva en la que se prioriza una "
-"integración con el sistema de gestión predilecto del usuario. En lugar de"
-" forzar al mismo a tener que pasar su operación sobre un CRM propio del "
-"stack de contact center."
-msgstr ""
-
-# d16aa8d81dc64133add7f23472496149
-#: ../../campaigns.rst:138
-msgid "Entre las funcionalidades contempladas podemos citar:"
-msgstr ""
-
-# a208668dafcd484da40a6cb802e2718f
-#: ../../campaigns.rst:140
-msgid ""
-"Abrir una vista concreta del CRM en una comunicación entrante o saliente,"
-" utilizando parámetros de la comunicación (id del agente, del contacto, "
-"de la campaña, etc.) como información dinámica para invocar al CRM."
-msgstr ""
-
-# 3d760e11776c4fb282524e65bed5f818
-#: ../../campaigns.rst:141
-msgid ""
-"Permitir realizar una llamada \"click to call\" desde cualquier vista del"
-" CRM hacia un número externo a través de una campaña y agente de "
-"OMniLeads."
-msgstr ""
-
-# 270cb1f9a6bf410d978bb290c5cb68c9
-#: ../../campaigns.rst:142
-msgid ""
-"Permitir calificar un contacto en el CRM y que la calificación se impacte"
-" en OMniLeads de manera tal que exista una correlación entre el sistema "
-"CRM y el sistema de Contact Center dentro de cada campaña."
-msgstr ""
-
-# 004421fed6634b959720729e58f0bdfc
-#: ../../campaigns.rst:143
-msgid ""
-"OMniLeads en las llamadas entrantes puede solicitar el ID del llamante y "
-"notificar al CRM para que éste decida sobre que campaña de OMniLeads "
-"encaminar una llamada."
-msgstr ""
-
-# 1fd9e19f139040bc80dc90a848911d32
-#: ../../campaigns.rst:145
-msgid ""
-"Todo el alcance y configuración a realizar para trabajar en Integración "
-"con CRM se expone en el capítulo:"
-msgstr ""
-
 # 3721e27d6fee49079a91a703f18948f4
-#: ../../campaigns.rst:154
+#: ../../campaigns.rst:134
 msgid "Campañas Manuales"
 msgstr ""
 
-# e0cf2c315d4442c08bec8cec75710d45
-#: ../../campaigns.rst:156
+# 42fe1e2f53a146bd87afaecc88e555ff
+#: ../../campaigns.rst:136
 msgid ""
-"Dentro de este inciso se ejemplifica el paso a paso de cómo generar una "
-"campaña de llamadas manuales."
+"Dentro de este inciso se ejemplifica el paso a paso de cómo administrar "
+":ref:`about_manualcamp`."
 msgstr ""
 
 # 0e34298d863e4e32930373ffe2dbd773
-#: ../../campaigns.rst:165
+#: ../../campaigns.rst:140
 msgid "Campañas Preview"
 msgstr ""
 
-# 1ad6709dd11e4587a31f3992e01589aa
-#: ../../campaigns.rst:167
-msgid "En este inciso nos adentramos en el mundo de las campañas preview."
+# 924ba603f95b40b58f625b6576af899a
+#: ../../campaigns.rst:142
+msgid ""
+"Dentro de este inciso se ejemplifica el paso a paso de cómo administrar "
+":ref:`about_previewcamp`."
 msgstr ""
 
 # e3fcdf497bce40e3b5b10925f1b353cd
-#: ../../campaigns.rst:176
+#: ../../campaigns.rst:145
 msgid "Campañas con discador predictivo"
 msgstr ""
 
-# 5d48ad90d01f444180cd6cbb1af11445
-#: ../../campaigns.rst:178
+# 4e213e55424744e58de934fbba1f6f56
+#: ../../campaigns.rst:147
 msgid ""
-"En este apartado desplegamos todo lo inherente a las campañas con "
-"discador predictivo."
+"Dentro de este inciso se ejemplifica el paso a paso de cómo administrar "
+":ref:`about_dialercamp`."
 msgstr ""
 
 # ed46a32c79194ef5ab8dbb46343e05d7
-#: ../../campaigns.rst:188
+#: ../../campaigns.rst:150
 msgid "Campañas Entrantes"
 msgstr ""
 
-# 88d6a7233a924eba813230e24cc8d556
-#: ../../campaigns.rst:189
+# 8574abb0fbaf4d84911b368ec3951bc7
+#: ../../campaigns.rst:152
 msgid ""
-"En este capítulo se repasan todas las funcionalidades asociadas al "
-"tratamiento de llamadas entrantes."
+"Al hablar de llamadas entrantes nos toca desplegar cada funcionalidad "
+"aplicable al flujo de llamadas entrantes, como bien sabemos una llamada "
+"entrante puede pasar por una serie \"nodos\" hasta finalmente conectar "
+"con un agente de atención. Por lo tanto vamos a ampliar el concepto de "
+"\"campañas entrantes\" a los siguientes ítems de configuración."
+msgstr ""
+
+# 9e1505e1590b402bb4f13add03199308
+#: ../../campaigns.rst:156
+msgid ":ref:`about_inboundcamp`."
+msgstr ""
+
+# bf8ccfed5fb940d68e1e1c74748af5d8
+#: ../../campaigns.rst:157
+msgid ":ref:`about_inboundroutes`."
+msgstr ""
+
+# 686f1e5f2d73459dacc02b9655c51eff
+#: ../../campaigns.rst:158
+msgid ":ref:`about_inboundroutespbx`."
+msgstr ""
+
+# 9b0f231261f34c9fa854f76c535a0387
+#: ../../campaigns.rst:159
+msgid ":ref:`about_timeconditions`."
+msgstr ""
+
+# 7b1e7de84800404e8ec5e2bd970f2ece
+#: ../../campaigns.rst:160
+msgid ":ref:`about_ivr`."
+msgstr ""
+
+# a3b36a23605f424aaae951ac7cd3ffe2
+#: ../../campaigns.rst:161
+msgid ":ref:`about_customer_id`."
 msgstr ""
 
 # 74524a15d26c4475ae074ccb42f90833
-#: ../../campaigns.rst:204
+#: ../../campaigns.rst:165
 msgid "Plantillas de Campaña"
 msgstr ""
 
 # 35355b2fdf504376996bbf951bc9617c
-#: ../../campaigns.rst:206
+#: ../../campaigns.rst:167
 msgid ""
 "En muchas ocasiones los parámetros de una familia de campañas (por "
 "ejemeplo campañas preview de encuestas) no varían demasiado salvo por "
@@ -471,12 +448,12 @@ msgid ""
 msgstr ""
 
 # 61d64158b2574a258f106a5af65619a2
-#: ../../campaigns.rst:209
+#: ../../campaigns.rst:170
 msgid "Esta funcionalidad la otorgan los *Templates* de campañas de OMniLeads."
 msgstr ""
 
 # a0443a4cabcd4bb680ba61ee7f181392
-#: ../../campaigns.rst:211
+#: ../../campaigns.rst:172
 msgid ""
 "A partir de generar un template (que se genera como una campaña), se pasa"
 " a disponer del mismo, de manera tal que simplemente seleccionando el "
@@ -486,8 +463,67 @@ msgid ""
 msgstr ""
 
 # 5e3fda8ef55e45b6ad951f5889cd78a2
-#: ../../campaigns.rst:217
+#: ../../campaigns.rst:178
 msgid "*Figure 13: templates*"
+msgstr ""
+
+# e75c428bd6eb497bbff348c128911a0f
+#: ../../campaigns.rst:181
+msgid "Campañas e Interacción con Sistemas Externos"
+msgstr ""
+
+# 737194e989b94ad08eabb6ffccb0a065
+#: ../../campaigns.rst:183
+msgid ""
+"OMniLeads está diseñado desde una perspectiva en la que se prioriza una "
+"integración con el sistema de gestión predilecto del usuario. Esto "
+"permite a un usuario integrar con la plataforma su propio CRM."
+msgstr ""
+
+# c56e36a973fc4465afff71c34e31ef89
+#: ../../campaigns.rst:185
+msgid "Entre las funcionalidades contempladas se pueden listar:"
+msgstr ""
+
+# faab43a0af3b4112925d3bafd344f10f
+#: ../../campaigns.rst:187
+msgid ""
+"Abrir una vista concreta del CRM en una comunicación entrante o saliente,"
+" utilizando parámetros de la comunicación (id del agente, id del "
+"contacto, id de la campaña, etc.) como información dinámica para invocar "
+"al CRM."
+msgstr ""
+
+# 260f16afcd174fd2be33aec3add2c99e
+#: ../../campaigns.rst:188
+msgid ""
+"Permitir realizar una llamada \"click to call\" desde una vista de "
+"contacto en el CRM y accionar así una llamada a través de una campaña y "
+"agente de OMniLeads."
+msgstr ""
+
+# 71e5bd71814346f9894ba157c981ee6c
+#: ../../campaigns.rst:189
+msgid ""
+"Permitir calificar la gestión de un contacto del CRM y que la "
+"calificación se impacte en OMniLeads, de manera tal que exista una "
+"correlación entre el sistema CRM y el sistema de Contact Center dentro de"
+" cada campaña."
+msgstr ""
+
+# 004421fed6634b959720729e58f0bdfc
+#: ../../campaigns.rst:190
+msgid ""
+"OMniLeads en las llamadas entrantes puede solicitar el ID del llamante y "
+"notificar al CRM para que éste decida sobre que campaña de OMniLeads "
+"encaminar una llamada."
+msgstr ""
+
+# 789b252aa6ba4ff6bb46e7b04e1c50ec
+#: ../../campaigns.rst:192
+msgid ""
+"Ampliamos todos estos conceptos y configuraciones en el siguiente link "
+":ref:`about_crm`."
 msgstr ""
 
 #~ msgid ""
@@ -718,5 +754,89 @@ msgstr ""
 
 # 9b500e9500f34c099b44cc9a421040cb
 #~ msgid "Entre otros parámetros."
+#~ msgstr ""
+
+# c341e7a00faa40e8a7c9c08c089622b6
+#~ msgid "Campañas VS Calificaciones VS Formularios"
+#~ msgstr ""
+
+# 60a66cbd3a374b64826a02b823e391df
+#~ msgid "Campañas VS sistema CRM externo"
+#~ msgstr ""
+
+# 878f029220944bdea34514023571ae4d
+#~ msgid ""
+#~ "OMniLeads está diseñado desde una "
+#~ "perspectiva en la que se prioriza "
+#~ "una integración con el sistema de "
+#~ "gestión predilecto del usuario. En lugar"
+#~ " de forzar al mismo a tener que"
+#~ " pasar su operación sobre un CRM "
+#~ "propio del stack de contact center."
+#~ msgstr ""
+
+# d16aa8d81dc64133add7f23472496149
+#~ msgid "Entre las funcionalidades contempladas podemos citar:"
+#~ msgstr ""
+
+# a208668dafcd484da40a6cb802e2718f
+#~ msgid ""
+#~ "Abrir una vista concreta del CRM "
+#~ "en una comunicación entrante o saliente,"
+#~ " utilizando parámetros de la comunicación"
+#~ " (id del agente, del contacto, de "
+#~ "la campaña, etc.) como información "
+#~ "dinámica para invocar al CRM."
+#~ msgstr ""
+
+# 3d760e11776c4fb282524e65bed5f818
+#~ msgid ""
+#~ "Permitir realizar una llamada \"click to"
+#~ " call\" desde cualquier vista del CRM"
+#~ " hacia un número externo a través "
+#~ "de una campaña y agente de "
+#~ "OMniLeads."
+#~ msgstr ""
+
+# 270cb1f9a6bf410d978bb290c5cb68c9
+#~ msgid ""
+#~ "Permitir calificar un contacto en el "
+#~ "CRM y que la calificación se "
+#~ "impacte en OMniLeads de manera tal "
+#~ "que exista una correlación entre el "
+#~ "sistema CRM y el sistema de "
+#~ "Contact Center dentro de cada campaña."
+#~ msgstr ""
+
+# 1fd9e19f139040bc80dc90a848911d32
+#~ msgid ""
+#~ "Todo el alcance y configuración a "
+#~ "realizar para trabajar en Integración "
+#~ "con CRM se expone en el capítulo:"
+#~ msgstr ""
+
+# e0cf2c315d4442c08bec8cec75710d45
+#~ msgid ""
+#~ "Dentro de este inciso se ejemplifica "
+#~ "el paso a paso de cómo generar "
+#~ "una campaña de llamadas manuales."
+#~ msgstr ""
+
+# 1ad6709dd11e4587a31f3992e01589aa
+#~ msgid "En este inciso nos adentramos en el mundo de las campañas preview."
+#~ msgstr ""
+
+# 5d48ad90d01f444180cd6cbb1af11445
+#~ msgid ""
+#~ "En este apartado desplegamos todo lo "
+#~ "inherente a las campañas con discador"
+#~ " predictivo."
+#~ msgstr ""
+
+# 88d6a7233a924eba813230e24cc8d556
+#~ msgid ""
+#~ "En este capítulo se repasan todas "
+#~ "las funcionalidades asociadas al tratamiento"
+#~ " de llamadas entrantes."
 #~ msgstr ""
 

@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../../agent_contact_managment.rst:2
 msgid "Listado de contactos de la campaña"
-msgstr ""
+msgstr "Campaign Contact List"
 
 #: ../../agent_contact_managment.rst:4
 msgid ""
@@ -34,6 +34,7 @@ msgid ""
 "Allí se despliega una vista que permite seleccionar la campaña a la cual "
 "ingresar para visualizar sus contactos."
 msgstr ""
+"A contact view is displayed, where agent is able to select the campaign to look for contacts. "
 
 #: ../../agent_contact_managment.rst:11
 msgid "*Figure 1: campaign contact list*"
@@ -45,6 +46,9 @@ msgid ""
 "cada uno de ellos o bien realizar una búsqueda por id de contacto, "
 "teléfono, nombre, apellido, etc."
 msgstr ""
+"By listing all contacts in the campaign, the agent can go through "
+"each of them or perform a search by contact id, "
+"telephone, name, surname, etc."
 
 #: ../../agent_contact_managment.rst:18
 msgid "*Figure 2: contact search*"
@@ -55,6 +59,8 @@ msgid ""
 "Por ejemplo podemos buscar un número de teléfono en el listado de "
 "contactos, como se ejemplifica en la figura 3."
 msgstr ""
+"For example, agent can search for a phone number in the list of "
+"contacts, as shown in figure 3."
 
 #: ../../agent_contact_managment.rst:24
 msgid "*Figure 3: contact search*"
@@ -62,7 +68,7 @@ msgstr ""
 
 #: ../../agent_contact_managment.rst:26
 msgid "La herramienta permite poder editar cualquiera de estos contactos."
-msgstr ""
+msgstr "The view allows to edit/modify any of the contacts listed."
 
 #: ../../agent_contact_managment.rst:30
 msgid "*Figure 4: contact search*"
@@ -70,7 +76,7 @@ msgstr ""
 
 #: ../../agent_contact_managment.rst:34
 msgid "Agendas pendientes"
-msgstr ""
+msgstr "Pending Agendas"
 
 #: ../../agent_contact_managment.rst:36
 msgid ""
@@ -78,6 +84,9 @@ msgid ""
 "En dicha sección se listan todas las entradas que el agente realizó "
 "durante la gestión."
 msgstr ""
+"The agent can access her/his phonebook of pending calls. "
+"This section lists all the entries that the agent has registered "
+"during operation."
 
 #: ../../agent_contact_managment.rst:42
 msgid "*Figure 5: Agenda*"
@@ -89,10 +98,13 @@ msgid ""
 " hacer click sobre el número de teléfono automñaticamente se dispara la "
 "llamada hacia el teléfono del contacto."
 msgstr ""
+"The agent has each scheduled contact and its description. By "
+"clicking on the phone number, it automatically triggers a "
+"dial attempt to the contact's phone."
 
 #: ../../agent_contact_managment.rst:48
 msgid "Histórico de calificaciones del agente"
-msgstr ""
+msgstr "Agent Call Dispositions"
 
 #: ../../agent_contact_managment.rst:50
 msgid ""
@@ -100,6 +112,9 @@ msgid ""
 "calificado a nivel histórico. Por lo tanto el agente puede llevar un "
 "control hacia atrás de cada contacto gestionado."
 msgstr ""
+"In this menu, the agent can list all the dispositioned calls "
+"at a historical level. Therefore the agent counts on with a "
+"backward control of each managed contact."
 
 #: ../../agent_contact_managment.rst:55
 msgid "*Figure 6: call disposition list*"
@@ -111,6 +126,9 @@ msgid ""
 "al contacto seleccionado para repasar sus datos o modificar la "
 "calificación asignada previamente."
 msgstr ""
+"The search process can be filtered by date and the agent can also access "
+"to the selected contact to review their data or modify the "
+"call disposition."
 
 #: ../../agent_contact_managment.rst:62
 msgid "*Figure 7: call disposition edit*"
@@ -122,3 +140,6 @@ msgid ""
 "calificación o del formulario, en caso de tratarse de un contacto "
 "calificado con una calificación \"de gestión\"."
 msgstr ""
+"As you can see, the agent can modify the "
+"call disposition of a contact, and the form data in the case the contact "
+"is dispositioned with a call disposition of type \"Engaged\"."

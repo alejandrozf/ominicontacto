@@ -8,20 +8,39 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-01 12:13-0300\n"
+"POT-Creation-Date: 2019-07-17 14:37-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.7.0\n"
 
-#: ../../install.rst:3
-msgid "Procedimientos de instalación"
+# 6c4a2d1fc2b84b7d8e257a2b0fae9ea2
+#: ../../install.rst:5
+msgid "Instalación de OMniLeads"
 msgstr ""
 
-#: ../../install.rst:4
+#: ../../install.rst:6
 msgid "En este capítulo se detallan los tre tipos de instalación de OMniLeads"
 msgstr ""
+
+# fdaf645c46544b7989bb138f6f41a016
+#: ../../install.rst:8
+msgid ":ref:`about_install_selfhosted`."
+msgstr ""
+
+# 4fe670adf4a64f6aaa3610da42365fd0
+#: ../../install.rst:9
+msgid ":ref:`about_install_remote`."
+msgstr ""
+
+# 517d546dbb9a4b3c8501a55a3e9eea43
+#: ../../install.rst:10
+msgid ":ref:`about_install_cluster`."
+msgstr ""
+
+#~ msgid "Procedimientos de instalación"
+#~ msgstr ""
 

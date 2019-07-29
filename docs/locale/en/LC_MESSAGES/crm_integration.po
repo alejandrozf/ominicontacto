@@ -8,48 +8,65 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-03 21:27-0300\n"
+"POT-Creation-Date: 2019-07-17 14:37-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 # 2f886d3599f44e40bc676961f457d6b0
-#: ../../crm_integration.rst:2
+#: ../../crm_integration.rst:4
 msgid "Integración con CRM"
 msgstr "CRM integration"
 
-# 7f629162c38c45ad8e5eac7566679806
-#: ../../crm_integration.rst:4
+# c77daa4391c04f658581537c136efa83
+#: ../../crm_integration.rst:6
 msgid ""
-"En cada llamada al CRM se pueden enviar datos de la llamada y el contacto"
-" como por ejemplo:"
+"Como bien se ha mencionado en esta documentación, OMniLeads nos permite "
+"una interacción bi-direccional con un sistema CRM. Por ello es que vamos "
+"a dividir las configuraciones en dos partes."
 msgstr ""
+"As well mentioned in the official documentation, OMniLeads allows us "
+"a bi-directional interaction with a CRM system. That's why we go "
+"to divide the configurations in two parts."
+
+# 1398e42787d74acc9af7f57337721357
+#: ../../crm_integration.rst:9
+msgid "Por un lado:"
+msgstr "From one hand:"
+
+# f8b4733aebe947308e9d106536ec0b39
+#: ../../crm_integration.rst:16
+msgid "Mientras que por el otro tenemos:"
+msgstr "And for the other hand, we get:"
+
+# 7f629162c38c45ad8e5eac7566679806
+#~ msgid ""
+#~ "En cada llamada al CRM se pueden"
+#~ " enviar datos de la llamada y "
+#~ "el contacto como por ejemplo:"
+#~ msgstr ""
 
 # 14243ab4189b4ab6830245e4d7944455
-#: ../../crm_integration.rst:6
-msgid "El \"path\" de la grabación de la llamada."
-msgstr ""
+#~ msgid "El \"path\" de la grabación de la llamada."
+#~ msgstr ""
 
 # 44297ef82b2e476f85d3222255c8ea94
-#: ../../crm_integration.rst:7
-msgid "El \"id\" del agente."
-msgstr ""
+#~ msgid "El \"id\" del agente."
+#~ msgstr ""
 
 # bebe7941ea334c3ab07d8ec27257e0c9
-#: ../../crm_integration.rst:8
-msgid "El \"id\" de la campaña."
-msgstr ""
+#~ msgid "El \"id\" de la campaña."
+#~ msgstr ""
 
 # b7cf90fa0598429da3a73fede0227872
-#: ../../crm_integration.rst:9
-msgid "Cualquiera de las columnas de la base asociada a la campaña."
-msgstr ""
+#~ msgid "Cualquiera de las columnas de la base asociada a la campaña."
+#~ msgstr ""
 
 # 6c60c90460884a23ae96856e88cb5da1
-#: ../../crm_integration.rst:11
-msgid "Entre otros parámetros."
-msgstr ""
+#~ msgid "Entre otros parámetros."
+#~ msgstr ""
+

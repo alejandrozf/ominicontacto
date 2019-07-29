@@ -19,13 +19,14 @@ msgstr ""
 
 #: ../../agent_dialer.rst:2
 msgid "Agente en modo predictivo"
-msgstr ""
+msgstr "Agent in Predictive Mode"
 
 #: ../../agent_dialer.rst:4
 msgid ""
 "Un agente online y asignado a una campaña predictiva que se encuentre "
 "activa, puede comenzar a recibir llamadas del discador."
 msgstr ""
+"An active Agent assigned to an active Predictive Campaign, is able to receive calls from the dialer module."
 
 #: ../../agent_dialer.rst:7
 msgid ""
@@ -34,6 +35,9 @@ msgid ""
 "datos del contacto que el discador enlazó y el agente queda en "
 "comunicación con dicho contacto."
 msgstr ""
+"The incoming calls are notified with a \"beep\" audio that is reproduced"
+" to the agent headset as soon as the call is delivered. "
+"Contact details are also presented to the agent once the call is answered."
 
 #: ../../agent_dialer.rst:13
 msgid "*Figure 1: dialer call connect*"
@@ -47,6 +51,9 @@ msgid ""
 "directamente al agente, sin brindar la posibilidad de elegir ser "
 "atendidas o no."
 msgstr ""
+"** NOTE 1: ** It is important to note that an agent working on a "
+"Predictive Campaign needs to be very alert as the system "
+"is configured to deliver calls to agents as soon as the contact has been reached and answers the attempt."
 
 #: ../../agent_dialer.rst:19
 msgid ""
@@ -56,6 +63,10 @@ msgid ""
 "de \"On call\" y además se notifica el nombre de la campaña a la que "
 "corresponde la llamada."
 msgstr ""
+"In addition to the reproduction of "
+"audio notification (beep message), the agent can notice the change in the status bar of the "
+"screen. The bar has green color when agent is "
+"\"On call\" and also the name of the campaign the call belongs to can be read."
 
 #: ../../agent_dialer.rst:23
 msgid ""
@@ -66,6 +77,11 @@ msgid ""
 "disponible en el estado de Connected, de manera tal que el discador lo "
 "visualice como un agente activo al cual enviarle llamadas."
 msgstr ""
+"Once the call ends (regardless of which end finishes the call) "
+", the system forces the Agent status to "
+"ACW (After Call Work), which allows the agent to finish filling the contact form "
+"with the respective Call Disposition. After that, the agent will change this ACW status to available again "
+", so that the dialer knows she/he is ready to receive new calls."
 
 #: ../../agent_dialer.rst:28
 msgid ""
@@ -76,10 +92,16 @@ msgid ""
 "calificar el contacto y luego automñaticamente es puesto nuevamente en "
 "estado de disponible para otra llamada, de manera automática."
 msgstr ""
+"** NOTE 2: ** Agent is able to exit ACW pause status by inducing the"
+" agent to leave the pause or after a period of"
+" time (in seconds) defined by the administrator. In the latter case,"
+" the agent simply has that grace period for "
+"call disposition process and then automatically will be put back in"
+"Ready for new calls."
 
 #: ../../agent_dialer.rst:34
 msgid "Como realizar una llamada manual"
-msgstr ""
+msgstr "How to make a Manual Call"
 
 #: ../../agent_dialer.rst:36
 msgid ""
@@ -90,6 +112,12 @@ msgid ""
 "marcando el número, el discador le envíe una llamada predictiva y corte "
 "al medio la acción de la llamada manual al agente."
 msgstr ""
+"There may be cases in which the agent assigned to a predictive campaign needs to "
+"dial a number manually. In this case the agent is suggested to"
+" enter to pause mode and then from that state, generate the manual call. "
+"Since otherwise it may happen that at the time of being "
+"dialing the manual call, the dialer sends a predictive call and drops "
+"manual call attempt."
 
 #: ../../agent_dialer.rst:41
 msgid ""
@@ -97,4 +125,6 @@ msgid ""
 "bien a un número externo a la base. Lo importante es recordar ir a pausa "
 "a la hora del intento de contactación manual al teléfono."
 msgstr ""
-
+"This manual call can be done to other phone numbers of the same contact, or external numbers out of database. "
+"The important thing is to remember to go to pause "
+"at the time of the manual attempt."

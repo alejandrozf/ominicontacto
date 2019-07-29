@@ -8,20 +8,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-01 12:13-0300\n"
+"POT-Creation-Date: 2019-07-17 14:37-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.7.0\n"
 
-#: ../../campaigns_inbound_routes.rst:3
+#: ../../campaigns_inbound_routes.rst:5
 msgid "Enrutamiento de llamadas entrantes"
 msgstr ""
 
-#: ../../campaigns_inbound_routes.rst:5
+#: ../../campaigns_inbound_routes.rst:7
 msgid ""
 "Una vez disponible nuestra campaña entrante, se debe proceder con la "
 "vinculación de un número telefónico \"DID\" disponible en alguno de los "
@@ -31,69 +31,83 @@ msgid ""
 "ingresen a OMniLeads sobre dicho número DID."
 msgstr ""
 
-#: ../../campaigns_inbound_routes.rst:10
+#: ../../campaigns_inbound_routes.rst:12
 msgid "*Figure 1: Inbound routes*"
 msgstr ""
 
-#: ../../campaigns_inbound_routes.rst:13
+#: ../../campaigns_inbound_routes.rst:15
 msgid ""
 "Para generar una nueva ruta de llamadas entrantes, debemos acceder al "
 "punto de menú **Telephony -> Inbound routes** en donde se listan las "
 "rutas creadas y además se pueden añadir nuevas."
 msgstr ""
 
-#: ../../campaigns_inbound_routes.rst:15
+#: ../../campaigns_inbound_routes.rst:17
 msgid ""
 "En la figura 2 se puede visualizar una *ruta entrante* en su pantalla de "
 "configuración."
 msgstr ""
 
-#: ../../campaigns_inbound_routes.rst:19
+#: ../../campaigns_inbound_routes.rst:21
 msgid "*Figure 2: Inbound route parameters*"
 msgstr ""
 
-#: ../../campaigns_inbound_routes.rst:21
+#: ../../campaigns_inbound_routes.rst:23
 msgid "Vamos a definir cada campo:"
 msgstr ""
 
-#: ../../campaigns_inbound_routes.rst:23
+#: ../../campaigns_inbound_routes.rst:25
 msgid "**Name:** es el asignado a la ruta (alfanumérico sin espacios)"
 msgstr ""
 
-#: ../../campaigns_inbound_routes.rst:24
+#: ../../campaigns_inbound_routes.rst:26
 msgid ""
 "**DID number:** es el número entrante que se valida como disparador del "
 "encaminamiento de la llamada sobre el destino seleccionado por la propia "
 "ruta."
 msgstr ""
 
-#: ../../campaigns_inbound_routes.rst:25
+#: ../../campaigns_inbound_routes.rst:27
 msgid ""
 "**Callerid prefix:** el valor que se configure en en este campo, "
 "aparecerá ccomo prefijo del callerid que llega en cada llamada por el "
 "troncal correspondiente."
 msgstr ""
 
-#: ../../campaigns_inbound_routes.rst:26
+#: ../../campaigns_inbound_routes.rst:28
 msgid ""
 "**Language:** el idioma que se utiliza a la hora de repoducir locuciones "
 "por defecto del sistema sobre los canales que ingresan por la ruta."
 msgstr ""
 
-#: ../../campaigns_inbound_routes.rst:27
+# a8e73b95231e47bc9e834b1381eccc17
+#: ../../campaigns_inbound_routes.rst:29
 msgid ""
 "**Destination type:** el tipo de destino a donde se enviarán las llamadas"
 " ingresadas por dicha ruta. Dentro de los tipos de destinos existen "
-"(Campañas entrantes, IVR, condicionales de tiempo)"
+"(Campañas entrantes, IVR, condicionales de tiempo, identificación de "
+"llamante)"
 msgstr ""
 
-#: ../../campaigns_inbound_routes.rst:28
-msgid "**Destination:** destino al cual enviar los canales."
-msgstr ""
-
+# 655b32615a1041e78cf577481ae2b806
 #: ../../campaigns_inbound_routes.rst:30
+msgid "**Destination:** destino puntual al cual enviar los canales."
+msgstr ""
+
+#: ../../campaigns_inbound_routes.rst:32
 msgid ""
 "Es importante aclarar que se permiten que varias rutas pueden tener el "
 "mismo destino."
 msgstr ""
+
+#~ msgid ""
+#~ "**Destination type:** el tipo de destino"
+#~ " a donde se enviarán las llamadas "
+#~ "ingresadas por dicha ruta. Dentro de "
+#~ "los tipos de destinos existen (Campañas"
+#~ " entrantes, IVR, condicionales de tiempo)"
+#~ msgstr ""
+
+#~ msgid "**Destination:** destino al cual enviar los canales."
+#~ msgstr ""
 
