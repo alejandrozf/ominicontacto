@@ -8,21 +8,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-17 14:37-0300\n"
+"POT-Creation-Date: 2019-07-30 14:27-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.4.0\n"
 
-# b727bc761c02481ab8c6acb558d01844
+# 6cbb8d4537674cb9ae2c2954efaca270
 #: ../../api.rst:5
 msgid "OMniLeads RESTful API"
 msgstr ""
 
-# 2d9b10e046b744f4a39c2c19d5323bef
+# 55852fcb088d46f882e4bb735577ba36
 #: ../../api.rst:7
 msgid ""
 "Esta sección está destinada hacia aquellos desarrolladores que desean "
@@ -31,7 +31,7 @@ msgid ""
 "público objetivo a desarrolladores de software."
 msgstr ""
 
-# 357cb1cf4b7a43cdb6b5c7fb7987b1d0
+# 174822b69191402a882fa84a1da95469
 #: ../../api.rst:10
 msgid ""
 "OMniLeads dispone de una RESTful API basada en HTTPS / JSON. La API "
@@ -40,7 +40,7 @@ msgid ""
 "integrarse de manera sencilla con OMniLeads."
 msgstr ""
 
-# 1abd3cbac0a04300bf7f3ca9cee9e4c1
+# a4ea2a9436d246bb8d11693c413d85e5
 #: ../../api.rst:13
 msgid ""
 "Las formas de autenticación disponibles para utilizar esta api son por "
@@ -50,17 +50,17 @@ msgid ""
 "petición:"
 msgstr ""
 
-# 0b55618d6e4d4538840a743c82f62171
+# ff7b52cf717942bcb063717360d1bad6
 #: ../../api.rst:15
 msgid "\"Authorization: Bearer <token obtenido>\""
 msgstr ""
 
-# 2d90b61a7fff4bdaa64da2ce7d60a597
+# 00289f32742e49efb8f6f108be3e8edf
 #: ../../api.rst:17
 msgid "Por ejemplo:"
 msgstr ""
 
-# 08e2de3dade343088e3dd06b1560f242
+# 35f06416486c4fa0bcdea212db975248
 #: ../../api.rst:23
 msgid ""
 "Con el transcurrir de los nuevos releases, esta sección irá siempre "
@@ -68,17 +68,17 @@ msgid ""
 "los releases."
 msgstr ""
 
-# ac8010199e3142d59439ed132237c7e2
+# 04e071c303594338bbc9046d663033a2
 #: ../../api.rst:25
 msgid "A continuación se describen los endpoints disponibles."
 msgstr ""
 
-# 2cbcf3f176bb4ec1a34e1494bd8929f9
+# 4840912170a243e39be5276dbaa3d1c0
 #: ../../api.rst:29
 msgid "Endpoint de Login"
 msgstr ""
 
-# 74d7d930ca644f9d9abe6b0677ce872e
+# 4e9d0ea5cb634786ab4a5c9a59bd8cfb
 #: ../../api.rst:31
 msgid ""
 "Este método proporciona la posibilidad de autenticarse como usuario del "
@@ -87,68 +87,68 @@ msgid ""
 "realizado dicho login."
 msgstr ""
 
-# 9cda43071dc94e26af737490d98627be
+# d6971a5341b040e29f34b4dcdbc85b40
 #: ../../api.rst:34
 msgid "**URL**: POST https://<omnileads_addr>/api/v1/login"
 msgstr ""
 
-# 209a2a8b7287429c887bd9af8bb08309
+# 0b45c37c25624b0aa261ff1556737ac0
 #: ../../api.rst:38
 msgid "*figure 1: endpint login request*"
 msgstr ""
 
-# 37d77fd357c74c6a9db6ef7e9e2ba5c0
-# 28b034d802574848adc37ef297718635
-# 1cc932d0563e45e7a935d29af3f59d2e
-# ea8b4aad058947c7a208a39778008cbe
-# 811b4f9f0d8d4cfbb99081acc45f46cf
+# d1522a6ad954473192afd7cbba7cf05f
+# 45b448aa4e69494d9deb9666edc53c3c
+# aab9dc99bb8b49aa9a450cb9b56457fc
+# 7825504e3840413f8d2def5e5e1aace2
+# c6365ec9eb3946228e08359052ffb867
 #: ../../api.rst:41 ../../api.rst:89 ../../api.rst:161 ../../api.rst:206
 #: ../../api.rst:246
 msgid "field name"
 msgstr ""
 
-# 7536c3555d81446e96a97658fdfb5cf7
-# c87c0044e90845ac87b438c10e7628f5
-# b02d150f23e34c8f89c8182d3c548db1
-# e0245b7a4c0b494b8431bcad19951e96
-# bdf8231af6544779be0345431b064f3d
+# 4e29c55a7f804ad98d10bcc48ef78fc5
+# 20516796e2274be49821194e28822ca0
+# 80271baae4ba4a1bb4620bf4fd365e1e
+# a3f8fc25ab744858a4de1128c25ec12c
+# d186b7980bf347c1b886a071f5e93a77
 #: ../../api.rst:41 ../../api.rst:89 ../../api.rst:161 ../../api.rst:206
 #: ../../api.rst:246
 msgid "type"
 msgstr ""
 
-# f8efb086e5da4cf7934f457bad8cdee8
-# 642804b148214123b8c6a172b8b4e3f9
-# 1880809714a84c2785a71b908612f0d0
-# f1f8cac0d53f4bc188e8ad84dbe3a713
-# e74ab70edd5d43d6926e0f1db9392057
+# de0f349883e7443e83a1fe9918eb21c4
+# a2139b2f054640b7a78db41fc8214b84
+# 4a364d7d23d947eeae9f48a13a3a7724
+# fddba807be1549d9aeca1d09b62ae84d
+# a02789be24374305880aee782590743d
 #: ../../api.rst:41 ../../api.rst:89 ../../api.rst:161 ../../api.rst:206
 #: ../../api.rst:246
 msgid "description"
 msgstr ""
 
-# c89025df51444f80b8665999944baf7f
+# 4c1371bcd42f49198e23ffa9b8ee5a62
 #: ../../api.rst:43
 msgid "username"
 msgstr ""
 
-# 3b0c93899065451e80e3ee8a4b0425c4
-# 823cabaf42804793b43040afb87ab2c1
-# 18b3db949a144b27bbc8c8dd6229ee3a
-# 5c75c6cc48c64e6998fe79eb75ca5ed5
-# 022f17bfdec2427f863e5dfb6e85e71f
-# a4591d8acddb430ebef0815175402d8b
-# 5f7ba12ccdec4908accf0981e11a065f
-# b8348fb545e542a390b8efdd1073653d
-# 065b64ad1bf74c6895d695d41aa60907
-# bfb8bb6bc95d47d59077ae3cd427f933
-# d174b3180ced46d2a04c4fc3a19d954e
-# 3a00ee0b7b264454890eb05683b4a2f3
-# cbb8a9a8aa1f4ab78021cf9f7fbd6d44
-# 310098f15177443fb1df31c91e5c5cf1
-# d9425553f6954a00a3ad317ec64244f0
-# b6e40b2b03424323966b9d0627d01478
-# 1a6ada89bc864f21ab17a06ae132378d
+# f03e9abc92e240a78ee773c3f4a9b407
+# 15285243fa8648a1b32c266153a3b3a4
+# f70442d2687944a9bb219b7c9866e7c5
+# 1e4c10cb137648f3953d3153c1c0179b
+# c78b531b2da148669b0380fa45089479
+# 5d4ad1fb19054cdaaa6c7e40cf649cd0
+# c58a5b223e7642e9aaee8e7485aeaa31
+# 1ac13809cc0749999162edecfb1b2893
+# decc6a46187f40c08da747069eeb0710
+# 91a1c5d542b9404c85436fb175e00318
+# 17e1985c3a004a1da1d8adcc1445f951
+# 01878bdcaef64462bbbf4981aafd81a7
+# 96b36b29fd7d4191a090363e81c8f6f4
+# 444e3a7cf400409f878c1616f69e318b
+# 07af777b741e4e08a48b78aaa5a4a08c
+# 59a092b080ca4485be01c1d908341016
+# c3efa54871d8479586d978d01725aab6
 #: ../../api.rst:43 ../../api.rst:45 ../../api.rst:91 ../../api.rst:94
 #: ../../api.rst:99 ../../api.rst:104 ../../api.rst:169 ../../api.rst:176
 #: ../../api.rst:178 ../../api.rst:208 ../../api.rst:210 ../../api.rst:217
@@ -157,37 +157,37 @@ msgstr ""
 msgid "string"
 msgstr ""
 
-# 5a959402771a4636a7efe758313097ee
+# ef3642fc68d54b6b83eab02929653246
 #: ../../api.rst:43
 msgid "username del usuario generado en el menú de creación de usuarios de OML"
 msgstr ""
 
-# 284dc856dd3e41b6819029a4eb95c71f
+# 700fbf924bef499a97666b161aec1cda
 #: ../../api.rst:45
 msgid "password"
 msgstr ""
 
-# f734504cbb00435fad6a25b381301683
+# 1eef5ca59e0d48d7b2aebf30e4fbd3eb
 #: ../../api.rst:45
 msgid "password del usuario generado en el menú de creación de usuarios de OML"
 msgstr ""
 
-# dbd965b2af344d00a677249afa77ce4b
+# 21d303563d70473b9722e186e842b4b4
 #: ../../api.rst:48
 msgid "**Autenticación exitosa**"
 msgstr ""
 
-# f8929773181d4f2f9474ed6d605d8991
+# a8ae0c0273224600b945472c85af673b
 #: ../../api.rst:50
 msgid "Si el login es exitoso, el método devuelve la siguiente salida:"
 msgstr ""
 
-# 1acff14950b947728d8840245b643e11
+# 03ec38a32f1a4ebdb228785b9a4dd896
 #: ../../api.rst:54
 msgid "*figure 2: endpint login request ok*"
 msgstr ""
 
-# 5011e2eb73e3469593d2e1bce8cbd9c6
+# c3182ec41eb74ea59ba151073fa53580
 #: ../../api.rst:57
 msgid ""
 "Como se puede observar en la figura, un login exitoso devuelve entre "
@@ -197,7 +197,7 @@ msgid ""
 "generado."
 msgstr ""
 
-# 83d128e7256c4ccd851527bd217f4dba
+# 430d547d3a0a48aa8377dbce2b2240b0
 #: ../../api.rst:60
 msgid ""
 "En caso de que el sistema lance una petición y el token de seguridad haya"
@@ -205,7 +205,7 @@ msgid ""
 "autenticación."
 msgstr ""
 
-# 8c74cfb1f22247e19d4364957165c114
+# 88b37875b7e84c8b98948fb2f2c3e58e
 #: ../../api.rst:64
 msgid ""
 "El tiempo de duración del token de seguridad se configura bajo el "
@@ -213,27 +213,27 @@ msgid ""
 "\"/opt/omnileads/ominicontacto/ominicontacto/settings/production.py\""
 msgstr ""
 
-# 95548ebe9eee4438b9198e93a1a79de7
+# aef7616599cc443fbe49831609895053
 #: ../../api.rst:66
 msgid "**Autenticación fallida**"
 msgstr ""
 
-# 9ed22e3f90ba464fbca3aaecea78ab15
+# c81d8aa8cabf4890b93beb77f98829e1
 #: ../../api.rst:68
 msgid "Si el login no es exitoso, el método devuelve la siguiente salida:"
 msgstr ""
 
-# 6df47e25d28a430a96d97a415dec91dc
+# a8dcf82c30734f4baac9fc456e7e99c7
 #: ../../api.rst:73
 msgid "*figure 3: endpint login request fail*"
 msgstr ""
 
-# 61bca7974991495cadb103fff7948538
+# ec980eedad9e4aeeac5ba80166d1aa36
 #: ../../api.rst:76
 msgid "Endpoint de Generación de llamadas"
 msgstr ""
 
-# 57c3d12bb154487fac08367fe345f696
+# b96790502b0141308f2f75a038aa75f1
 #: ../../api.rst:78
 msgid ""
 "Permite generar llamadas (click to call) desde un Sistema CRM Externo. "
@@ -241,36 +241,36 @@ msgid ""
 "(:ref:`about_agent_user`)."
 msgstr ""
 
-# ba6b41d4ca814b6db64e5932244dc3fe
+# 45209c8ff3d34a10b084b2108de6b92a
 #: ../../api.rst:82
 msgid "**URL**: POST https://<omnileads_addr>/api/v1/makeCall"
 msgstr ""
 
-# f8bc5f634d7a4328984575f0f8d37766
+# 9fa4ecc15fd142f6b64e161924394222
 #: ../../api.rst:86
 msgid "*figure 4: endpint new call request*"
 msgstr ""
 
-# 44933537bc334c6cb4d841341705636c
-# c5e96af2dec34528a59196772f782e1c
-# c595070dbc5942e4afc14c7beb033528
+# 20ff2261e0ec4b5d8b3d8e87575ff02b
+# 9c144e088950436faf3f3a0f9b8c0e62
+# f60ecf30b4a5486f9ebf3c862c06a21a
 #: ../../api.rst:91 ../../api.rst:163 ../../api.rst:248
 msgid "idExternalSystem"
 msgstr ""
 
-# 6d8df9e291fb49298b4dfd2a6cb487c9
+# ff2b3a88e4a04ddd8ffebbd7a531a95f
 #: ../../api.rst:91
 msgid ""
 "Es un parámetro opcional, debe enviarse en caso de que se quiera "
 "identificar a la campaña con el ID del sistema CRM externo"
 msgstr ""
 
-# c60124b851fd40ce812ae58ca90ecd5e
+# e7e17f2398e7426f8516080cd0446def
 #: ../../api.rst:94
 msgid "idCampaign"
 msgstr ""
 
-# 496ba59f1a5349baa6694b9a011eae0c
+# 86ac639eb2fe4567ba2fdcd84efb9ac5
 #: ../../api.rst:94
 msgid ""
 "Es un parámetro obligatorio, debe corresponder al identificador de una "
@@ -279,12 +279,12 @@ msgid ""
 "asociada al Sistema Externo indicado"
 msgstr ""
 
-# 199e968e4c3046d18232fc9003c031c7
+# 3ec48d14d5014e149245f7fe30f614ba
 #: ../../api.rst:99
 msgid "idAgent"
 msgstr ""
 
-# 9e52e66d9f7c4b879372903b1bf1d976
+# e258b25a9c17450f914321ac24d741b5
 #: ../../api.rst:99
 msgid ""
 "Es un parámetro obligatorio, debe corresponder al identificador de un "
@@ -293,12 +293,12 @@ msgid ""
 "Sistema CRM externo"
 msgstr ""
 
-# 9daa5932803e4aadb0cfad94c6d74e40
+# 906f252225854b9aac77f95c5cc657e6
 #: ../../api.rst:104
 msgid "idContacto"
 msgstr ""
 
-# 027474d84ca7461b805d4fc5c7546895
+# b15c38aaf4b848a8901238eeb57951c3
 #: ../../api.rst:104
 msgid ""
 "Es un parámetro opcional, si no es enviado se asume que es un contacto "
@@ -308,7 +308,7 @@ msgid ""
 "de contactos marcado como identificador externo"
 msgstr ""
 
-# 200a8c312bfa489e968f73533aad4492
+# 5cfd84b66a6d43308191074f2e41ed15
 #: ../../api.rst:111
 msgid ""
 "En caso de haber errores se devolverá un JSON con el campo "
@@ -316,12 +316,12 @@ msgid ""
 "contrario el valor del campo 'status' será 'OK'."
 msgstr ""
 
-# 75e54a255fce4b10a51aa8580f4b1a8f
+# f19b49584dc448d3a7e099306d71c32c
 #: ../../api.rst:115
 msgid "Endpoint listado de opciones de calificación"
 msgstr ""
 
-# 397c6f86dab94cf98b10804d457c25e0
+# 54b4f17fa9114ff4b66376594b8f5d07
 #: ../../api.rst:117
 msgid ""
 "**URL** GET "
@@ -329,7 +329,7 @@ msgid ""
 "               (1)"
 msgstr ""
 
-# 8b6c1b0f04c44e9a9ab321bb40937836
+# 96a36e439c0e49c1a0a87e7528ce8cc4
 #: ../../api.rst:119
 msgid ""
 "**URL** GET "
@@ -337,7 +337,7 @@ msgid ""
 "  (2)"
 msgstr ""
 
-# 66511b5fb3854f308980969208c736fd
+# 0def7ef48f1d4b9f80bb68e05db773a1
 #: ../../api.rst:121
 msgid ""
 "Este método permite obtener un listado de las opciones de  calificación "
@@ -345,7 +345,7 @@ msgid ""
 "deberán pertenecer a un Agente (:ref:`about_agent_user`)."
 msgstr ""
 
-# eee11fec66664ac387971422f9377a11
+# 9ea85169ded64e7eb7d6d94f8329b202
 #: ../../api.rst:124
 msgid ""
 "Los parámetros de este endpoint se especifican en la url. El mismo tiene "
@@ -354,7 +354,7 @@ msgid ""
 "interno de una campaña de OML."
 msgstr ""
 
-# 26e550c060bf4dc880721c0ed2dffc3d
+# e96893974afc48fcaf64188f589edd1f
 #: ../../api.rst:127
 msgid ""
 "La variante (2) es para ser usada en la interacción desde un sistema de "
@@ -363,26 +363,26 @@ msgid ""
 "identificador de una campaña en ese sistema sistema externo."
 msgstr ""
 
-# 49d2a55ba4a04af4bb127e1b902d389e
+# 986e9b0d5123496080b13da1ff22cc4b
 #: ../../api.rst:129
 msgid ""
 "En el caso de que el endpoint se ejecute sin errores se devolverá un "
 "output con una lista de opciones de calificación parecidos al siguiente:"
 msgstr ""
 
-# 3c0849e9b23d44dabec1d968a9c35bb0
+# 0284c07ddee24fad9c39073aae37ade3
 #: ../../api.rst:133
 msgid ""
 "En caso de que se no ingrese un id de una campaña o sistema de CRM "
 "externo inexistente se devolverá un output parecido a:"
 msgstr ""
 
-# ab43eb728f6a471b91349d8abc0400a3
+# 3e1e627d6def422a81dd478e57185bf3
 #: ../../api.rst:139
 msgid "Endpoint listado de calificaciones"
 msgstr ""
 
-# aa58f75d94bb4594a85be285ef59a16d
+# 03783221cc8b4431a854d02b65ec2c9c
 #: ../../api.rst:141
 msgid ""
 "Este método permite obtener un listado de las calificaciones que ha "
@@ -390,24 +390,24 @@ msgid ""
 "(:ref:`about_agent_user`)."
 msgstr ""
 
-# a75f390b399b42abb908a8833d3f55a1
+# 4fa5fb560e4f470d9c8df19f9ce55ac6
 #: ../../api.rst:144
 msgid "**URL**: GET https://<omnileads_addr>/api/v1/disposition/"
 msgstr ""
 
-# 9cc8500937ab4b69b23809b7c382724b
+# c1380493431a4b39b15d8d89755478c4
 #: ../../api.rst:146
 msgid ""
 "En caso de no haber errores se devolverá la lista de calificaciones "
 "realizadas por el agente."
 msgstr ""
 
-# 8a485e6c82d749fd9fd4f2fd22dae00e
+# 88ecd5ce419a488089f76e6fc09df6d4
 #: ../../api.rst:152
 msgid "Endpoint crear nueva calificación"
 msgstr ""
 
-# a7efef8c5c8744c6ac1e92707a138c28
+# 2b4a082ff8b64e20904727054fa25834
 #: ../../api.rst:153
 msgid ""
 "Esta endpoint habilita la posibilidad de \"calificar\" una gestión sobre "
@@ -417,23 +417,23 @@ msgid ""
 "credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`)."
 msgstr ""
 
-# 335ce53a0eea4eb79ba5e7a899d09669
+# 446054de03d543e3bcf7d62c3788a901
 #: ../../api.rst:158
 msgid "**URL**: POST https://<omnileads_addr>/api/v1/disposition/"
 msgstr ""
 
-# 8e4cf3c61f1147cc9ccc31315a2c7391
-# faa4750bf1dc466380eaa78dddc27758
-# 06a9bc2bbbf74e848211b4e707cc341d
-# 1558927952044331ba6fa8635719fd87
-# 3c066f31dc2c4a068e4a36006f2529ba
+# d70525a89d61442cbbe111332b0bdba4
+# 5feaab293cf94cd78354da9a1d207c1b
+# fab4f389ff8f4c76b3ff5655afb0c3e1
+# e31759b8e4d0436c8ef81c715d9b0686
+# 946442f3659e4a259de9dcaf8f0cb7a8
 #: ../../api.rst:163 ../../api.rst:172 ../../api.rst:213 ../../api.rst:248
 #: ../../api.rst:257
 msgid "integer"
 msgstr ""
 
-# 89e0f9c5dcc94202b18ddf04eb95d675
-# a67c4f23c8f047bd9b7c916eceed19bc
+# 013ebf748d824be0b19f240511b47201
+# 07d0a9cd2eea4ad79ccf886afa6f3577
 #: ../../api.rst:163 ../../api.rst:248
 msgid ""
 "Parámetro opcional, si se especifica el sistema intentará localizar al "
@@ -442,30 +442,30 @@ msgid ""
 "valor del parámetro 'idContact' es el id interno del contacto en OML"
 msgstr ""
 
-# 41143eebc93440e8ab61c1659d1b5600
-# 23185e42adac4ddab79821137fd44c1a
+# 05259630e95446b5bae455069d351b46
+# 590fa53812194f4da4bbbb44bd97e04e
 #: ../../api.rst:169 ../../api.rst:254
 msgid "idContact"
 msgstr ""
 
-# eeb46841256346d9a6ca4e0c9d2f60c6
-# 53ece2d19422439f88d0550b80d5dd0a
+# 782aaf539b4048f797d784828f969d3c
+# 74c39789090a43b7a9aaec0b9b15e579
 #: ../../api.rst:169 ../../api.rst:254
 msgid ""
 "Id del contacto que se quiere calificar, el significado de su valor "
 "depende de si se especifica o no el parámetro 'idExternalSystem'"
 msgstr ""
 
-# 2b859d4031e449ad96fe3c95b8e77f28
-# 28b028864ddd47d29ac7fb4756a6da7d
-# 4e533d2f39234e29ba8be4ebcc2ac846
+# 31b6f94303514614ad10293aa7749c84
+# db338bff89f84f84ab12e92ee3045a81
+# c280e87c05b5420798ddfe7653e3a19f
 #: ../../api.rst:172 ../../api.rst:213 ../../api.rst:257
 msgid "idDispositionOption"
 msgstr ""
 
-# 35880e5800bc46d194f3b2cd67de7014
-# ffe0dcc39a3a47d2968cf8581aca51b5
-# c5d2c29be259449b8334bafe17032865
+# e2732acb517043659dbd2763c1c8e338
+# 905f7a4f1d764a9093b9c1d18101d13c
+# 9edd60eebc5e472585d4462a87715dae
 #: ../../api.rst:172 ../../api.rst:213 ../../api.rst:257
 msgid ""
 "El id de la opción de calificación de la campaña  con que se va a "
@@ -473,72 +473,72 @@ msgid ""
 "calificación, ver el endpoint que permite obtenerlas."
 msgstr ""
 
-# 929b4bcad75f4566882b16ddbc7e4b2d
-# e28835e9822a422ba8a006b7164be907
-# 796bcd99cd9945adbc7235520a85d4c1
+# 2f0b636d1307499eb683508fdc020cdd
+# e9ec600817c84f1e83ca7bfbe9382ade
+# 3ed52fa16928439996f6c2e050bcabb8
 #: ../../api.rst:176 ../../api.rst:219 ../../api.rst:261
 msgid "callid"
 msgstr ""
 
-# 9d175f14cc5d41d9b80204a5098861d3
-# 011d8a514a744657aec24398d38effb0
-# 72a1ac6095354c548c8f9dabd3a78f4f
+# d205f6b4902844c390d61ff526bdfe8c
+# 985389f03a254f1e92b1d74d632c843c
+# 440257c365984b2da3887e682de7a30e
 #: ../../api.rst:176 ../../api.rst:219 ../../api.rst:261
 msgid "Parámetro opcional, el id de la llamada"
 msgstr ""
 
-# de7c5ea251754fe093b33c14ffba750c
-# be8617b06b5e4258839e4cdecfa8cdfa
-# 4ddaf26fee244ba9b7664470c0430409
+# d78c6d13c2f3499bac74d0e461cecebf
+# 5fc1916acaf34ea18fbe0235f5f7bc9c
+# 7431da4f9d454577ac1e99cae13828f4
 #: ../../api.rst:178 ../../api.rst:217 ../../api.rst:263
 msgid "comments"
 msgstr ""
 
-# 0baa4542afce45249c963d8709f3dd07
-# d4498ac683cc4100a283f6e73a78f4c7
-# f2420fcd6bc0415eb901fb44f878a217
+# 31d7ec023a444252ad98c9166a9d6e7d
+# 88fcd294ee874c54b4fa615a11298d36
+# 64356b05922d48a7a1e88af88acf0895
 #: ../../api.rst:178 ../../api.rst:217 ../../api.rst:263
 msgid "Las observaciones del agente en la calificación"
 msgstr ""
 
-# 07ef1988d6014f8689496b1b9a04a93e
-# 4152a99ba0d24a17a2fed7d4c3f8933b
+# 81103453e8e442a4a2302d15ec3ae2c5
+# b0b46b6eaaa54c1c9d919806aa387cb3
 #: ../../api.rst:181 ../../api.rst:226
 msgid ""
 "En caso de no haber errores se devolverá un output como este, con los "
 "datos de la nueva calificacion creada:"
 msgstr ""
 
-# ad16739e82684dd4b9f4c67701dabc00
+# 207972b576d742d2afab5ad6a8598c1f
 #: ../../api.rst:185
 msgid ""
 "Si se intenta crear una nueva instancia de calificación a un contacto ya "
 "calificado en la campaña de devolverá el siguiente error"
 msgstr ""
 
-# d16f7cbb9ce44d6d9e8845256887da9e
-# d69bc5d2ba6c4ad1895c40dc50b61cc4
+# ec660bb9757d44d18e108e8d70630c71
+# 17da6fc32cfb4ddab3a1bc933a419c8e
 #: ../../api.rst:189 ../../api.rst:278
 msgid ""
 "Si no se encuentra el id del contacto en la bd de la campaña se devolverá"
 " el siguiente mensaje de error:"
 msgstr ""
 
-# 5aa305fb47664737bf71458e1f2a762c
-# 9fdbd059520e4e739172fe7913d11e59
-# fca2e905445541f7a816806a5f860d06
+# 83ebd0e1ade74139ad89f4e1298d8eac
+# eaffefc8bec440cb8bbee4cb0b36774a
+# 917b0552b500456dbf9a1d7e4595f6d1
 #: ../../api.rst:193 ../../api.rst:230 ../../api.rst:282
 msgid ""
 "Si no se encuentra el id de la opcion de calificación en la bd de la "
 "campaña se devolverá el siguiente mensaje de error:"
 msgstr ""
 
-# cc434e8e4e724ccfa9d6be1555c32c42
+# 3d41e131dba24a39838eac8396667548
 #: ../../api.rst:199
 msgid "Endpoint crear nuevo contacto y asignarle calificación"
 msgstr ""
 
-# 206a55215c654a67ab2d888957b7a863
+# 8fce0472f57642a897e55c64e3cc4e7d
 #: ../../api.rst:200
 msgid ""
 "Esta endpoint habilita la posibilidad de \"calificar\" una gestión al "
@@ -547,37 +547,37 @@ msgid ""
 "pertenecer a un Agente (:ref:`about_agent_user`)."
 msgstr ""
 
-# 0cc9e6e06a7e408eb9b03d75b47b8f56
+# e526a9a0142947dbb78d5deed7334a04
 #: ../../api.rst:203
 msgid "**URL**: POST https://<omnileads_addr>/api/v1/new_contact/disposition/"
 msgstr ""
 
-# cfd6a284271146b38561675f61e3760e
+# ba9bcb9f7fd04220a1af834390b2e568
 #: ../../api.rst:208
 msgid "phone"
 msgstr ""
 
-# ee241d39379c43f586689134a927ee2a
+# 2ea43909af7e491fa8d053da80daad78
 #: ../../api.rst:208
 msgid "El número de teléfono del contacto"
 msgstr ""
 
-# 8339786dc2f0433f88934458ff340f32
+# 0994bc50a6cd49df8129b1c310aa7cbf
 #: ../../api.rst:210
 msgid "idExternalContact"
 msgstr ""
 
-# 8ccbd5eda3f8458587ee2b3c97ae3c37
+# d99a7f8eaa3649ecad0348ae8c98a0c2
 #: ../../api.rst:210
 msgid "Parámetro opcional, el id del contacto en un sistema de CRM externo"
 msgstr ""
 
-# 97e8958af6b749c094824bfa74bb9051
+# aedc81cda53e4723907804aaf829d29b
 #: ../../api.rst:221
 msgid "<optional_bd_field>"
 msgstr ""
 
-# b67adb7380004290acea34d32baa4903
+# 41824dca6eed4bbcb85fb4e60113997c
 #: ../../api.rst:221
 msgid ""
 "Parámetros opcionales, pueden definirse valores para rellenar los datos "
@@ -585,41 +585,41 @@ msgid ""
 "campos de la BD de la campaña"
 msgstr ""
 
-# eaf2d447df0d4c1daae5d3809e5779c3
+# b0ac579d1f574190afa4323638efb698
 #: ../../api.rst:236
 msgid "Endpoint para modificar una calificación existente"
 msgstr ""
 
-# 3eb31c952c914c13b01d24a924cc352f
+# 807044f1986f4d939f8f9bd28ae15634
 #: ../../api.rst:238
 msgid ""
 "Esta endpoint habilita la posibilidad de modificar una calificación "
 "existente en OMniLeads."
 msgstr ""
 
-# 40322cc732314fe2a1497cbf6149566e
+# d91b16b4d51d4957ac64efaf3abfd4f5
 #: ../../api.rst:240
 msgid "Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`)."
 msgstr ""
 
-# d9787981b3f8490188555887e3b59b74
+# 49625f76277f4343818cdc57e588e15e
 #: ../../api.rst:242
 msgid "**URL**: PUT https://<omnileads_addr>/api/v1/disposition/<idDisposition>"
 msgstr ""
 
-# a95dcd33c8ec495292453c5bc7332764
+# df996fe861dd40db94dd339902ef8697
 #: ../../api.rst:266
 msgid "Si no existe error se devolverá el siguiente tipo de output:"
 msgstr ""
 
-# c247cb8573814b87b4495318a7697320
+# d1fd7cda3e5b4e38b09bc55613eb84fa
 #: ../../api.rst:270
 msgid ""
 "Si en la url se especifica un id de calificación inexistente se devolverá"
 " el siguiente output de error:"
 msgstr ""
 
-# 1c4a4f9dcc1340339f129450f0e75d89
+# 2af168222925410ea5e7d8a54a155bb1
 #: ../../api.rst:274
 msgid ""
 "Si se intenta modificar la instancia de calificación, cambiando los "
@@ -628,12 +628,12 @@ msgid ""
 "mostrará el siguiente mensaje de error:"
 msgstr ""
 
-# ac2dde0b7e25423f9c7e2bfb60059a1e
+# 0277d7227deb4fac958bff70325122d3
 #: ../../api.rst:290
 msgid "Solicitud de enrutamiento hacia el sistema CRM externo"
 msgstr ""
 
-# 5f5d990e51a04c3f905b7a545c64b0a9
+# 82f209fa9c394bf7b8c1cd066e475972
 #: ../../api.rst:292
 msgid ""
 "Esta interacción implica que OMniLeads ejecute una solicitud HTTP-POST "
@@ -642,14 +642,14 @@ msgid ""
 "\"identificación de clientes\"."
 msgstr ""
 
-# df3c47be99bc49918f59bc4cae51a9b7
+# 62941ee23e8041ff8b26c3ec6fb15ba2
 #: ../../api.rst:295
 msgid ""
 "Este POST enviado hacia el sistema de gestión CRM tiene el siguiente "
 "aspecto"
 msgstr ""
 
-# 417eeac5f93a45e682d3ea7baa8bdaaa
+# f7832bd761b34927ac43e0e08b760374
 #: ../../api.rst:299
 msgid ""
 "Como podemos observar el \"User-Agent\" debe llegar como \"OMniLeads\" y "
@@ -657,13 +657,13 @@ msgid ""
 " se envía como \"idContact\"."
 msgstr ""
 
-# 56d2d3ff1bb04438861479df7e8be6e2
-#: ../../api.rst:302
+# e50eaa3f4f3f449bbe4d2770e6f4014a
+#: ../../api.rst:301
 msgid "**Respuesta que debe generar el servicio web del sistema de gestión CRM**"
 msgstr ""
 
-# a7b00c88ed3a4681b2496e386c7c50b2
-#: ../../api.rst:304
+# a1d63677806a428a877535866e6fff66
+#: ../../api.rst:303
 msgid ""
 "El servicio recibe de OMniLeads el request HTTP-Post con el número de "
 "identificación del cliente y debe generar una respuesta a dicha "
@@ -671,92 +671,85 @@ msgid ""
 "respuestas:"
 msgstr ""
 
-# ff186eb9e5794b26add662ef26868064
-#: ../../api.rst:307
+# 84b2e81660ec495d9ec4d54685d32aca
+#: ../../api.rst:306
 msgid "**true**"
 msgstr ""
 
-# f5951561e7cc4af699151114cd6c164e
-#: ../../api.rst:308
+# 4a242e22aec044e3905c862292eaf85f
+#: ../../api.rst:307
 msgid "**false**"
 msgstr ""
 
-# 96b6c3309f614c3a857e212cd5292ce6
-#: ../../api.rst:309
+# 27e4412721a14580a4e082723fef8746
+#: ../../api.rst:308
 msgid ""
 "**X,Y**: donde \"X\" es un número entero y corresponde con el tipo de "
 "destino hacia a donde enviar la llamada identificada e \"Y\" es el "
-"destino puntual"
+"destino puntual para ese tipo de destino. Por ejemplo (1,3) indica que la"
+" llamada será enrutada hacia una campaña entrante (1) y puntualmente "
+"hacia la campaña entrante cuyo id es (3). La clave asociada a la "
+"respuesta es \"response\""
 msgstr ""
 
-# fed5ccada58a411ebf09b2aced378aa1
+# 7b329b4c0e7541059977bb0e5fc52c9d
 #: ../../api.rst:310
-msgid ""
-"para ese tipo de destino. Por ejemplo (1,3) indica que la llamada será "
-"enrutada hacia una campaña entrante (1) y puntualmente hacia la campaña "
-"entrante cuyo id es (3)."
+msgid "El formato de respuesta debe ser \"JSON\"."
 msgstr ""
 
-# a816581ada7d4f8b856f23da748b7a84
-#: ../../api.rst:313
-msgid ""
-"La clave asociada a la respuesta es \"response\". El formato de respuesta"
-" debe ser \"JSON\"."
-msgstr ""
-
-# c767feda7a2e4966a366dba76494d5fe
-#: ../../api.rst:315
+# 63abba6d9d484d108338e9708af5570f
+#: ../../api.rst:312
 msgid "Respuesta JSON"
 msgstr ""
 
-# 73947b68b96845238e51fe7be5646198
-#: ../../api.rst:327
+# 03ab9afa34cd46dfa7e6ed17903caed3
+#: ../../api.rst:324
 msgid ""
 "Donde \"status\" puede ser *ok* o *fail* y \"destination\" podrá ser "
 "cualquiera de las 3 respuestas especificadas arriba."
 msgstr ""
 
-# 7042868767834ac1aa77cd6592708edf
-#: ../../api.rst:331
+# 594e8cf26a904d9c9fa3003ec62503ca
+#: ../../api.rst:328
 msgid ""
 "El sistema debe respetar el formato y nombre de parámetros (status y "
 "destination)"
 msgstr ""
 
-# 0ca49a9373c3485d903b1f656cc71878
-#: ../../api.rst:333
+# b3ee8739ec9e4d72b20e5514af8b7d44
+#: ../../api.rst:330
 msgid ""
 "En caso de generar una respuesta con el destino del enrutamiento, se "
 "deben conocer los tipos de destino:"
 msgstr ""
 
-# 0b06a6f4d3cb413298c13425a00afbf9
-#: ../../api.rst:335
+# 60a38e84eb844fe9868accd4a44fd94f
+#: ../../api.rst:332
 msgid "1: Campaña entrante"
 msgstr ""
 
-# e8a8c042b8514ca9a9f1a6b8f2fa4cb4
-#: ../../api.rst:336
+# 5bb922955eb142a2a215b865dbca2744
+#: ../../api.rst:333
 msgid "2: Condicional basado en tiempo"
 msgstr ""
 
-# ed9cc95a604640f49106dbeea3676f9f
-#: ../../api.rst:337
+# 9b3f3cfcdfa04b80a7273c08608d89ed
+#: ../../api.rst:334
 msgid "3: IVR"
 msgstr ""
 
-# c1f0277b8d22499698412e75034d95ac
-#: ../../api.rst:338
+# c7dddcddbac24bc794f213c6baa8693f
+#: ../../api.rst:335
 msgid "5: Hangup de la llamada"
 msgstr ""
 
-# e98702026e8c433aaaf0f6a0f9b55d45
-#: ../../api.rst:339
+# 31de56a0bdaf4ae9a20e99a486038cdb
+#: ../../api.rst:336
 msgid "9: Solicitud de identificación"
 msgstr ""
 
-# bba3541d02a145e18f5c0fd27d09d737
-#: ../../api.rst:341
+# 24f685b264b04060aeba1098ec0c3531
+#: ../../api.rst:338
 msgid ""
 "En un futuro se implementará un endpoint de la API para listar cada "
 "destino posible por cada tipo de destino. Mientras tanto, el "
@@ -766,8 +759,8 @@ msgid ""
 "(tipo de destino) listar los mismos y observar el id."
 msgstr ""
 
-# 2ba83b914f8042d48d13cbeb77bf1161
-#: ../../api.rst:346
+# 0f147d0ac21a4b94a1c0cda3b98c569d
+#: ../../api.rst:343
 msgid ""
 "**Ejemplo de respuesta con destino de llamada**: se desea validar cada id"
 " enviado desde OMniLeads y responder con dos posibles tipos destinos de "
@@ -775,25 +768,50 @@ msgid ""
 "y otra llamada \"clientes bronce\"."
 msgstr ""
 
-# f07e9783554a4a5ba0f51f173521bc29
-#: ../../api.rst:349
+# 520322e3756847dc9bbeec6634628573
+#: ../../api.rst:346
 msgid ""
 "Para ello suponemos que existen las dos campañas entrantes como se indica"
 " en la figura."
 msgstr ""
 
-# d5882e3dcdda4200a914456f06a00884
-#: ../../api.rst:353
+# c3232ad611b14798a9787f26466f327e
+#: ../../api.rst:350
 msgid ""
 "Tan solo con posicionar el mouse sobre el nombre de la campaña, podremos "
 "dilucidar el \"id\" particular de cada una."
 msgstr ""
 
-# 5421a1dfb8a940199e82742f74309d17
-#: ../../api.rst:355
+# 24eecdffbab349dd850285e322f0ad43
+#: ../../api.rst:352
 msgid ""
 "Por lo tanto, a partir de conocer los \"id\" de cada campaña el sistema "
 "de gestión a partir de su lógica de negocio, podrá evaluar cada llamada e"
 " indicar a OMniLeads hacia donde encaminarla devolviendo el par \"X,Y\"."
 msgstr ""
+
+# 96b6c3309f614c3a857e212cd5292ce6
+#~ msgid ""
+#~ "**X,Y**: donde \"X\" es un número "
+#~ "entero y corresponde con el tipo "
+#~ "de destino hacia a donde enviar la"
+#~ " llamada identificada e \"Y\" es el"
+#~ " destino puntual"
+#~ msgstr ""
+
+# fed5ccada58a411ebf09b2aced378aa1
+#~ msgid ""
+#~ "para ese tipo de destino. Por "
+#~ "ejemplo (1,3) indica que la llamada "
+#~ "será enrutada hacia una campaña entrante"
+#~ " (1) y puntualmente hacia la campaña"
+#~ " entrante cuyo id es (3)."
+#~ msgstr ""
+
+# a816581ada7d4f8b856f23da748b7a84
+#~ msgid ""
+#~ "La clave asociada a la respuesta "
+#~ "es \"response\". El formato de respuesta"
+#~ " debe ser \"JSON\"."
+#~ msgstr ""
 

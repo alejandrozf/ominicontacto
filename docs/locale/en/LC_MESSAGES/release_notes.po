@@ -8,55 +8,292 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-03 21:27-0300\n"
+"POT-Creation-Date: 2019-07-30 14:27-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.4.0\n"
 
-# 7e0868543e7a43ad93b5dd0fd5bb0870
+# d1c15f8555974ef7ba664cb583b04077
 #: ../../release_notes.rst:2
 msgid "Release Notes"
 msgstr ""
 
-# 4d6ec95ee39f4247be21f72691e31b90
+# 7288ced391a746f685b73393b976e243
 #: ../../release_notes.rst:4
-msgid "*May 10, 2019*"
+msgid "*July 25, 2019*"
 msgstr ""
 
-# 3e98104a22a24302ae1edecf15ee57e9
+# 8cdcfbee923e4c71bff23ec2e7448e06
 #: ../../release_notes.rst:7
-msgid "Bug fixes release"
+msgid "Release 1.3.0 details"
 msgstr ""
 
-# 2cd797f536fe45699db97fb48f224d5a
+# a87b653316c2469ba891d4053780a5e9
 #: ../../release_notes.rst:10
+msgid "What's new"
+msgstr ""
+
+# 0e2fe8283bbf4fe1905958e2706943ee
+#: ../../release_notes.rst:12
+msgid ""
+"New phone configuration option to specify custom identification on "
+"inbound calls"
+msgstr ""
+
+# 1af17a0e5e994fda9ede32acc170c2b9
+#: ../../release_notes.rst:13
+msgid "Asterisk version was updated to 16.4.0"
+msgstr ""
+
+# 704bb6f893424226aa299b010eb2468c
+#: ../../release_notes.rst:14
+msgid "Supervision version was rewritten from scratch in Python/Django"
+msgstr ""
+
+# 23f8c8e24bea4b818c79dee2a32a7a22
+#: ../../release_notes.rst:15
+msgid "CRM integrations are completely implemented to interact from-to OML"
+msgstr ""
+
+# 813b55f076664e05bf1c4e2b2110bdeb
+#: ../../release_notes.rst:16
+msgid "Added installation option to have a production environment based on docker"
+msgstr ""
+
+# b373a2be43bc4b57a3aa624e0a1cd1a0
+#: ../../release_notes.rst:21
 msgid "Installation tasks"
 msgstr ""
 
-# 9fc31b8fccbd484f943cf553b8349d6a
-#: ../../release_notes.rst:11
-msgid "Fixed bug that disallowed to make an upgrade from system with"
+# 7d13d6e561ff4af0a4123ab0ca073137
+#: ../../release_notes.rst:22
+msgid "Added .pgpass file for root user on bare-metal installations"
 msgstr ""
 
-# 64236daee7d24a36999bade5833e8efc
-#: ../../release_notes.rst:12
-msgid "release-1.1.1 to release-1.2.2"
-msgstr ""
-
-# 0b09d8a9797f43f6a32ee2368e4cb43c
-#: ../../release_notes.rst:16
-msgid "Asterisk recordings conversor"
-msgstr ""
-
-# 6a287aa16dd4470b812fdb51ebfa3ff7
-#: ../../release_notes.rst:17
+# 63bbf203a2d44940837836b4cd2ed80a
+#: ../../release_notes.rst:23
 msgid ""
-"Fixed bug in call recordings conversor script that destroyed folders in "
-"root project folder when recording folder didn't exists"
+"Fixed bug that inhibits to specify a hostname containing the digit \"0\" "
+"on inventory"
+msgstr ""
+
+# 8c693e2260634213997d77a1a552fb4e
+#: ../../release_notes.rst:24
+msgid ""
+"Added pip upgrade task on bare-metal installations, only for post-"
+"installations tasks"
+msgstr ""
+
+# c28bd78a9c0d4c81a433698cb2cfae6a
+#: ../../release_notes.rst:25
+msgid ""
+"Fixed bug that made user to execute sometimes twice deploy script on "
+"bare-metal installations"
+msgstr ""
+
+# 4fd3d283bcf84afdb6c4af0f12e44119
+#: ../../release_notes.rst:26
+msgid "Fixed permission error when uploading audio files"
+msgstr ""
+
+# 50ba9d24119946fd821ee3d86561d2d4
+#: ../../release_notes.rst:27
+msgid ""
+"Kamailio now is configured to not generate debug logs on bare metal "
+"installations"
+msgstr ""
+
+# e88c4398450f4b1e82032a32f72d40e5
+#: ../../release_notes.rst:28
+msgid "Docker develop enviroment was refined to follow Docker best practices"
+msgstr ""
+
+# d4a7db92c43a4d528ac72b31db64a223
+#: ../../release_notes.rst:29
+msgid ""
+"Kamailio now uses redis for its DB backend, now it's fully independent "
+"from OML DB"
+msgstr ""
+
+# 794e839be01e445dbefd420425de1822
+#: ../../release_notes.rst:33
+msgid "OML admin"
+msgstr ""
+
+# 3882927943c04c7aa669f7f620c1f0e6
+#: ../../release_notes.rst:34
+msgid "Fixed aesthetical error on contactation report"
+msgstr ""
+
+# 9bff323a4e774d939cec7fc5726f11a0
+#: ../../release_notes.rst:35
+msgid ""
+"Added validation in first campaign creation step to prevent fill external"
+" url field if user has not selected this interaction type"
+msgstr ""
+
+# 5d87772a5fe04ad0a3de971afe96b319
+#: ../../release_notes.rst:36
+msgid "Added callid-based for calls recordings filter"
+msgstr ""
+
+# e36c33bf7d2a4e19a805d1aba49fac26
+#: ../../release_notes.rst:37
+msgid "The admin view now shows current release on \"About\" section"
+msgstr ""
+
+# dfa70d58294a4414bb2932777bb864df
+#: ../../release_notes.rst:38
+msgid "A section to register an OML installation was added"
+msgstr ""
+
+# bef335ffef0348aa914dc8bb2c343b9e
+#: ../../release_notes.rst:39
+msgid "A section to allow user to send feedback about OML was added"
+msgstr ""
+
+# ed5200728a134fe29e7ce40f27edc219
+#: ../../release_notes.rst:40
+msgid ""
+"Agent interface information (on view that adds agents to campaign) was "
+"modified in order to make it more clear to users"
+msgstr ""
+
+# 1a571c27f7514a5cbd67b1d1c58f29a1
+#: ../../release_notes.rst:41
+msgid "Better colors were added for inbound campaigns reports"
+msgstr ""
+
+# 50eb433bcbb0481499ea45d6408b3fec
+#: ../../release_notes.rst:42
+msgid "Fav icon was added"
+msgstr ""
+
+# d99c5892a5044f0d9651956935aa56ae
+#: ../../release_notes.rst:43
+msgid "Validations on campaign forms creation were added"
+msgstr ""
+
+# 532dd526c38e4fe9b1169f4df2ffe7ca
+#: ../../release_notes.rst:46
+msgid "OML agent view"
+msgstr ""
+
+# 339590411e464d648d086c2ee71b7935
+#: ../../release_notes.rst:47
+msgid "Fixed error that prevents tag call recordings"
+msgstr ""
+
+# d7df982ee61d4f498f07cdbc3581334d
+#: ../../release_notes.rst:48
+msgid ""
+"Added posibility that agents can make calls outside of any campaign "
+"assigned"
+msgstr ""
+
+# 50146cec1e1a42fdae76fe0d267c9a97
+#: ../../release_notes.rst:49
+msgid "Tripartite conference was added in calls"
+msgstr ""
+
+# 6d93cb9472e34a318c7647819581d12c
+#: ../../release_notes.rst:52
+msgid "Asterisk dialplan"
+msgstr ""
+
+# 63819a898fd14d159df208a564fb3e3b
+#: ../../release_notes.rst:53
+msgid "Changed structure of dialplan making it more intuitive"
+msgstr ""
+
+# 279da0d9d66f43528836e78f5efc1907
+#: ../../release_notes.rst:54
+msgid "Fixed sintax error on DB insertion"
+msgstr ""
+
+# 201660eda137403880e23feb82f3d639
+#: ../../release_notes.rst:55
+msgid "Fixed bug on expired call on failover"
+msgstr ""
+
+# e6c3c448238c4f4c9cc88ee8d12db90d
+#: ../../release_notes.rst:56
+msgid ""
+"Fixed bug that keeps agents on BUSY state when she doesn't attend an "
+"inbound or transfer call"
+msgstr ""
+
+# 7f54ca6ca7ee45b28fd6c7a4d81a0eb4
+#: ../../release_notes.rst:57
+msgid ""
+"Fixed bug that makes insertions on recording DB table even for dialer "
+"campaigns even if the campaing wasn't configured to make recordings"
+msgstr ""
+
+# fdde4bc2bc1e425e9b9e927e50185150
+#: ../../release_notes.rst:58
+msgid ""
+"Fixed inconsistency on 'queue_log' logs table when a client hangs in a "
+"middle of a consultative transfer call"
+msgstr ""
+
+# 58caeeee19494b9696071798d2996230
+#: ../../release_notes.rst:61
+msgid "Misc"
+msgstr ""
+
+# bc60927ea39d4fe9bec8760c7c6aa8e6
+#: ../../release_notes.rst:62
+msgid ""
+"Fixed trigger error that doesn't allow to insert certain asterisk logs in"
+" queue_log table"
+msgstr ""
+
+# a933acac30fe42518604e4e1444bf94c
+#: ../../release_notes.rst:63
+msgid ""
+"Fixed bug that doesn't allow to insert some asterisk on queue_log table "
+"due to field length"
+msgstr ""
+
+# 79e88594b6984239aba87d9dc5a34ae5
+#: ../../release_notes.rst:64
+msgid "Ignored AMI errors logged when Asterisk regeration command is executed"
+msgstr ""
+
+# 7e7ea5c653d5444381a37f5e9eb63a59
+#: ../../release_notes.rst:65
+msgid "A Restfull API with a few initial endpoint was added"
+msgstr ""
+
+# 9d1cdb8f09114f1597ccd971a3159bab
+#: ../../release_notes.rst:66
+msgid "A django command for update system components settings was added"
+msgstr ""
+
+# b66efeb1cad54f479e5062d319716e76
+#: ../../release_notes.rst:67
+msgid ""
+"Django settings were refactored to allow distinct configurations in an "
+"easy way"
+msgstr ""
+
+# a9d5b7fa65b146b294c74c470b05ef23
+#: ../../release_notes.rst:68
+msgid "The web interface of the system now can run without internet."
+msgstr ""
+
+# 885a445bd7d348a4a7c33c0b72d3366d
+#: ../../release_notes.rst:69
+msgid ""
+"Fixed bug that generates inconsistency on inbound campaings & callings "
+"reports, it didn't count client abandon calls on welcome message. A new "
+"event in Asterisk logs (ABANDONWEL) was introduced to solve this bug and "
+"all related reports now shows that information based on that event"
 msgstr ""
 
 #~ msgid "*March 14, 2019*"
@@ -292,5 +529,33 @@ msgstr ""
 #~ "The system now shows calling agent "
 #~ "name when receiving a transfer call "
 #~ "on pop-up"
+#~ msgstr ""
+
+# 4d6ec95ee39f4247be21f72691e31b90
+#~ msgid "*May 10, 2019*"
+#~ msgstr ""
+
+# 3e98104a22a24302ae1edecf15ee57e9
+#~ msgid "Bug fixes release"
+#~ msgstr ""
+
+# 9fc31b8fccbd484f943cf553b8349d6a
+#~ msgid "Fixed bug that disallowed to make an upgrade from system with"
+#~ msgstr ""
+
+# 64236daee7d24a36999bade5833e8efc
+#~ msgid "release-1.1.1 to release-1.2.2"
+#~ msgstr ""
+
+# 0b09d8a9797f43f6a32ee2368e4cb43c
+#~ msgid "Asterisk recordings conversor"
+#~ msgstr ""
+
+# 6a287aa16dd4470b812fdb51ebfa3ff7
+#~ msgid ""
+#~ "Fixed bug in call recordings conversor"
+#~ " script that destroyed folders in "
+#~ "root project folder when recording "
+#~ "folder didn't exists"
 #~ msgstr ""
 

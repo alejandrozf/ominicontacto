@@ -8,21 +8,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-17 14:37-0300\n"
+"POT-Creation-Date: 2019-07-30 14:27-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.4.0\n"
 
-# 93e8c11ede994c4cb754f7dce1a9f87a
+# ef34836e6af6415aa931d50c9b4830a9
 #: ../../install_cluster.rst:5
 msgid "Horizontal Cluster Installation"
 msgstr ""
 
-# 28d136eb593a4f0eb2afe834e3b59914
+# 2df1a04a76ce43d1b1d9302cf960a98b
 #: ../../install_cluster.rst:7
 msgid ""
 "OMniLeads puede ser desplegado de manera tal que los componentes queden "
@@ -31,96 +31,96 @@ msgid ""
 "instalación permite dividir la carga de los servicios en más de un host."
 msgstr ""
 
-# 65c1583235e64010bbe6e1a5e542e8e7
+# 1e9b2d7a3afc4bb48efdd8bd2dc7e1f9
 #: ../../install_cluster.rst:9
 msgid "Puntualmente existen dos formas de instalar en cluster horizontal:"
 msgstr ""
 
-# 8496912908af410486de0cfa631793c6
+# b2e1420d67cb422f958e9e8f11e17155
 #: ../../install_cluster.rst:12
 msgid "OMniLeads in two:"
 msgstr ""
 
-# e917217a16d34dfd94d5dadd827dc6ba
+# 5034fb62ad6449c3ba707143d9f793fc
 #: ../../install_cluster.rst:13
 msgid "Host1 (omlvoip): Asterisk y Kamailio + rtpengine"
 msgstr ""
 
-# 98feb8643160463da07482aa82ebfe20
+# c060e84c079c401882807351d41c24f6
 #: ../../install_cluster.rst:14
 msgid "Host2 (omlapp): Aplicación web, Postgres y Dialer"
 msgstr ""
 
-# f6360af10ad04251bf6e3185c81a64ab
+# 1927d8335dba4013a47267996f9db2e2
 #: ../../install_cluster.rst:19
 msgid "*Figure 1: Cluster in 2 hosts*"
 msgstr ""
 
-# 37a3ecd016b346e88528bf572d2b9eef
+# b13d97507393462bbc2eb33271ed56e9
 #: ../../install_cluster.rst:23
 msgid "OMniLeads in five:"
 msgstr ""
 
-# 80b083c8fcf34e419f5972ed53d4d716
+# 6d40edead5a3420ab93e166161a2aa1b
 #: ../../install_cluster.rst:24
 msgid "Host1 (omlapp): Aplicación web"
 msgstr ""
 
-# 12031d0a88644cb68b933659ebe6062b
+# 5065f3f90b5340158871d12da3c0912c
 #: ../../install_cluster.rst:25
 msgid "Host2 (kamailio): Kamailio + rtpengine"
 msgstr ""
 
-# aa5097ee99f543549ccf5d7ca5e9eb7f
+# 03ec300b1f4346ba8e195885f6c1fb5c
 #: ../../install_cluster.rst:26
 msgid "Host3 (asterisk): Asterisk"
 msgstr ""
 
-# b6edcf93030643b9a3a27e6a80845fbd
+# 489cab45bc2948de941439d80301be19
 #: ../../install_cluster.rst:27
 msgid "Host4 (database): Postgresql"
 msgstr ""
 
-# 82d1146dd8cc487f8cf9204823f5ae1e
+# d08ff12fa7b34930b38191127af664d4
 #: ../../install_cluster.rst:28
 msgid "Host5 (dialer): Wombat dialer + MySQL"
 msgstr ""
 
-# 262ec70330ed43469c50ec39e7d1a56a
+# 5edb754f580f44cebf6c9e0ab12b4172
 #: ../../install_cluster.rst:33
 msgid "*Figure 2: Cluster in 5 hosts*"
 msgstr ""
 
-# ddba60abacf04989a2d850f0334dee90
+# 3a13b44e2ea145a3836f6a5823a735b2
 #: ../../install_cluster.rst:36
 msgid "Pre-requisitos"
 msgstr ""
 
-# 788aff46c4a74b0288fa123986b45e4d
+# ae18fa165c6e4e6abda13bcfd22f077b
 #: ../../install_cluster.rst:37
 msgid ""
 "Los hosts sobre los cuales vamos a desplegar los servicios en cluster "
 "deben cumplir con los siguientes requisitos:"
 msgstr ""
 
-# 6cb444fda2104aaeb921980afd76339c
+# d9f68c1a08974c119918132325f04f02
 #: ../../install_cluster.rst:39
 msgid ""
 "GNU/Linux CentOS 7.6 (minimal), Debian 9 (netinstall) ó Ubuntu Server "
 "18.04"
 msgstr ""
 
-# 84520a3c7e4d4e86a63965b6e989422f
+# 2d43da82d63745da91363a545f834c78
 #: ../../install_cluster.rst:40
 msgid "Al menos 20 GB de espacio en disco"
 msgstr ""
 
-# e7c6af6a172f4bbda185135af556468b
+# 7c8553b63af8472aaf982a5819627f85
 #: ../../install_cluster.rst:41
 msgid "Al menos 4 GB de memoria RAM"
 msgstr ""
 
-# 3be401447068445bb6e4d4b8240865f8
+# b0f4e72eb0464e2aab9a6df3bfe31b7e
 #: ../../install_cluster.rst:42
 msgid ""
 "Si es *Ubuntu / Debian*; Instalar el paquete *sudo*, *openssh-server* y "
@@ -128,31 +128,31 @@ msgid ""
 " servicio de ssh para que se tomen los cambios:"
 msgstr ""
 
-# e5981754eca0434cad35ac738364da5e
+# c7fd30fb43c1478388f29bfa47addd5b
 #: ../../install_cluster.rst:46
 msgid ""
 "En versiones menores a CentOS 7.6 es necesario primero hacer un yum "
 "update y luego reebotear el server"
 msgstr ""
 
-# bbd71d300ebd4798a1759c80b53b85a5
+# b41093b3b2e6482baa5830761096c1d7
 #: ../../install_cluster.rst:54
 msgid "Es muy importante dejar la hora correctamente configurada en cada host."
 msgstr ""
 
-# 27f43d84c67d465795f0bffda06831d2
+# be2835e0356c4cc4b5783f43adc96df8
 #: ../../install_cluster.rst:55
 msgid ""
 "Configurar una *dirección IP* y un *hostname* fijo en cada host destino "
 "de la instalación."
 msgstr ""
 
-# f8477e5bf26c4099be3b9e194c522710
+# 3c480c05879c48389a1c56a18159a7c9
 #: ../../install_cluster.rst:58
 msgid "Preparación en la máquina que ejecuta la instalación remota:"
 msgstr ""
 
-# 67cea0af96ae4a28ba4b13b9b96a9b42
+# db0ebaebf0794131b3e69b795cdb60cf
 #: ../../install_cluster.rst:59
 msgid ""
 "Al igual que en la instalación \"desde ansible remoto\", para desplegar "
@@ -165,36 +165,36 @@ msgid ""
 "ansible remoto\"."
 msgstr ""
 
-# 36afde2a088046c79240255fbfb1a55d
+# 967cb121b3894138a909a54d806ab40f
 #: ../../install_cluster.rst:62
 msgid ""
 "Se considera entonces que el usuario dispone del repositorio clonado en "
 "su Linux Workstation (OMniLeads deployer) !"
 msgstr ""
 
-# 224ccc8896ec4a92a47b21daf858b962
+# 02468e6c2aad442c9c8cdf2fbd1697b2
 #: ../../install_cluster.rst:66
 msgid "Preparación del archivo *inventory*:"
 msgstr ""
 
-# 7442e5e0eed04d4e9433ad0c578b64a7
+# 28cf2c18cd8f4d7bbdd10e28c35c34bd
 #: ../../install_cluster.rst:67
 msgid ""
 "Para este tipo de despliegue, se deben configurar los parámetros "
 "*hostname* y *dirección IP* de cada host-componente de nuestro cluster."
 msgstr ""
 
-# 9d1b0a5537e049f1a931dd998158d39c
+# 5aa16ecec84a4ad496306e6caf2812de
 #: ../../install_cluster.rst:70
 msgid "Ejemplo para *OMniLeads in two*"
 msgstr ""
 
-# 2d747e06287449409a96f496a88b35e9
+# 6680199f4b344063bb5bb254a0273108
 #: ../../install_cluster.rst:74
 msgid "*Figure 3: Cluster in 2 hosts, inventory file*"
 msgstr ""
 
-# e0eeab2897d24bd385985d3b3c10490f
+# 0ba977f6da0d48af903a72dc25a2f9bd
 #: ../../install_cluster.rst:76
 msgid ""
 "Como se puede apreciar en la figura 3, se agrupan los componentes "
@@ -204,17 +204,17 @@ msgid ""
 "hosts destino independientes entre si."
 msgstr ""
 
-# 7e0e290e04864671978ea0286cd9bb97
+# 1131d8a921e34d4bbe0c5aa48ad5d0ba
 #: ../../install_cluster.rst:78
 msgid "Ejemplo para *OMniLeads in five*"
 msgstr ""
 
-# a23082485f8b434592eb17740934f75f
+# 54606528856e4bc1807281bf391f2397
 #: ../../install_cluster.rst:82
 msgid "*Figure 4: Cluster in 5 hosts, inventory file*"
 msgstr ""
 
-# 3fc27e547ea34ae2997b64996353e3e2
+# ca563980a8714e2a9ac1291f626c7200
 #: ../../install_cluster.rst:84
 msgid ""
 "Como se puede apreciar en la figura 4, se separan todos los componentes "
@@ -222,33 +222,34 @@ msgid ""
 "ya que cada componente corre bajo un host dedicado e independiente."
 msgstr ""
 
-# f697c6c73a544e78add7664246710d07
+# 854df1f7f17d4cf6972cbc6670ace745
 #: ../../install_cluster.rst:87
 msgid ""
 "Al igual que en las otras instalaciones, las variables y passwords de los"
 " diferentes componentes se pueden modificar en la sección  "
-"*[everyyone:vars]*"
+"*[everyyone:vars]*. Introducir el parámetro \"time zone\" adecuado para "
+"su instanacia. Es **Importante** que realice este paso o la instalación "
+"no se va a poder realizar."
 msgstr ""
 
-# 6a0d49042e054d318a72673fb9983db3
+# 8c15116b514543239299b62f8878b98c
 #: ../../install_cluster.rst:91
 msgid "*Figure 5: Passwords and parameters of services*"
 msgstr ""
 
-# 688a375f00534f46a2a4f0bec21e0f6a
+# 23690cd2138e4efcbd88bf36851dc826
 #: ../../install_cluster.rst:93
 msgid ""
-"Introducir el parámetro \"time zone\" adecuado para su instanacia. Es "
-"**Importante** que realice este paso o la instalación no se va a poder "
-"realizar."
+"En caso de haber olvidado ingresar la instancia a instalar el script "
+"mostrará este mensaje"
 msgstr ""
 
-# 75ada48810174021828f9a593abf8904
+# 28c8c3462d5143f5b13a53257282e3db
 #: ../../install_cluster.rst:97
-msgid "*Figure 6: inevntory - Time Zone parameter*"
+msgid "*Figure 6: deploy - No hosts in inventory*"
 msgstr ""
 
-# 72af2002cbcb4ea490e1b0a814f1e489
+# 975cdf5efc234fd8973c13f29b5df80b
 #: ../../install_cluster.rst:99
 msgid ""
 "Es importante aclarar que cada vez que se corre el script \"./deploy.sh\""
@@ -261,17 +262,17 @@ msgid ""
 "lo expone la figura 6."
 msgstr ""
 
-# 75ada48810174021828f9a593abf8904
+# bfa4f06d796c467abdc6f4352253bbb2
 #: ../../install_cluster.rst:106
 msgid "*Figure 7: inevntory copy, my_inventory file*"
 msgstr ""
 
-# cec7d594903e4c0ba5db1c16e3ca6a32
+# 90a1704bb94045978e119163b5251fd5
 #: ../../install_cluster.rst:109
 msgid "Ejecución del script de instalación:"
 msgstr ""
 
-# e54737fdf87f4976800008f206be72ba
+# 14a20b7e01a84c3584dd0c3a1132bca2
 #: ../../install_cluster.rst:111
 msgid ""
 "La instalación de OMniLeads se realiza mediante el script *deploy.sh*, "
@@ -279,19 +280,19 @@ msgid ""
 "raíz del proyecto (ominicontacto)."
 msgstr ""
 
-# f441734320994a499e1e792d6ecfd874
+# 505f2e6418cc4d3d9d32aa42eebadec3
 #: ../../install_cluster.rst:114
 msgid ""
 "Una vez configuradas las variables citadas, se procede con la ejecución "
 "del script de instalación (uitilizando sudo)."
 msgstr ""
 
-# 6776d06b41a44454828b6d81d7fc7e25
+# 58e428c945e44a62abc43ccf112bb6c5
 #: ../../install_cluster.rst:122
 msgid "*Figure 8: remote root passwords*"
 msgstr ""
 
-# faf9c7492ca540bb85890f60a426f5b7
+# f282e8e85805478499dc5109afcc691b
 #: ../../install_cluster.rst:124
 msgid ""
 "La diferencia respecto de las otras instalacines, es que el script nos "
@@ -299,7 +300,7 @@ msgid ""
 "instalación de nuestro cluster."
 msgstr ""
 
-# a6f210437d44453b869da43a8b858fcb
+# f994ba33b64349d0b76dc50578495d12
 #: ../../install_cluster.rst:128
 msgid ""
 "El tiempo de instalación dependerá mayormente de la velocidad de conexión"
@@ -309,88 +310,88 @@ msgid ""
 "el sistema."
 msgstr ""
 
-# 7122691f0ba74bb7a356d7cdc2888e87
+# 42a286c0c0cf4b33b51e7f4781d81a69
 #: ../../install_cluster.rst:130
 msgid ""
 "Si la ejecución de la instalación finaliza exitosamente, se despliega una"
 " vista como la de la figura 8."
 msgstr ""
 
-# 8c75d96ae11740e099d10400ba93050a
+# c28db15e80294f9c88dd6c4f1de11d93
 #: ../../install_cluster.rst:134
 msgid "*Figure 9: OMniLeads installation ended succesfuly*"
 msgstr ""
 
-# 6625c3d71911443785d37c5ae9514859
+# 4c69db07950a47c28d2d6fd209d4abbb
 #: ../../install_cluster.rst:138
 msgid "Primer acceso a OMniLeads:"
 msgstr ""
 
-# f7a8f76d533249bda558b2ba446091ee
+# 8e59a8ab1a10449a9f11f4acfc81ab88
 #: ../../install_cluster.rst:140
 msgid ""
 "Si la ejecución de la instalación fue exitosa, entonces podemos realizar "
 "un :ref:`about_first_access`."
 msgstr ""
 
-# 955c34d2e90746439409a8387ca0f2df
+# fb1eb23fdbdd4326a4cd643aeab3168c
 #: ../../install_cluster.rst:143
 msgid "Errores comunes:"
 msgstr ""
 
-# cc23e53caa054f47973b671f5731b86e
+# ae5dc9857e0b463fb4c5093f80fb3cb2
 #: ../../install_cluster.rst:145
 msgid ""
 "Alguno de los hosts no tiene internet o no resuelve dominios "
 "(configuración de DNS)."
 msgstr ""
 
-# 2e4b1fdcc196460ea141134ee4cc40a9
+# 62af4216505a46168657003129dccaa6
 #: ../../install_cluster.rst:147
 msgid ""
 "*Compruebe el acceso a internet de cada host (por ej: actualizando "
 "paquetes - apt-get update | yum update).*"
 msgstr ""
 
-# 7791acbcff75469a9060393aed9ab57f
+# 907b638a157e4549815de5301976509e
 #: ../../install_cluster.rst:149
 msgid ""
 "Timeout de algún paquete que se intenta bajar. Puede volver a intentar "
 "ejecutar el deploy y si vuelve a fallar, la opción puede ser"
 msgstr ""
 
-# 8d91f42ad539467da1c8005a49418639
+# 644822f795d84796a864d6f526765228
 #: ../../install_cluster.rst:151
 msgid "*Instalar el paquete desde la terminal.*"
 msgstr ""
 
-# c1941e704b5f4ac6b05c44fb0e66668c
+# c15a3b4bee244c8598bb261993492ed9
 #: ../../install_cluster.rst:153
 msgid ""
 "Falla por mala sintaxis o falta de definición de *hostname* y *dirección "
 "IP* en el archivo *inventory*."
 msgstr ""
 
-# f846671028164e93acae950218481dde
+# 631ba56a39c540039a0e90976f1935a9
 #: ../../install_cluster.rst:155
 msgid "*Revisar archivo inventory*"
 msgstr ""
 
-# 027bfbe824404aa3a43cdde129979d00
+# 2bf272fcf8a24bc498042c8de8fda2b5
 #: ../../install_cluster.rst:157
 msgid ""
 "No se configuró correctamente el acceso ssh del host destino de la "
 "instalación."
 msgstr ""
 
-# e23402a70db94f6186fbb0db2e19c167
+# 12730a7c7c0546f49ff8910b01a2bc1d
 #: ../../install_cluster.rst:159
 msgid ""
 "*Revisar estado del firewall. Comprobar acceso remoto por ssh con el "
 "usuario root*"
 msgstr ""
 
-# b1fbfff619344160a97470334565c8dc
+# de8322b830c9470891c888585e463949
 #: ../../install_cluster.rst:161
 msgid ""
 "En caso de contar con algún host Ubuntu-Debian, recordar que se deben "
@@ -430,5 +431,27 @@ msgstr ""
 
 # d81bd87df3754054b2be8defb3e4d8c4
 #~ msgid "*Revisar archivo inventorys*"
+#~ msgstr ""
+
+# f697c6c73a544e78add7664246710d07
+#~ msgid ""
+#~ "Al igual que en las otras "
+#~ "instalaciones, las variables y passwords "
+#~ "de los diferentes componentes se pueden"
+#~ " modificar en la sección  "
+#~ "*[everyyone:vars]*"
+#~ msgstr ""
+
+# 688a375f00534f46a2a4f0bec21e0f6a
+#~ msgid ""
+#~ "Introducir el parámetro \"time zone\" "
+#~ "adecuado para su instanacia. Es "
+#~ "**Importante** que realice este paso o"
+#~ " la instalación no se va a "
+#~ "poder realizar."
+#~ msgstr ""
+
+# 75ada48810174021828f9a593abf8904
+#~ msgid "*Figure 6: inevntory - Time Zone parameter*"
 #~ msgstr ""
 
