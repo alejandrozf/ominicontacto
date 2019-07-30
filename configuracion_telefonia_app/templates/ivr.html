@@ -24,13 +24,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load widget_tweaks %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/ivr.css' %}"></link>
+    <link rel="stylesheet" href="{% static 'CSS/ivr.css' %}"></link>
 {% endblock %}
 
 {% block extra_js %}
     <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
-    <script src="{% static 'ominicontacto/JS/rutas-entrantes-lib.js' %}"></script>
-    <script src="{% static 'ominicontacto/JS/ivr.js' %}"></script>
+    <script src="{% static 'JS/rutas-entrantes-lib.js' %}"></script>
+    <script src="{% static 'JS/ivr.js' %}"></script>
     <script>
      $('.opcionDestinoTr').formset({
        addText: AGREGAR_DESTINO,
