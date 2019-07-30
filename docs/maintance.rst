@@ -339,3 +339,26 @@ Se observará el usuario bloqueado. Basta con hacer click en **Unblock** para de
 *Figure 19: Unblock user view*
 
 Ya el usuario podrá loguearse sin problema.
+
+Desinstalación de OMniLeads
+****************************
+
+Si por alguna razón quiere desinstalar OMniLeads de su máquina o VM se cuenta con un script para ello. Ya viene incorporado en el proceso de instalación, basta con ejecutarlo:
+
+.. code::
+
+  oml-uninstall
+
+Este script:
+
+* Desinstala los servicios esenciales de omnileads: asterisk, kamailio, rtpengine, mariadb, postgresql, wombat dialer, redis, nginx y omniapp.
+* Borra la carpeta /opt/omnileads (incluyendo grabaciones)
+* Elimina las bases de datos
+
+.. note::
+
+  El script no desinstala la paquetería de dependencias usadas para la instalación de los servicios.
+
+.. important::
+
+  Tener cuidado al ejecutarlo, una vez ejecutado no hay forma de recuperar el sistema.  

@@ -122,4 +122,7 @@
 
 - name: Change ownership of /var/lib/nginx/tmp/
   file: state=directory owner={{ usuario }} group={{ usuario }} path=/var/lib/nginx recurse=yes
+
+- name: Creation of Omnileads uninstall script
+  template: src=templates/bin/oml-uninstall.sh dest=/usr/sbin/oml-uninstall mode=755 owner=root group=root
   tags: postinstall
