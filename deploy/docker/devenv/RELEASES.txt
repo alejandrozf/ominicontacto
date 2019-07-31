@@ -18,9 +18,11 @@ Omniapp:
 
 Asterisk:
 
-16-res_json
+16.4.0-res_json
   - Based on andrius/asterisk image it builds asterisk with res_json module
-
+16.4.0-noaudios
+  - Edited 16.4.0-res_json image to avoid the install of asterisk sounds in all languages available
+  
 pbx-emulator image versions:
 
 0.1

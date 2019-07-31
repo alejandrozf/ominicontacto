@@ -18,7 +18,7 @@ services:
       - PGHOST={{ postgresql_fqdn }}
       - PGUSER={{ postgres_user }}
       - TZ={{ TZ }}
-    image: freetechsolutions/asterisk:16
+    image: freetechsolutions/asterisk:{{ asterisk_version }}
     networks:
       - dev_net
     privileged: true
@@ -29,7 +29,7 @@ services:
       - grabaciones:/var/spool/asterisk/monitor/
       - ./asterisk/conf/:/etc/asterisk/
       - ./asterisk/agis/:/var/lib/asterisk/agi-bin/
-      - sounds:/var/lib/asterisk/sounds/oml/
+      - sounds:/var/lib/asterisk/sounds/
       - ./asterisk/odbc.ini:/etc/odbc.ini
       - ./asterisk/odbcinst.ini:/etc/odbcinst.ini
       - ./asterisk/others/:/home/
@@ -164,6 +164,7 @@ services:
       - ./omniapp/conversor.sh:{{ install_prefix }}bin/conversor.sh
       - ./omniapp/omni-asterisk-logout.py:{{ install_prefix }}bin/omni-asterisk-logout.py
       - grabaciones:{{ install_prefix }}grabaciones
+      - sounds:/var/lib/asterisk/sounds/
     working_dir: {{ install_prefix}}ominicontacto
 
   postgresql:

@@ -19,9 +19,11 @@
 
 from __future__ import unicode_literals
 
+import os
 import re
 
 from django import forms
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.forms.models import (inlineformset_factory, modelformset_factory, BaseInlineFormSet,
                                  BaseModelFormSet)
@@ -546,6 +548,65 @@ class OpcionDestinoPersonalizadoForm(OpcionDestinoValidacionFechaHoraForm):
     def __init__(self, *args, **kwargs):
         super(OpcionDestinoPersonalizadoForm, self).__init__(*args, **kwargs)
         self.initial['valor'] = self.FAILOVER
+
+
+class AudiosAsteriskForm(forms.Form):
+
+    ES = 'es'
+    EN = 'en'
+    FR = 'fr'
+    IT = 'it'
+    JA = 'ja'
+    RU = 'ru'
+    SV = 'sv'
+
+    AUDIO_IDIOMA_CHOICES = (
+        (ES, _('Español')),
+        (EN, _('Inglés')),
+        (FR, _('Francés')),
+        (IT, _('Italiano')),
+        (JA, _('Japonés')),
+        (RU, _('Ruso')),
+        (SV, _('Sueco')),
+    )
+
+    AUDIO_IDIOMA_CHOICES_DICT = {
+        ES: _('Español'),
+        EN: _('Inglés'),
+        FR: _('Francés'),
+        IT: _('Italiano'),
+        JA: _('Japonés'),
+        RU: _('Ruso'),
+        SV: _('Sueco'),
+    }
+
+    idiomas_instalados = [EMPTY_CHOICE]
+
+    audio_idioma = forms.ChoiceField(
+        label=_('Escoger idioma del paquete de audios a instalar'),
+        widget=forms.Select(
+            attrs={'class': 'form-control escogerAudioIdioma'}))
+
+    def __init__(self, *args, **kwargs):
+        super(AudiosAsteriskForm, self).__init__(*args, **kwargs)
+        self.initial = {
+            'audio_idioma': ''
+        }
+        self.idiomas_instalados, self.idiomas_no_instalados = self._obtener_idiomas_instalados()
+
+        self.fields['audio_idioma'].choices = [EMPTY_CHOICE] + self.idiomas_no_instalados
+
+    def _obtener_idiomas_instalados(self):
+        directorios_idiomas = os.listdir(settings.ASTERISK_AUDIO_PATH)
+        try:
+            directorios_idiomas.remove('oml')
+        except ValueError:
+            pass
+        idiomas_instalados = [(valor, self.AUDIO_IDIOMA_CHOICES_DICT[valor])
+                              for valor in directorios_idiomas]
+        idiomas_no_instalados = list(set(self.AUDIO_IDIOMA_CHOICES) - set(idiomas_instalados))
+        idiomas_instalados_mostrar = [unicode(choice) for valor, choice in idiomas_instalados]
+        return (idiomas_instalados_mostrar, idiomas_no_instalados)
 
 
 PatronDeDiscadoFormset = inlineformset_factory(

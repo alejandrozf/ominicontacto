@@ -15,11 +15,11 @@ RUN apt-get update -qq \
     && wget http://packages.irontec.com/public.key -q -O - | apt-key add - \
     && apt-get update -y \
     && apt-get install sngrep -y \
-    && for i in en es; do \
-       cd /var/lib/asterisk/sounds/$i \
-       wget https://freetech.com.ar:20851/sounds/$i-oml.tar.gz --no-check-certificate \
-       tar xzvf $i-oml.tar.gz \
-       rm -rf /var/lib/asterisk/sounds/$i/$i.tar.gz; done \
+#    && for i in en es; do \
+#       cd /var/lib/asterisk/sounds/$i \
+#       wget https://freetech.com.ar:20851/sounds/$i-oml.tar.gz --no-check-certificate \
+#       tar xzvf $i-oml.tar.gz \
+#       rm -rf /var/lib/asterisk/sounds/$i/$i.tar.gz; done \
     && mkdir /run/sshd \
     && sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config \
     && sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd \
