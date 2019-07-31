@@ -28,7 +28,7 @@ from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
     AsteriskHttpAsteriskDBError
 from configuracion_telefonia_app.models import (
     RutaSaliente, TroncalSIP, IVR, RutaEntrante, DestinoEntrante, ValidacionFechaHora, GrupoHorario,
-    IdentificadorCliente
+    IdentificadorCliente, DestinoPersonalizado
 )
 import logging as _logging
 
@@ -600,3 +600,32 @@ class GrupoHorarioFamily(AbstractFamily):
 
     def get_nombre_families(self):
         return "OML/TG"
+
+
+class DestinoPersonalizadoFamily(AbstractFamily):
+    def _create_dict(self, family_member):
+        nodo = DestinoEntrante.get_nodo_ruta_entrante(family_member)
+        dict_destino_personalizado = {
+            'NAME': family_member.nombre,
+            'DST': family_member.custom_destination,
+        }
+        # sólo tendría un destino siguiente (FAILOVER)
+        opcion_destino_failover = nodo.destinos_siguientes.first()
+        dst = "{0},{1}".format(
+            opcion_destino_failover.destino_siguiente.tipo,
+            opcion_destino_failover.destino_siguiente.object_id)
+        dict_destino_personalizado.update({'FAILOVER': dst})
+        return dict_destino_personalizado
+
+    def _obtener_todos(self):
+        """Obtengo todas las ValidacionFechaHora para generar family"""
+        return DestinoPersonalizado.objects.all()
+
+    def _get_nombre_family(self, family_member):
+        return "OML/CUSTOMDST/{0}".format(family_member.id)
+
+    def _obtener_una_key(self):
+        return "NAME"
+
+    def get_nombre_families(self):
+        return "OML/CUSTOMDST"

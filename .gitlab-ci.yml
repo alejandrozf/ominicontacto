@@ -22,7 +22,6 @@ stages:
   - build
   - deploy
 
-
 test:
   stage: test
   image: alejandrozf/docker-stuff:python-flake8
@@ -58,6 +57,7 @@ test:
   script:
     - flake8
     - python manage.py test --failfast
+    - python manage.py compilemessages
   only:
     - merge_requests
     - /^pre-release-.*$/

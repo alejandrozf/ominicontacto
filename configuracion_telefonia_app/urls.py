@@ -148,4 +148,12 @@ urlpatterns = [
         administrador_o_supervisor_requerido(views.IdentificadorClienteDeleteView.as_view()),
         name='eliminar_identificador_cliente',
         ),
+    url(r'^destino_personalizado/lista/$', views.DestinoPersonalizadoListView.as_view(),
+        name='lista_destinos_personalizados'),
+    url(r'^destino_personalizado/crear/$', views.DestinoPersonalizadoCreateView.as_view(),
+        name='crear_destino_personalizado'),
+    url(r'^destino_personalizado/(?P<pk>\d+)/editar$',
+        views.DestinoPersonalizadoUpdateView.as_view(), name='editar_destino_personalizado'),
+    url(r'^destino_personalizado/(?P<pk>\d+)/eliminar$',
+        views.DestinoPersonalizadoDeleteView.as_view(), name='eliminar_destino_personalizado')
 ]

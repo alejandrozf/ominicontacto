@@ -1,0 +1,99 @@
+<!--
+     Copyright (C) 2018 Freetech Solutions
+
+     This file is part of OMniLeads
+
+     This program is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program.  If not, see http://www.gnu.org/licenses/.
+
+   -->
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% load widget_tweaks %}
+
+{% block extra_js %}
+    <script src="{% static 'ominicontacto/JS/rutas-entrantes-lib.js' %}"></script>
+    <script src="{% static 'ominicontacto/JS/destino-personalizado.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <form action="" role="form" method="POST">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-warning">{{ error|escape }}</div>
+            {% endfor %}
+        {% endif %}
+        <div class="row mt-3">
+            {% block header %}{% endblock %}
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-3">
+                <div class="form-row">
+                    <label >{{ form.nombre.label_tag }}</label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-row">
+                    {{ form.nombre|add_class:"form-control" }}
+                    {{ form.nombre.errors }}
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-3">
+                <div class="form-row">
+                    <label>{{ form.custom_destination.label_tag }}</label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-row">
+                    {{ form.custom_destination|add_class:"form-control" }}
+                    {{ form.custom_destination.errors }}
+                </div>
+            </div>
+        </div>
+        {% with form=opcion_destino_failover_form %}
+            {{ form.valor }}
+            {{ form.id }}
+            <div class="row mt-3">
+                <h4>{% trans 'Destino en caso de failover' %}</h4>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-3">
+                    <div class="form-row">
+                        <label >{{ form.tipo_destino.label_tag }}</label>
+                        {{ form.tipo_destino|add_class:"form-control"|attr:"id:tipoDestinoFailover" }}
+                        {{ form.tipo_destino.errors }}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-row">
+                        <label>{{ form.destino_siguiente.label_tag }}</label>
+                        {{ form.destino_siguiente|add_class:"form-control"|attr:"id:destinoFailover" }}
+                        {{ form.destino_siguiente.errors }}
+                    </div>
+                </div>
+            </div>
+        {% endwith %}
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <button type="submit" id="id_registrar" class="btn btn-primary">
+                    {% trans 'Guardar' %}
+                </button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

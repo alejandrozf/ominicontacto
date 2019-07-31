@@ -79,7 +79,7 @@ def elimina_espacios_parentesis_guiones(cadena):
     La cadena debe ser una instancia de unicode
     """
     assert isinstance(cadena, unicode), "'cadena' debe ser una instancia de unicode"
-    return re.sub("\(?\)?\s?\-?", "", cadena)
+    return re.sub(r"\(?\)?\s?\-?", "", cadena)
 
 
 def elimina_espacios(cadena):
@@ -88,7 +88,7 @@ def elimina_espacios(cadena):
     La cadena debe ser una instancia de unicode
     """
     assert isinstance(cadena, unicode), "'cadena' debe ser una instancia de unicode"
-    return re.sub("\s?", "", cadena)
+    return re.sub(r"\s?", "", cadena)
 
 
 def remplace_espacio_por_guion(cadena):
@@ -104,7 +104,7 @@ def elimina_coma(cadena):
     """
     Elimina coma
     """
-    return re.sub("\,?", "", cadena)
+    return re.sub(r"\,?", "", cadena)
 
 
 def elimina_comillas(cadena):

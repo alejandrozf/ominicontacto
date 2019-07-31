@@ -20,13 +20,15 @@
 from __future__ import unicode_literals
 
 
-from configuracion_telefonia_app.tests.factories import IdentificadorClienteFactory
+from configuracion_telefonia_app.tests.factories import (
+    IdentificadorClienteFactory, DestinoPersonalizadoFactory)
 
 from configuracion_telefonia_app.models import (OpcionDestino, IdentificadorCliente,
                                                 DestinoEntrante)
-from configuracion_telefonia_app.regeneracion_configuracion_telefonia import \
-    SincronizadorDeConfiguracionIdentificadorClienteAsterisk
-
+from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
+    SincronizadorDeConfiguracionIdentificadorClienteAsterisk,
+    SincronizadorDeConfiguracionDestinoPersonalizadoAsterisk
+)
 from ominicontacto_app.models import Campana
 from ominicontacto_app.tests.factories import CampanaFactory
 from ominicontacto_app.tests.utiles import OMLBaseTest
@@ -110,3 +112,18 @@ class TestsSincronizadors(OMLBaseTest):
         self.assertEqual(dict_astdb['TIMEOUT'], ident_cliente.timeout)
         self.assertFalse(dict_astdb.get('TRUEDST', False))
         self.assertFalse(dict_astdb.get('FALSEDST', False))
+
+    def test_creacion_sincronizador_destino_personalizado_envia_datos_correctos_asterisk(self):
+        campana_entrante_1 = CampanaFactory(type=Campana.TYPE_ENTRANTE)
+        dest_entrante_1 = DestinoEntrante.crear_nodo_ruta_entrante(campana_entrante_1)
+        dest_personalizado = DestinoPersonalizadoFactory()
+        nodo_dest_personalizado = DestinoEntrante.crear_nodo_ruta_entrante(dest_personalizado)
+        OpcionDestino.crear_opcion_destino(
+            nodo_dest_personalizado, dest_entrante_1, 'failover')
+        sync_dest_personalizado = SincronizadorDeConfiguracionDestinoPersonalizadoAsterisk()
+        gen_family = sync_dest_personalizado._obtener_generador_family()
+        dict_astdb = gen_family._create_dict(dest_personalizado)
+        self.assertEqual(dict_astdb['NAME'], dest_personalizado.nombre)
+        self.assertEqual(dict_astdb['DST'], dest_personalizado.custom_destination)
+        self.assertEqual(dict_astdb['FAILOVER'], "{0},{1}".format(
+            dest_entrante_1.tipo, dest_entrante_1.object_id))
