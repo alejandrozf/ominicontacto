@@ -76,15 +76,15 @@ menuselect/menuselect --enable chan_ooh323 menuselect.makeopts
 menuselect/menuselect --enable BETTER_BACKTRACES menuselect.makeopts
 menuselect/menuselect --enable format_mp3 menuselect.makeopts
 menuselect/menuselect --enable codec_opus menuselect.makeopts
-menuselect/menuselect --enable CORE-SOUNDS-EN-WAV menuselect.makeopts
-menuselect/menuselect --enable CORE-SOUNDS-ES-WAV menuselect.makeopts
-menuselect/menuselect --enable CORE-SOUNDS-FR-WAV menuselect.makeopts
-menuselect/menuselect --enable CORE-SOUNDS-IT-WAV menuselect.makeopts
-menuselect/menuselect --enable CORE-SOUNDS-RU-WAV menuselect.makeopts
-menuselect/menuselect --enable CORE-SOUNDS-JA-WAV menuselect.makeopts
-menuselect/menuselect --enable CORE-SOUNDS-SV-WAV menuselect.makeopts
-menuselect/menuselect --enable EXTRA-SOUNDS-EN-WAV menuselect.makeopts
-menuselect/menuselect --enable EXTRA-SOUNDS-FR-WAV menuselect.makeopts
+#menuselect/menuselect --enable CORE-SOUNDS-EN-WAV menuselect.makeopts
+#menuselect/menuselect --enable CORE-SOUNDS-ES-WAV menuselect.makeopts
+#menuselect/menuselect --enable CORE-SOUNDS-FR-WAV menuselect.makeopts
+#menuselect/menuselect --enable CORE-SOUNDS-IT-WAV menuselect.makeopts
+#menuselect/menuselect --enable CORE-SOUNDS-RU-WAV menuselect.makeopts
+#menuselect/menuselect --enable CORE-SOUNDS-JA-WAV menuselect.makeopts
+#menuselect/menuselect --enable CORE-SOUNDS-SV-WAV menuselect.makeopts
+#menuselect/menuselect --enable EXTRA-SOUNDS-EN-WAV menuselect.makeopts
+#menuselect/menuselect --enable EXTRA-SOUNDS-FR-WAV menuselect.makeopts
 # codecs
 # menuselect/menuselect --enable codec_opus menuselect.makeopts
 # menuselect/menuselect --enable codec_silk menuselect.makeopts

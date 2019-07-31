@@ -20,13 +20,20 @@
 from __future__ import unicode_literals
 
 import json
+import logging
+import os
+import requests
+import tarfile
+import tempfile
+
 from django.core.urlresolvers import reverse, reverse_lazy
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import View, FormView, ListView, CreateView, UpdateView, DeleteView
 from django.db.models import Case, When, Max, Min
 
 from configuracion_telefonia_app.forms import (RutaSalienteForm, TroncalSIPForm, RutaEntranteForm,
@@ -34,7 +41,8 @@ from configuracion_telefonia_app.forms import (RutaSalienteForm, TroncalSIPForm,
                                                OpcionDestinoIVRFormset, IVRForm,
                                                ValidacionTiempoFormset, IdentificadorClienteForm,
                                                OpcionDestinoValidacionFechaHoraFormset,
-                                               OpcionDestinoPersonalizadoForm)
+                                               OpcionDestinoPersonalizadoForm,
+                                               AudiosAsteriskForm)
 from configuracion_telefonia_app.models import (RutaSaliente, RutaEntrante, TroncalSIP,
                                                 OrdenTroncal, DestinoEntrante, IVR, OpcionDestino,
                                                 GrupoHorario, ValidacionFechaHora,
@@ -49,6 +57,8 @@ from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     SincronizadorDeConfiguracionIdentificadorClienteAsterisk,
     SincronizadorDeConfiguracionDestinoPersonalizadoAsterisk
 )
+
+logger = logging.getLogger(__name__)
 
 
 # Debería extender del AbstractConfiguracionAsterisk
@@ -73,7 +83,7 @@ def escribir_ruta_saliente_config(self, ruta_saliente):
     try:
         sincronizador = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
         sincronizador.regenerar_rutas_salientes(ruta_saliente)
-    except RestablecerConfiguracionTelefonicaError, e:
+    except RestablecerConfiguracionTelefonicaError as e:
         message = _("<strong>¡Cuidado!</strong> "
                     "con el siguiente error: {0} .".format(e))
         messages.add_message(
@@ -88,7 +98,7 @@ def eliminar_ruta_saliente_config(self, ruta_saliente):
     try:
         sincronizador = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
         sincronizador.eliminar_ruta_y_regenerar_asterisk(ruta_saliente)
-    except RestablecerConfiguracionTelefonicaError, e:
+    except RestablecerConfiguracionTelefonicaError as e:
         message = _("<strong>¡Cuidado!</strong> "
                     "con el siguiente error: {0} .".format(e))
         messages.add_message(
@@ -102,7 +112,7 @@ def escribir_ruta_entrante_config(self, ruta_entrante):
     try:
         sincronizador = SincronizadorDeConfiguracionRutaEntranteAsterisk()
         sincronizador.regenerar_asterisk(ruta_entrante)
-    except RestablecerConfiguracionTelefonicaError, e:
+    except RestablecerConfiguracionTelefonicaError as e:
         message = _("<strong>¡Cuidado!</strong> "
                     "con el siguiente error: {0} .".format(e))
         messages.add_message(
@@ -116,7 +126,7 @@ def eliminar_ruta_entrante_config(self, ruta_entrante):
     try:
         sincronizador = SincronizadorDeConfiguracionRutaEntranteAsterisk()
         sincronizador.eliminar_y_regenerar_asterisk(ruta_entrante)
-    except RestablecerConfiguracionTelefonicaError, e:
+    except RestablecerConfiguracionTelefonicaError as e:
         message = _("<strong>¡Cuidado!</strong> "
                     "con el siguiente error: {0} .".format(e))
         messages.add_message(
@@ -129,7 +139,7 @@ def eliminar_ruta_entrante_config(self, ruta_entrante):
 def escribir_nodo_entrante_config(self, nodo_destino_entrante, sincronizador):
     try:
         sincronizador.regenerar_asterisk(nodo_destino_entrante)
-    except RestablecerConfiguracionTelefonicaError, e:
+    except RestablecerConfiguracionTelefonicaError as e:
         message = _("<strong>¡Cuidado!</strong> "
                     "con el siguiente error: {0} .".format(e))
         messages.add_message(
@@ -144,7 +154,7 @@ def eliminar_troncal_config(self, trunk):
     try:
         sincronizador = SincronizadorDeConfiguracionTroncalSipEnAsterisk()
         sincronizador.eliminar_troncal_y_regenerar_asterisk(trunk)
-    except RestablecerConfiguracionTelefonicaError, e:
+    except RestablecerConfiguracionTelefonicaError as e:
         message = _("<strong>¡Cuidado!</strong> "
                     "con el siguiente error: {0} .".format(e))
         messages.add_message(
@@ -162,7 +172,7 @@ class TroncalSIPMixin(object):
         try:
             sincronizador = SincronizadorDeConfiguracionTroncalSipEnAsterisk()
             sincronizador.regenerar_troncales(self.object)
-        except RestablecerConfiguracionTelefonicaError, e:
+        except RestablecerConfiguracionTelefonicaError as e:
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error: {0} .".format(e))
             messages.add_message(
@@ -181,7 +191,7 @@ class TroncalSIPMixin(object):
                     try:
                         sincronizador_ruta = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
                         sincronizador_ruta.regenerar_troncales_en_ruta_asterisk(ruta)
-                    except RestablecerConfiguracionTelefonicaError, e:
+                    except RestablecerConfiguracionTelefonicaError as e:
                         message = _("<strong>¡Cuidado!</strong> "
                                     "con el siguiente error: {0} .".format(e))
                         messages.add_message(
@@ -444,7 +454,7 @@ class RutaEntranteDeleteView(DeleteView):
         try:
             sincronizador = SincronizadorDeConfiguracionRutaEntranteAsterisk()
             sincronizador.eliminar_y_regenerar_asterisk(self.get_object())
-        except RestablecerConfiguracionTelefonicaError, e:
+        except RestablecerConfiguracionTelefonicaError as e:
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error: {0} .".format(e))
             messages.add_message(
@@ -623,7 +633,7 @@ class GrupoHorarioMixin(object):
             try:
                 sincronizador = SincronizadorDeConfiguracionGrupoHorarioAsterisk()
                 sincronizador.regenerar_asterisk(grupo_horario)
-            except RestablecerConfiguracionTelefonicaError, e:
+            except RestablecerConfiguracionTelefonicaError as e:
                 message = _("<strong>¡Cuidado!</strong> con el siguiente error: {0} .".format(e))
                 messages.add_message(self.request, messages.WARNING, message)
 
@@ -677,7 +687,7 @@ class GrupoHorarioDeleteView(DeleteView):
         try:
             sincronizador = SincronizadorDeConfiguracionGrupoHorarioAsterisk()
             sincronizador.eliminar_y_regenerar_asterisk(self.object)
-        except RestablecerConfiguracionTelefonicaError, e:
+        except RestablecerConfiguracionTelefonicaError as e:
             message = _("<strong>¡Cuidado!</strong> con el siguiente error: {0} .".format(e))
             messages.add_message(self.request, messages.WARNING, message)
         if self.object.validaciones_fecha_hora.count() > 0:
@@ -852,7 +862,7 @@ class DeleteNodoDestinoMixin(object):
             sincronizador = self.get_sincronizador_de_configuracion()
 
             sincronizador.eliminar_y_regenerar_asterisk(self.get_object())
-        except RestablecerConfiguracionTelefonicaError, e:
+        except RestablecerConfiguracionTelefonicaError as e:
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error: {0} .".format(e))
             messages.add_message(
@@ -1121,3 +1131,47 @@ class DestinoPersonalizadoDeleteView(DestinoPersonalizadoMixin, DeleteNodoDestin
     """Elimina Destino Personalizado"""
     model = DestinoPersonalizado
     template_name = 'eliminar_destino_personalizado.html'
+
+
+class AdicionarAudioAsteriskView(FormView):
+    """Vista que adiciona dinámicamente audios de asterisk (desde el sitio oficial)
+    al sistema.
+    """
+    template_name = 'adicionar_audios_asterisk.html'
+    form_class = AudiosAsteriskForm
+
+    ASTERISK_SOUNDS_URL = 'https://downloads.asterisk.org/pub/telephony/sounds/'
+
+    def _download_asterisk_sound(self, language):
+        filename = 'asterisk-core-sounds-{0}-wav-current.tar.gz'.format(language)
+        url = self.ASTERISK_SOUNDS_URL + filename
+        response = requests.get(url, stream=True)
+        filename_full_path = os.path.join(tempfile.gettempdir(), filename)
+        handle = open(filename_full_path, "wb")  # ver el
+        for chunk in response.iter_content(chunk_size=512):
+            if chunk:  # filter out keep-alive new chunks
+                handle.write(chunk)
+        return filename_full_path
+
+    def form_valid(self, form):
+        try:
+            # download asterisk file
+            language = form.cleaned_data['audio_idioma']
+            filename_full_path = self._download_asterisk_sound(language)
+
+            # uncompress asterisk file and copy to its location
+            tar = tarfile.open(filename_full_path)
+            destination = os.path.join(settings.ASTERISK_AUDIO_PATH, language)
+            if not os.path.exists(destination):
+                os.makedirs(destination)
+                tar.extractall(destination)
+                tar.close()
+            messages.add_message(
+                self.request, messages.SUCCESS,
+                _('Se ha instalado el paquete de idioma satisfactoriamente.'))
+        except Exception as e:
+            logger.error(_("Error al instalar el paquete de idioma: {0}".format(e)))
+            messages.add_message(
+                self.request, messages.ERROR,
+                _('Ha ocurrido un error al instalar el paquete de idioma'))
+        return redirect('adicionar_audios_asterisk')

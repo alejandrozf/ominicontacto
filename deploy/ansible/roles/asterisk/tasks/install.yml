@@ -82,17 +82,9 @@
     - make menuselect.makeopts
     - menuselect/menuselect --disable BUILD_NATIVE menuselect.makeopts
     - menuselect/menuselect --enable res_json menuselect.makeopts
+    - menuselect/menuselect --enable res_json menuselect.makeopts
     - menuselect/menuselect --enable format_mp3 menuselect.makeopts
     - menuselect/menuselect --enable codec_opus menuselect.makeopts
-    - menuselect/menuselect --enable CORE-SOUNDS-EN-WAV menuselect.makeopts
-    - menuselect/menuselect --enable CORE-SOUNDS-ES-WAV menuselect.makeopts
-    - menuselect/menuselect --enable CORE-SOUNDS-FR-WAV menuselect.makeopts
-    - menuselect/menuselect --enable CORE-SOUNDS-IT-WAV menuselect.makeopts
-    - menuselect/menuselect --enable CORE-SOUNDS-RU-WAV menuselect.makeopts
-    - menuselect/menuselect --enable CORE-SOUNDS-JA-WAV menuselect.makeopts
-    - menuselect/menuselect --enable CORE-SOUNDS-SV-WAV menuselect.makeopts
-    - menuselect/menuselect --enable EXTRA-SOUNDS-EN-WAV menuselect.makeopts
-    - menuselect/menuselect --enable EXTRA-SOUNDS-FR-WAV menuselect.makeopts
     - make -j 10
     - make install
     - make config
