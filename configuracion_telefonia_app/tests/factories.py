@@ -26,7 +26,8 @@ from django.utils import timezone
 
 from configuracion_telefonia_app.models import (
     TroncalSIP, RutaSaliente, PatronDeDiscado, OrdenTroncal, RutaEntrante, IVR, ValidacionFechaHora,
-    DestinoEntrante, OpcionDestino, ValidacionTiempo, GrupoHorario, IdentificadorCliente
+    DestinoEntrante, OpcionDestino, ValidacionTiempo, GrupoHorario, IdentificadorCliente,
+    DestinoPersonalizado
 )
 from ominicontacto_app.tests.factories import ArchivoDeAudioFactory
 
@@ -164,3 +165,12 @@ class IdentificadorClienteFactory(DjangoModelFactory):
     longitud_id_esperado = lazy_attribute(lambda a: faker.random_int(3, 10))
     timeout = lazy_attribute(lambda a: faker.random_int(3, 7))
     intentos = lazy_attribute(lambda a: faker.random_int(2, 9))
+
+
+class DestinoPersonalizadoFactory(DjangoModelFactory):
+
+    class Meta:
+        model = DestinoPersonalizado
+
+    nombre = Sequence(lambda n: "Destino Personalizado {0}".format(n))
+    custom_destination = Sequence(lambda n: "Localización destino {0}".format(n))

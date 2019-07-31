@@ -539,6 +539,15 @@ class OpcionDestinoValidacionFechaHoraFormSet(BaseModelFormSet):
             destinos.append(destino)
 
 
+class OpcionDestinoPersonalizadoForm(OpcionDestinoValidacionFechaHoraForm):
+
+    FAILOVER = 'failover'
+
+    def __init__(self, *args, **kwargs):
+        super(OpcionDestinoPersonalizadoForm, self).__init__(*args, **kwargs)
+        self.initial['valor'] = self.FAILOVER
+
+
 PatronDeDiscadoFormset = inlineformset_factory(
     RutaSaliente, PatronDeDiscado, form=PatronDeDiscadoForm,
     formset=PatronDeDiscadoBaseFormset, can_delete=True, extra=0, min_num=1)

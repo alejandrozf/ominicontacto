@@ -33,11 +33,12 @@ from configuracion_telefonia_app.forms import (RutaSalienteForm, TroncalSIPForm,
                                                PatronDeDiscadoFormset, OrdenTroncalFormset,
                                                OpcionDestinoIVRFormset, IVRForm,
                                                ValidacionTiempoFormset, IdentificadorClienteForm,
-                                               OpcionDestinoValidacionFechaHoraFormset)
+                                               OpcionDestinoValidacionFechaHoraFormset,
+                                               OpcionDestinoPersonalizadoForm)
 from configuracion_telefonia_app.models import (RutaSaliente, RutaEntrante, TroncalSIP,
                                                 OrdenTroncal, DestinoEntrante, IVR, OpcionDestino,
                                                 GrupoHorario, ValidacionFechaHora,
-                                                IdentificadorCliente)
+                                                IdentificadorCliente, DestinoPersonalizado)
 from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     SincronizadorDeConfiguracionTroncalSipEnAsterisk, RestablecerConfiguracionTelefonicaError,
     SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk,
@@ -45,7 +46,8 @@ from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     SincronizadorDeConfiguracionIVRAsterisk,
     SincronizadorDeConfiguracionValidacionFechaHoraAsterisk,
     SincronizadorDeConfiguracionGrupoHorarioAsterisk,
-    SincronizadorDeConfiguracionIdentificadorClienteAsterisk
+    SincronizadorDeConfiguracionIdentificadorClienteAsterisk,
+    SincronizadorDeConfiguracionDestinoPersonalizadoAsterisk
 )
 
 
@@ -751,7 +753,7 @@ class ValidacionFechaHoraCreateView(ValidacionFechaHoraMixin, CreateView):
 class ValidacionFechaHoraUpdateView(ValidacionFechaHoraMixin, UpdateView):
     """Edita una validación de fecha/hora"""
     model = ValidacionFechaHora
-    template_name = "crear_validacion_fecha_hora.html"
+    template_name = "editar_validacion_fecha_hora.html"
     fields = ('nombre', 'grupo_horario')
     message = _('Se ha modificado la validacion horaria con éxito')
 
@@ -772,8 +774,6 @@ class ValidacionFechaHoraUpdateView(ValidacionFechaHoraMixin, UpdateView):
         if form.is_valid() and validacion_fecha_hora_formset.is_valid():
             validacion = form.save()
             validacion_fecha_hora_formset.save()
-            DestinoEntrante.objects.get(
-                object_id=validacion.pk, content_type=ContentType.objects.get_for_model(validacion))
             # escribe el nodo creado y sus relaciones en asterisk
             sincronizador = self.get_sincronizador_de_configuracion()
             escribir_nodo_entrante_config(self, validacion, sincronizador)
@@ -1024,3 +1024,100 @@ class IdentificadorClienteDeleteView(IdentificadorClienteMixin, DeleteNodoDestin
     imposible_eliminar = _('No se puede eliminar un Identificador de clientes '
                            'que es destino en un flujo de llamada.')
     nodo_eliminado = _(u'Se ha eliminado el Identificador de Clientes.')
+
+
+class DestinoPersonalizadoListView(ListView):
+    """Muestra la lista de los destinos personalizados"""
+    model = DestinoPersonalizado
+    template_name = 'lista_destino_personalizados.html'
+    paginate_by = 40
+    ordering = ['id']
+    context_object_name = 'destinos_personalizados'
+
+
+class DestinoPersonalizadoMixin(object):
+
+    def get_success_url(self):
+        return reverse('lista_destinos_personalizados')
+
+    def get_sincronizador_de_configuracion(self):
+        sincronizador = SincronizadorDeConfiguracionDestinoPersonalizadoAsterisk()
+        return sincronizador
+
+
+class DestinoPersonalizadoCreateView(DestinoPersonalizadoMixin, CreateView):
+    """Crea un Destino Personalizado"""
+    model = DestinoPersonalizado
+    fields = ('nombre', 'custom_destination')
+    template_name = 'crear_destino_personalizado.html'
+    message = _('Se ha creado el nodo de Destino Personalizado con éxito')
+
+    def get_context_data(self, **kwargs):
+        context = super(DestinoPersonalizadoCreateView, self).get_context_data(**kwargs)
+        opcion_destino_failover_form = OpcionDestinoPersonalizadoForm(prefix='failover_form')
+        context['opcion_destino_failover_form'] = opcion_destino_failover_form
+        return context
+
+    def form_valid(self, form):
+        opcion_destino_failover_form = OpcionDestinoPersonalizadoForm(
+            self.request.POST, prefix='failover_form')
+        if form.is_valid() and opcion_destino_failover_form.is_valid():
+            destino_personalizado = form.save()
+            nodo_destino_personalizado = DestinoEntrante.crear_nodo_ruta_entrante(
+                destino_personalizado)
+            opcion_destino_failover_form.instance.destino_anterior = nodo_destino_personalizado
+            opcion_destino_failover_form.save()
+            # escribe el nodo creado y sus relaciones en asterisk
+            sincronizador = self.get_sincronizador_de_configuracion()
+            escribir_nodo_entrante_config(self, destino_personalizado, sincronizador)
+            # muestra mensaje de éxito
+            messages.add_message(self.request, messages.SUCCESS, self.message)
+            return redirect(self.get_success_url())
+        return render(
+            self.request, self.template_name,
+            {'form': form, 'opcion_destino_failover_form': opcion_destino_failover_form})
+
+
+class DestinoPersonalizadoUpdateView(DestinoPersonalizadoMixin, UpdateView):
+    """Modifica Destino Personalizado"""
+    model = DestinoPersonalizado
+    fields = ('nombre', 'custom_destination')
+    template_name = 'editar_destino_personalizado.html'
+    message = _('Se ha modificado el nodo de Destino Personalizado con éxito')
+
+    def get_context_data(self, **kwargs):
+        context = super(DestinoPersonalizadoUpdateView, self).get_context_data(**kwargs)
+        destino_personalizado = context['form'].instance
+        nodo_destino_personalizado = DestinoEntrante.objects.get(
+            object_id=destino_personalizado.pk,
+            content_type=ContentType.objects.get_for_model(destino_personalizado))
+        opcion_destino_failover_form = OpcionDestinoPersonalizadoForm(
+            prefix='failover_form', instance=nodo_destino_personalizado.destinos_siguientes.first())
+        context['opcion_destino_failover_form'] = opcion_destino_failover_form
+        return context
+
+    def form_valid(self, form):
+        nodo_destino_personalizado = DestinoEntrante.objects.get(
+            object_id=form.instance.pk,
+            content_type=ContentType.objects.get_for_model(form.instance))
+        opcion_destino_failover_form = OpcionDestinoPersonalizadoForm(
+            self.request.POST, prefix='failover_form',
+            instance=nodo_destino_personalizado.destinos_siguientes.first())
+        if form.is_valid() and opcion_destino_failover_form.is_valid():
+            destino_personalizado = form.save()
+            opcion_destino_failover_form.save()
+            # escribe el nodo creado y sus relaciones en asterisk
+            sincronizador = self.get_sincronizador_de_configuracion()
+            escribir_nodo_entrante_config(self, destino_personalizado, sincronizador)
+            # muestra mensaje de éxito
+            messages.add_message(self.request, messages.SUCCESS, self.message)
+            return redirect(self.get_success_url())
+        return render(
+            self.request, self.template_name,
+            {'form': form, 'opcion_destino_failover_form': opcion_destino_failover_form})
+
+
+class DestinoPersonalizadoDeleteView(DestinoPersonalizadoMixin, DeleteNodoDestinoMixin, DeleteView):
+    """Elimina Destino Personalizado"""
+    model = DestinoPersonalizado
+    template_name = 'eliminar_destino_personalizado.html'

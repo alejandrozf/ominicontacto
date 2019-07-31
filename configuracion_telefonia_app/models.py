@@ -33,6 +33,7 @@ R_DECIMAL = r'^\d+$'
 R_ALFANUMERICO = r'^[\w]+$'
 R_DIAL_OPT = r'^[HhKkRrL():MATtWw]+$'
 R_MATCH_PATTERN = r'^[\w|\.|\[|\]|-]+$'
+R_CONTEXT_DIALPLAN = r'^(\w+,\w+,\w+|\w+,\w+|\w+)$'
 
 
 class TroncalSIP(models.Model):
@@ -330,6 +331,7 @@ class DestinoEntrante(models.Model):
         (IVR, _('IVR')),
         (HANGUP, _('HangUp')),
         (IDENTIFICADOR_CLIENTE, _('Identificador cliente')),
+        (CUSTOM_DST, _('Destino personalizado')),
     )
     nombre = models.CharField(max_length=128)
     tipo = models.PositiveIntegerField(choices=TIPOS_DESTINOS)
@@ -356,6 +358,8 @@ class DestinoEntrante(models.Model):
             tipo = cls.VALIDACION_FECHA_HORA
         elif isinstance(info_nodo_entrante, IdentificadorCliente):
             tipo = cls.IDENTIFICADOR_CLIENTE
+        elif isinstance(info_nodo_entrante, DestinoPersonalizado):
+            tipo = cls.CUSTOM_DST
         elif isinstance(info_nodo_entrante, HangUp):
             raise(_('Error: El nodo HangUp es único.'))
         kwargs = {
@@ -452,3 +456,12 @@ class HangUp(models.Model):
 
     def __unicode__(self):
         return _("HangUp")
+
+
+class DestinoPersonalizado(models.Model):
+    nombre = models.CharField(
+        max_length=50, unique=True, verbose_name=_('Nombre'),
+        validators=[RegexValidator(R_ALFANUMERICO)])
+    custom_destination = models.CharField(
+        max_length=50, unique=True, verbose_name=_('Localización destino'),
+        validators=[RegexValidator(R_CONTEXT_DIALPLAN)])

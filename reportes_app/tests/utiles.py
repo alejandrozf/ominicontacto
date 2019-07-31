@@ -196,7 +196,7 @@ class GeneradorDeLlamadaLogs():
                               time=time)
         else:
             # Se establece el Dialogo con el Agente
-            assert agente_id is not None and agente_id is not -1, 'Una llamada conectada debe '
+            assert agente_id is not None and agente_id != -1, 'Una llamada conectada debe '
             'tener un agente'
             assert finalizacion in CONNECT, 'Finalizacion incorrecta: %s' % finalizacion
 
