@@ -1,5 +1,5 @@
 ###########################################################
-###       OMniLeads Docker environment for production   ###
+###     OMniLeads Docker environment for production     ###
 ###########################################################
 
 You can have the software running in your system with this simple steps:
@@ -48,9 +48,15 @@ At beginning you will see that the oml-mariadb-prodenv container will be restart
 * FAQ *
 *******
 
+1. How do I change passwords of my services?
+
+There are two important password services:
+    - Omnileads web GUI: change the $DJANGO_PASS variable in .env file and restart the omniapp container
+    - Postgresql: edit the $PGPASSWORD variable in .env file, then use the **change_postgres_pass** script located in this folder. After that do docker-compose up -d to remake containers with new $PGPASSWORD
+
 These are typical issues you can encourage editing some variables in .env file.
 
-1. Overlap of network settings: By default the environment will use the subnet 192.168.15.0/24 for internal networking. If you are using this subnet in you LAN you can change these variables with new subnet configuration (or you can change your LAN):
+2. Overlap of network settings: By default the environment will use the subnet 192.168.15.0/24 for internal docker networking. If you are using this subnet in you LAN you can change these variables with new subnet configuration (or you can change your LAN):
 
   DIALER_IP=192.168.15.10
   KAMAILIO_IP=192.168.15.11
@@ -61,4 +67,4 @@ These are typical issues you can encourage editing some variables in .env file.
 
   WD_EXT_PORT=442  --> maps the 8080/tcp port in Wombat Dialer, to access WD GUI
   NGINX_EXT_PORT=444 --> maps the 443/tcp port in Omniapp to access OMniLeads GUI
-  PG_EXT_PORT=445  --> maps the 5038/tcp port in Postgresql to acces OMniLeads database 
+  PG_EXT_PORT=445  --> maps the 5038/tcp port in Postgresql to acces OMniLeads database
