@@ -9,7 +9,7 @@ services:
     dns: 8.8.8.8
     environment:
       - ASTERISK_LOCATION=${ASTERISK_LOCATION}
-      - PATH=${PATH}
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       - PGPASSWORD=${PGPASSWORD}
       - PGHOST=${PGHOST}
       - PGUSER=${PGUSER}
@@ -51,7 +51,7 @@ services:
       - asterisk
     dns: 8.8.8.8
     environment:
-      - PATH=${PATH}
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       - TZ=${TZ}
     image: freetechsolutions/kamailio:${RELEASE}
     networks:
@@ -83,7 +83,7 @@ services:
     container_name: oml-nginx-prodenv
     dns: 8.8.8.8
     environment:
-      - PATH=${PATH}
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       - TZ=${TZ}
     image: freetechsolutions/nginx:${RELEASE}
     networks:
@@ -102,13 +102,13 @@ services:
     container_name: oml-omniapp-prodenv
     dns: 8.8.8.8
     environment:
-      - DJANGO_ADMIN_PASS=${DJANGO_PASS}
       - AMI_USER=${AMI_USER}
       - AMI_PASSWORD=${AMI_PASSWORD}
       - ASTERISK_HOSTNAME=${ASTERISK_HOSTNAME}
       - ASTERISK_LOCATION=${ASTERISK_LOCATION}
       - CALIFICACION_REAGENDA=${CALIFICACION_REAGENDA}
       - DIALER_IP=${DIALER_IP}
+      - DJANGO_ADMIN_PASS=${DJANGO_PASS}
       - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
       - NGINX_HOSTNAME=${DOCKER_HOSTNAME}
       - EPHEMERAL_USER_TTL=${ECTTL}
@@ -119,7 +119,7 @@ services:
       - KAMAILIO_LOCATION=${KAMAILIO_LOCATION}
       - OMNILEADS_IP=${OMNILEADS_IP}
       - OMNILEADS_HOSTNAME=${OMNILEADS_HOSTNAME}
-      - PATH=${PATH}
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       - PGHOST=${PGHOST}
       - PGDATABASE=${PGDATABASE}
       - PGUSER=${PGUSER}

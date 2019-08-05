@@ -7,7 +7,8 @@ After=docker.service
 Type=oneshot
 User={{ docker_user }}
 RemainAfterExit=yes
-Environment=COMPOSE_FILE={{ deploy_location }}/devenv_stack.yml
+WorkingDirectory={{ deploy_location }}
+EnvironmentFile={{ deploy_location }}/.env
 ExecReload=/usr/local/bin/docker-compose up -d
 ExecStart=/usr/local/bin/docker-compose up -d
 ExecStop=/usr/local/bin/docker-compose down
