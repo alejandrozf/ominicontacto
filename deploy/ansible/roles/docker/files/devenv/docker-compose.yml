@@ -10,14 +10,12 @@ services:
       - postgresql
     dns: 8.8.8.8
     environment:
-      - ASTERISK_UID=1000
-      - ASTERISK_GID=1000
-      - ASTERISK_LOCATION=
+      - ASTERISK_LOCATION=${ASTERISK_LOCATION}
       - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-      - PGPASSWORD={{ postgres_password }}
-      - PGHOST={{ postgresql_fqdn }}
-      - PGUSER={{ postgres_user }}
-      - TZ={{ TZ }}
+      - PGPASSWORD=${PGPASSWORD}
+      - PGHOST=${PGHOST}
+      - PGUSER=${PGUSER}
+      - TZ=${TZ}
     image: freetechsolutions/asterisk:{{ asterisk_version }}
     networks:
       - dev_net
@@ -43,14 +41,14 @@ services:
       - mariadb
     dns: 8.8.8.8
     environment:
-      - TZ={{ TZ }}
-      - MYSQL_PWD={{ mysql_root_password }}
-    image: freetechsolutions/dialer:{{ wombat_version }}
+      - TZ=${TZ}
+      - MYSQL_PWD=${MYSQL_ROOT_PASS}
+    image: freetechsolutions/dialer:${DIALER_VERSION}
     networks:
       dev_net:
-        ipv4_address: {{ dialer_ip }}
+        ipv4_address: ${DIALER_IP}
     ports:
-      - "{{ wd_external_port }}:8080/tcp"
+      - ${WD_EXT_PORT}:8080/tcp
     privileged: true
     restart: on-failure
     stop_grace_period: 1m30s
@@ -63,7 +61,7 @@ services:
     dns: 8.8.8.8
     environment:
       - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-      - TZ={{ TZ }}
+      - TZ=${TZ}
     image: {{ kamailio_image }}
     networks:
       dev_net:
@@ -118,39 +116,40 @@ services:
     container_name: oml-{{ omniapp_fqdn }}-devenv
     dns: 8.8.8.8
     environment:
-      - AMI_USER={{ ami_user }}
-      - AMI_PASSWORD={{ ami_password }}
-      - ASTERISK_HOSTNAME={{ asterisk_fqdn }}
-      - ASTERISK_LOCATION=
-      - CALIFICACION_REAGENDA={{ schedule }}
-      - DIALER_IP={{ dialer_ip }}
-      - DJANGO_SETTINGS_MODULE=ominicontacto.settings.develop
-      - EPHEMERAL_USER_TTL=28800
-      - EXTERNAL_PORT={{ external_port }}
-      - INSTALL_PREFIX={{ install_prefix }}
-      - KAMAILIO_IP={{ kamailio_ip }}
-      - KAMAILIO_HOSTNAME={{ kamailio_fqdn }}
-      - KAMAILIO_LOCATION=
-      - NGINX_HOSTNAME={{ hostname.stdout }}
-      - OMNILEADS_IP={{ omniapp_ip }}
-      - OMNILEADS_HOSTNAME={{ omniapp_fqdn }}
+      - AMI_USER=${AMI_USER}
+      - AMI_PASSWORD=${AMI_PASSWORD}
+      - ASTERISK_HOSTNAME=${ASTERISK_HOSTNAME}
+      - ASTERISK_LOCATION=${ASTERISK_LOCATION}
+      - CALIFICACION_REAGENDA=${CALIFICACION_REAGENDA}
+      - DIALER_IP=${DIALER_IP}
+      - DJANGO_ADMIN_PASS=${DJANGO_PASS}
+      - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
+      - NGINX_HOSTNAME=${DOCKER_HOSTNAME}
+      - EPHEMERAL_USER_TTL=${ECTTL}
+      - EXTERNAL_PORT=${NGINX_EXT_PORT}
+      - INSTALL_PREFIX=${INSTALL_PREFIX}
+      - KAMAILIO_IP=${KAMAILIO_IP}
+      - KAMAILIO_HOSTNAME=${KAMAILIO_HOSTNAME}
+      - KAMAILIO_LOCATION=${KAMAILIO_LOCATION}
+      - OMNILEADS_IP=${OMNILEADS_IP}
+      - OMNILEADS_HOSTNAME=${OMNILEADS_HOSTNAME}
       - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-      - PGHOST={{ database_fqdn }}
-      - PGDATABASE={{ postgres_database }}
-      - PGUSER={{ postgres_user }}
-      - PGPASSWORD={{ postgres_password }}
-      - PYTHONPATH={{ install_prefix }}ominicontacto
-      - REDIS_HOSTNAME={{ redis_fqdn }}
-      - RTPENGINE_HOSTNAME={{ rtpengine_fqdn }}
-      - SESSION_COOKIE_AGE=3600
-      - TZ={{ TZ }}
-      - WOMBAT_HOSTNAME={{ dialer_fqdn }}
-      - WOMBAT_USER={{ dialer_user }}
-      - WOMBAT_PASSWORD={{ dialer_password }}
-    image: freetechsolutions/omniapp:{{ version }}
+      - PGHOST=${PGHOST}
+      - PGDATABASE=${PGDATABASE}
+      - PGUSER=${PGUSER}
+      - PGPASSWORD=${PGPASSWORD}
+      - PYTHONPATH=${PYTHONPATH}
+      - REDIS_HOSTNAME=${REDIS_HOSTNAME}
+      - RTPENGINE_HOSTNAME=${RTPENGINE_HOSTNAME}
+      - SESSION_COOKIE_AGE=${SCA}
+      - TZ=${TZ}
+      - WOMBAT_HOSTNAME=${WOMBAT_HOSTNAME}
+      - WOMBAT_USER=${WOMBAT_USER}
+      - WOMBAT_PASSWORD=${WOMBAT_PASSWORD}
+    image: freetechsolutions/omniapp:${DEVENV_VERSION}
     networks:
       dev_net:
-        ipv4_address: {{ omniapp_ip }}
+        ipv4_address: ${OMNILEADS_IP}
     privileged: true
     restart: on-failure
     stdin_open: true
@@ -171,15 +170,15 @@ services:
     container_name: oml-{{ postgresql_fqdn }}-devenv
     dns: 8.8.8.8
     environment:
-      - TZ={{ TZ }}
-      - POSTGRES_USER={{ postgres_user }}
-      - POSTGRES_PASSWORD={{ postgres_password }}
-      - POSTGRES_DB={{ postgres_database}}
-    image: freetechsolutions/postgresql:{{ postgresql_version }}
+      - TZ=${TZ}
+      - POSTGRES_USER=${PGUSER}
+      - POSTGRES_PASSWORD=${PGPASSWORD}
+      - POSTGRES_DB=${PGDATABASE}
+    image: freetechsolutions/postgresql:${POSTGRES_VERSION}
     networks:
       - dev_net
     ports:
-     - "{{ pg_external_port }}:5432/tcp"
+      - ${PG_EXT_PORT}:5432/tcp
     privileged: true
     restart: on-failure
     stop_grace_period: 1m30s
@@ -192,8 +191,8 @@ services:
     dns: 8.8.8.8
     environment:
       - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-      - TZ={{ TZ }}
-    image: freetechsolutions/pbx-emulator:0.1
+      - TZ=${TZ}
+    image: freetechsolutions/pbx-emulator:${PBXEMULATOR_VERSION}
     networks:
       - dev_net
     ports:
@@ -209,7 +208,7 @@ services:
     container_name: oml-{{ redis_fqdn }}-devenv
     dns: 8.8.8.8
     environment:
-      - TZ={{ TZ }}
+      - TZ=${TZ}
     networks:
       - dev_net
     image: {{ redis_image }}
@@ -221,8 +220,8 @@ services:
     container_name: oml-{{ rtpengine_fqdn }}-devenv
     dns: 8.8.8.8
     environment:
-      - TZ={{ TZ }}
-    image: freetechsolutions/rtpengine:{{ rtpengine_version }}
+      - TZ=${TZ}
+    image: freetechsolutions/rtpengine:${RTPENGINE_VERSION}
     networks:
       - dev_net
     privileged: true
@@ -234,7 +233,7 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: "{{ dev_subnet }}"
+        - subnet: "${SUBNET}"
 
 volumes:
   grabaciones:
