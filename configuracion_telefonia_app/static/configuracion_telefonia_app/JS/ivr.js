@@ -34,3 +34,22 @@ $(document).ready(function(){
   });
 
 });
+
+$(function() {
+  var opcionDestino = $('#opciondestino').val();
+  $('.opcionDestinoTr').formset({
+     addText: AGREGAR_DESTINO,
+     deleteText: REMOVER_CAMPO,
+     prefix: opcionDestino,
+     addCssClass: 'btn btn-outline-primary',
+     deleteCssClass: 'btn btn-outline-danger deleteFormset',
+     formCssClass: 'dynamic-formset',
+     added: function (row) {
+       row.each(function() {
+         var $tipoDestino = $(this).find('.tipoDestino');
+         var $destino = $(this).find('.destino');
+         nodosEntrantesCambioPorTipo($tipoDestino, $destino);
+       });
+     }
+  });
+});
