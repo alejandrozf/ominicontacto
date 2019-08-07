@@ -26,21 +26,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <script src="{% static 'ominicontacto/JS/ruta-entrante.js' %}"></script>
 {% endblock %}
 {% block head_js %}
-    <script type="text/javascript">
-     $(function() {
-       $('#id_detectar_contestadores').change(actualizarEstadoDeSelectorDeAudios);
-       actualizarEstadoDeSelectorDeAudios();
-     });
-
-     function actualizarEstadoDeSelectorDeAudios(){
-       var detectar = $('#id_detectar_contestadores').prop("checked");
-       if (!detectar){
-         $('#id_audio_para_contestadores').val('');
-       }
-       $('#id_audio_para_contestadores').prop("disabled", !detectar);
-     };
-
-    </script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/campana_dialer/create_update_queue.js' %}"></script>
 {% endblock %}
 
 {% block nav %}

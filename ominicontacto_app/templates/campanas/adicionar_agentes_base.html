@@ -29,20 +29,7 @@
 {% block extra_js %}
     <script src="{% static 'ominicontacto/JS/adicionarGruposAgentes.js' %}"></script>
     <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
-    <script type="text/javascript">
-     var $adicionarAgente = $('#adicionarAgente');
-     $('.linkFormset').formset({
-       addText: AGREGAR_AGENTE,
-       deleteText: REMOVER_CAMPO,
-       prefix: '{{ wizard.form.prefix }}',
-       addCssClass: 'addFormset btn btn-outline-primary',
-       deleteCssClass: 'deleteFormset btn btn-outline-danger',
-       addMultRows: {'button': $adicionarAgente,
-                     'function': obtenerAgentesGrupos,
-                     'post_function': eliminarPrimeraFilaVacia},
-       added: function (row) {asociarDatosRow(row);}
-     });
-    </script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/adicionar_agentes_base.js' %}"></script>
 {% endblock %}
 
 {% block formset_render %}

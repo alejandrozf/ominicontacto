@@ -20,19 +20,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% extends "campanas/wizard_base.html" %}
 {% load i18n %}
 {% load widget_tweaks %}
+{% load static %}
 
 {% block head_js %}
-    <script>
-     $(document).ready(function() {
-       $('#id_hora_desde').datetimepicker({
-         format: 'HH:mm',
-       });
-       $('#id_hora_hasta').datetimepicker({
-         format: 'HH:mm',
-       });
-
-     });
-    </script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/campana_dialer/actuacion_vigente_campana.js' %}"></script>
 {% endblock %}
 
 {% block nav %}

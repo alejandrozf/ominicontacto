@@ -29,11 +29,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% block extra_js %}
     <script type="text/javascript" src="{% static 'ominicontacto/JS/interaccionsitioexterno.js' %}"></script>
-    <script type="text/javascript">
-        $(function(){
-            interaccionUrl();
-        });
-    </script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/campana_entrante/nueva_edita_campana.js' %}"></script>
 {% endblock %}
 
 {% block nav %}

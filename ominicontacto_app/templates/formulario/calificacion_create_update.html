@@ -47,12 +47,12 @@
          }
         </style>
 
-        <script type="text/javascript">
-            var configuracion_sitio_externo = {{ configuracion_sitio_externo|safe }};
+        <script type="text/javascript" src="{% static 'ominicontacto/JS/formulario/calificacion_create_update.js' %}">
         </script>
 
     </head>
     <body>
+        <input class="hidden" value="{{ configuracion_sitio_externo|safe }}" id="configuracionSitioExterno">
         {% include 'messages.html' %}
 
         {% if campana.mostrar_nombre %}

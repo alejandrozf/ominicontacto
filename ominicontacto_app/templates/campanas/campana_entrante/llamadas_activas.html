@@ -22,16 +22,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 
 {% block head_js %}
-<script type="text/javascript">
-    $(document).ready(function() {
-
-        setInterval(function() {
-            window.location.reload(true)
-        }, 5000);
-
-    });
-
-</script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/campana_entrante/llamadas_activas.js' %}"></script>
 {% endblock %}
 
 {% block content %}

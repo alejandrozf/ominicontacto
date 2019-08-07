@@ -29,18 +29,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% block extra_js %}
     <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
-    <script type="text/javascript">
-     /* adiciona plugin 'jquery.formset.js' para generar forms dinamicamente
-        en un formset  */
-     $('.agentes').formset({
-       addText: AGREGAR_AGENTE,
-       deleteText: REMOVER_CAMPO,
-       prefix: '{{ agente_en_sistema_externo_formset.prefix }}',
-       addCssClass: 'btn btn-outline-primary agentes',
-       deleteCssClass: 'btn btn-outline-danger agentes',
-       formCssClass: 'dynamic-formset1',
-     });
-    </script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/sistema_externo.js' %}"></script>
 {% endblock %}
 
 {% block content %}

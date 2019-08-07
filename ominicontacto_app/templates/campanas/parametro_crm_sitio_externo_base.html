@@ -28,16 +28,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% block extra_js %}
     <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
-    <script type="text/javascript">
-     debugger;
-     $('.linkFormset').formset({
-       addText: AGREGAR_PARAMETRO,
-       deleteText: REMOVER_CAMPO,
-       prefix: '{{ wizard.form.prefix }}',
-       addCssClass: 'addFormset btn btn-outline-primary',
-       deleteCssClass: 'deleteFormset btn btn-outline-danger',
-     });
-    </script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/parametro_crm_sitio_externo_base.js' %}"></script>
 {% endblock %}
 
 {% block formset_render %}

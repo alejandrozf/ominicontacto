@@ -22,32 +22,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 
 {% block head_js %}
-    <script type="text/javascript">
-     $(function(){
-       $(".btn-submit").click(function (){
-         var campana_id = $(this).attr("id");
-         var action = $(this).attr("name");
-         submit_form(campana_id, action);
-       })
-
-       function submit_form(campana_id, action){
-         $("#campana_id").val(campana_id);
-         $("#form_estados_campanas").attr("action", action);
-         $("#form_estados_campanas").submit();
-       }
-     });
-
-
-     function mostrar_campanas_ocultas() {
-
-       $.get(Urls.campana_manual_mostrar_ocultas(),
-             function (data) {
-               $('#t_body_borradas').html(data);
-
-             });
-     }
-     ;
-    </script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/campana_manual/campana_list_base.js' %}"></script>
 {% endblock %}
 
 {% block content %}
