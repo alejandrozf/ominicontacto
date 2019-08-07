@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
@@ -20,7 +19,7 @@ msgstr ""
 # d404b9dd118e44b18a8a8c88cc3d07f2
 #: ../../output_reports_general.rst:2
 msgid "Reporte general de llamadas"
-msgstr ""
+msgstr "Calls General Report"
 
 # 87fbd537dad348f197b76e6868d5d6b1
 #: ../../output_reports_general.rst:4
@@ -29,6 +28,9 @@ msgid ""
 "rango de fechas. El mismo expone información sobre todas las llamadas "
 "transaccionadas por la plataforma dentro de la fecha acotada."
 msgstr ""
+"The report can be run as in all cases, based on a date or "
+"date range. It displays information about all calls "
+"managed by the platform according to the filter selected."
 
 # 42a446c40ccd4365bebcbe931e9414c3
 #: ../../output_reports_general.rst:7
@@ -36,26 +38,28 @@ msgid ""
 "El primer informe que se nos presenta tiene que ver con esa totalidad de "
 "llamadas transaccionadas por la plataforma clasificadas en:"
 msgstr ""
+"The first report has to do with the total amount of "
+"calls transacted by the platform, classified in:"
 
 # a3d6cd2a06a54ae7bbd23507485bbc37
 #: ../../output_reports_general.rst:10
 msgid "Llamadas manuales"
-msgstr ""
+msgstr "Manual Outbound Calls"
 
 # 157755b3b2ca4f169754ccd2430b889d
 #: ../../output_reports_general.rst:11
 msgid "Llamadas de campañas preview"
-msgstr ""
+msgstr "Preview Outbound Calls"
 
 # 1653d0d0ddaa4f56852ed0203482d135
 #: ../../output_reports_general.rst:12
 msgid "Llamadas de campañas predictivas"
-msgstr ""
+msgstr "Predictive Outbound Calls"
 
 # f1e6186cf5cf4baf8bfb45b5d07ff0f1
 #: ../../output_reports_general.rst:13
 msgid "Llamadas de campañas entrantes"
-msgstr ""
+msgstr "Inbound Calls"
 
 # b7e1fc8726ed4412a2ecf6954177a3f1
 #: ../../output_reports_general.rst:17
@@ -68,6 +72,8 @@ msgid ""
 "Además se detalla la información en términos de si las llamadas fueron o "
 "no \"conectadas\"."
 msgstr ""
+"The information is also detailed in terms of whether the calls were connected or "
+"not \"connected\"."
 
 # a38e6d491bd94cdf8de4e9b6cf82c65c
 #: ../../output_reports_general.rst:21
@@ -75,6 +81,8 @@ msgid ""
 "Luego aparecen un par de gráficos que representan las estadísticas arriba"
 " mencionadas."
 msgstr ""
+"Then there are a couple of graphs that represent the statistics above "
+"mentioned."
 
 # 2674d8776d764083b53c9035d4033f2c
 #: ../../output_reports_general.rst:25
@@ -89,6 +97,9 @@ msgid ""
 "plataforma en términos de las campañas por donde fueron procesadas las "
 "mismas."
 msgstr ""
+"The following information is presented as a table in which all "
+"calls transacted by the "
+"platform can be divided in terms of the campaigns where they were processed."
 
 # 0f738852e7374dce8e1021042413c2d2
 #: ../../output_reports_general.rst:32
@@ -104,6 +115,10 @@ msgid ""
 "a su vez dentro de cada una de estas clasificaciones se descompone en las"
 " campañas puntuales de cada tipo de llamada."
 msgstr ""
+"In the following three sections, it is presented in a tabular and graphic way "
+"a breakdown of all calls processed by OMniLeads in "
+"terms of its nature (incoming, manual, preview and predictive). Then, for each type of campaign, "
+"all call information can be seen according to each type of call."
 
 # 657bcefe15fd4967aedc23bed3a92ac5
 #: ../../output_reports_general.rst:38
@@ -112,11 +127,13 @@ msgid ""
 "campaña a partir de la exposición de la información tanto tabular como "
 "gráficamente."
 msgstr ""
+"This way you can quickly deduce the effectiveness of each "
+"campaign analyzing tabular and graphical information."
 
 # df045ade68e6486dbee4ffde84a4ade8
 #: ../../output_reports_general.rst:41
 msgid "Llamadas predictivas"
-msgstr ""
+msgstr "Predictive Calls"
 
 # 85ec53d46510400a878207bd5c6c5ba0
 #: ../../output_reports_general.rst:45
@@ -126,7 +143,7 @@ msgstr ""
 # 8a374092f5be432292845bc92889714b
 #: ../../output_reports_general.rst:47
 msgid "Llamadas preview"
-msgstr ""
+msgstr "Preview Calls"
 
 # e111999bab6841e7a3dea600c09a0591
 #: ../../output_reports_general.rst:51
@@ -136,7 +153,7 @@ msgstr ""
 # 36c49e6fe9bc43eca0ab7e60abcc283a
 #: ../../output_reports_general.rst:53
 msgid "Llamadas entrantes"
-msgstr ""
+msgstr "Inbound Calls"
 
 # c9f0c4304bd144c4bb0f8168018d0aad
 #: ../../output_reports_general.rst:58

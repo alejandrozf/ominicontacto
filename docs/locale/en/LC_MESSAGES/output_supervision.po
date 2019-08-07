@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
@@ -28,6 +27,8 @@ msgid ""
 "Este módulo permite visualizar el estado de las campañas entrantes, "
 "campañas salientes (Manual, Dialer y Preview) y agentes."
 msgstr ""
+"This module allows Supervisors to view the status of Inbound Campaigns, "
+"Outbound Campaigns (Manual, Dialer and Preview) and Agents."
 
 # 8690e25346954f4c8a49f4f91f3fa8bd
 #: ../../output_supervision.rst:8
@@ -37,7 +38,7 @@ msgstr ""
 # cfcc3f940dea45be8d51c388fcca2438
 #: ../../output_supervision.rst:11
 msgid "Visualización de status de Agentes"
-msgstr ""
+msgstr "Agent Status View"
 
 # 1d9c6a92611945d8adb02f2e7867be07
 #: ../../output_supervision.rst:13
@@ -46,6 +47,9 @@ msgid ""
 "sistema y el estado en el que se encuentran (READY, OnCall, Paused, "
 "Dialing, Offline) ."
 msgstr ""
+"In Agent section, it is possible to appreciate all the Active Agents operating on the "
+"system and the status they are in (Ready, On Call, Paused, "
+"Dialing, Offline)."
 
 # d2e413431ff24855bafe5e584dc44193
 #: ../../output_supervision.rst:17
@@ -53,6 +57,8 @@ msgid ""
 "Un agente debe estar asignado al menos a una campaña para que aparezca en"
 " este módulo"
 msgstr ""
+"Agents must be assigned to at least one campaign in order to appear in "
+"this supervision view."
 
 # edcb34ae35d1495da944747160144467
 #: ../../output_supervision.rst:18
@@ -60,6 +66,8 @@ msgid ""
 "Cuando un agente pasa al estado \"Offline\" permanece solo unos segundos "
 "en dicho estado y luego desaparece del listado de agentes."
 msgstr ""
+"When an agent logs out of the system, she/he changes the active status to \"Offline\", remaining only a few seconds "
+"in that transition before disappearing from the list of agents."
 
 # affb587df10b4538b6b7bc65b0f60c3d
 #: ../../output_supervision.rst:22
@@ -73,6 +81,8 @@ msgid ""
 "cuatro botones que aparecen al lado del estado. A continuación se "
 "describe la función de cada uno (de izquierda a derecha):"
 msgstr ""
+"Supervisors are able to take some actions on each agent. That is the reason why action buttons appear next to the agent "
+"status. All possible functions will be explained further below (from left to right)."
 
 # a2898782bbb640fdb44d080fa1dd9893
 #: ../../output_supervision.rst:26
@@ -81,6 +91,8 @@ msgid ""
 "cliente. Hacer click en el botón *Finalizar* para terminar de escuchar, "
 "en cualquier momento"
 msgstr ""
+"**Spy:** the supervisor listens the *active call* between agent and "
+"customer. Clicking on *Finish* button, allows the supervisor to finish the listening action."
 
 # 459259db6f484023a078d2daad94bd12
 #: ../../output_supervision.rst:27
@@ -89,6 +101,8 @@ msgid ""
 "cliente lo perciba, durante una **llamada activa**. Hacer click en el "
 "botón *Finalizar* para terminar de escuchar, en cualquier momento"
 msgstr ""
+"**Spy and Whisper:** the supervisor is able to listen and speak during an agent conversation without customer perception. "
+"Clicking on *Finish* button, allows supervisor to finish listening and whispering actions."
 
 # 351a2c0588a04b44ad8a2a5dba441869
 #: ../../output_supervision.rst:28
@@ -98,6 +112,9 @@ msgid ""
 "para que no reciba llamadas. Puede despausar oprimiendo nuevamente este "
 "botón."
 msgstr ""
+"**Pause Agent:** assuming the agent is out of the box and forgot to "
+"pause the session, the supervisor is able to force a pause action from supervisor view. This is useful as to avoid receiving calls while "
+"agent is absent but ready. Supervisor can also un-pause session by pressing the same button again."
 
 # 2ea609208af049d18400392bab63a042
 #: ../../output_supervision.rst:29
@@ -109,6 +126,9 @@ msgid ""
 " este proceso para no tener tiempos de sesión incoherentes en el reporte "
 "de agentes."
 msgstr ""
+"**Logging Out Agent:** assuming the agent closes browser session incorrectly (without using Log-Out button), agent session still remains active."
+" Supervisor has the ability to log agent out with this button. It is important to perform this action "
+"as to avoid having inconsistencies in session time reports (and more important to instruct agent to close session from log-out button!)."
 
 # 47a4c76ba5b046508a8c173c5a131783
 #: ../../output_supervision.rst:33
@@ -117,11 +137,14 @@ msgid ""
 "acciones es necesario que aparezca el mensaje de **Supervisor "
 "Registrado**."
 msgstr ""
+"The supervisor has a small webphone. In order to perform all the possible "
+"actions stated above, a message of **Supervisor "
+"Registered** needs to be present on supervisor console."
 
 # a087724f64794be78e1a16aab5ed712e
 #: ../../output_supervision.rst:36
 msgid "Visualización de campañas entrantes"
-msgstr ""
+msgstr "Inbound Campaigns View"
 
 # 43033086c56b48a390a8e9f0ff215216
 #: ../../output_supervision.rst:38
@@ -131,6 +154,10 @@ msgid ""
 "llamadas recibidas, atendidas, abandonadas, expiradas y gestiones (*) "
 "positivas dentro de cada campaña."
 msgstr ""
+"This view exposes a summary of all productive Inbound Campaigns, "
+"in terms of the accumulated results of the operation day: "
+"received calls, answered calls, abandoned calls, expired calls and Engaged Call Dispositions (*) "
+"per campaign."
 
 # f25b139122384d0286a8abb39ee0890f
 #: ../../output_supervision.rst:42
@@ -140,7 +167,7 @@ msgstr ""
 # 76863a78aced4542ae7438c45438d114
 #: ../../output_supervision.rst:45
 msgid "Visualización de campañas salientes"
-msgstr ""
+msgstr "Outbound Campaigns View"
 
 # 6c76c3d3c7eb433f9d6060721935749c
 #: ../../output_supervision.rst:47
@@ -150,6 +177,9 @@ msgid ""
 "campaña; llamadas discadas, atendidas, no atendidas y las gestiones (*) "
 "positivas de cada una."
 msgstr ""
+"As in the previous point, Outbound Campaigns also count on "
+"with a real time summary of the results for each "
+"campaign: dialed calls, answered calls, not answered calls, and their respective Engaged Call Dispositions (*)."
 
 # 8180f01288674ad4b692f8a05e757092
 #: ../../output_supervision.rst:51
@@ -163,6 +193,8 @@ msgid ""
 "23:59. En el siguiente día las estadísticas de campañas entrantes y "
 "salientes se resetean."
 msgstr ""
+"It is expected for this view to display results on a day-by-day basis, from 00:00 to "
+"23:59. After that time range, statistics are reset."
 
 # 988cd24aa16a400cbe63a191ee6cfc10
 #: ../../output_supervision.rst:59
@@ -171,6 +203,8 @@ msgid ""
 " una calificación de gestión, calificación capaz de ejecutar un "
 "formulario de campaña."
 msgstr ""
+"Engaged Call means a call that the agent closes with "
+"an engaged call disposition, the one in charged of triggering a campaign form."
 
 #~ msgid "Telephony"
 #~ msgstr ""
