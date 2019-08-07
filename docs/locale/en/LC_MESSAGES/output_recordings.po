@@ -20,7 +20,7 @@ msgstr ""
 # 0b2c3af7d4e2469e8231301904469cd0
 #: ../../output_recordings.rst:2
 msgid "Grabaciones"
-msgstr ""
+msgstr "Recordings"
 
 # e72e844ac17b46e2a1c98fb6fec391b0
 #: ../../output_recordings.rst:4
@@ -31,6 +31,9 @@ msgid ""
 "que nos permiten filtrar y recuperar grabaciones de acuerdo a criterios "
 "como:"
 msgstr ""
+"In order to access the recording search engine, go to "
+"*Recordings* Menu. The module view can be seen below, where a "
+"list of recordings is displayed according to a filter criteria like date and a set of parameters as:"
 
 # ae1487356da144a5bc5cf53c422b8000
 #: ../../output_recordings.rst:8
@@ -38,6 +41,7 @@ msgid ""
 "**Fecha:** permite acotar la búsqueda a una fecja o rango de fechas en "
 "particular."
 msgstr ""
+"**Date:** allows to filter your search by date or specific date range."
 
 # 1e84032750fb4f12b05ec347bfca2593
 #: ../../output_recordings.rst:9
@@ -45,6 +49,8 @@ msgid ""
 "**Tipo de llamada:** se puede filtrar por tipo de llamada (manua, "
 "entrante, preview o de discador predictivo)."
 msgstr ""
+"**Call Type:** allows to filter according to call type criteria (manual, "
+"incoming, preview, predictive dialer)."
 
 # 91bfa4b78bd74b35b2f06e2d9a91ebc9
 #: ../../output_recordings.rst:10
@@ -52,6 +58,8 @@ msgid ""
 "**Teléfono del contacto:** este campo permite acotar la búsqueda a "
 "llamadas en las que un teléfono puntual esté involucrado."
 msgstr ""
+"**Phone Number:** this field allows to filter search engine by "
+"a specific telephone number."
 
 # 223f1e6eeb9c44ffa551162d1ef25cbe
 #: ../../output_recordings.rst:11
@@ -59,11 +67,13 @@ msgid ""
 "**Agente:** se puede acotar la búsqueda a llamadas en las que un agente "
 "puntual esté involucrado en la grabación."
 msgstr ""
+"**Agent:** allows to filter search engine for calls managed by specific agent."
 
 # 881fd75f31104b49a37385e9ddd3707a
 #: ../../output_recordings.rst:12
 msgid "**Campaña:** filtro para listar llamadas asociadas a una cierta campaña."
 msgstr ""
+"**Campaign:** allows to filter search engine for calls managed by specific campaign."
 
 # b3825a0ef1024e99a2b3a5bfc5a70a2b
 #: ../../output_recordings.rst:13
@@ -72,6 +82,8 @@ msgid ""
 "llamadas que hayan sido observadas por el agente mediante el botón "
 "pertinente de su consola."
 msgstr ""
+"**Checked:** this check is used to recover recordings of "
+"calls that have been observed/marked by agent during conversation."
 
 # ba6c541771cf440c8b860421412fa291
 #: ../../output_recordings.rst:14
@@ -79,6 +91,8 @@ msgid ""
 "**Duración mínima:** este campo sirve para acotar la búsqueda a "
 "grabaciones que una cirta duración mínima."
 msgstr ""
+"**Minimum duration:** this field is used to limit search engine for "
+"Recordings with a specific value of duration, as minimum."
 
 # 5a75ec490ebc46509bc0ff1fb23d847e
 #: ../../output_recordings.rst:15
@@ -89,6 +103,10 @@ msgid ""
 "caso, este check permite recuperar llamadas calificadas con dicho tipo de"
 " calificación. (por ejemplo; ventas, encuesta, etc.)"
 msgstr ""
+"**Engaged Calls:** as we well know, in "
+"OMniLeads there are normal Call Dispositions and \"Engaged"
+" Call Dispositions\". Last one triggers campaign forms. In this "
+"case, this check allows administrator/supervisor to recover dispositioned calls of type Engaged."
 
 # e50abbeb04b14ef092314d084f2a90fe
 #: ../../output_recordings.rst:19
