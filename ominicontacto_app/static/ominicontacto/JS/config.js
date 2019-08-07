@@ -14,10 +14,9 @@
 
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see http://www.gnu.org/licenses/.
-
 */
 
-function liberar_contacto(agente_id){
-    $("#agente_id").val(agente_id);
-    $("#liberar_contacto_form").submit();
-};
+
+var KamailioHost = $('#kamailiohost').val();
+var WebSocketHost = $('#nginxhost').val();
+var WebSocketPort = $('#externalport').val();

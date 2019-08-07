@@ -20,11 +20,14 @@
 
 /* adiciona plugin 'jquery.formset.js' para generar forms dinamicamente
         en un formset  */
-     $('.agentes').formset({
-       addText: AGREGAR_AGENTE,
-       deleteText: REMOVER_CAMPO,
-       prefix: '{{ agente_en_sistema_externo_formset.prefix }}',
-       addCssClass: 'btn btn-outline-primary agentes',
-       deleteCssClass: 'btn btn-outline-danger agentes',
-       formCssClass: 'dynamic-formset1',
-     });
+$(function() {
+	 var agenteSistemaExterno = $('#agentesistemaexterno').val();
+	 $('.agentes').formset({
+	   addText: AGREGAR_AGENTE,
+	   deleteText: REMOVER_CAMPO,
+	   prefix: agenteSistemaExterno,
+	   addCssClass: 'btn btn-outline-primary agentes',
+	   deleteCssClass: 'btn btn-outline-danger agentes',
+	   formCssClass: 'dynamic-formset1',
+	 });
+});

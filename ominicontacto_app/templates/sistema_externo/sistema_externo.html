@@ -35,7 +35,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block content %}
 
     {% block header %}{% endblock %}
-
+    <input class="hidden" value="{{ agente_en_sistema_externo_formset.prefix }}" id="agentesistemaexterno">
     <form action="" role="form" method="POST">
         {% include "base_form_fields.html" with form=form %}
 

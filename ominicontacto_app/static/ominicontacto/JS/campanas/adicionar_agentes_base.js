@@ -18,10 +18,11 @@
 */
 
 var $adicionarAgente = $('#adicionarAgente');
+var $wizard = $('#wizard');
      $('.linkFormset').formset({
        addText: AGREGAR_AGENTE,
        deleteText: REMOVER_CAMPO,
-       prefix: '{{ wizard.form.prefix }}',
+       prefix: wizard,
        addCssClass: 'addFormset btn btn-outline-primary',
        deleteCssClass: 'deleteFormset btn btn-outline-danger',
        addMultRows: {'button': $adicionarAgente,

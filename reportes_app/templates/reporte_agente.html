@@ -21,38 +21,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 {% load i18n %}
 {% block head_js %}
-<script type="text/javascript">
- $(function() {
-   var start = moment();
-   var end = moment();
-   function cb(start, end) {
-     $('#id_fecha').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
-   }
-
-   $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
-      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-   });
-
-   $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
-      $(this).val('');
-   });
-
-   // Init daterange plugin
-   var ranges = get_ranges();
-   $('#id_fecha').daterangepicker(
-     {
-       locale: {
-         format: 'DD/MM/YYYY'
-       },
-       startDate: start,
-       endDate: end,
-       ranges: ranges,
-     }, cb);
-
-   cb(start, end);
-
- });
-</script>
+  <script type="text/javascript" src="{% static 'reportes_app/JS/reporte_agente.js' %}"></script>
 {% endblock %}
 {% block content %}
  <script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.min.js' %}"></script>

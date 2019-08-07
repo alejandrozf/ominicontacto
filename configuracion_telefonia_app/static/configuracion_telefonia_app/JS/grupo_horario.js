@@ -17,21 +17,19 @@
 
 */
  $(function() {
-   $('.tiempo').datetimepicker({format: 'HH:mm'});
- });
-$(function() {
-	 var validacionTiempo = $('#validaciontiempo').val();
-	 $('.validacionTiempoTr').formset({
-	   addText: AGREGAR_VALIDACION,
-	   deleteText: REMOVER_CAMPO,
-	   prefix: validacionTiempo,
-	   addCssClass: 'btn btn-outline-primary',
-	   deleteCssClass: 'btn btn-outline-danger deleteFormset',
-	   formCssClass: 'dynamic-formset',
-	   added: function (row) {
-	     $(row.find('.tiempo')).each(function () {
-	       $(this).datetimepicker({format: 'HH:mm'});
-	     });
-	   }
-	 });
+    $('.tiempo').datetimepicker({format: 'HH:mm'});
+	var validacionTiempo = $('#validaciontiempo').val();
+	$('.validacionTiempoTr').formset({
+	  addText: AGREGAR_VALIDACION,
+	  deleteText: REMOVER_CAMPO,
+	  prefix: validacionTiempo,
+	  addCssClass: 'btn btn-outline-primary',
+	  deleteCssClass: 'btn btn-outline-danger deleteFormset',
+	  formCssClass: 'dynamic-formset',
+	  added: function (row) {
+	    $(row.find('.tiempo')).each(function () {
+	      $(this).datetimepicker({format: 'HH:mm'});
+	    });
+	  }
+	});
 });

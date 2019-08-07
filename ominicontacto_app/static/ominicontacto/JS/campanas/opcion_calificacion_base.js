@@ -16,13 +16,13 @@
  along with this program.  If not, see http://www.gnu.org/licenses/.
 
 */
-
+  var wizard = $('#wizard').val();
      /* adiciona plugin 'jquery.formset.js' para generar forms dinamicamente
         en un formset  */
      $('.linkFormset').formset({
        addText: AGREGAR_CAMPO,
        deleteText: REMOVER_CAMPO,
-       prefix: '{{ wizard.form.prefix }}',
+       prefix: wizard,
        addCssClass: 'addFormset btn btn-outline-primary',
        deleteCssClass: 'deleteFormset btn btn-outline-danger',
        added: function (row) {
