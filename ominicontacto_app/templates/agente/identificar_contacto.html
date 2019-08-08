@@ -107,8 +107,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {% trans "Es contacto nuevo" %}
                 </button>
             </a>
-            <a href="javascript:;" onclick="makeClick2Call('{{ campana.pk }}', '{{ campana.type }}', '-1', '{{ telefono }}', 'contactos');">
-                <button type="button" id="id_buscar_btn" class="btn btn-primary">
+            <a href="javascript:;" onclick="makeClick2Call('{{ campana.pk }}', '{{ campana.type }}', '-1', '{{ telefono }}', 'contactos');" id="llamarSinIdentificar">
+                <button type="button" id="id_btn_no_identificar" class="btn btn-primary">
                     {% trans "Llamar sin identificar" %}
                 </button>
             </a>
