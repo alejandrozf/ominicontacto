@@ -1,0 +1,20 @@
+FROM selenium/standalone-chrome-debug
+USER root
+
+# Install pulse audio
+RUN apt-get -qq update && apt-get install -y pulseaudio python-pip xvfb
+
+# Copy some media files into place
+RUN mkdir -p /opt/media
+COPY audio1.wav /opt/media/audio1.wav
+COPY audio2.wav /opt/media/audio2.wav
+USER seluser
+RUN pip install selenium pyvirtualdisplay
+
+# Use custom entrypoint
+COPY entrypoint.sh /opt/bin/entrypoint.sh
+USER root
+RUN chmod 755 /opt/bin/entrypoint.sh
+
+USER seluser
+ENTRYPOINT /opt/bin/entrypoint.sh

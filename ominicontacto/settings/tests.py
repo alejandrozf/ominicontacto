@@ -71,7 +71,6 @@ DATABASES = {
         'PORT': 5432,
         'NAME': 'omnileads',
         'USER': 'omnileads',
-        'PASSWORD': 'admin123',
         'CONN_MAX_AGE': 300,
         'ATOMIC_REQUESTS': True,
     }
