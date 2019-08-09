@@ -55,6 +55,7 @@ test:
     DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
     DJANGO_SETTINGS_MODULE: "ominicontacto.settings.gitlab"
   script:
+    - python checks.py
     - flake8
     - python manage.py test --failfast
     - python manage.py compilemessages
