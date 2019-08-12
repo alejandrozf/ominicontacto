@@ -68,7 +68,7 @@ class RegeneracionAsteriskService(object):
         self.reload_asterisk_config = AsteriskConfigReloader()
 
         # parámetros de script que desloguea agentes inactivos
-        self.tarea_programada_logout_id = 'asterisk_logout_script'
+        self.tareas_programadas_ids = ['asterisk_logout_script', 'queue_log_clean_job']
         self.TIEMPO_CHEQUEO_CONTACTOS_INACTIVOS = 2
 
     def _generar_y_recargar_configuracion_asterisk(self):
@@ -113,7 +113,7 @@ class RegeneracionAsteriskService(object):
         ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python')
         ruta_script_logout = os.path.join(settings.INSTALL_PREFIX, 'bin/omni-asterisk-logout.py')
         # adicionar nuevo cron job para esta tarea si no existe anteriormente
-        job = crontab.find_comment(self.tarea_programada_logout_id)
+        job = crontab.find_comment(self.tareas_programadas_ids[0])
         if list(job) == []:
             install_prefix = 'INSTALL_PREFIX={0}'.format(settings.INSTALL_PREFIX)
             ami_user = 'AMI_USER={0}'.format(settings.AMI_USER)
@@ -123,11 +123,35 @@ class RegeneracionAsteriskService(object):
                 command='{0} {1} {2} {3} {4} {5}'.format(
                     install_prefix, ami_user, ami_password, asterisk_hostname,
                     ruta_python_virtualenv, ruta_script_logout),
-                comment=self.tarea_programada_logout_id)
+                comment=self.tareas_programadas_ids[0])
             # adicionar tiempo de print()eriodicidad al cron job
             job.minute.every(self.TIEMPO_CHEQUEO_CONTACTOS_INACTIVOS)
+            crontab.write_to_user(user=getpass.getuser())
+
+    def _generar_tarea_limpieza_diaria_queuelog(self):
+        """Adiciona una tarea programada para limpiar la tabla queue_log
+        diariamente
+        """
+        # conectar con cron
+        crontab = CronTab(user=getpass.getuser())
+        ruta_psql = os.popen('which psql').read()[:-1]
+        # adicionar nuevo cron job para esta tarea si no existe anteriormente
+        job = crontab.find_comment(self.tareas_programadas_ids[1])
+        if list(job) == []:
+            postgres_user = settings.POSTGRES_USER
+            postgres_host = settings.POSTGRES_HOST
+            postgres_database = settings.POSTGRES_DATABASE
+            postgres_password = 'PGPASSWORD={0}'.format(os.getenv('PGPASSWORD'))
+            job = crontab.new(
+                command='{0} {1} -U {2} -h {3} -d {4} -c \'DELETE FROM queue_log\''.format(
+                    postgres_password, ruta_psql, postgres_user, postgres_host,
+                    postgres_database),
+                comment=self.tareas_programadas_ids[1])
+            # adicionar tiempo de print()eriodicidad al cron job
+            job.hour.on(2)
             crontab.write_to_user(user=getpass.getuser())
 
     def regenerar(self):
         self._generar_y_recargar_configuracion_asterisk()
         self._generar_tarea_script_logout_agentes_inactivos()
+        self._generar_tarea_limpieza_diaria_queuelog()
