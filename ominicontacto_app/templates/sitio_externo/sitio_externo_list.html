@@ -22,16 +22,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 {% load js_reverse %}
 {% block head_js %}
-    <script type="text/javascript">
-        {% js_reverse_inline %}
-        function mostrar_sitios_ocultos() {
-
-            $.get(Urls.mostrar_sitios_externo_ocultos(),
-                    function (data) {
-                        $('#t_body_ocultas').html(data);
-                    });
-        }
-    </script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/sitio_externo_list.js' %}"></script>
 {% endblock %}
 
 {% block content %}

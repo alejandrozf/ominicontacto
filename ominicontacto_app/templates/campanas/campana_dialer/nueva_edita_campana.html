@@ -26,32 +26,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
   <script type="text/javascript"
           src="{% static 'ominicontacto/JS/agente/formularioNuevaEditaCampana.js' %}">
   </script>
-
-    {% get_current_language as LANGUAGE_CODE %}
-    <script>
-     $(document).ready(function() {
-       var fechaInicio = $('#id_fecha_inicio').val();
-       var fechaFinal = $('#id_fecha_fin').val();
-       $('#id_fecha_inicio').datetimepicker({format: 'L', locale: '{{ LANGUAGE_CODE }}'});
-       $('#id_fecha_fin').datetimepicker({format: 'L', locale: '{{ LANGUAGE_CODE }}'});
-       if (fechaInicio != "" && fechaFinal != "") {
-         /* si los entradas de fecha tenían valor se los restituimos */
-         $('#id_fecha_inicio').val(fechaInicio);
-         $('#id_fecha_fin').val(fechaFinal);
-       }
-     });
-    </script>
 {% endblock %}
+
 {% block extra_js %}
     <script type="text/javascript" src="{% static 'ominicontacto/JS/interaccionsitioexterno.js' %}"></script>
-    <script type="text/javascript">
-        $(function(){
-            interaccionUrl();
-        });
-    </script>
+    {% get_current_language as LANGUAGE_CODE %}
+  <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/campana_dialer/nueva_edita_campana.js' %}"></script>
 {% endblock %}
 
 {% block nav %}
+<input class="hidden" value="{{ LANGUAGE_CODE }}" id="languageCode">
     <h1>{% trans 'Campaña Dialer: Datos Básicos' %} {% if not form.instance.pk %}<span style="color:red;">- {% trans 'Canales en uso:' %} {{ canales_en_uso }}{% endif %}</h1>
 
     <ul class="nav nav-indicators">

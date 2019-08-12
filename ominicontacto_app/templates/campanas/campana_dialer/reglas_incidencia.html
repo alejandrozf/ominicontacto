@@ -25,15 +25,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% endblock %}
 
 {% block head_js %}
-    <script>
-     $(document).ready(function() {
-       $('#id_hora_desde').datetimepicker({
-         format: 'HH:mm',
-       });
-       $('#id_hora_hasta').datetimepicker({
-         format: 'HH:mm',
-       });
-     });
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/campana_dialer/reglas_incidencia.js' %}">
     </script>
 {% endblock %}
 

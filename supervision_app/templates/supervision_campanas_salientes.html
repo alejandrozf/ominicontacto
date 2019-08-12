@@ -23,10 +23,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% block head_js %}
     <script type="text/javascript" src="{% static 'supervision_app/JS/campanas_salientes.js' %}"></script>
+    {% include 'config.html' %}
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/config.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-{% include 'config.html' %}
 <h1>{% trans 'Campañas Salientes' %}</h1>
 <div>
     <table class="table">

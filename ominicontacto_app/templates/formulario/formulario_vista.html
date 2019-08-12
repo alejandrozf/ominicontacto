@@ -21,11 +21,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 {% load i18n %}
 {% block head_js %}
-<script>
-    $(document).ready(function() {
-            $('.class-fecha').datetimepicker({format: 'DD/MM/YYYY'});
-    });
-    </script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/formulario/formulario_vista.js' %}"></script>
 {% endblock %}
 {% block content %}
 

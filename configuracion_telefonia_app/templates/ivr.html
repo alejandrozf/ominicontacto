@@ -31,27 +31,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
     <script src="{% static 'configuracion_telefonia_app/JS/rutas-entrantes-lib.js' %}"></script>
     <script src="{% static 'configuracion_telefonia_app/JS/ivr.js' %}"></script>
-    <script>
-     $('.opcionDestinoTr').formset({
-       addText: AGREGAR_DESTINO,
-       deleteText: REMOVER_CAMPO,
-       prefix: '{{ opcion_destino_formset.prefix }}',
-       addCssClass: 'btn btn-outline-primary',
-       deleteCssClass: 'btn btn-outline-danger deleteFormset',
-       formCssClass: 'dynamic-formset',
-       added: function (row) {
-         row.each(function() {
-           var $tipoDestino = $(this).find('.tipoDestino');
-           var $destino = $(this).find('.destino');
-           nodosEntrantesCambioPorTipo($tipoDestino, $destino);
-         });
-       }
-     });
-    </script>
 {% endblock %}
 
 {% block content %}
     {% block header %}{% endblock %}
+    <input class="hidden" value="{{ opcion_destino_formset.prefix }}" id="opciondestino">
     <form action="" role="form" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row mt-3">

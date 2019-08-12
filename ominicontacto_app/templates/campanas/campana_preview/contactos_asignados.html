@@ -22,13 +22,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 
 {% block head_js %}
-    <script type="text/javascript">
-        function liberar_contacto(agente_id){
-            console.log('asd')
-            $("#agente_id").val(agente_id);
-            $("#liberar_contacto_form").submit();
-        };
-    </script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/campana_preview/contactos_asignados.js' %}"></script>
 {% endblock %}
 
 {% block content %}

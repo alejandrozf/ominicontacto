@@ -23,28 +23,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% block extra_js %}
     <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
-    <script>
-     $(function() {
-       $('.tiempo').datetimepicker({format: 'HH:mm'});
-     });
-     $('.validacionTiempoTr').formset({
-       addText: AGREGAR_VALIDACION,
-       deleteText: REMOVER_CAMPO,
-       prefix: '{{ validacion_tiempo_formset.prefix }}',
-       addCssClass: 'btn btn-outline-primary',
-       deleteCssClass: 'btn btn-outline-danger deleteFormset',
-       formCssClass: 'dynamic-formset',
-       added: function (row) {
-         $(row.find('.tiempo')).each(function () {
-           $(this).datetimepicker({format: 'HH:mm'});
-         });
-       }
-     });
-    </script>
+    <script type="text/javascript" src="{% static 'configuracion_telefonia_app/JS/grupo_horario.js' %}"></script>
 {% endblock %}
 
 {% block content %}
     {% block header %}{% endblock %}
+    <input class="hidden" value="{{ validacion_tiempo_formset.prefix }}" id="validaciontiempo">
     <form action="" role="form" method="POST">
         {% csrf_token %}
         <div class="row mt-3">

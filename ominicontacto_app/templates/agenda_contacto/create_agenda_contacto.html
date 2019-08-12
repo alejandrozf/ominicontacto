@@ -27,19 +27,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/moment.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/bootstrap-datetimepicker.min.js' %}"></script>
-    <script type="text/javascript">
-    $(document).ready(function() {
-
-            $('#id_fecha').datetimepicker({format: 'YYYY-MM-DD'});
-          $('#id_hora').datetimepicker({
-          format: 'HH:mm',
-
-          });
-
-
-
-        });
-    </script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/agenda_datetime.js'%}"></script>
 </head>
 <body>
 {%include "agenda_contacto/messages_agenda.html"%}  

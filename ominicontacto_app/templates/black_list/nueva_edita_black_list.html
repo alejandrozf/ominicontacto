@@ -20,16 +20,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
-{% block head_js %}
 
-    <script type="text/javascript">
-        $(function() {
-            $(".modal_proceso_grande").click(function (){
-                $('#modal_proceso_grande').modal();
-            });
-        });
-    </script>
-    {% endblock %}
+{% block head_js %}
+<script type="text/javascript" src="{% static 'ominicontacto/JS/blacklist.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 
 <h1>{% trans 'Nueva blacklist' %}</h1>
