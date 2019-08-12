@@ -10,13 +10,21 @@ DJANGO_SETTINGS_MODULE=ominicontacto.settings.production
 DJANGO_SETTINGS_MODULE=ominicontacto.settings.develop
 {% endif %}
 EPHEMERAL_USER_TTL={{ ECCTL }}
+{% if external_port is defined %}
 EXTERNAL_PORT={{ external_port }}
+{% else %}
+EXTERNAL_PORT=443
+{% endif %}
 INSTALL_PREFIX={{ install_prefix}}
 KAMAILIO_IP={{ kamailio_ip }}
 KAMAILIO_HOSTNAME={{ kamailio_fqdn }}
 KAMAILIO_LOCATION={{ kamailio_location }}
 MONITORFORMAT={{ MONITORFORMAT }}
+{% if external_hostname is defined %}
+NGINX_HOSTNAME={{ external_hostname }}
+{% else %}
 NGINX_HOSTNAME={{ omniapp_fqdn }}
+{% endif %}
 OMNILEADS_IP={{ omniapp_ip }}
 OMNILEADS_HOSTNAME={{ omniapp_fqdn }}
 PGHOST={{ database_fqdn }}
