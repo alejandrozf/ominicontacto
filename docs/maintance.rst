@@ -197,16 +197,20 @@ Posicionarse sobre el directorio donde reside el script “deploy.sh”
 Asumiendo que estamos trabajando sobre los release estables (master)
 Se debe ejecutar un "git pull origin master" para traernos las actualizaciones del repositorio.
 
+.. code-block:: bash
+
+ git pull origin master
+
 Observar que el parámetro *hostname* y *dirección IP* tiene que coincidir respecto a lo que tenga cargado el host donde corre OMniLeads.
 
-::
+.. code-block:: bash
 
  [omnileads-aio]
  oml-dev.example.com ansible_ssh_connection=local ansible_user=root ansible_host=192.168.95.155
 
-::
 
- git pull origin master
+
+
 
 A continuación se ejecuta el script con el parámetro -u (update). Esta ejecución tomará unos minutos e implica el aplicar todas las actualizaciones
 descargadas con el "git pull origin master" sobre nuestra instancia de OMniLeads.
@@ -288,7 +292,7 @@ Se guardan los cambios sobre el archivo y finalmente se ejecuta el script *deplo
 ::
 
  cd ominicontacto/deploy/ansible
- ./deploy.sh --change-network -a
+ ./deploy.sh --change-network
 
 Por último se ejecuta un reinicio de la plataforma. Luego podemos comenzar a utilizar OML en la nueva dirección IP.
 
@@ -306,7 +310,7 @@ En caso de querer modificar las contraseñas usadas en los servicios, basta con 
 ::
 
   cd ominicontacto/deploy/ansible
-  ./deploy.sh --change-passwords -a
+  ./deploy.sh --change-passwords
 
 Desbloqueo de usuarios
 ***********************
@@ -361,4 +365,4 @@ Este script:
 
 .. important::
 
-  Tener cuidado al ejecutarlo, una vez ejecutado no hay forma de recuperar el sistema.  
+  Tener cuidado al ejecutarlo, una vez ejecutado no hay forma de recuperar el sistema.

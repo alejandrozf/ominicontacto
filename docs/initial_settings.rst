@@ -48,6 +48,27 @@ Para generar el módulo de telefonía debemos acceder a *Modules -> Enable modul
 
 Guardamos los cambios y avanzamos !
 
+
+Instalar idiomas extras
+************************
+
+Los audios genéricos que los agentes o teléfonos externos escucharán vienen por defecto en inglés o español, siendo configurables en
+las rutas entrantes o rutas salientes, de manera tal que si el canal telefónico se encuentra con alguna indicación a través de un audio
+genérico dentro del flujo entrante o saliente de una llamada, éste podrá ser reproducido de acuerdo al idioma indicado.
+
+Si la instancia precisa utilizar otros idiomas, se pueden instalar a través del punto de menú "Telephony-Add audio files", en donde se podrán instalar los idiomas:
+
+* Italiano
+* Sueco
+* Postugués
+* Francés
+* Ruso
+
+
+.. image:: images/telephony_i18n_audio.png
+
+*Figure 4: i18n audio promps*
+
 Crear grupo de agentes
 **********************
 
@@ -56,7 +77,7 @@ un formulario similar al de la figura 4.
 
 .. image:: images/initial_settings_05.png
 
-*Figure 4: New agent group*
+*Figure 5: New agent group*
 
 Los campos allí desplegados son:
 
@@ -75,19 +96,19 @@ Una vez disponibles los grupos de agentes y su configuración, podemos proceder 
 
 .. image:: images/initial_settings_06.png
 
-*Figure 5: New agent*
+*Figure 6: New agent*
 
 Se debe seleccionar el grupo de agentes y los módulos disponibles para nuestro nuevo agente.
 
 .. image:: images/initial_settings_07.png
 
-*Figure 6: New agent*
+*Figure 7: New agent*
 
 Podemos listar nuestros usuarios, deberíamos contar con al menos un par de agentes.
 
 .. image:: images/initial_settings_08.png
 
-*Figure 7: Users*
+*Figure 8: Users*
 
 Crear pausas de agente
 **********************
@@ -99,14 +120,14 @@ Las pausas las pueden generar los supervisores y se clasifican en pausas Recreat
 
 .. image:: images/initial_settings_09.png
 
-*Figure 8: New pause*
+*Figure 9: New pause*
 
 A la hora de presentar los reportes de sesión de agente, las pausas totalizadas se dividen en pausas recreativas y pausas productivas. Esto permite medir la productividad de nuestros agentes
 de una manera más exacta.
 
 .. image:: images/initial_settings_10.png
 
-*Figure 9: New pauses*
+*Figure 10: New pauses*
 
 Una vez generados nuestros agentes, podemos proceder con nuestro primero login de agente !
 
@@ -125,10 +146,10 @@ Una vez que accedemos con nuestro agente, si todo va bien deberemos toparnos con
 
 .. image:: images/initial_settings_11.png
 
-*Figure 10: First login - microphone webrtc*
+*Figure 11: First login - microphone webrtc*
 
 Al habilitar el permiso, debemos escuchar un audio que el sistema reproduce indicando el login exitoso y además la pantalla de agente debe lucir como la figura 11.
 
 .. image:: images/initial_settings_12.png
 
-*Figure 11: First login - webphone connected*
+*Figure 12: First login - webphone connected*

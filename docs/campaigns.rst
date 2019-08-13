@@ -159,6 +159,7 @@ a los siguientes ítems de configuración.
 * :ref:`about_timeconditions`.
 * :ref:`about_ivr`.
 * :ref:`about_customer_id`.
+* :ref:`about_custom_dst`.
 
 
 Plantillas de Campaña
