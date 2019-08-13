@@ -4,8 +4,9 @@
 Ansible Self-Hosted Install
 ***************************
 
-Cuando decimos "Ansible Self-Hosted" nos referimos a instalar OMniLeads sobre un OS de forma monolítica (todos los servicios corriendo en dicho host) y
-descargando el proyecto en el OS destino de la instalación, para posteriormente ejecutar el script de instalación desde el propio host.
+Al mencionar "Ansible Self-Hosted" nos referimos a instalar OMniLeads sobre un sistema operativo (GNU/linux kernel) en un despliegue monolítico
+(todos los servicios corriendo sobre dicho host). Se descarga el proyecto (repositorio) sobre el host destino de la instalación, para posteriormente ejecutar el
+script de instalación allí en dicho host.
 
 .. image:: images/install_gitlab_repo.png
 
@@ -70,37 +71,28 @@ Ajustes necesarios antes  de la ejecución de script:
 
 *Figure 3: ip a command output*
 
-- En este paso, se debe editar el archivo *inventory* (PATH/ominicontacto/deploy/ansible).
+- En este paso debemos trabajar sobre el archivo  :ref:`about_install_inventory` disponible dentro del directorio "PATH/ominicontacto/deploy/ansible".
 
 .. note::
 
-   OMniLeads utiliza ansible para realizar la instalación, por lo tanto existe un "archivo de inventario" que debe ser modificado de acuerdo a los parámetros del host sobre el que estamos trabajando.
+   OMniLeads utiliza ansible para realizar la instalación, por lo tanto existe un "archivo de inventario" que debe ser modificado de acuerdo a los parámetros
+   del host sobre el que estamos trabajando.
 
-Modificar y descomentar la cadena 'hostname' por el que hemos configurado a nuestro servidor. También en esta línea, se debe editar el parámetro 'X.X.X.X' con la dirección IP del host sobre el que estamos trabajando.
+Modificar y descomentar la cadena 'hostname' por el que hemos configurado a nuestro servidor. También en esta línea, se debe editar el parámetro 'X.X.X.X' con la
+dirección IP que implementa el host sobre el que estamos trabajando.
 
+.. code-block:: bash
 
-.. image:: images/install_inventory_file_net.png
+ ##########################################################################################
+ # If you are installing a prodenv (PE) AIO y bare-metal, change the IP and hostname here #
+ ##########################################################################################
+ [prodenv-aio]
+ oml-name.example.com ansible_connection=local ansible_user=root ansible_host=10.10.10.100 #(this line is for self-hosted installation)
+ #hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #(this line is for node-host installation)
 
-*Figure 4: inventory file network params section*
+Luego, allí en el inventory mismo debemos ajustar las :ref:`about_install_inventory_vars` de la instanacia.
 
-Además dentro del mismo archivo, unas líneas debajo encontraremos la sección *[everyyone:vars]*, en la cual se pueden alterar variables y contraseñas que vienen por defecto en el sistema. Introducir el parámetro "time zone" adecuado para su instanacia. Es **Importante** que realice este paso o la instalación no se va a poder realizar.
-
-.. image:: images/install_inventory_passwords.png
-
-*Figure 5: Passwords and parameters of services*
-
-En caso de haber olvidado ingresar la instancia a instalar el script mostrará este mensaje
-
-.. image:: images/install_inventory_nohosts.png
-
-*Figure 6: deploy - No hosts in inventory*
-
-Es importante aclarar que cada vez que se corre el script *./deploy.sh* ya sea para instalar, re-instalar, actualizar, modificar la dirección IP de OML, etc., el archivo de inventory se vuelve a "cero". No obstante se genera una copia del archivo **(my_inventory)**, de manera tal que se cuente con los parámetros del sistema utilizados en la última ejecución del script. La copia en cuestión se ubica en el path donde ha sido clonado el repositorio de OML y bajo el nombre de "my_inventory" como lo expone la figura 6.
-
-.. image:: images/install_my_inventory.png
-
-*Figure 7: inventory copy, my_inventory file*
-
+Una vez ajustados todos los parámetros del archivo de inventario, procedemos con la ejecución de la instalación.
 
 Ejecución del script de instalación:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -118,13 +110,13 @@ El tiempo de instalación dependerá mayormente de la velocidad de conexión a i
 
 .. image:: images/install_deploysh.png
 
-*Figure 8: install running*
+*Figure 4: install running*
 
 Si la ejecución de la instalación finaliza exitosamente, se despliega una vista como la de la figura 8.
 
 .. image:: images/install_ok.png
 
-*Figure 9: OMniLeads installation ended succesfuly*
+*Figure 5: OMniLeads installation ended succesfuly*
 
 .. important::
 
@@ -140,6 +132,19 @@ Primer acceso a OMniLeads:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Si la ejecución de la instalación fue exitosa, entonces podemos realizar un :ref:`about_first_access`.
+
+
+.. important::
+
+ Cada vez que se ejecuta el script *./deploy.sh* ya sea para instalar, correr una actualización del sistema o modificar algún parñametro de red,
+ el archivo de "inventory" se vuelve a cero, es decir se pierde toda la parametrización realizada antes de la ejecución del script. No obstante una vez finalizada la
+ ejecución de "deplo.sh", se genera una copia del archivo "inventory" (llamada my_inventory), para no perder todos los parámetros del sistema
+ utilizados en la última ejecución del script. La copia en cuestión se ubica en el path donde ha sido clonado el repositorio de OML y bajo el nombre de "my_inventory"
+ como lo expone la figura.
+
+.. image:: images/install_my_inventory.png
+
+*Figure 6: inventory copy, my_inventory file*
 
 
 Errores comunes:
