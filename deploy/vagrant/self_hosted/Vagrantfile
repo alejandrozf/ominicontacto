@@ -1,0 +1,47 @@
+Vagrant.configure("2") do |config|
+  config.vm.define "debian" do |nodo1|
+# Tamaño del sisco principal, recordar antes instalar plugin vagrant-disksize
+# No funciona con debian9, esta el issue levantado el github de plugin:
+# https://github.com/sprotheroe/vagrant-disksize/issues
+    #config.disksize.size = "20GB"
+    nodo1.vm.box = "bento/debian-9.3"
+    nodo1.vm.box_version = "201802.02.0"
+    nodo1.vm.hostname = "debian-example"
+    nodo1.vm.network "public_network", bridge: "enp2s0", ip: "172.16.20.130",     use_dhcp_assigned_default_route: true
+    nodo1.vm.provision "shell", path: "provision.sh", env: {"BRANCH" => ENV['BRANCH']}
+    nodo1.vm.provider "virtualbox" do |vb|
+      vb.name = "Debian-SelfHosted"
+      vb.memory = "1024"
+      vb.cpus = "1"
+    end
+    nodo1.vm.synced_folder "..", "/vagrant", type: "rsync"
+  end
+  config.vm.define "ubuntu" do |nodo2|
+#    config.disksize.size = "20GB"
+    nodo2.vm.box = "aspyatkin/ubuntu-18.04-server"
+    nodo2.vm.box_version = "1.2.0"
+    nodo2.vm.hostname = "ubuntu-example"
+    nodo2.vm.network "public_network", bridge: "enp2s0", ip: "172.16.20.131",     use_dhcp_assigned_default_route: true
+    nodo2.vm.provision "shell", path: "provision.sh", env: {"BRANCH" => ENV['BRANCH']}
+    nodo2.vm.provider "virtualbox" do |vb|
+      vb.name = "Ubuntu-SelfHosted"
+      vb.memory = "1024"
+      vb.cpus = "1"
+    end
+    nodo2.vm.synced_folder "..", "/vagrant", type: "rsync"
+  end
+  config.vm.define "centos" do |nodo3|
+#    config.disksize.size = "20GB"
+    nodo3.vm.box = "centos/7"
+    nodo3.vm.box_version = "1905.1"
+    nodo3.vm.hostname = "centos-example.com"
+    nodo3.vm.network "public_network", bridge: "enp2s0", ip: "172.16.20.132",     use_dhcp_assigned_default_route: true
+    nodo3.vm.provision "shell", path: "provision.sh", env: {"BRANCH" => ENV['BRANCH']}
+    nodo3.vm.provider "virtualbox" do |vb|
+      vb.name = "Centos-SelfHosted"
+      vb.memory = "1024"
+      vb.cpus = "1"
+    end
+    nodo3.vm.synced_folder "..", "/vagrant", type: "rsync"
+  end
+end

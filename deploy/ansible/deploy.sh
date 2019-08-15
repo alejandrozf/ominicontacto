@@ -30,11 +30,11 @@ TMP_OMINICONTACTO='/var/tmp/ominicontacto-build/ominicontacto'
 REPO_LOCATION="`git rev-parse --show-toplevel`"
 USER_HOME=$(eval echo ~${SUDO_USER})
 export ANSIBLE_CONFIG=$TMP_ANSIBLE
+DEBIAN_FRONTEND=noninteractive
+IS_CICD=true
 IS_ANSIBLE="`find ~/.local -name ansible 2>/dev/null |grep \"/bin/ansible\" |head -1`"
-SUDO_USER="`who | awk '{print $1}'| head -1`"
 arg1=$1
-arg2=$2
-verbose=$3
+verbose=$2
 
 OSValidation(){
   if [ -z $PIP ]; then
@@ -47,6 +47,7 @@ OSValidation(){
     elif [ "$os" == '"Debian GNU/Linux"' ]; then
       echo "Installing python2-pip and sudo"
       apt-get install python-pip sudo -y
+      apt-get remove python-cryptography -y
     elif [ "$os" == '"Ubuntu"' ]; then
       echo "Adding the universe repository"
       add-apt-repository universe
@@ -199,7 +200,7 @@ AnsibleExec() {
       echo "All hosts in inventory file are commented, please check the file according to documentation"
       exit 1
     fi
-    echo "Beginning the Omnileads installation with Ansible, this can take a long time"
+    echo "Beginning the Omnileads installation with Ansible, this installation process can last between 30-40 minutes"
     echo ""
     ${IS_ANSIBLE}-playbook $verbose -s $TMP_ANSIBLE/omnileads.yml --extra-vars "build_dir=$TMP_OMINICONTACTO repo_location=$REPO_LOCATION docker_root=$USER_HOME" --tags "$tag" -i $TMP_ANSIBLE/inventory
     ResultadoAnsible=`echo $?`
@@ -236,10 +237,8 @@ AnsibleExec() {
       cp $current_directory/inventory $my_inventory
       echo " Remember that you have a copy of your inventory file in $inventory_copy_location/my_inventory with the variables you used for your OML installation"
       echo ""
-      if [ -z $IS_CICD ]; then
-          git checkout $current_directory/inventory
-          chown $SUDO_USER. $current_directory/inventory
-      fi
+      git checkout $current_directory/inventory
+      chown $SUDO_USER. $current_directory/inventory
     else
       echo ""
       echo "###################################################################################"

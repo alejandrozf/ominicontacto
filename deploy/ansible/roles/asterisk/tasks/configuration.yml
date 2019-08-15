@@ -157,11 +157,7 @@
 
 # Creo los directorios que tendran los audios subidos por la web
 - name: Make of the sounds dirs
-  file: state=directory path={{ ast_sounds_location }}/{{ item }} owner={{ usuario }} group={{ usuario }} mode=755
-  with_items:
-    - es
-    - en
-    - oml
+  file: state=directory path={{ ast_sounds_location }}/oml owner={{ usuario }} group={{ usuario }} mode=755
   when: is_docker == "false"
   tags: postinstall
 

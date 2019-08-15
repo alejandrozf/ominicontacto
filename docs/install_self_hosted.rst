@@ -118,16 +118,6 @@ Si la ejecución de la instalación finaliza exitosamente, se despliega una vist
 
 *Figure 5: OMniLeads installation ended succesfuly*
 
-.. important::
-
-  **Para Debian:** En caso de que ocurra este error durante la ejecución del script:
-
-  *"ERROR! Unexpected Exception, this is probably a bug: (cryptography 1.7.1 (/usr/lib/python2.7/
-  dist-packages), Requirement.parse('cryptography>=2.5'), set(['paramiko']))"*
-
-  Verificar que no exista el paquete python-cryptography, en caso de existir, desinstalarlo. Esto es debido a un bug conocido durante la instalación de Ansible: https://github.com/ansible/ansible/issues/29084
-
-
 Primer acceso a OMniLeads:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
