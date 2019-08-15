@@ -82,7 +82,6 @@
     - make menuselect.makeopts
     - menuselect/menuselect --disable BUILD_NATIVE menuselect.makeopts
     - menuselect/menuselect --enable res_json menuselect.makeopts
-    - menuselect/menuselect --enable res_json menuselect.makeopts
     - menuselect/menuselect --enable format_mp3 menuselect.makeopts
     - menuselect/menuselect --enable codec_opus menuselect.makeopts
     - make -j 10
@@ -90,6 +89,10 @@
     - make config
     - ldconfig
     - make samples
+  retries: 6
+  delay: 3
+  register: result
+  until: result.rc == 0
 
 # Se borran los paquetes descargados
 - name: Erase the downloaded directories of asterisk

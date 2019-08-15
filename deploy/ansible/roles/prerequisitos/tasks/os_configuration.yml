@@ -160,8 +160,10 @@
   when: ansible_os_family == "Debian"
 
 - name: Update / upgrade of system (debian)
-  apt: update_cache=yes upgrade=dist
+  apt: update_cache=yes upgrade=yes
   when: ansible_os_family == "Debian"
+  environment:
+    DEBIAN_FRONTEND: noninteractive
 
 # Instalo linux-headers del kernel  en cuestion
 - name: Install linux linux-headers (debian)

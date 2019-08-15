@@ -68,68 +68,171 @@ test:
 
 docker-prodenv-build-push:
   stage: build
-  image: alejandrozf/docker-ansible
-  before_script:
-    - dockerd&
-  variables:
-    TMP: /root/.local/lib
-    TMP_ANSIBLE: /root/.local/bin
   script:
-    - python deploy/edit_ansible.py -tag=$CI_COMMIT_REF_NAME -dlu=$DOCKER_LOGIN_USER -dle=$DOCKER_LOGIN_EMAIL -dlp=$DOCKER_LOGIN_PASSWORD
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/self_hosted/
+    - python ../edit_ansible.py -tag=$CI_COMMIT_REF_NAME -dlu=$DOCKER_LOGIN_USER -dle=$DOCKER_LOGIN_EMAIL -dlp=$DOCKER_LOGIN_PASSWORD
     - cd deploy/ansible
     - ./deploy.sh --docker-build
+  tags:
+    - build-docker
   only:
     - master
     - schedules
     - web
 
 staging-centos:
-  stage: deploy
-  image: alejandrozf/ubuntu-bionic
-  environment: FTS-CENTOS7
+  stage: build
   script:
-    - export SSHPASS=$PASSWORD_CENTOS
-    - ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
-    - sshpass -e ssh-copy-id -o stricthostkeychecking=no -p 40409 -i /root/.ssh/id_rsa.pub -o ConnectTimeout=10 root@$STAGING_IP_PUBLIC_CENTOS
-    - echo -e "    Hostname> $STAGING_HOST_CENTOS  , IP> $STAGING_IP_PUBLIC_CENTOS" >> /var/tmp/servers_installed
-    - python deploy/edit_ansible.py --remote_host=$STAGING_HOST_CENTOS --remote_ip_public=$STAGING_IP_PUBLIC_CENTOS --remote_ip_internal=$STAGING_IP_INTERNAL_CENTOS --remote_port=40409
-    - cd deploy/ansible
-    - ./deploy.sh -i
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - git fetch
+    - git checkout ../../ansible/inventory
+    - git checkout $CI_COMMIT_REF_NAME
+    - vagrant halt centos
+    - vagrant destroy centos -f
+    - ./vagrantup.sh centos
+    - python ../edit_ansible.py --remote_host=$STAGING_HOST_CENTOS --internal_ip=$STAGING_IP_CENTOS --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
+    - cd ../../ansible
+    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - vagrant halt centos
+  tags:
+    - build-aio
   only:
     - /^pre-release-.*$/
     - schedules
     - web
 
 staging-ubuntu:
-  stage: deploy
-  image: alejandrozf/ubuntu-bionic
-  environment: FTS-UBUNTU_BIONIC
+  stage: build
   script:
-    - export SSHPASS=$PASSWORD_UBUNTU
-    - ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
-    - sshpass -e ssh-copy-id -o stricthostkeychecking=no -p 40411 -i /root/.ssh/id_rsa.pub -o ConnectTimeout=10 root@$STAGING_IP_PUBLIC_UBUNTU
-    - echo -e "    Hostname> $STAGING_HOST_UBUNTU  , IP> $STAGING_IP_PUBLIC_UBUNTU" >> /var/tmp/servers_installed
-    - python deploy/edit_ansible.py --remote_host=$STAGING_HOST_UBUNTU --remote_ip_public=$STAGING_IP_PUBLIC_UBUNTU --remote_ip_internal=$STAGING_IP_INTERNAL_UBUNTU --remote_port=40411
-    - cd deploy/ansible
-    - ./deploy.sh -i
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - git fetch
+    - git checkout ../../ansible/inventory
+    - git checkout $CI_COMMIT_REF_NAME
+    - vagrant halt ubuntu
+    - vagrant destroy ubuntu -f
+    - ./vagrantup.sh ubuntu
+    - python ../edit_ansible.py --remote_host=$STAGING_HOST_UBUNTU --internal_ip=$STAGING_IP_UBUNTU --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
+    - cd ../../ansible
+    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - vagrant halt ubuntu
+  tags:
+    - build-aio
   only:
     - /^pre-release-.*$/
     - schedules
     - web
 
 staging-debian:
-  stage: deploy
-  image: alejandrozf/ubuntu-bionic
-  environment: FTS-DEBIAN
+  stage: build
   script:
-    - export SSHPASS=$PASSWORD_DEBIAN
-    - ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
-    - sshpass -e ssh-copy-id -o stricthostkeychecking=no -p 40410 -i /root/.ssh/id_rsa.pub -o ConnectTimeout=10 root@$STAGING_IP_PUBLIC_DEBIAN
-    - echo -e "    Hostname> $STAGING_HOST_DEBIAN  , IP> $STAGING_IP_PUBLIC_DEBIAN" >> /var/tmp/servers_installed
-    - python deploy/edit_ansible.py --remote_host=$STAGING_HOST_DEBIAN --remote_ip_public=$STAGING_IP_PUBLIC_DEBIAN --remote_ip_internal=$STAGING_IP_INTERNAL_DEBIAN --remote_port=40410
-    - cd deploy/ansible
-    - ./deploy.sh -i
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - git fetch
+    - git checkout ../../ansible/inventory
+    - git checkout $CI_COMMIT_REF_NAME
+    - vagrant halt debian
+    - vagrant destroy debian -f
+    - ./vagrantup.sh debian
+    - python ../edit_ansible.py --remote_host=$STAGING_HOST_DEBIAN --internal_ip=$STAGING_IP_DEBIAN --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
+    - cd ../../ansible
+    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - vagrant halt debian
+  tags:
+    - build-aio
   only:
     - /^pre-release-.*$/
     - schedules
     - web
+
+staging-self-hosted:
+  stage: build
+  script:
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/self_hosted/
+    - git fetch
+    - git checkout ../../ansible/inventory
+    - git checkout $CI_COMMIT_REF_NAME
+    - export BRANCH=$CI_COMMIT_REF_NAME
+    - vagrant up --provision
+    - vagrant halt
+    - vagrant destroy -f
+  tags:
+    - build-aio
+  only:
+    - /^.*ansible.*$/
+    - /^pre-release-.*$/
+    - schedules
+    - web
+
+prod-centos:
+  stage: deploy
+  environment: FTS-CENTOS7
+  script:
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - git fetch
+    - git checkout ../../ansible/inventory
+    - git checkout $CI_COMMIT_REF_NAME
+    - vagrant halt centos
+    - vagrant destroy centos -f
+    - ./vagrantup.sh centos
+    - python ../edit_ansible.py --remote_host=$STAGING_HOST_CENTOS --internal_ip=$STAGING_IP_CENTOS --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
+    - cd ../../ansible
+    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - vagrant package --base Centos-Staging --output centos-$CI_COMMIT_REF_NAME.box
+    - cp centos-$CI_COMMIT_REF_NAME.box /home/ftsinfra/oml-boxes
+    - cp -a .vagrant/machines/centos/virtualbox/private_key /home/ftsinfra/oml-boxes/centos_private_key_$CI_COMMIT_REF_NAME
+    - rm -rf centos-$CI_COMMIT_REF_NAME.box
+  tags:
+    - deploy-aio
+  only:
+    - /^release-.*$/
+
+prod-ubuntu:
+  stage: deploy
+  environment: FTS-UBUNTU_BIONIC
+  script:
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - git fetch
+    - git checkout ../../ansible/inventory
+    - git checkout $CI_COMMIT_REF_NAME
+    - vagrant halt ubuntu
+    - vagrant destroy ubuntu -f
+    - ./vagrantup.sh ubuntu
+    - python ../edit_ansible.py --remote_host=$STAGING_HOST_UBUNTU --internal_ip=$STAGING_IP_UBUNTU --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
+    - cd ../../ansible
+    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - vagrant package --base Ubuntu-Staging --output ubuntu-$CI_COMMIT_REF_NAME.box
+    - cp ubuntu-$CI_COMMIT_REF_NAME.box /home/ftsinfra/oml-boxes
+    - cp -a .vagrant/machines/ubuntu/virtualbox/private_key /home/ftsinfra/oml-boxes/ubuntu_private_key_$CI_COMMIT_REF_NAME
+    - rm -rf ubuntu-$CI_COMMIT_REF_NAME.box
+  tags:
+    - deploy-aio
+  only:
+    - /^release-.*$/
+
+prod-debian:
+  stage: deploy
+  environment: FTS-DEBIAN
+  script:
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - git fetch
+    - git checkout ../../ansible/inventory
+    - git checkout $CI_COMMIT_REF_NAME
+    - vagrant halt debian
+    - vagrant destroy debian -f
+    - ./vagrantup.sh debian
+    - python ../edit_ansible.py --remote_host=$STAGING_HOST_DEBIAN --internal_ip=$STAGING_IP_DEBIAN --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
+    - cd ../../ansible
+    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - vagrant package --base Debian-Staging --output debian-$CI_COMMIT_REF_NAME.box
+    - cp debian-$CI_COMMIT_REF_NAME.box /home/ftsinfra/oml-boxes
+    - cp -a .vagrant/machines/debian/virtualbox/private_key /home/ftsinfra/oml-boxes/debian_private_key_$CI_COMMIT_REF_NAME
+    - rm -rf debian-$CI_COMMIT_REF_NAME.box
+  tags:
+    - deploy-aio
+  only:
+    - /^release-.*$/
