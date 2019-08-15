@@ -215,7 +215,8 @@ services:
     privileged: true
     restart: on-failure
     stop_grace_period: 1m30s
-
+    volumes:
+      - redis_data:/data
   rtpengine:
     container_name: oml-{{ rtpengine_fqdn }}-devenv
     dns: 8.8.8.8
@@ -239,5 +240,6 @@ volumes:
   grabaciones:
   mariadb_data:
   postgresql_data:
+  redis_data:
   sounds:
   ssh_keys_devenv:
