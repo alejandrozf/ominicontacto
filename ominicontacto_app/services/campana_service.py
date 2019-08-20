@@ -268,7 +268,7 @@ class CampanaService():
         Da inicio a una campana en wombat via post
         Lanza error si no se hizo correctamente
         """
-        nombre_campana = "{0}_{1}".format(campana.id)
+        nombre_campana = "{0}_{1}".format(campana.id, campana.nombre)
         url_edit = "api/campaigns/?op=start&campaign={0}".format(nombre_campana)
         url = '/'.join([settings.OML_WOMBAT_URL, url_edit])
         self._requests_post_wombat(url)
@@ -278,7 +278,7 @@ class CampanaService():
         Pausa a una campana en wombat via post
         Lanza error si no se hizo correctamente
         """
-        nombre_campana = "{0}_{1}".format(campana.id)
+        nombre_campana = "{0}_{1}".format(campana.id, campana.nombre)
         url_edit = "api/campaigns/?op=pause&campaign={0}".format(nombre_campana)
         url = '/'.join([settings.OML_WOMBAT_URL, url_edit])
         self._requests_post_wombat(url)
@@ -288,7 +288,7 @@ class CampanaService():
         DesPausa a una campana en wombat via post
         Lanza error si no se hizo correctamente
         """
-        nombre_campana = "{0}_{1}".format(campana.id)
+        nombre_campana = "{0}_{1}".format(campana.id, campana.nombre)
         url_edit = "api/campaigns/?op=unpause&campaign={0}".format(nombre_campana)
         url = '/'.join([settings.OML_WOMBAT_URL, url_edit])
         self._requests_post_wombat(url)
@@ -324,7 +324,7 @@ class CampanaService():
         :return: True si accion se ejecuto correctamente, False si tuvo algun
         inconveniente
         """
-        nombre_campana = "{0}_{1}".format(campana.id)
+        nombre_campana = "{0}_{1}".format(campana.id, campana.nombre)
         url_edit = "api/campaigns/?op=remove&campaign={0}".format(nombre_campana)
         url = '/'.join([settings.OML_WOMBAT_URL, url_edit])
 
