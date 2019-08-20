@@ -18,7 +18,7 @@
 */
 
 var $adicionarAgente = $('#adicionarAgente');
-var $wizard = $('#wizard');
+var wizard = $('#wizard').val();
      $('.linkFormset').formset({
        addText: AGREGAR_AGENTE,
        deleteText: REMOVER_CAMPO,
@@ -30,3 +30,4 @@ var $wizard = $('#wizard');
                      'post_function': eliminarPrimeraFilaVacia},
        added: function (row) {asociarDatosRow(row);}
 });
+
