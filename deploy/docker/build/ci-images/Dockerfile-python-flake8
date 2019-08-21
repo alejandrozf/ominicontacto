@@ -3,8 +3,13 @@ FROM python:2.7.15
 
 RUN apt-get update -y
 RUN apt-get upgrade -y
-RUN apt-get install -y gettext libgettextpo-dev
+RUN apt-get install -y gettext libgettextpo-dev curl
 
+RUN curl -sL https://deb.nodesource.com/setup_10.x -o nodesource_setup.sh
+RUN bash nodesource_setup.sh
+RUN apt install nodejs
+
+RUN npm install eslint --global
 RUN python -m pip install flake8
 
 CMD ["python"]
