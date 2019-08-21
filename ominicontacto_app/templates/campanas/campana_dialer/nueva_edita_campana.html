@@ -26,12 +26,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
   <script type="text/javascript"
           src="{% static 'ominicontacto/JS/agente/formularioNuevaEditaCampana.js' %}">
   </script>
-{% endblock %}
-
-{% block extra_js %}
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/interaccionsitioexterno.js' %}"></script>
-    {% get_current_language as LANGUAGE_CODE %}
-  <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/campana_dialer/nueva_edita_campana.js' %}"></script>
+  <script type="text/javascript" src="{% static 'ominicontacto/JS/interaccionsitioexterno.js' %}"></script>
+  {% get_current_language as LANGUAGE_CODE %}
+  <input class="hidden" value="{{ LANGUAGE_CODE }}" id="languageCode">
+  <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/campana_dialer/nueva_edita_campana.js' %}">
+  </script>
 {% endblock %}
 
 {% block nav %}
