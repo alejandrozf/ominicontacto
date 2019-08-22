@@ -3,49 +3,50 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: OMniLeads \n"
+"Project-Id-Version: OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-07-30 14:27-0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2019-08-13 12:26-0300\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
+"X-Generator: Poedit 2.2.3\n"
 
 # d414c5f19b9f4d149d6503d2d590dfec
 #: ../../install.rst:5
 msgid "Instalación de OMniLeads"
-msgstr ""
+msgstr "OMniLeads installation"
 
 # a5d71c40973c43648010db923608ec24
 #: ../../install.rst:6
 msgid "En este capítulo se detallan los tre tipos de instalación de OMniLeads"
-msgstr ""
+msgstr "In this chapter the three types of OMniLeads installation are detailed"
 
 # e80357771ab34dbb8080f4ce0baf2397
 #: ../../install.rst:8
 msgid ":ref:`about_install_selfhosted`."
-msgstr ""
+msgstr ":ref:`about_install_selfhosted`."
 
 # 1100996160794e3999d66c523d6695c2
 #: ../../install.rst:9
 msgid ":ref:`about_install_remote`."
-msgstr ""
+msgstr ":ref:`about_install_remote`."
 
 # 1f38dd462ae64a56b6d4a7781d86e079
 #: ../../install.rst:10
 msgid ":ref:`about_install_cluster`."
-msgstr ""
+msgstr ":ref:`about_install_cluster`."
 
 # 8a44b175a5be49a9ab11faa440bb40f4
 #: ../../install.rst:14
 msgid "**Recomendaciones:**"
-msgstr ""
+msgstr "**Recommendations:**"
 
 # 6b1da100bd6846839673482b1b322010
 #: ../../install.rst:16
@@ -53,6 +54,8 @@ msgid ""
 "Tanto el host como el nodo a instalar tienen que tener conexión buena y "
 "estable a internet"
 msgstr ""
+"Both the host and the node to be installed must have a good and stable "
+"internet connection"
 
 # 37ca64b4e60c477d821e1aa0b515cee1
 #: ../../install.rst:17
@@ -60,11 +63,14 @@ msgid ""
 "Que no haya ningún elemento de red para salir a internet (firewall "
 "bloqueando puerto 443, proxy)"
 msgstr ""
+"That there is no network element to go out to the internet (firewall "
+"blocking 443 port, proxy)"
 
 # 2750576cc8de498aa659c3288195ff50
 #: ../../install.rst:18
 msgid "Usar las isos que se recomiendan en la sección Donde se puede Instalar?"
 msgstr ""
+"Use the isos that are recommended in the section Where can you install?"
 
 # 58a7ae9b59ae46f28d993e40deff140f
 #: ../../install.rst:19
@@ -72,15 +78,15 @@ msgid ""
 "En caso de fallo de alguna task de ansible volver a correr el script de "
 "instalación"
 msgstr ""
+"In case of failure of any ansible task run the installation script again"
 
 # b97918af9c1f40cc80d7a5119543b375
 #: ../../install.rst:20
 msgid ""
-"En caso de que vuelva a fallar levantar un issue a "
-"https://gitlab.com/omnileads/ominicontacto/issues especificando distro en"
-" la que sucedió y la versión estable que se quiso instalar"
+"En caso de que vuelva a fallar levantar un issue a https://gitlab.com/"
+"omnileads/ominicontacto/issues especificando distro en la que sucedió y la "
+"versión estable que se quiso instalar"
 msgstr ""
-
-#~ msgid "Procedimientos de instalación"
-#~ msgstr ""
-
+"In case it fails again raise an issue to https://gitlab.com/omnileads/"
+"ominicontacto/issues specifying the Linux distro in which it happened and "
+"the stable version that was wanted to install"
