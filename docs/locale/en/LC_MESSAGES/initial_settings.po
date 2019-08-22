@@ -3,89 +3,105 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: OMniLeads \n"
+"Project-Id-Version: OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-05-06 16:26-0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2019-08-12 22:43-0300\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.6.0\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
+"X-Generator: Poedit 2.2.3\n"
 
 # 916e06834dd549929ebaba06b0c1d570
 #: ../../initial_settings.rst:3
 msgid "Configuración Inicial"
-msgstr ""
+msgstr "Initial configuration"
 
 # a5bd7c7e41734e5185405d3a1331cbbe
 #: ../../initial_settings.rst:5
 msgid ""
 "Nuestra plataforma se encuentra instalada y por lo tanto disponible para "
 "comenzar a configurar todo lo necesario para montar nuetra operación de "
-"Contact Center. En esta sección vamos a avanzar con los pasos iniciales "
-"como crear nuestro primer usuario supervisor, generar grupos de agentes, "
-"agentes y sus pausas, para finalmente concluir el capítulo con un login "
-"de agente."
+"Contact Center. En esta sección vamos a avanzar con los pasos iniciales como "
+"crear nuestro primer usuario supervisor, generar grupos de agentes, agentes "
+"y sus pausas, para finalmente concluir el capítulo con un login de agente."
 msgstr ""
+"Our platform is installed and therefore available to start setting up all "
+"needed to assemble our Contact Center operation. In this section we are "
+"going to move on with the initial steps like create our first supervisor "
+"user, generate agent groups and their pauses, to finally conclude the "
+"chapter with an agent login."
 
 # 44d7229b25704905bbdaea10cd056a51
 #: ../../initial_settings.rst:10
 msgid "Crear usuario supervisor"
-msgstr ""
+msgstr "Create supervisor user"
 
 # 4e8db33e30404530bd79c49f9a4a54c0
 #: ../../initial_settings.rst:12
 msgid ""
-"Lo primero que vamos a realizar es generar un usuario supervisor con el "
-"cual desde ahora en más vamos a realizar todas las tareas administrativas"
-" del sistema, dejando relegado al usuario \"admin\" como acceso de último"
-" recurso y para el personal de IT."
+"Lo primero que vamos a realizar es generar un usuario supervisor con el cual "
+"desde ahora en más vamos a realizar todas las tareas administrativas del "
+"sistema, dejando relegado al usuario \"admin\" como acceso de último recurso "
+"y para el personal de IT."
 msgstr ""
+"The first thing we are going to do is generate a supervisor user with whom "
+"from now on we are going to do all the administrative tasks of the system, "
+"leaving the \"admin\" user relegated as a last access resourse and for the "
+"IT staff. "
 
 # 523fc81761c349a5935b737fa8bdaf1c
 #: ../../initial_settings.rst:15
 msgid ""
-"Para generar un nuevo usuario debemos acceder al punto de menú *User list"
-" -> New user*"
+"Para generar un nuevo usuario debemos acceder al punto de menú *User list -> "
+"New user*"
 msgstr ""
+"To generate a new user we must access the menu point *User list -> New user*"
 
 # d377754d1ffb4d35a8efdb9dcd6e5942
 #: ../../initial_settings.rst:17
 msgid "Allí completamos los campos solicitados como se ilustra en la figura 1."
-msgstr ""
+msgstr "There we complete the requested fields as illustrated in the figure 1."
 
 # e41b3fe8ebdc413f8a8146ecf9a55157
 #: ../../initial_settings.rst:21
 msgid "*Figure 1: new supervisor user*"
-msgstr ""
+msgstr "*Figure 1: new supervisor user*"
 
 # 7570038d9e4844b4a5d309094ce9988e
 #: ../../initial_settings.rst:23
 msgid ""
-"En el paso siguiente del wizard debemos seleccionar el perfil de "
-"supervisor, siendo posible seleccionar:"
+"En el paso siguiente del wizard debemos seleccionar el perfil de supervisor, "
+"siendo posible seleccionar:"
 msgstr ""
+"In the next step of the wizard we must select the supervisor profile, being "
+"possible to select:"
 
 # 97451c08388b4993b661acfc29408cb3
 #: ../../initial_settings.rst:25
 msgid ""
-"**Supervisor gerente:** este perfil de usuario puede gestionar casi todos"
-" los menúes de la paltaforma a excepción de las configuraciones de "
-"parámetros de telefonía como por ejemplo troncales SIP y enrutamiento de "
-"llamadas."
+"**Supervisor gerente:** este perfil de usuario puede gestionar casi todos "
+"los menúes de la paltaforma a excepción de las configuraciones de parámetros "
+"de telefonía como por ejemplo troncales SIP y enrutamiento de llamadas."
 msgstr ""
+"**Supervisor manager:** this user profile can manage almost all the platform "
+"menus except for the configurations of telephony parameters like for example "
+"SIP trunks and calls routing."
 
 # 81058ea8135a4122a04bde196b2d636e
 #: ../../initial_settings.rst:26
 msgid ""
-"**Administrador:** es un super-usuario que posee los mismo permisos que "
-"el usuario \"admin\""
+"**Administrador:** es un super-usuario que posee los mismo permisos que el "
+"usuario \"admin\""
 msgstr ""
+"**Administrator:** is a super-user who owns the same permissions than the "
+"\"admin\" user"
 
 # e47cacf7d58c41089d46bcdd171de3ae
 #: ../../initial_settings.rst:27
@@ -94,32 +110,38 @@ msgid ""
 "tiempo real y grabaciones de llamadas sobre las campañas que le fueron "
 "asignadas como permitidas."
 msgstr ""
+"**Customer:** is a profile that can only access to the real time supervision "
+"and call recordings about the campaings that were assigned as allowed."
 
 # c92f3e043dc343708af1dae2e648aacc
 #: ../../initial_settings.rst:31
 msgid "*Figure 2: supervisor / admin*"
-msgstr ""
+msgstr "*Figure 2: supervisor / admin*"
 
 # aa10824d1d7f404ca20e9f33e6ee496b
 #: ../../initial_settings.rst:33
 msgid ""
 "En nuestro caso generamos un usuario supervisor / administrador. A "
-"continuación nos logueamos con dicho usuario para continuar las "
-"gestiones."
+"continuación nos logueamos con dicho usuario para continuar las gestiones."
 msgstr ""
+"In our case we generate a supervisor / administrator user. Then we log in "
+"with that user to continue the managements."
 
 # 13c5e346fecb449b9e0bf7b5473ad1bc
 #: ../../initial_settings.rst:36
 msgid "Crear módulo de telefonía"
-msgstr ""
+msgstr "Create telephony module"
 
 # b4b06de36cff429c996246d20820cba7
 #: ../../initial_settings.rst:38
 msgid ""
-"En este punto se debe generar cada módulo de sistema, actualmente se "
-"dispone de la funcionalidad de telefonía, por lo que vamos a añadir dicho"
-" módulo. No obstante hacia el futuro se estarían añadiendo SMS y Chat."
+"En este punto se debe generar cada módulo de sistema, actualmente se dispone "
+"de la funcionalidad de telefonía, por lo que vamos a añadir dicho módulo. No "
+"obstante hacia el futuro se estarían añadiendo SMS y Chat."
 msgstr ""
+"In this point each system module must be generated, telephony functionality "
+"is currently available, so we are going to add that module. However towards "
+"the future SMS and Chat would be added"
 
 # 06b709d8ed974f9ea500dc7df4eecf18
 #: ../../initial_settings.rst:41
@@ -127,93 +149,115 @@ msgid ""
 "Para generar el módulo de telefonía debemos acceder a *Modules -> Enable "
 "module*"
 msgstr ""
+"To generate the telephony module we must access to *Modules -> Enable module*"
 
 # d8bb908fda1b46db9fc70cc9bd4b57a1
 #: ../../initial_settings.rst:45
 msgid "*Figure 3: Enable telephony module*"
-msgstr ""
+msgstr "*Figure 3: Enable telephony module*"
 
 # a0acc61b466d495d9b988a0bd2d16a6e
 #: ../../initial_settings.rst:47
 msgid "Guardamos los cambios y avanzamos !"
-msgstr ""
+msgstr "We save the changes and move on !"
 
 # 8cbfdb8a1dea475d9990b5fd020c8659
 #: ../../initial_settings.rst:50
 msgid "Crear grupo de agentes"
-msgstr ""
+msgstr "Create agents group"
 
 # d74fe6eda0ba44a692fc6cf867dfdf59
 #: ../../initial_settings.rst:52
 msgid ""
 "Llega el turno de crear los grupos de agentes de nuestro contact center. "
-"Para generar un nuevo grupo *Usuarios y grupos -> Nuevo grupo de agentes*"
-" y se desplegará un formulario similar al de la figura 4."
+"Para generar un nuevo grupo *Usuarios y grupos -> Nuevo grupo de agentes* y "
+"se desplegará un formulario similar al de la figura 4."
 msgstr ""
+"It is time to create the agents groups of our contact center. To generate a "
+"new group *Users and groups -> New agents group* and a form similar to the "
+"one in Figure 4 will be displayed."
 
 # 4354df4edb69401daace80fb8193a78e
 #: ../../initial_settings.rst:57
 msgid "*Figure 4: New agent group*"
-msgstr ""
+msgstr "*Figure 4: New agent group*"
 
 # 6d246c49d80d48ebb131402c61019bdf
 #: ../../initial_settings.rst:59
 msgid "Los campos allí desplegados son:"
-msgstr ""
+msgstr "The fields displayed there are:"
 
 # cae41452141f4fdd8a85c7ff232e4dd3
 #: ../../initial_settings.rst:61
 msgid "**Name:** es el nombre que se desea asignar al grupo de agentes."
-msgstr ""
+msgstr "**Name:* is the name desired to assign to the agents group."
 
 # e0170e1acbfb48feafd2e8df1f6e5238
 #: ../../initial_settings.rst:62
 msgid ""
 "**Auto_unpause:** para comprender este parámetro debemos explicar que en "
 "OMniLeads luego de cada llamada procesada por un agente (de cualquier "
-"naturaleza), el agente es forzado a ingresar en una pausa ACW (after call"
-" work), en la cual permanece inactivo para las campañas asignadas de "
-"manera tal que pueda completar la calificación de la llamada actual y "
-"recién seguir operando. Ahora bien, para salir de dicha pausa inducida "
-"por el sistema existen dos posibilidades y allí entra nuestro parámetro, "
-"ya que por un lado si dejamos el valor en \"0\" el agente debe salir de "
-"la pausa, ahora si colocamos un número (por ejemplo 5 segundos), esto "
-"implicará que el agente asignado a este grupo luego de caer en una pausa "
-"inducida ACW, el sistema lo vuelva a dejar online a los X segundos (según"
-" lo indicado en este parámetro)."
+"naturaleza), el agente es forzado a ingresar en una pausa ACW (after call "
+"work), en la cual permanece inactivo para las campañas asignadas de manera "
+"tal que pueda completar la calificación de la llamada actual y recién seguir "
+"operando. Ahora bien, para salir de dicha pausa inducida por el sistema "
+"existen dos posibilidades y allí entra nuestro parámetro, ya que por un lado "
+"si dejamos el valor en \"0\" el agente debe salir de la pausa, ahora si "
+"colocamos un número (por ejemplo 5 segundos), esto implicará que el agente "
+"asignado a este grupo luego de caer en una pausa inducida ACW, el sistema lo "
+"vuelva a dejar online a los X segundos (según lo indicado en este parámetro)."
 msgstr ""
+"**Auto_unpause:** to understand this parameter we must explain that in "
+"OMniLeads after every call processed by an agent (of any nature), the agent "
+"is forced to enter an ACW pause (after call work), in which remains inactive "
+"for the assigned campaings so he can complete the qualification of the "
+"current call and continue operating. Now, to get out of this pause induced "
+"by the system there are two possibilities and there our parameter enters, "
+"since on the one hand if we leave the value in \"0\" the agent must get out "
+"of the pause, now if we put a number (for example 5 seconds), this implies "
+"that the assigned agent to this group after falling into an induced pause "
+"ACW, the system will leave it online again after X seconds (as indicated in "
+"this parameter). "
 
 # 6563798c21bc456cbccf524c17058e63
 #: ../../initial_settings.rst:63
 msgid ""
 "**Auto_attend_ics:** si este valor está checkeado entonces las llamadas "
 "provenientes del Addon de OMniLeads ICS (Interactive Contact System), "
-"llamadas derivadas del IVR blaster press-one serán atendidas "
-"automáticamente por el agente sin dar la posibilidad de que exista ring "
-"en su webphone."
+"llamadas derivadas del IVR blaster press-one serán atendidas automáticamente "
+"por el agente sin dar la posibilidad de que exista ring en su webphone."
 msgstr ""
+"**Auto_attend_ics:** if this value is checked then the calls coming from the "
+"OMniLeads ICS (Interactive Contact System) Addon, calls derived from the IVR "
+"blaster press-one will be automatically answered by the agent without "
+"providing the possibility of a ring on his webphone."
 
 # f0695de129db4897bf15ebe81ffd5db1
 #: ../../initial_settings.rst:64
 msgid ""
-"**Auto_attend_inbound:** si este valor está checkeado entonces las "
-"llamadas provenientes de campañas entrantes serán conectadas al agente "
-"sin brindar la posibilidad de ring y answer por parte del agente."
+"**Auto_attend_inbound:** si este valor está checkeado entonces las llamadas "
+"provenientes de campañas entrantes serán conectadas al agente sin brindar la "
+"posibilidad de ring y answer por parte del agente."
 msgstr ""
+"**Auto_attend_inbound:** if this value is checked then the calls coming from "
+"incoming campaigns will be connected to the agent without providing the "
+"possibility of a ring and answer by the agent."
 
 # 9521273800224513a29926db0ef8cabe
 #: ../../initial_settings.rst:65
 msgid ""
-"**Auto_attend_dialer:** si este valor está checkeado entonces las "
-"llamadas provenientes de campañas con discador predictivo serán "
-"conectadas al agente sin brindar la posibilidad de ring y answer por "
-"parte del agente."
+"**Auto_attend_dialer:** si este valor está checkeado entonces las llamadas "
+"provenientes de campañas con discador predictivo serán conectadas al agente "
+"sin brindar la posibilidad de ring y answer por parte del agente."
 msgstr ""
+"**Auto_attend_dialer:** if this value is checked then the calls coming from "
+"campaigns with predictive dialer will be conected to the agent without "
+"providing the possibility of a ring and answer by the agent."
 
 # 8cbfdb8a1dea475d9990b5fd020c8659
 #: ../../initial_settings.rst:68
 msgid "Crear agentes"
-msgstr ""
+msgstr "Create agents"
 
 # 77dc58c2bf4b4c37929354f96682eb63
 #: ../../initial_settings.rst:70
@@ -221,11 +265,13 @@ msgid ""
 "Una vez disponibles los grupos de agentes y su configuración, podemos "
 "proceder con la creación de usuario agentes del contact center."
 msgstr ""
+"Once the agents groups and their configuration are available, we can proceed "
+"with the creation of contact center agents."
 
 # 35d96ef1d0b0459f910e2901f13ed3c6
 #: ../../initial_settings.rst:74
 msgid "*Figure 5: New agent*"
-msgstr ""
+msgstr "*Figure 5: New agent*"
 
 # dbe9725f30de4c60899235aa9a7a2f16
 #: ../../initial_settings.rst:76
@@ -233,38 +279,43 @@ msgid ""
 "Se debe seleccionar el grupo de agentes y los módulos disponibles para "
 "nuestro nuevo agente."
 msgstr ""
+"The agents group and available modules must be selected for our new agent."
 
 # 51ad12c8cdac45dfa27ffdb55940cafe
 #: ../../initial_settings.rst:80
 msgid "*Figure 6: New agent*"
-msgstr ""
+msgstr "*Figure 6: New agent*"
 
 # d53b9c9d054e45e4979049bb2b4685c0
 #: ../../initial_settings.rst:82
 msgid ""
-"Podemos listar nuestros usuarios, deberíamos contar con al menos un par "
-"de agentes."
-msgstr ""
+"Podemos listar nuestros usuarios, deberíamos contar con al menos un par de "
+"agentes."
+msgstr "We can list our users, we should have at least a couple of agents."
 
 # b80757cd0f3a4ad19b5e6d0acaf266ee
 #: ../../initial_settings.rst:86
 msgid "*Figure 7: Users*"
-msgstr ""
+msgstr "*Figure 7: Users*"
 
 # aa0c3c72e88a47d197f530cde8d562a5
 #: ../../initial_settings.rst:89
 msgid "Crear pausas de agente"
-msgstr ""
+msgstr "Create agent pauses"
 
 # 2a4ffe465c69439898b6f52c202eef39
 #: ../../initial_settings.rst:91
 msgid ""
 "Los agentes pueden entrar en una pausa cada vez que quieran quedar "
-"indispuestos para el procesamiento de llamados, de esta manera se evita "
-"que una campaña entrante o con discador le asigne una nueva llamada. "
-"Además los estados de pausa son útiles para registrar productividad y "
-"medir los tiempos de sesión del agente."
+"indispuestos para el procesamiento de llamados, de esta manera se evita que "
+"una campaña entrante o con discador le asigne una nueva llamada. Además los "
+"estados de pausa son útiles para registrar productividad y medir los tiempos "
+"de sesión del agente."
 msgstr ""
+"The agents can enter a pause whenever they want to be unavailable for the "
+"call processing, this prevents  that an incoming or dialed campaign assigns "
+"a new call. Also pause states are useful for recording productivity and "
+"measuring agent session times."
 
 # 7b663d2e195244e9aeada481b4512734
 #: ../../initial_settings.rst:94
@@ -272,25 +323,29 @@ msgid ""
 "Las pausas las pueden generar los supervisores y se clasifican en pausas "
 "Recreativas y Productivas."
 msgstr ""
+"Pauses can be generated by supervisors and are classified as Recreational "
+"and Productive pauses."
 
 # de8e24f19f03470fbc3dc32bc711567f
 #: ../../initial_settings.rst:98
 msgid "*Figure 8: New pause*"
-msgstr ""
+msgstr "*Figure 8: New pause*"
 
 # 04cf7f31df2743c28b612ed32e0b75de
 #: ../../initial_settings.rst:100
 msgid ""
 "A la hora de presentar los reportes de sesión de agente, las pausas "
 "totalizadas se dividen en pausas recreativas y pausas productivas. Esto "
-"permite medir la productividad de nuestros agentes de una manera más "
-"exacta."
+"permite medir la productividad de nuestros agentes de una manera más exacta."
 msgstr ""
+"At the time of presenting the agent sesión reports, the totalized pauses are "
+"divided in recreative pauses and productive pauses. This allows measure the "
+"productivity of our agents in a more exact way."
 
 # 9129e9ad17d5434f973cae3e9dd83455
 #: ../../initial_settings.rst:105
 msgid "*Figure 9: New pauses*"
-msgstr ""
+msgstr "*Figure 9: New pauses*"
 
 # 6dc316e2c81b41d48862cbaf3583e494
 #: ../../initial_settings.rst:107
@@ -298,24 +353,28 @@ msgid ""
 "Una vez generados nuestros agentes, podemos proceder con nuestro primero "
 "login de agente !"
 msgstr ""
+"Once our agents are generated, we can proceed with our first agent login !"
 
 # 8cbfdb8a1dea475d9990b5fd020c8659
 #: ../../initial_settings.rst:111
 msgid "Primer login de agente"
-msgstr ""
+msgstr "First agent login"
 
 # 1510c67448cb4b259b25ac77839fdf80
 #: ../../initial_settings.rst:113
 msgid "Finalmente tenemos todo listo para probar nuestro primer agente."
-msgstr ""
+msgstr "Finally we have everything ready to try our first agent."
 
 # 2a60351fd22346f7b2d335a83de1e461
 #: ../../initial_settings.rst:115
 msgid ""
-"**IMPORTANTE:** tener en cuenta que para obtener un login exitoso debemos"
-" contemplar dos aspectos, si alguno de ellos no se cumple entonces el "
-"login será defectuoso."
+"**IMPORTANTE:** tener en cuenta que para obtener un login exitoso debemos "
+"contemplar dos aspectos, si alguno de ellos no se cumple entonces el login "
+"será defectuoso."
 msgstr ""
+"**IMPORTANT:**  keep in mind that to obtain a successful login we should "
+"consider two aspects, if any of them is not fulfilled then the login will be "
+"defective."
 
 # c5132a19118847269b0d1202fd4c9b87
 #: ../../initial_settings.rst:117
@@ -324,69 +383,51 @@ msgid ""
 "deberá contar con un micrófono disponible y configurado a nivel sistema "
 "operativo."
 msgstr ""
+"**Microphone available:** the device from which the agent operates, must "
+"have a microphone available and configured at the operative system level."
 
 # cc1b2a0587d749efa13a9c4e45db9896
 #: ../../initial_settings.rst:118
 msgid ""
 "**Acceso al sistema por hostname:** como bien indicamos en la sección de "
-"\"primer acceso a OMniLeads\", es menester que el acceso a la plataforma "
-"sea mediante *hostname*. Esto quiere decir que para indicar al navegador "
-"la dirección de OMniLedas NO se deben utilizar una dirección IP, sino un "
-"nombre de host."
+"\"primer acceso a OMniLeads\", es menester que el acceso a la plataforma sea "
+"mediante *hostname*. Esto quiere decir que para indicar al navegador la "
+"dirección de OMniLedas NO se deben utilizar una dirección IP, sino un nombre "
+"de host."
 msgstr ""
+"**System access by hostname:** as we indicated in the \"first access to "
+"OMniLeads\" section, the access to the platform must be through *hostname*. "
+"This means that to indicate to the browser the address of OMniLeads, an IP "
+"address can not be used, but a host name."
 
 # 1bc86d5206294cb29a8a965508a2faf3
 #: ../../initial_settings.rst:120
 msgid ""
-"Una vez que accedemos con nuestro agente, si todo va bien deberemos "
-"toparnos con un popup que solicita el permiso de tomar el control del "
-"micrófono, como se ilustra en la figura 10."
+"Una vez que accedemos con nuestro agente, si todo va bien deberemos toparnos "
+"con un popup que solicita el permiso de tomar el control del micrófono, como "
+"se ilustra en la figura 10."
 msgstr ""
+"Once we access with our agent, if everything goes well we should run into a "
+"popup which request the permission to take control of the microphone, ass "
+"illustrated in Figure 10."
 
 # e5ffd3c19dc740afb163bf363168ec6d
 #: ../../initial_settings.rst:124
 msgid "*Figure 10: First login - microphone webrtc*"
-msgstr ""
+msgstr "*Figure 10: First login - microphone webrtc*"
 
 # c2e6618f8d644f13887b0f76a714fa96
 #: ../../initial_settings.rst:126
 msgid ""
-"Al habilitar el permiso, debemos escuchar un audio que el sistema "
-"reproduce indicando el login exitoso y además la pantalla de agente debe "
-"lucir como la figura 11."
+"Al habilitar el permiso, debemos escuchar un audio que el sistema reproduce "
+"indicando el login exitoso y además la pantalla de agente debe lucir como la "
+"figura 11."
 msgstr ""
+"When allowing the permission, we should listen to an audio that the system "
+"reproduces indicating the successful login and also the agent screen should "
+"look like figure 11."
 
 # 8406ffc85174470880896ffbb4d826b8
 #: ../../initial_settings.rst:130
 msgid "*Figure 11: First login - webphone connected*"
-msgstr ""
-
-#~ msgid ""
-#~ "En el vídeo se plantea una típica"
-#~ " configuración posterior a la instalación"
-#~ " de OMniLeads. En el mismo se "
-#~ "repasa el manejo de usuarios, pausas "
-#~ "de agente, calificaciones del sistema, "
-#~ "creación de formularios de campañas y"
-#~ " se ejecuta un primer login como "
-#~ "agente."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Al finalizar la configuración expuesta "
-#~ "en el video, disponemos en el "
-#~ "sistema de:"
-#~ msgstr ""
-
-#~ msgid "Un usuario supervisor."
-#~ msgstr ""
-
-#~ msgid "Un grupo de agentes."
-#~ msgstr ""
-
-#~ msgid "Dos agentes disponibles para login."
-#~ msgstr ""
-
-#~ msgid "Un listado de pausas de agente."
-#~ msgstr ""
-
+msgstr "*Figure 11: First login - webphone connected*"
