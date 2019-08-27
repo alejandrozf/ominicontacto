@@ -20,10 +20,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% extends "campanas/campana_manual/campana_manual_base.html" %}
 {% load i18n %}
 {% load static %}
-{% block extra_js %}
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/interaccionsitioexterno.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/campana_preview/campana_preview.js' %}"></script>
-{% endblock %}
 
 {% block title_campana %}
     <h1>{% trans 'Campaña Preview: Datos Básicos' %}</h1>
