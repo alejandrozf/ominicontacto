@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-31 17:06-0300\n"
+"POT-Creation-Date: 2019-08-27 10:57-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -91,7 +91,7 @@ msgstr ""
 #: configuracion_telefonia_app/templates/lista_identificador_cliente.html:32
 #: configuracion_telefonia_app/templates/lista_ivrs.html:33
 #: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:31
-#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:53
+#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:41
 #: configuracion_telefonia_app/templates/lista_troncal_sip.html:31
 #: configuracion_telefonia_app/templates/lista_validaciones_fecha_hora.html:32
 msgid "Nombre"
@@ -565,18 +565,18 @@ msgstr ""
 msgid "Instalados:"
 msgstr ""
 
-#: configuracion_telefonia_app/templates/content_ivr.html:47
-#: configuracion_telefonia_app/templates/ivr.html:67
+#: configuracion_telefonia_app/templates/content_ivr.html:40
+#: configuracion_telefonia_app/templates/ivr.html:51
 msgid "Opciones de destinos"
 msgstr ""
 
-#: configuracion_telefonia_app/templates/content_ivr.html:83
+#: configuracion_telefonia_app/templates/content_ivr.html:76
 #: configuracion_telefonia_app/templates/destino_personalizado.html:94
-#: configuracion_telefonia_app/templates/grupo_horario.html:96
+#: configuracion_telefonia_app/templates/grupo_horario.html:80
 #: configuracion_telefonia_app/templates/identificacion_cliente.html:164
-#: configuracion_telefonia_app/templates/ivr.html:113
+#: configuracion_telefonia_app/templates/ivr.html:97
 #: configuracion_telefonia_app/templates/ruta_entrante.html:36
-#: configuracion_telefonia_app/templates/ruta_saliente.html:137
+#: configuracion_telefonia_app/templates/ruta_saliente.html:120
 #: configuracion_telefonia_app/templates/validacion_fecha_hora.html:111
 msgid "Guardar"
 msgstr ""
@@ -629,7 +629,7 @@ msgstr ""
 #: configuracion_telefonia_app/templates/lista_identificador_cliente.html:44
 #: configuracion_telefonia_app/templates/lista_ivrs.html:43
 #: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:47
-#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:67
+#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:55
 #: configuracion_telefonia_app/templates/lista_validaciones_fecha_hora.html:42
 msgid "Eliminar"
 msgstr ""
@@ -739,7 +739,7 @@ msgstr ""
 msgid "¿Esta seguro que desea eliminar esta Validación Fecha Hora?"
 msgstr ""
 
-#: configuracion_telefonia_app/templates/grupo_horario.html:63
+#: configuracion_telefonia_app/templates/grupo_horario.html:47
 msgid "Condiciones de tiempo"
 msgstr ""
 
@@ -768,7 +768,7 @@ msgstr ""
 #: configuracion_telefonia_app/templates/lista_identificador_cliente.html:31
 #: configuracion_telefonia_app/templates/lista_ivrs.html:32
 #: configuracion_telefonia_app/templates/lista_rutas_entrantes.html:30
-#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:52
+#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:40
 #: configuracion_telefonia_app/templates/lista_troncal_sip.html:30
 #: configuracion_telefonia_app/templates/lista_validaciones_fecha_hora.html:31
 msgid "ID"
@@ -868,27 +868,27 @@ msgstr ""
 msgid "Agregar ruta entrante"
 msgstr ""
 
-#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:42
+#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:30
 msgid "Rutas Salientes"
 msgstr ""
 
-#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:54
+#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:42
 msgid "Tiempo ring"
 msgstr ""
 
-#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:55
+#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:43
 msgid "Opciones de discado"
 msgstr ""
 
-#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:73
+#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:61
 msgid "No hay rutas salientes configuradas"
 msgstr ""
 
-#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:78
+#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:66
 msgid "Agregar ruta saliente"
 msgstr ""
 
-#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:79
+#: configuracion_telefonia_app/templates/lista_rutas_salientes.html:67
 msgid "Guardar Orden"
 msgstr ""
 
@@ -936,11 +936,11 @@ msgstr ""
 msgid "Adicionar nuevo"
 msgstr ""
 
-#: configuracion_telefonia_app/templates/ruta_saliente.html:65
+#: configuracion_telefonia_app/templates/ruta_saliente.html:48
 msgid "Patrones de discado"
 msgstr ""
 
-#: configuracion_telefonia_app/templates/ruta_saliente.html:107
+#: configuracion_telefonia_app/templates/ruta_saliente.html:90
 msgid "Secuencia de troncales"
 msgstr ""
 

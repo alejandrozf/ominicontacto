@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-26 11:06-0300\n"
+"POT-Creation-Date: 2019-08-27 10:57-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,70 +18,74 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: supervision_app/templates/supervision_agentes.html:47
+#: supervision_app/templates/supervision_agentes.html:48
 msgid "Agentes"
 msgstr ""
 
-#: supervision_app/templates/supervision_agentes.html:75
+#: supervision_app/templates/supervision_agentes.html:76
 msgid "Finalizar"
 msgstr ""
 
-#: supervision_app/templates/supervision_agentes.html:84
-#: supervision_app/templates/supervision_campanas_entrantes.html:35
-#: supervision_app/templates/supervision_campanas_salientes.html:35
+#: supervision_app/templates/supervision_agentes.html:85
+#: supervision_app/templates/supervision_campanas_entrantes.html:37
+#: supervision_app/templates/supervision_campanas_salientes.html:36
 msgid "Nombre"
 msgstr ""
 
-#: supervision_app/templates/supervision_agentes.html:85
+#: supervision_app/templates/supervision_agentes.html:86
 msgid "Status"
 msgstr ""
 
-#: supervision_app/templates/supervision_agentes.html:86
+#: supervision_app/templates/supervision_agentes.html:87
 msgid "Tiempo"
 msgstr ""
 
-#: supervision_app/templates/supervision_agentes.html:87
+#: supervision_app/templates/supervision_agentes.html:88
 msgid "Acciones"
 msgstr ""
 
-#: supervision_app/templates/supervision_campanas_entrantes.html:30
+#: supervision_app/templates/supervision_campanas_entrantes.html:32
 msgid "Campañas Entrantes"
 msgstr ""
 
-#: supervision_app/templates/supervision_campanas_entrantes.html:36
+#: supervision_app/templates/supervision_campanas_entrantes.html:38
 msgid "Llamadas"
 msgstr ""
 
-#: supervision_app/templates/supervision_campanas_entrantes.html:37
-#: supervision_app/templates/supervision_campanas_salientes.html:37
+#: supervision_app/templates/supervision_campanas_entrantes.html:39
+#: supervision_app/templates/supervision_campanas_salientes.html:38
 msgid "Atendidas"
 msgstr ""
 
-#: supervision_app/templates/supervision_campanas_entrantes.html:38
+#: supervision_app/templates/supervision_campanas_entrantes.html:40
 msgid "Abandonadas"
 msgstr ""
 
-#: supervision_app/templates/supervision_campanas_entrantes.html:39
+#: supervision_app/templates/supervision_campanas_entrantes.html:41
 msgid "Abandonadas en anuncio"
 msgstr ""
 
-#: supervision_app/templates/supervision_campanas_entrantes.html:40
+#: supervision_app/templates/supervision_campanas_entrantes.html:42
 msgid "Expiradas"
 msgstr ""
 
-#: supervision_app/templates/supervision_campanas_entrantes.html:41
-#: supervision_app/templates/supervision_campanas_salientes.html:39
+#: supervision_app/templates/supervision_campanas_entrantes.html:43
+msgid "En espera"
+msgstr ""
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:44
+#: supervision_app/templates/supervision_campanas_salientes.html:40
 msgid "Gestiones"
 msgstr ""
 
-#: supervision_app/templates/supervision_campanas_salientes.html:30
+#: supervision_app/templates/supervision_campanas_salientes.html:31
 msgid "Campañas Salientes"
 msgstr ""
 
-#: supervision_app/templates/supervision_campanas_salientes.html:36
+#: supervision_app/templates/supervision_campanas_salientes.html:37
 msgid "Llamadas discadas"
 msgstr ""
 
-#: supervision_app/templates/supervision_campanas_salientes.html:38
+#: supervision_app/templates/supervision_campanas_salientes.html:39
 msgid "No atendidas"
 msgstr ""

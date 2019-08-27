@@ -16,7 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
+from mock import patch
 
+from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 from reportes_app.reportes.reporte_llamadas_supervision import (
@@ -32,11 +34,16 @@ from ominicontacto_app.models import Campana, OpcionCalificacion
 
 class ReporteDeLLamadasEntrantesDeSupervisionTest(TestCase):
 
+    PWD = u'admin123'
+
     def setUp(self):
         super(ReporteDeLLamadasEntrantesDeSupervisionTest, self).setUp()
         self.generador = GeneradorDeLlamadaLogs()
 
         self.supervisor = SupervisorProfileFactory()
+        self.supervisor.user.set_password(self.PWD)
+        self.supervisor.user.save()
+
         self.agente1 = AgenteProfileFactory()
 
         self.entrante1 = CampanaFactory.create(type=Campana.TYPE_ENTRANTE, nombre='camp-entrante-1',
@@ -48,12 +55,14 @@ class ReporteDeLLamadasEntrantesDeSupervisionTest(TestCase):
         self.entrante2 = CampanaFactory.create(type=Campana.TYPE_ENTRANTE, nombre='camp-entrante-2',
                                                estado=Campana.ESTADO_ACTIVA)
 
-    def test_reporte_vacio(self):
+    @patch.object(ReporteDeLLamadasEntrantesDeSupervision, '_obtener_llamadas_en_espera_raw')
+    def test_reporte_vacio(self, _obtener_llamadas_en_espera_raw):
         reporte = ReporteDeLLamadasEntrantesDeSupervision(self.supervisor.user)
         self.assertNotIn(self.entrante1.id, reporte.estadisticas)
         self.assertNotIn(self.entrante2.id, reporte.estadisticas)
 
-    def test_contabiliza_atendidas(self):
+    @patch.object(ReporteDeLLamadasEntrantesDeSupervision, '_obtener_llamadas_en_espera_raw')
+    def test_contabiliza_atendidas(self, _obtener_llamadas_en_espera_raw):
         self.generador.generar_log(self.entrante1, False, 'COMPLETEAGENT', '35100001111',
                                    agente=self.agente1, contacto=None, bridge_wait_time=-1,
                                    duracion_llamada=10, archivo_grabacion='', time=None)
@@ -68,7 +77,8 @@ class ReporteDeLLamadasEntrantesDeSupervisionTest(TestCase):
         self.assertEqual(reporte.estadisticas[self.entrante1.id]['abandonadas'], 0)
         self.assertEqual(reporte.estadisticas[self.entrante1.id]['gestiones'], 0)
 
-    def test_contabiliza_expiradas(self):
+    @patch.object(ReporteDeLLamadasEntrantesDeSupervision, '_obtener_llamadas_en_espera_raw')
+    def test_contabiliza_expiradas(self, _obtener_llamadas_en_espera_raw):
         self.generador.generar_log(self.entrante1, False, 'EXITWITHTIMEOUT', '35100001111',
                                    agente=self.agente1, contacto=None, bridge_wait_time=-1,
                                    duracion_llamada=-1, archivo_grabacion='', time=None)
@@ -79,7 +89,8 @@ class ReporteDeLLamadasEntrantesDeSupervisionTest(TestCase):
         self.assertEqual(reporte.estadisticas[self.entrante1.id]['abandonadas'], 0)
         self.assertEqual(reporte.estadisticas[self.entrante1.id]['gestiones'], 0)
 
-    def test_contabiliza_gestiones(self):
+    @patch.object(ReporteDeLLamadasEntrantesDeSupervision, '_obtener_llamadas_en_espera_raw')
+    def test_contabiliza_gestiones(self, _obtener_llamadas_en_espera_raw):
         self.generador.generar_log(self.entrante1, False, 'COMPLETEAGENT', '35100001111',
                                    agente=self.agente1, contacto=None, bridge_wait_time=-1,
                                    duracion_llamada=10, archivo_grabacion='', time=None)
@@ -91,6 +102,30 @@ class ReporteDeLLamadasEntrantesDeSupervisionTest(TestCase):
         self.assertEqual(reporte.estadisticas[self.entrante1.id]['expiradas'], 0)
         self.assertEqual(reporte.estadisticas[self.entrante1.id]['abandonadas'], 0)
         self.assertEqual(reporte.estadisticas[self.entrante1.id]['gestiones'], 1)
+
+    def _generar_ami_response_llamadas_espera(self, campana_entrante):
+        return ('Event: QueueEntry\r\nQueue: {0}_{1}\r\nMax: 5\r\nStrategy: '
+                'rrmemory\r\nCalls: 0\r\nHoldtime: 0\r\nTalkTime: 0\r\n'
+                'Completed: 0\r\nAbandoned: 0\r\n'
+                'ServiceLevel: 30\r\nServicelevelPerf: 0.0\r\nServicelevelPerf2: 0.0\r\n'
+                'Weight: 0\r\n'
+                'ActionID: d9555aefdc48-00000001\r\n\r\nEvent: QueueStatusComplete\r\nActionID: '
+                'd9555aefdc48-00000001\r\n'
+                'EventList: Complete\r\nListItems: 31\r\n').format(campana_entrante.id,
+                                                                   campana_entrante.nombre)
+
+    @patch.object(ReporteDeLLamadasEntrantesDeSupervision, '_obtener_llamadas_en_espera_raw')
+    def test_contabilizar_llamadas_en_espera(self, _obtener_llamadas_en_espera_raw):
+        self.generador.generar_log(self.entrante1, False, 'COMPLETEAGENT', '35100001111',
+                                   agente=self.agente1, contacto=None, bridge_wait_time=-1,
+                                   duracion_llamada=10, archivo_grabacion='', time=None)
+        _obtener_llamadas_en_espera_raw.return_value = self._generar_ami_response_llamadas_espera(
+            self.entrante1)
+        self.client.login(username=self.supervisor.user.username, password=self.PWD)
+        url = reverse('supervision_campanas_entrantes')
+        response = self.client.get(url)
+        estadisticas = response.context_data['estadisticas']
+        self.assertEqual(estadisticas[self.entrante1.pk]['en_cola'], 1)
 
 
 class ReporteDeLLamadasSalientesDeSupervisionTest(TestCase):
@@ -201,4 +236,3 @@ class ReporteDeLLamadasSalientesDeSupervisionTest(TestCase):
             self.assertEqual(reporte.estadisticas[id_campana]['efectuadas'], 0)
             self.assertEqual(reporte.estadisticas[id_campana]['conectadas'], 0)
             self.assertEqual(reporte.estadisticas[id_campana]['no_conectadas'], 0)
-            self.assertEqual(reporte.estadisticas[id_campana]['gestiones'], 1)

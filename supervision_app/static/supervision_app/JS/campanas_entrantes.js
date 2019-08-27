@@ -17,6 +17,9 @@
 
 */
 
+/* global Urls */
+/* global gettext */
+
 $(function(){
     setInterval(function() {requestEstadisticasEntrantes();}, 5000);
 });
@@ -24,24 +27,24 @@ $(function(){
 function requestEstadisticasEntrantes() {
     // {% url 'api_supervision_campanas_entrantes'%}
     var url = Urls.api_supervision_campanas_entrantes();
-    $.ajax({type: "get",
+    $.ajax({type: 'get',
         url: url,
-        contentType: "text/html",
+        contentType: 'text/html',
         success: function(msg) {
             cargarEstadisticasEntrantes(msg.data);
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
+            console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
         }
     });
 }
 
 function cargarEstadisticasEntrantes(estadisticas) {
-    var tabla = $("#table-campanas");
+    var tabla = $('#table-campanas');
     tabla.html('');
     Object.keys(estadisticas).forEach(function(id_campana) {
         var datos_campana = estadisticas[id_campana];
-        $("#table-campanas").html();
+        $('#table-campanas').html();
         tabla.append('<tr>' +
                        '<td>' + datos_campana['nombre'] + '</td>' +
                        '<td>' + datos_campana['recibidas'] + '</td>' +
@@ -49,6 +52,7 @@ function cargarEstadisticasEntrantes(estadisticas) {
                        '<td>' + datos_campana['abandonadas'] + '</td>' +
                        '<td>' + datos_campana['abandonadas_anuncio'] + '</td>' +
                        '<td>' + datos_campana['expiradas'] + '</td>' +
+                       '<td>' + datos_campana['en_cola'] + '</td>' +
                        '<td>' + datos_campana['gestiones'] + '</td>' +
                      '</tr>');
     });
