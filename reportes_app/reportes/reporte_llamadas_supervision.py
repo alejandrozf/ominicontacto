@@ -18,14 +18,22 @@
 #
 from __future__ import unicode_literals
 
+import logging as _logging
+
+from collections import defaultdict
 from datetime import datetime
 
-from django.utils.encoding import force_text
+from asterisk.manager import Manager, ManagerSocketException, ManagerAuthException, ManagerException
+
+from django.conf import settings
 from django.db.models import Count
+from django.utils.encoding import force_text
 
 from ominicontacto_app.models import Campana, OpcionCalificacion, CalificacionCliente
 from reportes_app.models import LlamadaLog
 from ominicontacto_app.utiles import datetime_hora_maxima_dia, datetime_hora_minima_dia
+
+logger = _logging.getLogger(__name__)
 
 
 class ReporteDeLlamadasDeSupervision(object):
@@ -93,10 +101,15 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
         'expiradas': 0,
         'abandonadas': 0,
         'abandonadas_anuncio': 0,
+        'en_cola': 0,
         'gestiones': 0,
     }
     EVENTOS_LLAMADA = ['ENTERQUEUE', 'ENTERQUEUE-TRANSFER', 'CONNECT', 'EXITWITHTIMEOUT', 'ABANDON',
                        'ABANDONWEL']
+
+    def __init__(self, user_supervisor):
+        super(ReporteDeLLamadasEntrantesDeSupervision, self).__init__(user_supervisor)
+        self._contabilizar_llamadas_en_espera_por_campana()
 
     def _obtener_campanas(self, user_supervisor):
         campanas = Campana.objects.obtener_all_activas_finalizadas()
@@ -127,6 +140,65 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
         elif log.event == 'ABANDONWEL':
             datos_campana['abandonadas_anuncio'] += 1
             datos_campana['recibidas'] += 1
+
+    def _parsear_queue_status_pasada_1(self, queue_status_raw):
+        # almacenamos una lista de pares con la información del tipo de evento
+        # y la cola relacionada
+        events_info = []
+        event_queue = []
+        for line in queue_status_raw.split('\n'):
+            if line.startswith('Event'):
+                event_queue.append(line)
+            elif line.startswith('Queue'):
+                event_queue.append(line)
+                events_info.append(event_queue)
+                event_queue = []
+        return events_info
+
+    def _parsear_queue_status_pasada_2(self, lista_queue_status):
+        llamadas_en_cola_por_campana = defaultdict(int)
+        for event in lista_queue_status:
+            if event[0].find('QueueEntry') > -1:
+                # obtenemos el id de la campana desde entradas como:
+                # u'Queue: 29_Dialer-3\r'
+                campana_id = int(event[1].split(' ')[1].split('_')[0])
+                llamadas_en_cola_por_campana[campana_id] += 1
+        return llamadas_en_cola_por_campana
+
+    def _obtener_llamadas_en_espera_raw(self):
+        manager = Manager()
+        ami_manager_user = settings.ASTERISK['AMI_USERNAME']
+        ami_manager_pass = settings.ASTERISK['AMI_PASSWORD']
+        ami_manager_host = str(settings.OML_ASTERISK_HOSTNAME.replace('root@', ''))
+        queue_status_raw = {}
+        try:
+            manager.connect(ami_manager_host)
+            manager.login(ami_manager_user, ami_manager_pass)
+            queue_status_raw = manager.send_action({"Action": "QueueStatus"}).data
+
+        except ManagerSocketException as e:
+            logger.exception("Error connecting to the manager: {0}".format(e.message))
+        except ManagerAuthException as e:
+            logger.exception("Error logging in to the manager: {0}".format(e.message))
+        except ManagerException as e:
+            logger.exception("Error {0}".format(e.message))
+        finally:
+            manager.close()
+            return queue_status_raw
+
+    def _obtener_llamadas_en_espera(self):
+        queue_status_raw = self._obtener_llamadas_en_espera_raw()
+        try:
+            self.llamadas_en_cola = self._parsear_queue_status_pasada_2(
+                self._parsear_queue_status_pasada_1(queue_status_raw))
+        except Exception as e:
+            logger.exception("Error {0}".format(e.message))
+            self.llamadas_en_cola = defaultdict(int)
+
+    def _contabilizar_llamadas_en_espera_por_campana(self):
+        self._obtener_llamadas_en_espera()
+        for campana, llamadas_en_cola_campana in self.llamadas_en_cola.items():
+            self.estadisticas[campana]['en_cola'] = llamadas_en_cola_campana
 
 
 class ReporteDeLLamadasSalientesDeSupervision(ReporteDeLlamadasDeSupervision):
