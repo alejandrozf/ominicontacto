@@ -5,16 +5,51 @@
 
 - include: roles/prerequisitos/tasks/reboot.yml
   when:  ansible_os_family == "RedHat" and ansible_connection != "local"
-  tags: reboot
+
+# Tarea especifica para restartear vagrant machine centos necesario para tests de integracion
+#- name: Restart or vagrant machine (centos)
+#  shell: vagrant halt && vagrant vagrant up
+#  args:
+#    chdir: /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+#  delegate_to: localhost
+#  when: ansible_os_family == "RedHat" and ansible_connection != "local"
+#  tags: integration-tests
+#  become: true
+#  become_method: su
+#  become_user: ftsinfra
 
 - name: Wait for the server to finish rebooting
   become: no
-  local_action: wait_for host="{{ omni_ip }}" delay=15 state=started port={{ ansible_ssh_port }} timeout=600
-  tags: reboot
-  when: ansible_os_family == "RedHat" and ansible_connection != "local"
+  wait_for: host="{{ omni_ip }}" delay=15 state=started port={{ ansible_ssh_port }} timeout=600
+  delegate_to: localhost
+  when: wait_reboot == "True"
+  #when: ansible_connection != "local"
 
 - name: Wait for the server to finish rebooting (cluster)
   become: no
   local_action: wait_for host="{{ dialer_ip }}" delay=15 state=started port={{ ansible_ssh_port }} timeout=600
-  tags: reboot
-  when: ansible_os_family == "RedHat" and cluster !=0
+  when: cluster !=0
+
+# TODO: Estas tareas quizá deberían estar separadas
+# (pero garantizando que se ejecuten al final de toda la instalación)
+- name: OML Environment Initialization
+  command: "{{ install_prefix }}bin/manage.sh inicializar_entorno"
+  become: true
+  become_method: su
+  become_user: "{{ usuario }}"
+  tags: integration-tests
+
+- name: Run integration tests that not depends on real browser
+  shell: "{{ install_prefix }}virtualenv/bin/python {{ install_prefix}}ominicontacto/ominicontacto_app/tests/tests.py"
+  register: out
+  environment:
+    TESTS_INTEGRACION: True
+    ADMIN_USERNAME: "{{ admin_user }}"
+    ADMIN_PASSWORD: "{{ admin_pass }}"
+  become: true
+  become_method: su
+  become_user: "{{ usuario }}"
+  become_flags: '-s /bin/bash'
+  tags: integration-tests
+
+- debug: var=out.stdout_lines

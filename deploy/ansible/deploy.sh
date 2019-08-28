@@ -31,10 +31,10 @@ REPO_LOCATION="`git rev-parse --show-toplevel`"
 USER_HOME=$(eval echo ~${SUDO_USER})
 export ANSIBLE_CONFIG=$TMP_ANSIBLE
 DEBIAN_FRONTEND=noninteractive
-IS_CICD=true
 IS_ANSIBLE="`find ~/.local -name ansible 2>/dev/null |grep \"/bin/ansible\" |head -1`"
 arg1=$1
-verbose=$2
+arg2=$2
+verbose=$3
 
 OSValidation(){
   if [ -z $PIP ]; then
@@ -102,6 +102,15 @@ TagCheck() {
   else
     echo "Invalid first option, use ./deploy.sh -h to see valid options"
     exit 1
+  fi
+
+  if [ "$arg2" == "--integration-tests" ]; then
+      # extra tag used for add integration tests when installation is complete
+      tag=${tag},integration-tests
+  else
+      # if the second argument is not for integration tests we asume is for
+      # mark verbose
+      verbose=$arg2
   fi
 }
 
@@ -202,7 +211,7 @@ AnsibleExec() {
     fi
     echo "Beginning the Omnileads installation with Ansible, this installation process can last between 30-40 minutes"
     echo ""
-    ${IS_ANSIBLE}-playbook $verbose -s $TMP_ANSIBLE/omnileads.yml --extra-vars "build_dir=$TMP_OMINICONTACTO repo_location=$REPO_LOCATION docker_root=$USER_HOME" --tags "$tag" -i $TMP_ANSIBLE/inventory
+    ${IS_ANSIBLE}-playbook $verbose -s $TMP_ANSIBLE/omnileads.yml --extra-vars "build_dir=$TMP_OMINICONTACTO repo_location=$REPO_LOCATION docker_root=$USER_HOME wait_reboot=$WAIT_REBOOT" --tags "$tag" -i $TMP_ANSIBLE/inventory
     ResultadoAnsible=`echo $?`
     if [ $ResultadoAnsible == 0 ];then
       echo "
@@ -266,6 +275,8 @@ case $arg1 in
             rm -rf /var/tmp/servers_installed
             exit 1
         fi
+      else
+        WAIT_REBOOT=True
       fi
       CodeCopy
       VersionGeneration
