@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-27 10:57-0300\n"
+"POT-Creation-Date: 2019-09-02 12:26-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1459,8 +1459,8 @@ msgstr "Cancelled"
 
 #: ominicontacto_app/services/estadisticas_campana.py:127
 #: ominicontacto_app/services/estadisticas_campana.py:149
-#: ominicontacto_app/services/estadisticas_campana.py:352
-#: ominicontacto_app/services/estadisticas_campana.py:377
+#: ominicontacto_app/services/estadisticas_campana.py:365
+#: ominicontacto_app/services/estadisticas_campana.py:390
 msgid "Contestador detectado"
 msgstr "Answer Machine Detected"
 
@@ -1492,16 +1492,16 @@ msgstr "Abandoned Calls"
 
 #: ominicontacto_app/services/estadisticas_campana.py:141
 #: ominicontacto_app/services/estadisticas_campana.py:156
-#: ominicontacto_app/services/estadisticas_campana.py:306
-#: ominicontacto_app/services/estadisticas_campana.py:315
-#: ominicontacto_app/services/estadisticas_campana.py:330
+#: ominicontacto_app/services/estadisticas_campana.py:319
+#: ominicontacto_app/services/estadisticas_campana.py:328
+#: ominicontacto_app/services/estadisticas_campana.py:343
 msgid "Abandonadas durante anuncio"
 msgstr "Abandoned during welcome audio"
 
 #: ominicontacto_app/services/estadisticas_campana.py:143
 #: ominicontacto_app/services/estadisticas_campana.py:157
-#: ominicontacto_app/services/estadisticas_campana.py:304
-#: ominicontacto_app/services/estadisticas_campana.py:313
+#: ominicontacto_app/services/estadisticas_campana.py:317
+#: ominicontacto_app/services/estadisticas_campana.py:326
 #: ominicontacto_app/templates/campanas/campana_entrante/tiempos_llamadas.html:105
 msgid "Expiradas"
 msgstr "Expired Calls"
@@ -1514,114 +1514,114 @@ msgstr "Congested Channel"
 msgid "Problema de enrutamiento"
 msgstr "Routing Problem"
 
-#: ominicontacto_app/services/estadisticas_campana.py:301
-#: ominicontacto_app/services/estadisticas_campana.py:310
-#: ominicontacto_app/services/estadisticas_campana.py:330
+#: ominicontacto_app/services/estadisticas_campana.py:314
+#: ominicontacto_app/services/estadisticas_campana.py:323
+#: ominicontacto_app/services/estadisticas_campana.py:343
 #: ominicontacto_app/templates/campanas/campana_entrante/tiempos_llamadas.html:103
 msgid "Recibidas"
 msgstr "Received Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:302
-#: ominicontacto_app/services/estadisticas_campana.py:311
+#: ominicontacto_app/services/estadisticas_campana.py:315
+#: ominicontacto_app/services/estadisticas_campana.py:324
 msgid "Transferencias recibidas"
 msgstr "Transferred Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:303
-#: ominicontacto_app/services/estadisticas_campana.py:312
-#: ominicontacto_app/services/estadisticas_campana.py:346
-#: ominicontacto_app/services/estadisticas_campana.py:373
+#: ominicontacto_app/services/estadisticas_campana.py:316
+#: ominicontacto_app/services/estadisticas_campana.py:325
+#: ominicontacto_app/services/estadisticas_campana.py:359
+#: ominicontacto_app/services/estadisticas_campana.py:386
 #: ominicontacto_app/templates/campanas/campana_entrante/tiempos_llamadas.html:104
 msgid "Atendidas"
 msgstr "Answered Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:305
-#: ominicontacto_app/services/estadisticas_campana.py:314
+#: ominicontacto_app/services/estadisticas_campana.py:318
+#: ominicontacto_app/services/estadisticas_campana.py:327
 #: ominicontacto_app/templates/campanas/campana_entrante/tiempos_llamadas.html:106
 msgid "Abandonadas"
 msgstr "Abandoned Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:307
-#: ominicontacto_app/services/estadisticas_campana.py:316
-#: ominicontacto_app/services/estadisticas_campana.py:354
-#: ominicontacto_app/services/estadisticas_campana.py:369
-#: ominicontacto_app/services/estadisticas_campana.py:430
-#: ominicontacto_app/services/estadisticas_campana.py:452
+#: ominicontacto_app/services/estadisticas_campana.py:320
+#: ominicontacto_app/services/estadisticas_campana.py:329
+#: ominicontacto_app/services/estadisticas_campana.py:367
+#: ominicontacto_app/services/estadisticas_campana.py:382
+#: ominicontacto_app/services/estadisticas_campana.py:443
+#: ominicontacto_app/services/estadisticas_campana.py:465
 #: ominicontacto_app/templates/campanas/campana_entrante/tiempos_llamadas.html:107
 msgid "Manuales"
 msgstr "Manual Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:308
-#: ominicontacto_app/services/estadisticas_campana.py:317
-#: ominicontacto_app/services/estadisticas_campana.py:356
-#: ominicontacto_app/services/estadisticas_campana.py:375
-#: ominicontacto_app/services/estadisticas_campana.py:432
-#: ominicontacto_app/services/estadisticas_campana.py:444
+#: ominicontacto_app/services/estadisticas_campana.py:321
+#: ominicontacto_app/services/estadisticas_campana.py:330
+#: ominicontacto_app/services/estadisticas_campana.py:369
+#: ominicontacto_app/services/estadisticas_campana.py:388
+#: ominicontacto_app/services/estadisticas_campana.py:445
+#: ominicontacto_app/services/estadisticas_campana.py:457
 #: ominicontacto_app/templates/campanas/campana_entrante/tiempos_llamadas.html:108
 msgid "Manuales atendidas"
 msgstr "Answered Manual Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:329
-#: ominicontacto_app/services/estadisticas_campana.py:358
-#: ominicontacto_app/services/estadisticas_campana.py:383
-#: ominicontacto_app/services/estadisticas_campana.py:434
-#: ominicontacto_app/services/estadisticas_campana.py:450
+#: ominicontacto_app/services/estadisticas_campana.py:342
+#: ominicontacto_app/services/estadisticas_campana.py:371
+#: ominicontacto_app/services/estadisticas_campana.py:396
+#: ominicontacto_app/services/estadisticas_campana.py:447
+#: ominicontacto_app/services/estadisticas_campana.py:463
 #: ominicontacto_app/templates/campanas/campana_entrante/tiempos_llamadas.html:109
 msgid "Manuales no atendidas"
 msgstr "No Answered Manual Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:344
-#: ominicontacto_app/services/estadisticas_campana.py:367
-#: ominicontacto_app/services/estadisticas_campana.py:396
-#: ominicontacto_app/services/estadisticas_campana.py:407
-#: ominicontacto_app/services/estadisticas_campana.py:424
-#: ominicontacto_app/services/estadisticas_campana.py:454
+#: ominicontacto_app/services/estadisticas_campana.py:357
+#: ominicontacto_app/services/estadisticas_campana.py:380
+#: ominicontacto_app/services/estadisticas_campana.py:409
+#: ominicontacto_app/services/estadisticas_campana.py:420
+#: ominicontacto_app/services/estadisticas_campana.py:437
+#: ominicontacto_app/services/estadisticas_campana.py:467
 msgid "Discadas"
 msgstr "Dialed Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:348
-#: ominicontacto_app/services/estadisticas_campana.py:371
+#: ominicontacto_app/services/estadisticas_campana.py:361
+#: ominicontacto_app/services/estadisticas_campana.py:384
 msgid "Conectadas al agente"
 msgstr "Calls Connected to Agent"
 
-#: ominicontacto_app/services/estadisticas_campana.py:350
-#: ominicontacto_app/services/estadisticas_campana.py:380
+#: ominicontacto_app/services/estadisticas_campana.py:363
+#: ominicontacto_app/services/estadisticas_campana.py:393
 msgid "Perdidas"
 msgstr "Lost Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:398
-#: ominicontacto_app/services/estadisticas_campana.py:409
+#: ominicontacto_app/services/estadisticas_campana.py:411
+#: ominicontacto_app/services/estadisticas_campana.py:422
 msgid "Discadas atendidas"
 msgstr "Dialed and Answered Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:400
-#: ominicontacto_app/services/estadisticas_campana.py:411
+#: ominicontacto_app/services/estadisticas_campana.py:413
+#: ominicontacto_app/services/estadisticas_campana.py:424
 msgid "Discadas no atendidas"
 msgstr "Dialed No Answered Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:426
-#: ominicontacto_app/services/estadisticas_campana.py:442
+#: ominicontacto_app/services/estadisticas_campana.py:439
+#: ominicontacto_app/services/estadisticas_campana.py:455
 msgid "Conectadas"
 msgstr "Connected Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:428
-#: ominicontacto_app/services/estadisticas_campana.py:447
+#: ominicontacto_app/services/estadisticas_campana.py:441
+#: ominicontacto_app/services/estadisticas_campana.py:460
 msgid "No conectadas"
 msgstr "Calls Not Connected"
 
-#: ominicontacto_app/services/estadisticas_campana.py:573
+#: ominicontacto_app/services/estadisticas_campana.py:587
 #: ominicontacto_app/services/reporte_llamadas_campana.py:80
 msgid "Generando grafico calificaciones de campana por cliente "
 msgstr "Generating graph of campagin disposition per customer"
 
-#: ominicontacto_app/services/estadisticas_campana.py:578
+#: ominicontacto_app/services/estadisticas_campana.py:592
 msgid "Cantidad de calificacion de cliente "
 msgstr "Call Dispositions"
 
-#: ominicontacto_app/services/estadisticas_campana.py:592
+#: ominicontacto_app/services/estadisticas_campana.py:606
 msgid "Cantidad de llamadas no atendidos "
 msgstr "No Answered Calls"
 
-#: ominicontacto_app/services/estadisticas_campana.py:604
+#: ominicontacto_app/services/estadisticas_campana.py:618
 msgid "Detalles de llamadas "
 msgstr "Call Details"
 
@@ -5223,11 +5223,11 @@ msgid ""
 "erronea. "
 msgstr "<strong>Error!</strong> Invalid database."
 
-#: ominicontacto_app/views_campana_dialer_creacion.py:208
+#: ominicontacto_app/views_campana_dialer_creacion.py:209
 msgid "Se ha creado la nueva campaña."
 msgstr "Campaign has been created."
 
-#: ominicontacto_app/views_campana_dialer_creacion.py:213
+#: ominicontacto_app/views_campana_dialer_creacion.py:214
 msgid ""
 "<strong>¡ATENCIÓN!</strong> El servicio Discador no se encuentra disponible. "
 "No se pudo crear la campaña. Por favor contacte un administrador."
@@ -5235,11 +5235,11 @@ msgstr ""
 "<strong>Warning!</strong> Dialer Service seems to be down, campaign could "
 "not be created. Please contact Administrator."
 
-#: ominicontacto_app/views_campana_dialer_creacion.py:277
+#: ominicontacto_app/views_campana_dialer_creacion.py:279
 msgid "Se ha modificado la campaña."
 msgstr "Campagin has been modified."
 
-#: ominicontacto_app/views_campana_dialer_creacion.py:282
+#: ominicontacto_app/views_campana_dialer_creacion.py:284
 msgid ""
 "<strong>¡ATENCIÓN!</strong> El servicio Discador no se encuentra disponible. "
 "No se pudo modificar la campaña. Por favor contacte un administrador."

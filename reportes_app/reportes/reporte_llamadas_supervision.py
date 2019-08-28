@@ -26,7 +26,7 @@ from datetime import datetime
 from asterisk.manager import Manager, ManagerSocketException, ManagerAuthException, ManagerException
 
 from django.conf import settings
-from django.db.models import Count
+from django.db.models import Avg, Count
 from django.utils.encoding import force_text
 
 from ominicontacto_app.models import Campana, OpcionCalificacion, CalificacionCliente
@@ -101,6 +101,7 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
         'expiradas': 0,
         'abandonadas': 0,
         'abandonadas_anuncio': 0,
+        't_promedio_espera': 0,
         'en_cola': 0,
         'gestiones': 0,
     }
@@ -110,6 +111,7 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
     def __init__(self, user_supervisor):
         super(ReporteDeLLamadasEntrantesDeSupervision, self).__init__(user_supervisor)
         self._contabilizar_llamadas_en_espera_por_campana()
+        self._contabilizar_llamadas_promedio_espera()
 
     def _obtener_campanas(self, user_supervisor):
         campanas = Campana.objects.obtener_all_activas_finalizadas()
@@ -199,6 +201,17 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
         self._obtener_llamadas_en_espera()
         for campana, llamadas_en_cola_campana in self.llamadas_en_cola.items():
             self.estadisticas[campana]['en_cola'] = llamadas_en_cola_campana
+
+    def _contabilizar_llamadas_promedio_espera(self):
+        logs_llamadas_espera = LlamadaLog.objects.entrantes_espera()
+        logs_llamadas_espera_hoy = logs_llamadas_espera.filter(time__gte=self.desde,
+                                                               time__lte=self.hasta)
+        logs_agrupados_espera = logs_llamadas_espera_hoy.values('campana_id').annotate(
+            tiempo_espera=Avg('bridge_wait_time'))
+        for log_llamada in logs_agrupados_espera:
+            campana_id = log_llamada['campana_id']
+            promedio_espera = log_llamada['tiempo_espera']
+            self.estadisticas[campana_id]['t_promedio_espera'] = promedio_espera
 
 
 class ReporteDeLLamadasSalientesDeSupervision(ReporteDeLlamadasDeSupervision):

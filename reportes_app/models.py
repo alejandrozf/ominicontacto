@@ -24,6 +24,7 @@ from django.db.models import Count
 from django.core.exceptions import SuspiciousOperation
 from django.utils.translation import ugettext as _
 
+from ominicontacto_app.models import Campana
 from ominicontacto_app.utiles import datetime_hora_minima_dia, datetime_hora_maxima_dia
 
 
@@ -147,6 +148,13 @@ class LlamadaLogManager(models.Manager):
         return self.filter(agente_id=agente_id,
                            time__gte=fecha_desde, time__lte=fecha_hasta,
                            event__in=LlamadaLog.EVENTOS_FIN_CONEXION)
+
+    def entrantes_espera(self):
+        ids_llamadas_entrantes = list(self.filter(
+            tipo_campana=Campana.TYPE_ENTRANTE, event='ENTERQUEUE').values_list(
+                'callid', flat=True))
+        logs = self.filter(callid__in=ids_llamadas_entrantes, event='CONNECT')
+        return logs
 
 
 class LlamadaLog(models.Model):
