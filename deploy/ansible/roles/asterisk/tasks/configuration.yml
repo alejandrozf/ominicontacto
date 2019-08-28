@@ -120,6 +120,67 @@
   become_method: sudo
   when: cluster != 0 and is_docker == "false"
 
+# TODO: las siguientes tareas deberían estar separadas de este rol
+
+# se instala chrome (CENTOS)
+- name: Chrome 76 install (CENTOS7)
+  shell: wget -P . https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm; sudo yum -y localinstall google-chrome-stable_current_x86_64.rpm; rm google-chrome-stable_current_x86_64.rpm
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "RedHat"
+  tags: integration-tests
+
+# se instala chrome (Ubuntu & Debian)
+- name: Chrome install (Ubuntu & Debian)
+  shell: wget -P . https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb; dpkg -i google-chrome-stable_current_amd64.deb; rm google-chrome-stable_current_amd64.deb;
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
+  tags: integration-tests
+
+# se instala xvfb (centos)
+- name: Install of xvfb (centos)
+  yum: name=xorg-x11-server-Xvfb state=present update_cache=yes
+  when: ansible_os_family == "RedHat"
+  tags: integration-tests
+
+# se instala xvfb (ubuntu & debian)
+- name: Clean xvfb dependencies (Ubuntu & Debian)
+  shell: apt --fix-broken -y install
+  become: true
+  become_method: sudo
+  when: ansible_os_family == "Debian"
+  tags: integration-tests
+
+- name: Install of xvfb (ubuntu & debian)
+  apt: name=xvfb state=present update_cache=yes
+  when: ansible_os_family == "Debian"
+  tags: integration-tests
+
+# se descarga chromedriver
+- name: chromedriver download
+  shell: wget -q https://chromedriver.storage.googleapis.com/76.0.3809.68/chromedriver_linux64.zip -O temp.zip; unzip temp.zip ; rm temp.zip; chmod +755 chromedriver; mv chromedriver /usr/bin
+  become: true
+  become_method: su
+  tags: integration-tests
+
+# Se instalan los paquetes selenium y pyvirtualdisplay
+- name: Install selenium & pyvirtualdisplay
+  pip:
+    name:
+      - selenium==3.141.0
+      - PyVirtualDisplay==0.2.4
+    virtualenv: "{{ install_prefix }}virtualenv"
+    virtualenv_command: /usr/bin/virtualenv
+  environment:
+    PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-{{ postgresql_version }}/bin"
+    PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
+    PIP_DEFAULT_TIMEOUT: 100
+  become: true
+  become_method: su
+  become_user: "{{ usuario }}"
+  tags: integration-tests
+
 # Genero los agis desde ansible
 - name: Creation of the agis omni-blackist and omni-dialednum
   template: "src=roles/asterisk/templates/agi-bin/{{ item.src }} dest={{ ast_agis_location }}/{{ item.dest }} mode=755 owner={{ usuario }} group={{ usuario }}"

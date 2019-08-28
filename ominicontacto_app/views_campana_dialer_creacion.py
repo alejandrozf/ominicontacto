@@ -198,7 +198,8 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
                 self.alertas_por_sistema_externo(campana)
                 success = True
 
-        except Exception:
+        except Exception as e:
+            logger.error(e)
             success = False
 
         if success:
@@ -267,7 +268,8 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
 
             success = True
 
-        except Exception:
+        except Exception as e:
+            logger.error(e)
             success = False
 
         if success:

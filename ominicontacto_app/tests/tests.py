@@ -138,7 +138,7 @@ class IntegrationTests(unittest.TestCase):
         # login como admin
         self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
         agente_username = uuid.uuid4().hex
-        agente_password = AGENTE_PASSWORD
+        agente_password = uuid.uuid4().hex
         # rellenar etapa1 del wizard de creación de usuario (agente)
         link_create_user = self.browser.find_element_by_id('newUser')
         href_create_user = link_create_user.get_attribute('href')
