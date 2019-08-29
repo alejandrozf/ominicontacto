@@ -9,7 +9,7 @@
 # If you are installing a prodenv (PE) AIO y bare-metal, change the IP and hostname here #
 ##########################################################################################
 [prodenv-aio]
-#hostname ansible_connection=local ansible_user=root ansible_host=X.X.X.X #(this line is for self-hosted installation)
+localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
 #hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #(this line is for node-host installation)
 
 ##############################################################################
@@ -50,16 +50,18 @@
 # Credentials #
 ###############
 
-############
-# Database #
-############
+#####################################################################
+#                           Database                                #
+#                    SET POSTGRESQL PASSWORD                        #
+#####################################################################
 postgres_database=omnileads
 postgres_user=omnileads
-postgres_password=my_very_strong_pass
-#############
-# Admin web #
-#############
-admin_pass=my_very_strong_pass
+#postgres_password=my_very_strong_pass
+#####################################################################
+#                           Web Admin                               #
+#                     SET WEB ADMIN PASSWORD                        #
+#####################################################################
+#admin_pass=my_very_strong_pass
 #########################
 # AMI for wombat dialer #
 #########################
@@ -70,10 +72,6 @@ ami_password=5_MeO_DMT
 #####################
 dialer_user=demoadmin
 dialer_password=demo
-###########################################################
-# MySQL (ONLY CHANGE THIS PASSWORD IN FIRST INSTALLATION) #
-###########################################################
-mysql_root_password=my_very_strong_pass
 ################################################################################################
 # Set the timezone where the nodes are UNCOMMENT and set this if you are doing a fresh install #
 ################################################################################################
@@ -163,18 +161,12 @@ docker_user='{{ lookup("env","SUDO_USER") }}'
 
 [prodenv-aio:vars]
 ssh_port="{{ ansible_ssh_port }}"
-omni_ip="{{ ansible_host }}"
+omni_ip="{{ inventory_hostname }}"
 omniapp_ip="{{ omni_ip }}"
 asterisk_ip="{{ omni_ip }}"
 kamailio_ip="{{ omni_ip }}"
 database_ip="{{ omni_ip }}"
 dialer_ip="{{ omni_ip }}"
-omni_fqdn="{{ inventory_hostname }}"
-omniapp_fqdn="{{ omni_fqdn }}"
-asterisk_fqdn="{{ omni_fqdn }}"
-kamailio_fqdn="{{ omni_fqdn }}"
-database_fqdn="{{ omni_fqdn }}"
-dialer_fqdn="{{ omni_fqdn }}"
 cluster=0
 devenv=0
 prodenv=1

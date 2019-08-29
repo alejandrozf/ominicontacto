@@ -36,6 +36,7 @@ res_json_repo: https://github.com/felipem1210/asterisk-res_json.git
 country_code: 54
 admin_user: admin
 usuario: omnileads
+mysql_root_password: "{{ postgres_password }}"
 session_cookie_age: 3600
 install_prefix: /opt/omnileads/
 asterisk_location: "{{ install_prefix }}asterisk"
@@ -47,3 +48,9 @@ certs_location: "{{ kamailio_location }}/etc/certs"
 kamailio_location: "{{ install_prefix }}kamailio"
 static_route: "{{ install_prefix }}ominicontacto/ominicontacto_app/static/ominicontacto"
 odbc_location: /etc/
+omni_fqdn: "{{ ansible_fqdn }}"
+omniapp_fqdn: "{{ omni_fqdn }}"
+asterisk_fqdn: "{{ omni_fqdn }}"
+kamailio_fqdn: "{{ omni_fqdn }}"
+database_fqdn: "{{ omni_fqdn }}"
+dialer_fqdn: "{{ omni_fqdn }}"

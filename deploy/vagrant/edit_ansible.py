@@ -22,7 +22,6 @@ import sys
 
 parser = argparse.ArgumentParser(description='Modify Ansible inventory')
 
-parser.add_argument("--remote_host", help="Sets external hostname to install OML on it")
 parser.add_argument("--self_hosted", help="Modifies if the install is selfhosted")
 parser.add_argument("--admin_pass", help="Omnileads admin web password")
 parser.add_argument("--databases_pass", help="Postgresql and mariadb passwords")
@@ -52,7 +51,7 @@ if args.remote_port:
 else:
     remote_ssh_port = 22
 
-if args.remote_host and args.internal_ip and args.self_hosted == "no":
+if args.internal_ip and args.self_hosted == "no":
     # modificamos el setting que define el servidor externo donde se va a instalar
     # el sistema
     inventory_file.seek(0)
@@ -70,22 +69,16 @@ if args.remote_host and args.internal_ip and args.self_hosted == "no":
                         args.databases_pass)))
     sys.exit()
 
-if args.remote_host and args.internal_ip and args.self_hosted == "yes":
+if args.internal_ip and args.self_hosted == "yes":
     # modificamos el setting que define el servidor externo donde se va a instalar
     # el sistema
     inventory_file.seek(0)
     inventory_file.truncate()
     inventory_file.write(inventory_contents.replace(
-        "#hostname ansible_connection=local ansible_user=root ansible_host=X.X.X.X"
-        " #(this line is for self-hosted installation)",
-        "{0} ansible_connection=local ansible_user=root ansible_host={1}".format(
-            args.remote_host, args.internal_ip)).replace(
-                "#TZ=America/Argentina/Cordoba", "TZ=America/Argentina/Cordoba").replace(
-                "admin_pass=my_very_strong_pass", "admin_pass={0}".format(args.admin_pass)).replace(
-                "postgres_password=my_very_strong_pass", "postgres_password={0}".format(
-                    args.databases_pass)).replace(
-                    "mysql_root_password=my_very_strong_pass", "mysql_root_password={0}".format(
-                        args.databases_pass)))
+        "#TZ=America/Argentina/Cordoba", "TZ=America/Argentina/Cordoba").replace(
+            "#admin_pass=my_very_strong_pass", "admin_pass={0}".format(args.admin_pass)).replace(
+            "#postgres_password=my_very_strong_pass", "postgres_password={0}".format(
+                args.databases_pass)))
     sys.exit()
 
 if args.docker_login_user and args.docker_login_email and args.docker_login_password \

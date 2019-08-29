@@ -16,18 +16,24 @@ if [ "$os" == '"CentOS Linux"' ]; then
   cd ominicontacto
   git fetch
   git checkout $BRANCH
-  python /vagrant/edit_ansible.py --remote_host=centos-example.com --internal_ip=$CENTOS_IP --self_hosted=yes --admin_pass=098098ZZZ --databases_pass=admin123
+  python deploy/vagrant/edit_ansible.py --internal_ip=$CENTOS_IP --self_hosted=yes --admin_pass=098098ZZZ --databases_pass=admin123
+  cd deploy/ansible
+  ./deploy.sh --integration-tests --iface=eth1
 elif [ "$os" == '"Debian GNU/Linux"' ]; then
   echo "Installing git"
+  apt-get update -y
   apt-get install git -y
   cd /var/tmp/
   git clone https://gitlab.com/omnileads/ominicontacto.git
   cd ominicontacto
   git fetch
   git checkout $BRANCH
-  python /vagrant/edit_ansible.py --remote_host=debian-example --internal_ip=$DEBIAN_IP --self_hosted=yes --admin_pass=098098ZZZ --databases_pass=admin123
+  python deploy/vagrant/edit_ansible.py --internal_ip=$DEBIAN_IP --self_hosted=yes --admin_pass=098098ZZZ --databases_pass=admin123
+  cd deploy/ansible
+  ./deploy.sh --integration-tests --iface=enp0s8
 elif [ "$os" == '"Ubuntu"' ]; then
   echo "Installing git"
+  apt-get update -y
   apt-get install git -y
   cd /var/tmp/
   git clone https://gitlab.com/omnileads/ominicontacto.git
@@ -36,10 +42,10 @@ elif [ "$os" == '"Ubuntu"' ]; then
   git checkout $BRANCH
   apt-get update -y
   echo 'yes' | apt-get install python-minimal -y
-  python /vagrant/edit_ansible.py --remote_host=ubuntu-example --internal_ip=$UBUNTU_IP --self_hosted=yes --admin_pass=098098ZZZ --databases_pass=admin123
+  python deploy/vagrant/edit_ansible.py --internal_ip=$UBUNTU_IP --self_hosted=yes --admin_pass=098098ZZZ --databases_pass=admin123
+  cd deploy/ansible
+  ./deploy.sh --integration-tests --iface=eth1
 else
   echo "The OS you are trying to install is not supported to install this software."
   exit 1
 fi
-cd deploy/ansible
-./deploy.sh -i

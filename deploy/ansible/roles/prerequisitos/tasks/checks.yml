@@ -3,7 +3,7 @@
 ##########
 # Checks #
 ##########
-  
+
 # Obtengo hostname del nodo
 - name: Get the hostname of node
   command: hostname
@@ -12,17 +12,9 @@
   tags: always
 
 # Obtengo IP del nodo
-- name: Get IP adress of node
-  debug: msg={{ ansible_all_ipv4_addresses }}
-  when: cluster == 0
-  tags: always
-
-# Comparo si el hostname ingresado en el inventory es el mismo  de el nodo
-- name: Compare if hostname of server is the same as hostname in inventory file
-  assert:
-    that: "'{{ hostname.stdout }}' == '{{ omni_fqdn }}'"
-    msg: "The hostname you inserted in inventory file is wrong, check it"
-  when: cluster == 0
+- name: Get IP adress of node (selfhosted)
+  set_fact: omni_ip={{ hostvars[inventory_hostname]['ansible_' + iface]['ipv4']['address'] }}
+  when: cluster == 0 and iface is defined
   tags: always
 
 # Comparo si la IP ingresada en el inventory es el mismo  de el nodo
@@ -30,7 +22,7 @@
   assert:
     that: "'{{ omni_ip }}' in ansible_all_ipv4_addresses"
     msg: "The IP you inserted in inventory file is wrong, check it"
-  when: cluster == 0
+  when: cluster == 0 and iface is not defined
   tags: always
 
 # nos aseguramos q' "omni_distribution" esté dentro de los SO permitidos. Si no es asi, esta task generara un error
@@ -90,5 +82,17 @@
 # Chequea si timezone esta definido
 - name: Check if TimeZone variable is defined
   fail:
-    msg: TimeZone variable undefined, edit it in the inventory file
+    msg: TimeZone variable undefined, edit $TZ variable in inventory file
   when: TZ is not defined
+
+# Chequea si postgres_password esta definido
+- name: Check if database password is defined
+  fail:
+    msg: Database variable undefined, edit $postgres_password in inventory file
+  when: postgres_password is not defined
+
+# Chequea si web admin password esta definido
+- name: Check if web admin password is defined
+  fail:
+    msg: Web admin variable undefined, edit $admin_pass in inventory file
+  when: admin_pass is not defined
