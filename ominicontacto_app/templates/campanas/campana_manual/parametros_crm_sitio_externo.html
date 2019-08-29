@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
-{% extends "campanas/parametros_crm_sitio_externo.html" %}
+{% extends "campanas/parametro_crm_sitio_externo_base.html" %}
 {% load i18n %}
 
 {% block nav %}
@@ -26,7 +26,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <ul class="nav nav-indicators">
       <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
       <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
+      {% if interaccion_crm %}
       <li class="active"><a>{% trans 'Interacción con Sitio Externo' %}</a></li>
+      {% endif %}
       {% if not es_template and create %}
           <li class="disabled"><a>{% trans 'Dar permiso a supervisores' %}</a></li>
           <li class="disabled"><a>{% trans 'Adicionar agentes' %}</a></li>

@@ -23,3 +23,28 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block title_campana %}
     <h1>{% trans 'Campaña Manual: Datos Básicos' %}</h1>
 {% endblock %}
+
+{% block interaccion %}
+    {% if form.instance.pk %}
+        {% if form.instance.tipo_interaccion == 2 %}
+            <div class="col-md-6">
+                <label>{% trans "Sitio Externo" %}</label>
+                {{ form.sitio_externo }}
+                {{ form.sitio_externo.errors }}
+            </div>
+        {% endif %}
+    {% else %}
+        {{ form.tipo_interaccion.errors }}
+        <div class="col-md-6">
+          <label> {% trans "Tipo de Interacción" %}</label>
+            <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.0 }} </div>
+            <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.1 }}</div>
+        </div>
+        <div class="col-md-6">
+            <label><div class="myradio" id="url_externa">
+            {% trans "Url Externa" %}</div> </label>
+            {{ form.sitio_externo.errors }}
+            {{ form.sitio_externo }}
+        </div>
+    {% endif %}
+{% endblock interaccion %}
