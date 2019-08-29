@@ -55,7 +55,6 @@
           - "{{ asterisk_location }}/etc/asterisk"
           - "{{ install_prefix}}virtualenv"
   tags: omniapp
-  ignore_errors: true
 
 #----------------------------------------------------------------------
 # pip / virtualenv
@@ -65,15 +64,6 @@
 - name: Setup pip
   template: src=templates/pip.conf dest={{ install_prefix }}.pip owner=root group=root mode=644
   tags: postinstall
-
-#----------------------------------------------------------------------
-# ics_app installed, do this
-#----------------------------------------------------------------------
-
-#- name: Get the ics_settings settings in temp file
-#  shell: cat {{ install_prefix }}local/oml_settings_local.py | grep "#ICS" -A200 > /tmp/oml_settings_local.py2
-#  tags: ['postinstall','changenetwork','changepassword']
-#  when: ics_exists.rc == 0 or ics_exists is defined
 
 # El codigo que está en /var/tmp/ominicontacto_build/ se pasa a /opt/omnileeads/ominicontacto
 - name: Upload built (rsync to /ominicontacto)
@@ -114,6 +104,10 @@
   become: true
   become_method: su
   become_user: "{{ usuario }}"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
 - name: Generate requirements.txt file
   template: src=roles/oml_server/templates/requirements.txt dest={{ install_prefix }}ominicontacto owner={{ usuario }} group={{ usuario }}
@@ -133,14 +127,10 @@
   become_method: su
   become_user: "{{ usuario }}"
   tags: postinstall
-- meta: clear_host_errors
-
-#- name: Copy the content of of ics_settings in oml_settings_local
-#  shell: "cat /tmp/oml_settings_local.py2 >> oml_settings_local.py"
-#  args:
-#    chdir: "{{ install_prefix }}/local"
-#  tags: ['changenetwork','postinstall','changepassword']
-#  when: ics_exists.rc == 0 or ics_exists is defined
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
 - name: Erase old folder of settings
   file: path={{ install_prefix }}{{ item }} state=absent
