@@ -32,8 +32,8 @@ Ambas son mutuamente excluyentes, la primera hace referencia a una instalación 
  # If you are installing a prodenv (PE) AIO y bare-metal, change the IP and hostname here #
  ##########################################################################################
  [prodenv-aio]
- #hostname ansible_connection=local ansible_user=root ansible_host=X.X.X.X #(this line is for self-hosted installation)
- #hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #(this line is for node-host installation)
+ localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
+ #X.X.X.X ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
 
 
 * **Entorno de desarrollo basado en Docker.**
@@ -95,7 +95,6 @@ En la tercera sección del archivo se ajusta todo lo respectivo a contraseñas d
 
 * **Postgres SQL**
 * **Usuario "admin" de OMniLeads**
-* **MySQL**
 
 .. code-block:: bash
 
@@ -104,17 +103,19 @@ En la tercera sección del archivo se ajusta todo lo respectivo a contraseñas d
   ###############
   # Credentials #
   ###############
-
-  ############
-  # Database #
-  ############
+  
+  #####################################################################
+  #                           Database                                #
+  #                    SET POSTGRESQL PASSWORD                        #
+  #####################################################################
   postgres_database=omnileads
   postgres_user=omnileads
-  postgres_password=my_very_strong_pass
-  #############
-  # Admin web #
-  #############
-  admin_pass=my_very_strong_pass
+  #postgres_password=my_very_strong_pass
+  #####################################################################
+  #                           Web Admin                               #
+  #                     SET WEB ADMIN PASSWORD                        #
+  #####################################################################
+  #admin_pass=my_very_strong_pass
   #########################
   # AMI for wombat dialer #
   #########################
@@ -125,11 +126,14 @@ En la tercera sección del archivo se ajusta todo lo respectivo a contraseñas d
   #####################
   dialer_user=demoadmin
   dialer_password=demo
-  ###########################################################
-  # MySQL (ONLY CHANGE THIS PASSWORD IN FIRST INSTALLATION) #
-  ###########################################################
-  mysql_root_password=my_very_strong_pass
+  ################################################################################################
+  # Set the timezone where the nodes are UNCOMMENT and set this if you are doing a fresh install #
+  ################################################################################################
+  #TZ=America/Argentina/Cordoba
 
+.. note::
+
+  La contraseña de postgresql ingresada será usada también como contraseña de MySQL
 
 Parámetros de zona horaria y configuración de NAT:
 

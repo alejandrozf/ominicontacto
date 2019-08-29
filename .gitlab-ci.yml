@@ -90,17 +90,18 @@ staging-centos:
     - vagrant halt centos
     - vagrant destroy centos -f
     - ./vagrantup.sh centos
-    - python ../edit_ansible.py --remote_host=$STAGING_HOST_CENTOS --internal_ip=$STAGING_IP_CENTOS --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
+    - python ../edit_ansible.py --internal_ip=$STAGING_IP_CENTOS --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
     - cd ../../ansible
-    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i --integration-tests
+    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh --integration-tests
     - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
     - vagrant halt centos
   tags:
     - build-aio
-  # only:
-  #   - /^pre-release-.*$/
-  #   - schedules
-  #   - web
+  only:
+    - /.*ansible-hostnode.*$/
+    - /^pre-release-.*$/
+    - schedules
+    - web
 
 
 staging-ubuntu:
@@ -112,17 +113,18 @@ staging-ubuntu:
     - vagrant halt ubuntu
     - vagrant destroy ubuntu -f
     - ./vagrantup.sh ubuntu
-    - python ../edit_ansible.py --remote_host=$STAGING_HOST_UBUNTU --internal_ip=$STAGING_IP_UBUNTU --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
+    - python ../edit_ansible.py --internal_ip=$STAGING_IP_UBUNTU --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
     - cd ../../ansible
-    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i --integration-tests
+    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh --integration-tests
     - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
     - vagrant halt ubuntu
   tags:
     - build-aio
-  # only:
-  #   - /^pre-release-.*$/
-  #   - schedules
-  #   - web
+  only:
+    - /.*ansible-hostnode.*$/
+    - /^pre-release-.*$/
+    - schedules
+    - web
 
 staging-debian:
   stage: build
@@ -133,33 +135,34 @@ staging-debian:
     - vagrant halt debian
     - vagrant destroy debian -f
     - ./vagrantup.sh debian
-    - python ../edit_ansible.py --remote_host=$STAGING_HOST_DEBIAN --internal_ip=$STAGING_IP_DEBIAN --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
+    - python ../edit_ansible.py --internal_ip=$STAGING_IP_DEBIAN --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
     - cd ../../ansible
-    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i --integration-tests
+    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh --integration-tests
     - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
     - vagrant halt debian
   tags:
     - build-aio
-  # only:
-  #   - /^pre-release-.*$/
-  #   - schedules
-  #   - web
+  only:
+    - /.*ansible-hostnode.*$/
+    - /^pre-release-.*$/
+    - schedules
+    - web
 
 staging-self-hosted:
   stage: build
   script:
-    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/self_hosted/
-    - git fetch
-    - git checkout ../../ansible/inventory
-    - git checkout $CI_COMMIT_REF_NAME
     - export BRANCH=$CI_COMMIT_REF_NAME
+    - bash /home/ftsinfra/git_cleanup.sh
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/self_hosted/
+    - vagrant halt
+    - vagrant destroy -f
     - vagrant up --provision
     - vagrant halt
     - vagrant destroy -f
   tags:
     - build-aio
   only:
-    - /^.*ansible.*$/
+    - /.*ansible-selfhosted.*$/
     - /^pre-release-.*$/
     - schedules
     - web

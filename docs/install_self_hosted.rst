@@ -55,40 +55,12 @@ Ajustes necesarios antes  de la ejecución de script:
 
  cd deploy/ansible
 
-- Se comprueba la *dirección IP* y *hostname* que posee el host y que luego se utiliza en el archivo de inventario en el proceso de instalación:
-
-.. code-block:: bash
-
- hostname
- ip a
-
-.. image:: images/install_hostname_command.png
-
-*Figure 2: hostname command output*
-
-
-.. image:: images/install_ip_a_command.png
-
-*Figure 3: ip a command output*
-
 - En este paso debemos trabajar sobre el archivo  :ref:`about_install_inventory` disponible dentro del directorio "PATH/ominicontacto/deploy/ansible".
 
 .. note::
 
    OMniLeads utiliza ansible para realizar la instalación, por lo tanto existe un "archivo de inventario" que debe ser modificado de acuerdo a los parámetros
    del host sobre el que estamos trabajando.
-
-Modificar y descomentar la cadena 'hostname' por el que hemos configurado a nuestro servidor. También en esta línea, se debe editar el parámetro 'X.X.X.X' con la
-dirección IP que implementa el host sobre el que estamos trabajando.
-
-.. code-block:: bash
-
- ##########################################################################################
- # If you are installing a prodenv (PE) AIO y bare-metal, change the IP and hostname here #
- ##########################################################################################
- [prodenv-aio]
- oml-name.example.com ansible_connection=local ansible_user=root ansible_host=10.10.10.100 #(this line is for self-hosted installation)
- #hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #(this line is for node-host installation)
 
 Luego, allí en el inventory mismo debemos ajustar las :ref:`about_install_inventory_vars` de la instanacia.
 
@@ -104,7 +76,9 @@ Una vez configuradas las variables citadas, se procede con la ejecución del scr
 
 .. code-block:: bash
 
-  sudo ./deploy.sh -i
+  sudo ./deploy.sh -i --iface=<your_iface>
+
+Donde **<your_iface>** es la interfaz con la IP que se quiere usar para levantar los servicios que componen OMniLeads (suele ser la IP de la interfaz LAN del servidor).
 
 El tiempo de instalación dependerá mayormente de la velocidad de conexión a internet del host OML, ya que se deben descargar, instalar y configurar varios paquetes correspondientes a los diferentes componentes de software que conforman el sistema.
 
@@ -123,28 +97,12 @@ Primer acceso a OMniLeads:
 
 Si la ejecución de la instalación fue exitosa, entonces podemos realizar un :ref:`about_first_access`.
 
-
-.. important::
-
- Cada vez que se ejecuta el script *./deploy.sh* ya sea para instalar, correr una actualización del sistema o modificar algún parñametro de red,
- el archivo de "inventory" se vuelve a cero, es decir se pierde toda la parametrización realizada antes de la ejecución del script. No obstante una vez finalizada la
- ejecución de "deplo.sh", se genera una copia del archivo "inventory" (llamada my_inventory), para no perder todos los parámetros del sistema
- utilizados en la última ejecución del script. La copia en cuestión se ubica en el path donde ha sido clonado el repositorio de OML y bajo el nombre de "my_inventory"
- como lo expone la figura.
-
-.. image:: images/install_my_inventory.png
-
-*Figure 6: inventory copy, my_inventory file*
-
-
 Errores comunes:
 ^^^^^^^^^^^^^^^^
 
 - El server no tiene internet o no resuelve dominios (configuración de DNS). **Compruebe el acceso a internet del host (por ej: actualizando paquetes - apt-get update | yum update).**
 
-- Timeout de algún paquete que se intenta bajar. Puede volver a intentar ejecutar el deploy y si vuelve a fallar, la opción puede serinstalar el paquete desde la terminal.
-
-- Falla por mala sintaxis o falta de definición de *hostname* y *dirección IP* en el archivo *inventory*.
+- Timeout de algún paquete que se intenta bajar. Puede volver a intentar ejecutar el deploy y si vuelve a fallar, la opción puede ser instalar el paquete desde la terminal.
 
 - No ejecutó el script de deploy con *sudo*, en el host deployer.
 
