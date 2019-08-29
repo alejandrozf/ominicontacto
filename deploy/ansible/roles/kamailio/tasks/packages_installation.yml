@@ -51,6 +51,10 @@
   become_method: sudo
   when: ansible_os_family == "RedHat"
   tags: ['kamailio']
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
 # Instalo los paquetes necesarios para kamailio/rtpengine en debian
 - name: Installation of kamailio/rtpengine packages (debian)
@@ -79,7 +83,11 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
-
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
+  
 - name: Install extra packages (debian cluster)
   apt: name={{ item }} state=present dpkg_options=no-triggers
   with_items:

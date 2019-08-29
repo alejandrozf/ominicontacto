@@ -24,9 +24,12 @@
 # Descargo rtpengine desde la fuente, me descarga un .tar.gz
 - name: Download of RTPengine-{{ rtpengine_version }}
   get_url: url={{ rtpengine_repo }} dest=/usr/src/
-  register: destino
   become: true
   become_method: sudo
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
 # Untareo el archivo recien descargado
 - name: Untar the file
@@ -57,6 +60,10 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
 # Instalo los paquetes que se necesitan
 - name: Install of ffmpeg (centos)
@@ -67,6 +74,10 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
 # Make de rtpengine en /usr/src/rtpengine/daemon
 - name: Installation of RTPengine (centos)
@@ -123,6 +134,10 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
 # Se hace el buildpackage para generar los debs
 - name: Build of rtpengine with dpkg (debian)

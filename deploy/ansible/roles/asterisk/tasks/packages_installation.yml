@@ -41,6 +41,10 @@
     - unzip
   tags: postinstall
   when: ansible_os_family == "RedHat"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
   # Intalo los paquetes necesarios para la parte VoIP
 - name: Installation of asterisk packages (debian)
@@ -59,7 +63,11 @@
     - unzip
   tags: postinstall
   when: ansible_os_family == "Debian"
-
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
+  
 - name: Install of cluster packages (centos cluster)
   yum: name={{ item }} state=present
   with_items:
