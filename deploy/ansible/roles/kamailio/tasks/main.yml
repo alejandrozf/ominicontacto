@@ -63,9 +63,16 @@
   tags: ['kamailio','postinstall']
   when: kamailio_installed.stdout != kamailio_version
 
+- name: Copy trusted certificates in desired locations
+  copy: src=/var/tmp/ominicontacto-build/ominicontacto/deploy/certs dest={{ item }}
+  with_items:
+    - "{{ kamailio_location }}/etc"
+    - "{{ install_prefix }}nginx_certs"
+  when: trusted_certs_exists.rc == 0
+
 - include: certificate_CA.yml
   tags: kamailio
-  when: certs_exists.rc == 1
+  when: certs_exists.rc == 1 and trusted_certs_exists.rc == 1
 
 - include: kamailio_configuration.yml
   tags: ['kamailio']

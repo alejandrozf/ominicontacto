@@ -31,10 +31,6 @@
   include: roles/asterisk/tasks/configuration.yml
   when: prodenv == 1
 
-- name: Creation of certificates
-  include: roles/kamailio/tasks/certificate_CA.yml
-  when: certs_exists.rc == 1 and prodenv == 1
-
 - name: Upload built (rsync to /ominicontacto)
   synchronize: "src={{ build_dir }}/{{ item }} dest={{ omniapp_location }}/ominicontacto delete=yes checksum=yes times=no"
   with_items:

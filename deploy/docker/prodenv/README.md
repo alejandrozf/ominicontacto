@@ -16,6 +16,8 @@ You can have the software running in your system with this simple steps:
     * RELEASE="the OMniLeads release you want to deploy"
     * TZ="your timezone"
     * DJANGO_PASS="the password for the web GUI"
+  7. HTTPS certificate and key pair:
+    * We provide by default an autosigned certificate/key pair for HTTPS connections, if you want user your own pair, place them in certs/ folder.
   7. With the user you selected raise up the environment
       - docker-compose up -d
 
