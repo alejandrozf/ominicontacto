@@ -153,9 +153,12 @@ CodeCopy() {
   echo "Copying the Omnileads code to temporal directory"
   git archive --format=tar $(git rev-parse HEAD) | tar x -f - -C $TMP_OMINICONTACTO
   sleep 2
+  echo "Copying trusted certificates if exists"
+  cp -r $REPO_LOCATION/deploy/certs/. $TMP_OMINICONTACTO/deploy/certs/
   echo "Deleting unnecesary files..."
   rm -rf $TMP_OMINICONTACTO/docs
-  rm -rf $TMP_OMINICONTACTO/ansible
+  rm -rf $TMP_OMINICONTACTO/deploy/ansible
+  rm -rf $TMP_OMINICONTACTO/deploy/certs/README.md
   sleep 2
 }
 

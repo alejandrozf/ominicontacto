@@ -19,12 +19,8 @@
   include: roles/asterisk/tasks/configuration.yml
   when: devenv == 1
 
-- include: roles/kamailio/tasks/certificate_CA.yml
-  when: certs_exists.rc == 1 and devenv == 1
-
-- name: Change ownership of certs folder
-  file: path={{ certs_location }} state=directory owner={{ docker_user }} group={{ docker_user }} recurse=yes
-  when: devenv == 1
+- name: Copy certificate and key pair
+  copy: src=/var/tmp/ansible/roles/docker/files/certs dest={{ deploy_location }}
 
 - name: Generate docker-compose file and other files form templates
   template: src=roles/{{ item.src }} dest={{ item.dest }} mode=755 owner={{ docker_user }} group={{ docker_user }}

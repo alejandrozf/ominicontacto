@@ -34,8 +34,8 @@
 - name: Copy of the certificates in nginx (aio)
   copy: "src={{ kamailio_location }}/etc/certs/{{ item }} dest={{ install_prefix }}nginx_certs/ remote_src=yes"
   with_items:
-      - cert.pem
-      - key.pem
+    - "{{ cert }}"
+    - "{{ key }}"
   become: true
   become_method: sudo
   tags: ['kamailio','changenetwork']
@@ -45,9 +45,8 @@
 - name: Copy the certificates from host to omniapp server (cluster)
   copy: src=/var/tmp/ansible/{{ item }} dest={{ install_prefix }}nginx_certs/
   with_items:
-    - ca_cert.pem
-    - cert.pem
-    - key.pem
+    - "{{ cert }}"
+    - "{{ key }}"
   when: cluster != 0
   tags: changenetwork
 

@@ -33,6 +33,8 @@ postgresql_key: https://ftp.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-{{ pos
 postgresql_url: https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7.6-x86_64/pgdg-redhat-repo-latest.noarch.rpm
 res_json_repo: https://github.com/felipem1210/asterisk-res_json.git
 ##Parametros de la aplicación
+cert: cert.pem
+key: key.pem
 country_code: 54
 admin_user: admin
 usuario: omnileads

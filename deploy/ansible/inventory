@@ -83,6 +83,13 @@ dialer_password=demo
 #################################################################################
 #external_port=
 #external_hostname=
+#####################################################################
+# Trusted Certificates:                                             #
+#   If you want to use your own certificate/key pair, copy them in  #
+#   ominicontacto/deploy/certs/ and type here the name of the files #
+#####################################################################
+#trusted_cert=
+#trusted_key=
 ####################################################################################################
 # Session Cookie Age (SCA) is the time in seconds that will last the https session when inactivity #
 # is detected in the session (by default is 1 hour)                                                #
