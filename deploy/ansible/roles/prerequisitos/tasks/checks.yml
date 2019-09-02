@@ -14,7 +14,7 @@
 # Obtengo IP del nodo
 - name: Get IP adress of node (selfhosted)
   set_fact: omni_ip={{ hostvars[inventory_hostname]['ansible_' + iface]['ipv4']['address'] }}
-  when: cluster == 0 and iface is defined
+  when: cluster == 0 and iface != "none"
   tags: always
 
 # Comparo si la IP ingresada en el inventory es el mismo  de el nodo
@@ -22,7 +22,7 @@
   assert:
     that: "'{{ omni_ip }}' in ansible_all_ipv4_addresses"
     msg: "The IP you inserted in inventory file is wrong, check it"
-  when: cluster == 0 and iface is not defined
+  when: cluster == 0 and iface == "none"
   tags: always
 
 # nos aseguramos q' "omni_distribution" esté dentro de los SO permitidos. Si no es asi, esta task generara un error
@@ -86,13 +86,6 @@
   tags: always
   become: true
   become_method: sudo
-
-# Chequeo si ics_app existe
-- name: Check if ics_app is installed in server
-  shell: "[-d {{ install_prefix }}ominicontacto/ics_app]"
-  failed_when: false
-  register: ics_exists
-  tags: always
 
 # Chequea si timezone esta definido
 - name: Check if TimeZone variable is defined

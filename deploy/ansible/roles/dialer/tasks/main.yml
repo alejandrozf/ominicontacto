@@ -10,8 +10,8 @@
   become: no
   wait_for: host="{{ omni_ip }}" delay=15 state=started port={{ ansible_ssh_port }} timeout=600
   delegate_to: localhost
-  when: iface is not defined
-  
+  when: iface == "none"
+
 - name: Wait for the server to finish rebooting (cluster)
   become: no
   local_action: wait_for host="{{ dialer_ip }}" delay=15 state=started port={{ ansible_ssh_port }} timeout=600
