@@ -195,6 +195,7 @@ EOF
 }
 
 AnsibleExec() {
+    if [ -z $INTERFACE ]; then INTERFACE=none; fi
     echo "Checking if there are hosts to deploy from inventory file"
     if ${IS_ANSIBLE} all --list-hosts -i $TMP_ANSIBLE/inventory | grep -q '(0)'; then
       echo "All hosts in inventory file are commented, please check the file according to documentation"

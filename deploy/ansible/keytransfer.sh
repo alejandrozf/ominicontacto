@@ -6,12 +6,11 @@
 arg1=$1
 current_directory=`pwd`
 ips=()
-servidores=()
 is_interface=false
 SSHtransfer() {
   while true; do
-      echo -e "Transfering the public key to $servidor server \n"
-      ssh-copy-id -p $ssh_port -i /root/.ssh/id_rsa.pub -o ConnectTimeout=10 root@$ip
+      echo -e "Transfering the public key to $ip server \n"
+        ssh-copy-id -p $ssh_port -i /root/.ssh/id_rsa.pub -o stricthostkeychecking=no -o ConnectTimeout=10 root@$ip
       ResultadoSSH=`echo $?`
       sleep 2
       if [ $ResultadoSSH -eq 0 ];then
@@ -40,10 +39,9 @@ Info() {
     if [[ ! $i = \#* ]]; then
       let "servers_ammount=servers_ammount+1"
       if [[ $i != *"ansible_connection=local"* ]] && [[ -z $arg1 ]]; then
-        servidor="`echo $i |awk -F \" \" '{print $1}'`"
-        ip="`echo $i |awk -F \" \" '{print $4}' |awk -F "=" '{print $2}' `"
+        ip="`echo $i |awk -F \" \" '{print $1}'`"
         ssh_port="`echo $i |grep ansible_ssh_port |awk -F " " '{print $2}'|awk -F "=" '{print $2}'`"
-        SSHtransfer
+        if [ -z $IS_CICD ]; then SSHtransfer; fi
       elif [[ $i != *"ansible_connection=local"* ]] && [[ ! -z $arg1 ]]; then
         exit 2
       elif [[ $i == *"ansible_connection=local"* ]] && [[ -z $arg1 ]]; then
@@ -58,8 +56,7 @@ Info() {
       fi
       for j in `seq 1 $servers_ammount`; do
         ips[j]=$ip
-        servidores[j]=$servidor
-        echo -e "    Hostname: ${servidores[j]} -  IP: ${ips[j]}" >> /var/tmp/servers_installed
+        echo -e "IP: ${ips[j]}" >> /var/tmp/servers_installed
       done
       fi
   done

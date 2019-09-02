@@ -10,7 +10,7 @@
 ##########################################################################################
 [prodenv-aio]
 localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
-#hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X #(this line is for node-host installation)
+#X.X.X.X ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
 
 ##############################################################################
 # Docker host is localhost because the application is deployed in localhost. #
