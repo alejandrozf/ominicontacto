@@ -27,7 +27,7 @@ from reportes_app.reportes.reporte_llamadas_supervision import (
 from reportes_app.tests.utiles import GeneradorDeLlamadaLogs
 from ominicontacto_app.tests.factories import (
     SupervisorProfileFactory, AgenteProfileFactory, CampanaFactory, OpcionCalificacionFactory,
-    CalificacionClienteFactory
+    CalificacionClienteFactory, LlamadaLogFactory
 )
 from ominicontacto_app.models import Campana, OpcionCalificacion
 
@@ -154,6 +154,19 @@ class ReporteDeLLamadasEntrantesDeSupervisionTest(TestCase):
         estadisticas = response.context_data['estadisticas']
         self.assertEqual(estadisticas[self.entrante1.pk]['t_promedio_espera'], 5)
         self.assertEqual(estadisticas[self.entrante2.pk]['t_promedio_espera'], 6)
+
+    @patch.object(ReporteDeLLamadasEntrantesDeSupervision, '_obtener_llamadas_en_espera_raw')
+    def test_contabilizar_promedio_llamadas_abandonadas(self, _obtener_llamadas_en_espera_raw):
+        self.generador.generar_log(self.entrante1, False, 'ABANDON', '35100001111',
+                                   agente=self.agente1, contacto=None, bridge_wait_time=5,
+                                   duracion_llamada=10, archivo_grabacion='', time=None)
+        LlamadaLogFactory(tipo_campana=Campana.TYPE_ENTRANTE, campana_id=self.entrante1.pk,
+                          event='ABANDONWEL', bridge_wait_time=2)
+        self.client.login(username=self.supervisor.user.username, password=self.PWD)
+        url = reverse('supervision_campanas_entrantes')
+        response = self.client.get(url)
+        estadisticas = response.context_data['estadisticas']
+        self.assertEqual(estadisticas[self.entrante1.pk]['t_promedio_abandono'], 3.5)
 
 
 class ReporteDeLLamadasSalientesDeSupervisionTest(TestCase):
