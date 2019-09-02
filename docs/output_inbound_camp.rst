@@ -23,6 +23,8 @@ La primera información que nos arroja la vista son las "llamadas que ingresaron
 Recordemos que en OMniLeads un agente puede procesar una llamada manual y asociarla a una campaña entrante, por ejemplo si estaba atendiendo una llamada y
 la misma se corta, el agente podrá marcar al número desde la campaña entrante pese a que se trata de una llamada manual saliente.
 
+También nos brinda información de los tiempos promedios de espera y abandono de los intentos de llamadas al sistema hacia dicha campaña.
+
 .. image:: images/output_incamp_reports_1.png
 
 *Figure 2: Inbound calls / Performed calls*

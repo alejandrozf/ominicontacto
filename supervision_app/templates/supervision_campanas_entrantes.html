@@ -42,6 +42,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <th>{% trans 'T. promedio espera' %}</th>
                 <th>{% trans 'Expiradas' %}</th>
                 <th>{% trans 'En espera' %}</th>
+                <th>{% trans 'T. promedio abandono' %}</th>
                 <th>{% trans 'Gestiones' %}</th>
             </tr>
         </thead>
@@ -56,6 +57,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <td>{{ datos_campana.t_promedio_espera|floatformat }} {% trans 'segundos' %}</td>
                     <td>{{ datos_campana.expiradas }}</td>
                     <td>{{ datos_campana.en_cola }}</td>
+                    <td>{{ datos_campana.t_promedio_abandono|floatformat }} {% trans ' segundos' %}</td>
                     <td>{{ datos_campana.gestiones }}</td>
                 </tr>
             {% endfor %}

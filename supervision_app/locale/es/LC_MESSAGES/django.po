@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-02 12:26-0300\n"
+"POT-Creation-Date: 2019-09-02 16:23-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -78,12 +78,20 @@ msgid "En espera"
 msgstr ""
 
 #: supervision_app/templates/supervision_campanas_entrantes.html:45
+msgid "T. promedio abandono"
+msgstr ""
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:46
 #: supervision_app/templates/supervision_campanas_salientes.html:40
 msgid "Gestiones"
 msgstr ""
 
-#: supervision_app/templates/supervision_campanas_entrantes.html:56
+#: supervision_app/templates/supervision_campanas_entrantes.html:57
 msgid "segundos"
+msgstr ""
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:60
+msgid " segundos"
 msgstr ""
 
 #: supervision_app/templates/supervision_campanas_salientes.html:31

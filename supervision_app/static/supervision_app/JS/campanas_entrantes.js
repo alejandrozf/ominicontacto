@@ -54,6 +54,7 @@ function cargarEstadisticasEntrantes(estadisticas) {
                        '<td>' + datos_campana['t_promedio_espera'].toFixed(1) + gettext(' segundos') +'</td>' +
                        '<td>' + datos_campana['expiradas'] + '</td>' +
                        '<td>' + datos_campana['en_cola'] + '</td>' +
+                       '<td>' + datos_campana['t_promedio_abandono'].toFixed(1) + gettext(' segundos') +'</td>' +
                        '<td>' + datos_campana['gestiones'] + '</td>' +
                      '</tr>');
     });

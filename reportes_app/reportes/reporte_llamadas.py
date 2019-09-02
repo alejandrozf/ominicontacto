@@ -380,6 +380,7 @@ class ReporteDeLlamadas(object):
         elif log.event == 'ABANDONWEL':
             datos_campana['recibidas'] += 1
             datos_campana['abandonadas_anuncio'] += 1
+            datos_campana['t_abandono'] += log.bridge_wait_time
 
     def _contabilizar_tipos_de_llamada_manual(self, datos_campana, log):
         if log.event == 'DIAL':

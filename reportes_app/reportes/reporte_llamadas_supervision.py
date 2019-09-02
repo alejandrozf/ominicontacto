@@ -103,6 +103,7 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
         'abandonadas_anuncio': 0,
         't_promedio_espera': 0,
         'en_cola': 0,
+        't_promedio_abandono': 0,
         'gestiones': 0,
     }
     EVENTOS_LLAMADA = ['ENTERQUEUE', 'ENTERQUEUE-TRANSFER', 'CONNECT', 'EXITWITHTIMEOUT', 'ABANDON',
@@ -112,6 +113,7 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
         super(ReporteDeLLamadasEntrantesDeSupervision, self).__init__(user_supervisor)
         self._contabilizar_llamadas_en_espera_por_campana()
         self._contabilizar_llamadas_promedio_espera()
+        self._contabilizar_tiempo_promedio_abandono_por_campana()
 
     def _obtener_campanas(self, user_supervisor):
         campanas = Campana.objects.obtener_all_activas_finalizadas()
@@ -212,6 +214,17 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
             campana_id = log_llamada['campana_id']
             promedio_espera = log_llamada['tiempo_espera']
             self.estadisticas[campana_id]['t_promedio_espera'] = promedio_espera
+
+    def _contabilizar_tiempo_promedio_abandono_por_campana(self):
+        logs_llamadas_abandonadas = LlamadaLog.objects.entrantes_abandono()
+        logs_llamadas_abandonadas_hoy = logs_llamadas_abandonadas.filter(time__gte=self.desde,
+                                                                         time__lte=self.hasta)
+        logs_agrupados_abandono = logs_llamadas_abandonadas_hoy.values('campana_id').annotate(
+            tiempo_abandono=Avg('bridge_wait_time'))
+        for log_llamada in logs_agrupados_abandono:
+            campana_id = log_llamada['campana_id']
+            promedio_abandono = log_llamada['tiempo_abandono']
+            self.estadisticas[campana_id]['t_promedio_abandono'] = promedio_abandono
 
 
 class ReporteDeLLamadasSalientesDeSupervision(ReporteDeLlamadasDeSupervision):

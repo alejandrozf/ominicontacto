@@ -156,6 +156,10 @@ class LlamadaLogManager(models.Manager):
         logs = self.filter(callid__in=ids_llamadas_entrantes, event='CONNECT')
         return logs
 
+    def entrantes_abandono(self):
+        return self.filter(
+            tipo_campana=Campana.TYPE_ENTRANTE, event__in=['ABANDON', 'ABANDONWEL'])
+
 
 class LlamadaLog(models.Model):
     """
