@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-27 10:57-0300\n"
+"POT-Creation-Date: 2019-09-02 12:26-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,11 +47,11 @@ msgstr "Invalid format"
 msgid "Formato JSON invalido"
 msgstr "Invalid JSON format"
 
-#: reportes_app/models.py:107 reportes_app/models.py:119
+#: reportes_app/models.py:108 reportes_app/models.py:120
 msgid "No se encontraron llamadas "
 msgstr "Calls not found"
 
-#: reportes_app/models.py:268
+#: reportes_app/models.py:276
 msgid "No se encontraron pausas "
 msgstr "Pauses not found"
 
@@ -81,7 +81,7 @@ msgstr ""
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:223
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:276
 #: reportes_app/templates/reporte_agente.html:34
-#: reportes_app/templates/reporte_grafico_campana.html:170
+#: reportes_app/templates/reporte_grafico_campana.html:179
 #: reportes_app/templates/reportes_agentes_tiempos.html:52
 #: reportes_app/templates/reportes_agentes_tiempos.html:87
 #: reportes_app/templates/reportes_agentes_tiempos.html:164
@@ -565,7 +565,7 @@ msgid "No se encontraron Calificaciones para esta campaña."
 msgstr "There are no call dispositions for this campaign"
 
 #: reportes_app/templates/reporte_agente.html:51
-#: reportes_app/templates/reporte_grafico_campana.html:78
+#: reportes_app/templates/reporte_grafico_campana.html:87
 msgid "Filtrar por esa fecha"
 msgstr "Filter by this date"
 
@@ -578,7 +578,7 @@ msgid "cantidad"
 msgstr "number"
 
 #: reportes_app/templates/reporte_agente.html:90
-#: reportes_app/templates/reporte_grafico_campana.html:107
+#: reportes_app/templates/reporte_grafico_campana.html:116
 msgid "Total asignados"
 msgstr "Total assignments"
 
@@ -624,6 +624,7 @@ msgstr "Performed calls"
 
 #: reportes_app/templates/reporte_grafico_campana.html:48
 #: reportes_app/templates/reporte_grafico_campana.html:57
+#: reportes_app/templates/reporte_grafico_campana.html:66
 msgid "(Se muestran las llamadas del día actual)"
 msgstr "(Calls of Today)"
 
@@ -631,11 +632,15 @@ msgstr "(Calls of Today)"
 msgid "Llamadas Recibidas"
 msgstr "Received calls"
 
-#: reportes_app/templates/reporte_grafico_campana.html:63
+#: reportes_app/templates/reporte_grafico_campana.html:64
+msgid "Tiempo promedio de espera (en segundos)"
+msgstr "Time average waiting (in seconds)"
+
+#: reportes_app/templates/reporte_grafico_campana.html:72
 msgid "Exportar Reporte(PDF)"
 msgstr "Export report (PDF)"
 
-#: reportes_app/templates/reporte_grafico_campana.html:68
+#: reportes_app/templates/reporte_grafico_campana.html:77
 #: reportes_app/templates/reporte_llamadas.html:42
 #: reportes_app/templates/reporte_llamadas.html:58
 #: reportes_app/templates/reportes_agentes_tiempos.html:38
@@ -643,65 +648,65 @@ msgstr "Export report (PDF)"
 msgid "Buscar"
 msgstr "Search"
 
-#: reportes_app/templates/reporte_grafico_campana.html:85
+#: reportes_app/templates/reporte_grafico_campana.html:94
 msgid "Reportes de contactados"
 msgstr "Contacted Calls Report"
 
-#: reportes_app/templates/reporte_grafico_campana.html:86
+#: reportes_app/templates/reporte_grafico_campana.html:95
 msgid "Exportar Reporte de contactados (CSV)"
 msgstr "Export Contacted Calls Report (CSV)"
 
-#: reportes_app/templates/reporte_grafico_campana.html:88
+#: reportes_app/templates/reporte_grafico_campana.html:97
 msgid "Llamadas conectadas al agente"
 msgstr "Calls connected to Agent"
 
-#: reportes_app/templates/reporte_grafico_campana.html:95
+#: reportes_app/templates/reporte_grafico_campana.html:104
 msgid "Calificacion"
 msgstr "Call Disposition"
 
-#: reportes_app/templates/reporte_grafico_campana.html:96
-#: reportes_app/templates/reporte_grafico_campana.html:135
-#: reportes_app/templates/reporte_grafico_campana.html:211
+#: reportes_app/templates/reporte_grafico_campana.html:105
+#: reportes_app/templates/reporte_grafico_campana.html:144
+#: reportes_app/templates/reporte_grafico_campana.html:220
 msgid "Cantidad"
 msgstr "Number"
 
-#: reportes_app/templates/reporte_grafico_campana.html:121
+#: reportes_app/templates/reporte_grafico_campana.html:130
 msgid "Exportar Reporte de contactos calificadas (CSV)"
 msgstr "Export Call Dispositions Report (CSV)"
 
-#: reportes_app/templates/reporte_grafico_campana.html:127
+#: reportes_app/templates/reporte_grafico_campana.html:136
 msgid "Cantidad de llamados no atendidos"
 msgstr "Number of not attended calls"
 
-#: reportes_app/templates/reporte_grafico_campana.html:134
+#: reportes_app/templates/reporte_grafico_campana.html:143
 msgid "Resultado"
 msgstr "Result"
 
-#: reportes_app/templates/reporte_grafico_campana.html:146
+#: reportes_app/templates/reporte_grafico_campana.html:155
 msgid "Total no atendidos"
 msgstr "Total of Not attended calls"
 
-#: reportes_app/templates/reporte_grafico_campana.html:161
+#: reportes_app/templates/reporte_grafico_campana.html:170
 msgid "Exportar Reporte llamadas no atendidas (CSV)"
 msgstr "Export Not attended Calls Report (CSV)"
 
-#: reportes_app/templates/reporte_grafico_campana.html:171
+#: reportes_app/templates/reporte_grafico_campana.html:180
 msgid "Gestiones"
 msgstr "Engaged Call Dispositions"
 
-#: reportes_app/templates/reporte_grafico_campana.html:175
+#: reportes_app/templates/reporte_grafico_campana.html:184
 msgid "Contactos calificados"
 msgstr "Dispositioned Contacts"
 
-#: reportes_app/templates/reporte_grafico_campana.html:191
+#: reportes_app/templates/reporte_grafico_campana.html:200
 msgid "Totales"
 msgstr "Totals"
 
-#: reportes_app/templates/reporte_grafico_campana.html:203
+#: reportes_app/templates/reporte_grafico_campana.html:212
 msgid "Detalle de las llamadas"
 msgstr "Detailed Calls"
 
-#: reportes_app/templates/reporte_grafico_campana.html:210
+#: reportes_app/templates/reporte_grafico_campana.html:219
 #: reportes_app/templates/reporte_llamadas.html:33
 msgid "Llamadas"
 msgstr "Calls"

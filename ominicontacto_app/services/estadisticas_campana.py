@@ -33,7 +33,7 @@ from collections import OrderedDict
 from pygal.style import LightGreenStyle, DefaultStyle
 
 from django.conf import settings
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Avg
 from django.utils.translation import ugettext as _
 from django.utils import timezone
 
@@ -191,12 +191,20 @@ class EstadisticasService():
             return contactos_agendados_count
         return contactos_agendados_count + llamadas_pendientes
 
+    def _calcular_tiempo_promedio_espera(self, logs_llamadas_campana_raw):
+        tiempo_promedio_espera_logs = logs_llamadas_campana_raw & \
+            LlamadaLog.objects.entrantes_espera()
+        tiempo_promedio_espera = tiempo_promedio_espera_logs.values(
+            'bridge_wait_time').aggregate(promedio_espera=Avg('bridge_wait_time'))
+        return tiempo_promedio_espera['promedio_espera']
+
     def obtener_total_llamadas(self, campana):
         """Obtiene los totales de llamadas realizadas y pendiente por la campaña
         :param campana: campana la cual se obtiene los totales
         :return: los totales de llamadas realizadas y pendientes de la campaña
         """
-        logs_llamadas_campana = LlamadaLog.objects.filter(campana_id=campana.pk).values(
+        logs_llamadas_campana_raw = LlamadaLog.objects.filter(campana_id=campana.pk)
+        logs_llamadas_campana = logs_llamadas_campana_raw.values(
             'event').annotate(cantidad=Count('event'))
         if campana.type == Campana.TYPE_ENTRANTE:
             # en las campañas entrantes solo queremos mostrar las llamadas ocurridas en el día
@@ -205,12 +213,15 @@ class EstadisticasService():
             hoy = hoy_ahora.date()
             fecha_desde = datetime.datetime.combine(hoy, datetime.time.min)
             fecha_hasta = datetime.datetime.combine(hoy_ahora, datetime.time.max)
+            logs_llamadas_campana_raw = logs_llamadas_campana_raw.filter(
+                time__range=(fecha_desde, fecha_hasta))
             logs_llamadas_campana = logs_llamadas_campana.filter(
                 time__range=(fecha_desde, fecha_hasta))
         # obtenemos los eventos en formato más sencillo para indexar
         dict_eventos_campana = self._convertir_eventos_values_dict(logs_llamadas_campana)
         # calculamos los contadores de cada tipo de llamada
-        llamadas_pendientes, llamadas_realizadas, llamadas_recibidas = (None,) * 3
+        (llamadas_pendientes, llamadas_realizadas, llamadas_recibidas,
+         tiempo_promedio_espera) = (None,) * 4
         llamadas_realizadas = dict_eventos_campana.get('DIAL', 0)
         if campana.type == Campana.TYPE_DIALER:
             campana_service = CampanaService()
@@ -223,12 +234,14 @@ class EstadisticasService():
                 dict_eventos_campana.get('ABANDONWEL', 0)
             llamadas_recibidas_transferidas = dict_eventos_campana.get('ENTERQUEUE-TRANSFER', 0)
             llamadas_recibidas += llamadas_recibidas_transferidas
+            tiempo_promedio_espera = self._calcular_tiempo_promedio_espera(
+                logs_llamadas_campana_raw)
         elif campana.type == Campana.TYPE_PREVIEW:
             llamadas_pendientes = AgenteEnContacto.objects.filter(
                 estado=AgenteEnContacto.ESTADO_INICIAL, campana_id=campana.pk,
                 es_originario=True).count()
         llamadas_pendientes = self._adicionar_agendas_pendientes(campana, llamadas_pendientes)
-        return llamadas_pendientes, llamadas_realizadas, llamadas_recibidas
+        return llamadas_pendientes, llamadas_realizadas, llamadas_recibidas, tiempo_promedio_espera
 
     def obtener_total_calificacion_agente(self, campana, fecha_desde, fecha_hasta):
         """
@@ -541,8 +554,8 @@ class EstadisticasService():
              campana, fecha_desde, fecha_hasta)
 
         # obtiene las llamadas pendientes y realizadas por campana
-        llamadas_pendientes, llamadas_realizadas, llamadas_recibidas = self.obtener_total_llamadas(
-            campana)
+        (llamadas_pendientes, llamadas_realizadas, llamadas_recibidas,
+         tiempo_promedio_espera) = self.obtener_total_llamadas(campana)
 
         # obtiene las cantidades totales por evento de las llamadas
         reporte = self.calcular_cantidad_llamadas(campana, fecha_desde, fecha_hasta)
@@ -561,6 +574,7 @@ class EstadisticasService():
             'llamadas_pendientes': llamadas_pendientes,
             'llamadas_realizadas': llamadas_realizadas,
             'llamadas_recibidas': llamadas_recibidas,
+            'tiempo_promedio_espera': tiempo_promedio_espera,
             'calificaciones': calificaciones,
             'cantidad_llamadas': cantidad_llamadas,
         }

@@ -127,6 +127,34 @@ class ReporteDeLLamadasEntrantesDeSupervisionTest(TestCase):
         estadisticas = response.context_data['estadisticas']
         self.assertEqual(estadisticas[self.entrante1.pk]['en_cola'], 1)
 
+    @patch.object(ReporteDeLLamadasEntrantesDeSupervision, '_obtener_llamadas_en_espera_raw')
+    def test_contabiliza_promedio_tiempo_espera(self, _obtener_llamadas_en_espera_raw):
+        callid_call1 = 1
+        callid_call2 = 2
+        self.entrante2.supervisors.add(self.supervisor.user)
+        self.generador.generar_log(self.entrante1, False, 'COMPLETEAGENT', '35100001111',
+                                   agente=self.agente1, contacto=None, bridge_wait_time=3,
+                                   duracion_llamada=10, archivo_grabacion='', time=None,
+                                   callid=callid_call1)
+        self.generador.generar_log(self.entrante1, False, 'COMPLETEOUTNUM', '35100001112',
+                                   agente=self.agente1, contacto=None, bridge_wait_time=7,
+                                   duracion_llamada=10, archivo_grabacion='', time=None,
+                                   callid=callid_call1)
+        self.generador.generar_log(self.entrante2, False, 'COMPLETEAGENT', '3510000117',
+                                   agente=self.agente1, contacto=None, bridge_wait_time=4,
+                                   duracion_llamada=10, archivo_grabacion='', time=None,
+                                   callid=callid_call2)
+        self.generador.generar_log(self.entrante2, False, 'COMPLETEAGENT', '35100001110',
+                                   agente=self.agente1, contacto=None, bridge_wait_time=8,
+                                   duracion_llamada=10, archivo_grabacion='', time=None,
+                                   callid=callid_call2)
+        self.client.login(username=self.supervisor.user.username, password=self.PWD)
+        url = reverse('supervision_campanas_entrantes')
+        response = self.client.get(url)
+        estadisticas = response.context_data['estadisticas']
+        self.assertEqual(estadisticas[self.entrante1.pk]['t_promedio_espera'], 5)
+        self.assertEqual(estadisticas[self.entrante2.pk]['t_promedio_espera'], 6)
+
 
 class ReporteDeLLamadasSalientesDeSupervisionTest(TestCase):
 

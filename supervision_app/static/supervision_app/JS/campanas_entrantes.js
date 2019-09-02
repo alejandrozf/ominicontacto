@@ -51,6 +51,7 @@ function cargarEstadisticasEntrantes(estadisticas) {
                        '<td>' + datos_campana['atendidas'] + '</td>' +
                        '<td>' + datos_campana['abandonadas'] + '</td>' +
                        '<td>' + datos_campana['abandonadas_anuncio'] + '</td>' +
+                       '<td>' + datos_campana['t_promedio_espera'].toFixed(1) + gettext(' segundos') +'</td>' +
                        '<td>' + datos_campana['expiradas'] + '</td>' +
                        '<td>' + datos_campana['en_cola'] + '</td>' +
                        '<td>' + datos_campana['gestiones'] + '</td>' +

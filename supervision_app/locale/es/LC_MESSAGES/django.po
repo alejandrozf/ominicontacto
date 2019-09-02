@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-27 10:57-0300\n"
+"POT-Creation-Date: 2019-09-02 12:26-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -66,16 +66,24 @@ msgid "Abandonadas en anuncio"
 msgstr ""
 
 #: supervision_app/templates/supervision_campanas_entrantes.html:42
-msgid "Expiradas"
+msgid "T. promedio espera"
 msgstr ""
 
 #: supervision_app/templates/supervision_campanas_entrantes.html:43
-msgid "En espera"
+msgid "Expiradas"
 msgstr ""
 
 #: supervision_app/templates/supervision_campanas_entrantes.html:44
+msgid "En espera"
+msgstr ""
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:45
 #: supervision_app/templates/supervision_campanas_salientes.html:40
 msgid "Gestiones"
+msgstr ""
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:56
+msgid "segundos"
 msgstr ""
 
 #: supervision_app/templates/supervision_campanas_salientes.html:31
