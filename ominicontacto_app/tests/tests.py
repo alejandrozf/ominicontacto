@@ -47,6 +47,7 @@ import os
 import socket
 import unittest
 import uuid
+import random
 
 from time import sleep
 
@@ -93,6 +94,17 @@ class IntegrationTests(unittest.TestCase):
         self.browser.find_element_by_tag_name('button').click()
         sleep(2)
 
+    def crear_module(self):
+        create_module = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/modulo/nuevo/")]')
+        href_create_module = create_module.get_attribute('href')
+        self.browser.get(href_create_module)
+        module_name = 'modulo_test'
+        self.browser.find_element_by_id('id_nombre').send_keys(module_name)
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit' and @id='id_registrar']")).click()
+        sleep(1)
+
     @unittest.skipIf(BROWSER_REAL != 'True', MSG_MICROFONO)
     def test_agente_se_registra_correctamente(self):
         self._login(AGENTE_USERNAME, AGENTE_PASSWORD)
@@ -134,11 +146,14 @@ class IntegrationTests(unittest.TestCase):
         self.assertEqual(self.browser.find_element_by_id('dial_status').text,
                          'Connected to {0}'.format(numero_externo))
 
+    # test de creacion y edicion de usuarios
+
     def test_crear_usuario_tipo_agente_como_administrador(self):
         # login como admin
         self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
-        agente_username = uuid.uuid4().hex
-        agente_password = uuid.uuid4().hex
+        random_username = uuid.uuid4().hex
+        agente_username = random_username[:16]
+        agente_password = AGENTE_PASSWORD
         # rellenar etapa1 del wizard de creación de usuario (agente)
         link_create_user = self.browser.find_element_by_id('newUser')
         href_create_user = link_create_user.get_attribute('href')
@@ -153,7 +168,198 @@ class IntegrationTests(unittest.TestCase):
         self.browser.find_elements_by_xpath('//select[@id=\'id_2-grupo\']/option')[1].click()
         self.browser.find_elements_by_xpath('//form[@id=\'wizardForm\']/button')[2].click()
         sleep(1)
-        self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(agente_username))
+        self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            agente_username))
+        # Editar agente
+        user_list = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/user/list/page1/")]')
+        href_user_list = user_list.get_attribute('href')
+        self.browser.get(href_user_list)
+        link_edit = self.browser.find_element_by_xpath(
+            "//tr[@id=\'{0}\']/td/div//a[contains(@href,'/user/update')]".format(agente_username))
+        href_edit = link_edit.get_attribute('href')
+        self.browser.get(href_edit)
+        nuevo_username = random_username[:16]
+        self.browser.find_element_by_id('id_username').clear()
+        sleep(1)
+        self.browser.find_element_by_id('id_username').send_keys(nuevo_username)
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit' and @id='id_registrar']")).click()
+        sleep(1)
+        self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            nuevo_username))
+        # modificar agente, para ello debe haber 2 modulos creados.
+        self.crear_module()
+        self.browser.get(href_user_list)
+        link_update = self.browser.find_element_by_xpath(
+            "//tr[@id=\'{0}\']/td/a[contains(@href, '/user/agenteprofile/update/')]".format(
+                nuevo_username))
+        href_update = link_update.get_attribute('href')
+        self.browser.get(href_update)
+        self.browser.find_element_by_xpath('//select[@id=\'id_modulos\']/option').click()
+        self.browser.find_elements_by_xpath(
+            '//select[@id=\'id_modulos\']/option')[1].click()
+        sleep(1)
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit' and @id='id_registrar']")).click()
+        sleep(1)
+        self.browser.get(href_user_list)
+        self.browser.get(href_update)
+        self.assertTrue(self.browser.find_elements_by_xpath(
+            "//select[@id=\'id_modulos\']/option[@value='2' and @selected='selected']"))
+        # Eliminar agente
+        self.browser.get(href_user_list)
+        link_delete = self.browser.find_element_by_xpath(
+            "//tr[@id=\'{0}\']/td/div//a[contains(@href,'/user/delete')]".format(nuevo_username))
+        href_delete = link_delete.get_attribute('href')
+        self.browser.get(href_delete)
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit']")).click()
+        sleep(1)
+        self.assertFalse(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            nuevo_username)))
+
+    def test_crear_usuario_tipo_customer(self):
+        # login como admin
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        link_create_user = self.browser.find_element_by_id('newUser')
+        href_create_user = link_create_user.get_attribute('href')
+        self.browser.get(href_create_user)
+        random_customer = uuid.uuid4().hex
+        customer_username = random_customer[:16]
+        customer_password = '098098ZZZ'
+        self.browser.find_element_by_id('id_0-username').send_keys(customer_username)
+        self.browser.find_element_by_id('id_0-password1').send_keys(customer_password)
+        self.browser.find_element_by_id('id_0-password2').send_keys(customer_password)
+        self.browser.find_element_by_id('id_0-is_supervisor').click()
+        self.browser.find_element_by_xpath('//form[@id=\'wizardForm\']/button').click()
+        sleep(1)
+        self.browser.find_elements_by_xpath('//select[@id=\'id_1-rol\']/option')[2].click()
+        self.browser.find_elements_by_xpath('//form[@id=\'wizardForm\']/button')[2].click()
+        sleep(1)
+        self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(customer_username))
+        # modificar perfil a un perfil de supervisor
+        user_list = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/user/list/page1/")]')
+        href_user_list = user_list.get_attribute('href')
+        self.browser.get(href_user_list)
+        link_update = self.browser.find_element_by_xpath(
+            "//tr[@id=\'{0}\']/td/a[contains(@href, '/supervisor/')]".format(
+                customer_username))
+        href_update = link_update.get_attribute('href')
+        self.browser.get(href_update)
+        self.browser.find_elements_by_xpath("//select[@id=\'id_rol\']/option")[0].click()
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit' and @id='id_registrar']")).click()
+        sleep(1)
+        self.browser.get(href_user_list)
+        self.browser.get(href_update)
+        self.assertTrue(self.browser.find_elements_by_xpath(
+            "//select[@id=\'id_rol\']/option[@value='2' and @selected='selected']"))
+
+    def test_crear_usuario_tipo_supervisor(self):
+        # login como admin
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        link_create_user = self.browser.find_element_by_id('newUser')
+        href_create_user = link_create_user.get_attribute('href')
+        self.browser.get(href_create_user)
+        random_supervisor = uuid.uuid4().hex
+        supervisor_username = random_supervisor[:16]
+        supervisor_password = '098098ZZZ'
+        self.browser.find_element_by_id('id_0-username').send_keys(supervisor_username)
+        self.browser.find_element_by_id('id_0-password1').send_keys(supervisor_password)
+        self.browser.find_element_by_id('id_0-password2').send_keys(supervisor_password)
+        self.browser.find_element_by_id('id_0-is_supervisor').click()
+        self.browser.find_element_by_xpath('//form[@id=\'wizardForm\']/button').click()
+        sleep(1)
+        self.browser.find_elements_by_xpath('//select[@id=\'id_1-rol\']/option')[0].click()
+        self.browser.find_elements_by_xpath('//form[@id=\'wizardForm\']/button')[2].click()
+        sleep(1)
+        self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(supervisor_username))
+        # modificar perfil a un perfil de administrador
+        user_list = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/user/list/page1/")]')
+        href_user_list = user_list.get_attribute('href')
+        self.browser.get(href_user_list)
+        link_update = self.browser.find_element_by_xpath(
+            "//tr[@id=\'{0}\']/td/a[contains(@href, '/supervisor/')]".format(
+                supervisor_username))
+        href_update = link_update.get_attribute('href')
+        self.browser.get(href_update)
+        self.browser.find_elements_by_xpath("//select[@id=\'id_rol\']/option")[1].click()
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit' and @id='id_registrar']")).click()
+        sleep(1)
+        self.browser.get(href_user_list)
+        self.browser.get(href_update)
+        self.assertTrue(self.browser.find_elements_by_xpath(
+            "//select[@id=\'id_rol\']/option[@value='1' and @selected='selected']"))
+
+    # test de creación y edición de grupos
+
+    def test_crear_grupo_con_Autounpause(self):
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        link_create_group = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/grupo/nuevo")]')
+        href_create_group = link_create_group.get_attribute('href')
+        self.browser.get(href_create_group)
+        random_name = uuid.uuid4().hex
+        group_name = random_name[:16]
+        auto_unpause = random.randrange(1, 99)
+        self.browser.find_element_by_id('id_nombre').send_keys(group_name)
+        self.browser.find_element_by_id('id_auto_unpause').send_keys(auto_unpause)
+        self.browser.find_element_by_id('id_auto_attend_ics').click()
+        self.browser.find_element_by_id('id_auto_attend_inbound').click()
+        self.browser.find_element_by_id('id_auto_attend_dialer').click()
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit' and @id='id_registrar']")).click()
+        sleep(1)
+        self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(group_name))
+        # Editar Grupo
+        group_list = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/grupo/list/")]')
+        href_group_list = group_list.get_attribute('href')
+        self.browser.get(href_group_list)
+        link_edit = self.browser.find_element_by_xpath(
+            "//tr[@id=\'{0}\']/td/div//a[contains(@href,'/grupo/update')]".format(group_name))
+        href_edit = link_edit.get_attribute('href')
+        self.browser.get(href_edit)
+        nuevo_groupname = random_name[:16]
+        self.browser.find_element_by_id('id_nombre').clear()
+        sleep(1)
+        self.browser.find_element_by_id('id_nombre').send_keys(nuevo_groupname)
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit' and @id='id_registrar']")).click()
+        sleep(1)
+        self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            nuevo_groupname))
+        # Eliminar grupo
+        self.browser.get(href_group_list)
+        link_delete = self.browser.find_element_by_xpath(
+            "//tr[@id=\'{0}\']/td/div//a[contains(@href,'/grupo/delete')]".format(nuevo_groupname))
+        href_delete = link_delete.get_attribute('href')
+        self.browser.get(href_delete)
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit']")).click()
+        sleep(1)
+        self.assertFalse(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            nuevo_groupname)))
+
+    def test_crear_grupo_sin_Autounpause(self):
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        link_create_group = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/grupo/nuevo")]')
+        href_create_group = link_create_group.get_attribute('href')
+        self.browser.get(href_create_group)
+        group_name = uuid.uuid4().hex
+        self.browser.find_element_by_id('id_nombre').send_keys(group_name)
+        self.browser.find_element_by_id('id_auto_attend_ics').click()
+        self.browser.find_element_by_id('id_auto_attend_inbound').click()
+        self.browser.find_element_by_id('id_auto_attend_dialer').click()
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit' and @id='id_registrar']")).click()
+        sleep(1)
+        self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(group_name))
 
 
 if __name__ == '__main__':

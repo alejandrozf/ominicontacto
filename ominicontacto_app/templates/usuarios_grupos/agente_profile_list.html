@@ -38,7 +38,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </thead>
     <tbody>
     {% for agente in agentes %}
-        <tr>
+        <tr id="{{agente.user}}">
             <td>{{ agente.id }}</td>
             <td>{{ agente.user.get_full_name}}</td>
             <td>{{ agente.sip_extension }}</td>
