@@ -40,7 +40,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </thead>
     <tbody>
     {% for grupo in object_list %}
-        <tr>
+        <tr id="{{ grupo.nombre }}">
             <td>{{ grupo.id }}</td>
             <td>{{ grupo.nombre }}</td>
             <td>

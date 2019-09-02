@@ -39,7 +39,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </thead>
     <tbody>
     {% for usuario in page_obj %}
-        <tr>
+        <tr id="{{usuario.username}}">
             <td>{{ usuario.id }}</td>
             <td>{{ usuario.username }}</td>
             <td>{{ usuario.first_name }}</td>
