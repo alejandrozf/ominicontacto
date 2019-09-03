@@ -7,8 +7,7 @@ OMniLeads RESTful API
 Esta sección está destinada hacia aquellos desarrolladores que desean ejecutar una integración entre el sistema CRM que mantienen y OMniLeads.
 Por lo tanto la terminología y la información aquí expuesta tiene como público objetivo a desarrolladores de software.
 
-OMniLeads dispone de una RESTful API basada en HTTPS / JSON. La API permite el acceso a recursos y servicios del sistema por afuera de la interfaz
-web de usuario, permitiendo así que sistemas externos puedan integrarse de manera sencilla con OMniLeads.
+OMniLeads dispone de una RESTful API basada en HTTPS / JSON. La API permite el acceso a recursos y servicios del sistema por afuera de la interfaz web de usuario, permitiendo así que sistemas externos puedan integrarse de manera sencilla con OMniLeads.
 
 Las formas de autenticación disponibles para utilizar esta api son por Sesión (el agente debe estar logueado en el sistema) y por Token (a partir del login a la API, con los parámetros usuario y pass de agente), en este caso se debe pasar la siguiente línea en los headers de la petición:
 
@@ -28,14 +27,13 @@ A continuación se describen los endpoints disponibles.
 Endpoint de Login
 *******************
 
-Este método proporciona la posibilidad de autenticarse como usuario del sistema, para luego (en caso de un login exitoso) acceder a otros endpoints
-disponibles dependiendo el perfil de usuario con el que se ha realizado dicho login.
+Este método proporciona la posibilidad de autenticarse como usuario del sistema, para luego (en caso de un login exitoso) acceder a otros endpoints disponibles dependiendo el perfil de usuario con el que se ha realizado dicho login.
 
 **URL**: POST https://<omnileads_addr>/api/v1/login
 
 .. image:: images/api_user_login.png
 
-*figure 1: endpint login request*
+*figure 1: endpoint login request*
 
 +--------------+------------+--------------------------------------------------------------------------+
 | field name   | type       | description                                                              |
@@ -51,17 +49,15 @@ Si el login es exitoso, el método devuelve la siguiente salida:
 
 .. image:: images/api_user_login_ok.png
 
-*figure 2: endpint login request ok*
+*figure 2: endpoint login request ok*
 
 
-Como se puede observar en la figura, un login exitoso devuelve entre otros campos un "token" de seguridad. El mismo deberá ser utilizado en las
-próximas peticiones a la API desde el usuario autenticado. Además en el campo "expires_in" deja asentado el tiempo de vida del token generado.
+Como se puede observar en la figura, un login exitoso devuelve entre otros campos un "token" de seguridad. El mismo deberá ser utilizado en las próximas peticiones a la API desde el usuario autenticado. Además en el campo "expires_in" deja asentado el tiempo de vida del token generado.
 
-En caso de que el sistema lance una petición y el token de seguridad haya expirado, entonces se deberá proceder nuevamente con una nueva
-autenticación.
+En caso de que el sistema lance una petición y el token de seguridad haya expirado, entonces se deberá proceder nuevamente con una nueva autenticación.
 
 .. note::
-  El tiempo de duración del token de seguridad se configura bajo el parámtro "TOKEN_EXPIRED_AFTER_SECONDS" dentro del archivo "/opt/omnileads/ominicontacto/ominicontacto/settings/production.py"
+  El tiempo de duración del token de seguridad se configura bajo el parámetro "TOKEN_EXPIRED_AFTER_SECONDS" dentro del archivo "/opt/omnileads/ominicontacto/ominicontacto/settings/production.py"
 
 **Autenticación fallida**
 
@@ -75,9 +71,7 @@ Si el login no es exitoso, el método devuelve la siguiente salida:
 Endpoint de Generación de llamadas
 ***********************************
 
-Permite generar llamadas (click to call) desde un Sistema CRM Externo.
-Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`).
-
+Permite generar llamadas (click to call) desde un Sistema CRM Externo. Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`).
 
 **URL**: POST https://<omnileads_addr>/api/v1/makeCall
 
@@ -108,8 +102,7 @@ Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`).
 |                      |            | de contactos marcado como identificador externo                          |
 +----------------------+------------+--------------------------------------------------------------------------+
 
-En caso de haber errores se devolverá un JSON con el campo 'status':'ERROR' y el detalle de los mismos en el campo 'errors'.
-Caso contrario el valor del campo 'status' será 'OK'.
+En caso de haber errores se devolverá un JSON con el campo 'status':'ERROR' y el detalle de los mismos en el campo 'errors'. Caso contrario el valor del campo 'status' será 'OK'.
 
 Endpoint listado de opciones de calificación
 ********************************************
@@ -118,11 +111,9 @@ Endpoint listado de opciones de calificación
 
 **URL** GET https://<omnileads_addr>/api/v1/campaign/<idc:string>/dispositionOptions/<ids:integer>/  (2)
 
-Este método permite obtener un listado de las opciones de  calificación disponibles para calificar a un contacto en una campaña
-Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`).
+Este método permite obtener un listado de las opciones de  calificación disponibles para calificar a un contacto en una campaña Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`).
 
-Los parámetros de este endpoint se especifican en la url.
-El mismo tiene dos formas de uso, si usa la variante (1), con un solo parámetro, el valor del parámetro 'idc' deberá ser un entero especificando el id interno de una campaña de OML.
+Los parámetros de este endpoint se especifican en la url. El mismo tiene dos formas de uso, si usa la variante (1), con un solo parámetro, el valor del parámetro 'idc' deberá ser un entero especificando el id interno de una campaña de OML.
 
 La variante (2) es para ser usada en la interacción desde un sistema de CRM externo hacia OML y en este caso el parámetro 'ids' deberá especificar el id del sistema de CRM externo y el parámetro 'idc' el identificador de una campaña en ese sistema sistema externo.
 
@@ -150,10 +141,7 @@ En caso de no haber errores se devolverá la lista de calificaciones realizadas 
 
 Endpoint crear nueva calificación
 **********************************
-Esta endpoint habilita la posibilidad de "calificar" una gestión sobre un contacto. Cuando un usuario del CRM finaliza una gestión,
-es normal que se cierre con una calificación, por lo que con éste método el Sistema CRM externo puede impactar la calificación
-en OMniLeads.
-Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`).
+Esta endpoint habilita la posibilidad de "calificar" una gestión sobre un contacto. Cuando un usuario del CRM finaliza una gestión, es normal que se cierre con una calificación, por lo que con éste método el Sistema CRM externo puede impactar la calificación en OMniLeads. Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`).
 
 **URL**: POST https://<omnileads_addr>/api/v1/disposition/
 
@@ -335,13 +323,9 @@ En caso de generar una respuesta con el destino del enrutamiento, se deben conoc
 * 5: Hangup de la llamada
 * 9: Solicitud de identificación
 
-En un futuro se implementará un endpoint de la API para listar cada destino posible por cada tipo de destino.
-Mientras tanto, el desarrollador que desee implementar el enrutamiento de llamadas basado en la identificación ingresada en la llamada
-y el request generado desde OMniLeads, podrá ingresar a la interfaz de OMniLeads y en cada módulo (tipo de destino) listar los mismos
-y observar el id.
+En un futuro se implementará un endpoint de la API para listar cada destino posible por cada tipo de destino. Mientras tanto, el desarrollador que desee implementar el enrutamiento de llamadas basado en la identificación ingresada en la llamada y el request generado desde OMniLeads, podrá ingresar a la interfaz de OMniLeads y en cada módulo (tipo de destino) listar los mismos y observar el id.
 
-**Ejemplo de respuesta con destino de llamada**: se desea validar cada id enviado desde OMniLeads y responder con dos posibles tipos destinos de enrutamiento. Por un lado
-una campaña entrante llamada "clientes gold" y otra llamada "clientes bronce".
+**Ejemplo de respuesta con destino de llamada**: se desea validar cada id enviado desde OMniLeads y responder con dos posibles tipos destinos de enrutamiento. Por un lado una campaña entrante llamada "clientes gold" y otra llamada "clientes bronce".
 
 Para ello suponemos que existen las dos campañas entrantes como se indica en la figura.
 
@@ -349,5 +333,4 @@ Para ello suponemos que existen las dos campañas entrantes como se indica en la
 
 Tan solo con posicionar el mouse sobre el nombre de la campaña, podremos dilucidar el "id" particular de cada una.
 
-Por lo tanto, a partir de conocer los "id" de cada campaña el sistema de gestión a partir de su lógica de negocio, podrá evaluar
-cada llamada e indicar a OMniLeads hacia donde encaminarla devolviendo el par "X,Y".
+Por lo tanto, a partir de conocer los "id" de cada campaña el sistema de gestión a partir de su lógica de negocio, podrá evaluar cada llamada e indicar a OMniLeads hacia donde encaminarla devolviendo el par "X,Y".
