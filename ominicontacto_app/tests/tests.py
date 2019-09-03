@@ -105,6 +105,28 @@ class IntegrationTests(unittest.TestCase):
             "//button[@type='submit' and @id='id_registrar']")).click()
         sleep(1)
 
+    def crear_supervisor(self, username, password):
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        link_create_user = self.browser.find_element_by_id('newUser')
+        href_create_user = link_create_user.get_attribute('href')
+        self.browser.get(href_create_user)
+        self.browser.find_element_by_id('id_0-username').send_keys(username)
+        self.browser.find_element_by_id('id_0-password1').send_keys(password)
+        self.browser.find_element_by_id('id_0-password2').send_keys(password)
+        self.browser.find_element_by_id('id_0-is_supervisor').click()
+        self.browser.find_element_by_xpath('//form[@id=\'wizardForm\']/button').click()
+        sleep(1)
+
+    def crear_supervisor_tipo_customer(self):
+        self.browser.find_elements_by_xpath('//select[@id=\'id_1-rol\']/option')[2].click()
+        self.browser.find_elements_by_xpath('//form[@id=\'wizardForm\']/button')[2].click()
+        sleep(1)
+
+    def crear_supervisor_tipo_gerente(self):
+        self.browser.find_elements_by_xpath('//select[@id=\'id_1-rol\']/option')[0].click()
+        self.browser.find_elements_by_xpath('//form[@id=\'wizardForm\']/button')[2].click()
+        sleep(1)
+
     @unittest.skipIf(BROWSER_REAL != 'True', MSG_MICROFONO)
     def test_agente_se_registra_correctamente(self):
         self._login(AGENTE_USERNAME, AGENTE_PASSWORD)
@@ -176,7 +198,7 @@ class IntegrationTests(unittest.TestCase):
         href_user_list = user_list.get_attribute('href')
         self.browser.get(href_user_list)
         link_edit = self.browser.find_element_by_xpath(
-            "//tr[@id=\'{0}\']/td/div//a[contains(@href,'/user/update')]".format(agente_username))
+            '//tr[@id=\'{0}\']/td/div//a[contains(@href,"/user/update")]'.format(agente_username))
         href_edit = link_edit.get_attribute('href')
         self.browser.get(href_edit)
         nuevo_username = random_username[:16]
@@ -220,23 +242,12 @@ class IntegrationTests(unittest.TestCase):
             nuevo_username)))
 
     def test_crear_usuario_tipo_customer(self):
-        # login como admin
-        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
-        link_create_user = self.browser.find_element_by_id('newUser')
-        href_create_user = link_create_user.get_attribute('href')
-        self.browser.get(href_create_user)
+        # Creación de clientes
         random_customer = uuid.uuid4().hex
         customer_username = random_customer[:16]
         customer_password = '098098ZZZ'
-        self.browser.find_element_by_id('id_0-username').send_keys(customer_username)
-        self.browser.find_element_by_id('id_0-password1').send_keys(customer_password)
-        self.browser.find_element_by_id('id_0-password2').send_keys(customer_password)
-        self.browser.find_element_by_id('id_0-is_supervisor').click()
-        self.browser.find_element_by_xpath('//form[@id=\'wizardForm\']/button').click()
-        sleep(1)
-        self.browser.find_elements_by_xpath('//select[@id=\'id_1-rol\']/option')[2].click()
-        self.browser.find_elements_by_xpath('//form[@id=\'wizardForm\']/button')[2].click()
-        sleep(1)
+        self.crear_supervisor(customer_username, customer_password)
+        self.crear_supervisor_tipo_customer()
         self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(customer_username))
         # modificar perfil a un perfil de supervisor
         user_list = self.browser.find_element_by_xpath(
@@ -258,23 +269,12 @@ class IntegrationTests(unittest.TestCase):
             "//select[@id=\'id_rol\']/option[@value='2' and @selected='selected']"))
 
     def test_crear_usuario_tipo_supervisor(self):
-        # login como admin
-        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
-        link_create_user = self.browser.find_element_by_id('newUser')
-        href_create_user = link_create_user.get_attribute('href')
-        self.browser.get(href_create_user)
+        # Creación de supervisor
         random_supervisor = uuid.uuid4().hex
         supervisor_username = random_supervisor[:16]
         supervisor_password = '098098ZZZ'
-        self.browser.find_element_by_id('id_0-username').send_keys(supervisor_username)
-        self.browser.find_element_by_id('id_0-password1').send_keys(supervisor_password)
-        self.browser.find_element_by_id('id_0-password2').send_keys(supervisor_password)
-        self.browser.find_element_by_id('id_0-is_supervisor').click()
-        self.browser.find_element_by_xpath('//form[@id=\'wizardForm\']/button').click()
-        sleep(1)
-        self.browser.find_elements_by_xpath('//select[@id=\'id_1-rol\']/option')[0].click()
-        self.browser.find_elements_by_xpath('//form[@id=\'wizardForm\']/button')[2].click()
-        sleep(1)
+        self.crear_supervisor(supervisor_username, supervisor_password)
+        self.crear_supervisor_tipo_gerente()
         self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(supervisor_username))
         # modificar perfil a un perfil de administrador
         user_list = self.browser.find_element_by_xpath(
@@ -360,6 +360,138 @@ class IntegrationTests(unittest.TestCase):
             "//button[@type='submit' and @id='id_registrar']")).click()
         sleep(1)
         self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(group_name))
+
+    # Acceso Web Administrador
+    def test_acceso_web_administrador_acceso_exitoso(self):
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        self.assertTrue(self.browser.find_element_by_xpath(
+            '//div/a[contains(@href, "/accounts/logout/")]'))
+
+    def test_acceso_web_administrador_acceso_denegado(self):
+        clave_erronea = "test"
+        self._login(ADMIN_USERNAME, clave_erronea)
+        self.assertEqual(self.browser.find_element_by_xpath(
+            '//div[@class="alert alert-danger"]/p').text,
+            'Invalid Username/Password, please try again')
+
+    # Acceso web Agente
+    def test_acceso_web_agente_acceso_exitoso(self):
+        self._login(AGENTE_USERNAME, AGENTE_PASSWORD)
+        self.assertTrue(self.browser.find_element_by_xpath(
+            '//div/a[contains(@href, "/agente/logout/")]'))
+
+    def test_acceso_web_agente_acceso_denegado(self):
+        clave_erronea = "test"
+        self._login(AGENTE_USERNAME, clave_erronea)
+        self.assertEqual(self.browser.find_element_by_xpath(
+            '//div[@class="alert alert-danger"]/p').text,
+            'Invalid Username/Password, please try again')
+
+    # Acceso web Supervisor
+    def test_accesos_web_supervisor_acceso_exitoso(self):
+        random_supervisor = uuid.uuid4().hex
+        supervisor_username = random_supervisor[:16]
+        supervisor_password = '098098ZZZ'
+        self.crear_supervisor(supervisor_username, supervisor_password)
+        # Deslogueo como admin
+        deslogueo = self.browser.find_element_by_xpath(
+            '//a[contains(@href, "/accounts/logout/")]')
+        href_deslogueo = deslogueo.get_attribute('href')
+        self.browser.get(href_deslogueo)
+        # Logueo como supervisor
+        self._login(supervisor_username, supervisor_password)
+        self.assertTrue(self.browser.find_element_by_xpath(
+            '//div/a[contains(@href, "/accounts/logout/")]'))
+
+    def test_acceso_web_supervisor_acceso_denegado(self):
+        # Creación supervisor que vamos a usar para simular un acceso denegado
+        random_supervisor = uuid.uuid4().hex
+        supervisor_username = random_supervisor[:16]
+        supervisor_password = '098098ZZZ'
+        self.crear_supervisor(supervisor_username, supervisor_password)
+        clave_erronea = 'test'
+        # Deslogueo como admin
+        deslogueo = self.browser.find_element_by_xpath(
+            '//a[contains(@href, "/accounts/logout/")]')
+        href_deslogueo = deslogueo.get_attribute('href')
+        self.browser.get(href_deslogueo)
+        # Logueo como supervisor
+        self._login(supervisor_username, clave_erronea)
+        self.assertEqual(self.browser.find_element_by_xpath(
+            '//div[@class="alert alert-danger"]/p').text,
+            'Invalid Username/Password, please try again')
+
+    # Acceso web Customer
+    def test_acceso_web_cliente_acceso_exitoso(self):
+        # Creación supervisor que vamos a usar para simular un acceso exitoso
+        random_customer = uuid.uuid4().hex
+        customer_username = random_customer[:16]
+        customer_password = '098098ZZZ'
+        self.crear_customer(customer_username, customer_password)
+        # Deslogue como admin
+        deslogueo = self.browser.find_element_by_xpath(
+            '//a[contains(@href, "/accounts/logout/")]')
+        href_deslogueo = deslogueo.get_attribute('href')
+        self.browser.get(href_deslogueo)
+        # Logueo como cliente
+        self._login(customer_username, customer_password)
+        self.assertTrue(self.browser.find_element_by_xpath(
+            '//div/a[contains(@href, "/accounts/logout/")]'))
+
+    def test_acceso_web_cliente_acceso_denegado(self):
+        # Creación supervisor que vamos a usar para simular un acceso denegado
+        random_customer = uuid.uuid4().hex
+        customer_username = random_customer[:16]
+        customer_password = '098098ZZZ'
+        self.crear_customer(customer_username, customer_password)
+        clave_erronea = 'test'
+        # Deslogue como admin
+        deslogueo = self.browser.find_element_by_xpath(
+            '//a[contains(@href, "/accounts/logout/")]')
+        href_deslogueo = deslogueo.get_attribute('href')
+        self.browser.get(href_deslogueo)
+        # Logueo como cliente
+        self._login(customer_username, clave_erronea)
+        self.assertEqual(self.browser.find_element_by_xpath(
+            '//div[@class="alert alert-danger"]/p').text,
+            'Invalid Username/Password, please try again')
+
+    def test_bloqueo_y_desbloqueo_de_un_usuario(self):
+        clave_erronea = 'test'
+        # Intento loguearme 3 veces para bloquear la cuenta del usuario
+        self._login(AGENTE_USERNAME, clave_erronea)
+        self._login(AGENTE_USERNAME, clave_erronea)
+        self._login(AGENTE_USERNAME, clave_erronea)
+        texto_error = self.browser.find_element_by_xpath('//div/p').text
+        self.assertEqual(texto_error[45:93], 'Tu cuenta y dirección IP permanecerán bloqueadas')
+        # Vamos al Admin de django para desbloquear este usuario
+        self.browser.get('https://{0}/admin'.format(socket.gethostname()))
+        self.browser.find_element_by_name('username').send_keys(ADMIN_USERNAME)
+        self.browser.find_element_by_name('password').send_keys(ADMIN_PASSWORD)
+        self.browser.find_element_by_xpath('//div/input[@type="submit"]').click()
+        sleep(2)
+        defender = self.browser.find_element_by_xpath(
+            '//a[contains(@href, "/admin/defender/")]')
+        href_defender = defender.get_attribute('href')
+        self.browser.get(href_defender)
+        bloqued_user = self.browser.find_element_by_xpath(
+            '//a[contains(@href, "/admin/defender/blocks/")]')
+        href_bloqued_user = bloqued_user.get_attribute('href')
+        self.browser.get(href_bloqued_user)
+        self.browser.find_element_by_xpath(
+            '//form[@action="/admin/defender/blocks/username/{0}/unblock"]/input[@type="submit"]'
+            .format(AGENTE_USERNAME)).click()
+        sleep(2)
+        # Deslogueo como admin
+        self.browser.get('https://{0}/'.format(socket.gethostname()))
+        deslogueo = self.browser.find_element_by_xpath(
+            '//a[contains(@href, "/accounts/logout/")]')
+        href_deslogueo = deslogueo.get_attribute('href')
+        self.browser.get(href_deslogueo)
+        # Compruebo que el usuario esta desbloqueado
+        self._login(AGENTE_USERNAME, AGENTE_PASSWORD)
+        self.assertTrue(self.browser.find_element_by_xpath(
+            '//div/a[contains(@href, "/agente/logout/")]'))
 
 
 if __name__ == '__main__':
