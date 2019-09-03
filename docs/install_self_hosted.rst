@@ -18,8 +18,7 @@ Pre-requisitos:
 - Una instancia de GNU/Linux CentOS 7 (minimal), Debian 9 (netinstall) ó Ubuntu Server 18.04
 - 20 GB de espacio en disco
 - 4 GB de memoria RAM
-
-- Es muy importante dejar la hora correctamente configurada en el host.
+- Dejar la hora correctamente configurada en el host.
 - Configurar una *dirección IP* y un *hostname* fijo, antes de ejecutar la instalación.
 
 .. note::
@@ -29,7 +28,7 @@ Pre-requisitos:
 Ajustes necesarios antes  de la ejecución de script:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- Debemos contar con el paquete git para luego clonar el repositorio del protyecto y seleccionar el release a instalar
+- Debemos contar con git para luego clonar el repositorio del proyecto y seleccionar el release a instalar
 
 **Ubuntu - Debian:**
 
@@ -80,7 +79,7 @@ Una vez configuradas las variables citadas, se procede con la ejecución del scr
 
 Donde **<your_iface>** es la interfaz con la IP que se quiere usar para levantar los servicios que componen OMniLeads (suele ser la IP de la interfaz LAN del servidor).
 
-El tiempo de instalación dependerá mayormente de la velocidad de conexión a internet del host OML, ya que se deben descargar, instalar y configurar varios paquetes correspondientes a los diferentes componentes de software que conforman el sistema.
+El tiempo de instalación dependerá mayormente de la velocidad de conexión a internet del host OML, ya que se deben descargar, instalar y configurar varios paquetes correspondientes a los diferentes componentes de software que conforman el sistema. Aproximadamente, este tiempo es de 20 a 30 minutos.
 
 .. image:: images/install_deploysh.png
 

@@ -1,0 +1,178 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, omnileads
+# This file is distributed under the same license as the OMniLeads package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OMniLeads \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-09-02 14:37-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+# 1e62c7a630514feb9fd263be30b7dd3c
+#: ../../telephony_cunstom_dst.rst:5
+msgid "Ejecución de dialplan personalizado"
+msgstr ""
+
+# 4e8a877785e74e8199e1475bdf052596
+#: ../../telephony_cunstom_dst.rst:7
+msgid ""
+"Resulta sumamente útil disponer de la posibilidad de poder forzar a que "
+"una llamada ejecute un \"plan de discado\" generado a imagen y semejanza "
+"de cualquier requerimiento puntual del modelo de negocios implicado."
+msgstr ""
+
+# 3856dcd79f9b422681a9a5a6b67ff263
+#: ../../telephony_cunstom_dst.rst:10
+msgid ""
+"Pero a qué nos referimos con **\"plan de discado\"**, como bien sabemos "
+"OMniLeads utiliza `Asterisk <https://www.asterisk.org>`_ como pieza "
+"fundamental dentro del módulo de \"gestión de llamadas telefónicas\" y "
+"por lo tanto cualquier programador con conocimientos de sintaxis de "
+"\"dialplan\" podrá generar sus propias rutinas de tratamiento de "
+"llamadas, pudiendo a su vez invocarlas dentro del flujo de llamadas de:"
+msgstr ""
+
+# 075658fe3911430a8019d3b1c2e7efa6
+#: ../../telephony_cunstom_dst.rst:14
+msgid "Rutas Entrantes"
+msgstr ""
+
+# 2d6759344b89435d82baa934ea364ecc
+#: ../../telephony_cunstom_dst.rst:15
+msgid "Campañas entrantes"
+msgstr ""
+
+# 1bd555202ca94204912f6f7f88cff09d
+#: ../../telephony_cunstom_dst.rst:16
+msgid "Destinos de failover"
+msgstr ""
+
+# 77dac46cd264423d8fcb3887cdde1f92
+#: ../../telephony_cunstom_dst.rst:17
+msgid "Rutas salientes"
+msgstr ""
+
+# 0bfd9d79f525468e8d155e30fb04fb4d
+#: ../../telephony_cunstom_dst.rst:18
+msgid "Etc."
+msgstr ""
+
+# 7324b954afe74c628e74008ae3b61053
+#: ../../telephony_cunstom_dst.rst:20
+msgid ""
+"Por lo que se permite entonces generar un \"nodo\" invocable dentro de "
+"una llamada procesada en OMniLeads, siendo este \"nodo\" lógica de "
+"programación de Asterisk, personalizada de acuerdo a cualquier necesidad "
+"puntual que esté por afuera del alcance de los módulos típicos del "
+"sistema."
+msgstr ""
+
+# 6b800e3885ac4a97b5b9f3b55858061f
+#: ../../telephony_cunstom_dst.rst:23
+msgid ""
+"Por ejemplo, a la hora de tener que lanzar un IVR que implique algún "
+"tratamiento avanzado de las llamadas entrantes (sistemas de autogestión o"
+" confirmación de trámites)."
+msgstr ""
+
+# 3d208618d4d0406fb4643f8da1405fda
+#: ../../telephony_cunstom_dst.rst:26
+msgid "Modo de configuración"
+msgstr ""
+
+# a07168d3f5fa41fab92b1728e1b9ae2b
+#: ../../telephony_cunstom_dst.rst:28
+msgid ""
+"El módulo \"custom destination\" simplemente involucra un formulario "
+"sencillo donde se indica el nombre (campo Name) del Nodo de \"dialplan "
+"personalizado\" y además la triada:"
+msgstr ""
+
+# 09fb7d3d60c148dda65b3053624aba2f
+#: ../../telephony_cunstom_dst.rst:30
+msgid "Contexto"
+msgstr ""
+
+# cf38b40ef32a4441be60e4422eb935af
+#: ../../telephony_cunstom_dst.rst:31
+msgid "Extensión"
+msgstr ""
+
+# 08ed9ed002644f07ab5bb5a35025a6c2
+#: ../../telephony_cunstom_dst.rst:32
+msgid "Prioridad"
+msgstr ""
+
+# 3aed56bfc1064a209f87bf7e5e573dcc
+#: ../../telephony_cunstom_dst.rst:34
+msgid ""
+"Hacia donde enviar la llamada afectada por éste nodo (campo Custom "
+"destination). Además contamos con la necesidad de indicar un destino en "
+"caso de fallo."
+msgstr ""
+
+# 9f404d36467a46599db31cc698661198
+#: ../../telephony_cunstom_dst.rst:38
+msgid "*figure 1: custom dst view*"
+msgstr ""
+
+# 55992ae29c8d467caf695a430a448bd8
+#: ../../telephony_cunstom_dst.rst:40
+msgid ""
+"Por otro lado, el programador podrá generar su código a nivel archivo de "
+"texto \"oml_extensions_custom.conf\". El cual será cargado en tiempo real"
+" y también tenido en cuenta a la hora de generar los backup & restore de "
+"la plataforma."
+msgstr ""
+
+# 19379049dca24bb796fd73e057ac2f9e
+#: ../../telephony_cunstom_dst.rst:45
+msgid "Ejemplo"
+msgstr ""
+
+# bec65890d8344f6c94fd5a3ca4889129
+#: ../../telephony_cunstom_dst.rst:47
+msgid "Vamos a implementar un dialplan como el siguiente:"
+msgstr ""
+
+# 6578f48da9374a27b063d44af4476c14
+#: ../../telephony_cunstom_dst.rst:57
+msgid ""
+"Por lo tanto, por un lado generamos el dialplan citado en el archivo "
+"\"oml_extensions_custom.conf\" ubicado en "
+"\"/opt/omnileads/asterisk/etc/asterisk\"."
+msgstr ""
+
+# 736a69dbe3cb4f8ba0c7e5fb61835eed
+#: ../../telephony_cunstom_dst.rst:59
+msgid ""
+"Luego debemos generar el \"nodo\" custom destination sobre la interfaz de"
+" configuración de OMniLeads."
+msgstr ""
+
+# ceaa2308d3264573a547df6a41c75c8d
+#: ../../telephony_cunstom_dst.rst:63
+msgid "*figure 2: custom dst example*"
+msgstr ""
+
+# d2e520ba05294632977395289320a5fe
+#: ../../telephony_cunstom_dst.rst:65
+msgid ""
+"Finalmente podemos invocar a nuestro nodo, desde una opción del IVR, "
+"condicional de tiempo o ruta entrante."
+msgstr ""
+
+# ddb889d454db4a7ea0a292ed7c19eb22
+#: ../../telephony_cunstom_dst.rst:69
+msgid "*figure 3: custom dst example*"
+msgstr ""
+

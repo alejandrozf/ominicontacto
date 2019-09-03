@@ -68,6 +68,8 @@ if args.internal_ip and args.self_hosted == "no":
                 "#admin_pass=my_very_strong_pass", "admin_pass={0}".format(
                     args.admin_pass)).replace(
                 "#postgres_password=my_very_strong_pass", "postgres_password={0}".format(
+                    args.databases_pass)).replace(
+                "#mysql_root_password=my_very_strong_pass", "mysql_root_password={0}".format(
                     args.databases_pass)))
     sys.exit()
 
@@ -80,6 +82,8 @@ if args.internal_ip and args.self_hosted == "yes":
         "#TZ=America/Argentina/Cordoba", "TZ=America/Argentina/Cordoba").replace(
             "#admin_pass=my_very_strong_pass", "admin_pass={0}".format(args.admin_pass)).replace(
             "#postgres_password=my_very_strong_pass", "postgres_password={0}".format(
+                args.databases_pass)).replace(
+            "#mysql_root_password=my_very_strong_pass", "mysql_root_password={0}".format(
                 args.databases_pass)))
     sys.exit()
 

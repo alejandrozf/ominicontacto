@@ -53,7 +53,7 @@
 # Se crea el archivo kamailio-local, Este archivo contiene las variables que usa el kamailio.cfg
 - name: Creation of kamailio-local.cfg file
   template: src=templates/etc/kamailio-local.cfg dest={{ kamailio_location }}/etc/kamailio/ owner={{ usuario }} group={{ usuario }}
-  tags: ['changenetwork','postinstall']
+  tags: postinstall
   become: true
   become_method: sudo
 
@@ -90,9 +90,9 @@
 # Restarteo kamailio
 - name: Restart kamailio service
   systemd: name=kamailio state=restarted enabled=yes daemon_reload=yes
-  tags: ['changenetwork','postinstall']
+  tags: postinstall
 
 # Se restartea rsyslog se habilita kamailio y se hace el daemon-reload.
 - name: Restart de rsyslog
   service: name=rsyslog.service state=restarted enabled=yes
-  tags: changenetwork
+  tags: postinstall

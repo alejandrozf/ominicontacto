@@ -38,7 +38,6 @@ key: key.pem
 country_code: 54
 admin_user: admin
 usuario: omnileads
-mysql_root_password: "{{ postgres_password }}"
 session_cookie_age: 3600
 install_prefix: /opt/omnileads/
 asterisk_location: "{{ install_prefix }}asterisk"

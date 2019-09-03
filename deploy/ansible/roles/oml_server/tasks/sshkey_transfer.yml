@@ -36,8 +36,8 @@
   shell: "ssh -oStrictHostKeyChecking=no root@{{ item }}"
   with_items:
     - "{{ asterisk_fqdn }}"
-    - "{{ kamailio_fqdn }}"
+    - "{{ kamailio_fqdn }}" 
   become: yes
   become_user: "{{ usuario }}"
   become_method: su
-  tags: changenetwork
+  tags: postinstall

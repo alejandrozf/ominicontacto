@@ -28,7 +28,7 @@
   template: src=templates/etc/ominicontacto.conf dest=/etc/nginx/conf.d/ominicontacto.conf owner={{ usuario }} group={{ usuario }}
   become: true
   become_method: sudo
-  tags: ['postinstall','changenetwork']
+  tags: postinstall
 
 # Se pasan los certificados creados en kamailio a la carpeta nginx_certs
 - name: Copy of the certificates in nginx (aio)
@@ -38,7 +38,7 @@
     - "{{ key }}"
   become: true
   become_method: sudo
-  tags: ['kamailio','changenetwork']
+  tags: postinstall
   when: cluster == 0
 
 # Se pasan los certificados creados en kamailio a la carpeta nginx_certs
@@ -48,7 +48,7 @@
     - "{{ cert }}"
     - "{{ key }}"
   when: cluster != 0
-  tags: changenetwork
+  tags: postinstall
 
 - name: Copy register server certificate in default location
   copy: src=/var/tmp/ansible/cert dest={{ install_prefix }} owner={{ usuario }} group={{ usuario }}
@@ -117,7 +117,7 @@
   service: name=nginx state=reloaded enabled=yes
   become: true
   become_method: sudo
-  tags: ['never','postinstall','kamailio','changenetwork']
+  tags: ['never','postinstall','kamailio']
 
 - name: Change ownership of /var/lib/nginx/tmp/
   file: state=directory owner={{ usuario }} group={{ usuario }} path=/var/lib/nginx recurse=yes

@@ -85,10 +85,6 @@ TagCheck() {
     tag="kamailio"
   elif [ "$arg1" == "--omniapp" ] || [ "$arg1" == "-o" ]; then
     tag="omniapp"
-  elif [ "$arg1" == "--change-network" ] || [ "$arg1" == "-cnet" ]; then
-    tag="changenetwork"
-  elif [ "$arg1" == "--change-passwords" ] || [ "$arg1" == "-cp" ]; then
-    tag="changepassword"
   elif [ "$arg1" == "--dialer" ] || [ "$arg1" == "-di" ]; then
     tag="dialer"
   elif [ "$arg1" == "--database" ] || [ "$arg1" == "-da" ]; then
@@ -264,8 +260,6 @@ do
         Omnileads installation script
         How to use it:
               -a --asterisk: execute asterisk related tasks
-              -cnet --change-network: execute tasks needed when you change the network settings of OML system
-              -cp --change-passwords: execute tasks needed when you change any of the passwords of your OML system
               -da --database: execute tasks related to database
               -di --dialer: execute tasks related to dialer (Wombat Dialer)
               --docker-deploy: deploy Omnileads in docker containers using docker-compose. See /deploy/docker/README.md
