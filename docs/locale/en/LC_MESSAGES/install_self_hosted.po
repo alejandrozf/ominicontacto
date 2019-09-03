@@ -5,49 +5,51 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OMniLeads\n"
+"Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-30 14:27-0300\n"
+"POT-Creation-Date: 2019-09-02 14:37-0300\n"
 "PO-Revision-Date: 2019-08-13 17:34-0300\n"
+"Last-Translator: \n"
+"Language: en\n"
+"Language-Team: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: en\n"
-"X-Generator: Poedit 2.2.3\n"
+"Generated-By: Babel 2.6.0\n"
 
-# 010ffaa67a4c4d38b92acb3bbb8a7c71
+# 19adec2eb1f24588af195582f92623c2
 #: ../../install_self_hosted.rst:5
 msgid "Ansible Self-Hosted Install"
 msgstr "Ansible Self-Hosted Install"
 
-# 3dc894009f15482e9417134a7226ff68
+# 19667b91d8cc434591d3a7444a85c46c
 #: ../../install_self_hosted.rst:7
+#, fuzzy
 msgid ""
-"Cuando decimos \"Ansible Self-Hosted\" nos referimos a instalar OMniLeads "
-"sobre un OS de forma monolítica (todos los servicios corriendo en dicho "
-"host) y descargando el proyecto en el OS destino de la instalación, para "
-"posteriormente ejecutar el script de instalación desde el propio host."
+"Al mencionar \"Ansible Self-Hosted\" nos referimos a instalar OMniLeads "
+"sobre un sistema operativo (GNU/linux kernel) en un despliegue monolítico"
+" (todos los servicios corriendo sobre dicho host). Se descarga el "
+"proyecto (repositorio) sobre el host destino de la instalación, para "
+"posteriormente ejecutar el script de instalación allí en dicho host."
 msgstr ""
-"When we say \"Ansible Self-Hosted\" we mean installing OMniLeads on an OS "
-"in a monolithic way (all services running on that host) and downloading "
+"When we say \"Ansible Self-Hosted\" we mean installing OMniLeads on an OS"
+" in a monolithic way (all services running on that host) and downloading "
 "the project on the OS destination of the installation, to execute the "
 "installation script from the own host later."
 
-# 47ea8ca53da249418b86db21bb97dab6
-#: ../../install_self_hosted.rst:12
+# 392a36391fea455791242ea0ff35135e
+#: ../../install_self_hosted.rst:13
 msgid "*Figure 1: self-hosted install*"
 msgstr "*Figure 1: self-hosted install*"
 
-# 0f08ca165d614692b8b3171c6074860e
-#: ../../install_self_hosted.rst:15
+# 27c4bf3ee70048878a4dbebedcec8b4b
+#: ../../install_self_hosted.rst:16
 msgid "Pre-requisitos:"
 msgstr "Pre-requirements:"
 
-# 999a4871cb3948dfa464d2f9abc782a9
-#: ../../install_self_hosted.rst:17
+# 51751cca199d4cdb99908d0a96ce6de3
+#: ../../install_self_hosted.rst:18
 msgid ""
 "Una instancia de GNU/Linux CentOS 7 (minimal), Debian 9 (netinstall) ó "
 "Ubuntu Server 18.04"
@@ -55,22 +57,23 @@ msgstr ""
 "A GNU/Linux CentOS 7 instance (minimal), Debian 9 (netinstall) or Ubuntu "
 "Server 18.04"
 
-# 9ff35fc59d204562a6dbb9540917c2f4
-#: ../../install_self_hosted.rst:18
+# 4c7c4c0e03994f119352c828768a4c20
+#: ../../install_self_hosted.rst:19
 msgid "20 GB de espacio en disco"
 msgstr "20 GB of disk space"
 
-# 7742411204224379ab12f4b99c326c9b
-#: ../../install_self_hosted.rst:19
+# 519825bea5f24ed5b88097c7e4aea925
+#: ../../install_self_hosted.rst:20
 msgid "4 GB de memoria RAM"
 msgstr "4 GB of RAM memory"
 
-# 688f585950c5439388dc3fd7894a9b97
+# 81dc91fd41054c79b557341693db5287
 #: ../../install_self_hosted.rst:21
-msgid "Es muy importante dejar la hora correctamente configurada en el host."
+#, fuzzy
+msgid "Dejar la hora correctamente configurada en el host."
 msgstr "It is very important to leave the time correctly set on the host."
 
-# 6246a8cba704450a83150640da638e8e
+# 05b6eb63c14243f7bd57fe1ec4ed706d
 #: ../../install_self_hosted.rst:22
 msgid ""
 "Configurar una *dirección IP* y un *hostname* fijo, antes de ejecutar la "
@@ -79,311 +82,378 @@ msgstr ""
 "Configure an *IP address* and a fixed *hostname* in the destination host "
 "of the installation."
 
-# f5c7625d678a418bab6efc4dca44716e
+# 1acf76a8cb2d4c7fb4b606fe30352d5d
 #: ../../install_self_hosted.rst:26
 msgid ""
-"En versiones menores a CentOS 7.6 es necesario primero hacer un yum update "
-"y luego reebotear el server"
+"En versiones menores a CentOS 7.6 es necesario primero hacer un yum "
+"update y luego reebotear el server"
 msgstr ""
-"In versions smaller tan CentOS 7.6 it is necessary to perform a yum update "
-"first and then reboot the server"
+"In versions smaller tan CentOS 7.6 it is necessary to perform a yum "
+"update first and then reboot the server"
 
-# d55255a15e114a88a8134369f9c2882c
+# 2b4433ace54a414a9b27fd24f92814a7
 #: ../../install_self_hosted.rst:29
 msgid "Ajustes necesarios antes  de la ejecución de script:"
 msgstr "Necessary adjustments before the script execution:"
 
-# 47799869d2c9458a9e2706654ac99505
+# 988c48072f814e14b87552fb05b2c21e
 #: ../../install_self_hosted.rst:31
+#, fuzzy
 msgid ""
-"Debemos contar con el paquete git para luego clonar el repositorio del "
-"protyecto y seleccionar el release a instalar"
+"Debemos contar con git para luego clonar el repositorio del proyecto y "
+"seleccionar el release a instalar"
 msgstr ""
 "We must have the git package to then clon the project repository and "
 "select the reléase to install"
 
-# 977b3a15b90340fe8b87ab282344bcac
+# f07e195eae4441f39dd5cdf9f6852760
 #: ../../install_self_hosted.rst:33
 msgid "**Ubuntu - Debian:**"
 msgstr "**Ubuntu - Debian:**"
 
-# ea6ff7ff5e5e4f408bff8be0ae8ea279
+# fa529c6c705a4ef189359f290a2fc988
 #: ../../install_self_hosted.rst:42
 msgid "**CentOS:**"
 msgstr "**CentOS:**"
 
-# bbf27237277d458f9c72406f34e25831
+# 0a73a82ed5d444d98332a9a0a97f40cb
 #: ../../install_self_hosted.rst:51
 msgid ""
-"La instalación se trabaja en el directorio \"deploy/ansible\", disponible "
-"desde la raíz del proyecto (PATH/ominicontacto/deploy/ansible):"
+"La instalación se trabaja en el directorio \"deploy/ansible\", disponible"
+" desde la raíz del proyecto (PATH/ominicontacto/deploy/ansible):"
 msgstr ""
-"The installation is worked in the \"deploy/ansible\" directory, available "
-"from the project root (PATH/ominicontact/deploy/ansible): "
+"The installation is worked in the \"deploy/ansible\" directory, available"
+" from the project root (PATH/ominicontact/deploy/ansible): "
 
-# e8a29dacf46743edbe27f73fb209af5f
+# 88fb65bd916e4235b4d2b00479a03b04
 #: ../../install_self_hosted.rst:57
+#, fuzzy
 msgid ""
-"Se comprueba la *dirección IP* y *hostname* que posee el host y que luego "
-"se utiliza en el archivo de inventario en el proceso de instalación:"
+"En este paso debemos trabajar sobre el archivo  "
+":ref:`about_install_inventory` disponible dentro del directorio "
+"\"PATH/ominicontacto/deploy/ansible\"."
 msgstr ""
-"The *IP address* and *hostname* that the host owns are checked and then "
-"used in the inventory file in the installation process:"
+"In this step, the file *inventory* (PATH/ominicontac/deploy/ansible) must"
+" be edited."
 
-# f47d81d67a964dbaa126ef1eafb9b420
-#: ../../install_self_hosted.rst:66
-msgid "*Figure 2: hostname command output*"
-msgstr "*Figure 2: hostname command output*"
-
-# d08c3de1032647638ffaee10f5796fdf
-#: ../../install_self_hosted.rst:71
-msgid "*Figure 3: ip a command output*"
-msgstr "*Figure 3: ip a command output*"
-
-# 394c4fbd17fb438f85e2c41db9ff589c
-#: ../../install_self_hosted.rst:73
-msgid ""
-"En este paso, se debe editar el archivo *inventory* (PATH/ominicontacto/"
-"deploy/ansible)."
-msgstr ""
-"In this step, the file *inventory* (PATH/ominicontac/deploy/ansible) must "
-"be edited."
-
-# 098f06b50719489a96e50f82035a3ded
-#: ../../install_self_hosted.rst:77
+# 412b8c81272e43ba83f68130ef671032
+#: ../../install_self_hosted.rst:61
 msgid ""
 "OMniLeads utiliza ansible para realizar la instalación, por lo tanto "
 "existe un \"archivo de inventario\" que debe ser modificado de acuerdo a "
 "los parámetros del host sobre el que estamos trabajando."
 msgstr ""
-"OMniLeads uses ansible to perform the installation, therefore there is an "
-"\"inventory file\" that must be modifies according to the parameters of "
+"OMniLeads uses ansible to perform the installation, therefore there is an"
+" \"inventory file\" that must be modifies according to the parameters of "
 "the host we are working on."
 
-# 113af1a7fd7e4d5ea9f22cfbf5bd8217
-#: ../../install_self_hosted.rst:79
+# 9673a7b543f9458caa97925c68078dee
+#: ../../install_self_hosted.rst:64
 msgid ""
-"Modificar y descomentar la cadena 'hostname' por el que hemos configurado "
-"a nuestro servidor. También en esta línea, se debe editar el parámetro 'X."
-"X.X.X' con la dirección IP del host sobre el que estamos trabajando."
+"Luego, allí en el inventory mismo debemos ajustar las "
+":ref:`about_install_inventory_vars` de la instanacia."
 msgstr ""
-"Modify and uncomment the chain 'hostname' by which we have configured our "
-"server. In this line, the parameter 'X.X.X.X' must be edited first with "
-"the IP address of the host we are working on."
 
-# 681ebedf0d8940f2b0ce7f2b3053cadc
-#: ../../install_self_hosted.rst:84
-msgid "*Figure 4: inventory file network params section*"
-msgstr "*Figure 4: inventory file network params section*"
-
-# fb7f55af71974d7ea686656fe8a5f447
-#: ../../install_self_hosted.rst:86
+# 54b60f7b860b4719a999d0444dba19ac
+#: ../../install_self_hosted.rst:66
 msgid ""
-"Además dentro del mismo archivo, unas líneas debajo encontraremos la "
-"sección *[everyyone:vars]*, en la cual se pueden alterar variables y "
-"contraseñas que vienen por defecto en el sistema. Introducir el parámetro "
-"\"time zone\" adecuado para su instanacia. Es **Importante** que realice "
-"este paso o la instalación no se va a poder realizar."
+"Una vez ajustados todos los parámetros del archivo de inventario, "
+"procedemos con la ejecución de la instalación."
 msgstr ""
-"Also within the same file, some lines below the section *[everyyone:"
-"vars]*, in which default variables and passwords can be changed. Enter the "
-"appropiate parameter \"time zone\" for its instance. It is **Important** "
-"to perform this step or the installation will not be possible."
 
-# ed793ad1ea754f939e6e98d90f64e8ae
-#: ../../install_self_hosted.rst:90
-msgid "*Figure 5: Passwords and parameters of services*"
-msgstr "*Figure 5: Passwords and parameters of services*"
-
-# d3d8aa477c86438ab87e8e7e50102611
-#: ../../install_self_hosted.rst:92
-msgid ""
-"En caso de haber olvidado ingresar la instancia a instalar el script "
-"mostrará este mensaje"
-msgstr ""
-"In case of having forgotten enter the instance to install the script will "
-"show this message"
-
-# b1647d4d76c24e0fb1a1f258082e1773
-#: ../../install_self_hosted.rst:96
-msgid "*Figure 6: deploy - No hosts in inventory*"
-msgstr "*Figure 6: deploy - No hosts in inventory*"
-
-# 07da63a01b38432e9ba0d581a2384a58
-#: ../../install_self_hosted.rst:98
-msgid ""
-"Es importante aclarar que cada vez que se corre el script *./deploy.sh* ya "
-"sea para instalar, re-instalar, actualizar, modificar la dirección IP de "
-"OML, etc., el archivo de inventory se vuelve a \"cero\". No obstante se "
-"genera una copia del archivo **(my_inventory)**, de manera tal que se "
-"cuente con los parámetros del sistema utilizados en la última ejecución "
-"del script. La copia en cuestión se ubica en el path donde ha sido clonado "
-"el repositorio de OML y bajo el nombre de \"my_inventory\" como lo expone "
-"la figura 6."
-msgstr ""
-"It is important to clarify that every time the script \"./deploy.sh\" runs "
-"either to install, re-install, update, modify the OML IP address, etc., "
-"the file inventory returns to \"cero\". However, a copy of the file "
-"(my_inventory) is generated, so the system parameters used in the last "
-"execution of the script are available. This copy is located in the path "
-"where the OML repository has been cloned and under the name of "
-"\"my_inventory\" as shown in Figure 6."
-
-# 9767c8b795284e76b7218cde4cba078d
-#: ../../install_self_hosted.rst:102
-msgid "*Figure 7: inventory copy, my_inventory file*"
-msgstr "*Figure 7: inventory copy, my_inventory file*"
-
-# 1d309c8b24864389b7fb61f6754cd50b
-#: ../../install_self_hosted.rst:106
+# de8b4289cf3a40f98d8c2d1b15f25578
+#: ../../install_self_hosted.rst:69
 msgid "Ejecución del script de instalación:"
 msgstr "Executing of the installation script:"
 
-# 9a6a13d686d340e3b0db04dd767863c8
-#: ../../install_self_hosted.rst:108
+# 95151eaaaeeb4db0beccb4e2c9c50c11
+#: ../../install_self_hosted.rst:71
 msgid ""
 "La instalación de OMniLeads se realiza mediante el script *deploy.sh*, "
-"ubicado dentro de la carpeta deploy/ansible con respecto a la carpeta raíz "
-"del proyecto (ominicontacto)."
+"ubicado dentro de la carpeta deploy/ansible con respecto a la carpeta "
+"raíz del proyecto (ominicontacto)."
 msgstr ""
 "The installation of OMniLeads is done using the script *deploy.sh*, "
 "located within the folder deploy/ansible respect to the root file of the "
 "project (omnicontacto)."
 
-# 3834010a0b20425dba552fb4e88d5c24
-#: ../../install_self_hosted.rst:111
+# c65094850fef457eb8fed322a386f896
+#: ../../install_self_hosted.rst:74
 msgid ""
 "Una vez configuradas las variables citadas, se procede con la ejecución "
 "del script de instalación (como usuario root o con privilegios sudo):"
 msgstr ""
-"Once the mentioned variables are configured, we proceed with the execution "
-"of the installation script (as root user or with sudo privileges):"
+"Once the mentioned variables are configured, we proceed with the "
+"execution of the installation script (as root user or with sudo "
+"privileges):"
 
-# fa7f53b1ed8048649e58402718b4f727
-#: ../../install_self_hosted.rst:117
+# 3f3e3637be06444292f2135c42015557
+#: ../../install_self_hosted.rst:80
 msgid ""
-"El tiempo de instalación dependerá mayormente de la velocidad de conexión "
-"a internet del host OML, ya que se deben descargar, instalar y configurar "
-"varios paquetes correspondientes a los diferentes componentes de software "
-"que conforman el sistema."
+"Donde **<your_iface>** es la interfaz con la IP que se quiere usar para "
+"levantar los servicios que componen OMniLeads (suele ser la IP de la "
+"interfaz LAN del servidor)."
+msgstr ""
+"Where **<your_iface>** is the interface with the IP address you want to "
+"use to raise up the services that compose OMniLeads (it usually is the "
+"LAN interface of the host)."
+
+# 94f6755e3f3841c78c01965b94b4952c
+#: ../../install_self_hosted.rst:82
+#, fuzzy
+msgid ""
+"El tiempo de instalación dependerá mayormente de la velocidad de conexión"
+" a internet del host OML, ya que se deben descargar, instalar y "
+"configurar varios paquetes correspondientes a los diferentes componentes "
+"de software que conforman el sistema. Aproximadamente, este tiempo es de "
+"20 a 30 minutos."
 msgstr ""
 "Installation time will depend mostly of the internet speed conection of "
 "the OML host, since several packages correspondign to different software "
 "components that compose the system must be downloaded, installed and "
-"configured."
+"configured. Approximately this time is 20 to 30 minutes."
 
-# b5352ee1296d45f88c08c6e44bb2845f
-#: ../../install_self_hosted.rst:121
-msgid "*Figure 8: install running*"
-msgstr "*Figure 8: install running*"
+# 7d664bdf9b154a02b4093a7f1002221b
+#: ../../install_self_hosted.rst:86
+#, fuzzy
+msgid "*Figure 4: install running*"
+msgstr "*Figure 4: install running*"
 
-# 22d7078c002f4135b53579c167e41bae
-#: ../../install_self_hosted.rst:123
+# e7a353463c254ab48ea23f413e2739bf
+#: ../../install_self_hosted.rst:88
+#, fuzzy
 msgid ""
-"Si la ejecución de la instalación finaliza exitosamente, se despliega una "
-"vista como la de la figura 8."
+"Si la ejecución de la instalación finaliza exitosamente, se despliega una"
+" vista como la de la figura 8."
 msgstr ""
 "If the installation execution ends succesfully, a view as the one on "
-"figure 8 is displayed."
+"figure 5 is displayed."
 
-# 83ddb33a51f94b01a197994681fe35dd
-#: ../../install_self_hosted.rst:127
-msgid "*Figure 9: OMniLeads installation ended succesfuly*"
-msgstr "*Figure 9: OMniLeads installation ended succesfuly*"
+# 208aa96e929342d4b19a75509fbd9a70
+#: ../../install_self_hosted.rst:92
+#, fuzzy
+msgid "*Figure 5: OMniLeads installation ended succesfuly*"
+msgstr "*Figure 5: OMniLeads installation ended succesfuly*"
 
-# 602a6c4de74c4050964823a379f8690f
-#: ../../install_self_hosted.rst:131
-msgid ""
-"**Para Debian:** En caso de que ocurra este error durante la ejecución del "
-"script:"
-msgstr ""
-"**For Debian:** In case this error occurs during the script execution:"
-
-# dce91147933b4f8687415c4a7197381c
-#: ../../install_self_hosted.rst:133
-msgid ""
-"*\"ERROR! Unexpected Exception, this is probably a bug: (cryptography "
-"1.7.1 (/usr/lib/python2.7/ dist-packages), Requirement."
-"parse('cryptography>=2.5'), set(['paramiko']))\"*"
-msgstr ""
-"*\"ERROR! Unexpected Exception, this is probably a bug: (cryptography "
-"1.7.1 (/usr/lib/python2.7/ dist-packages), Requirement."
-"parse('cryptography>=2.5'), set(['paramiko']))\"*"
-
-# 885171cd8a1e451dbb9b708235029df0
-#: ../../install_self_hosted.rst:136
-msgid ""
-"Verificar que no exista el paquete python-cryptography, en caso de "
-"existir, desinstalarlo. Esto es debido a un bug conocido durante la "
-"instalación de Ansible: https://github.com/ansible/ansible/issues/29084"
-msgstr ""
-"Verify the package Python-cryptography does not exist, in case it exists, "
-"uninstall it. This is due to a known bug during the Ansible installation: "
-"https://github.com/ansible/ansible/issues/29084"
-
-# 9be5207389454905bedf0b0ddda97d01
-#: ../../install_self_hosted.rst:140
+# 528f1962a24c4dafb222bc3daa6883a3
+#: ../../install_self_hosted.rst:95
 msgid "Primer acceso a OMniLeads:"
 msgstr "First access to OMniLeads:"
 
-# cfd79c0bc683409f89102b92bb9c9493
-#: ../../install_self_hosted.rst:142
+# 118e462d2b894e069a21b351fdd5c2a3
+#: ../../install_self_hosted.rst:97
 msgid ""
 "Si la ejecución de la instalación fue exitosa, entonces podemos realizar "
 "un :ref:`about_first_access`."
 msgstr ""
-"If the installation execution was succesful, then we can perform a :ref:"
-"`about_first_access`."
+"If the installation execution was succesful, then we can perform a "
+":ref:`about_first_access`."
 
-# 124519b84e964298ae17a334035dbbb0
-#: ../../install_self_hosted.rst:146
+# 5a238f9e9ebd45b7a688d0378122064e
+#: ../../install_self_hosted.rst:100
 msgid "Errores comunes:"
 msgstr "Common mistakes:"
 
-# 4333212ea4964a7e8eacb25dcc75c586
-#: ../../install_self_hosted.rst:148
+# 1695c9e1207143749dd988a27fe2f890
+#: ../../install_self_hosted.rst:102
 msgid ""
-"El server no tiene internet o no resuelve dominios (configuración de DNS). "
-"**Compruebe el acceso a internet del host (por ej: actualizando paquetes - "
-"apt-get update | yum update).**"
+"El server no tiene internet o no resuelve dominios (configuración de "
+"DNS). **Compruebe el acceso a internet del host (por ej: actualizando "
+"paquetes - apt-get update | yum update).**"
 msgstr ""
 "The server does not have internet or it does not solve domains (DNS "
 "configuration). *Check the internet access of the host (eg. updating "
 "packages - apt-get update | yum update).*"
 
-# 4d8f84b93ee14492bcd572f2e6ab3855
-#: ../../install_self_hosted.rst:150
+# 7a548aeafb2848fa9d290ff557b24b04
+#: ../../install_self_hosted.rst:104
+#, fuzzy
 msgid ""
 "Timeout de algún paquete que se intenta bajar. Puede volver a intentar "
-"ejecutar el deploy y si vuelve a fallar, la opción puede serinstalar el "
+"ejecutar el deploy y si vuelve a fallar, la opción puede ser instalar el "
 "paquete desde la terminal."
 msgstr ""
 "Timeout of any package that you try to download. You can try again to "
-"execute the deploy and if it fails again, the option can be. *Install the "
-"package from the terminal.*"
+"execute the deploy and if it fails again, the option can be. *Install the"
+" package from the terminal.*"
 
-# 4ba785fa400c46439d9c77e94e481673
-#: ../../install_self_hosted.rst:152
-msgid ""
-"Falla por mala sintaxis o falta de definición de *hostname* y *dirección "
-"IP* en el archivo *inventory*."
-msgstr ""
-"Failure due to bad syntax or lack of definition of *hostname* and *IP "
-"address* in the file *inventory*."
-
-# dc35683c77ec4bdeb5dbeb8e0ddedafe
-#: ../../install_self_hosted.rst:154
+# 30fb51145b1d41b29f09f79914b60944
+#: ../../install_self_hosted.rst:106
 msgid "No ejecutó el script de deploy con *sudo*, en el host deployer."
-msgstr ""
-"It does not execute the deploy script with *sudo*, in the deployer host."
+msgstr "It does not execute the deploy script with *sudo*, in the deployer host."
 
-# 7adb3f38608240199583d45c67bb152a
-#: ../../install_self_hosted.rst:156
+# b8ba5981c0b14fbab05433aff646984c
+#: ../../install_self_hosted.rst:108
 msgid ""
 "En caso de contar con algún host Ubuntu-Debian, recordar que se deben "
 "instalar paquetes como *sudo, openssh-server o python-minimal* antes de "
 "correr el script de *deploy.sh*"
 msgstr ""
 "In case of having any Ubuntu-Debian host, remember that packages such as "
-"*sudo, openssh-server or Python-minimal* must be installed before running "
-"the script *deploy.sh*"
+"*sudo, openssh-server or Python-minimal* must be installed before running"
+" the script *deploy.sh*"
+
+# e8a29dacf46743edbe27f73fb209af5f
+#~ msgid ""
+#~ "Se comprueba la *dirección IP* y "
+#~ "*hostname* que posee el host y que"
+#~ " luego se utiliza en el archivo "
+#~ "de inventario en el proceso de "
+#~ "instalación:"
+#~ msgstr ""
+#~ "The *IP address* and *hostname* that "
+#~ "the host owns are checked and then"
+#~ " used in the inventory file in "
+#~ "the installation process:"
+
+# f47d81d67a964dbaa126ef1eafb9b420
+#~ msgid "*Figure 2: hostname command output*"
+#~ msgstr "*Figure 2: hostname command output*"
+
+# d08c3de1032647638ffaee10f5796fdf
+#~ msgid "*Figure 3: ip a command output*"
+#~ msgstr "*Figure 3: ip a command output*"
+
+# 113af1a7fd7e4d5ea9f22cfbf5bd8217
+#~ msgid ""
+#~ "Modificar y descomentar la cadena "
+#~ "'hostname' por el que hemos configurado"
+#~ " a nuestro servidor. También en esta"
+#~ " línea, se debe editar el parámetro"
+#~ " 'X.X.X.X' con la dirección IP del"
+#~ " host sobre el que estamos "
+#~ "trabajando."
+#~ msgstr ""
+#~ "Modify and uncomment the chain "
+#~ "'hostname' by which we have configured"
+#~ " our server. In this line, the "
+#~ "parameter 'X.X.X.X' must be edited first"
+#~ " with the IP address of the "
+#~ "host we are working on."
+
+# 681ebedf0d8940f2b0ce7f2b3053cadc
+#~ msgid "*Figure 4: inventory file network params section*"
+#~ msgstr "*Figure 4: inventory file network params section*"
+
+# fb7f55af71974d7ea686656fe8a5f447
+#~ msgid ""
+#~ "Además dentro del mismo archivo, unas"
+#~ " líneas debajo encontraremos la sección "
+#~ "*[everyyone:vars]*, en la cual se pueden"
+#~ " alterar variables y contraseñas que "
+#~ "vienen por defecto en el sistema. "
+#~ "Introducir el parámetro \"time zone\" "
+#~ "adecuado para su instanacia. Es "
+#~ "**Importante** que realice este paso o"
+#~ " la instalación no se va a "
+#~ "poder realizar."
+#~ msgstr ""
+#~ "Also within the same file, some "
+#~ "lines below the section *[everyyone:vars]*,"
+#~ " in which default variables and "
+#~ "passwords can be changed. Enter the "
+#~ "appropiate parameter \"time zone\" for "
+#~ "its instance. It is **Important** to "
+#~ "perform this step or the installation"
+#~ " will not be possible."
+
+# ed793ad1ea754f939e6e98d90f64e8ae
+#~ msgid "*Figure 5: Passwords and parameters of services*"
+#~ msgstr "*Figure 5: Passwords and parameters of services*"
+
+# d3d8aa477c86438ab87e8e7e50102611
+#~ msgid ""
+#~ "En caso de haber olvidado ingresar "
+#~ "la instancia a instalar el script "
+#~ "mostrará este mensaje"
+#~ msgstr ""
+#~ "In case of having forgotten enter "
+#~ "the instance to install the script "
+#~ "will show this message"
+
+# b1647d4d76c24e0fb1a1f258082e1773
+#~ msgid "*Figure 6: deploy - No hosts in inventory*"
+#~ msgstr "*Figure 6: deploy - No hosts in inventory*"
+
+# 07da63a01b38432e9ba0d581a2384a58
+#~ msgid ""
+#~ "Es importante aclarar que cada vez "
+#~ "que se corre el script *./deploy.sh* "
+#~ "ya sea para instalar, re-instalar, "
+#~ "actualizar, modificar la dirección IP de"
+#~ " OML, etc., el archivo de inventory"
+#~ " se vuelve a \"cero\". No obstante"
+#~ " se genera una copia del archivo "
+#~ "**(my_inventory)**, de manera tal que se"
+#~ " cuente con los parámetros del "
+#~ "sistema utilizados en la última "
+#~ "ejecución del script. La copia en "
+#~ "cuestión se ubica en el path donde"
+#~ " ha sido clonado el repositorio de"
+#~ " OML y bajo el nombre de "
+#~ "\"my_inventory\" como lo expone la "
+#~ "figura 6."
+#~ msgstr ""
+#~ "It is important to clarify that "
+#~ "every time the script \"./deploy.sh\" "
+#~ "runs either to install, re-install, "
+#~ "update, modify the OML IP address, "
+#~ "etc., the file inventory returns to "
+#~ "\"cero\". However, a copy of the "
+#~ "file (my_inventory) is generated, so the"
+#~ " system parameters used in the last"
+#~ " execution of the script are "
+#~ "available. This copy is located in "
+#~ "the path where the OML repository "
+#~ "has been cloned and under the name"
+#~ " of \"my_inventory\" as shown in "
+#~ "Figure 6."
+
+# 9767c8b795284e76b7218cde4cba078d
+#~ msgid "*Figure 7: inventory copy, my_inventory file*"
+#~ msgstr "*Figure 7: inventory copy, my_inventory file*"
+
+# 602a6c4de74c4050964823a379f8690f
+#~ msgid ""
+#~ "**Para Debian:** En caso de que "
+#~ "ocurra este error durante la ejecución"
+#~ " del script:"
+#~ msgstr "**For Debian:** In case this error occurs during the script execution:"
+
+# dce91147933b4f8687415c4a7197381c
+#~ msgid ""
+#~ "*\"ERROR! Unexpected Exception, this is "
+#~ "probably a bug: (cryptography 1.7.1 "
+#~ "(/usr/lib/python2.7/ dist-packages), "
+#~ "Requirement.parse('cryptography>=2.5'), set(['paramiko']))\"*"
+#~ msgstr ""
+#~ "*\"ERROR! Unexpected Exception, this is "
+#~ "probably a bug: (cryptography 1.7.1 "
+#~ "(/usr/lib/python2.7/ dist-packages), "
+#~ "Requirement.parse('cryptography>=2.5'), set(['paramiko']))\"*"
+
+# 885171cd8a1e451dbb9b708235029df0
+#~ msgid ""
+#~ "Verificar que no exista el paquete "
+#~ "python-cryptography, en caso de existir,"
+#~ " desinstalarlo. Esto es debido a un"
+#~ " bug conocido durante la instalación "
+#~ "de Ansible: "
+#~ "https://github.com/ansible/ansible/issues/29084"
+#~ msgstr ""
+#~ "Verify the package Python-cryptography "
+#~ "does not exist, in case it exists,"
+#~ " uninstall it. This is due to a"
+#~ " known bug during the Ansible "
+#~ "installation: https://github.com/ansible/ansible/issues/29084"
+
+# 4ba785fa400c46439d9c77e94e481673
+#~ msgid ""
+#~ "Falla por mala sintaxis o falta de"
+#~ " definición de *hostname* y *dirección "
+#~ "IP* en el archivo *inventory*."
+#~ msgstr ""
+#~ "Failure due to bad syntax or lack"
+#~ " of definition of *hostname* and *IP"
+#~ " address* in the file *inventory*."
+

@@ -45,7 +45,7 @@
       {{ database_ip }} {{ database_fqdn }}
       {{ dialer_ip }} {{ dialer_fqdn }}
   when: cluster != 0
-  tags: changenetwork
+  tags: postinstall
 
 - name: Write the /etc/hosts of server (aio)
   blockinfile:
@@ -55,7 +55,7 @@
     block: |
       {{ omni_ip }} {{ omni_fqdn }}
   when: cluster == 0
-  tags: changenetwork
+  tags: postinstall
 
 # Se añaden los binarios que no van a necesitar password al hacerlos con sudo
 - name: Edit sudoers to execute binaries withouth password

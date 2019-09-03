@@ -5,25 +5,25 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: OMniLeads\n"
+"Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-30 14:27-0300\n"
+"POT-Creation-Date: 2019-09-02 14:37-0300\n"
 "PO-Revision-Date: 2019-08-13 16:42-0300\n"
+"Last-Translator: \n"
+"Language: en\n"
+"Language-Team: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: en\n"
-"X-Generator: Poedit 2.2.3\n"
+"Generated-By: Babel 2.6.0\n"
 
-# 31b1d51bbc79460c836d2c891f0c1208
+# f6321de3afc443a3afe6ed0ce9b3d693
 #: ../../install_remote.rst:5
 msgid "Instalación desde ansible remoto"
 msgstr "Installation from remote ansible"
 
-# 74f5377eed3b4ee5b3880d0fc209be91
+# 1b1ba6174917456cba831596afe44093
 #: ../../install_remote.rst:7
 msgid ""
 "Este tipo de instalación implica que la descarga del proyecto desde el "
@@ -31,12 +31,12 @@ msgid ""
 "estación de trabajo del sysadmin, ya que precisamente al estar basada en "
 "Ansible la instalación se hace viable éste método."
 msgstr ""
-"This type of intallation implies that the download of the project from the "
-"repository and the execution of the installation script is performed since "
-"the sysadmin workstation, due to since it is based on Ansible the "
+"This type of intallation implies that the download of the project from "
+"the repository and the execution of the installation script is performed "
+"since the sysadmin workstation, due to since it is based on Ansible the "
 "installation is viable this method."
 
-# 200c2c8a121f4ec59cc27b1379501819
+# 2b19cd4fe3e2423c8de98d6bf02a0b34
 #: ../../install_remote.rst:10
 msgid ""
 "La ventaja principal de esta opción es que el sysadmin puede instalar y "
@@ -45,17 +45,17 @@ msgstr ""
 "The main advantaje of this option is that the sysadmin can install and "
 "maintain several instances of OMniLeads from a single \"deployer\" node."
 
-# 9f584ea7494e4c72b8e6d022d540ba94
+# cc44446c86c8489aa55f3fecae686c0f
 #: ../../install_remote.rst:14
 msgid "*Figure 1: remote ansible install*"
 msgstr "*Figure 1: remote ansible install*"
 
-# 8da613ead3ca4e1ca49556429d9d9ba6
+# 3409b2b3fdb94cc0be553c64955285bb
 #: ../../install_remote.rst:17
 msgid "Pre-requisitos:"
 msgstr "Pre-requirements:"
 
-# 8c39d936cf204b68a2b7eef83d5ddf10
+# 420cac3bafb641698224e122b634b1d4
 #: ../../install_remote.rst:19
 msgid ""
 "Una instancia de GNU/Linux CentOS 7 (minimal), Debian 9 (netinstall) ó "
@@ -64,42 +64,43 @@ msgstr ""
 "A GNU/Linux CentOS 7 instance (minimal), Debian 9 (netinstall) or Ubuntu "
 "Server 18.04"
 
-# 5979da50515e4f06b2e5e7a3010189e7
+# d42916e760514abc930ad842f42848d4
 #: ../../install_remote.rst:20
 msgid "20 GB de espacio en disco"
 msgstr "\"= GB of disk space"
 
-# e1d9d6b009894f7089f6293b53c98433
+# 60b127ac6d2d4a1d9c6b87438b1c4e71
 #: ../../install_remote.rst:21
 msgid "4 GB de memoria RAM"
 msgstr "4 GB of RAM memory"
 
-# 3e620a82cbd24120ae46fb1a7572f784
+# ef30ff2c3ff94320a117405cdaec3baf
 #: ../../install_remote.rst:22
 msgid ""
 "En *Ubuntu / Debian*; Instalar el paquete sudo, openssh-server y phyton-"
-"minimal, permitir login SSH con el usuario root y reiniciar el servicio de "
-"ssh para que se tomen los cambios:"
+"minimal, permitir login SSH con el usuario root y reiniciar el servicio "
+"de ssh para que se tomen los cambios:"
 msgstr ""
-"in *Ubuntu / Debian*, install the pacjage sudo, openssh-server and phyton-"
-"minimal, allow SSH login with the root user and restart the ssh service so "
-"changes are taken:"
+"in *Ubuntu / Debian*, install the pacjage sudo, openssh-server and "
+"phyton-minimal, allow SSH login with the root user and restart the ssh "
+"service so changes are taken:"
 
-# f73707f0c05e444a93e9fa0b9b1bbb2d
-#: ../../install_remote.rst:26
+# ae2a12616baf4c8a98d1e20a26b9ded5
+#: ../../install_remote.rst:32
 msgid ""
-"En versiones menores a CentOS 7.6 es necesario primero hacer un yum update "
-"y luego reebotear el server"
+"En versiones menores a CentOS 7.6 es necesario primero hacer un yum "
+"update y luego reebotear el server"
 msgstr ""
-"In versions smaller tan CentOS 7.6 it is necessary to perform a yum update "
-"first and then reboot the server"
+"In versions smaller tan CentOS 7.6 it is necessary to perform a yum "
+"update first and then reboot the server"
 
-# 9a348e6bd81a42e6b57793808726d9d4
+# f9a5b2c78dbb4375880a1abe66bbfda9
 #: ../../install_remote.rst:34
-msgid "Es muy importante dejar la hora correctamente configurada en el host."
+#, fuzzy
+msgid "Dejar la hora correctamente configurada en el host."
 msgstr "It is very important to leave the time correctly set on the host."
 
-# d04fca43bf6246c3a922771168f8501d
+# 4e88ff0dd64a419f8511404b7f20700a
 #: ../../install_remote.rst:35
 msgid ""
 "Configurar una *dirección IP* y un *hostname* fijo en el host destino de "
@@ -108,13 +109,14 @@ msgstr ""
 "Configure an *IP address* and a fixed *hostname* in the destination host "
 "of the installation."
 
-# 7a0fa39072b047a38026f79a58050972
-#: ../../install_remote.rst:39
-msgid "Preparación en la máquina que ejecuta la instalación remota:"
+# ac68991a28fc4d0cb98d26105998aef5
+#: ../../install_remote.rst:42
+#, fuzzy
+msgid "Preparación en la máquina que ejecuta la instalación remota"
 msgstr "Preparation on the machine that executes the remote installation:"
 
-# 8505528a41704be695e88d9f6988a136
-#: ../../install_remote.rst:41
+# a8fc3f1a380a4ed9af071aeef463592f
+#: ../../install_remote.rst:44
 msgid ""
 "Debemos contar con el paquete git para luego clonar el repositorio del "
 "protyecto y seleccionar el release a instalar."
@@ -122,18 +124,18 @@ msgstr ""
 "We must have the git package to clone the project repository then and "
 "select the release to install."
 
-# 2e0cb970cb4f417a8361704d75912978
-#: ../../install_remote.rst:43
+# 9c1df60b2e6a4b12ba5c80ed82dd8bb7
+#: ../../install_remote.rst:46
 msgid "Ubuntu - Debian:"
 msgstr "Ubuntu - Debian:"
 
-# 5475390fbddf4874bf09b843b8dd4a51
-#: ../../install_remote.rst:52
+# d820ece5b07a4a11a042245de4735844
+#: ../../install_remote.rst:55
 msgid "CentOS:"
 msgstr "CentOS:"
 
-# 05835c41747945baaec8f2affba6f943
-#: ../../install_remote.rst:61
+# 89976157315541f196a5f7c83fc64ffa
+#: ../../install_remote.rst:64
 msgid ""
 "Debemos asegurarnos de contar con una clave pública generada en la "
 "carpeta /root/.ssh/"
@@ -141,8 +143,8 @@ msgstr ""
 "We must be sure of counting with a public password generated in the "
 "folder /root/.ssh/"
 
-# a4af83ebd17245d2a622ed7d22abb7ef
-#: ../../install_remote.rst:68
+# 838db398f8e846d5abdf8b7de406a572
+#: ../../install_remote.rst:71
 msgid ""
 "Es probable que ya contemos con una clave pública (id_rsa.pub), como se "
 "aprecia en la *figura 1*."
@@ -150,72 +152,68 @@ msgstr ""
 "It is possible that we already have a public password (id_rsa.pub), as "
 "appreciated on *figure 1*."
 
-# bf198275d71e419abc4b132b2ac6ef7d
-#: ../../install_remote.rst:72
+# ee596c1781624091bdc768009c27df9b
+#: ../../install_remote.rst:75
 msgid "*Figure 1: ls -a /root/.ssh command output*"
 msgstr "*Figure 1: ls -a /root/.ssh command output*"
 
-# 4f96ad79eb5540b6be9593401f0cc77a
-#: ../../install_remote.rst:74
+# 6599cc5fe9574f3ca487286c0a66f8b7
+#: ../../install_remote.rst:77
 msgid ""
 "En caso de NO disponer de una, se puede generar rápidamente con el "
 "siguiente comando:"
 msgstr ""
-"In case of not having one, it can be quickly generated with the following "
-"command:"
+"In case of not having one, it can be quickly generated with the following"
+" command:"
 
-# 4836a4b974f64c23ab5538c6f4db4f98
-#: ../../install_remote.rst:82
+# 1d20158b994446ddbde632215119451a
+#: ../../install_remote.rst:85
 msgid "*Figure 2: ssh-keygen command output*"
 msgstr "*Figure 2: ssh-keygen command output*"
 
-# 3eb761a3e7b846b987e0aa25596b7bc0
-#: ../../install_remote.rst:84
+# d8c1e237684646b4925dfaa9bd636670
+#: ../../install_remote.rst:87
 msgid ""
 "Este comando genera nuestra clave *id_rsa.pub* que mencionamos "
 "anteriormente."
-msgstr ""
-"This command generate our password *id_rsa.pub* previously mentioned."
+msgstr "This command generate our password *id_rsa.pub* previously mentioned."
 
-# 749c16260b49483ba62e3924829d19cb
-#: ../../install_remote.rst:86
+# ed5d2a39e7fa4ecc8c4c14039804d840
+#: ../../install_remote.rst:89
 msgid ""
 "Se comprueba la *dirección IP* y *hostname* que posee el host destino de "
-"la instalación, para luego ajustar el archivo *inventory* que se utiliza a "
-"la hora de tomar los parámetros de la instalación."
+"la instalación, para luego ajustar el archivo *inventory* que se utiliza "
+"a la hora de tomar los parámetros de la instalación."
 msgstr ""
-"We chack the *IP address* and *hostname* that the destination host of the "
-"installation owns, to then adjust the file *inventory* that we use when "
+"We chack the *IP address* and *hostname* that the destination host of the"
+" installation owns, to then adjust the file *inventory* that we use when "
 "taking the installation parameters."
 
-# a455501b56974d71a566a64104670b93
-#: ../../install_remote.rst:95
+# bab9d36c4dc7421fbdf997dd10484b2c
+#: ../../install_remote.rst:98
 msgid "*Figure 3: hostname command output*"
 msgstr "*Figure 3: hostname command output*"
 
-# 2f7394e8c19941f88b7cd8c32ad61b88
-#: ../../install_remote.rst:100
+# 72aa312db50d477ca3d61be02284bbeb
+#: ../../install_remote.rst:103
 msgid "*Figure 4: ip a command output*"
 msgstr "*Figure 4: ip a command output*"
 
-# 8a027c46875242a1ba58510d468b3ef3
-#: ../../install_remote.rst:103
+# 7d49e5c765014e218716065c3d802b4f
+#: ../../install_remote.rst:106
 msgid "Preparación del archivo *inventory*:"
 msgstr "Preparation of the file *inventory*:"
 
-# 3e1b1290cbbc4988beda350ea0724746
-#: ../../install_remote.rst:105
+# c82750f04f324fd4a2f22d4c3883d250
+#: ../../install_remote.rst:108
 msgid ""
-"En este paso, se debe editar el archivo *inventory* (PATH/ominicontacto/"
-"deploy/ansible). El mismo reside dentro del repositorio del proyecto, que "
-"se generó en la PC del sysadmin que ejecuta el deploy remoto."
+"En este paso debemos trabajar sobre el archivo  "
+":ref:`about_install_inventory` disponible dentro del directorio "
+"\"PATH/ominicontacto/deploy/ansible\"."
 msgstr ""
-"In this step, the file *inventory* (PATH/ominicontacto/deploy/ansible) "
-"must be edited. It is within the project repository, which was generated "
-"on the sysadmin PC that executes de remote deploy."
 
-# afe17e5442454071b5a381d302c8b396
-#: ../../install_remote.rst:109
+# 870d56c2d5c84a329308d0b8f1b218d2
+#: ../../install_remote.rst:112
 msgid ""
 "OMniLeads utiliza ansible para realizar la instalación, por lo tanto "
 "existe un \"archivo de inventario\" que debe ser modificado de acuerdo a "
@@ -225,193 +223,149 @@ msgstr ""
 "\"inventory file\" that must be modified according to the parameters of "
 "the host we are working on."
 
-# b72872f994bc406394d04297049da49b
-#: ../../install_remote.rst:111
-msgid ""
-"Localizar la sección *[omnileads-aio]* y modificar la cadena 'hostname' "
-"por el hostname de nuestro servidor destino de la instalción. También en "
-"esta sección se debe editar el parámetro 'X.X.X.X' con la dirección IP del "
-"servidor."
-msgstr ""
-"Locate the section *[omnileads-aio]* and modify the 'hostname' chain with "
-"the hostname of our destination server of the installation. In this "
-"section the parameter 'X.X.X.X' must be edited with the server IP address. "
-
-# d92c8c7ee3ae4f60a4c727e8dbbf6081
+# f2bc9813918f4d0bb3b98a8221aaad90
 #: ../../install_remote.rst:115
-msgid "*Figure 5: inventory file network parameters section*"
-msgstr "*Figure 5: inventory file network parameters section*"
-
-# d9a9df325ff74b2fb821de1f85ed3c9a
-#: ../../install_remote.rst:117
 msgid ""
-"Además dentro del mismo archivo, unas líneas debajo encontraremos la "
-"sección *[everyyone:vars]*, en la cual se pueden alterar variables y "
-"contraseñas que vienen por defecto en el sistema. Introducir el parámetro "
-"\"time zone\" adecuado para su instanacia. Es **Importante** que realice "
-"este paso o la instalación no se va a poder realizar."
+"Modificar y descomentar la segunda linea, editando el parámetro X.X.X.X' "
+"con la dirección IP del host remoto (donde se va a instalar OMniLeads)."
 msgstr ""
-"Also within the same file, some lines below the section *[everyyone:"
-"vars]*, in which default variables and passwords can be change. Enter the "
-"appropiate parameter \"time zone\" for its instance. It is **Important** "
-"to perform this step or the installation will not be possible."
 
-# e8e52047b7154f23ae864551cfd89ed1
-#: ../../install_remote.rst:121
-msgid "*Figure 6: Passwords and parameters of services*"
-msgstr "*Figure 6: Passwords and parameters of services*"
-
-# 8832a4cd03da407096b8841b9a07e357
-#: ../../install_remote.rst:123
+# befd3441af794ca787c3fdd1aeb64793
+#: ../../install_remote.rst:126
 msgid ""
-"En caso de haber olvidado ingresar la instancia a instalar el script "
-"mostrará este mensaje"
+"Luego en el inventory mismo debemos ajustar las "
+":ref:`about_install_inventory_vars` de la instancia."
 msgstr ""
-"In case of having forgotten enter the instance to install the script will "
-"show this message"
 
-# 0a7fc4aa332b4d1ab9a3500abe84a3ae
+# cf0910ad998d400d94d6771d7fc70430
 #: ../../install_remote.rst:128
-msgid "*Figure 7: deploy - No hosts in inventory*"
-msgstr "*Figure 7: deploy - No hosts in inventory*"
-
-# dceb724087374416b6df15f0abe339d7
-#: ../../install_remote.rst:130
 msgid ""
-"Es importante aclarar que cada vez que se corre el script \"./deploy.sh\" "
-"ya sea para instalar, re-instalar, actualizar, modificar la dirección IP "
-"de OML, etc., el archivo de inventory se vuelve a \"cero\". No obstante se "
-"genera una copia del archivo (my_inventory), de manera tal que se cuente "
-"con los parámetros del sistema utilizados en la última ejecución del "
-"script. La copia en cuestión se ubica en el path donde ha sido clonado el "
-"repositorio de OML y bajo el nombre de \"my_inventory\" como lo expone la "
-"figura 6."
+"Una vez ajustados todos los parámetros del archivo de inventario, "
+"procedemos con la ejecución de la instalación."
 msgstr ""
-"It is important to clarify that every time the script \"./deploy.sh\" runs "
-"either to install, re-install, update, modify the OML IP address, etc., "
-"the file inventory returns to \"cero\". However, a copy of the file "
-"(my_inventory) is generated, so the system parameters used in the last "
-"execution of the script are available. This copy is located in the path "
-"where the OML repository has been cloned and under the name of "
-"\"my_inventory\" as shown in Figure 6."
 
-# 04158eac2eac443f89eb958ff3c604b6
-#: ../../install_remote.rst:134
-msgid "*Figure 8: inevntory copy, my_inventory file*"
-msgstr "*Figure 8: inevntory copy, my_inventory file*"
-
-# e41b2d34717e4e8496231c27e709ac5a
-#: ../../install_remote.rst:138
+# 6a703a7831f84aeb9b23b386a646ece5
+#: ../../install_remote.rst:131
 msgid "Ejecución del script de instalación:"
 msgstr "Executing of the installation script:"
 
-# f05632bb0e5d494bbb60e8c743d44671
-#: ../../install_remote.rst:140
+# dd4faa8475d14dc99fa7a26c68e63c63
+#: ../../install_remote.rst:133
 msgid ""
 "La instalación de OMniLeads se realiza mediante el script *deploy.sh*, "
-"ubicado dentro de la carpeta deploy/ansible con respecto a la carpeta raíz "
-"del proyecto (ominicontacto)."
+"ubicado dentro de la carpeta deploy/ansible con respecto a la carpeta "
+"raíz del proyecto (ominicontacto)."
 msgstr ""
 "The installation of OMniLeads is done using the script *deploy.sh*, "
 "located within the folder deploy/ansible respect to the root file of the "
 "project (omnicontacto)."
 
-# 22dc8a8849fb4432939fee6a911a30f5
-#: ../../install_remote.rst:143
+# cf0910ad998d400d94d6771d7fc70430
+#: ../../install_remote.rst:136
 msgid ""
 "Una vez configuradas las variables citadas, se procede con la ejecución "
 "del script de instalación (uitilizando sudo)."
 msgstr ""
-"Once configured the mentioned variables, we proceed with the execution of "
-"the installation script (using sudo)."
+"Once configured the mentioned variables, we proceed with the execution of"
+" the installation script (using sudo)."
 
-# 240d9ce2e658480ca5e726e42111de58
-#: ../../install_remote.rst:151
+# 5896fa1809514839b3a769d720af40ce
+#: ../../install_remote.rst:144
 msgid "*Figure 9: remote root password*"
 msgstr "*Figure 9: remote root password*"
 
-# 989568ae335c4735955c5d2ad5828a69
-#: ../../install_remote.rst:153
+# de4f50528ecf4c7184b398a7f9280a4c
+#: ../../install_remote.rst:146
 msgid ""
 "La diferencia respecto de la instalación 'Self-Hosted', es que el script "
 "nos pide la contraseña del usuario *root* del host destino de la "
 "instalación."
 msgstr ""
-"The difference with respect to the 'Self-Hosted' installation, is that the "
-"script asks the password of the user *root* of the destination host of the "
-"installation."
+"The difference with respect to the 'Self-Hosted' installation, is that "
+"the script asks the password of the user *root* of the destination host "
+"of the installation."
 
-# 398a8d28facd4ee789ce0857b8366072
-#: ../../install_remote.rst:157
+# 2d5836ab782f45f3ab40c572dfc2fb59
+#: ../../install_remote.rst:148
 msgid ""
-"El tiempo de instalación dependerá mayormente de la velocidad de conexión "
-"a internet del host sobre ek que se está corriendo el deplot de  OML, ya "
-"que se deben descargar, instalar y configurar varios paquetes "
-"correspondientes a los diferentes componentes de software que conforman el "
-"sistema."
+"El tiempo de instalación dependerá mayormente de la velocidad de conexión"
+" a internet del host sobre ek que se está corriendo el deplot de  OML, ya"
+" que se deben descargar, instalar y configurar varios paquetes "
+"correspondientes a los diferentes componentes de software que conforman "
+"el sistema."
 msgstr ""
 "The installation time Will depend mostly of the internet speed conection "
 "of the host on which the OML deplot is running, since some packages "
 "corresponding to the different components of the systme must be "
 "downloaded, installed and configured."
 
-# e4b7764bf2ca4384b1c6d89cb1e90756
-#: ../../install_remote.rst:160
+# 4432d915d82a4cf69e3256b524c2ba35
+#: ../../install_remote.rst:150
 msgid ""
-"Si la ejecución de la instalación finaliza exitosamente, se despliega una "
-"vista como la de la figura 8."
+"Si la ejecución de la instalación finaliza exitosamente, se despliega una"
+" vista como la de la figura 8."
 msgstr ""
 "If the installation execution ends succesfully, a view as the one on "
 "figure 8 is displayed."
 
-# 490a51d2a7b545e3b8c8ac179c4f86c7
-#: ../../install_remote.rst:164
+# 9b5850ca11034a4db6c3cf11ab1f1137
+#: ../../install_remote.rst:154
 msgid "*Figure 10: OMniLeads installation ended succesfuly*"
 msgstr "*Figure 10: OMniLeads installation ended succesfuly*"
 
-# dde07f425b7747d29643afe4323c91a1
-#: ../../install_remote.rst:168
+# 178d62a5f19d4896bdfaf345878900fd
+#: ../../install_remote.rst:158
 msgid "Primer acceso a OMniLeads:"
 msgstr "First access to OMniLeads:"
 
-# 4edfe1cf3337484f87554398d417f583
-#: ../../install_remote.rst:170
+# 8d56029d8d854326aaf8a25f2452246a
+#: ../../install_remote.rst:160
 msgid ""
 "Si la ejecución de la instalación fue exitosa, entonces podemos realizar "
 "un :ref:`about_first_access`."
 msgstr ""
-"If the installation execution was succesful, then we can perform a :ref:"
-"`about_first_access`."
+"If the installation execution was succesful, then we can perform a "
+":ref:`about_first_access`."
 
-# 047bb80d3897409db5d9acb1c82f0c84
-#: ../../install_remote.rst:174
+# de3ef011277f41f0a322ac3095184823
+#: ../../install_remote.rst:164
+msgid ""
+"Cada vez que se ejecuta el script *./deploy.sh* ya sea para instalar, "
+"correr una actualización del sistema o modificar algún parametro de red,"
+"  el archivo de \"inventory\" se vuelve a cero, es decir se pierde toda "
+"la parametrización realizada antes de la ejecución del script. Tener "
+"presente los cambios realizados"
+msgstr ""
+
+# 0937c488364c4d87a4f17ec36f9f5509
+#: ../../install_remote.rst:168
 msgid "Errores comunes:"
 msgstr "Common mistakes:"
 
-# af1cd43ea35b4ba5b7ed8dd43e35dbc1
-#: ../../install_remote.rst:176
+# 641d01dac0d8497aa59ce2cd834d7c6a
+#: ../../install_remote.rst:170
 msgid ""
-"El server no tiene internet o no resuelve dominios (configuración de DNS)."
-"*Compruebe el acceso a internet del host (por ej: actualizando paquetes - "
-"apt-get update | yum update).*"
+"El server no tiene internet o no resuelve dominios (configuración de "
+"DNS).*Compruebe el acceso a internet del host (por ej: actualizando "
+"paquetes - apt-get update | yum update).*"
 msgstr ""
 "The server does not have internet or it does not solve domains (DNS "
 "configuration). *Check the internet access of the host (eg. updating "
 "packages - apt-get update | yum update).*"
 
-# 3226a8b87d4a494aab54bf0eaa8c9758
-#: ../../install_remote.rst:178
+# c1b4028f6bb344759174a0127b1d9294
+#: ../../install_remote.rst:172
 msgid ""
 "Timeout de algún paquete que se intenta bajar. Puede volver a intentar "
-"ejecutar el deploy y si vuelve a fallar, la opción puede ser. *Instalar el "
-"paquete desde la terminal.*"
+"ejecutar el deploy y si vuelve a fallar, la opción puede ser. *Instalar "
+"el paquete desde la terminal.*"
 msgstr ""
 "Timeout of any package that you try to download. You can try again to "
-"execute the deploy and if it fails again, the option can be. *Install the "
-"package from the terminal.*"
+"execute the deploy and if it fails again, the option can be. *Install the"
+" package from the terminal.*"
 
-# ba02a8000dc64ca68be1a6c718e4dff4
-#: ../../install_remote.rst:180
+# 4d97464e8abb45eaa1636389d53a6e9c
+#: ../../install_remote.rst:174
 msgid ""
 "Falla por mala sintaxis o falta de definición de *hostname* y *dirección "
 "IP* en el archivo *inventory*. *Revisar archivo inventory*"
@@ -419,24 +373,139 @@ msgstr ""
 "Failure due to bad syntax or lack of definition of *hostname* and *IP "
 "address* in the file *inventory*. *Check the file inventory* "
 
-# c44fcfc9a51f4eefbfd2596bc3baf812
-#: ../../install_remote.rst:182
+# 701810a4859e49779eb6bcb4d2fba602
+#: ../../install_remote.rst:176
 msgid ""
 "No se configuró correctamente el acceso ssh del host destino de la "
-"instalación. *Revisar estado del firewall. Comprobar acceso remoto por ssh "
-"con el usuario root*"
+"instalación. *Revisar estado del firewall. Comprobar acceso remoto por "
+"ssh con el usuario root*"
 msgstr ""
 "The ssh access of the destination host of the installation was not "
 "configured. *Review the firewall state. Check ssh remote access with the "
 "root user*"
 
-# bb7d9382031944fa9619c697c76163e6
-#: ../../install_remote.rst:184
+# 52ee7bf4773644588e1068032c9841dc
+#: ../../install_remote.rst:178
 msgid ""
 "En caso de contar con algún host Ubuntu-Debian, recordar que se deben "
 "instalar paquetes como *sudo, openssh-server o python-minimal* antes de "
 "correr el script de *deploy.sh*"
 msgstr ""
 "In case of having any Ubuntu-Debian host, remember that packages such as "
-"*sudo, openssh-server or Python-minimal* must be installed before running "
-"the script *deploy.sh*"
+"*sudo, openssh-server or Python-minimal* must be installed before running"
+" the script *deploy.sh*"
+
+# 3e1b1290cbbc4988beda350ea0724746
+#~ msgid ""
+#~ "En este paso, se debe editar el"
+#~ " archivo *inventory* "
+#~ "(PATH/ominicontacto/deploy/ansible). El mismo reside"
+#~ " dentro del repositorio del proyecto, "
+#~ "que se generó en la PC del "
+#~ "sysadmin que ejecuta el deploy remoto."
+#~ msgstr ""
+#~ "In this step, the file *inventory* "
+#~ "(PATH/ominicontacto/deploy/ansible) must be edited."
+#~ " It is within the project repository,"
+#~ " which was generated on the sysadmin"
+#~ " PC that executes de remote deploy."
+
+# b72872f994bc406394d04297049da49b
+#~ msgid ""
+#~ "Localizar la sección *[omnileads-aio]* y"
+#~ " modificar la cadena 'hostname' por "
+#~ "el hostname de nuestro servidor destino"
+#~ " de la instalción. También en esta"
+#~ " sección se debe editar el parámetro"
+#~ " 'X.X.X.X' con la dirección IP del"
+#~ " servidor."
+#~ msgstr ""
+#~ "Locate the section *[omnileads-aio]* and"
+#~ " modify the 'hostname' chain with the"
+#~ " hostname of our destination server "
+#~ "of the installation. In this section "
+#~ "the parameter 'X.X.X.X' must be edited"
+#~ " with the server IP address. "
+
+# d92c8c7ee3ae4f60a4c727e8dbbf6081
+#~ msgid "*Figure 5: inventory file network parameters section*"
+#~ msgstr "*Figure 5: inventory file network parameters section*"
+
+# d9a9df325ff74b2fb821de1f85ed3c9a
+#~ msgid ""
+#~ "Además dentro del mismo archivo, unas"
+#~ " líneas debajo encontraremos la sección "
+#~ "*[everyyone:vars]*, en la cual se pueden"
+#~ " alterar variables y contraseñas que "
+#~ "vienen por defecto en el sistema. "
+#~ "Introducir el parámetro \"time zone\" "
+#~ "adecuado para su instanacia. Es "
+#~ "**Importante** que realice este paso o"
+#~ " la instalación no se va a "
+#~ "poder realizar."
+#~ msgstr ""
+#~ "Also within the same file, some "
+#~ "lines below the section *[everyyone:vars]*,"
+#~ " in which default variables and "
+#~ "passwords can be change. Enter the "
+#~ "appropiate parameter \"time zone\" for "
+#~ "its instance. It is **Important** to "
+#~ "perform this step or the installation"
+#~ " will not be possible."
+
+# e8e52047b7154f23ae864551cfd89ed1
+#~ msgid "*Figure 6: Passwords and parameters of services*"
+#~ msgstr "*Figure 6: Passwords and parameters of services*"
+
+# 8832a4cd03da407096b8841b9a07e357
+#~ msgid ""
+#~ "En caso de haber olvidado ingresar "
+#~ "la instancia a instalar el script "
+#~ "mostrará este mensaje"
+#~ msgstr ""
+#~ "In case of having forgotten enter "
+#~ "the instance to install the script "
+#~ "will show this message"
+
+# 0a7fc4aa332b4d1ab9a3500abe84a3ae
+#~ msgid "*Figure 7: deploy - No hosts in inventory*"
+#~ msgstr "*Figure 7: deploy - No hosts in inventory*"
+
+# dceb724087374416b6df15f0abe339d7
+#~ msgid ""
+#~ "Es importante aclarar que cada vez "
+#~ "que se corre el script \"./deploy.sh\""
+#~ " ya sea para instalar, re-instalar,"
+#~ " actualizar, modificar la dirección IP "
+#~ "de OML, etc., el archivo de "
+#~ "inventory se vuelve a \"cero\". No "
+#~ "obstante se genera una copia del "
+#~ "archivo (my_inventory), de manera tal "
+#~ "que se cuente con los parámetros "
+#~ "del sistema utilizados en la última "
+#~ "ejecución del script. La copia en "
+#~ "cuestión se ubica en el path donde"
+#~ " ha sido clonado el repositorio de"
+#~ " OML y bajo el nombre de "
+#~ "\"my_inventory\" como lo expone la "
+#~ "figura 6."
+#~ msgstr ""
+#~ "It is important to clarify that "
+#~ "every time the script \"./deploy.sh\" "
+#~ "runs either to install, re-install, "
+#~ "update, modify the OML IP address, "
+#~ "etc., the file inventory returns to "
+#~ "\"cero\". However, a copy of the "
+#~ "file (my_inventory) is generated, so the"
+#~ " system parameters used in the last"
+#~ " execution of the script are "
+#~ "available. This copy is located in "
+#~ "the path where the OML repository "
+#~ "has been cloned and under the name"
+#~ " of \"my_inventory\" as shown in "
+#~ "Figure 6."
+
+# 04158eac2eac443f89eb958ff3c604b6
+#~ msgid "*Figure 8: inevntory copy, my_inventory file*"
+#~ msgstr "*Figure 8: inevntory copy, my_inventory file*"
+

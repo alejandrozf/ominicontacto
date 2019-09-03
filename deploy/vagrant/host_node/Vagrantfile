@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
     nodo1.vm.box = "bento/debian-9.3"
     nodo1.vm.box_version = "201802.02.0"
     nodo1.vm.hostname = "debian-example"
-    nodo1.vm.network "public_network", bridge: "enp2s0", ip: "172.16.20.61",     use_dhcp_assigned_default_route: true
+    nodo1.vm.network "public_network", bridge: "enp2s0", ip: "192.168.99.61",     use_dhcp_assigned_default_route: true
     nodo1.vm.provision "shell",  inline: "sudo /bin/sh -c 'VAR=`cat /vagrant/id_rsa.pub` ; mkdir /root/.ssh/; touch /root/.ssh/authorized_keys; echo $VAR >> /root/.ssh/authorized_keys'"
     nodo1.vm.provider "virtualbox" do |vb|
       vb.name = "Debian-Staging"
@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
     nodo2.vm.box = "aspyatkin/ubuntu-18.04-server"
     nodo2.vm.box_version = "1.2.0"
     nodo2.vm.hostname = "ubuntu-example"
-    nodo2.vm.network "public_network", bridge: "enp2s0", ip: "172.16.20.60", use_dhcp_assigned_default_route: true
+    nodo2.vm.network "public_network", bridge: "enp2s0", ip: "192.168.99.60", use_dhcp_assigned_default_route: true
     nodo2.vm.provision "shell",  inline: "sudo /bin/sh -c 'VAR=`cat /vagrant/id_rsa.pub` ; mkdir /root/.ssh/; touch /root/.ssh/authorized_keys; echo $VAR >> /root/.ssh/authorized_keys'; apt-get install python-minimal git -y"
     nodo2.vm.provider "virtualbox" do |vb|
       vb.name = "Ubuntu-Staging"
@@ -35,7 +35,7 @@ Vagrant.configure("2") do |config|
     nodo3.vm.box = "centos/7"
     nodo3.vm.box_version = "1905.1"
     nodo3.vm.hostname = "centos-example.com"
-    nodo3.vm.network "public_network", bridge: "enp2s0", ip: "172.16.20.62",     use_dhcp_assigned_default_route: true
+    nodo3.vm.network "public_network", bridge: "enp2s0", ip: "192.168.99.62",     use_dhcp_assigned_default_route: true
 #    config.vm.provision "shell", inline: <<-SHELL
 #      sed -i 's/ChallengeResponseAuthentication no/ChallengeResponseAuthentication yes/g' /etc/ssh/sshd_config
       #service ssh restart

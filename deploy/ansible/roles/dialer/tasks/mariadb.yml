@@ -42,7 +42,7 @@
   delay: 3
   register: result
   until: result is success
-  
+
 # En estas tasks se hacen tareas de segurizacion de mariadb, es como hacer un mariadb-secure no voy a explicar una por una, nunca fallan
 - name: Enable and start MariaDB (centos)
   service: name=mariadb enabled=yes state=started
@@ -56,25 +56,31 @@
   become_method: sudo
   when: ansible_os_family == "Debian"
 
-- name: Add .my.cnf
-  template: src=templates/my.cnf.j2 dest=/root/.my.cnf owner=root group=root mode=0600
+- name: Remove .my.cnf
+  file: path=/root/.my.cnf state=absent
   become: true
   become_method: sudo
-  tags: changepassword
+  tags: postinstall
+
+- set_fact: mysql_old_root_password="{{ mysql_root_password }}"
+  when: mysql_old_root_password is not defined
+  tags: postinstall
 
 - name: Set root Password
-  mysql_user: name=root host={{ item }} host_all=yes password={{ mysql_root_password }} check_implicit_admin=true state=present
+  mysql_user: name=root host={{ item }} host_all=yes password={{ mysql_root_password }} login_password={{ mysql_old_root_password }} login_host="{{ mysql_host }}" check_implicit_admin=true state=present
   with_items:
-    - 127.0.0.1
-    - localhost
+    - "{{ mysql_host }}"
   environment:
-    MYSQL_PWD: "{{ mysql_root_password }}"
+    MYSQL_HOST: "{{ mysql_host }}"
   become: true
   become_method: sudo
-  tags: changepassword
+  when: mysql_root_password != ""
+  tags: postinstall
 
 - name: Reload privilege tables
   command: 'mysql -ne "{{ item }}"'
+  environment:
+    MYSQL_HOST: "{{ mysql_host }}"
   with_items:
     - FLUSH PRIVILEGES
   changed_when: False
@@ -86,14 +92,18 @@
   with_items:
     - DELETE FROM mysql.user WHERE User=''
   changed_when: False
+  environment:
+    MYSQL_HOST: "{{ mysql_host }}"
   become: true
   become_method: sudo
 
 - name: Disallow root login remotely
   command: 'mysql -ne "{{ item }}"'
   with_items:
-    - DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1')
+    - DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('"{{ mysql_host }}"')
   changed_when: False
+  environment:
+    MYSQL_HOST: "{{ mysql_host }}"
   become: true
   become_method: sudo
 
@@ -102,16 +112,17 @@
   with_items:
     - FLUSH PRIVILEGES
   changed_when: False
+  environment:
+    MYSQL_HOST: "{{ mysql_host }}"
   become: true
   become_method: sudo
 
 - name: Grant privileges to root mysql user
   command: mysql -ne "GRANT ALL PRIVILEGES ON *.* TO 'root'@'{{ item }}' IDENTIFIED BY '{{ mysql_root_password }}' WITH GRANT OPTION;"
   with_items:
-    - localhost
-    - 127.0.0.1
+    - "{{ mysql_host }}"
   environment:
-    MYSQL_PWD: "{{ mysql_root_password }}"
+    MYSQL_HOST: "{{ mysql_host }}"
   become: true
   become_method: sudo
 

@@ -10,6 +10,7 @@
   register: hostname
   when: cluster == 0
   tags: always
+  changed_when: false
 
 # Obtengo IP del nodo
 - name: Get IP adress of node (selfhosted)
@@ -23,45 +24,44 @@
     that: "'{{ omni_ip }}' in ansible_all_ipv4_addresses"
     msg: "The IP you inserted in inventory file is wrong, check it"
   when: cluster == 0 and iface == "none"
+  changed_when: false
   tags: always
 
 # nos aseguramos q' "omni_distribution" esté dentro de los SO permitidos. Si no es asi, esta task generara un error
 - name: Print omni_distribution
   debug: msg="omni_distribution es {{ ansible_os_family }}"
+  changed_when: false
   tags: always
 
 - name: Check omni_distribution
   fail: msg="omni_distribution con valor {{ ansible_os_family }} es invalida"
   when: (
-      ansible_os_family != "Alpine" and
       ansible_os_family != "RedHat" and
       ansible_os_family != "Debian"
       )
+  changed_when: false
   tags: always
 
 # Chequeo si la version de asterisk instalada es {{ asterisk_version }}
 - name: Check if Asterisk {{ asterisk_version }} is installed
   shell: asterisk -V |awk -F " " '{print $2}'
+  changed_when: false
   register: asterisk_installed
   tags: ['asterisk','postinstall']
-  become: true
-  become_method: sudo
 
 # Chequeo si la version de rtpengine instalada es {{ rtpengine_version }}
 - name: Check if Rtpengine-mr{{ rtpengine_version }} is installed
   shell: rtpengine -v 2>&1 |awk -F "~" '{print $2}'|cut -c 3-
+  changed_when: false
   register: rtpengine_installed
   tags: kamailio
-  become: true
-  become_method: sudo
 
 # Chequeo si la version de kamailio instalada es {{ kamailio_version }}
 - name: Check if Kamailio {{ kamailio_version }} is installed
   shell: "{{ kamailio_location }}/sbin/kamailio -v |head -1 |awk -F \" \" '{print $3}'"
+  changed_when: false
   register: kamailio_installed
   tags: ['kamailio','postinstall']
-  become: true
-  become_method: sudo
 
 # Chequeo si el usuario puso sus certificados
 - name: Check if trusted certificates exists
@@ -81,26 +81,130 @@
 # Chequeo si el folder de certificado existe
 - name: Check if auto-signed certificates folder exists
   shell: "[ -d {{ kamailio_location }}/etc/certs ]"
+  changed_when: false
   failed_when: false
   register: certs_exists
   tags: always
-  become: true
-  become_method: sudo
+
+- name: Check if $TZ was defined previously
+  shell: if [ -z $TZ ]; then exit 1; else exit 0; fi
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_tz
+  tags: always
+
+- set_fact: TZ="{{ ansible_env.TZ }}"
+  when: assert_tz.rc == 0 and TZ is not defined
+  tags: always
+
+- name: Check if $PGPASSWORD was defined previously
+  shell: if [ -z $PGPASSWORD ]; then exit 1; else exit 0; fi
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_pgpass
+  tags: always
+
+- set_fact: postgres_password="{{ ansible_env.PGPASSWORD }}"
+  when: assert_pgpass.rc == 0 and postgres_password is not defined
+  tags: always
+
+- name: Check if $DJANGO_PASS was defined previously
+  shell: if [ -z $DJANGO_PASS ]; then exit 1; else exit 0; fi
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_djangopass
+  tags: always
+
+- set_fact: admin_pass="{{ ansible_env.DJANGO_PASS }}"
+  when: assert_djangopass.rc == 0 and admin_pass is not defined
+  tags: always
+
+- name: Check if $SESSION_COOKIE_AGE was defined previously
+  shell: if [ -z $SESSION_COOKIE_AGE ]; then exit 1; else exit 0; fi
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_sca
+  tags: always
+
+- set_fact: SCA="{{ ansible_env.SESSION_COOKIE_AGE }}"
+  when: assert_sca.rc == 0
+  tags: always
+
+- name: Check if $EPHEMERAL_USER_TTL was defined previously
+  shell: if [ -z $EPHEMERAL_USER_TTL ]; then exit 1; else exit 0; fi
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_ecctl
+  tags: always
+
+- set_fact: ECCTL="{{ ansible_env.EPHEMERAL_USER_TTL }}"
+  when: assert_ecctl.rc == 0
+  tags: always
+
+- name: Check if $MONITORFORMAT was defined previously
+  shell: if [ -z $MONITORFORMAT ]; then exit 1; else exit 0; fi
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_monitorformat
+  tags: always
+
+- set_fact: MONITORFORMAT="{{ ansible_env.MONITORFORMAT }}"
+  when: assert_monitorformat.rc == 0
+  tags: always
+
+- name: Check if $MYSQL_PWD was defined previously
+  shell: if [ -z $MYSQL_PWD ]; then exit 1; else exit 0; fi
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_mysqlpwd
+  tags: always
+
+- set_fact: mysql_root_password="{{ ansible_env.MYSQL_PWD }}"
+  when: assert_mysqlpwd.rc == 0 and mysql_root_password is not defined
+  tags: always
+
+- name: Get actual mysql root password
+  set_fact: mysql_old_root_password="{{ ansible_env.MYSQL_PWD }}"
+  when: assert_mysqlpwd.rc == 0
 
 # Chequea si timezone esta definido
 - name: Check if TimeZone variable is defined
   fail:
     msg: TimeZone variable undefined, edit $TZ variable in inventory file
-  when: TZ is not defined
+  when: TZ is not defined and assert_tz.rc == 1
+  tags: always
 
 # Chequea si postgres_password esta definido
-- name: Check if database password is defined
+- name: Check if postgres password variable is defined
   fail:
-    msg: Database variable undefined, edit $postgres_password in inventory file
-  when: postgres_password is not defined
+    msg: Postgres password undefined, edit $postgres_password in inventory file
+  when: postgres_password is not defined and assert_pgpass.rc == 1
+  tags: always
+
+# Chequea si mysql_root_password esta definido
+- name: Check if MYSQL password variable is defined
+  fail:
+    msg: MYSQL password undefined, edit $mysql_root_password in inventory file
+  when: mysql_root_password is not defined and assert_mysqlpwd.rc == 1
+  tags: always
 
 # Chequea si web admin password esta definido
 - name: Check if web admin password is defined
   fail:
     msg: Web admin variable undefined, edit $admin_pass in inventory file
-  when: admin_pass is not defined
+  when: admin_pass is not defined and assert_djangopass.rc == 1
+  tags: always

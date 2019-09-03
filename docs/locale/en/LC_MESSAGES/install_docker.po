@@ -1,0 +1,351 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, omnileads
+# This file is distributed under the same license as the OMniLeads package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OMniLeads \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-09-02 14:37-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+# e4fb355d07fb4849b48720bd069dd0d1
+#: ../../install_docker.rst:5
+msgid "Deploy utilizando Docker"
+msgstr "Deploy using Docker"
+
+# ef0b2e6a3b754262b07dcd816742bef6
+#: ../../install_docker.rst:7
+msgid ""
+"OMniLeads puede ser desplegado como una suite de contenedores Docker, en "
+"este apartado vamos a cubrir los pasos necesarios para ejecutar el "
+"sistema bajo esta arquitectura."
+msgstr "OMniLeads can be deployed as a container Docker group, in this chapter we cover the steps to deploy this environment."
+
+# fb6b74938eec489db6837cb4611ff92d
+#: ../../install_docker.rst:12
+msgid ""
+"Antes de avanzar aclaramos que todo lo expuesto a continuación, tiene "
+"garantías en cualquier host GNU/Linux que corra Docker-Engine. Sin "
+"embargo con el correr del  tiempo, vamos a ir adicionando los pasos a "
+"seguir para que esto pueda ser ejecutado tanto en MAC OSX como en "
+"Windows."
+msgstr "Before go further we ensure that the steps below are functional when the Docker engine is installed in a GNU/Linux distro. However we are investigating the steps to deploy this in MAC OSX and Windows. If you want to contribute with this, please read the CONTRIBUTING.md file in deploy/docker/prodenv folder"
+
+# 840e1ce8391c4df2a59b55d1396b04a8
+#: ../../install_docker.rst:15
+msgid ""
+"Asumimos que el lector dispone tanto del \"Docker-Engine\" como de "
+"\"docker-compose\" en su estación de trabajo."
+msgstr "We supose that you have installed docker engine and docker-compose in the host that will deploy the containers."
+
+# 61b3f82f9e0443c2bcdd5f8439953826
+#: ../../install_docker.rst:17
+msgid "En caso contrario, instalar:"
+msgstr "If you havent, install them:"
+
+# 99ac71c6ce2b45e8bce1382a6fe60873
+#: ../../install_docker.rst:19
+msgid "https://docs.docker.com/install/."
+msgstr "https://docs.docker.com/install/."
+
+# 0516aba9a38043d0b96ec6953ed54a8f
+#: ../../install_docker.rst:20
+msgid ""
+"https://docs.docker.com/install/linux/linux-postinstall/ (si lo instala "
+"sobre GNU/Linux)"
+msgstr "https://docs.docker.com/install/linux/linux-postinstall/ (if you are installing in GNU/Linux)"
+
+# 28467ec63b3f42ccaae807f8936ca633
+#: ../../install_docker.rst:21
+msgid "https://docs.docker.com/compose/"
+msgstr "https://docs.docker.com/compose/"
+
+# b94ebd78419c4840b83e7dcfae6f6e6b
+#: ../../install_docker.rst:24
+msgid ""
+"OMniLeads es un sistema complejo en el cual subyacen diferentes "
+"componentes:"
+msgstr "OMniLeads is composed by these services:"
+
+# c6ec6d2427b747cca2ba17a462cfdff5
+#: ../../install_docker.rst:26
+msgid "Nginx"
+msgstr "Nginx"
+
+# d8ab4f7d43404c32be81216d1a631315
+#: ../../install_docker.rst:27
+msgid "Django / Python"
+msgstr "Django / Python"
+
+# a2b124a8866e4b2886d96927c35f733d
+#: ../../install_docker.rst:28
+msgid "Asterisk"
+msgstr "Asterisk"
+
+# a1223e073468407d8c58cac9b321eead
+#: ../../install_docker.rst:29
+msgid "Kamailio"
+msgstr "Kamailio"
+
+# 07a797ca2e824ebe93a91f198d860240
+#: ../../install_docker.rst:30
+msgid "RTPEngine"
+msgstr "RTPEngine"
+
+# 79fc72effa1e41f8b6c767490d4e09bf
+#: ../../install_docker.rst:31
+msgid "Postgres"
+msgstr "PostgreSQL"
+
+# 182939a8556940bbb520b19f052e9585
+#: ../../install_docker.rst:32
+msgid "Redis"
+msgstr "Redis"
+
+# ac3c7a348fd747dfa61f91beadfd3e42
+#: ../../install_docker.rst:33
+msgid "Dialer"
+msgstr "Dialer"
+
+# 89df27f752074962996cd37b281c9c7e
+#: ../../install_docker.rst:34
+msgid "Database Dialer"
+msgstr "Database Dialer"
+
+# 108489d8b12c437c9c871120d138d7d8
+#: ../../install_docker.rst:39
+msgid "*Figure 1: OML & Docker*"
+msgstr "*Figure 1: OML & Docker*"
+
+# 835f6fb9a4494935aaab2df22e9e08a7
+#: ../../install_docker.rst:41
+msgid ""
+"En nuestro repositorio se encuentra todo lo necesario para ejecutar la "
+"aplicación con Docker, vamos a posicionarnos dentro del subdirectorio "
+"\"ominicontacto/deploy/docker\"."
+msgstr "In our repository is all needed to deploy OMniLeads with Docker. Go to the folder \"ominicontacto/deploy/docker\"."
+
+# 9b277e6505d44a2e8321342e4af2035c
+#: ../../install_docker.rst:47
+msgid ""
+"Allí entonces contamos con la carpeta \"prodenv\" la cual debemos copiar "
+"y pegar en cualquier ubicación dentro del \"docker-engine\" host."
+msgstr "There yo will see the folder \"prodenv\". Copy this folder in the location you desire in the \"docker-engine\" host"
+
+# ea98c6e6d27341e2b65cb4a92a2a9f7b
+#: ../../install_docker.rst:54
+msgid ""
+"Luego pasamos a listar los archivos existentes inicialmente dentro de la "
+"carpeta mencionada anteriormente:"
+msgstr "The files inside this folder are the following:"
+
+# 0f233e90e13f45e58fc9f22aed6dcb3d
+#: ../../install_docker.rst:56
+msgid "El archivo oculto **.env**, donde residen las variables de entorno."
+msgstr "The hidden file **.env** where are declared the environment variables"
+
+# 0bbf95774c7a4f72849f33012ddb6e7f
+#: ../../install_docker.rst:57
+msgid ""
+"El archivo **docker-compose.yml**, donde se especifica cada micro-"
+"servicio con su contenedor parametrizado para implementarlo."
+msgstr "The **docker-compose.yml** file. This is the typical docker-compose file"
+
+# 488700cbbd1f4cbf900e854745024072
+#: ../../install_docker.rst:58
+msgid "El archivo **README.md** con las indicaciones para levantar el entorno."
+msgstr "The **README.md** file with the steps to deploy the environment"
+
+# edb9080a7ec94ea0915d35524b09a71d
+#: ../../install_docker.rst:59
+msgid ""
+"El archivo **CONTRIBUTING.md** para aquellos entusiastas dockerizados que"
+" deseen aportar sus conocimientos al proyecto."
+msgstr "The **CONTRIBUTING.md** file with the requirements you need to acomplish if you want to contribute in the docker development of this project."
+
+# 2c3dfbd808694c30b0164ffae078fb22
+#: ../../install_docker.rst:63
+msgid "*Figure 2: prodenv folder*"
+msgstr "*Figure 2: prodenv folder*"
+
+# fc03ef78210a43fe9706721fd5bcbede
+#: ../../install_docker.rst:66
+msgid "Variables de entorno"
+msgstr "Environment variables"
+
+# 91b0d292dda645e880454faa006f6651
+#: ../../install_docker.rst:68
+msgid ""
+"Antes de lanzar la ejecución del \"docker-compose\" que levanta el "
+"entorno (todos los contenedores), debemos establecer algunos parámetros "
+"del sistema dentro del archivo oculto \".env\". En este archivo se "
+"configuran variables de entorno que serán utilizadas por los "
+"contenedores."
+msgstr "Before go with \"docker-compose up -d\" that will raise up the containers, you need to take a look to the \".env\" file and change some variables."
+
+# 4e1866455131420eaf59597fb62f04af
+#: ../../install_docker.rst:71
+msgid ""
+"El archivo se encuentra documentado con comentarios, no obstante vamos a "
+"citar los principales parámetros a continuación:"
+msgstr "The file is documented with commentaries, anyway let's see the more important envars:"
+
+# 8139d2a195e14471b55272c83ba90b5b
+#: ../../install_docker.rst:73
+msgid "Como podemos observar en la figura, se deben ajustar las variables:"
+msgstr "As you see in the picture, you need to set up these variables:"
+
+# 449a3617276d4712bbd9e41a3cfa579a
+#: ../../install_docker.rst:75
+msgid ""
+"**DOCKER_HOSTNAME**: es el nombre del host que está ejecutando el docker-"
+"engine."
+msgstr "**DOCKER_HOSTNAME**: is the hostname of the docker-engine"
+
+# 64e2f77fcf7340098d12677728cf6fd6
+#: ../../install_docker.rst:76
+msgid "**RELEASE**: es el release de OMniLeads que se desea desplegar"
+msgstr "**RELEASE**: OMniLeads release you want to deploy"
+
+# 733ad8dc1fb446a692d9338a49b1d4bf
+#: ../../install_docker.rst:77
+msgid "**TZ**: la zona horaria"
+msgstr "**TZ**: timezone of the environment"
+
+# 5b1234cc55844f16812e4b8afe63dd7a
+#: ../../install_docker.rst:78
+msgid "**DJANGO_PASS**: es la contraseña del usuario admin de la aplicación."
+msgstr "**DJANGO_PASS**: password of admin user of the application"
+
+# f64910ae7c524aefb5bea955cb129f22
+#: ../../install_docker.rst:82
+msgid "*Figure 3: env variables*"
+msgstr "*Figure 3: env variables*"
+
+# f3400c2e43dd47c9935da09b8cc74efe
+#: ../../install_docker.rst:84
+msgid "Las otras variables que vamos a repasar son:"
+msgstr "Other variables are:"
+
+# 3372fbbbf4ee47eaa0316cfb88935da0
+#: ../../install_docker.rst:86
+msgid ""
+"MYSQL_ROOT_PASS: la contraseña para el motor MySQL (necesario para el "
+"módulo Dialer)"
+msgstr "MYSQL_ROOT_PASS: necessary for the dialer module"
+
+# 1afdced94f754e9d94616aad3cf48c4c
+#: ../../install_docker.rst:87
+msgid "PGPASSWORD: la contraseña del usuario \"omnileads\" de PostgreSQL"
+msgstr "PGPASSWORD: the password of \"omnileads\" PostgreSQL user"
+
+# 74849b6ac97340ed9719b836307839e9
+#: ../../install_docker.rst:91
+msgid "*Figure 4: env variables*"
+msgstr "*Figure 4: env variables*"
+
+# cb018c2a06f54363910eb76bc114868f
+#: ../../install_docker.rst:93
+msgid ""
+"Una vez ajustadas las variables marcadas, estamos en condiciones de "
+"ejecutar el deploy de OMniLeads."
+msgstr "Once set up the variables, you can deploy the application with docker-compose"
+
+# a1e7b4b86d9e426abff2b071bf5a5047
+#: ../../install_docker.rst:97
+msgid ""
+"Las direcciones IP citadas en el archivo, SOLAMENTE deben modificarse en "
+"caso de que su dirección de red (donde se ejecuta el docker-engine) "
+"coincida con el rango de las direcciones aquí citadas."
+msgstr "The IP address in the .env file, must be modified ONLY if the docker-engine network address coincide with this range (192.168.15.0/24)"
+
+# 39081c67640941e4bed87ee7139b6709
+#: ../../install_docker.rst:105
+msgid "Deploy de la aplicación"
+msgstr "Deploy"
+
+# 7997dc82576f462a8341af56ee92967e
+#: ../../install_docker.rst:107
+msgid ""
+"Para ejecutar el despliegue de la aplicación debemos lanzar el comando "
+"\"docker-compose\" dentro de nuestro directorio \"prodenv\"."
+msgstr "To deploy the application use \"docker-compose\" inside the \"prodenv\" folder."
+
+# 8b5e97de8ab04bfba2e9382a838dbab3
+#: ../../install_docker.rst:113
+msgid ""
+"Si es la primera vez que lo ejecutamos, se va a demorar un tiempo en "
+"descargar las imágenes de cada componente. Esto luce de la siguiente "
+"manera."
+msgstr "If is the first time you execute it, it will take a time while download the docker images of each component. It looks like this."
+
+# 3f4004b3dd6b41d9b80647337d5ec9bb
+#: ../../install_docker.rst:117
+msgid "*Figure 5: docker-compose up*"
+msgstr "*Figure 5: docker-compose up*"
+
+# b4cecf4ddd0d40bfb60b4b30f0240ee7
+#: ../../install_docker.rst:119
+msgid ""
+"Una vez finalizada la ejecución del comando (la opción -d nos permite "
+"recuperar la terminal), podemos ejecutar el comando \"docker ps\" y "
+"\"docker images\" para visibilizar que los contenedores están activos y "
+"sus imagenes disponibles."
+msgstr "Once finished the docker-compose command execution, you can execute \"docker ps\" and \"docker images\" to see that the containers are Up & Running an the images are available."
+
+# 9223c12d25b64966b375b762e284dfc1
+#: ../../install_docker.rst:124
+msgid "*Figure 6: docker ps*"
+msgstr "*Figure 6: docker ps*"
+
+# bb17560393314927b3ae1976ae1e6da6
+#: ../../install_docker.rst:129
+msgid "*Figure 7: docker images*"
+msgstr "*Figure 7: docker images*"
+
+# d163b7a64c364f9abe8bfb4953d4075a
+#: ../../install_docker.rst:133
+msgid "Listo para utilizar !"
+msgstr "Ready to use !"
+
+# 269594d2f9fc42759539ebc4cd9db03a
+#: ../../install_docker.rst:135
+msgid ""
+"Para acceder debemos apuntar con https al \"hostname\" del docker-engine "
+"y puerto 444 (si dejó el puerto por defecto en \".env\")."
+msgstr "To access go to the web browser and URL with https the \"hostname\" of docker-engine in the 444 port (if you are using the default port in .env file)"
+
+# 7b18bad8cec441a1b44da08e3df69e7f
+#: ../../install_docker.rst:139
+msgid "*Figure 8: login*"
+msgstr "*Figure 8: login*"
+
+# 6bc21725d63c442abf51e90a6b35798f
+#: ../../install_docker.rst:142
+msgid ""
+"Ahora si, podemos continuar con la `configuración inicial <https"
+"://documentacion-"
+"omnileads.readthedocs.io/es/latest/initial_settings.html>`_"
+msgstr "Now you can go with `configuración inicial <https://documentacion-omnileads.readthedocs.io/es/latest/initial_settings.html>`_ "
+
+# 80af467a9c814637824a561d8378dc99
+#: ../../install_docker.rst:146
+msgid ""
+"Es importante aclarar que el login de Agente en OMniLeads **SI o SI** "
+"tiene que ser accediendo a la aplicación mediante su hostname, **NO** "
+"utilizando la dirección IP. Por lo tanto si el hostname del docker-engine"
+" no lo resuelve nuestro DNS local, debemos cargar esta resolución en cada"
+" \"archivo de hosts\" de cada estación de agente. En `este link <https"
+"://documentacion-"
+"omnileads.readthedocs.io/es/latest/install_first_access.html#about-first-"
+"access>`_ se explica cómo llevarlo a cabo."
+msgstr "Is important the the login of an Agent must be using the hostname in the web URL, not using the IP address. So, if the hostname of docker-engine is not being resolved by a local DNS, you must to ensure that each agent machine resolves it using the \"hosts file\". In `this link <https://documentacion-omnileads.readthedocs.io/es/latest/install_first_access.html#about-first-access>`_ you will see how to do it."

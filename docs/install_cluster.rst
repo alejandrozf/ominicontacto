@@ -136,20 +136,17 @@ Introducir el parámetro "time zone" adecuado para su instanacia.
  # Admin web #
  #############
  admin_pass=my_very_strong_pass
- #########################
- # AMI for wombat dialer #
- #########################
+ #######################################
+ # AMI for wombat dialer and OMniLeads #
+ #######################################
  ami_user=omnileadsami
  ami_password=5_MeO_DMT
- #####################
- # Wombat dialer web #
- #####################
+ #####################################################
+ # Wombat dialer credentials and MYSQL root password #
+ #####################################################
  dialer_user=demoadmin
  dialer_password=demo
- ###########################################################
- # MySQL (ONLY CHANGE THIS PASSWORD IN FIRST INSTALLATION) #
- ###########################################################
- mysql_root_password=my_very_strong_pass
+ #mysql_root_password=my_very_strong_pass
  ################################################################################################
  # Set the timezone where the nodes are UNCOMMENT and set this if you are doing a fresh install #
  ################################################################################################
@@ -161,6 +158,13 @@ Introducir el parámetro "time zone" adecuado para su instanacia.
  #################################################################################
  #external_port=
  #external_hostname=
+ #####################################################################
+ # Trusted Certificates:                                             #
+ #   If you want to use your own certificate/key pair, copy them in  #
+ #   ominicontacto/deploy/certs/ and type here the name of the files #
+ #####################################################################
+ #trusted_cert=
+ #trusted_key=
  ####################################################################################################
  # Session Cookie Age (SCA) is the time in seconds that will last the https session when inactivity #
  # is detected in the session (by default is 1 hour)                                                #
@@ -201,8 +205,7 @@ Una vez configuradas las variables citadas, se procede con la ejecución del scr
 
 *Figure 3: remote root passwords*
 
-La diferencia respecto de las otras instalacines, es que el script nos pide las contraseñas del usuario *root* de cada host
-destino de la instalación de nuestro cluster.
+La diferencia respecto de las otras instalaciones, es que el script nos pide las contraseñas del usuario *root* de cada host destino de la instalación de nuestro cluster.
 
 
 El tiempo de instalación dependerá mayormente de la velocidad de conexión a internet del host sobre ek que se está corriendo el deplot de  OML, ya que se deben descargar, instalar y configurar varios paquetes correspondientes a los diferentes componentes de software que conforman el sistema.
@@ -212,20 +215,6 @@ Si la ejecución de la instalación finaliza exitosamente, se despliega una vist
 .. image:: images/install_ok_cluster.png
 
 *Figure 4: OMniLeads installation ended succesfuly*
-
-
-
- .. important::
-
-  Cada vez que se ejecuta el script *./deploy.sh* ya sea para instalar, correr una actualización del sistema o modificar algún parñametro de red,
-  el archivo de "inventory" se vuelve a cero, es decir se pierde toda la parametrización realizada antes de la ejecución del script. No obstante una vez finalizada la
-  ejecución de "deplo.sh", se genera una copia del archivo "inventory" (llamada my_inventory), para no perder todos los parámetros del sistema
-  utilizados en la última ejecución del script. La copia en cuestión se ubica en el path donde ha sido clonado el repositorio de OML y bajo el nombre de "my_inventory"
-  como lo expone la figura.
-
-.. image:: images/install_remote_my_inventory.png
-
-*Figure 5: inventory copy, my_inventory file*
 
 
 Primer acceso a OMniLeads:

@@ -18,7 +18,7 @@ if [ "$os" == '"CentOS Linux"' ]; then
   git checkout $BRANCH
   python deploy/vagrant/edit_ansible.py --internal_ip=$CENTOS_IP --self_hosted=yes --admin_pass=098098ZZZ --databases_pass=admin123
   cd deploy/ansible
-  ./deploy.sh --integration-tests --iface=eth1
+  ./deploy.sh -i --iface=eth1
 elif [ "$os" == '"Debian GNU/Linux"' ]; then
   echo "Installing git"
   apt-get update -y
@@ -30,7 +30,7 @@ elif [ "$os" == '"Debian GNU/Linux"' ]; then
   git checkout $BRANCH
   python deploy/vagrant/edit_ansible.py --internal_ip=$DEBIAN_IP --self_hosted=yes --admin_pass=098098ZZZ --databases_pass=admin123
   cd deploy/ansible
-  ./deploy.sh --integration-tests --iface=enp0s8
+  ./deploy.sh -i --iface=enp0s8
 elif [ "$os" == '"Ubuntu"' ]; then
   echo "Installing git"
   apt-get update -y
@@ -44,7 +44,7 @@ elif [ "$os" == '"Ubuntu"' ]; then
   echo 'yes' | apt-get install python-minimal -y
   python deploy/vagrant/edit_ansible.py --internal_ip=$UBUNTU_IP --self_hosted=yes --admin_pass=098098ZZZ --databases_pass=admin123
   cd deploy/ansible
-  ./deploy.sh --integration-tests --iface=eth1
+  ./deploy.sh -i --iface=eth1
 else
   echo "The OS you are trying to install is not supported to install this software."
   exit 1

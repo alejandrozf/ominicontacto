@@ -9,7 +9,7 @@
 # If you are installing a prodenv (PE) AIO y bare-metal, change the IP and hostname here #
 ##########################################################################################
 [prodenv-aio]
-localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
+#localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
 #X.X.X.X ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
 
 ##############################################################################
@@ -62,16 +62,17 @@ postgres_user=omnileads
 #                     SET WEB ADMIN PASSWORD                        #
 #####################################################################
 #admin_pass=my_very_strong_pass
-#########################
-# AMI for wombat dialer #
-#########################
+#######################################
+# AMI for wombat dialer and OMniLeads #
+#######################################
 ami_user=omnileadsami
 ami_password=5_MeO_DMT
-#####################
-# Wombat dialer web #
-#####################
+#####################################################
+# Wombat dialer credentials and MYSQL root password #
+#####################################################
 dialer_user=demoadmin
 dialer_password=demo
+#mysql_root_password=my_very_strong_pass
 ################################################################################################
 # Set the timezone where the nodes are UNCOMMENT and set this if you are doing a fresh install #
 ################################################################################################
