@@ -25,7 +25,7 @@ msgstr "OMniLeads to CRM Interaction"
 # 9e7cdad4a313410184344a94cc0720db
 #: ../../crm_integration_oml2crm.rst:7
 msgid "**Cada campaña puede invocar un CRM o vista particular**"
-msgstr "** Each campaign can invoke a CRM or particular view **"
+msgstr "**Each campaign can invoke a CRM or particular view**"
 
 # cbc1d5a0689c46bbaed08eafe9fb5781
 #: ../../crm_integration_oml2crm.rst:9
@@ -602,7 +602,7 @@ msgstr ""
 "The main difference from the standard URLs (HTTP GET) that is exposed in "
 "the *example 1*, is that when assigning parameters in the campaign, "
 "\"holders\" need to be used instead of \"Parameter Names\", as shown in *"
-" figure 10 *."
+"figure 10*."
 
 # 01cb58fb2f8a4ef29619865e2f191d25
 #: ../../crm_integration_oml2crm.rst:187
@@ -629,4 +629,3 @@ msgstr ""
 #~ "column in the database as a "
 #~ "parameter to send in a program "
 #~ "call to the CRM."
-

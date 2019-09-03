@@ -1,32 +1,29 @@
 .. _about_timeconditions:
 
-********************************************
-Enrutamiento condicionado por fechas y horas
-********************************************
+**********************************************
+Enrutamiento condicionado por rango de tiempo
+**********************************************
 
-OMniLeads permite configurar el enrutamiento de llamadas entrantes hacia diferentes destinos internos a partir de comparar la fecha/hora en que se procesa una llamada y un patrón configurado, de manera tal que se pueda planificar de antemano
-si una llamada debe ir hacia un destino u otro basandonos en dicha comparación.
+En esta sección se trabaja con el concepto de *Enrutamiento de llamadas entrantes condicionado por rango de tiempo*, para configurar el flujo de llamadas
+entrantes hacia diferentes destinos internos a partir de comparar la fecha/hora en que llega una llamada y un patrón (de fechas y horas) relacionado,
+de manera tal que se pueda planificar de antemano si una llamada debe ir hacia un destino u otro de acuerdo al resultado de dicha comparación.
 
-Por ejemplo una llamada podria ir hacia una campaña entrante "en fechas y horas de atención al cliente" y hacia un IVR fuera de ese rango definido.
-
-Cada elemento de este tipo generado, puede ser invocado por otros como el destino de:
-
-- una ruta entrante
-- una opción de un IVR
-- el failover de una campaña entrante
-- otro elemento similar
+Por ejemplo una llamada podria ir hacia una campaña entrante *dentro del rango de fecha y horario de atención al cliente* y hacia un IVR que reproduzca
+un anuncio acerca de los horarios de atención, cuando la llamada ingrese fuera de ese rango definido.
 
 .. image:: images/campaigns_in_tc_diagrama.png
 
 *Figure 1: Time conditions*
 
+Existen dos módulos que trabajan en conjunto y que permiten implementar este tipo de configuraciones.
 
-Para llevar a cabo este tipo de configuiraciones se disponen de dos módulos que trabajan juntos.
+Grupos horarios
+****************
 
-- **Grupos horarios**
+Este módulo permite agrupar patrones de fechas y horas como un objeto, para luego puede ser invocados por los objetos del tipo condicionales de tiempo.
 
-Este módulo permite agrupar patrones de fechas y horas así también como fechas y horarios puntuales dentro de un elemento interno de OMniLeasds, para luego puede ser invocado por los condicionales de tiempo, módulo complementario que permite realizar un enrutamiento comparando la fecha/hora de la llamada con la de un grupo de éstos.
-Para definir o editar grupos de horarios, se debe acceder al punto de menú **Telefonía -> Grupos horarios**. Para añadir un nuevo grupo se debe presionar el botón "Agregar nuevo grupo".
+Para definir o editar grupos de horarios, se debe acceder al punto de menú **Telefonía -> Grupos horarios**. Para añadir un nuevo grupo se debe presionar
+el botón "Agregar nuevo grupo".
 
 La pantalla de grupos horarios se expone en la figura 2.
 
@@ -36,9 +33,18 @@ La pantalla de grupos horarios se expone en la figura 2.
 
 Una vez generados los *Grupos de tiempos* podemos invocarlos desde el módulo complementario *Condicionales de tiempos*
 
-- **Validaciones de tiempo**
+Validación de tiempo
+**********************
 
-Este módulo permite comparar la fecha y hora en el momento de procesar una llamada, con un grupo horario asignado como patrón de comparación. Luego en base a la coincidencia o no con alguna franja de fecha/hora del grupo, la llamada se envía hacia el destino positivo o negativo de la comparación.
+Este módulo permite comparar la fecha y hora en el momento de procesar una llamada, con un grupo horario asignado como patrón de comparación.
+Luego en base a la coincidencia o no con alguna franja de fecha/hora del grupo, la llamada se envía hacia el destino positivo o negativo de la comparación.
+
+Un *nodo* condicional de esta clase puede ser invocado por otros nodos:
+
+- rutas entrantes
+- opción de IVR
+- failover de una campaña entrante
+- otro condicional de tiempo
 
 Para generar un elemento Condicional de tiempo, se debe acceder a **Telephony -> Time conditions**
 

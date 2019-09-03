@@ -52,15 +52,14 @@ Guardamos los cambios y avanzamos !
 Instalar idiomas extras
 ************************
 
-Los audios genéricos que los agentes o teléfonos externos escucharán vienen por defecto en inglés o español, siendo configurables en
-las rutas entrantes o rutas salientes, de manera tal que si el canal telefónico se encuentra con alguna indicación a través de un audio
-genérico dentro del flujo entrante o saliente de una llamada, éste podrá ser reproducido de acuerdo al idioma indicado.
+Los audios genéricos que los agentes o teléfonos externos escucharán vienen por defecto en inglés siendo configurables en las rutas entrantes o rutas salientes, de manera tal que si el canal telefónico se encuentra con alguna indicación a través de un audio genérico dentro del flujo entrante o saliente de una llamada, éste podrá ser reproducido de acuerdo al idioma indicado.
 
 Si la instancia precisa utilizar otros idiomas, se pueden instalar a través del punto de menú "Telephony-Add audio files", en donde se podrán instalar los idiomas:
 
+* Español
 * Italiano
 * Sueco
-* Postugués
+* Portugués
 * Francés
 * Ruso
 
@@ -73,7 +72,7 @@ Crear grupo de agentes
 **********************
 
 Llega el turno de crear los grupos de agentes de nuestro contact center. Para generar un nuevo grupo *Usuarios y grupos -> Nuevo grupo de agentes* y se desplegará
-un formulario similar al de la figura 4.
+un formulario similar al de la figura 5.
 
 .. image:: images/initial_settings_05.png
 
@@ -142,13 +141,13 @@ Finalmente tenemos todo listo para probar nuestro primer agente.
 - **Micrófono disponible:** el dispositivo desde el cual opere el agente, deberá contar con un micrófono disponible y configurado a nivel sistema operativo.
 - **Acceso al sistema por hostname:** como bien indicamos en la sección de "primer acceso a OMniLeads", es menester que el acceso a la plataforma sea mediante *hostname*. Esto quiere decir que para indicar al navegador la dirección de OMniLedas NO se deben utilizar una dirección IP, sino un nombre de host.
 
-Una vez que accedemos con nuestro agente, si todo va bien deberemos toparnos con un popup que solicita el permiso de tomar el control del micrófono, como se ilustra en la figura 10.
+Una vez que accedemos con nuestro agente, si todo va bien deberemos toparnos con un popup que solicita el permiso de tomar el control del micrófono, como se ilustra en la figura 11.
 
 .. image:: images/initial_settings_11.png
 
 *Figure 11: First login - microphone webrtc*
 
-Al habilitar el permiso, debemos escuchar un audio que el sistema reproduce indicando el login exitoso y además la pantalla de agente debe lucir como la figura 11.
+Al habilitar el permiso, debemos escuchar un audio que el sistema reproduce indicando el login exitoso y además la pantalla de agente debe lucir como la figura 12.
 
 .. image:: images/initial_settings_12.png
 

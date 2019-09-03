@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-01 12:13-0300\n"
+"POT-Creation-Date: 2019-08-31 21:35-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.6.0\n"
 
-#: ../../campaigns_inbound_ivr.rst:3
+# 7df1a22ccfbb4fe1ac872963881e5c08
+#: ../../campaigns_inbound_ivr.rst:5
 msgid "IVR - Interactive Voice Response"
 msgstr ""
 
-#: ../../campaigns_inbound_ivr.rst:5
+# 3117cc3ca907477d95e0a66bdd8ae831
+#: ../../campaigns_inbound_ivr.rst:7
 msgid ""
 "Los IVRs hacen posible que la persona que realiza una llamada entrante "
 "pueda seleccionar un destino apropiado en base a informar los mismos a "
@@ -31,114 +33,174 @@ msgid ""
 " DTMFs se conmuten hacia diferetentes campañas entrantes, IVRs o "
 "Condicionales de fecha y hora."
 msgstr ""
+"An IVR or *Interactive Voice Response* menu allows callers to interact "
+"with your telephone system via their telephone keypads. The IVR Module is"
+" used to set up a menu system that will play an initial recording to "
+"callers, allow them to dial an option, and route their call to a "
+"particular location based upon what they dial.For example, you could "
+"configure an inbound route to send an incoming call to an IVR, so that "
+"when people call your number, they would hear a greeting that would thank"
+" them for calling and say, For sales, press 1.  For service, press 2. For"
+" our hours of operation, press 3."
 
-#: ../../campaigns_inbound_ivr.rst:10
+# f8a5de22db7c415ba9c0c70e7463df15
+#: ../../campaigns_inbound_ivr.rst:12
 msgid "*Figure 1: IVR - Interactive Voice Response*"
 msgstr ""
 
-#: ../../campaigns_inbound_ivr.rst:13
+# 654ff592456f43279adfe7afc66a07db
+#: ../../campaigns_inbound_ivr.rst:15
 msgid ""
 "Para generar un nuevo IVR se necesita como mínimo un audio a reproducir "
 "(disponible en la biblioteca de audios) y además un destino por defecto "
 "hacia a donde enviar la llamadas que pasen por nuestro IVR."
 msgstr ""
+"To generate a new IVR you need at least one audio to play (available in "
+"the audio library) and also a default destination to where to send calls "
+"that pass through our IVR."
 
-#: ../../campaigns_inbound_ivr.rst:15
+# f98fcf05fc2c489492902f1fcec677d2
+#: ../../campaigns_inbound_ivr.rst:17
 msgid ""
 "Para añadir un IVR se debe acceder al punto de menú *Telephony -> IVR*, "
 "seleccionar Agregar IVR."
 msgstr ""
+"To add an IVR you must access the *Telephony -> IVR* menu item, select "
+"Add IVR."
 
-#: ../../campaigns_inbound_ivr.rst:17
+# 23d987748c38487ba4897978d4dd4d1f
+#: ../../campaigns_inbound_ivr.rst:19
 msgid "Se despliega una pantalla similar a la Figura 1."
-msgstr ""
+msgstr "A screen similar to Figure 1 is displayed"
 
-#: ../../campaigns_inbound_ivr.rst:21
+# f75cd9744fce401080e30dad7d10b76b
+#: ../../campaigns_inbound_ivr.rst:23
 msgid "*Figure 2: IVR parameters*"
 msgstr ""
 
-#: ../../campaigns_inbound_ivr.rst:24
+# ec301061313745d880b56845ff7396c6
+#: ../../campaigns_inbound_ivr.rst:26
 msgid ""
 "El formulario se puede dividir en tres secciones. En la primera contiene "
 "los campos:"
 msgstr ""
+"We can divide IVR form view into three sections. First section contains "
+"the form fields:"
 
-#: ../../campaigns_inbound_ivr.rst:26
+# 820886f310c94bd3ab5eb9a44974b0ee
+#: ../../campaigns_inbound_ivr.rst:28
 msgid ""
 "**Nombre:** es el nombre del objeto, con este nombre se lista en el "
 "listado de IVR."
-msgstr ""
+msgstr "**Name:** reference name for IVR."
 
-#: ../../campaigns_inbound_ivr.rst:27
+# f004b8749739444896be4a147482815a
+#: ../../campaigns_inbound_ivr.rst:29
 msgid ""
 "**Descripción:** campo opcional dedicado un comentario aclaratorio sobre "
 "el objeto."
 msgstr ""
+"**Description:** enter a description for the IVR to help you remember "
+"what it is for."
 
-#: ../../campaigns_inbound_ivr.rst:28
+# 80dff72474da422b90d4eae6b3df710c
+#: ../../campaigns_inbound_ivr.rst:30
 msgid ""
 "**Archivo de OML:** se selecciona esta opción en caso de querer "
 "seleccionar como audio principal del IVR, un archivo previamente subido "
 "por el módulo de Audios."
 msgstr ""
+"**OML audio file:** here we choose which recording to be played to the "
+"caller when they enter the IVR. This can be any system recording that you"
+" have defined in the *Audio module*. It will usually give them "
+"instructions, such as *press 1 for sales and 2 for support.*"
 
-#: ../../campaigns_inbound_ivr.rst:29
+# 7e5025dbeb8c4997abb26102b991863d
+#: ../../campaigns_inbound_ivr.rst:31
 msgid ""
 "**Archivo externo:** se selecciona esta opción en caso de querer "
 "seleccionar como audio principal del IVR, un archivo y subirlo en el "
 "mismo instante al sistema."
 msgstr ""
+"**Upload audio:** here we choose which recording to be played to the "
+"caller when they enter the IVR. This can be any wav file that you can "
+"upload on the fly. It will usually give them instructions, such as *press"
+" 1 for sales and 2 for support.*"
 
-#: ../../campaigns_inbound_ivr.rst:31
+# 13a6dd9fbf914acd970a2311c2161f8c
+#: ../../campaigns_inbound_ivr.rst:33
 msgid ""
 "Luego sigue las secciones para configurar acciones de timeout y opciones "
 "inválidas."
-msgstr ""
+msgstr "Then follow the sections to configure timeout actions and invalid options."
 
-#: ../../campaigns_inbound_ivr.rst:33
+# fbbd058dd95a4d8b84c47b8584822b41
+#: ../../campaigns_inbound_ivr.rst:35
 msgid ""
 "**Time out:** es la cantidad de segundos que se aguarda a que el "
 "“llamante” introduzca un DTMF a partir de la finalización de la "
 "reproducción del audio del IVR."
 msgstr ""
+"**Time out:** enter the amount of time (in seconds) the system should "
+"wait for the caller to enter an option on their phone keypad. If this "
+"amount of time passes without the caller entering anything, it will be "
+"considered a timeout. After a timeout, the system follows the timeout "
+"rules defined below."
 
-#: ../../campaigns_inbound_ivr.rst:34
+# b8fb48dbd85f4d198373626661022827
+#: ../../campaigns_inbound_ivr.rst:36
 msgid ""
 "**Time out retries:** son la cantidad de intentos que el IVR ofrece al "
 "“llamante” a la hora de dar falla por “timeout”. Es decir se permite una "
 "cierta cantidad de intentos fallidos por timeout, para luego ejecutar la "
 "acción de timeout por defecto (Tipo de destino time out)."
 msgstr ""
+"**Time out retries:** how many times callers are allowed to timeout "
+"without pressing any options on their keypad before they are sent to the "
+"invalid destination defined above."
 
-#: ../../campaigns_inbound_ivr.rst:35
+# f261da6064c84d279c272d5ed380b0ae
+#: ../../campaigns_inbound_ivr.rst:37
 msgid ""
 "**Time out audio:** cada vez que se da un timeout por no ingreso de DTMF,"
 " se puede reproducir un audio subido previamente al módulo de audio de "
 "OML, que indique el error."
 msgstr ""
+"**Time out audio:** the recording to play to a caller who times out. This"
+" can be any recording from the *Audio module*."
 
-#: ../../campaigns_inbound_ivr.rst:36
+# eaeb833bb0b245c3b455e5caf8f3d88d
+#: ../../campaigns_inbound_ivr.rst:38
 msgid ""
 "**Time out ext audio:** cada vez que se da un timeout por no ingreso de "
 "DTMF, se puede reproducir un audio que se puede seleccionar y subir en el"
 " momento, que indique el error."
 msgstr ""
+"**Time out upload audio:** the recording to play to a caller who times "
+"out. This can be upload any wav recording."
 
-#: ../../campaigns_inbound_ivr.rst:37
+# da98c68dd73f44d3910aaec4fec5a440
+#: ../../campaigns_inbound_ivr.rst:39
 msgid ""
 "**Tipo de destino time out:** en caso de cumplire la cantidad de "
 "“retries” de timeout, la llamada es enviada por el IVR hacia el tipo de "
 "destino por defecto para los timeout de IVR. En este campo se indica "
 "dicha clase de destino."
 msgstr ""
+"**Time out Destination type** destination type to send the call to after "
+"Timeout valid attempts were reached."
 
-#: ../../campaigns_inbound_ivr.rst:38
+# 8c49df74b8aa41b487e89e4e1dc1b1f3
+#: ../../campaigns_inbound_ivr.rst:40
 msgid ""
 "**Destino time out:** finalmente se selecciona puntualmente el objeto "
 "dentro de la familia de tipo de destino."
 msgstr ""
+"**Time out destination:** destination to send the call to after Timeout "
+"valid attempts were reached."
 
-#: ../../campaigns_inbound_ivr.rst:40
+# ee0a6aa42d9f45fca6e58fdef0bb3929
+#: ../../campaigns_inbound_ivr.rst:42
 msgid ""
 "**Invalid retries:** son la cantidad de intentos que el IVR ofrece al "
 "“llamante” a la hora de dar falla de destino ingresado inválido. Es decir"
@@ -146,54 +208,81 @@ msgid ""
 " para luego ejecutar la acción de opción inválida, por defecto (Tipo de "
 "destino invalid)."
 msgstr ""
+"**Invalid retries:** number of times to retry when receiving an "
+"invalid/unmatched response from the caller"
 
-#: ../../campaigns_inbound_ivr.rst:41
+# 65268731988c4fb6b906ebc49760dd8a
+#: ../../campaigns_inbound_ivr.rst:43
 msgid ""
 "**Invalid audio:** cada vez que se da un ingreso de opción inválida, se "
 "puede reproducir un audio subido previamente al módulo de audio de OML, "
 "que indique el error."
 msgstr ""
+"**Invalid recording:** audio prompt to be played when an "
+"invalid/unmatched response is received, before prompting the caller to "
+"try againThis can be any recording from the *Audio module*"
 
-#: ../../campaigns_inbound_ivr.rst:42
+# ade85795b67d42648b40e13b3661296f
+#: ../../campaigns_inbound_ivr.rst:44
 msgid ""
 "**Invalid ext audio:** cada vez que se da un ingreso de opción inválida, "
 "se puede reproducir un audio que se puede seleccionar y subir en el "
 "momento, que indique el error."
 msgstr ""
+"**Invalid recording:** audio prompt to be played when an "
+"invalid/unmatched response is received, before prompting the caller to "
+"try againThis can be upload any wav recording."
 
-#: ../../campaigns_inbound_ivr.rst:43
+# 15523db2357d4158923c4e701350e6b2
+#: ../../campaigns_inbound_ivr.rst:45
 msgid ""
 "**Tipo de destino opción incorrecta:**  en caso de cumplire la cantidad "
 "de “retries” de opción incorrecta, la llamada es enviada por el IVR hacia"
 " el tipo de destino por defecto para los ingresos de opciones incorrectas"
 " del IVR. En este campo se indica dicha clase de destino."
 msgstr ""
+"**Invalid destination type:** destination type to send the call to after "
+"Invalid attempts were reached."
 
-#: ../../campaigns_inbound_ivr.rst:44
+# 1da64599053543c48b93131cd446a1f6
+#: ../../campaigns_inbound_ivr.rst:46
 msgid ""
 "**Destino para opción incorrecta:** finalmente se selecciona puntualmente"
 " el objeto dentro de la familia de tipo de destino."
 msgstr ""
+"**Invalid destination:** destination to send the call to after Invalid "
+"attempts were reached."
 
-#: ../../campaigns_inbound_ivr.rst:46
+# bd97fafe0e9748d492f6533ba8c277a9
+#: ../../campaigns_inbound_ivr.rst:48
 msgid ""
 "Finalmente la tercera sección despliega tantas filas como opciones de "
 "DMTF implique el IVR. Por cada fila, se puede asignar un DTMF a un "
 "destino de conmutación de la llamada."
 msgstr ""
+"Finally, the third section displays as many rows as DMTF options involve "
+"the IVR. For each row, a DTMF can be assigned to a call switching "
+"destination."
 
-#: ../../campaigns_inbound_ivr.rst:49
+# 99a72ab0ab4e47d29a685767e8fb674a
+#: ../../campaigns_inbound_ivr.rst:51
 msgid ""
 "Como bien se conoce, la idea es seleccionar un “tipo de destino” y un "
 "“destino particular dentro del tipo”, para cada DTMF del IVR que se "
 "brinda como opción."
 msgstr ""
+"Next, a *destination type/destination* must be assigned for each DTMF "
+"(option)of IVR."
 
-#: ../../campaigns_inbound_ivr.rst:51
-msgid "Finalmente al seleccionar el botón guardar, se dispondrá del IVR."
-msgstr ""
-
+# ae188e95d51e4343821b8a1a4b492abb
 #: ../../campaigns_inbound_ivr.rst:53
-msgid "Nota: es posible anidar diferentes IVRs."
-msgstr ""
+msgid "Finalmente al seleccionar el botón guardar, se dispondrá del IVR."
+msgstr "Click on save button"
 
+# 3c718b8842494ec8ae5df71fd9fb5767
+#: ../../campaigns_inbound_ivr.rst:56
+msgid "Es posible anidar un IVR dentro de otro."
+msgstr "It is possible to nest an IVR inside another."
+
+#~ msgid "Nota: es posible anidar diferentes IVRs."
+#~ msgstr ""

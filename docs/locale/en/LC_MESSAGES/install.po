@@ -96,4 +96,3 @@ msgstr ""
 "https://gitlab.com/omnileads/ominicontacto/issues specifying the Linux "
 "distro in which it happened and the stable version that was wanted to "
 "install"
-

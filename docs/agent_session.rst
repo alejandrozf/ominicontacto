@@ -106,7 +106,7 @@ Vamos a dividir al webphone en 5 partes:
 
 La mayoría de estas funcionalidades son ampliadas en las secciones permitentes de esta documentación.
 
-**(5) Dock**
+**Dock**
 
 El dock expone cada herramienta de comunicación. En la versión actual SOLAMENTE está funcional el webphone ya que
 OMniLeads actualmente soporta solamente llamadas telefónicas, en versiones futuras se comenzarán a activar otros componentes.

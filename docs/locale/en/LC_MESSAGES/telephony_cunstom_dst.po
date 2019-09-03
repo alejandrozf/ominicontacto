@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-02 14:37-0300\n"
+"POT-Creation-Date: 2019-08-20 10:37-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,20 +17,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.6.0\n"
 
-# 1e62c7a630514feb9fd263be30b7dd3c
+# e95347d9ea6143158ba780d998061c6d
 #: ../../telephony_cunstom_dst.rst:5
 msgid "Ejecución de dialplan personalizado"
-msgstr ""
+msgstr "Custom asterisk dialplan"
 
-# 4e8a877785e74e8199e1475bdf052596
+# cd675d847f2d4bfb9432f7406ba9ea65
 #: ../../telephony_cunstom_dst.rst:7
 msgid ""
 "Resulta sumamente útil disponer de la posibilidad de poder forzar a que "
 "una llamada ejecute un \"plan de discado\" generado a imagen y semejanza "
 "de cualquier requerimiento puntual del modelo de negocios implicado."
 msgstr ""
+"With this module an Asterisk developer can route calls to your custom dialplan. "
 
-# 3856dcd79f9b422681a9a5a6b67ff263
+# 14a72f1a6e76435799961c81fc9e31fd
 #: ../../telephony_cunstom_dst.rst:10
 msgid ""
 "Pero a qué nos referimos con **\"plan de discado\"**, como bien sabemos "
@@ -40,33 +41,36 @@ msgid ""
 "\"dialplan\" podrá generar sus propias rutinas de tratamiento de "
 "llamadas, pudiendo a su vez invocarlas dentro del flujo de llamadas de:"
 msgstr ""
+"OMniLeads run `Asterisk <https://www.asterisk.org>`_ like a PBX engine, then any developer who know "
+"about Asterisk syntax can write your own dialplan in order to "
+"customized the call flow."
 
-# 075658fe3911430a8019d3b1c2e7efa6
+# 2470c1627a814cb78c9b13211cc294d5
 #: ../../telephony_cunstom_dst.rst:14
 msgid "Rutas Entrantes"
-msgstr ""
+msgstr "Inbound routes"
 
-# 2d6759344b89435d82baa934ea364ecc
+# 917000121a2a4b37b8830c9f3dbf1d76
 #: ../../telephony_cunstom_dst.rst:15
 msgid "Campañas entrantes"
-msgstr ""
+msgstr "Inbound campaigns"
 
-# 1bd555202ca94204912f6f7f88cff09d
+# b92142c3d7464736ae0ec1e50ed48b22
 #: ../../telephony_cunstom_dst.rst:16
 msgid "Destinos de failover"
-msgstr ""
+msgstr "Failover destination"
 
-# 77dac46cd264423d8fcb3887cdde1f92
+# a5fc660ea71b4b93b1b2bd4fbad86aff
 #: ../../telephony_cunstom_dst.rst:17
 msgid "Rutas salientes"
-msgstr ""
+msgstr "Outbound routes"
 
-# 0bfd9d79f525468e8d155e30fb04fb4d
+# 4e9f35cb558441239cc7bc85255a97c8
 #: ../../telephony_cunstom_dst.rst:18
 msgid "Etc."
-msgstr ""
+msgstr "Etc."
 
-# 7324b954afe74c628e74008ae3b61053
+# e735d0649975464192fb09b3918c4a97
 #: ../../telephony_cunstom_dst.rst:20
 msgid ""
 "Por lo que se permite entonces generar un \"nodo\" invocable dentro de "
@@ -75,57 +79,66 @@ msgid ""
 "puntual que esté por afuera del alcance de los módulos típicos del "
 "sistema."
 msgstr ""
+"Therefore, it is allowed to generate an invokable *node* within a call flow, "
+"this *node* being Asterisk programming syntax, customized according to any specific "
+"need that is outside the scope of the typical OMniLeads modules."
 
-# 6b800e3885ac4a97b5b9f3b55858061f
+# 18ada3681f2f4ea4b90d0f6391d7310b
 #: ../../telephony_cunstom_dst.rst:23
 msgid ""
 "Por ejemplo, a la hora de tener que lanzar un IVR que implique algún "
 "tratamiento avanzado de las llamadas entrantes (sistemas de autogestión o"
 " confirmación de trámites)."
 msgstr ""
+"For example, a developer can write a dialplan to integrate different business "
+"processes and numerous data sources to your IVR using API integrations with CRM or ERP."
 
-# 3d208618d4d0406fb4643f8da1405fda
+# 4946eccbc6ee4a7f8708578e87d98fd7
 #: ../../telephony_cunstom_dst.rst:26
 msgid "Modo de configuración"
-msgstr ""
+msgstr "Custom destination settings"
 
-# a07168d3f5fa41fab92b1728e1b9ae2b
+# f628fa4915654a8c8c3cbc0a5766cd53
 #: ../../telephony_cunstom_dst.rst:28
 msgid ""
 "El módulo \"custom destination\" simplemente involucra un formulario "
 "sencillo donde se indica el nombre (campo Name) del Nodo de \"dialplan "
 "personalizado\" y además la triada:"
 msgstr ""
+"The *custom destination* module simply involves a form indicating "
+"the name of the *custom dialplan* node and also the *Asterisk* dialplan triad: "
 
-# 09fb7d3d60c148dda65b3053624aba2f
+# 1853217125ee4a72aa4a9d1071b87030
 #: ../../telephony_cunstom_dst.rst:30
 msgid "Contexto"
-msgstr ""
+msgstr "Context"
 
-# cf38b40ef32a4441be60e4422eb935af
+# 623e4b7694824cc8a066bc23b3bfac03
 #: ../../telephony_cunstom_dst.rst:31
 msgid "Extensión"
-msgstr ""
+msgstr "Extension"
 
-# 08ed9ed002644f07ab5bb5a35025a6c2
+# 8874a7c306e94658994f58eb9eced1ec
 #: ../../telephony_cunstom_dst.rst:32
 msgid "Prioridad"
-msgstr ""
+msgstr "Priority"
 
-# 3aed56bfc1064a209f87bf7e5e573dcc
+# 719751781ced4058aca404601c26f15c
 #: ../../telephony_cunstom_dst.rst:34
 msgid ""
 "Hacia donde enviar la llamada afectada por éste nodo (campo Custom "
 "destination). Además contamos con la necesidad de indicar un destino en "
 "caso de fallo."
 msgstr ""
+"Where to route the call affected by this node (Custom destination field). "
+"We also have the need to indicate a destination in case of failure."
 
-# 9f404d36467a46599db31cc698661198
+# 18081c1693ee498398c8a7df2b85002d
 #: ../../telephony_cunstom_dst.rst:38
 msgid "*figure 1: custom dst view*"
 msgstr ""
 
-# 55992ae29c8d467caf695a430a448bd8
+# 9409b33886f145218fee67209a870da1
 #: ../../telephony_cunstom_dst.rst:40
 msgid ""
 "Por otro lado, el programador podrá generar su código a nivel archivo de "
@@ -133,46 +146,51 @@ msgid ""
 " y también tenido en cuenta a la hora de generar los backup & restore de "
 "la plataforma."
 msgstr ""
+"Asterisk developer can generate your own dialplan on the *oml_extensions_custom.conf* "
+"file."
 
-# 19379049dca24bb796fd73e057ac2f9e
+# b2ed7a6de71e4f28ba854dba61da3417
 #: ../../telephony_cunstom_dst.rst:45
 msgid "Ejemplo"
-msgstr ""
+msgstr "Example"
 
-# bec65890d8344f6c94fd5a3ca4889129
+# 8f2cfdbce3f54905818992af55d966cb
 #: ../../telephony_cunstom_dst.rst:47
 msgid "Vamos a implementar un dialplan como el siguiente:"
-msgstr ""
+msgstr "We will implement the dialplan"
 
-# 6578f48da9374a27b063d44af4476c14
+# a8d214723f1143dcac528335ed429a09
 #: ../../telephony_cunstom_dst.rst:57
 msgid ""
 "Por lo tanto, por un lado generamos el dialplan citado en el archivo "
 "\"oml_extensions_custom.conf\" ubicado en "
 "\"/opt/omnileads/asterisk/etc/asterisk\"."
 msgstr ""
+"Then, we will write the code on *oml_extensions_custom.conf* "
+"the file is on \"/opt/omnileads/asterisk/etc/asterisk\" dir."
 
-# 736a69dbe3cb4f8ba0c7e5fb61835eed
+# 642e36d8c9404fbb8277ed63c1ecf10d
 #: ../../telephony_cunstom_dst.rst:59
 msgid ""
 "Luego debemos generar el \"nodo\" custom destination sobre la interfaz de"
 " configuración de OMniLeads."
 msgstr ""
+"Then, we must to create a *custom destination node*."
 
-# ceaa2308d3264573a547df6a41c75c8d
+# 6a87d2b1a8a74213b535c5663caae676
 #: ../../telephony_cunstom_dst.rst:63
 msgid "*figure 2: custom dst example*"
 msgstr ""
 
-# d2e520ba05294632977395289320a5fe
+# c435b9369ab2471aa8bd1a5d1b10d057
 #: ../../telephony_cunstom_dst.rst:65
 msgid ""
 "Finalmente podemos invocar a nuestro nodo, desde una opción del IVR, "
 "condicional de tiempo o ruta entrante."
 msgstr ""
+"Finally we can invoke our node, from an IVR option, conditional on time or incoming route."
 
-# ddb889d454db4a7ea0a292ed7c19eb22
+# 1cc81e5c1fb945f3bda917cff247c18c
 #: ../../telephony_cunstom_dst.rst:69
 msgid "*figure 3: custom dst example*"
 msgstr ""
-
