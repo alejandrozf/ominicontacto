@@ -15,14 +15,17 @@ La primera pantalla nos invita a indicar una serie de parámtros de la campaña,
 
 
 - **Name:** nombre de la campaña
-- **Contact database:** se utiliza para desplegar datos a partir del número de teléfono origen que realiza la llamada entrante al sistema.
-- **External URL:** URL a disparar cada vez que el agente lo indique.
-- **Enable recordings:** habilitar que todas las llamadas de la campaña sean grabadas.
+- **Contact database:** se utiliza para desplegar datos extras al teléfono a la hora de ejecutar una llamada a un contacto de la campaña.
+- **External system:** sistema de gestión externo que ejecutaría "click to call" sobre la campaña.
+- **ID on external system:**  ID de la campaña en el sistema de gestión externo. 
+- **Enable recordings:** habilitar la grabación de todas las llamadas que se cursen por la campaña.
 - **Scope:** se define como la cantidad de gestiones positivas que se esperan para la campaña. En la supervisión de la campaña se muestra en tiempo real el porcentaje de avence de la campaña respecto al objetivo definido.
 
-**Nota 1:** El tema de la base de contactos en las campañas manuales (y también entrantes) plantea un escenario flexible, ya que es Opcional el asignar una base de contactos a este tipo de campañas.
-En este caso, la base de contactos es utilizada si deseamos que cada vez que un agente marca un teléfono que corresponde con un contacto de la base, se pueda recuperar los datos (columnas extras al teléfono de la base) del mismo
-y además poder calificar el contacto en la campaña..
+.. note::
+  El tema de la base de contactos en las campañas manuales (y también entrantes) plantea un escenario flexible, ya que es Opcional el hecho de asignar una base de contactos
+  a este tipo de campañas. En este caso, la base de contactos es utilizada si deseamos que cada vez que un agente marca un teléfono que corresponde con un contacto
+  de la base, se puedan recuperar los datos (columnas extras al teléfono) del mismo. Además el hecho de trabajar con una base de contactos en una campaña manual
+  permite calificar cada contacto llamado.
 
 En la segunda pantalla se deben asignar las calificaciones que se requieran para que los agentes puedan clasificar cada llamada realizada al contacto. Como se puede apreciar
 en la figura 2, en nuestro ejemplo manejamos dos calificaciones que disparan dos formularios diferentes.
@@ -69,7 +72,7 @@ De esta manera el agente puede asignar una calificación sobre el contacto llama
 
 
 Por otro lado, si el teléfono marcado no corresponde a ningún contacto de la base entonces el sitema permite al agente buscar el contacto en la base o generar un nuevo contacto. En caso de tratarse
-de una campaña sin base de contactos, entonces cada llamado que realice un agente implica que se genere el contacto asociado a la llamada marcada (figura 5 y 6).
+de una campaña sin base de contactos, entonces cada llamado que realice un agente implica que se genere el contacto asociado a la llamada marcada (figura 8 y 9).
 
 .. image:: images/campaigns_manual_agconsole5.png
 
@@ -93,7 +96,7 @@ Finalmente se despliegan el nuevo contacto y la opción de clasificar la llamada
 Como sabemos, OMniLeads admite que cada contacto de una base posea "n" números de teléfono de contacto, de manera tal que si el contacto no es encontrado en su número principal
 (el primero de nuestro archivo CSV de base), pueda ser contactado a los demás números. En este caso, cada número de teléfono (que indicamos en la carga de la base) se genera
 como un link dentro de los datos del contacto presentados sobre la pantalla de agente. Al hacer click sobre dicho link, se dispara una llamada hacia ekl número de teléfono extra
-del contacto. En la figura 7 se muestra dicho escenario.
+del contacto. En la figura 11 se muestra dicho escenario.
 
 .. image:: images/campaigns_prev_agconsole3.png
 

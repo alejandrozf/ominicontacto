@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-02 14:37-0300\n"
+"POT-Creation-Date: 2019-09-03 12:40-0300\n"
 "PO-Revision-Date: 2019-08-13 16:42-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -67,7 +67,7 @@ msgstr ""
 # d42916e760514abc930ad842f42848d4
 #: ../../install_remote.rst:20
 msgid "20 GB de espacio en disco"
-msgstr "\"= GB of disk space"
+msgstr "20 GB of disk space"
 
 # 60b127ac6d2d4a1d9c6b87438b1c4e71
 #: ../../install_remote.rst:21
@@ -96,7 +96,6 @@ msgstr ""
 
 # f9a5b2c78dbb4375880a1abe66bbfda9
 #: ../../install_remote.rst:34
-#, fuzzy
 msgid "Dejar la hora correctamente configurada en el host."
 msgstr "It is very important to leave the time correctly set on the host."
 
@@ -111,7 +110,6 @@ msgstr ""
 
 # ac68991a28fc4d0cb98d26105998aef5
 #: ../../install_remote.rst:42
-#, fuzzy
 msgid "Preparación en la máquina que ejecuta la instalación remota"
 msgstr "Preparation on the machine that executes the remote installation:"
 
@@ -185,7 +183,7 @@ msgid ""
 "la instalación, para luego ajustar el archivo *inventory* que se utiliza "
 "a la hora de tomar los parámetros de la instalación."
 msgstr ""
-"We chack the *IP address* and *hostname* that the destination host of the"
+"We check the *IP address* and *hostname* that the destination host of the"
 " installation owns, to then adjust the file *inventory* that we use when "
 "taking the installation parameters."
 
@@ -211,6 +209,9 @@ msgid ""
 ":ref:`about_install_inventory` disponible dentro del directorio "
 "\"PATH/ominicontacto/deploy/ansible\"."
 msgstr ""
+"In this step you must work in the :ref:`about_install_inventory` file "
+"available in this folder of the repo "
+"\"PATH/ominicontacto/deploy/ansible\"."
 
 # 870d56c2d5c84a329308d0b8f1b218d2
 #: ../../install_remote.rst:112
@@ -219,16 +220,18 @@ msgid ""
 "existe un \"archivo de inventario\" que debe ser modificado de acuerdo a "
 "los parámetros del host sobre el que estamos trabajando."
 msgstr ""
-"OMniLeads uses ansible to peform the installation, therefore there is a "
+"OMniLeads uses ansible to perform the installation, therefore there is a "
 "\"inventory file\" that must be modified according to the parameters of "
 "the host we are working on."
 
-# f2bc9813918f4d0bb3b98a8221aaad90
+# 118d400fed7e46da9de1b5653897cc25
 #: ../../install_remote.rst:115
 msgid ""
 "Modificar y descomentar la segunda linea, editando el parámetro X.X.X.X' "
 "con la dirección IP del host remoto (donde se va a instalar OMniLeads)."
 msgstr ""
+"Uncomment the second line, replacing the parameter X.X.X.X with the IP "
+"addres of remote host (where is going to be installed OMniLeads)"
 
 # befd3441af794ca787c3fdd1aeb64793
 #: ../../install_remote.rst:126
@@ -236,6 +239,8 @@ msgid ""
 "Luego en el inventory mismo debemos ajustar las "
 ":ref:`about_install_inventory_vars` de la instancia."
 msgstr ""
+"Then, in the same inventory adjust the "
+":ref:`about_install_inventory_vars` of the instance"
 
 # cf0910ad998d400d94d6771d7fc70430
 #: ../../install_remote.rst:128
@@ -243,6 +248,8 @@ msgid ""
 "Una vez ajustados todos los parámetros del archivo de inventario, "
 "procedemos con la ejecución de la instalación."
 msgstr ""
+"Once adjusted all the parameters in inventory file, you should execute "
+"the installation script"
 
 # 6a703a7831f84aeb9b23b386a646ece5
 #: ../../install_remote.rst:131
@@ -327,7 +334,7 @@ msgstr ""
 "If the installation execution was succesful, then we can perform a "
 ":ref:`about_first_access`."
 
-# de3ef011277f41f0a322ac3095184823
+# 6e2241c9bb094ddbb3eb5fa162d4e4da
 #: ../../install_remote.rst:164
 msgid ""
 "Cada vez que se ejecuta el script *./deploy.sh* ya sea para instalar, "
@@ -336,6 +343,11 @@ msgid ""
 "la parametrización realizada antes de la ejecución del script. Tener "
 "presente los cambios realizados"
 msgstr ""
+"Each time the script *deploy.sh* is executed, for an installation from "
+"scratch, also for upgrades, or for modification of some password or "
+"network change the \"inventory\" file is reset, it means that all the "
+"changes made in file are lost after script execution. Keep in mind the "
+"changes made."
 
 # 0937c488364c4d87a4f17ec36f9f5509
 #: ../../install_remote.rst:168
@@ -508,4 +520,3 @@ msgstr ""
 # 04158eac2eac443f89eb958ff3c604b6
 #~ msgid "*Figure 8: inevntory copy, my_inventory file*"
 #~ msgstr "*Figure 8: inevntory copy, my_inventory file*"
-

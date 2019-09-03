@@ -177,7 +177,7 @@ msgid ""
 " (deployer), remarcando el hecho de que el repositorio y por lo tanto el "
 "script de deploy se encuentran en esta estación remota. Para generar "
 "nuestro host \"deployer\", repasar: :ref:`about_install_remote_deployer`."
-msgstr ""
+msgstr "The same as :ref:`about_install_remote`, to deploy OMniLeads in any of the two clusters configurations, you should proceed with the deploy.sh script execution from a GNU/Linux workstation (deployer), where is going to be located the repository and the deploy script. To generate this \"deployer\" host, see: :ref:`about_install_remote_deployer`."
 
 # 1262c6c38bfc4c96b113f871d9ed5b36
 #: ../../install_cluster.rst:63
@@ -210,7 +210,7 @@ msgid ""
 "otro lado Asterisk + Kamailio bajo otro *hostname* y *dirección IP*. De "
 "esta manera se despliegan dichos componentes en dos hosts destino "
 "independientes entre si."
-msgstr ""
+msgstr "As you can see, the components Web application + Database + Dialer are grouped in a same *hostname* and *IP address* and Asterisk + Kamailio are grouped by other *hostname* and *IP address*. In this way, the components are deployed in two bare metal machines."
 
 # 16b521c5503545249c61dc2294f34550
 #: ../../install_cluster.rst:90
@@ -219,7 +219,6 @@ msgstr "Example for *OMniLeads in five*"
 
 # 5085576322b04aec838cc252fd9a0320
 #: ../../install_cluster.rst:109
-#, fuzzy
 msgid ""
 "Como se puede apreciar, se separan todos los componentes Aplicación web, "
 "Database, Dialer diferentes *hostname* y *dirección IP*, ya que cada "
@@ -231,7 +230,6 @@ msgstr ""
 
 # d5aedaeaabe943e780d9f36270213f6c
 #: ../../install_cluster.rst:112
-#, fuzzy
 msgid ""
 "Al igual que en las otras instalaciones, las variables y passwords de los"
 " diferentes componentes se pueden modificar en la sección  "
@@ -271,13 +269,11 @@ msgstr ""
 
 # 28ee95f1112747579762ee7a80ce5093
 #: ../../install_cluster.rst:206
-#, fuzzy
 msgid "*Figure 3: remote root passwords*"
 msgstr "*Figure 8: remote root passwords*"
 
 # f8f515fcee4d49f69a6f43fe4a9da0f9
 #: ../../install_cluster.rst:208
-#, fuzzy
 msgid ""
 "La diferencia respecto de las otras instalaciones, es que el script nos "
 "pide las contraseñas del usuario *root* de cada host destino de la "
@@ -312,7 +308,6 @@ msgstr ""
 
 # 2d8b4c1ea52a4d0c86b9b296784d993c
 #: ../../install_cluster.rst:217
-#, fuzzy
 msgid "*Figure 4: OMniLeads installation ended succesfuly*"
 msgstr "*Figure 9: OMniLeads installation ended succesfuly*"
 
@@ -530,4 +525,3 @@ msgstr ""
 # bfa4f06d796c467abdc6f4352253bbb2
 #~ msgid "*Figure 7: inevntory copy, my_inventory file*"
 #~ msgstr "*Figure 7: inevntory copy, my_inventory file*"
-

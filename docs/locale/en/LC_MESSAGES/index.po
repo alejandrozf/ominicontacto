@@ -280,7 +280,6 @@ msgstr "CAMPAIGNS"
 
 # e777ce271135413d95085d045ced210d
 #: ../../index.rst:117
-#, fuzzy
 msgid ""
 "Toda comunicación entre \"el exterior\" y un agente de OMniLeads es "
 "encapsulado dentro de una campaña. En este capítulo se aborda todo lo "

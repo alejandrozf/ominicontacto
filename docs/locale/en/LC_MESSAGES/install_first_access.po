@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-02 14:37-0300\n"
+"POT-Creation-Date: 2019-09-03 12:40-0300\n"
 "PO-Revision-Date: 2019-08-13 15:12-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -69,7 +69,7 @@ msgid ""
 msgstr ""
 "When finding the login screen, we just enter the admin user and the "
 "password generated during the installation (my_inventory), as shown on "
-"figure 10."
+"figure 2."
 
 # 267a4f4fcaf04ccabbf288dad1713909
 #: ../../install_first_access.rst:24

@@ -19,15 +19,18 @@ Se debe completar la primera pantalla del wizard, como lo expone la figura 1.
 
 - **Name:** nombre de la campaña.
 - **Contact database:** (campo opcional) se utiliza para desplegar datos a partir del número de teléfono que realiza la llamada entrante al sistema.
-- **Campaign form:** campo de selección del formulario que se desplegará cada vez que un agente califique un contacto con la calificación "de gestión".
 - **External URL:** URL a disparar cada vez que el agente lo indique.
-- **Enable recordings:** habilitar que todas las llamadas de la campaña sean grabadas.
+- **External system:** sistema de gestión externo que se admite para lanzar acciones de *click to call o calificación* sobre contactos de la campaña.
+- **ID on external system:**  ID de la campaña del sistema de gestión externo que se desea vincular con nuestra campaña en OMniLeads.
+- **Enable recordings:** habilita que todas las llamadas de la campaña sean grabadas.
 - **Scope:** se define como la cantidad de gestiones positivas que se esperan para la campaña. En la supervisión de la campaña se muestra en tiempo real el porcentaje de avence de la campaña respecto al objetivo definido.
 
-**Nota 1:** El tema de la base de contactos en las campañas entrantes (y también manuales) plantea un escenario flexible, ya que es Opcional el asignar una base de contactos a este tipo de campañas.
-En este caso, la base de contactos es utilizada si deseamos que cada vez que un contacto realice una comunicación entrante, en base a su “callerid” poder recuperar los datos del mismo, si es que se encuentra registrado el teléfono desde donde llama, dentro de la base de contactos asociada a la campaña.
+ .. note::
 
-Para continuar se debe hacer click en “Paso Siguiente” y avanzar con los campos de la segunda pantalla.
+  El tema de la base de contactos en las campañas entrantes (y también manuales) plantea un escenario flexible, ya que es Opcional el asignar una base de contactos a este tipo de campañas.
+  En este caso, la base de contactos es utilizada si deseamos que cada vez que un contacto realice una comunicación entrante, en base a su “callerid” poder recuperar los datos del mismo, si es que se encuentra registrado el teléfono desde donde llama, dentro de la base de contactos asociada a la campaña.
+
+A continuación se prosigue con la creación de nuestra campaña entrante.
 
 
 .. image:: images/campaigns_in_wizard2.png
@@ -35,7 +38,7 @@ Para continuar se debe hacer click en “Paso Siguiente” y avanzar con los cam
 *Figure 2: Campaigns parameters*
 
 
-- **Ring time:** es el tiempo (en segundos) que el teléfono de la consola de agente sonará alertando una nueva llamada.
+- **Ring time:** es la cantidad de *tiempo de ring* que la campaña utiliza para intentar contactar la llamada entrante hacia un agente. Se debe considerar que éste parámetro tiene sentido siempre que el agente no trabaje dentro de un grupo configurado con la modalidad *Auto-attend inbound calls*.
 - **Agent callback time:** es el tiempo (en segundos) que la llamada quedará en la cola de espera, hasta volver a intentar conectarla con otro agente disponible.
 - **Welcome message:** permite definir si se reproducirá algún audio sobre la llamada entrante, al ingresar a la cola de espera de nuestra campaña. Para que esté disponible en el selector desplegable debe cargarse previamente el archivo desde el menú "Audios".
 - **Max amount of calls:** es el número de llamadas que se permiten poner en cola de espera. Por encima de ese número, la llamada será enviada a la acción “failover”.
@@ -48,9 +51,12 @@ Para continuar se debe hacer click en “Paso Siguiente” y avanzar con los cam
 - **Announcement frequency:** cantidad de segundos entre cada reproducción de un anuncio periódico.
 - **Failover dst:** destino hacia el cual se enviarán las llamadas que hayan sido expiradas (superó el tiempo de espera asociado).
 
-**Nota 2:** Los parámetros Ring time y Agent callback time, quedan sin efecto en las llamadas que reciban agentes donde su grupo está configurado el atributo de "auto-atención" de llamadas entrantes.
 
-En la tercera pantalla se deben asignar las calificaciones que se requieran para que los agentes úedan clasificar cada llamada de contacto.
+.. note::
+  Los parámetros Ring time y Agent callback time, quedan sin efecto para aquellas llamadas que reciban agentes cuyo *grupo de agentes* esté configurado con el atributo
+  *auto-atención* de llamadas entrantes.
+
+En la siguiente etapa de configuración se deben asignar las calificaciones que la campaña requiera para que los agentes califiquen cada llamada de contacto.
 
 .. image:: images/campaigns_in_wizard3.png
 

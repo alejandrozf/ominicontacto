@@ -20,8 +20,6 @@ En la figura 2 se puede visualizar una *ruta entrante* en su pantalla de configu
 
 *Figure 2: Inbound route parameters*
 
-Vamos a definir cada campo:
-
 - **Name:** es el asignado a la ruta (alfanumérico sin espacios)
 - **DID number:** es el número entrante que se valida como disparador del encaminamiento de la llamada sobre el destino seleccionado por la propia ruta.
 - **Callerid prefix:** el valor que se configure en en este campo, aparecerá ccomo prefijo del callerid que llega en cada llamada por el troncal correspondiente.

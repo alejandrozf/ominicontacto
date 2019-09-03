@@ -8,323 +8,393 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-17 14:37-0300\n"
+"POT-Creation-Date: 2019-09-02 09:16-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.6.0\n"
 
-# 8ed6723e7b33449cacd044b338fdbaea
+# 751b71f04b3642bc81e59e891cb6fcfd
 #: ../../campaigns_inbound_customer_id.rst:6
-msgid "Enrutamiento por identificación de llamada entrante"
-msgstr ""
+msgid "Identificación de llamada entrante"
+msgstr "Customer identification on incoming calls"
 
-# 98061f22ce4349a989ffe8e20aa29782
+# dfb7dd503ec6413a89ff7f8e8bb48037
 #: ../../campaigns_inbound_customer_id.rst:8
 msgid "**INTRODUCCIÓN**"
-msgstr ""
+msgstr "**INTRODUCTION**"
 
-# 068775c136e946d9ac626a9d264a4d6f
+# a08b1fc4cc2d430f991f37b64f640d4c
 #: ../../campaigns_inbound_customer_id.rst:10
 msgid ""
-"Esta funcionalidad es un posible nodo dentro del \"flow\" de la llamada "
-"entrante, que permite lanzar una \"solicitud de identificación\" sobre "
-"cada llamada entrante derivada implementando a su vez la posibilidad de "
-"que el sistema de gestión CRM tome la decisión de encaminamiento de las "
-"llamadas entrantes provenientes del exterior a través de una interacción "
-"entre OMniLeads y dicho sistema de gestión."
+"Dentro del flujo de una llamada entrante se puede añadir un nodo con la "
+"funcionalidad de *identificación de clientes*. Es decir lanzar una "
+"*solicitud de identificación* sobre cada llamada entrante procesada, "
+"implementando a su vez la posibilidad de consultar al un sistema de "
+"gestión CRM externo y aguardar que éste último determine una decisión de "
+"encaminamiento de las llamadas entrantes provenientes del exterior a "
+"través de una interacción entre OMniLeads y dicho sistema de gestión."
 msgstr ""
+"Incoming calls can invoke a *customer identification node* in order to "
+"ask to caller for its identification number or client number, then this "
+"input will be process to choose the internal destination for the call, "
+"being able to involve the CRM on the choose that destination, through the"
+" interaction between OMniLeads and the defined CRM system."
 
-# 41aa1d64a610407dbc8a2983778996fa
-#: ../../campaigns_inbound_customer_id.rst:14
+# 194cc2672fb44c0b85ba3516f257ad5c
+#: ../../campaigns_inbound_customer_id.rst:15
 msgid ""
-"En su funcionalidad más básica el módulo implementa la posibilidad de "
+"En su funcionamiento más básico el módulo implementa la posibilidad de "
 "solicitar la identificación de un cliente que se ha comunicado a la "
-"compañía a través de los tonos del teléfono (DTMF) y si la misma es "
-"válida entonces encaminar la llamada hacia un destino concreto, mientras "
-"que sino lo es, rumbo hacia otro destino indicado."
+"compañía mediante el ingreso de tonos del teléfono *DTMF*, luego se "
+"comprueba si se ha ingresado algún valor y finalmente se envía la llamada"
+" hacia un destino concreto en caso positivo, y hacia otro destino si el "
+"resultado fue negativo. Si la configuración involucra interacción con "
+"CRM, entonces el módulo envía el *numero ingresado* por el cliente hacia "
+"el CRM y espera por una respuesta de éste mismo, para decidir hacia donde"
+" encaminar la llamada."
 msgstr ""
+"In its most basic operation, the module implements the possibility of "
+"play a recording prompting callers its client number by entering DTMF "
+"tones and then route call to two different destinations (if the callers "
+"was input a valid number or not). In addition we can configure the module"
+" for launch an interaction with the CRM, so the CRM can wiil take control"
+" of incoming calls routing."
 
-# b10ffb86be4f434984eca43dcc0f290e
-#: ../../campaigns_inbound_customer_id.rst:17
+# 443a55d9132441b5ab7ad1a005aa7321
+#: ../../campaigns_inbound_customer_id.rst:21
 msgid ""
-"En ambos escenarios (el más básico y el interactivo con CRM), se consigue"
-" que la llamada ingrese al Agente con el \"ID del cliente\" como índice "
-"para obtener toda la información del cliente sobre el Formulario o CRM "
-"implicado en la campaña."
+"En ambos escenarios (modo básico y modo interactivo con CRM), se consigue"
+" que la llamada ingrese al Agente con el *ID del cliente* como índice "
+"para obtener toda la información del cliente y desplegarlo en la pantalla"
+" de agente (ya sea sobre la vista de contacto o en el CRM externo "
+"configurado para la campaña)."
 msgstr ""
+"In both scenarios (basic mode and CRM interactive mode), the call is "
+"allowed to enter Agent with the customer ID as an index to get all the "
+"customer data and render it on the agent view (either on the contact view"
+" or in the external CRM configured for the campaign)."
 
-# 6a54fcb61793468b84b74fbca8031262
-#: ../../campaigns_inbound_customer_id.rst:22
-msgid "Modos de configuración"
-msgstr ""
+# eef95ec49bb246759280f78bbfece051
+#: ../../campaigns_inbound_customer_id.rst:25
+msgid "El módulo permite tres modos de funcionamiento:"
+msgstr "The module allows three configuration modes:"
 
-# e606c64ecd19425cb733b6b597f69958
-#: ../../campaigns_inbound_customer_id.rst:24
-msgid ""
-"El módulo viene disponible para ser configurado en distintos modos de "
-"funcionamiento;"
-msgstr ""
-
-# 3f465c3c0a4144f2a5bea75fece7195f
-#: ../../campaigns_inbound_customer_id.rst:26
-msgid "**Solamente solicitar identificación**"
-msgstr ""
-
-# f65f282c964349699fba401395efada9
+# ce846292739d44a190a4c2e43e243181
 #: ../../campaigns_inbound_customer_id.rst:28
+msgid "Solamente solicitar identificación"
+msgstr "Basic behavior"
+
+# d7d026e600a048fe844d9036d13e2a1b
+#: ../../campaigns_inbound_customer_id.rst:30
 msgid ""
 "Bajo esta configuración cuando una llamada entrante es enviada hacia este"
-" módulo, se ejecuta una solicitud de identificación a través de un audio "
-"reproducido sobre el canal telefónico del cliente que originó la llamada "
-"para luego validar la credencial ingresada y tomar una decisión de "
-"encaminamiento hacia las dos alternativas posibles; \"destino  A\", si se"
-" ha ingresado una identificación y \"destino B\" si el llamante no lo "
-"hizo o lo hizo de manera errática."
+" nodo, se lanza una solicitud de identificación a través de un audio "
+"reproducido sobre el canal telefónico del cliente que originó la llamada,"
+" para luego simplemente validar si el cliente ingresó o no un valor y así"
+" tomar una decisión de encaminamiento hacia las dos alternativas "
+"posibles; *destino  A* si se ha ingresado una identificación o *destino "
+"B* si el llamante no lo hizo."
 msgstr ""
+"In this scenario, an identification request is launched through an "
+"recording played on the customer telephone channel, and then simply "
+"validate whether or not the customer entered a value and thus make a "
+"choise about route between two possible destinations; *destination A* if "
+"an identification or *destination B* has been entered if the caller did "
+"not."
 
-# a78bcb67d77540c4aa636753795992bf
-#: ../../campaigns_inbound_customer_id.rst:35
+# 87502c5f80cb48abbe4415ffb6a22a25
+#: ../../campaigns_inbound_customer_id.rst:37
 msgid "*Figure 1: Customer id without CRM interaction*"
 msgstr ""
 
-# 21ad0e7fbfe74ad39d8199ec29892808
-#: ../../campaigns_inbound_customer_id.rst:38
+# efb5eb79329140938d32b294a90e8a41
+#: ../../campaigns_inbound_customer_id.rst:41
 msgid ""
-"**Solicitar identificación, notificar al CRM y aguardar respuesta \"true "
-"/ false\"**"
-msgstr ""
+"Solicitar identificación, notificar al CRM y aguardar respuesta *true / "
+"false*"
+msgstr "CRM interaction *true or false*"
 
-# 5e6223732bd7407b9c2256e6de4ea708
-#: ../../campaigns_inbound_customer_id.rst:40
+# 2c996fa4f813492cab064ccedfc51bb6
+#: ../../campaigns_inbound_customer_id.rst:43
 msgid ""
 "Bajo esta configuración cuando una llamada entrante es enviada hacia este"
-" módulo, se ejecuta una solicitud de identificación a través de un audio "
-"reproducido sobre el canal telefónico del cliente que originó la llamada "
-"para luego ejecutar una consulta hacia un servicio web previamente "
+" nodo, se lanza una solicitud de identificación a través de un audio "
+"reproducido sobre el canal telefónico del cliente que originó la llamada,"
+" para luego lanzar una consulta hacia un servicio web (CRM) previamente "
 "configurado."
 msgstr ""
+"In this scenario, an identification request is launched through an "
+"recording played on the customer telephone channel and this entered value"
+" its deliver inside a http-request to the CRM web service."
 
-# 2817b72bdec94687a1990adb60135c9f
-#: ../../campaigns_inbound_customer_id.rst:46
+# c9c0c7feba77475dbf9d2a1f484bab05
+#: ../../campaigns_inbound_customer_id.rst:49
 msgid "*Figure 2: Customer id with CRM interaction true/false*"
 msgstr ""
 
-# 55c5a83ab340463db454d84c7c0970bb
-#: ../../campaigns_inbound_customer_id.rst:48
+# 48d156a08033419d921af3972087afcb
+#: ../../campaigns_inbound_customer_id.rst:51
 msgid ""
-"El sistema de gestión CRM toma partido respecto al encaminamiento de un "
-"cliente que se comunica a la compañía, ya que a partir de recibir desde "
-"OMniLeads la clave de identificación del llamante, se pueden encaminar "
-"las llamadas hacia cada uno de los dos posibles destinos posibles de "
-"acuerdo a lo que se responda (true/false) a dicha credencial recibida."
+"Aquí el sistema de gestión CRM toma partido en lo que respecta al "
+"encaminamiento de los clientes que llaman a la compañía, ya que a partir "
+"de recibir desde OMniLeads la *clave de identificación del llamante*, el "
+"CRM debe responder al *request* recibido con una respuesta del tipo *true"
+" / false*, por lo cual OMniLeads luego debe encaminar las llamadas hacia "
+"cada uno de los dos posibles destinos previamente configurados *destino "
+"A* si el CRM devuelve *true* o *destino B* si el CRM devuelve *false*."
 msgstr ""
+"Then the CRM decides in some way the routing of the customers who call "
+"the company. Because after receiving the caller's identification key from"
+" OMniLeads, the CRM must respond to the request received with a response "
+"of the *true or false* type, then OMniLeads must route the calls to each "
+"of the two possible previously configured destinations *destination A* if"
+" the CRM returns true or *destination B* if the CRM returns false."
 
-# 7d25585ee2e24a8eb6cac94f501aa8e7
-#: ../../campaigns_inbound_customer_id.rst:52
+# 3bf77d7c51094bb882bad22a884f5e8b
+#: ../../campaigns_inbound_customer_id.rst:56
 msgid ""
 "Un ejemplo podría ser el de una compañía que comprueba si el \"número de "
 "cliente\" se encuentra al día con los pagos del servicio y en base a ello"
 " encaminar la llamada hacia una campaña con mayor o menor prioridad en "
-"términos de tiempo en cola de espera."
+"términos de tiempo de espera en cola."
 msgstr ""
+"An example could be to consult the CRM if the call must be sent to an "
+"incoming campaign to be answered by an agent or instead be sent to "
+"another destination."
 
-# bfc25aa11b0948b0bde2f9808e2b85df
-#: ../../campaigns_inbound_customer_id.rst:56
+# 95fc5ecc897c4c3f9b8592fa2129a46f
+#: ../../campaigns_inbound_customer_id.rst:61
 msgid ""
-"**Solicitar identificación, notificar al CRM y aguardar respuesta "
-"\"destino de la llamada\"**"
+"Solicitar identificación, notificar al CRM y aguardar respuesta *destino "
+"de la llamada*"
 msgstr ""
+"The external CRM choose the OMniLeads destination where route customer "
+"calls"
 
-# c83d0b92a2564cbcab82450845436acd
-#: ../../campaigns_inbound_customer_id.rst:58
-msgid ""
-"Bajo este modo, cuando una llamada entrante invoca la ejecución del "
-"módulo, éste último procede con la solicitud de identificación para luego"
-" validar si el cliente ingresó o no un valor, en caso de haber ingresado "
-"se ejecuta una consulta hacia un servicio web previamente configurado."
-msgstr ""
-
-# 36d00eb946224af68a337d16a39b732c
+# 7b96c14666244915862c0f0873389d59
 #: ../../campaigns_inbound_customer_id.rst:63
+msgid ""
+"Bajo este modo, cuando una llamada entrante invoca la ejecución del nodo,"
+" éste último procede con la solicitud de identificación para luego "
+"validar si el cliente ingresó o no un valor, en caso de haber ingresado "
+"se ejecuta una consulta hacia un servicio web (CRM) previamente "
+"configurado."
+msgstr ""
+"In this scenario, an identification request is launched through an "
+"recording played on the customer telephone channel and this entered value"
+" its deliver inside a http-request to the CRM web service."
+
+# 4434ec9ef1854976bc38857a551ae910
+#: ../../campaigns_inbound_customer_id.rst:68
 msgid "*Figure 3: Customer id with interaction and destination chosen by CRM*"
 msgstr ""
 
-# 5a0f904fb23d49a6ac24523019bc1cfe
-#: ../../campaigns_inbound_customer_id.rst:65
+# 0017744e83db46a3bd9ac7a6d19d62ed
+#: ../../campaigns_inbound_customer_id.rst:70
 msgid ""
 "El sistema de gestión CRM toma partido respecto al encaminamiento de un "
-"cliente que se comunica a la compañía, ya que a partir de recibir de "
-"OMniLeads en tiempo real la clave de identificación del llamante, puede "
-"encaminar las llamadas hacia cualquier destino (o nodo) de OMniLeads "
-"siendo posibles una campaña entrante, un IVR, una validación de tiempo, "
-"etc."
+"cliente que llama a la compañía, ya que a partir de recibir de OMniLeads "
+"en tiempo real la *clave de identificación del llamante*, éste debe "
+"responder al *request* recibido con una respuesta que contenga el nodo "
+"destino de OMniLeads hacia donde encaminar las llamadas, siendo posibles "
+"una campaña entrante, un IVR, una validación de tiempo, un destino "
+"personalizado, etc."
 msgstr ""
+"Then the CRM choose the OMniLeads destination for the customers who call "
+"the company. Since after receiving the caller’s identification key from "
+"OMniLeads, the CRM must respond to the request received with a OMniLeads "
+"internal destination like response, finally OMniLeads must route the "
+"calls to the destination selected by CRM"
 
-# fa0e82b0b4924f579e9b50c1bb982bfb
-#: ../../campaigns_inbound_customer_id.rst:69
+# 0ce406ac57274eadbdddcf037aaa452d
+#: ../../campaigns_inbound_customer_id.rst:75
 msgid ""
-"Un ejemplo aplicación podría ser comprobar en base al \"número de "
-"cliente\" que plan de suscripción tiene contratado, que plan de salud, "
-"etc. y en base a ello encaminar la llamada hacia la campaña en OMniLeads "
-"que mejor se ajuste."
+"Un aplicación de esta funcionalidad podría ser, notificar al CRM acerca "
+"del *número de cliente* ingresado y que éste último decida hacia qué "
+"campaña entrante de OMniLeads enviar la llamada, utilizando como criterio"
+" que plan de suscripción tiene contratado ese *número de client*."
 msgstr ""
+"An example of this functionality could be to notify the CRM about the "
+"customer number entered on call and then the CRM choose the OMniLeads "
+"incoming campaign where to route this call. The destination choice can be"
+" base on the type of customer subscription plan."
 
-# 4a6cea9505be4304be7b8e3d3d9505b3
-#: ../../campaigns_inbound_customer_id.rst:76
+# 2e332cc603524437992d3750fd5804c3
+#: ../../campaigns_inbound_customer_id.rst:81
 msgid "Crear un nuevo punto de solicitud de identificación de clientes"
-msgstr ""
+msgstr "Create a new customer identification node"
 
-# 1d05483bfb6c4bd98e829c3678a008d4
-#: ../../campaigns_inbound_customer_id.rst:78
+# d9d3bf7a77ac4bbb97ccf0da264b1863
+#: ../../campaigns_inbound_customer_id.rst:83
 msgid ""
 "Para generar un nuevo nodo, se debe acceder al punto de menú: \"Telefonía"
 " - Identificación de clientes\""
 msgstr ""
+"To generate a new node, you must access the menu item: *Telephony - "
+"Customer identification*"
 
-# 76ebea0dbf0b45ee8aa2bd3a7bd5dae4
-#: ../../campaigns_inbound_customer_id.rst:82
+# 71102ec828d9421a8dc5b19c35381440
+#: ../../campaigns_inbound_customer_id.rst:87
 msgid "*Figure 4: New customer id node*"
 msgstr ""
 
-# 60b8023817d44cefa99bc8f29cf04e63
-#: ../../campaigns_inbound_customer_id.rst:84
+# ae1255e59bee45faa7736c1806e6c029
+#: ../../campaigns_inbound_customer_id.rst:89
 msgid "A continuación se detallan los campos del formulario:"
-msgstr ""
+msgstr "The form fields are detailed below:"
 
-# 9c0f9e070c4d48ce88996dceb7d80e18
-#: ../../campaigns_inbound_customer_id.rst:87
-msgid "Campo"
-msgstr ""
-
-# 31a2bdf2540a47fbb00ba204bd58c8b7
-#: ../../campaigns_inbound_customer_id.rst:87
-msgid "Descripción"
-msgstr ""
-
-# 69b38285cf654ecdb23c1f28b6907278
-#: ../../campaigns_inbound_customer_id.rst:89
-msgid "Nombre"
-msgstr ""
-
-# bf5900a5680e4e10b224bdf4abbc9ed4
-#: ../../campaigns_inbound_customer_id.rst:89
-msgid "Nombre de referencia del nodo"
-msgstr ""
-
-# 621e9ce5980f40899b4f2026a20677a3
-#: ../../campaigns_inbound_customer_id.rst:91
-msgid "Tipo de interacción"
-msgstr ""
-
-# 7d71321c26e046c18ed2aa5ee616dea4
-#: ../../campaigns_inbound_customer_id.rst:91
-msgid "Sin Interacción: solo se comprueba si hubo o no un ingreso y su logitud"
-msgstr ""
-
-# ab52e3dcb09f4603b2e3c82f08c2bd4b
+# 3eb1481c6e584f0a9b5ca2246c7aa2a1
 #: ../../campaigns_inbound_customer_id.rst:92
+msgid "Campo"
+msgstr "Field"
+
+# c6a6dfaeb92e4d2ea9b4c8dd324e2db5
+#: ../../campaigns_inbound_customer_id.rst:92
+msgid "Descripción"
+msgstr "Description"
+
+# 30ea51f32ff84358b461a75276338961
+#: ../../campaigns_inbound_customer_id.rst:94
+msgid "Nombre"
+msgstr "Name"
+
+# 04639da627bb4b10ac402667d0728dbb
+#: ../../campaigns_inbound_customer_id.rst:94
+msgid "Nombre de referencia del nodo"
+msgstr "Object reference name"
+
+# 283398b7673140ad837603136c0e57d1
+#: ../../campaigns_inbound_customer_id.rst:96
+msgid "Tipo de interacción"
+msgstr "Interaction type"
+
+# 738ab7c4b556435794f746542b8101ff
+#: ../../campaigns_inbound_customer_id.rst:96
+msgid "Sin Interacción: solo se comprueba si hubo o no un ingreso y su logitud"
+msgstr "Without CRM integration: just ask for identification"
+
+# 8a2fb39df61c414d8236126962a81a16
+#: ../../campaigns_inbound_customer_id.rst:97
 msgid ""
 "Interacción externa tipo 1: se envía id de cliente y se espera "
 "\"true/false\" como respuesta"
-msgstr ""
+msgstr "CRM interaction true or false"
 
-# e385b16551484eb8bde3ec1fb9eefd81
-#: ../../campaigns_inbound_customer_id.rst:93
+# ae54f89d572f40858eaa68c61cef439a
+#: ../../campaigns_inbound_customer_id.rst:98
 msgid ""
 "Interacción externa tipo 2:se envía id de cliente y se espera un destino "
 "como respuesta"
-msgstr ""
+msgstr "The CRM choose the OMniLeads destination for each customer caller"
 
-# 45d5ba48c36247fb90d1c5bddfb09bf8
-#: ../../campaigns_inbound_customer_id.rst:95
+# 16ea6ca77e1a4117bde439b6941386e4
+#: ../../campaigns_inbound_customer_id.rst:100
 msgid "URL servicio ident"
-msgstr ""
+msgstr "CRM web service URL"
 
-# c26b4f8e2227409282f19fe2ecd8f461
-#: ../../campaigns_inbound_customer_id.rst:95
+# ea68633096f246039766bcb6d0ceffab
+#: ../../campaigns_inbound_customer_id.rst:100
 msgid ""
 "Aquí se indica la dirección del servicio web hacia donde enviar el número"
 " de identificación"
 msgstr ""
+"here we indicate the web service address where send the requests from "
+"OMniLeads to CRM"
 
-# d86a2e7a6a7b44d2be9386456ee05f6b
-#: ../../campaigns_inbound_customer_id.rst:97
+# c2f3a61b64fd4fbe966bdd3bfc93464f
+#: ../../campaigns_inbound_customer_id.rst:102
 msgid "Audio"
-msgstr ""
+msgstr "Audio to be play on caller channel"
 
-# 0a178cf9672a4d6b962db12ba330ef5a
-#: ../../campaigns_inbound_customer_id.rst:97
+# dad753e4989c41de92d87c74114e9e49
+#: ../../campaigns_inbound_customer_id.rst:102
 msgid ""
 "Se trata del audio que se reproduce sobre la llamada entrantes, para "
 "solicitar la identificación"
 msgstr ""
+"This is the recording that we can choose to request the customer "
+"identification"
 
-# 435bd2d9eab84fb1a00843e2b2b79560
-#: ../../campaigns_inbound_customer_id.rst:100
+# a93024a7e8fd4eb19816bd32372453f7
+#: ../../campaigns_inbound_customer_id.rst:105
 msgid "Logitud id esperado"
-msgstr ""
+msgstr "Maximum acceptable number of digits"
 
-# 3bc4664199c4424eabc193ee065d12f7
-#: ../../campaigns_inbound_customer_id.rst:100
+# 95fab840fb164837a93696cd7f191850
+#: ../../campaigns_inbound_customer_id.rst:105
 msgid "Se puede indicar el largo esperado de código de identificación"
 msgstr ""
+"We can set the maximum acceptable number of digits for the customer id "
+"input"
 
-# 47c9f3e6c7ac4f3dbe49951dd3266199
-#: ../../campaigns_inbound_customer_id.rst:102
+# da3ff84880434d6eb3d804d54ec4f8d9
+#: ../../campaigns_inbound_customer_id.rst:107
 msgid "Timeout"
-msgstr ""
+msgstr "Timeout"
 
-# 188f8706ed3e4781bc9141c935c3c718
-#: ../../campaigns_inbound_customer_id.rst:102
+# 0ab61fa8acc64d338257f39c0092b2e6
+#: ../../campaigns_inbound_customer_id.rst:107
 msgid ""
 "El tiempo en segudos que el sistema espera a que se ingrese la "
-"identificación, en caso de exirar este tiempo, se comprueba si ya se han "
-"sobrepasados los re-intentos para en base a ello ejecutar una nueva "
+"identificación, en caso de expirar este tiempo, se comprueba si ya se han"
+" sobrepasados la cantidad de re-intentos para y así ejecutar una nueva "
 "petición o derivar la llamada hacia el destino no exitoso"
 msgstr ""
+"Enter the amount of time (in seconds) the system should wait for the caller "
+"to enter your *customer id* on their phone keypad. If this amount of time passes "
+"without the caller entering anything, it will be considered a timeout. "
+"After a timeout, the system follows the unsuccesfull destination defined below."
 
-# 9f098e5364cb496e8d15154eeafcf5c1
-#: ../../campaigns_inbound_customer_id.rst:106
-msgid "Intentos"
+# 3cb00324e911498aae8b8df529b1b0b9
+#: ../../campaigns_inbound_customer_id.rst:111
+msgid "Retries"
 msgstr ""
 
-# 37dd79a4d2764c708d4f844b4fc857d8
-#: ../../campaigns_inbound_customer_id.rst:106
-msgid "Cantidad de intentos no efectivos de autenticación"
+# 66f3247bd6004857a03f228d9de7b174
+#: ../../campaigns_inbound_customer_id.rst:111
+msgid ""
+"La cantidad de intentos erróneos que se permiten al ingresar la "
+"identificación"
 msgstr ""
+"Number of times to retry when receiving an invalid or null input from the caller"
 
-# 6ee009ee31ff4da4810f66afd4e78920
-#: ../../campaigns_inbound_customer_id.rst:108
+# 2a6f9eb8915e4ad6886d570ccf82c6df
+#: ../../campaigns_inbound_customer_id.rst:113
 msgid "Destino Identificación exitosa"
-msgstr ""
+msgstr "Successfull destiny"
 
-# 8801fcf79b9c45bd937b590dfc602579
-#: ../../campaigns_inbound_customer_id.rst:108
+# f3d0fd25f3c54045b80f18f5f9b3c1a2
+#: ../../campaigns_inbound_customer_id.rst:113
 msgid ""
 "Tipo de destino y destino puntual para dicho tipo al que se derivan las "
 "llamadas \"positivas\" en los tipo de interacción \"sin interacción\" e "
 "\"interacción tipo 1\""
 msgstr ""
+"Destiny for successfull calls. This option apply to "
+"Destiny for successful calls. This option apply to *basic behavior* setting "
+"mode or *CRM interaction true or false*."
 
-# 97a21e2a71f2401d9ef3d5208672f683
-#: ../../campaigns_inbound_customer_id.rst:111
+# ef0855c20899492f81953164996ae68d
+#: ../../campaigns_inbound_customer_id.rst:116
 msgid "Destino Identificación no exitosa"
-msgstr ""
+msgstr "Unsuccessful destiny"
 
-# 5a3a942e24bb4629b7ee5b216cb7a748
-#: ../../campaigns_inbound_customer_id.rst:111
+# 89a5dfde963d4a4aad6de7c456c263a8
+#: ../../campaigns_inbound_customer_id.rst:116
 msgid ""
 "Tipo de destino y destino puntual para dicho tipo al que se derivan las "
 "llamadas \"negativas\" en los tipo de interacción \"sin interacción\" e "
 "\"interacción tipo 1\""
 msgstr ""
+"Destiny for unsuccessful calls. This option apply to *basic behavior* setting "
+"mode or *CRM interaction true or false*."
 
-# 6f64cf11186147aeb1966696b7a194ef
-#: ../../campaigns_inbound_customer_id.rst:118
+# 4cd04ff777bc44fc8af7a3e6b50001d2
+#: ../../campaigns_inbound_customer_id.rst:123
 msgid ""
 "Para poder implementar los modos que implican enviar la identificación "
 "hacia un servicio web externo, aguardando una respuesta del mismo para "
@@ -332,13 +402,324 @@ msgid ""
 " de gestión implemente un servicio web para recibir las peticiones de "
 "este tipo."
 msgstr ""
+"In order to implement the configuration modes that imply interaction with CRM, "
+"you must consider the fact that the management system has a web service to receive "
+"requests of this type."
 
-# c58c961b7de24de8ad021b5133ae0d8c
-#: ../../campaigns_inbound_customer_id.rst:123
+# b28a47ada04e40e2af27e507b7ebd968
+#: ../../campaigns_inbound_customer_id.rst:128
 msgid ""
 "Para los desarrolladores que deseen habilitar en el sistema de gestión "
 "este tipo de interacción, pueden encontrar formato en que OMniLeads envía"
 " la identificación hacia el servicio web se encuentra dentro de la "
 "sección  :ref:`about_customer_id_request`."
 msgstr ""
+"For developers who wish to enable this integration in their CRM, you can find "
+"more information in our API documentation :ref:`about_customer_id_request`."
 
+# 8ed6723e7b33449cacd044b338fdbaea
+#~ msgid "Enrutamiento por identificación de llamada entrante"
+#~ msgstr ""
+
+# 068775c136e946d9ac626a9d264a4d6f
+#~ msgid ""
+#~ "Esta funcionalidad es un posible nodo"
+#~ " dentro del \"flow\" de la llamada"
+#~ " entrante, que permite lanzar una "
+#~ "\"solicitud de identificación\" sobre cada "
+#~ "llamada entrante derivada implementando a "
+#~ "su vez la posibilidad de que el"
+#~ " sistema de gestión CRM tome la "
+#~ "decisión de encaminamiento de las "
+#~ "llamadas entrantes provenientes del exterior"
+#~ " a través de una interacción entre"
+#~ " OMniLeads y dicho sistema de "
+#~ "gestión."
+#~ msgstr ""
+
+# 41aa1d64a610407dbc8a2983778996fa
+#~ msgid ""
+#~ "En su funcionalidad más básica el "
+#~ "módulo implementa la posibilidad de "
+#~ "solicitar la identificación de un "
+#~ "cliente que se ha comunicado a la"
+#~ " compañía a través de los tonos "
+#~ "del teléfono (DTMF) y si la misma"
+#~ " es válida entonces encaminar la "
+#~ "llamada hacia un destino concreto, "
+#~ "mientras que sino lo es, rumbo "
+#~ "hacia otro destino indicado."
+#~ msgstr ""
+
+# b10ffb86be4f434984eca43dcc0f290e
+#~ msgid ""
+#~ "En ambos escenarios (el más básico "
+#~ "y el interactivo con CRM), se "
+#~ "consigue que la llamada ingrese al "
+#~ "Agente con el \"ID del cliente\" "
+#~ "como índice para obtener toda la "
+#~ "información del cliente sobre el "
+#~ "Formulario o CRM implicado en la "
+#~ "campaña."
+#~ msgstr ""
+
+# 6a54fcb61793468b84b74fbca8031262
+#~ msgid "Modos de configuración"
+#~ msgstr ""
+
+# e606c64ecd19425cb733b6b597f69958
+#~ msgid ""
+#~ "El módulo viene disponible para ser "
+#~ "configurado en distintos modos de "
+#~ "funcionamiento;"
+#~ msgstr ""
+
+# 3f465c3c0a4144f2a5bea75fece7195f
+#~ msgid "**Solamente solicitar identificación**"
+#~ msgstr ""
+
+# f65f282c964349699fba401395efada9
+#~ msgid ""
+#~ "Bajo esta configuración cuando una "
+#~ "llamada entrante es enviada hacia este"
+#~ " módulo, se ejecuta una solicitud de"
+#~ " identificación a través de un audio"
+#~ " reproducido sobre el canal telefónico "
+#~ "del cliente que originó la llamada "
+#~ "para luego validar la credencial "
+#~ "ingresada y tomar una decisión de "
+#~ "encaminamiento hacia las dos alternativas "
+#~ "posibles; \"destino  A\", si se ha "
+#~ "ingresado una identificación y \"destino "
+#~ "B\" si el llamante no lo hizo "
+#~ "o lo hizo de manera errática."
+#~ msgstr ""
+
+# 21ad0e7fbfe74ad39d8199ec29892808
+#~ msgid ""
+#~ "**Solicitar identificación, notificar al CRM"
+#~ " y aguardar respuesta \"true / "
+#~ "false\"**"
+#~ msgstr ""
+
+# 5e6223732bd7407b9c2256e6de4ea708
+#~ msgid ""
+#~ "Bajo esta configuración cuando una "
+#~ "llamada entrante es enviada hacia este"
+#~ " módulo, se ejecuta una solicitud de"
+#~ " identificación a través de un audio"
+#~ " reproducido sobre el canal telefónico "
+#~ "del cliente que originó la llamada "
+#~ "para luego ejecutar una consulta hacia"
+#~ " un servicio web previamente configurado."
+#~ msgstr ""
+
+# bfc25aa11b0948b0bde2f9808e2b85df
+#~ msgid ""
+#~ "**Solicitar identificación, notificar al CRM"
+#~ " y aguardar respuesta \"destino de la"
+#~ " llamada\"**"
+#~ msgstr ""
+
+# 7b96c14666244915862c0f0873389d59
+#~ msgid ""
+#~ "Bajo este modo, cuando una llamada "
+#~ "entrante invoca la ejecución del módulo,"
+#~ " éste último procede con la solicitud"
+#~ " de identificación para luego validar "
+#~ "si el cliente ingresó o no un "
+#~ "valor, en caso de haber ingresado "
+#~ "se ejecuta una consulta hacia un "
+#~ "servicio web previamente configurado."
+#~ msgstr ""
+
+# a08b1fc4cc2d430f991f37b64f640d4c
+#~ msgid ""
+#~ "Dentro del *flujo entrante* de una "
+#~ "llamada se puede añadir un nodo "
+#~ "con esta funcionalidad de *identificación "
+#~ "de clientes*. Es decir lanzar una "
+#~ "*solicitud de identificación* sobre cada "
+#~ "llamada entrante procesada, implementando a"
+#~ " su vez la posibilidad de consultar"
+#~ " al un sistema de gestión CRM "
+#~ "externo y aguardar que éste último "
+#~ "determine una decisión de encaminamiento "
+#~ "de las llamadas entrantes provenientes "
+#~ "del exterior a través de una "
+#~ "interacción entre OMniLeads y dicho "
+#~ "sistema de gestión."
+#~ msgstr ""
+
+# fa4ce8afb0e6496483ffb659abe0e8dc
+#~ msgid ""
+#~ "En su funcionamiento más básico el "
+#~ "módulo implementa la posibilidad de "
+#~ "solicitar la identificación de un "
+#~ "cliente que se ha comunicado a la"
+#~ " compañía a través de los tonos "
+#~ "del teléfono *DTMF*, luego comprueba si"
+#~ " se ha ingresado algún valor para "
+#~ "entonces encaminar la llamada hacia un"
+#~ " destino concreto, mientras que sino "
+#~ "lo es, hacia otro destino."
+#~ msgstr ""
+
+# 443a55d9132441b5ab7ad1a005aa7321
+#~ msgid ""
+#~ "En ambos escenarios (el más básico "
+#~ "y el interactivo con CRM), se "
+#~ "consigue que la llamada ingrese al "
+#~ "Agente con el *ID del cliente* "
+#~ "como índice para luego obtener toda "
+#~ "la información del cliente y desplegarlo"
+#~ " en la consola de agente (sobre "
+#~ "la vista de contacto o en el "
+#~ "CRM implicado en la campaña)."
+#~ msgstr ""
+
+# 194cc2672fb44c0b85ba3516f257ad5c
+#~ msgid ""
+#~ "En su funcionamiento más básico el "
+#~ "módulo implementa la posibilidad de "
+#~ "solicitar la identificación de un "
+#~ "cliente que se ha comunicado a la"
+#~ " compañía mediante el ingreso de "
+#~ "tonos del teléfono *DTMF*, luego se "
+#~ "comprueba si se ha ingresado algún "
+#~ "valor y finalmente se envía la "
+#~ "llamada hacia un destino concreto en "
+#~ "caso positivo, y hacia otro destino "
+#~ "si el resultado fue negativo. Si "
+#~ "la configuración involucra interacción con "
+#~ "CRM, entonces además de solicitar el "
+#~ "ingreso el módulo envía esta *numero "
+#~ "ingresado* al CRM y aguarda una "
+#~ "respuesta del mismo para ver hacia "
+#~ "donde encaminar la llamada."
+#~ msgstr ""
+
+# d7d026e600a048fe844d9036d13e2a1b
+#~ msgid ""
+#~ "Bajo esta configuración cuando una "
+#~ "llamada entrante es enviada hacia este"
+#~ " nodo, se ejecuta una solicitud de"
+#~ " identificación a través de un audio"
+#~ " reproducido sobre el canal telefónico "
+#~ "del cliente que originó la llamada "
+#~ "para luego validar el ingreso y "
+#~ "tomar una decisión de encaminamiento "
+#~ "hacia las dos alternativas posibles; "
+#~ "*destino  A* si se ha ingresado "
+#~ "una identificación y *destino B* si "
+#~ "el llamante no lo hizo."
+#~ msgstr ""
+
+# 2c996fa4f813492cab064ccedfc51bb6
+#~ msgid ""
+#~ "Bajo esta configuración cuando una "
+#~ "llamada entrante es enviada hacia este"
+#~ " nodoo, se ejecuta una solicitud de"
+#~ " identificación a través de un audio"
+#~ " reproducido sobre el canal telefónico "
+#~ "del cliente que originó la llamada "
+#~ "para luego ejecutar una consulta hacia"
+#~ " un servicio web previamente configurado."
+#~ msgstr ""
+
+# 48d156a08033419d921af3972087afcb
+#~ msgid ""
+#~ "El sistema de gestión CRM toma "
+#~ "partido respecto al encaminamiento de un"
+#~ " cliente que se comunica a la "
+#~ "compañía, ya que a partir de "
+#~ "recibir desde OMniLeads la clave de "
+#~ "identificación del llamante, se pueden "
+#~ "encaminar las llamadas hacia cada uno"
+#~ " de los dos posibles destinos "
+#~ "posibles de acuerdo a lo que se"
+#~ " responda (true/false) a dicha credencial"
+#~ " recibida."
+#~ msgstr ""
+
+# 3bf77d7c51094bb882bad22a884f5e8b
+#~ msgid ""
+#~ "Un ejemplo podría ser el de una"
+#~ " compañía que comprueba si el "
+#~ "\"número de cliente\" se encuentra al"
+#~ " día con los pagos del servicio "
+#~ "y en base a ello encaminar la "
+#~ "llamada hacia una campaña con mayor "
+#~ "o menor prioridad en términos de "
+#~ "tiempo en cola de espera."
+#~ msgstr ""
+
+# 7b96c14666244915862c0f0873389d59
+#~ msgid ""
+#~ "Bajo este modo, cuando una llamada "
+#~ "entrante invoca la ejecución del nodo,"
+#~ " éste último procede con la solicitud"
+#~ " de identificación para luego validar "
+#~ "si el cliente ingresó o no un "
+#~ "valor, en caso de haber ingresado "
+#~ "se ejecuta una consulta hacia un "
+#~ "servicio web previamente configurado."
+#~ msgstr ""
+
+# 0017744e83db46a3bd9ac7a6d19d62ed
+#~ msgid ""
+#~ "El sistema de gestión CRM toma "
+#~ "partido respecto al encaminamiento de un"
+#~ " cliente que se comunica a la "
+#~ "compañía, ya que a partir de "
+#~ "recibir de OMniLeads en tiempo real "
+#~ "la clave de identificación del llamante,"
+#~ " puede encaminar las llamadas hacia "
+#~ "cualquier destino (o nodo) de OMniLeads"
+#~ " siendo posibles una campaña entrante, "
+#~ "un IVR, una validación de tiempo, "
+#~ "etc."
+#~ msgstr ""
+
+# 2041120a9df04307909022f83fd2bfa9
+#~ msgid ""
+#~ "Un ejemplo aplicación podría ser "
+#~ "comprobar en base al \"número de "
+#~ "cliente\" que plan de suscripción tiene"
+#~ " contratado, que plan de salud, etc."
+#~ " y en base a ello encaminar la"
+#~ " llamada hacia la campaña en "
+#~ "OMniLeads que mejor se ajuste."
+#~ msgstr ""
+
+# 0ce406ac57274eadbdddcf037aaa452d
+#~ msgid ""
+#~ "Un aplicación de esta funcionalidad "
+#~ "podría notificar el *número de cliente*"
+#~ " hacia el CRM y que éste último"
+#~ " decida hacia qué campaña entrante de"
+#~ " OMniLeads enviar la llamada, utilizando"
+#~ " como criterio que plan de "
+#~ "suscripción tiene contratado ese *número "
+#~ "de client*."
+#~ msgstr ""
+
+# 0ab61fa8acc64d338257f39c0092b2e6
+#~ msgid ""
+#~ "El tiempo en segudos que el "
+#~ "sistema espera a que se ingrese la"
+#~ " identificación, en caso de exirar "
+#~ "este tiempo, se comprueba si ya se"
+#~ " han sobrepasados los re-intentos "
+#~ "para en base a ello ejecutar una"
+#~ " nueva petición o derivar la llamada"
+#~ " hacia el destino no exitoso"
+#~ msgstr ""
+
+# 89006d4a92df4660b756e60b46f9e830
+#~ msgid "Intentos"
+#~ msgstr ""
+
+# efa2c6c9d6d9472199e62579fa06b2a3
+#~ msgid "Cantidad de intentos no efectivos de autenticación"
+#~ msgstr ""

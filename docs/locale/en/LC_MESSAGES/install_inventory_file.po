@@ -90,7 +90,7 @@ msgstr "As you can see, this section has two lines that are commented, this line
 # 3336cf65a5d74c379250f2c3965c3550
 #: ../../install_inventory_file.rst:39
 msgid "**Entorno de desarrollo basado en Docker.**"
-msgstr "Development Environment based on Docker"
+msgstr "**Development Environment based on Docker.**"
 
 # 30096d28a4554103bafe3d3fb6a4f989
 #: ../../install_inventory_file.rst:41
@@ -103,7 +103,7 @@ msgstr "If you want to deploy a devenv (Development Environment) you must see th
 # 9843595b042b478195c76bd2903c9810
 #: ../../install_inventory_file.rst:60
 msgid "**Entorno de producción clusterizando componentes (cluster horizontal).**"
-msgstr "Production cluster environment (horizontal cluster)"
+msgstr "**Production cluster environment (horizontal cluster).**"
 
 # d0a662d4489f4d40a45f181912e0dd41
 #: ../../install_inventory_file.rst:62
@@ -133,7 +133,7 @@ msgstr "**ssh user**"
 # 980a141692a54ed4842002a244d6b423
 #: ../../install_inventory_file.rst:68
 msgid "**dirección IP**"
-msgstr "** IP address**"
+msgstr "**IP address**"
 
 # 46f0ee0ddb8c4b74acc416922ef52463
 #: ../../install_inventory_file.rst:92
@@ -150,17 +150,17 @@ msgstr "The third section of the file refers to passwords of some components:"
 # 2cac001ca5674e7f886bb9bbd71d138d
 #: ../../install_inventory_file.rst:96
 msgid "**Postgres SQL**"
-msgstr "PostgreSQL"
+msgstr "**PostgreSQL**"
 
 # 0790868577524980b0250b98db0228bc
 #: ../../install_inventory_file.rst:97
 msgid "**MySQL**"
-msgstr "MySQL"
+msgstr "**MySQL**"
 
 # b91b5e1b4b8e403b91b44d55c56afd52
 #: ../../install_inventory_file.rst:98
 msgid "**Usuario \"admin\" de OMniLeads**"
-msgstr "OMniLeads \"admin\" user"
+msgstr "**OMniLeads \"admin\" user**"
 
 # 34c60dea494043d6ad795831d3fd5fdc
 #: ../../install_inventory_file.rst:136
@@ -177,4 +177,4 @@ msgid ""
 "indicar sobre que puerto externo (puerto del firewall) se accede a la "
 "aplicación, al igual con el hostname con el que se invoca a la aplicación"
 " desde el exterior."
-msgstr "Where \"TZ\" refers to the timezone you want to configure in the instance, \"external_port\" and \"external_hostname\" refers to the possibility that OMniLeads is behind a firewall, in this case, you must indicate the external port (Firewall port) that the application will be accessed to, the same as the URL that will be issued in web browser to access the application"
+msgstr "Where **\"TZ\"** refers to the timezone you want to configure in the instance, **\"external_port\"** and **\"external_hostname\"** refers to the possibility that OMniLeads is behind a firewall, in this case, you must indicate the external port (Firewall port) that the application will be accessed to, the same as the URL that will be issued in web browser to access the application"
