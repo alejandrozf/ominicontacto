@@ -2,9 +2,11 @@
 
 - set_fact: mysql_host=127.0.0.1
   when: ansible_os_family == "RedHat"
+  tags: postinstall
 
 - set_fact: mysql_host=localhost
   when: ansible_os_family == "Debian"
+  tags: postinstall
 
 - include: installations.yml
 
