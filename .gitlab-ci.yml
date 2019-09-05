@@ -70,14 +70,17 @@ test:
 docker-prodenv-build-push:
   stage: build
   script:
-    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/self_hosted/
-    - python ../edit_ansible.py -tag=$CI_COMMIT_REF_NAME -dlu=$DOCKER_LOGIN_USER -dle=$DOCKER_LOGIN_EMAIL -dlp=$DOCKER_LOGIN_PASSWORD
-    - cd deploy/ansible
-    - ./deploy.sh --docker-build
+    - bash /home/ftsinfra/git_cleanup.sh
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant
+    - python edit_ansible.py -tag=$CI_COMMIT_REF_NAME -dlu=$DOCKER_LOGIN_USER -dle=$DOCKER_LOGIN_EMAIL -dlp=$DOCKER_LOGIN_PASSWORD
+    - cd /home/ftsinfra/ominicontacto/deploy/ansible
+    - echo "$FTSINFRA_PASS" | sudo -S ./deploy.sh --docker-build
   tags:
     - build-docker
   only:
-    - master
+    - /.*docker-build.*$/
+    - /^pre-release-.*$/
+    - /^release-.*$/
     - schedules
     - web
 

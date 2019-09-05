@@ -38,7 +38,7 @@ args = parser.parse_args()
 # omininicontacto directorio raíz
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-if args.self_hosted == "no":
+if args.self_hosted == "no" or args.docker_login_user is not None:
     inventory_path = os.path.join(base_dir, 'ansible/inventory')
 else:
     inventory_path = '/var/tmp/ominicontacto/deploy/ansible/inventory'
@@ -92,7 +92,7 @@ if args.docker_login_user and args.docker_login_email and args.docker_login_pass
     # editamos las líneas del inventory que indican que se va hacer un build
     # de imágenes de producción de los componentes del sistema
     # 1) modificando archivo con variables de ansible
-    group_vars_path = os.path.join(base_dir, 'deploy/ansible/group_vars/docker_general_vars.yml')
+    group_vars_path = os.path.join(base_dir, 'ansible/group_vars/docker_general_vars.yml')
     group_vars_file = open(group_vars_path, 'r+')
     group_vars_contents = group_vars_file.read()
     group_vars_file.seek(0)
@@ -105,7 +105,7 @@ if args.docker_login_user and args.docker_login_email and args.docker_login_pass
         "docker_login_pass:", "docker_login_pass: {0}".format(
             args.docker_login_password)))
     # 3) modificamos el archivo con las variables de docker prodenv
-    prodenv_vars_path = os.path.join(base_dir, 'deploy/ansible/group_vars/docker_prodenv_vars.yml')
+    prodenv_vars_path = os.path.join(base_dir, 'ansible/group_vars/docker_prodenv_vars.yml')
     prodenv_vars_file = open(prodenv_vars_path, 'r+')
     prodenv_vars_contents = prodenv_vars_file.read()
     prodenv_vars_file.seek(0)
