@@ -96,7 +96,12 @@ menuselect/menuselect --enable codec_opus menuselect.makeopts
 #     done
 # done
 
-make -j ${JOBS} all
+until make -j ${JOBS} all
+do
+  >&2 echo "Make of asterisk failed, retrying"
+done
+  sleep 1
+  >&2 echo "Make of asterisk done"
 make install
 
 # copy default configs

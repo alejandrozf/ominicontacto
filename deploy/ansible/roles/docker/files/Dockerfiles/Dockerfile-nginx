@@ -1,6 +1,5 @@
 FROM {{ nginx_image }}
 
 COPY nginx/ /etc/nginx/
-COPY certs /etc/nginx/certs
 
 EXPOSE 443/tcp

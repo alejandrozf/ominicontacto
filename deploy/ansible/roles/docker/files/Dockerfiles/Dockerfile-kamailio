@@ -1,4 +1,3 @@
 FROM {{ kamailio_image }}
 
 COPY kamailio/ /etc/kamailio/
-COPY certs /etc/kamailio/certs
