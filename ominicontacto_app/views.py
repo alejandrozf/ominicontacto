@@ -614,7 +614,7 @@ class RegistroFormView(FormView):
             message = result['msg']
             messages.error(self.request, message)
             return render(self.request, 'registro.html', {'form': form})
-        message = _('Credenciales creadas para esta instancia')
+        message = _('Registro exitoso, se le ha enviado un e-mail con su llave de registro.')
         messages.success(self.request, message)
         config_constance.CLIENT_NAME = result['user_name']
         config_constance.CLIENT_PASSWORD = form.cleaned_data['password']

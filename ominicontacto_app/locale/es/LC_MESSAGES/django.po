@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-02 16:22-0300\n"
+"POT-Creation-Date: 2019-09-10 16:36-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4555,7 +4555,7 @@ msgid "Ingresar"
 msgstr ""
 
 #: ominicontacto_app/templates/registro.html:11
-msgid "Ya se encuentra registrado"
+msgid "Ya se encuentra registrado."
 msgstr ""
 
 #: ominicontacto_app/templates/sistema_externo/sistema_externo_list.html:31
@@ -4880,7 +4880,7 @@ msgid "Error en el intento de conexión a: {0} debido {1}"
 msgstr ""
 
 #: ominicontacto_app/views.py:617
-msgid "Credenciales creadas para esta instancia"
+msgid "Registro exitoso, se le ha enviado un e-mail con su llave de registro."
 msgstr ""
 
 #: ominicontacto_app/views_agente.py:170
