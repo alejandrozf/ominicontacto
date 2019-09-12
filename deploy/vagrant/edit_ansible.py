@@ -61,9 +61,6 @@ if args.internal_ip and args.self_hosted == "no":
         " #(this line is for node-host installation)",
         "{0} ansible_ssh_port={1} ansible_user=root".format(
             args.internal_ip, remote_ssh_port)).replace(
-                "localhost ansible_connection=local ansible_user=root"
-                " #(this line is for self-hosted installation)",
-                "#localhost ansible_connection=local ansible_user=root").replace(
                 "#TZ=America/Argentina/Cordoba", "TZ=America/Argentina/Cordoba").replace(
                 "#admin_pass=my_very_strong_pass", "admin_pass={0}".format(
                     args.admin_pass)).replace(
@@ -79,6 +76,9 @@ if args.internal_ip and args.self_hosted == "yes":
     inventory_file.seek(0)
     inventory_file.truncate()
     inventory_file.write(inventory_contents.replace(
+        "#localhost ansible_connection=local ansible_user=root"
+        " #(this line is for self-hosted installation)",
+        "localhost ansible_connection=local ansible_user=root").replace(
         "#TZ=America/Argentina/Cordoba", "TZ=America/Argentina/Cordoba").replace(
             "#admin_pass=my_very_strong_pass", "admin_pass={0}".format(args.admin_pass)).replace(
             "#postgres_password=my_very_strong_pass", "postgres_password={0}".format(
