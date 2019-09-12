@@ -23,8 +23,6 @@
     - MySQL-python.x86_64
     - mariadb-server
   when: ansible_os_family == "RedHat"
-  become: true
-  become_method: sudo
   retries: 3
   delay: 3
   register: result
@@ -36,8 +34,6 @@
     - mariadb-server
     - python-mysqldb
   when: ansible_os_family == "Debian"
-  become: true
-  become_method: sudo
   retries: 3
   delay: 3
   register: result
@@ -46,20 +42,14 @@
 # En estas tasks se hacen tareas de segurizacion de mariadb, es como hacer un mariadb-secure no voy a explicar una por una, nunca fallan
 - name: Enable and start MariaDB (centos)
   service: name=mariadb enabled=yes state=started
-  become: true
-  become_method: sudo
   when: ansible_os_family == "RedHat"
 
 - name: Enable and start MariaDB (debian)
   service: name=mysql enabled=yes state=started
-  become: true
-  become_method: sudo
   when: ansible_os_family == "Debian"
 
 - name: Remove .my.cnf
   file: path=/root/.my.cnf state=absent
-  become: true
-  become_method: sudo
   tags: postinstall
 
 - set_fact: mysql_old_root_password="{{ mysql_root_password }}"
@@ -67,64 +57,38 @@
   tags: postinstall
 
 - name: Set root Password
-  mysql_user: name=root host={{ item }} host_all=yes password={{ mysql_root_password }} login_password={{ mysql_old_root_password }} login_host="{{ mysql_host }}" check_implicit_admin=true state=present
-  with_items:
-    - "{{ mysql_host }}"
+  mysql_user: name=root host={{ mysql_host }} host_all=yes password={{ mysql_root_password }} login_password={{ mysql_old_root_password }} login_host={{ mysql_host }} check_implicit_admin=true state=present
   environment:
     MYSQL_HOST: "{{ mysql_host }}"
-  become: true
-  become_method: sudo
   when: mysql_root_password != ""
   tags: postinstall
 
 - name: Reload privilege tables
-  command: 'mysql -ne "{{ item }}"'
+  command: "mysql -ne \"FLUSH PRIVILEGES\""
   environment:
     MYSQL_HOST: "{{ mysql_host }}"
-  with_items:
-    - FLUSH PRIVILEGES
+    MYSQL_PWD: "{{ mysql_root_password}}"
   changed_when: False
-  become: true
-  become_method: sudo
 
 - name: Remove anonymous users
-  command: 'mysql -ne "{{ item }}"'
-  with_items:
-    - DELETE FROM mysql.user WHERE User=''
+  command: "mysql -ne \"DELETE FROM mysql.user WHERE User=''\""
   changed_when: False
   environment:
     MYSQL_HOST: "{{ mysql_host }}"
-  become: true
-  become_method: sudo
+    MYSQL_PWD: "{{ mysql_root_password}}"
 
 - name: Disallow root login remotely
-  command: 'mysql -ne "{{ item }}"'
-  with_items:
-    - DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('"{{ mysql_host }}"')
+  command: "mysql -ne \"DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('{{ mysql_host }}')\""
   changed_when: False
   environment:
     MYSQL_HOST: "{{ mysql_host }}"
-  become: true
-  become_method: sudo
-
-- name: Reload privilege tables
-  command: 'mysql -ne "{{ item }}"'
-  with_items:
-    - FLUSH PRIVILEGES
-  changed_when: False
-  environment:
-    MYSQL_HOST: "{{ mysql_host }}"
-  become: true
-  become_method: sudo
+    MYSQL_PWD: "{{ mysql_root_password}}"
 
 - name: Grant privileges to root mysql user
-  command: mysql -ne "GRANT ALL PRIVILEGES ON *.* TO 'root'@'{{ item }}' IDENTIFIED BY '{{ mysql_root_password }}' WITH GRANT OPTION;"
-  with_items:
-    - "{{ mysql_host }}"
+  command: "mysql -ne \"GRANT ALL PRIVILEGES ON *.* TO 'root'@'{{ mysql_host }}' IDENTIFIED BY '{{ mysql_root_password }}' WITH GRANT OPTION;\""
   environment:
     MYSQL_HOST: "{{ mysql_host }}"
-  become: true
-  become_method: sudo
+    MYSQL_PWD: "{{ mysql_root_password}}"
 
 - name: Enable and start MariaDB (centos)
   service: name=mariadb enabled=yes state=started
