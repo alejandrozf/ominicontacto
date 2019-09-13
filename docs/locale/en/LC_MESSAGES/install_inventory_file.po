@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-02 14:37-0300\n"
+"POT-Creation-Date: 2019-09-13 10:40-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,7 +28,10 @@ msgid ""
 "Al utilizar Ansible como tecnología para realizar los despliegues de "
 "OMniLeads, se trabaja con un archivo de \"inventario\" en el cual se "
 "configuran cuestiones como:"
-msgstr "Ansible is the technology used to deploy OMniLeads in a bare metal (physical machine or virtual machine). Ansible works with a file called \"inventory\" where these things are configured:"
+msgstr ""
+"Ansible is the technology used to deploy OMniLeads in a bare metal "
+"(physical machine or virtual machine). Ansible works with a file called "
+"\"inventory\" where these things are configured:"
 
 # c10a3df7f2cf41e5b2160ce445c0f01e
 #: ../../install_inventory_file.rst:9
@@ -42,7 +45,9 @@ msgstr "Installation type (self-hosted, host-node, cluster, devenv, etc.)"
 msgid ""
 "Passwords de los diferentes componentes (postgres, asterisk-AMI, acceso "
 "de admin, etc.)"
-msgstr "Passwors of different components (PostgreSQL, asterisk-AMI, web admin access, etc.)"
+msgstr ""
+"Passwors of different components (PostgreSQL, asterisk-AMI, web admin "
+"access, etc.)"
 
 # 03d102ea96ac487fbfdfda1d76538836
 #: ../../install_inventory_file.rst:11
@@ -69,7 +74,9 @@ msgstr "Installation type configuration"
 msgid ""
 "En la primera parte del archivo se especifica el tipo de despliegue a "
 "realizar, en donde tenemos para elegir:"
-msgstr "In first part of the file you specify which type of installation you want to do, for that you must choice: "
+msgstr ""
+"In first part of the file you specify which type of installation you want"
+" to do, for that you must choice: "
 
 # b193f1c1441f4d98bba4abe8ac53ed52
 #: ../../install_inventory_file.rst:24
@@ -85,7 +92,12 @@ msgid ""
 " referencia a una instalación :ref:`about_install_selfhosted` y la "
 "segunda se utiliza cuando se desea ejecutar una "
 ":ref:`about_install_remote`."
-msgstr "As you can see, this section has two lines that are commented, this lines refers to the installation type of a production environment AIO. Both are not mutually exclusive, first makes refer to the :ref:`about_install_selfhosted` installation and second refers to :ref:`about_install_remote`"
+msgstr ""
+"As you can see, this section has two lines that are commented, this lines"
+" refers to the installation type of a production environment AIO. Both "
+"are not mutually exclusive, first makes refer to the "
+":ref:`about_install_selfhosted` installation and second refers to "
+":ref:`about_install_remote`"
 
 # 3336cf65a5d74c379250f2c3965c3550
 #: ../../install_inventory_file.rst:39
@@ -98,7 +110,10 @@ msgid ""
 "En caso de requerir el despliegue de un entorno de desarrollo, se debe "
 "hacer foco en dicha sección. Aquí simplemente se debe desomentar la linea"
 " \"#localhost ansible_connection=local\"."
-msgstr "If you want to deploy a devenv (Development Environment) you must see this section. Here, uncomment the line \"#localhost ansible_connection=local\"."
+msgstr ""
+"If you want to deploy a devenv (Development Environment) you must see "
+"this section. Here, uncomment the line \"#localhost "
+"ansible_connection=local\"."
 
 # 9843595b042b478195c76bd2903c9810
 #: ../../install_inventory_file.rst:60
@@ -113,7 +128,11 @@ msgid ""
 "aplicación puede ser desplegada dividiendo la carga en hasta cinco "
 "componentes. Cada linea corresponde a uno de éstos y deben ser "
 "configurados indicando su:"
-msgstr "In this scenary you must to set the parameters of each host that make part of the OMniLeads cluster. As you can see, the application can be deploy dividing the load in five componentes. Each line refers to each of these and must be configured indicating:"
+msgstr ""
+"In this scenary you must to set the parameters of each host that make "
+"part of the OMniLeads cluster. As you can see, the application can be "
+"deploy dividing the load in five componentes. Each line refers to each of"
+" these and must be configured indicating:"
 
 # 0f8bc1669ed34509a5095476227c41fd
 #: ../../install_inventory_file.rst:65
@@ -144,15 +163,18 @@ msgstr "Passwords and parameters"
 #: ../../install_inventory_file.rst:94
 msgid ""
 "En la tercera sección del archivo se ajusta todo lo respectivo a "
-"contraseñas de algunos componentes:"
-msgstr "The third section of the file refers to passwords of some components:"
+"contraseñas de algunos componentes y parámetro para configuración de zona"
+" horaria:"
+msgstr ""
+"The third section of the file refers to passwords of some components and "
+"the setting to configure timezone:"
 
 # 2cac001ca5674e7f886bb9bbd71d138d
 #: ../../install_inventory_file.rst:96
 msgid "**Postgres SQL**"
 msgstr "**PostgreSQL**"
 
-# 0790868577524980b0250b98db0228bc
+# 60bcb6242a8548cb881786bf526ef90c
 #: ../../install_inventory_file.rst:97
 msgid "**MySQL**"
 msgstr "**MySQL**"
@@ -162,19 +184,118 @@ msgstr "**MySQL**"
 msgid "**Usuario \"admin\" de OMniLeads**"
 msgstr "**OMniLeads \"admin\" user**"
 
+# abec2f7abdb141c3a0e0342b585a401a
+#: ../../install_inventory_file.rst:99
+msgid "**TZ**"
+msgstr "**TZ**"
+
+# 404a045a16304ce1a1a8a63b294835c7
+#: ../../install_inventory_file.rst:138
+msgid "OMniLeads Cloud:"
+msgstr "OMniLeads Cloud:"
+
+# d12ec92bdeb8410280a19fc03cf4a7ce
+#: ../../install_inventory_file.rst:140
+msgid ""
+"Los parámetros  **\"external_hostname\"**, **\"external_port\"**  y "
+"**\"public_ip\"**, deben configurarse si se quiere instalar un OMniLeads "
+"en un servidor en la nube, donde los agentes se conectarán a la URL "
+"conformada por **https://external_hostname:external_port**, sin tener una"
+" conexion LAN directa o atraves de VPN hacia el OMniLeads."
+msgstr ""
+"The settings **\"external_hostname\"**, **\"external_port\"**  and "
+"**\"public_ip\"**, must be configured if you want to install OMniLeads in a cloud server, where the agents will connect to an URL composed by **https://external_hostname:external_port**, without having a LAN direct connection or through VPN to the OMniLeads server."
+
+# 36bc3f1bb54842fbbfaa2550079626ce
+#: ../../install_inventory_file.rst:157
+msgid ""
+"Se deben establecer dos reglas de firewall en la GUI del proveedor del "
+"servidor cloud, el cual actua como un router de borde, dejando a OML "
+"\"detrás de un NAT\". (si no sabe como hacerlo pongase en contacto con su"
+" proveedor)"
+msgstr "You must set two firewall rules in cloud provider GUI, which serves as a NAT border router (if you don't know how to do it, make contact with your provider)"
+
+# 8a81f7f9e16645689b2a4fb0313ab60a
+#: ../../install_inventory_file.rst:159
+msgid "Permit de tráfico saliente desde los puertos 10000 a 30000 UDP"
+msgstr "Permit outbound traffic in this port range: 10000-30000 UDP"
+
+# 1fe12ce9e81949bca1fb68da2e24ed6a
+#: ../../install_inventory_file.rst:160
+msgid "Permit de tráfico entrante desde los puertos 10000 a 30000 UDP"
+msgstr "Permit inbound traffic in this port range: 10000-30000 UDP"
+
+# 1726d848c19942918fd1ed7d12b68316
+#: ../../install_inventory_file.rst:163
+msgid "Parámetros para añadir par llave/certificado digital confiables"
+msgstr "Settings to add trusted key/certificate pair"
+
+# 8cc82a7f559f491aacee6f316352fd3f
+#: ../../install_inventory_file.rst:165
+msgid ""
+"OMniLeads utiliza por defecto un par de llave/certificado digital "
+"autofirmado, lo que hace que siempre salten excepciones en el browser con"
+" los conocidos errores **ERR_CERT_AUTORITHY INVALID** (para Google "
+"Chrome) y **SEC_ERROR_UNKNOWN_ISSUER** (para Firefox). Si ud posee sus "
+"propios certificados firmados por una CA válida puede añadirlos a su "
+"instalación de OMniLeads siguiendo estos pasos:"
+msgstr "By default, OMniLeads uses it own selfsigned key/certifate pair for HTTPS connections. This invokes the well known errors in browsers: **ERR_CERT_AUTORITHY INVALID** (Google "
+"Chrome) and **SEC_ERROR_UNKNOWN_ISSUER** (Firefox). If you own your own certificates signed by a valid CA you can add them to your OMniLeads installation, with this steps:"
+
+# 2b1e71901ef9473db55eceeb057686ff
+#: ../../install_inventory_file.rst:167
+msgid ""
+"Ubique sus certificados en la carpeta *deploy/certs/* dentro del "
+"repositorio"
+msgstr "Place the files in the folder *deploy/certs/* inside the repository"
+
+# b45abd326a314830a69bc1c462d057f4
+#: ../../install_inventory_file.rst:168
+msgid ""
+"Edite y descomente las variables **trusted_key** y **trusted_cert** con "
+"el nombre del key y cert que puso en la carpeta"
+msgstr "Edit and uncomment the variables **trusted_key** and **trusted_cert** with the name of the key and cert files in the folder"
+
+# 8fb6c71c10574cfc86209f5f9304a3b4
+#: ../../install_inventory_file.rst:180
+msgid "Proceda con la instalación"
+msgstr "Proceed with the installation"
+
+# 9df6cc82b00f4176a5c9a99626816e38
+#: ../../install_inventory_file.rst:184
+msgid ""
+"Tener certificados digitales confiables es imprescindible para poder "
+"hacer uso del addon `WebPhone Client <https://gitlab.com/omnileads"
+"/webphone-client-releases>`_."
+msgstr "The trusted certificate for HTTPS connection is mandatory to use the `WebPhone Client <https://gitlab.com/omnileads/webphone-client-releases>`_ addon."
+
 # 34c60dea494043d6ad795831d3fd5fdc
-#: ../../install_inventory_file.rst:136
-msgid "Parámetros de zona horaria y configuración de NAT:"
-msgstr "Timezone and NAT configuration"
+#~ msgid "Parámetros de zona horaria y configuración de NAT:"
+#~ msgstr "Timezone and NAT configuration"
 
 # e5dc6e505d974beda4d99fa1f814d870
-#: ../../install_inventory_file.rst:138
-msgid ""
-"Donde **\"TZ\"** corresponde al Time Zone correspondiente y por otro lado"
-" tenemos los parámetros **\"external_port\"** y "
-"**\"external_hostname\"**, que hacen alusión a la posibilidad de que "
-"OMniLeads se encuentre detrás de un firewall, en este caso se debe "
-"indicar sobre que puerto externo (puerto del firewall) se accede a la "
-"aplicación, al igual con el hostname con el que se invoca a la aplicación"
-" desde el exterior."
-msgstr "Where **\"TZ\"** refers to the timezone you want to configure in the instance, **\"external_port\"** and **\"external_hostname\"** refers to the possibility that OMniLeads is behind a firewall, in this case, you must indicate the external port (Firewall port) that the application will be accessed to, the same as the URL that will be issued in web browser to access the application"
+#~ msgid ""
+#~ "Donde **\"TZ\"** corresponde al Time "
+#~ "Zone correspondiente y por otro lado "
+#~ "tenemos los parámetros **\"external_port\"** y"
+#~ " **\"external_hostname\"**, que hacen alusión "
+#~ "a la posibilidad de que OMniLeads "
+#~ "se encuentre detrás de un firewall, "
+#~ "en este caso se debe indicar sobre"
+#~ " que puerto externo (puerto del "
+#~ "firewall) se accede a la aplicación, "
+#~ "al igual con el hostname con el"
+#~ " que se invoca a la aplicación "
+#~ "desde el exterior."
+#~ msgstr ""
+#~ "Where **\"TZ\"** refers to the timezone"
+#~ " you want to configure in the "
+#~ "instance, **\"external_port\"** and "
+#~ "**\"external_hostname\"** refers to the "
+#~ "possibility that OMniLeads is behind a"
+#~ " firewall, in this case, you must "
+#~ "indicate the external port (Firewall "
+#~ "port) that the application will be "
+#~ "accessed to, the same as the URL"
+#~ " that will be issued in web "
+#~ "browser to access the application"
