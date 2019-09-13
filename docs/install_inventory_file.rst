@@ -91,11 +91,12 @@ dividiendo la carga en hasta cinco componentes. Cada linea corresponde a uno de 
 Parámetros y contraseñas
 ***************************
 
-En la tercera sección del archivo se ajusta todo lo respectivo a contraseñas de algunos componentes:
+En la tercera sección del archivo se ajusta todo lo respectivo a contraseñas de algunos componentes y parámetro para configuración de zona horaria:
 
 * **Postgres SQL**
 * **MySQL**
 * **Usuario "admin" de OMniLeads**
+* **TZ**
 
 .. code-block:: bash
 
@@ -128,27 +129,56 @@ En la tercera sección del archivo se ajusta todo lo respectivo a contraseñas d
   dialer_user=demoadmin
   dialer_password=demo
   #mysql_root_password=my_very_strong_pass
-  ################################################################################################
-  # Set the timezone where the nodes are UNCOMMENT and set this if you are doing a fresh install #
-  ################################################################################################
+  #################################################################################################
+  # Set the timezone where the nodes are. UNCOMMENT and set this if you are doing a fresh install #
+  #################################################################################################
   #TZ=America/Argentina/Cordoba
 
-Parámetros de zona horaria y configuración de NAT:
+OMniLeads Cloud:
+*****************
 
-Donde **"TZ"** corresponde al Time Zone correspondiente y por otro lado tenemos los parámetros **"external_port"** y **"external_hostname"**, que hacen alusión a la posibilidad de
-que OMniLeads se encuentre detrás de un firewall, en este caso se debe indicar sobre que puerto externo (puerto del firewall) se accede a la aplicación, al igual
-con el hostname con el que se invoca a la aplicación desde el exterior.
+Los parámetros  **"external_hostname"**, **"external_port"**  y **"public_ip"**, deben configurarse si se quiere instalar un OMniLeads en un servidor en la nube, donde los agentes se conectarán a la URL conformada por **https://external_hostname:external_port**, sin tener una conexion LAN directa o atraves de VPN hacia el OMniLeads.
 
 .. code-block:: bash
 
-  ################################################################################################
-  # Set the timezone where the nodes are UNCOMMENT and set this if you are doing a fresh install #
-  ################################################################################################
-  #TZ=America/Argentina/Cordoba
-  #################################################################################
-  # OMniLeads behind nat:                                                         #
-  #  External port is the outside port where OML web server will listen requests  #
-  #  External hostname is the dns external users will connect to                  #
-  #################################################################################
+  #######################################################################################
+  #                                OMniLeads cloud:			 	      #
+  # If you are wishing to install OML in a cloud provider you must set these variables: #
+  #  - external_port: the outside port where OML web server will listen requests        #
+  #  - external_hostname: the dns external users will connect to                        #
+  #  - public_ip: where OML is installed                                                #
+  #######################################################################################
   #external_port=
   #external_hostname=
+  #public_ip=
+
+.. important::
+
+  Se deben establecer dos reglas de firewall en la GUI del proveedor del servidor cloud, el cual actua como un router de borde, dejando a OML "detrás de un NAT". (si no sabe como hacerlo pongase en contacto con su proveedor)
+
+    * Permit de tráfico saliente desde los puertos 10000 a 30000 UDP
+    * Permit de tráfico entrante desde los puertos 10000 a 30000 UDP
+
+Parámetros para añadir par llave/certificado digital confiables
+***************************************************************
+
+OMniLeads utiliza por defecto un par de llave/certificado digital autofirmado, lo que hace que siempre salten excepciones en el browser con los conocidos errores **ERR_CERT_AUTORITHY INVALID** (para Google Chrome) y **SEC_ERROR_UNKNOWN_ISSUER** (para Firefox). Si ud posee sus propios certificados firmados por una CA válida puede añadirlos a su instalación de OMniLeads siguiendo estos pasos:
+
+1. Ubique sus certificados en la carpeta *deploy/certs/* dentro del repositorio
+2. Edite y descomente las variables **trusted_key** y **trusted_cert** con el nombre del key y cert que puso en la carpeta
+
+.. code::
+
+  #####################################################################
+  # Trusted Certificates:                                             #
+  #   If you want to use your own certificate/key pair, copy them in  #
+  #   ominicontacto/deploy/certs/ and type here the name of the files #
+  #####################################################################
+  #trusted_cert=
+  #trusted_key=
+
+3. Proceda con la instalación
+
+.. important::
+
+  Tener certificados digitales confiables es imprescindible para poder hacer uso del addon `WebPhone Client <https://gitlab.com/omnileads/webphone-client-releases>`_.
