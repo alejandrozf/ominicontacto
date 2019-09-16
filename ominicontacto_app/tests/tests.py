@@ -378,7 +378,7 @@ class IntegrationTests(unittest.TestCase):
     def test_acceso_web_agente_acceso_exitoso(self):
         self._login(AGENTE_USERNAME, AGENTE_PASSWORD)
         self.assertTrue(self.browser.find_element_by_xpath(
-            '//div/a[contains(@href, "/agente/logout/")]'))
+            '//a[contains(@href, "/agente/logout/")]'))
 
     def test_acceso_web_agente_acceso_denegado(self):
         clave_erronea = "test"
@@ -393,6 +393,7 @@ class IntegrationTests(unittest.TestCase):
         supervisor_username = random_supervisor[:16]
         supervisor_password = '098098ZZZ'
         self.crear_supervisor(supervisor_username, supervisor_password)
+        self.crear_supervisor_tipo_gerente()
         # Deslogueo como admin
         deslogueo = self.browser.find_element_by_xpath(
             '//a[contains(@href, "/accounts/logout/")]')
@@ -401,7 +402,7 @@ class IntegrationTests(unittest.TestCase):
         # Logueo como supervisor
         self._login(supervisor_username, supervisor_password)
         self.assertTrue(self.browser.find_element_by_xpath(
-            '//div/a[contains(@href, "/accounts/logout/")]'))
+            '//a[contains(@href, "/accounts/logout/")]'))
 
     def test_acceso_web_supervisor_acceso_denegado(self):
         # Creación supervisor que vamos a usar para simular un acceso denegado
@@ -427,7 +428,8 @@ class IntegrationTests(unittest.TestCase):
         random_customer = uuid.uuid4().hex
         customer_username = random_customer[:16]
         customer_password = '098098ZZZ'
-        self.crear_customer(customer_username, customer_password)
+        self.crear_supervisor(customer_username, customer_password)
+        self.crear_supervisor_tipo_customer()
         # Deslogue como admin
         deslogueo = self.browser.find_element_by_xpath(
             '//a[contains(@href, "/accounts/logout/")]')
@@ -443,7 +445,8 @@ class IntegrationTests(unittest.TestCase):
         random_customer = uuid.uuid4().hex
         customer_username = random_customer[:16]
         customer_password = '098098ZZZ'
-        self.crear_customer(customer_username, customer_password)
+        self.crear_supervisor(customer_username, customer_password)
+        self.crear_supervisor_tipo_customer()
         clave_erronea = 'test'
         # Deslogue como admin
         deslogueo = self.browser.find_element_by_xpath(
