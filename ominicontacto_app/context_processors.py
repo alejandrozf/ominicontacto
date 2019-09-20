@@ -20,6 +20,7 @@
 from __future__ import unicode_literals
 
 from django.conf import settings
+from django.apps import apps
 
 from constance import config
 
@@ -39,3 +40,21 @@ def global_settings(request):
     return {
         'ALLOW_FEEDBACK': settings.ALLOW_FEEDBACK,
     }
+
+
+def addon_menu_items(request):
+    """
+    Adds items in the supervision menu asking the app configurations.
+    """
+    menu_items = []
+    if request.user.is_authenticated() and request.user.get_tiene_permiso_administracion():
+        for app in apps.get_app_configs():
+            if hasattr(app, 'supervision_menu_items'):
+                app_items = app.supervision_menu_items(request)
+                if app_items:
+                    menu_items += app_items
+    if menu_items:
+        return {
+            'ADMIN_MENU_ITEMS': menu_items,
+        }
+    return {}
