@@ -16,11 +16,37 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-
 from __future__ import unicode_literals
 
+from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext as _
 from django.apps import AppConfig
 
 
 class SupervisionAppConfig(AppConfig):
     name = 'supervision_app'
+
+    def supervision_menu_items(self, request):
+        if request.user.get_supervisor_profile():
+            return [
+                {
+                    'label': _('Supervisión'),
+                    'icon': 'icon-headset',
+                    'id': 'menuSupervise',
+                    'children': [
+                        {
+                            'label': _('Agentes'),
+                            'url': reverse('supervision_agentes'),
+                        },
+                        {
+                            'label': _('Campañas Entrantes'),
+                            'url': reverse('supervision_campanas_entrantes'),
+                        },
+                        {
+                            'label': _('Campañas Salientes'),
+                            'url': reverse('supervision_campanas_salientes'),
+                        },
+                    ],
+                },
+            ]
+        return None

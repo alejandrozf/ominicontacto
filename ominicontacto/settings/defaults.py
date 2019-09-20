@@ -111,7 +111,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'ominicontacto_app.context_processors.admin_supervisor',
-                'ominicontacto_app.context_processors.global_settings'
+                'ominicontacto_app.context_processors.global_settings',
+                'ominicontacto_app.context_processors.addon_menu_items',
             ],
         },
     },
