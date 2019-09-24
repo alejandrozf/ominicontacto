@@ -21,10 +21,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 
 {% block tipo_interaccion %}
+    {{ form.tipo_interaccion.errors }}
     {% if form.instance.tipo_interaccion == 2 %}
         <div class="col-md-6">
             <label>{% trans 'Sitio externo:' %}</label>
+            <input id="urlSitioExterno" type="text" class="form-control"
+                   value="{{ form.instance.sitio_externo.url }}" disabled/>
             {{ form.sitio_externo }}
+            {{ form.sitio_externo.errors }}
         </div>
     {% endif %}
 {% endblock %}
