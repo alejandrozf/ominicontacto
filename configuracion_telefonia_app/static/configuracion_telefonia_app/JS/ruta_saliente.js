@@ -17,25 +17,30 @@
 
 */
 
-/* adiciona plugin 'jquery.formset.js' para generar forms dinamicamente
-        en un formset  */
+/* adiciona plugin 'jquery.formset.js' para generar forms dinamicamente en un formset  */
+
+/* global AGREGAR_PATRON_DISCADO */
+/* global REMOVER_CAMPO */
+/* global AGREGAR_TRONCAL */
+
+
 $(function() {
-    var patronDiscador = $('#patrondiscador').val();
+    var patronDiscador = $('#patrondiscado').val();
     var ordenTroncal = $('#ordentroncal').val();
-	 $('.patronesDiscado').formset({
-	   addText: AGREGAR_PATRON_DISCADO,
-	   deleteText: REMOVER_CAMPO,
-	   prefix: patronDiscador,
-	   addCssClass: 'btn btn-outline-primary patronesDiscado',
-	   deleteCssClass: 'btn btn-outline-danger patronesDiscado',
-	   formCssClass: 'dynamic-formset1',
-	 });
-	 $('.troncalesOrdenados').formset({
-	   addText: AGREGAR_TRONCAL,
-	   deleteText: REMOVER_CAMPO,
-	   prefix: ordenTroncal,
-	   addCssClass: 'btn btn-outline-primary troncalesOrdenados',
-	   deleteCssClass: 'btn btn-outline-danger troncalesOrdenados',
-	   formCssClass: 'dynamic-formset2',
-	 });
+    $('.patronesDiscado').formset({
+        addText: AGREGAR_PATRON_DISCADO,
+        deleteText: REMOVER_CAMPO,
+        prefix: patronDiscador,
+        addCssClass: 'btn btn-outline-primary patronesDiscado',
+        deleteCssClass: 'btn btn-outline-danger patronesDiscado',
+        formCssClass: 'dynamic-formset1',
+    });
+    $('.troncalesOrdenados').formset({
+        addText: AGREGAR_TRONCAL,
+        deleteText: REMOVER_CAMPO,
+        prefix: ordenTroncal,
+        addCssClass: 'btn btn-outline-primary troncalesOrdenados',
+        deleteCssClass: 'btn btn-outline-danger troncalesOrdenados',
+        formCssClass: 'dynamic-formset2',
+    });
 });
