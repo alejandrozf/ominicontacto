@@ -178,7 +178,12 @@ class ArchivoDeReporteCsv(object):
                                           calificacion.agente]
                     # TODO: ver la forma de relacionar con respuestas vieja.
                     respuesta_formulario_gestion = calificacion.history_object.get_venta()
-                    if (calificacion.es_gestion() and
+                    if hasattr(calificacion, 'es_gestion'):
+                        es_gestion = calificacion.es_gestion()
+                    else:
+                        es_gestion = (calificacion.opcion_calificacion.tipo ==
+                                      OpcionCalificacion.GESTION)
+                    if (es_gestion and
                         campana.tipo_interaccion is Campana.FORMULARIO and
                             respuesta_formulario_gestion is not None):
 
