@@ -143,7 +143,7 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
              (PARAMETROS_CRM, ParametrosCrmFormSet)]
 
     TEMPLATES = {INICIAL: "campanas/campana_manual/nueva_edita_campana.html",
-                 OPCIONES_CALIFICACION: "campanas/campanas/campana_manual/opcion_calificacion.html",
+                 OPCIONES_CALIFICACION: "campanas/campana_manual/opcion_calificacion.html",
                  PARAMETROS_CRM: "campanas/campana_manual/parametros_crm_sitio_externo.html"}
 
     form_list = FORMS

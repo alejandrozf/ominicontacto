@@ -22,14 +22,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 
 {% block head_js %}
-  <script type="text/javascript" 
+  <script type="text/javascript"
           src="{% static 'ominicontacto/JS/agente/formularioNuevaEditaCampana.js' %}">
   </script>
 {% endblock head_js %}
 
 {% block extra_js %}
     <script type="text/javascript" src="{% static 'ominicontacto/JS/interaccionsitioexterno.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/campana_entrante/nueva_edita_campana.js' %}"></script>
 {% endblock %}
 
 {% block nav %}
@@ -87,6 +86,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {% if form.instance.tipo_interaccion == 2 %}
                     <div class="col-md-6">
                         <label>{% trans "Sitio Externo" %}</label>
+                        <input id="urlSitioExterno" type="text" class="form-control"
+                               value="{{ form.instance.sitio_externo.url }}" disabled/>
                         {{ form.sitio_externo }}
                         {{ form.sitio_externo.errors }}
                     </div>
