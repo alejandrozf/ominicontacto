@@ -141,7 +141,7 @@ CodeCopy() {
   echo "      Version: $release_name"
   echo ""
   if [ -e $TMP_OMINICONTACTO ] ; then
-    rm -rf $TMP
+    rm -rf $TMP_OMINICONTACTO
   fi
   mkdir -p $TMP_OMINICONTACTO
   echo "Using temporal directory: $TMP_OMINICONTACTO..."

@@ -27,7 +27,7 @@ services:
       - grabaciones:/var/spool/asterisk/monitor/
       - ./asterisk/conf/:/etc/asterisk/
       - ./asterisk/agis/:/var/lib/asterisk/agi-bin/
-      - sounds:/var/lib/asterisk/sounds/
+      - sounds:/var/lib/asterisk/sounds/oml/
       - ./asterisk/odbc.ini:/etc/odbc.ini
       - ./asterisk/odbcinst.ini:/etc/odbcinst.ini
       - ./asterisk/others/:/home/
