@@ -21,10 +21,6 @@ Pre-requisitos:
 - 4 GB de memoria RAM
 - En *Ubuntu / Debian*; Instalar el paquete sudo, openssh-server y phyton-minimal, permitir login SSH con el usuario root y reiniciar el servicio de ssh para que se tomen los cambios:
 
-.. note::
-
-   En versiones menores a CentOS 7.6 es necesario primero hacer un yum update y luego reebotear el server
-
 .. code-block:: bash
 
   apt-get install sudo openssh-server python-minimal -y
@@ -57,6 +53,19 @@ CentOS:
   git clone https://gitlab.com/omnileads/ominicontacto.git
   cd ominicontacto
   git checkout master
+
+
+- Instalar paquete kernel-devel, realizar el update del sistema operativo y rebotear la máquina.
+
+.. code-block:: bash
+
+      yum install kernel-devel -y
+      yum update -y
+      reboot
+
+.. important::
+
+    Luego del reboot es importante revisar que el paquete kernel-devel coincida con el kernel que se muestre con el comando *uname -a*
 
 - Debemos asegurarnos de contar con una clave pública generada en la carpeta /root/.ssh/
 

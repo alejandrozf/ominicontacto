@@ -45,7 +45,7 @@
       {{ database_ip }} {{ database_fqdn }}
       {{ dialer_ip }} {{ dialer_fqdn }}
   when: cluster != 0
-  tags: changenetwork
+  tags: postinstall
 
 - name: Write the /etc/hosts of server (aio)
   blockinfile:
@@ -55,7 +55,7 @@
     block: |
       {{ omni_ip }} {{ omni_fqdn }}
   when: cluster == 0
-  tags: changenetwork
+  tags: postinstall
 
 # Se añaden los binarios que no van a necesitar password al hacerlos con sudo
 - name: Edit sudoers to execute binaries withouth password
@@ -91,19 +91,6 @@
       - systemctl disable firewalld
   when: ansible_os_family == "RedHat"
 
-- name: Install kernel-devel package (centos)
-  shell: "yum install \"kernel-devel-uname-r == $(uname -r)\" -y"
-  any_errors_fatal: true
-  when: ansible_os_family == "RedHat"
-
-# Update/upgrade del sistema, osea si se ejecuta como deployed - deployer
-# https://docs.ansible.com/ansible/2.5/modules/yum_module.html#yum-module
-- name: Update/upgrade of centos (centos)
-  yum: name='*' state=latest update_cache=yes skip_broken=yes
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "RedHat"
-
 # Se instalan paquetes basicos que se necesitan
 - name: Install of dependencies (centos)
   yum: name={{ item }} state=present update_cache=yes
@@ -126,6 +113,10 @@
       - kernel-headers
       - acl
   when: ansible_os_family == "RedHat"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
 ##################################
 ###        Debian tasks         ##
@@ -144,30 +135,55 @@
     - "deb http://archive.ubuntu.com/ubuntu/ bionic-updates universe"
     - "deb http://security.ubuntu.com/ubuntu/ bionic-security universe"
   when: ansible_distribution == "Ubuntu"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
 # Cuando el cluster tenga ubuntu se hace esto
 - name: Add the postgresql repository key (ubuntu )
   apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc validate_certs=no state=present
   when: ansible_distribution == "Ubuntu" and cluster != 0
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
 - name: Download postgresql-{{ postgresql_version }} repository
   apt_repository: repo="deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" filename=pgdg state=present update_cache=yes
   when: ansible_distribution == "Ubuntu" and cluster != 0
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
 # Se instala este paquete necesario antes de hacer update
 - name: Install apt-transport-https (debian)
   apt: name=apt-transport-https state=present
   when: ansible_os_family == "Debian"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
 - name: Update / upgrade of system (debian)
-  apt: update_cache=yes upgrade=dist
+  apt: update_cache=yes upgrade=yes
   when: ansible_os_family == "Debian"
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
 # Instalo linux-headers del kernel  en cuestion
 - name: Install linux linux-headers (debian)
   shell: "apt-get install -y linux-headers-$(uname -r)"
   when: ansible_os_family == "Debian"
-  ignore_errors: True
+  retries: 3
+  delay: 3
+  register: result
+  until: result.rc == 0
 
 - name: Install of dependencies (debian)
   apt: name={{ item }} state=present
@@ -181,3 +197,7 @@
       - wget
       - unzip
   when: ansible_os_family == "Debian"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
