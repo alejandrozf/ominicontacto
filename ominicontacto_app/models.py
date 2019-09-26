@@ -529,9 +529,9 @@ class ArchivoDeAudio(models.Model):
         un sufijo.
         """
         descripcion = SUBSITUTE_ALFANUMERICO.sub('', descripcion)
-        if cls.objects.filter(descripcion=descripcion).count() > 0:
+        if cls._base_manager.filter(descripcion=descripcion).count() > 0:
             ultimo = 0
-            copias = cls.objects.filter(descripcion__startswith=descripcion + '_')
+            copias = cls._base_manager.filter(descripcion__startswith=descripcion + '_')
             for archivo in copias:
                 sufijo = archivo.descripcion.replace(descripcion + '_', '', 1)
                 if sufijo.isdigit():

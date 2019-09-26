@@ -346,6 +346,10 @@ class IVRForm(forms.ModelForm):
         if valor_escoger_audio == self.AUDIO_EXTERNO and valor_audio_externo is None:
             raise forms.ValidationError(
                 _('Debe escoger un audio como archivo externo'), code='invalid')
+        if valor_escoger_audio != self.AUDIO_EXTERNO and valor_audio_externo is not None:
+            raise forms.ValidationError(
+                _('Seleccione Archivo Externo si desea subir un Archivo de audio nuevo'),
+                code='invalid')
         if obligatorio and valor_escoger_audio == self.AUDIO_OML and valor_audio_oml is None:
             raise forms.ValidationError(
                 _('Debe escoger un archivo de OML'), code='invalid')
