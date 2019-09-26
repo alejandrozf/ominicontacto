@@ -16,20 +16,22 @@
  along with this program.  If not, see http://www.gnu.org/licenses/.
 
 */
- $(function() {
+/* global REMOVER_CAMPO */
+/* global AGREGAR_VALIDACION */
+$(function() {
     $('.tiempo').datetimepicker({format: 'HH:mm'});
-	var validacionTiempo = $('#validaciontiempo').val();
-	$('.validacionTiempoTr').formset({
-	  addText: AGREGAR_VALIDACION,
-	  deleteText: REMOVER_CAMPO,
-	  prefix: validacionTiempo,
-	  addCssClass: 'btn btn-outline-primary',
-	  deleteCssClass: 'btn btn-outline-danger deleteFormset',
-	  formCssClass: 'dynamic-formset',
-	  added: function (row) {
-	    $(row.find('.tiempo')).each(function () {
-	      $(this).datetimepicker({format: 'HH:mm'});
-	    });
-	  }
-	});
+});
+var validacionTiempo = $('#validaciontiempo').val();
+$('.validacionTiempoTr').formset({
+    addText: AGREGAR_VALIDACION,
+    deleteText: REMOVER_CAMPO,
+    prefix: validacionTiempo,
+    addCssClass: 'btn btn-outline-primary',
+    deleteCssClass: 'btn btn-outline-danger deleteFormset',
+    formCssClass: 'dynamic-formset',
+    added: function (row) {
+        $(row.find('.tiempo')).each(function () {
+            $(this).datetimepicker({format: 'HH:mm'});
+        });
+    }
 });
