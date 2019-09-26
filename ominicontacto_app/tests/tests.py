@@ -62,8 +62,10 @@ except ImportError:
 ADMIN_USERNAME = os.getenv('ADMIN_USERNAME')
 ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
 
-AGENTE_USERNAME = os.getenv('AGENTE_USERNAME')
-AGENTE_PASSWORD = os.getenv('AGENTE_PASSWORD')
+CAMPANA_MANUAL = os.getenv('CAMPANA_MANUAL')
+
+AGENTE_USERNAME = 'agente' + uuid.uuid4().hex[:5]
+AGENTE_PASSWORD = '098098ZZZ'
 
 BROWSER_REAL = os.getenv('BROWSER_REAL')
 TESTS_INTEGRACION = os.getenv('TESTS_INTEGRACION')
@@ -73,6 +75,25 @@ MSG_MICROFONO = 'Se necesita un browser real con micrófono'
 
 @unittest.skipIf(TESTS_INTEGRACION != 'True', 'Ignorando tests de integración')
 class IntegrationTests(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        # super(IntegrationTests, cls).setUpClass()
+        cls.setUp()
+        cls._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        cls.crear_module()
+        group_name = uuid.uuid4().hex
+        cls.crear_grupo(group_name)
+        cls.crear_agente(AGENTE_USERNAME, AGENTE_PASSWORD)
+        if BROWSER_REAL == 'True':
+            cls.asignar_agente_campana_manual()
+        cls.tearDown()
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
+    @classmethod
     def setUp(self):
         chrome_options = Options()
         chrome_options.add_argument('--use-fake-ui-for-media-stream')
@@ -83,10 +104,12 @@ class IntegrationTests(unittest.TestCase):
         self.display.start()
         self.browser = webdriver.Chrome(options=chrome_options)
 
+    @classmethod
     def tearDown(self):
         self.browser.close()
         self.display.stop()
 
+    @classmethod
     def _login(self, username, password):
         self.browser.get('https://{0}'.format(socket.gethostname()))
         self.browser.find_element_by_name('username').send_keys(username)
@@ -94,6 +117,55 @@ class IntegrationTests(unittest.TestCase):
         self.browser.find_element_by_tag_name('button').click()
         sleep(2)
 
+    @classmethod
+    def asignar_agente_campana_manual(self):
+        link_list_campana_manual = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/campana_manual/lista/")]')
+        href_list_campana_manual = link_list_campana_manual.get_attribute('href')
+        self.browser.get(href_list_campana_manual)
+        link_add_agent = self.browser.find_element_by_xpath(
+            '//tr[@id=\'{0}\']/td/div//a[contains(@href, "/queue_member/")]'.format(CAMPANA_MANUAL))
+        href_add_agent = link_add_agent.get_attribute('href')
+        self.browser.get(href_add_agent)
+        self.browser.find_element_by_xpath('//select/option[contains(text(), \'{0}\')]'
+                                           .format(AGENTE_USERNAME)).click()
+        self.browser.find_element_by_xpath((
+            "//button[@id='id_guardar']")).click()
+        sleep(1)
+
+    @classmethod
+    def crear_agente(self, username, password):
+        link_create_user = self.browser.find_element_by_id('newUser')
+        href_create_user = link_create_user.get_attribute('href')
+        self.browser.get(href_create_user)
+        self.browser.find_element_by_id('id_0-username').send_keys(username)
+        self.browser.find_element_by_id('id_0-first_name').send_keys(username)
+        self.browser.find_element_by_id('id_0-password1').send_keys(password)
+        self.browser.find_element_by_id('id_0-password2').send_keys(password)
+        self.browser.find_element_by_id('id_0-is_agente').click()
+        self.browser.find_element_by_xpath('//form[@id=\'wizardForm\']/button').click()
+        sleep(1)
+        self.browser.find_element_by_xpath('//select[@id=\'id_2-modulos\']/option').click()
+        self.browser.find_elements_by_xpath('//select[@id=\'id_2-grupo\']/option')[1].click()
+        self.browser.find_elements_by_xpath('//form[@id=\'wizardForm\']/button')[2].click()
+        sleep(1)
+
+    @classmethod
+    def crear_grupo(self, group_name):
+        link_create_group = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/grupo/nuevo")]')
+        href_create_group = link_create_group.get_attribute('href')
+        self.browser.get(href_create_group)
+        group_name = uuid.uuid4().hex
+        self.browser.find_element_by_id('id_nombre').send_keys(group_name)
+        self.browser.find_element_by_id('id_auto_attend_ics').click()
+        self.browser.find_element_by_id('id_auto_attend_inbound').click()
+        self.browser.find_element_by_id('id_auto_attend_dialer').click()
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit' and @id='id_registrar']")).click()
+        sleep(1)
+
+    @classmethod
     def crear_module(self):
         create_module = self.browser.find_element_by_xpath(
             '//a[contains(@href,"/modulo/nuevo/")]')
@@ -173,23 +245,10 @@ class IntegrationTests(unittest.TestCase):
     def test_crear_usuario_tipo_agente_como_administrador(self):
         # login como admin
         self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
-        random_username = uuid.uuid4().hex
-        agente_username = random_username[:16]
+        agente_username = 'agente' + uuid.uuid4().hex[:5]
         agente_password = AGENTE_PASSWORD
         # rellenar etapa1 del wizard de creación de usuario (agente)
-        link_create_user = self.browser.find_element_by_id('newUser')
-        href_create_user = link_create_user.get_attribute('href')
-        self.browser.get(href_create_user)
-        self.browser.find_element_by_id('id_0-username').send_keys(agente_username)
-        self.browser.find_element_by_id('id_0-password1').send_keys(agente_password)
-        self.browser.find_element_by_id('id_0-password2').send_keys(agente_password)
-        self.browser.find_element_by_id('id_0-is_agente').click()
-        self.browser.find_element_by_xpath('//form[@id=\'wizardForm\']/button').click()
-        sleep(1)
-        self.browser.find_element_by_xpath('//select[@id=\'id_2-modulos\']/option').click()
-        self.browser.find_elements_by_xpath('//select[@id=\'id_2-grupo\']/option')[1].click()
-        self.browser.find_elements_by_xpath('//form[@id=\'wizardForm\']/button')[2].click()
-        sleep(1)
+        self.crear_agente(agente_username, agente_password)
         self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
             agente_username))
         # Editar agente
@@ -201,7 +260,7 @@ class IntegrationTests(unittest.TestCase):
             '//tr[@id=\'{0}\']/td/div//a[contains(@href,"/user/update")]'.format(agente_username))
         href_edit = link_edit.get_attribute('href')
         self.browser.get(href_edit)
-        nuevo_username = random_username[:16]
+        nuevo_username = 'agente' + uuid.uuid4().hex[:5]
         self.browser.find_element_by_id('id_username').clear()
         sleep(1)
         self.browser.find_element_by_id('id_username').send_keys(nuevo_username)
@@ -347,18 +406,8 @@ class IntegrationTests(unittest.TestCase):
 
     def test_crear_grupo_sin_Autounpause(self):
         self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
-        link_create_group = self.browser.find_element_by_xpath(
-            '//a[contains(@href,"/grupo/nuevo")]')
-        href_create_group = link_create_group.get_attribute('href')
-        self.browser.get(href_create_group)
         group_name = uuid.uuid4().hex
-        self.browser.find_element_by_id('id_nombre').send_keys(group_name)
-        self.browser.find_element_by_id('id_auto_attend_ics').click()
-        self.browser.find_element_by_id('id_auto_attend_inbound').click()
-        self.browser.find_element_by_id('id_auto_attend_dialer').click()
-        self.browser.find_element_by_xpath((
-            "//button[@type='submit' and @id='id_registrar']")).click()
-        sleep(1)
+        self.crear_grupo(group_name)
         self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(group_name))
 
     # Acceso Web Administrador
@@ -378,7 +427,7 @@ class IntegrationTests(unittest.TestCase):
     def test_acceso_web_agente_acceso_exitoso(self):
         self._login(AGENTE_USERNAME, AGENTE_PASSWORD)
         self.assertTrue(self.browser.find_element_by_xpath(
-            '//div/a[contains(@href, "/agente/logout/")]'))
+            '//a[contains(@href, "/agente/logout/")]'))
 
     def test_acceso_web_agente_acceso_denegado(self):
         clave_erronea = "test"
@@ -393,6 +442,7 @@ class IntegrationTests(unittest.TestCase):
         supervisor_username = random_supervisor[:16]
         supervisor_password = '098098ZZZ'
         self.crear_supervisor(supervisor_username, supervisor_password)
+        self.crear_supervisor_tipo_gerente()
         # Deslogueo como admin
         deslogueo = self.browser.find_element_by_xpath(
             '//a[contains(@href, "/accounts/logout/")]')
@@ -401,7 +451,7 @@ class IntegrationTests(unittest.TestCase):
         # Logueo como supervisor
         self._login(supervisor_username, supervisor_password)
         self.assertTrue(self.browser.find_element_by_xpath(
-            '//div/a[contains(@href, "/accounts/logout/")]'))
+            '//a[contains(@href, "/accounts/logout/")]'))
 
     def test_acceso_web_supervisor_acceso_denegado(self):
         # Creación supervisor que vamos a usar para simular un acceso denegado
@@ -427,7 +477,8 @@ class IntegrationTests(unittest.TestCase):
         random_customer = uuid.uuid4().hex
         customer_username = random_customer[:16]
         customer_password = '098098ZZZ'
-        self.crear_customer(customer_username, customer_password)
+        self.crear_supervisor(customer_username, customer_password)
+        self.crear_supervisor_tipo_customer()
         # Deslogue como admin
         deslogueo = self.browser.find_element_by_xpath(
             '//a[contains(@href, "/accounts/logout/")]')
@@ -443,7 +494,8 @@ class IntegrationTests(unittest.TestCase):
         random_customer = uuid.uuid4().hex
         customer_username = random_customer[:16]
         customer_password = '098098ZZZ'
-        self.crear_customer(customer_username, customer_password)
+        self.crear_supervisor(customer_username, customer_password)
+        self.crear_supervisor_tipo_customer()
         clave_erronea = 'test'
         # Deslogue como admin
         deslogueo = self.browser.find_element_by_xpath(
