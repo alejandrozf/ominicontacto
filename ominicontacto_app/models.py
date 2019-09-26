@@ -2120,8 +2120,15 @@ class BaseDatosContacto(models.Model):
         actual.
         NO realiza la copia de los contactos de la misma.
         """
+        # obtiene ultimo id de BaseDatosContacto, le suma 1 y se usa
+        # para generar el nuevo nombre
+        last_bd_contacto = BaseDatosContacto.objects.last()
+        if last_bd_contacto:
+            bd_reciclada_id = last_bd_contacto.pk + 1
+        else:
+            bd_reciclada_id = 0
         copia = BaseDatosContacto.objects.create(
-            nombre='{0} (reciclada)'.format(self.nombre),
+            nombre='{0}-{1} (reciclada)'.format(self.nombre, bd_reciclada_id),
             archivo_importacion=self.archivo_importacion,
             nombre_archivo_importacion=self.nombre_archivo_importacion,
             metadata=self.metadata,
