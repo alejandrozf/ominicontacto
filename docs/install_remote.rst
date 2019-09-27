@@ -61,6 +61,19 @@ CentOS:
   cd ominicontacto
   git checkout master
 
+
+- Instalar paquete kernel-devel, realizar el update del sistema operativo y rebotear la máquina.
+
+.. code-block:: bash
+
+      yum install kernel-devel -y
+      yum update -y
+      reboot
+
+.. important::
+
+    Luego del reboot es importante revisar que el paquete kernel-devel coincida con el kernel que se muestre con el comando *uname -a*
+
 - Debemos asegurarnos de contar con una clave pública generada en la carpeta /root/.ssh/
 
 .. code-block:: bash
