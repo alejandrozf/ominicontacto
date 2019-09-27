@@ -21,10 +21,6 @@ Pre-requisitos:
 - Es muy importante dejar la hora correctamente configurada en el host.
 - Configurar una *dirección IP* y un *hostname* fijo, antes de ejecutar la instalación.
 
-.. note::
-
-   En versiones menores a CentOS 7.6 es necesario primero hacer un yum update y luego reebotear el server
-
 Ajustes necesarios antes  de la ejecución de script:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -47,6 +43,18 @@ Ajustes necesarios antes  de la ejecución de script:
   git clone https://gitlab.com/omnileads/ominicontacto.git
   cd ominicontacto
   git checkout master
+
+- Instalar paquete kernel-devel, realizar el update del sistema operativo y rebotear la máquina.
+
+  .. code-block:: bash
+
+    yum install kernel-devel -y
+    yum update -y
+    reboot
+
+.. important::
+
+  Luego del reboot es importante revisar que el paquete kernel-devel coincida con el kernel que se muestre con el comando *uname -a*
 
 - La instalación se trabaja en el directorio "deploy/ansible", disponible desde la raíz del proyecto (PATH/ominicontacto/deploy/ansible):
 
