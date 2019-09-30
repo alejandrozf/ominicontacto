@@ -1088,7 +1088,10 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         return True
 
     def clean_bd_contacto(self):
+        bd_contacto = self.cleaned_data['bd_contacto']
         instance = getattr(self, 'instance', None)
+        if bd_contacto.cantidad_contactos == 0:
+            raise forms.ValidationError(_('No puede seleccionar una BD vacia'))
         if instance and instance.pk:
             return instance.bd_contacto
         else:
@@ -1456,6 +1459,12 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
             msg = 'Debe ingresar un minimo de {0} minutos'.format(TIEMPO_MINIMO_DESCONEXION)
             raise forms.ValidationError(msg)
         return tiempo_desconexion
+
+    def clean_bd_contacto(self):
+        bd_contacto = self.cleaned_data['bd_contacto']
+        if bd_contacto.cantidad_contactos == 0:
+            raise forms.ValidationError(_('No puede seleccionar una BD vacia'))
+        return bd_contacto
 
 
 class CalificacionForm(forms.ModelForm):
