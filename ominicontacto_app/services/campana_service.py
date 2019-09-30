@@ -29,7 +29,7 @@ import requests
 from django.utils.translation import ugettext as _
 
 from django.conf import settings
-from ominicontacto_app.utiles import elimina_comillas
+from ominicontacto_app.utiles import elimina_comillas, remplace_espacio_por_guion
 from ominicontacto_app.services.wombat_service import WombatService
 from ominicontacto_app.services.wombat_config import (
     CampanaCreator, TrunkCreator, RescheduleRuleCreator, EndPointCreator,
@@ -81,7 +81,7 @@ class CampanaService():
         :return: id_lista - el id de la lista en wombat
         """
         nombre_lista = '_'.join([str(campana.id), str(campana.bd_contacto.id),
-                                campana.bd_contacto.nombre])
+                                 remplace_espacio_por_guion(campana.bd_contacto.nombre)])
         nombre_lista_ascii = unicodedata.normalize('NFKD', nombre_lista).encode('ascii', 'ignore')
         id_lista = None
         results = salida_comando['results']
@@ -226,7 +226,7 @@ class CampanaService():
         """
         service_wombat = WombatService()
         nombre_lista = '_'.join([str(campana.id), str(campana.bd_contacto.id),
-                                 campana.bd_contacto.nombre])
+                                 remplace_espacio_por_guion(campana.bd_contacto.nombre)])
         nombre_lista_ascii = unicodedata.normalize('NFKD', nombre_lista).encode('ascii', 'ignore')
         url_edit = "api/lists/?op=addToList&list={0}".format(nombre_lista_ascii)
         # crea lista de contactos en wombat
