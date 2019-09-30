@@ -41,10 +41,6 @@ Los hosts sobre los cuales vamos a desplegar los servicios en cluster deben cump
 - Al menos 4 GB de memoria RAM
 - Si es *Ubuntu / Debian*; Instalar el paquete *sudo*, *openssh-server* y *phyton-minimal*, permitir login SSH con el usuario *root* y reiniciar el servicio de ssh para que se tomen los cambios:
 
-.. note::
-
-   En versiones menores a CentOS 7.6 es necesario primero hacer un yum update y luego reebotear el server
-
 ::
 
   apt-get install sudo openssh-server python-minimal -y

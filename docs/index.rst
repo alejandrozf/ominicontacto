@@ -30,9 +30,9 @@ Donde se puede instalar ?
 *************************
 OMniLeads ha sido testeado en su totalidad en las siguientes distribuciones de GNU/Linux:
 
-* `CentOS 7.6.1810 minimal ISO <http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1810.iso>`_
-* `Debian 9.3 netinstall ISO <https://cdimage.debian.org/mirror/cdimage/archive/9.3.0/amd64/iso-cd/debian-9.3.0-amd64-netinst.iso>`_
-* `Ubuntu Server 18.04.2 LTS ISO <https://ubuntu.com/download/server/thank-you?version=18.04.2&architecture=amd64>`_
+* **CentOS 7.7.1908 minimal ISO** - http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso
+* **Debian 9.3 netinstall ISO** - https://cdimage.debian.org/mirror/cdimage/archive/9.3.0/amd64/iso-cd/debian-9.3.0-amd64-netinst.iso
+* **Ubuntu Server 18.04.2 LTS ISO** - https://ubuntu.com/download/server/thank-you?version=18.04.2&architecture=amd64
 
 .. important::
 
