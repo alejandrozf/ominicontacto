@@ -21,6 +21,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 {% load static %}
 {% block head_js %}
+<script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
 <script type="text/javascript" src="{% static 'reportes_app/JS/reportes_agentes_tiempos.js' %}"></script>
 
 <style>
@@ -122,7 +123,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </td>
                         <td>
                             {% if agente.tiempo_porcentaje_llamada %}
-                                {{agente.tiempo_porcentaje_llamada|floatformat:4}}%
+                                {{agente.tiempo_porcentaje_llamada|floatformat:2}}%
                             {% else %}
                                 0%
                             {% endif %}
@@ -130,13 +131,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             <hr>
                             <span>
                             {% if agente.tiempo_porcentaje_pausa %}
-                                {{agente.tiempo_porcentaje_pausa|floatformat:4}}%
+                                {{agente.tiempo_porcentaje_pausa|floatformat:2}}%
                             {% else %}
                                 0%
                             {% endif %}
                             <span class="label">{% trans "pausa" %}</span>,
                             {% if agente.tiempo_porcentaje_wait %}
-                                {{agente.tiempo_porcentaje_wait|floatformat:4}}%
+                                {{agente.tiempo_porcentaje_wait|floatformat:2}}%
                             {% else %}
                                 0%
                             {% endif %}
