@@ -1090,12 +1090,13 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
     def clean_bd_contacto(self):
         bd_contacto = self.cleaned_data['bd_contacto']
         instance = getattr(self, 'instance', None)
-        if bd_contacto.cantidad_contactos == 0:
-            raise forms.ValidationError(_('No puede seleccionar una BD vacia'))
+        es_template = self.initial.get('es_template', False)
+        # Si uno desea modificar una campaña dialer, con instance no se permitira cambiar la BD
         if instance and instance.pk:
             return instance.bd_contacto
-        else:
-            return self.cleaned_data['bd_contacto']
+        if not es_template and not bd_contacto.contactos.exists():
+            raise forms.ValidationError(_('No puede seleccionar una BD vacia'))
+        return self.cleaned_data['bd_contacto']
 
     class Meta:
         model = Campana
@@ -1462,7 +1463,8 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
 
     def clean_bd_contacto(self):
         bd_contacto = self.cleaned_data['bd_contacto']
-        if bd_contacto.cantidad_contactos == 0:
+        es_template = self.initial.get('es_template', False)
+        if not es_template and not bd_contacto.contactos.exists():
             raise forms.ValidationError(_('No puede seleccionar una BD vacia'))
         return bd_contacto
 
