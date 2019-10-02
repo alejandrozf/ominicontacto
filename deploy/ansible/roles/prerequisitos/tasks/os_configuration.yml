@@ -166,16 +166,6 @@
   register: result
   until: result is success
 
-- name: Update / upgrade of system (debian)
-  apt: update_cache=yes upgrade=yes
-  when: ansible_os_family == "Debian"
-  environment:
-    DEBIAN_FRONTEND: noninteractive
-  retries: 3
-  delay: 3
-  register: result
-  until: result is success
-
 # Instalo linux-headers del kernel  en cuestion
 - name: Install linux linux-headers (debian)
   shell: "apt-get install -y linux-headers-$(uname -r)"
