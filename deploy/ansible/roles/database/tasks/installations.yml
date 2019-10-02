@@ -52,12 +52,15 @@
 
   #Se instalan todos los paquetes de postgresql96
 - name: Install of postgresql-{{ postgresql_version }} (centos)
-  yum: name={{ item }} state=present
-  with_items:
-    - postgresql{{ postgres_version_nodot }}*
-    - python-psycopg2.x86_64
-  become: yes
-  become_method: sudo
+  yum: name="postgresql{{ postgres_version_nodot }}*" state=present
+  when: ansible_os_family == "RedHat"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
+
+- name: Install of python-psycopg2 (centos)
+  yum: name="{{ psycopg2_url }}" state=present
   when: ansible_os_family == "RedHat"
   retries: 3
   delay: 3

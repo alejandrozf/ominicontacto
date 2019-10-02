@@ -2,9 +2,9 @@
 
 export DEBIAN_FRONTEND=noninteractive
 
-CENTOS_IP="172.16.20.132"
-DEBIAN_IP="172.16.20.130"
-UBUNTU_IP="172.16.20.131"
+CENTOS_IP="192.168.99.132"
+DEBIAN_IP="192.168.99.130"
+UBUNTU_IP="192.168.99.131"
 
 
 os=`awk -F= '/^NAME/{print $2}' /etc/os-release`

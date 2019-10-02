@@ -157,8 +157,9 @@ staging-self-hosted:
     - export BRANCH=$CI_COMMIT_REF_NAME
     - bash /home/ftsinfra/git_cleanup.sh
     - cd /home/ftsinfra/ominicontacto/deploy/vagrant/self_hosted/
-    - vagrant halt
-    - vagrant destroy -f
+    - vagrant halt; RC=0
+    - vagrant destroy -f; RC=0
+    - ./vagrantsh.sh
     - vagrant up --provision
     - vagrant halt
     - vagrant destroy -f
