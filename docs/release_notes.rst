@@ -1,65 +1,65 @@
 Release Notes
 *************
 
-*Octuber 3, 2019*
+*Octubre 3, 2019*
 
-Release 1.3.2 details
+Release 1.3.2 detalles
 =========================
 
-What's new
+Nuevas funcionalidades
 =========================
 
-- You can now add your custom Asterisk code in OMniLeads!
-- OML now can be reached behind NAT
-- Registration of OML instances now sends an email with the key to the admin when registration is successful
-- Documentation was translated to English
-- CI/CD now got improved with jobs that tests all kind of installations we support
-- Asterisk audios can be now be added dinamically from UI
+- Puedes adicionar tu código Asterisk personalizado para OMniLeads!
+- OML puede ser accedido detrás de un NAT
+- La vista de registro de instancia de OML ahora envía un email al administrador cuando el registro es exitoso
+- La documentación ha sido traducida al inglés
+- El CI/CD ha sido mejorado con jobs que testean todos los tipos de instalaciones que soportamos
+- Los audios de Asterisk pueden ser adicionados al sistema dinámicamente desde la UI
 
 
-Installation tasks
+Tareas de instalación
 ---------------------------------------------------------------
-- Fixed  error on identification audio files routes
-- When upgrading the system installation avoids current inventory modification
-- Hostname is not needed now for host node installations
-- User can add its own certificate in inventory
-- Added retries for long downloading time tasks that could failed by connection
-- Redis container persistence was improved (for dev-env & prod-env environments)
-- Dev-env was improved to read environment variables from .env file like prod-env.
-- A change in variable PGPASSWORD on its .env fike, apply also this change on postgres container
-- Uninstallation script was added
+- Solucionado error en las rutas de los audios de identificación
+- Ahora la actualización del sistema no necesita modificar el archivo de inventory
+- No es necesario especificar el hostname para las instalaciones de tipo hostnode
+- El usuario puede adicionar su propio certificado en el inventory
+- Se adicionaron reintentos para las tareas de larga duración de descarga para evitar fallos
+- Fue mejorada la persistencia del contenedor de redis (para los entornos de prod-env y dev-env)
+- El Dev-env fue mejorado para poder leer las variables de entorno desde un archivo .env al igual que el prod-env.
+- Ahora un cambio en la variable PGPASSWORD en su archivo .env, realiza ese cambio también en el container de postgres
+- Se adicionó un script de desinstalación
 
 
 OML admin
 -------------------------
-- Abandon average, waiting average and number of waiting calls reports were added for inbound campaigns
-- Fixed error that didn't allow to recycle more than one time a dialer campaign
-- Fixed error when tried to access daily agents report
-- Fixed error in IVR forms validation when uploading external audio files
-- Fixed error on dialer campaign update wizard that didn't allow to modify its engaged disposition options forms
-- Fixed error that didn't allow to edit campaigns with external field attribute setted
-- Fixed exception generated when accessing to campaign reports
-- Contact databases names must be differents now
-- Agent Groups must be differents now
+- Se adicionaron los reportes de promedio de tiempo de abandono, promedio de tiempo de espera y llamadas en espera para campañas entrntes
+- Se solucionó error que impedía reciclar más de una vez a partir de una misma campaña dialer
+- Se solucionó error que impedía acceder a los reporte diarios de agentes
+- Se solucionó error en formularios de IVR al cargar archivos de audio externos
+- Se solucionó error en la edición de campañas que no permitía modificar sus formularios asociadas a las opciones de calificación de gestión
+- Se solucionó error que impedía editar campañas creadas con el campo interacción de sitio externo definido
+- Se solucionó error que lanzaba excepción al intentar acceder al reporte de una campaña
+- Los nombres de las bases de datos de contactos deben ser distintas desde ahora
+- Los nombres de los grupos de agentes deben ser diferentes a partir de ahora
 
 
-OML agent view
+OML vista de agente
 ------------------------
-- Fixed error that ocurred when user visualized call registry, more information were added also
-- Recalling option was added for every call registered
+- Solucionado error generado al visualizar la lista de llamadas realizadas, se adiciona mas información en esa vista
+- Se adicionó una opción de rellamada desde la lista de llamadas realizadas
 
 
 Asterisk dialplan
 ------------------------
-- More descriptive logs were added
-- Fixed error on Blacklist events when saving to database
-- Fixed error on IVR delay
-- Fix error when handling IVR incorrect option
+- Se adicionaron logs más descriptivos
+- Se solucionó error en la inserción hacia BD de los eventos de tipo Blacklist
+- Se solucionó error que introducía demoras en procesar una opción de IVR
+- Se solucionó error al manejar una opción de IVR incorrecta
 
 Misc
 ------------------------
-- First integration tests were introduced, integrated with CI/CD jobs
-- A cron job to clean table 'queue_log' daily was added
-- Javascript code was separated from Django templates
-- Static files were moved to its related project apps
-- Redirection to an internal url when logged to the system was added
+- Los primeros tests de integración fueron creados y sincronizados con el CI/CD
+- Se introdujo una tarea de cron que limpia diariamente la tabla 'queue_log'
+- El código JavaScript fue separado de los templates de Django
+- Los archivos estáticos fueron organizados hacia sus apps más relacionadas
+- Fue adicionada la redirección hacia una url interna al loguearse el usuario
