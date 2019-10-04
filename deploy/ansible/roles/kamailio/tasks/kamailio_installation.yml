@@ -25,9 +25,12 @@
   # Descargo kamailio desde la fuente, me descarga un .tar.gz
 - name: Download of Kamailio
   get_url: url={{ kamailio_repo }} dest=/usr/src/
-  register: destino
   become: true
   become_method: sudo
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
   # Untareo el archivo recien descargado
 - name: Untar the file

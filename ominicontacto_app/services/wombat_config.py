@@ -30,8 +30,6 @@ import json
 from django.conf import settings
 from django.utils.translation import ugettext as _
 
-from ominicontacto_app.utiles import elimina_espacios
-
 logger = logging.getLogger(__name__)
 
 
@@ -56,7 +54,7 @@ class CampanaCreator(object):
 
         dict_campana = {
             "campaignId": campana_id_wombat,
-            "name": "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre)),
+            "name": "{0}_{1}".format(campana.id, campana.nombre),
 
             "priority": 10,
             "pace": "RUNNABLE",
@@ -70,7 +68,7 @@ class CampanaCreator(object):
 
             "dial_timeout": campana.queue_campana.dial_timeout * 1000,
             "maxCallLength": 0,
-            "dial_clid": elimina_espacios(campana.nombre),
+            "dial_clid": campana.nombre,
             "agentClid": "",
             "dial_account": "",
             "dial_pres": "",
@@ -169,7 +167,7 @@ class EndPointCreator(object):
 
         dict_endpoint = {
             "type": "QUEUE",
-            "queueName": "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre)),
+            "queueName": "{0}_{1}".format(campana.id, campana.nombre),
             "name": "",
             "astId": {
                 "id": 1
@@ -184,7 +182,7 @@ class EndPointCreator(object):
             "reverseDialing": False,
             "stepwiseReverse": False,
             "securityKey": "",
-            "description": "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre)),
+            "description": "{0}_{1}".format(campana.id, campana.nombre),
             "dialFind": "",
             "dialReplace": ""
         }

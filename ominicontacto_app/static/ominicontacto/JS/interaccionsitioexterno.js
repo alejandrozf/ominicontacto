@@ -4,10 +4,18 @@
 */
 
 function interaccionUrl(){
-	if ( $("input:radio[name ='0-tipo_interaccion']:checked").val()== 2){
-		$('#id_0-sitio_externo').prop("disabled", false);
-	}
-	else{
-		$('#id_0-sitio_externo').prop("disabled", true);	
-	}
-};
+    var $tipoInteraccion = $('input:radio[name ="0-tipo_interaccion"]');
+    if ($tipoInteraccion.length > 0) {
+        // vista de creación de la campaña
+        if ( $('input:radio[name ="0-tipo_interaccion"]:checked').val() == 2){
+            $('#id_0-sitio_externo').prop('disabled', false);
+        }
+        else{
+            $('#id_0-sitio_externo').prop('disabled', true);
+        }
+    }
+}
+
+$(function(){
+    interaccionUrl();
+});

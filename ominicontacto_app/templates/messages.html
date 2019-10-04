@@ -56,7 +56,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     {% elif "debug" in message.tags %} {# the same as "INFO" #}
         <div class="alert alert-info alert-dismissible fade show" role="alert">
             <button type="button" class="close btn" datadismiss="alert" aria-label="Cerrar">&times;</button>
-            <h1>Información</h1>
+            <h1>{% trans 'Información' %}</h1>
             <p>{{ message|safe  }}</p>
         </div>
 

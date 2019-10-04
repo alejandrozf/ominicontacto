@@ -149,3 +149,9 @@ OML_AUDIO_FOLDER = "oml/"
 MONITORFORMAT = os.getenv('MONITORFORMAT')
 # Calificacion de agenda
 CALIFICACION_REAGENDA = os.getenv('CALIFICACION_REAGENDA')
+
+CONSTANCE_REDIS_CONNECTION = {
+    'host': REDIS_HOSTNAME,
+    'port': 6379,
+    'db': 0,
+}

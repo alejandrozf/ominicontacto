@@ -6,15 +6,15 @@ INTRODUCCION A OMNILEADS
 `OMniLeads <https://www.omnileads.net/>`_ es un Software `GPLV3  <https://www.gnu.org/licenses/gpl-3.0.en.html/>`_ para Contact Centers basado en `WebRTC <https://www.webrtc.org/>`_ ,
 que permite implementar y gestionar un Contact Center administrando operaciones entrantes y salientes, con acceso a métricas, reportes e indicadores, supervisión real-time de agentes y demás funcionalidades avanzadas de QA y gestión de contactos y campañas.
 
-A partir de ejecutar una sencilla :ref:`about_install`, y unos pocos pasos de Configuración posteriores, se deja funcional a una instancia
-de OMniLeads con operaciones de Contact Center en campañas entrantes y salientes. Nuestro software puede adaptarse a una compañia u organización que necesita
-mantener su propio Contact Center con integración a su central PBX, así como también asumir la función de "núcleo" de comunicaciones del Contact Center
-de una compañía que brinda servicios de Customer Contact (Business Outsourcing Process - BPO).
+A partir de ejecutar una sencilla :ref:`about_install`, y unos pocos pasos de Configuración posteriores, tenemos funcional una instancia
+de OMniLeads con operaciones de Contact Center en términos de campañas entrantes y salientes. Nuestro software puede adaptarse a una compañia u organización que necesita
+mantener su propio Contact Center con integración a su central PBX, así como también asumir la función de "núcleo" de comunicaciones para
+una compañía que brinda servicios de Customer Contact (Business Outsourcing Process - BPO).
 
-En un universo 100% web, los diferentes perfiles de usuarios; agentes, supervisores, administradores, clientes, acceden a OMniLeads desde
-cualquier navegador moderno moderno con soporte `WebRTC <https://www.webrtc.org/>`_. Al no requerir del uso de aplicaciones de escritorio Softphones, este
-software simplifica a nada la configuración a realizarse en las estaciones de trabajo de los agentes, solo acceder a una dirección HTTPS para estar
-online operando, Por esta razón OMniLeads es una gran opción para implementar como CCaaS "Contact Center as a Service".
+Dentro de un universo 100% web, los diferentes perfiles de usuarios; agentes, supervisores, administradores, clientes, acceden a OMniLeads desde
+cualquier navegador moderno con soporte `WebRTC <https://www.webrtc.org/>`_. Al no requerir del uso de aplicaciones de escritorio Softphones, este
+software simplifica a nada la configuración a realizar en las estaciones de trabajo de los agentes, tan solo acceder a una dirección HTTPS para estar
+online gestionando comunicaciones con los clientes. OMniLeads es una gran opción para implementar CCaaS "Contact Center as a Service" !
 
 
 .. image:: images/what_is.png
@@ -38,9 +38,15 @@ OMniLeads ha sido testeado en su totalidad en las siguientes distribuciones de G
 
   Remitirse a estas versiones de las distribuciones y sus correspondientes ISO para lograr una instalación exitosa
 
+Por otra parte, si eres usuario de `Docker <https://www.docker.com>`_, puedes ejecutar el sistema a partir de nuestras imágenes oficiales disponibles en el
+`Docker-Hub <https://hub.docker.com/u/freetechsolutions>`_ y el correspondiente `docker-compose  <https://docs.docker.com/compose>`_ que viene en el repositorio.
+
 Cómo lo instalo ?
 *****************
-La instalación de omnileads está basada en el uso de un script de bash que setea un entorno para la ejecución de  `Ansible <https://www.ansible.com/>`_. Dentro del código del proyecto, se dispone de dicho script que permite instalar el producto sobre cualquiera de los Sistemas Operativos citados previamente. En la sección :ref:`about_install` de esta documentación, se detalla dicho proceso.
+La instalación de omnileads está basada en el uso de un script de bash que setea un entorno para la ejecución de  `Ansible <https://www.ansible.com/>`_. Dentro del código del proyecto,
+se dispone de dicho script que permite instalar el sistema sobre cualquiera de los Sistemas Operativos previamente citados. En la sección :ref:`about_install` de esta
+documentación, se detalla dicho proceso.
+
 
 Características y funcionalidades de OMniLeads
 **********************************************

@@ -91,7 +91,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                     <a href="{% url 'user_list' page=1 %}">{% trans 'Usuarios' %}</a>
                                 </li>
                                 <li>
-                                    <a href="{% url 'user_nuevo' %}">{% trans 'Nuevo Usuario' %}</a>
+                                    <a href="{% url 'user_nuevo' %}" id="newUser">{% trans 'Nuevo Usuario' %}</a>
                                 </li>
                                 <li>
                                     <a href="{% url 'agente_list' %}">{% trans 'Agentes' %}</a>
@@ -100,6 +100,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 <li>
                                     <a href="{% url 'supervisor_list' %}">{% trans 'Supervisores' %}</a>
                                 </li>
+                                {% endif %}
+                                {% if WEBPHONE_CLIENT_ENABLED %}
+                                    <li>
+                                        <a href="{% url 'cliente_webphone_list' %}">{% trans 'Clientes WebPhone' %}</a>
+                                    </li>
                                 {% endif %}
                             </ul>
                         </li>
@@ -389,6 +394,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </li>
                         <li>
                             <a href="{% url 'lista_identificador_cliente' %}">{% trans 'Identificación de Clientes' %}</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'lista_destinos_personalizados' %}">{% trans 'Destinos personalizados' %}</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'adicionar_audios_asterisk' %}">{% trans 'Adicionar audios' %}</a>
                         </li>
                     </ul>
                 </li>

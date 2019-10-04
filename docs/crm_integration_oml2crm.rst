@@ -178,8 +178,7 @@ entre llaves que van a ser generados en la petición. Parámetros que luego se a
 
 Por lo tanto ahora pasamos a ejemplificar la configuración de la campaña para que invoque al CRM con los parámetros especificados arriba.
 
-La diferencia respecto a las URLs estándares (HTTP GET) que se expuso en el *ejemplo 1*, es que a la hora de asignar parámetros en la campaña, se deben
-utilizar "los holders" en lugar de los "Nombres de parámetros", como se ejemplifica en la *figura 10*.
+La diferencia respecto a las URLs estándares (HTTP GET) que se expuso en el *ejemplo 1*, es que a la hora de asignar parámetros en la campaña, se deben utilizar "los holders" en lugar de los "Nombres de parámetros", como se ejemplifica en la *figura 10*.
 
 
 .. image:: images/crm_oml2crm_campcrm_example_2.png

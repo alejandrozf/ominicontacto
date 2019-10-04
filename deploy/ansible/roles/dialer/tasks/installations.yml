@@ -29,7 +29,10 @@
   when: ansible_os_family == "RedHat"
   become: true
   become_method: sudo
-- meta: clear_host_errors
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
 - name: Add parameters in server.xml of Catalina (centos)
   template: src=templates/server.xml.j2  dest=/usr/local/queuemetrics/tomcat/conf/server.xml
@@ -42,6 +45,10 @@
   shell: apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9
   when: ansible_os_family == "Debian"
   #apt_key: keyserver=keyserver.ubuntu.com state=present id=0xC2518248EEA14886
+  retries: 3
+  delay: 3
+  register: result
+  until: result.rc == 0
 
 - name: Add oracle-java repositorie (debian)
   apt_repository: repo="deb http://repos.azulsystems.com/debian stable main" state=present filename=zulu update_cache=yes
@@ -59,11 +66,18 @@
     - libmysql-java
   when: ansible_os_family == "Debian"
   failed_when: false
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
 - name: Get wombat dialer (debian)
   get_url: url={{ wombat }} dest=/var/lib/tomcat8/webapps/
   register: destino
   when: ansible_os_family == "Debian"
+  retries: 3
+  delay: 3
+  until: destino is success
 
 - name: Unarchive downloaded package (debian)
   unarchive: src={{ destino.dest }} dest=/var/lib/tomcat8/webapps remote_src=yes

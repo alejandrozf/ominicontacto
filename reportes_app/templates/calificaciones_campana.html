@@ -40,7 +40,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                           <th>{% trans 'Datos' %}</th>
                           <th>{% trans 'Calificación' %}</th>
                           <th>{% trans 'Observaciones' %}</th>
-                          <th>{% trans 'Base de datos' %}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -58,13 +57,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 <td>
                                     {% if calificacion.observaciones %}
                                         {{calificacion.observaciones}}
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if calificacion.contacto.es_originario %}
-                                        {{calificacion.contacto.bd_contacto}}
-                                    {% else %}
-                                        {% trans "Fuera de Base" %}
                                     {% endif %}
                                 </td>
                             </tr>

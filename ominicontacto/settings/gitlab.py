@@ -43,6 +43,7 @@ Y luego de eso, las customizaciones.
 """
 import os
 
+from addons import *
 from defaults import *
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -218,7 +219,8 @@ CONSTANCE_CONFIG = {
     'CLIENT_KEY': ('', 'Llave para acceder a addons'),
     'CLIENT_EMAIL': ('', 'Dirección de email'),
     'CLIENT_PHONE': ('', 'Teléfono'),
-    'KEYS_SERVER_HOST': ('', 'Dirección url base para acceder a los addons')
+    'KEYS_SERVER_HOST': ('', 'Dirección url base para acceder a los addons'),
+    'WEBPHONE_CLIENT_ENABLED': (False, 'WEBPHONE_CLIENT_ENABLED', bool),
 }
 
 MIDDLEWARE_PREPPEND = []
@@ -232,3 +234,7 @@ CONSTANCE_REDIS_CONNECTION = {
 }
 
 TOKEN_EXPIRED_AFTER_SECONDS = 600
+
+KAMAILIO_HOSTNAME = 'trash'
+NGINX_HOSTNAME = 'trash'
+OML_EXTERNAL_PORT = 'trash'

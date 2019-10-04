@@ -45,7 +45,8 @@ from ominicontacto_app.services.reporte_respuestas_formulario import (
 from ominicontacto_app.tests.factories import (AgenteProfileFactory, ActividadAgenteLogFactory,
                                                CalificacionClienteFactory, ContactoFactory,
                                                CampanaFactory, NombreCalificacionFactory,
-                                               OpcionCalificacionFactory, UserFactory)
+                                               OpcionCalificacionFactory, UserFactory,
+                                               LlamadaLogFactory)
 from ominicontacto_app.utiles import fecha_hora_local, fecha_local
 from reportes_app.models import LlamadaLog
 from reportes_app.tests.utiles import GeneradorDeLlamadaLogs
@@ -93,16 +94,18 @@ class BaseTestDeReportes(TestCase):
         self.generador_log_llamadas = GeneradorDeLlamadaLogs()
         self.generador_log_llamadas.generar_log(
             self.campana_activa, False, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile,
-            contacto=self.contacto_calificado_gestion, duracion_llamada=self.DURACION_LLAMADA)
+            contacto=self.contacto_calificado_gestion, duracion_llamada=self.DURACION_LLAMADA,
+            callid=1)
         self.generador_log_llamadas.generar_log(
             self.campana_activa, False, 'COMPLETEAGENT', self.telefono2, agente=self.agente_profile,
-            contacto=self.contacto_calificado_no_accion, duracion_llamada=self.DURACION_LLAMADA)
+            contacto=self.contacto_calificado_no_accion, duracion_llamada=self.DURACION_LLAMADA,
+            callid=2)
         self.generador_log_llamadas.generar_log(
             self.campana_activa, True, 'NOANSWER', self.telefono3, agente=self.agente_profile,
-            contacto=self.contacto_no_atendido)
+            contacto=self.contacto_no_atendido, callid=3)
         self.generador_log_llamadas.generar_log(
             self.campana_activa, True, 'COMPLETEOUTNUM', self.telefono4, agente=self.agente_profile,
-            contacto=self.contacto_no_calificado, duracion_llamada=0)
+            contacto=self.contacto_no_calificado, duracion_llamada=0, callid=4)
         callid_gestion = LlamadaLog.objects.get(
             contacto_id=self.contacto_calificado_gestion.pk, event='COMPLETEAGENT').callid
         callid_no_accion = LlamadaLog.objects.get(
@@ -282,7 +285,8 @@ class ReportesCampanasTests(BaseTestDeReportes):
             time=hoy)
         estadisticas_service = EstadisticasService()
         hoy = fecha_local(timezone.now())
-        _, _, llamadas_recibidas = estadisticas_service.obtener_total_llamadas(campana_entrante)
+        _, _, llamadas_recibidas, _, _ = estadisticas_service.obtener_total_llamadas(
+            campana_entrante)
         self.assertEqual(llamadas_recibidas, 1)
 
     def test_datos_reporte_grafico_llamadas_entrantes_realizadas_muestran_solo_dia_actual(
@@ -298,8 +302,36 @@ class ReportesCampanasTests(BaseTestDeReportes):
             time=hoy)
         estadisticas_service = EstadisticasService()
         hoy = fecha_local(timezone.now())
-        _, llamadas_realizadas, _ = estadisticas_service.obtener_total_llamadas(campana_entrante)
+        _, llamadas_realizadas, _, _, _ = estadisticas_service.obtener_total_llamadas(
+            campana_entrante)
         self.assertEqual(llamadas_realizadas, 1)
+
+    def test_datos_reporte_grafico_llamadas_entrantes_promedio_tiempo_espera(self):
+        campana_entrante = CampanaFactory(type=Campana.TYPE_ENTRANTE, estado=Campana.ESTADO_ACTIVA)
+        hoy = fecha_hora_local(timezone.now())
+        self.generador_log_llamadas.generar_log(
+            campana_entrante, False, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile,
+            time=hoy, bridge_wait_time=4, callid=1)
+        self.generador_log_llamadas.generar_log(
+            campana_entrante, False, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile,
+            time=hoy, bridge_wait_time=2, callid=2)
+        estadisticas_service = EstadisticasService()
+        _, _, _, tiempo_promedio_espera, _ = estadisticas_service.obtener_total_llamadas(
+            campana_entrante)
+        self.assertEqual(tiempo_promedio_espera, 3)
+
+    def test_datos_reporte_grafico_llamadas_entrantes_promedio_tiempo_abandono(self):
+        campana_entrante = CampanaFactory(type=Campana.TYPE_ENTRANTE, estado=Campana.ESTADO_ACTIVA)
+        hoy = fecha_hora_local(timezone.now())
+        self.generador_log_llamadas.generar_log(
+            campana_entrante, False, 'ABANDON', self.telefono1, agente=self.agente_profile,
+            time=hoy, bridge_wait_time=4)
+        LlamadaLogFactory(tipo_campana=Campana.TYPE_ENTRANTE, campana_id=campana_entrante.pk,
+                          event='ABANDONWEL', bridge_wait_time=5, time=hoy)
+        estadisticas_service = EstadisticasService()
+        _, _, _, _, tiempo_promedio_abandono = estadisticas_service.obtener_total_llamadas(
+            campana_entrante)
+        self.assertEqual(tiempo_promedio_abandono, 4.5)
 
     def test_datos_reporte_grafico_detalle_llamadas_dialer_coinciden_estadisticas_sistema(self):
         campana_dialer = CampanaFactory(type=Campana.TYPE_DIALER, estado=Campana.ESTADO_ACTIVA)
@@ -479,7 +511,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
     def test_usuario_logueado_accede_a_datos_vista_detalle_campana_preview(self):
         url = reverse('campana_preview_detalle', args=[self.campana_activa.pk])
         response = self.client.get(url, follow=True)
-        self.assertTemplateUsed(response, u'campana_preview/detalle.html')
+        self.assertTemplateUsed(response, u'campanas/campana_preview/detalle.html')
         self.assertEqual(
             response.context_data['categorias'][self.calif_gestion.opcion_calificacion.nombre], 1)
         self.assertEqual(
@@ -488,7 +520,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
     def test_usuario_logueado_accede_a_datos_vista_detalle_express_campana_preview(self):
         url = reverse('campana_preview_detalle_express', args=[self.campana_activa.pk])
         response = self.client.get(url, follow=True)
-        self.assertTemplateUsed(response, u'campana_preview/detalle_express.html')
+        self.assertTemplateUsed(response, u'campanas/campana_preview/detalle_express.html')
         self.assertEqual(
             response.context_data['categorias'][self.calif_gestion.opcion_calificacion.nombre], 1)
         self.assertEqual(
@@ -502,7 +534,8 @@ class ReportesCampanasTests(BaseTestDeReportes):
         CalificacionClienteFactory(
             opcion_calificacion=opcion_calificacion_agenda, agente=self.agente_profile)
         estadisticas_service = EstadisticasService()
-        llamadas_pendientes, _, _ = estadisticas_service.obtener_total_llamadas(campana_manual)
+        llamadas_pendientes, _, _, _, _ = estadisticas_service.obtener_total_llamadas(
+            campana_manual)
         self.assertEqual(llamadas_pendientes, 1)
 
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
@@ -553,3 +586,28 @@ class ReportesCampanasTests(BaseTestDeReportes):
         estadisticas = response.context_data['graficos_estadisticas']['estadisticas']
         total_calificados = estadisticas['total_calificados']
         self.assertEqual(total_calificados, 4)
+
+    def test_datos_reporte_grafico_total_llamadas_entrantes_coinciden_estadisticas_sistema(self):
+        campana_entrante = CampanaFactory(type=Campana.TYPE_ENTRANTE, estado=Campana.ESTADO_ACTIVA)
+        self.generador_log_llamadas.generar_log(
+            campana_entrante, False, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile)
+        self.generador_log_llamadas.generar_log(
+            campana_entrante, False, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile)
+        self.generador_log_llamadas.generar_log(
+            campana_entrante, False, 'EXITWITHTIMEOUT', self.telefono3, agente=self.agente_profile)
+        self.generador_log_llamadas.generar_log(
+            campana_entrante, False, 'ABANDON', self.telefono4, agente=self.agente_profile)
+        self.generador_log_llamadas.generar_log(
+            campana_entrante, True, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile)
+        self.generador_log_llamadas.generar_log(
+            campana_entrante, True, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile)
+        estadisticas_service = EstadisticasService()
+        hoy = fecha_local(timezone.now())
+        reporte = estadisticas_service.calcular_cantidad_llamadas(campana_entrante, hoy, hoy)
+        self.assertEqual(reporte['Recibidas'], 4)
+        self.assertEqual(reporte['Atendidas'], 2)
+        self.assertEqual(reporte['Expiradas'], 1)
+        self.assertEqual(reporte['Abandonadas'], 1)
+        self.assertEqual(reporte['Manuales'], 2)
+        self.assertEqual(reporte['Manuales atendidas'], 2)
+        self.assertEqual(reporte['Manuales no atendidas'], 0)

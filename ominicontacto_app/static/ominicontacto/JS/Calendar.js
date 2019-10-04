@@ -52,7 +52,7 @@ $(function () {
 		if(flagAjax === true) {
 		$.ajax({
 			type: "get",
-	   	 url: "/agenda/nuevo/",
+	   	 url: Urls.agenda_nuevo(),
 	   	 contentType: "text/plain",
 	   	 data: "horaEvento="+$("#horaAgenda").val()+"&fechaEvento="+$("#ctlfechaAgenda").val()+"&descripcion="+$("#calendarSubject").val()+"&agente="+ag+"&smart="+smart+"&channel="+chan+"&dirchan="+phoneOrEmail+"&personal="+pers,
 	   	 success: function (msg) {

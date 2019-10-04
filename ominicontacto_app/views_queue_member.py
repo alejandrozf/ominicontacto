@@ -34,7 +34,6 @@ from django.utils.translation import ugettext as _
 from ominicontacto_app.forms import QueueMemberForm, GrupoAgenteForm
 from ominicontacto_app.models import Campana, QueueMember, Grupo, AgenteProfile
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
-from ominicontacto_app.utiles import elimina_espacios
 from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
     AsteriskHttpQueueRemoveError, AsteriskHttpQueueAddError
 from utiles_globales import obtener_sip_agentes_sesiones_activas
@@ -47,7 +46,7 @@ logger = logging_.getLogger(__name__)
 
 def adicionar_agente_cola(agente, queue_member, campana):
     """Adiciona agente a la cola de su respectiva campaña"""
-    queue = "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre))
+    queue = "{0}_{1}".format(campana.id, campana.nombre)
     interface = "SIP/{0}".format(agente.sip_extension)
     penalty = queue_member.penalty
     paused = queue_member.paused
@@ -268,7 +267,7 @@ def queue_member_delete_view(request, pk_queuemember, pk_campana):
     campana = Campana.objects.get(pk=pk_campana)
 
     # ahora vamos a remover el agente de la cola de asterisk
-    queue = "{0}_{1}".format(campana.id, elimina_espacios(campana.nombre))
+    queue = "{0}_{1}".format(campana.id, campana.nombre)
     interface = "SIP/{0}".format(agente.sip_extension)
     sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
     if agente.sip_extension in sip_agentes_logueados:

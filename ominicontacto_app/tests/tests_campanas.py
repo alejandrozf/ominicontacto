@@ -196,7 +196,7 @@ class CampanasTests(OMLBaseTest):
 
         self.campana_activa = CampanaFactory.create(
             estado=Campana.ESTADO_ACTIVA, type=Campana.TYPE_PREVIEW,
-            tiempo_desconexion=self.tiempo_desconexion, gestion=self.GESTION)
+            tiempo_desconexion=self.tiempo_desconexion)
         self.opcion_calificacion_gestion = OpcionCalificacionFactory.create(
             campana=self.campana_activa, nombre=calificacion_gestion.nombre,
             tipo=OpcionCalificacion.GESTION, formulario=self.formulario)
@@ -207,8 +207,7 @@ class CampanasTests(OMLBaseTest):
             campana=self.campana_activa, nombre=calificacion_nombre,
             tipo=OpcionCalificacion.NO_ACCION)
         self.campana_borrada = CampanaFactory.create(
-            estado=Campana.ESTADO_BORRADA, oculto=False, type=Campana.TYPE_PREVIEW,
-            gestion=self.GESTION)
+            estado=Campana.ESTADO_BORRADA, oculto=False, type=Campana.TYPE_PREVIEW)
         OpcionCalificacionFactory.create(
             campana=self.campana_borrada, nombre=calificacion_nombre,
             tipo=OpcionCalificacion.GESTION, formulario=self.formulario)

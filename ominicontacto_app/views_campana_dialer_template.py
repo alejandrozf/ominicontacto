@@ -49,7 +49,7 @@ class TemplateListView(ListView):
     Esta vista lista los objetos Capanas-->Templates activos.
     """
 
-    template_name = 'template/lista_template.html'
+    template_name = 'campanas/campana_dialer/lista_template.html'
     context_object_name = 'campanas'
     model = Campana
 
@@ -126,7 +126,7 @@ class CampanaDialerTemplateCreateCampanaView(CampanaTemplateCreateCampanaMixin,
 
 class TemplateDetailView(DetailView):
     """Vista muestra el detalle de la campana"""
-    template_name = 'template/template_detalle.html'
+    template_name = 'campanas/campana_dialer/template_detalle.html'
     model = Campana
 
 
@@ -137,7 +137,7 @@ class TemplateDeleteView(DeleteView):
     """
 
     model = Campana
-    template_name = 'campana_dialer/delete_campana.html'
+    template_name = 'campanas/campana_dialer/delete_campana.html'
 
     def dispatch(self, request, *args, **kwargs):
         self.campana = \

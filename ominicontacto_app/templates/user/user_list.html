@@ -39,7 +39,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </thead>
     <tbody>
     {% for usuario in page_obj %}
-        <tr>
+        <tr id="{{usuario.username}}">
             <td>{{ usuario.id }}</td>
             <td>{{ usuario.username }}</td>
             <td>{{ usuario.first_name }}</td>
@@ -50,6 +50,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <a href="{% url 'agenteprofile_update' usuario.get_agente_profile.id %}">{% trans 'Modificar perfil Agente' %}</a>
                 {% elif usuario.is_supervisor %}
                     <a href="{% url 'supervisor_update' usuario.get_supervisor_profile.id %}">{% trans 'Modificar perfil Supervisor' %}</a>
+                {% elif usuario.is_cliente_webphone %}
+                    {% trans "Cliente WebPhone" %}
                 {% else %}
                     <span class="icon icon-cancel" aria-hidden="true"></span>
                 {% endif %}

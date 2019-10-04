@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-03 21:27-0300\n"
+"POT-Creation-Date: 2019-09-03 15:05-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,19 +17,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.6.0\n"
 
-# bd7af74b0331410684a875ad7025acdc
+# 7db50a69f6514791846b96805dbc7379
 #: ../../agent_session.rst:2
 msgid "Login"
-msgstr ""
+msgstr "Login"
 
-# 934f8a68227145b792c543f731aa9123
+# 7987647119c84085952b2dee35c554fb
 #: ../../agent_session.rst:4
 msgid ""
 "Para acceder a la aplicación se ingresa el URL de su instancia de "
 "OMniLeads en su browser."
-msgstr ""
+msgstr "Access the system using OMniLeads URL from a browser."
 
-# 62c14816a0224fba9156bed7711e5531
+# fcec39deb8994829b9310d58330aa349
 #: ../../agent_session.rst:6
 msgid ""
 "Si la instancia de OMniLeads no dispone de certificados comerciales, al "
@@ -37,38 +37,45 @@ msgid ""
 "correspondiente al ingreso a un sitio *https* con un certificado auto-"
 "firmado."
 msgstr ""
+"If there are no commercial certificates installed, a security exception "
+"takes place when trying to access for the first time. This is because the"
+" presence of a self-signed certificate under https protocol."
 
-# 322192363a17450fb794461990507635
+# 15c71e968a7244f182ed3368619c1ad4
 #: ../../agent_session.rst:9
 msgid ""
 "En ese caso, simplemente debe aceptar la advertencia y continuar, como lo"
 " indican las figuras 1 y 2."
 msgstr ""
+"In this case, just accept the exception and continue, as shown in figure "
+"1 and 2."
 
-# a50dd14efdcd41e38e6963837c70fd8a
+# 795e4e9b38b14eb6b6f5f3b44d6a98fc
 #: ../../agent_session.rst:14
 msgid "*Figure 1: certificate is not trusted*"
 msgstr ""
 
-# 0ee7cd4535de49b398cf8a309d4bf4ab
+# 03f7e103d0334c13961b18a03cd8a218
 #: ../../agent_session.rst:18
 msgid "*Figure 2: certificate is not trusted*"
 msgstr ""
 
-# 9875cef79cee4ab48908a65fbc17eaf6
+# 67ad6f1f42334ebb8d9454447a5ea9ac
 #: ../../agent_session.rst:20
 msgid ""
 "Al avanzar sobre el sitio, se despliega la pantalla de login, en donde el"
 " agente deberá ingresar su usuario y contraseña para acceder a la "
 "aplicación."
 msgstr ""
+"After accepting security exception, agent is able to access using "
+"username and password."
 
-# 7a39c814097646ac8ba502bd7989957e
+# c570412d87934006967532451e1f9704
 #: ../../agent_session.rst:25
 msgid "*Figure 3: login screen*"
 msgstr ""
 
-# 7248a77d641e43c3b2b4388d0f479c5c
+# 2376027a4a10499d853ecd8079e73200
 #: ../../agent_session.rst:27
 msgid ""
 "Luego de un login exitoso, se despliega la interfaz de agente. Lo primero"
@@ -77,38 +84,46 @@ msgid ""
 "usuario debe permitir esta acción, ya que precisa del micrófono para "
 "utilizar la aplicación a la hora de gestionar llamadas."
 msgstr ""
+"After successfull login, agent screen is shown. The first thing that "
+"comes up is a browser pop-up screen telling us that OML needs access to "
+"microphone. As expected, this action needs to be allowed in order for the"
+" agent to use those resources for operating."
 
-# c9187afed924494988455a0404d26da6
+# 5e67dc21f7f141589e92deb082e68de0
 #: ../../agent_session.rst:33
 msgid "*Figure 4: OMniLeads wants to use your microphone*"
 msgstr ""
 
-# 2f6f9d5502b14a06a65a3db379a519fb
+# 506bd8c4adfa49af8cc013559c2aaf04
 #: ../../agent_session.rst:35
 msgid ""
 "Al permir el acceso al micrófono, entonces se procede con el resto del "
 "login. Esto implica la reproducción de un \"audio\" sobre el auricular "
 "del agente anunciando el login exitoso."
 msgstr ""
+"Once this is accepted, agent is able to login successfully and can listen"
+" a brief login message over the headsets."
 
-# 7bceebabcc3a478ea00ed5dc14a54b70
+# 664c576664c145deac9e221895def633
 #: ../../agent_session.rst:38
 msgid ""
 "Además el agente debe visualizar el webphone desplegado y en estado "
 "\"Registered\" como lo indica la figura 5."
 msgstr ""
+"Agent will see the Webphone, and if all is going on a Registered status "
+"will be displayed as it is shown in figure 5."
 
-# 465b9a0f7fcd44abbcb4cbbf3df4726c
+# 562630104c5541f9b9f3ea65c8440171
 #: ../../agent_session.rst:42
 msgid "*Figure 5: Succesful agent login*"
 msgstr ""
 
-# 683c1cd737464cf89962a810aba13077
+# 8d6e4a4361be4be59ce66a82c50da1a5
 #: ../../agent_session.rst:46
 msgid "La consola de agente"
-msgstr ""
+msgstr "Agent Console"
 
-# cd33c2a847324bd19db3c8e2041c1740
+# 3972f30a2aec4309b7ff59803870b815
 #: ../../agent_session.rst:48
 msgid ""
 "La consola de agente es el componente sobre el cual el agente de "
@@ -116,18 +131,21 @@ msgid ""
 "observar su aspecto y además se diseccionó en sub-componentes que son "
 "explicados a continuación."
 msgstr ""
+"Agent console is the component where all call management flows. In the "
+"following picture, we can see the different sections that will be "
+"explained below."
 
-# fd23af84b8f349359ddb77967cc98764
+# a5fffb0132c542e8bef67f178129391e
 #: ../../agent_session.rst:54
 msgid "*Figure 6: the OMniLeads agent console*"
 msgstr ""
 
-# a5baf9d770dc43d184033b57c02a1dbe
+# dcd0e6db11c440149ed35ade8ab83ff2
 #: ../../agent_session.rst:56
 msgid "**(1) Gestión de contactos**"
-msgstr ""
+msgstr "**(1) Contact Management**"
 
-# 9e523c83d5cd461ba95aced66f10333d
+# 420cd5a0a37d424faba68ecfed374105
 #: ../../agent_session.rst:58
 msgid ""
 "En esta sección encontramos las funcionalidades que permiten navegar "
@@ -136,28 +154,31 @@ msgid ""
 "las calificaciones que fue realizando el agente y además acceder a las "
 "campañas del tipo Preview para solicitar contactos para gestionar."
 msgstr ""
+"In this section we see the way the agent can navigate among different "
+"campaign contacts, scheduled callbacks, dispositioned calls, and also "
+"access to Preview Campaigns in order to retrieve contacts to dial."
 
-# cacfb2cb0a2f44b68b308022999e1cad
+# 8b513ca423d14bafb9f3f1c1bb224855
 #: ../../agent_session.rst:62
 msgid "Todos estos aspectos serán ampliados en las próximas secciones."
-msgstr ""
+msgstr "All the above will be explained in depth in the next sections."
 
-# 628a16f817de439ab6e1294f7c6f3231
+# 29d287f00c5d433fa08b7cda24b20097
 #: ../../agent_session.rst:64
 msgid "Barra de estado"
-msgstr ""
+msgstr "Status Bar"
 
-# 237dee437ee641a09ebfa908e5e92389
+# 72bfafd3e81247c1846ddb03e05412a1
 #: ../../agent_session.rst:66
 msgid "En esta barra tenemos información sobre la sesión."
-msgstr ""
+msgstr "In this bar, session information is shown."
 
-# 4cd9c03eb4784456a4ec86595731038a
+# c890ed8929ff493ca1767673961da965
 #: ../../agent_session.rst:70
 msgid "*Figure 7: status bar*"
 msgstr ""
 
-# 543b6b30ab354672921e268058b1faaa
+# 8a6e9b63bb0741f8bbf458aa8139d0cd
 #: ../../agent_session.rst:72
 msgid ""
 "En la barra de estado hay dos cronómetros que van contabilizando la suma "
@@ -167,13 +188,19 @@ msgid ""
 "Finalmente aparecen los botones de pausa y des-pausa, para que el agente "
 "pueda irse a pausa y salir de la misma."
 msgstr ""
+"In the status bar there are two chronometers with the amount of agent "
+"time in Pause and Ready status. Its color changes according to whether "
+"the agent is in the Ready (gray), On call (green) or Paused (yellow) "
+"status. A status legend can also be seen as a description. Finally the "
+"Pause and Un-pause buttons appear, so that the agent can go to pause and "
+"leave it."
 
-# 0ce2694528c94405bba7f5e680873229
+# 5f612415816041bd898bce8aa9418332
 #: ../../agent_session.rst:78
 msgid "Área de información dinámica"
-msgstr ""
+msgstr "Dynamic Information Area"
 
-# 2cbfc08ccd1a4b7d9b90911b759911c6
+# 2ce635cd46d94ebeb0bef7393bd95e42
 #: ../../agent_session.rst:80
 msgid ""
 "En esta sección de la pantalla aparece toda la información que el agente "
@@ -181,95 +208,126 @@ msgid ""
 "también los datos de los contactos en el momento en que el agente procesa"
 " una nueva llamada."
 msgstr ""
+"All the information that the agent is requesting while browsing can be "
+"seen in this section, as well as Contact Information when agent processes"
+" a new call."
 
-# 982ca13563664b85853c5d44e92d8a9c
+# f87f33b985c749318e998128206f06c2
 #: ../../agent_session.rst:84
 msgid "**(4) Webphone**"
 msgstr ""
 
-# 1764aa65618e4af89db5577e96aa9fcf
+# 4b0aea62357e4accb93a72afb49ff4c4
 #: ../../agent_session.rst:86
 msgid ""
 "El webphone OMniLeads es el componente pricipal dentro del módulo de "
 "telefonía. A continuación vamos a repasar los botones del mismo."
 msgstr ""
+"OMniLeads Wephone is the main component within Telephony module. Let's "
+"review the embedded buttons."
 
-# 04dde9e9bd1c49598c9c3cbec57d55ba
+# 5b422c64e65040018331d8d22c2abc55
 #: ../../agent_session.rst:91
 msgid "*Figure 8: Webphone*"
 msgstr ""
 
-# 0c9a6fa7d3394c52abf8b682549338e3
+# 717295b5e04244c5ab909c18ee3b9582
 #: ../../agent_session.rst:93
 msgid "Vamos a dividir al webphone en 5 partes:"
-msgstr ""
+msgstr "Webphone can be separated in 5 pieces:"
 
-# 003871bb7e714a78852c1b888da218c5
+# a12ad004fd00498499b3264fe00b52eb
 #: ../../agent_session.rst:95
 msgid ""
-"a Estado del webphone. Debe siempre figurar como *Registered*. En caso "
+"Estado del webphone. Debe siempre figurar como *Registered*. En caso "
 "contrario debe comunicarse con el administrador."
 msgstr ""
+"Webphone Status. It should be seen always as *Registered*. If that is not"
+" the case, please cotact the System Administrator."
 
-# e9a01026c4934d04b3374e251d1b534f
+# 70f494a9f6ab4f63a21bf313222e16ae
 #: ../../agent_session.rst:97
 msgid ""
-"b Dialpad para marcar llamados manuales o enviar DTMF sobre una llamada "
+"Dialpad para marcar llamados manuales o enviar DTMF sobre una llamada "
 "conectada."
 msgstr ""
+"Dialpad: used for dialing numbers manually or pressing DTMF options in a "
+"connected call."
 
-# 1ffeb6853bde410b81a2ed2fbdc994bf
+# 085681002dcf4dfc823f3866ff5f3825
 #: ../../agent_session.rst:99
 msgid ""
-"c Estos botones permiten disparar las acciones de: llamar, cortar, re-"
+"Estos botones permiten disparar las acciones de: llamar, cortar, re-"
 "llamar al último número por un lado, siendo el cuarto botón un método "
 "para \"marcar\" la grabación de la llamada con un comentario."
 msgstr ""
+"These buttons allow the agent to shoot certain actions: dial, hangup, re-"
+"call, and the possibility to \"leave a mark\" in a conversation, i.e. a "
+"specific comment."
 
-# c4fcb2d826e44e99860288c8f0fa641d
+# cd8de0f7c14641c693b3a4ddefdec8af
 #: ../../agent_session.rst:101
 msgid ""
-"d Esta serie de botones permiten al agente efectuar las acciones de: "
+"Esta serie de botones permiten al agente efectuar las acciones de: "
 "realizar una transferencia de llamada, efectuar una conferencia con una "
 "tercera parte y poner la llamada en esepra."
 msgstr ""
+"These buttons allow to the agent to make actions like: make a transfer "
+"call, make a conference with a third party and hold the call"
 
-# eaf2d5c0ae0948e19e9772819003fed6
+# 4c7b88f87637447f87bcb3b72f34a293
 #: ../../agent_session.rst:103
 msgid ""
-"e Este botón permite modificar la campaña sobre la cual se procesa cada "
+"Este botón permite modificar la campaña sobre la cual se procesa cada "
 "llamada manual. También se abordará más adelante en la sección \"campañas"
 " manuales\"."
 msgstr ""
+"This button allows to modify the campaign which is processed each manual "
+"call. More information in \"manual campaign\" section"
 
-# d5a922f70dca4c76a9e9f27ce53c274c
+# 3fafc74507e249eeae2f4d8461697a69
 #: ../../agent_session.rst:105
+msgid ""
+"Este botón permite efectuar una llamada hacia otro agente, así como "
+"también lanzar una llamada saliente a un número externo SIN asociarse a "
+"ninguna campaña."
+msgstr ""
+"This button allows to make a call to another agent, also to make an "
+"outbound call to an external number withouth association to a campaign"
+
+# 437a3652683f44049057d17a50c7905c
+#: ../../agent_session.rst:107
 msgid ""
 "La mayoría de estas funcionalidades son ampliadas en las secciones "
 "permitentes de esta documentación."
 msgstr ""
+"Almost all of the functionalities are analyzed in depth in the related "
+"sections."
 
-# 9bc3636614a24adab424d81acbf43944
-#: ../../agent_session.rst:107
-msgid "**(5) Dock**"
-msgstr ""
-
-# cd4d216fcade4c8d81f80e2e6b1590f2
+# 677972d272994c1ebf722d1c79fd3248
 #: ../../agent_session.rst:109
+msgid "**Dock**"
+msgstr "**Dock**"
+
+# 057f63266c9242e7acab621aa21057f2
+#: ../../agent_session.rst:111
 msgid ""
 "El dock expone cada herramienta de comunicación. En la versión actual "
 "SOLAMENTE está funcional el webphone ya que OMniLeads actualmente soporta"
 " solamente llamadas telefónicas, en versiones futuras se comenzarán a "
 "activar otros componentes."
 msgstr ""
+"In the current version, OMniLeads just supports Webphone component to "
+"make/receive calls. In future versions Product Team will be activating "
+"other modules."
 
-# 152952e5cce248fc9dcdf0255756900a
-#: ../../agent_session.rst:114
-msgid "Pausas"
-msgstr ""
-
-# 69408485abec4a078b0822abfa24debb
+# 05c9d5d2b0d2439ebe708c86dfbefb43
 #: ../../agent_session.rst:116
+msgid "Pausas"
+msgstr "Pauses"
+
+# 54fb49179c4b47bf803648891d08cc05
+#: ../../agent_session.rst:118
 msgid ""
 "El agente puede ingresar en modo pausa para que ninguna llamada de "
 "campañas entrantes o predictivas pueda ingresarle. Como bien se explica "
@@ -278,31 +336,38 @@ msgid ""
 "lo tanto el agente al ingresar en el estado de pausa, debe indicar a qué "
 "tipo de pausa."
 msgstr ""
+"Agent has the ability to enter in Pause mode so that no incoming or "
+"predictive campaign calls are delivered. As explained in the \"Initial "
+"configuration\" section, there are different types of pauses the "
+"Administrator can create and maintain in the system. Therefore, when "
+"entering the pause status, the agent must select the type of pause."
 
-# 0cc22f787cbe4925b4d0a2cfb8ed9e2a
-#: ../../agent_session.rst:121
+# 895102a486af40d88f4477b472d5f475
+#: ../../agent_session.rst:123
 msgid ""
 "Para ingresar en una pausa se debe hacer click en el botón \"Pausa\" "
 "dentro de la barra de estado del agente."
 msgstr ""
+"For entering in Pause mode, Agent must click in the \"Pause\" button in "
+"the status bar of the console."
 
-# 028220f7d04c4d35a581aaa5e4865948
-#: ../../agent_session.rst:125
+# 903f33905d69476dab5558c4ab29a4fd
+#: ../../agent_session.rst:127
 msgid "*Figure 8: Pause*"
 msgstr ""
 
-# c46144b76e234284806bd9354b8b4f43
-#: ../../agent_session.rst:127
+# cfd1ef4f506e49c8956e551752cef0e6
+#: ../../agent_session.rst:129
 msgid "Se despliega entonces el menú de selección del tipo de pausa."
-msgstr ""
+msgstr "Pause type selection process takes place."
 
-# a1589b02c8994e37b636ade299b8bc02
-#: ../../agent_session.rst:131
+# 72fd1e45973347e081bfe59e67beb224
+#: ../../agent_session.rst:133
 msgid "*Figure 9: Pause class*"
 msgstr ""
 
-# 49744d274cd548b3a10333a951cb85c5
-#: ../../agent_session.rst:133
+# 99a7e11d69254b808d24a9b23a895511
+#: ../../agent_session.rst:135
 msgid ""
 "Finalmente, el agente entra en pausa. Debe notarse como cambia hacia el "
 "color \"amarillo\" la barra de estado, además en la barra se puede leer "
@@ -310,26 +375,32 @@ msgid ""
 "de tiempo de pausa comienza a correr, mientras que el de tiempo de "
 "operación se frena."
 msgstr ""
+"Finally, the agent is paused. It should be noted how the status bar "
+"changes to \"yellow\" color, also the current pause type can be read in "
+"the status bar and the Pause timer starts to run. On the other hand, "
+"Operation timer stops."
 
-# 7355c68606924815be84c0e16b62dcab
-#: ../../agent_session.rst:139
+# 12572540afa14fcd8e1c980d8fb6b12c
+#: ../../agent_session.rst:141
 msgid "*Figure 10: On Pause*"
 msgstr ""
 
-# a5bddaac06574ee5869ba372ecb10b2b
-#: ../../agent_session.rst:143
+# fa2247fe55cc4e41b1c373c8f8f1331a
+#: ../../agent_session.rst:145
 msgid "Logout"
 msgstr ""
 
-# e0819d9639cf405fbfd6299d182f10a4
-#: ../../agent_session.rst:145
+# 63bb38b1b46a46599bed78d48b91aaa3
+#: ../../agent_session.rst:147
 msgid ""
 "Para efectuar un logout se debe acceder al vértice superior izquierdo, "
 "tal como lo expone la figura 9."
 msgstr ""
+"In order to log out of the system, agent needs to click on the exit "
+"button as displayed below."
 
-# 323ba978a4034514a7c71e1dbb57db10
-#: ../../agent_session.rst:149
+# 13f3b6d8892a484f9612038bf55b2cb1
+#: ../../agent_session.rst:151
 msgid "*Figure 11: agent logout*"
 msgstr ""
 
@@ -352,3 +423,21 @@ msgstr ""
 #~ "\"campañas manuales\"."
 #~ msgstr ""
 
+# c4fcb2d826e44e99860288c8f0fa641d
+#~ msgid ""
+#~ "d Esta serie de botones permiten "
+#~ "al agente efectuar las acciones de: "
+#~ "realizar una transferencia de llamada, "
+#~ "efectuar una conferencia con una tercera"
+#~ " parte y poner la llamada en "
+#~ "esepra."
+#~ msgstr ""
+
+# eaf2d5c0ae0948e19e9772819003fed6
+#~ msgid ""
+#~ "e Este botón permite modificar la "
+#~ "campaña sobre la cual se procesa "
+#~ "cada llamada manual. También se abordará"
+#~ " más adelante en la sección "
+#~ "\"campañas manuales\"."
+#~ msgstr ""

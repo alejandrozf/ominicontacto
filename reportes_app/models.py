@@ -24,6 +24,7 @@ from django.db.models import Count
 from django.core.exceptions import SuspiciousOperation
 from django.utils.translation import ugettext as _
 
+from ominicontacto_app.models import Campana
 from ominicontacto_app.utiles import datetime_hora_minima_dia, datetime_hora_maxima_dia
 
 
@@ -141,14 +142,40 @@ class LlamadaLogManager(models.Manager):
         values = cursor.fetchall()
         return values
 
+    def obtener_llamadas_finalizadas_del_dia(self, agente_id, fecha):
+        fecha_desde = datetime_hora_minima_dia(fecha)
+        fecha_hasta = datetime_hora_maxima_dia(fecha)
+        return self.filter(agente_id=agente_id,
+                           time__gte=fecha_desde, time__lte=fecha_hasta,
+                           event__in=LlamadaLog.EVENTOS_FIN_CONEXION)
+
+    def entrantes_espera(self):
+        ids_llamadas_entrantes = list(self.filter(
+            tipo_campana=Campana.TYPE_ENTRANTE, event='ENTERQUEUE').values_list(
+                'callid', flat=True))
+        logs = self.filter(callid__in=ids_llamadas_entrantes, event='CONNECT')
+        return logs
+
+    def entrantes_abandono(self):
+        return self.filter(
+            tipo_campana=Campana.TYPE_ENTRANTE, event__in=['ABANDON', 'ABANDONWEL'])
+
 
 class LlamadaLog(models.Model):
     """
     Define la estructura de un evento de log de cola relacionado con una llamada
     """
 
+    # Tipos de llamada
     LLAMADA_MANUAL = 1
+    LLAMADA_DIALER = 2
     LLAMADA_ENTRANTE = 3
+    LLAMADA_PREVIEW = 4
+    LLAMADA_CLICK2CALL = 6
+    LLAMADA_TRANSFER_INTERNA = 8
+    LLAMADA_TRANSFER_EXTERNA = 9
+
+    TIPOS_LLAMADAS_SALIENTES = (LLAMADA_MANUAL, LLAMADA_PREVIEW, LLAMADA_CLICK2CALL)
 
     EVENTOS_NO_CONTACTACION = ('NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL', 'FAIL', 'OTHER',
                                'BLACKLIST', 'CONGESTION', 'NONDIALPLAN')

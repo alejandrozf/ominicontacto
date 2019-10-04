@@ -27,9 +27,6 @@ Luego es el momento de ingresar la clave del usuario root de MySQL y hacer click
 Nota: el password del motor MariaDB fue configurado dentro del archivo "inventory" antes de activar la instalación del sistema. (En el mismo directorio en el que clonó el repositorio de OML).
 
 
-.. image:: images/install_my_inventory.png
-
-
 .. image:: images/maintance_wd_mariadb_pass.png
 
 *Figure 2: MariaDB root password*
@@ -164,7 +161,10 @@ Actualizaciones
 
 .. important::
 
-  Para realizar el upgrade de la plataforma es **IMPRESCINDIBLE** contar con las contraseñas de *postgresql*, *mysql* y *django admin* que se usaron durante la instalación. Dichas contraseñas las podrá ver en el archivo *my_inventory*, y tendrá que asignarlas nuevamente en el archivo *inventory*. Si no se utilizan las mismas contraseñas que se usaron para la instalación el upgrade puede fallar
+  **Para realizar el upgrade de la plataforma anterior a release-1.3.1 (incluyendolo)**
+
+  * Es **IMPRESCINDIBLE** contar con las contraseñas de *postgresql*, *mysql* y *django admin* que se usaron durante la instalación. Dichas contraseñas las podrá ver en el archivo *my_inventory*, y tendrá que asignarlas nuevamente en el archivo *inventory*. Si no se utilizan las mismas contraseñas que se usaron, el upgrade cambiará las contraseñas por aquellas que se encuentren en el inventory
+  * Si no utiliza la misma contraseña de MySQL que se tenia previamente, el upgrade fallará.
 
 OMniLeads es forjado bajo un paradigma de releases continuos, lo cual implica un flujo de actualizaciones constantes.
 Por ello es muy importante llevar a cabo de manera limpia las actualizaciones.
@@ -174,9 +174,9 @@ El equipo de OMniLeads ha realizado el testeo de upgrades de la plataforma en lo
 ===================  =============================
 Linux Distro         Upgrade soportado y testeado
 ===================  =============================
-CentOS 7.6            Desde 1.1.1 a 1.3.0
-Debian 9.3            Desde 1.2.2 a 1.3.0
-Ubuntu Server 18.04   No soportado
+CentOS 7.6            Desde 1.1.1 a 1.3.1
+Debian 9.3            Desde 1.2.2 a 1.3.1
+Ubuntu Server 18.04   Desde 1.3.1 en adelante
 ===================  =============================
 
 A continuación se exponen los pasos a seguir para llevar a cabo una nueva actualización de la plataforma. Esta tarea también se realiza con el script "deploy.sh".
@@ -197,19 +197,22 @@ Posicionarse sobre el directorio donde reside el script “deploy.sh”
 Asumiendo que estamos trabajando sobre los release estables (master)
 Se debe ejecutar un "git pull origin master" para traernos las actualizaciones del repositorio.
 
-Observar que el parámetro *hostname* y *dirección IP* tiene que coincidir respecto a lo que tenga cargado el host donde corre OMniLeads.
-
-::
-
- [omnileads-aio]
- oml-dev.example.com ansible_ssh_connection=local ansible_user=root ansible_host=192.168.95.155
-
-::
+.. code-block:: bash
 
  git pull origin master
 
-A continuación se ejecuta el script con el parámetro -u (update). Esta ejecución tomará unos minutos e implica el aplicar todas las actualizaciones
-descargadas con el "git pull origin master" sobre nuestra instancia de OMniLeads.
+Descomentar en el archivo de inventario la línea para instalación self-hosted
+
+.. code-block:: bash
+
+  ##########################################################################################
+  # If you are installing a prodenv (PE) AIO y bare-metal, change the IP and hostname here #
+  ##########################################################################################
+  [prodenv-aio]
+  localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
+  #10.10.10.100 ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
+
+A continuación se ejecuta el script con el parámetro -u (update). Esta ejecución tomará unos minutos e implica el aplicar todas las actualizaciones descargadas con el "git pull origin master" sobre nuestra instancia de OMniLeads.
 
 ::
 
@@ -232,18 +235,22 @@ Se debe acceder al repositorio clonado en nuestra maquina workstation, para desd
  git pull origin master
  cd ominicontacto/deploy/ansible
 
-A continuación y como en cada ejecución del script "deploy.sh", se debe repasar el archivo de inventory, velando por la coincidencia del parámetro hostname y dirección IP respecto al host donde corre OMniLeads y vamos a actualizar.
+A continuación y como en cada ejecución del script "deploy.sh", se debe repasar el archivo de inventory, velando por la coincidencia de la dirección IP de host donde corre OMniLeads y vamos a actualizar.
 
 ::
 
- [omnileads-aio]
- oml-dev.example.com ansible_ssh_port=22 ansible_user=root ansible_host=10.10.1.100
+  ##########################################################################################
+  # If you are installing a prodenv (PE) AIO y bare-metal, change the IP and hostname here #
+  ##########################################################################################
+  [prodenv-aio]
+  #localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
+  10.10.10.100 ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
 
 .. note::
 
-  Se debe tener en cuenta que para instalación remota, se debe utilizar la línea con el parámetro "ansible_ssh_port=22" (donde 22 es el puerto por defecto, pero es normal tambien que se utilice otro puerto) dentro de la sección [omnileads-aio]
+  Se debe tener en cuenta que para instalación remota, se debe utilizar la línea con el parámetro "ansible_ssh_port=22" (donde 22 es el puerto por defecto, pero es normal tambien que se utilice otro puerto) dentro de la sección [prodenv-aio]
 
-  Se ejecuta el script con el parámetro -u (update). Esta ejecución tomará unos minutos e implica el aplicar todas las actualizaciones descargadas con el "git pull origin master" sobre nuestra instancia de OMniLeads.
+Se ejecuta el script con el parámetro -u (update). Esta ejecución tomará unos minutos e implica el aplicar todas las actualizaciones descargadas con el "git pull origin master" sobre nuestra instancia de OMniLeads.
 
 ::
 
@@ -260,53 +267,46 @@ Finalmente, la plataforma queda actualizada a la última versión estable "maste
 
   Los nuevos releases suelen traer nuevo codigo JavaScript. El browser mantiene el código viejo en su cache por lo que se **recomienda** instalar en el browser un addon para borrar la cache. *Clear cache* para *Google Chrome*, por ejemplo
 
-Cambios de los parámetros de red (Hostname y/o Dirección IP)
-************************************************************
+Cambios de los parámetros de red (Hostname y/o Dirección IP) y cambios de contraseñas de servicios
+***************************************************************************************************
 
-OMniLeads es un sistema complejo, con varios servicios orientados a las comunicaciones real-time corriendo en el Linux Host.
-Esto implica que un cambio de *dirección IP* o *hostname* del host conlleva cierta complejidad.
+OMniLeads es un sistema complejo, con varios servicios orientados a las comunicaciones real-time corriendo en el Linux Host. Esto implica que un cambio de *dirección IP* o *hostname* del host conlleva cierta complejidad.
 
-Para llevar a cabo éstas tareas, debemos ejecutar nuevamente el script "deploy.sh", el mismo que fue utilizado para llevar a cabo la
-instalación de la plataforma.
+Para llevar a cabo éstas tareas, debemos ejecutar nuevamente el script "deploy.sh", el mismo que fue utilizado para llevar a cabo la instalación de la plataforma.
 
 Debemos ingresar con el usuario root al sistema, cambiar la dirección IP a nivel **sistema operativo** y/o el hostname y asegurarnos de que el host tomó los cambios. Se recomienda
 un *reboot* del sistema.
 
-Luego continuamos con los cambios sobre OML, para ellos debemos pararnos sobre el directorio donde se clonó el repositorio de OML (si fue una instalación self-hosted será
-dentro del host remoto, si fue una instalación desde ansible-remoto será en la máquina *deployer*), para luego acceder al directorio *deploy/ansible*, donde tenemos los
-archivos *deploy.sh* e *inventory*.
+Luego continuamos con los cambios sobre OML, para ellos debemos pararnos sobre el directorio donde se clonó el repositorio de OML (si fue una instalación self-hosted será dentro del host remoto, si fue una instalación desde ansible-remoto será en la máquina *deployer*), para luego acceder al directorio *deploy/ansible*, donde tenemos los archivos *deploy.sh* e *inventory*.
 
 Allí debemos editar nuevamente el archivo *inventory* y repasar el hostname para que coincida con el hostname del host y allí también debemos configurar la nueva dirección IP.
 
 ::
 
- [omnileads-aio]
- hostname ansible_connection=local ansible_user=root ansible_host=X.X.X.X #(this line is for self-hosted installation)
+  [prodenv-aio]
+  #localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
+  10.10.10.100 ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
+
+Si se va a ejecutar self-hosted basta con descomentar la linea correspondiente, si se va a ejecutar host-node, ingresar la nueva IP que tiene la instancia de OMniLeads.
+
+A su vez, si se quiere cambiar alguna contraseña de alguno de los servicios de omnileads (postgresql, mysql, admin pass o AMI pass), descomentar las respectivas variables e ingresar la nueva contraseña
+
+::
+
+  #postgres_password=my_very_strong_pass
+  #admin_pass=my_very_strong_pass
+  ami_password=5_MeO_DMT
+  #mysql_root_password=my_very_strong_pass
 
 Se guardan los cambios sobre el archivo y finalmente se ejecuta el script *deploy.sh*.
 
 ::
 
  cd ominicontacto/deploy/ansible
- ./deploy.sh --change-network -a
+ ./deploy.sh -u
 
-Por último se ejecuta un reinicio de la plataforma. Luego podemos comenzar a utilizar OML en la nueva dirección IP.
-
-::
-
- reboot
 
 **NOTA:** si está resolviendo el nombre del host de OMniLeads con su archivo *hosts* de su maquina de trabajo, no olvide tambien cambiar los parámetros.
-
-Modificación de passwords de servicios
-***************************************
-
-En caso de querer modificar las contraseñas usadas en los servicios, basta con modificar dicha contraseña dentro del archivo de inventario. Una vez seteadas ahi se procede a ejecutar el *deploy.sh* así:
-
-::
-
-  cd ominicontacto/deploy/ansible
-  ./deploy.sh --change-passwords -a
 
 Desbloqueo de usuarios
 ***********************
@@ -339,3 +339,26 @@ Se observará el usuario bloqueado. Basta con hacer click en **Unblock** para de
 *Figure 19: Unblock user view*
 
 Ya el usuario podrá loguearse sin problema.
+
+Desinstalación de OMniLeads
+****************************
+
+Si por alguna razón quiere desinstalar OMniLeads de su máquina o VM se cuenta con un script para ello. Ya viene incorporado en el proceso de instalación, basta con ejecutarlo:
+
+.. code::
+
+  oml-uninstall
+
+Este script:
+
+* Desinstala los servicios esenciales de omnileads: asterisk, kamailio, rtpengine, mariadb, postgresql, wombat dialer, redis, nginx y omniapp.
+* Borra la carpeta /opt/omnileads (incluyendo grabaciones)
+* Elimina las bases de datos
+
+.. note::
+
+  El script no desinstala la paquetería de dependencias usadas para la instalación de los servicios.
+
+.. important::
+
+  Tener cuidado al ejecutarlo, una vez ejecutado no hay forma de recuperar el sistema.

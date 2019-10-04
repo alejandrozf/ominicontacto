@@ -108,7 +108,6 @@ class CampanaTemplateCreateCampanaMixin(object):
                 'bd_contacto': campana_template.bd_contacto,
                 'tipo_interaccion': campana_template.tipo_interaccion,
                 'sitio_externo': campana_template.sitio_externo,
-                'gestion': campana_template.gestion,
                 'objetivo': campana_template.objetivo,
                 'es_template': False}
         elif step == self.COLA:
@@ -214,12 +213,12 @@ class CampanaWizardMixin(object):
              (ADICION_SUPERVISORES, CampanaSupervisorUpdateForm),
              (ADICION_AGENTES, QueueMemberFormset)]
 
-    TEMPLATES = {INICIAL: "campana/nueva_edita_campana.html",
-                 COLA: "campana/create_update_queue.html",
-                 OPCIONES_CALIFICACION: "campana/opcion_calificacion.html",
-                 PARAMETROS_CRM: "campana/parametros_crm_sitio_externo.html",
-                 ADICION_SUPERVISORES: "campana/adicionar_supervisores.html",
-                 ADICION_AGENTES: "campana/adicionar_agentes.html"}
+    TEMPLATES = {INICIAL: "campanas/campana_entrante/nueva_edita_campana.html",
+                 COLA: "campanas/campana_entrante/create_update_queue.html",
+                 OPCIONES_CALIFICACION: "campanas/campana_entrante/opcion_calificacion.html",
+                 PARAMETROS_CRM: "campanas/campana_entrante/parametros_crm_sitio_externo.html",
+                 ADICION_SUPERVISORES: "campanas/campana_entrante/adicionar_supervisores.html",
+                 ADICION_AGENTES: "campanas/campana_entrante/adicionar_agentes.html"}
 
     form_list = FORMS
     condition_dict = {
@@ -493,10 +492,10 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (PARAMETROS_CRM, ParametrosCrmFormSet)]
 
-    TEMPLATES = {INICIAL: "campana/nueva_edita_campana.html",
-                 COLA: "campana/create_update_queue.html",
-                 OPCIONES_CALIFICACION: "campana/opcion_calificacion.html",
-                 PARAMETROS_CRM: "campana/parametros_crm_sitio_externo.html"}
+    TEMPLATES = {INICIAL: "campanas/campana_entrante/nueva_edita_campana.html",
+                 COLA: "campanas/campana_entrante/create_update_queue.html",
+                 OPCIONES_CALIFICACION: "campanas/campana_entrante/opcion_calificacion.html",
+                 PARAMETROS_CRM: "campanas/campana_entrante/parametros_crm_sitio_externo.html"}
 
     form_list = FORMS
 
@@ -531,7 +530,7 @@ class CampanaEntranteTemplateListView(ListView):
     """
     Vista que muestra todos los templates de campañas entrantes activos
     """
-    template_name = "campana/lista_template.html"
+    template_name = "campanas/campana_entrante/lista_template.html"
     context_object_name = 'templates_activos_entrantes'
     model = Campana
 
@@ -555,10 +554,10 @@ class CampanaEntranteTemplateCreateView(CampanaTemplateCreateMixin, CampanaEntra
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (PARAMETROS_CRM, ParametrosCrmFormSet)]
 
-    TEMPLATES = {INICIAL: "campana/nueva_edita_campana.html",
-                 COLA: "campana/create_update_queue.html",
-                 OPCIONES_CALIFICACION: "campana/opcion_calificacion.html",
-                 PARAMETROS_CRM: "campana/parametros_crm_sitio_externo.html"}
+    TEMPLATES = {INICIAL: "campanas/campana_entrante/nueva_edita_campana.html",
+                 COLA: "campanas/campana_entrante/create_update_queue.html",
+                 OPCIONES_CALIFICACION: "campanas/campana_entrante/opcion_calificacion.html",
+                 PARAMETROS_CRM: "campanas/campana_entrante/parametros_crm_sitio_externo.html"}
 
     form_list = FORMS
 
@@ -579,7 +578,7 @@ class CampanaEntranteTemplateDetailView(DetailView):
     """
     Muestra el detalle de un template para crear una campaña entrante
     """
-    template_name = "campana/detalle_campana_template.html"
+    template_name = "campanas/campana_entrante/detalle_campana_template.html"
     model = Campana
 
 
@@ -588,7 +587,7 @@ class CampanaEntranteTemplateDeleteView(CampanaTemplateDeleteMixin, DeleteView):
     Esta vista se encarga de la eliminación del
     objeto Campana Entrante-->Template.
     """
-    template_name = "campana/delete_campana_template.html"
+    template_name = "campanas/campana_entrante/delete_campana_template.html"
     model = Campana
 
     def get_success_url(self):

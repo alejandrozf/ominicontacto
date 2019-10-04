@@ -1,5 +1,6 @@
 requirements.txt
 ominicontacto_voip/kamailio-files/kamailio-local.cfg
+*.vagrant
 /docs/_build
 .idea/
 *.pyc
@@ -8,3 +9,4 @@ ominicontacto_voip/kamailio-files/kamailio-local.cfg
 /.coverage
 atom-sftp-sync.json
 deployment-config.json
+django.log

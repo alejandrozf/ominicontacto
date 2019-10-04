@@ -35,12 +35,12 @@ from django.test import TestCase, TransactionTestCase
 from django.conf import settings
 from django.test.utils import override_settings
 from ominicontacto_app.models import (
-    User, AgenteProfile, Grupo, SupervisorProfile, Contacto,
+    User, AgenteProfile, SupervisorProfile, Contacto,
     BaseDatosContacto, NombreCalificacion, Campana, Queue, OpcionCalificacion,
     ActuacionVigente, ReglasIncidencia, CalificacionCliente,
     ArchivoDeAudio
 )
-from ominicontacto_app.tests.factories import NombreCalificacionFactory
+from ominicontacto_app.tests.factories import NombreCalificacionFactory, GrupoFactory
 from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 from mock import Mock
 
@@ -130,7 +130,7 @@ class OMLTestUtilsMixin(object):
     def crear_agente_profile(self, user=None):
         if user is None:
             user = self.crear_user_agente()
-        grupo = Grupo.objects.create(nombre="grupo_test", auto_unpause=0)
+        grupo = GrupoFactory(auto_unpause=0)
         return AgenteProfile.objects.create(
             user=user,
             sip_extension=1000 + user.id,
@@ -474,11 +474,10 @@ class OMLTestUtilsMixin(object):
         regla.save()
 
     def crear_calificacion_cliente(self, agente, contacto,
-                                   opcion_calificacion, es_venta=False):
+                                   opcion_calificacion):
         calificacioncliente = CalificacionCliente(
             agente=agente,
             contacto=contacto,
-            es_venta=es_venta,
             opcion_calificacion=opcion_calificacion
         )
         calificacioncliente.save()

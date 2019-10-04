@@ -41,7 +41,7 @@ class LlamadasActivasView(ListView):
     Esta vista lista las llamadas activas
     """
 
-    template_name = 'campana/llamadas_activas.html'
+    template_name = 'campanas/campana_entrante/llamadas_activas.html'
     context_object_name = 'campanas'
     model = Campana
 

@@ -1,0 +1,631 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, omnileads
+# This file is distributed under the same license as the OMniLeads package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OMniLeads \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-07-30 14:27-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.4.0\n"
+
+# e4a8e74517d045d3b8d991ad63957be7
+#: ../../crm_integration_oml2crm.rst:5
+msgid "Interacción desde OMniLeads hacia el CRM"
+msgstr "OMniLeads to CRM Interaction"
+
+# 9e7cdad4a313410184344a94cc0720db
+#: ../../crm_integration_oml2crm.rst:7
+msgid "**Cada campaña puede invocar un CRM o vista particular**"
+msgstr "**Each campaign can invoke a CRM or particular view**"
+
+# cbc1d5a0689c46bbaed08eafe9fb5781
+#: ../../crm_integration_oml2crm.rst:9
+msgid ""
+"OMniLeads ejecutará llamados o notificaciones hacia el CRM cuando un "
+"agente dispare una llamada dentro de una campaña que ha sido configurada "
+"para disparar precisamente una URL hacia un CRM externo. Esto puede "
+"ocurrir en campañas entrantes, preview o con discador predictivo."
+msgstr ""
+"OMniLeads will execute program calls or notifications to the CRM when "
+"using campaigns with external URL set from the administration level. This"
+" can occur in incoming campaigns, preview or predictive dialer."
+
+# 90f58f847de24cf79221516954830dde
+#: ../../crm_integration_oml2crm.rst:14
+msgid "*Figure 1: campaign calls and crm*"
+msgstr ""
+
+# 611eab410a854886bec83aeb25f7d5a0
+#: ../../crm_integration_oml2crm.rst:16
+msgid ""
+"La idea de esta interacción es que el agente disponga de una vista del "
+"contacto de la llamada en el CRM. OMniLeads permite que esta invocación "
+"al URL del CRM involucre parámetros de la llamada, del contacto y/o "
+"parámetros personalizados dentro del contexto de la campaña que ejecuta "
+"la llamada al CRM."
+msgstr ""
+"The idea of ​​this interaction is that the agent counts on with a view of"
+" the contact information in the CRM. OMniLeads allows a CRM URL "
+"invocation involving parameters of the call, contact and / or custom "
+"parameters within the context of the campaign running the program call to"
+" the CRM."
+
+# ae62d500d5e241bab38fae0209f3adad
+#: ../../crm_integration_oml2crm.rst:19
+msgid ""
+"A su vez dependiendo de la configuración aplicada en la campaña, el "
+"resultado del URL invocado puede estar embebido dentro de la consola de "
+"agente, puede dispararse una nueva pestaña en el navegador por cada "
+"llamada o bien simplemente enviar un HTTP-Post JSON hacia el CRM."
+msgstr ""
+"Depending on the settings applied in the campaign configuration, the "
+"invoked URL may be embedded within the agent console , or a new browser "
+"tab can be opened for each program call. Another action is to simply send"
+" an HTTP-Post JSON to the CRM."
+
+# b7f9d63007ff49ef9b24bfbfc0a5fa65
+#: ../../crm_integration_oml2crm.rst:24
+msgid "*Figure 2: CRM and agent console*"
+msgstr ""
+
+# 8922258544f949279b0b0351a0a811a7
+#: ../../crm_integration_oml2crm.rst:26
+msgid ""
+"Finalmente debemos considerar que la ejecución de la URL del CRM por "
+"parte de OMniLeads puede ser automática (es decir al momento de generarse"
+" la llamada) o bien disparada por el agente a partir de accionar un botón"
+" que dispara la invocación al CRM."
+msgstr ""
+"Finally we must consider that the execution of the CRM URL by OMniLeads "
+"can be done automatically (i.e. when call attempt is performed) or "
+"triggered by the agent after pressing a button in the agent console."
+
+# b6b06474c2ee46068caca2005a8e1e3f
+#: ../../crm_integration_oml2crm.rst:29
+msgid ""
+"Todos los detalles de configuración asociados a este escenario de "
+"integración se cubren dentro de esta sección."
+msgstr ""
+"All configuration details associated with this scenario of CRM "
+"Integration are covered within this section."
+
+# e231b5fa3bf84776a883b783905a3b37
+#: ../../crm_integration_oml2crm.rst:33
+msgid "Activar un nuevo CRM"
+msgstr "Activate a new External CRM entity"
+
+# 5b0ce11c429d42d491a36c167cc525b7
+#: ../../crm_integration_oml2crm.rst:35
+msgid ""
+"El primer paso que se debe realizar es dar de alta la entidad \"CRM "
+"externo\" con su dirección web (URL) y demás configuraciones inherentes "
+"al formato de interacción que se desea realizar. Entonces se debe acceder"
+" al punto de menú; *Campaigns - External Sites - New Site*."
+msgstr ""
+"The first step to follow is to register the entity \" External CRM\" with"
+" the related web address (URL) and the interaction settings we expect. "
+"For that, access to the menu *Campaigns - External Sites - New Site*."
+
+# 89499e6a938a48b59647bca60539b93c
+#: ../../crm_integration_oml2crm.rst:40
+msgid "*Figure 3: new crm*"
+msgstr ""
+
+# 0b8e273874784274952ee5da43bae368
+#: ../../crm_integration_oml2crm.rst:42
+msgid ""
+"Como se expone en la *figura 3*, en este paso simplemente debemos nombrar"
+" al recurso, indicar la dirección URL del recurso al cual hay que invocar"
+" luego desde en cada llamada dentro de una campaña, el tipo de "
+"interacción (GET, Post o JSON) con el cual se invocará y finalmente "
+"indicar si el sistema debe abrir una nueva pestaña en el browser, "
+"realizar la petición y embeber el resultado dentro de la consola del "
+"agente o enviar una notificación (JSON) al CRM con los parámetros de cada"
+" nueva llamada conectada al agente."
+msgstr ""
+"As stated in *figure 3*, in this step we need to simply complete the "
+"resource name, define the URL of the resource to invoke, and the type of "
+"interaction (GET, POST or JSON) with external CRM. Finally we set if the "
+"system will open a new tab per connected call, make the request and embed"
+" the result within the agent console or send a notification (JSON) to the"
+" CRM with the call parameters."
+
+# 797102b7761a41288664be6aedbeac0c
+#: ../../crm_integration_oml2crm.rst:46
+msgid "Vamos a listar cada campo del formulario (*figura 2*):"
+msgstr "Let's list each form field (*figure 3*):"
+
+# ac474c4c4f5b4c92b9c98eefac81a14e
+#: ../../crm_integration_oml2crm.rst:48
+msgid "**Nombre**: nombre de referencia"
+msgstr "**Name**: reference name"
+
+# 7317d51cc7cc4d3b9fc260a48c48996a
+#: ../../crm_integration_oml2crm.rst:49
+msgid ""
+"**URL**: se trata de la dirección web a invocar en cada llamada. Aquí "
+"solamente declaramos el recurso web a invocar. Como veremos más adelante,"
+" los parámetros son personalizados en cada campaña."
+msgstr ""
+"**URL**: this is the web address to invoke on each call. Here we only "
+"declare the web resource to invoke. As we will see later, the parameters "
+"are customized per campaign."
+
+# fbff68d1e0834f8090e9d19100ead9e9
+#: ../../crm_integration_oml2crm.rst:52
+msgid ""
+"Disparador: aquí se permite seleccionar la forma en que se va a invocar "
+"la dirección web URL del CRM."
+msgstr ""
+"**Trigger**: here you can select the way you are going to invoke CRM URL "
+"web address."
+
+# 6b80a19ff3b14128b88165e62fded293
+#: ../../crm_integration_oml2crm.rst:51
+msgid ""
+"Seleccionamos \"Agente\" si seleccionamos esta opción entonces cuando la "
+"llamada conecte con un agente, éste es quien acciona la ejecución de la "
+"URL del CRM  a través de una petición Ajax desde el navegador."
+msgstr ""
+"When \"Agent\" is selected, then when the call connects with an agent, "
+"this is the one who triggers the execution of the CRM URL through an AJAX"
+" request from the browser."
+
+# 5acfaf2b1fb1456ba81a5f9a396a4191
+#: ../../crm_integration_oml2crm.rst:52
+msgid ""
+"Seleccionamos \"Automático\" si deseamos que se dispare la ejecución de "
+"la URL del CRM al momento en que la llamada ingresa a la consola de "
+"agente a través de una petición Ajax desde el navegador."
+msgstr ""
+"When \"Automatic\" is selected, the execution of CRM URL is performed at "
+"the time the call is delivered to the agent console, through an AJAX "
+"request from the browser."
+
+# bc9af0d53d04454697ea72016d5f4338
+#: ../../crm_integration_oml2crm.rst:53
+msgid ""
+"Seleccionam*Figure 3: new crm*os \"Servidor\" si deseamos que se genere "
+"una petición HTTP Post hacia el CRM."
+msgstr "When \"Server\" is selected, then a HTTP POST request to CRM is generated."
+
+# 9fb8677ca21c4b7b848f53eb62d4137f
+#: ../../crm_integration_oml2crm.rst:54
+msgid ""
+"**Método**: la ejecución del URL del CRM puede ser mediante peticiones "
+"del tipo GET o POST"
+msgstr ""
+"**Method**: the execution of the CRM URL can be done through GET/POST "
+"request."
+
+# b67afdff91db46d29178bb8280843fdd
+#: ../../crm_integration_oml2crm.rst:55
+msgid ""
+"**Formato**: en caso de ejecutar una petición del tipo HTTP-POST, se "
+"puede indicar el formaro html."
+msgstr "**Format**: in case of using HTTP-POST, HTML format can be defined here."
+
+# 13b76b4c33de4beb9ce7f29bc1640ba8
+#: ../../crm_integration_oml2crm.rst:56
+msgid ""
+"**Objetivo**: si el \"disparador\" es Automático o Agente, entonces el "
+"resultado de la petición realizada al URL del CRM puede ser desplegada o "
+"bien de manera \"embebida\" en la consola del agente o sino abriendo una "
+"nueva \"pestaña\" en el browser del agente."
+msgstr ""
+"**Scope**: if the \"trigger\" is set as Automatic or Agent, then the "
+"result of the request made to the CRM URL can be displayed \"embedded\" "
+"in the agent console or by opening a new \"tab\" in the agent browser."
+
+# 7cc07b4b9016405fa3eb62d73ac9510f
+#: ../../crm_integration_oml2crm.rst:58
+msgid ""
+"Una vez generado el CRM con sus parámetros de configuración, podemos "
+"afectarlo a diferentes campañas para que éstas invoquen al CRM en cada "
+"llamada conectada a un agente."
+msgstr ""
+"Once the CRM with all the configuration parameters is generated, we can "
+"affect it to different campaigns so that the CRM can be invoked in each "
+"call delivered to an agent."
+
+# 94c3d75d6db04641bd9dafb6734c211f
+#: ../../crm_integration_oml2crm.rst:63
+msgid "Configuración de Campañas telefónicas con interacción CRM"
+msgstr "Campaign configuration with CRM Interaction"
+
+# aec11d23ca3a4308940723a5095eecf0
+#: ../../crm_integration_oml2crm.rst:65
+msgid ""
+"Los cuatro tipo de campañas de OMniLeads permiten activar una ejecución "
+"de una invocación al CRM por cada llamada conectada sobre un agente. En "
+"este punto vamos a ejemplificar cómo realizar esta configuración, en el "
+"wizard de creación de una campaña (*figura 3*)."
+msgstr ""
+"All OMniLeads campaign types are able to activate this CRM interaction "
+"per agent call. In his point we will see some examples on how to perform "
+"this configuration using the campaign wizard (*figure 3*)."
+
+# fda79b0d59a8490488b9427962e50cc6
+#: ../../crm_integration_oml2crm.rst:68
+msgid ""
+"Todas las campañas cuentan con la posibilidad de indicar que disparen un "
+"formulario o un CRM al momento en que se conecta una llamada con un "
+"agente. En dicha configuración se puede indicar ejecutar un CRM y luego "
+"indicar el CRM en particular que deseamos accionar desde nuestra campaña."
+msgstr ""
+"All campaigns have the ability to trigger a form or a CRM Interaction at "
+"the time a call is connected to an agent. In this configuration you may "
+"indicate CRM Interaction and then define the External CRM entity that "
+"will  take place."
+
+# 665c809fc53744ed9b1167c3d748eefb
+#: ../../crm_integration_oml2crm.rst:73
+msgid "*Figure 4: CRM campaign activate*"
+msgstr ""
+
+# 8e6cd7c888b74fa999fad714926bf7df
+#: ../../crm_integration_oml2crm.rst:75
+msgid ""
+"Luego queda realizar la asignación de parámetros a enviar hacia el CRM. "
+"Esto se establece también dentro de la configuración de una campaña "
+"(*figura 5*)."
+msgstr ""
+"Then it is necessary to assign the parameters to be sent to the CRM. This"
+" is also set in the campaign configuration. (*figure 5*)."
+
+# 9d394cabcfd642a68c3e2d96247ac9a6
+#: ../../crm_integration_oml2crm.rst:80
+msgid "*Figure 5: CRM campaign params*"
+msgstr ""
+
+# 19f04b96c04449f99f0cbe3343b013c8
+#: ../../crm_integration_oml2crm.rst:82
+msgid ""
+"En esta etapa de la configuración de cualquier campaña, podemos indicar "
+"cada uno de los parámetros disponibles en OMniLeads y que se deben enviar"
+" hacia el CRM cada vez que se conecte una llamada a un agente. Dichos "
+"parámetros disponibles se agrupan en cuatro familias:"
+msgstr ""
+"At this configuration phase, we can indicate the expected parameters "
+"available in OMniLeads System that must be sent to the CRM every time a "
+"call is connected to an agent. Those available parameters are grouped by "
+"four families:"
+
+# 330eab32f4b8401da9cd4cdabb52de70
+#: ../../crm_integration_oml2crm.rst:88
+msgid "**Dato de campaña**, conformado por los parámetros;"
+msgstr "**Campaign data**, conformed by the parameters:"
+
+# f6d2fdf45a1c4a3bb6f54d6cf83d509c
+#: ../../crm_integration_oml2crm.rst:86
+msgid "**id**: es el id de la campaña"
+msgstr "**id**: id of the campaign."
+
+# 10085347006b48efa4ac8a66b6ea1a2e
+#: ../../crm_integration_oml2crm.rst:87
+msgid "**nombre**: representa al nombre de la campaña"
+msgstr "**name**: represents the campaign name."
+
+# 553b78b4c1eb4f0393305f1aa5d0a03d
+#: ../../crm_integration_oml2crm.rst:88
+msgid "**tipo**: es el tipo de campaña"
+msgstr "**type**: represents the campaign type."
+
+# 65b5ab975dcb4678a3f32afc2bab73f5
+#: ../../crm_integration_oml2crm.rst:95
+msgid "**Dato de llamada**, conformado por los parámetros;"
+msgstr "**Call data**, conformed by the parameters:"
+
+# 56a31299c5884789b8a6b4985fee1726
+#: ../../crm_integration_oml2crm.rst:91
+msgid "**call_id**: es el identificador de la transacción dentro de OMniLeads."
+msgstr "**call_id**: is the transaction identifier within OMniLeads."
+
+# e3b162e2027a4621a87832c7243cc18b
+#: ../../crm_integration_oml2crm.rst:92
+msgid ""
+"**agent_id**: se trata del id del agente que está procesando la llamada "
+"que disparó la petición al CRM."
+msgstr ""
+"**agent_id**: this is the id of the agent that is processing the call in "
+"charged of triggering the request to the CRM."
+
+# f30db6c4bf034bfc8afddb6016f1bd50
+#: ../../crm_integration_oml2crm.rst:93
+msgid ""
+"**telefono**: es el teléfono del contacto con el cual se ha conectado la "
+"llamada con el agente."
+msgstr "**telephone**: is the contact telephone number."
+
+# 1b2d65478d3a452eaa64244ea828d303
+#: ../../crm_integration_oml2crm.rst:94
+msgid "**id_contacto**: es el id interno del contacto en la campaña."
+msgstr "**contact_id**: is the internal id of the contact in the campaign."
+
+# 57396c40998e4fb19963c67f2d5f439e
+#: ../../crm_integration_oml2crm.rst:95
+msgid ""
+"**rec_filename**: el nombre del archivo que contiene la grabación de la "
+"llamada conectada al agente."
+msgstr ""
+"**rec_filename**: the name of the audio file that contains the recording "
+"of the call connected to the agent."
+
+# 12a0b40b64ac4d31b1b2a6fb5ee60d62
+#: ../../crm_integration_oml2crm.rst:97
+#, fuzzy
+msgid ""
+"**Dato de base de contactos**, serian parámetros disponibles a partir de "
+"las columnas de la base de contactos de campaña actual. Entonces quiere "
+"decir que podemos citar a cualquier columna de la base como parámetro a "
+"enviar en una llamada al CRM."
+msgstr ""
+"**Contact Data**, parameters available from the columns of the current "
+"campaign contact database."
+
+# ee4ce5800287446a8d05dc01f53518be
+#: ../../crm_integration_oml2crm.rst:99
+msgid "**Parámetro Fijo**, se puede fijar un parámetro a enviar en cada llamada."
+msgstr ""
+"**Fixed Parameter**, you can set custom parameters to be sent on each "
+"call."
+
+# e1806258b818413b93d493b9969be435
+#: ../../crm_integration_oml2crm.rst:101
+msgid ""
+"Una vez descriptos cada parámetro del sistema, se observa en la *figura "
+"5* que por cada parámetro a enviar se deben completar tres campos:"
+msgstr ""
+"With all parameters defined above, in the *figure 5* we need to note that"
+" three fields still need to be completed *per parameter* in order to be "
+"sent."
+
+# 160aeacd60c743708e01613840d49b9a
+#: ../../crm_integration_oml2crm.rst:103
+msgid ""
+"**1er Campo**: corresponde al tipo de parámetro (dato de campaña, de "
+"llamada, de base de contactos o fijo)."
+msgstr ""
+"**1st Field**: corresponds to the parameter type (campaign data, call "
+"data, database data or fixed data)."
+
+# e0521256922248948cb7b493fedc4e76
+#: ../../crm_integration_oml2crm.rst:105
+msgid ""
+"**2do Campo**: corresponde con el nombre puntual del parámetro a enviar "
+"(por ejemplo \"nombre\" si es un dato de campaña)."
+msgstr ""
+"**2nd Field**: corresponds to the specific name of the parameter to be "
+"sent (for example \"name\" if it is a campaign data)."
+
+# 1e4947545724423e85d28d27909ce077
+#: ../../crm_integration_oml2crm.rst:107
+msgid "**3er Campo**: es el nombre de cada parámetro, esperado del lado del CRM."
+msgstr "**3rd Field**: is the name of each parameter, expected from the CRM side."
+
+# e0f6f64f7c6445ac8681c7dd06086682
+#: ../../crm_integration_oml2crm.rst:111
+msgid "Ejemplo 1: invocación a un CRM utilizando GET"
+msgstr "Example 1: CRM interaction using GET"
+
+# 0246cd6b699740e58634672a9833370a
+#: ../../crm_integration_oml2crm.rst:113
+msgid ""
+"Vamos a suponer que se desea ejecutar el URL: "
+"**https://my_crm.domain.com?idClient=321321321&idCamp=11&lang=es&recordingFile=prev-115-20190604-2-4149014-1559667982.424.wav**"
+msgstr ""
+"Let's assume the following URL needs to be executed: "
+"**https://my_crm.domain.com?idClient=321321321&idCamp=11&lang=es&recordingFile=prev-115-20190604-2-4149014-1559667982.424.wav**"
+
+# 78c600d6fb5f47d982fb37db71e37497
+# 1f3ccdfae1d9440c8b32873fd479d706
+#: ../../crm_integration_oml2crm.rst:115 ../../crm_integration_oml2crm.rst:159
+msgid ""
+"Como se puede leer en nuestra URL de ejemplo, en cada ejecución se debe "
+"facilitar como parámetros:"
+msgstr "As you can note in our example of URL, each execution must provide:"
+
+# dc1653757e4d4eb6b2698792da133047
+# 13f9b9b24dbd4b539914f4231d62f4c2
+#: ../../crm_integration_oml2crm.rst:117 ../../crm_integration_oml2crm.rst:161
+msgid "ID del contacto"
+msgstr "Contact ID"
+
+# 1a252c6f5a874e888135ceb2464d40a9
+# e113db3df2ea443d91aee2926491151b
+#: ../../crm_integration_oml2crm.rst:118 ../../crm_integration_oml2crm.rst:162
+msgid "ID de la campaña que invoca al crm"
+msgstr "Campaign ID that will invoke external CRM"
+
+# fcd2e8b1b91e442f8b745b07187ae717
+# 8e89910039f545139f9ef925a74997ad
+#: ../../crm_integration_oml2crm.rst:119 ../../crm_integration_oml2crm.rst:163
+msgid "Un parámetro \"lang=es\""
+msgstr "Parameter \"lang=es\""
+
+# b33c1a3597af47cda8126469f2322833
+# 8212f67b16b04ce0b5bbe1a96dd0a2e2
+#: ../../crm_integration_oml2crm.rst:120 ../../crm_integration_oml2crm.rst:164
+msgid "La grabación de la llamada actual"
+msgstr "Recording of the current connected call"
+
+# b45ab0cd7c8d46d096e4ba6086a91574
+# 37cbd78d8f304bd3acfccfa455415653
+#: ../../crm_integration_oml2crm.rst:122 ../../crm_integration_oml2crm.rst:166
+msgid ""
+"Cómo implementaríamos entonces este requerimiento desde lo que hemos "
+"cubierto en este capítulo ?"
+msgstr ""
+"How would we implement this requirement from what we have covered in this"
+" chapter?"
+
+# 11326dcbd8014c94a6b2701f3f406e50
+# c8afb4f1473b411aab339534aa9574f3
+#: ../../crm_integration_oml2crm.rst:124 ../../crm_integration_oml2crm.rst:168
+msgid "**Generar el nuevo CRM**"
+msgstr "**Generate the new CRM**"
+
+# fbf21882edb54ae1904d8440feae0578
+#: ../../crm_integration_oml2crm.rst:126
+msgid ""
+"En la *figura 6* se ejemplifica la implementación del CRM propuesto como "
+"ejemplo."
+msgstr ""
+"*Figure 6* shows the implementation of the proposed CRM seen in our "
+"example."
+
+# 6607cc8c972246abbf14790f4c699186
+#: ../../crm_integration_oml2crm.rst:130
+msgid "*Figure 6: CRM definition*"
+msgstr ""
+
+# afa0167617b94205a5c8c5edcd62ab0d
+# 79f63667393148dea49ff98da21b5aa2
+#: ../../crm_integration_oml2crm.rst:132 ../../crm_integration_oml2crm.rst:179
+msgid ""
+"Por lo tanto ahora pasamos a ejemplificar la configuración de la campaña "
+"para que invoque al CRM con los parámetros especificados arriba."
+msgstr ""
+"Therefore, campaign configuration now will proceed in order to invoke the"
+" CRM with the parameters specified above."
+
+# 294f5dd1642f4f2c81f69a43189a2550
+#: ../../crm_integration_oml2crm.rst:134
+msgid ""
+"En la *figura 7*, se expone como configurar la campaña para que trabaje "
+"con el CRM de este ejemplo."
+msgstr ""
+"In *Figure 7*, we explain how to configure the campaign to work with the "
+"CRM of this example."
+
+# 76d8898282e34c0db3c5e8f5a1b233f9
+#: ../../crm_integration_oml2crm.rst:138
+msgid "*Figure 7: Campaign and CRM*"
+msgstr ""
+
+# a7bdab7203784032b862a7641bacd7bc
+#: ../../crm_integration_oml2crm.rst:140
+msgid ""
+"El último paso tiene que ver con la asignación de los parámetros "
+"necesarios para cada invocación al CRM, en la *figura 8* ejemplificamos "
+"este paso."
+msgstr ""
+"The last step has to do with the assignment of the related parameters for"
+" CRM interaction. In *figure 8* we see an example of this step."
+
+# 38870938dd1341599b86588a8c3a3654
+#: ../../crm_integration_oml2crm.rst:145
+msgid "*Figure 8: Campaign CRM parameters*"
+msgstr ""
+
+# 839597830b814f6f95217fd7d7476718
+#: ../../crm_integration_oml2crm.rst:147
+msgid ""
+"Finalmente resaltamos la relación entra las columnas 2 y 3 de cada "
+"parámetro, ya que hacen a la asignación de los parámetros del sistema "
+"bajo los nombres de parámetros esperados del lado del CRM."
+msgstr ""
+"Finally we highlight the relationship between columns 2 and 3 for each "
+"parameter, since they make the assignment between system parameters and "
+"the expected parameter names on the CRM side."
+
+# a8853743d8ac430c9b290baa26e230dc
+#: ../../crm_integration_oml2crm.rst:152
+msgid "Ejemplo 2: invocación a un CRM utilizando GET y Clean URLs"
+msgstr "Example 2: CRM Interaction using GET and Clean URLs"
+
+# eb7327d34e8a47d087aab00edec00074
+#: ../../crm_integration_oml2crm.rst:154
+msgid ""
+"Vamos a suponer que se desea ejecutar una `Clean URL "
+"<https://en.wikipedia.org/wiki/Clean_URL>`_  : "
+"**https://my_crm.domain.com/idClient/idCamp/lang/recordingFile**"
+msgstr ""
+"Let's assume that you want to run a `Clean URL "
+"<https://en.wikipedia.org/wiki/Clean_URL>`_  : **https: "
+"//my_crm.domain.com/idClient/idCamp/lang/recordingFile**"
+
+# 646ed98ed8d8413195648c33219ddb67
+#: ../../crm_integration_oml2crm.rst:156
+msgid ""
+"por ejemplo: "
+"https://my_crm.domain.com/321321321/11/es/prev-115-20190604-2-4149014-1559667982.424.wav"
+msgstr ""
+"For instance: "
+"https://my_crm.domain.com/321321321/11/es/prev-115-20190604-2-4149014-1559667982.424.wav"
+
+# 0fbea58ba0a144a294ba5b7e6d201dc6
+#: ../../crm_integration_oml2crm.rst:170
+msgid ""
+"En la *figura 9* se ejemplifica la implementación del CRM propuesto como "
+"ejemplo."
+msgstr ""
+"The implementation of the proposed CRM is shown as an example in *Figure "
+"9*."
+
+# d8073396b9e64de389e19490761fdfc7
+#: ../../crm_integration_oml2crm.rst:174
+msgid "*Figure 9: CRM definition with clean URL*"
+msgstr ""
+
+# 432be948d4224fac99710df387889bec
+#: ../../crm_integration_oml2crm.rst:176
+msgid ""
+"En la figura se resaltan los \"holders\" necesarios para trabajar con "
+"Clean URLs. A la hora de generar el URL a ejecutar, se deben especificar "
+"los parámetros entre llaves que van a ser generados en la petición. "
+"Parámetros que luego se asignarán a la hora de generar la campaña que "
+"invocará el CRM externo."
+msgstr ""
+"The figure highlights the \"holders\" needed to work with Clean URLs. "
+"When generating the URL to be executed, parameters must be specified "
+"between brackets. Those Parameters will then be used when generating the "
+"campaign for that CRM interaction. "
+
+# 61b535aa358f487f9e868d6b46f1acfe
+#: ../../crm_integration_oml2crm.rst:181
+msgid ""
+"La diferencia respecto a las URLs estándares (HTTP GET) que se expuso en "
+"el *ejemplo 1*, es que a la hora de asignar parámetros en la campaña, se "
+"deben utilizar \"los holders\" en lugar de los \"Nombres de parámetros\","
+" como se ejemplifica en la *figura 10*."
+msgstr ""
+"The main difference from the standard URLs (HTTP GET) that is exposed in "
+"the *example 1*, is that when assigning parameters in the campaign, "
+"\"holders\" need to be used instead of \"Parameter Names\", as shown in *"
+"figure 10*."
+
+# 01cb58fb2f8a4ef29619865e2f191d25
+#: ../../crm_integration_oml2crm.rst:187
+msgid "*Figure 10: Campaign and CRM parameters*"
+msgstr ""
+
+# 4f22564a3f5a45b9941d8cec2ae0e6b2
+#: ../../crm_integration_oml2crm.rst:189
+msgid ""
+"Finalmente resaltamos la relación entra las columnas 2 y 3 de cada "
+"parámetro, en el marco de las \"clean URLs\" ."
+msgstr ""
+"Finally we highlight the relationship between columns 2 and 3 of each "
+"parameter, within the scenario of \"clean URLs \"."
+
+# 3124d2f00ead48fa88765193b82460dc
+#~ msgid ""
+#~ "Entonces quiere decir que podemos citar"
+#~ " a cualquier columna de la base "
+#~ "como parámetro a enviar en una "
+#~ "llamada al CRM."
+#~ msgstr ""
+#~ "So it means we can quote any "
+#~ "column in the database as a "
+#~ "parameter to send in a program "
+#~ "call to the CRM."

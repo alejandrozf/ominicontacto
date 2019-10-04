@@ -35,7 +35,7 @@ from ominicontacto_app.forms import (
 )
 
 from ominicontacto_app.models import (
-    SupervisorProfile, AgenteProfile, User, QueueMember, Modulo, Grupo,
+    SupervisorProfile, AgenteProfile, ClienteWebPhoneProfile, User, QueueMember, Modulo, Grupo,
 )
 
 from services.asterisk_service import ActivacionAgenteService, RestablecerConfigSipError
@@ -157,6 +157,23 @@ class CustomUserWizard(SessionWizardView):
                 message,
             )
 
+    def _save_cliente_webphone(self, user):
+        sip_extension = 1000 + user.id
+        cliente_webphone = ClienteWebPhoneProfile(user=user, sip_extension=sip_extension)
+        cliente_webphone.save()
+
+        asterisk_sip_service = ActivacionAgenteService()
+        try:
+            asterisk_sip_service.activar()
+        except RestablecerConfigSipError, e:
+            message = _("<strong>¡Cuidado!</strong> "
+                        "con el siguiente error{0} .".format(e))
+            messages.add_message(
+                self.request,
+                messages.WARNING,
+                message,
+            )
+
     def done(self, form_list, **kwargs):
         # Ver el tipo de Usuario que se crea.
         user_form = form_list[int(self.USER)]
@@ -167,6 +184,9 @@ class CustomUserWizard(SessionWizardView):
             self._save_supervisor_form(user, form_list[1])
         elif user.is_agente:
             self._save_agente_form(user, form_list[1])
+        elif user.is_cliente_webphone:
+            self._save_cliente_webphone(user)
+
         return HttpResponseRedirect(reverse('user_list', kwargs={"page": 1}))
 
 
@@ -227,6 +247,8 @@ class UserDeleteView(DeleteView):
                 self.object.get_agente_profile())
         if self.object.is_supervisor and self.object.get_supervisor_profile():
             self.object.get_supervisor_profile().borrar()
+        if self.object.is_cliente_webphone and self.object.get_cliente_webphone_profile():
+            self.object.get_cliente_webphone_profile().borrar()
         self.object.borrar()
         return HttpResponseRedirect(self.get_success_url())
 
@@ -282,7 +304,7 @@ class SupervisorProfileUpdateView(UpdateView):
 class SupervisorListView(ListView):
     """Vista lista los supervisores """
     model = SupervisorProfile
-    template_name = 'supervisor_profile_list.html'
+    template_name = 'usuarios_grupos/supervisor_profile_list.html'
 
     def get_queryset(self):
         """Returns Supervisor excluyendo los borrados"""
@@ -292,7 +314,7 @@ class SupervisorListView(ListView):
 class AgenteListView(ListView):
     """Vista para listar los agentes"""
     model = AgenteProfile
-    template_name = 'agente_profile_list.html'
+    template_name = 'usuarios_grupos/agente_profile_list.html'
 
     def get_context_data(self, **kwargs):
         context = super(AgenteListView, self).get_context_data(
@@ -367,3 +389,36 @@ class ActivarAgenteView(RedirectView):
         agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
         agente.activar()
         return HttpResponseRedirect(reverse('agente_list'))
+
+
+class ClienteWebPhoneListView(ListView):
+    """Vista para listar los Clientes WebPhone """
+    model = ClienteWebPhoneProfile
+    template_name = 'user/cliente_webphone_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ClienteWebPhoneListView, self).get_context_data(
+            **kwargs)
+        clientes = ClienteWebPhoneProfile.objects.exclude(borrado=True)
+
+        # TODO: Limitar la lista a los clientes que tiene asignado
+
+        context['clientes'] = clientes
+        return context
+
+
+class ToggleActivarClienteWebPhoneView(RedirectView):
+    """
+    Esta vista cambia el estado de activacion de un Cliente WebPhone
+    """
+
+    def get(self, request, *args, **kwargs):
+        cliente = ClienteWebPhoneProfile.objects.get(pk=self.kwargs['pk'])
+        cliente.toggle_is_inactive()
+        if cliente.is_inactive:
+            msg = _('El Cliente WebPhone fue desactivado')
+        else:
+            msg = _('El Cliente WebPhone fue activado')
+        messages.success(request, msg)
+
+        return HttpResponseRedirect(reverse('cliente_webphone_list'))

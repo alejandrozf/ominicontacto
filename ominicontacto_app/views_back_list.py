@@ -51,7 +51,7 @@ class BackListView(ListView):
     Lista de Contactos.
     """
 
-    template_name = 'back_list/lista_back_list.html'
+    template_name = 'black_list/lista_black_list.html'
     context_object_name = 'back_lists'
     model = Backlist
 
@@ -114,7 +114,7 @@ class BacklistCreateView(CreateView):
         else:
             return estructura_archivo
 
-    template_name = 'back_list/nueva_edita_back_list.html'
+    template_name = 'black_list/nueva_edita_black_list.html'
     model = Backlist
     context_object_name = 'backlist'
     form_class = BacklistForm

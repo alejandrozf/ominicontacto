@@ -46,6 +46,10 @@
   with_items:
     - contrib/scripts/install_prereq install
   when: ansible_os_family == "RedHat"
+  retries: 3
+  delay: 3
+  register: result
+  until: result.rc == 0
 
 # Esta task es necesaria porque en debian hay un paquete que pregunta cual es el countrycode telefonico del pais donde va a estar asterisk instalado
 # El debconf sirve para confirugarle predeterminadamente la opcion de 59 (country code argentino) y asi no pida el input
@@ -57,6 +61,10 @@
 - name: Installation of prerequisites packages (debian)
   shell: "echo 'y' | contrib/scripts/install_prereq install chdir=/usr/src/asterisk-{{ asterisk_version }}"
   when: ansible_os_family == "Debian"
+  retries: 3
+  delay: 3
+  register: result
+  until: result.rc == 0
 
 - name: Download of res_json module
   git: repo={{ res_json_repo }} dest=/usr/src/asterisk-{{ asterisk_version }}/asterisk-res_json/ version=master
@@ -70,10 +78,13 @@
 
 # Se obtienen las fuentes mp3
 - shell: "contrib/scripts/get_mp3_source.sh chdir=/usr/src/asterisk-{{ asterisk_version }}"
-  register: command_result
   failed_when: false
   become: yes
   become_method: sudo
+  retries: 3
+  delay: 3
+  register: result
+  until: result.rc == 0
 
 # Se hace la instalacion de asterisk
 - name: Make menuselect opts and make install of Asterisk
@@ -84,20 +95,15 @@
     - menuselect/menuselect --enable res_json menuselect.makeopts
     - menuselect/menuselect --enable format_mp3 menuselect.makeopts
     - menuselect/menuselect --enable codec_opus menuselect.makeopts
-    - menuselect/menuselect --enable CORE-SOUNDS-EN-WAV menuselect.makeopts
-    - menuselect/menuselect --enable CORE-SOUNDS-ES-WAV menuselect.makeopts
-    - menuselect/menuselect --enable CORE-SOUNDS-FR-WAV menuselect.makeopts
-    - menuselect/menuselect --enable CORE-SOUNDS-IT-WAV menuselect.makeopts
-    - menuselect/menuselect --enable CORE-SOUNDS-RU-WAV menuselect.makeopts
-    - menuselect/menuselect --enable CORE-SOUNDS-JA-WAV menuselect.makeopts
-    - menuselect/menuselect --enable CORE-SOUNDS-SV-WAV menuselect.makeopts
-    - menuselect/menuselect --enable EXTRA-SOUNDS-EN-WAV menuselect.makeopts
-    - menuselect/menuselect --enable EXTRA-SOUNDS-FR-WAV menuselect.makeopts
     - make -j 10
     - make install
     - make config
     - ldconfig
     - make samples
+  retries: 6
+  delay: 3
+  register: result
+  until: result.rc == 0
 
 # Se borran los paquetes descargados
 - name: Erase the downloaded directories of asterisk

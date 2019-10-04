@@ -1,10 +1,22 @@
 #!/bin/bash
 
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 #
 # Shell script para facilitar el deploy de la aplicación
-#
-# Autor: Andres Felipe Macias
-# Colaborador:  Federico Peker
 #
 # Que hace este shell script?
 # 1. Instala ansible
@@ -18,11 +30,9 @@ TMP_OMINICONTACTO='/var/tmp/ominicontacto-build/ominicontacto'
 REPO_LOCATION="`git rev-parse --show-toplevel`"
 USER_HOME=$(eval echo ~${SUDO_USER})
 export ANSIBLE_CONFIG=$TMP_ANSIBLE
+DEBIAN_FRONTEND=noninteractive
 IS_ANSIBLE="`find ~/.local -name ansible 2>/dev/null |grep \"/bin/ansible\" |head -1`"
-SUDO_USER="`who | awk '{print $1}'| head -1`"
 arg1=$1
-arg2=$2
-verbose=$3
 
 OSValidation(){
   if [ -z $PIP ]; then
@@ -35,6 +45,7 @@ OSValidation(){
     elif [ "$os" == '"Debian GNU/Linux"' ]; then
       echo "Installing python2-pip and sudo"
       apt-get install python-pip sudo -y
+      apt-get remove python-cryptography -y
     elif [ "$os" == '"Ubuntu"' ]; then
       echo "Adding the universe repository"
       add-apt-repository universe
@@ -74,10 +85,6 @@ TagCheck() {
     tag="kamailio"
   elif [ "$arg1" == "--omniapp" ] || [ "$arg1" == "-o" ]; then
     tag="omniapp"
-  elif [ "$arg1" == "--change-network" ] || [ "$arg1" == "-cnet" ]; then
-    tag="changenetwork"
-  elif [ "$arg1" == "--change-passwords" ] || [ "$arg1" == "-cp" ]; then
-    tag="changepassword"
   elif [ "$arg1" == "--dialer" ] || [ "$arg1" == "-di" ]; then
     tag="dialer"
   elif [ "$arg1" == "--database" ] || [ "$arg1" == "-da" ]; then
@@ -86,9 +93,8 @@ TagCheck() {
     tag="docker_build"
   elif [ "$arg1" == "--docker-deploy" ]; then
     tag="docker_deploy"
-  else
-    echo "Invalid first option, use ./deploy.sh -h to see valid options"
-    exit 1
+  elif [ "$arg1" == "--integration-tests" ]; then
+    tag="all,integration-tests"
   fi
 }
 
@@ -96,14 +102,14 @@ AnsibleInstall() {
   echo "Detecting if Ansible 2.5 is installed"
   if [ -z "$IS_ANSIBLE" ] ; then
     echo "Ansible 2.5 is not installed, installing it"
-	  echo ""
-	  $PIP install 'ansible==2.5' --user
+    echo ""
+    $PIP install 'ansible==2.5' --user
     IS_ANSIBLE="`find ~/.local -name ansible |grep \"/bin/ansible\" |head -1 2> /dev/null`"
   else
     echo "Ansible 2.5 is already installed"
-	fi
-#  echo "Detecting if docker-py is installed"
-#  $PIP install 'docker-py==1.10.6' --user > /dev/null 2>&1
+  fi
+  #  echo "Detecting if docker-py is installed"
+  #  $PIP install 'docker-py==1.10.6' --user > /dev/null 2>&1
   cd $current_directory
   sleep 2
   echo "Creating ansible temporal directory"
@@ -135,7 +141,7 @@ CodeCopy() {
   echo "      Version: $release_name"
   echo ""
   if [ -e $TMP_OMINICONTACTO ] ; then
-    rm -rf $TMP
+    rm -rf $TMP_OMINICONTACTO
   fi
   mkdir -p $TMP_OMINICONTACTO
   echo "Using temporal directory: $TMP_OMINICONTACTO..."
@@ -143,9 +149,12 @@ CodeCopy() {
   echo "Copying the Omnileads code to temporal directory"
   git archive --format=tar $(git rev-parse HEAD) | tar x -f - -C $TMP_OMINICONTACTO
   sleep 2
+  echo "Copying trusted certificates if exists"
+  cp -r $REPO_LOCATION/deploy/certs/. $TMP_OMINICONTACTO/deploy/certs/
   echo "Deleting unnecesary files..."
   rm -rf $TMP_OMINICONTACTO/docs
-  rm -rf $TMP_OMINICONTACTO/ansible
+  rm -rf $TMP_OMINICONTACTO/deploy/ansible
+  rm -rf $TMP_OMINICONTACTO/deploy/certs/README.md
   sleep 2
 }
 
@@ -182,14 +191,15 @@ EOF
 }
 
 AnsibleExec() {
+    if [ -z $INTERFACE ]; then INTERFACE=none; fi
     echo "Checking if there are hosts to deploy from inventory file"
     if ${IS_ANSIBLE} all --list-hosts -i $TMP_ANSIBLE/inventory | grep -q '(0)'; then
       echo "All hosts in inventory file are commented, please check the file according to documentation"
       exit 1
     fi
-    echo "Beginning the Omnileads installation with Ansible, this can take a long time"
+    echo "Beginning the Omnileads installation with Ansible, this installation process can last between 30-40 minutes"
     echo ""
-    ${IS_ANSIBLE}-playbook $verbose -s $TMP_ANSIBLE/omnileads.yml --extra-vars "build_dir=$TMP_OMINICONTACTO repo_location=$REPO_LOCATION docker_root=$USER_HOME" --tags "$tag" -i $TMP_ANSIBLE/inventory
+    ${IS_ANSIBLE}-playbook $verbose -s $TMP_ANSIBLE/omnileads.yml --extra-vars "iface=$INTERFACE build_dir=$TMP_OMINICONTACTO repo_location=$REPO_LOCATION docker_root=$USER_HOME" --tags "$tag" -i $TMP_ANSIBLE/inventory
     ResultadoAnsible=`echo $?`
     if [ $ResultadoAnsible == 0 ];then
       echo "
@@ -218,12 +228,6 @@ AnsibleExec() {
       echo "##          Omnileads installation ended successfully        ##"
       echo "###############################################################"
       echo ""
-      inventory_copy_location="`cd $current_directory/../../.. && pwd`"
-      echo "Creating a copy of inventory file in $inventory_copy_location"
-      my_inventory=$current_directory/../../../my_inventory
-      cp $current_directory/inventory $my_inventory
-      echo " Remember that you have a copy of your inventory file in $inventory_copy_location/my_inventory with the variables you used for your OML installation"
-      echo ""
       git checkout $current_directory/inventory
       chown $SUDO_USER. $current_directory/inventory
     else
@@ -238,51 +242,71 @@ echo "Deleting temporal files created"
 rm -rf $TMP_ANSIBLE
 rm -rf $TMP_OMINICONTACTO
 }
-case $arg1 in
-  --upgrade|-u|--install|-i|--kamailio|-k|--asterisk|-a|--omniapp|-o|--omnivoip|--dialer|-di|--database|-da|--change-network|-cnet|--change-passwords|-cp)
-      UserValidation
-      OSValidation
+UserValidation
+OSValidation
+for i in "$@"
+do
+  case $i in
+    --upgrade|-u|--install|-i|--kamailio|-k|--asterisk|-a|--omniapp|-o|--omnivoip|--dialer|-di|--database|-da|--change-network|-cnet|--change-passwords|-cp|--docker-build|--docker-deploy|--integration-tests)
       TagCheck
-      AnsibleInstall
-      ./keytransfer.sh
-      ResultadoKeyTransfer=`echo $?`
-        if [ "$ResultadoKeyTransfer" != 0 ]; then
-          echo "It seems that you don't have generated keys in the server you are executing this s#cript"
-          echo "Try with ssh-keygen or check the ssh port configured in server"
-          rm -rf /var/tmp/servers_installed
-          exit 1
-        fi
-      CodeCopy
-      VersionGeneration
-      AnsibleExec
-  ;;
-  --docker-build|--docker-deploy)
-    UserValidation
-    OSValidation
-    TagCheck
-    AnsibleInstall
-    CodeCopy
-    VersionGeneration
-    AnsibleExec
-  ;;
-  *)
-  echo "
-    Omnileads installation script
-
-    How to use it:
-          (First option)
-            -a --asterisk: execute asterisk related tasks
-            -cnet --change-network: execute tasks needed when you change the network settings of OML system
-            -cp --change-passwords: execute tasks needed when you change any of the passwords of your OML system
-            -da --database: execute tasks related to database
-            -di --dialer: execute tasks related to dialer (Wombat Dialer)
-            --docker-deploy: deploy Omnileads in docker containers using docker-compose. See /deploy/docker/README.md
-            --docker-build: build Omnileads images. See /deploy/docker/CONTRIBUTING.md
-            -i --install: make a fresh install of Omnileads
-            -k --kamailio: execute kamailio related tasks
-            -o --omniapp: execute omniapp related tasks
-            -u --upgrade: make an upgrade of Omnileads version
-
-          "
-  ;;
-esac
+      shift
+    ;;
+    --iface=*|--interface=*)
+      INTERFACE="${i#*=}"
+      shift
+    ;;
+    --help|-h)
+      echo "
+        Omnileads installation script
+        How to use it:
+              -a --asterisk: execute asterisk related tasks
+              -da --database: execute tasks related to database
+              -di --dialer: execute tasks related to dialer (Wombat Dialer)
+              --docker-deploy: deploy Omnileads in docker containers using docker-compose. See /deploy/docker/README.md
+              --docker-build: build Omnileads images. See /deploy/docker/CONTRIBUTING.md
+              -i --install: make a fresh install of Omnileads
+              -k --kamailio: execute kamailio related tasks
+              -o --omniapp: execute omniapp related tasks
+              -u --upgrade: make an upgrade of Omnileads version
+              --iface --interface: set the iface when you want omnileads services listening (JUST USE THIS OPTION WHEN INSTALLATION IS SELFHOSTED)
+            "
+      shift
+      exit 1
+    ;;
+    -v*)
+      verbose=$1
+      shift
+    ;;
+    *)
+      echo "One or more invalid options, use ./deploy.sh -h or ./deploy.sh --help"
+      exit 1
+    ;;
+  esac
+done
+./keytransfer.sh $INTERFACE
+ResultadoKeyTransfer=`echo $?`
+  if [ "$ResultadoKeyTransfer" == 1 ]; then
+    echo "It seems that you don't have generated keys in the server you are executing this script"
+    echo "Try with ssh-keygen or check the ssh port configured in server"
+    rm -rf /var/tmp/servers_installed
+    exit 1
+  elif [ "$ResultadoKeyTransfer" == 2 ]; then
+    echo "#######################################################################"
+    echo "# The option --interface must be used only in selfhosted installation #"
+    echo "#######################################################################"
+    exit 1
+  elif [ "$ResultadoKeyTransfer" == 3 ]; then
+    echo "#####################################"
+    echo "# Option --interface must be passed #"
+    echo "#####################################"
+    exit 1
+  elif [ "$ResultadoKeyTransfer" == 4 ]; then
+    echo "###############################################################"
+    echo "# It seems you typed a wrong interface in --interface option  #"
+    echo "###############################################################"
+    exit 1
+  fi
+AnsibleInstall
+CodeCopy
+VersionGeneration
+AnsibleExec

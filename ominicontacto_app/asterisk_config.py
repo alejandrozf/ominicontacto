@@ -33,11 +33,9 @@ import traceback
 from django.conf import settings
 from django.utils.translation import ugettext as _
 
-from ominicontacto_app.utiles import (
-    elimina_espacios, remplace_espacio_por_guion
-)
+from ominicontacto_app.utiles import remplace_espacio_por_guion
 from ominicontacto_app.models import (
-    AgenteProfile, SupervisorProfile, Campana
+    AgenteProfile, SupervisorProfile, ClienteWebPhoneProfile, Campana
 )
 from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP
 from ominicontacto_app.asterisk_config_generador_de_partes import (
@@ -56,13 +54,20 @@ class SipConfigCreator(object):
         self._sip_config_file = SipConfigFile()
         self._generador_factory = GeneradorDePedazoDeAgenteFactory()
 
-    def _generar_config_sip(self, agente):
-        """Genera el dialplan para una queue.
+    def _generar_config_sip(self, agente, es_externo=False):
+        """Genera la configuracion para el sip endpoint.
 
-        :param agente: Agente para la cual hay crear config sip
+        :param agente: Agente/Supervisor/ClienteWebphone para la cual hay crear config sip
+        :              Debe tener .sip_extension y .user
         :type agente: ominicontacto_app.models.AgenteProfile
-        :returns: str -- config sip para los agentes
+        :             o ominicontacto_app.models.SupervisorProfile
+        :             o ominicontacto_app.models.ClienteWebphoneProfile
+        :param externo: Indica si es un cliente Webphone
+        :returns: str -- config sip para los agentes/supervisores/clientes webphone
         """
+        context = 'from-oml'
+        if es_externo:
+            context = 'from-pstn'
 
         # assert agente is not None, "AgenteProfile == None"
         assert agente.user.get_full_name() is not None,\
@@ -74,7 +79,7 @@ class SipConfigCreator(object):
         param_generales = {
             'oml_agente_name': "{0}_{1}".format(agente.id, nombre_agente),
             'oml_agente_sip': agente.sip_extension,
-            'oml_kamailio_ip': settings.OML_KAMAILIO_IP,
+            'context': context
         }
 
         generador_agente = self._generador_factory.crear_generador_para_agente(
@@ -93,18 +98,18 @@ class SipConfigCreator(object):
         """
         return SupervisorProfile.objects.all()
 
-    def create_config_sip(self, agente=None, agentes=None):
+    def _obtener_clientes_webphone_para_generar_config_sip(self):
+        """Devuelve los supervisor para crear config de sip.
+        """
+        return ClienteWebPhoneProfile.objects.all()
+
+    def create_config_sip(self):
         """Crea el archivo de dialplan para queue existentes
         (si `queue` es None). Si `queue` es pasada por parametro,
         se genera solo para dicha queue.
         """
 
-        if agentes:
-            pass
-        elif agente:
-            agentes = [agente]
-        else:
-            agentes = self._obtener_todas_para_generar_config_sip()
+        agentes = self._obtener_todas_para_generar_config_sip()
         sip = []
         for agente in agentes:
             logger.info(_("Creando config sip para agente {0}".format(agente.user.get_full_name())))
@@ -171,6 +176,39 @@ class SipConfigCreator(object):
                 config_chunk = generador_failed.generar_pedazo()
             sip.append(config_chunk)
 
+        clientes = ClienteWebPhoneProfile.objects.all()
+        for cliente in clientes:
+            logger.info(_("Creando config sip para cliente {0}".format(
+                cliente.user.get_full_name())))
+            try:
+                config_chunk = self._generar_config_sip(cliente, True)
+                logger.info(_("Config sip generado OK para cliente {0}".format(
+                    cliente.user.get_full_name())))
+            except Exception as e:
+                logger.exception(
+                    _("Error {0}: no se pudo generar configuracion de "
+                      "Asterisk para la queue {1}".format(
+                          e.message, cliente.user.get_full_name())))
+
+                try:
+                    traceback_lines = [
+                        "; {0}".format(line)
+                        for line in traceback.format_exc().splitlines()]
+                    traceback_lines = "\n".join(traceback_lines)
+                except Exception as e:
+                    traceback_lines = _("Error {0} al intentar generar traceback".format(e.message))
+                    logger.exception(traceback_lines)
+
+                # FAILED: Creamos la porción para el fallo del config sip.
+                param_failed = {'oml_queue_name': cliente.user.get_full_name(),
+                                'date': str(datetime.datetime.now()),
+                                'traceback_lines': traceback_lines}
+                generador_failed = \
+                    self._generador_factory.crear_generador_para_failed(
+                        param_failed)
+                config_chunk = generador_failed.generar_pedazo()
+            sip.append(config_chunk)
+
         self._sip_config_file.write(sip)
 
 
@@ -196,8 +234,7 @@ class QueuesCreator(object):
 
         partes = []
         param_generales = {
-            'oml_queue_name': "{0}_{1}".format(campana.id,
-                                               elimina_espacios(campana.nombre)),
+            'oml_queue_name': "{0}_{1}".format(campana.id, campana.nombre),
             'oml_queue_type': campana.type,
             'oml_strategy': campana.queue_campana.strategy,
             'oml_timeout': campana.queue_campana.timeout,
@@ -241,8 +278,7 @@ class QueuesCreator(object):
             periodic_announce = ""
         partes = []
         param_generales = {
-            'oml_queue_name': "{0}_{1}".format(campana.id,
-                                               elimina_espacios(campana.nombre)),
+            'oml_queue_name': "{0}_{1}".format(campana.id, campana.nombre),
             'oml_queue_type': campana.type,
             'oml_strategy': campana.queue_campana.strategy,
             'oml_timeout': campana.queue_campana.timeout,

@@ -31,6 +31,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.views.i18n import javascript_catalog
@@ -52,6 +53,9 @@ urlpatterns = [
         {'next_page': '/accounts/login/'}, name="logout"),
 
 ]
+
+for (regex, module) in settings.ADDON_URLPATTERNS:
+    urlpatterns += [url(regex, include(module)), ]
 
 urlpatterns += [
     url(r'^jsi18n/$', javascript_catalog, js_info_dict, name='javascript-catalog'),

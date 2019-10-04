@@ -72,10 +72,11 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         fields = (
             'username', 'first_name', 'last_name', 'email', 'is_agente',
-            'is_supervisor', 'password1', 'password2')
+            'is_supervisor', 'is_cliente_webphone', 'password1', 'password2')
         labels = {
             'is_agente': _('Es un agente'),
             'is_supervisor': _('Es un supervisor'),
+            'is_cliente_webphone': _('Es para Cliente WebPhone'),
         }
         error_messages = {
             'username': {'unique':
@@ -90,20 +91,37 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields['email'].widget.attrs['class'] = 'form-control'
         self.fields['password1'].widget.attrs['class'] = 'form-control'
         self.fields['password2'].widget.attrs['class'] = 'form-control'
+        if not config.WEBPHONE_CLIENT_ENABLED:
+            self.fields.pop('is_cliente_webphone')
 
         if deshabilitar_agente:
             self.fields['is_agente'].widget.attrs['disabled'] = True
 
     def clean(self):
         super(CustomUserCreationForm, self).clean()
-        is_agente = self.cleaned_data.get('is_agente', None)
-        is_supervisor = self.cleaned_data.get('is_supervisor', None)
-        if is_agente and is_supervisor:
-            raise forms.ValidationError(
-                _('Un usuario no puede ser Agente y Supervisor al mismo tiempo'))
-        if not is_agente and not is_supervisor:
-            raise forms.ValidationError(
-                _('Un usuario debe ser Agente o Supervisor'))
+        is_agente = self.cleaned_data.get('is_agente', False)
+        is_supervisor = self.cleaned_data.get('is_supervisor', False)
+        is_cliente_webphone = self.cleaned_data.get('is_cliente_webphone', False)
+
+        uno = is_agente + is_supervisor + is_cliente_webphone
+        # Si no eligió ninguno
+        if uno == 0:
+            if config.WEBPHONE_CLIENT_ENABLED:
+                raise forms.ValidationError(
+                    _('Un usuario debe ser Agente, Supervisor, o Cliente Webphone'))
+            else:
+                raise forms.ValidationError(
+                    _('Un usuario debe ser Agente o Supervisor'))
+        # Si eligió más de uno
+        if uno > 1:
+            if config.WEBPHONE_CLIENT_ENABLED:
+                raise forms.ValidationError(
+                    _('Un usuario sólo puede ser Agente, Supervisor '
+                      'o Cliente Webphone exclusivamente'))
+            else:
+                raise forms.ValidationError(
+                    _('Un usuario sólo puede ser Agente o Supervisor exclusivamente'))
+
         return self.cleaned_data
 
 
@@ -431,6 +449,9 @@ class GrabacionBusquedaForm(forms.Form):
 class CampanaMixinForm(object):
     def __init__(self, *args, **kwargs):
         super(CampanaMixinForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance.pk is not None:
+            self.fields['sitio_externo'].widget = forms.TextInput(attrs={'class': 'hidden'})
         self.fields['bd_contacto'].required = not self.initial.get('es_template', False)
         if self.fields.get('bd_contacto', False):
             self.fields['bd_contacto'].queryset = BaseDatosContacto.objects.obtener_definidas()
@@ -1376,6 +1397,8 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
         else:
             self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].required = True
+            self.fields['tipo_interaccion'].disabled = True
+            self.fields['tipo_interaccion'].required = False
 
     class Meta:
         model = Campana

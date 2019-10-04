@@ -62,6 +62,10 @@
   become: yes
   become_method: sudo
   when: ansible_os_family == "RedHat"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
 # Intalo los paquetes necesarios para la parte App
 - name: Install omniapp packages (debian)
@@ -90,7 +94,11 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
-
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
+  
 - name: Start and enable redis service
   service: name=redis state=restarted enabled=yes
   become: yes

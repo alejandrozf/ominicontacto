@@ -436,10 +436,10 @@ class PhoneJSController {
             }
             self.view.setCallStatus(gettext("Disponible"), "black");
             self.phone_fsm.endCall();
-            self.saveCall();
             self.timers.llamada.stop();
             self.timers.llamada.restart();
             self.callEndTransition();
+            self.updateCallHistory()
         });
     }
 
@@ -648,28 +648,17 @@ class PhoneJSController {
         this.getQualificationForm(call_data);
     }
 
-    saveCall() {
-        var duracion = this.timers.llamada.get_time_str();
-        var numero_telefono = undefined;
-        // NOTA: No guardo la duracion de llamadas entre agentes (internal). ( Ver si es deseable )
-        if (this.phone.session_data.is_off_campaign) {
-            return;
-        }
-
-        numero_telefono = this.phone.session_data.from;
-        var tipo_llamada = this.phone.session_data.call_type_id;
-        phone_logger.log('saveCall: tipo:' + tipo_llamada + ', numero: ' + numero_telefono);
-        this.oml_api.guardarDuracionLlamada(duracion,
-                                            this.agent_id,
-                                            numero_telefono,
-                                            tipo_llamada,
-                                            function(msg){$("#call_list").html(msg);});
+    updateCallHistory() {
+        var self = this;
+        setTimeout(function() {
+            self.oml_api.updateCallHistory(function(msg){$("#call_list").html(msg);});
+            }, 2000);
     }
 
     getQualificationForm(call_data) {
         // 'calificar_llamada'
         var call_data_json = JSON.stringify(call_data);
-        var url = '/agente/calificar_llamada/' + encodeURIComponent(call_data_json);
+        var url = Urls.calificar_llamada(encodeURIComponent(call_data_json));
         $("#dataView").attr('src', url);
     }
 
@@ -678,7 +667,7 @@ class PhoneJSController {
         var telephone = tel.replace(/\D+/g, '');
         telephone = telephone == '' ? 0 : telephone;
         // {% url 'identificar_contacto_a_llamar' %}
-        var url = '/campana/' + id_camp + '/identificar_contacto_a_llamar/' + telephone +'/'
+        var url = Urls.identificar_contacto_a_llamar(id_camp, telephone);
         $("#dataView").attr('src', url);
     }
 

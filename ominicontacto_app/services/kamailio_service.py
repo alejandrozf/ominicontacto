@@ -36,8 +36,9 @@ logger = logging.getLogger(__name__)
 
 class KamailioService():
 
-    def generar_sip_timestamp(self):
-        ttl = settings.EPHEMERAL_USER_TTL
+    def generar_sip_timestamp(self, ttl=None):
+        if ttl is None:
+            ttl = settings.EPHEMERAL_USER_TTL
         date = time.time()
         return date + ttl
 

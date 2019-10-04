@@ -22,18 +22,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 
 {% block head_js %}
-<script type="text/javascript">
-
-    function mostrar_bases_datos_ocultas() {
-
-        $.get('{% url  'mostrar_bases_datos_ocultas' %}',
-                function (data) {
-                    $('#t_body_ocultas').html(data);
-
-                });
-    }
-
-</script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/base_datos_contacto_ocultos.js' %}"></script>
 {% endblock %}
 
 {% block content %}

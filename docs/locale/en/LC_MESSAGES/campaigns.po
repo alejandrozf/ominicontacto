@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-03 21:27-0300\n"
+"POT-Creation-Date: 2019-08-20 10:37-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,289 +17,336 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.6.0\n"
 
-# 506d381cfb5344249e6418a979a89324
+# 75a66203555b49aaa50a2e86e1edf29a
 #: ../../campaigns.rst:4
 msgid "Campañas Telefónicas"
-msgstr ""
+msgstr "Telephone Campaigns"
 
-# 7691bc4f2eda416aadcd3644eea8e958
+# e4408293b11849088d548ecd854e5211
 #: ../../campaigns.rst:6
 msgid ""
-"Una campaña representa una manera de clasificar dentro de la plataforma a"
-" una operación de Contact Center que integra:"
+"Una campaña representa una manera de encapsular (dentro de la plataforma)"
+" a una operación de Contact Center conformada por:"
 msgstr ""
+"A campaign represents a Contact Center operation that groups:"
 
-# 9356549532d24e8ea7aa43f9df598272
+# a4a6f47af9de40a0b4bbca22d59c8203
 #: ../../campaigns.rst:9
 msgid ""
-"Un grupo de agentes procesando llamadas en un sentido (outbound o "
+"Un grupo de agentes procesando llamadas en alguna dirección (outbound o "
 "inbound)."
 msgstr ""
+"An agent group processing phone calls in one direction (outbound or  inbound)"
 
-# 8cae5c78488f401c919948c7e0b160f2
+# a513bec6cbbb498ebd72c7f8671cd5f7
 #: ../../campaigns.rst:10
 msgid "Una base de contactos asociada a la campaña."
-msgstr ""
+msgstr "A contact base associated with the campaign."
 
-# 618bde97dc124d51a467e2fdd8840993
+# dea358db219d4d8386292bf3c931c242
 #: ../../campaigns.rst:11
 msgid ""
-"Un listado de calificaciones que se despliegan a la hora de clasificar la"
-" llamada gestionada por el agente."
+"Un listado de calificaciones disponibles a la hora de clasificar la "
+"llamada gestionada por el agente."
 msgstr ""
+"A dispositions list that are displayed when classifying the "
+"callprocessed by the agent."
 
-# 4afdb355053f43c6b0aaf5c4095e9ad3
+
+# afdb9233412e4f89946d4944b182337e
 #: ../../campaigns.rst:12
 msgid ""
-"Uno o varios formularios de campaña, a ser desplegados en caso de que el "
-"agente asigne una calificación de \"gestión\" asociada a alguno de los "
-"formularios, sobre la llamada en curso. El formulario es desplegado por "
-"dicha calificación y el agente puede completar el mismo según los datos "
-"del contacto de la llamada en curso."
+"Uno o varios formularios de campaña, a ser lanzados en caso de que el "
+"agente asigne una calificación de \"gestión\" sobre la llamada en curso. "
+"El formulario es desplegado por dicha calificación y el agente puede "
+"completar el mismo según los datos del contacto de la llamada en curso."
 msgstr ""
+"One or more forms to be launched in case the agent assigns a *engage "
+"disposition* associated with any of the forms on the call in progress the "
+"form is displayed by said engage disposition and the agent can complete "
+"it according to the contact details of the ongoing call."
 
-# 89301f7feb234a23b51da6810b6f0f6a
+# e925f4e373914844a99d3f256a076067
 #: ../../campaigns.rst:14
-msgid "En la figura 1, se ilustra todo lo citado en los ítems."
-msgstr ""
+msgid "En la figura 1 se representa una campaña y sus componentes."
+msgstr "Figure 1 shows a campaign and its components."
 
-# 712319184bf4495f91acd9852aab1fda
+# 170f1f751ecf4708a407a0b70ef75dce
 #: ../../campaigns.rst:18
 msgid "*Figure 1: the campaigns elements*"
 msgstr ""
 
-# 0baa70488b354a60a5eb16c5c326ecc6
+# bd43d407d8bf4308afc3141de0a9f105
 #: ../../campaigns.rst:20
 msgid ""
 "El hecho de trabajar bajo campañas, permite a los perfiles de usuarios "
-"Supervisor/Administrador extraer información y métricas de cada campañas,"
-" así como también realizar monitoreo en tiempo real o buscar grabaciones,"
-" entre otras acciones, usando como criterio de filtrado a las campañas. "
-"Podemos contar con diferentes campañas de diferente naturaleza "
-"(predictivas, preview, entrantes o manuales), conviviendo de manera "
-"simultánea en OMniLeads y dejando registros sobre las llamadas "
-"transaccionadas por los agentes."
+"Supervisor/Administrador acotar métricas e informes, así como también "
+"realizar monitoreo en tiempo real o buscar grabaciones, entre otras "
+"acciones, utilizando campañas como criterio de filtrado. Podemos contar "
+"con diferentes campañas de diferente naturaleza (predictivas, preview, "
+"entrantes o manuales), conviviendo de manera simultánea en OMniLeads y "
+"dejando registros sobre las llamadas transaccionadas por los agentes."
 msgstr ""
+"The fact of working with campaigns allows *Supervisor or Administrator* user"
+" profiles to focus metrics and reports, as well as real-time monitoring "
+"or search for recordings, among other actions, using campaigns as a "
+"filtering criteria. We can have different campaigns of different nature "
+"(predictive, preview, incoming or manual), living simultaneously in "
+"OMniLeads and leaving records about the calls transacted by the agents."
 
-# 693883165b184feea5f8fcbbdac23839
-#: ../../campaigns.rst:26
+# b4199974675146afa1d32705cdaf8817
+#: ../../campaigns.rst:28
 msgid "*Figure 2: Campaigns, agents, supervisors and backoffice*"
 msgstr ""
 
-# 58b2ee8272e34ca596fea16cf8c1ffc8
-#: ../../campaigns.rst:30
-msgid "Calificaciones"
-msgstr ""
-
-# c60962f25c664fbb836433ae20ec7153
+# 97c935a5f72f419983aba6dd011c16bf
 #: ../../campaigns.rst:32
-msgid ""
-"Las calificaciones constituyen un listado de etiquetas disponibles para "
-"ser vinculadas a cualquier campaña, de manera tal que luego las llamadas "
-"procesadas dentro de una campaña pueda ofrecer dichas calificaciones al "
-"agente afectado a una llamada i así éste ultimo pueda cerrar (temporal o "
-"definitivamente) la gestión de la llamada utilizando una de las "
-"calificaciones disponibles en la campaña como etiqueta para tipiicar la "
-"gestión."
-msgstr ""
+msgid "Calificaciones"
+msgstr "Dispositions"
 
-# 1efca47da57445e485d9bf86b7481718
-#: ../../campaigns.rst:35
+# d0339cbc488b4a6b8c787a73e294b914
+#: ../../campaigns.rst:34
 msgid ""
-"Las calificaciones las define el supervisor o administrador y se pueden "
-"relacionar con varios aspectos, por ejemplo:"
+"Las calificaciones constituyen un listado de \"etiquetas\" disponibles "
+"para ser asignadas a cualquier campaña, de manera tal que los agentes "
+"puedan clasificar cada llamada dentro de una campaña, con cualquiera de "
+"éstas calificaciones."
 msgstr ""
+"Dispositions form a list of *tags* available to be assigned to any "
+"campaign, so that agents can classify each call within a campaign, with "
+"any of these dispositions."
 
-# c07fd8cb2b724d9eaf17e799ec5ffa88
+# 947d37ba8bd145c8aeae810091fe6bf1
 #: ../../campaigns.rst:37
-msgid "El estado del contacto (respondió, no atendió, numero equivocado, etc.)"
-msgstr ""
-
-# ed9ad1438b1b411588685aff2142382a
-#: ../../campaigns.rst:38
 msgid ""
-"El resultado de la gestión (interesado, no interesado, se ofreció "
-"producto, se vendió, etc.)"
+"Las calificaciones son generadas por el supervisor o administrador y se "
+"pueden relacionar con varios aspectos, por ejemplo:"
 msgstr ""
+"Dispositions are defined by the supervisor or administrator and can be "
+"related to several aspects, for example:"
 
-# 6f5fc29bb5b0439aa0577c3059509729
+# dc145b19ca574d78a455b2c7d9723b8e
 #: ../../campaigns.rst:39
 msgid ""
-"La predisposición del contactado o el resultado de una encuesta de "
-"satisfacción (cliente satisfecho/insatisfecho, etc.)"
+"El resultado de la llamada hacia un contacto de la campaña (ocupado, no "
+"atendió, numero equivocado, buzón de mensajes, etc.)"
 msgstr ""
+"The telephone call result (busy, no answer, wrong number, voicemail, etc.)"
 
-# 7b4248a043eb4a8b8d662b964e46e5b7
-#: ../../campaigns.rst:41
+# 2f8cc8bf256944fa99c24f73c8a90846
+#: ../../campaigns.rst:40
+msgid ""
+"El resultado asociado a una llamada atendida (interesado, no interesado, "
+"venta, encuesta realizada, etc.)"
+msgstr ""
+"The result of an interaction in a call answered (sale, survey completed, "
+"schedule call, etc.)"
+
+# 15c78c57af334166b66fb2d1b86542d9
+#: ../../campaigns.rst:42
 msgid ""
 "Las calificaciones pueden ser totalmente arbitrarias y para generarlas se"
 " debe ingresar al punto de menú; *Campaigns → Call Dispositions → New "
 "Call Dispositions*."
 msgstr ""
+"Dispositions can be totally arbitrary and to generate them you must enter"
+" the screen*Campaigns → Call Dispositions → New Call Dispositions*."
 
-# 19e9874c61ab4c2c914e1e2dcf16edaa
-#: ../../campaigns.rst:43
+# fdf6d3f42b764e42982021ea91846eb6
+#: ../../campaigns.rst:44
 msgid ""
 "Podemos listar las calificaciones generadas dentro de *Campaigns → Call "
 "Dispositions → Call Dispositions*"
 msgstr ""
+"We can list the ratings generated within *Campaigns → Call Dispositions →"
+" Call Dispositions*"
 
-# 287295bf9b8c43d98855eb9fcba360d6
-#: ../../campaigns.rst:47
+# aa950340a86245cea319a09706f443fc
+#: ../../campaigns.rst:48
 msgid "*Figure 3: Call dispositions*"
 msgstr ""
 
-# be313af9d2ad40ba8de0a643af1baace
-#: ../../campaigns.rst:50
-msgid "Base de contactos"
-msgstr ""
-
-# deb22974778e4805b4294fe98a799e6f
+# 298e509edb104d55b62e8dccd82563d7
 #: ../../campaigns.rst:51
-msgid ""
-"Las bases de datos son utilizadas tanto para las campañas entrantes como "
-"salientes. En las campañas salientes, los datos que requiere el discador "
-"predictivo/preview se extraen de la base de contactos afectada a la "
-"campaña, mientras que en las campañas entrantes aportan los datos que se "
-"despliegan en la pantalla del agente cada vez que ingresa al sistema "
-"alguna comunicación"
-msgstr ""
+msgid "Base de contactos"
+msgstr "Campaign contact database"
 
-# 7e097a51118243edabe7440ce4bf7e4c
-#: ../../campaigns.rst:53
+# 384f62a42baf40aba04671b02315dee1
+#: ../../campaigns.rst:52
 msgid ""
-"Deben estar almacenadas en archivos con formato CSV con los campos "
-"separados con coma y además generadas en la codificacipón UTF-8 "
+"Las bases de contactos son utilizadas en las campañas salientes aunque "
+"también pueden ser utilizadas por campañas entrantes. En el marco de las "
+"campañas salientes, los datos que requiere el discador predictivo o "
+"preview son proporcionados por la base de contactos afectada a la "
+"campaña, mientras que en las campañas entrantes aportan los datos "
+"complementarios al número telefónico que son desplegados en la pantalla "
+"del agente cada vez que ingresa una llamada por una campaña entrante."
+msgstr ""
+"Contact databases are used in outbound campaigns but can also be used by "
+"incoming campaigns. In the context of outbound campaigns, the data "
+"required by the predictive or preview dialer is provided by the contact "
+"base affected to the campaign, while in incoming campaigns they provide "
+"the complementary data to the phone number that is displayed on the "
+"agent's screen every time a call comes in."
+
+# 1a5556abc57e42b1adf2799da05fb845
+#: ../../campaigns.rst:56
+msgid ""
+"Éstas bases son proporcionadas en archivos con formato CSV con los campos"
+" separados con coma y además generadas en la codificacipón UTF-8 "
 "(requisito excluyente). Debe existir al menos una columna que contenga un"
-" teléfono de cada contacto (registro) del archivo, el resto de las "
+" teléfono por cada contacto (registro) del archivo, el resto de las "
 "columnas puede contener cualquier contenido, generalmente cada registro "
 "cuenta con datos complementarios al teléfono principal. Éstos datos son "
 "expuestos en la pantalla de agente a la hora de establecer una "
 "comunicación entre ambos (agente y contacto de la base)."
 msgstr ""
+"Contact databases are provided in CSV format files with fields separated "
+"by a comma and also generated in the UTF-8 encoding (excluding "
+"requirement). There must be at least one column that contains a telephone"
+" for each contact (record) of the file, the rest of the columns can "
+"contain any content, generally each record has complementary data to the "
+"main telephone. This data is displayed on the agent screen when "
+"establishing a communication between both (agent and base contact)."
 
-# 39c0d873b73342e8a2db04f9989a3f06
-#: ../../campaigns.rst:59
+# dee7ab5031124d758377bc77a810a542
+#: ../../campaigns.rst:63
 msgid "*Figure 4: Contacts CSV file - text editor view*"
 msgstr ""
 
-# 1689c1e158c64bae81ad9dd01eb7f91c
-#: ../../campaigns.rst:63
+# f0a4065b95b0462c9fa20ae7260fddc7
+#: ../../campaigns.rst:67
 msgid "*Figure 5: Contacts CSV file - libreoffice excel view*"
 msgstr ""
 
-# 63619e2fa709494d835103a27deb41bd
-#: ../../campaigns.rst:65
+# 407aab1a5dff4659a358f645e471b7d9
+#: ../../campaigns.rst:69
 msgid ""
 "Se dispone entonces de una base de contactos (csv) para proceder con la "
 "carga del archivo en el sistema accediendo al punto de menú; *Contacts → "
 "New contacts database*"
 msgstr ""
+"A contact base (csv) is available, to proceed with the the loading of the"
+" file into the system by accessing the menu item; *Contacts → New "
+"contacts database*"
 
-# 0bcf244d757248b99b3021328ff42df1
-#: ../../campaigns.rst:69
+# bd6c7f4f95584f9f8f40a420c6cc9e6d
+#: ../../campaigns.rst:73
 msgid "*Figure 6: New contact database*"
 msgstr ""
 
-# bb60764ca3ed4a3aa06af5fb9734cfd5
-#: ../../campaigns.rst:71
+# 6c9b2a61c8784ee0965dac704549c45e
+#: ../../campaigns.rst:75
 msgid ""
 "Se debe indicar con un check, cuales columnas son las que almacenan "
 "teléfonos, como se indica en la figura 7."
 msgstr ""
+"It should be indicated with a check, which columns are the ones that "
+"store phones, as indicated in figure 7."
 
-# 1fb9c7c01e4c493d87f60165c106cc56
-#: ../../campaigns.rst:75
+# f00a83655eb64476907b5281fbe2f447
+#: ../../campaigns.rst:79
 msgid "*Figure 7: Tel check*"
 msgstr ""
 
-# 86ac312a994f41199aec4dffb34653a6
-#: ../../campaigns.rst:77
+# 3a51d0f6f3c14178b80e309cf7625234
+#: ../../campaigns.rst:81
 msgid ""
 "Finalmente se salva el archivo y el mismo queda disponible como una base "
 "de contactos del sistema instanciable por cualquier tipo de campaña."
 msgstr ""
+"Finally, the form is saved and the CSV file is now available as a system "
+"contact database available for any campaign."
 
-# 139341e07beb43069ac0ee28c54190c4
-#: ../../campaigns.rst:80
-msgid "Formularios"
-msgstr ""
-
-# e705edd8fa4e472b9f4a86efd38facbe
-#: ../../campaigns.rst:81
-msgid ""
-"Los formularios de campaña constituyen un elemento que permite recolectar"
-" información de la interacción con la persona detrás de la comunicación "
-"establecida. Son diseñados dentro de OMniLeads conjugando en una vista "
-"estática diferentes tipos campos (texto, fecha, de multiple selección y "
-"área de texto)."
-msgstr ""
-
-# 3b97246ce46d4ea2a4f03b52e2ca1f48
+# a0f22920d471438f80f2e488dd315a55
 #: ../../campaigns.rst:84
+msgid "Formularios"
+msgstr "Forms"
+
+# 729be87168e44db8b383cf996191e452
+#: ../../campaigns.rst:85
+msgid ""
+"Los formularios de campaña constituyen el método por defecto para "
+"recolectar información (relevante para la campaña) en la interacción con "
+"la persona detrás de una comunicación establecida. Son diseñados por el "
+"usuario combinando en una vista estática diferentes tipos campos (texto, "
+"fecha, de multiple selección y área de texto), pudiendo ordenar los "
+"mismos de acuerdo a la necesidad de la campaña."
+msgstr ""
+"Campaign forms constitute the default method to collect information "
+"(relevant to the campaign) in the interaction with the person behind an "
+"established communication. They are designed by the user combining in a "
+"static view different types of fields (text, date, multiple selection and"
+" text area), being able to order them according to the need of the "
+"campaign."
+
+# 609d4d8285764891a54894ddf75cbe9a
+#: ../../campaigns.rst:90
 msgid ""
 "Para crear formularios se debe acceder al punto de menú; *Campaigns → New"
 " form*. Allí"
-msgstr ""
+msgstr "To create forms you must access the menu item; *Campaigns → New form*"
 
-# 58c7119ec6804a8bb0bc16aaa7bb3e50
-#: ../../campaigns.rst:86
+# 96a8271ebf85465f8d4b41f88b143ba3
+#: ../../campaigns.rst:92
 msgid "Los formularios pueden contener campos del tipo:"
-msgstr ""
+msgstr "Campaign forms may contain field types like"
 
-# 59c1c770070a4af8b2a429dd31c9a1bb
-#: ../../campaigns.rst:88
+# c2eb26fe59984a8aa695a55cea6fc0ab
+#: ../../campaigns.rst:94
 msgid "**Texto**"
-msgstr ""
+msgstr "**Text**"
 
-# 1560d2492fb346c2b4de09906f985d70
-#: ../../campaigns.rst:89
+# c840e222133949539a3e08789853f549
+#: ../../campaigns.rst:95
 msgid "**Fecha**"
-msgstr ""
+msgstr "**Date**"
 
-# c8d96485634c43e489932e76cd2bdbc6
-#: ../../campaigns.rst:90
+# 447573479dc843c0ad46cd6b64c51738
+#: ../../campaigns.rst:96
 msgid "**Combo de selección múltiple**"
-msgstr ""
+msgstr "**List**"
 
-# 8701ba4ee0f54aa9ad0ddd18619adf35
-#: ../../campaigns.rst:91
+# e717c0d7d92d475fb6fcb992133f27a6
+#: ../../campaigns.rst:97
 msgid "**Campo de complementarios**"
-msgstr ""
+msgstr "**Text area box**"
 
-# fd42a10667d746ca840e710a62163bfc
-#: ../../campaigns.rst:93
+# 851327a0f0de498dae2e977bff08c150
+#: ../../campaigns.rst:99
 msgid ""
 "En la figura 8 se ejemplifica un campo del tipo \"combo\" dentro de la "
 "creación de un formulario."
-msgstr ""
+msgstr "Figure 8 exemplifies a campaign form creation."
 
-# 8bce0b56c8d943df9a74ce49b751e31b
-#: ../../campaigns.rst:97
+# bc9ac78c32e149fdb24cf80d48a6da03
+#: ../../campaigns.rst:103
 msgid "*Figure 8: New campaign form*"
 msgstr ""
 
-# 2887427cd12e4564bb042898a27cc931
-#: ../../campaigns.rst:99
+# f156c1d3ab824f8f9b2344a1d163480f
+#: ../../campaigns.rst:105
 msgid ""
 "Podemos generar un formulario de ejemplo de encuesta de satisfacción con "
 "el aspecto de la figura 9."
 msgstr ""
+"We can generate a sample satisfaction survey form with the appearance of "
+"figure 9."
 
-# fbdf1b3e0a4146d2831a07d93e4b5f4a
-#: ../../campaigns.rst:103
+# 897f63019e0a4a778788f614bbfa18d1
+#: ../../campaigns.rst:109
 msgid "*Figure 9: Survey campaign form*"
 msgstr ""
 
-# c341e7a00faa40e8a7c9c08c089622b6
-#: ../../campaigns.rst:107
-msgid "Campañas VS Calificaciones VS Formularios"
-msgstr ""
+# ca9ff7ce06754e9f85cee02226518133
+#: ../../campaigns.rst:113
+msgid "Campañas, Calificaciones & Formularios"
+msgstr "Campaigns, Dispositions & Forms"
 
-# 36b9be4e7719450f81f8d33dff57ca76
-#: ../../campaigns.rst:109
+# f4c508a88f6448d293f5f68c97c8e26c
+#: ../../campaigns.rst:115
 msgid ""
-"Para explicar la relación entre éstos componenetes, debemos recordar que "
+"Para explicar la relación entre éstos componentes, debemos recordar que "
 "múltiples formularios pueden ser asignados a una campaña. La idea es que "
 "diferentes calificaciones de una campaña pueden disparar diferentes "
 "formularios, permitiendo así a la operación de recolectar mediante "
@@ -307,34 +354,48 @@ msgid ""
 " entre el agente de OMniLeads y la persona en el otro extremo de la "
 "comunicación dentro de la campaña."
 msgstr ""
+"To explain the relationship between these components, we must remember "
+"that multiple forms can be assigned to a campaign. The idea is that "
+"different dispositions of a campaign can trigger different forms, thus "
+"allowing the ability to collect through previously designed forms, "
+"information associated with the interaction between the OMniLeads agent "
+"and the person at the other end of the communication within the campaign."
 
-# 3f1a73b76ec146aeb39e7ba612db3ebc
-#: ../../campaigns.rst:113
+# 606715aa09be42be82085433d46e2ac0
+#: ../../campaigns.rst:119
 msgid ""
-"Resulta importante explicar conceptualmrnte cómo se utilizan los "
+"Resulta importante explicar conceptualmente cómo se utilizan los "
 "formularios de campaña en OMniLeads. Antes que nada aclarar que en el "
 "marco de una campaña a la hora de asignar calificaciones, se van a poder "
 "definir calificaciones normales y calificaciones \"de gestión\" o "
 "\"engaged\". Éstas últimas son las que disparan los formularios de "
 "campaña."
 msgstr ""
+"It is important to explain conceptually how campaign forms are used in "
+"OMniLeads. We must clarify that in the context of a campaign when "
+"assigning ratings, it will be possible to define normal and *engaged "
+"disposition*. The latter are the ones that trigger the campaign forms. "
 
-# 404d311f23064cd0b1e209935c4f3aab
-#: ../../campaigns.rst:119
+# ebfd44e22139483588d0cf7ba5d3f93e
+#: ../../campaigns.rst:125
 msgid "*Figure 10: Call dispositions inside campaign*"
 msgstr ""
 
-# 8836e734c7bc400890c64199785db0da
-#: ../../campaigns.rst:121
+# 65f9885b106b4b30ad110d15f0db3b32
+#: ../../campaigns.rst:127
 msgid ""
 "En el ejemplo de la figura 10, contamos con dos calificaciones del tipo "
 "engaged, por un lado la calificación \"Survey on demand client\" que "
 "tiene asociado el formulario \"Survey On Demand\" y por el otro la "
 "calificación \"Survey\" que dispara el formulario \"Survey Clients\"."
 msgstr ""
+"In the figure 10 example, we have two engaged dispositions, on the one "
+"hand the *Survey on demand client* disposition that triggers the "
+"*Survey on demand* form, and on the other the *Survey* disposition "
+"that triggers the *Survey clients* form."
 
-# f709c110c5e944fa931c5053725911af
-#: ../../campaigns.rst:124
+# 9bc63409c15f48509ee1dcb8ffacf54e
+#: ../../campaigns.rst:130
 msgid ""
 "Siempre que haya una llamada activa entre un agente y un contacto de la "
 "base de la campaña, el agente dispone de los datos complementarios al "
@@ -343,152 +404,243 @@ msgid ""
 "una calificación del tipo \"gestión\", entonces se dispara en la pantalla"
 " de agente el formulario asociado a la calificación dentro de la campaña."
 msgstr ""
+"Whenever there is an active call between an OMniLeads agent and a contact"
+" at thecampaign contact database, the agent has the complementary data to"
+" the contact's phone on their screen next to the disposition selection "
+"combo for the current contact. If the agent selects and saves a "
+"*engaged disposition* then the form associated with the engaged "
+"disposition within the campaign is triggered on the agent screen."
 
-# bad61c78ba1c40a19493d655d8ee45c8
-#: ../../campaigns.rst:130
+# fbd835f8382e4b188ad76a94728c97f3
+#: ../../campaigns.rst:136
 msgid "*Figure 11: Engaged dispostions and forms*"
 msgstr ""
 
-# 60a66cbd3a374b64826a02b823e391df
-#: ../../campaigns.rst:133
-msgid "Campañas VS sistema CRM externo"
-msgstr ""
-
-# 878f029220944bdea34514023571ae4d
-#: ../../campaigns.rst:135
-msgid ""
-"OMniLeads está diseñado desde una perspectiva en la que se prioriza una "
-"integración con el sistema de gestión predilecto del usuario. En lugar de"
-" forzar al mismo a tener que pasar su operación sobre un CRM propio del "
-"stack de contact center."
-msgstr ""
-
-# d16aa8d81dc64133add7f23472496149
-#: ../../campaigns.rst:138
-msgid "Entre las funcionalidades contempladas podemos citar:"
-msgstr ""
-
-# a208668dafcd484da40a6cb802e2718f
+# 9c8e487fa10649299d2f0e5edadb3e77
 #: ../../campaigns.rst:140
-msgid ""
-"Abrir una vista concreta del CRM en una comunicación entrante o saliente,"
-" utilizando parámetros de la comunicación (id del agente, del contacto, "
-"de la campaña, etc.) como información dinámica para invocar al CRM."
-msgstr ""
+msgid "Campañas Manuales"
+msgstr "Manual Campaigns"
 
-# 3d760e11776c4fb282524e65bed5f818
-#: ../../campaigns.rst:141
-msgid ""
-"Permitir realizar una llamada \"click to call\" desde cualquier vista del"
-" CRM hacia un número externo a través de una campaña y agente de "
-"OMniLeads."
-msgstr ""
-
-# 270cb1f9a6bf410d978bb290c5cb68c9
+# c88342b6deca4b7a8a72904001d43f15
 #: ../../campaigns.rst:142
 msgid ""
-"Permitir calificar un contacto en el CRM y que la calificación se impacte"
-" en OMniLeads de manera tal que exista una correlación entre el sistema "
-"CRM y el sistema de Contact Center dentro de cada campaña."
+"Dentro de este inciso se ejemplifica el paso a paso de cómo administrar "
+":ref:`about_manualcamp`."
+msgstr ""
+"Within this subsection the step-by-step example of how to manage Manual "
+"Campaigns is exemplified. :ref:`about_manualcamp`."
+
+# 4c0e63e575c6466e94819eb927cd6105
+#: ../../campaigns.rst:146
+msgid "Campañas Preview"
+msgstr "Preview Campaigns"
+
+# c6cd024d7dd34bf29c13982bef0986d7
+#: ../../campaigns.rst:148
+msgid ""
+"Dentro de este inciso se ejemplifica el paso a paso de cómo administrar "
+":ref:`about_previewcamp`."
+msgstr ""
+"Within this subsection the step-by-step example of how to manage Preview "
+"Campaigns is exemplified. :ref:`about_previewcamp`."
+
+# 6da1481ac0894d0d99b878982df206ef
+#: ../../campaigns.rst:151
+msgid "Campañas con discador predictivo"
+msgstr "Predictive dialer campaigns"
+
+# 9ff23b1f2a7f4ed49a52acc000fdef60
+#: ../../campaigns.rst:153
+msgid ""
+"Dentro de este inciso se ejemplifica el paso a paso de cómo administrar "
+":ref:`about_dialercamp`."
+msgstr ""
+"Within this subsection the step-by-step example of how to manage "
+"Predictive dialer Campaigns is exemplified. :ref:`about_dialercamp`."
+
+# e4f5afd094454ddbb538fdee61e31967
+#: ../../campaigns.rst:156
+msgid "Campañas Entrantes"
+msgstr "Inbound Campaigns"
+
+# cb4bc9886f9842c69942877149cd474e
+#: ../../campaigns.rst:158
+msgid ""
+"Al hablar de llamadas entrantes nos toca desplegar cada funcionalidad "
+"aplicable al flujo de llamadas entrantes, como bien sabemos una llamada "
+"entrante puede pasar por una serie \"nodos\" hasta finalmente conectar "
+"con un agente de atención. Por lo tanto vamos a ampliar el concepto de "
+"\"campañas entrantes\" a los siguientes ítems de configuración."
+msgstr ""
+"When talking about incoming calls we have to explain each functionality "
+"applicable to the flow of a incoming call. As we know an incoming call "
+"can go through a series of \"nodes\" until finally connecting with an "
+"agent. Therefore we will extend the concept of \"incoming campaigns\" to "
+"the following configuration items."
+
+# b8a8c61f618c4da485f8f5abda40d820
+#: ../../campaigns.rst:162
+msgid ":ref:`about_inboundcamp`."
 msgstr ""
 
-# 004421fed6634b959720729e58f0bdfc
-#: ../../campaigns.rst:143
+# eb0a3c0836b149d1adb109856553c7fd
+#: ../../campaigns.rst:163
+msgid ":ref:`about_inboundroutes`."
+msgstr ""
+
+# 7bed02c6dde84f39bdee3358175ffc8f
+#: ../../campaigns.rst:164
+msgid ":ref:`about_inboundroutespbx`."
+msgstr ""
+
+# bcc1f0cf1e6c40e68d4cdeb01cc259df
+#: ../../campaigns.rst:165
+msgid ":ref:`about_timeconditions`."
+msgstr ""
+
+# e188e4d3232341fbacd867539322c549
+#: ../../campaigns.rst:166
+msgid ":ref:`about_ivr`."
+msgstr ""
+
+# d2ff6f35dd2f4597b7e9931b3428dbb5
+#: ../../campaigns.rst:167
+msgid ":ref:`about_customer_id`."
+msgstr ""
+
+# a1a4247912d44a11ab2b0a21284f441f
+#: ../../campaigns.rst:168
+msgid ":ref:`about_custom_dst`."
+msgstr ""
+
+# 40d33f80aa5c46828c7b5dee658d9819
+#: ../../campaigns.rst:172
+msgid "Plantillas de Campaña"
+msgstr ""
+
+# 4d6504c1c192496b910d85837ef8292d
+#: ../../campaigns.rst:174
+msgid ""
+"Suele ser recurrente que los parámetros de una \"clase\" de campañas (por"
+" ejemeplo campañas preview de encuestas) no varíen demasiado salvo quizás"
+" por el grupo de agentes asignados, la base de contactos a utilizar o el "
+"supervisor agignado. Por lo tanto en lugar de tener que crear campañas "
+"muy similares siempre desde cero, se pueden generar plantillas para luego"
+" crear campañas nuevas rápidamente a partir de clonar dichas plantillas."
+msgstr ""
+"It is often recurring that the parameters of a \"class\" of campaigns "
+"(for example, survey preview campaigns) do not vary too much except "
+"perhaps by the assigned agent group, a contact database, or by assign "
+"supervisor. Therefore instead of having to create very similar campaigns "
+"always from scratch, you can generate templates and then quickly create "
+"new campaigns from cloning those templates. "
+
+# 3f4ceb18f8df4b3ba8e35dbb05166e12
+#: ../../campaigns.rst:179
+msgid "Esta funcionalidad la otorgan los *Templates* de campañas de OMniLeads."
+msgstr "This functionality is granted by the OMniLeads campaigns *Templates*."
+
+# e0a1c52a51464b42b4b9c030b3d6a5b9
+#: ../../campaigns.rst:181
+msgid ""
+"A partir de la generación de una plantilla (que se genera de manera "
+"similar a una campaña), se pueden crear nuevas campañas simplemente "
+"seleccionando el template y la opción *Create campaign from template*. "
+"Cada nueva campaña estará disponible con todos los parámetros "
+"especificados en su plantilla matriz."
+msgstr ""
+"Once you have generated a template (which is generated similarly to a "
+"campaign), you can create new campaigns simply by selecting the template "
+"and the *Create campaign from template* option. Each new campaign will be"
+" available with all the parameters specified in its parent template. "
+
+# 0ed4b27f10e648dc9d70145c1ed66f6d
+#: ../../campaigns.rst:187
+msgid "*Figure 13: templates*"
+msgstr ""
+
+# 803da7edbaf641839c4687600f1da7e8
+#: ../../campaigns.rst:190
+msgid "Interacción con sistemas de gestión externos"
+msgstr "Interaction with external CRMs"
+
+# 9c2a085a7c494d5d9fb27b330e66559a
+#: ../../campaigns.rst:192
+msgid ""
+"OMniLeads está diseñado desde una perspectiva en la que se prioriza una "
+"integración con el sistema de gestión predilecto de la compañía. "
+"Brindando así la posibilidad de que una empresa mantenga el uso de su "
+"sistema de gestión apropiado a su mercado vertical (salud, ventas, "
+"atención al cliente, etc.)."
+msgstr ""
+"OMniLeads is designed from a perspective that prioritizes integration "
+"with the company's preferred CRM/ERP system. Thus providing the "
+"possibility for a company to maintain the use of its CRM/ERP system "
+"appropriate to its vertical market (health, sales, customer service, "
+"etc.)."
+
+# 26d57606f96b47fb96744b1c2ccd2d72
+#: ../../campaigns.rst:195
+msgid ""
+"Mediante funcionalidades propias y métodos de la API, OMniLeads permite "
+"los siguientes interacciones:"
+msgstr ""
+"Through its own functionalities and API methods, OMniLeads allows the "
+"following interactions:"
+
+# 892d94ef000144a7894d93a8da654141
+#: ../../campaigns.rst:198
+msgid ""
+"Abrir una vista concreta del CRM en una comunicación entrante o saliente,"
+" utilizando parámetros de la comunicación (id del agente, id del "
+"contacto, id de la campaña, etc.) como información dinámica para invocar "
+"al CRM."
+msgstr ""
+"Open a specific view of the CRM in an incoming or outgoing communication,"
+" using communication parameters (agent id, contact id, campaign id, etc.)"
+" as dynamic data to invoke the CRM."
+
+# c354c946d6f74e829adcf251a54d19ab
+#: ../../campaigns.rst:199
+msgid ""
+"Permitir realizar una llamada \"click to call\" desde una vista de "
+"contacto en el CRM y accionar así una llamada a través de una campaña y "
+"agente de OMniLeads."
+msgstr ""
+"Execute *click to call* from a contact view in the CRM and thus "
+"activate a call through a campaign and OMniLeads agent."
+
+# 39c3c610825e4451bc08efc4b7427d7c
+#: ../../campaigns.rst:200
+msgid ""
+"Permitir calificar la gestión de un contacto del CRM y que la "
+"calificación se impacte en OMniLeads, de manera tal que exista una "
+"correlación entre el sistema CRM y el sistema de Contact Center dentro de"
+" cada campaña."
+msgstr ""
+"Record the management of a CRM contact and that the disposition impacts "
+"OMniLeads, so that there is a correlation between the CRM system and the "
+"Contact Center system within each campaign."
+
+# af100f0a934f4e21ad653ece44ca06f2
+#: ../../campaigns.rst:201
 msgid ""
 "OMniLeads en las llamadas entrantes puede solicitar el ID del llamante y "
 "notificar al CRM para que éste decida sobre que campaña de OMniLeads "
 "encaminar una llamada."
 msgstr ""
+"Request the \"ID\" of the person on incoming calls, send this \"ID\" to "
+"the CRM (via http request) and wait for the latter to respond on which "
+"OMniLeads campaign to route a call. "
 
-# 1fd9e19f139040bc80dc90a848911d32
-#: ../../campaigns.rst:145
+# afcaba3becd14817b0bcc4fe2f0af38f
+#: ../../campaigns.rst:203
 msgid ""
-"Todo el alcance y configuración a realizar para trabajar en Integración "
-"con CRM se expone en el capítulo:"
+"Ampliamos todos estos conceptos y configuraciones en el siguiente link "
+":ref:`about_crm`."
 msgstr ""
-
-# 3721e27d6fee49079a91a703f18948f4
-#: ../../campaigns.rst:154
-msgid "Campañas Manuales"
-msgstr ""
-
-# e0cf2c315d4442c08bec8cec75710d45
-#: ../../campaigns.rst:156
-msgid ""
-"Dentro de este inciso se ejemplifica el paso a paso de cómo generar una "
-"campaña de llamadas manuales."
-msgstr ""
-
-# 0e34298d863e4e32930373ffe2dbd773
-#: ../../campaigns.rst:165
-msgid "Campañas Preview"
-msgstr ""
-
-# 1ad6709dd11e4587a31f3992e01589aa
-#: ../../campaigns.rst:167
-msgid "En este inciso nos adentramos en el mundo de las campañas preview."
-msgstr ""
-
-# e3fcdf497bce40e3b5b10925f1b353cd
-#: ../../campaigns.rst:176
-msgid "Campañas con discador predictivo"
-msgstr ""
-
-# 5d48ad90d01f444180cd6cbb1af11445
-#: ../../campaigns.rst:178
-msgid ""
-"En este apartado desplegamos todo lo inherente a las campañas con "
-"discador predictivo."
-msgstr ""
-
-# ed46a32c79194ef5ab8dbb46343e05d7
-#: ../../campaigns.rst:188
-msgid "Campañas Entrantes"
-msgstr ""
-
-# 88d6a7233a924eba813230e24cc8d556
-#: ../../campaigns.rst:189
-msgid ""
-"En este capítulo se repasan todas las funcionalidades asociadas al "
-"tratamiento de llamadas entrantes."
-msgstr ""
-
-# 74524a15d26c4475ae074ccb42f90833
-#: ../../campaigns.rst:204
-msgid "Plantillas de Campaña"
-msgstr ""
-
-# 35355b2fdf504376996bbf951bc9617c
-#: ../../campaigns.rst:206
-msgid ""
-"En muchas ocasiones los parámetros de una familia de campañas (por "
-"ejemeplo campañas preview de encuestas) no varían demasiado salvo por "
-"quizás por ejemplo el grupo de agentes asignados, la base de contactos a "
-"utilizar o el supervisor agignado. Entonces en lugar de tener que crear "
-"campañas myu similares siempre de cero, se pueden utilizar las plantillas"
-" y clonar éstas con los parámetros listos para avanzar más rápidamente en"
-" la creación de la nueva campaña."
-msgstr ""
-
-# 61d64158b2574a258f106a5af65619a2
-#: ../../campaigns.rst:209
-msgid "Esta funcionalidad la otorgan los *Templates* de campañas de OMniLeads."
-msgstr ""
-
-# a0443a4cabcd4bb680ba61ee7f181392
-#: ../../campaigns.rst:211
-msgid ""
-"A partir de generar un template (que se genera como una campaña), se pasa"
-" a disponer del mismo, de manera tal que simplemente seleccionando el "
-"template y la opción *Create campaign from template* se genera una nueva "
-"campaña con todos los parámetros especificados en el template como "
-"configurados en la nueva campaña."
-msgstr ""
-
-# 5e3fda8ef55e45b6ad951f5889cd78a2
-#: ../../campaigns.rst:217
-msgid "*Figure 13: templates*"
-msgstr ""
+"These concepts and configurations are expanded in the following link "
+":ref:`about_crm`."
 
 #~ msgid ""
 #~ "Un listado de calificaciones que se "
@@ -720,3 +872,312 @@ msgstr ""
 #~ msgid "Entre otros parámetros."
 #~ msgstr ""
 
+# c341e7a00faa40e8a7c9c08c089622b6
+#~ msgid "Campañas VS Calificaciones VS Formularios"
+#~ msgstr ""
+
+# 60a66cbd3a374b64826a02b823e391df
+#~ msgid "Campañas VS sistema CRM externo"
+#~ msgstr ""
+
+# 878f029220944bdea34514023571ae4d
+#~ msgid ""
+#~ "OMniLeads está diseñado desde una "
+#~ "perspectiva en la que se prioriza "
+#~ "una integración con el sistema de "
+#~ "gestión predilecto del usuario. En lugar"
+#~ " de forzar al mismo a tener que"
+#~ " pasar su operación sobre un CRM "
+#~ "propio del stack de contact center."
+#~ msgstr ""
+
+# d16aa8d81dc64133add7f23472496149
+#~ msgid "Entre las funcionalidades contempladas podemos citar:"
+#~ msgstr ""
+
+# a208668dafcd484da40a6cb802e2718f
+#~ msgid ""
+#~ "Abrir una vista concreta del CRM "
+#~ "en una comunicación entrante o saliente,"
+#~ " utilizando parámetros de la comunicación"
+#~ " (id del agente, del contacto, de "
+#~ "la campaña, etc.) como información "
+#~ "dinámica para invocar al CRM."
+#~ msgstr ""
+
+# 3d760e11776c4fb282524e65bed5f818
+#~ msgid ""
+#~ "Permitir realizar una llamada \"click to"
+#~ " call\" desde cualquier vista del CRM"
+#~ " hacia un número externo a través "
+#~ "de una campaña y agente de "
+#~ "OMniLeads."
+#~ msgstr ""
+
+# 270cb1f9a6bf410d978bb290c5cb68c9
+#~ msgid ""
+#~ "Permitir calificar un contacto en el "
+#~ "CRM y que la calificación se "
+#~ "impacte en OMniLeads de manera tal "
+#~ "que exista una correlación entre el "
+#~ "sistema CRM y el sistema de "
+#~ "Contact Center dentro de cada campaña."
+#~ msgstr ""
+
+# 1fd9e19f139040bc80dc90a848911d32
+#~ msgid ""
+#~ "Todo el alcance y configuración a "
+#~ "realizar para trabajar en Integración "
+#~ "con CRM se expone en el capítulo:"
+#~ msgstr ""
+
+# e0cf2c315d4442c08bec8cec75710d45
+#~ msgid ""
+#~ "Dentro de este inciso se ejemplifica "
+#~ "el paso a paso de cómo generar "
+#~ "una campaña de llamadas manuales."
+#~ msgstr ""
+
+# 1ad6709dd11e4587a31f3992e01589aa
+#~ msgid "En este inciso nos adentramos en el mundo de las campañas preview."
+#~ msgstr ""
+
+# 5d48ad90d01f444180cd6cbb1af11445
+#~ msgid ""
+#~ "En este apartado desplegamos todo lo "
+#~ "inherente a las campañas con discador"
+#~ " predictivo."
+#~ msgstr ""
+
+# 88d6a7233a924eba813230e24cc8d556
+#~ msgid ""
+#~ "En este capítulo se repasan todas "
+#~ "las funcionalidades asociadas al tratamiento"
+#~ " de llamadas entrantes."
+#~ msgstr ""
+
+# 7691bc4f2eda416aadcd3644eea8e958
+#~ msgid ""
+#~ "Una campaña representa una manera de "
+#~ "clasificar dentro de la plataforma a "
+#~ "una operación de Contact Center que "
+#~ "integra:"
+#~ msgstr ""
+
+# 9356549532d24e8ea7aa43f9df598272
+#~ msgid ""
+#~ "Un grupo de agentes procesando llamadas"
+#~ " en un sentido (outbound o inbound)."
+#~ msgstr ""
+
+# 618bde97dc124d51a467e2fdd8840993
+#~ msgid ""
+#~ "Un listado de calificaciones que se "
+#~ "despliegan a la hora de clasificar "
+#~ "la llamada gestionada por el agente."
+#~ msgstr ""
+
+# 4afdb355053f43c6b0aaf5c4095e9ad3
+#~ msgid ""
+#~ "Uno o varios formularios de campaña, "
+#~ "a ser desplegados en caso de que"
+#~ " el agente asigne una calificación de"
+#~ " \"gestión\" asociada a alguno de los"
+#~ " formularios, sobre la llamada en "
+#~ "curso. El formulario es desplegado por"
+#~ " dicha calificación y el agente puede"
+#~ " completar el mismo según los datos"
+#~ " del contacto de la llamada en "
+#~ "curso."
+#~ msgstr ""
+
+# 89301f7feb234a23b51da6810b6f0f6a
+#~ msgid "En la figura 1, se ilustra todo lo citado en los ítems."
+#~ msgstr ""
+
+# 0baa70488b354a60a5eb16c5c326ecc6
+#~ msgid ""
+#~ "El hecho de trabajar bajo campañas, "
+#~ "permite a los perfiles de usuarios "
+#~ "Supervisor/Administrador extraer información y "
+#~ "métricas de cada campañas, así como "
+#~ "también realizar monitoreo en tiempo "
+#~ "real o buscar grabaciones, entre otras"
+#~ " acciones, usando como criterio de "
+#~ "filtrado a las campañas. Podemos contar"
+#~ " con diferentes campañas de diferente "
+#~ "naturaleza (predictivas, preview, entrantes o"
+#~ " manuales), conviviendo de manera "
+#~ "simultánea en OMniLeads y dejando "
+#~ "registros sobre las llamadas transaccionadas"
+#~ " por los agentes."
+#~ msgstr ""
+
+# c60962f25c664fbb836433ae20ec7153
+#~ msgid ""
+#~ "Las calificaciones constituyen un listado "
+#~ "de etiquetas disponibles para ser "
+#~ "vinculadas a cualquier campaña, de "
+#~ "manera tal que luego las llamadas "
+#~ "procesadas dentro de una campaña pueda"
+#~ " ofrecer dichas calificaciones al agente"
+#~ " afectado a una llamada i así "
+#~ "éste ultimo pueda cerrar (temporal o "
+#~ "definitivamente) la gestión de la "
+#~ "llamada utilizando una de las "
+#~ "calificaciones disponibles en la campaña "
+#~ "como etiqueta para tipiicar la gestión."
+#~ msgstr ""
+
+# 1efca47da57445e485d9bf86b7481718
+#~ msgid ""
+#~ "Las calificaciones las define el "
+#~ "supervisor o administrador y se pueden"
+#~ " relacionar con varios aspectos, por "
+#~ "ejemplo:"
+#~ msgstr ""
+
+# c07fd8cb2b724d9eaf17e799ec5ffa88
+#~ msgid "El estado del contacto (respondió, no atendió, numero equivocado, etc.)"
+#~ msgstr ""
+
+# ed9ad1438b1b411588685aff2142382a
+#~ msgid ""
+#~ "El resultado de la gestión (interesado,"
+#~ " no interesado, se ofreció producto, "
+#~ "se vendió, etc.)"
+#~ msgstr ""
+
+# 6f5fc29bb5b0439aa0577c3059509729
+#~ msgid ""
+#~ "La predisposición del contactado o el"
+#~ " resultado de una encuesta de "
+#~ "satisfacción (cliente satisfecho/insatisfecho, etc.)"
+#~ msgstr ""
+
+# deb22974778e4805b4294fe98a799e6f
+#~ msgid ""
+#~ "Las bases de datos son utilizadas "
+#~ "tanto para las campañas entrantes como"
+#~ " salientes. En las campañas salientes, "
+#~ "los datos que requiere el discador "
+#~ "predictivo/preview se extraen de la base"
+#~ " de contactos afectada a la campaña,"
+#~ " mientras que en las campañas "
+#~ "entrantes aportan los datos que se "
+#~ "despliegan en la pantalla del agente "
+#~ "cada vez que ingresa al sistema "
+#~ "alguna comunicación"
+#~ msgstr ""
+
+# 7e097a51118243edabe7440ce4bf7e4c
+#~ msgid ""
+#~ "Deben estar almacenadas en archivos con"
+#~ " formato CSV con los campos separados"
+#~ " con coma y además generadas en "
+#~ "la codificacipón UTF-8 (requisito excluyente)."
+#~ " Debe existir al menos una columna"
+#~ " que contenga un teléfono de cada "
+#~ "contacto (registro) del archivo, el "
+#~ "resto de las columnas puede contener "
+#~ "cualquier contenido, generalmente cada "
+#~ "registro cuenta con datos complementarios "
+#~ "al teléfono principal. Éstos datos son"
+#~ " expuestos en la pantalla de agente"
+#~ " a la hora de establecer una "
+#~ "comunicación entre ambos (agente y "
+#~ "contacto de la base)."
+#~ msgstr ""
+
+# e705edd8fa4e472b9f4a86efd38facbe
+#~ msgid ""
+#~ "Los formularios de campaña constituyen "
+#~ "un elemento que permite recolectar "
+#~ "información de la interacción con la "
+#~ "persona detrás de la comunicación "
+#~ "establecida. Son diseñados dentro de "
+#~ "OMniLeads conjugando en una vista "
+#~ "estática diferentes tipos campos (texto, "
+#~ "fecha, de multiple selección y área "
+#~ "de texto)."
+#~ msgstr ""
+
+# 36b9be4e7719450f81f8d33dff57ca76
+#~ msgid ""
+#~ "Para explicar la relación entre éstos"
+#~ " componenetes, debemos recordar que "
+#~ "múltiples formularios pueden ser asignados "
+#~ "a una campaña. La idea es que "
+#~ "diferentes calificaciones de una campaña "
+#~ "pueden disparar diferentes formularios, "
+#~ "permitiendo así a la operación de "
+#~ "recolectar mediante formularios previamentes "
+#~ "diseñados, información asociada a la "
+#~ "interacción entre el agente de OMniLeads"
+#~ " y la persona en el otro "
+#~ "extremo de la comunicación dentro de "
+#~ "la campaña."
+#~ msgstr ""
+
+# 3f1a73b76ec146aeb39e7ba612db3ebc
+#~ msgid ""
+#~ "Resulta importante explicar conceptualmrnte "
+#~ "cómo se utilizan los formularios de "
+#~ "campaña en OMniLeads. Antes que nada "
+#~ "aclarar que en el marco de una "
+#~ "campaña a la hora de asignar "
+#~ "calificaciones, se van a poder definir"
+#~ " calificaciones normales y calificaciones "
+#~ "\"de gestión\" o \"engaged\". Éstas "
+#~ "últimas son las que disparan los "
+#~ "formularios de campaña."
+#~ msgstr ""
+
+# 35355b2fdf504376996bbf951bc9617c
+#~ msgid ""
+#~ "En muchas ocasiones los parámetros de"
+#~ " una familia de campañas (por "
+#~ "ejemeplo campañas preview de encuestas) "
+#~ "no varían demasiado salvo por quizás "
+#~ "por ejemplo el grupo de agentes "
+#~ "asignados, la base de contactos a "
+#~ "utilizar o el supervisor agignado. "
+#~ "Entonces en lugar de tener que "
+#~ "crear campañas myu similares siempre de"
+#~ " cero, se pueden utilizar las "
+#~ "plantillas y clonar éstas con los "
+#~ "parámetros listos para avanzar más "
+#~ "rápidamente en la creación de la "
+#~ "nueva campaña."
+#~ msgstr ""
+
+# a0443a4cabcd4bb680ba61ee7f181392
+#~ msgid ""
+#~ "A partir de generar un template "
+#~ "(que se genera como una campaña), "
+#~ "se pasa a disponer del mismo, de"
+#~ " manera tal que simplemente seleccionando"
+#~ " el template y la opción *Create "
+#~ "campaign from template* se genera una"
+#~ " nueva campaña con todos los "
+#~ "parámetros especificados en el template "
+#~ "como configurados en la nueva campaña."
+#~ msgstr ""
+
+# e75c428bd6eb497bbff348c128911a0f
+#~ msgid "Campañas e Interacción con Sistemas Externos"
+#~ msgstr ""
+
+# 737194e989b94ad08eabb6ffccb0a065
+#~ msgid ""
+#~ "OMniLeads está diseñado desde una "
+#~ "perspectiva en la que se prioriza "
+#~ "una integración con el sistema de "
+#~ "gestión predilecto del usuario. Esto "
+#~ "permite a un usuario integrar con "
+#~ "la plataforma su propio CRM."
+#~ msgstr ""
+
+# c56e36a973fc4465afff71c34e31ef89
+#~ msgid "Entre las funcionalidades contempladas se pueden listar:"
+#~ msgstr ""

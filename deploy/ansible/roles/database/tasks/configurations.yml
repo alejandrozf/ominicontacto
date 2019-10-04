@@ -20,7 +20,7 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
-  tags: changenetwork
+  tags: postinstall
 
 # Esto es para debian
 - name: Modify of pg_hba.conf file (debian)
@@ -28,7 +28,7 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
-  tags: changenetwork
+  tags: postinstall
 
 #Se modifica la ip en la que escucha postgres
 - name: Modify postgresql listen address
@@ -46,22 +46,22 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
-  tags: changenetwork
+  tags: postinstall
 
 - name: Restart postgres service (debian)
   service: name=postgresql state=restarted enabled=yes
   become: true
   become_method: sudo
   when: ansible_os_family == "Debian"
-  tags: changenetwork
+  tags: postinstall
 
 # Se crea el usuario de postgres
-- name: Create rw postgres user
+- name: Create/modify postgres user
   postgresql_user: name={{ postgres_user }} password={{ postgres_password }} role_attr_flags=SUPERUSER
   become: yes
   become_method: sudo
   become_user: postgres
-  tags: changepassword
+  tags: postinstall
 
 # Se crea el usuario de postgres
 - name: Create ro postgres user

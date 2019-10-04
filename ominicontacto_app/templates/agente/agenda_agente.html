@@ -42,38 +42,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <script type="text/javascript" src="{% static 'ominicontacto/JS/daterangepicker.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/ranges-datepicker.js' %}"></script>
     {% endcompress %}
-    <script type="text/javascript">
-     $(function() {
-       var start = moment().subtract(29, 'days');
-       var end = moment();
-       function cb(start, end) {
-         $('#id_fecha').html(start.format('D MMMM, YYYY') + ' - ' + end.format('D MMMM, YYYY'));
-       }
-
-
-       $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
-         $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-       });
-
-       $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
-         $(this).val('');
-       });
-
-       var ranges = get_ranges();
-       // Init daterange plugin
-       $('#id_fecha').daterangepicker(
-         {
-           locale: {
-             format: 'DD/MM/YYYY'
-           },
-           autoUpdateInput: false,
-           ranges: ranges,
-         }, cb);
-
-       cb(start, end);
-
-     });
-    </script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/agente/agenda_agente.js' %}"></script>
 </head>
 <body>
 

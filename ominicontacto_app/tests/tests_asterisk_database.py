@@ -30,7 +30,6 @@ from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.services.asterisk_database import (
     CampanaFamily, AgenteFamily, RutaSalienteFamily, TrunkFamily, GlobalsFamily
 )
-from ominicontacto_app.utiles import elimina_espacios
 from configuracion_telefonia_app.tests.factories import (
     TroncalSIPFactory, RutaSalienteFactory, PatronDeDiscadoFactory)
 from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
@@ -79,7 +78,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         dict_campana = servicio._create_dict(self.campana_entrante)
 
         nombre_campana = "{0}_{1}".format(self.campana_entrante.id,
-                                          elimina_espacios(self.campana_entrante.nombre))
+                                          self.campana_entrante.nombre)
         self.assertEqual(dict_campana['QNAME'], nombre_campana)
         self.assertEqual(dict_campana['TYPE'], self.campana_entrante.type)
         self.assertEqual(dict_campana['REC'], self.campana_entrante.queue_campana.auto_grabacion)
@@ -109,7 +108,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         dict_campana = servicio._create_dict(self.campana_dialer)
 
         nombre_campana = "{0}_{1}".format(self.campana_dialer.id,
-                                          elimina_espacios(self.campana_dialer.nombre))
+                                          self.campana_dialer.nombre)
         self.assertEqual(dict_campana['QNAME'], nombre_campana)
         self.assertEqual(dict_campana['TYPE'], self.campana_dialer.type)
         self.assertEqual(dict_campana['REC'], self.campana_dialer.queue_campana.auto_grabacion)

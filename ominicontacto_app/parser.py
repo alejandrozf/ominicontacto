@@ -350,7 +350,7 @@ def validate_fechas(fechas):
     validate = []
     for fecha in fechas:
         if re.match(
-            "^(0[1-9]|[12][0-9]|3[01])[/](0[1-9]|1[012])[/](19|20)?\d\d$",
+            r"^(0[1-9]|[12][0-9]|3[01])[/](0[1-9]|1[012])[/](19|20)?\d\d$",
                 fecha):
             validate.append(True)
         else:

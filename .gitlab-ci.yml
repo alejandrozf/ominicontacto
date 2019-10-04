@@ -17,36 +17,37 @@
 #
 # Official framework image. Look for the different tagged releases at:
 # https://hub.docker.com/r/library/python
-image: alejandrozf/docker-stuff:python-flake8
-
-# Pick zero or more services to be used on all builds.
-# Only needed when using a docker container to run your tests in.
-# Check out: http://docs.gitlab.com/ce/ci/docker/using_docker_images.html#what-is-a-service
-
-services:
-  - name: alejandrozf/docker-stuff:postgres-plpython-template1
-    alias: plpython
-  - redis
-
-# This folder is cached between builds
-# http://docs.gitlab.com/ce/ci/yaml/README.html#cache
-cache:
-  paths:
-  - /root/.cache/pip/
-
-before_script:
-  - mkdir -p /opt/omnileads/ominicontacto/
-  - touch /opt/omnileads/ominicontacto/django.log
-  - mkdir -p /opt/omnileads/static
-  - mkdir -p /opt/omnileads/media_root
-  # FIXME: what follows is a hack to simulate we have the 'sox' program, we should have the real program
-  # as a docker image or installed by this script
-  - touch sox
-  - chmod +x sox
-  - mv sox /usr/bin/
-  - pip install -r requirements/tests.txt
+stages:
+  - test
+  - build
+  - deploy
 
 test:
+  stage: test
+  image: alejandrozf/docker-stuff:python-flake8
+  # Pick zero or more services to be used on all builds.
+  # Only needed when using a docker container to run your tests in.
+  # Check out: http://docs.gitlab.com/ce/ci/docker/using_docker_images.html#what-is-a-service
+  services:
+    - name: alejandrozf/docker-stuff:postgres-plpython-template1
+      alias: plpython
+    - redis
+  # This folder is cached between builds
+  # http://docs.gitlab.com/ce/ci/yaml/README.html#cache
+  cache:
+    paths:
+      - /root/.cache/pip/
+  before_script:
+    - mkdir -p /opt/omnileads/ominicontacto/
+    - touch /opt/omnileads/ominicontacto/django.log
+    - mkdir -p /opt/omnileads/static
+    - mkdir -p /opt/omnileads/media_root
+    # FIXME: what follows is a hack to simulate we have the 'sox' program, we should have the real program
+    # as a docker image or installed by this script
+    - touch sox
+    - chmod +x sox
+    - mv sox /usr/bin/
+    - pip install -r requirements/tests.txt
   variables:
     POSTGRES_DB: omnileads
     POSTGRES_USER: omnileads
@@ -54,5 +55,215 @@ test:
     DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
     DJANGO_SETTINGS_MODULE: "ominicontacto.settings.gitlab"
   script:
+    - python checks.py
+    - bash check-js.sh
     - flake8
     - python manage.py test --failfast
+    - python manage.py compilemessages
+  only:
+    - merge_requests
+    - /^pre-release-.*$/
+    - schedules
+    - web
+
+
+docker-prodenv-build-push:
+  stage: build
+  script:
+    - bash /home/ftsinfra/git_cleanup.sh
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant
+    - python edit_ansible.py -tag=$CI_COMMIT_REF_NAME -dlu=$DOCKER_LOGIN_USER -dle=$DOCKER_LOGIN_EMAIL -dlp=$DOCKER_LOGIN_PASSWORD
+    - cd /home/ftsinfra/ominicontacto/deploy/ansible
+    - echo "$FTSINFRA_PASS" | sudo -S ./deploy.sh --docker-build
+  tags:
+    - build-docker
+  only:
+    - /.*docker-build.*$/
+    - /^pre-release-.*$/
+    - /^release-.*$/
+    - schedules
+    - web
+
+staging-centos:
+  stage: build
+  script:
+    - export CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME
+    - bash /home/ftsinfra/git_cleanup.sh
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - vagrant halt centos
+    - vagrant destroy centos -f
+    - ./vagrantup.sh centos
+    - python ../edit_ansible.py --internal_ip=$STAGING_IP_CENTOS --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
+    - cd ../../ansible
+    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh --integration-tests
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - vagrant halt centos
+  tags:
+    - build-aio
+  only:
+    - /.*ansible-hostnode.*$/
+    - /^pre-release-.*$/
+    - schedules
+    - web
+
+
+staging-ubuntu:
+  stage: build
+  script:
+    - export CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME
+    - bash /home/ftsinfra/git_cleanup.sh
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - vagrant halt ubuntu
+    - vagrant destroy ubuntu -f
+    - ./vagrantup.sh ubuntu
+    - python ../edit_ansible.py --internal_ip=$STAGING_IP_UBUNTU --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
+    - cd ../../ansible
+    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh --integration-tests
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - vagrant halt ubuntu
+  tags:
+    - build-aio
+  only:
+    - /.*ansible-hostnode.*$/
+    - /^pre-release-.*$/
+    - schedules
+    - web
+
+staging-debian:
+  stage: build
+  script:
+    - export CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME
+    - bash /home/ftsinfra/git_cleanup.sh
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - vagrant halt debian
+    - vagrant destroy debian -f
+    - ./vagrantup.sh debian
+    - python ../edit_ansible.py --internal_ip=$STAGING_IP_DEBIAN --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
+    - cd ../../ansible
+    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh --integration-tests
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - vagrant halt debian
+  tags:
+    - build-aio
+  only:
+    - /.*ansible-hostnode.*$/
+    - /^pre-release-.*$/
+    - schedules
+    - web
+
+staging-self-hosted:
+  stage: build
+  script:
+    - export BRANCH=$CI_COMMIT_REF_NAME
+    - bash /home/ftsinfra/git_cleanup.sh
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/self_hosted/
+    - vagrant halt; RC=0
+    - vagrant destroy -f; RC=0
+    - ./vagrantsh.sh
+    - vagrant up --provision
+    - vagrant halt
+    - vagrant destroy -f
+  tags:
+    - build-aio
+  only:
+    - /.*ansible-selfhosted.*$/
+    - /^pre-release-.*$/
+    - schedules
+    - web
+
+#TODO: dejo template de lo que sería el job de upgrade, a probar luego de que salga release-1.3.1
+#upgrade-centos:
+#  stage: build
+#  script:
+#    - export CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME
+#    - bash /home/ftsinfra/git_cleanup.sh
+#    - cd /home/ftsinfra/oml-boxes
+#    - vagrant box add centos-release-1.3.1.box –name centos-release-1.3.1
+#    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/releases
+#    - vagrant halt
+#    - vagrant destroy -f
+#    - ./vagrantup.sh centos
+#    - python ../edit_ansible.py --internal_ip=172.16.20.63 --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
+#    - cd ../../ansible
+#    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -u
+#    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/releases
+#    - vagrant halt centos
+#  tags:
+#    - build-aio
+#  only:
+#    - /.*ansible-upgrade.*$/
+  #  - /^pre-release-.*$/
+#    - schedules
+#    - web
+
+prod-centos:
+  stage: deploy
+  environment: FTS-CENTOS7
+  script:
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - git fetch
+    - git checkout ../../ansible/inventory
+    - git checkout $CI_COMMIT_REF_NAME
+    - vagrant halt centos
+    - vagrant destroy centos -f
+    - ./vagrantup.sh centos
+    - python ../edit_ansible.py --remote_host=$STAGING_HOST_CENTOS --internal_ip=$STAGING_IP_CENTOS --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
+    - cd ../../ansible
+    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - vagrant package --base Centos-Staging --output centos-$CI_COMMIT_REF_NAME.box
+    - cp centos-$CI_COMMIT_REF_NAME.box /home/ftsinfra/oml-boxes
+    - cp -a .vagrant/machines/centos/virtualbox/private_key /home/ftsinfra/oml-boxes/centos_private_key_$CI_COMMIT_REF_NAME
+    - rm -rf centos-$CI_COMMIT_REF_NAME.box
+  tags:
+    - deploy-aio
+  only:
+    - /^release-.*$/
+
+prod-ubuntu:
+  stage: deploy
+  environment: FTS-UBUNTU_BIONIC
+  script:
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - git fetch
+    - git checkout ../../ansible/inventory
+    - git checkout $CI_COMMIT_REF_NAME
+    - vagrant halt ubuntu
+    - vagrant destroy ubuntu -f
+    - ./vagrantup.sh ubuntu
+    - python ../edit_ansible.py --remote_host=$STAGING_HOST_UBUNTU --internal_ip=$STAGING_IP_UBUNTU --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
+    - cd ../../ansible
+    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - vagrant package --base Ubuntu-Staging --output ubuntu-$CI_COMMIT_REF_NAME.box
+    - cp ubuntu-$CI_COMMIT_REF_NAME.box /home/ftsinfra/oml-boxes
+    - cp -a .vagrant/machines/ubuntu/virtualbox/private_key /home/ftsinfra/oml-boxes/ubuntu_private_key_$CI_COMMIT_REF_NAME
+    - rm -rf ubuntu-$CI_COMMIT_REF_NAME.box
+  tags:
+    - deploy-aio
+  only:
+    - /^release-.*$/
+
+prod-debian:
+  stage: deploy
+  environment: FTS-DEBIAN
+  script:
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - git fetch
+    - git checkout ../../ansible/inventory
+    - git checkout $CI_COMMIT_REF_NAME
+    - vagrant halt debian
+    - vagrant destroy debian -f
+    - ./vagrantup.sh debian
+    - python ../edit_ansible.py --remote_host=$STAGING_HOST_DEBIAN --internal_ip=$STAGING_IP_DEBIAN --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
+    - cd ../../ansible
+    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - vagrant package --base Debian-Staging --output debian-$CI_COMMIT_REF_NAME.box
+    - cp debian-$CI_COMMIT_REF_NAME.box /home/ftsinfra/oml-boxes
+    - cp -a .vagrant/machines/debian/virtualbox/private_key /home/ftsinfra/oml-boxes/debian_private_key_$CI_COMMIT_REF_NAME
+    - rm -rf debian-$CI_COMMIT_REF_NAME.box
+  tags:
+    - deploy-aio
+  only:
+    - /^release-.*$/

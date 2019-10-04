@@ -1,0 +1,80 @@
+<!--
+Copyright (C) 2018 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% extends "campanas/wizard_base.html" %}
+{% load i18n %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/opcion-calificacion.css' %}"></link>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/opcion_calificacion_base.js' %}"></script>
+{% endblock %}
+
+{% block formset_render %}
+    <input class="hidden" value="{{ wizard.form.prefix }}" id="wizard">
+    <table border="0" cellpadding="0" cellspacing="0">
+        <tbody>
+            {% if wizard.form.non_form_errors %}
+                {% for error in wizard.form.non_form_errors %}
+                    <div class="alert alert-warning">{{ error|escape }}</div>
+                {% endfor %}
+            {% endif %}
+            {% for form in wizard.form.forms %}
+                <tr
+                    {% if form.instance.usada_en_calificacion %}
+                    class="linkFormset readOnly"
+                    data-toggle="tooltip" data-placement="top"
+                    title="Esta opción de calificación ya está siendo usada en la campaña, no se permitirá su eliminación, tenga en cuenta además que si modifica su nombre esto puede causarle confusión al consultar los reportes"
+                    {% elif form.instance.es_agenda %}
+                    class="linkFormset readOnly"
+                    {% else %}
+                    class="linkFormset"
+                    {% endif %}>
+                    <td>
+                    {% if form.instance.pk %}
+                        {{ form.DELETE }}
+                    {% endif %}
+                    </td>
+                    <td class="nombre">
+                        {{ form.nombre.errors }}
+                        {{ form.nombre|add_class:"form-control" }}
+                    </td>
+                    <td class="tipo">
+                        {{ form.tipo.errors }}
+                        {{ form.tipo|add_class:"form-control" }}
+                    </td>
+                    {% if form.formulario %}
+                        <td class="formulario">
+                            {{ form.formulario.errors }}
+                            {{ form.formulario|add_class:"form-control fieldsFormset" }}
+                        </td>
+                    {% endif %}
+
+                    <td>{{ form.id }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {{ wizard.form.management_form }}
+{% endblock %}

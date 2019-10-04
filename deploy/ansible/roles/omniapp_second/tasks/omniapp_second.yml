@@ -28,31 +28,30 @@
   template: src=templates/etc/ominicontacto.conf dest=/etc/nginx/conf.d/ominicontacto.conf owner={{ usuario }} group={{ usuario }}
   become: true
   become_method: sudo
-  tags: ['postinstall','changenetwork']
+  tags: postinstall
 
 # Se pasan los certificados creados en kamailio a la carpeta nginx_certs
 - name: Copy of the certificates in nginx (aio)
   copy: "src={{ kamailio_location }}/etc/certs/{{ item }} dest={{ install_prefix }}nginx_certs/ remote_src=yes"
   with_items:
-      - cert.pem
-      - key.pem
+    - "{{ cert }}"
+    - "{{ key }}"
   become: true
   become_method: sudo
-  tags: ['kamailio','changenetwork']
+  tags: postinstall
   when: cluster == 0
 
 # Se pasan los certificados creados en kamailio a la carpeta nginx_certs
 - name: Copy the certificates from host to omniapp server (cluster)
   copy: src=/var/tmp/ansible/{{ item }} dest={{ install_prefix }}nginx_certs/
   with_items:
-    - ca_cert.pem
-    - cert.pem
-    - key.pem
+    - "{{ cert }}"
+    - "{{ key }}"
   when: cluster != 0
-  tags: changenetwork
+  tags: postinstall
 
-- name: Get register server certificate
-  get_url: url={{ registrar_server }} dest={{ install_prefix }} validate_certs=False
+- name: Copy register server certificate in default location
+  copy: src=/var/tmp/ansible/cert dest={{ install_prefix }} owner={{ usuario }} group={{ usuario }}
   tags: postinstall
 
 # Se crea el archivo .ini de uwsgi. Para mas info revisar documentacion de uwsgi
@@ -118,8 +117,11 @@
   service: name=nginx state=reloaded enabled=yes
   become: true
   become_method: sudo
-  tags: ['never','postinstall','kamailio','changenetwork']
+  tags: ['never','postinstall','kamailio']
 
 - name: Change ownership of /var/lib/nginx/tmp/
   file: state=directory owner={{ usuario }} group={{ usuario }} path=/var/lib/nginx recurse=yes
+
+- name: Creation of Omnileads uninstall script
+  template: src=templates/bin/oml-uninstall.sh dest=/usr/sbin/oml-uninstall mode=755 owner=root group=root
   tags: postinstall

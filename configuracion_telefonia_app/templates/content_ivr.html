@@ -24,20 +24,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% block extra_js %}
     <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
-    <script>
-     $('.opcionDestino').formset({
-       addText: 'Agregar destino',
-       deleteText: 'Remover',
-       prefix: '{{ ivr_formset.prefix }}',
-       addCssClass: 'btn btn-outline-primary',
-       deleteCssClass: 'btn btn-outline-danger',
-       formCssClass: 'dynamic-formset',
-     });
-    </script>
+    <script type="text/javascript" src="{% static 'configuracion_telefonia_app/JS/content_ivr.js'%}"></script>
 {% endblock %}
 
 {% block content %}
     {% block header %}{% endblock %}
+    <input class="hidden" value="{{ ivr_formset.prefix }}" id="ivr">
+
     <form action="" role="form" method="POST">
         <div class="row">
             {% include "base_form_fields.html" with form=form %}

@@ -3,131 +3,161 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: OMniLeads \n"
+"Project-Id-Version: OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-04-01 12:13-0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2019-08-14 21:24-0300\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.6.0\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
+"X-Generator: Poedit 2.2.3\n"
 
 #: ../../telephony.rst:3
 msgid "Configuración de acceso a la PSTN"
-msgstr ""
+msgstr "Access configuration to PSTN"
 
 #: ../../telephony.rst:5
 msgid ""
-"En este capítulo vamos a explicar cómo dejar la capa de *troncalización "
-"PSTN* de OMniLeads lista para operar de acuerdo a los contextos "
-"planteados. OMniLeads admite solamente SIP como tecnología de "
-"interconexión con otros conmutadores de telefonía."
+"En este capítulo vamos a explicar cómo dejar la capa de *troncalización PSTN* "
+"de OMniLeads lista para operar de acuerdo a los contextos planteados. "
+"OMniLeads admite solamente SIP como tecnología de interconexión con otros "
+"conmutadores de telefonía."
 msgstr ""
+"In this chapter we will explain how to leave the OMniLeads *PSTN trunking*  "
+"layer ready to perate accordign to the proposed contexts. OMniLeads only "
+"accept SIP as interconnection technology with other telephony switches."
 
 #: ../../telephony.rst:9
 msgid "Explicación del ABM de troncales"
-msgstr ""
+msgstr "ABM of trunks explanation"
 
 #: ../../telephony.rst:11
 msgid ""
-"Para acceder a la configuración de los troncales debemos ingresar en el "
-"punto de menú *(Telephony -> SIP Trunks)* y allí añadir un nuevo troncal "
-"SIP. Se va a desplegar un formulario similar al de la figura 1."
+"Para acceder a la configuración de los troncales debemos ingresar en el punto "
+"de menú *(Telephony -> SIP Trunks)* y allí añadir un nuevo troncal SIP. Se va "
+"a desplegar un formulario similar al de la figura 1."
 msgstr ""
+"To access the trunks configuration we must enter in the menú point *(Telephony "
+"-> SIP Trunks)* and there add a new SIP trunk. A form similar to the one on "
+"figure 1 will be displayed."
 
 #: ../../telephony.rst:17
 msgid "*Figure 1: New SIP Trunk*"
-msgstr ""
+msgstr "*Figure 1: New SIP Trunk*"
 
 #: ../../telephony.rst:19
 msgid "Los campos del formulario son:"
-msgstr ""
+msgstr "The form blanks are:"
 
 #: ../../telephony.rst:21
 msgid ""
 "**Name**: el nombre del troncal. Debe ser alfanumperico sin espacios ni "
 "caracteres especiales (Ej: Trunk_provider_a)."
 msgstr ""
+"**Name**: the name of the trunk. Must be alphanumeric without spaces or "
+"special characters (eg Trunk_provider_a)."
 
 #: ../../telephony.rst:22
 msgid "**Number of channels**: es la cantidad de canales que permite el vínculo."
-msgstr ""
+msgstr "**Number of channels**: is the number of channels allowed by the link."
 
 #: ../../telephony.rst:23
 msgid "**Caller id**: el número con el que saldrán las llamadas por el troncal."
 msgstr ""
+"**Caller id**: the number with which the calls will go through the trunk."
 
 #: ../../telephony.rst:24
 msgid ""
-"**Register string**: se trata de la cadena de registro. En el caso de que"
-" el otro extremo del troncal solicite una registración, aquí es donde se "
-"debe configurar. (Ej: *username:password@address-domain:port*)"
+"**Register string**: se trata de la cadena de registro. En el caso de que el "
+"otro extremo del troncal solicite una registración, aquí es donde se debe "
+"configurar. (Ej: *username:password@address-domain:port*)"
 msgstr ""
+"**Register string**: it is the register chain. In the event that the other end "
+"of the trunk asks a registration, there is where it must be configured. (eg. "
+"*username:password@address-domain:port*) "
 
 #: ../../telephony.rst:25
 msgid ""
-"**Text config**: en este campo de texto se proporciona los parámetros SIP"
-" en sintaxis de chan_sip.so de Asterisk."
+"**Text config**: en este campo de texto se proporciona los parámetros SIP en "
+"sintaxis de chan_sip.so de Asterisk."
 msgstr ""
+"**Text config**: in this text field the SIP parameters are provided in "
+"chan_sip.so syntax of Asterisk."
 
 #: ../../telephony.rst:27
 msgid ""
-"A continuación se presentan los tipos de escenarios planteados como caso "
-"de uso de OMniLeads."
-msgstr ""
+"A continuación se presentan los tipos de escenarios planteados como caso de "
+"uso de OMniLeads."
+msgstr "Below are the types of scenarios proposed as a case of using OMniLeads."
 
 #: ../../telephony.rst:31
 msgid "Troncal SIP entre OMniLeads y un sistema PBX"
-msgstr ""
+msgstr "SIP trunk between OMniLeads and a PBX system"
 
 #: ../../telephony.rst:33
 msgid ""
-"Esta sección apunta al caso de uso \"OMniLeads como Plataforma de Contact"
-" Center integrado a un PBX basado en SIP\". Por lo tanto se plantea una "
+"Esta sección apunta al caso de uso \"OMniLeads como Plataforma de Contact "
+"Center integrado a un PBX basado en SIP\". Por lo tanto se plantea una "
 "configuración en la cual OMniLeads interactúa con la PSTN a través de un "
 "troncal SIP establecido con un sistema PBX siendo éste último quien está "
 "vinculado directamente con el acceso a la PSTN. Además el vínculo SIP "
-"mencionado es funcional al flujo de llamadas entre los agentes de "
-"OMniLeads y los recursos internos del PBX (extensiones, colas, salas de "
-"conferencias, ertc.), así como también desde los recursos del PBX hacia "
-"los de OMniLeads."
+"mencionado es funcional al flujo de llamadas entre los agentes de OMniLeads y "
+"los recursos internos del PBX (extensiones, colas, salas de conferencias, "
+"ertc.), así como también desde los recursos del PBX hacia los de OMniLeads."
 msgstr ""
+"This section points to the use case \"OMniLeads as a Contact Center Platform "
+"integrated to a SIP based PBX\". Therefore, a configuration is proposed in "
+"which OMniLeads interacts with the PSTN through a SIP trunk established with a "
+"PBX system, the last one being directly linked to the access to PSTN. In "
+"addition, the mentioned SIP link is functional to the call flow between "
+"OMniLeads agents and internal PBX resources (extensions, queues, conference "
+"rooms, etc.), as well as from PBX resources to OMniLeads."
 
 #: ../../telephony.rst:46
 msgid "Troncal SIP entre OMniLeads y un proveedor de acceso a la PSTN"
-msgstr ""
+msgstr "SIP trunk between OMniLeads and a PSTN access provider"
 
 #: ../../telephony.rst:48
 msgid ""
-"Dentro de ésta sección se expone la configuración de un proveedor que nos"
-" brinda acceso a la PSTN a través de un troncal SIP. De esta manera "
-"nuestra instancia de OMniLeads podrá interactuar con abonados de la PSTN "
-"ya sea enviando llamadas o recibiendo llamadas."
+"Dentro de ésta sección se expone la configuración de un proveedor que nos "
+"brinda acceso a la PSTN a través de un troncal SIP. De esta manera nuestra "
+"instancia de OMniLeads podrá interactuar con abonados de la PSTN ya sea "
+"enviando llamadas o recibiendo llamadas."
 msgstr ""
+"Within this section we expose the configuration of a provider which give us "
+"access to PSTN through a SIP trunk. This wayour OMniLeads instance can "
+"interact with PSTN subscribers either sending calls or recibing calls."
 
 #: ../../telephony.rst:58
 msgid "Configuración de enrutamiento de llamadas salientes"
-msgstr ""
+msgstr "Outbound calls routing configuration"
 
 #: ../../telephony.rst:60
 msgid ""
 "OMniLeads permite gestionar el enrutamiento de llamadas salientes sobre "
-"múltiples troncales SIP (previamente creados), de manera tal que "
-"utilizando criterios como el *largo o prefijo del número* para determinar"
-" por qué vínculo SIP encaminar la llamada. Además es posible mantener una"
-" lógica de *failover* en término de troncales SIP."
+"múltiples troncales SIP (previamente creados), de manera tal que utilizando "
+"criterios como el *largo o prefijo del número* para determinar por qué vínculo "
+"SIP encaminar la llamada. Además es posible mantener una lógica de *failover* "
+"en término de troncales SIP."
 msgstr ""
+"OMniLeads allows to manage the outbound call routing on several SIP trunks "
+"(created previously), so using criteria like the *lenght or number prefix* to "
+"determine which SIP link use to route the call. It is also possible to "
+"maintain a *failover* logic in terms of SIP trunk."
 
 #: ../../telephony.rst:64
 msgid ""
-"Para acceder al ABM de rutas salientes ingresar al punto de menú "
-"(*Telephony -> Outbound routes*)"
+"Para acceder al ABM de rutas salientes ingresar al punto de menú (*Telephony -"
+"> Outbound routes*)"
 msgstr ""
+"To access the ABM of outbound routes enter the menú point (*Telephony -> "
+"Outbound routes*)"
 
 #: ../../telephony.rst:68
 msgid "*Figure 2: Outbound route*"
@@ -135,64 +165,80 @@ msgstr ""
 
 #: ../../telephony.rst:70
 msgid "Nombre: es el nombre de la ruta (alfanumérico sin espacios)"
-msgstr ""
+msgstr "Name: is the route name (alphanumeric without spaces)"
 
 #: ../../telephony.rst:71
 msgid ""
-"Ring time: es el tiempo (en segundos) que las llamadas cursadas por esta "
-"ruta, intentarán establecer una conexión con el destino, antes de seguir "
-"intentando por el próximo troncal o bien descartar la llamada."
+"Ring time: es el tiempo (en segundos) que las llamadas cursadas por esta ruta, "
+"intentarán establecer una conexión con el destino, antes de seguir intentando "
+"por el próximo troncal o bien descartar la llamada."
 msgstr ""
+"Ring time: is the time (in seconds) that calls made of this route, will "
+"attempt to stablish a conection with the destination, before continuing to try "
+"the next trunk or discard the call."
 
 #: ../../telephony.rst:72
 msgid ""
 "Dial options: son las opciones de la aplicación \"Dial\" utilizadas por "
 "Asterisk(r) en bajo nivel."
 msgstr ""
+"Dial options: are the \"dial\" application options used by Asterisk(r) in a "
+"low level."
 
 #: ../../telephony.rst:73
 msgid ""
-"Patrones de discado: mediante patrones, se puede representar los “tipos "
-"de llamadas” que serán aceptados por la ruta para enviarlos al destino "
-"por el Trunk SIP."
+"Patrones de discado: mediante patrones, se puede representar los “tipos de "
+"llamadas” que serán aceptados por la ruta para enviarlos al destino por el "
+"Trunk SIP."
 msgstr ""
+"Dialing patterns: using patterns, you can represent the “types of calls” that "
+"will be accepted by the route to be sent to the destination by the SIP Trunk."
 
 #: ../../telephony.rst:75
 msgid ""
-"Para comprender cómo se representan los dígitos con patrones, se "
-"recomienda leer éste link: https://www.voip-info.org/asterisk-extension-"
-"matching/."
+"Para comprender cómo se representan los dígitos con patrones, se recomienda "
+"leer éste link: https://www.voip-info.org/asterisk-extension-matching/."
 msgstr ""
+"To understand how the digits with patterns are represented, it is recommended "
+"to read this link: https://www.voip-info.org/asterisk-extension-matching/."
 
 #: ../../telephony.rst:77
 msgid "Dentro de cada patrón ingresado hay tres campos:"
-msgstr ""
+msgstr "Within each pattern entered there are three fields:"
 
 #: ../../telephony.rst:80
 msgid ""
-"Prepend: son los dígitos que se mandan por el trunk SIP como adicionales "
-"al número discado. Es decir llegan al Trunk posicionados delante del "
-"número marcado."
+"Prepend: son los dígitos que se mandan por el trunk SIP como adicionales al "
+"número discado. Es decir llegan al Trunk posicionados delante del número "
+"marcado."
 msgstr ""
+"Prepend: are the digits sent to the SIP trunk as additionals to the dialed "
+"number. In other words, they arrive at the Trunk positioned in front of the "
+"dialed number."
 
 #: ../../telephony.rst:81
 msgid ""
 "Prefijo: son los dígitos que pueden venir como “prefijo” de una llamada "
-"marcada y éstos serán quitados en el momento de enviarlos por el SIP "
-"Trunk."
+"marcada y éstos serán quitados en el momento de enviarlos por el SIP Trunk."
 msgstr ""
+"Prefix: are the digits that can come as a \"prefix\" of a dialed call and will "
+"be removed at the time of sending them by the SIP Trunk."
 
 #: ../../telephony.rst:82
 msgid ""
-"Patrón de discado: se busca representar en este campo el patrón de "
-"dígitos autorizados que la ruta va a procesar para y enviar a un SIP "
-"Trunk para sacar la llamada hacia el exterior."
+"Patrón de discado: se busca representar en este campo el patrón de dígitos "
+"autorizados que la ruta va a procesar para y enviar a un SIP Trunk para sacar "
+"la llamada hacia el exterior."
 msgstr ""
+"Dial pattern: this field seeks to represent the patern of authorized digits "
+"that the route will proccess for and send to a SIP trunk to take the call out."
 
 #: ../../telephony.rst:84
 msgid ""
 "Secuencia de troncales: son los troncales SIP sobre los cuales la ruta "
-"saliente va a intentar establecer la llamada discada por OML. Si la "
-"llamada falla en un troncal, se sigue intentando en el siguiente."
+"saliente va a intentar establecer la llamada discada por OML. Si la llamada "
+"falla en un troncal, se sigue intentando en el siguiente."
 msgstr ""
-
+"Trunks sequence: are the SIP trunks on which the outbound route will attempr "
+"to stablish the dialed call by OML. If the call fails in a trunk, will attempt "
+"again in the next one."

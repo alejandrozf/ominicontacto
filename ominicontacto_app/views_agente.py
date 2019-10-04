@@ -31,7 +31,6 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.sessions.models import Session
-from django.conf import settings
 from django.db.models import F, Value
 from django.db.models.functions import Concat
 from django.utils import timezone
@@ -173,7 +172,7 @@ def logout_view(request):
         except Exception as e:
             logger.exception(_("Originate failed {0} - agente: {1}".format(e, agente)))
     logout(request)
-    return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+    return redirect('login')
 
 
 class LlamarContactoView(RedirectView):

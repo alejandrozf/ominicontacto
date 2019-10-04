@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-06 16:12-0300\n"
+"POT-Creation-Date: 2019-09-03 15:04-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,16 +17,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.6.0\n"
 
+# 1345b275c9d04f97ae6f7c15301b4af7
 #: ../../agent_dialer.rst:2
 msgid "Agente en modo predictivo"
-msgstr ""
+msgstr "Agent in Predictive Mode"
 
+# 0b609acf8e394047b3d3b8208be35655
 #: ../../agent_dialer.rst:4
 msgid ""
 "Un agente online y asignado a una campaña predictiva que se encuentre "
 "activa, puede comenzar a recibir llamadas del discador."
 msgstr ""
+"An active Agent assigned to an active Predictive Campaign, is able to "
+"receive calls from the dialer module."
 
+# 71b6a6077364408495381eac0e8d9880
 #: ../../agent_dialer.rst:7
 msgid ""
 "El ingreso de las llamadas se notifica con un audio tipo \"beep\" que se "
@@ -34,20 +39,30 @@ msgid ""
 "datos del contacto que el discador enlazó y el agente queda en "
 "comunicación con dicho contacto."
 msgstr ""
+"The incoming calls are notified with a \"beep\" audio that is reproduced "
+"to the agent headset as soon as the call is delivered. Contact details "
+"are also presented to the agent once the call is answered."
 
+# 6a960326521246749b30471eb188c61a
 #: ../../agent_dialer.rst:13
 msgid "*Figure 1: dialer call connect*"
 msgstr ""
 
-#: ../../agent_dialer.rst:15
+# c52aa4e39d8e404d82a3dce1e5cfaf0d
+#: ../../agent_dialer.rst:17
 msgid ""
-"**NOTA 1:** Es importante advertir de que un agente que trabaja sobre una"
-" campaña predictiva, debe estar muy alerta ya que generalmente el sistema"
-" se configura para que las llamadas de discador predictivo ingresen "
+"Es importante advertir de que un agente que trabaja sobre una campaña "
+"predictiva, debe estar muy alerta ya que generalmente el sistema se "
+"configura para que las llamadas de discador predictivo ingresen "
 "directamente al agente, sin brindar la posibilidad de elegir ser "
 "atendidas o no."
 msgstr ""
+"It is important to note that an agent working on a "
+"Predictive Campaign needs to be very alert as the system is configured to"
+" deliver calls to agents as soon as the contact has been reached and "
+"answers the attempt."
 
+# 43f290de2ee74162a50c368eb7a038a8
 #: ../../agent_dialer.rst:19
 msgid ""
 "Como se puede visualizar en la figura 1, además de la reproducción del "
@@ -56,8 +71,13 @@ msgid ""
 "de \"On call\" y además se notifica el nombre de la campaña a la que "
 "corresponde la llamada."
 msgstr ""
+"In addition to the reproduction of audio notification (beep message), the"
+" agent can notice the change in the status bar of the screen. The bar has"
+" green color when agent is \"On call\" and also the name of the campaign "
+"the call belongs to can be read."
 
-#: ../../agent_dialer.rst:23
+# f1f8e8f4b6234e5d9ca0e7d99846798c
+#: ../../agent_dialer.rst:22
 msgid ""
 "Una vez que la llamada finaliza (independientemente de qué lado corte la "
 "llamada), el sistema fuerza al Agente a ingresar a una pausa  del tipo "
@@ -66,22 +86,36 @@ msgid ""
 "disponible en el estado de Connected, de manera tal que el discador lo "
 "visualice como un agente activo al cual enviarle llamadas."
 msgstr ""
+"Once the call ends (regardless of which end finishes the call) , the "
+"system forces the Agent status to ACW (After Call Work), which allows the"
+" agent to finish filling the contact form with the respective Call "
+"Disposition. After that, the agent will change this ACW status to "
+"available again , so that the dialer knows she/he is ready to receive new"
+" calls."
 
-#: ../../agent_dialer.rst:28
+# aa653d836566462dbb9736abd3511268
+#: ../../agent_dialer.rst:26
 msgid ""
-"**NOTA 2:** La salida del estado de pausa ACW puede darse induciendo al "
-"agente a que salga el mismo de la pausa o bien después de un periodo de "
-"tiempo (en segundos) definido por el administrador, en este último caso, "
-"el agente simplemente cuenta con ese periodo de tiempo de gracia para "
-"calificar el contacto y luego automñaticamente es puesto nuevamente en "
-"estado de disponible para otra llamada, de manera automática."
+"La salida del estado de pausa ACW puede darse induciendo al agente a que "
+"salga el mismo de la pausa o bien después de un periodo de tiempo (en "
+"segundos) definido por el administrador, en este último caso, el agente "
+"simplemente cuenta con ese periodo de tiempo de gracia para calificar el "
+"contacto y luego automñaticamente es puesto nuevamente en estado de "
+"disponible para otra llamada, de manera automática."
 msgstr ""
+"Agent is able to exit ACW pause status by inducing the "
+"agent to leave the pause or after a period of time (in seconds) defined "
+"by the administrator. In the latter case, the agent simply has that grace"
+" period for call disposition process and then automatically will be put "
+"back inReady for new calls."
 
-#: ../../agent_dialer.rst:34
+# e9b3fc0d0f254dd2a1fc2a0ce2078661
+#: ../../agent_dialer.rst:29
 msgid "Como realizar una llamada manual"
-msgstr ""
+msgstr "How to make a Manual Call"
 
-#: ../../agent_dialer.rst:36
+# e4618ff542da489e826ab8525e714476
+#: ../../agent_dialer.rst:31
 msgid ""
 "Surgen casos en los que el agente asignado a una campaña predictiva debe "
 "marcar a un número manualmente, en este caso se sugiere al agente "
@@ -90,11 +124,20 @@ msgid ""
 "marcando el número, el discador le envíe una llamada predictiva y corte "
 "al medio la acción de la llamada manual al agente."
 msgstr ""
+"There may be cases in which the agent assigned to a predictive campaign "
+"needs to dial a number manually. In this case the agent is suggested to "
+"enter to pause mode and then from that state, generate the manual call. "
+"Since otherwise it may happen that at the time of being dialing the "
+"manual call, the dialer sends a predictive call and drops manual call "
+"attempt."
 
-#: ../../agent_dialer.rst:41
+# de7e36b751dd459ea08958118d2a179e
+#: ../../agent_dialer.rst:33
 msgid ""
 "La llamada manual citada puede ser a otro de los números del contacto o "
 "bien a un número externo a la base. Lo importante es recordar ir a pausa "
 "a la hora del intento de contactación manual al teléfono."
 msgstr ""
-
+"This manual call can be done to other phone numbers of the same contact, "
+"or external numbers out of database. The important thing is to remember "
+"to go to pause at the time of the manual attempt."

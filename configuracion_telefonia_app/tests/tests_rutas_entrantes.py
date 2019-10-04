@@ -485,3 +485,42 @@ class TestsRutasEntrantes(OMLBaseTest):
         response = self.client.post(url, post_data, follow=True)
         self.assertFalse(response.context['form'].is_valid())
         self.assertContains(response, _('Archivos permitidos: .wav'))
+
+    def test_no_se_permite_crear_destino_nombre_no_alfanumerico(self):
+        url = reverse('crear_destino_personalizado')
+        self.client.login(username=self.admin.username, password=self.PWD)
+        post_data = {
+            'nombre': 'aaa bb',
+            'custom_destination': 'bbb',
+            'failover_form-valor': 'failover',
+            'failover_form-tipo_destino': 1,
+            'failover_form-destino_siguiente': 1}
+        response = self.client.post(url, post_data, follow=True)
+        self.assertFalse(response.context['form'].is_valid())
+        self.assertEqual(response.context['form'].errors['nombre'],
+                         [_('Introduzca un valor correcto.')])
+
+    def test_no_se_permite_crear_destino_custom_destino_no_alfanumerico(self):
+        url = reverse('crear_destino_personalizado')
+        self.client.login(username=self.admin.username, password=self.PWD)
+        post_data = {
+            'nombre': 'aaabb',
+            'custom_destination': 'bbb aaa',
+            'failover_form-valor': 'failover',
+            'failover_form-tipo_destino': 1,
+            'failover_form-destino_siguiente': 1}
+        response = self.client.post(url, post_data, follow=True)
+        self.assertFalse(response.context['form'].is_valid())
+        self.assertEqual(response.context['form'].errors['custom_destination'],
+                         [_('Introduzca un valor correcto.')])
+
+    def test_no_se_permite_crear_destino_custom_sin_failover(self):
+        url = reverse('crear_destino_personalizado')
+        self.client.login(username=self.admin.username, password=self.PWD)
+        post_data = {
+            'nombre': 'aaabb',
+            'custom_destination': 'bbbaaa'}
+        response = self.client.post(url, post_data, follow=True)
+        self.assertFalse(response.context['opcion_destino_failover_form'].is_valid())
+        error = response.context['opcion_destino_failover_form'].errors['destino_siguiente']
+        self.assertEqual(error, [_('Este campo es requerido.')])

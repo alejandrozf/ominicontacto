@@ -62,6 +62,7 @@ SUBSITUTE_ALFANUMERICO = re.compile(r'[^\w]')
 class User(AbstractUser):
     is_agente = models.BooleanField(default=False)
     is_supervisor = models.BooleanField(default=False)
+    is_cliente_webphone = models.BooleanField(default=False)
     last_session_key = models.CharField(blank=True, null=True, max_length=40)
     borrado = models.BooleanField(default=False, editable=False)
 
@@ -99,6 +100,17 @@ class User(AbstractUser):
     def get_is_supervisor_normal(self):
         supervisor = self.get_supervisor_profile()
         if supervisor and not supervisor.is_customer and not supervisor.is_administrador:
+            return True
+        return False
+
+    def get_cliente_webphone_profile(self):
+        cliente_webphone_profile = None
+        if hasattr(self, 'clientewebphoneprofile'):
+            cliente_webphone_profile = self.clientewebphoneprofile
+        return cliente_webphone_profile
+
+    def get_is_cliente_webphone(self):
+        if self.is_cliente_webphone and self.get_cliente_webphone_profile():
             return True
         return False
 
@@ -150,15 +162,20 @@ class Modulo(models.Model):
 
 
 class Grupo(models.Model):
-    nombre = models.CharField(max_length=20, verbose_name=_('Nombre'))
-    auto_attend_ics = models.BooleanField(default=False, verbose_name=_('auto_attend_ics'))
-    auto_attend_inbound = models.BooleanField(default=False, verbose_name=_('auto_attend_inbound'))
-    auto_attend_dialer = models.BooleanField(default=False, verbose_name=_('auto_attend_dialer'))
-    auto_pause = models.BooleanField(default=True, verbose_name=_('auto_pause'))
-    auto_unpause = models.PositiveIntegerField(verbose_name=_('auto_unpause'))
+    nombre = models.CharField(max_length=20, unique=True, verbose_name=_('Nombre'))
+    auto_attend_ics = models.BooleanField(default=False, verbose_name=_('Auto atender ics'))
+    auto_attend_inbound = models.BooleanField(default=False, verbose_name=_(
+        'Auto atender entrantes'))
+    auto_attend_dialer = models.BooleanField(default=False, verbose_name=_('Auto atender dailer'))
+    auto_pause = models.BooleanField(default=True, verbose_name=_('Pausar automaticamente'))
+    auto_unpause = models.PositiveIntegerField(verbose_name=_('Despausar automaticamente'))
 
     def __unicode__(self):
         return self.nombre
+
+    class Meta:
+        verbose_name = _('Grupo')
+        verbose_name_plural = _('Grupos')
 
 
 class AgenteProfileManager(models.Manager):
@@ -291,6 +308,34 @@ class SupervisorProfile(models.Model):
 
     def obtener_campanas_activas_asignadas(self):
         return self.user.campanasupervisors.filter(estado=Campana.ESTADO_ACTIVA)
+
+
+class ClienteWebPhoneProfileManager(models.Manager):
+    def obtener_activos(self):
+        return self.exclude(is_inactive=True)
+
+
+class ClienteWebPhoneProfile(models.Model):
+    objects = ClienteWebPhoneProfileManager()
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    sip_extension = models.IntegerField(unique=True)
+    is_inactive = models.BooleanField(default=False)
+    borrado = models.BooleanField(default=False)
+
+    def toggle_is_inactive(self):
+        self.is_inactive = not self.is_inactive
+        self.save()
+
+    def borrar(self):
+        """
+        Setea Cliente Webphone como BORRADO .
+        """
+        logger.info(_("Seteando Cliente Webphone {0} como BORRADO".format(self.id)))
+
+        self.is_inactive = True
+        self.borrado = True
+        self.save()
 
 
 class NombreCalificacionManager(models.Manager):
@@ -484,9 +529,9 @@ class ArchivoDeAudio(models.Model):
         un sufijo.
         """
         descripcion = SUBSITUTE_ALFANUMERICO.sub('', descripcion)
-        if cls.objects.filter(descripcion=descripcion).count() > 0:
+        if cls._base_manager.filter(descripcion=descripcion).count() > 0:
             ultimo = 0
-            copias = cls.objects.filter(descripcion__startswith=descripcion + '_')
+            copias = cls._base_manager.filter(descripcion__startswith=descripcion + '_')
             for archivo in copias:
                 sufijo = archivo.descripcion.replace(descripcion + '_', '', 1)
                 if sufijo.isdigit():
@@ -660,7 +705,6 @@ class CampanaManager(models.Manager):
             fecha_inicio=campana.fecha_inicio,
             fecha_fin=campana.fecha_fin,
             bd_contacto=base_datos_sugerida,
-            gestion=campana.gestion,
             type=campana.type,
             sitio_externo=campana.sitio_externo,
             tipo_interaccion=campana.tipo_interaccion,
@@ -906,7 +950,6 @@ class Campana(models.Model):
     )
     oculto = models.BooleanField(default=False)
     # TODO: Sacar este campo
-    gestion = models.CharField(max_length=128, default="Venta")
     campaign_id_wombat = models.IntegerField(null=True, blank=True)
     type = models.PositiveIntegerField(choices=TYPES_CAMPANA)
     sistema_externo = models.ForeignKey("SistemaExterno", null=True, blank=True,
@@ -1150,7 +1193,7 @@ class Campana(models.Model):
     def update_basedatoscontactos(self, bd_nueva):
         """ Actualizar con nueva base datos de contacto"""
         self.bd_contacto = bd_nueva
-        self.save
+        self.save()
 
     def save(self, *args, **kwargs):
         if self.tipo_interaccion == Campana.FORMULARIO and self.sitio_externo is not None:
@@ -1946,7 +1989,7 @@ class BaseDatosContacto(models.Model):
     )
 
     nombre = models.CharField(
-        max_length=128, verbose_name=_('Nombre')
+        max_length=128, unique=True, verbose_name=_('Nombre')
     )
     fecha_alta = models.DateTimeField(
         auto_now_add=True, verbose_name=_('Fecha alta')
@@ -1971,6 +2014,10 @@ class BaseDatosContacto(models.Model):
         default=ESTADO_EN_DEFINICION,
     )
     oculto = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = _("Base de datos")
+        verbose_name_plural = _("Base de datos")
 
     def __unicode__(self):
         return "{0}: ({1} contactos)".format(self.nombre,
@@ -2073,8 +2120,15 @@ class BaseDatosContacto(models.Model):
         actual.
         NO realiza la copia de los contactos de la misma.
         """
+        # obtiene ultimo id de BaseDatosContacto, le suma 1 y se usa
+        # para generar el nuevo nombre
+        last_bd_contacto = BaseDatosContacto.objects.last()
+        if last_bd_contacto:
+            bd_reciclada_id = last_bd_contacto.pk + 1
+        else:
+            bd_reciclada_id = 0
         copia = BaseDatosContacto.objects.create(
-            nombre='{0} (reciclada)'.format(self.nombre),
+            nombre='{0}-{1} (reciclada)'.format(self.nombre, bd_reciclada_id),
             archivo_importacion=self.archivo_importacion,
             nombre_archivo_importacion=self.nombre_archivo_importacion,
             metadata=self.metadata,
@@ -2505,7 +2559,6 @@ class CalificacionCliente(models.Model):
     objects = CalificacionClienteManager()
 
     contacto = models.ForeignKey(Contacto)
-    es_venta = models.BooleanField(default=False)
     opcion_calificacion = models.ForeignKey(
         OpcionCalificacion, blank=False, related_name='calificaciones_cliente')
     fecha = models.DateTimeField(auto_now_add=True)
@@ -2557,10 +2610,9 @@ class CalificacionCliente(models.Model):
     def get_venta(self):
         return self.respuesta_formulario_gestion.first()
 
-    def set_es_venta(self):
+    def es_gestion(self):
         # TODO: Usar metodo de OpcionCalificacion.es_gestion()
-        # self.es_venta = self.opcion_calificacion.es_gestion()
-        self.es_venta = self.opcion_calificacion.tipo == OpcionCalificacion.GESTION
+        return self.opcion_calificacion.tipo == OpcionCalificacion.GESTION
 
     def es_agenda(self):
         # TODO: Usar metodo de OpcionCalificacion.es_agenda()
@@ -2577,36 +2629,6 @@ class CalificacionCliente(models.Model):
             opcion_calificacion__campana__pk__in=ids_campanas)
         calificaciones = calificaciones.filter(opcion_calificacion__tipo=OpcionCalificacion.GESTION)
         return calificaciones
-
-
-class DuracionDeLlamada(models.Model):
-    """Representa la duración de las llamdas de las campanas, con el fin
-        de contar con los datos para búsquedas y estadísticas"""
-
-    TYPE_MANUAL = 1
-    """Tipo de llamada manual"""
-
-    TYPE_DIALER = 2
-    """Tipo de llamada DIALER"""
-
-    TYPE_INBOUND = 3
-    """Tipo de llamada inbound"""
-
-    TYPE_PREVIEW = 4
-    """Tipo de llamada inbound"""
-
-    TYPE_LLAMADA_CHOICES = (
-        (TYPE_PREVIEW, 'PREVIEW'),
-        (TYPE_DIALER, 'DIALER'),
-        (TYPE_INBOUND, 'INBOUND'),
-        (TYPE_MANUAL, 'MANUAL'),
-    )
-
-    agente = models.ForeignKey(AgenteProfile, related_name="llamadas")
-    numero_telefono = models.CharField(max_length=20)
-    fecha_hora_llamada = models.DateTimeField(auto_now=True)
-    tipo_llamada = models.PositiveIntegerField(choices=TYPE_LLAMADA_CHOICES)
-    duracion = models.TimeField()
 
 
 class RespuestaFormularioGestion(models.Model):

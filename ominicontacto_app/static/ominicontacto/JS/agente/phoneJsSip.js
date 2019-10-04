@@ -41,16 +41,17 @@ var ORIGIN_MANUAL = 'Manual-Call';
 var ORIGIN_OFF_CAMPAIGN = 'withoutCamp';
 var ORIGIN_AGENT_CALL = 'agentCall';
 
+/* TODO: Revisar utilidad y borrar
 var ORIGIN_IDS = {};
+ORIGIN_IDS[ORIGIN_MANUAL] = 1;
 ORIGIN_IDS[ORIGIN_DIALER] = 2;
 ORIGIN_IDS[ORIGIN_INBOUND] = 3;
-ORIGIN_IDS[ORIGIN_CLICK2CALL] = 4;
 ORIGIN_IDS[ORIGIN_CLICK2CALL_PREVIEW] = 4;
-ORIGIN_IDS[ORIGIN_MANUAL] = 1;
+ORIGIN_IDS[ORIGIN_CLICK2CALL] = 6;
 
-/* NOTA: Ver si es necesario */
-ORIGIN_IDS[ORIGIN_OFF_CAMPAIGN] = 5;    // NOTA: Ver cual es el codigo que tendran
-ORIGIN_IDS[ORIGIN_AGENT_CALL] = 6;    // NOTA: Ver cual es el codigo que tendran
+ORIGIN_IDS[ORIGIN_OFF_CAMPAIGN] = 5?;    // NOTA: Ver cual es el codigo que tendran
+ORIGIN_IDS[ORIGIN_AGENT_CALL] = 5?;    // NOTA: Ver cual es el codigo que tendran
+/**/
 
 DESTINATION_AGENT = 1;
 DESTINATION_EXTERNAL = 2;
@@ -635,13 +636,6 @@ class SessionData {
         var endPos = fromUser.indexOf("@");
         var startPos = fromUser.indexOf(":");
         return fromUser.substring(startPos + 1, endPos);
-    }
-
-    get call_type_id() {
-        // TODO: Probablemente no haga falta setear si la llamada es fuera de campaña
-        if (this.is_off_campaign)
-            return ORIGIN_IDS[ORIGIN_OFF_CAMPAIGN];
-        return ORIGIN_IDS[this.origin];
     }
 
     get is_call() {

@@ -60,11 +60,11 @@ class CampanaManualMixin(CampanaWizardMixin):
              (ADICION_SUPERVISORES, CampanaSupervisorUpdateForm),
              (ADICION_AGENTES, QueueMemberFormset)]
 
-    TEMPLATES = {INICIAL: "campana_manual/nueva_edita_campana.html",
-                 OPCIONES_CALIFICACION: "campana_manual/opcion_calificacion.html",
-                 PARAMETROS_CRM: "campana_manual/parametros_crm_sitio_externo.html",
-                 ADICION_SUPERVISORES: "campana_manual/adicionar_supervisores.html",
-                 ADICION_AGENTES: "campana_manual/adicionar_agentes.html"}
+    TEMPLATES = {INICIAL: "campanas/campana_manual/nueva_edita_campana.html",
+                 OPCIONES_CALIFICACION: "campanas/campana_manual/opcion_calificacion.html",
+                 PARAMETROS_CRM: "campanas/campana_manual/parametros_crm_sitio_externo.html",
+                 ADICION_SUPERVISORES: "campanas/campana_manual/adicionar_supervisores.html",
+                 ADICION_AGENTES: "campanas/campana_manual/adicionar_agentes.html"}
 
     form_list = FORMS
 
@@ -142,9 +142,9 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (PARAMETROS_CRM, ParametrosCrmFormSet)]
 
-    TEMPLATES = {INICIAL: "campana_manual/nueva_edita_campana.html",
-                 OPCIONES_CALIFICACION: "campana_manual/opcion_calificacion.html",
-                 PARAMETROS_CRM: "campana_manual/parametros_crm_sitio_externo.html"}
+    TEMPLATES = {INICIAL: "campanas/campana_manual/nueva_edita_campana.html",
+                 OPCIONES_CALIFICACION: "campanas/campana_manual/opcion_calificacion.html",
+                 PARAMETROS_CRM: "campanas/campana_manual/parametros_crm_sitio_externo.html"}
 
     form_list = FORMS
 
@@ -184,7 +184,7 @@ class CampanaManualTemplateListView(ListView):
     """
     Vista que muestra todos los templates de campañas entrantes activos
     """
-    template_name = "campana_manual/lista_template.html"
+    template_name = "campanas/campana_manual/lista_template.html"
     context_object_name = 'templates_activos_manuales'
     model = Campana
 
@@ -207,9 +207,9 @@ class CampanaManualTemplateCreateView(CampanaTemplateCreateMixin, CampanaManualC
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (PARAMETROS_CRM, ParametrosCrmFormSet)]
 
-    TEMPLATES = {INICIAL: "campana_manual/nueva_edita_campana.html",
-                 OPCIONES_CALIFICACION: "campana_manual/opcion_calificacion.html",
-                 PARAMETROS_CRM: "campana_manual/parametros_crm_sitio_externo.html"}
+    TEMPLATES = {INICIAL: "campanas/campana_manual/nueva_edita_campana.html",
+                 OPCIONES_CALIFICACION: "campanas/campana_manual/opcion_calificacion.html",
+                 PARAMETROS_CRM: "campanas/campana_manual/parametros_crm_sitio_externo.html"}
 
     form_list = FORMS
 
@@ -236,7 +236,7 @@ class CampanaManualTemplateDetailView(DetailView):
     """
     Muestra el detalle de un template para crear una campaña manual
     """
-    template_name = "campana_manual/detalle_campana_template.html"
+    template_name = "campanas/campana_manual/detalle_campana_template.html"
     model = Campana
 
 
@@ -246,7 +246,7 @@ class CampanaManualTemplateDeleteView(CampanaTemplateDeleteMixin, DeleteView):
     objeto Campana Manual-->Template.
     """
     model = Campana
-    template_name = "campana_manual/delete_campana_template.html"
+    template_name = "campanas/campana_manual/delete_campana_template.html"
 
     def get_success_url(self):
         return reverse("campana_manual_template_list")

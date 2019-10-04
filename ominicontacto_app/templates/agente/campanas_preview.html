@@ -35,11 +35,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
         <script src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
         <script src="{% static 'ominicontacto/JS/campanasPreviewAgente.js' %}"></script>
+        <script type="text/javascript" src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
         {% endcompress %}
-        <script type="text/javascript">
-            var liberar_contacto_url = "{% url 'liberar_contacto_asignado_agente' %}";
-            var calificar_contacto_url = "{% url 'calificacion_formulario_update_or_create' '0000' '1111' %}";
-        </script>
     </head>
     <body>
         <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>

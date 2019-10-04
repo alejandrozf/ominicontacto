@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-06 16:26-0300\n"
+"POT-Creation-Date: 2019-10-01 14:27-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,75 +16,79 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.6.0\n"
 
-# b6dad027a7234fa1ae3e1508eb57ccf6
+# 1be8540b44ae42819aa735e1e6f33ffc
 #: ../../index.rst:3
 msgid "INTRODUCCION A OMNILEADS"
 msgstr "OMNILEADS INTRODUCTION"
 
-# fb6fee072d9e499f894a650c8fbc74ba
-#: ../../index.rst:5
+# fd97bc4c3399416a80f0ed26ff837086
+#: ../../index.rst:6
 msgid ""
-"OMniLeads es una solución de software para Contact Centers, basada en "
-"*Software Libre - GPL V3*."
-msgstr "Omnileads is a Contact Center's standalone Solution based on *GPL V3 Free Software*, destinated to support the Contact Center's management, operation and administration."
-
-# 3a60ea7f57674935aeace3eceec88e1d
-#: ../../index.rst:7
-msgid ""
-"A partir de una sencilla instalación, OMniLeads le permite montar toda "
-"una operación de Contact Center tanto Inbound como Outbound, ya sea "
-"dentro del marco de una compañia u organización que necesita su propio "
-"Contact Center integrado al PBX operativo dentro de su sistema de "
-"telefonía, así como también cumpliendo el rol sistema \"núcleo\" de "
-"comunicaciones en una compañía que brinda servicios de Customer Contact "
-"(Business Outsourcing Process - BPO)."
-msgstr " From a simple installation a Contact Center operation can be build in a company or organization that need it's own Contact Center integrated to the PBX inside it's telephony system. Also, it can work as a Communication Core in a company that offers BPO(Business Outsourcing Process) services."
-
-# e41c7528ad064436873eba32e463da5a
-#: ../../index.rst:11
-msgid ""
-"Dentro de un universo 100% Web, los agentes disponen de una interfaz "
-"basada en `WebRTC <https://www.webrtc.org/>`_ para la gestión de "
-"comunicaciones mientras que los supervisores aprovechan las bondades de "
-"la tecnología WebRTC para realizar acciones de channel spy, coaching de "
-"agentes, gestión de QA o three way conferences, sin la necesidad de "
-"instalar ninguna aplicación \"softphone\". La interfaz para "
-"administradores permite gestionar usuarios, campañas, bases de datos, a "
-"su vez extraer métricas y estadísticas, gestionar las grabaciones de las "
-"comunicaciones entre tantas otras funcionalidades."
-msgstr "The operation is 100% web, the agents have an interface based in `WebRTC <https://www.webrtc.org/>`_ for the management of communications while the supervisors use WebRTC to make channel spy, agent coaching, QA management or three way conferences. On the other hand, the administrators have an interface where they can maintain users, campaigns, databases, at the same time, extract metrics and statistics, manage the recording of communications and other functionalities."
-
-# 0835a2025bb14ebcbe9064f00547c784
-#: ../../index.rst:16
-msgid ""
-"OMniLeads cuenta una interfaz de configuración de parámetros de "
-"telefonía, que permite adminsitrar múltiples troncales SIP y su "
-"enrutamiento de llamadas salientes de acuerdo a reglas/patrones de "
-"marcado así como también el enrutamiento de llamadas entrantes con la "
-"posibilidad de utilizar IVRs y/o Condicionales de tiempo a la hora de "
-"encaminar una numeración *DID* hacia una campaña entrante."
-msgstr "OMniLeads has its own interface to configure telephony funcionalities, to allow to manage multiple SIP trunkds and routing of outbound calls regarding to the dial rules. Also, it handles the routing of inbound calls, using IVR's or Time Conditions when configuring a *DID* number to the campaign."
-
-# a1726d4b4c264669abb9e917163d90cb
-#: ../../index.rst:19
-#, fuzzy
-msgid ""
-"Por si quedan dudas: **OMniLeads NO es un módulo de \"call center\" que "
-"añade reportería y  supervisión a un sistema PBX. OMniLeads fue concebido"
-" como una plataforma Standalone orientada y optimizada para el manejo de "
-"campañas telefónicas en el marco del Contact Center**"
+"`OMniLeads <https://www.omnileads.net/>`_ es un Software `GPLV3  "
+"<https://www.gnu.org/licenses/gpl-3.0.en.html/>`_ para Contact Centers "
+"basado en `WebRTC <https://www.webrtc.org/>`_ , que permite implementar y"
+" gestionar un Contact Center administrando operaciones entrantes y "
+"salientes, con acceso a métricas, reportes e indicadores, supervisión "
+"real-time de agentes y demás funcionalidades avanzadas de QA y gestión de"
+" contactos y campañas."
 msgstr ""
-"OMniLeads is not a \"call center\" module that adds metrics and "
-"supervision to a PBX system. It was made from scratch as a Standalone "
-"plattform to handle the telephonic campaigns "
+"`OMniLeads <https://www.omnileads.net/>`_ is a `GPLV3  "
+"<https://www.gnu.org/licenses/gpl-3.0.en.html/>`_ licenced software made "
+"for Contact Centers. Based on `WebRTC <https://www.webrtc.org/>`_ , it "
+"allows to implement and manage a Contact Center, administering inbound "
+"and outbound operations, with access to metrics, reports and indicators, "
+"real-time supervision of agents and advanced QA functionalities of "
+"contacts and campaigns. "
 
-# b17d8de4faf64bc29eba5e75ad6bdb56
-#: ../../index.rst:28
+# e39b572e3b2e47709ba2309a683cea25
+#: ../../index.rst:9
+msgid ""
+"A partir de ejecutar una sencilla :ref:`about_install`, y unos pocos "
+"pasos de Configuración posteriores, tenemos funcional una instancia de "
+"OMniLeads con operaciones de Contact Center en términos de campañas "
+"entrantes y salientes. Nuestro software puede adaptarse a una compañia u "
+"organización que necesita mantener su propio Contact Center con "
+"integración a su central PBX, así como también asumir la función de "
+"\"núcleo\" de comunicaciones para una compañía que brinda servicios de "
+"Customer Contact (Business Outsourcing Process - BPO)."
+msgstr ""
+"You just need to execute a simple :ref:`about_install`, and in a few "
+"configuration steps, you will have a functional OMniLeads instance with "
+"Contact Center operations of inbound and outbound campaigns. Our software"
+" can be adapted to a company or organization that needs to maintain its "
+"own Contact Center with integration to its PBX, also it can work as a "
+"\"core\" of communications to a company that provide Customer Contact "
+"(Business Outsourcing Process - BPO) services."
+
+# 49071202269f4534b92e7f12ffd9fd9c
+#: ../../index.rst:14
+msgid ""
+"Dentro de un universo 100% web, los diferentes perfiles de usuarios; "
+"agentes, supervisores, administradores, clientes, acceden a OMniLeads "
+"desde cualquier navegador moderno con soporte `WebRTC "
+"<https://www.webrtc.org/>`_. Al no requerir del uso de aplicaciones de "
+"escritorio Softphones, este software simplifica a nada la configuración a"
+" realizar en las estaciones de trabajo de los agentes, tan solo acceder a"
+" una dirección HTTPS para estar online gestionando comunicaciones con los"
+" clientes. OMniLeads es una gran opción para implementar CCaaS \"Contact "
+"Center as a Service\" !"
+msgstr ""
+"OMniLeads is 100% web for the different user profiles: agents, "
+"supervisors, administrators, customers, that can access the software from"
+" every modern browser with `WebRTC <https://www.webrtc.org/>`_ support. "
+"It doesn't require the use of desktop applications like softphones. This "
+"simplifies to zero the configuration to do in the workstations of agents,"
+" that will only have to go to a web URL to be online, managing "
+"communications with customers. OMniLeads is a great option to implement "
+"CCaaS \"Contact Center as a Service\" !"
+
+# 35be10cb565541d39bf95880c49dbc68
+#: ../../index.rst:25
 msgid "Cómo lo obtengo ?"
 msgstr "How do i get it?"
 
-# 79f90e0e80ac4d67931d9e71219dd278
-#: ../../index.rst:29
+# 646675dd87e14d59a450ed4f0272e254
+#: ../../index.rst:26
 msgid ""
 "`Nuestro repositorio  <https://gitlab.com/omnileads/ominicontacto>`_ se "
 "encuentra disponible en GitLab, para libre descarga, instalación y uso "
@@ -94,100 +97,181 @@ msgstr ""
 "`Our repository <https://gitlab.com/omnileads/ominicontacto>`_ is "
 "available on Gitlab, the software is free for download, install and use  "
 
-# b2faba8416c34c0b9fd1aa30e5ed3e1a
-#: ../../index.rst:33
+# ce05a9fb69384f6a87879893f3441be7
+#: ../../index.rst:30
 msgid "Donde se puede instalar ?"
 msgstr "Where can I install it ?"
 
-# 868ad69e85d044e8b26211c3ab75964a
+# 015295304d7f4051aea1db835cc2c1f3
+#: ../../index.rst:31
+msgid ""
+"OMniLeads ha sido testeado en su totalidad en las siguientes "
+"distribuciones de GNU/Linux:"
+msgstr "OMniLeads has been tested 100% in the following GNU/Linux distros:"
+
+# 3b0f13df226844999c66596d8ae0cecb
+#: ../../index.rst:33
+msgid ""
+"**CentOS 7.7.1908 minimal ISO** - "
+"http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso"
+msgstr ""
+"`CentOS 7.7.1908 minimal ISO "
+"<http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso>`_"
+
+# 94fd1d4d7e3a41b98c2b766b92946964
 #: ../../index.rst:34
 msgid ""
-"OMniLeads puede correr sobre las distribuciones de GNU/Linux; CentOS7, "
-"Debian-9 y Ubuntu Server 18.04."
+"**Debian 9.3 netinstall ISO** - "
+"https://cdimage.debian.org/mirror/cdimage/archive/9.3.0/amd64/iso-"
+"cd/debian-9.3.0-amd64-netinst.iso"
 msgstr ""
-"OMniLeads can be installed on these GNU/Linux distros: Centos7, Debian9 "
-"and Ubuntu Server 18.04."
+"`Debian 9.3 netinstall ISO "
+"<https://cdimage.debian.org/mirror/cdimage/archive/9.3.0/amd64/iso-"
+"cd/debian-9.3.0-amd64-netinst.iso>`_"
 
-# fa41a9ce49fb4a1eac725ab1e8afaf70
-#: ../../index.rst:38
+# 0f69ccc0d05c404e8f2dcaebc1391b83
+#: ../../index.rst:35
+msgid ""
+"**Ubuntu Server 18.04.2 LTS ISO** - https://ubuntu.com/download/server"
+"/thank-you?version=18.04.2&architecture=amd64"
+msgstr ""
+"`Ubuntu Server 18.04.2 LTS ISO <https://ubuntu.com/download/server/thank-"
+"you?version=18.04.2&architecture=amd64>`_"
+
+# 218ad4744e204c118c6156f0e9cc5f72
+#: ../../index.rst:39
+msgid ""
+"Remitirse a estas versiones de las distribuciones y sus correspondientes "
+"ISO para lograr una instalación exitosa"
+msgstr ""
+"Strictly use these versions and ISOS of the distros if you want to "
+"experience a successful installation."
+
+# 1a513f4a04f54bbc9f858ee76466b48c
+#: ../../index.rst:41
+msgid ""
+"Por otra parte, si eres usuario de `Docker <https://www.docker.com>`_, "
+"puedes ejecutar el sistema a partir de nuestras imágenes oficiales "
+"disponibles en el `Docker-Hub "
+"<https://hub.docker.com/u/freetechsolutions>`_ y el correspondiente "
+"`docker-compose  <https://docs.docker.com/compose>`_ que viene en el "
+"repositorio."
+msgstr ""
+"In other hand, if you are familiar with `Docker "
+"<https://www.docker.com>`_, you can deploy the system from our oficial "
+"images available in `Docker-Hub "
+"<https://hub.docker.com/u/freetechsolutions>`_ and the `docker-compose  "
+"<https://docs.docker.com/compose>`_ file in the repository"
+
+# b654d19a2b3f4812946cc3db8788f29b
+#: ../../index.rst:45
 msgid "Cómo lo instalo ?"
 msgstr "How do I install it ?"
 
-# 729381412aac4b9f8ca9bd9da43c36fd
-#: ../../index.rst:39
+# 3a9c1ce1ae3c4e2b8e05f761f009b1ca
+#: ../../index.rst:46
 msgid ""
-"Dentro del código del proyecto, se dispone de un script de instalación "
-"basado en `Ansible <https://www.ansible.com/>`_ que permite instalar el "
-"producto sobre cualquier SO de los mencionados anteriormente. En la "
-"sección Instalación de ésta pagin se detalla el proceso, en sus "
-"diferentes tipos de instalación."
+"La instalación de omnileads está basada en el uso de un script de bash "
+"que setea un entorno para la ejecución de  `Ansible "
+"<https://www.ansible.com/>`_. Dentro del código del proyecto, se dispone "
+"de dicho script que permite instalar el sistema sobre cualquiera de los "
+"Sistemas Operativos previamente citados. En la sección "
+":ref:`about_install` de esta documentación, se detalla dicho proceso."
 msgstr ""
 "Inside the code of the project is available an installation script based "
 "on `Ansible <https://www.ansible.com/>`_ that allows to install the "
 "product in the distros mentioned before. In the sectoin Instalattiton of "
 "this page the process is detailed. "
 
-# d7a17c4a47704311b79a3e0e214b974b
-#: ../../index.rst:44
+# a19882e8213e4057be357fde55d6dd21
+#: ../../index.rst:52
 msgid "Características y funcionalidades de OMniLeads"
 msgstr "Omnileads's Features and funtionalities"
 
-# 6d3b6fcf7c6744cd8de091a1e6866bac
-#: ../../index.rst:51
+# 4cbfcea2d8174343827c08b23bdb8298
+#: ../../index.rst:54
+msgid ":ref:`about_webrtc`."
+msgstr ":ref:`about_webrtc`."
+
+# c886349613ce4703a26669307710fe5d
+#: ../../index.rst:55
+msgid ":ref:`about_omlfeatures`."
+msgstr ":ref:`about_omlfeatures`."
+
+# 44fce8d7ec6b4e94b9a27386d440f5e2
+#: ../../index.rst:58
 msgid "Dónde y cómo lo puedo usar ?"
 msgstr "Where and how can I use it ?"
 
-# 854869954ad848b4a41fb67e1efa8571
-#: ../../index.rst:58
-msgid "Cómo me capacito ?"
-msgstr ""
-
-# 0ca6fd1fd20c4c849dacb11c37a58e17
+# 6750592efdb4410e9d1a374ad67aaf1a
 #: ../../index.rst:60
+msgid ":ref:`about_usecase_pbx`."
+msgstr ":ref:`about_usecase_pbx`."
+
+# 4ddccf385a8748f8bc6ca680896d8b1d
+#: ../../index.rst:61
+msgid ":ref:`about_usecase_bpo`."
+msgstr ":ref:`about_usecase_bpo`."
+
+# 02372c2138e34c03bb421e5b4392ea52
+#: ../../index.rst:62
+msgid ":ref:`about_usecase_cloud`."
+msgstr ":ref:`about_usecase_cloud`."
+
+# 56b9d354e0664a1084e983935e34172c
+#: ../../index.rst:66
+msgid "Cómo me capacito ?"
+msgstr "How do I get training?"
+
+# bd9175111a6e4414837360a1da8f77aa
+#: ../../index.rst:68
 msgid ""
 "Esta documentación cubre todos los aspectos del producto. Desde "
 "cuestiones técnicas inherentes al administrador IT hasta aspectos "
 "funcionales orientados a los supervisores o líderes del contact center."
-msgstr "This documentation take cover of all the facts of this product. From technical instructions oriented to IT administrators to instructions about functionality oriented to supervisors or leaders of the Contact Center."
+msgstr ""
+"This documentation take cover of all the facts of this product. From "
+"technical instructions oriented to IT administrators to instructions "
+"about functionality oriented to supervisors or leaders of the Contact "
+"Center."
 
-# 799b88e08f5642dd9df1ee1f79b53815
-#: ../../index.rst:63
+# 9b81c0f117ae486d94331e8f227321c6
+#: ../../index.rst:71
 msgid ""
 "Además ponemos a disposición un **Curso online gratuito**, en el cual se "
 "exponen videos que ejemplifican los tópicos planteados en esta "
 "documentación. Es un material complementario y a su vez basado en todos "
 "los temas aquí postulados."
-msgstr "Also a **Free Online Course** is available. In this course you can see videos that covers all thematic in this documentation."
+msgstr ""
+"Also a **Free Online Course** is available. In this course you can see "
+"videos that covers all thematic in this documentation."
 
-# 4fa08642a9ae445da4b5054296cc9020
-#: ../../index.rst:66
+# 2762f24dce324d47a2fc88ecea5895f9
+#: ../../index.rst:74
 msgid ""
-"Para registrarse **sin cargo** acceder a `este enlace "
+"Para registrarse **sin cargo** acceder a `ESTE LINK "
 "<http://www.techxpert.guru/omnileads-takeoff/>`_"
-msgstr "To register **free** go to `this link <http://www.techxpert.guru/omnileads-takeoff/>`"
+msgstr ""
+"To register **free** go to `this link <http://www.techxpert.guru"
+"/omnileads-takeoff/>`"
 
-# 080df1c7e73541fc86c7175e96799b56
-#: ../../index.rst:70
+# f087313eec8649a9ae2dde72c7ab3d32
+#: ../../index.rst:78
 msgid "INSTALACIÓN"
 msgstr "INSTALLATION"
 
-# fe3f9fe3e9254d04849c7c359c06072a
-#: ../../index.rst:72
-#, fuzzy
-msgid ""
-"Existen tres formas en la que OMniLeads puede ser instalado. En el "
-"presente capítulo se detalla cada uno de los procesos."
-msgstr ""
-"There are three ways where OMniLeads can be installer. In this section "
-"each process is detailed"
+# 444b2b309caa4b35b7ccf1f1d1413557
+#: ../../index.rst:80
+msgid "En este capítulo se cubren todos los tipos de instalación del software."
+msgstr "In this chapter is covered all the types of installation of the software"
 
-# a5281ba94cc04328a04ceb89c0e62d44
-#: ../../index.rst:82
+# de10214d9b6e43d6a3a4b2c3ae229c39
+#: ../../index.rst:90
 msgid "SETTING INICIALES"
 msgstr "INITIAL SETTINGS"
 
-# 5163f1f4b15545debb89cf9edc28d6cc
-#: ../../index.rst:83
+# ef6deca14b314d418943c1aac1a1eee7
+#: ../../index.rst:91
 msgid ""
 "En esta sección se plantean las configuraciones escenciales a realizar "
 "una vez que dejamos instalada una instancia de OMniLeads."
@@ -195,13 +279,13 @@ msgstr ""
 "In this section the essential configuration are shown once an instance of"
 " OMniLeads is installed"
 
-# f8d2d333846d4b508d8c026543a47b11
-#: ../../index.rst:93
+# ebf705011e7c48e29e03fabe8b9613fb
+#: ../../index.rst:101
 msgid "CONFIGURACIÓN DE ACCESO A LA PSTN"
 msgstr "PSTN ACCESS CONFIGURATION"
 
-# dc923fcf2cbe440f8f1d378e154299b6
-#: ../../index.rst:94
+# c27cab3ab2eb4e018253d6d68bdf66b8
+#: ../../index.rst:102
 msgid ""
 "OMniLeads facilita mediante configuración web, la posibilidad de mantener"
 " troncales SIP de acceso a la PSTN. Éstos troncales son invocados por "
@@ -215,73 +299,115 @@ msgstr ""
 "processed by each SIP trunk. Also, the trunks can be configured in "
 "*failover* mode"
 
-# 71fc6d1d2806442f89d66ec387be9dfe
-#: ../../index.rst:98
+# 341d1f00f7f94faa9188261a31705f56
+#: ../../index.rst:106
 msgid "Para profundizar al respecto se recomienda leer el resto del capítulo."
 msgstr "To go deeper it's recommended to read the rest of the chapter."
 
-# 556969e086c04a10b0e3cdc2fa2e7734
-#: ../../index.rst:108
+# 843fad7068e645e4b257af0cc8798df7
+#: ../../index.rst:116
 msgid "CAMPAÑAS"
 msgstr "CAMPAIGNS"
 
-# e63310144e19476ca561a51225ee1f29
-#: ../../index.rst:109
+# e777ce271135413d95085d045ced210d
+#: ../../index.rst:117
 msgid ""
-"Todo procesamiento de comunicaciones entre \"el exterior\" y un agente de"
-" OMniLeads es encapsulado dentro de una campaña. En este capítulo se "
-"aborda todo lo inherente a la gestión de campañas Entrantes y Salientes "
-"(manuales, preview y dialer)"
-msgstr "The processing of communications between the \"outher world\" and an OMniLeads's agent is encapsulated in a campaign. In this chapter all about the management of Inbound and Outbound (manual, preview and dialer) campaigns is covered."
+"Toda comunicación entre \"el exterior\" y un agente de OMniLeads es "
+"encapsulado dentro de una campaña. En este capítulo se aborda todo lo "
+"inherente a la gestión de campañas Entrantes y Salientes (manuales, "
+"preview y dialer)"
+msgstr ""
+"The processing of communications between the \"outher world\" and an "
+"OMniLeads's agent is encapsulated in a campaign. In this chapter all "
+"about the management of Inbound and Outbound (manual, preview and dialer)"
+" campaigns is covered."
 
-# 5c69c13e25824fbc86d5bbbe1e599a33
-#: ../../index.rst:120
+# eedcd8b7ec49469aba9d46365f3561b7
+#: ../../index.rst:128
 msgid "METRICAS, REPORTES, GRABACIONES Y SUPERVISION"
 msgstr "METRICS, REPORTS, RECORDINGS AND SUPERVISION"
 
-# f6c405eda50546c193c9d9175f84f498
-#: ../../index.rst:121
+# 9599ae267ea64a77be7fa0f41125dfe5
+#: ../../index.rst:129
 msgid ""
 "Dentro de este capítulo se aborda todo lo inherente a la extracción de "
 "informarción que arroja el sistema respecto a estadísticas, métricas, "
 "reportes, grabaciones, supervisión en tiempo real, etc."
-msgstr "Inside this chapter, all about the metrics, statistics, reports, recordings and real time supervision, etc. "
+msgstr ""
+"Inside this chapter, all about the metrics, statistics, reports, "
+"recordings and real time supervision, etc. "
 
-# 5c94f0f7e0e44963ae495c89649d1557
-#: ../../index.rst:132
+# e0e6d878bb4b4d02bf9722033513ab18
+#: ../../index.rst:140
 msgid "MANUAL DE AGENTE"
 msgstr "AGENT MANUAL"
 
-# 1eaecc7fcfa94dd9bcc30556af3d52f4
-#: ../../index.rst:133
+# f3ffe037eb4247e1a27e36bb20cc3faa
+#: ../../index.rst:141
 msgid ""
 "En esta sección se repasan todas las acciones que un agente de OMniLeads "
 "pueda realizar dentro de una operación. Cuestiones que van desde la "
 "atención/generación de una llamada, calificaciones, agendamiento, "
 "macación de grabaciones, transferencias de llamadas y mucho más, son "
 "tratadas en este capítulo de la documentación."
-msgstr "In this chapter is covered all the actions that an OMniLeads agent can do inside an operation. Refering to receive/make of calls, dispositions, scheduling, call transfers, and much more."
+msgstr ""
+"In this chapter is covered all the actions that an OMniLeads agent can do"
+" inside an operation. Refering to receive/make of calls, dispositions, "
+"scheduling, call transfers, and much more."
 
-# 7065a0d8f6374bf881f05ec2e685a9ee
-#: ../../index.rst:144
+# 4a93662c091d4734b3a8eaffe6764e0b
+#: ../../index.rst:152
 msgid "GESTIONES DEL ADMINISTRADOR IT"
 msgstr "IT ADMINISTRATOR MANAGEMENT"
 
-# 3ee717adb621470e85364f710e44b81b
-#: ../../index.rst:145
+# 5ec54ba1fef744c9aafff1c81bf9e5f4
+#: ../../index.rst:153
 msgid ""
 "En esta sección se cubren algunas tareas inherentes al administrador "
 "técnico de OMniLeads. Cuestiones como la configuración de bajo nivel del "
 "módulo de discador predictivo, gestión de actualizaciones, backup & "
 "restore y cambio de dirección IP de la plataforma."
-msgstr "In this chapter is covered some tasks made from the IT administrator of OMniLeads. Refering to: configuration of the dialer plattform, upgrade of software management, backup & restore and network parameters change."
+msgstr ""
+"In this chapter is covered some tasks made from the IT administrator of "
+"OMniLeads. Refering to: configuration of the dialer plattform, upgrade of"
+" software management, backup & restore and network parameters change."
 
-# 603ecd0d5d3e4b80997424b91c61c198
-#: ../../index.rst:155
+# 9536b762dd154cc3bc469f766d098c3d
+#: ../../index.rst:163
+msgid "INTEGRACION CON CRM"
+msgstr "CRM INTEGRATION"
+
+# 84b933a498a1437cafde3b60308d2471
+#: ../../index.rst:165
+msgid ""
+"OMniLeads permite integrarse con sistemas Web CRM, de manera tal que se "
+"puede configurar para enviar notificaciones y peticiones desde OMniLeads "
+"hacia el sistema CRM y viceversa a traves de la API del sistema."
+msgstr ""
+"OMniLeads allows integration with Web CRM systems, allowing to configure "
+"the software to send notifications and requests from OMniLeads to the CRM"
+" system and vice vers through the system API."
+
+# feeeaf2e188f4b5c84b0bdb472ce9911
+#: ../../index.rst:176
+msgid "OML API"
+msgstr "OML API"
+
+# 3eac723340e145bebb54522458e4cfea
+#: ../../index.rst:177
+msgid ""
+"En esta sección vamos a encontrar toda la especificación de la API Rest "
+"del sistema."
+msgstr ""
+"In this section you will find all the information about the Rest API of "
+"the system"
+
+# d35f734a1bb44ed79feba874986d38c5
+#: ../../index.rst:186
 msgid "KNOWN ISSUES"
 msgstr "KNOWN ISSUES"
 
-# 073a6f8593734eca8247d3e3570b57f8
-#: ../../index.rst:165
+# 34ceb712ede8424e99f11476acfbc99f
+#: ../../index.rst:196
 msgid "RELEASE NOTES"
 msgstr "RELEASE NOTES"

@@ -1,20 +1,31 @@
 ---
+
+- set_fact: mysql_host=127.0.0.1
+  when: ansible_os_family == "RedHat"
+  tags: postinstall
+
+- set_fact: mysql_host=localhost
+  when: ansible_os_family == "Debian"
+  tags: postinstall
+
 - include: installations.yml
 
 - include: mariadb.yml
 
 - include: roles/prerequisitos/tasks/reboot.yml
   when:  ansible_os_family == "RedHat" and ansible_connection != "local"
-  tags: reboot
 
 - name: Wait for the server to finish rebooting
   become: no
-  local_action: wait_for host="{{ omni_ip }}" delay=15 state=started port={{ ansible_ssh_port }} timeout=600
-  tags: reboot
-  when: ansible_os_family == "RedHat" and ansible_connection != "local"
+  wait_for: host="{{ omni_ip }}" delay=15 state=started port={{ ansible_ssh_port }} timeout=600
+  delegate_to: localhost
+  when: iface == "none"
 
 - name: Wait for the server to finish rebooting (cluster)
   become: no
   local_action: wait_for host="{{ dialer_ip }}" delay=15 state=started port={{ ansible_ssh_port }} timeout=600
-  tags: reboot
-  when: ansible_os_family == "RedHat" and cluster !=0
+  when: cluster !=0
+
+- name: Integration tests tasks
+  include: integration_tests.yml
+  tags: ['never','integration-tests']

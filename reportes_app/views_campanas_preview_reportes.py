@@ -30,7 +30,7 @@ from ominicontacto_app.models import Campana, CalificacionCliente, OpcionCalific
 
 
 class CampanaPreviewDetailView(DetailView):
-    template_name = 'campana_preview/detalle.html'
+    template_name = 'campanas/campana_preview/detalle.html'
     model = Campana
 
     def _crear_dict_categorias(self, count_gestiones, finalizadas_categorias_count_dict):
@@ -78,4 +78,4 @@ class CampanaPreviewDetailView(DetailView):
 
 
 class CampanaPreviewExpressView(CampanaPreviewDetailView):
-    template_name = 'campana_preview/detalle_express.html'
+    template_name = 'campanas/campana_preview/detalle_express.html'

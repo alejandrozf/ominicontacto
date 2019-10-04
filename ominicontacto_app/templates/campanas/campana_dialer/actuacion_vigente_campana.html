@@ -1,0 +1,105 @@
+<!--
+Copyright (C) 2018 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% extends "campanas/wizard_base.html" %}
+{% load i18n %}
+{% load widget_tweaks %}
+{% load static %}
+
+{% block head_js %}
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/campana_dialer/actuacion_vigente_campana.js' %}"></script>
+{% endblock %}
+
+{% block nav %}
+    <h1>{% trans 'Campaña Dialer: Actuación vigente'  %} </h1>
+
+    <ul class="nav nav-indicators">
+        <li class="disabled"><a>{% trans 'Campaña' %}</a></li>
+        <li class="disabled"><a>{% trans 'Cola' %}</a></li>
+        <li class="disabled"><a>{% trans 'Opciones de calificación' %}</a></li>
+        {% if interaccion_crm %}
+            <li class="disabled"><a>{% trans 'Interacción con Sitio Externo' %}</a></li>
+        {% endif %}
+        <li class="active"><a>{% trans 'Actuacion' %}</a></li>
+        <li class="disabled"><a>{% trans 'Reglas Incidencias' %}</a></li>
+        {% if not es_template %}
+            {% if create %}
+                <li class="disabled"><a>{% trans 'Dar permiso a supervisores' %}</a></li>
+                <li class="disabled"><a>{% trans 'Adicionar agentes' %}</a></li>
+            {% endif %}
+            <li class="disabled"><a>{% trans 'Sincronizar' %}</a></li>
+        {% endif %}
+    </ul>
+{% endblock %}
+
+{% block form_render %}
+    {% with form as form %}
+        {{ form.non_field_errors }}
+        {{ form.errors }}
+        <div class="form-row">
+            <div class="col-sm-2">
+                <label for="{{ form.domingo.id_for_label }}">{% trans 'Domingo:' %}</label>
+                {{ form.domingo }}
+                {{ form.domingo.errors }}
+            </div>
+            <div class="col-sm-2">
+                <label for="{{ form.lunes.id_for_label }}">{% trans 'Lunes:' %}</label>
+                {{ form.lunes }}
+                {{ form.lunes.errors }}
+            </div>
+            <div class="col-sm-2">
+                <label for="{{ form.martes.id_for_label }}">{% trans 'Martes:' %}</label>
+                {{ form.martes }}
+                {{ form.martes.errors }}
+            </div>
+            <div class="col-sm-2">
+                <label for="{{ form.miercoles.id_for_label }}">{% trans 'Miércoles:' %}</label>
+                {{ form.miercoles }}
+                {{ form.miercoles.errors }}
+            </div>
+            <div class="col-sm-2">
+                <label for="{{ form.jueves.id_for_label }}">{% trans 'Jueves:' %}</label>
+                {{ form.jueves }}
+                {{ form.jueves.errors }}
+            </div>
+            <div class="col-sm-2">
+                <label for="{{ form.viernes.id_for_label }}">{% trans 'Viernes:' %}</label>
+                {{ form.viernes }}
+                {{ form.viernes.errors }}
+            </div>
+            <div class="col-sm-2">
+                <label for="{{ form.sabado.id_for_label }}">{% trans 'Sábado:' %}</label>
+                {{ form.sabado }}
+                {{ form.sabado.errors }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-6">
+                <label for="{{ form.hora_desde.id_for_label }}">{% trans 'Hora desde:' %}</label>
+                {{ form.hora_desde|attr:"id:id_hora_desde" }}
+                {{ form.hora_desde.errors }}
+            </div>
+            <div class="col-md-6">
+                <label for="{{ form.hora_hasta.id_for_label }}">{% trans 'Hora hasta:' %}</label>
+                {{ form.hora_hasta|attr:"id:id_hora_hasta" }}
+                {{ form.hora_hasta.errors }}
+            </div>
+        </div>
+    {% endwith %}
+{% endblock %}

@@ -86,7 +86,7 @@
       - udptl.conf
   become: true
   become_method: sudo
-  tags: ['changenetwork','changepassword','postinstall']
+  tags: postinstall
 
 - name: Copy of asterisk logger config file
   template: "src=roles/asterisk/templates/conf/logger.conf dest={{ ast_conf_location }}/logger.conf owner={{ usuario }} group={{ usuario }} mode=755"
@@ -130,7 +130,7 @@
       - { src: "omni-grabaciones.py.j2", dest: "omni-grabaciones.py" }
   become: yes
   become_method: sudo
-  tags: ['changenetwork','changepassword','postinstall']
+  tags: postinstall
 
 - name: Erase omnileads crontab.d task
   file: state=absent path=/etc/cron.d/cron-omnileads
@@ -153,24 +153,17 @@
   with_items:
     - odbcinst.ini
     - odbc.ini
-  tags: ['changenetwork','changepassword']
+  tags: postinstall
 
-# Creo los directorios que tendran los sonidos de agentes
+# Creo los directorios que tendran los audios subidos por la web
 - name: Make of the sounds dirs
-  file: state=directory path={{ ast_sounds_location }}/{{ item }} owner={{ usuario }} group={{ usuario }} mode=755
-  with_items:
-    - es
-    - en
-    - oml
+  file: state=directory path={{ ast_sounds_location }}/oml owner={{ usuario }} group={{ usuario }} mode=755
   when: is_docker == "false"
   tags: postinstall
 
 # Untareo los sonidos de agentes, que vienen desde el repo
 - name: Untar the sounds for agents
-  unarchive: "src=/var/tmp/ominicontacto-build/ominicontacto/ominicontacto_voip/asterisk-files/sounds/{{ item.source }} dest={{ ast_sounds_location }}/{{ item.dest }}"
-  with_items:
-    - { source: "es-oml.tar.gz", dest: "es" }
-    - { source: "en-oml.tar.gz", dest: "en" }
+  unarchive: "src=/var/tmp/ominicontacto-build/ominicontacto/ominicontacto_voip/asterisk-files/sounds/oml.tar.gz dest={{ ast_sounds_location }}/oml/"
   when: is_docker == "false"
   tags: postinstall
 

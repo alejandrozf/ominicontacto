@@ -52,4 +52,5 @@ Como bien se conoce, la idea es seleccionar un “tipo de destino” y un “des
 
 Finalmente al seleccionar el botón guardar, se dispondrá del IVR.
 
-Nota: es posible anidar diferentes IVRs.
+ .. note::
+  Es posible anidar un IVR dentro de otro.

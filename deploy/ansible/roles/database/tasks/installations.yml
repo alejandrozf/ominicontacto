@@ -34,6 +34,10 @@
 - name: Download postgresql-{{ postgresql_version }} key
   rpm_key: key="{{ postgresql_key }}" state=present validate_certs=no
   when: ansible_os_family == "RedHat"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
 # Se instala el repo de postgresql9.6
 - name: Install of postgresql-{{ postgresql_version }} repository
@@ -41,16 +45,27 @@
   become: yes
   become_method: sudo
   when: ansible_os_family == "RedHat"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
   #Se instalan todos los paquetes de postgresql96
 - name: Install of postgresql-{{ postgresql_version }} (centos)
-  yum: name={{ item }} state=present
-  with_items:
-    - postgresql{{ postgres_version_nodot }}*
-    - python-psycopg2.x86_64
-  become: yes
-  become_method: sudo
+  yum: name="postgresql{{ postgres_version_nodot }}*" state=present
   when: ansible_os_family == "RedHat"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
+
+- name: Install of python-psycopg2 (centos)
+  yum: name="{{ psycopg2_url }}" state=present
+  when: ansible_os_family == "RedHat"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
 ############################
 ## Ubuntu / Debian tasks ##
@@ -61,12 +76,20 @@
   become: true
   become_method: sudo
   when: ansible_distribution == "Ubuntu"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
 - name: Download postgresql-{{ postgresql_version }} repository
   apt_repository: repo="deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" filename=pgdg state=present update_cache=yes
   become: true
   become_method: sudo
   when: ansible_distribution == "Ubuntu"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
 #Se intala postgresql debian
 - name: Install of postgresql {{ postgresql_version }}
@@ -76,3 +99,7 @@
     - postgresql-{{ postgresql_version }}
     - python-psycopg2
   when: ansible_os_family == "Debian"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success

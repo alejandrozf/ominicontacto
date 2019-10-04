@@ -3,90 +3,118 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-06 16:26-0300\n"
+"POT-Creation-Date: 2019-09-02 17:33-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.4.0\n"
 
-# 944826c374fe468ba41eaecb41428db4
-#: ../../output_inbound_camp.rst:1
+# 61efc11551c241b9bd83a8b38fdad586
+#: ../../output_inbound_camp.rst:4
+msgid "Reportes de Campañas Entrantes"
+msgstr "Inbound Campaign Reports"
+
+# 7ce46373ef4c4523856fc1e21f22c302
+#: ../../output_inbound_camp.rst:6
 msgid ""
 "En esta sección se cubren todos los reportes disponibles para una campaña"
 " de llamadas entrantes."
-msgstr ""
+msgstr "This section covers all available reports for an Inbound Campaign."
 
-# d9651bd24628461284966b95c9ad3876
-#: ../../output_inbound_camp.rst:5
+# dc58fc78291f4fb5a8ac4318a7bf8ec8
+#: ../../output_inbound_camp.rst:10
 msgid "*Figure 1: Campaign Reports view*"
 msgstr ""
 
-# 4e9c2d3695a54f48a81f54647c324cfc
-#: ../../output_inbound_camp.rst:9
+# fd7e6fad59754277b2f3762b2a9e565e
+#: ../../output_inbound_camp.rst:14
 msgid "Reporte general de una campaña entrante"
-msgstr ""
+msgstr "General Report for Inbound Campaign"
 
-# 8e2a3ad92714413799002d19a24a387a
-#: ../../output_inbound_camp.rst:11
+# 714c613c787a4e8998f1cf69c6bd6efb
+#: ../../output_inbound_camp.rst:16
 msgid ""
 "Este reporte nos brinda un resumen de varios aspectos de la campaña. "
 "Cuestiones como cantidad de llamadas recibidas (atendidas y no) y "
 "realizadas desde la campaña dispuestas en detalle con respecto a las "
 "calificaciones generadas por agentes."
 msgstr ""
+"This report gives us a summary of several aspects of an Inbound Campaign."
+" Metrics such as number of calls received (attended and not attended) and"
+" performed in the campaign are displayed in detail with respect to the "
+"agent call dispositions."
 
-# 63166c93c61f41e08200ed3df61d97dc
-#: ../../output_inbound_camp.rst:14
+# 562b66b6ded44a5ea06f521202ba015e
+#: ../../output_inbound_camp.rst:19
 msgid ""
 "Para acceder a este reporte, se debe ingresar a la opción \"Reportes\" "
 "dentro de la campaña."
 msgstr ""
+"In order to access to this report, go to \"Reports\" option within the "
+"campaign."
 
-# e28c6565994a4ef79241d488a495d235
-#: ../../output_inbound_camp.rst:16
+# 3b94614bc2194c6f8eef4d1bfe1a88e8
+#: ../../output_inbound_camp.rst:21
 msgid ""
 "La primera información que nos arroja la vista son las \"llamadas que "
 "ingresaron\" y las \"llamadas realizadas\" dentro la campaña."
 msgstr ""
+"The first information that comes up are the \"received calls\" and the "
+"\"manual calls\" within the campaign. "
 
-# fd8e3ee352ae470e8f03aa655c93612b
-#: ../../output_inbound_camp.rst:18
+# 3b65c900635e434ca870c38f40abf5b2
+#: ../../output_inbound_camp.rst:23
 msgid ""
 "Recordemos que en OMniLeads un agente puede procesar una llamada manual y"
 " asociarla a una campaña entrante, por ejemplo si estaba atendiendo una "
 "llamada y la misma se corta, el agente podrá marcar al número desde la "
 "campaña entrante pese a que se trata de una llamada manual saliente."
 msgstr ""
+"Remember that in OMniLeads an agent can process a manual call and "
+"associate it with an incoming campaign. For example, the agent can redial"
+" an incoming call number that has been accidentally hanged up, and handle"
+" it as a manual outbound  for the campaign."
 
-# 1bbefac1382f4c0cabf806499f6fb25b
-#: ../../output_inbound_camp.rst:23
+# 0100b1045f50441eb58182f56f861255
+#: ../../output_inbound_camp.rst:26
+msgid ""
+"También nos brinda información de los tiempos promedios de espera y "
+"abandono de los intentos de llamadas al sistema hacia dicha campaña."
+msgstr ""
+"Also it give us information about average waiting and abandon time for"
+" call attempts to the campaign."
+
+# a8015831504b4669b51236049d147645
+#: ../../output_inbound_camp.rst:30
 msgid "*Figure 2: Inbound calls / Performed calls*"
 msgstr ""
 
-# 2c367d4e10a743a09682ceb526b76b8d
-#: ../../output_inbound_camp.rst:25
+# 89545356ce1b41eb9cdee42570a4be74
+#: ../../output_inbound_camp.rst:32
 msgid ""
 "Siguiendo el recorrido por la presente pantalla, nos vamos a encontrar "
 "con el primer botón de exportación de información a CSV. En este caso el "
 "botón nos permite exportar a \"CSV / Planilla de cálculos\" todas las "
 "llamadas atendidas en la campaña."
 msgstr ""
+"Following the tour of this screen, we will find the first button to "
+"export information to a CSV. In this case, the button allows us to export"
+" to \"CSV/Spreadsheet\" all calls answered in the campaign."
 
-# 08a60623eece4cf89cd7757122006b44
-#: ../../output_inbound_camp.rst:30
+# cd0479c1979a492bac95640c1f1b8279
+#: ../../output_inbound_camp.rst:37
 msgid "*Figure 3: Attended calls CSV*"
 msgstr ""
 
-# 64d3d9b5f43945d8a91d3fa984cc7131
-#: ../../output_inbound_camp.rst:32
+# 8e6ab386ee3c4cf688f4c057560368ab
+#: ../../output_inbound_camp.rst:39
 msgid ""
 "Como se puede apreciar, el archivo presenta como primer columna el "
 "teléfono desde el que se llamó a la campaña. Si bien el contacto puede "
@@ -95,9 +123,14 @@ msgid ""
 " campaña y al cual se asocia la calificación de agente (columna "
 "calificación)."
 msgstr ""
+"The file presents the first column as phone, that is the source number of"
+" the incoming call. While the contact can have more than one phone number"
+" associated in this report, column \"Phone number\" refers to the source "
+"of that specific inbound call which agent call disposition is associated "
+"to (Call Disposition column)."
 
-# 15157c940c194c8d9e2aac8f9515117c
-#: ../../output_inbound_camp.rst:36
+# ace8b00b7cae484dadf4623cdceb7e2a
+#: ../../output_inbound_camp.rst:43
 msgid ""
 "Volvemos a recarcar el hecho de que en campañas entrantes no siempre se "
 "asocia un contacto a una base de contactos. Cuando una llamada entrante "
@@ -106,31 +139,40 @@ msgid ""
 "base\" en la columna base de datos de nuestra planilla de cálculos "
 "(figura3)."
 msgstr ""
+"It is not mandatory for incoming campaigns, to associate them to a "
+"contact database. When an incoming campaign is NOT associated to a "
+"contact database, all calls in reports are mentioned as \"out of "
+"database\" in the database column of our spreadsheet (figure3)."
 
-# dbac245f7bca4a348dbfc5b139ba21af
-#: ../../output_inbound_camp.rst:40
+# 737cbb6fc7da4355851f2ee66ef20919
+#: ../../output_inbound_camp.rst:47
 msgid ""
 "Debajo del botón de exportar llamadas atendidas, encontramos un informe "
 "que se representa la contabilización de las diferentes calificaciones que"
 " realizaron los agentes sobre las llamadas atendidas en la campaña "
 "(figura 4)."
 msgstr ""
+"Below the first export button, a report table can be seen. It represents "
+"the different call dispositions made by agents for those answered "
+"calls.(figure 4)."
 
-# e7fe6e1a3912404fac808abd0087f8fd
-#: ../../output_inbound_camp.rst:43
+# fecf461663584ccaad1a682a13007ec7
+#: ../../output_inbound_camp.rst:50
 msgid ""
 "En este caso y en general toda información tabulada puede generarse como "
 "una exportación a CSV para poder disponer de los datos sobre una planilla"
 " de cálculos."
 msgstr ""
+"In this case and in general all tabulated information can be exported to "
+"CSV file."
 
-# 7004a893108d41d598a1e624cc02142c
-#: ../../output_inbound_camp.rst:48
+# 89be0d15812c482aab32874605487f1e
+#: ../../output_inbound_camp.rst:55
 msgid "*Figure 4: Dispositions*"
 msgstr ""
 
-# 9b5145d3d2da499a9c273075123b6206
-#: ../../output_inbound_camp.rst:50
+# a6c91fc3ea144e4abcc2d3fac5d83c2d
+#: ../../output_inbound_camp.rst:57
 msgid ""
 "Continuando con la sucesión de informes presentados en la pantalla de "
 "reportes de la campaña, nos vamos a topar con un listado que contibiliza "
@@ -138,14 +180,17 @@ msgid ""
 "intentos fallidos clasificados de acuerdo a si fueron llamadas "
 "abandonadas o llamadas expiradas por tiempo de espera agotado."
 msgstr ""
+"In the following section, a list of not answered calls can be obtained. "
+"These ones represent all the failed attempts from inbound point of view: "
+"abandoned calls, expired calls."
 
-# d76467e7e8204842bb8b37aa201c02fd
-#: ../../output_inbound_camp.rst:56
+# eede3e7b872c4d1f9e7fa2f5794de3f3
+#: ../../output_inbound_camp.rst:63
 msgid "*Figure 5: Not attended calls*"
 msgstr ""
 
-# 619ce0ffc4a9496590d50133450113f3
-#: ../../output_inbound_camp.rst:58
+# ad9b721445ce4c47bb7f67663bef8121
+#: ../../output_inbound_camp.rst:65
 msgid ""
 "A continuación se presenta un informe sobre la performance de cada agente"
 " que trabajó en la campaña. Se expone mediante la contabilización de cada"
@@ -153,62 +198,68 @@ msgid ""
 "permite saltar a una pantalla con un informe más detallado sobre el "
 "agente en cuestión y su performance en la campaña en cuestión."
 msgstr ""
+"Below we can see an Agent Performance report. It counts all the call "
+"dispositions registered by agents. There is also an agent link that "
+"redirects to a screen with more information about agent performance in "
+"that campaign."
 
-# 2a232cde18534daf929f4194f9cb6ba5
-#: ../../output_inbound_camp.rst:64
+# 052013800d4945d09f0b16360ec1ffe9
+#: ../../output_inbound_camp.rst:71
 msgid "*Figure 6: Contacts pending / Performed calls*"
 msgstr ""
 
-# b9bb3b53679e4fb1984cb89ef92bbe1f
-#: ../../output_inbound_camp.rst:66
+# f40e2d1c8e79439da2b896da5fdb5e68
+#: ../../output_inbound_camp.rst:73
 msgid ""
 "Entonces si se hace click sobre uno de los agentes, se despliega una "
 "nueva pantalla con mayor detalle, en la que se contempla por ejemplo la "
 "información de:"
 msgstr ""
+"Then if you click on a specific agent, a new screen is displayed, which "
+"includes in depth the information of: "
 
-# db9e44f7e7b24a7f99519fb0bdc6536d
-#: ../../output_inbound_camp.rst:69
+# d5d9d828a42b42648d570149916fd35e
+#: ../../output_inbound_camp.rst:76
 msgid "Tiempo acumulado en la campaña"
-msgstr ""
+msgstr "Accumulated Time in the campaign"
 
-# 87cb762d47a24c998762cd887f0ee1b6
-#: ../../output_inbound_camp.rst:70
+# d61219e325084cc5b275cadde8f8ec45
+#: ../../output_inbound_camp.rst:77
 msgid "Tiempo en pausa dentro de la campaña"
-msgstr ""
+msgstr "Pause Time in the campaign"
 
-# 4e6a0dcff0b34bf2aa43e39c0eb9e317
-#: ../../output_inbound_camp.rst:71
+# 9aa3f861760b49239537d2a7d6b83539
+#: ../../output_inbound_camp.rst:78
 msgid "Tiempo efectivo en llamadas dentro de la campaña"
-msgstr ""
+msgstr "On Call time in the campaign"
 
-# 2444a1baa15d4fa395c660b468f411d2
-#: ../../output_inbound_camp.rst:72
-msgid "Cantidad de llamadas procesadas"
-msgstr ""
-
-# 324a5c0f32b249ba8cc4ba3245ddff24
-#: ../../output_inbound_camp.rst:73
-msgid "Tiempo promedio de llamada"
-msgstr ""
-
-# 62ab6b241ed64030b46fcb904fc486f8
-#: ../../output_inbound_camp.rst:74
-msgid "Cantidad de intentos de llamadas fallidas"
-msgstr ""
-
-# 50d9d786dbc046c59498a33093fed132
-#: ../../output_inbound_camp.rst:75
-msgid "Procentajes de efectividad"
-msgstr ""
-
-# 219ad2de7baf46c69e8285045e5b235c
+# 242acb92bee74159af65aaa048aff8ef
 #: ../../output_inbound_camp.rst:79
+msgid "Cantidad de llamadas procesadas"
+msgstr "Amount of Processed Calls"
+
+# fb32d894d15a4beaa8afca11fe6f9a47
+#: ../../output_inbound_camp.rst:80
+msgid "Tiempo promedio de llamada"
+msgstr "Average Call Time"
+
+# 2a94fc7168f94ec4acea2bf9fc9ce891
+#: ../../output_inbound_camp.rst:81
+msgid "Cantidad de intentos de llamadas fallidas"
+msgstr "Amount of Failed attempts"
+
+# bd6fe5c0c65b45949fef732f3ae71f65
+#: ../../output_inbound_camp.rst:82
+msgid "Procentajes de efectividad"
+msgstr "Effectiveness percentages"
+
+# 2b3b30244ab04dafaa5f400f9012c1ea
+#: ../../output_inbound_camp.rst:86
 msgid "*Figure 8: Agent performance detail*"
 msgstr ""
 
-# a6bb1380622f41c9a03dff64f14b5cc9
-#: ../../output_inbound_camp.rst:81
+# 32761aa755954377a7e5f5b2389c92a3
+#: ../../output_inbound_camp.rst:88
 msgid ""
 "Regresando al reporte de la campaña, como último ítem se presenta un "
 "listado de todas las llamadas procesadas en la campaña y su resultado. Se"
@@ -216,19 +267,24 @@ msgid ""
 " en la campaña. Recordemos que en cualquier tipo de campaña, se pueden "
 "generar paralelamente llamadas manuales."
 msgstr ""
+"Returning to the campaign report, the last item is a List of all calls "
+"processed in the campaign and their results. It exposes separately all "
+"manual calls that have been made in the campaign. Remember that in any "
+"type of campaign, agent can generate manual calls on behalf of selected "
+"campaign."
 
-# 05d7df821f374e6cb8e038b8ddf1906e
-#: ../../output_inbound_camp.rst:87
+# a910521ff9594061b9df2b625816c558
+#: ../../output_inbound_camp.rst:94
 msgid "*Figure 9: Call details*"
 msgstr ""
 
-# e93862ac22174e58acfb233b7b058a12
-#: ../../output_inbound_camp.rst:90
+# 84845a73a5074941818db4da2a84875a
+#: ../../output_inbound_camp.rst:97
 msgid "Reporte de calificaciones"
-msgstr ""
+msgstr "Call Dispositions Report"
 
-# cfb1e1e53bf24e289980e0e150051ad5
-#: ../../output_inbound_camp.rst:92
+# 3b3dd25d2eca412195c7bced82b7ff43
+#: ../../output_inbound_camp.rst:99
 msgid ""
 "Este reporte presenta cada contacto gestionado en la campaña junto a la "
 "calificación que ha recibido por parte del agente que procesó la llamada "
@@ -236,28 +292,34 @@ msgid ""
 "calificaciones ordinarias por un lado y otro con los contactos cuya "
 "calificación recibida fue del tipo \"gestión\"."
 msgstr ""
+"This report lists all call dispositions made by an agent in the campaign."
+" It can also be exported as a CSV file, containing full details for both "
+"\"normal\" and \"engaged\" call dispositions."
 
-# 76cfad98195a4d1dbb7f23fd7102699f
-#: ../../output_inbound_camp.rst:98
+# df34138ed55841a88a7871de012872dd
+#: ../../output_inbound_camp.rst:105
 msgid "*Figure 10: Call dispositions detail*"
 msgstr ""
 
-# 84752a93efa74db5b0df1e8bdb75485c
-#: ../../output_inbound_camp.rst:100
+# 212c79a2880e489ca138b6281cb75290
+#: ../../output_inbound_camp.rst:107
 msgid ""
 "Es importante aclarar que en este listado también se contemplan aquellos "
 "contactos introducidos dinámicamente en la campaña por los agentes. Por "
 "ejemplo contactos que llamaron a la campaña y no estaban en la base de "
 "contactos."
 msgstr ""
+"It is important to clarify that this list also includes those contacts "
+"dynamically registered in the campaign by agents. For example, contacts "
+"who call the campaign and are not part of a contact database."
 
-# 48a99e48ea624cdca2ab618732b9b051
-#: ../../output_inbound_camp.rst:105
+# b70b8a711ba940f5b4a6d8f94948839f
+#: ../../output_inbound_camp.rst:112
 msgid "Resultados de la base de contactos"
-msgstr ""
+msgstr "Contact Database Results"
 
-# c179a63c2c66415292b1d5d1fd1a3879
-#: ../../output_inbound_camp.rst:107
+# 5362008002eb4965802e50b6fff11d10
+#: ../../output_inbound_camp.rst:114
 msgid ""
 "Aquí se presenta un listado plano de la base de contactos asociada a la "
 "campaña y el resultado de la última llamada realizada por el contacto a "
@@ -266,20 +328,29 @@ msgid ""
 "campaña, sino que se busca hacer un mapeo entre la base de contactos "
 "asignada a la campaña y el resultado al ser procesada por la campaña."
 msgstr ""
+"Here is a flat list of all the contacts associated with the campaign "
+"database and the result of the last call made by the contact to the "
+"incoming campaign. The difference between this report and the previous "
+"one is that here we will NOT find those contacts introduced dinamically "
+"by agents (out of database). It is expected for this report to present a "
+"mapping between the contact database assigned to the campaign and the "
+"results once processed by the campaign."
 
-# 1bb8c0267d0845daaf8e88a80d1488b9
-#: ../../output_inbound_camp.rst:111
+# b6feaacf81d04cce9d39be55df2d820c
+#: ../../output_inbound_camp.rst:118
 msgid ""
 "NOTA: es importante remarcar que este reporte es de suma utilidad en "
 "campañas preview y predictivas, siendo quizás no muy irrelevante en "
 "campañas entrantes."
 msgstr ""
+"NOTE: It is important to note that this report is very useful in Preview "
+"and Predictive Dialer Campaigns, being perhaps not very irrelevant in "
+"incoming campaigns."
 
-# 2344930209ec46b796ca9d7a7f27e958
-#: ../../output_inbound_camp.rst:115
+# 1ffbbf7d62744fef87943c86661a40d6
+#: ../../output_inbound_camp.rst:122
 msgid "*Figure 11: DB result*"
 msgstr ""
 
 #~ msgid "Telephony"
 #~ msgstr ""
-

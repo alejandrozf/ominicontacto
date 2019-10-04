@@ -60,7 +60,7 @@ $(document).ready(function(){
   }
 
   $('#validar_contacto').on('click', function(){
-    var url = "/campana_preview/validar_contacto_asignado/";
+    var url = Urls.validar_contacto_asignado();
     var data = {
       'pk_agente': $inputAgente.val(),
       'pk_campana': $inputCampana.val(),
@@ -88,7 +88,7 @@ Por favor intente solicitar uno nuevo");
       var $button = $(this);
       var nombreCampana = $button.text();
       var idCampana = $button.attr('data-campana');
-      var url = '/campana_preview/'+ idCampana +'/contacto/obtener/';
+      var url = Urls.campana_preview_dispatcher(idCampana);
       $.post(url)
         .success(function (data) {
           if (data['result'] != 'OK') {
@@ -114,6 +114,7 @@ Por favor intente solicitar uno nuevo");
               $('#liberar_contacto').show()
               $('#calificar_contacto').show()
               var url_parameters = [idCampana, data['contacto_id'], data['agente_id']];
+              var calificar_contacto_url = Urls.calificacion_formulario_update_or_create('0000', '1111');
               var calificar_url = set_url_parameters(calificar_contacto_url, url_parameters);
               $('#calificar_contacto').attr('href', calificar_url);
             }
@@ -145,7 +146,7 @@ Por favor intente solicitar uno nuevo");
   });
 
   $('#liberar_contacto').on('click', function(){
-    var url = liberar_contacto_url;
+    var url = Urls.liberar_contacto_asignado_agente();
     var data = {
       'campana_id': $inputCampana.val(),
     };

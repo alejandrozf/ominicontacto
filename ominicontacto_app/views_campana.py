@@ -87,7 +87,7 @@ class CampanaListView(ListView):
     Esta vista lista los objetos Campana de tipo Entrantes
     """
 
-    template_name = 'campana/campana_list.html'
+    template_name = 'campanas/campana_entrante/campana_list.html'
     context_object_name = 'campanas'
     model = Campana
 
@@ -116,7 +116,7 @@ class CampanaDeleteView(DeleteNodoDestinoMixin, CampanasDeleteMixin, DeleteView)
     # TODO: realizar refactor aquí, la vista de eliminación no debería tener dos métodos
     # 'delete'
     model = Campana
-    template_name = 'campana/delete_campana.html'
+    template_name = 'campanas/campana_entrante/delete_campana.html'
     imposible_eliminar = _('No se puede eliminar una Campaña que es destino en un flujo de llamada')
     nodo_eliminado = _(u'<strong>Operación Exitosa!</strong>\
         Se llevó a cabo con éxito la eliminación de la campana.')
@@ -170,7 +170,7 @@ class CampanaReporteQueueListView(FormView):
     Esta vista lista los tiempo de llamadas de las campanas
     """
 
-    template_name = 'campana/tiempos_llamadas.html'
+    template_name = 'campanas/campana_entrante/tiempos_llamadas.html'
     context_object_name = 'campanas'
     model = Campana
     form_class = ReporteForm
@@ -223,7 +223,7 @@ class CampanaSupervisorUpdateView(UpdateView):
     Esta vista agrega supervisores a una campana
     """
 
-    template_name = 'campana_dialer/campana_supervisors.html'
+    template_name = 'campanas/campana_dialer/campana_supervisors.html'
     model = Campana
     context_object_name = 'campana'
     form_class = CampanaSupervisorUpdateForm
@@ -250,7 +250,7 @@ class CampanaBorradasListView(CampanaListView):
     Vista que lista las campañas entrantes pero de incluyendo las borradas ocultas
     """
 
-    template_name = 'campana/campanas_borradas.html'
+    template_name = 'campanas/campana_entrante/campanas_borradas.html'
 
     def get_context_data(self, **kwargs):
         context = super(CampanaBorradasListView, self).get_context_data(**kwargs)

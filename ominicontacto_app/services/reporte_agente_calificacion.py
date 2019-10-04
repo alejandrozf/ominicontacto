@@ -97,7 +97,7 @@ class ArchivoDeReporteCsv(object):
 
                 lista_opciones.append(calificacion.contacto.telefono)
 
-                if calificacion.es_venta:
+                if calificacion.es_gestion():
                     lista_opciones.append(_("SI"))
                 else:
                     lista_opciones.append(_("NO"))

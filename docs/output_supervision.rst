@@ -37,7 +37,7 @@ Un supervisor puede tomar acciones sobre cada agente. Para ello son los cuatro b
 Visualización de campañas entrantes
 ***********************************
 
-Esta vista expone un resumen de todas las campañas entrantes productivas, en término de los resultados acumulados del día de la operación; llamadas recibidas, atendidas, abandonadas, expiradas y gestiones (*) positivas dentro de cada campaña.
+Esta vista expone un resumen de todas las campañas entrantes productivas, en término de los resultados acumulados del día de la operación; llamadas recibidas, atendidas, abandonadas, abandonadas durante el anuncio de bienvenida, tiempo promedio de espera, expiradas, en espera, tiempo promedio de abandono y gestiones (*) positivas dentro de cada campaña.
 
 .. image:: images/output_supervision_camp_entrantes.png
 

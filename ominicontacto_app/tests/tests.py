@@ -1,4 +1,4 @@
-import time
+# -*- coding: utf-8 -*-
 # Copyright (C) 2018 Freetech Solutions
 
 # This file is part of OMniLeads
@@ -17,861 +17,535 @@ import time
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-from django.test import TestCase
-# from selenium import webdriver
-from unittest import skip
+# Tests de integración (no usar en un entorno de producción de un cliente!!)
+
+# tener en cuenta que las credenciales del agente que se va a testar deben estar igualmente
+# especificadas en las variables  de entorno AGENTE_USERNAME y AGENTE_PASSWORD; además este agente
+# debe estar asignado al menos a una campaña
+# Por otra parte las credenciales del admin deberan estar especificadas en las variables de entorno
+# ADMIN_USERNAME y ADMIN_PASSWORD
+
+# Prerequisitos:
+# 1) Chrome (o Chromium) 76 instalado, tarjeta de audio presente en el host
+# 2) chromedriver desde
+# "https://chromedriver.storage.googleapis.com/76.0.3809.68/chromedriver_linux64.zip"
+
+# 3) instalar selenium y copiar el geckodriver en /usr/bin del host donde corre omniapp
+
+# 4) Instalar xvfb y pyvirtualdisplay
+# sudo apk add xvfb
+# pip install pyvirtualdisplay --user
+
+# 3) Probar este codigo como punto de partida hacia un server sin DJANGO_DEBUG_TOOLBAR
+
+# 4) correr "$BROWSER_REAL='True' TESTS_INTEGRACION='True' python ominicontacto_app/tests/tests.py"
+# para testear los tests de integración incluyendo los que necesitan audio en el browser
+
+from __future__ import unicode_literals
+
+import os
+import socket
+import unittest
+import uuid
+import random
+
+from time import sleep
+
+try:
+    from pyvirtualdisplay import Display
+    from selenium import webdriver
+    from selenium.webdriver.common.keys import Keys
+    from selenium.webdriver.chrome.options import Options
+except ImportError:
+    pass
+
+ADMIN_USERNAME = os.getenv('ADMIN_USERNAME')
+ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
+
+CAMPANA_MANUAL = os.getenv('CAMPANA_MANUAL')
+
+AGENTE_USERNAME = 'agente' + uuid.uuid4().hex[:5]
+AGENTE_PASSWORD = '098098ZZZ'
+
+BROWSER_REAL = os.getenv('BROWSER_REAL')
+TESTS_INTEGRACION = os.getenv('TESTS_INTEGRACION')
+
+MSG_MICROFONO = 'Se necesita un browser real con micrófono'
 
 
-@skip("Don't want to test")
-class SimpleSeleniumTest(TestCase):
+@unittest.skipIf(TESTS_INTEGRACION != 'True', 'Ignorando tests de integración')
+class IntegrationTests(unittest.TestCase):
 
-    def setUp(self):
-        # self.driver = webdriver.Chrome()
-        # self.driver.set_window_size(1366, 760)
-        # self.driver.get("https://172.16.20.90/accounts/login")
-        # self.driver.find_element_by_name("username").send_keys("fulano")
-        # self.driver.find_element_by_name("password").send_keys("098098ZZZ")
-        # self.driver.find_element_by_css_selector("button.btn.btn-success").click()
+    @classmethod
+    def setUpClass(cls):
+        # super(IntegrationTests, cls).setUpClass()
+        cls.setUp()
+        cls._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        cls.crear_module()
+        group_name = uuid.uuid4().hex
+        cls.crear_grupo(group_name)
+        cls.crear_agente(AGENTE_USERNAME, AGENTE_PASSWORD)
+        if BROWSER_REAL == 'True':
+            cls.asignar_agente_campana_manual()
+        cls.tearDown()
+
+    @classmethod
+    def tearDownClass(cls):
         pass
 
-    # def test_pagina_principal_carga_ok(self):
-    #     driver = webdriver.Chrome()
-    #     driver.get("https://172.16.20.90/accounts/login")
-    #     self.assertEquals(driver.title, "Logueo Usuario")
-    #     driver.close()
+    @classmethod
+    def setUp(self):
+        chrome_options = Options()
+        chrome_options.add_argument('--use-fake-ui-for-media-stream')
+        chrome_options.add_argument('--use-fake-device-for-media-stream')
+        chrome_options.add_experimental_option('prefs', {'intl.accept_languages': 'en,en'})
+        # si se pone visible=1 se muestra el browser en medio de los tests
+        self.display = Display(visible=0, size=(1366, 768))
+        self.display.start()
+        self.browser = webdriver.Chrome(options=chrome_options)
 
-    # def test_login_agente_ok(self):
-    #     driver = webdriver.Chrome()
-    #     driver.get("https://172.16.20.90/accounts/login")
-    #     driver.find_element_by_name("username").send_keys("usuariodeSuper1")
-    #     driver.find_element_by_name("password").send_keys("098098zzz")
-    #     driver.find_element_by_css_selector("button.btn.btn-success").click()
-    #     self.assertEquals(driver.current_url, "https://172.16.20.90/node/")
-    #     driver.close()
-    #    def test_logout_agente_ok(self):
+    @classmethod
+    def tearDown(self):
+        self.browser.close()
+        self.display.stop()
 
-    def test_webphone_abierto_al_inicio(self):
-        for _ in range(10):
-            if self.driver.find_element_by_id("modalWebCall").is_displayed():
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
-        self.driver.close()
+    @classmethod
+    def _login(self, username, password):
+        self.browser.get('https://{0}'.format(socket.gethostname()))
+        self.browser.find_element_by_name('username').send_keys(username)
+        self.browser.find_element_by_name('password').send_keys(password)
+        self.browser.find_element_by_tag_name('button').click()
+        sleep(2)
 
-    def test_cerrar_webphone(self):
-        for _ in range(10):
-            if self.driver.find_element_by_id("modalWebCall").is_displayed():
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
-        self.driver.find_element_by_id("modalWebCall").find_element_by_class_name("close").click()
-        for _ in range(10):
-            if not self.driver.find_element_by_id("modalWebCall").is_displayed():
-                break
-            time.sleep(1)
-        self.assertFalse(self.driver.find_element_by_id("modalWebCall").is_displayed())
-        self.driver.close()
+    @classmethod
+    def asignar_agente_campana_manual(self):
+        link_list_campana_manual = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/campana_manual/lista/")]')
+        href_list_campana_manual = link_list_campana_manual.get_attribute('href')
+        self.browser.get(href_list_campana_manual)
+        link_add_agent = self.browser.find_element_by_xpath(
+            '//tr[@id=\'{0}\']/td/div//a[contains(@href, "/queue_member/")]'.format(CAMPANA_MANUAL))
+        href_add_agent = link_add_agent.get_attribute('href')
+        self.browser.get(href_add_agent)
+        self.browser.find_element_by_xpath('//select/option[contains(text(), \'{0}\')]'
+                                           .format(AGENTE_USERNAME)).click()
+        self.browser.find_element_by_xpath((
+            "//button[@id='id_guardar']")).click()
+        sleep(1)
 
-    """def test_sip_status_registration_failed(self):
-        time.sleep(5)
-        self.driver.find_element_by_id("sipSec").send_keys("123445")
-        for _ in range(10):
-            if self.driver.find_element_by_id("SipStatus").text == "  Registration failed":
-                break
-            time.sleep(1)
-        self.assertEqual(self.driver.find_element_by_id("SipStatus").text, "  Registration failed")
-        self.driver.close()
-    # def test_sip_status_no_account(self):"""
+    @classmethod
+    def crear_agente(self, username, password):
+        link_create_user = self.browser.find_element_by_id('newUser')
+        href_create_user = link_create_user.get_attribute('href')
+        self.browser.get(href_create_user)
+        self.browser.find_element_by_id('id_0-username').send_keys(username)
+        self.browser.find_element_by_id('id_0-first_name').send_keys(username)
+        self.browser.find_element_by_id('id_0-password1').send_keys(password)
+        self.browser.find_element_by_id('id_0-password2').send_keys(password)
+        self.browser.find_element_by_id('id_0-is_agente').click()
+        self.browser.find_element_by_xpath('//form[@id=\'wizardForm\']/button').click()
+        sleep(1)
+        self.browser.find_element_by_xpath('//select[@id=\'id_2-modulos\']/option').click()
+        self.browser.find_elements_by_xpath('//select[@id=\'id_2-grupo\']/option')[1].click()
+        self.browser.find_elements_by_xpath('//form[@id=\'wizardForm\']/button')[2].click()
+        sleep(1)
 
-    def test_online_agente(self):
-        for _ in range(10):
-            if self.driver.find_element_by_id("UserStatus").text == "Online":
-                break
-            time.sleep(1)
-        self.assertEqual(self.driver.find_element_by_id("UserStatus").text, "Online")
-        self.driver.close()
+    @classmethod
+    def crear_grupo(self, group_name):
+        link_create_group = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/grupo/nuevo")]')
+        href_create_group = link_create_group.get_attribute('href')
+        self.browser.get(href_create_group)
+        group_name = uuid.uuid4().hex
+        self.browser.find_element_by_id('id_nombre').send_keys(group_name)
+        self.browser.find_element_by_id('id_auto_attend_ics').click()
+        self.browser.find_element_by_id('id_auto_attend_inbound').click()
+        self.browser.find_element_by_id('id_auto_attend_dialer').click()
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit' and @id='id_registrar']")).click()
+        sleep(1)
 
-    def test_sip_oncall_agente(self):
-        time.sleep(5)
-        for _ in range(10):
-            if self.driver.find_element_by_id("UserStatus").text == "Online":
-                break
-            time.sleep(1)
-        self.assertEqual(self.driver.find_element_by_id("UserStatus").text, "Online")
-        self.driver.find_element_by_id("numberToCall").send_keys("156285260")
-        time.sleep(5)
-        self.driver.find_element_by_id("call").click()
-        time.sleep(5)
-        self.driver.find_element_by_id("SelectCamp").click()
-        for _ in range(30):
-            if self.driver.find_element_by_id("UserStatus").text == "OnCall":
-                break
-            time.sleep(1)
-        self.assertEqual(self.driver.find_element_by_id("UserStatus").text, "OnCall")
-        self.driver.close()
+    @classmethod
+    def crear_module(self):
+        create_module = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/modulo/nuevo/")]')
+        href_create_module = create_module.get_attribute('href')
+        self.browser.get(href_create_module)
+        module_name = 'modulo_test'
+        self.browser.find_element_by_id('id_nombre').send_keys(module_name)
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit' and @id='id_registrar']")).click()
+        sleep(1)
 
-    def test_sip_acw_agente(self):
-        time.sleep(5)
-        for _ in range(10):
-            if self.driver.find_element_by_id("UserStatus").text == "Online":
-                break
-            time.sleep(1)
-        self.assertEqual(self.driver.find_element_by_id("UserStatus").text, "Online")
-        self.driver.find_element_by_id("numberToCall").send_keys("156285260")
-        time.sleep(5)
-        self.driver.find_element_by_id("call").click()
-        time.sleep(5)
-        self.driver.find_element_by_id("SelectCamp").click()
-        for _ in range(30):
-            if self.driver.find_element_by_id("UserStatus").text == "OnCall":
-                break
-            time.sleep(1)
-        self.assertEqual(self.driver.find_element_by_id("UserStatus").text, "OnCall")
-        self.driver.find_element_by_id("endCall").click()
-        for _ in range(10):
-            if self.driver.find_element_by_id("UserStatus").text == "ACW":
-                break
-            time.sleep(1)
-        self.assertEqual(self.driver.find_element_by_id("UserStatus").text, "ACW")
-        self.driver.close()
+    def crear_supervisor(self, username, password):
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        link_create_user = self.browser.find_element_by_id('newUser')
+        href_create_user = link_create_user.get_attribute('href')
+        self.browser.get(href_create_user)
+        self.browser.find_element_by_id('id_0-username').send_keys(username)
+        self.browser.find_element_by_id('id_0-password1').send_keys(password)
+        self.browser.find_element_by_id('id_0-password2').send_keys(password)
+        self.browser.find_element_by_id('id_0-is_supervisor').click()
+        self.browser.find_element_by_xpath('//form[@id=\'wizardForm\']/button').click()
+        sleep(1)
 
-    # def test_auto_attend_dialer(self):
-    #     self.driver.find_element_by_id("auto_attend_DIALER")
-    #     time.sleep(5)
-    #     for _ in range(10):
-    #         if self.driver.find_element_by_id("UserStatus").text == "Online":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEqual(self.driver.find_element_by_id("UserStatus").text, "Online")
-    #     self.driver.close()
+    def crear_supervisor_tipo_customer(self):
+        self.browser.find_elements_by_xpath('//select[@id=\'id_1-rol\']/option')[2].click()
+        self.browser.find_elements_by_xpath('//form[@id=\'wizardForm\']/button')[2].click()
+        sleep(1)
 
-    # def test_auto_attend_inbound(self):
-    #     self.driver.find_element_by_id("auto_attend_IN")
-    #     time.sleep(5)
-    #     for _ in range(10):
-    #         if self.driver.find_element_by_id("UserStatus").text == "Online":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEqual(self.driver.find_element_by_id("UserStatus").text, "Online")
-    #     self.driver.close()
+    def crear_supervisor_tipo_gerente(self):
+        self.browser.find_elements_by_xpath('//select[@id=\'id_1-rol\']/option')[0].click()
+        self.browser.find_elements_by_xpath('//form[@id=\'wizardForm\']/button')[2].click()
+        sleep(1)
 
-    #  def test_auto_pause(self):
-    #     time.sleep(5)
-    #     for _ in range(10):
-    #         if self.driver.find_element_by_id("UserStatus").text == "Online":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEqual(self.driver.find_element_by_id("UserStatus").text, "Online")
-    #     self.driver.close()
+    @unittest.skipIf(BROWSER_REAL != 'True', MSG_MICROFONO)
+    def test_agente_se_registra_correctamente(self):
+        self._login(AGENTE_USERNAME, AGENTE_PASSWORD)
+        self.assertEqual(self.browser.find_element_by_id('dial_status').text, 'Registered Agent')
 
-    #  def test_auto_unpause(self):
-    #     time.sleep(5)
-    #     for _ in range(10):
-    #         if self.driver.find_element_by_id("UserStatus").text == "Online":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEqual(self.driver.find_element_by_id("UserStatus").text, "Online")
-    #     self.driver.close()
+    @unittest.skipIf(BROWSER_REAL != 'True', MSG_MICROFONO)
+    def test_agente_puede_realizar_llamada_fuera_de_campana(self):
+        numero_externo = '351111111'
+        self._login(AGENTE_USERNAME, AGENTE_PASSWORD)
+        self.browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
+        self.browser.find_element_by_id('call_off_campaign_menu').click()
+        sleep(1)
+        self.browser.find_element_by_id('phone_off_camp').send_keys(numero_externo)
+        self.browser.find_element_by_id('call_phone_off_campaign').click()
+        webdriver.ActionChains(self.browser).send_keys(Keys.ESCAPE).perform()
+        sleep(1)
+        self.assertEqual(self.browser.find_element_by_id('dial_status').text,
+                         'Connected to {0}'.format(numero_externo))
 
-    def test_abrir_modal_pausa(self):
-        for _ in range(10):
-            if self.driver.find_element_by_id("modalWebCall").is_displayed():
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
-        self.driver.find_element_by_id("modalWebCall").find_element_by_class_name("close").click()
-        for _ in range(10):
-            if not self.driver.find_element_by_id("modalWebCall").is_displayed():
-                break
-            time.sleep(1)
-        self.assertFalse(self.driver.find_element_by_id("modalWebCall").is_displayed())
-        self.driver.find_element_by_id("Pause").click()
-        for _ in range(10):
-            if self.driver.find_element_by_id("modalPause").is_displayed():
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("modalPause").is_displayed())
-        self.driver.close()
+    # def test_agente_puede_recibir_llamada_entrante(self):
+    #     pass
 
-    def test_cerrar_modal_pausa(self):
-        for _ in range(10):
-            if self.driver.find_element_by_id("modalWebCall").is_displayed():
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
-        self.driver.find_element_by_id("modalWebCall").find_element_by_class_name("close").click()
-        for _ in range(10):
-            if not self.driver.find_element_by_id("modalWebCall").is_displayed():
-                break
-            time.sleep(1)
-        self.assertFalse(self.driver.find_element_by_id("modalWebCall").is_displayed())
-        self.driver.find_element_by_id("Pause").click()
-        for _ in range(10):
-            if self.driver.find_element_by_id("modalPause").is_displayed():
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("modalPause").is_displayed())
-        self.driver.find_element_by_id("modalPause").find_element_by_class_name("close").click()
-        for _ in range(10):
-            if not self.driver.find_element_by_id("modalPause").is_displayed():
-                break
-            time.sleep(1)
-        self.assertFalse(self.driver.find_element_by_id("modalPause").is_displayed())
-        self.driver.close()
+    @unittest.skipIf(BROWSER_REAL != 'True', MSG_MICROFONO)
+    def test_agente_puede_realizar_llamada_saliente_campana_sin_identificar_contacto(self):
+        # asume al menos una campaña asignada al agente
+        numero_externo = '351111111'
+        self._login(AGENTE_USERNAME, AGENTE_PASSWORD)
+        self.browser.find_element_by_id('numberToCall').send_keys(numero_externo)
+        self.browser.find_element_by_id('call').click()
+        sleep(1)
+        self.browser.find_element_by_id('SelectCamp').click()
+        webdriver.ActionChains(self.browser).send_keys(Keys.ESCAPE).perform()
+        self.browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
+        self.browser.switch_to.frame(self.browser.find_element_by_tag_name('iframe'))
+        sleep(1)
+        self.browser.find_element_by_id('id_btn_no_identificar').click()
+        sleep(1)
+        self.browser.switch_to.default_content()
+        self.assertEqual(self.browser.find_element_by_id('dial_status').text,
+                         'Connected to {0}'.format(numero_externo))
 
-    def test_pausar_agente(self):
-        for _ in range(10):
-            if self.driver.find_element_by_id("modalWebCall").is_displayed():
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
-        self.driver.find_element_by_id("modalWebCall").find_element_by_class_name("close").click()
-        for _ in range(10):
-            if not self.driver.find_element_by_id("modalWebCall").is_displayed():
-                break
-            time.sleep(1)
-        self.assertFalse(self.driver.find_element_by_id("modalWebCall").is_displayed())
-        self.driver.find_element_by_id("Pause").click()
-        for _ in range(10):
-            if self.driver.find_element_by_id("modalPause").is_displayed():
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("modalPause").is_displayed())
-        self.driver.find_element_by_id("setPause").click()
-        self.assertEquals(self.driver.find_element_by_id("UserStatus").text, "Gestion")
-        self.driver.close()
+    # test de creacion y edicion de usuarios
 
-    def test_quitar_pausa_agente(self):
-        for _ in range(10):
-            if self.driver.find_element_by_id("modalWebCall").is_displayed():
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
-        self.driver.find_element_by_id("modalWebCall").find_element_by_class_name("close").click()
-        for _ in range(10):
-            if not self.driver.find_element_by_id("modalWebCall").is_displayed():
-                break
-            time.sleep(1)
-        self.assertFalse(self.driver.find_element_by_id("modalWebCall").is_displayed())
-        self.driver.find_element_by_id("Pause").click()
-        for _ in range(10):
-            if self.driver.find_element_by_id("modalPause").is_displayed():
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("modalPause").is_displayed())
-        self.driver.find_element_by_id("setPause").click()
-        self.assertEquals(self.driver.find_element_by_id("UserStatus").text, "Gestion")
-        for _ in range(9):
-            if self.driver.find_element_by_id("Resume").get_attribute("enabled"):
-                break
-            time.sleep(1)
-        self.driver.find_element_by_id("Resume").click()
-        self.assertEquals(self.driver.find_element_by_id("UserStatus").text, "Online")
-        self.driver.close()
+    def test_crear_usuario_tipo_agente_como_administrador(self):
+        # login como admin
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        agente_username = 'agente' + uuid.uuid4().hex[:5]
+        agente_password = AGENTE_PASSWORD
+        # rellenar etapa1 del wizard de creación de usuario (agente)
+        self.crear_agente(agente_username, agente_password)
+        self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            agente_username))
+        # Editar agente
+        user_list = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/user/list/page1/")]')
+        href_user_list = user_list.get_attribute('href')
+        self.browser.get(href_user_list)
+        link_edit = self.browser.find_element_by_xpath(
+            '//tr[@id=\'{0}\']/td/div//a[contains(@href,"/user/update")]'.format(agente_username))
+        href_edit = link_edit.get_attribute('href')
+        self.browser.get(href_edit)
+        nuevo_username = 'agente' + uuid.uuid4().hex[:5]
+        self.browser.find_element_by_id('id_username').clear()
+        sleep(1)
+        self.browser.find_element_by_id('id_username').send_keys(nuevo_username)
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit' and @id='id_registrar']")).click()
+        sleep(1)
+        self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            nuevo_username))
+        # modificar agente, para ello debe haber 2 modulos creados.
+        self.crear_module()
+        self.browser.get(href_user_list)
+        link_update = self.browser.find_element_by_xpath(
+            "//tr[@id=\'{0}\']/td/a[contains(@href, '/user/agenteprofile/update/')]".format(
+                nuevo_username))
+        href_update = link_update.get_attribute('href')
+        self.browser.get(href_update)
+        self.browser.find_element_by_xpath('//select[@id=\'id_modulos\']/option').click()
+        self.browser.find_elements_by_xpath(
+            '//select[@id=\'id_modulos\']/option')[1].click()
+        sleep(1)
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit' and @id='id_registrar']")).click()
+        sleep(1)
+        self.browser.get(href_user_list)
+        self.browser.get(href_update)
+        self.assertTrue(self.browser.find_elements_by_xpath(
+            "//select[@id=\'id_modulos\']/option[@value='2' and @selected='selected']"))
+        # Eliminar agente
+        self.browser.get(href_user_list)
+        link_delete = self.browser.find_element_by_xpath(
+            "//tr[@id=\'{0}\']/td/div//a[contains(@href,'/user/delete')]".format(nuevo_username))
+        href_delete = link_delete.get_attribute('href')
+        self.browser.get(href_delete)
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit']")).click()
+        sleep(1)
+        self.assertFalse(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            nuevo_username)))
 
-    def test_dial_status_idle(self):
-        for _ in range(9):
-            if self.driver.find_element_by_id("modalWebCall").is_displayed():
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
-        for _ in range(9):
-            if self.driver.find_element_by_id("CallStatus"):
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("CallStatus"))
-        time.sleep(9)
-        for _ in range(9):
-            if self.driver.find_element_by_id("dial_status"):
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("dial_status"))
-        for _ in range(10):
-            if self.driver.find_element_by_id("dial_status").text == "Idle":
-                break
-            time.sleep(1)
-        self.assertEquals(self.driver.find_element_by_id("dial_status").text, "Idle")
-        self.driver.close()
+    def test_crear_usuario_tipo_customer(self):
+        # Creación de clientes
+        random_customer = uuid.uuid4().hex
+        customer_username = random_customer[:16]
+        customer_password = '098098ZZZ'
+        self.crear_supervisor(customer_username, customer_password)
+        self.crear_supervisor_tipo_customer()
+        self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(customer_username))
+        # modificar perfil a un perfil de supervisor
+        user_list = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/user/list/page1/")]')
+        href_user_list = user_list.get_attribute('href')
+        self.browser.get(href_user_list)
+        link_update = self.browser.find_element_by_xpath(
+            "//tr[@id=\'{0}\']/td/a[contains(@href, '/supervisor/')]".format(
+                customer_username))
+        href_update = link_update.get_attribute('href')
+        self.browser.get(href_update)
+        self.browser.find_elements_by_xpath("//select[@id=\'id_rol\']/option")[0].click()
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit' and @id='id_registrar']")).click()
+        sleep(1)
+        self.browser.get(href_user_list)
+        self.browser.get(href_update)
+        self.assertTrue(self.browser.find_elements_by_xpath(
+            "//select[@id=\'id_rol\']/option[@value='2' and @selected='selected']"))
 
-    def test_sip_status_registered(self):
-        for _ in range(10):
-            if self.driver.find_element_by_id("UserStatus").text == "Online":
-                break
-            time.sleep(1)
-        self.assertEqual(self.driver.find_element_by_id("UserStatus").text, "Online")
-        for _ in range(10):
-            if self.driver.find_element_by_id("SipStatus").text == "Registered":
-                break
-            time.sleep(1)
-        self.assertEqual(self.driver.find_element_by_id("SipStatus").text, "Registered")
-        self.driver.close()
+    def test_crear_usuario_tipo_supervisor(self):
+        # Creación de supervisor
+        random_supervisor = uuid.uuid4().hex
+        supervisor_username = random_supervisor[:16]
+        supervisor_password = '098098ZZZ'
+        self.crear_supervisor(supervisor_username, supervisor_password)
+        self.crear_supervisor_tipo_gerente()
+        self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(supervisor_username))
+        # modificar perfil a un perfil de administrador
+        user_list = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/user/list/page1/")]')
+        href_user_list = user_list.get_attribute('href')
+        self.browser.get(href_user_list)
+        link_update = self.browser.find_element_by_xpath(
+            "//tr[@id=\'{0}\']/td/a[contains(@href, '/supervisor/')]".format(
+                supervisor_username))
+        href_update = link_update.get_attribute('href')
+        self.browser.get(href_update)
+        self.browser.find_elements_by_xpath("//select[@id=\'id_rol\']/option")[1].click()
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit' and @id='id_registrar']")).click()
+        sleep(1)
+        self.browser.get(href_user_list)
+        self.browser.get(href_update)
+        self.assertTrue(self.browser.find_elements_by_xpath(
+            "//select[@id=\'id_rol\']/option[@value='1' and @selected='selected']"))
 
-    def test_dial_status_calling(self):
-        for _ in range(9):
-            if self.driver.find_element_by_id("modalWebCall").is_displayed():
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
-        for _ in range(9):
-            if self.driver.find_element_by_id("CallStatus"):
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("CallStatus"))
-        time.sleep(9)
-        for _ in range(9):
-            if self.driver.find_element_by_id("dial_status"):
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("dial_status"))
-        for _ in range(9):
-            if self.driver.find_element_by_id("dial_status").text == "Idle":
-                break
-            time.sleep(1)
-        self.assertEquals(self.driver.find_element_by_id("dial_status").text, "Idle")
-        self.driver.find_element_by_id("numberToCall").send_keys("156285260")
-        self.driver.find_element_by_id("call").click()
-        for _ in range(9):
-            if self.driver.find_element_by_id("modalSelectCmp").is_displayed():
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("modalSelectCmp").is_displayed())
-        self.driver.find_element_by_id("SelectCamp").click()
-        for _ in range(9):
-            if self.driver.find_element_by_id("dial_status").text == "Calling.... 156285260":
-                break
-            time.sleep(1)
-        self.assertEquals(
-            self.driver.find_element_by_id("dial_status").text, "Calling.... 156285260")
-        self.driver.close()
+    # test de creación y edición de grupos
 
-    def test_dial_status_connected(self):
-        for _ in range(9):
-            if self.driver.find_element_by_id("modalWebCall").is_displayed():
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
-        for _ in range(19):
-            if self.driver.find_element_by_id("CallStatus"):
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("CallStatus"))
-        time.sleep(9)
-        for _ in range(9):
-            if self.driver.find_element_by_id("dial_status"):
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("dial_status"))
-        for _ in range(9):
-            if self.driver.find_element_by_id("dial_status").text == "Idle":
-                break
-            time.sleep(1)
-        self.assertEquals(self.driver.find_element_by_id("dial_status").text, "Idle")
-        self.driver.find_element_by_id("numberToCall").send_keys("156285260")
-        self.driver.find_element_by_id("call").click()
-        for _ in range(9):
-            if self.driver.find_element_by_id("modalSelectCmp").is_displayed():
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("modalSelectCmp").is_displayed())
-        self.driver.find_element_by_id("SelectCamp").click()
-        for _ in range(14):
-            if self.driver.find_element_by_id("dial_status").text == "Calling.... 156285260":
-                break
-            time.sleep(1)
-        self.assertEquals(
-            self.driver.find_element_by_id("dial_status").text, "Calling.... 156285260")
-        for _ in range(19):
-            if self.driver.find_element_by_id("dial_status").text == "Connected":
-                break
-            time.sleep(1)
-        self.assertEquals(
-            self.driver.find_element_by_id("dial_status").text, "Connected to 156285260")
-        self.driver.close()
+    def test_crear_grupo_con_Autounpause(self):
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        link_create_group = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/grupo/nuevo")]')
+        href_create_group = link_create_group.get_attribute('href')
+        self.browser.get(href_create_group)
+        random_name = uuid.uuid4().hex
+        group_name = random_name[:16]
+        auto_unpause = random.randrange(1, 99)
+        self.browser.find_element_by_id('id_nombre').send_keys(group_name)
+        self.browser.find_element_by_id('id_auto_unpause').send_keys(auto_unpause)
+        self.browser.find_element_by_id('id_auto_attend_ics').click()
+        self.browser.find_element_by_id('id_auto_attend_inbound').click()
+        self.browser.find_element_by_id('id_auto_attend_dialer').click()
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit' and @id='id_registrar']")).click()
+        sleep(1)
+        self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(group_name))
+        # Editar Grupo
+        group_list = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/grupo/list/")]')
+        href_group_list = group_list.get_attribute('href')
+        self.browser.get(href_group_list)
+        link_edit = self.browser.find_element_by_xpath(
+            "//tr[@id=\'{0}\']/td/div//a[contains(@href,'/grupo/update')]".format(group_name))
+        href_edit = link_edit.get_attribute('href')
+        self.browser.get(href_edit)
+        nuevo_groupname = random_name[:16]
+        self.browser.find_element_by_id('id_nombre').clear()
+        sleep(1)
+        self.browser.find_element_by_id('id_nombre').send_keys(nuevo_groupname)
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit' and @id='id_registrar']")).click()
+        sleep(1)
+        self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            nuevo_groupname))
+        # Eliminar grupo
+        self.browser.get(href_group_list)
+        link_delete = self.browser.find_element_by_xpath(
+            "//tr[@id=\'{0}\']/td/div//a[contains(@href,'/grupo/delete')]".format(nuevo_groupname))
+        href_delete = link_delete.get_attribute('href')
+        self.browser.get(href_delete)
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit']")).click()
+        sleep(1)
+        self.assertFalse(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            nuevo_groupname)))
 
-    #     """def test_dial_status_busy(self):
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("modalWebCall").is_displayed():
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
-    #     for _ in range(19):
-    #         if self.driver.find_element_by_id("CallStatus"):
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("CallStatus"))
-    #     time.sleep(9)
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("dial_status"):
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("dial_status"))
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("dial_status").text == "Idle":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(self.driver.find_element_by_id("dial_status").text, "Idle")
-    #     self.driver.find_element_by_id("numberToCall").send_keys("156285260")
-    #     self.driver.find_element_by_id("call").click()
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("modalSelectCmp").is_displayed():
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("modalSelectCmp").is_displayed())
-    #     self.driver.find_element_by_id("SelectCamp").click()
-    #     for _ in range(14):
-    #         if self.driver.find_element_by_id("dial_status").text == "Calling.... 156285260":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(
-    #     self.driver.find_element_by_id("dial_status").text, "Calling.... 156285260")
-    #     for _ in range(19):
-    #         if self.driver.find_element_by_id("dial_status").text == "Connected":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(
-    #     self.driver.find_element_by_id("dial_status").text, "Connected to 156285260")
-    #     self.driver.close()"""
+    def test_crear_grupo_sin_Autounpause(self):
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        group_name = uuid.uuid4().hex
+        self.crear_grupo(group_name)
+        self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(group_name))
 
-    # """def test_dial_status_rejected(self):
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("modalWebCall").is_displayed():
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
-    #     for _ in range(19):
-    #         if self.driver.find_element_by_id("CallStatus"):
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("CallStatus"))
-    #     time.sleep(9)
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("dial_status"):
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("dial_status"))
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("dial_status").text == "Idle":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(self.driver.find_element_by_id("dial_status").text, "Idle")
-    #     self.driver.find_element_by_id("numberToCall").send_keys("156285260")
-    #     self.driver.find_element_by_id("call").click()
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("modalSelectCmp").is_displayed():
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("modalSelectCmp").is_displayed())
-    #     self.driver.find_element_by_id("SelectCamp").click()
-    #     for _ in range(14):
-    #         if self.driver.find_element_by_id("dial_status").text == "Calling.... 156285260":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(
-    #     self.driver.find_element_by_id("dial_status").text, "Calling.... 156285260")
-    #     for _ in range(19):
-    #         if self.driver.find_element_by_id("dial_status").text == "Connected":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(
-    #     self.driver.find_element_by_id("dial_status").text, "Connected to 156285260")
-    #     self.driver.close()"""
+    # Acceso Web Administrador
+    def test_acceso_web_administrador_acceso_exitoso(self):
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        self.assertTrue(self.browser.find_element_by_xpath(
+            '//div/a[contains(@href, "/accounts/logout/")]'))
 
-    # """def test_dial_status_unavailable(self):
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("modalWebCall").is_displayed():
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
-    #     for _ in range(19):
-    #         if self.driver.find_element_by_id("CallStatus"):
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("CallStatus"))
-    #     time.sleep(9)
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("dial_status"):
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("dial_status"))
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("dial_status").text == "Idle":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(self.driver.find_element_by_id("dial_status").text, "Idle")
-    #     self.driver.find_element_by_id("numberToCall").send_keys("156285260")
-    #     self.driver.find_element_by_id("call").click()
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("modalSelectCmp").is_displayed():
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("modalSelectCmp").is_displayed())
-    #     self.driver.find_element_by_id("SelectCamp").click()
-    #     for _ in range(14):
-    #         if self.driver.find_element_by_id("dial_status").text == "Calling.... 156285260":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(
-    #     self.driver.find_element_by_id("dial_status").text, "Calling.... 156285260")
-    #     for _ in range(19):
-    #         if self.driver.find_element_by_id("dial_status").text == "Connected":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(
-    #     self.driver.find_element_by_id("dial_status").text, "Connected to 156285260")
-    #     self.driver.close()"""
+    def test_acceso_web_administrador_acceso_denegado(self):
+        clave_erronea = "test"
+        self._login(ADMIN_USERNAME, clave_erronea)
+        self.assertEqual(self.browser.find_element_by_xpath(
+            '//div[@class="alert alert-danger"]/p').text,
+            'Invalid Username/Password, please try again')
 
-    # """def test_dial_status_error(self):
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("modalWebCall").is_displayed():
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
-    #     for _ in range(19):
-    #         if self.driver.find_element_by_id("CallStatus"):
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("CallStatus"))
-    #     time.sleep(9)
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("dial_status"):
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("dial_status"))
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("dial_status").text == "Idle":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(self.driver.find_element_by_id("dial_status").text, "Idle")
-    #     self.driver.find_element_by_id("numberToCall").send_keys("156285260")
-    #     self.driver.find_element_by_id("call").click()
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("modalSelectCmp").is_displayed():
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("modalSelectCmp").is_displayed())
-    #     self.driver.find_element_by_id("SelectCamp").click()
-    #     for _ in range(14):
-    #         if self.driver.find_element_by_id("dial_status").text == "Calling.... 156285260":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(
-    #     self.driver.find_element_by_id("dial_status").text, "Calling.... 156285260")
-    #     for _ in range(19):
-    #         if self.driver.find_element_by_id("dial_status").text == "Connected":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(
-    #     self.driver.find_element_by_id("dial_status").text, "Connected to 156285260")
-    #     self.driver.close()"""
+    # Acceso web Agente
+    def test_acceso_web_agente_acceso_exitoso(self):
+        self._login(AGENTE_USERNAME, AGENTE_PASSWORD)
+        self.assertTrue(self.browser.find_element_by_xpath(
+            '//a[contains(@href, "/agente/logout/")]'))
 
-    # """def test_dial_status_autherror(self):
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("modalWebCall").is_displayed():
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
-    #     for _ in range(19):
-    #         if self.driver.find_element_by_id("CallStatus"):
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("CallStatus"))
-    #     time.sleep(9)
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("dial_status"):
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("dial_status"))
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("dial_status").text == "Idle":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(self.driver.find_element_by_id("dial_status").text, "Idle")
-    #     self.driver.find_element_by_id("numberToCall").send_keys("156285260")
-    #     self.driver.find_element_by_id("call").click()
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("modalSelectCmp").is_displayed():
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("modalSelectCmp").is_displayed())
-    #     self.driver.find_element_by_id("SelectCamp").click()
-    #     for _ in range(14):
-    #         if self.driver.find_element_by_id("dial_status").text == "Calling.... 156285260":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(
-    #     self.driver.find_element_by_id("dial_status").text, "Calling.... 156285260")
-    #     for _ in range(19):
-    #         if self.driver.find_element_by_id("dial_status").text == "Connected":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(
-    #     self.driver.find_element_by_id("dial_status").text, "Connected to 156285260")
-    #     self.driver.close()"""
+    def test_acceso_web_agente_acceso_denegado(self):
+        clave_erronea = "test"
+        self._login(AGENTE_USERNAME, clave_erronea)
+        self.assertEqual(self.browser.find_element_by_xpath(
+            '//div[@class="alert alert-danger"]/p').text,
+            'Invalid Username/Password, please try again')
 
-    # """def test_dial_status_missingsdp(self):
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("modalWebCall").is_displayed():
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
-    #     for _ in range(19):
-    #         if self.driver.find_element_by_id("CallStatus"):
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("CallStatus"))
-    #     time.sleep(9)
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("dial_status"):
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("dial_status"))
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("dial_status").text == "Idle":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(self.driver.find_element_by_id("dial_status").text, "Idle")
-    #     self.driver.find_element_by_id("numberToCall").send_keys("156285260")
-    #     self.driver.find_element_by_id("call").click()
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("modalSelectCmp").is_displayed():
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("modalSelectCmp").is_displayed())
-    #     self.driver.find_element_by_id("SelectCamp").click()
-    #     for _ in range(14):
-    #         if self.driver.find_element_by_id("dial_status").text == "Calling.... 156285260":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(
-    #     self.driver.find_element_by_id("dial_status").text, "Calling.... 156285260")
-    #     for _ in range(19):
-    #         if self.driver.find_element_by_id("dial_status").text == "Connected":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(
-    #     self.driver.find_element_by_id("dial_status").text, "Connected to 156285260")
-    #     self.driver.close()"""
+    # Acceso web Supervisor
+    def test_accesos_web_supervisor_acceso_exitoso(self):
+        random_supervisor = uuid.uuid4().hex
+        supervisor_username = random_supervisor[:16]
+        supervisor_password = '098098ZZZ'
+        self.crear_supervisor(supervisor_username, supervisor_password)
+        self.crear_supervisor_tipo_gerente()
+        # Deslogueo como admin
+        deslogueo = self.browser.find_element_by_xpath(
+            '//a[contains(@href, "/accounts/logout/")]')
+        href_deslogueo = deslogueo.get_attribute('href')
+        self.browser.get(href_deslogueo)
+        # Logueo como supervisor
+        self._login(supervisor_username, supervisor_password)
+        self.assertTrue(self.browser.find_element_by_xpath(
+            '//a[contains(@href, "/accounts/logout/")]'))
 
-    # """def test_dial_status_addressincomplete(self):
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("modalWebCall").is_displayed():
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
-    #     for _ in range(19):
-    #         if self.driver.find_element_by_id("CallStatus"):
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("CallStatus"))
-    #     time.sleep(9)
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("dial_status"):
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("dial_status"))
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("dial_status").text == "Idle":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(self.driver.find_element_by_id("dial_status").text, "Idle")
-    #     self.driver.find_element_by_id("numberToCall").send_keys("156285260")
-    #     self.driver.find_element_by_id("call").click()
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("modalSelectCmp").is_displayed():
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("modalSelectCmp").is_displayed())
-    #     self.driver.find_element_by_id("SelectCamp").click()
-    #     for _ in range(14):
-    #         if self.driver.find_element_by_id("dial_status").text == "Calling.... 156285260":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(
-    #     self.driver.find_element_by_id("dial_status").text, "Calling.... 156285260")
-    #     for _ in range(19):
-    #         if self.driver.find_element_by_id("dial_status").text == "Connected":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(
-    #     self.driver.find_element_by_id("dial_status").text, "Connected to 156285260")
-    #     self.driver.close()"""
+    def test_acceso_web_supervisor_acceso_denegado(self):
+        # Creación supervisor que vamos a usar para simular un acceso denegado
+        random_supervisor = uuid.uuid4().hex
+        supervisor_username = random_supervisor[:16]
+        supervisor_password = '098098ZZZ'
+        self.crear_supervisor(supervisor_username, supervisor_password)
+        clave_erronea = 'test'
+        # Deslogueo como admin
+        deslogueo = self.browser.find_element_by_xpath(
+            '//a[contains(@href, "/accounts/logout/")]')
+        href_deslogueo = deslogueo.get_attribute('href')
+        self.browser.get(href_deslogueo)
+        # Logueo como supervisor
+        self._login(supervisor_username, clave_erronea)
+        self.assertEqual(self.browser.find_element_by_xpath(
+            '//div[@class="alert alert-danger"]/p').text,
+            'Invalid Username/Password, please try again')
 
-    # """def test_dial_status_jssipfailure(self):
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("modalWebCall").is_displayed():
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
-    #     for _ in range(19):
-    #         if self.driver.find_element_by_id("CallStatus"):
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("CallStatus"))
-    #     time.sleep(9)
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("dial_status"):
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("dial_status"))
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("dial_status").text == "Idle":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(self.driver.find_element_by_id("dial_status").text, "Idle")
-    #     self.driver.find_element_by_id("numberToCall").send_keys("156285260")
-    #     self.driver.find_element_by_id("call").click()
-    #     for _ in range(9):
-    #         if self.driver.find_element_by_id("modalSelectCmp").is_displayed():
-    #             break
-    #         time.sleep(1)
-    #     self.assertTrue(self.driver.find_element_by_id("modalSelectCmp").is_displayed())
-    #     self.driver.find_element_by_id("SelectCamp").click()
-    #     for _ in range(14):
-    #         if self.driver.find_element_by_id("dial_status").text == "Calling.... 156285260":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(
-    #     self.driver.find_element_by_id("dial_status").text, "Calling.... 156285260")
-    #     for _ in range(19):
-    #         if self.driver.find_element_by_id("dial_status").text == "Connected":
-    #             break
-    #         time.sleep(1)
-    #     self.assertEquals(
-    #     self.driver.find_element_by_id("dial_status").text, "Connected to 156285260")
-    #     self.driver.close()"""
+    # Acceso web Customer
+    def test_acceso_web_cliente_acceso_exitoso(self):
+        # Creación supervisor que vamos a usar para simular un acceso exitoso
+        random_customer = uuid.uuid4().hex
+        customer_username = random_customer[:16]
+        customer_password = '098098ZZZ'
+        self.crear_supervisor(customer_username, customer_password)
+        self.crear_supervisor_tipo_customer()
+        # Deslogue como admin
+        deslogueo = self.browser.find_element_by_xpath(
+            '//a[contains(@href, "/accounts/logout/")]')
+        href_deslogueo = deslogueo.get_attribute('href')
+        self.browser.get(href_deslogueo)
+        # Logueo como cliente
+        self._login(customer_username, customer_password)
+        self.assertTrue(self.browser.find_element_by_xpath(
+            '//div/a[contains(@href, "/accounts/logout/")]'))
 
-    def test_abre_modal_select_camp_manual_call(self):
-        for _ in range(9):
-            if self.driver.find_element_by_id("modalWebCall").is_displayed():
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
-        for _ in range(9):
-            if self.driver.find_element_by_id("CallStatus"):
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("CallStatus"))
-        time.sleep(9)
-        for _ in range(19):
-            if self.driver.find_element_by_id("dial_status"):
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("dial_status"))
-        for _ in range(10):
-            if self.driver.find_element_by_id("dial_status").text == "Idle":
-                break
-            time.sleep(1)
-        self.assertEquals(self.driver.find_element_by_id("dial_status").text, "Idle")
-        self.driver.find_element_by_id("numberToCall").send_keys("1234")
-        self.driver.find_element_by_id("call").click()
-        for _ in range(10):
-            if self.driver.find_element_by_id("modalSelectCmp").is_displayed():
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("modalSelectCmp").is_displayed())
-        self.driver.close()
+    def test_acceso_web_cliente_acceso_denegado(self):
+        # Creación supervisor que vamos a usar para simular un acceso denegado
+        random_customer = uuid.uuid4().hex
+        customer_username = random_customer[:16]
+        customer_password = '098098ZZZ'
+        self.crear_supervisor(customer_username, customer_password)
+        self.crear_supervisor_tipo_customer()
+        clave_erronea = 'test'
+        # Deslogue como admin
+        deslogueo = self.browser.find_element_by_xpath(
+            '//a[contains(@href, "/accounts/logout/")]')
+        href_deslogueo = deslogueo.get_attribute('href')
+        self.browser.get(href_deslogueo)
+        # Logueo como cliente
+        self._login(customer_username, clave_erronea)
+        self.assertEqual(self.browser.find_element_by_xpath(
+            '//div[@class="alert alert-danger"]/p').text,
+            'Invalid Username/Password, please try again')
 
-    def test_cierra_modal_select_camp_manual_call(self):
-        for _ in range(9):
-            if self.driver.find_element_by_id("modalWebCall").is_displayed():
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
-        for _ in range(9):
-            if self.driver.find_element_by_id("CallStatus"):
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("CallStatus"))
-        time.sleep(9)
-        for _ in range(9):
-            if self.driver.find_element_by_id("dial_status"):
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("dial_status"))
-        for _ in range(10):
-            if self.driver.find_element_by_id("dial_status").text == "Idle":
-                break
-            time.sleep(1)
-        self.assertEquals(self.driver.find_element_by_id("dial_status").text, "Idle")
-        self.driver.find_element_by_id("numberToCall").send_keys("1234")
-        self.driver.find_element_by_id("call").click()
-        for _ in range(10):
-            if self.driver.find_element_by_id("modalSelectCmp").is_displayed():
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("modalSelectCmp").is_displayed())
-        self.driver.find_element_by_id("modalSelectCmp").find_element_by_class_name("close").click()
-        for _ in range(10):
-            if not self.driver.find_element_by_id("modalSelectCmp").is_displayed():
-                break
-            time.sleep(1)
-        self.assertFalse(self.driver.find_element_by_id("modalSelectCmp").is_displayed())
-        self.driver.close()
+    def test_bloqueo_y_desbloqueo_de_un_usuario(self):
+        clave_erronea = 'test'
+        # Intento loguearme 3 veces para bloquear la cuenta del usuario
+        self._login(AGENTE_USERNAME, clave_erronea)
+        self._login(AGENTE_USERNAME, clave_erronea)
+        self._login(AGENTE_USERNAME, clave_erronea)
+        texto_error = self.browser.find_element_by_xpath('//div/p').text
+        self.assertEqual(texto_error[45:93], 'Tu cuenta y dirección IP permanecerán bloqueadas')
+        # Vamos al Admin de django para desbloquear este usuario
+        self.browser.get('https://{0}/admin'.format(socket.gethostname()))
+        self.browser.find_element_by_name('username').send_keys(ADMIN_USERNAME)
+        self.browser.find_element_by_name('password').send_keys(ADMIN_PASSWORD)
+        self.browser.find_element_by_xpath('//div/input[@type="submit"]').click()
+        sleep(2)
+        defender = self.browser.find_element_by_xpath(
+            '//a[contains(@href, "/admin/defender/")]')
+        href_defender = defender.get_attribute('href')
+        self.browser.get(href_defender)
+        bloqued_user = self.browser.find_element_by_xpath(
+            '//a[contains(@href, "/admin/defender/blocks/")]')
+        href_bloqued_user = bloqued_user.get_attribute('href')
+        self.browser.get(href_bloqued_user)
+        self.browser.find_element_by_xpath(
+            '//form[@action="/admin/defender/blocks/username/{0}/unblock"]/input[@type="submit"]'
+            .format(AGENTE_USERNAME)).click()
+        sleep(2)
+        # Deslogueo como admin
+        self.browser.get('https://{0}/'.format(socket.gethostname()))
+        deslogueo = self.browser.find_element_by_xpath(
+            '//a[contains(@href, "/accounts/logout/")]')
+        href_deslogueo = deslogueo.get_attribute('href')
+        self.browser.get(href_deslogueo)
+        # Compruebo que el usuario esta desbloqueado
+        self._login(AGENTE_USERNAME, AGENTE_PASSWORD)
+        self.assertTrue(self.browser.find_element_by_xpath(
+            '//div/a[contains(@href, "/agente/logout/")]'))
 
-    def test_navegar_a_agenda(self):
-        for _ in range(9):
-            if self.driver.find_element_by_id("modalWebCall").is_displayed():
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
-        for _ in range(9):
-            if self.driver.find_element_by_id("CallStatus"):
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("CallStatus"))
-        time.sleep(9)
-        for _ in range(9):
-            if self.driver.find_element_by_id("dial_status"):
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("dial_status"))
-        for _ in range(10):
-            if self.driver.find_element_by_id("dial_status").text == "Idle":
-                break
-            time.sleep(1)
-        self.assertEquals(self.driver.find_element_by_id("dial_status").text, "Idle")
-        self.driver.find_element_by_id("modalWebCall").find_element_by_class_name("close").click()
-        for _ in range(10):
-            if not self.driver.find_element_by_id("modalWebCall").is_displayed():
-                break
-            time.sleep(1)
-        self.assertFalse(self.driver.find_element_by_id("modalWebCall").is_displayed())
-        self.driver.find_element_by_link_text("Agendas").click()
-        time.sleep(4)
-        self.assertEquals(self.driver.find_element_by_id(
-            "dataView").get_attribute("src"), "https://172.16.20.90/agenda/agente_list/")
 
-    def test_elegir_camp_llam_manual(self):
-        for _ in range(9):
-            if self.driver.find_element_by_id("modalWebCall").is_displayed():
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("modalWebCall").is_displayed())
-        for _ in range(9):
-            if self.driver.find_element_by_id("CallStatus"):
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("CallStatus"))
-        time.sleep(9)
-        for _ in range(9):
-            if self.driver.find_element_by_id("dial_status"):
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("dial_status"))
-        for _ in range(10):
-            if self.driver.find_element_by_id("dial_status").text == "Idle":
-                break
-            time.sleep(1)
-        self.assertEquals(self.driver.find_element_by_id("dial_status").text, "Idle")
-        self.driver.find_element_by_id("numberToCall").send_keys("1234")
-        self.driver.find_element_by_id("call").click()
-        for _ in range(10):
-            if self.driver.find_element_by_id("modalSelectCmp").is_displayed():
-                break
-            time.sleep(1)
-        self.assertTrue(self.driver.find_element_by_id("modalSelectCmp").is_displayed())
-        for _ in range(10):
-            if self.driver.find_element_by_id("cmpList").get_attribute("value") == 36:
-                break
-            time.sleep(1)
-        self.assertEquals('36', self.driver.find_element_by_id("cmpList").get_attribute("value"))
+if __name__ == '__main__':
+    # para poder ejecutar los tests desde fuera del entorno
+    unittest.main()
