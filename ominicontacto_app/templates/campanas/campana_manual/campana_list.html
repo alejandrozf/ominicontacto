@@ -24,7 +24,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% block campanas_activas %}
     {% for campana in activas %}
-        <tr>
+        <tr id="{{campana.nombre}}">
             <td width="25%">
                 <a href="{% url 'campana_manual_update' campana.pk %}">{{ campana.nombre }}</a>
             </td>

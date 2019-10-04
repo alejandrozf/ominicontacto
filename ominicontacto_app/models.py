@@ -529,9 +529,9 @@ class ArchivoDeAudio(models.Model):
         un sufijo.
         """
         descripcion = SUBSITUTE_ALFANUMERICO.sub('', descripcion)
-        if cls.objects.filter(descripcion=descripcion).count() > 0:
+        if cls._base_manager.filter(descripcion=descripcion).count() > 0:
             ultimo = 0
-            copias = cls.objects.filter(descripcion__startswith=descripcion + '_')
+            copias = cls._base_manager.filter(descripcion__startswith=descripcion + '_')
             for archivo in copias:
                 sufijo = archivo.descripcion.replace(descripcion + '_', '', 1)
                 if sufijo.isdigit():
@@ -2120,8 +2120,15 @@ class BaseDatosContacto(models.Model):
         actual.
         NO realiza la copia de los contactos de la misma.
         """
+        # obtiene ultimo id de BaseDatosContacto, le suma 1 y se usa
+        # para generar el nuevo nombre
+        last_bd_contacto = BaseDatosContacto.objects.last()
+        if last_bd_contacto:
+            bd_reciclada_id = last_bd_contacto.pk + 1
+        else:
+            bd_reciclada_id = 0
         copia = BaseDatosContacto.objects.create(
-            nombre='{0} (reciclada)'.format(self.nombre),
+            nombre='{0}-{1} (reciclada)'.format(self.nombre, bd_reciclada_id),
             archivo_importacion=self.archivo_importacion,
             nombre_archivo_importacion=self.nombre_archivo_importacion,
             metadata=self.metadata,

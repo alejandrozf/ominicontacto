@@ -161,6 +161,11 @@
   when: is_docker == "false"
   tags: postinstall
 
+# Untareo los sonidos de agentes, que vienen desde el repo
+- name: Untar the sounds for agents
+  unarchive: "src=/var/tmp/ominicontacto-build/ominicontacto/ominicontacto_voip/asterisk-files/sounds/oml.tar.gz dest={{ ast_sounds_location }}/oml/"
+  when: is_docker == "false"
+  tags: postinstall
 
 # Permiso de usuario a la carpeta de asterisk
 - name: Set up permissions of asterisk

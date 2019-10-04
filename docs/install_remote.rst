@@ -43,7 +43,7 @@ Preparación en la máquina que ejecuta la instalación remota
 
 - Debemos contar con el paquete git para luego clonar el repositorio del protyecto y seleccionar el release a instalar.
 
-Ubuntu - Debian:
+**Ubuntu - Debian:**
 
 .. code-block:: bash
 
@@ -52,7 +52,24 @@ Ubuntu - Debian:
   cd ominicontacto
   git checkout master
 
-CentOS:
+- Realizar el update/upgrade del sistema operativo
+
+.. code-block:: bash
+
+  apt-get update
+  apt-get upgrade -y
+
+.. important::
+
+    **Para Debian:** Instalar paquete linux-image-amd64: *apt-get install linux-image-amd64*
+
+- Rebootear la máquina.
+
+.. code-block:: bash
+
+  reboot
+
+**CentOS:**
 
 .. code-block:: bash
 

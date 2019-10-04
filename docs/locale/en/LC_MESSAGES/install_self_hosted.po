@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-02 14:37-0300\n"
+"POT-Creation-Date: 2019-10-01 14:27-0300\n"
 "PO-Revision-Date: 2019-08-13 17:34-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -81,41 +81,63 @@ msgstr ""
 "Configure an *IP address* and a fixed *hostname* in the destination host "
 "of the installation."
 
-# 1acf76a8cb2d4c7fb4b606fe30352d5d
-#: ../../install_self_hosted.rst:26
-msgid ""
-"En versiones menores a CentOS 7.6 es necesario primero hacer un yum "
-"update y luego reebotear el server"
-msgstr ""
-"In versions smaller tan CentOS 7.6 it is necessary to perform a yum "
-"update first and then reboot the server"
-
 # 2b4433ace54a414a9b27fd24f92814a7
-#: ../../install_self_hosted.rst:29
+#: ../../install_self_hosted.rst:25
 msgid "Ajustes necesarios antes  de la ejecución de script:"
 msgstr "Necessary adjustments before the script execution:"
 
 # 988c48072f814e14b87552fb05b2c21e
-#: ../../install_self_hosted.rst:31
+#: ../../install_self_hosted.rst:27
 msgid ""
 "Debemos contar con git para luego clonar el repositorio del proyecto y "
 "seleccionar el release a instalar"
 msgstr ""
 "We must have the git package to then clon the project repository and "
-"select the reléase to install"
+"select the release to install"
 
 # f07e195eae4441f39dd5cdf9f6852760
-#: ../../install_self_hosted.rst:33
+#: ../../install_self_hosted.rst:29
 msgid "**Ubuntu - Debian:**"
 msgstr "**Ubuntu - Debian:**"
 
+# a204d339581244b886452034b5aca489
+#: ../../install_self_hosted.rst:38
+msgid "Realizar el update/upgrade del sistema operativo"
+msgstr "Make an update/upgrade of the SO"
+
+# 5b2b4f4b220e494f873cf9cf105e5e3f
+#: ../../install_self_hosted.rst:47
+msgid ""
+"**Para Debian:** Instalar paquete linux-image-amd64: *apt-get install "
+"linux-image-amd64*"
+msgstr "**To Debian:** Install the package linux-image-amd64: *apt-get install linux-image-amd64*"
+
+# 37fc736d167648878d78e3b482c57ad6
+#: ../../install_self_hosted.rst:49
+msgid "Rebootear la máquina."
+msgstr "Reboot the machine"
+
 # fa529c6c705a4ef189359f290a2fc988
-#: ../../install_self_hosted.rst:42
+#: ../../install_self_hosted.rst:55
 msgid "**CentOS:**"
 msgstr "**CentOS:**"
 
+# d54d46011af0427ca57b1f10525d6f1d
+#: ../../install_self_hosted.rst:64
+msgid ""
+"Instalar paquete kernel-devel, realizar el update del sistema operativo y"
+" rebotear la máquina."
+msgstr "Install kernel-devel package, update the SO and reboot the machine"
+
+# ce16feea8bbf4211bcf1ce66efe9b43f
+#: ../../install_self_hosted.rst:74
+msgid ""
+"Luego del reboot es importante revisar que el paquete kernel-devel "
+"coincida con el kernel que se muestre con el comando *uname -a*"
+msgstr "After the reboot is very important to check that the kernel-devel package coincide with the kernel shown by the command *uname -a*"
+
 # 0a73a82ed5d444d98332a9a0a97f40cb
-#: ../../install_self_hosted.rst:51
+#: ../../install_self_hosted.rst:76
 msgid ""
 "La instalación se trabaja en el directorio \"deploy/ansible\", disponible"
 " desde la raíz del proyecto (PATH/ominicontacto/deploy/ansible):"
@@ -124,7 +146,7 @@ msgstr ""
 " from the project root (PATH/ominicontact/deploy/ansible): "
 
 # 88fb65bd916e4235b4d2b00479a03b04
-#: ../../install_self_hosted.rst:57
+#: ../../install_self_hosted.rst:82
 msgid ""
 "En este paso debemos trabajar sobre el archivo  "
 ":ref:`about_install_inventory` disponible dentro del directorio "
@@ -134,7 +156,7 @@ msgstr ""
 " be edited."
 
 # 412b8c81272e43ba83f68130ef671032
-#: ../../install_self_hosted.rst:61
+#: ../../install_self_hosted.rst:86
 msgid ""
 "OMniLeads utiliza ansible para realizar la instalación, por lo tanto "
 "existe un \"archivo de inventario\" que debe ser modificado de acuerdo a "
@@ -145,26 +167,26 @@ msgstr ""
 "the host we are working on."
 
 # 9673a7b543f9458caa97925c68078dee
-#: ../../install_self_hosted.rst:64
+#: ../../install_self_hosted.rst:89
 msgid ""
 "Luego, allí en el inventory mismo debemos ajustar las "
 ":ref:`about_install_inventory_vars` de la instanacia."
 msgstr ""
 
 # 54b60f7b860b4719a999d0444dba19ac
-#: ../../install_self_hosted.rst:66
+#: ../../install_self_hosted.rst:91
 msgid ""
 "Una vez ajustados todos los parámetros del archivo de inventario, "
 "procedemos con la ejecución de la instalación."
 msgstr ""
 
 # de8b4289cf3a40f98d8c2d1b15f25578
-#: ../../install_self_hosted.rst:69
+#: ../../install_self_hosted.rst:94
 msgid "Ejecución del script de instalación:"
 msgstr "Executing of the installation script:"
 
 # 95151eaaaeeb4db0beccb4e2c9c50c11
-#: ../../install_self_hosted.rst:71
+#: ../../install_self_hosted.rst:96
 msgid ""
 "La instalación de OMniLeads se realiza mediante el script *deploy.sh*, "
 "ubicado dentro de la carpeta deploy/ansible con respecto a la carpeta "
@@ -175,7 +197,7 @@ msgstr ""
 "project (omnicontacto)."
 
 # c65094850fef457eb8fed322a386f896
-#: ../../install_self_hosted.rst:74
+#: ../../install_self_hosted.rst:99
 msgid ""
 "Una vez configuradas las variables citadas, se procede con la ejecución "
 "del script de instalación (como usuario root o con privilegios sudo):"
@@ -185,7 +207,7 @@ msgstr ""
 "privileges):"
 
 # 3f3e3637be06444292f2135c42015557
-#: ../../install_self_hosted.rst:80
+#: ../../install_self_hosted.rst:105
 msgid ""
 "Donde **<your_iface>** es la interfaz con la IP que se quiere usar para "
 "levantar los servicios que componen OMniLeads (suele ser la IP de la "
@@ -196,7 +218,7 @@ msgstr ""
 "LAN interface of the host)."
 
 # 94f6755e3f3841c78c01965b94b4952c
-#: ../../install_self_hosted.rst:82
+#: ../../install_self_hosted.rst:107
 msgid ""
 "El tiempo de instalación dependerá mayormente de la velocidad de conexión"
 " a internet del host OML, ya que se deben descargar, instalar y "
@@ -210,12 +232,12 @@ msgstr ""
 "configured. Approximately this time is 20 to 30 minutes."
 
 # 7d664bdf9b154a02b4093a7f1002221b
-#: ../../install_self_hosted.rst:86
+#: ../../install_self_hosted.rst:111
 msgid "*Figure 4: install running*"
 msgstr "*Figure 4: install running*"
 
 # e7a353463c254ab48ea23f413e2739bf
-#: ../../install_self_hosted.rst:88
+#: ../../install_self_hosted.rst:113
 msgid ""
 "Si la ejecución de la instalación finaliza exitosamente, se despliega una"
 " vista como la de la figura 8."
@@ -224,17 +246,17 @@ msgstr ""
 "figure 5 is displayed."
 
 # 208aa96e929342d4b19a75509fbd9a70
-#: ../../install_self_hosted.rst:92
+#: ../../install_self_hosted.rst:117
 msgid "*Figure 5: OMniLeads installation ended succesfuly*"
 msgstr "*Figure 5: OMniLeads installation ended succesfuly*"
 
 # 528f1962a24c4dafb222bc3daa6883a3
-#: ../../install_self_hosted.rst:95
+#: ../../install_self_hosted.rst:120
 msgid "Primer acceso a OMniLeads:"
 msgstr "First access to OMniLeads:"
 
 # 118e462d2b894e069a21b351fdd5c2a3
-#: ../../install_self_hosted.rst:97
+#: ../../install_self_hosted.rst:122
 msgid ""
 "Si la ejecución de la instalación fue exitosa, entonces podemos realizar "
 "un :ref:`about_first_access`."
@@ -243,12 +265,12 @@ msgstr ""
 ":ref:`about_first_access`."
 
 # 5a238f9e9ebd45b7a688d0378122064e
-#: ../../install_self_hosted.rst:100
+#: ../../install_self_hosted.rst:125
 msgid "Errores comunes:"
 msgstr "Common mistakes:"
 
 # 1695c9e1207143749dd988a27fe2f890
-#: ../../install_self_hosted.rst:102
+#: ../../install_self_hosted.rst:127
 msgid ""
 "El server no tiene internet o no resuelve dominios (configuración de "
 "DNS). **Compruebe el acceso a internet del host (por ej: actualizando "
@@ -259,7 +281,7 @@ msgstr ""
 "packages - apt-get update | yum update).*"
 
 # 7a548aeafb2848fa9d290ff557b24b04
-#: ../../install_self_hosted.rst:104
+#: ../../install_self_hosted.rst:129
 msgid ""
 "Timeout de algún paquete que se intenta bajar. Puede volver a intentar "
 "ejecutar el deploy y si vuelve a fallar, la opción puede ser instalar el "
@@ -270,12 +292,12 @@ msgstr ""
 " package from the terminal.*"
 
 # 30fb51145b1d41b29f09f79914b60944
-#: ../../install_self_hosted.rst:106
+#: ../../install_self_hosted.rst:131
 msgid "No ejecutó el script de deploy con *sudo*, en el host deployer."
 msgstr "It does not execute the deploy script with *sudo*, in the deployer host."
 
 # b8ba5981c0b14fbab05433aff646984c
-#: ../../install_self_hosted.rst:108
+#: ../../install_self_hosted.rst:133
 msgid ""
 "En caso de contar con algún host Ubuntu-Debian, recordar que se deben "
 "instalar paquetes como *sudo, openssh-server o python-minimal* antes de "
@@ -448,3 +470,14 @@ msgstr ""
 #~ "Failure due to bad syntax or lack"
 #~ " of definition of *hostname* and *IP"
 #~ " address* in the file *inventory*."
+
+# 1acf76a8cb2d4c7fb4b606fe30352d5d
+#~ msgid ""
+#~ "En versiones menores a CentOS 7.6 "
+#~ "es necesario primero hacer un yum "
+#~ "update y luego reebotear el server"
+#~ msgstr ""
+#~ "In versions smaller tan CentOS 7.6 "
+#~ "it is necessary to perform a yum"
+#~ " update first and then reboot the "
+#~ "server"
