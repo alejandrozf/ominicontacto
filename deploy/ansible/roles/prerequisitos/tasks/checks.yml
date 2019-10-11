@@ -12,6 +12,20 @@
   tags: always
   changed_when: false
 
+- name: Set ansible variables depending of hostname
+  set_fact: omni_fqdn="{{ hostname.stdout }}"
+  tags: always
+- set_fact: omniapp_fqdn="{{ omni_fqdn }}"
+  tags: always
+- set_fact: asterisk_fqdn="{{ omni_fqdn }}"
+  tags: always
+- set_fact: kamailio_fqdn="{{ omni_fqdn }}"
+  tags: always
+- set_fact: database_fqdn="{{ omni_fqdn }}"
+  tags: always
+- set_fact: dialer_fqdn="{{ omni_fqdn }}"
+  tags: always
+
 # Obtengo IP del nodo
 - name: Get IP adress of node (selfhosted)
   set_fact: omni_ip={{ hostvars[inventory_hostname]['ansible_' + iface]['ipv4']['address'] }}
@@ -180,6 +194,7 @@
 - name: Get actual mysql root password
   set_fact: mysql_old_root_password="{{ ansible_env.MYSQL_PWD }}"
   when: assert_mysqlpwd.rc == 0
+  tags: always
 
 # Chequea si timezone esta definido
 - name: Check if TimeZone variable is defined

@@ -54,7 +54,6 @@
 
 - set_fact: mysql_old_root_password="{{ mysql_root_password }}"
   when: mysql_old_root_password is not defined
-  tags: postinstall
 
 - name: Set root Password
   mysql_user: name=root host={{ mysql_host }} host_all=yes password={{ mysql_root_password }} login_password={{ mysql_old_root_password }} login_host={{ mysql_host }} check_implicit_admin=true state=present
