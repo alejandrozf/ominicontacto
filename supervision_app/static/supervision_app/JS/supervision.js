@@ -16,14 +16,19 @@
  along with this program.  If not, see http://www.gnu.org/licenses/.
 
 */
+/* global Urls */
+/* global create_node */
+/* global gettext */
+/* global moment */
+
 
 function obtenerNodosAcciones(pk_agent, status) {
 
     var $whisper = create_node('a', {
         'class': 'btn btn-light btn-sm',
         'role': 'button',
-        'href': "#",
-        'onclick': "executeSupervisorAction('" + pk_agent + "', 'CHANSPYWISHPER')"
+        'href': '#',
+        'onclick': 'executeSupervisorAction(\'' + pk_agent + '\', \'CHANSPYWISHPER\')'
     });
     var $spanWhisper = create_node('span', {
         'class': 'fas fa-comment',
@@ -35,8 +40,8 @@ function obtenerNodosAcciones(pk_agent, status) {
     var $spy = create_node('a', {
         'class': 'btn btn-light btn-sm',
         'role': 'button',
-        'href': "#",
-        'onclick': "executeSupervisorAction('" + pk_agent + "', 'CHANSPY')"
+        'href': '#',
+        'onclick': 'executeSupervisorAction(\'' + pk_agent + '\', \'CHANSPY\')'
     });
     var $spanSpy = create_node('span', {
         'class': 'fas fa-user-secret',
@@ -51,8 +56,8 @@ function obtenerNodosAcciones(pk_agent, status) {
     var $pause = create_node('a', {
         'class': 'btn btn-light btn-sm',
         'role': 'button',
-        'href': "#",
-        'onclick': "executeSupervisorAction('" + pk_agent + "', '" + pause_action + "')"
+        'href': '#',
+        'onclick': 'executeSupervisorAction(\'' + pk_agent + '\', \'' + pause_action + '\')'
     });
     var $spanPause = create_node('span', {
         'class': 'fas fa-pause-circle',
@@ -64,8 +69,8 @@ function obtenerNodosAcciones(pk_agent, status) {
     var $logout = create_node('a', {
         'class': 'btn btn-light btn-sm',
         'role': 'button',
-        'href': "#",
-        'onclick': "executeSupervisorAction('" + pk_agent + "', 'AGENTLOGOUT')"
+        'href': '#',
+        'onclick': 'executeSupervisorAction(\'' + pk_agent + '\', \'AGENTLOGOUT\')'
     });
     var $spanLogout = create_node('span', {
         'class': 'fas fa-sign-out-alt',
@@ -74,7 +79,7 @@ function obtenerNodosAcciones(pk_agent, status) {
     });
     $logout.append($spanLogout);
 
-    $div = create_node('div');
+    var $div = create_node('div');
     $div.append($spy);
     $div.append($whisper);
     $div.append($pause);
@@ -88,52 +93,55 @@ function assignToColumns(data_sin_filtrar) {
     if ( $.fn.DataTable.isDataTable('#tableAgentes') ) {
         $('#tableAgentes').DataTable().destroy();
     }
-    var data = data_sin_filtrar.filter(function (val) {return val['status'] != 'OFFLINE'});
-    var table = $('#tableAgentes').dataTable({
+    var data = data_sin_filtrar.filter(function (val) {return val['status'] != 'OFFLINE';});
+    $('#tableAgentes').dataTable({
         bAutoWidth : false,
         aaData : data,
         columns : [
             {'data' : 'nombre'},
             {'data' : 'status',
-             'render': function ( data, type, row, meta) {
-                 var $status = create_node('p');
-                 $status.text(data);
-                 if (data.search('READY') != -1) {
-                     $status.attr('class', 'ready');
-                 }
-                 if (data.search('PAUSE') != -1) {
-                     $status.attr('class', 'paused');
-                 }
-                 if (data.search('ONCALL') != -1) {
-                     $status.attr('class', 'oncall');
-                 }
-                 return $status.prop('outerHTML');
-             }
+                'render': function (data) {  //( data, type, row, meta)
+                    var $status = create_node('p');
+                    $status.text(data);
+                    if (data.search('READY') != -1) {
+                        $status.attr('class', 'ready');
+                    }
+                    if (data.search('PAUSE') != -1) {
+                        $status.attr('class', 'paused');
+                    }
+                    if (data.search('ONCALL') != -1) {
+                        $status.attr('class', 'oncall');
+                    }
+                    if (data.search('DIALING') != -1) {
+                        $status.attr('class', 'dialing');
+                    }
+                    return $status.prop('outerHTML');
+                }
 
             },
             {'data' : 'tiempo',
-             'render': function ( data, type, row, meta ) {
-                 var duration = moment.duration(data, 'seconds');
-                 return moment.utc(duration.as('milliseconds')).format('HH:mm:ss')
-             },
+                'render': function (data) {  // ( data, type, row, meta)
+                    var duration = moment.duration(data, 'seconds');
+                    return moment.utc(duration.as('milliseconds')).format('HH:mm:ss');
+                },
             },
             {'data' : 'id',
-             'render': function ( data, type, row, meta ) {
-                 return obtenerNodosAcciones(row['id'], row['status']);
-             },
+                'render': function (data, type, row) {  // (data, type, row, meta)
+                    return obtenerNodosAcciones(row['id'], row['status']);
+                },
             }
         ],
         language: {
-            search: gettext("Buscar: "),
-            infoFiltered: gettext("(filtrando de un total de _MAX_ contactos)"),
+            search: gettext('Buscar: '),
+            infoFiltered: gettext('(filtrando de un total de _MAX_ contactos)'),
             paginate: {
-                first: gettext("Primero "),
-                previous: gettext("Anterior "),
-                next: gettext(" Siguiente"),
-                last: gettext(" Último"),
+                first: gettext('Primero '),
+                previous: gettext('Anterior '),
+                next: gettext(' Siguiente'),
+                last: gettext(' Último'),
             },
-            lengthMenu: gettext("Mostrar _MENU_ entradas"),
-            info: gettext("Mostrando _START_ a _END_ de _TOTAL_ entradas"),
+            lengthMenu: gettext('Mostrar _MENU_ entradas'),
+            info: gettext('Mostrando _START_ a _END_ de _TOTAL_ entradas'),
         }
     });
 }
@@ -147,12 +155,12 @@ function refreshActiveAgentsTable() {
             assignToColumns(data);
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
+            console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
         },
     });
 }
 
 $(document).ready(function () {
-    refreshActiveAgentsTable()
+    refreshActiveAgentsTable();
     setInterval(refreshActiveAgentsTable, 5000);
 });
