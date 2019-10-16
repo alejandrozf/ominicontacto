@@ -1,11 +1,31 @@
 .ready {
-    color: green;
+    color: black;
+    background: rgb(236, 238, 234);
+    border-radius: 50px;
+    padding: 0px 5px;
+    text-align: center;
 }
 
 .paused {
-    color: yellow;
+    color: black;
+    background: rgb(224, 185, 61);
+    border-radius: 50px;
+    padding: 0px 5px;
+    text-align: center;
 }
 
 .oncall {
-    color: red;
+    color: white;
+    background: rgb(143, 198, 65);
+    border-radius: 50px;
+    padding: 0px 5px;
+    text-align: center;
+}
+
+.dialing {
+    color: white;
+    background: rgb(143, 198, 65);
+    border-radius: 50px;
+    padding: 0px 5px;
+    text-align: center;
 }
