@@ -81,8 +81,9 @@ class IntegrationTests(unittest.TestCase):
         # super(IntegrationTests, cls).setUpClass()
         cls.setUp()
         cls._login(ADMIN_USERNAME, ADMIN_PASSWORD)
-        cls.crear_module()
-        group_name = uuid.uuid4().hex
+        modulo_name = 'modulo' + uuid.uuid4().hex[:5]
+        cls.crear_module(modulo_name)
+        group_name = 'group' + uuid.uuid4().hex[:5]
         cls.crear_grupo(group_name)
         cls.crear_agente(AGENTE_USERNAME, AGENTE_PASSWORD)
         if BROWSER_REAL == 'True':
@@ -156,7 +157,7 @@ class IntegrationTests(unittest.TestCase):
             '//a[contains(@href,"/grupo/nuevo")]')
         href_create_group = link_create_group.get_attribute('href')
         self.browser.get(href_create_group)
-        group_name = uuid.uuid4().hex
+        group_name = 'grupo' + uuid.uuid4().hex[:5]
         self.browser.find_element_by_id('id_nombre').send_keys(group_name)
         self.browser.find_element_by_id('id_auto_attend_ics').click()
         self.browser.find_element_by_id('id_auto_attend_inbound').click()
@@ -166,13 +167,12 @@ class IntegrationTests(unittest.TestCase):
         sleep(1)
 
     @classmethod
-    def crear_module(self):
+    def crear_module(self, modulo):
         create_module = self.browser.find_element_by_xpath(
             '//a[contains(@href,"/modulo/nuevo/")]')
         href_create_module = create_module.get_attribute('href')
         self.browser.get(href_create_module)
-        module_name = 'modulo_test'
-        self.browser.find_element_by_id('id_nombre').send_keys(module_name)
+        self.browser.find_element_by_id('id_nombre').send_keys(modulo)
         self.browser.find_element_by_xpath((
             "//button[@type='submit' and @id='id_registrar']")).click()
         sleep(1)
@@ -269,17 +269,14 @@ class IntegrationTests(unittest.TestCase):
         sleep(1)
         self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
             nuevo_username))
-        # modificar agente, para ello debe haber 2 modulos creados.
-        self.crear_module()
+        # modificar grupo del agente.
         self.browser.get(href_user_list)
         link_update = self.browser.find_element_by_xpath(
             "//tr[@id=\'{0}\']/td/a[contains(@href, '/user/agenteprofile/update/')]".format(
                 nuevo_username))
         href_update = link_update.get_attribute('href')
         self.browser.get(href_update)
-        self.browser.find_element_by_xpath('//select[@id=\'id_modulos\']/option').click()
-        self.browser.find_elements_by_xpath(
-            '//select[@id=\'id_modulos\']/option')[1].click()
+        self.browser.find_elements_by_xpath('//select[@id=\'id_grupo\']/option')[2].click()
         sleep(1)
         self.browser.find_element_by_xpath((
             "//button[@type='submit' and @id='id_registrar']")).click()
@@ -287,7 +284,7 @@ class IntegrationTests(unittest.TestCase):
         self.browser.get(href_user_list)
         self.browser.get(href_update)
         self.assertTrue(self.browser.find_elements_by_xpath(
-            "//select[@id=\'id_modulos\']/option[@value='2' and @selected='selected']"))
+            "//select[@id=\'id_grupo\']/option[@value='2' and @selected='selected']"))
         # Eliminar agente
         self.browser.get(href_user_list)
         link_delete = self.browser.find_element_by_xpath(
@@ -302,8 +299,7 @@ class IntegrationTests(unittest.TestCase):
 
     def test_crear_usuario_tipo_customer(self):
         # Creación de clientes
-        random_customer = uuid.uuid4().hex
-        customer_username = random_customer[:16]
+        customer_username = 'cliente' + uuid.uuid4().hex[:5]
         customer_password = '098098ZZZ'
         self.crear_supervisor(customer_username, customer_password)
         self.crear_supervisor_tipo_customer()
@@ -326,11 +322,28 @@ class IntegrationTests(unittest.TestCase):
         self.browser.get(href_update)
         self.assertTrue(self.browser.find_elements_by_xpath(
             "//select[@id=\'id_rol\']/option[@value='2' and @selected='selected']"))
+        # Volver a modificiar a un perfil de cliente
+        user_list = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/user/list/page1/")]')
+        href_user_list = user_list.get_attribute('href')
+        self.browser.get(href_user_list)
+        link_update = self.browser.find_element_by_xpath(
+            "//tr[@id=\'{0}\']/td/a[contains(@href, '/supervisor/')]".format(
+                customer_username))
+        href_update = link_update.get_attribute('href')
+        self.browser.get(href_update)
+        self.browser.find_elements_by_xpath("//select[@id=\'id_rol\']/option")[2].click()
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit' and @id='id_registrar']")).click()
+        sleep(1)
+        self.browser.get(href_user_list)
+        self.browser.get(href_update)
+        self.assertTrue(self.browser.find_elements_by_xpath(
+            "//select[@id=\'id_rol\']/option[@value='4' and @selected='selected']"))
 
     def test_crear_usuario_tipo_supervisor(self):
         # Creación de supervisor
-        random_supervisor = uuid.uuid4().hex
-        supervisor_username = random_supervisor[:16]
+        supervisor_username = 'supervisor' + uuid.uuid4().hex[:5]
         supervisor_password = '098098ZZZ'
         self.crear_supervisor(supervisor_username, supervisor_password)
         self.crear_supervisor_tipo_gerente()
@@ -362,8 +375,7 @@ class IntegrationTests(unittest.TestCase):
             '//a[contains(@href,"/grupo/nuevo")]')
         href_create_group = link_create_group.get_attribute('href')
         self.browser.get(href_create_group)
-        random_name = uuid.uuid4().hex
-        group_name = random_name[:16]
+        group_name = 'grupo' + uuid.uuid4().hex[:5]
         auto_unpause = random.randrange(1, 99)
         self.browser.find_element_by_id('id_nombre').send_keys(group_name)
         self.browser.find_element_by_id('id_auto_unpause').send_keys(auto_unpause)
@@ -383,7 +395,7 @@ class IntegrationTests(unittest.TestCase):
             "//tr[@id=\'{0}\']/td/div//a[contains(@href,'/grupo/update')]".format(group_name))
         href_edit = link_edit.get_attribute('href')
         self.browser.get(href_edit)
-        nuevo_groupname = random_name[:16]
+        nuevo_groupname = 'grupo' + uuid.uuid4().hex[:5]
         self.browser.find_element_by_id('id_nombre').clear()
         sleep(1)
         self.browser.find_element_by_id('id_nombre').send_keys(nuevo_groupname)
@@ -406,7 +418,7 @@ class IntegrationTests(unittest.TestCase):
 
     def test_crear_grupo_sin_Autounpause(self):
         self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
-        group_name = uuid.uuid4().hex
+        group_name = 'grupo' + uuid.uuid4().hex[:5]
         self.crear_grupo(group_name)
         self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(group_name))
 
@@ -438,8 +450,7 @@ class IntegrationTests(unittest.TestCase):
 
     # Acceso web Supervisor
     def test_accesos_web_supervisor_acceso_exitoso(self):
-        random_supervisor = uuid.uuid4().hex
-        supervisor_username = random_supervisor[:16]
+        supervisor_username = 'supervisor' + uuid.uuid4().hex[:5]
         supervisor_password = '098098ZZZ'
         self.crear_supervisor(supervisor_username, supervisor_password)
         self.crear_supervisor_tipo_gerente()
@@ -455,8 +466,7 @@ class IntegrationTests(unittest.TestCase):
 
     def test_acceso_web_supervisor_acceso_denegado(self):
         # Creación supervisor que vamos a usar para simular un acceso denegado
-        random_supervisor = uuid.uuid4().hex
-        supervisor_username = random_supervisor[:16]
+        supervisor_username = 'supervisor' + uuid.uuid4().hex[:5]
         supervisor_password = '098098ZZZ'
         self.crear_supervisor(supervisor_username, supervisor_password)
         clave_erronea = 'test'
@@ -474,8 +484,7 @@ class IntegrationTests(unittest.TestCase):
     # Acceso web Customer
     def test_acceso_web_cliente_acceso_exitoso(self):
         # Creación supervisor que vamos a usar para simular un acceso exitoso
-        random_customer = uuid.uuid4().hex
-        customer_username = random_customer[:16]
+        customer_username = 'cliente' + uuid.uuid4().hex[:5]
         customer_password = '098098ZZZ'
         self.crear_supervisor(customer_username, customer_password)
         self.crear_supervisor_tipo_customer()
@@ -491,8 +500,7 @@ class IntegrationTests(unittest.TestCase):
 
     def test_acceso_web_cliente_acceso_denegado(self):
         # Creación supervisor que vamos a usar para simular un acceso denegado
-        random_customer = uuid.uuid4().hex
-        customer_username = random_customer[:16]
+        customer_username = 'cliente' + uuid.uuid4().hex[:5]
         customer_password = '098098ZZZ'
         self.crear_supervisor(customer_username, customer_password)
         self.crear_supervisor_tipo_customer()
@@ -544,6 +552,23 @@ class IntegrationTests(unittest.TestCase):
         self._login(AGENTE_USERNAME, AGENTE_PASSWORD)
         self.assertTrue(self.browser.find_element_by_xpath(
             '//div/a[contains(@href, "/agente/logout/")]'))
+
+    def test_crear_eliminar_modulo(self):
+        # Crear modulo
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        modulo_name = 'modulo' + uuid.uuid4().hex[:5]
+        self.crear_module(modulo_name)
+        self.assertTrue(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            modulo_name)))
+        # Eliminar modulo
+        link_delete = self.browser.find_element_by_xpath(
+            '//tr[@id=\'{0}\']//td/div//a[contains(@href, "/modulo/delete/")]'.format(modulo_name))
+        href_delete = link_delete.get_attribute('href')
+        self.browser.get(href_delete)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.assertFalse(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'
+                         .format(modulo_name)))
 
 
 if __name__ == '__main__':
