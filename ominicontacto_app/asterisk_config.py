@@ -30,6 +30,7 @@ import subprocess
 import tempfile
 import traceback
 
+from asterisk.manager import Manager, ManagerSocketException, ManagerAuthException, ManagerException
 from django.conf import settings
 from django.utils.translation import ugettext as _
 
@@ -585,55 +586,30 @@ class SipRegistrationsConfigCreator(object):
 
 class AsteriskConfigReloader(object):
 
-    def reload_config(self):
-        """Realiza reload de configuracion de Asterisk
-
-        :returns: int -- exit status de proceso ejecutado.
-                  0 (cero) si fue exitoso, otro valor si se produjo
-                  un error
-        """
-        stdout_file = tempfile.mkstemp()
-        stderr_file = tempfile.mkstemp()
-
-        try:
-            subprocess.check_call(settings.OML_RELOAD_CMD,
-                                  stdout=stdout_file, stderr=stderr_file)
-            logger.info(_("Reload de configuracion de Asterisk fue OK"))
-            return 0
-        except subprocess.CalledProcessError, e:
-            logger.warn(_("Exit status erroneo: {0}".format(e.returncode)))
-            logger.warn(_(" - Comando ejecutado: {0}".format(e.cmd)))
-            try:
-                stdout_file.seek(0)
-                stderr_file.seek(0)
-                stdout = stdout_file.read().splitlines()
-                for line in stdout:
-                    if line:
-                        logger.warn(" STDOUT> %s", line)
-                stderr = stderr_file.read().splitlines()
-                for line in stderr:
-                    if line:
-                        logger.warn(" STDERR> %s", line)
-            except Exception as e:
-                logger.exception(_("Error {0} al intentar reporter STDERR y STDOUT".format(
-                    e.message)))
-
-            return e.returncode
-
-        finally:
-            stdout_file.close()
-            stderr_file.close()
-
     def reload_asterisk(self):
-        # subprocess.call(['ssh', settings.OML_ASTERISK_HOSTNAME, '/usr/sbin/asterisk', '-rx',
-        # '\'core reload\''])
-        subprocess.call(settings.OML_RELOAD_CMD, shell=True)
+        """Realiza reload de configuracion de Asterisk usando AMI
+        """
+        manager = Manager()
+        ami_manager_user = settings.ASTERISK['AMI_USERNAME']
+        ami_manager_pass = settings.ASTERISK['AMI_PASSWORD']
+        ami_manager_host = str(settings.ASTERISK_HOSTNAME)
+        try:
+            manager.connect(ami_manager_host)
+            manager.login(ami_manager_user, ami_manager_pass)
+            manager.command("module reload")
+        except ManagerSocketException as e:
+            logger.exception("Error connecting to the manager: {0}".format(e.message))
+        except ManagerAuthException as e:
+            logger.exception("Error logging in to the manager: {0}".format(e.message))
+        except ManagerException as e:
+            logger.exception("Error {0}".format(e.message))
+        finally:
+            manager.close()
 
 
 class ConfigFile(object):
-    def __init__(self, filename, hostname, remote_path):
+    def __init__(self, filename, remote_path):
         self._filename = filename
-        self._hostname = hostname
         self._remote_path = remote_path
 
     def write(self, contenidos):
@@ -659,67 +635,58 @@ class ConfigFile(object):
                     e.message, tmp_filename)))
 
     def copy_asterisk(self):
-        subprocess.call(['scp', self._filename, ':'.join([self._hostname,
-                                                          self._remote_path])])
+        subprocess.call(['cp', self._filename, self._remote_path])
 
 
 class SipConfigFile(ConfigFile):
     def __init__(self):
         filename = settings.OML_SIP_FILENAME.strip()
-        hostname = settings.OML_ASTERISK_HOSTNAME
         remote_path = settings.OML_ASTERISK_REMOTEPATH
-        super(SipConfigFile, self).__init__(filename, hostname, remote_path)
+        super(SipConfigFile, self).__init__(filename, remote_path)
 
 
 class QueuesConfigFile(ConfigFile):
     def __init__(self):
         filename = settings.OML_QUEUES_FILENAME.strip()
-        hostname = settings.OML_ASTERISK_HOSTNAME
         remote_path = settings.OML_ASTERISK_REMOTEPATH
-        super(QueuesConfigFile, self).__init__(filename, hostname, remote_path)
+        super(QueuesConfigFile, self).__init__(filename, remote_path)
 
 
 class RutasSalientesConfigFile(ConfigFile):
     def __init__(self):
         filename = settings.OML_RUTAS_SALIENTES_FILENAME.strip()
-        hostname = settings.OML_ASTERISK_HOSTNAME
         remote_path = settings.OML_ASTERISK_REMOTEPATH
-        super(RutasSalientesConfigFile, self).__init__(filename, hostname, remote_path)
+        super(RutasSalientesConfigFile, self).__init__(filename, remote_path)
 
 
 class SipTrunksConfigFile(ConfigFile):
     def __init__(self):
         filename = os.path.join(settings.OML_ASTERISK_REMOTEPATH,
                                 "oml_sip_trunks.conf")
-        hostname = settings.OML_ASTERISK_HOSTNAME
         remote_path = settings.OML_ASTERISK_REMOTEPATH
-        super(SipTrunksConfigFile, self).__init__(filename, hostname, remote_path)
+        super(SipTrunksConfigFile, self).__init__(filename, remote_path)
 
 
 class SipRegistrationsConfigFile(ConfigFile):
     def __init__(self):
         filename = os.path.join(settings.OML_ASTERISK_REMOTEPATH,
                                 "oml_sip_registrations.conf")
-        hostname = settings.OML_ASTERISK_HOSTNAME
         remote_path = settings.OML_ASTERISK_REMOTEPATH
-        super(SipRegistrationsConfigFile, self).__init__(filename, hostname, remote_path)
+        super(SipRegistrationsConfigFile, self).__init__(filename, remote_path)
 
 
 class BackListConfigFile(ConfigFile):
     def __init__(self):
         filename = os.path.join(settings.OML_WOMBAT_FILENAME,
                                 "oml_backlist.txt")
-        hostname = settings.OML_ASTERISK_HOSTNAME
         remote_path = settings.OML_BACKLIST_REMOTEPATH
-        super(BackListConfigFile, self).__init__(filename, hostname, remote_path)
+        super(BackListConfigFile, self).__init__(filename, remote_path)
 
 
 class AudioConfigFile(object):
     def __init__(self, filename):
         self._filename = os.path.join(settings.MEDIA_ROOT, filename)
-        self._hostname = settings.OML_ASTERISK_HOSTNAME
         self._remote_path = settings.OML_AUDIO_PATH_ASTERISK
 
     def copy_asterisk(self):
-        subprocess.call(['scp', self._filename, ':'.join([self._hostname,
-                                                          self._remote_path])])
+        subprocess.call(['cp', self._filename, self._remote_path])

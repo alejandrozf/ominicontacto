@@ -92,7 +92,6 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
         if not proceso_ok:
             raise(RestablecerConfiguracionTelefonicaError(mensaje_error))
         else:
-            self.config_rutas_file.copy_asterisk()
             self.reload_asterisk_config.reload_asterisk()
 
     def _generar_e_insertar_en_astdb(self, ruta):
@@ -191,8 +190,6 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
         if not proceso_ok:
             raise(RestablecerConfiguracionTelefonicaError(mensaje_error))
         else:
-            self.config_trunk_file.copy_asterisk()
-            self.config_trunk_registration_file.copy_asterisk()
             self.reload_asterisk_config.reload_asterisk()
 
     def _generar_e_insertar_en_astdb(self, trunk):

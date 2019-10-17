@@ -54,16 +54,6 @@
   roles:
     - prerequisitos
 
-- name: Get the omniapp omnileads ssh key (cluster)
-  hosts: ['omniapp']
-  pre_tasks:
-    - name: Get the omniapp omnileads ssh key
-      shell: cat {{ install_prefix }}.ssh/id_rsa.pub
-      register: ssh_key
-      tags: ['omniapp','asterisk','kamailio']
-    - set_fact: sshkey={{ ssh_key.stdout }}
-      tags: ['omniapp','asterisk','kamailio']
-
 - name: Database sever installation
   hosts: ['database']
   gather_facts: True
@@ -73,23 +63,12 @@
 - name: Asterisk server installation
   hosts: asterisk
   gather_facts: True
-  pre_tasks:
-    - set_fact: ssh_key="{{ hostvars[groups['omniapp'][0]].sshkey }}"
-      tags: ['omniapp','asterisk']
-    - name: Print omniapp omnileads user key in asterisk's root
-      authorized_key: "user=root key={{ ssh_key }} state=present manage_dir=yes"
-      tags: ['omniapp','asterisk']
   roles:
     - { role: asterisk, tags: asterisk }
 
 - name: Kamailio server installation
   hosts: kamailio
   gather_facts: True
-  pre_tasks:
-    - set_fact: ssh_key="{{ hostvars[groups['omniapp'][0]].sshkey }}"
-      tags: ['omniapp','kamailio']
-    - name: Print omniapp omnileads user key in kamailio's root
-      authorized_key: "user=root key={{ ssh_key }} state=present manage_dir=yes"
   roles:
     - { role: kamailio, tags: [kamailio'] }
 

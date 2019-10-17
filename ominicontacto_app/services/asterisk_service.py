@@ -64,7 +64,6 @@ class ActivacionAgenteService(object):
         if not proceso_ok:
             raise(RestablecerConfigSipError(mensaje_error))
         else:
-            self.config_file.copy_asterisk()
             self.reload_asterisk_config.reload_asterisk()
             self.asterisk_database.regenerar_families()
 

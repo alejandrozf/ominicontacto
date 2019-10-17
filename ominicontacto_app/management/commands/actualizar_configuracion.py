@@ -19,10 +19,6 @@
 
 import logging
 
-from StringIO import StringIO
-
-from fabric import Connection
-
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
@@ -38,11 +34,10 @@ class Command(BaseCommand):
 
     help = u'Actualiza archivos de configuración del sistema'
 
-    def _escribir_archivo(self, content, ruta_remota, host):
-        strio_config_kamailio = StringIO()
-        strio_config_kamailio.write(content)
-        connection = Connection(host=host, user="root")
-        connection.put(strio_config_kamailio, ruta_remota)
+    def _escribir_archivo(self, content, ruta_remota):
+        f = open(ruta_remota, "w+")
+        f.write(content)
+        f.close()
 
     def _actualizar_template_asterisk_oml_manager(self):
         template_asterisk_oml_manager = (
@@ -61,7 +56,7 @@ class Command(BaseCommand):
         )
         ruta_archivo = '{0}/etc/asterisk/oml_manager.conf'.format(settings.ASTERISK_LOCATION)
         self._escribir_archivo(
-            config_asterisk_oml_manager, ruta_archivo, settings.ASTERISK_HOSTNAME)
+            config_asterisk_oml_manager, ruta_archivo)
 
     def _actualizar_template_asterisk_oml_sip_general(self):
         template_asterisk_oml_sip_general = (
@@ -88,7 +83,7 @@ class Command(BaseCommand):
             settings.KAMAILIO_IP)
         ruta_archivo = '{0}/etc/asterisk/oml_sip_general.conf'.format(settings.ASTERISK_LOCATION)
         self._escribir_archivo(
-            config_asterisk_oml_sip_general, ruta_archivo, settings.ASTERISK_HOSTNAME)
+            config_asterisk_oml_sip_general, ruta_archivo)
 
     def _actualizar_archivos_kamailio(self):
         template_config_kamailio = (
@@ -130,7 +125,7 @@ class Command(BaseCommand):
                                                           settings.REDIS_HOSTNAME
                                                           )
         ruta_archivo = '{0}/etc/kamailio/kamailio-local.cfg'.format(settings.KAMAILIO_LOCATION)
-        self._escribir_archivo(config_kamailio, ruta_archivo, settings.KAMAILIO_HOSTNAME)
+        self._escribir_archivo(config_kamailio, ruta_archivo)
 
     def handle(self, *args, **options):
         try:

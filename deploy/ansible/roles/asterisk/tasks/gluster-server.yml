@@ -22,8 +22,8 @@
   become: true
   become_method: sudo
 
-- name: Create the gluster volume in root partition
-  gluster_volume: force=yes name=grabaciones start_on_create=yes state={{ item }} brick={{ asterisk_location }}/var/spool/asterisk/monitor
+- name: Create the gluster volume of asterisk in root partition
+  gluster_volume: force=yes name=asterisk start_on_create=yes state={{ item }} brick={{ asterisk_location }}
   with_items:
     - present
     - started

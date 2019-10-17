@@ -166,15 +166,6 @@
   register: result
   until: result is success
 
-# Instalo linux-headers del kernel  en cuestion
-- name: Install linux linux-headers (debian)
-  shell: "apt-get install -y linux-headers-$(uname -r)"
-  when: ansible_os_family == "Debian"
-  retries: 3
-  delay: 3
-  register: result
-  until: result.rc == 0
-
 - name: Install of dependencies (debian)
   apt: name={{ item }} state=present
   with_items:
