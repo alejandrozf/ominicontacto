@@ -67,7 +67,6 @@ class ActivacionQueueService(object):
         if not proceso_ok:
             raise(RestablecerDialplanError(mensaje_error))
         else:
-            self.config_queues_file.copy_asterisk()
             self.reload_asterisk_config.reload_asterisk()
             self.asterisk_database.regenerar_families()
 

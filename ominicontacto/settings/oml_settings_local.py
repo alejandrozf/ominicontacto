@@ -58,7 +58,6 @@ MEDIA_ROOT = "{0}media_root".format(INSTALL_PREFIX)
 
 # IPs y hostnames
 OML_KAMAILIO_IP = "{0}/255.255.255.255".format(KAMAILIO_IP)
-OML_ASTERISK_HOSTNAME = "root@{0}".format(ASTERISK_HOSTNAME)
 
 # Comandos que se ejecutan desde django
 OML_RELOAD_CMD = 'ssh root@{0} \'/usr/sbin/asterisk -rx "core reload"\''.format(ASTERISK_HOSTNAME)

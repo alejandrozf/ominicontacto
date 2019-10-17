@@ -217,7 +217,6 @@ Ejemplo:
 # DEPLOY -> Asterisk
 # ==============================================================================
 
-OML_ASTERISK_HOSTNAME = None
 OML_ASTERISK_REMOTEPATH = None
 OML_SIP_FILENAME = None
 OML_QUEUES_FILENAME = None
@@ -229,7 +228,6 @@ Ejemplos:
 
 .. code-block:: python
 
-    OML_ASTERISK_HOSTNAME = "root@192.168.1.23"
     OML_ASTERISK_REMOTEPATH = "/etc/asterisk/"
     OML_SIP_FILENAME = "/etc/asterisk/sip_fts.conf"
     OML_QUEUES_FILENAME = "/etc/asterisk/queues_fts.conf"

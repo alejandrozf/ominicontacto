@@ -85,7 +85,7 @@ class EstadoAgentesService:
         manager = Manager()
         ami_manager_user = settings.ASTERISK['AMI_USERNAME']
         ami_manager_pass = settings.ASTERISK['AMI_PASSWORD']
-        ami_manager_host = str(settings.OML_ASTERISK_HOSTNAME.replace('root@', ''))
+        ami_manager_host = str(settings.ASTERISK_HOSTNAME)
         agentes_activos = []
         try:
             manager.connect(ami_manager_host)

@@ -32,6 +32,3 @@
 
 - include: deploy.yml
   tags: [omniapp']
-
-- include: sshkey_transfer.yml
-  tags: omniapp

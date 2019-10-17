@@ -4,7 +4,7 @@
 
 # Images used
 asterisk_image: debian:buster-slim
-base_image: alpine:3.9
+base_image: alpine:3.10
 dialer_image: tomcat:8.5-alpine
 kamailio_image: kamailio/kamailio-ci:5.2
 mariadb_image: bitnami/mariadb:latest

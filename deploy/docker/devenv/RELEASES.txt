@@ -15,6 +15,8 @@ Omniapp:
   - Removed run_omnileads.sh script.
 1.2.1
   - Added the cert of the Registrar Server for testing Omnileads Addons
+1.2.2
+  - Removed ssh setup cuz is no more necessary
 
 Asterisk:
 
@@ -22,7 +24,9 @@ Asterisk:
   - Based on andrius/asterisk image it builds asterisk with res_json module
 16.4.0-noaudios
   - Edited 16.4.0-res_json image to avoid the install of asterisk sounds in all languages available
-  
+16.4.0-no_ssh
+  - From 16.4.0-noaudios, removed ssh setup cuz is no more necessary
+
 pbx-emulator image versions:
 
 0.1

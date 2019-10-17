@@ -19,7 +19,7 @@
   become: no
   wait_for: host="{{ omni_ip }}" delay=15 state=started port={{ ansible_ssh_port }} timeout=600
   delegate_to: localhost
-  when: iface == "none"
+  when: iface == "none" and cluster == 0
 
 - name: Wait for the server to finish rebooting (cluster)
   become: no

@@ -32,7 +32,6 @@ services:
       - ./asterisk/odbcinst.ini:/etc/odbcinst.ini
       - ./asterisk/others/:/home/
       - {{ repo_location }}/ominicontacto_voip/asterisk-files/conf/:/var/tmp/
-      - ssh_keys_devenv:/opt/sshkeys
     working_dir: /etc/asterisk
 
   dialer:
@@ -158,7 +157,7 @@ services:
     user: omnileads
     volumes:
       - {{ repo_location }}:{{ install_prefix }}ominicontacto/
-      - ssh_keys_devenv:{{ install_prefix }}.ssh/
+      - ./asterisk/conf/:/etc/asterisk/
       - ./omniapp/:{{ install_prefix }}run/
       - ./omniapp/conversor.sh:{{ install_prefix }}bin/conversor.sh
       - ./omniapp/omni-asterisk-logout.py:{{ install_prefix }}bin/omni-asterisk-logout.py

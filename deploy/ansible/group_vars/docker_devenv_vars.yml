@@ -4,8 +4,8 @@
 # If you are installing a devenv (DE) AIO uncomment these line
 # If you are installing a devenv (DE) AIO uncomment these line
 
-version: de1.2.1
-asterisk_version: 16.4.0-res_json
+version: de1.2.2
+asterisk_version: 16.4.0-no_ssh
 customer: devenv
 root_password: toor123
 
