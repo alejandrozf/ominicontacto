@@ -92,11 +92,7 @@
 # Se hace el upgrade de python setuptools usando pip. https://docs.ansible.com/ansible/2.5/modules/pip_module.html#pip-module
 # El environment sirve para setear variables de entorno necesarias
 - name: Upgrade of python setuptools
-  pip:
-    name=setuptools
-    virtualenv={{ install_prefix }}virtualenv
-    virtualenv_command=/usr/bin/virtualenv
-    extra_args=--upgrade
+  pip: name=setuptools virtualenv={{ install_prefix }}virtualenv virtualenv_command=/usr/bin/virtualenv extra_args=--upgrade
   environment:
     PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-{{ postgresql_version }}/bin"
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
@@ -119,6 +115,7 @@
     requirements={{ install_prefix }}ominicontacto/requirements.txt
     virtualenv={{ install_prefix }}virtualenv
     virtualenv_command=/usr/bin/virtualenv
+    extra_args="--exists-action s"
   environment:
     PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-{{ postgresql_version }}/bin"
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'

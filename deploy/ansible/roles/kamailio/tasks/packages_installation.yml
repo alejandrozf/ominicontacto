@@ -13,7 +13,7 @@
 
 # Se descarga e instala el repositorio epel-release
 - name: Install of epel-release repo (centos and cluster)
-  yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm state=present
+  yum: name={{ epel_repository }} state=present
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat" and cluster == 1
@@ -87,7 +87,7 @@
   delay: 3
   register: result
   until: result is success
-  
+
 - name: Install extra packages (debian cluster)
   apt: name={{ item }} state=present dpkg_options=no-triggers
   with_items:
