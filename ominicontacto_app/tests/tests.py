@@ -67,10 +67,15 @@ CAMPANA_MANUAL = os.getenv('CAMPANA_MANUAL')
 AGENTE_USERNAME = 'agente' + uuid.uuid4().hex[:5]
 AGENTE_PASSWORD = '098098ZZZ'
 
+
 BROWSER_REAL = os.getenv('BROWSER_REAL')
 TESTS_INTEGRACION = os.getenv('TESTS_INTEGRACION')
 
 MSG_MICROFONO = 'Se necesita un browser real con micrófono'
+
+TESTS_INTEGRACION_HOSTNAME = os.getenv('TESTS_INTEGRACION_HOSTNAME')
+if not TESTS_INTEGRACION_HOSTNAME:
+    TESTS_INTEGRACION_HOSTNAME = socket.gethostname()
 
 
 @unittest.skipIf(TESTS_INTEGRACION != 'True', 'Ignorando tests de integración')
@@ -112,7 +117,7 @@ class IntegrationTests(unittest.TestCase):
 
     @classmethod
     def _login(self, username, password):
-        self.browser.get('https://{0}'.format(socket.gethostname()))
+        self.browser.get('https://{0}'.format(TESTS_INTEGRACION_HOSTNAME))
         self.browser.find_element_by_name('username').send_keys(username)
         self.browser.find_element_by_name('password').send_keys(password)
         self.browser.find_element_by_tag_name('button').click()
@@ -525,7 +530,7 @@ class IntegrationTests(unittest.TestCase):
         texto_error = self.browser.find_element_by_xpath('//div/p').text
         self.assertEqual(texto_error[45:93], 'Tu cuenta y dirección IP permanecerán bloqueadas')
         # Vamos al Admin de django para desbloquear este usuario
-        self.browser.get('https://{0}/admin'.format(socket.gethostname()))
+        self.browser.get('https://{0}/admin'.format(TESTS_INTEGRACION_HOSTNAME))
         self.browser.find_element_by_name('username').send_keys(ADMIN_USERNAME)
         self.browser.find_element_by_name('password').send_keys(ADMIN_PASSWORD)
         self.browser.find_element_by_xpath('//div/input[@type="submit"]').click()
@@ -543,7 +548,7 @@ class IntegrationTests(unittest.TestCase):
             .format(AGENTE_USERNAME)).click()
         sleep(2)
         # Deslogueo como admin
-        self.browser.get('https://{0}/'.format(socket.gethostname()))
+        self.browser.get('https://{0}/'.format(TESTS_INTEGRACION_HOSTNAME))
         deslogueo = self.browser.find_element_by_xpath(
             '//a[contains(@href, "/accounts/logout/")]')
         href_deslogueo = deslogueo.get_attribute('href')

@@ -19,7 +19,7 @@
 
 # Se descarga e instala el repositorio epel-release
 - name: Install of epel-release repo (centos)
-  yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm state=present
+  yum: name={{ epel_repository }} state=present
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
@@ -98,17 +98,8 @@
   delay: 3
   register: result
   until: result is success
-  
+
 - name: Start and enable redis service
   service: name=redis state=restarted enabled=yes
   become: yes
   become_method: sudo
-
-#Esto es para ubuntu se desinstala el postgresql-11 que se instala por defecto
-- name: Stop of postgresql-11 service
-  service: name=postgresql@11-main state=stopped
-  when: ansible_distribution == "Ubuntu"
-
-- name: Uninstall of postgresql-11
-  apt: name=postgresql-11 state=absent purge=yes
-  when: ansible_distribution == "Ubuntu"

@@ -21,7 +21,7 @@
 - name: Install of epel-release repo
   yum: name={{ item }} state=present update_cache=yes
   with_items:
-    - https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    - "{{ epel_repository }}"
     - centos-release-gluster
   become: true
   become_method: sudo
@@ -67,7 +67,7 @@
   delay: 3
   register: result
   until: result is success
-  
+
 - name: Install of cluster packages (centos cluster)
   yum: name={{ item }} state=present
   with_items:

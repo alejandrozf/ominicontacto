@@ -5,59 +5,37 @@
 
 # El initdb de postgres toca ejecutarlo solo para centos
 - name: Setup of postgresql
-  command: "/usr/pgsql-{{ postgresql_version }}/bin/postgresql96-setup initdb"
+  command: "/usr/pgsql-{{ postgresql_version }}/bin/postgresql-{{ postgresql_version }}-setup initdb"
   register: commandresult
   failed_when:
     - "'is not empty' not in commandresult.stdout"
     - "commandresult.rc != 0"
-  become: yes
-  become_method: sudo
-  when: ansible_os_family == "RedHat"
+  tags: postinstall
+  when: ansible_os_family == "RedHat" and postgresql_new_installed.rc != 3
 
 # Se modifica el pg_hba.conf
-- name: Modify of pg_hba.conf file (centos)
-  template: src=templates/pg_hba.conf.j2 dest=/var/lib/pgsql/{{ postgresql_version }}/data/pg_hba.conf
+- name: Modify of pg_hba.conf file
+  template: src=templates/pg_hba.conf.j2 dest={{ pg_lib_location }}/pg_hba.conf
   become: true
   become_method: sudo
-  when: ansible_os_family == "RedHat"
-  tags: postinstall
-
-# Esto es para debian
-- name: Modify of pg_hba.conf file (debian)
-  template: src=templates/pg_hba.conf.j2 dest=/etc/postgresql/{{ postgresql_version }}/main/pg_hba.conf
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "Debian"
+  when: postgresql_new_installed.rc != 3
   tags: postinstall
 
 #Se modifica la ip en la que escucha postgres
-- name: Modify postgresql listen address
-  lineinfile: path=/etc/postgresql/{{ postgresql_version }}/main/postgresql.conf regexp="^#listen_addresses" line="listen_addresses = '*'" state=present
-  when: ansible_os_family == "Debian"
-
-#Se modifica la ip en la que escucha postgres
-- name: Modify postgresql listen address
-  lineinfile: path=/var/lib/pgsql/{{ postgresql_version }}/data/postgresql.conf regexp="^#listen_addresses" line="listen_addresses = '*'" state=present
-  when: ansible_os_family == "RedHat"
+- name: Modify postgresql listen address (centos)
+  lineinfile: path={{ pg_lib_location }}/postgresql.conf regexp="^#listen_addresses" line="listen_addresses = '*'" state=present
+  tags: postinstall
+  when: postgresql_new_installed.rc != 3
 
 # Restarteamos servicio
-- name: Restart postgres service (centos)
-  service: name=postgresql-{{ postgresql_version }} state=restarted enabled=yes
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "RedHat"
-  tags: postinstall
-
-- name: Restart postgres service (debian)
-  service: name=postgresql state=restarted enabled=yes
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "Debian"
+- name: Restart postgres service
+  service: name=postgresql{{prefix}}{{ postgresql_version }}{{sufix}} state=restarted enabled=yes
+  when: postgresql_new_installed.rc != 2
   tags: postinstall
 
 # Se crea el usuario de postgres
 - name: Create/modify postgres user
-  postgresql_user: name={{ postgres_user }} password={{ postgres_password }} role_attr_flags=SUPERUSER
+  postgresql_user: name={{ postgres_user }} password={{ postgres_password }} role_attr_flags=SUPERUSER encrypted=yes
   become: yes
   become_method: sudo
   become_user: postgres
@@ -65,7 +43,7 @@
 
 # Se crea el usuario de postgres
 - name: Create ro postgres user
-  postgresql_user: name={{ postgres_user}}ro password={{ postgres_password }}ro role_attr_flags=SUPERUSER
+  postgresql_user: name={{ postgres_user}}ro password={{ postgres_password }}ro role_attr_flags=SUPERUSER encrypted=yes
   become: yes
   become_method: sudo
   become_user: postgres
@@ -73,17 +51,13 @@
 # Se crea base de datos omnileads
 - name: Create of the database
   postgresql_db: name={{ postgres_database }} state=present login_user={{ postgres_user }} login_password={{ postgres_password }} owner={{ postgres_user }} login_host={{ database_fqdn }}
-  register: command_result
-  become: true
-  become_method: sudo
 
 # Se crea el lenguaje plpythonu a las bases de datos mencionadas.
 - name: Createlang of the database
-  shell: "createlang plpythonu {{ item }}"
+  shell: psql -d {{ item }} -c 'CREATE EXTENSION plpythonu'
   with_items:
-    - omnileads
+    - "{{ postgres_database }}"
     - template1
-  become: yes
+  become: true
   become_user: postgres
-  register: command_result
   failed_when: false

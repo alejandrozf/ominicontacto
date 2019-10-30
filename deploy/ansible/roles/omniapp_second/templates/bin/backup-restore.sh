@@ -16,7 +16,6 @@ Backup() {
     cp -a --preserve=links {{ asterisk_location }}/etc/asterisk/oml_extensions* /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/etc
     cp {{ asterisk_location }}/var/lib/asterisk/agi-bin/*.py /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/agi-bin
     cp -a {{ asterisk_location }}/var/lib/asterisk/sounds/oml/ /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/sounds
-    cp /usr/local/parselog/conversor.sh /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk
     tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/* > /dev/null 2>&1
     rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/
     sleep 3
@@ -73,7 +72,6 @@ Restore() {
     cd asterisk
     cp -a agi-bin/* {{ asterisk_location }}/var/lib/asterisk/agi-bin/
     cp -a --preserve=links etc/oml_extensions* {{ asterisk_location }}/etc/asterisk/
-    cp -a conversor.sh /usr/local/parselog
     cp -a sounds/* {{ asterisk_location }}/var/lib/asterisk/sounds/
 
     #Restore of omniapp files
