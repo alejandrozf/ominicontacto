@@ -1,5 +1,5 @@
 ===================================
-Omnileads (OML) 1.3.3 release notes
+Omnileads (OML) 1.3.2 release notes
 ===================================
 
 *Octuber 3, 2019*
