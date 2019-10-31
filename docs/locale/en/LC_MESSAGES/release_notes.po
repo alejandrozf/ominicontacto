@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-03 18:47-0300\n"
+"POT-Creation-Date: 2019-10-31 11:55-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,287 +24,27 @@ msgstr "Release Notes"
 
 # 7288ced391a746f685b73393b976e243
 #: ../../release_notes.rst:4
-msgid "*Octubre 3, 2019*"
-msgstr "Octuber 3, 2019"
+msgid "*Octubre 31, 2019*"
+msgstr "October 31, 2019"
 
-# 8cdcfbee923e4c71bff23ec2e7448e06
+# b0b9340519f24e33872825751563c900
 #: ../../release_notes.rst:7
-msgid "Release 1.3.2 detalles"
-msgstr "Release 1.3.2 details"
+msgid "Detalles de Release 1.3.3"
+msgstr "Release 1.3.3 details"
 
-# 8b36510213a240318dfff7be657b0019
+# c6aba20bde634765a1eb7f7f3d5139df
 #: ../../release_notes.rst:10
-msgid "Nuevas funcionalidades"
-msgstr "What's new"
-
-# 875f7da5d1004f9284c5e521abd4d47b
-#: ../../release_notes.rst:12
-msgid "Puedes adicionar tu código Asterisk personalizado para OMniLeads!"
-msgstr "You can now add your custom Asterisk code in OMniLeads"
-
-# f49415f3fb6441688cbbeb63628702a7
-#: ../../release_notes.rst:13
-msgid "OML puede ser accedido detrás de un NAT"
-msgstr "OML now can be reached behind NAT"
-
-# 6c1c09c387bd4c73bd3cd24538dc6c15
-#: ../../release_notes.rst:14
-msgid ""
-"La vista de registro de instancia de OML ahora envía un email al "
-"administrador cuando el registro es exitoso"
-msgstr ""
-"Registration of OML instances now sends an email with the key to"
-" the admin when registration is successful"
-
-# 46bdf54098cc4ec298df33aba86815f2
-#: ../../release_notes.rst:15
-msgid "La documentación ha sido traducida al inglés"
-msgstr "Documentation was translated to English"
-
-# 9ce3cc34c64b40bf981f399fb7112a27
-#: ../../release_notes.rst:16
-msgid ""
-"El CI/CD ha sido mejorado con jobs que testean todos los tipos de "
-"instalaciones que soportamos"
-msgstr ""
-"CI/CD now got improved with jobs that tests all kind of installations "
-"we support"
-
-# 4a91b25fcde84c3c8b4bb7c62c2ea229
-#: ../../release_notes.rst:17
-msgid ""
-"Los audios de Asterisk pueden ser adicionados al sistema dinámicamente "
-"desde la UI"
-msgstr ""
-"Asterisk audios can be now be added dinamically from UI"
-
-# dc95e8189a9746229acc062efaf8c8b4
-#: ../../release_notes.rst:21
-msgid "Tareas de instalación"
-msgstr "Installation tasks"
-
-# 997a349b7c11489b8e75e6a49d15ed75
-#: ../../release_notes.rst:22
-msgid "Solucionado error en las rutas de los audios de identificación"
-msgstr "Fixed  error on identification audio files routes"
-
-# 01f01ecc05bb4f2ba4f7aaf5711e2290
-#: ../../release_notes.rst:23
-msgid ""
-"Ahora la actualización del sistema no necesita modificar el archivo de "
-"inventory"
-msgstr ""
-"When upgrading the system installation avoids current inventory modification"
-
-# 4f5fbcfe04b04cdb98fd53480977ab0c
-#: ../../release_notes.rst:24
-msgid ""
-"No es necesario especificar el hostname para las instalaciones de tipo "
-"hostnode"
-msgstr ""
-"Hostname is not needed now for host node installations"
-
-# 6e18face9760402a8dfe280a1dd3dc48
-#: ../../release_notes.rst:25
-msgid "El usuario puede adicionar su propio certificado en el inventory"
-msgstr "User can add its own certificate in inventory"
-
-# e1fbef0fde294b87ac03581e99644c6d
-#: ../../release_notes.rst:26
-msgid ""
-"Se adicionaron reintentos para las tareas de larga duración de descarga "
-"para evitar fallos"
-msgstr ""
-"Added retries for long downloading time tasks that could failed by connection"
-
-# 5dd717bf1bee44a48705b9a01c18a8f2
-#: ../../release_notes.rst:27
-msgid ""
-"Fue mejorada la persistencia del contenedor de redis (para los entornos "
-"de prod-env y dev-env)"
-msgstr ""
-"Redis container persistence was improved (for dev-env & prod-env environments)"
-
-# b927b9c8518448288fa510bffb96f878
-#: ../../release_notes.rst:28
-msgid ""
-"El Dev-env fue mejorado para poder leer las variables de entorno desde un"
-" archivo .env al igual que el prod-env."
-msgstr ""
-"Dev-env was improved to read environment variables from .env file like prod-env."
-
-# 65580fbc2e6a4408a6f2aa7670e94378
-#: ../../release_notes.rst:29
-msgid ""
-"Ahora un cambio en la variable PGPASSWORD en su archivo .env, realiza ese"
-" cambio también en el container de postgres"
-msgstr ""
-"A change in variable PGPASSWORD on its .env fike, apply also this change "
-"on postgres container"
-
-# 50ba9d24119946fd821ee3d86561d2d4
-#: ../../release_notes.rst:30
-msgid "Se adicionó un script de desinstalación"
-msgstr "Uninstallation script was added"
-
-# 794e839be01e445dbefd420425de1822
-#: ../../release_notes.rst:34
-msgid "OML admin"
+msgid "Admin de OML"
 msgstr "OML admin"
 
-# 83a169a448104730aa454e5801ecddfe
-#: ../../release_notes.rst:35
-msgid ""
-"Se adicionaron los reportes de promedio de tiempo de abandono, promedio "
-"de tiempo de espera y llamadas en espera para campañas entrntes"
-msgstr ""
-"Abandon average, waiting average and number of waiting calls reports were"
-" added for inbound campaigns"
-
-# 1e0bbd75dece4a9dba042c98b48d8788
-#: ../../release_notes.rst:36
-msgid ""
-"Se solucionó error que impedía reciclar más de una vez a partir de una "
-"misma campaña dialer"
-msgstr ""
-"Fixed error that didn't allow to recycle more than one time a dialer campaign"
-
-# 2ab00e6c24694d6d986e09d26274699f
-#: ../../release_notes.rst:37
-msgid "Se solucionó error que impedía acceder a los reporte diarios de agentes"
-msgstr "Fixed error when tried to access daily agents report"
-
-# b3ae396c3dfa49fb9abef91cb5d61bd1
-#: ../../release_notes.rst:38
-msgid ""
-"Se solucionó error en formularios de IVR al cargar archivos de audio "
-"externos"
-msgstr ""
-"Fixed error in IVR forms validation when uploading external audio files"
-
-# 85a155a28f4247f28183b57a67b22d0f
-#: ../../release_notes.rst:39
-msgid ""
-"Se solucionó error en la edición de campañas que no permitía modificar "
-"sus formularios asociadas a las opciones de calificación de gestión"
-msgstr ""
-"Fixed error on dialer campaign update wizard that didn't allow to modify"
-" its engaged disposition options forms"
-
 # 47d6413d39e9435b9574e87a742fece3
-#: ../../release_notes.rst:40
+#: ../../release_notes.rst:11
 msgid ""
-"Se solucionó error que impedía editar campañas creadas con el campo "
-"interacción de sitio externo definido"
+"Se soluciona error que impedía adicionar parámetros de interacción CRM en"
+" la gestión de las campañas"
 msgstr ""
-"Fixed error that didn't allow to edit campaigns with external field attribute setted"
+"Fixed error that prevented to add CRM interaction parameters on campaigns wizards"
 
-# 5c9ff95831f2450fa0623bd2b2c20f46
-#: ../../release_notes.rst:41
-msgid ""
-"Se solucionó error que lanzaba excepción al intentar acceder al reporte "
-"de una campaña"
-msgstr ""
-"Fixed exception generated when accessing to campaign reports"
-
-# 997dc7a78c8e4f82b4943b546837626c
-#: ../../release_notes.rst:42
-msgid ""
-"Los nombres de las bases de datos de contactos deben ser distintas desde "
-"ahora"
-msgstr ""
-"Contact databases names must be different now"
-
-# 255d0a47cb2143efb555bb24e0d319df
-#: ../../release_notes.rst:43
-msgid ""
-"Los nombres de los grupos de agentes deben ser diferentes a partir de "
-"ahora"
-msgstr ""
-"Agent Groups must be differents now"
-
-# e213e37aa1d54e25966a5ca9bc3f38a3
-#: ../../release_notes.rst:47
-msgid "OML vista de agente"
-msgstr "OML agent view"
-
-# 97ae104d21b34d378b58da7e94ac143a
-#: ../../release_notes.rst:48
-msgid ""
-"Solucionado error generado al visualizar la lista de llamadas realizadas,"
-" se adiciona mas información en esa vista"
-msgstr ""
-"Fixed error that ocurred when user visualized call registry, more information were"
-" added also"
-
-# 9f7413dd1e6b42cdae67f5c402a4c77c
-#: ../../release_notes.rst:49
-msgid "Se adicionó una opción de rellamada desde la lista de llamadas realizadas"
-msgstr " Recalling option was added for every call registered"
-
-# 6d93cb9472e34a318c7647819581d12c
-#: ../../release_notes.rst:53
-msgid "Asterisk dialplan"
-msgstr "Asterisk dialplan"
-
-# 7db1834ae6784b93b2141a99271b6c14
-#: ../../release_notes.rst:54
-msgid "Se adicionaron logs más descriptivos"
-msgstr "More descriptive logs were added"
-
-# a4aaeeb5cff44c3e92784bb3f74529db
-#: ../../release_notes.rst:55
-msgid ""
-"Se solucionó error en la inserción hacia BD de los eventos de tipo "
-"Blacklist"
-msgstr ""
-"Fixed error on Blacklist events when saving to database"
-
-# 5fc58be93833475e992417d8ce25673d
-#: ../../release_notes.rst:56
-msgid "Se solucionó error que introducía demoras en procesar una opción de IVR"
-msgstr "Fixed error on IVR delay"
-
-# 6b2a1a770bbe4299a436b9ffc3f7be4a
-#: ../../release_notes.rst:57
-msgid "Se solucionó error al manejar una opción de IVR incorrecta"
-msgstr "Fix error when handling IVR incorrect option"
-
-# 58caeeee19494b9696071798d2996230
-#: ../../release_notes.rst:60
-msgid "Misc"
-msgstr "Misc"
-
-# dd807c6ec3224c06a4894cbeeac3e126
-#: ../../release_notes.rst:61
-msgid ""
-"Los primeros tests de integración fueron creados y sincronizados con el "
-"CI/CD"
-msgstr ""
-"First integration tests were introduced, integrated with CI/CD jobs"
-
-# 7fef4f96cfcc4675b5300db12c773e53
-#: ../../release_notes.rst:62
-msgid "Se introdujo una tarea de cron que limpia diariamente la tabla 'queue_log'"
-msgstr "A cron job to clean table 'queue_log' daily was added"
-
-# 2844fda050b24fa18a71b92b76e4a19b
-#: ../../release_notes.rst:63
-msgid "El código JavaScript fue separado de los templates de Django"
-msgstr "Javascript code was separated from Django templates"
-
-# f656f56ffe5f44619a0146516c9b5cb9
-#: ../../release_notes.rst:64
-msgid "Los archivos estáticos fueron organizados hacia sus apps más relacionadas"
-msgstr "Static files were moved to its related project apps"
-
-# 54bae3ecd50e4c958b07561f6a1c781a
-#: ../../release_notes.rst:65
-msgid ""
-"Fue adicionada la redirección hacia una url interna al loguearse el "
-"usuario"
-msgstr ""
-"Redirection to an internal url when logged to the system was added"
 
 # 7288ced391a746f685b73393b976e243
 #~ msgid "*July 25, 2019*"
@@ -543,3 +283,268 @@ msgstr ""
 #~ "all related reports now shows that "
 #~ "information based on that event"
 #~ msgstr ""
+
+# 8cdcfbee923e4c71bff23ec2e7448e06
+#~ msgid "Release 1.3.2 detalles"
+#~ msgstr "Release 1.3.2 details"
+
+# 8b36510213a240318dfff7be657b0019
+#~ msgid "Nuevas funcionalidades"
+#~ msgstr "What's new"
+
+# 875f7da5d1004f9284c5e521abd4d47b
+#~ msgid "Puedes adicionar tu código Asterisk personalizado para OMniLeads!"
+#~ msgstr "You can now add your custom Asterisk code in OMniLeads"
+
+# f49415f3fb6441688cbbeb63628702a7
+#~ msgid "OML puede ser accedido detrás de un NAT"
+#~ msgstr "OML now can be reached behind NAT"
+
+# 6c1c09c387bd4c73bd3cd24538dc6c15
+#~ msgid ""
+#~ "La vista de registro de instancia "
+#~ "de OML ahora envía un email al "
+#~ "administrador cuando el registro es "
+#~ "exitoso"
+#~ msgstr ""
+#~ "Registration of OML instances now sends"
+#~ " an email with the key to the"
+#~ " admin when registration is successful"
+
+# 46bdf54098cc4ec298df33aba86815f2
+#~ msgid "La documentación ha sido traducida al inglés"
+#~ msgstr "Documentation was translated to English"
+
+# 9ce3cc34c64b40bf981f399fb7112a27
+#~ msgid ""
+#~ "El CI/CD ha sido mejorado con jobs"
+#~ " que testean todos los tipos de "
+#~ "instalaciones que soportamos"
+#~ msgstr ""
+#~ "CI/CD now got improved with jobs "
+#~ "that tests all kind of installations "
+#~ "we support"
+
+# 4a91b25fcde84c3c8b4bb7c62c2ea229
+#~ msgid ""
+#~ "Los audios de Asterisk pueden ser "
+#~ "adicionados al sistema dinámicamente desde "
+#~ "la UI"
+#~ msgstr "Asterisk audios can be now be added dinamically from UI"
+
+# dc95e8189a9746229acc062efaf8c8b4
+#~ msgid "Tareas de instalación"
+#~ msgstr "Installation tasks"
+
+# 997a349b7c11489b8e75e6a49d15ed75
+#~ msgid "Solucionado error en las rutas de los audios de identificación"
+#~ msgstr "Fixed  error on identification audio files routes"
+
+# 01f01ecc05bb4f2ba4f7aaf5711e2290
+#~ msgid ""
+#~ "Ahora la actualización del sistema no"
+#~ " necesita modificar el archivo de "
+#~ "inventory"
+#~ msgstr ""
+#~ "When upgrading the system installation "
+#~ "avoids current inventory modification"
+
+# 4f5fbcfe04b04cdb98fd53480977ab0c
+#~ msgid ""
+#~ "No es necesario especificar el hostname"
+#~ " para las instalaciones de tipo "
+#~ "hostnode"
+#~ msgstr "Hostname is not needed now for host node installations"
+
+# 6e18face9760402a8dfe280a1dd3dc48
+#~ msgid "El usuario puede adicionar su propio certificado en el inventory"
+#~ msgstr "User can add its own certificate in inventory"
+
+# e1fbef0fde294b87ac03581e99644c6d
+#~ msgid ""
+#~ "Se adicionaron reintentos para las "
+#~ "tareas de larga duración de descarga "
+#~ "para evitar fallos"
+#~ msgstr ""
+#~ "Added retries for long downloading time"
+#~ " tasks that could failed by "
+#~ "connection"
+
+# 5dd717bf1bee44a48705b9a01c18a8f2
+#~ msgid ""
+#~ "Fue mejorada la persistencia del "
+#~ "contenedor de redis (para los entornos"
+#~ " de prod-env y dev-env)"
+#~ msgstr ""
+#~ "Redis container persistence was improved "
+#~ "(for dev-env & prod-env "
+#~ "environments)"
+
+# b927b9c8518448288fa510bffb96f878
+#~ msgid ""
+#~ "El Dev-env fue mejorado para poder"
+#~ " leer las variables de entorno desde"
+#~ " un archivo .env al igual que "
+#~ "el prod-env."
+#~ msgstr ""
+#~ "Dev-env was improved to read "
+#~ "environment variables from .env file "
+#~ "like prod-env."
+
+# 65580fbc2e6a4408a6f2aa7670e94378
+#~ msgid ""
+#~ "Ahora un cambio en la variable "
+#~ "PGPASSWORD en su archivo .env, realiza"
+#~ " ese cambio también en el container"
+#~ " de postgres"
+#~ msgstr ""
+#~ "A change in variable PGPASSWORD on "
+#~ "its .env fike, apply also this "
+#~ "change on postgres container"
+
+# 50ba9d24119946fd821ee3d86561d2d4
+#~ msgid "Se adicionó un script de desinstalación"
+#~ msgstr "Uninstallation script was added"
+
+# 794e839be01e445dbefd420425de1822
+#~ msgid "OML admin"
+#~ msgstr "OML admin"
+
+# 83a169a448104730aa454e5801ecddfe
+#~ msgid ""
+#~ "Se adicionaron los reportes de promedio"
+#~ " de tiempo de abandono, promedio de"
+#~ " tiempo de espera y llamadas en "
+#~ "espera para campañas entrntes"
+#~ msgstr ""
+#~ "Abandon average, waiting average and "
+#~ "number of waiting calls reports were "
+#~ "added for inbound campaigns"
+
+# 2ab00e6c24694d6d986e09d26274699f
+#~ msgid "Se solucionó error que impedía acceder a los reporte diarios de agentes"
+#~ msgstr "Fixed error when tried to access daily agents report"
+
+# b3ae396c3dfa49fb9abef91cb5d61bd1
+#~ msgid ""
+#~ "Se solucionó error en formularios de "
+#~ "IVR al cargar archivos de audio "
+#~ "externos"
+#~ msgstr "Fixed error in IVR forms validation when uploading external audio files"
+
+# 85a155a28f4247f28183b57a67b22d0f
+#~ msgid ""
+#~ "Se solucionó error en la edición "
+#~ "de campañas que no permitía modificar"
+#~ " sus formularios asociadas a las "
+#~ "opciones de calificación de gestión"
+#~ msgstr ""
+#~ "Fixed error on dialer campaign update"
+#~ " wizard that didn't allow to modify"
+#~ " its engaged disposition options forms"
+
+# 47d6413d39e9435b9574e87a742fece3
+#~ msgid ""
+#~ "Se solucionó error que impedía editar"
+#~ " campañas creadas con el campo "
+#~ "interacción de sitio externo definido"
+#~ msgstr ""
+#~ "Fixed error that didn't allow to "
+#~ "edit campaigns with external field "
+#~ "attribute setted"
+
+# 5c9ff95831f2450fa0623bd2b2c20f46
+#~ msgid ""
+#~ "Se solucionó error que lanzaba excepción"
+#~ " al intentar acceder al reporte de"
+#~ " una campaña"
+#~ msgstr "Fixed exception generated when accessing to campaign reports"
+
+# 997dc7a78c8e4f82b4943b546837626c
+#~ msgid ""
+#~ "Los nombres de las bases de datos"
+#~ " de contactos deben ser distintas "
+#~ "desde ahora"
+#~ msgstr "Contact databases names must be different now"
+
+# 255d0a47cb2143efb555bb24e0d319df
+#~ msgid ""
+#~ "Los nombres de los grupos de "
+#~ "agentes deben ser diferentes a partir"
+#~ " de ahora"
+#~ msgstr "Agent Groups must be differents now"
+
+# e213e37aa1d54e25966a5ca9bc3f38a3
+#~ msgid "OML vista de agente"
+#~ msgstr "OML agent view"
+
+# 97ae104d21b34d378b58da7e94ac143a
+#~ msgid ""
+#~ "Solucionado error generado al visualizar "
+#~ "la lista de llamadas realizadas, se "
+#~ "adiciona mas información en esa vista"
+#~ msgstr ""
+#~ "Fixed error that ocurred when user "
+#~ "visualized call registry, more information "
+#~ "were added also"
+
+# 9f7413dd1e6b42cdae67f5c402a4c77c
+#~ msgid ""
+#~ "Se adicionó una opción de rellamada "
+#~ "desde la lista de llamadas realizadas"
+#~ msgstr " Recalling option was added for every call registered"
+
+# 6d93cb9472e34a318c7647819581d12c
+#~ msgid "Asterisk dialplan"
+#~ msgstr "Asterisk dialplan"
+
+# 7db1834ae6784b93b2141a99271b6c14
+#~ msgid "Se adicionaron logs más descriptivos"
+#~ msgstr "More descriptive logs were added"
+
+# a4aaeeb5cff44c3e92784bb3f74529db
+#~ msgid ""
+#~ "Se solucionó error en la inserción "
+#~ "hacia BD de los eventos de tipo"
+#~ " Blacklist"
+#~ msgstr "Fixed error on Blacklist events when saving to database"
+
+# 5fc58be93833475e992417d8ce25673d
+#~ msgid "Se solucionó error que introducía demoras en procesar una opción de IVR"
+#~ msgstr "Fixed error on IVR delay"
+
+# 6b2a1a770bbe4299a436b9ffc3f7be4a
+#~ msgid "Se solucionó error al manejar una opción de IVR incorrecta"
+#~ msgstr "Fix error when handling IVR incorrect option"
+
+# 58caeeee19494b9696071798d2996230
+#~ msgid "Misc"
+#~ msgstr "Misc"
+
+# dd807c6ec3224c06a4894cbeeac3e126
+#~ msgid ""
+#~ "Los primeros tests de integración fueron"
+#~ " creados y sincronizados con el CI/CD"
+#~ msgstr "First integration tests were introduced, integrated with CI/CD jobs"
+
+# 7fef4f96cfcc4675b5300db12c773e53
+#~ msgid ""
+#~ "Se introdujo una tarea de cron que"
+#~ " limpia diariamente la tabla 'queue_log'"
+#~ msgstr "A cron job to clean table 'queue_log' daily was added"
+
+# 2844fda050b24fa18a71b92b76e4a19b
+#~ msgid "El código JavaScript fue separado de los templates de Django"
+#~ msgstr "Javascript code was separated from Django templates"
+
+# f656f56ffe5f44619a0146516c9b5cb9
+#~ msgid ""
+#~ "Los archivos estáticos fueron organizados "
+#~ "hacia sus apps más relacionadas"
+#~ msgstr "Static files were moved to its related project apps"
+
+# 54bae3ecd50e4c958b07561f6a1c781a
+#~ msgid ""
+#~ "Fue adicionada la redirección hacia una"
+#~ " url interna al loguearse el usuario"
+#~ msgstr "Redirection to an internal url when logged to the system was added"

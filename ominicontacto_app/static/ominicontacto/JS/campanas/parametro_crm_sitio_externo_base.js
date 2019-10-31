@@ -16,12 +16,16 @@
  along with this program.  If not, see http://www.gnu.org/licenses/.
 
 */
+/* global AGREGAR_PARAMETRO */
+/* global REMOVER_CAMPO */
+
 $(function() {
-    var wizard = $('#wizard').val()	
-	$('.linkFormset').formset({
-	       addText: AGREGAR_PARAMETRO,
-	       deleteText: REMOVER_CAMPO,
-	       prefix: wizard,
-	       addCssClass: 'addFormset btn btn-outline-primary',
-	       deleteCssClass: 'deleteFormset btn btn-outline-danger',
-	});
+    var wizard = $('#wizard').val();
+    $('.linkFormset').formset({
+        addText: AGREGAR_PARAMETRO,
+        deleteText: REMOVER_CAMPO,
+        prefix: wizard,
+        addCssClass: 'addFormset btn btn-outline-primary',
+        deleteCssClass: 'deleteFormset btn btn-outline-danger',
+    });
+});
