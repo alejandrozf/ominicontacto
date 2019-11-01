@@ -184,6 +184,14 @@ class LlamadaLog(models.Model):
 
     EVENTOS_NO_CONEXION = EVENTOS_NO_CONTACTACION + EVENTOS_NO_DIALOGO
 
+    # Eventos que indican que no se pudo completar una transferencia
+    EVENTOS_NO_CONEXION_TRANSFER = [
+        'BT-BUSY', 'BT-CANCEL', 'BT-CHANUNAVAIL', 'BT-CONGESTION', 'BT-NOANSWER', 'BT-ABANDON',
+        'CT-DISCARD', 'CT-BUSY', 'CT-CANCEL', 'CT-CHANUNAVAIL', 'CT-CONGESTION',
+        'BTOUT-BUSY', 'BTOUT-CANCEL', 'BTOUT-CONGESTION', 'BTOUT-CHANUNAVAIL', 'BTOUT-ABANDON',
+        'CTOUT-DISCARD', 'CTOUT-BUSY', 'CTOUT-CANCEL', 'CTOUT-CHANUNAVAIL', 'CTOUT-CONGESTION'
+    ]
+
     # Eventos que marcan el fin de la conexion con un agente. (Puede ser por conectar con otro)
     EVENTOS_FIN_CONEXION = ['COMPLETEAGENT', 'COMPLETEOUTNUM',
                             'BT-TRY', 'COMPLETE-BT',

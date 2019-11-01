@@ -249,6 +249,7 @@ class GeneradorDeLlamadaLogs():
         """ Genera logs para una llamada transferida a una campaña Entrante """
         es_manual = campana_orig.type == Campana.TYPE_MANUAL
         tipo_llamada = campana_orig.type
+        contacto_id = -1 if contacto is None else contacto.id
 
         assert agente_orig is not None, 'Solo un agente puede transferir'
         assert finalizacion in ['COMPLETE-CAMPT', 'ABANDON', 'EXITWITHTIMEOUT', ]
@@ -256,7 +257,7 @@ class GeneradorDeLlamadaLogs():
         # Genero log de llamada hasta CAMPT-TRY
         self._generar_logs(campana=campana_orig, es_manual=es_manual, finalizacion=None,
                            numero_marcado=numero_marcado, tipo_llamada=tipo_llamada,
-                           agente_id=agente_orig.id, contacto_id=contacto.id,
+                           agente_id=agente_orig.id, contacto_id=contacto_id,
                            bridge_wait_time=bridge_wait_time,
                            duracion_llamada=duracion_llamada, archivo_grabacion='',
                            time=time, callid=callid, es_transfer=True)
@@ -265,7 +266,7 @@ class GeneradorDeLlamadaLogs():
                           duracion_llamada=duracion_llamada,
                           tipo_llamada=LlamadaLog.LLAMADA_TRANSFER_INTERNA,
                           campana_extra_id=campana_dest.id,
-                          numero_marcado=numero_marcado, contacto_id=contacto.id,
+                          numero_marcado=numero_marcado, contacto_id=contacto_id,
                           archivo_grabacion=archivo_grabacion, time=time, callid=callid)
         LlamadaLogFactory(event='ENTERQUEUE-TRANSFER', campana_id=campana_dest.id,
                           agente_id=agente_orig.id,
@@ -273,7 +274,7 @@ class GeneradorDeLlamadaLogs():
                           tipo_campana=campana_dest.type,
                           campana_extra_id=campana_orig.id,
                           tipo_llamada=LlamadaLog.LLAMADA_TRANSFER_INTERNA,
-                          numero_marcado=numero_marcado, contacto_id=contacto.id,
+                          numero_marcado=numero_marcado, contacto_id=contacto_id,
                           archivo_grabacion=archivo_grabacion, time=time, callid=callid)
 
         if finalizacion == 'COMPLETE-CAMPT':
@@ -284,7 +285,7 @@ class GeneradorDeLlamadaLogs():
                               agente_id=agente_orig.id, agente_extra_id=agente_dest.id,
                               bridge_wait_time=bridge_wait_time,
                               duracion_llamada=duracion_llamada,
-                              numero_marcado=numero_marcado, contacto_id=contacto.id,
+                              numero_marcado=numero_marcado, contacto_id=contacto_id,
                               archivo_grabacion=archivo_grabacion, time=time, callid=callid)
 
             LlamadaLogFactory(event='CONNECT', campana_id=campana_dest.id,
@@ -293,7 +294,7 @@ class GeneradorDeLlamadaLogs():
                               agente_id=agente_dest.id,
                               bridge_wait_time=bridge_wait_time,
                               duracion_llamada='-1',
-                              numero_marcado=numero_marcado, contacto_id=contacto.id,
+                              numero_marcado=numero_marcado, contacto_id=contacto_id,
                               archivo_grabacion=archivo_grabacion, time=time, callid=callid)
             LlamadaLogFactory(event='COMPLETE-CAMPT', campana_id=campana_dest.id,
                               tipo_campana=campana_dest.type,
@@ -301,7 +302,7 @@ class GeneradorDeLlamadaLogs():
                               agente_id=agente_dest.id,
                               bridge_wait_time=bridge_wait_time,
                               duracion_llamada=duracion_llamada,
-                              numero_marcado=numero_marcado, contacto_id=contacto.id,
+                              numero_marcado=numero_marcado, contacto_id=contacto_id,
                               archivo_grabacion=archivo_grabacion, time=time, callid=callid)
 
         else:
@@ -313,7 +314,7 @@ class GeneradorDeLlamadaLogs():
                               agente_id=agente_orig.id,
                               bridge_wait_time=bridge_wait_time,
                               duracion_llamada=duracion_llamada,
-                              numero_marcado=numero_marcado, contacto_id=contacto.id,
+                              numero_marcado=numero_marcado, contacto_id=contacto_id,
                               archivo_grabacion=archivo_grabacion, time=time, callid=callid)
             LlamadaLogFactory(event=finalizacion,
                               campana_id=campana_dest.id, tipo_campana=campana_dest.type,
@@ -321,11 +322,59 @@ class GeneradorDeLlamadaLogs():
                               agente_id=-1,
                               bridge_wait_time=bridge_wait_time,
                               duracion_llamada=-1,
-                              numero_marcado=numero_marcado, contacto_id=contacto.id,
+                              numero_marcado=numero_marcado, contacto_id=contacto_id,
                               archivo_grabacion=archivo_grabacion, time=time, callid=callid)
 
-    # def generar_log_transferencia_bt(
+    def generar_log_transferencia_bt(self, campana, finalizacion, numero_marcado,
+                                     agente_orig, agente_dest, contacto=None,
+                                     bridge_wait_time=5, duracion_llamada=5,
+                                     archivo_grabacion='', time=None, callid=None):
         """ Genera logs para una llamada con transferencia ciega a Agente """
+        es_manual = campana.type == Campana.TYPE_MANUAL
+        tipo_llamada = campana.type
+        contacto_id = -1 if contacto is None else contacto.id
+
+        assert agente_orig is not None, 'Solo un agente puede transferir'
+        assert finalizacion in ['BT-BUSY', 'BT-CANCEL', 'BT-CHANUNAVAIL', 'BT-CONGESTION',
+                                'BT-NOANSWER', 'BT-ABANDON', 'COMPLETE-BT', ]
+        self._generar_logs(campana=campana, es_manual=es_manual, finalizacion=None,
+                           numero_marcado=numero_marcado, tipo_llamada=tipo_llamada,
+                           agente_id=agente_orig.id, contacto_id=contacto_id,
+                           bridge_wait_time=bridge_wait_time,
+                           duracion_llamada=duracion_llamada, archivo_grabacion='',
+                           time=time, callid=callid, es_transfer=True)
+        LlamadaLogFactory(event='BT-TRY', agente_id=agente_orig.id, campana_id=campana.id,
+                          tipo_campana=campana.type, bridge_wait_time=bridge_wait_time,
+                          duracion_llamada=duracion_llamada,
+                          tipo_llamada=LlamadaLog.LLAMADA_TRANSFER_INTERNA,
+                          agente_extra_id=agente_dest.id,
+                          numero_marcado=numero_marcado, contacto_id=contacto_id,
+                          archivo_grabacion=archivo_grabacion, time=time, callid=callid)
+        if finalizacion == 'COMPLETE-BT':
+            LlamadaLogFactory(event='BT-ANSWER', agente_id=agente_dest.id,
+                              campana_id=campana.id,
+                              tipo_campana=campana.type, bridge_wait_time=bridge_wait_time,
+                              duracion_llamada=-1,
+                              tipo_llamada=LlamadaLog.LLAMADA_TRANSFER_INTERNA,
+                              numero_marcado=numero_marcado, contacto_id=contacto_id,
+                              archivo_grabacion=-1, time=time, callid=callid)
+            LlamadaLogFactory(event='COMPLETE-BT', agente_id=agente_dest.id,
+                              campana_id=campana.id,
+                              tipo_campana=campana.type, bridge_wait_time=bridge_wait_time,
+                              duracion_llamada=duracion_llamada,
+                              tipo_llamada=LlamadaLog.LLAMADA_TRANSFER_INTERNA,
+                              numero_marcado=numero_marcado, contacto_id=contacto_id,
+                              archivo_grabacion=archivo_grabacion, time=time, callid=callid)
+            pass
+        else:
+            LlamadaLogFactory(event=finalizacion, agente_id=agente_dest.id,
+                              campana_id=campana.id,
+                              tipo_campana=campana.type, bridge_wait_time=bridge_wait_time,
+                              duracion_llamada=duracion_llamada,
+                              tipo_llamada=LlamadaLog.LLAMADA_TRANSFER_INTERNA,
+                              numero_marcado=numero_marcado, contacto_id=contacto_id,
+                              archivo_grabacion=archivo_grabacion, time=time, callid=callid)
+
     # def generar_log_transferencia_ct(
         """ Genera logs para una llamada con transferencia consultativa a Agente """
     # def generar_log_transferencia_btout(
