@@ -50,7 +50,7 @@ from django.utils.timezone import now, timedelta
 from simple_history.models import HistoricalRecords
 from ominicontacto_app.utiles import (
     ValidadorDeNombreDeCampoExtra, fecha_local, datetime_hora_maxima_dia,
-    datetime_hora_minima_dia)
+    datetime_hora_minima_dia, remplace_espacio_por_guion, )
 
 logger = logging.getLogger(__name__)
 
@@ -189,6 +189,9 @@ class AgenteProfileManager(models.Manager):
         """
         return self.filter(queue__campana=campana)
 
+    def get_agent_sip_extension(self, agent_id):
+        return self.filter(id=agent_id).values_list('sip_extension', flat=True)
+
     def obtener_agentes_supervisor(self, supervisor):
         """
         Obtiene todos los agentes que estan asignados a las campanas propias de un supervisor
@@ -257,8 +260,13 @@ class AgenteProfile(models.Model):
             queue_name__campana__type=Campana.TYPE_PREVIEW)
         return campanas_preview_activas
 
+    # TODO verificar si se puede eliminar esta funcion
     def get_id_nombre_agente(self):
         return "{0}_{1}".format(self.id, self.user.get_full_name())
+
+    def get_asterisk_caller_id(self):
+        nombre_agente = remplace_espacio_por_guion(self.user.get_full_name())
+        return "{0}_{1}".format(self.id, nombre_agente)
 
     def desactivar(self):
         self.is_inactive = True
@@ -1414,6 +1422,16 @@ class QueueMemberManager(models.Manager):
         """
         return self.filter(queue_name=queue)
 
+    def obtener_queue_por_agent(self, agent_id):
+        """Devuelve el queue filtrando por agent_id
+        """
+        return self.filter(member_id=agent_id).values_list('id_campana', flat=True)
+
+    def obtener_penalty_por_agent(self, agent_id):
+        """Devuelve el penalty de queue filtrando por agent_id
+        """
+        return self.filter(member_id=agent_id).values_list('penalty', flat=True)
+
     def existe_member_queue(self, member, queue):
         return self.obtener_member_por_queue(queue).filter(
             member=member).exists()
@@ -1490,6 +1508,9 @@ class PausaManager(models.Manager):
 
     def eliminadas(self):
         return self.filter(eliminada=True)
+
+    def activa_by_pauseid(self, pause_id):
+        return self.get(eliminada=False, id=pause_id)
 
 
 class Pausa(models.Model):

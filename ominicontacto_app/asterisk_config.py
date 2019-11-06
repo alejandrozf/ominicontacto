@@ -30,20 +30,19 @@ import subprocess
 import tempfile
 import traceback
 
-from asterisk.manager import Manager, ManagerSocketException, ManagerAuthException, ManagerException
 from django.conf import settings
 from django.utils.translation import ugettext as _
 
+from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP
 from ominicontacto_app.utiles import remplace_espacio_por_guion
 from ominicontacto_app.models import (
     AgenteProfile, SupervisorProfile, ClienteWebPhoneProfile, Campana
 )
-from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP
 from ominicontacto_app.asterisk_config_generador_de_partes import (
     GeneradorDePedazoDeQueueFactory, GeneradorDePedazoDeAgenteFactory,
     GeneradorDePedazoDeRutasSalientesFactory
 )
-
+from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnector
 import logging as _logging
 
 logger = _logging.getLogger(__name__)
@@ -589,22 +588,8 @@ class AsteriskConfigReloader(object):
     def reload_asterisk(self):
         """Realiza reload de configuracion de Asterisk usando AMI
         """
-        manager = Manager()
-        ami_manager_user = settings.ASTERISK['AMI_USERNAME']
-        ami_manager_pass = settings.ASTERISK['AMI_PASSWORD']
-        ami_manager_host = str(settings.ASTERISK_HOSTNAME)
-        try:
-            manager.connect(ami_manager_host)
-            manager.login(ami_manager_user, ami_manager_pass)
-            manager.command("module reload")
-        except ManagerSocketException as e:
-            logger.exception("Error connecting to the manager: {0}".format(e.message))
-        except ManagerAuthException as e:
-            logger.exception("Error logging in to the manager: {0}".format(e.message))
-        except ManagerException as e:
-            logger.exception("Error {0}".format(e.message))
-        finally:
-            manager.close()
+        manager = AMIManagerConnector()
+        manager._ami_manager('command', 'module reload')
 
 
 class ConfigFile(object):

@@ -21,11 +21,11 @@ from __future__ import unicode_literals
 
 import logging as _logging
 
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, logout
 from django.http import JsonResponse, Http404
 from django.utils.translation import ugettext as _
 from django.views.generic import View
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 
 from rest_framework.views import APIView
 from rest_framework import viewsets
@@ -43,18 +43,16 @@ from api_app.serializers import (CampanaSerializer, AgenteProfileSerializer, Use
                                  UserSerializer, CalificacionClienteSerializer,
                                  CalificacionClienteNuevoContactoSerializer,
                                  OpcionCalificacionSerializer)
-from api_app.utiles import EstadoAgentesService
 from api_app.forms import Click2CallOMLParametersForm, Click2CallExternalSiteParametersForm
 
 from ominicontacto_app.models import (Campana, AgenteProfile, Contacto, CalificacionCliente,
                                       SistemaExterno)
+from ominicontacto_app.services.asterisk.agent_activity import AgentActivityAmiManager
+from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorActivityAmiManager
+from ominicontacto_app.services.click2call import Click2CallOriginator
 from reportes_app.reportes.reporte_llamadas_supervision import (
     ReporteDeLLamadasEntrantesDeSupervision, ReporteDeLLamadasSalientesDeSupervision
 )
-from ominicontacto_app.services.asterisk.interaccion_supervisor_agente import (
-    AccionesDeSupervisorSobreAgente
-)
-from ominicontacto_app.services.click2call import Click2CallOriginator
 
 logger = _logging.getLogger(__name__)
 
@@ -198,10 +196,10 @@ class StatusCampanasSalientesView(View):
 
 class AgentesStatusAPIView(View):
     """Devuelve información de los agentes en el sistema"""
+    agentes_parseados = SupervisorActivityAmiManager()
 
     def get(self, request):
-        agentes_activos_service = EstadoAgentesService()
-        data = list(agentes_activos_service._obtener_agentes_activos_ami())
+        data = list(self.agentes_parseados._obtener_agentes_activos())
         return JsonResponse(data=data, safe=False)
 
 
@@ -216,8 +214,9 @@ class InteraccionDeSupervisorSobreAgenteView(View):
 
     def post(self, request, pk):
         accion = request.POST.get('accion')
-        servicio_acciones = AccionesDeSupervisorSobreAgente()
-        error = servicio_acciones.ejecutar_accion(self.supervisor, self.agente_id, accion)
+        servicio_acciones = SupervisorActivityAmiManager()
+        error = servicio_acciones.ejecutar_accion_sobre_agente(
+            self.supervisor, self.agente_id, accion)
         if error:
             return JsonResponse(data={
                 'status': 'ERROR',
@@ -269,6 +268,84 @@ class API_ObtenerContactosCampanaView(APIView):
         contactos = self._procesar_api(request, campana)
         result_dict = self._procesar_contactos_salida(request, campana, contactos)
         return Response(result_dict)
+
+
+class AgentLoginAsterisk(View):
+    """
+        Vista para ejecutar el login de agente a asterisk, realizando las acciones
+        que solia hacer la extension 0077LOGIN
+    """
+    def post(self, request):
+        agent_login_manager = AgentActivityAmiManager()
+        agente_profile = self.request.user.get_agente_profile()
+        queue_add_error, insert_astdb_error, queue_unpause_error = agent_login_manager.login_agent(
+            agente_profile)
+        if queue_add_error or insert_astdb_error or queue_unpause_error:
+            return JsonResponse(data={
+                'status': 'ERROR',
+            })
+        else:
+            return JsonResponse(data={
+                'status': 'OK',
+            })
+
+
+class AgentLogoutAsterisk(View):
+    """
+        Vista para ejecutar el logout de agente a asterisk, realizando las acciones
+        que solia hacer la extension 066LOGOUT
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+        agent_login_manager = AgentActivityAmiManager()
+        agente_profile = self.request.user.get_agente_profile()
+        agent_login_manager.logout_agent(agente_profile)
+        logout(request)
+        return redirect('login')
+
+
+class AgentPauseAsterisk(View):
+    """
+        Vista para ejecutar la pausa de agente a asterisk, realizando las acciones
+        que solia hacer la extension 0077X
+    """
+
+    def post(self, request):
+        agent_login_manager = AgentActivityAmiManager()
+        pause_id = request.POST.get('pause_id')
+        agente_profile = self.request.user.get_agente_profile()
+        queue_pause_error, insert_astdb_error = agent_login_manager.pause_agent(
+            agente_profile, pause_id)
+        if queue_pause_error or insert_astdb_error:
+            return JsonResponse(data={
+                'status': 'ERROR',
+            })
+        else:
+            return JsonResponse(data={
+                'status': 'OK',
+            })
+
+
+class AgentUnpauseAsterisk(View):
+    """
+        Vista para ejecutar la despausa de agente a asterisk, realizando las acciones
+        que solia hacer la extension 0077UNPAUSE
+    """
+
+    def post(self, request):
+        agent_login_manager = AgentActivityAmiManager()
+        pause_id = request.POST.get('pause_id')
+        agente_profile = self.request.user.get_agente_profile()
+        queue_pause_error, insert_astdb_error = agent_login_manager.unpause_agent(
+            agente_profile, pause_id)
+        if queue_pause_error or insert_astdb_error:
+            return JsonResponse(data={
+                'status': 'ERROR',
+            })
+        else:
+            return JsonResponse(data={
+                'status': 'OK',
+            })
 
 
 class Click2CallView(APIView):

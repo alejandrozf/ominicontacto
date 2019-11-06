@@ -26,7 +26,7 @@ from django.utils.translation import ugettext as _
 from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError
 from ominicontacto_app.models import CalificacionCliente
 
-from api_app.utiles import EstadoAgentesService
+from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorActivityAmiManager
 
 
 def validar_extension_archivo_audio(valor):
@@ -58,8 +58,8 @@ def validar_estructura_csv(data_csv_memory, err_message, logger):
 
 
 def obtener_sip_agentes_sesiones_activas():
-    agentes_activos_service = EstadoAgentesService()
-    agentes = list(agentes_activos_service._obtener_agentes_activos_ami())
+    agentes_activos_service = SupervisorActivityAmiManager()
+    agentes = list(agentes_activos_service._obtener_agentes_activos())
     sips_agentes = []
     for agente in agentes:
         if agente['status'] != 'OFFLINE':

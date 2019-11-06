@@ -28,10 +28,10 @@ from django.test import TestCase, RequestFactory
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient
 
-from api_app.utiles import EstadoAgentesService
-from api_app.views import login
+from api_app.views import login, AgentActivityAmiManager
 
 from ominicontacto_app.models import Campana, User, Contacto
+from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnector
 from ominicontacto_app.tests.factories import (CampanaFactory, SupervisorProfileFactory,
                                                AgenteProfileFactory, SistemaExternoFactory,
                                                AgenteEnSistemaExternoFactory,
@@ -184,7 +184,7 @@ class APITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()[0]['name'], self.opcion_calificacion.nombre)
 
-    def _generar_ami_response_agentes(self):
+    def _generar_ami_manager_response_agentes(self):
         # genera datos que simulan lo más aproximadamente posible las lineas de output de
         # los estados de los agentes obtenidos por el comando AMI 'database show OML/AGENT'
         linea_agente = 'Output: /OML/AGENT/{0}/NAME                                 : agente{0}'
@@ -198,13 +198,13 @@ class APITest(TestCase):
             status_agente = datos_agente['status']
             response.extend([linea_agente.format(id_agente), linea_sip.format(id_agente),
                              linea_status.format(id_agente, status_agente)])
-        return '\r\n'.join(response)
+        return '\r\n'.join(response), None
 
-    @patch('api_app.utiles.Manager')
-    @patch.object(EstadoAgentesService, "_ami_obtener_agentes")
-    def test_servicio_agentes_activos_muestra_activos(self, _ami_obtener_agentes, manager):
+    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
+    @patch.object(AMIManagerConnector, "_ami_manager")
+    def test_servicio_agentes_activos_muestra_activos(self, _ami_manager, manager):
         self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
-        _ami_obtener_agentes.return_value = self._generar_ami_response_agentes()
+        _ami_manager.return_value = self._generar_ami_manager_response_agentes()
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
         self.assertEqual(len(response.json()), 3)
@@ -382,3 +382,76 @@ class APITest(TestCase):
         response = client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
+
+    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
+    @patch.object(AgentActivityAmiManager, "login_agent")
+    def test_api_vista_login_de_agente_retorno_de_valores_correctos(self, login_agent, manager):
+        self.client.login(username=self.agente_profile.user.username, password=self.PWD)
+        login_agent.return_value = False, False, False
+        url = reverse('agent_asterisk_login')
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content[12:14], 'OK')
+
+    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
+    @patch.object(AgentActivityAmiManager, "login_agent")
+    def test_api_vista_login_de_agente_retorno_de_valores_erroneos(self, login_agent, manager):
+        self.client.login(username=self.agente_profile.user.username, password=self.PWD)
+        login_agent.return_value = False, True, True
+        url = reverse('agent_asterisk_login')
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content[12:17], 'ERROR')
+
+    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
+    @patch.object(AgentActivityAmiManager, "pause_agent")
+    def test_api_vista_pausa_de_agente_retorno_de_valores_correctos(self, pause_agent, manager):
+        self.client.login(username=self.agente_profile.user.username, password=self.PWD)
+        pause_agent.return_value = False, False
+        url = reverse('make_pause')
+        post_data = {
+            'pause_id': 1
+        }
+        response = self.client.post(url, post_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content[12:14], 'OK')
+
+    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
+    @patch.object(AgentActivityAmiManager, "pause_agent")
+    def test_api_vista_pausa_de_agente_retorno_de_valores_erroneos(self, pause_agent, manager):
+        self.client.login(username=self.agente_profile.user.username, password=self.PWD)
+        pause_agent.return_value = True, False
+        url = reverse('make_pause')
+        post_data = {
+            'pause_id': 1
+        }
+        response = self.client.post(url, post_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content[12:17], 'ERROR')
+
+    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
+    @patch.object(AgentActivityAmiManager, "unpause_agent")
+    def test_api_vista_despausa_de_agente_retorno_de_valores_correctos(
+            self, unpause_agent, manager):
+        self.client.login(username=self.agente_profile.user.username, password=self.PWD)
+        unpause_agent.return_value = False, False
+        url = reverse('make_unpause')
+        post_data = {
+            'pause_id': 1
+        }
+        response = self.client.post(url, post_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content[12:14], 'OK')
+
+    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
+    @patch.object(AgentActivityAmiManager, "unpause_agent")
+    def test_api_vista_despausa_de_agente_retorno_de_valores_erroneos(self, unpause_agent, manager):
+        self.client.login(username=self.agente_profile.user.username, password=self.PWD)
+        unpause_agent.return_value = True, False
+        url = reverse('make_unpause')
+        post_data = {
+            'pause_id': 1
+        }
+        response = self.client.post(url, post_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content[12:17], 'ERROR')

@@ -32,7 +32,7 @@ RUN pip install setuptools --upgrade \
 
 RUN apk add sudo \
     && echo "omnileads ALL=(ALL:ALL) ALL" >> /etc/sudoers \
-    && echo "omnileads   ALL= NOPASSWD: /usr/sbin/crond, /bin/chown, /bin/ln" >> /etc/sudoers \
+    && echo "omnileads   ALL= NOPASSWD: /usr/sbin/crond, /bin/chown, /bin/ln, /usr/bin/tee" >> /etc/sudoers \
     && echo 'omnileads:{{ root_password }}' | chpasswd \
     && echo 'root:{{ root_password }}' | chpasswd \
 {% if devenv == 1 %}

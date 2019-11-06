@@ -115,7 +115,7 @@
     requirements={{ install_prefix }}ominicontacto/requirements.txt
     virtualenv={{ install_prefix }}virtualenv
     virtualenv_command=/usr/bin/virtualenv
-    extra_args="--exists-action s"
+    extra_args="--exists-action 'w'"
   environment:
     PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-{{ postgresql_version }}/bin"
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'

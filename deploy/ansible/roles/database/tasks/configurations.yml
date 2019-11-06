@@ -18,7 +18,6 @@
   template: src=templates/pg_hba.conf.j2 dest={{ pg_lib_location }}/pg_hba.conf
   become: true
   become_method: sudo
-  when: postgresql_new_installed.rc != 3
   tags: postinstall
 
 #Se modifica la ip en la que escucha postgres

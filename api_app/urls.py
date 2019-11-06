@@ -27,8 +27,9 @@ from api_app.views import (SupervisorCampanasActivasViewSet, AgentesStatusAPIVie
                            StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView,
                            login, API_ObtenerContactosCampanaView, ApiCalificacionClienteView,
                            ApiCalificacionClienteCreateView, OpcionesCalificacionViewSet,
-                           Click2CallView)
-from ominicontacto_app.auth.decorators import supervisor_requerido
+                           Click2CallView, AgentLoginAsterisk, AgentLogoutAsterisk,
+                           AgentPauseAsterisk, AgentUnpauseAsterisk)
+from ominicontacto_app.auth.decorators import supervisor_requerido, agente_requerido
 
 router = routers.DefaultRouter()
 router.register(
@@ -70,8 +71,15 @@ urlpatterns = [
     url(r'^api/v1/campaign/(?P<pk_campana>\d+)/contacts/$',
         API_ObtenerContactosCampanaView.as_view(), name='api_contactos_campana'),
     url(r'api/v1/login', login, name='api_login'),
-
+    url(r'^api/v1/asterisk_login/$',
+        agente_requerido(AgentLoginAsterisk.as_view()), name='agent_asterisk_login'),
+    url(r'^api/v1/asterisk_pause/$',
+        agente_requerido(AgentPauseAsterisk.as_view()), name='make_pause'),
+    url(r'^api/v1/asterisk_unpause/$',
+        agente_requerido(AgentUnpauseAsterisk.as_view()), name='make_unpause'),
     url(r'api/v1/makeCall/$',
         Click2CallView.as_view(),
         name='api_click2call'),
+    url(r'^agente/logout/$', agente_requerido(AgentLogoutAsterisk.as_view()),
+        name='agente_logout'),
 ]
