@@ -5,7 +5,7 @@ ASTERISK_USER=${ASTERISK_USER:-asterisk}
 
 if [ "$1" = "" ]; then
   echo "Creating symlink of asterisk dialplan files"
-  array=(oml_extensions_agent_session.conf oml_extensions_bridgecall.conf oml_extensions_commonsub.conf oml_extensions_modules.conf oml_extensions_postcall.conf oml_extensions_precall.conf oml_extensions.conf)
+  array=(oml_extensions_bridgecall.conf oml_extensions_commonsub.conf oml_extensions_modules.conf oml_extensions_postcall.conf oml_extensions_precall.conf oml_extensions.conf)
   for i in $(seq 0 6); do
     if [ ! -f /etc/asterisk/${array[i]} ]; then ln -s /var/tmp/${array[i]} /etc/asterisk/${array[i]}; fi
   done

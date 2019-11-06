@@ -88,7 +88,6 @@
   with_items:
     - { src: backup-restore.sh, dest: backup-restore.sh }
     - { src: conversor.sh, dest: conversor.sh }
-    - { src: omni-asterisk-logout.py.j2, dest: omni-asterisk-logout.py }
   tags: postinstall
 
 - name: Erase files related to php supervision

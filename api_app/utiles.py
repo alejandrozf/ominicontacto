@@ -19,27 +19,16 @@
 from __future__ import unicode_literals
 
 import re
-import logging as _logging
-
 from time import time
 
-from asterisk.manager import Manager, ManagerSocketException, ManagerAuthException, ManagerException
 
-from django.conf import settings
-
-logger = _logging.getLogger(__name__)
-
-
-class EstadoAgentesService:
+class AgentesParsing(object):
     """Encapsula todos las acciones destinadas a obtener datos sobre los agentes
-    del sistema en forma legible usando AMI
+    del sistema en forma legible
     """
 
     headers_agente_regex = re.compile(r'.*(NAME|SIP|STATUS).*')
     id_agente = re.compile(r'[1-9][0-9]*')
-
-    def _ami_obtener_agentes(self, manager):
-        return manager.command("database show OML/AGENT").data
 
     def _parsear_datos_agentes_pasada_1(self, datos):
         # para filtrar entradas que no nos interesan, como ids de pausas
@@ -80,28 +69,3 @@ class EstadoAgentesService:
                 }
                 agentes_activos.append(agente)
         return agentes_activos
-
-    def _obtener_agentes_activos_ami(self):
-        manager = Manager()
-        ami_manager_user = settings.ASTERISK['AMI_USERNAME']
-        ami_manager_pass = settings.ASTERISK['AMI_PASSWORD']
-        ami_manager_host = str(settings.ASTERISK_HOSTNAME)
-        agentes_activos = []
-        try:
-            manager.connect(ami_manager_host)
-            manager.login(ami_manager_user, ami_manager_pass)
-            agentes_activos_raw = self._parsear_datos_agentes_pasada_1(
-                self._ami_obtener_agentes(manager))
-            agentes_activos = self._parsear_datos_agentes_pasada_2(agentes_activos_raw)
-        except ManagerSocketException as e:
-            logger.exception("Error connecting to the manager: {0}".format(e.message))
-        except ManagerAuthException as e:
-            logger.exception("Error logging in to the manager: {0}".format(e.message))
-        except ManagerException as e:
-            logger.exception("Error {0}".format(e.message))
-        finally:
-            manager.close()
-            return agentes_activos
-
-    def obtener_agentes_activos(self):
-        return self._obtener_agentes_ami()

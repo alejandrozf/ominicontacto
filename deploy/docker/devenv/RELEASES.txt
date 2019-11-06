@@ -17,7 +17,9 @@ Omniapp:
   - Added the cert of the Registrar Server for testing Omnileads Addons
 1.2.2
   - Removed ssh setup cuz is no more necessary
-
+1.2.3
+  - Added a line in run_omniapp.sh that writes envars in a file to source cron jobs
+  
 Asterisk:
 
 16.4.0-res_json

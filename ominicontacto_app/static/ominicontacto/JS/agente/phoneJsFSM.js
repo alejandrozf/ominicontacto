@@ -20,53 +20,53 @@
 /* Requirements:                        */
 /*      - state-machine-min.js          */
 
+/* global StateMachine */
 
 var PhoneFSM = new StateMachine.factory({
     init: 'Inactive',
     transitions: [
         // Inactive
-      { name: 'start',                  from: 'Inactive',           to: 'Initial' },
+        { name: 'start',                  from: 'Inactive',           to: 'Initial' },
         // Initial
-      { name: 'registered',             from: 'Initial',            to: 'Ready' },
-      { name: 'disconnected',           from: 'Initial',            to: 'End' },
-      { name: 'failedRegistration',     from: 'Initial',            to: 'End' },
+        { name: 'registered',             from: 'Initial',            to: 'Ready' },
+        { name: 'disconnected',           from: 'Initial',            to: 'End' },
+        { name: 'failedRegistration',     from: 'Initial',            to: 'End' },
         // Ready
-      { name: 'startCall',              from: 'Ready',              to: 'Calling' },
-      { name: 'receiveCall',            from: 'Ready',              to: 'ReceivingCall' },
-      { name: 'startPause',             from: 'Ready',              to: 'Paused' },
-      { name: 'logout',                 from: 'Ready',              to: 'End' },
+        { name: 'startCall',              from: 'Ready',              to: 'Calling' },
+        { name: 'receiveCall',            from: 'Ready',              to: 'ReceivingCall' },
+        { name: 'startPause',             from: 'Ready',              to: 'Paused' },
+        { name: 'logout',                 from: 'Ready',              to: 'End' },
         // Calling
-      { name: 'endCall',                from: 'Calling',            to: 'Ready' },
-      { name: 'connectCall',            from: 'Calling',            to: 'OnCall' },
+        { name: 'endCall',                from: 'Calling',            to: 'Ready' },
+        { name: 'connectCall',            from: 'Calling',            to: 'OnCall' },
         // Paused
-      { name: 'unpause',                from: 'Paused',             to: 'Ready' },
-      { name: 'startCall',              from: 'Paused',             to: 'Calling' },
-      { name: 'receiveCall',            from: 'Paused',             to: 'ReceivingCall' },
-      { name: 'logout',                 from: 'Paused',             to: 'End' },
-      { name: 'changePause',            from: 'Paused',             to: 'Paused' },
+        { name: 'unpause',                from: 'Paused',             to: 'Ready' },
+        { name: 'startCall',              from: 'Paused',             to: 'Calling' },
+        { name: 'receiveCall',            from: 'Paused',             to: 'ReceivingCall' },
+        { name: 'logout',                 from: 'Paused',             to: 'End' },
+        { name: 'changePause',            from: 'Paused',             to: 'Paused' },
         // OnCall
-      { name: 'endCall',                from: 'OnCall',             to: 'Ready' },
-      { name: 'dialTransfer',           from: 'OnCall',             to: 'DialingTransfer' },
-      { name: 'startOnHold',            from: 'OnCall',             to: 'OnHold' },
+        { name: 'endCall',                from: 'OnCall',             to: 'Ready' },
+        { name: 'dialTransfer',           from: 'OnCall',             to: 'DialingTransfer' },
+        { name: 'startOnHold',            from: 'OnCall',             to: 'OnHold' },
         // DialingTransfer
-      { name: 'endCall',                from: 'DialingTransfer',    to: 'Ready' },
-      { name: 'blindTransfer',          from: 'DialingTransfer',    to: 'Transfered' },
-      { name: 'consultativeTransfer',   from: 'DialingTransfer',    to: 'Transfering' },
+        { name: 'endCall',                from: 'DialingTransfer',    to: 'Ready' },
+        { name: 'blindTransfer',          from: 'DialingTransfer',    to: 'Transfered' },
+        { name: 'consultativeTransfer',   from: 'DialingTransfer',    to: 'Transfering' },
         // Transfered
-      { name: 'endCall',                from: 'Transfered',         to: 'Ready' },
+        { name: 'endCall',                from: 'Transfered',         to: 'Ready' },
         // Transfering
-      { name: 'transferAccepted',       from: 'Transfering',        to: 'Ready' },
-      { name: 'endCall',                from: 'Transfering',        to: 'Ready' },
-      { name: 'transferNotAccepted',    from: 'Transfering',        to: 'OnCall' }, // Cuando sucede?
-      { name: 'endTransfer',            from: 'Transfering',        to: 'OnCall' },
+        { name: 'transferAccepted',       from: 'Transfering',        to: 'Ready' },
+        { name: 'endCall',                from: 'Transfering',        to: 'Ready' },
+        { name: 'transferNotAccepted',    from: 'Transfering',        to: 'OnCall' }, // Cuando sucede?
+        { name: 'endTransfer',            from: 'Transfering',        to: 'OnCall' },
 
         // ReceivingCall
-      { name: 'acceptCall',             from: 'ReceivingCall',      to: 'OnCall' },
-      { name: 'refuseCall',             from: 'ReceivingCall',      to: 'Ready' },
+        { name: 'acceptCall',             from: 'ReceivingCall',      to: 'OnCall' },
+        { name: 'refuseCall',             from: 'ReceivingCall',      to: 'Ready' },
         // OnHold
-      { name: 'releaseHold',            from: 'OnHold',             to: 'OnCall' },
-      { name: 'endCall',                from: 'OnHold',             to: 'Ready' },
+        { name: 'releaseHold',            from: 'OnHold',             to: 'OnCall' },
+        { name: 'endCall',                from: 'OnHold',             to: 'Ready' },
     ],
 
 });
-

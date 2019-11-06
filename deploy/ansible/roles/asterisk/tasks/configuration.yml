@@ -33,7 +33,6 @@
 - name: Copy of asterisk dialplan files for OML (aio)
   file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ ast_conf_location }}/{{ item }} force=true owner={{ usuario }} group={{ usuario }} mode=755"
   with_items:
-    - oml_extensions_agent_session.conf
     - oml_extensions_bridgecall.conf
     - oml_extensions_commonsub.conf
     - oml_extensions_modules.conf
@@ -47,7 +46,6 @@
 - name: Copy of asterisk dialplan files for OML (cluster)
   copy: src={{ repo_location }}/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ ast_conf_location }} owner={{ usuario }} group={{ usuario }}
   with_items:
-    - oml_extensions_agent_session.conf
     - oml_extensions_bridgecall.conf
     - oml_extensions_commonsub.conf
     - oml_extensions_modules.conf
@@ -100,13 +98,11 @@
 - name: Copy of dialplan custom and override files
   copy: "src=roles/asterisk/templates/conf/archivos-no-enlaces/{{ item }} dest={{ ast_conf_location }}/ owner={{ usuario }} group={{ usuario }} mode=755"
   with_items:
-    - oml_extensions_agent_session_custom.conf
     - oml_extensions_bridgecall_custom.conf
     - oml_extensions_commonsub_custom.conf
     - oml_extensions_modules_custom.conf
     - oml_extensions_postcall_custom.conf
     - oml_extensions_precall_custom.conf
-    - oml_extensions_agent_session_override.conf
     - oml_extensions_bridgecall_override.conf
     - oml_extensions_commonsub_override.conf
     - oml_extensions_modules_override.conf
