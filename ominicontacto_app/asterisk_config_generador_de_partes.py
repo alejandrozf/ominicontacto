@@ -345,13 +345,14 @@ class GeneradorParaAgente(GeneradorDePedazoDeAgenteSip):
         insecure=invite
         context={context}
         host=dynamic
+        secret=
         qualify=yes
         notifyringing=yes
         callevents=yes
         callcounter=yes
         callerid={oml_agente_name} <{oml_agente_sip}>
-        secret=
         rtcp_mux=yes
+        defaultuser={oml_agente_sip}
         """
 
     def get_parametros(self):

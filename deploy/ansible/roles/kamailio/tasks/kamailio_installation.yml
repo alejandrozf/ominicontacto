@@ -53,10 +53,10 @@
 # Se añaden los modulos que se quieren incluir por defecto en la instalacion
 - name: Add the desired modules in modules.lst
   lineinfile:
-          dest: /usr/src/kamailio-{{ kamailio_version }}/src/modules.lst
-          regexp: '^include_modules='
-          insertafter: '^include_modules= '
-          line: 'include_modules= presence presence_xml app_python auth_ephemeral db_redis ndb_redis tls uuid websocket'
+    dest: /usr/src/kamailio-{{ kamailio_version }}/src/modules.lst
+    regexp: '^include_modules='
+    insertafter: '^include_modules= '
+    line: 'include_modules= presence presence_xml app_python auth_ephemeral db_redis outbound tls uuid websocket'
   become: true
   become_method: sudo
 

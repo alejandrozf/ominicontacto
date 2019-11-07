@@ -79,7 +79,8 @@ class SipConfigCreator(object):
         param_generales = {
             'oml_agente_name': "{0}_{1}".format(agente.id, nombre_agente),
             'oml_agente_sip': agente.sip_extension,
-            'context': context
+            'context': context,
+            'oml_kam_ip': settings.KAMAILIO_HOSTNAME,
         }
 
         generador_agente = self._generador_factory.crear_generador_para_agente(
