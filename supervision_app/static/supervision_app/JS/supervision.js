@@ -21,6 +21,66 @@
 /* global gettext */
 /* global moment */
 
+var table_agentes;
+
+$(function() {
+    createDataTable();
+    setInterval( function () { table_agentes.ajax.reload(); }, 5000 );
+});
+
+function createDataTable() {
+    table_agentes =  $('#tableAgentes').DataTable({
+        ajax: {
+            url: Urls.api_agentes_activos(),
+            dataSrc: ''
+        },
+        columns: [
+            {'data': 'nombre'},
+            {'data' : 'status',
+                'render': function (data) {  //( data, type, row, meta)
+                    var $status = create_node('p');
+                    $status.text(data);
+                    if (data.search('READY') != -1) {
+                        $status.attr('class', 'ready');
+                    }
+                    if (data.search('PAUSE') != -1) {
+                        $status.attr('class', 'paused');
+                    }
+                    if (data.search('ONCALL') != -1) {
+                        $status.attr('class', 'oncall');
+                    }
+                    if (data.search('DIALING') != -1) {
+                        $status.attr('class', 'dialing');
+                    }
+                    return $status.prop('outerHTML');
+                },
+            },
+            {'data' : 'tiempo',
+                'render': function (data) {  // ( data, type, row, meta)
+                    var duration = moment.duration(data, 'seconds');
+                    return moment.utc(duration.as('milliseconds')).format('HH:mm:ss');
+                },
+            },
+            {'data' : 'id',
+                'render': function (data, type, row) {  // (data, type, row, meta)
+                    return obtenerNodosAcciones(row['id'], row['status']);
+                },
+            }
+        ],
+        language: {
+            search: gettext('Buscar: '),
+            infoFiltered: gettext('(filtrando de un total de _MAX_ contactos)'),
+            paginate: {
+                first: gettext('Primero '),
+                previous: gettext('Anterior '),
+                next: gettext(' Siguiente'),
+                last: gettext(' Último'),
+            },
+            lengthMenu: gettext('Mostrar _MENU_ entradas'),
+            info: gettext('Mostrando _START_ a _END_ de _TOTAL_ entradas'),
+        }
+    });
+}
 
 function obtenerNodosAcciones(pk_agent, status) {
 
@@ -87,80 +147,3 @@ function obtenerNodosAcciones(pk_agent, status) {
 
     return $div.prop('outerHTML');
 }
-
-
-function assignToColumns(data_sin_filtrar) {
-    if ( $.fn.DataTable.isDataTable('#tableAgentes') ) {
-        $('#tableAgentes').DataTable().destroy();
-    }
-    var data = data_sin_filtrar.filter(function (val) {return val['status'] != 'OFFLINE';});
-    $('#tableAgentes').dataTable({
-        bAutoWidth : false,
-        aaData : data,
-        columns : [
-            {'data' : 'nombre'},
-            {'data' : 'status',
-                'render': function (data) {  //( data, type, row, meta)
-                    var $status = create_node('p');
-                    $status.text(data);
-                    if (data.search('READY') != -1) {
-                        $status.attr('class', 'ready');
-                    }
-                    if (data.search('PAUSE') != -1) {
-                        $status.attr('class', 'paused');
-                    }
-                    if (data.search('ONCALL') != -1) {
-                        $status.attr('class', 'oncall');
-                    }
-                    if (data.search('DIALING') != -1) {
-                        $status.attr('class', 'dialing');
-                    }
-                    return $status.prop('outerHTML');
-                }
-
-            },
-            {'data' : 'tiempo',
-                'render': function (data) {  // ( data, type, row, meta)
-                    var duration = moment.duration(data, 'seconds');
-                    return moment.utc(duration.as('milliseconds')).format('HH:mm:ss');
-                },
-            },
-            {'data' : 'id',
-                'render': function (data, type, row) {  // (data, type, row, meta)
-                    return obtenerNodosAcciones(row['id'], row['status']);
-                },
-            }
-        ],
-        language: {
-            search: gettext('Buscar: '),
-            infoFiltered: gettext('(filtrando de un total de _MAX_ contactos)'),
-            paginate: {
-                first: gettext('Primero '),
-                previous: gettext('Anterior '),
-                next: gettext(' Siguiente'),
-                last: gettext(' Último'),
-            },
-            lengthMenu: gettext('Mostrar _MENU_ entradas'),
-            info: gettext('Mostrando _START_ a _END_ de _TOTAL_ entradas'),
-        }
-    });
-}
-
-function refreshActiveAgentsTable() {
-    $.ajax({
-        url: Urls.api_agentes_activos(),
-        type: 'GET',
-        dataType: 'json',
-        success: function(data) {
-            assignToColumns(data);
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
-        },
-    });
-}
-
-$(document).ready(function () {
-    refreshActiveAgentsTable();
-    setInterval(refreshActiveAgentsTable, 5000);
-});
