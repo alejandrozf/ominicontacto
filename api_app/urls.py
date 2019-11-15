@@ -28,7 +28,8 @@ from api_app.views import (SupervisorCampanasActivasViewSet, AgentesStatusAPIVie
                            login, API_ObtenerContactosCampanaView, ApiCalificacionClienteView,
                            ApiCalificacionClienteCreateView, OpcionesCalificacionViewSet,
                            Click2CallView, AgentLoginAsterisk, AgentLogoutAsterisk,
-                           AgentPauseAsterisk, AgentUnpauseAsterisk, ContactoCreateView)
+                           AgentPauseAsterisk, AgentUnpauseAsterisk, ContactoCreateView,
+                           CampaignDatabaseMetadataView)
 from ominicontacto_app.auth.decorators import supervisor_requerido, agente_requerido
 
 router = routers.DefaultRouter()
@@ -83,5 +84,7 @@ urlpatterns = [
     url(r'^agente/logout/$', agente_requerido(AgentLogoutAsterisk.as_view()),
         name='agente_logout'),
     url(r'api/v1/new_contact/', ContactoCreateView.as_view(),
-        name='api_new_contact')
+        name='api_new_contact'),
+    url(r'api/v1/campaign/database_metadata/', CampaignDatabaseMetadataView.as_view(),
+        name='campaign_database_metadata'),
 ]

@@ -460,8 +460,9 @@ class ContactoCreateView(APIView):
 
         # Obtengo la campaña a la cual corresponde la base de datos
         try:
-            id_campana = request.data.pop('idCampaign')
-        except KeyError:
+            id_campana = request.data.get('idCampaign')
+            id_campana = int(id_campana)
+        except (KeyError, ValueError):
             return Response(data={
                 'status': 'ERROR',
                 'message': msg_error_datos,
@@ -541,6 +542,74 @@ class ContactoCreateView(APIView):
                 'message': msg_error_datos,
                 'errors': form.errors
             }, status=HTTP_400_BAD_REQUEST)
+
+    def _user_tiene_permiso_en_campana(self, campana):
+        user = self.request.user
+        if user.get_is_agente():
+            return user.get_agente_profile() in campana.obtener_agentes()
+        else:
+            return user in campana.supervisors.all()
+
+
+class CampaignDatabaseMetadataView(APIView):
+    permission_classes = (IsAuthenticated, EsSupervisorOAgentePermiso)
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication)
+    http_method_names = ['post']
+    renderer_classes = (JSONRenderer, )
+
+    def post(self, request, *args, **kwargs):
+        msg_error_datos = _('Hubo errores en los datos recibidos')
+        # Veo si los ids corresponden a un sistema externo
+        sistema_externo = None
+        if 'idExternalSystem' in request.data:
+            try:
+                id_external_system = request.data.get('idExternalSystem')
+                sistema_externo = SistemaExterno.objects.get(id=id_external_system)
+            except SistemaExterno.DoesNotExist:
+                return Response(data={
+                    'status': 'ERROR',
+                    'message': msg_error_datos,
+                    'errors': {'idExternalSystem': [_('Sistema externo inexistente.')]}
+                }, status=HTTP_400_BAD_REQUEST)
+
+        # Obtengo la campaña a la cual corresponde la base de datos
+        try:
+            id_campana = request.data.get('idCampaign')
+            id_campana = int(id_campana)
+        except (KeyError, ValueError):
+            return Response(data={
+                'status': 'ERROR',
+                'message': msg_error_datos,
+                'errors': {'idCampaign': [_('Debe indicar un idCampaign válido.')]}
+            }, status=HTTP_400_BAD_REQUEST)
+
+        try:
+            if sistema_externo:
+                campana = Campana.objects.obtener_activas().get(id_externo=id_campana)
+            else:
+
+                campana = Campana.objects.obtener_activas().get(id=id_campana)
+        except Campana.DoesNotExist:
+            return Response(data={
+                'status': 'ERROR',
+                'message': msg_error_datos,
+                'errors': {'idCampaign': [_('Campana inexistente.')]}
+            }, status=HTTP_400_BAD_REQUEST)
+
+        if not self._user_tiene_permiso_en_campana(campana):
+            return Response(data={
+                'status': 'ERROR',
+                'message': msg_error_datos,
+                'errors': {'idCampaign': [_('No tiene permiso para editar la campaña.')]}
+            }, status=HTTP_400_BAD_REQUEST)
+
+        metadata = campana.bd_contacto.get_metadata()
+
+        return Response(data={
+            'main_phone': metadata.nombre_campo_telefono,
+            'external_id': metadata.nombre_campo_id_externo,
+            'fields': metadata.nombres_de_columnas,
+        })
 
     def _user_tiene_permiso_en_campana(self, campana):
         user = self.request.user
