@@ -52,7 +52,7 @@ class SupervisorActivityAmiManager(object):
         supervisor_activity = SupervisorActivityAmiManager()
         if exten not in self.EXTENSIONES:
             return _("La acción indicada no existe")
-        channel = "SIP/{0}".format(supervisor.sip_extension)
+        channel = "PJSIP/{0}".format(supervisor.sip_extension)
         channel_vars = {'OMLAGENTID': str(agente_id), }
         originate_data = [channel, exten, 'oml-sup-actions', channel_vars]
         # Genero la llamada via originate por AMI

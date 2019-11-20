@@ -215,7 +215,7 @@ class TroncalSIPListView(ListView):
 class TroncalSIPCreateView(TroncalSIPMixin, CreateView):
     model = TroncalSIP
     form_class = TroncalSIPForm
-    template_name = 'base_create_update_form.html'
+    template_name = 'create_update_troncal.html'
 
     def form_valid(self, form):
         return self.process_in_form_valid(form)
@@ -224,7 +224,7 @@ class TroncalSIPCreateView(TroncalSIPMixin, CreateView):
 class TroncalSIPUpdateView(TroncalSIPMixin, UpdateView):
     model = TroncalSIP
     form_class = TroncalSIPForm
-    template_name = 'base_create_update_form.html'
+    template_name = 'create_update_troncal.html'
 
     def form_valid(self, form):
         return self.process_in_form_valid(form, update=True)

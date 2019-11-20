@@ -76,8 +76,11 @@
       - oml_manager.conf
       - oml_dahdi.conf
       - oml_http.conf
+      - oml_pjsip.conf
+      - oml_pjsip_wizard.conf
       - oml_sip_general.conf
-      - oml_sip_nat.conf
+      - pjsip.conf
+      - pjsip_wizard.conf
       - queues.conf
       - res_odbc.conf
       - sip.conf
@@ -108,6 +111,16 @@
     - oml_extensions_modules_override.conf
     - oml_extensions_postcall_override.conf
     - oml_extensions_precall_override.conf
+  tags: postinstall
+  when: ast_custom_exists.rc == 0
+
+- name: Copy of pjsip custom and override files
+  copy: "src=roles/asterisk/templates/conf/archivos-no-enlaces/{{ item }} dest={{ ast_conf_location }}/ owner={{ usuario }} group={{ usuario }} mode=755"
+  with_items:
+    - oml_pjsip_custom.conf
+    - oml_pjsip_wizard_custom.conf
+    - oml_pjsip_override.conf
+    - oml_pjsip_wizard_override.conf
   tags: postinstall
 
 - name: Install pyst (Asterisk manager for python) (cluster)
