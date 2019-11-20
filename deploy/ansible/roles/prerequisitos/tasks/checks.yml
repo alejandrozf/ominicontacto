@@ -38,6 +38,12 @@
   when: cluster == 0 and iface != "none"
   tags: always
 
+# Obtengo IP publica del nodo
+- name: Get public IP address of node
+  shell: curl ifconfig.me
+  register: public_ip
+  tags: always
+
 # Comparo si la IP ingresada en el inventory es el mismo  de el nodo
 - name: Compare if IP in inventory file is configured in the server
   assert:
@@ -93,8 +99,17 @@
 - name: Check if trusted certificates exists
   shell: "if [ -z \"$(ls -A /var/tmp/ominicontacto-build/ominicontacto/deploy/certs)\" ]; then exit 1; else exit 0; fi"
   failed_when: false
+  changed_when: false
   delegate_to: localhost
   register: trusted_certs_exists
+  tags: always
+
+- name: Check if custom and override files for dialplan exists
+  shell: "[ -f {{ asterisk_location }}/etc/asterisk/oml_extensions_commonsub_custom.conf ]"
+  changed_when: false
+  failed_when: false
+  delegate_to: localhost
+  register: ast_custom_exists
   tags: always
 
 - name: Set name of trusted certificate as ansible variable

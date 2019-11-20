@@ -82,11 +82,9 @@ dialer_password=demo
 # If you are wishing to install OML in a cloud provider you must set these variables: #
 #  - external_port: the outside port where OML web server will listen requests        #
 #  - external_hostname: the dns external users will connect to                        #
-#  - public_ip: where OML is installed                                                #
 #######################################################################################
 #external_port=
 #external_hostname=
-#public_ip=
 #####################################################################
 # Trusted Certificates:                                             #
 #   If you want to use your own certificate/key pair, copy them in  #

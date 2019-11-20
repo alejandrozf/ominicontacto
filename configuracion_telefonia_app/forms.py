@@ -53,6 +53,7 @@ class TroncalSIPForm(forms.ModelForm):
             'caller_id': forms.TextInput(attrs={'class': 'form-control'}),
             'register_string': forms.TextInput(attrs={'class': 'form-control'}),
             'text_config': forms.Textarea(attrs={'class': 'form-control'}),
+            'tecnologia': forms.Select(attrs={'class': 'form-control'}),
         }
         labels = {
             'nombre': _('Nombre Troncal'),

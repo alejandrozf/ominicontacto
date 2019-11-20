@@ -1,6 +1,3 @@
 # Add extra options here
-{% if public_ip is not defined %}
-OPTIONS="-i internal/{{ kamailio_ip }} -n 127.0.0.1:{{ rtpengine_port }} -m 20000 -M 30000 -L 7 --log-facility=local1"
-{% else %}
-OPTIONS="-i external/{{ kamailio_ip }}!{{ public_ip }} -n 127.0.0.1:{{ rtpengine_port }} -m 20000 -M 30000 -L 7 --log-facility=local1"
-{% endif %}
+
+OPTIONS="-i external/{{ kamailio_ip }}!{{ public_ip.stdout }} -n 127.0.0.1:{{ rtpengine_port }} -m 20000 -M 30000 -L 7 --log-facility=local1"

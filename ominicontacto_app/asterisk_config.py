@@ -509,7 +509,8 @@ class RutasSalientesConfigCreator(object):
 class SipTrunksConfigCreator(object):
 
     def __init__(self):
-        self._sip_trunks_config_file = SipTrunksConfigFile()
+        self._chansip_trunks_config_file = ChanSipTrunksConfigFile()
+        self._pjsip_trunks_config_file = PJSipTrunksConfigFile()
 
     def _obtener_todas_para_generar_config_rutas(self):
         """Devuelve todas para config troncales
@@ -536,13 +537,19 @@ class SipTrunksConfigCreator(object):
                 trunk_exclude)
         else:
             trunks = self._obtener_todas_para_generar_config_rutas()
-        trunk_file = []
+        chansip_trunk_file = []
+        pjsip_trunk_file = []
 
         for trunk in trunks:
             logger.info(_("Creando config troncal sip {0}".format(trunk.id)))
-            trunk_file.append("\n[{0}]\n{1}\n".format(
-                trunk.nombre, trunk.text_config.replace("\r", "")))
-        self._sip_trunks_config_file.write(trunk_file)
+            if trunk.tecnologia == TroncalSIP.CHANSIP:
+                chansip_trunk_file.append("\n[{0}]\n{1}\n".format(
+                    trunk.nombre, trunk.text_config.replace("\r", "")))
+            elif trunk.tecnologia == TroncalSIP.PJSIP:
+                pjsip_trunk_file.append("\n[{0}]\n{1}\n".format(
+                    trunk.nombre, trunk.text_config.replace("\r", "")))
+        self._chansip_trunks_config_file.write(chansip_trunk_file)
+        self._pjsip_trunks_config_file.write(pjsip_trunk_file)
 
 
 class SipRegistrationsConfigCreator(object):
@@ -645,12 +652,20 @@ class RutasSalientesConfigFile(ConfigFile):
         super(RutasSalientesConfigFile, self).__init__(filename, remote_path)
 
 
-class SipTrunksConfigFile(ConfigFile):
+class ChanSipTrunksConfigFile(ConfigFile):
     def __init__(self):
         filename = os.path.join(settings.OML_ASTERISK_REMOTEPATH,
                                 "oml_sip_trunks.conf")
         remote_path = settings.OML_ASTERISK_REMOTEPATH
-        super(SipTrunksConfigFile, self).__init__(filename, remote_path)
+        super(ChanSipTrunksConfigFile, self).__init__(filename, remote_path)
+
+
+class PJSipTrunksConfigFile(ConfigFile):
+    def __init__(self):
+        filename = os.path.join(settings.OML_ASTERISK_REMOTEPATH,
+                                "oml_pjsip_trunks.conf")
+        remote_path = settings.OML_ASTERISK_REMOTEPATH
+        super(PJSipTrunksConfigFile, self).__init__(filename, remote_path)
 
 
 class SipRegistrationsConfigFile(ConfigFile):

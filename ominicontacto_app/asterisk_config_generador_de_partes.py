@@ -340,19 +340,10 @@ class GeneradorParaAgente(GeneradorDePedazoDeAgenteSip):
 
     def get_template(self):
         return """
-        [{oml_agente_sip}]
-        type=friend
-        insecure=invite
-        context={context}
-        host=dynamic
-        secret=
-        qualify=yes
-        notifyringing=yes
-        callevents=yes
-        callcounter=yes
-        callerid={oml_agente_name} <{oml_agente_sip}>
-        rtcp_mux=yes
-        defaultuser={oml_agente_sip}
+        [{oml_agente_sip}](agents)
+        endpoint/callerid={oml_agente_name} <{oml_agente_sip}>
+        inbound_auth/username={oml_agente_sip}
+        inbound_auth/password=
         """
 
     def get_parametros(self):

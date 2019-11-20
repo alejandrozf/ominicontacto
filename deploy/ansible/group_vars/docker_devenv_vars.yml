@@ -12,6 +12,7 @@ root_password: toor123
 # Networking settings
 dev_subnet: 172.20.0.0/24
 dialer_ip: 172.20.0.10
+asterisk_ip: 172.20.0.10
 kamailio_ip: 172.20.0.11
 omniapp_ip: 172.20.0.12
 nginx_external_port: 443

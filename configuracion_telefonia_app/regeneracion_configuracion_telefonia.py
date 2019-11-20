@@ -30,8 +30,7 @@ from django.utils.translation import ugettext as _
 from ominicontacto_app.errors import OmlError
 from ominicontacto_app.asterisk_config import (
     AsteriskConfigReloader, RutasSalientesConfigCreator, RutasSalientesConfigFile,
-    SipTrunksConfigCreator, SipRegistrationsConfigCreator, SipTrunksConfigFile,
-    SipRegistrationsConfigFile
+    SipTrunksConfigCreator, SipRegistrationsConfigCreator, SipRegistrationsConfigFile
 )
 from ominicontacto_app.services.asterisk_database import (
     RutaSalienteFamily, TrunkFamily, RutaEntranteFamily, IVRFamily, ValidacionFechaHoraFamily,
@@ -156,7 +155,6 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
     def __init__(self):
         self.generador_trunk_en_astdb = TrunkFamily()
         self.generador_trunk_sip_en_asterisk_conf = SipTrunksConfigCreator()
-        self.config_trunk_file = SipTrunksConfigFile()
         self.generador_trunks_registration_en_asterisk_conf = SipRegistrationsConfigCreator()
         self.config_trunk_registration_file = SipRegistrationsConfigFile()
         self.reload_asterisk_config = AsteriskConfigReloader()

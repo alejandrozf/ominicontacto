@@ -79,7 +79,7 @@ class AgentActivityAmiManager(object):
         queues = QueueMember.objects.obtener_queue_por_agent(agent_id)
         penalties = QueueMember.objects.obtener_penalty_por_agent(agent_id)
         sip_extension = agente_profile.sip_extension
-        interface = "SIP/" + str(sip_extension).strip('[]')
+        interface = "PJSIP/" + str(sip_extension).strip('[]')
         content = [agent_id, member_name, queues, penalties, interface]
         return content
 

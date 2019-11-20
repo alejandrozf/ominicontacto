@@ -258,7 +258,7 @@ class RutaSalienteFamily(AbstractFamily):
 
         troncales = self._obtener_troncales_ordenados(ruta)
         for orden, troncal in troncales:
-            dict_ruta.update({"TRUNK/{0}".format(orden): troncal.troncal.nombre})
+            dict_ruta.update({"TRUNK/{0}".format(orden): troncal.troncal.id})
 
         return dict_ruta
 
@@ -299,7 +299,7 @@ class RutaSalienteFamily(AbstractFamily):
                 client.login()
                 family = self._get_nombre_family(ruta)
                 key = "TRUNK/{0}".format(orden)
-                val = troncal.troncal.nombre
+                val = troncal.troncal.id
                 client.asterisk_db("DBPut", family, key=key, val=val)
             except AsteriskHttpAsteriskDBError:
                 logger.exception(_("Error al intentar DBPut al insertar"
@@ -320,6 +320,7 @@ class TrunkFamily(AbstractFamily):
     def _create_dict(self, trunk):
 
         dict_trunk = {
+            'TECH': trunk.tecnologia_astdb,
             'NAME': trunk.nombre,
             'CHANNELS': trunk.canales_maximos,
             'CALLERID': trunk.caller_id,

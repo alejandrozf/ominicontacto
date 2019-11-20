@@ -67,7 +67,7 @@ OML_GRABACIONES_URL = "https://{0}:{1}/grabaciones".format(NGINX_HOSTNAME, OML_E
 OML_WOMBAT_URL = "http://{0}:8080/wombat".format(DIALER_HOSTNAME)
 
 # Ubicaciones de archivos
-OML_SIP_FILENAME = "{0}/etc/asterisk/oml_sip_endpoints.conf".format(ASTERISK_LOCATION)
+OML_SIP_FILENAME = "{0}/etc/asterisk/oml_pjsip_agents.conf".format(ASTERISK_LOCATION)
 OML_QUEUES_FILENAME = "{0}/etc/asterisk/oml_queues.conf".format(ASTERISK_LOCATION)
 OML_RUTAS_SALIENTES_FILENAME = "{0}/etc/asterisk/oml_extensions_outr.conf".format(ASTERISK_LOCATION)
 OML_ASTERISK_REMOTEPATH = "{0}/etc/asterisk/".format(ASTERISK_LOCATION)
