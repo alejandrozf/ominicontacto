@@ -26,7 +26,7 @@ wombat_version: 18.08.3-232
 
 #URLS para descargar asterisk
 asterisk_repo: https://downloads.asterisk.org/pub/telephony/asterisk/old-releases/asterisk-{{ asterisk_version }}.tar.gz
-wombat: http://downloads.loway.ch/wd/WombatDialer-18.08.1-223.tar.gz
+wombat: http://downloads.loway.ch/wd/WombatDialer-{{ wombat_version }}.tar.gz
 rtpengine_repo: https://github.com/sipwise/rtpengine/archive/mr{{ rtpengine_version }}.tar.gz
 kamailio_repo: https://github.com/kamailio/kamailio/archive/{{ kamailio_version }}.tar.gz
 postgresql_key: https://ftp.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-{{ postgres_version_nodot }}

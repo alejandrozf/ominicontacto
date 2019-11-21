@@ -138,7 +138,7 @@
   tags: postinstall
 
 - name: Create crontab file
-  template: src=templates/cron-grabaciones dest=/var/spool/cron/omnileads owner={{ usuario }} group={{ usuario }} mode=600
+  template: src=templates/cron-grabaciones dest={{ cron_location }} owner={{ usuario }} group={{ usuario }} mode=600 force=yes
   tags: postinstall
   when: MONITORFORMAT == "mp3" and is_docker == "false"
 

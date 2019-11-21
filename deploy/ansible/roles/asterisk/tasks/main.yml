@@ -43,6 +43,14 @@
   when: asterisk_installed.stdout != asterisk_version
   tags: ['asterisk','postinstall']
 
+- set_fact: cron_location=/var/spool/cron/crontabs/omnileads
+  when: ansible_os_family == "Debian"
+  tags: postinstall
+
+- set_fact: cron_location=/var/spool/cron/omnileads
+  when: ansible_os_family == "RedHat"
+  tags: postinstall
+
 - include: configuration.yml
   tags: asterisk
 
