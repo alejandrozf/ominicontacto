@@ -68,6 +68,60 @@ Si el login no es exitoso, el método devuelve la siguiente salida:
 
 *figure 3: endpint login request fail*
 
+.. _about_api_database_metadata:
+
+Endpoint obtener estructura de Base de Datos de Contactos
+*********************************************************
+Esta endpoint habilita la posibilidad de obtener información de los campos de una base de datos de contactos de una campaña. Con esta información será posible luego crear un contacto. Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`) o a un Supervisor (:ref:`about_supervisor_user`) que estén asociados a la campaña.
+
+**URL**: POST https://<omnileads_addr>/api/v1/campaign/database_metadata/
+
++---------------------+---------+-----------------------------------------------------------------------------+
+| field name          | type    | description                                                                 |
++=====================+=========+=============================================================================+
+| idExternalSystem    | integer | Parámetro opcional, si se especifica el sistema intentará localizar la      |
+|                     |         | campaña especificada buscando este valor como 'id_externo' de la campaña.   |
+|                     |         | En caso de no especificarse el sistema asumirá que el valor                 |
+|                     |         | del parámetro 'idCampaign' es el id interno de la campaña en OML            |
++---------------------+---------+-----------------------------------------------------------------------------+
+| idCampaign          | string  | Id de la campaña a la que pertenece la base de datos el significado de su   |
+|                     |         | valor depende de si se especifica o no el parámetro 'idExternalSystem'      |
++---------------------+---------+-----------------------------------------------------------------------------+
+
+En caso de no haber errores se devolverá un output como este, con los datos de los campos de la base de datos:
+
+.. image:: images/api_database_metadata.png
+
+El campo 'fields' indica la lista de todos los campos de la base de datos. El campo 'main_phone' indica cual es es campo correspondiente al teléfono principal. El campo 'external_id' indica cual de los campos corresponde al identificador externo del contacto. En caso de que la base de datos no tenga campo identificador externo, el campo 'external_id' tendrá el valor None.
+
+En caso de haber errores se devolverá un JSON con el campo “status”:”ERROR” y el detalle de los mismos en el campo “errors”. Caso contrario el valor del campo “status” será “OK”.
+
+Endpoint creacion de contacto
+*****************************
+Esta endpoint habilita la posibilidad de agegar un contacto a una base de datos de contactos de una campaña. Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`) o a un Supervisor (:ref:`about_supervisor_user`) que estén asociados a la campaña.
+
+**URL**: POST https://<omnileads_addr>/api/v1/new_contact/
+
++---------------------+---------+-----------------------------------------------------------------------------+
+| field name          | type    | description                                                                 |
++=====================+=========+=============================================================================+
+| idExternalSystem    | integer | Parámetro opcional, si se especifica el sistema intentará localizar la      |
+|                     |         | campaña especificada buscando este valor como 'id_externo' de la campaña.   |
+|                     |         | En caso de no especificarse el sistema asumirá que el valor                 |
+|                     |         | del parámetro 'idCampaign' es el id interno de la campaña en OML            |
++---------------------+---------+-----------------------------------------------------------------------------+
+| idCampaign          | string  | Id de la campaña a la que pertenece la base de datos el significado de su   |
+|                     |         | valor depende de si se especifica o no el parámetro 'idExternalSystem'      |
++---------------------+---------+-----------------------------------------------------------------------------+
+
+Además deberán enviarse los valores de los campos correspondientes a los datos del contacto, y cuyos nombres pueden obtenerse con la api de obtener estructura de de Base de Datos de Contactos (:ref:`about_api_database_metadata`). Es obligatorio enviar un valor para el campo indicado como 'main_phone', y en caso de que la base de datos tenga campo identificador externo, el valor del campo indicado como 'external_id' no deberá existir previamente en otro contacto de la base de datos.
+
+En caso de no haber errores se devolverá un output como este, con los datos del contacto y su id en OML:
+
+.. image:: images/api_new_contact.png
+
+En caso de haber errores se devolverá un JSON con el campo “status”:”ERROR” y el detalle de los mismos en el campo “errors”. Caso contrario el valor del campo “status” será “OK”.
+
 Endpoint de Generación de llamadas
 ***********************************
 
