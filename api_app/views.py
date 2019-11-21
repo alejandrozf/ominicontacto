@@ -460,13 +460,14 @@ class ContactoCreateView(APIView):
 
         # Obtengo la campaña a la cual corresponde la base de datos
         try:
-            id_campana = request.data.get('idCampaign')
-            id_campana = int(id_campana)
+            id_campana = request.data.pop('idCampaign')
+            if sistema_externo is None:
+                id_campana = int(id_campana)
         except (KeyError, ValueError):
             return Response(data={
                 'status': 'ERROR',
                 'message': msg_error_datos,
-                'errors': {'idCampaign': [_('Debe indicar un idCampaign.')]}
+                'errors': {'idCampaign': [_('Debe indicar un idCampaign válido.')]}
             }, status=HTTP_400_BAD_REQUEST)
 
         try:
@@ -517,7 +518,7 @@ class ContactoCreateView(APIView):
         if form.is_valid():
             # TODO: Decidir si esto lo tiene que hacer el form o la vista
             contacto = form.save(commit=False)
-            if self.user.get_is_supervisor_normal():
+            if self.request.user.get_is_supervisor_normal():
                 campana.bd_contacto.cantidad_contactos += 1
                 campana.bd_contacto.save()
             contacto.datos = form.get_datos_json()
@@ -575,7 +576,8 @@ class CampaignDatabaseMetadataView(APIView):
         # Obtengo la campaña a la cual corresponde la base de datos
         try:
             id_campana = request.data.get('idCampaign')
-            id_campana = int(id_campana)
+            if sistema_externo is None:
+                id_campana = int(id_campana)
         except (KeyError, ValueError):
             return Response(data={
                 'status': 'ERROR',
@@ -606,6 +608,7 @@ class CampaignDatabaseMetadataView(APIView):
         metadata = campana.bd_contacto.get_metadata()
 
         return Response(data={
+            'status': 'OK',
             'main_phone': metadata.nombre_campo_telefono,
             'external_id': metadata.nombre_campo_id_externo,
             'fields': metadata.nombres_de_columnas,
