@@ -198,7 +198,8 @@ class OMLTestUtilsMixin(object):
         )
 
     def crear_base_datos_contacto(self, cant_contactos=None,
-                                  numeros_telefonicos=None, columna_extra=None):
+                                  numeros_telefonicos=None, columna_extra=None,
+                                  columna_id_externo=None):
         """Crea base datos contacto
         - cant_contactos: cantidad de contactos a crear.
             Si no se especifica, se genera una cantidad
@@ -211,19 +212,24 @@ class OMLTestUtilsMixin(object):
 
         metadata = bd_contacto.get_metadata()
 
-        if columna_extra is None:
-            metadata.cantidad_de_columnas = 4
-            metadata.nombres_de_columnas = ['TELEFONO', 'NOMBRE', 'FECHA',
-                                            'HORA']
-        else:
-            metadata.cantidad_de_columnas = 5
-            metadata.nombres_de_columnas = ['TELEFONO', 'NOMBRE', 'FECHA',
-                                            'HORA', columna_extra]
+        cantidad_de_columnas = 4
+        nombres_de_columnas = ['TELEFONO', 'NOMBRE', 'FECHA', 'HORA']
+        if columna_extra is not None:
+            cantidad_de_columnas += 1
+            nombres_de_columnas.append(columna_extra)
+        if columna_id_externo is not None:
+            cantidad_de_columnas += 1
+            nombres_de_columnas.append(columna_id_externo)
 
+        metadata.cantidad_de_columnas = cantidad_de_columnas
+        metadata.nombres_de_columnas = nombres_de_columnas
         metadata.columna_con_telefono = 0
+        metadata.columnas_con_telefono = [0]
         metadata.columnas_con_hora = [3]
         metadata.columnas_con_fecha = [2]
         metadata.primer_fila_es_encabezado = False
+        if columna_id_externo is not None:
+            metadata.columna_id_externo = cantidad_de_columnas - 1
         metadata.save()
         bd_contacto.save()
 

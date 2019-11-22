@@ -463,7 +463,7 @@ class ContactoCreateView(APIView):
             id_campana = request.data.pop('idCampaign')
             if sistema_externo is None:
                 id_campana = int(id_campana)
-        except (KeyError, ValueError):
+        except (KeyError, ValueError, TypeError):
             return Response(data={
                 'status': 'ERROR',
                 'message': msg_error_datos,
@@ -479,7 +479,7 @@ class ContactoCreateView(APIView):
             return Response(data={
                 'status': 'ERROR',
                 'message': msg_error_datos,
-                'errors': {'idCampaign': [_('Campana inexistente.')]}
+                'errors': {'idCampaign': [_('Campaña inexistente.')]}
             }, status=HTTP_400_BAD_REQUEST)
 
         if not self._user_tiene_permiso_en_campana(campana):
@@ -578,7 +578,7 @@ class CampaignDatabaseMetadataView(APIView):
             id_campana = request.data.get('idCampaign')
             if sistema_externo is None:
                 id_campana = int(id_campana)
-        except (KeyError, ValueError):
+        except (KeyError, ValueError, TypeError):
             return Response(data={
                 'status': 'ERROR',
                 'message': msg_error_datos,
@@ -595,7 +595,7 @@ class CampaignDatabaseMetadataView(APIView):
             return Response(data={
                 'status': 'ERROR',
                 'message': msg_error_datos,
-                'errors': {'idCampaign': [_('Campana inexistente.')]}
+                'errors': {'idCampaign': [_('Campaña inexistente.')]}
             }, status=HTTP_400_BAD_REQUEST)
 
         if not self._user_tiene_permiso_en_campana(campana):
