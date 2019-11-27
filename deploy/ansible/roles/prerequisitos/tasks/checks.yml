@@ -38,12 +38,6 @@
   when: cluster == 0 and iface != "none"
   tags: always
 
-# Obtengo IP publica del nodo
-- name: Get public IP address of node
-  shell: curl ifconfig.me
-  register: public_ip
-  tags: always
-
 # Comparo si la IP ingresada en el inventory es el mismo  de el nodo
 - name: Compare if IP in inventory file is configured in the server
   assert:

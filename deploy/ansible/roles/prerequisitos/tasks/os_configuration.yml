@@ -112,6 +112,7 @@
       - texinfo
       - kernel-headers
       - acl
+      - bind-utils
   when: ansible_os_family == "RedHat"
   retries: 3
   delay: 3
@@ -160,8 +161,15 @@
       - sudo
       - wget
       - unzip
+      - dnsutils
   when: ansible_os_family == "Debian"
   retries: 3
   delay: 3
   register: result
   until: result is success
+
+# Obtengo IP publica del nodo
+- name: Get public IP address of node
+  shell: wget -qO- http://ipecho.net/plain | xargs echo
+  register: public_ip
+  tags: always
