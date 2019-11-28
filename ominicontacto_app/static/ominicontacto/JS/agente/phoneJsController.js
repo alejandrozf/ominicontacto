@@ -484,7 +484,6 @@ class PhoneJSController {
             self.pause_manager.leavePause();
         };
         this.oml_api.makePause(pause_id, pause_ok, pause_error);
-        setTimeout(function(){self.oml_api.makePause(pause_id, pause_ok, pause_error);}, 10);
     }
 
     leavePause(pause_id) {
