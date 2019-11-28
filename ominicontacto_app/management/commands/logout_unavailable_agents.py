@@ -37,6 +37,7 @@ class Command(BaseCommand):
     help = u"Comando para desloguear agentes que no se hayan deslogueado correctamente"
 
     def get_agents_unavailable(self):
+        agentes_profiles = []
         manager = AMIManagerConnector()
         agent_activity = AgentActivityAmiManager()
         user_activity_list, error = manager._ami_manager('command', 'queue show')
@@ -45,7 +46,10 @@ class Command(BaseCommand):
                 fields_activity = activity_line.split()
                 agente_id = fields_activity[1].split('_')[0]
                 agente_profile = AgenteProfile.objects.get(id=agente_id)
-                agent_activity.logout_agent(agente_profile)
+                if agente_profile not in agentes_profiles:
+                    agentes_profiles.append(agente_profile)
+        for agente_profile in agentes_profiles:
+            agent_activity.logout_agent(agente_profile)
 
     def handle(self, *args, **options):
         try:
