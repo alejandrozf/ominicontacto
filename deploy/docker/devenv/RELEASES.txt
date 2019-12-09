@@ -19,7 +19,7 @@ Omniapp:
   - Removed ssh setup cuz is no more necessary
 1.2.3
   - Added a line in run_omniapp.sh that writes envars in a file to source cron jobs
-  
+
 Asterisk:
 
 16.4.0-res_json
@@ -28,6 +28,8 @@ Asterisk:
   - Edited 16.4.0-res_json image to avoid the install of asterisk sounds in all languages available
 16.4.0-no_ssh
   - From 16.4.0-noaudios, removed ssh setup cuz is no more necessary
+16.4.0-iptools
+  - Added packages iproute2 and net-tools to discover internal subnet to add in asterisk manager.conf file
 
 pbx-emulator image versions:
 

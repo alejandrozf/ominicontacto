@@ -13,6 +13,7 @@ You can have the software running in your system with this simple steps:
   5. Copy the prodenv folder in the location you desire
   6. Check the .env file, read carefully what is the purpose of each variable and edit them as you desire. There are some variables that are really important and you need to change them:
     * DOCKER_HOSTNAME="the hostname of the machine used to be docker host"
+    * DOCKER_IP="the IP address of the machine used to be docker host"
     * RELEASE="the OMniLeads release you want to deploy"
     * TZ="your timezone"
     * DJANGO_PASS="the password for the web GUI"
@@ -58,11 +59,8 @@ There are two important password services:
 
 These are typical issues you can encourage editing some variables in .env file.
 
-2. Overlap of network settings: By default the environment will use the subnet 192.168.15.0/24 for internal docker networking. If you are using this subnet in you LAN you can change these variables with new subnet configuration (or you can change your LAN):
+2. Overlap of network settings: By default the environment will use the subnet 192.168.15.0/24 for internal docker networking. If you are using this subnet in you LAN you can change this variable with new subnet configuration (or you can change your LAN):
 
-  DIALER_IP=192.168.15.10
-  KAMAILIO_IP=192.168.15.11
-  OMniLeads_IP=192.168.15.12
   SUBNET=192.168.15.0/24
 
 2. The environment doesn't start because docker-compose says a port is in use: there are three port mappings made to access services inside containers. Change them as your convenience.

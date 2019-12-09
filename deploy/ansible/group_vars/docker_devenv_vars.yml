@@ -5,12 +5,12 @@
 # If you are installing a devenv (DE) AIO uncomment these line
 
 version: de1.2.3
-asterisk_version: 16.4.0-no_ssh
+asterisk_version: 16.4.0-iptools
 customer: devenv
 root_password: toor123
 
 # Networking settings
-dev_subnet: 172.20.0.0/24
+subnet: 172.20.0.0/24
 dialer_ip: 172.20.0.10
 asterisk_ip: 172.20.0.10
 kamailio_ip: 172.20.0.11

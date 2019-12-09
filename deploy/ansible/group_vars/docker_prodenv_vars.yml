@@ -12,10 +12,7 @@ kamailio_version: "{{ version }}"
 root_password: Sup3rS3cr3tP4ssw0rd
 
 # Networking settings
-prod_subnet: 192.168.15.0/24
-dialer_ip: 192.168.15.10
-kamailio_ip: 192.168.15.11
-omniapp_ip: 192.168.15.12
+subnet: 192.168.15.0/24
 nginx_external_port: 444
 pg_external_port: 446
 wd_external_port: 442

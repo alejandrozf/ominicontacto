@@ -167,9 +167,3 @@
   delay: 3
   register: result
   until: result is success
-
-# Obtengo IP publica del nodo
-- name: Get public IP address of node
-  shell: wget -qO- http://ipecho.net/plain | xargs echo
-  register: public_ip
-  tags: always

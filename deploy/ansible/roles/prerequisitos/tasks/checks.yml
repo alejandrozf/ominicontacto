@@ -38,12 +38,24 @@
   when: cluster == 0 and iface != "none"
   tags: always
 
+# Obtengo IP publica del nodo
+- name: Get public IP address of node
+  shell: wget -qO- http://ipecho.net/plain | xargs echo
+  register: public_ip
+  tags: always
+
 # Comparo si la IP ingresada en el inventory es el mismo  de el nodo
 - name: Compare if IP in inventory file is configured in the server
   assert:
     that: "'{{ omni_ip }}' in ansible_all_ipv4_addresses"
     msg: "The IP you inserted in inventory file is wrong, check it"
   when: cluster == 0 and iface == "none"
+  changed_when: false
+  tags: always
+
+- name: Get the network/submask configured in default interface
+  shell: default_if=$(ip route show | awk '/^default/ {print $5}'); route | grep $default_if|tail -1 |awk -F " " '{print $1"/"$3}'
+  register: network_submask
   changed_when: false
   tags: always
 
