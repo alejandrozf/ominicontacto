@@ -11,12 +11,14 @@ services:
     dns: 8.8.8.8
     environment:
       - ASTERISK_LOCATION=${ASTERISK_LOCATION}
+      - AMI_USER=${AMI_USER}
+      - AMI_PASSWORD=${AMI_PASSWORD}
       - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       - PGPASSWORD=${PGPASSWORD}
       - PGHOST=${PGHOST}
       - PGUSER=${PGUSER}
       - TZ=${TZ}
-    image: freetechsolutions/asterisk:{{ asterisk_version }}
+    image: freetechsolutions/asterisk:${ASTERISK_VERSION}
     networks:
       - dev_net
     privileged: true
@@ -44,8 +46,7 @@ services:
       - MYSQL_PWD=${MYSQL_ROOT_PASS}
     image: freetechsolutions/dialer:${DIALER_VERSION}
     networks:
-      dev_net:
-        ipv4_address: ${DIALER_IP}
+      - dev_net
     ports:
       - ${WD_EXT_PORT}:8080/tcp
     privileged: true
@@ -63,8 +64,7 @@ services:
       - TZ=${TZ}
     image: {{ kamailio_image }}
     networks:
-      dev_net:
-        ipv4_address: {{ kamailio_ip }}
+      - dev_net
     privileged: true
     restart: on-failure
     stop_grace_period: 1m30s
@@ -123,6 +123,7 @@ services:
       - DIALER_IP=${DIALER_IP}
       - DJANGO_ADMIN_PASS=${DJANGO_PASS}
       - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
+      - DOCKER_IP=${DOCKER_IP}
       - NGINX_HOSTNAME=${DOCKER_HOSTNAME}
       - EPHEMERAL_USER_TTL=${ECTTL}
       - EXTERNAL_PORT=${NGINX_EXT_PORT}
@@ -147,8 +148,7 @@ services:
       - WOMBAT_PASSWORD=${WOMBAT_PASSWORD}
     image: freetechsolutions/omniapp:${DEVENV_VERSION}
     networks:
-      dev_net:
-        ipv4_address: ${OMNILEADS_IP}
+      - dev_net
     privileged: true
     restart: on-failure
     stdin_open: true

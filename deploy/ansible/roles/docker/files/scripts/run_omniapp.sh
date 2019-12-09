@@ -1,6 +1,7 @@
 #!/bin/bash
 COMMAND="python ${INSTALL_PREFIX}ominicontacto/manage.py"
-
+INTERFACE=$(ip route show | awk '/^default/ {print $5}'); 
+INTERNAL_IP=$(ifconfig $INTERFACE | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
 # run as user OMNIAPP by default
 OMNIAPP_USER=${OMNIAPP_USER:-"{{ usuario }}"}
 OMNIAPP_GROUP=${OMNIAPP_GROUP:-${OMNIAPP_USER}}
@@ -20,6 +21,7 @@ if [ "$1" = "" ]; then
   if ! crontab -l | grep -q 'conversor.sh'; then
   touch /var/spool/cron/crontabs/omnileads
   printenv | sed 's/^\(.*\)$/export \1/g' | sudo tee -a /etc/profile.d/omnileads_envars.sh
+  echo "export OMNILEADS_IP=$INTERNAL_IP" | sudo tee -a /etc/profile.d/omnileads_envars.sh
   cat > /var/spool/cron/crontabs/omnileads << EOF
 SHELL=/bin/bash
 0 1 * * * ${INSTALL_PREFIX}bin/conversor.sh 1 0  >> ${INSTALL_PREFIX}log/conversor.log

@@ -203,20 +203,10 @@ OML_DUMP_HTTP_AMI_RESPONSES = False
 # ==============================================================================
 
 # ==============================================================================
-# DEPLOY -> IP OMNILEADS
-# ==============================================================================
-
-OML_OMNILEADS_IP = None
-"""IP donde se encuentra kamailio
-
-Ejemplo:
-    OML_OMNILEADS_IP = "172.16.20.241"
-"""
-
-# ==============================================================================
 # DEPLOY -> Asterisk
 # ==============================================================================
 
+OML_OMNILEADS_IP = None
 OML_ASTERISK_REMOTEPATH = None
 OML_SIP_FILENAME = None
 OML_QUEUES_FILENAME = None
@@ -317,17 +307,6 @@ OML_AUDIO_PATH_ASTERISK = None
 
 Ejemplo:
     OML_WOMBAT_FILENAME = "/var/lib/asterisk/sounds/oml/"
-"""
-
-# ==============================================================================
-# DEPLOY -> KAMAILIO
-# ==============================================================================
-
-OML_KAMAILIO_IP = None
-"""IP donde se encuentra kamailio-debian
-
-Ejemplo:
-    OML_KAMAILIO_IP = "172.16.20.219/255.255.255.255"
 """
 
 # ==============================================================================

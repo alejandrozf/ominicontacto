@@ -22,8 +22,7 @@ COPY requirements/* $INSTALL_LOCATION/requirements/
 {% endif %}
 COPY scripts/requirements.txt $INSTALL_LOCATION
 
-RUN pip install setuptools --upgrade \
-    && pip install -r $INSTALL_LOCATION/requirements.txt \
+RUN pip install -r $INSTALL_LOCATION/requirements.txt \
     && apk del .build-deps build-base python-dev libxslt-dev jpeg-dev libffi-dev \
     && mkdir /etc/asterisk && chown omnileads. /etc/asterisk \
     && chown -R omnileads.omnileads {{ install_prefix }} /var/spool/cron/ /var/spool/cron/crontabs/ \
