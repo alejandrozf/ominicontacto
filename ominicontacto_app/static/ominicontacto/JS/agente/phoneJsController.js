@@ -92,8 +92,7 @@ class PhoneJSController {
         });
 
         this.view.resumeButton.click(function() {
-            var pause_id = $('#pauseType').val();
-            self.leavePause(pause_id);
+            self.leavePause();
         });
 
         if ($('#pauseType').find('option').length > 0){
@@ -448,7 +447,7 @@ class PhoneJSController {
         if (return_to_pause) {
             this.setPause(pause_id, pause_name);
         }else {
-            this.leavePause(pause_id);
+            this.leavePause();
         }
     }
 
@@ -486,8 +485,9 @@ class PhoneJSController {
         this.oml_api.makePause(pause_id, pause_ok, pause_error);
     }
 
-    leavePause(pause_id) {
+    leavePause() {
         clearTimeout(this.ACW_pause_timeout_handler);
+        var pause_id = this.pause_manager.pause_id;
         this.pause_manager.leavePause();
         this.oml_api.changeStatus(USER_STATUS_ONLINE, this.agent_id);
         /** Pauses **/
