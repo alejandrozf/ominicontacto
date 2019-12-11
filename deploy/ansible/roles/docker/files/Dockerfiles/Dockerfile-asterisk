@@ -28,5 +28,4 @@ COPY asterisk/conf/* /etc/asterisk/
 COPY asterisk/agis/* /var/lib/asterisk/agi-bin/
 COPY asterisk/*.ini /etc/
 COPY scripts/run_asterisk.sh /home/
-EXPOSE 22
 {% endif %}
