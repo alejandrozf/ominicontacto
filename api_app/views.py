@@ -209,8 +209,11 @@ class AgentesStatusAPIView(View):
     agentes_parseados = SupervisorActivityAmiManager()
 
     def get(self, request):
-        data = list(self.agentes_parseados._obtener_agentes_activos())
-        return JsonResponse(data=data, safe=False)
+        online = []
+        for data_agente in self.agentes_parseados._obtener_agentes_activos():
+            if not data_agente['status'] == u'OFFLINE':
+                online.append(data_agente)
+        return JsonResponse(data=online, safe=False)
 
 
 class InteraccionDeSupervisorSobreAgenteView(View):

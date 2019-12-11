@@ -202,12 +202,18 @@ class APITest(TestCase):
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AMIManagerConnector, "_ami_manager")
-    def test_servicio_agentes_activos_muestra_activos(self, _ami_manager, manager):
+    def test_servicio_agentes_activos_muestra_activos_no_offline(self, _ami_manager, manager):
         self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
         _ami_manager.return_value = self._generar_ami_manager_response_agentes()
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
-        self.assertEqual(len(response.json()), 3)
+        self.assertEqual(len(response.json()), 2)
+        for datos_agente in response.json():
+            self.assertIn(datos_agente['id'], ['1', '2'])
+            if datos_agente['id'] == '1':
+                self.assertEqual(datos_agente['status'], 'READY')
+            else:
+                self.assertEqual(datos_agente['status'], 'PAUSE')
 
     def test_api_login_devuelve_token_asociado_al_usuario_password(self):
         url = 'https://{0}{1}'.format(settings.OML_OMNILEADS_IP, reverse('api_login'))
