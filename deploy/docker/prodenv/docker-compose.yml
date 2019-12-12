@@ -28,6 +28,8 @@ services:
     working_dir: /etc/asterisk
 
   dialer:
+    command: >
+    bash -c "sed -i -- 's/127.0.0.1/${MYSQL_HOST}/g' /usr/local/tomcat/webapps/wombat/WEB-INF/tpf.properties && catalina.sh run"
     container_name: oml-dialer-prodenv
     depends_on:
       - mariadb
