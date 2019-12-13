@@ -166,7 +166,9 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
                 # obtenemos el id de la campana desde entradas como:
                 # u'Queue: 29_Dialer-3\r'
                 campana_id = int(event[1].split(' ')[1].split('_')[0])
-                llamadas_en_cola_por_campana[campana_id] += 1
+                if campana_id in self.campanas.keys():
+                    # por si es de una dialer, en ese caso se excluye
+                    llamadas_en_cola_por_campana[campana_id] += 1
         return llamadas_en_cola_por_campana
 
     def _obtener_llamadas_en_espera_raw(self):
