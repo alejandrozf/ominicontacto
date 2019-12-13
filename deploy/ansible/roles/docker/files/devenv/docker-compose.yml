@@ -1,5 +1,3 @@
-
-
 version: '3.7'
 services:
   asterisk:
@@ -24,7 +22,6 @@ services:
     privileged: true
     restart: on-failure
     stop_grace_period: 1m30s
-    #user: asterisk
     volumes:
       - grabaciones:/var/spool/asterisk/monitor/
       - ./asterisk/conf/:/etc/asterisk/
@@ -37,6 +34,8 @@ services:
     working_dir: /etc/asterisk
 
   dialer:
+    command: >
+      bash -c "sed -i -- 's/127.0.0.1/${MYSQL_HOST}/g' /usr/local/tomcat/webapps/wombat/WEB-INF/tpf.properties && catalina.sh run"
     container_name: oml-{{ dialer_fqdn }}-devenv
     depends_on:
       - mariadb
