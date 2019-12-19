@@ -87,7 +87,7 @@ def obtener_oml_private_ip():
 
 
 def obtener_oml_public_ip():
-    public_ip = os.popen("wget -qO- http://ipecho.net/plain | xargs echo").read().strip("\n")
+    public_ip = os.popen("wget -qO- http://ipinfo.io/ip").read().strip("\n")
     return public_ip
 
 
