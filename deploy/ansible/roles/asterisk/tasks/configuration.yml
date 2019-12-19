@@ -77,6 +77,7 @@
       - oml_dahdi.conf
       - oml_http.conf
       - oml_pjsip.conf
+      - oml_pjsip_transports.conf
       - oml_pjsip_wizard.conf
       - oml_sip_general.conf
       - pjsip.conf
