@@ -29,7 +29,7 @@ test:
   # Only needed when using a docker container to run your tests in.
   # Check out: http://docs.gitlab.com/ce/ci/docker/using_docker_images.html#what-is-a-service
   services:
-    - name: alejandrozf/docker-stuff:postgres-plpython-template1
+    - name: alejandrozf/docker-stuff:postgres-plperl-template1
       alias: plpython
     - redis
   # This folder is cached between builds

@@ -82,7 +82,7 @@
     - nginx
     - openssl
     - postgresql-contrib
-    - postgresql-plpython-{{ postgresql_version }}
+    - postgresql-plperl-{{ postgresql_version }}
     - postgresql-server-dev-{{ postgresql_version }}
     - python-dev
     - python-psycopg2

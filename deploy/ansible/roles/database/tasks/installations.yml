@@ -97,7 +97,7 @@
 - name: Install of postgresql {{ postgresql_version }} (debian/ubuntu)
   apt: name={{ item }} state=present
   with_items:
-    - postgresql-plpython-{{ postgresql_version }}
+    - postgresql-plperl-{{ postgresql_version }}
     - postgresql-{{ postgresql_version }}
     - python-psycopg2
   retries: 3

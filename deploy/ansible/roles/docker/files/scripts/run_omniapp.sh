@@ -42,7 +42,7 @@ EOF
   $COMMAND collectstatic_js_reverse
   $COMMAND compress --force
   $COMMAND actualizar_configuracion
-  psql -U $PGUSER -h $PGHOST -d $PGDATABASE -c '\i {{ install_prefix }}ominicontacto/reportes_app/sql/plpython/replace_insert_queue_log_ominicontacto_queue_log.sql'
+  psql -U $PGUSER -h $PGHOST -d $PGDATABASE -c '\i {{ install_prefix }}ominicontacto/reportes_app/sql/plperl/replace_insert_queue_log_ominicontacto_queue_log.sql'
   $COMMAND regenerar_asterisk
   sudo /usr/sbin/crond -l 0 -L /opt/omnileads/log/crond.log
   sudo chown -R omnileads. ${INSTALL_PREFIX}
