@@ -51,12 +51,13 @@
 - name: Create of the database
   postgresql_db: name={{ postgres_database }} state=present login_user={{ postgres_user }} login_password={{ postgres_password }} owner={{ postgres_user }} login_host={{ database_fqdn }}
 
-# Se crea el lenguaje plpythonu a las bases de datos mencionadas.
-- name: Createlang of the database
-  shell: psql -d {{ item }} -c 'CREATE EXTENSION plpythonu'
+# Se crea el lenguaje plperl en todo el cluster.
+- name: Create language plperl in database
+  shell: psql -d {{ item }} -c 'CREATE EXTENSION plperl'
   with_items:
     - "{{ postgres_database }}"
     - template1
   become: true
+  tags: postinstall
   become_user: postgres
   failed_when: false
