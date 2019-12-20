@@ -450,6 +450,12 @@ class CampanaService():
         # asocio endpoint a la campana en wombat
         self.crear_endpoint_asociacion_campana_wombat(campana)
         # TODO: Deuda tecnica: Controlar posibles errores de las funciones llamadas.
+        # actualiza boost_factor
+        boost_factor = int(campana.queue_campana.initial_boost_factor * 100)
+        id_campana_wombat = '{0}_{1}'.format(campana.pk, campana.nombre)
+        url_api = '{0}/api/campaigns/?op=boost&campaign={1}&factor={2}'.format(
+            settings.OML_WOMBAT_URL, id_campana_wombat, boost_factor)
+        requests.get(url_api)
         return True
 
     def translate_state_wombat(self, status):
