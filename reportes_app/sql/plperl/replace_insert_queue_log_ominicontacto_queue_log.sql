@@ -85,6 +85,16 @@ $archivo_grabacion = $_TD->{new}{data5};
 @EVENTOS = (@EVENTOS_LLAMADAS, @EVENTOS_TRANSFERENCIAS);
 
 
+sub is_number  {
+    if (length($_[0]) == length(int($_[0]))) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+
+
 sub procesar_datos_transferencias {
     # Parsea la información de los valores generados desde los campos 'agent', 'data4' y
     # 'data5' para obtener los valores de los campos de los logs de transferencias de llamadas:
@@ -102,15 +112,20 @@ sub procesar_datos_transferencias {
         $agente_id_modificado = $valor_transf_1;
         $agente_extra_id = $valor_transf_2;
     }
-    elsif ( $event ==  'CAMPT-TRY') {
+    elsif ( $event eq 'CAMPT-TRY') {
         # agente_id - id_camp_destino
         $agente_id_modificado = $valor_transf_1;
         $campana_extra_id = $valor_transf_2;
     }
-    elsif ( $event == 'ENTERQUEUE-TRANSFER') {
+    elsif ( $event eq 'ENTERQUEUE-TRANSFER') {
         # id_camp_origen - id_agente_origen (en data4, data5)
         $campana_extra_id = $_TD->{new}{data4};
         $agente_id_modificado = $_TD->{new}{data5};
+    }
+    elsif ($event eq ('BTOUT-TRY', 'CTOUT-TRY')) {
+        # agente_id_origen - nro_telefono_destino
+        $agente_id_modificado = $valor_transf_1;
+        $numero_extra = $valor_transf_2;
     }
     elsif ( grep $_ eq $event,  ('BTOUT-ANSWER', 'BTOUT-BUSY', 'BTOUT-CANCEL', 'BTOUT-CONGESTION',
                                  'BTOUT-CHANUNAVAIL', 'CTOUT-ANSWER', 'CTOUT-ACCEPT', 'CTOUT-DISCARD',
@@ -132,16 +147,16 @@ if( grep $_ eq $event,  @EVENTOS_AGENTE) { # TODO: ver como usar 'and' con 'grep
     if ($queuename == 'ALL') {
         # es un log de la actividad de un agente
         $_SHARED{plan_agente_log} = spi_prepare('INSERT INTO reportes_app_actividadagentelog( time, agente_id, event, pausa_id )VALUES( $1 ,$2, $3, $4 )', 'TIMESTAMP WITH TIME ZONE', 'INTEGER', 'TEXT', 'TEXT');
-        eval {
-            if (looks_like_number($agente_id) || $agente_id == -1) {
+        if ( is_number($agente_id) == 1 || $agente_id == -1) {
+            eval {
                 spi_exec_prepared($_SHARED{plan_agente_log}, {limit => 1}, $fecha, $agente_id, $event, $data1);
             }
+            or do {
+                my $e = $@;
+                my $entrada = "time=$fecha,\nagente_id=$agente_id,\nevent=$event,\ndata1=$data1,\n";
+                elog(ERROR, "Error $e trying to insert input $entrada");
+            };
         }
-        or do {
-            my $e = $@;
-            my $entrada = "time=$fecha,\nagente_id=$agente_id,\nevent=$event,\ndata1=$data1,\n";
-            elog(ERROR, "Error $e trying to insert input $entrada");
-        };
 
     }
 }
@@ -163,23 +178,24 @@ elsif ( grep $_ eq $event,  @EVENTOS)  {
     my $plan_llamadas_log =  spi_prepare('INSERT INTO reportes_app_llamadalog( time, callid, campana_id, tipo_campana, tipo_llamada, agente_id, event, numero_marcado, contacto_id, bridge_wait_time, duracion_llamada, archivo_grabacion, agente_extra_id, campana_extra_id, numero_extra )VALUES( $1 ,$2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15 )',
                                          'timestamp with time zone', 'text', 'int', 'int', 'int', 'int', 'text', 'text', 'int',
                                          'int', 'int', 'text', 'int', 'int', 'text');
-    eval {
-        if (looks_like_number($agente_id) || $agente_id == -1) {
+    if (is_number($agente_id) == 1 || $agente_id == -1) {
+        eval {
             spi_exec_prepared($plan_llamadas_log, {limit => 1}, $fecha, $callid, $campana_id, $tipo_campana, $tipo_llamada,
                               $agente_id, $event, $data1, $contacto_id, $bridge_wait_time,
                               $duracion_llamada, $archivo_grabacion, $agente_extra_id,
                               $campana_extra_id, $numero_extra);
         }
+        or do {
+            my $e = $@;
+            my $entrada = "fecha=$fecha,\ncallid=$callid,\ncampana_id=$campana_id,\ntipo_campana=$tipo_campana,\n".
+                "tipo_llamada=$tipo_llamada,\nagente_id=$agente_id,\nevent=$event,\ndata1=$data1,\n".
+                "contacto_id=$contacto_id,\nbridge_wait_time=$bridge_wait_time,\nduracion_llamada=$duracion_llamada,\n".
+                "archivo_grabacion=$archivo_grabacion,\nagente_extra_id=$agente_extra_id,\ncampana_extra_id=$campana_extra_id,\n".
+                "numero_extra=$numero_extra.\n";
+            elog(ERROR, "Error $e trying to insert input $entrada");
+        };
     }
-    or do {
-        my $e = $@;
-        my $entrada = "fecha=$fecha,\ncallid=$callid,\ncampana_id=$campana_id,\ntipo_campana=$tipo_campana,\n".
-            "tipo_llamada=$tipo_llamada,\nagente_id=$agente_id,\nevent=$event,\ndata1=$data1,\n".
-            "contacto_id=$contacto_id,\nbridge_wait_time=$bridge_wait_time,\nduracion_llamada=$duracion_llamada,\n".
-            "archivo_grabacion=$archivo_grabacion,\nagente_extra_id=$agente_extra_id,\ncampana_extra_id=$campana_extra_id,\n".
-            "numero_extra=$numero_extra.\n";
-        elog(ERROR, "Error $e trying to insert input $entrada");
-    };
+
 }
 
 else {
