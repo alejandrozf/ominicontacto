@@ -61,12 +61,12 @@ except ImportError:
 
 ADMIN_USERNAME = os.getenv('ADMIN_USERNAME')
 ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
+USER = os.getenv('USER')
 
 CAMPANA_MANUAL = os.getenv('CAMPANA_MANUAL')
 
 AGENTE_USERNAME = 'agente' + uuid.uuid4().hex[:5]
 AGENTE_PASSWORD = '098098ZZZ'
-
 
 BROWSER_REAL = os.getenv('BROWSER_REAL')
 TESTS_INTEGRACION = os.getenv('TESTS_INTEGRACION')
@@ -105,6 +105,7 @@ class IntegrationTests(unittest.TestCase):
         chrome_options.add_argument('--use-fake-ui-for-media-stream')
         chrome_options.add_argument('--use-fake-device-for-media-stream')
         chrome_options.add_experimental_option('prefs', {'intl.accept_languages': 'en,en'})
+        chrome_options.add_argument('--ignore-certificate-errors')
         # si se pone visible=1 se muestra el browser en medio de los tests
         self.display = Display(visible=0, size=(1366, 768))
         self.display.start()
@@ -162,7 +163,6 @@ class IntegrationTests(unittest.TestCase):
             '//a[contains(@href,"/grupo/nuevo")]')
         href_create_group = link_create_group.get_attribute('href')
         self.browser.get(href_create_group)
-        group_name = 'grupo' + uuid.uuid4().hex[:5]
         self.browser.find_element_by_id('id_nombre').send_keys(group_name)
         self.browser.find_element_by_id('id_auto_attend_ics').click()
         self.browser.find_element_by_id('id_auto_attend_inbound').click()
@@ -207,7 +207,8 @@ class IntegrationTests(unittest.TestCase):
     @unittest.skipIf(BROWSER_REAL != 'True', MSG_MICROFONO)
     def test_agente_se_registra_correctamente(self):
         self._login(AGENTE_USERNAME, AGENTE_PASSWORD)
-        self.assertEqual(self.browser.find_element_by_id('dial_status').text, 'Registered Agent')
+        self.assertEqual(self.browser.find_element_by_id('dial_status').text,
+                         'Agent connected to asterisk')
 
     @unittest.skipIf(BROWSER_REAL != 'True', MSG_MICROFONO)
     def test_agente_puede_realizar_llamada_fuera_de_campana(self):
@@ -275,21 +276,24 @@ class IntegrationTests(unittest.TestCase):
         self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
             nuevo_username))
         # modificar grupo del agente.
+        group_name = 'grupo' + uuid.uuid4().hex[:5]
+        self.crear_grupo(group_name)
         self.browser.get(href_user_list)
         link_update = self.browser.find_element_by_xpath(
             "//tr[@id=\'{0}\']/td/a[contains(@href, '/user/agenteprofile/update/')]".format(
                 nuevo_username))
         href_update = link_update.get_attribute('href')
         self.browser.get(href_update)
-        self.browser.find_elements_by_xpath('//select[@id=\'id_grupo\']/option')[2].click()
+        self.browser.find_element_by_xpath("//select[@id='id_grupo']/option[text()=\'{0}\']"
+                                           .format(group_name)).click()
         sleep(1)
         self.browser.find_element_by_xpath((
             "//button[@type='submit' and @id='id_registrar']")).click()
         sleep(1)
         self.browser.get(href_user_list)
         self.browser.get(href_update)
-        self.assertTrue(self.browser.find_elements_by_xpath(
-            "//select[@id=\'id_grupo\']/option[@value='2' and @selected='selected']"))
+        self.assertTrue(self.browser.find_element_by_xpath(
+            "//select[@id=\'id_grupo\']/option[text()=\'{0}\']".format(group_name)))
         # Eliminar agente
         self.browser.get(href_user_list)
         link_delete = self.browser.find_element_by_xpath(
@@ -574,6 +578,58 @@ class IntegrationTests(unittest.TestCase):
         sleep(1)
         self.assertFalse(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'
                          .format(modulo_name)))
+
+    def test_crear_modificar_eliminar_audio(self):
+        # Crear audio
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        user_list = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/audios/create/")]')
+        href_user_list = user_list.get_attribute('href')
+        self.browser.get(href_user_list)
+        descripcion_audio = 'audio' + uuid.uuid4().hex[:5]
+        self.browser.find_element_by_id('id_descripcion').send_keys(descripcion_audio)
+        wav_path = "/home/{0}/ominicontacto/test/wavs/8k16bitpcm.wav". format(USER)
+        self.browser.find_element_by_id('id_audio_original').send_keys(wav_path)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.browser.find_elements_by_xpath('//tr[text()=\'{0}\']'.format(
+            descripcion_audio))
+        # Modificar Audio
+        duracion_wav_path = 13
+        duracion_nuevo_wav = 35
+        self.browser.find_element_by_xpath(
+            '//tr[@id=\'{0}\']//a[contains(@href, "/update/")]'.format(descripcion_audio)).click()
+        nuevo_wav = "/home/{0}/ominicontacto/test/wavs/audio1.wav".format(USER)
+        self.browser.find_element_by_id('id_audio_original').send_keys(nuevo_wav)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.browser.find_element_by_xpath(
+            '//tr[@id=\'{0}\']//a[contains(@href, "/update/")]'.format(descripcion_audio)).click()
+        self.assertNotEqual(self.browser.find_element_by_xpath(
+            "//input[text()=\'{0}\']".format(duracion_nuevo_wav)), duracion_wav_path)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        # Eliminar Audio
+        self.browser.find_element_by_xpath(
+            '//tr[@id=\'{0}\']//a[contains(@href, "/eliminar/")]'.format(descripcion_audio)).click()
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.assertFalse(self.browser.find_elements_by_xpath('//tr[text()=\'{0}\']'
+                         .format(nuevo_wav)))
+
+    def test_subir_audio_erroneo(self):
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        user_list = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/audios/create/")]')
+        href_user_list = user_list.get_attribute('href')
+        self.browser.get(href_user_list)
+        descripcion_audio = 'audio' + uuid.uuid4().hex[:5]
+        self.browser.find_element_by_id('id_descripcion').send_keys(descripcion_audio)
+        wav_path = "/home/{0}/ominicontacto/test/wavs/error_audio.mp3". format(USER)
+        self.browser.find_element_by_id('id_audio_original').send_keys(wav_path)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.browser.find_elements_by_xpath('//ul/li[text()="Allowed files: .wav"]')
 
 
 if __name__ == '__main__':
