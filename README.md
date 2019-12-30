@@ -35,7 +35,7 @@ License
 GPLv3. Every source code file contains the license preamble and copyright details.
 
 Actual version
-1.1.X.
+1.3.X.
 
 Documentation
 Official documentation for the proyect can be found at: https://omnileads.net/.
@@ -45,21 +45,24 @@ Installation
 At the moment of the creation of this README, OMniLeads (OML) supports the following distributions:
 - GNU/Linux CentOS 7 minimal version
 - GNU/Linux Debian 9 netinstall version
+- GNU/Linux Ubuntu 18.04 version
 
 An "step to step" tutorial is located on the section of “Docs & Recursos” at: https://omnileads.net/
 
 The actual installation procedure describe how to deploy an “All In One” (AIO) architecture, it means all the components of OMniLeads (OML) deployed inside one Host Server. There is also the option of run some components or services on differents hosts (for horizontal scalability), go to the docs to see more information about this.
 
-The selected tool for install & update OMniLeads (OML) is: Ansible(https://www.ansible.com/). The installation has two differents posibilities:
-1- Ansible Self-Hosted mode: this is, execute the installation running Ansible on the same node server where you want to install OML
+The selected tool for install & update OMniLeads (OML) is: Ansible(https://www.ansible.com/). The installation have four differents posibilities:
+1- Ansible Self-Hosted mode (see https://documentacion-omnileads.readthedocs.io/en/stable/install.html)
+2- Ansible Host-Node mode (see https://documentacion-omnileads.readthedocs.io/en/stable/install_remote.html#about-install-remote)
+3- Horizontal Cluster Installation(see https://documentacion-omnileads.readthedocs.io/en/stable/install_cluster.html#about-install-cluster)
+4- Deploy using Docker(see https://documentacion-omnileads.readthedocs.io/en/stable/install_docker.html#about-install-docker)
 
-2- Ansible Host-Node mode: this is, execute the installation running Ansible from another workstation (Deployer Host) and writing in an inventory file the DNS (Domain Name Server) and IP (Interne Protocol) of Server  where you want to install OML.
 
 The installation script is found inside the software repository. More information can be shown using the help flag “-h”:
 ./deploy.sh -h
 
-For example, this command installs the last stable release
-/deploy.sh --install --aio
+For example, this command makes a fresh install of Omnileads
+/deploy.sh -i --iface=<your_iface>
 
 Please, READ CAREFULLY the Installation Tutorial available in the official page for OMniLeads Project (OML).
 
