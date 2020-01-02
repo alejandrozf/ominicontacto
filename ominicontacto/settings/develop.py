@@ -26,6 +26,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 INSTALLED_APPS += ['debug_toolbar', 'django_extensions', 'corsheaders'] + ADDONS_APPS
+LOCALE_PATHS += ADDONS_LOCALE_PATHS
 MIDDLEWARE_CLASSES = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE_CLASSES
 MIDDLEWARE_CLASSES += ['debug_toolbar.middleware.DebugToolbarMiddleware']
 DJANGO_CORS_HEADERS = True
@@ -33,7 +34,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 INTERNAL_IPS = ['127.0.0.1', OML_OMNILEADS_IP]
 
-TOKEN_EXPIRED_AFTER_SECONDS = 6 * 60 # 6 minutos
+TOKEN_EXPIRED_AFTER_SECONDS = 6 * 60  # 6 minutos
 
 
 def show_toolbar(request):

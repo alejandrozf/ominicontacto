@@ -24,11 +24,12 @@ from checks import (check_settings_variables, process_middleware_settings,
 COMPRESS_ENABLED = True
 TEMPLATE_DEBUG = DEBUG
 DJANGO_CORS_HEADERS = False
-INTERNAL_IPS = ['127.0.0.1',OML_OMNILEADS_IP]
+INTERNAL_IPS = ['127.0.0.1', OML_OMNILEADS_IP]
 
 TOKEN_EXPIRED_AFTER_SECONDS = 9 * 60 * 60  # 9 horas
 
 INSTALLED_APPS += ADDONS_APPS
+LOCALE_PATHS += ADDONS_LOCALE_PATHS
 
 try:
     from oml_settings_local import *

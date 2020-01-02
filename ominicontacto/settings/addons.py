@@ -19,6 +19,9 @@
 
 # Módulo para configurar settings de addons
 
+import os
+from ominicontacto.settings.defaults import BASE_DIR
+
 CONSTANCE_CONFIG = {
     'KEYS_SERVER_HOST': ('https://keys-server.freetech.com.ar:20852', 'KEYS_SERVER_HOST', str),
     'SSL_CERT_FILE': ('/opt/omnileads/cert', 'SSL_CERT_FILE', str),
@@ -33,6 +36,7 @@ CONSTANCE_CONFIG = {
 }
 
 ADDONS_APPS = []
+ADDONS_LOCALE_PATHS = ()
 MIDDLEWARE_PREPPEND = []
 MIDDLEWARE_APPEND = []
 TEMPLATES_CONTEXT_PROCESORS_APPEND = []
