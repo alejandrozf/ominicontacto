@@ -35,7 +35,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </thead>
     <tbody>
     {% for pausa in pausas_activas %}
-        <tr>
+        <tr id="{{ pausa.nombre }}">
             <td>{{ pausa.id }}</td>
             <td>{{ pausa.nombre }}</td>
             <td>
@@ -76,10 +76,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </thead>
         <tbody>
         {% for pausa in pausas_eliminadas %}
-            <tr>
+            <tr id="pausa_eliminada">
                 <td>{{ pausa.id }}</td>
                 <td>{{ pausa.nombre }}</td>
-                <td>
+                <td id="{{ pausa.nombre }}">
                     <div class="dropdown">
                         <button class="btn btn-light dropdown-toggle" type="button" id="dropdownPauseDeleted" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {% trans 'Opciones' %}
