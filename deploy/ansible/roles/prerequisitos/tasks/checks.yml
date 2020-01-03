@@ -45,13 +45,15 @@
   tags: always
 
 - name: Validate IP public obtained
-  shell: val=`echo {{ public_ip.stdout }} | awk -F "." '$0 ~ /^([0-9]{1,3}\.){3}[0-9]{1,3}$/ && $1 <=255 && $2 <= 255 && $3 <= 255 && $4 <= 255'`; if [ ! -z $val ]; then echo 0; else echo 1; fi 
+  shell: if [[ {{ public_ip.stdout }} =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then echo 0; else echo 1; fi
+  args: 
+    executable: /bin/bash
   register: ip_val
   tags: always
   failed_when: false
 
 - fail:
-    msg: "The public IP obtained is wrong, check in shell if you obtain a public IP with this command 'wget -qO- http://ipecho.net/plain | xargs echo', after that please run the script again"
+    msg: "The public IP obtained is wrong, check in shell if you obtain a public IP with this command 'wget -qO- http://ipinfo.io/ip', after that please run the script again"
   when: ip_val.stdout != '0'
   tags: always
 
