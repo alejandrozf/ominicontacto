@@ -80,6 +80,10 @@ $archivo_grabacion = $_TD->{new}{data5};
     'COMPLETE-BT',
     'COMPLETE-BTOUT',
     'COMPLETE-CAMPT',
+    'CT-ABANDON',
+    'ABANDON-CT',
+    'CTOUT-ABANDON',
+    'ABANDON-CTOUT',
     );
 
 @EVENTOS = (@EVENTOS_LLAMADAS, @EVENTOS_TRANSFERENCIAS);
@@ -130,7 +134,7 @@ sub procesar_datos_transferencias {
     elsif ( grep $_ eq $event,  ('BTOUT-ANSWER', 'BTOUT-BUSY', 'BTOUT-CANCEL', 'BTOUT-CONGESTION',
                                  'BTOUT-CHANUNAVAIL', 'CTOUT-ANSWER', 'CTOUT-ACCEPT', 'CTOUT-DISCARD',
                                  'CTOUT-BUSY', 'CTOUT-CANCEL', 'CTOUT-CHANUNAVAIL', 'CTOUT-CONGESTION',
-                                 'COMPLETE-BTOUT', 'COMPLETE-CTOUT')) {
+                                 'COMPLETE-BTOUT', 'COMPLETE-CTOUT', 'CTOUT-ABANDON')) {
         # el valor del campo 'agent' tiene un número de telefono
         $agente_id_modificado = -1;
         $numero_extra = $valor_transf_1;
