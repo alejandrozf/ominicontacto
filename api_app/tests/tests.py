@@ -28,8 +28,8 @@ from django.test import TestCase, RequestFactory
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient
 
-from api_app.views import login, AgentActivityAmiManager
-
+from api_app.views.base import login
+from ominicontacto_app.services.asterisk.agent_activity import AgentActivityAmiManager
 from ominicontacto_app.models import Campana, User, Contacto
 from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnector
 from ominicontacto_app.tests.factories import (CampanaFactory, SupervisorProfileFactory,
@@ -397,7 +397,7 @@ class APITest(TestCase):
         url = reverse('agent_asterisk_login')
         response = self.client.post(url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content[12:14], 'OK')
+        self.assertEqual(response.json()['status'], 'OK')
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AgentActivityAmiManager, "login_agent")
@@ -407,7 +407,7 @@ class APITest(TestCase):
         url = reverse('agent_asterisk_login')
         response = self.client.post(url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content[12:17], 'ERROR')
+        self.assertEqual(response.json()['status'], 'ERROR')
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AgentActivityAmiManager, "pause_agent")
@@ -420,7 +420,7 @@ class APITest(TestCase):
         }
         response = self.client.post(url, post_data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content[12:14], 'OK')
+        self.assertEqual(response.json()['status'], 'OK')
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AgentActivityAmiManager, "pause_agent")
@@ -433,7 +433,7 @@ class APITest(TestCase):
         }
         response = self.client.post(url, post_data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content[12:17], 'ERROR')
+        self.assertEqual(response.json()['status'], 'ERROR')
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AgentActivityAmiManager, "unpause_agent")
@@ -447,7 +447,7 @@ class APITest(TestCase):
         }
         response = self.client.post(url, post_data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content[12:14], 'OK')
+        self.assertEqual(response.json()['status'], 'OK')
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AgentActivityAmiManager, "unpause_agent")
@@ -460,4 +460,4 @@ class APITest(TestCase):
         }
         response = self.client.post(url, post_data)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content[12:17], 'ERROR')
+        self.assertEqual(response.json()['status'], 'ERROR')
