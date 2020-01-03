@@ -112,6 +112,30 @@ outbound_auth/password=****SIP_PASS OML -> PBX****\n\
 endpoint/from_user=****SIP_USER OML -> PBX****',
     },
     {
+        'name': 'OMniLeads inside PBX',
+        'template':
+        'type=wizard\n\
+transport=trunk-nat-docker-transport\n\
+accepts_registrations=no\n\
+sends_auth=yes\n\
+sends_registrations=no\n\
+accepts_auth=yes\n\
+endpoint/rtp_symmetric=nov\n\
+endpoint/force_rport=yes\n\
+endpoint/rewrite_contact=yes\n\
+endpoint/timers=yes\n\
+aor/qualify_frequency=60\n\
+endpoint/allow=alaw,ulaw\n\
+endpoint/dtmf_mode=rfc4733\n\
+endpoint/context=from-pbx\n\
+remote_hosts=****IPADDR-or-FQDN:PORT****\n\
+inbound_auth/username=****SIP_USER PBX -> OML****\n\
+inbound_auth/password=****SIP_PASS PBX -> OML****\n\
+outbound_auth/username=****SIP_USER OML -> PBX****\n\
+outbound_auth/password=****SIP_PASS OML -> PBX****\n\
+endpoint/from_user=****SIP_USER OML -> PBX****',
+    },
+    {
         'name': 'Custom',
         'template': '',
     },
