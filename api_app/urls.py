@@ -22,23 +22,36 @@ from __future__ import unicode_literals
 from django.conf.urls import url, include
 from rest_framework import routers
 
-from api_app.views import (SupervisorCampanasActivasViewSet, AgentesStatusAPIView,
-                           AgentesActivosGrupoViewSet, StatusCampanasEntrantesView,
-                           StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView,
-                           login, API_ObtenerContactosCampanaView, ApiCalificacionClienteView,
-                           ApiCalificacionClienteCreateView, OpcionesCalificacionViewSet,
-                           Click2CallView, AgentLoginAsterisk, AgentLogoutAsterisk,
-                           AgentPauseAsterisk, AgentUnpauseAsterisk, ContactoCreateView,
-                           CampaignDatabaseMetadataView)
+from api_app.views.base import login, ContactoCreateView, CampaignDatabaseMetadataView
+from api_app.views.administrador import AgentesActivosGrupoViewSet
+from api_app.views.supervisor import (
+    SupervisorCampanasActivasViewSet, AgentesStatusAPIView, StatusCampanasEntrantesView,
+    StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView, )
+from api_app.views.agente import (
+    OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
+    API_ObtenerContactosCampanaView, Click2CallView,
+    AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk
+)
+
 from ominicontacto_app.auth.decorators import supervisor_requerido, agente_requerido
 
 router = routers.DefaultRouter()
-router.register(
-    r'api/v1/supervisor/campanas', SupervisorCampanasActivasViewSet,
-    base_name='supervisor_campanas')
+
+#####################################################
+# Wire up our API using automatic URL routing.
+# Additionally, we include login URLs for the browsable API.
+
+# ###########  ADMINISTRADOR  ############ #
 router.register(
     r'api/v1/grupo/(?P<pk_grupo>\d+)/agentes_activos', AgentesActivosGrupoViewSet,
     base_name='grupo_agentes_activos')
+
+# ###########   SUPERVISOR    ############ #
+router.register(
+    r'api/v1/supervisor/campanas', SupervisorCampanasActivasViewSet,
+    base_name='supervisor_campanas')
+
+# ###########     AGENTE      ############ #
 router.register(
     r'api/v1/campaign/(?P<campaign>\w+)/dispositionOptions/(?P<externalSystem>\w+)',
     OpcionesCalificacionViewSet, base_name='api_campana_opciones_calificacion')
@@ -51,40 +64,44 @@ router.register(
     base_name='disposition_new_contact')
 
 
-# Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browsable API.
 urlpatterns = [
+    # ###########   TODOS/BASE    ############ #
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'api/v1/login', login, name='api_login'),
 
+    url(r'api/v1/new_contact/', ContactoCreateView.as_view(),
+        name='api_new_contact'),
+    url(r'api/v1/campaign/database_metadata/', CampaignDatabaseMetadataView.as_view(),
+        name='campaign_database_metadata'),
+
+    # ###########   SUPERVISOR    ############ #
+    url(r'api/v1/supervision/agentes',
+        supervisor_requerido(AgentesStatusAPIView.as_view()),
+        name='api_agentes_activos'),
     url('api/v1/supervision/status_campanas/entrantes/$',
         supervisor_requerido(StatusCampanasEntrantesView.as_view()),
         name='api_supervision_campanas_entrantes'),
     url('api/v1/supervision/status_campanas/salientes/$',
         supervisor_requerido(StatusCampanasSalientesView.as_view()),
         name='api_supervision_campanas_salientes'),
-    url(r'api/v1/supervision/agentes',
-        supervisor_requerido(AgentesStatusAPIView.as_view()),
-        name='api_agentes_activos'),
     url(r'api/v1/supervision/accion_sobre_agente/(?P<pk>\d+)/$',
         supervisor_requerido(InteraccionDeSupervisorSobreAgenteView.as_view()),
         name='api_accion_sobre_agente'),
+
+    # ###########     AGENTE      ############ #
     url(r'^api/v1/campaign/(?P<pk_campana>\d+)/contacts/$',
         API_ObtenerContactosCampanaView.as_view(), name='api_contactos_campana'),
-    url(r'api/v1/login', login, name='api_login'),
+    url(r'api/v1/makeCall/$',
+        Click2CallView.as_view(),
+        name='api_click2call'),
     url(r'^api/v1/asterisk_login/$',
         agente_requerido(AgentLoginAsterisk.as_view()), name='agent_asterisk_login'),
+    url(r'^agente/logout/$', agente_requerido(AgentLogoutAsterisk.as_view()),
+        name='agente_logout'),
     url(r'^api/v1/asterisk_pause/$',
         agente_requerido(AgentPauseAsterisk.as_view()), name='make_pause'),
     url(r'^api/v1/asterisk_unpause/$',
         agente_requerido(AgentUnpauseAsterisk.as_view()), name='make_unpause'),
-    url(r'api/v1/makeCall/$',
-        Click2CallView.as_view(),
-        name='api_click2call'),
-    url(r'^agente/logout/$', agente_requerido(AgentLogoutAsterisk.as_view()),
-        name='agente_logout'),
-    url(r'api/v1/new_contact/', ContactoCreateView.as_view(),
-        name='api_new_contact'),
-    url(r'api/v1/campaign/database_metadata/', CampaignDatabaseMetadataView.as_view(),
-        name='campaign_database_metadata'),
+
 ]
