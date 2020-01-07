@@ -4,8 +4,6 @@ services:
     entrypoint:
       - /home/run_asterisk.sh
     container_name: oml-asterisk-prodenv
-    depends_on:
-      - postgresql
     dns: 8.8.8.8
     environment:
       - AMI_USER=${AMI_USER}
@@ -25,14 +23,13 @@ services:
     volumes:
       - ./recordings:/var/spool/asterisk/monitor/
       - ./sounds:/var/lib/asterisk/sounds/oml/
+      - ast_conf_files:/etc/asterisk/
     working_dir: /etc/asterisk
 
   dialer:
     command: >
-    bash -c "sed -i -- 's/127.0.0.1/${MYSQL_HOST}/g' /usr/local/tomcat/webapps/wombat/WEB-INF/tpf.properties && catalina.sh run"
+      bash -c "sed -i -- 's/127.0.0.1/${MYSQL_HOST}/g' /usr/local/tomcat/webapps/wombat/WEB-INF/tpf.properties && catalina.sh run"
     container_name: oml-dialer-prodenv
-    depends_on:
-      - mariadb
     dns: 8.8.8.8
     environment:
       - TZ=${TZ}
@@ -63,24 +60,6 @@ services:
     stop_grace_period: 1m30s
     volumes:
       - ./certs/:/etc/kamailio/certs/
-
-  mariadb:
-    container_name: oml-mariadb-prodenv
-    dns: 8.8.8.8
-    environment:
-      - TZ=${TZ}
-      - MARIADB_ROOT_PASSWORD=${MYSQL_ROOT_PASS}
-      - MARIADB_DATABASE=${WOMBAT_DB}
-      - MARIADB_USER=${WOMBAT_DB_USER}
-      - MARIADB_PASSWORD=${WOMBAT_DB_PASS}
-    image: bitnami/mariadb:latest
-    networks:
-      - prod_net
-    privileged: true
-    restart: on-failure
-    stop_grace_period: 1m30s
-    volumes:
-      - ./mariadb_data:/bitnami
 
   nginx:
     container_name: oml-nginx-prodenv
@@ -128,7 +107,6 @@ services:
       - PGPASSWORD=${PGPASSWORD}
       - PYTHONPATH=${PYTHONPATH}
       - REDIS_HOSTNAME=${REDIS_HOSTNAME}
-      - RTPENGINE_HOSTNAME=${RTPENGINE_HOSTNAME}
       - SESSION_COOKIE_AGE=${SCA}
       - TZ=${TZ}
       - WOMBAT_HOSTNAME=${WOMBAT_HOSTNAME}
@@ -145,28 +123,9 @@ services:
     user: omnileads
     volumes:
       - ./recordings:/opt/omnileads/grabaciones
-      - ./ast_conf_files:/etc/asterisk/
+      - ast_conf_files:/etc/asterisk/
       - ./sounds:/var/lib/asterisk/sounds/oml/
     working_dir: /opt/omnileads/ominicontacto
-
-  postgresql:
-    container_name: oml-postgresql-prodenv
-    dns: 8.8.8.8
-    environment:
-      - TZ=${TZ}
-      - POSTGRES_USER=${PGUSER}
-      - POSTGRES_PASSWORD=${PGPASSWORD}
-      - POSTGRES_DB=${PGDATABASE}
-    image: freetechsolutions/postgresql:${POSTGRES_VERSION}
-    networks:
-      - prod_net
-    ports:
-     - ${PG_EXT_PORT}:5432/tcp
-    privileged: true
-    restart: on-failure
-    stop_grace_period: 1m30s
-    volumes:
-      - ./postgresql_data:/var/lib/postgresql/data
 
   redis:
     container_name: oml-redis-prodenv
@@ -182,18 +141,6 @@ services:
     volumes:
       - ./redis_data:/data
 
-  rtpengine:
-    container_name: oml-rtpengine-prodenv
-    dns: 8.8.8.8
-    environment:
-      - TZ=${TZ}
-    image: freetechsolutions/rtpengine:${RTPENGINE_VERSION}
-    networks:
-      - prod_net
-    privileged: true
-    restart: on-failure
-    stop_grace_period: 1m30s
-
 networks:
   prod_net:
     ipam:
@@ -201,4 +148,4 @@ networks:
       config:
         - subnet: ${SUBNET}
 volumes:
-  ssh_keys:
+  ast_conf_files:

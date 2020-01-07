@@ -20,13 +20,14 @@ if [ "$1" = "" ]; then
   fi
   if ! crontab -l | grep -q 'conversor.sh'; then
   touch /var/spool/cron/crontabs/omnileads
-  printenv | sed 's/^\(.*\)$/export \1/g' | sudo tee -a /etc/profile.d/omnileads_envars.sh
-  echo "export OMNILEADS_IP=$INTERNAL_IP" | sudo tee -a /etc/profile.d/omnileads_envars.sh
   cat > /var/spool/cron/crontabs/omnileads << EOF
 SHELL=/bin/bash
 0 1 * * * ${INSTALL_PREFIX}bin/conversor.sh 1 0  >> ${INSTALL_PREFIX}log/conversor.log
 EOF
   fi
+  printenv | sed 's/^\(.*\)$/export \1/g' | sudo tee -a /etc/profile.d/omnileads_envars.sh
+  echo "export OMNILEADS_IP=$INTERNAL_IP" | sudo tee -a /etc/profile.d/omnileads_envars.sh
+  export OMNILEADS_IP=$INTERNAL_IP
   $COMMAND migrate --noinput
   $COMMAND createsuperuser --noinput --username=admin --email=admin@example.com || true
   $COMMAND shell << EOF

@@ -56,7 +56,7 @@
 #####################################################################
 postgres_database=omnileads
 postgres_user=omnileads
-#postgres_password=my_very_strong_pass
+#postgres_password=my_mery_strong_pass
 #####################################################################
 #                           Web Admin                               #
 #                     SET WEB ADMIN PASSWORD                        #
