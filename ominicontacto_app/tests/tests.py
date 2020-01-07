@@ -363,8 +363,8 @@ class IntegrationTests(unittest.TestCase):
         href_user_list = user_list.get_attribute('href')
         self.browser.get(href_user_list)
         link_update = self.browser.find_element_by_xpath(
-            "//tr[@id=\'{0}\']/td/a[contains(@href, '/supervisor/')]".format(
-                supervisor_username))
+            "//tr[@id=\'{0}\']/td/a[contains(@href, '/supervisor/')]"
+            .format(supervisor_username))
         href_update = link_update.get_attribute('href')
         self.browser.get(href_update)
         self.browser.find_elements_by_xpath("//select[@id=\'id_rol\']/option")[1].click()
@@ -625,11 +625,109 @@ class IntegrationTests(unittest.TestCase):
         self.browser.get(href_user_list)
         descripcion_audio = 'audio' + uuid.uuid4().hex[:5]
         self.browser.find_element_by_id('id_descripcion').send_keys(descripcion_audio)
-        wav_path = "/home/{0}/ominicontacto/test/wavs/error_audio.mp3". format(USER)
+        wav_path = "/home/{0}/ominicontacto/test/wavs/error_audio.mp3".format(USER)
         self.browser.find_element_by_id('id_audio_original').send_keys(wav_path)
         self.browser.find_element_by_xpath("//button[@type='submit']").click()
         sleep(1)
         self.browser.find_elements_by_xpath('//ul/li[text()="Allowed files: .wav"]')
+
+    def test_pausa_productiva(self):
+        # crear pausa productiva
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        link_create_pausa = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/pausa/nuevo")]')
+        href_create_pausa = link_create_pausa.get_attribute('href')
+        self.browser.get(href_create_pausa)
+        pausa_nueva = 'pausa_pro' + uuid.uuid4().hex[:5]
+        self.browser.find_element_by_id('id_nombre').send_keys(pausa_nueva)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.assertTrue(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            pausa_nueva)))
+        # modificar pausa productiva
+        link_edit = self.browser.find_element_by_xpath(
+            '//tr[@id=\'{0}\']//a[contains(@href, "/pausa/update/")]'.format(pausa_nueva))
+        href_edit = link_edit.get_attribute('href')
+        self.browser.get(href_edit)
+        pausa_recreativa = 'pausa_rec' + uuid.uuid4().hex[:5]
+        self.browser.find_element_by_id('id_nombre').clear()
+        sleep(1)
+        self.browser.find_element_by_id('id_nombre').send_keys(pausa_recreativa)
+        self.browser.find_element_by_xpath("//select/option[@value = 'R']").click()
+        sleep(1)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.assertTrue(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            pausa_recreativa)))
+        # eliminar pausa recreativa
+        link_delete = self.browser.find_element_by_xpath(
+            "//tr[@id=\'{0}\']//a[contains(@href, '/pausa/delete/')]".format(pausa_recreativa))
+        href_delete = link_delete.get_attribute('href')
+        self.browser.get(href_delete)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.assertTrue(self.browser.find_elements_by_xpath(
+            "//tr[@id='pausa_eliminada']//td[contains(text(), \'{0}\')]".format(pausa_recreativa)))
+        # reactivar pausa recreativa
+        link_reactivate = self.browser.find_element_by_xpath(
+            "//tr[@id='pausa_eliminada']//td[@id=\'{0}\']//a[contains(@href, '/pausa/delete/')]"
+            .format(pausa_recreativa))
+        href_reactivate = link_reactivate.get_attribute('href')
+        self.browser.get(href_reactivate)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.assertTrue(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            pausa_recreativa)))
+
+    def test_pausa_recreativa(self):
+        # crear pausa recreativa
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        link_create_pausa = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/pausa/nuevo")]')
+        href_create_pausa = link_create_pausa.get_attribute('href')
+        self.browser.get(href_create_pausa)
+        pausa_nueva = 'pausa_rec' + uuid.uuid4().hex[:5]
+        self.browser.find_element_by_id('id_nombre').send_keys(pausa_nueva)
+        self.browser.find_element_by_xpath("//select/option[@value = 'R']").click()
+        sleep(1)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.assertTrue(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            pausa_nueva)))
+        # modificar pausa recreativa
+        link_edit = self.browser.find_element_by_xpath(
+            '//tr[@id=\'{0}\']//a[contains(@href, "/pausa/update/")]'.format(pausa_nueva))
+        href_edit = link_edit.get_attribute('href')
+        self.browser.get(href_edit)
+        pausa_productiva = 'pausa_pro' + uuid.uuid4().hex[:5]
+        self.browser.find_element_by_id('id_nombre').clear()
+        sleep(1)
+        self.browser.find_element_by_id('id_nombre').send_keys(pausa_productiva)
+        self.browser.find_element_by_xpath("//select/option[@value = 'P']").click()
+        sleep(1)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.assertTrue(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            pausa_productiva)))
+        # eliminar pausa productiva
+        link_delete = self.browser.find_element_by_xpath(
+            "//tr[@id=\'{0}\']//a[contains(@href, '/pausa/delete/')]".format(pausa_productiva))
+        href_delete = link_delete.get_attribute('href')
+        self.browser.get(href_delete)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.assertTrue(self.browser.find_elements_by_xpath(
+            "//tr[@id='pausa_eliminada']//td[contains(text(), \'{0}\')]".format(pausa_productiva)))
+        # reactivar pausa productiva
+        link_reactivate = self.browser.find_element_by_xpath(
+            "//tr[@id='pausa_eliminada']//td[@id=\'{0}\']//a[contains(@href, '/pausa/delete/')]"
+            .format(pausa_productiva))
+        href_reactivate = link_reactivate.get_attribute('href')
+        self.browser.get(href_reactivate)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.assertTrue(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            pausa_productiva)))
 
 
 if __name__ == '__main__':
