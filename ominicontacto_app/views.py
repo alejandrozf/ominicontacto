@@ -131,15 +131,20 @@ def login_view(request):
                     return HttpResponseRedirect(reverse('index'))
 
     else:
-        if request.user.is_authenticated():
-            if 'next' in request.GET:
+        if request.user.is_authenticated() and not request.user.borrado:
+            if request.user.is_agente and request.user.get_agente_profile().is_inactive:
+                form = AuthenticationForm(request)
+                logout(request)
+            elif 'next' in request.GET:
                 return redirect(request.GET.get('next'))
-            if request.user.is_agente:
+            elif request.user.is_agente:
                 return HttpResponseRedirect(reverse('consola_de_agente'))
             else:
                 return HttpResponseRedirect(reverse('index'))
         else:
             form = AuthenticationForm(request)
+            if request.user.is_authenticated():
+                logout(request)
     context = {
         'form': form,
         'detail': detail,
