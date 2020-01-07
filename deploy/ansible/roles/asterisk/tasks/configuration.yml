@@ -84,6 +84,7 @@
       - pjsip_wizard.conf
       - queues.conf
       - res_odbc.conf
+      - rtp.conf
       - sip.conf
       - udptl.conf
   become: true
