@@ -26,7 +26,7 @@ services:
       - grabaciones:/var/spool/asterisk/monitor/
       - ./asterisk/conf/:/etc/asterisk/
       - ./asterisk/agis/:/var/lib/asterisk/agi-bin/
-      - sounds:/var/lib/asterisk/sounds/oml/
+      - sounds:/var/lib/asterisk/sounds/
       - ./asterisk/odbc.ini:/etc/odbc.ini
       - ./asterisk/odbcinst.ini:/etc/odbcinst.ini
       - ./asterisk/others/:/home/
@@ -123,6 +123,8 @@ services:
       - DJANGO_ADMIN_PASS=${DJANGO_PASS}
       - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
       - DOCKER_IP=${DOCKER_IP}
+      - LOGIN_FAILURE_LIMIT=${LOGIN_FAILURE_LIMIT}
+      - MONITORFORMAT=${MONITORFORMAT}
       - NGINX_HOSTNAME=${DOCKER_HOSTNAME}
       - EPHEMERAL_USER_TTL=${ECTTL}
       - EXTERNAL_PORT=${NGINX_EXT_PORT}
