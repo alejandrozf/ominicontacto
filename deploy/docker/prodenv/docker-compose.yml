@@ -22,7 +22,7 @@ services:
     stop_grace_period: 1m30s
     volumes:
       - ./recordings:/var/spool/asterisk/monitor/
-      - ./sounds:/var/lib/asterisk/sounds/oml/
+      - ./sounds:/var/lib/asterisk/sounds/
       - ast_conf_files:/etc/asterisk/
     working_dir: /etc/asterisk
 
@@ -93,6 +93,8 @@ services:
       - DJANGO_ADMIN_PASS=${DJANGO_PASS}
       - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
       - DOCKER_IP=${DOCKER_IP}
+      - LOGIN_FAILURE_LIMIT=${LOGIN_FAILURE_LIMIT}
+      - MONITORFORMAT=${MONITORFORMAT}
       - NGINX_HOSTNAME=${DOCKER_HOSTNAME}
       - EPHEMERAL_USER_TTL=${ECTTL}
       - EXTERNAL_PORT=${NGINX_EXT_PORT}
@@ -124,7 +126,7 @@ services:
     volumes:
       - ./recordings:/opt/omnileads/grabaciones
       - ast_conf_files:/etc/asterisk/
-      - ./sounds:/var/lib/asterisk/sounds/oml/
+      - ./sounds:/var/lib/asterisk/sounds/
     working_dir: /opt/omnileads/ominicontacto
 
   redis:
