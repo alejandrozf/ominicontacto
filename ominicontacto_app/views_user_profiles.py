@@ -38,6 +38,8 @@ from ominicontacto_app.models import (
     SupervisorProfile, AgenteProfile, ClienteWebPhoneProfile, User, QueueMember, Modulo, Grupo,
 )
 
+from ominicontacto_app.views_queue_member import activar_cola, remover_agente_cola_asterisk
+
 from services.asterisk_service import ActivacionAgenteService, RestablecerConfigSipError
 
 
@@ -242,9 +244,16 @@ class UserDeleteView(DeleteView):
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         if self.object.is_agente and self.object.get_agente_profile():
-            self.object.get_agente_profile().borrar()
-            QueueMember.objects.borrar_member_queue(
-                self.object.get_agente_profile())
+            agente_profile = self.object.get_agente_profile()
+            agente_profile.borrar()
+            # ahora vamos a remover el agente de la cola de asterisk
+            queues_member_agente = agente_profile.campana_member.all()
+            for queue_member in queues_member_agente:
+                campana = queue_member.queue_name.campana
+                remover_agente_cola_asterisk(campana, agente_profile)
+            activar_cola()
+            QueueMember.objects.borrar_member_queue(agente_profile)
+
         if self.object.is_supervisor and self.object.get_supervisor_profile():
             self.object.get_supervisor_profile().borrar()
         if self.object.is_cliente_webphone and self.object.get_cliente_webphone_profile():
