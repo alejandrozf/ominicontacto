@@ -47,7 +47,7 @@ logger = logging_.getLogger(__name__)
 def adicionar_agente_cola(agente, queue_member, campana):
     """Adiciona agente a la cola de su respectiva campaña"""
     queue = "{0}_{1}".format(campana.id, campana.nombre)
-    interface = "SIP/{0}".format(agente.sip_extension)
+    interface = "PJSIP/{0}".format(agente.sip_extension)
     penalty = queue_member.penalty
     paused = queue_member.paused
     member_name = "{0}_{1}_{2}".format(agente.id, agente.user.first_name, agente.user.last_name)
@@ -259,16 +259,9 @@ class QueueMemberCampanaView(TemplateView):
         return context
 
 
-def queue_member_delete_view(request, pk_queuemember, pk_campana):
-    """Elimina agente asignado en la campana"""
-    queue_member = QueueMember.objects.get(pk=pk_queuemember)
-    agente = queue_member.member
-    queue_member.delete()
-    campana = Campana.objects.get(pk=pk_campana)
-
-    # ahora vamos a remover el agente de la cola de asterisk
+def remover_agente_cola_asterisk(campana, agente):
     queue = "{0}_{1}".format(campana.id, campana.nombre)
-    interface = "SIP/{0}".format(agente.sip_extension)
+    interface = "PJSIP/{0}".format(agente.sip_extension)
     sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
     if agente.sip_extension in sip_agentes_logueados:
         try:
@@ -279,6 +272,17 @@ def queue_member_delete_view(request, pk_queuemember, pk_campana):
         except AsteriskHttpQueueRemoveError:
             logger.exception(_("QueueRemove failed - agente: {0} de la campana: {1} ".format(
                 agente, campana)))
+
+
+def queue_member_delete_view(request, pk_queuemember, pk_campana):
+    """Elimina agente asignado en la campana"""
+    queue_member = QueueMember.objects.get(pk=pk_queuemember)
+    agente = queue_member.member
+    queue_member.delete()
+    campana = Campana.objects.get(pk=pk_campana)
+
+    # ahora vamos a remover el agente de la cola de asterisk
+    remover_agente_cola_asterisk(campana, agente)
     activar_cola()
 
     return HttpResponseRedirect(
