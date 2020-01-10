@@ -2,57 +2,47 @@
 Configuración de acceso a la PSTN
 *********************************
 
-En este capítulo vamos a explicar cómo dejar la capa de *troncalización PSTN* de OMniLeads lista para operar de acuerdo a los contextos planteados.
-OMniLeads admite solamente SIP como tecnología de interconexión con otros conmutadores de telefonía.
+En este capítulo vamos a explicar cómo dejar configurada la capa de *acceso a la PSTN* de OMniLeads para operar de acuerdo a los contextos planteados.
+OMniLeads admite solamente SIP como tecnología de interconexión con otros conmutadores de telefonía. Por lo tanto el integrador podrá configurar troncales SIP de proveedores ITSP,
+troncales SIP contra sistemas PBX y/o troncales SIP contra Gateways FXO o E1/T1.
 
-Explicación del ABM de troncales
-********************************
+.. important::
 
-Para acceder a la configuración de los troncales debemos ingresar en el punto de menú *(Telephony -> SIP Trunks)* y allí añadir un nuevo
-troncal SIP. Se va a desplegar un formulario similar al de la figura 1.
+  A partir del Release-1.4.0 OMniLeads implementa y recomienda el uso de troncales PJSIP debido a su eficiencia en términos
+  de recursos informáticos y debido a su estado de *deprecated* en el cual entrará el módulo chan_sip en Asterisk 17.
 
-.. image:: images/telephony_siptrunk_view.png
+  Usted podrá visitar la documentación de releases anteriores para disponer de ejemplos basados en chan_sip.
+
+
+Explicación del ABM para troncales PJSIP
+*****************************************
+
+Para acceder a la configuración debemos ingresar en el punto de menú *(Telephony -> SIP Trunks)* y allí añadir una nueva
+troncal PJSIP. Se va a desplegar un formulario similar al de la figura 1.
+
+.. image:: images/telephony_pjsiptrunk_abm.png
        :align: center
 
 *Figure 1: New SIP Trunk*
 
 Los campos del formulario son:
 
-- **Name**: el nombre del troncal. Debe ser alfanumperico sin espacios ni caracteres especiales (Ej: Trunk_provider_a).
+- **Trunk Name**: el nombre del troncal. Debe ser alfanumperico sin espacios ni caracteres especiales (Ej: Trunk_provider_a).
 - **Number of channels**: es la cantidad de canales que permite el vínculo.
 - **Caller id**: el número con el que saldrán las llamadas por el troncal.
-- **Register string**: se trata de la cadena de registro. En el caso de que el otro extremo del troncal solicite una registración, aquí es donde se debe configurar. (Ej: *username:password@address-domain:port*)
-- **Text config**: en este campo de texto se proporciona los parámetros SIP en sintaxis de chan_sip.so de Asterisk.
+- **SIP details**: en este campo de texto se proporciona los parámetros SIP en sintaxis de `PJSIP configuration Wizard <https://wiki.asterisk.org/wiki/display/AST/PJSIP+Configuration+Wizard>`_ de Asterisk.
 
-A continuación se presentan los tipos de escenarios planteados como caso de uso de OMniLeads.
+Como se puede apreciar en la figura 1, existen una serie de *plantillas* de configuración en base al tipo de conexión troncal que se desea configurar, que pueden
+facilitar bastante el trabajo.
 
-
-Troncal SIP entre OMniLeads y un sistema PBX
-********************************************
-
-Esta sección apunta al caso de uso "OMniLeads como Plataforma de Contact Center integrado a un PBX basado en SIP".
-Por lo tanto se plantea una configuración en la cual OMniLeads interactúa con la PSTN a través de un troncal SIP establecido con un
-sistema PBX siendo éste último quien está vinculado directamente con el acceso a la PSTN. Además el vínculo SIP mencionado es funcional al flujo de llamadas entre los agentes de OMniLeads y los recursos internos
-del PBX (extensiones, colas, salas de conferencias, ertc.), así como también desde los recursos del PBX hacia los de OMniLeads.
+A continuación desplegamos las plantillas sugeridas en los tipos de escenarios planteados como casos de uso de OMniLeads.
 
 
-  .. toctree::
-   :maxdepth: 2
-
-   telephony_settings_pbx.rst
-
-
-Troncal SIP entre OMniLeads y un proveedor de acceso a la PSTN
-***************************************************************
-
-Dentro de ésta sección se expone la configuración de un proveedor que nos brinda acceso a la PSTN a través de un troncal SIP. De esta manera nuestra instancia de OMniLeads podrá interactuar con abonados de la PSTN ya sea enviando llamadas o recibiendo llamadas.
-
-     .. toctree::
-      :maxdepth: 2
-
-      telephony_settings_bpo.rst
-
-
+* :ref:`about_telephony_pjsip_internet_provider`.
+* :ref:`about_telephony_pjsip_lan_provider`.
+* :ref:`about_telephony_pjsip_lan_pbx`.
+* :ref:`about_telephony_pjsip_internet_pbx`.
+* :ref:`about_telephony_pjsip_oml_inside_pbx`.
 
 Configuración de enrutamiento de llamadas salientes
 ***************************************************
@@ -82,3 +72,11 @@ Dentro de cada patrón ingresado hay tres campos:
   * Patrón de discado: se busca representar en este campo el patrón de dígitos autorizados que la ruta va a procesar para y enviar a un SIP Trunk para sacar la llamada hacia el exterior.
 
 - Secuencia de troncales: son los troncales SIP sobre los cuales la ruta saliente va a intentar establecer la llamada discada por OML. Si la llamada falla en un troncal, se sigue intentando en el siguiente.
+
+Configuración de enrutamiento de llamadas entrantes
+****************************************************
+
+El tratamiento de llamadas entrantes se abordará en la sección *Campañas Entrantes* de esta documentación ya que para poder operar con dicho módulo debemos al menos
+tener creado algún objeto (IVR, condicional de tiempo, campaña entrante, etc.) hacia a donde rutear cada DID generado en OMniLeads.
+
+:ref:`about_inboundroutes`.
