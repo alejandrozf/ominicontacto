@@ -7,8 +7,8 @@ En este capítulo se detallan los tre tipos de instalación de OMniLeads
 
 * :ref:`about_install_selfhosted`.
 * :ref:`about_install_remote`.
-* :ref:`about_install_cluster`.
-* :ref:`about_install_docker`.
+* :ref:`about_install_docker_linux`.
+* :ref:`about_install_docker_pbx`.
 
 .. note::
 

@@ -119,7 +119,31 @@ Si la ejecución de la instalación finaliza exitosamente, se despliega una vist
 Primer acceso a OMniLeads:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Si la ejecución de la instalación fue exitosa, entonces podemos realizar un :ref:`about_first_access`.
+Para acceder al sistema OMniLeads debe ingresar a:
+
+https://omnileads-hostname
+
+.. Important::
+  El acceso web a OMniLeads debe ser a través del hostname.domain del host. Por lo tanto existen dos posibilidades a la hora de resolver el
+  hostname:
+
+  * Que los DNS de la red lo hagan.
+  * Añadir el hostname.domain del host, dentro del archivo de *hosts* (Windows, Linux o Mac de cada PC que tenga que acceder a OMniLeads.
+
+En el segundo caso, podemos editar el archivo de *hosts* de nuestro Sistema Operativo:
+
+.. image:: images/install_dns_hosts.png
+
+
+Una vez ajustado el método por el cual se resolverá el FQDN o hostname de nuestra instanacia de OMniLeads, se procede con el acceso al URL a través de cualquier browser moderno.
+Al encontrarnos con la pantalla de login, simplemente se debe ingresar el usuario admin y la clave generada durante la instalación, como se expone en las figura.
+
+.. image:: images/install_1st_login.png
+
+
+.. Note::
+
+  Si no recuerda la contraseña de admin web, podemos consultar su valor :ref:`about_maintance_envvars`.
 
 Errores comunes:
 ^^^^^^^^^^^^^^^^

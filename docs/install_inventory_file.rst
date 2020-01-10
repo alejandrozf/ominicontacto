@@ -56,36 +56,6 @@ En caso de requerir el despliegue de un entorno de desarrollo, se debe hacer foc
  #localhost ansible_connection=local
 
 
-
-* **Entorno de producción clusterizando componentes (cluster horizontal).**
-
-Bajo este escenario se deben establecer los parámetros inherentes a cada host que conforma el cluster OMniLeads. Como podemos observar la aplicación puede ser desplegada
-dividiendo la carga en hasta cinco componentes. Cada linea corresponde a uno de éstos y deben ser configurados indicando su:
-
-* **hostname**
-* **ssh port**
-* **ssh user**
-* **dirección IP**
-
-
-.. code-block:: bash
-
- ################################################################
- # If you  are installing a cluster in bare-metal.              #
- # Uncomment this lines and change IP and hostnames of servers  #
- ################################################################
- [omniapp]
- #hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X
- [kamailio]
- #hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X
- [asterisk]
- #hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X
- [database]
- #hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X
- [dialer]
- #hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X
-
-
 .. _about_install_inventory_vars:
 
 Parámetros y contraseñas
