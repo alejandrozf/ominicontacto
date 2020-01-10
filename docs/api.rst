@@ -325,3 +325,13 @@ Si no se encuentra el id de la opcion de calificación en la bd de la campaña s
 
 .. image:: images/api_create_disposition_err_disp_opt_not_found.png
 
+
+API de Sesión de Agente en Asterisk
+***********************************
+
+Endpoints de la API utilizados por el WebPhone mediante los cuales puede controlar las sesiones del agente en Asterisk.
+
+.. toctree::
+  :maxdepth: 2
+
+  api_agent_session.rst

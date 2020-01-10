@@ -36,8 +36,9 @@ class AgentActivityAmiManager(object):
         return queue_add_error, insert_astdb_error, queue_unpause_error
 
     def logout_agent(self, agente_profile):
-        self.queue_add_remove(agente_profile, 'QueueRemove')
-        self.insert_astdb(agente_profile, 'logout')
+        queue_remove_error = self.queue_add_remove(agente_profile, 'QueueRemove')
+        insert_astdb_error = self.insert_astdb(agente_profile, 'logout')
+        return queue_remove_error, insert_astdb_error
 
     def pause_agent(self, agente_profile, pause_id):
         pause_name = ''
