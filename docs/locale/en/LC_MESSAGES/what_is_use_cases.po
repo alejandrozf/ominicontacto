@@ -8,95 +8,135 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-17 14:37-0300\n"
+"POT-Creation-Date: 2020-01-14 11:06-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.6.0\n"
 
+# b5829bfaa92b4e108fd65a23877464e5
 #: ../../what_is_use_cases.rst:4
 msgid "OML como Contact Center integrado a un PBX basado en SIP"
 msgstr ""
 
-# 613d0928718f4a22932277b679416e90
+# c3bdae7c852b4cdf9e0edf9954d99e51
 #: ../../what_is_use_cases.rst:7
 msgid ""
 "OMniLeads resulta ideal para las compañías que demandan funcionalidades "
-"típicas de Contact Center como extras a lo que brinda la central PBX.  "
-"OMniLeads surge como una alternativa para complementar dicha central PBX,"
-" desde una instancia independiente (bare-metal host, virtual machine o "
-"infraestructura en cloud) integrada al PBX, permitiendo el fluir de las "
-"comunicaciones entre ambos componentes y de manera transparente."
+"típicas de Contact Center, donde el sistema PBX no llega a cubrir por su "
+"propia naturaleza. Por lo tanto OMniLeads surge como una alternativa para"
+" complementar dicha central PBX, desde una instancia independiente (bare-"
+"metal host, virtual machine o infraestructura de cloud) integrada al PBX,"
+" permitiendo el fluir de las comunicaciones entre ambos componentes, de "
+"manera fiable, segura y transparente."
 msgstr ""
 
-# 7175e30289a548a092514784a73f318b
-#: ../../what_is_use_cases.rst:9
-msgid ""
-"Se plantea romper con el paradigma tradicional de adquisición de un stack"
-" de software para instalar sobre el PBX, evitando dos tipos de costos:"
-msgstr ""
-
+# fcb8716a202d4b349a1a907719d142ce
 #: ../../what_is_use_cases.rst:11
 msgid ""
-"El coste económico que involucran las licencias de software de las "
-"herramientas complementarias para que el PBX obtenga algunas "
-"funcionalidaes de Contact Center."
+"Se plantea expandir el paradigma tradicional de adquisición de un stack "
+"de software de reportería / supervisión para instalar sobre el PBX, para "
+"en lugar de ello desplegar una completa aplicación de Contact Center "
+"independiente (utiliza su propio Asterisk) que permite a su vez una "
+"integración sencilla con el software de PBX, De manera tal que podamos "
+"derivar una opción del IVR del PBX hacia una campaña entrante de "
+"OMniLeads, o bien realizar una transferencia desde una extensión del PBX "
+"hacia OMniLeads o viceversa."
 msgstr ""
 
-# 8728e4558e08467d8960dbad0c9386bb
-#: ../../what_is_use_cases.rst:13
+# f9999158f99b4a1baa0f86980cd5e93c
+#: ../../what_is_use_cases.rst:15
+msgid "Las ventajas que se hacen notables son:"
+msgstr ""
+
+# 3311df1be9864597a290b03842015bb5
+#: ../../what_is_use_cases.rst:17
 msgid ""
-"El coste en términos de performance del core de telefonía “PBX” "
+"Evitar el coste económico que involucran las licencias de software de las"
+" típicas herramientas complementarias del mercado que dotan al PBX de "
+"algunas funcionalidaes *reporting y supervisión* de Colas."
+msgstr ""
+
+# c2dbd0ca913d40ed83027450557305da
+#: ../../what_is_use_cases.rst:19
+msgid ""
+"Evitar el coste en términos de performance del core de telefonía *PBX* "
 "sacrificada para correr complejos reportes y herramientas de monitoreo, "
 "que implica ejecutar un «módulo de call center» sobre el sistema PBX."
 msgstr ""
 
-#: ../../what_is_use_cases.rst:22
+# 728e68bd0d3340ff8792be93649c1db7
+#: ../../what_is_use_cases.rst:20
+msgid ""
+"En operaciones donde hay una gran demanda de extracción de reportes o "
+"bien se necesita escalar en términos de agentes, es sumamente sencillo "
+"desplegar OMniLeads *out of the box*, ya sea en una VM, VPS o Server "
+"dedicado, sin perder la integración con el PBX."
+msgstr ""
+
+# 3311df1be9864597a290b03842015bb5
+#: ../../what_is_use_cases.rst:23
+msgid ""
+"El integrador cuenta con la opción de ejecutar la aplicación sobre el "
+"propio sistema PBX o bien en una instancia independiente."
+msgstr ""
+
+# 7143fd9b6b9b4b11992baef384a191c1
+#: ../../what_is_use_cases.rst:33
 msgid "OML en una Compañia de servicios de Customer Contact"
 msgstr ""
 
-# 89bd98db8c9f4daea5342f83235b5516
-#: ../../what_is_use_cases.rst:24
+# 9fb8016e29414693800efd1eb8865165
+#: ../../what_is_use_cases.rst:35
 msgid ""
 "Bajo este escenario, OMniLeads puede trabajar como núcleo de "
 "comunicaciones de un Contact Center con agentes que van entre las decenas"
-" y centenas. En este escenario OMniLeads puede manejar múltiples "
-"troncales SIP a la vez, con su pertinente enrutamientos entrante y "
-"saliente de comunicaciones."
+" y centenas. Así OMniLeads puede manejar múltiples troncales SIP a la "
+"vez, con su pertinente enrutamientos entrante y saliente de "
+"comunicaciones."
 msgstr ""
 
-# f802bab4f0a4457fb914c431512acc48
-#: ../../what_is_use_cases.rst:27
+# 0f9dfd8fa3434b03ba643d84a391333b
+#: ../../what_is_use_cases.rst:38
 msgid ""
 "En estos contextos la escalabilidad es un requisito básico, ya que las "
 "operaciones son muy dinámicas y pueden demandar picos de usuarios "
 "conectados trabajando en simultánea. La escalabilidad se garantiza a "
 "partir de concebir nuestra solución de manera tal que pueda ser "
-"facilmente desplegada en modalidad de cluster."
+"facilmente desplegada en modalidad de cluster de alta disponibilidad."
 msgstr ""
 
-#: ../../what_is_use_cases.rst:38
+# a49d2f21f2c34736a469976dda6f735e
+#: ../../what_is_use_cases.rst:42
+msgid ""
+"A su vez la API RestFull permite generar fácilmente CRMs o web workflows "
+"para cada campaña de manera tal de ajustarse a los requisitos del cliente"
+" que terceriza la cartera."
+msgstr ""
+
+# 076917df16764e5ca5074cf750e84f6e
+#: ../../what_is_use_cases.rst:51
 msgid "OML para Carriers ó Proveedores de Cloud PBX"
 msgstr ""
 
-# 4bbc7eccd2504fb4a28ba44efa0853ea
-#: ../../what_is_use_cases.rst:40
+# 5bc5af40f6ec4743a11547ba9cbd87f3
+#: ../../what_is_use_cases.rst:53
 msgid ""
 "Si la necesidad es implementar un servicio de CCaaS (Contact Center as a "
 "Service) OMniLeads resulta ideal a partir de la ventaja otorgada por "
-"WebRTC como tecnología base."
+"WebRTC y Docker como tecnología base."
 msgstr ""
 
-# f427a02be8fe433795dbd2a178aca03b
-#: ../../what_is_use_cases.rst:43
+# 1d5ac9b57c564c5a87c26120845853f4
+#: ../../what_is_use_cases.rst:56
 msgid "Podemos citar como ventajas:"
 msgstr ""
 
-# 7260905e84874fc8a63d9105bd88a3e2
-#: ../../what_is_use_cases.rst:45
+# 21fe81a436884ffd931890fa01884cc0
+#: ../../what_is_use_cases.rst:58
 msgid ""
 "**WebRTC** elimina la necesidad de instalar aplicaciones softphone para "
 "escritorio, ya que la voz y el video fluye a través del browser de los "
@@ -104,8 +144,8 @@ msgid ""
 "sobre las estaciones de trabajo."
 msgstr ""
 
-# 884ff441f0f44e98a00394c81a485c13
-#: ../../what_is_use_cases.rst:47
+# d2057fb978f34b1ea7b77cbe81f77fed
+#: ../../what_is_use_cases.rst:60
 msgid ""
 "Los **Codecs** implementados para audio y video son Opus y VP8, ambos "
 "diseñados para funcionar en internet y se adaptan dinámicamente al ancho "
@@ -113,21 +153,29 @@ msgid ""
 "de la VoIP convencional."
 msgstr ""
 
-# 81326d0b73e742268a8cdc96508665dd
-#: ../../what_is_use_cases.rst:49
+# d93d399a6e59463abcdfc631e385c248
+#: ../../what_is_use_cases.rst:62
 msgid ""
 "**Seguridad**: el intercambio de información entre las estaciones de "
 "trabajo y la instancia de OML en Cloud, se encuentra encriptado bajo los "
 "estándares HTTPS, sRTP y dTLS."
 msgstr ""
 
-# bea83197e3194697b0ecdec6ff5f72d0
-#: ../../what_is_use_cases.rst:51
+# e5d4139bed2147369da63aaf1b763b3f
+#: ../../what_is_use_cases.rst:64
 msgid ""
 "`Kamailio <https://www.kamailio.org/>`_ es parte del core de "
 "comunicaciones de OMniLeads. Se trata de un Proxy-SIP de avanzadas "
 "prestaciones y crucial para brindar seguridad a servidores de VoIP y "
 "Video de acceso público en internet."
+msgstr ""
+
+# db3daef2aba946319fafec542a9e4e49
+#: ../../what_is_use_cases.rst:66
+msgid ""
+"Docker permite desplegar OMniLeads fácilmente abstrayéndo la "
+"infraestructura subyacente, permitiendo sin problemas correr en VPS, AWS,"
+" GCloud, etc."
 msgstr ""
 
 #~ msgid ""
@@ -213,5 +261,82 @@ msgstr ""
 #~ "Kamailio como proxy y autenticador de"
 #~ " agentes, la seguridad se ve "
 #~ "incrementada y enfocada en la nube."
+#~ msgstr ""
+
+# 613d0928718f4a22932277b679416e90
+#~ msgid ""
+#~ "OMniLeads resulta ideal para las "
+#~ "compañías que demandan funcionalidades típicas"
+#~ " de Contact Center como extras a "
+#~ "lo que brinda la central PBX.  "
+#~ "OMniLeads surge como una alternativa "
+#~ "para complementar dicha central PBX, "
+#~ "desde una instancia independiente (bare-"
+#~ "metal host, virtual machine o "
+#~ "infraestructura en cloud) integrada al "
+#~ "PBX, permitiendo el fluir de las "
+#~ "comunicaciones entre ambos componentes y "
+#~ "de manera transparente."
+#~ msgstr ""
+
+# 7175e30289a548a092514784a73f318b
+#~ msgid ""
+#~ "Se plantea romper con el paradigma "
+#~ "tradicional de adquisición de un stack"
+#~ " de software para instalar sobre el"
+#~ " PBX, evitando dos tipos de costos:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "El coste económico que involucran las"
+#~ " licencias de software de las "
+#~ "herramientas complementarias para que el "
+#~ "PBX obtenga algunas funcionalidaes de "
+#~ "Contact Center."
+#~ msgstr ""
+
+# 8728e4558e08467d8960dbad0c9386bb
+#~ msgid ""
+#~ "El coste en términos de performance "
+#~ "del core de telefonía “PBX” sacrificada"
+#~ " para correr complejos reportes y "
+#~ "herramientas de monitoreo, que implica "
+#~ "ejecutar un «módulo de call center» "
+#~ "sobre el sistema PBX."
+#~ msgstr ""
+
+# 89bd98db8c9f4daea5342f83235b5516
+#~ msgid ""
+#~ "Bajo este escenario, OMniLeads puede "
+#~ "trabajar como núcleo de comunicaciones "
+#~ "de un Contact Center con agentes "
+#~ "que van entre las decenas y "
+#~ "centenas. En este escenario OMniLeads "
+#~ "puede manejar múltiples troncales SIP a"
+#~ " la vez, con su pertinente "
+#~ "enrutamientos entrante y saliente de "
+#~ "comunicaciones."
+#~ msgstr ""
+
+# f802bab4f0a4457fb914c431512acc48
+#~ msgid ""
+#~ "En estos contextos la escalabilidad es"
+#~ " un requisito básico, ya que las "
+#~ "operaciones son muy dinámicas y pueden"
+#~ " demandar picos de usuarios conectados "
+#~ "trabajando en simultánea. La escalabilidad "
+#~ "se garantiza a partir de concebir "
+#~ "nuestra solución de manera tal que "
+#~ "pueda ser facilmente desplegada en "
+#~ "modalidad de cluster."
+#~ msgstr ""
+
+# 4bbc7eccd2504fb4a28ba44efa0853ea
+#~ msgid ""
+#~ "Si la necesidad es implementar un "
+#~ "servicio de CCaaS (Contact Center as "
+#~ "a Service) OMniLeads resulta ideal a "
+#~ "partir de la ventaja otorgada por "
+#~ "WebRTC como tecnología base."
 #~ msgstr ""
 

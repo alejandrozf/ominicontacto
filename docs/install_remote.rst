@@ -204,7 +204,7 @@ En el segundo caso, podemos editar el archivo de *hosts* de nuestro Sistema Oper
 .. image:: images/install_dns_hosts.png
 
 
-Una vez ajustado el método por el cual se resolverá el FQDN o hostname de nuestra instanacia de OMniLeads, se procede con el acceso al URL a través de cualquier browser moderno.
+Una vez ajustado el método por el cual se resolverá el FQDN o hostname de nuestra instancia de OMniLeads, se procede con el acceso al URL a través de cualquier browser moderno.
 Al encontrarnos con la pantalla de login, simplemente se debe ingresar el usuario admin y la clave generada durante la instalación, como se expone en las figura.
 
 .. image:: images/install_1st_login.png

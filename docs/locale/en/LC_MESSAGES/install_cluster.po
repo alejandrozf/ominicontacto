@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-01 14:27-0300\n"
+"POT-Creation-Date: 2020-01-14 11:06-0300\n"
 "PO-Revision-Date: 2019-08-13 14:55-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -316,22 +316,67 @@ msgstr "*Figure 9: OMniLeads installation ended succesfuly*"
 msgid "Primer acceso a OMniLeads:"
 msgstr "First Access to OMniLeads:"
 
-# a81a21e7e55e4158a8c62f57e0935f5a
-#: ../../install_cluster.rst:219
-msgid ""
-"Si la ejecución de la instalación fue exitosa, entonces podemos realizar "
-"un :ref:`about_first_access`."
+# a0979cb5c2e84e668ac109053f375df4
+#: ../../install_cluster.rst:220
+msgid "Para acceder al sistema OMniLeads debe ingresar a:"
 msgstr ""
-"If the installation execution was successful, then we can perform a "
-":ref:`about_first_access`."
+
+# 4d4db8d009b34b429bbd71502e4d1817
+#: ../../install_cluster.rst:222
+msgid "https://omnileads-hostname"
+msgstr ""
+
+# cec0f05c28704560816a624058e6e9d7
+#: ../../install_cluster.rst:225
+msgid ""
+"El acceso web a OMniLeads debe ser a través del hostname.domain del host."
+" Por lo tanto existen dos posibilidades a la hora de resolver el "
+"hostname:"
+msgstr ""
+
+# f781b934683e492dbb182cb8b259fbcd
+#: ../../install_cluster.rst:228
+msgid "Que los DNS de la red lo hagan."
+msgstr ""
+
+# df1698e4395f485e8ab7a205fb62c105
+#: ../../install_cluster.rst:229
+msgid ""
+"Añadir el hostname.domain del host, dentro del archivo de *hosts* "
+"(Windows, Linux o Mac de cada PC que tenga que acceder a OMniLeads."
+msgstr ""
+
+# b615b27e8bc44bdc944b800afdbb85a1
+#: ../../install_cluster.rst:231
+msgid ""
+"En el segundo caso, podemos editar el archivo de *hosts* de nuestro "
+"Sistema Operativo:"
+msgstr ""
+
+# 1a9a497675b14cc893729f6acc0c652c
+#: ../../install_cluster.rst:236
+msgid ""
+"Una vez ajustado el método por el cual se resolverá el FQDN o hostname de"
+" nuestra instanacia de OMniLeads, se procede con el acceso al URL a "
+"través de cualquier browser moderno. Al encontrarnos con la pantalla de "
+"login, simplemente se debe ingresar el usuario admin y la clave generada "
+"durante la instalación, como se expone en las figura."
+msgstr ""
+
+# a81a21e7e55e4158a8c62f57e0935f5a
+#: ../../install_cluster.rst:244
+msgid ""
+"Si no recuerda la contraseña de admin web, podemos consultar su valor "
+":ref:`about_maintance_envvars`."
+msgstr ""
 
 # ba0116c1567c455fac47ad13f7f8db96
-#: ../../install_cluster.rst:222
+#: ../../install_cluster.rst:247
 msgid "Errores comunes:"
 msgstr "Common mistakes:"
 
 # 6951725b4d0048d2800b05254188a773
-#: ../../install_cluster.rst:224
+#: ../../install_cluster.rst:249
 msgid ""
 "Alguno de los hosts no tiene internet o no resuelve dominios "
 "(configuración de DNS)."
@@ -340,7 +385,7 @@ msgstr ""
 "configuration)."
 
 # c0c6ae32fa6f41f8b7a0e2520f1ad920
-#: ../../install_cluster.rst:226
+#: ../../install_cluster.rst:251
 msgid ""
 "*Compruebe el acceso a internet de cada host (por ej: actualizando "
 "paquetes - apt-get update | yum update).*"
@@ -349,7 +394,7 @@ msgstr ""
 "update | yum update).*"
 
 # 22a4bdad897442b58feb06513364dbb3
-#: ../../install_cluster.rst:228
+#: ../../install_cluster.rst:253
 msgid ""
 "Timeout de algún paquete que se intenta bajar. Puede volver a intentar "
 "ejecutar el deploy y si vuelve a fallar, la opción puede ser"
@@ -358,12 +403,12 @@ msgstr ""
 "deploy again and if it fails again, the option may be"
 
 # cd114f782db04eb8903845df3b2ce4db
-#: ../../install_cluster.rst:230
+#: ../../install_cluster.rst:255
 msgid "*Instalar el paquete desde la terminal.*"
 msgstr "*Install the package from the terminal.*"
 
 # 29f37cfcb77d40fbad7c9642fd30588b
-#: ../../install_cluster.rst:232
+#: ../../install_cluster.rst:257
 msgid ""
 "Falla por mala sintaxis o falta de definición de *hostname* y *dirección "
 "IP* en el archivo *inventory*."
@@ -372,12 +417,12 @@ msgstr ""
 "address* in the file *inventory*."
 
 # 5f69618de43947659e1aa27e9fde7be5
-#: ../../install_cluster.rst:234
+#: ../../install_cluster.rst:259
 msgid "*Revisar archivo inventory*"
 msgstr "*Review inventory file*"
 
 # 0acc1c601e1340778dc8f6756ef52dfc
-#: ../../install_cluster.rst:236
+#: ../../install_cluster.rst:261
 msgid ""
 "No se configuró correctamente el acceso ssh del host destino de la "
 "instalación."
@@ -386,14 +431,14 @@ msgstr ""
 "correctly."
 
 # a6c1f3a0a481405b9809a1fb3028957b
-#: ../../install_cluster.rst:238
+#: ../../install_cluster.rst:263
 msgid ""
 "*Revisar estado del firewall. Comprobar acceso remoto por ssh con el "
 "usuario root*"
 msgstr "*Review firewall state. Check remote access by ssh with the root user*"
 
 # 67e52662f400426abfd67035bf138f86
-#: ../../install_cluster.rst:240
+#: ../../install_cluster.rst:265
 msgid ""
 "En caso de contar con algún host Ubuntu-Debian, recordar que se deben "
 "instalar paquetes como *sudo, openssh-server o python-minimal* antes de "
@@ -536,4 +581,14 @@ msgstr ""
 #~ "it is necessary to first do a "
 #~ "yum update and then reboot the "
 #~ "server"
+
+# a81a21e7e55e4158a8c62f57e0935f5a
+#~ msgid ""
+#~ "Si la ejecución de la instalación "
+#~ "fue exitosa, entonces podemos realizar "
+#~ "un :ref:`about_first_access`."
+#~ msgstr ""
+#~ "If the installation execution was "
+#~ "successful, then we can perform a "
+#~ ":ref:`about_first_access`."
 

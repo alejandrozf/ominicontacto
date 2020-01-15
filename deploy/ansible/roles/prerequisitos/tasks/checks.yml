@@ -38,6 +38,11 @@
   when: cluster == 0 and iface != "none"
   tags: always
 
+# Se instala wget para centos, que no viene incorporado
+- name: Install of dependencies (centos)
+  yum: name=wget state=present update_cache=yes
+  when: ansible_os_family == "RedHat"
+
 # Obtengo IP publica del nodo
 - name: Get public IP address of node
   shell: wget -qO- http://ipinfo.io/ip
