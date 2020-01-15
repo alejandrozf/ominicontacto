@@ -56,7 +56,7 @@
 #####################################################################
 postgres_database=omnileads
 postgres_user=omnileads
-#postgres_password=my_mery_strong_pass
+#postgres_password=my_very_strong_pass
 #####################################################################
 #                           Web Admin                               #
 #                     SET WEB ADMIN PASSWORD                        #
@@ -111,6 +111,11 @@ ECCTL=28800
 # You can edit this # changing crontab of omnileads user                                        #
 #################################################################################################
 MONITORFORMAT=mp3
+#################################################################################################
+# Login failure limit (LFM) is the attempts a user has to enter an incorrect password in login  #
+# Decrease it if paranoic reasons                                                               #
+#################################################################################################
+LOGIN_FAILURE_LIMIT=10
 ####################################
 # Language of schedule disposition #
 ####################################

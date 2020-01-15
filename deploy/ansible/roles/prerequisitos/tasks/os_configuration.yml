@@ -102,7 +102,6 @@
       - openssl-devel
       - cronie-anacron
       - make
-      - wget
       - gdb
       - which
       - vim
