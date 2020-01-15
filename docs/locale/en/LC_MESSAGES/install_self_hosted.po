@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-01 14:27-0300\n"
+"POT-Creation-Date: 2020-01-14 11:06-0300\n"
 "PO-Revision-Date: 2019-08-13 17:34-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -110,7 +110,9 @@ msgstr "Make an update/upgrade of the SO"
 msgid ""
 "**Para Debian:** Instalar paquete linux-image-amd64: *apt-get install "
 "linux-image-amd64*"
-msgstr "**To Debian:** Install the package linux-image-amd64: *apt-get install linux-image-amd64*"
+msgstr ""
+"**To Debian:** Install the package linux-image-amd64: *apt-get install "
+"linux-image-amd64*"
 
 # 37fc736d167648878d78e3b482c57ad6
 #: ../../install_self_hosted.rst:49
@@ -134,7 +136,9 @@ msgstr "Install kernel-devel package, update the SO and reboot the machine"
 msgid ""
 "Luego del reboot es importante revisar que el paquete kernel-devel "
 "coincida con el kernel que se muestre con el comando *uname -a*"
-msgstr "After the reboot is very important to check that the kernel-devel package coincide with the kernel shown by the command *uname -a*"
+msgstr ""
+"After the reboot is very important to check that the kernel-devel package"
+" coincide with the kernel shown by the command *uname -a*"
 
 # 0a73a82ed5d444d98332a9a0a97f40cb
 #: ../../install_self_hosted.rst:76
@@ -171,14 +175,14 @@ msgstr ""
 msgid ""
 "Luego, allí en el inventory mismo debemos ajustar las "
 ":ref:`about_install_inventory_vars` de la instanacia."
-msgstr ""
+msgstr "In inventory file, check the variables of instance :ref:`about_install_inventory_vars`"
 
 # 54b60f7b860b4719a999d0444dba19ac
 #: ../../install_self_hosted.rst:91
 msgid ""
 "Una vez ajustados todos los parámetros del archivo de inventario, "
 "procedemos con la ejecución de la instalación."
-msgstr ""
+msgstr "Once adjusted all parameters in inventory file, proceed with the installation script."
 
 # de8b4289cf3a40f98d8c2d1b15f25578
 #: ../../install_self_hosted.rst:94
@@ -255,22 +259,72 @@ msgstr "*Figure 5: OMniLeads installation ended succesfuly*"
 msgid "Primer acceso a OMniLeads:"
 msgstr "First access to OMniLeads:"
 
-# 118e462d2b894e069a21b351fdd5c2a3
+# 765c895d5628452995cfb786d64230e3
 #: ../../install_self_hosted.rst:122
-msgid ""
-"Si la ejecución de la instalación fue exitosa, entonces podemos realizar "
-"un :ref:`about_first_access`."
+msgid "Para acceder al sistema OMniLeads debe ingresar a:"
+msgstr "To access OMniLeads use the URL"
+
+# a0b209b3cea449368a177bbe243c30f9
+#: ../../install_self_hosted.rst:124
+msgid "https://omnileads-hostname"
 msgstr ""
-"If the installation execution was succesful, then we can perform a "
-":ref:`about_first_access`."
+
+# 86170ce5165641619c3f2aa8c42932dd
+#: ../../install_self_hosted.rst:127
+msgid ""
+"El acceso web a OMniLeads debe ser a través del hostname.domain del host."
+" Por lo tanto existen dos posibilidades a la hora de resolver el "
+"hostname:"
+msgstr "The web access to OMniLeads must be through hostname.domain of machine. "
+"So there are two possibilities for hostname resolving"
+
+# e9093e2eea314073b3699cdd47cabf36
+#: ../../install_self_hosted.rst:130
+msgid "Que los DNS de la red lo hagan."
+msgstr "Network DNS do it"
+
+# ad67196fe89a427299dfea3fce477876
+#: ../../install_self_hosted.rst:131
+msgid ""
+"Añadir el hostname.domain del host, dentro del archivo de *hosts* "
+"(Windows, Linux o Mac de cada PC que tenga que acceder a OMniLeads."
+msgstr ""
+
+# 6286d3fe10724683be2a23ed0738d836
+#: ../../install_self_hosted.rst:133
+msgid ""
+"En el segundo caso, podemos editar el archivo de *hosts* de nuestro "
+"Sistema Operativo:"
+msgstr ""
+"Add hostname.domain in *hosts* file (Windows, Linux or Mac on each PC "
+"that is going to access OMniLeads."
+
+# d9a61f57469b41af923079bed1b9c03a
+#: ../../install_self_hosted.rst:138
+msgid ""
+"Una vez ajustado el método por el cual se resolverá el FQDN o hostname de"
+" nuestra instanacia de OMniLeads, se procede con el acceso al URL a "
+"través de cualquier browser moderno. Al encontrarnos con la pantalla de "
+"login, simplemente se debe ingresar el usuario admin y la clave generada "
+"durante la instalación, como se expone en las figura."
+msgstr "Once selected the method to resolve the hostname of the OMniLeads instance, "
+"access the URL with any modern browser. Login with admin user and the password selected "
+"in the inventory file, as seen in figure: "
+
+# 118e462d2b894e069a21b351fdd5c2a3
+#: ../../install_self_hosted.rst:146
+msgid ""
+"Si no recuerda la contraseña de admin web, podemos consultar su valor "
+":ref:`about_maintance_envvars`."
+msgstr "If you don't remember the password you can check it here :ref:`about_maintance_envvars`."
 
 # 5a238f9e9ebd45b7a688d0378122064e
-#: ../../install_self_hosted.rst:125
+#: ../../install_self_hosted.rst:149
 msgid "Errores comunes:"
 msgstr "Common mistakes:"
 
 # 1695c9e1207143749dd988a27fe2f890
-#: ../../install_self_hosted.rst:127
+#: ../../install_self_hosted.rst:151
 msgid ""
 "El server no tiene internet o no resuelve dominios (configuración de "
 "DNS). **Compruebe el acceso a internet del host (por ej: actualizando "
@@ -281,7 +335,7 @@ msgstr ""
 "packages - apt-get update | yum update).*"
 
 # 7a548aeafb2848fa9d290ff557b24b04
-#: ../../install_self_hosted.rst:129
+#: ../../install_self_hosted.rst:153
 msgid ""
 "Timeout de algún paquete que se intenta bajar. Puede volver a intentar "
 "ejecutar el deploy y si vuelve a fallar, la opción puede ser instalar el "
@@ -292,12 +346,12 @@ msgstr ""
 " package from the terminal.*"
 
 # 30fb51145b1d41b29f09f79914b60944
-#: ../../install_self_hosted.rst:131
+#: ../../install_self_hosted.rst:155
 msgid "No ejecutó el script de deploy con *sudo*, en el host deployer."
 msgstr "It does not execute the deploy script with *sudo*, in the deployer host."
 
 # b8ba5981c0b14fbab05433aff646984c
-#: ../../install_self_hosted.rst:133
+#: ../../install_self_hosted.rst:157
 msgid ""
 "En caso de contar con algún host Ubuntu-Debian, recordar que se deben "
 "instalar paquetes como *sudo, openssh-server o python-minimal* antes de "
@@ -306,178 +360,3 @@ msgstr ""
 "In case of having any Ubuntu-Debian host, remember that packages such as "
 "*sudo, openssh-server or Python-minimal* must be installed before running"
 " the script *deploy.sh*"
-
-# e8a29dacf46743edbe27f73fb209af5f
-#~ msgid ""
-#~ "Se comprueba la *dirección IP* y "
-#~ "*hostname* que posee el host y que"
-#~ " luego se utiliza en el archivo "
-#~ "de inventario en el proceso de "
-#~ "instalación:"
-#~ msgstr ""
-#~ "The *IP address* and *hostname* that "
-#~ "the host owns are checked and then"
-#~ " used in the inventory file in "
-#~ "the installation process:"
-
-# f47d81d67a964dbaa126ef1eafb9b420
-#~ msgid "*Figure 2: hostname command output*"
-#~ msgstr "*Figure 2: hostname command output*"
-
-# d08c3de1032647638ffaee10f5796fdf
-#~ msgid "*Figure 3: ip a command output*"
-#~ msgstr "*Figure 3: ip a command output*"
-
-# 113af1a7fd7e4d5ea9f22cfbf5bd8217
-#~ msgid ""
-#~ "Modificar y descomentar la cadena "
-#~ "'hostname' por el que hemos configurado"
-#~ " a nuestro servidor. También en esta"
-#~ " línea, se debe editar el parámetro"
-#~ " 'X.X.X.X' con la dirección IP del"
-#~ " host sobre el que estamos "
-#~ "trabajando."
-#~ msgstr ""
-#~ "Modify and uncomment the chain "
-#~ "'hostname' by which we have configured"
-#~ " our server. In this line, the "
-#~ "parameter 'X.X.X.X' must be edited first"
-#~ " with the IP address of the "
-#~ "host we are working on."
-
-# 681ebedf0d8940f2b0ce7f2b3053cadc
-#~ msgid "*Figure 4: inventory file network params section*"
-#~ msgstr "*Figure 4: inventory file network params section*"
-
-# fb7f55af71974d7ea686656fe8a5f447
-#~ msgid ""
-#~ "Además dentro del mismo archivo, unas"
-#~ " líneas debajo encontraremos la sección "
-#~ "*[everyyone:vars]*, en la cual se pueden"
-#~ " alterar variables y contraseñas que "
-#~ "vienen por defecto en el sistema. "
-#~ "Introducir el parámetro \"time zone\" "
-#~ "adecuado para su instanacia. Es "
-#~ "**Importante** que realice este paso o"
-#~ " la instalación no se va a "
-#~ "poder realizar."
-#~ msgstr ""
-#~ "Also within the same file, some "
-#~ "lines below the section *[everyyone:vars]*,"
-#~ " in which default variables and "
-#~ "passwords can be changed. Enter the "
-#~ "appropiate parameter \"time zone\" for "
-#~ "its instance. It is **Important** to "
-#~ "perform this step or the installation"
-#~ " will not be possible."
-
-# ed793ad1ea754f939e6e98d90f64e8ae
-#~ msgid "*Figure 5: Passwords and parameters of services*"
-#~ msgstr "*Figure 5: Passwords and parameters of services*"
-
-# d3d8aa477c86438ab87e8e7e50102611
-#~ msgid ""
-#~ "En caso de haber olvidado ingresar "
-#~ "la instancia a instalar el script "
-#~ "mostrará este mensaje"
-#~ msgstr ""
-#~ "In case of having forgotten enter "
-#~ "the instance to install the script "
-#~ "will show this message"
-
-# b1647d4d76c24e0fb1a1f258082e1773
-#~ msgid "*Figure 6: deploy - No hosts in inventory*"
-#~ msgstr "*Figure 6: deploy - No hosts in inventory*"
-
-# 07da63a01b38432e9ba0d581a2384a58
-#~ msgid ""
-#~ "Es importante aclarar que cada vez "
-#~ "que se corre el script *./deploy.sh* "
-#~ "ya sea para instalar, re-instalar, "
-#~ "actualizar, modificar la dirección IP de"
-#~ " OML, etc., el archivo de inventory"
-#~ " se vuelve a \"cero\". No obstante"
-#~ " se genera una copia del archivo "
-#~ "**(my_inventory)**, de manera tal que se"
-#~ " cuente con los parámetros del "
-#~ "sistema utilizados en la última "
-#~ "ejecución del script. La copia en "
-#~ "cuestión se ubica en el path donde"
-#~ " ha sido clonado el repositorio de"
-#~ " OML y bajo el nombre de "
-#~ "\"my_inventory\" como lo expone la "
-#~ "figura 6."
-#~ msgstr ""
-#~ "It is important to clarify that "
-#~ "every time the script \"./deploy.sh\" "
-#~ "runs either to install, re-install, "
-#~ "update, modify the OML IP address, "
-#~ "etc., the file inventory returns to "
-#~ "\"cero\". However, a copy of the "
-#~ "file (my_inventory) is generated, so the"
-#~ " system parameters used in the last"
-#~ " execution of the script are "
-#~ "available. This copy is located in "
-#~ "the path where the OML repository "
-#~ "has been cloned and under the name"
-#~ " of \"my_inventory\" as shown in "
-#~ "Figure 6."
-
-# 9767c8b795284e76b7218cde4cba078d
-#~ msgid "*Figure 7: inventory copy, my_inventory file*"
-#~ msgstr "*Figure 7: inventory copy, my_inventory file*"
-
-# 602a6c4de74c4050964823a379f8690f
-#~ msgid ""
-#~ "**Para Debian:** En caso de que "
-#~ "ocurra este error durante la ejecución"
-#~ " del script:"
-#~ msgstr "**For Debian:** In case this error occurs during the script execution:"
-
-# dce91147933b4f8687415c4a7197381c
-#~ msgid ""
-#~ "*\"ERROR! Unexpected Exception, this is "
-#~ "probably a bug: (cryptography 1.7.1 "
-#~ "(/usr/lib/python2.7/ dist-packages), "
-#~ "Requirement.parse('cryptography>=2.5'), set(['paramiko']))\"*"
-#~ msgstr ""
-#~ "*\"ERROR! Unexpected Exception, this is "
-#~ "probably a bug: (cryptography 1.7.1 "
-#~ "(/usr/lib/python2.7/ dist-packages), "
-#~ "Requirement.parse('cryptography>=2.5'), set(['paramiko']))\"*"
-
-# 885171cd8a1e451dbb9b708235029df0
-#~ msgid ""
-#~ "Verificar que no exista el paquete "
-#~ "python-cryptography, en caso de existir,"
-#~ " desinstalarlo. Esto es debido a un"
-#~ " bug conocido durante la instalación "
-#~ "de Ansible: "
-#~ "https://github.com/ansible/ansible/issues/29084"
-#~ msgstr ""
-#~ "Verify the package Python-cryptography "
-#~ "does not exist, in case it exists,"
-#~ " uninstall it. This is due to a"
-#~ " known bug during the Ansible "
-#~ "installation: https://github.com/ansible/ansible/issues/29084"
-
-# 4ba785fa400c46439d9c77e94e481673
-#~ msgid ""
-#~ "Falla por mala sintaxis o falta de"
-#~ " definición de *hostname* y *dirección "
-#~ "IP* en el archivo *inventory*."
-#~ msgstr ""
-#~ "Failure due to bad syntax or lack"
-#~ " of definition of *hostname* and *IP"
-#~ " address* in the file *inventory*."
-
-# 1acf76a8cb2d4c7fb4b606fe30352d5d
-#~ msgid ""
-#~ "En versiones menores a CentOS 7.6 "
-#~ "es necesario primero hacer un yum "
-#~ "update y luego reebotear el server"
-#~ msgstr ""
-#~ "In versions smaller tan CentOS 7.6 "
-#~ "it is necessary to perform a yum"
-#~ " update first and then reboot the "
-#~ "server"

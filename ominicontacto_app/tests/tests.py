@@ -70,6 +70,7 @@ AGENTE_PASSWORD = '098098ZZZ'
 
 BROWSER_REAL = os.getenv('BROWSER_REAL')
 TESTS_INTEGRACION = os.getenv('TESTS_INTEGRACION')
+LOGIN_FAILURE_LIMIT = int(os.getenv('LOGIN_FAILURE_LIMIT'))
 
 MSG_MICROFONO = 'Se necesita un browser real con micrófono'
 
@@ -527,12 +528,12 @@ class IntegrationTests(unittest.TestCase):
 
     def test_bloqueo_y_desbloqueo_de_un_usuario(self):
         clave_erronea = 'test'
-        # Intento loguearme 3 veces para bloquear la cuenta del usuario
-        self._login(AGENTE_USERNAME, clave_erronea)
-        self._login(AGENTE_USERNAME, clave_erronea)
-        self._login(AGENTE_USERNAME, clave_erronea)
+        # Intento loguearme 12 veces para bloquear la cuenta del usuario
+        intentos = LOGIN_FAILURE_LIMIT + 2
+        for i in range(intentos):
+            self._login(AGENTE_USERNAME, clave_erronea)
         texto_error = self.browser.find_element_by_xpath('//div/p').text
-        self.assertEqual(texto_error[45:93], 'Tu cuenta y dirección IP permanecerán bloqueadas')
+        self.assertEqual(texto_error[0:24], 'Haz tratado de loguearte')
         # Vamos al Admin de django para desbloquear este usuario
         self.browser.get('https://{0}/admin'.format(TESTS_INTEGRACION_HOSTNAME))
         self.browser.find_element_by_name('username').send_keys(ADMIN_USERNAME)

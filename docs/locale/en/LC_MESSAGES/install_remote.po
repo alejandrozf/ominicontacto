@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-01 14:27-0300\n"
+"POT-Creation-Date: 2020-01-14 14:05-0300\n"
 "PO-Revision-Date: 2019-08-13 16:42-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -137,7 +137,9 @@ msgstr "Make an update/upgrade of the SO"
 msgid ""
 "**Para Debian:** Instalar paquete linux-image-amd64: *apt-get install "
 "linux-image-amd64*"
-msgstr "**To Debian:** Install the package linux-image-amd64: *apt-get install linux-image-amd64*"
+msgstr ""
+"**To Debian:** Install the package linux-image-amd64: *apt-get install "
+"linux-image-amd64*"
 
 # 95c01022c5ed4027ba3a314d959c8194
 #: ../../install_remote.rst:66
@@ -161,7 +163,9 @@ msgstr "Install kernel-devel package, update the SO and reboot the machine"
 msgid ""
 "Luego del reboot es importante revisar que el paquete kernel-devel "
 "coincida con el kernel que se muestre con el comando *uname -a*"
-msgstr "After the reboot is very important to check that the kernel-devel package coincide with the kernel shown by the command *uname -a*"
+msgstr ""
+"After the reboot is very important to check that the kernel-devel package"
+" coincide with the kernel shown by the command *uname -a*"
 
 # 89976157315541f196a5f7c83fc64ffa
 #: ../../install_remote.rst:94
@@ -356,37 +360,74 @@ msgstr "*Figure 10: OMniLeads installation ended succesfuly*"
 msgid "Primer acceso a OMniLeads:"
 msgstr "First access to OMniLeads:"
 
-# 8d56029d8d854326aaf8a25f2452246a
-#: ../../install_remote.rst:190
-msgid ""
-"Si la ejecución de la instalación fue exitosa, entonces podemos realizar "
-"un :ref:`about_first_access`."
-msgstr ""
-"If the installation execution was succesful, then we can perform a "
-":ref:`about_first_access`."
+# d7e453a9cf6b4c2e8c17bc4aa2447fe7
+#: ../../install_remote.rst:191
+msgid "Para acceder al sistema OMniLeads debe ingresar a:"
+msgstr "To access the system go to web URL:"
 
-# 6e2241c9bb094ddbb3eb5fa162d4e4da
-#: ../../install_remote.rst:194
+# 59ec3f007f4a457da1ee0b7b08637e9a
+#: ../../install_remote.rst:193
+msgid "https://omnileads-hostname"
+msgstr "https://omnileads-hostname"
+
+# f5f469c88da74f34994cde5f6c4b4aaa
+#: ../../install_remote.rst:196
 msgid ""
-"Cada vez que se ejecuta el script *./deploy.sh* ya sea para instalar, "
-"correr una actualización del sistema o modificar algún parametro de red,"
-"  el archivo de \"inventory\" se vuelve a cero, es decir se pierde toda "
-"la parametrización realizada antes de la ejecución del script. Tener "
-"presente los cambios realizados"
+"El acceso web a OMniLeads debe ser a través del hostname.domain del host."
+" Por lo tanto existen dos posibilidades a la hora de resolver el "
+"hostname:"
 msgstr ""
-"Each time the script *deploy.sh* is executed, for an installation from "
-"scratch, also for upgrades, or for modification of some password or "
-"network change the \"inventory\" file is reset, it means that all the "
-"changes made in file are lost after script execution. Keep in mind the "
-"changes made."
+"The web access to OMniLeads must be through hostname.domain of machine. "
+"So there are two possibilities for hostname resolving"
+
+# 22a2b00133804adca6c41d54d67e6d29
+#: ../../install_remote.rst:199
+msgid "Que los DNS de la red lo hagan."
+msgstr "Network DNS do it"
+
+# 32eef18136004ca08e7f278f17b9cbbb
+#: ../../install_remote.rst:200
+msgid ""
+"Añadir el hostname.domain del host, dentro del archivo de *hosts* "
+"(Windows, Linux o Mac de cada PC que tenga que acceder a OMniLeads."
+msgstr ""
+"Add hostname.domain in *hosts* file (Windows, Linux or Mac on each PC "
+"that is going to access OMniLeads."
+
+# 77cd6334625646cea250d8d7265c969e
+#: ../../install_remote.rst:202
+msgid ""
+"En el segundo caso, podemos editar el archivo de *hosts* de nuestro "
+"Sistema Operativo:"
+msgstr "In second case, you can edit the *hosts* file in the SO"
+
+# fffab4f6a90f4f02962f4507d46992a0
+#: ../../install_remote.rst:207
+#, fuzzy
+msgid ""
+"Una vez ajustado el método por el cual se resolverá el FQDN o hostname de"
+" nuestra instancia de OMniLeads, se procede con el acceso al URL a través"
+" de cualquier browser moderno. Al encontrarnos con la pantalla de login, "
+"simplemente se debe ingresar el usuario admin y la clave generada durante"
+" la instalación, como se expone en las figura."
+msgstr "Once selected the method to resolve the hostname of the OMniLeads instance, "
+"access the URL with any modern browser. Login with admin user and the password selected "
+"in the inventory file, as seen in figure: "
+
+# 8d56029d8d854326aaf8a25f2452246a
+#: ../../install_remote.rst:214
+msgid ""
+"Si no recuerda la contraseña de admin web, podemos consultar su valor "
+":ref:`about_maintance_envvars`."
+msgstr "If you don't remember the password you can check it here :ref:`about_maintance_envvars`."
 
 # 0937c488364c4d87a4f17ec36f9f5509
-#: ../../install_remote.rst:198
+#: ../../install_remote.rst:218
 msgid "Errores comunes:"
 msgstr "Common mistakes:"
 
 # 641d01dac0d8497aa59ce2cd834d7c6a
-#: ../../install_remote.rst:200
+#: ../../install_remote.rst:220
 msgid ""
 "El server no tiene internet o no resuelve dominios (configuración de "
 "DNS).*Compruebe el acceso a internet del host (por ej: actualizando "
@@ -397,7 +438,7 @@ msgstr ""
 "packages - apt-get update | yum update).*"
 
 # c1b4028f6bb344759174a0127b1d9294
-#: ../../install_remote.rst:202
+#: ../../install_remote.rst:221
 msgid ""
 "Timeout de algún paquete que se intenta bajar. Puede volver a intentar "
 "ejecutar el deploy y si vuelve a fallar, la opción puede ser. *Instalar "
@@ -408,7 +449,7 @@ msgstr ""
 " package from the terminal.*"
 
 # 4d97464e8abb45eaa1636389d53a6e9c
-#: ../../install_remote.rst:204
+#: ../../install_remote.rst:222
 msgid ""
 "Falla por mala sintaxis o falta de definición de *hostname* y *dirección "
 "IP* en el archivo *inventory*. *Revisar archivo inventory*"
@@ -417,7 +458,7 @@ msgstr ""
 "address* in the file *inventory*. *Check the file inventory* "
 
 # 701810a4859e49779eb6bcb4d2fba602
-#: ../../install_remote.rst:206
+#: ../../install_remote.rst:223
 msgid ""
 "No se configuró correctamente el acceso ssh del host destino de la "
 "instalación. *Revisar estado del firewall. Comprobar acceso remoto por "
@@ -428,7 +469,7 @@ msgstr ""
 "root user*"
 
 # 52ee7bf4773644588e1068032c9841dc
-#: ../../install_remote.rst:208
+#: ../../install_remote.rst:224
 msgid ""
 "En caso de contar con algún host Ubuntu-Debian, recordar que se deben "
 "instalar paquetes como *sudo, openssh-server o python-minimal* antes de "
@@ -437,121 +478,3 @@ msgstr ""
 "In case of having any Ubuntu-Debian host, remember that packages such as "
 "*sudo, openssh-server or Python-minimal* must be installed before running"
 " the script *deploy.sh*"
-
-# 3e1b1290cbbc4988beda350ea0724746
-#~ msgid ""
-#~ "En este paso, se debe editar el"
-#~ " archivo *inventory* "
-#~ "(PATH/ominicontacto/deploy/ansible). El mismo reside"
-#~ " dentro del repositorio del proyecto, "
-#~ "que se generó en la PC del "
-#~ "sysadmin que ejecuta el deploy remoto."
-#~ msgstr ""
-#~ "In this step, the file *inventory* "
-#~ "(PATH/ominicontacto/deploy/ansible) must be edited."
-#~ " It is within the project repository,"
-#~ " which was generated on the sysadmin"
-#~ " PC that executes de remote deploy."
-
-# b72872f994bc406394d04297049da49b
-#~ msgid ""
-#~ "Localizar la sección *[omnileads-aio]* y"
-#~ " modificar la cadena 'hostname' por "
-#~ "el hostname de nuestro servidor destino"
-#~ " de la instalción. También en esta"
-#~ " sección se debe editar el parámetro"
-#~ " 'X.X.X.X' con la dirección IP del"
-#~ " servidor."
-#~ msgstr ""
-#~ "Locate the section *[omnileads-aio]* and"
-#~ " modify the 'hostname' chain with the"
-#~ " hostname of our destination server "
-#~ "of the installation. In this section "
-#~ "the parameter 'X.X.X.X' must be edited"
-#~ " with the server IP address. "
-
-# d92c8c7ee3ae4f60a4c727e8dbbf6081
-#~ msgid "*Figure 5: inventory file network parameters section*"
-#~ msgstr "*Figure 5: inventory file network parameters section*"
-
-# d9a9df325ff74b2fb821de1f85ed3c9a
-#~ msgid ""
-#~ "Además dentro del mismo archivo, unas"
-#~ " líneas debajo encontraremos la sección "
-#~ "*[everyyone:vars]*, en la cual se pueden"
-#~ " alterar variables y contraseñas que "
-#~ "vienen por defecto en el sistema. "
-#~ "Introducir el parámetro \"time zone\" "
-#~ "adecuado para su instanacia. Es "
-#~ "**Importante** que realice este paso o"
-#~ " la instalación no se va a "
-#~ "poder realizar."
-#~ msgstr ""
-#~ "Also within the same file, some "
-#~ "lines below the section *[everyyone:vars]*,"
-#~ " in which default variables and "
-#~ "passwords can be change. Enter the "
-#~ "appropiate parameter \"time zone\" for "
-#~ "its instance. It is **Important** to "
-#~ "perform this step or the installation"
-#~ " will not be possible."
-
-# e8e52047b7154f23ae864551cfd89ed1
-#~ msgid "*Figure 6: Passwords and parameters of services*"
-#~ msgstr "*Figure 6: Passwords and parameters of services*"
-
-# 8832a4cd03da407096b8841b9a07e357
-#~ msgid ""
-#~ "En caso de haber olvidado ingresar "
-#~ "la instancia a instalar el script "
-#~ "mostrará este mensaje"
-#~ msgstr ""
-#~ "In case of having forgotten enter "
-#~ "the instance to install the script "
-#~ "will show this message"
-
-# 0a7fc4aa332b4d1ab9a3500abe84a3ae
-#~ msgid "*Figure 7: deploy - No hosts in inventory*"
-#~ msgstr "*Figure 7: deploy - No hosts in inventory*"
-
-# dceb724087374416b6df15f0abe339d7
-#~ msgid ""
-#~ "Es importante aclarar que cada vez "
-#~ "que se corre el script \"./deploy.sh\""
-#~ " ya sea para instalar, re-instalar,"
-#~ " actualizar, modificar la dirección IP "
-#~ "de OML, etc., el archivo de "
-#~ "inventory se vuelve a \"cero\". No "
-#~ "obstante se genera una copia del "
-#~ "archivo (my_inventory), de manera tal "
-#~ "que se cuente con los parámetros "
-#~ "del sistema utilizados en la última "
-#~ "ejecución del script. La copia en "
-#~ "cuestión se ubica en el path donde"
-#~ " ha sido clonado el repositorio de"
-#~ " OML y bajo el nombre de "
-#~ "\"my_inventory\" como lo expone la "
-#~ "figura 6."
-#~ msgstr ""
-#~ "It is important to clarify that "
-#~ "every time the script \"./deploy.sh\" "
-#~ "runs either to install, re-install, "
-#~ "update, modify the OML IP address, "
-#~ "etc., the file inventory returns to "
-#~ "\"cero\". However, a copy of the "
-#~ "file (my_inventory) is generated, so the"
-#~ " system parameters used in the last"
-#~ " execution of the script are "
-#~ "available. This copy is located in "
-#~ "the path where the OML repository "
-#~ "has been cloned and under the name"
-#~ " of \"my_inventory\" as shown in "
-#~ "Figure 6."
-
-# 04158eac2eac443f89eb958ff3c604b6
-#~ msgid "*Figure 8: inevntory copy, my_inventory file*"
-#~ msgstr "*Figure 8: inevntory copy, my_inventory file*"
-
-# d820ece5b07a4a11a042245de4735844
-#~ msgid "CentOS:"
-#~ msgstr "CentOS:"

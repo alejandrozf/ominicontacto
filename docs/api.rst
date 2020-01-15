@@ -66,7 +66,7 @@ Si el login no es exitoso, el método devuelve la siguiente salida:
 .. image:: images/api_user_login_fail.png
 
 
-*figure 3: endpint login request fail*
+*figure 3: endpoint login request fail*
 
 .. _about_api_database_metadata:
 
@@ -98,7 +98,7 @@ En caso de haber errores se devolverá un JSON con el campo “status”:”ERRO
 
 Endpoint creacion de contacto
 *****************************
-Esta endpoint habilita la posibilidad de agegar un contacto a una base de datos de contactos de una campaña. Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`) o a un Supervisor (:ref:`about_supervisor_user`) que estén asociados a la campaña.
+Esta endpoint habilita la posibilidad de agregar un contacto a una base de datos de contactos de una campaña. Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`) o a un Supervisor (:ref:`about_supervisor_user`) que estén asociados a la campaña.
 
 **URL**: POST https://<omnileads_addr>/api/v1/new_contact/
 
@@ -114,7 +114,7 @@ Esta endpoint habilita la posibilidad de agegar un contacto a una base de datos 
 |                     |         | valor depende de si se especifica o no el parámetro 'idExternalSystem'      |
 +---------------------+---------+-----------------------------------------------------------------------------+
 
-Además deberán enviarse los valores de los campos correspondientes a los datos del contacto, y cuyos nombres pueden obtenerse con la api de obtener estructura de de Base de Datos de Contactos (:ref:`about_api_database_metadata`). Es obligatorio enviar un valor para el campo indicado como 'main_phone', y en caso de que la base de datos tenga campo identificador externo, el valor del campo indicado como 'external_id' no deberá existir previamente en otro contacto de la base de datos.
+Además deberán enviarse los valores de los campos correspondientes a los datos del contacto, y cuyos nombres pueden obtenerse con el endpoint de obtener estructura de de Base de Datos de Contactos (:ref:`about_api_database_metadata`). Es obligatorio enviar un valor para el campo indicado como 'main_phone', y en caso de que la base de datos tenga campo identificador externo, el valor del campo indicado como 'external_id' no deberá existir previamente en otro contacto de la base de datos.
 
 En caso de no haber errores se devolverá un output como este, con los datos del contacto y su id en OML:
 
@@ -131,7 +131,7 @@ Permite generar llamadas (click to call) desde un Sistema CRM Externo. Las crede
 
 .. image:: images/api_new_call_request.png
 
-*figure 4: endpint new call request*
+*figure 4: endpoint new call request*
 
 +----------------------+------------+--------------------------------------------------------------------------+
 | field name           | type       | description                                                              |

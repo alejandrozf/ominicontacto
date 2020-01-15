@@ -138,7 +138,7 @@ en la figura 7. **Local/${num}@from-oml/n**
 
 *Figure 7: WD basic config - Asterisk Trunk*
 
-Por último, recuerde dar "play" al servicio de dialer, tal como lo indica la siguiente figura 9.
+Por último, recuerde dar "play" al servicio de dialer, tal como lo indica la siguiente figura 8.
 
 .. image:: images/maintance_wd_config4.png
 
@@ -321,8 +321,12 @@ Finalmente, la plataforma queda actualizada a la última versión estable "maste
 
 **Instalación basada en contenedores Docker**
 
-Una de las grandes ventajas que otorga la tecnología de contenedores tiene que ver con la facilidad a la hora de distribuir, instalar y actualizar las aplicaciones. Para el caso de OMniLeads
-simplemente basta con cambiar el parámetro **RELEASE=release-1.X.X** dentro del archivo :ref:`about_install_docker_env` , para luego proceder con un reinicio del servicio omnileads-pbx.
+Una de las grandes ventajas que otorga la tecnología de contenedores tiene que ver con la facilidad a la hora de distribuir, instalar y actualizar las aplicaciones. Para OMniLeads falta con hacer lo siguiente:
+
+1. Crear una copia del archivo .env en `/home/omnileads/prodenv/` para mantener el valor de sus variables
+2. Copiar el contenido de la carpeta `deploy/docker/prodenv/` en `/home/omnileads/prodenv`
+3. Modificar el archivo .env nuevo con sus variables 
+4. Reiniciar el servicio omnileads-pbx
 
 .. code-block:: bash
 
@@ -332,8 +336,8 @@ En el proceso de reinicio cuando se invoca el *docker-compose* al percatarse del
 
 .. note::
 
-  Los nuevos releases suelen traer nuevo codigo JavaScript. El browser mantiene el código viejo en su cache por lo que se **recomienda** instalar en el browser un addon para borrar la cache. *Clear cache* para *Google Chrome*, por ejemplo
-
+  1. Los nuevos releases suelen traer nuevo codigo JavaScript. El browser mantiene el código viejo en su cache por lo que se **recomienda** instalar en el browser un addon para borrar la cache. *Clear cache* para *Google Chrome*, por ejemplo
+  2. Una vez copiado el contenido de prodenv revisar el archivo .env, se pudo haber implementado una nueva variable de entorno
 
 
 Cambios de los parámetros de red (Hostname y/o Dirección IP) y cambios de contraseñas de servicios

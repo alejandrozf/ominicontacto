@@ -30,7 +30,7 @@ TMP_OMINICONTACTO='/var/tmp/ominicontacto-build/ominicontacto'
 REPO_LOCATION="`git rev-parse --show-toplevel`"
 USER_HOME=$(eval echo ~${SUDO_USER})
 export ANSIBLE_CONFIG=$TMP_ANSIBLE
-DEBIAN_FRONTEND=noninteractive
+export DEBIAN_FRONTEND=noninteractive
 IS_ANSIBLE="`find ~/.local -name ansible 2>/dev/null |grep \"/bin/ansible\" |head -1`"
 arg1=$1
 

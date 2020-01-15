@@ -171,7 +171,7 @@ Finalmente tenemos todo listo para probar nuestro primer agente.
 
 .. important::
 
- Tener en cuenta que para obtener un login exitoso debemos debemos contar con un **MICROFONO disponible:** en la estación de trabajo desde la cual se harealizado el login de agente. Si no se cumple entonces el login será defectuoso.
+ Tener en cuenta que para obtener un login exitoso debemos debemos contar con un **MICROFONO disponible:** en la estación de trabajo desde la cual se ha realizado el login de agente. Si no se cumple entonces el login será defectuoso.
 
 
 Una vez que accedemos con nuestro agente, si todo va bien deberemos toparnos con un popup que solicita el permiso de tomar el control del micrófono, como se ilustra en la figura 14.
