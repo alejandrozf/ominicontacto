@@ -1,0 +1,10 @@
+#text_line {
+	text-decoration-color: #8FC641;
+    text-decoration-line: underline;
+    text-underline-position: under;
+    padding-bottom: 10px;
+}  
+
+#align_box {
+	padding-top: 20px;
+}  
