@@ -20,7 +20,7 @@ msgstr ""
 # 0679ea95c2a042e4bbbc13e1e8745bbd
 #: ../../install_docker_linux.rst:5
 msgid "Instalación sobre CentOS7 utilizando Docker"
-msgstr ""
+msgstr "Installation over CentOS7 using Docker"
 
 # c06a608e5602467dbe4fc8244769126d
 #: ../../install_docker_linux.rst:7
@@ -31,6 +31,10 @@ msgid ""
 "tecnología de \"virtualización\" sobre CentOS-7 como sistema operativo "
 "subyacente."
 msgstr ""
+"Since version 1.4.0, OMniLeads can be deployed in production using Docker."
+"In this section we cover all required aspects to run the application using"
+" this novel \"virtualization\" techonology over CentOS-7 as underlying "
+"operating system."
 
 # 2674678bddf84beeb928517740bbb01c
 #: ../../install_docker_linux.rst:10
@@ -38,6 +42,8 @@ msgid ""
 "Al ejecutar el proceso de instalación disponible en el repositorio, se "
 "procede con la instalación de:"
 msgstr ""
+"When executing the installation process available on repository, we "
+"proceds with the installation of:"
 
 # 0a2448580c3d4fe09588ebe3f4ab028c
 #: ../../install_docker_linux.rst:12
@@ -70,6 +76,8 @@ msgid ""
 "Estos componentes serán instalados y se van a ejecutar directamente sobre"
 " el sistema operativo de base."
 msgstr ""
+"These components will be installed and will be execute directly over the base "
+"operating system."
 
 # 96807d0f37f143348cc7191a4b3720de
 #: ../../install_docker_linux.rst:20
@@ -77,6 +85,8 @@ msgid ""
 "Por otro lado los componentes restantes de la aplicación, serán ejecutads"
 " como contenedores Docker."
 msgstr ""
+"For other part the rest of application componens, will be executed as a docker"
+" containers"
 
 # 0c71a097ca7a498fabeac51f4fa0acd1
 #: ../../install_docker_linux.rst:22
@@ -84,6 +94,8 @@ msgid ""
 "En la siguiente figura se presenta un esquema representativo acerca del "
 "cómo se despliega OMniLeads."
 msgstr ""
+"On he following picture is present a representative schema about OMniLeads"
+" deployment"
 
 # 8926511bb2a34539a562bb91986aeb06
 #: ../../install_docker_linux.rst:27
@@ -92,11 +104,14 @@ msgid ""
 " Dialer, Redis y OMni-App se ejecutan en contenedores, mientras que "
 "RTPengine, PostgreSQL y MySQL sobre el sistema operativo base."
 msgstr ""
+"As we can observe the components: Asterisk, Kamailio, Nginx, Wombat Dialer,"
+"Redis and OMni-App are executed in containers, while RTPengine, PostgreSQL y MySQL"
+"in the operating system base"
 
 # 8f8aa439b6954de69b540b62982c1f0b
 #: ../../install_docker_linux.rst:31
 msgid "Procedimiento de instalación"
-msgstr ""
+msgstr "Installation procedure"
 
 # ba63491f914e4df49f705c9341413471
 #: ../../install_docker_linux.rst:33
@@ -106,6 +121,9 @@ msgid ""
 "debemos posicionarnos sobre el path *relativo*; "
 "ominicontacto/deploy/docker/prodenv."
 msgstr ""
+"As first step we proced with the login to the Linux host for then download the OMniLeads"
+"and once cloned the repository we must go to the *relative* path; "
+"ominicontacto/deploy/docker/prodenv."
 
 # a54fe2fa8e03465d8c1235057e54c950
 #: ../../install_docker_linux.rst:43
@@ -114,11 +132,13 @@ msgid ""
 "en pos de asociar valores a variables utilizadas para el deploy de "
 "OMniLeads."
 msgstr ""
+"Once we are in the indicated *Path*, we must edit the file *.env* in order"
+" to associate values to variables used for the OMniLeads deployment"
 
 # b451538de73e49908e75a4f1297c4b71
 #: ../../install_docker_linux.rst:48
 msgid "Variables de entorno *.env*"
-msgstr ""
+msgstr "Environment variables *.env*"
 
 # 4b286cb7cb0d4c0eaac8295a257cd135
 #: ../../install_docker_linux.rst:50
@@ -126,6 +146,7 @@ msgid ""
 "En este archivo se configuran variables de entorno que serán utilizadas "
 "por los contenedores."
 msgstr ""
+"In this file we configure environment variables that will be used for the containers"
 
 # a62642dec6be44288c32661d807280af
 #: ../../install_docker_linux.rst:52
@@ -133,6 +154,8 @@ msgid ""
 "El archivo se encuentra documentado con comentarios, no obstante vamos a "
 "citar los principales parámetros a continuación."
 msgstr ""
+"The file is documented with comment, however we are going to cite"
+" the main parameters next"
 
 # ae9e1d876e6745d99e72a985c1012d10
 #: ../../install_docker_linux.rst:54
@@ -140,6 +163,8 @@ msgid ""
 "Las variables *DOCKER_HOSTNAME* y *DOCKER_IP* se corresponden con la "
 "dirección IP LAN asignada a la interfaz principal del host Linux."
 msgstr ""
+"The variables *DOCKER_HOSTNAME* and *DOCKER_IP* are consistent the IP LAN "
+"direction assigned to the main interface of the Linux host"
 
 # caf8f03f78e54a69944f645d99812e6a
 #: ../../install_docker_linux.rst:56
@@ -149,6 +174,9 @@ msgid ""
 "variable *DJANGO_PASS* la cual implementa la contraseña del usuario web "
 "admin de OMniLeads."
 msgstr ""
+"Then whe have the *RELEASE* that describes the OMniLeads to deploy, the variable"
+"*TZ* (Time Zone) and the variable *DJANGO_PASS* which sets the password for OMniLeads web user"
+"admin"
 
 # 57ac87a4c6d24c44b40e92ed7ae459ad
 #: ../../install_docker_linux.rst:86
@@ -161,6 +189,13 @@ msgid ""
 "generó un password de root. Con respecto al segundo parámetro a "
 "configurar *MYSQL_HOST*, se debe utilizar la dirección IP LAN del host."
 msgstr ""
+"We make focus on the variables block related to MySQL, where the variable "
+"*MYSQL_ROOT_PASS* must be edited with the value of the MySQL root user."
+"On CentOS-7 MySQL got without password for *localhost* connections, in that case"
+" uncomment the parameter and left empty (MYSQL_ROOT_PASS=), if you did not"
+" generated a root password. Regarding the second parameter to configure, *MYSQL_HOST*,"
+"the host IP LAN direction must be used."
+
 
 # 1d7fa88966734aa4bf6bae1d0073172c
 #: ../../install_docker_linux.rst:102
@@ -170,6 +205,9 @@ msgid ""
 "usuario omnileads del motor PostgreSQL que utiliza la aplicación. Aquí "
 "debemos elegir una contraseña a nuestro antojo."
 msgstr ""
+"Finally, the parámetros *PGHOST* must be filled  with the host IP LAN and *PGPASSWORD* "
+"is the omnileads user password on the PostgreSQL instance used by the application. Here "
+"we can choose freely a password for our like."
 
 # cad19755e6cc46088085f009a73832d8
 #: ../../install_docker_linux.rst:116
@@ -177,6 +215,8 @@ msgid ""
 "Una vez ajustadas las variables marcadas, estamos en condiciones de "
 "ejecutar el deploy de OMniLeads."
 msgstr ""
+"When filled the mentioned variables, we are ready to execute OMniLeads"
+"deployment"
 
 # c7dc311103b947d4be1af167f2b7d9f1
 #: ../../install_docker_linux.rst:120
@@ -185,6 +225,9 @@ msgid ""
 "caso de que su dirección IP LAN del Linux host (donde se ejecuta el "
 "docker-engine) coincida con este rango aquí citadas."
 msgstr ""
+"The *SUBNET=192.168.15.0/24* should ONLY be modified in case your Linux"
+"host LAN IP (where docker-engine runs) does not match with this range "
+"mentioned."
 
 # 533acbf8ea5948dbb40be867dcbd9c35
 #: ../../install_docker_linux.rst:124
@@ -195,6 +238,10 @@ msgid ""
 "establecido correctamente cada parámetro del archivo *.env* previamente "
 "repasado."
 msgstr ""
+"Inside the folder where *.env* variables file resides, in which we were "
+"working we have the installation script: *install.sh*. This script must be "
+"executed as a *root*, after set every parameter on file *.env* previously "
+"mentioned"
 
 # 6a8bd9fbb253460b89eea0bda332e637
 #: ../../install_docker_linux.rst:132
@@ -202,6 +249,7 @@ msgid ""
 "A partir de entonces comenzará el proceso de instalación y posterior "
 "lanzamiento de la applicación."
 msgstr ""
+"Then, from here the install process will starts and then also the application running"
 
 # 10aac2a3a66f4ac3b0996d3634baedcd
 #: ../../install_docker_linux.rst:136
@@ -212,6 +260,10 @@ msgid ""
 "lo que el proceso puede demorar hasta varias decenas de minutos "
 "dependiendo la velocidad de conexión a internet."
 msgstr ""
+"Inside the installation steps there is the execution of the first *docker-compose"
+" that makes up the containers. Being the first execution the Docker images for "
+"every component will be downloaded now, and for that reason could be slow for up"
+" to some dozens of minutes, depending of the Internet connection speed."
 
 # a97cae1559ca4f0aa1425631dbb47193
 #: ../../install_docker_linux.rst:145
@@ -226,31 +278,34 @@ msgid ""
 " se deja configurado para que inicie automáticamente luego de cada "
 "reinicio del sistema operativo de base."
 msgstr ""
+"From installation complete a service omnileads-pbx.service is created and"
+"can be used for start/stop the application and is configured to start "
+"automatically after every base operating system restart."
 
 # b449e05fefc047f390b5ffb1adc738a1
 #: ../../install_docker_linux.rst:150
 msgid "Para verificar el servicio:"
-msgstr ""
+msgstr "To verify the service:"
 
-# 46ba2be0f8154b84ac2ed4a402ef2dfe
+# 46ba2be0f8154b84ac2ed4a402ef2dfed
 #: ../../install_docker_linux.rst:156
 msgid "Si todo es correcto deberíamos obtener la siguiente salida:"
-msgstr ""
+msgstr "If everything is correct we should get the following output:"
 
 # fd66682b86b0418fb82f94528848b471
 #: ../../install_docker_linux.rst:161
 msgid "Para bajar el servicio:"
-msgstr ""
+msgstr "To stop the service:"
 
 # 59d9675b88914b7b933fa807855359ac
 #: ../../install_docker_linux.rst:167
 msgid "Para levantar el servicio:"
-msgstr ""
+msgstr "To start the service"
 
 # 1ba68465b3c649b1bab0635d5f1adfeb
 #: ../../install_docker_linux.rst:174
 msgid "Primer login"
-msgstr ""
+msgstr "First login"
 
 # d0ad3a580aa84462a4779cbd6c08fcbe
 #: ../../install_docker_linux.rst:176
@@ -260,4 +315,6 @@ msgid ""
 "dirección IP del host Linux utilizando *https* y el puerto *444*, como se"
 " indica en la figura."
 msgstr ""
-
+"To access the system and start the :ref:`about_initial_settings` "
+"we must access from a web browser to the URL formed by the Linux host IP using"
+" *https* and the port 444, as shown in the figure."

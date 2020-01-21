@@ -20,7 +20,7 @@ msgstr ""
 # fb9280eb1de14f228dec456e77dd0a0a
 #: ../../pbx_integration.rst:5
 msgid "Integración entre OMniLeads & PBXs"
-msgstr ""
+msgstr "Integration between OMniLeads & PBXs"
 
 # 1e136d80ded04b9881215bbfd64e2946
 #: ../../pbx_integration.rst:7
@@ -29,6 +29,9 @@ msgid ""
 "software libre bien conocido donde además todo lo expuesto aquí puede ser"
 " extrapolado como configuración para cualquier IPPBX basada en Asterisk."
 msgstr ""
+"We are going to approach out example using Issabel-PBX, a well known  "
+"FLOSS project where, besides, every aspect exposed here can be generalized as"
+"as a configuration for every IPPBX based on Asterisk."
 
 # eb28358eda0d4413bbeb77898030565a
 #: ../../pbx_integration.rst:15
@@ -38,11 +41,14 @@ msgid ""
 " como también para el caso en que OMniLeads se ejecuta en Docker "
 "conviviendo dentro del mismo host de la IPPBX."
 msgstr ""
+"The steps described on the section are aplicable so the scheme where OMniLeads"
+" is in an exclusive host and the IPPBX in other, as where OMniLeads is executed"
+"on Docker, living both on the same host in the IPPBX"
 
 # d011cef5f1034f0ebc24cc7a790e0cf7
 #: ../../pbx_integration.rst:19
 msgid "Configuración del troncal SIP en la IPPBX"
-msgstr ""
+msgstr "SIP trunk configuration in the IPPBX"
 
 # 8119726a317a4d8b91c33768644162d3
 #: ../../pbx_integration.rst:21
@@ -50,11 +56,13 @@ msgid ""
 "Seleccionamos la creación de un nuevo troncal SIP y completamos la "
 "configuración con los siguientes parámetros:"
 msgstr ""
+"We select the creation of a new SIP trunk y complete the configuration"
+" with the following parameters"
 
 # 98c18af8e1354592a20428e5c644c951
 #: ../../pbx_integration.rst:24
 msgid "En caso de tener OMniLeads en un Host y la IPPBX en otro Host.-"
-msgstr ""
+msgstr "In case we have OMniLeads in a Host and the IPPBX in other Host.-"
 
 # 1331c6b78259410fb73e8e3e5217b51e
 #: ../../pbx_integration.rst:38
@@ -62,6 +70,7 @@ msgid ""
 "En caso de ejecutar OMniLeads con Docker dentro de sistema operativo base"
 " de la IPPBX.-"
 msgstr ""
+"In case of executing OMniLeads with Docker inside of IPPBX base operating system"
 
 # 66a66000221149828e16568a02acc17c
 #: ../../pbx_integration.rst:53
@@ -71,6 +80,9 @@ msgid ""
 "(OmniLeads dockerizado sobre el mismo host de la IPPBX) y además el "
 "parámetro **host** el cual posee el valor de la IP LAN de la IPPBX."
 msgstr ""
+"Note that the only thing tha changes between both posibilities is "
+"the *port* parameter, between 5160 (OMniLeads in a separate host)"
+"and 5163 (OmniLeads dockerized over the same IPPBX host)"
 
 # 5a9acffdbbb540308fcc1e2696afba75
 #: ../../pbx_integration.rst:57
@@ -78,6 +90,8 @@ msgid ""
 "Una vez disponible nuestro troncal SIP, pasamos a comprobar accesibilidad"
 " utilizando el CLI de Asterisk de la IPPBX."
 msgstr ""
+"Once our SIP trunk is available, we go to check accessibility using the "
+"IPPBX Asterisk IPPBX"
 
 # d7fe8a84e73447eb95faa4bdf190e963
 #: ../../pbx_integration.rst:66
@@ -85,6 +99,8 @@ msgid ""
 "Estrablecemos una sesión bash dentro del host donde se ejecuta Issabel-"
 "PBX y lanzamos el comando:"
 msgstr ""
+"We establish a bash session inside the host running Issabel y raise the "
+"command:"
 
 # 29227ea595e848a5b8384807b8b6377b
 #: ../../pbx_integration.rst:72
@@ -92,11 +108,13 @@ msgid ""
 "Si todo va bien, deberíamos observar OK en la linea de salida "
 "correspondiente al nuevo troncal SIP, ya sea con el puerto 5160 o 5163."
 msgstr ""
+"If all goes well, we should see OK in the output line "
+"related to the new SIP trunk, with 5160 or 5163 port"
 
 # 2bf8c11409e24d90b36f01991fb5fdc4
 #: ../../pbx_integration.rst:79
 msgid "Configuración del troncal SIP en OMniLeads"
-msgstr ""
+msgstr "SIP trunk configuration on OMniLeads"
 
 # 0fed8b2a75b54271a51f5585712d5f4c
 #: ../../pbx_integration.rst:81
@@ -104,6 +122,8 @@ msgid ""
 "Una vez generado el troncal SIP del lado de la IP-PBX, se procede con la "
 "generación de la contraparte correspondiente en OMniLeads."
 msgstr ""
+"Once generated the SIP trunk on IPPBX side, we proced with the generation"
+"with its corresponding part on OMniLeads"
 
 # c27dff3d5c34466abe213e9ce25d878d
 #: ../../pbx_integration.rst:83
@@ -111,6 +131,8 @@ msgid ""
 "En caso de tener OMniLeads en un Host y la IPPBX en otro Host, utilizamos"
 " la plantilla PBX Omnileads (LAN).-"
 msgstr ""
+"In case we have OMniLeads on a Host and the IPPBX in other host we use the"
+" PBX Omnileads (LAN) template.-"
 
 # 86c31c631978485097d9b200b98f815a
 #: ../../pbx_integration.rst:109
@@ -118,6 +140,8 @@ msgid ""
 "En caso de ejecutar OMniLeads con Docker dentro de sistema operativo base"
 " de la IPPBX, utilizamos la plantilla Omnileads inside PBX.-"
 msgstr ""
+"In case of execution of OMniLeas with Docker inside of the IPPBX base operating"
+" system, we used the Omnileads inside PBX template.-"
 
 # 1f8f6c616d544c34a383b8c7505a3feb
 #: ../../pbx_integration.rst:135
@@ -125,6 +149,8 @@ msgid ""
 "Quedando efectiva nuestra troncal, pasamos a controlar si Issabel está "
 "accesible desde OMniLeads, utilizando el CLI de Asterisk de OMniLeads."
 msgstr ""
+"Once efective our trunk, we pass to check if Issable is accessible from "
+"OMniLeads, using OMniLeads Asterisk CLI."
 
 # 35685a94b0cb4819b06d578a58ae9dac
 #: ../../pbx_integration.rst:140
@@ -134,11 +160,14 @@ msgid ""
 "comando: **docker exec -it oml-asterisk-prodenv** , a partir de allí se "
 "invoca el CLI."
 msgstr ""
+"If we are executing OMniLeads in Docker, for access the container executing"
+" we must execute the following command: **docker exec -it oml-asterisk-prodenv**"
+", then we can start the CLI"
 
 # ab32798e62d94f5d9e6bd89a06269d36
 #: ../../pbx_integration.rst:147
 msgid "La salida del comando debería ser similar a la figura:"
-msgstr ""
+msgstr "The command output should be similar to the figure:"
 
 # 704604c413bb4d2fba0b29ba19299e67
 #: ../../pbx_integration.rst:152
@@ -147,6 +176,8 @@ msgid ""
 "quedando pendiente la configuración del enrutamiento de llamadas entre "
 "ambos sistemas."
 msgstr ""
+"At this point, exists a SIP trunk between bot phone systems, pending the calls"
+" routing configuration between both systems"
 
 # 7f65164ee0ea40049a7cc315da8249b1
 #: ../../pbx_integration.rst:154
@@ -154,16 +185,18 @@ msgid ""
 "Finalmente ponemos énfasis en relacionar parámetros entre la "
 "configuración del SIP trunk en Issabel con la de OMniLeads."
 msgstr ""
+"Finally we emphasize on make relations between parameters on"
+"Issabel and OMniLeads SIP trunks"
 
 # 342fb88498614768991d25090831a8c3
 #: ../../pbx_integration.rst:156
 msgid "Una imagen vale mas que mil palabras:"
-msgstr ""
+msgstr "A picture is worth a thousand words:"
 
 # 88cd60e6f20649abbbe981a8dba05119
 #: ../../pbx_integration.rst:162
 msgid "Como enviar llamadas desde la IP-PBX hacia OMniLeads"
-msgstr ""
+msgstr "How send calls from IP-PBX to OMniLeads"
 
 # d37decbd0aa5430dbd298e94e5d2a7a5
 #: ../../pbx_integration.rst:164
@@ -175,6 +208,11 @@ msgid ""
 "extensión pueda contactar o transferir una llamada hacia una campaña "
 "entrante o agente de OMniLeads."
 msgstr ""
+"Now we exposed a way to connect the IP-PBX resources (inbound routes, IVRs,"
+" announcements, extensions, etc.) with OMniLeads. It means, that, for example"
+"  from one option of the company main IVR can derive to an OMniLeads inbound "
+"campaing, or that one extension can contact or transfer a call to an "
+"OMniLeads inbound campaign or OMniLeads agent."
 
 # 2228f89b88e04badb07ce6f9a819937a
 #: ../../pbx_integration.rst:168
@@ -182,11 +220,13 @@ msgid ""
 "Esto es completamente viable utilizando las *custom extensions* de la IP-"
 "PBX, en nuestro caso ejemplar: Issabel-PBX."
 msgstr ""
+"This is completely viable using the IP-PBX *custom extensions*, in our"
+"example case: Issabel-PBX"
 
 # 1b6ec54b758d4bce9e37d1feef4e3da0
 #: ../../pbx_integration.rst:174
 msgid "Llamadas hacia rutas entrantes de OMniLeads"
-msgstr ""
+msgstr "Calls to OMniLeads inbound routes"
 
 # 10bb2e4bbd494af0a975962700a9d2e8
 #: ../../pbx_integration.rst:176
@@ -197,6 +237,11 @@ msgid ""
 "canal contra OMniLeads, particularmente apuntando a una *ruta entrante* "
 "la cual puede a su vez enviar la llamada hacia una campaña entrante."
 msgstr ""
+"Now we present the example where the user want to create a *custom extension*"
+" in which, when call it from another extension or invoke it from some "
+" PBX object(IVR, inbound route, announcement, etc) create a channel "
+"against OMniLeads, particularly pointing to an *inbound route*"
+" which can at the same time, send the call to an inbound campaign."
 
 # a2ecb4847e344c1c90543a474154a097
 #: ../../pbx_integration.rst:179
@@ -204,6 +249,8 @@ msgid ""
 "Por un lado entonces, tendremos una ruta entrante en OMniLeads, apuntando"
 " por ej. a una campaña entrante:"
 msgstr ""
+"For one side, we have an inbound route in OMniLeas, pointing for instance,"
+" to an inbound campaign:"
 
 # e53bf371244e4c78be44f073797edbac
 #: ../../pbx_integration.rst:184
@@ -213,12 +260,16 @@ msgid ""
 "apunte al troncal SIP contra OMniLeads y el número enviado sea "
 "precisamente *098098*."
 msgstr ""
+"Having in mind that the DID choosen was *098098*, in the IPPBX we must"
+"generate an *extension* with type *custom*, where the *Dial* string"
+"should point to the OMniLeads SIP trunk, and the sent number should be "
+"*098098*."
 
 # e35f1baac3b94c44af0b8050c577f15c
 # 945335a8b89f44d58f1366e874ef8453
 #: ../../pbx_integration.rst:190 ../../pbx_integration.rst:219
 msgid "En la figura remarcamos tres elementos:"
-msgstr ""
+msgstr "In the figure we mark three elements:"
 
 # 793160872c9d40d5be3ead49d46f6f90
 #: ../../pbx_integration.rst:192
@@ -228,6 +279,10 @@ msgid ""
 "cuando la cadena de Dial de la custom extension coincida con el DID de la"
 " ruta entrante de OML (098098 para nuestro ejemplo)."
 msgstr ""
+"The extension number, could be different to the number sent to OMniLeads"
+"(3) . It can be every numner, only making sure the Dial extension from the "
+" custom extension matches with the DID number from the OML inbound route "
+"(098098 for our example)"
 
 # b1a15c2a881c45bd9e3bf7268e7bc2ce
 # d99dad84c7b54941a0c271b907d3e18d
@@ -237,6 +292,9 @@ msgid ""
 " con el campo *Trunk Name* en el troncal SIP contra OMniLeads generado en"
 " la IP-PBX."
 msgstr ""
+"The *trunk* where the custom extension points. This values must matches"
+" with the field *Trunk Name* on the SIP trunk against OMniLeads generated"
+" on the IP-IPBX"
 
 # 4dd760198ee8452abc00201fe07473c0
 #: ../../pbx_integration.rst:194
@@ -244,6 +302,8 @@ msgid ""
 "El número a enviar por el trunk tiene que coincidir con el DID de la ruta"
 " entrante de OMniLeads."
 msgstr ""
+"The number to send by the trunk must match with the DID on the OMniLeads "
+"inbound route"
 
 # ef42faed065a4a208d73e0e43f828fe4
 #: ../../pbx_integration.rst:196
@@ -254,6 +314,10 @@ msgid ""
 "finalmente conectar sobre una campaña entrante o el elemento asignado "
 "como destino de la ruta entrante en OMniLeads."
 msgstr ""
+"This way every IPPBX extension could call o transfer a call to this "
+"*custom extension* and will be sent to the related inbound route on OMniLeads"
+" for finally connect over an inbound campaign or the assigned element as"
+" destination of the OMniLeads inbound route"
 
 # 430235c27275481a9602078878882cd4
 #: ../../pbx_integration.rst:199
@@ -262,11 +326,14 @@ msgid ""
 "custom extensions apuntando a diferentes rutas entrantes de OMniLeads "
 "como querramos !"
 msgstr ""
+"As a final mention, we want to make clear that we can have in the IPPBX"
+"many custom extensions pointing to different OMniLeads inbound routes"
+"as we like !"
 
 # 11e59f544b5a499ebc4367051a71cf9a
 #: ../../pbx_integration.rst:202
 msgid "Llamadas hacia agentes de OMniLeads"
-msgstr ""
+msgstr "Calls to OMniLeads agents"
 
 # 25b29f005e744138b1f860408f4a0088
 #: ../../pbx_integration.rst:204
@@ -278,11 +345,16 @@ msgid ""
 "conformado ya no por un DID de ruta entrante de OMniLeads, sino que será "
 "una combinación del ID del agente y su número SIP."
 msgstr ""
+"For the case of link an OMniLeads agent on the IPPBX (it means, that from one "
+"extension we can call the *custom extension* and this extension ends linking in"
+"a call to an OMniLeads agent), the number to send in Dial string of custom extension"
+" will be formed not by a DID of OMniLeads inbound route, but will be a combination of"
+"the agent ID and its SIP number"
 
 # 81e662ac6c63473488fc36327d477d5c
 #: ../../pbx_integration.rst:208
 msgid "Vayamos al grano con esto:"
-msgstr ""
+msgstr "Let's get to the point with this:"
 
 # f848a163c88c43c39c158ad19a7d3590
 #: ../../pbx_integration.rst:213
@@ -294,6 +366,11 @@ msgid ""
 "agente*; en nuestro ejemplo sería **10061** para el agente *Adrian Belew*"
 " y **10072** para el agente *Mikael Ackerfeldt*."
 msgstr ""
+"From the figure, let's take the agent *Adrian Belew*. Note that its ID is 1"
+" and its SIP number is 1006. For that reason at the momment to make the number"
+" to send in the Dial string of the IPPBX custom extension we must concatenate"
+" the *SIP Number* with its *Agent ID*; in our example will be **10061** for "
+"agent *Adrian Belew* and *10072* for agent *Mikael Ackerfeldt*"
 
 # faa50d58f0e4483abcb0aef67f85abdd
 #: ../../pbx_integration.rst:221
@@ -304,6 +381,10 @@ msgid ""
 "concatenación del ID de agente y su número SIP (10061 para nuestro "
 "ejemplo)."
 msgstr ""
+"The extension number, could be different to the number sent to OMniLeads"
+"(3) . It can be every numner, only making sure the Dial extension from the "
+" custom extension matches with the concatenation of the ID agent and its "
+" SIP number (10061 for our example)"
 
 # 258a9e2b27cf47968c4e64f49a5d54c0
 #: ../../pbx_integration.rst:223
@@ -311,6 +392,9 @@ msgid ""
 "El número a enviar por el trunk tiene que coincidir con la concatenación "
 "del ID de agente y su número SIP (10061 para nuestro ejemplo)."
 msgstr ""
+"The number to send by the trunk must to match with the concatenation of the ID"
+" agent and its SIP number (10061 for our example)"
+
 
 # 96e470e990ee474db56dea2072f51c49
 #: ../../pbx_integration.rst:225
@@ -318,11 +402,12 @@ msgid ""
 "Se deberá repetir el procedimiento para cada agente que haya que vincular"
 " dentro de la IPPBX."
 msgstr ""
+"We must to repeat the procedure for every agent for link inside the IPPBX"
 
 # a4419ca2e5be4871a4d7617c823e57ec
 #: ../../pbx_integration.rst:229
 msgid "Llamadas desde OMniLeads hacia la PSTN y recursos de la IPPBX"
-msgstr ""
+msgstr "Calls from OMniLeads to the PSTB and the IPPBX resources"
 
 # 1998c51fa4c94afea976fd59d879cdef
 #: ../../pbx_integration.rst:231
@@ -333,6 +418,10 @@ msgid ""
 "transferir llamadas hacia recursos de la IPPBX como extensiones, ring "
 "groups, colas de llamadas ,etc."
 msgstr ""
+"Finally we are going to generate the outboung routing inside OMniLeads"
+"that allow agents and diales raise calls to the PSTN, and , at the same time"
+"allow agents to call or transfer calls to the IPPBX resources like extensions,"
+" ring, groups, queues calls, etc"
 
 # 62eefa5a271c4e6da2c738674c5c71ed
 #: ../../pbx_integration.rst:243
@@ -340,6 +429,7 @@ msgid ""
 "Simplemente se debe añadir una nueva ruta saliente que apunte al troncal "
 "hacia la IPPBX."
 msgstr ""
+"Simply we must add a new outbound route that points to the trunk to the IPPBX"
 
 # f654844cf19f447694781e0ca82b49d0
 #: ../../pbx_integration.rst:248
@@ -347,4 +437,5 @@ msgid ""
 "De esta manera la integración queda completamente funcional y ambos "
 "sistemas pueden realizar todo tipo de llamadas e interacciones."
 msgstr ""
-
+"This way the integration is completely functional and both systems can "
+"make all types of calls and interactions"

@@ -35,10 +35,12 @@ debemos posicionarnos sobre el path *relativo*; ominicontacto/deploy/docker/prod
 
   .. code-block:: bash
 
-    yum -y install git
+    yum -y install git kernel-devel kernel-headers
     cd /var/tmp
     git clone https://gitlab.com/omnileads/ominicontacto.git
     cd ominicontacto/deploy/docker/prodenv
+    yum update -y
+    reboot
 
 Una vez ubicados en el *Path* indicado, se debe editar el archivo *.env* en pos de asociar valores a variables utilizadas para el deploy de OMniLeads.
 
