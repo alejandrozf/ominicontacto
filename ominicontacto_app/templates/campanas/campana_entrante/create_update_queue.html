@@ -192,11 +192,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <div class="form-row">
                 <div class="col-md-7">
                     <label>{% trans 'Autopausar agentes que fallan al responder:' %}</label>
-                    <button class="btn dropdown-toggle">Yes</button>
+                    {{ form.autopause }}
+                    {{ form.autopause.errors }}
                 </div>
                 <div class="col-md-5">
                     <label>{% trans 'Autopausar agentes que dan ocupado:' %}</label>
-                    <button class="btn dropdown-toggle">Yes</button>
+                    {{ form.autopausebusy }}
+                    {{ form.autopausebusy.errors }}
                 </div>
                 <div class="col-md-6">
                     <label for="{{ form.timeout.id_for_label }}">{% trans 'Tiempo de Ring:' %}</label>

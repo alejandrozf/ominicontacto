@@ -221,7 +221,7 @@ class QueueEntranteForm(forms.ModelForm):
         fields = ('name', 'timeout', 'retry', 'maxlen', 'wrapuptime', 'servicelevel',
                   'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
                   'audios', 'announce_frequency', 'audio_de_ingreso', 'campana',
-                  'tipo_destino', 'destino')
+                  'tipo_destino', 'destino', 'autopause', 'autopausebusy')
 
         help_texts = {
             'timeout': _('En segundos'),

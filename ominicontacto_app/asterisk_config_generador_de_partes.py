@@ -273,6 +273,7 @@ class GeneradorParaQueue(GeneradorDePedazoDeQueue):
         wrapuptime={oml_wrapuptime}
         maxlen={oml_maxlen}
         retry={oml_retry}
+        autopauseunavail=yes
         """
 
     def get_parametros(self):
@@ -317,6 +318,9 @@ class GeneradorParaQueueEntrante(GeneradorDePedazoDeQueue):
         wrapuptime={oml_wrapuptime}
         maxlen={oml_maxlen}
         retry={oml_retry}
+        autopauseunavail=yes
+        autopause={oml_autopause}
+        autopausebusy={oml_autopausebusy}
         """
 
     def get_parametros(self):

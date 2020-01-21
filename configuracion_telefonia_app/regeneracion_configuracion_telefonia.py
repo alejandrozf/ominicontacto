@@ -29,8 +29,8 @@ from django.utils.translation import ugettext as _
 
 from ominicontacto_app.errors import OmlError
 from ominicontacto_app.asterisk_config import (
-    AsteriskConfigReloader, RutasSalientesConfigCreator, RutasSalientesConfigFile,
-    SipTrunksConfigCreator, SipRegistrationsConfigCreator, SipRegistrationsConfigFile
+    AsteriskConfigReloader, RutasSalientesConfigCreator,
+    SipTrunksConfigCreator, SipRegistrationsConfigCreator,
 )
 from ominicontacto_app.services.asterisk_database import (
     RutaSalienteFamily, TrunkFamily, RutaEntranteFamily, IVRFamily, ValidacionFechaHoraFamily,
@@ -71,7 +71,6 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
     def __init__(self):
         self.generador_rutas_en_astdb = RutaSalienteFamily()
         self.generador_rutas_en_asterisk_conf = RutasSalientesConfigCreator()
-        self.config_rutas_file = RutasSalientesConfigFile()
         self.reload_asterisk_config = AsteriskConfigReloader()
 
     def _generar_y_recargar_archivos_conf_asterisk(self, ruta_exclude=None):
@@ -156,7 +155,6 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
         self.generador_trunk_en_astdb = TrunkFamily()
         self.generador_trunk_sip_en_asterisk_conf = SipTrunksConfigCreator()
         self.generador_trunks_registration_en_asterisk_conf = SipRegistrationsConfigCreator()
-        self.config_trunk_registration_file = SipRegistrationsConfigFile()
         self.reload_asterisk_config = AsteriskConfigReloader()
 
     def _generar_y_recargar_archivos_conf_asterisk(self, trunk_exclude=None):

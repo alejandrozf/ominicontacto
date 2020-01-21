@@ -50,6 +50,8 @@ A continuación se prosigue con la creación de nuestra campaña entrante.
 - **Periodic Announcement:** podemos seleccionar algún audio de nuestro repositorio para reproducir como un anuncio periódico sobre la llamada en espera.
 - **Announcement frequency:** cantidad de segundos entre cada reproducción de un anuncio periódico.
 - **Failover dst:** destino hacia el cual se enviarán las llamadas que hayan sido expiradas (superó el tiempo de espera asociado).
+- **Autopausar agentes que fallan al responder:** indica si se debe pausar automáticamente o no a los agentes que fallen a responder llamadas.
+- **Autopausar agentes que dan ocupado:** indica si se debe pausar automáticamente o no a los agentes que den ocupado.
 
 
 .. note::
