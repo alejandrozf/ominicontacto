@@ -192,6 +192,7 @@ class QueueEntranteForm(forms.ModelForm):
     tipo_destino = forms.ChoiceField(
         widget=forms.Select(attrs={'class': 'form-control', 'id': 'tipo_destino'}), required=False
     )
+    announce_position = forms.BooleanField(required=False),
 
     def __init__(self, audios_choices, *args, **kwargs):
         super(QueueEntranteForm, self).__init__(*args, **kwargs)
@@ -228,7 +229,7 @@ class QueueEntranteForm(forms.ModelForm):
                   'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
                   'audios', 'announce_frequency', 'audio_de_ingreso', 'campana',
                   'tipo_destino', 'destino', 'ivr_breakdown', 'autopause', 'autopausebusy',
-                  'announce_holdtime')
+                  'announce_holdtime', 'announce_position',)
 
         help_texts = {
             'timeout': _('En segundos'),

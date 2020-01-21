@@ -156,10 +156,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {{ form.announce_holdtime.errors }}
                 </div>
                 <div class="col-md-6">
-                    <label>{% trans 'Announce position:'%}</label>
-                    <div class="custom-control custom-checkbox">
-                        <label class="custom-control-label"></label>
-                    </div>
+                    <label for="{{ form.announce_position.id_for_label }}">{% trans 'Posición de anuncio:'%}</label>
+                    {{ form.announce_position }}
+                    {{ form.announce_position.errors }}
                 </div>
                 <div class="col-md-6">
                     <label>{% trans 'Frecuencia de anuncios de tiempo aprox. de espera y posición actual:'%}</label>

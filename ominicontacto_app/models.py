@@ -1404,6 +1404,7 @@ class Queue(models.Model):
 
     # TODO: OML-496 Borrar, usar 'audios.audio_asterisk.name'
     # announcements
+    announce_position = models.BooleanField(default=False, verbose_name='Posición de anuncio')
     announce = models.CharField(max_length=128, blank=True, null=True)
     announce_frequency = models.BigIntegerField(blank=True, null=True)
 
