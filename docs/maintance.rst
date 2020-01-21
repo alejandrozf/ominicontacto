@@ -231,7 +231,7 @@ Linux Distro         Upgrade soportado y testeado
 ===================  =============================
 CentOS 7.6            Desde 1.1.1 a 1.3.1
 Debian 9.3            Desde 1.2.2 a 1.3.1
-Ubuntu Server 18.04   Desde 1.3.1 en adelante
+Ubuntu Server 18.04   Desde 1.3.1 hasta 1.3.4
 ===================  =============================
 
 A continuación se exponen los pasos a seguir para llevar a cabo una nueva actualización de la plataforma. Esta tarea también se realiza con el script "deploy.sh".
@@ -318,6 +318,9 @@ Finalmente, la plataforma queda actualizada a la última versión estable "maste
 
 *Figure 12: updates from ansible remote OK*
 
+.. note::
+
+  Las instalaciones AIO dejarán de ser soportadas en un futuro para Debian y Ubuntu, por lo que se recomienda usar CentOS
 
 **Instalación basada en contenedores Docker**
 
