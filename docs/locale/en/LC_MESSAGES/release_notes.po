@@ -44,4 +44,4 @@ msgid ""
 "Se soluciona error que impedía acceder a la supervisión al eliminar "
 "después de eliminar una campaña entrante"
 msgstr ""
-Fix error when accessing the supervision after remove an inbound campaign.
+"Fix error when accessing the supervision after remove an inbound campaign."
