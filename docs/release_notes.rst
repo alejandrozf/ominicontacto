@@ -1,11 +1,11 @@
 Release Notes
 *************
 
-*Octubre 31, 2019*
+*Enero 22, 2020*
 
-Detalles de Release 1.3.3
+Detalles de Release 1.3.5
 =========================
 
 Admin de OML
 -------------
-- Se soluciona error que impedía adicionar parámetros de interacción CRM en la gestión de las campañas
+- Se soluciona error que impedía acceder a la supervisión al eliminar después de eliminar una campaña entrante

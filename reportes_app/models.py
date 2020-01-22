@@ -150,15 +150,21 @@ class LlamadaLogManager(models.Manager):
                            event__in=LlamadaLog.EVENTOS_FIN_CONEXION)
 
     def entrantes_espera(self):
+        campanas_eliminadas_ids = list(
+            Campana.objects.obtener_borradas().values_list('pk', flat=True))
         ids_llamadas_entrantes = list(self.filter(
             tipo_campana=Campana.TYPE_ENTRANTE, event='ENTERQUEUE').values_list(
-                'callid', flat=True))
+                'callid', flat=True).exclude(campana_id__in=campanas_eliminadas_ids))
         logs = self.filter(callid__in=ids_llamadas_entrantes, event='CONNECT')
         return logs
 
     def entrantes_abandono(self):
+        campanas_eliminadas_ids = list(
+            Campana.objects.obtener_borradas().values_list('pk', flat=True))
         return self.filter(
-            tipo_campana=Campana.TYPE_ENTRANTE, event__in=['ABANDON', 'ABANDONWEL'])
+            tipo_campana=Campana.TYPE_ENTRANTE,
+            event__in=['ABANDON', 'ABANDONWEL']).exclude(
+                campana_id__in=campanas_eliminadas_ids)
 
 
 class LlamadaLog(models.Model):
