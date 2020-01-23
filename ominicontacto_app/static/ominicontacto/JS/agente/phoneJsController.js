@@ -91,6 +91,11 @@ class PhoneJSController {
             self.redial();
         });
 
+        this.view.recordCall.click(function name(arg) {
+            $(this).attr('disabled', true);
+            self.recordCall();
+        });
+
         this.view.resumeButton.click(function() {
             self.leavePause();
         });
@@ -269,6 +274,7 @@ class PhoneJSController {
                 self.view.setUserStatus('label label-success', gettext('En llamado'));
                 self.view.closeAllModalMenus();
                 self.view.setStateInputStatus('OnCall');
+                self.view.toogleVisibilityRecordButtons(self.phone.session_data);
                 self.click_2_call_dispatcher.disable();
             },
             onDialingtransfer: function() {
@@ -283,6 +289,7 @@ class PhoneJSController {
                 self.view.setUserStatus('label label-success', gettext('Transfiriendo'));
                 self.view.closeAllModalMenus();
                 self.view.setStateInputStatus('Transfering');
+                self.view.toogleVisibilityRecordButtons(self.phone.session_data);
                 self.click_2_call_dispatcher.disable();
             },
             onReceivingcall: function() {
@@ -559,6 +566,13 @@ class PhoneJSController {
         if (this.call_after_campaign_selection) {
             this.makeDialedNumberCall();
         }
+    }
+
+
+    recordCall() {
+        // TODO: mover a modulo phoneJsSip.js
+        this.phone.currentSession.sendDTMF('*');
+        this.phone.currentSession.sendDTMF('4');
     }
 
     setCallFailedStatus(cause) {
