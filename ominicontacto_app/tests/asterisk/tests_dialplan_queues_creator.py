@@ -82,3 +82,14 @@ class QueuesCreatorTest(OMLBaseTest):
         creator = QueuesCreator()
         dialplan = creator._generar_dialplan_entrantes(self.campana_entrante)
         self.assertIn('context=sub-oml-module-ivrbreakout', dialplan)
+
+    def test_generar_dialplan_entrante_posicion_de_anuncios_default(self):
+        creator = QueuesCreator()
+        dialplan = creator._generar_dialplan_entrantes(self.campana_entrante)
+        self.assertIn('announce-position=no', dialplan)
+
+    def test_generar_dialplan_entrante_posicion_de_anuncios(self):
+        self.queue_entrante.announce_position = True
+        creator = QueuesCreator()
+        dialplan = creator._generar_dialplan_entrantes(self.campana_entrante)
+        self.assertIn('announce-position=yes', dialplan)
