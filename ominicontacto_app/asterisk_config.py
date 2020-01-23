@@ -260,7 +260,6 @@ class QueuesCreator(object):
         :type campana: ominicontacto_app.models.Campana
         :returns: str -- dialplan para la queue
         """
-
         assert campana.queue_campana is not None, "campana.queue_campana == None"
 
         retry = 1
@@ -294,6 +293,7 @@ class QueuesCreator(object):
             'oml_autopausebusy': 'yes' if campana.queue_campana.autopausebusy else 'no',
             'oml_announce-holdtime': campana.queue_campana.announce_holdtime,
             'oml_ivr-breakdown': campana.queue_campana.ivr_breakdown,
+            'oml_announce_position': 'yes' if campana.queue_campana.announce_position else 'no',
         }
 
         ivr_breakdown = campana.queue_campana.ivr_breakdown

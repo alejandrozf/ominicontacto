@@ -290,6 +290,8 @@ class GeneradorParaQueueEntrante(GeneradorDePedazoDeQueue):
         announce-frequency=0
         announce-holdtime={oml_announce-holdtime}
         announce-position=no
+        announce-holdtime=no
+        announce-position={oml_announce_position}
         autofill=yes
         eventmemberstatus=yes
         eventwhencalled=yes
