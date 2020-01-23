@@ -19,9 +19,10 @@
 
 from __future__ import unicode_literals
 
+from mock import patch
 
 from configuracion_telefonia_app.tests.factories import (
-    IdentificadorClienteFactory, DestinoPersonalizadoFactory)
+    IdentificadorClienteFactory, DestinoPersonalizadoFactory, PlaylistFactory)
 
 from configuracion_telefonia_app.models import (OpcionDestino, IdentificadorCliente,
                                                 DestinoEntrante)
@@ -33,9 +34,10 @@ from ominicontacto_app.models import Campana
 from ominicontacto_app.tests.factories import CampanaFactory
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.utiles import convert_audio_asterisk_path_astdb
+from ominicontacto_app.asterisk_config import PlaylistsConfigCreator
 
 
-class TestsSincronizadors(OMLBaseTest):
+class TestsSincronizadores(OMLBaseTest):
 
     def test_identificador_cliente_sin_interaccion_externa_envia_datos_correctos_creacion_astdb(
             self):
@@ -127,3 +129,20 @@ class TestsSincronizadors(OMLBaseTest):
         self.assertEqual(dict_astdb['DST'], dest_personalizado.custom_destination)
         self.assertEqual(dict_astdb['FAILOVER'], "{0},{1}".format(
             dest_entrante_1.tipo, dest_entrante_1.object_id))
+
+
+class TestConfigCreators(OMLBaseTest):
+
+    @patch('ominicontacto_app.asterisk_config.ConfigFile.write')
+    def test_playlist_config_creator(self, write):
+        playlist = PlaylistFactory()
+        template = """
+        [{oml_nombre_playlist}]
+        mode=files
+        directory=sounds/moh/{oml_nombre_playlist}
+        """
+        template = "\n".join(t.strip() for t in template.splitlines())
+        config = template.format(**{'oml_nombre_playlist': playlist.nombre})
+        creator = PlaylistsConfigCreator()
+        creator.create_config_asterisk()
+        write.assert_called_with([config])

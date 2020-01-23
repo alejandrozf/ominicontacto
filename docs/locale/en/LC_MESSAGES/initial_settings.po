@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-14 13:53-0300\n"
+"POT-Creation-Date: 2020-02-20 12:23-0300\n"
 "PO-Revision-Date: 2019-08-12 22:43-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 # c29ec8faa2ed40009cb7203371550e6a
 #: ../../initial_settings.rst:5
@@ -194,48 +194,13 @@ msgstr ""
 "In our case we generate a supervisor / administrator user. Then we log in"
 " with that user to continue the managements."
 
-# 2972bf948d2a4670b37e7db3592bdc39
-#: ../../initial_settings.rst:71
-msgid "Crear módulo de telefonía"
-msgstr "Create telephony module"
-
-# 2749f1cd12ac406fa72ce8209bcb2b16
-#: ../../initial_settings.rst:73
-msgid ""
-"En este punto se debe generar cada módulo de sistema, actualmente se "
-"dispone de la funcionalidad de telefonía, por lo que vamos a añadir dicho"
-" módulo. No obstante hacia el futuro se estarían añadiendo SMS y Chat."
-msgstr ""
-"In this point each system module must be generated, telephony "
-"functionality is currently available, so we are going to add that module."
-" However towards the future SMS and Chat would be added"
-
-# 1f6f420a0df2486a83d6f8e0dbfd6ba3
-#: ../../initial_settings.rst:76
-msgid ""
-"Para generar el módulo de telefonía debemos acceder a *Modules -> Enable "
-"module*"
-msgstr ""
-"To generate the telephony module we must access to *Modules -> Enable "
-"module*"
-
-# f62ae86b3e084f039165849c04c01f5d
-#: ../../initial_settings.rst:80
-msgid "*Figure 6: Enable telephony module*"
-msgstr ""
-
-# 900c0552f71f4b4ea60c6d07c9d382a4
-#: ../../initial_settings.rst:82
-msgid "Guardamos los cambios y avanzamos !"
-msgstr "We save the changes and move on !"
-
 # c45e2f32cdce47498f37eaafe0a8b39d
-#: ../../initial_settings.rst:86
+#: ../../initial_settings.rst:72
 msgid "Instalar idiomas extras"
 msgstr "Extra language installation"
 
 # d211d647e98f4a90b54bea118bd4c176
-#: ../../initial_settings.rst:88
+#: ../../initial_settings.rst:74
 msgid ""
 "Los audios genéricos que los agentes o teléfonos externos escucharán "
 "vienen por defecto en inglés siendo configurables en las rutas entrantes "
@@ -250,7 +215,7 @@ msgstr ""
 "especified in its configuration."
 
 # 1421271b153549dc9e2569d5623beb75
-#: ../../initial_settings.rst:90
+#: ../../initial_settings.rst:76
 msgid ""
 "Si la instancia precisa utilizar otros idiomas, se pueden instalar a "
 "través del punto de menú \"Telephony-Add audio files\", en donde se "
@@ -261,47 +226,82 @@ msgstr ""
 " these languages:"
 
 # 46ab6f673029465ba6d927b751e7c9f7
-#: ../../initial_settings.rst:92
+#: ../../initial_settings.rst:78
 msgid "Español"
 msgstr "Spanish"
 
 # 21d7ac806b7e4f5588ab60408e0f7263
-#: ../../initial_settings.rst:93
+#: ../../initial_settings.rst:79
 msgid "Italiano"
 msgstr "Italian"
 
 # 2763d49cf83445b2b90cca433e132123
-#: ../../initial_settings.rst:94
+#: ../../initial_settings.rst:80
 msgid "Sueco"
 msgstr "Swedish"
 
 # 7ca6e91dafe248e7abc61634e3e0f5f0
-#: ../../initial_settings.rst:95
+#: ../../initial_settings.rst:81
 msgid "Portugués"
 msgstr "Portuguese"
 
 # f620447d8f7c44479babf66844aba349
-#: ../../initial_settings.rst:96
+#: ../../initial_settings.rst:82
 msgid "Francés"
 msgstr "French"
 
 # 43926475c128419c9cbd498db1ddd96d
-#: ../../initial_settings.rst:97
+#: ../../initial_settings.rst:83
 msgid "Ruso"
 msgstr "Russian"
 
-# 67af13fb643a43ac8c6a45556ea01858
-#: ../../initial_settings.rst:102
-msgid "*Figure 7: i18n audio promps*"
+# cf652db0e38b4779b87cd3bddbd51d2d
+#: ../../initial_settings.rst:88
+msgid "*Figure 6: i18n audio promps*"
+msgstr ""
+
+# 28edd6f0ff4e45e69fe004c435ebd3d9
+#: ../../initial_settings.rst:92
+msgid "Musica de espera"
+msgstr "Music on hold"
+
+# ab99df93b5184e42b77d5aa0fcc673a7
+#: ../../initial_settings.rst:94
+msgid ""
+"Este menú permite crear y eliminar las playlists a ser utilizadas en las "
+"campañas entrantes para que el cliente escuche como música de espera. No "
+"podrán eliminarse playlists que estén en uso por alguna campaña o que "
+"tengan musicas cargadas."
+msgstr ""
+"This page allows the creation and removal of the playlist to be used on Inbound Campaigns for the client to listen as music on hold. Playlists in use by any campaign or with loaded musics can not be deleted."
+
+# e7a9d421e1cc4cb0b5fe7e2568c62f3e
+#: ../../initial_settings.rst:98
+msgid "*Figure 7: Creating a playlist*"
+msgstr ""
+
+# 2112032880d749bd899574e9c4918372
+#: ../../initial_settings.rst:100
+msgid ""
+"Una vez creada la playlist deberán agregarse las músicas deseadas, "
+"cargando archivos de formato **.wav**. Sólo estarán disponibles para su "
+"uso en campañas entrantes las playlist que tengan al menos una música "
+"cargada."
+msgstr ""
+"Once the playlist is created music files are to be loaded, using files with **.wav** format. Only the playlists with at least one music uploaded will be available for use in Inbound Campaigns."
+
+# e7a9d421e1cc4cb0b5fe7e2568c62f3e
+#: ../../initial_settings.rst:105
+msgid "*Figure 8: Editing a playlist*"
 msgstr ""
 
 # fa29ba7dfe9d43e3a1aabaddde8f1f12
-#: ../../initial_settings.rst:105
+#: ../../initial_settings.rst:109
 msgid "Crear grupo de agentes"
 msgstr "Create agents group"
 
 # 6551a205e2a14724b909789b057d26ff
-#: ../../initial_settings.rst:107
+#: ../../initial_settings.rst:111
 msgid ""
 "Llega el turno de crear los grupos de agentes de nuestro contact center. "
 "Para generar un nuevo grupo *Usuarios y grupos -> Nuevo grupo de agentes*"
@@ -311,23 +311,23 @@ msgstr ""
 " a new group *Users and groups -> New agents group* and a form similar to"
 " the one in Figure 4 will be displayed."
 
-# 67af13fb643a43ac8c6a45556ea01858
-#: ../../initial_settings.rst:112
-msgid "*Figure 8: New agent group*"
+# 6666be4d6b5b4f0aba6b84f9d3fb1b69
+#: ../../initial_settings.rst:116
+msgid "*Figure 9: New agent group*"
 msgstr ""
 
 # c29131d0bf0c45b983401f0d9d1330c0
-#: ../../initial_settings.rst:114
+#: ../../initial_settings.rst:118
 msgid "Los campos allí desplegados son:"
 msgstr "The fields displayed there are:"
 
 # 97d92ce9c9934a6185082466f4995e52
-#: ../../initial_settings.rst:116
+#: ../../initial_settings.rst:120
 msgid "**Name:** es el nombre que se desea asignar al grupo de agentes."
 msgstr "**Name:* is the name desired to assign to the agents group."
 
 # 8853dcccdc3e4dadb6601a987f57b090
-#: ../../initial_settings.rst:117
+#: ../../initial_settings.rst:121
 msgid ""
 "**Auto_unpause:** para comprender este parámetro debemos explicar que en "
 "OMniLeads luego de cada llamada procesada por un agente (de cualquier "
@@ -355,7 +355,7 @@ msgstr ""
 "after X seconds (as indicated in this parameter). "
 
 # ba6909a2a7c547cd993f757fed2dfa3d
-#: ../../initial_settings.rst:118
+#: ../../initial_settings.rst:122
 msgid ""
 "**Auto_attend_ics:** si este valor está checkeado entonces las llamadas "
 "provenientes del Addon de OMniLeads ICS (Interactive Contact System), "
@@ -369,7 +369,7 @@ msgstr ""
 "without providing the possibility of a ring on his webphone."
 
 # 85fa197422f1494eb14a6cd200bfd7d6
-#: ../../initial_settings.rst:119
+#: ../../initial_settings.rst:123
 msgid ""
 "**Auto_attend_inbound:** si este valor está checkeado entonces las "
 "llamadas provenientes de campañas entrantes serán conectadas al agente "
@@ -380,7 +380,7 @@ msgstr ""
 "the possibility of a ring and answer by the agent."
 
 # 38b81475263a43aba7fe86d347b9fca0
-#: ../../initial_settings.rst:120
+#: ../../initial_settings.rst:124
 msgid ""
 "**Auto_attend_dialer:** si este valor está checkeado entonces las "
 "llamadas provenientes de campañas con discador predictivo serán "
@@ -392,12 +392,12 @@ msgstr ""
 "without providing the possibility of a ring and answer by the agent."
 
 # 9e4961953bb64063bf6d14dcf1119ad3
-#: ../../initial_settings.rst:125
+#: ../../initial_settings.rst:129
 msgid "Crear agentes"
 msgstr "Create agents"
 
 # ff6f338108bf4e9bac72638f48e2effa
-#: ../../initial_settings.rst:127
+#: ../../initial_settings.rst:131
 msgid ""
 "Una vez disponibles los grupos de agentes y su configuración, podemos "
 "proceder con la creación de usuario agentes del contact center."
@@ -406,41 +406,41 @@ msgstr ""
 "proceed with the creation of contact center agents."
 
 # 5dc165f50e69496bafb01dc7b382215e
-#: ../../initial_settings.rst:131
-msgid "*Figure 9: New agent*"
+#: ../../initial_settings.rst:135
+msgid "*Figure 10: New agent*"
 msgstr ""
 
 # 1aa052bc3c6242f1a0580769a2a99b5b
-#: ../../initial_settings.rst:133
+#: ../../initial_settings.rst:137
 msgid ""
 "Se debe seleccionar el grupo de agentes y los módulos disponibles para "
 "nuestro nuevo agente."
 msgstr "The agents group and available modules must be selected for our new agent."
 
-# 5dc165f50e69496bafb01dc7b382215e
-#: ../../initial_settings.rst:137
-msgid "*Figure 10: New agent*"
+# c235e53b2d084246a5ca4e888f50b236
+#: ../../initial_settings.rst:141
+msgid "*Figure 11: New agent*"
 msgstr ""
 
 # 485320ad774e424faff3dbe038aee182
-#: ../../initial_settings.rst:139
+#: ../../initial_settings.rst:143
 msgid ""
 "Podemos listar nuestros usuarios, deberíamos contar con al menos un par "
 "de agentes."
 msgstr "We can list our users, we should have at least a couple of agents."
 
-# 2c2de4deda314f88b9b48be9a97a155f
-#: ../../initial_settings.rst:143
-msgid "*Figure 11: Users*"
+# 8d00c418a81c442b9b716d2015454259
+#: ../../initial_settings.rst:147
+msgid "*Figure 12: Users*"
 msgstr ""
 
 # e19db18c612a46a7beec27c7b6b239e4
-#: ../../initial_settings.rst:146
+#: ../../initial_settings.rst:150
 msgid "Crear pausas de agente"
 msgstr "Create agent pauses"
 
 # e22ad2d3ead64c1ba9389c9bb885c520
-#: ../../initial_settings.rst:148
+#: ../../initial_settings.rst:152
 msgid ""
 "Los agentes pueden entrar en una pausa cada vez que quieran quedar "
 "indispuestos para el procesamiento de llamados, de esta manera se evita "
@@ -454,7 +454,7 @@ msgstr ""
 "productivity and measuring agent session times."
 
 # efb594b982d449a9ad9cf632873092e7
-#: ../../initial_settings.rst:151
+#: ../../initial_settings.rst:155
 msgid ""
 "Las pausas las pueden generar los supervisores y se clasifican en pausas "
 "Recreativas y Productivas."
@@ -462,13 +462,13 @@ msgstr ""
 "Pauses can be generated by supervisors and are classified as Recreational"
 " and Productive pauses."
 
-# 8a0ce155110742f08a7ee3136cd17153
-#: ../../initial_settings.rst:155
-msgid "*Figure 12: New pause*"
+# 0960cc51ae3f41b6b2087a2c53abd73a
+#: ../../initial_settings.rst:159
+msgid "*Figure 13: New pause*"
 msgstr ""
 
 # 82ed375cc88e42878cd4df252227db12
-#: ../../initial_settings.rst:157
+#: ../../initial_settings.rst:161
 msgid ""
 "A la hora de presentar los reportes de sesión de agente, las pausas "
 "totalizadas se dividen en pausas recreativas y pausas productivas. Esto "
@@ -479,30 +479,30 @@ msgstr ""
 "are divided in recreative pauses and productive pauses. This allows "
 "measure the productivity of our agents in a more exact way."
 
-# 8a0ce155110742f08a7ee3136cd17153
-#: ../../initial_settings.rst:162
-msgid "*Figure 13: New pauses*"
+# 0960cc51ae3f41b6b2087a2c53abd73a
+#: ../../initial_settings.rst:166
+msgid "*Figure 14: New pauses*"
 msgstr ""
 
 # e7c3eed9b6ce4722bdcd4334e38b8d93
-#: ../../initial_settings.rst:164
+#: ../../initial_settings.rst:168
 msgid ""
 "Una vez generados nuestros agentes, podemos proceder con nuestro primero "
 "login de agente !"
 msgstr "Once our agents are generated, we can proceed with our first agent login !"
 
 # ef1c227d0cf64d598709e1e57df6d8eb
-#: ../../initial_settings.rst:168
+#: ../../initial_settings.rst:172
 msgid "Primer login de agente"
 msgstr "First agent login"
 
 # 16d55208170643838121dc254bd8cc73
-#: ../../initial_settings.rst:170
+#: ../../initial_settings.rst:174
 msgid "Finalmente tenemos todo listo para probar nuestro primer agente."
 msgstr "Finally we have everything ready to try our first agent."
 
 # 40cf9dcb9f2343d99ae97d57f0387173
-#: ../../initial_settings.rst:174
+#: ../../initial_settings.rst:178
 msgid ""
 "Tener en cuenta que para obtener un login exitoso debemos debemos contar "
 "con un **MICROFONO disponible:** en la estación de trabajo desde la cual "
@@ -514,7 +514,7 @@ msgstr ""
 "work. Otherwise the login could be flawed."
 
 # e17c45c185fd406cba6b136f1dbbb670
-#: ../../initial_settings.rst:177
+#: ../../initial_settings.rst:181
 msgid ""
 "Una vez que accedemos con nuestro agente, si todo va bien deberemos "
 "toparnos con un popup que solicita el permiso de tomar el control del "
@@ -524,13 +524,13 @@ msgstr ""
 " a popup which request the permission to take control of the microphone, "
 "ass illustrated in Figure 14."
 
-# fd32a5cf4b0d4153807073868f97839f
-#: ../../initial_settings.rst:181
-msgid "*Figure 14: First login - microphone webrtc*"
+# e7a9d421e1cc4cb0b5fe7e2568c62f3e
+#: ../../initial_settings.rst:185
+msgid "*Figure 15: First login - microphone webrtc*"
 msgstr ""
 
 # 62f900e4cc6a4bfa8905f707ad938ce6
-#: ../../initial_settings.rst:183
+#: ../../initial_settings.rst:187
 msgid ""
 "Al habilitar el permiso, debemos escuchar un audio que el sistema "
 "reproduce indicando el login exitoso y además la pantalla de agente debe "
@@ -540,7 +540,44 @@ msgstr ""
 "system reproduces indicating the successful login and also the agent "
 "screen should look like figure 15."
 
-# 8d13e3087cc74ee9a8e8bd0f0b15a2ca
-#: ../../initial_settings.rst:187
-msgid "*Figure 15: First login - webphone connected*"
+# c4778f31eba04c91a58ca1152691648d
+#: ../../initial_settings.rst:191
+msgid "*Figure 16: First login - webphone connected*"
 msgstr ""
+
+# 67af13fb643a43ac8c6a45556ea01858
+#~ msgid "*Figure 7: i18n audio promps*"
+#~ msgstr ""
+
+# e7a9d421e1cc4cb0b5fe7e2568c62f3e
+#~ msgid "*Figure 8: Creating a playlist*"
+#~ msgstr ""
+
+# 67af13fb643a43ac8c6a45556ea01858
+#~ msgid "*Figure 8: New agent group*"
+#~ msgstr ""
+
+# 5dc165f50e69496bafb01dc7b382215e
+#~ msgid "*Figure 9: New agent*"
+#~ msgstr ""
+
+# 2c2de4deda314f88b9b48be9a97a155f
+#~ msgid "*Figure 11: Users*"
+#~ msgstr ""
+
+# 8a0ce155110742f08a7ee3136cd17153
+#~ msgid "*Figure 12: New pause*"
+#~ msgstr ""
+
+# 8a0ce155110742f08a7ee3136cd17153
+#~ msgid "*Figure 13: New pauses*"
+#~ msgstr ""
+
+# fd32a5cf4b0d4153807073868f97839f
+#~ msgid "*Figure 14: First login - microphone webrtc*"
+#~ msgstr ""
+
+# 8d13e3087cc74ee9a8e8bd0f0b15a2ca
+#~ msgid "*Figure 15: First login - webphone connected*"
+#~ msgstr ""
+

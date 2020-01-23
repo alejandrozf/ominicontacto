@@ -31,7 +31,7 @@ from configuracion_telefonia_app.tests.factories import (
     ValidacionFechaHoraFactory, GrupoHorarioFactory, ValidacionTiempoFactory, OpcionDestinoFactory)
 from configuracion_telefonia_app.models import (
     GrupoHorario, ValidacionTiempo, IVR, ValidacionFechaHora, DestinoEntrante, OpcionDestino)
-from configuracion_telefonia_app.views import IVRDeleteView, ValidacionFechaHoraDeleteView
+from configuracion_telefonia_app.views.base import IVRDeleteView, ValidacionFechaHoraDeleteView
 
 
 class BaseTestRestriccionEliminacion(OMLBaseTest):

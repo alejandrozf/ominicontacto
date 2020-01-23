@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-13 11:31-0300\n"
+"POT-Creation-Date: 2020-02-20 10:46-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -69,8 +69,8 @@ msgid ""
 "externo en cada llamada, aquí se indica cual de los CRMs definidos debe "
 "invocar la campaña."
 msgstr ""
-"**External URL:** in case of selecting an external URL interaction for each "
-"call, this field selects to wich CRMs should the campaign invoque."
+"**External URL:** in case of selecting an external URL interaction for "
+"each call, this field selects to wich CRMs should the campaign invoque."
 
 # d3f631b89ac94cf1b022cfe7ea49f928
 #: ../../campaigns_inbound.rst:23
@@ -88,9 +88,9 @@ msgid ""
 "campaña dentro del sistema de gestión externo desde el cual llegarán los "
 "*click to call* o *solicitudes de calificación* de contactos."
 msgstr ""
-"**ID on external system:**  this fields must have the campaign's ID in the "
-"external system from where the *click to call* or the *disposition requests* "
-"will be sent."
+"**ID on external system:**  this fields must have the campaign's ID in "
+"the external system from where the *click to call* or the *disposition "
+"requests* will be sent."
 
 # 36d8bbb664aa484d9f51e27016aa9cc2
 #: ../../campaigns_inbound.rst:25
@@ -271,8 +271,8 @@ msgid ""
 "**Autopausar agentes que fallan al responder:** indica si se debe pausar "
 "automáticamente o no a los agentes que fallen a responder llamadas."
 msgstr ""
-"**Autopause agentes who fail to answer:** sets if the agents that fail "
-"to answer a call should be automatically sent to pause."
+"**Autopause agentes who fail to answer:** sets if the agents that fail to"
+" answer a call should be automatically sent to pause."
 
 # 169f044142e94acb9960af1268f9fb2b
 #: ../../campaigns_inbound.rst:54
@@ -280,8 +280,8 @@ msgid ""
 "**Autopausar agentes que dan ocupado:** indica si se debe pausar "
 "automáticamente o no a los agentes que den ocupado."
 msgstr ""
-"**Autopause busy agents:** sets if the agents that are busy"
-" should be automatically sent to pause."
+"**Autopause busy agents:** sets if the agents that are busy should be "
+"automatically sent to pause."
 
 # 63385eb3131141388feba26b780b0cf7
 #: ../../campaigns_inbound.rst:55
@@ -312,8 +312,17 @@ msgstr ""
 msgid "**Posición de anuncio:** Anunciar posición del llamante en la cola."
 msgstr "**Announce position:** Announce the caller's position in the queue."
 
+# 440c308bfc4143ffb8a652b7a1055bd9
+#: ../../campaigns_inbound.rst:58
+msgid ""
+"**Musica de espera:** Indica el Playlist que escuchará el cliente cuando "
+"su llamada este en espera."
+msgstr ""
+"**Music on hold:** Configures wich Playlist will be played for the client "
+"when his call is put on hold."
+
 # 9dacb93abc364de59e69ea651b8b1f6c
-#: ../../campaigns_inbound.rst:60
+#: ../../campaigns_inbound.rst:61
 msgid ""
 "Los parámetros Ring time y Agent callback time, quedan sin efecto para "
 "aquellas llamadas que reciban agentes cuyo *grupo de agentes* esté "
@@ -324,7 +333,7 @@ msgstr ""
 "calls attribute *Auto attend inbound*."
 
 # 5266c295958d40ec862cde430423de92
-#: ../../campaigns_inbound.rst:63
+#: ../../campaigns_inbound.rst:64
 msgid ""
 "En la siguiente etapa de configuración se deben asignar las "
 "calificaciones que la campaña requiera para que los agentes califiquen "
@@ -334,22 +343,22 @@ msgstr ""
 "requires for agents to rate each contact call must be assigned."
 
 # a56bce2bf2f049a59d311dbe26499711
-#: ../../campaigns_inbound.rst:67
+#: ../../campaigns_inbound.rst:68
 msgid "*Figure 3: Campaign dispositions*"
 msgstr ""
 
 # e087b3736e0e4f0f9d14fc89e7e7ecab
-#: ../../campaigns_inbound.rst:69
+#: ../../campaigns_inbound.rst:70
 msgid "Finalmente, los agentes pueden ser asignados a la campaña."
 msgstr "Finally, agents can be assigned to the campaign."
 
 # 162625c736084a84a5e1acc12f73bbb0
-#: ../../campaigns_inbound.rst:73
+#: ../../campaigns_inbound.rst:74
 msgid "*Figure 4: agent assignment*"
 msgstr ""
 
 # 1fcf76b1fc904b82a59bcfdcbb116e2a
-#: ../../campaigns_inbound.rst:75
+#: ../../campaigns_inbound.rst:76
 msgid ""
 "En el resto del capítulo se detalla todo acerca del enrutamiento de las "
 "llamadas desde los vínculos troncales hacia nustras campañas entrantes."
@@ -358,12 +367,12 @@ msgstr ""
 " incoming campaigns."
 
 # cb1f4e3e87f443b8864ec11b3646a749
-#: ../../campaigns_inbound.rst:78
+#: ../../campaigns_inbound.rst:79
 msgid "Ringing VS Atención automática de llamadas entrantes"
 msgstr "Ringing VS Automatic incoming call attention"
 
 # e25a222ca0504c3b8ace1a46d53b7410
-#: ../../campaigns_inbound.rst:79
+#: ../../campaigns_inbound.rst:80
 msgid ""
 "El comportamiento del Webphone del agente frente a una llamada "
 "proveniente de una campaña entrante puede ser:"
@@ -372,7 +381,7 @@ msgstr ""
 "incoming campaign can be:"
 
 # 33680c62062f4bedb70d468822db3265
-#: ../../campaigns_inbound.rst:81
+#: ../../campaigns_inbound.rst:82
 msgid ""
 "**Ringing normal** y con una duración asociada al parámetro \"Ring time\""
 " presente en la creación de la campaña entrante. Durante ese tiempo el "
@@ -384,7 +393,7 @@ msgstr ""
 "the action of the agent that determines the attention or not of the call."
 
 # 99ae8f5f879043a1bb5e7dbab2871598
-#: ../../campaigns_inbound.rst:83
+#: ../../campaigns_inbound.rst:84
 msgid ""
 "**Atención automática de la llamada**. Este comportamiento implica que "
 "cada llamada entrante enviada a un agente sea atendida automáticamente "
@@ -397,7 +406,7 @@ msgstr ""
 "counterpart of the call."
 
 # 6317a373a5944742aa2de6cf38a183e6
-#: ../../campaigns_inbound.rst:85
+#: ../../campaigns_inbound.rst:86
 msgid ""
 "Dicho comportamiento depende de la configuración a nivel \"Grupo de "
 "Agentes\" que posea el agente vinculado a la campaña entrante. Entonces "
@@ -414,6 +423,7 @@ msgstr ""
 " and \"Agent callback time\" as is mentioned in the note of this section"
 
 # 35600c1a5e7e4a7abcb30809a4e6cc13
-#: ../../campaigns_inbound.rst:90
+#: ../../campaigns_inbound.rst:91
 msgid "*Figure 5: agent group config*"
 msgstr "*Figure 5: agent group config*"
+

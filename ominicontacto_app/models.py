@@ -460,13 +460,13 @@ class FieldFormulario(models.Model):
 # https://docs.djangoproject.com/en/1.11/topics/migrations/#serializing-values
 def upload_to_audio_original(instance, filename):
     filename = SUBSITUTE_REGEX.sub('', filename)
-    return "audios_reproduccion/%Y/%m/{0}-{1}".format(
+    return "audios_reproduccion/{0}-{1}".format(
         str(uuid.uuid4()), filename)[:95]
 
 
 def upload_to_audio_asterisk(instance, filename):
     filename = SUBSITUTE_REGEX.sub('', filename)
-    return "audios_asterisk/%Y/%m/{0}-{1}".format(
+    return "audios_asterisk/{0}-{1}".format(
         str(uuid.uuid4()), filename)[:95]
 
 
@@ -489,6 +489,12 @@ class ArchivoDeAudio(models.Model):
 
     objects = ArchivoDeAudioManager()
 
+    DIR_AUDIO_PREDEFINIDO = "audio_asterisk_predefinido"
+    """Directorio relativo a MEDIA_ROOT donde se guardan los archivos
+    convertidos para audios globales / predefinidos
+    """
+    OML_AUDIO_PATH_ASTERISK = settings.OML_AUDIO_PATH_ASTERISK
+
     descripcion = models.CharField(
         max_length=100, unique=True, validators=[RegexValidator(R_ALFANUMERICO)]
     )
@@ -497,6 +503,7 @@ class ArchivoDeAudio(models.Model):
         max_length=100,
         null=True, blank=True,
     )
+    # Archivo de audio .wav ya procesado con el ConversorDeAudioService, apto para asterisk.
     audio_asterisk = models.FileField(
         upload_to=upload_to_audio_asterisk,
         max_length=100,
@@ -1446,8 +1453,11 @@ class Queue(models.Model):
                                       related_name='campanas_ivr_breakdown', blank=True,
                                       null=True, on_delete=True)
 
+    musiconhold = models.ForeignKey('configuracion_telefonia_app.Playlist',
+                                    related_name='campanas', blank=True, null=True,
+                                    on_delete=models.SET_NULL)
+
     # campos que no usamos
-    musiconhold = models.CharField(max_length=128, blank=True, null=True)
     context = models.CharField(max_length=128, blank=True, null=True)
     monitor_join = models.NullBooleanField(blank=True, null=True)
     monitor_format = models.CharField(max_length=128, blank=True, null=True)

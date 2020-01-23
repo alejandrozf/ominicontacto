@@ -21,7 +21,7 @@ import logging
 
 from django.core.management.base import BaseCommand, CommandError
 
-from ominicontacto_app.services.regeneracion_asterisk import RegeneracionAsteriskService
+from ominicontacto_app.services.asterisk.regeneracion_asterisk import RegeneracionAsteriskService
 
 logger = logging.getLogger(__name__)
 

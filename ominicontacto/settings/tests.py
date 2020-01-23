@@ -199,6 +199,8 @@ MONITORFORMAT = 'mp3'
 
 OML_AUDIO_PATH_ASTERISK = "/var/lib/asterisk/sounds/oml/"
 
+OML_PLAYLIST_PATH_ASTERISK = "/var/lib/asterisk/sounds/oml/"
+
 CALIFICACION_REAGENDA = 'Agenda'
 
 LOCAL_APPS = []
@@ -210,6 +212,7 @@ OML_RUTAS_SALIENTES_FILENAME = "/opt/omnileads/asterisk/etc/asterisk/oml_extensi
 ASTERISK_AUDIO_PATH = "/var/lib/asterisk/sounds/"
 
 OML_AUDIO_FOLDER = "oml/"
+OML_PLAYLIST_FOLDER = 'moh/'
 
 DURACION_ASIGNACION_CONTACTO_PREVIEW = 30
 
@@ -241,3 +244,14 @@ NGINX_HOSTNAME = 'trash'
 OML_EXTERNAL_PORT = 'trash'
 
 MIDDLEWARE = MIDDLEWARE_CLASSES
+
+
+class DisableMigrations(object):
+
+    def __contains__(self, item):
+        return True
+
+    def __getitem__(self, item):
+        return None
+
+# MIGRATION_MODULES = DisableMigrations()

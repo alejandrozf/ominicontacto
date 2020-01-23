@@ -121,6 +121,28 @@ class GeneradorParaFailedRutaSaliente(GeneradorDePedazoDeDialplanParaFailed):
         return self._parametros
 
 
+class GeneradorParaFailedPlaylist(GeneradorDePedazoDeDialplanParaFailed):
+    def get_template(self):
+        return """
+
+        ;----------------------------------------------------------------------
+        ; TEMPLATE_FAILED-{oml_playlist_name}
+        ;   Autogenerado {date}
+        ;
+        ; La generacion de configuracion para la playlist {oml_playlist_name}
+        ;   a fallado.
+        ;
+        ; {traceback_lines}
+        ;
+        ;----------------------------------------------------------------------
+
+
+        """
+
+    def get_parametros(self):
+        return self._parametros
+
+
 # ########################################################################### #
 # Factory para las Queue.
 
@@ -162,6 +184,17 @@ class GeneradorDePedazoDeRutasSalientesFactory(object):
 
     def crear_generador_para_failed(self, parametros):
         return GeneradorParaFailedRutaSaliente(parametros)
+
+
+# Factory para las Playlists
+
+class GeneradorDePedazoDePlaylistFactory(object):
+
+    def crear_generador_para_playlist(self, parametros):
+        return GeneradorParaPlaylist(parametros)
+
+    def crear_generador_para_failed(self, parametros):
+        return GeneradorParaFailedPlaylist(parametros)
 
 # ==============================================================================
 # Queue
@@ -382,6 +415,32 @@ class GeneradorParaPatronRuta(GeneradorDePedazoDeRutaSaliente):
         same => n,Set(OMLOUTRID={oml-ruta-id})
         same => n,Gosub(sub-oml-dialout,s,1({oml-ruta-id},{oml-ruta-orden-patern}))
         same => n,Gosub(sub-oml-hangup,s,1(OUTR-FAIL))
+        """
+
+    def get_parametros(self):
+        return self._parametros
+
+
+# ==============================================================================
+# Playlists
+# ==============================================================================
+
+
+class GeneradorDePedazoDePlaylist(GeneradorDePedazo):
+    """Interfaz / Clase abstracta para generar el pedazo de ruta.
+    """
+
+    def __init__(self, parametros):
+        self._parametros = parametros
+
+
+class GeneradorParaPlaylist(GeneradorDePedazoDePlaylist):
+
+    def get_template(self):
+        return """
+        [{oml_nombre_playlist}]
+        mode=files
+        directory=sounds/moh/{oml_nombre_playlist}
         """
 
     def get_parametros(self):

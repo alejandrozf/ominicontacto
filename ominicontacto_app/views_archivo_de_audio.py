@@ -37,13 +37,15 @@ import logging as logging_
 logger = logging_.getLogger(__name__)
 
 
-def convertir_archivo_audio(archivo_de_audio):
-    """Convierte un archivo usando el conversor especificado, actualiza sus rutas"""
+def convertir_archivo_audio(audio):
+    """
+        Convierte un archivo usando el conversor especificado, actualiza sus rutas
+        - audio: Puede ser ArchivoDeAudio o MusicaDeEspera
+    """
     conversor_audio = ConversorDeAudioService()
-    conversor_audio.convertir_audio_de_archivo_de_audio_globales(archivo_de_audio)
-    audio_asterisk = archivo_de_audio.audio_asterisk.name
-    if audio_asterisk:
-        audio_file_asterisk = AudioConfigFile(audio_asterisk)
+    conversor_audio.convertir_audio_de_archivo_de_audio_globales(audio)
+    if audio.audio_asterisk.name:
+        audio_file_asterisk = AudioConfigFile(audio)
         audio_file_asterisk.copy_asterisk()
 
 
@@ -59,6 +61,9 @@ class ArchivoAudioListView(ListView):
 
 
 class ArchivoDeAudioMixin(object):
+    """
+    El model puede ser ArchivoDeAudio o MusicaDeEspera
+    """
 
     def _procesar_archivo_de_audio(self, form):
         try:

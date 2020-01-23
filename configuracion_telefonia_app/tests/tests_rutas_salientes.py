@@ -68,7 +68,7 @@ class TestsRutasSalientes(OMLBaseTest):
         self.client.post(url, follow=True)
         response = self.client.get(url, follow=True)
 
-    @patch('configuracion_telefonia_app.views.eliminar_ruta_saliente_config')
+    @patch('configuracion_telefonia_app.views.base.eliminar_ruta_saliente_config')
     def test_administrador_puede_eliminar(self, mock_sincronizacion):
         self.client.login(username=self.admin.username, password=self.PWD)
         url = reverse('eliminar_ruta_saliente', args=[self.ruta_1.id])
@@ -89,7 +89,7 @@ class TestsRutasSalientes(OMLBaseTest):
         self.assertContains(response, self.troncal_2.nombre)
         self.assertNotContains(response, self.troncal_1.nombre)
 
-    @patch('configuracion_telefonia_app.views.eliminar_ruta_saliente_config')
+    @patch('configuracion_telefonia_app.views.base.eliminar_ruta_saliente_config')
     def test_elimina_RutaSaliente(self, mock_sincronizacion):
         mock_sincronizacion.return_value = True
         self.client.login(username=self.admin.username, password=self.PWD)
@@ -102,7 +102,7 @@ class TestsRutasSalientes(OMLBaseTest):
         self.assertEqual(PatronDeDiscado.objects.count(), 2)
         self.assertEqual(OrdenTroncal.objects.count(), 1)
 
-    @patch('configuracion_telefonia_app.views.eliminar_ruta_saliente_config')
+    @patch('configuracion_telefonia_app.views.base.eliminar_ruta_saliente_config')
     def test_no_elimina_RutaSaliente_al_fallar_sincronizacion_con_asterisk(self,
                                                                            mock_sincronizacion):
         mock_sincronizacion.side_effect = Exception('Boom!')
@@ -136,7 +136,7 @@ class TestsRutasSalientes(OMLBaseTest):
         response = self.client.post(url, post_data, follow=True)
         self.assertEqual(response.status_code, 403)
 
-    @patch('configuracion_telefonia_app.views.escribir_ruta_saliente_config')
+    @patch('configuracion_telefonia_app.views.base.escribir_ruta_saliente_config')
     def test_administrador_puede_crear_ruta_saliente(self, mock_sincronizacion):
         self.client.login(username=self.admin.username, password=self.PWD)
         post_data = {
@@ -167,7 +167,7 @@ class TestsRutasSalientes(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         self.assertEqual(RutaSaliente.objects.count(), n_rutas_salientes + 1)
 
-    @patch('configuracion_telefonia_app.views.escribir_ruta_saliente_config')
+    @patch('configuracion_telefonia_app.views.base.escribir_ruta_saliente_config')
     def test_administrador_puede_modificar_ruta_saliente(self, mock_sincronizacion):
         self.client.login(username=self.admin.username, password=self.PWD)
         nuevo_nombre = 'ruta_1_modificada'

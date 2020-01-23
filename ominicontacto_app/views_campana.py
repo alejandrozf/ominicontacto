@@ -41,7 +41,7 @@ from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
 from ominicontacto_app.utiles import convert_fecha_datetime
 from ominicontacto_app.services.reporte_llamadas_campana import \
     EstadisticasCampanaLlamadasService
-from configuracion_telefonia_app.views import DeleteNodoDestinoMixin, SincronizadorDummy
+from configuracion_telefonia_app.views.base import DeleteNodoDestinoMixin, SincronizadorDummy
 
 import logging as logging_
 

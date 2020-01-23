@@ -308,6 +308,13 @@ Ejemplo:
     OML_WOMBAT_FILENAME = "/var/lib/asterisk/sounds/oml/"
 """
 
+OML_PLAYLIST_PATH_ASTERISK = None
+"""Directory donde se guardan las playlist de music on hold en el server de asterisk
+
+Ejemplo:
+    OML_PLAYLIST_PATH_ASTERISK = '/var/lib/asterisk/sounds/moh/'
+"""
+
 # ==============================================================================
 # URL DE GRABACIONES DE ELASTIX
 # ==============================================================================

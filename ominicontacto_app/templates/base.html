@@ -122,21 +122,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </li>
                 {% endif %}
 
-                {% if user.get_es_administrador_o_supervisor_normal %}
-                <li class="main-menu-li">
-                    <span class="icon icon-audio-file"></span>
-                    <a class="menu-header" href="#menuAudio" role="button" data-toggle="collapse" aria-expanded="false">{% trans 'Audios' %}</a>
-                    <ul class="collapse list-unstyled submenu" id="menuAudio" data-parent="#nav-main-menu">
-                        <li>
-                            <a href="{% url 'lista_archivo_audio' %}">{% trans 'Lista de Audios' %}</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'create_archivo_audio' %}">{% trans 'Nuevo audio' %}</a>
-                        </li>
-                    </ul>
-                </li>
-                {% endif %}
-
                 <li class="main-menu-li">
                     <span class="icon icon-campaign"></span>
                     <a class="menu-header" href="#menuCampaign" role="button" data-toggle="collapse" aria-expanded="false">{% trans 'Campañas' %}</a>
@@ -347,7 +332,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                               {% endif %}
                               {% if grandchild_item.url %}
                                 <li>
-                                  <a href="{{ child_item.url }}">{{ child_item.label }}</a>
+                                  <a href="{{ grandchild_item.url }}">{{ grandchild_item.label }}</a>
                                 </li>
                               {% endif %}
                             {% endfor %}

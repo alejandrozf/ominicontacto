@@ -174,6 +174,9 @@ class CampanaFamily(AbstractFamily):
             dict_campana.update(
                 {'IVRBREAKOUTID': campana.queue_campana.ivr_breakdown.object_id})
 
+        if campana.queue_campana.musiconhold:
+            dict_campana['MOH'] = campana.queue_campana.musiconhold.nombre
+
         return dict_campana
 
     def _obtener_todos(self):

@@ -32,6 +32,7 @@ from django.core.files.storage import default_storage
 from django.utils.translation import ugettext as _
 from ominicontacto_app.errors import OmlAudioConversionError
 from ominicontacto_app.models import ArchivoDeAudio
+from configuracion_telefonia_app.models import MusicaDeEspera
 import logging as _logging
 
 logger = _logging.getLogger(__name__)
@@ -42,17 +43,12 @@ class ConversorDeAudioService(object):
     para poder ser usados por Asterisk
     """
 
-    DIR_AUDIO_PREDEFINIDO = "audio_asterisk_predefinido"
-    """Directorio relativo a MEDIA_ROOT donde se guardan los archivos
-    convertidos para audios globales / predefinidos
-    """
-
     TEMPLATE_NOMBRE_AUDIO_ASTERISK_PREDEFINIDO = "{0}{1}"
     """Nombre de archivo para audios ya convertidos, de archivos
     de audios globales / predefinidos.
 
     Debe poseer 2 placeholders:
-    1. {0} para el ID de ArchivoDeAudio
+    1. {0} para cadena identificadora unica de ArchivoDeAudio/MusicaDeEspera
     2. {1} para el sufijo del nombre del archivo (ej: '.wav')
     """
 
@@ -181,7 +177,8 @@ class ConversorDeAudioService(object):
         :raises: OmlAudioConversionError
         """
 
-        assert isinstance(archivo_de_audio, ArchivoDeAudio)
+        assert isinstance(archivo_de_audio, ArchivoDeAudio) or \
+            isinstance(archivo_de_audio, MusicaDeEspera)
 
         # chequea archivo original (a convertir)
         wav_full_path = default_storage.path(
@@ -196,7 +193,7 @@ class ConversorDeAudioService(object):
 
         # Creamos directorios si no existen
         abs_output_dir = os.path.join(settings.MEDIA_ROOT,
-                                      ConversorDeAudioService.DIR_AUDIO_PREDEFINIDO)
+                                      archivo_de_audio.DIR_AUDIO_PREDEFINIDO)
 
         self._crear_directorios(abs_output_dir)
 
@@ -211,5 +208,5 @@ class ConversorDeAudioService(object):
 
         # guarda ref. a archivo convertido
         archivo_de_audio.audio_asterisk = os.path.join(
-            ConversorDeAudioService.DIR_AUDIO_PREDEFINIDO, filename)
+            archivo_de_audio.DIR_AUDIO_PREDEFINIDO, filename)
         archivo_de_audio.save()
