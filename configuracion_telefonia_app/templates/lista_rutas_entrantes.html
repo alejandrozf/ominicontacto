@@ -60,7 +60,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <ul class="pagination">
             {% if page_obj.has_previous %}
                 <li class="page-item">
-                    <a class="page-link" href="{% url 'user_list' page=page_obj.previous_page_number%}" aria-label="Previous">
+                    <a class="page-link" href="{% url 'lista_rutas_entrantes' page=page_obj.previous_page_number%}" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                         <span class="sr-only">{% trans 'Anterior' %}</span>
                     </a>
@@ -75,7 +75,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
             {% if page_obj.has_next %}
                 <li class="page-item">
-                    <a class="page-link" href="{% url 'user_list' page=page_obj.next_page_number %}" aria-label="Next">
+                    <a class="page-link" href="{% url 'lista_rutas_entrantes' page=page_obj.next_page_number %}" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                         <span class="sr-only">{% trans 'Siguiente' %}</span>
                     </a>
