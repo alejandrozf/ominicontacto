@@ -34,7 +34,7 @@
   hosts: prodenv-aio
 
 # el gather_facts es para obtener valores de variables predeterminadas de ansible, la mas usada es ansible_os_family.
-# Esta variable te dice que familia de OS es el servidor a deployar (Debian o RedHat)
+# Esta variable te dice que familia de OS es el servidor a deployar
   gather_facts: True
 
 # Aca comienza la ejecucion de tasks. Las tasks se agrupan en roles, los roles se agrupan dependiendo del componente del sistema
@@ -47,40 +47,3 @@
           - {role: kamailio, tags: kamailio }
           - {role: omniapp_second, tags: omiapp }
           - { role: dialer, tags: dialer }
-
-- name: OMniLeads Horizontal Cluster installation
-  hosts: ['asterisk','kamailio','omniapp','database','dialer']
-  gather_facts: True
-  roles:
-    - prerequisitos
-
-- name: Database sever installation
-  hosts: ['database']
-  gather_facts: True
-  roles:
-    - { role: database, tags: database }
-
-- name: Asterisk server installation
-  hosts: asterisk
-  gather_facts: True
-  roles:
-    - { role: asterisk, tags: asterisk }
-
-- name: Kamailio server installation
-  hosts: kamailio
-  gather_facts: True
-  roles:
-    - { role: kamailio, tags: [kamailio'] }
-
-- name: Omniapp server installation
-  hosts: omniapp
-  gather_facts: True
-  roles:
-    - { role: oml_server, tags: omniapp }
-    - { role: omniapp_second, tags: omniapp }
-
-- name: Dialer server installation
-  hosts: dialer
-  gather_facts: True
-  roles:
-    - { role: dialer, tags: dialer }

@@ -44,13 +44,13 @@ class AMIManagerConnector(object):
             data_returned = self._ami_action(manager, action, content)
             manager.close()
         except ManagerSocketException as e:
-            logger.exception("Error connecting to the manager: {0}".format(e.message))
+            logger.exception("Error connecting to the manager: {0}".format(e))
             error = True
         except ManagerAuthException as e:
-            logger.exception("Error logging in to the manager: {0}".format(e.message))
+            logger.exception("Error logging in to the manager: {0}".format(e))
             error = True
         except ManagerException as e:
-            logger.exception("Error {0}".format(e.message))
+            logger.exception("Error {0}".format(e))
             error = True
         return data_returned, error
 

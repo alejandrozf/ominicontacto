@@ -35,14 +35,6 @@ OMniLeads puede correr como una aplicación tradicional desplegando una instalac
 utilizar cualquiera de las siguientes distribuciones de GNU/Linux:
 
 * `CentOS minimal 7.7 <http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso>`_
-* `Debian 9.3 netinstall <https://cdimage.debian.org/mirror/cdimage/archive/9.3.0/amd64/iso-cd/debian-9.3.0-amd64-netinst.iso>`_
-* `Ubuntu Server 18.04.2 <https://ubuntu.com/download/server/thank-you?version=18.04.2&architecture=amd64>`_
-
-.. important::
-
-  Remitirse a estas versiones de las distribuciones y sus correspondientes ISO para lograr una instalación exitosa.
-
-
 * `Docker <https://www.docker.com>`_
 
 OMniLeads puede ser desplegado utilizando contenedores Docker, esto extiende la posibilidad de ejecución de la aplicación sobre diversas

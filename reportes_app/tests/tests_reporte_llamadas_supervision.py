@@ -18,7 +18,7 @@
 #
 from mock import patch
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase
 
 from reportes_app.reportes.reporte_llamadas_supervision import (

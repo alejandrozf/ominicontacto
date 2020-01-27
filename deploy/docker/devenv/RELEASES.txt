@@ -19,6 +19,8 @@ Omniapp:
   - Removed ssh setup cuz is no more necessary
 1.2.3
   - Added a line in run_omniapp.sh that writes envars in a file to source cron jobs
+1.2.4
+  - Upgrade to python3 and django 2.2.8
 
 Asterisk:
 

@@ -43,8 +43,8 @@ Y luego de eso, las customizaciones.
 """
 import os
 
-from addons import *
-from defaults import *
+from .addons import *
+from .defaults import *
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -239,3 +239,5 @@ CONSTANCE_REDIS_CONNECTION = {
 KAMAILIO_HOSTNAME = 'trash'
 NGINX_HOSTNAME = 'trash'
 OML_EXTERNAL_PORT = 'trash'
+
+MIDDLEWARE = MIDDLEWARE_CLASSES

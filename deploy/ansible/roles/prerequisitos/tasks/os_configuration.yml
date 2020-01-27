@@ -22,39 +22,23 @@
 ##################################
 
 # se deshabilita selinux https://docs.ansible.com/ansible/2.5/modules/command_module.html
-- name: Disable Selinux (centos)
+- name: Disable Selinux
   command: "{{ item }}"
   with_items:
       - sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/sysconfig/selinux
       - sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/selinux/config
-  when: ansible_os_family == "RedHat"
 
 - name: Set environment variables for this installation
   template: src=templates/omnileads_envars.sh dest=/etc/profile.d/ mode=644 owner=root group=root
   tags: postinstall
 
-- name: Write the /etc/hosts of server (cluster)
-  blockinfile:
-    path: /etc/hosts
-    insertafter: EOF
-    state: present
-    block: |
-      {{ omniapp_ip }} {{ omniapp_fqdn}}
-      {{ asterisk_ip }} {{ asterisk_fqdn }}
-      {{ kamailio_ip }} {{ kamailio_fqdn }}
-      {{ database_ip }} {{ database_fqdn }}
-      {{ dialer_ip }} {{ dialer_fqdn }}
-  when: cluster != 0
-  tags: postinstall
-
-- name: Write the /etc/hosts of server (aio)
+- name: Write the /etc/hosts of server
   blockinfile:
     path: /etc/hosts
     insertafter: EOF
     state: present
     block: |
       {{ omni_ip }} {{ omni_fqdn }}
-  when: cluster == 0
   tags: postinstall
 
 # Se añaden los binarios que no van a necesitar password al hacerlos con sudo
@@ -63,8 +47,6 @@
   with_items:
     - "{{ usuario }} ALL=(ALL:ALL)  ALL"
     - "{{ usuario }} ALL=(ALL) NOPASSWD: /usr/bin/rsync, /usr/sbin/asterisk"
-  become: yes
-  become_method: sudo
 
 # Se setea el timezone
 - name: Set timezone of server
@@ -74,25 +56,23 @@
 ###        Centos tasks         ##
 ##################################
 
-- name: Configure yum for ansible (centos)
+- name: Configure yum for ansible
   ini_file: path=/etc/yum.conf section=main option="{{ item.option }}" no_extra_spaces=yes value="{{ item.value }}" state=present
   with_items:
     - { option: "sslverify", value: "0" }
     - { option: "timeout", value: "300" }
     - { option: "minrate", value: "100" }
-  when: ansible_os_family == "RedHat"
 
 # Se para y deshabilita firewalld
 # https://docs.ansible.com/ansible/2.5/modules/shell_module.html#shell-module
-- name: Stop firewalld (centos)
+- name: Stop firewalld
   shell: "{{ item }}"
   with_items:
       - systemctl stop firewalld
       - systemctl disable firewalld
-  when: ansible_os_family == "RedHat"
 
 # Se instalan paquetes basicos que se necesitan
-- name: Install of dependencies (centos)
+- name: Install of dependencies
   yum: name={{ item }} state=present update_cache=yes
   with_items:
       - tftp-server
@@ -112,57 +92,11 @@
       - kernel-headers
       - acl
       - bind-utils
-  when: ansible_os_family == "RedHat"
   retries: 3
   delay: 3
   register: result
   until: result is success
 
-##################################
-###        Debian tasks         ##
-##################################
-
-# Se desinstala apache2 por defecto viene instalado en debian
-- name: Uninstall of apache2 (debian)
-  apt: name=apache2 state=absent purge=yes
-  when: ansible_os_family == "Debian"
-
-# Se añade el repositorio universe para ubuntu
-- name: Add universal repository (ubuntu)
-  apt_repository: repo={{ item }} state=present update_cache=yes
-  with_items:
-    - "deb http://archive.ubuntu.com/ubuntu/ bionic universe"
-    - "deb http://archive.ubuntu.com/ubuntu/ bionic-updates universe"
-    - "deb http://security.ubuntu.com/ubuntu/ bionic-security universe"
-  when: ansible_distribution == "Ubuntu"
-  retries: 3
-  delay: 3
-  register: result
-  until: result is success
-
-# Se instala este paquete necesario antes de hacer update
-- name: Install apt-transport-https (debian)
-  apt: name=apt-transport-https state=present
-  when: ansible_os_family == "Debian"
-  retries: 3
-  delay: 3
-  register: result
-  until: result is success
-
-- name: Install of dependencies (debian)
-  apt: name={{ item }} state=present
-  with_items:
-      - build-essential
-      - vim
-      - net-tools
-      - gcc
-      - curl
-      - sudo
-      - wget
-      - unzip
-      - dnsutils
-  when: ansible_os_family == "Debian"
-  retries: 3
-  delay: 3
-  register: result
-  until: result is success
+# Se descarga e instala el repositorio epel-release
+- name: Install of epel-release repo (centos)
+  yum: name={{ epel_repository }} state=present update_cache=yes

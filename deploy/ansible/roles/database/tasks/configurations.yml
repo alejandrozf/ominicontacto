@@ -1,7 +1,21 @@
----
+# Copyright (C) 2018 Freetech Solutions
 
-# Bueno este paso es importante. El comando kamdbctl es para interactuar con la base de datos. http://manpages.ubuntu.com/manpages/trusty/man8/kamdbctl.8.html
-# Aca lo que se esta haciendo es creando la base de datos y las tablas que necesitan los modulos de kamailio. Se usa la  configuracion que hay en el kamctlrc
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
+---
 
 # El initdb de postgres toca ejecutarlo solo para centos
 - name: Setup of postgresql
@@ -11,7 +25,7 @@
     - "'is not empty' not in commandresult.stdout"
     - "commandresult.rc != 0"
   tags: postinstall
-  when: ansible_os_family == "RedHat" and postgresql_new_installed.rc != 3
+  when: postgresql_new_installed.rc != 3
 
 # Se modifica el pg_hba.conf
 - name: Modify of pg_hba.conf file
@@ -49,7 +63,7 @@
 
 # Se crea base de datos omnileads
 - name: Create of the database
-  postgresql_db: name={{ postgres_database }} state=present login_user={{ postgres_user }} login_password={{ postgres_password }} owner={{ postgres_user }} login_host={{ database_fqdn }}
+  postgresql_db: name={{ postgres_database }} state=present login_user={{ postgres_user }} login_password={{ postgres_password }} owner={{ postgres_user }} login_host={{ omni_fqdn }}
 
 # Se crea el lenguaje plperl en todo el cluster.
 - name: Create language plperl in database

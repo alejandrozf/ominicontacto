@@ -1,34 +1,33 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 ---
 
 # Se crea el repo de sngrep desde el template https://docs.ansible.com/ansible/2.5/modules/template_module.html#template-module
 #  https://docs.ansible.com/ansible-container/container_yml/template.html
 - name: Creation of sngrep repo
   template: src=templates/etc/irontec.repo dest=/etc/yum.repos.d/irontec.repo
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "RedHat"
-  tags: ['asterisk']
 
 # Se importa la rpm key
 - name: Import of irontec public key
   rpm_key: state=present key=http://packages.irontec.com/public.key validate_certs=no
-  become: true
-  become_method: sudo
-  tags: ['asterisk']
-  when: ansible_os_family == "RedHat"
 
-# Se descarga e instala el repositorio epel-release
-- name: Install of epel-release repo
-  yum: name={{ item }} state=present update_cache=yes
-  with_items:
-    - "{{ epel_repository }}"
-    - centos-release-gluster
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "RedHat"
-
-#  Instalo paquetes de asterisk no se instalan
-- name: Installation of asterisk packages (centos)
+#  Instalo paquetes de asterisk
+- name: Installation of asterisk packages
   yum: name={{ item }} state=present update_cache=yes
   with_items:
     - dh-autoreconf
@@ -40,51 +39,7 @@
     - unixODBC
     - unzip
   tags: postinstall
-  when: ansible_os_family == "RedHat"
   retries: 3
   delay: 3
   register: result
   until: result is success
-
-  # Intalo los paquetes necesarios para la parte VoIP
-- name: Installation of asterisk packages (debian)
-  apt: "name={{ item }} state=present dpkg_options=no-triggers"
-  with_items:
-    - dh-autoreconf
-    - lame
-    - libavcodec-dev
-    - mpg123
-    - odbc-postgresql
-    - postgresql-client
-    - sox
-    - subversion
-    - unixodbc-dev
-    - uuid
-    - unzip
-  tags: postinstall
-  when: ansible_os_family == "Debian"
-  retries: 3
-  delay: 3
-  register: result
-  until: result is success
-
-- name: Install of cluster packages (centos cluster)
-  yum: name={{ item }} state=present
-  with_items:
-    - python-pip
-    - python-psycopg2.x86_64
-    - glusterfs-server
-  when: ansible_os_family == "RedHat" and cluster != 0
-
-- name: Install of glusterfs-server (debian cluster)
-  apt: name=glusterfs-server state=present
-  when: ansible_os_family == "Debian" and cluster != 0
-
-- name: Install of cluster packages (debian cluster)
-  apt: name={{ item }} state=present
-  with_items:
-    - postgresql-server-dev-{{ postgresql_version }}
-    - python
-    - python-pip
-    - python-psycopg2
-  when: ansible_os_family == "Debian" and cluster != 0

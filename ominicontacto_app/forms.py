@@ -1346,7 +1346,7 @@ class QueueDialerForm(forms.ModelForm):
             tipo = instance.destino.tipo
             self.initial['tipo_destino'] = tipo
             destinos_qs = DestinoEntrante.get_destinos_por_tipo(tipo)
-            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__unicode__())
+            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, str(dest_entr))
                                                          for dest_entr in destinos_qs]
             self.fields['destino'].choices = destino_entrante_choices
         else:

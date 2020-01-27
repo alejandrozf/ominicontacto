@@ -26,7 +26,7 @@ import requests
 import tarfile
 import tempfile
 
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
@@ -474,7 +474,7 @@ class ApiObtenerDestinosEntrantes(View):
         tipo_destino = kwargs.get('tipo_destino')
         data = []
         for nodo_entrante in DestinoEntrante.objects.filter(tipo=tipo_destino):
-            repr_nombre = nodo_entrante.__unicode__()
+            repr_nombre = str(nodo_entrante)
             pk = nodo_entrante.pk
             data.append({'nombre': repr_nombre, 'id': pk})
         return JsonResponse(data, safe=False)

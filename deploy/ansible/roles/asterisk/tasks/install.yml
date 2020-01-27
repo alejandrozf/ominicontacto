@@ -45,22 +45,6 @@
   shell: "{{ item }} chdir=/usr/src/asterisk-{{ asterisk_version }}"
   with_items:
     - contrib/scripts/install_prereq install
-  when: ansible_os_family == "RedHat"
-  retries: 3
-  delay: 3
-  register: result
-  until: result.rc == 0
-
-# Esta task es necesaria porque en debian hay un paquete que pregunta cual es el countrycode telefonico del pais donde va a estar asterisk instalado
-# El debconf sirve para confirugarle predeterminadamente la opcion de 59 (country code argentino) y asi no pida el input
-- name: Set country code for libvp0 package
-  debconf: name='libvpb0' question='libvpb1/countrycode' value={{ country_code }} vtype='string'
-  when: ansible_os_family == "Debian"
-
-# Toca pasarle el echo 'y' a este script porque pide confirmacion de paquetes en debian
-- name: Installation of prerequisites packages (debian)
-  shell: "echo 'y' | contrib/scripts/install_prereq install chdir=/usr/src/asterisk-{{ asterisk_version }}"
-  when: ansible_os_family == "Debian"
   retries: 3
   delay: 3
   register: result
@@ -79,8 +63,6 @@
 # Se obtienen las fuentes mp3
 - shell: "contrib/scripts/get_mp3_source.sh chdir=/usr/src/asterisk-{{ asterisk_version }}"
   failed_when: false
-  become: yes
-  become_method: sudo
   retries: 3
   delay: 3
   register: result

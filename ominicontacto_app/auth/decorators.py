@@ -26,7 +26,7 @@ def administrador_requerido(function=None, redirect_field_name=REDIRECT_FIELD_NA
     Decorator que verifica que el usuario es Administrador.
     """
     def es_administrador(user):
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return False
         elif user.get_is_administrador():
             return True
@@ -48,7 +48,7 @@ def supervisor_requerido(function=None, redirect_field_name=REDIRECT_FIELD_NAME,
     (Administrador, Normal o Customer).
     """
     def tiene_supervisor_profile(user):
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return False
         elif user.get_supervisor_profile():
             return True
@@ -70,7 +70,7 @@ def supervisor_normal_requerido(function=None, redirect_field_name=REDIRECT_FIEL
     Decorator que verifica que el usuario es Supervisor Normal.
     """
     def es_supervisor_normal(user):
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return False
         elif user.get_is_supervisor_normal():
             return True
@@ -92,7 +92,7 @@ def supervisor_customer_requerido(function=None, redirect_field_name=REDIRECT_FI
     Decorator que verifica que el usuario es Supervisor Customer.
     """
     def es_supervisor_customer(user):
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return False
         elif user.get_is_supervisor_customer():
             return True
@@ -115,7 +115,7 @@ def permiso_administracion_requerido(function=None,
     Decorator que verifica que el usuario es Administrador, Supervisor Normal o Customer.
     """
     def tiene_permiso_administracion(user):
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return False
         elif user.get_tiene_permiso_administracion():
             return True
@@ -138,7 +138,7 @@ def administrador_o_supervisor_requerido(function=None,
     Decorator que verifica que el usuario es Administrador o Supervisor Normal.
     """
     def es_administrador_o_supervisor_normal(user):
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return False
         elif user.get_es_administrador_o_supervisor_normal():
             return True
@@ -161,7 +161,7 @@ def supervisor_o_customer_requerido(function=None,
     Decorator que verifica que el usuario es Supervisor Normal o Customer.
     """
     def es_supervisor_normal_o_customer(user):
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return False
         elif user.get_is_supervisor_normal() or user.get_is_supervisor_customer():
             return True
@@ -182,7 +182,7 @@ def agente_requerido(function=None, redirect_field_name=REDIRECT_FIELD_NAME, log
     Decorator que verifica que el usuario es un Agente Activo.
     """
     def is_agente_activo(user):
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return False
         elif user.get_is_agente():
             return not user.get_agente_profile().is_inactive

@@ -67,7 +67,7 @@ def crear_ruta_entrante(n_hijos_ivr=11):
     RutaEntranteFactory(destino=nodo_inmediato_siguiente_raiz)
 
     # creamos rutas a partir del nodo ivr
-    for i in xrange(n_hijos_ivr):
+    for i in range(n_hijos_ivr):
         info_siguiente = crear_info_destino_entrante_random()
         nodo_entrante_siguiente_ivr = crear_destino_entrante(info_siguiente)
         crear_relacion_nodos_entrantes(nodo_inmediato_siguiente_raiz, nodo_entrante_siguiente_ivr)

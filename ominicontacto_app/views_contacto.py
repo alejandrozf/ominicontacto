@@ -26,7 +26,7 @@ from __future__ import unicode_literals
 import json
 
 from django.contrib import messages
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views.generic import (ListView, CreateView, UpdateView, FormView, DeleteView,
@@ -295,7 +295,7 @@ class FormularioSeleccionCampanaFormView(FormView):
 
     def get_form(self):
         self.form_class = self.get_form_class()
-        if self.request.user.is_authenticated()\
+        if self.request.user.is_authenticated\
                 and self.request.user.get_agente_profile():
             agente = self.request.user.get_agente_profile()
             campanas = [queue.queue_name.campana

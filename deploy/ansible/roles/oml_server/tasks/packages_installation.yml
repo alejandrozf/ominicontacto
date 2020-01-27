@@ -17,20 +17,12 @@
 #
 ---
 
-# Se descarga e instala el repositorio epel-release
-- name: Install of epel-release repo (centos)
-  yum: name={{ epel_repository }} state=present
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "RedHat"
+- name: Remove python2-devel package
+  yum: name=python2-devel state=absent
+  tags: ['never', 'postinstall']
 
-# Se desinstalan paquetes por defecto en debian para que no hinche los huevos
-- name: Uninstall of unnecesary packages (debian)
-  apt: name=apache2 state=absent purge=yes
-  when: ansible_os_family == "Debian"
-
-# Se instalan paquetes de App (centos)
-- name: Install omniapp packages (centos)
+# Se instalan paquetes de App
+- name: Install omniapp packages
   yum: "name={{ item }} state=present"
   with_items:
     - cairo
@@ -50,8 +42,9 @@
     - nginx-all-modules
     - pycairo
     - pycairo-devel
-    - python
-    - python2-pip.noarch
+    - python3
+    - python3-devel
+    - python3-pip.noarch
     - python2-psycogreen.noarch
     - python-lxml
     - python-psycopg2.x86_64
@@ -59,45 +52,12 @@
     - redis
     - rsync
     - sox
-  become: yes
-  become_method: sudo
-  when: ansible_os_family == "RedHat"
+  when: python_version.stdout != "Python 3.6.8"
   retries: 3
   delay: 3
   register: result
   until: result is success
-
-# Intalo los paquetes necesarios para la parte App
-- name: Install omniapp packages (debian)
-  apt: "name={{ item }} state=present"
-  with_items:
-    - gettext
-    - git
-    - libcairo2-dev
-    - libffi-dev
-    - libjpeg-dev
-    - libldap2-dev
-    - libsasl2-dev
-    - libxslt1-dev
-    - nginx
-    - openssl
-    - postgresql-contrib
-    - postgresql-plperl-{{ postgresql_version }}
-    - postgresql-server-dev-{{ postgresql_version }}
-    - python-dev
-    - python-psycopg2
-    - python-virtualenv
-    - redis-server
-    - rsync
-    - sox
-    - virtualenv
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "Debian"
-  retries: 3
-  delay: 3
-  register: result
-  until: result is success
+  tags: postinstall
 
 - name: Start and enable redis service
   service: name=redis state=restarted enabled=yes

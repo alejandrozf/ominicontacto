@@ -91,8 +91,7 @@ class ArchivoDeReporteCsv(object):
             self.sufijo_nombre_de_archivo)
 
     def _escribir_csv_writer_utf_8(self, csvwriter, datos):
-        lista_datos_utf8 = [force_text(item).encode('utf-8')
-                            for item in datos]
+        lista_datos_utf8 = [force_text(item) for item in datos]
         csvwriter.writerow(lista_datos_utf8)
 
     def _obtener_datos_contacto(self, contacto_id, campos_contacto):
@@ -121,7 +120,7 @@ class ArchivoDeReporteCsv(object):
     def escribir_archivo_contactados_csv(self, campana, llamadas, calificaciones_dict):
         # TODO: Debe listar los llamadas contactados: EVENTOS_FIN_CONEXION
         # Agregarle a los llamadas los datos del (posible) contacto
-        with open(self.ruta, 'wb') as csvfile:
+        with open(self.ruta, 'w', newline='') as csvfile:
             # Creamos encabezado
             bd_metadata = campana.bd_contacto.get_metadata()
             encabezado = []
@@ -215,7 +214,7 @@ class ArchivoDeReporteCsv(object):
                 self._escribir_csv_writer_utf_8(csvwiter, registro)
 
     def escribir_archivo_no_atendidos_csv(self, campana, no_contactados):
-        with open(self.ruta, 'wb') as csvfile:
+        with open(self.ruta, 'w', newline='') as csvfile:
             # Creamos encabezado
             bd_metadata = campana.bd_contacto.get_metadata()
             encabezado = []
@@ -266,7 +265,7 @@ class ArchivoDeReporteCsv(object):
         return llamada.numero_marcado
 
     def escribir_archivo_calificado_csv(self, campana, calificaciones):
-        with open(self.ruta, 'wb') as csvfile:
+        with open(self.ruta, 'w', newline='') as csvfile:
             # Creamos encabezado
             bd_metadata = campana.bd_contacto.get_metadata()
             encabezado = []

@@ -22,7 +22,7 @@
 from __future__ import unicode_literals
 
 from django import forms
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -263,7 +263,7 @@ class CampanaWizardMixin(object):
             campana = self.get_cleaned_data_for_step(self.INICIAL)
             bd_contacto = campana['bd_contacto']
             columnas_bd = obtener_opciones_columnas_bd(bd_contacto, COLUMNAS_DB_DEFAULT)
-            form_class = self.form_list[step]
+            form_class = list(self.form_list)[step]
             kwargs = self.get_form_kwargs(step)
             kwargs.update({
                 'data': data,
@@ -316,16 +316,16 @@ class CampanaWizardMixin(object):
         return context
 
     def save_supervisores(self, form_list, index_form_supervisores):
-        campana_form = form_list[int(self.INICIAL)]
-        supervisores_form = form_list[index_form_supervisores]
+        campana_form = list(form_list)[int(self.INICIAL)]
+        supervisores_form = list(form_list)[index_form_supervisores]
         supervisores = supervisores_form.cleaned_data.get('supervisors', [])
         campana = campana_form.instance
         campana.supervisors.add(*supervisores)
 
     def save_agentes(self, form_list, index_form_agentes):
-        campana_form = form_list[int(self.INICIAL)]
+        campana_form = list(form_list)[int(self.INICIAL)]
         campana = campana_form.instance
-        queue_member_formset = form_list[index_form_agentes]
+        queue_member_formset = list(form_list)[index_form_agentes]
         queue_member_formset.instance = campana.queue_campana
         if queue_member_formset.is_valid():
             # obtenemos los agentes que estan logueados
@@ -433,10 +433,10 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         return queue_form.instance
 
     def _save_forms(self, form_list, estado):
-        campana_form = form_list[int(self.INICIAL)]
+        campana_form = list(form_list)[int(self.INICIAL)]
         interaccion_crm = campana_form.instance.tipo_interaccion == Campana.SITIO_EXTERNO
-        queue_form = form_list[int(self.COLA)]
-        opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
+        queue_form = list(form_list)[int(self.COLA)]
+        opciones_calificacion_formset = list(form_list)[int(self.OPCIONES_CALIFICACION)]
         campana_form.instance.type = Campana.TYPE_ENTRANTE
         campana_form.instance.reported_by = self.request.user
         campana_form.instance.fecha_inicio = cast_datetime_part_date(timezone.now())
@@ -449,7 +449,7 @@ class CampanaEntranteCreateView(CampanaEntranteMixin, SessionWizardView):
         opciones_calificacion_formset.instance = campana
         opciones_calificacion_formset.save()
         if interaccion_crm:
-            parametros_crm_formset = form_list[int(self.PARAMETROS_CRM)]
+            parametros_crm_formset = list(form_list)[int(self.PARAMETROS_CRM)]
             parametros_crm_formset.instance = campana
             parametros_crm_formset.save()
         return queue
@@ -500,11 +500,11 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
     form_list = FORMS
 
     def done(self, form_list, *args, **kwargs):
-        campana_form = form_list[int(self.INICIAL)]
+        campana_form = list(form_list)[int(self.INICIAL)]
         campana_form = asignar_bd_contactos_defecto_campo_vacio(campana_form)
         campana_form.instance.save()
 
-        queue_form = form_list[int(self.COLA)]
+        queue_form = list(form_list)[int(self.COLA)]
         # TODO: OML-496
         audio_anuncio_periodico = queue_form.cleaned_data['audios']
         if audio_anuncio_periodico:
@@ -514,11 +514,11 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
         queue_form.instance.save()
 
         campana = campana_form.instance
-        opts_calif_init_formset = form_list[int(self.OPCIONES_CALIFICACION)]
+        opts_calif_init_formset = list(form_list)[int(self.OPCIONES_CALIFICACION)]
         opts_calif_init_formset.instance = campana
         opts_calif_init_formset.save()
         if campana.tipo_interaccion == Campana.SITIO_EXTERNO:
-            parametros_crm_formset = form_list[int(self.PARAMETROS_CRM)]
+            parametros_crm_formset = list(form_list)[int(self.PARAMETROS_CRM)]
             parametros_crm_formset.instance = campana
             parametros_crm_formset.save()
         self._insert_queue_asterisk(queue_form.instance)

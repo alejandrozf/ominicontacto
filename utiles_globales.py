@@ -50,13 +50,16 @@ def obtener_cantidad_no_calificados(total_llamadas_qs, fecha_desde, fecha_hasta,
 
 def validar_estructura_csv(data_csv_memory, err_message, logger):
     """Analiza si un archivo con extensión .csv tiene una estructura válida"""
-    try:
-        # chequea que el csv tenga un formato estándar de black list, así podemos descartar
-        # archivos csv corruptos
-        all([row[0] < row[1] for row in data_csv_memory])
-    except Exception as e:
-        logger.warn("Error: {0}".format(e.message))
-        raise(OmlArchivoImportacionInvalidoError(err_message))
+    # chequea que el csv tenga un formato estándar de base de contactos o black list o
+    # así podemos descartar archivos csv corruptos
+    for i, row in enumerate(data_csv_memory):
+        # controlamos que el primer valor sea numérico, como campo teléfonico
+        try:
+            if i > 0:
+                int(row[0])
+        except Exception as e:
+            logger.warn("Error: {0}".format(e))
+            raise(OmlArchivoImportacionInvalidoError(err_message))
 
 
 def obtener_sip_agentes_sesiones_activas():

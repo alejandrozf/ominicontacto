@@ -55,10 +55,10 @@ class WombatService():
                                                      url_edit])])
             logger.info(_("actualizacion en WOMBAT OK"))
             return json.loads(out)
-        except subprocess.CalledProcessError, e:
+        except subprocess.CalledProcessError as e:
             logger.warn(_("Exit status erroneo: {0}".format(e.returncode)))
             logger.warn(" - Comando ejecutado: {0}".format(e.cmd))
-            print e
+            print(e)
 
     def update_lista_wombat(self, nombre_archivo, url_edit):
         """Realiza un update en la config de wombat
@@ -79,10 +79,10 @@ class WombatService():
                                            '/'.join([settings.OML_WOMBAT_URL,
                                                      url_edit])])
             return out
-        except subprocess.CalledProcessError, e:
+        except subprocess.CalledProcessError as e:
             logger.warn(_("Exit status erroneo: {0}".format(e.returncode)))
             logger.warn(_(" - Comando ejecutado: {0}".format(e.cmd)))
-            print e
+            print(e)
 
     def list_config_wombat(self, url_edit):
         """Realiza un list en la config de wombat
@@ -102,7 +102,7 @@ class WombatService():
                                                      url_edit])])
             logger.info(_("list en WOMBAT OK"))
             return json.loads(out)
-        except subprocess.CalledProcessError, e:
+        except subprocess.CalledProcessError as e:
             logger.warn(_("Exit status erroneo: {0}".format(e.returncode)))
             logger.warn(_(" - Comando ejecutado: {0}".format(e.cmd)))
-            print e
+            print(e)

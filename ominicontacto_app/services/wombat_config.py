@@ -310,13 +310,13 @@ class ConfigFile(object):
             tmp_file_obj = os.fdopen(tmp_fd, 'w')
             # assert isinstance(contenido, json), \
             #     "Objeto NO es unicode: {0}".format(type(contenido))
-            tmp_file_obj.write(contenido.encode('utf-8'))
+            tmp_file_obj.write(contenido)
 
             tmp_file_obj.close()
 
             logger.info(_("Copiando file config a {0}".format(self._filename)))
             shutil.copy(tmp_filename, self._filename)
-            os.chmod(self._filename, 0644)
+            os.chmod(self._filename, 0o644)
 
         finally:
             try:

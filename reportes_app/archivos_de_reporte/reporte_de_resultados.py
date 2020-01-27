@@ -60,7 +60,7 @@ class ReporteDeResultadosCSV(object):
     def generar_archivo_descargable(self, reporte):
         self._crear_archivo_en_directorio()
 
-        with open(self.ruta, 'wb') as csvfile:
+        with open(self.ruta, 'w', newline='') as csvfile:
             # Creamos encabezado
             encabezado = []
 
@@ -76,8 +76,7 @@ class ReporteDeResultadosCSV(object):
             csvwiter = csv.writer(csvfile)
 
             # guardamos encabezado
-            lista_encabezados_utf8 = [force_text(item).encode('utf-8')
-                                      for item in encabezado]
+            lista_encabezados_utf8 = [force_text(item) for item in encabezado]
             csvwiter.writerow(lista_encabezados_utf8)
 
             for contactacion in reporte.contactaciones.values():
@@ -97,8 +96,7 @@ class ReporteDeResultadosCSV(object):
 
                 # --- Finalmente, escribimos la linea
 
-                lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                       for item in lista_opciones]
+                lista_opciones_utf8 = [force_text(item) for item in lista_opciones]
                 csvwiter.writerow(lista_opciones_utf8)
 
     def archivo_ya_generado(self):

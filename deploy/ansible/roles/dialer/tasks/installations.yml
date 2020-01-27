@@ -22,93 +22,13 @@
 
 - name: Get the wombat dialer repository (centos)
   shell: "wget -P /etc/yum.repos.d http://yum.loway.ch/loway.repo"
-  when: ansible_os_family == "RedHat"
 
 - name: Install wombat dialer (centos)
   yum: name=wombat state=present
-  when: ansible_os_family == "RedHat"
-  become: true
-  become_method: sudo
   retries: 3
   delay: 3
   register: result
   until: result is success
 
-- name: Add parameters in server.xml of Catalina (centos)
-  template: src=templates/server.xml.j2  dest=/usr/local/queuemetrics/tomcat/conf/server.xml
-  when: ansible_os_family == "RedHat"
-  become: true
-  become_method: sudo
-
-- name: Add the repository key for oracle-java (debian)
-#  apt_key: url=hkp://keyserver.ubuntu.com:80 state=present state=present id=EEA14886
-  shell: apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9
-  when: ansible_os_family == "Debian"
-  #apt_key: keyserver=keyserver.ubuntu.com state=present id=0xC2518248EEA14886
-  retries: 3
-  delay: 3
-  register: result
-  until: result.rc == 0
-
-- name: Add oracle-java repositorie (debian)
-  apt_repository: repo="deb http://repos.azulsystems.com/debian stable main" state=present filename=zulu update_cache=yes
-  when: ansible_os_family == "Debian"
-
-#- name: Accept Java8 license (debian)
-#  debconf: name='oracle-java8-installer' question='shared/accepted-oracle-license-v1-1' value='true' vtype='select'
-#  when: ansible_os_family == "Debian"
-
-- name: Install oracle zulu8 and tomcat8 (debian)
-  apt: name={{ item }} state=present update_cache=yes dpkg_options="force-confold" force_apt_get=yes
-  with_items:
-    - zulu-8
-    - tomcat8
-    - libmysql-java
-  when: ansible_os_family == "Debian"
-  failed_when: false
-  retries: 3
-  delay: 3
-  register: result
-  until: result is success
-
-- name: Get wombat dialer (debian)
-  get_url: url={{ wombat }} dest=/var/lib/tomcat8/webapps/
-  register: destino
-  when: ansible_os_family == "Debian"
-  retries: 3
-  delay: 3
-  until: destino is success
-  tags: postinstall
-
-- name: Unarchive downloaded package (debian)
-  unarchive: src={{ destino.dest }} dest=/var/lib/tomcat8/webapps remote_src=yes
-  register: nombres_tar
-  when: ansible_os_family == "Debian"
-  tags: postinstall
-
-- name: Erase of the tar (debian)
-  file: dest={{ nombres_tar.src }} state=absent
-  when: ansible_os_family == "Debian"
-  tags: postinstall
-
-- name: Remove old wombat code
-  file: state=absent path=/var/lib/tomcat8/webapps/wombat
-  when: ansible_os_family == "Debian"
-  tags: postinstall
-
-- name: Rename wombat directory inside tomcat webapps
-  command: mv /var/lib/tomcat8/webapps/wombatdialer-{{ wombat_version.split("-")[0] | lower  }} /var/lib/tomcat8/webapps/wombat
-  when: ansible_os_family == "Debian"
-  tags: postinstall
-
-- name: Copy of mariadb-java-client.jar (debian)
-  copy: src=/var/tmp/ominicontacto-build/ominicontacto/ominicontacto_voip/mariadb-java-client-2.3.0.jar dest=/var/lib/tomcat8/webapps/wombat/WEB-INF/lib/
-  when: ansible_os_family == "Debian"
-
-- name: Change JAVA_HOME (debian)
-  lineinfile: "dest=/etc/default/tomcat8 regexp=\"^#JAVA_HOME=\" line=\"JAVA_HOME=/usr/lib/jvm/zulu-8-amd64/\""
-  when: ansible_os_family == "Debian"
-
-- name: Restart tomcat8
-  service: name=tomcat8 state=restarted enabled=yes
-  when: ansible_os_family == "Debian"
+- name: Add parameters in server.xml of Catalina
+  template: src=templates/server.xml.j2  dest=/usr/local/queuemetrics/tomcat/conf/server.xml  

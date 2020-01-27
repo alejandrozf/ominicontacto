@@ -1,7 +1,0 @@
----
-
-sufix: -main
-pg_bin_location: /usr/lib/postgresql/{{ postgresql_version }}/bin/
-pg_lib_location_no_version: /etc/postgresql
-pg_lib_location: "{{ pg_lib_location_no_version }}/{{ postgresql_version }}/main"
-postgresql_key: https://www.postgresql.org/media/keys/ACCC4CF8.asc

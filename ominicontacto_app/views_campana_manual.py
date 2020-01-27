@@ -24,7 +24,7 @@ Observacion se copiaron varias vistas del modulo views_campana
 
 from __future__ import unicode_literals
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 from ominicontacto_app.models import Campana
 from django.views.generic import ListView, DeleteView
@@ -55,7 +55,7 @@ class CampanaManualListView(ListView):
         campanas = self._get_campanas()
         # Filtra las campanas de acuerdo al usuario logeado si tiene permiso sobre
         # las mismas
-        if self.request.user.is_authenticated() and self.request.user and \
+        if self.request.user.is_authenticated and self.request.user and \
                 not self.request.user.get_is_administrador():
             user = self.request.user
             campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
@@ -136,7 +136,7 @@ class CampanaManualBorradasListView(CampanaManualListView):
         return context
 
     def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return super(CampanaManualBorradasListView, self).get(request, *args, **kwargs)
         else:
             return JsonResponse({'result': 'desconectado'})

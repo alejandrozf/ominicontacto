@@ -435,7 +435,7 @@ class AsteriskHttpClient(object):
             "Timeout must be GREATER than 0. Timeout: {0}".format(timeout)
 
         query_as_string = "&".join(["{0}={1}".format(k, v)
-                                    for k, v in params.iteritems()])
+                                    for k, v in params.items()])
         full_url = "{0}{1}".format(settings.ASTERISK['HTTP_AMI_URL'], url)
         logger.debug("AsteriskHttpClient: request a '%s?%s'", full_url, query_as_string)
         response = self.session.get(full_url, params=params, timeout=timeout)
@@ -451,7 +451,7 @@ class AsteriskHttpClient(object):
                 logger.info("AsteriskHttpClient - Dump: %s", tmp_filename)
             except Exception as e:
                 logger.exception(_("Error {0}: no se pudo hacer dump de respuesta a archivo".format(
-                    e.message)))
+                    e)))
 
         return response.content, response
 
@@ -537,7 +537,7 @@ class AsteriskHttpClient(object):
         # var64=x64,var65=x65,var66=x66,var67=x67,(...)
 
         lista_de_variables = []
-        for key, value in variables_de_canal.iteritems():
+        for key, value in variables_de_canal.items():
             lista_de_variables.append(key + "=" + value)
 
         if es_aplication:

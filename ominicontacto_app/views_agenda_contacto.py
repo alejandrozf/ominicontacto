@@ -28,7 +28,7 @@ from __future__ import unicode_literals
 import requests
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.views.generic import CreateView, FormView
 from django.views.generic.detail import DetailView
 from ominicontacto_app.models import AgendaContacto, Contacto, Campana, CalificacionCliente

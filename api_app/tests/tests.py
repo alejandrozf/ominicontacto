@@ -22,7 +22,7 @@ from __future__ import unicode_literals
 from mock import patch
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase, RequestFactory
 
 from rest_framework.authtoken.models import Token
@@ -375,7 +375,7 @@ class APITest(TestCase):
         url = reverse('disposition-detail', args=(self.calificacion_cliente.pk,))
         response = client.put(url, post_data)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data['status'], 'ERROR')
+        self.assertEqual(str(response.data['status']), 'ERROR')
 
     def test_api_muestra_solo_las_calificaciones_que_ha_hecho_el_agente_que_accede(self):
         contacto_nuevo = ContactoFactory(bd_contacto=self.campana_activa.bd_contacto)

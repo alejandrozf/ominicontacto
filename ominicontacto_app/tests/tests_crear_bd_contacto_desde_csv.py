@@ -48,7 +48,7 @@ class TestWorkflowCreacionBdContactoDesdeCsv(OMLBaseTest):
         estructura_archivo = parser.previsualiza_archivo(bd_contacto)
         predictor_metadata = PredictorMetadataService()
         metadata_inferida = predictor_metadata.inferir_metadata_desde_lineas(
-            estructura_archivo, "utf-8")
+            estructura_archivo)
 
         metadata = bd_contacto.get_metadata()
         metadata._metadata = metadata_inferida._metadata
@@ -96,7 +96,7 @@ class TestWorkflowCreacionBdContactoDesdeCsv(OMLBaseTest):
             estructura_archivo = parser.previsualiza_archivo(bd_contacto)
             predictor_metadata = PredictorMetadataService()
             metadata_inferida = predictor_metadata.inferir_metadata_desde_lineas(
-                estructura_archivo, "utf-8")
+                estructura_archivo)
 
             metadata = bd_contacto.get_metadata()
             metadata._metadata = metadata_inferida._metadata

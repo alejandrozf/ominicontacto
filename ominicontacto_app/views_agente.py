@@ -34,7 +34,7 @@ from django.db.models import F, Value
 from django.db.models.functions import Concat
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponseRedirect
 
 from ominicontacto_app.models import (

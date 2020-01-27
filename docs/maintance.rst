@@ -224,16 +224,6 @@ Actualizaciones
 OMniLeads es forjado bajo un paradigma de releases continuos, lo cual implica un flujo de actualizaciones constantes.
 Por ello es muy importante llevar a cabo de manera limpia las actualizaciones.
 
-El equipo de OMniLeads ha realizado el testeo de upgrades de la plataforma en los siguientes escenarios. Se recomienda acoplarse a estos escenarios.
-
-===================  =============================
-Linux Distro         Upgrade soportado y testeado
-===================  =============================
-CentOS 7.6            Desde 1.1.1 a 1.3.1
-Debian 9.3            Desde 1.2.2 a 1.3.1
-Ubuntu Server 18.04   Desde 1.3.1 en adelante
-===================  =============================
-
 A continuación se exponen los pasos a seguir para llevar a cabo una nueva actualización de la plataforma. Esta tarea también se realiza con el script "deploy.sh".
 
 Las actualizaciones se anuncian por los canales de comunicaciones oficiales del proyecto.

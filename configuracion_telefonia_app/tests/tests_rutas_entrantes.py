@@ -23,7 +23,7 @@ from django.utils.translation import ugettext as _
 from io import BytesIO
 from mock import patch
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from configuracion_telefonia_app.forms import IVRForm
 from configuracion_telefonia_app.models import (RutaEntrante, DestinoEntrante, IVR, GrupoHorario,
@@ -498,7 +498,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         response = self.client.post(url, post_data, follow=True)
         self.assertFalse(response.context['form'].is_valid())
         self.assertEqual(response.context['form'].errors['nombre'],
-                         [_('Introduzca un valor correcto.')])
+                         [_('Introduzca un valor válido.')])
 
     def test_no_se_permite_crear_destino_custom_destino_no_alfanumerico(self):
         url = reverse('crear_destino_personalizado')
@@ -512,7 +512,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         response = self.client.post(url, post_data, follow=True)
         self.assertFalse(response.context['form'].is_valid())
         self.assertEqual(response.context['form'].errors['custom_destination'],
-                         [_('Introduzca un valor correcto.')])
+                         [_('Introduzca un valor válido.')])
 
     def test_no_se_permite_crear_destino_custom_sin_failover(self):
         url = reverse('crear_destino_personalizado')

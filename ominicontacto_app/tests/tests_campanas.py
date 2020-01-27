@@ -27,7 +27,7 @@ import threading
 
 from mock import patch
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.conf import settings
 from django.db import connections
 from django.forms import ValidationError
@@ -147,12 +147,12 @@ class CampanasThreadsTests(OMLTransaccionBaseTest):
 
         obtener_contacto()
 
-        user1_data = responses_threads['user1'].get('telefono_contacto') == unicode(
+        user1_data = responses_threads['user1'].get('telefono_contacto') == str(
             agente_en_contacto.telefono_contacto)
         user2_no_data = responses_threads['user2'].get('code') == 'error-no-contactos'
 
         user1_no_data = responses_threads['user1'].get('code') == 'error-no-contactos'
-        user2_data = responses_threads['user2'].get('telefono_contacto') == unicode(
+        user2_data = responses_threads['user2'].get('telefono_contacto') == str(
             agente_en_contacto.telefono_contacto)
 
         test_condition = (user1_data and user2_no_data) or (user1_no_data and user2_data)
@@ -311,7 +311,7 @@ class AgenteCampanaTests(CampanasTests):
     def test_campanas_preview_activas_muestra_las_asociadas_a_agente(self):
         url = reverse('campana_preview_activas_miembro')
         QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
-        response = self.client.get(url, follow=True)
+        response = self.client.get(url)
         self.assertContains(response, self.campana_activa.nombre)
 
     def test_campanas_preview_activas_no_muestra_las_no_asociadas_a_agente(self):
@@ -350,7 +350,7 @@ class AgenteCampanaTests(CampanasTests):
     def test_al_crear_formulario_cliente_finaliza_relacion_agente_contacto(self, post):
         AgenteEnContactoFactory.create(campana_id=self.campana_activa.pk)
         values, url, post_data = self._inicializar_valores_formulario_cliente()
-        self.client.post(url, post_data, follow=True)
+        self.client.post(url, post_data)
         values['estado'] = AgenteEnContacto.ESTADO_FINALIZADO
         del values['datos_contacto']
         self.assertTrue(AgenteEnContacto.objects.filter(**values).exists())
@@ -365,7 +365,7 @@ class AgenteCampanaTests(CampanasTests):
         datos = json.loads(self.contacto.datos)
         for nombre, dato in zip(nombres, datos):
             post_data.update({convertir_ascii_string(nombre): "{0}-modificado".format(dato)})
-        self.client.post(url, post_data, follow=True)
+        self.client.post(url, post_data)
         self.campana_activa.refresh_from_db()
         self.assertEqual(self.campana_activa.estado, Campana.ESTADO_FINALIZADA)
 
@@ -480,7 +480,7 @@ class SupervisorCampanaTests(CampanasTests):
         url = reverse('campana_preview_delete', args=[self.campana_activa.pk])
         self.assertEqual(Campana.objects.get(
             pk=self.campana_activa.pk).estado, Campana.ESTADO_ACTIVA)
-        self.client.post(url, follow=True)
+        self.client.post(url)
         self.assertEqual(Campana.objects.get(
             pk=self.campana_activa.pk).estado, Campana.ESTADO_BORRADA)
 
@@ -496,7 +496,7 @@ class SupervisorCampanaTests(CampanasTests):
         supervisor = UserFactory.create()
         post_data = {'supervisors': [supervisor.pk]}
         self.assertFalse(self.campana_activa.supervisors.all().exists())
-        self.client.post(url, post_data, follow=True)
+        self.client.post(url, post_data)
         self.assertTrue(self.campana_activa.supervisors.all().exists())
 
     def test_usuario_no_logueado_no_agrega_agentes_a_campana(self):
@@ -516,7 +516,7 @@ class SupervisorCampanaTests(CampanasTests):
         url = reverse('queue_member_add', args=[self.campana_activa.pk])
         self.assertFalse(QueueMember.objects.all().exists())
         post_data = {'member': self.agente_profile.pk, 'penalty': 1}
-        self.client.post(url, post_data, follow=True)
+        self.client.post(url, post_data)
         self.assertTrue(QueueMember.objects.all().exists())
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
@@ -529,7 +529,7 @@ class SupervisorCampanaTests(CampanasTests):
         url = reverse('queue_member_add', args=[self.campana_activa.pk])
         self.assertFalse(QueueMember.objects.all().exists())
         post_data = {'member': self.agente_profile.pk, 'penalty': 1}
-        self.client.post(url, post_data, follow=True)
+        self.client.post(url, post_data)
         self.assertFalse(QueueMember.objects.all().exists())
 
     def test_relacion_agente_contacto_campanas_preview(self):
@@ -627,7 +627,7 @@ class SupervisorCampanaTests(CampanasTests):
         response = self.client.post(url, follow=True)
         data = json.loads(response.content)
         self.assertEqual(data['agente_id'], agente.pk)
-        self.assertEqual(data['telefono_contacto'], unicode(agente_en_contacto.telefono_contacto))
+        self.assertEqual(data['telefono_contacto'], str(agente_en_contacto.telefono_contacto))
         self.assertEqual(data['estado'], AgenteEnContacto.ESTADO_ENTREGADO)
 
     def test_solo_un_contacto_se_mantiene_asignado_a_un_agente(self):
@@ -637,7 +637,7 @@ class SupervisorCampanaTests(CampanasTests):
             campana_id=self.campana_activa.pk, agente_id=self.agente_profile.pk,
             estado=AgenteEnContacto.ESTADO_ENTREGADO)
         url = reverse('campana_preview_dispatcher', args=[self.campana_activa.pk])
-        self.client.post(url, follow=True)
+        self.client.post(url)
         agente_en_contacto.refresh_from_db()
         self.assertEqual(AgenteEnContacto.objects.filter(
             estado=AgenteEnContacto.ESTADO_ENTREGADO).count(), 1)
@@ -697,7 +697,7 @@ class SupervisorCampanaTests(CampanasTests):
     def test_borrar_campana_preview_elimina_tarea_programada_actualizacion_contactos(
             self, eliminar_tarea_actualizacion, _generar_y_recargar_configuracion_asterisk):
         url = reverse('campana_preview_delete', args=[self.campana_activa.pk])
-        self.client.post(url, follow=True)
+        self.client.post(url)
         self.assertTrue(eliminar_tarea_actualizacion.called)
 
     @patch.object(Campana, 'eliminar_tarea_actualizacion')
@@ -1798,14 +1798,14 @@ class SupervisorCampanaTests(CampanasTests):
     def test_no_es_posible_eliminar_formulario_asignado_a_campana(self):
         url = reverse('formulario_eliminar', args=[self.formulario.pk])
         n_formularios = Formulario.objects.count()
-        self.client.post(url, follow=True)
+        self.client.post(url)
         self.assertEqual(Formulario.objects.count(), n_formularios)
 
     def test_se_puede_eliminar_formulario_no_asignado_a_campana(self):
         formulario = FormularioFactory()
         url = reverse('formulario_eliminar', args=[formulario.pk])
         n_formularios = Formulario.objects.count()
-        self.client.post(url, follow=True)
+        self.client.post(url)
         self.assertEqual(Formulario.objects.count(), n_formularios - 1)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
@@ -1819,7 +1819,7 @@ class SupervisorCampanaTests(CampanasTests):
         destino_entrante.campanas_destino_failover.add(self.campana.queue_campana)
         url = reverse('campana_elimina', args=[self.campana_activa.pk])
         self.assertEqual(self.campana_activa.estado, Campana.ESTADO_ACTIVA)
-        self.client.post(url, follow=True)
+        self.client.post(url)
         self.campana_activa.refresh_from_db()
         self.assertEqual(self.campana_activa.estado, Campana.ESTADO_ACTIVA)
 

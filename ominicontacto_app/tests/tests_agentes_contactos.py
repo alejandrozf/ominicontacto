@@ -25,7 +25,7 @@ from __future__ import unicode_literals
 import json
 
 from django.utils.translation import ugettext as _
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, QueueFactory,
                                                QueueMemberFactory, SupervisorProfileFactory)
@@ -119,7 +119,7 @@ class AgentesContactosTests(OMLBaseTest):
         self.assertEqual(json_content['draw'], 1)
         self.assertEqual(json_content['recordsTotal'], 1)
         self.assertEqual(json_content['recordsFiltered'], 1)
-        self.assertEqual(json_content['data'][0][1], unicode(self.contacto_camp_dialer.telefono))
+        self.assertEqual(json_content['data'][0][1], str(self.contacto_camp_dialer.telefono))
 
     def _obtener_datos_post_adicionar_contacto(self, campana):
         contacto_nuevo = ContactoFactory.build(bd_contacto=campana.bd_contacto)

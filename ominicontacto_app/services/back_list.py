@@ -24,6 +24,7 @@ OJO: servicio copiado del modulo base_de_datos_contactos
 
 from __future__ import unicode_literals
 
+import codecs
 import csv
 import logging
 import os
@@ -68,7 +69,9 @@ class CreacionBacklistService(object):
         if extension not in csv_extensions:
             logger.warn(_("La extensión {0} no es CSV. ".format(extension)))
             raise(OmlArchivoImportacionInvalidoError(file_invalid_msg))
-        data = csv.reader(back_list.archivo_importacion)
+        file_obj = codecs.iterdecode(
+            back_list.archivo_importacion, 'utf-8', errors='ignore')
+        data = csv.reader(file_obj)
         validar_estructura_csv(data, file_invalid_msg, logger)
 
     def importa_contactos(self, backlist):
