@@ -132,8 +132,8 @@ class TiemposAgente(object):
                     time_actual = logs[1]
                     is_remove = True
                 if calculo_ok:
-                    agente_en_lista = filter(lambda x: x.agente == agente,
-                                             self.agentes_tiempo)
+                    agente_en_lista = list(filter(lambda x: x.agente == agente,
+                                                  self.agentes_tiempo))
                     if agente_en_lista:
                         agente_nuevo = agente_en_lista[0]
                         if agente_nuevo.tiempo_sesion:
@@ -171,8 +171,8 @@ class TiemposAgente(object):
             for logs in log_agente:
                 if is_unpause and logs[2] == 'PAUSEALL':
                     resta = time_actual - logs[1]
-                    agente_en_lista = filter(lambda x: x.agente == agente,
-                                             self.agentes_tiempo)
+                    agente_en_lista = list(filter(lambda x: x.agente == agente,
+                                                  self.agentes_tiempo))
                     if agente_en_lista:
                         agente_nuevo = agente_en_lista[0]
                         if agente_nuevo.tiempo_pausa:
@@ -206,8 +206,8 @@ class TiemposAgente(object):
         for log in logs_time:
 
             agente = AgenteProfile.objects.get(pk=int(log[0]))
-            agente_en_lista = filter(lambda x: x.agente == agente,
-                                     self.agentes_tiempo)
+            agente_en_lista = list(filter(lambda x: x.agente == agente,
+                                          self.agentes_tiempo))
             if agente_en_lista:
                 agente_nuevo = agente_en_lista[0]
                 agente_nuevo._tiempo_llamada = int(log[1])
@@ -232,8 +232,8 @@ class TiemposAgente(object):
         for log in logs_time:
 
             agente = AgenteProfile.objects.get(pk=int(log[0]))
-            agente_en_lista = filter(lambda x: x.agente == agente,
-                                     self.agentes_tiempo)
+            agente_en_lista = list(filter(lambda x: x.agente == agente,
+                                          self.agentes_tiempo))
             if agente_en_lista:
                 agente_nuevo = agente_en_lista[0]
                 agente_nuevo._cantidad_llamadas_procesadas = int(log[1])
@@ -259,8 +259,8 @@ class TiemposAgente(object):
         for log in logs_time:
 
             agente = AgenteProfile.objects.get(pk=int(log[0]))
-            agente_en_lista = filter(lambda x: x.agente == agente,
-                                     self.agentes_tiempo)
+            agente_en_lista = list(filter(lambda x: x.agente == agente,
+                                          self.agentes_tiempo))
             if agente_en_lista:
                 agente_nuevo = agente_en_lista[0]
                 agente_nuevo._cantidad_intentos_fallidos = int(log[1])
@@ -560,9 +560,9 @@ class TiemposAgente(object):
                 is_remove = True
             if calculo_ok:
                 date_time_actual = cast_datetime_part_date(time_actual)
-                agente_en_lista = filter(
+                agente_en_lista = list(filter(
                     lambda x: x.agente == date_time_actual,
-                    agente_fecha)
+                    agente_fecha))
                 if agente_en_lista:
                     agente_nuevo = agente_en_lista[0]
                     if agente_nuevo.tiempo_sesion:
@@ -602,8 +602,8 @@ class TiemposAgente(object):
 
                 resta = time_actual - logs[1]
                 date_time_actual = cast_datetime_part_date(time_actual)
-                agente_en_lista = filter(lambda x: x.agente == date_time_actual,
-                                         agente_fecha)
+                agente_en_lista = list(filter(lambda x: x.agente == date_time_actual,
+                                              agente_fecha))
                 if agente_en_lista:
                     agente_nuevo = agente_en_lista[0]
                     if agente_nuevo.tiempo_pausa:
@@ -639,8 +639,8 @@ class TiemposAgente(object):
         for log in logs_time:
 
             date_time_actual = cast_datetime_part_date(log.time)
-            agente_en_lista = filter(lambda x: x.agente == date_time_actual,
-                                     agente_fecha)
+            agente_en_lista = list(filter(lambda x: x.agente == date_time_actual,
+                                          agente_fecha))
             if agente_en_lista:
                 agente_nuevo = agente_en_lista[0]
                 if agente_nuevo._tiempo_llamada:
@@ -670,8 +670,8 @@ class TiemposAgente(object):
             agente.id)
         for log in logs_time:
             date_time_actual = log[0]
-            agente_en_lista = filter(lambda x: x.agente == date_time_actual,
-                                     agente_fecha)
+            agente_en_lista = list(filter(lambda x: x.agente == date_time_actual,
+                                          agente_fecha))
             if agente_en_lista:
                 agente_nuevo = agente_en_lista[0]
                 agente_nuevo._cantidad_intentos_fallidos = int(log[1])

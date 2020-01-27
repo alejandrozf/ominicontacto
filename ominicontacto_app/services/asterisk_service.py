@@ -52,7 +52,7 @@ class ActivacionAgenteService(object):
         try:
             self.sip_config_creator.create_config_sip()
         except Exception as e:
-            msg = _("Error {0}: ActivacionAgenteService: error al ".format(e.message) +
+            msg = _("Error {0}: ActivacionAgenteService: error al ".format(e) +
                     "intentar create_config_sip()")
             logger.exception(msg)
 

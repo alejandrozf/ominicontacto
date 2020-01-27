@@ -6,6 +6,7 @@ TARGET_BRANCH_SHA=`git rev-parse origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}`
 
 STAGED_FILES=`git diff $TARGET_BRANCH_SHA...HEAD --name-only --diff-filter=ACM | grep ".*\.js$"`
 
+
 if [[ "$STAGED_FILES" = "" ]]; then
   exit 0
 fi

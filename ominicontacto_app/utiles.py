@@ -24,7 +24,7 @@ from __future__ import unicode_literals
 from contextlib import contextmanager
 import csv
 import codecs
-import cStringIO
+import io
 import os
 import re
 import tempfile
@@ -70,7 +70,7 @@ def resolve_strftime(text):
 
 
 def elimina_tildes(s):
-    return ''.join(unicodedata.normalize('NFD', s).encode('ASCII', 'ignore'))
+    return ''.join(unicodedata.normalize('NFD', s).encode('ASCII', 'ignore').decode('utf8'))
 
 
 def elimina_espacios_parentesis_guiones(cadena):
@@ -78,7 +78,7 @@ def elimina_espacios_parentesis_guiones(cadena):
     Elimina espacios, parentesis y guiones de la cadena recibida por parametro
     La cadena debe ser una instancia de unicode
     """
-    assert isinstance(cadena, unicode), "'cadena' debe ser una instancia de unicode"
+    assert isinstance(cadena, str), "'cadena' debe ser una instancia de unicode"
     return re.sub(r"\(?\)?\s?\-?", "", cadena)
 
 
@@ -87,7 +87,7 @@ def remplace_espacio_por_guion(cadena):
     Remplaza espacio por guion en cadaena recibida por parametro
     La cadena debe ser una instancia de unicode
     """
-    assert isinstance(cadena, unicode), "'cadena' debe ser una instancia de unicode"
+    assert isinstance(cadena, str), "'cadena' debe ser una instancia de unicode"
     return re.sub(r"\s+", "_", cadena)
 
 
@@ -140,7 +140,7 @@ def crear_archivo_en_media_root(dirname_template, prefix, suffix=""):
     abs_output_dir = os.path.join(settings.MEDIA_ROOT, relative_dirname)
     if not os.path.exists(abs_output_dir):
         logger.info("Se crearan directorios: %s", abs_output_dir)
-        os.makedirs(abs_output_dir, mode=0755)
+        os.makedirs(abs_output_dir, mode=0o755)
 
     fd, output_filename = tempfile.mkstemp(dir=abs_output_dir, prefix=prefix,
                                            suffix=suffix)
@@ -148,7 +148,7 @@ def crear_archivo_en_media_root(dirname_template, prefix, suffix=""):
     # Cerramos FD
     os.close(fd)
 
-    os.chmod(output_filename, 0644)
+    os.chmod(output_filename, 0o644)
 
     __, generated_filename = os.path.split(output_filename)
     return relative_dirname, generated_filename
@@ -271,7 +271,7 @@ def fecha_hora_local(fecha_hora):
 
 def convertir_ascii_string(cadena):
     """ Devuelve ascii ignorando caracteres extraños"""
-    return cadena.encode('ascii', errors='ignore')
+    return cadena.encode('ascii', errors='ignore').decode('utf-8')
 
 
 def cast_datetime_part_date(fecha):
@@ -295,7 +295,7 @@ class UnicodeWriter:            # tomado de https://docs.python.org/2/library/cs
 
     def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
         # Redirect output to a queue
-        self.queue = cStringIO.StringIO()
+        self.queue = io.StringIO()
         self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
         self.stream = f
         self.encoder = codecs.getincrementalencoder(encoding)()
@@ -304,7 +304,7 @@ class UnicodeWriter:            # tomado de https://docs.python.org/2/library/cs
         self.writer.writerow([s.encode("utf-8") for s in row])
         # Fetch UTF-8 output from the queue ...
         data = self.queue.getvalue()
-        data = data.decode("utf-8")
+        # data = data.decode("utf-8")
         # ... and reencode it into the target encoding
         data = self.encoder.encode(data)
         # write to the target stream

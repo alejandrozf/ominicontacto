@@ -23,6 +23,7 @@ Servicio para generar credenciales SIP efimeras para autenticar usuario en kamai
 
 from __future__ import unicode_literals
 
+import base64
 import hmac
 import logging
 import subprocess
@@ -53,8 +54,9 @@ class KamailioService():
             # cmd = subprocess.check_output(['ssh', settings.OML_KAMAILIO_HOSTNAME,
             #                              settings.OML_KAMAILIO_CMD])
             secret_key = settings.SIP_SECRET_KEY
-            password_hashed = hmac.new(secret_key, sip_usuario, sha1)
-            password_ephemeral = password_hashed.digest().encode("base64").rstrip('\n')
+            password_hashed = hmac.new(
+                bytes(secret_key, encoding='utf-8'), bytes(sip_usuario, encoding='utf-8'), sha1)
+            password_ephemeral = base64.b64encode(password_hashed.digest()).decode('utf-8')
             return password_ephemeral
         except subprocess.CalledProcessError as e:
             logger.error('Hubo un problema al obtener la secret_key, verificar el comando {0}'.

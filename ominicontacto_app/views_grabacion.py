@@ -35,7 +35,7 @@ from ominicontacto_app.forms import GrabacionBusquedaForm
 from ominicontacto_app.models import (
     Grabacion, GrabacionMarca, Campana
 )
-from utiles import convert_fecha_datetime, fecha_local
+from .utiles import convert_fecha_datetime, fecha_local
 
 
 class BusquedaGrabacionFormView(FormView):
@@ -131,7 +131,7 @@ class MarcarGrabacionView(View):
         try:
             grabacion_marca, _ = GrabacionMarca.objects.get_or_create(callid=callid)
         except Exception as e:
-            return JsonResponse({'result': 'failed by {0}'.format(e.message)})
+            return JsonResponse({'result': 'failed by {0}'.format(e)})
         else:
             grabacion_marca.descripcion = descripcion
             grabacion_marca.save()

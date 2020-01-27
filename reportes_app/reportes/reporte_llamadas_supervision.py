@@ -183,11 +183,11 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
             queue_status_raw = manager.send_action({"Action": "QueueStatus"}).data
 
         except ManagerSocketException as e:
-            logger.exception("Error connecting to the manager: {0}".format(e.message))
+            logger.exception("Error connecting to the manager: {0}".format(e))
         except ManagerAuthException as e:
-            logger.exception("Error logging in to the manager: {0}".format(e.message))
+            logger.exception("Error logging in to the manager: {0}".format(e))
         except ManagerException as e:
-            logger.exception("Error {0}".format(e.message))
+            logger.exception("Error {0}".format(e))
         finally:
             manager.close()
             return queue_status_raw
@@ -198,7 +198,7 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
             self.llamadas_en_cola = self._parsear_queue_status_pasada_2(
                 self._parsear_queue_status_pasada_1(queue_status_raw))
         except Exception as e:
-            logger.exception("Error {0}".format(e.message))
+            logger.exception("Error {0}".format(e))
             self.llamadas_en_cola = defaultdict(int)
 
     def _contabilizar_llamadas_en_espera_por_campana(self):

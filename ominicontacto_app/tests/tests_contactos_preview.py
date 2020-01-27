@@ -26,7 +26,7 @@ import json
 from mock import patch
 from django.utils.translation import ugettext_lazy as _
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, QueueFactory,
                                                AgenteEnContactoFactory)
@@ -245,4 +245,4 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
         }
         self.client.post(url, post_data)
         agente_en_contacto.refresh_from_db()
-        self.assertEqual(agente_en_contacto.telefono_contacto, unicode(telefono_nuevo))
+        self.assertEqual(agente_en_contacto.telefono_contacto, str(telefono_nuevo))

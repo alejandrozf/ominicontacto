@@ -11,11 +11,7 @@ Environment=PKG_SIZE=8
 ExecStartPre={{ kamailio_location }}/sbin/kamailio -c
 ExecStartPre=/usr/bin/redis-cli -n 1 FLUSHDB
 ExecStart={{ kamailio_location }}/sbin/kamailio -m $SHM_SIZE -M $PKG_SIZE -P {{ kamailio_location }}/run/kamailio/kamailio.pid
-{% if ansible_os_family == "RedHat" %}
 ExecStop=/usr/bin/rm -f {{ kamailio_location }}/run/kamailio/kamailio.pid
-{% else %}
-ExecStop=/bin/rm -f {{ kamailio_location }}/run/kamailio/kamailio.pid
-{% endif %}
 PIDFile={{ kamailio_location }}/run/kamailio/kamailio.pid
 RuntimeDirectory=kamailio
 RuntimeDirectoryMode=755

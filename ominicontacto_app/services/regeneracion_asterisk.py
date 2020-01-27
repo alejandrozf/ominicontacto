@@ -117,7 +117,7 @@ class RegeneracionAsteriskService(object):
                 command='{0} {1} {2}'.format(
                     ruta_source_envars, ruta_python_virtualenv, ruta_script_logout),
                 comment=self.tareas_programadas_ids[0])
-            # adicionar tiempo de print()eriodicidad al cron job
+            # adicionar tiempo de periodicidad al cron job
             job.minute.every(self.TIEMPO_CHEQUEO_CONTACTOS_INACTIVOS)
             crontab.write_to_user(user=getpass.getuser())
 
@@ -141,7 +141,7 @@ class RegeneracionAsteriskService(object):
                     postgres_password, ruta_psql, postgres_user, postgres_host,
                     postgres_database),
                 comment=self.tareas_programadas_ids[1])
-            # adicionar tiempo de print()eriodicidad al cron job
+            # adicionar tiempo de periodicidad al cron job
             job.hour.on(2)
             crontab.write_to_user(user=getpass.getuser())
 

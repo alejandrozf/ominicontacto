@@ -101,7 +101,17 @@
     email: "{{ docker_login_email }}"
 
 - name: Build images for PE and DE
-  docker_image: path={{ build_location }} dockerfile=Dockerfile-{{ item.dockerfile }} state=present name=freetechsolutions/{{ item.image }} tag={{ item.version }} force=yes push=yes
+  docker_image: 
+    build:
+        path: "{{ build_location }}"
+        dockerfile: Dockerfile-{{ item.dockerfile }}
+        pull: yes
+    name: "freetechsolutions/{{ item.image }}"
+    source: build
+    tag: "{{ item.version }}"
+    force_source: yes
+    force_tag: yes 
+    push: yes
   with_items:
     - { dockerfile: "asterisk", image: "asterisk", version: "{{ asterisk_version }}" }
     - { dockerfile: "dialer", image: "dialer", version: "{{ wombat_version }}" }
@@ -110,7 +120,17 @@
     - { dockerfile: "rtpengine", image: "rtpengine", version: "{{ rtpengine_version }}" }
 
 - name: Build {{ version }} images (PE)
-  docker_image: path={{ build_location }} dockerfile=Dockerfile-{{ item.dockerfile }} state=present name=freetechsolutions/{{ item.image }} tag={{ item.version }} force=yes push=yes
+  docker_image: 
+    build:
+        path: "{{ build_location }}"
+        dockerfile: Dockerfile-{{ item.dockerfile }}
+        pull: yes
+    name: "freetechsolutions/{{ item.image }}"
+    source: build
+    tag: "{{ item.version }}"
+    force_source: yes
+    force_tag: yes 
+    push: yes  
   with_items:
     - { dockerfile: "kamailio", image: "kamailio", version: "{{ version }}" }
     - { dockerfile: "nginx", image: "nginx", version: "{{ version }}" }

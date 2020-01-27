@@ -17,10 +17,10 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-from addons import *
-from defaults import *
-from checks import (check_settings_variables, process_middleware_settings,
-                    check_asterisk_connect_settings, check_audio_conversor_settings)
+from .addons import *
+from .defaults import *
+from .checks import (check_settings_variables, process_middleware_settings,
+                     check_asterisk_connect_settings, check_audio_conversor_settings)
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -46,7 +46,7 @@ DEBUG_TOOLBAR_CONFIG = {
 }
 
 try:
-    from oml_settings_local import *
+    from .oml_settings_local import *
 except ImportError:
     raise Exception("No se pudo importar oml_settings_local")
 
@@ -91,3 +91,5 @@ check_audio_conversor_settings(TMPL_OML_AUDIO_CONVERSOR)
 OML_AUDIO_PATH_ASTERISK = ASTERISK_AUDIO_PATH + OML_AUDIO_FOLDER
 
 # DEFENDER_LOCK_OUT_BY_IP_AND_USERNAME = True
+
+MIDDLEWARE = MIDDLEWARE_CLASSES

@@ -189,12 +189,13 @@ class CalificacionClienteNuevoContactoSerializer(
             campo = data.get(FormularioNuevoContacto.get_nombre_input(nombre))
             datos.append(campo)
         datos_contacto_json = json.dumps(datos)
-        data['datos'] = datos_contacto_json
-        data['telefono'] = telefono
-        data['bd_contacto'] = bd_contacto.pk
-        data['id_externo'] = id_externo
+        tmp_data = data.copy()
+        tmp_data['datos'] = datos_contacto_json
+        tmp_data['telefono'] = telefono
+        tmp_data['bd_contacto'] = bd_contacto.pk
+        tmp_data['id_externo'] = id_externo
 
-        contacto_serializer = ContactoSerializer(data=data)
+        contacto_serializer = ContactoSerializer(data=tmp_data)
         if contacto_serializer.is_valid():
             contacto = contacto_serializer.save()
         else:

@@ -1,7 +1,7 @@
 AMI_USER={{ ami_user }}
 AMI_PASSWORD={{ ami_password }}
-ASTERISK_IP={{ asterisk_ip }}
-ASTERISK_HOSTNAME={{ asterisk_fqdn }}
+ASTERISK_IP={{ omni_ip }}
+ASTERISK_HOSTNAME={{ omni_fqdn }}
 ASTERISK_LOCATION={{ asterisk_location }}
 CALIFICACION_REAGENDA={{ schedule }}
 DJANGO_PASS={{ admin_pass }}
@@ -17,20 +17,23 @@ EXTERNAL_PORT={{ external_port }}
 EXTERNAL_PORT=443
 {% endif %}
 INSTALL_PREFIX={{ install_prefix}}
-KAMAILIO_IP={{ kamailio_ip }}
-KAMAILIO_HOSTNAME={{ kamailio_fqdn }}
+KAMAILIO_IP={{ omni_ip }}
+KAMAILIO_HOSTNAME={{ omni_fqdn }}
 KAMAILIO_LOCATION={{ kamailio_location }}
 MONITORFORMAT={{ MONITORFORMAT }}
 MYSQL_PWD={{ mysql_root_password }}
 {% if external_hostname is defined %}
 NGINX_HOSTNAME={{ external_hostname }}
 {% else %}
-NGINX_HOSTNAME={{ omniapp_fqdn }}
+NGINX_HOSTNAME={{ omni_fqdn }}
 {% endif %}
 LOGIN_FAILURE_LIMIT={{ LOGIN_FAILURE_LIMIT }}
-OMNILEADS_IP={{ omniapp_ip }}
-OMNILEADS_HOSTNAME={{ omniapp_fqdn }}
-PGHOST={{ database_fqdn }}
+OMNILEADS_IP={{ omni_ip }}
+OMNILEADS_HOSTNAME={{ omni_fqdn }}
+PGHOST={{ omni_fqdn }}
+OMNILEADS_IP={{ omni_ip }}
+OMNILEADS_HOSTNAME={{ omni_fqdn }}
+PGHOST={{ omni_fqdn }}
 PGDATABASE={{ postgres_database }}
 PGUSER={{ postgres_user }}
 PGPASSWORD={{ postgres_password }}
@@ -38,7 +41,7 @@ PYTHONPATH=$INSTALL_PREFIX
 REDIS_HOSTNAME=localhost
 SESSION_COOKIE_AGE={{ SCA }}
 TZ={{ TZ }}
-WOMBAT_HOSTNAME={{ dialer_fqdn }}
+WOMBAT_HOSTNAME={{ omni_fqdn }}
 WOMBAT_USER={{ dialer_user }}
 WOMBAT_PASSWORD={{ dialer_password }}
 

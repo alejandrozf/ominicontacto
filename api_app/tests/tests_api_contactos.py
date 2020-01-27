@@ -20,7 +20,7 @@ from __future__ import unicode_literals
 
 import json
 from django.utils.translation import ugettext as _
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from ominicontacto_app.models import Contacto
 from ominicontacto_app.tests.utiles import OMLBaseTest

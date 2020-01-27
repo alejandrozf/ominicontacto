@@ -49,7 +49,7 @@ class AgentesParsing(object):
         # para obtener las entradas de los agentes agrupados en una lista de diccionarios
         agentes_activos = []
         tiempo_actual = int(time())
-        for i in xrange(0, len(datos), 3):
+        for i in range(0, len(datos), 3):
             sip_agente = datos[i + 1][1]
             status_agente = datos[i + 2][1]
             try:

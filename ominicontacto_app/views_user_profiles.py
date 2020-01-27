@@ -26,7 +26,7 @@ from formtools.wizard.views import SessionWizardView
 
 from django.utils.translation import ugettext as _
 from django.contrib import messages
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.views.generic import UpdateView, ListView, DeleteView, RedirectView
 
@@ -40,7 +40,7 @@ from ominicontacto_app.models import (
 
 from ominicontacto_app.views_queue_member import activar_cola, remover_agente_cola_asterisk
 
-from services.asterisk_service import ActivacionAgenteService, RestablecerConfigSipError
+from .services.asterisk_service import ActivacionAgenteService, RestablecerConfigSipError
 
 
 import logging as logging_
@@ -130,7 +130,7 @@ class CustomUserWizard(SessionWizardView):
         asterisk_sip_service = ActivacionAgenteService()
         try:
             asterisk_sip_service.activar()
-        except RestablecerConfigSipError, e:
+        except RestablecerConfigSipError as e:
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error{0} .".format(e))
             messages.add_message(
@@ -145,12 +145,12 @@ class CustomUserWizard(SessionWizardView):
         agente_profile.sip_extension = 1000 + user.id
         agente_profile.reported_by = self.request.user
         agente_profile.save()
-        agente_profile.modulos = form.cleaned_data['modulos']
+        agente_profile.modulos.set(form.cleaned_data['modulos'])
         # generar archivos sip en asterisk
         asterisk_sip_service = ActivacionAgenteService()
         try:
             asterisk_sip_service.activar()
-        except RestablecerConfigSipError, e:
+        except RestablecerConfigSipError as e:
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error{0} .".format(e))
             messages.add_message(
@@ -167,7 +167,7 @@ class CustomUserWizard(SessionWizardView):
         asterisk_sip_service = ActivacionAgenteService()
         try:
             asterisk_sip_service.activar()
-        except RestablecerConfigSipError, e:
+        except RestablecerConfigSipError as e:
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error{0} .".format(e))
             messages.add_message(
@@ -178,6 +178,9 @@ class CustomUserWizard(SessionWizardView):
 
     def done(self, form_list, **kwargs):
         # Ver el tipo de Usuario que se crea.
+        # TODO: ver como convertir de forma mas elegante un odict_values a lista
+        # en python3
+        form_list = [i for i in form_list]
         user_form = form_list[int(self.USER)]
         user = user_form.save()
 
@@ -331,7 +334,7 @@ class AgenteListView(ListView):
         agentes = AgenteProfile.objects.exclude(borrado=True)
 
         # TODO: Limitar la lista a los agentes que tiene asignado
-        # if self.request.user.is_authenticated() and self.request.user:
+        # if self.request.user.is_authenticated and self.request.user:
         #     user = self.request.user
         #     agentes = agentes.filter(reported_by=user)
 
@@ -360,7 +363,7 @@ class AgenteProfileUpdateView(UpdateView):
         asterisk_sip_service = ActivacionAgenteService()
         try:
             asterisk_sip_service.activar()
-        except RestablecerConfigSipError, e:
+        except RestablecerConfigSipError as e:
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error{0} .".format(e))
             messages.add_message(

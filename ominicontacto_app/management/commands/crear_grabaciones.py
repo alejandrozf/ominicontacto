@@ -51,6 +51,6 @@ class Command(BaseCommand):
             try:
                 self.grabacion_marcada_aleatoria(agente)
             except Exception as e:
-                raise CommandError('Fallo del comando: {0}'.format(e.message))
+                raise CommandError('Fallo del comando: {0}'.format(e))
         self.stdout.write(
             self.style.SUCCESS('Creada(s) {0} grabaciones(s)'.format(nro_grabaciones)))

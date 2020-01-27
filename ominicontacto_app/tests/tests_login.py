@@ -22,7 +22,7 @@ Tests relacionados con la lista de contactos de los Agentes
 """
 from __future__ import unicode_literals
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from mock import patch
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 

@@ -148,5 +148,5 @@ class Command(BaseCommand):
         try:
             self._crear_datos_entorno()
         except Exception as e:
-            logging.error('Fallo del comando: {0}'.format(e.message))
-            raise CommandError('Fallo del comando: {0}'.format(e.message))
+            logging.error('Fallo del comando: {0}'.format(e))
+            raise CommandError('Fallo del comando: {0}'.format(e))

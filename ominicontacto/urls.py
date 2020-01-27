@@ -34,11 +34,9 @@ from django.conf.urls import url, include
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.views.i18n import javascript_catalog
+from django.views.i18n import JavaScriptCatalog
 
-js_info_dict = {
-    'packages': ('ominicontacto_app',),
-}
+js_info_packages = ('ominicontacto_app',)
 
 
 urlpatterns = [
@@ -49,8 +47,8 @@ urlpatterns = [
     url(r'^', include('configuracion_telefonia_app.urls')),
     url(r'^', include('supervision_app.urls')),
     url(r'^', include('api_app.urls')),
-    url(r'^accounts/logout/$', auth_views.logout,
-        {'next_page': '/accounts/login/'}, name="logout"),
+    url(r'^accounts/logout/$', auth_views.LogoutView.as_view(next_page='/accounts/login/'),
+        name="logout"),
 
 ]
 
@@ -58,6 +56,7 @@ for (regex, module) in settings.ADDON_URLPATTERNS:
     urlpatterns += [url(regex, include(module)), ]
 
 urlpatterns += [
-    url(r'^jsi18n/$', javascript_catalog, js_info_dict, name='javascript-catalog'),
+    url(r'^jsi18n/$', JavaScriptCatalog.as_view(packages=js_info_packages),
+        name='javascript-catalog'),
     url(r'^i18n/', include('django.conf.urls.i18n')),
 ]

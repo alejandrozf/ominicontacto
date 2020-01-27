@@ -24,7 +24,7 @@ from __future__ import unicode_literals
 import datetime
 
 from django.contrib import messages
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic import (
     ListView, UpdateView, DeleteView, FormView)
@@ -65,7 +65,7 @@ class CampanasDeleteMixin(object):
         activacion_queue_service = ActivacionQueueService()
         try:
             activacion_queue_service.activar()
-        except RestablecerDialplanError, e:
+        except RestablecerDialplanError as e:
             message = _("<strong>Operación Errónea!</strong> "
                         "No se pudo confirmar la creación del dialplan  "
                         "al siguiente error: {0}".format(e))
@@ -97,7 +97,7 @@ class CampanaListView(ListView):
         campanas = Campana.objects.obtener_campanas_entrantes()
         # Filtra las campanas de acuerdo al usuario logeado si tiene permiso sobre
         # las mismas
-        if self.request.user.is_authenticated() and self.request.user and \
+        if self.request.user.is_authenticated and self.request.user and \
                 not self.request.user.get_is_administrador():
             user = self.request.user
             campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
@@ -258,7 +258,7 @@ class CampanaBorradasListView(CampanaListView):
         return context
 
     def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return super(CampanaBorradasListView, self).get(request, *args, **kwargs)
         else:
             return JsonResponse({'result': 'desconectado'})

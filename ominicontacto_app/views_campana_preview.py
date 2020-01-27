@@ -23,7 +23,7 @@ import logging as logging_
 
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
@@ -90,7 +90,7 @@ class CampanaPreviewCreateView(CampanaPreviewMixin, CampanaManualCreateView):
         self.save_supervisores(form_list, -3)
         self.save_agentes(form_list, -2)
         # rellenar la tabla que relación agentes y contactos con los valores iniciales
-        asignar_contactos_form = form_list[-1]
+        asignar_contactos_form = list(form_list)[-1]
         asignacion_proporcional = asignar_contactos_form.cleaned_data.get(
             'proporcionalmente', False)
         asignacion_aleatoria = asignar_contactos_form.cleaned_data.get('aleatorio', False)
@@ -233,7 +233,7 @@ class CampanaPreviewBorradasListView(CampanaPreviewListView):
         return context
 
     def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return super(CampanaPreviewBorradasListView, self).get(request, *args, **kwargs)
         else:
             return JsonResponse({'result': 'desconectado'})

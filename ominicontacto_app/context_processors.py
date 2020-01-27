@@ -26,7 +26,7 @@ from constance import config
 
 
 def admin_supervisor(request):
-    es_supervisor_o_admin = request.user.is_authenticated()
+    es_supervisor_o_admin = request.user.is_authenticated
     if es_supervisor_o_admin:
         es_supervisor_o_admin &= request.user.get_is_administrador() or request.user.is_supervisor
     if es_supervisor_o_admin:
@@ -47,7 +47,7 @@ def addon_menu_items(request):
     Adds items in the supervision menu asking the app configurations.
     """
     menu_items = []
-    if request.user.is_authenticated() and request.user.get_tiene_permiso_administracion():
+    if request.user.is_authenticated and request.user.get_tiene_permiso_administracion():
         for app in apps.get_app_configs():
             if hasattr(app, 'supervision_menu_items'):
                 app_items = app.supervision_menu_items(request)

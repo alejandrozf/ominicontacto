@@ -99,14 +99,14 @@ class TestInfiereMetadata(OMLBaseTest):
 
         # Ninguna linea
         with self.assertRaises(NoSePuedeInferirMetadataError):
-            service.inferir_metadata_desde_lineas([], "utf-8")
+            service.inferir_metadata_desde_lineas([])
 
         # Una linea
         with self.assertRaises(NoSePuedeInferirMetadataError):
-            service.inferir_metadata_desde_lineas([[TELEFONO_OK], ], "utf-8")
+            service.inferir_metadata_desde_lineas([[TELEFONO_OK], ])
 
         # Por las dudas chequeamos q' funcione con 2 linas
-        service.inferir_metadata_desde_lineas([['telefono'], [TELEFONO_OK], ], "utf-8")
+        service.inferir_metadata_desde_lineas([['telefono'], [TELEFONO_OK], ])
 
     def test_infiere_ok_con_todos_los_datos(self):
         ENCABEZADO_ORIGINAL = ["telefono", "Apellido", "Nombre",
@@ -124,7 +124,7 @@ class TestInfiereMetadata(OMLBaseTest):
         ]
 
         service = PredictorMetadataService()
-        metadata = service.inferir_metadata_desde_lineas(lineas, "utf-8")
+        metadata = service.inferir_metadata_desde_lineas(lineas)
 
         self.assertEquals(metadata.cantidad_de_columnas, 5)
         self.assertEquals(metadata.columna_con_telefono, 0)
@@ -143,7 +143,7 @@ class TestInfiereMetadata(OMLBaseTest):
 
         service = PredictorMetadataService()
         with self.assertRaises(NoSePuedeInferirMetadataError):
-            service.inferir_metadata_desde_lineas(lineas, "utf-8")
+            service.inferir_metadata_desde_lineas(lineas)
 
 
 class TestValidadorNombreDeCampo(OMLBaseTest):

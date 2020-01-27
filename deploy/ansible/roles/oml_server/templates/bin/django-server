@@ -1,7 +1,0 @@
-#!/bin/bash
-
-# solo para ambientes de desarrollo
-
-export DJANGO_SETTINGS_MODULE=ominicontacto.settings.develop
-
-~/virtualenv/bin/python ~/ominicontacto/manage.py runsslserver 0.0.0.0:1210 --certificate {{ install_prefix}}certs/cert.pem --key {{ install_prefix}}certs/key.pem

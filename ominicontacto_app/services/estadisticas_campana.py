@@ -571,7 +571,7 @@ class EstadisticasService():
 
         # obtiene las cantidades totales por evento de las llamadas
         reporte = self.calcular_cantidad_llamadas(campana, fecha_desde, fecha_hasta)
-        cantidad_llamadas = (reporte.keys(), reporte.values())
+        cantidad_llamadas = (list(reporte.keys()), list(reporte.values()))
 
         dic_estadisticas = {
             'agentes_venta': agentes_venta,

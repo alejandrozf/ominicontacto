@@ -331,7 +331,7 @@ class IntegrationTests(unittest.TestCase):
         self.browser.get(href_user_list)
         self.browser.get(href_update)
         self.assertTrue(self.browser.find_elements_by_xpath(
-            "//select[@id=\'id_rol\']/option[@value='2' and @selected='selected']"))
+            "//select[@id=\'id_rol\']/option[@value='2' and @selected]"))
         # Volver a modificiar a un perfil de cliente
         user_list = self.browser.find_element_by_xpath(
             '//a[contains(@href,"/user/list/page1/")]')
@@ -349,7 +349,7 @@ class IntegrationTests(unittest.TestCase):
         self.browser.get(href_user_list)
         self.browser.get(href_update)
         self.assertTrue(self.browser.find_elements_by_xpath(
-            "//select[@id=\'id_rol\']/option[@value='4' and @selected='selected']"))
+            "//select[@id=\'id_rol\']/option[@value='4' and @selected]"))
 
     def test_crear_usuario_tipo_supervisor(self):
         # Creación de supervisor
@@ -375,7 +375,7 @@ class IntegrationTests(unittest.TestCase):
         self.browser.get(href_user_list)
         self.browser.get(href_update)
         self.assertTrue(self.browser.find_elements_by_xpath(
-            "//select[@id=\'id_rol\']/option[@value='1' and @selected='selected']"))
+            "//select[@id=\'id_rol\']/option[@value='1' and @selected]"))
 
     # test de creación y edición de grupos
 
@@ -606,6 +606,7 @@ class IntegrationTests(unittest.TestCase):
         sleep(1)
         self.browser.find_element_by_xpath(
             '//tr[@id=\'{0}\']//a[contains(@href, "/update/")]'.format(descripcion_audio)).click()
+        self.browser.find_element_by_id('id_audio_original').send_keys(nuevo_wav)
         self.assertNotEqual(self.browser.find_element_by_xpath(
             "//input[text()=\'{0}\']".format(duracion_nuevo_wav)), duracion_wav_path)
         self.browser.find_element_by_xpath("//button[@type='submit']").click()

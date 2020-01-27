@@ -22,7 +22,7 @@
 from __future__ import unicode_literals
 
 from django.contrib import messages
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.views.generic.edit import (
@@ -223,7 +223,7 @@ class DefineBaseDatosContactoView(UpdateView):
                 message,
             )
         except OmlParserRepeatedColumnsError as e:
-            message = _('<strong>Operación Errónea!</strong> ') + e.message
+            message = _('<strong>Operación Errónea!</strong> ') + e
             messages.add_message(
                 self.request,
                 messages.ERROR,
@@ -237,19 +237,13 @@ class DefineBaseDatosContactoView(UpdateView):
 
         estructura_archivo = self.obtiene_previsualizacion_archivo(self.object)
         if estructura_archivo:
-            parser = ParserCsv()
-            encoding = parser.detectar_encoding_csv(estructura_archivo)
-            estructura_archivo_transformada = parser.visualizar_estructura_template(
-                estructura_archivo, encoding
-            )
-
             try:
                 error_predictor = False
                 error_predictor_encabezado = False
 
                 predictor_metadata = PredictorMetadataService()
                 metadata = predictor_metadata.inferir_metadata_desde_lineas(
-                    estructura_archivo, encoding)
+                    estructura_archivo)
             except NoSePuedeInferirMetadataError:
                 initial_predecido_datos_extras = {}
                 initial_predecido_encabezado = {}
@@ -280,7 +274,7 @@ class DefineBaseDatosContactoView(UpdateView):
             return self.render_to_response(self.get_context_data(
                 error_predictor_encabezado=error_predictor_encabezado,
                 error_predictor=error_predictor,
-                estructura_archivo=estructura_archivo_transformada,
+                estructura_archivo=estructura_archivo,
                 form_primer_linea_encabezado=form_primer_linea_encabezado,
                 form_campos_telefonicos=form_campos_telefonicos
             ))
@@ -347,10 +341,7 @@ class DefineBaseDatosContactoView(UpdateView):
         #     return self.form_invalid(estructura_archivo,
         #                             form_primer_linea_encabezado,
         #                             form_campos_telefonicos, error=error)
-
-        parser = ParserCsv()
         # Detecto el encondig de la base de datoss recientemente subida
-        encoding = parser.detectar_encoding_csv(estructura_archivo)
         metadata = self.object.get_metadata()
         metadata.cantidad_de_columnas = cantidad_columnas
 
@@ -364,8 +355,7 @@ class DefineBaseDatosContactoView(UpdateView):
         if columna_id_externo is not None:
             metadata.columna_id_externo = columna_id_externo
 
-        metadata.nombres_de_columnas = [value.decode(encoding)
-                                        for value in estructura_archivo[0]]
+        metadata.nombres_de_columnas = estructura_archivo[0]
         es_encabezado = False
         if self.request.POST.get('es_encabezado', False):
             es_encabezado = True

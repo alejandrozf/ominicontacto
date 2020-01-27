@@ -46,6 +46,6 @@ class InteraccionConSistemaExterno(object):
                 requests.post(url, files=parametros)
             elif sitio_externo.formato == SitioExterno.JSON:
                 requests.post(url, json=parametros)
-        except Exception, e:
-            logger.exception(err_msg.format(e.message))
-            return e.message
+        except Exception as e:
+            logger.exception(err_msg.format(e))
+            return e

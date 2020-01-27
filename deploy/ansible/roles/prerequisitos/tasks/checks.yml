@@ -1,3 +1,20 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 ---
 
 ##########
@@ -8,34 +25,19 @@
 - name: Get the hostname of node
   command: hostname
   register: hostname
-  when: cluster == 0
+  when: is_docker == "false"
   tags: always
   changed_when: false
 
-- name: Set ansible variables depending of hostname
-  set_fact: omni_fqdn="{{ hostname.stdout }}"
-  when: cluster == 0
+- set_fact: omni_fqdn="{{ hostname.stdout }}"
+  when: is_docker == "false"
   tags: always
-- set_fact: omniapp_fqdn="{{ omni_fqdn }}"
-  when: cluster == 0
-  tags: always
-- set_fact: asterisk_fqdn="{{ omni_fqdn }}"
-  when: cluster == 0
-  tags: always
-- set_fact: kamailio_fqdn="{{ omni_fqdn }}"
-  when: cluster == 0
-  tags: always
-- set_fact: database_fqdn="{{ omni_fqdn }}"
-  when: cluster == 0
-  tags: always
-- set_fact: dialer_fqdn="{{ omni_fqdn }}"
-  when: cluster == 0
-  tags: always
+  changed_when: false
 
 # Obtengo IP del nodo
 - name: Get IP adress of node (selfhosted)
   set_fact: omni_ip={{ hostvars[inventory_hostname]['ansible_' + iface]['ipv4']['address'] }}
-  when: cluster == 0 and iface != "none"
+  when: is_docker == "false" and iface != "none"
   tags: always
 
 # Se instala wget para centos, que no viene incorporado
@@ -67,7 +69,7 @@
   assert:
     that: "'{{ omni_ip }}' in ansible_all_ipv4_addresses"
     msg: "The IP you inserted in inventory file is wrong, check it"
-  when: cluster == 0 and iface == "none"
+  when: iface == "none" and is_docker == "false"
   changed_when: false
   tags: always
 
@@ -81,16 +83,20 @@
 - name: Print omni_distribution
   debug: msg="omni_distribution es {{ ansible_os_family }}"
   changed_when: false
+  when: is_docker == "false"
   tags: always
 
 - name: Check omni_distribution
   fail: msg="omni_distribution con valor {{ ansible_os_family }} es invalida"
-  when: (
-      ansible_os_family != "RedHat" and
-      ansible_os_family != "Debian"
-      )
+  when: ansible_os_family != "RedHat" and is_docker == "false"
   changed_when: false
   tags: always
+
+- name: Check python version inside virtualenv
+  shell: "source {{ install_prefix }}virtualenv/bin/activate; python -V"
+  register: python_version
+  failed_when: false
+  tags: postinstall
 
 # Chequeo si la version de asterisk instalada es {{ asterisk_version }}
 - name: Check if Asterisk {{ asterisk_version }} is installed
@@ -142,6 +148,7 @@
     - { var: cert, value: "{{ trusted_cert }}" }
     - { var: key, value: "{{ trusted_key }}" }
   when: trusted_key is defined and trusted_cert is defined
+  tags: always
 
 # Chequeo si el folder de certificado existe
 - name: Check if auto-signed certificates folder exists

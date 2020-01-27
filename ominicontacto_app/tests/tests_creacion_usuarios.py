@@ -27,7 +27,7 @@ from mock import patch
 
 import logging as _logging
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.translation import ugettext as _
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
@@ -36,6 +36,8 @@ from ominicontacto_app.models import Grupo, Modulo, User, SupervisorProfile
 from ominicontacto_app.services.asterisk_service import ActivacionAgenteService
 
 logger = _logging.getLogger(__name__)
+
+COMPLEX_PASSWORD = '*FTS*OML1*'
 
 
 class CreacionUsuariosTest(OMLBaseTest):
@@ -60,8 +62,8 @@ class CreacionUsuariosTest(OMLBaseTest):
             '0-first_name': 'supervisor1',
             '0-last_name': 'supervisor1',
             '0-email': 'asd@asd.com',
-            '0-password1': PASSWORD,
-            '0-password2': PASSWORD,
+            '0-password1': COMPLEX_PASSWORD,
+            '0-password2': COMPLEX_PASSWORD,
             '0-is_supervisor': True,
             '0-is_agente': False,
         }
@@ -96,8 +98,8 @@ class CreacionUsuariosTest(OMLBaseTest):
             '0-first_name': 'agente1',
             '0-last_name': 'agente1',
             '0-email': 'asd@asd.com',
-            '0-password1': PASSWORD,
-            '0-password2': PASSWORD,
+            '0-password1': COMPLEX_PASSWORD,
+            '0-password2': COMPLEX_PASSWORD,
             '0-is_supervisor': False,
             '0-is_agente': True,
         }
@@ -132,7 +134,7 @@ class CreacionUsuariosTest(OMLBaseTest):
 
         # Manera poco elegante de ver si el campo is_agente esta deshabilitado
         field_is_agente = filtrar_linea(response.content.splitlines(), 'name="0-is_agente"')
-        self.assertNotEqual(field_is_agente[0].find('disabled'), 1)
+        self.assertNotEqual(field_is_agente.decode('utf-8').find('disabled'), 1)
 
         # Sin Grupo
         self.modulo1 = ModuloFactory(nombre='phone')
@@ -146,7 +148,7 @@ class CreacionUsuariosTest(OMLBaseTest):
 
         # Manera poco elegante de ver si el campo is_agente no esta deshabilitado
         field_is_agente = filtrar_linea(response.content.splitlines(), 'name="0-is_agente"')
-        self.assertEqual(field_is_agente[0].find(u'disabled'), -1)
+        self.assertEqual(field_is_agente.decode('utf-8').find('disabled'), -1)
 
 
 def filtrar_linea(lineas, texto):

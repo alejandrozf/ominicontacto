@@ -28,7 +28,6 @@ from __future__ import unicode_literals
 import logging
 import requests
 
-from services.sms_services import SmsManager
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
 from django.conf import settings
@@ -39,7 +38,7 @@ from django.template import RequestContext
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
 from django.views.generic import (
@@ -51,6 +50,7 @@ from constance import config as config_constance
 from defender import utils
 from defender import config
 
+from ominicontacto_app.services.sms_services import SmsManager
 from ominicontacto_app.models import (
     User, AgenteProfile, Modulo, Grupo, Pausa, Agenda,
     Chat, MensajeChat, ClienteWebPhoneProfile
@@ -79,7 +79,7 @@ logger = logging.getLogger(__name__)
 
 def index_view(request):
     template_name = "base.html"
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
         return redirect('login')
     else:
         if request.user.is_agente:
@@ -131,7 +131,7 @@ def login_view(request):
                     return HttpResponseRedirect(reverse('index'))
 
     else:
-        if request.user.is_authenticated() and not request.user.borrado:
+        if request.user.is_authenticated and not request.user.borrado:
             if request.user.is_agente and request.user.get_agente_profile().is_inactive:
                 form = AuthenticationForm(request)
                 logout(request)
@@ -143,7 +143,7 @@ def login_view(request):
                 return HttpResponseRedirect(reverse('index'))
         else:
             form = AuthenticationForm(request)
-            if request.user.is_authenticated():
+            if request.user.is_authenticated:
                 logout(request)
     context = {
         'form': form,

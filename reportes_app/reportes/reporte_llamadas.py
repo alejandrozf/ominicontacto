@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-from __future__ import unicode_literals
+from __future__ import unicode_literals, division
 
 import pygal
 
@@ -218,7 +218,7 @@ class ReporteDeLlamadas(object):
         # Inicializar Llamadas por campaña
         self.estadisticas['llamadas_por_campana'][campana.id] = {
             'nombre': campana.nombre,
-            'tipo': unicode(tipo_display),
+            'tipo': str(tipo_display),
             'total': 0,
             'manuales': 0,
         }
@@ -393,12 +393,12 @@ class ReporteDeLlamadas(object):
             datos_campana['t_espera_conexion_manuales'] += log.bridge_wait_time
 
     def _aplicar_promedios_a_tiempos(self):
-        for tipo, datos_tipo in self.estadisticas['tipos_de_llamada_por_campana'].iteritems():
-            for id_campana, datos_campana in datos_tipo.iteritems():
+        for tipo, datos_tipo in self.estadisticas['tipos_de_llamada_por_campana'].items():
+            for id_campana, datos_campana in datos_tipo.items():
                 self._aplicar_promedios_a_tiempos_de_campana(tipo, datos_campana)
 
                 datos_por_tipo = self.estadisticas_por_fecha['tipos_de_llamada_por_campana'][tipo]
-                for fecha, datos_fecha in datos_por_tipo[id_campana].iteritems():
+                for fecha, datos_fecha in datos_por_tipo[id_campana].items():
                     self._aplicar_promedios_a_tiempos_de_campana(tipo, datos_fecha)
 
     def _aplicar_promedios_a_tiempos_de_campana(self, tipo, datos_campana):
@@ -532,7 +532,7 @@ class GraficosReporteDeLlamadas(object):
         nombres_campanas = []
         totales_campanas = []
         manuales_campanas = []
-        for datos_campana in estadisticas['llamadas_por_campana'].itervalues():
+        for datos_campana in estadisticas['llamadas_por_campana'].values():
             nombres_campanas.append(datos_campana['nombre'])
             totales_campanas.append(datos_campana['total'])
             manuales_campanas.append(datos_campana['manuales'])
@@ -550,7 +550,7 @@ class GraficosReporteDeLlamadas(object):
         expiradas = []
         abandonadas = []
         por_campana = estadisticas['tipos_de_llamada_por_campana'][str(Campana.TYPE_DIALER)]
-        for datos_campana in por_campana.itervalues():
+        for datos_campana in por_campana.values():
             nombres_campanas.append(datos_campana['nombre'])
             no_atendidas.append(datos_campana['efectuadas'] - datos_campana['atendidas'])
             conectadas.append(datos_campana['conectadas'])
@@ -573,7 +573,7 @@ class GraficosReporteDeLlamadas(object):
         abandonadas = []
         abandonadas_anuncio = []
         por_campana = estadisticas['tipos_de_llamada_por_campana'][str(Campana.TYPE_ENTRANTE)]
-        for datos_campana in por_campana.itervalues():
+        for datos_campana in por_campana.values():
             nombres_campanas.append(datos_campana['nombre'])
             atendidas.append(datos_campana['atendidas'])
             abandonadas.append(datos_campana['abandonadas'])
@@ -594,7 +594,7 @@ class GraficosReporteDeLlamadas(object):
         conectadas = []
         no_conectadas = []
         por_campana = estadisticas['tipos_de_llamada_por_campana'][str(Campana.TYPE_MANUAL)]
-        for datos_campana in por_campana.itervalues():
+        for datos_campana in por_campana.values():
             nombres_campanas.append(datos_campana['nombre'])
             conectadas.append(datos_campana['conectadas'])
             no_conectadas.append(datos_campana['no_conectadas'])
@@ -612,7 +612,7 @@ class GraficosReporteDeLlamadas(object):
         conectadas = []
         no_conectadas = []
         por_campana = estadisticas['tipos_de_llamada_por_campana'][str(Campana.TYPE_PREVIEW)]
-        for datos_campana in por_campana.itervalues():
+        for datos_campana in por_campana.values():
             nombres_campanas.append(datos_campana['nombre'])
             conectadas.append(datos_campana['conectadas'])
             no_conectadas.append(datos_campana['no_conectadas'])
@@ -659,14 +659,14 @@ class GeneradorReportesLlamadasCSV(object):
                   _('Atendidas'), _('No atendidas'), _('Perdidas'), _('Expiradas'),
                   _('Abandonadas'), _('Abandonadas durante anuncio')], ]
         filas.append([
-            unicode(Campana.TYPE_MANUAL_DISPLAY),
+            str(Campana.TYPE_MANUAL_DISPLAY),
             force_text(por_tipo[str(Campana.TYPE_MANUAL)]['total']),
             force_text(por_tipo[str(Campana.TYPE_MANUAL)]['conectadas']),
             force_text(por_tipo[str(Campana.TYPE_MANUAL)]['no_conectadas']),
             '', '', '', '', '',
         ])
         filas.append([
-            unicode(Campana.TYPE_DIALER_DISPLAY),
+            str(Campana.TYPE_DIALER_DISPLAY),
             force_text(por_tipo[str(Campana.TYPE_DIALER)]['total']),
             '', '',
             force_text(por_tipo[str(Campana.TYPE_DIALER)]['atendidas']),
@@ -675,7 +675,7 @@ class GeneradorReportesLlamadasCSV(object):
             '', '',
         ])
         filas.append([
-            unicode(Campana.TYPE_ENTRANTE_DISPLAY),
+            str(Campana.TYPE_ENTRANTE_DISPLAY),
             force_text(por_tipo[str(Campana.TYPE_ENTRANTE)]['total']),
             '', '',
             force_text(por_tipo[str(Campana.TYPE_ENTRANTE)]['atendidas']),
@@ -685,7 +685,7 @@ class GeneradorReportesLlamadasCSV(object):
             force_text(por_tipo[str(Campana.TYPE_ENTRANTE)]['abandonadas_anuncio'],),
         ])
         filas.append([
-            unicode(Campana.TYPE_PREVIEW_DISPLAY),
+            str(Campana.TYPE_PREVIEW_DISPLAY),
             force_text(por_tipo[str(Campana.TYPE_PREVIEW)]['total']),
             force_text(por_tipo[str(Campana.TYPE_PREVIEW)]['conectadas']),
             force_text(por_tipo[str(Campana.TYPE_PREVIEW)]['no_conectadas']),

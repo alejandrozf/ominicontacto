@@ -101,9 +101,9 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         agentes_tiempo = reportes_estadisticas.agentes_tiempo
 
         for agente in agentes_tiempo:
-            if agente.agente.id is self.agente.id:
+            if agente.agente.id == self.agente.id:
                 self.assertEqual(tiempo_sesion_agente, agente.tiempo_sesion)
-            elif agente.agente.id is self.agente1.id:
+            elif agente.agente.id == self.agente1.id:
                 self.assertEqual(tiempo_sesion_agente1, agente.tiempo_sesion)
             else:
                 self.fail("Agente no calculado revisar test")
@@ -136,9 +136,9 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         agentes_tiempo = reportes_estadisticas.agentes_tiempo
 
         for agente in agentes_tiempo:
-            if agente.agente.id is self.agente.id:
+            if agente.agente.id == self.agente.id:
                 self.assertEqual(tiempo_sesion_agente, agente.tiempo_sesion)
-            elif agente.agente.id is self.agente1.id:
+            elif agente.agente.id == self.agente1.id:
                 self.assertEqual(tiempo_sesion_agente1, agente.tiempo_sesion)
             else:
                 self.fail("Agente no calculado revisar test")
@@ -190,9 +190,9 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         agentes_tiempo = reportes_estadisticas.agentes_tiempo
 
         for agente in agentes_tiempo:
-            if agente.agente.id is self.agente.id:
+            if agente.agente.id == self.agente.id:
                 self.assertEqual(total_pausa_agente, agente.tiempo_pausa)
-            elif agente.agente.id is self.agente1.id:
+            elif agente.agente.id == self.agente1.id:
                 self.assertEqual(total_pausa_agente1, agente.tiempo_pausa)
             else:
                 self.fail("Agente no calculado revisar test")
@@ -218,9 +218,9 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         agentes_tiempo = reportes_estadisticas.agentes_tiempo
 
         for agente in agentes_tiempo:
-            if agente.agente.id is self.agente.id:
+            if agente.agente.id == self.agente.id:
                 self.assertEqual(149, agente.tiempo_llamada)
-            elif agente.agente.id is self.agente1.id:
+            elif agente.agente.id == self.agente1.id:
                 self.assertEqual(58, agente.tiempo_llamada)
             else:
                 self.fail("Agente no calculado revisar test")
@@ -325,7 +325,7 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         agentes_tiempo = reportes_estadisticas.agentes_tiempo
 
         for agente in agentes_tiempo:
-            if agente.agente.id is self.agente.id:
+            if agente.agente.id == self.agente.id:
                 self.assertEqual(149, agente.tiempo_llamada)
                 self.assertEqual(tiempo_sesion_agente, agente.tiempo_sesion)
                 self.assertEqual(total_pausa_agente, agente.tiempo_pausa)
@@ -337,7 +337,7 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
                                  agente.tiempo_porcentaje_wait)
                 self.assertEqual(2, agente.cantidad_llamadas_procesadas)
                 self.assertEqual(promedio_agente, agente.tiempo_promedio_llamadas())
-            elif agente.agente.id is self.agente1.id:
+            elif agente.agente.id == self.agente1.id:
                 self.assertEqual(58, agente.tiempo_llamada)
                 self.assertEqual(tiempo_sesion_agente1, agente.tiempo_sesion)
                 self.assertEqual(total_pausa_agente1, agente.tiempo_pausa)
@@ -378,9 +378,9 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         agentes_tiempo = reportes_estadisticas.agentes_tiempo
 
         for agente in agentes_tiempo:
-            if agente.agente.id is self.agente.id:
+            if agente.agente.id == self.agente.id:
                 self.assertEqual(2, agente.cantidad_intentos_fallidos)
-            elif agente.agente.id is self.agente1.id:
+            elif agente.agente.id == self.agente1.id:
                 self.assertEqual(1, agente.cantidad_intentos_fallidos)
             else:
                 self.fail("Agente no calculado revisar test")
@@ -441,14 +441,14 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
             agentes, fecha_ayer, fecha_hoy)
 
         for agente in agentes_tiempo:
-            if agente['id'] is self.agente.id:
-                if int(agente['pausa_id']) is pausa.id:
+            if agente['id'] == self.agente.id:
+                if int(agente['pausa_id']) == pausa.id:
                     self.assertEqual(str(total_pausa_agente), agente['tiempo'])
-                elif int(agente['pausa_id']) is pausa1.id:
+                elif int(agente['pausa_id']) == pausa1.id:
                     self.assertEqual(str(total_pausa_agente_1), agente['tiempo'])
                 else:
                     self.fail("pausa no calculada revisar test")
-            elif agente['id'] is self.agente1.id:
+            elif agente['id'] == self.agente1.id:
                 self.assertEqual(str(total_pausa_agente1), agente['tiempo'])
             else:
                 self.fail("Agente no calculado revisar test")
@@ -557,11 +557,11 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         dict_agentes = reportes_estadisticas._obtener_total_agentes_tipos_llamadas(
             agentes, fecha_ayer, fecha_hoy)
 
-        self.assertEqual([2, 1], dict_agentes['total_agente_preview'])
-        self.assertEqual([3, 0], dict_agentes['total_agente_manual'])
-        self.assertEqual([1, 3], dict_agentes['total_agente_inbound'])
-        self.assertEqual([2, 1], dict_agentes['total_agente_dialer'])
-        self.assertEqual([8, 5], dict_agentes['total_agentes'])
+        self.assertEqual([2, 1], list(dict_agentes['total_agente_preview']))
+        self.assertEqual([3, 0], list(dict_agentes['total_agente_manual']))
+        self.assertEqual([1, 3], list(dict_agentes['total_agente_inbound']))
+        self.assertEqual([2, 1], list(dict_agentes['total_agente_dialer']))
+        self.assertEqual([8, 5], list(dict_agentes['total_agentes']))
         self.assertEqual([self.agente.user.get_full_name(),
                           self.agente1.user.get_full_name()],
                          dict_agentes['nombres_agentes'])

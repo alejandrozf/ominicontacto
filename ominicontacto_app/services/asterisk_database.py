@@ -84,8 +84,8 @@ class AbstractFamily(object):
             client = AsteriskHttpClient()
             client.login()
             client.asterisk_db_deltree(family)
-        except AsteriskHttpAsteriskDBError, e:
-            if (e.message == u'Database entry not found' and ignorar_error_no_encontrado):
+        except AsteriskHttpAsteriskDBError as e:
+            if (e.args[0] == 'Database entry not found' and ignorar_error_no_encontrado):
                 return
             logger.exception(_("Error al intentar DBDelTree de {0}".format(family)))
 

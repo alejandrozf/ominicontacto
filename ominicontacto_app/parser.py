@@ -23,6 +23,7 @@ Parser de archivos CSV.
 
 from __future__ import unicode_literals
 
+import codecs
 import csv
 import logging
 import re
@@ -31,8 +32,8 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 from django.utils.encoding import smart_text
 from ominicontacto_app.errors import\
-    (OmlParserCsvDelimiterError, OmlParserMinRowError, OmlParserMaxRowError,
-     OmlParserCsvImportacionError, OmlParserCsvEncodingError, OmlParserRepeatedColumnsError)
+    (OmlParserMinRowError, OmlParserMaxRowError,
+     OmlParserCsvImportacionError, OmlParserRepeatedColumnsError)
 from ominicontacto_app.models import MetadataBaseDatosContactoDTO
 
 
@@ -86,14 +87,14 @@ class ParserCsv(object):
         :raises: FtsParserCsvImportacionError
         """
         try:
-            return [unicode(column, 'utf-8') for column in row]
+            return [str(column, 'utf-8') for column in row]
         except UnicodeDecodeError:
             # Aja! Una columna no es utf-8 valido!
             celda_problematica = None
             try:
                 for column in row:
                     celda_problematica = column
-                    unicode(column, 'utf-8')
+                    str(column, 'utf-8')
                 # Alguna columna deberia fallar, pero por las dudas limpiamos
                 # 'celda_problematica' si el 'for' termina de procesar todas
                 # las columnas. Esto NO DEBERIA SUCEDER!
@@ -114,7 +115,8 @@ class ParserCsv(object):
 
         assert isinstance(metadata, MetadataBaseDatosContactoDTO)
 
-        workbook = csv.reader(file_obj, self._get_dialect(file_obj))
+        file_obj_str = codecs.iterdecode(file_obj, 'utf-8', errors='ignore')
+        workbook = csv.reader(file_obj_str)
 
         cantidad_importados = 0
         for i, curr_row in enumerate(workbook):
@@ -197,7 +199,8 @@ class ParserCsv(object):
         """
 
         file_obj = base_datos_contactos.archivo_importacion.file
-        workbook = csv.reader(file_obj, self._get_dialect(file_obj))
+        file_obj_str = codecs.iterdecode(file_obj, 'utf-8', errors='ignore')
+        workbook = csv.reader(file_obj_str)
 
         structure_dic = []
         for i, row in enumerate(workbook):
@@ -220,62 +223,14 @@ class ParserCsv(object):
 
         return structure_dic
 
-    def _get_dialect(self, file_obj):
-        try:
-            file_obj.seek(0, 0)
-            dialect = csv.Sniffer().sniff(file_obj.read(1024),
-                                          [',', ';', '\t'])
-            file_obj.seek(0, 0)
-
-            return dialect
-        except csv.Error:
-            file_obj.seek(0, 0)
-
-            workbook = csv.reader(file_obj)
-            single_column = []
-
-            i = 0
-            for i, row in enumerate(workbook):
-                value = row[0].strip()
-                try:
-                    int(value)
-                    value_valid = True
-                except ValueError:
-                    value_valid = False
-
-                if i == 0 and not value_valid:
-                    continue
-
-                single_column.append(value_valid)
-
-                if i == 2:
-                    break
-
-            if i < 2:
-                logger.warn(_("El archivo CSV seleccionado posee menos de 2 "
-                              "filas."))
-                raise OmlParserMinRowError(_("El archivo CSV posee menos de "
-                                             "2 filas"))
-
-            if single_column and all(single_column):
-                file_obj.seek(0, 0)
-                return None
-
-            logger.warn(_("No se pudo determinar el delimitador del archivo"
-                          " CSV"))
-            raise OmlParserCsvDelimiterError(_("No se pudo determinar el "
-                                               "delimitador del archivo CSV"))
-        finally:
-            file_obj.seek(0, 0)
-
     def get_estructura_archivo(self, base_datos_contactos):
         """
         Lee un archivo CSV y devuelve contenidos.
         """
 
         file_obj = base_datos_contactos.archivo_importacion.file
-        workbook = csv.reader(file_obj, self._get_dialect(file_obj))
-
+        file_obj_str = codecs.iterdecode(file_obj, 'utf-8', errors='ignore')
+        workbook = csv.reader(file_obj_str)
         structure_dic = []
         for i, row in enumerate(workbook):
             if row:
@@ -287,52 +242,6 @@ class ParserCsv(object):
             raise OmlParserMinRowError(_("El archivo CSV posee menos de "
                                          "2 filas"))
         return structure_dic
-
-    # TODO: OPTIMIZAR - Verificar ambos encodings en el mismo loop sobre estructura_archivo
-    # x Ej. Usar un flag para ver si falló cada encoding
-    def detectar_encoding_csv(self, estructura_archivo):
-        """
-        Detecta el encoding la estructura pasada por parametro
-        :param estructura_archivo: estructura del archiva
-        :return: retorna el enconding del archivo
-        """
-
-        error_utf_8 = False
-        error_iso = False
-        for item in estructura_archivo:
-            for value in item:
-                try:
-                    value.decode('utf-8')
-                except UnicodeDecodeError:
-                    error_utf_8 = True
-                    break
-
-        if not error_utf_8:
-            return "utf-8"
-        else:
-            for item in estructura_archivo:
-                for value in item:
-                    try:
-                        value.decode('iso-8859-1')
-                    except UnicodeDecodeError:
-                        error_iso = True
-                    break
-
-        if error_iso:
-            logger.warn(_("No se pudo detectar el encoding del archivo csv"))
-            raise OmlParserCsvEncodingError(_("No se pudo detectar el encoding"
-                                              " del archivo csv"))
-        else:
-            return "iso-8859-1"
-
-    # TODO: Ponerle un nombre más declarativo a este metodo... Que hace?
-    def visualizar_estructura_template(self, estructura_archivo, encoding):
-
-        transformado = []
-        for fila in estructura_archivo:
-            item = [value.decode(encoding) for value in fila]
-            transformado.append(item)
-        return transformado
 
 # =============================================================================
 # Funciones utilitarias
@@ -397,5 +306,5 @@ PATTERN_SANITIZE_NUMBER = re.compile("[^0-9]")
 
 
 def sanitize_number(number):
-    number = unicode(number)
+    number = str(number)
     return PATTERN_SANITIZE_NUMBER.sub("", number)

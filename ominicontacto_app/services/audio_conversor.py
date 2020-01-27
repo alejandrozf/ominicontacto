@@ -56,7 +56,7 @@ class ConversorDeAudioService(object):
     2. {1} para el sufijo del nombre del archivo (ej: '.wav')
     """
 
-    def _crear_directorios(self, directorio, mode=0755):
+    def _crear_directorios(self, directorio, mode=0o755):
         """Crea directorio (recursivamente) si no existen. Es el equivalente
         de `mkdir -p`.
 
@@ -77,7 +77,7 @@ class ConversorDeAudioService(object):
 
         return False
 
-    def _crear_archivo(self, archivo, mode=0644):
+    def _crear_archivo(self, archivo, mode=0o644):
         """Crea archivo vacio si no existe.
 
         :param archivo: path absoluto al archivo

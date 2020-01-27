@@ -113,7 +113,7 @@ class AgenteTiemposReporte(object):
 
     @property
     def tiempo_porcentaje_wait(self):
-        if self.tiempo_wait > 0 and self.tiempo_sesion:
+        if self.tiempo_wait is not None and self.tiempo_wait > 0.0 and self.tiempo_sesion:
             return self.tiempo_wait / self.tiempo_sesion.total_seconds() * 100
         return None
 

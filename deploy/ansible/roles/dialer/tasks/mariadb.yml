@@ -17,23 +17,11 @@
 #
 ---
 
-- name: Installation of mariadb (centos)
+- name: Installation of mariadb
   yum: name={{ item }} state=present
   with_items:
     - MySQL-python.x86_64
     - mariadb-server
-  when: ansible_os_family == "RedHat"
-  retries: 3
-  delay: 3
-  register: result
-  until: result is success
-
-- name: Installation of mariadb (debian)
-  apt: name={{ item }} state=present
-  with_items:
-    - mariadb-server
-    - python-mysqldb
-  when: ansible_os_family == "Debian"
   retries: 3
   delay: 3
   register: result
@@ -42,11 +30,6 @@
 # En estas tasks se hacen tareas de segurizacion de mariadb, es como hacer un mariadb-secure no voy a explicar una por una, nunca fallan
 - name: Enable and start MariaDB (centos)
   service: name=mariadb enabled=yes state=started
-  when: ansible_os_family == "RedHat"
-
-- name: Enable and start MariaDB (debian)
-  service: name=mysql enabled=yes state=started
-  when: ansible_os_family == "Debian"
 
 - name: Remove .my.cnf
   file: path=/root/.my.cnf state=absent
@@ -60,7 +43,6 @@
   environment:
     MYSQL_HOST: "{{ mysql_host }}"
   when: mysql_root_password != ""
-  tags: postinstall
 
 - name: Reload privilege tables
   command: "mysql -ne \"FLUSH PRIVILEGES\""
@@ -94,9 +76,3 @@
   become: true
   become_method: sudo
   when: ansible_os_family == "RedHat"
-
-- name: Enable and start MariaDB (debian)
-  service: name=mysql enabled=yes state=started
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "Debian"

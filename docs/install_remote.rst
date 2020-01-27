@@ -19,18 +19,6 @@ Pre-requisitos:
 - Una instancia de GNU/Linux CentOS 7 (minimal), Debian 9 (netinstall) ó Ubuntu Server 18.04
 - 20 GB de espacio en disco
 - 4 GB de memoria RAM
-- En *Ubuntu / Debian*; Instalar el paquete sudo, openssh-server y phyton-minimal, permitir login SSH con el usuario root y reiniciar el servicio de ssh para que se tomen los cambios:
-
-.. code-block:: bash
-
-  apt-get install sudo openssh-server python-minimal -y
-  sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-  systemctl restart ssh
-
-.. note::
-
-   En versiones menores a CentOS 7.6 es necesario primero hacer un yum update y luego reebotear el server
-
 - Dejar la hora correctamente configurada en el host.
 - Configurar una *dirección IP* y un *hostname* fijo en el host destino de la instalación.
 
@@ -42,32 +30,6 @@ Preparación en la máquina que ejecuta la instalación remota
 ************************************************************
 
 - Debemos contar con el paquete git para luego clonar el repositorio del protyecto y seleccionar el release a instalar.
-
-**Ubuntu - Debian:**
-
-.. code-block:: bash
-
-  apt install git
-  git clone https://gitlab.com/omnileads/ominicontacto.git
-  cd ominicontacto
-  git checkout master
-
-- Realizar el update/upgrade del sistema operativo
-
-.. code-block:: bash
-
-  apt-get update
-  apt-get upgrade -y
-
-.. important::
-
-    **Para Debian:** Instalar paquete linux-image-amd64: *apt-get install linux-image-amd64*
-
-- Rebootear la máquina.
-
-.. code-block:: bash
-
-  reboot
 
 **CentOS:**
 

@@ -76,21 +76,3 @@
 
 - include: kamailio_configuration.yml
   tags: ['kamailio']
-
-#  Se pasan los certificados al host
-- name: Copy of the certificates from kamailio server to omniapp (cluster)
-  fetch: src={{ kamailio_location }}/etc/certs/{{ item.src }} dest=/var/tmp/ansible/{{ item.dest }} flat=yes
-  with_items:
-    - { src: 'demoCA/cert.pem', dest: 'ca_cert.pem'}
-    - { src: 'cert.pem', dest: 'cert.pem' }
-    - { src: 'key.pem', dest: 'key.pem' }
-  when: cluster != 0
-
-- include: roles/prerequisitos/tasks/reboot.yml
-  when: cluster != 0 and ansible_os_family == "RedHat"
-
-- name: Wait for the server to finish rebooting
-  become: no
-  local_action: wait_for host="{{ kamailio_ip }}" delay=15 state=started port={{ ansible_ssh_port }} timeout=600
-  tags: reboot
-  when: ansible_os_family == "RedHat" and cluster !=0

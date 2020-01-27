@@ -1,7 +1,7 @@
-{% if cluster == 0 %}
-#!{{ install_prefix }}virtualenv/bin/python
+{% if is_docker == "false" %}
+#!{{ install_prefix }}virtualenv/bin/python3
 {% else %}
-#! /usr/bin/python
+#! /usr/bin/python3
 {% endif %}
 # -*- coding: utf-8 -*-
 

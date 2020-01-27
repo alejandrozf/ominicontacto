@@ -23,21 +23,6 @@
 [devenv-container]
 #localhost ansible_connection=local
 
-################################################################
-# If you  are installing a cluster in bare-metal.              #
-# Uncomment this lines and change IP and hostnames of servers  #
-################################################################
-[omniapp]
-#hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X
-[kamailio]
-#hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X
-[asterisk]
-#hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X
-[database]
-#hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X
-[dialer]
-#hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X
-
 ###############################################################
 ###############################################################
 # Below are the variables used for every kind of installation #
@@ -168,53 +153,21 @@ devenv=0
 prodenv=1
 
 [docker:vars]
-aio=0
-cluster=1
 is_docker=true
 docker_user='{{ lookup("env","SUDO_USER") }}'
 
 [prodenv-aio:vars]
 ssh_port="{{ ansible_ssh_port }}"
 omni_ip="{{ inventory_hostname }}"
-omniapp_ip="{{ omni_ip }}"
-asterisk_ip="{{ omni_ip }}"
-kamailio_ip="{{ omni_ip }}"
-database_ip="{{ omni_ip }}"
-dialer_ip="{{ omni_ip }}"
-cluster=0
 devenv=0
 prodenv=1
 is_docker=false
-
-[prodenv-cluster:vars]
-omniapp_ip="{{ hostvars[groups['omniapp'][0]].ansible_host }}"
-omniapp_fqdn="{{ hostvars[groups['omniapp'][0]].inventory_hostname }}"
-database_ip="{{ hostvars[groups['database'][0]].ansible_host }}"
-database_fqdn="{{ hostvars[groups['database'][0]].inventory_hostname }}"
-asterisk_ip="{{ hostvars[groups['asterisk'][0]].ansible_host }}"
-asterisk_fqdn="{{ hostvars[groups['asterisk'][0]].inventory_hostname }}"
-kamailio_ip="{{ hostvars[groups['kamailio'][0]].ansible_host }}"
-kamailio_fqdn="{{ hostvars[groups['kamailio'][0]].inventory_hostname }}"
-dialer_ip="{{ hostvars[groups['dialer'][0]].ansible_host }}"
-dialer_fqdn="{{ hostvars[groups['dialer'][0]].inventory_hostname }}"
-cluster=1
-devenv=0
-prodenv=1
-is_docker=false
-
-[prodenv-cluster:children]
-omniapp
-database
-asterisk
-kamailio
-dialer
 
 [docker:children]
 devenv-container
 prodenv-container
 
 [everyone:children]
-prodenv-cluster
 prodenv-aio
 devenv-container
 prodenv-container

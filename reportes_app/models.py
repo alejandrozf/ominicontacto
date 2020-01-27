@@ -275,7 +275,7 @@ class LlamadaLog(models.Model):
     campana_extra_id = models.IntegerField(db_index=True, blank=True, null=True)
     numero_extra = models.CharField(max_length=128, blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "Log de llamada con fecha {0} con id de campaña {1} con id de agente {2} " \
                "con el evento {3} ".format(self.time, self.campana_id,
                                            self.agente_id, self.event)
@@ -338,7 +338,7 @@ class ActividadAgenteLog(models.Model):
     event = models.CharField(max_length=32, blank=True, null=True)
     pausa_id = models.CharField(max_length=128, blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "Log de actividad agente con fecha {0} para agente de id {1} con el evento {2} " \
                "con id de pausa {3}".format(self.time, self.agente_id,
                                             self.event, self.pausa_id)

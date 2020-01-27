@@ -223,7 +223,7 @@ class RutaEntranteForm(forms.ModelForm):
             tipo = instance.destino.tipo
             self.initial['tipo_destino'] = tipo
             destinos_qs = DestinoEntrante.get_destinos_por_tipo(tipo)
-            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__unicode__())
+            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, str(dest_entr))
                                                          for dest_entr in destinos_qs]
             self.fields['destino'].choices = destino_entrante_choices
         else:
@@ -313,7 +313,7 @@ class IVRForm(forms.ModelForm):
             self.initial[destino_field] = destino.pk
             self.initial[destino_field_tipo] = destino.tipo
             destinos_qs = DestinoEntrante.get_destinos_por_tipo(destino.tipo)
-            destinos_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__unicode__())
+            destinos_choices = [EMPTY_CHOICE] + [(dest_entr.id, str(dest_entr))
                                                  for dest_entr in destinos_qs]
             self.fields[destino_field].choices = destinos_choices
 
@@ -463,7 +463,7 @@ class OpcionDestinoIVRForm(forms.ModelForm):
             tipo_destino = instance.destino_siguiente.tipo
             self.initial['tipo_destino'] = tipo_destino
             destinos_qs = DestinoEntrante.get_destinos_por_tipo(tipo_destino)
-            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__unicode__())
+            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, str(dest_entr))
                                                          for dest_entr in destinos_qs]
             self.fields['destino_siguiente'].choices = destino_entrante_choices
 
@@ -520,7 +520,7 @@ class OpcionDestinoValidacionFechaHoraForm(forms.ModelForm):
             tipo_destino = instance.destino_siguiente.tipo
             self.initial['tipo_destino'] = tipo_destino
             destinos_qs = DestinoEntrante.get_destinos_por_tipo(tipo_destino)
-            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__unicode__())
+            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, str(dest_entr))
                                                          for dest_entr in destinos_qs]
             self.fields['destino_siguiente'].choices = destino_entrante_choices
 
@@ -610,7 +610,7 @@ class AudiosAsteriskForm(forms.Form):
         idiomas_instalados = [(valor, self.AUDIO_IDIOMA_CHOICES_DICT[valor])
                               for valor in directorios_idiomas]
         idiomas_no_instalados = list(set(self.AUDIO_IDIOMA_CHOICES) - set(idiomas_instalados))
-        idiomas_instalados_mostrar = [unicode(choice) for valor, choice in idiomas_instalados]
+        idiomas_instalados_mostrar = [str(choice) for valor, choice in idiomas_instalados]
         return (idiomas_instalados_mostrar, idiomas_no_instalados)
 
 

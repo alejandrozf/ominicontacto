@@ -159,7 +159,7 @@ class User(AbstractUser):
 class Modulo(models.Model):
     nombre = models.CharField(max_length=20, verbose_name=_('Nombre'))
 
-    def __unicode__(self):
+    def __str__(self):
         return self.nombre
 
 
@@ -172,7 +172,7 @@ class Grupo(models.Model):
     auto_pause = models.BooleanField(default=True, verbose_name=_('Pausar automaticamente'))
     auto_unpause = models.PositiveIntegerField(verbose_name=_('Despausar automaticamente'))
 
-    def __unicode__(self):
+    def __str__(self):
         return self.nombre
 
     class Meta:
@@ -234,13 +234,14 @@ class AgenteProfile(models.Model):
     sip_extension = models.IntegerField(unique=True)
     sip_password = models.CharField(max_length=128, blank=True, null=True)
     modulos = models.ManyToManyField(Modulo, verbose_name=_("Módulos"))
-    grupo = models.ForeignKey(Grupo, related_name='agentes', verbose_name=_("Grupo"))
+    grupo = models.ForeignKey(Grupo, related_name='agentes', verbose_name=_("Grupo"),
+                              on_delete=models.CASCADE)
     estado = models.PositiveIntegerField(choices=ESTADO_CHOICES, default=ESTADO_OFFLINE)
-    reported_by = models.ForeignKey(User, related_name="reportedby")
+    reported_by = models.ForeignKey(User, related_name="reportedby", on_delete=models.CASCADE)
     is_inactive = models.BooleanField(default=False)
     borrado = models.BooleanField(default=False, editable=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.user.get_full_name()
 
     def get_modulos(self):
@@ -304,7 +305,7 @@ class SupervisorProfile(models.Model):
     borrado = models.BooleanField(default=False, editable=False)
     timestamp = models.CharField(max_length=64, blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.user.get_full_name()
 
     def borrar(self):
@@ -364,7 +365,7 @@ class NombreCalificacion(models.Model):
     def es_reservada(self):
         return self.nombre == settings.CALIFICACION_REAGENDA
 
-    def __unicode__(self):
+    def __str__(self):
         return self.nombre
 
 
@@ -376,7 +377,7 @@ class Formulario(models.Model):
     def tiene_campana_asignada(self):
         return self.campana_set.all().exists()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.nombre
 
 
@@ -417,7 +418,7 @@ class FieldFormulario(models.Model):
         (TIPO_TEXTO_AREA, _('Caja de Texto de Area')),
     )
 
-    formulario = models.ForeignKey(Formulario, related_name="campos")
+    formulario = models.ForeignKey(Formulario, related_name="campos", on_delete=models.CASCADE)
     nombre_campo = models.CharField(max_length=64)
     orden = models.PositiveIntegerField()
     tipo = models.PositiveIntegerField(choices=TIPO_CHOICES)
@@ -428,9 +429,9 @@ class FieldFormulario(models.Model):
         ordering = ['orden']
         unique_together = ("orden", "formulario")
 
-    def __unicode__(self):
-        return unicode(_("campo {0} del formulario {1}".format(self.nombre_campo,
-                                                               self.formulario)))
+    def __str__(self):
+        return str(_("campo {0} del formulario {1}".format(self.nombre_campo,
+                                                           self.formulario)))
 
     def obtener_campo_anterior(self):
         """
@@ -500,7 +501,7 @@ class ArchivoDeAudio(models.Model):
         editable=False,
     )
 
-    def __unicode__(self):
+    def __str__(self):
         if self.borrado:
             return _(u'(Eliminado) {0}').format(self.descripcion)
         return self.descripcion
@@ -960,7 +961,8 @@ class Campana(models.Model):
     bd_contacto = models.ForeignKey(
         'BaseDatosContacto',
         null=True, blank=True,
-        related_name="%(class)ss"
+        related_name="%(class)ss",
+        on_delete=models.CASCADE
     )
     oculto = models.BooleanField(default=False)
     # TODO: Sacar este campo
@@ -969,7 +971,8 @@ class Campana(models.Model):
     sistema_externo = models.ForeignKey("SistemaExterno", null=True, blank=True,
                                         on_delete=models.SET_NULL, related_name='campanas')
     id_externo = models.CharField(max_length=128, null=True, blank=True)
-    sitio_externo = models.ForeignKey("SitioExterno", null=True, blank=True)
+    sitio_externo = models.ForeignKey("SitioExterno", null=True, blank=True,
+                                      on_delete=models.CASCADE)
     tipo_interaccion = models.PositiveIntegerField(
         choices=TIPO_INTERACCION,
         default=FORMULARIO,
@@ -986,7 +989,7 @@ class Campana(models.Model):
 
     mostrar_nombre = models.BooleanField(default=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.nombre
 
     def crear_tarea_actualizacion(self):
@@ -1285,10 +1288,10 @@ class OpcionCalificacion(models.Model):
         Campana, on_delete=models.CASCADE, related_name='opciones_calificacion')
     tipo = models.IntegerField(choices=FORMULARIO_CHOICES, default=NO_ACCION)
     nombre = models.CharField(max_length=50)
-    formulario = models.ForeignKey(Formulario, null=True, blank=True)
+    formulario = models.ForeignKey(Formulario, null=True, blank=True, on_delete=models.CASCADE)
 
-    def __unicode__(self):
-        return unicode(_('Opción "{0}" para campaña "{1}" de tipo "{2}"'.format(
+    def __str__(self):
+        return str(_('Opción "{0}" para campaña "{1}" de tipo "{2}"'.format(
             self.nombre, self.campana.nombre, self.get_tipo_display())))
 
     def es_agenda(self):
@@ -1359,7 +1362,7 @@ class Queue(models.Model):
 
     campana = models.OneToOneField(
         Campana,
-        related_name='queue_campana', blank=True, null=True
+        related_name='queue_campana', blank=True, null=True, on_delete=models.CASCADE
     )
 
     name = models.CharField(max_length=128, primary_key=True)
@@ -1412,7 +1415,8 @@ class Queue(models.Model):
 
     # destino por failover
     destino = models.ForeignKey('configuracion_telefonia_app.DestinoEntrante',
-                                related_name='campanas_destino_failover', blank=True, null=True)
+                                related_name='campanas_destino_failover', blank=True, null=True,
+                                on_delete=models.CASCADE)
 
     # campos que no usamos
     musiconhold = models.CharField(max_length=128, blank=True, null=True)
@@ -1436,7 +1440,7 @@ class Queue(models.Model):
     memberdelay = models.BigIntegerField(blank=True, null=True)
     timeoutrestart = models.NullBooleanField(blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def guardar_ep_id_wombat(self, ep_id_wombat):
@@ -1518,8 +1522,8 @@ class QueueMember(models.Model):
     paused = models.IntegerField()
     id_campana = models.CharField(max_length=128)
 
-    def __unicode__(self):
-        return unicode(_("agente: {0} para la campana {1} ".format(
+    def __str__(self):
+        return str(_("agente: {0} para la campana {1} ".format(
             self.member.user.get_full_name(), self.queue_name)))
 
     @classmethod
@@ -1563,7 +1567,7 @@ class Pausa(models.Model):
                             verbose_name=_('Tipo'))
     eliminada = models.BooleanField(default=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.nombre
 
     def es_productiva(self):
@@ -1884,7 +1888,7 @@ class MetadataBaseDatosContactoDTO(object):
         except Exception as e:
             logger.exception(_("Error: {0} detectada al desserializar "
                                "datos extras. Datos extras: '{1}'"
-                               "".format(e.message, datos_json)))
+                               "".format(e, datos_json)))
             raise
 
         assert len(datos) == self.cantidad_de_columnas
@@ -1999,7 +2003,7 @@ class MetadataBaseDatosContacto(MetadataBaseDatosContactoDTO):
                 self._metadata = json.loads(bd.metadata)
             except Exception as e:
                 logger.exception(_("Error: {0} detectada al desserializar "
-                                   "metadata de la bd {1}".format(e.message, bd.id)))
+                                   "metadata de la bd {1}".format(e, bd.id)))
                 raise
 
     # -----
@@ -2016,7 +2020,7 @@ class MetadataBaseDatosContacto(MetadataBaseDatosContactoDTO):
             self.bd.save()
         except Exception as e:
             logger.exception(_("Error: {0} detectada al serializar "
-                               "metadata de la bd {1}".format(e.message, self.bd.id)))
+                               "metadata de la bd {1}".format(e, self.bd.id)))
             raise
 
 
@@ -2077,7 +2081,7 @@ class BaseDatosContacto(models.Model):
         verbose_name = _("Base de datos")
         verbose_name_plural = _("Base de datos")
 
-    def __unicode__(self):
+    def __str__(self):
         return "{0}: ({1} contactos)".format(self.nombre,
                                              self.cantidad_contactos)
 
@@ -2285,7 +2289,8 @@ class Contacto(models.Model):
     datos = models.TextField()
     bd_contacto = models.ForeignKey(
         'BaseDatosContacto',
-        related_name='contactos', blank=True, null=True
+        related_name='contactos', blank=True, null=True,
+        on_delete=models.CASCADE
     )
     id_externo = models.CharField(max_length=128, null=True)
     es_originario = models.BooleanField(default=True)
@@ -2323,7 +2328,7 @@ class Contacto(models.Model):
     def lista_de_datos(self):
         return json.loads(self.datos)
 
-    def __unicode__(self):
+    def __str__(self):
         return '{0} >> {1}'.format(
             self.bd_contacto, self.datos)
 
@@ -2356,7 +2361,7 @@ class MensajeRecibido(models.Model):
     content = models.TextField()
     es_leido = models.BooleanField(default=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return "mensaje recibido del numero {0}".format(self.remitente)
 
     class Meta:
@@ -2367,11 +2372,11 @@ class MensajeEnviado(models.Model):
     remitente = models.CharField(max_length=20)
     destinatario = models.CharField(max_length=20)
     timestamp = models.CharField(max_length=255)
-    agente = models.ForeignKey(AgenteProfile)
+    agente = models.ForeignKey(AgenteProfile, on_delete=models.CASCADE)
     content = models.TextField()
     result = models.IntegerField(blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "mensaje enviado al número {0}".format(self.destinatario)
 
     class Meta:
@@ -2508,12 +2513,12 @@ class Grabacion(models.Model):
     id_cliente = models.CharField(max_length=255)
     tel_cliente = models.CharField(max_length=255)
     grabacion = models.CharField(max_length=255)
-    agente = models.ForeignKey(AgenteProfile, related_name='grabaciones')
-    campana = models.ForeignKey(Campana, related_name='grabaciones')
+    agente = models.ForeignKey(AgenteProfile, related_name='grabaciones', on_delete=models.CASCADE)
+    campana = models.ForeignKey(Campana, related_name='grabaciones', on_delete=models.CASCADE)
     callid = models.CharField(max_length=45, blank=True, null=True)
     duracion = models.IntegerField(default=0)
 
-    def __unicode__(self):
+    def __str__(self):
         return "grabacion del agente {0} con el cliente {1}".format(
             self.agente.user.get_full_name(), self.id_cliente)
 
@@ -2537,7 +2542,7 @@ class GrabacionMarca(models.Model):
     callid = models.CharField(max_length=45)
     descripcion = models.TextField()
 
-    def __unicode__(self):
+    def __str__(self):
         return "Grabacion con uid={0} marcada con descripcion={1}".format(
             self.callid, self.descripcion)
 
@@ -2581,7 +2586,7 @@ class Agenda(models.Model):
         (MEDIO_EMAIL, 'EMAIL'),
     )
     agente = models.ForeignKey(AgenteProfile, blank=True, null=True,
-                               related_name='eventos')
+                               related_name='eventos', on_delete=models.CASCADE)
     es_personal = models.BooleanField()
     fecha = models.DateField()
     hora = models.TimeField()
@@ -2592,7 +2597,7 @@ class Agenda(models.Model):
     email = models.CharField(max_length=128, blank=True, null=True)
     descripcion = models.TextField()
 
-    def __unicode__(self):
+    def __str__(self):
         return "Evento programado para la fecha {0} a las {1} hs".format(
             self.fecha, self.hora)
 
@@ -2616,11 +2621,13 @@ class CalificacionClienteManager(models.Manager):
 class CalificacionCliente(models.Model):
     objects = CalificacionClienteManager()
 
-    contacto = models.ForeignKey(Contacto)
+    contacto = models.ForeignKey(Contacto, on_delete=models.CASCADE)
     opcion_calificacion = models.ForeignKey(
-        OpcionCalificacion, blank=False, related_name='calificaciones_cliente')
+        OpcionCalificacion, blank=False, related_name='calificaciones_cliente',
+        on_delete=models.CASCADE)
     fecha = models.DateTimeField(auto_now_add=True)
-    agente = models.ForeignKey(AgenteProfile, related_name="calificaciones")
+    agente = models.ForeignKey(AgenteProfile, related_name="calificaciones",
+                               on_delete=models.CASCADE)
     observaciones = models.TextField(blank=True, null=True)
     agendado = models.BooleanField(default=False)
     callid = models.CharField(max_length=32, blank=True, null=True)
@@ -2629,7 +2636,7 @@ class CalificacionCliente(models.Model):
     es_calificacion_manual = models.BooleanField(default=False)
     history = HistoricalRecords()
 
-    def __unicode__(self):
+    def __str__(self):
         return "Calificacion para la campana {0} para el contacto " \
                "{1} ".format(self.opcion_calificacion.campana, self.contacto)
 
@@ -2697,28 +2704,28 @@ class RespuestaFormularioGestion(models.Model):
     metadata = models.TextField()
     fecha = models.DateTimeField(auto_now_add=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "Respuesta del Formulario para el contacto {0} de la campana{1} " \
                "{1} ".format(self.calificacion.contacto,
                              self.calificacion.opcion_calificacion.campana)
 
 
 class Chat(models.Model):
-    agente = models.ForeignKey(AgenteProfile, related_name="chatsagente")
-    user = models.ForeignKey(User, related_name="chatsusuario")
+    agente = models.ForeignKey(AgenteProfile, related_name="chatsagente", on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name="chatsusuario", on_delete=models.CASCADE)
     fecha_hora_chat = models.DateTimeField(auto_now=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "Chat entre el agente {0} y el usuario {1} " \
                "{1} ".format(self.agente, self.user)
 
 
 class MensajeChat(models.Model):
-    sender = models.ForeignKey(User, related_name="chatssender")
-    to = models.ForeignKey(User, related_name="chatsto")
+    sender = models.ForeignKey(User, related_name="chatssender", on_delete=models.CASCADE)
+    to = models.ForeignKey(User, related_name="chatsto", on_delete=models.CASCADE)
     mensaje = models.TextField()
     fecha_hora = models.DateTimeField(auto_now=True)
-    chat = models.ForeignKey(Chat, related_name="mensajeschat")
+    chat = models.ForeignKey(Chat, related_name="mensajeschat", on_delete=models.CASCADE)
 
 
 class AgendaContactoManager(models.Manager):
@@ -2756,15 +2763,17 @@ class AgendaContacto(models.Model):
         (TYPE_GLOBAL, 'GLOBAL'),
     )
 
-    agente = models.ForeignKey(AgenteProfile, related_name="agendacontacto")
-    contacto = models.ForeignKey(Contacto)
+    agente = models.ForeignKey(AgenteProfile, related_name="agendacontacto",
+                               on_delete=models.CASCADE)
+    contacto = models.ForeignKey(Contacto, on_delete=models.CASCADE)
     fecha = models.DateField()
     hora = models.TimeField()
     tipo_agenda = models.PositiveIntegerField(choices=TYPE_AGENDA_CHOICES)
     observaciones = models.TextField(blank=True, null=True)
-    campana = models.ForeignKey(Campana, related_name='agendas', null=True)
+    campana = models.ForeignKey(Campana, related_name='agendas', null=True,
+                                on_delete=models.CASCADE)
 
-    def __unicode__(self):
+    def __str__(self):
         return "Agenda para el contacto {0} agendado por el agente {1} " \
                "para la fecha {2} a la hora {3}hs ".format(
                    self.contacto, self.agente, self.fecha, self.hora)
@@ -2900,7 +2909,7 @@ class ActuacionVigente(models.Model):
 
     """Dias de la semana, compatibles con datetime.date.weekday()"""
 
-    campana = models.OneToOneField(Campana)
+    campana = models.OneToOneField(Campana, on_delete=models.CASCADE)
     domingo = models.BooleanField()
     lunes = models.BooleanField()
     martes = models.BooleanField()
@@ -2911,7 +2920,7 @@ class ActuacionVigente(models.Model):
     hora_desde = models.TimeField()
     hora_hasta = models.TimeField()
 
-    def __unicode__(self):
+    def __str__(self):
         return "Campaña {0} - Actuación vigente: hora dese {1} a horas hasta {2}".format(
             self.campana, self.hora_desde, self.hora_hasta
         )
@@ -2982,7 +2991,7 @@ class Backlist(models.Model):
     cantidad_contactos = models.PositiveIntegerField(
         default=0)
 
-    def __unicode__(self):
+    def __str__(self):
         return "{0}: ({1} contactos)".format(self.nombre,
                                              self.cantidad_contactos)
 
@@ -2994,9 +3003,10 @@ class ContactoBacklist(models.Model):
 
     telefono = models.CharField(max_length=128)
     back_list = models.ForeignKey(
-        Backlist, related_name='contactosbacklist', blank=True, null=True)
+        Backlist, related_name='contactosbacklist', blank=True, null=True,
+        on_delete=models.CASCADE)
 
-    def __unicode__(self):
+    def __str__(self):
         return "Telefono no llame {0}  ".format(self.telefono)
 
 
@@ -3053,7 +3063,7 @@ class SitioExterno(models.Model):
     objetivo = models.PositiveIntegerField(choices=OBJETIVOS, default=EMBEBIDO,
                                            blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "Sitio: {0} - url: {1}".format(self.nombre, self.url)
 
     def ocultar(self):
@@ -3112,17 +3122,17 @@ class SistemaExterno(models.Model):
     agentes = models.ManyToManyField(
         AgenteProfile, through="AgenteEnSistemaExterno", verbose_name=_("Agentes"))
 
-    def __unicode__(self):
+    def __str__(self):
         return "Sistema Externo: {0}".format(self.nombre)
 
 
 class AgenteEnSistemaExterno(models.Model):
     """Representa la relación entre un agente de OML y un sistema externo"""
-    agente = models.ForeignKey(AgenteProfile)
-    sistema_externo = models.ForeignKey(SistemaExterno)
+    agente = models.ForeignKey(AgenteProfile, on_delete=models.CASCADE)
+    sistema_externo = models.ForeignKey(SistemaExterno, on_delete=models.CASCADE)
     id_externo_agente = models.CharField(max_length=128)
 
-    def __unicode__(self):
+    def __str__(self):
         return "Agente: {0} en Sistema Externo: {1} con id_externo: {2}".format(
             self.agente, self.sistema_externo, self.id_externo_agente)
 
@@ -3170,14 +3180,14 @@ class ReglasIncidencia(models.Model):
         (MULT, "MULT")
     )
 
-    campana = models.ForeignKey(Campana, related_name='reglas_incidencia')
+    campana = models.ForeignKey(Campana, related_name='reglas_incidencia', on_delete=models.CASCADE)
     estado = models.PositiveIntegerField(choices=ESTADOS_CHOICES)
     estado_personalizado = models.CharField(max_length=128, blank=True, null=True)
     intento_max = models.IntegerField()
     reintentar_tarde = models.IntegerField()
     en_modo = models.PositiveIntegerField(choices=EN_MODO_CHOICES, default=MULT)
 
-    def __unicode__(self):
+    def __str__(self):
         return "Regla de incidencia para la campana: {0} - estado: {1}".format(
             self.campana.nombre, self.estado)
 
@@ -3248,7 +3258,7 @@ class AgenteEnContacto(models.Model):
     modificado = models.DateTimeField(auto_now=True, null=True)
     es_originario = models.BooleanField(default=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "Agente de id={0} relacionado con contacto de id={1} con el estado {2}".format(
             self.agente_id, self.contacto_id, self.estado)
 
@@ -3376,12 +3386,12 @@ class ParametrosCrm(models.Model):
     )
     OPCIONES_LLAMADA_KEYS = [key for key, value in OPCIONES_LLAMADA]
 
-    campana = models.ForeignKey(Campana, related_name='parametros_crm')
+    campana = models.ForeignKey(Campana, related_name='parametros_crm', on_delete=models.CASCADE)
     nombre = models.CharField(max_length=128)
     valor = models.CharField(max_length=256)
     tipo = models.PositiveIntegerField(choices=TIPOS)
 
-    def __unicode__(self):
+    def __str__(self):
         return "Variable {0} con valor: {1} para la campana {2}".format(
             self.nombre, self.valor, self.campana)
 

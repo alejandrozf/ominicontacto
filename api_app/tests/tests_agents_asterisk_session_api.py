@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 from mock import patch
 
 # from django.utils.translation import ugettext as _
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from ominicontacto_app.tests.factories import PausaFactory
 from ominicontacto_app.tests.utiles import OMLBaseTest

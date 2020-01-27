@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright (C) 2018 Freetech Solutions
 
 # This file is part of OMniLeads
@@ -14,16 +15,27 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
-#
----
 
-- name: Enable and start glusterd deamon
-  systemd: name=glusterd state=started enabled=yes
-  become: true
-  become_method: sudo
+import os
 
-- name: Create the gluster volume of asterisk in root partition
-  gluster_volume: force=yes name=asterisk start_on_create=yes state={{ item }} brick={{ asterisk_location }}
-  with_items:
-    - present
-    - started
+from django.core.management.base import BaseCommand, CommandError
+
+from ominicontacto_app.models import User
+
+
+class Command(BaseCommand):
+
+    help = ('Cambia la contraseña de admin por la definidida en la variable de '
+            'entorno DJANGO_ADMIN_PASS')
+
+    def cambiar_admin_pass(self):
+        django_admin_pass = os.getenv('DJANGO_ADMIN_PASS')
+        admin = User.objects.get(username='admin')
+        admin.set_password(django_admin_pass)
+        admin.save()
+
+    def handle(self, *args, **options):
+        try:
+            self.cambiar_admin_pass()
+        except Exception as e:
+            raise CommandError('Fallo del comando: {0}'.format(e))

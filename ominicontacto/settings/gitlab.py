@@ -43,8 +43,8 @@ Y luego de eso, las customizaciones.
 """
 import os
 
-from addons import *
-from defaults import *
+from .addons import *
+from .defaults import *
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -234,3 +234,5 @@ TOKEN_EXPIRED_AFTER_SECONDS = 600
 KAMAILIO_HOSTNAME = 'trash'
 NGINX_HOSTNAME = 'trash'
 OML_EXTERNAL_PORT = 'trash'
+
+MIDDLEWARE = MIDDLEWARE_CLASSES

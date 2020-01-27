@@ -121,7 +121,7 @@ class SipConfigCreator(object):
             except Exception as e:
                 logger.exception(
                     _("Error {0}: No se pudo generar configuracion de "
-                      "Asterisk para la quene {1}".format(e.message, agente.user.get_full_name())))
+                      "Asterisk para la quene {1}".format(e, agente.user.get_full_name())))
 
                 try:
                     traceback_lines = [
@@ -129,7 +129,7 @@ class SipConfigCreator(object):
                         for line in traceback.format_exc().splitlines()]
                     traceback_lines = "\n".join(traceback_lines)
                 except Exception as e:
-                    traceback_lines = _("Error {0} al intentar generar traceback".format(e.message))
+                    traceback_lines = _("Error {0} al intentar generar traceback".format(e))
                     logger.exception(_("Error al intentar generar traceback"))
 
                 # FAILED: Creamos la porción para el fallo del config sip.
@@ -156,7 +156,7 @@ class SipConfigCreator(object):
                 logger.exception(
                     _("Error {0}: no se pudo generar configuracion de "
                       "Asterisk para la queue {1}".format(
-                          e.message, supervisor.user.get_full_name())))
+                          e, supervisor.user.get_full_name())))
 
                 try:
                     traceback_lines = [
@@ -164,7 +164,7 @@ class SipConfigCreator(object):
                         for line in traceback.format_exc().splitlines()]
                     traceback_lines = "\n".join(traceback_lines)
                 except Exception as e:
-                    traceback_lines = _("Error {0} al intentar generar traceback".format(e.message))
+                    traceback_lines = _("Error {0} al intentar generar traceback".format(e))
                     logger.exception(traceback_lines)
 
                 # FAILED: Creamos la porción para el fallo del config sip.
@@ -189,7 +189,7 @@ class SipConfigCreator(object):
                 logger.exception(
                     _("Error {0}: no se pudo generar configuracion de "
                       "Asterisk para la queue {1}".format(
-                          e.message, cliente.user.get_full_name())))
+                          e, cliente.user.get_full_name())))
 
                 try:
                     traceback_lines = [
@@ -197,7 +197,7 @@ class SipConfigCreator(object):
                         for line in traceback.format_exc().splitlines()]
                     traceback_lines = "\n".join(traceback_lines)
                 except Exception as e:
-                    traceback_lines = _("Error {0} al intentar generar traceback".format(e.message))
+                    traceback_lines = _("Error {0} al intentar generar traceback".format(e))
                     logger.exception(traceback_lines)
 
                 # FAILED: Creamos la porción para el fallo del config sip.
@@ -338,7 +338,7 @@ class QueuesCreator(object):
             except Exception as e:
                 logger.exception(
                     _("Error {0}: No se pudo generar configuracion de "
-                      "Asterisk para la queue {1}".format(e.message, campana.nombre)))
+                      "Asterisk para la queue {1}".format(e, campana.nombre)))
 
                 try:
                     traceback_lines = [
@@ -347,7 +347,7 @@ class QueuesCreator(object):
                     traceback_lines = "\n".join(traceback_lines)
                 except Exception as e:
                     traceback_lines = _("Error {0}: al intentar generar traceback".format(
-                        e.message))
+                        e))
                     logger.exception(traceback)
 
                 # FAILED: Creamos la porción para el fallo del Dialplan.
@@ -369,7 +369,7 @@ class QueuesCreator(object):
             except Exception as e:
                 logger.exception(
                     _("Error {0}: no se pudo generar configuracion de "
-                      "Asterisk para la queue {1}".format(e.message, campana.nombre)))
+                      "Asterisk para la queue {1}".format(e, campana.nombre)))
 
                 try:
                     traceback_lines = [
@@ -377,7 +377,7 @@ class QueuesCreator(object):
                         for line in traceback.format_exc().splitlines()]
                     traceback_lines = "\n".join(traceback_lines)
                 except Exception as e:
-                    traceback_lines = _("Error {0} al intentar generar traceback".format(e.message))
+                    traceback_lines = _("Error {0} al intentar generar traceback".format(e))
                     logger.exception(traceback_lines)
 
                 # FAILED: Creamos la porción para el fallo del Dialplan.
@@ -482,7 +482,7 @@ class RutasSalientesConfigCreator(object):
             except Exception as e:
                 logger.exception(
                     _("Error {0}: No se pudo generar configuracion de "
-                      "Asterisk para la ruta {1}".format(e.message, ruta.id)))
+                      "Asterisk para la ruta {1}".format(e, ruta.id)))
 
                 try:
                     traceback_lines = [
@@ -491,7 +491,7 @@ class RutasSalientesConfigCreator(object):
                     traceback_lines = "\n".join(traceback_lines)
                 except Exception as e:
                     traceback_lines = _("Error {0}: al intentar generar traceback".format(
-                        e.message))
+                        e))
                     logger.exception(traceback_lines)
 
                 # FAILED: Creamos la porción para el fallo del config sip.
@@ -612,22 +612,22 @@ class ConfigFile(object):
         try:
             tmp_file_obj = os.fdopen(tmp_fd, 'w')
             for contenido in contenidos:
-                assert isinstance(contenido, unicode), \
+                assert isinstance(contenido, str), \
                     _("Objeto NO es unicode: {0}".format(type(contenido)))
-                tmp_file_obj.write(contenido.encode('utf-8'))
+                tmp_file_obj.write(contenido)
 
             tmp_file_obj.close()
 
             logger.info(_("Copiando file config a {0}".format(self._filename)))
             shutil.copy(tmp_filename, self._filename)
-            os.chmod(self._filename, 0644)
+            os.chmod(self._filename, 0o644)
 
         finally:
             try:
                 os.remove(tmp_filename)
             except Exception as e:
                 logger.exception(_("Error {0} al intentar borrar temporal {1}".format(
-                    e.message, tmp_filename)))
+                    e, tmp_filename)))
 
     def copy_asterisk(self):
         subprocess.call(['cp', self._filename, self._remote_path])

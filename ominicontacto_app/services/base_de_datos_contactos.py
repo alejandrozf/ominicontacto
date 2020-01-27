@@ -23,8 +23,7 @@ Servicio encargado de validar y crear las bases de datos.
 
 from __future__ import unicode_literals
 
-from __builtin__ import callable, enumerate
-
+import codecs
 import csv
 import json
 import logging
@@ -75,14 +74,17 @@ class CreacionBaseDatosService(object):
         extension = os.path.splitext(filename)[1].lower()
         if extension not in csv_extensions:
             logger.warn(_("La extensión {0} no es CSV. ".format(extension)))
-            raise(OmlArchivoImportacionInvalidoError(_("El archivo especificado "
+            raise(OmlArchivoImportacionInvalidoError(
+                _("El archivo especificado "
                   "para realizar la importación de contactos no es válido.")))
-        data = csv.reader(base_datos_contacto.archivo_importacion)
+        file_obj = codecs.iterdecode(
+            base_datos_contacto.archivo_importacion, 'utf-8', errors='ignore')
+        data = csv.reader(file_obj)
         validar_estructura_csv(data, file_invalid_msg, logger)
 
         base_datos_contacto.save()
 
-    def obtener_telefono_y_datos(self, encoding, lista_dato, posicion_primer_telefono,
+    def obtener_telefono_y_datos(self, lista_dato, posicion_primer_telefono,
                                  columna_id_externo):
         id_externo = None
         if len(lista_dato) > 1:
@@ -93,7 +95,7 @@ class CreacionBaseDatosService(object):
                 elif i == columna_id_externo:
                     id_externo = valor
                 else:
-                    item.append(valor.decode(encoding))
+                    item.append(valor)
         else:
             telefono = lista_dato[0]
             item = ['']
@@ -131,7 +133,6 @@ class CreacionBaseDatosService(object):
         try:
             estructura_archivo = parser.get_estructura_archivo(base_datos_contacto)
             posicion_primer_telefono = estructura_archivo[0].index(campos_telefonicos[0])
-            encoding = parser.detectar_encoding_csv(estructura_archivo)
             cantidad_contactos = 0
 
             if base_datos_contacto.cantidad_contactos:
@@ -140,7 +141,7 @@ class CreacionBaseDatosService(object):
             for lista_dato in estructura_archivo[1:]:
                 numero_fila += 1
                 telefono, datos, id_externo = self.obtener_telefono_y_datos(
-                    encoding, lista_dato, posicion_primer_telefono, columna_id_externo)
+                    lista_dato, posicion_primer_telefono, columna_id_externo)
                 cantidad_contactos += 1
 
                 if id_externo is not None and id_externo != '':
@@ -300,7 +301,7 @@ class PredictorMetadataService(object):
         nombre = elimina_tildes(nombre)
         return nombre
 
-    def inferir_metadata_desde_lineas(self, lineas_unsafe, encoding):
+    def inferir_metadata_desde_lineas(self, lineas_unsafe):
         """Infiere los metadatos desde las lineas pasadas por parametros.
 
         Devuelve instancias de MetadataBaseDatosContactoDTO.
@@ -309,8 +310,9 @@ class PredictorMetadataService(object):
 
         lineas = []
         for linea in lineas_unsafe:
+            # FIXME: revisar esto del encoding para py3
             lineas.append(
-                [smart_text(col.decode(encoding)) for col in linea]
+                [smart_text(col) for col in linea]
             )
         del lineas_unsafe
 
@@ -628,11 +630,11 @@ class PredictorMetadataService(object):
 
         return metadata
 
-    def inferir_columnas_telefono(self, otras_lineas, encoding):
+    def inferir_columnas_telefono(self, otras_lineas):
         lineas = []
         for linea in otras_lineas:
             lineas.append(
-                [smart_text(col.decode(encoding)) for col in linea]
+                [smart_text(col) for col in linea]
             )
         columnas_con_telefonos = self._inferir_columnas(
             lineas, validate_telefono)
