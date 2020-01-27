@@ -771,6 +771,9 @@ class CampanaManager(models.Manager):
             initial_predictive_model=campana.queue_campana.initial_predictive_model,
             initial_boost_factor=campana.queue_campana.initial_boost_factor,
 
+            autopause=campana.queue_campana.autopause,
+            autopausebusy=campana.queue_campana.autopausebusy,
+
         )
 
         # Replica Actuacion Vigente
@@ -815,6 +818,7 @@ class CampanaManager(models.Manager):
                                       "estado ESTADO_TEMPLATE_ACTIVO"))
 
     def replicar_campana_queue(self, campana):
+        # TODO: No se esta usando
         """
         En este metodo vamos a crear una nueva cola y se la vamos a reasginar a la
         campana para eso vamos a crear un objecto Queue con los datos de actuales
@@ -1375,6 +1379,9 @@ class Queue(models.Model):
     ringinuse = models.BooleanField()
     setinterfacevar = models.BooleanField()
     members = models.ManyToManyField(AgenteProfile, through='QueueMember')
+
+    autopause = models.BooleanField(default=False)
+    autopausebusy = models.BooleanField(default=False)
 
     wait = models.PositiveIntegerField(verbose_name='Tiempo de espera en cola')
     auto_grabacion = models.BooleanField(default=False,

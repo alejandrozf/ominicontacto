@@ -290,6 +290,8 @@ class QueuesCreator(object):
             'oml_retry': retry,
             'oml_periodic-announce': periodic_announce,
             'oml_periodic-announce-frequency': campana.queue_campana.announce_frequency,
+            'oml_autopause': 'all' if campana.queue_campana.autopause else 'no',
+            'oml_autopausebusy': 'yes' if campana.queue_campana.autopausebusy else 'no',
         }
 
         # QUEUE: Creamos la porción inicial del Queue.

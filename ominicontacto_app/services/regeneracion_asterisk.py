@@ -35,8 +35,7 @@ from django.utils.translation import ugettext as _
 
 from ominicontacto_app.errors import OmlError
 from ominicontacto_app.asterisk_config import (
-    AsteriskConfigReloader, QueuesCreator, QueuesConfigFile, SipConfigCreator,
-    SipConfigFile
+    AsteriskConfigReloader, QueuesCreator, SipConfigCreator
 )
 from ominicontacto_app.services.asterisk_database import RegenerarAsteriskFamilysOML
 from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
@@ -55,10 +54,8 @@ class RegeneracionAsteriskService(object):
     def __init__(self):
         # Sincroniza Queues de Campañas
         self.queues_config_creator = QueuesCreator()
-        self.config_queues_file = QueuesConfigFile()
         # Sincroniza Sip De Agentes
         self.sip_config_creator = SipConfigCreator()
-        self.config_sip_file = SipConfigFile()
         # Sincroniza Modelos de Configuracion Telefonica
         self.sincronizador_config_telefonica = SincronizadorDeConfiguracionTelefonicaEnAsterisk()
         # Sincroniza en AstDB las que faltan en el Sincronizador de Configuracion Telefonica
