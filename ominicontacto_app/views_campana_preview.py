@@ -32,7 +32,7 @@ from django.views.generic import ListView, View, DetailView, DeleteView, Templat
 
 from ominicontacto_app.forms import (CampanaPreviewForm, OpcionCalificacionFormSet,
                                      ParametrosCrmFormSet, CampanaSupervisorUpdateForm,
-                                     QueueMemberFormset)
+                                     QueueMemberFormset, AsignacionContactosForm)
 from ominicontacto_app.models import AgenteEnContacto, Campana, AgenteProfile, Contacto
 from ominicontacto_app.views_campana_creacion import (CampanaWizardMixin,
                                                       CampanaTemplateCreateMixin,
@@ -54,18 +54,21 @@ class CampanaPreviewMixin(CampanaWizardMixin):
     PARAMETROS_CRM = '2'
     ADICION_SUPERVISORES = '3'
     ADICION_AGENTES = '4'
+    ASIGNACION_CONTACTOS = '5'
 
     FORMS = [(INICIAL, CampanaPreviewForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (PARAMETROS_CRM, ParametrosCrmFormSet),
              (ADICION_SUPERVISORES, CampanaSupervisorUpdateForm),
-             (ADICION_AGENTES, QueueMemberFormset)]
+             (ADICION_AGENTES, QueueMemberFormset),
+             (ASIGNACION_CONTACTOS, AsignacionContactosForm)]
 
     TEMPLATES = {INICIAL: "campanas/campana_preview/campana_preview.html",
                  OPCIONES_CALIFICACION: "campanas/campana_preview/opcion_calificacion.html",
                  PARAMETROS_CRM: "campanas/campana_preview/parametros_crm_sitio_externo.html",
                  ADICION_SUPERVISORES: "campanas/campana_preview/adicionar_supervisores.html",
-                 ADICION_AGENTES: "campanas/campana_preview/adicionar_agentes.html"}
+                 ADICION_AGENTES: "campanas/campana_preview/adicionar_agentes.html",
+                 ASIGNACION_CONTACTOS: "campanas/campana_preview/asignar_contactos.html"}
 
     form_list = FORMS
 
@@ -84,10 +87,15 @@ class CampanaPreviewCreateView(CampanaPreviewMixin, CampanaManualCreateView):
         queue = self._save_forms(form_list, Campana.ESTADO_ACTIVA, Campana.TYPE_PREVIEW)
         self._insert_queue_asterisk(queue)
         # salvamos los supervisores y agentes asignados a la campaña
-        self.save_supervisores(form_list, -2)
-        self.save_agentes(form_list, -1)
+        self.save_supervisores(form_list, -3)
+        self.save_agentes(form_list, -2)
         # rellenar la tabla que relación agentes y contactos con los valores iniciales
-        queue.campana.establecer_valores_iniciales_agente_contacto()
+        asignar_contactos_form = form_list[-1]
+        asignacion_proporcional = asignar_contactos_form.cleaned_data.get(
+            'proporcionalmente', False)
+        asignacion_aleatoria = asignar_contactos_form.cleaned_data.get('aleatorio', False)
+        queue.campana.establecer_valores_iniciales_agente_contacto(
+            asignacion_proporcional, asignacion_aleatoria)
         # crear(sobreescribir) archivo de crontab con la configuración de llamadas al procedimiento
         # de actualización de las asignaciones de agente a contactos
         queue.campana.crear_tarea_actualizacion()
@@ -141,7 +149,7 @@ class CampanaPreviewTemplateCreateView(CampanaTemplateCreateMixin, CampanaPrevie
     template base para agilizar la creación de las campañas preview
     """
 
-    FORMS = CampanaPreviewCreateView.FORMS[:-2]
+    FORMS = CampanaPreviewCreateView.FORMS[:-3]
 
     form_list = FORMS
 

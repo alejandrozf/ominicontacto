@@ -42,6 +42,25 @@ En la figura 3 y 4 se ejemplifica una asignación de agentes a una campaña.
 
 *Figure 4: agent assignment*
 
+Por último, en la etapa final del wizard se permite opcionalmente realizar una preasignación de contacto a agentes.
+Esta preasignación puede realizar en dos variantes.
+
+La primera variante es mostrada en la siguiente imagen:
+
+.. image:: images/campaigns_prev_wizard_5_1.png
+
+Si se le selecciona la opción de asignar proporcionalmente el sistema realizará una asignación inicial de contactos a agentes en la misma proporción permitiendo que en la consola de agente cuando el agente pida un contacto de la campaña se le entreguen solo contactos libres o de la lista de los que se le hayan asignados. Ver esta distribución en el admin en la siguiente figura:
+
+.. image:: images/campaigns_prev_admin_proporcional.png
+
+Al momento de seleccionar la opción se preasignación proporcional el sistema muestra la opción de seleccionar aleatoriamente:
+
+.. image:: images/campaigns_prev_wizard_5_2.png
+
+Esta opción permite que los contactos sean asignados en orden aleatorio a los agentes, como se muestra a continuación:
+
+.. image:: images/campaigns_prev_admin_aleatorio.png
+
 Finalmente nuestra campaña queda disponible para comenzar a operar. Por lo tanto cuando los agentes asignados a la misma realicen un login a la plataforma, deberían
 disponer de la campaña preview tal como se expone en la figura 5.
 

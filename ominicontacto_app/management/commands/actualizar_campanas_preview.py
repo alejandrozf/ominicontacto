@@ -50,7 +50,7 @@ class Command(BaseCommand):
         """
         liberados = AgenteEnContacto.liberar_contactos_por_tiempo(campana_id, tiempo_desconexion)
 
-        logging.info(
+        logger.info(
             _("Actualizando {0} asignaciones de contactos a agentes en campaña {1}".format(
                 liberados, campana_id)))
 
@@ -60,4 +60,4 @@ class Command(BaseCommand):
         try:
             self._actualizar_relacion_agente_contacto(campana_id, tiempo_desconexion)
         except Exception as e:
-            logging.error('Fallo del comando: {0}'.format(e))
+            logger.error('Fallo del comando: {0}'.format(e))

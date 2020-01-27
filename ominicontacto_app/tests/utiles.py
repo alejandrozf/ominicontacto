@@ -40,7 +40,8 @@ from ominicontacto_app.models import (
     ActuacionVigente, ReglasIncidencia, CalificacionCliente,
     ArchivoDeAudio
 )
-from ominicontacto_app.tests.factories import NombreCalificacionFactory, GrupoFactory
+from ominicontacto_app.tests.factories import (NombreCalificacionFactory, GrupoFactory,
+                                               QueueMemberFactory)
 from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 from mock import Mock
 
@@ -500,6 +501,11 @@ class OMLTestUtilsMixin(object):
             archivo_de_audio)
         archivo_de_audio.save = Mock()
         return archivo_de_audio
+
+    def _hacer_miembro(self, agente, campana):
+        QueueMemberFactory.create(
+            member=agente, queue_name=campana.queue_campana,
+            id_campana='{0}_{1}'.format(campana.pk, campana.nombre))
 
 
 class OMLBaseTest(TestCase, OMLTestUtilsMixin):

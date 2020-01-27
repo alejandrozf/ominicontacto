@@ -1630,3 +1630,23 @@ class RegistroForm(forms.Form):
             'email': config.CLIENT_EMAIL,
             'telefono': config.CLIENT_PHONE,
         }
+
+
+class AsignacionContactosForm(forms.Form):
+
+    proporcionalmente = forms.BooleanField(label=_('Asignar proporcionalmente'),
+                                           required=False, initial=False)
+    aleatorio = forms.BooleanField(label=_('En orden aleatorio'),
+                                   required=False, initial=False)
+
+    def clean(self):
+        # no tiene sentido q se seleccione aleatoriamente si no se seleccionó
+        # la asignación proporcional
+        cleaned_data = super(AsignacionContactosForm, self).clean()
+        proporcionalmente = cleaned_data.get('proporcionalmente', False)
+        aleatorio = cleaned_data.get('aleatorio', False)
+        if aleatorio and not proporcionalmente:
+            raise forms.ValidationError(
+                _('Debe seleccionar la asignación proporcional si quiere escoger'
+                  'la asignación en orden aleatorio'))
+        return cleaned_data
