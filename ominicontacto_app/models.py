@@ -24,6 +24,7 @@ import getpass
 import json
 import logging
 import os
+import random
 import re
 import sys
 import uuid
@@ -48,9 +49,10 @@ from django.forms.models import model_to_dict
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now, timedelta
 from simple_history.models import HistoricalRecords
+
 from ominicontacto_app.utiles import (
     ValidadorDeNombreDeCampoExtra, fecha_local, datetime_hora_maxima_dia,
-    datetime_hora_minima_dia, remplace_espacio_por_guion, )
+    datetime_hora_minima_dia, remplace_espacio_por_guion, dividir_lista)
 
 logger = logging.getLogger(__name__)
 
@@ -993,9 +995,11 @@ class Campana(models.Model):
         ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python')
         ruta_manage_py = os.path.join(settings.BASE_DIR, 'manage.py')
         # adicionar nuevo cron job
+        env_vars_command = 'source /etc/profile.d/omnileads_envars.sh;'
         job = crontab.new(
-            command='{0} {1} actualizar_campanas_preview {2} {3}'.format(
-                ruta_python_virtualenv, ruta_manage_py, self.pk, self.tiempo_desconexion),
+            command='{0} {1} {2} actualizar_campanas_preview {3} {4}'.format(
+                env_vars_command, ruta_python_virtualenv, ruta_manage_py, self.pk,
+                self.tiempo_desconexion),
             comment=str(self.pk))
         # adicionar tiempo de periodicidad al cron job
         job.minute.every(self.TIEMPO_ACTUALIZACION_CONTACTOS)
@@ -1094,13 +1098,23 @@ class Campana(models.Model):
         self.estado = Campana.ESTADO_TEMPLATE_BORRADO
         self.save()
 
-    def establecer_valores_iniciales_agente_contacto(self):
+    def _crear_agente_en_contacto(self, contacto, agente_id, campos_contacto, estado):
+        datos_contacto = literal_eval(contacto.datos)
+        datos_contacto = dict(zip(campos_contacto, datos_contacto))
+        datos_contacto_json = json.dumps(datos_contacto)
+        agente_en_contacto = AgenteEnContacto(
+            agente_id=agente_id, contacto_id=contacto.pk, datos_contacto=datos_contacto_json,
+            telefono_contacto=contacto.telefono, campana_id=self.pk, estado=estado)
+        return agente_en_contacto
+
+    def establecer_valores_iniciales_agente_contacto(
+            self, asignacion_proporcional, asignacion_aleatoria):
         """
         Rellena con valores iniciales la tabla que informa el estado de los contactos
         en relación con los agentes
         """
         # obtenemos todos los contactos de la campaña
-        campana_contactos = self.bd_contacto.contactos.all()
+        campana_contactos = list(self.bd_contacto.contactos.all())
 
         # obtenemos los campos de la BD del contacto
         metadata = self.bd_contacto.get_metadata()
@@ -1108,15 +1122,31 @@ class Campana(models.Model):
 
         # creamos los objetos del modelo AgenteEnContacto a crear
         agente_en_contacto_list = []
-        for contacto in campana_contactos:
-            datos_contacto = literal_eval(contacto.datos)
-            datos_contacto = dict(zip(campos_contacto, datos_contacto))
-            datos_contacto_json = json.dumps(datos_contacto)
-            agente_en_contacto = AgenteEnContacto(
-                agente_id=-1, contacto_id=contacto.pk, datos_contacto=datos_contacto_json,
-                telefono_contacto=contacto.telefono, campana_id=self.pk,
-                estado=AgenteEnContacto.ESTADO_INICIAL)
-            agente_en_contacto_list.append(agente_en_contacto)
+
+        if asignacion_proporcional and asignacion_aleatoria:
+            random.shuffle(campana_contactos)
+            agentes_campana = self.obtener_agentes()
+            n_agentes_campana = agentes_campana.count()
+            for agente, grupo_contactos in zip(agentes_campana,
+                                               dividir_lista(campana_contactos, n_agentes_campana)):
+                for contacto in grupo_contactos:
+                    agente_en_contacto = self._crear_agente_en_contacto(
+                        contacto, agente.pk, campos_contacto, AgenteEnContacto.ESTADO_INICIAL)
+                    agente_en_contacto_list.append(agente_en_contacto)
+        elif asignacion_proporcional:
+            agentes_campana = self.obtener_agentes()
+            n_agentes_campana = agentes_campana.count()
+            for agente, grupo_contactos in zip(agentes_campana,
+                                               dividir_lista(campana_contactos, n_agentes_campana)):
+                for contacto in grupo_contactos:
+                    agente_en_contacto = self._crear_agente_en_contacto(
+                        contacto, agente.pk, campos_contacto, AgenteEnContacto.ESTADO_INICIAL)
+                    agente_en_contacto_list.append(agente_en_contacto)
+        else:
+            for contacto in campana_contactos:
+                agente_en_contacto = self._crear_agente_en_contacto(
+                    contacto, -1, campos_contacto, AgenteEnContacto.ESTADO_INICIAL)
+                agente_en_contacto_list.append(agente_en_contacto)
 
         # insertamos las instancias en la BD
         AgenteEnContacto.objects.bulk_create(agente_en_contacto_list)
@@ -3251,7 +3281,8 @@ class AgenteEnContacto(models.Model):
 
         try:
             qs_agentes_contactos = cls.objects.select_for_update().filter(
-                agente_id=-1, estado=AgenteEnContacto.ESTADO_INICIAL, campana_id=campana_id)
+                agente_id__in=[-1, agente.pk], estado=AgenteEnContacto.ESTADO_INICIAL,
+                campana_id=campana_id)
         except DatabaseError:
             return {'result': 'Error',
                     'code': 'error-concurrencia',
@@ -3279,7 +3310,6 @@ class AgenteEnContacto(models.Model):
         qs_agente_en_contacto = cls.objects.contacto_asignado(agente_id, campana_id)
         if qs_agente_en_contacto.exists():
             agente_en_contacto = qs_agente_en_contacto.first()
-            agente_en_contacto.agente_id = -1
             agente_en_contacto.estado = AgenteEnContacto.ESTADO_INICIAL
             agente_en_contacto.save()
             return True

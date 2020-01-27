@@ -32,6 +32,9 @@
         {% if not es_template %}
             <li class="active"><a>{% trans 'Dar permiso a supervisores' %}</a></li>
             <li class="disabled"><a>{% trans 'Adicionar agentes' %}</a></li>
+            {% if create %}
+                <li class="disabled"><a>{% trans 'Asignación inicial de contactos a agentes' %}</a></li>
+            {% endif %}
         {% endif %}
     </ul>
 {% endblock %}

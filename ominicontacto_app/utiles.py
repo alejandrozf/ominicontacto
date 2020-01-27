@@ -348,3 +348,20 @@ def obtener_opciones_columnas_bd(bd_contacto, columnas_bd_default):
     else:
         nombres_de_columnas = bd_contacto.get_metadata().nombres_de_columnas
     return zip(nombres_de_columnas, nombres_de_columnas)
+
+
+def dividir_lista(lst, n):
+    """Divide una lista en n partes de tamaño similar
+    Si n es menor que la longitud de la lista devuelve
+    un generador de una lista de listas con un iterador
+    donde cada elemento es una lista con un unico elemento
+    de la lista inicial
+    """
+    len_lst = len(lst)
+    if n >= len_lst:
+        for val in lst:
+            yield [val]
+    else:
+        len_partes = len_lst / n
+        for i in range(0, len_lst, len_partes):
+            yield lst[i:i + len_partes]

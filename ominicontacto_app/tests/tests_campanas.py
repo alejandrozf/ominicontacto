@@ -438,7 +438,8 @@ class SupervisorCampanaTests(CampanasTests):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
-         post_step4_data) = self._obtener_post_data_wizard_creacion_campana_preview(
+         post_step4_data,
+         post_step5_data) = self._obtener_post_data_wizard_creacion_campana_preview(
              nombre_campana)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
@@ -446,6 +447,7 @@ class SupervisorCampanaTests(CampanasTests):
         # self.client.post(url, post_step2_data, follow=True)
         self.client.post(url, post_step3_data, follow=True)
         self.client.post(url, post_step4_data, follow=True)
+        self.client.post(url, post_step5_data, follow=True)
         self.assertTrue(Campana.objects.get(nombre=nombre_campana))
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
@@ -546,7 +548,8 @@ class SupervisorCampanaTests(CampanasTests):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
-         post_step4_data) = self._obtener_post_data_wizard_creacion_campana_preview(
+         post_step4_data,
+         post_step5_data) = self._obtener_post_data_wizard_creacion_campana_preview(
              nombre_campana)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
@@ -554,13 +557,41 @@ class SupervisorCampanaTests(CampanasTests):
         # self.client.post(url, post_step2_data, follow=True)
         self.client.post(url, post_step3_data, follow=True)
         self.client.post(url, post_step4_data, follow=True)
+        self.client.post(url, post_step5_data, follow=True)
         self.assertTrue(AgenteEnContacto.objects.all().exists())
 
-    def test_usuario_no_logueado_no_obtiene_contacto_campana_preview(self):
-        self.client.logout()
-        url = reverse('campana_preview_dispatcher', args=[self.campana_activa.pk])
-        response = self.client.post(url, follow=True)
-        self.assertTemplateUsed(response, u'registration/login.html')
+    @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
+    @patch.object(Campana, "crear_tarea_actualizacion")
+    @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
+    @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
+    def test_creacion_campana_preview_inicializa_relacion_agente_contacto_proporcionalmente(
+            self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
+            crear_tarea_actualizacion, _generar_y_recargar_configuracion_asterisk):
+        url = reverse('campana_preview_create')
+        contacto2 = ContactoFactory.create(bd_contacto=self.campana_activa.bd_contacto)
+        self.campana_activa.bd_contacto.contactos.add(contacto2)
+        agente_2 = self.crear_agente_profile()
+
+        nombre_campana = 'campana_preview_test'
+        (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
+         post_step4_data,
+         post_step5_data) = self._obtener_post_data_wizard_creacion_campana_preview(
+             nombre_campana)
+        post_step4_data['4-TOTAL_FORMS'] = 2
+        post_step4_data['4-1-member'] = agente_2.pk
+        post_step4_data['4-1-penalty'] = 3
+        post_step5_data['5-proporcionalmente'] = True
+
+        # realizamos la creación de la campaña mediante el wizard
+        self.client.post(url, post_step0_data, follow=True)
+        self.client.post(url, post_step1_data, follow=True)
+        # self.client.post(url, post_step2_data, follow=True)
+        self.client.post(url, post_step3_data, follow=True)
+        self.client.post(url, post_step4_data, follow=True)
+        self.client.post(url, post_step5_data, follow=True)
+
+        self.assertEqual(list(AgenteEnContacto.objects.values_list('agente_id', flat=True)),
+                         [self.agente_profile.pk, agente_2.pk])
 
     def test_usuario_no_agente_no_obtiene_contacto_campana_preview(self):
         url = reverse('campana_preview_dispatcher', args=[self.campana_activa.pk])
@@ -649,7 +680,8 @@ class SupervisorCampanaTests(CampanasTests):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
-         post_step4_data) = self._obtener_post_data_wizard_creacion_campana_preview(
+         post_step4_data,
+         post_step5_data) = self._obtener_post_data_wizard_creacion_campana_preview(
              nombre_campana)
         # realizamos la creación de la campaña mediante el wizard
         self.client.post(url, post_step0_data, follow=True)
@@ -657,6 +689,7 @@ class SupervisorCampanaTests(CampanasTests):
         # self.client.post(url, post_step2_data, follow=True)
         self.client.post(url, post_step3_data, follow=True)
         self.client.post(url, post_step4_data, follow=True)
+        self.client.post(url, post_step5_data, follow=True)
         self.assertTrue(crear_tarea_actualizacion.called)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
@@ -987,13 +1020,20 @@ class SupervisorCampanaTests(CampanasTests):
         post_step3_data['campana_preview_create_view-current_step'] = 3
         post_step4_data['campana_preview_create_view-current_step'] = 4
 
+        post_step5_data = {
+            '5-proporcionalmente': False,
+            '5-aleatorio': False,
+            'campana_preview_create_view-current_step': 5
+        }
+
         return (post_step0_data, post_step1_data, post_step2_data,
-                post_step3_data, post_step4_data)
+                post_step3_data, post_step4_data, post_step5_data)
 
     def _obtener_post_data_wizard_modificacion_campana_preview(self, nombre_campana):
         (post_step0_data, post_step1_data,
          post_step2_data, post_step3_data,
-         post_step4_data) = self._obtener_post_data_wizard_creacion_campana_preview(
+         post_step4_data,
+         post_step5_data) = self._obtener_post_data_wizard_creacion_campana_preview(
              nombre_campana)
         post_step0_data.pop('campana_preview_create_view-current_step')
         post_step1_data.pop('campana_preview_create_view-current_step')
@@ -1665,7 +1705,7 @@ class SupervisorCampanaTests(CampanasTests):
 
     def _obtener_post_data_wizard_creacion_template_campana_preview(self, nombre_campana):
         (post_step0_data, post_step1_data,
-         post_step2_data, __, __) = self._obtener_post_data_wizard_creacion_campana_preview(
+         post_step2_data, __, __, __) = self._obtener_post_data_wizard_creacion_campana_preview(
              nombre_campana)
         post_step0_data['campana_preview_template_create_view-current_step'] = 0
         post_step1_data['campana_preview_template_create_view-current_step'] = 1
@@ -1692,20 +1732,23 @@ class SupervisorCampanaTests(CampanasTests):
 
     def _obtener_post_data_wizard_creacion_campana_preview_desde_template(self, nombre_campana):
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
-         post_step4_data) = self._obtener_post_data_wizard_creacion_campana_preview(
+         post_step4_data,
+         post_step5_data) = self._obtener_post_data_wizard_creacion_campana_preview(
              nombre_campana)
         post_step0_data['campana_preview_template_create_campana_view-current_step'] = 0
         post_step1_data['campana_preview_template_create_campana_view-current_step'] = 1
         post_step2_data['campana_preview_template_create_campana_view-current_step'] = 2
         post_step3_data['campana_preview_template_create_campana_view-current_step'] = 3
         post_step4_data['campana_preview_template_create_campana_view-current_step'] = 4
+        post_step5_data['campana_preview_template_create_campana_view-current_step'] = 5
         post_step0_data.pop('campana_preview_create_view-current_step')
         post_step1_data.pop('campana_preview_create_view-current_step')
         post_step2_data.pop('campana_preview_create_view-current_step')
         post_step3_data.pop('campana_preview_create_view-current_step')
         post_step4_data.pop('campana_preview_create_view-current_step')
+        post_step5_data.pop('campana_preview_create_view-current_step')
         return (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
-                post_step4_data)
+                post_step4_data, post_step5_data)
 
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     @patch.object(Campana, "crear_tarea_actualizacion")
@@ -1724,7 +1767,8 @@ class SupervisorCampanaTests(CampanasTests):
         url = reverse('campana_preview_template_create_campana', args=[campana.pk])
         nombre_campana = 'campana_preview_clonada'
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
-         post_step4_data) = self._obtener_post_data_wizard_creacion_campana_preview_desde_template(
+         post_step4_data,
+         post_step5_data) = self._obtener_post_data_wizard_creacion_campana_preview_desde_template(
              nombre_campana)
         post_step0_data['0-nombre'] = nombre_campana
         post_step1_data['1-0-nombre'] = opt_calif.nombre
@@ -1737,6 +1781,7 @@ class SupervisorCampanaTests(CampanasTests):
         # self.client.post(url, post_step2_data, follow=True)
         self.client.post(url, post_step3_data, follow=True)
         self.client.post(url, post_step4_data, follow=True)
+        self.client.post(url, post_step5_data, follow=True)
         campana_clonada = Campana.objects.get(nombre=nombre_campana)
         opt_calif_clonada_gestion = campana_clonada.opciones_calificacion.get(
             tipo=OpcionCalificacion.GESTION)
@@ -1902,7 +1947,8 @@ class SupervisorCampanaTests(CampanasTests):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
-         post_step4_data) = self._obtener_post_data_wizard_creacion_campana_preview(
+         post_step4_data,
+         post_step5_data) = self._obtener_post_data_wizard_creacion_campana_preview(
              nombre_campana)
         post_step0_data['0-tipo_interaccion'] = Campana.SITIO_EXTERNO
         sitio_externo = SitioExternoFactory()
@@ -1915,7 +1961,8 @@ class SupervisorCampanaTests(CampanasTests):
         url = reverse('campana_preview_create')
         nombre_campana = 'campana_preview_test'
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
-         post_step4_data) = self._obtener_post_data_wizard_creacion_campana_preview(
+         post_step4_data,
+         post_step5_data) = self._obtener_post_data_wizard_creacion_campana_preview(
              nombre_campana)
         self.client.post(url, post_step0_data, follow=True)
         post_step1_data['1-0-formulario'] = ''
