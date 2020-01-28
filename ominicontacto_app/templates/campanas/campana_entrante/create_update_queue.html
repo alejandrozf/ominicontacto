@@ -78,11 +78,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <div class="col-md-5">
             <label>{% trans 'Musica de espera:' %}</label>
             <button class="btn dropdown-toggle">Inherit</button> <button>moH</button> <button>Agent ringing</button> <button>Ring only</button>
-            
+
         </div>
         <div class="col-md-4">
             <label>{% trans 'Información de alerta:' %}</label>
-            <input type="" name="">      
+            <input type="" name="">
         </div>
         <div class="col-md-3">
             <label for="{{ form.auto_grabacion.id_for_label }}">{% trans 'Grabar llamados:' %}</label>
@@ -102,8 +102,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <button class="btn dropdown-toggle">Yes</button>
         </div>
         <div class="col-md-3">
-            <label>{% trans 'Leave Empty:' %}</label> 
-            <button class="btn dropdown-toggle">No</button>   
+            <label>{% trans 'Leave Empty:' %}</label>
+            <button class="btn dropdown-toggle">No</button>
         </div>
         <div class="col-md-3">
             <label>{% trans 'IVR Breakdown:' %}</label>
@@ -150,10 +150,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <div class="col-md-6">
                 </div>
                 <div class="col-md-6">
-                    <label>{% trans 'Announce Hold Time:'%}</label>
-                    <div class="custom-control custom-checkbox">
-                        <label class="custom-control-label"></label>
-                    </div>
+                    <label for="{{ form.announce_holdtime.id_for_label }}">{% trans 'Anunciar tiempo promedio espera:' %}</label>
+                    {{ form.announce_holdtime }}
+                    {{ form.announce_holdtime.errors }}
                 </div>
                 <div class="col-md-6">
                     <label>{% trans 'Announce position:'%}</label>
@@ -163,7 +162,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </div>
                 <div class="col-md-6">
                     <label>{% trans 'Frecuencia de anuncios de tiempo aprox. de espera y posición actual:'%}</label>
-                    <input type="" name=""> 
+                    <input type="" name="">
                 </div>
                 <div class="col-md-6" id="align_box">
                     <label>{% trans 'Min announce frecuency:'%}</label>

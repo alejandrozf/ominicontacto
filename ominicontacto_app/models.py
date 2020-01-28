@@ -1334,22 +1334,22 @@ class Queue(models.Model):
     objects = QueueManager()
 
     RINGALL = 'ringall'
-    """ring all available channels until one answers (default)"""
+    # ring all available channels until one answers (default)
 
     RRORDERED = 'rrordered'
-    """same as rrmemory, except the queue member order from config file is preserved"""
+    # same as rrmemory, except the queue member order from config file is preserved
 
     LEASTRECENT = 'leastrecent'
-    """ring interface which was least recently called by this queue"""
+    # ring interface which was least recently called by this queue"""
 
     FEWESTCALLS = 'fewestcalls'
-    """ring the one with fewest completed calls from this queue"""
+    # ring the one with fewest completed calls from this queue
 
     RANDOM = 'random'
-    """ring random interface"""
+    # ring random interface
 
     RRMEMORY = 'rrmemory'
-    """round robin with memory, remember where we left off last ring pass"""
+    # round robin with memory, remember where we left off last ring pass
 
     STRATEGY_CHOICES = (
         (RINGALL, 'Ringall'),
@@ -1358,6 +1358,16 @@ class Queue(models.Model):
         (FEWESTCALLS, 'Fewestcalls'),
         (RANDOM, 'Random'),
         (RRMEMORY, 'Rremory'),
+    )
+
+    ANNOUNCE_HOLD_TIME_YES = 'yes'
+    ANNOUNCE_HOLD_TIME_NO = 'no'
+    ANNOUNCE_HOLD_TIME_ONCE = 'once'
+
+    ANNOUNCE_HOLD_TIME_CHOICES = (
+        (ANNOUNCE_HOLD_TIME_YES, _('Sí')),
+        (ANNOUNCE_HOLD_TIME_NO, _('No')),
+        (ANNOUNCE_HOLD_TIME_ONCE, _('Una sola vez')),
     )
 
     campana = models.OneToOneField(
@@ -1418,6 +1428,11 @@ class Queue(models.Model):
                                 related_name='campanas_destino_failover', blank=True, null=True,
                                 on_delete=models.CASCADE)
 
+    # para permitir al usuario especificar el tiempo promedio  que deberá
+    # esperar el llamante para ser atendido
+    announce_holdtime = models.CharField(max_length=128, default=ANNOUNCE_HOLD_TIME_NO,
+                                         choices=ANNOUNCE_HOLD_TIME_CHOICES)
+
     # campos que no usamos
     musiconhold = models.CharField(max_length=128, blank=True, null=True)
     context = models.CharField(max_length=128, blank=True, null=True)
@@ -1433,7 +1448,6 @@ class Queue(models.Model):
     queue_thankyou = models.CharField(max_length=128, blank=True, null=True)
     queue_reporthold = models.CharField(max_length=128, blank=True, null=True)
     announce_round_seconds = models.BigIntegerField(blank=True, null=True)
-    announce_holdtime = models.CharField(max_length=128, blank=True, null=True)
     joinempty = models.CharField(max_length=128, blank=True, null=True)
     leavewhenempty = models.CharField(max_length=128, blank=True, null=True)
     reportholdtime = models.NullBooleanField(blank=True, null=True)

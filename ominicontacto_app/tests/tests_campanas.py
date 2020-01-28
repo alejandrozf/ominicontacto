@@ -740,6 +740,7 @@ class SupervisorCampanaTests(CampanasTests):
             '1-auto_grabacion': 'on',
             '1-audios': audio_ingreso.pk,
             '1-announce_frequency': 1,
+            '1-announce_holdtime': 'no',
             'campana_entrante_create_view-current_step': 1,
             '1-name': nombre_campana,
             '1-campana': '',
