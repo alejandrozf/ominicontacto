@@ -288,7 +288,7 @@ class GeneradorParaQueueEntrante(GeneradorDePedazoDeQueue):
         [{oml_queue_name}]
         announce=beep
         announce-frequency=0
-        announce-holdtime=no
+        announce-holdtime={oml_announce-holdtime}
         announce-position=no
         autofill=yes
         eventmemberstatus=yes
@@ -321,6 +321,9 @@ class GeneradorParaQueueEntrante(GeneradorDePedazoDeQueue):
         autopauseunavail=yes
         autopause={oml_autopause}
         autopausebusy={oml_autopausebusy}
+        queue-callswaiting=queue-callswaiting
+        queue-thereare=queue-thereare
+        queue-youarenext=queue-youarenext
         """
 
     def get_parametros(self):

@@ -52,6 +52,8 @@ A continuación se prosigue con la creación de nuestra campaña entrante.
 - **Failover dst:** destino hacia el cual se enviarán las llamadas que hayan sido expiradas (superó el tiempo de espera asociado).
 - **Autopausar agentes que fallan al responder:** indica si se debe pausar automáticamente o no a los agentes que fallen a responder llamadas.
 - **Autopausar agentes que dan ocupado:** indica si se debe pausar automáticamente o no a los agentes que den ocupado.
+- **Anunciar tiempo promedio de espera** permite al usuario especificar el tiempo promedio  que deberá esperar el llamante para ser atendido
+
 
 
 .. note::

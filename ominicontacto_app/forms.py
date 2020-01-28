@@ -221,7 +221,7 @@ class QueueEntranteForm(forms.ModelForm):
         fields = ('name', 'timeout', 'retry', 'maxlen', 'wrapuptime', 'servicelevel',
                   'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
                   'audios', 'announce_frequency', 'audio_de_ingreso', 'campana',
-                  'tipo_destino', 'destino', 'autopause', 'autopausebusy')
+                  'tipo_destino', 'destino', 'announce_holdtime', 'autopause', 'autopausebusy')
 
         help_texts = {
             'timeout': _('En segundos'),
@@ -239,6 +239,7 @@ class QueueEntranteForm(forms.ModelForm):
             "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
             'servicelevel': forms.TextInput(attrs={'class': 'form-control'}),
             'strategy': forms.Select(attrs={'class': 'form-control'}),
+            'announce_holdtime': forms.Select(attrs={'class': 'form-control'}),
             'weight': forms.TextInput(attrs={'class': 'form-control'}),
             'wait': forms.TextInput(attrs={'class': 'form-control'}),
             'audios': forms.Select(attrs={'class': 'form-control'}),

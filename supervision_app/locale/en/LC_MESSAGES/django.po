@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-02 16:23-0300\n"
+"POT-Creation-Date: 2020-01-28 14:30-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,9 +17,24 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: supervision_app/apps.py:33
+msgid "Supervisión"
+msgstr "Supervision"
+
+#: supervision_app/apps.py:38
 #: supervision_app/templates/supervision_agentes.html:48
 msgid "Agentes"
 msgstr "Agents"
+
+#: supervision_app/apps.py:42
+#: supervision_app/templates/supervision_campanas_entrantes.html:32
+msgid "Campañas Entrantes"
+msgstr "Inbound Campaigns"
+
+#: supervision_app/apps.py:46
+#: supervision_app/templates/supervision_campanas_salientes.html:31
+msgid "Campañas Salientes"
+msgstr "Outbound Campaigns"
 
 #: supervision_app/templates/supervision_agentes.html:76
 msgid "Finalizar"
@@ -42,10 +57,6 @@ msgstr "Time"
 #: supervision_app/templates/supervision_agentes.html:88
 msgid "Acciones"
 msgstr "Actions"
-
-#: supervision_app/templates/supervision_campanas_entrantes.html:32
-msgid "Campañas Entrantes"
-msgstr "Inbound Campaigns"
 
 #: supervision_app/templates/supervision_campanas_entrantes.html:38
 msgid "Llamadas"
@@ -92,10 +103,6 @@ msgstr "seconds"
 #: supervision_app/templates/supervision_campanas_entrantes.html:60
 msgid " segundos"
 msgstr " seconds"
-
-#: supervision_app/templates/supervision_campanas_salientes.html:31
-msgid "Campañas Salientes"
-msgstr "Outbound Campaigns"
 
 #: supervision_app/templates/supervision_campanas_salientes.html:37
 msgid "Llamadas discadas"
