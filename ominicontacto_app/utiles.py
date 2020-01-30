@@ -362,6 +362,11 @@ def dividir_lista(lst, n):
         for val in lst:
             yield [val]
     else:
-        len_partes = len_lst / n
-        for i in range(0, len_lst, len_partes):
-            yield lst[i:i + len_partes]
+        len_partes = len_lst // n
+        for i, val in enumerate(range(0, len_lst, len_partes)):
+            if i == n:
+                return
+            if i == n - 1:
+                yield lst[val:]
+            else:
+                yield lst[val:val + len_partes]

@@ -32,7 +32,8 @@ from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.utiles import (
     upload_to, crear_archivo_en_media_root, elimina_espacios_parentesis_guiones,
     remplace_espacio_por_guion, elimina_coma, elimina_comillas,
-    convert_string_in_boolean, convert_fecha_datetime, convertir_ascii_string
+    convert_string_in_boolean, convert_fecha_datetime, convertir_ascii_string,
+    dividir_lista
 )
 import os
 
@@ -161,3 +162,11 @@ class UtilesTest(OMLBaseTest):
     def test_convertir_ascii_string(self):
         cadena = convertir_ascii_string("asdfg32432\xf1 (899)-781")
         self.assertEqual(cadena, "asdfg32432 (899)-781")
+
+    def test_dividir_lista(self):
+        self.assertEqual(list(dividir_lista(range(13), 2)), [range(0, 6), range(6, 13)])
+        self.assertEqual(
+            list(dividir_lista(range(13), 3)), [range(0, 4), range(4, 8), range(8, 13)])
+        self.assertEqual(list(dividir_lista(range(4), 2)), [range(0, 2), range(2, 4)])
+        self.assertEqual(list(dividir_lista(range(11), 1)), [range(0, 11)])
+        self.assertEqual(list(dividir_lista(range(5), 6)), [[0], [1], [2], [3], [4]])
