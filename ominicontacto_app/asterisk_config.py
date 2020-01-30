@@ -293,7 +293,16 @@ class QueuesCreator(object):
             'oml_autopause': 'all' if campana.queue_campana.autopause else 'no',
             'oml_autopausebusy': 'yes' if campana.queue_campana.autopausebusy else 'no',
             'oml_announce-holdtime': campana.queue_campana.announce_holdtime,
+            'oml_ivr-breakdown': campana.queue_campana.ivr_breakdown,
         }
+
+        ivr_breakdown = campana.queue_campana.ivr_breakdown
+        if ivr_breakdown is not None:
+            oml_ivr_breakdown = 'sub-oml-module-ivrbreakout'
+        else:
+            oml_ivr_breakdown = ''
+
+        param_generales.update({'oml_ivr-breakdown': oml_ivr_breakdown})
 
         # QUEUE: Creamos la porción inicial del Queue.
         generador_queue = self._generador_factory. \

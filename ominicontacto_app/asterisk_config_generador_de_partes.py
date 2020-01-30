@@ -324,6 +324,7 @@ class GeneradorParaQueueEntrante(GeneradorDePedazoDeQueue):
         queue-callswaiting=queue-callswaiting
         queue-thereare=queue-thereare
         queue-youarenext=queue-youarenext
+        context={oml_ivr-breakdown}
         """
 
     def get_parametros(self):

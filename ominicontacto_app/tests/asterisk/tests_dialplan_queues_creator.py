@@ -23,6 +23,9 @@ Tests del metodo 'ominicontacto_app.asterisk_config_generador_de_partes'
 
 from __future__ import unicode_literals
 
+from configuracion_telefonia_app.models import DestinoEntrante
+from configuracion_telefonia_app.tests.factories import IVRFactory
+
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.models import Campana
 from ominicontacto_app.asterisk_config import QueuesCreator
@@ -71,3 +74,11 @@ class QueuesCreatorTest(OMLBaseTest):
         creator = QueuesCreator()
         dialplan = creator._generar_dialplan_entrantes(self.campana_entrante)
         self.assertIn('announce-holdtime=once', dialplan)
+
+    def test_generar_dialplan_entrante_ivr_breakout(self):
+        ivr = IVRFactory()
+        destino_ivr = DestinoEntrante.crear_nodo_ruta_entrante(ivr)
+        self.queue_entrante.ivr_breakdown = destino_ivr
+        creator = QueuesCreator()
+        dialplan = creator._generar_dialplan_entrantes(self.campana_entrante)
+        self.assertIn('context=sub-oml-module-ivrbreakout', dialplan)

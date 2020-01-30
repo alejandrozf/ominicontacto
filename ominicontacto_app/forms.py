@@ -204,15 +204,21 @@ class QueueEntranteForm(forms.ModelForm):
         tipo_destino_choices.extend(DestinoEntrante.TIPOS_DESTINOS)
         self.fields['tipo_destino'].choices = tipo_destino_choices
         instance = getattr(self, 'instance', None)
+        # inicializa valores de destino failover
         if instance.pk is not None and instance.destino:
             tipo = instance.destino.tipo
             self.initial['tipo_destino'] = tipo
             destinos_qs = DestinoEntrante.get_destinos_por_tipo(tipo)
-            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__unicode__())
+            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__str__())
                                                          for dest_entr in destinos_qs]
             self.fields['destino'].choices = destino_entrante_choices
         else:
             self.fields['destino'].choices = ()
+        # inicializa valores de campo ivr_breakdown
+        ivr_breakdown_qs = DestinoEntrante.get_destinos_por_tipo(DestinoEntrante.IVR)
+        ivr_breakdown_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__str__())
+                                                  for dest_entr in ivr_breakdown_qs]
+        self.fields['ivr_breakdown'].choices = ivr_breakdown_choices
         if not instance.pk:
             self.initial['wrapuptime'] = 2
 
@@ -221,7 +227,8 @@ class QueueEntranteForm(forms.ModelForm):
         fields = ('name', 'timeout', 'retry', 'maxlen', 'wrapuptime', 'servicelevel',
                   'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
                   'audios', 'announce_frequency', 'audio_de_ingreso', 'campana',
-                  'tipo_destino', 'destino', 'announce_holdtime', 'autopause', 'autopausebusy')
+                  'tipo_destino', 'destino', 'ivr_breakdown', 'autopause', 'autopausebusy',
+                  'announce_holdtime')
 
         help_texts = {
             'timeout': _('En segundos'),
@@ -236,7 +243,7 @@ class QueueEntranteForm(forms.ModelForm):
             'timeout': forms.TextInput(attrs={'class': 'form-control'}),
             'retry': forms.TextInput(attrs={'class': 'form-control'}),
             'maxlen': forms.TextInput(attrs={'class': 'form-control'}),
-            "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
+            'wrapuptime': forms.TextInput(attrs={'class': 'form-control'}),
             'servicelevel': forms.TextInput(attrs={'class': 'form-control'}),
             'strategy': forms.Select(attrs={'class': 'form-control'}),
             'announce_holdtime': forms.Select(attrs={'class': 'form-control'}),
@@ -247,6 +254,7 @@ class QueueEntranteForm(forms.ModelForm):
             'audio_de_ingreso': forms.Select(attrs={'class': 'form-control'}),
             'tipo_destino': forms.Select(attrs={'class': 'form-control'}),
             'destino': forms.Select(attrs={'class': 'form-control', 'id': 'destino'}),
+            'ivr_breakdown': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def clean_maxlen(self):
@@ -271,6 +279,15 @@ class QueueEntranteForm(forms.ModelForm):
             raise forms.ValidationError(
                 _('Debe seleccionar un destino'))
         return destino
+
+    def clean_ivr_breakdown(self):
+        ivr_breakdown = self.cleaned_data.get('ivr_breakdown', None)
+        anuncio_periodico = self.cleaned_data.get('audios', None)
+        if ivr_breakdown and ivr_breakdown.tipo != DestinoEntrante.IVR:
+            raise forms.ValidationError(_('Debe seleccionar un destino IVR'))
+        if ivr_breakdown and not anuncio_periodico:
+            raise forms.ValidationError(_('Debe seleccionar un anuncio periódico'))
+        return ivr_breakdown
 
 
 class QueueMemberForm(forms.ModelForm):
