@@ -3,37 +3,39 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-17 14:37-0300\n"
+"POT-Creation-Date: 2020-02-10 18:11-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.4.0\n"
 
-# 29eeddd4bdc94438aadde81cf095d503
+# c362fa67d5624df780b8caf1f3a18148
 #: ../../crm_integration_crm2oml.rst:5
 msgid "Interacción desde el CRM hacia OMniLeads"
 msgstr "CRM to OMniLeads Interaction"
 
-# 1625c8bb81fa413d9dfa132b9bfc2864
+# a54b05630bff463cb6faeba066c58b89
 #: ../../crm_integration_crm2oml.rst:7
 msgid ""
 "Desde un sistema CRM se pueden ejecutar peticiones a partir de accesar a "
-"los endpoints de la :ref:`about_api`. A lo largo de esta sección vamos a "
-"explicar como activar las acciones que se pueden efectuar desde un CRM "
-"externo."
+"los endpoints de la :ref:`about_restful_api`. A lo largo de esta sección "
+"vamos a explicar como activar las acciones que se pueden efectuar desde "
+"un CRM externo."
 msgstr ""
 "It is also possible from a CRM system to execute requests once accessing "
-"to the endpoints of the :ref:`about_api`. Throughout this section we will go to "
-"explain how to activate the actions available from an external CRM."
+"to the endpoints of the :ref:`about_api`. Throughout this section we will"
+" go to explain how to activate the actions available from an external "
+"CRM."
 
-# fb6984588be64ee0abcc8eecdda0146b
+# 63982f026b4e4304aa7e5893c445ff92
 #: ../../crm_integration_crm2oml.rst:10
 msgid ""
 "**Click to call**: un usuario del CRM que se encuentre en la vista de un "
@@ -43,13 +45,12 @@ msgid ""
 "encamine la llamada hacia el exterior y la enlace con el agente "
 "pertinente."
 msgstr ""
-"**Click to call**: a CRM user who is available in the contact view "
-"can make a call to the contact number clicking "
-"on that number within the CRM. The click action triggers "
-"a program call to an OMniLeads API method in order for the system to "
-"route the call accordingly."
+"**Click to call**: a CRM user who is available in the contact view can "
+"make a call to the contact number clicking on that number within the CRM."
+" The click action triggers a program call to an OMniLeads API method in "
+"order for the system to route the call accordingly."
 
-# 460cf339e6a0439097150f83b8c99dcb
+# ff832c8e30ea4fceb57b392607625071
 #: ../../crm_integration_crm2oml.rst:12
 msgid ""
 "**Calificación de gestión**: cada llamada conectada a un agente puede "
@@ -61,33 +62,33 @@ msgid ""
 "permitiendo así una correlación entre la campaña y los contactos del CRM "
 "y la gestión del usuario a nivel Contact Center dentro de OMniLeads."
 msgstr ""
-"**Call Disposition**: each call connected to an agent can "
-"execute a request to the CRM passing usable call parameters. "
-"When the user finishes the call "
-"within the CRM, she/he proceeds with the \"Call Disposition\". This action allows CRM to access "
-"an OMniLeads API method establishing a correlation between the OMniLeads campaign level and CRM contacts. "
+"**Call Disposition**: each call connected to an agent can execute a "
+"request to the CRM passing usable call parameters. When the user finishes"
+" the call within the CRM, she/he proceeds with the \"Call Disposition\". "
+"This action allows CRM to access an OMniLeads API method establishing a "
+"correlation between the OMniLeads campaign level and CRM contacts. "
 
-# 263d7c563d4742a5bef3b6cf95acac2f
+# b4b7297ebfc14a7a80153c866f438a4a
 #: ../../crm_integration_crm2oml.rst:15
 msgid ""
 "Para implementar las acciones enumeradas, los desarrolladores del sistema"
 " CRM deben implementar dichas funcionalidades a partir de consumir la "
-":ref:`about_api`. Una vez disponibles las funcionalidades del lado del "
-"CRM, se deben ejecutar las siguientes configuraciones para comenzar a "
-"operar en el marco de las integraciones."
+":ref:`about_restful_api`. Una vez disponibles las funcionalidades del "
+"lado del CRM, se deben ejecutar las siguientes configuraciones para "
+"comenzar a operar en el marco de las integraciones."
 msgstr ""
-"In order to implement the listed actions, CRM developer "
-"needs to implement these functionalities consuming the "
-":ref:`about_api`. Once the functionalities from CRM side are available"
-" , the following configurations need to be set as to start "
-"operating with this integration level."
+"In order to implement the listed actions, CRM developer needs to "
+"implement these functionalities consuming the :ref:`about_api`. Once the "
+"functionalities from CRM side are available , the following "
+"configurations need to be set as to start operating with this integration"
+" level."
 
-# ff8dbcab2f6248aa99e7328b7aaac2df
+# 70236be50e814e7e89f4597ba67ff143
 #: ../../crm_integration_crm2oml.rst:19
 msgid "Interrelación de entidades entre el CRM y OMniLeads"
 msgstr "CRM and OMniLeads entities Relationships"
 
-# 46d1103581ba4f4eac8567bea9ff5f68
+# b1d503853f1a42749d48bdecb85278ac
 #: ../../crm_integration_crm2oml.rst:21
 msgid ""
 "Como bien sabemos, cada llamada procesada por OMniLeads implica una "
@@ -95,12 +96,11 @@ msgid ""
 "Contacto. Podríamos hablar de la \"Trinidad; Agente - Contacto - "
 "Campaña\"."
 msgstr ""
-"As we well know, each call processed by OMniLeads implies a "
-"relationship between a Campaign, an Agent and in most cases a "
-"Contact. We could talk about the Trinity: \"Agent - Contact - "
-"Campaign\"."
+"As we well know, each call processed by OMniLeads implies a relationship "
+"between a Campaign, an Agent and in most cases a Contact. We could talk "
+"about the Trinity: \"Agent - Contact - Campaign\"."
 
-# 51534452cbda4c27a28cd96789a5617b
+# c70cb63262aa4a58a0ab44838c35f70e
 #: ../../crm_integration_crm2oml.rst:24
 msgid ""
 "Dentro del universo CRM también sabemos que tenemos la misma relación "
@@ -115,13 +115,13 @@ msgid ""
 msgstr ""
 "In the CRM universe we also know that we have the same relationship "
 "between the CRM User, the campaign she/he is operating and the contacts "
-"associated to the campaign. Therefore, the relationship stated here "
-"has to do with the fact of being able to relate each OMniLeads agent, campaign "
-"and contact with the expected CRM entity side. This concept will allow "
-"a perfect correlation between CRM and OMniLeads systems when executing a \"click to call\" or \"disposition a "
-"contact\"."
+"associated to the campaign. Therefore, the relationship stated here has "
+"to do with the fact of being able to relate each OMniLeads agent, "
+"campaign and contact with the expected CRM entity side. This concept will"
+" allow a perfect correlation between CRM and OMniLeads systems when "
+"executing a \"click to call\" or \"disposition a contact\"."
 
-# dfb9cc137ec440d681901f94b8677083
+# 231d3b7c28ea4a788c5c61622d07796f
 #: ../../crm_integration_crm2oml.rst:29
 msgid ""
 "OMniLeads tiene sus identificadores (agente, campaña y contactos de la "
@@ -131,67 +131,72 @@ msgid ""
 "identificadores entre ambos sistemas."
 msgstr ""
 "OMniLeads has its own identifiers (agent, campaign and contacts of the "
-"campaign) self-generated. It is also common to find the same scenario in CRM "
-", therefore it is desired to make a mapping process between OMniLeads and CRM in this aspect. "
-"We will explain below how to synchronize these identifiers between both systems."
+"campaign) self-generated. It is also common to find the same scenario in "
+"CRM , therefore it is desired to make a mapping process between OMniLeads"
+" and CRM in this aspect. We will explain below how to synchronize these "
+"identifiers between both systems."
 
-# 2172afbd993f49639c4a387acd2e34d1
+# d750d6587dd74508a06ed42cb6eb8969
 #: ../../crm_integration_crm2oml.rst:32
 msgid "**Relación de Agentes de OMniLeads y Usuarios del CRM**"
 msgstr "**OMniLeads Agents and CRM Users relationship**"
 
-# 1090df0a1e534567b5ca4fd2021da181
+# 06c78dd2a26542c89296117abb45665b
 #: ../../crm_integration_crm2oml.rst:34
 msgid ""
 "El primer paso es dar el alta de un Sistema Externo y asociar los agentes"
 " de OMniLeads con usuarios del CRM a través de ingresar el ID "
 "(identificador) del usuario en el CRM, como se indica en la figura 1."
 msgstr ""
-"The first step is to register an External System entity and associate the OMniLeads agents "
-"with CRM users by entering the ID "
-"(identifier) ​​of the user in the CRM, as indicated in Figure 1."
+"The first step is to register an External System entity and associate the"
+" OMniLeads agents with CRM users by entering the ID (identifier) ​​of the"
+" user in the CRM, as indicated in Figure 1."
 
-# 1b9537406c5f4c9188f73792122e4f1b
+# f4bf42c6a3034e7fa92d02659b3b88b2
 #: ../../crm_integration_crm2oml.rst:39
 msgid "*Figure 1: new external crm*"
 msgstr ""
 
-# ef5399fc70714421baf85550202e5101
+# 912e570dd74348c69df48662058e5e25
 #: ../../crm_integration_crm2oml.rst:41
 msgid "Por lo tanto cada agente identificado podrá interactuar desde el CRM."
-msgstr "That being said, each identified agent will be able to interact from the CRM."
+msgstr ""
+"That being said, each identified agent will be able to interact from the "
+"CRM."
 
-# 5c40c565f01d4803950f55009fd5fe37
+# fde70dc2829c4c418a0f69192ec30b39
 #: ../../crm_integration_crm2oml.rst:43
 msgid "**Relación entre base de contactos de OMniLeads y CRM**"
 msgstr "**Relationship between OMniLeads and CRM Contact Database**"
 
-# bbe70d9e0c6c4d27852d8a701315bdfa
+# 275703423caf43a79711ab2c6956e839
 #: ../../crm_integration_crm2oml.rst:45
 msgid ""
 "Para generar una interrelación de una base de contactos se dispone de un "
 "campo selector de ID externo a la hora de subir una nueva base de "
 "contactos, como se muestra en la figura 2."
 msgstr ""
-"In order to create a Contact Database relationship between systems, the database upload process will offer an "
-"external ID selector field, as shown in figure 2."
+"In order to create a Contact Database relationship between systems, the "
+"database upload process will offer an external ID selector field, as "
+"shown in figure 2."
 
-# 46c6b81f8620452aa873bb856a99bfc0
+# 0572f3f530ca4d95b07b795eb8a1558f
 #: ../../crm_integration_crm2oml.rst:50
 msgid "*Figure 2: new crm contact database*"
 msgstr ""
 
-# e380675b58314d7bb32d5b3d9dc6c80c
+# 385297091d0743c7b080260a24985a9a
 #: ../../crm_integration_crm2oml.rst:52
 msgid ""
 "Este valor deberá ser único para cada contacto de la base de datos, por "
 "lo que no podrán cargarse dos contactos con el mismo valor en una misma "
 "base de datos. Cada contacto solo podrá tener un identificador externo."
 msgstr ""
-"This value must be unique for each contact in the database, so there should be no contacts with the same value. "
-"Each contact can only have one external identifier."
+"This value must be unique for each contact in the database, so there "
+"should be no contacts with the same value. Each contact can only have one"
+" external identifier."
 
-# c9ae612f34464def9839a295a82465ff
+# 0fff6610b4a44e47b986bd08fd2fc0aa
 #: ../../crm_integration_crm2oml.rst:55
 msgid ""
 "En el ejemplo de la figura 2 se asume que la columna \"id_contact\" es la"
@@ -200,15 +205,15 @@ msgid ""
 "de efectuar una interacción con el CRM."
 msgstr ""
 "In Figure 2, the example assumes that column \"id_contact\" is the one "
-"reserved for external ID. Therefore, "
-"OMniLeads will consider this column/value when interacting with CRM system."
+"reserved for external ID. Therefore, OMniLeads will consider this "
+"column/value when interacting with CRM system."
 
-# 28ef79bf3e5b4012a51f800845553d6f
+# 3e802ad1c393434f9d33116a723e9fe7
 #: ../../crm_integration_crm2oml.rst:58
 msgid "**Relación entre campañas de OMniLeads y CRM**"
 msgstr "**Relationship between OMniLeads and CRM Campaigns**"
 
-# f4ddae3d41fc47f499a91015a6263082
+# 525a6e7b77e84b82b42084874b6fe8d2
 #: ../../crm_integration_crm2oml.rst:60
 msgid ""
 "A la hora de dar de alta una campaña contamos contamos con campos "
@@ -220,21 +225,20 @@ msgid ""
 "\"Sistema externo\" e \"ID en sistema externo\" respectivamente (Figura "
 "3)."
 msgstr ""
-"When a Campaign Wiozard is in process, there are fields"
-" related to CRM interaction. Remember that in the section of "
-"OML to CRM Interaction we present the field Type of "
-"interaction \"External URL\", to be able to launch a program call to the CRM for each "
-"call connected to the agent.  In this section we present the "
-"Interactions from the CRM to OML, so let's work with the fields "
-"\"External system\" and \"external system ID\" respectively (Figure "
-"3)."
+"When a Campaign Wiozard is in process, there are fields related to CRM "
+"interaction. Remember that in the section of OML to CRM Interaction we "
+"present the field Type of interaction \"External URL\", to be able to "
+"launch a program call to the CRM for each call connected to the agent.  "
+"In this section we present the Interactions from the CRM to OML, so let's"
+" work with the fields \"External system\" and \"external system ID\" "
+"respectively (Figure 3)."
 
-# 43792bfe7af44e748ea84c2f7accdd12
+# 6d70a63433864b6b81d1909aa5351b35
 #: ../../crm_integration_crm2oml.rst:67
 msgid "*Figure 3: new camp crm to oml interaction*"
 msgstr ""
 
-# 6a697383124c4c559c28885dcd491570
+# 0829ec0ee44f4bbfb8b2087d8718c084
 #: ../../crm_integration_crm2oml.rst:69
 msgid ""
 "Por lo tanto, se debe seleccionar el CRM que ejecutará las peticiones "
@@ -243,30 +247,28 @@ msgid ""
 "externo). Cada campaña solamente podrá tener una vinculación con una "
 "campaña del CRM externo."
 msgstr ""
-"Therefore, the wizard process selects the external CRM that will execute the requests "
-"against OML (External System). And on the other hand, the ID of "
-"the corresponding campaign we wish to link to (external system ID). "
-"Each campaign can only be linked to one "
-"External CRM campaign."
+"Therefore, the wizard process selects the external CRM that will execute "
+"the requests against OML (External System). And on the other hand, the ID"
+" of the corresponding campaign we wish to link to (external system ID). "
+"Each campaign can only be linked to one External CRM campaign."
 
-# d9f29e75be364855b603e36d55224982
+# 22215118f6394471bac3528dc968c12b
 #: ../../crm_integration_crm2oml.rst:72
 msgid ""
 "Luego avanzamos con la creación de la campaña con todos los pasos que ya "
 "conocemos."
 msgstr ""
-"Then we move forward with the creation of the campaign with all the steps that we already know."
+"Then we move forward with the creation of the campaign with all the steps"
+" that we already know."
 
-# bd03469563e6474eba03550166595f88
+# d1dfe302a35740d583a056db99f380b3
 #: ../../crm_integration_crm2oml.rst:76
 msgid ""
 "Cuando se lleva adelante la vinculación expuesta pueden surgir las "
 "siguiente excepciones"
-msgstr ""
-"When the exposed linkage is processed, the "
-"following exceptions can exist."
+msgstr "When the exposed linkage is processed, the following exceptions can exist."
 
-# 213a12cf3aee4970b22c87bba3f643ee
+# edab21304fc64fa0b4541f85c22f76b9
 #: ../../crm_integration_crm2oml.rst:79
 msgid ""
 "Cuando a una campaña se le asignen agentes que no tengan identificador "
@@ -275,29 +277,32 @@ msgstr ""
 "When assigning agents that do not have an external identifier in the "
 "selected External System."
 
-# fd4f827a47bd43b385e8c9d433b18d7d
+# fa212c1edee94585b8fe03c156b07d78
 #: ../../crm_integration_crm2oml.rst:80
 msgid ""
 "Cuando a una campaña se le asigne una base de datos que ya este asignada "
 "a una campaña asociada a OTRO Sistema Externo."
 msgstr ""
-"When assigning a Contact Database that is already assigned to a campaign with another External System configured."
+"When assigning a Contact Database that is already assigned to a campaign "
+"with another External System configured."
 
-# b5a68bb070c74033b4780f1abc52ef3d
+# 3d0fa9abf9264de29a961c7a339ee5fe
 #: ../../crm_integration_crm2oml.rst:81
 msgid ""
 "Cuando a una campaña se le asigne un Sitio Externo que ya esté siendo "
 "utilizado en una campaña asociada a OTRO Sistema Externo."
 msgstr ""
-"When assigning an External URL that is already assigned to a campaign with another External System."
+"When assigning an External URL that is already assigned to a campaign "
+"with another External System."
 
-# 909c46353967439387ca70ba0070c33f
+# 084bdffb35394029a85666e870e1c667
 #: ../../crm_integration_crm2oml.rst:83
 msgid ""
 "También aparecerán notificaciones en caso de que al editar un Sistema "
 "Externo, falte asignar identificadores externos a Agentes utilizados en "
 "Campañas relacionadas con el Sistema Externo."
 msgstr ""
-"Notifications will also appear when editing an External System "
-", if there are missing external identifiers in agents assigned to campaigns where External System is configured."
+"Notifications will also appear when editing an External System , if there"
+" are missing external identifiers in agents assigned to campaigns where "
+"External System is configured."
 

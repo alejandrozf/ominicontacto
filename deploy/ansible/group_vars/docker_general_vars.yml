@@ -1,8 +1,11 @@
 ---
 
 # Docker hosts general variable
+docker_repository_url: https://download.docker.com/linux/centos/docker-ce.repo
+docker_compose_url: "https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)"
+omni_ip: "{{ inventory_hostname }}"
 
-# Images used
+# Base images used
 asterisk_image: debian:buster-slim
 base_image: alpine:3.10
 dialer_image: tomcat:8.5-alpine

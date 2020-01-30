@@ -39,8 +39,8 @@ Para buildear imágenes seguir los siguientes pasos:
 
     [docker:vars]
     registry_username=
-    registry_email=
-    registry_password=
+    #registry_email=
+    #registry_password=
     oml_release=
 
 Ingresar ahí el nombre de usuario, email y contraseña del *Registry* donde quiere subir sus imágenes.
@@ -55,3 +55,13 @@ La variable **oml_release** es usada solo cuando se quiere buildear imagenes par
 .. note::
 
   Durante la ejecución se realiza de una vez el build y push de las imágenes, por lo que si experimenta algun error a la hora del build debido a problemas de conexion a internet, es recomendable volver a correr el script.
+
+4. Tenemos la opción de crear todo el entorno de build (con todos los archivos necesarios para dicho build renderizados) pero sin que se realice el build/push de las imágenes.
+   De esta forma damos la opción de que el desarrollador estudie mas a fondo los Dockerfile de cada servicio. 
+   Ejecutar el script *deploy.sh* de la siguiente forma:
+
+.. code-block:: bash
+
+  ./deploy.sh --docker-no-build
+
+Todo este contenido lo encontrará en `~/omnileads/build`

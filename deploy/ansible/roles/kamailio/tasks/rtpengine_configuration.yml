@@ -19,16 +19,16 @@
 
 # Se crea el archivo de configuracion de rtpengine, el cual tiene el comando que se ejecuta al hacer start con systemctl
 - name: Creation of RTPengine config file
-  template: src=templates/systemd/sysconfig_rtpengine.j2 dest=/etc/rtpengine-config.conf
+  template: src=roles/kamailio/templates/systemd/sysconfig_rtpengine.j2 dest=/etc/rtpengine-config.conf
   tags: postinstall
 
 # Se copia el archivo para el systemd, (revisarlo y revisar systemd para mas informacion)
 - name: Copy of rtpengine service file to systemd
-  template: src=templates/systemd/rtpengine.service dest=/etc/systemd/system owner=root group=root mode=650
+  template: src=roles/kamailio/templates/systemd/rtpengine.service dest=/etc/systemd/system owner=root group=root mode=650
 
 # Tengo un template de rsyslog modificado para tener logs de rtpengine y kamailio en sus propios archivos (ver template para mas info)
 - name: Modify of /etc/rsyslog.conf
-  template: src=templates/etc/rsyslog.conf.j2 dest=/etc/rsyslog.conf
+  template: src=roles/kamailio/templates/etc/rsyslog.conf.j2 dest=/etc/rsyslog.conf
 
 # Creo la carpeta y el archivo donde va a ir el log de rtpengine
 - name: Create rtpengine.log file and directory

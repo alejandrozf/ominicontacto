@@ -15,8 +15,8 @@ hacia una campaña entrante de OMniLeads, o bien realizar una transferencia desd
 Las ventajas que se hacen notables son:
 
 - Evitar el coste económico que involucran las licencias de software de las típicas herramientas complementarias del mercado que dotan al PBX de algunas funcionalidaes *reporting y supervisión* de Colas.
-
 - Evitar el coste en términos de performance del core de telefonía *PBX* sacrificada para correr complejos reportes y herramientas de monitoreo, que implica ejecutar un «módulo de call center» sobre el sistema PBX.
+
 En operaciones donde hay una gran demanda de extracción de reportes o bien se necesita escalar en términos de agentes, es sumamente sencillo desplegar OMniLeads *out of the box*, ya sea en una VM, VPS o Server dedicado,
 sin perder la integración con el PBX.
 

@@ -1,4 +1,4 @@
-.. _about_api:
+.. _about_restful_api:
 
 **********************
 OMniLeads RESTful API

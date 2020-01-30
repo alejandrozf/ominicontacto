@@ -145,10 +145,10 @@ Si la ejecución de la instalación finaliza exitosamente, se despliega una vist
 
 *Figure 10: OMniLeads installation ended succesfuly*
 
+.. _about_install_first_login:
 
 Primer acceso a OMniLeads:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 
 Para acceder al sistema OMniLeads debe ingresar a:
 

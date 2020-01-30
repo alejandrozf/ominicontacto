@@ -47,6 +47,7 @@ certs_location: "{{ kamailio_location }}/etc/certs"
 kamailio_location: "{{ install_prefix }}kamailio"
 static_route: "{{ install_prefix }}ominicontacto/ominicontacto_app/static/ominicontacto"
 odbc_location: /etc/
+rtpengine_name: "rtpengine-mr{{ rtpengine_version }}"
 
 ######### VoIP ports ###########
 kam_tls_port: 5061

@@ -17,24 +17,13 @@
 #
 ---
 
-# Se crea el repo de sngrep desde el template https://docs.ansible.com/ansible/2.5/modules/template_module.html#template-module
-#  https://docs.ansible.com/ansible-container/container_yml/template.html
-- name: Creation of sngrep repo
-  template: src=templates/etc/irontec.repo dest=/etc/yum.repos.d/irontec.repo
-
-# Se importa la rpm key
-- name: Import of irontec public key
-  rpm_key: state=present key=http://packages.irontec.com/public.key validate_certs=no
-
 #  Instalo paquetes de asterisk
 - name: Installation of asterisk packages
   yum: name={{ item }} state=present update_cache=yes
   with_items:
     - dh-autoreconf
-    - http://mirror.centos.org/centos/7/os/x86_64/Packages/postgresql-odbc-09.03.0100-2.el7.x86_64.rpm
     - lame
     - sqlite-devel
-    - sngrep
     - subversion
     - unixODBC
     - unzip

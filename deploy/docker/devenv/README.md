@@ -21,7 +21,8 @@ NOTE: never raise up containers with root user or root privileges
           #TZ=America/Argentina/Cordoba
   5. Check the network assgined to devenv in group_vars/docker_devenv_vars.yml. By default the subnet 172.20.0.0/24 is assgined to the environment. Change the subnet and the IP's assigned to some containers if you need it.
   6. Go to deploy/ansible and run:
-      - sudo ./deploy.sh --docker-deploy
+      - sudo ./deploy.sh --docker-deploy --iface=<your_iface>
+    where your_iface is the network interface of your LAN o WLAN 
 
 This will deploy the required settings for the environment. Once finished you can use docker ps to see that you have 10 containers up and running.
 A new service is created for raising up or down the environment. Init the service:

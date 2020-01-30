@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
@@ -117,9 +118,10 @@ msgid ""
 "OMniLeads puede correr como una aplicación tradicional desplegando una "
 "instalación de todos los componentes sobre un server físico, máquina "
 "virtual o VPS. Siempre y cuando se utilice como base GNU/Linux: `CentOS "
-"minimal 7.7 "
-"<http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso>`_"
-msgstr ""
+"minimal 7.7 <http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso>`_"
+msgstr "OMniLeads can be deployed as a monolithic application, installing all "
+"software components on premise (VM or VPS). It's neccesary to use this GNU/LINUX distro: "
+"`CentOS minimal 7.7 <http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso>`_"
 
 # 3b0f13df226844999c66596d8ae0cecb
 #: ../../index.rst:37

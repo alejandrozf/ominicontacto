@@ -3,11 +3,12 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-13 11:31-0300\n"
+"POT-Creation-Date: 2020-02-09 23:58-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,12 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.7.0\n"
 
-# ebe0aa44e2c04717a123b9143e6018c6
+# b0c3ae4991aa4c458dc179aacb862dea
 #: ../../campaigns_preview.rst:5
 msgid "Campañas preview"
 msgstr "Preview campaigns"
 
-# 076126c2cea94abe970a106222d197ee
+# 9b8914882d6247b6aa977e91bf1e4823
 #: ../../campaigns_preview.rst:7
 msgid ""
 "Para crear una nueva campaña preview se debe ingresar al punto de menú "
@@ -31,7 +32,7 @@ msgstr ""
 "To create a new preview campaign you must enter the menu item Preview "
 "Campaigns -> New Campaign. "
 
-# f4de34b7b6ba405393adac5c7c1e4ae4
+# 75840226cd2c4de7a3128075739d5e2d
 #: ../../campaigns_preview.rst:10
 msgid ""
 "En la primera etapa se deben indicar una serie de parámetros de campaña, "
@@ -40,17 +41,17 @@ msgstr ""
 "The first view invites us to indicate a series of campaign parameters, as"
 " indicated in Figure 1."
 
-# a86d734b69e94596978862cfd72a8546
+# 363e70a1bf6d4736832114be1d2b9412
 #: ../../campaigns_preview.rst:14
 msgid "*Figure 1: Campaigns parameters*"
 msgstr ""
 
-# b104461895194faeb02047a63dd41356
+# 9e3fed1ca0214694bf4bcca0742f6113
 #: ../../campaigns_preview.rst:17
 msgid "**Name:** nombre de la campaña."
 msgstr "**Name:** campaign name"
 
-# c4c4c4e998fd480580550617d950979c
+# 49b8fcf956a6432a9c35883c7495bf09
 #: ../../campaigns_preview.rst:18
 msgid ""
 "**Contact database:** la base de contactos que utilzará el discador "
@@ -59,7 +60,7 @@ msgstr ""
 "**Contact database:** contact database that the preview dialer will use "
 "when delivering on demand contacts to each agent."
 
-# f64109769b9a46f3a5e08e399a34f791
+# df60a6a42b5d45a1a53a2bb15fac9d90
 #: ../../campaigns_preview.rst:19
 msgid ""
 "**External system:** aquí se adjudica el sistema de gestión externo que "
@@ -68,7 +69,7 @@ msgstr ""
 "**External system:** external CRM system linked to launch *click to call "
 "actions or dispositions* on campaign contacts, through the API."
 
-# eaa0e47dea6b4f9198596084ebd61fc3
+# 6effd2a9e09846fea3333937b1489981
 #: ../../campaigns_preview.rst:20
 msgid ""
 "**ID on external system:**  este campo debe contener el ID que posee la "
@@ -99,14 +100,14 @@ msgstr ""
 "**External URL:** in case of selecting an external URL interaction, this "
 "fields sets wich CRMs must the campaign trigger."
 
-# cebbffa9b7d945e7a006a0f2ad657371
+# 83bb6969be7d4126a47a1eb317e126f7
 #: ../../campaigns_preview.rst:23
 msgid ""
 "**Enable recordings:** habilita que todas las llamadas de la campaña sean"
 " grabadas."
 msgstr "**Enable recordings:** Enable all campaign calls to be recorded."
 
-# 21d6e0c78c104869bee0ab44e3bad012
+# d349ce58e48e46b1b07510112da522a2
 #: ../../campaigns_preview.rst:24
 msgid ""
 "**Scope:** se define como la cantidad de *gestiones positivas* esperadas "
@@ -118,7 +119,7 @@ msgstr ""
 "campaign's arrival with respect to the defined objective is shown in real"
 " time."
 
-# 593c84e1aa7042c8b411b62e6ce92073
+# 1adf310c47c447d995bc94273f0e371d
 #: ../../campaigns_preview.rst:25
 msgid ""
 "**Disconection time:** es el tiempo que el *discador preview* reserva un "
@@ -129,7 +130,7 @@ msgstr ""
 "assigned to an agent, after that time the contact is released so that it "
 "can be sued by another agent."
 
-# 95b9ac622d534fa0a598f05c0fea52cf
+# 6ef818a0627145ef889791f581d41467
 #: ../../campaigns_preview.rst:27
 msgid ""
 "En la segunda pantalla se deben asignar las calificaciones que se "
@@ -139,12 +140,12 @@ msgstr ""
 "On the second screen you must assign the dispositions that are required "
 "as available to the agents when classifying each call to each contact."
 
-# 527b591fcb0a4ad891a712fb8fbfa3f6
+# 65f14dbd5a6f47b4a12144870f11a477
 #: ../../campaigns_preview.rst:31
 msgid "*Figure 2: Call dispositions*"
 msgstr ""
 
-# d35a11e22fb5412bb3d92c8b69f15308
+# 2d5a9972585e47a4884a7095ef0caa39
 #: ../../campaigns_preview.rst:33
 msgid ""
 "Luego resta asignar a los supervisores y agentes que podrán trabajar en "
@@ -155,17 +156,17 @@ msgstr ""
 "campaign. An assignment of agents to a campaign is exemplified in Figures"
 " 3 and 4."
 
-# 2fc5f9db944942999c5ced23fc5e2e33
+# 38c586fa9edb4e25acd03a1f32d71926
 #: ../../campaigns_preview.rst:38
 msgid "*Figure 3: supervisor assignment*"
 msgstr ""
 
-# d340873493704edb82f6d13717480a0a
+# faa8ff9aec9941318bf45ae9dbddc8ea
 #: ../../campaigns_preview.rst:43
 msgid "*Figure 4: agent assignment*"
 msgstr ""
 
-# 5c1d5ca5d6634c0c9a3df2c7aa53f9b3
+# 172858a9e98f490b85f3e793583526a9
 #: ../../campaigns_preview.rst:45
 msgid ""
 "Por último, en la etapa final del wizard se permite opcionalmente "
@@ -176,12 +177,12 @@ msgstr ""
 "assignation of contacs to agents. This operation can be made using two "
 "variants"
 
-# 495084dbabc7425ab57f3a99266fd4fe
+# 6fd71057a28849239a2579046fd4ae06
 #: ../../campaigns_preview.rst:48
 msgid "La primera variante es mostrada en la siguiente imagen:"
 msgstr "The fist way is shown in the next figure:"
 
-# e3b97cbbb51c44cc895aeef434c7acb8
+# 6d423c3a7e254cfeb78e6d9cbf74999b
 #: ../../campaigns_preview.rst:52
 msgid ""
 "Si se le selecciona la opción de asignar proporcionalmente el sistema "
@@ -197,7 +198,7 @@ msgstr ""
 "contacts or free contactos. See this distribution on Django admin in the "
 "following picture."
 
-# a31ae0c4673041e58856e80b3b3bbf24
+# 72b286614cdf45c692f37d6f20458b37
 #: ../../campaigns_preview.rst:56
 msgid ""
 "Al momento de seleccionar la opción se preasignación proporcional el "
@@ -206,7 +207,7 @@ msgstr ""
 "At the moment of select the proportionally pre-assignation the system "
 "shows the random selection"
 
-# 33eba93b149d4d1cb0e1c404428ead8d
+# 14d01a6527524e9cb096eed6048b42d9
 #: ../../campaigns_preview.rst:60
 msgid ""
 "Esta opción permite que los contactos sean asignados en orden aleatorio a"
@@ -215,7 +216,7 @@ msgstr ""
 "This option allows that the contacts could be assigned in random order to"
 " the agents, as is shown next:"
 
-# c6d21a89e3e042dc8d9918a88b6c3d6f
+# f90838d89a744fe9914512ac8dbb2b88
 #: ../../campaigns_preview.rst:64
 msgid ""
 "Finalmente nuestra campaña queda disponible para comenzar a operar. Por "
@@ -227,12 +228,12 @@ msgstr ""
 " agents assigned to it perform a login to the platform, they should have "
 "the preview campaign as shown in Figure 5."
 
-# 69d4449e10f84989bf2803ef7b7b9fb5
+# a2bbadeed98f4f7c958fad7d8c1c9427
 #: ../../campaigns_preview.rst:70
 msgid "*Figure 5: Preview agents view*"
 msgstr ""
 
-# 8b0af4b16eb54a5cbdcbd545be4e5c7e
+# acef728aa5ca4bd59d59f27d7f2c6d57
 #: ../../campaigns_preview.rst:72
 msgid ""
 "Si el agente hace click sobre el teléfono entonces se dispara la llamada,"
@@ -245,17 +246,17 @@ msgstr ""
 "view allowing the agent to classify the call with any of the ratings "
 "assigned to the campaign."
 
-# 10c517e43a034666884dcfbd6518db0a
+# 17aa4041dead4c298d709bb0f00a6591
 #: ../../campaigns_preview.rst:78
 msgid "*Figure 6: Contact called*"
 msgstr ""
 
-# 22ebce79c1e241038d78eba2fadd9462
+# 744995e447b349ad836d02bee708a84c
 #: ../../campaigns_preview.rst:80
 msgid "**Campaña con base de datos Multinum**"
 msgstr "**Campaign with Multinum database**"
 
-# 327491da3dce41fb89c238c117feb2ff
+# d5336b7002e745d09e5f5665cbf39c41
 #: ../../campaigns_preview.rst:82
 msgid ""
 "Como sabemos, OMniLeads admite que cada contacto de una base posea \"n\" "
@@ -276,12 +277,12 @@ msgstr ""
 "presented on the agent screen. Clicking on that link triggers a call to "
 "the extra telephone number of the contact. Figure 11 shows this scenario."
 
-# a3733be79b3d4a418e3b50a0234acf08
+# 52a9ca6e6791430ca3312893846b7232
 #: ../../campaigns_preview.rst:89
 msgid "*Figure 7: Multinum contact database*"
 msgstr ""
 
-# 78649135150c4bfdaee53195eda4ef3b
+# a7b734f8eb8141d4adadacea55f5d69c
 #: ../../campaigns_preview.rst:91
 msgid ""
 "Por lo tanto, el agente puede intentar contactar a todos los números "

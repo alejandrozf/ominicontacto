@@ -8,7 +8,6 @@ En este capítulo se detallan los tipos de instalación de OMniLeads
 * :ref:`about_install_selfhosted`.
 * :ref:`about_install_remote`.
 * :ref:`about_install_docker_linux`.
-* :ref:`about_install_docker_pbx`.
 
 El siguiente apartado esta dirigido a usuarios avanzados de Docker, los cuales quieran involucrarse mas con la creacion de imagenes para el proyecto:
 

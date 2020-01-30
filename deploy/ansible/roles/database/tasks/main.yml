@@ -1,9 +1,5 @@
 ---
 
-- name: Include centos variables
-  include_vars: group_vars/centos_vars.yml
-  tags: postinstall
-
 - include: installations.yml
   tags: postinstall
 
