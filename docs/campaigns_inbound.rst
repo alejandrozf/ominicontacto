@@ -53,6 +53,7 @@ A continuación se prosigue con la creación de nuestra campaña entrante.
 - **Autopausar agentes que fallan al responder:** indica si se debe pausar automáticamente o no a los agentes que fallen a responder llamadas.
 - **Autopausar agentes que dan ocupado:** indica si se debe pausar automáticamente o no a los agentes que den ocupado.
 - **Anunciar tiempo promedio de espera** permite al usuario especificar el tiempo promedio  que deberá esperar el llamante para ser atendido
+- **IVR Breakdown:** es un destino de tipo IVR que el usuario puede escoger para 'escapar' hacia él en medio del tiempo de espera, este parámetro está relacionado con el de anuncio periódico pues éste último es donde se reproduciría el mensaje que guíe al usuario para realizar el escape hacia dicho destino IVR.
 
 
 

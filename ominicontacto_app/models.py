@@ -1432,6 +1432,10 @@ class Queue(models.Model):
     # esperar el llamante para ser atendido
     announce_holdtime = models.CharField(max_length=128, default=ANNOUNCE_HOLD_TIME_NO,
                                          choices=ANNOUNCE_HOLD_TIME_CHOICES)
+    # ivr break down
+    ivr_breakdown = models.ForeignKey('configuracion_telefonia_app.DestinoEntrante',
+                                      related_name='campanas_ivr_breakdown', blank=True,
+                                      null=True, on_delete=True)
 
     # campos que no usamos
     musiconhold = models.CharField(max_length=128, blank=True, null=True)

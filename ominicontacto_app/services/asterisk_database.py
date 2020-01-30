@@ -170,6 +170,10 @@ class CampanaFamily(AbstractFamily):
         else:
             dict_campana.update({'FAILOVER': str(0)})
 
+        if campana.queue_campana.ivr_breakdown:
+            dict_campana.update(
+                {'IVRBREAKOUTID': campana.queue_campana.ivr_breakdown.object_id})
+
         return dict_campana
 
     def _obtener_todos(self):

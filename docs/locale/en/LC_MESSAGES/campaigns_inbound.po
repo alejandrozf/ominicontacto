@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-28 14:41-0300\n"
+"POT-Creation-Date: 2020-01-28 16:41-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -281,11 +281,25 @@ msgid ""
 "**Anunciar tiempo promedio de espera** permite al usuario especificar el "
 "tiempo promedio  que deberá esperar el llamante para ser atendido"
 msgstr ""
-"**Announce hold time** allows the user to specify the average hold time"
-"that the caller will wait for be attend by an agent"
+"**Announce hold time** allows the user to specify the average hold "
+"timethat the caller will wait for be attend by an agent"
+
+# 5b8e17e897de4dc9aaba0575866dac62
+#: ../../campaigns_inbound.rst:56
+msgid ""
+"**IVR Breakdown:** es un destino de tipo IVR que el usuario puede escoger"
+" para 'escapar' hacia él en medio del tiempo de espera, este parámetro "
+"está relacionado con el de anuncio periódico pues éste último es donde se"
+" reproduciría el mensaje que guíe al usuario para realizar el escape "
+"hacia dicho destino IVR."
+msgstr ""
+"**IVR Breakdown** is an IVR destination that user can choose to 'escape'"
+"to it in a middle of waiting time. This parameter is related to the 'periodic "
+"announcement' because of the last parameter specify the audio messages that"
+" instructs the user how to 'escape' to these IVR destination."
 
 # b6d59286b4d8470486af38697e3c9403
-#: ../../campaigns_inbound.rst:60
+#: ../../campaigns_inbound.rst:61
 msgid ""
 "Los parámetros Ring time y Agent callback time, quedan sin efecto para "
 "aquellas llamadas que reciban agentes cuyo *grupo de agentes* esté "
@@ -296,7 +310,7 @@ msgstr ""
 "calls attribute *Auto attend inbound*."
 
 # 6553b905d3304fcab34c90dac7dfc52c
-#: ../../campaigns_inbound.rst:63
+#: ../../campaigns_inbound.rst:64
 msgid ""
 "En la siguiente etapa de configuración se deben asignar las "
 "calificaciones que la campaña requiera para que los agentes califiquen "
@@ -306,22 +320,22 @@ msgstr ""
 "requires for agents to rate each contact call must be assigned."
 
 # d94c8c5c415042aaaa64b659882abf72
-#: ../../campaigns_inbound.rst:67
+#: ../../campaigns_inbound.rst:68
 msgid "*Figure 3: Campaign dispositions*"
 msgstr ""
 
 # b387fc2b68a446b7b911e64c00aa10b7
-#: ../../campaigns_inbound.rst:69
+#: ../../campaigns_inbound.rst:70
 msgid "Finalmente, los agentes pueden ser asignados a la campaña."
 msgstr "Finally, agents can be assigned to the campaign."
 
 # 73e9c0812d4d4812ab1b4b20a0d5d576
-#: ../../campaigns_inbound.rst:73
+#: ../../campaigns_inbound.rst:74
 msgid "*Figure 4: agent assignment*"
 msgstr ""
 
 # 907f67ab007b466c89d2c8289bf95d43
-#: ../../campaigns_inbound.rst:75
+#: ../../campaigns_inbound.rst:76
 msgid ""
 "En el resto del capítulo se detalla todo acerca del enrutamiento de las "
 "llamadas desde los vínculos troncales hacia nustras campañas entrantes."
@@ -330,12 +344,12 @@ msgstr ""
 " incoming campaigns."
 
 # abd0839364e1435b803fd5e5834e839d
-#: ../../campaigns_inbound.rst:78
+#: ../../campaigns_inbound.rst:79
 msgid "Ringing VS Atención automática de llamadas entrantes"
 msgstr "Ringing VS Automatic incoming call attention"
 
 # 43c4b540ded54886ad6e70c55fc02b9d
-#: ../../campaigns_inbound.rst:79
+#: ../../campaigns_inbound.rst:80
 msgid ""
 "El comportamiento del Webphone del agente frente a una llamada "
 "proveniente de una campaña entrante puede ser:"
@@ -344,7 +358,7 @@ msgstr ""
 "incoming campaign can be:"
 
 # 63601b36091b49da9950b206f3462462
-#: ../../campaigns_inbound.rst:81
+#: ../../campaigns_inbound.rst:82
 msgid ""
 "**Ringing normal** y con una duración asociada al parámetro \"Ring time\""
 " presente en la creación de la campaña entrante. Durante ese tiempo el "
@@ -356,7 +370,7 @@ msgstr ""
 "the action of the agent that determines the attention or not of the call."
 
 # ca28d15df9c442e698bcce14cbd92508
-#: ../../campaigns_inbound.rst:83
+#: ../../campaigns_inbound.rst:84
 msgid ""
 "**Atención automática de la llamada**. Este comportamiento implica que "
 "cada llamada entrante enviada a un agente sea atendida automáticamente "
@@ -369,7 +383,7 @@ msgstr ""
 "counterpart of the call."
 
 # eb396270bf814ad68b3fa7ddb1f179a7
-#: ../../campaigns_inbound.rst:85
+#: ../../campaigns_inbound.rst:86
 msgid ""
 "Dicho comportamiento depende de la configuración a nivel \"Grupo de "
 "Agentes\" que posea el agente vinculado a la campaña entrante. Entonces "
@@ -386,6 +400,6 @@ msgstr ""
 " and \"Agent callback time\" as is mentioned in the note of this section"
 
 # 24a37793320341f996c15c83221a2dc9
-#: ../../campaigns_inbound.rst:90
+#: ../../campaigns_inbound.rst:91
 msgid "*Figure 5: agent group config*"
 msgstr "*Figure 5: agent group config*"

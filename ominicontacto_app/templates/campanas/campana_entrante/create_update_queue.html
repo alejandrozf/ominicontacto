@@ -106,8 +106,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <button class="btn dropdown-toggle">No</button>
         </div>
         <div class="col-md-3">
-            <label>{% trans 'IVR Breakdown:' %}</label>
-            <button class="btn dropdown-toggle">Dropdown</button>
+            <label for="{{ form.ivr_breakdown.id_for_label }}">{% trans 'IVR de escape:' %}</label>
+            {{ form.ivr_breakdown }}
+            {{ form.ivr_breakdown.errors }}
         </div>
         <div class="col-md-5">
             <span class="hidden"></span>
