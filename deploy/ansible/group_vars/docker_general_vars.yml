@@ -23,9 +23,9 @@ efk_location: "{{ deploy_location }}/efk"
 odbc_location: "{{ ast_local_location }}"
 
 # Docker hub credentials to push images
-docker_login_user:
-docker_login_email:
-docker_login_pass:
+docker_login_user: "{{ registry_username }}"
+docker_login_email: "{{ registry_email }}"
+docker_login_pass: "{{ registry_password }}"
 
 asterisk_fqdn: asterisk
 dialer_fqdn: dialer

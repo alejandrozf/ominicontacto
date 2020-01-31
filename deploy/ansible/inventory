@@ -61,7 +61,7 @@ dialer_password=demo
 #################################################################################################
 # Set the timezone where the nodes are. UNCOMMENT and set this if you are doing a fresh install #
 #################################################################################################
-#TZ=America/Argentina/Cordoba
+TZ=America/Argentina/Cordoba
 #######################################################################################
 #                                OMniLeads cloud:			 	      #
 # If you are wishing to install OML in a cloud provider you must set these variables: #
@@ -105,6 +105,20 @@ LOGIN_FAILURE_LIMIT=10
 # Language of schedule disposition #
 ####################################
 schedule=Agenda
+
+#############################################################
+# Edit these variables if you want to build your own images #
+#############################################################
+[docker:vars]
+registry_username=
+registry_email=
+registry_password=
+oml_release=
+#################################
+# Do not change variables below #
+#################################
+is_docker=true
+docker_user='{{ lookup("env","SUDO_USER") }}'
 
 #
 # WARNING!!! ATENCION!!! WAARSCHUWING!!! WARNUNG!!! AVIS!!!
@@ -151,10 +165,6 @@ prodenv=0
 [prodenv-container:vars]
 devenv=0
 prodenv=1
-
-[docker:vars]
-is_docker=true
-docker_user='{{ lookup("env","SUDO_USER") }}'
 
 [prodenv-aio:vars]
 ssh_port="{{ ansible_ssh_port }}"

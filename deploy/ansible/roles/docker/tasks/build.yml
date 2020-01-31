@@ -106,7 +106,7 @@
         path: "{{ build_location }}"
         dockerfile: Dockerfile-{{ item.dockerfile }}
         pull: yes
-    name: "freetechsolutions/{{ item.image }}"
+    name: "{{ docker_login_user }}/{{ item.image }}"
     source: build
     tag: "{{ item.version }}"
     force_source: yes
@@ -125,7 +125,7 @@
         path: "{{ build_location }}"
         dockerfile: Dockerfile-{{ item.dockerfile }}
         pull: yes
-    name: "freetechsolutions/{{ item.image }}"
+    name: "{{ docker_login_user }}/{{ item.image }}"
     source: build
     tag: "{{ item.version }}"
     force_source: yes
