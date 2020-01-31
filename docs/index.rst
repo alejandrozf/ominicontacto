@@ -41,8 +41,6 @@ OMniLeads puede ser desplegado utilizando contenedores Docker, esto extiende la 
 distrubuciones de GNU/Linux. Se resalta el hecho de que mediante este formato es posible desplegar OMniLeads sobre instancias de Issabel-PBX & FreePBX, de manera tal que dentro del mismo
 host conviva el software de PBX y OMniLeads como software de Contact Center.
 
-Las imágenes oficiales están disponibles en `Docker-Hub <https://hub.docker.com/u/freetechsolutions>`_.
-
 Cómo lo instalo ?
 *****************
 
