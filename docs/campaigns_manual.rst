@@ -16,8 +16,10 @@ La primera pantalla nos invita a indicar una serie de parámtros de la campaña,
 
 - **Name:** nombre de la campaña
 - **Contact database:** se utiliza para desplegar datos extras al teléfono a la hora de ejecutar una llamada a un contacto de la campaña.
-- **External system:** sistema de gestión externo que ejecutaría "click to call" sobre la campaña.
-- **ID on external system:**  ID de la campaña en el sistema de gestión externo. 
+- **External system:** aquí se adjudica el sistema de gestión externo que ejecutaría "click to call" sobre la campaña, en caso de así desearlo.
+- **ID on external system:**  este campo debe contener el ID que posee la campaña dentro del sistema de gestión externo desde el cual llegarán los *click to call* o *solicitudes de calificación*.
+- **Type of interaction:** indica si la campaña va a operar con formularios de OMniLeads o bien va a ejecutar una invocación hacia un CRM por cada llamada conectada.
+- **External URL:** en caso de haber seleccionado la invocación a un URL externo en cada llamada, aquí se indica cual de los CRMs definidos debe invocar la campaña.
 - **Enable recordings:** habilitar la grabación de todas las llamadas que se cursen por la campaña.
 - **Scope:** se define como la cantidad de gestiones positivas que se esperan para la campaña. En la supervisión de la campaña se muestra en tiempo real el porcentaje de avence de la campaña respecto al objetivo definido.
 
