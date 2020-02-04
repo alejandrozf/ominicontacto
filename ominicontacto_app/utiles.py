@@ -22,11 +22,14 @@
 from __future__ import unicode_literals
 
 from contextlib import contextmanager
+from lxml import etree
+
 import csv
 import codecs
 import io
 import os
 import re
+import requests
 import tempfile
 import time
 import uuid
@@ -370,3 +373,20 @@ def dividir_lista(lst, n):
                 yield lst[val:]
             else:
                 yield lst[val:val + len_partes]
+
+
+def get_oml_last_release():
+    """Obtiene la ultima versión de OMniLeads, en caso de no poder acceder
+    devuelve ''"""
+    tags_url = 'https://gitlab.com/omnileads/ominicontacto/-/tags'
+    try:
+        html_tags_page = requests.get(tags_url)
+    except requests.RequestException as e:
+        logger.info(_("No se pudo acceder a la url debido a: {0}".format(e)))
+        return ''
+    else:
+        root = etree.HTML(html_tags_page.content)
+        doc = etree.ElementTree(root)
+        nodos_tags = doc.xpath("//div[@class='row-main-content']/a")
+        current_release = "Release {0}".format(nodos_tags[0].text)
+        return current_release
