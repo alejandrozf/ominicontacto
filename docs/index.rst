@@ -31,23 +31,13 @@ Cómo lo obtengo ?
 
 Donde se puede instalar ?
 *************************
-OMniLeads puede correr como una aplicación tradicional desplegando una instalación de todos los componentes sobre un server físico, máquina virtual o VPS, asumiendo como requisito
-utilizar cualquiera de las siguientes distribuciones de GNU/Linux:
+OMniLeads puede correr como una aplicación tradicional desplegando una instalación de todos los componentes sobre un server físico, máquina virtual o VPS. Siempre y cuando se utilice como base
+GNU/Linux: `CentOS minimal 7.7 <http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso>`_
 
-* `CentOS minimal 7.7 <http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso>`_
-* `Debian 9.3 netinstall <https://cdimage.debian.org/mirror/cdimage/archive/9.3.0/amd64/iso-cd/debian-9.3.0-amd64-netinst.iso>`_
-* `Ubuntu Server 18.04.2 <https://ubuntu.com/download/server/thank-you?version=18.04.2&architecture=amd64>`_
+OMniLeads puede ser desplegado utilizando contenedores `Docker <https://www.docker.com>`_, esto permite la ejecución de la aplicación sobre diversas
+distrubuciones de GNU/Linux. Se resalta el hecho de que mediante este formato es posible desplegar OMniLeads sobre **Issabel-PBX** & **FreePBX**, de manera tal que dentro del mismo
+host convivan el software de PBX y OMniLeads supliendo las funcionalidades de Contact Center.
 
-.. important::
-
-  Remitirse a estas versiones de las distribuciones y sus correspondientes ISO para lograr una instalación exitosa.
-
-
-* `Docker <https://www.docker.com>`_
-
-OMniLeads puede ser desplegado utilizando contenedores Docker, esto extiende la posibilidad de ejecución de la aplicación sobre diversas
-distrubuciones de GNU/Linux. Se resalta el hecho de que mediante este formato es posible desplegar OMniLeads sobre instancias de Issabel-PBX & FreePBX, de manera tal que dentro del mismo
-host conviva el software de PBX y OMniLeads como software de Contact Center.
 
 Las imágenes oficiales están disponibles en `Docker-Hub <https://hub.docker.com/u/freetechsolutions>`_.
 

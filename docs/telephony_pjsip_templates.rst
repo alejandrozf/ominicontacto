@@ -4,7 +4,7 @@
 Troncal contra un proveedor SIP sobre Internet
 ***********************************************
 
-Se trata del tipo de proveedor de troncales SIP al que se puede acceder a través de nuestra propia conexión a internet, utilizando generalemente la autenticaciónn SIP para
+Se trata del tipo de proveedor de troncales SIP al que se puede acceder a través de nuestra propia conexión a internet, utilizando generalmente la autenticación SIP para
 el envío de llamadas y la registración como suscriptor.
 
 .. image:: images/telephony_pjsip_internet_provider_arq.png
@@ -34,8 +34,8 @@ Para este esquema analizamos la plantilla `PJSIP configuration Wizard <https://w
  outbound_auth/password=****YOUR SIP_PASSWORD****
 
 Los últimos cuatro parámetros tienen que ver con los datos que el proveedor nos facilita, esto es; la dirección o FQDN y puerto correspondiente hacia donde debemos
-disparar nuestros REGISTER o INVITE para registrar el troncal o enviar una llamada saliente por un lado y los valores de *username* y *password* proporcionados también por el proveedor para utilizar
-en los mencionados métodos REGISTER e INVITE.
+disparar nuestros REGISTER o INVITE para registrar el troncal o enviar una llamada saliente y además los valores de *username* y *password* con los cuales el proveedor autentica cada REGISTER e INVITE
+generado desde OMniLeads.
 
 Respecto al resto de los parámetros vamos a enfatizar:
 
@@ -44,7 +44,7 @@ Respecto al resto de los parámetros vamos a enfatizar:
 Este parámetro indica a la pila PJSIP de Asterisk que debe *advertir* la IP pública y puerto público con la que saldrán "nateados" los paquetes SIP a la hora de alcanzar el SIP-Server del proveedor.
 (Asumimos que OMniLeads se encuentra detrás de NAT con respecto a los paquetes que salen hacia el proveedor SIP)
 
-Los próximos 4 parámetros hacen alusión al hecho de que bajo este esquema OMniLeads no solicita autenticación al proveedor SIP en caso de las llamadas entrantes, pero si debe autenticarse
+Los próximos 4 parámetros hacen alusión al hecho de que típicamente bajo este esquema OMniLeads no solicita autenticación al proveedor SIP en caso de las llamadas entrantes, pero si debe autenticarse
 a la hora de enviar llamadas hacia el proveedor y que además debe enviar un registro recurrente para poder ser localizado por el proveedor SIP a la hora de conectarle llamadas entrantes.
 Estamos hablando puntualmente de los parámetros y sus valores:
 
@@ -222,7 +222,7 @@ El resto de los parámetros son similares a los aplicados en el esquema anterior
 OMniLeads inside IPPBX
 **********************
 
-Esta plantilla hace alusión a una instalación :ref:`about_install_docker`. Es decir bajo este escenario OMniLeads se encuentra corriendo en el mismo host que el software de IPPBX.
+Esta plantilla hace alusión a una instalación :ref:`about_install_docker_pbx`. Es decir bajo este escenario OMniLeads se encuentra corriendo en el mismo host que el software de IPPBX.
 Lo cual implica que se establezca un PJSIP trunk desde el *Asterisk dockerizado* dentro del host y el Asterisk que se ejecuta como servicio a nivel sistema operativo de base de la IPPBX.
 
 .. image:: images/telephony_pjsip_docker_pbx_arq.png
@@ -255,7 +255,7 @@ Por ello es que la plantilla de configuración cambia en un par de parámetros:
 
 Respecto a los parámetros vamos a observar que se trata de una configuración muy similar al escenario :ref:`about_telephony_pjsip_lan_pbx`, solo que al tener el componente Asterisk dockerizado,
 se realiza un tratamiento de NAT, observar los parámetros **trunk-nat-docker-transport** y **endpoint/force_rport=yes** que se encargan de alterar la dirección IP de los paquetes SIP engendrados desde OMniLeads
-dockerizado para que salgan con la IP del host IPPBX en lugar de hacerlo con la IP del contenedor Docker.
+dockerizado para que salgan con la IP del host IPPBX en lugar de hacerlo con la IP dinámica del asterisk Docker.
 
 El resto de los parámetros son similares a los aplicados en los esquemas anteriores.
 
