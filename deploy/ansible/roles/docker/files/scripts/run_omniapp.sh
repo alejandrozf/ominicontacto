@@ -1,6 +1,6 @@
 #!/bin/bash
 COMMAND="python ${INSTALL_PREFIX}ominicontacto/manage.py"
-INTERFACE=$(ip route show | awk '/^default/ {print $5}'); 
+INTERFACE=$(ip route show | awk '/^default/ {print $5}');
 INTERNAL_IP=$(ifconfig $INTERFACE | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
 # run as user OMNIAPP by default
 OMNIAPP_USER=${OMNIAPP_USER:-"{{ usuario }}"}
@@ -41,7 +41,7 @@ EOF
   $COMMAND compilemessages
   echo 'yes' | $COMMAND collectstatic
   $COMMAND collectstatic_js_reverse
-  $COMMAND compress --force
+  $COMMAND custom_compress --force
   $COMMAND actualizar_configuracion
   psql -U $PGUSER -h $PGHOST -d $PGDATABASE -c '\i {{ install_prefix }}ominicontacto/reportes_app/sql/plperl/replace_insert_queue_log_ominicontacto_queue_log.sql'
   $COMMAND regenerar_asterisk
