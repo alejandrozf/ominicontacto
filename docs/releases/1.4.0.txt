@@ -8,6 +8,7 @@ What's new
 =========================
 - OML can be deployed and integrated now with Issabel PBX & FreePBX using docker
 - The system changed its default trunk technology from SIP to PJSIP
+- Asterisk agents endpoints were migrated from chan_sip to PJSIP
 - The internal interaction with Asterisk from agent console component was refactored to
 use AMI protocol
 - The installation on Docker for production was refined
