@@ -1,7 +1,7 @@
 Release Notes
 *************
 
-*Enero 10, 2020*
+*February 7, 2020*
 
 Detalles de Release 1.4.0
 =========================

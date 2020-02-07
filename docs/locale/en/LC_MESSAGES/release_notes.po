@@ -23,10 +23,8 @@ msgid "Release Notes"
 msgstr "Release Notes"
 
 # 49f95cb248ba435e8ace05535c7388ce
-#: ../../release_notes.rst:4
-#, fuzzy
-msgid "*Enero 10, 2020*"
-msgstr "January 22, 2020"
+msgid "*February 7, 2020*"
+msgstr "February 7, 2020"
 
 # 591f9ffdc8d94490869bf62312567a22
 #: ../../release_notes.rst:7
@@ -189,4 +187,3 @@ msgstr ""
 #~ msgstr ""
 #~ "Fix error when accessing the supervision"
 #~ " after remove an inbound campaign."
-

@@ -2,7 +2,7 @@
 Omnileads (OML) 1.4.1 release notes
 ===================================
 
-*February 10, 2020*
+*February 7, 2020*
 
 What's new
 =========================
