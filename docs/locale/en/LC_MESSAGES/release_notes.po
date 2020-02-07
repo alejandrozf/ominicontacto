@@ -67,8 +67,8 @@ msgid ""
 "Las interacciones con Asterisk desde la consola de agentes fueron "
 "refactorizadas para usar el protocolo AMI"
 msgstr ""
-"The internal interaction with Asterisk from agent console component was refactored to
-use AMI protocol"
+"The internal interaction with Asterisk from agent console component was refactored to"
+"use AMI protocol"
 
 # 2832ee5d4ed940d3a9dba2917c6ebbeb
 #: ../../release_notes.rst:16
@@ -115,8 +115,8 @@ msgid ""
 "Solucionado bug que contaba como ABANDONWEL los eventos de llamadas "
 "entrantes que excedían el límite de llamadas en cola afectando a los reportes"
 msgstr ""
-"Fixed bug that counted as ABANDONWEL inbound calls that exceeds the queue calls limit,
-affecting reports"
+"Fixed bug that counted as ABANDONWEL inbound calls that exceeds the queue calls limit,"
+" affecting reports"
 
 # 4a4a4a5668b74595bf213c26c81c2808
 #: ../../release_notes.rst:27
@@ -133,8 +133,8 @@ msgid ""
 "entrantes con un destino en caso de fallo configurado en la campaña como "
 "destino personalizado, afectando a los reportes"
 msgstr ""
-"Fixed bug that counted as EXPIRED inbound calls with failover configured to point to
-a custom destination, affecting reports"
+"Fixed bug that counted as EXPIRED inbound calls with failover configured to point to "
+"a custom destination, affecting reports"
 
 # 2b6b95c254b245b2a1d0beb2b86f33b2
 #: ../../release_notes.rst:30
@@ -152,8 +152,8 @@ msgid ""
 "Solucionado bug que generaba un valor de callid incorrecto al realizar "
 "llamadas manuales de click2call afectando los reportes"
 msgstr ""
-"Fixed bug that generated an incorrect callid for manual click2call generating errors
-on campaign reports"
+"Fixed bug that generated an incorrect callid for manual click2call generating errors"
+" on campaign reports"
 
 # 2b6b95c254b245b2a1d0beb2b86f33b2
 #: ../../release_notes.rst:34
