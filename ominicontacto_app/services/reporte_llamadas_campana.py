@@ -55,7 +55,8 @@ class EstadisticasCampanaLlamadasService():
 
         campanas = Campana.objects.obtener_all_dialplan_asterisk()
         if not user.get_is_administrador():
-            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
+            supervisor = user.get_supervisor_profile()
+            campanas = supervisor.campanas_asignadas_actuales()
 
         queues_llamadas, totales_grafico = self.calcular_cantidad_llamadas(
             campanas, fecha_inferior, fecha_superior)

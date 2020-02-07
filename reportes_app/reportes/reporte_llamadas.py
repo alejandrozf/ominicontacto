@@ -149,13 +149,17 @@ class ReporteDeLlamadas(object):
         self._contabilizar_estadisticas()
 
     def _campanas_implicadas(self, user, incluir_finalizadas):
-        if incluir_finalizadas:
-            campanas = Campana.objects.obtener_all_activas_finalizadas()
+        if user.get_is_administrador():
+            if incluir_finalizadas:
+                campanas = Campana.objects.obtener_actuales()
+            else:
+                campanas = Campana.objects.obtener_all_dialplan_asterisk()
         else:
-            campanas = Campana.objects.obtener_all_dialplan_asterisk()
-
-        if not user.get_is_administrador():
-            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
+            supervisor = user.get_supervisor_profile()
+            if incluir_finalizadas:
+                campanas = supervisor.campanas_asignadas_actuales()
+            else:
+                campanas = supervisor.campanas_asignadas_actuales_no_finalizadas()
 
         return campanas
 

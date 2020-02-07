@@ -326,10 +326,10 @@ class TiemposAgente(object):
                                        fecha_superior, user):
         eventos_llamadas = list(LlamadaLog.EVENTOS_FIN_CONEXION)
 
-        campanas = Campana.objects.obtener_all_activas_finalizadas()
+        campanas = Campana.objects.obtener_actuales()
         if not user.get_is_administrador():
-            campanas = Campana.objects.obtener_campanas_vista_by_user(
-                campanas, user)
+            supervisor = user.get_supervisor_profile()
+            campanas = supervisor.campanas_asignadas_actuales()
 
         agentes_tiempo = []
         agentes_id = [agente.id for agente in agentes]

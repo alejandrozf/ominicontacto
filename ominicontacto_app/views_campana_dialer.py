@@ -62,7 +62,7 @@ class CampanaDialerListView(ListView):
         if self.request.user.is_authenticated and self.request.user and \
                 not self.request.user.get_is_administrador():
             user = self.request.user
-            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
+            campanas = Campana.objects.obtener_campanas_asignadas_o_creadas_by_user(campanas, user)
 
         # campana_service = CampanaService()
         # error_finalizadas = campana_service.chequear_campanas_finalizada_eliminarlas(

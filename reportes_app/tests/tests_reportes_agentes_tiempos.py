@@ -58,6 +58,7 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
             time=fin_sesion, event='REMOVEMEMBER', agente_id=self.agente1.id)
 
         self.user_supervisor = self.crear_user_supervisor()
+        self.supervisor_profile = self.crear_supervisor_profile(user=self.user_supervisor)
         self.manual = CampanaFactory.create(
             type=Campana.TYPE_MANUAL, reported_by=self.user_supervisor,
             estado=Campana.ESTADO_ACTIVA)
