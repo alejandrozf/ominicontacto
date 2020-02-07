@@ -30,7 +30,7 @@ msgstr "February 7, 2020"
 #: ../../release_notes.rst:7
 #, fuzzy
 msgid "Detalles de Release 1.4.0"
-msgstr "Release 1.3.5 details"
+msgstr "Release 1.4.0 details"
 
 # 58f70ad7b1c14c83b8fdbfbc514af179
 #: ../../release_notes.rst:11
