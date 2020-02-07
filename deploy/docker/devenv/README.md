@@ -14,7 +14,11 @@ NOTE: never raise up containers with root user or root privileges
     * Uncomment the line below [devenv-container] to let ansible know you want to deploy a devenv
         [devenv-container]
         #localhost ansible_connection=local
-    * Change the TZ variable to raise up containers with the timezone you want
+      * Uncomment the following variables and change the values as you wish       
+          #postgres_password=my_very_strong_pass
+          #admin_pass=my_very_strong_pass
+          #mysql_root_password=my_very_strong_pass
+          #TZ=America/Argentina/Cordoba
   5. Check the network assgined to devenv in group_vars/docker_devenv_vars.yml. By default the subnet 172.20.0.0/24 is assgined to the environment. Change the subnet and the IP's assigned to some containers if you need it.
   6. Go to deploy/ansible and run:
       - sudo ./deploy.sh --docker-deploy

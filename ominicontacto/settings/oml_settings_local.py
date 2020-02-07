@@ -6,18 +6,16 @@ AMI_USER = os.getenv('AMI_USER')
 AMI_PASSWORD = os.getenv('AMI_PASSWORD')
 ASTERISK_HOSTNAME = os.getenv('ASTERISK_HOSTNAME')
 ASTERISK_LOCATION = os.getenv('ASTERISK_LOCATION')
-DIALER_IP = os.getenv('DIALER_IP')
 DIALER_HOSTNAME = os.getenv('WOMBAT_HOSTNAME')
 EPHEMERAL_USER_TTL = int(os.getenv('EPHEMERAL_USER_TTL'))
 INSTALL_PREFIX = os.getenv('INSTALL_PREFIX')
-KAMAILIO_IP = os.getenv('KAMAILIO_IP')
 KAMAILIO_HOSTNAME = os.getenv('KAMAILIO_HOSTNAME')
 KAMAILIO_LOCATION = os.getenv('KAMAILIO_LOCATION')
 KAMAILIO_MODULES_LOCATION = os.getenv('KAMAILIO_MODULES_LOCATION')
+OML_OMNILEADS_IP = os.getenv('OMNILEADS_IP')
 POSTGRES_HOST = os.getenv('PGHOST')
 POSTGRES_DATABASE = os.getenv('PGDATABASE')
 POSTGRES_USER = os.getenv('PGUSER')
-OML_OMNILEADS_IP = os.getenv('OMNILEADS_IP')
 OML_EXTERNAL_PORT = int(os.getenv('EXTERNAL_PORT'))
 NGINX_HOSTNAME = os.getenv('NGINX_HOSTNAME')
 REDIS_HOSTNAME = os.getenv('REDIS_HOSTNAME')
@@ -57,8 +55,7 @@ STATIC_ROOT = "{0}static".format(INSTALL_PREFIX)
 MEDIA_ROOT = "{0}media_root".format(INSTALL_PREFIX)
 
 # IPs y hostnames
-OML_KAMAILIO_IP = "{0}/255.255.255.255".format(KAMAILIO_IP)
-OML_ASTERISK_HOSTNAME = "root@{0}".format(ASTERISK_HOSTNAME)
+#OML_KAMAILIO_IP = "{0}/255.255.255.255".format(KAMAILIO_IP)
 
 # Comandos que se ejecutan desde django
 OML_RELOAD_CMD = 'ssh root@{0} \'/usr/sbin/asterisk -rx "core reload"\''.format(ASTERISK_HOSTNAME)
@@ -68,7 +65,7 @@ OML_GRABACIONES_URL = "https://{0}:{1}/grabaciones".format(NGINX_HOSTNAME, OML_E
 OML_WOMBAT_URL = "http://{0}:8080/wombat".format(DIALER_HOSTNAME)
 
 # Ubicaciones de archivos
-OML_SIP_FILENAME = "{0}/etc/asterisk/oml_sip_endpoints.conf".format(ASTERISK_LOCATION)
+OML_SIP_FILENAME = "{0}/etc/asterisk/oml_pjsip_agents.conf".format(ASTERISK_LOCATION)
 OML_QUEUES_FILENAME = "{0}/etc/asterisk/oml_queues.conf".format(ASTERISK_LOCATION)
 OML_RUTAS_SALIENTES_FILENAME = "{0}/etc/asterisk/oml_extensions_outr.conf".format(ASTERISK_LOCATION)
 OML_ASTERISK_REMOTEPATH = "{0}/etc/asterisk/".format(ASTERISK_LOCATION)
@@ -132,7 +129,7 @@ LOGGING = {
 
 # Defender variables
 DEFENDER_BEHIND_REVERSE_PROXY = True
-DEFENDER_LOGIN_FAILURE_LIMIT = 1
+DEFENDER_LOGIN_FAILURE_LIMIT = int(os.getenv('LOGIN_FAILURE_LIMIT'))
 DEFENDER_DISABLE_IP_LOCKOUT = True
 DURACION_ASIGNACION_CONTACTO_PREVIEW = 30
 DEFENDER_REDIS_URL="redis://{0}:6379/0".format(REDIS_HOSTNAME)

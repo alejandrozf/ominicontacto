@@ -202,7 +202,7 @@ class TroncalSIPMixin(object):
         return super(TroncalSIPMixin, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('lista_troncal_sip')
+        return reverse('lista_troncal_sip', args=(1,))
 
 
 class TroncalSIPListView(ListView):
@@ -215,7 +215,7 @@ class TroncalSIPListView(ListView):
 class TroncalSIPCreateView(TroncalSIPMixin, CreateView):
     model = TroncalSIP
     form_class = TroncalSIPForm
-    template_name = 'base_create_update_form.html'
+    template_name = 'create_update_troncal.html'
 
     def form_valid(self, form):
         return self.process_in_form_valid(form)
@@ -224,7 +224,7 @@ class TroncalSIPCreateView(TroncalSIPMixin, CreateView):
 class TroncalSIPUpdateView(TroncalSIPMixin, UpdateView):
     model = TroncalSIP
     form_class = TroncalSIPForm
-    template_name = 'base_create_update_form.html'
+    template_name = 'create_update_troncal.html'
 
     def form_valid(self, form):
         return self.process_in_form_valid(form, update=True)
@@ -238,7 +238,7 @@ class TroncalSIPDeleteView(DeleteView):
     template_name = 'delete_troncal_sip.html'
 
     def get_success_url(self):
-        return reverse('lista_troncal_sip')
+        return reverse('lista_troncal_sip', args=(1,))
 
     def dispatch(self, request, *args, **kwargs):
         troncal_sip = self.get_object()
@@ -283,7 +283,7 @@ class OrdenarRutasSalientesView(View):
         orden = request.POST.get('orden', '')
         if not orden:
             messages.warning(request, _(u'No se pudo guardar el orden'))
-            return redirect('lista_rutas_salientes')
+            return redirect('lista_rutas_salientes', page=1)
 
         orden = json.loads(orden)
         preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(orden)])
@@ -306,7 +306,7 @@ class OrdenarRutasSalientesView(View):
         sincronizador = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
         sincronizador._generar_y_recargar_archivos_conf_asterisk()
         messages.success(request, _(u'Orden guardado satisfactoriamente'))
-        return redirect('lista_rutas_salientes')
+        return redirect('lista_rutas_salientes', page=1)
 
 
 class RutaSalienteMixin(object):
@@ -325,7 +325,7 @@ class RutaSalienteMixin(object):
             messages.add_message(self.request, messages.SUCCESS, self.message)
             # inserta la configuración de la ruta saliente en asterisk
             escribir_ruta_saliente_config(self, ruta_saliente)
-            return redirect('lista_rutas_salientes')
+            return redirect('lista_rutas_salientes', page=1)
         return render(self.request, 'ruta_saliente.html',
                       {'form': form, 'patrondiscado_formset': patrondiscado_formset,
                        'ordentroncal_formset': ordentroncal_formset})
@@ -375,7 +375,7 @@ class RutaSalienteUpdateView(RutaSalienteMixin, UpdateView):
 
 class EliminarRutaSaliente(DeleteView):
     model = RutaSaliente
-    success_url = reverse_lazy('lista_rutas_salientes')
+    success_url = reverse_lazy('lista_rutas_salientes', args=(1,))
     template_name = 'eliminar_ruta_saliente.html'
     context_object_name = 'ruta_saliente'
 
@@ -412,7 +412,7 @@ class RutaEntranteListView(ListView):
 class RutaEntranteMixin(object):
 
     def get_success_url(self):
-        return reverse('lista_rutas_entrantes')
+        return reverse('lista_rutas_entrantes', args=(1,))
 
     def form_valid(self, form):
         form.save()
@@ -443,7 +443,7 @@ class RutaEntranteUpdateView(RutaEntranteMixin, UpdateView):
 class RutaEntranteDeleteView(DeleteView):
     """Vista para eliminar una ruta entrante"""
     model = RutaEntrante
-    success_url = reverse_lazy('lista_rutas_entrantes')
+    success_url = reverse_lazy('lista_rutas_entrantes', args=(1,))
     template_name = 'eliminar_ruta_entrante.html'
     context_object_name = 'ruta_entrante'
 
@@ -482,7 +482,7 @@ class ApiObtenerDestinosEntrantes(View):
 
 class IVRMixin(object):
     def get_success_url(self):
-        return reverse('lista_ivrs')
+        return reverse('lista_ivrs', args=(1,))
 
     def get_sincronizador_de_configuracion(self):
         sincronizador = SincronizadorDeConfiguracionIVRAsterisk()
@@ -538,7 +538,7 @@ class IVRCreateView(IVRMixin, CreateView):
             escribir_nodo_entrante_config(self, ivr, sincronizador)
             # muestra mensaje de éxito
             messages.add_message(self.request, messages.SUCCESS, self.message)
-            return redirect('lista_ivrs')
+            return redirect('lista_ivrs', page=1)
         return render(
             self.request, 'crear_ivr.html',
             {'form': form, 'opcion_destino_formset': opcion_destino_formset})
@@ -599,7 +599,7 @@ class IVRUpdateView(IVRMixin, UpdateView):
             escribir_nodo_entrante_config(self, ivr, sincronizador)
             # muestra mensaje de éxito
             messages.add_message(self.request, messages.SUCCESS, self.message)
-            return redirect('lista_ivrs')
+            return redirect('lista_ivrs', page=1)
         return render(
             self.request, 'editar_ivr.html',
             {'form': form, 'opcion_destino_formset': opcion_destino_formset})
@@ -649,7 +649,7 @@ class GrupoHorarioCreateView(GrupoHorarioMixin, CreateView):
     model = GrupoHorario
     template_name = "crear_grupo_horario.html"
     fields = ('nombre',)
-    success_url = reverse_lazy('lista_grupos_horarios')
+    success_url = reverse_lazy('lista_grupos_horarios', args=(1,))
     message = _('Se ha creado el grupo horario con éxito')
 
     def get_context_data(self, **kwargs):
@@ -663,7 +663,7 @@ class GrupoHorarioUpdateView(GrupoHorarioMixin, UpdateView):
     model = GrupoHorario
     template_name = 'editar_grupo_horario.html'
     fields = ('nombre',)
-    success_url = reverse_lazy('lista_grupos_horarios')
+    success_url = reverse_lazy('lista_grupos_horarios', args=(1,))
     message = _('Se ha modificado el grupo horario con éxito')
 
     def get_context_data(self, **kwargs):
@@ -680,7 +680,7 @@ class GrupoHorarioDeleteView(DeleteView):
     model = GrupoHorario
     template_name = 'eliminar_grupo_horario.html'
     context_object_name = 'grupo_horario'
-    success_url = reverse_lazy('lista_grupos_horarios')
+    success_url = reverse_lazy('lista_grupos_horarios', args=(1,))
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -717,7 +717,7 @@ class ValidacionFechaHoraListView(ListView):
 class ValidacionFechaHoraMixin(object):
 
     def get_success_url(self):
-        return reverse('lista_validaciones_fecha_hora')
+        return reverse('lista_validaciones_fecha_hora', args=(1,))
 
     def get_sincronizador_de_configuracion(self):
         sincronizador = SincronizadorDeConfiguracionValidacionFechaHoraAsterisk()
@@ -909,7 +909,7 @@ class IdentificadorClienteListView(ListView):
 class IdentificadorClienteMixin(object):
 
     def get_success_url(self):
-        return reverse('lista_identificador_cliente')
+        return reverse('lista_identificador_cliente', args=(1,))
 
     def get_sincronizador_de_configuracion(self):
         sincronizador = SincronizadorDeConfiguracionIdentificadorClienteAsterisk()
@@ -1048,7 +1048,7 @@ class DestinoPersonalizadoListView(ListView):
 class DestinoPersonalizadoMixin(object):
 
     def get_success_url(self):
-        return reverse('lista_destinos_personalizados')
+        return reverse('lista_destinos_personalizados', args=(1,))
 
     def get_sincronizador_de_configuracion(self):
         sincronizador = SincronizadorDeConfiguracionDestinoPersonalizadoAsterisk()

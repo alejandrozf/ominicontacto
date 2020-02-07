@@ -12,10 +12,54 @@
   tags: always
   changed_when: false
 
+- name: Set ansible variables depending of hostname
+  set_fact: omni_fqdn="{{ hostname.stdout }}"
+  when: cluster == 0
+  tags: always
+- set_fact: omniapp_fqdn="{{ omni_fqdn }}"
+  when: cluster == 0
+  tags: always
+- set_fact: asterisk_fqdn="{{ omni_fqdn }}"
+  when: cluster == 0
+  tags: always
+- set_fact: kamailio_fqdn="{{ omni_fqdn }}"
+  when: cluster == 0
+  tags: always
+- set_fact: database_fqdn="{{ omni_fqdn }}"
+  when: cluster == 0
+  tags: always
+- set_fact: dialer_fqdn="{{ omni_fqdn }}"
+  when: cluster == 0
+  tags: always
+
 # Obtengo IP del nodo
 - name: Get IP adress of node (selfhosted)
   set_fact: omni_ip={{ hostvars[inventory_hostname]['ansible_' + iface]['ipv4']['address'] }}
   when: cluster == 0 and iface != "none"
+  tags: always
+
+# Se instala wget para centos, que no viene incorporado
+- name: Install of dependencies (centos)
+  yum: name=wget state=present update_cache=yes
+  when: ansible_os_family == "RedHat"
+
+# Obtengo IP publica del nodo
+- name: Get public IP address of node
+  shell: wget -qO- http://ipinfo.io/ip
+  register: public_ip
+  tags: always
+
+- name: Validate IP public obtained
+  shell: if [[ {{ public_ip.stdout }} =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then echo 0; else echo 1; fi
+  args: 
+    executable: /bin/bash
+  register: ip_val
+  tags: always
+  failed_when: false
+
+- fail:
+    msg: "The public IP obtained is wrong, check in shell if you obtain a public IP with this command 'wget -qO- http://ipinfo.io/ip', after that please run the script again"
+  when: ip_val.stdout != '0'
   tags: always
 
 # Comparo si la IP ingresada en el inventory es el mismo  de el nodo
@@ -24,6 +68,12 @@
     that: "'{{ omni_ip }}' in ansible_all_ipv4_addresses"
     msg: "The IP you inserted in inventory file is wrong, check it"
   when: cluster == 0 and iface == "none"
+  changed_when: false
+  tags: always
+
+- name: Get the network/submask configured in default interface
+  shell: default_if=$(ip route show | awk '/^default/ {print $5}'); route | grep $default_if|tail -1 |awk -F " " '{print $1"/"$3}'
+  register: network_submask
   changed_when: false
   tags: always
 
@@ -49,6 +99,12 @@
   register: asterisk_installed
   tags: ['asterisk','postinstall']
 
+- name: Check if posgresql-{{ postgresql_version }} is installed
+  shell:  bash -lc 'output=`psql -c "SELECT version()"`; if [[ $output == *"{{ postgresql_old_version }}"* ]]; then exit 2; elif [[ $output == *"{{ postgresql_version }}"* ]]; then exit 3; else exit 1; fi'
+  failed_when: false
+  register: postgresql_new_installed
+  tags: ['database','postinstall']
+
 # Chequeo si la version de rtpengine instalada es {{ rtpengine_version }}
 - name: Check if Rtpengine-mr{{ rtpengine_version }} is installed
   shell: rtpengine -v 2>&1 |awk -F "~" '{print $2}'|cut -c 3-
@@ -67,8 +123,17 @@
 - name: Check if trusted certificates exists
   shell: "if [ -z \"$(ls -A /var/tmp/ominicontacto-build/ominicontacto/deploy/certs)\" ]; then exit 1; else exit 0; fi"
   failed_when: false
+  changed_when: false
   delegate_to: localhost
   register: trusted_certs_exists
+  tags: always
+
+- name: Check if custom and override files for dialplan exists
+  shell: "[ -f {{ asterisk_location }}/etc/asterisk/oml_extensions_commonsub_custom.conf ]"
+  changed_when: false
+  failed_when: false
+  delegate_to: localhost
+  register: ast_custom_exists
   tags: always
 
 - name: Set name of trusted certificate as ansible variable
@@ -87,7 +152,7 @@
   tags: always
 
 - name: Check if $TZ was defined previously
-  shell: if [ -z $TZ ]; then exit 1; else exit 0; fi
+  shell: bash -lc 'if [ -z $TZ ]; then exit 1; else echo $TZ; exit 0; fi'
   args:
     executable: /bin/bash
   changed_when: false
@@ -95,12 +160,12 @@
   register: assert_tz
   tags: always
 
-- set_fact: TZ="{{ ansible_env.TZ }}"
+- set_fact: TZ="{{ assert_tz.stdout }}"
   when: assert_tz.rc == 0 and TZ is not defined
   tags: always
 
 - name: Check if $PGPASSWORD was defined previously
-  shell: if [ -z $PGPASSWORD ]; then exit 1; else exit 0; fi
+  shell: bash -lc 'if [ -z $PGPASSWORD ]; then exit 1; else echo $PGPASSWORD; exit 0; fi'
   args:
     executable: /bin/bash
   changed_when: false
@@ -108,12 +173,12 @@
   register: assert_pgpass
   tags: always
 
-- set_fact: postgres_password="{{ ansible_env.PGPASSWORD }}"
+- set_fact: postgres_password="{{ assert_pgpass.stdout }}"
   when: assert_pgpass.rc == 0 and postgres_password is not defined
   tags: always
 
 - name: Check if $DJANGO_PASS was defined previously
-  shell: if [ -z $DJANGO_PASS ]; then exit 1; else exit 0; fi
+  shell: bash -lc 'if [ -z $DJANGO_PASS ]; then exit 1; else echo $DJANGO_PASS; exit 0; fi'
   args:
     executable: /bin/bash
   changed_when: false
@@ -121,12 +186,12 @@
   register: assert_djangopass
   tags: always
 
-- set_fact: admin_pass="{{ ansible_env.DJANGO_PASS }}"
+- set_fact: admin_pass="{{ assert_djangopass.stdout }}"
   when: assert_djangopass.rc == 0 and admin_pass is not defined
   tags: always
 
 - name: Check if $SESSION_COOKIE_AGE was defined previously
-  shell: if [ -z $SESSION_COOKIE_AGE ]; then exit 1; else exit 0; fi
+  shell: bash -lc 'if [ -z $SESSION_COOKIE_AGE ]; then exit 1; else echo $SESSION_COOKIE_AGE; exit 0; fi'
   args:
     executable: /bin/bash
   changed_when: false
@@ -134,12 +199,12 @@
   register: assert_sca
   tags: always
 
-- set_fact: SCA="{{ ansible_env.SESSION_COOKIE_AGE }}"
+- set_fact: SCA="{{ assert_sca.stdout }}"
   when: assert_sca.rc == 0
   tags: always
 
 - name: Check if $EPHEMERAL_USER_TTL was defined previously
-  shell: if [ -z $EPHEMERAL_USER_TTL ]; then exit 1; else exit 0; fi
+  shell: bash -lc 'if [ -z $EPHEMERAL_USER_TTL ]; then exit 1; else echo $EPHEMERAL_USER_TTL; exit 0; fi'
   args:
     executable: /bin/bash
   changed_when: false
@@ -147,12 +212,12 @@
   register: assert_ecctl
   tags: always
 
-- set_fact: ECCTL="{{ ansible_env.EPHEMERAL_USER_TTL }}"
+- set_fact: ECCTL="{{ assert_ecctl.stdout }}"
   when: assert_ecctl.rc == 0
   tags: always
 
 - name: Check if $MONITORFORMAT was defined previously
-  shell: if [ -z $MONITORFORMAT ]; then exit 1; else exit 0; fi
+  shell: bash -lc 'if [ -z $MONITORFORMAT ]; then exit 1; else echo $MONITORFORMAT; exit 0; fi'
   args:
     executable: /bin/bash
   changed_when: false
@@ -160,12 +225,12 @@
   register: assert_monitorformat
   tags: always
 
-- set_fact: MONITORFORMAT="{{ ansible_env.MONITORFORMAT }}"
+- set_fact: MONITORFORMAT="{{ assert_monitorformat.stdout }}"
   when: assert_monitorformat.rc == 0
   tags: always
 
 - name: Check if $MYSQL_PWD was defined previously
-  shell: if [ -z $MYSQL_PWD ]; then exit 1; else exit 0; fi
+  shell: bash -lc 'if [ -z $MYSQL_PWD ]; then exit 1; else echo $MYSQL_PWD; exit 0; fi'
   args:
     executable: /bin/bash
   changed_when: false
@@ -173,13 +238,14 @@
   register: assert_mysqlpwd
   tags: always
 
-- set_fact: mysql_root_password="{{ ansible_env.MYSQL_PWD }}"
+- set_fact: mysql_root_password="{{ assert_mysqlpwd.stdout }}"
   when: assert_mysqlpwd.rc == 0 and mysql_root_password is not defined
   tags: always
 
 - name: Get actual mysql root password
-  set_fact: mysql_old_root_password="{{ ansible_env.MYSQL_PWD }}"
+  set_fact: mysql_old_root_password="{{ assert_mysqlpwd.stdout }}"
   when: assert_mysqlpwd.rc == 0
+  tags: always
 
 # Chequea si timezone esta definido
 - name: Check if TimeZone variable is defined

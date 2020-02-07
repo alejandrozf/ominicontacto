@@ -81,7 +81,7 @@ SESSION_COOKIE_AGE = 600
 
 #  para hacer un include de este archivo
 # **** RECORDAR: revisar permisos y que existan los directorios ****
-OML_ASTERISK_HOSTNAME = "root@172.16.20.222"
+ASTERISK_HOSTNAME = "172.16.20.222"
 OML_ASTERISK_REMOTEPATH = "/etc/asterisk/"
 OML_SIP_FILENAME = "/opt/omnileads/sip_fts.conf"
 OML_QUEUES_FILENAME = "/opt/omnileads/queues_fts.conf"
@@ -114,10 +114,6 @@ OML_GRABACIONES_URL = "http://172.16.20.222/grabaciones"
 
 OML_SUPERVISION_URL = "http://172.16.20.88:8090/Omnisup/index.php?page=Lista_Campanas&supervId="
 
-
-# 'OML_KAMAILIO_IP': ip donde se encuentra kamailio-debian
-# ejemplo "16.20.219/255.255.255.255"
-OML_KAMAILIO_IP = "172.16.20.14/255.255.255.255"
 
 # 'OML_WOMBAT_URL': url donde se encuentra el discador de wombat
 # ejemplo "http://172.16.20.222/wombat"

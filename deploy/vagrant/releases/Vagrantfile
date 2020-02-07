@@ -2,21 +2,21 @@ Vagrant.configure("2") do |config|
   config.vm.define "centos" do |nodo1|
     nodo1.vm.box = "centos-release-1.3.1"
     nodo1.ssh.private_key_path = "/home/ftsinfra/oml-boxes/centos_private_key_1.3.1"
-    nodo1.vm.network "public_network", bridge: "enp2s0", ip: "172.16.20.63", use_dhcp_assigned_default_route: true
+    nodo1.vm.network "public_network", bridge: "enp2s0", ip: "192.168.99.63", use_dhcp_assigned_default_route: true
     nodo1.ssh.forward_agent = true
     nodo1.vm.synced_folder '.', '/vagrant', disabled: true
   end
   config.vm.define "debian" do |nodo2|
     nodo2.vm.box = "centos-release-1.3.1"
     nodo2.ssh.private_key_path = "/home/ftsinfra/oml-boxes/debian_private_key_1.3.1"
-    nodo2.vm.network "public_network", bridge: "enp2s0", ip: "172.16.20.64", use_dhcp_assigned_default_route: true
+    nodo2.vm.network "public_network", bridge: "enp2s0", ip: "192.168.99.64", use_dhcp_assigned_default_route: true
     nodo2.ssh.forward_agent = true
     nodo2.vm.synced_folder '.', '/vagrant', disabled: true
   end
   config.vm.define "ubuntu" do |nodo3|
     nodo3.vm.box = "centos-release-1.3.1"
     nodo3.ssh.private_key_path = "/home/ftsinfra/oml-boxes/centos_private_key_1.3.1"
-    nodo3.vm.network "public_network", bridge: "enp2s0", ip: "172.16.20.65", use_dhcp_assigned_default_route: true
+    nodo3.vm.network "public_network", bridge: "enp2s0", ip: "192.168.99.65", use_dhcp_assigned_default_route: true
     nodo3.ssh.forward_agent = true
     nodo3.vm.synced_folder '.', '/vagrant', disabled: true
   end

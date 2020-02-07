@@ -1,5 +1,3 @@
-
-
 version: '3.7'
 services:
   asterisk:
@@ -11,31 +9,33 @@ services:
     dns: 8.8.8.8
     environment:
       - ASTERISK_LOCATION=${ASTERISK_LOCATION}
+      - AMI_USER=${AMI_USER}
+      - AMI_PASSWORD=${AMI_PASSWORD}
       - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       - PGPASSWORD=${PGPASSWORD}
       - PGHOST=${PGHOST}
       - PGUSER=${PGUSER}
       - TZ=${TZ}
-    image: freetechsolutions/asterisk:{{ asterisk_version }}
+    image: freetechsolutions/asterisk:${ASTERISK_VERSION}
     networks:
       - dev_net
     privileged: true
     restart: on-failure
     stop_grace_period: 1m30s
-    #user: asterisk
     volumes:
       - grabaciones:/var/spool/asterisk/monitor/
       - ./asterisk/conf/:/etc/asterisk/
       - ./asterisk/agis/:/var/lib/asterisk/agi-bin/
-      - sounds:/var/lib/asterisk/sounds/oml/
+      - sounds:/var/lib/asterisk/sounds/
       - ./asterisk/odbc.ini:/etc/odbc.ini
       - ./asterisk/odbcinst.ini:/etc/odbcinst.ini
       - ./asterisk/others/:/home/
       - {{ repo_location }}/ominicontacto_voip/asterisk-files/conf/:/var/tmp/
-      - ssh_keys_devenv:/opt/sshkeys
     working_dir: /etc/asterisk
 
   dialer:
+    command: >
+      bash -c "sed -i -- 's/127.0.0.1/${MYSQL_HOST}/g' /usr/local/tomcat/webapps/wombat/WEB-INF/tpf.properties && catalina.sh run"
     container_name: oml-{{ dialer_fqdn }}-devenv
     depends_on:
       - mariadb
@@ -45,8 +45,7 @@ services:
       - MYSQL_PWD=${MYSQL_ROOT_PASS}
     image: freetechsolutions/dialer:${DIALER_VERSION}
     networks:
-      dev_net:
-        ipv4_address: ${DIALER_IP}
+      - dev_net
     ports:
       - ${WD_EXT_PORT}:8080/tcp
     privileged: true
@@ -64,8 +63,7 @@ services:
       - TZ=${TZ}
     image: {{ kamailio_image }}
     networks:
-      dev_net:
-        ipv4_address: {{ kamailio_ip }}
+      - dev_net
     privileged: true
     restart: on-failure
     stop_grace_period: 1m30s
@@ -124,6 +122,9 @@ services:
       - DIALER_IP=${DIALER_IP}
       - DJANGO_ADMIN_PASS=${DJANGO_PASS}
       - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
+      - DOCKER_IP=${DOCKER_IP}
+      - LOGIN_FAILURE_LIMIT=${LOGIN_FAILURE_LIMIT}
+      - MONITORFORMAT=${MONITORFORMAT}
       - NGINX_HOSTNAME=${DOCKER_HOSTNAME}
       - EPHEMERAL_USER_TTL=${ECTTL}
       - EXTERNAL_PORT=${NGINX_EXT_PORT}
@@ -148,8 +149,7 @@ services:
       - WOMBAT_PASSWORD=${WOMBAT_PASSWORD}
     image: freetechsolutions/omniapp:${DEVENV_VERSION}
     networks:
-      dev_net:
-        ipv4_address: ${OMNILEADS_IP}
+      - dev_net
     privileged: true
     restart: on-failure
     stdin_open: true
@@ -158,7 +158,7 @@ services:
     user: omnileads
     volumes:
       - {{ repo_location }}:{{ install_prefix }}ominicontacto/
-      - ssh_keys_devenv:{{ install_prefix }}.ssh/
+      - ./asterisk/conf/:/etc/asterisk/
       - ./omniapp/:{{ install_prefix }}run/
       - ./omniapp/conversor.sh:{{ install_prefix }}bin/conversor.sh
       - ./omniapp/omni-asterisk-logout.py:{{ install_prefix }}bin/omni-asterisk-logout.py

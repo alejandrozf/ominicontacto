@@ -1,0 +1,380 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2019, omnileads
+# This file is distributed under the same license as the OMniLeads package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: OMniLeads \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-02-03 13:54-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+# 9fc17715f21b41dcaec4e16da290e6b5
+#: ../../install_docker_pbx.rst:5
+msgid "OMniLeads sobre FreePBX / Issabel"
+msgstr "OMniLeads over FreePBX / Issabel"
+
+# b672543d387c440aaf080828448ea5ae
+#: ../../install_docker_pbx.rst:7
+#, fuzzy
+msgid ""
+"A partir de la versión 1.4.0, OMniLeads puede ser desplegado en "
+"producción utilizando Docker. En esta sección se cubren todos los "
+"aspectos necesarios para correr la aplicación utilizando esta novedosa "
+"tecnología de \"virtualización\" que nos facilita la co-existencia entre "
+"OMniLeads y el software de IPPBX dentro del sistema operativo subyacente."
+msgstr ""
+"Since 1.4.0 version, OMniLeads can be deploy in production using "
+"Docker.In this section we cover all aspects needed to run the application"
+" usingthis novel virtualization technique that simplifies the coexistence"
+" between OMniLeads and the IPPBX software inside the underlying operating"
+" system"
+
+# f96628741d324604919c529adcba13fd
+#: ../../install_docker_pbx.rst:13
+msgid ""
+"Antes de avanzar aclaramos que todo lo expuesto a continuación, tiene "
+"garantías en `Issabel-20200102 "
+"<https://razaoinfo.dl.sourceforge.net/project/issabelpbx/Issabel%204/issabel4"
+"-USB-DVD-x86_64-20200102.iso>`_. Para `FreePBX-15 "
+"<https://downloads.freepbxdistro.org/ISO/SNG7-FPBX-64bit-1910-2.iso>`_ "
+"existe un workaround que se detalla al final de esta sección."
+msgstr ""
+"First of all, we want to emphasize, that all things exposed here "
+"havewarranty on "
+"`Issabel-20200102<https://razaoinfo.dl.sourceforge.net/project/issabelpbx/Issabel%204/issabel4"
+"-USB-DVD-x86_64-20200102.iso>`_. For `FreePBX-15 "
+"<https://downloads.freepbxdistro.org/ISO/SNG7-FPBX-64bit-1910-2.iso>`_ "
+"exists a workaround detailed at the end of this section."
+
+# d82a5c0c89a4489d990898f34510f769
+#: ../../install_docker_pbx.rst:16
+msgid ""
+"Al ejecutar el proceso de instalación disponible en el repositorio, se "
+"procede con la instalación de:"
+msgstr ""
+"When executing installation procedure on the repository, we can proced "
+"with the installation of:"
+
+# 4c763cf0481d4ad4b238fb6dfaf54af9
+#: ../../install_docker_pbx.rst:18
+msgid "Docker"
+msgstr ""
+
+# 113ccd8fe04a4be88f3f8ae9eb07dd80
+#: ../../install_docker_pbx.rst:19
+msgid "docker-compose"
+msgstr ""
+
+# 9420fd2113274fa19c2ea07601d302b8
+#: ../../install_docker_pbx.rst:20
+msgid "PostgreSQL"
+msgstr ""
+
+# 6962eace72f243a383c83e5ddb551911
+#: ../../install_docker_pbx.rst:21
+msgid "RTPEngine"
+msgstr ""
+
+# 61765a7a060a4008becf5741033ab274
+#: ../../install_docker_pbx.rst:23
+msgid ""
+"Estos componentes serán instalados y se van a ejecutar directamente sobre"
+" el sistema operativo de base (Sangoma-OS o Issabel-OS, según "
+"corresponda)."
+msgstr ""
+"This components will be installed and executed directly over the base "
+"operating system(Sangoma-OS or Issabel-OS, as appropriate)"
+
+# 2713549bd18f477cba628d70f43836e6
+#: ../../install_docker_pbx.rst:25
+msgid ""
+"Por otro lado los componentes restantes de la aplicación, serán ejecutads"
+" como contenedores Docker."
+msgstr ""
+"For other part, the remaining application components, will be executed as"
+" a Docker containers."
+
+# 44c4f534ffc94db1952557491aa600c6
+#: ../../install_docker_pbx.rst:27
+msgid ""
+"En la siguiente figura se presenta un esquema representativo acerca del "
+"cómo se despliega OMniLeads en convivencia con el stack de IPPBX."
+msgstr ""
+"In the following figure a representative scheme about how is deployed "
+"OMniLeadsalongside an IPPBX stack is shown"
+
+# 3f43c38ba134412aac648ed18f4a31f0
+#: ../../install_docker_pbx.rst:32
+msgid ""
+"Como se puede observar los componentes: Asterisk, Kamailio, Nginx, Wombat"
+" Dialer, Redis y OMni-App se ejecutan en contenedores, mientras que "
+"RTPengine, PostgreSQL y MySQL sobre el sistema operativo base."
+msgstr ""
+"As we can see the components: Asterisk, Kamailio, Nginx, Wombat Dialer, "
+"Redis and OMni-App are executed on containers, while  RTPengine, "
+"PostgreSQL and MySQL over the base operating system."
+
+# d04c1f751ae340caa63363e6a8624a1e
+#: ../../install_docker_pbx.rst:36
+msgid "Procedimiento de instalación"
+msgstr "Installation procedure"
+
+# d5b2d5bb5fbe4087a3fada4e5b7926bf
+#: ../../install_docker_pbx.rst:38
+msgid ""
+"Como primer paso se procede con el ingreso al host donde se ejecuta el "
+"software de PBX para luego descargar el repositorio de OMniLeads y una "
+"vez clonado el repositorio debemos posicionarnos sobre el path "
+"*relativo*; ominicontacto/deploy/docker/prodenv."
+msgstr ""
+"As a first step we proced to login into the host where the PBX is running"
+" for then download the OMniLeads repository, and once its cloned we must "
+"go to the *relative* path: ominicontacto/deploy/docker/prodenv"
+
+# cb4349aac9d54c0285c6133944bf06fa
+#: ../../install_docker_pbx.rst:48
+msgid ""
+"Una vez ubicados en el *Path* indicado, se debe editar el archivo *.env* "
+"en pos de asociar valores a variables utilizadas para el deploy de "
+"OMniLeads."
+msgstr ""
+"Once we are in the *Path* indicated, we must edit the file *.env* in "
+"order to associate values to the variables used on OMniLeads deployment"
+
+# 9ada7d400a294922a22f744a58b99a5e
+#: ../../install_docker_pbx.rst:53
+msgid "Variables de entorno *.env*"
+msgstr "Environment variables *.env*"
+
+# 4746878805304320bbea9f710083b64d
+#: ../../install_docker_pbx.rst:55
+msgid ""
+"En este archivo se configuran variables de entorno que serán utilizadas "
+"por los contenedores."
+msgstr ""
+"In this file environment variables that will be used by the containers "
+"are configured"
+
+# 4ea303d054e74a5db8b417305a2fc79d
+#: ../../install_docker_pbx.rst:57
+msgid ""
+"El archivo se encuentra documentado con comentarios, no obstante vamos a "
+"citar los principales parámetros a continuación."
+msgstr ""
+"The file is documented con comments, however we are going to cite the "
+"main parameters next"
+
+# 4f9085c4f2cf46a4acac0fdbcc4ab359
+#: ../../install_docker_pbx.rst:59
+msgid ""
+"Las variables *DOCKER_HOSTNAME* y *DOCKER_IP* se corresponden con la "
+"dirección IP LAN asignada a la interfaz principal del host IPPBX."
+msgstr ""
+"The variables *DOCKER_HOSTNAME* and *DOCKER_IP* are related with the IP "
+"LAN address assigned to the IPPBX host main interface"
+
+# e7859f6848904714b7a2ad72f1eae712
+#: ../../install_docker_pbx.rst:61
+msgid ""
+"Luego tenemos a la variable *RELEASE* que hace alusión a la versión de "
+"OMniLeads que se desea desplegar, la variable *TZ* (Time Zone) y la "
+"variable *DJANGO_PASS* la cual implementa la contraseña del usuario web "
+"admin de OMniLeads."
+msgstr ""
+"Then we have the variable *RELEASE* that makes allusion to the OMniLeads "
+"version to deploy, the variable *TZ* (Time Zone) and the variable "
+"*DJANGO_PASS* which sets the password for the OMniLeads web user 'admin'"
+
+# 1deb8600c0f7408dbe6f1261d2c15693
+#: ../../install_docker_pbx.rst:91
+msgid ""
+"Ponemos el foco en el bloque de variables inherentes a MySQL, donde se "
+"deben editar las variables *MYSQL_ROOT_PASS* con el valor de la "
+"contraseña del usuario root de MySQL. Tanto en FreePBX como en Issabel "
+"suele venir sin password a la hora de conectar desde *localhost*, en tal "
+"caso descomentar el parámetro y dejarlo vacío (MYSQL_ROOT_PASS=). Con "
+"respecto al segundo parámetro a configurar *MYSQL_HOST*, se debe utilizar"
+" la dirección IP LAN del host."
+msgstr ""
+"We make focus on the variables block related to MySQL, where the variable"
+" *MYSQL_ROOT_PASS* must be edited with the value of the MySQL root "
+"user.On CentOS-7 MySQL got without password for *localhost* connections, "
+"in that case uncomment the parameter and left empty (MYSQL_ROOT_PASS=), "
+"if you did not generated a root password. Regarding the second parameter "
+"to configure, *MYSQL_HOST*,the host IP LAN direction must be used."
+
+# 56f6165521cc4fd3ac7b28f3f2be3413
+#: ../../install_docker_pbx.rst:106
+msgid ""
+"Finalmente nos concentramos sobre los parámetros *PGHOST* correspondiente"
+" a la dirección IP LAN del host y *PGPASSWORD* es la contraseña del "
+"usuario omnileads del motor PostgreSQL que utiliza la aplicación. Aquí "
+"debemos elegir una contraseña a nuestro antojo, ya que PostgreSQL se "
+"instala con OMniLeads, a diferencia de MySQL que ya viene instalado como "
+"parte del stack de software de IPPBX."
+msgstr ""
+"Finally, the parámetros *PGHOST* must be filled  with the host IP LAN and"
+" *PGPASSWORD* is the omnileads user password on the PostgreSQL instance "
+"used by the application. Here we can choose freely a password for our "
+"like, because PostgreSQL is installed with OML as a part, unlike MySQL "
+"which is installed as part of the IPPBX software stack"
+
+# 845430c57de940cbac8798d4fb297586
+#: ../../install_docker_pbx.rst:120
+msgid ""
+"Una vez ajustadas las variables marcadas, estamos en condiciones de "
+"ejecutar el deploy de OMniLeads."
+msgstr ""
+"Once edited the selected variables, we are ready to execute the OMniLeads"
+" deployment."
+
+# ac31a47d7b154f22baca44b8c4f03cd8
+#: ../../install_docker_pbx.rst:124
+msgid ""
+"El parámetro *SUBNET=192.168.15.0/24*, SOLAMENTE deben modificarse en "
+"caso de que su dirección IP LAN del PBX host (donde se ejecuta el docker-"
+"engine) coincida con este rango aquí citadas."
+msgstr ""
+"The *SUBNET=192.168.15.0/24* should ONLY be modified in case your PBX "
+"hosthost LAN IP (where docker-engine runs) does not match with this range"
+" mentioned."
+
+# 3af92b5817cd43d4a7109ae02012d268
+#: ../../install_docker_pbx.rst:128
+msgid ""
+"Dentro de la carpeta donde reside el archivo de variables *.env*, sobre "
+"el cual estuvimos trabajando tenemos al script de instalación: "
+"*install.sh*. El cual debe ser ejecutado como *root*, a partir de haber "
+"establecido correctamente cada parámetro del archivo *.env* previamente "
+"repasado."
+msgstr ""
+"Inside the folder where *.env* variables file resides, in which we were "
+"working we have the installation script: *install.sh*. This script must "
+"be executed as a *root*, after set every parameter on file *.env* "
+"previously mentioned"
+
+# 13b4d53e9eb540be900d2bafcfa41e7b
+#: ../../install_docker_pbx.rst:136
+msgid ""
+"A partir de entonces comenzará el proceso de instalación y posterior "
+"lanzamiento de la applicación."
+msgstr ""
+"Then, from here the install process will starts and then also the "
+"application running"
+
+# 10c9f8d7d8bc4d9fa815fc594aa4f788
+#: ../../install_docker_pbx.rst:140
+msgid ""
+"Dentro de los pasos que contempla la instalación está la ejecución del "
+"*docker-compose* que levanta los contenedores. Al ser la primera "
+"ejecución se deben descargar las imágenes Docker de cada componente, por "
+"lo que el proceso puede demorar hasta varias decenas de minutos "
+"dependiendo la velocidad de conexión a internet."
+msgstr ""
+"Inside the installation steps there is the execution of the first "
+"*docker-compose that makes up the containers. Being the first execution "
+"the Docker images for every component will be downloaded now, and for "
+"that reason could be slow for up to some dozens of minutes, depending of "
+"the Internet connection speed."
+
+# a92a7955687a475c9a2e3b9f4e5b41af
+#: ../../install_docker_pbx.rst:149
+msgid "Systemd - omnileads-prodenv"
+msgstr ""
+
+# c2d9464e5103411080df00d599063378
+#: ../../install_docker_pbx.rst:151
+msgid ""
+"A partir de la isntalación se deja disponible el servicio: omnileads-"
+"prodenv.service el cual servirá para parar/levantar la aplicación. El "
+"sistema se deja configurado para que inicie automáticamente luego de cada"
+" reinicio del sistema operativo de base."
+msgstr ""
+
+# c67f0ba54b8f4225804860336201c089
+#: ../../install_docker_pbx.rst:154
+msgid "Para verificar el servicio:"
+msgstr "To verify the service:"
+
+# a952ee5667864f739f18797e8f2efec2
+#: ../../install_docker_pbx.rst:160
+msgid "Si todo es correcto deberíamos obtener la siguiente salida:"
+msgstr "If everything is correct we should get the following output:"
+
+# f2db5359fd3c4f168eb3eae319ae06ef
+#: ../../install_docker_pbx.rst:165
+msgid "Para bajar el servicio:"
+msgstr "To stop the service:"
+
+# 481375f712fd4b558b4f01ef9257167d
+#: ../../install_docker_pbx.rst:171
+msgid "Para levantar el servicio:"
+msgstr "To start the service"
+
+# 772a7b1d46504e5090a21e32c6b80e18
+#: ../../install_docker_pbx.rst:180
+msgid ""
+"En el caso de estar ejecutando este procedimiento sobre FreePBX, se debe "
+"considerar el siguiente workaround debido al tratamiento que dicha "
+"distribución hace sobre Iptables."
+msgstr ""
+"In case we have been executing this procedure on FreePBX, we must "
+"consider the following workaround due to its management of Iptables."
+
+# 126e45dc9d594fa0a81554fe51be0962
+#: ../../install_docker_pbx.rst:183
+msgid "Primer login"
+msgstr "First login"
+
+# a25eaefd555d429d86304608a58bc545
+#: ../../install_docker_pbx.rst:185
+msgid ""
+"Para acceder al sistema y comenzar la  :ref:`about_initial_settings` y "
+"posteriormente la configuración de :ref:`about_pbx_integration` debemos "
+"acceder desde un navegador web a la URL conformada por la dirección IP "
+"del host IPPBX utilizando *https* y el puerto *444*, como se indica en la"
+" figura."
+msgstr ""
+"For access to the system and start the :ref:`about_initial_settings` and "
+"then the configuration of :ref:`about_pbx_integration` we must access "
+"from a web browser to the URL formed by the Linux host IP using *https* "
+"and the port 444, as shown in the figure."
+
+# 6d3269d1c5cd4b37bff3e02387cff692
+#: ../../install_docker_pbx.rst:193
+msgid "Workaround para freePBX"
+msgstr "Workaround for FreePBX"
+
+# a7a12c9da2ad4ec5b5cb9322d16a1c24
+#: ../../install_docker_pbx.rst:195
+msgid ""
+"Luego de cada *reboot* del sistema operativo se deberán ejecutar los "
+"siguientes comandos para dejar apta la instancia para comenzar a "
+"trabajar."
+msgstr ""
+"After every operating system *reboot* we must execute the following "
+"commands in order to make the instance ready to start to work"
+
+# 07c1c310826c42558c04910a6e281750
+#: ../../install_docker_pbx.rst:202
+msgid "Estos dos comandos dejaran lista la instancia de OMniLeads sobre FreePBX."
+msgstr "This two commands will make ready the OMniLeads instance in FreePBX"
+
+# 2fa86a3a199e4836ae3614a7df83d4e9
+#: ../../install_docker_pbx.rst:207
+msgid "En próximas versiones se tratará de optimizar la ejecución sobre FreePBX."
+msgstr ""
+"On next versions we will try to optimize the OMniLeads execution in "
+"FreePBX"
+
+
+

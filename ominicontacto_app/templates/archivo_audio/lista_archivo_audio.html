@@ -33,7 +33,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </thead>
     <tbody>
     {% for audio in audios %}
-        <tr>
+        <tr id="{{audio}}">
             <td><a href="{% url 'edita_archivo_audio' audio.id %}">{{ audio.descripcion }}</a></td>
             <td>
                 <a class="btn btn-light btn-sm" href="{% url 'eliminar_archivo_audio' audio.pk %}">

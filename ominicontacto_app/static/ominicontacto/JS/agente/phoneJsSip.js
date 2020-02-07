@@ -20,18 +20,16 @@
 /* Requirements:  * /
     - config.js
 /* ----------------*/
-
-
-var test;
+/* globals JsSIP phone_logger */
 
 /**********   Constants   **********/
 var UNPAUSE_CODE = '0077UNPAUSE';
 var LOGIN_CODE = '0077LOGIN';
-var SPECIAL_CODE_PREFIX = "0077";
+var SPECIAL_CODE_PREFIX = '0077';
 
-var DIRECT_TRANSFER = "1";
-var CONSULTATIVE_TRANSFER = "2";
-var CAMPAIGN_TRANSFER = "3";
+var DIRECT_TRANSFER = '1';
+var CONSULTATIVE_TRANSFER = '2';
+var CAMPAIGN_TRANSFER = '3';
 
 var ORIGIN_INBOUND = 'IN';
 var ORIGIN_DIALER = 'DIALER-FORM';
@@ -53,14 +51,13 @@ ORIGIN_IDS[ORIGIN_OFF_CAMPAIGN] = 5?;    // NOTA: Ver cual es el codigo que tend
 ORIGIN_IDS[ORIGIN_AGENT_CALL] = 5?;    // NOTA: Ver cual es el codigo que tendran
 /**/
 
-DESTINATION_AGENT = 1;
-DESTINATION_EXTERNAL = 2;
+var DESTINATION_AGENT = 1;
+var DESTINATION_EXTERNAL = 2;
 
 class PhoneJS {
-    constructor(agent_id, sipExtension, sipSecret, KamailioHost, WebSocketPort, WebSocketHost,
-                local_audio, remote_audio) {
+    constructor(agent_id, sipExtension, sipSecret, KamailioHost, WebSocketPort, WebSocketHost, local_audio, remote_audio) {
         /* Config */
-        this.agent_id = agent_id
+        this.agent_id = agent_id;
         this.sipExtension = sipExtension;
         this.sipSecret = sipSecret;
         this.KamailioHost = KamailioHost;
@@ -83,7 +80,6 @@ class PhoneJS {
             onUserAgentRegistered: $.Callbacks(),
             onUserAgentDisconnect: $.Callbacks(),
             onUserAgentRegisterFail: $.Callbacks(),
-            onAgentLogged: $.Callbacks(),
             onAgentLoginFail: $.Callbacks(),
 
             onAgentPaused: $.Callbacks(),
@@ -102,25 +98,25 @@ class PhoneJS {
 
             onSessionFailed: $.Callbacks(),
 
-        }
+        };
     }
 
     startSipSession() {
         var socket = new JsSIP.WebSocketInterface('wss://' + this.WebSocketHost + ':' + this.WebSocketPort + '/ws' );
         var config = {
-                sockets: [ socket ],
-                uri: "sip:" + this.sipExtension + "@" + this.KamailioHost,
-                password: this.sipSecret,
-                realm: this.KamailioHost,
-                hack_ip_in_contact: true,
-                session_timers: false,
-                register_expires: 120,
-                pcConfig: {
-                    rtcpMuxPolicy: 'negotiate'
-                }
-            };
+            sockets: [ socket ],
+            uri: 'sip:' + this.sipExtension + '@' + this.KamailioHost,
+            password: this.sipSecret,
+            realm: this.KamailioHost,
+            hack_ip_in_contact: true,
+            session_timers: false,
+            register_expires: 120,
+            pcConfig: {
+                rtcpMuxPolicy: 'negotiate'
+            }
+        };
 
-        // Inicializar Sesion de Websocket con Kamailio  "Hacer Login"
+        // Inicializar Sesion de Websocket con Kamailio  'Hacer Login'
         if (this.sipExtension && this.sipSecret) {
             this.userAgent = new JsSIP.UA(config);
             this.userAgent.start();
@@ -137,7 +133,7 @@ class PhoneJS {
 
     hangUp(play_stop_sound=true) {
         if (play_stop_sound) {
-            this.Sounds("", "stop");
+            this.Sounds('', 'stop');
         }
         this.userAgent.terminateSessions();
     }
@@ -147,29 +143,29 @@ class PhoneJS {
         var self = this;
         /* -- SIP registration events -- */
         //Connects to the WebSocket server
-        this.userAgent.on("registered", function(e) { // cuando se registra la entidad SIP
+        this.userAgent.on('registered', function(e) { // cuando se registra la entidad SIP
             phone_logger.log('User Agent: registered');
             self.eventsCallbacks.onUserAgentRegistered.fire();
         });
-        this.userAgent.on("registrationFailed", function(e) { // cuando falla la registracion
+        this.userAgent.on('registrationFailed', function(e) { // cuando falla la registracion
             phone_logger.log('User Agent: registrationFailed');
             self.eventsCallbacks.onUserAgentRegisterFail.fire();
         });
-        this.userAgent.on("unregistered", function(e) {phone_logger.log('User Agent: unregistered');});
+        this.userAgent.on('unregistered', function(e) {phone_logger.log('User Agent: unregistered');});
 
         /* -- WebSocket connection events -- */
-        this.userAgent.on("disconnected", function(e) {
+        this.userAgent.on('disconnected', function(e) {
             phone_logger.log('User Agent: disconnected');
             self.eventsCallbacks.onUserAgentDisconnect.fire();
         });
-        this.userAgent.on("connected", function(e) {phone_logger.log('User Agent: connected');});
+        this.userAgent.on('connected', function(e) {phone_logger.log('User Agent: connected');});
 
         /*      --  New incoming or outgoing call event  --
            La sesion se crea al: Llamar, recibir llamada, des/Pausar, Hacer Login
            Si el originator es 'local': Llamar, des/pausar, login
            Si es 'remote': Puede ser recibir llamada, click2Call, Recibir transferencia
         */
-        this.userAgent.on("newRTCSession", function(e) {
+        this.userAgent.on('newRTCSession', function(e) {
             phone_logger.log('newRTCSession');
             // Si cae una nueva session mientras hay otra activa se la rechaza.
             if (self.currentSession !== undefined){
@@ -181,12 +177,12 @@ class PhoneJS {
             self.invite_request = e.request;
             self.currentSession = e.session;
             self.session_data = new SessionData(self.currentSession,
-                                                self.local_call,
-                                                self.invite_request,
-                                                e.originator);
+                self.local_call,
+                self.invite_request,
+                e.originator);
 
             if (self.session_data.is_remote) {
-                self.Sounds("In", "play");
+                self.Sounds('In', 'play');
                 if (self.session_data.is_transfered) {
                     self.eventsCallbacks.onTransferReceipt.fire(self.session_data); // Pasar un TransferData?
                 }
@@ -196,33 +192,33 @@ class PhoneJS {
             }
 
             // Session Events
-            self.currentSession.on("failed", function(e) {
+            self.currentSession.on('failed', function(e) {
                 phone_logger.log('session: failed');
-                self.Sounds("", "stop");
+                self.Sounds('', 'stop');
                 if (self.session_data.is_call) {
                     self.eventsCallbacks.onSessionFailed.fire();
                 }
             });
 
-            self.currentSession.on("confirmed", function(e) {
+            self.currentSession.on('confirmed', function(e) {
                 // Aca si puedo decir que esta establecida
                 phone_logger.log('session: confirmed');
                 if (self.session_data.is_call) {
                     var phone_number = self.session_data.is_remote?
-                                            self.session_data.from :
-                                            self.local_call.numberToCall;
+                        self.session_data.from :
+                        self.local_call.numberToCall;
                     self.eventsCallbacks.onCallConnected.fire(phone_number);
                 }
             });
 
-            self.currentSession.on("accepted", function() { // cuando se establece una llamada
+            self.currentSession.on('accepted', function() { // cuando se establece una llamada
                 phone_logger.log('session: accepted');
-                self.Sounds("", "stop");
+                self.Sounds('', 'stop');
             });
 
             // Llamada puede ser por: REGISTER - LOGIN, (UN)PAUSA, Manual
             //                        IN, Dialer, Preview, Click2Call, Transfer.
-            self.currentSession.on("ended", function() { // Cuando Finaliza la llamada
+            self.currentSession.on('ended', function() { // Cuando Finaliza la llamada
                 phone_logger.log('session: ended');
                 if (self.session_data.is_call){
                     phone_logger.log('PhoneJS: onCallEnded');
@@ -233,10 +229,10 @@ class PhoneJS {
                 }
             });
             // TODO: SACAR ESTO, SOLO ESTA PARA DEBUG
-            self.currentSession.on("addstream", function() {phone_logger.log('session: addstream')});
-            self.currentSession.on("succeeded", function() {phone_logger.log('session: succeeded')});
+            self.currentSession.on('addstream', function() {phone_logger.log('session: addstream');});
+            self.currentSession.on('succeeded', function() {phone_logger.log('session: succeeded');});
         });
-    };
+    }
 
     subscribeToSessionConnectionEvents() {
         var self = this;
@@ -248,119 +244,28 @@ class PhoneJS {
 
     /* FUNCTIONS */
 
-    makeLoginCall(pause_id) {
-        phone_logger.log("----------\nLogin Call");
-        this.makeCall(LOGIN_CODE);
-    }
-
-    makePauseCall(pause_id) {
-        phone_logger.log("---------- \nPause Call");
-        this.makeCall(SPECIAL_CODE_PREFIX + pause_id);
-    }
-
-    makeUnpauseCall() {
-        phone_logger.log("----------\nUnpause Call");
-        this.makeCall(UNPAUSE_CODE);
-    }
-
     putOnHold() {
-        phone_logger.log("----------\nset Hold");
+        phone_logger.log('----------\nset Hold');
         this.currentSession.hold();
     }
 
     releaseHold() {
-        phone_logger.log("----------\nrelease Hold");
+        phone_logger.log('----------\nrelease Hold');
         this.currentSession.unhold();
-    }
-
-    // TODO: En principio sólo se va a usar para Login, Pause y Unpause.
-    //       Más adelante tal vez se use para llamadas fuera de campaña entre agentes.
-    makeCall(numberToCall) {
-        var self = this;
-        this.local_call = new LocalCall(numberToCall);
-        phone_logger.log('makeCall: ' + numberToCall);
-
-        // Luego de 60 segundos sin respuesta, stop al ringback y cuelga discado
-        // TODO: Cancelar el timeout una vez recibida respuesta ('accepted', failed', )
-        this.callTimeoutHandler = setTimeout(function() {self.hangUp();}, 61000);
-
-        var eventHandlers = {
-            // TODO: Verificar si no hay otros posibles eventos.
-            // Asegurarse de que cualquier finalizacion termina llamando al clearTimeout(...)
-            'confirmed': function(e) {
-                phone_logger.log('makeCall: confirmed');
-                clearTimeout(self.callTimeoutHandler);
-                if (self.local_call.is_unpause) {
-                    self.eventsCallbacks.onAgentUnpaused.fire();
-                }
-                else if (self.local_call.is_login) {
-                    self.eventsCallbacks.onAgentLogged.fire();
-                }
-                else if (self.local_call.is_pause) {
-                    self.eventsCallbacks.onAgentPaused.fire();
-                }
-            },/**/
-            'addstream': function(e) {
-                phone_logger.log('makeCall: addstream');
-                clearTimeout(self.callTimeoutHandler);
-            },
-            'succeeded': function(e) {
-                phone_logger.log('makeCall: succeeded');
-                clearTimeout(self.callTimeoutHandler);
-            },
-            'failed': function(data) {
-                phone_logger.log('makeCall: failed - ' + numberToCall);
-                clearTimeout(self.callTimeoutHandler);
-                if (self.local_call.is_login) {
-                    self.eventsCallbacks.onAgentLoginFail.fire(self);
-                } else if (self.local_call.is_unpause) {
-                    self.eventsCallbacks.onAgentUnPauseFail.fire(self);
-                } else if (self.local_call.is_pause) {
-                    self.eventsCallbacks.onAgentPauseFail.fire(self);
-                }
-                // NOTA: Este caso no debería darse más, salvo que se agreguen maneras locales
-                //       de generar llamadas
-                else {
-                    // (self.local_call.is_other_internal_call)
-                    self.eventsCallbacks.onOutCallFailed.fire(data.cause);
-                    if (data.cause === JsSIP.C.causes.BUSY) {
-                        self.Sounds("", "stop");
-                        self.Sounds("", "play");
-                    }
-                }
-            },
-            // TODO: SACAR ESTO, SOLO ESTA PARA DEBUG
-            'accepted': function(asd) { phone_logger.log('makeCall: accepted'); },
-            'ended': function(asd) { phone_logger.log('makeCall: ended'); },
-        };
-        var opciones = {
-            'eventHandlers': eventHandlers,
-            'mediaConstraints': {
-                'audio': true,
-                'video': false
-            },
-            pcConfig: {
-                rtcpMuxPolicy: 'negotiate'
-            },
-        };
-
-        // Finalmente Mando el invite/llamada
-        this.userAgent.call('sip:' + numberToCall + '@' + this.KamailioHost, opciones);
-        this.subscribeToSessionConnectionEvents();
     }
 
     dialTransfer(transfer) {
         var self = this;
         if (transfer.is_blind) {
-            this.currentSession.sendDTMF("#");
-            this.currentSession.sendDTMF("#");
+            this.currentSession.sendDTMF('#');
+            this.currentSession.sendDTMF('#');
             if (transfer.is_to_agent) {
                 if (transfer.destination) {             // TODO: Remove Line
                     this.transferTimeoutHandler = setTimeout(function() {
-                        self.currentSession.sendDTMF("0");
-                        self.currentSession.sendDTMF("0");
-                        self.currentSession.sendDTMF("0");
-                        self.currentSession.sendDTMF("0");
+                        self.currentSession.sendDTMF('0');
+                        self.currentSession.sendDTMF('0');
+                        self.currentSession.sendDTMF('0');
+                        self.currentSession.sendDTMF('0');
                         self.currentSession.sendDTMF(transfer.destination);
                         self.eventsCallbacks.onTransferDialed.fire(transfer);
                     }, 2500);
@@ -368,10 +273,10 @@ class PhoneJS {
             } else if (transfer.is_to_campaign) {
                 if (transfer.destination) {             // TODO: Remove Line
                     this.transferTimeoutHandler = setTimeout(function() {
-                        self.currentSession.sendDTMF("9");
-                        self.currentSession.sendDTMF("9");
-                        self.currentSession.sendDTMF("9");
-                        self.currentSession.sendDTMF("9");
+                        self.currentSession.sendDTMF('9');
+                        self.currentSession.sendDTMF('9');
+                        self.currentSession.sendDTMF('9');
+                        self.currentSession.sendDTMF('9');
                         self.currentSession.sendDTMF(transfer.destination);
                         self.eventsCallbacks.onTransferDialed.fire(transfer);
                     }, 2500);
@@ -389,22 +294,22 @@ class PhoneJS {
                 }
             }
         } else if (transfer.is_consultative) {
-            this.currentSession.sendDTMF("*");
-            this.currentSession.sendDTMF("2");
+            this.currentSession.sendDTMF('*');
+            this.currentSession.sendDTMF('2');
             if (transfer.is_to_agent) {
                 if (transfer.destination) {
                     this.transferTimeoutHandler = setTimeout(function() {
-                        self.currentSession.sendDTMF("1");
-                        self.currentSession.sendDTMF("1");
-                        self.currentSession.sendDTMF("1");
-                        self.currentSession.sendDTMF("1");
+                        self.currentSession.sendDTMF('1');
+                        self.currentSession.sendDTMF('1');
+                        self.currentSession.sendDTMF('1');
+                        self.currentSession.sendDTMF('1');
                         self.currentSession.sendDTMF(transfer.destination);
                         self.eventsCallbacks.onTransferDialed.fire(transfer);
                     }, 2500);
                 }
             } else if (transfer.is_to_number) {
                 if (transfer.destination) {
-                    var i = 0;
+                    i = 0;
                     this.transferTimeoutHandler = setTimeout(function() {
                         while (i < transfer.destination.length) {
                             self.currentSession.sendDTMF(transfer.destination[i]);
@@ -422,13 +327,13 @@ class PhoneJS {
     }
 
     endTransfer () {
-        this.currentSession.sendDTMF("*");
-        this.currentSession.sendDTMF("1");
+        this.currentSession.sendDTMF('*');
+        this.currentSession.sendDTMF('1');
     }
 
     confer () {
-        this.currentSession.sendDTMF("*");
-        this.currentSession.sendDTMF("3");
+        this.currentSession.sendDTMF('*');
+        this.currentSession.sendDTMF('3');
     }
 
     acceptCall() {
@@ -440,33 +345,40 @@ class PhoneJS {
         };
         this.currentSession.answer(options);
         this.subscribeToSessionConnectionEvents();
-        this.Sounds("", "stop");
+        this.Sounds('', 'stop');
     }
 
     refuseCall() {
         this.hangUp(false);
-        this.Sounds("", "stop");
+        this.Sounds('', 'stop');
     }
 
     ///----------
 
     Sounds(callType, action) {
-        // Los "catch" son por si se da el caso de que el agente no haya interactuado con la pagina.
+        // Los 'catch' son por si se da el caso de que el agente no haya interactuado con la pagina.
         var ring = null;
-        if (action === "play") {
-            if (callType === "In") {
+        if (action === 'play') {
+            if (callType === 'In') {
                 ring = document.getElementById('RingIn');
                 ring.play().catch(function() { });
                 ring.onended = function() {
                     ring.play().catch(function() { });
                 };
-            } else if (callType === "Out") {
+            } else if (callType === 'Out') {
                 ring = document.getElementById('RingOut');
                 ring.play().catch(function() { });
                 ring.onended = function() {
                     ring.play().catch(function() { });
                 };
-            } else {
+            } else if (callType === 'Welcome') {
+                ring = document.getElementById('Welcome');
+                ring.play().catch(function() { });
+                ring.onended = function() {
+                    ring.pause();
+                };
+            }
+            else {
                 ring = document.getElementById('RingBusy');
                 ring.play().catch(function() { });
             }
@@ -486,7 +398,7 @@ class PhoneJS {
         this.local_call = undefined;
     }
 
-};
+}
 
 class LocalCall {
     constructor (numberToCall) {
@@ -516,7 +428,7 @@ class SessionData {
     }
 
     setRemoteCallInfo(invite_request) {
-        var call_data = {}
+        var call_data = {};
         if (invite_request.headers.Idcamp)
             call_data.id_campana = invite_request.headers.Idcamp[0].raw;
         if (invite_request.headers.Omlcamptype)
@@ -571,15 +483,14 @@ class SessionData {
 
     get transfer_type_str () {
         switch (this.transfer_type) {
-            case DIRECT_TRANSFER:
-                return "Transf. directa";
-                break;
-            case CONSULTATIVE_TRANSFER:
-                return "Transf. asistida";
-                break;
-            case CAMPAIGN_TRANSFER:
-                return "Transf. a campaña";
-                break;
+        case DIRECT_TRANSFER:
+            return 'Transf. directa';
+        case CONSULTATIVE_TRANSFER:
+            return 'Transf. asistida';
+        case CAMPAIGN_TRANSFER:
+            return 'Transf. a campaña';
+        default:
+            return undefined;
         }
     }
 
@@ -594,6 +505,8 @@ class SessionData {
         if (this.invite_request.headers.Origin) {
             return this.invite_request.headers.Origin[0].raw;
         }
+        else
+            return undefined;
     }
 
     get is_dialer() {
@@ -618,12 +531,16 @@ class SessionData {
         if (this.invite_request.headers.Idcliente) {
             return this.invite_request.headers.Idcliente[0].raw;
         }
+        else
+            return undefined;
     }
 
     get campaign_id() {
         if (this.invite_request.headers.Idcamp) {
             return this.invite_request.headers.Idcamp[0].raw;
         }
+        else
+            return undefined;
     }
 
     get from() {
@@ -633,8 +550,8 @@ class SessionData {
                 return from_agent_name;
         }
         var fromUser = this.invite_request.headers.From[0].raw;
-        var endPos = fromUser.indexOf("@");
-        var startPos = fromUser.indexOf(":");
+        var endPos = fromUser.indexOf('@');
+        var startPos = fromUser.indexOf(':');
         return fromUser.substring(startPos + 1, endPos);
     }
 

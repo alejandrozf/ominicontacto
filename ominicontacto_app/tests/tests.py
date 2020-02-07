@@ -61,6 +61,7 @@ except ImportError:
 
 ADMIN_USERNAME = os.getenv('ADMIN_USERNAME')
 ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
+USER = os.getenv('USER')
 
 CAMPANA_MANUAL = os.getenv('CAMPANA_MANUAL')
 
@@ -69,8 +70,13 @@ AGENTE_PASSWORD = '098098ZZZ'
 
 BROWSER_REAL = os.getenv('BROWSER_REAL')
 TESTS_INTEGRACION = os.getenv('TESTS_INTEGRACION')
+LOGIN_FAILURE_LIMIT = int(os.getenv('LOGIN_FAILURE_LIMIT'))
 
 MSG_MICROFONO = 'Se necesita un browser real con micrófono'
+
+TESTS_INTEGRACION_HOSTNAME = os.getenv('TESTS_INTEGRACION_HOSTNAME')
+if not TESTS_INTEGRACION_HOSTNAME:
+    TESTS_INTEGRACION_HOSTNAME = socket.gethostname()
 
 
 @unittest.skipIf(TESTS_INTEGRACION != 'True', 'Ignorando tests de integración')
@@ -81,8 +87,9 @@ class IntegrationTests(unittest.TestCase):
         # super(IntegrationTests, cls).setUpClass()
         cls.setUp()
         cls._login(ADMIN_USERNAME, ADMIN_PASSWORD)
-        cls.crear_module()
-        group_name = uuid.uuid4().hex
+        modulo_name = 'modulo' + uuid.uuid4().hex[:5]
+        cls.crear_module(modulo_name)
+        group_name = 'group' + uuid.uuid4().hex[:5]
         cls.crear_grupo(group_name)
         cls.crear_agente(AGENTE_USERNAME, AGENTE_PASSWORD)
         if BROWSER_REAL == 'True':
@@ -99,6 +106,7 @@ class IntegrationTests(unittest.TestCase):
         chrome_options.add_argument('--use-fake-ui-for-media-stream')
         chrome_options.add_argument('--use-fake-device-for-media-stream')
         chrome_options.add_experimental_option('prefs', {'intl.accept_languages': 'en,en'})
+        chrome_options.add_argument('--ignore-certificate-errors')
         # si se pone visible=1 se muestra el browser en medio de los tests
         self.display = Display(visible=0, size=(1366, 768))
         self.display.start()
@@ -111,7 +119,7 @@ class IntegrationTests(unittest.TestCase):
 
     @classmethod
     def _login(self, username, password):
-        self.browser.get('https://{0}'.format(socket.gethostname()))
+        self.browser.get('https://{0}'.format(TESTS_INTEGRACION_HOSTNAME))
         self.browser.find_element_by_name('username').send_keys(username)
         self.browser.find_element_by_name('password').send_keys(password)
         self.browser.find_element_by_tag_name('button').click()
@@ -156,7 +164,6 @@ class IntegrationTests(unittest.TestCase):
             '//a[contains(@href,"/grupo/nuevo")]')
         href_create_group = link_create_group.get_attribute('href')
         self.browser.get(href_create_group)
-        group_name = uuid.uuid4().hex
         self.browser.find_element_by_id('id_nombre').send_keys(group_name)
         self.browser.find_element_by_id('id_auto_attend_ics').click()
         self.browser.find_element_by_id('id_auto_attend_inbound').click()
@@ -166,13 +173,12 @@ class IntegrationTests(unittest.TestCase):
         sleep(1)
 
     @classmethod
-    def crear_module(self):
+    def crear_module(self, modulo):
         create_module = self.browser.find_element_by_xpath(
             '//a[contains(@href,"/modulo/nuevo/")]')
         href_create_module = create_module.get_attribute('href')
         self.browser.get(href_create_module)
-        module_name = 'modulo_test'
-        self.browser.find_element_by_id('id_nombre').send_keys(module_name)
+        self.browser.find_element_by_id('id_nombre').send_keys(modulo)
         self.browser.find_element_by_xpath((
             "//button[@type='submit' and @id='id_registrar']")).click()
         sleep(1)
@@ -202,7 +208,8 @@ class IntegrationTests(unittest.TestCase):
     @unittest.skipIf(BROWSER_REAL != 'True', MSG_MICROFONO)
     def test_agente_se_registra_correctamente(self):
         self._login(AGENTE_USERNAME, AGENTE_PASSWORD)
-        self.assertEqual(self.browser.find_element_by_id('dial_status').text, 'Registered Agent')
+        self.assertEqual(self.browser.find_element_by_id('dial_status').text,
+                         'Agent connected to asterisk')
 
     @unittest.skipIf(BROWSER_REAL != 'True', MSG_MICROFONO)
     def test_agente_puede_realizar_llamada_fuera_de_campana(self):
@@ -269,25 +276,25 @@ class IntegrationTests(unittest.TestCase):
         sleep(1)
         self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
             nuevo_username))
-        # modificar agente, para ello debe haber 2 modulos creados.
-        self.crear_module()
+        # modificar grupo del agente.
+        group_name = 'grupo' + uuid.uuid4().hex[:5]
+        self.crear_grupo(group_name)
         self.browser.get(href_user_list)
         link_update = self.browser.find_element_by_xpath(
             "//tr[@id=\'{0}\']/td/a[contains(@href, '/user/agenteprofile/update/')]".format(
                 nuevo_username))
         href_update = link_update.get_attribute('href')
         self.browser.get(href_update)
-        self.browser.find_element_by_xpath('//select[@id=\'id_modulos\']/option').click()
-        self.browser.find_elements_by_xpath(
-            '//select[@id=\'id_modulos\']/option')[1].click()
+        self.browser.find_element_by_xpath("//select[@id='id_grupo']/option[text()=\'{0}\']"
+                                           .format(group_name)).click()
         sleep(1)
         self.browser.find_element_by_xpath((
             "//button[@type='submit' and @id='id_registrar']")).click()
         sleep(1)
         self.browser.get(href_user_list)
         self.browser.get(href_update)
-        self.assertTrue(self.browser.find_elements_by_xpath(
-            "//select[@id=\'id_modulos\']/option[@value='2' and @selected='selected']"))
+        self.assertTrue(self.browser.find_element_by_xpath(
+            "//select[@id=\'id_grupo\']/option[text()=\'{0}\']".format(group_name)))
         # Eliminar agente
         self.browser.get(href_user_list)
         link_delete = self.browser.find_element_by_xpath(
@@ -302,8 +309,7 @@ class IntegrationTests(unittest.TestCase):
 
     def test_crear_usuario_tipo_customer(self):
         # Creación de clientes
-        random_customer = uuid.uuid4().hex
-        customer_username = random_customer[:16]
+        customer_username = 'cliente' + uuid.uuid4().hex[:5]
         customer_password = '098098ZZZ'
         self.crear_supervisor(customer_username, customer_password)
         self.crear_supervisor_tipo_customer()
@@ -326,11 +332,28 @@ class IntegrationTests(unittest.TestCase):
         self.browser.get(href_update)
         self.assertTrue(self.browser.find_elements_by_xpath(
             "//select[@id=\'id_rol\']/option[@value='2' and @selected='selected']"))
+        # Volver a modificiar a un perfil de cliente
+        user_list = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/user/list/page1/")]')
+        href_user_list = user_list.get_attribute('href')
+        self.browser.get(href_user_list)
+        link_update = self.browser.find_element_by_xpath(
+            "//tr[@id=\'{0}\']/td/a[contains(@href, '/supervisor/')]".format(
+                customer_username))
+        href_update = link_update.get_attribute('href')
+        self.browser.get(href_update)
+        self.browser.find_elements_by_xpath("//select[@id=\'id_rol\']/option")[2].click()
+        self.browser.find_element_by_xpath((
+            "//button[@type='submit' and @id='id_registrar']")).click()
+        sleep(1)
+        self.browser.get(href_user_list)
+        self.browser.get(href_update)
+        self.assertTrue(self.browser.find_elements_by_xpath(
+            "//select[@id=\'id_rol\']/option[@value='4' and @selected='selected']"))
 
     def test_crear_usuario_tipo_supervisor(self):
         # Creación de supervisor
-        random_supervisor = uuid.uuid4().hex
-        supervisor_username = random_supervisor[:16]
+        supervisor_username = 'supervisor' + uuid.uuid4().hex[:5]
         supervisor_password = '098098ZZZ'
         self.crear_supervisor(supervisor_username, supervisor_password)
         self.crear_supervisor_tipo_gerente()
@@ -341,8 +364,8 @@ class IntegrationTests(unittest.TestCase):
         href_user_list = user_list.get_attribute('href')
         self.browser.get(href_user_list)
         link_update = self.browser.find_element_by_xpath(
-            "//tr[@id=\'{0}\']/td/a[contains(@href, '/supervisor/')]".format(
-                supervisor_username))
+            "//tr[@id=\'{0}\']/td/a[contains(@href, '/supervisor/')]"
+            .format(supervisor_username))
         href_update = link_update.get_attribute('href')
         self.browser.get(href_update)
         self.browser.find_elements_by_xpath("//select[@id=\'id_rol\']/option")[1].click()
@@ -362,8 +385,7 @@ class IntegrationTests(unittest.TestCase):
             '//a[contains(@href,"/grupo/nuevo")]')
         href_create_group = link_create_group.get_attribute('href')
         self.browser.get(href_create_group)
-        random_name = uuid.uuid4().hex
-        group_name = random_name[:16]
+        group_name = 'grupo' + uuid.uuid4().hex[:5]
         auto_unpause = random.randrange(1, 99)
         self.browser.find_element_by_id('id_nombre').send_keys(group_name)
         self.browser.find_element_by_id('id_auto_unpause').send_keys(auto_unpause)
@@ -383,7 +405,7 @@ class IntegrationTests(unittest.TestCase):
             "//tr[@id=\'{0}\']/td/div//a[contains(@href,'/grupo/update')]".format(group_name))
         href_edit = link_edit.get_attribute('href')
         self.browser.get(href_edit)
-        nuevo_groupname = random_name[:16]
+        nuevo_groupname = 'grupo' + uuid.uuid4().hex[:5]
         self.browser.find_element_by_id('id_nombre').clear()
         sleep(1)
         self.browser.find_element_by_id('id_nombre').send_keys(nuevo_groupname)
@@ -406,7 +428,7 @@ class IntegrationTests(unittest.TestCase):
 
     def test_crear_grupo_sin_Autounpause(self):
         self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
-        group_name = uuid.uuid4().hex
+        group_name = 'grupo' + uuid.uuid4().hex[:5]
         self.crear_grupo(group_name)
         self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(group_name))
 
@@ -438,8 +460,7 @@ class IntegrationTests(unittest.TestCase):
 
     # Acceso web Supervisor
     def test_accesos_web_supervisor_acceso_exitoso(self):
-        random_supervisor = uuid.uuid4().hex
-        supervisor_username = random_supervisor[:16]
+        supervisor_username = 'supervisor' + uuid.uuid4().hex[:5]
         supervisor_password = '098098ZZZ'
         self.crear_supervisor(supervisor_username, supervisor_password)
         self.crear_supervisor_tipo_gerente()
@@ -455,8 +476,7 @@ class IntegrationTests(unittest.TestCase):
 
     def test_acceso_web_supervisor_acceso_denegado(self):
         # Creación supervisor que vamos a usar para simular un acceso denegado
-        random_supervisor = uuid.uuid4().hex
-        supervisor_username = random_supervisor[:16]
+        supervisor_username = 'supervisor' + uuid.uuid4().hex[:5]
         supervisor_password = '098098ZZZ'
         self.crear_supervisor(supervisor_username, supervisor_password)
         clave_erronea = 'test'
@@ -474,8 +494,7 @@ class IntegrationTests(unittest.TestCase):
     # Acceso web Customer
     def test_acceso_web_cliente_acceso_exitoso(self):
         # Creación supervisor que vamos a usar para simular un acceso exitoso
-        random_customer = uuid.uuid4().hex
-        customer_username = random_customer[:16]
+        customer_username = 'cliente' + uuid.uuid4().hex[:5]
         customer_password = '098098ZZZ'
         self.crear_supervisor(customer_username, customer_password)
         self.crear_supervisor_tipo_customer()
@@ -491,8 +510,7 @@ class IntegrationTests(unittest.TestCase):
 
     def test_acceso_web_cliente_acceso_denegado(self):
         # Creación supervisor que vamos a usar para simular un acceso denegado
-        random_customer = uuid.uuid4().hex
-        customer_username = random_customer[:16]
+        customer_username = 'cliente' + uuid.uuid4().hex[:5]
         customer_password = '098098ZZZ'
         self.crear_supervisor(customer_username, customer_password)
         self.crear_supervisor_tipo_customer()
@@ -510,14 +528,14 @@ class IntegrationTests(unittest.TestCase):
 
     def test_bloqueo_y_desbloqueo_de_un_usuario(self):
         clave_erronea = 'test'
-        # Intento loguearme 3 veces para bloquear la cuenta del usuario
-        self._login(AGENTE_USERNAME, clave_erronea)
-        self._login(AGENTE_USERNAME, clave_erronea)
-        self._login(AGENTE_USERNAME, clave_erronea)
+        # Intento loguearme 12 veces para bloquear la cuenta del usuario
+        intentos = LOGIN_FAILURE_LIMIT + 2
+        for i in range(intentos):
+            self._login(AGENTE_USERNAME, clave_erronea)
         texto_error = self.browser.find_element_by_xpath('//div/p').text
-        self.assertEqual(texto_error[45:93], 'Tu cuenta y dirección IP permanecerán bloqueadas')
+        self.assertEqual(texto_error[0:24], 'Haz tratado de loguearte')
         # Vamos al Admin de django para desbloquear este usuario
-        self.browser.get('https://{0}/admin'.format(socket.gethostname()))
+        self.browser.get('https://{0}/admin'.format(TESTS_INTEGRACION_HOSTNAME))
         self.browser.find_element_by_name('username').send_keys(ADMIN_USERNAME)
         self.browser.find_element_by_name('password').send_keys(ADMIN_PASSWORD)
         self.browser.find_element_by_xpath('//div/input[@type="submit"]').click()
@@ -535,7 +553,7 @@ class IntegrationTests(unittest.TestCase):
             .format(AGENTE_USERNAME)).click()
         sleep(2)
         # Deslogueo como admin
-        self.browser.get('https://{0}/'.format(socket.gethostname()))
+        self.browser.get('https://{0}/'.format(TESTS_INTEGRACION_HOSTNAME))
         deslogueo = self.browser.find_element_by_xpath(
             '//a[contains(@href, "/accounts/logout/")]')
         href_deslogueo = deslogueo.get_attribute('href')
@@ -544,6 +562,173 @@ class IntegrationTests(unittest.TestCase):
         self._login(AGENTE_USERNAME, AGENTE_PASSWORD)
         self.assertTrue(self.browser.find_element_by_xpath(
             '//div/a[contains(@href, "/agente/logout/")]'))
+
+    def test_crear_eliminar_modulo(self):
+        # Crear modulo
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        modulo_name = 'modulo' + uuid.uuid4().hex[:5]
+        self.crear_module(modulo_name)
+        self.assertTrue(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            modulo_name)))
+        # Eliminar modulo
+        link_delete = self.browser.find_element_by_xpath(
+            '//tr[@id=\'{0}\']//td/div//a[contains(@href, "/modulo/delete/")]'.format(modulo_name))
+        href_delete = link_delete.get_attribute('href')
+        self.browser.get(href_delete)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.assertFalse(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'
+                         .format(modulo_name)))
+
+    def test_crear_modificar_eliminar_audio(self):
+        # Crear audio
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        user_list = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/audios/create/")]')
+        href_user_list = user_list.get_attribute('href')
+        self.browser.get(href_user_list)
+        descripcion_audio = 'audio' + uuid.uuid4().hex[:5]
+        self.browser.find_element_by_id('id_descripcion').send_keys(descripcion_audio)
+        wav_path = "/home/{0}/ominicontacto/test/wavs/8k16bitpcm.wav". format(USER)
+        self.browser.find_element_by_id('id_audio_original').send_keys(wav_path)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.browser.find_elements_by_xpath('//tr[text()=\'{0}\']'.format(
+            descripcion_audio))
+        # Modificar Audio
+        duracion_wav_path = 13
+        duracion_nuevo_wav = 35
+        self.browser.find_element_by_xpath(
+            '//tr[@id=\'{0}\']//a[contains(@href, "/update/")]'.format(descripcion_audio)).click()
+        nuevo_wav = "/home/{0}/ominicontacto/test/wavs/audio1.wav".format(USER)
+        self.browser.find_element_by_id('id_audio_original').send_keys(nuevo_wav)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.browser.find_element_by_xpath(
+            '//tr[@id=\'{0}\']//a[contains(@href, "/update/")]'.format(descripcion_audio)).click()
+        self.assertNotEqual(self.browser.find_element_by_xpath(
+            "//input[text()=\'{0}\']".format(duracion_nuevo_wav)), duracion_wav_path)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        # Eliminar Audio
+        self.browser.find_element_by_xpath(
+            '//tr[@id=\'{0}\']//a[contains(@href, "/eliminar/")]'.format(descripcion_audio)).click()
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.assertFalse(self.browser.find_elements_by_xpath('//tr[text()=\'{0}\']'
+                         .format(nuevo_wav)))
+
+    def test_subir_audio_erroneo(self):
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        user_list = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/audios/create/")]')
+        href_user_list = user_list.get_attribute('href')
+        self.browser.get(href_user_list)
+        descripcion_audio = 'audio' + uuid.uuid4().hex[:5]
+        self.browser.find_element_by_id('id_descripcion').send_keys(descripcion_audio)
+        wav_path = "/home/{0}/ominicontacto/test/wavs/error_audio.mp3".format(USER)
+        self.browser.find_element_by_id('id_audio_original').send_keys(wav_path)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.browser.find_elements_by_xpath('//ul/li[text()="Allowed files: .wav"]')
+
+    def test_pausa_productiva(self):
+        # crear pausa productiva
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        link_create_pausa = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/pausa/nuevo")]')
+        href_create_pausa = link_create_pausa.get_attribute('href')
+        self.browser.get(href_create_pausa)
+        pausa_nueva = 'pausa_pro' + uuid.uuid4().hex[:5]
+        self.browser.find_element_by_id('id_nombre').send_keys(pausa_nueva)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.assertTrue(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            pausa_nueva)))
+        # modificar pausa productiva
+        link_edit = self.browser.find_element_by_xpath(
+            '//tr[@id=\'{0}\']//a[contains(@href, "/pausa/update/")]'.format(pausa_nueva))
+        href_edit = link_edit.get_attribute('href')
+        self.browser.get(href_edit)
+        pausa_recreativa = 'pausa_rec' + uuid.uuid4().hex[:5]
+        self.browser.find_element_by_id('id_nombre').clear()
+        sleep(1)
+        self.browser.find_element_by_id('id_nombre').send_keys(pausa_recreativa)
+        self.browser.find_element_by_xpath("//select/option[@value = 'R']").click()
+        sleep(1)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.assertTrue(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            pausa_recreativa)))
+        # eliminar pausa recreativa
+        link_delete = self.browser.find_element_by_xpath(
+            "//tr[@id=\'{0}\']//a[contains(@href, '/pausa/delete/')]".format(pausa_recreativa))
+        href_delete = link_delete.get_attribute('href')
+        self.browser.get(href_delete)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.assertTrue(self.browser.find_elements_by_xpath(
+            "//tr[@id='pausa_eliminada']//td[contains(text(), \'{0}\')]".format(pausa_recreativa)))
+        # reactivar pausa recreativa
+        link_reactivate = self.browser.find_element_by_xpath(
+            "//tr[@id='pausa_eliminada']//td[@id=\'{0}\']//a[contains(@href, '/pausa/delete/')]"
+            .format(pausa_recreativa))
+        href_reactivate = link_reactivate.get_attribute('href')
+        self.browser.get(href_reactivate)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.assertTrue(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            pausa_recreativa)))
+
+    def test_pausa_recreativa(self):
+        # crear pausa recreativa
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        link_create_pausa = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/pausa/nuevo")]')
+        href_create_pausa = link_create_pausa.get_attribute('href')
+        self.browser.get(href_create_pausa)
+        pausa_nueva = 'pausa_rec' + uuid.uuid4().hex[:5]
+        self.browser.find_element_by_id('id_nombre').send_keys(pausa_nueva)
+        self.browser.find_element_by_xpath("//select/option[@value = 'R']").click()
+        sleep(1)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.assertTrue(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            pausa_nueva)))
+        # modificar pausa recreativa
+        link_edit = self.browser.find_element_by_xpath(
+            '//tr[@id=\'{0}\']//a[contains(@href, "/pausa/update/")]'.format(pausa_nueva))
+        href_edit = link_edit.get_attribute('href')
+        self.browser.get(href_edit)
+        pausa_productiva = 'pausa_pro' + uuid.uuid4().hex[:5]
+        self.browser.find_element_by_id('id_nombre').clear()
+        sleep(1)
+        self.browser.find_element_by_id('id_nombre').send_keys(pausa_productiva)
+        self.browser.find_element_by_xpath("//select/option[@value = 'P']").click()
+        sleep(1)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.assertTrue(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            pausa_productiva)))
+        # eliminar pausa productiva
+        link_delete = self.browser.find_element_by_xpath(
+            "//tr[@id=\'{0}\']//a[contains(@href, '/pausa/delete/')]".format(pausa_productiva))
+        href_delete = link_delete.get_attribute('href')
+        self.browser.get(href_delete)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.assertTrue(self.browser.find_elements_by_xpath(
+            "//tr[@id='pausa_eliminada']//td[contains(text(), \'{0}\')]".format(pausa_productiva)))
+        # reactivar pausa productiva
+        link_reactivate = self.browser.find_element_by_xpath(
+            "//tr[@id='pausa_eliminada']//td[@id=\'{0}\']//a[contains(@href, '/pausa/delete/')]"
+            .format(pausa_productiva))
+        href_reactivate = link_reactivate.get_attribute('href')
+        self.browser.get(href_reactivate)
+        self.browser.find_element_by_xpath("//button[@type='submit']").click()
+        sleep(1)
+        self.assertTrue(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            pausa_productiva)))
 
 
 if __name__ == '__main__':

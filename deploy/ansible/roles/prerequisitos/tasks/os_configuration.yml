@@ -102,7 +102,6 @@
       - openssl-devel
       - cronie-anacron
       - make
-      - wget
       - gdb
       - which
       - vim
@@ -112,6 +111,7 @@
       - texinfo
       - kernel-headers
       - acl
+      - bind-utils
   when: ansible_os_family == "RedHat"
   retries: 3
   delay: 3
@@ -140,23 +140,6 @@
   register: result
   until: result is success
 
-# Cuando el cluster tenga ubuntu se hace esto
-- name: Add the postgresql repository key (ubuntu )
-  apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc validate_certs=no state=present
-  when: ansible_distribution == "Ubuntu" and cluster != 0
-  retries: 3
-  delay: 3
-  register: result
-  until: result is success
-
-- name: Download postgresql-{{ postgresql_version }} repository
-  apt_repository: repo="deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" filename=pgdg state=present update_cache=yes
-  when: ansible_distribution == "Ubuntu" and cluster != 0
-  retries: 3
-  delay: 3
-  register: result
-  until: result is success
-
 # Se instala este paquete necesario antes de hacer update
 - name: Install apt-transport-https (debian)
   apt: name=apt-transport-https state=present
@@ -165,15 +148,6 @@
   delay: 3
   register: result
   until: result is success
-
-# Instalo linux-headers del kernel  en cuestion
-- name: Install linux linux-headers (debian)
-  shell: "apt-get install -y linux-headers-$(uname -r)"
-  when: ansible_os_family == "Debian"
-  retries: 3
-  delay: 3
-  register: result
-  until: result.rc == 0
 
 - name: Install of dependencies (debian)
   apt: name={{ item }} state=present
@@ -186,6 +160,7 @@
       - sudo
       - wget
       - unzip
+      - dnsutils
   when: ansible_os_family == "Debian"
   retries: 3
   delay: 3

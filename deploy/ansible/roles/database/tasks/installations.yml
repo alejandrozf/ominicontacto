@@ -21,47 +21,45 @@
 ## Centos tasks ##
 ##################
 
-# Se excluye postgres de la lista de repositorios base y updates
-- name: Exclude postgres in list of repositories
-  ini_file: "path=/etc/yum.repos.d/CentOS-Base.repo section={{ item }} option=exclude no_extra_spaces=yes value=postgres* state=present"
-  with_items:
-    - base
-    - updates
+# Se descarga e instala el repositorio epel-release
+- name: Install of epel-release repo (centos)
+  yum: name={{ epel_repository }} state=present update_cache=yes
   become: true
   become_method: sudo
-  when: ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat" and postgresql_new_installed.rc != 3
 
 - name: Download postgresql-{{ postgresql_version }} key
   rpm_key: key="{{ postgresql_key }}" state=present validate_certs=no
-  when: ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat" and postgresql_new_installed.rc != 3
   retries: 3
   delay: 3
   register: result
   until: result is success
 
-# Se instala el repo de postgresql9.6
+# Se instala el repo de postgresql
 - name: Install of postgresql-{{ postgresql_version }} repository
-  yum: "name={{ postgresql_url }} state=present validate_certs=no "
+  yum: name={{ postgresql_repo }} state=present validate_certs=no update_cache=yes
   become: yes
   become_method: sudo
-  when: ansible_os_family == "RedHat"
+  when: ansible_os_family == "RedHat" and postgresql_new_installed.rc != 3
   retries: 3
   delay: 3
   register: result
   until: result is success
 
-  #Se instalan todos los paquetes de postgresql96
+  #Se instalan todos los paquetes de postgresql
 - name: Install of postgresql-{{ postgresql_version }} (centos)
-  yum: name="postgresql{{ postgres_version_nodot }}*" state=present
-  when: ansible_os_family == "RedHat"
+  shell: "yum install postgresql{{ postgresql_version }}* --skip-broken -y"
+  #yum: name='postgresql{{ postgresql_version }}*' state=present
+  when: ansible_os_family == "RedHat" and postgresql_new_installed.rc != 3
   retries: 3
   delay: 3
   register: result
   until: result is success
 
 - name: Install of python-psycopg2 (centos)
-  yum: name="{{ psycopg2_url }}" state=present
-  when: ansible_os_family == "RedHat"
+  yum: name="{{ psycopg2_repo }}" state=present
+  when: ansible_os_family == "RedHat" and postgresql_new_installed.rc != 3
   retries: 3
   delay: 3
   register: result
@@ -71,35 +69,40 @@
 ## Ubuntu / Debian tasks ##
 ###########################
 
-- name: Add the postgresql repository key (ubuntu )
-  apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc validate_certs=no state=present
-  become: true
-  become_method: sudo
-  when: ansible_distribution == "Ubuntu"
-  retries: 3
-  delay: 3
-  register: result
-  until: result is success
+- name: Get debian/ubuntu release
+  shell: lsb_release -cs
+  register: release
+  tags: postinstall
+  when: ansible_os_family == "Debian" and postgresql_new_installed.rc != 3
 
-- name: Download postgresql-{{ postgresql_version }} repository
-  apt_repository: repo="deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" filename=pgdg state=present update_cache=yes
-  become: true
-  become_method: sudo
-  when: ansible_distribution == "Ubuntu"
+- name: Add the postgresql repository key (debian/ubuntu)
+  apt_key: url={{ postgresql_key }} validate_certs=no state=present
   retries: 3
   delay: 3
   register: result
   until: result is success
+  tags: postinstall
+  when: ansible_os_family == "Debian" and postgresql_new_installed.rc != 3
+
+- name: Download postgresql-{{ postgresql_version }} repository (debian/ubuntu)
+  apt_repository: repo="deb http://apt.postgresql.org/pub/repos/apt/ {{ release.stdout }}-pgdg main" filename=pgdg state=present update_cache=yes
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
+  tags: postinstall
+  when: ansible_os_family == "Debian" and postgresql_new_installed.rc != 3
 
 #Se intala postgresql debian
-- name: Install of postgresql {{ postgresql_version }}
+- name: Install of postgresql {{ postgresql_version }} (debian/ubuntu)
   apt: name={{ item }} state=present
   with_items:
-    - postgresql-plpython-{{ postgresql_version }}
+    - postgresql-plperl-{{ postgresql_version }}
     - postgresql-{{ postgresql_version }}
     - python-psycopg2
-  when: ansible_os_family == "Debian"
   retries: 3
   delay: 3
   register: result
   until: result is success
+  tags: postinstall
+  when: ansible_os_family == "Debian" and postgresql_new_installed.rc != 3

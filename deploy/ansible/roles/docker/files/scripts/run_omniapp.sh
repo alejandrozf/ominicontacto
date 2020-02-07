@@ -1,6 +1,7 @@
 #!/bin/bash
 COMMAND="python ${INSTALL_PREFIX}ominicontacto/manage.py"
-
+INTERFACE=$(ip route show | awk '/^default/ {print $5}');
+INTERNAL_IP=$(ifconfig $INTERFACE | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
 # run as user OMNIAPP by default
 OMNIAPP_USER=${OMNIAPP_USER:-"{{ usuario }}"}
 OMNIAPP_GROUP=${OMNIAPP_GROUP:-${OMNIAPP_USER}}
@@ -24,6 +25,9 @@ SHELL=/bin/bash
 0 1 * * * ${INSTALL_PREFIX}bin/conversor.sh 1 0  >> ${INSTALL_PREFIX}log/conversor.log
 EOF
   fi
+  printenv | sed 's/^\(.*\)$/export \1/g' | sudo tee -a /etc/profile.d/omnileads_envars.sh
+  echo "export OMNILEADS_IP=$INTERNAL_IP" | sudo tee -a /etc/profile.d/omnileads_envars.sh
+  export OMNILEADS_IP=$INTERNAL_IP
   $COMMAND migrate --noinput
   $COMMAND createsuperuser --noinput --username=admin --email=admin@example.com || true
   $COMMAND shell << EOF
@@ -39,7 +43,7 @@ EOF
   $COMMAND collectstatic_js_reverse
   $COMMAND compress --force
   $COMMAND actualizar_configuracion
-  psql -U $PGUSER -h $PGHOST -d $PGDATABASE -c '\i {{ install_prefix }}ominicontacto/reportes_app/sql/plpython/replace_insert_queue_log_ominicontacto_queue_log.sql'
+  psql -U $PGUSER -h $PGHOST -d $PGDATABASE -c '\i {{ install_prefix }}ominicontacto/reportes_app/sql/plperl/replace_insert_queue_log_ominicontacto_queue_log.sql'
   $COMMAND regenerar_asterisk
   sudo /usr/sbin/crond -l 0 -L /opt/omnileads/log/crond.log
   sudo chown -R omnileads. ${INSTALL_PREFIX}

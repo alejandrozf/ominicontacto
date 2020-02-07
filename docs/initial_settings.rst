@@ -1,10 +1,43 @@
+.. _about_initial_settings:
+
 *********************
 Configuración Inicial
 *********************
 
-Nuestra plataforma se encuentra instalada y por lo tanto disponible para comenzar a configurar todo lo necesario para montar nuetra operación de Contact Center.
-En esta sección vamos a avanzar con los pasos iniciales como crear nuestro primer usuario supervisor, generar grupos de agentes, agentes y sus pausas, para finalmente
+Nuestra plataforma se encuentra instalada y por lo tanto disponible para comenzar a configurar todo lo necesario para montar nuestra operación de Contact Center.
+En esta sección vamos a avanzar con los pasos iniciales como registrar la instancia, crear nuestro primer usuario supervisor, generar grupos de agentes, agentes y sus pausas, para finalmente
 concluir el capítulo con un login de agente.
+
+
+.. _about_omnileads_register:
+
+Registro de la instancia
+**************************
+
+Este paso no es obligatorio ya que el sistema puede funcionar perfectamente sin realizar un registro. No obstante SI es condición obligatoria tener la instancia registrada si se desea
+adquirir un Addon o suscribir la plataforma al soporte de fabricante.
+
+Finalmente para aquellos integradores certificados (que han aprobado el programa de certificación oficial de OMniLeads), a partir de registrar la instancia se podrá *firmar* la instalación
+con el código de certificación logrando así una visibilidad de que la plataforma ha sido instalada/configurada por una persona certificada.
+
+
+
+ .. image:: images/initial_settings_14.png
+
+*Figure 1: omnileads registration*
+
+Se deben completar los campos allí solicitados y luego recibirá un email con el código de la instancia.
+
+.. image:: images/initial_settings_16.png
+
+*Figure 2: Email notification*
+
+Luego cada vez que ingresemos a la sección de registro, se obtendrá una salida que informa el hecho de haber registrado ya la instancia.
+
+
+.. image:: images/initial_settings_15.png
+
+*Figure 3: omnileads registered*
 
 .. _about_supervisor_user:
 
@@ -16,11 +49,11 @@ al usuario "admin" como acceso de último recurso y para el personal de IT.
 
 Para generar un nuevo usuario debemos acceder al punto de menú *User list -> New user*
 
-Allí completamos los campos solicitados como se ilustra en la figura 1.
+Allí completamos los campos solicitados como se ilustra en la figura 4.
 
  .. image:: images/initial_settings_01.png
 
-*Figure 1: new supervisor user*
+*Figure 4: new supervisor user*
 
 En el paso siguiente del wizard debemos seleccionar el perfil de supervisor, siendo posible seleccionar:
 
@@ -30,7 +63,7 @@ En el paso siguiente del wizard debemos seleccionar el perfil de supervisor, sie
 
 .. image:: images/initial_settings_02.png
 
-*Figure 2: supervisor / admin*
+*Figure 5: supervisor / admin*
 
 En nuestro caso generamos un usuario supervisor / administrador. A continuación nos logueamos con dicho usuario para continuar las gestiones.
 
@@ -44,7 +77,7 @@ Para generar el módulo de telefonía debemos acceder a *Modules -> Enable modul
 
 .. image:: images/initial_settings_04.png
 
-*Figure 3: Enable telephony module*
+*Figure 6: Enable telephony module*
 
 Guardamos los cambios y avanzamos !
 
@@ -66,17 +99,17 @@ Si la instancia precisa utilizar otros idiomas, se pueden instalar a través del
 
 .. image:: images/telephony_i18n_audio.png
 
-*Figure 4: i18n audio promps*
+*Figure 7: i18n audio promps*
 
 Crear grupo de agentes
 **********************
 
 Llega el turno de crear los grupos de agentes de nuestro contact center. Para generar un nuevo grupo *Usuarios y grupos -> Nuevo grupo de agentes* y se desplegará
-un formulario similar al de la figura 5.
+un formulario similar al de la figura 8.
 
 .. image:: images/initial_settings_05.png
 
-*Figure 5: New agent group*
+*Figure 8: New agent group*
 
 Los campos allí desplegados son:
 
@@ -95,19 +128,19 @@ Una vez disponibles los grupos de agentes y su configuración, podemos proceder 
 
 .. image:: images/initial_settings_06.png
 
-*Figure 6: New agent*
+*Figure 9: New agent*
 
 Se debe seleccionar el grupo de agentes y los módulos disponibles para nuestro nuevo agente.
 
 .. image:: images/initial_settings_07.png
 
-*Figure 7: New agent*
+*Figure 10: New agent*
 
 Podemos listar nuestros usuarios, deberíamos contar con al menos un par de agentes.
 
 .. image:: images/initial_settings_08.png
 
-*Figure 8: Users*
+*Figure 11: Users*
 
 Crear pausas de agente
 **********************
@@ -119,14 +152,14 @@ Las pausas las pueden generar los supervisores y se clasifican en pausas Recreat
 
 .. image:: images/initial_settings_09.png
 
-*Figure 9: New pause*
+*Figure 12: New pause*
 
 A la hora de presentar los reportes de sesión de agente, las pausas totalizadas se dividen en pausas recreativas y pausas productivas. Esto permite medir la productividad de nuestros agentes
 de una manera más exacta.
 
 .. image:: images/initial_settings_10.png
 
-*Figure 10: New pauses*
+*Figure 13: New pauses*
 
 Una vez generados nuestros agentes, podemos proceder con nuestro primero login de agente !
 
@@ -136,19 +169,19 @@ Primer login de agente
 
 Finalmente tenemos todo listo para probar nuestro primer agente.
 
-**IMPORTANTE:** tener en cuenta que para obtener un login exitoso debemos contemplar dos aspectos, si alguno de ellos no se cumple entonces el login será defectuoso.
+.. important::
 
-- **Micrófono disponible:** el dispositivo desde el cual opere el agente, deberá contar con un micrófono disponible y configurado a nivel sistema operativo.
-- **Acceso al sistema por hostname:** como bien indicamos en la sección de "primer acceso a OMniLeads", es menester que el acceso a la plataforma sea mediante *hostname*. Esto quiere decir que para indicar al navegador la dirección de OMniLedas NO se deben utilizar una dirección IP, sino un nombre de host.
+ Tener en cuenta que para obtener un login exitoso debemos debemos contar con un **MICROFONO disponible:** en la estación de trabajo desde la cual se ha realizado el login de agente. Si no se cumple entonces el login será defectuoso.
 
-Una vez que accedemos con nuestro agente, si todo va bien deberemos toparnos con un popup que solicita el permiso de tomar el control del micrófono, como se ilustra en la figura 11.
+
+Una vez que accedemos con nuestro agente, si todo va bien deberemos toparnos con un popup que solicita el permiso de tomar el control del micrófono, como se ilustra en la figura 14.
 
 .. image:: images/initial_settings_11.png
 
-*Figure 11: First login - microphone webrtc*
+*Figure 14: First login - microphone webrtc*
 
-Al habilitar el permiso, debemos escuchar un audio que el sistema reproduce indicando el login exitoso y además la pantalla de agente debe lucir como la figura 12.
+Al habilitar el permiso, debemos escuchar un audio que el sistema reproduce indicando el login exitoso y además la pantalla de agente debe lucir como la figura 15.
 
 .. image:: images/initial_settings_12.png
 
-*Figure 12: First login - webphone connected*
+*Figure 15: First login - webphone connected*

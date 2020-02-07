@@ -1,6 +1,5 @@
 #!/bin/bash
-CMD="createlang plpythonu"
-PGUSER={{ postgres_user }} $CMD template1
-PGUSER={{ postgres_user }} $CMD {{ postgres_database }}
-PGUSER={{ postgres_user }} psql -c "GRANT ALL PRIVILEGES ON DATABASE {{ postgres_database }} TO {{ postgres_user }};"
-PGUSER={{ postgres_user }} psql -c "ALTER USER {{ postgres_user }} WITH SUPERUSER;"
+PGUSER=$POSTGRES_USER psql -d $POSTGRES_DB -c  "CREATE EXTENSION plperl"
+PGUSER=$POSTGRES_USER psql -d template1 -c  "CREATE EXTENSION plpeRL"
+PGUSER=$POSTGRES_USER psql -c "GRANT ALL PRIVILEGES ON DATABASE $POSTGRES_DB TO $POSTGRES_USER;"
+PGUSER=$POSTGRES_USER psql -c "ALTER USER $POSTGRES_USER WITH SUPERUSER;"

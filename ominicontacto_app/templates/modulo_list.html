@@ -34,7 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </thead>
     <tbody>
     {% for modulo in object_list %}
-        <tr>
+        <tr id="{{modulo.nombre}}">
             <td>{{ modulo.id }}</td>
             <td>{{ modulo.nombre }}</td>
             <td>

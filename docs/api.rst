@@ -66,7 +66,61 @@ Si el login no es exitoso, el método devuelve la siguiente salida:
 .. image:: images/api_user_login_fail.png
 
 
-*figure 3: endpint login request fail*
+*figure 3: endpoint login request fail*
+
+.. _about_api_database_metadata:
+
+Endpoint obtener estructura de Base de Datos de Contactos
+*********************************************************
+Esta endpoint habilita la posibilidad de obtener información de los campos de una base de datos de contactos de una campaña. Con esta información será posible luego crear un contacto. Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`) o a un Supervisor (:ref:`about_supervisor_user`) que estén asociados a la campaña.
+
+**URL**: POST https://<omnileads_addr>/api/v1/campaign/database_metadata/
+
++---------------------+---------+-----------------------------------------------------------------------------+
+| field name          | type    | description                                                                 |
++=====================+=========+=============================================================================+
+| idExternalSystem    | integer | Parámetro opcional, si se especifica el sistema intentará localizar la      |
+|                     |         | campaña especificada buscando este valor como 'id_externo' de la campaña.   |
+|                     |         | En caso de no especificarse el sistema asumirá que el valor                 |
+|                     |         | del parámetro 'idCampaign' es el id interno de la campaña en OML            |
++---------------------+---------+-----------------------------------------------------------------------------+
+| idCampaign          | string  | Id de la campaña a la que pertenece la base de datos el significado de su   |
+|                     |         | valor depende de si se especifica o no el parámetro 'idExternalSystem'      |
++---------------------+---------+-----------------------------------------------------------------------------+
+
+En caso de no haber errores se devolverá un output como este, con los datos de los campos de la base de datos:
+
+.. image:: images/api_database_metadata.png
+
+El campo 'fields' indica la lista de todos los campos de la base de datos. El campo 'main_phone' indica cual es es campo correspondiente al teléfono principal. El campo 'external_id' indica cual de los campos corresponde al identificador externo del contacto. En caso de que la base de datos no tenga campo identificador externo, el campo 'external_id' tendrá el valor None.
+
+En caso de haber errores se devolverá un JSON con el campo “status”:”ERROR” y el detalle de los mismos en el campo “errors”. Caso contrario el valor del campo “status” será “OK”.
+
+Endpoint creacion de contacto
+*****************************
+Esta endpoint habilita la posibilidad de agregar un contacto a una base de datos de contactos de una campaña. Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`) o a un Supervisor (:ref:`about_supervisor_user`) que estén asociados a la campaña.
+
+**URL**: POST https://<omnileads_addr>/api/v1/new_contact/
+
++---------------------+---------+-----------------------------------------------------------------------------+
+| field name          | type    | description                                                                 |
++=====================+=========+=============================================================================+
+| idExternalSystem    | integer | Parámetro opcional, si se especifica el sistema intentará localizar la      |
+|                     |         | campaña especificada buscando este valor como 'id_externo' de la campaña.   |
+|                     |         | En caso de no especificarse el sistema asumirá que el valor                 |
+|                     |         | del parámetro 'idCampaign' es el id interno de la campaña en OML            |
++---------------------+---------+-----------------------------------------------------------------------------+
+| idCampaign          | string  | Id de la campaña a la que pertenece la base de datos el significado de su   |
+|                     |         | valor depende de si se especifica o no el parámetro 'idExternalSystem'      |
++---------------------+---------+-----------------------------------------------------------------------------+
+
+Además deberán enviarse los valores de los campos correspondientes a los datos del contacto, y cuyos nombres pueden obtenerse con el endpoint de obtener estructura de de Base de Datos de Contactos (:ref:`about_api_database_metadata`). Es obligatorio enviar un valor para el campo indicado como 'main_phone', y en caso de que la base de datos tenga campo identificador externo, el valor del campo indicado como 'external_id' no deberá existir previamente en otro contacto de la base de datos.
+
+En caso de no haber errores se devolverá un output como este, con los datos del contacto y su id en OML:
+
+.. image:: images/api_new_contact.png
+
+En caso de haber errores se devolverá un JSON con el campo “status”:”ERROR” y el detalle de los mismos en el campo “errors”. Caso contrario el valor del campo “status” será “OK”.
 
 Endpoint de Generación de llamadas
 ***********************************
@@ -77,7 +131,7 @@ Permite generar llamadas (click to call) desde un Sistema CRM Externo. Las crede
 
 .. image:: images/api_new_call_request.png
 
-*figure 4: endpint new call request*
+*figure 4: endpoint new call request*
 
 +----------------------+------------+--------------------------------------------------------------------------+
 | field name           | type       | description                                                              |
@@ -271,66 +325,3 @@ Si no se encuentra el id de la opcion de calificación en la bd de la campaña s
 
 .. image:: images/api_create_disposition_err_disp_opt_not_found.png
 
-
-.. _about_customer_id_request:
-
-Solicitud de enrutamiento hacia el sistema CRM externo
-**********************************************************
-
-Esta interacción implica que OMniLeads ejecute una solicitud HTTP-POST (plain/text) hacia el URL del sistema de gestión especificado dentro
-del módulo :ref:`about_customer_id_form`, osea en la definición de un nodo "identificación de clientes".
-
-Este POST enviado hacia el sistema de gestión CRM tiene el siguiente aspecto
-
-.. image:: images/api_customerid_post.png
-
-Como podemos observar el "User-Agent" debe llegar como "OMniLeads" y en el cuerpo del Post el número de identificación ingresado en la llamada se envía como "idContact".
-
-**Respuesta que debe generar el servicio web del sistema de gestión CRM**
-
-El servicio recibe de OMniLeads el request HTTP-Post con el número de identificación del cliente y debe generar una respuesta a dicha solicitud.
-El sistema tiene la posibilidad de generar tres tipos de respuestas:
-
-* **true**
-* **false**
-* **X,Y**: donde "X" es un número entero y corresponde con el tipo de destino hacia a donde enviar la llamada identificada e "Y" es el destino puntual para ese tipo de destino. Por ejemplo (1,3) indica que la llamada será enrutada hacia una campaña entrante (1) y puntualmente hacia la campaña entrante cuyo id es (3). La clave asociada a la respuesta es "response"
-
-El formato de respuesta debe ser "JSON".
-
-* Respuesta JSON
-
-  ::
-
-   Content-Type: application/json
-   HTTP/1.1 200 OK
-
-    {
-      "status": "ok",
-      "destination": "value"
-    }
-
-Donde "status" puede ser *ok* o *fail* y "destination" podrá ser cualquiera de las 3 respuestas especificadas arriba.
-
-.. important::
-
-  El sistema debe respetar el formato y nombre de parámetros (status y destination)
-
-En caso de generar una respuesta con el destino del enrutamiento, se deben conocer los tipos de destino:
-
-* 1: Campaña entrante
-* 2: Condicional basado en tiempo
-* 3: IVR
-* 5: Hangup de la llamada
-* 9: Solicitud de identificación
-
-En un futuro se implementará un endpoint de la API para listar cada destino posible por cada tipo de destino. Mientras tanto, el desarrollador que desee implementar el enrutamiento de llamadas basado en la identificación ingresada en la llamada y el request generado desde OMniLeads, podrá ingresar a la interfaz de OMniLeads y en cada módulo (tipo de destino) listar los mismos y observar el id.
-
-**Ejemplo de respuesta con destino de llamada**: se desea validar cada id enviado desde OMniLeads y responder con dos posibles tipos destinos de enrutamiento. Por un lado una campaña entrante llamada "clientes gold" y otra llamada "clientes bronce".
-
-Para ello suponemos que existen las dos campañas entrantes como se indica en la figura.
-
-.. image:: images/api_customerid_choice_dst_1.png
-
-Tan solo con posicionar el mouse sobre el nombre de la campaña, podremos dilucidar el "id" particular de cada una.
-
-Por lo tanto, a partir de conocer los "id" de cada campaña el sistema de gestión a partir de su lógica de negocio, podrá evaluar cada llamada e indicar a OMniLeads hacia donde encaminarla devolviendo el par "X,Y".

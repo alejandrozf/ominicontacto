@@ -98,8 +98,6 @@ class RegeneracionAsteriskService(object):
         if not proceso_ok:
             raise(RestablecerDialplanError(mensaje_error))
         else:
-            self.config_queues_file.copy_asterisk()
-            self.config_sip_file.copy_asterisk()
             self.sincronizador_config_telefonica.sincronizar_en_asterisk()
             self.asterisk_database.regenerar_asterisk()
             self.reload_asterisk_config.reload_asterisk()
@@ -110,19 +108,17 @@ class RegeneracionAsteriskService(object):
         """
         # conectar con cron
         crontab = CronTab(user=getpass.getuser())
+        ruta_source_envars = 'source /etc/profile.d/omnileads_envars.sh;'
         ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python')
-        ruta_script_logout = os.path.join(settings.INSTALL_PREFIX, 'bin/omni-asterisk-logout.py')
+        ruta_script_logout = os.path.join(settings.INSTALL_PREFIX,
+                                          'ominicontacto/manage.py logout_unavailable_agents')
         # adicionar nuevo cron job para esta tarea si no existe anteriormente
         job = crontab.find_comment(self.tareas_programadas_ids[0])
+        crontab.remove_all(comment=self.tareas_programadas_ids[0])
         if list(job) == []:
-            install_prefix = 'INSTALL_PREFIX={0}'.format(settings.INSTALL_PREFIX)
-            ami_user = 'AMI_USER={0}'.format(settings.AMI_USER)
-            ami_password = 'AMI_PASSWORD={0}'.format(settings.AMI_PASSWORD)
-            asterisk_hostname = 'ASTERISK_HOSTNAME={0}'.format(settings.ASTERISK_HOSTNAME)
             job = crontab.new(
-                command='{0} {1} {2} {3} {4} {5}'.format(
-                    install_prefix, ami_user, ami_password, asterisk_hostname,
-                    ruta_python_virtualenv, ruta_script_logout),
+                command='{0} {1} {2}'.format(
+                    ruta_source_envars, ruta_python_virtualenv, ruta_script_logout),
                 comment=self.tareas_programadas_ids[0])
             # adicionar tiempo de print()eriodicidad al cron job
             job.minute.every(self.TIEMPO_CHEQUEO_CONTACTOS_INACTIVOS)
@@ -137,6 +133,7 @@ class RegeneracionAsteriskService(object):
         ruta_psql = os.popen('which psql').read()[:-1]
         # adicionar nuevo cron job para esta tarea si no existe anteriormente
         job = crontab.find_comment(self.tareas_programadas_ids[1])
+        crontab.remove_all(comment=self.tareas_programadas_ids[1])
         if list(job) == []:
             postgres_user = settings.POSTGRES_USER
             postgres_host = settings.POSTGRES_HOST

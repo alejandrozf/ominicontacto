@@ -1,8 +1,27 @@
 ---
 
+- name: Include debian variables
+  include_vars: group_vars/debian_vars.yml
+  when: ansible_os_family == "Debian"
+  tags: postinstall
+
+- set_fact: prefix=@
+  when: ansible_os_family == "Debian"
+  tags: postinstall
+  
+- name: Include centos variables
+  include_vars: group_vars/centos_vars.yml
+  when: ansible_os_family == "RedHat"
+  tags: postinstall
+
 - include: installations.yml
+  tags: postinstall
 
 - include: configurations.yml
+
+- include: db_upgrade.yml
+  tags: ['never','postinstall']
+  when: postgresql_new_installed.rc == 2
 
 - include: roles/prerequisitos/tasks/reboot.yml
   when: cluster != 0 and ansible_os_family == "RedHat"

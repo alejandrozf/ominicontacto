@@ -33,16 +33,16 @@ import traceback
 from django.conf import settings
 from django.utils.translation import ugettext as _
 
+from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP
 from ominicontacto_app.utiles import remplace_espacio_por_guion
 from ominicontacto_app.models import (
     AgenteProfile, SupervisorProfile, ClienteWebPhoneProfile, Campana
 )
-from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP
 from ominicontacto_app.asterisk_config_generador_de_partes import (
     GeneradorDePedazoDeQueueFactory, GeneradorDePedazoDeAgenteFactory,
     GeneradorDePedazoDeRutasSalientesFactory
 )
-
+from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnector
 import logging as _logging
 
 logger = _logging.getLogger(__name__)
@@ -79,7 +79,7 @@ class SipConfigCreator(object):
         param_generales = {
             'oml_agente_name': "{0}_{1}".format(agente.id, nombre_agente),
             'oml_agente_sip': agente.sip_extension,
-            'context': context
+            'oml_context': context,
         }
 
         generador_agente = self._generador_factory.crear_generador_para_agente(
@@ -508,7 +508,8 @@ class RutasSalientesConfigCreator(object):
 class SipTrunksConfigCreator(object):
 
     def __init__(self):
-        self._sip_trunks_config_file = SipTrunksConfigFile()
+        self._chansip_trunks_config_file = ChanSipTrunksConfigFile()
+        self._pjsip_trunks_config_file = PJSipTrunksConfigFile()
 
     def _obtener_todas_para_generar_config_rutas(self):
         """Devuelve todas para config troncales
@@ -535,13 +536,19 @@ class SipTrunksConfigCreator(object):
                 trunk_exclude)
         else:
             trunks = self._obtener_todas_para_generar_config_rutas()
-        trunk_file = []
+        chansip_trunk_file = []
+        pjsip_trunk_file = []
 
         for trunk in trunks:
             logger.info(_("Creando config troncal sip {0}".format(trunk.id)))
-            trunk_file.append("\n[{0}]\n{1}\n".format(
-                trunk.nombre, trunk.text_config.replace("\r", "")))
-        self._sip_trunks_config_file.write(trunk_file)
+            if trunk.tecnologia == TroncalSIP.CHANSIP:
+                chansip_trunk_file.append("\n[{0}]\n{1}\n".format(
+                    trunk.nombre, trunk.text_config.replace("\r", "")))
+            elif trunk.tecnologia == TroncalSIP.PJSIP:
+                pjsip_trunk_file.append("\n[{0}]\n{1}\n".format(
+                    trunk.nombre, trunk.text_config.replace("\r", "")))
+        self._chansip_trunks_config_file.write(chansip_trunk_file)
+        self._pjsip_trunks_config_file.write(pjsip_trunk_file)
 
 
 class SipRegistrationsConfigCreator(object):
@@ -585,55 +592,16 @@ class SipRegistrationsConfigCreator(object):
 
 class AsteriskConfigReloader(object):
 
-    def reload_config(self):
-        """Realiza reload de configuracion de Asterisk
-
-        :returns: int -- exit status de proceso ejecutado.
-                  0 (cero) si fue exitoso, otro valor si se produjo
-                  un error
-        """
-        stdout_file = tempfile.mkstemp()
-        stderr_file = tempfile.mkstemp()
-
-        try:
-            subprocess.check_call(settings.OML_RELOAD_CMD,
-                                  stdout=stdout_file, stderr=stderr_file)
-            logger.info(_("Reload de configuracion de Asterisk fue OK"))
-            return 0
-        except subprocess.CalledProcessError, e:
-            logger.warn(_("Exit status erroneo: {0}".format(e.returncode)))
-            logger.warn(_(" - Comando ejecutado: {0}".format(e.cmd)))
-            try:
-                stdout_file.seek(0)
-                stderr_file.seek(0)
-                stdout = stdout_file.read().splitlines()
-                for line in stdout:
-                    if line:
-                        logger.warn(" STDOUT> %s", line)
-                stderr = stderr_file.read().splitlines()
-                for line in stderr:
-                    if line:
-                        logger.warn(" STDERR> %s", line)
-            except Exception as e:
-                logger.exception(_("Error {0} al intentar reporter STDERR y STDOUT".format(
-                    e.message)))
-
-            return e.returncode
-
-        finally:
-            stdout_file.close()
-            stderr_file.close()
-
     def reload_asterisk(self):
-        # subprocess.call(['ssh', settings.OML_ASTERISK_HOSTNAME, '/usr/sbin/asterisk', '-rx',
-        # '\'core reload\''])
-        subprocess.call(settings.OML_RELOAD_CMD, shell=True)
+        """Realiza reload de configuracion de Asterisk usando AMI
+        """
+        manager = AMIManagerConnector()
+        manager._ami_manager('command', 'module reload')
 
 
 class ConfigFile(object):
-    def __init__(self, filename, hostname, remote_path):
+    def __init__(self, filename, remote_path):
         self._filename = filename
-        self._hostname = hostname
         self._remote_path = remote_path
 
     def write(self, contenidos):
@@ -659,67 +627,66 @@ class ConfigFile(object):
                     e.message, tmp_filename)))
 
     def copy_asterisk(self):
-        subprocess.call(['scp', self._filename, ':'.join([self._hostname,
-                                                          self._remote_path])])
+        subprocess.call(['cp', self._filename, self._remote_path])
 
 
 class SipConfigFile(ConfigFile):
     def __init__(self):
         filename = settings.OML_SIP_FILENAME.strip()
-        hostname = settings.OML_ASTERISK_HOSTNAME
         remote_path = settings.OML_ASTERISK_REMOTEPATH
-        super(SipConfigFile, self).__init__(filename, hostname, remote_path)
+        super(SipConfigFile, self).__init__(filename, remote_path)
 
 
 class QueuesConfigFile(ConfigFile):
     def __init__(self):
         filename = settings.OML_QUEUES_FILENAME.strip()
-        hostname = settings.OML_ASTERISK_HOSTNAME
         remote_path = settings.OML_ASTERISK_REMOTEPATH
-        super(QueuesConfigFile, self).__init__(filename, hostname, remote_path)
+        super(QueuesConfigFile, self).__init__(filename, remote_path)
 
 
 class RutasSalientesConfigFile(ConfigFile):
     def __init__(self):
         filename = settings.OML_RUTAS_SALIENTES_FILENAME.strip()
-        hostname = settings.OML_ASTERISK_HOSTNAME
         remote_path = settings.OML_ASTERISK_REMOTEPATH
-        super(RutasSalientesConfigFile, self).__init__(filename, hostname, remote_path)
+        super(RutasSalientesConfigFile, self).__init__(filename, remote_path)
 
 
-class SipTrunksConfigFile(ConfigFile):
+class ChanSipTrunksConfigFile(ConfigFile):
     def __init__(self):
         filename = os.path.join(settings.OML_ASTERISK_REMOTEPATH,
                                 "oml_sip_trunks.conf")
-        hostname = settings.OML_ASTERISK_HOSTNAME
         remote_path = settings.OML_ASTERISK_REMOTEPATH
-        super(SipTrunksConfigFile, self).__init__(filename, hostname, remote_path)
+        super(ChanSipTrunksConfigFile, self).__init__(filename, remote_path)
+
+
+class PJSipTrunksConfigFile(ConfigFile):
+    def __init__(self):
+        filename = os.path.join(settings.OML_ASTERISK_REMOTEPATH,
+                                "oml_pjsip_trunks.conf")
+        remote_path = settings.OML_ASTERISK_REMOTEPATH
+        super(PJSipTrunksConfigFile, self).__init__(filename, remote_path)
 
 
 class SipRegistrationsConfigFile(ConfigFile):
     def __init__(self):
         filename = os.path.join(settings.OML_ASTERISK_REMOTEPATH,
                                 "oml_sip_registrations.conf")
-        hostname = settings.OML_ASTERISK_HOSTNAME
         remote_path = settings.OML_ASTERISK_REMOTEPATH
-        super(SipRegistrationsConfigFile, self).__init__(filename, hostname, remote_path)
+        super(SipRegistrationsConfigFile, self).__init__(filename, remote_path)
 
 
 class BackListConfigFile(ConfigFile):
     def __init__(self):
         filename = os.path.join(settings.OML_WOMBAT_FILENAME,
                                 "oml_backlist.txt")
-        hostname = settings.OML_ASTERISK_HOSTNAME
         remote_path = settings.OML_BACKLIST_REMOTEPATH
-        super(BackListConfigFile, self).__init__(filename, hostname, remote_path)
+        super(BackListConfigFile, self).__init__(filename, remote_path)
 
 
 class AudioConfigFile(object):
     def __init__(self, filename):
         self._filename = os.path.join(settings.MEDIA_ROOT, filename)
-        self._hostname = settings.OML_ASTERISK_HOSTNAME
         self._remote_path = settings.OML_AUDIO_PATH_ASTERISK
 
     def copy_asterisk(self):
-        subprocess.call(['scp', self._filename, ':'.join([self._hostname,
-                                                          self._remote_path])])
+        subprocess.call(['cp', self._filename, self._remote_path])

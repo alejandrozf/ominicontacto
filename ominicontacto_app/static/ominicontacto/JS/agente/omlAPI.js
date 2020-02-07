@@ -16,71 +16,148 @@
  along with this program.  If not, see http://www.gnu.org/licenses/.
 
 */
+/* global Urls */
+/* global gettext */
+/* exported OMLAPI */
 
 class OMLAPI {
 
-	constructor() {
+    constructor() {
 
-	};
+    }
+
+    asteriskLogin(callback_ok, callback_error) {
+        // {% url 'grabacion_marcar'%}
+        var URL = Urls.agent_asterisk_login();
+        // var URL = "grabacion/marcar/";
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            dataType: 'json',
+            success: function(data){
+                if (data['status'] == 'ERROR') {
+                    callback_error();
+                }
+                else
+                    callback_ok();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                callback_error();
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
+            }
+        });
+    }
 
     changeStatus(status, id_agente) {
         // {% url 'agente_cambiar_estado'%}
         var URL = Urls.agente_cambiar_estado(status, id_agente);
-    	// TODO: Este request debería ser por POST
-    	// {% url 'agente_cambiar_estado' status id_agente %}
+        // TODO: Este request debería ser por POST
+        //{% url 'agente_cambiar_estado' status id_agente %}
         $.ajax({
-            type: "get",
+            type: 'get',
             url: URL,
-//            url: "/agente/cambiar_estado?estado=" + status + "&pk_agente=" + idagente,
-            contentType: "text/html",
+            //url: "/agente/cambiar_estado?estado=" + status + "&pk_agente=" + idagente,
+            contentType: 'text/html',
             success: function(msg) {
 
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
             }
         });
-    };
+    }
 
     getCampanasActivas(callback) {
         // {% url 'service_campanas_activas'%}
         var URL = Urls.service_campanas_activas();
         $.ajax({
-            type: "get",
+            type: 'get',
             url: URL,
-            contentType: "text/html",
+            contentType: 'text/html',
             success: function(msg) {
-            	callback(msg.campanas);
+                callback(msg.campanas);
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
             }
         });
-    };
+    }
 
     getAgentes(callback) {
         // {% url 'service_agentes_de_grupo'%}
         var URL = Urls.service_agentes_de_grupo();
         $.ajax({
-            type: "get",
+            type: 'get',
             url: URL,
-            contentType: "text/html",
+            contentType: 'text/html',
             success: function(msg) {
-            	callback(msg.agentes);
+                callback(msg.agentes);
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
             }
         });
-    };
+    }
+
+    makePause(pause_id, callback_ok, callback_error) {
+        // {% url 'grabacion_marcar'%}
+        var URL = Urls.make_pause();
+        // var URL = "grabacion/marcar/";
+        var post_data = {
+            'pause_id': pause_id
+        };
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            dataType: 'json',
+            data: post_data,
+            success: function(data){
+                if (data['status'] == 'ERROR') {
+                    callback_error();
+                }
+                else
+                    callback_ok();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                callback_error();
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
+            }
+        });
+    }
+
+    makeUnpause(pause_id, callback_ok, callback_error) {
+        // {% url 'grabacion_marcar'%}
+        var URL = Urls.make_unpause();
+        // var URL = "grabacion/marcar/";
+        var post_data = {
+            'pause_id': pause_id
+        };
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            dataType: 'json',
+            data: post_data,
+            success: function(data){
+                if (data['status'] == 'ERROR') {
+                    callback_error();
+                }
+                else
+                    callback_ok();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                callback_error();
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
+            }
+        });
+    }
 
     marcarLlamada(descripcion, uuid_llamada) {
         // {% url 'grabacion_marcar'%}
         var URL = Urls.grabacion_marcar();
         // var URL = "grabacion/marcar/";
         var post_data = {
-            "callid": uuid_llamada,
-            "descripcion": descripcion
+            'callid': uuid_llamada,
+            'descripcion': descripcion
         };
         $.ajax({
             url: URL,
@@ -91,37 +168,37 @@ class OMLAPI {
 
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
             }
         });
-    };
+    }
 
     updateCallHistory(callback) {
         // {% url 'historico_de_llamadas_de_agente'%}
         var URL = Urls.historico_de_llamadas_de_agente();
         $.ajax({
-            type: "get",
+            type: 'get',
             url: URL,
-            contentType: "text/html",
+            contentType: 'text/html',
             success: function(msg) {
                 callback(msg);
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
             }
         });
-    };
+    }
 
     startClick2Call(agent_id, campaign_id, campaign_type, contact_id, phone, click2call_type) {
         // {% url 'agente_llamar_contacto'%}
         var URL = Urls.agente_llamar_contacto();
         var post_data = {
-            "pk_agente": agent_id,
-            "pk_campana": campaign_id,
-            "tipo_campana": campaign_type,
-            "pk_contacto": contact_id,
-            "telefono": phone,
-            "click2call_type": click2call_type,
+            'pk_agente': agent_id,
+            'pk_campana': campaign_id,
+            'tipo_campana': campaign_type,
+            'pk_contacto': contact_id,
+            'telefono': phone,
+            'click2call_type': click2call_type,
         };
         $.ajax({
             url: URL,
@@ -131,18 +208,18 @@ class OMLAPI {
 
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
-                alert(gettext("No se pudo iniciar la llamada. Intente Nuevamente."))
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
+                alert(gettext('No se pudo iniciar la llamada. Intente Nuevamente.'));
             }
         });
-    };
+    }
 
     startCallOutsideCampaign(destination_type, destination) {
         // {% url 'agente_llamar_sin_campana'%}
         var URL = Urls.agente_llamar_sin_campana();
         var post_data = {
-            "tipo_destino": destination_type,
-            "destino": destination,
+            'tipo_destino': destination_type,
+            'destino': destination,
         };
         $.ajax({
             url: URL,
@@ -152,10 +229,9 @@ class OMLAPI {
 
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
-                alert(gettext("No se pudo iniciar la llamada. Intente Nuevamente."))
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
+                alert(gettext('No se pudo iniciar la llamada. Intente Nuevamente.'));
             }
         });
-    };
-
+    }
 }

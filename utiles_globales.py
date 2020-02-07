@@ -19,6 +19,8 @@
 
 from __future__ import unicode_literals
 
+import os
+
 from django.conf import settings
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _
@@ -26,7 +28,7 @@ from django.utils.translation import ugettext as _
 from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError
 from ominicontacto_app.models import CalificacionCliente
 
-from api_app.utiles import EstadoAgentesService
+from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorActivityAmiManager
 
 
 def validar_extension_archivo_audio(valor):
@@ -58,13 +60,35 @@ def validar_estructura_csv(data_csv_memory, err_message, logger):
 
 
 def obtener_sip_agentes_sesiones_activas():
-    agentes_activos_service = EstadoAgentesService()
-    agentes = list(agentes_activos_service._obtener_agentes_activos_ami())
+    agentes_activos_service = SupervisorActivityAmiManager()
+    agentes = list(agentes_activos_service._obtener_agentes_activos())
     sips_agentes = []
     for agente in agentes:
         if agente['status'] != 'OFFLINE':
             sips_agentes.append(int(agente['sip']))
     return sips_agentes
+
+
+interface = os.popen("ip route list | awk '/^default/ {print $5}'").read().strip("\n")
+
+
+def obtener_oml_network_subnet():
+    network_subnet = os.popen("route | grep " + str(interface) +
+                              "| tail -1 |awk -F \" \" '{print $1\"/\"$3}'").read().strip("\n")
+    return network_subnet
+
+
+def obtener_oml_private_ip():
+    private_ip = os.popen("ifconfig" + str(interface) +
+                          "| grep -Eo 'inet (addr:)?([0-9]*\\.){3}[0-9]*'"
+                          "| grep -Eo '([0-9]*\\.){3}[0-9]*'"
+                          "| grep -v '127.0.0.1'")
+    return private_ip
+
+
+def obtener_oml_public_ip():
+    public_ip = os.popen("wget -qO- http://ipinfo.io/ip").read().strip("\n")
+    return public_ip
 
 
 class AddSettingsContextMixin(object):

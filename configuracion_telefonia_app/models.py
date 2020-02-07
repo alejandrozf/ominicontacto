@@ -38,6 +38,13 @@ R_CONTEXT_DIALPLAN = r'^(\w+,\w+,\w+|\w+,\w+|\w+)$'
 
 class TroncalSIP(models.Model):
     """Configuración de Troncal SIP."""
+    CHANSIP = 0
+    PJSIP = 1
+    OPCIONES_TECNOLOGIA = (
+        (CHANSIP, _('chansip')),
+        (PJSIP, _('pjsip')),
+    )
+
     nombre = models.CharField(
         max_length=128, unique=True, validators=[RegexValidator(R_ALFANUMERICO)],
         verbose_name=_('Nombre'))
@@ -50,9 +57,17 @@ class TroncalSIP(models.Model):
     register_string = models.CharField(max_length=100, blank=True, null=True,
                                        verbose_name=_('Register string'))
     text_config = models.TextField(verbose_name=_('Text config'))
+    tecnologia = models.PositiveIntegerField(choices=OPCIONES_TECNOLOGIA, default=CHANSIP)
 
     def __unicode__(self):
         return self.nombre
+
+    @property
+    def tecnologia_astdb(self):
+        if self.tecnologia == self.CHANSIP:
+            return 'SIP'
+        if self.tecnologia == self.PJSIP:
+            return 'PJSIP'
 
 
 def max_orden_ruta_saliente():

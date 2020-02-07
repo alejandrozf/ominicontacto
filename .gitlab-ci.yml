@@ -29,7 +29,7 @@ test:
   # Only needed when using a docker container to run your tests in.
   # Check out: http://docs.gitlab.com/ce/ci/docker/using_docker_images.html#what-is-a-service
   services:
-    - name: alejandrozf/docker-stuff:postgres-plpython-template1
+    - name: alejandrozf/docker-stuff:postgres-plperl-template1
       alias: plpython
     - redis
   # This folder is cached between builds
@@ -95,7 +95,8 @@ staging-centos:
     - ./vagrantup.sh centos
     - python ../edit_ansible.py --internal_ip=$STAGING_IP_CENTOS --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
     - cd ../../ansible
-    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh --integration-tests
+    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
+    - TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=$STAGING_HOST_CENTOS ADMIN_USERNAME=admin ADMIN_PASSWORD=$DJANGO_PASS LOGIN_FAILURE_LIMIT=$LOGIN_FAILURE_LIMIT python /home/ftsinfra/ominicontacto/ominicontacto_app/tests/tests.py
     - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
     - vagrant halt centos
   tags:
@@ -118,7 +119,8 @@ staging-ubuntu:
     - ./vagrantup.sh ubuntu
     - python ../edit_ansible.py --internal_ip=$STAGING_IP_UBUNTU --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
     - cd ../../ansible
-    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh --integration-tests
+    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
+    - TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=$STAGING_HOST_UBUNTU ADMIN_USERNAME=admin ADMIN_PASSWORD=$DJANGO_PASS LOGIN_FAILURE_LIMIT=$LOGIN_FAILURE_LIMIT python /home/ftsinfra/ominicontacto/ominicontacto_app/tests/tests.py
     - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
     - vagrant halt ubuntu
   tags:
@@ -140,7 +142,8 @@ staging-debian:
     - ./vagrantup.sh debian
     - python ../edit_ansible.py --internal_ip=$STAGING_IP_DEBIAN --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
     - cd ../../ansible
-    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh --integration-tests
+    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
+    - TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=$STAGING_HOST_DEBIAN ADMIN_USERNAME=admin ADMIN_PASSWORD=$DJANGO_PASS LOGIN_FAILURE_LIMIT=$LOGIN_FAILURE_LIMIT python /home/ftsinfra/ominicontacto/ominicontacto_app/tests/tests.py
     - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
     - vagrant halt debian
   tags:
@@ -200,14 +203,13 @@ prod-centos:
   stage: deploy
   environment: FTS-CENTOS7
   script:
+    - export CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME
+    - bash /home/ftsinfra/git_cleanup.sh
     - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
-    - git fetch
-    - git checkout ../../ansible/inventory
-    - git checkout $CI_COMMIT_REF_NAME
     - vagrant halt centos
     - vagrant destroy centos -f
     - ./vagrantup.sh centos
-    - python ../edit_ansible.py --remote_host=$STAGING_HOST_CENTOS --internal_ip=$STAGING_IP_CENTOS --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
+    - python ../edit_ansible.py --internal_ip=$STAGING_IP_CENTOS --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
     - cd ../../ansible
     - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
     - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
@@ -224,14 +226,13 @@ prod-ubuntu:
   stage: deploy
   environment: FTS-UBUNTU_BIONIC
   script:
+    - export CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME
+    - bash /home/ftsinfra/git_cleanup.sh
     - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
-    - git fetch
-    - git checkout ../../ansible/inventory
-    - git checkout $CI_COMMIT_REF_NAME
     - vagrant halt ubuntu
     - vagrant destroy ubuntu -f
     - ./vagrantup.sh ubuntu
-    - python ../edit_ansible.py --remote_host=$STAGING_HOST_UBUNTU --internal_ip=$STAGING_IP_UBUNTU --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
+    - python ../edit_ansible.py --internal_ip=$STAGING_IP_UBUNTU --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
     - cd ../../ansible
     - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
     - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
@@ -248,14 +249,13 @@ prod-debian:
   stage: deploy
   environment: FTS-DEBIAN
   script:
+    - export CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME
+    - bash /home/ftsinfra/git_cleanup.sh
     - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
-    - git fetch
-    - git checkout ../../ansible/inventory
-    - git checkout $CI_COMMIT_REF_NAME
     - vagrant halt debian
     - vagrant destroy debian -f
     - ./vagrantup.sh debian
-    - python ../edit_ansible.py --remote_host=$STAGING_HOST_DEBIAN --internal_ip=$STAGING_IP_DEBIAN --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
+    - python ../edit_ansible.py --internal_ip=$STAGING_IP_DEBIAN --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
     - cd ../../ansible
     - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
     - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/

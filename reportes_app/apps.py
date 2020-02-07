@@ -1,4 +1,4 @@
-from __future__ import unicode_literals
+# -*- coding: utf-8 -*-
 # Copyright (C) 2018 Freetech Solutions
 
 # This file is part of OMniLeads
@@ -16,9 +16,31 @@ from __future__ import unicode_literals
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
+from __future__ import unicode_literals
 
+from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext as _
 from django.apps import AppConfig
 
 
-class ReportesConfig(AppConfig):
-    name = 'reportes'
+class ReportesAppConfig(AppConfig):
+    name = 'reportes_app'
+
+    def supervision_menu_items(self, request):
+        return [
+            {
+                'label': _('Reportes'),
+                'icon': 'icon-graph',
+                'id': 'menuReports',
+                'children': [
+                    {
+                        'label': _('Llamadas'),
+                        'url': reverse('reporte_llamadas'),
+                    },
+                    {
+                        'label': _('Agentes'),
+                        'url': reverse('reportes_agentes_tiempos'),
+                    },
+                ],
+            },
+        ]

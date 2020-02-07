@@ -17,12 +17,17 @@
 
 */
 
+/* global Urls */
+/* global gettext */
+/* global PhoneJSController */
+/* exported executeSupervisorAction */
+
 var phone_controller;
 
 $(function (){
-    var supervisor_id = $("#supervisor_id").val();
-    var sipExtension = $("#sipExt").val();
-    var sipSecret = $("#sipSec").val();
+    var supervisor_id = $('#supervisor_id').val();
+    var sipExtension = $('#sipExt').val();
+    var sipSecret = $('#sipSec').val();
 
     phone_controller = new PhoneJSController(supervisor_id, sipExtension, sipSecret);
 });
@@ -41,11 +46,11 @@ function executeSupervisorAction(pk_agent, action) {
         type: 'POST',
         dataType: 'json',
         data: {'accion': action},
-        success: function(data) {
+        success: function() {   // function(data)
             
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
+            console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
         },
     });    
 }

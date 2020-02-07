@@ -17,21 +17,18 @@ ca_organizationalunit: Freetech Solutions
 ################# Versiones de aplicaciones ####################
 
 asterisk_version: 16.4.0
-kamailio_version: 5.2.2
-postgresql_version: 9.6
-postgres_version_nodot: 96
+kamailio_version: 5.2.3
+postgresql_old_version: 9.6
+postgresql_version: 11
 rtpengine_version: 5.5.3.1
 wombat_version: 18.08.3-232
 ################ URL's ############################
-
+epel_repository: https://download-ib01.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 #URLS para descargar asterisk
 asterisk_repo: https://downloads.asterisk.org/pub/telephony/asterisk/old-releases/asterisk-{{ asterisk_version }}.tar.gz
 wombat: http://downloads.loway.ch/wd/WombatDialer-{{ wombat_version }}.tar.gz
 rtpengine_repo: https://github.com/sipwise/rtpengine/archive/mr{{ rtpengine_version }}.tar.gz
 kamailio_repo: https://github.com/kamailio/kamailio/archive/{{ kamailio_version }}.tar.gz
-postgresql_key: https://ftp.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-{{ postgres_version_nodot }}
-postgresql_url: https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7.6-x86_64/pgdg-redhat-repo-latest.noarch.rpm
-psycopg2_url: ftp://ftp.pbone.net/mirror/ftp.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/python-psycopg2-2.7.5-1.rhel7.x86_64.rpm
 res_json_repo: https://github.com/felipem1210/asterisk-res_json.git
 ##Parametros de la aplicación
 cert: cert.pem
@@ -50,9 +47,11 @@ certs_location: "{{ kamailio_location }}/etc/certs"
 kamailio_location: "{{ install_prefix }}kamailio"
 static_route: "{{ install_prefix }}ominicontacto/ominicontacto_app/static/ominicontacto"
 odbc_location: /etc/
-omni_fqdn: "{{ ansible_fqdn }}"
-omniapp_fqdn: "{{ omni_fqdn }}"
-asterisk_fqdn: "{{ omni_fqdn }}"
-kamailio_fqdn: "{{ omni_fqdn }}"
-database_fqdn: "{{ omni_fqdn }}"
-dialer_fqdn: "{{ omni_fqdn }}"
+
+######### VoIP ports ###########
+kam_tls_port: 5061
+kam_ws_port: 1080
+kam_wss_port: 14443
+kam_sip_port: 5060
+ast_sip_port: 5160
+rtpengine_port: 22222

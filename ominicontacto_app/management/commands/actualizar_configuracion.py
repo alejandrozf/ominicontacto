@@ -18,11 +18,8 @@
 #
 
 import logging
-
-from StringIO import StringIO
-
-from fabric import Connection
-
+import utiles_globales
+import os
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
@@ -35,33 +32,15 @@ class Command(BaseCommand):
     """Reescribe los archivos de configuración del sistema a partir de variables de
     entorno
     """
-
+    network_subnet = utiles_globales.obtener_oml_network_subnet()
+    public_ip = utiles_globales.obtener_oml_public_ip()
+    host_ip = os.getenv('DOCKER_IP')
     help = u'Actualiza archivos de configuración del sistema'
 
-    def _escribir_archivo(self, content, ruta_remota, host):
-        strio_config_kamailio = StringIO()
-        strio_config_kamailio.write(content)
-        connection = Connection(host=host, user="root")
-        connection.put(strio_config_kamailio, ruta_remota)
-
-    def _actualizar_template_asterisk_oml_manager(self):
-        template_asterisk_oml_manager = (
-            "[{0}]\n"
-            "secret =  {1}\n"
-            "deny = 0.0.0.0/0.0.0.0\n"
-            "permit = 127.0.0.1/255.255.255.255\n"
-            "permit = {2}/255.255.255.255\n"
-            "permit = {3}/255.255.255.255\n"
-            "read = all\n"
-            "write = all\n"
-        )
-        config_asterisk_oml_manager = template_asterisk_oml_manager.format(
-            settings.AMI_USER, settings.AMI_PASSWORD,
-            settings.OML_OMNILEADS_IP, settings.DIALER_IP
-        )
-        ruta_archivo = '{0}/etc/asterisk/oml_manager.conf'.format(settings.ASTERISK_LOCATION)
-        self._escribir_archivo(
-            config_asterisk_oml_manager, ruta_archivo, settings.ASTERISK_HOSTNAME)
+    def _escribir_archivo(self, content, ruta_remota):
+        f = open(ruta_remota, "w+")
+        f.write(content)
+        f.close()
 
     def _actualizar_template_asterisk_oml_sip_general(self):
         template_asterisk_oml_sip_general = (
@@ -70,7 +49,7 @@ class Command(BaseCommand):
             "allowtransfer=yes\n"
             "tlsenable=no\n"
             "tcpenable=no\n"
-            "udpbindaddr=0.0.0.0:5160\n"
+            "udpbindaddr=0.0.0.0:5159\n"
             "transport=udp\n"
             "maxexpiry=3600\n"
             "minexpiry=60\n"
@@ -82,13 +61,69 @@ class Command(BaseCommand):
             "alwaysauthreject=yes\n"
             "rtptimeout=60\n"
             "deny=0.0.0.0/0.0.0.0\n"
-            "permit={0}/255.255.255.255\n"
+            "permit={0}\n"
+            "externaddr={1}\n"
+            "localnet={0}\n"
+            "nat=yes\n"
         )
         config_asterisk_oml_sip_general = template_asterisk_oml_sip_general.format(
-            settings.KAMAILIO_IP)
+            self.network_subnet, self.public_ip)
         ruta_archivo = '{0}/etc/asterisk/oml_sip_general.conf'.format(settings.ASTERISK_LOCATION)
         self._escribir_archivo(
-            config_asterisk_oml_sip_general, ruta_archivo, settings.ASTERISK_HOSTNAME)
+            config_asterisk_oml_sip_general, ruta_archivo)
+
+    def _actualizar_template_asterisk_oml_pjsip_wizard(self):
+        ruta_archivo = '{0}/etc/asterisk/oml_pjsip_wizard.conf'.format(settings.ASTERISK_LOCATION)
+        f = open(ruta_archivo, 'r')
+        filedata = f.read()
+        f.close()
+        content = filedata.replace(
+            "endpoint/permit={0}", "endpoint/permit={0}").format(self.network_subnet)
+        self._escribir_archivo(content, ruta_archivo)
+
+    def _actualizar_template_asterisk_oml_pjsip_transports(self):
+        template_config_oml_pjsip_transports = (
+            "[agent-transport]\n"
+            "type=transport\n"
+            "async_operations=1\n"
+            "bind=0.0.0.0:5160\n"
+            "protocol=udp\n"
+            "allow_reload=yes\n"
+            "symmetric_transport=no\n"
+            "\n"
+            "[trunk-transport]\n"
+            "type=transport\n"
+            "async_operations=1\n"
+            "bind=0.0.0.0:5161\n"
+            "protocol=udp\n"
+            "allow_reload=yes\n"
+            "symmetric_transport=no\n"
+            "\n"
+            "[trunk-nat-transport]\n"
+            "type=transport\n"
+            "async_operations=1\n"
+            "bind=0.0.0.0:5162\n"
+            "protocol=udp\n"
+            "allow_reload=yes\n"
+            "symmetric_transport=no\n"
+            "external_media_address={0}\n"
+            "external_signaling_address={0}\n"
+            "\n"
+            "[trunk-nat-docker-transport]\n"
+            "type=transport\n"
+            "async_operations=1\n"
+            "bind=0.0.0.0:5163\n"
+            "protocol=udp\n"
+            "allow_reload=yes\n"
+            "symmetric_transport=no\n"
+            "external_media_address={1}\n"
+            "external_signaling_address={1}\n"
+        )
+        config_pjsip_transports = template_config_oml_pjsip_transports.format(
+            self.public_ip, self.host_ip)
+        ruta_archivo = '{0}/etc/asterisk/oml_pjsip_transports.conf'.format(
+            settings.ASTERISK_LOCATION)
+        self._escribir_archivo(config_pjsip_transports, ruta_archivo)
 
     def _actualizar_archivos_kamailio(self):
         template_config_kamailio = (
@@ -130,13 +165,14 @@ class Command(BaseCommand):
                                                           settings.REDIS_HOSTNAME
                                                           )
         ruta_archivo = '{0}/etc/kamailio/kamailio-local.cfg'.format(settings.KAMAILIO_LOCATION)
-        self._escribir_archivo(config_kamailio, ruta_archivo, settings.KAMAILIO_HOSTNAME)
+        self._escribir_archivo(config_kamailio, ruta_archivo)
 
     def handle(self, *args, **options):
         try:
             # self._actualizar_archivos_kamailio()
-            self._actualizar_template_asterisk_oml_manager()
+            self._actualizar_template_asterisk_oml_pjsip_wizard()
             self._actualizar_template_asterisk_oml_sip_general()
+            self._actualizar_template_asterisk_oml_pjsip_transports()
             # regeneramos asterisk con la nueva configuracion
             asterisk_reloader = AsteriskConfigReloader()
             asterisk_reloader.reload_asterisk()

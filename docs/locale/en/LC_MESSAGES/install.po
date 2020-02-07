@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-02 14:37-0300\n"
+"POT-Creation-Date: 2020-01-14 11:06-0300\n"
 "PO-Revision-Date: 2019-08-13 12:26-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -38,16 +38,16 @@ msgstr ":ref:`about_install_selfhosted`."
 msgid ":ref:`about_install_remote`."
 msgstr ":ref:`about_install_remote`."
 
-# e259a16ff5544c5bb9b080d23c7db3be
+# 97369854435040e1bb4123c4159a8c53
 #: ../../install.rst:10
-msgid ":ref:`about_install_cluster`."
-msgstr ":ref:`about_install_cluster`."
+msgid ":ref:`about_install_docker_linux`."
+msgstr ""
 
 # 97369854435040e1bb4123c4159a8c53
 #: ../../install.rst:11
-#, fuzzy
-msgid ":ref:`about_install_docker`."
-msgstr ":ref:`about_install_cluster`."
+
+msgid ":ref:`about_install_docker_pbx`."
+msgstr ""
 
 # 7fda9b93bfd14b359367cd4389d7ec5d
 #: ../../install.rst:15
@@ -86,7 +86,6 @@ msgstr "In case of failure of any ansible task run the installation script again
 
 # 829769703a1343f5af3b72b4e35ce0cd
 #: ../../install.rst:21
-#, fuzzy
 msgid ""
 "En caso de que vuelva a fallar levantar un issue a "
 "https://gitlab.com/omnileads/ominicontacto/issues especificando distro en"

@@ -46,7 +46,8 @@ from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, 
                                                NombreCalificacionFactory,
                                                OpcionCalificacionFactory, ArchivoDeAudioFactory,
                                                ActuacionVigenteFactory, FormularioFactory,
-                                               SitioExternoFactory, SistemaExternoFactory)
+                                               SitioExternoFactory, SistemaExternoFactory,
+                                               BaseDatosContactoFactory)
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, OMLTransaccionBaseTest
 
@@ -266,6 +267,28 @@ class CampanasTests(OMLBaseTest):
                               reported_by=UserFactory(),
                               tiempo_desconexion=2)
             campana.save()
+
+    def test_campana_preview_no_permitir_BD_vacias(self):
+        bd = BaseDatosContactoFactory()
+        campana_preview_data = {'nombre': 'test',
+                                'bd_contacto': bd.pk,
+                                'tipo_interaccion': Campana.FORMULARIO,
+                                'objetivo': 1,
+                                'tiempo_desconexion': 2}
+        campana_preview_form = CampanaPreviewForm(data=campana_preview_data)
+        message = _('No puede seleccionar una BD vacia')
+        self.assertEqual(campana_preview_form.errors['bd_contacto'], [message])
+
+    def test_campana_dialer_no_permitir_BD_vacias(self):
+        bd = BaseDatosContactoFactory()
+        campana_dialer_data = {'nombre': 'test',
+                               'bd_contacto': bd.pk,
+                               'tipo_interaccion': Campana.FORMULARIO,
+                               'objetivo': 1,
+                               'tiempo_desconexion': 2}
+        campana_dialer_form = CampanaDialerForm(data=campana_dialer_data)
+        message = _('No puede seleccionar una BD vacia')
+        self.assertEqual(campana_dialer_form.errors['bd_contacto'], [message])
 
 
 class AgenteCampanaTests(CampanasTests):

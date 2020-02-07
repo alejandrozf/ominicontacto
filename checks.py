@@ -34,7 +34,7 @@ def numero_rama_existente(numero_tarjeta, tipo_tarjeta):
         # por lo que solo se controla entre esas ramas
         str_check = 'oml-{}-ext'.format(numero_tarjeta)
     else:
-        str_check = 'oml-{}'.format(numero_tarjeta)
+        str_check = 'oml-{}-'.format(numero_tarjeta)
     check = os.popen('git log --oneline --grep=\'{}\''.format(str_check)).read()
     return check != ''
 

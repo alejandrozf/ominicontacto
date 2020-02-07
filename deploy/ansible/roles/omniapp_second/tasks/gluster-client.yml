@@ -21,15 +21,18 @@
   apt: name=glusterfs-client state=present
   when: ansible_os_family == "Debian"
 
+- name: Install glusterfs-repository (centos)
+  yum: name=centos-release-gluster state=present
+  when: ansible_os_family == "RedHat"
+
 - name: Install glusterfs-client (centos)
   yum: name={{ item }} state=present
   with_items:
-    - glusterfs
-    - glusterfs-fuse
+    - glusterfs-client
   when: ansible_os_family == "RedHat"
 
 - name: Create location of volume mount
-  file: state=directory path={{ asterisk_location }}/var/spool/asterisk/monitor/ owner={{ usuario }} group={{ usuario }} mode=755
+  file: state=directory path={{ asterisk_location }} owner={{ usuario }} group={{ usuario }} mode=755
 
 - name: Script for mounting the volume after reboot
   template: src=templates/etc/glusterfs-mount dest=/etc/init.d/glusterfs-mount owner=root group=root mode=755

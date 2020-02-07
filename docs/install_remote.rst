@@ -187,22 +187,38 @@ Si la ejecución de la instalación finaliza exitosamente, se despliega una vist
 Primer acceso a OMniLeads:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Si la ejecución de la instalación fue exitosa, entonces podemos realizar un :ref:`about_first_access`.
 
-.. important::
+Para acceder al sistema OMniLeads debe ingresar a:
 
- Cada vez que se ejecuta el script *./deploy.sh* ya sea para instalar, correr una actualización del sistema o modificar algún parametro de red,  el archivo de "inventory" se vuelve a cero, es decir se pierde toda la parametrización realizada antes de la ejecución del script. Tener presente los cambios realizados
+https://omnileads-hostname
+
+.. Important::
+  El acceso web a OMniLeads debe ser a través del hostname.domain del host. Por lo tanto existen dos posibilidades a la hora de resolver el
+  hostname:
+
+  * Que los DNS de la red lo hagan.
+  * Añadir el hostname.domain del host, dentro del archivo de *hosts* (Windows, Linux o Mac de cada PC que tenga que acceder a OMniLeads.
+
+En el segundo caso, podemos editar el archivo de *hosts* de nuestro Sistema Operativo:
+
+.. image:: images/install_dns_hosts.png
+
+
+Una vez ajustado el método por el cual se resolverá el FQDN o hostname de nuestra instancia de OMniLeads, se procede con el acceso al URL a través de cualquier browser moderno.
+Al encontrarnos con la pantalla de login, simplemente se debe ingresar el usuario admin y la clave generada durante la instalación, como se expone en las figura.
+
+.. image:: images/install_1st_login.png
+
+.. Note::
+
+  Si no recuerda la contraseña de admin web, podemos consultar su valor :ref:`about_maintance_envvars`.
 
 
 Errores comunes:
 ^^^^^^^^^^^^^^^^
 
 - El server no tiene internet o no resuelve dominios (configuración de DNS).*Compruebe el acceso a internet del host (por ej: actualizando paquetes - apt-get update | yum update).*
-
 - Timeout de algún paquete que se intenta bajar. Puede volver a intentar ejecutar el deploy y si vuelve a fallar, la opción puede ser. *Instalar el paquete desde la terminal.*
-
 - Falla por mala sintaxis o falta de definición de *hostname* y *dirección IP* en el archivo *inventory*. *Revisar archivo inventory*
-
 - No se configuró correctamente el acceso ssh del host destino de la instalación. *Revisar estado del firewall. Comprobar acceso remoto por ssh con el usuario root*
-
 - En caso de contar con algún host Ubuntu-Debian, recordar que se deben instalar paquetes como *sudo, openssh-server o python-minimal* antes de correr el script de *deploy.sh*

@@ -28,8 +28,8 @@ def create_procedemiento_trigger(apps, schema_editor):
     tmp_dir = os.path.split(tmp_dir)[0]  # reportes_app
 
     for sql_file_path in (
-            "sql/plpython/replace_insert_queue_log_ominicontacto_queue_log.sql",
-            "sql/plpython/trigger_queue_log.sql"
+            "sql/plperl/replace_insert_queue_log_ominicontacto_queue_log.sql",
+            "sql/plperl/trigger_queue_log.sql"
     ):
         tmp = os.path.join(tmp_dir, sql_file_path)
 

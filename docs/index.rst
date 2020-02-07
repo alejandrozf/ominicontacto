@@ -4,17 +4,20 @@ INTRODUCCION A OMNILEADS
 
 
 `OMniLeads <https://www.omnileads.net/>`_ es un Software `GPLV3  <https://www.gnu.org/licenses/gpl-3.0.en.html/>`_ para Contact Centers basado en `WebRTC <https://www.webrtc.org/>`_ ,
-que permite implementar y gestionar un Contact Center administrando operaciones entrantes y salientes, con acceso a métricas, reportes e indicadores, supervisión real-time de agentes y demás funcionalidades avanzadas de QA y gestión de contactos y campañas.
+que permite implementar y gestionar un Contact Center administrando operaciones entrantes y salientes, con acceso a métricas, reportes e indicadores, supervisión real-time de agentes y demás funcionalidades avanzadas
+de QA, gestión de contactos y campañas.
 
-A partir de ejecutar una sencilla :ref:`about_install`, y unos pocos pasos de Configuración posteriores, tenemos funcional una instancia
-de OMniLeads con operaciones de Contact Center en términos de campañas entrantes y salientes. Nuestro software puede adaptarse a una compañia u organización que necesita
-mantener su propio Contact Center con integración a su central PBX, así como también asumir la función de "núcleo" de comunicaciones para
-una compañía que brinda servicios de Customer Contact (Business Outsourcing Process - BPO).
+A partir realizar una sencilla :ref:`about_install` junto a unos pocos pasos de Configuración post-instalación, se dispone de una instancia funcional
+de OMniLeads lista para traccionar operaciones de Contact Center en términos de campañas entrantes y salientes.
+
+Esta aplicación puede adaptarse a una compañia u organización que necesita
+montar su propio Contact Center integrado a su central IP-PBX, así como también asumir la función de "núcleo" de comunicaciones para
+una compañía que brinda servicios de Customer Contact (Business Outsourcing Process) o bien ser ejecutada en instancias del tipo VPS o proveedores de nube pública.
 
 Dentro de un universo 100% web, los diferentes perfiles de usuarios; agentes, supervisores, administradores, clientes, acceden a OMniLeads desde
-cualquier navegador moderno con soporte `WebRTC <https://www.webrtc.org/>`_. Al no requerir del uso de aplicaciones de escritorio Softphones, este
-software simplifica a nada la configuración a realizar en las estaciones de trabajo de los agentes, tan solo acceder a una dirección HTTPS para estar
-online gestionando comunicaciones con los clientes. OMniLeads es una gran opción para implementar CCaaS "Contact Center as a Service" !
+cualquier navegador web moderno con soporte `WebRTC <https://www.webrtc.org/>`_. Al no requerir del uso de aplicaciones de escritorio *Softphones*, OMniLeads
+reduce a nada respecto a la configuración de las estaciones de trabajo de los agentes, tan solo con acceder a la dirección web HTTPS, agentes y supervisores pueden estar
+online gestionando comunicaciones con los clientes. Esta facilidad hace de OMniLeads una gran opción para implementar CCaaS "Contact Center as a Service" !
 
 
 .. image:: images/what_is.png
@@ -23,29 +26,25 @@ online gestionando comunicaciones con los clientes. OMniLeads es una gran opció
 
 Cómo lo obtengo ?
 *****************
-`Nuestro repositorio  <https://gitlab.com/omnileads/ominicontacto>`_ se encuentra disponible en GitLab, para libre descarga, instalación y uso del Software.
+`Nuestro repositorio  <https://gitlab.com/omnileads/ominicontacto>`_ se encuentra disponible en GitLab, para libre descarga, instalación, modificación y uso del Software.
 
 
 Donde se puede instalar ?
 *************************
-OMniLeads ha sido testeado en su totalidad en las siguientes distribuciones de GNU/Linux:
+OMniLeads puede correr como una aplicación tradicional desplegando una instalación de todos los componentes sobre un server físico, máquina virtual o VPS. Siempre y cuando se utilice como base
+GNU/Linux: `CentOS minimal 7.7 <http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso>`_
 
-* **CentOS 7.7.1908 minimal ISO** - http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso
-* **Debian 9.3 netinstall ISO** - https://cdimage.debian.org/mirror/cdimage/archive/9.3.0/amd64/iso-cd/debian-9.3.0-amd64-netinst.iso
-* **Ubuntu Server 18.04.2 LTS ISO** - https://ubuntu.com/download/server/thank-you?version=18.04.2&architecture=amd64
+OMniLeads puede ser desplegado utilizando contenedores `Docker <https://www.docker.com>`_, esto permite la ejecución de la aplicación sobre diversas
+distrubuciones de GNU/Linux. Se resalta el hecho de que mediante este formato es posible desplegar OMniLeads sobre **Issabel-PBX** & **FreePBX**, de manera tal que dentro del mismo
+host convivan el software de PBX y OMniLeads supliendo las funcionalidades de Contact Center.
 
-.. important::
 
-  Remitirse a estas versiones de las distribuciones y sus correspondientes ISO para lograr una instalación exitosa
-
-Por otra parte, si eres usuario de `Docker <https://www.docker.com>`_, puedes ejecutar el sistema a partir de nuestras imágenes oficiales disponibles en el
-`Docker-Hub <https://hub.docker.com/u/freetechsolutions>`_ y el correspondiente `docker-compose  <https://docs.docker.com/compose>`_ que viene en el repositorio.
+Las imágenes oficiales están disponibles en `Docker-Hub <https://hub.docker.com/u/freetechsolutions>`_.
 
 Cómo lo instalo ?
 *****************
-La instalación de omnileads está basada en el uso de un script de bash que setea un entorno para la ejecución de  `Ansible <https://www.ansible.com/>`_. Dentro del código del proyecto,
-se dispone de dicho script que permite instalar el sistema sobre cualquiera de los Sistemas Operativos previamente citados. En la sección :ref:`about_install` de esta
-documentación, se detalla dicho proceso.
+
+En la sección :ref:`about_install` se aborda este asunto presentando los pasos a seguir para instalar la aplicación bajo cualquiera de los esquemas mencionados con anterioridad.
 
 
 Características y funcionalidades de OMniLeads
@@ -145,6 +144,20 @@ una llamada, calificaciones, agendamiento, macación de grabaciones, transferenc
    :maxdepth: 2
 
    agent.rst
+
+
+*********************
+INTEGRACION CON PBXs
+*********************
+
+A partir de unas pocas configuraciones se puede establecer una completa integración entre OMniLeads y cualquier central IP-PBX. En esta sección se ejemplifica
+paso a paso la configuración necesaria para dejar integrada una IP-PBX (con sus recursos locales y acceso a la PSTN) y OMniLeads operando como una tecnología
+de Contact Center complementaria y extensiva del sistema de telefonía basado en dicha IP-PBX
+
+ .. toctree::
+  :maxdepth: 2
+
+  pbx_integration.rst
 
 
 *******************************

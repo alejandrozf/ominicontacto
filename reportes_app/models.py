@@ -28,6 +28,33 @@ from ominicontacto_app.models import Campana
 from ominicontacto_app.utiles import datetime_hora_minima_dia, datetime_hora_maxima_dia
 
 
+class QueueLog(models.Model):
+    """ Tabla queue_log para la insercion de Logs desde Asterisk """
+    # time character varying(26) DEFAULT NULL::character varying,
+    time = models.CharField(max_length=100, blank=True, null=True, default=None)
+    # callid character varying(32) DEFAULT ''::character varying NOT NULL,
+    callid = models.CharField(max_length=100, blank=True, null=False, default='')
+    # queuename character varying(32) DEFAULT ''::character varying NOT NULL,
+    queuename = models.CharField(max_length=100, blank=True, default='')
+    # agent character varying(32) DEFAULT ''::character varying NOT NULL,
+    agent = models.CharField(max_length=100, blank=True, default='')
+    # event character varying(32) DEFAULT ''::character varying NOT NULL,
+    event = models.CharField(max_length=100, blank=True, default='')
+    # data1 character varying(100) DEFAULT ''::character varying NOT NULL,
+    data1 = models.CharField(max_length=100, blank=True, default='')
+    # data2 character varying(100) DEFAULT ''::character varying NOT NULL,
+    data2 = models.CharField(max_length=100, blank=True, default='')
+    # data3 character varying(100) DEFAULT ''::character varying NOT NULL,
+    data3 = models.CharField(max_length=100, blank=True, default='')
+    # data4 character varying(100) DEFAULT ''::character varying NOT NULL,
+    data4 = models.CharField(max_length=100, blank=True, default='')
+    # data5 character varying(100) DEFAULT ''::character varying NOT NULL
+    data5 = models.CharField(max_length=100, blank=True, default='')
+
+    class Meta:
+        db_table = 'queue_log'
+
+
 class LlamadaLogManager(models.Manager):
 
     def obtener_tiempo_llamadas_agente(self, eventos, fecha_desde, fecha_hasta, agentes):
@@ -190,6 +217,14 @@ class LlamadaLog(models.Model):
 
     EVENTOS_NO_CONEXION = EVENTOS_NO_CONTACTACION + EVENTOS_NO_DIALOGO
 
+    # Eventos que indican que no se pudo completar una transferencia
+    EVENTOS_NO_CONEXION_TRANSFER = [
+        'BT-BUSY', 'BT-CANCEL', 'BT-CHANUNAVAIL', 'BT-CONGESTION', 'BT-NOANSWER', 'BT-ABANDON',
+        'CT-DISCARD', 'CT-BUSY', 'CT-CANCEL', 'CT-CHANUNAVAIL', 'CT-CONGESTION',
+        'BTOUT-BUSY', 'BTOUT-CANCEL', 'BTOUT-CONGESTION', 'BTOUT-CHANUNAVAIL', 'BTOUT-ABANDON',
+        'CTOUT-DISCARD', 'CTOUT-BUSY', 'CTOUT-CANCEL', 'CTOUT-CHANUNAVAIL', 'CTOUT-CONGESTION'
+    ]
+
     # Eventos que marcan el fin de la conexion con un agente. (Puede ser por conectar con otro)
     EVENTOS_FIN_CONEXION = ['COMPLETEAGENT', 'COMPLETEOUTNUM',
                             'BT-TRY', 'COMPLETE-BT',
@@ -197,6 +232,11 @@ class LlamadaLog(models.Model):
                             'CT-COMPLETE', 'COMPLETE-CT',
                             'BTOUT-TRY',
                             'CTOUT-COMPLETE', ]
+
+    # Marcan el fin de la conexion por una transferencia para el agente original
+    EVENTOS_FIN_CONEXION_POR_TRANSFER = ['BT-TRY', 'BTOUT-TRY',
+                                         'CAMPT-COMPLETE', 'CAMPT-FAIL',
+                                         'CT_COMPLETE', 'CTOUT-COMPLETE']
 
     EVENTOS_INICIO_CONEXION = ['CONNECT', 'ANSWER', 'BT-ANSWER', 'CT-ACCEPT']  # Con id_agente
 

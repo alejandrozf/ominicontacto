@@ -29,7 +29,6 @@ from django.views.generic.base import RedirectView
 from django.shortcuts import redirect
 from django.http import JsonResponse
 from django.contrib import messages
-from django.contrib.auth import logout
 from django.contrib.sessions.models import Session
 from django.db.models import F, Value
 from django.db.models.functions import Concat
@@ -46,9 +45,6 @@ from ominicontacto_app.services.reporte_agente_calificacion import ReporteAgente
 from ominicontacto_app.services.reporte_agente_venta import ReporteFormularioVentaService
 from ominicontacto_app.utiles import convert_fecha_datetime
 from ominicontacto_app.services.click2call import Click2CallOriginator
-from ominicontacto_app.services.asterisk_ami_http import (
-    AsteriskHttpClient, AsteriskHttpOriginateError
-)
 import logging as _logging
 
 
@@ -149,30 +145,6 @@ def cambiar_estado_agente_view(request):
     agente.save()
     response = JsonResponse({'status': 'OK'})
     return response
-
-
-def logout_view(request):
-    """Vista para desloguear el agente de django y de asterisk"""
-    if request.user.is_agente and request.user.get_agente_profile():
-        agente = request.user.get_agente_profile()
-        variables = {
-            'AGENTE': str(agente.sip_extension),
-            'AGENTNAME': "{0}_{1}".format(agente.id, request.user.get_full_name())
-        }
-        # Deslogueo el agente de asterisk via AMI
-        try:
-            client = AsteriskHttpClient()
-            client.login()
-            client.originate("Local/066LOGOUT@oml-agent-actions/n", "oml-agent-actions", True,
-                             variables, True, aplication='Hangup')
-
-        except AsteriskHttpOriginateError:
-            logger.exception(_("Originate failed - agente: {0} ".format(agente)))
-
-        except Exception as e:
-            logger.exception(_("Originate failed {0} - agente: {1}".format(e, agente)))
-    logout(request)
-    return redirect('login')
 
 
 class LlamarContactoView(RedirectView):

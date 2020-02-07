@@ -17,6 +17,9 @@
 
 */
 
+/* global Urls */
+/* global gettext */
+
 $(function(){
     setInterval(function() {requestEstadisticasSalientes();}, 5000);
 });
@@ -24,24 +27,24 @@ $(function(){
 function requestEstadisticasSalientes() {
     // {% url 'api_supervision_campanas_salientes'%}
     var url = Urls.api_supervision_campanas_salientes();
-    $.ajax({type: "get",
+    $.ajax({type: 'get',
         url: url,
-        contentType: "text/html",
+        contentType: 'text/html',
         success: function(msg) {
             cargarEstadisticasSalientes(msg.data);
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            console.log(gettext("Error al ejecutar => ") + textStatus + " - " + errorThrown);
+            console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
         }
     });
 }
 
 function cargarEstadisticasSalientes(estadisticas) {
-    var tabla = $("#table-campanas");
+    var tabla = $('#table-campanas');
     tabla.html('');
     Object.keys(estadisticas).forEach(function(id_campana) {
         var datos_campana = estadisticas[id_campana];
-        $("#table-campanas").html();
+        $('#table-campanas').html();
         tabla.append('<tr>' + 
                        '<td>' + datos_campana['nombre'] + '</td>' + 
                        '<td>' + datos_campana['efectuadas'] + '</td>' + 

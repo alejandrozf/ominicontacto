@@ -33,19 +33,8 @@
   when: prodenv == 1
   tags: ['docker_build','docker_deploy']
 
-# Chequea si timezone esta definido
-- name: Check if TimeZone variable is defined
-  fail:
-    msg: TimeZone variable undefined, edit it in the inventory file
-  when: TZ is not defined
-  tags: always
-
-# Chequeo si el folder de certificado existe
-- name: Check if certificates folder exists
-  shell: "[ -d {{ certs_location }} ]"
-  failed_when: false
-  register: certs_exists
-  tags: always
+- include_tasks: roles/prerequisitos/tasks/checks.yml
+  tags: ['never', 'docker_deploy']
 
 - include: build.yml
   tags: docker_build

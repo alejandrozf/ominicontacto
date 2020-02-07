@@ -166,14 +166,16 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
                 # obtenemos el id de la campana desde entradas como:
                 # u'Queue: 29_Dialer-3\r'
                 campana_id = int(event[1].split(' ')[1].split('_')[0])
-                llamadas_en_cola_por_campana[campana_id] += 1
+                if campana_id in self.campanas.keys():
+                    # por si es de una dialer, en ese caso se excluye
+                    llamadas_en_cola_por_campana[campana_id] += 1
         return llamadas_en_cola_por_campana
 
     def _obtener_llamadas_en_espera_raw(self):
         manager = Manager()
         ami_manager_user = settings.ASTERISK['AMI_USERNAME']
         ami_manager_pass = settings.ASTERISK['AMI_PASSWORD']
-        ami_manager_host = str(settings.OML_ASTERISK_HOSTNAME.replace('root@', ''))
+        ami_manager_host = str(settings.ASTERISK_HOSTNAME)
         queue_status_raw = {}
         try:
             manager.connect(ami_manager_host)

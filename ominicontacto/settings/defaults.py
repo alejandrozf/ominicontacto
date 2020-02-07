@@ -111,7 +111,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'ominicontacto_app.context_processors.admin_supervisor',
-                'ominicontacto_app.context_processors.global_settings'
+                'ominicontacto_app.context_processors.global_settings',
+                'ominicontacto_app.context_processors.addon_menu_items',
             ],
         },
     },
@@ -202,21 +203,10 @@ OML_DUMP_HTTP_AMI_RESPONSES = False
 # ==============================================================================
 
 # ==============================================================================
-# DEPLOY -> IP OMNILEADS
-# ==============================================================================
-
-OML_OMNILEADS_IP = None
-"""IP donde se encuentra kamailio
-
-Ejemplo:
-    OML_OMNILEADS_IP = "172.16.20.241"
-"""
-
-# ==============================================================================
 # DEPLOY -> Asterisk
 # ==============================================================================
 
-OML_ASTERISK_HOSTNAME = None
+OML_OMNILEADS_IP = None
 OML_ASTERISK_REMOTEPATH = None
 OML_SIP_FILENAME = None
 OML_QUEUES_FILENAME = None
@@ -228,7 +218,6 @@ Ejemplos:
 
 .. code-block:: python
 
-    OML_ASTERISK_HOSTNAME = "root@192.168.1.23"
     OML_ASTERISK_REMOTEPATH = "/etc/asterisk/"
     OML_SIP_FILENAME = "/etc/asterisk/sip_fts.conf"
     OML_QUEUES_FILENAME = "/etc/asterisk/queues_fts.conf"
@@ -318,17 +307,6 @@ OML_AUDIO_PATH_ASTERISK = None
 
 Ejemplo:
     OML_WOMBAT_FILENAME = "/var/lib/asterisk/sounds/oml/"
-"""
-
-# ==============================================================================
-# DEPLOY -> KAMAILIO
-# ==============================================================================
-
-OML_KAMAILIO_IP = None
-"""IP donde se encuentra kamailio-debian
-
-Ejemplo:
-    OML_KAMAILIO_IP = "172.16.20.219/255.255.255.255"
 """
 
 # ==============================================================================

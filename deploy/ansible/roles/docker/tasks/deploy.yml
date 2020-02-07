@@ -3,6 +3,13 @@
 - name: Get the hostname of host
   command: hostname
   register: hostname
+  changed_when: false
+
+- name: Get the IP address configured in default interface
+  shell: default_if=$(ip route show | awk '/^default/ {print $5}'); ifconfig $default_if | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'
+  register: omni_ip
+  changed_when: false
+  tags: always
 
 - name: Creation of deploy folders structure
   file: "dest={{ item }} state=directory owner={{ docker_user }} group={{ docker_user }} mode=0755 recurse=yes"
@@ -30,7 +37,6 @@
     - { src: docker/files/scripts/run_asterisk.sh, dest: "{{ ast_other_location }}/run_asterisk.sh"}
     - { src: docker/files/scripts/run_omniapp.sh, dest: "{{ omniapp_location }}/run_omniapp.sh"}
     - { src: omniapp_second/templates/bin/conversor.sh, dest: "{{ omniapp_location}}/conversor.sh" }
-    - { src: omniapp_second/templates/bin/omni-asterisk-logout.py.j2, dest: "{{ omniapp_location}}/omni-asterisk-logout.py" }
     - { src: omniapp_second/templates/etc/ominicontacto.conf, dest: "{{ nginx_location }}/conf.d"}
     - { src: omniapp_second/templates/etc/nginx.conf.j2, dest: "{{ nginx_location }}/nginx.conf"}
     - { src: docker/files/scripts/mime.types, dest: "{{ nginx_location }}/mime.types"}
