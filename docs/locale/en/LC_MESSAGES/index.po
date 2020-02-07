@@ -137,8 +137,13 @@ msgstr ""
 msgid "`Docker <https://www.docker.com>`_"
 msgstr ""
 
+# d1dac01f90744f9ca24edafd1dde0103
+#: ../../index.rst:46
+msgid "`Docker <https://www.docker.com>`_"
+msgstr ""
+
 # 99c26074e0ed407ab55c2413c1eab26c
-#: ../../index.rst:40
+#: ../../index.rst:48
 msgid ""
 "OMniLeads puede ser desplegado utilizando contenedores Docker, esto "
 "extiende la posibilidad de ejecución de la aplicación sobre diversas "
@@ -146,14 +151,20 @@ msgid ""
 "formato es posible desplegar OMniLeads sobre instancias de Issabel-PBX & "
 "FreePBX, de manera tal que dentro del mismo host conviva el software de "
 "PBX y OMniLeads como software de Contact Center."
-msgstr ""
-"OMniLeads can also be deployed using Docker containers, with this form "
-"the software can be also installed inside an Issabel-PBX or FreePBX "
-"instances, having both Contact Center and PBX solutions inside the same "
-"host."
+msgstr "OMniLeads can also be deployed using Docker containers, with this form "
+"the software can be also installed inside an Issabel-PBX or FreePBX instances, "
+"having both Contact Center and PBX solutions inside the same host."
+
+# 77743afc72dc4cbf91128931773b6638
+#: ../../index.rst:52
+msgid ""
+"Las imágenes oficiales están disponibles en `Docker-Hub "
+"<https://hub.docker.com/u/freetechsolutions>`_."
+msgstr "The official docker images are pused in `Docker-Hub "
+"<https://hub.docker.com/u/freetechsolutions>`_."
 
 # b654d19a2b3f4812946cc3db8788f29b
-#: ../../index.rst:45
+#: ../../index.rst:55
 msgid "Cómo lo instalo ?"
 msgstr "How do I install it ?"
 
@@ -173,7 +184,7 @@ msgid "Características y funcionalidades de OMniLeads"
 msgstr "Omnileads's Features and funtionalities"
 
 # 4cbfcea2d8174343827c08b23bdb8298
-#: ../../index.rst:53
+#: ../../index.rst:63
 msgid ":ref:`about_webrtc`."
 msgstr ":ref:`about_webrtc`."
 

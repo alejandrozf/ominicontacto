@@ -50,7 +50,7 @@ class Click2CallOriginator(object):
         try:
             client = AsteriskHttpClient()
             client.login()
-            client.originate(channel, "from-internal", False, variables, True,
+            client.originate(channel, "from-oml", False, variables, True,
                              exten=telefono, priority=1, timeout=45000)
 
         except AsteriskHttpOriginateError:

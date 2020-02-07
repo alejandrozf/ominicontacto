@@ -31,8 +31,8 @@ Cómo lo obtengo ?
 
 Donde se puede instalar ?
 *************************
-OMniLeads puede correr como una aplicación tradicional desplegando una instalación de todos los componentes sobre un server físico, máquina virtual o VPS, asumiendo como requisito
-utilizar cualquiera de las siguientes distribuciones de GNU/Linux:
+OMniLeads puede correr como una aplicación tradicional desplegando una instalación de todos los componentes sobre un server físico, máquina virtual o VPS. Siempre y cuando se utilice como base
+GNU/Linux: `CentOS minimal 7.7 <http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso>`_
 
 * `CentOS minimal 7.7 <http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso>`_
 * `Docker <https://www.docker.com>`_

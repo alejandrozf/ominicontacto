@@ -308,6 +308,9 @@ Finalmente, la plataforma queda actualizada a la última versión estable "maste
 
 *Figure 12: updates from ansible remote OK*
 
+.. note::
+
+  Las instalaciones AIO dejarán de ser soportadas en un futuro para Debian y Ubuntu, por lo que se recomienda usar CentOS
 
 **Instalación basada en contenedores Docker**
 
@@ -315,7 +318,7 @@ Una de las grandes ventajas que otorga la tecnología de contenedores tiene que 
 
 1. Crear una copia del archivo .env en `/home/omnileads/prodenv/` para mantener el valor de sus variables
 2. Copiar el contenido de la carpeta `deploy/docker/prodenv/` en `/home/omnileads/prodenv`
-3. Modificar el archivo .env nuevo con sus variables 
+3. Modificar el archivo .env nuevo con sus variables
 4. Reiniciar el servicio omnileads-pbx
 
 .. code-block:: bash

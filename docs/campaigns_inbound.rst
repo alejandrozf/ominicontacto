@@ -19,9 +19,9 @@ Se debe completar la primera pantalla del wizard, como lo expone la figura 1.
 
 - **Name:** nombre de la campaña.
 - **Contact database:** (campo opcional) se utiliza para desplegar datos a partir del número de teléfono que realiza la llamada entrante al sistema.
-- **External URL:** URL a disparar cada vez que el agente lo indique.
-- **External system:** sistema de gestión externo que se admite para lanzar acciones de *click to call o calificación* sobre contactos de la campaña.
-- **ID on external system:**  ID de la campaña del sistema de gestión externo que se desea vincular con nuestra campaña en OMniLeads.
+- **External URL:** en caso de haber seleccionado la invocación a un URL externo en cada llamada, aquí se indica cual de los CRMs definidos debe invocar la campaña.
+- **External system:** aquí se adjudica el sistema de gestión externo que ejecutaría "click to call" sobre la campaña, en caso de así desearlo.
+- **ID on external system:**  este campo debe contener el ID que posee la campaña dentro del sistema de gestión externo desde el cual llegarán los *click to call* o *solicitudes de calificación* de contactos.
 - **Enable recordings:** habilita que todas las llamadas de la campaña sean grabadas.
 - **Scope:** se define como la cantidad de gestiones positivas que se esperan para la campaña. En la supervisión de la campaña se muestra en tiempo real el porcentaje de avence de la campaña respecto al objetivo definido.
 

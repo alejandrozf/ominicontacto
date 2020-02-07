@@ -33,37 +33,37 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
                 children += [
                     {
                         'label': _('Troncales SIP'),
-                        'url': reverse('lista_troncal_sip'),
+                        'url': reverse('lista_troncal_sip', args=(1,)),
                     },
                     {
                         'label': _('Rutas entrantes'),
-                        'url': reverse('lista_rutas_entrantes'),
+                        'url': reverse('lista_rutas_entrantes', args=(1,)),
                     },
                     {
                         'label': _('Rutas salientes'),
-                        'url': reverse('lista_rutas_salientes'),
+                        'url': reverse('lista_rutas_salientes', args=(1,)),
                     },
                     {
                         'label': _('IVR'),
-                        'url': reverse('lista_ivrs'),
+                        'url': reverse('lista_ivrs', args=(1,)),
                     },
                 ]
             children += [
                 {
                     'label': _('Grupos horarios'),
-                    'url': reverse('lista_grupos_horarios'),
+                    'url': reverse('lista_grupos_horarios', args=(1,)),
                 },
                 {
                     'label': _('Validaciones Horarias'),
-                    'url': reverse('lista_validaciones_fecha_hora'),
+                    'url': reverse('lista_validaciones_fecha_hora', args=(1,)),
                 },
                 {
                     'label': _('Identificación de Clientes'),
-                    'url': reverse('lista_identificador_cliente'),
+                    'url': reverse('lista_identificador_cliente', args=(1,)),
                 },
                 {
                     'label': _('Destinos personalizados'),
-                    'url': reverse('lista_destinos_personalizados'),
+                    'url': reverse('lista_destinos_personalizados', args=(1,)),
                 },
                 {
                     'label': _('Adicionar audios'),

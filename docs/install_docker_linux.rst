@@ -35,10 +35,12 @@ debemos posicionarnos sobre el path *relativo*; ominicontacto/deploy/docker/prod
 
   .. code-block:: bash
 
-    yum -y install git
+    yum -y install git kernel-devel kernel-headers
     cd /var/tmp
     git clone https://gitlab.com/omnileads/ominicontacto.git
     cd ominicontacto/deploy/docker/prodenv
+    yum update -y
+    reboot
 
 Una vez ubicados en el *Path* indicado, se debe editar el archivo *.env* en pos de asociar valores a variables utilizadas para el deploy de OMniLeads.
 
@@ -141,17 +143,17 @@ A partir de entonces comenzará el proceso de instalación y posterior lanzamien
    :align: center
 
 
-Systemd - omnileads-pbx
+Systemd - omnileads-prodenv
 ***********************
 
-A partir de la isntalación se deja disponible el servicio: omnileads-pbx.service el cual servirá para parar/levantar la aplicación. El sistema se deja configurado para que
+A partir de la isntalación se deja disponible el servicio: omnileads-prodenv.service el cual servirá para parar/levantar la aplicación. El sistema se deja configurado para que
 inicie automáticamente luego de cada reinicio del sistema operativo de base.
 
 Para verificar el servicio:
 
 .. code-block:: bash
 
-  systemctl status omnileads-pbx
+  systemctl status omnileads-prodenv
 
 Si todo es correcto deberíamos obtener la siguiente salida:
 
@@ -162,13 +164,13 @@ Para bajar el servicio:
 
  .. code-block:: bash
 
-   systemctl stop omnileads-pbx
+   systemctl stop omnileads-prodenv
 
 Para levantar el servicio:
 
  .. code-block:: bash
 
-   systemctl start omnileads-pbx
+   systemctl start omnileads-prodenv
 
 Primer login
 ************

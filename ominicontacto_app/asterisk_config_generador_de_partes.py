@@ -353,6 +353,7 @@ class GeneradorParaAgente(GeneradorDePedazoDeAgenteSip):
         endpoint/callerid={oml_agente_name} <{oml_agente_sip}>
         inbound_auth/username={oml_agente_sip}
         inbound_auth/password=
+        endpoint/context={oml_context}
         """
 
     def get_parametros(self):
