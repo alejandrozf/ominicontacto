@@ -137,11 +137,6 @@ msgstr ""
 msgid "`Docker <https://www.docker.com>`_"
 msgstr ""
 
-# d1dac01f90744f9ca24edafd1dde0103
-#: ../../index.rst:46
-msgid "`Docker <https://www.docker.com>`_"
-msgstr ""
-
 # 99c26074e0ed407ab55c2413c1eab26c
 #: ../../index.rst:48
 msgid ""
