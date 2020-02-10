@@ -56,5 +56,5 @@ with open(black_list_file, 'r') as f:
 try:
     agi.set_variable('BLACKLIST', str(is_black_listed))
 except Exception as e:
-    write_time_stderr("Unable to set variable BLACKLIST in channel due to {0}".format(e.message))
+    write_time_stderr("Unable to set variable BLACKLIST in channel due to {0}".format(e))
     raise e

@@ -32,7 +32,9 @@ Asterisk:
   - From 16.4.0-noaudios, removed ssh setup cuz is no more necessary
 16.4.0-iptools
   - Added packages iproute2 and net-tools to discover internal subnet to add in asterisk manager.conf file
-
+16.4.0-python3
+  - Changed python and pyscopg2 version to support python3.
+  
 pbx-emulator image versions:
 
 0.1
