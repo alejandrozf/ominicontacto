@@ -64,7 +64,7 @@ try:
     conn = psycopg2.connect(
         host=OML_DB_HOST, dbname=OML_DB_NAME, user=OML_DB_USER)
 except Exception as e:
-    write_time_stderr("Unable to connect to the database due to {0}".format(e.message))
+    write_time_stderr("Unable to connect to the database due to {0}".format(e))
     raise e
 
 # se realiza la inserción de los parámetros de la grabación en la BD
@@ -77,7 +77,7 @@ cur = conn.cursor()
 try:
     cur.execute(query)
 except Exception as e:
-    write_time_stderr("Unable to insert log in database due to {0}".format(e.message))
+    write_time_stderr("Unable to insert log in database due to {0}".format(e))
     raise e
 conn.commit()
 
