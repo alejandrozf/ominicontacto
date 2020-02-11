@@ -184,6 +184,7 @@ services:
       - ./recordings:/opt/omnileads/grabaciones
       - ast_conf_files:/etc/asterisk/
       - ./sounds:/var/lib/asterisk/sounds/
+      - ominicontacto:{{ install_prefix }}ominicontacto/
 {% endif %}
     working_dir: {{ install_prefix}}ominicontacto
 
@@ -273,7 +274,7 @@ volumes:
   postgresql_data:
   redis_data:
   sounds:
-  ssh_keys_devenv:
 {% else %}
   ast_conf_files:
+  ominicontacto:
 {% endif %}
