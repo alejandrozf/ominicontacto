@@ -71,6 +71,7 @@
       - modules.conf
       - musiconhold.conf
       - oml_func_odbc.conf
+      - oml_appmap.conf
       - oml_res_odbc.conf
       - oml_amd.conf
       - oml_manager.conf

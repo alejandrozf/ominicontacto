@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-30 12:44-0300\n"
+"POT-Creation-Date: 2020-02-12 12:14-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,120 +18,120 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ominicontacto_app/asterisk_config.py:116
+#: ominicontacto_app/asterisk_config.py:115
 #, python-brace-format
 msgid "Creando config sip para agente {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:119
+#: ominicontacto_app/asterisk_config.py:118
 #, python-brace-format
 msgid "Config sip generado OK para agente {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:123
+#: ominicontacto_app/asterisk_config.py:122
 #, python-brace-format
 msgid ""
 "Error {0}: No se pudo generar configuracion de Asterisk para la quene {1}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:132
-#: ominicontacto_app/asterisk_config.py:167
-#: ominicontacto_app/asterisk_config.py:200
-#: ominicontacto_app/asterisk_config.py:390
+#: ominicontacto_app/asterisk_config.py:131
+#: ominicontacto_app/asterisk_config.py:166
+#: ominicontacto_app/asterisk_config.py:199
+#: ominicontacto_app/asterisk_config.py:389
 #, python-brace-format
 msgid "Error {0} al intentar generar traceback"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:133
+#: ominicontacto_app/asterisk_config.py:132
 msgid "Error al intentar generar traceback"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:149
+#: ominicontacto_app/asterisk_config.py:148
 #, python-brace-format
 msgid "Creando config sip para supervisor {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:153
+#: ominicontacto_app/asterisk_config.py:152
 #, python-brace-format
 msgid "Config sip generado OK para supervisor {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:157
-#: ominicontacto_app/asterisk_config.py:190
-#: ominicontacto_app/asterisk_config.py:381
+#: ominicontacto_app/asterisk_config.py:156
+#: ominicontacto_app/asterisk_config.py:189
+#: ominicontacto_app/asterisk_config.py:380
 #, python-brace-format
 msgid ""
 "Error {0}: no se pudo generar configuracion de Asterisk para la queue {1}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:182
+#: ominicontacto_app/asterisk_config.py:181
 #, python-brace-format
 msgid "Creando config sip para cliente {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:186
+#: ominicontacto_app/asterisk_config.py:185
 #, python-brace-format
 msgid "Config sip generado OK para cliente {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:344
-#: ominicontacto_app/asterisk_config.py:375
+#: ominicontacto_app/asterisk_config.py:343
+#: ominicontacto_app/asterisk_config.py:374
 #, python-brace-format
 msgid "Creando dialplan para queue {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:347
-#: ominicontacto_app/asterisk_config.py:378
+#: ominicontacto_app/asterisk_config.py:346
+#: ominicontacto_app/asterisk_config.py:377
 #, python-brace-format
 msgid "Dialplan generado OK para queue {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:350
+#: ominicontacto_app/asterisk_config.py:349
 #, python-brace-format
 msgid ""
 "Error {0}: No se pudo generar configuracion de Asterisk para la queue {1}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:359
-#: ominicontacto_app/asterisk_config.py:503
+#: ominicontacto_app/asterisk_config.py:358
+#: ominicontacto_app/asterisk_config.py:502
 #, python-brace-format
 msgid "Error {0}: al intentar generar traceback"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:486
+#: ominicontacto_app/asterisk_config.py:485
 #, python-brace-format
 msgid "Creando config sip para ruta saliente {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:491
+#: ominicontacto_app/asterisk_config.py:490
 #, python-brace-format
 msgid "Config generado OK para ruta saliente {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:494
+#: ominicontacto_app/asterisk_config.py:493
 #, python-brace-format
 msgid ""
 "Error {0}: No se pudo generar configuracion de Asterisk para la ruta {1}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:556
-#: ominicontacto_app/asterisk_config.py:600
+#: ominicontacto_app/asterisk_config.py:555
+#: ominicontacto_app/asterisk_config.py:599
 #, python-brace-format
 msgid "Creando config troncal sip {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:626
+#: ominicontacto_app/asterisk_config.py:625
 #, python-brace-format
 msgid "Objeto NO es unicode: {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:631
+#: ominicontacto_app/asterisk_config.py:630
 #: ominicontacto_app/services/wombat_config.py:317
 #, python-brace-format
 msgid "Copiando file config a {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:639
+#: ominicontacto_app/asterisk_config.py:638
 #, python-brace-format
 msgid "Error {0} al intentar borrar temporal {1}"
 msgstr ""
@@ -229,7 +229,7 @@ msgstr ""
 #: ominicontacto_app/templates/agenda_contacto/agenda_detalle.html:39
 #: ominicontacto_app/templates/agente/agenda_agente.html:72
 #: ominicontacto_app/templates/agente/base_agente.html:370
-#: ominicontacto_app/templates/agente/base_agente.html:723
+#: ominicontacto_app/templates/agente/base_agente.html:726
 #: ominicontacto_app/templates/busqueda_grabacion.html:47
 #: ominicontacto_app/templates/historico_calificaciones.html:29
 msgid "Fecha"
@@ -804,7 +804,7 @@ msgstr ""
 #: ominicontacto_app/models.py:1586
 #: ominicontacto_app/templates/agenda_contacto/agenda_agente.html:76
 #: ominicontacto_app/templates/agenda_contacto/agenda_detalle.html:47
-#: ominicontacto_app/templates/agente/base_agente.html:717
+#: ominicontacto_app/templates/agente/base_agente.html:720
 #: ominicontacto_app/templates/formulario/formulario_field.html:98
 msgid "Tipo"
 msgstr ""
@@ -864,7 +864,7 @@ msgstr ""
 #: ominicontacto_app/templates/agenda_contacto/agenda_agente.html:75
 #: ominicontacto_app/templates/agenda_contacto/agenda_detalle.html:43
 #: ominicontacto_app/templates/agente/agenda_agente.html:73
-#: ominicontacto_app/templates/agente/base_agente.html:723
+#: ominicontacto_app/templates/agente/base_agente.html:726
 msgid "Hora"
 msgstr ""
 
@@ -2364,52 +2364,56 @@ msgstr ""
 msgid "Marcar Llamada"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:697
+#: ominicontacto_app/templates/agente/base_agente.html:687
+msgid "Grabar Llamada"
+msgstr ""
+
+#: ominicontacto_app/templates/agente/base_agente.html:700
 msgid "Transfer"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:698
+#: ominicontacto_app/templates/agente/base_agente.html:701
 msgid "Confer"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:701
+#: ominicontacto_app/templates/agente/base_agente.html:704
 msgid "Cancel Transfer"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:702
+#: ominicontacto_app/templates/agente/base_agente.html:705
 msgid "Hold"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:705
+#: ominicontacto_app/templates/agente/base_agente.html:708
 msgid "Campaña: "
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:708
+#: ominicontacto_app/templates/agente/base_agente.html:711
 msgid "Llamar Fuera de Campaña: "
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:720
+#: ominicontacto_app/templates/agente/base_agente.html:723
 #: ominicontacto_app/templates/campanas/campana_entrante/llamadas_activas.html:34
 msgid "Número"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:761
+#: ominicontacto_app/templates/agente/base_agente.html:764
 msgid "SMS"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:767
+#: ominicontacto_app/templates/agente/base_agente.html:770
 msgid "Webphone"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:773
+#: ominicontacto_app/templates/agente/base_agente.html:776
 msgid "Webchat"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:779
+#: ominicontacto_app/templates/agente/base_agente.html:782
 msgid "Social chat"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:786
+#: ominicontacto_app/templates/agente/base_agente.html:789
 msgid "Email"
 msgstr ""
 

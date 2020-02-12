@@ -53,13 +53,14 @@ class PhoneJSView {
         this.inboundCallMenu = $('#modalReceiveCalls');
         this.tagCallButton = $('#SignCall');
         this.hangUpButton = $('#endCall');
+        this.recordCall = $('#recordCall');
 
         this.keypad_buttons_ids = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
             'asterisk', 'hashtag'];
         this.inputs_ids = ['Resume', 'Pause', 'changeCampAssocManualCall',
             'call', 'numberToCall', 'redial', 'onHold', 'Transfer',
             'Confer', 'EndTransfer', 'SignCall', 'endCall',
-            'call_off_campaign_menu'];
+            'call_off_campaign_menu', 'recordCall'];
         this.modal_menus_ids = ['modalPause', 'modalSelectCmp',
             'modalTransfer', 'modalReceiveCalls', 'modalCallOffCamp'];
 
@@ -248,6 +249,20 @@ class PhoneJSView {
         this.timebar.css('background-color', color);
     }
 
+
+    toogleVisibilityRecordButtons(sessionData) {
+        // si no se recibe desde Asterisk un nombre para el archivo de grabación
+        // significa que la llamada pertenece a un campaña no está configurada
+        // para grabar llamadas
+        var recordingFile = sessionData.remote_call.rec_filename;
+        if (recordingFile == '') {
+            this.tagCallButton.attr('disabled', true);
+        }
+        else {
+            this.recordCall.attr('disabled', true);
+        }
+    }
+
     closeAllModalMenus() {
         for (var i = 0; i < this.modal_menus_ids.length; i++) {
             var id = this.modal_menus_ids[i];
@@ -290,7 +305,7 @@ var PHONE_STATUS_CONFIGS = {
     },
     'OnCall': {
         keypad_enabled: true,
-        enabled_buttons: ['onHold', 'Transfer', 'endCall', 'SignCall'],
+        enabled_buttons: ['onHold', 'Transfer', 'endCall', 'SignCall', 'recordCall'],
         color: '#8fc641',
     },
     'DialingTransfer': {
@@ -300,7 +315,7 @@ var PHONE_STATUS_CONFIGS = {
     },
     'Transfering': {
         keypad_enabled: false,
-        enabled_buttons: ['EndTransfer', 'SignCall', 'endCall', 'Confer'],
+        enabled_buttons: ['EndTransfer', 'SignCall', 'endCall', 'Confer', 'recordCall'],
         color: '#bfef7a',
     },
     'ReceivingCall': {
