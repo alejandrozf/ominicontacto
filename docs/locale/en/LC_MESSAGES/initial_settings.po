@@ -503,7 +503,6 @@ msgstr "Finally we have everything ready to try our first agent."
 
 # 40cf9dcb9f2343d99ae97d57f0387173
 #: ../../initial_settings.rst:174
-#, fuzzy
 msgid ""
 "Tener en cuenta que para obtener un login exitoso debemos debemos contar "
 "con un **MICROFONO disponible:** en la estación de trabajo desde la cual "
@@ -512,7 +511,7 @@ msgid ""
 msgstr ""
 "Have in mind that to obtain successful login, you must have an "
 "**available MICROPHONE:** in the workstation where the agent is going to "
-"work. "
+"work. Otherwise the login could be flawed."
 
 # e17c45c185fd406cba6b136f1dbbb670
 #: ../../initial_settings.rst:177

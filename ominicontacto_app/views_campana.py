@@ -100,7 +100,7 @@ class CampanaListView(ListView):
         if self.request.user.is_authenticated and self.request.user and \
                 not self.request.user.get_is_administrador():
             user = self.request.user
-            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
+            campanas = Campana.objects.obtener_campanas_asignadas_o_creadas_by_user(campanas, user)
 
         context['campanas'] = campanas
         context['activas'] = campanas.filter(estado=Campana.ESTADO_ACTIVA)

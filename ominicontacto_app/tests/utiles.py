@@ -67,6 +67,8 @@ def _tmpdir():
 
 class OMLTestUtilsMixin(object):
 
+    DEFAULT_PASSWORD = PASSWORD
+
     def get_test_resource(self, resource):
         """Devuelve el path completo a archivo del directorio test
         """

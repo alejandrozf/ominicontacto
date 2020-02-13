@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
@@ -80,8 +79,7 @@ msgstr ""
 
 # fab06fe76aa64417b6df2821bf48944f
 #: ../../agent_call_actions.rst:27
-#, fuzzy
-msgid "*Figure 2: call on hold*"
+msgid "*Figure 1: call on hold*"
 msgstr "*Figure 1: call on hold*"
 
 # 026b761c430843feb582eca91a14f480
@@ -98,8 +96,7 @@ msgstr ""
 
 # 9497090561f54f019cae8ef5ffbdc1ba
 #: ../../agent_call_actions.rst:34
-#, fuzzy
-msgid "*Figure 3: unhold*"
+msgid "*Figure 2: unhold*"
 msgstr "*Figure 2: unhold*"
 
 # 716d919605394357b7714d6f4cc3c19d
@@ -142,8 +139,7 @@ msgstr ""
 
 # e47a1e381e1f4c398ba049fbcf3a0705
 #: ../../agent_call_actions.rst:51
-#, fuzzy
-msgid "*Figure 4: \"Agent A\" to \"Agent B\" blind transfer*"
+msgid "*Figure 3: \"Agent A\" to \"Agent B\" blind transfer*"
 msgstr "*Figure 3: \"Agent A\" to \"Agent B\" blind transfer*"
 
 # 06f7c53097714807ae6a22e6149ddcee
@@ -618,77 +614,3 @@ msgstr ""
 "To create a Global Callback, you must disposition the call by selecting "
 "\"Agenda\" Call Disposition. After that, agent must select \"Global\" as "
 "the type of agenda."
-
-#~ msgid "**Transferencia directa a número externo**"
-#~ msgstr ""
-
-#~ msgid "**Transferencia con consulta a número externo**"
-#~ msgstr ""
-
-#~ msgid "*Figure 6: \"Agent A\" to \"External telephone\" consultative transfer*"
-#~ msgstr ""
-
-#~ msgid "*Figure 7: \"Agent A\" to \"inbound campaign\" transfer*"
-#~ msgstr ""
-
-#~ msgid "*Figure 8: call recording tag*"
-#~ msgstr ""
-
-#~ msgid "*Figure 9: agenda personal*"
-#~ msgstr ""
-
-#~ msgid "*Figure 10: detalles de la agenda personal*"
-#~ msgstr ""
-
-#~ msgid "*Figure 11: detalles de la agenda personal*"
-#~ msgstr ""
-
-# 2c987fe353374733abb7badc3b7f2d45
-#~ msgid ""
-#~ "En este caso se hunde el botón "
-#~ "de transferencia disponible en el "
-#~ "webphone y luego se selecciona \"blind"
-#~ " transfer\" como tipo de transferencia "
-#~ "y se debe introducir el número "
-#~ "destino en recuadro como lo indica "
-#~ "la figura 4."
-#~ msgstr ""
-
-# e926888f57db458d9776310585701bd1
-#~ msgid "*Figure 4: \"Agent A\" to \"External telephone\" blind transfer*"
-#~ msgstr ""
-
-# 43c4100156a3406bb52c486788b40104
-#~ msgid "*Figure 5: \"Agent A\" to \"Agent B\" consultative transfer*"
-#~ msgstr ""
-
-# 41d756e6578948adaa0a3f233b6de42f
-#~ msgid ""
-#~ "*Figure 6: \"Agent A\", \"Agent B\" "
-#~ "and External number three way "
-#~ "conference*"
-#~ msgstr ""
-
-# 8a728b5ba0a3498f983bfdfacae2117b
-#~ msgid ""
-#~ "*Figure 8: \"Agent A\", \"Subscriber A\""
-#~ " and \"Subscriber B\" three way "
-#~ "conference*"
-#~ msgstr ""
-
-# d9e8a7ef1d624c01bfd0f01a9eb3f077
-#~ msgid "*Figure 9: Webphone confer switch*"
-#~ msgstr ""
-
-# 252fb573be35467580330383232b49bc
-#~ msgid ""
-#~ "Como se indica en la figura 8, "
-#~ "luego de hundir el botón para "
-#~ "marcar la llamada, se depliega un "
-#~ "campo de texto para que el agente"
-#~ " pueda describir la situación."
-#~ msgstr ""
-
-# 1db85f73e92d4a49aa7228ac69159a89
-#~ msgid "*Figure 13: detalles de la agenda personal*"
-#~ msgstr ""

@@ -215,7 +215,7 @@ msgstr ""
 # f87f33b985c749318e998128206f06c2
 #: ../../agent_session.rst:84
 msgid "**(4) Webphone**"
-msgstr ""
+msgstr "**(4) Webphone**"
 
 # 4b0aea62357e4accb93a72afb49ff4c4
 #: ../../agent_session.rst:86
@@ -388,7 +388,7 @@ msgstr ""
 # fa2247fe55cc4e41b1c373c8f8f1331a
 #: ../../agent_session.rst:145
 msgid "Logout"
-msgstr ""
+msgstr "Logout"
 
 # 63bb38b1b46a46599bed78d48b91aaa3
 #: ../../agent_session.rst:147
@@ -403,41 +403,3 @@ msgstr ""
 #: ../../agent_session.rst:151
 msgid "*Figure 11: agent logout*"
 msgstr ""
-
-#~ msgid "b Allí se indica a qué número realizar una llamada manual."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "c Estos botones permiten disparar la "
-#~ "acción de: llamar, cortar, re-llamar "
-#~ "al último número y marcar una "
-#~ "grabación. El botón de marcar una "
-#~ "grabación será explicado más adelante."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "d Este botón permite modificar la "
-#~ "campaña sobre la cual se procesa "
-#~ "cada llamada manual. También se abordará"
-#~ " más adelante en la sección "
-#~ "\"campañas manuales\"."
-#~ msgstr ""
-
-# c4fcb2d826e44e99860288c8f0fa641d
-#~ msgid ""
-#~ "d Esta serie de botones permiten "
-#~ "al agente efectuar las acciones de: "
-#~ "realizar una transferencia de llamada, "
-#~ "efectuar una conferencia con una tercera"
-#~ " parte y poner la llamada en "
-#~ "esepra."
-#~ msgstr ""
-
-# eaf2d5c0ae0948e19e9772819003fed6
-#~ msgid ""
-#~ "e Este botón permite modificar la "
-#~ "campaña sobre la cual se procesa "
-#~ "cada llamada manual. También se abordará"
-#~ " más adelante en la sección "
-#~ "\"campañas manuales\"."
-#~ msgstr ""

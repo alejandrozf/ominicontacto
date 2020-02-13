@@ -116,12 +116,14 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
         self._contabilizar_tiempo_promedio_abandono_por_campana()
 
     def _obtener_campanas(self, user_supervisor):
-        campanas = Campana.objects.obtener_all_activas_finalizadas()
-        campanas = campanas.filter(type=Campana.TYPE_ENTRANTE)
-        if not user_supervisor.get_is_administrador():
-            return Campana.objects.obtener_campanas_vista_by_user(campanas, user_supervisor)
+        if user_supervisor.get_is_administrador():
+            campanas = Campana.objects.obtener_actuales()
         else:
-            return campanas
+            supervisor = user_supervisor.get_supervisor_profile()
+            campanas = supervisor.campanas_asignadas_actuales()
+
+        campanas = campanas.filter(type=Campana.TYPE_ENTRANTE)
+        return campanas
 
     def _obtener_logs_de_llamadas(self):
         return LlamadaLog.objects.filter(time__gte=self.desde,
@@ -239,14 +241,16 @@ class ReporteDeLLamadasSalientesDeSupervision(ReporteDeLlamadasDeSupervision):
     EVENTOS_LLAMADA = ('DIAL', 'CONNECT', 'ANSWER') + LlamadaLog.EVENTOS_NO_CONEXION
 
     def _obtener_campanas(self, user_supervisor):
-        campanas = Campana.objects.obtener_all_activas_finalizadas()
+        if user_supervisor.get_is_administrador():
+            campanas = Campana.objects.obtener_actuales()
+        else:
+            supervisor = user_supervisor.get_supervisor_profile()
+            campanas = supervisor.campanas_asignadas_actuales()
+
         campanas = campanas.filter(type__in=[Campana.TYPE_DIALER,
                                              Campana.TYPE_PREVIEW,
                                              Campana.TYPE_MANUAL])
-        if not user_supervisor.get_is_administrador():
-            return Campana.objects.obtener_campanas_vista_by_user(campanas, user_supervisor)
-        else:
-            return campanas
+        return campanas
 
     def _obtener_logs_de_llamadas(self):
         return LlamadaLog.objects.filter(time__gte=self.desde,

@@ -31,7 +31,7 @@ from django.views.generic import FormView, View
 from django.core import paginator as django_paginator
 from django.http import JsonResponse
 
-from ominicontacto_app.forms import GrabacionBusquedaForm
+from ominicontacto_app.forms import GrabacionBusquedaForm, GrabacionBusquedaSupervisorForm
 from ominicontacto_app.models import (
     Grabacion, GrabacionMarca, Campana
 )
@@ -39,8 +39,8 @@ from .utiles import convert_fecha_datetime, fecha_local
 
 
 class BusquedaGrabacionFormView(FormView):
-    """Vista que realiza la busqeda de las grabaciones"""
-    form_class = GrabacionBusquedaForm
+    """Vista abstracta para subclasear para agente o supervisor"""
+    form_class = GrabacionBusquedaSupervisorForm
     template_name = 'busqueda_grabacion.html'
 
     def get_context_data(self, **kwargs):
@@ -70,10 +70,7 @@ class BusquedaGrabacionFormView(FormView):
 
     def get(self, request, *args, **kwargs):
         hoy = fecha_local(timezone.now())
-        campanas = Campana.objects.all()
-        if self.request.user.get_is_supervisor_customer():
-            user = self.request.user
-            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
+        campanas = self.get_campanas()
         return self.render_to_response(
             self.get_context_data(
                 listado_de_grabaciones=Grabacion.objects.
@@ -82,10 +79,7 @@ class BusquedaGrabacionFormView(FormView):
 
     def get_form(self):
         self.form_class = self.get_form_class()
-        campanas = Campana.objects.all()
-        if self.request.user.get_is_supervisor_customer():
-            user = self.request.user
-            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
+        campanas = self.get_campanas()
         campana_choice = [(campana.pk, campana.nombre)
                           for campana in campanas]
         return self.form_class(campana_choice=campana_choice, **self.get_form_kwargs())
@@ -102,15 +96,12 @@ class BusquedaGrabacionFormView(FormView):
         tipo_llamada = form.cleaned_data.get('tipo_llamada')
         tel_cliente = form.cleaned_data.get('tel_cliente')
         callid = form.cleaned_data.get('callid')
-        agente = form.cleaned_data.get('agente', None)
+        agente = self.get_filtro_agente(form)
         campana = form.cleaned_data.get('campana')
         marcadas = form.cleaned_data.get('marcadas', False)
         duracion = form.cleaned_data.get('duracion', 0)
         gestion = form.cleaned_data.get('gestion', False)
-        campanas = Campana.objects.all()
-        if self.request.user.get_is_supervisor_customer():
-            user = self.request.user
-            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
+        campanas = self.get_campanas()
         pagina = form.cleaned_data.get('pagina')
         listado_de_grabaciones = Grabacion.objects.grabacion_by_filtro(
             fecha_desde, fecha_hasta, tipo_llamada, tel_cliente, callid,
@@ -118,6 +109,33 @@ class BusquedaGrabacionFormView(FormView):
 
         return self.render_to_response(self.get_context_data(
             listado_de_grabaciones=listado_de_grabaciones, pagina=pagina))
+
+
+class BusquedaGrabacionSupervisorFormView(BusquedaGrabacionFormView):
+
+    def get_campanas(self):
+        campanas = Campana.objects.all()
+        user = self.request.user
+        if not user.get_is_administrador():
+            supervisor = user.get_supervisor_profile()
+            campanas = supervisor.campanas_asignadas_actuales()
+        return campanas
+
+    def get_filtro_agente(self, form):
+        return form.cleaned_data.get('agente', None)
+
+
+class BusquedaGrabacionAgenteFormView(BusquedaGrabacionFormView):
+    form_class = GrabacionBusquedaForm
+    template_name = 'agente/frame/busqueda_grabacion.html'
+
+    def get_campanas(self):
+        agente = self.request.user.get_agente_profile()
+        queues = agente.queue_set.all()
+        return [queue.campana for queue in queues]
+
+    def get_filtro_agente(self, form):
+        return self.request.user.get_agente_profile()
 
 
 class MarcarGrabacionView(View):

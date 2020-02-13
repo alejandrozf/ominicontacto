@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-27 09:31-0300\n"
+"POT-Creation-Date: 2020-02-13 11:31-0300\n"
 "PO-Revision-Date: 2019-08-13 16:42-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 # f6321de3afc443a3afe6ed0ce9b3d693
 #: ../../install_remote.rst:5
@@ -101,30 +101,6 @@ msgid ""
 msgstr ""
 "We must have the git package to clone the project repository then and "
 "select the release to install."
-
-# 9c1df60b2e6a4b12ba5c80ed82dd8bb7
-#: ../../install_remote.rst:46
-msgid "**Ubuntu - Debian:**"
-msgstr "**Ubuntu - Debian:**"
-
-# f3e10971c58144c3bf49f6864ad616a4
-#: ../../install_remote.rst:55
-msgid "Realizar el update/upgrade del sistema operativo"
-msgstr "Make an update/upgrade of the SO"
-
-# 405f9ec9135f40d3a7366fd2a7b701ac
-#: ../../install_remote.rst:64
-msgid ""
-"**Para Debian:** Instalar paquete linux-image-amd64: *apt-get install "
-"linux-image-amd64*"
-msgstr ""
-"**To Debian:** Install the package linux-image-amd64: *apt-get install "
-"linux-image-amd64*"
-
-# 95c01022c5ed4027ba3a314d959c8194
-#: ../../install_remote.rst:66
-msgid "Rebootear la máquina."
-msgstr "Reboot the machine"
 
 # d820ece5b07a4a11a042245de4735844
 #: ../../install_remote.rst:34
@@ -341,17 +317,17 @@ msgid "Primer acceso a OMniLeads:"
 msgstr "First access to OMniLeads:"
 
 # d7e453a9cf6b4c2e8c17bc4aa2447fe7
-#: ../../install_remote.rst:191
+#: ../../install_remote.rst:153
 msgid "Para acceder al sistema OMniLeads debe ingresar a:"
 msgstr "To access the system go to web URL:"
 
 # 59ec3f007f4a457da1ee0b7b08637e9a
-#: ../../install_remote.rst:193
+#: ../../install_remote.rst:155
 msgid "https://omnileads-hostname"
 msgstr "https://omnileads-hostname"
 
 # f5f469c88da74f34994cde5f6c4b4aaa
-#: ../../install_remote.rst:196
+#: ../../install_remote.rst:158
 msgid ""
 "El acceso web a OMniLeads debe ser a través del hostname.domain del host."
 " Por lo tanto existen dos posibilidades a la hora de resolver el "
@@ -361,12 +337,12 @@ msgstr ""
 "So there are two possibilities for hostname resolving"
 
 # 22a2b00133804adca6c41d54d67e6d29
-#: ../../install_remote.rst:199
+#: ../../install_remote.rst:161
 msgid "Que los DNS de la red lo hagan."
 msgstr "Network DNS do it"
 
 # 32eef18136004ca08e7f278f17b9cbbb
-#: ../../install_remote.rst:200
+#: ../../install_remote.rst:162
 msgid ""
 "Añadir el hostname.domain del host, dentro del archivo de *hosts* "
 "(Windows, Linux o Mac de cada PC que tenga que acceder a OMniLeads."
@@ -375,7 +351,7 @@ msgstr ""
 "that is going to access OMniLeads."
 
 # 77cd6334625646cea250d8d7265c969e
-#: ../../install_remote.rst:202
+#: ../../install_remote.rst:164
 msgid ""
 "En el segundo caso, podemos editar el archivo de *hosts* de nuestro "
 "Sistema Operativo:"
@@ -389,24 +365,27 @@ msgid ""
 " de cualquier browser moderno. Al encontrarnos con la pantalla de login, "
 "simplemente se debe ingresar el usuario admin y la clave generada durante"
 " la instalación, como se expone en las figura."
-msgstr "Once selected the method to resolve the hostname of the OMniLeads instance, "
-"access the URL with any modern browser. Login with admin user and the password selected "
-"in the inventory file, as seen in figure: "
+msgstr ""
+"Once selected the method to resolve the hostname of the OMniLeads "
+"instance, access the URL with any modern browser. Login with admin user "
+"and the password selected in the inventory file, as seen in figure: "
 
 # 8d56029d8d854326aaf8a25f2452246a
-#: ../../install_remote.rst:214
+#: ../../install_remote.rst:176
 msgid ""
 "Si no recuerda la contraseña de admin web, podemos consultar su valor "
 ":ref:`about_maintance_envvars`."
-msgstr "If you don't remember the password you can check it here :ref:`about_maintance_envvars`."
+msgstr ""
+"If you don't remember the password you can check it here "
+":ref:`about_maintance_envvars`."
 
 # 0937c488364c4d87a4f17ec36f9f5509
-#: ../../install_remote.rst:218
+#: ../../install_remote.rst:180
 msgid "Errores comunes:"
 msgstr "Common mistakes:"
 
 # 641d01dac0d8497aa59ce2cd834d7c6a
-#: ../../install_remote.rst:220
+#: ../../install_remote.rst:182
 msgid ""
 "El server no tiene internet o no resuelve dominios (configuración de "
 "DNS).*Compruebe el acceso a internet del host (por ej: actualizando "
@@ -417,7 +396,7 @@ msgstr ""
 "packages - apt-get update | yum update).*"
 
 # c1b4028f6bb344759174a0127b1d9294
-#: ../../install_remote.rst:221
+#: ../../install_remote.rst:183
 msgid ""
 "Timeout de algún paquete que se intenta bajar. Puede volver a intentar "
 "ejecutar el deploy y si vuelve a fallar, la opción puede ser. *Instalar "
@@ -428,7 +407,7 @@ msgstr ""
 " package from the terminal.*"
 
 # 4d97464e8abb45eaa1636389d53a6e9c
-#: ../../install_remote.rst:222
+#: ../../install_remote.rst:184
 msgid ""
 "Falla por mala sintaxis o falta de definición de *hostname* y *dirección "
 "IP* en el archivo *inventory*. *Revisar archivo inventory*"
@@ -437,7 +416,7 @@ msgstr ""
 "address* in the file *inventory*. *Check the file inventory* "
 
 # 701810a4859e49779eb6bcb4d2fba602
-#: ../../install_remote.rst:223
+#: ../../install_remote.rst:185
 msgid ""
 "No se configuró correctamente el acceso ssh del host destino de la "
 "instalación. *Revisar estado del firewall. Comprobar acceso remoto por "
@@ -448,7 +427,7 @@ msgstr ""
 "root user*"
 
 # 52ee7bf4773644588e1068032c9841dc
-#: ../../install_remote.rst:224
+#: ../../install_remote.rst:186
 msgid ""
 "En caso de contar con algún host Ubuntu-Debian, recordar que se deben "
 "instalar paquetes como *sudo, openssh-server o python-minimal* antes de "

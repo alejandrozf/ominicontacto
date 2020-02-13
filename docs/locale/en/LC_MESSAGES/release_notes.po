@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-06 15:55-0300\n"
+"POT-Creation-Date: 2020-02-13 11:31-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 # 6881a397b3cf4d92bd78144a6c22c006
 #: ../../release_notes.rst:2
@@ -23,7 +23,9 @@ msgid "Release Notes"
 msgstr "Release Notes"
 
 # 49f95cb248ba435e8ace05535c7388ce
-msgid "*February 7, 2020*"
+#: ../../release_notes.rst:4
+#, fuzzy
+msgid "*Febrero 7, 2020*"
 msgstr "February 7, 2020"
 
 # 591f9ffdc8d94490869bf62312567a22
@@ -43,23 +45,22 @@ msgid ""
 "OML ahora puede ser deployado e integrado con Issabel PBX & FreePBX "
 "usando docker"
 msgstr ""
-"OML can be deployed and integrated now with Issabel PBX & FreePBX using docker"
+"OML can be deployed and integrated now with Issabel PBX & FreePBX using "
+"docker"
 
 # 215d5432a9324dc0beeb0e0a10013a35
 #: ../../release_notes.rst:13
 msgid ""
 "Se realizón la migración de endpoints de agentes Asterisk de chan_sip "
 "hacia PJSIP"
-msgstr ""
-"The system changed its default trunk technology from SIP to PJSIP"
+msgstr "The system changed its default trunk technology from SIP to PJSIP"
 
 # b8561fdab4ee486cb33945bf708863f2
 #: ../../release_notes.rst:14
 msgid ""
 "El sistema soporta troncales SIP basados ahora en el módulo PJSIP de "
 "Asterisk"
-msgstr ""
-"Asterisk agents endpoints were migrated from chan_sip to PJSIP"
+msgstr "Asterisk agents endpoints were migrated from chan_sip to PJSIP"
 
 # 5f7b9b4ccd29498fadd0acffc1b35f59
 #: ../../release_notes.rst:15
@@ -67,16 +68,15 @@ msgid ""
 "Las interacciones con Asterisk desde la consola de agentes fueron "
 "refactorizadas para usar el protocolo AMI"
 msgstr ""
-"The internal interaction with Asterisk from agent console component was refactored to"
-"use AMI protocol"
+"The internal interaction with Asterisk from agent console component was "
+"refactored touse AMI protocol"
 
 # 2832ee5d4ed940d3a9dba2917c6ebbeb
 #: ../../release_notes.rst:16
 msgid ""
 "Se realizaron mejoras en la instalación del sistema en Docker para "
 "ambientes productivos"
-msgstr ""
-"The installation on Docker for production was refined"
+msgstr "The installation on Docker for production was refined"
 
 # 107aef8b5dd44da2a00cfafdfffe1f1b
 #: ../../release_notes.rst:17
@@ -89,7 +89,8 @@ msgid ""
 "Se adicionaron nuevos endpoints para la API pública que enriquecen la "
 "interacción con CRM"
 msgstr ""
-"The CRM interaction was refined with the addition of new endpoints on the public API"
+"The CRM interaction was refined with the addition of new endpoints on the"
+" public API"
 
 # 7da66f234a5d496a9824b69711700373
 #: ../../release_notes.rst:19
@@ -101,8 +102,7 @@ msgstr "kamailio.cfg file was refactored and optimized"
 msgid ""
 "El trigger usado como logger de eventos fue portado desde plpython a "
 "plperl"
-msgstr ""
-"Database logger trigger script was ported from plpython to plperl"
+msgstr "Database logger trigger script was ported from plpython to plperl"
 
 # 8799d689ff1f48a4b489a1d169e25f86
 #: ../../release_notes.rst:24
@@ -111,20 +111,21 @@ msgstr "Bug fixes"
 
 # 2900c04530cc433a801b23a61bc46bc7
 #: ../../release_notes.rst:25
+#, fuzzy
 msgid ""
 "Solucionado bug que contaba como ABANDONWEL los eventos de llamadas "
-"entrantes que excedían el límite de llamadas en cola afectando a los reportes"
+"entrantes que excedían el límite de llamadas en cola configurado that "
+"exceeds the queue calls limit, afectando a los reportes"
 msgstr ""
-"Fixed bug that counted as ABANDONWEL inbound calls that exceeds the queue calls limit,"
-" affecting reports"
+"Fixed bug that counted as ABANDONWEL inbound calls that exceeds the queue"
+" calls limit, affecting reports"
 
 # 4a4a4a5668b74595bf213c26c81c2808
 #: ../../release_notes.rst:27
 msgid ""
 "Solucionado bug en paginación de las vistas de listas de objetos de "
 "telefonía"
-msgstr ""
-"Fixed bug on telephony list views (on paginators)"
+msgstr "Fixed bug on telephony list views (on paginators)"
 
 # 965f0e2b53db469fa1916235255d9875
 #: ../../release_notes.rst:28
@@ -133,8 +134,8 @@ msgid ""
 "entrantes con un destino en caso de fallo configurado en la campaña como "
 "destino personalizado, afectando a los reportes"
 msgstr ""
-"Fixed bug that counted as EXPIRED inbound calls with failover configured to point to "
-"a custom destination, affecting reports"
+"Fixed bug that counted as EXPIRED inbound calls with failover configured "
+"to point to a custom destination, affecting reports"
 
 # 2b6b95c254b245b2a1d0beb2b86f33b2
 #: ../../release_notes.rst:30
@@ -152,16 +153,15 @@ msgid ""
 "Solucionado bug que generaba un valor de callid incorrecto al realizar "
 "llamadas manuales de click2call afectando los reportes"
 msgstr ""
-"Fixed bug that generated an incorrect callid for manual click2call generating errors"
-" on campaign reports"
+"Fixed bug that generated an incorrect callid for manual click2call "
+"generating errors on campaign reports"
 
 # 2b6b95c254b245b2a1d0beb2b86f33b2
 #: ../../release_notes.rst:34
 msgid ""
 "Solucionado bug que impedía editar el parámetro 'boost factor' en "
 "campañas dialer"
-msgstr ""
-"Fixed bug that inhibits to edit boost factor in dialer campaings"
+msgstr "Fixed bug that inhibits to edit boost factor in dialer campaings"
 
 # 1b29651db8884492b279f54426e2bf8b
 #: ../../release_notes.rst:35
@@ -169,7 +169,8 @@ msgid ""
 "Solucionado error generado en la vista de supervisión de llamadas "
 "entrantes cuando existía alguna llamada dialer en cola"
 msgstr ""
-"Fixed error generated on inbound calls supervision view when there was enqueued dialer calls"
+"Fixed error generated on inbound calls supervision view when there was "
+"enqueued dialer calls"
 
 # 5b7743a88a37424f80bbea35682c9a84
 #: ../../release_notes.rst:37
@@ -178,30 +179,17 @@ msgid ""
 "constance en instalaciones en docker despues de reiniciar el servicio de "
 "kamailio"
 msgstr ""
-"Fixed bug that remove constance OML data on docker installation after Kamailio restarts"
+"Fixed bug that remove constance OML data on docker installation after "
+"Kamailio restarts"
 
 # ade47bbf2a9747109f3ffba9b6335095
 #: ../../release_notes.rst:39
 msgid ""
 "Solucionado bug que enviaba un id incorrecto al finalizar una pausa de "
 "tipo ACW."
-msgstr ""
-"Fixed bug that sent an incorrect id after ends an ACW pause"
+msgstr "Fixed bug that sent an incorrect id after ends an ACW pause"
 
 # 2b6b95c254b245b2a1d0beb2b86f33b2
 #: ../../release_notes.rst:40
 msgid "Solucionado error en la paginación de la vista de supervision de agentes"
 msgstr "Fixed error on agents view pagination on supervision"
-
-# 92685bd04e354e94bdda942bc7d346df
-#~ msgid "Admin de OML"
-#~ msgstr "OML admin"
-
-# 2b6b95c254b245b2a1d0beb2b86f33b2
-#~ msgid ""
-#~ "Se soluciona error que impedía acceder"
-#~ " a la supervisión al eliminar después"
-#~ " de eliminar una campaña entrante"
-#~ msgstr ""
-#~ "Fix error when accessing the supervision"
-#~ " after remove an inbound campaign."

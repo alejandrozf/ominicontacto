@@ -159,7 +159,3 @@ msgstr "Inbound Calls"
 #: ../../output_reports_general.rst:58
 msgid "*Figure 6: Inbound calls*"
 msgstr ""
-
-#~ msgid "Telephony"
-#~ msgstr ""
-

@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-30 13:57-0300\n"
+"POT-Creation-Date: 2020-02-13 11:31-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 # 91c07a4ed55d4c7a80e8abf5f2b67561
 #: ../../campaigns_inbound.rst:5
@@ -62,31 +62,35 @@ msgstr ""
 "campaigns can use to take and display extra data to the telephone number "
 "of person that makes the incoming call."
 
-# 23639a6538ed43bab924f2dbad0dc9c9
+# cd752ed384614a99a83107ee7e524cdf
 #: ../../campaigns_inbound.rst:22
-msgid "**External URL:** URL a disparar cada vez que el agente lo indique."
+msgid ""
+"**External URL:** en caso de haber seleccionado la invocación a un URL "
+"externo en cada llamada, aquí se indica cual de los CRMs definidos debe "
+"invocar la campaña."
 msgstr ""
-"**External URL:** URL (http-request) to be trieggered each time the "
-"campaign connects a call to an agent."
+"**External URL:** in case of selecting an external URL interaction for each "
+"call, this field selects to wich CRMs should the campaign invoque."
 
 # d3f631b89ac94cf1b022cfe7ea49f928
 #: ../../campaigns_inbound.rst:23
 msgid ""
-"**External system:** sistema de gestión externo que se admite para lanzar"
-" acciones de *click to call o calificación* sobre contactos de la "
-"campaña."
+"**External system:** aquí se adjudica el sistema de gestión externo que "
+"ejecutaría \"click to call\" sobre la campaña, en caso de así desearlo."
 msgstr ""
 "**External system:** external CRM system linked to launch *click to call "
 "actions or dispositions* on campaign contacts, through the API."
 
-# 9ad950838c774fd29aaf1a2486cf7d38
+# ab84dce00e77432eb47f5102b3a1a728
 #: ../../campaigns_inbound.rst:24
 msgid ""
-"**ID on external system:**  ID de la campaña del sistema de gestión "
-"externo que se desea vincular con nuestra campaña en OMniLeads."
+"**ID on external system:**  este campo debe contener el ID que posee la "
+"campaña dentro del sistema de gestión externo desde el cual llegarán los "
+"*click to call* o *solicitudes de calificación* de contactos."
 msgstr ""
-"**ID on external system:** ID of the external CRM system campaign that "
-"you want to link to this OMniLeads campaign."
+"**ID on external system:**  this fields must have the campaign's ID in the "
+"external system from where the *click to call* or the *disposition requests* "
+"will be sent."
 
 # 36d8bbb664aa484d9f51e27016aa9cc2
 #: ../../campaigns_inbound.rst:25
@@ -267,6 +271,8 @@ msgid ""
 "**Autopausar agentes que fallan al responder:** indica si se debe pausar "
 "automáticamente o no a los agentes que fallen a responder llamadas."
 msgstr ""
+"**Autopause agentes who fail to answer:** sets if the agents that fail "
+"to answer a call should be automatically sent to pause."
 
 # 169f044142e94acb9960af1268f9fb2b
 #: ../../campaigns_inbound.rst:54
@@ -274,6 +280,8 @@ msgid ""
 "**Autopausar agentes que dan ocupado:** indica si se debe pausar "
 "automáticamente o no a los agentes que den ocupado."
 msgstr ""
+"**Autopause busy agents:** sets if the agents that are busy"
+" should be automatically sent to pause."
 
 # 63385eb3131141388feba26b780b0cf7
 #: ../../campaigns_inbound.rst:55
@@ -409,4 +417,3 @@ msgstr ""
 #: ../../campaigns_inbound.rst:90
 msgid "*Figure 5: agent group config*"
 msgstr "*Figure 5: agent group config*"
-

@@ -196,7 +196,8 @@ class AgenteProfileManager(models.Manager):
 
     def obtener_agentes_supervisor(self, supervisor):
         """
-        Obtiene todos los agentes que estan asignados a las campanas propias de un supervisor
+        Obtiene todos los agentes que estan asignados a las campanas
+        que un supervisor tiene asignadas
         """
         if supervisor.is_administrador:
             return self.obtener_activos()
@@ -317,7 +318,23 @@ class SupervisorProfile(models.Model):
         self.borrado = True
         self.save()
 
-    def obtener_campanas_activas_asignadas(self):
+    def campanas_asignadas_actuales(self):
+        """
+        Devuelve las campañas NO BORRADAS a las que esta asignado el Supervisor.
+        """
+        estados = [Campana.ESTADO_ACTIVA, Campana.ESTADO_PAUSADA,
+                   Campana.ESTADO_INACTIVA, Campana.ESTADO_FINALIZADA]
+        return self.user.campanasupervisors.filter(estado__in=estados)
+
+    def campanas_asignadas_actuales_no_finalizadas(self):
+        """
+        Devuelve las campañas NO BORRADAS a las que esta asignado el Supervisor.
+        """
+        estados = [Campana.ESTADO_ACTIVA, Campana.ESTADO_PAUSADA,
+                   Campana.ESTADO_INACTIVA]
+        return self.user.campanasupervisors.filter(estado__in=estados)
+
+    def obtener_campanas_asignadas_activas(self):
         return self.user.campanasupervisors.filter(estado=Campana.ESTADO_ACTIVA)
 
 
@@ -609,7 +626,7 @@ class CampanaManager(models.Manager):
                             Campana.ESTADO_INACTIVA]
         return self.filter(estado__in=campanas_include)
 
-    def obtener_all_activas_finalizadas(self):
+    def obtener_actuales(self):
         """
         Devuelve campañas excluyendo las campanas borradas
         """
@@ -647,11 +664,13 @@ class CampanaManager(models.Manager):
         """
         return self.filter(type=Campana.TYPE_PREVIEW)
 
-    def obtener_campanas_vista_by_user(self, campanas, user):
+    def obtener_campanas_asignadas_o_creadas_by_user(self, campanas, user):
         """
-        devuelve las campanas filtradas por user
+        IMPORTANTE: Unicamente para ser usado en AMB de campañas !!
+        Devuelve las campanas creadas o a las que fue asignado como supervisor el user
+        Incluye las BORRADAS
         :param campanas: queryset de campanas a filtrar
-        :param user: usuario a filtrar
+        :param user: usuario con supervisor_profile
         :return: campanas filtradas por usuaro
         """
         return campanas.filter(

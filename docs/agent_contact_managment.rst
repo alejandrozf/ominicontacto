@@ -44,6 +44,7 @@ las entradas que el agente realizó durante la gestión.
 El agente cuenta con cada contacto agendado y su descripción. A partir de hacer click sobre el número de teléfono
 automñaticamente se dispara la llamada hacia el teléfono del contacto.
 
+
 Histórico de calificaciones del agente
 **************************************
 
@@ -63,3 +64,15 @@ repasar sus datos o modificar la calificación asignada previamente.
 
 Como se puede observar, el agente puede modificar los datos de la calificación o del formulario, en caso de tratarse
 de un contacto calificado con una calificación "de gestión".
+
+
+Búsqueda de grabaciones del agente
+**********************************
+
+En este menú el agente podrá buscar las grabaciones de las llamadas en las que haya participado. 
+
+.. image:: images/about_agent_search_record_1.png
+
+*Figure 6: call disposition list*
+
+Se puede filtrar por fecha, tipo de llamada, teléfono del cliente, call ID, campaña, si fue marcada, si esta calificada como gestión y por su duración.

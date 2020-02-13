@@ -99,7 +99,3 @@ msgstr ""
 #: ../../output_reports_agents.rst:35
 msgid "*Figure 5: Call types*"
 msgstr ""
-
-#~ msgid "Telephony"
-#~ msgstr ""
-

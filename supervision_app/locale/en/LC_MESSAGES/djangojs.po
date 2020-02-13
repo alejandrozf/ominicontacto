@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-28 14:30-0300\n"
+"POT-Creation-Date: 2020-02-13 13:21-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,7 +25,7 @@ msgstr "Error when executing =>"
 #: supervision_app/static/supervision_app/JS/campanas_entrantes.js:54
 #: supervision_app/static/supervision_app/JS/campanas_entrantes.js:57
 msgid " segundos"
-msgstr ""
+msgstr " seconds"
 
 #: supervision_app/static/supervision_app/JS/phoneJsController.js:60
 #: supervision_app/static/supervision_app/JS/phoneJsController.js:65

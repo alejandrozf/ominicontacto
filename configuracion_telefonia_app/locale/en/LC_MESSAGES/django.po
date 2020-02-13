@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-28 14:30-0300\n"
+"POT-Creation-Date: 2020-02-13 13:20-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,7 +36,7 @@ msgstr "The agent is not related to external system."
 #: api_app/tests/tests_api_click2call.py:121
 #: api_app/tests/tests_api_click2call.py:166
 msgid "Escoja una opción válida. Esa opción no está entre las disponibles."
-msgstr ""
+msgstr "Select a valid option. That option is not available."
 
 #: api_app/tests/tests_api_click2call.py:158
 #: api_app/tests/tests_api_contactos.py:170
@@ -122,26 +121,20 @@ msgid "Validaciones Horarias"
 msgstr "Time Conditions"
 
 #: configuracion_telefonia_app/apps.py:61
-#, fuzzy
-#| msgid "Identificador de Clientes"
 msgid "Identificación de Clientes"
 msgstr "Client Identification service"
 
 #: configuracion_telefonia_app/apps.py:65
-#, fuzzy
-#| msgid "Destino personalizado"
 msgid "Destinos personalizados"
-msgstr "Custom destination:"
+msgstr "Custom destinations"
 
 #: configuracion_telefonia_app/apps.py:69
-#, fuzzy
-#| msgid "Adicionar nuevo"
 msgid "Adicionar audios"
-msgstr "Add new"
+msgstr "Add audios"
 
 #: configuracion_telefonia_app/apps.py:76
 msgid "Telefonía"
-msgstr ""
+msgstr "Telephony"
 
 #: configuracion_telefonia_app/forms.py:59
 msgid "Nombre Troncal"
@@ -272,7 +265,7 @@ msgstr "You must choose an audio file from an external source"
 
 #: configuracion_telefonia_app/forms.py:352
 msgid "Seleccione Archivo Externo si desea subir un Archivo de audio nuevo"
-msgstr ""
+msgstr "Select External Audio if you wish to upload a new audio file "
 
 #: configuracion_telefonia_app/forms.py:356
 #: configuracion_telefonia_app/forms.py:364
@@ -342,11 +335,11 @@ msgstr "Choose the audio package to install"
 
 #: configuracion_telefonia_app/models.py:44
 msgid "chansip"
-msgstr ""
+msgstr "chansip"
 
 #: configuracion_telefonia_app/models.py:45
 msgid "pjsip"
-msgstr ""
+msgstr "pjsip"
 
 #: configuracion_telefonia_app/models.py:53
 msgid "Canales máximos"
@@ -996,7 +989,7 @@ msgstr "Save Order"
 
 #: configuracion_telefonia_app/templates/lista_troncal_sip.html:32
 msgid "Tecnología"
-msgstr ""
+msgstr "Technology"
 
 #: configuracion_telefonia_app/templates/lista_troncal_sip.html:33
 msgid "Caller ID"
@@ -1070,10 +1063,8 @@ msgstr "Allowed files: .wav"
 
 #: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:501
 #: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:515
-#, fuzzy
-#| msgid "Introduzca un valor correcto."
 msgid "Introduzca un valor válido."
-msgstr "Add a correct value"
+msgstr "Insert a valid value"
 
 #: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:526
 msgid "Este campo es requerido."

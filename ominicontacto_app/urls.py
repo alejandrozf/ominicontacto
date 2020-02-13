@@ -186,8 +186,13 @@ urlpatterns = [
         name='grabacion_descripcion',
         ),
     url(r'^grabacion/buscar/(?P<pagina>\d+)/$',
-        permiso_administracion_requerido(views_grabacion.BusquedaGrabacionFormView.as_view()),
+        permiso_administracion_requerido(
+            views_grabacion.BusquedaGrabacionSupervisorFormView.as_view()),
         name='grabacion_buscar',
+        ),
+    url(r'^grabacion/agente/buscar/(?P<pagina>\d+)/$',
+        agente_requerido(views_grabacion.BusquedaGrabacionAgenteFormView.as_view()),
+        name='grabacion_agente_buscar',
         ),
 
     url(r'^agenda/nuevo/$',

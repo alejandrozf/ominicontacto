@@ -443,14 +443,16 @@ class GrabacionBusquedaForm(forms.Form):
                             label=_('Fecha'))
     tipo_llamada_choice = list(Grabacion.TYPE_LLAMADA_CHOICES)
     tipo_llamada_choice.insert(0, EMPTY_CHOICE)
-    tipo_llamada = forms.ChoiceField(required=False,
-                                     choices=tipo_llamada_choice, label=_('Tipo de llamada'))
-    tel_cliente = forms.CharField(required=False, label=_('Teléfono Cliente'))
+    tipo_llamada = forms.ChoiceField(
+        required=False, choices=tipo_llamada_choice, label=_('Tipo de llamada'),
+        widget=forms.Select(attrs={'class': 'form-control'}))
+    tel_cliente = forms.CharField(required=False, label=_('Teléfono Cliente'),
+                                  widget=forms.TextInput(attrs={'class': 'form-control'}))
     callid = forms.CharField(required=False, label=_('Call ID'),
                              widget=forms.TextInput(attrs={'class': 'form-control'}))
-    agente = forms.ModelChoiceField(queryset=AgenteProfile.objects.filter(is_inactive=False),
-                                    required=False, label=_('Agente'))
-    campana = forms.ChoiceField(required=False, choices=(), label=_('Campaña'))
+    campana = forms.ChoiceField(
+        required=False, choices=(), label=_('Campaña'),
+        widget=forms.Select(attrs={'class': 'form-control'}))
     pagina = forms.CharField(required=False, widget=forms.HiddenInput(), label=_('Página'))
     marcadas = forms.BooleanField(required=False, label=_('Marcadas'))
     duracion = forms.IntegerField(required=False, min_value=0, initial=0,
@@ -463,6 +465,14 @@ class GrabacionBusquedaForm(forms.Form):
         campana_choice.insert(0, EMPTY_CHOICE)
         self.fields['campana'].choices = campana_choice
         self.fields['duracion'].help_text = _('En segundos')
+
+
+class GrabacionBusquedaSupervisorForm(GrabacionBusquedaForm):
+    agente = forms.ModelChoiceField(queryset=AgenteProfile.objects.filter(is_inactive=False),
+                                    required=False, label=_('Agente'))
+
+    field_order = ['fecha', 'tipo_llamada_choice', 'tipo_llamada', 'tel_cliente', 'callid',
+                   'agente', 'campana', 'pagina', 'marcadas', 'duracion', 'gestion']
 
 
 class CampanaMixinForm(object):

@@ -24,24 +24,30 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="{% static 'bootstrap-3.3.6/css/bootstrap.min.css' %}">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
+    <!-- Fonts -->
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/google-font.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
 
 </head>
 <body>
     {% include "contactos/messages_contacto.html" %}
-       <h4>{% trans 'Seleccione la campana para la cual desea agregar un nuevo contacto' %}</h4>
+    <h3>{% trans 'Seleccione la campana para la cual desea agregar un nuevo contacto' %}</h3>
    <div class="col-md-6">
 <form target="crm" action = "" method = "post"> {% csrf_token %}
     {% csrf_token %}
     {{ form.non_field_errors }}
-    <div class="form-group row">
+    <div class="form-group">
         {{ form.campana.errors }}
         <label class="col-sm-3 control-label" for="{{ form.campana.id_for_label }}">{% trans 'Campana:' %}</label>
         <div class="col-sm-6">
               {{ form.campana }}
         </div>
     </div>
-    <button type="submit"  class="btn btn-success btn-lg">
+    <button type="submit"  class="btn btn-primary">
         {% trans 'Continuar' %}
     </button>
 </form>
