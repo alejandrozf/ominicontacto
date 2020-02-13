@@ -105,6 +105,8 @@ msgid ""
 "**Language:** el idioma que se utiliza a la hora de repoducir locuciones "
 "por defecto del sistema sobre los canales que ingresan por la ruta."
 msgstr ""
+"**Language:** el language used for the system's default audio over the "
+" channels that enter using the route."
 
 # 667c5cc8c3fb4c89952344c3650b87ae
 #: ../../campaigns_inbound_routes.rst:27
@@ -133,18 +135,3 @@ msgid ""
 msgstr ""
 "It is important to clarify that it is allowed that several routes can "
 "have the same destination."
-
-#~ msgid ""
-#~ "**Destination type:** el tipo de destino"
-#~ " a donde se enviarán las llamadas "
-#~ "ingresadas por dicha ruta. Dentro de "
-#~ "los tipos de destinos existen (Campañas"
-#~ " entrantes, IVR, condicionales de tiempo)"
-#~ msgstr ""
-
-#~ msgid "**Destination:** destino al cual enviar los canales."
-#~ msgstr ""
-
-#~ msgid "Vamos a definir cada campo:"
-#~ msgstr ""
-

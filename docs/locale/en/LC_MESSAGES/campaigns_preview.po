@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-28 14:41-0300\n"
+"POT-Creation-Date: 2020-02-13 11:31-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 # ebe0aa44e2c04717a123b9143e6018c6
 #: ../../campaigns_preview.rst:5
@@ -59,44 +59,38 @@ msgstr ""
 "**Contact database:** contact database that the preview dialer will use "
 "when delivering on demand contacts to each agent."
 
-# 7831a710dda84008962e856c5142b976
+# f64109769b9a46f3a5e08e399a34f791
 #: ../../campaigns_preview.rst:19
 msgid ""
-"**Tipo interacción:** aquí se selecciona si la campaña va a utilizar un "
-"*formulario de campaña* o va a disparar una *solicitud-http* hacia un "
-"*sistema CRM externo*\"."
-msgstr ""
-"**Interaction class:** select if the campaign will use a *campaign form* "
-"or will launch an http-request to an external *CRM system* when an agent "
-"make a call."
-
-# ea879b77ac264a46a306a31c529d32aa
-#: ../../campaigns_preview.rst:20
-msgid ""
-"**External URL:** URL (http-request) a disparar cada vez que el agente "
-"ejecute una llamada."
-msgstr ""
-"**External URL:** URL (http-request) to triggered when agent executes a "
-"call"
-
-# f64109769b9a46f3a5e08e399a34f791
-#: ../../campaigns_preview.rst:21
-msgid ""
-"**External system:** sistema de gestión externo que se admite para lanzar"
-" acciones de *click to call o calificación* sobre contactos de la "
-"campaña."
+"**External system:** aquí se adjudica el sistema de gestión externo que "
+"ejecutaría \"click to call\" sobre la campaña, en caso de así desearlo."
 msgstr ""
 "**External system:** external CRM system linked to launch *click to call "
 "actions or dispositions* on campaign contacts, through the API."
 
-# 68c5ed043e20430a924c2759834e399a
+# eaa0e47dea6b4f9198596084ebd61fc3
+#: ../../campaigns_preview.rst:20
+msgid ""
+"**ID on external system:**  este campo debe contener el ID que posee la "
+"campaña dentro del sistema de gestión externo desde el cual llegarán los "
+"*click to call* o *solicitudes de calificación* de contactos."
+msgstr ""
+
+# 5fca113821ab4bff90e458895052020d
+#: ../../campaigns_preview.rst:21
+msgid ""
+"**Type of interaction:** indica si la campaña va a operar con formularios"
+" de OMniLeads o bien va a ejecutar una invocación hacia un CRM por cada "
+"llamada conectada."
+msgstr ""
+
+# c06c889e2d414583bb00cd8e441cc108
 #: ../../campaigns_preview.rst:22
 msgid ""
-"**ID on external system:**  ID de la campaña del sistema de gestión "
-"externo que se desea vincular con nuestra campaña en OMniLeads."
+"**External URL:** en caso de haber seleccionado la invocación a un URL "
+"externo en cada llamada, aquí se indica cual de los CRMs definidos debe "
+"invocar la campaña."
 msgstr ""
-"**ID on external system:** ID of the external CRM system campaign that "
-"you want to link to this OMniLeads campaign."
 
 # cebbffa9b7d945e7a006a0f2ad657371
 #: ../../campaigns_preview.rst:23
@@ -171,9 +165,9 @@ msgid ""
 "realizar una preasignación de contacto a agentes. Esta preasignación "
 "puede realizar en dos variantes."
 msgstr ""
-"Finally, in the final wizard step is allowed, optionally "
-" realize a pre-assignation of contacs to agents. This operation"
-" can be made using two variants"
+"Finally, in the final wizard step is allowed, optionally  realize a pre-"
+"assignation of contacs to agents. This operation can be made using two "
+"variants"
 
 # 495084dbabc7425ab57f3a99266fd4fe
 #: ../../campaigns_preview.rst:48
@@ -190,10 +184,11 @@ msgid ""
 "lista de los que se le hayan asignados. Ver esta distribución en el admin"
 " en la siguiente figura:"
 msgstr ""
-"If the user select the assign proportionally option, the system will make "
-"an initial assignation of contacts to agents on the same proportion allowing"
-" send to the current agent only from his lists of pre-assigned contacts or "
-"free contactos. See this distribution on Django admin in the following picture."
+"If the user select the assign proportionally option, the system will make"
+" an initial assignation of contacts to agents on the same proportion "
+"allowing send to the current agent only from his lists of pre-assigned "
+"contacts or free contactos. See this distribution on Django admin in the "
+"following picture."
 
 # a31ae0c4673041e58856e80b3b3bbf24
 #: ../../campaigns_preview.rst:56
@@ -201,8 +196,8 @@ msgid ""
 "Al momento de seleccionar la opción se preasignación proporcional el "
 "sistema muestra la opción de seleccionar aleatoriamente:"
 msgstr ""
-"At the moment of select the proportionally pre-assignation the system shows"
-" the random selection"
+"At the moment of select the proportionally pre-assignation the system "
+"shows the random selection"
 
 # 33eba93b149d4d1cb0e1c404428ead8d
 #: ../../campaigns_preview.rst:60
@@ -289,162 +284,3 @@ msgstr ""
 "Therefore, the agent can try to contact all available numbers as a *link*"
 " in the contact form, until finally selecting a disposition and moving to"
 " a new one."
-
-#~ msgid "Preview Campaigns"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "**Campaign form:** campo de selección "
-#~ "del formulario que se desplegará cada"
-#~ " vez que un agente califique un "
-#~ "contacto con la calificación \"de "
-#~ "gestión\"."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "**Disconection time:** es el tiempo que"
-#~ " el discador preview reserva un "
-#~ "contacto a un agente, antes de "
-#~ "volverlo como disponible para ser "
-#~ "procesado por otro."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "En la segunda pantalla se deben "
-#~ "asignar las calificaciones que se "
-#~ "requieran como disponibles para os "
-#~ "agentes a la hora de tipificar "
-#~ "cada llamada de cada contacto."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Una vez lista la campaña solo "
-#~ "resta asignar a los agentes que "
-#~ "podrán trabajar en la misma, opteniendo"
-#~ " contactos para marcar. En la figura"
-#~ " 3 y 4 se ejemplifica una "
-#~ "asignación de agentes a una campaña."
-#~ msgstr ""
-
-#~ msgid "*Figure 3: agent assignment*"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Cuando un agente asignado a la "
-#~ "campaña realice un login a la "
-#~ "plataforma, debería disponer de la "
-#~ "campaña preview tal como se expone "
-#~ "en la figura 5."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Si el agente hace click sobre el"
-#~ " teléfono entonces se dispara la "
-#~ "llamada, se visualizan los datos (extras"
-#~ " al teléfono) del contacto marcado en"
-#~ " la vista de agente, permitiendo a"
-#~ " su vez al agente tipificar la "
-#~ "llamada con alguna de las calificaciones"
-#~ " asignadas a la campaña."
-#~ msgstr ""
-
-# 0d89b93159c84235b76ce9338a5891e5
-#~ msgid ""
-#~ "La primera pantalla nos invita a "
-#~ "indicar una serie de parámtros de "
-#~ "la campaña, como lo indica la "
-#~ "figura 1."
-#~ msgstr ""
-
-# 55e9917949dc41d9b03c0142befddfda
-#~ msgid "**Name:** nombre de la campaña"
-#~ msgstr ""
-
-# 3017ba29bac545408fb149e092bf419b
-#~ msgid ""
-#~ "**Contact database:** la base de "
-#~ "contactos que utilzará el discador "
-#~ "preview a la hora de entregar "
-#~ "llamadas a los agentes"
-#~ msgstr ""
-
-# 15711715ebac4f469c2998cee0a2f76b
-#~ msgid ""
-#~ "**Tipo interacción:** aquí se selecciona "
-#~ "si la campaña va a operar con "
-#~ "un formulario o solamente utilizando un"
-#~ " llamo a un CRM externo Web\"."
-#~ msgstr ""
-
-# e5396dd6928e45ba8dd8d155844bc06f
-#~ msgid "**External URL:** URL a disparar cada vez que el agente lo indique."
-#~ msgstr ""
-
-# a616a87c04954c82b1f34b8e421537c9
-#~ msgid ""
-#~ "**Enable recordings:** habilitar que todas "
-#~ "las llamadas de la campaña sean "
-#~ "grabadas."
-#~ msgstr ""
-
-# db363beaf3cb413d95304cce7f4f37e0
-#~ msgid ""
-#~ "**Scope:** se define como la cantidad"
-#~ " de gestiones positivas que se "
-#~ "esperan para la campaña. En la "
-#~ "supervisión de la campaña se muestra "
-#~ "en tiempo real el porcentaje de "
-#~ "avence de la campaña respecto al "
-#~ "objetivo definido."
-#~ msgstr ""
-
-# f62259fc4bc64104b4244df321c71a57
-#~ msgid ""
-#~ "**Disconection time:** es el tiempo que"
-#~ " el discador preview reserva un "
-#~ "contacto a un agente, hasta ser "
-#~ "liberado de manera tal que pueda "
-#~ "ser demandado por otro agente."
-#~ msgstr ""
-
-# a1c43ad1c4c14d038629afc9c7c9a16b
-#~ msgid ""
-#~ "En la segunda pantalla se deben "
-#~ "asignar las calificaciones que se "
-#~ "requieran como disponibles para los "
-#~ "agentes a la hora de clasificar "
-#~ "cada llamada de cada contacto."
-#~ msgstr ""
-
-# e0dcf899499f4ec797ec982d4a1a109a
-#~ msgid ""
-#~ "Luego resta asignar a los supervisores"
-#~ " y agentes que podrán trabajar en "
-#~ "la misma. En la figura 3 y 4"
-#~ " se ejemplifica una asignación de "
-#~ "agentes a una campaña."
-#~ msgstr ""
-
-# 4a030e3581f14236910ccd222f138333
-#~ msgid ""
-#~ "Finalmente nuestra campañas queda disponible"
-#~ " para comenzar a operar. Por lo "
-#~ "tanto cuando los agentes asignados a "
-#~ "la misma realicen un login a la"
-#~ " plataforma, deberían disponer de la "
-#~ "campaña preview tal como se expone "
-#~ "en la figura 5."
-#~ msgstr ""
-
-# 9bb6f897ba304201b6f10fdbfb027eca
-#~ msgid ""
-#~ "Si el agente hace click sobre el"
-#~ " teléfono entonces se dispara la "
-#~ "llamada, se visualizan los datos (extras"
-#~ " al teléfono) del contacto llamado, "
-#~ "en la vista de agente y "
-#~ "permitiendo a su vez al agente "
-#~ "clasificar la llamada con alguna de "
-#~ "las calificaciones asignadas a la "
-#~ "campaña."
-#~ msgstr ""

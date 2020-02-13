@@ -42,31 +42,3 @@ msgstr "From one hand:"
 #: ../../crm_integration.rst:16
 msgid "Mientras que por el otro tenemos:"
 msgstr "And for the other hand, we get:"
-
-# 7f629162c38c45ad8e5eac7566679806
-#~ msgid ""
-#~ "En cada llamada al CRM se pueden"
-#~ " enviar datos de la llamada y "
-#~ "el contacto como por ejemplo:"
-#~ msgstr ""
-
-# 14243ab4189b4ab6830245e4d7944455
-#~ msgid "El \"path\" de la grabación de la llamada."
-#~ msgstr ""
-
-# 44297ef82b2e476f85d3222255c8ea94
-#~ msgid "El \"id\" del agente."
-#~ msgstr ""
-
-# bebe7941ea334c3ab07d8ec27257e0c9
-#~ msgid "El \"id\" de la campaña."
-#~ msgstr ""
-
-# b7cf90fa0598429da3a73fede0227872
-#~ msgid "Cualquiera de las columnas de la base asociada a la campaña."
-#~ msgstr ""
-
-# 6c60c90460884a23ae96856e88cb5da1
-#~ msgid "Entre otros parámetros."
-#~ msgstr ""
-

@@ -319,7 +319,3 @@ msgstr ""
 #: ../../output_outbound_camp.rst:125
 msgid "*Figure 11: DB result*"
 msgstr ""
-
-#~ msgid "Telephony"
-#~ msgstr ""
-

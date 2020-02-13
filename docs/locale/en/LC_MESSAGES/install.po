@@ -25,19 +25,18 @@ msgstr "OMniLeads installation"
 
 # f2e89e8a95d54130b0094c2d0c153b47
 #: ../../install.rst:6
-#, fuzzy
 msgid "En este capítulo se detallan los tipos de instalación de OMniLeads"
-msgstr "In this chapter the three types of OMniLeads installation are detailed"
+msgstr "In this chapter the different types of OMniLeads installations are detailed"
 
 # fbeaecf3551c498eb204dbd3d59554ee
 #: ../../install.rst:8
 msgid ":ref:`about_install_selfhosted`."
-msgstr ":ref:`about_install_selfhosted`."
+msgstr ""
 
 # 1a4da564bd79494fb3781240dea3762d
 #: ../../install.rst:9
 msgid ":ref:`about_install_remote`."
-msgstr ":ref:`about_install_remote`."
+msgstr ""
 
 # 97369854435040e1bb4123c4159a8c53
 #: ../../install.rst:10
@@ -59,9 +58,8 @@ msgstr ""
 
 # b0d60365f9244ef38cd606f29b3da5dc
 #: ../../install.rst:15
-#, fuzzy
 msgid ":ref:`about_install_docker_build`."
-msgstr ":ref:`about_install_selfhosted`."
+msgstr ""
 
 # 7fda9b93bfd14b359367cd4389d7ec5d
 #: ../../install.rst:19

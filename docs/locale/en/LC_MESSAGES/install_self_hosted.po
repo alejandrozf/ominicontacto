@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-27 09:31-0300\n"
+"POT-Creation-Date: 2020-02-13 11:31-0300\n"
 "PO-Revision-Date: 2019-08-13 17:34-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 # 19adec2eb1f24588af195582f92623c2
 #: ../../install_self_hosted.rst:5
@@ -94,30 +94,6 @@ msgstr ""
 "We must have the git package to then clon the project repository and "
 "select the release to install"
 
-# f07e195eae4441f39dd5cdf9f6852760
-#: ../../install_self_hosted.rst:29
-msgid "**Ubuntu - Debian:**"
-msgstr "**Ubuntu - Debian:**"
-
-# a204d339581244b886452034b5aca489
-#: ../../install_self_hosted.rst:38
-msgid "Realizar el update/upgrade del sistema operativo"
-msgstr "Make an update/upgrade of the SO"
-
-# 5b2b4f4b220e494f873cf9cf105e5e3f
-#: ../../install_self_hosted.rst:47
-msgid ""
-"**Para Debian:** Instalar paquete linux-image-amd64: *apt-get install "
-"linux-image-amd64*"
-msgstr ""
-"**To Debian:** Install the package linux-image-amd64: *apt-get install "
-"linux-image-amd64*"
-
-# 37fc736d167648878d78e3b482c57ad6
-#: ../../install_self_hosted.rst:49
-msgid "Rebootear la máquina."
-msgstr "Reboot the machine"
-
 # fa529c6c705a4ef189359f290a2fc988
 #: ../../install_self_hosted.rst:29
 msgid "**CentOS:**"
@@ -174,14 +150,18 @@ msgstr ""
 msgid ""
 "Luego, allí en el inventory mismo debemos ajustar las "
 ":ref:`about_install_inventory_vars` de la instanacia."
-msgstr "In inventory file, check the variables of instance :ref:`about_install_inventory_vars`"
+msgstr ""
+"In inventory file, check the variables of instance "
+":ref:`about_install_inventory_vars`"
 
 # 54b60f7b860b4719a999d0444dba19ac
 #: ../../install_self_hosted.rst:65
 msgid ""
 "Una vez ajustados todos los parámetros del archivo de inventario, "
 "procedemos con la ejecución de la instalación."
-msgstr "Once adjusted all parameters in inventory file, proceed with the installation script."
+msgstr ""
+"Once adjusted all parameters in inventory file, proceed with the "
+"installation script."
 
 # de8b4289cf3a40f98d8c2d1b15f25578
 #: ../../install_self_hosted.rst:68
@@ -259,26 +239,27 @@ msgid "Primer acceso a OMniLeads:"
 msgstr "First access to OMniLeads:"
 
 # 765c895d5628452995cfb786d64230e3
-#: ../../install_self_hosted.rst:122
+#: ../../install_self_hosted.rst:96
 msgid "Para acceder al sistema OMniLeads debe ingresar a:"
 msgstr "To access OMniLeads use the URL"
 
 # a0b209b3cea449368a177bbe243c30f9
-#: ../../install_self_hosted.rst:124
+#: ../../install_self_hosted.rst:98
 msgid "https://omnileads-hostname"
 msgstr ""
 
 # 86170ce5165641619c3f2aa8c42932dd
-#: ../../install_self_hosted.rst:127
+#: ../../install_self_hosted.rst:101
 msgid ""
 "El acceso web a OMniLeads debe ser a través del hostname.domain del host."
 " Por lo tanto existen dos posibilidades a la hora de resolver el "
 "hostname:"
-msgstr "The web access to OMniLeads must be through hostname.domain of machine. "
+msgstr ""
+"The web access to OMniLeads must be through hostname.domain of machine. "
 "So there are two possibilities for hostname resolving"
 
 # e9093e2eea314073b3699cdd47cabf36
-#: ../../install_self_hosted.rst:130
+#: ../../install_self_hosted.rst:104
 msgid "Que los DNS de la red lo hagan."
 msgstr "Network DNS do it"
 

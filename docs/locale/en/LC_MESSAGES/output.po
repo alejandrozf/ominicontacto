@@ -134,18 +134,3 @@ msgstr "This section reviews the OMniLeads Supervision module."
 #: ../../output.rst:47
 msgid ":ref:`about_supervision`."
 msgstr ""
-
-#~ msgid "Reportes generales de llamadas"
-#~ msgstr ""
-
-# d59f27f874b64a7f8014df243a355615
-#~ msgid "Supervisión relatime"
-#~ msgstr ""
-
-# 1c5b9909c20b4dc8981fed555303a479
-#~ msgid ""
-#~ "Esta sección repasa cada informe "
-#~ "generado por el reporte general de "
-#~ "llamadas. *Reportes -- Llamadas*"
-#~ msgstr ""
-

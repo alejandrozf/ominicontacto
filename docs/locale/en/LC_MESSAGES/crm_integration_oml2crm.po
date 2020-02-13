@@ -364,13 +364,14 @@ msgstr ""
 #: ../../crm_integration_oml2crm.rst:97
 #, fuzzy
 msgid ""
-"**Dato de base de contactos**, serian parámetros disponibles a partir de "
+"**Dato de base de contactos**, serían parámetros disponibles a partir de "
 "las columnas de la base de contactos de campaña actual. Entonces quiere "
 "decir que podemos citar a cualquier columna de la base como parámetro a "
 "enviar en una llamada al CRM."
 msgstr ""
 "**Contact Data**, parameters available from the columns of the current "
-"campaign contact database."
+"campaign contact database. Any column can be chosen as a parameter to send"
+" to the CRM."
 
 # ee4ce5800287446a8d05dc01f53518be
 #: ../../crm_integration_oml2crm.rst:99
@@ -617,15 +618,3 @@ msgid ""
 msgstr ""
 "Finally we highlight the relationship between columns 2 and 3 of each "
 "parameter, within the scenario of \"clean URLs \"."
-
-# 3124d2f00ead48fa88765193b82460dc
-#~ msgid ""
-#~ "Entonces quiere decir que podemos citar"
-#~ " a cualquier columna de la base "
-#~ "como parámetro a enviar en una "
-#~ "llamada al CRM."
-#~ msgstr ""
-#~ "So it means we can quote any "
-#~ "column in the database as a "
-#~ "parameter to send in a program "
-#~ "call to the CRM."

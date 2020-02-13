@@ -19,7 +19,7 @@ msgstr ""
 # 5cf09c411fe14c4d990cb48d96c13a7c
 #: ../../api.rst:5
 msgid "OMniLeads RESTful API"
-msgstr ""
+msgstr "OMniLeads RESTful API"
 
 # 2e40cec90b6045638d1f7cae33b97cf4
 #: ../../api.rst:7
@@ -148,7 +148,7 @@ msgstr "username"
 #: ../../api.rst:252 ../../api.rst:259 ../../api.rst:261 ../../api.rst:263
 #: ../../api.rst:296 ../../api.rst:303 ../../api.rst:305
 msgid "string"
-msgstr ""
+msgstr "string"
 
 # 22a0ca61a4b646b29d78b28ac21cceeb
 #: ../../api.rst:41
@@ -158,7 +158,7 @@ msgstr "username value generated from the OML users creation menu"
 # db88777d87464163a8cf0aebc69597ac
 #: ../../api.rst:43
 msgid "password"
-msgstr ""
+msgstr "password"
 
 # a8ea7971a3e1423ca05bf69eb76d14b4
 #: ../../api.rst:43
@@ -260,13 +260,13 @@ msgstr ""
 #: ../../api.rst:82 ../../api.rst:108 ../../api.rst:139 ../../api.rst:205
 #: ../../api.rst:290
 msgid "idExternalSystem"
-msgstr ""
+msgstr "idExternalSystem"
 
 # e24e8b5314d946eeac7cab08fbee30a4
 #: ../../api.rst:82 ../../api.rst:108 ../../api.rst:205 ../../api.rst:214
 #: ../../api.rst:255 ../../api.rst:290 ../../api.rst:299
 msgid "integer"
-msgstr ""
+msgstr "integer"
 
 # 91fb3501b15f4a31a8a2ff678dde3e9d
 #: ../../api.rst:82 ../../api.rst:108
@@ -284,7 +284,7 @@ msgstr ""
 # e0707b82868b4f24b0347b6f765c0be0
 #: ../../api.rst:87 ../../api.rst:113 ../../api.rst:142
 msgid "idCampaign"
-msgstr ""
+msgstr "idCampaign"
 
 # 6b0bd504201645809abee173ee48bb40
 #: ../../api.rst:87 ../../api.rst:113
@@ -431,7 +431,7 @@ msgstr ""
 # 2199d0af28334b5eb89bfe1ed1d42920
 #: ../../api.rst:147
 msgid "idAgent"
-msgstr ""
+msgstr "idAgent"
 
 # 0ee76ff58e764b37b0a06e5c7113bed2
 #: ../../api.rst:147
@@ -621,7 +621,7 @@ msgstr ""
 # 1ce73fe8fbca492086d462fe3e9b45de
 #: ../../api.rst:211 ../../api.rst:296
 msgid "idContact"
-msgstr ""
+msgstr "idContact"
 
 # 067143800dbf4db1b7bfa4328c26515b
 #: ../../api.rst:211 ../../api.rst:296
@@ -635,7 +635,7 @@ msgstr ""
 # 6188b69f80ef442ba8556b56ab2fa5ff
 #: ../../api.rst:214 ../../api.rst:255 ../../api.rst:299
 msgid "idDispositionOption"
-msgstr ""
+msgstr "idDispositionOption"
 
 # d6bd17b01b724a22a39611afc5fdb475
 #: ../../api.rst:214 ../../api.rst:255 ../../api.rst:299
@@ -651,7 +651,7 @@ msgstr ""
 # a3916a0ca32b48379f8794c16084b2d1
 #: ../../api.rst:218 ../../api.rst:261 ../../api.rst:303
 msgid "callid"
-msgstr ""
+msgstr "callid"
 
 # 8ae793fe92664660ba70828908746ba3
 #: ../../api.rst:218 ../../api.rst:261 ../../api.rst:303
@@ -662,7 +662,7 @@ msgstr "Optional parameter, call identifier"
 # 5691a4f300824cc893fee2707819f462
 #: ../../api.rst:220 ../../api.rst:259 ../../api.rst:305
 msgid "comments"
-msgstr ""
+msgstr "comments"
 
 # 1692b04ca3e64d2d9400b58647e319ae
 # 697712ecaa324b88815faa617a8d4c5b
@@ -733,7 +733,7 @@ msgstr ""
 # e9c8bf39fbb84d668a8059092157764c
 #: ../../api.rst:250
 msgid "phone"
-msgstr ""
+msgstr "phone"
 
 # 44f36522735d40e6b1b62dbe42c8dd0b
 #: ../../api.rst:250
@@ -743,7 +743,7 @@ msgstr "The contact phone number"
 # 2425c84475b745309243a0e712133b96
 #: ../../api.rst:252
 msgid "idExternalContact"
-msgstr ""
+msgstr "idExternalContact"
 
 # 80ca34b695c6498a8413d073119b145b
 #: ../../api.rst:252
@@ -753,7 +753,7 @@ msgstr "Optional parameter, the contact id on an external CRM system"
 # 31f0c44ce22a4136b2469b4f06f71ebc
 #: ../../api.rst:263
 msgid "<optional_bd_field>"
-msgstr ""
+msgstr "<optional_bd_field>"
 
 # 511e83425c9f46f6b5945eba7e91bc03
 #: ../../api.rst:263
@@ -818,293 +818,12 @@ msgstr ""
 # 1692b04ca3e64d2d9400b58647e319ae
 #: ../../api.rst:330
 msgid "API de Sesión de Agente en Asterisk"
-msgstr ""
+msgstr "Asterisk Agent Session API"
 
 # d2e93577172344cea4ae50ad050c08ca
 #: ../../api.rst:332
 msgid ""
 "Endpoints de la API utilizados por el WebPhone mediante los cuales puede "
 "controlar las sesiones del agente en Asterisk."
-msgstr ""
-
-# 96b6c3309f614c3a857e212cd5292ce6
-#~ msgid ""
-#~ "**X,Y**: donde \"X\" es un número "
-#~ "entero y corresponde con el tipo "
-#~ "de destino hacia a donde enviar la"
-#~ " llamada identificada e \"Y\" es el"
-#~ " destino puntual"
-#~ msgstr ""
-
-# fed5ccada58a411ebf09b2aced378aa1
-#~ msgid ""
-#~ "para ese tipo de destino. Por "
-#~ "ejemplo (1,3) indica que la llamada "
-#~ "será enrutada hacia una campaña entrante"
-#~ " (1) y puntualmente hacia la campaña"
-#~ " entrante cuyo id es (3)."
-#~ msgstr ""
-
-# a816581ada7d4f8b856f23da748b7a84
-#~ msgid ""
-#~ "La clave asociada a la respuesta "
-#~ "es \"response\". El formato de respuesta"
-#~ " debe ser \"JSON\"."
-#~ msgstr ""
-
-# 0b45c37c25624b0aa261ff1556737ac0
-#~ msgid "*figure 1: endpint login request*"
-#~ msgstr ""
-
-# 03ec38a32f1a4ebdb228785b9a4dd896
-#~ msgid "*figure 2: endpint login request ok*"
-#~ msgstr ""
-
-# 0ad5df51d9aa45a79a37bd02c2b18acd
-#~ msgid "Solicitud de enrutamiento hacia el sistema CRM externo"
-#~ msgstr "Routing request to the external CRM system"
-
-# f7fb99a2770b4d4589b9576abe45b3e3
-#~ msgid ""
-#~ "Esta interacción implica que OMniLeads "
-#~ "ejecute una solicitud HTTP-POST "
-#~ "(plain/text) hacia el URL del sistema"
-#~ " de gestión especificado dentro del "
-#~ "módulo :ref:`about_customer_id_form`, osea en "
-#~ "la definición de un nodo "
-#~ "\"identificación de clientes\"."
-#~ msgstr ""
-#~ "This interaction implies that OMniLeads "
-#~ "executes a POST (plain/text) request to"
-#~ " the management system specified inside "
-#~ "of module :ref:`about_customer_id_form`, it "
-#~ "means, in the definition of a node"
-#~ " in the section \"\"Clients "
-#~ "identification\"."
-
-# d7851bd36224467a88711b33a017aafb
-#~ msgid ""
-#~ "Este POST enviado hacia el sistema "
-#~ "de gestión CRM tiene el siguiente "
-#~ "aspecto"
-#~ msgstr ""
-#~ "This POST sent to the management "
-#~ "CRM system have the the following "
-#~ "aspect"
-
-# 3da156ddc7cf4c7b96021684ec84dca7
-#~ msgid ""
-#~ "Como podemos observar el \"User-Agent\""
-#~ " debe llegar como \"OMniLeads\" y en"
-#~ " el cuerpo del Post el número "
-#~ "de identificación ingresado en la "
-#~ "llamada se envía como \"idContact\"."
-#~ msgstr ""
-#~ "The \"User-Agent\" must be sent as"
-#~ " \"OMniLeads\" and in the body of "
-#~ "the request the identifier number "
-#~ "entered on the is sent on the "
-#~ "\"idContact\" field"
-
-# ca471e34f57e4f2ab137022a2b00ab81
-#~ msgid ""
-#~ "**Respuesta que debe generar el servicio"
-#~ " web del sistema de gestión CRM**"
-#~ msgstr ""
-#~ "**Answer that must be generated from "
-#~ "the web of the management CRM "
-#~ "system**"
-
-# bec04ac3776f49b7b8a656b6b1ceecce
-#~ msgid ""
-#~ "El servicio recibe de OMniLeads el "
-#~ "request HTTP-Post con el número de"
-#~ " identificación del cliente y debe "
-#~ "generar una respuesta a dicha solicitud."
-#~ " El sistema tiene la posibilidad de"
-#~ " generar tres tipos de respuestas:"
-#~ msgstr ""
-#~ "The service receives from OMniLeads the"
-#~ " POST request with the client "
-#~ "identification  number and must be "
-#~ "generate an answer to this requests. "
-#~ "The system can make 3 response "
-#~ "types:"
-
-# 6a11fd268f8a4eebb3209a2c3b5862ec
-#~ msgid "**true**"
-#~ msgstr ""
-
-# caccdb301a9248c7beaf290c82592faf
-#~ msgid "**false**"
-#~ msgstr ""
-
-# 0cb82ef9cd3d4c3495edf87d706bd41f
-#~ msgid ""
-#~ "**X,Y**: donde \"X\" es un número "
-#~ "entero y corresponde con el tipo "
-#~ "de destino hacia a donde enviar la"
-#~ " llamada identificada e \"Y\" es el"
-#~ " destino puntual para ese tipo de "
-#~ "destino. Por ejemplo (1,3) indica que"
-#~ " la llamada será enrutada hacia una"
-#~ " campaña entrante (1) y puntualmente "
-#~ "hacia la campaña entrante cuyo id "
-#~ "es (3). La clave asociada a la "
-#~ "respuesta es \"response\""
-#~ msgstr ""
-#~ "**X,Y**: where \"X\" is an integer "
-#~ "and match with the node destination "
-#~ "type where the call identified will "
-#~ "be sent and \"\\Y\" is the node"
-#~ " destination id for that node "
-#~ "destination type. For example (1,3) "
-#~ "indicates that the call will be "
-#~ "routed to one inbound campaign (1) "
-#~ "and specifically to the inbound campaign"
-#~ " with id (3). The field associated"
-#~ " to the responde is \"response\""
-
-# 2ef23615f84c49d496afcd6eb571105b
-#~ msgid "El formato de respuesta debe ser \"JSON\"."
-#~ msgstr "The answer response format must be \"JSON\""
-
-# 41ec88692262463e8edf098bbe3a2a43
-#~ msgid "Respuesta JSON"
-#~ msgstr "JSON answer"
-
-# 6d547faebc974b08b128f8bda7816759
-#~ msgid ""
-#~ "Donde \"status\" puede ser *ok* o "
-#~ "*fail* y \"destination\" podrá ser "
-#~ "cualquiera de las 3 respuestas "
-#~ "especificadas arriba."
-#~ msgstr ""
-#~ "Where \"status\" must be *ok* or "
-#~ "*fail* and \"destination\" could be any"
-#~ " of the 3 responses types specified"
-#~ " previously."
-
-# b0468e9d205147e2aab89e1916c2794c
-#~ msgid ""
-#~ "El sistema debe respetar el formato "
-#~ "y nombre de parámetros (status y "
-#~ "destination)"
-#~ msgstr ""
-#~ "The system must be respect the "
-#~ "format an name of the 'status' and"
-#~ " 'destination'parameters"
-
-# c45d9389b7c94bffa33c8941fe7e6686
-#~ msgid ""
-#~ "En caso de generar una respuesta "
-#~ "con el destino del enrutamiento, se "
-#~ "deben conocer los tipos de destino:"
-#~ msgstr ""
-#~ "In case of generate a response "
-#~ "with the routing destination, the node"
-#~ " destination types must be known:"
-
-# 643523a8c6c54291bb2bb4bb80a8c895
-#~ msgid "1: Campaña entrante"
-#~ msgstr "1: Inbound campaign"
-
-# 210ca025ddc4442493e2ffb4ac696473
-#~ msgid "2: Condicional basado en tiempo"
-#~ msgstr "2: Time condition based"
-
-# 1389b9d432804a04aa23628db5b9a620
-#~ msgid "3: IVR"
-#~ msgstr ""
-
-# 981466ecce884bc3b0c10caeb400ae4a
-#~ msgid "5: Hangup de la llamada"
-#~ msgstr "5: Call Hangup"
-
-# 627bdb4550de478ea9e1ccd6b60a54b4
-#~ msgid "9: Solicitud de identificación"
-#~ msgstr "9: Client identification"
-
-# 3197c9402f22450e919ed7ca9cc4f41c
-#~ msgid ""
-#~ "En un futuro se implementará un "
-#~ "endpoint de la API para listar "
-#~ "cada destino posible por cada tipo "
-#~ "de destino. Mientras tanto, el "
-#~ "desarrollador que desee implementar el "
-#~ "enrutamiento de llamadas basado en la"
-#~ " identificación ingresada en la llamada "
-#~ "y el request generado desde OMniLeads,"
-#~ " podrá ingresar a la interfaz de "
-#~ "OMniLeads y en cada módulo (tipo "
-#~ "de destino) listar los mismos y "
-#~ "observar el id."
-#~ msgstr ""
-#~ "In a future an endpoint to list"
-#~ " all node destinations for a node "
-#~ "destination type will be implemented. "
-#~ "For now, the developer can enter "
-#~ "to the OMniLeads web interface and "
-#~ "inspect in the module (node destination"
-#~ " type) list, to get the id(s) "
-#~ "needed."
-
-# 9cd2f8b1fb2d42be857a01ff2e039f6b
-#~ msgid ""
-#~ "**Ejemplo de respuesta con destino de"
-#~ " llamada**: se desea validar cada id"
-#~ " enviado desde OMniLeads y responder "
-#~ "con dos posibles tipos destinos de "
-#~ "enrutamiento. Por un lado una campaña"
-#~ " entrante llamada \"clientes gold\" y "
-#~ "otra llamada \"clientes bronce\"."
-#~ msgstr ""
-#~ "**Example of call destination**: is "
-#~ "wanted to validate each id sent "
-#~ "from OMniLeads and answer with two "
-#~ "posible node destination types of "
-#~ "routing. For one side an inbound "
-#~ "campaign called \"gold clients\" and "
-#~ "other called  \"bronze clients\"."
-
-# 86c09e216a2e4dfaa5214f6bf158670b
-#~ msgid ""
-#~ "Para ello suponemos que existen las "
-#~ "dos campañas entrantes como se indica"
-#~ " en la figura."
-#~ msgstr "For this, we assume that two campaigns exists as shown in the picture"
-
-# ab989e684d4849fb81b88c6d202a782e
-#~ msgid ""
-#~ "Tan solo con posicionar el mouse "
-#~ "sobre el nombre de la campaña, "
-#~ "podremos dilucidar el \"id\" particular "
-#~ "de cada una."
-#~ msgstr ""
-#~ "With only positionate the mouse over "
-#~ "the campaign name, we can get the"
-#~ " \"id\" from each one"
-
-# e24a6e4163f944969c5487bdfc9ed482
-#~ msgid ""
-#~ "Por lo tanto, a partir de conocer"
-#~ " los \"id\" de cada campaña el "
-#~ "sistema de gestión a partir de su"
-#~ " lógica de negocio, podrá evaluar "
-#~ "cada llamada e indicar a OMniLeads "
-#~ "hacia donde encaminarla devolviendo el "
-#~ "par \"X,Y\"."
-#~ msgstr ""
-#~ "Thus, having the \"id\" of each "
-#~ "campaing the management system, can, "
-#~ "using itsown business login, evaluate "
-#~ "each call and indicates to OML "
-#~ "where should berouted"
-
-# c6eac21c35434649a6f344e2f01d6cb2
-#~ msgid "*figure 3: endpint login request fail*"
-#~ msgstr ""
-
-# 7c357736cb68440ab11b94f7539131bc
-#~ msgid "*figure 4: endpint new call request*"
-#~ msgstr ""
+msgstr "API endpoints used by the WebPhone to control the Asterisk's Agent "
+"sessions."

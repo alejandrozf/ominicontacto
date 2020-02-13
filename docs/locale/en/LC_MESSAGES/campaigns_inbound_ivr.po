@@ -20,7 +20,7 @@ msgstr ""
 # 7df1a22ccfbb4fe1ac872963881e5c08
 #: ../../campaigns_inbound_ivr.rst:5
 msgid "IVR - Interactive Voice Response"
-msgstr ""
+msgstr "IVR - Interactive Voice Response"
 
 # 3117cc3ca907477d95e0a66bdd8ae831
 #: ../../campaigns_inbound_ivr.rst:7
@@ -283,6 +283,3 @@ msgstr "Click on save button"
 #: ../../campaigns_inbound_ivr.rst:56
 msgid "Es posible anidar un IVR dentro de otro."
 msgstr "It is possible to nest an IVR inside another."
-
-#~ msgid "Nota: es posible anidar diferentes IVRs."
-#~ msgstr ""

@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-28 14:03-0300\n"
+"POT-Creation-Date: 2020-02-13 11:31-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 # 1be8540b44ae42819aa735e1e6f33ffc
 #: ../../index.rst:3
@@ -111,17 +111,15 @@ msgstr ""
 msgid "Donde se puede instalar ?"
 msgstr "Where can I install it ?"
 
-# 9249cfdfbf44467b88719c80d0db1ae3
+# d98f8cd74f2142ee9c5fa25e79f78176
 #: ../../index.rst:34
 msgid ""
 "OMniLeads puede correr como una aplicación tradicional desplegando una "
 "instalación de todos los componentes sobre un server físico, máquina "
-"virtual o VPS, asumiendo como requisito utilizar cualquiera de las "
-"siguientes distribuciones de GNU/Linux:"
+"virtual o VPS. Siempre y cuando se utilice como base GNU/Linux: `CentOS "
+"minimal 7.7 "
+"<http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso>`_"
 msgstr ""
-"OMniLeads can be deployed as a monolithic application, installing all "
-"software components on premise (VM or VPS). It's neccesary to use any of "
-"these GNU/Linux distros:"
 
 # 3b0f13df226844999c66596d8ae0cecb
 #: ../../index.rst:37
@@ -138,7 +136,7 @@ msgid "`Docker <https://www.docker.com>`_"
 msgstr ""
 
 # 99c26074e0ed407ab55c2413c1eab26c
-#: ../../index.rst:48
+#: ../../index.rst:40
 msgid ""
 "OMniLeads puede ser desplegado utilizando contenedores Docker, esto "
 "extiende la posibilidad de ejecución de la aplicación sobre diversas "
@@ -146,20 +144,14 @@ msgid ""
 "formato es posible desplegar OMniLeads sobre instancias de Issabel-PBX & "
 "FreePBX, de manera tal que dentro del mismo host conviva el software de "
 "PBX y OMniLeads como software de Contact Center."
-msgstr "OMniLeads can also be deployed using Docker containers, with this form "
-"the software can be also installed inside an Issabel-PBX or FreePBX instances, "
-"having both Contact Center and PBX solutions inside the same host."
-
-# 77743afc72dc4cbf91128931773b6638
-#: ../../index.rst:52
-msgid ""
-"Las imágenes oficiales están disponibles en `Docker-Hub "
-"<https://hub.docker.com/u/freetechsolutions>`_."
-msgstr "The official docker images are pused in `Docker-Hub "
-"<https://hub.docker.com/u/freetechsolutions>`_."
+msgstr ""
+"OMniLeads can also be deployed using Docker containers, with this form "
+"the software can be also installed inside an Issabel-PBX or FreePBX "
+"instances, having both Contact Center and PBX solutions inside the same "
+"host."
 
 # b654d19a2b3f4812946cc3db8788f29b
-#: ../../index.rst:55
+#: ../../index.rst:45
 msgid "Cómo lo instalo ?"
 msgstr "How do I install it ?"
 
@@ -179,14 +171,14 @@ msgid "Características y funcionalidades de OMniLeads"
 msgstr "Omnileads's Features and funtionalities"
 
 # 4cbfcea2d8174343827c08b23bdb8298
-#: ../../index.rst:63
+#: ../../index.rst:53
 msgid ":ref:`about_webrtc`."
-msgstr ":ref:`about_webrtc`."
+msgstr ""
 
 # c886349613ce4703a26669307710fe5d
 #: ../../index.rst:54
 msgid ":ref:`about_omlfeatures`."
-msgstr ":ref:`about_omlfeatures`."
+msgstr ""
 
 # 44fce8d7ec6b4e94b9a27386d440f5e2
 #: ../../index.rst:57
@@ -196,17 +188,17 @@ msgstr "Where and how can I use it ?"
 # 6750592efdb4410e9d1a374ad67aaf1a
 #: ../../index.rst:59
 msgid ":ref:`about_usecase_pbx`."
-msgstr ":ref:`about_usecase_pbx`."
+msgstr ""
 
 # 4ddccf385a8748f8bc6ca680896d8b1d
 #: ../../index.rst:60
 msgid ":ref:`about_usecase_bpo`."
-msgstr ":ref:`about_usecase_bpo`."
+msgstr ""
 
 # 02372c2138e34c03bb421e5b4392ea52
 #: ../../index.rst:61
 msgid ":ref:`about_usecase_cloud`."
-msgstr ":ref:`about_usecase_cloud`."
+msgstr ""
 
 # 56b9d354e0664a1084e983935e34172c
 #: ../../index.rst:65
