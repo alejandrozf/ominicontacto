@@ -18,7 +18,7 @@
 #
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from ominicontacto_app.models import AgenteProfile, User, Modulo, AgenteEnContacto
+from ominicontacto_app.models import AgenteProfile, User, AgenteEnContacto
 from ominicontacto_app.forms import (
     CustomUserChangeForm,
     CustomUserCreationForm
@@ -65,14 +65,6 @@ class AgenteAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'user_id'
-    )
-
-
-@admin.register(Modulo)
-class ModuloAdmin(admin.ModelAdmin):
-    list_display = (
-        'id',
-        'nombre'
     )
 
 

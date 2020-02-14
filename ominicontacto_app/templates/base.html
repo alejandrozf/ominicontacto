@@ -121,22 +121,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </li>
                 {% endif %}
 
-                {% if user.get_is_administrador %}
-                <li class="main-menu-li">
-                    <span class="icon icon-module"></span>
-                    <a class="menu-header" href="#menuModules" role="button" data-toggle="collapse" aria-expanded="false">
-                      {% trans 'Módulos' %}</a>
-                    <ul class="collapse list-unstyled submenu" id="menuModules" data-parent="#nav-main-menu">
-                        <li>
-                            <a href="{% url 'modulo_list' %}">{% trans 'Módulos disponibles' %}</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'modulo_nuevo' %}">{% trans 'Habilitar Módulo' %}</a>
-                        </li>
-                    </ul>
-                </li>
-                {% endif %}
-
                 {% if user.get_es_administrador_o_supervisor_normal %}
                 <li class="main-menu-li">
                     <span class="icon icon-audio-file"></span>

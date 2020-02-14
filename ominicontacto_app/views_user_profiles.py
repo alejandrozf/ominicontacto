@@ -35,7 +35,7 @@ from ominicontacto_app.forms import (
 )
 
 from ominicontacto_app.models import (
-    SupervisorProfile, AgenteProfile, ClienteWebPhoneProfile, User, QueueMember, Modulo, Grupo,
+    SupervisorProfile, AgenteProfile, ClienteWebPhoneProfile, User, QueueMember, Grupo,
 )
 
 from ominicontacto_app.views_queue_member import activar_cola, remover_agente_cola_asterisk
@@ -71,15 +71,14 @@ class CustomUserWizard(SessionWizardView):
                  (AGENTE, AgenteProfileForm), ]
     template_name = "user/user_create_form.html"
 
-    def _grupos_y_modulos_disponibles(self):
-        modulos = Modulo.objects.all()
+    def _grupos_disponibles(self):
         grupos = Grupo.objects.all()
-        return modulos.count() > 0 and grupos.count() > 0
+        return grupos.count() > 0
 
     def dispatch(self, request, *args, **kwargs):
-        if not self._grupos_y_modulos_disponibles():
+        if not self._grupos_disponibles():
             message = _(u"Para poder crear un Usuario Agente asegurese de contar con al menos "
-                        "un Grupo y un Modulo cargados.")
+                        "un Grupo cargado.")
             messages.warning(self.request, message)
         return super(CustomUserWizard, self).dispatch(request, *args, **kwargs)
 
@@ -100,7 +99,7 @@ class CustomUserWizard(SessionWizardView):
             # TODO: Limitar los tipos de Usuarios que puede crear segun el tipo de usuario
             # Admin y gerentes: Agentes y Supervisores
             # Supervisores: Agentes y ¿Supervisores?
-            if not self._grupos_y_modulos_disponibles():
+            if not self._grupos_disponibles():
                 kwargs['deshabilitar_agente'] = True
         if step == self.SUPERVISOR:
             kwargs['rol'] = SupervisorProfile.ROL_GERENTE
@@ -110,7 +109,6 @@ class CustomUserWizard(SessionWizardView):
         if step == self.AGENTE:
             # TODO: Limitar los agentes y grupos que puede seleccionar segun el tipo de usuario
             kwargs['grupos_queryset'] = Grupo.objects.all()
-            kwargs['modulos_queryset'] = Modulo.objects.all()
         return kwargs
 
     def _save_supervisor_form(self, user, form):
@@ -145,7 +143,6 @@ class CustomUserWizard(SessionWizardView):
         agente_profile.sip_extension = 1000 + user.id
         agente_profile.reported_by = self.request.user
         agente_profile.save()
-        agente_profile.modulos.set(form.cleaned_data['modulos'])
         # generar archivos sip en asterisk
         asterisk_sip_service = ActivacionAgenteService()
         try:
@@ -353,7 +350,6 @@ class AgenteProfileUpdateView(UpdateView):
 
     def get_form_kwargs(self):
         kwargs = super(AgenteProfileUpdateView, self).get_form_kwargs()
-        kwargs['modulos_queryset'] = Modulo.objects.all()
         kwargs['grupos_queryset'] = Grupo.objects.all()
         return kwargs
 

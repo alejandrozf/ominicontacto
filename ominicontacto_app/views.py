@@ -52,7 +52,7 @@ from defender import config
 
 from ominicontacto_app.services.sms_services import SmsManager
 from ominicontacto_app.models import (
-    User, AgenteProfile, Modulo, Grupo, Pausa, Agenda,
+    User, AgenteProfile, Grupo, Pausa, Agenda,
     Chat, MensajeChat, ClienteWebPhoneProfile
 )
 from ominicontacto_app.forms import AgendaBusquedaForm, PausaForm, GrupoForm, RegistroForm
@@ -152,57 +152,6 @@ def login_view(request):
     }
     template_name = 'registration/login.html'
     return TemplateResponse(request, template_name, context)
-
-
-####################
-# MODULOS
-####################
-class ModuloCreateView(CreateView):
-    """Vista para crear un modulo"""
-    model = Modulo
-    template_name = 'base_create_update_form.html'
-    fields = ('nombre',)
-
-    def get_success_url(self):
-        return reverse('modulo_list')
-
-
-class ModuloUpdateView(UpdateView):
-    """Vista para modificar un modulo"""
-    model = Modulo
-    template_name = 'base_create_update_form.html'
-    fields = ('nombre',)
-
-    def get_success_url(self):
-        return reverse('modulo_list')
-
-
-class ModuloDeleteView(DeleteView):
-    """
-    Esta vista se encarga de la eliminación del
-    objeto modulo
-    """
-    model = Modulo
-    template_name = 'delete_modulo.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        modulo = Modulo.objects.get(pk=self.kwargs['pk'])
-        agentes_relacionados = modulo.agenteprofile_set.exists()
-        if agentes_relacionados:
-            message = _("No está permitido eliminar un módulo con agentes relacionados")
-            messages.warning(self.request, message)
-            return HttpResponseRedirect(
-                reverse('modulo_list'))
-        return super(ModuloDeleteView, self).dispatch(request, *args, **kwargs)
-
-    def get_success_url(self):
-        return reverse('modulo_list')
-
-
-class ModuloListView(ListView):
-    """Vista para listar los modulos"""
-    model = Modulo
-    template_name = 'modulo_list.html'
 
 
 ####################
