@@ -75,21 +75,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {{ form.strategy }}
             {{ form.strategy.errors }}
         </div>
-        <div class="col-md-5">
+        <div class="col-md-4">
             <label>{% trans 'Musica de espera:' %}</label>
             {{ form.musiconhold }}
             {{ form.musiconhold.errors }}
         </div>
         <div class="col-md-4">
-            <label>{% trans 'Información de alerta:' %}</label>
-            <input type="" name="">
-        </div>
-        <div class="col-md-3">
             <label for="{{ form.auto_grabacion.id_for_label }}">{% trans 'Grabar llamados:' %}</label>
             {{ form.auto_grabacion }}
             {{ form.auto_grabacion.errors }}
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <label for="{{ form.wait.id_for_label }}">{% trans 'Tiempo de espera en cola:' %}</label>
             {{ form.wait }}
             {{ form.wait.errors }}
@@ -97,30 +93,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ form.wait.help_text }}
             </small>
         </div>
-        <div class="col-md-3">
-            <label>{% trans 'Join Empty:' %}</label>
-            <button class="btn dropdown-toggle">Yes</button>
-        </div>
-        <div class="col-md-3">
-            <label>{% trans 'Leave Empty:' %}</label>
-            <button class="btn dropdown-toggle">No</button>
-        </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <label for="{{ form.ivr_breakdown.id_for_label }}">{% trans 'IVR de escape:' %}</label>
             {{ form.ivr_breakdown }}
             {{ form.ivr_breakdown.errors }}
         </div>
-        <div class="col-md-5">
-            <span class="hidden"></span>
-            <!--Se coloca este span para crear una alineacion con el texto Destino en caso de timeout-->
-        </div>
-        <div class="col-md-7">
-            <label >{% trans 'Destino en caso de timeout' %}</label>
-        </div>
-        <div class="col-md-5">
+        <div class="col-md-4">
             <label for="{{ form.servicelevel.id_for_label }}">{% trans 'Nivel de Servicio:' %}</label>
             {{ form.servicelevel }}
             {{ form.servicelevel.errors }}
+        </div>
+        <div class="col-md-7">
+            <label >{% trans 'Destino en caso de timeout' %}</label>
         </div>
         <div class="col-md-7">
             <div class="row">
@@ -160,15 +144,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {{ form.announce_position }}
                     {{ form.announce_position.errors }}
                 </div>
-                <div class="col-md-6">
-                    <label>{% trans 'Frecuencia de anuncios de tiempo aprox. de espera y posición actual:'%}</label>
-                    <input type="" name="">
-                </div>
-                <div class="col-md-6" id="align_box">
-                    <label>{% trans 'Frecuencia mínima de anuncio:'%}</label>
-                    <input type="" name="">
-                </div>
-
                 <div class="col-md-6">
                     <label for="{{ form.audios.id_for_label }}">{% trans 'Anuncio periódico:' %}</label>
                     {{ form.audios|add_class:"form-control" }}

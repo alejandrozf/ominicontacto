@@ -33,7 +33,8 @@ Se debe completar la primera pantalla del wizard, como lo expone la figura 1.
 A continuación se prosigue con la creación de nuestra campaña entrante.
 
 
-.. image:: images/campaigns_in_wizard2.png
+.. image:: images/campaigns_in_wizard2_1.png
+.. image:: images/campaigns_in_wizard2_2.png
 
 *Figure 2: Campaigns parameters*
 

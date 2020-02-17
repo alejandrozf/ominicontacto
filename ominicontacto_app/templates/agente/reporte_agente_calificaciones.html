@@ -135,7 +135,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                               <span class="icon icon-pencil"></span>{% trans 'Calificación' %}
                           </a>
                           {% if calificacion_cliente.get_venta %}
-                              <a class="dropdown-item" href="{% url 'formulario_venta_update' calificacion_cliente.get_venta.pk %}">
+                              <a class="dropdown-item" href="{% url 'formulario_venta' calificacion_cliente.pk %}">
                               <span class="icon icon-pencil"></span>{% trans 'Gestión' %}
                               </a>
                           {% endif %}

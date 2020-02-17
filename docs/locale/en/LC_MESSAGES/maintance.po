@@ -269,13 +269,11 @@ msgstr ""
 
 # ef761fd569b94e3ba364631e16f093f5
 #: ../../maintance.rst:139
-#, fuzzy
 msgid "*Figure 7: WD basic config - Asterisk Trunk*"
 msgstr "*Figure 7: WD basic config - Asterisk Trunk*"
 
 # 0657bb7ace2f457e97d7541c5fa07771
 #: ../../maintance.rst:141
-#, fuzzy
 msgid ""
 "Por último, recuerde dar \"play\" al servicio de dialer, tal como lo "
 "indica la siguiente figura 8."
@@ -285,7 +283,6 @@ msgstr ""
 
 # e162da89fe8246f0a6823b86356ba4c2
 #: ../../maintance.rst:145
-#, fuzzy
 msgid "*Figure 8: WD activate*"
 msgstr "*Figure 8: WD activate*"
 
@@ -402,7 +399,6 @@ msgstr "A succesful restore throws an output similar to figure 10."
 
 # 1c0a67123c3748398082bf8d2eede350
 #: ../../maintance.rst:206
-#, fuzzy
 msgid "*Figure 10: restore*"
 msgstr "*Figure 10: restore*"
 
@@ -538,7 +534,6 @@ msgstr ""
 
 # 1aad53f5460d4ca28d812131a8a4461b
 #: ../../maintance.rst:270
-#, fuzzy
 msgid "*Figure 11: updates OK*"
 msgstr "*Figure 11: updates OK*"
 
@@ -826,9 +821,8 @@ msgstr ""
 
 # e91e5d8e900d442c9fc8181384124a97
 #: ../../maintance.rst:387
-#, fuzzy
 msgid "*Figure 13: Django admin console*"
-msgstr "*Figure 16: Django admin console*"
+msgstr "*Figure 13: Django admin console*"
 
 # d7a164fe534249f8b6e9adec0536fe74
 #: ../../maintance.rst:390
@@ -841,9 +835,8 @@ msgstr ""
 
 # 6d8907fdef714afa94298f0e1d80178f
 #: ../../maintance.rst:394
-#, fuzzy
 msgid "*Figure 14: Defender in django admin*"
-msgstr "*Figure 17: Defend in django admin*"
+msgstr "*Figure 14: Defend in django admin*"
 
 # 315a366709e541ac848278ae89979c38
 #: ../../maintance.rst:396
@@ -858,9 +851,8 @@ msgstr ""
 
 # 76a24fa6d58f48c087596f31612679af
 #: ../../maintance.rst:400
-#, fuzzy
 msgid "*Figure 15: Blocked users view*"
-msgstr "*Figure 18: Blocked users view*"
+msgstr "*Figure 15: Blocked users view*"
 
 # c0a0d742626b42e7906fc4e988a49513
 #: ../../maintance.rst:402
@@ -871,9 +863,8 @@ msgstr "You will see the blocked user. Just click on **Unblock** to unblock it."
 
 # a0f87c4e842a4ac0a8f8723c7853a35d
 #: ../../maintance.rst:406
-#, fuzzy
 msgid "*Figure 16: Unblock user view*"
-msgstr "*Figure 19: Unblock user view*"
+msgstr "*Figure 16: Unblock user view*"
 
 # 2a7b25e13da74fa6a3d389c6cddf3ce6
 #: ../../maintance.rst:408

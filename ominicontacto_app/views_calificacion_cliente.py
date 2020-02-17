@@ -31,7 +31,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect, get_object_or_404
-from django.views.generic.edit import FormView, CreateView, UpdateView
+from django.views.generic.edit import FormView, CreateView
 from django.views.generic.detail import DetailView
 
 from simple_history.utils import update_change_reason
@@ -54,8 +54,9 @@ class CalificacionClienteFormView(FormView):
     """
     Vista para la creacion y actualización de las calificaciones.
     Además actualiza los datos del contacto.
+    Para ser usada por un Agente (con subclase para Supervisor)
     """
-    template_name = 'formulario/calificacion_create_update.html'
+    template_name = 'formulario/calificacion_create_update_agente.html'
     context_object_name = 'calificacion_cliente'
     model = CalificacionCliente
     form_class = CalificacionClienteForm
@@ -87,8 +88,14 @@ class CalificacionClienteFormView(FormView):
             return False
         return not telefono.isdigit()
 
+    def _get_agente(self):
+        return self.request.user.get_agente_profile()
+
+    def _usuario_esta_asignado_a_campana(self):
+        agente = self._get_agente()
+        return agente.esta_asignado_a_campana(self.campana)
+
     def dispatch(self, *args, **kwargs):
-        self.agente = self.request.user.get_agente_profile()
         id_contacto = None
         self.call_data = None
         call_data_json = 'false'
@@ -107,6 +114,12 @@ class CalificacionClienteFormView(FormView):
             id_contacto = kwargs['pk_contacto']
         self.contacto = self.get_contacto(id_contacto)
 
+        # Verifico que este asignado a la campaña:
+        if not self._usuario_esta_asignado_a_campana():
+            messages.warning(
+                self.request, _("No tiene permiso para calificar llamadas de esa campaña."))
+            return self._get_redireccion_campana_erronea()
+
         if self._es_numero_privado(telefono):
             self.contacto = None
         elif telefono and self.contacto is None:
@@ -123,7 +136,10 @@ class CalificacionClienteFormView(FormView):
                             kwargs={'pk_campana': self.campana.pk,
                                     'telefono': telefono,
                                     'call_data_json': call_data_json}))
+
         self.object = self.get_object()
+
+        self.agente = self._get_agente()
 
         self.configuracion_sitio_externo = None
         # Si no hay call data no puedo interactuar con el sitio_externo
@@ -173,7 +189,9 @@ class CalificacionClienteFormView(FormView):
     def get_form(self, historico_calificaciones=False):
         kwargs = self.get_calificacion_form_kwargs()
         kwargs['historico_calificaciones'] = historico_calificaciones
-        return CalificacionClienteForm(campana=self.campana, **kwargs)
+        return CalificacionClienteForm(campana=self.campana,
+                                       es_auditoria=self.es_auditoria(),
+                                       **kwargs)
 
     def get_contacto_form_kwargs(self):
         kwargs = {'prefix': 'contacto_form'}
@@ -256,11 +274,10 @@ class CalificacionClienteFormView(FormView):
     def _obtener_call_id(self):
         if self.call_data is not None:
             return self.call_data.get('call_id')
-        return None
+        return self.object_calificacion.callid
 
     def _calificar_form(self, calificacion_form):
         self.object_calificacion = calificacion_form.save(commit=False)
-        self.object_calificacion.es_gestion()
         self.object_calificacion.callid = self._obtener_call_id()
         self.object_calificacion.agente = self.agente
         self.object_calificacion.contacto = self.contacto
@@ -359,6 +376,44 @@ class CalificacionClienteFormView(FormView):
                        kwargs={"pk_campana": self.campana.id,
                                "pk_contacto": self.contacto.id})
 
+    def es_auditoria(self):
+        return False
+
+    def _get_redireccion_campana_erronea(self):
+        return redirect('view_blanco')
+
+
+class AuditarCalificacionClienteFormView(CalificacionClienteFormView):
+    # TODO: Analizar la posibilidad de que este template y el de agente compartan lineas.
+    template_name = 'formulario/calificacion_create_update_supervisor.html'
+
+    def es_auditoria(self):
+        return True
+
+    def _get_agente(self):
+        return self.object.agente
+
+    def _usuario_esta_asignado_a_campana(self):
+        if self.request.user.get_is_administrador():
+            return True
+        supervisor = self.request.user.get_supervisor_profile()
+        return supervisor.esta_asignado_a_campana(self.campana)
+
+    def get_success_url_venta(self):
+        return reverse('auditar_formulario_venta',
+                       kwargs={"pk_calificacion": self.object_calificacion.id})
+
+    def get_success_url(self):
+        return reverse('auditar_calificacion',
+                       kwargs={"pk_campana": self.campana.id,
+                               "pk_contacto": self.contacto.id})
+
+    def get_success_url_agenda(self):
+        return self.get_success_url()
+
+    def _get_redireccion_campana_erronea(self):
+        return redirect('index')
+
 
 ######################################
 # Respuesta de Formulario de Gestión #
@@ -387,15 +442,28 @@ class RespuestaFormularioDetailView(DetailView):
         return context
 
 
-class RespuestaFormularioFormViewMixin(object):
-    template_name = 'formulario/respuesta_formulario_create.html'
+class RespuestaFormularioCreateUpdateFormView(CreateView):
+    """
+    Vista "abstracta" para la creacion o edicion de una respuesta de Formulario de gestión
+    """
     model = RespuestaFormularioGestion
     form_class = RespuestaFormularioGestionForm
 
+    def _get_calificacion(self):
+        raise NotImplementedError()
+
     def dispatch(self, *args, **kwargs):
-        self.calificacion = self.get_object_calificacion()
+        self.calificacion = self._get_calificacion()
+
+        # Verifico que este asignado a la campaña:
+        if not self._usuario_esta_asignado_a_campana():
+            messages.warning(
+                self.request, _("No tiene permiso para calificar llamadas de esa campaña."))
+            return self._get_redireccion_campana_erronea()
+
         self.contacto = self.calificacion.contacto
-        return super(RespuestaFormularioFormViewMixin, self).dispatch(*args, **kwargs)
+        self.object = self.calificacion.get_venta()
+        return super(RespuestaFormularioCreateUpdateFormView, self).dispatch(*args, **kwargs)
 
     def get_contacto_form_kwargs(self):
         kwargs = {'instance': self.contacto,
@@ -409,10 +477,16 @@ class RespuestaFormularioFormViewMixin(object):
         return FormularioNuevoContacto(**self.get_contacto_form_kwargs())
 
     def get_form_kwargs(self):
-        kwargs = super(RespuestaFormularioFormViewMixin, self).get_form_kwargs()
+        kwargs = super(RespuestaFormularioCreateUpdateFormView, self).get_form_kwargs()
         formulario = self.calificacion.opcion_calificacion.formulario
         campos = formulario.campos.all()
         kwargs['campos'] = campos
+        if self.object:
+            kwargs['instance'] = self.object
+            for clave, valor in json.loads(self.object.metadata).items():
+                kwargs['initial'].update({clave: valor})
+        else:
+            kwargs['initial'].update({'calificacion': self.calificacion.id, })
         return kwargs
 
     def get(self, request, *args, **kwargs):
@@ -437,8 +511,7 @@ class RespuestaFormularioFormViewMixin(object):
                     'Se llevó a cabo con éxito el llenado del formulario del'
                     ' cliente')
         messages.success(self.request, message)
-        return HttpResponseRedirect(reverse('formulario_detalle',
-                                            kwargs={"pk": self.object.pk}))
+        return HttpResponseRedirect(self.get_success_url())
 
     def post(self, request, *args, **kwargs):
         """
@@ -467,42 +540,40 @@ class RespuestaFormularioFormViewMixin(object):
             form=form, contacto_form=contacto_form))
 
     def get_success_url(self):
-        reverse('view_blanco')
+        return reverse('formulario_detalle', kwargs={"pk": self.object.pk})
 
 
-class RespuestaFormularioCreateFormView(RespuestaFormularioFormViewMixin, CreateView):
-    """En esta vista se crea el formulario de gestion"""
+class RespuestaFormularioCreateUpdateAgenteFormView(RespuestaFormularioCreateUpdateFormView):
+    template_name = 'formulario/respuesta_formulario_gestion_agente.html'
 
-    def dispatch(self, *args, **kwargs):
-        self.object = None
-        respuestas = RespuestaFormularioGestion.objects.filter(
-            calificacion_id=self.kwargs['pk_calificacion'])
-        if respuestas.count() > 0:
-            return HttpResponseRedirect(reverse('formulario_venta_update',
-                                                kwargs={"pk": respuestas[0].id}))
-        return super(RespuestaFormularioCreateFormView, self).dispatch(*args, **kwargs)
-
-    def get_object_calificacion(self):
+    def _get_calificacion(self):
         return CalificacionCliente.objects.get(id=self.kwargs['pk_calificacion'])
 
-    def get_form_kwargs(self):
-        kwargs = super(RespuestaFormularioCreateFormView, self).get_form_kwargs()
-        kwargs['initial'].update({'calificacion': self.calificacion.id, })
-        return kwargs
+    def _usuario_esta_asignado_a_campana(self):
+        agente = self.request.user.get_agente_profile()
+        return agente.esta_asignado_a_campana(self.calificacion.opcion_calificacion.campana)
+
+    def _get_redireccion_campana_erronea(self):
+        return redirect('view_blanco')
 
 
-class RespuestaFormularioUpdateFormView(RespuestaFormularioFormViewMixin, UpdateView):
-    """Vista para actualizar un formulario de gestion"""
+class RespuestaFormularioCreateUpdateSupervisorFormView(RespuestaFormularioCreateUpdateFormView):
+    template_name = 'formulario/respuesta_formulario_gestion_supervisor.html'
 
-    def dispatch(self, *args, **kwargs):
-        self.object = self.get_object()
-        return super(RespuestaFormularioUpdateFormView, self).dispatch(*args, **kwargs)
+    def _get_calificacion(self):
+        return CalificacionCliente.objects.get(id=self.kwargs['pk_calificacion'])
 
-    def get_object_calificacion(self):
-        return self.object.calificacion
+    def get_success_url(self):
+        return reverse(
+            'auditar_calificacion',
+            kwargs={'pk_campana': self.calificacion.opcion_calificacion.campana.id,
+                    'pk_contacto': self.calificacion.contacto.id})
 
-    def get_form_kwargs(self):
-        kwargs = super(RespuestaFormularioUpdateFormView, self).get_form_kwargs()
-        for clave, valor in json.loads(self.object.metadata).items():
-            kwargs['initial'].update({clave: valor})
-        return kwargs
+    def _usuario_esta_asignado_a_campana(self):
+        if self.request.user.get_is_administrador():
+            return True
+        supervisor = self.request.user.get_supervisor_profile()
+        return supervisor.esta_asignado_a_campana(self.calificacion.opcion_calificacion.campana)
+
+    def _get_redireccion_campana_erronea(self):
+        return redirect('index')

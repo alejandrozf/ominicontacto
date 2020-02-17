@@ -26,6 +26,7 @@ from __future__ import unicode_literals
 
 from django.utils.translation import ugettext as _
 from django.utils import timezone
+from django.db.models import Q
 
 from django.views.generic import FormView, View
 from django.core import paginator as django_paginator
@@ -33,7 +34,7 @@ from django.http import JsonResponse
 
 from ominicontacto_app.forms import GrabacionBusquedaForm, GrabacionBusquedaSupervisorForm
 from ominicontacto_app.models import (
-    Grabacion, GrabacionMarca, Campana
+    Grabacion, GrabacionMarca, Campana, CalificacionCliente
 )
 from .utiles import convert_fecha_datetime, fecha_local
 
@@ -66,6 +67,9 @@ class BusquedaGrabacionFormView(FormView):
             qs = result_paginator.page(result_paginator.num_pages)
         # ----- </Paginate> -----
         context['listado_de_grabaciones'] = qs
+
+        context['calificaciones'] = self._get_calificaciones(qs)
+
         return context
 
     def get(self, request, *args, **kwargs):
@@ -109,6 +113,21 @@ class BusquedaGrabacionFormView(FormView):
 
         return self.render_to_response(self.get_context_data(
             listado_de_grabaciones=listado_de_grabaciones, pagina=pagina))
+
+    def _get_calificaciones(self, grabaciones):
+        identificadores = grabaciones.object_list.values_list('id_cliente', 'campana_id', 'callid')
+        filtro = Q()
+        callids = []
+        for contacto_id, campana_id, callid in identificadores:
+            # Calificaciones si o si tienen contacto y campaña.
+            if contacto_id and campana_id:
+                filtro = filtro | Q(contacto_id=contacto_id,
+                                    opcion_calificacion__campana_id=campana_id)
+            # Pero si la grabacion no tiene esos datos uso el callid
+            else:
+                callids.append(callid)
+        calificaciones = CalificacionCliente.objects.filter(filtro | Q(callid__in=callids))
+        return calificaciones
 
 
 class BusquedaGrabacionSupervisorFormView(BusquedaGrabacionFormView):

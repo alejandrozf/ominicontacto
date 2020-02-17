@@ -349,6 +349,7 @@ class AgenteCampanaTests(CampanasTests):
     @patch('requests.post')
     def test_al_crear_formulario_cliente_finaliza_relacion_agente_contacto(self, post):
         AgenteEnContactoFactory.create(campana_id=self.campana_activa.pk)
+        QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
         values, url, post_data = self._inicializar_valores_formulario_cliente()
         self.client.post(url, post_data)
         values['estado'] = AgenteEnContacto.ESTADO_FINALIZADO
@@ -359,6 +360,7 @@ class AgenteCampanaTests(CampanasTests):
     @patch.object(Campana, 'eliminar_tarea_actualizacion')
     def test_se_finaliza_campana_si_todos_los_contactos_ya_han_sido_atendidos(
             self, eliminar_tarea_actualizacion, post):
+        QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
         values, url, post_data = self._inicializar_valores_formulario_cliente()
         base_datos = self.contacto.bd_contacto
         nombres = base_datos.get_metadata().nombres_de_columnas_de_datos

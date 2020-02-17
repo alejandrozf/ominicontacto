@@ -24,6 +24,7 @@ import json
 
 from mock import patch
 
+from django.utils.translation import ugettext as _
 from django.conf import settings
 from django.urls import reverse
 from django.forms import ValidationError
@@ -128,6 +129,16 @@ class CalificacionTests(OMLBaseTest):
         calificacion_form = response.context_data.get('calificacion_form')
         self.assertFalse(calificacion_form.is_valid())
 
+    def no_puede_calificar_si_no_esta_asignado(self):
+        campana2 = CampanaFactory.create()
+        contacto2 = ContactoFactory.create(bd_contacto=campana2.bd_contacto)
+
+        url = reverse('calificacion_formulario_update_or_create',
+                      kwargs={'pk_campana': campana2.pk,
+                              'pk_contacto': contacto2.pk})
+        response = self.client.get(url, follow=True)
+        self.assertContains(response, _("No tiene permiso para calificar llamadas de esa campaña."))
+
     @patch('requests.post')
     def test_calificacion_cliente_creacion_redirecciona_formulario_gestion(self, post):
         url = reverse('calificacion_formulario_update_or_create',
@@ -136,7 +147,7 @@ class CalificacionTests(OMLBaseTest):
         post_data = self._obtener_post_data_calificacion_cliente()
         post_data['opcion_calificacion'] = self.opcion_calificacion_gestion.pk
         response = self.client.post(url, post_data, follow=True)
-        self.assertTemplateUsed(response, 'formulario/respuesta_formulario_create.html')
+        self.assertTemplateUsed(response, 'formulario/respuesta_formulario_gestion_agente.html')
         self.assertTrue(self.campo_formulario.nombre_campo in response.context_data['form'].fields)
 
     @patch('requests.post')
@@ -154,7 +165,7 @@ class CalificacionTests(OMLBaseTest):
         post_data = self._obtener_post_data_calificacion_cliente()
         post_data['opcion_calificacion'] = opcion_calificacion.pk
         response = self.client.post(url, post_data, follow=True)
-        self.assertTemplateUsed(response, 'formulario/respuesta_formulario_create.html')
+        self.assertTemplateUsed(response, 'formulario/respuesta_formulario_gestion_agente.html')
         self.assertTrue(campo_formulario.nombre_campo in response.context_data['form'].fields)
         self.assertFalse(self.campo_formulario.nombre_campo in response.context_data['form'].fields)
 
@@ -166,7 +177,7 @@ class CalificacionTests(OMLBaseTest):
         post_data = self._obtener_post_data_calificacion_cliente()
         post_data['opcion_calificacion'] = self.opcion_calificacion_gestion.pk
         response = self.client.post(url, post_data, follow=True)
-        self.assertTemplateUsed(response, 'formulario/respuesta_formulario_create.html')
+        self.assertTemplateUsed(response, 'formulario/respuesta_formulario_gestion_agente.html')
 
     @patch('requests.post')
     def test_calificacion_cliente_modificacion_gestion_por_no_accion(self, post):
@@ -492,7 +503,7 @@ class CalificacionTests(OMLBaseTest):
                       kwargs={'pk_campana': self.campana.pk,
                               'pk_contacto': self.contacto.pk})
         response = self.client.get(url)
-        self.assertTemplateUsed(response, 'formulario/calificacion_create_update.html')
+        self.assertTemplateUsed(response, 'formulario/calificacion_create_update_agente.html')
         click2call = "makeClick2Call('%s', '%s', '%s', '%s', 'agendas')" % \
             (self.campana.id, self.campana.type, self.contacto.id, self.contacto.telefono)
         self.assertContains(response, click2call)

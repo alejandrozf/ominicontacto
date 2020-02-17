@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-28 14:41-0300\n"
+"POT-Creation-Date: 2020-02-13 11:31-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 # 5cf09c411fe14c4d990cb48d96c13a7c
 #: ../../api.rst:5
@@ -401,10 +401,10 @@ msgstr ""
 msgid "**URL**: POST https://<omnileads_addr>/api/v1/makeCall"
 msgstr ""
 
-# 4d2c345c167e4e38a99f865a59c61a12
+# c05d24411af1483f8b26cb658485a98f
 #: ../../api.rst:134
 msgid "*figure 4: endpoint new call request*"
-msgstr ""
+msgstr "*figure 4: endpoint new call request*"
 
 # ff84abb986484896a6fa94cb14cd5724
 #: ../../api.rst:139
@@ -825,5 +825,6 @@ msgstr "Asterisk Agent Session API"
 msgid ""
 "Endpoints de la API utilizados por el WebPhone mediante los cuales puede "
 "controlar las sesiones del agente en Asterisk."
-msgstr "API endpoints used by the WebPhone to control the Asterisk's Agent "
+msgstr ""
+"API endpoints used by the WebPhone to control the Asterisk's Agent "
 "sessions."

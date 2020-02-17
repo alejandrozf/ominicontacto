@@ -253,6 +253,9 @@ class AgenteProfile(models.Model):
             queue_name__campana__type=Campana.TYPE_PREVIEW)
         return campanas_preview_activas
 
+    def esta_asignado_a_campana(self, campana):
+        return self.campana_member.filter(queue_name__campana_id=campana.id).exists()
+
     # TODO verificar si se puede eliminar esta funcion
     def get_id_nombre_agente(self):
         return "{0}_{1}".format(self.id, self.user.get_full_name())
@@ -325,6 +328,9 @@ class SupervisorProfile(models.Model):
 
     def obtener_campanas_asignadas_activas(self):
         return self.user.campanasupervisors.filter(estado=Campana.ESTADO_ACTIVA)
+
+    def esta_asignado_a_campana(self, campana):
+        return self.user.campanasupervisors.filter(id=campana.id).exists()
 
 
 class ClienteWebPhoneProfileManager(models.Manager):
@@ -2713,8 +2719,7 @@ class CalificacionCliente(models.Model):
         return self.respuesta_formulario_gestion.first()
 
     def es_gestion(self):
-        # TODO: Usar metodo de OpcionCalificacion.es_gestion()
-        return self.opcion_calificacion.tipo == OpcionCalificacion.GESTION
+        return self.opcion_calificacion.es_gestion()
 
     def es_agenda(self):
         # TODO: Usar metodo de OpcionCalificacion.es_agenda()

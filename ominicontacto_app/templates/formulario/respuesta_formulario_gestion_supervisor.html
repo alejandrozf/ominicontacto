@@ -17,21 +17,16 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
+{% extends "base.html" %}
 {% load staticfiles %}
+{% load compress %}
 {% load i18n %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
-    <meta charset="UTF-8">
-    <title> - </title>
-</head>
-<body>
-    <div class="wrapper-info">
-        {% include 'messages.html' %}
-    </div>
+{% block head_js %}
+  <script type="text/javascript" src="{% static 'ominicontacto/JS/formulario/respuesta_formulario_create.js' %}"></script>  
+{% endblock head_js %}
 
-</body>
-</html>
+{% block content %}
+    {% include "formulario/respuesta_formulario_gestion_form.html" %}
+{% endblock content %}
+{% include 'messages.html' %}

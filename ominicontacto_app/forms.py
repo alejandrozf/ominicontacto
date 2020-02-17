@@ -740,12 +740,22 @@ class CalificacionClienteForm(forms.ModelForm):
     opcion_calificacion = OpcionCalificacionModelChoiceField(
         OpcionCalificacion.objects.all(), empty_label='---------', label=_('Calificación'))
 
-    def __init__(self, campana, *args, **kwargs):
+    def __init__(self, campana, es_auditoria, *args, **kwargs):
+
         historico_calificaciones = kwargs.pop('historico_calificaciones')
         super(CalificacionClienteForm, self).__init__(*args, **kwargs)
         self.campana = campana
+        self.es_auditoria = es_auditoria
         self.historico_calificaciones = historico_calificaciones
         self.fields['opcion_calificacion'].queryset = campana.opciones_calificacion.all()
+
+    def clean_opcion_calificacion(self):
+        opcion = self.cleaned_data.get('opcion_calificacion')
+        if self.es_auditoria:
+            if 'opcion_calificacion' in self.changed_data and opcion.es_agenda():
+                raise forms.ValidationError(
+                    _('Sólo el Agente puede cambiar la calificacion a Agenda.'))
+        return opcion
 
     class Meta:
         model = CalificacionCliente
