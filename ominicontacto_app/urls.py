@@ -106,23 +106,7 @@ urlpatterns = [
         administrador_o_supervisor_requerido(
             views_user_profiles.ToggleActivarClienteWebPhoneView.as_view()),
         name="cliente_webphone_toggle_activacion"),
-    # ==========================================================================
-    # Módulos
-    # ==========================================================================
-    url(r'^modulo/nuevo/$',
-        administrador_requerido(views.ModuloCreateView.as_view()), name='modulo_nuevo',
-        ),
-    url(r'^modulo/update/(?P<pk>\d+)/$',
-        administrador_requerido(views.ModuloUpdateView.as_view()),
-        name='modulo_update',
-        ),
-    url(r'^modulo/list/$',
-        administrador_requerido(views.ModuloListView.as_view()), name='modulo_list',
-        ),
-    url(r'^modulo/delete/(?P<pk>\d+)/$',
-        administrador_requerido(views.ModuloDeleteView.as_view()),
-        name='modulo_delete',
-        ),
+
     # ==========================================================================
     # Grupos
     # ==========================================================================

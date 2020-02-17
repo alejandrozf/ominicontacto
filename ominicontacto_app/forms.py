@@ -175,12 +175,10 @@ class AgenteProfileForm(forms.ModelForm):
 
     class Meta:
         model = AgenteProfile
-        fields = ('modulos', 'grupo')
+        fields = ('grupo',)
 
-    def __init__(self, modulos_queryset, grupos_queryset, *args, **kwargs):
+    def __init__(self, grupos_queryset, *args, **kwargs):
         super(AgenteProfileForm, self).__init__(*args, **kwargs)
-        self.fields['modulos'].widget.attrs['class'] = 'form-control'
-        self.fields['modulos'].queryset = modulos_queryset
         self.fields['grupo'].widget.attrs['class'] = 'form-control'
         self.fields['grupo'].queryset = grupos_queryset
 

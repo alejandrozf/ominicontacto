@@ -21,7 +21,7 @@ import logging
 from django.core.management.base import BaseCommand, CommandError
 
 from ominicontacto_app.models import Campana, Queue, User, OpcionCalificacion
-from ominicontacto_app.tests.factories import (GrupoFactory, ModuloFactory, AgenteProfileFactory,
+from ominicontacto_app.tests.factories import (GrupoFactory, AgenteProfileFactory,
                                                ArchivoDeAudioFactory, FormularioFactory,
                                                FieldFormularioFactory, BaseDatosContactoFactory,
                                                ContactoFactory, CampanaFactory,
@@ -129,12 +129,8 @@ class Command(BaseCommand):
         # crear grupo
         grupo = GrupoFactory()
 
-        # crear modulo
-        modulo = ModuloFactory()
-
         # crear agente
         agente = AgenteProfileFactory(grupo=grupo, reported_by=self.admin)
-        agente.modulos.add(modulo)
         agente.user.username = self.agent_username
         agente.user.set_password(self.agent_password)
         agente.sip_extension = 1000 + agente.id

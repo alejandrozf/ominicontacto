@@ -156,13 +156,6 @@ class User(AbstractUser):
         self.save()
 
 
-class Modulo(models.Model):
-    nombre = models.CharField(max_length=20, verbose_name=_('Nombre'))
-
-    def __str__(self):
-        return self.nombre
-
-
 class Grupo(models.Model):
     nombre = models.CharField(max_length=20, unique=True, verbose_name=_('Nombre'))
     auto_attend_ics = models.BooleanField(default=False, verbose_name=_('Auto atender ics'))
@@ -234,7 +227,6 @@ class AgenteProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     sip_extension = models.IntegerField(unique=True)
     sip_password = models.CharField(max_length=128, blank=True, null=True)
-    modulos = models.ManyToManyField(Modulo, verbose_name=_("Módulos"))
     grupo = models.ForeignKey(Grupo, related_name='agentes', verbose_name=_("Grupo"),
                               on_delete=models.CASCADE)
     estado = models.PositiveIntegerField(choices=ESTADO_CHOICES, default=ESTADO_OFFLINE)
@@ -244,9 +236,6 @@ class AgenteProfile(models.Model):
 
     def __str__(self):
         return self.user.get_full_name()
-
-    def get_modulos(self):
-        return "\n".join([modulo.nombre for modulo in self.modulos.all()])
 
     def get_campanas_activas_miembro(self):
         campanas_member = self.campana_member.all()

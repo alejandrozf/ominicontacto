@@ -30,7 +30,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <th>{% trans 'id' %}</th>
             <th>{% trans 'nombre del agente' %}</th>
             <th>{% trans 'sip_extension' %}</th>
-            <th>{% trans 'modulos' %}</th>
             <th>{% trans 'grupo' %}</th>
             <th>{% trans 'campañas' %}</th>
             <th></th>
@@ -42,7 +41,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <td>{{ agente.id }}</td>
             <td>{{ agente.user.get_full_name}}</td>
             <td>{{ agente.sip_extension }}</td>
-            <td>{{ agente.get_modulos}}</td>
             <td>{{ agente.grupo}}</td>
             <td>
                 {% for queue in agente.campana_member.all %}
