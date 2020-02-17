@@ -20,6 +20,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load staticfiles %}
 {% load compress %}
 {% load i18n %}
+{% load custom_messages %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -398,8 +399,20 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {% include 'messages.html' %}
                 {% if user.is_authenticated  %}
                     {% if user.get_tiene_permiso_administracion  %}
-                       {% block content %}
-                       {% endblock %}
+                        {% block content %}
+                            {% if user.get_es_administrador_o_supervisor_normal %}
+                                <div class="row">
+                                    <div class="col-md-6 col-md-offset-3">
+                                        <div id="mostrarInfoRelease">
+                                            {% advertencia_release_desactualizado as messages %}
+                                            {% for message in messages %}
+                                                <p>{{ message }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endblock %}
                     {% else %}
                         <div class="alert alert-warning">
                             <h1>{% trans 'Permiso denegado' %}</h1>
