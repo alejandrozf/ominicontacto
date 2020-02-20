@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 import calendar
 
 from django.db import models
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
@@ -28,7 +29,10 @@ from django.utils.translation import ugettext_lazy as _
 
 from ominicontacto_app.models import ArchivoDeAudio, Campana
 
-
+import os
+import re
+import uuid
+SUBSITUTE_REGEX = re.compile(r'[^a-z\._-]')
 R_DECIMAL = r'^\d+$'
 R_ALFANUMERICO = r'^[\w]+$'
 R_DIAL_OPT = r'^[HhKkRrL():MATtWw]+$'
@@ -483,3 +487,61 @@ class DestinoPersonalizado(models.Model):
     custom_destination = models.CharField(
         max_length=50, unique=True, verbose_name=_('Localización destino'),
         validators=[RegexValidator(R_CONTEXT_DIALPLAN)])
+
+
+class Playlist(models.Model):
+    nombre = models.CharField(
+        max_length=50, unique=True, verbose_name=_('Nombre'),
+        validators=[RegexValidator(R_ALFANUMERICO)])
+
+    def __str__(self):
+        return self.nombre
+
+
+def upload_to_musicas_originales(instance, filename):
+    filename = SUBSITUTE_REGEX.sub('', filename)
+    filename = "{0}-{1}".format(str(uuid.uuid4()), filename)[:95]
+    return os.path.join('musicas_originales', instance.playlist.nombre, filename)
+
+
+def upload_to_musicas_asterisk(instance, filename):
+    filename = SUBSITUTE_REGEX.sub('', filename)
+    filename = "{0}-{1}".format(instance.id, filename)[:95]
+    return os.path.join(MusicaDeEspera._DIR_AUDIO_PREDEFINIDO, instance.playlist.nombre, filename)
+
+
+class MusicaDeEspera(models.Model):
+    """Representa una Musica de espera de una Playlist"""
+
+    @property
+    def DIR_AUDIO_PREDEFINIDO(self):
+        return os.path.join(self._DIR_AUDIO_PREDEFINIDO, self.playlist.nombre)
+
+    _DIR_AUDIO_PREDEFINIDO = "musicas_asterisk"
+    # Directorio relativo a MEDIA_ROOT donde se guardan los archivos convertidos para
+    # audios globales / predefinidos
+
+    @property
+    def OML_AUDIO_PATH_ASTERISK(self):
+        return os.path.join(settings.OML_PLAYLIST_PATH_ASTERISK, self.playlist.nombre)
+
+    nombre = models.CharField(
+        max_length=100, unique=True, validators=[RegexValidator(R_ALFANUMERICO)],
+        verbose_name=_('Nombre')
+    )
+    audio_original = models.FileField(
+        upload_to=upload_to_musicas_originales,
+        max_length=100,
+        null=True, blank=True,
+    )
+    # Archivo de audio .wav ya procesado con el ConversorDeAudioService, apto para asterisk.
+    audio_asterisk = models.FileField(
+        upload_to=upload_to_musicas_asterisk,
+        max_length=100,
+        null=True, blank=True,
+    )
+    playlist = models.ForeignKey(Playlist, related_name='musicas', on_delete=models.CASCADE)
+
+    @property
+    def descripcion(self):
+        return '{0}-{1}'.format(self.id, self.nombre)

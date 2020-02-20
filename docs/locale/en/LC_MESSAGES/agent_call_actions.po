@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-12 12:07-0300\n"
+"POT-Creation-Date: 2020-02-13 11:31-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 # 852caeaea58c49dc9b037abd7c921ef7
 #: ../../agent_call_actions.rst:2
@@ -79,8 +79,8 @@ msgstr ""
 
 # fab06fe76aa64417b6df2821bf48944f
 #: ../../agent_call_actions.rst:27
-msgid "*Figure 1: call on hold*"
-msgstr "*Figure 1: call on hold*"
+msgid "*Figure 2: call on hold*"
+msgstr "*Figure 2: call on hold*"
 
 # 026b761c430843feb582eca91a14f480
 #: ../../agent_call_actions.rst:29
@@ -96,8 +96,8 @@ msgstr ""
 
 # 9497090561f54f019cae8ef5ffbdc1ba
 #: ../../agent_call_actions.rst:34
-msgid "*Figure 2: unhold*"
-msgstr "*Figure 2: unhold*"
+msgid "*Figure 3: unhold*"
+msgstr "*Figure 3: unhold*"
 
 # 716d919605394357b7714d6f4cc3c19d
 #: ../../agent_call_actions.rst:36
@@ -139,8 +139,8 @@ msgstr ""
 
 # e47a1e381e1f4c398ba049fbcf3a0705
 #: ../../agent_call_actions.rst:51
-msgid "*Figure 3: \"Agent A\" to \"Agent B\" blind transfer*"
-msgstr "*Figure 3: \"Agent A\" to \"Agent B\" blind transfer*"
+msgid "*Figure 4: \"Agent A\" to \"Agent B\" blind transfer*"
+msgstr "*Figure 4: \"Agent A\" to \"Agent B\" blind transfer*"
 
 # 06f7c53097714807ae6a22e6149ddcee
 #: ../../agent_call_actions.rst:53
@@ -496,9 +496,9 @@ msgid ""
 "funcionalidad esta habilitada exclusivamente para llamadas pertecientes a"
 " campañas con la opción de realizar grabaciones desactivada."
 msgstr ""
-"This feature allows agents to record a call on demand, since clicked"
-" the button shown in next picture. This feature is only activate for calls related"
-" to campaigns with recording calls option disabled"
+"This feature allows agents to record a call on demand, since clicked the "
+"button shown in next picture. This feature is only available for calls "
+"related to campaigns with recording calls option disabled"
 
 # f1fff66989044a43b6ad61ed35ae947a
 #: ../../agent_call_actions.rst:173

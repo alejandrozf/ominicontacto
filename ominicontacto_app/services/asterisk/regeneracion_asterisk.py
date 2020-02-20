@@ -35,7 +35,7 @@ from django.utils.translation import ugettext as _
 
 from ominicontacto_app.errors import OmlError
 from ominicontacto_app.asterisk_config import (
-    AsteriskConfigReloader, QueuesCreator, SipConfigCreator
+    AsteriskConfigReloader, QueuesCreator, SipConfigCreator, PlaylistsConfigCreator
 )
 from ominicontacto_app.services.asterisk_database import RegenerarAsteriskFamilysOML
 from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
@@ -60,6 +60,7 @@ class RegeneracionAsteriskService(object):
         self.sincronizador_config_telefonica = SincronizadorDeConfiguracionTelefonicaEnAsterisk()
         # Sincroniza en AstDB las que faltan en el Sincronizador de Configuracion Telefonica
         self.asterisk_database = RegenerarAsteriskFamilysOML()
+        self.playlist_config_creator = PlaylistsConfigCreator()
 
         # Llama al comando que reinicia Asterisk
         self.reload_asterisk_config = AsteriskConfigReloader()
@@ -91,6 +92,16 @@ class RegeneracionAsteriskService(object):
             proceso_ok = False
             mensaje_error += _("Hubo un inconveniente al crear el archivo de "
                                "configuracion del config sip de Asterisk. ")
+
+        try:
+            self.playlist_config_creator.create_config_asterisk()
+        except Exception:
+            logger.exception(_("PlaylistsConfigCreator: error al "
+                               "intentar create_config_sip()"))
+
+            proceso_ok = False
+            mensaje_error += _("Hubo un inconveniente al crear el archivo de "
+                               "configuracion Playlists (MOH) en Asterisk. ")
 
         if not proceso_ok:
             raise(RestablecerDialplanError(mensaje_error))

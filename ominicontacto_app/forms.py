@@ -27,6 +27,7 @@ from django.contrib.auth.forms import (
     UserChangeForm,
     UserCreationForm
 )
+from django.db.models import Count
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import ugettext_lazy as _
 
@@ -45,7 +46,7 @@ from ominicontacto_app.models import (
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
                                       validar_solo_ascii_y_sin_espacios, elimina_tildes)
-from configuracion_telefonia_app.models import DestinoEntrante
+from configuracion_telefonia_app.models import DestinoEntrante, Playlist
 
 from utiles_globales import validar_extension_archivo_audio
 
@@ -199,6 +200,8 @@ class QueueEntranteForm(forms.ModelForm):
         self.fields['announce_frequency'].required = False
         self.fields['audios'].queryset = ArchivoDeAudio.objects.all()
         self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
+        self.fields['musiconhold'].queryset = Playlist.objects.annotate(
+            Count('musicas')).filter(musicas__count__gte=1)
         tipo_destino_choices = [EMPTY_CHOICE]
         tipo_destino_choices.extend(DestinoEntrante.TIPOS_DESTINOS)
         self.fields['tipo_destino'].choices = tipo_destino_choices
@@ -227,7 +230,7 @@ class QueueEntranteForm(forms.ModelForm):
                   'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
                   'audios', 'announce_frequency', 'audio_de_ingreso', 'campana',
                   'tipo_destino', 'destino', 'ivr_breakdown', 'autopause', 'autopausebusy',
-                  'announce_holdtime', 'announce_position',)
+                  'announce_holdtime', 'announce_position', 'musiconhold')
 
         help_texts = {
             'timeout': _('En segundos'),
@@ -254,6 +257,7 @@ class QueueEntranteForm(forms.ModelForm):
             'tipo_destino': forms.Select(attrs={'class': 'form-control'}),
             'destino': forms.Select(attrs={'class': 'form-control', 'id': 'destino'}),
             'ivr_breakdown': forms.Select(attrs={'class': 'form-control'}),
+            'musiconhold': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def clean_maxlen(self):

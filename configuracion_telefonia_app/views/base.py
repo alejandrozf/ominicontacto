@@ -17,36 +17,30 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
+# TODO: Refactorizar las vistas en módulos mas pequeños y borrar este.
+
 from __future__ import unicode_literals
 
 import json
 import logging
-import os
-import requests
-import tarfile
-import tempfile
 
 from django.urls import reverse, reverse_lazy
-from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import View, FormView, ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
 from django.db.models import Case, When, Max, Min
 
-from configuracion_telefonia_app.forms import (RutaSalienteForm, TroncalSIPForm, RutaEntranteForm,
-                                               PatronDeDiscadoFormset, OrdenTroncalFormset,
-                                               OpcionDestinoIVRFormset, IVRForm,
-                                               ValidacionTiempoFormset, IdentificadorClienteForm,
-                                               OpcionDestinoValidacionFechaHoraFormset,
-                                               OpcionDestinoPersonalizadoForm,
-                                               AudiosAsteriskForm)
-from configuracion_telefonia_app.models import (RutaSaliente, RutaEntrante, TroncalSIP,
-                                                OrdenTroncal, DestinoEntrante, IVR, OpcionDestino,
-                                                GrupoHorario, ValidacionFechaHora,
-                                                IdentificadorCliente, DestinoPersonalizado)
+from configuracion_telefonia_app.forms import (
+    RutaSalienteForm, TroncalSIPForm, RutaEntranteForm, PatronDeDiscadoFormset, OrdenTroncalFormset,
+    OpcionDestinoIVRFormset, IVRForm, ValidacionTiempoFormset, IdentificadorClienteForm,
+    OpcionDestinoValidacionFechaHoraFormset, OpcionDestinoPersonalizadoForm, )
+from configuracion_telefonia_app.models import (
+    RutaSaliente, RutaEntrante, TroncalSIP, OrdenTroncal, DestinoEntrante, IVR,
+    OpcionDestino, GrupoHorario, ValidacionFechaHora, IdentificadorCliente,
+    DestinoPersonalizado, )
 from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     SincronizadorDeConfiguracionTroncalSipEnAsterisk, RestablecerConfiguracionTelefonicaError,
     SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk,
@@ -1131,47 +1125,3 @@ class DestinoPersonalizadoDeleteView(DestinoPersonalizadoMixin, DeleteNodoDestin
     """Elimina Destino Personalizado"""
     model = DestinoPersonalizado
     template_name = 'eliminar_destino_personalizado.html'
-
-
-class AdicionarAudioAsteriskView(FormView):
-    """Vista que adiciona dinámicamente audios de asterisk (desde el sitio oficial)
-    al sistema.
-    """
-    template_name = 'adicionar_audios_asterisk.html'
-    form_class = AudiosAsteriskForm
-
-    ASTERISK_SOUNDS_URL = 'https://downloads.asterisk.org/pub/telephony/sounds/'
-
-    def _download_asterisk_sound(self, language):
-        filename = 'asterisk-core-sounds-{0}-wav-current.tar.gz'.format(language)
-        url = self.ASTERISK_SOUNDS_URL + filename
-        response = requests.get(url, stream=True)
-        filename_full_path = os.path.join(tempfile.gettempdir(), filename)
-        handle = open(filename_full_path, "wb")  # ver el
-        for chunk in response.iter_content(chunk_size=512):
-            if chunk:  # filter out keep-alive new chunks
-                handle.write(chunk)
-        return filename_full_path
-
-    def form_valid(self, form):
-        try:
-            # download asterisk file
-            language = form.cleaned_data['audio_idioma']
-            filename_full_path = self._download_asterisk_sound(language)
-
-            # uncompress asterisk file and copy to its location
-            tar = tarfile.open(filename_full_path)
-            destination = os.path.join(settings.ASTERISK_AUDIO_PATH, language)
-            if not os.path.exists(destination):
-                os.makedirs(destination)
-                tar.extractall(destination)
-                tar.close()
-            messages.add_message(
-                self.request, messages.SUCCESS,
-                _('Se ha instalado el paquete de idioma satisfactoriamente.'))
-        except Exception as e:
-            logger.error(_("Error al instalar el paquete de idioma: {0}".format(e)))
-            messages.add_message(
-                self.request, messages.ERROR,
-                _('Ha ocurrido un error al instalar el paquete de idioma'))
-        return redirect('adicionar_audios_asterisk')

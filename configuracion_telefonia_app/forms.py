@@ -32,7 +32,7 @@ from django.utils.translation import ugettext_lazy as _
 from configuracion_telefonia_app.models import (PatronDeDiscado, RutaSaliente, RutaEntrante,
                                                 TroncalSIP, OrdenTroncal, DestinoEntrante, IVR,
                                                 OpcionDestino, ValidacionTiempo, GrupoHorario,
-                                                IdentificadorCliente)
+                                                IdentificadorCliente, Playlist, MusicaDeEspera)
 from ominicontacto_app.models import ArchivoDeAudio
 from ominicontacto_app.views_archivo_de_audio import convertir_archivo_audio
 
@@ -607,11 +607,48 @@ class AudiosAsteriskForm(forms.Form):
             directorios_idiomas.remove('oml')
         except ValueError:
             pass
+        try:
+            directorios_idiomas.remove('moh')
+        except ValueError:
+            pass
         idiomas_instalados = [(valor, self.AUDIO_IDIOMA_CHOICES_DICT[valor])
                               for valor in directorios_idiomas]
         idiomas_no_instalados = list(set(self.AUDIO_IDIOMA_CHOICES) - set(idiomas_instalados))
         idiomas_instalados_mostrar = [str(choice) for valor, choice in idiomas_instalados]
         return (idiomas_instalados_mostrar, idiomas_no_instalados)
+
+
+class PlaylistForm(forms.ModelForm):
+
+    class Meta:
+        model = Playlist
+        exclude = ()
+
+
+class MusicaDeEsperaForm(forms.ModelForm):
+
+    class Meta:
+        model = MusicaDeEspera
+        fields = ('nombre', 'audio_original', 'playlist')
+        widgets = {
+            "nombre": forms.TextInput(attrs={'class': 'form-control'}),
+            "audio_original": forms.FileInput(attrs={'class': 'form-control'}),
+            "playlist": forms.HiddenInput(),
+        }
+        help_texts = {
+            'audio_original': _("Seleccione el archivo .wav que desea para la Musica de Espera."),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(MusicaDeEsperaForm, self).__init__(*args, **kwargs)
+        self.initial['playlist'] = kwargs['initial']['playlist']
+        self.fields['audio_original'].required = True
+
+    def clean_archivo(self):
+        audio_original = self.cleaned_data.get('audio_original', False)
+        if audio_original:
+            validar_extension_archivo_audio(audio_original)
+        return audio_original
 
 
 PatronDeDiscadoFormset = inlineformset_factory(
