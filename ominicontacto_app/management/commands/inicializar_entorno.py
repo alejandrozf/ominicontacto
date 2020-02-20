@@ -36,7 +36,7 @@ from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk)
 
 from configuracion_telefonia_app.models import DestinoEntrante
-from configuracion_telefonia_app.views import escribir_ruta_entrante_config
+from configuracion_telefonia_app.views.base import escribir_ruta_entrante_config
 
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 from ominicontacto_app.services.asterisk_service import ActivacionAgenteService
