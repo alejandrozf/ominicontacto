@@ -61,11 +61,10 @@ msgstr "*Figure 1: hosts file*"
 
 # a45214406e6a4caf80d93e269ec911e4
 #: ../../install_first_access.rst:20
-#, fuzzy
 msgid ""
 "Al encontrarnos con la pantalla de login, simplemente se debe ingresar el"
 " usuario admin y la clave generada durante la instalación, como se expone"
-" en las figura 10."
+" en la figura 2."
 msgstr ""
 "When finding the login screen, we just enter the admin user and the "
 "password generated during the installation (my_inventory), as shown on "

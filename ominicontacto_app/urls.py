@@ -495,6 +495,14 @@ urlpatterns = [
         name='calificacion_cliente_actualiza_desde_reporte'
         ),
 
+    url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
+        '/auditar_calificacion/$',
+        administrador_o_supervisor_requerido(
+            views_calificacion_cliente.AuditarCalificacionClienteFormView.as_view()),
+        kwargs={'from': 'audita_supervisor'},
+        name='auditar_calificacion'
+        ),
+
     # TODO: Una vez que todas las manuales sean click to call ya no existirá esta vista
     # Mientras, quedará para ser usada únicamente en llamadas manuales
     url(r'^formulario/(?P<pk_campana>\d+)/calificacion_create/(?P<telefono>\d+)/$',
@@ -509,13 +517,14 @@ urlpatterns = [
         name='formulario_detalle'
         ),
     url(r'^formulario/venta/(?P<pk_calificacion>\d+)/$',
-        agente_requerido(views_calificacion_cliente.RespuestaFormularioCreateFormView.as_view()),
+        agente_requerido(
+            views_calificacion_cliente.RespuestaFormularioCreateUpdateAgenteFormView.as_view()),
         name='formulario_venta'
         ),
-    url(r'^formulario/venta/(?P<pk>\d+)/update/$',
-        agente_requerido(
-            views_calificacion_cliente.RespuestaFormularioUpdateFormView.as_view()),
-        name='formulario_venta_update'
+    url(r'^formulario/auditar_venta/(?P<pk_calificacion>\d+)/$',
+        administrador_o_supervisor_requerido(
+            views_calificacion_cliente.RespuestaFormularioCreateUpdateSupervisorFormView.as_view()),
+        name='auditar_formulario_venta'
         ),
     # ==========================================================================
     # Agente

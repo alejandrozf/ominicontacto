@@ -55,13 +55,11 @@ msgstr ""
 
 # ba41e3a938be45ddbd832d04bf4b4cb4
 #: ../../telephony.rst:19
-#, fuzzy
 msgid "Explicación del ABM para troncales PJSIP"
-msgstr "ABM of trunks explanation"
+msgstr "ABM of PJSIP trunks explanation"
 
 # b8d0aa6688224bb5bdf3386ee0c194fe
 #: ../../telephony.rst:21
-#, fuzzy
 msgid ""
 "Para acceder a la configuración debemos ingresar en el punto de menú "
 "*(Telephony -> SIP Trunks)* y allí añadir una nueva troncal PJSIP. Se va "
@@ -83,12 +81,11 @@ msgstr "The form blanks are:"
 
 # 78ce1ec1ec414e71a5e48f90bdc7344d
 #: ../../telephony.rst:31
-#, fuzzy
 msgid ""
 "**Trunk Name**: el nombre del troncal. Debe ser alfanumperico sin "
 "espacios ni caracteres especiales (Ej: Trunk_provider_a)."
 msgstr ""
-"**Name**: the name of the trunk. Must be alphanumeric without spaces or "
+"**Trunk Name**: the name of the trunk. Must be alphanumeric without spaces or "
 "special characters (eg Trunk_provider_a)."
 
 # e454bcde4cd04f60a8a7d37a8ab5a237
@@ -120,7 +117,6 @@ msgstr ""
 
 # 3a6a5ea01f1e4271b6547f1ed8e986d6
 #: ../../telephony.rst:39
-#, fuzzy
 msgid ""
 "A continuación desplegamos las plantillas sugeridas para los tipos de "
 "escenarios planteados como casos de uso típicos de OMniLeads."
@@ -153,13 +149,11 @@ msgstr ""
 
 # ac50d91915e24aaa9487bc7de2b2bc19
 #: ../../telephony.rst:49
-#, fuzzy
 msgid "Configuración para el enrutamiento de llamadas salientes"
 msgstr "Outbound calls routing configuration"
 
 # f5974488c9a945ac88f855afcb1f9cad
 #: ../../telephony.rst:51
-#, fuzzy
 msgid ""
 "OMniLeads permite gestionar el enrutamiento de llamadas salientes sobre "
 "múltiples troncales SIP (previamente creados), de manera tal que "
@@ -175,7 +169,6 @@ msgstr ""
 
 # 236d27e40a614226a8964ba7e706a854
 #: ../../telephony.rst:55
-#, fuzzy
 msgid ""
 "Para acceder a la vista de configuración de rutas salientes, ingresar al "
 "punto de menú (*Telephony -> Outbound routes*)"
@@ -190,13 +183,11 @@ msgstr ""
 
 # 7864e98cd4cc489c971d37470f8818bf
 #: ../../telephony.rst:61
-#, fuzzy
 msgid "**Nombre**: es el nombre de la ruta (alfanumérico sin espacios)"
-msgstr "Name: is the route name (alphanumeric without spaces)"
+msgstr "**Name**: is the route name (alphanumeric without spaces)"
 
 # 48f7feb0ee154d1fb26b96543edd6c28
 #: ../../telephony.rst:62
-#, fuzzy
 msgid ""
 "**Ring time**: es el tiempo (en segundos) que las llamadas cursadas por "
 "esta ruta, intentarán establecer una conexión con el destino, antes de "
@@ -208,7 +199,6 @@ msgstr ""
 
 # 72de49ed5c264ddeaa2654ced7ae4036
 #: ../../telephony.rst:63
-#, fuzzy
 msgid ""
 "**Dial options**: son las opciones de la aplicación \"Dial\" utilizadas "
 "por Asterisk(r) en bajo nivel."
@@ -227,7 +217,6 @@ msgstr ""
 
 # 997f1e296e254d618bd66cc98abfb71a
 #: ../../telephony.rst:66
-#, fuzzy
 msgid ""
 "Para comprender cómo se representan los dígitos utilizando *patrones*, se"
 " recomienda leer éste link: https://www.voip-info.org/asterisk-extension-"
@@ -244,7 +233,6 @@ msgstr "Within each pattern entered there are three fields:"
 
 # a016a53f23064dcf87d3a9200b67a760
 #: ../../telephony.rst:71
-#, fuzzy
 msgid ""
 "**Prepend**: son los dígitos que se mandan por el trunk SIP como "
 "adicionales al número discado. Es decir llegan al Trunk posicionados "
@@ -256,7 +244,6 @@ msgstr ""
 
 # bd2d51016ea448f588536c27d10e7244
 #: ../../telephony.rst:72
-#, fuzzy
 msgid ""
 "**Prefijo**: son los dígitos que pueden venir como “prefijo” de una "
 "llamada marcada y éstos serán quitados en el momento de enviarlos por el "
@@ -267,7 +254,6 @@ msgstr ""
 
 # e18aac5974cf4d5d97ca2ade0f28fec1
 #: ../../telephony.rst:73
-#, fuzzy
 msgid ""
 "**Patrón de discado**: se busca representar en este campo el patrón de "
 "dígitos autorizados que la ruta va a procesar para y enviar a un SIP "
@@ -279,7 +265,6 @@ msgstr ""
 
 # 907480afdeb34ad2a02572c94047d80c
 #: ../../telephony.rst:75
-#, fuzzy
 msgid ""
 "**Secuencia de troncales**: son los troncales SIP sobre los cuales la "
 "ruta saliente va a intentar establecer la llamada discada por OML. Si la "
@@ -291,9 +276,8 @@ msgstr ""
 
 # ac50d91915e24aaa9487bc7de2b2bc19
 #: ../../telephony.rst:78
-#, fuzzy
 msgid "Configuración de enrutamiento de llamadas entrantes"
-msgstr "Outbound calls routing configuration"
+msgstr "Inbound calls routing configuration"
 
 # 82ac644a2bb4460cbeb431645a6d6d4d
 #: ../../telephony.rst:80

@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
@@ -24,7 +23,6 @@ msgstr "SIP trunk with Internet SIP provider"
 
 # 173bf608889044859626da574c7195c1
 #: ../../telephony_pjsip_templates.rst:7
-#, fuzzy
 msgid ""
 "Se trata del tipo de proveedor de troncales SIP al que se puede acceder a"
 " través de nuestra propia conexión a internet, utilizando generalmente la"
@@ -82,7 +80,6 @@ msgstr ""
 
 # 8fb68f3c9bdf4b3c897e246c91338251
 #: ../../telephony_pjsip_templates.rst:47
-#, fuzzy
 msgid ""
 "Los próximos 4 parámetros hacen alusión al hecho de que típicamente bajo "
 "este esquema OMniLeads no solicita autenticación al proveedor SIP en caso"
@@ -381,7 +378,6 @@ msgstr ""
 
 # 6d41cbf028274bc6914e36bee6adecf7
 #: ../../telephony_pjsip_templates.rst:225
-#, fuzzy
 msgid ""
 "Esta plantilla hace alusión a una instalación "
 ":ref:`about_install_docker_pbx`. Es decir bajo este escenario OMniLeads "
@@ -397,7 +393,6 @@ msgstr ""
 
 # b289cbcc369e4039adaf29468ba257cf
 #: ../../telephony_pjsip_templates.rst:256
-#, fuzzy
 msgid ""
 "Respecto a los parámetros vamos a observar que se trata de una "
 "configuración muy similar al escenario "

@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
@@ -24,7 +23,6 @@ msgstr "OMniLeads over FreePBX / Issabel"
 
 # b672543d387c440aaf080828448ea5ae
 #: ../../install_docker_pbx.rst:7
-#, fuzzy
 msgid ""
 "A partir de la versión 1.4.0, OMniLeads puede ser desplegado en "
 "producción utilizando Docker. En esta sección se cubren todos los "

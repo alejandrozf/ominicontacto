@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
@@ -362,7 +361,6 @@ msgstr ""
 
 # 12a0b40b64ac4d31b1b2a6fb5ee60d62
 #: ../../crm_integration_oml2crm.rst:97
-#, fuzzy
 msgid ""
 "**Dato de base de contactos**, serían parámetros disponibles a partir de "
 "las columnas de la base de contactos de campaña actual. Entonces quiere "

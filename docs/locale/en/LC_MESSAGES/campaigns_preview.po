@@ -75,6 +75,9 @@ msgid ""
 "campaña dentro del sistema de gestión externo desde el cual llegarán los "
 "*click to call* o *solicitudes de calificación* de contactos."
 msgstr ""
+"**ID on external system:**  this field must containe the ID of the campaign"
+"in the external system from where the *click to call* or contact *disposition"
+" requests* will be triggered."
 
 # 5fca113821ab4bff90e458895052020d
 #: ../../campaigns_preview.rst:21
@@ -83,6 +86,8 @@ msgid ""
 " de OMniLeads o bien va a ejecutar una invocación hacia un CRM por cada "
 "llamada conectada."
 msgstr ""
+"**Type of interaction:** sets if the campaign will work with OMniLeads"
+" forms or make a request to the CRM for each connected call."
 
 # c06c889e2d414583bb00cd8e441cc108
 #: ../../campaigns_preview.rst:22
@@ -91,6 +96,8 @@ msgid ""
 "externo en cada llamada, aquí se indica cual de los CRMs definidos debe "
 "invocar la campaña."
 msgstr ""
+"**External URL:** in case of selecting an external URL interaction, this "
+"fields sets wich CRMs must the campaign trigger."
 
 # cebbffa9b7d945e7a006a0f2ad657371
 #: ../../campaigns_preview.rst:23
@@ -246,7 +253,7 @@ msgstr ""
 # 22ebce79c1e241038d78eba2fadd9462
 #: ../../campaigns_preview.rst:80
 msgid "**Campaña con base de datos Multinum**"
-msgstr ""
+msgstr "**Campaign with Multinum database**"
 
 # 327491da3dce41fb89c238c117feb2ff
 #: ../../campaigns_preview.rst:82
