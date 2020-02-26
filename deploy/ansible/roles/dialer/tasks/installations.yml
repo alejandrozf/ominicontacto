@@ -25,7 +25,7 @@
   when: ansible_os_family == "RedHat"
 
 - name: Install wombat dialer (centos)
-  yum: name=wombat state=present
+  yum: name=wombat state=latest
   when: ansible_os_family == "RedHat"
   become: true
   become_method: sudo

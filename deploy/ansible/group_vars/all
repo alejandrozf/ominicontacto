@@ -21,7 +21,7 @@ kamailio_version: 5.2.3
 postgresql_old_version: 9.6
 postgresql_version: 11
 rtpengine_version: 5.5.3.1
-wombat_version: 18.08.3-232
+wombat_version: 20.02.1-271
 ################ URL's ############################
 epel_repository: https://download-ib01.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 #URLS para descargar asterisk
