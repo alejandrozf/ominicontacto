@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-06 15:55-0300\n"
+"POT-Creation-Date: 2020-02-27 09:39-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,191 +17,39 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-# 6881a397b3cf4d92bd78144a6c22c006
+# 47dcfdec1b274e2fb0bd6f58be5a3fb3
 #: ../../release_notes.rst:2
 msgid "Release Notes"
 msgstr "Release Notes"
 
-# 49f95cb248ba435e8ace05535c7388ce
-msgid "*February 7, 2020*"
-msgstr "February 7, 2020"
+# eb03ffc6236945e5a3ad5e2d43cff95e
+#: ../../release_notes.rst:4
+#, fuzzy
+msgid "*Febrero 27, 2020*"
+msgstr "February 27, 2020"
 
-# 591f9ffdc8d94490869bf62312567a22
+# 4b5264401e684a549346fd8b425ac1d3
 #: ../../release_notes.rst:7
 #, fuzzy
-msgid "Detalles de Release 1.4.0"
-msgstr "Release 1.4.0 details"
+msgid "Detalles de Release 1.4.1"
+msgstr "Release 1.4.1 details"
 
-# 58f70ad7b1c14c83b8fdbfbc514af179
-#: ../../release_notes.rst:11
-msgid "Nuevas funcionalidades"
-msgstr "New features"
+# 3eb18b5cbf824e49a25bcc2c1fed28a5
+#: ../../release_notes.rst:9
+msgid ""
+"Este es un release \"bugfix\" mejorando la estabilidad y rendimiento del "
+"sistema"
+msgstr "This is a \"bugfix\" release improving the stability and performance of the codebase."
 
-# eaba1c96e74346bb9ba10f905dca546a
+# a99b85d5576743a5ab0768cd9de93efe
 #: ../../release_notes.rst:12
-msgid ""
-"OML ahora puede ser deployado e integrado con Issabel PBX & FreePBX "
-"usando docker"
-msgstr ""
-"OML can be deployed and integrated now with Issabel PBX & FreePBX using docker"
-
-# 215d5432a9324dc0beeb0e0a10013a35
-#: ../../release_notes.rst:13
-msgid ""
-"Se realizón la migración de endpoints de agentes Asterisk de chan_sip "
-"hacia PJSIP"
-msgstr ""
-"The system changed its default trunk technology from SIP to PJSIP"
-
-# b8561fdab4ee486cb33945bf708863f2
-#: ../../release_notes.rst:14
-msgid ""
-"El sistema soporta troncales SIP basados ahora en el módulo PJSIP de "
-"Asterisk"
-msgstr ""
-"Asterisk agents endpoints were migrated from chan_sip to PJSIP"
-
-# 5f7b9b4ccd29498fadd0acffc1b35f59
-#: ../../release_notes.rst:15
-msgid ""
-"Las interacciones con Asterisk desde la consola de agentes fueron "
-"refactorizadas para usar el protocolo AMI"
-msgstr ""
-"The internal interaction with Asterisk from agent console component was refactored to"
-"use AMI protocol"
-
-# 2832ee5d4ed940d3a9dba2917c6ebbeb
-#: ../../release_notes.rst:16
-msgid ""
-"Se realizaron mejoras en la instalación del sistema en Docker para "
-"ambientes productivos"
-msgstr ""
-"The installation on Docker for production was refined"
-
-# 107aef8b5dd44da2a00cfafdfffe1f1b
-#: ../../release_notes.rst:17
-msgid "PostgreSQL fue actualizado a la versión 11"
-msgstr "PostgreSQL component was updated to version 11"
-
-# 26fd056ea9794a2c99660b15b549f3da
-#: ../../release_notes.rst:18
-msgid ""
-"Se adicionaron nuevos endpoints para la API pública que enriquecen la "
-"interacción con CRM"
-msgstr ""
-"The CRM interaction was refined with the addition of new endpoints on the public API"
-
-# 7da66f234a5d496a9824b69711700373
-#: ../../release_notes.rst:19
-msgid "El archivo kamailio.cfg fue refactorizado y optimizado"
-msgstr "kamailio.cfg file was refactored and optimized"
-
-# 02b971f24a0944339daa1fa49d364aae
-#: ../../release_notes.rst:20
-msgid ""
-"El trigger usado como logger de eventos fue portado desde plpython a "
-"plperl"
-msgstr ""
-"Database logger trigger script was ported from plpython to plperl"
-
-# 8799d689ff1f48a4b489a1d169e25f86
-#: ../../release_notes.rst:24
 msgid "Bug fixes"
 msgstr "Bug fixes"
 
-# 2900c04530cc433a801b23a61bc46bc7
-#: ../../release_notes.rst:25
+# bc9844bae34f4718953d3eea63f2f89b
+#: ../../release_notes.rst:14
 msgid ""
-"Solucionado bug que contaba como ABANDONWEL los eventos de llamadas "
-"entrantes que excedían el límite de llamadas en cola afectando a los reportes"
-msgstr ""
-"Fixed bug that counted as ABANDONWEL inbound calls that exceeds the queue calls limit,"
-" affecting reports"
-
-# 4a4a4a5668b74595bf213c26c81c2808
-#: ../../release_notes.rst:27
-msgid ""
-"Solucionado bug en paginación de las vistas de listas de objetos de "
-"telefonía"
-msgstr ""
-"Fixed bug on telephony list views (on paginators)"
-
-# 965f0e2b53db469fa1916235255d9875
-#: ../../release_notes.rst:28
-msgid ""
-"Solucionado bug que contaba como EXPIRED a los eventos de llamadas "
-"entrantes con un destino en caso de fallo configurado en la campaña como "
-"destino personalizado, afectando a los reportes"
-msgstr ""
-"Fixed bug that counted as EXPIRED inbound calls with failover configured to point to "
-"a custom destination, affecting reports"
-
-# 2b6b95c254b245b2a1d0beb2b86f33b2
-#: ../../release_notes.rst:30
-msgid "Solucionado error de redirección infinita al eliminar un agente logueado"
-msgstr "Fixed infinite redirection bug on removed agents"
-
-# b8a10d84c36142e8b418820e78f115b4
-#: ../../release_notes.rst:31
-msgid "Solucionada inconsistencia en AstDB al eliminar agentes"
-msgstr "Fixed AstDB inconsistency bug when remove agents"
-
-# 667b9858e30e4a88ae7c0a6c1c5e5c89
-#: ../../release_notes.rst:32
-msgid ""
-"Solucionado bug que generaba un valor de callid incorrecto al realizar "
-"llamadas manuales de click2call afectando los reportes"
-msgstr ""
-"Fixed bug that generated an incorrect callid for manual click2call generating errors"
-" on campaign reports"
-
-# 2b6b95c254b245b2a1d0beb2b86f33b2
-#: ../../release_notes.rst:34
-msgid ""
-"Solucionado bug que impedía editar el parámetro 'boost factor' en "
-"campañas dialer"
-msgstr ""
-"Fixed bug that inhibits to edit boost factor in dialer campaings"
-
-# 1b29651db8884492b279f54426e2bf8b
-#: ../../release_notes.rst:35
-msgid ""
-"Solucionado error generado en la vista de supervisión de llamadas "
-"entrantes cuando existía alguna llamada dialer en cola"
-msgstr ""
-"Fixed error generated on inbound calls supervision view when there was enqueued dialer calls"
-
-# 5b7743a88a37424f80bbea35682c9a84
-#: ../../release_notes.rst:37
-msgid ""
-"Solucionado bug que eliminada los datos almacenados usando django-"
-"constance en instalaciones en docker despues de reiniciar el servicio de "
-"kamailio"
-msgstr ""
-"Fixed bug that remove constance OML data on docker installation after Kamailio restarts"
-
-# ade47bbf2a9747109f3ffba9b6335095
-#: ../../release_notes.rst:39
-msgid ""
-"Solucionado bug que enviaba un id incorrecto al finalizar una pausa de "
-"tipo ACW."
-msgstr ""
-"Fixed bug that sent an incorrect id after ends an ACW pause"
-
-# 2b6b95c254b245b2a1d0beb2b86f33b2
-#: ../../release_notes.rst:40
-msgid "Solucionado error en la paginación de la vista de supervision de agentes"
-msgstr "Fixed error on agents view pagination on supervision"
-
-# 92685bd04e354e94bdda942bc7d346df
-#~ msgid "Admin de OML"
-#~ msgstr "OML admin"
-
-# 2b6b95c254b245b2a1d0beb2b86f33b2
-#~ msgid ""
-#~ "Se soluciona error que impedía acceder"
-#~ " a la supervisión al eliminar después"
-#~ " de eliminar una campaña entrante"
-#~ msgstr ""
-#~ "Fix error when accessing the supervision"
-#~ " after remove an inbound campaign."
+"Se upgrade version de Wombat Dialer a la ultima (20.02.1-271) debido a un"
+" bug que hacía a Wombat seguir discando a la base de contactos cuando los"
+" agentes estaban pausados."
+msgstr "Upgraded Wombat Dialer version in installation to latest (20.02.1-271) due to a bug that made Wombat to keep dialing the contact database even when agents were paused."
