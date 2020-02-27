@@ -5,14 +5,21 @@ After=docker.service
 
 [Service]
 Type=oneshot
+{% if devenv == 1 %}
 User={{ docker_user }}
+{% else %}
+ExecStartPost=/bin/bash {{ deploy_location }}/postinstall.sh
+ExecStopPost=/usr/sbin/iptables -D DOCKER -p udp -m udp -d $CIP/32 ! -i docker0 -o docker0 --dport $RTP_START:$RTP_FINISH -j ACCEPT
+{% endif %}
+EnvironmentFile={{ deploy_location }}/.env
+Environment=COMPOSE_FILE={{ deploy_location }}/docker-compose.yml
 RemainAfterExit=yes
 WorkingDirectory={{ deploy_location }}
-EnvironmentFile={{ deploy_location }}/.env
 ExecReload=/usr/local/bin/docker-compose up -d
 ExecStart=/usr/local/bin/docker-compose up -d
 ExecStop=/usr/local/bin/docker-compose down
 TimeoutStartSec=0
+TimeoutStopSec=0
 
 [Install]
 WantedBy=multi-user.target

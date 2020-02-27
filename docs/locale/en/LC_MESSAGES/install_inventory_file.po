@@ -3,18 +3,19 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-14 11:06-0300\n"
+"POT-Creation-Date: 2020-02-10 17:21-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.4.0\n"
 
 # 1c7df76b46fe431b85c296ece7819e91
 #: ../../install_inventory_file.rst:5
@@ -115,12 +116,12 @@ msgstr ""
 "ansible_connection=local\"."
 
 # 46f0ee0ddb8c4b74acc416922ef52463
-#: ../../install_inventory_file.rst:62
+#: ../../install_inventory_file.rst:61
 msgid "Parámetros y contraseñas"
 msgstr "Passwords and parameters"
 
 # 18d91a05143f470d9efaa871b9320c14
-#: ../../install_inventory_file.rst:64
+#: ../../install_inventory_file.rst:63
 msgid ""
 "En la tercera sección del archivo se ajusta todo lo respectivo a "
 "contraseñas de algunos componentes y parámetro para configuración de zona"
@@ -130,32 +131,64 @@ msgstr ""
 "the setting to configure timezone:"
 
 # 2cac001ca5674e7f886bb9bbd71d138d
-#: ../../install_inventory_file.rst:66
+#: ../../install_inventory_file.rst:65
 msgid "**Postgres SQL**"
 msgstr "**PostgreSQL**"
 
 # 60bcb6242a8548cb881786bf526ef90c
-#: ../../install_inventory_file.rst:67
+#: ../../install_inventory_file.rst:66
 msgid "**MySQL**"
 msgstr "**MySQL**"
 
 # b91b5e1b4b8e403b91b44d55c56afd52
-#: ../../install_inventory_file.rst:68
+#: ../../install_inventory_file.rst:67
 msgid "**Usuario \"admin\" de OMniLeads**"
 msgstr "**OMniLeads \"admin\" user**"
 
 # abec2f7abdb141c3a0e0342b585a401a
-#: ../../install_inventory_file.rst:69
+#: ../../install_inventory_file.rst:68
 msgid "**TZ**"
 msgstr "**TZ**"
 
+# fca016ddc1ac48688f5af7ccf852e216
+#: ../../install_inventory_file.rst:109
+msgid "Variables para Docker"
+msgstr "Docker variables"
+
+# 7a1911c48ca746f5aa211e3d8505628e
+#: ../../install_inventory_file.rst:111
+msgid ""
+"Ademas de las variables vistas anteriormente, si se quiere instalar "
+"OMniLeads en su versión dockerizada, será necesario modificar estas "
+"variables:"
+msgstr ""
+"Besides the variables seen, if you want to install OMniLeads in its "
+"dockerized version, it will be necessary to modify these variables:"
+
+# 62a0f05156ee4ebcbc2f67fab8095547
+#: ../../install_inventory_file.rst:122
+msgid ""
+"Las variables necesarias para **deploy** de los containers son: * "
+"**registry_username:** si se va a deployar las imagenes oficiales de "
+"Freetech Solutions, dejar esta variable como está * **oml_release:** la "
+"versión de OMniLeads a instalar. * **subnet:** se refiere a la red LAN "
+"con la que se levantarán los containers."
+msgstr ""
+
+# ba34695f75b146a39a64aad564ee4807
+#: ../../install_inventory_file.rst:127
+msgid ""
+"Las variables *registry_email* y *registry_password* son necesarias en "
+"caso de querer hacer un **build** de sus propias imágenes."
+msgstr ""
+
 # 404a045a16304ce1a1a8a63b294835c7
-#: ../../install_inventory_file.rst:108
+#: ../../install_inventory_file.rst:130
 msgid "OMniLeads Cloud:"
 msgstr "OMniLeads Cloud:"
 
 # d12ec92bdeb8410280a19fc03cf4a7ce
-#: ../../install_inventory_file.rst:110
+#: ../../install_inventory_file.rst:132
 msgid ""
 "Los parámetros  **\"external_hostname\"**, **\"external_port\"**  y "
 "**\"public_ip\"**, deben configurarse si se quiere instalar un OMniLeads "
@@ -170,7 +203,7 @@ msgstr ""
 "connection or through VPN to the OMniLeads server."
 
 # 36bc3f1bb54842fbbfaa2550079626ce
-#: ../../install_inventory_file.rst:127
+#: ../../install_inventory_file.rst:149
 msgid ""
 "Se deben establecer dos reglas de firewall en la GUI del proveedor del "
 "servidor cloud, el cual actua como un router de borde, dejando a OML "
@@ -182,22 +215,22 @@ msgstr ""
 " provider)"
 
 # 8a81f7f9e16645689b2a4fb0313ab60a
-#: ../../install_inventory_file.rst:129
+#: ../../install_inventory_file.rst:151
 msgid "Permit de tráfico saliente desde los puertos 10000 a 30000 UDP"
 msgstr "Permit outbound traffic in this port range: 10000-30000 UDP"
 
 # 1fe12ce9e81949bca1fb68da2e24ed6a
-#: ../../install_inventory_file.rst:130
+#: ../../install_inventory_file.rst:152
 msgid "Permit de tráfico entrante desde los puertos 10000 a 30000 UDP"
 msgstr "Permit inbound traffic in this port range: 10000-30000 UDP"
 
 # 1726d848c19942918fd1ed7d12b68316
-#: ../../install_inventory_file.rst:133
+#: ../../install_inventory_file.rst:155
 msgid "Parámetros para añadir par llave/certificado digital confiables"
 msgstr "Settings to add trusted key/certificate pair"
 
 # 8cc82a7f559f491aacee6f316352fd3f
-#: ../../install_inventory_file.rst:135
+#: ../../install_inventory_file.rst:157
 msgid ""
 "OMniLeads utiliza por defecto un par de llave/certificado digital "
 "autofirmado, lo que hace que siempre salten excepciones en el browser con"
@@ -214,14 +247,14 @@ msgstr ""
 "with this steps:"
 
 # 2b1e71901ef9473db55eceeb057686ff
-#: ../../install_inventory_file.rst:137
+#: ../../install_inventory_file.rst:159
 msgid ""
 "Ubique sus certificados en la carpeta *deploy/certs/* dentro del "
 "repositorio"
 msgstr "Place the files in the folder *deploy/certs/* inside the repository"
 
 # b45abd326a314830a69bc1c462d057f4
-#: ../../install_inventory_file.rst:138
+#: ../../install_inventory_file.rst:160
 msgid ""
 "Edite y descomente las variables **trusted_key** y **trusted_cert** con "
 "el nombre del key y cert que puso en la carpeta"
@@ -230,12 +263,12 @@ msgstr ""
 "with the name of the key and cert files in the folder"
 
 # 8fb6c71c10574cfc86209f5f9304a3b4
-#: ../../install_inventory_file.rst:150
+#: ../../install_inventory_file.rst:172
 msgid "Proceda con la instalación"
 msgstr "Proceed with the installation"
 
 # 9df6cc82b00f4176a5c9a99626816e38
-#: ../../install_inventory_file.rst:154
+#: ../../install_inventory_file.rst:176
 msgid ""
 "Tener certificados digitales confiables es imprescindible para poder "
 "hacer uso del addon `WebPhone Client <https://gitlab.com/omnileads"
@@ -244,3 +277,11 @@ msgstr ""
 "The trusted certificate for HTTPS connection is mandatory to use the "
 "`WebPhone Client <https://gitlab.com/omnileads/webphone-client-"
 "releases>`_ addon."
+
+# 237f89ca4d3b4d5eb00e9d848fbb1f7b
+#~ msgid ""
+#~ "[docker:vars] registry_username=freetechsolutions "
+#~ "#registry_email= #registry_password= oml_release=pre-"
+#~ "release-1.4.0 subnet=192.168.15.0/24"
+#~ msgstr ""
+

@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
@@ -380,11 +381,11 @@ msgstr ""
 #: ../../telephony_pjsip_templates.rst:225
 msgid ""
 "Esta plantilla hace alusión a una instalación "
-":ref:`about_install_docker_pbx`. Es decir bajo este escenario OMniLeads "
-"se encuentra corriendo en el mismo host que el software de IPPBX. Lo cual"
-" implica que se establezca un PJSIP trunk desde el *Asterisk dockerizado*"
-" dentro del host y el Asterisk que se ejecuta como servicio a nivel "
-"sistema operativo de base de la IPPBX."
+":ref:`about_install_docker_linux`. Es decir bajo este escenario OMniLeads"
+" se encuentra corriendo en el mismo host que el software de IPPBX. Lo "
+"cual implica que se establezca un PJSIP trunk desde el *Asterisk "
+"dockerizado* dentro del host y el Asterisk que se ejecuta como servicio a"
+" nivel sistema operativo de base de la IPPBX."
 msgstr ""
 "This template refers to OMniLeads deployed with Docker "
 ":ref:`about_install_docker`. The software is running in the same machine "

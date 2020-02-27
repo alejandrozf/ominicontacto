@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
@@ -44,7 +45,7 @@ msgid ""
 "CHAN_SIP a partir de la versión 17 de Asterisk."
 msgstr ""
 
-# d1617c25178d469b9e3f2359c6b86629
+# 6d0d4636957b4f75a6228d9fa2e02ca9
 #: ../../telephony.rst:14
 msgid ""
 "Por lo tanto a la hora de plantear el uso de troncales SIP en esta "
@@ -98,7 +99,7 @@ msgstr "**Number of channels**: is the number of channels allowed by the link."
 msgid "**Caller id**: el número con el que saldrán las llamadas por el troncal."
 msgstr "**Caller id**: the number with which the calls will go through the trunk."
 
-# 707ba8d97c25481aa3f269ead8252676
+# 0c6317a0433348f590812b6ebfa5470d
 #: ../../telephony.rst:34
 msgid ""
 "**SIP details**: en este campo de texto se proporcionan los parámetros "
@@ -107,7 +108,7 @@ msgid ""
 " de Asterisk."
 msgstr ""
 
-# 95f9dbff209f4f8c8cf826f63891da48
+# 19776f70db0c4ef5b82e9efe02d954cc
 #: ../../telephony.rst:36
 msgid ""
 "Como se puede apreciar en la figura 1, existen una serie de *plantillas* "
@@ -206,7 +207,7 @@ msgstr ""
 "Dial options: are the \"dial\" application options used by Asterisk(r) in"
 " a low level."
 
-# db6fdd17884f443f986eb0d2f863c6dd
+# b8bd4a419a18460e99e985e07fe08cc0
 #: ../../telephony.rst:64
 msgid ""
 "**Patrones de discado**: mediante patrones, se puede representar los "
@@ -279,7 +280,7 @@ msgstr ""
 msgid "Configuración de enrutamiento de llamadas entrantes"
 msgstr "Inbound calls routing configuration"
 
-# 82ac644a2bb4460cbeb431645a6d6d4d
+# 6f5f6dfd99664d6d8b28e93d00851a10
 #: ../../telephony.rst:80
 msgid ""
 "El tratamiento de llamadas entrantes se abordará en la sección *Campañas "

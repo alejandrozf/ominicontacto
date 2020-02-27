@@ -4,7 +4,7 @@
 Interacción desde el CRM hacia OMniLeads
 ****************************************
 
-Desde un sistema CRM se pueden ejecutar peticiones a partir de accesar a los endpoints de la :ref:`about_api`. A lo largo de esta sección vamos a explicar como
+Desde un sistema CRM se pueden ejecutar peticiones a partir de accesar a los endpoints de la :ref:`about_restful_api`. A lo largo de esta sección vamos a explicar como
 activar las acciones que se pueden efectuar desde un CRM externo.
 
 * **Click to call**: un usuario del CRM que se encuentre en la vista de un contacto podrá ejecutar una llamada hacia el número del contacto a partir de realizar un click sobre dicho número dentro del CRM. El click dispara una llamada a un método de la API de OMniLeads para que éste último encamine la llamada hacia el exterior y la enlace con el agente pertinente.
@@ -12,7 +12,7 @@ activar las acciones que se pueden efectuar desde un CRM externo.
 * **Calificación de gestión**: cada llamada conectada a un agente puede ejecutar una llamada al CRM pasando parámetros de la propia llamada. Luego cuando el usuario determina que ha finalizado la gestión del contacto dentro del CRM procede con la "calificación" de dicha gestión sobre el CRM, pero a partir de acceder a un método de la API de OMniLeads esta calificación podrá ser efectuada a nivel contacto de OMniLeads permitiendo así una correlación entre la campaña y los contactos del CRM y la gestión del usuario a nivel Contact Center dentro de OMniLeads.
 
 
-Para implementar las acciones enumeradas, los desarrolladores del sistema CRM deben implementar dichas funcionalidades a partir de consumir la :ref:`about_api`.
+Para implementar las acciones enumeradas, los desarrolladores del sistema CRM deben implementar dichas funcionalidades a partir de consumir la :ref:`about_restful_api`.
 Una vez disponibles las funcionalidades del lado del CRM, se deben ejecutar las siguientes configuraciones para comenzar a operar en el marco de las integraciones.
 
 Interrelación de entidades entre el CRM y OMniLeads

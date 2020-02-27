@@ -10,7 +10,7 @@ kamailio_version: "{{ version }}"
 root_password: Sup3rS3cr3tP4ssw0rd
 
 # Networking settings
-subnet: 192.168.15.0/24
+subnet_name: prod_net
 nginx_external_port: 444
 pg_external_port: 446
 wd_external_port: 442
@@ -23,7 +23,22 @@ ast_conf_location: "{{ ast_local_location }}/conf"
 ast_other_location: "{{ build_location }}/scripts"
 build_location: "{{ docker_root }}/omnileads/build"
 certs_location: "{{ build_location }}/certs"
-deploy_location: "/{{ docker_root }}/omnileads/{{ customer }}"
+deploy_location: "/home/omnileads/{{ customer }}"
 kamailio_location: "{{ build_location }}/kamailio"
 nginx_location: "{{ build_location }}/nginx"
 omniapp_location: "{{ build_location }}/omniapp"
+
+# Imagenes usadas en el docker-compose file
+ast_builded_image: "{{ docker_login_user }}/asterisk:${RELEASE}"
+dialer_builded_image: "{{ docker_login_user }}/dialer:${DIALER_VERSION}"
+kamailio_builded_image: "{{ docker_login_user }}/kamailio:${RELEASE}"
+nginx_builded_image: "{{ docker_login_user }}/nginx:${RELEASE}"
+omniapp_builded_image: "{{ docker_login_user }}/omniapp:${RELEASE}"
+
+# Como en prodenv las db estan en el docker host tengo que hacer esta jugadita
+postgresql_fqdn: "{{ omni_ip }}"
+mariadb_fqdn: "{{ omni_ip }}"
+
+# Ports used for asterisk rtp prodenv firewall rules 
+rtp_start_port: 40000
+rtp_finish_port: 50000

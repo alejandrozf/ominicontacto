@@ -18,7 +18,7 @@
 ---
 
 # Instalo paquetes de kamailio/rtpengine
-- name: Installation of kamailio/rtpengine packages
+- name: Installation of kamailio packages
   yum: name={{ item }} state=present
   with_items:
     - bison
@@ -26,28 +26,37 @@
     - expat
     - expat-devel
     - flex
-    - gcc
-    - gcc-c++
-    - glib2-devel
-    - hiredis
-    - hiredis-devel
-    - iptables-devel
     - iptables-services
-    - json-glib-devel
-    - libevent-devel
-    - libpcap-devel
     - libtool-ltdl-devel
     - libunistring-devel.x86_64
     - libuuid
     - libuuid-devel
     - lynx
-    - pcre
-    - pcre-devel
     - postgresql96-devel
     - redis
+  tags: ['kamailio']
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
+  when: is_docker == "false"
+
+# Instalo paquetes de kamailio/rtpengine
+- name: Installation of rtpengine packages
+  yum: name={{ item }} state=present
+  with_items:
+    - iptables-devel
     - xmlrpc-c-devel
-  become: true
-  become_method: sudo
+    - xmlrpc-c
+    - glib2-devel
+    - glib2
+    - pcre
+    - pcre-devel
+    - libevent-devel
+    - json-glib-devel
+    - libpcap-devel
+    - hiredis
+    - hiredis-devel
   tags: ['kamailio']
   retries: 3
   delay: 3

@@ -13,15 +13,15 @@
 #X.X.X.X ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
 
 ##############################################################################
-# Docker host is localhost because the application is deployed in localhost. #
 # Uncomment the line if you want to deploy DE or PE                          #
 ##############################################################################
 # If you are installing a devenv (PE) uncomment
 [prodenv-container]
-#localhost ansible_connection=local
+#localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
+#X.X.X.X ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation, replace X.X.X.X with the IP of Docker Host)
 # If you are installing a devenv (DE) uncomment
 [devenv-container]
-#localhost ansible_connection=local
+#localhost ansible_connection=local ansible_user=root
 
 ###############################################################
 ###############################################################
@@ -61,7 +61,7 @@ dialer_password=demo
 #################################################################################################
 # Set the timezone where the nodes are. UNCOMMENT and set this if you are doing a fresh install #
 #################################################################################################
-TZ=America/Argentina/Cordoba
+#TZ=America/Argentina/Cordoba
 #######################################################################################
 #                                OMniLeads cloud:			 	      #
 # If you are wishing to install OML in a cloud provider you must set these variables: #
@@ -106,14 +106,19 @@ LOGIN_FAILURE_LIMIT=10
 ####################################
 schedule=Agenda
 
-#############################################################
-# Edit these variables if you want to build your own images #
-#############################################################
+#################################################################################################
+# Edit these variables with information of registry to build OMniLeads Docker images 		#
+# Note: you need the variable registry_username to deploy images, by default use the FTS images #
+#################################################################################################
 [docker:vars]
-registry_username=
-registry_email=
-registry_password=
-oml_release=
+registry_username=freetechsolutions
+#registry_email=
+#registry_password=
+##############################################################
+# Variables oml_release and subnet are necessary for prodenv #
+##############################################################
+oml_release=release-1.4.0
+subnet=192.168.15.0/24
 #################################
 # Do not change variables below #
 #################################

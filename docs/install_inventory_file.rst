@@ -41,19 +41,18 @@ Ambas son mutuamente excluyentes, la primera hace referencia a una instalación 
 En caso de requerir el despliegue de un entorno de desarrollo, se debe hacer foco en dicha sección. Aquí simplemente se debe desomentar la linea
 "#localhost ansible_connection=local".
 
-
 .. code-block:: bash
 
- ##############################################################################
- # Docker host is localhost because the application is deployed in localhost. #
- # Uncomment the line if you want to deploy DE or PE                          #
- ##############################################################################
- # If you are installing a devenv (PE) uncomment
- [prodenv-container]
- #localhost ansible_connection=local
- # If you are installing a devenv (DE) uncomment
- [devenv-container]
- #localhost ansible_connection=local
+  ##############################################################################
+  # Docker host is localhost because the application is deployed in localhost. #
+  # Uncomment the line if you want to deploy DE or PE                          #
+  ##############################################################################
+  # If you are installing a devenv (PE) uncomment
+  [prodenv-container]
+  #localhost ansible_connection=local
+  # If you are installing a devenv (DE) uncomment
+  [devenv-container]
+  #localhost ansible_connection=local
 
 
 .. _about_install_inventory_vars:
@@ -103,6 +102,29 @@ En la tercera sección del archivo se ajusta todo lo respectivo a contraseñas d
   # Set the timezone where the nodes are. UNCOMMENT and set this if you are doing a fresh install #
   #################################################################################################
   #TZ=America/Argentina/Cordoba
+
+.. _about_install_inventory_docker:
+
+Variables para Docker
+**********************
+
+Ademas de las variables vistas anteriormente, si se quiere instalar OMniLeads en su versión dockerizada, será necesario modificar estas variables:
+
+.. code-block:: bash
+
+  [docker:vars]
+  registry_username=freetechsolutions
+  #registry_email=
+  #registry_password=
+  oml_release=release-1.4.0
+  subnet=192.168.15.0/24
+
+Las variables necesarias para **deploy** de los containers son:
+* **registry_username:** si se va a deployar las imagenes oficiales de Freetech Solutions, dejar esta variable como está
+* **oml_release:** la versión de OMniLeads a instalar.
+* **subnet:** se refiere a la red LAN con la que se levantarán los containers.
+
+Las variables *registry_email* y *registry_password* son necesarias en caso de querer hacer un **build** de sus propias imágenes. 
 
 OMniLeads Cloud:
 *****************

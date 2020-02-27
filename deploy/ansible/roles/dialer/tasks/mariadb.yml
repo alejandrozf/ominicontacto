@@ -35,13 +35,11 @@
   file: path=/root/.my.cnf state=absent
   tags: postinstall
 
-- set_fact: mysql_old_root_password="{{ mysql_root_password }}"
-  when: mysql_old_root_password is not defined
-
 - name: Set root Password
-  mysql_user: name=root host={{ mysql_host }} host_all=yes password={{ mysql_root_password }} login_password={{ mysql_old_root_password }} login_host={{ mysql_host }} check_implicit_admin=true state=present
+  mysql_user: name=root host={{ mysql_host }} password={{ mysql_root_password }} login_host={{ mysql_host }} state=present update_password=always
   environment:
     MYSQL_HOST: "{{ mysql_host }}"
+    MYSQL_PWD: "{{ mysql_old_root_password }}"
   when: mysql_root_password != ""
 
 - name: Reload privilege tables

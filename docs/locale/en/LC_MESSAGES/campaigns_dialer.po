@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
@@ -16,12 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.7.0\n"
 
-# 0c8159c0c8ea460694f6ff986708b162
+# fa3f75b14bb04358989bc7bd88ab4b9c
 #: ../../campaigns_dialer.rst:5
 msgid "Campañas con discador predictivo"
 msgstr "Campaigns with predictive dialer"
 
-# 2841ab4bbb7b452191ab8c3faba997f6
+# 1b874f652cb540578902bcefedf40be3
 #: ../../campaigns_dialer.rst:7
 msgid ""
 "OMniLeads pone a disposición el concepto de *campañas con discado "
@@ -30,7 +31,7 @@ msgstr ""
 "OMniLeads makes campaigns with automatic call dialing available through a"
 " predictive dialer."
 
-# 8524db19ce484849bdbe4f80425d037c
+# 6c39ff39a0f04054a7cf81f7a5c72049
 #: ../../campaigns_dialer.rst:11
 msgid ""
 "No se provee la funcionalidad de discador automático dentro de las "
@@ -45,7 +46,7 @@ msgstr ""
 "this software is subject to the acquisition of the corresponding license "
 "with the software manufacturer."
 
-# 8497630ebc2f4f54a71906819f80a69f
+# 232beb33d1e948a6be2749bc57e35823
 #: ../../campaigns_dialer.rst:15
 msgid ""
 "Aclarado el tema del componente *engine dialer*, se procede con la "
@@ -56,12 +57,12 @@ msgstr ""
 "with the explanation of the necessary steps when generating a campaign "
 "with predictive dialing."
 
-# f1bd4164f42f4a7c98231ee15b00eebb
+# fc2fb276864f4ddb89279672d889963d
 #: ../../campaigns_dialer.rst:18
 msgid "**Creación de campaña dialer**"
 msgstr "**Dialer campaign creation**"
 
-# 71451d6a72cc454d984d03311f947cdb
+# 74a60a6282514751846f7a2e36574118
 #: ../../campaigns_dialer.rst:20
 msgid ""
 "Ingresar al menú  **Campaigns -> Dialer Campaigns -> New Campaigns** en "
@@ -70,22 +71,22 @@ msgstr ""
 "Enter the **Campaigns menu -> Dialer Campaigns -> New Campaigns** where a"
 " sequence of configuration stages are displayed."
 
-# 7638a2b52be44542a97edf09626190ef
+# a40b3bafd9b547c7a8e84efd22afbad2
 #: ../../campaigns_dialer.rst:22
 msgid "La primera pantalla luce como la figura 1."
 msgstr "The first stage looks like figure 1."
 
-# 64a2d696d167438b9f391d18d4e1ff3c
+# 26e434be08ef423d96dbc5b52fdde093
 #: ../../campaigns_dialer.rst:27
 msgid "*Figure 1: Campaigns parameters*"
 msgstr ""
 
-# 5c214a44bea54848ad13a9738f056923
+# f235b569a9ff46d38a90cb055095e077
 #: ../../campaigns_dialer.rst:30
 msgid "**Name:** nombre de la campaña"
 msgstr "**Name:** campaign name"
 
-# b0fd05df047d487e85be0ec168038754
+# 8de45a265eae433f90a1c0f537950f00
 #: ../../campaigns_dialer.rst:31
 msgid ""
 "**Show campaign name whe reciving call:** se puede habilitar para que "
@@ -96,7 +97,7 @@ msgstr ""
 "call connected by the dialer to the agent implies notification of the "
 "name of the campaign associated with that call."
 
-# df16ea918cec4b32860c6a9e8b98de01
+# 02dd3cfb21c14b0099e86b928d58caac
 #: ../../campaigns_dialer.rst:32
 msgid ""
 "**Initial date:** es la fecha en la que, estando activa la campaña y con "
@@ -105,7 +106,7 @@ msgstr ""
 "**Initial date:** date on which, while the campaign is active and with "
 "agents connected, it will start dialing."
 
-# 4a341e87ecb04f6dbbb1445597d88223
+# 7ebb6f8f14e34ba5b84f26f6431ef522
 #: ../../campaigns_dialer.rst:33
 msgid ""
 "**End date:** es la fecha en la que, estando activa la campaña y con "
@@ -115,7 +116,7 @@ msgstr ""
 "**End date:** date on which the dial will stop dialing no matter how many"
 " numbers remain unmarked."
 
-# 1e99700e27944c4bb271095750530e8e
+# a11e3c75f7c34c339da3964edea5add8
 #: ../../campaigns_dialer.rst:34
 msgid ""
 "**Contact database:** la base de contactos que el discador utilizará para"
@@ -124,7 +125,7 @@ msgstr ""
 "**Contact database:** the contact database that the dialer uses to make "
 "contacts and generate calls."
 
-# eeb445a58c4841d99ee3dbd6a8e4f398
+# cd7ede027fa6450491f1375b81e5859b
 #: ../../campaigns_dialer.rst:35
 msgid ""
 "**Type of interaction:** aquí se selecciona si la campaña va a utilizar "
@@ -134,7 +135,7 @@ msgstr ""
 "**Interaction class:** select if the campaign will use a *campaign form* "
 "or will launch an http-request to an external *CRM system*."
 
-# 680f0e52af314111977e969913a1c31e
+# 34628a5326a849518512cd40f8102de8
 #: ../../campaigns_dialer.rst:36
 msgid ""
 "**External URL:** URL (http-request) a disparar cada vez que el discador "
@@ -143,7 +144,7 @@ msgstr ""
 "**External URL:** URL (http-request) to be triggered each time the dialer"
 " connects a call to an agent."
 
-# 841da0b2aaf240e5bce7d9d01fddd098
+# b86d67f096d74c7192cc5f28adf44967
 #: ../../campaigns_dialer.rst:37
 msgid ""
 "**External system:** sistema de gestión externo que se admite para lanzar"
@@ -153,7 +154,7 @@ msgstr ""
 "**External system:** external CRM system linked to launch *click to call "
 "actions or dispositions* on campaign contacts, through the API."
 
-# dbadbf3d26a342eeb308543811c77fa2
+# c149f74bc3434010a913e3bc343cb8fe
 #: ../../campaigns_dialer.rst:38
 msgid ""
 "**ID on external system:**  este campo debe contener el ID que posee la "
@@ -163,7 +164,7 @@ msgstr ""
 "**ID on external system:**  ID of the campaign in the external system from "
 "where the *click to call* or *disposition requests* will be sent."
 
-# 6a7bdb27392045a188d31655d1b42292
+# 257618b964514f8f9c734128acaa6349
 #: ../../campaigns_dialer.rst:39
 msgid ""
 "**Scope:** se define como la cantidad de gestiones positivas que se "
@@ -176,7 +177,7 @@ msgstr ""
 "campaign's arrival with respect to the defined objective is shown in real"
 " time."
 
-# 7530835b2fad42ab939d3d50d813320b
+# 8f8d978e243c478a8b347a2ae967d274
 #: ../../campaigns_dialer.rst:41
 msgid ""
 "Una vez completados estos campos, se debe dar click al botón \"Next\", "
@@ -185,7 +186,7 @@ msgstr ""
 "Once these fields are completed, you must click on the *Next* button, to "
 "continue with the campaign configuration."
 
-# 082ca1e15aae4c7c91689a282774455f
+# 468ab90337f54be69d7f7e5f98df6845
 #: ../../campaigns_dialer.rst:43
 msgid ""
 "La siguiente pantalla se establecen más parámetros que modelan el "
@@ -194,12 +195,12 @@ msgstr ""
 "The next stage establishes more parameters that model the campaign "
 "behavior, as shown in Figure 2."
 
-# 0d74c5ae81634261a8fa4d3001923669
+# 808475ef109c48ad8130c4546509f8b6
 #: ../../campaigns_dialer.rst:47
 msgid "*Figure 2: Campaigns parameters*"
 msgstr ""
 
-# 3097dd118c704b1285470b1bea6a9665
+# 71630e69e7944fe691bac58546cf6049
 #: ../../campaigns_dialer.rst:49
 msgid ""
 "**Max amount of calls:** cantidad de llamadas que se permiten poner en "
@@ -210,7 +211,7 @@ msgstr ""
 "while waiting for the availability of an agent. Above that number, the "
 "call will be sent to the *failover destination*."
 
-# d4649742e6374fe8926c8c1547004b8f
+# 40ee2f9f38c04a688ad5a57bb68c469b
 #: ../../campaigns_dialer.rst:50
 msgid ""
 "**Wrapup time:** es el tiempo de descanso (en segundos) que cada agente "
@@ -219,7 +220,7 @@ msgstr ""
 "**Wrapup time:** It is the rest time (in seconds) that each agent has "
 "between each call connected by the dialer."
 
-# 2fe1a501d3174c08a37b78717e2491c9
+# 7a4c8e17bb7c407884ab18b3eea06706
 #: ../../campaigns_dialer.rst:51
 msgid ""
 "**Service level:** es un parámetro para medir cuántas de las llamadas "
@@ -229,7 +230,7 @@ msgstr ""
 "**Service level:** It is a parameter to measure how many of the calls "
 "were connected to an agent within that time slot (in seconds)."
 
-# 7c3f677f69b345518bb4a624373d2858
+# f12254dcc8734bfbb89e012a8aa358a1
 #: ../../campaigns_dialer.rst:52
 msgid ""
 "**Distribution strategy:** método de distribución de llamadas que usará "
@@ -239,7 +240,7 @@ msgstr ""
 "**Distribution strategy:** call distribution method that the campaign on "
 "agents will use. For outbound campaigns, RRmemory is recommended."
 
-# af5b580de92940f9bc08185857d8b445
+# 4ad24815461f4a808c24822decab0439
 #: ../../campaigns_dialer.rst:53
 msgid ""
 "**Campaign priority:** Es un parámetro lineal en la escala del 1 al 10, "
@@ -254,7 +255,7 @@ msgstr ""
 " value is left at * 0 * (by default), equity is maintained with the rest "
 "of the campaigns."
 
-# 6edb64e345a64019ad94796da19d7e6b
+# 3b9b8b46006c4484b7259e7fce294587
 #: ../../campaigns_dialer.rst:54
 msgid ""
 "**Waiting time:** es el tiempo (en segundos), que la llamada contactada "
@@ -264,21 +265,21 @@ msgstr ""
 "**Waiting time:** It is the time (in seconds), that the call contacted "
 "will be queued, waiting for an agent to be released to connect it."
 
-# 8b0fa95164504eb5be09fa25b12866f2
+# d1101e69fbd74e7aac2157e2f1a39967
 #: ../../campaigns_dialer.rst:55
 msgid ""
 "**Enable recordings:** habilita que todas las llamadas de la campaña sean"
 " grabadas."
 msgstr "**Enable recordings:** Enable all campaign calls to be recorded."
 
-# b1518c592fea4bf284b4b3bb4775ac82
+# 82f40353092443c498154e3170d3522d
 #: ../../campaigns_dialer.rst:56
 msgid ""
 "**Detectar contestadores:** habilita la detección de contestadores "
 "automáticos."
 msgstr "**Answer Machine Detection:** enable answering machine detection. "
 
-# 80759f1d2ef9458cb182cc6494b502c5
+# f49ae430995f4068a2da04ba66377757
 #: ../../campaigns_dialer.rst:57
 msgid ""
 "**Audio para contestadores:** se puede indicar la reproducción de un "
@@ -290,7 +291,7 @@ msgstr ""
 "answering machine is detected. For audio to be available, it must be pre-"
 "loaded from the Audios menu> New audio"
 
-# 8648bb2e741047389ca05b92ac44b12c
+# ae6cdb6104434818b5bb349925066550
 #: ../../campaigns_dialer.rst:58
 msgid ""
 "**Activar predictividad:** El discador ofrece una configuración que "
@@ -306,7 +307,7 @@ msgstr ""
 "of calls generated by available agent will be varied in such a way as to "
 "avoid dead times between each calls assigned by the dialer to each agent."
 
-# 3597b2616f1a4e38b8af26f688f1ac25
+# 566a2b5cf3ff4023b02730c41c9fac21
 #: ../../campaigns_dialer.rst:59
 msgid ""
 "**Factor de boost inicial:** indica el valor por el cual se desea "
@@ -323,7 +324,7 @@ msgstr ""
 "boost factor, the dialer is asked to double that value and then make six "
 "calls at once."
 
-# 450451525b45408094757242a714d0e9
+# 73be515a60fa42e7a5f37427afbca8c5
 #: ../../campaigns_dialer.rst:60
 msgid ""
 "**Failover dst:** destino hacia el cual se enviarán las llamadas que "
@@ -331,12 +332,12 @@ msgid ""
 "agotado)."
 msgstr "**Failover dst:** destination to where calls that have expired (timeout)"
 
-# c777dbe8e38243c99907dabda0365d0f
+# c6af660e9f9e469995e6bedde84d26d6
 #: ../../campaigns_dialer.rst:63
 msgid "Luego de completar todos los campos, se debe presionar el botón \"Next\"."
 msgstr "After completing all the fields, click *next*"
 
-# 91d35860e92d4cfcb8b592290856d007
+# 76673a68b5d24546b0be5499fee8d50e
 #: ../../campaigns_dialer.rst:65
 msgid ""
 "En la siguiente pantalla se configuran las opciones de calificación, "
@@ -349,12 +350,12 @@ msgstr ""
 "On the this stage you must assign the dispositions that are required as "
 "available to the agents when classifying each call to each contact."
 
-# a04a368465554b25b02cb08014295dab
+# 0ea21339227643b3a10c8c13fb396ce8
 #: ../../campaigns_dialer.rst:70
 msgid "*Figure 3: Campaigns parameters - call dispositions*"
 msgstr ""
 
-# c09f6e40bfd9492eb7c4d555b91a39eb
+# 28e06314448b40569176c64c27c9b9a0
 #: ../../campaigns_dialer.rst:72
 msgid ""
 "Se guardan los cambios haciendo click en \"Next\" y llegamos a la "
@@ -366,12 +367,12 @@ msgstr ""
 "the time of day which this campaign can place calls (always within the "
 "range of dates established in the first step of creating the campaign)."
 
-# 2c6048e4eff24901ac7c0b81a511abb2
+# 24dd7887462647da82f32a033a347f60
 #: ../../campaigns_dialer.rst:76
 msgid "*Figure 4: Campaigns parameters - days and hours*"
 msgstr ""
 
-# a88e1e2ea20d48c082b02c47cf56decc
+# 65f4362d628044a6bd4ce3cd74ed4ab8
 #: ../../campaigns_dialer.rst:78
 msgid ""
 "Se hace click en \"Next\" y en este caso se trabaja con las \"reglas de "
@@ -383,12 +384,12 @@ msgstr ""
 "call numbers whose contact attempt was failed: Busy, Answering Machine, "
 "No Answer, temporarily out of coverage, etc."
 
-# a9e3a9ff760b435793881b25485cf27f
+# bc2dca13737a4abbaacce8019a98e174
 #: ../../campaigns_dialer.rst:82
 msgid "*Figure 5: Campaigns parameters - days and hours*"
 msgstr ""
 
-# 5663b811424d4e619e8e04e18a00e003
+# 1016e74c3d5c48ea847299e76199f8fd
 #: ../../campaigns_dialer.rst:85
 msgid ""
 "Como se puede observar en la figura 5, los campos a completar permiten "
@@ -399,29 +400,29 @@ msgstr ""
 "retry to establish communication and how many seconds after   an failed "
 "try, the dialer should retry to call."
 
-# f8018331f0a84933b1e37f92d656066a
+# f6b412964a504dd487705aeeeeefe53a
 #: ../../campaigns_dialer.rst:87
 msgid ""
 "Los estados telefónicos que podrán reintentarse marcar automáticamente "
 "son:"
 msgstr "Callstatus that can be retried automatically dial are:"
 
-# bfe83ac13b504300b9b9466639a5d4b8
+# 38dcbefbbe4540bc98bfe8d70dfa5e50
 #: ../../campaigns_dialer.rst:89
 msgid "Ocupado."
 msgstr "Busy"
 
-# 489c6230a81041e38f47946c95f9ccc5
+# 24dee6543fce4a24ab13431c7caec5c6
 #: ../../campaigns_dialer.rst:90
 msgid "Contestador Automático detectado."
 msgstr "Answer machine"
 
-# 1546e5db0ceb48d7a09cafdbb3fc9917
+# 27c69d51c0ab4fc28357f5fb500d58e3
 #: ../../campaigns_dialer.rst:91
 msgid "Destino no contesta."
 msgstr "Phone not answer"
 
-# 24f29025cce94249a696516d2da55c94
+# 0adf29e9739b4ba7ae2705d3f93544e6
 #: ../../campaigns_dialer.rst:92
 msgid ""
 "Llamada rechazada (Rechazado): cuando la llamada no pudo ser cursada por "
@@ -430,7 +431,7 @@ msgstr ""
 "Call rejected (Rejected): when the call could not be carried out due to "
 "problems inherent to the external telephone network."
 
-# 31ff8e72cc614ca28ef775acca43daf2
+# 3b9b8b46006c4484b7259e7fce294587
 #: ../../campaigns_dialer.rst:93
 msgid ""
 "Timeout: cuando la llamada se contactó, se conectó pero ningún agente "
@@ -439,24 +440,24 @@ msgstr ""
 "Timeout: when the call was contacted, it was connected but no agent was "
 "free to handle it."
 
-# 8eef564816224a249518565916842835
+# 3e28ef236e11433e81dd2595004d0c54
 #: ../../campaigns_dialer.rst:95
 msgid ""
 "Se hace click en \"Next\" para llegar al último paso de la creación de la"
 " campaña."
 msgstr "Finally we go to the last stage"
 
-# 60575274adea4549b96289ef7b120668
+# a0dcaf12c457442e8d9abc0ad85a9ea0
 #: ../../campaigns_dialer.rst:99
 msgid "*Figure 6: Campaigns parameters*"
 msgstr ""
 
-# 92766c8691b74d168a8be062a0c84865
+# cd91487a8c10407db9ee236d57bce24a
 #: ../../campaigns_dialer.rst:101
 msgid "En este paso, simplemente se indican tres opciones:"
 msgstr "In this step, three options are simply indicated:"
 
-# fe7c6f04197e4cb6add5870725851082
+# 7de5ca06bc6248d1baa851acd18640b9
 #: ../../campaigns_dialer.rst:103
 msgid ""
 "**Evitar duplicados:** seleccionar esta opción para evitar subir al "
@@ -465,7 +466,7 @@ msgstr ""
 "**Evitar duplicados:** Select this option to avoid uploading records with"
 " the duplicate main phone to the dialer."
 
-# a7bb42d03c3e4bb5a10787bae765609f
+# b7b85910834f459aa8cf8bdcf565dc68
 #: ../../campaigns_dialer.rst:104
 msgid ""
 "**Evitar sin teléfono:** seleccionar esta opción para evitar subir al "
@@ -475,7 +476,7 @@ msgstr ""
 "**Evitar sin teléfono:** select this option to avoid uploading contact "
 "base records that do not have a primary telephone to the dialer."
 
-# 1b2fc1b3acb94ffd885b6cff33c65a1d
+# d83fee8434ef4a06919c3d541cbac9dc
 #: ../../campaigns_dialer.rst:105
 msgid ""
 "**Prefijo:** este campo sirve para indicar al discador si debe anteponer "
@@ -486,14 +487,14 @@ msgstr ""
 " must be placed before each number of the contact base at the time of "
 "dialing the campaign calls."
 
-# cc881ddb2dd84989b3d7f58f3ef30dff
+# 8f8d978e243c478a8b347a2ae967d274
 #: ../../campaigns_dialer.rst:107
 msgid ""
 "Por último, hacemos click en el botón \"Finish\" para concretar la "
 "creación de nuestra campaña."
 msgstr "Finally we go to the last stage"
 
-# 6ebe68f1c4a24e718f37060674159927
+# e15d9815baf24c68a0259c4b2c1c907f
 #: ../../campaigns_dialer.rst:109
 msgid ""
 "La campaña recientemente creada figura en el estado de *Inactiva* (figura"
@@ -502,22 +503,22 @@ msgstr ""
 "The newly created campaign appears in the incative state (figure 7), in "
 "the list of predictive campaigns."
 
-# 525077a0182048c28e4f03f78a887284
+# 3cbad81064fd4473ab4fa9c593410f46
 #: ../../campaigns_dialer.rst:113
 msgid "*Figure 7: Inactive campaign*"
 msgstr ""
 
-# 340066de719d49cc9cb5b20ed7f654ee
+# 6ce3a4742905439eae3c13bfcf75f6e5
 #: ../../campaigns_dialer.rst:115
 msgid "El administrador debe activar la campaña manualmente."
 msgstr "The administrator must activate the campaign manually."
 
-# 9948079e0c8c4829a4e01bf831723889
+# c473ec50986f4654a32f23de7374bbfc
 #: ../../campaigns_dialer.rst:119
 msgid "*Figure 8: Activate camp*"
 msgstr ""
 
-# d563e85cc9d04bc5a974aa71e3dcf025
+# 098c4b3757874e5882927cc5ce814c62
 #: ../../campaigns_dialer.rst:121
 msgid ""
 "Luego de activar nuestra campaña, automáticamente  pasamos a visualizarla"
@@ -526,12 +527,12 @@ msgstr ""
 "After activating the campaign, it should appear in active campaign list  "
 "(figure 9)"
 
-# 73e1bf85e0be4ac99739c86c03ec2b58
+# 7c341450b60644b895224913adae757c
 #: ../../campaigns_dialer.rst:126
 msgid "*Figure 9: Active campaigns*"
 msgstr ""
 
-# 09af2ef71432435a8f788c195c9c70e4
+# 36dbaf2bdeb042e18c2d6bd104ae3e4b
 #: ../../campaigns_dialer.rst:128
 msgid ""
 "En el momento en que un agente asignado a nuestra campaña predictiva "
@@ -543,12 +544,12 @@ msgstr ""
 "active date and time range of the campaign, then the dialer can start "
 "generating calls and deliver these to the agents active in the campaign."
 
-# 025b4c47e7fa469cb6d38f842ed2fb74
+# d10aa8863e254269b7013d1cc3f91952
 #: ../../campaigns_dialer.rst:133
 msgid "Finalización de campañas dialer"
 msgstr "Predictive dialer campaigns completion"
 
-# c8949e8c3c984ad2b6d3016bcb6cbace
+# 62830e86898a4a5aab3b4cf89246c06f
 #: ../../campaigns_dialer.rst:135
 msgid ""
 "Para determinar cuando una campaña predictiva está sin registros por "
@@ -559,12 +560,12 @@ msgstr ""
 "the status of the campaign must be checked by clicking on the name of the"
 " campaign (figure 10)."
 
-# fa968d553012455a98e4810f53894273
+# 8a3969820f5f4a409e87e9db15bdbe47
 #: ../../campaigns_dialer.rst:140
 msgid "*Figure 10: Campaign pending calls*"
 msgstr ""
 
-# d0007351ffcd46588f03b0401c8def7d
+# 9a4401e658ed44c79ade14ce4ea1244d
 #: ../../campaigns_dialer.rst:142
 msgid ""
 "En caso de certificar que el valor *Llamadas pendientes* está en cero, se"
@@ -574,22 +575,22 @@ msgstr ""
 "If the value of pending calls is set to zero, the campaign must be "
 "terminated (figure 11)."
 
-# 79856d9c984c410e818f577b82bfe68d
+# d052d6a253e1431d8f81cb55c1cdf047
 #: ../../campaigns_dialer.rst:146
 msgid "*Figure 11: Finish dialer campaign*"
 msgstr ""
 
-# 537caaaea9184e21baab4314a2ac3eee
+# d38b4b996ffc4749b5d8920bae44e630
 #: ../../campaigns_dialer.rst:148
 msgid "La campaña pasa al listado de *Campañas finalizadas*."
 msgstr "The campaign goes to the list of * Campaigns finished*."
 
-# d393ed3909b8498e8e1a56d791a8cc7a
+# 7eaead4c1ed84290a3467f67cef6edc4
 #: ../../campaigns_dialer.rst:151
 msgid "Reciclado y rotación de bases de contactos"
 msgstr "Recycling and rotation of contact databases"
 
-# 3a21705444b0457f9485e048ec000700
+# b323483082de4ed3926ddf2b1bc131de
 #: ../../campaigns_dialer.rst:153
 msgid ""
 "Cada vez que una campaña predictiva se queda sin registros por marcar en "
@@ -599,12 +600,12 @@ msgstr ""
 "When a predictive campaign runs out of pending records to call its "
 "contact base, that campaign can be reused through two possibilities:"
 
-# 5a48a402e08c49d19a92e9e57e8969f8
+# ce096776cf8a49d48a552e722203c13d
 #: ../../campaigns_dialer.rst:155
 msgid "**Reciclar la base de contactos**"
 msgstr "**Recycle the contact base**"
 
-# a03a3c3439b94b2e98bf0e15889e61d1
+# 0d4e6dd4e6164bcc88c93d6576094637
 #: ../../campaigns_dialer.rst:157
 msgid ""
 "Esta opción permite al administrador seleccionar contactos de la base con"
@@ -622,7 +623,7 @@ msgstr ""
 "current campaign, so that the dialer returns to call the contacts that "
 "fall within the dispositions indicated in the recycling."
 
-# 6cd49fa459cf4da980e7e785ff3e3e28
+# 03c21726b06f4b69a6cda9b0bab624af
 #: ../../campaigns_dialer.rst:161
 msgid ""
 "Para reciclar una campaña finalizada, debemos seleccionar la campaña e "
@@ -631,34 +632,34 @@ msgstr ""
 "To recycle a campaign, you must deploy the options of camapaña and select"
 " there *Recycle*"
 
-# 7911a22f64064a9892e054444c614bf5
+# 86b92128555f4d659a3a2ea28556d00e
 #: ../../campaigns_dialer.rst:165
 msgid "*Figure 12: Campaing recycle*"
 msgstr ""
 
-# 9da481890d2a41f7a7251ebaa028a466
+# 443b862cd49847c7a5cb824f1bcd15db
 #: ../../campaigns_dialer.rst:167
 msgid "Allí se despliegan dos opciones:"
 msgstr "There two options are displayed:"
 
-# 6ee6dac1114a4d9995ddc6407e6a2eea
+# a3e653ac79304963868a7128ee4352bd
 #: ../../campaigns_dialer.rst:169
 msgid "*Reciclar sobre la misma campaña*"
 msgstr "*Recycle on the same campaign*"
 
-# 126d5bc13ac24bc4ab36a6ff63623ffb
+# efdc2f2ba12044c1a0dd5203c0888137
 #: ../../campaigns_dialer.rst:171
 msgid ""
 "Es decir volver a marcar a los contactos seleccionados desde la misma "
 "campaña."
 msgstr "Redial the selected contacts from the same campaign."
 
-# 0fbef256d4694c1c839a4894bd3d6e74
+# 561a6e93cdb440fe82f58f24d8407f15
 #: ../../campaigns_dialer.rst:173
 msgid "*Reciclar sobre una nueva campaña clon*"
 msgstr "*Recycle on a new clone campaign*"
 
-# 160a557919494ff28e64be97bdd70167
+# 122f8f86902748819206b99b3283b5f0
 #: ../../campaigns_dialer.rst:175
 msgid ""
 "Es decir volver a marcar a los contactos seleccionados, pero sobre una "
@@ -669,7 +670,7 @@ msgstr ""
 "similar to the original one and whose contact base will be the result of "
 "recycling."
 
-# b531b0b3b25f48288e37ccd83c378256
+# 5dc966309b784e6682d340e434d322bd
 #: ../../campaigns_dialer.rst:177
 msgid ""
 "Para completar el procedimiento se deben seleccionar *las calificaciones*"
@@ -682,17 +683,17 @@ msgstr ""
 " in case you need to adjust any configuration parameter of the recycled "
 "campaign."
 
-# 0f79679533fb4bd297c35809641589be
+# 270e639aa6194e5299910b5db908ea68
 #: ../../campaigns_dialer.rst:182
 msgid "*Figure 13: Recycle; call dispositions*"
 msgstr ""
 
-# d3ce6fa422914d18b03354c29336fa1f
+# a2296a84c38f4dd0a3810231644c434b
 #: ../../campaigns_dialer.rst:187
 msgid "*Figure 14: Recycle campaigns parameters*"
 msgstr ""
 
-# 16d543ead23046be887d0f02183751d2
+# 441fccb02e9e413abad077d22bb33329
 #: ../../campaigns_dialer.rst:189
 msgid ""
 "Al ejecutar el reciclado, la campaña se encuentra en estado de "
@@ -703,17 +704,17 @@ msgstr ""
 "therefore it remains to activate the campaign so that the recycled "
 "contacts begin to be marked by the dialer."
 
-# 442d28a8968041afab817d9efb5a4844
+# a24afe8878be42078c283b8c290ec0e1
 #: ../../campaigns_dialer.rst:194
 msgid "*Figure 15: Recycle campaign activate*"
 msgstr ""
 
-# 717c48fefa644e209a7ff87461c72a6b
+# ce096776cf8a49d48a552e722203c13d
 #: ../../campaigns_dialer.rst:197
 msgid "**Reemplazar la base de contactos**"
 msgstr "Contact database rotation"
 
-# faa259d9e69743778c8e22845b907432
+# cdad75385e564fb4a679c76f077f8389
 #: ../../campaigns_dialer.rst:199
 msgid ""
 "Una campaña puede sustituir su base por otra nueva. Esto permite seguir "
@@ -726,7 +727,7 @@ msgstr ""
 "contacts to call. In this way the history of reports, recordings and "
 "other statistics in the same campaign is followed."
 
-# faa259d9e69743778c8e22845b907432
+# cdad75385e564fb4a679c76f077f8389
 #: ../../campaigns_dialer.rst:202
 msgid ""
 "Para llevar a cabo un cambio de base, la campaña debe estar pausada o "
@@ -737,12 +738,12 @@ msgstr ""
 "under the status of *finished*. Then you must click on the *database "
 "change* campaign option."
 
-# 61b194df8ae145ddb9793fc554342dc2
+# 9264d11e4c8d4ae7bc635b986361718e
 #: ../../campaigns_dialer.rst:208
 msgid "*Figure 16: database change*"
 msgstr ""
 
-# d3aea32d9d1a430c89674c526fbe2c7e
+# 9eaa7006abeb4617aaa20e0ea796cdd0
 #: ../../campaigns_dialer.rst:210
 msgid ""
 "Esto desplegará una pantalla similar a la expuesta en la siguiente figura"
@@ -751,12 +752,12 @@ msgstr ""
 "This will display a screen similar to the one shown in the following "
 "figure 17."
 
-# 355f71e6b71642aeacfed390d1eece38
+# 483c8357e17c46a6824bd22800396967
 #: ../../campaigns_dialer.rst:215
 msgid "*Figure 17: database change*"
 msgstr ""
 
-# bb42aba0ecab4170bcc45b569beedd32
+# 27fa0f0e559442ac9b755f8057c4d86e
 #: ../../campaigns_dialer.rst:219
 msgid ""
 "La estructura de la base de contactos que se puede utilizar como "
@@ -765,7 +766,7 @@ msgstr ""
 "The contact database structure that can be used as a substitute should be"
 " similar to the contact database to be replaced."
 
-# e5730ba3bd27432c89d4da92894a4a81
+# 3b50e2cfbaf740d5883e747d9702ab3d
 #: ../../campaigns_dialer.rst:221
 msgid ""
 "Una vez llevada a cabo la sustitución es necesario activar nuevamente la "

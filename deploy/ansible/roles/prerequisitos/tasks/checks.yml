@@ -17,6 +17,10 @@
 #
 ---
 
+- name: Include centos variables
+  include_vars: group_vars/centos_vars.yml
+  tags: always
+
 ##########
 # Checks #
 ##########
@@ -25,29 +29,22 @@
 - name: Get the hostname of node
   command: hostname
   register: hostname
-  when: is_docker == "false"
   tags: always
   changed_when: false
 
 - set_fact: omni_fqdn="{{ hostname.stdout }}"
-  when: is_docker == "false"
   tags: always
   changed_when: false
 
 # Obtengo IP del nodo
 - name: Get IP adress of node (selfhosted)
   set_fact: omni_ip={{ hostvars[inventory_hostname]['ansible_' + iface]['ipv4']['address'] }}
-  when: is_docker == "false" and iface != "none"
+  when: iface != "none"
   tags: always
-
-# Se instala wget para centos, que no viene incorporado
-- name: Install of dependencies (centos)
-  yum: name=wget state=present update_cache=yes
-  when: ansible_os_family == "RedHat"
 
 # Obtengo IP publica del nodo
 - name: Get public IP address of node
-  shell: wget -qO- http://ipinfo.io/ip
+  shell: curl http://ipinfo.io/ip
   register: public_ip
   tags: always
 
@@ -60,7 +57,7 @@
   failed_when: false
 
 - fail:
-    msg: "The public IP obtained is wrong, check in shell if you obtain a public IP with this command 'wget -qO- http://ipinfo.io/ip', after that please run the script again"
+    msg: "The public IP obtained is wrong, check in shell if you obtain a public IP with this command 'curl http://ipinfo.io/ip', after that please run the script again"
   when: ip_val.stdout != '0'
   tags: always
 
@@ -69,7 +66,7 @@
   assert:
     that: "'{{ omni_ip }}' in ansible_all_ipv4_addresses"
     msg: "The IP you inserted in inventory file is wrong, check it"
-  when: iface == "none" and is_docker == "false"
+  when: iface == "none"
   changed_when: false
   tags: always
 
@@ -92,6 +89,12 @@
   changed_when: false
   tags: always
 
+- name: Check omni_distribution
+  shell: awk -F= '/^NAME/{print $2}' /etc/os-release
+  register: docker_distribution
+  when: is_docker == "true"
+  tags: docker_deploy
+
 - name: Check python version inside virtualenv
   shell: "source {{ install_prefix }}virtualenv/bin/activate; python -V"
   register: python_version
@@ -109,14 +112,14 @@
   shell:  bash -lc 'output=`psql -c "SELECT version()"`; if [[ $output == *"{{ postgresql_old_version }}"* ]]; then exit 2; elif [[ $output == *"{{ postgresql_version }}"* ]]; then exit 3; else exit 1; fi'
   failed_when: false
   register: postgresql_new_installed
-  tags: ['database','postinstall']
+  tags: ['database','postinstall','docker_deploy']
 
 # Chequeo si la version de rtpengine instalada es {{ rtpengine_version }}
 - name: Check if Rtpengine-mr{{ rtpengine_version }} is installed
   shell: rtpengine -v 2>&1 |awk -F "~" '{print $2}'|cut -c 3-
   changed_when: false
   register: rtpengine_installed
-  tags: kamailio
+  tags: ['kamailio','docker_deploy']
 
 # Chequeo si la version de kamailio instalada es {{ kamailio_version }}
 - name: Check if Kamailio {{ kamailio_version }} is installed
@@ -157,6 +160,19 @@
   failed_when: false
   register: certs_exists
   tags: always
+  
+- name: Check if $DOCKER_USER was defined previously
+  shell: bash -lc 'if [ -z $DOCKER_USER ]; then exit 1; else echo $DOCKER_USER; exit 0; fi'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_docker_user
+  tags: docker_deploy
+
+- set_fact: registry_username="{{ assert_docker_user.stdout }}"
+  when: assert_docker_user.rc == 0 and registry_username is not defined
+  tags: docker_deploy
 
 - name: Check if $TZ was defined previously
   shell: bash -lc 'if [ -z $TZ ]; then exit 1; else echo $TZ; exit 0; fi'
@@ -179,7 +195,7 @@
   failed_when: false
   register: assert_pgpass
   tags: always
-
+  
 - set_fact: postgres_password="{{ assert_pgpass.stdout }}"
   when: assert_pgpass.rc == 0 and postgres_password is not defined
   tags: always
@@ -243,16 +259,23 @@
   changed_when: false
   failed_when: false
   register: assert_mysqlpwd
-  tags: always
+  tags: ['never','postinstall','docker_deploy']
 
 - set_fact: mysql_root_password="{{ assert_mysqlpwd.stdout }}"
   when: assert_mysqlpwd.rc == 0 and mysql_root_password is not defined
-  tags: always
+  tags: ['never','postinstall','docker_deploy']
 
 - name: Get actual mysql root password
   set_fact: mysql_old_root_password="{{ assert_mysqlpwd.stdout }}"
   when: assert_mysqlpwd.rc == 0
-  tags: always
+  tags: ['never','postinstall','docker_deploy']
+
+# Chequea si registry_username esta definido
+- name: Check if registry_username variable is defined
+  fail:
+    msg: registry_username variable undefined, edit $TZ variable in inventory file
+  when: registry_username is not defined and assert_docker_user.rc == 1 and devenv == 1
+  tags: docker_deploy
 
 # Chequea si timezone esta definido
 - name: Check if TimeZone variable is defined
@@ -281,3 +304,15 @@
     msg: Web admin variable undefined, edit $admin_pass in inventory file
   when: admin_pass is not defined and assert_djangopass.rc == 1
   tags: always
+
+- name: Set mysql root installed (issabel)
+  set_fact: mysql_old_root_password="{{ mysql_root_password }}"
+  when: mysql_old_root_password is not defined and docker_distribution.stdout == '"Issabel PBX"'
+  tags: ['never', 'docker_deploy']
+
+- set_fact: mysql_old_root_password=""
+  when: mysql_old_root_password is not defined and docker_distribution.stdout != '"Issabel PBX"'
+  tags: ['never', 'docker_deploy']
+
+- set_fact: mysql_old_root_password=""
+  when: mysql_old_root_password is not defined and is_docker == "false" 

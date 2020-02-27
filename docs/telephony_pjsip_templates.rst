@@ -222,7 +222,7 @@ El resto de los parámetros son similares a los aplicados en el esquema anterior
 OMniLeads inside IPPBX
 **********************
 
-Esta plantilla hace alusión a una instalación :ref:`about_install_docker_pbx`. Es decir bajo este escenario OMniLeads se encuentra corriendo en el mismo host que el software de IPPBX.
+Esta plantilla hace alusión a una instalación :ref:`about_install_docker_linux`. Es decir bajo este escenario OMniLeads se encuentra corriendo en el mismo host que el software de IPPBX.
 Lo cual implica que se establezca un PJSIP trunk desde el *Asterisk dockerizado* dentro del host y el Asterisk que se ejecuta como servicio a nivel sistema operativo de base de la IPPBX.
 
 .. image:: images/telephony_pjsip_docker_pbx_arq.png

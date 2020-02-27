@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
@@ -16,12 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.7.0\n"
 
-# 5742112fa46c4f54829a20a0eae43bda
+# aac2465283c545b68dfb2aed6de03ade
 #: ../../campaigns_manual.rst:5
 msgid "Campañas manuales"
 msgstr "Manual Campaigns"
 
-# aae90a9364d14a349689884bbb718d99
+# c82c9ff69e9f446b9ca829c900baacaf
 #: ../../campaigns_manual.rst:7
 msgid ""
 "Para crear una nueva campaña manual se debe ingresar al punto de menú "
@@ -31,7 +32,7 @@ msgstr ""
 "To create a new manual campaign you must enter the menu item Manual "
 "Campaigns -> New Campaign. "
 
-# 1f0a6ab330b149709d66e57ce1335727
+# 7b91ca0dcacb42ee8866675380d0e34f
 #: ../../campaigns_manual.rst:10
 msgid ""
 "La primera pantalla nos invita a indicar una serie de parámtros de la "
@@ -40,17 +41,17 @@ msgstr ""
 "The first stage invites us to indicate a series of campaign parameters, "
 "as indicated in Figure 1."
 
-# bfa9430acbf6476e9d2c3be1847d78bb
+# 7a618fa2b7c74ad38885769e85697ce0
 #: ../../campaigns_manual.rst:14
 msgid "*Figure 1: Campaigns parameters*"
 msgstr ""
 
-# c84093dc9f834fe39a9d4efd54e31bbe
+# 5c9588ac3ccd4976a4e181569623719c
 #: ../../campaigns_manual.rst:17
 msgid "**Name:** nombre de la campaña"
 msgstr "**Name:** Campaign name"
 
-# 425c99ff621541a9810190e95c68a3b0
+# b7b1e392fc76402eb5fc304a3cfa5d2f
 #: ../../campaigns_manual.rst:18
 msgid ""
 "**Contact database:** se utiliza para desplegar datos extras al teléfono "
@@ -59,7 +60,7 @@ msgstr ""
 "**Contact database:** it is used to display extra data to the phone "
 "number, when executing a call to a campaign contact."
 
-# 3515a49e7a894bb8b5833af32aa2f4bb
+# 26376986b36740678563c3c2bd61be1f
 #: ../../campaigns_manual.rst:19
 msgid ""
 "**External system:** aquí se adjudica el sistema de gestión externo que "
@@ -68,7 +69,7 @@ msgstr ""
 "**External system:** Selects the external CRM that will execute the "
 "requests against OML (External System)"
 
-# 962460d08e614bfa8b54c8fdcefa384b
+# 912d1263075c461798a70a56f378e41b
 #: ../../campaigns_manual.rst:20
 msgid ""
 "**ID on external system:**  este campo debe contener el ID que posee la "
@@ -108,7 +109,7 @@ msgstr ""
 "**Enable recordings:** enable the recording of all calls that are placed "
 "through the campaign."
 
-# f395a62db8c944a8ba32aeec719686a0
+# ad0569b4bb9045f9b8a2566c5ec1feae
 #: ../../campaigns_manual.rst:24
 msgid ""
 "**Scope:** se define como la cantidad de gestiones positivas que se "
@@ -121,7 +122,7 @@ msgstr ""
 "campaign's arrival with respect to the defined objective is shown in real"
 " time."
 
-# c57b0d07a12d47d4a4b5a61b56cf706d
+# 77bd4dbbfbb2477d94c8c624c6ff9661
 #: ../../campaigns_manual.rst:27
 msgid ""
 "El tema de la base de contactos en las campañas manuales (y también "
@@ -141,7 +142,7 @@ msgstr ""
 "telephone) can be retrieved from it. In addition to working with a "
 "contact base in a manual campaign allows you to rate each contact called."
 
-# 1d0a5e31c66140cab24b33d9c082aab2
+# e305c965fdcb471f83c99f2ec0c5c104
 #: ../../campaigns_manual.rst:32
 msgid ""
 "En la segunda pantalla se deben asignar las calificaciones que se "
@@ -153,24 +154,24 @@ msgstr ""
 "each call made to the contact must be assigned.As can be seen in Figure "
 "2, in our example we handle two ratings that trigger two different forms."
 
-# 8ea6c76d0db144abac74b4b92bc66a9e
+# b5fa07c3aa1d4cb4b9242a062d605ad6
 #: ../../campaigns_manual.rst:37
 msgid "*Figure 2: Call dispositions*"
 msgstr ""
 
-# 86470c5c625741578929ffc174f6fad8
+# 33e72c3930334dc5a5f51a720ad990c3
 #: ../../campaigns_manual.rst:39
 msgid ""
 "En los siguientes pasos se pueden añadir supervisores y agentes a nuestra"
 " campaña."
 msgstr "In the following steps you can add supervisors and agents to our campaign"
 
-# f361676d937044b19dea5a81bc5b11d2
+# eefa74d0412a4b49bf686b027279cd48
 #: ../../campaigns_manual.rst:43
 msgid "*Figure 3: agent assignment*"
 msgstr ""
 
-# 13103b53dd37463ab2f08e6dd3f00b09
+# bad35a3cb32b49bc92d2b6eb9ba53ff9
 #: ../../campaigns_manual.rst:45
 msgid ""
 "Finalmente contamos con nuestra nueva campaña manual. cuando un agente "
@@ -185,12 +186,12 @@ msgstr ""
 "will assign each generated manual call from the webphone, as shown in "
 "figure 4."
 
-# 9e39939230ab41289ae4c182be0f98c5
+# 529f7199c37c41f5a43cfdb049481ec9
 #: ../../campaigns_manual.rst:51
 msgid "*Figure 4: Manual call camp selection*"
 msgstr ""
 
-# 26f863cde2c0467fb6806d06f8f99037
+# 4f115718154d4a8b8c4ecb3fa4477e70
 #: ../../campaigns_manual.rst:54
 msgid ""
 "Cuando un agente se encuentra online y marca un teléfono correspondiente "
@@ -211,12 +212,12 @@ msgstr ""
 "listed contact or also create a new contact and dial it. The contact "
 "information (extra phone) is displayed on the agent screen. "
 
-# 2a2c17188a0043f0a7edfdc41b45f464
+# 85630199f8844f4f8bc5ba5049cb8604
 #: ../../campaigns_manual.rst:61
 msgid "*Figure 5: Contact selection*"
 msgstr ""
 
-# 8b4deaf3173c4a079c167b7871d4913d
+# 14773d230aec4548bce4b911bbd239c8
 #: ../../campaigns_manual.rst:63
 msgid ""
 "Si se selecciona llamar al contacto listado, entonces los datos del mismo"
@@ -225,24 +226,24 @@ msgstr ""
 "If you select to call the contact listed, then the data is displayed on "
 "the screen, as shown in Figure 6."
 
-# 881687fc7485490d827f2cb78a9909b5
+# 75fb532812574fab955ef1c07d7832f2
 #: ../../campaigns_manual.rst:67
 msgid "*Figure 6: Contact data*"
 msgstr ""
 
-# 5e3d69818f494acea1a57d48941a9e38
+# 7703cceccb2447d69f6f4f87c4c23919
 #: ../../campaigns_manual.rst:69
 msgid ""
 "De esta manera el agente puede asignar una calificación sobre el contacto"
 " llamado; figura 7."
 msgstr "In this way the agent can assign a rating on the called contact; figure 7."
 
-# c28be31c4d7840e4bb51e617ab1ffc00
+# 73fa7b475b094cec936b89569e54f2a6
 #: ../../campaigns_manual.rst:73
 msgid "*Figure 7: call disposition for contact*"
 msgstr ""
 
-# d1b4d66b784d426ea12762a1badab549
+# 12f92cb973d448aca752cff4d6ff06e3
 #: ../../campaigns_manual.rst:76
 msgid ""
 "Por otro lado, si el teléfono marcado no corresponde a ningún contacto de"
@@ -258,17 +259,17 @@ msgstr ""
 "implies that the contact associated to the dialed call is generated "
 "(figures 5 and 6)."
 
-# ad6c1b5eea6e4f9b849fd30a8d660a82
+# 8ab7f96b780741c98abb63bdb930793c
 #: ../../campaigns_manual.rst:81
 msgid "*Figure 8: new contact add to campaign database 1*"
 msgstr ""
 
-# f8c405881bc743418e7133322d64be4c
+# 633929321f184696927f1408a673a331
 #: ../../campaigns_manual.rst:86
 msgid "*Figure 9: new contact add to campaign database 2*"
 msgstr ""
 
-# 841ff7ad50934fa2a08d386586df6b2a
+# 41dbbecd85ce4dc4881d95da1375abc7
 #: ../../campaigns_manual.rst:88
 msgid ""
 "Entonces al momento de marcar a un número que no devuelva un contacto, el"
@@ -283,17 +284,17 @@ msgstr ""
 "contact and the option to classify the call with some qualification are "
 "displayed (figure 10)."
 
-# 39ce8cc7d4b34e2586b77e588f23509b
+# 96188ff7ebf24276a7bf32ddfb7b2a62
 #: ../../campaigns_manual.rst:94
 msgid "*Figure 10: new contact called*"
 msgstr ""
 
-# 2f21d281a97f4a448616d489bc006802
+# 3da5718374dc4ab79778daf523a95cb1
 #: ../../campaigns_manual.rst:96
 msgid "**Campaña con base de datos Multinum**"
 msgstr "**Multinum contact database**"
 
-# 72d8bec53a75409c971fb3c2428b41b3
+# 666ca7c09c434c7881ea93fc55f5474b
 #: ../../campaigns_manual.rst:98
 msgid ""
 "Como sabemos, OMniLeads admite que cada contacto de una base posea \"n\" "
@@ -314,12 +315,12 @@ msgstr ""
 "presented on the agent screen. Clicking on that link triggers a call to "
 "the extra telephone number of the contact. Figure 11 shows this scenario."
 
-# 73bcae274bbc495794b8d2ba873f3baf
+# 4689429cd33a40aa9cdc33034ffd4695
 #: ../../campaigns_manual.rst:105
 msgid "*Figure 11: Multinum contact database*"
 msgstr ""
 
-# c7536dfd47c84ee4a233fd5556baff15
+# 086a910b72544c1996782eca321dd3ee
 #: ../../campaigns_manual.rst:107
 msgid ""
 "Por lo tanto, el agente puede intentar contactar a todos los números "
