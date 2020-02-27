@@ -48,7 +48,7 @@ setdefaulttimeout(20)
 agi = AGI()
 
 phone_number = sys.argv[1]
-black_list_file = '{0}/var/spool/asterisk/oml_backlist.txt'.format(ASTERISK_LOCATION)
+black_list_file = '{0}/var/spool/asterisk/blacklist/oml_backlist.txt'.format(ASTERISK_LOCATION)
 
 with open(black_list_file, 'r') as f:
     is_black_listed = int(f.read().find(phone_number) != -1)

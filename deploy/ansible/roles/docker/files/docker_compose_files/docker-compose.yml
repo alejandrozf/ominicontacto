@@ -41,6 +41,7 @@ services:
       - ./sounds:/var/lib/asterisk/sounds/
       - ast_conf_files:/etc/asterisk/
 {% endif %}
+      - blacklist:/var/spool/asterisk/blacklist
     working_dir: /etc/asterisk
 
   dialer:
@@ -187,11 +188,12 @@ services:
       - grabaciones:{{ install_prefix }}grabaciones
       - sounds:/var/lib/asterisk/sounds/
 {% else %}
-      - ./recordings:/opt/omnileads/grabaciones
       - ast_conf_files:/etc/asterisk/
+      - ./recordings:/opt/omnileads/grabaciones
       - ./sounds:/var/lib/asterisk/sounds/
     #  - ominicontacto:{{ install_prefix }}ominicontacto/
 {% endif %}
+      - blacklist:/var/spool/asterisk/blacklist
     working_dir: {{ install_prefix}}ominicontacto
 
 {% if devenv == 1 %}
@@ -284,3 +286,4 @@ volumes:
   ast_conf_files:
   #ominicontacto:
 {% endif %}
+  blacklist:

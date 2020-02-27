@@ -129,9 +129,12 @@
     - odbc.ini
   tags: postinstall
 
-# Creo los directorios que tendran los audios subidos por la web
-- name: Make of the sounds dirs
-  file: state=directory path={{ ast_sounds_location }}/oml owner={{ usuario }} group={{ usuario }} mode=755
+# Creo los irectorios que tendran los audios subidos por la web
+- name: Creation of the sounds and blacklist dirs
+  file: state=directory path={{ item }} owner={{ usuario }} group={{ usuario }} mode=755
+  with_items:
+    - "{{ ast_sounds_location }}/oml"
+    - "{{ ast_blacklist_location }}"
   when: is_docker == "false"
   tags: postinstall
 

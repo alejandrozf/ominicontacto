@@ -787,7 +787,7 @@ class SipRegistrationsConfigFile(ConfigFile):
 
 class BackListConfigFile(ConfigFile):
     def __init__(self):
-        filename = os.path.join(settings.OML_WOMBAT_FILENAME,
+        filename = os.path.join(settings.OML_BACKLIST_REMOTEPATH,
                                 "oml_backlist.txt")
         remote_path = settings.OML_BACKLIST_REMOTEPATH
         super(BackListConfigFile, self).__init__(filename, remote_path)
