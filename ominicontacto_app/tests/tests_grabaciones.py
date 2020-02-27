@@ -255,3 +255,17 @@ class FiltrosBusquedaGrabacionesAgenteTests(BaseGrabacionesTests):
         self.assertContains(response, self.grabacion2.tel_cliente)
         self.assertContains(response, self.grabacion3.tel_cliente)
         self.assertNotContains(response, self.grabacion2_1.tel_cliente)
+
+    def test_ve_solamente_grabaciones_propias_antes_de_filtrar(self):
+        agente3 = self.crear_agente_profile()
+        QueueMemberFactory(member=agente3, queue_name=self.queue_campana_1)
+        grabacion3_3 = GrabacionFactory.create(
+            duracion=1, agente=agente3, campana=self.campana1)
+
+        url = reverse('grabacion_agente_buscar', kwargs={'pagina': 1})
+        response = self.client.get(url, follow=True)
+
+        self.assertContains(response, self.grabacion1.tel_cliente)
+        self.assertContains(response, self.grabacion2.tel_cliente)
+        self.assertContains(response, self.grabacion3.tel_cliente)
+        self.assertNotContains(response, grabacion3_3.tel_cliente)

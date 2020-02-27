@@ -72,18 +72,24 @@ class BusquedaGrabacionFormView(FormView):
 
         return context
 
+    def _get_campanas(self):
+        raise NotImplementedError()
+
+    def _get_filtro_agente(self, form):
+        raise NotImplementedError()
+
+    def _get_grabaciones_del_dia(self):
+        raise NotImplementedError()
+
     def get(self, request, *args, **kwargs):
-        hoy = fecha_local(timezone.now())
-        campanas = self.get_campanas()
         return self.render_to_response(
             self.get_context_data(
-                listado_de_grabaciones=Grabacion.objects.
-                grabacion_by_fecha_intervalo_campanas(hoy, hoy, campanas),
+                listado_de_grabaciones=self._get_grabaciones_del_dia(),
                 pagina=self.kwargs['pagina']))
 
     def get_form(self):
         self.form_class = self.get_form_class()
-        campanas = self.get_campanas()
+        campanas = self._get_campanas()
         campana_choice = [(campana.pk, campana.nombre)
                           for campana in campanas]
         return self.form_class(campana_choice=campana_choice, **self.get_form_kwargs())
@@ -100,12 +106,12 @@ class BusquedaGrabacionFormView(FormView):
         tipo_llamada = form.cleaned_data.get('tipo_llamada')
         tel_cliente = form.cleaned_data.get('tel_cliente')
         callid = form.cleaned_data.get('callid')
-        agente = self.get_filtro_agente(form)
+        agente = self._get_filtro_agente(form)
         campana = form.cleaned_data.get('campana')
         marcadas = form.cleaned_data.get('marcadas', False)
         duracion = form.cleaned_data.get('duracion', 0)
         gestion = form.cleaned_data.get('gestion', False)
-        campanas = self.get_campanas()
+        campanas = self._get_campanas()
         pagina = form.cleaned_data.get('pagina')
         listado_de_grabaciones = Grabacion.objects.grabacion_by_filtro(
             fecha_desde, fecha_hasta, tipo_llamada, tel_cliente, callid,
@@ -132,7 +138,7 @@ class BusquedaGrabacionFormView(FormView):
 
 class BusquedaGrabacionSupervisorFormView(BusquedaGrabacionFormView):
 
-    def get_campanas(self):
+    def _get_campanas(self):
         campanas = Campana.objects.all()
         user = self.request.user
         if not user.get_is_administrador():
@@ -140,21 +146,32 @@ class BusquedaGrabacionSupervisorFormView(BusquedaGrabacionFormView):
             campanas = supervisor.campanas_asignadas_actuales()
         return campanas
 
-    def get_filtro_agente(self, form):
+    def _get_filtro_agente(self, form):
         return form.cleaned_data.get('agente', None)
+
+    def _get_grabaciones_del_dia(self):
+        hoy = fecha_local(timezone.now())
+        campanas = self._get_campanas()
+        return Grabacion.objects.grabacion_by_fecha_intervalo_campanas(hoy, hoy, campanas)
 
 
 class BusquedaGrabacionAgenteFormView(BusquedaGrabacionFormView):
     form_class = GrabacionBusquedaForm
     template_name = 'agente/frame/busqueda_grabacion.html'
 
-    def get_campanas(self):
+    def _get_campanas(self):
         agente = self.request.user.get_agente_profile()
         queues = agente.queue_set.all()
         return [queue.campana for queue in queues]
 
-    def get_filtro_agente(self, form):
+    def _get_filtro_agente(self, form):
         return self.request.user.get_agente_profile()
+
+    def _get_grabaciones_del_dia(self):
+        hoy = fecha_local(timezone.now())
+        campanas = self._get_campanas()
+        grabaciones = Grabacion.objects.grabacion_by_fecha_intervalo_campanas(hoy, hoy, campanas)
+        return grabaciones.filter(agente=self.request.user.get_agente_profile())
 
 
 class MarcarGrabacionView(View):
