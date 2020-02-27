@@ -24,11 +24,12 @@
   shell: "wget -P /etc/yum.repos.d http://yum.loway.ch/loway.repo"
 
 - name: Install wombat dialer (centos)
-  yum: name=wombat state=present
+  yum: name=wombat state=latest
+  when: ansible_os_family == "RedHat"
   retries: 3
   delay: 3
   register: result
   until: result is success
 
 - name: Add parameters in server.xml of Catalina
-  template: src=templates/server.xml.j2  dest=/usr/local/queuemetrics/tomcat/conf/server.xml  
+  template: src=templates/server.xml.j2  dest=/usr/local/queuemetrics/tomcat/conf/server.xml

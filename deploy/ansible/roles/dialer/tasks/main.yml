@@ -4,6 +4,7 @@
   tags: postinstall
 
 - include: installations.yml
+  tags: postinstall
   
 - include: mariadb.yml
 

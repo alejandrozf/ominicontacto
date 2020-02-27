@@ -7,7 +7,7 @@ RUN apk update \
     && cd /usr/local/tomcat/webapps/ \
     && wget http://downloads.loway.ch/wd/WombatDialer-${WD_VERSION}.tar.gz  \
     && tar xzvf WombatDialer-${WD_VERSION}.tar.gz \
-    && mv wombatdialer-18.08.3 wombat \
+    && mv wombatdialer-{{  wombat_version.split("-")[0] | lower }} wombat \
     && rm -rf  WombatDialer-${WD_VERSION}.tar.gz \
     && wget https://downloads.mariadb.com/Connectors/java/connector-java-2.3.0/mariadb-java-client-${JAVA_CONNECTOR_VERSION}.jar \
     && cp mariadb-java-client-${JAVA_CONNECTOR_VERSION}.jar wombat/WEB-INF/lib/ \
