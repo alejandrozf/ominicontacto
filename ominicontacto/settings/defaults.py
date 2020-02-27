@@ -377,6 +377,7 @@ LOCALE_PATHS = (
 LANGUAGES = (
     ('en', 'English'),
     ('es', 'Spanish'),
+	('fa', 'Persian'),
 )
 
 LANGUAGE_CODE = 'es'
