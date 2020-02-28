@@ -1,32 +1,5 @@
 ---
 
-# Se crea el repo de sngrep desde el template https://docs.ansible.com/ansible/2.5/modules/template_module.html#template-module
-#  https://docs.ansible.com/ansible-container/container_yml/template.html
-- name: Creation of sngrep repo
-  template: src=templates/etc/irontec.repo dest=/etc/yum.repos.d/irontec.repo
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "RedHat"
-  tags: ['asterisk']
-
-# Se importa la rpm key
-- name: Import of irontec public key
-  rpm_key: state=present key=http://packages.irontec.com/public.key validate_certs=no
-  become: true
-  become_method: sudo
-  tags: ['asterisk']
-  when: ansible_os_family == "RedHat"
-
-# Se descarga e instala el repositorio epel-release
-- name: Install of epel-release repo
-  yum: name={{ item }} state=present update_cache=yes
-  with_items:
-    - "{{ epel_repository }}"
-    - centos-release-gluster
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "RedHat"
-
 #  Instalo paquetes de asterisk no se instalan
 - name: Installation of asterisk packages (centos)
   yum: name={{ item }} state=present update_cache=yes
