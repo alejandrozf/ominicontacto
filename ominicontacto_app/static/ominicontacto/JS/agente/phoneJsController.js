@@ -92,8 +92,20 @@ class PhoneJSController {
         });
 
         this.view.recordCall.click(function name(arg) {
-            $(this).attr('disabled', true);
-            self.recordCall();
+            var $recordCallButton = self.view.recordCall;
+            var $img = $recordCallButton.find('img');
+            var recordUrlStatus = $img.attr('src');
+
+            if (recordUrlStatus == self.view.imgRecordOffUrl) {
+                $img.attr('src', self.view.imgRecordOnUrl);
+                $recordCallButton.attr('title', gettext('Parar grabación llamada'));
+                self.recordCall();
+            }
+            else {
+                $img.attr('src', self.view.imgRecordOffUrl);
+                $recordCallButton.attr('title', gettext('Grabar llamada'));
+                self.stopRecordCall();
+            }
         });
 
         this.view.resumeButton.click(function() {
@@ -571,8 +583,12 @@ class PhoneJSController {
 
     recordCall() {
         // TODO: mover a modulo phoneJsSip.js
-        this.phone.currentSession.sendDTMF('*');
-        this.phone.currentSession.sendDTMF('4');
+        this.phone.currentSession.sendDTMF('*4');
+    }
+
+    stopRecordCall() {
+        // TODO: mover a modulo phoneJsSip.js
+        this.phone.currentSession.sendDTMF('*5');
     }
 
     setCallFailedStatus(cause) {

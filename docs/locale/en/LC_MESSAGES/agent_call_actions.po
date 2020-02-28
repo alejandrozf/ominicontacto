@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-13 11:31-0300\n"
+"POT-Creation-Date: 2020-02-28 10:33-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.4.0\n"
 
 # 852caeaea58c49dc9b037abd7c921ef7
 #: ../../agent_call_actions.rst:2
@@ -501,13 +501,24 @@ msgstr ""
 "button shown in next picture. This feature is only available for calls "
 "related to campaigns with recording calls option disabled"
 
+# b24c0658bcc84c26ab58be2ae9e79bb4
+#: ../../agent_call_actions.rst:171
+msgid ""
+"La grabación de la llamada puede terminarse a elección del usuario "
+"presionando el mismo botón en medio de dicha grabación, si no se hace "
+"esto la llamada se grabará hasta el final de la llamada"
+msgstr ""
+"The call recording can be stopped if user want it, clicking the same button in "
+"the middle of the recording, if the user cannot do that the call will be "
+"recorded until the end of the call."
+
 # f1fff66989044a43b6ad61ed35ae947a
-#: ../../agent_call_actions.rst:173
+#: ../../agent_call_actions.rst:177
 msgid "Agendamiento de llamadas"
 msgstr "Scheduled Callbacks"
 
 # 741c5f37d67b44389ac363f677b18c6a
-#: ../../agent_call_actions.rst:175
+#: ../../agent_call_actions.rst:179
 msgid ""
 "La funcionalidad de agendamiento de llamadas permite al sistema volver a "
 "procesar un contacto hacia el futuro. La idea es no descartar al mismo, "
@@ -518,12 +529,12 @@ msgstr ""
 "but keep managing it."
 
 # cdec1a63f32242d2bbada55963881867
-#: ../../agent_call_actions.rst:177
+#: ../../agent_call_actions.rst:181
 msgid "**Agendamiento personal:**"
 msgstr "**Personal Callback**"
 
 # 8c344678e1a04d7183ee00427837268a
-#: ../../agent_call_actions.rst:179
+#: ../../agent_call_actions.rst:183
 msgid ""
 "Cuando el agente requiere volver a llamar a un contacto determinado, "
 "puede generar un recordatorio en su agenda personal, para luego al listar"
@@ -535,19 +546,19 @@ msgstr ""
 "order to call them back."
 
 # eeb2c90d106d475d98e1bd18f4091780
-#: ../../agent_call_actions.rst:182
+#: ../../agent_call_actions.rst:186
 msgid ""
 "El agendamiento de llamadas es una calificación que se encuentra por "
 "defecto siempre como calificación de contacto."
 msgstr "Agenda is a default call disposition of the system."
 
 # 561da4434eb549898d31f17ec6deada8
-#: ../../agent_call_actions.rst:186
+#: ../../agent_call_actions.rst:190
 msgid "*Figure 13: agenda personal*"
 msgstr "*Figure 13: Personal Callback*"
 
 # 547ae1827df44f96bda1550653fbf2ef
-#: ../../agent_call_actions.rst:188
+#: ../../agent_call_actions.rst:192
 msgid ""
 "Luego de guardar la calificación, se despliega un formulario para "
 "seleccionar la fecha, hora y motivo de la agenda personal del contacto."
@@ -556,12 +567,12 @@ msgstr ""
 "time and reason of the agenda being in place."
 
 # 8eaaf1e367cd46deab798e7b81466468
-#: ../../agent_call_actions.rst:192
+#: ../../agent_call_actions.rst:196
 msgid "*Figure 14: detalles de la agenda personal*"
 msgstr "*Figure 14: Personal Callback details*"
 
 # fc224a5fa57444669744bd83a4c4415f
-#: ../../agent_call_actions.rst:194
+#: ../../agent_call_actions.rst:198
 msgid ""
 "Finalmente, la entrada en la agenda personal del agente quedará "
 "disponible ingresando al punto de menú Agendas:"
@@ -570,17 +581,17 @@ msgstr ""
 "seen by clicking in the Agenda menu."
 
 # e13a99aefcf24e8c8f1da3d9dba07c7e
-#: ../../agent_call_actions.rst:198
+#: ../../agent_call_actions.rst:202
 msgid "*Figure 15: detalles de la agenda personal*"
 msgstr "*Figure 25: Agenda details*"
 
 # 2e627ea3b1d847fca1d332d969419940
-#: ../../agent_call_actions.rst:200
+#: ../../agent_call_actions.rst:204
 msgid "**Agendamiento global de llamadas predictivas**"
 msgstr "**Global Callbacks for Outbound Dialer Campaigns**"
 
 # 7950db4ed5c3490dbbda16b863a5aa9c
-#: ../../agent_call_actions.rst:202
+#: ../../agent_call_actions.rst:206
 msgid ""
 "Este tipo de agendamiento es solo aplicable a campañas con discador "
 "predictivo ya que tiene como finalidad volver a colocar al contacto "
@@ -596,7 +607,7 @@ msgstr ""
 "number."
 
 # d64ec7bc5c1b4a95b25634265eeada93
-#: ../../agent_call_actions.rst:206
+#: ../../agent_call_actions.rst:210
 msgid ""
 "Se trata de una funcionalidad que permite no descartar al contacto, pero "
 "sin implicar un seguimiento personal por parte del agente."
@@ -606,7 +617,7 @@ msgstr ""
 "to attend the call in that moment."
 
 # be5b4ccabf134d5688803ca8f7d8997e
-#: ../../agent_call_actions.rst:208
+#: ../../agent_call_actions.rst:212
 msgid ""
 "Para generar una agenda de este tipo, se debe calificar al contacto con "
 "la calificación \"agenda\" pero luego seleccionar \"global\" en el menú "
