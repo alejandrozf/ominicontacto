@@ -8,7 +8,6 @@
     - http://mirror.centos.org/centos/7/os/x86_64/Packages/postgresql-odbc-09.03.0100-2.el7.x86_64.rpm
     - lame
     - sqlite-devel
-    - sngrep
     - subversion
     - unixODBC
     - unzip
