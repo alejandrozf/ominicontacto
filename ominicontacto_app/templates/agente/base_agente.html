@@ -689,7 +689,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                         <span class="icon icon-solid-phone-save"></span>
                                     </button>
                                     <button type="button" id="recordCall" class="btn btn-outline-secondary" title="{% trans 'Grabar Llamada' %}">
-                                        <span class="fa fa-microphone"></span>
+                                        <span>
+                                            <input class="hidden" name="recordOnUrl" id="recordOnUrl" type="text"
+                                                   value="{% static 'ominicontacto/Img/record-on.svg' %}"/>
+                                            <input class="hidden" name="recordOffUrl" id="recordOffUrl" type="text"
+                                                   value="{% static 'ominicontacto/Img/record-off.svg' %}"/>
+                                            <img src="{% static 'ominicontacto/Img/record-off.svg' %}">
+                                        </span>
                                     </button>
                                 </div>
                             </div>

@@ -168,6 +168,10 @@ Esta funcionalidad permite grabar una llamada, a partir del momento de hacer cli
 
 .. image:: images/about_agent_callactions_record_call.png
 
+La grabación de la llamada puede terminarse a elección del usuario presionando el mismo botón en medio de dicha grabación, si no se hace esto la llamada se grabará hasta el final de la llamada
+
+.. image:: images/about_agent_callactions_stop_record_call.png
+
 
 Agendamiento de llamadas
 ************************

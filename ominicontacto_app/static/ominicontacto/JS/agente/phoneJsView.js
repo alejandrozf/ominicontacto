@@ -54,6 +54,8 @@ class PhoneJSView {
         this.tagCallButton = $('#SignCall');
         this.hangUpButton = $('#endCall');
         this.recordCall = $('#recordCall');
+        this.imgRecordOffUrl = $('#recordOffUrl').val();
+        this.imgRecordOnUrl = $('#recordOnUrl').val();
 
         this.keypad_buttons_ids = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0',
             'asterisk', 'hashtag'];
