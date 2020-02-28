@@ -78,7 +78,7 @@ class CampanaReporteCalificacionListView(ListView):
         return context
 
 
-class ExportaReporteCampanaView(View):
+class ExportaCampanaReporteCalificacionView(View):
     """
     Esta vista invoca a generar un csv de reporte de la campana.
     """
@@ -187,7 +187,7 @@ class CampanaReporteGraficoView(FormView):
             pk_campana=self.kwargs['pk_campana']))
 
 
-class ExportaCampanaReportePDFView(View):
+class ExportaCampanaReporteGraficoPDFView(View):
     """
     Esta vista invoca a generar un pdf de reporte de la campana
     """

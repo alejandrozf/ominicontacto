@@ -31,8 +31,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {% endif %}
                 <h3>{% trans 'Base Datos:' %} {{ campana.bd_contacto }}</h3>
                 <br>
-                <a class="btn btn-outline-primary" href="{% url 'exporta_campana_reporte' campana.pk %}">{% trans 'Exportar Calificación(CSV)' %}</a>
-                <a class="btn btn-outline-primary" href="{% url 'exporta_formulario_reporte' campana.pk %}">{% trans 'Exportar Gestión:' %} (CSV)</a>
+                <a class="btn btn-outline-primary" href="{% url 'exporta_campana_reporte_calificacion' campana.pk %}">{% trans 'Exportar Calificación(CSV)' %}</a>
+                <a class="btn btn-outline-primary" href="{% url 'exporta_reporte_calificaciones_gestion' campana.pk %}">{% trans 'Exportar Gestión:' %} (CSV)</a>
                 <table class="table">
                     <thead>
                       <tr class="fts-table-bg">

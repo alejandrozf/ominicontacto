@@ -42,7 +42,7 @@ class AgentsAsteriskSessionAPITest(OMLBaseTest):
     @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.login_agent')
     def test_asterisk_session_login_ok(self, login_agent):
         login_agent.return_value = False, False, False
-        url = reverse('agent_asterisk_login')
+        url = reverse('api_agent_asterisk_login')
         response = self.client.post(url, HTTP_AUTHORIZATION=self.auth_header)
         self.assertEqual(response.status_code, 200)
         self.assertIn('status', response.json())
@@ -52,7 +52,7 @@ class AgentsAsteriskSessionAPITest(OMLBaseTest):
     @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.login_agent')
     def test_asterisk_session_login_error(self, login_agent):
         login_agent.return_value = False, False, True
-        url = reverse('agent_asterisk_login')
+        url = reverse('api_agent_asterisk_login')
         response = self.client.post(url, HTTP_AUTHORIZATION=self.auth_header)
         self.assertEqual(response.status_code, 200)
         self.assertIn('status', response.json())
@@ -63,7 +63,7 @@ class AgentsAsteriskSessionAPITest(OMLBaseTest):
            'logout_agent')
     def test_asterisk_session_logout_ok(self, logout_agent):
         logout_agent.return_value = False, False
-        url = reverse('agent_asterisk_logout')
+        url = reverse('api_agent_asterisk_logout')
         response = self.client.post(url, HTTP_AUTHORIZATION=self.auth_header)
         self.assertEqual(response.status_code, 200)
         self.assertIn('status', response.json())
@@ -74,7 +74,7 @@ class AgentsAsteriskSessionAPITest(OMLBaseTest):
            'logout_agent')
     def test_asterisk_session_logout_error(self, logout_agent):
         logout_agent.return_value = False, True
-        url = reverse('agent_asterisk_logout')
+        url = reverse('api_agent_asterisk_logout')
         response = self.client.post(url, HTTP_AUTHORIZATION=self.auth_header)
         self.assertEqual(response.status_code, 200)
         self.assertIn('status', response.json())
@@ -85,7 +85,7 @@ class AgentsAsteriskSessionAPITest(OMLBaseTest):
            'pause_agent')
     def test_asterisk_session_pause_agent(self, pause_agent):
         pause_agent.return_value = False, False
-        url = reverse('make_pause')
+        url = reverse('api_make_pause')
         response = self.client.post(url, data={'pause_id': self.pausa.id},
                                     HTTP_AUTHORIZATION=self.auth_header)
         self.assertEqual(response.status_code, 200)
@@ -97,7 +97,7 @@ class AgentsAsteriskSessionAPITest(OMLBaseTest):
            'unpause_agent')
     def test_asterisk_session_unpause_agent(self, unpause_agent):
         unpause_agent.return_value = False, False
-        url = reverse('make_unpause')
+        url = reverse('api_make_unpause')
         response = self.client.post(url, data={'pause_id': self.pausa.id},
                                     HTTP_AUTHORIZATION=self.auth_header)
         self.assertEqual(response.status_code, 200)

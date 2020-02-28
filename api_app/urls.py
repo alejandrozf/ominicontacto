@@ -26,7 +26,8 @@ from api_app.views.base import login, ContactoCreateView, CampaignDatabaseMetada
 from api_app.views.administrador import AgentesActivosGrupoViewSet
 from api_app.views.supervisor import (
     SupervisorCampanasActivasViewSet, AgentesStatusAPIView, StatusCampanasEntrantesView,
-    StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView, )
+    StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView, LlamadasDeCampanaView,
+    CalificacionesDeCampanaView)
 from api_app.views.agente import (
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
     API_ObtenerContactosCampanaView, Click2CallView, AgentLogoutView,
@@ -44,12 +45,12 @@ router = routers.DefaultRouter()
 # ###########  ADMINISTRADOR  ############ #
 router.register(
     r'api/v1/grupo/(?P<pk_grupo>\d+)/agentes_activos', AgentesActivosGrupoViewSet,
-    base_name='grupo_agentes_activos')
+    base_name='api_agentes_activos_de_grupo')
 
 # ###########   SUPERVISOR    ############ #
 router.register(
     r'api/v1/supervisor/campanas', SupervisorCampanasActivasViewSet,
-    base_name='supervisor_campanas')
+    base_name='api_campanas_de_supervisor')
 
 # ###########     AGENTE      ############ #
 router.register(
@@ -58,10 +59,10 @@ router.register(
 router.register(
     r'api/v1/campaign/(?P<campaign>\w+)/dispositionOptions',
     OpcionesCalificacionViewSet, base_name='api_campana_opciones_calificacion_intern')
-router.register(r'api/v1/disposition', ApiCalificacionClienteView, base_name='disposition')
+router.register(r'api/v1/disposition', ApiCalificacionClienteView, base_name='api_disposition')
 router.register(
     r'api/v1/new_contact/disposition', ApiCalificacionClienteCreateView,
-    base_name='disposition_new_contact')
+    base_name='api_disposition_new_contact')
 
 
 urlpatterns = [
@@ -73,7 +74,16 @@ urlpatterns = [
     url(r'api/v1/new_contact/', ContactoCreateView.as_view(),
         name='api_new_contact'),
     url(r'api/v1/campaign/database_metadata/', CampaignDatabaseMetadataView.as_view(),
-        name='campaign_database_metadata'),
+        name='api_campaign_database_metadata'),
+
+    url(r'^api_supervision/llamadas_campana/(?P<pk_campana>\d+)/$',
+        LlamadasDeCampanaView.as_view(),
+        name='api_supervision_llamadas_campana',
+        ),
+    url(r'^api_supervision/calificaciones_campana/(?P<pk_campana>\d+)/$',
+        CalificacionesDeCampanaView.as_view(),
+        name='api_supervision_calificaciones_campana',
+        ),
 
     # ###########   SUPERVISOR    ############ #
     url(r'api/v1/supervision/agentes',
@@ -96,14 +106,14 @@ urlpatterns = [
         Click2CallView.as_view(),
         name='api_click2call'),
     url(r'^api/v1/asterisk_login/$',
-        AgentLoginAsterisk.as_view(), name='agent_asterisk_login'),
+        AgentLoginAsterisk.as_view(), name='api_agent_asterisk_login'),
     url(r'^api/v1/asterisk_logout/$',
-        AgentLogoutAsterisk.as_view(), name='agent_asterisk_logout'),
+        AgentLogoutAsterisk.as_view(), name='api_agent_asterisk_logout'),
     url(r'^agente/logout/$', agente_requerido(AgentLogoutView.as_view()),
-        name='agente_logout'),
+        name='api_agente_logout'),
     url(r'^api/v1/asterisk_pause/$',
-        AgentPauseAsterisk.as_view(), name='make_pause'),
+        AgentPauseAsterisk.as_view(), name='api_make_pause'),
     url(r'^api/v1/asterisk_unpause/$',
-        AgentUnpauseAsterisk.as_view(), name='make_unpause'),
+        AgentUnpauseAsterisk.as_view(), name='api_make_unpause'),
 
 ]

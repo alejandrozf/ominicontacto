@@ -39,6 +39,23 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% endcompress %}
     </head>
     <body>
+        <!-- { % include 'messages.html' % } -->
+        {% for message in messages %}
+            {% if "warning" in message.tags %}
+                <div class="alert alert-warning alert-dismissible show" role="alert">
+                    <button type="button" class="close btn" datadismiss="alert" aria-label="Cerrar">&times;</button>
+                    <h1>{% trans '¡Atención!' %}</h1>
+                    <p>{{ message|safe  }}</p>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <button type="button" class="close btn" datadismiss="alert" aria-label="Cerrar">&times;</button>
+            <h1>{% trans '¡Atención!' %}</h1>
+            <p>{{ message|safe  }}</p>
+        </div>
+
         <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
         <div class="row" style="margin-top:5%; margin-left:5%;">
             <div class="col-md-5">

@@ -599,13 +599,6 @@ class IVRUpdateView(IVRMixin, UpdateView):
             {'form': form, 'opcion_destino_formset': opcion_destino_formset})
 
 
-class IVRContentCreateView(IVRCreateView):
-    """Vista para crear un nodo de tipo IVR para solo renderizando el contenido
-    del formulario
-    """
-    template_name = "content_ivr.html"
-
-
 class GrupoHorarioListView(ListView):
     """Lista los grupos horarios existentes"""
     model = GrupoHorario

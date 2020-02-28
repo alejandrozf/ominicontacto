@@ -391,20 +391,20 @@ class ReportesCampanasTests(BaseTestDeReportes):
 
     def test_usuario_logueado_accede_reporte_agente_campana(self):
         url = reverse(
-            'campana_reporte_agente', args=[self.campana_activa.pk, self.agente_profile.pk])
+            'campana_reporte_grafico_agente', args=[self.campana_activa.pk, self.agente_profile.pk])
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed(response, 'reporte_agente.html')
 
     def test_usuario_no_logueado_no_accede_reporte_agente_campana(self):
         self.client.logout()
         url = reverse(
-            'campana_reporte_agente', args=[self.campana_activa.pk, self.agente_profile.pk])
+            'campana_reporte_grafico_agente', args=[self.campana_activa.pk, self.agente_profile.pk])
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed(response, 'registration/login.html')
 
     def test_datos_reporte_agente_calificaciones_coinciden_estadisticas_sistema(self):
         url = reverse(
-            'campana_reporte_agente', args=[self.campana_activa.pk, self.agente_profile.pk])
+            'campana_reporte_grafico_agente', args=[self.campana_activa.pk, self.agente_profile.pk])
         response = self.client.get(url, follow=True)
         estadisticas = response.context_data['graficos_estadisticas']['estadisticas']
         calificaciones_list = [self.calif_gestion.opcion_calificacion.nombre,
@@ -416,7 +416,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
 
     def test_datos_reporte_agente_detalle_llamadas_coinciden_estadisticas_sistema(self):
         url = reverse(
-            'campana_reporte_agente', args=[self.campana_activa.pk, self.agente_profile.pk])
+            'campana_reporte_grafico_agente', args=[self.campana_activa.pk, self.agente_profile.pk])
         response = self.client.get(url, follow=True)
         estadisticas = response.context_data['graficos_estadisticas']['estadisticas']
         agente_data = estadisticas['agente_tiempo']
@@ -443,7 +443,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
         ActividadAgenteLogFactory(
             agente_id=self.agente_profile.pk, time=tiempo_agente_logout, event='REMOVEMEMBER')
         url = reverse(
-            'campana_reporte_agente', args=[self.campana_activa.pk, self.agente_profile.pk])
+            'campana_reporte_grafico_agente', args=[self.campana_activa.pk, self.agente_profile.pk])
         response = self.client.get(url, follow=True)
         estadisticas = response.context_data['graficos_estadisticas']['estadisticas']
         agente_data = estadisticas['agente_tiempo']
@@ -466,7 +466,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
         ActividadAgenteLogFactory(
             agente_id=self.agente_profile.pk, time=tiempo_agente_logout, event='REMOVEMEMBER')
         url = reverse(
-            'campana_reporte_agente', args=[self.campana_activa.pk, self.agente_profile.pk])
+            'campana_reporte_grafico_agente', args=[self.campana_activa.pk, self.agente_profile.pk])
         response = self.client.get(url, follow=True)
         estadisticas = response.context_data['graficos_estadisticas']['estadisticas']
         agente_data = estadisticas['agente_tiempo']
@@ -489,7 +489,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
         ActividadAgenteLogFactory(
             agente_id=self.agente_profile.pk, time=tiempo_agente_inicio_pausa, event='PAUSEALL')
         url = reverse(
-            'campana_reporte_agente', args=[self.campana_activa.pk, self.agente_profile.pk])
+            'campana_reporte_grafico_agente', args=[self.campana_activa.pk, self.agente_profile.pk])
         response = self.client.get(url, follow=True)
         estadisticas = response.context_data['graficos_estadisticas']['estadisticas']
         agente_data = estadisticas['agente_tiempo']
