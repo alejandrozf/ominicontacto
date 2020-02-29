@@ -1,6 +1,3 @@
 # Add extra options here
-{% if is_docker == "false" %}
-OPTIONS="-i external/{{ omni_ip }}!{{ public_ip.stdout }} -n 127.0.0.1:{{ rtpengine_port }} -m 20000 -M 30000 -L 7 --log-facility=local1"
-{% else %}
-OPTIONS="-i internal/{{ omni_ip }} -n {{ omni_ip }}:{{ rtpengine_port }} -m 20000 -M 30000 -L 7 --log-facility=local1"
-{% endif %}
+
+OPTIONS="-i {{ kamailio_ip }} -n 127.0.0.1:{{ rtpengine_port }} -m 20000 -M 30000 -L 7 --log-facility=local1"

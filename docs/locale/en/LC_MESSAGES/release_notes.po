@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-27 09:46-0300\n"
+"POT-Creation-Date: 2020-02-28 18:39-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,22 +17,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-# 47dcfdec1b274e2fb0bd6f58be5a3fb3
+# eb60d83c42df47e7be5e20e90a4b61a5
 #: ../../release_notes.rst:2
 msgid "Release Notes"
 msgstr "Release Notes"
 
-# eb03ffc6236945e5a3ad5e2d43cff95e
+# d82b7aba6425421ab734c9a356b56743
 #: ../../release_notes.rst:4
-msgid "*Febrero 27, 2020*"
-msgstr "February 27, 2020"
+msgid "*Febrero 28, 2020*"
+msgstr "February 28, 2020"
 
-# 4b5264401e684a549346fd8b425ac1d3
+# 8376ef42c5614a178a2fc0fe09246ed1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.4.1"
-msgstr "Release 1.4.1 details"
+msgid "Detalles de Release 1.4.2"
+msgstr "Release 1.4.2 details"
 
-# 3eb18b5cbf824e49a25bcc2c1fed28a5
+# 5e789c671d314442b28fcfb50d32a507
 #: ../../release_notes.rst:9
 msgid ""
 "Este es un release \"bugfix\" mejorando la estabilidad y rendimiento del "
@@ -41,20 +41,15 @@ msgstr ""
 "This is a \"bugfix\" release improving the stability and performance of "
 "the codebase."
 
-# a99b85d5576743a5ab0768cd9de93efe
+# 08671eb233f04abb94799e4b0e1d9251
 #: ../../release_notes.rst:12
 msgid "Bug fixes"
 msgstr "Bug fixes"
 
-# bc9844bae34f4718953d3eea63f2f89b
+# 7f737ba46fa140769dd90a8f75f0f5f2
 #: ../../release_notes.rst:14
-#, fuzzy
 msgid ""
-"Se upgradea version de Wombat Dialer a la ultima (20.02.1-271) debido a "
-"un bug que hacía a Wombat seguir discando a la base de contactos cuando "
-"los agentes estaban pausados."
+"El paquete sngrep es eliminado de la instalación debido a problemas de "
+"con repositorio fuente en CentOS"
 msgstr ""
-"Upgraded Wombat Dialer version in installation to latest (20.02.1-271) "
-"due to a bug that made Wombat to keep dialing the contact database even "
-"when agents were paused."
-
+"The sngrep package is removed from the installation due to availability repo issues on CentOS"
