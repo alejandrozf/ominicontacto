@@ -299,6 +299,27 @@ class APITest(TestCase):
         self.assertEqual(len(response.json()), 3)
         self.assertEqual(logger.warning.call_count, 2)
 
+    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
+    @patch.object(AMIManagerConnector, "_ami_manager")
+    @patch('api_app.utiles.logger')
+    def test_servicio_agentes_activos_no_incluye_entradas_lineas_status_vacio(
+            self, logger, _ami_manager, manager):
+        self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
+        _ami_manager.return_value = (
+            "/OML/AGENT/1/NAME                                : Agente 01\r\n"
+            "/OML/AGENT/1/SIP                                 : 1004 \r\n"
+            "/OML/AGENT/1/STATUS                              : \r\n"
+            "/OML/AGENT/10/NAME                               : Agente10 \n"
+            "/OML/AGENT/10/SIP                                : 1013\r\n"
+            "/OML/AGENT/10/STATUS                             : \r\n"
+            "/OML/AGENT/11/NAME                               : Agente11\r\n"
+            "/OML/AGENT/11/SIP                                : 1014\r\n"
+            "/OML/AGENT/11/STATUS                             : READY:1582309100\r\n"
+            "3 results found."), None
+        url = reverse('api_agentes_activos')
+        response = self.client.get(url)
+        self.assertEqual(len(response.json()), 1)
+
     def test_api_login_devuelve_token_asociado_al_usuario_password(self):
         url = 'https://{0}{1}'.format(settings.OML_OMNILEADS_IP, reverse('api_login'))
         user = self.supervisor_admin.user

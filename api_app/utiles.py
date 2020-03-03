@@ -66,11 +66,17 @@ class AgentesParsing(object):
         entrada_agente['id'] = id_agente
         if header == 'STATUS':
             # obtener timestamp desde value
-            status, timestamp = value_part.split(':')
-            entrada_agente['status'] = status
-            tiempo_actual = int(time())
-            tiempo_estado = tiempo_actual - int(timestamp)
-            entrada_agente['tiempo'] = tiempo_estado
+            try:
+                status, timestamp = value_part.split(':')
+            except ValueError:
+                # no contamos entradas con status vacío
+                # por ejemplo "/OML/AGENT/11/STATUS : \r\n"
+                entrada_agente = {}
+            else:
+                entrada_agente['status'] = status
+                tiempo_actual = int(time())
+                tiempo_estado = tiempo_actual - int(timestamp)
+                entrada_agente['tiempo'] = tiempo_estado
         else:
             entrada_agente[map_keys[header]] = value_part
         if value_part == '':
@@ -79,7 +85,7 @@ class AgentesParsing(object):
         return entrada_agente
 
     def _pertenece_grupo_actual_agente(self, entrada_agente, grupo_datos_agente):
-        if grupo_datos_agente == {}:
+        if grupo_datos_agente == {} or entrada_agente == {}:
             return True
         else:
             id_grupo = grupo_datos_agente['id']
