@@ -38,8 +38,9 @@
 
 # 3) Probar este codigo como punto de partida hacia un server sin DJANGO_DEBUG_TOOLBAR
 
-# 4) correr "$BROWSER_REAL='True' TESTS_INTEGRACION='True' LOGIN_FAILURE_LIMIT=10 python ominicontacto_app/tests/tests.py"
-# para testear los tests de integración incluyendo los que necesitan audio en el browser
+# 4)Para testear los tests de integración:
+# "$TESTS_INTEGRACION='True' LOGIN_FAILURE_LIMIT=10 python ominicontacto_app/tests/tests.py"
+# Para los que necesitan audio en el browser, agregar "$BROWSER_REAL='True'"
 
 from __future__ import unicode_literals
 
@@ -552,10 +553,14 @@ class IntegrationTests(unittest.TestCase):
     def test_crear_modificar_eliminar_audio(self):
         # Crear audio
         self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
-        user_list = self.browser.find_element_by_xpath(
+        audio_list = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/audios/")]')
+        href_audio_list = audio_list.get_attribute('href')
+        self.browser.get(href_audio_list)
+        audio_create = self.browser.find_element_by_xpath(
             '//a[contains(@href,"/audios/create/")]')
-        href_user_list = user_list.get_attribute('href')
-        self.browser.get(href_user_list)
+        href_audio_create = audio_create.get_attribute('href')
+        self.browser.get(href_audio_create)
         descripcion_audio = 'audio' + uuid.uuid4().hex[:5]
         self.browser.find_element_by_id('id_descripcion').send_keys(descripcion_audio)
         wav_path = "/home/{0}/ominicontacto/test/wavs/8k16bitpcm.wav". format(USER)
@@ -590,10 +595,14 @@ class IntegrationTests(unittest.TestCase):
 
     def test_subir_audio_erroneo(self):
         self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
-        user_list = self.browser.find_element_by_xpath(
+        audio_list = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/audios/")]')
+        href_audio_list = audio_list.get_attribute('href')
+        self.browser.get(href_audio_list)
+        audio_create = self.browser.find_element_by_xpath(
             '//a[contains(@href,"/audios/create/")]')
-        href_user_list = user_list.get_attribute('href')
-        self.browser.get(href_user_list)
+        href_audio_create = audio_create.get_attribute('href')
+        self.browser.get(href_audio_create)
         descripcion_audio = 'audio' + uuid.uuid4().hex[:5]
         self.browser.find_element_by_id('id_descripcion').send_keys(descripcion_audio)
         wav_path = "/home/{0}/ominicontacto/test/wavs/error_audio.mp3".format(USER)
