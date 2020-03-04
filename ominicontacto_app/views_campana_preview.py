@@ -318,6 +318,7 @@ def campana_validar_contacto_asignado_view(request, *args, **kwargs):
     """
     Valida si un contacto sigue asignado al agente que quiere llamarlo
     """
+    # TODO: El id de agente debe ser del agente loggeado, no hace falta mandarlo en el POST
     campana_id = request.POST.get('pk_campana')
     agente_id = request.POST.get('pk_agente')
     contacto_id = request.POST.get('pk_contacto')

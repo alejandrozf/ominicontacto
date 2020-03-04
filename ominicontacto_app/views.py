@@ -30,11 +30,9 @@ import requests
 
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now
-from django.conf import settings
 from django.http import JsonResponse
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.template import RequestContext
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponseRedirect
@@ -50,7 +48,6 @@ from constance import config as config_constance
 from defender import utils
 from defender import config
 
-from ominicontacto_app.services.sms_services import SmsManager
 from ominicontacto_app.models import (
     User, AgenteProfile, Grupo, Pausa, Agenda,
     Chat, MensajeChat, ClienteWebPhoneProfile
@@ -67,14 +64,6 @@ from reportes_app.models import LlamadaLog
 from utiles_globales import AddSettingsContextMixin
 
 logger = logging.getLogger(__name__)
-
-# def mensajes_recibidos_view(request):
-#
-#     service_sms = SmsManager()
-#     mensajes = service_sms.obtener_ultimo_mensaje_por_numero()
-#     response = JsonResponse(service_sms.armar_json_mensajes_recibidos(
-# mensajes))
-#     return response
 
 
 def index_view(request):
@@ -350,162 +339,13 @@ class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
         return context
 
 
-def mensajes_recibidos_enviado_remitente_view(request):
-    remitente = request.GET['phoneNumber']
-    service_sms = SmsManager()
-    mensajes = service_sms.obtener_mensaje_enviado_recibido(remitente)
-    response = JsonResponse(service_sms.
-                            armar_json_mensajes_recibidos_enviados(mensajes),
-                            safe=False)
-    return response
-
-
-def mensajes_recibidos_view(request):
-    service_sms = SmsManager()
-    mensajes = service_sms.obtener_mensajes_recibidos_por_remitente()
-    response = JsonResponse(
-        service_sms.armar_json_mensajes_recibidos_por_remitente(mensajes),
-        safe=False
-    )
-
-    return response
-
-
 class BlancoView(TemplateView):
     template_name = 'blanco.html'
-
-
-def nuevo_evento_agenda_view(request):
-    """Vista get para insertar un nuevo evento en la agenda
-        REVISAR si se usa esta vista si no es obsoleta. Referenciada en Calendar.js
-    """
-    agente = request.GET['agente']
-    es_personal = request.GET['personal']
-    fecha = request.GET['fechaEvento']
-    fecha = convert_fecha_datetime(fecha)
-    hora = request.GET['horaEvento']
-    es_smart = request.GET['smart']
-    medio_comunicacion = request.GET['channel']
-    medio = request.GET['dirchan']
-    descripcion = request.GET['descripcion']
-    es_smart = convert_string_in_boolean(es_smart)
-    es_personal = convert_string_in_boolean(es_personal)
-
-    agenda = Agenda(fecha=fecha, hora=hora, es_smart=es_smart,
-                    medio_comunicacion=medio_comunicacion,
-                    descripcion=descripcion, es_personal=es_personal)
-
-    # verifico el agente logueado
-    try:
-        agente_logueado = AgenteProfile.objects.get(pk=agente)
-    except AgenteProfile.DoesNotExist:
-        agente_logueado = request.user.get_agente_profile()
-
-    if es_personal:
-        agenda.agente = agente_logueado
-
-    if int(medio_comunicacion) is Agenda.MEDIO_LLAMADA:
-        agenda.telefono = medio
-    elif int(medio_comunicacion) is Agenda.MEDIO_SMS:
-        agenda.telefono = medio
-    elif int(medio_comunicacion) is Agenda.MEDIO_EMAIL:
-        agenda.email = medio
-
-    agenda.save()
-    response = JsonResponse({'status': 'OK'})
-    return response
-
-
-class AgenteEventosFormView(FormView):
-    """Esta vista devuelve el listado de los eventos de agenda por agente"""
-    model = AgenteProfile
-    template_name = 'agente/agenda_agente.html'
-    form_class = AgendaBusquedaForm
-
-    def get(self, request, *args, **kwargs):
-        agente = self.request.user.get_agente_profile()
-        listado_de_eventos = agente.eventos.eventos_filtro_fecha('', '')
-        return self.render_to_response(self.get_context_data(
-            listado_de_eventos=listado_de_eventos))
-
-    def form_valid(self, form):
-        fecha = form.cleaned_data.get('fecha')
-        if fecha:
-            fecha_desde, fecha_hasta = fecha.split('-')
-            fecha_desde = convert_fecha_datetime(fecha_desde)
-            fecha_hasta = convert_fecha_datetime(fecha_hasta)
-        else:
-            fecha_desde = ''
-            fecha_hasta = ''
-        agente = self.request.user.get_agente_profile()
-        listado_de_eventos = agente.eventos.eventos_filtro_fecha(fecha_desde,
-                                                                 fecha_hasta)
-        return self.render_to_response(self.get_context_data(
-            listado_de_eventos=listado_de_eventos))
-
-
-def mensaje_chat_view(request):
-    """Vistar para crear un nuevo mensaje de chat"""
-    sender = request.GET['sender']
-    to = request.GET['to']
-    mensaje = request.GET['mensaje']
-    chat = request.GET['chat']
-
-    chat = Chat.objects.get(pk=int(chat))
-    sender = User.objects.get(pk=int(sender))
-    to = User.objects.get(pk=int(to))
-    MensajeChat.objects.create(
-        sender=sender, to=to, mensaje=mensaje, chat=chat)
-    response = JsonResponse({'status': 'OK'})
-    return response
-
-
-def crear_chat_view(request):
-    """Vista para crear un nuevo char"""
-    agente = request.GET['agente']
-    user = request.GET['user']
-    agente = User.objects.get(pk=int(agente))
-    user = User.objects.get(pk=int(user))
-    chat = Chat.objects.create(agente=agente, user=user)
-    response = JsonResponse({'status': 'OK', 'chat': chat.pk})
-    return response
-
-
-######################
-# Supervision Externa
-######################
-def supervision_url_externa(request):
-    """Vista que redirect a la supervision externa de marce"""
-    user = request.user
-    # TODO: Simon abarque el supervisor administrador del sistema pueda ver la supervision
-    # hasta que este resuelto el tema de perfiles de supervisor por la tarjeta 652
-    # que no permitia que un usuario administrador del sistema vea la sueprvision
-    if user.get_es_administrador_o_supervisor_normal() or user.get_is_supervisor_customer():
-        supervisor = user.get_supervisor_profile()
-        sip_extension = supervisor.sip_extension
-        kamailio_service = KamailioService()
-        timestamp = int(kamailio_service.generar_sip_timestamp())
-        sip_usuario = kamailio_service.generar_sip_user(sip_extension, timestamp)
-        supervisor.timestamp = timestamp
-        supervisor.sip_password = kamailio_service.generar_sip_password(sip_usuario)
-        supervisor.save()
-        url = settings.OML_SUPERVISION_URL + str(supervisor.pk)
-        if supervisor.is_administrador:
-            # TODO: Con los nuevos permisos nunca se puede dar este caso
-            # Discutir si este caso de uso queda descartado
-            url += "&es_admin=t"
-        else:
-            url += "&es_admin=f"
-        return redirect(url)
-    message = _("Supervision: Funcion valida para usuario tipo supervisor!!!")
-    messages.warning(request, message)
-    return HttpResponseRedirect(reverse('index'))
 
 
 # =============================================================================
 # Acerca
 # =============================================================================
-
 
 class AcercaTemplateView(TemplateView):
     """
@@ -578,9 +418,138 @@ class RegistroFormView(FormView):
         return super(RegistroFormView, self).form_valid(form)
 
 
-# TEST para probar sitio externo
-def profile_page(request, username):
-    prueba = request.GET.get('q', '')
-    print(prueba)
-    return render_to_response('blanco.html',
-                              context_instance=RequestContext(request))
+# #########################################################################
+# DEPRECATED ? - En caso de borrarse, borrar tambien otras clases asociadas
+def nuevo_evento_agenda_view(request):
+    """Vista get para insertar un nuevo evento en la agenda
+        REVISAR si se usa esta vista si no es obsoleta. Referenciada en Calendar.js
+    """
+    # DEPRECATED: Eliminar en OML-1437
+    agente = request.GET['agente']
+    es_personal = request.GET['personal']
+    fecha = request.GET['fechaEvento']
+    fecha = convert_fecha_datetime(fecha)
+    hora = request.GET['horaEvento']
+    es_smart = request.GET['smart']
+    medio_comunicacion = request.GET['channel']
+    medio = request.GET['dirchan']
+    descripcion = request.GET['descripcion']
+    es_smart = convert_string_in_boolean(es_smart)
+    es_personal = convert_string_in_boolean(es_personal)
+
+    agenda = Agenda(fecha=fecha, hora=hora, es_smart=es_smart,
+                    medio_comunicacion=medio_comunicacion,
+                    descripcion=descripcion, es_personal=es_personal)
+
+    # verifico el agente logueado
+    try:
+        agente_logueado = AgenteProfile.objects.get(pk=agente)
+    except AgenteProfile.DoesNotExist:
+        agente_logueado = request.user.get_agente_profile()
+
+    if es_personal:
+        agenda.agente = agente_logueado
+
+    if int(medio_comunicacion) is Agenda.MEDIO_LLAMADA:
+        agenda.telefono = medio
+    elif int(medio_comunicacion) is Agenda.MEDIO_SMS:
+        agenda.telefono = medio
+    elif int(medio_comunicacion) is Agenda.MEDIO_EMAIL:
+        agenda.email = medio
+
+    agenda.save()
+    response = JsonResponse({'status': 'OK'})
+    return response
+
+
+class AgenteEventosFormView(FormView):
+    """Esta vista devuelve el listado de los eventos de agenda por agente"""
+    # DEPRECATED: Eliminar en OML-1437
+    model = AgenteProfile
+    template_name = 'agente/agenda_agente.html'
+    form_class = AgendaBusquedaForm
+
+    def get(self, request, *args, **kwargs):
+        agente = self.request.user.get_agente_profile()
+        listado_de_eventos = agente.eventos.eventos_filtro_fecha('', '')
+        return self.render_to_response(self.get_context_data(
+            listado_de_eventos=listado_de_eventos))
+
+    def form_valid(self, form):
+        fecha = form.cleaned_data.get('fecha')
+        if fecha:
+            fecha_desde, fecha_hasta = fecha.split('-')
+            fecha_desde = convert_fecha_datetime(fecha_desde)
+            fecha_hasta = convert_fecha_datetime(fecha_hasta)
+        else:
+            fecha_desde = ''
+            fecha_hasta = ''
+        agente = self.request.user.get_agente_profile()
+        listado_de_eventos = agente.eventos.eventos_filtro_fecha(fecha_desde,
+                                                                 fecha_hasta)
+        return self.render_to_response(self.get_context_data(
+            listado_de_eventos=listado_de_eventos))
+
+
+def mensaje_chat_view(request):
+    """Vistar para crear un nuevo mensaje de chat"""
+    sender = request.GET['sender']
+    to = request.GET['to']
+    mensaje = request.GET['mensaje']
+    chat = request.GET['chat']
+
+    chat = Chat.objects.get(pk=int(chat))
+    sender = User.objects.get(pk=int(sender))
+    to = User.objects.get(pk=int(to))
+    MensajeChat.objects.create(
+        sender=sender, to=to, mensaje=mensaje, chat=chat)
+    response = JsonResponse({'status': 'OK'})
+    return response
+
+
+def crear_chat_view(request):
+    """Vista para crear un nuevo char"""
+    agente = request.GET['agente']
+    user = request.GET['user']
+    agente = User.objects.get(pk=int(agente))
+    user = User.objects.get(pk=int(user))
+    chat = Chat.objects.create(agente=agente, user=user)
+    response = JsonResponse({'status': 'OK', 'chat': chat.pk})
+    return response
+
+
+# DEPRECATED ? - En caso de borrarse, borrar tambien otras clases asociadas
+
+# def mensajes_recibidos_enviado_remitente_view(request):
+#     remitente = request.GET['phoneNumber']
+#     service_sms = SmsManager()
+#     mensajes = service_sms.obtener_mensaje_enviado_recibido(remitente)
+#     response = JsonResponse(service_sms.
+#                             armar_json_mensajes_recibidos_enviados(mensajes),
+#                             safe=False)
+#     return response
+
+
+# def mensajes_recibidos_view(request):
+#     service_sms = SmsManager()
+#     mensajes = service_sms.obtener_mensajes_recibidos_por_remitente()
+#     response = JsonResponse(
+#         service_sms.armar_json_mensajes_recibidos_por_remitente(mensajes),
+#         safe=False
+#     )
+
+#     return response
+
+# def mensajes_recibidos_view(request):
+#
+#     service_sms = SmsManager()
+#     mensajes = service_sms.obtener_ultimo_mensaje_por_numero()
+#     response = JsonResponse(service_sms.armar_json_mensajes_recibidos(mensajes))
+#     return response
+
+# # TEST para probar sitio externo
+# def profile_page(request, username):
+#     prueba = request.GET.get('q', '')
+#     print(prueba)
+#     return render_to_response('blanco.html',
+#                               context_instance=RequestContext(request))

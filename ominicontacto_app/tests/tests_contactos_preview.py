@@ -164,7 +164,7 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
         self.assertFalse(_call_originate.called)
         inicial = AgenteEnContacto.ESTADO_INICIAL
         self.assertFalse(AgenteEnContacto.objects.exclude(estado=inicial).exists())
-        self.assertContains(response, u'No es posible llamar al contacto.')
+        self.assertContains(response, _(u'No es posible llamar al contacto.'))
 
     def test_agente_libera_contacto_asignado(self):
         # Un agente puede liberar un contacto asignado

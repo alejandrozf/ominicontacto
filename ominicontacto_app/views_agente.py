@@ -188,7 +188,7 @@ class LlamarContactoView(RedirectView):
                             ' Asegurese de no haber perdido la reserva')
                 messages.warning(self.request, message)
                 return HttpResponseRedirect(
-                    reverse('agenda_agente_list'))
+                    reverse('campana_preview_activas_miembro'))
 
         originator = Click2CallOriginator()
         originator.call_originate(

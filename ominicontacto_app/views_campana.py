@@ -21,26 +21,18 @@
 
 from __future__ import unicode_literals
 
-import datetime
-
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
-from django.views.generic import (
-    ListView, UpdateView, DeleteView, FormView)
+from django.views.generic import (ListView, UpdateView, DeleteView, )
 from django.views.generic.base import RedirectView
 from django.utils.translation import ugettext_lazy as _
 
-from ominicontacto_app.forms import (
-    ReporteForm, CampanaSupervisorUpdateForm
-)
+from ominicontacto_app.forms import CampanaSupervisorUpdateForm
 from ominicontacto_app.models import Campana, SupervisorProfile
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
 
-from ominicontacto_app.utiles import convert_fecha_datetime
-from ominicontacto_app.services.reporte_llamadas_campana import \
-    EstadisticasCampanaLlamadasService
 from configuracion_telefonia_app.views.base import DeleteNodoDestinoMixin, SincronizadorDummy
 
 import logging as logging_
@@ -163,59 +155,6 @@ class DesOcultarCampanaView(RedirectView):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         campana.desocultar()
         return HttpResponseRedirect(reverse('campana_list'))
-
-
-class CampanaReporteQueueListView(FormView):
-    """
-    Esta vista lista los tiempo de llamadas de las campanas
-    """
-
-    template_name = 'campanas/campana_entrante/tiempos_llamadas.html'
-    context_object_name = 'campanas'
-    model = Campana
-    form_class = ReporteForm
-
-    def get(self, request, *args, **kwargs):
-        hoy_ahora = datetime.datetime.today()
-        hoy = hoy_ahora.date()
-        campana_llamadas_service = EstadisticasCampanaLlamadasService()
-        estadisticas = campana_llamadas_service.general_campana(hoy, hoy_ahora,
-                                                                request.user)
-        return self.render_to_response(self.get_context_data(
-            estadisticas=estadisticas))
-
-    def form_valid(self, form):
-        fecha = form.cleaned_data.get('fecha')
-        fecha_desde, fecha_hasta = fecha.split('-')
-        fecha_desde = convert_fecha_datetime(fecha_desde)
-        fecha_hasta = convert_fecha_datetime(fecha_hasta)
-
-        campana_llamadas_service = EstadisticasCampanaLlamadasService()
-        estadisticas = campana_llamadas_service.general_campana(fecha_desde, fecha_hasta,
-                                                                self.request.user)
-
-        return self.render_to_response(self.get_context_data(
-            estadisticas=estadisticas))
-
-
-def campana_json_view(request, pk_campana):
-    """Esta vista devuelve un json con datos de la campana"""
-    campana = Campana.objects.get(pk=pk_campana)
-    nombre_interacion = 'SITIO_EXTERNO'
-    if campana.tipo_interaccion is Campana.FORMULARIO:
-        nombre_interacion = 'FORMULARIO'
-    url_sitio_externo = None
-    if campana.sitio_externo:
-        url_sitio_externo = campana.sitio_externo.url
-    repuesta = {
-        'campana': campana.nombre,
-        'pk_campana': campana.pk,
-        'tipo_interaccion': campana.tipo_interaccion,
-        'nombre_interacion': nombre_interacion,
-        'url_sitio_externo': url_sitio_externo
-    }
-    response = JsonResponse(repuesta)
-    return response
 
 
 class CampanaSupervisorUpdateView(UpdateView):

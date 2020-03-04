@@ -1,14 +1,35 @@
+/* Copyright (C) 2018 Freetech Solutions
+
+ This file is part of OMniLeads
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see http://www.gnu.org/licenses/.
+
+*/
+
 /*
  * Funciones para que una vez que se adicione un grupo de agentes se actualice el formset de agentes
  (queue_member)
 */
+
+/* global Urls */
 
 function eliminarPrimeraFilaVacia(data) {
     // esta función elimina la primera fila de la tabla una vez que se han
     // añadido filas de los agentes de un grupo, si esta fila está vacía
     var $firstRow = $('.linkFormset').first();
     var $selectMember = $firstRow.find('.member>select');
-    if (($selectMember.val() == "") && (data.length != 0)) {
+    if (($selectMember.val() == '') && (data.length != 0)) {
         $firstRow.find('.deleteFormset').click();
     }
 }
@@ -17,7 +38,7 @@ function obtenerAgentesGrupos() {
     var $grupoSelect = $('#gruposAgentes').find('select');
     var idGrupo = $grupoSelect.val();
     // obtenemos los datos de los agentes asignados al grupo
-    return Urls.grupo_agentes_activos_list(idGrupo);
+    return Urls.api_agentes_activos_de_grupo_list(idGrupo);
 }
 
 function asociarDatosRow(row) {

@@ -124,7 +124,7 @@ class APITest(OMLBaseTest):
 
 
 class DatabaseMetadataTest(APITest):
-    URL = reverse('campaign_database_metadata')
+    URL = reverse('api_campaign_database_metadata')
 
     def test_usuario_no_loggeado(self):
         self.client.logout()
