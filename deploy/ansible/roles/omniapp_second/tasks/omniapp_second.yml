@@ -52,11 +52,6 @@
   template: src=templates/omnileads.service dest=/etc/systemd/system/omnileads.service owner=root group=root mode=650
   tags: postinstall
 
-# Se inicia y habilita el servicio
-- name: Start the omnileads-daemon service
-  systemd: name=omnileads state=restarted enabled=yes daemon_reload=yes
-  tags: postinstall
-
 # Se ejecuta una funcion de sql que hizo ale, esto es para los reportes
 - name: Add queuelog trigger to database
   shell: psql -U {{ postgres_user}} -h {{ omni_fqdn }} -d {{ postgres_database }} -c '\i {{ install_prefix }}ominicontacto/reportes_app/sql/plperl/replace_insert_queue_log_ominicontacto_queue_log.sql'
@@ -72,8 +67,18 @@
   with_items:
     - { src: backup-restore.sh, dest: backup-restore.sh }
     - { src: conversor.sh, dest: conversor.sh }
+    - { src: reinstall_addons.sh, dest: reinstall_addons.sh }
   tags: postinstall
 
+- name: Execute reinstall_addons.sh script
+  command: "{{ install_prefix }}bin/reinstall_addons.sh"
+  tags: postinstall
+
+# Se inicia y habilita el servicio
+- name: Start the omnileads-daemon service
+  systemd: name=omnileads state=restarted enabled=yes daemon_reload=yes
+  tags: postinstall
+  
 - name: Erase files related to php supervision
   file: state=absent path={{ item }}
   with_items:
