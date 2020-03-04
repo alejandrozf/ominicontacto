@@ -40,6 +40,7 @@ from django.contrib.sessions.models import Session
 from django.db import (models,
                        # connection
                        )
+
 from django.db.models import Max, Q, Count, Sum
 from django.db.utils import DatabaseError
 from django.conf import settings
@@ -53,6 +54,8 @@ from simple_history.models import HistoricalRecords
 from ominicontacto_app.utiles import (
     ValidadorDeNombreDeCampoExtra, fecha_local, datetime_hora_maxima_dia,
     datetime_hora_minima_dia, remplace_espacio_por_guion, dividir_lista)
+from ominicontacto_app.permisos import PermisoOML
+PermisoOML
 
 logger = logging.getLogger(__name__)
 
@@ -62,6 +65,14 @@ SUBSITUTE_ALFANUMERICO = re.compile(r'[^\w]')
 
 
 class User(AbstractUser):
+
+    # Roles predefinidos
+    ADMINISTRADOR = 'Administrador'
+    GERENTE = 'Gerente'
+    SUPERVISOR = 'Supervisor'
+    REFERENTE = 'Referente'
+    AGENTE = 'Agente'
+
     is_agente = models.BooleanField(default=False)
     is_supervisor = models.BooleanField(default=False)
     is_cliente_webphone = models.BooleanField(default=False)

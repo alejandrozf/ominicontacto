@@ -19,7 +19,7 @@
 from __future__ import unicode_literals
 
 from django.urls import reverse
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.apps import AppConfig
 
 
@@ -50,3 +50,22 @@ class SupervisionAppConfig(AppConfig):
                 },
             ]
         return None
+
+    def configuraciones_de_permisos(self):
+        return [
+            {'nombre': 'supervision_agentes',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
+            {'nombre': 'supervision_campanas_entrantes',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
+            {'nombre': 'supervision_campanas_salientes',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
+        ]
+
+    informacion_de_permisos = {
+        'supervision_agentes':
+            {'descripcion': _('Estado de agentes en supervisión'), 'version': '1.5.1'},
+        'supervision_campanas_entrantes':
+            {'descripcion': _('Estado de campañas entrantes en supervisión'), 'version': '1.5.1'},
+        'supervision_campanas_salientes':
+            {'descripcion': _('Estado de campañas salientes en supervision'), 'version': '1.5.1'},
+    }
