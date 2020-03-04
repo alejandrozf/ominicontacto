@@ -1,10 +1,6 @@
 .. _about_inboundcamp:
 
-******************
-Campañas entrantes
-******************
-
-Cómo crear una nueva campaña
+Creación de nueva campaña
 ****************************
 
 Para crear una nueva campaña, se debe ir a Campaña → Campañas Entrantes → Nueva campaña.
@@ -78,6 +74,7 @@ En el resto del capítulo se detalla todo acerca del enrutamiento de las llamada
 
 Ringing VS Atención automática de llamadas entrantes
 ****************************************************
+
 El comportamiento del Webphone del agente frente a una llamada proveniente de una campaña entrante puede ser:
 
 - **Ringing normal** y con una duración asociada al parámetro "Ring time" presente en la creación de la campaña entrante. Durante ese tiempo el teléfono del agente notifica la llamada entrante, aguardando la acción del agente que determine la atención o no de la llamada.

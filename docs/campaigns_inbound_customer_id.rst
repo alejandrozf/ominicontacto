@@ -5,7 +5,8 @@
 Identificación de llamada entrante
 *************************************
 
-**INTRODUCCIÓN**
+Presentación
+*************
 
 Dentro del flujo de una llamada entrante se puede añadir un nodo con la funcionalidad de *identificación de clientes*.
 Es decir lanzar una *solicitud de identificación* sobre cada llamada entrante procesada, implementando a su vez la posibilidad de consultar
