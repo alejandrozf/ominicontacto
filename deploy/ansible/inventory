@@ -17,8 +17,8 @@
 ##############################################################################
 # If you are installing a devenv (PE) uncomment
 [prodenv-container]
-#localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
-#X.X.X.X ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation, replace X.X.X.X with the IP of Docker Host)
+#localhost ansible_connection=local ansible_user=root #(for self-hosted installation)
+#X.X.X.X ansible_ssh_port=22 ansible_user=root #(for node-host installation, replace X.X.X.X with the IP of Docker Host)
 # If you are installing a devenv (DE) uncomment
 [devenv-container]
 #localhost ansible_connection=local ansible_user=root

@@ -10,14 +10,12 @@
 - name: Check if docker is installed
   shell: which docker
   register: docker_installed
-  tags: always
   changed_when: false
   failed_when: false
 
 - name: Check if docker-compose is installed
   shell: which docker-compose
   register: docker_compose_installed
-  tags: always
   changed_when: false
   failed_when: false
 
