@@ -297,6 +297,7 @@ class SupervisorProfile(models.Model):
     is_customer = models.BooleanField(default=False)
     borrado = models.BooleanField(default=False, editable=False)
     timestamp = models.CharField(max_length=64, blank=True, null=True)
+    # TODO: OML-1448 eliminar los campos timestamp y sip_password
 
     def __str__(self):
         return self.user.get_full_name()
