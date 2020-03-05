@@ -38,8 +38,9 @@
 
 # 3) Probar este codigo como punto de partida hacia un server sin DJANGO_DEBUG_TOOLBAR
 
-# 4) correr "$BROWSER_REAL='True' TESTS_INTEGRACION='True' python ominicontacto_app/tests/tests.py"
-# para testear los tests de integración incluyendo los que necesitan audio en el browser
+# 4)Para testear los tests de integración:
+# "$TESTS_INTEGRACION='True' LOGIN_FAILURE_LIMIT=10 python ominicontacto_app/tests/tests.py"
+# Para los que necesitan audio en el browser, agregar "$BROWSER_REAL='True'"
 
 from __future__ import unicode_literals
 
@@ -87,8 +88,6 @@ class IntegrationTests(unittest.TestCase):
         # super(IntegrationTests, cls).setUpClass()
         cls.setUp()
         cls._login(ADMIN_USERNAME, ADMIN_PASSWORD)
-        modulo_name = 'modulo' + uuid.uuid4().hex[:5]
-        cls.crear_module(modulo_name)
         group_name = 'group' + uuid.uuid4().hex[:5]
         cls.crear_grupo(group_name)
         cls.crear_agente(AGENTE_USERNAME, AGENTE_PASSWORD)
@@ -153,7 +152,6 @@ class IntegrationTests(unittest.TestCase):
         self.browser.find_element_by_id('id_0-is_agente').click()
         self.browser.find_element_by_xpath('//form[@id=\'wizardForm\']/button').click()
         sleep(1)
-        self.browser.find_element_by_xpath('//select[@id=\'id_2-modulos\']/option').click()
         self.browser.find_elements_by_xpath('//select[@id=\'id_2-grupo\']/option')[1].click()
         self.browser.find_elements_by_xpath('//form[@id=\'wizardForm\']/button')[2].click()
         sleep(1)
@@ -168,17 +166,6 @@ class IntegrationTests(unittest.TestCase):
         self.browser.find_element_by_id('id_auto_attend_ics').click()
         self.browser.find_element_by_id('id_auto_attend_inbound').click()
         self.browser.find_element_by_id('id_auto_attend_dialer').click()
-        self.browser.find_element_by_xpath((
-            "//button[@type='submit' and @id='id_registrar']")).click()
-        sleep(1)
-
-    @classmethod
-    def crear_module(self, modulo):
-        create_module = self.browser.find_element_by_xpath(
-            '//a[contains(@href,"/modulo/nuevo/")]')
-        href_create_module = create_module.get_attribute('href')
-        self.browser.get(href_create_module)
-        self.browser.find_element_by_id('id_nombre').send_keys(modulo)
         self.browser.find_element_by_xpath((
             "//button[@type='submit' and @id='id_registrar']")).click()
         sleep(1)
@@ -563,30 +550,17 @@ class IntegrationTests(unittest.TestCase):
         self.assertTrue(self.browser.find_element_by_xpath(
             '//div/a[contains(@href, "/agente/logout/")]'))
 
-    def test_crear_eliminar_modulo(self):
-        # Crear modulo
-        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
-        modulo_name = 'modulo' + uuid.uuid4().hex[:5]
-        self.crear_module(modulo_name)
-        self.assertTrue(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
-            modulo_name)))
-        # Eliminar modulo
-        link_delete = self.browser.find_element_by_xpath(
-            '//tr[@id=\'{0}\']//td/div//a[contains(@href, "/modulo/delete/")]'.format(modulo_name))
-        href_delete = link_delete.get_attribute('href')
-        self.browser.get(href_delete)
-        self.browser.find_element_by_xpath("//button[@type='submit']").click()
-        sleep(1)
-        self.assertFalse(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'
-                         .format(modulo_name)))
-
     def test_crear_modificar_eliminar_audio(self):
         # Crear audio
         self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
-        user_list = self.browser.find_element_by_xpath(
+        audio_list = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/audios/")]')
+        href_audio_list = audio_list.get_attribute('href')
+        self.browser.get(href_audio_list)
+        audio_create = self.browser.find_element_by_xpath(
             '//a[contains(@href,"/audios/create/")]')
-        href_user_list = user_list.get_attribute('href')
-        self.browser.get(href_user_list)
+        href_audio_create = audio_create.get_attribute('href')
+        self.browser.get(href_audio_create)
         descripcion_audio = 'audio' + uuid.uuid4().hex[:5]
         self.browser.find_element_by_id('id_descripcion').send_keys(descripcion_audio)
         wav_path = "/home/{0}/ominicontacto/test/wavs/8k16bitpcm.wav". format(USER)
@@ -621,10 +595,14 @@ class IntegrationTests(unittest.TestCase):
 
     def test_subir_audio_erroneo(self):
         self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
-        user_list = self.browser.find_element_by_xpath(
+        audio_list = self.browser.find_element_by_xpath(
+            '//a[contains(@href,"/audios/")]')
+        href_audio_list = audio_list.get_attribute('href')
+        self.browser.get(href_audio_list)
+        audio_create = self.browser.find_element_by_xpath(
             '//a[contains(@href,"/audios/create/")]')
-        href_user_list = user_list.get_attribute('href')
-        self.browser.get(href_user_list)
+        href_audio_create = audio_create.get_attribute('href')
+        self.browser.get(href_audio_create)
         descripcion_audio = 'audio' + uuid.uuid4().hex[:5]
         self.browser.find_element_by_id('id_descripcion').send_keys(descripcion_audio)
         wav_path = "/home/{0}/ominicontacto/test/wavs/error_audio.mp3".format(USER)
