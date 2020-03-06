@@ -117,7 +117,7 @@ registry_username=freetechsolutions
 ##############################################################
 # Variables oml_release and subnet are necessary for prodenv #
 ##############################################################
-oml_release=release-1.4.0
+oml_release=
 subnet=192.168.15.0/24
 #################################
 # Do not change variables below #
