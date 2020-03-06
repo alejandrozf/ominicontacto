@@ -2256,8 +2256,8 @@ msgstr "نتیجه مکالمه"
 
 #: ominicontacto_app/templates/agente/base_agente.html:524
 #: ominicontacto_app/templates/base.html:179
-#: ominicontacto_app/templates/campanas/campana_پیش نمایش/campana_list.html:30
-msgid "Campañas پیش نمایش"
+#: ominicontacto_app/templates/campanas/campana_preview/campana_list.html:30
+msgid "Campañas preview"
 msgstr "پیش نمایش کمپین"
 
 #: ominicontacto_app/templates/agente/base_agente.html:579
