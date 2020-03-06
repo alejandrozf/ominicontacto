@@ -1,0 +1,351 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Hamed Kouhfallah <k.haamed@gmail.com>, 2019.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-06-11 18:29+0000\n"
+"PO-Revision-Date: 2019-11-18 11:12+0330\n"
+"Language: fa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.2\n"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:40
+#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:56
+#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:72
+#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:94
+#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:118
+#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:142
+#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:163
+#: ominicontacto_app/static/ominicontacto/JS/supervision/campanas_entrantes.js:34
+#: ominicontacto_app/static/ominicontacto/JS/supervision/campanas_salientes.js:34
+msgid "Error al ejecutar => "
+msgstr "Error when executing => "
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:143
+#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:164
+msgid "No se pudo iniciar la llamada. Intente Nuevamente."
+msgstr "تماس نمی تواند برقرار شود، لطفا دوباره تلاش کنید."
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:175
+msgid "Seleccione una opción válida"
+msgstr "Please choose a valid option"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:203
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:415
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:614
+msgid "Conectado a %(fromUser)s"
+msgstr "متصل به %(fromUser)s"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:232
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:246
+msgid "Conectado"
+msgstr "متصل"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:239
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:319
+msgid "Desconectado"
+msgstr "بدون ارتباط"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:260
+msgid "Llamando"
+msgstr "درحال تماس"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:267
+msgid "En llamado"
+msgstr "درحال مکالمه"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:274
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:281
+msgid "Transfiriendo"
+msgstr "درحال انتقال مکالمه"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:288
+msgid "Recibiendo llamado"
+msgstr "دریافت تماس"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:295
+msgid "En espera"
+msgstr "درحال انتظار"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:309
+msgid "Registrando.."
+msgstr "درحال رجیستر شدن..."
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:325
+msgid "Agente registrado"
+msgstr "اپراتور رجیستر شده است"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:328
+msgid "Agente no registrado, contacte a su administrador"
+msgstr "Agent not registered. Please contact your Administrator"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:335
+msgid "Agente en pausa"
+msgstr "اپراتور در حالت مکث"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:338
+msgid "No se puede obtener la pausa, contacte a su administrador"
+msgstr "Unable to get Pause, please reach your Administrator"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:347
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:437
+msgid "Disponible"
+msgstr "آماده به کار"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:350
+msgid "No se puede liberar la pausa, contacte a su administrador"
+msgstr "Unable to release Pause, please reach your Administrator"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:487
+msgid "Obteniendo pausa: %(pause_name)s"
+msgstr "Getting pause: %(pause_name)s"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:509
+msgid "Liberando pausa..."
+msgstr "Releasing Pause..."
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:567
+msgid "Ocupado, intente maás tarde"
+msgstr "Busy, try again later"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:570
+msgid "Rechazado, intente maás tarde"
+msgstr "Rejected, try again later"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:573
+msgid "No disponible, contacte a su administrador"
+msgstr "Not Available, contact your Administrator"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:577
+msgid "Error, verifique el número marcado"
+msgstr "Error, please check the number and try again"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:581
+msgid "Error de autenticación, contacte a su administrador"
+msgstr "Authentication Error, contact your Administrator"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:586
+msgid "Error, Falta SDP"
+msgstr "Error, Missing SDP"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:589
+msgid "Dirección incompleta"
+msgstr "Address Incomplete"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:593
+msgid "Servicio no disponible, contacte a su administrador"
+msgstr "Service Unavailable, contact your Administrator"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:599
+msgid "Error WebRTC: El usuario no permite acceso al medio"
+msgstr "WebRTC Error: Unable to access media"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:604
+msgid "Error: Llamado fallido"
+msgstr "Errorr: Failed Attempt"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:320
+msgid "Registrado"
+msgstr "رجیستر شده"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:321
+msgid "No Registrado"
+msgstr "رجیستر نشده"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:323
+msgid "El SIP Proxy no responde, contacte a su administrador"
+msgstr "سیپ پراکسی پاسخی نمی دهد، با مدیریت تماس بگیرید"
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:327
+msgid "Fallo en la registración, contacte a su administrador"
+msgstr "رجیستر ناموفق، با مدیریت تماس بگیرید"
+
+#: ominicontacto_app/static/ominicontacto/JS/campanasپیش
+#: نمایشAgente.js:36
+msgid "Buscar:"
+msgstr "جستجو:"
+
+#: ominicontacto_app/static/ominicontacto/JS/campanasپیش
+#: نمایشAgente.js:38
+msgid "Primero"
+msgstr "ابتدا"
+
+#: ominicontacto_app/static/ominicontacto/JS/campanasپیش
+#: نمایشAgente.js:39
+msgid "Anterior"
+msgstr "انتها"
+
+#: ominicontacto_app/static/ominicontacto/JS/campanasپیش
+#: نمایشAgente.js:40
+msgid "Siguiente"
+msgstr "بعدی"
+
+#: ominicontacto_app/static/ominicontacto/JS/campanasپیش
+#: نمایشAgente.js:41
+msgid "Último"
+msgstr "آخرین"
+
+#: ominicontacto_app/static/ominicontacto/JS/campanasپیش
+#: نمایشAgente.js:43
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:109
+msgid "Mostrar _MENU_ entradas"
+msgstr "Show _MENU_ entries"
+
+#: ominicontacto_app/static/ominicontacto/JS/campanasپیش
+#: نمایشAgente.js:44
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:110
+msgid "Mostrando _START_ a _END_ de _TOTAL_ entradas"
+msgstr "Showing _START_ to _END_ of _TOTAL_ entries"
+
+#: ominicontacto_app/static/ominicontacto/JS/campanasپیش
+#: نمایشAgente.js:79
+msgid ""
+"OPS, se venció el tiempo de asignación de este contacto.Por favor intente "
+"solicitar uno nuevo"
+msgstr "لطفا یک گزینه جدید انتخاب کنید"
+
+#: ominicontacto_app/static/ominicontacto/JS/campanasپیش
+#: نمایشAgente.js:112
+msgid ""
+"Contacto asignado por llamado previo. Califique el contacto o liberelo para "
+"poder recibir un nuevo contacto."
+msgstr ""
+"Last assigned contact. You need to disposition this call, or release the "
+"contact to proceed with a new one."
+
+#: ominicontacto_app/static/ominicontacto/JS/campanasپیش
+#: نمایشAgente.js:157
+msgid "Contacto Liberado"
+msgstr "Contact Released"
+
+#: ominicontacto_app/static/ominicontacto/JS/campanasپیش
+#: نمایشAgente.js:164
+msgid "No se pudo liberar al contacto. Intente pedir otro."
+msgstr "Unable to release contact. Please select a new one."
+
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:39
+msgid "Modificar"
+msgstr "ویرایش"
+
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:52
+msgid "Llamar"
+msgstr "تماس"
+
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:79
+msgid "Enviar email"
+msgstr "ارسال ایمیل"
+
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:101
+msgid "Buscar: "
+msgstr "جستجو "
+
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:102
+msgid "(filtrando de un total de _MAX_ contactos)"
+msgstr "(filtering from a total of _MAX_ contactos)"
+
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:104
+msgid "Primero "
+msgstr "ابتدا "
+
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:105
+msgid "Anterior "
+msgstr "انتها "
+
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:106
+msgid " Siguiente"
+msgstr " بعدی"
+
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:107
+msgid " Último"
+msgstr " آخرین"
+
+#: ominicontacto_app/static/ominicontacto/JS/formularios.js:40
+msgid "Ocultar"
+msgstr "مخفی"
+
+#: ominicontacto_app/static/ominicontacto/JS/formularios.js:47
+msgid "Mostrar"
+msgstr "نمایش"
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:1
+msgid "Agregar campo"
+msgstr "فیلد اضافه شود"
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:2
+msgid "Remover"
+msgstr "حذف"
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:3
+msgid "Sin Acción"
+msgstr "Normal"
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:4
+msgid "Gestión"
+msgstr "Engaged"
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:5
+msgid "Agregar parámetro"
+msgstr "اضافه کردن پارمتر"
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:6
+msgid "Agregar agente"
+msgstr "اضافه کردن اپراتور"
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:7
+msgid "Agregar regla"
+msgstr "اضافه کردن قانون"
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:8
+msgid "Agregar patron de discado"
+msgstr "اضافه کردن الگوی تماس"
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:9
+msgid "Agregar troncal"
+msgstr "اضافه کردن ترانک"
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:10
+msgid "Agregar destino"
+msgstr "اضافه کردن یک مقصد"
+
+#: ominicontacto_app/static/ominicontacto/JS/l18n_constantes.js:11
+msgid "Agregar validación"
+msgstr "اضافه کردن اعتبار سنجی"
+
+#: ominicontacto_app/static/ominicontacto/JS/ranges-datepicker.js:3
+msgid "Hoy"
+msgstr "امروز"
+
+#: ominicontacto_app/static/ominicontacto/JS/ranges-datepicker.js:4
+msgid "Ayer"
+msgstr "دیروز"
+
+#: ominicontacto_app/static/ominicontacto/JS/ranges-datepicker.js:5
+msgid "Últimos 7 Días"
+msgstr "7 روز گذشته"
+
+#: ominicontacto_app/static/ominicontacto/JS/ranges-datepicker.js:6
+msgid "Últimos 30 Días"
+msgstr "30 روز گذشته"
+
+#: ominicontacto_app/static/ominicontacto/JS/ranges-datepicker.js:7
+msgid "Este mes"
+msgstr "ماه جاری"
+
+#: ominicontacto_app/static/ominicontacto/JS/ranges-datepicker.js:8
+msgid "Último Mes"
+msgstr "ماه گذشته"
+
+#: ominicontacto_app/static/ominicontacto/JS/ranges-datepicker.js:11
+msgid "Desde el inicio"
+msgstr "از تاریخ ایجاد"
+
+#~ msgid "Llamando: %(dialedNumber)s"
+#~ msgstr "Calling: %(dialedNumber)s"
