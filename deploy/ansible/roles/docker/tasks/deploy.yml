@@ -175,4 +175,3 @@
 
 - name: Set environment variables for this installation
   template: src=roles/prerequisitos/templates/omnileads_envars.sh dest=/etc/profile.d/ mode=644 owner=root group=root
-  tags: always

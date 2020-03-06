@@ -117,7 +117,7 @@ class RegeneracionAsteriskService(object):
         # conectar con cron
         crontab = CronTab(user=getpass.getuser())
         ruta_source_envars = 'source /etc/profile.d/omnileads_envars.sh;'
-        ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python')
+        ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python3')
         ruta_script_logout = os.path.join(settings.INSTALL_PREFIX,
                                           'ominicontacto/manage.py logout_unavailable_agents')
         # adicionar nuevo cron job para esta tarea si no existe anteriormente
