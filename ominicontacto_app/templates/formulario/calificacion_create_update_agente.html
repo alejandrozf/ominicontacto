@@ -29,12 +29,11 @@
     <script src="{% static 'ominicontacto/JS/agente/formularioCalificacion.js' %}"></script>
     <script src="{% static 'ominicontacto/JS/agente/make_click2call.js' %}"></script>
     <script src="{% static 'ominicontacto/JS/agente/interaccionSitioExterno.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/formulario/calificacion_create_update.js' %}"></script>
 {% endblock head_js %}
 
 {% block content %}
     
-    <input class="hidden" value="{{ configuracion_sitio_externo|safe }}" id="configuracionSitioExterno">
+    <input class="hidden" value='{{ configuracion_sitio_externo|safe }}' id="configuracionSitioExterno">
 
     {% if campana.mostrar_nombre %}
         <h1>{{ campana.nombre }}</h1>
