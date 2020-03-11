@@ -263,7 +263,7 @@ class CampanaWizardMixin(object):
             campana = self.get_cleaned_data_for_step(self.INICIAL)
             bd_contacto = campana['bd_contacto']
             columnas_bd = obtener_opciones_columnas_bd(bd_contacto, COLUMNAS_DB_DEFAULT)
-            form_class = list(self.form_list)[step]
+            form_class = self.form_list[step]
             kwargs = self.get_form_kwargs(step)
             kwargs.update({
                 'data': data,
