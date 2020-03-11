@@ -32,6 +32,8 @@ from ominicontacto_app.models import Campana
 
 import logging as _logging
 
+from utiles_globales import adicionar_render_unicode
+
 logger = _logging.getLogger(__name__)
 
 
@@ -94,6 +96,8 @@ class EstadisticasCampanaLlamadasService():
                                    estadisticas['totales_grafico']['total_abandonadas'])
         barra_campana_llamadas.add('expiradas',
                                    estadisticas['totales_grafico']['total_expiradas'])
+
+        barra_campana_llamadas = adicionar_render_unicode(barra_campana_llamadas)
 
         return {
             'estadisticas': estadisticas,

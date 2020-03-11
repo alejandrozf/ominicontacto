@@ -32,6 +32,8 @@ from ominicontacto_app.utiles import (
     datetime_hora_minima_dia, datetime_hora_maxima_dia, cast_datetime_part_date
 )
 
+from utiles_globales import adicionar_render_unicode
+
 
 ESTILO_AZUL_ROJO_AMARILLO = Style(
     background='transparent',
@@ -478,7 +480,7 @@ class TiemposAgente(object):
         barra_agente_total.add('MANUAL', dict_agentes_llamadas['total_agente_manual'])
         barra_agente_total.add('TRANSFERIDAS', dict_agentes_llamadas['total_agente_transferidas'])
 
-        return barra_agente_total
+        return adicionar_render_unicode(barra_agente_total)
 
     def generar_reportes(self, agentes, fecha_inferior, fecha_superior, user):
         """Genera las estadisticas para generar todos los reportes de los agentes"""
@@ -508,13 +510,13 @@ class TiemposAgente(object):
             'agentes_tiempos': self.agentes_tiempo,
             'agente_pausa': agente_pausa,
             'count_llamada_campana': count_llamada_campana,
-            'dict_agente_counter': zip(dict_agentes_llamadas['nombres_agentes'],
-                                       dict_agentes_llamadas['total_agentes'],
-                                       dict_agentes_llamadas['total_agente_preview'],
-                                       dict_agentes_llamadas['total_agente_dialer'],
-                                       dict_agentes_llamadas['total_agente_inbound'],
-                                       dict_agentes_llamadas['total_agente_manual'],
-                                       dict_agentes_llamadas['total_agente_transferidas']),
+            'dict_agente_counter': list(zip(dict_agentes_llamadas['nombres_agentes'],
+                                            dict_agentes_llamadas['total_agentes'],
+                                            dict_agentes_llamadas['total_agente_preview'],
+                                            dict_agentes_llamadas['total_agente_dialer'],
+                                            dict_agentes_llamadas['total_agente_inbound'],
+                                            dict_agentes_llamadas['total_agente_manual'],
+                                            dict_agentes_llamadas['total_agente_transferidas'])),
             'barra_agente_total': barra_agente_total,
         }
 

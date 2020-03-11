@@ -94,6 +94,20 @@ def obtener_oml_public_ip():
     return public_ip
 
 
+def adicionar_render_unicode(pygal_object):
+    """Adiciona metodo que llama al metodo render
+    del objeto de pygal con argumento que permite renderizarlo
+    con cadenas en formato unicode
+    """
+    render = pygal_object.render
+
+    def render_unicode():
+        return render(disable_xml_declaration=True)
+
+    pygal_object.render_unicode = render_unicode
+    return pygal_object
+
+
 class AddSettingsContextMixin(object):
 
     def get_context_data(self, *args, **kwargs):

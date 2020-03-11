@@ -291,6 +291,7 @@ def convert_audio_asterisk_path_astdb(audio_asterisk):
 
 
 class UnicodeWriter:            # tomado de https://docs.python.org/2/library/csv.html
+    # TODO: eliminar o adaptar a python3
     """
     A CSV writer which will write rows to CSV file "f",
     which is encoded in the given encoding.
@@ -304,7 +305,7 @@ class UnicodeWriter:            # tomado de https://docs.python.org/2/library/cs
         self.encoder = codecs.getincrementalencoder(encoding)()
 
     def writerow(self, row):
-        self.writer.writerow([s.encode("utf-8") for s in row])
+        self.writer.writerow(row)
         # Fetch UTF-8 output from the queue ...
         data = self.queue.getvalue()
         # data = data.decode("utf-8")

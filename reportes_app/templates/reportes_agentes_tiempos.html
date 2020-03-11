@@ -253,7 +253,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <h3>{% trans 'Cantidad de llamadas de los agentes por tipo de llamadas' %}</h3>
         <div class="graficos-avances col-md-auto">
             <figure>
-                {{ graficos_estadisticas.barra_agente_total.render|safe }}
+                {{ graficos_estadisticas.barra_agente_total.render_unicode|safe }}
             </figure>
         </div>
     </div>
