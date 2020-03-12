@@ -71,7 +71,7 @@ class CreacionBacklistService(object):
             raise(OmlArchivoImportacionInvalidoError(file_invalid_msg))
         file_obj = codecs.iterdecode(
             back_list.archivo_importacion, 'utf-8', errors='ignore')
-        data = csv.reader(file_obj)
+        data = csv.reader(file_obj, skipinitialspace=True)
         validar_estructura_csv(data, file_invalid_msg, logger)
 
     def importa_contactos(self, backlist):

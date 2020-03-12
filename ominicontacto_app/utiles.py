@@ -351,7 +351,7 @@ def obtener_opciones_columnas_bd(bd_contacto, columnas_bd_default):
         nombres_de_columnas = columnas_bd_default
     else:
         nombres_de_columnas = bd_contacto.get_metadata().nombres_de_columnas
-    return zip(nombres_de_columnas, nombres_de_columnas)
+    return list(zip(nombres_de_columnas, nombres_de_columnas))
 
 
 def dividir_lista(lst, n):
