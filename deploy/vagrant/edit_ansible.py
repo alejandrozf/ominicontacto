@@ -67,7 +67,12 @@ if args.internal_ip and args.self_hosted == "no":
                 "#postgres_password=my_very_strong_pass", "postgres_password={0}".format(
                     args.databases_pass)).replace(
                 "#mysql_root_password=my_very_strong_pass", "mysql_root_password={0}".format(
-                    args.databases_pass)))
+                    args.databases_pass)).replace(
+                    "#postgres_user=omnileads", "postgres_user=omnileads").replace(
+                    "#ami_user=omnileadsami", "ami_user=omnileadsami").replace(
+                    "#ami_password=5_MeO_DMT", "ami_password=5_MeO_DMT").replace(
+                    "#dialer_user=demoadmin", "dialer_user=demoadmin").replace(
+                    "#dialer_password=demo", "dialer_password=demo"))
     sys.exit()
 
 if args.internal_ip and args.self_hosted == "yes":
@@ -84,7 +89,12 @@ if args.internal_ip and args.self_hosted == "yes":
             "#postgres_password=my_very_strong_pass", "postgres_password={0}".format(
                 args.databases_pass)).replace(
             "#mysql_root_password=my_very_strong_pass", "mysql_root_password={0}".format(
-                args.databases_pass)))
+                args.databases_pass)).replace(
+                "#postgres_user=omnileads", "postgres_user=omnileads").replace(
+                "#ami_user=omnileadsami", "ami_user=omnileadsami").replace(
+                "#ami_password=5_MeO_DMT", "ami_password=5_MeO_DMT").replace(
+                "#dialer_user=demoadmin", "dialer_user=demoadmin").replace(
+                "#dialer_password=demo", "dialer_password=demo"))
     sys.exit()
 
 if args.docker_login_user and args.docker_login_email and args.docker_login_password \
@@ -100,13 +110,20 @@ if args.docker_login_user and args.docker_login_email and args.docker_login_pass
     inventory_contents = inventory_contents.replace(
         "docker_user='{{ lookup(\"env\",\"SUDO_USER\") }}'", "docker_user='root'")
     inventory_contents = inventory_contents.replace(
-        "registry_username=", "registry_username={0}".format(args.docker_login_user))
+        "registry_username=freetechsolutions", "registry_username={0}".format(
+            args.docker_login_user))
     inventory_contents = inventory_contents.replace(
-        "registry_email=", "registry_email={0}".format(args.docker_login_email))
+        "#registry_email=", "registry_email={0}".format(args.docker_login_email))
     inventory_contents = inventory_contents.replace(
-        "registry_password=", "registry_password={0}".format(args.docker_login_password))
+        "#registry_password=", "registry_password={0}".format(args.docker_login_password))
     inventory_contents = inventory_contents.replace(
         "oml_release=", "oml_release={0}".format(args.tag_docker_images))
+    inventory_contents = inventory_contents.replace(
+        "#postgres_user=omnileads", "postgres_user=omnileads")
+    inventory_contents = inventory_contents.replace(
+        "#ami_user=omnileadsami", "ami_user=omnileadsami")
+    inventory_contents = inventory_contents.replace(
+        "#ami_password=5_MeO_DMT", "ami_password=5_MeO_DMT")
     inventory_file.seek(0)
     inventory_file.truncate()
     inventory_file.write(inventory_contents)
