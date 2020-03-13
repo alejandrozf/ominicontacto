@@ -75,3 +75,20 @@
   tags: postinstall
   become_user: postgres
   failed_when: false
+
+- name: Erasing pg_dump and psql binaries from {{ postgresql_old_version }}
+  file: name=/usr/bin/{{ item }} state=absent
+  with_items:
+    - psql
+    - pg_restore
+    - pg_dump
+  tags: postinstall
+
+- name: Create link of pg{{ postgresql_version }} binaries in /usr/bin/
+  file: state=link src=/usr/pgsql-{{ postgresql_version }}/bin/{{ item }} dest=/usr/bin/{{ item }} force=true owner=root group=root mode=755
+  with_items:
+    - psql
+    - pg_restore
+    - pg_dump
+  tags: postinstall
+
