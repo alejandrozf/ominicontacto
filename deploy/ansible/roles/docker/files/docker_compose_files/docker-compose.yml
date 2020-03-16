@@ -43,7 +43,7 @@ services:
 
   dialer:
     command: >
-      bash -c "sed -i '/JDBC_URL/c\JDBC_URL=jdbc:mariadb:\/\/${MYSQL_HOST}\/${WOMBAT_DB}?user=${WOMBAT_DB_USER}&password=${WOMBAT_DB_PASS}&autoReconnect=true/' /usr/local/tomcat/webapps/wombat/WEB-INF/tpf.properties && catalina.sh run"
+      bash -c "sed -i '/JDBC_URL/c\JDBC_URL=jdbc:mariadb:\/\/${MYSQL_HOST}\/${WOMBAT_DB}?user=${WOMBAT_DB_USER}&password=${WOMBAT_DB_PASS}&autoReconnect=true' /usr/local/tomcat/webapps/wombat/WEB-INF/tpf.properties && catalina.sh run"
     container_name: oml-{{ dialer_fqdn }}-{{ customer }}
 {% if devenv == 1 %}
     depends_on:
