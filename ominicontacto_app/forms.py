@@ -270,9 +270,12 @@ class QueueEntranteForm(forms.ModelForm):
     def clean_announce_frequency(self):
         audio = self.cleaned_data.get('audios', None)
         frequency = self.cleaned_data.get('announce_frequency', None)
-        if audio and not (frequency > 0):
+        if audio and (frequency is None or not (frequency > 0)):
             raise forms.ValidationError(
                 _('Debe definir una frecuencia para el Anuncio Periódico'))
+        if audio is None and frequency is not None:
+            raise forms.ValidationError(
+                _('Debe definir un Anuncio Periódico para esta frecuencia'))
         return frequency
 
     def clean_destino(self):
