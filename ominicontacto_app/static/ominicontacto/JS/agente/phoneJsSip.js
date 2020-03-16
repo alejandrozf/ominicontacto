@@ -549,10 +549,7 @@ class SessionData {
             if (from_agent_name)
                 return from_agent_name;
         }
-        var fromUser = this.invite_request.headers.From[0].raw;
-        var endPos = fromUser.indexOf('@');
-        var startPos = fromUser.indexOf(':');
-        return fromUser.substring(startPos + 1, endPos);
+        return this.remote_call.telefono;
     }
 
     get is_call() {
