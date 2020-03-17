@@ -155,7 +155,7 @@ OMniLeads dispone de un script para llevar a cabo las tareas de backup/restore.
   En caso de hacer el restore en una nueva máquina, es necesario que dicha máquina:
 
   * Tenga OMniLeads instalado en la misma version que la maquina productiva
-  * Tenga la misma IP y el mismo hostname de la maquina productiva
+  * Tenga misma IP, mismo hostname y misma credenciales de la maquina productiva
 
 Para realizar un backup:
 
