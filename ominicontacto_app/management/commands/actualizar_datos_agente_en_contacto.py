@@ -69,13 +69,13 @@ class Command(BaseCommand):
             }
             aec, created = AgenteEnContacto.objects.get_or_create(
                 contacto_id=contacto.id, campana_id=campana.id, defaults=defaults)
-            if created:
+            if not created:
                 aec.telefono_contacto = contacto.telefono
                 aec.datos_contacto = datos_contacto_json
                 aec.save()
-                creados += 1
-            else:
                 modificados += 1
+            else:
+                creados += 1
 
         msg = _('Actualizando {0}  y creando {1} AgentesEnContacto para la campaña con id:'
                 ' {2}').format(modificados, creados, campaign_id)
