@@ -3,7 +3,7 @@
 # Docker hosts at beginning is localhost because the base containers are raised up in localhost to install the application. Uncomment the line if you want to install DE or PE
 
 version: de1.2.4
-asterisk_version: 16.4.0-python3
+asterisk_version: 16.9.0
 customer: devenv
 root_password: toor123
 
