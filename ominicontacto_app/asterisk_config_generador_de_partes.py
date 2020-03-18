@@ -322,7 +322,6 @@ class GeneradorParaQueueEntrante(GeneradorDePedazoDeQueue):
         announce=beep
         announce-frequency=0
         announce-holdtime={oml_announce-holdtime}
-        announce-position=no
         announce-position={oml_announce_position}
         autofill=yes
         eventmemberstatus=yes
@@ -333,9 +332,6 @@ class GeneradorParaQueueEntrante(GeneradorDePedazoDeQueue):
         penaltymemberslimit=0
         periodic-announce={oml_periodic-announce}
         periodic-announce-frequency={oml_periodic-announce-frequency}
-        queue-callswaiting=silence/1
-        queue-thereare=silence/1
-        queue-youarenext=silence/1
         reportholdtime=no
         ringinuse=no
         timeoutpriority=app
