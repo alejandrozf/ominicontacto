@@ -31,6 +31,8 @@ class AMIManagerConnector(object):
     """Establece la conexión AMI utilizando la librería pyst2, para manipular asterisk
     """
 
+    # TODO: Refactorizar esta clase. Nombres mas descriptivos.
+    #       Permitir ejecutar varios comandos con la misma sesion.
     def _ami_manager(self, action, content):
         error = False
         data_returned = ''
