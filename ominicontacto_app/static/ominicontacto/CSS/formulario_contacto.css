@@ -1,0 +1,15 @@
+#id_observaciones{
+	height: 180px;
+	border: 1px solid #ced4da;
+    border-radius: .25rem;
+}
+
+#id_opcion_calificacion{
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
