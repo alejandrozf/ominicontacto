@@ -933,13 +933,19 @@ class IdentificadorClienteCreateView(IdentificadorClienteMixin, CreateView):
 
         validacion_ok = False
         salvar_opciones = False
+        salvar_destino_false = False
         if form.is_valid():
             tipo_interaccion = form.cleaned_data.get('tipo_interaccion')
-            if tipo_interaccion == IdentificadorCliente.INTERACCION_EXTERNA_2:
-                validacion_ok = True
-            elif identificacion_cliente_formset.is_valid():
+            es_interaccion_ext_tipo_2 = (
+                tipo_interaccion == IdentificadorCliente.INTERACCION_EXTERNA_2)
+            form_destino_false = identificacion_cliente_formset.forms[1]
+            identificacion_cliente_formset_valid = identificacion_cliente_formset.is_valid()
+            if identificacion_cliente_formset_valid:
                 validacion_ok = True
                 salvar_opciones = True
+            elif es_interaccion_ext_tipo_2 and form_destino_false.is_valid():
+                validacion_ok = True
+                salvar_destino_false = True
 
         if validacion_ok:
             identificador = form.save()
@@ -947,6 +953,9 @@ class IdentificadorClienteCreateView(IdentificadorClienteMixin, CreateView):
             if salvar_opciones:
                 _asignar_destino_anterior(identificacion_cliente_formset, nodo_identificador)
                 identificacion_cliente_formset.save()
+            elif salvar_destino_false:
+                form_destino_false.instance.destino_anterior = nodo_identificador
+                form_destino_false.save()
 
             # escribe el nodo creado y sus relaciones en asterisk
             sincronizador = self.get_sincronizador_de_configuracion()
@@ -974,30 +983,46 @@ class IdentificadorClienteUpdateView(IdentificadorClienteMixin, UpdateView):
         nodo_identificador = DestinoEntrante.objects.get(
             object_id=identificador.pk,
             content_type=ContentType.objects.get_for_model(identificador))
+        queryset = nodo_identificador.destinos_siguientes.all()
+        identificacion_cliente_formset = OpcionDestinoValidacionFechaHoraFormset(
+            prefix='identificacion_cliente', queryset=queryset)
         if identificador.tipo_interaccion == IdentificadorCliente.INTERACCION_EXTERNA_2:
-            empty_queryset = OpcionDestino.objects.none()
-            identificacion_cliente_formset = OpcionDestinoValidacionFechaHoraFormset(
-                prefix='identificacion_cliente', queryset=empty_queryset)
-        else:
-            queryset = nodo_identificador.destinos_siguientes.all()
-            identificacion_cliente_formset = OpcionDestinoValidacionFechaHoraFormset(
-                prefix='identificacion_cliente', queryset=queryset)
+            # cambiamos los forms ya que el formset pone por defecto
+            # el form con valor en la primera posicion (que seria el destino True)
+            form_destino_false, form_destino_true = identificacion_cliente_formset.forms
+            identificacion_cliente_formset.forms = [form_destino_true, form_destino_false]
         context['identificacion_cliente_formset'] = identificacion_cliente_formset
         return context
+
+    def _some_form_valid(self, identificacion_cliente_formset):
+        for form in identificacion_cliente_formset.forms:
+            if form.is_valid():
+                return True
+        return False
+
+    def _get_form_destino_false(self, identificacion_cliente_formset):
+        for form in identificacion_cliente_formset.forms:
+            if form.is_valid() and form.instance.pk is not None:
+                return form
 
     def form_valid(self, form):
         identificacion_cliente_formset = OpcionDestinoValidacionFechaHoraFormset(
             self.request.POST, prefix='identificacion_cliente')
-
         validacion_ok = False
         salvar_opciones = False
+        salvar_destino_false = False
         if form.is_valid():
             tipo_interaccion = form.cleaned_data.get('tipo_interaccion')
-            if tipo_interaccion == IdentificadorCliente.INTERACCION_EXTERNA_2:
-                validacion_ok = True
-            elif identificacion_cliente_formset.is_valid():
+            es_interaccion_ext_tipo_2 = (
+                tipo_interaccion == IdentificadorCliente.INTERACCION_EXTERNA_2)
+            identificacion_cliente_formset_valid = identificacion_cliente_formset.is_valid()
+            if identificacion_cliente_formset_valid:
                 validacion_ok = True
                 salvar_opciones = True
+            elif es_interaccion_ext_tipo_2 and self._some_form_valid(
+                    identificacion_cliente_formset):
+                validacion_ok = True
+                salvar_destino_false = True
 
         if validacion_ok:
             identificador = form.save()
@@ -1005,10 +1030,14 @@ class IdentificadorClienteUpdateView(IdentificadorClienteMixin, UpdateView):
                 object_id=identificador.pk,
                 content_type=ContentType.objects.get_for_model(identificador))
             if salvar_opciones:
+                OpcionDestino.objects.filter(destino_anterior=nodo_identificador).delete()
                 _asignar_destino_anterior(identificacion_cliente_formset, nodo_identificador)
                 identificacion_cliente_formset.save()
-            else:
+            elif salvar_destino_false:
+                form_destino_false = self._get_form_destino_false(identificacion_cliente_formset)
                 OpcionDestino.objects.filter(destino_anterior=nodo_identificador).delete()
+                form_destino_false.instance.destino_anterior = nodo_identificador
+                form_destino_false.save()
 
             # escribe el nodo creado y sus relaciones en asterisk
             sincronizador = self.get_sincronizador_de_configuracion()
