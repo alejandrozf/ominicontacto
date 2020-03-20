@@ -17,7 +17,7 @@
   failed_when: false
   delegate_to: localhost
   register: ast_custom_exists
-  
+
 - name: Create directory to copy Omnileads-Docker folders
   file: path={{ item }} state=directory recurse=yes owner={{ docker_user }} group={{ docker_user }}
   with_items:
@@ -101,7 +101,7 @@
   when: build_images == "true"
 
 - name: Build images for PE and DE
-  docker_image: 
+  docker_image:
     build:
         path: "{{ build_location }}"
         dockerfile: Dockerfile-{{ item.dockerfile }}
@@ -110,10 +110,10 @@
     source: build
     tag: "{{ item.version }}"
     force_source: yes
-    force_tag: yes 
+    force_tag: yes
     push: yes
   with_items:
-    - { dockerfile: "asterisk", image: "asterisk", version: "{{ asterisk_version }}" }
+    - { dockerfile: "asterisk", image: "asterisk", version: "{{ asterisk_builded_version }}" }
     - { dockerfile: "dialer", image: "dialer", version: "{{ wombat_version }}" }
     - { dockerfile: "omniapp", image: "omniapp", version: "{{ version }}" }
     - { dockerfile: "postgresql", image: "postgresql", version: "{{ postgresql_version }}" }
@@ -121,7 +121,7 @@
   when: build_images == "true"
 
 - name: Build {{ version }} images (PE)
-  docker_image: 
+  docker_image:
     build:
         path: "{{ build_location }}"
         dockerfile: Dockerfile-{{ item.dockerfile }}
@@ -130,10 +130,9 @@
     source: build
     tag: "{{ item.version }}"
     force_source: yes
-    force_tag: yes 
-    push: yes  
+    force_tag: yes
+    push: yes
   with_items:
     - { dockerfile: "kamailio", image: "kamailio", version: "{{ version }}" }
     - { dockerfile: "nginx", image: "nginx", version: "{{ version }}" }
   when: prodenv == 1 and build_images == "true"
-
