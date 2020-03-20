@@ -82,14 +82,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <td>{{object.queue_campana.announce_position}}</td>
             </tr>
             <tr>
-                <td>{% trans 'Autopausar agentes que fallan al responder:' %}:</td>
-                <td>{{object.queue_campana.autopause}}</td>
-            </tr>
-            <tr>
-                <td>{% trans 'Autopausar agentes que dan ocupado:' %}:</td>
-                <td>{{object.queue_campana.autopausebusy}}</td>
-            </tr>
-            <tr>
                 <td colspan="2"><strong>{% trans 'Opciones de calificación' %}</strong></td>
             </tr>
             {% for opcion_calificacion in object.opciones_calificacion.all  %}

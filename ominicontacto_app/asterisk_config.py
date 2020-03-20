@@ -289,8 +289,6 @@ class QueuesCreator(object):
             'oml_retry': retry,
             'oml_periodic-announce': periodic_announce,
             'oml_periodic-announce-frequency': campana.queue_campana.announce_frequency,
-            'oml_autopause': 'all' if campana.queue_campana.autopause else 'no',
-            'oml_autopausebusy': 'yes' if campana.queue_campana.autopausebusy else 'no',
             'oml_announce-holdtime': campana.queue_campana.announce_holdtime,
             'oml_ivr-breakdown': campana.queue_campana.ivr_breakdown,
             'oml_announce_position': 'yes' if campana.queue_campana.announce_position else 'no',

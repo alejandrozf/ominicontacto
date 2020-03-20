@@ -131,8 +131,6 @@ class CampanaTemplateCreateCampanaMixin(object):
                 'announce_position': queue.announce_position,
                 'ivr_breakdown': queue.ivr_breakdown,
                 'musiconhold': queue.musiconhold,
-                'autopause': queue.autopause,
-                'autopausebusy': queue.autopausebusy,
             }
         else:
             initial_data = super(

@@ -229,7 +229,7 @@ class QueueEntranteForm(forms.ModelForm):
         fields = ('name', 'timeout', 'retry', 'maxlen', 'wrapuptime', 'servicelevel',
                   'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
                   'audios', 'announce_frequency', 'audio_de_ingreso', 'campana',
-                  'tipo_destino', 'destino', 'ivr_breakdown', 'autopause', 'autopausebusy',
+                  'tipo_destino', 'destino', 'ivr_breakdown',
                   'announce_holdtime', 'announce_position', 'musiconhold')
 
         help_texts = {
