@@ -524,6 +524,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <a class="menu-link" href="{% url 'campana_preview_activas_miembro' %}" target="crm">{% trans 'Campañas preview' %}</a>
             </li>
             {% endif %}
+            <li class="main-menu-li">
+                <span class="icon icon-audio-file"></span>
+                <a class="menu-link" href="{% url 'grabacion_agente_buscar' 1 %}" target="crm">{% trans 'Grabaciones' %}</a>
+            </li>
 
 <!--                 <li class="main-menu-li">
                 <span class="icon icon-user"></span>
@@ -641,49 +645,66 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <div class="webphone-body">
                     <div class="tab-content" id="webphoneTabContent">
                         <div class="tab-pane fade show active" id="phoneContent" role="tabpanel" aria-labelledby="phoneTab">
-                            <div id="phoneStatus">
-                                <div id="CallStatus"></div>
-                                <div id="SipStatus"></div>
-                                <div class="filaCampoNroDiscar">
-                                    <input type="text" class="form-control" id="numberToCall" name="numberToCall">
+                            <div class="container">
+                                <div class="row" id="phoneStatus">
+                                    <div class="col-md-12">
+                                        <div id="CallStatus"></div>
+                                        <div id="SipStatus"></div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div id="phoneKeys">
-                                <div id="phoneKeysNumbers">
-                                  <div>
-                                      <button id="1" class="btn key">1</button>
-                                      <button id="2" class="btn key">2</button>
-                                      <button id="3" class="btn key">3</button>
-                                  </div>
-                                  <div>
-                                      <button id="4" class="btn key">4</button>
-                                      <button id="5" class="btn key">5</button>
-                                      <button id="6" class="btn key">6</button>
-                                  </div>
-                                  <div>
-                                      <button id="7" class="btn key">7</button>
-                                      <button id="8" class="btn key">8</button>
-                                      <button id="9" class="btn key">9</button>
-                                  </div>
-                                  <div>
-                                      <button id="hashtag" class="btn key">#</button>
-                                      <button id="0" class="btn key">0</button>
-                                      <button id="asterisk" class="btn key astBtn">*</button>
-                                  </div>
-                                </div>
-                                <div id="phoneKeysActions">
-                                    <button type="button" id="call" class="btn btn-outline-primary" title="{% trans 'Llamar' %}">
-                                        <span class="icon icon-solid-phone-call"></span>
-                                    </button>
-                                    <button type="button" id="endCall" class="btn btn-outline-danger" title="{% trans 'Finalizar llamada' %}">
-                                        <span class="icon icon-solid-phone-end"></span>
-                                    </button>
-                                    <button type="button" id="redial" class="btn btn-outline-secondary" title="{% trans 'Rellamar' %}">
-                                        <span class="icon icon-solid-phone-redial"></span>
-                                    </button>
-                                    <button type="button" id="SignCall" class="btn btn-outline-secondary" title="{% trans 'Marcar Llamada' %}">
-                                        <span class="icon icon-solid-phone-save"></span>
-                                    </button>
+                                <div class="row" id="phoneKeys">
+                                    <div class="col-md-10">
+                                        <div class="row filaCampoNroDiscar">
+                                                <input type="text" class="form-control" id="numberToCall" name="numberToCall">
+                                        </div>
+                                        <div class="row" id="phoneKeysNumbers">
+                                              <div>
+                                                  <button id="1" class="btn key">1</button>
+                                                  <button id="2" class="btn key">2</button>
+                                                  <button id="3" class="btn key">3</button>
+                                              </div>
+                                              <div>
+                                                  <button id="4" class="btn key">4</button>
+                                                  <button id="5" class="btn key">5</button>
+                                                  <button id="6" class="btn key">6</button>
+                                              </div>
+                                              <div>
+                                                  <button id="7" class="btn key">7</button>
+                                                  <button id="8" class="btn key">8</button>
+                                                  <button id="9" class="btn key">9</button>
+                                              </div>
+                                              <div>
+                                                  <button id="hashtag" class="btn key">#</button>
+                                                  <button id="0" class="btn key">0</button>
+                                                  <button id="asterisk" class="btn key astBtn">*</button>
+                                              </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 paddingNull">
+                                        <div id="phoneKeysActions">
+                                                <button type="button" id="call" class="btn btn-outline-primary" title="{% trans 'Llamar' %}">
+                                                    <span class="icon icon-solid-phone-call"></span>
+                                                </button>
+                                                <button type="button" id="endCall" class="btn btn-outline-danger" title="{% trans 'Finalizar llamada' %}">
+                                                    <span class="icon icon-solid-phone-end"></span>
+                                                </button>
+                                                <button type="button" id="redial" class="btn btn-outline-secondary" title="{% trans 'Rellamar' %}">
+                                                    <span class="icon icon-solid-phone-redial"></span>
+                                                </button>
+                                                <button type="button" id="SignCall" class="btn btn-outline-secondary" title="{% trans 'Marcar Llamada' %}">
+                                                    <span class="icon icon-solid-phone-save"></span>
+                                                </button>
+                                                <button type="button" id="recordCall" class="btn btn-outline-secondary" title="{% trans 'Grabar Llamada' %}">
+                                                    <span>
+                                                        <input class="hidden" name="recordOnUrl" id="recordOnUrl" type="text"
+                                                               value="{% static 'ominicontacto/Img/record-on.svg' %}"/>
+                                                        <input class="hidden" name="recordOffUrl" id="recordOffUrl" type="text"
+                                                               value="{% static 'ominicontacto/Img/record-off.svg' %}"/>
+                                                        <img src="{% static 'ominicontacto/Img/record-off.svg' %}">
+                                                    </span>
+                                                </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 

@@ -22,11 +22,14 @@
 from __future__ import unicode_literals
 
 from contextlib import contextmanager
+from lxml import etree
+
 import csv
 import codecs
-import cStringIO
+import io
 import os
 import re
+import requests
 import tempfile
 import time
 import uuid
@@ -70,7 +73,7 @@ def resolve_strftime(text):
 
 
 def elimina_tildes(s):
-    return ''.join(unicodedata.normalize('NFD', s).encode('ASCII', 'ignore'))
+    return ''.join(unicodedata.normalize('NFD', s).encode('ASCII', 'ignore').decode('utf8'))
 
 
 def elimina_espacios_parentesis_guiones(cadena):
@@ -78,7 +81,7 @@ def elimina_espacios_parentesis_guiones(cadena):
     Elimina espacios, parentesis y guiones de la cadena recibida por parametro
     La cadena debe ser una instancia de unicode
     """
-    assert isinstance(cadena, unicode), "'cadena' debe ser una instancia de unicode"
+    assert isinstance(cadena, str), "'cadena' debe ser una instancia de unicode"
     return re.sub(r"\(?\)?\s?\-?", "", cadena)
 
 
@@ -87,7 +90,7 @@ def remplace_espacio_por_guion(cadena):
     Remplaza espacio por guion en cadaena recibida por parametro
     La cadena debe ser una instancia de unicode
     """
-    assert isinstance(cadena, unicode), "'cadena' debe ser una instancia de unicode"
+    assert isinstance(cadena, str), "'cadena' debe ser una instancia de unicode"
     return re.sub(r"\s+", "_", cadena)
 
 
@@ -140,7 +143,7 @@ def crear_archivo_en_media_root(dirname_template, prefix, suffix=""):
     abs_output_dir = os.path.join(settings.MEDIA_ROOT, relative_dirname)
     if not os.path.exists(abs_output_dir):
         logger.info("Se crearan directorios: %s", abs_output_dir)
-        os.makedirs(abs_output_dir, mode=0755)
+        os.makedirs(abs_output_dir, mode=0o755)
 
     fd, output_filename = tempfile.mkstemp(dir=abs_output_dir, prefix=prefix,
                                            suffix=suffix)
@@ -148,7 +151,7 @@ def crear_archivo_en_media_root(dirname_template, prefix, suffix=""):
     # Cerramos FD
     os.close(fd)
 
-    os.chmod(output_filename, 0644)
+    os.chmod(output_filename, 0o644)
 
     __, generated_filename = os.path.split(output_filename)
     return relative_dirname, generated_filename
@@ -271,7 +274,7 @@ def fecha_hora_local(fecha_hora):
 
 def convertir_ascii_string(cadena):
     """ Devuelve ascii ignorando caracteres extraños"""
-    return cadena.encode('ascii', errors='ignore')
+    return cadena.encode('ascii', errors='ignore').decode('utf-8')
 
 
 def cast_datetime_part_date(fecha):
@@ -288,6 +291,7 @@ def convert_audio_asterisk_path_astdb(audio_asterisk):
 
 
 class UnicodeWriter:            # tomado de https://docs.python.org/2/library/csv.html
+    # TODO: eliminar o adaptar a python3
     """
     A CSV writer which will write rows to CSV file "f",
     which is encoded in the given encoding.
@@ -295,16 +299,16 @@ class UnicodeWriter:            # tomado de https://docs.python.org/2/library/cs
 
     def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
         # Redirect output to a queue
-        self.queue = cStringIO.StringIO()
+        self.queue = io.StringIO()
         self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
         self.stream = f
         self.encoder = codecs.getincrementalencoder(encoding)()
 
     def writerow(self, row):
-        self.writer.writerow([s.encode("utf-8") for s in row])
+        self.writer.writerow(row)
         # Fetch UTF-8 output from the queue ...
         data = self.queue.getvalue()
-        data = data.decode("utf-8")
+        # data = data.decode("utf-8")
         # ... and reencode it into the target encoding
         data = self.encoder.encode(data)
         # write to the target stream
@@ -347,4 +351,43 @@ def obtener_opciones_columnas_bd(bd_contacto, columnas_bd_default):
         nombres_de_columnas = columnas_bd_default
     else:
         nombres_de_columnas = bd_contacto.get_metadata().nombres_de_columnas
-    return zip(nombres_de_columnas, nombres_de_columnas)
+    return list(zip(nombres_de_columnas, nombres_de_columnas))
+
+
+def dividir_lista(lst, n):
+    """Divide una lista en n partes de tamaño similar
+    Si n es menor que la longitud de la lista devuelve
+    un generador de una lista de listas con un iterador
+    donde cada elemento es una lista con un unico elemento
+    de la lista inicial
+    """
+    len_lst = len(lst)
+    if n >= len_lst:
+        for val in lst:
+            yield [val]
+    else:
+        len_partes = len_lst // n
+        for i, val in enumerate(range(0, len_lst, len_partes)):
+            if i == n:
+                return
+            if i == n - 1:
+                yield lst[val:]
+            else:
+                yield lst[val:val + len_partes]
+
+
+def get_oml_last_release():
+    """Obtiene la ultima versión de OMniLeads, en caso de no poder acceder
+    devuelve ''"""
+    tags_url = 'https://gitlab.com/omnileads/ominicontacto/-/tags'
+    try:
+        html_tags_page = requests.get(tags_url)
+    except requests.RequestException as e:
+        logger.info(_("No se pudo acceder a la url debido a: {0}".format(e)))
+        return ''
+    else:
+        root = etree.HTML(html_tags_page.content)
+        doc = etree.ElementTree(root)
+        nodos_tags = doc.xpath("//div[@class='row-main-content']/a")
+        current_release = "Release {0}".format(nodos_tags[0].text)
+        return current_release

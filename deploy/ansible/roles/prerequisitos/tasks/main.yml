@@ -21,29 +21,6 @@
 - name: Check if Omnileads has been installed previously
   include: checks.yml
 
-# se crea el grupo de usuario omnileads
-- name: Creation of {{ usuario }} group (bare metal)
-  group: name={{ usuario }} state=present
-  become: true
-  become_method: sudo
-
-- name: Creation of {{ usuario }} user
-  user: name={{ usuario }} group={{ usuario }} create_home=yes shell=/bin/bash home=/opt/{{ usuario }} generate_ssh_key=yes ssh_key_bits=2048 state=present
-
-# se crea el grupo de usuario omnileads
-- name: Creation of {{ usuario }} user and group (docker)
-  shell: addgroup -g 1000 -S {{ usuario }} &&  adduser -u 1000 -S {{ usuario }} -G {{ usuario }} -h {{ install_prefix }} -s /bin/bash
-  become: true
-  become_method: sudo
-  failed_when: false
-
-- name: Create of .pgpass file
-  template: src=templates/.pgpass dest={{ item }}.pgpass mode=0600 owner={{ usuario }} group={{ usuario }}
-  with_items:
-    - "{{ install_prefix }}"
-    - /root/
-  tags: ['database','asterisk','kamailio','omniapp','postinstall']
-
 # primeras configuraciones de servidores
 - name: First configuration in server or servers
   include: os_configuration.yml

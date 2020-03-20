@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
@@ -352,7 +353,7 @@ msgstr ""
 # 3950d2e9404848ce8a855542ba10de9e
 #: ../../campaigns_inbound_customer_id.rst:111
 msgid "Retries"
-msgstr ""
+msgstr "Retries"
 
 # 8279bbd7f514489081ff5a80ce3e6a38
 #: ../../campaigns_inbound_customer_id.rst:111
@@ -469,12 +470,12 @@ msgstr "The service receives from OMniLeads the HTTP Post request the customer "
 # 69df661f7dfb4c99a3453f911e657918
 #: ../../campaigns_inbound_customer_id.rst:150
 msgid "**true**"
-msgstr ""
+msgstr "**true**"
 
 # b1faf583b08641e1a1a54cd25ee8aded
 #: ../../campaigns_inbound_customer_id.rst:151
 msgid "**false**"
-msgstr ""
+msgstr "**false**"
 
 # f2774e95e7654598bd4c00d10a8a9d7c
 #: ../../campaigns_inbound_customer_id.rst:152

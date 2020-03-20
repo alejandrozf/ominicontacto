@@ -1,0 +1,280 @@
+version: '3.7'
+services:
+  asterisk:
+    entrypoint:
+      - /home/run_asterisk.sh
+    container_name: oml-{{ asterisk_fqdn }}-{{ customer }}
+{% if devenv == 1 %}
+    depends_on:
+      - postgresql
+{% endif %}
+    dns: 8.8.8.8
+    environment:
+      - AMI_USER=${AMI_USER}
+      - AMI_PASSWORD=${AMI_PASSWORD}
+      - ASTERISK_LOCATION=${ASTERISK_LOCATION}
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - PGPASSWORD=${PGPASSWORD}
+      - PGHOST=${PGHOST}
+      - PGUSER=${PGUSER}
+      - TZ=${TZ}
+    image: {{ ast_builded_image }}
+    networks:
+      - {{ subnet_name }}
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+{% if devenv == 1 %}
+      - grabaciones:/var/spool/asterisk/monitor/
+      - ./asterisk/conf/:/etc/asterisk/
+      - ./asterisk/agis/:/var/lib/asterisk/agi-bin/
+      - sounds:/var/lib/asterisk/sounds/
+      - ./asterisk/odbc.ini:/etc/odbc.ini
+      - ./asterisk/odbcinst.ini:/etc/odbcinst.ini
+      - ./asterisk/others/:/home/
+      - {{ repo_location }}/ominicontacto_voip/asterisk-files/conf/:/var/tmp/
+{% else %}
+      - ./recordings:/var/spool/asterisk/monitor/
+      - ./sounds:/var/lib/asterisk/sounds/
+      - ast_conf_files:/etc/asterisk/
+{% endif %}
+    working_dir: /etc/asterisk
+
+  dialer:
+    command: >
+      bash -c "sed -i '/JDBC_URL/c\JDBC_URL=jdbc:mariadb:\/\/${MYSQL_HOST}\/${WOMBAT_DB}?user=${WOMBAT_DB_USER}&password=${WOMBAT_DB_PASS}&autoReconnect=true' /usr/local/tomcat/webapps/wombat/WEB-INF/tpf.properties && catalina.sh run"
+    container_name: oml-{{ dialer_fqdn }}-{{ customer }}
+{% if devenv == 1 %}
+    depends_on:
+      - mariadb
+{% endif %}
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+      - MYSQL_PWD=${MYSQL_ROOT_PASS}
+    image: {{ dialer_builded_image }}
+    networks:
+      - {{ subnet_name }}
+    ports:
+      - ${WD_EXT_PORT}:8080/tcp
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+
+  kamailio:
+    container_name: oml-{{ kamailio_fqdn }}-{{ customer }}
+    depends_on:
+      - redis
+      - asterisk
+    dns: 8.8.8.8
+    environment:
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - TZ=${TZ}
+    image: {{ kamailio_builded_image }}
+    networks:
+      - {{ subnet_name }}
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+{% if devenv == 1 %}
+      - {{ repo_location }}/ominicontacto_voip/kamailio-files:/etc/kamailio
+{% endif %}
+      - ./certs/:/etc/kamailio/certs/
+
+{% if devenv == 1%}
+  mariadb:
+    container_name: oml-{{ mariadb_fqdn }}-{{ customer }}
+    dns: 8.8.8.8
+    environment:
+      - TZ={{ TZ }}
+      - MARIADB_ROOT_PASSWORD={{ mysql_root_password }}
+      - MARIADB_DATABASE=wombat
+      - MARIADB_USER=wombat
+      - MARIADB_PASSWORD=dials
+    image: {{ mariadb_builded_image }}
+    networks:
+      - {{ subnet_name }}
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - mariadb_data:/bitnami
+{% endif %}
+
+  nginx:
+    container_name: oml-{{ nginx_fqdn }}-{{ customer }}
+    dns: 8.8.8.8
+    environment:
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - TZ={{ TZ }}
+    image: {{ nginx_builded_image }}
+    networks:
+      - {{ subnet_name }}
+    privileged: true
+    ports:
+     - "{{ nginx_external_port }}:443/tcp"
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - ./certs:/etc/nginx/certs/
+{% if devenv == 1 %}
+      - ./nginx/:/etc/nginx/
+      - grabaciones:/var/spool/asterisk/monitor/
+{% else %}
+      - ./recordings:/var/spool/asterisk/monitor
+{% endif %}
+
+  omniapp:
+    command:
+      - {{ install_prefix }}run/run_omniapp.sh
+    container_name: oml-{{ omniapp_fqdn }}-{{ customer }}
+    dns: 8.8.8.8
+    environment:
+      - AMI_USER=${AMI_USER}
+      - AMI_PASSWORD=${AMI_PASSWORD}
+      - ASTERISK_HOSTNAME=${ASTERISK_HOSTNAME}
+      - ASTERISK_LOCATION=${ASTERISK_LOCATION}
+      - CALIFICACION_REAGENDA=${CALIFICACION_REAGENDA}
+      - DJANGO_ADMIN_PASS=${DJANGO_PASS}
+      - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
+      - DOCKER_IP=${DOCKER_IP}
+      - LOGIN_FAILURE_LIMIT=${LOGIN_FAILURE_LIMIT}
+      - MONITORFORMAT=${MONITORFORMAT}
+      - NGINX_HOSTNAME=${DOCKER_HOSTNAME}
+      - EPHEMERAL_USER_TTL=${ECTTL}
+      - EXTERNAL_PORT=${NGINX_EXT_PORT}
+      - INSTALL_PREFIX=${INSTALL_PREFIX}
+      - KAMAILIO_HOSTNAME=${KAMAILIO_HOSTNAME}
+      - KAMAILIO_LOCATION=${KAMAILIO_LOCATION}
+      - OMNILEADS_HOSTNAME=${OMNILEADS_HOSTNAME}
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - PGHOST=${PGHOST}
+      - PGDATABASE=${PGDATABASE}
+      - PGUSER=${PGUSER}
+      - PGPASSWORD=${PGPASSWORD}
+      - PYTHONPATH=${PYTHONPATH}
+      - REDIS_HOSTNAME=${REDIS_HOSTNAME}
+      - RTPENGINE_HOSTNAME=${RTPENGINE_HOSTNAME}
+      - SESSION_COOKIE_AGE=${SCA}
+      - TZ=${TZ}
+      - WOMBAT_HOSTNAME=${WOMBAT_HOSTNAME}
+      - WOMBAT_USER=${WOMBAT_USER}
+      - WOMBAT_PASSWORD=${WOMBAT_PASSWORD}
+    image: {{ omniapp_builded_image }}
+    networks:
+      - {{ subnet_name }}
+    privileged: true
+    restart: on-failure
+    stdin_open: true
+    stop_grace_period: 1m30s
+    tty: true
+    user: omnileads
+    volumes:
+{% if devenv == 1 %}
+      - {{ repo_location }}:{{ install_prefix }}ominicontacto/
+      - ./asterisk/conf/:/etc/asterisk/
+      - ./omniapp/:{{ install_prefix }}run/
+      - ./omniapp/conversor.sh:{{ install_prefix }}bin/conversor.sh
+      - ./omniapp/omni-asterisk-logout.py:{{ install_prefix }}bin/omni-asterisk-logout.py
+      - grabaciones:{{ install_prefix }}grabaciones
+      - sounds:/var/lib/asterisk/sounds/
+{% else %}
+      - ./recordings:/opt/omnileads/grabaciones
+      - ast_conf_files:/etc/asterisk/
+      - ./sounds:/var/lib/asterisk/sounds/
+      - ominicontacto:{{ install_prefix }}ominicontacto/
+{% endif %}
+    working_dir: {{ install_prefix}}ominicontacto
+
+{% if devenv == 1 %}
+  postgresql:
+    container_name: oml-{{ postgresql_fqdn }}-{{ customer }}
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+      - POSTGRES_USER=${PGUSER}
+      - POSTGRES_PASSWORD=${PGPASSWORD}
+      - POSTGRES_DB=${PGDATABASE}
+    image: {{ postgres_builded_image }}
+    networks:
+      - {{ subnet_name }}
+    ports:
+      - ${PG_EXT_PORT}:5432/tcp
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+
+  pbx-emulator:
+    container_name: pbx-emulator
+    hostname: pbx-emulator
+    dns: 8.8.8.8
+    environment:
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - TZ=${TZ}
+    image: {{ pbxemulator_builded_image }}
+    networks:
+      - {{ subnet_name }}
+    ports:
+      - 5060:5060/udp
+      - 10000-10020:10000-10020/udp
+    privileged: true
+    restart: on-failure
+    stdin_open: true
+    stop_grace_period: 1m30s
+    tty: true
+{% endif %}
+
+  redis:
+    container_name: oml-{{ redis_fqdn }}-{{ customer }}
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+    networks:
+      - {{ subnet_name }}
+    image: {{ redis_image }}
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+{% if devenv == 1 %}
+      - redis_data:/data
+{% else %}
+      - ./redis_data:/data
+{% endif %}
+
+{% if devenv == 1 %}
+  rtpengine:
+    container_name: oml-{{ rtpengine_fqdn }}-{{ customer}}
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+    image: {{ rtpengine_builded_image }}
+    networks:
+      - {{ subnet_name }}
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+{% endif %}
+
+networks:
+  {{ subnet_name }}:
+    ipam:
+      driver: default
+      config:
+        - subnet: "${SUBNET}"
+
+volumes:
+{% if devenv == 1 %}
+  grabaciones:
+  mariadb_data:
+  postgresql_data:
+  redis_data:
+  sounds:
+{% else %}
+  ast_conf_files:
+  ominicontacto:
+{% endif %}

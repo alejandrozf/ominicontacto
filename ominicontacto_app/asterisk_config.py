@@ -29,18 +29,19 @@ import shutil
 import subprocess
 import tempfile
 import traceback
+import time
 
 from django.conf import settings
 from django.utils.translation import ugettext as _
 
-from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP
+from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP, Playlist
 from ominicontacto_app.utiles import remplace_espacio_por_guion
 from ominicontacto_app.models import (
     AgenteProfile, SupervisorProfile, ClienteWebPhoneProfile, Campana
 )
 from ominicontacto_app.asterisk_config_generador_de_partes import (
     GeneradorDePedazoDeQueueFactory, GeneradorDePedazoDeAgenteFactory,
-    GeneradorDePedazoDeRutasSalientesFactory
+    GeneradorDePedazoDeRutasSalientesFactory, GeneradorDePedazoDePlaylistFactory,
 )
 from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnector
 import logging as _logging
@@ -120,7 +121,7 @@ class SipConfigCreator(object):
             except Exception as e:
                 logger.exception(
                     _("Error {0}: No se pudo generar configuracion de "
-                      "Asterisk para la quene {1}".format(e.message, agente.user.get_full_name())))
+                      "Asterisk para la quene {1}".format(e, agente.user.get_full_name())))
 
                 try:
                     traceback_lines = [
@@ -128,7 +129,7 @@ class SipConfigCreator(object):
                         for line in traceback.format_exc().splitlines()]
                     traceback_lines = "\n".join(traceback_lines)
                 except Exception as e:
-                    traceback_lines = _("Error {0} al intentar generar traceback".format(e.message))
+                    traceback_lines = _("Error {0} al intentar generar traceback".format(e))
                     logger.exception(_("Error al intentar generar traceback"))
 
                 # FAILED: Creamos la porción para el fallo del config sip.
@@ -155,7 +156,7 @@ class SipConfigCreator(object):
                 logger.exception(
                     _("Error {0}: no se pudo generar configuracion de "
                       "Asterisk para la queue {1}".format(
-                          e.message, supervisor.user.get_full_name())))
+                          e, supervisor.user.get_full_name())))
 
                 try:
                     traceback_lines = [
@@ -163,7 +164,7 @@ class SipConfigCreator(object):
                         for line in traceback.format_exc().splitlines()]
                     traceback_lines = "\n".join(traceback_lines)
                 except Exception as e:
-                    traceback_lines = _("Error {0} al intentar generar traceback".format(e.message))
+                    traceback_lines = _("Error {0} al intentar generar traceback".format(e))
                     logger.exception(traceback_lines)
 
                 # FAILED: Creamos la porción para el fallo del config sip.
@@ -188,7 +189,7 @@ class SipConfigCreator(object):
                 logger.exception(
                     _("Error {0}: no se pudo generar configuracion de "
                       "Asterisk para la queue {1}".format(
-                          e.message, cliente.user.get_full_name())))
+                          e, cliente.user.get_full_name())))
 
                 try:
                     traceback_lines = [
@@ -196,7 +197,7 @@ class SipConfigCreator(object):
                         for line in traceback.format_exc().splitlines()]
                     traceback_lines = "\n".join(traceback_lines)
                 except Exception as e:
-                    traceback_lines = _("Error {0} al intentar generar traceback".format(e.message))
+                    traceback_lines = _("Error {0} al intentar generar traceback".format(e))
                     logger.exception(traceback_lines)
 
                 # FAILED: Creamos la porción para el fallo del config sip.
@@ -259,7 +260,6 @@ class QueuesCreator(object):
         :type campana: ominicontacto_app.models.Campana
         :returns: str -- dialplan para la queue
         """
-
         assert campana.queue_campana is not None, "campana.queue_campana == None"
 
         retry = 1
@@ -289,7 +289,18 @@ class QueuesCreator(object):
             'oml_retry': retry,
             'oml_periodic-announce': periodic_announce,
             'oml_periodic-announce-frequency': campana.queue_campana.announce_frequency,
+            'oml_announce-holdtime': campana.queue_campana.announce_holdtime,
+            'oml_ivr-breakdown': campana.queue_campana.ivr_breakdown,
+            'oml_announce_position': 'yes' if campana.queue_campana.announce_position else 'no',
         }
+
+        ivr_breakdown = campana.queue_campana.ivr_breakdown
+        if ivr_breakdown is not None:
+            oml_ivr_breakdown = 'sub-oml-module-ivrbreakout'
+        else:
+            oml_ivr_breakdown = ''
+
+        param_generales.update({'oml_ivr-breakdown': oml_ivr_breakdown})
 
         # QUEUE: Creamos la porción inicial del Queue.
         generador_queue = self._generador_factory. \
@@ -335,7 +346,7 @@ class QueuesCreator(object):
             except Exception as e:
                 logger.exception(
                     _("Error {0}: No se pudo generar configuracion de "
-                      "Asterisk para la queue {1}".format(e.message, campana.nombre)))
+                      "Asterisk para la queue {1}".format(e, campana.nombre)))
 
                 try:
                     traceback_lines = [
@@ -344,7 +355,7 @@ class QueuesCreator(object):
                     traceback_lines = "\n".join(traceback_lines)
                 except Exception as e:
                     traceback_lines = _("Error {0}: al intentar generar traceback".format(
-                        e.message))
+                        e))
                     logger.exception(traceback)
 
                 # FAILED: Creamos la porción para el fallo del Dialplan.
@@ -366,7 +377,7 @@ class QueuesCreator(object):
             except Exception as e:
                 logger.exception(
                     _("Error {0}: no se pudo generar configuracion de "
-                      "Asterisk para la queue {1}".format(e.message, campana.nombre)))
+                      "Asterisk para la queue {1}".format(e, campana.nombre)))
 
                 try:
                     traceback_lines = [
@@ -374,7 +385,7 @@ class QueuesCreator(object):
                         for line in traceback.format_exc().splitlines()]
                     traceback_lines = "\n".join(traceback_lines)
                 except Exception as e:
-                    traceback_lines = _("Error {0} al intentar generar traceback".format(e.message))
+                    traceback_lines = _("Error {0} al intentar generar traceback".format(e))
                     logger.exception(traceback_lines)
 
                 # FAILED: Creamos la porción para el fallo del Dialplan.
@@ -479,7 +490,7 @@ class RutasSalientesConfigCreator(object):
             except Exception as e:
                 logger.exception(
                     _("Error {0}: No se pudo generar configuracion de "
-                      "Asterisk para la ruta {1}".format(e.message, ruta.id)))
+                      "Asterisk para la ruta {1}".format(e, ruta.id)))
 
                 try:
                     traceback_lines = [
@@ -488,7 +499,7 @@ class RutasSalientesConfigCreator(object):
                     traceback_lines = "\n".join(traceback_lines)
                 except Exception as e:
                     traceback_lines = _("Error {0}: al intentar generar traceback".format(
-                        e.message))
+                        e))
                     logger.exception(traceback_lines)
 
                 # FAILED: Creamos la porción para el fallo del config sip.
@@ -590,13 +601,111 @@ class SipRegistrationsConfigCreator(object):
         self._sip_registrations_config_file.write(trunk_file)
 
 
+class PlaylistsConfigCreator(object):
+
+    def __init__(self):
+        self._playlist_config_file = PlaylistsConfigFile()
+        self._generador_factory = GeneradorDePedazoDePlaylistFactory()
+
+    def _generar_config(self, playlist):
+        """Genera el dialplan para una playlist.
+
+        :param playlist: playlist para la cual hay crear config asterisk
+        :type Playlist: configuracion_telefonia_app.models.Playlist
+        :returns: str -- config para la playlist
+        """
+
+        param_generales = {
+            'oml_nombre_playlist': playlist.nombre,
+        }
+        generador_playlists = self._generador_factory.crear_generador_para_playlist(
+            param_generales)
+        return generador_playlists.generar_pedazo()
+
+    def create_config_asterisk(self):
+        """Crea el archivo de dialplan para playlists existentes
+        """
+
+        playlists = Playlist.objects.all()
+        playlists_file = []
+
+        for playlist in playlists:
+            logger.info(_("Creando config para playlist {0}".format(playlist.id)))
+            try:
+                config_chunk = self._generar_config(playlist)
+                logger.info(_("Config generado OK para playlist {0}".format(playlist.id)))
+            except Exception as e:
+                logger.exception(
+                    _("Error {0}: No se pudo generar configuracion de "
+                      "Asterisk para la playlist {1}".format(e, playlist.id)))
+                try:
+                    traceback_lines = [
+                        "; {0}".format(line)
+                        for line in traceback.format_exc().splitlines()]
+                    traceback_lines = "\n".join(traceback_lines)
+                except Exception as e:
+                    traceback_lines = _("Error {0}: al intentar generar traceback".format(
+                        e))
+                    logger.exception(traceback_lines)
+
+                # FAILED: Creamos la porción para el fallo del config sip.
+                param_failed = {'oml_playlist_name': playlist.nombre,
+                                'date': str(datetime.datetime.now()),
+                                'traceback_lines': traceback_lines}
+                generador_failed = \
+                    self._generador_factory.crear_generador_para_failed(
+                        param_failed)
+                config_chunk = generador_failed.generar_pedazo()
+
+            playlists_file.append(config_chunk)
+
+        self._playlist_config_file.write(playlists_file)
+
+
+# #########################################
+#    Reloader
+# #########################################
+
 class AsteriskConfigReloader(object):
+
+    MOH_MODULE = 'res_musiconhold.so'
+    SIP_TRUNKS_MODULE = 'res_pjsip.so'
+    AGENTS_SIP_MODULE = 'res_pjsip.so'
+    OUT_ROUTE_MODULE = 'pbx_config.so'
 
     def reload_asterisk(self):
         """Realiza reload de configuracion de Asterisk usando AMI
         """
         manager = AMIManagerConnector()
         manager._ami_manager('command', 'module reload')
+
+    def reload_module(self, module):
+        """
+        Realiza reload de configuracion de Asterisk usando AMI
+        ATENCION: El comando parece estar blacklisted.
+        """
+        manager = AMIManagerConnector()
+        manager._ami_manager('command', 'module reload {0}'.format(module))
+
+
+class AsteriskMOHConfigReloader(object):
+
+    def reload_music_on_hold_config(self):
+        """Realiza reload de configuracion de Asterisk usando AMI
+        """
+        # TODO: Actualmente  el comando  manager.command(content) del metodo _ami_action
+        #       esta devolviendo estos headers:
+        #       {'Response': 'Error', 'ActionID': 'xxx', 'Message': 'Command blacklisted'}
+        manager = AMIManagerConnector()
+        manager._ami_manager('command', 'module unload res_musiconhold.so')
+        time.sleep(2)
+        manager = AMIManagerConnector()
+        manager._ami_manager('command', 'module load res_musiconhold.so')
+
+
+# #########################################
+#    Config Files
+# #########################################
 
 
 class ConfigFile(object):
@@ -609,22 +718,22 @@ class ConfigFile(object):
         try:
             tmp_file_obj = os.fdopen(tmp_fd, 'w')
             for contenido in contenidos:
-                assert isinstance(contenido, unicode), \
+                assert isinstance(contenido, str), \
                     _("Objeto NO es unicode: {0}".format(type(contenido)))
-                tmp_file_obj.write(contenido.encode('utf-8'))
+                tmp_file_obj.write(contenido)
 
             tmp_file_obj.close()
 
             logger.info(_("Copiando file config a {0}".format(self._filename)))
             shutil.copy(tmp_filename, self._filename)
-            os.chmod(self._filename, 0644)
+            os.chmod(self._filename, 0o644)
 
         finally:
             try:
                 os.remove(tmp_filename)
             except Exception as e:
                 logger.exception(_("Error {0} al intentar borrar temporal {1}".format(
-                    e.message, tmp_filename)))
+                    e, tmp_filename)))
 
     def copy_asterisk(self):
         subprocess.call(['cp', self._filename, self._remote_path])
@@ -683,10 +792,25 @@ class BackListConfigFile(ConfigFile):
         super(BackListConfigFile, self).__init__(filename, remote_path)
 
 
+class PlaylistsConfigFile(ConfigFile):
+    def __init__(self):
+        filename = os.path.join(settings.OML_ASTERISK_REMOTEPATH,
+                                "oml_moh.conf")
+        remote_path = settings.OML_ASTERISK_REMOTEPATH
+        super(PlaylistsConfigFile, self).__init__(filename, remote_path)
+
+
 class AudioConfigFile(object):
-    def __init__(self, filename):
+    def __init__(self, audio):
+        filename = audio.audio_asterisk.name
         self._filename = os.path.join(settings.MEDIA_ROOT, filename)
-        self._remote_path = settings.OML_AUDIO_PATH_ASTERISK
+        self._remote_path = audio.OML_AUDIO_PATH_ASTERISK
 
     def copy_asterisk(self):
         subprocess.call(['cp', self._filename, self._remote_path])
+
+    def delete_asterisk(self):
+        # TODO: Obtener el nombre del archivo y agregarlo al path!!!
+        filename = os.path.basename(self._filename)
+        full_path = os.path.join(self._remote_path, filename)
+        subprocess.call(['rm', full_path])

@@ -49,7 +49,7 @@ class PredictorBaseDatosContactoTests(OMLBaseTest):
         estructura_archivo = parser.previsualiza_archivo(base_test)
 
         predictor_metadata = PredictorMetadataService()
-        metadata = predictor_metadata.inferir_metadata_desde_lineas(estructura_archivo, "utf-8")
+        metadata = predictor_metadata.inferir_metadata_desde_lineas(estructura_archivo)
 
         validador_nombre = ValidadorDeNombreDeCampoExtra()
         for nombre_columna in metadata.nombres_de_columnas:

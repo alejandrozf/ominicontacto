@@ -44,7 +44,7 @@ from ominicontacto_app.models import (AgenteEnContacto, CalificacionCliente, Cam
 from ominicontacto_app.services.campana_service import CampanaService
 from reportes_app.models import LlamadaLog
 
-from utiles_globales import obtener_cantidad_no_calificados
+from utiles_globales import obtener_cantidad_no_calificados, adicionar_render_unicode
 
 import logging as _logging
 
@@ -571,7 +571,7 @@ class EstadisticasService():
 
         # obtiene las cantidades totales por evento de las llamadas
         reporte = self.calcular_cantidad_llamadas(campana, fecha_desde, fecha_hasta)
-        cantidad_llamadas = (reporte.keys(), reporte.values())
+        cantidad_llamadas = (list(reporte.keys()), list(reporte.values()))
 
         dic_estadisticas = {
             'agentes_venta': agentes_venta,
@@ -612,6 +612,8 @@ class EstadisticasService():
             settings.MEDIA_ROOT,
             "reporte_campana", "barra_campana_calificacion.png"))
 
+        barra_campana_calificacion = adicionar_render_unicode(barra_campana_calificacion)
+
         # Barra: Total de llamados no atendidos en cada intento por campana.
         barra_campana_no_atendido = pygal.Bar(  # @UndefinedVariable
             show_legend=False,
@@ -626,6 +628,8 @@ class EstadisticasService():
             os.path.join(settings.MEDIA_ROOT,
                          "reporte_campana", "barra_campana_no_atendido.png"))
 
+        barra_campana_no_atendido = adicionar_render_unicode(barra_campana_no_atendido)
+
         # Barra: Detalles de llamadas por evento de llamada.
         barra_campana_llamadas = pygal.Bar(show_legend=False)
         barra_campana_llamadas.title = _('Detalles de llamadas ')
@@ -634,23 +638,24 @@ class EstadisticasService():
             estadisticas['cantidad_llamadas'][0]
         barra_campana_llamadas.add('cantidad', self._crear_serie_con_color(
             campana, estadisticas['cantidad_llamadas']))
+        barra_campana_llamadas = adicionar_render_unicode(barra_campana_llamadas)
 
         return {
             'estadisticas': estadisticas,
             'barra_campana_calificacion': barra_campana_calificacion,
-            'dict_campana_counter': zip(estadisticas['calificaciones_nombre'],
-                                        estadisticas['calificaciones_cantidad']),
+            'dict_campana_counter': list(zip(estadisticas['calificaciones_nombre'],
+                                             estadisticas['calificaciones_cantidad'])),
             'total_asignados': estadisticas['total_asignados'],
             'agentes_venta': estadisticas['agentes_venta'],
             'total_calificados': estadisticas['total_calificados'],
             'total_ventas': estadisticas['total_ventas'],
             'barra_campana_no_atendido': barra_campana_no_atendido,
-            'dict_no_atendido_counter': zip(estadisticas['resultado_nombre'],
-                                            estadisticas['resultado_cantidad']),
+            'dict_no_atendido_counter': list(zip(estadisticas['resultado_nombre'],
+                                                 estadisticas['resultado_cantidad'])),
             'total_no_atendidos': estadisticas['total_no_atendidos'],
             'calificaciones': estadisticas['calificaciones'],
             'barra_campana_llamadas': barra_campana_llamadas,
-            'dict_llamadas_counter': zip(estadisticas['cantidad_llamadas'][0],
-                                         estadisticas['cantidad_llamadas'][1]),
+            'dict_llamadas_counter': list(zip(estadisticas['cantidad_llamadas'][0],
+                                              estadisticas['cantidad_llamadas'][1])),
 
         }

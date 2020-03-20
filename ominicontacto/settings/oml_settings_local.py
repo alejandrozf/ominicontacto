@@ -55,7 +55,7 @@ STATIC_ROOT = "{0}static".format(INSTALL_PREFIX)
 MEDIA_ROOT = "{0}media_root".format(INSTALL_PREFIX)
 
 # IPs y hostnames
-#OML_KAMAILIO_IP = "{0}/255.255.255.255".format(KAMAILIO_IP)
+# OML_KAMAILIO_IP = "{0}/255.255.255.255".format(KAMAILIO_IP)
 
 # Comandos que se ejecutan desde django
 OML_RELOAD_CMD = 'ssh root@{0} \'/usr/sbin/asterisk -rx "core reload"\''.format(ASTERISK_HOSTNAME)
@@ -132,7 +132,7 @@ DEFENDER_BEHIND_REVERSE_PROXY = True
 DEFENDER_LOGIN_FAILURE_LIMIT = int(os.getenv('LOGIN_FAILURE_LIMIT'))
 DEFENDER_DISABLE_IP_LOCKOUT = True
 DURACION_ASIGNACION_CONTACTO_PREVIEW = 30
-DEFENDER_REDIS_URL="redis://{0}:6379/0".format(REDIS_HOSTNAME)
+DEFENDER_REDIS_URL = "redis://{0}:6379/0".format(REDIS_HOSTNAME)
 
 # Comando y paths de audios del sistema
 TMPL_OML_AUDIO_CONVERSOR = ["sox", "-t", "wav", "<INPUT_FILE>",
@@ -141,6 +141,7 @@ TMPL_OML_AUDIO_CONVERSOR = ["sox", "-t", "wav", "<INPUT_FILE>",
 TMPL_OML_AUDIO_CONVERSOR_EXTENSION = ".wav"
 ASTERISK_AUDIO_PATH = "{0}/var/lib/asterisk/sounds/".format(ASTERISK_LOCATION)
 OML_AUDIO_FOLDER = "oml/"
+OML_PLAYLIST_FOLDER = 'moh/'
 
 # Formato de grabaciones
 MONITORFORMAT = os.getenv('MONITORFORMAT')

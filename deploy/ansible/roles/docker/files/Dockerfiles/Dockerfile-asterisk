@@ -3,23 +3,18 @@ FROM {{ asterisk_image }}
 
 ENV LANG en_US.utf8
 ENV NOTVISIBLE "in users profile"
-ENV ASTERISK_VERSION 16.4.0
-ENV OPUS_CODEC       asterisk-16.0/x86-64/codec_opus-16.0_current-x86_64
+ENV ASTERISK_VERSION {{ asterisk_version }}
+ENV OPUS_CODEC asterisk-16.0/x86-64/codec_opus-16.0_current-x86_64
 
 COPY scripts/build-asterisk.sh /
 RUN /build-asterisk.sh
 
 RUN apt-get update -qq \
-    && apt-get install -y iproute2 net-tools python2.7-minimal python-psycopg2 bash odbc-postgresql less python-pyst wget gnupg lame \
+    && apt-get install -y iproute2 net-tools python3-minimal python3-psycopg2 bash odbc-postgresql less python-pyst wget gnupg lame \
     && echo "deb http://packages.irontec.com/debian stretch main" >> /etc/apt/sources.list \
     && wget http://packages.irontec.com/public.key -q -O - | apt-key add - \
     && apt-get update -y \
     && apt-get install sngrep -y
-#    && for i in en es; do \
-#       cd /var/lib/asterisk/sounds/$i \
-#       wget https://freetech.com.ar:20851/sounds/$i-oml.tar.gz --no-check-certificate \
-#       tar xzvf $i-oml.tar.gz \
-#       rm -rf /var/lib/asterisk/sounds/$i/$i.tar.gz; done \
 
 {% if devenv == 1 %}
 EXPOSE 22 5038/tcp 7088/tcp 5060/udp 5060/tcp

@@ -29,7 +29,7 @@ from api_app.views.supervisor import (
     StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView, )
 from api_app.views.agente import (
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
-    API_ObtenerContactosCampanaView, Click2CallView,
+    API_ObtenerContactosCampanaView, Click2CallView, AgentLogoutView,
     AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk
 )
 
@@ -96,12 +96,14 @@ urlpatterns = [
         Click2CallView.as_view(),
         name='api_click2call'),
     url(r'^api/v1/asterisk_login/$',
-        agente_requerido(AgentLoginAsterisk.as_view()), name='agent_asterisk_login'),
-    url(r'^agente/logout/$', agente_requerido(AgentLogoutAsterisk.as_view()),
+        AgentLoginAsterisk.as_view(), name='agent_asterisk_login'),
+    url(r'^api/v1/asterisk_logout/$',
+        AgentLogoutAsterisk.as_view(), name='agent_asterisk_logout'),
+    url(r'^agente/logout/$', agente_requerido(AgentLogoutView.as_view()),
         name='agente_logout'),
     url(r'^api/v1/asterisk_pause/$',
-        agente_requerido(AgentPauseAsterisk.as_view()), name='make_pause'),
+        AgentPauseAsterisk.as_view(), name='make_pause'),
     url(r'^api/v1/asterisk_unpause/$',
-        agente_requerido(AgentUnpauseAsterisk.as_view()), name='make_unpause'),
+        AgentUnpauseAsterisk.as_view(), name='make_unpause'),
 
 ]

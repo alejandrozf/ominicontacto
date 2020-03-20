@@ -42,8 +42,7 @@ class SupervisorActivityAmiManager(object):
         agentes_parseados = AgentesParsing()
         agentes_activos = []
         data_returned, error = self.manager._ami_manager("command", "database show OML/AGENT")
-        agentes_activos_raw = agentes_parseados._parsear_datos_agentes_pasada_1(data_returned)
-        agentes_activos = agentes_parseados._parsear_datos_agentes_pasada_2(agentes_activos_raw)
+        agentes_activos = agentes_parseados._parsear_datos_agentes(data_returned)
         return agentes_activos
 
     def ejecutar_accion_sobre_agente(self, supervisor, agente_id, exten):

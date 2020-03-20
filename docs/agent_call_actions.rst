@@ -162,6 +162,17 @@ Como se indica en la figura 12, luego de hundir el botón para marcar la llamada
 Finalmente en el módulo de grabación de OMniLeads, se puede recuperar dicha grabación y observar lo que el agente escribió al respecto.
 
 
+Grabar llamada bajo demanda
+***************************
+Esta funcionalidad permite grabar una llamada, a partir del momento de hacer click en el botón que se muestra en la siguiente figura, la funcionalidad esta habilitada exclusivamente para llamadas pertecientes a campañas con la opción de realizar grabaciones desactivada.
+
+.. image:: images/about_agent_callactions_record_call.png
+
+La grabación de la llamada puede terminarse a elección del usuario presionando el mismo botón en medio de dicha grabación, si no se hace esto la llamada se grabará hasta el final de la llamada
+
+.. image:: images/about_agent_callactions_stop_record_call.png
+
+
 Agendamiento de llamadas
 ************************
 

@@ -1,16 +1,15 @@
 ---
 
 # Docker hosts at beginning is localhost because the base containers are raised up in localhost to install the application. Uncomment the line if you want to install DE or PE
-# If you are installing a devenv (DE) AIO uncomment these line
-# If you are installing a devenv (DE) AIO uncomment these line
 
-version: de1.2.3
-asterisk_version: 16.4.0-iptools
+version: de1.2.4
+asterisk_builded_version: 16.9.0
 customer: devenv
 root_password: toor123
 
 # Networking settings
 subnet: 172.20.0.0/24
+subnet_name: dev_net
 dialer_ip: 172.20.0.10
 asterisk_ip: 172.20.0.10
 kamailio_ip: 172.20.0.11
@@ -30,3 +29,14 @@ certs_location: "{{ deploy_location }}/certs"
 deploy_location: "{{ docker_root }}/omnileads/{{ customer }}"
 nginx_location: "{{ deploy_location }}/nginx"
 omniapp_location: "{{ deploy_location }}/omniapp"
+
+# Imagenes usadas en el docker-compose file
+ast_builded_image: "{{ docker_login_user }}/asterisk:${ASTERISK_VERSION}"
+dialer_builded_image: "{{ docker_login_user }}/dialer:${DIALER_VERSION}"
+kamailio_builded_image: "{{ kamailio_image }}"
+mariadb_builded_image: "{{ mariadb_image }}"
+nginx_builded_image: "{{ nginx_image }}"
+omniapp_builded_image: "{{ docker_login_user }}/omniapp:${DEVENV_VERSION}"
+postgres_builded_image: "{{ docker_login_user }}/postgresql:${POSTGRES_VERSION}"
+pbxemulator_builded_image: "{{ docker_login_user }}/pbx-emulator:${PBXEMULATOR_VERSION}"
+rtpengine_builded_image: "{{ docker_login_user }}/rtpengine:${RTPENGINE_VERSION}"

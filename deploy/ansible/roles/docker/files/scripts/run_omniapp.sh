@@ -1,5 +1,6 @@
 #!/bin/bash
-COMMAND="python ${INSTALL_PREFIX}ominicontacto/manage.py"
+
+COMMAND="python3 ${INSTALL_PREFIX}ominicontacto/manage.py"
 INTERFACE=$(ip route show | awk '/^default/ {print $5}');
 INTERNAL_IP=$(ifconfig $INTERFACE | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
 # run as user OMNIAPP by default
@@ -30,13 +31,7 @@ EOF
   export OMNILEADS_IP=$INTERNAL_IP
   $COMMAND migrate --noinput
   $COMMAND createsuperuser --noinput --username=admin --email=admin@example.com || true
-  $COMMAND shell << EOF
-  from ominicontacto_app.models import User
-  u = User.objects.get(username='admin')
-  u.set_password('${DJANGO_ADMIN_PASS}')
-  u.save()
-  exit()
-EOF
+  $COMMAND cambiar_admin_password
   $COMMAND populate_history
   $COMMAND compilemessages
   echo 'yes' | $COMMAND collectstatic

@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
@@ -99,7 +100,3 @@ msgstr ""
 #: ../../output_reports_agents.rst:35
 msgid "*Figure 5: Call types*"
 msgstr ""
-
-#~ msgid "Telephony"
-#~ msgstr ""
-

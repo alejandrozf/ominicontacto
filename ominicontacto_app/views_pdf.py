@@ -34,8 +34,7 @@ from django.utils.translation import ugettext as _
 from io import BytesIO
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle
-from reportlab.lib.pagesizes import cm
-from reportlab.lib.units import inch
+from reportlab.lib.units import inch, cm
 from reportlab.lib import colors
 from django.views.generic import View
 from ominicontacto_app.models import User, Campana

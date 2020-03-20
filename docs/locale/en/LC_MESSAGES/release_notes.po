@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-28 18:39-0300\n"
+"POT-Creation-Date: 2020-03-20 14:31-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 # eb60d83c42df47e7be5e20e90a4b61a5
 #: ../../release_notes.rst:2
@@ -24,32 +24,152 @@ msgstr "Release Notes"
 
 # d82b7aba6425421ab734c9a356b56743
 #: ../../release_notes.rst:4
-msgid "*Febrero 28, 2020*"
-msgstr "February 28, 2020"
+msgid "*March 20, 2020*"
+msgstr "Marzo 20, 2020"
 
 # 8376ef42c5614a178a2fc0fe09246ed1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.4.2"
-msgstr "Release 1.4.2 details"
+msgid "Detalles de Release 1.5.0"
+msgstr "Release 1.5.0 details"
 
-# 5e789c671d314442b28fcfb50d32a507
-#: ../../release_notes.rst:9
+# 21f8948983e145f2a2909d484e3eafa8
+#: ../../release_notes.rst:10
+msgid "Nuevas funcionalidades"
+msgstr "New features"
+
+# 3bd8e6ddae054941b96eecb7714ef05f
+#: ../../release_notes.rst:11
 msgid ""
-"Este es un release \"bugfix\" mejorando la estabilidad y rendimiento del "
-"sistema"
+"Django fue actualizadp a la versión 2.2.7 y, por tanto, todo el código "
+"python fue migrado a python3"
 msgstr ""
-"This is a \"bugfix\" release improving the stability and performance of "
-"the codebase."
+"Django was updated to 2.2.7 version and, consequently, all python code "
+"was migrated to python3"
+
+# bd7f11c3dbd042dcaa4b19c49ec9b5ea
+#: ../../release_notes.rst:12
+msgid "El parsing de los headers de Asterisk DB fue optimizado"
+msgstr "Asterisk DB headers parsing was optimized"
+
+# d4cba50f887d43f4b73c6e4169e217b7
+#: ../../release_notes.rst:13
+msgid ""
+"Ahora es posible distribuir los contactos entre agentes de forma "
+"proporcional en la creación de campañas preview"
+msgstr ""
+"Is possible now to distribute contacts between agents proportionally in "
+"preview campaigns creation"
+
+# ec72b0859c004622b79427fbd4b261a5
+#: ../../release_notes.rst:14
+msgid ""
+"Se adicionaron nuevos endpoints que permiten la interacción de agentes "
+"con Asterisk"
+msgstr "New API endpoints were added to handle agent interaction with Asterisk"
+
+# b47ec8b82f9b42a7b7b5774b859c5157
+#: ../../release_notes.rst:15
+msgid "Se adicionaron nuevos parámetros a las campañas entrantes"
+msgstr "New parameters were added to inbound campaigns"
+
+# 4b668f09e23b4284b0c085105c2c4e98
+#: ../../release_notes.rst:16
+msgid ""
+"Se adicionó información sobre el release actual después de loguearse un "
+"administrador"
+msgstr "Release version information was added after administrator login"
+
+# ac03dee0d30a464f9d75c725c753e89f
+#: ../../release_notes.rst:17
+msgid "Se adicionó la posibilidad de realiza grabaciones de llamada bajo demanda"
+msgstr "Ability to on-demand record call was added"
+
+# 32c15028a341438dbc12c26e7d314ab0
+#: ../../release_notes.rst:18
+msgid "Se eliminó el soporte para instalaciones AIO de Ubuntu/Debian"
+msgstr "Ubuntu/Debian AIO installation support was dropped"
+
+# 298b65d79cd7430fa2e147cef1230492
+#: ../../release_notes.rst:19
+msgid "Se refactorizó el deploy del sistema en entornos basados en Docker"
+msgstr "The build/deploy on Docker environments was refactored"
+
+# 16e6a25f79e7442bab5a98289afae22c
+#: ../../release_notes.rst:20
+msgid ""
+"El sistema ahora permite auditar grabaciones y re-calificar llamadas por "
+"supervisores"
+msgstr ""
+"The system now allows to audite recordings and also re-disposition calls "
+"by supervisors"
+
+# fe341454ce914b999e327870f7c21e2c
+#: ../../release_notes.rst:21
+msgid ""
+"Los agentes pueden ahora visualizar las grabaciones de sus propias "
+"llamadas"
+msgstr "Agents can see now its recordings of its owns calls"
+
+# 3f07c183da7c4680b9952abe4bdd1b76
+#: ../../release_notes.rst:22
+msgid "Asterisk fue actualizado a la versión 16.9.0"
+msgstr "Asterisk was updated to 16.9.0 version"
+
+# a57d27d7f2464a5ba3f2207ba78856ec
+#: ../../release_notes.rst:23
+msgid "Se le realizaron modificaciones estéticas al formulario de calificación"
+msgstr "Aesthetic changes were made on disposition form"
+
+# 0d9b535234384c21abed75650963bdda
+#: ../../release_notes.rst:24
+msgid ""
+"Se habilitó destino  si NO se identifica correctamente para Tipo de "
+"interacción \"externa 2\" para el objeto de telefonía Identificador de "
+"Clientes"
+msgstr ""
+"An inbound destination option was added for Type 2 External Interaction "
+"in Client Identification Service"
 
 # 08671eb233f04abb94799e4b0e1d9251
-#: ../../release_notes.rst:12
+#: ../../release_notes.rst:29
 msgid "Bug fixes"
 msgstr "Bug fixes"
 
-# 7f737ba46fa140769dd90a8f75f0f5f2
-#: ../../release_notes.rst:14
+# b3b1c0e6248e4a859ba8ade29663bb6a
+#: ../../release_notes.rst:30
 msgid ""
-"El paquete sngrep es eliminado de la instalación debido a problemas de "
-"con repositorio fuente en CentOS"
+"Solucionado error que oocrría al intentar asignar columnas de la base al "
+"URL de sitio externo"
 msgstr ""
-"The sngrep package is removed from the installation due to availability repo issues on CentOS"
+"Fixed error that ocurred on assigment of database columns to external "
+"site url"
+
+# 2f7e3fcd72d944478b23bc45b18cac1a
+#: ../../release_notes.rst:31
+msgid ""
+"Solucionado error que no renderizaba la URL de sitio externo en la Agent "
+"Toolbar"
+msgstr "Fixed error that didn't rendered external site url on agent view"
+
+# c1e19c4fd5ee4cc7b3246ff47abfb9a6
+#: ../../release_notes.rst:32
+msgid "Solucionado error en script de restore backup"
+msgstr "Fixed restore backup script"
+
+# 27e3b44bbf0b4aafa6fb6fe639b98db2
+#: ../../release_notes.rst:33
+msgid ""
+"Se adiciona validación para evitar setear tiempo de anuncio sin haber "
+"elegido anuncio perióidico"
+msgstr ""
+"Added validation that avoids to set an time frequency for periodic "
+"announcenment without its audio file"
+
+# 475cc4cbccdd4bbd873159db08769e9c
+#: ../../release_notes.rst:34
+msgid ""
+"Solucionado error que ocurría al cumplirse una regla de incidencia en "
+"campañas dialer y trackeaba mal el OUTNUM en queue_log"
+msgstr ""
+"Fixed error that did track wrong number out number for dialer campaing "
+"incidence rules"

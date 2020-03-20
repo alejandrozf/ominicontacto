@@ -55,5 +55,5 @@ class Command(BaseCommand):
         try:
             self.get_agents_unavailable()
         except Exception as e:
-            logging.error('Fallo del comando: {0}'.format(e.message))
-            raise CommandError('Fallo del comando: {0}'.format(e.message))
+            logging.error('Fallo del comando: {0}'.format(e))
+            raise CommandError('Fallo del comando: {0}'.format(e))

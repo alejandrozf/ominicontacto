@@ -13,30 +13,15 @@
 #X.X.X.X ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
 
 ##############################################################################
-# Docker host is localhost because the application is deployed in localhost. #
 # Uncomment the line if you want to deploy DE or PE                          #
 ##############################################################################
 # If you are installing a devenv (PE) uncomment
 [prodenv-container]
-#localhost ansible_connection=local
+#localhost ansible_connection=local ansible_user=root #(for self-hosted installation)
+#X.X.X.X ansible_ssh_port=22 ansible_user=root #(for node-host installation, replace X.X.X.X with the IP of Docker Host)
 # If you are installing a devenv (DE) uncomment
 [devenv-container]
-#localhost ansible_connection=local
-
-################################################################
-# If you  are installing a cluster in bare-metal.              #
-# Uncomment this lines and change IP and hostnames of servers  #
-################################################################
-[omniapp]
-#hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X
-[kamailio]
-#hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X
-[asterisk]
-#hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X
-[database]
-#hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X
-[dialer]
-#hostname ansible_ssh_port=22 ansible_user=root ansible_host=X.X.X.X
+#localhost ansible_connection=local ansible_user=root
 
 ###############################################################
 ###############################################################
@@ -55,7 +40,7 @@
 #                    SET POSTGRESQL PASSWORD                        #
 #####################################################################
 postgres_database=omnileads
-postgres_user=omnileads
+#postgres_user=omnileads
 #postgres_password=my_very_strong_pass
 #####################################################################
 #                           Web Admin                               #
@@ -65,13 +50,13 @@ postgres_user=omnileads
 #######################################
 # AMI for wombat dialer and OMniLeads #
 #######################################
-ami_user=omnileadsami
-ami_password=5_MeO_DMT
+#ami_user=omnileadsami
+#ami_password=5_MeO_DMT
 #####################################################
 # Wombat dialer credentials and MYSQL root password #
 #####################################################
-dialer_user=demoadmin
-dialer_password=demo
+#dialer_user=demoadmin
+#dialer_password=demo
 #mysql_root_password=my_very_strong_pass
 #################################################################################################
 # Set the timezone where the nodes are. UNCOMMENT and set this if you are doing a fresh install #
@@ -121,6 +106,25 @@ LOGIN_FAILURE_LIMIT=10
 ####################################
 schedule=Agenda
 
+#################################################################################################
+# Edit these variables with information of registry to build OMniLeads Docker images 		#
+# Note: you need the variable registry_username to deploy images, by default use the FTS images #
+#################################################################################################
+[docker:vars]
+registry_username=freetechsolutions
+#registry_email=
+#registry_password=
+##############################################################
+# Variables oml_release and subnet are necessary for prodenv #
+##############################################################
+oml_release=
+subnet=192.168.15.0/24
+#################################
+# Do not change variables below #
+#################################
+is_docker=true
+docker_user='{{ lookup("env","SUDO_USER") }}'
+
 #
 # WARNING!!! ATENCION!!! WAARSCHUWING!!! WARNUNG!!! AVIS!!!
 # WARNING!!! ATENCION!!! WAARSCHUWING!!! WARNUNG!!! AVIS!!!
@@ -167,54 +171,18 @@ prodenv=0
 devenv=0
 prodenv=1
 
-[docker:vars]
-aio=0
-cluster=1
-is_docker=true
-docker_user='{{ lookup("env","SUDO_USER") }}'
-
 [prodenv-aio:vars]
 ssh_port="{{ ansible_ssh_port }}"
 omni_ip="{{ inventory_hostname }}"
-omniapp_ip="{{ omni_ip }}"
-asterisk_ip="{{ omni_ip }}"
-kamailio_ip="{{ omni_ip }}"
-database_ip="{{ omni_ip }}"
-dialer_ip="{{ omni_ip }}"
-cluster=0
 devenv=0
 prodenv=1
 is_docker=false
-
-[prodenv-cluster:vars]
-omniapp_ip="{{ hostvars[groups['omniapp'][0]].ansible_host }}"
-omniapp_fqdn="{{ hostvars[groups['omniapp'][0]].inventory_hostname }}"
-database_ip="{{ hostvars[groups['database'][0]].ansible_host }}"
-database_fqdn="{{ hostvars[groups['database'][0]].inventory_hostname }}"
-asterisk_ip="{{ hostvars[groups['asterisk'][0]].ansible_host }}"
-asterisk_fqdn="{{ hostvars[groups['asterisk'][0]].inventory_hostname }}"
-kamailio_ip="{{ hostvars[groups['kamailio'][0]].ansible_host }}"
-kamailio_fqdn="{{ hostvars[groups['kamailio'][0]].inventory_hostname }}"
-dialer_ip="{{ hostvars[groups['dialer'][0]].ansible_host }}"
-dialer_fqdn="{{ hostvars[groups['dialer'][0]].inventory_hostname }}"
-cluster=1
-devenv=0
-prodenv=1
-is_docker=false
-
-[prodenv-cluster:children]
-omniapp
-database
-asterisk
-kamailio
-dialer
 
 [docker:children]
 devenv-container
 prodenv-container
 
 [everyone:children]
-prodenv-cluster
 prodenv-aio
 devenv-container
 prodenv-container

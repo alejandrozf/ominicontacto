@@ -84,8 +84,8 @@ class AbstractFamily(object):
             client = AsteriskHttpClient()
             client.login()
             client.asterisk_db_deltree(family)
-        except AsteriskHttpAsteriskDBError, e:
-            if (e.message == u'Database entry not found' and ignorar_error_no_encontrado):
+        except AsteriskHttpAsteriskDBError as e:
+            if (e.args[0] == 'Database entry not found' and ignorar_error_no_encontrado):
                 return
             logger.exception(_("Error al intentar DBDelTree de {0}".format(family)))
 
@@ -169,6 +169,13 @@ class CampanaFamily(AbstractFamily):
             dict_campana.update({'FAILOVER': 1, 'FAILOVERDST': dst})
         else:
             dict_campana.update({'FAILOVER': str(0)})
+
+        if campana.queue_campana.ivr_breakdown:
+            dict_campana.update(
+                {'IVRBREAKOUTID': campana.queue_campana.ivr_breakdown.object_id})
+
+        if campana.queue_campana.musiconhold:
+            dict_campana['MOH'] = campana.queue_campana.musiconhold.nombre
 
         return dict_campana
 

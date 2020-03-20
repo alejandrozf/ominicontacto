@@ -1,3 +1,8 @@
 # Add extra options here
-
-OPTIONS="-i {{ kamailio_ip }} -n 127.0.0.1:{{ rtpengine_port }} -m 20000 -M 30000 -L 7 --log-facility=local1"
+{% if is_docker == "false" and external_hostname is not defined %}
+OPTIONS="-i {{ omni_ip }} -n 127.0.0.1:{{ rtpengine_port }} -m 20000 -M 30000 -L 7 --log-facility=local1"
+{% elif is_docker == "false" and external_hostname is defined  %}
+OPTIONS="-i external/{{ omni_ip }}!{{ public_ip.stdout }} -n 127.0.0.1:22222 -m 20000 -M 30000 -L 7 --log-facility=local1"
+{% elif is_docker == "true" %}
+OPTIONS="-i {{ omni_ip }} -n {{ omni_ip }}:{{ rtpengine_port }} -m 20000 -M 30000 -L 7 --log-facility=local1"
+{% endif %}

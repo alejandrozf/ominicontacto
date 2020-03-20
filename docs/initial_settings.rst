@@ -22,20 +22,20 @@ con el código de certificación logrando así una visibilidad de que la platafo
 
 
 
- .. image:: images/initial_settings_14.png
+ .. image:: images/initial_settings_13.png
 
 *Figure 1: omnileads registration*
 
 Se deben completar los campos allí solicitados y luego recibirá un email con el código de la instancia.
 
-.. image:: images/initial_settings_16.png
+.. image:: images/initial_settings_15.png
 
 *Figure 2: Email notification*
 
 Luego cada vez que ingresemos a la sección de registro, se obtendrá una salida que informa el hecho de haber registrado ya la instancia.
 
 
-.. image:: images/initial_settings_15.png
+.. image:: images/initial_settings_14.png
 
 *Figure 3: omnileads registered*
 
@@ -67,20 +67,6 @@ En el paso siguiente del wizard debemos seleccionar el perfil de supervisor, sie
 
 En nuestro caso generamos un usuario supervisor / administrador. A continuación nos logueamos con dicho usuario para continuar las gestiones.
 
-Crear módulo de telefonía
-*************************
-
-En este punto se debe generar cada módulo de sistema, actualmente se dispone de la funcionalidad de telefonía, por lo que vamos a añadir dicho módulo. No obstante hacia el futuro
-se estarían añadiendo SMS y Chat.
-
-Para generar el módulo de telefonía debemos acceder a *Modules -> Enable module*
-
-.. image:: images/initial_settings_04.png
-
-*Figure 6: Enable telephony module*
-
-Guardamos los cambios y avanzamos !
-
 
 Instalar idiomas extras
 ************************
@@ -99,7 +85,25 @@ Si la instancia precisa utilizar otros idiomas, se pueden instalar a través del
 
 .. image:: images/telephony_i18n_audio.png
 
-*Figure 7: i18n audio promps*
+*Figure 6: i18n audio promps*
+
+
+Musica de espera
+****************
+
+Este menú permite crear y eliminar las playlists a ser utilizadas en las campañas entrantes para que el cliente escuche como música de espera. No podrán eliminarse playlists que estén en uso por alguna campaña o que tengan musicas cargadas.
+
+.. image:: images/telephony_playlist_create.png
+
+*Figure 7: Creating a playlist*
+
+Una vez creada la playlist deberán agregarse las músicas deseadas, cargando archivos de formato **.wav**.
+Sólo estarán disponibles para su uso en campañas entrantes las playlist que tengan al menos una música cargada.
+
+.. image:: images/telephony_playlist_edit.png
+
+*Figure 8: Editing a playlist*
+
 
 Crear grupo de agentes
 **********************
@@ -107,9 +111,9 @@ Crear grupo de agentes
 Llega el turno de crear los grupos de agentes de nuestro contact center. Para generar un nuevo grupo *Usuarios y grupos -> Nuevo grupo de agentes* y se desplegará
 un formulario similar al de la figura 8.
 
-.. image:: images/initial_settings_05.png
+.. image:: images/initial_settings_04.png
 
-*Figure 8: New agent group*
+*Figure 9: New agent group*
 
 Los campos allí desplegados son:
 
@@ -126,21 +130,21 @@ Crear agentes
 
 Una vez disponibles los grupos de agentes y su configuración, podemos proceder con la creación de usuario agentes del contact center.
 
-.. image:: images/initial_settings_06.png
-
-*Figure 9: New agent*
-
-Se debe seleccionar el grupo de agentes y los módulos disponibles para nuestro nuevo agente.
-
-.. image:: images/initial_settings_07.png
+.. image:: images/initial_settings_05.png
 
 *Figure 10: New agent*
 
+Se debe seleccionar el grupo de agentes y los módulos disponibles para nuestro nuevo agente.
+
+.. image:: images/initial_settings_06.png
+
+*Figure 11: New agent*
+
 Podemos listar nuestros usuarios, deberíamos contar con al menos un par de agentes.
 
-.. image:: images/initial_settings_08.png
+.. image:: images/initial_settings_07.png
 
-*Figure 11: Users*
+*Figure 12: Users*
 
 Crear pausas de agente
 **********************
@@ -150,16 +154,16 @@ le asigne una nueva llamada. Además los estados de pausa son útiles para regis
 
 Las pausas las pueden generar los supervisores y se clasifican en pausas Recreativas y Productivas.
 
-.. image:: images/initial_settings_09.png
+.. image:: images/initial_settings_08.png
 
-*Figure 12: New pause*
+*Figure 13: New pause*
 
 A la hora de presentar los reportes de sesión de agente, las pausas totalizadas se dividen en pausas recreativas y pausas productivas. Esto permite medir la productividad de nuestros agentes
 de una manera más exacta.
 
-.. image:: images/initial_settings_10.png
+.. image:: images/initial_settings_09.png
 
-*Figure 13: New pauses*
+*Figure 14: New pauses*
 
 Una vez generados nuestros agentes, podemos proceder con nuestro primero login de agente !
 
@@ -176,12 +180,12 @@ Finalmente tenemos todo listo para probar nuestro primer agente.
 
 Una vez que accedemos con nuestro agente, si todo va bien deberemos toparnos con un popup que solicita el permiso de tomar el control del micrófono, como se ilustra en la figura 14.
 
-.. image:: images/initial_settings_11.png
+.. image:: images/initial_settings_10.png
 
-*Figure 14: First login - microphone webrtc*
+*Figure 15: First login - microphone webrtc*
 
 Al habilitar el permiso, debemos escuchar un audio que el sistema reproduce indicando el login exitoso y además la pantalla de agente debe lucir como la figura 15.
 
-.. image:: images/initial_settings_12.png
+.. image:: images/initial_settings_11.png
 
-*Figure 15: First login - webphone connected*
+*Figure 16: First login - webphone connected*

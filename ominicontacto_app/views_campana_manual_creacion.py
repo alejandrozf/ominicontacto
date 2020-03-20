@@ -21,7 +21,7 @@
 
 from __future__ import unicode_literals
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
@@ -84,9 +84,9 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
         return context
 
     def _save_forms(self, form_list, estado, tipo):
-        campana_form = form_list[int(self.INICIAL)]
+        campana_form = list(form_list)[int(self.INICIAL)]
         interaccion_crm = campana_form.instance.tipo_interaccion == Campana.SITIO_EXTERNO
-        opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
+        opciones_calificacion_formset = list(form_list)[int(self.OPCIONES_CALIFICACION)]
         campana_form.instance.type = tipo
         campana_form.instance.reported_by = self.request.user
         campana_form.instance.fecha_inicio = cast_datetime_part_date(timezone.now())
@@ -112,7 +112,7 @@ class CampanaManualCreateView(CampanaManualMixin, SessionWizardView):
         opciones_calificacion_formset.instance = campana
         opciones_calificacion_formset.save()
         if interaccion_crm:
-            parametros_crm_formset = form_list[int(self.PARAMETROS_CRM)]
+            parametros_crm_formset = list(form_list)[int(self.PARAMETROS_CRM)]
             parametros_crm_formset.instance = campana
             parametros_crm_formset.save()
         return queue
@@ -156,8 +156,8 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
         return initial
 
     def _save_forms(self, form_list, **kwargs):
-        campana_form = form_list[int(self.INICIAL)]
-        opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
+        campana_form = list(form_list)[int(self.INICIAL)]
+        opciones_calificacion_formset = list(form_list)[int(self.OPCIONES_CALIFICACION)]
         campana_form = asignar_bd_contactos_defecto_campo_vacio(campana_form)
         campana_form.save()
         auto_grabacion = campana_form.cleaned_data['auto_grabacion']
@@ -168,7 +168,7 @@ class CampanaManualUpdateView(CampanaManualMixin, SessionWizardView):
         opciones_calificacion_formset.instance = campana
         opciones_calificacion_formset.save()
         if campana.tipo_interaccion == Campana.SITIO_EXTERNO:
-            parametros_crm_formset = form_list[int(self.PARAMETROS_CRM)]
+            parametros_crm_formset = list(form_list)[int(self.PARAMETROS_CRM)]
             parametros_crm_formset.instance = campana
             parametros_crm_formset.save()
         return queue

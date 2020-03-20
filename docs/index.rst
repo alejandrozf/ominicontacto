@@ -34,12 +34,12 @@ Donde se puede instalar ?
 OMniLeads puede correr como una aplicación tradicional desplegando una instalación de todos los componentes sobre un server físico, máquina virtual o VPS. Siempre y cuando se utilice como base
 GNU/Linux: `CentOS minimal 7.7 <http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso>`_
 
-OMniLeads puede ser desplegado utilizando contenedores `Docker <https://www.docker.com>`_, esto permite la ejecución de la aplicación sobre diversas
-distrubuciones de GNU/Linux. Se resalta el hecho de que mediante este formato es posible desplegar OMniLeads sobre **Issabel-PBX** & **FreePBX**, de manera tal que dentro del mismo
-host convivan el software de PBX y OMniLeads supliendo las funcionalidades de Contact Center.
+* `CentOS minimal 7.7 <http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso>`_
+* `Docker <https://www.docker.com>`_
 
-
-Las imágenes oficiales están disponibles en `Docker-Hub <https://hub.docker.com/u/freetechsolutions>`_.
+OMniLeads puede ser desplegado utilizando contenedores Docker, esto extiende la posibilidad de ejecución de la aplicación sobre diversas
+distrubuciones de GNU/Linux. Se resalta el hecho de que mediante este formato es posible desplegar OMniLeads sobre instancias de Issabel-PBX & FreePBX, de manera tal que dentro del mismo
+host conviva el software de PBX y OMniLeads como software de Contact Center.
 
 Cómo lo instalo ?
 *****************

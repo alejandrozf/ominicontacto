@@ -21,7 +21,7 @@ import json
 
 from django.test import TestCase
 from django.utils.timezone import now, timedelta
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from ominicontacto_app.utiles import datetime_hora_minima_dia, fecha_hora_local
 from ominicontacto_app.models import Campana
@@ -332,7 +332,7 @@ class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
         self.assertEqual(llamadas['total'], 5)
         self.assertEqual(llamadas['manuales'], 2)
         tipos = estadisticas['tipos_de_llamada_por_campana'][tipo]
-        self.assertEqual(tipos[campana.id]['t_espera_conexion'], 5)
+        self.assertEqual(tipos[campana.id]['t_espera_conexion'], 5.4)
         self.assertEqual(tipos[campana.id]['efectuadas'], 5)
         self.assertEqual(tipos[campana.id]['conectadas'], 3)
         self.assertEqual(tipos[campana.id]['no_conectadas'], 2)
@@ -419,7 +419,7 @@ class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
         self.assertEqual(tipos[campana.id]['expiradas'], 1)
         self.assertEqual(tipos[campana.id]['abandonadas'], 1)
         self.assertEqual(tipos[campana.id]['t_espera_conexion'], 0)
-        self.assertEqual(tipos[campana.id]['t_espera_atencion'], 4)
+        self.assertEqual(tipos[campana.id]['t_espera_atencion'], 4.5)
         self.assertEqual(tipos[campana.id]['t_abandono'], 5)
 
         # Genero dos llamadas DIALER que terminan en COMPLETEAGENT y COMPLETEOUTNUM
@@ -447,7 +447,7 @@ class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
         self.assertEqual(tipos[campana.id]['expiradas'], 1)
         self.assertEqual(tipos[campana.id]['abandonadas'], 1)
         self.assertEqual(tipos[campana.id]['t_espera_conexion'], 9)
-        self.assertEqual(tipos[campana.id]['t_espera_atencion'], 6)
+        self.assertEqual(tipos[campana.id]['t_espera_atencion'], 6.75)
         self.assertEqual(tipos[campana.id]['t_abandono'], 5)
 
         # Genero llamadas dialer Manuales CANCEL, COMPLETEOUTNUM
@@ -479,7 +479,7 @@ class ReporteDeLlamadasConLlamadasManualesTests(BaseReporteDeLlamadasTests):
         self.assertEqual(tipos[campana.id]['expiradas'], 1)
         self.assertEqual(tipos[campana.id]['abandonadas'], 1)
         self.assertEqual(tipos[campana.id]['t_espera_conexion'], 9)
-        self.assertEqual(tipos[campana.id]['t_espera_atencion'], 6)
+        self.assertEqual(tipos[campana.id]['t_espera_atencion'], 6.75)
         self.assertEqual(tipos[campana.id]['t_abandono'], 5)
         self.assertEqual(tipos[campana.id]['efectuadas_manuales'], 2)
         self.assertEqual(tipos[campana.id]['conectadas_manuales'], 1)
@@ -632,7 +632,7 @@ class AccesoReportesTests(TestCase):
         data = {'tipo_reporte': 'llamadas_por_tipo', 'estadisticas': json.dumps(self.estadisticas)}
         response = self.client.post(url, data=data, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.serialize().find('llamadas_por_tipo.csv') > -1)
+        self.assertTrue(str(response.serialize()).find('llamadas_por_tipo.csv') > -1)
 
     def test_usuario_logueado_con_mal_parametro_tira_400(self):
         url = reverse('csv_reporte_llamadas')
@@ -647,25 +647,25 @@ class AccesoReportesTests(TestCase):
         data = {'tipo_reporte': 'llamadas_por_tipo', 'estadisticas': json.dumps(self.estadisticas)}
         self.client.logout()
         response = self.client.post(url, data=data, follow=True)
-        self.assertFalse(response.serialize().find('llamadas_por_tipo.csv') > -1)
+        self.assertFalse(str(response.serialize()).find('llamadas_por_tipo.csv') > -1)
 
     def test_usuario_logueado_accede_a_zip_reportes_llamadas(self):
         url = reverse('zip_reportes_llamadas')
         data = {'estadisticas': json.dumps(self.estadisticas)}
         response = self.client.post(url, data=data, follow=True)
-        self.assertTrue(response.serialize().find('llamadas_por_tipo.csv') > -1)
-        self.assertTrue(response.serialize().find('llamadas_por_campana.csv') > -1)
-        self.assertTrue(response.serialize().find('tipos_de_llamada_manual.csv') > -1)
-        self.assertTrue(response.serialize().find('tipos_de_llamada_dialer.csv') > -1)
-        self.assertTrue(response.serialize().find('tipos_de_llamada_entrante.csv') > -1)
-        self.assertTrue(response.serialize().find('tipos_de_llamada_preview.csv') > -1)
+        self.assertTrue(str(response.serialize()).find('llamadas_por_tipo.csv') > -1)
+        self.assertTrue(str(response.serialize()).find('llamadas_por_campana.csv') > -1)
+        self.assertTrue(str(response.serialize()).find('tipos_de_llamada_manual.csv') > -1)
+        self.assertTrue(str(response.serialize()).find('tipos_de_llamada_dialer.csv') > -1)
+        self.assertTrue(str(response.serialize()).find('tipos_de_llamada_entrante.csv') > -1)
+        self.assertTrue(str(response.serialize()).find('tipos_de_llamada_preview.csv') > -1)
 
     def test_usuario_no_logueado_no_accede_a_zip_reportes_llamadas(self):
         url = reverse('zip_reportes_llamadas')
         data = {'estadisticas': json.dumps(self.estadisticas)}
         self.client.logout()
         response = self.client.post(url, data=data, follow=True)
-        self.assertFalse(response.serialize().find('total_llamadas.csv') > -1)
+        self.assertFalse(str(response.serialize()).find('total_llamadas.csv') > -1)
 
     def test_usuario_logueado_con_mal_parametro_tira_400_zip(self):
         url = reverse('zip_reportes_llamadas')

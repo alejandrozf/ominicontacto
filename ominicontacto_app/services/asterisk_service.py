@@ -26,7 +26,7 @@ import logging
 from django.utils.translation import ugettext as _
 
 from ominicontacto_app.asterisk_config import (
-    SipConfigCreator, SipConfigFile, AsteriskConfigReloader)
+    SipConfigCreator, AsteriskConfigReloader)
 from ominicontacto_app.errors import OmlError
 from ominicontacto_app.services.asterisk_database import AgenteFamily
 logger = logging.getLogger(__name__)
@@ -42,7 +42,6 @@ class ActivacionAgenteService(object):
 
     def __init__(self):
         self.sip_config_creator = SipConfigCreator()
-        self.config_file = SipConfigFile()
         self.reload_asterisk_config = AsteriskConfigReloader()
         self.asterisk_database = AgenteFamily()
 
@@ -53,7 +52,7 @@ class ActivacionAgenteService(object):
         try:
             self.sip_config_creator.create_config_sip()
         except Exception as e:
-            msg = _("Error {0}: ActivacionAgenteService: error al ".format(e.message) +
+            msg = _("Error {0}: ActivacionAgenteService: error al ".format(e) +
                     "intentar create_config_sip()")
             logger.exception(msg)
 

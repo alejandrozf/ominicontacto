@@ -1,11 +1,17 @@
 .. _about_install_docker_linux:
 
 *******************************************
-Instalación sobre CentOS7 utilizando Docker
+Instalación de OMniLeads utilizando Docker
 *******************************************
 
 A partir de la versión 1.4.0, OMniLeads puede ser desplegado en producción utilizando Docker. En esta sección se cubren todos los aspectos necesarios
-para correr la aplicación utilizando esta novedosa tecnología de "virtualización" sobre CentOS-7 como sistema operativo subyacente.
+para correr la aplicación utilizando esta novedosa tecnología de "virtualización" sobre CentOS-7, FreePBX o Issabel como sistema operativo subyacente.
+
+.. note::
+
+  Antes de avanzar aclaramos que todo lo expuesto a continuación, tiene garantías en `Issabel-20200102 <https://razaoinfo.dl.sourceforge.net/project/issabelpbx/Issabel%204/issabel4-USB-DVD-x86_64-20200102.iso>`_. Para
+  `FreePBX-15 <https://downloads.freepbxdistro.org/ISO/SNG7-FPBX-64bit-1910-2.iso>`_ existe un workaround que se detalla al final de esta sección.
+
 
 Al ejecutar el proceso de instalación disponible en el repositorio, se procede con la instalación de:
 
@@ -16,16 +22,15 @@ Al ejecutar el proceso de instalación disponible en el repositorio, se procede 
   * RTPEngine
 
 Estos componentes serán instalados y se van a ejecutar directamente sobre el sistema operativo de base.
-
-Por otro lado los componentes restantes de la aplicación, serán ejecutads como contenedores Docker.
-
+Por otro lado los componentes restantes de la aplicación, serán ejecutadoss como contenedores Docker.
 En la siguiente figura se presenta un esquema representativo acerca del cómo se despliega OMniLeads.
 
   .. image:: images/install_docker_centos.png
         :align: center
 
-Como se puede observar los componentes: Asterisk, Kamailio, Nginx, Wombat Dialer, Redis y OMni-App se ejecutan en contenedores, mientras que RTPengine, PostgreSQL y MySQL sobre el sistema operativo base.
-
+Como se puede observar los componentes: Asterisk, Kamailio, Nginx, Wombat Dialer, Redis y OMni-App se ejecutan en contenedores, mientras que RTPengine, PostgreSQL y MySQL sobre el sistema operativo base. 
+A nivel de red, estos componentes se despliegan en una red LAN la cual es creada por docker, creando interfaces virtuales por cada componente.
+Este tipo de configuración de red es llamado `Bridge network <https://docs.docker.com/network/bridge/>`_. La LAN por defecto para los containers es 192.168.15.0/24.
 
 Procedimiento de instalación
 ****************************
@@ -36,115 +41,48 @@ debemos posicionarnos sobre el path *relativo*; ominicontacto/deploy/docker/prod
   .. code-block:: bash
 
     yum -y install git kernel-devel kernel-headers
-    cd /var/tmp
-    git clone https://gitlab.com/omnileads/ominicontacto.git
-    cd ominicontacto/deploy/docker/prodenv
     yum update -y
     reboot
 
-Una vez ubicados en el *Path* indicado, se debe editar el archivo *.env* en pos de asociar valores a variables utilizadas para el deploy de OMniLeads.
+Una vez terminado el reboot se procede a usar Ansible para la instalación, pudiendo hacerlo de los dos modos: :ref:`about_install_selfhosted` o :ref:`about_install_remote`.
+Hay que tener en cuenta un estas cosas:
 
-.. _about_install_docker_env:
-
-Variables de entorno *.env*
-****************************
-
-En este archivo se configuran variables de entorno que serán utilizadas por los contenedores.
-
-El archivo se encuentra documentado con comentarios, no obstante vamos a citar los principales parámetros a continuación.
-
-Las variables *DOCKER_HOSTNAME* y *DOCKER_IP* se corresponden con la dirección IP LAN asignada a la interfaz principal del host Linux.
-
-Luego tenemos a la variable *RELEASE* que hace alusión a la versión de OMniLeads que se desea desplegar, la variable *TZ* (Time Zone) y la variable *DJANGO_PASS* la cual implementa
-la contraseña del usuario web admin de OMniLeads.
-
+1. Modificar y descomentar la línea de la sección [prodenv-container] dependiendo de si se va a instalar remoto o self-hosted.
 
 .. code-block:: bash
 
-  ###############################################################################
-  #                       IP and hostname of the docker host:                   #
-  #  If you want to use a hostname to connect web OMnileads type your hostname  #
-  #  If not type the IP address in both variables                               #
-  ###############################################################################
-  #DOCKER_HOSTNAME=your.hostname.com
-  #DOCKER_IP=X.X.X.X
+  # If you are installing a devenv (PE) uncomment
+  [prodenv-container]
+  #localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
+  #X.X.X.X ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation, replace X.X.X.X with the IP of Docker Host)
 
-  #####################
-  # Omnileads release #
-  #####################
-  #RELEASE=release-1.3.4
-
-  ################################
-  # Timezone for the environment #
-  ################################
-  TZ=America/Argentina/Cordoba
-
-  ##############################
-  # Password of admin web user #
-  ##############################
-  #DJANGO_PASS=my_very_strong_pass
-
-
-Ponemos el foco en el bloque de variables inherentes a MySQL, donde se deben editar las variables *MYSQL_ROOT_PASS* con el valor de la contraseña del usuario root de MySQL. En CentOS-7 MySQL queda sin password
-a la hora de conectar desde *localhost*, en tal caso descomentar el parámetro y dejarlo vacío (MYSQL_ROOT_PASS=), si es que usted no generó un password de root.
-Con respecto al segundo parámetro a configurar *MYSQL_HOST*, se debe utilizar la dirección IP LAN del host.
-
-.. code-block:: bash
-
-  #####################
-  # MYSQL credentials #
-  #####################
-  #MYSQL_ROOT_PASS=my_very_strong_pass
-  #MYSQL_HOST=X.X.X.X
-  WOMBAT_DB=wombat
-  WOMBAT_DB_USER=wombat
-  WOMBAT_DB_PASS=dials
-
-
-Finalmente nos concentramos sobre los parámetros *PGHOST* correspondiente a la dirección IP LAN del host y *PGPASSWORD* es la contraseña del usuario omnileads del motor PostgreSQL que utiliza la aplicación.
-Aquí debemos elegir una contraseña a nuestro antojo.
-
-.. code-block:: bash
-
-  ##########################
-  # PostgreSQL credentials #
-  ##########################
-  #PGHOST=X.X.X.X
-  PGDATABASE=omnileads
-  PGUSER=omnileads
-  #PGPASSWORD=my_very_strong_pass
-
-
-Una vez ajustadas las variables marcadas, estamos en condiciones de ejecutar el deploy de OMniLeads.
+2. Revisar la sección :ref:`about_install_inventory_docker` para ver las variables de docker a modificar.
+3. Modificar las variables del archivo de inventario :ref:`about_install_inventory_vars`.
 
 .. note::
 
-   El parámetro *SUBNET=192.168.15.0/24*, SOLAMENTE deben modificarse en caso de que su dirección IP LAN del Linux host (donde se ejecuta el docker-engine) coincida con este rango
-   aquí citadas.
+   * La variable *subnet=192.168.15.0/24*, debe modificarse OBLIGATORIAMENTE en caso de que su dirección IP LAN del Linux host (donde se ejecuta el docker-engine) coincida con este rango aquí citadas.
+   * Para una instalación de ceros, en la variable *mysql_root_password* ingresar **LA MISMA** contraseña de mysql que se ingresó a la hora de instalar el FreePBX e Issabel.
 
+4. Ejecutar el script deploy.sh de la siguiente forma:
 
-Dentro de la carpeta donde reside el archivo de variables *.env*, sobre el cual estuvimos trabajando tenemos al script de instalación: *install.sh*. El cual debe ser ejecutado como *root*, a partir
-de haber establecido correctamente cada parámetro del archivo *.env* previamente repasado.
+**Para ansible remoto:**
 
+.. code-block:: bash
 
- .. code-block:: bash
+  ./deploy.sh --docker-deploy
 
-   ./install.sh
+**Para ansible self-hosted:**
 
-A partir de entonces comenzará el proceso de instalación y posterior lanzamiento de la applicación.
+.. code-block:: bash
 
-.. important::
+  ./deploy.sh --docker-deploy --iface=<your_iface>
 
-   Dentro de los pasos que contempla la instalación está la ejecución del *docker-compose* que levanta los contenedores. Al ser la primera ejecución se deben
-   descargar las imágenes Docker de cada componente, por lo que el proceso puede demorar hasta varias decenas de minutos dependiendo la velocidad de conexión a internet.
-
-
-.. image:: images/install_docker_download_img.png
-   :align: center
+Donde **<your_iface>** es la interfaz con la IP que se quiere usar para levantar los servicios que componen OMniLeads (suele ser la IP de la interfaz LAN del servidor).
 
 
 Systemd - omnileads-prodenv
-***********************
+****************************
 
 A partir de la isntalación se deja disponible el servicio: omnileads-prodenv.service el cual servirá para parar/levantar la aplicación. El sistema se deja configurado para que
 inicie automáticamente luego de cada reinicio del sistema operativo de base.
@@ -175,8 +113,50 @@ Para levantar el servicio:
 Primer login
 ************
 
-Para acceder al sistema y comenzar la  :ref:`about_initial_settings` debemos acceder desde un navegador web a la URL conformada por la
-dirección IP del host Linux utilizando *https* y el puerto *444*, como se indica en la figura.
+Al igual que en la sección :ref:`about_install_first_login`, con la diferencia de que se debe ingresar al puerto 444:
 
-.. image:: images/install_docker_1st_access.png
-      :align: center
+.. code-block:: bash
+
+  https://YOUR_HOSTNAME:444
+
+.. important::
+
+  En el caso de estar ejecutando este procedimiento sobre FreePBX, se debe considerar el siguiente workaround debido al tratamiento que dicha distribución hace sobre Iptables.
+
+Workaround para freePBX
+***********************
+
+Luego de cada *reboot* del sistema operativo se deberán ejecutar los siguientes comandos para dejar apta la instancia para comenzar a trabajar.
+
+.. code-block:: bash
+
+  systemctl restart docker
+  systemctl restart omnileads-prodenv
+
+Estos dos comandos dejaran lista la instancia de OMniLeads sobre FreePBX.
+
+
+.. Note::
+
+    En próximas versiones se tratará de optimizar la ejecución sobre FreePBX.
+
+FAQ
+***
+
+1. **Como cambiar las contraseñas de los containers docker?**
+
+Hay tres contraseñas importantes: 
+  - **OMniLeads Web GUI:** cambiar la variable $DJANGO_PASS en el archivo .env y reiniciar el container de omniapp: **docker restart oml-omniapp-prodenv**
+  - **Postgresql y MySQL:** observar la sección de :ref:`about_maintance_change_ip_passwords`
+
+2. **Mi segmento de red LAN es 192.168.15.0/24 o está dentro de este segmento**
+
+Por defecto el entorno docker se levanta con esta subred interna. Cambiar la variable **SUBNET** en el archivo .env y reiniciar el servicio **omnileads-prodenv**.
+
+3. **El entorno no inicia debido a que docker-compose dice que hay un puerto en uso, que hago?**
+
+Hay tres puertos del Docker Host que se usan para mapear puertos internos de los containers, estos son:
+
+*  WD_EXT_PORT=442  --> mapea con el puerto 8080/tcp en Wombat Dialer, para acceder a la GUI
+*  NGINX_EXT_PORT=444 --> mapea con el puerto 443/tcp en Omniapp para acceder a OMniLeads GUI
+*  PG_EXT_PORT=445  --> mapea con el puerto 5038/tcp en Postgresql para acceder a la base de datos de OMniLeads

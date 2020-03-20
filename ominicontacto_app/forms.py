@@ -27,6 +27,7 @@ from django.contrib.auth.forms import (
     UserChangeForm,
     UserCreationForm
 )
+from django.db.models import Count
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import ugettext_lazy as _
 
@@ -45,7 +46,7 @@ from ominicontacto_app.models import (
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
                                       validar_solo_ascii_y_sin_espacios, elimina_tildes)
-from configuracion_telefonia_app.models import DestinoEntrante
+from configuracion_telefonia_app.models import DestinoEntrante, Playlist
 
 from utiles_globales import validar_extension_archivo_audio
 
@@ -175,12 +176,10 @@ class AgenteProfileForm(forms.ModelForm):
 
     class Meta:
         model = AgenteProfile
-        fields = ('modulos', 'grupo')
+        fields = ('grupo',)
 
-    def __init__(self, modulos_queryset, grupos_queryset, *args, **kwargs):
+    def __init__(self, grupos_queryset, *args, **kwargs):
         super(AgenteProfileForm, self).__init__(*args, **kwargs)
-        self.fields['modulos'].widget.attrs['class'] = 'form-control'
-        self.fields['modulos'].queryset = modulos_queryset
         self.fields['grupo'].widget.attrs['class'] = 'form-control'
         self.fields['grupo'].queryset = grupos_queryset
 
@@ -192,6 +191,7 @@ class QueueEntranteForm(forms.ModelForm):
     tipo_destino = forms.ChoiceField(
         widget=forms.Select(attrs={'class': 'form-control', 'id': 'tipo_destino'}), required=False
     )
+    announce_position = forms.BooleanField(required=False),
 
     def __init__(self, audios_choices, *args, **kwargs):
         super(QueueEntranteForm, self).__init__(*args, **kwargs)
@@ -200,19 +200,27 @@ class QueueEntranteForm(forms.ModelForm):
         self.fields['announce_frequency'].required = False
         self.fields['audios'].queryset = ArchivoDeAudio.objects.all()
         self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
+        self.fields['musiconhold'].queryset = Playlist.objects.annotate(
+            Count('musicas')).filter(musicas__count__gte=1)
         tipo_destino_choices = [EMPTY_CHOICE]
         tipo_destino_choices.extend(DestinoEntrante.TIPOS_DESTINOS)
         self.fields['tipo_destino'].choices = tipo_destino_choices
         instance = getattr(self, 'instance', None)
+        # inicializa valores de destino failover
         if instance.pk is not None and instance.destino:
             tipo = instance.destino.tipo
             self.initial['tipo_destino'] = tipo
             destinos_qs = DestinoEntrante.get_destinos_por_tipo(tipo)
-            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__unicode__())
+            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__str__())
                                                          for dest_entr in destinos_qs]
             self.fields['destino'].choices = destino_entrante_choices
         else:
             self.fields['destino'].choices = ()
+        # inicializa valores de campo ivr_breakdown
+        ivr_breakdown_qs = DestinoEntrante.get_destinos_por_tipo(DestinoEntrante.IVR)
+        ivr_breakdown_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__str__())
+                                                  for dest_entr in ivr_breakdown_qs]
+        self.fields['ivr_breakdown'].choices = ivr_breakdown_choices
         if not instance.pk:
             self.initial['wrapuptime'] = 2
 
@@ -221,7 +229,8 @@ class QueueEntranteForm(forms.ModelForm):
         fields = ('name', 'timeout', 'retry', 'maxlen', 'wrapuptime', 'servicelevel',
                   'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
                   'audios', 'announce_frequency', 'audio_de_ingreso', 'campana',
-                  'tipo_destino', 'destino')
+                  'tipo_destino', 'destino', 'ivr_breakdown',
+                  'announce_holdtime', 'announce_position', 'musiconhold')
 
         help_texts = {
             'timeout': _('En segundos'),
@@ -236,9 +245,10 @@ class QueueEntranteForm(forms.ModelForm):
             'timeout': forms.TextInput(attrs={'class': 'form-control'}),
             'retry': forms.TextInput(attrs={'class': 'form-control'}),
             'maxlen': forms.TextInput(attrs={'class': 'form-control'}),
-            "wrapuptime": forms.TextInput(attrs={'class': 'form-control'}),
+            'wrapuptime': forms.TextInput(attrs={'class': 'form-control'}),
             'servicelevel': forms.TextInput(attrs={'class': 'form-control'}),
             'strategy': forms.Select(attrs={'class': 'form-control'}),
+            'announce_holdtime': forms.Select(attrs={'class': 'form-control'}),
             'weight': forms.TextInput(attrs={'class': 'form-control'}),
             'wait': forms.TextInput(attrs={'class': 'form-control'}),
             'audios': forms.Select(attrs={'class': 'form-control'}),
@@ -246,6 +256,8 @@ class QueueEntranteForm(forms.ModelForm):
             'audio_de_ingreso': forms.Select(attrs={'class': 'form-control'}),
             'tipo_destino': forms.Select(attrs={'class': 'form-control'}),
             'destino': forms.Select(attrs={'class': 'form-control', 'id': 'destino'}),
+            'ivr_breakdown': forms.Select(attrs={'class': 'form-control'}),
+            'musiconhold': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def clean_maxlen(self):
@@ -258,9 +270,12 @@ class QueueEntranteForm(forms.ModelForm):
     def clean_announce_frequency(self):
         audio = self.cleaned_data.get('audios', None)
         frequency = self.cleaned_data.get('announce_frequency', None)
-        if audio and not (frequency > 0):
+        if audio and (frequency is None or not (frequency > 0)):
             raise forms.ValidationError(
                 _('Debe definir una frecuencia para el Anuncio Periódico'))
+        if audio is None and frequency is not None:
+            raise forms.ValidationError(
+                _('Debe definir un Anuncio Periódico para esta frecuencia'))
         return frequency
 
     def clean_destino(self):
@@ -270,6 +285,15 @@ class QueueEntranteForm(forms.ModelForm):
             raise forms.ValidationError(
                 _('Debe seleccionar un destino'))
         return destino
+
+    def clean_ivr_breakdown(self):
+        ivr_breakdown = self.cleaned_data.get('ivr_breakdown', None)
+        anuncio_periodico = self.cleaned_data.get('audios', None)
+        if ivr_breakdown and ivr_breakdown.tipo != DestinoEntrante.IVR:
+            raise forms.ValidationError(_('Debe seleccionar un destino IVR'))
+        if ivr_breakdown and not anuncio_periodico:
+            raise forms.ValidationError(_('Debe seleccionar un anuncio periódico'))
+        return ivr_breakdown
 
 
 class QueueMemberForm(forms.ModelForm):
@@ -424,14 +448,16 @@ class GrabacionBusquedaForm(forms.Form):
                             label=_('Fecha'))
     tipo_llamada_choice = list(Grabacion.TYPE_LLAMADA_CHOICES)
     tipo_llamada_choice.insert(0, EMPTY_CHOICE)
-    tipo_llamada = forms.ChoiceField(required=False,
-                                     choices=tipo_llamada_choice, label=_('Tipo de llamada'))
-    tel_cliente = forms.CharField(required=False, label=_('Teléfono Cliente'))
+    tipo_llamada = forms.ChoiceField(
+        required=False, choices=tipo_llamada_choice, label=_('Tipo de llamada'),
+        widget=forms.Select(attrs={'class': 'form-control'}))
+    tel_cliente = forms.CharField(required=False, label=_('Teléfono Cliente'),
+                                  widget=forms.TextInput(attrs={'class': 'form-control'}))
     callid = forms.CharField(required=False, label=_('Call ID'),
                              widget=forms.TextInput(attrs={'class': 'form-control'}))
-    agente = forms.ModelChoiceField(queryset=AgenteProfile.objects.filter(is_inactive=False),
-                                    required=False, label=_('Agente'))
-    campana = forms.ChoiceField(required=False, choices=(), label=_('Campaña'))
+    campana = forms.ChoiceField(
+        required=False, choices=(), label=_('Campaña'),
+        widget=forms.Select(attrs={'class': 'form-control'}))
     pagina = forms.CharField(required=False, widget=forms.HiddenInput(), label=_('Página'))
     marcadas = forms.BooleanField(required=False, label=_('Marcadas'))
     duracion = forms.IntegerField(required=False, min_value=0, initial=0,
@@ -444,6 +470,14 @@ class GrabacionBusquedaForm(forms.Form):
         campana_choice.insert(0, EMPTY_CHOICE)
         self.fields['campana'].choices = campana_choice
         self.fields['duracion'].help_text = _('En segundos')
+
+
+class GrabacionBusquedaSupervisorForm(GrabacionBusquedaForm):
+    agente = forms.ModelChoiceField(queryset=AgenteProfile.objects.filter(is_inactive=False),
+                                    required=False, label=_('Agente'))
+
+    field_order = ['fecha', 'tipo_llamada_choice', 'tipo_llamada', 'tel_cliente', 'callid',
+                   'agente', 'campana', 'pagina', 'marcadas', 'duracion', 'gestion']
 
 
 class CampanaMixinForm(object):
@@ -709,12 +743,22 @@ class CalificacionClienteForm(forms.ModelForm):
     opcion_calificacion = OpcionCalificacionModelChoiceField(
         OpcionCalificacion.objects.all(), empty_label='---------', label=_('Calificación'))
 
-    def __init__(self, campana, *args, **kwargs):
+    def __init__(self, campana, es_auditoria, *args, **kwargs):
+
         historico_calificaciones = kwargs.pop('historico_calificaciones')
         super(CalificacionClienteForm, self).__init__(*args, **kwargs)
         self.campana = campana
+        self.es_auditoria = es_auditoria
         self.historico_calificaciones = historico_calificaciones
         self.fields['opcion_calificacion'].queryset = campana.opciones_calificacion.all()
+
+    def clean_opcion_calificacion(self):
+        opcion = self.cleaned_data.get('opcion_calificacion')
+        if self.es_auditoria:
+            if 'opcion_calificacion' in self.changed_data and opcion.es_agenda():
+                raise forms.ValidationError(
+                    _('Sólo el Agente puede cambiar la calificacion a Agenda.'))
+        return opcion
 
     class Meta:
         model = CalificacionCliente
@@ -1346,7 +1390,7 @@ class QueueDialerForm(forms.ModelForm):
             tipo = instance.destino.tipo
             self.initial['tipo_destino'] = tipo
             destinos_qs = DestinoEntrante.get_destinos_por_tipo(tipo)
-            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, dest_entr.__unicode__())
+            destino_entrante_choices = [EMPTY_CHOICE] + [(dest_entr.id, str(dest_entr))
                                                          for dest_entr in destinos_qs]
             self.fields['destino'].choices = destino_entrante_choices
         else:
@@ -1630,3 +1674,23 @@ class RegistroForm(forms.Form):
             'email': config.CLIENT_EMAIL,
             'telefono': config.CLIENT_PHONE,
         }
+
+
+class AsignacionContactosForm(forms.Form):
+
+    proporcionalmente = forms.BooleanField(label=_('Asignar proporcionalmente'),
+                                           required=False, initial=False)
+    aleatorio = forms.BooleanField(label=_('En orden aleatorio'),
+                                   required=False, initial=False)
+
+    def clean(self):
+        # no tiene sentido q se seleccione aleatoriamente si no se seleccionó
+        # la asignación proporcional
+        cleaned_data = super(AsignacionContactosForm, self).clean()
+        proporcionalmente = cleaned_data.get('proporcionalmente', False)
+        aleatorio = cleaned_data.get('aleatorio', False)
+        if aleatorio and not proporcionalmente:
+            raise forms.ValidationError(
+                _('Debe seleccionar la asignación proporcional si quiere escoger'
+                  'la asignación en orden aleatorio'))
+        return cleaned_data

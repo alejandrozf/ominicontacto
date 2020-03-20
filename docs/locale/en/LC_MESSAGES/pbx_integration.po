@@ -99,7 +99,7 @@ msgid ""
 "Estrablecemos una sesión bash dentro del host donde se ejecuta Issabel-"
 "PBX y lanzamos el comando:"
 msgstr ""
-"We establish a bash session inside the host running Issabel y raise the "
+"We establish a bash session inside the host running Issabel and raise the "
 "command:"
 
 # 29227ea595e848a5b8384807b8b6377b

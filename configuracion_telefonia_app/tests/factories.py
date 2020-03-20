@@ -27,7 +27,7 @@ from django.utils import timezone
 from configuracion_telefonia_app.models import (
     TroncalSIP, RutaSaliente, PatronDeDiscado, OrdenTroncal, RutaEntrante, IVR, ValidacionFechaHora,
     DestinoEntrante, OpcionDestino, ValidacionTiempo, GrupoHorario, IdentificadorCliente,
-    DestinoPersonalizado
+    DestinoPersonalizado, Playlist
 )
 from ominicontacto_app.tests.factories import ArchivoDeAudioFactory
 
@@ -174,3 +174,10 @@ class DestinoPersonalizadoFactory(DjangoModelFactory):
 
     nombre = Sequence(lambda n: "Destino Personalizado {0}".format(n))
     custom_destination = Sequence(lambda n: "Localización destino {0}".format(n))
+
+
+class PlaylistFactory(DjangoModelFactory):
+    class Meta:
+        model = Playlist
+
+    nombre = Sequence(lambda n: "Playlist_{0}".format(n))

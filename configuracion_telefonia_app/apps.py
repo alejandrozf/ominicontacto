@@ -18,7 +18,7 @@
 #
 from __future__ import unicode_literals
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.apps import AppConfig
 
@@ -66,8 +66,23 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
                     'url': reverse('lista_destinos_personalizados', args=(1,)),
                 },
                 {
-                    'label': _('Adicionar audios'),
-                    'url': reverse('adicionar_audios_asterisk'),
+                    'label': _('Audios'),
+                    'icon': 'icon-audio-file',
+                    'id': 'menuAllAudios',
+                    'children': [
+                        {
+                            'label': _('Paquetes de Audio de Asterisk'),
+                            'url': reverse('adicionar_audios_asterisk'),
+                        },
+                        {
+                            'label': _('Audios Personalizados'),
+                            'url': reverse('lista_archivo_audio'),
+                        },
+                        {
+                            'label': _('Listas de Musica de Espera'),
+                            'url': reverse('lista_playlist'),
+                        },
+                    ],
                 },
             ]
 

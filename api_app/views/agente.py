@@ -230,7 +230,31 @@ class AgentLoginAsterisk(APIView):
             })
 
 
-class AgentLogoutAsterisk(View):
+class AgentLogoutAsterisk(APIView):
+    permission_classes = (IsAuthenticated, EsAgentePermiso, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['post']
+    """
+        Vista para ejecutar el logout de agente a asterisk, realizando las acciones
+        que solia hacer la extension 066LOGOUT
+    """
+
+    def post(self, request, *args, **kwargs):
+        agent_login_manager = AgentActivityAmiManager()
+        agente_profile = self.request.user.get_agente_profile()
+        queue_remove_error, insert_astdb_error = agent_login_manager.logout_agent(agente_profile)
+        if insert_astdb_error or queue_remove_error:
+            return Response(data={
+                'status': 'ERROR',
+            })
+        else:
+            return Response(data={
+                'status': 'OK',
+            })
+
+
+class AgentLogoutView(View):
     """
         Vista para ejecutar el logout de agente a asterisk, realizando las acciones
         que solia hacer la extension 066LOGOUT
@@ -256,7 +280,7 @@ class AgentPauseAsterisk(APIView):
 
     def post(self, request):
         agent_login_manager = AgentActivityAmiManager()
-        pause_id = request.POST.get('pause_id')
+        pause_id = request.data.get('pause_id')
         agente_profile = self.request.user.get_agente_profile()
         queue_pause_error, insert_astdb_error = agent_login_manager.pause_agent(
             agente_profile, pause_id)
@@ -282,7 +306,7 @@ class AgentUnpauseAsterisk(APIView):
 
     def post(self, request):
         agent_login_manager = AgentActivityAmiManager()
-        pause_id = request.POST.get('pause_id')
+        pause_id = request.data.get('pause_id')
         agente_profile = self.request.user.get_agente_profile()
         queue_pause_error, insert_astdb_error = agent_login_manager.unpause_agent(
             agente_profile, pause_id)

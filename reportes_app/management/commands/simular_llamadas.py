@@ -193,7 +193,7 @@ class Command(BaseCommand):
             try:
                 self.llamada_aleatoria(generador)
             except Exception as e:
-                raise CommandError('Fallo del comando: {0}'.format(e.message))
+                raise CommandError('Fallo del comando: {0}'.format(e))
 
     def handle(self, *args, **options):
         nro_llamadas = options['nro_llamadas'][0]

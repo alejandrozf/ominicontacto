@@ -64,6 +64,21 @@ class PhoneJSController {
         this.phone_fsm.start();
     }
 
+
+    markRecordCallButtonReady (self, $img, $recordCallButton) {
+        // cambia icono y mensaje del botón de grabacion bajo demanda
+        // para mostrar que está listo para grabar
+        $img.attr('src', self.view.imgRecordOffUrl);
+        $recordCallButton.attr('title', gettext('Grabar llamada'));
+    }
+
+    markRecordCallButtonRecording (self, $img, $recordCallButton) {
+        // cambia icono y mensaje del botón de grabacion bajo demanda
+        // para mostrar que está grabando
+        $img.attr('src', self.view.imgRecordOnUrl);
+        $recordCallButton.attr('title', gettext('Parar grabación llamada'));
+    }
+
     subscribeToViewEvents() {
         var self = this;
 
@@ -89,6 +104,21 @@ class PhoneJSController {
 
         this.view.redialButton.click(function() {
             self.redial();
+        });
+
+        this.view.recordCall.click(function () {
+            var $recordCallButton = self.view.recordCall;
+            var $img = $recordCallButton.find('img');
+            var recordUrlStatus = $img.attr('src');
+
+            if (recordUrlStatus == self.view.imgRecordOffUrl) {
+                self.markRecordCallButtonRecording(self, $img, $recordCallButton);
+                self.recordCall();
+            }
+            else {
+                self.markRecordCallButtonReady(self, $img, $recordCallButton);
+                self.stopRecordCall();
+            }
         });
 
         this.view.resumeButton.click(function() {
@@ -269,6 +299,7 @@ class PhoneJSController {
                 self.view.setUserStatus('label label-success', gettext('En llamado'));
                 self.view.closeAllModalMenus();
                 self.view.setStateInputStatus('OnCall');
+                self.view.toogleVisibilityRecordButtons(self.phone.session_data);
                 self.click_2_call_dispatcher.disable();
             },
             onDialingtransfer: function() {
@@ -283,6 +314,7 @@ class PhoneJSController {
                 self.view.setUserStatus('label label-success', gettext('Transfiriendo'));
                 self.view.closeAllModalMenus();
                 self.view.setStateInputStatus('Transfering');
+                self.view.toogleVisibilityRecordButtons(self.phone.session_data);
                 self.click_2_call_dispatcher.disable();
             },
             onReceivingcall: function() {
@@ -415,6 +447,12 @@ class PhoneJSController {
             self.timers.llamada.restart();
             self.callEndTransition();
             self.updateCallHistory();
+            // mostramos al botón de grabación bajo demanda de llamada
+            // como listo para grabar (aunque en este punto va a estar
+            // deshabilitado)
+            var $recordCallButton = self.view.recordCall;
+            var $img = $recordCallButton.find('img');
+            self.markRecordCallButtonReady(self, $img, $recordCallButton);
         });
     }
 
@@ -559,6 +597,17 @@ class PhoneJSController {
         if (this.call_after_campaign_selection) {
             this.makeDialedNumberCall();
         }
+    }
+
+
+    recordCall() {
+        // TODO: mover a modulo phoneJsSip.js
+        this.phone.currentSession.sendDTMF('*4');
+    }
+
+    stopRecordCall() {
+        // TODO: mover a modulo phoneJsSip.js
+        this.phone.currentSession.sendDTMF('*5');
     }
 
     setCallFailedStatus(cause) {

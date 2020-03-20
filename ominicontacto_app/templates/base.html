@@ -20,6 +20,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load staticfiles %}
 {% load compress %}
 {% load i18n %}
+{% load custom_messages %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -117,37 +118,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             <a href="{% url 'grupo_nuevo' %}">{% trans 'Nuevo Grupo de agentes' %}</a>
                         </li>
 
-                    </ul>
-                </li>
-                {% endif %}
-
-                {% if user.get_is_administrador %}
-                <li class="main-menu-li">
-                    <span class="icon icon-module"></span>
-                    <a class="menu-header" href="#menuModules" role="button" data-toggle="collapse" aria-expanded="false">
-                      {% trans 'Módulos' %}</a>
-                    <ul class="collapse list-unstyled submenu" id="menuModules" data-parent="#nav-main-menu">
-                        <li>
-                            <a href="{% url 'modulo_list' %}">{% trans 'Módulos disponibles' %}</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'modulo_nuevo' %}">{% trans 'Habilitar Módulo' %}</a>
-                        </li>
-                    </ul>
-                </li>
-                {% endif %}
-
-                {% if user.get_es_administrador_o_supervisor_normal %}
-                <li class="main-menu-li">
-                    <span class="icon icon-audio-file"></span>
-                    <a class="menu-header" href="#menuAudio" role="button" data-toggle="collapse" aria-expanded="false">{% trans 'Audios' %}</a>
-                    <ul class="collapse list-unstyled submenu" id="menuAudio" data-parent="#nav-main-menu">
-                        <li>
-                            <a href="{% url 'lista_archivo_audio' %}">{% trans 'Lista de Audios' %}</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'create_archivo_audio' %}">{% trans 'Nuevo audio' %}</a>
-                        </li>
                     </ul>
                 </li>
                 {% endif %}
@@ -362,7 +332,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                               {% endif %}
                               {% if grandchild_item.url %}
                                 <li>
-                                  <a href="{{ child_item.url }}">{{ child_item.label }}</a>
+                                  <a href="{{ grandchild_item.url }}">{{ grandchild_item.label }}</a>
                                 </li>
                               {% endif %}
                             {% endfor %}
@@ -414,8 +384,20 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {% include 'messages.html' %}
                 {% if user.is_authenticated  %}
                     {% if user.get_tiene_permiso_administracion  %}
-                       {% block content %}
-                       {% endblock %}
+                        {% block content %}
+                            {% if user.get_es_administrador_o_supervisor_normal %}
+                                <div class="row">
+                                    <div class="col-md-6 col-md-offset-3">
+                                        <div id="mostrarInfoRelease">
+                                            {% advertencia_release_desactualizado as messages %}
+                                            {% for message in messages %}
+                                                <p>{{ message }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endblock %}
                     {% else %}
                         <div class="alert alert-warning">
                             <h1>{% trans 'Permiso denegado' %}</h1>

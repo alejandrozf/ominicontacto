@@ -20,7 +20,7 @@
 from __future__ import unicode_literals
 
 import json
-from StringIO import StringIO
+from io import BytesIO
 from zipfile import ZipFile
 
 from django.utils.timezone import now
@@ -97,7 +97,7 @@ class ExportarReporteLlamadasFormView(FormView):
         return response
 
     def form_invalid(self, form):
-        return handler400(self.request)
+        return handler400(self.request, None)
 
 
 class ExportarZipReportesLlamadasFormView(FormView):
@@ -121,7 +121,7 @@ class ExportarZipReportesLlamadasFormView(FormView):
         return response
 
     def form_invalid(self, form):
-        return handler400(self.request)
+        return handler400(self.request, None)
 
     def _generar_buffer_archivo_zip(self, estadisticas):
 
@@ -130,30 +130,30 @@ class ExportarZipReportesLlamadasFormView(FormView):
          tipos_de_llamada_dialer, tipos_de_llamada_entrante,
          tipos_de_llamada_preview) = generador.obtener_filas_de_todos_los_reportes(estadisticas)
 
-        in_memory = StringIO()
+        in_memory = BytesIO()
         zip = ZipFile(in_memory, "a")
 
-        llamadas_por_tipo_file = StringIO()
+        llamadas_por_tipo_file = BytesIO()
         llamadas_por_tipo_writer = UnicodeWriter(llamadas_por_tipo_file)
         llamadas_por_tipo_writer.writerows(llamadas_por_tipo)
 
-        llamadas_por_campana_file = StringIO()
+        llamadas_por_campana_file = BytesIO()
         llamadas_por_campana_writer = UnicodeWriter(llamadas_por_campana_file)
         llamadas_por_campana_writer.writerows(llamadas_por_campana)
 
-        tipos_de_llamada_manual_file = StringIO()
+        tipos_de_llamada_manual_file = BytesIO()
         tipos_de_llamada_manual_writer = UnicodeWriter(tipos_de_llamada_manual_file)
         tipos_de_llamada_manual_writer.writerows(tipos_de_llamada_manual)
 
-        tipos_de_llamada_dialer_file = StringIO()
+        tipos_de_llamada_dialer_file = BytesIO()
         tipos_de_llamada_dialer_writer = UnicodeWriter(tipos_de_llamada_dialer_file)
         tipos_de_llamada_dialer_writer.writerows(tipos_de_llamada_dialer)
 
-        tipos_de_llamada_entrante_file = StringIO()
+        tipos_de_llamada_entrante_file = BytesIO()
         tipos_de_llamada_entrante_writer = UnicodeWriter(tipos_de_llamada_entrante_file)
         tipos_de_llamada_entrante_writer.writerows(tipos_de_llamada_entrante)
 
-        tipos_de_llamada_preview_file = StringIO()
+        tipos_de_llamada_preview_file = BytesIO()
         tipos_de_llamada_preview_writer = UnicodeWriter(tipos_de_llamada_preview_file)
         tipos_de_llamada_preview_writer.writerows(tipos_de_llamada_preview)
 

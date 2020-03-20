@@ -20,12 +20,12 @@ msgstr ""
 # be85866c24f34c06b82008a571a2ba0f
 #: ../../external_system_interaction.rst:3
 msgid "Interacciones con Sistemas Externos"
-msgstr ""
+msgstr "External Systems Interactions"
 
 # 64ef20a4a8da4874aa6855d1e4c6d909
 #: ../../external_system_interaction.rst:6
 msgid "Interacción con un Sitio externo"
-msgstr ""
+msgstr "Interaction with an External System"
 
 # 26e718cd5a87426987dfae1451d29793
 #: ../../external_system_interaction.rst:7
@@ -54,45 +54,47 @@ msgid ""
 "En cada llamada al CRM se pueden enviar datos de la llamada, del contacto"
 " o valores fijos como por ejemplo:"
 msgstr ""
+"Each CRM interaction can send call information, contact information or fixed"
+"values like:"
 
 # 1a0bc7bbdd6c4c7fbd1262847c12cd3d
 #: ../../external_system_interaction.rst:15
 msgid "El \"path\" de la grabación de la llamada."
-msgstr ""
+msgstr "The call record \"path\"."
 
 # 7a8fd1288a70444383e6813eb0cb30df
 #: ../../external_system_interaction.rst:16
 msgid "El \"id\" del agente."
-msgstr ""
+msgstr "The agent's \"id\"."
 
 # e641c7ca4cbf462a8a24e5810e26cc8f
 #: ../../external_system_interaction.rst:17
 msgid "El \"id\" de la campaña."
-msgstr ""
+msgstr "The campaign's \"id\"."
 
 # 25b0d5c19cfc4febad1b671a078185ca
 #: ../../external_system_interaction.rst:18
 msgid ""
 "Cualquiera de las columnas de la base de datos de contactos asociada a la"
 " campaña."
-msgstr ""
+msgstr "Any of the campaign's database columns"
 
 # 5745329bc2fc494ca103f1c4dc7babdc
 #: ../../external_system_interaction.rst:19
 msgid ""
 "Un valor fijo que identifique a que cliente corresponde la campaña en el "
 "CRM."
-msgstr ""
+msgstr "A fixed value that identifies the client in the CRM's campaign."
 
 # 9a965fff5f844d6ba51bb972eea5e6f6
 #: ../../external_system_interaction.rst:21
 msgid "Entre otros parámetros."
-msgstr ""
+msgstr "And other parameters"
 
 # b35ebda37b9a43a195eb9188ea83f399
 #: ../../external_system_interaction.rst:25
 msgid "Identificación de entidades del Sistema Externo"
-msgstr ""
+msgstr "Entity identification in the External System"
 
 # 24e098c2021147189240c0131f79ec7a
 #: ../../external_system_interaction.rst:27

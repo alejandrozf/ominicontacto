@@ -18,7 +18,7 @@ hostname:
 
 *Figure 1: hosts file*
 
-Al encontrarnos con la pantalla de login, simplemente se debe ingresar el usuario admin y la clave generada durante la instalación, como se expone en las figura 10.
+Al encontrarnos con la pantalla de login, simplemente se debe ingresar el usuario admin y la clave generada durante la instalación, como se expone en la figura 2.
 
 .. image:: images/install_1st_login.png
 

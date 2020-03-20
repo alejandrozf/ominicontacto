@@ -20,26 +20,9 @@
 from __future__ import unicode_literals
 
 from django.test.utils import override_settings
-from ominicontacto_app.errors import OmlParserMinRowError, OmlParserCsvDelimiterError
-from ominicontacto_app.parser import ParserCsv, validate_telefono, sanitize_number, \
+from ominicontacto_app.parser import validate_telefono, sanitize_number, \
     validate_fechas, validate_horas
 from ominicontacto_app.tests.utiles import OMLBaseTest
-
-
-class GetDialectTest(OMLBaseTest):
-
-    def test_cantidad_minima_de_filas(self):
-        planilla = self.get_test_resource("planilla-ejemplo-4.csv")
-        parser = ParserCsv()
-        with self.assertRaises(OmlParserMinRowError):
-            parser._get_dialect(open(planilla, 'r'))
-
-    def test_delimiter_incorrecto(self):
-        parser = ParserCsv()
-
-        with self.assertRaises(OmlParserCsvDelimiterError):
-            planilla = self.get_test_resource("planilla-ejemplo-5.csv")
-            parser._get_dialect(open(planilla, 'r'))
 
 
 class ValidateTelefonoTest(OMLBaseTest):

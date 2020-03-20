@@ -111,7 +111,6 @@ A continuación se debe realizar un login en la interfaz de administración de W
 de parámetros necesarios para la interacción con OML.
 
 Al ingresar se despliega una pantalla como la siguiente, donde debemos acceder con el usuario y passwords que se generaron en la instalación.
-Recordar que éstas variables se encuentran en la copia del archivo inventory (my_inventory).
 
 .. image:: images/maintance_wd_1.png
 
@@ -156,7 +155,7 @@ OMniLeads dispone de un script para llevar a cabo las tareas de backup/restore.
   En caso de hacer el restore en una nueva máquina, es necesario que dicha máquina:
 
   * Tenga OMniLeads instalado en la misma version que la maquina productiva
-  * Tenga la misma IP y el mismo hostname de la maquina productiva
+  * Tenga misma IP, mismo hostname y misma credenciales de la maquina productiva
 
 Para realizar un backup:
 
@@ -214,49 +213,40 @@ Una vez finalizado el restore, ejecutar el siguiente comando para regenerar los 
 Actualizaciones
 ***************
 
+OMniLeads genera releases continuos, lo cual implica tener que actualizar el sistema periodicamente.
+
 .. important::
 
-  **Para realizar el upgrade de la plataforma anterior a release-1.3.1 (incluyendolo)**
+  **Upgrade anterior a release-1.3.1 (incluyendolo)**
 
-  * Es **IMPRESCINDIBLE** contar con las contraseñas de *postgresql*, *mysql* y *django admin* que se usaron durante la instalación. Dichas contraseñas las podrá ver en el archivo *my_inventory*, y tendrá que asignarlas nuevamente en el archivo *inventory*. Si no se utilizan las mismas contraseñas que se usaron, el upgrade cambiará las contraseñas por aquellas que se encuentren en el inventory
+  * Es **IMPRESCINDIBLE** contar con las contraseñas de *postgresql*, *mysql* y *django admin* que se usaron durante la instalación. Tendrá que asignarlas nuevamente en el archivo *inventory*. Si no se utilizan las mismas contraseñas que se usaron, el upgrade cambiará las contraseñas por aquellas que se encuentren en el inventory
   * Si no utiliza la misma contraseña de MySQL que se tenia previamente, el upgrade fallará.
 
-OMniLeads es forjado bajo un paradigma de releases continuos, lo cual implica un flujo de actualizaciones constantes.
-Por ello es muy importante llevar a cabo de manera limpia las actualizaciones.
+  **Upgrade después de release-1.3.1**
 
-El equipo de OMniLeads ha realizado el testeo de upgrades de la plataforma en los siguientes escenarios. Se recomienda acoplarse a estos escenarios.
-
-===================  =============================
-Linux Distro         Upgrade soportado y testeado
-===================  =============================
-CentOS 7.6            Desde 1.1.1 a 1.3.1
-Debian 9.3            Desde 1.2.2 a 1.3.1
-Ubuntu Server 18.04   Desde 1.3.1 hasta 1.3.4
-===================  =============================
+  * Si no se quieren cambiar alguna variable basta con definir el tipo de instalación.
+  * Si se quieren cambiar alguna variable, ingresarla y la actualización se encargará de ello.
 
 A continuación se exponen los pasos a seguir para llevar a cabo una nueva actualización de la plataforma. Esta tarea también se realiza con el script "deploy.sh".
-
 Las actualizaciones se anuncian por los canales de comunicaciones oficiales del proyecto.
 Dependiendo el método de instalación que se haya seleccionado:
 
-
 **Instalación Self-Hosted**
 
-Acceder como root al host omnileads
-Posicionarse sobre el directorio donde reside el script “deploy.sh”
+* Acceder como root a la maquina con OMniLeads instalado
+* Posicionarse sobre el directorio donde reside el script “deploy.sh”
 
 ::
 
  cd ominicontacto/deploy/ansible
 
-Asumiendo que estamos trabajando sobre los release estables (master)
-Se debe ejecutar un "git pull origin master" para traernos las actualizaciones del repositorio.
+* Asumiendo que estamos trabajando sobre los release estables (master). Se debe ejecutar un "git pull origin master" para traernos las actualizaciones del repositorio.
 
 .. code-block:: bash
 
  git pull origin master
 
-Descomentar en el archivo de inventario la línea para instalación self-hosted
+* Descomentar en el archivo de inventario la línea para instalación self-hosted
 
 .. code-block:: bash
 
@@ -267,13 +257,13 @@ Descomentar en el archivo de inventario la línea para instalación self-hosted
   localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
   #10.10.10.100 ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
 
-A continuación se ejecuta el script con el parámetro -u (update). Esta ejecución tomará unos minutos e implica el aplicar todas las actualizaciones descargadas con el "git pull origin master" sobre nuestra instancia de OMniLeads.
+* A continuación se ejecuta el script con el parámetro -u (update). Esta ejecución tomará unos minutos e implica el aplicar todas las actualizaciones descargadas con el "git pull origin master" sobre nuestra instancia de OMniLeads.
 
 ::
 
  ./deploy.sh -u --iface=**your_NIC_name**
 
-Si todo fluye correctamente, al finalizar la ejecución de la tarea veremos una pantalla como muestra la figura 11.
+* Si todo fluye correctamente, al finalizar la ejecución de la tarea veremos una pantalla como muestra la figura 11.
 
 .. image:: images/maintance_updates_ok.png
 
@@ -282,7 +272,7 @@ Si todo fluye correctamente, al finalizar la ejecución de la tarea veremos una 
 
 **Instalación desde workstation Linux remoto**
 
-Se debe acceder al repositorio clonado en nuestra maquina workstation, para desde allí correr la actualización sobre el host Linux OMniLeads.
+* Se debe acceder al repositorio clonado en nuestra maquina workstation, para desde allí correr la actualización sobre el host Linux OMniLeads.
 
 ::
 
@@ -290,7 +280,7 @@ Se debe acceder al repositorio clonado en nuestra maquina workstation, para desd
  git pull origin master
  cd ominicontacto/deploy/ansible
 
-A continuación y como en cada ejecución del script "deploy.sh", se debe repasar el archivo de inventory, velando por la coincidencia de la dirección IP de host donde corre OMniLeads y vamos a actualizar.
+* A continuación y como en cada ejecución del script "deploy.sh", se debe repasar el archivo de inventory, velando por la coincidencia de la dirección IP de host donde corre OMniLeads y vamos a actualizar.
 
 ::
 
@@ -303,16 +293,14 @@ A continuación y como en cada ejecución del script "deploy.sh", se debe repasa
 
 .. note::
 
-  Se debe tener en cuenta que para instalación remota, se debe utilizar la línea con el parámetro "ansible_ssh_port=22" (donde 22 es el puerto por defecto, pero es normal tambien que se utilice otro puerto) dentro de la sección [prodenv-aio]
-
-Se ejecuta el script con el parámetro -u (update). Esta ejecución tomará unos minutos e implica el aplicar todas las actualizaciones descargadas con el "git pull origin master" sobre nuestra instancia de OMniLeads.
+  * Se debe tener en cuenta que para instalación remota, se debe utilizar la línea con el parámetro "ansible_ssh_port=22" (donde 22 es el puerto por defecto, pero es normal tambien que se utilice otro puerto) dentro de la sección [prodenv-aio]
+  * Se ejecuta el script con el parámetro -u (update). Esta ejecución tomará unos minutos e implica el aplicar todas las actualizaciones descargadas con el "git pull origin master" sobre nuestra instancia de OMniLeads.
 
 ::
 
 	./deploy.sh -u
 
-
-Finalmente, la plataforma queda actualizada a la última versión estable "master"
+* Finalmente, la plataforma queda actualizada a la última versión estable "master"
 
 .. image:: images/maintance_updates_ok.png
 
@@ -324,12 +312,22 @@ Finalmente, la plataforma queda actualizada a la última versión estable "maste
 
 **Instalación basada en contenedores Docker**
 
-Una de las grandes ventajas que otorga la tecnología de contenedores tiene que ver con la facilidad a la hora de distribuir, instalar y actualizar las aplicaciones. Para OMniLeads falta con hacer lo siguiente:
+.. important::
+  
+  Si ya tiene un entorno instalado con el script *install.sh* y quiere pasar a actualizar con Ansible, tiene que ingresar las variables correspondientes en el archivo de inventario. Es **MUY IMPORTANTE** que ingrese la misma password MYSQL. 
 
-1. Crear una copia del archivo .env en `/home/omnileads/prodenv/` para mantener el valor de sus variables
-2. Copiar el contenido de la carpeta `deploy/docker/prodenv/` en `/home/omnileads/prodenv`
-3. Modificar el archivo .env nuevo con sus variables 
-4. Reiniciar el servicio omnileads-pbx
+Una vez instalado OMniLeads en docker no siempre va a a ser necesario ejecutar el instalador de Ansible para realizar la actualización de la plataforma, salvo en estos casos:
+
+1. Upgrade de algun componente que se instala en el Docker Host (rtpengine o postgresql).
+2. Modificación de algún parámetro del docker-compose file.
+3. Adición de una variable de entorno nueva que requiera el sistema.
+
+En cada release nos encargaremos de avisar si es necesario o no ejecutar el instalador.
+
+* **En caso de ser necesario:** basta con seguir los pasos para :ref:`about_install_docker_linux` a excepción de que ya no es necesario ingresar :ref:`about_install_inventory_vars`, a no ser que se quiera modificar alguna variable. En la variable **oml_release**, ingresar el release al que se quiere upgradear.
+* **En caso de NO ser necesario:** basta con ingresar al folder `/home/omnileads/prodenv/` y alli modificar la variable **RELEASE** del archivo `.env`.
+
+Luego realizar un `service omnileads-prodenv restart`.
 
 .. code-block:: bash
 
@@ -340,49 +338,35 @@ En el proceso de reinicio cuando se invoca el *docker-compose* al percatarse del
 .. note::
 
   1. Los nuevos releases suelen traer nuevo codigo JavaScript. El browser mantiene el código viejo en su cache por lo que se **recomienda** instalar en el browser un addon para borrar la cache. *Clear cache* para *Google Chrome*, por ejemplo
-  2. Una vez copiado el contenido de prodenv revisar el archivo .env, se pudo haber implementado una nueva variable de entorno
 
+.. _about_maintance_change_ip_passwords:
 
 Cambios de los parámetros de red (Hostname y/o Dirección IP) y cambios de contraseñas de servicios
 ***************************************************************************************************
 
-OMniLeads es un sistema complejo, con varios servicios orientados a las comunicaciones real-time corriendo en el Linux Host. Esto implica que un cambio de *dirección IP* o *hostname* del host conlleva cierta complejidad.
+**Para entorno AIO**
 
-Para llevar a cabo éstas tareas, debemos ejecutar nuevamente el script "deploy.sh", el mismo que fue utilizado para llevar a cabo la instalación de la plataforma.
+* Para llevar a cabo éstas tareas, debemos ejecutar nuevamente el script "deploy.sh". 
+* **Si se quiere cambiar IP** Se debe ingresar con el usuario root al sistema, cambiar la dirección IP a nivel sistema operativo y/o hostname y asegurarnos de que el host tomó los cambios. Se recomienda un *reboot* del sistema. 
+* **Si se quieren cambiar constraseñas** cambiar la contraseña que se desee, remitirse a :ref:`about_install_inventory_vars` para revisar las variables de contraseñas.
 
-Debemos ingresar con el usuario root al sistema, cambiar la dirección IP a nivel **sistema operativo** y/o el hostname y asegurarnos de que el host tomó los cambios. Se recomienda
-un *reboot* del sistema.
+Llevar a cabo esta tarea conlleva ejecutar el script deploy.sh asi:
 
-Luego continuamos con los cambios sobre OML, para ellos debemos pararnos sobre el directorio donde se clonó el repositorio de OML (si fue una instalación self-hosted será dentro del host remoto, si fue una instalación desde ansible-remoto será en la máquina *deployer*), para luego acceder al directorio *deploy/ansible*, donde tenemos los archivos *deploy.sh* e *inventory*.
+.. code:: bash
 
-Allí debemos editar nuevamente el archivo *inventory* y repasar el hostname para que coincida con el hostname del host y allí también debemos configurar la nueva dirección IP.
+  ./deploy.sh -u
 
-::
+.. important::
 
-  [prodenv-aio]
-  #localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
-  10.10.10.100 ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
+  Asegurarse de correr el script en el mismo release en el cual se encuentra instalado el sistema, de lo contrario realizará actualización del software.
 
-Si se va a ejecutar self-hosted basta con descomentar la linea correspondiente, si se va a ejecutar host-node, ingresar la nueva IP que tiene la instancia de OMniLeads.
+**Para entorno docker**
 
-A su vez, si se quiere cambiar alguna contraseña de alguno de los servicios de omnileads (postgresql, mysql, admin pass o AMI pass), descomentar las respectivas variables e ingresar la nueva contraseña
+La única diferencia con el entorno AIO es que debe correr el script deploy.sh así:
 
-::
+.. code-block:: bash
 
-  #postgres_password=my_very_strong_pass
-  #admin_pass=my_very_strong_pass
-  ami_password=5_MeO_DMT
-  #mysql_root_password=my_very_strong_pass
-
-Se guardan los cambios sobre el archivo y finalmente se ejecuta el script *deploy.sh*.
-
-::
-
- cd ominicontacto/deploy/ansible
- ./deploy.sh -u --iface=**your_NIC_name**
-
-
-**NOTA:** si está resolviendo el nombre del host de OMniLeads con su archivo *hosts* de su maquina de trabajo, no olvide tambien cambiar los parámetros.
+  ./deploy.sh --docker-deploy
 
 Desbloqueo de usuarios
 ***********************

@@ -25,7 +25,7 @@ el sitio externo el cual va abrirse en una pestaña
 from __future__ import unicode_literals
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.contrib import messages
 from django.views.generic.edit import (
     CreateView, UpdateView, DeleteView

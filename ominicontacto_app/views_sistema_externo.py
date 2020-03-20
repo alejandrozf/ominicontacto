@@ -18,7 +18,7 @@
 #
 from __future__ import unicode_literals
 from django.views.generic import ListView, CreateView, UpdateView
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.shortcuts import get_object_or_404, render
 
 from ominicontacto_app.forms import AgenteEnSistemaExternoFormset

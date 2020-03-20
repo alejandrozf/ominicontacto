@@ -22,7 +22,7 @@ from __future__ import unicode_literals
 from mock import patch
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.test import TestCase, RequestFactory
 
 from rest_framework.authtoken.models import Token
@@ -215,6 +215,111 @@ class APITest(TestCase):
             else:
                 self.assertEqual(datos_agente['status'], 'PAUSE')
 
+    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
+    @patch.object(AMIManagerConnector, "_ami_manager")
+    def test_servicio_agentes_activos_detecta_grupos_menos_lineas_previstas(
+            self, _ami_manager, manager):
+        self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
+        _ami_manager.return_value = (
+            "/OML/AGENT/1/NAME                                 : John Perkins\r\n"
+            "/OML/AGENT/2/NAME                                 : Silvia Pensive\r\n"
+            "/OML/AGENT/2/SIP                                  : 1001\r\n"
+            "/OML/AGENT/2/STATUS                               : READY:1582309000\r\n"
+            "2 results found."), None
+        url = reverse('api_agentes_activos')
+        response = self.client.get(url)
+        self.assertEqual(len(response.json()), 1)
+        datos_agente = response.json()[0]
+        self.assertEqual(datos_agente['id'], '2')
+        self.assertEqual(datos_agente['status'], 'READY')
+
+    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
+    @patch.object(AMIManagerConnector, "_ami_manager")
+    def test_servicio_agentes_no_adiciona_grupo_headers_desconocidos(self, _ami_manager, manager):
+        self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
+        _ami_manager.return_value = (
+            "/OML/AGENT/1/NAME                                 : John Perkins\r\n"
+            "/OML/AGENT/1/SIP                                  : 1001\r\n"
+            "/OML/AGENT/1/STATUS                               : READY:1582309000\r\n"
+            "/OML/AGENT/1/STRANGE-HEADER                       : strange-value\r\n"
+            "/OML/AGENT/2/NAME                                 : Silvia Pensive\r\n"
+            "/OML/AGENT/2/SIP                                  : 1002\r\n"
+            "/OML/AGENT/2/STATUS                               : PAUSE:1582309000\r\n"
+            "2 results found."), None
+        url = reverse('api_agentes_activos')
+        response = self.client.get(url)
+        self.assertEqual(len(response.json()), 2)
+        datos_agente_1 = response.json()[0]
+        datos_agente_2 = response.json()[1]
+        self.assertEqual(datos_agente_2['id'], '2')
+        self.assertEqual(datos_agente_2['status'], 'PAUSE')
+        self.assertEqual([i for i in datos_agente_1.keys()],
+                         ['id', 'nombre', 'sip', 'status', 'tiempo'])
+
+    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
+    @patch.object(AMIManagerConnector, "_ami_manager")
+    @patch('api_app.utiles.logger')
+    def test_servicio_agentes_activos_detecta_grupos_headers_incompletos(
+            self, logger, _ami_manager, manager):
+        self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
+        _ami_manager.return_value = (
+            "/OML/AGENT/1/NAME                                 : John Perkins\r\n"
+            "/OML/AGENT/1/SIP                                  : \r\n"
+            "/OML/AGENT/1/STATUS                               : READY:1582309000\r\n"
+            "/OML/AGENT/2/NAME                                 : Silvia Pensive\r\n"
+            "/OML/AGENT/2/SIP                                  : 1002\r\n"
+            "/OML/AGENT/2/STATUS                               : PAUSE:1582309000\r\n"
+            "2 results found."), None
+        url = reverse('api_agentes_activos')
+        response = self.client.get(url)
+        self.assertEqual(len(response.json()), 2)
+        self.assertEqual(logger.warning.call_count, 1)
+
+    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
+    @patch.object(AMIManagerConnector, "_ami_manager")
+    @patch('api_app.utiles.logger')
+    def test_servicio_agentes_activos_entradas_menos_lineas_son_detectadas_y_excluidas(
+            self, logger, _ami_manager, manager):
+        self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
+        _ami_manager.return_value = (
+            "/OML/AGENT/1/NAME                                 : John Perkins\r\n"
+            "/OML/AGENT/1/SIP                                  : 1001\r\n"
+            "/OML/AGENT/1/STATUS                               : READY:1582309100\r\n"
+            "/OML/AGENT/2/NAME                                 : Silvia Pensive\r\n"
+            "/OML/AGENT/2/SIP                                  : 1002\r\n"
+            "/OML/AGENT/2/STATUS                               : PAUSE:1582309000\r\n"
+            "/OML/AGENT/3/NAME                                 : Homero Simpson\r\n"
+            "/OML/AGENT/4/NAME                                 : Marge Simpson\r\n"
+            "/OML/AGENT/4/SIP                                  : 1003\r\n"
+            "/OML/AGENT/4/STATUS                               : PAUSE:1582309500\r\n"
+            "/OML/AGENT/5/SIP                                  : 1004\r\n"
+            "2 results found."), None
+        url = reverse('api_agentes_activos')
+        response = self.client.get(url)
+        self.assertEqual(len(response.json()), 3)
+        self.assertEqual(logger.warning.call_count, 2)
+
+    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
+    @patch.object(AMIManagerConnector, "_ami_manager")
+    @patch('api_app.utiles.logger')
+    def test_servicio_agentes_activos_no_incluye_entradas_lineas_status_vacio(
+            self, logger, _ami_manager, manager):
+        self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
+        _ami_manager.return_value = (
+            "/OML/AGENT/1/NAME                                : Agente 01\r\n"
+            "/OML/AGENT/1/SIP                                 : 1004 \r\n"
+            "/OML/AGENT/1/STATUS                              : \r\n"
+            "/OML/AGENT/10/NAME                               : Agente10 \n"
+            "/OML/AGENT/10/SIP                                : 1013\r\n"
+            "/OML/AGENT/10/STATUS                             : \r\n"
+            "/OML/AGENT/11/NAME                               : Agente11\r\n"
+            "/OML/AGENT/11/SIP                                : 1014\r\n"
+            "/OML/AGENT/11/STATUS                             : READY:1582309100\r\n"
+            "3 results found."), None
+        url = reverse('api_agentes_activos')
+        response = self.client.get(url)
+        self.assertEqual(len(response.json()), 1)
+
     def test_api_login_devuelve_token_asociado_al_usuario_password(self):
         url = 'https://{0}{1}'.format(settings.OML_OMNILEADS_IP, reverse('api_login'))
         user = self.supervisor_admin.user
@@ -375,7 +480,7 @@ class APITest(TestCase):
         url = reverse('disposition-detail', args=(self.calificacion_cliente.pk,))
         response = client.put(url, post_data)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data['status'], 'ERROR')
+        self.assertEqual(str(response.data['status']), 'ERROR')
 
     def test_api_muestra_solo_las_calificaciones_que_ha_hecho_el_agente_que_accede(self):
         contacto_nuevo = ContactoFactory(bd_contacto=self.campana_activa.bd_contacto)

@@ -24,7 +24,7 @@ from __future__ import unicode_literals
 from django.db import transaction
 from django.utils.translation import ugettext as _
 from django.contrib import messages
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponseRedirect
 from ominicontacto_app.forms import (QueueDialerForm, SincronizaDialerForm, ActuacionVigenteForm,
                                      ReglasIncidenciaFormSet, CampanaDialerForm,
@@ -152,9 +152,9 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
         campana_service.crear_lista_asociacion_campana_wombat(campana)
 
     def _save_forms(self, form_list, estado):
-        campana_form = form_list[int(self.INICIAL)]
-        queue_form = form_list[int(self.COLA)]
-        opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
+        campana_form = list(form_list)[int(self.INICIAL)]
+        queue_form = list(form_list)[int(self.COLA)]
+        opciones_calificacion_formset = list(form_list)[int(self.OPCIONES_CALIFICACION)]
 
         campana = self._save_campana(campana_form, estado)
 
@@ -162,12 +162,12 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
         offset = 1
         if campana.tipo_interaccion == Campana.SITIO_EXTERNO:
             offset = 0
-            parametros_crm_formset = form_list[int(self.PARAMETROS_CRM)]
+            parametros_crm_formset = list(form_list)[int(self.PARAMETROS_CRM)]
             parametros_crm_formset.instance = campana
             parametros_crm_formset.save()
 
-        actuacion_vigente_form = form_list[int(self.ACTUACION_VIGENTE) - offset]
-        reglas_incidencia_form = form_list[int(self.REGLAS_INCIDENCIA) - offset]
+        actuacion_vigente_form = list(form_list)[int(self.ACTUACION_VIGENTE) - offset]
+        reglas_incidencia_form = list(form_list)[int(self.REGLAS_INCIDENCIA) - offset]
 
         queue_form.instance.campana = campana
         self._save_queue(queue_form)
@@ -190,7 +190,7 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
                 campana = self._save_forms(form_list, Campana.ESTADO_INACTIVA)
                 # Agrego este offset por si form_list no contiene el formulario de PARAMETROS_CRM
                 offset = 0 if campana.tipo_interaccion == Campana.SITIO_EXTERNO else 1
-                sincronizar_form = form_list[int(self.SINCRONIZAR) - offset]
+                sincronizar_form = list(form_list)[int(self.SINCRONIZAR) - offset]
                 self._sincronizar_campana(sincronizar_form, campana)
                 self._insert_queue_asterisk(campana.queue_campana)
                 self.save_supervisores(form_list, -3)
@@ -247,15 +247,15 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
         success = False
         try:
             with transaction.atomic():
-                campana_form = form_list[int(self.INICIAL)]
-                queue_form = form_list[int(self.COLA)]
-                opciones_calificacion_formset = form_list[int(self.OPCIONES_CALIFICACION)]
+                campana_form = list(form_list)[int(self.INICIAL)]
+                queue_form = list(form_list)[int(self.COLA)]
+                opciones_calificacion_formset = list(form_list)[int(self.OPCIONES_CALIFICACION)]
                 campana = campana_form.save()
                 queue = self._save_queue(queue_form)
                 opciones_calificacion_formset.save()
 
                 if campana.tipo_interaccion == Campana.SITIO_EXTERNO:
-                    parametros_crm_formset = form_list[int(self.PARAMETROS_CRM)]
+                    parametros_crm_formset = list(form_list)[int(self.PARAMETROS_CRM)]
                     parametros_crm_formset.save()
 
                 self._insert_queue_asterisk(queue)

@@ -43,8 +43,8 @@ Y luego de eso, las customizaciones.
 """
 import os
 
-from addons import *
-from defaults import *
+from .addons import *
+from .defaults import *
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -195,6 +195,8 @@ MONITORFORMAT = 'mp3'
 
 OML_AUDIO_PATH_ASTERISK = "/var/lib/asterisk/sounds/oml/"
 
+OML_PLAYLIST_PATH_ASTERISK = "var/lib/asterisk/sounds/moh/"
+
 CALIFICACION_REAGENDA = 'Agenda'
 
 LOCAL_APPS = []
@@ -206,6 +208,7 @@ OML_RUTAS_SALIENTES_FILENAME = "/opt/omnileads/asterisk/etc/asterisk/oml_extensi
 ASTERISK_AUDIO_PATH = "/var/lib/asterisk/sounds/"
 
 OML_AUDIO_FOLDER = "oml/"
+OML_PLAYLIST_FOLDER = "moh/"
 
 DURACION_ASIGNACION_CONTACTO_PREVIEW = 30
 
@@ -234,3 +237,5 @@ TOKEN_EXPIRED_AFTER_SECONDS = 600
 KAMAILIO_HOSTNAME = 'trash'
 NGINX_HOSTNAME = 'trash'
 OML_EXTERNAL_PORT = 'trash'
+
+MIDDLEWARE = MIDDLEWARE_CLASSES

@@ -17,7 +17,7 @@
   failed_when: false
   delegate_to: localhost
   register: ast_custom_exists
-  
+
 - name: Create directory to copy Omnileads-Docker folders
   file: path={{ item }} state=directory recurse=yes owner={{ docker_user }} group={{ docker_user }}
   with_items:
@@ -92,26 +92,47 @@
     - { src: roles/omniapp_second/templates/etc/ominicontacto.conf, dest: "{{ nginx_location }}/conf.d"}
     - { src: roles/omniapp_second/templates/etc/nginx.conf.j2, dest: "{{ nginx_location }}/nginx.conf"}
     - { src: roles/docker/files/scripts/mime.types, dest: "{{ nginx_location }}/mime.types"}
-    - { src: roles/kamailio/templates/etc/kamailio-local.cfg, dest: "{{ kamailio_location }}" }
 
 - name: Log into DockerHub
   docker_login:
     username: "{{ docker_login_user }}"
     password: "{{ docker_login_pass }}"
     email: "{{ docker_login_email }}"
+  when: build_images == "true"
 
 - name: Build images for PE and DE
-  docker_image: path={{ build_location }} dockerfile=Dockerfile-{{ item.dockerfile }} state=present name=freetechsolutions/{{ item.image }} tag={{ item.version }} force=yes push=yes
+  docker_image:
+    build:
+        path: "{{ build_location }}"
+        dockerfile: Dockerfile-{{ item.dockerfile }}
+        pull: yes
+    name: "{{ docker_login_user }}/{{ item.image }}"
+    source: build
+    tag: "{{ item.version }}"
+    force_source: yes
+    force_tag: yes
+    push: yes
   with_items:
-    - { dockerfile: "asterisk", image: "asterisk", version: "{{ asterisk_version }}" }
+    - { dockerfile: "asterisk", image: "asterisk", version: "{{ asterisk_builded_version }}" }
     - { dockerfile: "dialer", image: "dialer", version: "{{ wombat_version }}" }
     - { dockerfile: "omniapp", image: "omniapp", version: "{{ version }}" }
     - { dockerfile: "postgresql", image: "postgresql", version: "{{ postgresql_version }}" }
     - { dockerfile: "rtpengine", image: "rtpengine", version: "{{ rtpengine_version }}" }
+  when: build_images == "true"
 
 - name: Build {{ version }} images (PE)
-  docker_image: path={{ build_location }} dockerfile=Dockerfile-{{ item.dockerfile }} state=present name=freetechsolutions/{{ item.image }} tag={{ item.version }} force=yes push=yes
+  docker_image:
+    build:
+        path: "{{ build_location }}"
+        dockerfile: Dockerfile-{{ item.dockerfile }}
+        pull: yes
+    name: "{{ docker_login_user }}/{{ item.image }}"
+    source: build
+    tag: "{{ item.version }}"
+    force_source: yes
+    force_tag: yes
+    push: yes
   with_items:
     - { dockerfile: "kamailio", image: "kamailio", version: "{{ version }}" }
     - { dockerfile: "nginx", image: "nginx", version: "{{ version }}" }
-  when: prodenv == 1
+  when: prodenv == 1 and build_images == "true"

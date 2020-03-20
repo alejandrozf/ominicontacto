@@ -23,18 +23,12 @@
   with_items:
       - "{{ kamailio_location }}/run/"
       - "{{ kamailio_location }}/run/kamailio/"
-  become: true
-  become_method: sudo
 
 # Se crea el directorio y el archivo para el log
 - name: Create kamailio.log file and directory
   file: path=/var/log/kamailio/ state=directory mode=0755
-  become: true
-  become_method: sudo
 
 - file: path=/var/log/kamailio/kamailio.log state=touch mode=0755
-  become: true
-  become_method: sudo
 
 # Se cre el archivo kamailio en /etc/default este archivo contiene variables que va a usar systemctl para levantar kamailio
 - name: Creation of kamailio file in /etc/default
@@ -47,15 +41,11 @@
 
 - name: Change owner of kamailio directory
   file: state=directory path={{ kamailio_location }} owner={{ usuario }} group={{ usuario }} recurse=yes
-  become: true
-  become_method: sudo
 
 # Se crea el archivo kamailio-local, Este archivo contiene las variables que usa el kamailio.cfg
 - name: Creation of kamailio-local.cfg file
   template: src=templates/etc/kamailio-local.cfg dest={{ kamailio_location }}/etc/kamailio/ owner={{ usuario }} group={{ usuario }}
   tags: postinstall
-  become: true
-  become_method: sudo
 
 # Se borra el kamailio.cfg que se crea por default a  la  hora de instalar
 - name: Erase of default kamailio.cfg file
@@ -63,15 +53,8 @@
   tags: postinstall
 
 # Se linkea el kamailio.cfg de omnileads a su ubicacion /etc/kamailio
-- name: Link kamailio.cfg repo file to {{ kamailio_location }} (aio)
+- name: Link kamailio.cfg repo file to {{ kamailio_location }}
   file: state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg dest={{ kamailio_location }}/etc/kamailio/kamailio.cfg force=true owner={{ usuario }} group={{ usuario }} mode=644
-  tags: postinstall
-  when: cluster == 0
-
-# Se copia si es un cluster
-- name: Copy of the kamailio.cfg file (cluster)
-  copy: src=/var/tmp/ominicontacto-build/ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg dest={{ kamailio_location }}/etc/kamailio/ owner={{ usuario }} group={{ usuario }}
-  when: cluster != 0
   tags: postinstall
 
 # Linkeamos dos binarios de kamailio que son necesarios para el buen funcionamiento del proceso de autenticacion

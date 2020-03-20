@@ -1,18 +1,59 @@
 ---
 
-- name: Get the hostname of host
-  command: hostname
-  register: hostname
-  changed_when: false
+- name: Set system user omnileads
+  set_fact: usuario="omnileads"
+  when: prodenv == 1
 
-- name: Get the IP address configured in default interface
-  shell: default_if=$(ip route show | awk '/^default/ {print $5}'); ifconfig $default_if | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'
-  register: omni_ip
-  changed_when: false
-  tags: always
+- include: roles/prerequisitos/tasks/os_configuration.yml
+  when: prodenv == 1 and ansible_os_family == "RedHat" or ansible_os_family == "Sangoma"
 
+- name: Check if docker is installed
+  shell: which docker
+  register: docker_installed
+  changed_when: false
+  failed_when: false
+
+- name: Check if docker-compose is installed
+  shell: which docker-compose
+  register: docker_compose_installed
+  changed_when: false
+  failed_when: false
+
+- name: Adding docker repository (centos)
+  command: yum-config-manager -y --add-repo {{ docker_repository_url }}
+  when: '"docker" not in docker_installed.stdout'
+
+- name: Installing docker (centos)
+  yum: name={{ item }} state=present update_cache=yes
+  with_items:
+    - yum-utils 
+    - device-mapper-persistent-data
+    - lvm2
+    - docker-ce 
+    - docker-ce-cli
+    - containerd.io
+  when: '"docker" not in docker_installed.stdout'
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
+
+- name: Installing docker-compose
+  shell: |
+    curl -m 3000 -L "https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    chmod +x /usr/local/bin/docker-compose
+    ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+  when: "'docker-compose' not in docker_compose_installed.stdout"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
+
+#################
+# DevEnv deploy # 
+#################
 - name: Creation of deploy folders structure
-  file: "dest={{ item }} state=directory owner={{ docker_user }} group={{ docker_user }} mode=0755 recurse=yes"
+  file: "dest={{ item }} state=directory owner={{ usuario }} group={{ usuario }} mode=0755 recurse=yes"
   with_items:
     - "{{ ast_conf_location }}"
     - "{{ ast_agis_location }}"
@@ -29,11 +70,11 @@
 - name: Copy certificate and key pair
   copy: src=/var/tmp/ansible/roles/docker/files/certs dest={{ deploy_location }}
 
-- name: Generate docker-compose file and other files form templates
-  template: src=roles/{{ item.src }} dest={{ item.dest }} mode=755 owner={{ docker_user }} group={{ docker_user }}
+- name: Generate scripts and configuration files of some services
+  template: src=roles/{{ item.src }} dest={{ item.dest }} mode=755 owner={{ usuario }} group={{ usuario }}
   with_items:
-    - { src: docker/files/devenv/docker-compose.yml, dest: "{{ deploy_location }}/docker-compose.yml"}
-    - { src: docker/files/devenv/.env, dest: "{{ deploy_location }}/.env"}
+    - { src: docker/files/docker_compose_files/docker-compose.yml, dest: "{{ deploy_location }}/docker-compose.yml"}
+    - { src: docker/files/docker_compose_files/.env, dest: "{{ deploy_location }}/.env"}
     - { src: docker/files/scripts/run_asterisk.sh, dest: "{{ ast_other_location }}/run_asterisk.sh"}
     - { src: docker/files/scripts/run_omniapp.sh, dest: "{{ omniapp_location }}/run_omniapp.sh"}
     - { src: omniapp_second/templates/bin/conversor.sh, dest: "{{ omniapp_location}}/conversor.sh" }
@@ -42,23 +83,93 @@
     - { src: docker/files/scripts/mime.types, dest: "{{ nginx_location }}/mime.types"}
   when: devenv == 1
 
-- name: Generate EFK docker-compose file and configuration files
-  template: src=roles/docker/files/efk_infra/{{ item.src }} dest={{ item.dest }} mode=755 owner={{ docker_user }} group={{ docker_user }}
+#- name: Generate EFK docker-compose file and configuration files
+#  template: src=roles/docker/files/efk_infra/{{ item.src }} dest={{ item.dest }} mode=755 owner={{ usuario }} group={{ usuario }}
+#  with_items:
+#    - { src: kibana.conf, dest: "{{ efk_location }}/kibana.conf"}
+#    - { src: fluent.conf, dest: "{{ efk_location }}/fluent.conf"}
+#    - { src: logging_stack.yml, dest: "{{ deploy_location }}"}
+#  when: devenv == 1
+
+##################
+# ProdEnv deploy # 
+##################
+
+- name: Creation of deploy base folder
+  file: "dest={{ deploy_location }} state=directory owner={{ usuario }} group={{ usuario }} mode=0755 recurse=yes"
+  when: prodenv == 1
+
+- include: roles/dialer/tasks/mariadb.yml
+  when: prodenv == 1
+  
+- include: roles/database/tasks/installations.yml
+  when: prodenv == 1
+
+- include: roles/database/tasks/configurations.yml
+  when: prodenv == 1
+
+ # mensaje para mostrar si rtpengine no está instalado
+- debug: msg="RTPengine no está instalado, se procede a la instalación"
+  when: rtpengine_installed.stdout != rtpengine_version and prodenv == 1
+
+# mensaje si rtpengine está instalado
+- debug: msg="RTPengine ya se encuentra instalado se omite instalación"
+  when: rtpengine_installed.stdout == rtpengine_version and prodenv == 1
+ 
+- include: roles/kamailio/tasks/packages_installation.yml
+  when: prodenv == 1 and rtpengine_installed.stdout != rtpengine_version
+
+- include: roles/kamailio/tasks/rtpengine_installation.yml
+  when: prodenv == 1 and rtpengine_installed.stdout != rtpengine_version
+
+- include: roles/kamailio/tasks/rtpengine_configuration.yml
+  when: prodenv == 1 and rtpengine_installed.stdout != rtpengine_version
+
+################################
+# Tareas para devenv y prodenv #
+################################
+
+- name: Generate docker-compose and .env file
+  template: src=roles/{{ item.src }} dest={{ item.dest }} mode=755 owner={{ usuario }} group={{ usuario }}
   with_items:
-    - { src: kibana.conf, dest: "{{ efk_location }}/kibana.conf"}
-    - { src: fluent.conf, dest: "{{ efk_location }}/fluent.conf"}
-    - { src: logging_stack.yml, dest: "{{ deploy_location }}"}
+    - { src: docker/files/docker_compose_files/docker-compose.yml, dest: "{{ deploy_location }}/docker-compose.yml"}
+    - { src: docker/files/docker_compose_files/.env, dest: "{{ deploy_location }}/.env"}
+
+# Se crea el archivo kamailio-local, Este archivo contiene las variables que usa el kamailio.cfg
+- name: Creation of kamailio-local.cfg file (devenv)
+  template: src=roles/kamailio/templates/etc/kamailio-local.cfg dest={{ repo_location }}/ominicontacto_voip/kamailio-files/ owner={{ usuario }} group={{ usuario }}
   when: devenv == 1
 
 # Se crea el archivo kamailio-local, Este archivo contiene las variables que usa el kamailio.cfg
-- name: Creation of kamailio-local.cfg file
-  template: src=roles/kamailio/templates/etc/kamailio-local.cfg dest={{ repo_location }}/ominicontacto_voip/kamailio-files/ owner={{ docker_user }} group={{ docker_user }}
+- name: Creation of kamailio-local.cfg file (prodenv)
+  template: src=roles/kamailio/templates/etc/kamailio-local.cfg dest={{ deploy_location }} owner={{ usuario }} group={{ usuario }}
+  when: prodenv == 1
+
+- name: Creation of odbc.ini file (prodenv)
+  template: src=roles/asterisk/templates/etc/odbc.ini dest={{ deploy_location }} owner={{ usuario }} group={{ usuario }}
+  when: prodenv == 1
+
+- name: Creation of oml_res_odbc.conf file (prodenv)
+  template: src=roles/asterisk/templates/conf/oml_res_odbc.conf dest={{ deploy_location }} owner={{ usuario }} group={{ usuario }}
+  when: prodenv == 1
+
+- name: Create omnileads-{{ customer }} systemd service
+  template: src=files/systemd/omnileads.service mode=644 dest=/etc/systemd/system/omnileads-{{ customer }}.service
+
+- name: Enable omnileads-{{ customer }} service
+  systemd: name=omnileads-{{ customer }} enabled=yes daemon_reload=yes
   when: devenv == 1
 
-- name: Create omnileads-devenv systemd service
-  template: src=files/devenv/omnileads-devenv.service mode=644 dest=/etc/systemd/system/
-  when: devenv == 1
+- name: Creation of postinstall script (prodenv)
+  template: src=files/scripts/postinstall.sh dest={{ deploy_location }} owner={{ usuario }} group={{ usuario }} variable_start_string="[[" variable_end_string="]]"
+  when: prodenv == 1
 
-- name: Enable omnileads-devenv service
-  systemd: name=omnileads-devenv enabled=yes daemon_reload=yes
-  when: devenv == 1
+- name: Start and enable docker and omnileads-{{ customer }} services
+  systemd: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - docker
+    - "omnileads-{{ customer }}"
+  when: prodenv == 1
+
+- name: Set environment variables for this installation
+  template: src=roles/prerequisitos/templates/omnileads_envars.sh dest=/etc/profile.d/ mode=644 owner=root group=root

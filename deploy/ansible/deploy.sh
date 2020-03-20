@@ -24,33 +24,26 @@
 # 3. Pregunta si se quiere dockerizar asterisk o no, para pasarle la variable a ansible.
 # 4. Ejecuta ansible segun la opcion de Dockerizar o no
 current_directory=`pwd`
+PATH=$PATH:~/.local/bin/
 PIP=`which pip`
+ANSIBLE=`which ansible`
 TMP_ANSIBLE='/var/tmp/ansible'
 TMP_OMINICONTACTO='/var/tmp/ominicontacto-build/ominicontacto'
+ANSIBLE_VERSION_DESIRED='2.9.2'
+ANSIBLE_VERSION_INSTALLED="`~/.local/bin/ansible --version |head -1| awk -F ' ' '{print $2}'`"
 REPO_LOCATION="`git rev-parse --show-toplevel`"
 USER_HOME=$(eval echo ~${SUDO_USER})
 export ANSIBLE_CONFIG=$TMP_ANSIBLE
-export DEBIAN_FRONTEND=noninteractive
-IS_ANSIBLE="`find ~/.local -name ansible 2>/dev/null |grep \"/bin/ansible\" |head -1`"
 arg1=$1
 
 OSValidation(){
   if [ -z $PIP ]; then
     os=`awk -F= '/^NAME/{print $2}' /etc/os-release`
-    if [ "$os" == '"CentOS Linux"' ]; then
+    if [ "$os" == '"CentOS Linux"' ] || [ "$os" == '"Issabel PBX"' ] || [ "$os" == '"Sangoma Linux"' ]; then
       echo "Downloading and installing epel-release repository"
       yum install epel-release -y
       echo "Installing python2-pip"
-      yum install python2-pip -y
-    elif [ "$os" == '"Debian GNU/Linux"' ]; then
-      echo "Installing python2-pip and sudo"
-      apt-get install python-pip sudo -y
-      apt-get remove python-cryptography -y
-    elif [ "$os" == '"Ubuntu"' ]; then
-      echo "Adding the universe repository"
-      add-apt-repository universe
-      echo "Installing python2 and python-pip"
-      apt-get install python-minimal python-pip -y
+      yum install python-pip -y
     else
       echo "The OS you are trying to install is not supported to install this software."
       exit 1
@@ -91,22 +84,26 @@ TagCheck() {
     tag="database"
   elif [ "$arg1" == "--docker-build" ]; then
     tag="docker_build"
+    BUILD_IMAGES=true
   elif [ "$arg1" == "--docker-deploy" ]; then
     tag="docker_deploy"
   elif [ "$arg1" == "--integration-tests" ]; then
     tag="all,integration-tests"
+  elif [ "$arg1" == "--docker-no-build" ]; then
+    tag="docker_build"
+    BUILD_IMAGES=false
   fi
 }
 
 AnsibleInstall() {
-  echo "Detecting if Ansible 2.5 is installed"
-  if [ -z "$IS_ANSIBLE" ] ; then
-    echo "Ansible 2.5 is not installed, installing it"
+  echo "Detecting if Ansible $ANSIBLE_VERSION_DESIRED is installed"
+  if [ -z "$ANSIBLE" ] || [ "$ANSIBLE_VERSION_INSTALLED" != "$ANSIBLE_VERSION_DESIRED" ]; then
+    echo "Ansible $ANSIBLE_VERSION_DESIRED is not installed, installing it"
     echo ""
-    $PIP install 'ansible==2.5' --user
-    IS_ANSIBLE="`find ~/.local -name ansible |grep \"/bin/ansible\" |head -1 2> /dev/null`"
+    $PIP install "ansible==$ANSIBLE_VERSION_DESIRED" --user
+    ANSIBLE="`find ~/.local -name ansible |grep \"/bin/ansible\" |head -1 2> /dev/null`"
   else
-    echo "Ansible 2.5 is already installed"
+    echo "Ansible $ANSIBLE_VERSION_DESIRED is already installed"
   fi
   #  echo "Detecting if docker-py is installed"
   #  $PIP install 'docker-py==1.10.6' --user > /dev/null 2>&1
@@ -180,7 +177,7 @@ OML_BUILD_DATE="$(env LC_hosts=C LC_TIME=C date)"
 OML_AUTHOR="${author}"
 
 if __name__ == '__main__':
-    print OML_COMMIT
+    print (OML_COMMIT)
 
 EOF
 
@@ -193,13 +190,13 @@ EOF
 AnsibleExec() {
     if [ -z $INTERFACE ]; then INTERFACE=none; fi
     echo "Checking if there are hosts to deploy from inventory file"
-    if ${IS_ANSIBLE} all --list-hosts -i $TMP_ANSIBLE/inventory | grep -q '(0)'; then
+    if ${ANSIBLE} all --list-hosts -i $TMP_ANSIBLE/inventory | grep -q '(0)' 2>/dev/null; then
       echo "All hosts in inventory file are commented, please check the file according to documentation"
       exit 1
     fi
     echo "Beginning the Omnileads installation with Ansible, this installation process can last between 30-40 minutes"
     echo ""
-    ${IS_ANSIBLE}-playbook $verbose -s $TMP_ANSIBLE/omnileads.yml --extra-vars "iface=$INTERFACE build_dir=$TMP_OMINICONTACTO repo_location=$REPO_LOCATION docker_root=$USER_HOME" --tags "$tag" -i $TMP_ANSIBLE/inventory
+    ${ANSIBLE}-playbook $verbose $TMP_ANSIBLE/omnileads.yml --extra-vars "iface=$INTERFACE build_dir=$TMP_OMINICONTACTO repo_location=$REPO_LOCATION docker_root=$USER_HOME build_images=$BUILD_IMAGES" --tags "$tag" -i $TMP_ANSIBLE/inventory
     ResultadoAnsible=`echo $?`
     if [ $ResultadoAnsible == 0 ];then
       echo "
@@ -247,7 +244,7 @@ OSValidation
 for i in "$@"
 do
   case $i in
-    --upgrade|-u|--install|-i|--kamailio|-k|--asterisk|-a|--omniapp|-o|--omnivoip|--dialer|-di|--database|-da|--change-network|-cnet|--change-passwords|-cp|--docker-build|--docker-deploy|--integration-tests)
+    --upgrade|-u|--install|-i|--kamailio|-k|--asterisk|-a|--omniapp|-o|--omnivoip|--dialer|-di|--database|-da|--change-network|-cnet|--change-passwords|-cp|--docker-no-build|--docker-build|--docker-deploy|--integration-tests)
       TagCheck
       shift
     ;;
@@ -262,12 +259,13 @@ do
               -a --asterisk: execute asterisk related tasks
               -da --database: execute tasks related to database
               -di --dialer: execute tasks related to dialer (Wombat Dialer)
-              --docker-deploy: deploy Omnileads in docker containers using docker-compose. See /deploy/docker/README.md
-              --docker-build: build Omnileads images. See /deploy/docker/CONTRIBUTING.md
-              -i --install: make a fresh install of Omnileads
-              -k --kamailio: execute kamailio related tasks
-              -o --omniapp: execute omniapp related tasks
-              -u --upgrade: make an upgrade of Omnileads version
+              --docker-deploy: deploy Omnileads in docker containers using docker-compose.
+              --docker-build: build and push Omnileads images to a registry. 
+              --docker-no-build: execute build images steps without building and pushing the images.
+              -i --install: make a fresh install of Omnileads.
+              -k --kamailio: execute kamailio related tasks.
+              -o --omniapp: execute omniapp related tasks.
+              -u --upgrade: make an upgrade of Omnileads version.
               --iface --interface: set the iface when you want omnileads services listening (JUST USE THIS OPTION WHEN INSTALLATION IS SELFHOSTED)
             "
       shift
@@ -283,29 +281,33 @@ do
     ;;
   esac
 done
-./keytransfer.sh $INTERFACE
-ResultadoKeyTransfer=`echo $?`
-  if [ "$ResultadoKeyTransfer" == 1 ]; then
-    echo "It seems that you don't have generated keys in the server you are executing this script"
-    echo "Try with ssh-keygen or check the ssh port configured in server"
-    rm -rf /var/tmp/servers_installed
-    exit 1
-  elif [ "$ResultadoKeyTransfer" == 2 ]; then
-    echo "#######################################################################"
-    echo "# The option --interface must be used only in selfhosted installation #"
-    echo "#######################################################################"
-    exit 1
-  elif [ "$ResultadoKeyTransfer" == 3 ]; then
-    echo "#####################################"
-    echo "# Option --interface must be passed #"
-    echo "#####################################"
-    exit 1
-  elif [ "$ResultadoKeyTransfer" == 4 ]; then
-    echo "###############################################################"
-    echo "# It seems you typed a wrong interface in --interface option  #"
-    echo "###############################################################"
-    exit 1
-  fi
+if [ "$arg1" == "--docker-build" ] || [ "$arg1" == "--docker-no-build" ]; then
+  echo ""
+else
+  ./keytransfer.sh $INTERFACE
+  ResultadoKeyTransfer=`echo $?`
+    if [ "$ResultadoKeyTransfer" == 1 ]; then
+      echo "It seems that you don't have generated keys in the server you are executing this script"
+      echo "Try with ssh-keygen or check the ssh port configured in server"
+      rm -rf /var/tmp/servers_installed
+      exit 1
+    elif [ "$ResultadoKeyTransfer" == 2 ]; then
+      echo "#######################################################################"
+      echo "# The option --interface must be used only in selfhosted installation #"
+      echo "#######################################################################"
+      exit 1
+    elif [ "$ResultadoKeyTransfer" == 3 ]; then
+      echo "#####################################"
+      echo "# Option --interface must be passed #"
+      echo "#####################################"
+      exit 1
+    elif [ "$ResultadoKeyTransfer" == 4 ]; then
+      echo "###############################################################"
+      echo "# It seems you typed a wrong interface in --interface option  #"
+      echo "###############################################################"
+      exit 1
+    fi
+fi
 AnsibleInstall
 CodeCopy
 VersionGeneration

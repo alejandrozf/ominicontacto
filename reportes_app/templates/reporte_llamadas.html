@@ -223,7 +223,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <h3>{% trans 'Totales de llamadas por tipo de llamada y forma de finalización' %}</h3>
             <div class="graficos-avances">
               <figure>
-                {{ graficos.barras_llamadas_por_tipo.render|safe }}
+                {{ graficos.barras_llamadas_por_tipo.render_unicode|safe }}
               </figure>
             </div>
           </div>
@@ -231,7 +231,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <h3>{% trans 'Porcentaje de llamadas por tipo de llamada' %}</h3>
             <div class="graficos-avances">
               <figure>
-                {{ graficos.torta_porcentajes_por_tipo.render|safe }}
+                {{ graficos.torta_porcentajes_por_tipo.render_unicode|safe }}
               </figure>
             </div>
           </div>
@@ -268,7 +268,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <h3>{% trans 'Cantidad de llamadas de las campañas' %}</h3>
         <div class="graficos-avances">
             <figure>
-                {{ graficos.barra_llamada_por_campana.render|safe }}
+                {{ graficos.barra_llamada_por_campana.render_unicode|safe }}
             </figure>
         </div>
     </div>
@@ -377,7 +377,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <h3>{% trans 'Tipos de llamadas por campaña de discador' %}</h3>
         <div class="graficos-avances">
             <figure>
-                {{ graficos.barra_campana_llamadas_dialer.render|safe }}
+                {{ graficos.barra_campana_llamadas_dialer.render_unicode|safe }}
             </figure>
             <button class="btn btn-outline-primary" onclick="exportarReporte('tipos_de_llamada_dialer');">
                 {% trans 'Exportar tipo de llamadas de Campañas Dialer (CSV)' %}
@@ -484,7 +484,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <h3>{% trans 'Tipos de llamadas por campaña entrantes' %}</h3>
         <div class="graficos-avances">
             <figure>
-                {{ graficos.barra_campana_llamadas_entrantes.render|safe }}
+                {{ graficos.barra_campana_llamadas_entrantes.render_unicode|safe }}
             </figure>
             <button class="btn btn-outline-primary" onclick="exportarReporte('tipos_de_llamada_entrante');">
                 {% trans 'Exportar tipo de llamadas de Campañas Entrantes (CSV)' %}
@@ -555,7 +555,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <h3>{% trans 'Tipos de llamadas por campaña manuales' %}</h3>
         <div class="graficos-avances">
             <figure>
-                {{ graficos.barra_campana_llamadas_manuales.render|safe }}
+                {{ graficos.barra_campana_llamadas_manuales.render_unicode|safe }}
             </figure>
              <button class="btn btn-outline-primary" onclick="exportarReporte('tipos_de_llamada_manual');">
                 {% trans 'Exportar tipo de llamadas de Campañas Manuales (CSV)' %}
@@ -646,7 +646,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <h3>{% trans 'Tipos de llamadas por campaña preview' %}</h3>
         <div class="graficos-avances">
             <figure>
-                {{ graficos.barra_campana_llamadas_preview.render|safe }}
+                {{ graficos.barra_campana_llamadas_preview.render_unicode|safe }}
             </figure>
              <button class="btn btn-outline-primary" onclick="exportarReporte('tipos_de_llamada_preview');">
                 {% trans 'Exportar tipo de llamadas de Campañas Preview (CSV)' %}

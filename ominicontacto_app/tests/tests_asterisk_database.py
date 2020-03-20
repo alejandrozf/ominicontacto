@@ -31,7 +31,7 @@ from ominicontacto_app.services.asterisk_database import (
     CampanaFamily, AgenteFamily, RutaSalienteFamily, TrunkFamily, GlobalsFamily
 )
 from configuracion_telefonia_app.tests.factories import (
-    TroncalSIPFactory, RutaSalienteFactory, PatronDeDiscadoFactory)
+    TroncalSIPFactory, RutaSalienteFactory, PatronDeDiscadoFactory, PlaylistFactory)
 from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 
 
@@ -98,6 +98,14 @@ class AsteriskDatabaseTest(OMLBaseTest):
         self.assertEqual(dict_campana['PERMITOCCULT'], "")
         self.assertEqual(dict_campana['MAXCALLS'], "")
         self.assertEqual(dict_campana['FAILOVER'], str(0))
+        self.assertNotIn('MOH', dict_campana['FAILOVER'])
+
+    def test_devuelve_correctamente_value_MOH_campana_entrante_asterisk(self):
+        playlist = PlaylistFactory()
+        self.campana_entrante.queue_campana.musiconhold = playlist
+        servicio = CampanaFamily()
+        dict_campana = servicio._create_dict(self.campana_entrante)
+        self.assertEqual(dict_campana['MOH'], playlist.nombre)
 
     def test_devuelve_correctamente_values_campana_dialer_asterisk(self):
         """
@@ -137,7 +145,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         servicio = AgenteFamily()
         dict_agente = servicio._create_dict(self.agente)
 
-        self.assertItemsEqual(['NAME', 'SIP', 'STATUS'], dict_agente.keys())
+        self.assertEqual(['NAME', 'SIP', 'STATUS'], list(dict_agente.keys()))
 
     def test_falla_dict_agente_asterisk(self):
         """

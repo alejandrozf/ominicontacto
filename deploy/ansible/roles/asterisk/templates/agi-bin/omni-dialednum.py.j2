@@ -1,7 +1,7 @@
-{% if cluster == 0 %}
-#!{{ install_prefix }}virtualenv/bin/python
+{% if is_docker == "false" %}
+#!{{ install_prefix }}virtualenv/bin/python3
 {% else %}
-#! /usr/bin/python
+#! /usr/bin/python3
 {% endif %}
 # -*- coding: utf-8 -*-
 
@@ -55,5 +55,5 @@ with open(campaign_dialed_number_file, 'r') as f:
 try:
     agi.set_variable('OMLDIALEDNUM', str(is_dialed))
 except Exception as e:
-    write_time_stderr("Unable to set variable OMLDIALEDNUM in channel due to {0}".format(e.message))
+    write_time_stderr("Unable to set variable OMLDIALEDNUM in channel due to {0}".format(e))
     raise e

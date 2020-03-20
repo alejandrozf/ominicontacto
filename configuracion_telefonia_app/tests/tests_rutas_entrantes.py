@@ -23,7 +23,7 @@ from django.utils.translation import ugettext as _
 from io import BytesIO
 from mock import patch
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from configuracion_telefonia_app.forms import IVRForm
 from configuracion_telefonia_app.models import (RutaEntrante, DestinoEntrante, IVR, GrupoHorario,
@@ -109,7 +109,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         self.assertEqual(RutaEntrante.objects.count(), n_rutas_entrantes)
 
-    @patch('configuracion_telefonia_app.views.escribir_ruta_entrante_config')
+    @patch('configuracion_telefonia_app.views.base.escribir_ruta_entrante_config')
     def test_usuario_administrador_puede_crear_ruta_entrante(self, escribir_ruta_entrante_config):
         url = reverse('crear_ruta_entrante')
         self.client.login(username=self.admin.username, password=self.PWD)
@@ -129,8 +129,8 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.ruta_entrante.refresh_from_db()
         self.assertNotEqual(self.ruta_entrante.nombre, nuevo_nombre)
 
-    @patch('configuracion_telefonia_app.views.escribir_ruta_entrante_config')
-    @patch('configuracion_telefonia_app.views.eliminar_ruta_entrante_config')
+    @patch('configuracion_telefonia_app.views.base.escribir_ruta_entrante_config')
+    @patch('configuracion_telefonia_app.views.base.eliminar_ruta_entrante_config')
     def test_usuario_administrador_puede_modificar_ruta_entrante(
             self, eliminar_ruta_entrante_config, escribir_ruta_entrante_config):
         nuevo_nombre = 'ruta_entrante_modificada'
@@ -203,7 +203,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.assertEqual(response.status_code, 403)
         self.assertEqual(IVR.objects.count(), n_ivrs)
 
-    @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
+    @patch('configuracion_telefonia_app.views.base.escribir_nodo_entrante_config')
     def test_usuario_administrador_puede_crear_ivr(self, escribir_nodo_entrante_config):
         url = reverse('crear_ivr')
         self.client.login(username=self.admin.username, password=self.PWD)
@@ -226,7 +226,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.ivr.refresh_from_db()
         self.assertNotEqual(self.ivr.nombre, nuevo_nombre)
 
-    @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
+    @patch('configuracion_telefonia_app.views.base.escribir_nodo_entrante_config')
     def test_usuario_administrar_puede_modificar_ivr(self, escribir_nodo_entrante_config):
         url = reverse('editar_ivr', args=[self.ivr.pk])
         nuevo_nombre = 'ivr_modificado'
@@ -240,7 +240,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.ivr.refresh_from_db()
         self.assertEqual(self.ivr.nombre, nuevo_nombre)
 
-    @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
+    @patch('configuracion_telefonia_app.views.base.escribir_nodo_entrante_config')
     def test_creacion_ivr_crea_nodo_generico_correspondiente(self, escribir_nodo_entrante_config):
         url = reverse('crear_ivr')
         self.client.login(username=self.admin.username, password=self.PWD)
@@ -362,7 +362,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         self.assertEqual(ValidacionFechaHora.objects.count(), n_validaciones_fecha_hora)
 
-    @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
+    @patch('configuracion_telefonia_app.views.base.escribir_nodo_entrante_config')
     def test_usuario_supervisor_puede_crear_validacion_fecha_hora(
             self, escribir_nodo_entrante_config):
         url = reverse('crear_validacion_fecha_hora')
@@ -373,7 +373,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(ValidacionFechaHora.objects.count(), n_validaciones_fecha_hora + 1)
 
-    @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
+    @patch('configuracion_telefonia_app.views.base.escribir_nodo_entrante_config')
     def test_usuario_administrador_puede_crear_validacion_fecha_hora(
             self, escribir_nodo_entrante_config):
         url = reverse('crear_validacion_fecha_hora')
@@ -396,7 +396,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.validacion_fecha_hora.refresh_from_db()
         self.assertNotEqual(self.validacion_fecha_hora.nombre, nuevo_nombre)
 
-    @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
+    @patch('configuracion_telefonia_app.views.base.escribir_nodo_entrante_config')
     def test_usuario_supervisor_puede_modificar_validacion_fecha_hora(
             self, escribir_nodo_entrante_config):
         nuevo_nombre = 'validacion_fecha_hora_modificada'
@@ -411,7 +411,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.validacion_fecha_hora.refresh_from_db()
         self.assertEqual(self.validacion_fecha_hora.nombre, nuevo_nombre)
 
-    @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
+    @patch('configuracion_telefonia_app.views.base.escribir_nodo_entrante_config')
     def test_usuario_administrar_puede_modificar_validacion_fecha_hora(
             self, escribir_nodo_entrante_config):
         nuevo_nombre = 'validacion_fecha_hora_modificada'
@@ -426,7 +426,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.validacion_fecha_hora.refresh_from_db()
         self.assertEqual(self.validacion_fecha_hora.nombre, nuevo_nombre)
 
-    @patch('configuracion_telefonia_app.views.escribir_nodo_entrante_config')
+    @patch('configuracion_telefonia_app.views.base.escribir_nodo_entrante_config')
     def test_creacion_validacion_fecha_hora_crea_nodo_generico_correspondiente(
             self, escribir_nodo_entrante_config):
         url = reverse('crear_validacion_fecha_hora')
@@ -498,7 +498,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         response = self.client.post(url, post_data, follow=True)
         self.assertFalse(response.context['form'].is_valid())
         self.assertEqual(response.context['form'].errors['nombre'],
-                         [_('Introduzca un valor correcto.')])
+                         [_('Introduzca un valor válido.')])
 
     def test_no_se_permite_crear_destino_custom_destino_no_alfanumerico(self):
         url = reverse('crear_destino_personalizado')
@@ -512,7 +512,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         response = self.client.post(url, post_data, follow=True)
         self.assertFalse(response.context['form'].is_valid())
         self.assertEqual(response.context['form'].errors['custom_destination'],
-                         [_('Introduzca un valor correcto.')])
+                         [_('Introduzca un valor válido.')])
 
     def test_no_se_permite_crear_destino_custom_sin_failover(self):
         url = reverse('crear_destino_personalizado')

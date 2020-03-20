@@ -4,6 +4,9 @@
 # Inicialización de variables
 FECHA=`date +%Y%m%d`
 
+pg_dump=`which pg_dump`
+pg_restore=`which pg_restore`
+
 Backup() {
 
     mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup
@@ -39,7 +42,7 @@ Backup() {
     #Databases
     echo "Making dump of {{ postgres_database }} database"
     mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database
-    pg_dump -F t {{ postgres_database }} -f /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/base_backup > /dev/null 2>&1
+    $pg_dump -F t {{ postgres_database }} -f /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/base_backup
     tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/* > /dev/null 2>&1
     rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/
 
@@ -88,7 +91,7 @@ Restore() {
     #Restore of Database
     echo "Restoring {{ postgres_database }} database"
     cd ../../postgres_database
-    pg_restore -F t -d {{ postgres_database }} base_backup -c
+    $pg_restore -F t -d {{ postgres_database }} base_backup -c
 
     rm -rf {{ install_prefix }}backup/$tar_directory
 

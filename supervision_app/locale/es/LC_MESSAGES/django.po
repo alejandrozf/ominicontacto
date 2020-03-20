@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-02 16:23-0300\n"
+"POT-Creation-Date: 2020-02-13 13:20-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,8 +17,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: supervision_app/apps.py:33
+msgid "Supervisión"
+msgstr ""
+
+#: supervision_app/apps.py:38
 #: supervision_app/templates/supervision_agentes.html:48
 msgid "Agentes"
+msgstr ""
+
+#: supervision_app/apps.py:42
+#: supervision_app/templates/supervision_campanas_entrantes.html:32
+msgid "Campañas Entrantes"
+msgstr ""
+
+#: supervision_app/apps.py:46
+#: supervision_app/templates/supervision_campanas_salientes.html:31
+msgid "Campañas Salientes"
 msgstr ""
 
 #: supervision_app/templates/supervision_agentes.html:76
@@ -42,10 +56,6 @@ msgstr ""
 
 #: supervision_app/templates/supervision_agentes.html:88
 msgid "Acciones"
-msgstr ""
-
-#: supervision_app/templates/supervision_campanas_entrantes.html:32
-msgid "Campañas Entrantes"
 msgstr ""
 
 #: supervision_app/templates/supervision_campanas_entrantes.html:38
@@ -92,10 +102,6 @@ msgstr ""
 
 #: supervision_app/templates/supervision_campanas_entrantes.html:60
 msgid " segundos"
-msgstr ""
-
-#: supervision_app/templates/supervision_campanas_salientes.html:31
-msgid "Campañas Salientes"
 msgstr ""
 
 #: supervision_app/templates/supervision_campanas_salientes.html:37

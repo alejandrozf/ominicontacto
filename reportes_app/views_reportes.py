@@ -54,7 +54,8 @@ class CampanaReporteCalificacionListView(ListView):
         asignadas = Campana.objects.all()
 
         if not user.get_is_administrador():
-            asignadas = Campana.objects.obtener_campanas_vista_by_user(asignadas, user)
+            supervisor = user.get_supervisor_profile()
+            asignadas = supervisor.campanas_asignadas_actuales()
 
         try:
             self.campana = asignadas.get(pk=self.kwargs['pk_campana'])
@@ -131,7 +132,8 @@ class CampanaReporteGraficoView(FormView):
         asignadas = Campana.objects.all()
 
         if not user.get_is_administrador():
-            asignadas = Campana.objects.obtener_campanas_vista_by_user(asignadas, user)
+            supervisor = user.get_supervisor_profile()
+            asignadas = supervisor.campanas_asignadas_actuales()
 
         try:
             return asignadas.get(pk=self.kwargs['pk_campana'])

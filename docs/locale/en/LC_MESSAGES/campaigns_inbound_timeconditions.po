@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
@@ -189,109 +190,3 @@ msgid ""
 msgstr ""
 "Finally we have this routing element available to be used by example "
 "as the destination of an incoming route."
-
-#~ msgid "Enrutamiento condicionado por fechas y horas"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "OMniLeads permite configurar el enrutamiento"
-#~ " de llamadas entrantes hacia diferentes "
-#~ "destinos internos a partir de comparar"
-#~ " la fecha/hora en que se procesa "
-#~ "una llamada y un patrón configurado, "
-#~ "de manera tal que se pueda "
-#~ "planificar de antemano si una llamada"
-#~ " debe ir hacia un destino u "
-#~ "otro basandonos en dicha comparación."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Por ejemplo una llamada podria ir "
-#~ "hacia una campaña entrante \"en fechas"
-#~ " y horas de atención al cliente\" "
-#~ "y hacia un IVR fuera de ese "
-#~ "rango definido."
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Cada elemento de este tipo generado, "
-#~ "puede ser invocado por otros como "
-#~ "el destino de:"
-#~ msgstr ""
-
-#~ msgid "una ruta entrante"
-#~ msgstr ""
-
-#~ msgid "una opción de un IVR"
-#~ msgstr ""
-
-#~ msgid "el failover de una campaña entrante"
-#~ msgstr ""
-
-#~ msgid "otro elemento similar"
-#~ msgstr ""
-
-# a0a00879c51b4122bcdde82c6569cfcf
-#~ msgid ""
-#~ "En esta sección se trabaja con el"
-#~ " módulo *Enrutamiento de llamadas entrantes"
-#~ " condicionado por rango de tiempo*, "
-#~ "el cual permite configurar el flujo "
-#~ "de llamadas entrantes hacia diferentes "
-#~ "destinos internos a partir de comparar"
-#~ " la fecha/hora en que llega una "
-#~ "llamada y un patrón (de fechas y"
-#~ " horas) relacionado, de manera tal "
-#~ "que se pueda planificar de antemano "
-#~ "si una llamada debe ir hacia un"
-#~ " destino u otro de acuerdo al "
-#~ "resultado de dicha comparación."
-#~ msgstr ""
-
-# 360ba72d39a6418a9dc3d26ef585d019
-#~ msgid "**Grupos horarios**"
-#~ msgstr ""
-
-# cf83f054bd5b40068d86ead3040d824f
-#~ msgid ""
-#~ "Este módulo permite agrupar patrones de"
-#~ " fechas y horas así también como "
-#~ "fechas y horarios puntuales dentro de"
-#~ " un elemento interno de OMniLeasds, "
-#~ "para luego puede ser invocado por "
-#~ "los condicionales de tiempo, módulo "
-#~ "complementario que permite realizar un "
-#~ "enrutamiento comparando la fecha/hora de "
-#~ "la llamada con la de un grupo "
-#~ "de éstos. Para definir o editar "
-#~ "grupos de horarios, se debe acceder "
-#~ "al punto de menú **Telefonía -> "
-#~ "Grupos horarios**. Para añadir un nuevo"
-#~ " grupo se debe presionar el botón "
-#~ "\"Agregar nuevo grupo\"."
-#~ msgstr ""
-
-# d46ad5451cbb4c38a6fbc4bd43e411fc
-#~ msgid "**Validaciones de tiempo**"
-#~ msgstr ""
-
-# cb8022e5c516474a8723407c1ca03c17
-#~ msgid ""
-#~ "Para llevar a cabo este tipo de"
-#~ " configuiraciones se disponen de dos "
-#~ "módulos que trabajan juntos."
-#~ msgstr ""
-
-# cb8022e5c516474a8723407c1ca03c17
-#~ msgid ""
-#~ "Para llevar a cabo este tipo de"
-#~ " configuiraciones se disponen de dos "
-#~ "módulos que trabajan a la par."
-#~ msgstr ""
-
-# 4613b7087c8f4253ad087562327e9479
-#~ msgid ""
-#~ "Existen dos módulos que trabajan en "
-#~ "conjunto y que permiten implementar este"
-#~ " tipo de configuraciones,."
-#~ msgstr ""

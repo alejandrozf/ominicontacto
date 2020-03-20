@@ -4,8 +4,8 @@ ENV INSTALL_LOCATION {{ install_prefix }}ominicontacto
 ENV INSTALL_PREFIX {{ install_prefix }}
 
 RUN apk update \
-    && apk add bash busybox-suid coreutils curl gettext git lame libsasl libxslt libsass libffi libjpeg-turbo openssl pcre postgresql-client postgresql-dev py-cairo py-lxml py-libxslt py-pip sed sox tzdata \
-    && apk add --virtual .build-deps build-base python-dev libxslt-dev libjpeg-turbo-dev jpeg-dev libffi-dev libass-dev py-cairo-dev libxslt-dev cairo-dev libffi-dev \
+    && apk add bash busybox-suid coreutils python3 curl gettext git lame libsasl libxslt libsass tiff libffi libjpeg-turbo openssl pcre postgresql-client postgresql-dev py3-cairo py3-lxml py-libxslt py3-pip sed sox tzdata \
+    && apk add --virtual .build-deps build-base libxml2-dev python3-dev libxslt-dev libjpeg-turbo-dev jpeg-dev lcms2-dev tcl-dev tiff-dev tk-dev freetype-dev libass-dev py-cairo-dev cairo-dev libffi-dev zlib-dev \
     && addgroup -g 1000 -S omnileads &&  adduser -u 1000 -S omnileads -G omnileads -h {{ install_prefix }} -s /bin/bash \
     && cd {{ install_prefix }} \
     && mkdir -p .pip wombat-json bin backup media_root/reporte_campana static log run
@@ -22,8 +22,8 @@ COPY requirements/* $INSTALL_LOCATION/requirements/
 {% endif %}
 COPY scripts/requirements.txt $INSTALL_LOCATION
 
-RUN pip install -r $INSTALL_LOCATION/requirements.txt \
-    && apk del .build-deps build-base python-dev libxslt-dev jpeg-dev libffi-dev \
+RUN pip3 install -r $INSTALL_LOCATION/requirements.txt \
+    && apk del .build-deps build-base python3-dev libxslt-dev jpeg-dev libffi-dev libxml2-dev zlib-dev freetype-dev lcms2-dev tcl-dev tiff-dev tk-dev\
     && mkdir /etc/asterisk && chown omnileads. /etc/asterisk \
     && chown -R omnileads.omnileads {{ install_prefix }} /var/spool/cron/ /var/spool/cron/crontabs/ \
     && cd /opt/omnileads/ \

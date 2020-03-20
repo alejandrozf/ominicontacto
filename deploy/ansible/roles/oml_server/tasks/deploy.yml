@@ -53,7 +53,6 @@
           - "{{ install_prefix }}log"
           - "{{ install_prefix }}run"
           - "{{ asterisk_location }}/etc/asterisk"
-          - "{{ install_prefix}}virtualenv"
   tags: omniapp
 
 #----------------------------------------------------------------------
@@ -84,15 +83,35 @@
     - utiles_globales.py
   tags: postinstall
 
+- name: Erase virtualenv if exists
+  file: path={{ install_prefix }}virtualenv state=absent
+  tags: postinstall
+  when: python_version.stdout != "Python 3.6.8"
+
+- name: Creation of the initial virtualenv
+  command: virtualenv {{ install_prefix }}virtualenv -p python3.6
+  become: true
+  become_method: su
+  become_user: "{{ usuario }}"
+  when: python_version.stdout != "Python 3.6.8"
+  tags: postinstall
+
 # Seteo posesion de ominicontacto al usuario omnileads
 - name: Change owner and group of ominicontacto
   file: "path={{ install_prefix }}ominicontacto owner={{ usuario }} group={{ usuario }} recurse=yes"
   tags: postinstall
 
+
 # Se hace el upgrade de python setuptools usando pip. https://docs.ansible.com/ansible/2.5/modules/pip_module.html#pip-module
 # El environment sirve para setear variables de entorno necesarias
 - name: Upgrade of python setuptools
-  pip: name=setuptools virtualenv={{ install_prefix }}virtualenv virtualenv_command=/usr/bin/virtualenv extra_args=--upgrade
+  pip:
+    chdir={{ install_prefix }}virtualenv
+    executable=pip3 
+    name=setuptools 
+    virtualenv_command=/usr/bin/virtualenv
+    virtualenv_python=python3.6 
+    extra_args=--upgrade
   environment:
     PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-{{ postgresql_version }}/bin"
     PYTHONPATH: '{{ install_prefix }}ominicontacto:{{ install_prefix }}local'
@@ -112,9 +131,10 @@
 # Se instalan los paquetes que hay en el requirements.txt usando pip
 - name: Setup virtualenv
   pip:
+    chdir={{ install_prefix }}virtualenv
+    executable=pip3
     requirements={{ install_prefix }}ominicontacto/requirements.txt
-    virtualenv={{ install_prefix }}virtualenv
-    virtualenv_command=/usr/bin/virtualenv
+    virtualenv_python=python3.6 
     extra_args="--exists-action 'w'"
   environment:
     PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-{{ postgresql_version }}/bin"

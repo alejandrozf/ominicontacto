@@ -40,7 +40,8 @@ from ominicontacto_app.models import (
     ActuacionVigente, ReglasIncidencia, CalificacionCliente,
     ArchivoDeAudio
 )
-from ominicontacto_app.tests.factories import NombreCalificacionFactory, GrupoFactory
+from ominicontacto_app.tests.factories import (NombreCalificacionFactory, GrupoFactory,
+                                               QueueMemberFactory)
 from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 from mock import Mock
 
@@ -55,8 +56,8 @@ def ru():
 
 def rtel():
     """Devuelve nro telefonico aleatorio"""
-    return unicode(random.randint(1140000000000000,
-                                  1149999999999999))
+    return str(random.randint(1140000000000000,
+                              1149999999999999))
 
 
 def _tmpdir():
@@ -65,6 +66,8 @@ def _tmpdir():
 
 
 class OMLTestUtilsMixin(object):
+
+    DEFAULT_PASSWORD = PASSWORD
 
     def get_test_resource(self, resource):
         """Devuelve el path completo a archivo del directorio test
@@ -500,6 +503,11 @@ class OMLTestUtilsMixin(object):
             archivo_de_audio)
         archivo_de_audio.save = Mock()
         return archivo_de_audio
+
+    def _hacer_miembro(self, agente, campana):
+        QueueMemberFactory.create(
+            member=agente, queue_name=campana.queue_campana,
+            id_campana='{0}_{1}'.format(campana.pk, campana.nombre))
 
 
 class OMLBaseTest(TestCase, OMLTestUtilsMixin):

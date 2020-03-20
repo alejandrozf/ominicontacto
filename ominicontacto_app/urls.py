@@ -106,23 +106,7 @@ urlpatterns = [
         administrador_o_supervisor_requerido(
             views_user_profiles.ToggleActivarClienteWebPhoneView.as_view()),
         name="cliente_webphone_toggle_activacion"),
-    # ==========================================================================
-    # Módulos
-    # ==========================================================================
-    url(r'^modulo/nuevo/$',
-        administrador_requerido(views.ModuloCreateView.as_view()), name='modulo_nuevo',
-        ),
-    url(r'^modulo/update/(?P<pk>\d+)/$',
-        administrador_requerido(views.ModuloUpdateView.as_view()),
-        name='modulo_update',
-        ),
-    url(r'^modulo/list/$',
-        administrador_requerido(views.ModuloListView.as_view()), name='modulo_list',
-        ),
-    url(r'^modulo/delete/(?P<pk>\d+)/$',
-        administrador_requerido(views.ModuloDeleteView.as_view()),
-        name='modulo_delete',
-        ),
+
     # ==========================================================================
     # Grupos
     # ==========================================================================
@@ -186,8 +170,13 @@ urlpatterns = [
         name='grabacion_descripcion',
         ),
     url(r'^grabacion/buscar/(?P<pagina>\d+)/$',
-        permiso_administracion_requerido(views_grabacion.BusquedaGrabacionFormView.as_view()),
+        permiso_administracion_requerido(
+            views_grabacion.BusquedaGrabacionSupervisorFormView.as_view()),
         name='grabacion_buscar',
+        ),
+    url(r'^grabacion/agente/buscar/(?P<pagina>\d+)/$',
+        agente_requerido(views_grabacion.BusquedaGrabacionAgenteFormView.as_view()),
+        name='grabacion_agente_buscar',
         ),
 
     url(r'^agenda/nuevo/$',
@@ -506,6 +495,14 @@ urlpatterns = [
         name='calificacion_cliente_actualiza_desde_reporte'
         ),
 
+    url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
+        '/auditar_calificacion/$',
+        administrador_o_supervisor_requerido(
+            views_calificacion_cliente.AuditarCalificacionClienteFormView.as_view()),
+        kwargs={'from': 'audita_supervisor'},
+        name='auditar_calificacion'
+        ),
+
     # TODO: Una vez que todas las manuales sean click to call ya no existirá esta vista
     # Mientras, quedará para ser usada únicamente en llamadas manuales
     url(r'^formulario/(?P<pk_campana>\d+)/calificacion_create/(?P<telefono>\d+)/$',
@@ -520,13 +517,14 @@ urlpatterns = [
         name='formulario_detalle'
         ),
     url(r'^formulario/venta/(?P<pk_calificacion>\d+)/$',
-        agente_requerido(views_calificacion_cliente.RespuestaFormularioCreateFormView.as_view()),
+        agente_requerido(
+            views_calificacion_cliente.RespuestaFormularioCreateUpdateAgenteFormView.as_view()),
         name='formulario_venta'
         ),
-    url(r'^formulario/venta/(?P<pk>\d+)/update/$',
-        agente_requerido(
-            views_calificacion_cliente.RespuestaFormularioUpdateFormView.as_view()),
-        name='formulario_venta_update'
+    url(r'^formulario/auditar_venta/(?P<pk_calificacion>\d+)/$',
+        administrador_o_supervisor_requerido(
+            views_calificacion_cliente.RespuestaFormularioCreateUpdateSupervisorFormView.as_view()),
+        name='auditar_formulario_venta'
         ),
     # ==========================================================================
     # Agente

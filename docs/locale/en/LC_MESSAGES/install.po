@@ -3,11 +3,12 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-14 11:06-0300\n"
+"POT-Creation-Date: 2020-02-09 23:58-0300\n"
 "PO-Revision-Date: 2019-08-13 12:26-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -16,7 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.4.0\n"
 
 # a58a62259e22457a8e8022b83a9030b2
 #: ../../install.rst:5
@@ -25,37 +26,45 @@ msgstr "OMniLeads installation"
 
 # f2e89e8a95d54130b0094c2d0c153b47
 #: ../../install.rst:6
-msgid "En este capítulo se detallan los tre tipos de instalación de OMniLeads"
-msgstr "In this chapter the three types of OMniLeads installation are detailed"
+msgid "En este capítulo se detallan los tipos de instalación de OMniLeads"
+msgstr "In this chapter the different types of OMniLeads installations are detailed"
 
 # fbeaecf3551c498eb204dbd3d59554ee
 #: ../../install.rst:8
 msgid ":ref:`about_install_selfhosted`."
-msgstr ":ref:`about_install_selfhosted`."
+msgstr ""
 
 # 1a4da564bd79494fb3781240dea3762d
 #: ../../install.rst:9
 msgid ":ref:`about_install_remote`."
-msgstr ":ref:`about_install_remote`."
+msgstr ""
 
 # 97369854435040e1bb4123c4159a8c53
 #: ../../install.rst:10
 msgid ":ref:`about_install_docker_linux`."
 msgstr ""
 
-# 97369854435040e1bb4123c4159a8c53
-#: ../../install.rst:11
+# ca9bec51590d43079de30551ec7f6178
+#: ../../install.rst:12
+msgid ""
+"El siguiente apartado esta dirigido a usuarios avanzados de Docker, los "
+"cuales quieran involucrarse mas con la creacion de imagenes para el "
+"proyecto:"
+msgstr "This chapter is oriented to Docker advanced users, interested in creating "
+"their own images for the project: "
 
-msgid ":ref:`about_install_docker_pbx`."
+# 97369854435040e1bb4123c4159a8c53
+#: ../../install.rst:14
+msgid ":ref:`about_install_docker_build`."
 msgstr ""
 
 # 7fda9b93bfd14b359367cd4389d7ec5d
-#: ../../install.rst:15
+#: ../../install.rst:18
 msgid "**Recomendaciones:**"
 msgstr "**Recommendations:**"
 
 # 033f331d687a4010be56214b407b9dea
-#: ../../install.rst:17
+#: ../../install.rst:20
 msgid ""
 "Tanto el host como el nodo a instalar tienen que tener conexión buena y "
 "estable a internet"
@@ -64,7 +73,7 @@ msgstr ""
 "internet connection"
 
 # 3e90f12a25c442f2b29d24332e9ad76e
-#: ../../install.rst:18
+#: ../../install.rst:21
 msgid ""
 "Que no haya ningún elemento de red para salir a internet (firewall "
 "bloqueando puerto 443, proxy)"
@@ -73,19 +82,19 @@ msgstr ""
 "blocking 443 port, proxy)"
 
 # b2a703daf4f54b29b05f8ec76a9aff1f
-#: ../../install.rst:19
+#: ../../install.rst:22
 msgid "Usar las isos que se recomiendan en la sección Donde se puede Instalar?"
 msgstr "Use the isos that are recommended in the section Where can you install?"
 
 # b74c6760a1804b0f9da5389c9a64253d
-#: ../../install.rst:20
+#: ../../install.rst:23
 msgid ""
 "En caso de fallo de alguna task de ansible volver a correr el script de "
 "instalación"
 msgstr "In case of failure of any ansible task run the installation script again"
 
 # 829769703a1343f5af3b72b4e35ce0cd
-#: ../../install.rst:21
+#: ../../install.rst:24
 msgid ""
 "En caso de que vuelva a fallar levantar un issue a "
 "https://gitlab.com/omnileads/ominicontacto/issues especificando distro en"
@@ -95,3 +104,5 @@ msgstr ""
 "https://gitlab.com/omnileads/ominicontacto/issues specifying the Linux "
 "distro in which it happened and the stable version that was wanted to "
 "install"
+
+

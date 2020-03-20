@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 import calendar
 
 from django.db import models
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
@@ -28,7 +29,10 @@ from django.utils.translation import ugettext_lazy as _
 
 from ominicontacto_app.models import ArchivoDeAudio, Campana
 
-
+import os
+import re
+import uuid
+SUBSITUTE_REGEX = re.compile(r'[^a-z\._-]')
 R_DECIMAL = r'^\d+$'
 R_ALFANUMERICO = r'^[\w]+$'
 R_DIAL_OPT = r'^[HhKkRrL():MATtWw]+$'
@@ -59,7 +63,7 @@ class TroncalSIP(models.Model):
     text_config = models.TextField(verbose_name=_('Text config'))
     tecnologia = models.PositiveIntegerField(choices=OPCIONES_TECNOLOGIA, default=CHANSIP)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.nombre
 
     @property
@@ -90,7 +94,7 @@ class RutaSaliente(models.Model):
         max_length=512, validators=[RegexValidator(R_DIAL_OPT)], default='Tt')
     orden = models.PositiveIntegerField(unique=True, default=max_orden_ruta_saliente)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.nombre
 
 
@@ -109,7 +113,7 @@ class PatronDeDiscado(models.Model):
         unique_together = ('orden', 'ruta_saliente')
         ordering = ['orden']
 
-    def __unicode__(self):
+    def __str__(self):
         return "Patrón de ruta saliente {0} con match_pattern: {1}".format(
             self.ruta_saliente.nombre, self.match_pattern)
 
@@ -126,7 +130,7 @@ class OrdenTroncal(models.Model):
         unique_together = ('orden', 'ruta_saliente')
         ordering = ['orden']
 
-    def __unicode__(self):
+    def __str__(self):
         return "Troncal {0} con orden {1} para ruta saliente {2}".format(
             self.troncal.nombre, self.orden, self.ruta_saliente.nombre)
 
@@ -154,7 +158,7 @@ class IVR(models.Model):
         ArchivoDeAudio, on_delete=models.PROTECT, blank=True, null=True,
         related_name="audio_invalid_ivrs")
 
-    def __unicode__(self):
+    def __str__(self):
         return "IVR {0}".format(self.nombre)
 
 
@@ -164,7 +168,7 @@ class GrupoHorario(models.Model):
     """
     nombre = models.CharField(max_length=50, unique=True, verbose_name=_('Nombre'))
 
-    def __unicode__(self):
+    def __str__(self):
         return self.nombre
 
 
@@ -220,7 +224,7 @@ class ValidacionTiempo(models.Model):
     # Notar que todos los campos de validación temporal, excepto 'tiempo_inicial' no son requeridos
     # si se guardan vacíos esto significa por defecto TODOS (los días de la semana, los meses, etc.)
 
-    def __unicode__(self):
+    def __str__(self):
         return "Validación fecha/hora id:{0} para {1}".format(self.id, self.grupo_horario)
 
     @property
@@ -324,8 +328,8 @@ class IdentificadorCliente(models.Model):
                                                        MaxValueValidator(20)],
                                            verbose_name=_('Intentos'))
 
-    def __unicode__(self):
-        return unicode(_("{0}: {1}".format(self.nombre, self.url)))
+    def __str__(self):
+        return str(_("{0}: {1}".format(self.nombre, self.url)))
 
 
 class DestinoEntrante(models.Model):
@@ -358,8 +362,8 @@ class DestinoEntrante(models.Model):
     class Meta:
         unique_together = ('tipo', 'object_id')
 
-    def __unicode__(self):
-        return unicode(_("{0}: {1}".format(self.get_tipo_display(), self.nombre)))
+    def __str__(self):
+        return str(_("{0}: {1}".format(self.get_tipo_display(), self.nombre)))
 
     @classmethod
     def crear_nodo_ruta_entrante(cls, info_nodo_entrante, commit=True):
@@ -418,11 +422,13 @@ class DestinoEntrante(models.Model):
 class OpcionDestino(models.Model):
     """Representa una relación entre dos nodos de una ruta entrante de una llamada"""
     valor = models.CharField(max_length=30)
-    destino_anterior = models.ForeignKey(DestinoEntrante, related_name='destinos_siguientes')
-    destino_siguiente = models.ForeignKey(DestinoEntrante, related_name='destinos_anteriores')
+    destino_anterior = models.ForeignKey(DestinoEntrante, related_name='destinos_siguientes',
+                                         on_delete=models.CASCADE)
+    destino_siguiente = models.ForeignKey(DestinoEntrante, related_name='destinos_anteriores',
+                                          on_delete=models.CASCADE)
 
-    def __unicode__(self):
-        return unicode(_("Desde nodo {0} a nodo {1}".format(
+    def __str__(self):
+        return str(_("Desde nodo {0} a nodo {1}".format(
             self.destino_anterior.nombre, self.destino_siguiente.nombre)))
 
     @classmethod
@@ -455,7 +461,8 @@ class RutaEntrante(models.Model):
         max_length=30, unique=True, validators=[RegexValidator(R_MATCH_PATTERN)])
     prefijo_caller_id = models.CharField(max_length=30, blank=True, null=True)
     idioma = models.PositiveIntegerField(choices=TIPOS_IDIOMAS)
-    destino = models.ForeignKey(DestinoEntrante, related_name='rutas_entrantes')
+    destino = models.ForeignKey(DestinoEntrante, related_name='rutas_entrantes',
+                                on_delete=models.CASCADE)
 
     @property
     def sigla_idioma(self):
@@ -469,8 +476,8 @@ class HangUp(models.Model):
         obj, created = cls.objects.get_or_create(pk=1)
         return obj
 
-    def __unicode__(self):
-        return _("HangUp")
+    def __str__(self):
+        return str(_("HangUp"))
 
 
 class DestinoPersonalizado(models.Model):
@@ -480,3 +487,61 @@ class DestinoPersonalizado(models.Model):
     custom_destination = models.CharField(
         max_length=50, unique=True, verbose_name=_('Localización destino'),
         validators=[RegexValidator(R_CONTEXT_DIALPLAN)])
+
+
+class Playlist(models.Model):
+    nombre = models.CharField(
+        max_length=50, unique=True, verbose_name=_('Nombre'),
+        validators=[RegexValidator(R_ALFANUMERICO)])
+
+    def __str__(self):
+        return self.nombre
+
+
+def upload_to_musicas_originales(instance, filename):
+    filename = SUBSITUTE_REGEX.sub('', filename)
+    filename = "{0}-{1}".format(str(uuid.uuid4()), filename)[:95]
+    return os.path.join('musicas_originales', instance.playlist.nombre, filename)
+
+
+def upload_to_musicas_asterisk(instance, filename):
+    filename = SUBSITUTE_REGEX.sub('', filename)
+    filename = "{0}-{1}".format(instance.id, filename)[:95]
+    return os.path.join(MusicaDeEspera._DIR_AUDIO_PREDEFINIDO, instance.playlist.nombre, filename)
+
+
+class MusicaDeEspera(models.Model):
+    """Representa una Musica de espera de una Playlist"""
+
+    @property
+    def DIR_AUDIO_PREDEFINIDO(self):
+        return os.path.join(self._DIR_AUDIO_PREDEFINIDO, self.playlist.nombre)
+
+    _DIR_AUDIO_PREDEFINIDO = "musicas_asterisk"
+    # Directorio relativo a MEDIA_ROOT donde se guardan los archivos convertidos para
+    # audios globales / predefinidos
+
+    @property
+    def OML_AUDIO_PATH_ASTERISK(self):
+        return os.path.join(settings.OML_PLAYLIST_PATH_ASTERISK, self.playlist.nombre)
+
+    nombre = models.CharField(
+        max_length=100, unique=True, validators=[RegexValidator(R_ALFANUMERICO)],
+        verbose_name=_('Nombre')
+    )
+    audio_original = models.FileField(
+        upload_to=upload_to_musicas_originales,
+        max_length=100,
+        null=True, blank=True,
+    )
+    # Archivo de audio .wav ya procesado con el ConversorDeAudioService, apto para asterisk.
+    audio_asterisk = models.FileField(
+        upload_to=upload_to_musicas_asterisk,
+        max_length=100,
+        null=True, blank=True,
+    )
+    playlist = models.ForeignKey(Playlist, related_name='musicas', on_delete=models.CASCADE)
+
+    @property
+    def descripcion(self):
+        return '{0}-{1}'.format(self.id, self.nombre)

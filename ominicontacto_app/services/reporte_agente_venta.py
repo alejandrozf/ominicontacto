@@ -73,7 +73,7 @@ class ArchivoDeReporteCsv(object):
 
     def escribir_archivo_csv(self, respuestas):
 
-        with open(self.ruta, 'wb') as csvfile:
+        with open(self.ruta, 'w') as csvfile:
             # Creamos encabezado
             encabezado = []
 

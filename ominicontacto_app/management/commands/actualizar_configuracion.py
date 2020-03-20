@@ -177,4 +177,4 @@ class Command(BaseCommand):
             asterisk_reloader = AsteriskConfigReloader()
             asterisk_reloader.reload_asterisk()
         except Exception as e:
-            logging.error('Fallo del comando: {0}'.format(e.message))
+            logging.error('Fallo del comando: {0}'.format(e))

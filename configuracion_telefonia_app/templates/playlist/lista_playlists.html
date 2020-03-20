@@ -1,0 +1,81 @@
+<!--
+Copyright (C) 2018 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<h1>{% trans 'Playlists de Musica en Espera' %}</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>{% trans 'ID' %}</th>
+            <th>{% trans 'Nombre' %}</th>
+            <th>{% trans 'Acciones' %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for playlist in page_obj %}
+        <tr>
+            <td>{{ playlist.id }}</td>
+            <td><a href="{% url 'editar_playlist' playlist.id %}">{{ playlist.nombre }}</a></td>
+            <td>
+                <a class="dropdown-item" href="{% url 'eliminar_playlist' playlist.pk %}">
+                    <span class="icon icon-trash"></span>
+                </a>
+            </td>
+        </tr>
+   {% empty %}
+    <tr>
+        <td>{% trans 'No hay Playlists configuradas' %}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% with 'playlist_list' as  url_name %}
+    
+<a class="btn btn-light btn-sm" href="{% url 'crear_playlist' %}" >{% trans 'Agregar' %}</a>
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="{% url url_name page=page_obj.previous_page_number%}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">{% trans 'Anterior' %}</span>
+                </a>
+            </li>
+        {% endif %}
+
+        <li class="page-item current">
+            {%trans 'Pagina' %} {{ page_obj.number }} {% trans 'de' %} {{ paginator.num_pages }}.
+        </li>
+
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{% url url_name page=page_obj.next_page_number %}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">{% trans 'Siguiente' %}</span>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endwith %}
+{% endblock %}

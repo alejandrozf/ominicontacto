@@ -22,16 +22,3 @@
 
 - include: omniapp_second.yml
   tags: ['omniapp']
-
-- include: gluster-client.yml
-  tags: ['omniapp']
-  when: cluster != 0
-
-- include: roles/prerequisitos/tasks/reboot.yml
-  when: cluster != 0 and ansible_os_family == "RedHat"
-
-- name: Wait for the server to finish rebooting
-  become: no
-  local_action: wait_for host="{{ omniapp_ip }}" delay=15 state=started port={{ ansible_ssh_port }} timeout=600
-  tags: reboot
-  when: ansible_os_family == "RedHat" and cluster !=0

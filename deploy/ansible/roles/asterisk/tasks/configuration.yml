@@ -30,7 +30,7 @@
   tags: postinstall
 
 # Se linkean los .conf de asterisk (los que estan afuera de archivos-no-enlaces) a /opt/omnileads/asterisk/etc/asterisk
-- name: Copy of asterisk dialplan files for OML (aio)
+- name: Copy of asterisk dialplan files for OML
   file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ ast_conf_location }}/{{ item }} force=true owner={{ usuario }} group={{ usuario }} mode=755"
   with_items:
     - oml_extensions_bridgecall.conf
@@ -39,7 +39,7 @@
     - oml_extensions_postcall.conf
     - oml_extensions_precall.conf
     - oml_extensions.conf
-  when: cluster == 0
+  when: is_docker == "false"
   tags: postinstall
 
 # Se copian si es un cluster
@@ -52,7 +52,7 @@
     - oml_extensions_postcall.conf
     - oml_extensions_precall.conf
     - oml_extensions.conf
-  when: prodenv == 1 and cluster != 0
+  when: prodenv == 1 and is_docker == "true"
   tags: postinstall
 
 - name: Copy of asterisk config files
@@ -71,6 +71,7 @@
       - modules.conf
       - musiconhold.conf
       - oml_func_odbc.conf
+      - oml_appmap.conf
       - oml_res_odbc.conf
       - oml_amd.conf
       - oml_manager.conf
@@ -87,8 +88,6 @@
       - rtp.conf
       - sip.conf
       - udptl.conf
-  become: true
-  become_method: sudo
   tags: postinstall
 
 - name: Copy of asterisk logger config file
@@ -125,12 +124,6 @@
     - oml_pjsip_wizard_override.conf
   tags: postinstall
 
-- name: Install pyst (Asterisk manager for python) (cluster)
-  pip: name=pyst2 state=present version=0.5.0
-  become: true
-  become_method: sudo
-  when: cluster != 0 and is_docker == "false"
-
 # Genero los agis desde ansible
 - name: Creation of the agis omni-blackist and omni-dialednum
   template: "src=roles/asterisk/templates/agi-bin/{{ item.src }} dest={{ ast_agis_location }}/{{ item.dest }} mode=755 owner={{ usuario }} group={{ usuario }}"
@@ -152,11 +145,6 @@
   template: src=templates/cron-grabaciones dest={{ cron_location }} owner={{ usuario }} group={{ usuario }} mode=600 force=yes
   tags: postinstall
   when: MONITORFORMAT == "mp3" and is_docker == "false"
-
-# Para debian toca linkear esta libreria a a /usr/lib/postgresql/{{ postgresql_version }} es una libreria de unixODBC
-- name: Link odbc librarie to postgresql libs
-  file: state=link src=/usr/lib/x86_64-linux-gnu/odbc/psqlodbcw.so dest=/usr/lib/postgresql/{{ postgresql_version }}/lib/psqlodbcw.so owner=root group=root mode=700
-  when: ansible_os_family == "Debian" and is_docker == "false"
 
 # Creo el archivo odbcinst.ini desde ansible
 - name: Creation of odbcinst.ini file

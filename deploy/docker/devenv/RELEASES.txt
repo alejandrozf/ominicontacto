@@ -19,6 +19,8 @@ Omniapp:
   - Removed ssh setup cuz is no more necessary
 1.2.3
   - Added a line in run_omniapp.sh that writes envars in a file to source cron jobs
+1.2.4
+  - Upgrade to python3 and django 2.2.8
 
 Asterisk:
 
@@ -30,7 +32,11 @@ Asterisk:
   - From 16.4.0-noaudios, removed ssh setup cuz is no more necessary
 16.4.0-iptools
   - Added packages iproute2 and net-tools to discover internal subnet to add in asterisk manager.conf file
-
+16.4.0-python3
+  - Changed python and pyscopg2 version to support python3.
+16.9.0
+  - Upgraded asterisk version to 16.9.0
+  
 pbx-emulator image versions:
 
 0.1

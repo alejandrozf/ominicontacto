@@ -50,6 +50,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <th>{% trans 'Agente' %}</th>
                 <th>{% trans 'Campaña' %}</th>
                 <th>{% trans 'Grabación' %}</th>
+                <th>{% trans 'Calificacion' %}</th>
                 <th>{% trans 'Descripción' %}</th>
             </tr>
         </thead>
@@ -69,6 +70,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <a href="{{ grabacion.url }}" target="_blank">
                         <span class="glyphicon glyphicon-download-alt" aria-hidden="true" title="{% trans 'Descargar' %}"></span>
                     </a>
+                </td>
+                <td>
+                    {% for calificacion in calificaciones %}
+                        {% if grabacion.id_cliente == calificacion.contacto_id|stringformat:"i" and grabacion.campana_id == calificacion.opcion_calificacion.campana_id%}
+                            <a href="{% url 'auditar_calificacion' calificacion.opcion_calificacion.campana_id calificacion.contacto_id %}">{{ calificacion.opcion_calificacion.nombre }}</a>
+                        {% elif  grabacion.callid == calificacion.callid %}
+                            <a href="{% url 'auditar_calificacion' calificacion.opcion_calificacion.campana_id calificacion.contacto_id %}">{{ calificacion.opcion_calificacion.nombre }}</a>
+                        {% endif %}
+                    {% endfor %}
                 </td>
                 <td><button type="button" class="btn btn-light btn-sm" data-toggle="modal"
                             data-target="#descripcionModal" data-uid="{{ grabacion.callid }}">{% trans 'Descripción' %}</button></td>

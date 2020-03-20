@@ -26,7 +26,7 @@ from __future__ import unicode_literals
 
 from django.utils.translation import ugettext as _
 from django.contrib import messages
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
 from django.views.generic import ListView, DeleteView, FormView
@@ -59,10 +59,10 @@ class CampanaDialerListView(ListView):
         campanas = Campana.objects.obtener_campanas_dialer()
         # Filtra las campanas de acuerdo al usuario logeado si tiene permiso sobre
         # las mismas
-        if self.request.user.is_authenticated() and self.request.user and \
+        if self.request.user.is_authenticated and self.request.user and \
                 not self.request.user.get_is_administrador():
             user = self.request.user
-            campanas = Campana.objects.obtener_campanas_vista_by_user(campanas, user)
+            campanas = Campana.objects.obtener_campanas_asignadas_o_creadas_by_user(campanas, user)
 
         # campana_service = CampanaService()
         # error_finalizadas = campana_service.chequear_campanas_finalizada_eliminarlas(
@@ -104,7 +104,7 @@ class PlayCampanaDialerView(RedirectView):
                 messages.SUCCESS,
                 message,
             )
-        except WombatDialerError, e:
+        except WombatDialerError as e:
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error: ") + "{0} .".format(e)
             messages.add_message(
@@ -112,7 +112,7 @@ class PlayCampanaDialerView(RedirectView):
                 messages.WARNING,
                 message,
             )
-        except RequestException, e:
+        except RequestException as e:
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error: ") + "{0} .".format(e)
             messages.add_message(
@@ -145,7 +145,7 @@ class PausarCampanaDialerView(RedirectView):
                 messages.SUCCESS,
                 message,
             )
-        except WombatDialerError, e:
+        except WombatDialerError as e:
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error: ") + "{0} .".format(e)
             messages.add_message(
@@ -153,7 +153,7 @@ class PausarCampanaDialerView(RedirectView):
                 messages.WARNING,
                 message,
             )
-        except RequestException, e:
+        except RequestException as e:
             e = _(u'Imposible conectarse con el servicio Wombat')
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error: ") + "{0} .".format(e)
@@ -187,7 +187,7 @@ class ActivarCampanaDialerView(RedirectView):
                 messages.SUCCESS,
                 message,
             )
-        except WombatDialerError, e:
+        except WombatDialerError as e:
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error: ") + "{0} .".format(e)
             messages.add_message(
@@ -195,7 +195,7 @@ class ActivarCampanaDialerView(RedirectView):
                 messages.WARNING,
                 message,
             )
-        except RequestException, e:
+        except RequestException as e:
             e = _(u'Imposible conectarse con el servicio Wombat')
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error: ") + "{0} .".format(e)
@@ -371,7 +371,7 @@ class CampanaDialerBorradasListView(CampanaDialerListView):
         return context
 
     def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return super(CampanaDialerBorradasListView, self).get(request, *args, **kwargs)
         else:
             return JsonResponse({'result': 'desconectado'})

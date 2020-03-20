@@ -25,8 +25,6 @@
   # Descargo kamailio desde la fuente, me descarga un .tar.gz
 - name: Download of Kamailio
   get_url: url={{ kamailio_repo }} dest=/usr/src/
-  become: true
-  become_method: sudo
   retries: 3
   delay: 3
   register: result
@@ -35,20 +33,14 @@
   # Untareo el archivo recien descargado
 - name: Untar the file
   unarchive: "src=/usr/src/kamailio-{{ kamailio_version }}.tar.gz dest=/usr/src/ remote_src=yes"
-  become: true
-  become_method: sudo
 
   # Borro el tar
 - name: Delete tar file
   file: "dest=/usr/src/kamailio-{{ kamailio_version }}.tar.gz state=absent"
-  become: true
-  become_method: sudo
 
 # se hace el make prefix del kamailio.cfg (pasos de instalacion de kamailio desde ceros)
 - name: Make Prefix kamailio.cfg
   shell: "make PREFIX={{ kamailio_location }} cfg chdir=/usr/src/kamailio-{{ kamailio_version }}"
-  become: true
-  become_method: sudo
 
 # Se añaden los modulos que se quieren incluir por defecto en la instalacion
 - name: Add the desired modules in modules.lst
@@ -57,8 +49,6 @@
     regexp: '^include_modules='
     insertafter: '^include_modules= '
     line: 'include_modules= presence presence_xml app_python auth_ephemeral db_redis outbound tls uuid websocket'
-  become: true
-  become_method: sudo
 
 # Se hace el make all y el make install
 - name: Make of kamailio
@@ -66,8 +56,6 @@
   with_items:
       - make all
       - make install
-  become: true
-  become_method: sudo
 
 - name: Erase kamailio source
   file: state=absent path=/usr/src/kamailio-{{ kamailio_version }}

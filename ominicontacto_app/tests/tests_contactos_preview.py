@@ -26,10 +26,10 @@ import json
 from mock import patch
 from django.utils.translation import ugettext_lazy as _
 
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, QueueFactory,
-                                               QueueMemberFactory, AgenteEnContactoFactory)
+                                               AgenteEnContactoFactory)
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 from ominicontacto_app.models import AgenteEnContacto, Campana
 
@@ -47,13 +47,8 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
         self._hacer_miembro(self.agente_2, self.campana_preview)
         self.contacto_1 = ContactoFactory.create(bd_contacto=self.campana_preview.bd_contacto)
         self.contacto_2 = ContactoFactory.create(bd_contacto=self.campana_preview.bd_contacto)
-        self.campana_preview.establecer_valores_iniciales_agente_contacto()
+        self.campana_preview.establecer_valores_iniciales_agente_contacto(False, False)
         self.client.login(username=self.agente_1.user.username, password=PASSWORD)
-
-    def _hacer_miembro(self, agente, campana):
-        QueueMemberFactory.create(
-            member=agente, queue_name=campana.queue_campana,
-            id_campana='{0}_{1}'.format(campana.pk, campana.nombre))
 
     def test_valida_contacto_no_asignado_devuelve_false(self):
         # Contacto 1 no esta reservado
@@ -87,6 +82,35 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
             contacto_id_2 = self.contacto_2.id
         self.assertTrue(AgenteEnContacto.objects.filter(contacto_id=contacto_id_2,
                         campana_id=self.campana_preview.id,
+                        estado=AgenteEnContacto.ESTADO_INICIAL).exists())
+
+    def test_reserva_de_contacto_otorga_uno_asignado_inicialmente_al_agente(self):
+        # asignamos los contactos inicialmente uno a cada agente
+        for agente, agente_en_contacto in zip([self.agente_1, self.agente_2],
+                                              AgenteEnContacto.objects.all()):
+            agente_en_contacto.agente_id = agente.pk
+            agente_en_contacto.save()
+        # Pido un contacto.
+        url = reverse('campana_preview_dispatcher', args=[self.campana_preview.pk])
+        response = self.client.post(url, follow=True)
+        resultado = json.loads(response.content)
+        self.assertEqual(resultado['result'], 'OK')
+        self.assertEqual(resultado['code'], 'contacto-entregado')
+        id_contacto = resultado['contacto_id']
+        self.assertEqual(response.status_code, 200)
+
+        # Contacto reservado
+        self.assertTrue(AgenteEnContacto.objects.filter(agente_id=self.agente_1.id,
+                        contacto_id=id_contacto,
+                        campana_id=self.campana_preview.id,
+                        estado=AgenteEnContacto.ESTADO_ENTREGADO).exists())
+
+        # El otro contacto no esta reservado y se encuentra asignado al otro agente
+        contacto_id_2 = self.contacto_1.id
+        if id_contacto == self.contacto_1.id:
+            contacto_id_2 = self.contacto_2.id
+        self.assertTrue(AgenteEnContacto.objects.filter(contacto_id=contacto_id_2,
+                        campana_id=self.campana_preview.id, agente_id=self.agente_2.id,
                         estado=AgenteEnContacto.ESTADO_INICIAL).exists())
 
     def test_reserva_de_contacto_devuelve_siempre_contacto_asignado_al_agente(self):
@@ -151,7 +175,7 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
                                     post_data, follow=True)
         resultado = json.loads(response.content)
         self.assertEqual(resultado['status'], 'OK')
-        self.assertTrue(AgenteEnContacto.objects.filter(agente_id=-1,
+        self.assertTrue(AgenteEnContacto.objects.filter(agente_id=self.agente_1.id,
                         contacto_id=self.contacto_1.id,
                         campana_id=self.campana_preview.id,
                         estado=AgenteEnContacto.ESTADO_INICIAL).exists())
@@ -221,4 +245,4 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
         }
         self.client.post(url, post_data)
         agente_en_contacto.refresh_from_db()
-        self.assertEqual(agente_en_contacto.telefono_contacto, unicode(telefono_nuevo))
+        self.assertEqual(agente_en_contacto.telefono_contacto, str(telefono_nuevo))

@@ -1,25 +1,24 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
 ---
 
-- name: Download postgresql-{{ postgresql_version }} key
-  rpm_key: key="{{ postgresql_key }}" state=present validate_certs=no
-  when: ansible_os_family == "RedHat" and cluster != 0
-
-# Se instala el repo de postgresql9.6
-- name: Download of postgresql {{ postgresql_version }} repository (redhat and cluster)
-  yum: "name={{ postgresql_url }} state=present validate_certs=no"
-  become: yes
-  become_method: sudo
-  when: ansible_os_family == "RedHat" and cluster != 0
-
-# Se descarga e instala el repositorio epel-release
-- name: Install of epel-release repo (centos and cluster)
-  yum: name={{ epel_repository }} state=present
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "RedHat" and cluster == 1
-
-# Instalo paquetes de kamailio/rtpengine en centos
-- name: Installation of kamailio/rtpengine packages (redhat)
+# Instalo paquetes de kamailio/rtpengine
+- name: Installation of kamailio packages
   yum: name={{ item }} state=present
   with_items:
     - bison
@@ -27,71 +26,39 @@
     - expat
     - expat-devel
     - flex
-    - gcc
-    - gcc-c++
-    - glib2-devel
-    - hiredis
-    - hiredis-devel
-    - iptables-devel
     - iptables-services
-    - json-glib-devel
-    - libevent-devel
-    - libpcap-devel
     - libtool-ltdl-devel
     - libunistring-devel.x86_64
     - libuuid
     - libuuid-devel
     - lynx
-    - pcre
-    - pcre-devel
     - postgresql96-devel
     - redis
-    - xmlrpc-c-devel
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "RedHat"
   tags: ['kamailio']
   retries: 3
   delay: 3
   register: result
   until: result is success
+  when: is_docker == "false"
 
-# Instalo los paquetes necesarios para kamailio/rtpengine en debian
-- name: Installation of kamailio/rtpengine packages (debian)
-  apt: "name={{ item }} state=present dpkg_options=no-triggers"
+# Instalo paquetes de kamailio/rtpengine
+- name: Installation of rtpengine packages
+  yum: name={{ item }} state=present
   with_items:
-    - autoconf
-    - bison
-    - debhelper
-    - default-libmysqlclient-dev
-    - flex
-    - iptables-dev
-    - libavfilter-dev
-    - libavformat-dev
-    - libavresample-dev
-    - libcurl4-openssl-dev
-    - libevent-dev
-    - libhiredis-dev
-    - libjson-glib-dev
-    - libpcre3-dev
-    - libssl-dev
-    - libunistring-dev
-    - libxml2-dev
-    - libxmlrpc-core-c3-dev
-    - markdown
-    - redis-server
-  become: true
-  become_method: sudo
-  when: ansible_os_family == "Debian"
+    - iptables-devel
+    - xmlrpc-c-devel
+    - xmlrpc-c
+    - glib2-devel
+    - glib2
+    - pcre
+    - pcre-devel
+    - libevent-devel
+    - json-glib-devel
+    - libpcap-devel
+    - hiredis
+    - hiredis-devel
+  tags: ['kamailio']
   retries: 3
   delay: 3
   register: result
   until: result is success
-
-- name: Install extra packages (debian cluster)
-  apt: name={{ item }} state=present dpkg_options=no-triggers
-  with_items:
-    - libpcap-dev
-    - libpq-dev
-    - uuid-dev
-  when: ansible_os_family == "Debian" and cluster != 0

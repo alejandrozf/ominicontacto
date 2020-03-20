@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
@@ -61,11 +62,10 @@ msgstr "*Figure 1: hosts file*"
 
 # a45214406e6a4caf80d93e269ec911e4
 #: ../../install_first_access.rst:20
-#, fuzzy
 msgid ""
 "Al encontrarnos con la pantalla de login, simplemente se debe ingresar el"
 " usuario admin y la clave generada durante la instalación, como se expone"
-" en las figura 10."
+" en la figura 2."
 msgstr ""
 "When finding the login screen, we just enter the admin user and the "
 "password generated during the installation (my_inventory), as shown on "
@@ -75,24 +75,3 @@ msgstr ""
 #: ../../install_first_access.rst:24
 msgid "*Figure 2: First login*"
 msgstr "*Figure 2: First login*"
-
-#~ msgid ""
-#~ "En caso de no recordar la "
-#~ "contraseña de admin, recuerde que quedó"
-#~ " la copia del archivo *inventory* en"
-#~ " el archivo *my_inventory* ubicado en "
-#~ "el mismo directorio donde se encuentra"
-#~ " la raíz del proyecto *ominicontacto*. "
-#~ "Allí entre otras cosas, cuenta con "
-#~ "la contraseña generada para el usuario"
-#~ " admin."
-#~ msgstr ""
-#~ "In case of having forgotten the "
-#~ "admin password, remember that the copy"
-#~ " of the file *inventory* remains in"
-#~ " the file *my_inventory* located in "
-#~ "the same directory where the project "
-#~ "root*omnicontacto* is. There, among other "
-#~ "things, you have the password generated"
-#~ " for the admin user."
-

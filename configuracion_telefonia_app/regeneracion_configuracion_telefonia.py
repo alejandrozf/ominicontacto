@@ -29,8 +29,8 @@ from django.utils.translation import ugettext as _
 
 from ominicontacto_app.errors import OmlError
 from ominicontacto_app.asterisk_config import (
-    AsteriskConfigReloader, RutasSalientesConfigCreator, RutasSalientesConfigFile,
-    SipTrunksConfigCreator, SipRegistrationsConfigCreator, SipRegistrationsConfigFile
+    AsteriskConfigReloader, RutasSalientesConfigCreator,
+    SipTrunksConfigCreator, SipRegistrationsConfigCreator,
 )
 from ominicontacto_app.services.asterisk_database import (
     RutaSalienteFamily, TrunkFamily, RutaEntranteFamily, IVRFamily, ValidacionFechaHoraFamily,
@@ -71,7 +71,6 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
     def __init__(self):
         self.generador_rutas_en_astdb = RutaSalienteFamily()
         self.generador_rutas_en_asterisk_conf = RutasSalientesConfigCreator()
-        self.config_rutas_file = RutasSalientesConfigFile()
         self.reload_asterisk_config = AsteriskConfigReloader()
 
     def _generar_y_recargar_archivos_conf_asterisk(self, ruta_exclude=None):
@@ -82,7 +81,7 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
             self.generador_rutas_en_asterisk_conf.create_config_asterisk(ruta_exclude=ruta_exclude)
         except Exception as e:
             msg = _("SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk: error {0} al".format(
-                e.message)) + _("intentar create_config_asterisk()")
+                e)) + _("intentar create_config_asterisk()")
             logger.exception(msg)
 
             proceso_ok = False
@@ -103,7 +102,7 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
                 self.generador_rutas_en_astdb.regenerar_family(ruta)
         except Exception as e:
             msg = _("SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk: error {0} al ".format(
-                e.message)) + _("intentar regenerar_familys_rutas()")
+                e)) + _("intentar regenerar_familys_rutas()")
             logger.exception(msg)
             mensaje_error += _("Hubo un inconveniente al insertar los registros de las rutas en "
                                "la base de datos de Asterisk. ")
@@ -116,7 +115,7 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
             self.generador_rutas_en_astdb.delete_family(ruta)
         except Exception as e:
             msg = _("SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk: error {0} al ".format(
-                e.message)) + _("intentar delete_family_ruta()")
+                e)) + _("intentar delete_family_ruta()")
             logger.exception(msg)
             mensaje_error += _("Hubo un inconveniente al eliminar los registros de las rutas en "
                                "la base de datos de Asterisk. ")
@@ -129,7 +128,7 @@ class SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk(object):
             self.generador_rutas_en_astdb.regenerar_family_trunk_ruta(ruta)
         except Exception as e:
             msg = ("SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk: error {0} al ".format(
-                e.message)) + _("intentar delete_family_ruta()")
+                e)) + _("intentar delete_family_ruta()")
             logger.exception(msg)
             mensaje_error += _("Hubo un inconveniente al eliminar los registros de las rutas en "
                                "la base de datos de Asterisk. ")
@@ -156,7 +155,6 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
         self.generador_trunk_en_astdb = TrunkFamily()
         self.generador_trunk_sip_en_asterisk_conf = SipTrunksConfigCreator()
         self.generador_trunks_registration_en_asterisk_conf = SipRegistrationsConfigCreator()
-        self.config_trunk_registration_file = SipRegistrationsConfigFile()
         self.reload_asterisk_config = AsteriskConfigReloader()
 
     def _generar_y_recargar_archivos_conf_asterisk(self, trunk_exclude=None):
@@ -168,7 +166,7 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
                 trunk_exclude=trunk_exclude)
         except Exception as e:
             msg = _("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error {0} al ".format(
-                e.message)) + _("intentar create_config_asterisk()")
+                e)) + _("intentar create_config_asterisk()")
             logger.exception(msg)
             proceso_ok = False
             mensaje_error += _("Hubo un inconveniente al crear el archivo de "
@@ -179,7 +177,7 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
                 trunk_exclude=trunk_exclude)
         except Exception as e:
             msg = _("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error {0} al ".format(
-                e.message)) + _("intentar create_config_asterisk()")
+                e)) + _("intentar create_config_asterisk()")
             logger.exception(msg)
             proceso_ok = False
             mensaje_error += _("Hubo un inconveniente al crear el archivo de "
@@ -200,7 +198,7 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
                 self.generador_trunk_en_astdb.regenerar_family(trunk)
         except Exception as e:
             msg = _("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error {0} al ".format(
-                e.message)) + _("intentar regenerar_familys_rutas()")
+                e)) + _("intentar regenerar_familys_rutas()")
             logger.exception(msg)
             mensaje_error += _("Hubo un inconveniente al insertar los registros del troncal en "
                                "la base de datos de Asterisk. ")
@@ -213,7 +211,7 @@ class SincronizadorDeConfiguracionTroncalSipEnAsterisk(object):
             self.generador_trunk_en_astdb.delete_family(trunk)
         except Exception as e:
             msg = _("SincronizadorDeConfiguracionTroncalSipEnAsterisk: error {0} al ".format(
-                e.message)) + _("intentar delete_family_trunk()")
+                e)) + _("intentar delete_family_trunk()")
             logger.exception(msg)
             mensaje_error += _("Hubo un inconveniente al eliminar los registros de los troncales"
                                " en la base de datos de Asterisk. ")
@@ -244,7 +242,7 @@ class AbstractConfiguracionAsterisk(object):
                 generador_family.regenerar_family(family_member)
         except Exception as e:
             logger.exception(_("Error {0} en la family {1} "
-                               "al intentar regenerar_family()".format(e.message, nombre_families)))
+                               "al intentar regenerar_family()".format(e, nombre_families)))
             mensaje_error += _("Hubo un inconveniente al insertar los registros de la family {0} "
                                "en la base de datos de Asterisk. ".format(nombre_families))
             raise (RestablecerConfiguracionTelefonicaError(mensaje_error))
@@ -257,7 +255,7 @@ class AbstractConfiguracionAsterisk(object):
             generador_family.delete_family(family_member)
         except Exception as e:
             logger.exception(_("Error {0} en la family {1} al "
-                               "intentar delete_family()".format(e.message, nombre_families)))
+                               "intentar delete_family()".format(e, nombre_families)))
             mensaje_error += _("Hubo un inconveniente al eliminar los registros de la family {0} "
                                "en la base de datos de Asterisk. ".format(nombre_families))
             raise (RestablecerConfiguracionTelefonicaError(mensaje_error))

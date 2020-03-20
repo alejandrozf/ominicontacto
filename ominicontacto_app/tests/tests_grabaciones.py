@@ -26,14 +26,15 @@ from __future__ import unicode_literals
 import json
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.timezone import now, timedelta
 
-from ominicontacto_app.models import Grabacion, GrabacionMarca, OpcionCalificacion
+from ominicontacto_app.models import Grabacion, GrabacionMarca, OpcionCalificacion, Campana
 
-from ominicontacto_app.tests.factories import (GrabacionFactory, GrabacionMarcaFactory, UserFactory,
+from ominicontacto_app.tests.factories import (GrabacionFactory, GrabacionMarcaFactory,
                                                CalificacionClienteFactory, CampanaFactory,
-                                               OpcionCalificacionFactory)
+                                               OpcionCalificacionFactory, QueueFactory,
+                                               QueueMemberFactory)
 from ominicontacto_app.tests.utiles import OMLBaseTest
 
 from ominicontacto_app.utiles import fecha_hora_local
@@ -41,34 +42,48 @@ from ominicontacto_app.utiles import fecha_hora_local
 
 class BaseGrabacionesTests(OMLBaseTest):
 
-    PWD = 'admin123'
-
     def setUp(self):
-        self.usuario_admin_supervisor = UserFactory(is_staff=True, is_supervisor=True)
-        self.usuario_admin_supervisor.set_password(self.PWD)
-        self.usuario_admin_supervisor.save()
+        self.supervisor1 = self.crear_supervisor_profile()
+        self.supervisor2 = self.crear_supervisor_profile()
 
-        self.user_agente = self.crear_user_agente()
-        self.campana = CampanaFactory()
-        self.agente_profile = self.crear_agente_profile(self.user_agente)
+        self.agente1 = self.crear_agente_profile()
+        self.agente2 = self.crear_agente_profile()
+
+        self.campana1 = CampanaFactory(estado=Campana.ESTADO_ACTIVA)
+        self.queue_campana_1 = QueueFactory(campana=self.campana1)
+        QueueMemberFactory(member=self.agente1, queue_name=self.queue_campana_1)
+        self.campana1.supervisors.add(self.supervisor1.user)
+
+        self.campana2 = CampanaFactory(estado=Campana.ESTADO_ACTIVA)
+        self.queue_campana_2 = QueueFactory(campana=self.campana2)
+        QueueMemberFactory(member=self.agente2, queue_name=self.queue_campana_2)
+        self.campana2.supervisors.add(self.supervisor2.user)
+
+        self.campana3 = CampanaFactory(estado=Campana.ESTADO_ACTIVA)
+
         self.opcion_calificacion = OpcionCalificacionFactory(
-            campana=self.campana, tipo=OpcionCalificacion.GESTION)
+            campana=self.campana1, tipo=OpcionCalificacion.GESTION)
         self.calificacion = CalificacionClienteFactory(opcion_calificacion=self.opcion_calificacion)
         self.grabacion1 = GrabacionFactory.create(
-            duracion=0, agente=self.agente_profile, callid=self.calificacion.callid,
-            campana=self.campana)
+            duracion=1, agente=self.agente1, callid=self.calificacion.callid,
+            campana=self.campana1)
         self.grabacion2 = GrabacionFactory(
-            duracion=0, agente=self.agente_profile, campana=self.campana)
+            duracion=1, agente=self.agente1, campana=self.campana1)
         self.grabacion3 = GrabacionFactory(
-            duracion=0, agente=self.agente_profile, campana=self.campana)
+            duracion=1, agente=self.agente1, campana=self.campana1)
         self.marca_campana1 = GrabacionMarcaFactory(callid=self.grabacion1.callid)
         self.marca_campana2 = GrabacionMarcaFactory(callid=self.grabacion2.callid)
 
-        self.client.login(username=self.usuario_admin_supervisor.username,
-                          password=self.PWD)
+        self.grabacion2_1 = GrabacionFactory.create(
+            duracion=1, agente=self.agente2, campana=self.campana2)
+        self.marca_campana2_1 = GrabacionMarcaFactory(callid=self.grabacion2_1.callid)
 
 
 class GrabacionesTests(BaseGrabacionesTests):
+
+    def setUp(self):
+        super(GrabacionesTests, self).setUp()
+        self.client.login(username=self.supervisor1.user, password=self.DEFAULT_PASSWORD)
 
     def test_vista_creacion_grabaciones_marcadas(self):
         url = reverse('grabacion_marcar')
@@ -117,24 +132,37 @@ class GrabacionesTests(BaseGrabacionesTests):
         self.assertTrue(self.grabacion1.url.endswith('.wav'))
 
 
-class FiltrosGrabacionesTests(BaseGrabacionesTests):
+class FiltrosBusquedaGrabacionesSupervisorTests(BaseGrabacionesTests):
+
+    def setUp(self):
+        super(FiltrosBusquedaGrabacionesSupervisorTests, self).setUp()
+        self.client.login(username=self.supervisor1.user, password=self.DEFAULT_PASSWORD)
 
     def test_filtro_grabaciones_marcadas(self):
-        self.assertEqual(Grabacion.objects.marcadas().count(), 2)
+        self.assertEqual(Grabacion.objects.marcadas().count(), 3)
 
     def test_buscar_grabaciones_por_duracion(self):
+        url = reverse('grabacion_buscar', kwargs={'pagina': 1})
+        post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'agente': '',
+                     'campana': '', 'marcadas': '', 'duracion': '1'}
+
+        response = self.client.post(url, post_data, follow=True)
+        self.assertContains(response, self.grabacion1.tel_cliente)
+        self.assertContains(response, self.grabacion2.tel_cliente)
+        self.assertContains(response, self.grabacion3.tel_cliente)
+        # Aseguro que no traiga la grabacion de una campaña que no tiene asignada.
+        self.assertNotContains(response, self.grabacion2_1.tel_cliente)
+
         Grabacion.objects.filter(id=self.grabacion2.id).update(duracion=15, tel_cliente='42222222')
         Grabacion.objects.filter(id=self.grabacion1.id).update(duracion=15, tel_cliente='41111111')
         Grabacion.objects.filter(id=self.grabacion3.id).update(duracion=12, tel_cliente='43333333')
-        url = reverse('grabacion_buscar', kwargs={'pagina': 1})
-        post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'agente': '',
-                     'campana': '', 'marcadas': '', 'duracion': '0'}
 
         post_data['duracion'] = 12
         response = self.client.post(url, post_data, follow=True)
         self.assertContains(response, '41111111')
         self.assertContains(response, '42222222')
         self.assertContains(response, '43333333')
+        self.assertNotContains(response, self.grabacion2_1.tel_cliente)
 
         post_data['duracion'] = 15
         response = self.client.post(url, post_data, follow=True)
@@ -208,3 +236,36 @@ class FiltrosGrabacionesTests(BaseGrabacionesTests):
         self.assertContains(response, self.grabacion1.tel_cliente)
         self.assertNotContains(response, self.grabacion2.tel_cliente)
         self.assertNotContains(response, self.grabacion3.tel_cliente)
+
+
+class FiltrosBusquedaGrabacionesAgenteTests(BaseGrabacionesTests):
+
+    def setUp(self):
+        super(FiltrosBusquedaGrabacionesAgenteTests, self).setUp()
+        self.client.login(username=self.agente1.user, password=self.DEFAULT_PASSWORD)
+
+    def test_ve_solamente_grabaciones_propias(self):
+        url = reverse('grabacion_agente_buscar', kwargs={'pagina': 1})
+        post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '',
+                     'campana': '', 'marcadas': '', 'duracion': '0'}
+        response = self.client.post(url, post_data, follow=True)
+
+        response = self.client.post(url, post_data, follow=True)
+        self.assertContains(response, self.grabacion1.tel_cliente)
+        self.assertContains(response, self.grabacion2.tel_cliente)
+        self.assertContains(response, self.grabacion3.tel_cliente)
+        self.assertNotContains(response, self.grabacion2_1.tel_cliente)
+
+    def test_ve_solamente_grabaciones_propias_antes_de_filtrar(self):
+        agente3 = self.crear_agente_profile()
+        QueueMemberFactory(member=agente3, queue_name=self.queue_campana_1)
+        grabacion3_3 = GrabacionFactory.create(
+            duracion=1, agente=agente3, campana=self.campana1)
+
+        url = reverse('grabacion_agente_buscar', kwargs={'pagina': 1})
+        response = self.client.get(url, follow=True)
+
+        self.assertContains(response, self.grabacion1.tel_cliente)
+        self.assertContains(response, self.grabacion2.tel_cliente)
+        self.assertContains(response, self.grabacion3.tel_cliente)
+        self.assertNotContains(response, grabacion3_3.tel_cliente)

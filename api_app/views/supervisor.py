@@ -46,7 +46,7 @@ class SupervisorCampanasActivasViewSet(viewsets.ModelViewSet):
         superv_profile = self.request.user.get_supervisor_profile()
         if superv_profile.is_administrador:
             return super(SupervisorCampanasActivasViewSet, self).get_queryset()
-        return superv_profile.obtener_campanas_activas_asignadas()
+        return superv_profile.obtener_campanas_asignadas_activas()
 
 
 class AgentesStatusAPIView(APIView):

@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
@@ -319,7 +320,3 @@ msgstr ""
 #: ../../output_outbound_camp.rst:125
 msgid "*Figure 11: DB result*"
 msgstr ""
-
-#~ msgid "Telephony"
-#~ msgstr ""
-

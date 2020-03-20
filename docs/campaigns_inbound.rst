@@ -33,7 +33,8 @@ Se debe completar la primera pantalla del wizard, como lo expone la figura 1.
 A continuación se prosigue con la creación de nuestra campaña entrante.
 
 
-.. image:: images/campaigns_in_wizard2.png
+.. image:: images/campaigns_in_wizard2_1.png
+.. image:: images/campaigns_in_wizard2_2.png
 
 *Figure 2: Campaigns parameters*
 
@@ -50,7 +51,12 @@ A continuación se prosigue con la creación de nuestra campaña entrante.
 - **Periodic Announcement:** podemos seleccionar algún audio de nuestro repositorio para reproducir como un anuncio periódico sobre la llamada en espera.
 - **Announcement frequency:** cantidad de segundos entre cada reproducción de un anuncio periódico.
 - **Failover dst:** destino hacia el cual se enviarán las llamadas que hayan sido expiradas (superó el tiempo de espera asociado).
-
+- **Autopausar agentes que fallan al responder:** indica si se debe pausar automáticamente o no a los agentes que fallen a responder llamadas.
+- **Autopausar agentes que dan ocupado:** indica si se debe pausar automáticamente o no a los agentes que den ocupado.
+- **Anunciar tiempo promedio de espera** permite al usuario especificar el tiempo promedio  que deberá esperar el llamante para ser atendido
+- **IVR Breakdown:** es un destino de tipo IVR que el usuario puede escoger para 'escapar' hacia él en medio del tiempo de espera, este parámetro está relacionado con el de anuncio periódico pues éste último es donde se reproduciría el mensaje que guíe al usuario para realizar el escape hacia dicho destino IVR.
+- **Posición de anuncio:** Anunciar posición del llamante en la cola.
+- **Musica de espera:** Indica el Playlist que escuchará el cliente cuando su llamada este en espera.
 
 .. note::
   Los parámetros Ring time y Agent callback time, quedan sin efecto para aquellas llamadas que reciban agentes cuyo *grupo de agentes* esté configurado con el atributo

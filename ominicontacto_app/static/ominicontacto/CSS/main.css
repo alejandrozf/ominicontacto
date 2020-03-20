@@ -674,9 +674,12 @@ body > h1 {
 }
 
 .filaCampoNroDiscar {
-  margin-top: 2%;
-  width: 80%;
-  margin-left: 10%;
+  margin: 5% 0 5% 0;
+  width: 90%;
+}
+
+.paddingNull {
+  padding: 0;
 }
 
 .cuerpoLlamEntrante {
@@ -797,16 +800,16 @@ body > h1 {
   cursor: pointer;
 }
 #bottomBar #txtSms {
-  color: #FC8F00;
+  color: #CCCCCC;
 }
 #bottomBar #webCall {
   color: #52C159;
 }
 #bottomBar #webChat {
-  color: #00C2AE;
+  color: #CCCCCC;
 }
 #bottomBar #facebookChat {
-  color: #59A9FF;
+  color: #CCCCCC;
 }
 #bottomBar # {
   color: #FF7373;

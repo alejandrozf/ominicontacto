@@ -18,7 +18,7 @@
 #
 
 from mock import patch
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.translation import ugettext as _
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
@@ -31,7 +31,7 @@ from configuracion_telefonia_app.tests.factories import (
     ValidacionFechaHoraFactory, GrupoHorarioFactory, ValidacionTiempoFactory, OpcionDestinoFactory)
 from configuracion_telefonia_app.models import (
     GrupoHorario, ValidacionTiempo, IVR, ValidacionFechaHora, DestinoEntrante, OpcionDestino)
-from configuracion_telefonia_app.views import IVRDeleteView, ValidacionFechaHoraDeleteView
+from configuracion_telefonia_app.views.base import IVRDeleteView, ValidacionFechaHoraDeleteView
 
 
 class BaseTestRestriccionEliminacion(OMLBaseTest):

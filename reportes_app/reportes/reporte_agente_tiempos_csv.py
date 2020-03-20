@@ -71,7 +71,7 @@ class ArchivoDeReporteCsv(object):
 
     def escribir_archivo_tiempos_csv(self, estadisticas):
 
-        with open(self.ruta, 'wb') as csvfile:
+        with open(self.ruta, 'w', newline='') as csvfile:
             # Creamos encabezado
             encabezado = []
 
@@ -90,8 +90,7 @@ class ArchivoDeReporteCsv(object):
             csvwiter = csv.writer(csvfile)
 
             # guardamos encabezado
-            lista_encabezados_utf8 = [force_text(item).encode('utf-8')
-                                      for item in encabezado]
+            lista_encabezados_utf8 = [force_text(item) for item in encabezado]
             csvwiter.writerow(lista_encabezados_utf8)
 
             # Iteramos cada uno de las metadata de la gestion del formulario
@@ -130,13 +129,12 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(agente.cantidad_intentos_fallidos)
 
                 # --- Finalmente, escribimos la linea
-                lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                       for item in lista_opciones]
+                lista_opciones_utf8 = [force_text(item) for item in lista_opciones]
                 csvwiter.writerow(lista_opciones_utf8)
 
     def escribir_archivo_pausas_csv(self, estadisticas):
 
-        with open(self.ruta, 'wb') as csvfile:
+        with open(self.ruta, 'w', newline='') as csvfile:
             # Creamos encabezado
             encabezado = []
 
@@ -149,8 +147,7 @@ class ArchivoDeReporteCsv(object):
             csvwiter = csv.writer(csvfile)
 
             # guardamos encabezado
-            lista_encabezados_utf8 = [force_text(item).encode('utf-8')
-                                      for item in encabezado]
+            lista_encabezados_utf8 = [force_text(item) for item in encabezado]
             csvwiter.writerow(lista_encabezados_utf8)
 
             # Iteramos cada uno de las metadata de la gestion del formulario
@@ -165,13 +162,12 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(agente['tiempo'] + "hs")
 
                 # --- Finalmente, escribimos la linea
-                lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                       for item in lista_opciones]
+                lista_opciones_utf8 = [force_text(item) for item in lista_opciones]
                 csvwiter.writerow(lista_opciones_utf8)
 
     def escribir_archivo_llamadas_csv(self, estadisticas):
 
-        with open(self.ruta, 'wb') as csvfile:
+        with open(self.ruta, 'w', newline='') as csvfile:
             # Creamos encabezado
             encabezado = []
 
@@ -184,8 +180,7 @@ class ArchivoDeReporteCsv(object):
             csvwiter = csv.writer(csvfile)
 
             # guardamos encabezado
-            lista_encabezados_utf8 = [force_text(item).encode('utf-8')
-                                      for item in encabezado]
+            lista_encabezados_utf8 = [force_text(item) for item in encabezado]
             csvwiter.writerow(lista_encabezados_utf8)
 
             # Iteramos cada uno de las metadata de la gestion del formulario
@@ -200,13 +195,12 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(agente[3])
 
                 # --- Finalmente, escribimos la linea
-                lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                       for item in lista_opciones]
+                lista_opciones_utf8 = [force_text(item) for item in lista_opciones]
                 csvwiter.writerow(lista_opciones_utf8)
 
     def escribir_archivo_llamadas_tipo_csv(self, estadisticas):
 
-        with open(self.ruta, 'wb') as csvfile:
+        with open(self.ruta, 'w', newline='') as csvfile:
             # Creamos encabezado
             encabezado = []
 
@@ -222,8 +216,7 @@ class ArchivoDeReporteCsv(object):
             csvwiter = csv.writer(csvfile)
 
             # guardamos encabezado
-            lista_encabezados_utf8 = [force_text(item).encode('utf-8')
-                                      for item in encabezado]
+            lista_encabezados_utf8 = [force_text(item) for item in encabezado]
             csvwiter.writerow(lista_encabezados_utf8)
 
             # Iteramos cada uno de las metadata de la gestion del formulario
@@ -242,8 +235,7 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(total_transferidas)
 
                 # --- Finalmente, escribimos la linea
-                lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                       for item in lista_opciones]
+                lista_opciones_utf8 = [force_text(item) for item in lista_opciones]
                 csvwiter.writerow(lista_opciones_utf8)
 
     def ya_existe(self):
