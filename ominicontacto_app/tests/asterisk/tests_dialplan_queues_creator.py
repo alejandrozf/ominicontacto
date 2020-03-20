@@ -46,22 +46,10 @@ class QueuesCreatorTest(OMLBaseTest):
     def test_generar_dialplan_entrante_default(self):
         creator = QueuesCreator()
         dialplan = creator._generar_dialplan_entrantes(self.campana_entrante)
-        self.assertIn('autopauseunavail=yes', dialplan)
-        self.assertIn('autopause=no', dialplan)
-        self.assertIn('autopausebusy=no', dialplan)
         self.assertIn('announce-holdtime=no', dialplan)
         self.assertIn('queue-callswaiting=queue-callswaiting', dialplan)
         self.assertIn('queue-thereare=queue-thereare', dialplan)
         self.assertIn('queue-youarenext=queue-youarenext', dialplan)
-
-    def test_generar_dialplan_entrante_autopause(self):
-        self.queue_entrante.autopause = True
-        self.queue_entrante.autopausebusy = True
-        creator = QueuesCreator()
-        dialplan = creator._generar_dialplan_entrantes(self.campana_entrante)
-        self.assertIn('autopauseunavail=yes', dialplan)
-        self.assertIn('autopause=all', dialplan)
-        self.assertIn('autopausebusy=yes', dialplan)
 
     def test_generar_dialplan_announce_holdtime_activated(self):
         self.queue_entrante.announce_holdtime = 'yes'

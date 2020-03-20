@@ -306,7 +306,6 @@ class GeneradorParaQueue(GeneradorDePedazoDeQueue):
         wrapuptime={oml_wrapuptime}
         maxlen={oml_maxlen}
         retry={oml_retry}
-        autopauseunavail=yes
         """
 
     def get_parametros(self):
@@ -322,7 +321,6 @@ class GeneradorParaQueueEntrante(GeneradorDePedazoDeQueue):
         announce=beep
         announce-frequency=0
         announce-holdtime={oml_announce-holdtime}
-        announce-position=no
         announce-position={oml_announce_position}
         autofill=yes
         eventmemberstatus=yes
@@ -333,9 +331,6 @@ class GeneradorParaQueueEntrante(GeneradorDePedazoDeQueue):
         penaltymemberslimit=0
         periodic-announce={oml_periodic-announce}
         periodic-announce-frequency={oml_periodic-announce-frequency}
-        queue-callswaiting=silence/1
-        queue-thereare=silence/1
-        queue-youarenext=silence/1
         reportholdtime=no
         ringinuse=no
         timeoutpriority=app
@@ -352,9 +347,6 @@ class GeneradorParaQueueEntrante(GeneradorDePedazoDeQueue):
         wrapuptime={oml_wrapuptime}
         maxlen={oml_maxlen}
         retry={oml_retry}
-        autopauseunavail=yes
-        autopause={oml_autopause}
-        autopausebusy={oml_autopausebusy}
         queue-callswaiting=queue-callswaiting
         queue-thereare=queue-thereare
         queue-youarenext=queue-youarenext

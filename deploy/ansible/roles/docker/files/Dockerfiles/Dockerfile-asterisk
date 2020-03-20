@@ -3,8 +3,8 @@ FROM {{ asterisk_image }}
 
 ENV LANG en_US.utf8
 ENV NOTVISIBLE "in users profile"
-ENV ASTERISK_VERSION 16.4.0
-ENV OPUS_CODEC       asterisk-16.0/x86-64/codec_opus-16.0_current-x86_64
+ENV ASTERISK_VERSION {{ asterisk_version }}
+ENV OPUS_CODEC asterisk-16.0/x86-64/codec_opus-16.0_current-x86_64
 
 COPY scripts/build-asterisk.sh /
 RUN /build-asterisk.sh

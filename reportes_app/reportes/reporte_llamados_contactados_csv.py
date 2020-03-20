@@ -262,6 +262,10 @@ class ArchivoDeReporteCsv(object):
         if not callid:
             return ''
         llamada = LlamadaLog.objects.filter(callid=calificacion.callid).first()
+
+        if llamada is None:
+            logger.error('CRITICAL! disposition callid={0} not found in phone logs!'.format(callid))
+            return calificacion.contacto.telefono
         return llamada.numero_marcado
 
     def escribir_archivo_calificado_csv(self, campana, calificaciones):

@@ -16,13 +16,17 @@
  along with this program.  If not, see http://www.gnu.org/licenses/.
 
 */
+/* global gettext */
 
 $(function () {
-    if (configuracion_sitio_externo) 
-        configurarInteraccion();
+    var configuracion_sitio_externo = $('#configuracionSitioExterno').val();
+    if (configuracion_sitio_externo){
+        configuracion_sitio_externo = JSON.parse(configuracion_sitio_externo);
+        configurarInteraccion(configuracion_sitio_externo);
+    }
 });
 
-function configurarInteraccion(){
+function configurarInteraccion(configuracion_sitio_externo){
 
     if (!configuracion_sitio_externo.formato_es_JSON){
         var form = $('#form_sitio_externo');
@@ -46,31 +50,33 @@ function configurarInteraccion(){
     else {
         if (configuracion_sitio_externo.dispara_agente){
             $('#submit_interaccion').prop('type', 'button');
-            $('#submit_interaccion').click(function(){ejecutarInteraccionJSON();})
+            $('#submit_interaccion').click(function(){ejecutarInteraccionJSON(configuracion_sitio_externo);});
         }
         else {
-            ejecutarInteraccionJSON();
+            ejecutarInteraccionJSON(configuracion_sitio_externo);
         }
     }
 }
 
-function ejecutarInteraccionJSON(){
+function ejecutarInteraccionJSON(configuracion_sitio_externo){
     
     return jQuery.ajax({
         url: configuracion_sitio_externo.url,
-        type: "POST",
-        contentType:"application/json; charset=utf-8",
-        dataType: "json",
+        type: 'POST',
+        contentType:'application/json; charset=utf-8',
+        dataType: 'json',
         data: JSON.stringify(configuracion_sitio_externo.parametros),
         success: function(data) {
-            $.growl.notice({'title': gettext('Interacción con sitio externo'),
-                        'message': gettext('OK'),
-                        'duration': 5000});
+            $.growl.notice({
+                'title': gettext('Interacción con sitio externo'),
+                'message': gettext('OK'),
+                'duration': 5000});
         },
         error: function(data) {
-        $.growl.error({'title': gettext('Error al ejecutar Interacción con sitio externo'),
-                       'message': gettext('Consulte a su supervisor'),
-                       'duration': 5000});
+            $.growl.error({
+                'title': gettext('Error al ejecutar Interacción con sitio externo'),
+                'message': gettext('Consulte a su supervisor'),
+                'duration': 5000});
         }
     });
 }

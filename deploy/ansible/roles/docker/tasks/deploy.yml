@@ -10,14 +10,12 @@
 - name: Check if docker is installed
   shell: which docker
   register: docker_installed
-  tags: always
   changed_when: false
   failed_when: false
 
 - name: Check if docker-compose is installed
   shell: which docker-compose
   register: docker_compose_installed
-  tags: always
   changed_when: false
   failed_when: false
 
@@ -175,4 +173,3 @@
 
 - name: Set environment variables for this installation
   template: src=roles/prerequisitos/templates/omnileads_envars.sh dest=/etc/profile.d/ mode=644 owner=root group=root
-  tags: always

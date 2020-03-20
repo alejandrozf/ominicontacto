@@ -17,8 +17,8 @@
 ##############################################################################
 # If you are installing a devenv (PE) uncomment
 [prodenv-container]
-#localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
-#X.X.X.X ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation, replace X.X.X.X with the IP of Docker Host)
+#localhost ansible_connection=local ansible_user=root #(for self-hosted installation)
+#X.X.X.X ansible_ssh_port=22 ansible_user=root #(for node-host installation, replace X.X.X.X with the IP of Docker Host)
 # If you are installing a devenv (DE) uncomment
 [devenv-container]
 #localhost ansible_connection=local ansible_user=root
@@ -40,7 +40,7 @@
 #                    SET POSTGRESQL PASSWORD                        #
 #####################################################################
 postgres_database=omnileads
-postgres_user=omnileads
+#postgres_user=omnileads
 #postgres_password=my_very_strong_pass
 #####################################################################
 #                           Web Admin                               #
@@ -50,13 +50,13 @@ postgres_user=omnileads
 #######################################
 # AMI for wombat dialer and OMniLeads #
 #######################################
-ami_user=omnileadsami
-ami_password=5_MeO_DMT
+#ami_user=omnileadsami
+#ami_password=5_MeO_DMT
 #####################################################
 # Wombat dialer credentials and MYSQL root password #
 #####################################################
-dialer_user=demoadmin
-dialer_password=demo
+#dialer_user=demoadmin
+#dialer_password=demo
 #mysql_root_password=my_very_strong_pass
 #################################################################################################
 # Set the timezone where the nodes are. UNCOMMENT and set this if you are doing a fresh install #
@@ -117,7 +117,7 @@ registry_username=freetechsolutions
 ##############################################################
 # Variables oml_release and subnet are necessary for prodenv #
 ##############################################################
-oml_release=release-1.4.0
+oml_release=
 subnet=192.168.15.0/24
 #################################
 # Do not change variables below #

@@ -64,6 +64,21 @@ class PhoneJSController {
         this.phone_fsm.start();
     }
 
+
+    markRecordCallButtonReady (self, $img, $recordCallButton) {
+        // cambia icono y mensaje del botón de grabacion bajo demanda
+        // para mostrar que está listo para grabar
+        $img.attr('src', self.view.imgRecordOffUrl);
+        $recordCallButton.attr('title', gettext('Grabar llamada'));
+    }
+
+    markRecordCallButtonRecording (self, $img, $recordCallButton) {
+        // cambia icono y mensaje del botón de grabacion bajo demanda
+        // para mostrar que está grabando
+        $img.attr('src', self.view.imgRecordOnUrl);
+        $recordCallButton.attr('title', gettext('Parar grabación llamada'));
+    }
+
     subscribeToViewEvents() {
         var self = this;
 
@@ -91,19 +106,17 @@ class PhoneJSController {
             self.redial();
         });
 
-        this.view.recordCall.click(function name(arg) {
+        this.view.recordCall.click(function () {
             var $recordCallButton = self.view.recordCall;
             var $img = $recordCallButton.find('img');
             var recordUrlStatus = $img.attr('src');
 
             if (recordUrlStatus == self.view.imgRecordOffUrl) {
-                $img.attr('src', self.view.imgRecordOnUrl);
-                $recordCallButton.attr('title', gettext('Parar grabación llamada'));
+                self.markRecordCallButtonRecording(self, $img, $recordCallButton);
                 self.recordCall();
             }
             else {
-                $img.attr('src', self.view.imgRecordOffUrl);
-                $recordCallButton.attr('title', gettext('Grabar llamada'));
+                self.markRecordCallButtonReady(self, $img, $recordCallButton);
                 self.stopRecordCall();
             }
         });
@@ -434,6 +447,12 @@ class PhoneJSController {
             self.timers.llamada.restart();
             self.callEndTransition();
             self.updateCallHistory();
+            // mostramos al botón de grabación bajo demanda de llamada
+            // como listo para grabar (aunque en este punto va a estar
+            // deshabilitado)
+            var $recordCallButton = self.view.recordCall;
+            var $img = $recordCallButton.find('img');
+            self.markRecordCallButtonReady(self, $img, $recordCallButton);
         });
     }
 

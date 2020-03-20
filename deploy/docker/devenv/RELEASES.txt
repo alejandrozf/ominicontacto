@@ -34,6 +34,8 @@ Asterisk:
   - Added packages iproute2 and net-tools to discover internal subnet to add in asterisk manager.conf file
 16.4.0-python3
   - Changed python and pyscopg2 version to support python3.
+16.9.0
+  - Upgraded asterisk version to 16.9.0
   
 pbx-emulator image versions:
 
