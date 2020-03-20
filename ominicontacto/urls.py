@@ -35,9 +35,9 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.views.i18n import JavaScriptCatalog
+import os
 
 js_info_packages = ('ominicontacto_app',)
-
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -49,7 +49,6 @@ urlpatterns = [
     url(r'^', include('api_app.urls')),
     url(r'^accounts/logout/$', auth_views.LogoutView.as_view(next_page='/accounts/login/'),
         name="logout"),
-
 ]
 
 for (regex, module) in settings.ADDON_URLPATTERNS:
@@ -60,3 +59,11 @@ urlpatterns += [
         name='javascript-catalog'),
     url(r'^i18n/', include('django.conf.urls.i18n')),
 ]
+
+# TODO me funciona con el if de abajo el if de arriba es mas prolijo pero no funciona
+# if settings.DEBUG:
+if os.getenv('DJANGO_SETTINGS_MODULE') == 'ominicontacto.settings.develop':
+    import debug_toolbar
+    urlpatterns += [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ]
