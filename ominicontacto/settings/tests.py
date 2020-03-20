@@ -103,7 +103,7 @@ ASTERISK = {
     'HTTP_AMI_URL': "http://172.16.20.88:7088",
 }
 
-OML_OMNILEADS_IP = os.getenv('OMNILEADS_IP')
+OML_OMNILEADS_HOSTNAME = os.getenv('OMNILEADS_HOSTNAME')
 
 # 'OML_RELOAD_CMD': comando a ejecutar para realizar el reload de la configuracion de Asterisk
 # **** RECORDAR: revisar permisos, usuario, etc.

@@ -34,7 +34,6 @@ Para consultar dichas variables podemos ejecutar un *cat* sobre el archivo */etc
  MONITORFORMAT=mp3
  MYSQL_PWD=098098ZZZ
  NGINX_HOSTNAME=localhost.localdomain
- OMNILEADS_IP=192.168.95.163
  OMNILEADS_HOSTNAME=localhost.localdomain
  PGHOST=localhost.localdomain
  PGDATABASE=omnileads
@@ -48,7 +47,7 @@ Para consultar dichas variables podemos ejecutar un *cat* sobre el archivo */etc
  WOMBAT_USER=demoadmin
  WOMBAT_PASSWORD=demo
 
- export AMI_USER AMI_PASSWORD ASTERISK_IP ASTERISK_HOSTNAME ASTERISK_LOCATION CALIFICACION_REAGENDA DJANGO_SETTINGS_MODULE DJANGO_PASS EPHEMERAL_USER_TTL EXTERNAL_PORT INSTALL_PREFIX KAMAILIO_IP KAMAILIO_HOSTNAME KAMAILIO_LOCATION MONITORFORMAT MYSQL_PWD NGINX_HOSTNAME OMNILEADS_IP OMNILEADS_HOSTNAME PGHOST PGDATABASE PGUSER PGPASSWORD PYTHONPATH REDIS_HOSTNAME SESSION_COOKIE_AGE TZ WOMBAT_HOSTNAME WOMBAT_USER WOMBAT_PASSWORD
+ export AMI_USER AMI_PASSWORD ASTERISK_IP ASTERISK_HOSTNAME ASTERISK_LOCATION CALIFICACION_REAGENDA DJANGO_SETTINGS_MODULE DJANGO_PASS EPHEMERAL_USER_TTL EXTERNAL_PORT INSTALL_PREFIX KAMAILIO_IP KAMAILIO_HOSTNAME KAMAILIO_LOCATION MONITORFORMAT MYSQL_PWD NGINX_HOSTNAME OMNILEADS_HOSTNAME PGHOST PGDATABASE PGUSER PGPASSWORD PYTHONPATH REDIS_HOSTNAME SESSION_COOKIE_AGE TZ WOMBAT_HOSTNAME WOMBAT_USER WOMBAT_PASSWORD
 
 De esta manera el administrador podrá disponer de todos estos parámeros operativos cuando desee.
 
@@ -313,8 +312,8 @@ Dependiendo el método de instalación que se haya seleccionado:
 **Instalación basada en contenedores Docker**
 
 .. important::
-  
-  Si ya tiene un entorno instalado con el script *install.sh* y quiere pasar a actualizar con Ansible, tiene que ingresar las variables correspondientes en el archivo de inventario. Es **MUY IMPORTANTE** que ingrese la misma password MYSQL. 
+
+  Si ya tiene un entorno instalado con el script *install.sh* y quiere pasar a actualizar con Ansible, tiene que ingresar las variables correspondientes en el archivo de inventario. Es **MUY IMPORTANTE** que ingrese la misma password MYSQL.
 
 Una vez instalado OMniLeads en docker no siempre va a a ser necesario ejecutar el instalador de Ansible para realizar la actualización de la plataforma, salvo en estos casos:
 
@@ -346,8 +345,8 @@ Cambios de los parámetros de red (Hostname y/o Dirección IP) y cambios de cont
 
 **Para entorno AIO**
 
-* Para llevar a cabo éstas tareas, debemos ejecutar nuevamente el script "deploy.sh". 
-* **Si se quiere cambiar IP** Se debe ingresar con el usuario root al sistema, cambiar la dirección IP a nivel sistema operativo y/o hostname y asegurarnos de que el host tomó los cambios. Se recomienda un *reboot* del sistema. 
+* Para llevar a cabo éstas tareas, debemos ejecutar nuevamente el script "deploy.sh".
+* **Si se quiere cambiar IP** Se debe ingresar con el usuario root al sistema, cambiar la dirección IP a nivel sistema operativo y/o hostname y asegurarnos de que el host tomó los cambios. Se recomienda un *reboot* del sistema.
 * **Si se quieren cambiar constraseñas** cambiar la contraseña que se desee, remitirse a :ref:`about_install_inventory_vars` para revisar las variables de contraseñas.
 
 Llevar a cabo esta tarea conlleva ejecutar el script deploy.sh asi:

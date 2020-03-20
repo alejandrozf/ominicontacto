@@ -205,7 +205,7 @@ OML_DUMP_HTTP_AMI_RESPONSES = False
 # DEPLOY -> Asterisk
 # ==============================================================================
 
-OML_OMNILEADS_IP = None
+OML_OMNILEADS_HOSTNAME = None
 OML_ASTERISK_REMOTEPATH = None
 OML_SIP_FILENAME = None
 OML_QUEUES_FILENAME = None
