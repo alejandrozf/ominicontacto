@@ -1,0 +1,8 @@
+---
+
+pg_service_name: postgresql
+pg_setup_location: /usr/bin/postgresql-setup
+pg_lib_location: /var/lib/pgsql/data
+cron_location: /var/spool/cron/omnileads
+mysql_host: localhost
+python_version_desired: "3.6.2"

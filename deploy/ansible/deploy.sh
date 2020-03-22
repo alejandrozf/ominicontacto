@@ -44,6 +44,12 @@ OSValidation(){
       yum install epel-release -y
       echo "Installing python2-pip"
       yum install python-pip -y
+      echo
+    elif [ "$os" == '"Amazon Linux"' ]; then
+      echo "Habilitating epel repository"
+      amazon-linux-extras enable epel
+      echo "Installing python2-pip"
+      yum install python-pip patch libedit-devel libuuid-devel -y
     else
       echo "The OS you are trying to install is not supported to install this software."
       exit 1
@@ -260,7 +266,7 @@ do
               -da --database: execute tasks related to database
               -di --dialer: execute tasks related to dialer (Wombat Dialer)
               --docker-deploy: deploy Omnileads in docker containers using docker-compose.
-              --docker-build: build and push Omnileads images to a registry. 
+              --docker-build: build and push Omnileads images to a registry.
               --docker-no-build: execute build images steps without building and pushing the images.
               -i --install: make a fresh install of Omnileads.
               -k --kamailio: execute kamailio related tasks.

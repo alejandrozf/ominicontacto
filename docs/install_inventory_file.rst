@@ -143,10 +143,12 @@ Las variables necesarias para **deploy** de los containers son:
 
 Las variables *registry_email* y *registry_password* son necesarias en caso de querer hacer un **build** de sus propias imágenes. 
 
-OMniLeads Cloud
-*****************
+.. _about_install_inventory_oml_cloud:
 
-Los parámetros  **"external_hostname"**, **"external_port"**  y **"public_ip"**, deben configurarse si se quiere instalar un OMniLeads en un servidor en la nube, donde los agentes se conectarán a la URL conformada por **https://external_hostname:external_port**, sin tener una conexion LAN directa o atraves de VPN hacia el OMniLeads.
+Variables OMniLeads Cloud
+**************************
+
+Los parámetros  **"external_hostname"**, **"external_port"**, deben configurarse si se quiere instalar un OMniLeads en un servidor en la nube, donde los agentes se conectarán a la URL conformada por **https://external_hostname:external_port**, sin tener una conexion LAN directa o atraves de VPN hacia el OMniLeads.
 
 .. code-block:: bash
 
@@ -159,7 +161,6 @@ Los parámetros  **"external_hostname"**, **"external_port"**  y **"public_ip"**
   #######################################################################################
   #external_port=
   #external_hostname=
-  #public_ip=
 
 .. important::
 
@@ -167,6 +168,8 @@ Los parámetros  **"external_hostname"**, **"external_port"**  y **"public_ip"**
 
     * Permit de tráfico saliente desde los puertos 10000 a 30000 UDP
     * Permit de tráfico entrante desde los puertos 10000 a 30000 UDP
+
+.. _about_install_inventory_oml_trusted_certs:
 
 Parámetros para añadir par llave/certificado digital confiables
 ***************************************************************

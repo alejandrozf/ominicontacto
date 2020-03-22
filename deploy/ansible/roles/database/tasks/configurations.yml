@@ -19,9 +19,10 @@
 
 # El initdb de postgres toca ejecutarlo solo para centos
 - name: Setup of postgresql
-  command: "/usr/pgsql-{{ postgresql_version }}/bin/postgresql-{{ postgresql_version }}-setup initdb"
+  command: "{{ pg_setup_location }} initdb"
   register: commandresult
   failed_when:
+    - "'is not empty' not in commandresult.stderr"
     - "'is not empty' not in commandresult.stdout"
     - "commandresult.rc != 0"
   tags: postinstall
@@ -30,8 +31,6 @@
 # Se modifica el pg_hba.conf
 - name: Modify of pg_hba.conf file
   template: src=roles/database/templates/pg_hba.conf.j2 dest={{ pg_lib_location }}/pg_hba.conf
-  become: true
-  become_method: sudo
   tags: postinstall
 
 #Se modifica la ip en la que escucha postgres
@@ -42,7 +41,7 @@
 
 # Restarteamos servicio
 - name: Restart postgres service
-  service: name=postgresql{{prefix}}{{ postgresql_version }}{{sufix}} state=restarted enabled=yes
+  service: name={{ pg_service_name }} state=restarted enabled=yes
   when: postgresql_new_installed.rc != 2
   tags: postinstall
 
@@ -83,6 +82,7 @@
     - pg_restore
     - pg_dump
   tags: postinstall
+  when: ansible_distribution != "Amazon"
 
 - name: Create link of pg{{ postgresql_version }} binaries in /usr/bin/
   file: state=link src=/usr/pgsql-{{ postgresql_version }}/bin/{{ item }} dest=/usr/bin/{{ item }} force=true owner=root group=root mode=755
@@ -91,4 +91,4 @@
     - pg_restore
     - pg_dump
   tags: postinstall
-
+  when: ansible_distribution != "Amazon"
