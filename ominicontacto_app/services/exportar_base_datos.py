@@ -41,6 +41,7 @@ from ominicontacto_app.services.wombat_config import CampanaListContactoConfigFi
 logger = logging.getLogger(__name__)
 
 
+# TODO: Verificar si este archivo se usa en algun momento
 class ArchivoDeReporteCsv(object):
     def __init__(self, base_datos):
         self._base_datos = base_datos

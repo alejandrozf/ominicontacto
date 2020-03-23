@@ -389,5 +389,5 @@ def get_oml_last_release():
         root = etree.HTML(html_tags_page.content)
         doc = etree.ElementTree(root)
         nodos_tags = doc.xpath("//div[@class='row-main-content']/a")
-        current_release = "Release {0}".format(nodos_tags[0].text)
+        current_release = "release-{0}".format(nodos_tags[0].text)
         return current_release
