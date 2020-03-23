@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-23 13:05-0300\n"
+"POT-Creation-Date: 2020-03-23 19:14-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,154 +24,28 @@ msgstr "Release Notes"
 
 # 7cb6be6322af4d678643b0d6beead1a9
 #: ../../release_notes.rst:4
-msgid "*March 20, 2020*"
-msgstr "Marzo 20, 2020"
+msgid "*Marzo 23, 2020*"
+msgstr "March 23, 2020"
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.5.0"
-msgstr "Release 1.5.0 details"
+msgid "Detalles de Release 1.5.1"
+msgstr "Release 1.5.1 details"
 
-# cba3ecf3a3aa44039b44e015a3b31797
+# 08671eb233f04abb94799e4b0e1d9251
 #: ../../release_notes.rst:10
-msgid "Nuevas funcionalidades"
-msgstr "New features"
-
-# 88c377bad9bc40b19bb48b30f415aa11
-#: ../../release_notes.rst:11
-msgid ""
-"Django fue actualizadp a la versión 2.2.7 y, por tanto, todo el código "
-"python fue migrado a python3"
-msgstr ""
-"Django was updated to 2.2.7 version and, consequently, all python code "
-"was migrated to python3"
-
-# eba7113f6361442b94fb1f20afd5e330
-#: ../../release_notes.rst:12
-msgid "El parsing de los headers de Asterisk DB fue optimizado"
-msgstr "Asterisk DB headers parsing was optimized"
-
-# 0077a9418c45456081874df7aed1115d
-#: ../../release_notes.rst:13
-msgid ""
-"Ahora es posible distribuir los contactos entre agentes de forma "
-"proporcional en la creación de campañas preview"
-msgstr ""
-"Is possible now to distribute contacts between agents proportionally in "
-"preview campaigns creation"
-
-# 85fb774735234eebbfeec134ff51546b
-#: ../../release_notes.rst:14
-msgid ""
-"Se adicionaron nuevos endpoints que permiten la interacción de agentes "
-"con Asterisk"
-msgstr "New API endpoints were added to handle agent interaction with Asterisk"
-
-# 464329e5ece84b6eba2c9a73b798f103
-#: ../../release_notes.rst:15
-msgid "Se adicionaron nuevos parámetros a las campañas entrantes"
-msgstr "New parameters were added to inbound campaigns"
-
-# c17fd528247d44da8005689fb5759c0b
-#: ../../release_notes.rst:16
-msgid ""
-"Se adicionó información sobre el release actual después de loguearse un "
-"administrador"
-msgstr "Release version information was added after administrator login"
-
-# be95cc1463c4431a8d0efe30d96bf93d
-#: ../../release_notes.rst:17
-#, fuzzy
-msgid "Se adicionó la posibilidad de realizar grabaciones de llamada bajo demanda"
-msgstr "Ability to on-demand record call was added"
-
-# 2c881e5d9a6f42b294d466f1a1adbc14
-#: ../../release_notes.rst:18
-msgid "Se eliminó el soporte para instalaciones AIO de Ubuntu/Debian"
-msgstr "Ubuntu/Debian AIO installation support was dropped"
-
-# 449888051d1b4af4895a0897981566f7
-#: ../../release_notes.rst:19
-msgid "Se refactorizó el deploy del sistema en entornos basados en Docker"
-msgstr "The build/deploy on Docker environments was refactored"
-
-# 73387cd478a743919fe52c372021c1f1
-#: ../../release_notes.rst:20
-msgid ""
-"El sistema ahora permite auditar grabaciones y re-calificar llamadas por "
-"supervisores"
-msgstr ""
-"The system now allows to audite recordings and also re-disposition calls "
-"by supervisors"
-
-# bafd6770c70b4630af99912054e4345e
-#: ../../release_notes.rst:21
-msgid ""
-"Los agentes pueden ahora visualizar las grabaciones de sus propias "
-"llamadas"
-msgstr "Agents can see now its recordings of its owns calls"
-
-# fb1a3c03f46f4c0d98b827f1dfbdb0a0
-#: ../../release_notes.rst:22
-msgid "Asterisk fue actualizado a la versión 16.9.0"
-msgstr "Asterisk was updated to 16.9.0 version"
-
-# b931d7252b6744fc85486fd51ad0b032
-#: ../../release_notes.rst:23
-msgid "Se le realizaron modificaciones estéticas al formulario de calificación"
-msgstr "Aesthetic changes were made on disposition form"
-
-# 3503c60537a1445bb330a3df0b9eae78
-#: ../../release_notes.rst:24
-msgid ""
-"Se habilitó destino  si NO se identifica correctamente para Tipo de "
-"interacción \"externa 2\" para el objeto de telefonía Identificador de "
-"Clientes"
-msgstr ""
-"An inbound destination option was added for Type 2 External Interaction "
-"in Client Identification Service"
-
-# 25248e6684514b4886210439cb30c9fd
-#: ../../release_notes.rst:29
 msgid "Bug fixes"
 msgstr "Bug fixes"
 
-# 2825e26d57c24a0e9a01c99dda2700cc
-#: ../../release_notes.rst:30
+# b3b1c0e6248e4a859ba8ade29663bb6a
+#: ../../release_notes.rst:11
 msgid ""
-"Solucionado error que oocrría al intentar asignar columnas de la base al "
-"URL de sitio externo"
+"Solucionado error en validación al mostrar información de release "
+"desactualizado"
 msgstr ""
-"Fixed error that ocurred on assigment of database columns to external "
-"site url"
+"A validation error on condition to show release outdated information was fixed"
 
-# 5d5d91d02bd2400b95a9de93846cdcb0
-#: ../../release_notes.rst:31
-msgid ""
-"Solucionado error que no renderizaba la URL de sitio externo en la Agent "
-"Toolbar"
-msgstr "Fixed error that didn't rendered external site url on agent view"
-
-# e1fad7fcb8ba4aa9910c11151ebc1ee3
-#: ../../release_notes.rst:32
-msgid "Solucionado error en script de restore backup"
-msgstr "Fixed restore backup script"
-
-# 6d838ee68d494a259ac8756e88955c91
-#: ../../release_notes.rst:33
-msgid ""
-"Se adiciona validación para evitar setear tiempo de anuncio sin haber "
-"elegido anuncio perióidico"
-msgstr ""
-"Added validation that avoids to set an time frequency for periodic "
-"announcenment without its audio file"
-
-# 8b81587cb004483bada19bebea2f9f21
-#: ../../release_notes.rst:34
-msgid ""
-"Solucionado error que ocurría al cumplirse una regla de incidencia en "
-"campañas dialer y trackeaba mal el OUTNUM en queue_log"
-msgstr ""
-"Fixed error that did track wrong number out number for dialer campaing "
-"incidence rules"
-
+# ec72b0859c004622b79427fbd4b261a5
+#: ../../release_notes.rst:12
+msgid "Solucionados algunos errores de encoding en visualización de reportes"
+msgstr "Some encoding visualization errors on reports were fixed"

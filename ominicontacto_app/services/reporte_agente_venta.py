@@ -73,7 +73,7 @@ class ArchivoDeReporteCsv(object):
 
     def escribir_archivo_csv(self, respuestas):
 
-        with open(self.ruta, 'w') as csvfile:
+        with open(self.ruta, 'w', encoding='utf-8') as csvfile:
             # Creamos encabezado
             encabezado = []
 
@@ -84,8 +84,7 @@ class ArchivoDeReporteCsv(object):
             csvwiter = csv.writer(csvfile)
 
             # guardamos encabezado
-            lista_encabezados_utf8 = [force_text(item).encode('utf-8')
-                                      for item in encabezado]
+            lista_encabezados_utf8 = [force_text(item) for item in encabezado]
             csvwiter.writerow(lista_encabezados_utf8)
 
             # Iteramos cada una de las calificaciones del agente
@@ -105,8 +104,7 @@ class ArchivoDeReporteCsv(object):
 
                 # --- Finalmente, escribimos la linea
 
-                lista_opciones_utf8 = [force_text(item).encode('utf-8')
-                                       for item in lista_opciones]
+                lista_opciones_utf8 = [force_text(item) for item in lista_opciones]
                 csvwiter.writerow(lista_opciones_utf8)
 
     def ya_existe(self):
