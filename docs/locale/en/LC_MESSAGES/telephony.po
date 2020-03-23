@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-13 11:31-0300\n"
+"POT-Creation-Date: 2020-03-04 11:08-0300\n"
 "PO-Revision-Date: 2019-08-14 21:24-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -17,14 +17,14 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.4.0\n"
 
-# 5cbfe5e7a2184f7380d484739fa58b27
+# 8fcfbbb9fba74e658690835b1ec703f4
 #: ../../telephony.rst:3
 msgid "Configuración de acceso a la PSTN"
 msgstr "Access configuration to PSTN"
 
-# af22c63f015b4770affc98e7c6f63a3a
+# 11aeaadb42054c3496386648e00f5bca
 #: ../../telephony.rst:5
 msgid ""
 "En este capítulo vamos a explicar cómo dejar configurada la capa de "
@@ -33,9 +33,12 @@ msgid ""
 "interconexión con otros conmutadores de telefonía. Por lo tanto el "
 "integrador podrá configurar troncales SIP de proveedores ITSP, troncales "
 "SIP contra sistemas PBX y/o troncales SIP contra Gateways FXO o E1/T1."
-msgstr ""
+msgstr "In this chapter we are going to explain how to configure the *PSTN access* "
+"so OMniLeads can make phone calls. OMniLeads just admits SIP as telephony session "
+"techology. Therefore, the integrator can configure SIP trunks of ITSP providers, "
+"SIP trunks against PBX systems and/or SIP trunks against Gateways FXO or E1/T1."
 
-# 652f36a5c5a4492282a860c0f520a28c
+# 2fa4c6061b3b4a1a961a5b4cef19f363
 #: ../../telephony.rst:11
 msgid ""
 "A partir del **Release-1.4.0** OMniLeads implementa y recomienda el uso "
@@ -43,23 +46,26 @@ msgid ""
 "eficiencia en términos de recursos informáticos utilizados, así como "
 "también por el estado de *deprecated* en el cual se encuentra el módulo "
 "CHAN_SIP a partir de la versión 17 de Asterisk."
-msgstr ""
+msgstr "From **Release-1.4.0** OMniLeads implements and recommends the use of "
+"SIP trunks based on PJISP Asterisk module, due to its efficiency saving CPU, "
+"as well as the decrepation of CHAN_SIP module from Asterisk 17 version."
 
-# 6d0d4636957b4f75a6228d9fa2e02ca9
+# 6b1f7294eeb84fd28c7cc8afc7830532
 #: ../../telephony.rst:14
 msgid ""
 "Por lo tanto a la hora de plantear el uso de troncales SIP en esta "
 "documentación se utilizará PJSIP. Para disponer de la explicación de "
 "troncales utilizando chan_sip, usted podrá visitar las versiones "
 "anteriores de esta documentación."
-msgstr ""
+msgstr "Therefore in this section PJSIP trunks configuration will be described. "
+"To check the chan_sip explanation, you can see the previous versions of documentation."
 
-# ba41e3a938be45ddbd832d04bf4b4cb4
+# cfe360a1954d46a5952c7afa2a43aa22
 #: ../../telephony.rst:19
 msgid "Explicación del ABM para troncales PJSIP"
 msgstr "ABM of PJSIP trunks explanation"
 
-# b8d0aa6688224bb5bdf3386ee0c194fe
+# d1966a602864443f929f8255c7230db9
 #: ../../telephony.rst:21
 msgid ""
 "Para acceder a la configuración debemos ingresar en el punto de menú "
@@ -70,36 +76,36 @@ msgstr ""
 "*(Telephony -> SIP Trunks)* and there add a new SIP trunk. A form similar"
 " to the one on figure 1 will be displayed."
 
-# ee6dfc46c6064ab8b2cfbf82f2f1655f
+# 8b01ca2b98fb40e9b28f04953f7c70cd
 #: ../../telephony.rst:27
 msgid "*Figure 1: New SIP Trunk*"
 msgstr "*Figure 1: New SIP Trunk*"
 
-# 0fd8ab689326473da4aee3714eff16c0
+# 896c88ec369c4ab2ae1ac08f844eda63
 #: ../../telephony.rst:29
 msgid "Los campos del formulario son:"
 msgstr "The form blanks are:"
 
-# 78ce1ec1ec414e71a5e48f90bdc7344d
+# 037fcc49231c425fbf253551f7c28062
 #: ../../telephony.rst:31
 msgid ""
 "**Trunk Name**: el nombre del troncal. Debe ser alfanumperico sin "
 "espacios ni caracteres especiales (Ej: Trunk_provider_a)."
 msgstr ""
-"**Trunk Name**: the name of the trunk. Must be alphanumeric without spaces or "
-"special characters (eg Trunk_provider_a)."
+"**Trunk Name**: the name of the trunk. Must be alphanumeric without "
+"spaces or special characters (eg Trunk_provider_a)."
 
-# e454bcde4cd04f60a8a7d37a8ab5a237
+# 51ed0a3dff0f460a9c6767d121317b25
 #: ../../telephony.rst:32
 msgid "**Number of channels**: es la cantidad de canales que permite el vínculo."
 msgstr "**Number of channels**: is the number of channels allowed by the link."
 
-# 638f23b62034447cafc057c9c2fc09aa
+# 9bc8cd72f31545009102c779ac6ce3b1
 #: ../../telephony.rst:33
 msgid "**Caller id**: el número con el que saldrán las llamadas por el troncal."
 msgstr "**Caller id**: the number with which the calls will go through the trunk."
 
-# 0c6317a0433348f590812b6ebfa5470d
+# 1265887a818b4089a588d0370d6e0238
 #: ../../telephony.rst:34
 msgid ""
 "**SIP details**: en este campo de texto se proporcionan los parámetros "
@@ -108,7 +114,7 @@ msgid ""
 " de Asterisk."
 msgstr ""
 
-# 19776f70db0c4ef5b82e9efe02d954cc
+# 131c66c399194d689c3b9b85b674e115
 #: ../../telephony.rst:36
 msgid ""
 "Como se puede apreciar en la figura 1, existen una serie de *plantillas* "
@@ -116,45 +122,20 @@ msgid ""
 "configurar, que pueden facilitar bastante el trabajo de configuración  ."
 msgstr ""
 
-# 3a6a5ea01f1e4271b6547f1ed8e986d6
+# 77a779bba382408d9d861d5d80c625dc
 #: ../../telephony.rst:39
 msgid ""
 "A continuación desplegamos las plantillas sugeridas para los tipos de "
 "escenarios planteados como casos de uso típicos de OMniLeads."
 msgstr "Below are the types of scenarios proposed as a case of using OMniLeads."
 
-# acad76ae2be942e0bed4764eb367ebab
-#: ../../telephony.rst:42
-msgid ":ref:`about_telephony_pjsip_internet_provider`."
-msgstr ""
-
-# 13348c389e1b45b89eb0eb46a0d014e9
-#: ../../telephony.rst:43
-msgid ":ref:`about_telephony_pjsip_lan_provider`."
-msgstr ""
-
-# 1bbc08ff4f7c47dcb875898d51af0513
-#: ../../telephony.rst:44
-msgid ":ref:`about_telephony_pjsip_lan_pbx`."
-msgstr ""
-
-# 0907b759ab54456fb2ebacb4a0bd4689
-#: ../../telephony.rst:45
-msgid ":ref:`about_telephony_pjsip_internet_pbx`."
-msgstr ""
-
-# 20235cd487d04b20aba16120ff0eb506
-#: ../../telephony.rst:46
-msgid ":ref:`about_telephony_pjsip_oml_inside_pbx`."
-msgstr ""
-
-# ac50d91915e24aaa9487bc7de2b2bc19
-#: ../../telephony.rst:49
+# 7acd25dc05004046a1b765f293bf6df9
+#: ../../telephony.rst:47
 msgid "Configuración para el enrutamiento de llamadas salientes"
 msgstr "Outbound calls routing configuration"
 
-# f5974488c9a945ac88f855afcb1f9cad
-#: ../../telephony.rst:51
+# e74c5103674c45a785358306309144b2
+#: ../../telephony.rst:49
 msgid ""
 "OMniLeads permite gestionar el enrutamiento de llamadas salientes sobre "
 "múltiples troncales SIP (previamente creados), de manera tal que "
@@ -168,8 +149,8 @@ msgstr ""
 " prefix* to determine which SIP link use to route the call. It is also "
 "possible to maintain a *failover* logic in terms of SIP trunk."
 
-# 236d27e40a614226a8964ba7e706a854
-#: ../../telephony.rst:55
+# 1f29a9d5887f497fb96f880ffee2f817
+#: ../../telephony.rst:53
 msgid ""
 "Para acceder a la vista de configuración de rutas salientes, ingresar al "
 "punto de menú (*Telephony -> Outbound routes*)"
@@ -177,18 +158,18 @@ msgstr ""
 "To access the ABM of outbound routes enter the menú point (*Telephony -> "
 "Outbound routes*)"
 
-# 7903bb34f88e41baa863fbb02c3a45de
-#: ../../telephony.rst:59
+# a6f78136dfc64838b0051bdf91f4808b
+#: ../../telephony.rst:57
 msgid "*Figure 2: Outbound route*"
 msgstr ""
 
-# 7864e98cd4cc489c971d37470f8818bf
-#: ../../telephony.rst:61
+# ddc405fb505a4549ad96cc56eb9f509a
+#: ../../telephony.rst:59
 msgid "**Nombre**: es el nombre de la ruta (alfanumérico sin espacios)"
 msgstr "**Name**: is the route name (alphanumeric without spaces)"
 
-# 48f7feb0ee154d1fb26b96543edd6c28
-#: ../../telephony.rst:62
+# d9b39cdf5f414c49901ea034636fd5d3
+#: ../../telephony.rst:60
 msgid ""
 "**Ring time**: es el tiempo (en segundos) que las llamadas cursadas por "
 "esta ruta, intentarán establecer una conexión con el destino, antes de "
@@ -198,8 +179,8 @@ msgstr ""
 "attempt to stablish a conection with the destination, before continuing "
 "to try the next trunk or discard the call."
 
-# 72de49ed5c264ddeaa2654ced7ae4036
-#: ../../telephony.rst:63
+# 64638feec75c4a3994022fcdfff9700c
+#: ../../telephony.rst:61
 msgid ""
 "**Dial options**: son las opciones de la aplicación \"Dial\" utilizadas "
 "por Asterisk(r) en bajo nivel."
@@ -207,8 +188,8 @@ msgstr ""
 "Dial options: are the \"dial\" application options used by Asterisk(r) in"
 " a low level."
 
-# b8bd4a419a18460e99e985e07fe08cc0
-#: ../../telephony.rst:64
+# 26534b9f21a0457e9c780cd1fbcf7877
+#: ../../telephony.rst:62
 msgid ""
 "**Patrones de discado**: mediante patrones, se puede representar los "
 "*tipos de llamadas* que serán aceptadas por la ruta y así entonces "
@@ -216,8 +197,8 @@ msgid ""
 "deseado."
 msgstr ""
 
-# 997f1e296e254d618bd66cc98abfb71a
-#: ../../telephony.rst:66
+# e695eb9c931c4f68aed5ce24c86b190b
+#: ../../telephony.rst:64
 msgid ""
 "Para comprender cómo se representan los dígitos utilizando *patrones*, se"
 " recomienda leer éste link: https://www.voip-info.org/asterisk-extension-"
@@ -227,13 +208,13 @@ msgstr ""
 "recommended to read this link: https://www.voip-info.org/asterisk-"
 "extension-matching/."
 
-# b516f6b4dde441b68a927db2a9e9943d
-#: ../../telephony.rst:68
+# b17f1aa8394a43e8a8d2e4249441c0fe
+#: ../../telephony.rst:66
 msgid "Dentro de cada patrón ingresado hay tres campos:"
 msgstr "Within each pattern entered there are three fields:"
 
-# a016a53f23064dcf87d3a9200b67a760
-#: ../../telephony.rst:71
+# f76a41e4c2014c17989a7079db42a8bb
+#: ../../telephony.rst:69
 msgid ""
 "**Prepend**: son los dígitos que se mandan por el trunk SIP como "
 "adicionales al número discado. Es decir llegan al Trunk posicionados "
@@ -243,8 +224,8 @@ msgstr ""
 "dialed number. In other words, they arrive at the Trunk positioned in "
 "front of the dialed number."
 
-# bd2d51016ea448f588536c27d10e7244
-#: ../../telephony.rst:72
+# 1d7f40085c9847928dd0571f32229101
+#: ../../telephony.rst:70
 msgid ""
 "**Prefijo**: son los dígitos que pueden venir como “prefijo” de una "
 "llamada marcada y éstos serán quitados en el momento de enviarlos por el "
@@ -253,8 +234,8 @@ msgstr ""
 "Prefix: are the digits that can come as a \"prefix\" of a dialed call and"
 " will be removed at the time of sending them by the SIP Trunk."
 
-# e18aac5974cf4d5d97ca2ade0f28fec1
-#: ../../telephony.rst:73
+# 5b68ce92a50347ec99fc1fcdc7503732
+#: ../../telephony.rst:71
 msgid ""
 "**Patrón de discado**: se busca representar en este campo el patrón de "
 "dígitos autorizados que la ruta va a procesar para y enviar a un SIP "
@@ -264,8 +245,8 @@ msgstr ""
 "digits that the route will proccess for and send to a SIP trunk to take "
 "the call out."
 
-# 907480afdeb34ad2a02572c94047d80c
-#: ../../telephony.rst:75
+# 7ea40dc38079452f9baa8455105ca973
+#: ../../telephony.rst:73
 msgid ""
 "**Secuencia de troncales**: son los troncales SIP sobre los cuales la "
 "ruta saliente va a intentar establecer la llamada discada por OML. Si la "
@@ -275,13 +256,13 @@ msgstr ""
 "attempr to stablish the dialed call by OML. If the call fails in a trunk,"
 " will attempt again in the next one."
 
-# ac50d91915e24aaa9487bc7de2b2bc19
-#: ../../telephony.rst:78
+# 8a0903e90d7b4bc9870290f63daa2fa5
+#: ../../telephony.rst:76
 msgid "Configuración de enrutamiento de llamadas entrantes"
 msgstr "Inbound calls routing configuration"
 
-# 6f5f6dfd99664d6d8b28e93d00851a10
-#: ../../telephony.rst:80
+# cc518e5ef10c4a08bcfd6121dc62fcb0
+#: ../../telephony.rst:78
 msgid ""
 "El tratamiento de llamadas entrantes se abordará en la sección *Campañas "
 "Entrantes* de esta documentación ya que para poder operar con dicho "
@@ -289,7 +270,7 @@ msgid ""
 "tiempo, campaña entrante, etc.) hacia a donde rutear cada DID generado."
 msgstr ""
 
-# 5fa6f0459ea9469d910949efd7b4bc9a
-#: ../../telephony.rst:83
+# 3c878e288d894c13a47b47b047204b05
+#: ../../telephony.rst:81
 msgid ":ref:`about_inboundroutes`."
 msgstr ""

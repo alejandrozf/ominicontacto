@@ -15,16 +15,10 @@ Vamos a dividir el archivo en dos fragmentos:
 
 .. _about_install_inventory_aio:
 
-Configuración acerca del tipo de instalación
-**********************************************
+Configuración entorno AIO
+**************************
 
-En la primera parte del archivo se especifica el tipo de despliegue a realizar, en donde tenemos para elegir:
-
-
-* **Entorno de producción AIO (All In One).**
-
-Como podemos observar esta sección involucra dos lineas que vienen comentadas, las cuales están atañadas al formato de instalación de un entorno productivo AIO.
-Ambas son mutuamente excluyentes, la primera hace referencia a una instalación :ref:`about_install_selfhosted` y la segunda se utiliza cuando se desea ejecutar una :ref:`about_install_remote`.
+En la primera parte del archivo se encuentra la seccion **[prodenv-aio]**:
 
 .. code-block:: bash
 
@@ -35,25 +29,47 @@ Ambas son mutuamente excluyentes, la primera hace referencia a una instalación 
  #localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
  #X.X.X.X ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
 
+* **Para Self Hosted:** descomentar la primera línea, para que quede así:
 
-* **Entorno de desarrollo basado en Docker.**
+.. code:: bash
+   
+   localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
 
-En caso de requerir el despliegue de un entorno de desarrollo, se debe hacer foco en dicha sección. Aquí simplemente se debe desomentar la linea
-"#localhost ansible_connection=local".
+* **Para Ansible Remoto** descomentar la segunda línea, y reemplazar el X.X.X.X por la IP de la máquina a instalar OMniLeads, ejemplo:
+
+.. code:: bash
+   
+  192.168.1.206 ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
+
+.. _about_install_inventory_docker:
+
+Configuración entorno Docker
+*****************************
+
+En la segunda parte, se encuentra la sección **[prodenv-container]** para la instalación de OMniLeads en containers:
 
 .. code-block:: bash
 
-  ##############################################################################
-  # Docker host is localhost because the application is deployed in localhost. #
-  # Uncomment the line if you want to deploy DE or PE                          #
-  ##############################################################################
   # If you are installing a devenv (PE) uncomment
   [prodenv-container]
-  #localhost ansible_connection=local
-  # If you are installing a devenv (DE) uncomment
-  [devenv-container]
-  #localhost ansible_connection=local
+  #localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
+  #X.X.X.X ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation, replace X.X.X.X with the IP of Docker Host)
 
+* **Para Self Hosted:** descomentar la primera línea, para que quede así:
+
+.. code:: bash
+   
+   localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
+
+* **Para Ansible Remoto** descomentar la segunda línea, y reemplazar el X.X.X.X por la IP de la máquina a instalar OMniLeads, ejemplo:
+
+.. code:: bash
+   
+  192.168.1.206 ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
+
+.. important::
+
+  Tener mucho cuidado a la hora de descomentar las líneas, no descomentar las de entorno de container si se quiere instalar AIO, por ejemplo.
 
 .. _about_install_inventory_vars:
 
@@ -103,7 +119,7 @@ En la tercera sección del archivo se ajusta todo lo respectivo a contraseñas d
   #################################################################################################
   #TZ=America/Argentina/Cordoba
 
-.. _about_install_inventory_docker:
+.. _about_install_inventory_docker_vars:
 
 Variables para Docker
 **********************
@@ -120,13 +136,14 @@ Ademas de las variables vistas anteriormente, si se quiere instalar OMniLeads en
   subnet=192.168.15.0/24
 
 Las variables necesarias para **deploy** de los containers son:
+
 * **registry_username:** si se va a deployar las imagenes oficiales de Freetech Solutions, dejar esta variable como está
 * **oml_release:** la versión de OMniLeads a instalar.
 * **subnet:** se refiere a la red LAN con la que se levantarán los containers.
 
 Las variables *registry_email* y *registry_password* son necesarias en caso de querer hacer un **build** de sus propias imágenes. 
 
-OMniLeads Cloud:
+OMniLeads Cloud
 *****************
 
 Los parámetros  **"external_hostname"**, **"external_port"**  y **"public_ip"**, deben configurarse si se quiere instalar un OMniLeads en un servidor en la nube, donde los agentes se conectarán a la URL conformada por **https://external_hostname:external_port**, sin tener una conexion LAN directa o atraves de VPN hacia el OMniLeads.

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-27 12:12-0300\n"
+"POT-Creation-Date: 2020-03-04 11:08-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,12 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-# 240a13cd4d1b43a88eca27009958d858
+# a9d0e7201d9344439fe4b288f1b724e2
 #: ../../install_docker_linux.rst:5
 msgid "Instalación de OMniLeads utilizando Docker"
 msgstr "OMniLeads Installation using Docker"
 
-# 605d70a3eeea4222b9f23947dd7d54aa
+# 430575d90ebb4a1faba32b396d0edaee
 #: ../../install_docker_linux.rst:7
 msgid ""
 "A partir de la versión 1.4.0, OMniLeads puede ser desplegado en "
@@ -36,7 +36,7 @@ msgstr ""
 "application using this novel \"virtualization\" techonology over "
 "CentOS-7, Issabel or FreePBX  as underlying operating system."
 
-# 0a8184368d9346b786def2deeffe3aa4
+# eb67683896db46e1bdcc17e630308610
 #: ../../install_docker_linux.rst:12
 msgid ""
 "Antes de avanzar aclaramos que todo lo expuesto a continuación, tiene "
@@ -53,7 +53,7 @@ msgstr ""
 "<https://downloads.freepbxdistro.org/ISO/SNG7-FPBX-64bit-1910-2.iso>`_ "
 "exists a workaround detailed at the end of this section."
 
-# 10b02a5497a94ab0bde73be83c4ab48c
+# a33ee3888c774ff99c333beb46061c3a
 #: ../../install_docker_linux.rst:16
 msgid ""
 "Al ejecutar el proceso de instalación disponible en el repositorio, se "
@@ -62,32 +62,32 @@ msgstr ""
 "When executing the installation process available on repository, we "
 "proceds with the installation of:"
 
-# 923849b5d098402ba9e7a1a53d95b9a2
+# 299c41c2746b4c718a25b0f1f8d8b954
 #: ../../install_docker_linux.rst:18
 msgid "Docker"
 msgstr ""
 
-# 801c7ed831d140d9a665c1f889e9a101
+# f65ce42f82fb41529f68fcb30cd4a3a1
 #: ../../install_docker_linux.rst:19
 msgid "docker-compose"
 msgstr ""
 
-# bef0ed3f389b406d89705627f3fce719
+# 79c4ce4e660b435bbdc4910b3d4e5d42
 #: ../../install_docker_linux.rst:20
 msgid "PostgreSQL"
 msgstr ""
 
-# c7188101cd6e4ec3b57365b3ca18dfe5
+# d5d504349b1242749254bc27d945832f
 #: ../../install_docker_linux.rst:21
 msgid "MySQL"
 msgstr ""
 
-# 968dc96754f9460ead440a1d5a8a57a8
+# 94b9c83417b14c5bbd4c3d19ce1f7960
 #: ../../install_docker_linux.rst:22
 msgid "RTPEngine"
 msgstr ""
 
-# c77bd81a694a4b4dbb3aea6060f24d1f
+# a01fe87a6ffe4966a876a8d106d598ff
 #: ../../install_docker_linux.rst:24
 msgid ""
 "Estos componentes serán instalados y se van a ejecutar directamente sobre"
@@ -102,7 +102,7 @@ msgstr ""
 "representative scheme about how is deployed OMniLeads alongside an IPPBX "
 "stack is shown\""
 
-# 6f078571fc9b4379924f31e3acfeac72
+# f3178e6694a247a481f12d5afadcfef2
 #: ../../install_docker_linux.rst:31
 msgid ""
 "Como se puede observar los componentes: Asterisk, Kamailio, Nginx, Wombat"
@@ -123,12 +123,12 @@ msgstr ""
 "<https://docs.docker.com/network/bridge/>`_. The default LAN for this is "
 "192.168.15.0/24."
 
-# 6f3d65b5a47b4e7b879e287edb8d6c6d
+# 0b33645103c541f3b31bfebbaf017bf8
 #: ../../install_docker_linux.rst:36
 msgid "Procedimiento de instalación"
 msgstr "Installation procedure"
 
-# e8b5c6ade6a84c5fa548f3e3e33756c8
+# 8a925266f84d438498ac2f13e4d6f136
 #: ../../install_docker_linux.rst:38
 msgid ""
 "Como primer paso se procede con el ingreso al host Linux para luego "
@@ -140,45 +140,45 @@ msgstr ""
 "download the OMniLeadsand once cloned the repository we must go to the "
 "*relative* path; ominicontacto/deploy/docker/prodenv."
 
-# e9740bb43c204f6ba20928403f7f0b0f
+# c8fd0349f43c438384c9a043cb71e72c
 #: ../../install_docker_linux.rst:47
 msgid ""
 "Una vez terminado el reboot se procede a usar Ansible para la "
 "instalación, pudiendo hacerlo de los dos modos: "
 ":ref:`about_install_selfhosted` o :ref:`about_install_remote`. Hay que "
-"tener en cuenta un estas cosas:"
+"tener en cuenta estas cosas:"
 msgstr ""
 "Once finished the reboot, proceed to use Ansible to the installation you "
 "can do it :ref:`about_install_selfhosted` o :ref:`about_install_remote`. "
 "Take care about two things."
 
-# 9f809d1da2884d498b39acb1ab143387
+# c1cb6988601d43d0950ca492fed07c85
 #: ../../install_docker_linux.rst:50
 msgid ""
-"Modificar y descomentar la línea de la sección [prodenv-container] "
-"dependiendo de si se va a instalar remoto o self-hosted."
-msgstr ""
-"Modify and uncomment the line in section [prodenv-container], depending "
-"if your a going to install Ansible host-node or self-hosted"
-
-# adc7eb69d1d34378a6e5a2f5cc962e18
-#: ../../install_docker_linux.rst:59
-msgid ""
-"Revisar la sección :ref:`about_install_inventory_docker` para ver las "
-"variables de docker a modificar."
+"Revisar la sección :ref:`about_install_inventory_docker` del archivo de "
+"inventario"
 msgstr ""
 "Verify the section :ref:`about_install_inventory_docker` to see the "
 "docker variables to modify."
 
-# c2443b2baea64b9d930b9caac55dccda
-#: ../../install_docker_linux.rst:60
+# 90393c4d19644223932c8a0f6855c9f8
+#: ../../install_docker_linux.rst:51
+msgid ""
+"Revisar la sección :ref:`about_install_inventory_docker_vars` para ver "
+"las variables de docker a modificar."
+msgstr ""
+"Verify the section :ref:`about_install_inventory_docker_vars` to see the "
+"docker variables to modify."
+
+# 5010ae3aeed040deafee097fd9ae112d
+#: ../../install_docker_linux.rst:52
 msgid ""
 "Modificar las variables del archivo de inventario "
 ":ref:`about_install_inventory_vars`."
 msgstr "Modify the inventory file variables :ref:`about_install_inventory_vars`."
 
-# 0087606cd3974ea5a005c7f2f6208788
-#: ../../install_docker_linux.rst:64
+# fc780f31bdd44377b89d3b3f7928b774
+#: ../../install_docker_linux.rst:56
 msgid ""
 "La variable *subnet=192.168.15.0/24*, debe modificarse OBLIGATORIAMENTE "
 "en caso de que su dirección IP LAN del Linux host (donde se ejecuta el "
@@ -188,8 +188,8 @@ msgstr ""
 "Linuxhost LAN IP (where docker-engine runs) does not match with this "
 "range mentioned."
 
-# 144632cbec5645a380c6782fd4be44ee
-#: ../../install_docker_linux.rst:65
+# 55808596f6c846aebce61e0b9651e81a
+#: ../../install_docker_linux.rst:57
 msgid ""
 "Para una instalación de ceros, en la variable *mysql_root_password* "
 "ingresar **LA MISMA** contraseña de mysql que se ingresó a la hora de "
@@ -198,23 +198,23 @@ msgstr ""
 "For fresh install, the variable *mysql_root_password* must be **THE "
 "SAME** mysql password used when you installed the FreePBX or Issabel"
 
-# 98682ae0aef94b7ab05afc695663d2e7
-#: ../../install_docker_linux.rst:67
+# d4f2ee07a697466d8347a24ab4689ead
+#: ../../install_docker_linux.rst:59
 msgid "Ejecutar el script deploy.sh de la siguiente forma:"
 msgstr "Execute the deploy.sh script, this way:"
 
-# f870412a5fd0496299d2a8b5335f85d7
-#: ../../install_docker_linux.rst:69
+# 11f10d914fd0400ab73cc6e8ddf00f27
+#: ../../install_docker_linux.rst:61
 msgid "**Para ansible remoto:**"
 msgstr "**For ansible host-node:**"
 
-# ac268f5b3d664b9ea84c34108cf78593
-#: ../../install_docker_linux.rst:75
+# 0d4d1d5199564a71baa82416d96584ce
+#: ../../install_docker_linux.rst:67
 msgid "**Para ansible self-hosted:**"
 msgstr "**For ansible self-hosted:**"
 
-# 2f4c9ae4472247bfaccbce2214bd99c3
-#: ../../install_docker_linux.rst:81
+# 412a19f242c64603a1991fc450f49787
+#: ../../install_docker_linux.rst:73
 msgid ""
 "Donde **<your_iface>** es la interfaz con la IP que se quiere usar para "
 "levantar los servicios que componen OMniLeads (suele ser la IP de la "
@@ -224,15 +224,15 @@ msgstr ""
 "use to raise up the services that compose OMniLeads (it usually is the "
 "LAN interface of the host)."
 
-# 282e4c22e7644df2ba6e0790855b87e0
-#: ../../install_docker_linux.rst:85
+# 1e49ce8a658246aaa512c858dcb2d096
+#: ../../install_docker_linux.rst:77
 msgid "Systemd - omnileads-prodenv"
 msgstr ""
 
-# 4feb2d9033fa4a898c3a95c570cb1fa5
-#: ../../install_docker_linux.rst:87
+# 35f4726d73e8411fb2a79403d7914694
+#: ../../install_docker_linux.rst:79
 msgid ""
-"A partir de la isntalación se deja disponible el servicio: omnileads-"
+"A partir de la instalación se deja disponible el servicio: omnileads-"
 "prodenv.service el cual servirá para parar/levantar la aplicación. El "
 "sistema se deja configurado para que inicie automáticamente luego de cada"
 " reinicio del sistema operativo de base."
@@ -241,56 +241,33 @@ msgstr ""
 "will manage the up/down of environment. The service is configured to "
 "start automatically after a reboot."
 
-# 2968ae07c06047c28666cfc660e5bfe5
-#: ../../install_docker_linux.rst:90
+# 50fbde994b2f47e789dc7e04ab50a232
+#: ../../install_docker_linux.rst:82
 msgid "Para verificar el servicio:"
 msgstr "To verifiy the service:"
 
-# c00f5c2c7af44599a0517b25d750ec2c
-#: ../../install_docker_linux.rst:96
+# bd6c9f903eb344d59f5a94e233f0f5a6
+#: ../../install_docker_linux.rst:88
 msgid "Si todo es correcto deberíamos obtener la siguiente salida:"
 msgstr "If everything is correct we should get the following output:"
 
-# b1070b47151240adb230cc24a8ee125b
-#: ../../install_docker_linux.rst:101
+# 959e40216bb2421ea8332d6e15945dc3
+#: ../../install_docker_linux.rst:93
 msgid "Para bajar el servicio:"
 msgstr "To stop the service:"
 
-# b58adb24ff954b559f1491bba7f87748
-#: ../../install_docker_linux.rst:107
+# 51d39624f49f4541855bb9da8da41ac5
+#: ../../install_docker_linux.rst:99
 msgid "Para levantar el servicio:"
 msgstr "To start the service"
 
-# c1ae303f87f9442e8a41f7e825d7a0f7
-#: ../../install_docker_linux.rst:114
-msgid "Primer login"
-msgstr "First login"
-
-# ce64e1327703444487fa16dca9b5133a
-#: ../../install_docker_linux.rst:116
-msgid ""
-"Al igual que en la sección :ref:`about_install_first_login`, con la "
-"diferencia de que se debe ingresar al puerto 444:"
-msgstr "Refer to section :ref:`about_install_first_login`, with the difference that "
-"you must connect to port 444:"
-
-# f228cd5424774e3e8eab05e22193f8e1
-#: ../../install_docker_linux.rst:124
-msgid ""
-"En el caso de estar ejecutando este procedimiento sobre FreePBX, se debe "
-"considerar el siguiente workaround debido al tratamiento que dicha "
-"distribución hace sobre Iptables."
-msgstr ""
-"In case of you are using FreePBX, you must consider this workaround "
-"because FreePBX overrides the Iptables rules when reboots"
-
-# 7d0986b62d204477a331b52886212177
-#: ../../install_docker_linux.rst:127
+# 94d92b8387334000826cc544c1ca1988
+#: ../../install_docker_linux.rst:106
 msgid "Workaround para freePBX"
 msgstr "FreePBX workaround"
 
-# bf99acda8a5043ce8183bb55910c686a
-#: ../../install_docker_linux.rst:129
+# b3658a14ced94f7d9c55c85e0a1cfa05
+#: ../../install_docker_linux.rst:108
 msgid ""
 "Luego de cada *reboot* del sistema operativo se deberán ejecutar los "
 "siguientes comandos para dejar apta la instancia para comenzar a "
@@ -299,109 +276,13 @@ msgstr ""
 "After every operating system *reboot* we must execute the following "
 "commands in order to make the instance ready to start to work"
 
-# 85ec025ed8e14dd992472a5da9e1dc88
-#: ../../install_docker_linux.rst:136
+# 98bfa49e88d24dae91a82eac2d54860f
+#: ../../install_docker_linux.rst:115
 msgid "Estos dos comandos dejaran lista la instancia de OMniLeads sobre FreePBX."
 msgstr "These two commands will make ready the OMniLeads instance in FreePBX"
 
-# 719bbd2aedd94d728aba5462cb188a28
-#: ../../install_docker_linux.rst:141
+# 16363db4458f421dbd00932389ca2c51
+#: ../../install_docker_linux.rst:120
 msgid "En próximas versiones se tratará de optimizar la ejecución sobre FreePBX."
 msgstr ""
-"On next versions we will try to optimize the OMniLeads execution in "
-"FreePBX"
-
-# f16524251bd84406b26c396b8f8a56ff
-#: ../../install_docker_linux.rst:144
-msgid "FAQ"
-msgstr "FAQ"
-
-# 9599a56909ea40f09bdfb7004502ed3a
-#: ../../install_docker_linux.rst:146
-msgid "**Como cambiar las contraseñas de los containers docker?**"
-msgstr "**How do I change passwords of docker containers?**"
-
-# c6d9efcadb4b4fe38dbd754d34484cb9
-#: ../../install_docker_linux.rst:150
-msgid "Hay tres contraseñas importantes:"
-msgstr "There are two important password services:"
-
-# 8bc7481450bc441ba4c0ab7ade5bdd79
-#: ../../install_docker_linux.rst:149
-msgid ""
-"**OMniLeads Web GUI:** cambiar la variable $DJANGO_PASS en el archivo "
-".env y reiniciar el container de omniapp: **docker restart oml-omniapp-"
-"prodenv**"
-msgstr ""
-"**OMniLeads web GUI:** change the $DJANGO_PASS variable in .env file and "
-"restart the omniapp container: **docker restart oml-omniapp-prodenv**"
-
-# 26ef98b4ce2a45268e404eb2a8e20252
-#: ../../install_docker_linux.rst:150
-msgid ""
-"**Postgresql y MySQL:** observar la sección de "
-":ref:`about_maintance_change_ip_passwords`"
-msgstr "**Postgresql y MySQL:** see the section :ref:`about_maintance_change_ip_passwords`."
-
-# cb63ff586ab24c54bd500e8123a9dee1
-#: ../../install_docker_linux.rst:152
-msgid ""
-"**Mi segmento de red LAN es 192.168.15.0/24 o está dentro de este "
-"segmento**"
-msgstr "**My LAN subnet is 192.168.15.0/24 or is inside this segment**"
-
-# f4bf2aca590a4cbbb5484922bd403556
-#: ../../install_docker_linux.rst:154
-msgid ""
-"Por defecto el entorno docker se levanta con esta subred interna. Cambiar"
-" la variable **SUBNET** en el archivo .env y reiniciar el servicio "
-"**omnileads-prodenv**."
-msgstr ""
-"By default the environment will use this subnet for internal docker "
-"networking. Change the variable **SUBNET** in .env file and restart "
-"**omnileads-prodenv** service."
-
-# 8066a39a3f7748339e8ea25ee90d7905
-#: ../../install_docker_linux.rst:156
-msgid ""
-"**El entorno no inicia debido a que docker-compose dice que hay un puerto"
-" en uso, que hago?**"
-msgstr ""
-"**The environment doesn't start due to docker-compose tells that there is"
-" an used port, what should I do?**"
-
-# cb17066e04234fab98f21d31f9d589a1
-#: ../../install_docker_linux.rst:158
-msgid ""
-"Hay tres puertos del Docker Host que se usan para mapear puertos internos"
-" de los containers, estos son:"
-msgstr ""
-"There are three of Docker Host used to map ports inside containers. these"
-" are:"
-
-# 67f9aeb772294e5ab61d9a0d0738d638
-#: ../../install_docker_linux.rst:160
-msgid ""
-"WD_EXT_PORT=442  --> mapea con el puerto 8080/tcp en Wombat Dialer, para "
-"acceder a la GUI"
-msgstr ""
-"WD_EXT_PORT=442  --> maps the 8080/tcp port in Wombat Dialer, to access "
-"WD GUI"
-
-# de179fbe11d441fbac588c911c6dd667
-#: ../../install_docker_linux.rst:161
-msgid ""
-"NGINX_EXT_PORT=444 --> mapea con el puerto 443/tcp en Omniapp para "
-"acceder a OMniLeads GUI"
-msgstr ""
-"NGINX_EXT_PORT=444 --> maps the 443/tcp port in Omniapp to access "
-"OMniLeads GUI"
-
-# 20e8c9b476864a7ab6585f42d546ae1f
-#: ../../install_docker_linux.rst:162
-msgid ""
-"PG_EXT_PORT=445  --> mapea con el puerto 5038/tcp en Postgresql para "
-"acceder a la base de datos de OMniLeads"
-msgstr ""
-"PG_EXT_PORT=445  --> maps the 5038/tcp port in Postgresql to acces "
-"OMniLeads database"
+"On next versions we will try to optimize the OMniLeads execution in FreePBX"

@@ -139,18 +139,33 @@ el formulario asociado a la calificación dentro de la campaña.
 Campañas Manuales
 *****************
 
-Dentro de este inciso se ejemplifica el paso a paso de cómo administrar :ref:`about_manualcamp`.
+Dentro de este inciso se ejemplifica el paso a paso de cómo administrar campañas manuales.
+
+.. toctree::
+  :maxdepth: 2
+
+  campaigns_manual.rst
 
 
 Campañas Preview
 ****************
 
-Dentro de este inciso se ejemplifica el paso a paso de cómo administrar :ref:`about_previewcamp`.
+Dentro de este inciso se ejemplifica el paso a paso de cómo administrar campañas preview
+
+.. toctree::
+  :maxdepth: 2
+
+  campaigns_preview.rst
 
 Campañas con discador predictivo
 ********************************
 
-Dentro de este inciso se ejemplifica el paso a paso de cómo administrar :ref:`about_dialercamp`.
+Dentro de este inciso se ejemplifica el paso a paso de cómo administrar campañas dialer.
+
+.. toctree::
+  :maxdepth: 2
+
+  campaigns_dialer.rst
 
 Campañas Entrantes
 ******************
@@ -159,14 +174,16 @@ Al hablar de llamadas entrantes nos toca desplegar cada funcionalidad aplicable 
 puede pasar por una serie "nodos" hasta finalmente conectar con un agente de atención. Por lo tanto vamos a ampliar el concepto de "campañas entrantes"
 a los siguientes ítems de configuración.
 
-* :ref:`about_inboundcamp`.
-* :ref:`about_inboundroutes`.
-* :ref:`about_inboundroutespbx`.
-* :ref:`about_timeconditions`.
-* :ref:`about_ivr`.
-* :ref:`about_customer_id`.
-* :ref:`about_custom_dst`.
+.. toctree::
+  :maxdepth: 1
 
+  campaigns_inbound.rst
+  campaigns_inbound_routes.rst
+  campaigns_inbound_routes_frompbx.rst
+  campaigns_inbound_timeconditions.rst
+  campaigns_inbound_ivr.rst
+  campaigns_inbound_customer_id.rst
+  telephony_cunstom_dst.rst
 
 Plantillas de Campaña
 *********************
