@@ -36,8 +36,7 @@ from ominicontacto_app.services.wombat_config import (
     CampanaEndPointCreator, CampanaListCreator, CampanaDeleteListCreator,
     CampanaEndPointDelete
 )
-from ominicontacto_app.services.exportar_base_datos import\
-    SincronizarBaseDatosContactosService
+from ominicontacto_app.services.exportar_base_datos import SincronizarBaseDatosContactosService
 from ominicontacto_app.errors import OmlError
 
 
