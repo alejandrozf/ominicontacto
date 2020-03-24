@@ -35,8 +35,8 @@
     - "{{ install_prefix }}"
     - /root/
   tags: postinstall
-  when: is_docker == false
-  
+  when: is_docker == "false"
+
 ##################################
 ##         Centos tasks         ##
 ##################################
@@ -92,6 +92,7 @@
   with_items:
       - systemctl stop firewalld
       - systemctl disable firewalld
+  when: ansible_distribution != "Amazon"
 
 # Se instalan paquetes basicos que se necesitan
 - name: Install of dependencies
@@ -123,4 +124,11 @@
 # Se descarga e instala el repositorio epel-release
 - name: Install of epel-release repo (centos)
   yum: name={{ epel_repository }} state=present update_cache=yes
-  when: ansible_os_family == "RedHat"
+
+- name: Install of python-psycopg2
+  yum: name=python-psycopg2 state=present
+  when: postgresql_new_installed.rc != 3
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success

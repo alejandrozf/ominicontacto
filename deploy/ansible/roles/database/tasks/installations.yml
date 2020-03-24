@@ -19,37 +19,49 @@
 
 - name: Download postgresql-{{ postgresql_version }} key
   rpm_key: key="{{ postgresql_key }}" state=present validate_certs=no
-  when: postgresql_new_installed.rc != 3
   retries: 3
   delay: 3
   register: result
   until: result is success
+  when: postgresql_new_installed.rc != 3 and ansible_distribution != "Amazon"
 
 # Se instala el repo de postgresql
 - name: Install of postgresql-{{ postgresql_version }} repository
   yum: name={{ postgresql_repo }} state=present validate_certs=no update_cache=yes
   become: yes
   become_method: sudo
-  when: postgresql_new_installed.rc != 3
   retries: 3
   delay: 3
   register: result
   until: result is success
+  when: postgresql_new_installed.rc != 3 and ansible_distribution != "Amazon"
 
   #Se instalan todos los paquetes de postgresql
 - name: Install of postgresql-{{ postgresql_version }}
   shell: "yum install postgresql{{ postgresql_version }}* --skip-broken -y"
-  #yum: name='postgresql{{ postgresql_version }}*' state=present
-  when: postgresql_new_installed.rc != 3
   retries: 3
   delay: 3
   register: result
   until: result is success
+  when: postgresql_new_installed.rc != 3 and ansible_distribution != "Amazon"
 
-- name: Install of python-psycopg2
-  yum: name="{{ psycopg2_repo }}" state=present
-  when: postgresql_new_installed.rc != 3
+  #Se instala repositorio postgresql amazon linux
+- name: Install of postgresql-{{ postgresql_version }} repository
+  shell: "amazon-linux-extras enable postgresql11"
+  when: postgresql_new_installed.rc != 3 and ansible_distribution == "Amazon"
+
+  #Se instala postgresql amazon linux
+- name: Install of postgresql-{{ postgresql_version }} repository
+  yum: name={{ item }} state=present update_cache=yes
+  with_items:
+    - postgresql
+    - postgresql-server
+    - postgresql-devel
+    - postgresql-odbc
+    - postgresql-docs
+    - postgresql-plperl
   retries: 3
   delay: 3
   register: result
   until: result is success
+  when: postgresql_new_installed.rc != 3 and ansible_distribution == "Amazon"

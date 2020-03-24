@@ -48,6 +48,19 @@ A partir de lo que se configure en el archivo de inventario podemos tener dos ti
   * En caso de fallo de alguna task de ansible volver a correr el script de instalación
   * En caso de que vuelva a fallar levantar un issue a https://gitlab.com/omnileads/ominicontacto/issues especificando distro en la que sucedió y la versión que se intentó instalar
 
+OMniLeads Cloud
+################
+
+OMniLeads puede ser instalado en una instancia en la nube siempre y cuando se use una imágen de CentOS. Tener en cuenta las siguientes indicaciones:
+
+1. Solamente se puede realizar el tipo de instalación :ref:`about_install_selfhosted` para deployar OMniLeads en un servidor Cloud.
+2. En el archivo de inventario revisar las :ref:`about_install_inventory_oml_cloud`.
+3. Se recomienda utilizar certificados digitales confiables, revisar la sección :ref:`about_install_inventory_oml_trusted_certs`
+
+.. note::
+
+  Desde el equipo de Freetech Solutions hemos probado la instalación en la distro `Amazon Linux 2 <https://aws.amazon.com/es/amazon-linux-2/>`_. Se **recomienda** utilizar esta distro si va a hostear su OMniLeads en Amazon Web Services.
+
 
 Instalación en contenedores
 ****************************
