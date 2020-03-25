@@ -273,7 +273,6 @@ class APITest(TestCase):
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
         self.assertEqual(len(response.json()), 2)
-        self.assertEqual(logger.warning.call_count, 1)
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AMIManagerConnector, "_ami_manager")
@@ -297,7 +296,6 @@ class APITest(TestCase):
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
         self.assertEqual(len(response.json()), 3)
-        self.assertEqual(logger.warning.call_count, 2)
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AMIManagerConnector, "_ami_manager")

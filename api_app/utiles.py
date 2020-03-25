@@ -33,6 +33,7 @@ class AgentesParsing(object):
     """Encapsula todos las acciones destinadas a obtener datos sobre los agentes
     del sistema en forma legible
     """
+    # TODO: hacer que se loguee condicionalmente
 
     headers_agente_regex = re.compile(r'.*(NAME|SIP|STATUS).*')
     headers_agente_regex_group = re.compile(r'(NAME|SIP|STATUS)')
@@ -58,7 +59,7 @@ class AgentesParsing(object):
         entrada_agente = {}
         map_keys = {
             'NAME': 'nombre',
-            'SIP': 'sip'
+            'SIP': 'sip',
         }
         key_part, value_part = valor_linea_procesada
         id_agente = self.id_agente.search(key_part).group(0)
@@ -80,8 +81,9 @@ class AgentesParsing(object):
         else:
             entrada_agente[map_keys[header]] = value_part
         if value_part == '':
-            logger.warning(_('Esta entrada tiene datos incompletos: {0}'.format(
-                valor_linea_procesada)))
+            # logger.warning(_('Esta entrada tiene datos incompletos: {0}'.format(
+            #     valor_linea_procesada)))
+            pass
         return entrada_agente
 
     def _pertenece_grupo_actual_agente(self, entrada_agente, grupo_datos_agente):
@@ -106,8 +108,9 @@ class AgentesParsing(object):
                     grupo_datos_agente.update(entrada_agente)
                 else:
                     if len(grupo_datos_agente) != 5:
-                        logger.warning(
-                            _("Inconsistencias en datos de agente: {0}".format(grupo_datos_agente)))
+                        # logger.warning(
+                        #   _("Inconsistencias en datos de agente: {0}".format(grupo_datos_agente)))
+                        pass
                     else:
                         agentes_activos.append(grupo_datos_agente)
                     grupo_datos_agente = entrada_agente
@@ -115,6 +118,7 @@ class AgentesParsing(object):
                 agentes_activos.append(grupo_datos_agente)
                 grupo_datos_agente = {}
             elif i == len(lineas) - 1 and len(grupo_datos_agente) != 5:
-                logger.warning(
-                    _("Inconsistencias en datos de agente: {0}".format(grupo_datos_agente)))
+                # logger.warning(
+                #   _("Inconsistencias en datos de agente: {0}".format(grupo_datos_agente)))
+                pass
         return agentes_activos
