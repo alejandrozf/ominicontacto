@@ -1,0 +1,78 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Hamed Kouhfallah <k.haamed@gmail.com>, 2019.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-04-01 12:10-0300\n"
+"PO-Revision-Date: 2019-11-18 11:17+0330\n"
+"Language: fa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.2\n"
+
+#: reciclado_app/resultado_contactacion.py:52
+msgid "No Contesta"
+msgstr "پاسخ داده نشد"
+
+#: reciclado_app/resultado_contactacion.py:53
+msgid "Cancelado"
+msgstr "انصراف داده شد"
+
+#: reciclado_app/resultado_contactacion.py:54
+msgid "Ocupado"
+msgstr "مشغول"
+
+#: reciclado_app/resultado_contactacion.py:55
+msgid "Canal no disponible"
+msgstr "کانال در دسترس نیست"
+
+#: reciclado_app/resultado_contactacion.py:56
+msgid "Otro"
+msgstr "سایر"
+
+#: reciclado_app/resultado_contactacion.py:57
+msgid "Falla"
+msgstr "Fails"
+
+#: reciclado_app/resultado_contactacion.py:58
+msgid "Contestador"
+msgstr "Answering machine detected"
+
+#: reciclado_app/resultado_contactacion.py:59
+msgid "Blacklist"
+msgstr "لیست سیاه"
+
+#: reciclado_app/resultado_contactacion.py:60
+msgid "Expiradas"
+msgstr "منقضی"
+
+#: reciclado_app/resultado_contactacion.py:61
+msgid "Abandono"
+msgstr "Abandon"
+
+#: reciclado_app/resultado_contactacion.py:62
+msgid "Congestion"
+msgstr "Congestion"
+
+#: reciclado_app/resultado_contactacion.py:63
+msgid "Problema de enrutamiento"
+msgstr "Routing problem"
+
+#: reciclado_app/resultado_contactacion.py:73
+msgid "Agente no califico"
+msgstr "Agent doesn't qualified"
+
+#: reciclado_app/templates/nuevo_reciclado.html:46
+msgid "Como desea reciclar esta campana"
+msgstr "How do you want to recycle this campaign"
+
+#: reciclado_app/templates/nuevo_reciclado.html:55
+msgid "Reciclar"
+msgstr "Recycle"

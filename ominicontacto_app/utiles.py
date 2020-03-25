@@ -291,6 +291,7 @@ def convert_audio_asterisk_path_astdb(audio_asterisk):
 
 
 class UnicodeWriter:            # tomado de https://docs.python.org/2/library/csv.html
+    # TODO: eliminar o adaptar a python3
     """
     A CSV writer which will write rows to CSV file "f",
     which is encoded in the given encoding.
@@ -304,7 +305,7 @@ class UnicodeWriter:            # tomado de https://docs.python.org/2/library/cs
         self.encoder = codecs.getincrementalencoder(encoding)()
 
     def writerow(self, row):
-        self.writer.writerow([s.encode("utf-8") for s in row])
+        self.writer.writerow(row)
         # Fetch UTF-8 output from the queue ...
         data = self.queue.getvalue()
         # data = data.decode("utf-8")
@@ -350,7 +351,7 @@ def obtener_opciones_columnas_bd(bd_contacto, columnas_bd_default):
         nombres_de_columnas = columnas_bd_default
     else:
         nombres_de_columnas = bd_contacto.get_metadata().nombres_de_columnas
-    return zip(nombres_de_columnas, nombres_de_columnas)
+    return list(zip(nombres_de_columnas, nombres_de_columnas))
 
 
 def dividir_lista(lst, n):
@@ -388,5 +389,5 @@ def get_oml_last_release():
         root = etree.HTML(html_tags_page.content)
         doc = etree.ElementTree(root)
         nodos_tags = doc.xpath("//div[@class='row-main-content']/a")
-        current_release = "Release {0}".format(nodos_tags[0].text)
+        current_release = "release-{0}".format(nodos_tags[0].text)
         return current_release

@@ -321,7 +321,7 @@ class APITest(TestCase):
         self.assertEqual(len(response.json()), 1)
 
     def test_api_login_devuelve_token_asociado_al_usuario_password(self):
-        url = 'https://{0}{1}'.format(settings.OML_OMNILEADS_IP, reverse('api_login'))
+        url = 'https://{0}{1}'.format(settings.OML_OMNILEADS_HOSTNAME, reverse('api_login'))
         user = self.supervisor_admin.user
         password = self.PWD
         post_data = {

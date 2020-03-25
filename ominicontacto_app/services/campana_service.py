@@ -36,8 +36,7 @@ from ominicontacto_app.services.wombat_config import (
     CampanaEndPointCreator, CampanaListCreator, CampanaDeleteListCreator,
     CampanaEndPointDelete
 )
-from ominicontacto_app.services.exportar_base_datos import\
-    SincronizarBaseDatosContactosService
+from ominicontacto_app.services.exportar_base_datos import SincronizarBaseDatosContactosService
 from ominicontacto_app.errors import OmlError
 
 
@@ -82,7 +81,7 @@ class CampanaService():
         """
         nombre_lista = '_'.join([str(campana.id), str(campana.bd_contacto.id),
                                  remplace_espacio_por_guion(campana.bd_contacto.nombre)])
-        nombre_lista_ascii = unicodedata.normalize('NFKD', nombre_lista).encode('ascii', 'ignore')
+        nombre_lista_ascii = unicodedata.normalize('NFKD', nombre_lista)
         id_lista = None
         results = salida_comando['results']
         for lista in results:
@@ -227,7 +226,7 @@ class CampanaService():
         service_wombat = WombatService()
         nombre_lista = '_'.join([str(campana.id), str(campana.bd_contacto.id),
                                  remplace_espacio_por_guion(campana.bd_contacto.nombre)])
-        nombre_lista_ascii = unicodedata.normalize('NFKD', nombre_lista).encode('ascii', 'ignore')
+        nombre_lista_ascii = unicodedata.normalize('NFKD', nombre_lista)
         url_edit = "api/lists/?op=addToList&list={0}".format(nombre_lista_ascii)
         # crea lista de contactos en wombat
         service_wombat.update_lista_wombat("newcampaign_list_contacto.txt", url_edit)

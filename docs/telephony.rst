@@ -38,12 +38,10 @@ facilitar bastante el trabajo de configuración  .
 
 A continuación desplegamos las plantillas sugeridas para los tipos de escenarios planteados como casos de uso típicos de OMniLeads.
 
+.. toctree::
+  :maxdepth: 1
 
-* :ref:`about_telephony_pjsip_internet_provider`.
-* :ref:`about_telephony_pjsip_lan_provider`.
-* :ref:`about_telephony_pjsip_lan_pbx`.
-* :ref:`about_telephony_pjsip_internet_pbx`.
-* :ref:`about_telephony_pjsip_oml_inside_pbx`.
+  telephony_pjsip_templates.rst
 
 Configuración para el enrutamiento de llamadas salientes
 ********************************************************

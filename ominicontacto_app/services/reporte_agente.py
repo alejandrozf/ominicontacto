@@ -38,7 +38,7 @@ from ominicontacto_app.models import CalificacionCliente, Campana
 from reportes_app.actividad_agente_log import AgenteTiemposReporte
 from reportes_app.models import LlamadaLog, ActividadAgenteLog
 
-from utiles_globales import obtener_cantidad_no_calificados
+from utiles_globales import obtener_cantidad_no_calificados, adicionar_render_unicode
 
 logger = _logging.getLogger(__name__)
 
@@ -236,10 +236,12 @@ class EstadisticasAgenteService():
         barra_campana_calificacion.add('cantidad',
                                        estadisticas['calificaciones_cantidad'])
 
+        barra_campana_calificacion = adicionar_render_unicode(barra_campana_calificacion)
+
         return {
             'estadisticas': estadisticas,
             'barra_campana_calificacion': barra_campana_calificacion,
             'total_asignados': estadisticas['total_asignados'],
-            'dict_campana_counter': zip(estadisticas['calificaciones_nombre'],
-                                        estadisticas['calificaciones_cantidad']),
+            'dict_campana_counter': list(zip(estadisticas['calificaciones_nombre'],
+                                             estadisticas['calificaciones_cantidad'])),
         }

@@ -1,14 +1,12 @@
 Release Notes
 *************
 
-*Febrero 28, 2020*
+*Marzo 23, 2020*
 
-Detalles de Release 1.4.2
+Detalles de Release 1.5.1
 =========================
-
-Este es un release "bugfix" mejorando la estabilidad y rendimiento del sistema
 
 Bug fixes
 ---------
-
-- El paquete sngrep es eliminado de la instalación debido a problemas de con repositorio fuente en CentOS
+- Solucionado error en validación al mostrar información de release desactualizado
+- Solucionados algunos errores de encoding en visualización de reportes

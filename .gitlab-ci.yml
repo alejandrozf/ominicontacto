@@ -83,6 +83,8 @@ docker-prodenv-build-push:
     - /^release-.*$/
     - schedules
     - web
+  except:
+    - merge_requests
 
 staging-centos:
   stage: build
@@ -106,7 +108,9 @@ staging-centos:
     - /^pre-release-.*$/
     - schedules
     - web
-
+  except:
+      - merge_requests
+  
 staging-self-hosted:
   stage: build
   script:
@@ -126,6 +130,8 @@ staging-self-hosted:
     - /^pre-release-.*$/
     - schedules
     - web
+  except:
+    - merge_requests
 
 #TODO: dejo template de lo que sería el job de upgrade, a probar luego de que salga release-1.3.1
 #upgrade-centos:
@@ -174,3 +180,5 @@ prod-centos:
     - deploy-aio
   only:
     - /^release-.*$/
+  except:
+    - merge_requests

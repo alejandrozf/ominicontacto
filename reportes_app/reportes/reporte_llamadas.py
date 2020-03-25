@@ -31,6 +31,8 @@ from reportes_app.utiles import (
     ESTILO_ROJO_VERDE_GRIS_NEGRO, ESTILO_VERDE_GRIS_NEGRO, ESTILO_VERDE_ROJO
 )
 
+from utiles_globales import adicionar_render_unicode
+
 LLAMADA_MANUAL = Campana.TYPE_MANUAL
 LLAMADA_DIALER = Campana.TYPE_DIALER
 LLAMADA_ENTRANTE = Campana.TYPE_ENTRANTE
@@ -499,7 +501,7 @@ class GraficosReporteDeLlamadas(object):
                          por_tipo[str(Campana.TYPE_PREVIEW)]['no_conectadas'],
                          por_tipo['transferencia']['no_conectadas']])
 
-        self.graficos['barras_llamadas_por_tipo'] = grafico
+        self.graficos['barras_llamadas_por_tipo'] = adicionar_render_unicode(grafico)
 
     def _generar_grafico_de_torta_de_porcentajes_por_tipo(self, estadisticas):
         # Porcentajes de llamadas por tipo de llamada
@@ -527,7 +529,7 @@ class GraficosReporteDeLlamadas(object):
         grafico.add(_('Entrante'), porcentaje_entrante)
         grafico.add(_('Preview'), porcentaje_preview)
         grafico.add(_('Transferencias'), porcentaje_transferidas)
-        self.graficos['torta_porcentajes_por_tipo'] = grafico
+        self.graficos['torta_porcentajes_por_tipo'] = adicionar_render_unicode(grafico)
 
     def _generar_grafico_de_barras_de_llamadas_por_campana(self, estadisticas):
         # Cantidad de llamadas de las campana
@@ -543,7 +545,7 @@ class GraficosReporteDeLlamadas(object):
         grafico.x_labels = nombres_campanas
         grafico.add(_('Total'), totales_campanas)
         grafico.add(_('Manuales'), manuales_campanas)
-        self.graficos['barra_llamada_por_campana'] = grafico
+        self.graficos['barra_llamada_por_campana'] = adicionar_render_unicode(grafico)
 
     def _generar_grafico_de_barras_de_llamadas_dialer(self, estadisticas):
         grafico = pygal.StackedBar(show_legend=True, style=ESTILO_ROJO_VERDE_GRIS_NEGRO)
@@ -566,7 +568,7 @@ class GraficosReporteDeLlamadas(object):
         grafico.add(_(u'Procesadas'), conectadas)
         grafico.add(_(u'Abandonadas'), abandonadas)
         grafico.add(_(u'Expiradas'), expiradas)
-        self.graficos['barra_campana_llamadas_dialer'] = grafico
+        self.graficos['barra_campana_llamadas_dialer'] = adicionar_render_unicode(grafico)
 
     def _generar_grafico_de_barras_de_llamadas_entrantes(self, estadisticas):
         grafico = pygal.StackedBar(show_legend=True, style=ESTILO_VERDE_GRIS_NEGRO)
@@ -589,7 +591,7 @@ class GraficosReporteDeLlamadas(object):
         grafico.add(_(u'Abandonadas'), abandonadas)
         grafico.add(_(u'Abandonadas durante anuncio'), abandonadas_anuncio)
         grafico.add(_(u'Expiradas'), expiradas)
-        self.graficos['barra_campana_llamadas_entrantes'] = grafico
+        self.graficos['barra_campana_llamadas_entrantes'] = adicionar_render_unicode(grafico)
 
     def _generar_grafico_de_barras_de_llamadas_manuales(self, estadisticas):
         grafico = pygal.StackedBar(show_legend=True, style=ESTILO_VERDE_ROJO)
@@ -607,7 +609,7 @@ class GraficosReporteDeLlamadas(object):
         grafico.add(_(u'Conectadas'), conectadas)
         grafico.add(_(u'No conectadas'), no_conectadas)
 
-        self.graficos['barra_campana_llamadas_manuales'] = grafico
+        self.graficos['barra_campana_llamadas_manuales'] = adicionar_render_unicode(grafico)
 
     def _generar_grafico_de_barras_de_llamadas_preview(self, estadisticas):
         grafico = pygal.StackedBar(show_legend=True, style=ESTILO_VERDE_ROJO)
@@ -624,7 +626,7 @@ class GraficosReporteDeLlamadas(object):
         grafico.x_labels = nombres_campanas
         grafico.add(_(u'Conectadas'), conectadas)
         grafico.add(_(u'No conectadas'), no_conectadas)
-        self.graficos['barra_campana_llamadas_preview'] = grafico
+        self.graficos['barra_campana_llamadas_preview'] = adicionar_render_unicode(grafico)
 
 
 class GeneradorReportesLlamadasCSV(object):

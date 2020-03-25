@@ -3996,14 +3996,6 @@ msgstr "Announcement Frequency:"
 msgid "Parámetros de agentes"
 msgstr "Agents parameters"
 
-#: ominicontacto_app/templates/campanas/campana_entrante/create_update_queue.html:168
-msgid "Autopausar agentes que fallan al responder:"
-msgstr "Autopause agents that fail to answer"
-
-#: ominicontacto_app/templates/campanas/campana_entrante/create_update_queue.html:173
-msgid "Autopausar agentes que dan ocupado:"
-msgstr "Autopause busy agents"
-
 #: ominicontacto_app/templates/campanas/campana_entrante/create_update_queue.html:178
 msgid "Tiempo de Ring:"
 msgstr "Rigning Time:"

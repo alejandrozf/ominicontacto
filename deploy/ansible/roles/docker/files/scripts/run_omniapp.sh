@@ -2,7 +2,6 @@
 
 COMMAND="python3 ${INSTALL_PREFIX}ominicontacto/manage.py"
 INTERFACE=$(ip route show | awk '/^default/ {print $5}');
-INTERNAL_IP=$(ifconfig $INTERFACE | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1')
 # run as user OMNIAPP by default
 OMNIAPP_USER=${OMNIAPP_USER:-"{{ usuario }}"}
 OMNIAPP_GROUP=${OMNIAPP_GROUP:-${OMNIAPP_USER}}
@@ -27,8 +26,7 @@ SHELL=/bin/bash
 EOF
   fi
   printenv | sed 's/^\(.*\)$/export \1/g' | sudo tee -a /etc/profile.d/omnileads_envars.sh
-  echo "export OMNILEADS_IP=$INTERNAL_IP" | sudo tee -a /etc/profile.d/omnileads_envars.sh
-  export OMNILEADS_IP=$INTERNAL_IP
+
   $COMMAND migrate --noinput
   $COMMAND createsuperuser --noinput --username=admin --email=admin@example.com || true
   $COMMAND cambiar_admin_password

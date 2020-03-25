@@ -1,8 +1,7 @@
 .. _about_manualcamp:
 
-*****************
-Campañas manuales
-*****************
+Creación campaña manual
+************************
 
 Para crear una nueva campaña manual se debe ingresar al punto de menú *Manual Campaigns -> New  Campaign*. El proceso de creación consta de
 un wizard de dos pantallas.
@@ -41,6 +40,9 @@ En los siguientes pasos se pueden añadir supervisores y agentes a nuestra campa
 .. image:: images/campaigns_manual_wizard_3.png
 
 *Figure 3: agent assignment*
+
+Interacción de agente con campaña
+*********************************
 
 Finalmente contamos con nuestra nueva campaña manual. cuando un agente asignado a la misma realice un login a la plataforma y comience a marcar llamadas desde
 su webphone, el sistema le permitirá seleccionar la campaña sobre la cual va a asignar cada llamada manual generada desde el webphone, tal como se expone
@@ -93,7 +95,8 @@ Finalmente se despliegan el nuevo contacto y la opción de clasificar la llamada
 
 *Figure 10: new contact called*
 
-**Campaña con base de datos Multinum**
+Campaña con base de datos Multinum
+***********************************
 
 Como sabemos, OMniLeads admite que cada contacto de una base posea "n" números de teléfono de contacto, de manera tal que si el contacto no es encontrado en su número principal
 (el primero de nuestro archivo CSV de base), pueda ser contactado a los demás números. En este caso, cada número de teléfono (que indicamos en la carga de la base) se genera

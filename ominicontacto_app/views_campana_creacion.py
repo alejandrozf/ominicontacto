@@ -127,6 +127,10 @@ class CampanaTemplateCreateCampanaMixin(object):
                 'announce_frequency': queue.announce_frequency,
                 'audio_de_ingreso': queue.audio_de_ingreso,
                 'auto_grabacion': queue.auto_grabacion,
+                'announce_holdtime': queue.announce_holdtime,
+                'announce_position': queue.announce_position,
+                'ivr_breakdown': queue.ivr_breakdown,
+                'musiconhold': queue.musiconhold,
             }
         else:
             initial_data = super(
@@ -263,7 +267,7 @@ class CampanaWizardMixin(object):
             campana = self.get_cleaned_data_for_step(self.INICIAL)
             bd_contacto = campana['bd_contacto']
             columnas_bd = obtener_opciones_columnas_bd(bd_contacto, COLUMNAS_DB_DEFAULT)
-            form_class = list(self.form_list)[step]
+            form_class = self.form_list[step]
             kwargs = self.get_form_kwargs(step)
             kwargs.update({
                 'data': data,

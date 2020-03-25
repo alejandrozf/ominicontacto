@@ -1,0 +1,32 @@
+===================================
+Omnileads (OML) 1.5.0 release notes
+===================================
+
+*March 20, 2020*
+
+What's new
+=========================
+- Django was updated to 2.2.7 version and, consequently, all python code was migrated to python3
+- Asterisk DB headers parsing was optimized
+- Is possible now to distribute contacts between agents proportionally in preview campaigns creation
+- New API endpoints were added to handle agent interaction with Asterisk
+- New parameters were added to inbound campaigns
+- Release version information was added after administrator login
+- Ability to make on-demand record call was added
+- Ubuntu/Debian AIO installation support was dropped
+- The build/deploy on Docker environments was refactored
+- The system now allows to audite recordings and also re-disposition calls by supervisors
+- Agents can see now its recordings of its owns calls
+- Asterisk was updated to 16.9.0 version
+- Aesthetic changes were made on disposition form
+- An inbound destination option was added for Type 2 External Interaction in Client Identification Service
+telephony object for unsuccesfull cases
+
+
+Fixes
+----------------------------------------
+- Fixed error that ocurred on assigment of database columns to external site url
+- Fixed error that didn't rendered external site url on agent view
+- Fixed restore backup script
+- Added validation that avoids to set an time frequency for periodic announcenment without its audio file
+- Fixed error that did track wrong number out number for dialer campaing incidence rules

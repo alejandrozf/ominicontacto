@@ -187,6 +187,19 @@
   when: assert_tz.rc == 0 and TZ is not defined
   tags: always
 
+- name: Check if $PGUSER was defined previously
+  shell: bash -lc 'if [ -z $PGUSER ]; then exit 1; else echo $PGUSER; exit 0; fi'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_pguser
+  tags: always
+  
+- set_fact: postgres_user="{{ assert_pguser.stdout }}"
+  when: assert_pguser.rc == 0 and postgres_user is not defined
+  tags: always
+
 - name: Check if $PGPASSWORD was defined previously
   shell: bash -lc 'if [ -z $PGPASSWORD ]; then exit 1; else echo $PGPASSWORD; exit 0; fi'
   args:
@@ -198,6 +211,58 @@
   
 - set_fact: postgres_password="{{ assert_pgpass.stdout }}"
   when: assert_pgpass.rc == 0 and postgres_password is not defined
+  tags: always
+
+- name: Check if $AMI_USER was defined previously
+  shell: bash -lc 'if [ -z $AMI_USER ]; then exit 1; else echo $AMI_USER; exit 0; fi'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_amiuser
+  tags: always
+
+- set_fact: ami_user="{{ assert_amiuser.stdout }}"
+  when: assert_amiuser.rc == 0 and ami_user is not defined
+  tags: always
+
+- name: Check if $AMI_PASSWORD was defined previously
+  shell: bash -lc 'if [ -z $AMI_PASSWORD ]; then exit 1; else echo $AMI_PASSWORD; exit 0; fi'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_amipass
+  tags: always
+
+- set_fact: ami_password="{{ assert_amipass.stdout }}"
+  when: assert_amipass.rc == 0 and ami_password is not defined
+  tags: always
+
+- name: Check if $WOMBAT_USER was defined previously
+  shell: bash -lc 'if [ -z $WOMBAT_USER ]; then exit 1; else echo $WOMBAT_USER; exit 0; fi'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_wombatuser
+  tags: always
+
+- set_fact: dialer_user="{{ assert_wombatuser.stdout }}"
+  when: assert_wombatuser.rc == 0 and dialer_user is not defined
+  tags: always
+
+- name: Check if $WOMBAT_PASSWORD was defined previously
+  shell: bash -lc 'if [ -z $WOMBAT_PASSWORD ]; then exit 1; else echo $WOMBAT_PASSWORD; exit 0; fi'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_wombatpass
+  tags: always
+
+- set_fact: dialer_password="{{ assert_wombatpass.stdout }}"
+  when: assert_wombatpass.rc == 0 and dialer_password is not defined
   tags: always
 
 - name: Check if $DJANGO_PASS was defined previously
@@ -273,22 +338,57 @@
 # Chequea si registry_username esta definido
 - name: Check if registry_username variable is defined
   fail:
-    msg: registry_username variable undefined, edit $TZ variable in inventory file
+    msg: registry_username variable undefined, edit registry_username variable in inventory file
   when: registry_username is not defined and assert_docker_user.rc == 1 and devenv == 1
   tags: docker_deploy
 
 # Chequea si timezone esta definido
 - name: Check if TimeZone variable is defined
   fail:
-    msg: TimeZone variable undefined, edit $TZ variable in inventory file
+    msg: TimeZone variable undefined, edit TZ variable in inventory file
   when: TZ is not defined and assert_tz.rc == 1
+  tags: always
+
+# Chequea si postgres_user esta definido
+- name: Check if postgres user variable is defined
+  fail:
+    msg: Postgres user undefined, edit postgres_user in inventory file
+  when: postgres_user is not defined and assert_pguser.rc == 1
   tags: always
 
 # Chequea si postgres_password esta definido
 - name: Check if postgres password variable is defined
   fail:
-    msg: Postgres password undefined, edit $postgres_password in inventory file
+    msg: Postgres password undefined, edit postgres_password in inventory file
   when: postgres_password is not defined and assert_pgpass.rc == 1
+  tags: always
+
+# Chequea si ami_user esta definido
+- name: Check if AMI user variable is defined
+  fail:
+    msg: AMI user undefined, edit ami_user in inventory file
+  when: ami_user is not defined and assert_amiuser.rc == 1
+  tags: always
+
+# Chequea si ami_password esta definido
+- name: Check if AMI password variable is defined
+  fail:
+    msg: AMI password undefined, edit ami_password in inventory file
+  when: ami_password is not defined and assert_amipass.rc == 1
+  tags: always
+
+# Chequea si dialer_user esta definido
+- name: Check if WD user variable is defined
+  fail:
+    msg: WD user undefined, edit dialer_user in inventory file
+  when: dialer_user is not defined and assert_dialeruser.rc == 1
+  tags: always
+
+# Chequea si dialer_password esta definido
+- name: Check if WD pass variable is defined
+  fail:
+    msg: WD pass undefined, edit dialer_password in inventory file
+  when: dialer_password is not defined and assert_dialerpass.rc == 1
   tags: always
 
 # Chequea si mysql_root_password esta definido

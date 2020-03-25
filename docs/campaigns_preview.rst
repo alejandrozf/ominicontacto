@@ -1,8 +1,7 @@
 .. _about_previewcamp:
 
-*****************
-Campañas preview
-*****************
+Creación campaña preview
+************************
 
 Para crear una nueva campaña preview se debe ingresar al punto de menú *Campaigns -> New  Campaign*. El proceso de creación consta de
 un wizard de dos pantallas.
@@ -12,7 +11,6 @@ En la primera etapa se deben indicar una serie de parámetros de campaña, como 
 .. image:: images/campaigns_prev_wizard_1.png
 
 *Figure 1: Campaigns parameters*
-
 
 - **Name:** nombre de la campaña.
 - **Contact database:** la base de contactos que utilzará el discador preview a la hora de entregar contactos bajo demanda a cada agente.
@@ -49,6 +47,9 @@ La primera variante es mostrada en la siguiente imagen:
 
 .. image:: images/campaigns_prev_wizard_5_1.png
 
+Asignación de contactos
+************************
+
 Si se le selecciona la opción de asignar proporcionalmente el sistema realizará una asignación inicial de contactos a agentes en la misma proporción permitiendo que en la consola de agente cuando el agente pida un contacto de la campaña se le entreguen solo contactos libres o de la lista de los que se le hayan asignados. Ver esta distribución en el admin en la siguiente figura:
 
 .. image:: images/campaigns_prev_admin_proporcional.png
@@ -69,6 +70,9 @@ disponer de la campaña preview tal como se expone en la figura 5.
 
 *Figure 5: Preview agents view*
 
+Interacción de agente con campaña
+*********************************
+
 Si el agente hace click sobre el teléfono entonces se dispara la llamada, se visualizan los datos (extras al teléfono) del contacto llamado, en la vista de agente
 permitiendo a su vez al agente clasificar la llamada con alguna de las calificaciones asignadas a la campaña.
 
@@ -77,7 +81,8 @@ permitiendo a su vez al agente clasificar la llamada con alguna de las calificac
 
 *Figure 6: Contact called*
 
-**Campaña con base de datos Multinum**
+Campaña con base de datos Multinum
+***********************************
 
 Como sabemos, OMniLeads admite que cada contacto de una base posea "n" números de teléfono de contacto, de manera tal que si el contacto no es encontrado en su número principal
 (el primero de nuestro archivo CSV de base), pueda ser contactado a los demás números. En este caso, cada número de teléfono (que indicamos en la carga de la base) se genera

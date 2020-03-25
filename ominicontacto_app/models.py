@@ -794,9 +794,6 @@ class CampanaManager(models.Manager):
             initial_predictive_model=campana.queue_campana.initial_predictive_model,
             initial_boost_factor=campana.queue_campana.initial_boost_factor,
 
-            autopause=campana.queue_campana.autopause,
-            autopausebusy=campana.queue_campana.autopausebusy,
-
         )
 
         # Replica Actuacion Vigente
@@ -1414,9 +1411,6 @@ class Queue(models.Model):
     ringinuse = models.BooleanField()
     setinterfacevar = models.BooleanField()
     members = models.ManyToManyField(AgenteProfile, through='QueueMember')
-
-    autopause = models.BooleanField(default=False)
-    autopausebusy = models.BooleanField(default=False)
 
     wait = models.PositiveIntegerField(verbose_name='Tiempo de espera en cola')
     auto_grabacion = models.BooleanField(default=False,

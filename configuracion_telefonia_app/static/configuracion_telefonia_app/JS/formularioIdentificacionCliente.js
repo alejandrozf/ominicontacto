@@ -17,6 +17,8 @@
 
 */
 
+/* global nodosEntrantesCambioPorTipo */
+
 const SIN_INTERACCION_EXTERNA = '1';      // IdentificadorCliente.SIN_INTERACCION_EXTERNA
 const INTERACCION_EXTERNA_1 = '2';        // IdentificadorCliente.INTERACCION_EXTERNA_1
 const INTERACCION_EXTERNA_2 = '3';        // IdentificadorCliente.INTERACCION_EXTERNA_2
@@ -39,7 +41,7 @@ $(function () {
 });
 
 function actualizarCamposSegunInteraccion() {
-    var tipo_interaccion = $('#id_tipo_interaccion').val()
+    var tipo_interaccion = $('#id_tipo_interaccion').val();
     if (tipo_interaccion == SIN_INTERACCION_EXTERNA) {
         $('#id_url').prop('disabled', true);
     }
@@ -48,7 +50,8 @@ function actualizarCamposSegunInteraccion() {
     }
 
     if (tipo_interaccion == INTERACCION_EXTERNA_2) {
-        disableDestinos(true);
+        $tipoDestinoMatch.prop('disabled', true);
+        $destinoMatch.prop('disabled', true);
     }
     else {
         disableDestinos(false);

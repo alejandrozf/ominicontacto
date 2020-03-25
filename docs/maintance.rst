@@ -34,7 +34,6 @@ Para consultar dichas variables podemos ejecutar un *cat* sobre el archivo */etc
  MONITORFORMAT=mp3
  MYSQL_PWD=098098ZZZ
  NGINX_HOSTNAME=localhost.localdomain
- OMNILEADS_IP=192.168.95.163
  OMNILEADS_HOSTNAME=localhost.localdomain
  PGHOST=localhost.localdomain
  PGDATABASE=omnileads
@@ -48,7 +47,7 @@ Para consultar dichas variables podemos ejecutar un *cat* sobre el archivo */etc
  WOMBAT_USER=demoadmin
  WOMBAT_PASSWORD=demo
 
- export AMI_USER AMI_PASSWORD ASTERISK_IP ASTERISK_HOSTNAME ASTERISK_LOCATION CALIFICACION_REAGENDA DJANGO_SETTINGS_MODULE DJANGO_PASS EPHEMERAL_USER_TTL EXTERNAL_PORT INSTALL_PREFIX KAMAILIO_IP KAMAILIO_HOSTNAME KAMAILIO_LOCATION MONITORFORMAT MYSQL_PWD NGINX_HOSTNAME OMNILEADS_IP OMNILEADS_HOSTNAME PGHOST PGDATABASE PGUSER PGPASSWORD PYTHONPATH REDIS_HOSTNAME SESSION_COOKIE_AGE TZ WOMBAT_HOSTNAME WOMBAT_USER WOMBAT_PASSWORD
+ export AMI_USER AMI_PASSWORD ASTERISK_IP ASTERISK_HOSTNAME ASTERISK_LOCATION CALIFICACION_REAGENDA DJANGO_SETTINGS_MODULE DJANGO_PASS EPHEMERAL_USER_TTL EXTERNAL_PORT INSTALL_PREFIX KAMAILIO_IP KAMAILIO_HOSTNAME KAMAILIO_LOCATION MONITORFORMAT MYSQL_PWD NGINX_HOSTNAME OMNILEADS_HOSTNAME PGHOST PGDATABASE PGUSER PGPASSWORD PYTHONPATH REDIS_HOSTNAME SESSION_COOKIE_AGE TZ WOMBAT_HOSTNAME WOMBAT_USER WOMBAT_PASSWORD
 
 De esta manera el administrador podrá disponer de todos estos parámeros operativos cuando desee.
 
@@ -58,7 +57,11 @@ De esta manera el administrador podrá disponer de todos estos parámeros operat
 
 Configuración del módulo de *Discador predictivo*
 *************************************************
-Antes que nada se notifica que si la instancia de OML desplegada en los pasos anteriores, NO contemplan el uso de campañas con discado saliente predictivo, este paso puede ser omitido.
+
+.. note::
+
+  Antes que nada se notifica que si la instancia de OML desplegada en los pasos anteriores, NO contemplan el uso de campañas con discado saliente predictivo, este paso puede ser omitido.
+
 OMniLeads necesita de una herramienta de terceros para implementar las campañas con discador predictivo. Esta herramienta se basa en licencias de software comerciales que deben
 ser gestionadas con el fabricante.
 
@@ -76,6 +79,9 @@ http://omnileads.yourdomain:8080/wombat ó http://XXX.XXX.XXX.OML:8080/wombat
   http://XXX.XXX.XXX.OML:442/wombat
 
   Donde XXX.XXX.XXX.OML es la dirección IP del docker engine host
+
+Creación de base de datos
+##########################
 
 Al ingresar por primera vez, se debe proceder con la creación de la base de datos MariaDB que utiliza Wombat Dialer.
 Hacer click en botón remarcado en la figura 1.
@@ -99,6 +105,8 @@ Procedemos entonces con la creación de la base de datos MySQL que utilizará de
 
 *Figure 2: MySQL root password*
 
+Primer login
+#############
 
 Una vez creada la base de datos MariaDB que utiliza Wombat Dialer, se procede con el primer login.
 
@@ -116,35 +124,58 @@ Al ingresar se despliega una pantalla como la siguiente, donde debemos acceder c
 
 *Figure 4: Access to WD*
 
+Cambio de credenciales
+#######################
+
+Por defecto Wombat Dialer viene con las credenciales web *demoadmin* como user y *demo* como pass. Estas credeciales se pueden cambiar, para ello:
+
+* Primeramente, las credenciales deben ser definidas en el archivo de inventario, son las variables **dialer_user** y **dialer_password**. Ver :ref:`about_install_inventory_vars`.
+* Ingresar a Wombat Dialer via web, e ingresar a Administracion -> Editar usuarios.
+
+.. image:: images/maintance_wd_changepass_1.png
+
+*Figure 5: WD change credentials*
+
+* Ahí se puede ver al usuario demoadmin, hacer click en el icono de lápiz, cambiar el usuario en *Login* por el **mismo usuario que ingresó en la variable dialer_user**, ingresar la **misma contraseña ingresada en dialer_password**.
+* Finalmente dar click en el botón Guardar.
+
+.. image:: images/maintance_wd_changepass_2.png
+
+*Figure 6: WD change credentials 2*
+
+* Una vez finalizado, recargar la página e ingresar con las nuevas credenciales.
+
+Parámetros básicos
+###################
+
 Una vez adentro del sistema, se procede con la configuración de dos parámetros básicos necesarios para dejar lista la integración con OMniLeads.
-Para ello debemos acceder al menú de "Configuración básica" como se indica en la figura 5.
+Para ello debemos acceder al menú de "Configuración básica" como se indica en la figura 7.
 
 .. image:: images/maintance_wd_config1.png
 
-*Figure 5: WD basic config*
+*Figure 7: WD basic config*
 
 En este menú se debe generar en primer lugar se debe generar una nueva instancia de conexión dentro de la sección "Asterisk Servers"
-como se expone en la figura 6.
+como se expone en la figura 8.
 
 .. image:: images/maintance_wd_config2.png
 
-*Figure 6: WD basic config - AMI Asterisk*
+*Figure 8: WD basic config - AMI Asterisk*
 
 En el siguiente punto, se configura un Troncal utilizando un "Nombre del troncal" arbitrario, pero con la cadena de llamado marcada
-en la figura 7. **Local/${num}@from-oml/n**
+en la figura 9. **Local/${num}@from-oml/n**
 
 .. image:: images/maintance_wd_config3.png
 
-*Figure 7: WD basic config - Asterisk Trunk*
+*Figure 9: WD basic config - Asterisk Trunk*
 
-Por último, recuerde dar "play" al servicio de dialer, tal como lo indica la siguiente figura 8.
+Por último, recuerde dar "play" al servicio de dialer, tal como lo indica la siguiente figura 10.
 
 .. image:: images/maintance_wd_config4.png
 
-*Figure 8: WD activate*
+*Figure 10: WD activate*
 
 Finalmente la plataforma se encuentra habilitada para gestionar llamadas predictivas. La instalación por defecto cuenta con una licencia de Wombat Dialer demo de un canal.
-
 
 Backup & Restore
 ****************
@@ -155,7 +186,7 @@ OMniLeads dispone de un script para llevar a cabo las tareas de backup/restore.
   En caso de hacer el restore en una nueva máquina, es necesario que dicha máquina:
 
   * Tenga OMniLeads instalado en la misma version que la maquina productiva
-  * Tenga la misma IP y el mismo hostname de la maquina productiva
+  * Tenga misma IP, mismo hostname y misma credenciales de la maquina productiva
 
 Para realizar un backup:
 
@@ -167,11 +198,11 @@ Debemos acceder por ssh al host donde tenemos corriendo OMniLeads. Una vez dentr
   cd /opt/omnileads/bin
   ./backup-restore.sh -b
 
-La ejecución del script arroja una salida similar a la de la figura 9.
+La ejecución del script arroja una salida similar a la de la figura 11.
 
 .. image:: images/maintance_backup_1.png
 
-*Figure 9: backup*
+*Figure 11: backup*
 
 Como se puede observar, nos indica cómo realizar el restore de dicho backup.
 
@@ -198,11 +229,11 @@ Por ejemplo:
 
 No hace falta agregar el path completo de ubicación del backup.
 
-Un restore exitoso arroja una salida similar a la figura 10.
+Un restore exitoso arroja una salida similar a la figura 12.
 
  .. image:: images/maintance_backup_2.png
 
- *Figure 10: restore*
+ *Figure 12: restore*
 
 Una vez finalizado el restore, ejecutar el siguiente comando para regenerar los archivos de configuración y valores de AstDB de la instancia que se restoreó:
 
@@ -231,7 +262,8 @@ A continuación se exponen los pasos a seguir para llevar a cabo una nueva actua
 Las actualizaciones se anuncian por los canales de comunicaciones oficiales del proyecto.
 Dependiendo el método de instalación que se haya seleccionado:
 
-**Instalación Self-Hosted**
+Actualización Self-Hosted
+##########################
 
 * Acceder como root a la maquina con OMniLeads instalado
 * Posicionarse sobre el directorio donde reside el script “deploy.sh”
@@ -263,14 +295,14 @@ Dependiendo el método de instalación que se haya seleccionado:
 
  ./deploy.sh -u --iface=**your_NIC_name**
 
-* Si todo fluye correctamente, al finalizar la ejecución de la tarea veremos una pantalla como muestra la figura 11.
+* Si todo fluye correctamente, al finalizar la ejecución de la tarea veremos una pantalla como muestra la figura 13.
 
 .. image:: images/maintance_updates_ok.png
 
-*Figure 11: updates OK*
+*Figure 13: updates OK*
 
-
-**Instalación desde workstation Linux remoto**
+Actualización Ansible Remoto
+#############################
 
 * Se debe acceder al repositorio clonado en nuestra maquina workstation, para desde allí correr la actualización sobre el host Linux OMniLeads.
 
@@ -304,17 +336,18 @@ Dependiendo el método de instalación que se haya seleccionado:
 
 .. image:: images/maintance_updates_ok.png
 
-*Figure 12: updates from ansible remote OK*
+*Figure 14: updates from ansible remote OK*
 
 .. note::
 
   Las instalaciones AIO dejarán de ser soportadas en un futuro para Debian y Ubuntu, por lo que se recomienda usar CentOS
 
-**Instalación basada en contenedores Docker**
+Actualización Docker containers
+################################
 
 .. important::
-  
-  Si ya tiene un entorno instalado con el script *install.sh* y quiere pasar a actualizar con Ansible, tiene que ingresar las variables correspondientes en el archivo de inventario. Es **MUY IMPORTANTE** que ingrese la misma password MYSQL. 
+
+  Si ya tiene un entorno instalado con el script *install.sh* y quiere pasar a actualizar con Ansible, tiene que ingresar las variables correspondientes en el archivo de inventario. Es **MUY IMPORTANTE** que ingrese la misma password MYSQL.
 
 Una vez instalado OMniLeads en docker no siempre va a a ser necesario ejecutar el instalador de Ansible para realizar la actualización de la plataforma, salvo en estos casos:
 
@@ -344,10 +377,11 @@ En el proceso de reinicio cuando se invoca el *docker-compose* al percatarse del
 Cambios de los parámetros de red (Hostname y/o Dirección IP) y cambios de contraseñas de servicios
 ***************************************************************************************************
 
-**Para entorno AIO**
+Entorno AIO
+############
 
-* Para llevar a cabo éstas tareas, debemos ejecutar nuevamente el script "deploy.sh". 
-* **Si se quiere cambiar IP** Se debe ingresar con el usuario root al sistema, cambiar la dirección IP a nivel sistema operativo y/o hostname y asegurarnos de que el host tomó los cambios. Se recomienda un *reboot* del sistema. 
+* Para llevar a cabo éstas tareas, debemos ejecutar nuevamente el script "deploy.sh".
+* **Si se quiere cambiar IP** Se debe ingresar con el usuario root al sistema, cambiar la dirección IP a nivel sistema operativo y/o hostname y asegurarnos de que el host tomó los cambios. Se recomienda un *reboot* del sistema.
 * **Si se quieren cambiar constraseñas** cambiar la contraseña que se desee, remitirse a :ref:`about_install_inventory_vars` para revisar las variables de contraseñas.
 
 Llevar a cabo esta tarea conlleva ejecutar el script deploy.sh asi:
@@ -360,7 +394,8 @@ Llevar a cabo esta tarea conlleva ejecutar el script deploy.sh asi:
 
   Asegurarse de correr el script en el mismo release en el cual se encuentra instalado el sistema, de lo contrario realizará actualización del software.
 
-**Para entorno docker**
+Entorno Docker
+###############
 
 La única diferencia con el entorno AIO es que debe correr el script deploy.sh así:
 
@@ -378,26 +413,26 @@ Para desbloquearlo se ingresa a la siguiente URL: https://omnileads-hostname/adm
 
 .. image:: images/django_admin.png
 
-*Figure 13: Django admin console*
+*Figure 15: Django admin console*
 
 
 Allí, ingresar las credenciales del usuario admin. Luego hacer click en el botón **Defender**
 
 .. image:: images/defender.png
 
-*Figure 14: Defender in django admin*
+*Figure 16: Defender in django admin*
 
 Esto abre la administración de **Django Defender** (https://github.com/kencochrane/django-defender) que es el plugin de Django usado para manejar esto. Hacer click en **Blocked Users**
 
 .. image:: images/blocked_users.png
 
-*Figure 15: Blocked users view*
+*Figure 17: Blocked users view*
 
 Se observará el usuario bloqueado. Basta con hacer click en **Unblock** para desbloquearlo.
 
 .. image:: images/unblock.png
 
-*Figure 16: Unblock user view*
+*Figure 18: Unblock user view*
 
 Ya el usuario podrá loguearse sin problema.
 

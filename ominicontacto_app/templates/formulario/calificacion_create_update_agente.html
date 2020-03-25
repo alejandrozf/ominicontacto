@@ -22,6 +22,7 @@
 {% load i18n %}
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.growl.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/formulario_contacto.css' %}">
 {% endblock extra_css%}
 {% block head_js %}
     <!-- Scripts -->
@@ -29,12 +30,11 @@
     <script src="{% static 'ominicontacto/JS/agente/formularioCalificacion.js' %}"></script>
     <script src="{% static 'ominicontacto/JS/agente/make_click2call.js' %}"></script>
     <script src="{% static 'ominicontacto/JS/agente/interaccionSitioExterno.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/formulario/calificacion_create_update.js' %}"></script>
 {% endblock head_js %}
 
 {% block content %}
-    
-    <input class="hidden" value="{{ configuracion_sitio_externo|safe }}" id="configuracionSitioExterno">
+<div class="container">
+    <input class="hidden" value='{{ configuracion_sitio_externo|safe }}' id="configuracionSitioExterno">
 
     {% if campana.mostrar_nombre %}
         <h1>{{ campana.nombre }}</h1>
@@ -60,12 +60,11 @@
                 </label>
             </div>
         {% endif %}
-        <div class="row mt-3">
+        <div class="row">
             <div class="col-md-6">
-
                 {% for field in contacto_form %}
                     <tr>
-                        <th>{{ field.label_tag }}</th>
+                        <th>{{ field.label_tag}}</th>
                         <th>{{ field.errors }}</th>
                         <td> {{ field }}
                         {% if contacto and field.name in campos_telefono %}
@@ -74,23 +73,24 @@
                         </td>
                     </tr>
                 {% endfor %}
-
-
+                <br>
+                <button type="submit" id="id_guardar" class="btn btn-primary">
+                    {% trans 'Guardar'  %}
+                </button>
+            </div>
+            <div class="col-md-6">
                 <div {% if llamada_entrante %}class="hidden"{% endif %} data="toHide">
                     {{calificacion_form.as_table}}
                 </div>
-            </div>
-            <div class="col-md-6">
+                <br>
                 <div {% if llamada_entrante %}class="hidden"{% endif %} data="toHide">
                     {% if calificacion_form.historico_calificaciones %}
                         {% include 'historico_calificaciones.html' with calificaciones=calificacion_form.instance.history.all %}
                     {% endif %}
                 </div>
+                
             </div>
         </div>
-        <hr>
-        <button type="submit" id="id_guardar" class="btn btn-primary">
-            {% trans 'Guardar'  %}
-        </button>
     </form>
+</div>
 {% endblock content %}

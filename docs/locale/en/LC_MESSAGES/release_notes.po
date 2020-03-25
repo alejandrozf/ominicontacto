@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-28 18:39-0300\n"
+"POT-Creation-Date: 2020-03-23 19:14-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,39 +17,35 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-# eb60d83c42df47e7be5e20e90a4b61a5
+# ad472e9e5da84af080e880f4bdf6ab8f
 #: ../../release_notes.rst:2
 msgid "Release Notes"
 msgstr "Release Notes"
 
-# d82b7aba6425421ab734c9a356b56743
+# 7cb6be6322af4d678643b0d6beead1a9
 #: ../../release_notes.rst:4
-msgid "*Febrero 28, 2020*"
-msgstr "February 28, 2020"
+msgid "*Marzo 23, 2020*"
+msgstr "March 23, 2020"
 
-# 8376ef42c5614a178a2fc0fe09246ed1
+# 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.4.2"
-msgstr "Release 1.4.2 details"
-
-# 5e789c671d314442b28fcfb50d32a507
-#: ../../release_notes.rst:9
-msgid ""
-"Este es un release \"bugfix\" mejorando la estabilidad y rendimiento del "
-"sistema"
-msgstr ""
-"This is a \"bugfix\" release improving the stability and performance of "
-"the codebase."
+msgid "Detalles de Release 1.5.1"
+msgstr "Release 1.5.1 details"
 
 # 08671eb233f04abb94799e4b0e1d9251
-#: ../../release_notes.rst:12
+#: ../../release_notes.rst:10
 msgid "Bug fixes"
 msgstr "Bug fixes"
 
-# 7f737ba46fa140769dd90a8f75f0f5f2
-#: ../../release_notes.rst:14
+# b3b1c0e6248e4a859ba8ade29663bb6a
+#: ../../release_notes.rst:11
 msgid ""
-"El paquete sngrep es eliminado de la instalación debido a problemas de "
-"con repositorio fuente en CentOS"
+"Solucionado error en validación al mostrar información de release "
+"desactualizado"
 msgstr ""
-"The sngrep package is removed from the installation due to availability repo issues on CentOS"
+"A validation error on condition to show release outdated information was fixed"
+
+# ec72b0859c004622b79427fbd4b261a5
+#: ../../release_notes.rst:12
+msgid "Solucionados algunos errores de encoding en visualización de reportes"
+msgstr "Some encoding visualization errors on reports were fixed"

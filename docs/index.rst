@@ -7,7 +7,7 @@ INTRODUCCION A OMNILEADS
 que permite implementar y gestionar un Contact Center administrando operaciones entrantes y salientes, con acceso a métricas, reportes e indicadores, supervisión real-time de agentes y demás funcionalidades avanzadas
 de QA, gestión de contactos y campañas.
 
-A partir realizar una sencilla :ref:`about_install` junto a unos pocos pasos de Configuración post-instalación, se dispone de una instancia funcional
+A partir de una sencilla instalación junto a unos pocos pasos de Configuración post-instalación, se dispone de una instancia funcional
 de OMniLeads lista para traccionar operaciones de Contact Center en términos de campañas entrantes y salientes.
 
 Esta aplicación puede adaptarse a una compañia u organización que necesita
@@ -29,18 +29,6 @@ Cómo lo obtengo ?
 `Nuestro repositorio  <https://gitlab.com/omnileads/ominicontacto>`_ se encuentra disponible en GitLab, para libre descarga, instalación, modificación y uso del Software.
 
 
-Donde se puede instalar ?
-*************************
-OMniLeads puede correr como una aplicación tradicional desplegando una instalación de todos los componentes sobre un server físico, máquina virtual o VPS. Siempre y cuando se utilice como base
-GNU/Linux: `CentOS minimal 7.7 <http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso>`_
-
-* `CentOS minimal 7.7 <http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso>`_
-* `Docker <https://www.docker.com>`_
-
-OMniLeads puede ser desplegado utilizando contenedores Docker, esto extiende la posibilidad de ejecución de la aplicación sobre diversas
-distrubuciones de GNU/Linux. Se resalta el hecho de que mediante este formato es posible desplegar OMniLeads sobre instancias de Issabel-PBX & FreePBX, de manera tal que dentro del mismo
-host conviva el software de PBX y OMniLeads como software de Contact Center.
-
 Cómo lo instalo ?
 *****************
 
@@ -50,16 +38,18 @@ En la sección :ref:`about_install` se aborda este asunto presentando los pasos 
 Características y funcionalidades de OMniLeads
 **********************************************
 
-* :ref:`about_webrtc`.
-* :ref:`about_omlfeatures`.
+.. toctree::
+  :maxdepth: 2
+
+  what_is_extra.rst
 
 Dónde y cómo lo puedo usar ?
 ****************************
 
-* :ref:`about_usecase_pbx`.
-* :ref:`about_usecase_bpo`.
-* :ref:`about_usecase_cloud`.
+.. toctree::
+  :maxdepth: 2
 
+  what_is_use_cases.rst
 
 Cómo me capacito ?
 ******************
@@ -82,7 +72,6 @@ En este capítulo se cubren todos los tipos de instalación del software.
   :maxdepth: 2
 
   install.rst
-
 
 *****************
 SETTING INICIALES

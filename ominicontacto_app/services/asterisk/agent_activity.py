@@ -31,13 +31,13 @@ class AgentActivityAmiManager(object):
 
     def login_agent(self, agente_profile):
         queue_add_error = self.queue_add_remove(agente_profile, 'QueueAdd')
-        insert_astdb_error = self.insert_astdb(agente_profile, 'login')
+        insert_astdb_error = self._insert_astb_status(agente_profile, 'login')
         queue_unpause_error = self.queue_pause_unpause(agente_profile, '', 'unpause')
         return queue_add_error, insert_astdb_error, queue_unpause_error
 
     def logout_agent(self, agente_profile):
         queue_remove_error = self.queue_add_remove(agente_profile, 'QueueRemove')
-        insert_astdb_error = self.insert_astdb(agente_profile, 'logout')
+        insert_astdb_error = self._insert_astb_status(agente_profile, 'logout')
         return queue_remove_error, insert_astdb_error
 
     def pause_agent(self, agente_profile, pause_id):
@@ -49,21 +49,27 @@ class AgentActivityAmiManager(object):
             pause_name = 'Supervision'
         else:
             pause_name = Pausa.objects.activa_by_pauseid(pause_id).nombre
-        insert_astdb_error = self.insert_astdb(agente_profile, 'PAUSE-' + str(pause_name))
+        insert_astdb_error = self._insert_astb_status(agente_profile, 'PAUSE-' + str(pause_name))
+        # TODO: Refactorizar para hacer todo en la misma session del AMIManagerConnector
+        if not insert_astdb_error:
+            insert_astdb_error = self.insert_astdb_pause_id(agente_profile, pause_id)
         return queue_pause_error, insert_astdb_error
 
     def unpause_agent(self, agente_profile, pause_id):
         queue_unpause_error = self.queue_pause_unpause(agente_profile, pause_id, 'unpause')
-        insert_astdb_error = self.insert_astdb(agente_profile, 'unpause')
+        insert_astdb_error = self._insert_astb_status(agente_profile, 'unpause')
         return queue_unpause_error, insert_astdb_error
 
     def get_pause_id(self, pause_id):
         return pause_id
 
-    def get_astdb_data(self, agente_profile, action):
+    def _get_family(self, agente_profile):
         agente_family = AgenteFamily()
+        return agente_family._get_nombre_family(agente_profile)
+
+    def _get_astdb_status_data(self, agente_profile, action):
+        family = self._get_family(agente_profile)
         tiempo_actual = int(time.time())
-        family = agente_family._get_nombre_family(agente_profile)
         key = 'STATUS'
         if action == 'login' or action == 'unpause':
             value = 'READY:' + str(tiempo_actual)
@@ -99,7 +105,15 @@ class AgentActivityAmiManager(object):
         content.append(pause_state)
         data_returned, error = self.manager._ami_manager('QueuePause', content)
 
-    def insert_astdb(self, agente_profile, action):
-        content = self.get_astdb_data(agente_profile, action)
+    def _insert_astb_status(self, agente_profile, action):
+        content = self._get_astdb_status_data(agente_profile, action)
+        data_returned, error = self.manager._ami_manager('dbput', content)
+        return error
+
+    def insert_astdb_pause_id(self, agente_profile, pause_id):
+        family = self._get_family(agente_profile)
+        key = 'PAUSE_ID'
+        value = pause_id
+        content = [family, key, value]
         data_returned, error = self.manager._ami_manager('dbput', content)
         return error
