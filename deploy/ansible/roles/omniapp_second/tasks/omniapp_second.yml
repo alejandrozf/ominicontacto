@@ -41,12 +41,8 @@
 # Se crea el archivo .ini de uwsgi. Para mas info revisar documentacion de uwsgi
 - name: Create of oml_uwgsi.ini script
   template: src=templates/run/oml_uwsgi.ini dest={{ install_prefix }}run/oml_uwsgi.ini mode=755 owner={{ usuario }} group={{ usuario }}
-
-# Se crea el archivo .ini de uwsgi. Para mas info revisar documentacion de uwsgi
-- name: Create of ominicontacto_app.ini script
-  template: src=templates/run/ominicontacto_app.ini dest={{ install_prefix }}run/ominicontacto_app.ini mode=755 owner={{ usuario }} group={{ usuario }}
   tags: postinstall
-
+  
 # Se crea el arhivo de systemd para omnileads daemon
 - name: Create of omnileads service
   template: src=templates/omnileads.service dest=/etc/systemd/system/omnileads.service owner=root group=root mode=650
@@ -78,7 +74,7 @@
 - name: Start the omnileads-daemon service
   systemd: name=omnileads state=restarted enabled=yes daemon_reload=yes
   tags: postinstall
-  
+
 - name: Erase files related to php supervision
   file: state=absent path={{ item }}
   with_items:
