@@ -67,7 +67,7 @@ def eliminar_grupos_roles_predefinidos(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0041_queue_musiconhold_playlist'),
+        ('ominicontacto_app', '0043_elimina_autopause_autopausebusy'),
     ]
 
     operations = [
