@@ -23,8 +23,6 @@ import re
 
 from time import time
 
-from django.utils.translation import ugettext as _
-
 
 logger = logging.getLogger(__name__)
 
@@ -33,9 +31,12 @@ class AgentesParsing(object):
     """Encapsula todos las acciones destinadas a obtener datos sobre los agentes
     del sistema en forma legible
     """
+    # TODO: hacer que se loguee condicionalmente
 
-    headers_agente_regex = re.compile(r'.*(NAME|SIP|STATUS).*')
-    headers_agente_regex_group = re.compile(r'(NAME|SIP|STATUS)')
+    LONGITUD_MINIMA_HEADERS = 5
+
+    headers_agente_regex = re.compile(r'.*(NAME|SIP|STATUS|PAUSE_ID).*')
+    headers_agente_regex_group = re.compile(r'(NAME|SIP|STATUS|PAUSE_ID)')
     id_agente = re.compile(r'[1-9][0-9]*')
 
     def _chequear_procesar_entrada(self, linea):
@@ -58,7 +59,8 @@ class AgentesParsing(object):
         entrada_agente = {}
         map_keys = {
             'NAME': 'nombre',
-            'SIP': 'sip'
+            'SIP': 'sip',
+            'PAUSE_ID': 'pause_id'
         }
         key_part, value_part = valor_linea_procesada
         id_agente = self.id_agente.search(key_part).group(0)
@@ -80,8 +82,9 @@ class AgentesParsing(object):
         else:
             entrada_agente[map_keys[header]] = value_part
         if value_part == '':
-            logger.warning(_('Esta entrada tiene datos incompletos: {0}'.format(
-                valor_linea_procesada)))
+            # logger.warning(_('Esta entrada tiene datos incompletos: {0}'.format(
+            #     valor_linea_procesada)))
+            pass
         return entrada_agente
 
     def _pertenece_grupo_actual_agente(self, entrada_agente, grupo_datos_agente):
@@ -105,16 +108,24 @@ class AgentesParsing(object):
                         entrada_agente, grupo_datos_agente):
                     grupo_datos_agente.update(entrada_agente)
                 else:
-                    if len(grupo_datos_agente) != 5:
-                        logger.warning(
-                            _("Inconsistencias en datos de agente: {0}".format(grupo_datos_agente)))
+                    if len(grupo_datos_agente) < self.LONGITUD_MINIMA_HEADERS or \
+                       not grupo_datos_agente.get('status', False):
+                        # al menos esperamos un grupo de datos con headers:
+                        # (id, name, status, sip), si no tiene valor el header status no
+                        # mostramos el grupo, ya que asumimos que dicho agente no se ha
+                        # logueado aún en el sistema
+
+                        # logger.warning(
+                        #   _("Inconsistencias en datos de agente: {0}".format(grupo_datos_agente)))
+                        pass
                     else:
                         agentes_activos.append(grupo_datos_agente)
                     grupo_datos_agente = entrada_agente
-            if i == len(lineas) - 1 and len(grupo_datos_agente) == 5:
+            if i == len(lineas) - 1 and len(grupo_datos_agente) >= self.LONGITUD_MINIMA_HEADERS:
                 agentes_activos.append(grupo_datos_agente)
                 grupo_datos_agente = {}
-            elif i == len(lineas) - 1 and len(grupo_datos_agente) != 5:
-                logger.warning(
-                    _("Inconsistencias en datos de agente: {0}".format(grupo_datos_agente)))
+            elif i == len(lineas) - 1 and len(grupo_datos_agente) < self.LONGITUD_MINIMA_HEADERS:
+                # logger.warning(
+                #   _("Inconsistencias en datos de agente: {0}".format(grupo_datos_agente)))
+                pass
         return agentes_activos

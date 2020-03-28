@@ -60,7 +60,7 @@ class AgentesStatusAPIView(APIView):
     def get(self, request):
         online = []
         for data_agente in self.agentes_parseados._obtener_agentes_activos():
-            if not data_agente['status'] == u'OFFLINE':
+            if not data_agente.get('status', '') == 'OFFLINE':
                 online.append(data_agente)
         return Response(data=online)
 
