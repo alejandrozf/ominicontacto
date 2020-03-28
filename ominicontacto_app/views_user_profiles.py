@@ -127,7 +127,7 @@ class CustomUserWizard(SessionWizardView):
         supervisor.save()
         asterisk_sip_service = ActivacionAgenteService()
         try:
-            asterisk_sip_service.activar()
+            asterisk_sip_service.activar(regenerar_families=False)
         except RestablecerConfigSipError as e:
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error{0} .".format(e))
@@ -146,7 +146,7 @@ class CustomUserWizard(SessionWizardView):
         # generar archivos sip en asterisk
         asterisk_sip_service = ActivacionAgenteService()
         try:
-            asterisk_sip_service.activar()
+            asterisk_sip_service.activar_agente(agente_profile)
         except RestablecerConfigSipError as e:
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error{0} .".format(e))
@@ -163,7 +163,7 @@ class CustomUserWizard(SessionWizardView):
 
         asterisk_sip_service = ActivacionAgenteService()
         try:
-            asterisk_sip_service.activar()
+            asterisk_sip_service.activar(regenerar_families=False)
         except RestablecerConfigSipError as e:
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error{0} .".format(e))
@@ -358,7 +358,8 @@ class AgenteProfileUpdateView(UpdateView):
 
         asterisk_sip_service = ActivacionAgenteService()
         try:
-            asterisk_sip_service.activar()
+            # Como solo puede cambiar el grupo no impacta en AstDB
+            asterisk_sip_service.activar(regenerar_families=False)
         except RestablecerConfigSipError as e:
             message = _("<strong>¡Cuidado!</strong> "
                         "con el siguiente error{0} .".format(e))
