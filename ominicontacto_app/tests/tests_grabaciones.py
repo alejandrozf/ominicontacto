@@ -66,7 +66,7 @@ class BaseGrabacionesTests(OMLBaseTest):
         self.calificacion = CalificacionClienteFactory(opcion_calificacion=self.opcion_calificacion)
         self.grabacion1 = GrabacionFactory.create(
             duracion=1, agente=self.agente1, callid=self.calificacion.callid,
-            campana=self.campana1)
+            campana=self.campana1, id_cliente='-1')
         self.grabacion2 = GrabacionFactory(
             duracion=1, agente=self.agente1, campana=self.campana1)
         self.grabacion3 = GrabacionFactory(
@@ -215,6 +215,7 @@ class FiltrosBusquedaGrabacionesSupervisorTests(BaseGrabacionesTests):
                      'campana': '', 'marcadas': '', 'duracion': '0', 'gestion': True}
         response = self.client.post(url, post_data, follow=True)
         self.assertContains(response, self.grabacion1.tel_cliente)
+        self.assertContains(response, self.opcion_calificacion.nombre)
         self.assertNotContains(response, self.grabacion2.tel_cliente)
         self.assertNotContains(response, self.grabacion3.tel_cliente)
 
