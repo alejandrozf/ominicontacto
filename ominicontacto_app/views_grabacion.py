@@ -126,7 +126,7 @@ class BusquedaGrabacionFormView(FormView):
         callids = []
         for contacto_id, campana_id, callid in identificadores:
             # Calificaciones si o si tienen contacto y campaña.
-            if contacto_id and campana_id:
+            if contacto_id and campana_id and not contacto_id == '-1':
                 filtro = filtro | Q(contacto_id=contacto_id,
                                     opcion_calificacion__campana_id=campana_id)
             # Pero si la grabacion no tiene esos datos uso el callid
