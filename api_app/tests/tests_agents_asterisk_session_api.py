@@ -41,7 +41,7 @@ class AgentsAsteriskSessionAPITest(OMLBaseTest):
 
     @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.login_agent')
     def test_asterisk_session_login_ok(self, login_agent):
-        login_agent.return_value = False, False, False
+        login_agent.return_value = False
         url = reverse('agent_asterisk_login')
         response = self.client.post(url, HTTP_AUTHORIZATION=self.auth_header)
         self.assertEqual(response.status_code, 200)
@@ -51,7 +51,7 @@ class AgentsAsteriskSessionAPITest(OMLBaseTest):
 
     @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.login_agent')
     def test_asterisk_session_login_error(self, login_agent):
-        login_agent.return_value = False, False, True
+        login_agent.return_value = True
         url = reverse('agent_asterisk_login')
         response = self.client.post(url, HTTP_AUTHORIZATION=self.auth_header)
         self.assertEqual(response.status_code, 200)
