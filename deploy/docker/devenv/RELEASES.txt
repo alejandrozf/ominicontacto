@@ -21,6 +21,8 @@ Omniapp:
   - Added a line in run_omniapp.sh that writes envars in a file to source cron jobs
 1.2.4
   - Upgrade to python3 and django 2.2.8
+1.2.5
+  - Fork of pyst2 library to fix bug in AMI connection: https://github.com/rdegges/pyst2/pull/51
 
 Asterisk:
 
@@ -36,7 +38,7 @@ Asterisk:
   - Changed python and pyscopg2 version to support python3.
 16.9.0
   - Upgraded asterisk version to 16.9.0
-  
+
 pbx-emulator image versions:
 
 0.1
