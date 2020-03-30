@@ -19,12 +19,12 @@
 
 # mensaje para mostrar si rtpengine no está instalado
 - debug: msg="RTPengine no está instalado, se procede a la instalación"
-  when: rtpengine_installed.stdout != rtpengine_version
+  when: rtpengine_installed.stdout != rtpengine_version and rtpengine_host is not defined
   tags: kamailio
 
 # mensaje si rtpengine está instalado
 - debug: msg="RTPengine ya se encuentra instalado se omite instalación"
-  when: rtpengine_installed.stdout == rtpengine_version
+  when: rtpengine_installed.stdout == rtpengine_version and rtpengine_host is not defined
 
 - include: roles/kamailio/tasks/packages_installation.yml
   tags: kamailio
@@ -33,10 +33,11 @@
 #  Si rtpengine_installed es failed incluyo la tarea de instalacion. Osea el sistema detecta cuando rtpengine está instalado o no y en caso de que no lo  esté lo instala sino omite
 - include: roles/kamailio/tasks/rtpengine_installation.yml
   tags: kamailio
-  when: rtpengine_installed.stdout != rtpengine_version
+  when: rtpengine_installed.stdout != rtpengine_version and rtpengine_host is not defined
 
 - include: roles/kamailio/tasks/rtpengine_configuration.yml
   tags: kamailio
+  when: rtpengine_host is not defined
 
 - debug: msg="Kamailio {{ kamailio_version }} is not installed, proceeding to install"
   tags: ['kamailio','postinstall']

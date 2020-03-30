@@ -8,4 +8,3 @@
 - include: db_upgrade.yml
   tags: ['never','postinstall']
   when: postgresql_new_installed.rc == 2
-

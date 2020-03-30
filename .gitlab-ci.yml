@@ -72,7 +72,7 @@ docker-prodenv-build-push:
   script:
     - bash /home/ftsinfra/git_cleanup.sh
     - cd /home/ftsinfra/ominicontacto/deploy/vagrant
-    - python edit_ansible.py -tag=$CI_COMMIT_REF_NAME -dlu=$DOCKER_LOGIN_USER -dle=$DOCKER_LOGIN_EMAIL -dlp=$DOCKER_LOGIN_PASSWORD
+    - python edit_inventory.py -tag=$CI_COMMIT_REF_NAME -dlu=$DOCKER_LOGIN_USER -dle=$DOCKER_LOGIN_EMAIL -dlp=$DOCKER_LOGIN_PASSWORD
     - cd /home/ftsinfra/ominicontacto/deploy/ansible
     - echo "$FTSINFRA_PASS" | sudo -S ./deploy.sh --docker-build
   tags:
@@ -95,7 +95,7 @@ staging-centos:
     - vagrant halt centos
     - vagrant destroy centos -f
     - ./vagrantup.sh centos
-    - python ../edit_ansible.py --internal_ip=$STAGING_IP_CENTOS --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
+    - python ../edit_inventory.py --internal_ip=$STAGING_IP_CENTOS --self_hosted=no
     - cd ../../ansible
     - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
     - TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=$STAGING_HOST_CENTOS ADMIN_USERNAME=admin ADMIN_PASSWORD=$DJANGO_PASS LOGIN_FAILURE_LIMIT=$LOGIN_FAILURE_LIMIT python /home/ftsinfra/ominicontacto/ominicontacto_app/tests/tests.py
@@ -110,7 +110,7 @@ staging-centos:
     - web
   except:
       - merge_requests
-  
+
 staging-self-hosted:
   stage: build
   script:
