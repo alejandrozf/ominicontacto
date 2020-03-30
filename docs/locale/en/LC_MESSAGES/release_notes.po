@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-23 19:14-0300\n"
+"POT-Creation-Date: 2020-03-28 20:28-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,28 +24,62 @@ msgstr "Release Notes"
 
 # 7cb6be6322af4d678643b0d6beead1a9
 #: ../../release_notes.rst:4
-msgid "*Marzo 23, 2020*"
-msgstr "March 23, 2020"
+msgid "*Marzo 28, 2020*"
+msgstr "March 28, 2020"
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.5.1"
-msgstr "Release 1.5.1 details"
+msgid "Detalles de Release 1.5.2"
+msgstr "Release 1.5.2 details"
 
 # 08671eb233f04abb94799e4b0e1d9251
 #: ../../release_notes.rst:10
 msgid "Bug fixes"
 msgstr "Bug fixes"
 
-# b3b1c0e6248e4a859ba8ade29663bb6a
+# 4ca4e3f47dea49a2ae256e0579d88577
 #: ../../release_notes.rst:11
 msgid ""
-"Solucionado error en validación al mostrar información de release "
-"desactualizado"
+"Solucionado error que regeneraba todos los datos de agentes en AstDB con "
+"status vacío después de crear/modificar agente"
 msgstr ""
-"A validation error on condition to show release outdated information was fixed"
+"Fix error that regenerates all AstDB agents data when an agent were added or modified with empty status"
 
-# ec72b0859c004622b79427fbd4b261a5
+# daec947aee8c419fb3fce7ded1d29b05
 #: ../../release_notes.rst:12
-msgid "Solucionados algunos errores de encoding en visualización de reportes"
-msgstr "Some encoding visualization errors on reports were fixed"
+msgid ""
+"Solucionado error que ocultaba los link a calificaciones de llamadas sin "
+"identificar en busqueda de grabaciones"
+msgstr ""
+"Fix error that hides disposition links on not identified calls in recording calls view"
+
+# 86acd08279fe44c5bf60463c81fe09fd
+#: ../../release_notes.rst:13
+msgid ""
+"Solucionada condición de carrera en el método close() de pyst2 que "
+"afectaba al sistema"
+msgstr ""
+"Fixed race condition on pyst2 close() method"
+
+# b3b1c0e6248e4a859ba8ade29663bb6a
+#: ../../release_notes.rst:14
+msgid "Solucionado error en la configuración de uwsgi que elevaba el uso de CPU"
+msgstr ""
+"Fixed error on uwsgi configuration the elevated the CPU usage"
+
+
+# 45e1d5f063fa4af7aa01b44d38793768
+#: ../../release_notes.rst:15
+msgid ""
+"Solucionado error en el parsing de entradas de agentes en AstDB que "
+"contienen la key PAUSE_ID"
+msgstr ""
+"Fixed error on parsing of AstDB agents headers containing the PAUSE_ID key"
+
+# b3b1c0e6248e4a859ba8ade29663bb6a
+#: ../../release_notes.rst:16
+msgid ""
+"Solucionado error en la vista de reporte de supervisión de campañas "
+"entrantes"
+msgstr ""
+"Fixed error on inbound campaigns supervision live report"

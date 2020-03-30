@@ -32,7 +32,7 @@
     - libuuid
     - libuuid-devel
     - lynx
-    - postgresql96-devel
+    #- postgresql96-devel
     - redis
   tags: ['kamailio']
   retries: 3

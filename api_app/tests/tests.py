@@ -273,7 +273,6 @@ class APITest(TestCase):
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
         self.assertEqual(len(response.json()), 2)
-        self.assertEqual(logger.warning.call_count, 1)
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AMIManagerConnector, "_ami_manager")
@@ -297,7 +296,6 @@ class APITest(TestCase):
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
         self.assertEqual(len(response.json()), 3)
-        self.assertEqual(logger.warning.call_count, 2)
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AMIManagerConnector, "_ami_manager")
@@ -319,6 +317,35 @@ class APITest(TestCase):
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
         self.assertEqual(len(response.json()), 1)
+
+    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
+    @patch.object(AMIManagerConnector, "_ami_manager")
+    @patch('api_app.utiles.logger')
+    def test_servicio_agentes_activos_entradas_mixtas_lineas_pause_id_aceptadas(
+            self, logger, _ami_manager, manager):
+        self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
+        _ami_manager.return_value = (
+            "/OML/AGENT/1/NAME                                : John Perkins\r\n"
+            "/OML/AGENT/1/PAUSE_ID                            : 1\r\n"
+            "/OML/AGENT/1/SIP                                 : 1001\r\n"
+            "/OML/AGENT/1/STATUS                              : \r\n"
+            "/OML/AGENT/2/NAME                                : Silvia Pensive\r\n"
+            "/OML/AGENT/2/SIP                                 : 1002\r\n"
+            "/OML/AGENT/2/STATUS                              : PAUSE:1582309000\r\n"
+            "/OML/AGENT/3/NAME                                : FERNANDO XXX\r\n"
+            "/OML/AGENT/3/SIP                                 : 1105\r\n"
+            "/OML/AGENT/3/STATUS                              : \r\n"
+            "/OML/AGENT/4/NAME                                : Marge Simpson\r\n"
+            "/OML/AGENT/4/PAUSE_ID                            : 0\r\n"
+            "/OML/AGENT/4/SIP                                 : 1003\r\n"
+            "/OML/AGENT/4/STATUS                              : PAUSE:1582309500\r\n"
+            "2 results found."), None
+        url = reverse('api_agentes_activos')
+        response = self.client.get(url)
+        response_json = response.json()
+        agent1_dict = response_json[1]
+        self.assertEqual(len(response_json), 2)
+        self.assertEqual(agent1_dict['pause_id'], '0')
 
     def test_api_login_devuelve_token_asociado_al_usuario_password(self):
         url = 'https://{0}{1}'.format(settings.OML_OMNILEADS_HOSTNAME, reverse('api_login'))

@@ -85,8 +85,8 @@ class CreacionUsuariosTest(OMLBaseTest):
         self.assertFalse(supervisor.is_administrador)
         self.assertFalse(supervisor.is_customer)
 
-    @patch.object(ActivacionAgenteService, 'activar')
-    def test_crear_agente(self, activar):
+    @patch.object(ActivacionAgenteService, 'activar_agente')
+    def test_crear_agente(self, activar_agente):
         self.client.login(username=self.admin.username, password=PASSWORD)
         url = reverse('user_nuevo')
         response = self.client.get(url, follow=True)

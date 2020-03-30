@@ -18,7 +18,7 @@
 ---
 
 #  Instalo paquetes de asterisk
-- name: Installation of asterisk packages (centos)
+- name: Installation of asterisk packages
   yum: name={{ item }} state=present update_cache=yes
   with_items:
     - dh-autoreconf
@@ -32,3 +32,7 @@
   delay: 3
   register: result
   until: result is success
+
+- name: Install of unixODBC-devel package
+  yum: name=unixODBC-devel state=present
+  when: ansible_distribution == "Amazon"

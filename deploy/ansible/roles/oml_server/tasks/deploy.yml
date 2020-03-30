@@ -86,14 +86,14 @@
 - name: Erase virtualenv if exists
   file: path={{ install_prefix }}virtualenv state=absent
   tags: postinstall
-  when: python_version.stdout != "Python 3.6.8"
+  when: python_version.stdout != "Python " + python_version_desired
 
 - name: Creation of the initial virtualenv
   command: virtualenv {{ install_prefix }}virtualenv -p python3.6
   become: true
   become_method: su
   become_user: "{{ usuario }}"
-  when: python_version.stdout != "Python 3.6.8"
+  when: python_version.stdout != "Python " + python_version_desired
   tags: postinstall
 
 # Seteo posesion de ominicontacto al usuario omnileads
@@ -107,10 +107,10 @@
 - name: Upgrade of python setuptools
   pip:
     chdir={{ install_prefix }}virtualenv
-    executable=pip3 
-    name=setuptools 
+    executable=pip3
+    name=setuptools
     virtualenv_command=/usr/bin/virtualenv
-    virtualenv_python=python3.6 
+    virtualenv_python=python3
     extra_args=--upgrade
   environment:
     PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-{{ postgresql_version }}/bin"
@@ -134,7 +134,7 @@
     chdir={{ install_prefix }}virtualenv
     executable=pip3
     requirements={{ install_prefix }}ominicontacto/requirements.txt
-    virtualenv_python=python3.6 
+    virtualenv_python=python3
     extra_args="--exists-action 'w'"
   environment:
     PATH: "{{ install_prefix }}virtualenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/usr/pgsql-{{ postgresql_version }}/bin"
