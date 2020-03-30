@@ -2,8 +2,9 @@
 
 - include: installations.yml
   tags: postinstall
-  
+
 - include: mariadb.yml
+  when: mysql_host is not defined
 
 - include: roles/prerequisitos/tasks/reboot.yml
   when: ansible_connection != "local"
