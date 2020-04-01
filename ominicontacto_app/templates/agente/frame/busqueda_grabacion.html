@@ -27,108 +27,107 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% endblock head_js %}
 
 {% block content %}
-    <h1>{% trans 'Buscar grabación' %}</h1>
+    <div class="container-fluid">
+        <h1>{% trans 'Buscar grabación' %}</h1>
 
-    <div id="wrapper-search">
-        <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> {% trans 'Buscar' %}</button>
-        <div id="wrapperSearchForm" class="show">
-            <form id="form-buscar-grabacion" role="form" method="post" enctype="multipart/form-data" >
-                {% include "base_form_fields.html" with form=form %}
-                <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-                    {% trans 'Buscar' %}
-                </button>
-            </form>
+        <div id="wrapper-search">
+            <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> {% trans 'Buscar' %}</button>
+            <div id="wrapperSearchForm" class="show">
+                <form id="form-buscar-grabacion" role="form" method="post" enctype="multipart/form-data" >
+                    {% include "base_form_fields.html" with form=form %}
+                    <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                        {% trans 'Buscar' %}
+                    </button>
+                </form>
+            </div>
         </div>
-    </div>
 
-    <div class="wrapper-results">
-        <table class="table table-stripped">
-            <thead>
+        <div class="wrapper-results">
+            <table class="table table-stripped">
+                <thead>
+                    <tr>
+                        <th>{% trans 'Fecha' %}</th>
+                        <th>{% trans 'Tipo de llamada' %}</th>
+                        <th>{% trans 'tel_cliente' %}</th>
+                        <th>{% trans 'Campaña' %}</th>
+                        <th>{% trans 'Grabación' %}</th>
+                        <th>{% trans 'Descripción' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for grabacion in listado_de_grabaciones %}
+                    <tr>
+                        <td>{{ grabacion.fecha|date:"Y-m-d H:i"}}</td>
+                        <td>{{ grabacion.get_tipo_llamada_display}}</td>
+                        <td>{{ grabacion.tel_cliente}}</td>
+                        <td>{{ grabacion.campana}}</td>
+                        <td>
+                            <audio controls>
+                                <source src="{{ grabacion.url }}" type='audio/mpeg'>
+                                    {% trans 'Escuchar' %}
+                            </audio>
+                            <a href="{{ grabacion.url }}" target="_blank">
+                                <span class="glyphicon glyphicon-download-alt" aria-hidden="true" title="{% trans 'Descargar' %}"></span>
+                            </a>
+                        </td>
+                        <td><button type="button" class="btn btn-light btn-sm" data-toggle="modal"
+                                    data-target="#descripcionModal" data-uid="{{ grabacion.callid }}">{% trans 'Descripción' %}</button></td>
+                    </tr>
+               {% empty %}
                 <tr>
-                    <th>{% trans 'Fecha' %}</th>
-                    <th>{% trans 'Tipo de llamada' %}</th>
-                    <th>{% trans 'tel_cliente' %}</th>
-                    <th>{% trans 'Campaña' %}</th>
-                    <th>{% trans 'Grabación' %}</th>
-                    <th>{% trans 'Descripción' %}</th>
+                    <td colspan="7">{% trans 'No existen grabaciones' %}</td>
                 </tr>
-            </thead>
-            <tbody>
-            {% for grabacion in listado_de_grabaciones %}
-                <tr>
-                    <td>{{ grabacion.fecha|date:"Y-m-d H:i"}}</td>
-                    <td>{{ grabacion.get_tipo_llamada_display}}</td>
-                    <td>{{ grabacion.tel_cliente}}</td>
-                    <td>{{ grabacion.campana}}</td>
-                    <td>
-                        <audio controls>
-                            <source src="{{ grabacion.url }}" type='audio/mpeg'>
-                                {% trans 'Escuchar' %}
-                        </audio>
-                        <a href="{{ grabacion.url }}" target="_blank">
-                            <span class="glyphicon glyphicon-download-alt" aria-hidden="true" title="{% trans 'Descargar' %}"></span>
-                        </a>
-                    </td>
-                    <td><button type="button" class="btn btn-light btn-sm" data-toggle="modal"
-                                data-target="#descripcionModal" data-uid="{{ grabacion.callid }}">{% trans 'Descripción' %}</button></td>
-                </tr>
-           {% empty %}
-            <tr>
-                <td colspan="7">{% trans 'No existen grabaciones' %}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                {% endfor %}
+                </tbody>
+            </table>
 
-        <nav aria-label="Page navigation">
-            <ul class="pagination">
-            {% if listado_de_grabaciones.has_previous %}
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Previous" onclick="javascript:filtrar_pagina({{listado_de_grabaciones.previous_page_number}})">
-                    <span aria-hidden="true">&laquo;</span>
-                    <span class="sr-only">{% trans 'Anterior' %}</span>
-                  </a>
-                </li>
-            {% endif %}
-            {% for page in listado_de_grabaciones.paginator.page_range %}
-                <li class="page-item {% if listado_de_grabaciones.number == page  %}active{% endif %}"><a class="page-link" href="#" onclick="javascript:filtrar_pagina({{page}})">{{ page }}</a></li>
-            {% endfor %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                {% if listado_de_grabaciones.has_previous %}
+                    <li class="page-item">
+                      <a class="page-link" href="#" aria-label="Previous" onclick="javascript:filtrar_pagina({{listado_de_grabaciones.previous_page_number}})">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">{% trans 'Anterior' %}</span>
+                      </a>
+                    </li>
+                {% endif %}
+                {% for page in listado_de_grabaciones.paginator.page_range %}
+                    <li class="page-item {% if listado_de_grabaciones.number == page  %}active{% endif %}"><a class="page-link" href="#" onclick="javascript:filtrar_pagina({{page}})">{{ page }}</a></li>
+                {% endfor %}
 
-            {% if listado_de_grabaciones.has_next %}
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Next" onclick="javascript:filtrar_pagina({{listado_de_grabaciones.next_page_number}})">
-                    <span aria-hidden="true">&raquo;</span>
-                    <span class="sr-only">{% trans 'Siguiente' %}</span>
-                  </a>
-                </li>
-            {% endif %}
-            </ul>
-        </nav>
+                {% if listado_de_grabaciones.has_next %}
+                    <li class="page-item">
+                      <a class="page-link" href="#" aria-label="Next" onclick="javascript:filtrar_pagina({{listado_de_grabaciones.next_page_number}})">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">{% trans 'Siguiente' %}</span>
+                      </a>
+                    </li>
+                {% endif %}
+                </ul>
+            </nav>
 
-     <div class="modal fade" id="descripcionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-         <div class="modal-dialog" role="document">
-             <div class="modal-content">
-                 <div class="modal-header">
-                    <h1 class="modal-title" id="descripcionModalLabel"></h1>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                 </div>
-                 <div class="modal-body">
-                     <form>
-                         <div class="description-text" id="descripcion-text">
-                         </div>
-                     </form>
-                 </div>
-                 <div class="modal-footer">
-                     <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>
+         <div class="modal fade" id="descripcionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+             <div class="modal-dialog" role="document">
+                 <div class="modal-content">
+                     <div class="modal-header">
+                        <h1 class="modal-title" id="descripcionModalLabel"></h1>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                     </div>
+                     <div class="modal-body">
+                         <form>
+                             <div class="description-text" id="descripcion-text">
+                             </div>
+                         </form>
+                     </div>
+                     <div class="modal-footer">
+                         <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar' %}</button>
+                     </div>
                  </div>
              </div>
          </div>
-     </div>
+        </div>
     </div>
 
-
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/select2.min.css' %}"></link>
-    <script src="{% static 'ominicontacto/JS/select2.min.js' %}"></script>
     <script>
      /* se activa en todos los campos de selección un plugin para
         JQuery que permite una mejor búsqueda */

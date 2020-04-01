@@ -42,14 +42,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     {{ form.non_field_errors }}
     <div class="form-group">
         {{ form.campana.errors }}
-        <label class="col-sm-3 control-label" for="{{ form.campana.id_for_label }}">{% trans 'Campana:' %}</label>
-        <div class="col-sm-6">
-              {{ form.campana }}
+        <div class="row">
+            <label class="col-md-12 control-label" for="{{ form.campana.id_for_label }}">{% trans 'Campana:' %}</label>
+            <div class="col-md-12">
+                  {{ form.campana }}
+            </div>
         </div>
-    </div>
+    </div>    
     <button type="submit"  class="btn btn-primary">
         {% trans 'Continuar' %}
     </button>
+    
 </form>
    </div>
 </body>
