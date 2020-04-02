@@ -49,15 +49,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% endcompress %}
     </head>
     <body>
-        <h1>{% trans 'Contactos' %}</h1>
-            {% include 'messages.html' %}
+        <div class="container-fluid">
+            <h1>{% trans 'Contactos' %}</h1>
+                {% include 'messages.html' %}
 
-        <div>
-            {% if campanas %}
-                {% include 'agente/contactos_content.html' with contactos=contactos %}
-            {% else %}
-                <p>{% trans 'No tiene contactos para marcar manualmente desde esta interfaz' %}</p>
-            {% endif %}
+            <div>
+                {% if campanas %}
+                    {% include 'agente/contactos_content.html' with contactos=contactos %}
+                {% else %}
+                    <p>{% trans 'No tiene contactos para marcar manualmente desde esta interfaz' %}</p>
+                {% endif %}
+            </div>
         </div>
     </body>
 </html>

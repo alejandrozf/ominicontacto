@@ -36,30 +36,31 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <body>
 
 {% include 'messages.html' %}
-
-<div class="row">
-    <div class="col-md-9">
-        <table class="table table-striped">
-            <tr>
-                <td><strong>{% trans 'Teléfono' %}</strong></td>
-                <td>{{contacto.telefono}}</td>
-            </tr>
-        {% for datos in mas_datos %}
-            <tr>
-                <td><strong>{{datos.0|title}}</strong></td>
-                <td>{{datos.1}}</td>
-            </tr>
-        {% endfor %}
-            <tr>
-                <td colspan="2"><strong>{% trans 'Formulario recientemente cargado' %}</strong></td>
-            </tr>
-        {% for key, values in metadata.items %}
-            <tr>
-                <td><strong>{{key|title}}</strong></td>
-                <td>{{values}}</td>
-            </tr>
-        {% endfor %}
-        </table>
+<div class="container">
+    <div class="row">
+        <div class="col-md-9">
+            <table class="table table-striped">
+                <tr>
+                    <td><strong>{% trans 'Teléfono' %}</strong></td>
+                    <td>{{contacto.telefono}}</td>
+                </tr>
+            {% for datos in mas_datos %}
+                <tr>
+                    <td><strong>{{datos.0|title}}</strong></td>
+                    <td>{{datos.1}}</td>
+                </tr>
+            {% endfor %}
+                <tr>
+                    <td colspan="2"><strong>{% trans 'Formulario recientemente cargado' %}</strong></td>
+                </tr>
+            {% for key, values in metadata.items %}
+                <tr>
+                    <td><strong>{{key|title}}</strong></td>
+                    <td>{{values}}</td>
+                </tr>
+            {% endfor %}
+            </table>
+        </div>
     </div>
 </div>
 </body>

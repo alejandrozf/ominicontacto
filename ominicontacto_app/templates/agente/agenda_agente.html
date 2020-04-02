@@ -45,77 +45,82 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <script type="text/javascript" src="{% static 'ominicontacto/JS/agente/agenda_agente.js' %}"></script>
 </head>
 <body>
+<div class="container-fluid">
+    <h1>{% trans 'Agendas' %}</h1>
 
-<h1>{% trans 'Agendas' %}</h1>
-
-<div id="wrapper-search">
-    {% include 'messages.html' %}
-    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> {% trans 'Buscar' %}</button>
-    <div id="wrapperSearchForm" class="show">
-        <form role="form" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="form-row">
-                <div class="col-md-6">
-                    {{form.fecha}}
+    <div id="wrapper-search">
+        {% include 'messages.html' %}
+        <div id="wrapperSearchForm">
+            <form role="form" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-1">
+                        <h2> {% trans 'Buscar' %}</h2>
+                    </div>
+                    <div class="col-md-7">
+                        {{form.fecha}}
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                            {% trans 'Filtrar' %}
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-                {% trans 'Filtrar' %}
-            </button>
-        </form>
+            </form>
+        </div>
     </div>
-</div>
 
-    <table class="table">
-        <thead>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>{% trans 'Fecha' %}</th>
+                    <th>{% trans 'Hora' %}</th>
+                    <th>{% trans 'Es personal' %}</th>
+                    <th>{% trans 'Es smart' %}</th>
+                    <th>{% trans 'Medio de comunicación' %}</th>
+                    <th>{% trans 'Descripción' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for evento in listado_de_eventos %}
+                <tr>
+                    <td>{{ evento.fecha|date:"d/m/Y" }}</td>
+                    <td>{{ evento.hora|date:"H:i" }}</td>
+                    <td>
+                        {% if evento.es_personal %}
+                            <span class="icon icon-check" aria-hidden="true"></span>
+                        {% else %}
+                            <span class="icon icon-cancel" aria-hidden="true"></span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if evento.es_smart %}
+                            <span class="icon icon-check" aria-hidden="true"></span>
+                        {% else %}
+                            <span class="icon icon-cancel" aria-hidden="true"></span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{evento.get_medio_comunicacion_display}}
+                        {% if evento.medio_comunicacion == 1 %}
+                            : {{ evento.sms }}
+                        {% elif evento.medio_comunicacion == 2 %}
+                            : {{ evento.telefono }}
+                        {% elif evento.medio_comunicacion == 3 %}
+                            : {{ evento.email }}
+                        {% else %}
+                            {% trans 'Hay otro medio de comunicacion no disponible' %}
+                        {% endif %}
+                    </td>
+                    <td>{{ evento.descripcion}}</td>
+                </tr>
+           {% empty %}
             <tr>
-                <th>{% trans 'Fecha' %}</th>
-                <th>{% trans 'Hora' %}</th>
-                <th>{% trans 'Es personal' %}</th>
-                <th>{% trans 'Es smart' %}</th>
-                <th>{% trans 'Medio de comunicación' %}</th>
-                <th>{% trans 'Descripción' %}</th>
+                <td>{% trans 'No existen eventos para el día de hoy' %}</td>
             </tr>
-        </thead>
-        <tbody>
-        {% for evento in listado_de_eventos %}
-            <tr>
-                <td>{{ evento.fecha|date:"d/m/Y" }}</td>
-                <td>{{ evento.hora|date:"H:i" }}</td>
-                <td>
-                    {% if evento.es_personal %}
-                        <span class="icon icon-check" aria-hidden="true"></span>
-                    {% else %}
-                        <span class="icon icon-cancel" aria-hidden="true"></span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if evento.es_smart %}
-                        <span class="icon icon-check" aria-hidden="true"></span>
-                    {% else %}
-                        <span class="icon icon-cancel" aria-hidden="true"></span>
-                    {% endif %}
-                </td>
-                <td>
-                    {{evento.get_medio_comunicacion_display}}
-                    {% if evento.medio_comunicacion == 1 %}
-                        : {{ evento.sms }}
-                    {% elif evento.medio_comunicacion == 2 %}
-                        : {{ evento.telefono }}
-                    {% elif evento.medio_comunicacion == 3 %}
-                        : {{ evento.email }}
-                    {% else %}
-                        {% trans 'Hay otro medio de comunicacion no disponible' %}
-                    {% endif %}
-                </td>
-                <td>{{ evento.descripcion}}</td>
-            </tr>
-       {% empty %}
-        <tr>
-            <td>{% trans 'No existen eventos para el día de hoy' %}</td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
