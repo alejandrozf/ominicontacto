@@ -211,6 +211,7 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
     def _contabilizar_llamadas_promedio_espera(self):
         logs_llamadas_espera = LlamadaLog.objects.entrantes_espera()
         logs_llamadas_espera_hoy = logs_llamadas_espera.filter(
+            tipo_llamada=LlamadaLog.LLAMADA_ENTRANTE,
             time__gte=self.desde, campana_id__in=self.campanas.keys(), time__lte=self.hasta)
         logs_agrupados_espera = logs_llamadas_espera_hoy.values('campana_id').annotate(
             tiempo_espera=Avg('bridge_wait_time'))
