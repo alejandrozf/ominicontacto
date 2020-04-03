@@ -22,7 +22,9 @@ $(function () {
     var configuracion_sitio_externo = $('#configuracionSitioExterno').val();
     if (configuracion_sitio_externo){
         configuracion_sitio_externo = JSON.parse(configuracion_sitio_externo);
-        configurarInteraccion(configuracion_sitio_externo);
+        if (configuracion_sitio_externo) {
+            configurarInteraccion(configuracion_sitio_externo);
+        }
     }
 });
 

@@ -31,7 +31,6 @@
 # Se modifica el pg_hba.conf
 - name: Modify of pg_hba.conf file
   template: src=roles/database/templates/pg_hba.conf.j2 dest={{ pg_lib_location }}/pg_hba.conf
-  tags: postinstall
   when: postgres_host is not defined
 
 #Se modifica la ip en la que escucha postgres
@@ -65,7 +64,7 @@
 
 # Se crea base de datos omnileads
 - name: Create of the database
-  postgresql_db: name={{ postgres_database }} state=present login_user={{ postgres_user }} login_password={{ postgres_password }} owner={{ postgres_user }} login_host={{ omni_fqdn }}
+  postgresql_db: name={{ postgres_database }} state=present login_user={{ postgres_user }} login_password={{ postgres_password }} owner={{ postgres_user }} login_host=localhost
   when: postgres_host is not defined
 
 # Se crea el lenguaje plperl en todo el cluster.

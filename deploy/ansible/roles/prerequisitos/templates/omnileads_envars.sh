@@ -2,7 +2,7 @@
 AMI_USER={{ ami_user }}
 AMI_PASSWORD={{ ami_password }}
 ASTERISK_IP={{ omni_ip }}
-ASTERISK_HOSTNAME={{ omni_fqdn }}
+ASTERISK_HOSTNAME=localhost
 ASTERISK_LOCATION={{ asterisk_location }}
 CALIFICACION_REAGENDA={{ schedule }}
 DJANGO_PASS={{ admin_pass }}
@@ -28,11 +28,11 @@ NGINX_HOSTNAME={{ external_hostname }}
 NGINX_HOSTNAME={{ omni_fqdn }}
 {% endif %}
 LOGIN_FAILURE_LIMIT={{ LOGIN_FAILURE_LIMIT }}
-OMNILEADS_HOSTNAME={{ omni_fqdn }}
+OMNILEADS_HOSTNAME=localhost
 {% if postgres_host is defined %}
 PGHOST={{ postgres_host }}
 {% else %}
-PGHOST={{ omni_fqdn }}
+PGHOST=localhost
 {% endif %}
 PGDATABASE={{ postgres_database }}
 PGUSER={{ postgres_user }}
@@ -41,7 +41,7 @@ PYTHONPATH=$INSTALL_PREFIX
 REDIS_HOSTNAME=localhost
 SESSION_COOKIE_AGE={{ SCA }}
 TZ={{ TZ }}
-WOMBAT_HOSTNAME={{ omni_fqdn }}
+WOMBAT_HOSTNAME=localhost
 WOMBAT_USER={{ dialer_user }}
 WOMBAT_PASSWORD={{ dialer_password }}
 

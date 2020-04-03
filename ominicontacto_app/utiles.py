@@ -384,10 +384,11 @@ def get_oml_last_release():
         html_tags_page = requests.get(tags_url)
     except requests.RequestException as e:
         logger.info(_("No se pudo acceder a la url debido a: {0}".format(e)))
-        return ''
+        return []
     else:
         root = etree.HTML(html_tags_page.content)
         doc = etree.ElementTree(root)
         nodos_tags = doc.xpath("//div[@class='row-main-content']/a")
-        current_release = "release-{0}".format(nodos_tags[0].text)
-        return current_release
+        current_release_tag = "Release {0}".format(nodos_tags[0].text)
+        current_release_branch = "release-{0}".format(nodos_tags[0].text)
+        return [current_release_tag, current_release_branch]

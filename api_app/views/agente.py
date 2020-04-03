@@ -218,9 +218,8 @@ class AgentLoginAsterisk(APIView):
     def post(self, request):
         agent_login_manager = AgentActivityAmiManager()
         agente_profile = self.request.user.get_agente_profile()
-        queue_add_error, insert_astdb_error, queue_unpause_error = agent_login_manager.login_agent(
-            agente_profile)
-        if queue_add_error or insert_astdb_error or queue_unpause_error:
+        error = agent_login_manager.login_agent(agente_profile)
+        if error:
             return Response(data={
                 'status': 'ERROR',
             })

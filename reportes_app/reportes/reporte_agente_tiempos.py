@@ -29,7 +29,7 @@ from reportes_app.reportes.reporte_llamadas import LLAMADA_TRANSF_INTERNA
 from ominicontacto_app.models import AgenteProfile, Pausa, Campana
 from pygal.style import Style
 from ominicontacto_app.utiles import (
-    datetime_hora_minima_dia, datetime_hora_maxima_dia, cast_datetime_part_date
+    datetime_hora_minima_dia, datetime_hora_maxima_dia, fecha_local
 )
 
 from utiles_globales import adicionar_render_unicode
@@ -104,51 +104,58 @@ class TiemposAgente(object):
             fecha_superior,
             agentes_id)
 
+        TIME = 1
+        EVENT = 2
         for agente in agentes:
-            agente_nuevo = None
-            is_remove = False
-            time_actual = None
-            log_agente = self._filter_query_por_agente(logs_time, agente.id)
-            len_log_agente = len(log_agente) - 1
-            for logs in log_agente:
-                calculo_ok = False
-                # primer elemento addmember
-                if log_agente.index(logs) == 0 and logs[2] == 'ADDMEMBER':
-                    fecha_hoy = timezone.now()
-                    time_actual = datetime_hora_maxima_dia(logs[1])
-                    if cast_datetime_part_date(logs[1]) == cast_datetime_part_date(fecha_hoy):
-                        time_actual = fecha_hoy
-                    resta = time_actual - logs[1]
-                    calculo_ok = True
-                # ultimo elemento removemember
-                if len_log_agente == log_agente.index(logs) and logs[2] == 'REMOVEMEMBER':
-                    time_actual = datetime_hora_minima_dia(logs[1])
-                    resta = logs[1] - time_actual
-                    calculo_ok = True
 
-                if is_remove and logs[2] == 'ADDMEMBER':
-                    resta = time_actual - logs[1]
-                    calculo_ok = True
+            tiempos_agente = list(filter(lambda x: x.agente == agente, self.agentes_tiempo))
+            if tiempos_agente:
+                agregar_tiempos = False
+                tiempos_agente = tiempos_agente[0]
+            else:
+                agregar_tiempos = True
+                cero = timezone.timedelta(0)
+                tiempos_agente = AgenteTiemposReporte(agente, cero, 0, 0, 0, 0, 0, 0)
 
-                if logs[2] == 'REMOVEMEMBER':
-                    time_actual = logs[1]
-                    is_remove = True
-                if calculo_ok:
-                    agente_en_lista = list(filter(lambda x: x.agente == agente,
-                                                  self.agentes_tiempo))
-                    if agente_en_lista:
-                        agente_nuevo = agente_en_lista[0]
-                        if agente_nuevo.tiempo_sesion:
-                            agente_nuevo._tiempo_sesion += resta
+            datos_ultima_sesion = {
+                'inicio': None,
+                'fin': None,
+            }
+            logs_agente = self._filter_query_por_agente(logs_time, agente.id)
+            for log in reversed(logs_agente):
+
+                if log[EVENT] == 'REMOVEMEMBER':
+                    if datos_ultima_sesion['inicio'] is None:
+                        # Si la ultima sesion no esta iniciada descarto el REMOVEMEMBER.
+                        pass
+                    elif datos_ultima_sesion['fin'] is None:
+                        # Si no esta finalizada, contabilizo la sesion.
+                        datos_ultima_sesion['fin'] = log[TIME]
+                        duracion = datos_ultima_sesion['fin'] - datos_ultima_sesion['inicio']
+                        tiempos_agente._tiempo_sesion += duracion
+                    # Si la ultima sesion ya esta finalizada, descarto el REMOVEMEMBER
+
+                if log[EVENT] == 'ADDMEMBER':
+                    # Si la ultima sesion esta iniciada
+                    if datos_ultima_sesion['inicio'] is not None:
+                        #  Si no esta finalizada Contabilizo una sesion. y Arranco otra.
+                        if datos_ultima_sesion['fin'] is None:
+                            # ATENCION: Se podria estimar mejor poniendo un maximo.
+                            duracion = log[TIME] - datos_ultima_sesion['inicio']
+                            tiempos_agente._tiempo_sesion += duracion
+                            datos_ultima_sesion['inicio'] = log[TIME]
+                            datos_ultima_sesion['fin'] = None
+                        # Si esta finalizada, solamente arranco otra
                         else:
-                            agente_nuevo._tiempo_sesion = resta
+                            datos_ultima_sesion['inicio'] = log[TIME]
+                            datos_ultima_sesion['fin'] = None
                     else:
-                        agente_nuevo = AgenteTiemposReporte(
-                            agente, resta, 0, 0, 0, 0, 0, 0)
-                        self.agentes_tiempo.append(agente_nuevo)
-                    agente_nuevo = None
-                    is_remove = False
-                    time_actual = None
+                        datos_ultima_sesion['inicio'] = log[TIME]
+
+                    # Si el ultimo log es ADDMEMBER, se ignora esa sesion.
+
+            if agregar_tiempos and tiempos_agente._tiempo_sesion:
+                self.agentes_tiempo.append(tiempos_agente)
 
     def calcular_tiempo_pausa(self, agentes, fecha_inferior, fecha_superior):
         """ Calcula el tiempo de pausa teniendo en cuenta los eventos PAUSEALL,
@@ -163,16 +170,18 @@ class TiemposAgente(object):
             fecha_superior,
             agentes_id)
 
+        TIME = 1
+        EVENT = 2
         for agente in agentes:
             agente_nuevo = None
             is_unpause = False
             time_actual = None
 
-            log_agente = self._filter_query_por_agente(logs_time, agente.id)
+            logs_agente = self._filter_query_por_agente(logs_time, agente.id)
 
-            for logs in log_agente:
-                if is_unpause and logs[2] == 'PAUSEALL':
-                    resta = time_actual - logs[1]
+            for log in logs_agente:
+                if is_unpause and log[EVENT] == 'PAUSEALL':
+                    resta = time_actual - log[TIME]
                     agente_en_lista = list(filter(lambda x: x.agente == agente,
                                                   self.agentes_tiempo))
                     if agente_en_lista:
@@ -188,8 +197,8 @@ class TiemposAgente(object):
                     agente_nuevo = None
                     is_unpause = False
                     time_actual = None
-                if logs[2] == 'UNPAUSEALL' or logs[2] == 'REMOVEMEMBER':
-                    time_actual = logs[1]
+                if log[EVENT] == 'UNPAUSEALL' or log[EVENT] == 'REMOVEMEMBER':
+                    time_actual = log[TIME]
                     is_unpause = True
 
     def calcular_tiempo_llamada(self, agentes, fecha_inferior, fecha_superior):
@@ -287,27 +296,30 @@ class TiemposAgente(object):
             fecha_superior,
             agentes_id)
 
+        TIME = 1
+        EVENT = 2
+        ID_PAUSA = 3
         for agente in agentes:
 
             is_unpause = False
             time_actual = None
             tiempos_pausa = {}
-            log_agente = self._filter_query_por_agente(logs_time, agente.id)
+            logs_agente = self._filter_query_por_agente(logs_time, agente.id)
             # iterar los log teniendo en cuenta que si encuentra un evento
             # UNPAUSEALL/REMOVEMEMBER y luego un PAUSEALL calcula el tiempo de session
 
-            for logs in log_agente:
-                if is_unpause and logs[2] == 'PAUSEALL':
-                    resta = time_actual - logs[1]
-                    id_pausa = logs[3]
+            for log in logs_agente:
+                if is_unpause and log[EVENT] == 'PAUSEALL':
+                    resta = time_actual - log[TIME]
+                    id_pausa = log[ID_PAUSA]
                     if id_pausa in tiempos_pausa.keys():
                         tiempos_pausa[id_pausa] += resta
                     else:
                         tiempos_pausa.update({id_pausa: resta})
                     is_unpause = False
                     time_actual = None
-                if logs[2] == 'UNPAUSEALL' or logs[2] == 'REMOVEMEMBER':
-                    time_actual = logs[1]
+                if log[EVENT] == 'UNPAUSEALL' or log[EVENT] == 'REMOVEMEMBER':
+                    time_actual = log[TIME]
                     is_unpause = True
             for id_pausa in tiempos_pausa:
                 datos_de_pausa = self._obtener_datos_de_pausa(id_pausa)
@@ -339,14 +351,17 @@ class TiemposAgente(object):
             eventos_llamadas, fecha_inferior, fecha_superior, agentes_id,
             campanas)
 
+        ID_CAMPANA = 1
+        SUM_DURACION = 2
+        CANTIDAD = 3
         for agente in agentes:
             logs_agente = self._filter_query_por_agente(logs_time, agente.id)
             for log in logs_agente:
                 tiempo_agente = []
                 tiempo_agente.append(agente.user.get_full_name())
-                tiempo_agente.append(self._get_nombre_campana(campanas, log[1]))
-                tiempo_agente.append(str(timezone.timedelta(0, log[2])))
-                tiempo_agente.append(log[3])
+                tiempo_agente.append(self._get_nombre_campana(campanas, log[ID_CAMPANA]))
+                tiempo_agente.append(str(timezone.timedelta(0, log[SUM_DURACION])))
+                tiempo_agente.append(log[CANTIDAD])
                 agentes_tiempo.append(tiempo_agente)
 
         return agentes_tiempo
@@ -520,67 +535,81 @@ class TiemposAgente(object):
             'barra_agente_total': barra_agente_total,
         }
 
+    def _computar_tiempo_session_fecha(self, tiempos_fechas, inicio, fin):
+        """ Computa la duracion de la sesion en la lista de tiempos por fecha """
+        fecha_inicio = fecha_local(inicio)
+        fecha_fin = fecha_local(fin)
+
+        if tiempos_fechas and tiempos_fechas[-1].agente == fecha_inicio:
+            tiempos = tiempos_fechas[-1]
+        else:
+            cero = timezone.timedelta(0)
+            tiempos = AgenteTiemposReporte(fecha_inicio, cero, 0, 0, 0, 0, 0, 0)
+            tiempos_fechas.append(tiempos)
+
+        if fecha_fin == tiempos.agente:
+            tiempos._tiempo_sesion += fin - inicio
+        else:
+            fin_dia = datetime_hora_maxima_dia(fecha_inicio)
+            tiempos._tiempo_sesion += fin_dia - inicio
+            inicio_dia = datetime_hora_minima_dia(fecha_fin)
+            duracion = fin - inicio_dia
+            tiempos = AgenteTiemposReporte(fecha_fin, duracion, 0, 0, 0, 0, 0, 0)
+            tiempos_fechas.append(tiempos)
+
     def calcular_tiempo_session_fecha_agente(self, agente, fecha_inferior,
-                                             fecha_superior, agente_fecha):
+                                             fecha_superior, tiempos_fechas):
         """ Calcula el tiempo de session teniendo en cuenta los eventos
         ADDMEMBER, REMOVEMEMBER por fecha dia a dia"""
 
         eventos_sesion = ['ADDMEMBER', 'REMOVEMEMBER']
+        logs_erroneos = False
+        logs_agente = ActividadAgenteLog.objects.obtener_tiempos_event_agentes(
+            eventos_sesion, fecha_inferior, fecha_superior, [agente.id])
+        datos_ultima_sesion = {
+            'inicio': None,
+            'fin': None,
+        }
 
-        logs_time = ActividadAgenteLog.objects.obtener_tiempos_event_agentes(
-            eventos_sesion,
-            fecha_inferior,
-            fecha_superior,
-            [agente.id])
+        TIME = 1
+        EVENT = 2
+        for log in reversed(logs_agente):
+            if log[EVENT] == 'REMOVEMEMBER':
+                if datos_ultima_sesion['inicio'] is None:
+                    logs_erroneos = True
+                    # Si la ultima sesion no esta iniciada descarto el REMOVEMEMBER.
+                    pass
+                elif datos_ultima_sesion['fin'] is None:
+                    # Si no esta finalizada, contabilizo la sesion.
+                    datos_ultima_sesion['fin'] = log[TIME]
+                    self._computar_tiempo_session_fecha(tiempos_fechas,
+                                                        datos_ultima_sesion['inicio'],
+                                                        datos_ultima_sesion['fin'])
+                # Si la ultima sesion ya esta finalizada, descarto el REMOVEMEMBER
 
-        time_actual = None
-        is_remove = False
-        len_log_agente = len(logs_time) - 1
-        error = False
-
-        for logs in logs_time:
-            calculo_ok = False
-            # primer elemento addmember
-            if logs_time.index(logs) == 0 and logs[2] == 'ADDMEMBER':
-                agente_nuevo = None
-                is_remove = False
-                time_actual = None
-                error = True
-            # ultimo elemento removemember
-            if len_log_agente == logs_time.index(logs) and logs[2] == 'REMOVEMEMBER':
-                agente_nuevo = None
-                is_remove = False
-                time_actual = None
-                error = True
-
-            if is_remove and logs[2] == 'ADDMEMBER':
-                resta = time_actual - logs[1]
-                calculo_ok = True
-
-            if logs[2] == 'REMOVEMEMBER':
-                time_actual = logs[1]
-                is_remove = True
-            if calculo_ok:
-                date_time_actual = cast_datetime_part_date(time_actual)
-                agente_en_lista = list(filter(
-                    lambda x: x.agente == date_time_actual,
-                    agente_fecha))
-                if agente_en_lista:
-                    agente_nuevo = agente_en_lista[0]
-                    if agente_nuevo.tiempo_sesion:
-                        agente_nuevo._tiempo_sesion += resta
+            if log[EVENT] == 'ADDMEMBER':
+                # Si la ultima sesion esta iniciada
+                if datos_ultima_sesion['inicio'] is not None:
+                    #  Si no esta finalizada Contabilizo una sesion. y Arranco otra.
+                    if datos_ultima_sesion['fin'] is None:
+                        logs_erroneos = True
+                        # ATENCION: Se podria estimar mejor poniendo un maximo.
+                        self._computar_tiempo_session_fecha(tiempos_fechas,
+                                                            datos_ultima_sesion['inicio'],
+                                                            log[TIME])
+                        datos_ultima_sesion['inicio'] = log[TIME]
+                        datos_ultima_sesion['fin'] = None
+                    # Si esta finalizada, solamente arranco otra
                     else:
-                        agente_nuevo._tiempo_sesion = resta
+                        datos_ultima_sesion['inicio'] = log[TIME]
+                        datos_ultima_sesion['fin'] = None
                 else:
-                    agente_nuevo = AgenteTiemposReporte(
-                        cast_datetime_part_date(
-                            time_actual), resta, 0, 0, 0, 0, 0, 0)
-                    agente_fecha.append(agente_nuevo)
-                agente_nuevo = None
-                is_remove = False
-                time_actual = None
+                    datos_ultima_sesion['inicio'] = log[TIME]
 
-        return agente_fecha, error
+        # Si la ultima sesion esta incompleta, se ignora esa sesion.
+        if datos_ultima_sesion['inicio'] is not None and datos_ultima_sesion['fin'] is None:
+            logs_erroneos = True
+        return tiempos_fechas, logs_erroneos
 
     def calcular_tiempo_pausa_fecha_agente(self, agente, fecha_inferior,
                                            fecha_superior, agente_fecha):
@@ -595,15 +624,17 @@ class TiemposAgente(object):
             fecha_superior,
             [agente.id])
 
+        TIME = 1
+        EVENT = 2
         time_actual = None
         is_unpause = False
-        for logs in logs_time:
+        for log in logs_time:
             agente_nuevo = None
 
-            if is_unpause and logs[2] == 'PAUSEALL':
+            if is_unpause and log[EVENT] == 'PAUSEALL':
 
-                resta = time_actual - logs[1]
-                date_time_actual = cast_datetime_part_date(time_actual)
+                resta = time_actual - log[TIME]
+                date_time_actual = fecha_local(time_actual)
                 agente_en_lista = list(filter(lambda x: x.agente == date_time_actual,
                                               agente_fecha))
                 if agente_en_lista:
@@ -614,14 +645,13 @@ class TiemposAgente(object):
                         agente_nuevo._tiempo_pausa = resta
                 else:
                     agente_nuevo = AgenteTiemposReporte(
-                        cast_datetime_part_date(
-                            time_actual), None, resta, 0, 0, 0, 0, 0)
+                        fecha_local(time_actual), None, resta, 0, 0, 0, 0, 0)
                     agente_fecha.append(agente_nuevo)
                 is_unpause = False
                 time_actual = None
 
-            if logs[2] == 'UNPAUSEALL' or logs[2] == 'REMOVEMEMBER':
-                time_actual = logs[1]
+            if log[EVENT] == 'UNPAUSEALL' or log[EVENT] == 'REMOVEMEMBER':
+                time_actual = log[TIME]
                 is_unpause = True
         return agente_fecha
 
@@ -640,7 +670,7 @@ class TiemposAgente(object):
 
         for log in logs_time:
 
-            date_time_actual = cast_datetime_part_date(log.time)
+            date_time_actual = fecha_local(log.time)
             agente_en_lista = list(filter(lambda x: x.agente == date_time_actual,
                                           agente_fecha))
             if agente_en_lista:
@@ -671,15 +701,16 @@ class TiemposAgente(object):
             fecha_superior,
             agente.id)
         for log in logs_time:
-            date_time_actual = log[0]
+            date_time_actual = log['fecha']
+            print(date_time_actual)
             agente_en_lista = list(filter(lambda x: x.agente == date_time_actual,
                                           agente_fecha))
             if agente_en_lista:
                 agente_nuevo = agente_en_lista[0]
-                agente_nuevo._cantidad_intentos_fallidos = int(log[1])
+                agente_nuevo._cantidad_intentos_fallidos = int(log['cantidad'])
             else:
                 agente_nuevo = AgenteTiemposReporte(
-                    date_time_actual, None, 0, 0, 0, int(log[1]), 0, 0)
+                    date_time_actual, None, 0, 0, 0, int(log['cantidad']), 0, 0)
                 agente_fecha.append(agente_nuevo)
         return agente_fecha
 
@@ -722,18 +753,18 @@ class TiemposAgente(object):
         # iterar los log teniendo en cuenta que si encuentra un evento
         # UNPAUSEALL/REMOVEMEMBER y luego un PAUSEALL calcula el tiempo de session
 
-        for logs in logs_time:
-            if is_unpause and logs.event == 'PAUSEALL':
-                resta = time_actual - logs.time
-                time_actual = cast_datetime_part_date(time_actual)
+        for log in logs_time:
+            if is_unpause and log.event == 'PAUSEALL':
+                resta = time_actual - log.time
+                time_actual = fecha_local(time_actual)
                 if time_actual in tiempos_pausa.keys():
                     tiempos_pausa[time_actual] += resta
                 else:
                     tiempos_pausa.update({time_actual: resta})
                 is_unpause = False
                 time_actual = None
-            if logs.event == 'UNPAUSEALL' or logs.event == 'REMOVEMEMBER':
-                time_actual = logs.time
+            if log.event == 'UNPAUSEALL' or log.event == 'REMOVEMEMBER':
+                time_actual = log.time
                 is_unpause = True
         for item in tiempos_pausa:
             datos_de_pausa = self._obtener_datos_de_pausa(str(pausa_id))
