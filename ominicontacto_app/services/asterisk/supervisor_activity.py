@@ -56,6 +56,7 @@ class SupervisorActivityAmiManager(object):
         originate_data = [channel, exten, 'oml-sup-actions', channel_vars]
         # Genero la llamada via originate por AMI
         if exten == "AGENTLOGOUT":
+            agente_profile.force_logout()
             agent_activity.logout_agent(agente_profile)
         elif exten == "AGENTPAUSE":
             agent_activity.pause_agent(agente_profile, '00')
