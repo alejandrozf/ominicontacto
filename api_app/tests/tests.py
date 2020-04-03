@@ -525,7 +525,7 @@ class APITest(TestCase):
     @patch.object(AgentActivityAmiManager, "login_agent")
     def test_api_vista_login_de_agente_retorno_de_valores_correctos(self, login_agent, manager):
         self.client.login(username=self.agente_profile.user.username, password=self.PWD)
-        login_agent.return_value = False, False, False
+        login_agent.return_value = False
         url = reverse('agent_asterisk_login')
         response = self.client.post(url)
         self.assertEqual(response.status_code, 200)
@@ -535,7 +535,7 @@ class APITest(TestCase):
     @patch.object(AgentActivityAmiManager, "login_agent")
     def test_api_vista_login_de_agente_retorno_de_valores_erroneos(self, login_agent, manager):
         self.client.login(username=self.agente_profile.user.username, password=self.PWD)
-        login_agent.return_value = False, True, True
+        login_agent.return_value = True
         url = reverse('agent_asterisk_login')
         response = self.client.post(url)
         self.assertEqual(response.status_code, 200)
