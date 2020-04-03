@@ -35,8 +35,8 @@
     - "{{ install_prefix }}"
     - /root/
   tags: postinstall
-  when: is_docker == false
-  
+  when: is_docker == "false"
+
 ##################################
 ##         Centos tasks         ##
 ##################################
