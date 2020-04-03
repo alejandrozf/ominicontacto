@@ -31,11 +31,11 @@ DEVELOP_MARK_VERSION = "0000000000000000000000000000000000000000"
 @register.simple_tag
 def advertencia_release_desactualizado():
     current_release = version.OML_BRANCH
-    last_release = get_oml_last_release()
-    if version.OML_COMMIT != DEVELOP_MARK_VERSION and current_release != last_release \
-       and last_release != '':
+    last_release_info = get_oml_last_release()
+    if version.OML_COMMIT != DEVELOP_MARK_VERSION and current_release not in last_release_info \
+       and last_release_info != []:
         return [_("Tienes una version antigua de OMniLeads."),
                 _("Te recomendamos actualizar tu sistema"),
                 _("Tu versión: {0}".format(current_release)),
-                _("Versión actual: {0}".format(last_release))]
+                _("Versión actual: {0}".format(last_release_info[0]))]
     return ''

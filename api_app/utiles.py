@@ -129,3 +129,14 @@ class AgentesParsing(object):
                 #   _("Inconsistencias en datos de agente: {0}".format(grupo_datos_agente)))
                 pass
         return agentes_activos
+
+    def parsear_datos_agente(self, datos):
+        # Se asume todas las lineas son del mismo agente
+        lineas = datos.split('\r\n')
+        datos_agente = {}
+        for i, linea in enumerate(lineas):
+            valor_linea_procesada = self._chequear_procesar_entrada(linea)
+            if valor_linea_procesada:
+                entrada_agente = self._parsear_entrada_agente(valor_linea_procesada)
+                datos_agente.update(entrada_agente)
+        return datos_agente

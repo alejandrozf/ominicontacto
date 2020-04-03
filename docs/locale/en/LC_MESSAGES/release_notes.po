@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-28 20:28-0300\n"
+"POT-Creation-Date: 2020-04-03 14:45-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,62 +24,53 @@ msgstr "Release Notes"
 
 # d82b7aba6425421ab734c9a356b56743
 #: ../../release_notes.rst:4
-msgid "*Marzo 28, 2020*"
-msgstr "March 28, 2020"
+msgid "*Abril 3, 2020*"
+msgstr "*April 3, 2020"
 
 # 8376ef42c5614a178a2fc0fe09246ed1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.5.2"
-msgstr "Release 1.5.2 details"
+msgid "Detalles de Release 1.5.3"
+msgstr "Release 1.5.3 details"
 
 # 08671eb233f04abb94799e4b0e1d9251
 #: ../../release_notes.rst:10
 msgid "Bug fixes"
 msgstr "Bug fixes"
 
-# 4ca4e3f47dea49a2ae256e0579d88577
+# 45e1d5f063fa4af7aa01b44d38793768
 #: ../../release_notes.rst:11
 msgid ""
-"Solucionado error que regeneraba todos los datos de agentes en AstDB con "
-"status vacío después de crear/modificar agente"
+"Solucionado error en instalación que impedía crear la base de datos en "
+"ambientes cloud"
 msgstr ""
-"Fix error that regenerates all AstDB agents data when an agent were added or modified with empty status"
+"Fixed installation error on database creation on cloud environments"
 
 # daec947aee8c419fb3fce7ded1d29b05
 #: ../../release_notes.rst:12
 msgid ""
-"Solucionado error que ocultaba los link a calificaciones de llamadas sin "
-"identificar en busqueda de grabaciones"
+"Solucionado error al mostrar la información del estado de actualización "
+"del release instalado"
 msgstr ""
-"Fix error that hides disposition links on not identified calls in recording calls view"
+"Fixed error on release update status information"
 
-# 86acd08279fe44c5bf60463c81fe09fd
+# 49907451420e4bce8f353bbd1558425b
 #: ../../release_notes.rst:13
 msgid ""
-"Solucionada condición de carrera en el método close() de pyst2 que "
-"afectaba al sistema"
+"Solucionada inconsistencia en los logs generados cuando el agente "
+"actualiza su página"
 msgstr ""
-"Fixed race condition on pyst2 close() method"
+"Fixed inconsistency on log events generated when agent refresh the page"
 
-# b3b1c0e6248e4a859ba8ade29663bb6a
+# 46e38b4fd9fb4c29a1cdc075898f33f3
 #: ../../release_notes.rst:14
-msgid "Solucionado error en la configuración de uwsgi que elevaba el uso de CPU"
-msgstr ""
-"Fixed error on uwsgi configuration the elevated the CPU usage"
-
-
-# 45e1d5f063fa4af7aa01b44d38793768
-#: ../../release_notes.rst:15
 msgid ""
-"Solucionado error en el parsing de entradas de agentes en AstDB que "
-"contienen la key PAUSE_ID"
+"Solucionado error en el reporte de supervisión de llamadas entrantes "
+"cuando solo han ocurrido transferencias para una campaña en el día"
 msgstr ""
-"Fixed error on parsing of AstDB agents headers containing the PAUSE_ID key"
+"Fixed error on inbound calls supervision report when there are only transfer "
+"calls in the campaign in the current day"
 
 # b3b1c0e6248e4a859ba8ade29663bb6a
-#: ../../release_notes.rst:16
-msgid ""
-"Solucionado error en la vista de reporte de supervisión de campañas "
-"entrantes"
-msgstr ""
-"Fixed error on inbound campaigns supervision live report"
+#: ../../release_notes.rst:15
+msgid "Solucionado error en la sincronización del logout entre Django y Asterisk"
+msgstr "Fixed error on logout sincronization between Django/Asterisk"

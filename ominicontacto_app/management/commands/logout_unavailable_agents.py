@@ -20,8 +20,9 @@
 import logging
 
 from django.core.management.base import BaseCommand, CommandError
+from django.contrib.sessions.models import Session
+from django.utils.timezone import now
 
-from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnector
 from ominicontacto_app.services.asterisk.agent_activity import AgentActivityAmiManager
 
 from ominicontacto_app.models import AgenteProfile
@@ -36,24 +37,28 @@ class Command(BaseCommand):
 
     help = u"Comando para desloguear agentes que no se hayan deslogueado correctamente"
 
-    def get_agents_unavailable(self):
-        agentes_profiles = []
-        manager = AMIManagerConnector()
+    def logout_expired_sessions(self):
+        agentes_deslogueados = []
         agent_activity = AgentActivityAmiManager()
-        user_activity_list, error = manager._ami_manager('command', 'queue show')
-        for activity_line in user_activity_list.splitlines():
-            if activity_line.find("Unavailable") != -1:
-                fields_activity = activity_line.split()
-                agente_id = fields_activity[1].split('_')[0]
-                agente_profile = AgenteProfile.objects.get(id=agente_id)
-                if agente_profile not in agentes_profiles:
-                    agentes_profiles.append(agente_profile)
-        for agente_profile in agentes_profiles:
-            agent_activity.logout_agent(agente_profile)
+        hora_actual = now()
+        for agente_profile in AgenteProfile.objects.all():
+            session = None
+            if agente_profile.user.last_session_key:
+                try:
+                    session = Session.objects.get(session_key=agente_profile.user.last_session_key)
+                except Session.DoesNotExist:
+                    pass
+            if session and session.expire_date < hora_actual:
+                agentes_deslogueados.append(str(agente_profile.id))
+                agente_profile.force_logout()
+                agent_activity.logout_agent(agente_profile)
+
+        if agentes_deslogueados:
+            logger.info("Expired Sessions detected: " + str(agentes_deslogueados))
 
     def handle(self, *args, **options):
         try:
-            self.get_agents_unavailable()
+            self.logout_expired_sessions()
         except Exception as e:
             logging.error('Fallo del comando: {0}'.format(e))
             raise CommandError('Fallo del comando: {0}'.format(e))

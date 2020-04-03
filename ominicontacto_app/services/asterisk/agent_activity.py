@@ -23,6 +23,7 @@ import time
 from ominicontacto_app.models import QueueMember, Pausa
 from ominicontacto_app.services.asterisk_database import AgenteFamily
 from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnector
+from api_app.utiles import AgentesParsing
 
 
 class AgentActivityAmiManager(object):
@@ -30,10 +31,14 @@ class AgentActivityAmiManager(object):
     manager = AMIManagerConnector()
 
     def login_agent(self, agente_profile):
-        queue_add_error = self.queue_add_remove(agente_profile, 'QueueAdd')
-        insert_astdb_error = self._insert_astb_status(agente_profile, 'login')
-        queue_unpause_error = self.queue_pause_unpause(agente_profile, '', 'unpause')
-        return queue_add_error, insert_astdb_error, queue_unpause_error
+
+        error = self._close_open_session(agente_profile)
+        # Inicio nueva sesión
+        if not error:
+            error = self.queue_add_remove(agente_profile, 'QueueAdd')
+        if not error:
+            error = self._insert_astb_status(agente_profile, 'login')
+        return error
 
     def logout_agent(self, agente_profile):
         queue_remove_error = self.queue_add_remove(agente_profile, 'QueueRemove')
@@ -117,3 +122,23 @@ class AgentActivityAmiManager(object):
         content = [family, key, value]
         data_returned, error = self.manager._ami_manager('dbput', content)
         return error
+
+    def _close_open_session(self, agente_profile):
+        status, error = self._get_astdb_agent_status(agente_profile)
+        if not error and not status == 'OFFLINE':
+            # Finalizo posibles pausas en curso.
+            error = self.queue_pause_unpause(agente_profile, '', 'unpause')
+            # Finalizo posible sesión en curso.
+            if not error:
+                error = self.queue_add_remove(agente_profile, 'QueueRemove')
+        return error
+
+    def _get_astdb_agent_status(self, agente_profile):
+        family = self._get_family(agente_profile)
+        data_returned, error = self.manager._ami_manager("command", "database show {0}".format(
+            family))
+        if not error:
+            parser = AgentesParsing()
+            agent_data = parser.parsear_datos_agente(data_returned)
+            status = agent_data.get('status', 'OFFLINE')
+        return status, error
