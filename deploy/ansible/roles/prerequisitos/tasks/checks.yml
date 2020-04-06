@@ -309,6 +309,32 @@
   when: assert_ecctl.rc == 0
   tags: always
 
+- name: Check if $EXTERNAL_URL was defined previously
+  shell: bash -lc 'if [ -z $EXTERNAL_URL ]; then exit 1; else echo $EXTERNAL_URL; exit 0; fi'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_externalurl
+  tags: always
+
+- set_fact: external_hostname="{{ assert_externalurl.stdout }}"
+  when: assert_externalurl.rc == 0
+  tags: always
+
+- name: Check if $EXTERNAL_PORT was defined previously
+  shell: bash -lc 'if [ -z $EXTERNAL_PORT ]; then exit 1; else echo $EXTERNAL_PORT; exit 0; fi'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_externalport
+  tags: always
+
+- set_fact: external_port="{{ assert_externalport.stdout }}"
+  when: assert_externalport.rc == 0
+  tags: always
+
 - name: Check if $MONITORFORMAT was defined previously
   shell: bash -lc 'if [ -z $MONITORFORMAT ]; then exit 1; else echo $MONITORFORMAT; exit 0; fi'
   args:

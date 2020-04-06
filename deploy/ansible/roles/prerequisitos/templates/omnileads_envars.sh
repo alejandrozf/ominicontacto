@@ -10,23 +10,21 @@ DJANGO_SETTINGS_MODULE=ominicontacto.settings.production
 EPHEMERAL_USER_TTL={{ ECCTL }}
 {% if external_port is defined %}
 EXTERNAL_PORT={{ external_port }}
-{% else %}
-EXTERNAL_PORT=443
+{% endif %}
+{% if external_hostname is defined %}
+EXTERNAL_URL={{ external_hostname }}
 {% endif %}
 INSTALL_PREFIX={{ install_prefix}}
 KAMAILIO_IP={{ omni_ip }}
 KAMAILIO_HOSTNAME={{ omni_fqdn }}
 KAMAILIO_LOCATION={{ kamailio_location }}
+HTTPS_PORT=443
 MONITORFORMAT={{ MONITORFORMAT }}
 {% if mysql_host is defined %}
 MYSQL_HOST={{ mysql_host }}
 {% endif %}
 MYSQL_PWD={{ mysql_root_password }}
-{% if external_hostname is defined %}
-NGINX_HOSTNAME={{ external_hostname }}
-{% else %}
 NGINX_HOSTNAME={{ omni_fqdn }}
-{% endif %}
 LOGIN_FAILURE_LIMIT={{ LOGIN_FAILURE_LIMIT }}
 OMNILEADS_HOSTNAME=localhost
 {% if postgres_host is defined %}
