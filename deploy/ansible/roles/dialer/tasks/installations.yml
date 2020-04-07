@@ -31,5 +31,9 @@
   register: result
   until: result is success
 
-- name: Add parameters in server.xml of Catalina
+- name: Add parameters in server.xml of Catalina server
   template: src=templates/server.xml.j2  dest=/usr/local/queuemetrics/tomcat/conf/server.xml
+
+- name: Modify mysql_host in tpf.properties file
+  template: src=templates/tpf.properties  dest=/usr/local/queuemetrics/tomcat/webapps/wombat/WEB-INF/tpf.properties
+  when: mysql_host is defined

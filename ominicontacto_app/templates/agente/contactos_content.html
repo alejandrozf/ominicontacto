@@ -23,7 +23,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <div id="contactos">
     <div id="wrapper-search">
-        <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> {% trans 'Buscar' %}</button>
         <div id="wrapperSearchForm" class="show">
             <form action="{% url 'contacto_list' %}" method="post">{% csrf_token %}
               <div class="form-row">

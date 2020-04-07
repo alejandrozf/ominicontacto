@@ -26,6 +26,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <head>
     <meta charset="utf-8">
     <title>{% trans 'OmniLeads' %}</title>
+    <link rel="shortcut icon" href="{% static 'ominicontacto/Img/favicon.png' %}">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Stylesheets -->
@@ -776,16 +777,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <!-- container que une la agenda con el crm-->
 <div id="bottomBar">
     <div>
-      <div class="iconApp" id="txtSms">
-        <span class="icon icon-solid-messages"></span>
-      </div>
-      <div>{% trans 'SMS' %}</div>
-    </div>
-    <div>
       <div class="iconApp" id="webCall">
         <span class="icon icon-solid-phone"></span>
       </div>
       <div>{% trans 'Webphone' %}</div>
+    </div>
+    <div>
+      <div class="iconApp" id="txtSms">
+        <span class="icon icon-solid-messages"></span>
+      </div>
+      <div>{% trans 'SMS' %}</div>
     </div>
     <div>
       <div class="iconApp" id="webChat">

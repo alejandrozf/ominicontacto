@@ -49,56 +49,61 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     {% endcompress %}
 </head>
 <body>
-
-<div id="wrapper-search">
-    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> {% trans 'Buscar' %}</button>
-    <div id="wrapperSearchForm" class="show">
-        <form role="form" method="post" enctype="multipart/form-data" >
-            {% csrf_token %}
-            <div class="form-row">
-                <div class="col-md-6">
-                    {{form.fecha}}
+<div class="container-fluid">
+    <div id="wrapper-search">
+        
+        <div id="wrapperSearchForm">
+            <form role="form" method="post" enctype="multipart/form-data" >
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="col-md-1">
+                        <h2> {% trans 'Buscar' %} </h2>
+                    </div>
+                    <div class="col-md-7">
+                        {{form.fecha}}
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                            {% trans 'Filtrar' %}
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <button type="submit" id="id_buscar_btn" class="btn btn-primary">
-                {% trans 'Filtrar por este rango' %}
-            </button>
-        </form>
+            </form>
+        </div>
     </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>{% trans 'Contacto' %}</th>
+                <th>{% trans 'Fecha' %}</th>
+                <th>{% trans 'Hora' %}</th>
+                <th>{% trans 'Tipo' %}</th>
+                <th>{% trans 'Observaciones' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for agenda in listado_de_eventos %}
+            <tr>
+                <td>
+                    <a class="btn btn-submit btn-outline-primary" href="javascript:;"
+                       onclick="makeClick2Call('{{ agenda.campana.pk }}', '{{ agenda.campana.type }}', '{{agenda.contacto.pk}}', '{{ agenda.contacto.telefono }}', 'agendas');"
+                       name="click2call">
+                       {{ agenda.contacto.telefono }}
+                    </a>
+                </td>
+                <td>{{ agenda.fecha }}</td>
+                <td>{{ agenda.hora}}</td>
+                <td>{{ agenda.get_tipo_agenda_display }}</td>
+                <td>{{ agenda.observaciones }}</td>
+            </tr>
+       {% empty %}
+        <tr>
+            <td colspan="5">{% trans 'No existen eventos agendados para el día de hoy' %}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 </div>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>{% trans 'Contacto' %}</th>
-            <th>{% trans 'Fecha' %}</th>
-            <th>{% trans 'Hora' %}</th>
-            <th>{% trans 'Tipo' %}</th>
-            <th>{% trans 'Observaciones' %}</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for agenda in listado_de_eventos %}
-        <tr>
-            <td>
-                <a class="btn btn-submit btn-outline-primary" href="javascript:;"
-                   onclick="makeClick2Call('{{ agenda.campana.pk }}', '{{ agenda.campana.type }}', '{{agenda.contacto.pk}}', '{{ agenda.contacto.telefono }}', 'agendas');"
-                   name="click2call">
-                   {{ agenda.contacto.telefono }}
-                </a>
-            </td>
-            <td>{{ agenda.fecha }}</td>
-            <td>{{ agenda.hora}}</td>
-            <td>{{ agenda.get_tipo_agenda_display }}</td>
-            <td>{{ agenda.observaciones }}</td>
-        </tr>
-   {% empty %}
-    <tr>
-        <td colspan="5">{% trans 'No existen eventos agendados para el día de hoy' %}</td>
-    </tr>
-    {% endfor %}
-    </tbody>
-</table>
-
 </body>
 </html>

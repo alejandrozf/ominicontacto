@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 
 from django.db import models, connection
 from django.db.models import Count
+from django.db.models.functions import TruncDate
 from django.core.exceptions import SuspiciousOperation
 from django.utils.translation import ugettext as _
 
@@ -152,22 +153,9 @@ class LlamadaLogManager(models.Manager):
             fecha_desde = datetime_hora_minima_dia(fecha_desde)
             fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
 
-        cursor = connection.cursor()
-        sql = """select DATE(time), count(*)
-                 from reportes_app_llamadalog where time between %(fecha_desde)s and
-                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agente_id = %(agente_id)s
-                 GROUP BY DATE(time) order by DATE(time) desc
-        """
-        params = {
-            'fecha_desde': fecha_desde,
-            'fecha_hasta': fecha_hasta,
-            'eventos': eventos,
-            'agente_id': agente_id,
-        }
-
-        cursor.execute(sql, params)
-        values = cursor.fetchall()
-        return values
+        return LlamadaLog.objects.filter(event__in=eventos, agente_id=agente_id,
+                                         time__range=(fecha_desde, fecha_hasta)).annotate(
+            fecha=TruncDate('time')).values('fecha').annotate(cantidad=Count('fecha'))
 
     def obtener_llamadas_finalizadas_del_dia(self, agente_id, fecha):
         fecha_desde = datetime_hora_minima_dia(fecha)

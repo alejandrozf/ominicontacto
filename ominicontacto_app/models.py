@@ -138,8 +138,13 @@ class User(AbstractUser):
     def set_session_key(self, key):
         if self.last_session_key and not self.last_session_key == key:
             try:
+                # TODO: Revisar por que está este codigo.
+                #       Si se hace logout normal, no se esta limpiando last_session_key
+                #       Pero Django borra la session automaticamente
                 Session.objects.get(session_key=self.last_session_key).delete()
             except Session.DoesNotExist:
+                # TODO: Este log aparece toda vez que se loggee un usuario y la key sea otra
+                #       O no exista sesion
                 logger.exception(_("Excepción detectada al obtener session "
                                    "con el key {0} no existe".format(self.last_session_key)))
         self.last_session_key = key
@@ -154,6 +159,13 @@ class User(AbstractUser):
         self.borrado = True
         self.is_active = False
         self.save()
+
+    def force_logout(self):
+        if self.last_session_key:
+            try:
+                Session.objects.get(session_key=self.last_session_key).delete()
+            except Session.DoesNotExist:
+                pass
 
 
 class Grupo(models.Model):
@@ -229,6 +241,7 @@ class AgenteProfile(models.Model):
     sip_password = models.CharField(max_length=128, blank=True, null=True)
     grupo = models.ForeignKey(Grupo, related_name='agentes', verbose_name=_("Grupo"),
                               on_delete=models.CASCADE)
+    # TODO: Revisar si esta variable se esta usando para algo
     estado = models.PositiveIntegerField(choices=ESTADO_CHOICES, default=ESTADO_OFFLINE)
     reported_by = models.ForeignKey(User, related_name="reportedby", on_delete=models.CASCADE)
     is_inactive = models.BooleanField(default=False)
@@ -281,6 +294,9 @@ class AgenteProfile(models.Model):
         self.borrado = True
         self.is_inactive = True
         self.save()
+
+    def force_logout(self):
+        self.user.force_logout()
 
 
 class SupervisorProfile(models.Model):

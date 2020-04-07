@@ -62,21 +62,6 @@ postgres_database=omnileads
 # Set the timezone where the nodes are. UNCOMMENT and set this if you are doing a fresh install #
 #################################################################################################
 #TZ=America/Argentina/Cordoba
-#######################################################################################
-#                                OMniLeads cloud:			 	      #
-# If you are wishing to install OML in a cloud provider you must set these variables: #
-#  - external_port: the outside port where OML web server will listen requests        #
-#  - external_hostname: the dns external users will connect to                        #
-#######################################################################################
-#external_port=
-#external_hostname=
-#####################################################################
-# Trusted Certificates:                                             #
-#   If you want to use your own certificate/key pair, copy them in  #
-#   ominicontacto/deploy/certs/ and type here the name of the files #
-#####################################################################
-#trusted_cert=
-#trusted_key=
 ####################################################################################################
 # Session Cookie Age (SCA) is the time in seconds that will last the https session when inactivity #
 # is detected in the session (by default is 1 hour)                                                #
@@ -105,6 +90,32 @@ LOGIN_FAILURE_LIMIT=10
 # Language of schedule disposition #
 ####################################
 schedule=Agenda
+
+#######################################################################################
+#                                OMniLeads cloud:			 	      #
+# If you are wishing to install OML in a cloud provider you must set these variables: #
+#  - external_port: the outside port where OML web server will listen requests        #
+#  - external_hostname: the dns external users will connect to                        #
+#######################################################################################
+#external_port=
+#external_hostname=
+#####################################################################
+# Trusted Certificates:                                             #
+#   If you want to use your own certificate/key pair, copy them in  #
+#   ominicontacto/deploy/certs/ and type here the name of the files #
+#####################################################################
+#trusted_cert=
+#trusted_key=
+##############################################################################################
+# Variables below are used when you have postgresql, mysql or rtpengine in diferent servers. #
+# Uncomment the variables and place the hostnames of these servers                           #
+##############################################################################################
+#postgres_host=
+#default_postgres_user=
+#default_postgres_password=
+#mysql_host=
+#rtpengine_host=
+
 
 #################################################################################################
 # Edit these variables with information of registry to build OMniLeads Docker images 		#

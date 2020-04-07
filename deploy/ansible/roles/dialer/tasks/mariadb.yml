@@ -28,7 +28,7 @@
   until: result is success
 
 # En estas tasks se hacen tareas de segurizacion de mariadb, es como hacer un mariadb-secure no voy a explicar una por una, nunca fallan
-- name: Enable and start MariaDB (centos)
+- name: Enable and start MariaDB
   service: name=mariadb enabled=yes state=started
 
 - name: Remove .my.cnf
@@ -36,16 +36,16 @@
   tags: postinstall
 
 - name: Set root Password
-  mysql_user: name=root host={{ mysql_host }} password={{ mysql_root_password }} login_host={{ mysql_host }} state=present update_password=always
+  mysql_user: name=root host={{ mariadb_host }} password={{ mysql_root_password }} login_host={{ mariadb_host }} state=present update_password=always
   environment:
-    MYSQL_HOST: "{{ mysql_host }}"
+    mariadb_host: "{{ mariadb_host }}"
     MYSQL_PWD: "{{ mysql_old_root_password }}"
   when: mysql_root_password != ""
 
 - name: Reload privilege tables
   command: "mysql -ne \"FLUSH PRIVILEGES\""
   environment:
-    MYSQL_HOST: "{{ mysql_host }}"
+    mariadb_host: "{{ mariadb_host }}"
     MYSQL_PWD: "{{ mysql_root_password}}"
   changed_when: False
 
@@ -53,20 +53,20 @@
   command: "mysql -ne \"DELETE FROM mysql.user WHERE User=''\""
   changed_when: False
   environment:
-    MYSQL_HOST: "{{ mysql_host }}"
+    mariadb_host: "{{ mariadb_host }}"
     MYSQL_PWD: "{{ mysql_root_password}}"
 
 - name: Disallow root login remotely
-  command: "mysql -ne \"DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('{{ mysql_host }}')\""
+  command: "mysql -ne \"DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('{{ mariadb_host }}')\""
   changed_when: False
   environment:
-    MYSQL_HOST: "{{ mysql_host }}"
+    mariadb_host: "{{ mariadb_host }}"
     MYSQL_PWD: "{{ mysql_root_password}}"
 
 - name: Grant privileges to root mysql user
-  command: "mysql -ne \"GRANT ALL PRIVILEGES ON *.* TO 'root'@'{{ mysql_host }}' IDENTIFIED BY '{{ mysql_root_password }}' WITH GRANT OPTION;\""
+  command: "mysql -ne \"GRANT ALL PRIVILEGES ON *.* TO 'root'@'{{ mariadb_host }}' IDENTIFIED BY '{{ mysql_root_password }}' WITH GRANT OPTION;\""
   environment:
-    MYSQL_HOST: "{{ mysql_host }}"
+    mariadb_host: "{{ mariadb_host }}"
     MYSQL_PWD: "{{ mysql_root_password}}"
 
 - name: Enable and start MariaDB (centos)

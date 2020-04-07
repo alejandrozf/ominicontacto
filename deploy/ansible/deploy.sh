@@ -231,7 +231,7 @@ AnsibleExec() {
       echo "##          Omnileads installation ended successfully        ##"
       echo "###############################################################"
       echo ""
-      git checkout $current_directory/inventory
+      #git checkout $current_directory/inventory
       chown $SUDO_USER. $current_directory/inventory
     else
       echo ""
