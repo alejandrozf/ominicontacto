@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-03 14:45-0300\n"
+"POT-Creation-Date: 2020-04-08 19:01-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,53 +24,41 @@ msgstr "Release Notes"
 
 # 7cb6be6322af4d678643b0d6beead1a9
 #: ../../release_notes.rst:4
-msgid "*Abril 3, 2020*"
-msgstr "*April 3, 2020"
+msgid "*Abril 8, 2020*"
+msgstr "*April 8, 2020"
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.5.3"
-msgstr "Release 1.5.3 details"
+msgid "Detalles de Release 1.5.4"
+msgstr "Release 1.5.4 details"
 
 # 08671eb233f04abb94799e4b0e1d9251
 #: ../../release_notes.rst:10
 msgid "Bug fixes"
 msgstr "Bug fixes"
 
-# 45e1d5f063fa4af7aa01b44d38793768
+# daec947aee8c419fb3fce7ded1d29b05
 #: ../../release_notes.rst:11
 msgid ""
-"Solucionado error en instalación que impedía crear la base de datos en "
-"ambientes cloud"
-msgstr ""
-"Fixed installation error on database creation on cloud environments"
+"Solucionado error en la instalación al hacer la actualización al "
+"release-1.5.3"
+msgstr "Fixed installation error when upgrading to release-1.5.3"
 
-# daec947aee8c419fb3fce7ded1d29b05
+# 0d426c5da4814825b97cd817d5377513
 #: ../../release_notes.rst:12
 msgid ""
-"Solucionado error al mostrar la información del estado de actualización "
-"del release instalado"
+"Solucionado error en el proceso de modificación de una calificación de "
+"gestión que generaba error en el reporte de calificaciones de la campaña"
 msgstr ""
-"Fixed error on release update status information"
-
-# 49907451420e4bce8f353bbd1558425b
-#: ../../release_notes.rst:13
-msgid ""
-"Solucionada inconsistencia en los logs generados cuando el agente "
-"actualiza su página"
-msgstr ""
-"Fixed inconsistency on log events generated when agent refresh the page"
+"Fixed error on engaged call disposition updating process that generates a"
+" campaigns dispositions report error"
 
 # 46e38b4fd9fb4c29a1cdc075898f33f3
-#: ../../release_notes.rst:14
+#: ../../release_notes.rst:13
 msgid ""
-"Solucionado error en el reporte de supervisión de llamadas entrantes "
-"cuando solo han ocurrido transferencias para una campaña en el día"
+"Solucionado error en la exportación a csv del reporte de calificaciones "
+"de una campaña que mostraba mas de una calificación para una misma "
+"llamada"
 msgstr ""
-"Fixed error on inbound calls supervision report when there are only transfer "
-"calls in the campaign in the current day"
-
-# b3b1c0e6248e4a859ba8ade29663bb6a
-#: ../../release_notes.rst:15
-msgid "Solucionado error en la sincronización del logout entre Django y Asterisk"
-msgstr "Fixed error on logout sincronization between Django/Asterisk"
+"Fixed error on exporting to csv of inbound campaigns disposition report "
+"that showed more than one record for a single call disposition"
