@@ -305,11 +305,16 @@ class ArchivoDeReporteCsv(object):
             # guardamos encabezado
             self._escribir_csv_writer_utf_8(csvwiter, encabezado)
 
+            # Asumo calificaciones vienen ordenadas por fecha decreciente. Puede ser con historico.
+            callids_ya_iteradas = set()
             # Iteramos cada uno de las metadata de la gestion del formulario
             for calificacion_val in calificaciones:
                 lista_opciones = []
                 # --- Buscamos datos
                 if campana.es_entrante:
+                    if calificacion_val.callid in callids_ya_iteradas:
+                        continue
+                    callids_ya_iteradas.add(calificacion_val.callid)
                     calificacion = calificacion_val.history_object
                     calificacion_fecha_local = localtime(calificacion_val.history_date)
                 else:
