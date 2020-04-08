@@ -267,7 +267,7 @@ class CalificacionClienteFormView(FormView):
 
     def _check_metadata_no_accion_delete(self, calificacion):
         """ En caso que sea una calificacion de no gestion elimina metadatacliente"""
-        if calificacion.opcion_calificacion.tipo is OpcionCalificacion.NO_ACCION \
+        if calificacion.opcion_calificacion.tipo != OpcionCalificacion.GESTION \
                 and calificacion.get_venta():
             calificacion.get_venta().delete()
 

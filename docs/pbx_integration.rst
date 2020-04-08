@@ -33,6 +33,7 @@ Seleccionamos la creaci√≥n de un nuevo troncal SIP y completamos la configuraci√
  qualify=yes
  secret=omnileads
  fromuser=issabel
+ defaultuser=issabel
  context=from-internal
 
 * En caso de ejecutar OMniLeads con Docker dentro de sistema operativo base de la IPPBX.-
@@ -47,6 +48,7 @@ Seleccionamos la creaci√≥n de un nuevo troncal SIP y completamos la configuraci√
  qualify=yes
  secret=issabelOML
  fromuser=issabel
+ defaultuser=issabel
  context=from-internal
 
 
