@@ -104,18 +104,18 @@
 # Se crea el usuario de postgres
 - name: Create/modify postgres user
   postgresql_user: name={{ postgres_user }} password={{ postgres_password }} login_user={{ default_postgres_user }} login_host={{ postgres_host }} login_password={{ default_postgres_password }} role_attr_flags=CREATEROLE,CREATEDB,INHERIT,LOGIN encrypted=yes
-  when: postgres_host is defined
+  when: postgres_host is defined and default_postgres_user is defined and default_postgres_password is defined
 
 # Se crea base de datos omnileads
 - name: Create of the database
   postgresql_db: name={{ postgres_database }} state=present login_user={{ postgres_user }} login_password={{ postgres_password }} owner={{ postgres_user }} login_host={{ postgres_host }}
-  when: postgres_host is defined
+  when: postgres_host is defined and default_postgres_user is defined and default_postgres_password is defined
 
 # Se crea el lenguaje plperl en todo el cluster.
 - name: Create language plperl in database
-  shell: psql -U {{ default_postgres_user }} -h {{ postgres_host }} -d {{ item }} -c 'CREATE EXTENSION plperl'
+  shell: psql -U {{ postgres_user }} -h {{ postgres_host }} -d {{ item }} -c 'CREATE EXTENSION plperl'
   environment:
-    - PGPASSWORD: "{{ default_postgres_password }}"
+    - PGPASSWORD: "{{ postgres_password }}"
   with_items:
     - "{{ postgres_database }}"
     - template1

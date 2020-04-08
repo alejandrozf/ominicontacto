@@ -41,7 +41,11 @@ PYTHONPATH=$INSTALL_PREFIX
 REDIS_HOSTNAME=localhost
 SESSION_COOKIE_AGE={{ SCA }}
 TZ={{ TZ }}
+{% if dialer_host is defined %}
+WOMBAT_HOSTNAME={{ dialer_host }}
+{% else %}
 WOMBAT_HOSTNAME=localhost
+{% endif %}
 WOMBAT_USER={{ dialer_user }}
 WOMBAT_PASSWORD={{ dialer_password }}
 

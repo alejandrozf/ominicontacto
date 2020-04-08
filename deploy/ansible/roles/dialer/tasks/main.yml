@@ -2,7 +2,8 @@
 
 - include: installations.yml
   tags: postinstall
-
+  when: dialer_host is not defined
+  
 - include: mariadb.yml
   when: mysql_host is not defined
 
