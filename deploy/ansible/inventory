@@ -9,7 +9,7 @@
 # If you are installing a prodenv (PE) AIO y bare-metal, change the IP and hostname here #
 ##########################################################################################
 [prodenv-aio]
-#localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
+localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
 #X.X.X.X ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
 
 ##############################################################################
@@ -40,28 +40,28 @@
 #                    SET POSTGRESQL PASSWORD                        #
 #####################################################################
 postgres_database=omnileads
-#postgres_user=omnileads
-#postgres_password=my_very_strong_pass
+postgres_user=omnileads
+postgres_password=Mssm050018@
 #####################################################################
 #                           Web Admin                               #
 #                     SET WEB ADMIN PASSWORD                        #
 #####################################################################
-#admin_pass=my_very_strong_pass
+admin_pass=Mssm050018@
 #######################################
 # AMI for wombat dialer and OMniLeads #
 #######################################
-#ami_user=omnileadsami
-#ami_password=5_MeO_DMT
+ami_user=omnileadsami
+ami_password=5_MeO_DMT
 #####################################################
 # Wombat dialer credentials and MYSQL root password #
 #####################################################
-#dialer_user=demoadmin
-#dialer_password=demo
-#mysql_root_password=my_very_strong_pass
+dialer_user=demoadmin
+dialer_password=demo
+mysql_root_password=Mssm050018@
 #################################################################################################
 # Set the timezone where the nodes are. UNCOMMENT and set this if you are doing a fresh install #
 #################################################################################################
-#TZ=America/Argentina/Cordoba
+TZ=America/Argentina/Cordoba
 ####################################################################################################
 # Session Cookie Age (SCA) is the time in seconds that will last the https session when inactivity #
 # is detected in the session (by default is 1 hour)                                                #
@@ -97,8 +97,8 @@ schedule=Agenda
 #  - external_port: the outside port where OML web server will listen requests        #
 #  - external_hostname: the dns external users will connect to                        #
 #######################################################################################
-#external_port=
-#external_hostname=
+external_port=443
+external_hostname=oml.callcenterflex.com.br
 #####################################################################
 # Trusted Certificates:                                             #
 #   If you want to use your own certificate/key pair, copy them in  #
