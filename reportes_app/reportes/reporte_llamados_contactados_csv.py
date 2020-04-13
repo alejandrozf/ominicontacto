@@ -173,7 +173,7 @@ class ArchivoDeReporteCsv(object):
                                           self.agentes_dict.get(llamada_log.agente_id, -1)]
                 else:
                     datos_calificacion = [calificacion.opcion_calificacion.nombre,
-                                          calificacion.observaciones,
+                                          calificacion.observaciones.replace('\r\n', ' '),
                                           calificacion.agente]
                     # TODO: ver la forma de relacionar con respuestas vieja.
                     respuesta_formulario_gestion = calificacion.history_object.get_venta()
@@ -197,7 +197,7 @@ class ArchivoDeReporteCsv(object):
                         datos_gestion.append('')
                         campos = campos_formulario_opciones[id_opcion]
                         for campo in campos:
-                            datos_gestion.append(datos[campo.nombre_campo])
+                            datos_gestion.append(datos[campo.nombre_campo].replace('\r\n', ' '))
 
                 fecha_local_llamada = localtime(llamada_log.time)
                 registro = []
@@ -329,7 +329,7 @@ class ArchivoDeReporteCsv(object):
                 numero_marcado = self._obtener_numero_marcado(calificacion)
                 lista_opciones.append(numero_marcado)
                 lista_opciones.append(calificacion.opcion_calificacion.nombre)
-                lista_opciones.append(calificacion.observaciones)
+                lista_opciones.append(calificacion.observaciones.replace('\r\n', ' '))
                 lista_opciones.append(calificacion.agente)
                 if calificacion.contacto.es_originario:
                     lista_opciones.append(calificacion.contacto.bd_contacto)
@@ -352,7 +352,7 @@ class ArchivoDeReporteCsv(object):
                     lista_opciones.append('')
                     campos = campos_formulario_opciones[id_opcion]
                     for campo in campos:
-                        lista_opciones.append(datos[campo.nombre_campo])
+                        lista_opciones.append(datos[campo.nombre_campo].replace('\r\n', ' '))
 
                 # --- Finalmente, escribimos la linea
                 self._escribir_csv_writer_utf_8(csvwiter, lista_opciones)
