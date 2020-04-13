@@ -17,7 +17,19 @@
 #
 from __future__ import unicode_literals
 from django.apps import AppConfig
+from django.utils.translation import ugettext_lazy as _
 
 
 class RecicladoAppConfig(AppConfig):
     name = 'reciclado_app'
+
+    def configuraciones_de_permisos(self):
+        return [
+            {'nombre': 'reciclar_campana_dialer',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+        ]
+
+    informacion_de_permisos = {
+        'reciclar_campana_dialer':
+            {'descripcion': _('Reciclado de campañas Dialer'), 'version': '1.5.1'},
+    }
