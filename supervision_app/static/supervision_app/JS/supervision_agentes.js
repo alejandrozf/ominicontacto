@@ -59,9 +59,11 @@ function executeSupervisorAction(pk_agent, action) {
 
 function preventLeaveOnCall(event) {
     if (phone_controller.is_on_call()) {
+        phone_controller.phone.hangUp();
+
         $.growl.warning({ 
             title: gettext('Atención!'),
-            message: gettext('Debe finalizar la acción actual antes salir de esta pantalla.')});
+            message: gettext('Se ha registrado un intento de salir de esta pantalla. Su llamado ha finalizado.')});
 
         // Cancel the event as stated by the standard.
         event.preventDefault();
