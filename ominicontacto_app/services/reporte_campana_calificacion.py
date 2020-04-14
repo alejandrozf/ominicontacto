@@ -106,7 +106,7 @@ class ArchivoDeReporteCsv(object):
                 for dato in datos:
                     lista_opciones.append(dato)
                 lista_opciones.append(calificacion.opcion_calificacion.nombre)
-                lista_opciones.append(calificacion.observaciones)
+                lista_opciones.append(calificacion.observaciones.replace('\r\n', ' '))
                 if calificacion.contacto.es_originario:
                     lista_opciones.append(calificacion.contacto.bd_contacto)
                 else:
