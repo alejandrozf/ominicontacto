@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-13 13:21-0300\n"
+"POT-Creation-Date: 2020-04-14 12:17-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 
 #: supervision_app/static/supervision_app/JS/campanas_entrantes.js:37
 #: supervision_app/static/supervision_app/JS/campanas_salientes.js:37
-#: supervision_app/static/supervision_app/JS/supervision_agentes.js:53
+#: supervision_app/static/supervision_app/JS/supervision_agentes.js:55
 msgid "Error al ejecutar => "
 msgstr "Error when executing =>"
 
@@ -174,10 +174,25 @@ msgstr "Spy"
 msgid "Logout"
 msgstr "Logout"
 
-#: supervision_app/static/supervision_app/JS/supervision_agentes.js:39
+#: supervision_app/static/supervision_app/JS/supervision_agentes.js:41
+#: supervision_app/static/supervision_app/JS/supervision_agentes.js:65
 msgid "Atención!"
 msgstr "Attention!"
 
-#: supervision_app/static/supervision_app/JS/supervision_agentes.js:40
+#: supervision_app/static/supervision_app/JS/supervision_agentes.js:42
 msgid "Debe finalizar la acción actual antes de realizar otra."
 msgstr "You must end current action before executing another."
+
+#: supervision_app/static/supervision_app/JS/supervision_agentes.js:66
+msgid ""
+"Se ha registrado un intento de salir de esta pantalla. Su llamado ha "
+"finalizado."
+msgstr ""
+"An attempt to leave this page has been detected. Your call has been "
+"terminated."
+
+#: supervision_app/static/supervision_app/JS/supervision_agentes.js:71
+#: supervision_app/static/supervision_app/JS/supervision_agentes.js:72
+#, fuzzy
+msgid "Debe finalizar la acción actual antes de salir de esta pantalla."
+msgstr "You must end current action before leaving this page."
