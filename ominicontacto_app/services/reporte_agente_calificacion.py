@@ -101,7 +101,7 @@ class ArchivoDeReporteCsv(object):
                 else:
                     lista_opciones.append(_("NO"))
                 lista_opciones.append(calificacion.opcion_calificacion.nombre)
-                lista_opciones.append(calificacion.observaciones)
+                lista_opciones.append(calificacion.observaciones.replace('\r\n', ' '))
                 datos = json.loads(calificacion.contacto.datos)
                 for dato in datos:
                     lista_opciones.append(dato)
