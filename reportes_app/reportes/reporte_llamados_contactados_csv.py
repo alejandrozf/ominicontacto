@@ -31,7 +31,7 @@ import datetime
 
 from django.conf import settings
 from django.utils.encoding import force_text
-from django.utils.timezone import localtime
+from django.utils.timezone import localtime, timedelta
 from django.utils.translation import ugettext as _
 
 from ominicontacto_app.models import AgenteProfile, Campana, Contacto, OpcionCalificacion
@@ -131,6 +131,7 @@ class ArchivoDeReporteCsv(object):
             campos_contacto_datos = bd_metadata.nombres_de_columnas_de_datos
             encabezado.extend(campos_contacto)
             encabezado.append(_("Fecha-Hora Contacto"))
+            encabezado.append(_("Duración"))
             encabezado.append(_("Tel status"))
             encabezado.append(_("Calificado"))
             encabezado.append(_("Observaciones"))
@@ -200,11 +201,18 @@ class ArchivoDeReporteCsv(object):
                             datos_gestion.append(datos[campo.nombre_campo].replace('\r\n', ' '))
 
                 fecha_local_llamada = localtime(llamada_log.time)
+                duracion_llamada = llamada_log.duracion_llamada
+                if duracion_llamada > 0:
+                    duracion_llamada = timedelta(0, duracion_llamada)
+                else:
+                    duracion_llamada = 'N/A'
+
                 registro = []
                 registro.append(llamada_log.numero_marcado)
                 registro.append(telefono_contacto)
                 registro.extend(datos_contacto)
                 registro.append(fecha_local_llamada.strftime("%Y/%m/%d %H:%M:%S"))
+                registro.append(str(duracion_llamada))
                 registro.append(tel_status)
                 registro.extend(datos_calificacion)
                 registro.append(bd_contacto)
