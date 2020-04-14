@@ -112,7 +112,8 @@ def login_view(request):
             if form.is_valid():
                 login(request, user)
                 user.set_session_key(request.session.session_key)
-                if 'next' in request.GET and request.GET.get('next') != reverse('agente_logout'):
+                if 'next' in request.GET and request.GET.get('next') != reverse(
+                        'api_agente_logout'):
                     return redirect(request.GET.get('next'))
                 if user.is_agente:
                     return HttpResponseRedirect(reverse('consola_de_agente'))
