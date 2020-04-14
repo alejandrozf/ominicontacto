@@ -1,0 +1,114 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-02-13 13:20-0300\n"
+"PO-Revision-Date: 2020-03-21 23:00-0300\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.2.4\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: pt_BR\n"
+
+#: supervision_app/apps.py:33
+msgid "Supervisión"
+msgstr "Supervisão"
+
+#: supervision_app/apps.py:38
+#: supervision_app/templates/supervision_agentes.html:48
+msgid "Agentes"
+msgstr "Agentes"
+
+#: supervision_app/apps.py:42
+#: supervision_app/templates/supervision_campanas_entrantes.html:32
+msgid "Campañas Entrantes"
+msgstr "Campanhas Entrantes"
+
+#: supervision_app/apps.py:46
+#: supervision_app/templates/supervision_campanas_salientes.html:31
+msgid "Campañas Salientes"
+msgstr "Campanhas Saintes"
+
+#: supervision_app/templates/supervision_agentes.html:76
+msgid "Finalizar"
+msgstr "Finalzar"
+
+#: supervision_app/templates/supervision_agentes.html:85
+#: supervision_app/templates/supervision_campanas_entrantes.html:37
+#: supervision_app/templates/supervision_campanas_salientes.html:36
+msgid "Nombre"
+msgstr "Nome"
+
+#: supervision_app/templates/supervision_agentes.html:86
+msgid "Status"
+msgstr "Status"
+
+#: supervision_app/templates/supervision_agentes.html:87
+msgid "Tiempo"
+msgstr "Tempo de espera"
+
+#: supervision_app/templates/supervision_agentes.html:88
+msgid "Acciones"
+msgstr "Ações"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:38
+msgid "Llamadas"
+msgstr "Chamadas"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:39
+#: supervision_app/templates/supervision_campanas_salientes.html:38
+msgid "Atendidas"
+msgstr "Atendidas"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:40
+msgid "Abandonadas"
+msgstr "Abandonadas"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:41
+msgid "Abandonadas en anuncio"
+msgstr "Abandonadas no anúncio"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:42
+msgid "T. promedio espera"
+msgstr "T. espera média"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:43
+msgid "Expiradas"
+msgstr "Expiradas"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:44
+msgid "En espera"
+msgstr "Em espera"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:45
+msgid "T. promedio abandono"
+msgstr "T. abandono médio"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:46
+#: supervision_app/templates/supervision_campanas_salientes.html:40
+msgid "Gestiones"
+msgstr "Administração"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:57
+msgid "segundos"
+msgstr "segundos"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:60
+msgid " segundos"
+msgstr " segundos"
+
+#: supervision_app/templates/supervision_campanas_salientes.html:37
+msgid "Llamadas discadas"
+msgstr "Chamadas efetuadas"
+
+#: supervision_app/templates/supervision_campanas_salientes.html:39
+msgid "No atendidas"
+msgstr "Não atendidas"
