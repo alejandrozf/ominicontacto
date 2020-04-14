@@ -191,8 +191,13 @@ class APITest(TestCase):
         linea_sip = 'Output: /OML/AGENT/{0}/SIP                                  : 100{0}'
         linea_status = 'Output: /OML/AGENT/{0}/STATUS                               : {1}:155439223'
         response = []
-        datos_agentes = [{'id': 1, 'status': 'READY'}, {'id': 2, 'status': 'PAUSE'},
-                         {'id': 3, 'status': 'OFFLINE'}]
+        self.ag1 = self.agente_profile
+        self.ag2, self.ag3 = AgenteProfileFactory.create_batch(2)
+        QueueMemberFactory.create(member=self.ag2, queue_name=self.queue)
+        QueueMemberFactory.create(member=self.ag3, queue_name=self.queue)
+        datos_agentes = [{'id': self.ag1.pk, 'status': 'READY'},
+                         {'id': self.ag2.pk, 'status': 'PAUSE'},
+                         {'id': self.ag3.pk, 'status': 'OFFLINE'}]
         for datos_agente in datos_agentes:
             id_agente = datos_agente['id']
             status_agente = datos_agente['status']
@@ -203,14 +208,17 @@ class APITest(TestCase):
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AMIManagerConnector, "_ami_manager")
     def test_servicio_agentes_activos_muestra_activos_no_offline(self, _ami_manager, manager):
+        self.campana_activa.supervisors.add(self.supervisor_admin.user)
+        agente = AgenteProfileFactory()
+        QueueMemberFactory.create(member=agente, queue_name=self.queue)
         self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
         _ami_manager.return_value = self._generar_ami_manager_response_agentes()
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
         self.assertEqual(len(response.json()), 2)
         for datos_agente in response.json():
-            self.assertIn(datos_agente['id'], ['1', '2'])
-            if datos_agente['id'] == '1':
+            self.assertIn(datos_agente['id'], [str(self.ag1.pk), str(self.ag2.pk)])
+            if datos_agente['id'] == str(self.ag1.pk):
                 self.assertEqual(datos_agente['status'], 'READY')
             else:
                 self.assertEqual(datos_agente['status'], 'PAUSE')
@@ -219,39 +227,47 @@ class APITest(TestCase):
     @patch.object(AMIManagerConnector, "_ami_manager")
     def test_servicio_agentes_activos_detecta_grupos_menos_lineas_previstas(
             self, _ami_manager, manager):
+        self.campana_activa.supervisors.add(self.supervisor_admin.user)
+        ag1 = self.agente_profile
+        ag2 = AgenteProfileFactory()
+        QueueMemberFactory.create(member=ag2, queue_name=self.queue)
         self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
         _ami_manager.return_value = (
-            "/OML/AGENT/1/NAME                                 : John Perkins\r\n"
-            "/OML/AGENT/2/NAME                                 : Silvia Pensive\r\n"
-            "/OML/AGENT/2/SIP                                  : 1001\r\n"
-            "/OML/AGENT/2/STATUS                               : READY:1582309000\r\n"
+            "/OML/AGENT/{0}/NAME                       : John Perkins\r\n".format(ag1.pk) +
+            "/OML/AGENT/{0}/NAME                       : Silvia Pensive\r\n".format(ag2.pk) +
+            "/OML/AGENT/{0}/SIP                        : 1001\r\n".format(ag2.pk) +
+            "/OML/AGENT/{0}/STATUS                     : READY:1582309000\r\n".format(ag2.pk) +
             "2 results found."), None
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
         self.assertEqual(len(response.json()), 1)
         datos_agente = response.json()[0]
-        self.assertEqual(datos_agente['id'], '2')
+        self.assertEqual(datos_agente['id'], str(ag2.pk))
         self.assertEqual(datos_agente['status'], 'READY')
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AMIManagerConnector, "_ami_manager")
     def test_servicio_agentes_no_adiciona_grupo_headers_desconocidos(self, _ami_manager, manager):
+        self.campana_activa.supervisors.add(self.supervisor_admin.user)
+        ag1 = self.agente_profile
+        ag2 = AgenteProfileFactory()
+        QueueMemberFactory.create(member=ag2, queue_name=self.queue)
         self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
         _ami_manager.return_value = (
-            "/OML/AGENT/1/NAME                                 : John Perkins\r\n"
-            "/OML/AGENT/1/SIP                                  : 1001\r\n"
-            "/OML/AGENT/1/STATUS                               : READY:1582309000\r\n"
-            "/OML/AGENT/1/STRANGE-HEADER                       : strange-value\r\n"
-            "/OML/AGENT/2/NAME                                 : Silvia Pensive\r\n"
-            "/OML/AGENT/2/SIP                                  : 1002\r\n"
-            "/OML/AGENT/2/STATUS                               : PAUSE:1582309000\r\n"
+            "/OML/AGENT/{0}/NAME                         : John Perkins\r\n".format(ag1.pk) +
+            "/OML/AGENT/{0}/SIP                          : 1001\r\n".format(ag1.pk) +
+            "/OML/AGENT/{0}/STATUS                       : READY:1582309000\r\n".format(ag1.pk) +
+            "/OML/AGENT/{0}/STRANGE-HEADER               : strange-value\r\n".format(ag1.pk) +
+            "/OML/AGENT/{0}/NAME                         : Silvia Pensive\r\n".format(ag2.pk) +
+            "/OML/AGENT/{0}/SIP                          : 1002\r\n".format(ag2.pk) +
+            "/OML/AGENT/{0}/STATUS                       : PAUSE:1582309000\r\n".format(ag2.pk) +
             "2 results found."), None
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
         self.assertEqual(len(response.json()), 2)
         datos_agente_1 = response.json()[0]
         datos_agente_2 = response.json()[1]
-        self.assertEqual(datos_agente_2['id'], '2')
+        self.assertEqual(datos_agente_2['id'], str(ag2.pk))
         self.assertEqual(datos_agente_2['status'], 'PAUSE')
         self.assertEqual([i for i in datos_agente_1.keys()],
                          ['id', 'nombre', 'sip', 'status', 'tiempo'])
@@ -261,14 +277,18 @@ class APITest(TestCase):
     @patch('api_app.utiles.logger')
     def test_servicio_agentes_activos_detecta_grupos_headers_incompletos(
             self, logger, _ami_manager, manager):
+        self.campana_activa.supervisors.add(self.supervisor_admin.user)
+        ag1 = self.agente_profile
+        ag2 = AgenteProfileFactory()
+        QueueMemberFactory.create(member=ag2, queue_name=self.queue)
         self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
         _ami_manager.return_value = (
-            "/OML/AGENT/1/NAME                                 : John Perkins\r\n"
-            "/OML/AGENT/1/SIP                                  : \r\n"
-            "/OML/AGENT/1/STATUS                               : READY:1582309000\r\n"
-            "/OML/AGENT/2/NAME                                 : Silvia Pensive\r\n"
-            "/OML/AGENT/2/SIP                                  : 1002\r\n"
-            "/OML/AGENT/2/STATUS                               : PAUSE:1582309000\r\n"
+            "/OML/AGENT/{0}/NAME                           : John Perkins\r\n".format(ag1.pk) +
+            "/OML/AGENT/{0}/SIP                            : \r\n".format(ag1.pk) +
+            "/OML/AGENT/{0}/STATUS                         : READY:1582309000\r\n".format(ag1.pk) +
+            "/OML/AGENT/{0}/NAME                           : Silvia Pensive\r\n".format(ag2.pk) +
+            "/OML/AGENT/{0}/SIP                            : 1002\r\n".format(ag2.pk) +
+            "/OML/AGENT/{0}/STATUS                         : PAUSE:1582309000\r\n".format(ag2.pk) +
             "2 results found."), None
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
@@ -279,19 +299,25 @@ class APITest(TestCase):
     @patch('api_app.utiles.logger')
     def test_servicio_agentes_activos_entradas_menos_lineas_son_detectadas_y_excluidas(
             self, logger, _ami_manager, manager):
+        self.campana_activa.supervisors.add(self.supervisor_admin.user)
+        ag1 = self.agente_profile
+        ag2, ag3, ag4 = AgenteProfileFactory.create_batch(3)
+        QueueMemberFactory.create(member=ag2, queue_name=self.queue)
+        QueueMemberFactory.create(member=ag3, queue_name=self.queue)
+        QueueMemberFactory.create(member=ag4, queue_name=self.queue)
         self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
         _ami_manager.return_value = (
-            "/OML/AGENT/1/NAME                                 : John Perkins\r\n"
-            "/OML/AGENT/1/SIP                                  : 1001\r\n"
-            "/OML/AGENT/1/STATUS                               : READY:1582309100\r\n"
-            "/OML/AGENT/2/NAME                                 : Silvia Pensive\r\n"
-            "/OML/AGENT/2/SIP                                  : 1002\r\n"
-            "/OML/AGENT/2/STATUS                               : PAUSE:1582309000\r\n"
-            "/OML/AGENT/3/NAME                                 : Homero Simpson\r\n"
-            "/OML/AGENT/4/NAME                                 : Marge Simpson\r\n"
-            "/OML/AGENT/4/SIP                                  : 1003\r\n"
-            "/OML/AGENT/4/STATUS                               : PAUSE:1582309500\r\n"
-            "/OML/AGENT/5/SIP                                  : 1004\r\n"
+            "/OML/AGENT/{0}/NAME                          : John Perkins\r\n".format(ag1.pk) +
+            "/OML/AGENT/{0}/SIP                           : 1001\r\n".format(ag1.pk) +
+            "/OML/AGENT/{0}/STATUS                        : READY:1582309100\r\n".format(ag1.pk) +
+            "/OML/AGENT/{0}/NAME                          : Silvia Pensive\r\n".format(ag2.pk) +
+            "/OML/AGENT/{0}/SIP                           : 1002\r\n".format(ag2.pk) +
+            "/OML/AGENT/{0}/STATUS                        : PAUSE:1582309000\r\n".format(ag2.pk) +
+            "/OML/AGENT/{0}/NAME                          : Homero Simpson\r\n".format(ag3.pk) +
+            "/OML/AGENT/{0}/NAME                          : Marge Simpson\r\n".format(ag4.pk) +
+            "/OML/AGENT/{0}/SIP                           : 1003\r\n".format(ag4.pk) +
+            "/OML/AGENT/{0}/STATUS                        : PAUSE:1582309500\r\n".format(ag4.pk) +
+            "/OML/AGENT/{0}/SIP                           : 1004\r\n".format(ag4.pk) +
             "2 results found."), None
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
@@ -302,17 +328,22 @@ class APITest(TestCase):
     @patch('api_app.utiles.logger')
     def test_servicio_agentes_activos_no_incluye_entradas_lineas_status_vacio(
             self, logger, _ami_manager, manager):
+        self.campana_activa.supervisors.add(self.supervisor_admin.user)
+        ag1 = self.agente_profile
+        ag10, ag11 = AgenteProfileFactory.create_batch(2)
+        QueueMemberFactory.create(member=ag10, queue_name=self.queue)
+        QueueMemberFactory.create(member=ag11, queue_name=self.queue)
         self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
         _ami_manager.return_value = (
-            "/OML/AGENT/1/NAME                                : Agente 01\r\n"
-            "/OML/AGENT/1/SIP                                 : 1004 \r\n"
-            "/OML/AGENT/1/STATUS                              : \r\n"
-            "/OML/AGENT/10/NAME                               : Agente10 \n"
-            "/OML/AGENT/10/SIP                                : 1013\r\n"
-            "/OML/AGENT/10/STATUS                             : \r\n"
-            "/OML/AGENT/11/NAME                               : Agente11\r\n"
-            "/OML/AGENT/11/SIP                                : 1014\r\n"
-            "/OML/AGENT/11/STATUS                             : READY:1582309100\r\n"
+            "/OML/AGENT/{0}/NAME                          : Agente 01\r\n".format(ag1.pk) +
+            "/OML/AGENT/{0}/SIP                           : 1004 \r\n".format(ag1.pk) +
+            "/OML/AGENT/{0}/STATUS                        : \r\n".format(ag1.pk) +
+            "/OML/AGENT/{0}/NAME                          : Agente10 \n".format(ag10.pk) +
+            "/OML/AGENT/{0}/SIP                           : 1013\r\n".format(ag10.pk) +
+            "/OML/AGENT/{0}/STATUS                        : \r\n".format(ag10.pk) +
+            "/OML/AGENT/{0}/NAME                          : Agente11\r\n".format(ag11.pk) +
+            "/OML/AGENT/{0}/SIP                           : 1014\r\n".format(ag11.pk) +
+            "/OML/AGENT/{0}/STATUS                        : READY:1582309100\r\n".format(ag11.pk) +
             "3 results found."), None
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
@@ -321,24 +352,58 @@ class APITest(TestCase):
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AMIManagerConnector, "_ami_manager")
     @patch('api_app.utiles.logger')
-    def test_servicio_agentes_activos_entradas_mixtas_lineas_pause_id_aceptadas(
+    def test_servicio_agentes_activos_no_incluye_agentes_no_asignados_al_supervisor(
             self, logger, _ami_manager, manager):
+        self.campana_activa.supervisors.add(self.supervisor_admin.user)
+        ag1 = self.agente_profile
+        ag10, ag11 = AgenteProfileFactory.create_batch(2)
+        QueueMemberFactory.create(member=ag10, queue_name=self.queue)
         self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
         _ami_manager.return_value = (
-            "/OML/AGENT/1/NAME                                : John Perkins\r\n"
-            "/OML/AGENT/1/PAUSE_ID                            : 1\r\n"
-            "/OML/AGENT/1/SIP                                 : 1001\r\n"
-            "/OML/AGENT/1/STATUS                              : \r\n"
-            "/OML/AGENT/2/NAME                                : Silvia Pensive\r\n"
-            "/OML/AGENT/2/SIP                                 : 1002\r\n"
-            "/OML/AGENT/2/STATUS                              : PAUSE:1582309000\r\n"
-            "/OML/AGENT/3/NAME                                : FERNANDO XXX\r\n"
-            "/OML/AGENT/3/SIP                                 : 1105\r\n"
-            "/OML/AGENT/3/STATUS                              : \r\n"
-            "/OML/AGENT/4/NAME                                : Marge Simpson\r\n"
-            "/OML/AGENT/4/PAUSE_ID                            : 0\r\n"
-            "/OML/AGENT/4/SIP                                 : 1003\r\n"
-            "/OML/AGENT/4/STATUS                              : PAUSE:1582309500\r\n"
+            "/OML/AGENT/{0}/NAME                          : Agente 01\r\n".format(ag1.pk) +
+            "/OML/AGENT/{0}/SIP                           : 1004\r\n".format(ag1.pk) +
+            "/OML/AGENT/{0}/STATUS                        : READY:1582309004\r\n".format(ag1.pk) +
+            "/OML/AGENT/{0}/NAME                          : Agente10\r\n".format(ag10.pk) +
+            "/OML/AGENT/{0}/SIP                           : 1013\r\n".format(ag10.pk) +
+            "/OML/AGENT/{0}/STATUS                        : READY:1582309102\r\n".format(ag10.pk) +
+            "/OML/AGENT/{0}/NAME                          : Agente11\r\n".format(ag11.pk) +
+            "/OML/AGENT/{0}/SIP                           : 1014\r\n".format(ag11.pk) +
+            "/OML/AGENT/{0}/STATUS                        : READY:1582309100\r\n".format(ag11.pk) +
+            "3 results found."), None
+        url = reverse('api_agentes_activos')
+        response = self.client.get(url)
+        response_json = response.json()
+        self.assertEqual(len(response_json), 2)
+        for datos_agente in response_json:
+            self.assertTrue(datos_agente.get('id') != str(ag11.pk))
+
+    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
+    @patch.object(AMIManagerConnector, "_ami_manager")
+    @patch('api_app.utiles.logger')
+    def test_servicio_agentes_activos_entradas_mixtas_lineas_pause_id_aceptadas(
+            self, logger, _ami_manager, manager):
+        ag1_pk = self.agente_profile.pk
+        self.campana_activa.supervisors.add(self.supervisor_admin.user)
+        ag2, ag3, ag4 = AgenteProfileFactory.create_batch(3)
+        QueueMemberFactory.create(member=ag2, queue_name=self.queue)
+        QueueMemberFactory.create(member=ag3, queue_name=self.queue)
+        QueueMemberFactory.create(member=ag4, queue_name=self.queue)
+        self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
+        _ami_manager.return_value = (
+            "/OML/AGENT/{0}/NAME                            : John Perkins\r\n".format(ag1_pk) +
+            "/OML/AGENT/{0}/PAUSE_ID                        : 1\r\n".format(ag1_pk) +
+            "/OML/AGENT/{0}/SIP                             : 1001\r\n".format(ag1_pk) +
+            "/OML/AGENT/{0}/STATUS                          : \r\n".format(ag1_pk) +
+            "/OML/AGENT/{0}/NAME                            : Silvia Pensive\r\n".format(ag2.pk) +
+            "/OML/AGENT/{0}/SIP                             : 1002\r\n".format(ag2.pk) +
+            "/OML/AGENT/{0}/STATUS                          : PAUSE:1582309000\r\n".format(ag2.pk) +
+            "/OML/AGENT/{0}/NAME                            : FERNANDO XXX\r\n".format(ag3.pk) +
+            "/OML/AGENT/{0}/SIP                             : 1105\r\n".format(ag3.pk) +
+            "/OML/AGENT/{0}/STATUS                          : \r\n".format(ag3.pk) +
+            "/OML/AGENT/{0}/NAME                            : Marge Simpson\r\n".format(ag4.pk) +
+            "/OML/AGENT/{0}/PAUSE_ID                        : 0\r\n".format(ag4.pk) +
+            "/OML/AGENT/{0}/SIP                             : 1003\r\n".format(ag4.pk) +
+            "/OML/AGENT/{0}/STATUS                          : PAUSE:1582309500\r\n".format(ag4.pk) +
             "2 results found."), None
         url = reverse('api_agentes_activos')
         response = self.client.get(url)

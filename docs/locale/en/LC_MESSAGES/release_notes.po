@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-08 19:01-0300\n"
+"POT-Creation-Date: 2020-04-14 15:23-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,41 +24,57 @@ msgstr "Release Notes"
 
 # d82b7aba6425421ab734c9a356b56743
 #: ../../release_notes.rst:4
-msgid "*Abril 8, 2020*"
-msgstr "*April 8, 2020"
+msgid "*Abril 14, 2020*"
+msgstr "*April 14, 2020"
 
 # 8376ef42c5614a178a2fc0fe09246ed1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.5.4"
-msgstr "Release 1.5.4 details"
+#, fuzzy
+msgid "Detalles de Release 1.5.5"
+msgstr "Release 1.5.5 details"
 
-# 08671eb233f04abb94799e4b0e1d9251
+# 2f558403c15a436e90409b976c7f07ed
 #: ../../release_notes.rst:10
-msgid "Bug fixes"
-msgstr "Bug fixes"
+msgid "Bug fixes and improvements"
+msgstr "Bug fixes y mejoras"
 
-# daec947aee8c419fb3fce7ded1d29b05
+# a3c1819847e4414781a36ded6328c67e
 #: ../../release_notes.rst:11
 msgid ""
-"Solucionado error en la instalación al hacer la actualización al "
-"release-1.5.3"
-msgstr "Fixed installation error when upgrading to release-1.5.3"
+"Se adiciona mejora a la supervisión que permite mostrar información de "
+"solo los agentes activos asignados al supervisor logueado"
+msgstr ""
+"Added improvement to the supervision that only shows information about active"
+" agents asigned to the logged supervisor"
 
-# 0d426c5da4814825b97cd817d5377513
+# 630088f3c3024d33834e751a362d9f66
 #: ../../release_notes.rst:12
 msgid ""
-"Solucionado error en el proceso de modificación de una calificación de "
-"gestión que generaba error en el reporte de calificaciones de la campaña"
+"Se adiciona mejora que incluye información sobre la duración de una "
+"llamada en la exportación a .csv de los reportes de contactados en "
+"llamadas"
 msgstr ""
-"Fixed error on engaged call disposition updating process that generates a"
-" campaigns dispositions report error"
+"Added improvement that includes call duration in contacts called report"
+" when exporting to .csv file"
 
-# 46e38b4fd9fb4c29a1cdc075898f33f3
+# 9c3a0ce89ee34e66b9a594478c006b5c
 #: ../../release_notes.rst:13
 msgid ""
-"Solucionado error en la exportación a csv del reporte de calificaciones "
-"de una campaña que mostraba mas de una calificación para una misma "
-"llamada"
+"Se adiciona mejora que advierte a los usuarios de tipo supervisor cuando "
+"intentan dejar la página de agentes activos y están en el medio de una "
+"acción de Asterisk, como 'spy', 'whisper', etc"
 msgstr ""
-"Fixed error on exporting to csv of inbound campaigns disposition report "
-"that showed more than one record for a single call disposition"
+"Added improvement that warns to supervisor users when they attempts to left"
+" the active agents page and are in a middle of Asterisk action, such as"
+" spy, whisper, etc"
+
+# f4b3cf11934a4112b869a3d74516d6fd
+#: ../../release_notes.rst:14
+msgid ""
+"Se soluciona error en el formato del archivo al exportar a .csv y abrir "
+"el archivo exportado con Microsoft Excel, si el usuario inserté "
+"caracteres de fin de línea en el campo observación de la calificación."
+msgstr ""
+"Fixed error on file format when exporting to .csv and open exported file"
+" with Microsoft Excel, when user entered end line characters "
+"on disposition comments"
