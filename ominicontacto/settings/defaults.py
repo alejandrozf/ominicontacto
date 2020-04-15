@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'api_app',
     'constance',
     'django_js_reverse',
+    'import_export',
 ]
 
 MIDDLEWARE_CLASSES = [

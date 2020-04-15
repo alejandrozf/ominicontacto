@@ -94,3 +94,23 @@ del contacto. En la figura 7 se muestra dicho escenario.
 *Figure 7: Multinum contact database*
 
 Por lo tanto, el agente puede intentar contactar a todos los números disponibles como "link" en la ficha del contacto, hasta finalmente calificar y pasar a uno nuevo.
+
+
+Ordenamiento de la entrega de contactos
+***************************************
+
+Una vez creada la campaña los contactos disponibles para cada agente serán entregados siguiendo un orden establecido en el modelo AgenteEnContacto, esta funcionalidad permite editar ese orden usando la exportación/importación de archivos en formato .csv.
+
+La idea es que el administrador puede descargarse el orden actual de contactos hacia un archivo .csv, reordenar las filas y luego importar dicho archivo con lo cual el nuevo orden se impacte en el orden de la asignación de contactos a agentes en la campaña.
+
+A esta funcionalidad se puede acceder usando el menú de la campaña preview
+
+Ver imágenes 8 y 9
+
+.. image:: images/access_to_reorden_contacts.png
+
+*Figura 8: Accesso a página de reordenamiento de entrega de contactos*
+
+.. image:: images/reorder_contacts_page.png
+
+*Figura 9: Página de reordenamiento de entrega de contactos*

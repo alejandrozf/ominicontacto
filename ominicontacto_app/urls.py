@@ -670,6 +670,14 @@ urlpatterns = [
         administrador_o_supervisor_requerido(
             views_campana_preview.LiberarContactoAsignado.as_view()),
         name="liberar_contacto_asignado"),
+    url(r'^campana_preview/ordenar_contactos_asignados/(?P<pk_campana>\d+)/$',
+        administrador_o_supervisor_requerido(
+            views_campana_preview.OrdenarAsignacionContactosView.as_view()),
+        name="ordenar_entrega_contactos_preview"),
+    url(r'^campana_preview/descargar_asignacion_contactos/(?P<pk_campana>\d+)/$',
+        administrador_o_supervisor_requerido(
+            views_campana_preview.DescargarOrdenAgentesEnContactosView.as_view()),
+        name="descargar_orden_contactos_actual_preview"),
     # ==========================================================================
     # Campana Entrante
     # ==========================================================================

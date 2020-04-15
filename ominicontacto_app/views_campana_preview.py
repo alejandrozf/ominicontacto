@@ -19,6 +19,12 @@
 
 from __future__ import unicode_literals
 
+import csv
+import json
+import tablib
+
+from import_export import resources
+
 import logging as logging_
 
 from django.utils.translation import ugettext_lazy as _
@@ -26,13 +32,14 @@ from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404
-from django.views.generic import ListView, View, DetailView, DeleteView, TemplateView
+from django.views.generic import ListView, View, DetailView, DeleteView, TemplateView, FormView
 
 from ominicontacto_app.forms import (CampanaPreviewForm, OpcionCalificacionFormSet,
                                      ParametrosCrmFormSet, CampanaSupervisorUpdateForm,
-                                     QueueMemberFormset, AsignacionContactosForm)
+                                     QueueMemberFormset, AsignacionContactosForm,
+                                     OrdenarAsignacionContactosForm)
 from ominicontacto_app.models import AgenteEnContacto, Campana, AgenteProfile, Contacto
 from ominicontacto_app.views_campana_creacion import (CampanaWizardMixin,
                                                       CampanaTemplateCreateMixin,
@@ -304,7 +311,8 @@ class LiberarContactoAsignado(View):
         # TODO: Validar que el supervisor tiene permisos sobre la campaña
         campana_id = request.POST.get('campana_id')
         agente_id = request.POST.get('agente_id')
-        if AgenteEnContacto.liberar_contacto(agente_id, campana_id):
+        status, ___ = AgenteEnContacto.liberar_contacto(agente_id, campana_id)
+        if status:
             message = _(u'El Contacto ha sido liberado.')
             messages.success(self.request, message)
         else:
@@ -349,3 +357,110 @@ class ObtenerContactoView(View):
         campana_id = kwargs.get('pk_campana', False)
         data_entrega = AgenteEnContacto.entregar_contacto(self.agente, campana_id)
         return JsonResponse(data_entrega)
+
+
+class AgenteEnContactoResourceExport(resources.ModelResource):
+
+    class Meta:
+        model = AgenteEnContacto
+        fields = ('id', 'agente_id', 'contacto_id', 'telefono_contacto', 'datos_contacto')
+        export_order = ('id', 'agente_id', 'contacto_id', 'telefono_contacto', 'datos_contacto')
+
+
+class AgenteEnContactoResourceImport(resources.ModelResource):
+
+    def before_import_row(self, row, **kwargs):
+        telefono_contacto = row.get('phone')
+        agente_id = row.get('agent_id')
+        contacto_id = row.get('contact_id')
+        nombres_columnas_datos = kwargs.get('nombres_columnas_datos')
+        datos_contacto = {}
+        for columna in nombres_columnas_datos:
+            datos_contacto[columna] = row[columna]
+        row['agente_id'] = agente_id
+        row['contacto_id'] = contacto_id
+        row['telefono_contacto'] = telefono_contacto
+        row['datos_contacto'] = json.dumps(datos_contacto)
+
+    def before_import(self, dataset, using_transactions, dry_run, **kwargs):
+        orden_datos = [str(i) for i in range(1, len(dataset) + 1)]
+        dataset.append_col(orden_datos, header='orden')
+
+    class Meta:
+        model = AgenteEnContacto
+        fields = ('id', 'agente_id', 'contacto_id', 'telefono_contacto', 'datos_contacto', 'orden')
+        export_order = (
+            'id', 'agente_id', 'contacto_id', 'telefono_contacto', 'datos_contacto', 'orden')
+
+
+class OrdenarAsignacionContactosView(FormView):
+    """Vista que permite al supervisor reordenar el orden en que seran entregados
+    los contactos a los agentes"""
+    template_name = 'campanas/campana_preview/ordenar_asignacion_contactos.html'
+
+    form_class = OrdenarAsignacionContactosForm
+
+    def get_success_url(self):
+        pk_campana = self.kwargs.get('pk_campana')
+        return reverse("ordenar_entrega_contactos_preview",
+                       kwargs={'pk_campana': pk_campana})
+
+    def get_context_data(self, **kwargs):
+        pk_campana = self.kwargs.get('pk_campana')
+        campana = Campana.objects.get(pk=pk_campana)
+        context = super(OrdenarAsignacionContactosView, self).get_context_data(**kwargs)
+        context['campana'] = campana
+        return context
+
+    def form_valid(self, form):
+        cleaned_data = form.cleaned_data
+        csv_file = cleaned_data['agentes_en_contactos_ordenados']
+        pk_campana = self.kwargs.get('pk_campana')
+        campana = Campana.objects.get(pk=pk_campana)
+        bd_contacto = campana.bd_contacto
+        nombres_columnas_datos = bd_contacto.get_metadata().nombres_de_columnas_de_datos
+        # import file
+        agents_in_contacts_dat = csv_file.read()
+        imported_data = tablib.Dataset().load(agents_in_contacts_dat.decode('utf8'))
+        result = AgenteEnContactoResourceImport().import_data(
+            imported_data, nombres_columnas_datos=nombres_columnas_datos, dry_run=False)
+        if not result.has_errors():
+            message = _('Se ha realizado la importación con éxito.')
+            messages.success(self.request, message)
+        else:
+            message = _('Hubo un error al importar el archivo de orden de contactos')
+            logger.error(
+                'Error al importar el archivo de orden de contactos en campaña {0}'.format(campana))
+            messages.error(self.request, message)
+        return super(OrdenarAsignacionContactosView, self).form_valid(form)
+
+
+class DescargarOrdenAgentesEnContactosView(View):
+    """Vista que genera y descarga un archivo .csv con el orden actual de los contactos
+    aún no entregados a los agentes
+    """
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+
+        pk_campana = kwargs.get('pk_campana')
+        campana = Campana.objects.get(pk=pk_campana)
+        bd_contacto = campana.bd_contacto
+        nombres_columnas_datos = bd_contacto.get_metadata().nombres_de_columnas_de_datos
+        response = HttpResponse(content_type='text/csv')
+        content_disposition = 'attachment; filename="agents-contacs-campaign-{0}.csv"'.format(
+            pk_campana)
+        response['Content-Disposition'] = content_disposition
+        agentes_en_contacto_qs = AgenteEnContacto.objects.filter(campana_id=pk_campana)
+        dataset = AgenteEnContactoResourceExport().export(agentes_en_contacto_qs)
+        writer = csv.writer(response)
+        columnas_headers = ['id', 'agent_id', 'contact_id', 'phone'] + nombres_columnas_datos
+        writer.writerow(columnas_headers)
+
+        for row in dataset:
+            datos_contacto = json.loads(row[-1])
+            row = row[:-1]
+            for nombre_columna in nombres_columnas_datos:
+                row = row + (datos_contacto[nombre_columna],)
+            writer.writerow(row)
+        return response

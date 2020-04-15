@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-14 11:56-0300\n"
+"POT-Creation-Date: 2020-04-21 14:25-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -91,6 +91,66 @@ msgstr "There were errors on received data"
 #: api_app/views/agente.py:194
 msgid "Error al ejecutar la llamada"
 msgstr "Error when executing the call"
+
+#: api_app/views/supervisor.py:145
+msgid "Recibidas"
+msgstr "Received"
+
+#: api_app/views/supervisor.py:146
+msgid "Efectuadas"
+msgstr "Dialed"
+
+#: api_app/views/supervisor.py:147
+msgid "Atendidas"
+msgstr "Attended"
+
+#: api_app/views/supervisor.py:148
+msgid "Conectadas"
+msgstr "Connected"
+
+#: api_app/views/supervisor.py:149
+msgid "No Conectadas"
+msgstr "Not connected"
+
+#: api_app/views/supervisor.py:150
+msgid "Abandonadas"
+msgstr "Abandon"
+
+#: api_app/views/supervisor.py:151
+msgid "Expiradas"
+msgstr "Expired"
+
+#: api_app/views/supervisor.py:152
+msgid "Tiempo de Espera de Conexión(prom.)"
+msgstr "Waiting time for connection(avg.)"
+
+#: api_app/views/supervisor.py:153
+msgid "Tiempo de Espera de Atención(prom.)"
+msgstr "Waiting time for attention(avg.)"
+
+#: api_app/views/supervisor.py:154
+msgid "Tiempo de Abandono(prom.)"
+msgstr "Abandon time(avg.)"
+
+#: api_app/views/supervisor.py:157
+msgid "Efectuadas Manuales"
+msgstr "Manual dialed calls"
+
+#: api_app/views/supervisor.py:158
+msgid "Conectadas Manuales"
+msgstr "Manual connected calls"
+
+#: api_app/views/supervisor.py:159
+msgid "No Conectadas Manuales"
+msgstr "Manual not connected calls"
+
+#: api_app/views/supervisor.py:160
+msgid "Tiempo de Espera de Conexión Manuales(prom.)"
+msgstr "Manual calls waiting time for connection(avg.)"
+
+#: api_app/views/supervisor.py:180 api_app/views/supervisor.py:195
+msgid "No existe la campaña"
+msgstr "Campaign does not exists"
 
 #: configuracion_telefonia_app/apps.py:35
 #: configuracion_telefonia_app/templates/lista_troncal_sip.html:25
@@ -679,22 +739,6 @@ msgstr "Add asterisk audios"
 msgid "Instalados:"
 msgstr "Installed:"
 
-#: configuracion_telefonia_app/templates/content_ivr.html:40
-#: configuracion_telefonia_app/templates/ivr.html:51
-msgid "Opciones de destinos"
-msgstr "Destination options"
-
-#: configuracion_telefonia_app/templates/content_ivr.html:76
-#: configuracion_telefonia_app/templates/destino_personalizado.html:94
-#: configuracion_telefonia_app/templates/grupo_horario.html:80
-#: configuracion_telefonia_app/templates/identificacion_cliente.html:164
-#: configuracion_telefonia_app/templates/ivr.html:97
-#: configuracion_telefonia_app/templates/ruta_entrante.html:36
-#: configuracion_telefonia_app/templates/ruta_saliente.html:120
-#: configuracion_telefonia_app/templates/validacion_fecha_hora.html:111
-msgid "Guardar"
-msgstr "Save"
-
 #: configuracion_telefonia_app/templates/crear_destino_personalizado.html:25
 msgid "Crear Destino Personalizado"
 msgstr "Create Custom Destination"
@@ -763,6 +807,16 @@ msgstr "Cancel"
 #: configuracion_telefonia_app/templates/destino_personalizado.html:72
 msgid "Destino en caso de failover"
 msgstr "Failover destination"
+
+#: configuracion_telefonia_app/templates/destino_personalizado.html:94
+#: configuracion_telefonia_app/templates/grupo_horario.html:80
+#: configuracion_telefonia_app/templates/identificacion_cliente.html:164
+#: configuracion_telefonia_app/templates/ivr.html:97
+#: configuracion_telefonia_app/templates/ruta_entrante.html:36
+#: configuracion_telefonia_app/templates/ruta_saliente.html:120
+#: configuracion_telefonia_app/templates/validacion_fecha_hora.html:111
+msgid "Guardar"
+msgstr "Save"
 
 #: configuracion_telefonia_app/templates/editar_destino_personalizado.html:25
 msgid "Editar Destino Personalizado"
@@ -867,6 +921,10 @@ msgstr "Succesfull identification destiny"
 #: configuracion_telefonia_app/templates/identificacion_cliente.html:141
 msgid "Destino si NO se identifica correctamente"
 msgstr "UNsuccesfull identification destiny"
+
+#: configuracion_telefonia_app/templates/ivr.html:51
+msgid "Opciones de destinos"
+msgstr "Destination options"
 
 #: configuracion_telefonia_app/templates/ivr_fields.html:30
 msgid "Sección general"
@@ -1117,12 +1175,12 @@ msgid "Destino si NO cumple la condición de tiempo"
 msgstr "Destination if time condition does not match"
 
 #: configuracion_telefonia_app/tests/tests_restriccion_eliminacion.py:65
-#: configuracion_telefonia_app/views/base.py:697
+#: configuracion_telefonia_app/views/base.py:690
 msgid "Se ha eliminado el Grupo Horario."
 msgstr "Group of Hours removed."
 
 #: configuracion_telefonia_app/tests/tests_restriccion_eliminacion.py:80
-#: configuracion_telefonia_app/views/base.py:689
+#: configuracion_telefonia_app/views/base.py:682
 msgid ""
 "No se puede eliminar un Grupo Horario utilizado en una Validacion Fecha Hora"
 msgstr "Cannot remove a Group of Hours being in use by a Time Condition"
@@ -1202,9 +1260,9 @@ msgstr "Music on Hold deleted successfully"
 #: configuracion_telefonia_app/views/base.py:170
 #: configuracion_telefonia_app/views/base.py:189
 #: configuracion_telefonia_app/views/base.py:452
-#: configuracion_telefonia_app/views/base.py:631
-#: configuracion_telefonia_app/views/base.py:685
-#: configuracion_telefonia_app/views/base.py:860
+#: configuracion_telefonia_app/views/base.py:624
+#: configuracion_telefonia_app/views/base.py:678
+#: configuracion_telefonia_app/views/base.py:853
 #, python-brace-format
 msgid "<strong>¡Cuidado!</strong> con el siguiente error: {0} ."
 msgstr "<strong>Warning!</strong> with the following error: {0} ."
@@ -1246,32 +1304,32 @@ msgstr "IVR created successfully"
 msgid "Se ha modificado el IVR con éxito"
 msgstr "IVR updated successfully"
 
-#: configuracion_telefonia_app/views/base.py:647
+#: configuracion_telefonia_app/views/base.py:640
 msgid "Se ha creado el grupo horario con éxito"
 msgstr "Group of Hours created successfully"
 
-#: configuracion_telefonia_app/views/base.py:661
+#: configuracion_telefonia_app/views/base.py:654
 msgid "Se ha modificado el grupo horario con éxito"
 msgstr "Group of Hours updated successfully"
 
-#: configuracion_telefonia_app/views/base.py:726
+#: configuracion_telefonia_app/views/base.py:719
 msgid "Se ha creado la validacion horaria con éxito"
 msgstr "Time Condition created successfully"
 
-#: configuracion_telefonia_app/views/base.py:762
+#: configuracion_telefonia_app/views/base.py:755
 msgid "Se ha modificado la validacion horaria con éxito"
 msgstr "Time Condition updated successfully"
 
-#: configuracion_telefonia_app/views/base.py:796
+#: configuracion_telefonia_app/views/base.py:789
 msgid "No se puede eliminar un objeto que es destino en un flujo de llamada."
 msgstr "You cannot delete an object that is current destination in a call flow"
 
-#: configuracion_telefonia_app/views/base.py:797
+#: configuracion_telefonia_app/views/base.py:790
 msgid "Se ha eliminado el Nodo."
 msgstr "Node deleted"
 
-#: configuracion_telefonia_app/views/base.py:825
-#: configuracion_telefonia_app/views/base.py:849
+#: configuracion_telefonia_app/views/base.py:818
+#: configuracion_telefonia_app/views/base.py:842
 #, python-brace-format
 msgid ""
 "No se puede eliminar la campaña. Es usada como destino failover de las "
@@ -1280,34 +1338,34 @@ msgstr ""
 "You cannot delete a campaign that is set as a failover destination in "
 "campaigns: {0}"
 
-#: configuracion_telefonia_app/views/base.py:880
+#: configuracion_telefonia_app/views/base.py:873
 msgid "No se puede eliminar un IVR que es destino en un flujo de llamada."
 msgstr "You cannot delete an IVR that is current destination in a call flow"
 
-#: configuracion_telefonia_app/views/base.py:881
+#: configuracion_telefonia_app/views/base.py:874
 msgid "Se ha eliminado el IVR."
 msgstr "IVR deleted"
 
-#: configuracion_telefonia_app/views/base.py:889
+#: configuracion_telefonia_app/views/base.py:882
 msgid ""
 "No se puede eliminar una Validación Fecha Hora mientras sea destino en un "
 "flujo de llamada."
 msgstr ""
 "You cannot delete a Time Condition that is current destination in a call flow"
 
-#: configuracion_telefonia_app/views/base.py:891
+#: configuracion_telefonia_app/views/base.py:884
 msgid "Se ha eliminado la Validación Fecha Hora."
 msgstr "Time Condition deleted"
 
-#: configuracion_telefonia_app/views/base.py:918
+#: configuracion_telefonia_app/views/base.py:911
 msgid "Se ha creado el Identificador de clientes con éxito"
 msgstr "Client Identification service created successfully"
 
-#: configuracion_telefonia_app/views/base.py:978
+#: configuracion_telefonia_app/views/base.py:971
 msgid "Se ha modificado el Identificador de clientes con éxito"
 msgstr "Client Identification service updated successfully"
 
-#: configuracion_telefonia_app/views/base.py:1057
+#: configuracion_telefonia_app/views/base.py:1050
 msgid ""
 "No se puede eliminar un Identificador de clientes que es destino en un flujo "
 "de llamada."
@@ -1315,14 +1373,14 @@ msgstr ""
 "You cannot delete an Client Identification service that is a current "
 "destination in a call flow"
 
-#: configuracion_telefonia_app/views/base.py:1059
+#: configuracion_telefonia_app/views/base.py:1052
 msgid "Se ha eliminado el Identificador de Clientes."
 msgstr "Client Identification service route removed"
 
-#: configuracion_telefonia_app/views/base.py:1086
+#: configuracion_telefonia_app/views/base.py:1079
 msgid "Se ha creado el nodo de Destino Personalizado con éxito"
 msgstr "Custom Destination created successfully"
 
-#: configuracion_telefonia_app/views/base.py:1119
+#: configuracion_telefonia_app/views/base.py:1112
 msgid "Se ha modificado el nodo de Destino Personalizado con éxito"
 msgstr "Custom Destination updated successfully"
