@@ -144,10 +144,9 @@
   tags: always
 
 - name: Check if custom and override files for dialplan exists
-  shell: "[ -f {{ asterisk_location }}/etc/asterisk/oml_extensions_commonsub_custom.conf ]"
+  shell: "if [ $(ls -l {{ asterisk_location}}/etc/asterisk/oml_extensions_*_override.conf 2>/dev/null | wc -l) -gt 0 ] && [ $(ls -l {{ asterisk_location}}/etc/asterisk/oml_extensions_*_custom.conf 2>/dev/null | wc -l) -gt 0 ]; then exit 0; else exit 1; fi"
   changed_when: false
   failed_when: false
-  delegate_to: localhost
   register: ast_custom_exists
   tags: always
 

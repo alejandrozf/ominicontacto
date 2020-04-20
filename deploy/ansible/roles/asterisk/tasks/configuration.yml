@@ -113,7 +113,7 @@
     - oml_extensions_postcall_override.conf
     - oml_extensions_precall_override.conf
   tags: postinstall
-  when: ast_custom_exists.rc == 0
+  when: ast_custom_exists.rc != 0
 
 - name: Copy of pjsip custom and override files
   copy: "src=roles/asterisk/templates/conf/archivos-no-enlaces/{{ item }} dest={{ ast_conf_location }}/ owner={{ usuario }} group={{ usuario }} mode=755"
