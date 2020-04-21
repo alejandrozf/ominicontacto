@@ -30,12 +30,11 @@
 #  failed_when: false
 
 - name: Create of .pgpass file
-  template: src=templates/.pgpass dest={{ item }}.pgpass mode=0600 owner={{ usuario }} group={{ usuario }}
+  template: src=roles/prerequisitos/templates/.pgpass dest={{ item }}.pgpass mode=0600 owner={{ usuario }} group={{ usuario }}
   with_items:
     - "{{ install_prefix }}"
     - /root/
   tags: postinstall
-  when: is_docker == "false"
 
 ##################################
 ##         Centos tasks         ##
@@ -124,6 +123,7 @@
 # Se descarga e instala el repositorio epel-release
 - name: Install of epel-release repo (centos)
   yum: name={{ epel_repository }} state=present update_cache=yes
+  when: docker_distribution.stdout != '"Sangoma Linux"'
 
 - name: Install of python-psycopg2
   yum: name=python-psycopg2 state=present

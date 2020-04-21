@@ -26,10 +26,10 @@
 - name: Installing docker (centos)
   yum: name={{ item }} state=present update_cache=yes
   with_items:
-    - yum-utils 
+    - yum-utils
     - device-mapper-persistent-data
     - lvm2
-    - docker-ce 
+    - docker-ce
     - docker-ce-cli
     - containerd.io
   when: '"docker" not in docker_installed.stdout'
@@ -50,7 +50,7 @@
   until: result is success
 
 #################
-# DevEnv deploy # 
+# DevEnv deploy #
 #################
 - name: Creation of deploy folders structure
   file: "dest={{ item }} state=directory owner={{ usuario }} group={{ usuario }} mode=0755 recurse=yes"
@@ -92,7 +92,7 @@
 #  when: devenv == 1
 
 ##################
-# ProdEnv deploy # 
+# ProdEnv deploy #
 ##################
 
 - name: Creation of deploy base folder
@@ -100,8 +100,18 @@
   when: prodenv == 1
 
 - include: roles/dialer/tasks/mariadb.yml
+  when: prodenv == 1 and docker_distribution.stdout == '"CentOS Linux"'
+
+- name: Grant privileges to root and wombat mysql users
+  command: "mysql -ne \"GRANT ALL PRIVILEGES ON *.* TO '{{ item.user }}'@'%' IDENTIFIED BY '{{ item.password }}' WITH GRANT OPTION;\""
+  with_items:
+    - { user: "root", password: "{{ mysql_root_password }}" }
+    - { user: "wombat", password: "dials" }
+  environment:
+    mariadb_host: "{{ mariadb_host }}"
+    MYSQL_PWD: "{{ mysql_root_password}}"
   when: prodenv == 1
-  
+
 - include: roles/database/tasks/installations.yml
   when: prodenv == 1
 
@@ -115,7 +125,7 @@
 # mensaje si rtpengine está instalado
 - debug: msg="RTPengine ya se encuentra instalado se omite instalación"
   when: rtpengine_installed.stdout == rtpengine_version and prodenv == 1
- 
+
 - include: roles/kamailio/tasks/packages_installation.yml
   when: prodenv == 1 and rtpengine_installed.stdout != rtpengine_version
 

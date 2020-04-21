@@ -28,7 +28,7 @@ En la siguiente figura se presenta un esquema representativo acerca del cómo se
   .. image:: images/install_docker_centos.png
         :align: center
 
-Como se puede observar los componentes: Asterisk, Kamailio, Nginx, Wombat Dialer, Redis y OMni-App se ejecutan en contenedores, mientras que RTPengine, PostgreSQL y MySQL sobre el sistema operativo base. 
+Como se puede observar los componentes: Asterisk, Kamailio, Nginx, Wombat Dialer, Redis y OMni-App se ejecutan en contenedores, mientras que RTPengine, PostgreSQL y MySQL sobre el sistema operativo base.
 A nivel de red, estos componentes se despliegan en una red LAN la cual es creada por docker, creando interfaces virtuales por cada componente.
 Este tipo de configuración de red es llamado `Bridge network <https://docs.docker.com/network/bridge/>`_. La LAN por defecto para los containers es 192.168.15.0/24.
 
@@ -54,7 +54,7 @@ Hay que tener en cuenta estas cosas:
 .. note::
 
    * La variable *subnet=192.168.15.0/24*, debe modificarse OBLIGATORIAMENTE en caso de que su dirección IP LAN del Linux host (donde se ejecuta el docker-engine) coincida con este rango aquí citadas.
-   * Para una instalación de ceros, en la variable *mysql_root_password* ingresar **LA MISMA** contraseña de mysql que se ingresó a la hora de instalar el FreePBX e Issabel.
+   * Para una instalación en FreePBX o Issabel la variable *mysql_root_password* no es necesario ingresarla, para Issabel va a tomar el valor que encuentre en /etc/issabel.conf y para FreePBX tomará un valor vacio, ya que FreePBX por default no setea contraseña de mysql.
 
 4. Ejecutar el script deploy.sh de la siguiente forma:
 
@@ -118,4 +118,3 @@ Estos dos comandos dejaran lista la instancia de OMniLeads sobre FreePBX.
 .. Note::
 
     En próximas versiones se tratará de optimizar la ejecución sobre FreePBX.
-
