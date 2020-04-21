@@ -34,7 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </thead>
         <tbody>
         {% for contacto in object_list %}
-            <tr>
+            <tr id="{{ contacto.telefono}}">
                 <td>{{ contacto.telefono }}</td>
                 <td>{{ contacto.pk }}</td>
                 <td>
