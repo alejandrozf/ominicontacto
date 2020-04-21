@@ -1223,7 +1223,7 @@ class Campana(models.Model):
             contactos_campana.delete()
             self.finalizar()
 
-    def adicionar_agente_en_contacto(self, contacto):
+    def adicionar_agente_en_contacto(self, contacto, agente_id, es_originario=True):
         """Crea una nueva entrada para relacionar un agentes y un contacto
         nuevo a una campaña preview
         """
@@ -1233,10 +1233,10 @@ class Campana(models.Model):
         datos_contacto = dict(zip(campos_contacto, datos_contacto))
         datos_contacto_json = json.dumps(datos_contacto)
         AgenteEnContacto.objects.create(
-            agente_id=-1, contacto_id=contacto.pk, datos_contacto=datos_contacto_json,
+            agente_id=agente_id, contacto_id=contacto.pk, datos_contacto=datos_contacto_json,
             telefono_contacto=contacto.telefono, campana_id=self.pk,
             estado=AgenteEnContacto.ESTADO_INICIAL,
-            es_originario=False)
+            es_originario=es_originario)
 
     def get_string_queue_asterisk(self):
         if self.queue_campana:
