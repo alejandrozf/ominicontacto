@@ -1138,13 +1138,13 @@ class Campana(models.Model):
         self.estado = Campana.ESTADO_TEMPLATE_BORRADO
         self.save()
 
-    def _crear_agente_en_contacto(self, contacto, agente_id, campos_contacto, estado):
+    def _crear_agente_en_contacto(self, contacto, agente_id, campos_contacto, estado, orden):
         datos_contacto = literal_eval(contacto.datos)
         datos_contacto = dict(zip(campos_contacto, datos_contacto))
         datos_contacto_json = json.dumps(datos_contacto)
         agente_en_contacto = AgenteEnContacto(
             agente_id=agente_id, contacto_id=contacto.pk, datos_contacto=datos_contacto_json,
-            telefono_contacto=contacto.telefono, campana_id=self.pk, estado=estado)
+            telefono_contacto=contacto.telefono, campana_id=self.pk, estado=estado, orden=orden)
         return agente_en_contacto
 
     def establecer_valores_iniciales_agente_contacto(
@@ -1163,6 +1163,7 @@ class Campana(models.Model):
         # creamos los objetos del modelo AgenteEnContacto a crear
         agente_en_contacto_list = []
 
+        orden = AgenteEnContacto.ultimo_id() + 1
         if asignacion_proporcional and asignacion_aleatoria:
             random.shuffle(campana_contactos)
             agentes_campana = self.obtener_agentes()
@@ -1171,7 +1172,9 @@ class Campana(models.Model):
                                                dividir_lista(campana_contactos, n_agentes_campana)):
                 for contacto in grupo_contactos:
                     agente_en_contacto = self._crear_agente_en_contacto(
-                        contacto, agente.pk, campos_contacto, AgenteEnContacto.ESTADO_INICIAL)
+                        contacto, agente.pk, campos_contacto, AgenteEnContacto.ESTADO_INICIAL,
+                        orden=orden)
+                    orden += 1
                     agente_en_contacto_list.append(agente_en_contacto)
         elif asignacion_proporcional:
             agentes_campana = self.obtener_agentes()
@@ -1180,12 +1183,15 @@ class Campana(models.Model):
                                                dividir_lista(campana_contactos, n_agentes_campana)):
                 for contacto in grupo_contactos:
                     agente_en_contacto = self._crear_agente_en_contacto(
-                        contacto, agente.pk, campos_contacto, AgenteEnContacto.ESTADO_INICIAL)
+                        contacto, agente.pk, campos_contacto, AgenteEnContacto.ESTADO_INICIAL,
+                        orden=orden)
+                    orden += 1
                     agente_en_contacto_list.append(agente_en_contacto)
         else:
             for contacto in campana_contactos:
                 agente_en_contacto = self._crear_agente_en_contacto(
-                    contacto, -1, campos_contacto, AgenteEnContacto.ESTADO_INICIAL)
+                    contacto, -1, campos_contacto, AgenteEnContacto.ESTADO_INICIAL, orden=orden)
+                orden += 1
                 agente_en_contacto_list.append(agente_en_contacto)
 
         # insertamos las instancias en la BD
@@ -1232,11 +1238,12 @@ class Campana(models.Model):
         datos_contacto = literal_eval(contacto.datos)
         datos_contacto = dict(zip(campos_contacto, datos_contacto))
         datos_contacto_json = json.dumps(datos_contacto)
+        orden = AgenteEnContacto.ultimo_id() + 1
         AgenteEnContacto.objects.create(
             agente_id=agente_id, contacto_id=contacto.pk, datos_contacto=datos_contacto_json,
             telefono_contacto=contacto.telefono, campana_id=self.pk,
             estado=AgenteEnContacto.ESTADO_INICIAL,
-            es_originario=es_originario)
+            es_originario=es_originario, orden=orden)
 
     def get_string_queue_asterisk(self):
         if self.queue_campana:
@@ -3414,6 +3421,13 @@ class AgenteEnContacto(models.Model):
         qs_agentes_liberados.update(agente_id=-1, estado=AgenteEnContacto.ESTADO_INICIAL)
 
         return liberados
+
+    @classmethod
+    def ultimo_id(cls):
+        ultimo = AgenteEnContacto.objects.last()
+        if ultimo:
+            return ultimo.id
+        return 0
 
 
 class ParametrosCrm(models.Model):

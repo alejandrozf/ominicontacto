@@ -216,6 +216,11 @@ urlpatterns = [
             views_base_de_datos_contacto.BaseDatosContactoUpdateView.as_view()),
         name='update_base_datos_contacto'
         ),
+    url(r'^campana/base_datos_contacto/(?P<pk_campana>\d+)/actualizar/$',
+        administrador_o_supervisor_requerido(
+            views_base_de_datos_contacto.BaseDatosContactoUpdateView.as_view()),
+        name='update_base_datos_contacto_de_campana'
+        ),
     url(r'^base_datos_contacto/(?P<pk>\d+)/validacion/$',
         administrador_o_supervisor_requerido(
             views_base_de_datos_contacto.DefineBaseDatosContactoView.as_view()),
@@ -233,6 +238,11 @@ urlpatterns = [
         administrador_o_supervisor_requerido(
             views_base_de_datos_contacto.ActualizaBaseDatosContactoView.as_view()),
         name='actualiza_base_datos_contacto',
+        ),
+    url(r'^campana/base_datos_contacto/(?P<pk_campana>\d+)/validacion_actualizacion/$',
+        administrador_o_supervisor_requerido(
+            views_base_de_datos_contacto.ActualizaBaseDatosContactoView.as_view()),
+        name='actualiza_base_datos_contacto_de_campana',
         ),
 
     url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/list_contacto/$',
