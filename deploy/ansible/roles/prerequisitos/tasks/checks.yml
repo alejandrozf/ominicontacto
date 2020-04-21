@@ -50,7 +50,7 @@
 
 - name: Validate IP public obtained
   shell: if [[ {{ public_ip.stdout }} =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then echo 0; else echo 1; fi
-  args: 
+  args:
     executable: /bin/bash
   register: ip_val
   tags: always
@@ -160,7 +160,7 @@
   failed_when: false
   register: certs_exists
   tags: always
-  
+
 - name: Check if $DOCKER_USER was defined previously
   shell: bash -lc 'if [ -z $DOCKER_USER ]; then exit 1; else echo $DOCKER_USER; exit 0; fi'
   args:
@@ -195,7 +195,7 @@
   failed_when: false
   register: assert_pguser
   tags: always
-  
+
 - set_fact: postgres_user="{{ assert_pguser.stdout }}"
   when: assert_pguser.rc == 0 and postgres_user is not defined
   tags: always
@@ -208,7 +208,7 @@
   failed_when: false
   register: assert_pgpass
   tags: always
-  
+
 - set_fact: postgres_password="{{ assert_pgpass.stdout }}"
   when: assert_pgpass.rc == 0 and postgres_password is not defined
   tags: always
@@ -415,4 +415,4 @@
   tags: ['never', 'docker_deploy']
 
 - set_fact: mysql_old_root_password=""
-  when: mysql_old_root_password is not defined and is_docker == "false" 
+  when: mysql_old_root_password is not defined and is_docker == "false"

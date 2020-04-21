@@ -3380,6 +3380,7 @@ class AgenteEnContacto(models.Model):
         if qs_agente_en_contacto.exists():
             agente_en_contacto = qs_agente_en_contacto.first()
             agente_en_contacto.estado = AgenteEnContacto.ESTADO_INICIAL
+            agente_en_contacto.agente_id = -1
             agente_en_contacto.save()
             return True
         return False

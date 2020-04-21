@@ -175,7 +175,7 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
                                     post_data, follow=True)
         resultado = json.loads(response.content)
         self.assertEqual(resultado['status'], 'OK')
-        self.assertTrue(AgenteEnContacto.objects.filter(agente_id=self.agente_1.id,
+        self.assertTrue(AgenteEnContacto.objects.filter(agente_id=-1,
                         contacto_id=self.contacto_1.id,
                         campana_id=self.campana_preview.id,
                         estado=AgenteEnContacto.ESTADO_INICIAL).exists())

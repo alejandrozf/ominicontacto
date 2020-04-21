@@ -144,7 +144,7 @@
 - name: Create crontab file
   template: src=templates/cron-grabaciones dest={{ cron_location }} owner={{ usuario }} group={{ usuario }} mode=600 force=yes
   tags: postinstall
-  when: MONITORFORMAT == "mp3" and is_docker == "false"
+  when: is_docker == "false"
 
 # Creo el archivo odbcinst.ini desde ansible
 - name: Creation of odbcinst.ini file
