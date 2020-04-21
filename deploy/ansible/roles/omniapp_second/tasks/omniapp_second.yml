@@ -30,8 +30,8 @@
 - name: Copy of the certificates in nginx
   copy: "src={{ kamailio_location }}/etc/certs/{{ item }} dest={{ install_prefix }}nginx_certs/ remote_src=yes"
   with_items:
-    - "{{ cert }}"
-    - "{{ key }}"
+    - cert.pem
+    - key.pem
   tags: postinstall
 
 - name: Copy register server certificate in default location

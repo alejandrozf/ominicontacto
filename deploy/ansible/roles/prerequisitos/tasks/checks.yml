@@ -134,15 +134,6 @@
   register: kamailio_installed
   tags: ['kamailio','postinstall']
 
-# Chequeo si el usuario puso sus certificados
-- name: Check if trusted certificates exists
-  shell: "if [ -z \"$(ls -A /var/tmp/ominicontacto-build/ominicontacto/deploy/certs)\" ]; then exit 1; else exit 0; fi"
-  failed_when: false
-  changed_when: false
-  delegate_to: localhost
-  register: trusted_certs_exists
-  tags: always
-
 - name: Check if custom and override files for dialplan exists
   shell: "if [ $(ls -l {{ asterisk_location}}/etc/asterisk/oml_extensions_*_override.conf 2>/dev/null | wc -l) -gt 0 ] && [ $(ls -l {{ asterisk_location}}/etc/asterisk/oml_extensions_*_custom.conf 2>/dev/null | wc -l) -gt 0 ]; then exit 0; else exit 1; fi"
   changed_when: false

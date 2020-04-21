@@ -36,6 +36,7 @@
     - redis
     - hiredis
     - hiredis-devel
+    - python-devel
   tags: ['kamailio']
   retries: 3
   delay: 3

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-04 13:21-0300\n"
+"POT-Creation-Date: 2020-04-24 16:02-0300\n"
 "PO-Revision-Date: 2019-08-13 12:26-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -17,7 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 # 9b9308075d544f91bb967ec4921521b3
 #: ../../install.rst:5
@@ -26,7 +26,6 @@ msgstr "OMniLeads installation"
 
 # bba3fa0f0b3a41f0b86832141e5cb2f5
 #: ../../install.rst:7
-#, fuzzy
 msgid ""
 "La instalación de OMniLeads requiere la configuración completa de un "
 "servidor Linux. No queremos depender del viejo formato de ISO para "
@@ -39,18 +38,21 @@ msgid ""
 "<https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html>`_."
 msgstr ""
 "OMniLeads installation requires the complete configuration of a Linux "
-"server. We don't want to depend to the old ISO format to distribute the software, "
-"due to our philosophy of deploying releases continuously. So, we use this automation tool "
-"to deploy: `Ansible <https://docs.ansible.com/ansible/latest/index.html>`_. "
-"The Ansible code is versioned, you just need to care about one file, and this is the "
-"`Inventory File <https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html>`_."
+"server. We don't want to depend to the old ISO format to distribute the "
+"software, due to our philosophy of deploying releases continuously. So, "
+"we use this automation tool to deploy: `Ansible "
+"<https://docs.ansible.com/ansible/latest/index.html>`_. The Ansible code "
+"is versioned, you just need to care about one file, and this is the "
+"`Inventory File "
+"<https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html>`_."
 
 # bf45cdf9ee6c4ec48e7d3cddeaff8247
 #: ../../install.rst:12
 msgid ""
 "No es necesario preocuparse por la instalación de Ansible, el script de "
 "instalación que se va a usar ya lo instala."
-msgstr "Is not necessary to care about Ansible installation, the installation "
+msgstr ""
+"Is not necessary to care about Ansible installation, the installation "
 "script of OMniLeads installs Ansible."
 
 # cba9d9b4f2fb4d71a98b6e9036a4225d
@@ -66,8 +68,10 @@ msgid ""
 "Con la configuración ya establecida en este archivo, tenemos variedad a "
 "la hora de definir que tipo de instalación queremos. Para OMniLeads "
 "tenemos dos grandes tipos:"
-msgstr "With the configuration stablished in this file, we have variety when defining "
-"which type of installation we want. For OMniLeads we have to big types:"
+msgstr ""
+"With the configuration stablished in this file, we have variety when "
+"defining which type of installation we want. For OMniLeads we have to big"
+" types:"
 
 # 894f1e51c6594ec3b58d792f9c85d322
 #: ../../install.rst:24
@@ -83,10 +87,11 @@ msgid ""
 "minimal 7.7 "
 "<http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso>`_."
 " A este tipo de instalación lo llamamos **OMniLeads AIO (All In One)**."
-msgstr "OMniLeads can run as a traditional application, deploying an installation "
-"of all its components on premise, can be a VM, physical server or VPS. The only conditoin is "
-"that you must to use as base GNU/Linux distro: `CentOS "
-"minimal 7.7 "
+msgstr ""
+"OMniLeads can run as a traditional application, deploying an installation"
+" of all its components on premise, can be a VM, physical server or VPS. "
+"The only conditoin is that you must to use as base GNU/Linux distro: "
+"`CentOS minimal 7.7 "
 "<http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso>`_."
 
 # 8e79bdef2c594890b5a796e2f95344e8
@@ -99,7 +104,9 @@ msgstr "AIO installation types"
 msgid ""
 "A partir de lo que se configure en el archivo de inventario podemos tener"
 " dos tipos de instalación AIO:"
-msgstr "From what you configure in the inventory file, you can have to types of AIO installation: "
+msgstr ""
+"From what you configure in the inventory file, you can have to types of "
+"AIO installation: "
 
 # 2b13a56d496e488692b23e300ab020f9
 #: ../../install.rst:43
@@ -148,13 +155,102 @@ msgstr ""
 "distro in which it happened and the stable version that was wanted to "
 "install"
 
+# bb4535c4569a4c7fa9e884ffc0408340
+#: ../../install.rst:52
+msgid "OMniLeads Cloud"
+msgstr ""
+
+# 521ee21b53364ee597cc0f2e126e1682
+#: ../../install.rst:54
+msgid ""
+"OMniLeads puede ser instalado en una instancia en la nube siempre y "
+"cuando se use una imágen de CentOS. Tener en cuenta las siguientes "
+"indicaciones:"
+msgstr ""
+
+# f7994d68cb064615b058e017801b88cd
+#: ../../install.rst:56
+msgid ""
+"Solamente se puede realizar el tipo de instalación "
+":ref:`about_install_selfhosted` para deployar OMniLeads en un servidor "
+"Cloud."
+msgstr ""
+
+# fa667849c74a4440a24bd419e65de426
+#: ../../install.rst:57
+msgid ""
+"En el archivo de inventario revisar las "
+":ref:`about_install_inventory_oml_cloud`."
+msgstr ""
+
+# b320251cbd2a4e88aa0b9c059c8edf41
+#: ../../install.rst:58
+msgid "Se recomienda utilizar certificados digitales confiables."
+msgstr ""
+
+# b7df6ca7ce6d42c49e9db94c0ef47d70
+#: ../../install.rst:62
+msgid ""
+"Desde el equipo de Freetech Solutions hemos probado la instalación en la "
+"distro `Amazon Linux 2 <https://aws.amazon.com/es/amazon-linux-2/>`_. Se "
+"**recomienda** utilizar esta distro si va a hostear su OMniLeads en "
+"Amazon Web Services."
+msgstr ""
+
+# 1624df8b5afc41df980108ba688dfaae
+#: ../../install.rst:64
+msgid "**Añadir par key/cert confiables**"
+msgstr "Add trusted key/cert pairt"
+
+# 98fdf707899548f48b2125742bb82043
+#: ../../install.rst:66
+msgid ""
+"OMniLeads utiliza por defecto un par de key/cert digital autofirmado, lo "
+"que hace que siempre salten excepciones en el browser con los conocidos "
+"errores **ERR_CERT_AUTORITHY INVALID** (para Google Chrome) y "
+"**SEC_ERROR_UNKNOWN_ISSUER** (para Firefox). Si ud posee su propio par "
+"key/cert certificados firmados por una CA válida puede añadirlos a su "
+"instalación de OMniLeads siguiendo estos pasos:"
+msgstr ""
+"By default, OMniLeads uses it own selfsigned key/certifate pair for HTTPS"
+" connections. This invokes the well known errors in browsers: "
+"**ERR_CERT_AUTORITHY INVALID** (Google Chrome) and "
+"**SEC_ERROR_UNKNOWN_ISSUER** (Firefox). If you own your own certificates "
+"signed by a valid CA you can add them to your OMniLeads installation, "
+"with this steps:"
+
+# 57b14612f6ca44f3be92aa09298200c2
+#: ../../install.rst:68
+msgid ""
+"Ubique sus par de archivos en la carpeta *deploy/certs/* dentro del "
+"repositorio"
+msgstr "Place the files in the folder *deploy/certs/* inside the repository"
+
+# c8e0c14ec3b747a4b5c4322ad26ebc67
+#: ../../install.rst:69
+msgid "Los archivos tienen que estar en formato *.pem*"
+msgstr "The files must be in *.pem* format"
+
+# 8e79bdef2c594890b5a796e2f95344e8
+#: ../../install.rst:70
+msgid "Proceda con la instalación"
+msgstr "Proceed with installation"
+
+# 759f974d6b534141af4a46cb27f07c3f
+#: ../../install.rst:74
+msgid ""
+"Dejar sus certificados en la carpeta *deploy/certs/*, para que al "
+"actualizar el software se mantenga el uso de estos certificados."
+msgstr "Leave your certs in *deploy/certs/* forlder, so when you want to "
+"upgrade the software, the same certs will be used."
+
 # bf3312ab2a424b78bff357fafe858774
-#: ../../install.rst:53
+#: ../../install.rst:78
 msgid "Instalación en contenedores"
 msgstr "Containers Installation"
 
 # a70e26d192e34008ae3ad30410619e4f
-#: ../../install.rst:55
+#: ../../install.rst:80
 msgid ""
 "OMniLeads puede ser desplegado utilizando contenedores `Docker "
 "<https://www.docker.com>`_, esto extiende la posibilidad de ejecución de "
@@ -164,17 +260,18 @@ msgid ""
 "host conviva el software de PBX y OMniLeads como software de Contact "
 "Center."
 msgstr ""
-"OMniLeads can also be deployed using `Docker <https://www.docker.com>`_ containers, "
-" with this form the software can be also installed inside an Issabel-PBX or FreePBX "
-"instances, having both Contact Center and PBX solutions inside the same host."
+"OMniLeads can also be deployed using `Docker <https://www.docker.com>`_ "
+"containers,  with this form the software can be also installed inside an "
+"Issabel-PBX or FreePBX instances, having both Contact Center and PBX "
+"solutions inside the same host."
 
 # d9e741eb84c2411b82adda41e208db77
-#: ../../install.rst:59
+#: ../../install.rst:84
 msgid "En esta sección puede ver los pasos para lograr esta instalación:"
 msgstr "In this section you can see the steps to achieve this installation:"
 
 # dc292b0b354541dc93a8b1bc78e0638c
-#: ../../install.rst:66
+#: ../../install.rst:91
 msgid ""
 "El siguiente apartado esta dirigido a usuarios avanzados de Docker, los "
 "cuales quieran involucrarse mas con la creacion de imagenes para el "
@@ -184,18 +281,30 @@ msgstr ""
 " their own images for the project: "
 
 # 05188bc1bc8f4f22bf7fb817a9dfb6c7
-#: ../../install.rst:74
+#: ../../install.rst:99
 msgid "Primer acceso al sistema"
 msgstr "First access to system"
 
 # 1cac7311a8c04da3874692bae8514999
-#: ../../install.rst:76
+#: ../../install.rst:101
 msgid ""
 "Una vez instalado el software, remitirse a esta sección para el primer "
 "acceso:"
 msgstr "Once installed the software, go to this section for the first access:"
 
 # 358fe882d6a04d118662f64c63d4cc0c
-#: ../../install.rst:84
+#: ../../install.rst:109
 msgid "FAQ y errores comunes"
 msgstr "FAQ and common errors"
+
+# 427ca6d86b5e4f1ebabc80e3cffdaa1b
+#~ msgid ""
+#~ "Tener certificados digitales confiables es "
+#~ "imprescindible para poder hacer uso del"
+#~ " addon `WebPhone Client "
+#~ "<https://gitlab.com/omnileads/webphone-client-releases>`_."
+#~ msgstr ""
+#~ "The trusted certificate for HTTPS "
+#~ "connection is mandatory to use the "
+#~ "`WebPhone Client <https://gitlab.com/omnileads"
+#~ "/webphone-client-releases>`_ addon."

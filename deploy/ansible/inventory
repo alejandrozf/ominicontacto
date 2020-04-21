@@ -99,13 +99,6 @@ schedule=Agenda
 #######################################################################################
 #external_port=
 #external_hostname=
-#####################################################################
-# Trusted Certificates:                                             #
-#   If you want to use your own certificate/key pair, copy them in  #
-#   ominicontacto/deploy/certs/ and type here the name of the files #
-#####################################################################
-#trusted_cert=
-#trusted_key=
 ##############################################################################################
 # Variables below are used when you have postgresql, mysql , wombat dialer or rtpengine      #
 # in diferent servers. Uncomment the variables and place the hostnames of these servers      #

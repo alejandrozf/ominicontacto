@@ -5,7 +5,7 @@ Instalación de OMniLeads
 ******************************
 
 La instalación de OMniLeads requiere la configuración completa de un servidor Linux. No queremos depender del viejo formato de ISO para distribuir el software, ya que tenemos como filosofía el despliegue continuo de releases. Por ende, usamos como base esta herramienta de automatización de tareas: `Ansible <https://docs.ansible.com/ansible/latest/index.html>`_.
-El código de Ansible ya está versionado, solo hay que tener en cuenta un archivo muy importante, y este es el `Archivo de Inventario <https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html>`_. 
+El código de Ansible ya está versionado, solo hay que tener en cuenta un archivo muy importante, y este es el `Archivo de Inventario <https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html>`_.
 
 .. note::
 
@@ -55,11 +55,23 @@ OMniLeads puede ser instalado en una instancia en la nube siempre y cuando se us
 
 1. Solamente se puede realizar el tipo de instalación :ref:`about_install_selfhosted` para deployar OMniLeads en un servidor Cloud.
 2. En el archivo de inventario revisar las :ref:`about_install_inventory_oml_cloud`.
-3. Se recomienda utilizar certificados digitales confiables, revisar la sección :ref:`about_install_inventory_oml_trusted_certs`
+3. Se recomienda utilizar certificados digitales confiables.
 
 .. note::
 
   Desde el equipo de Freetech Solutions hemos probado la instalación en la distro `Amazon Linux 2 <https://aws.amazon.com/es/amazon-linux-2/>`_. Se **recomienda** utilizar esta distro si va a hostear su OMniLeads en Amazon Web Services.
+
+**Añadir par key/cert confiables**
+
+OMniLeads utiliza por defecto un par de key/cert digital autofirmado, lo que hace que siempre salten excepciones en el browser con los conocidos errores **ERR_CERT_AUTORITHY INVALID** (para Google Chrome) y **SEC_ERROR_UNKNOWN_ISSUER** (para Firefox). Si ud posee su propio par key/cert certificados firmados por una CA válida puede añadirlos a su instalación de OMniLeads siguiendo estos pasos:
+
+1. Ubique sus par de archivos en la carpeta *deploy/certs/* dentro del repositorio
+2. Los archivos tienen que estar en formato *.pem*
+3. Proceda con la instalación
+
+.. important::
+
+  Dejar sus certificados en la carpeta *deploy/certs/*, para que al actualizar el software se mantenga el uso de estos certificados.
 
 
 Instalación en contenedores
