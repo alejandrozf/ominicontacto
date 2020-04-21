@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-14 15:23-0300\n"
+"POT-Creation-Date: 2020-04-21 10:35-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,57 +24,34 @@ msgstr "Release Notes"
 
 # d82b7aba6425421ab734c9a356b56743
 #: ../../release_notes.rst:4
-msgid "*Abril 14, 2020*"
-msgstr "*April 14, 2020"
+msgid "*Abril 21, 2020*"
+msgstr "*April 21, 2020"
 
 # 8376ef42c5614a178a2fc0fe09246ed1
 #: ../../release_notes.rst:7
-#, fuzzy
-msgid "Detalles de Release 1.5.5"
-msgstr "Release 1.5.5 details"
+msgid "Detalles de Release 1.5.6"
+msgstr "Release 1.5.6 details"
 
 # 2f558403c15a436e90409b976c7f07ed
 #: ../../release_notes.rst:10
-msgid "Bug fixes and improvements"
-msgstr "Bug fixes y mejoras"
+msgid "Bug fixes y mejoras"
+msgstr "Fixes and improvements"
 
-# a3c1819847e4414781a36ded6328c67e
+# aad09193077e4992ad8243ec8f4db81a
 #: ../../release_notes.rst:11
 msgid ""
-"Se adiciona mejora a la supervisión que permite mostrar información de "
-"solo los agentes activos asignados al supervisor logueado"
+"Solucionado error en instalación que sobreescribía el archivo de crontab "
+"y se perdía información de las tareas relacionadas con las campañas "
+"preview"
 msgstr ""
-"Added improvement to the supervision that only shows information about active"
-" agents asigned to the logged supervisor"
+"Fixed installation error that overrides crontab file and lose preview"
+" campaigns tasks"
 
-# 630088f3c3024d33834e751a362d9f66
+# 22c4d17b93184f9081221fcff5ad10db
 #: ../../release_notes.rst:12
 msgid ""
-"Se adiciona mejora que incluye información sobre la duración de una "
-"llamada en la exportación a .csv de los reportes de contactados en "
-"llamadas"
+"Solucionada inconsistencia en el proceso de liberación de contactos de "
+"agentes en campañas preview"
 msgstr ""
-"Added improvement that includes call duration in contacts called report"
-" when exporting to .csv file"
-
-# 9c3a0ce89ee34e66b9a594478c006b5c
-#: ../../release_notes.rst:13
-msgid ""
-"Se adiciona mejora que advierte a los usuarios de tipo supervisor cuando "
-"intentan dejar la página de agentes activos y están en el medio de una "
-"acción de Asterisk, como 'spy', 'whisper', etc"
-msgstr ""
-"Added improvement that warns to supervisor users when they attempts to left"
-" the active agents page and are in a middle of Asterisk action, such as"
-" spy, whisper, etc"
-
-# f4b3cf11934a4112b869a3d74516d6fd
-#: ../../release_notes.rst:14
-msgid ""
-"Se soluciona error en el formato del archivo al exportar a .csv y abrir "
-"el archivo exportado con Microsoft Excel, si el usuario inserté "
-"caracteres de fin de línea en el campo observación de la calificación."
-msgstr ""
-"Fixed error on file format when exporting to .csv and open exported file"
-" with Microsoft Excel, when user entered end line characters "
-"on disposition comments"
+"Fixed inconsistency in the process of release contacts from agents on"
+" preview campaigns"
