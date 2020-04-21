@@ -40,6 +40,7 @@
     - collectstatic_js_reverse
     - compress --force
     - regenerar_asterisk
+    - regenerar_tareas_preview
   become: true
   become_method: su
   become_user: "{{ usuario }}"
