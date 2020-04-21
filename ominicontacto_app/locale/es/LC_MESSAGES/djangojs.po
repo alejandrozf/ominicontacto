@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-14 12:17-0300\n"
+"POT-Creation-Date: 2020-04-21 15:14-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,21 +33,27 @@ msgstr ""
 msgid "Consulte a su supervisor"
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:46
-#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:65
-#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:81
-#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:97
-#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:123
-#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:149
-#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:171
-#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:187
-#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:211
-#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:232
+#: ominicontacto_app/static/ominicontacto/JS/agente/main.js:44
+msgid ""
+"No se ha podido acceder a su micrófono. \n"
+"Permita el acceso al mismo y recargue la página para comenzar a trabajar."
+msgstr ""
+
+#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:44
+#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:61
+#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:76
+#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:91
+#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:115
+#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:139
+#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:159
+#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:174
+#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:197
+#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:217
 msgid "Error al ejecutar => "
 msgstr "Error al ejecutar => "
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:212
-#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:233
+#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:198
+#: ominicontacto_app/static/ominicontacto/JS/agente/omlAPI.js:218
 msgid "No se pudo iniciar la llamada. Intente Nuevamente."
 msgstr "No se pudo iniciar la llamada. Intente Nuevamente."
 

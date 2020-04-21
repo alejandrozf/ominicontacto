@@ -22,7 +22,7 @@
 /*      - omlAPI.js         */
 /* 		- click2Call.js     */
 
-/* globals Timer OMLAPI Click2CallDispatcher PhoneJSController */
+/* globals Timer OMLAPI Click2CallDispatcher PhoneJSController gettext */
 
 /* DEBUG*/
 $('#wrapperWebphone').toggleClass('active');
@@ -35,6 +35,19 @@ var phone_controller = undefined;
 var click2call = undefined;
 
 $(function () {
+
+    navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(function(stream) {
+            startPhoneJs();
+        })
+        .catch(function(err) {
+            alert(gettext('No se ha podido acceder a su micrófono. \n\
+Permita el acceso al mismo y recargue la página para comenzar a trabajar.'));
+            return;
+        });
+});
+
+function startPhoneJs() {
     var timers = {
         'operacion': new Timer('horaO', 'minsO', 'segsO'),
         'pausa': new Timer('horaP', 'minsP', 'segsP'),
@@ -55,7 +68,7 @@ $(function () {
 
     timers.operacion.start();
     oml_api.changeStatus(USER_STATUS_ONLINE, agent_id);
-});
+}
 
 function subscribirEventosBotonesGenerales(oml_api, agent_id) {
 
