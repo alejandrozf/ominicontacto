@@ -75,7 +75,7 @@ class AgenteTiemposReporte(object):
     def tiempo_promedio_llamadas(self):
         if self._cantidad_llamadas_procesadas:
             return float('%.2f' %
-                         (self._tiempo_llamada /
+                         (self._tiempo_llamada.total_seconds() /
                           self._cantidad_llamadas_procesadas))
         return None
 
@@ -90,7 +90,7 @@ class AgenteTiemposReporte(object):
     @property
     def tiempo_porcentaje_llamada(self):
         if self.tiempo_llamada and self.tiempo_sesion:
-            return self.tiempo_llamada / self.tiempo_sesion.total_seconds() * 100
+            return self.tiempo_llamada.total_seconds() / self.tiempo_sesion.total_seconds() * 100
         return None
 
     @property
@@ -106,7 +106,7 @@ class AgenteTiemposReporte(object):
             if self.tiempo_pausa:
                 tiempo_wait -= self.tiempo_pausa.total_seconds()
             if self.tiempo_llamada:
-                tiempo_wait -= self.tiempo_llamada
+                tiempo_wait -= self.tiempo_llamada.total_seconds()
             return tiempo_wait
         else:
             return None
@@ -133,8 +133,9 @@ class AgenteTiemposReporte(object):
         return self.tiempo_llamada
 
     def get_promedio_llamadas(self):
-        if self.tiempo_llamada and self.tiempo_llamada > 0:
-            promedio_llamadas = self.tiempo_llamada / self.cantidad_llamadas_procesadas
+        tiempo_llamada = self.tiempo_llamada.total_seconds()
+        if tiempo_llamada > 0:
+            promedio_llamadas = tiempo_llamada / self.cantidad_llamadas_procesadas
             return promedio_llamadas
         return 0
 
