@@ -80,6 +80,21 @@ Se debe indicar con un check, cuales columnas son las que almacenan teléfonos, 
 
 Finalmente se salva el archivo y el mismo queda disponible como una base de contactos del sistema instanciable por cualquier tipo de campaña.
 
+Configuración de restricciones sobre campos de Contactos
+********************************************************
+A veces no es deseable que los Agentes puedan ver o editar algún campo de un contacto en la base de datos. Para estos casos se puede configurar qué campos restringir ingresando desde la lista de campañas a la opción de "Restringir campos de contacto".
+
+.. image:: images/campaigns_restrict_field_action.png
+
+Luego en esta pantalla se deben seleccionar para bloquear los campos que no deben ser editables y para ocultar los campos que ni siquiera deben poder ser vistos por los Agentes. Sólo será posible ocultar los campos que esten seleccionados como bloqueados. El campo principal de teléfono no podrá ser ocultado.
+
+.. image:: images/campaigns_restricted_fields_selection.png
+
+Cuando un Agente quiera editar un contacto no se le mostrarán los campos ocultos y se le presentarán deshabilitados los campos seleccionados como bloqueados que no esten ocultos. Tener en cuenta que al crear el contacto el agente podrá ingresar por única vez valores en los campos que solamente estén bloqueados.
+
+.. image:: images/campaigns_restricted_fields_for_agent.png
+
+
 Formularios
 ***********
 Los formularios de campaña constituyen el método por defecto para recolectar información (relevante para la campaña) en la interacción con la persona detrás
