@@ -53,6 +53,9 @@
   shell: psql -c '\i {{ install_prefix }}ominicontacto/reportes_app/sql/plperl/replace_insert_queue_log_ominicontacto_queue_log.sql'
   environment:
     PGPASSWORD: "{{ postgres_password }}"
+  become: true
+  become_user: "{{ usuario }}"
+  become_method: su
   tags: ['never','postinstall']
 
 # Se sube el script de backup-restore
