@@ -1694,3 +1694,10 @@ class AsignacionContactosForm(forms.Form):
                 _('Debe seleccionar la asignación proporcional si quiere escoger'
                   'la asignación en orden aleatorio'))
         return cleaned_data
+
+
+class OrdenarAsignacionContactosForm(forms.Form):
+    """Formulario para importar el orden realizado sobre los
+    Agentes en Contactos en un archivo .csv
+    """
+    agentes_en_contactos_ordenados = forms.FileField()

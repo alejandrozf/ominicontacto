@@ -74,8 +74,10 @@ class AgenteEnContactoAdmin(admin.ModelAdmin):
         'contacto_id',
         'agente_id',
         'campana_id',
+        'telefono_contacto',
         'datos_contacto',
-        'estado'
+        'estado',
+        'orden'
     )
 
     list_filter = (

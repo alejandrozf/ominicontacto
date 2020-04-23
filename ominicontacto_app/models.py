@@ -33,7 +33,6 @@ import uuid
 from ast import literal_eval
 
 from crontab import CronTab
-from random import choice
 
 from django.contrib.auth.models import AbstractUser
 from django.contrib.sessions.models import Session
@@ -3309,6 +3308,10 @@ class AgenteEnContacto(models.Model):
     estado = models.PositiveIntegerField(choices=ESTADO_CHOICES)
     modificado = models.DateTimeField(auto_now=True, null=True)
     es_originario = models.BooleanField(default=True)
+    orden = models.IntegerField(default=1)
+
+    class Meta:
+        ordering = ['orden']
 
     def __str__(self):
         return "Agente de id={0} relacionado con contacto de id={1} con el estado {2}".format(
@@ -3346,21 +3349,28 @@ class AgenteEnContacto(models.Model):
 
         # Si el agente tiene algún contacto entregado previamente se libera para
         # que pueda ser entregado a otros agentes de la campaña
-        cls.liberar_contacto(agente.id, campana_id)
+        __, orden = cls.liberar_contacto(agente.id, campana_id)
+
+        # obtiene el orden de la ultimo asignacion entregada al agente
+        # (-1 si no tenía ninguno asignado y le asigna consecutivamente
+        # a partir los numeros de orden superiores o iguales a este
+        numero_agentes_contacto = AgenteEnContacto.objects.filter(campana_id=campana_id).count()
+        orden = (orden + 1) % (numero_agentes_contacto + 1)
 
         try:
             qs_agentes_contactos = cls.objects.select_for_update().filter(
                 agente_id__in=[-1, agente.pk], estado=AgenteEnContacto.ESTADO_INICIAL,
-                campana_id=campana_id)
+                campana_id=campana_id, orden__gte=orden)
         except DatabaseError:
             return {'result': 'Error',
                     'code': 'error-concurrencia',
                     'data': 'Contacto siendo accedido por más de un agente'}
 
         if qs_agentes_contactos.exists():
-            # encuentra y devuelve de forma aleatoria los datos de uno de los
-            # contactos disponibles para el agente
-            agente_en_contacto = choice(qs_agentes_contactos)
+            # encuentra y devuelve el contacto a asignar al
+            # de acuerdo al orden definido en el atributo 'orden'
+            # desde la lista de los contactos disponibles para el agente
+            agente_en_contacto = qs_agentes_contactos.first()
             agente_en_contacto.estado = AgenteEnContacto.ESTADO_ENTREGADO
             agente_en_contacto.agente_id = agente.id
             agente_en_contacto.save()
@@ -3382,8 +3392,8 @@ class AgenteEnContacto(models.Model):
             agente_en_contacto.estado = AgenteEnContacto.ESTADO_INICIAL
             agente_en_contacto.agente_id = -1
             agente_en_contacto.save()
-            return True
-        return False
+            return True, agente_en_contacto.orden
+        return False, -1
 
     @classmethod
     def liberar_contactos_por_tiempo(cls, campana_id, tiempo_de_reserva):

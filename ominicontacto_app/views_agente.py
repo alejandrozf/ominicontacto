@@ -235,7 +235,8 @@ class LiberarContactoAsignado(View):
         # TODO: Validar que el supervisor tiene permisos sobre la campaña
         campana_id = request.POST.get('campana_id')
         agente = request.user.get_agente_profile()
-        if AgenteEnContacto.liberar_contacto(agente.id, campana_id):
+        status, ___ = AgenteEnContacto.liberar_contacto(agente.id, campana_id)
+        if status:
             return JsonResponse({'status': 'OK'})
         else:
             return JsonResponse({'status': 'ERROR'})
