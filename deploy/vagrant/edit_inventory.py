@@ -33,6 +33,7 @@ parser.add_argument("-tag", "--tag_docker_images", help="Specifies de tag for ge
                     "images")
 parser.add_argument("--ami_user", help="Specifies de tag for generated docker images")
 parser.add_argument("--ami_password", help="Specifies de tag for generated docker images")
+parser.add_argument("--dialer_host", help="Specifies de tag for generated docker images")
 parser.add_argument("--dialer_user", help="Specifies de tag for generated docker images")
 parser.add_argument("--dialer_password", help="Specifies de tag for generated docker images")
 parser.add_argument("--ecctl", help="Specifies de tag for generated docker images")
@@ -40,9 +41,7 @@ parser.add_argument("--sca", help="Specifies de tag for generated docker images"
 parser.add_argument("--external_hostname", help="Specifies de tag for generated docker images")
 parser.add_argument("--postgres_host", help="Specifies de tag for generated docker images")
 parser.add_argument("--postgres_database", help="Specifies de tag for generated docker images")
-parser.add_argument("--default_postgres_user", help="Specifies de tag for generated docker images")
 parser.add_argument("--postgres_user", help="Specifies de tag for generated docker images")
-parser.add_argument("--default_postgres_password", help="Postgresql and mariadb passwords")
 parser.add_argument("--postgres_password", help="Postgresql and mariadb passwords")
 parser.add_argument("--mysql_host", help="Specifies de tag for generated docker images")
 parser.add_argument("--mysql_password", help="Postgresql and mariadb passwords")
@@ -111,21 +110,18 @@ else:
 if args.postgres_database:
     inventory_contents = inventory_contents.replace(
         "postgres_database=omnileads", "postgres_database={0}".format(args.postgres_database))
-if args.postgres_host and args.default_postgres_user and args.default_postgres_password:
+if args.postgres_host:
     inventory_contents = inventory_contents.replace(
         "#postgres_host=", "postgres_host={0}".format(args.postgres_host))
-    inventory_contents = inventory_contents.replace(
-        "#default_postgres_user=", "default_postgres_user={0}".format(
-            args.default_postgres_user))
-    inventory_contents = inventory_contents.replace(
-        "#default_postgres_password=", "default_postgres_password={0}".format(
-            args.default_postgres_password))
 if args.ecctl:
     inventory_contents = inventory_contents.replace(
         "ECCTL=28800", "ECCTL={0}".format(args.ecctl))
 if args.external_hostname:
     inventory_contents = inventory_contents.replace(
         "#external_hostname=", "external_hostname={0}".format(args.external_hostname))
+if args.dialer_host:
+    inventory_contents = inventory_contents.replace(
+        "#dialer_host=", "dialer_host={0}".format(args.dialer_host))
 if args.mysql_host:
     inventory_contents = inventory_contents.replace(
         "#mysql_host=", "mysql_host={0}".format(args.mysql_host))
