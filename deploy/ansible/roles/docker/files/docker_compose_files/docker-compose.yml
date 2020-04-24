@@ -21,6 +21,8 @@ services:
     image: {{ ast_builded_image }}
     networks:
       - {{ subnet_name }}
+    ports:
+      - 5160-5163:5160-5163/udp
     privileged: true
     restart: on-failure
     stop_grace_period: 1m30s
@@ -114,7 +116,7 @@ services:
       - {{ subnet_name }}
     privileged: true
     ports:
-     - "{{ nginx_external_port }}:443/tcp"
+     - "${NGINX_EXT_PORT}:443/tcp"
     restart: on-failure
     stop_grace_period: 1m30s
     volumes:
@@ -184,7 +186,7 @@ services:
       - ./recordings:/opt/omnileads/grabaciones
       - ast_conf_files:/etc/asterisk/
       - ./sounds:/var/lib/asterisk/sounds/
-      - ominicontacto:{{ install_prefix }}ominicontacto/
+    #  - ominicontacto:{{ install_prefix }}ominicontacto/
 {% endif %}
     working_dir: {{ install_prefix}}ominicontacto
 
@@ -276,5 +278,5 @@ volumes:
   sounds:
 {% else %}
   ast_conf_files:
-  ominicontacto:
+  #ominicontacto:
 {% endif %}
