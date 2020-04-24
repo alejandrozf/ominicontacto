@@ -32,13 +32,13 @@ En la primera parte del archivo se encuentra la seccion **[prodenv-aio]**:
 * **Para Self Hosted:** descomentar la primera línea, para que quede así:
 
 .. code:: bash
-   
+
    localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
 
 * **Para Ansible Remoto** descomentar la segunda línea, y reemplazar el X.X.X.X por la IP de la máquina a instalar OMniLeads, ejemplo:
 
 .. code:: bash
-   
+
   192.168.1.206 ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
 
 .. _about_install_inventory_docker:
@@ -58,13 +58,13 @@ En la segunda parte, se encuentra la sección **[prodenv-container]** para la in
 * **Para Self Hosted:** descomentar la primera línea, para que quede así:
 
 .. code:: bash
-   
+
    localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
 
 * **Para Ansible Remoto** descomentar la segunda línea, y reemplazar el X.X.X.X por la IP de la máquina a instalar OMniLeads, ejemplo:
 
 .. code:: bash
-   
+
   192.168.1.206 ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
 
 .. important::
@@ -80,8 +80,11 @@ En la tercera sección del archivo se ajusta todo lo respectivo a contraseñas d
 
 * **Postgres SQL**
 * **MySQL**
-* **Usuario "admin" de OMniLeads**
+* **Constraseña del usuario "admin" de OMniLeads**
 * **TZ**
+* **Usuario de la DB postgresql**
+* **Usuario y contraseña para asterisk AMI**
+* **Usuario y contraseña para web de Wombat Dialer**
 
 .. code-block:: bash
 
@@ -96,7 +99,7 @@ En la tercera sección del archivo se ajusta todo lo respectivo a contraseñas d
   #                    SET POSTGRESQL PASSWORD                        #
   #####################################################################
   postgres_database=omnileads
-  postgres_user=omnileads
+  #postgres_user=omnileads
   #postgres_password=my_very_strong_pass
   #####################################################################
   #                           Web Admin                               #
@@ -106,13 +109,13 @@ En la tercera sección del archivo se ajusta todo lo respectivo a contraseñas d
   #######################################
   # AMI for wombat dialer and OMniLeads #
   #######################################
-  ami_user=omnileadsami
-  ami_password=5_MeO_DMT
+  #ami_user=omnileadsami
+  #ami_password=5_MeO_DMT
   #####################################################
   # Wombat dialer credentials and MYSQL root password #
   #####################################################
-  dialer_user=demoadmin
-  dialer_password=demo
+  #dialer_user=demoadmin
+  #dialer_password=demo
   #mysql_root_password=my_very_strong_pass
   #################################################################################################
   # Set the timezone where the nodes are. UNCOMMENT and set this if you are doing a fresh install #
@@ -141,7 +144,7 @@ Las variables necesarias para **deploy** de los containers son:
 * **oml_release:** la versión de OMniLeads a instalar.
 * **subnet:** se refiere a la red LAN con la que se levantarán los containers.
 
-Las variables *registry_email* y *registry_password* son necesarias en caso de querer hacer un **build** de sus propias imágenes. 
+Las variables *registry_email* y *registry_password* son necesarias en caso de querer hacer un **build** de sus propias imágenes.
 
 .. _about_install_inventory_oml_cloud:
 
@@ -170,27 +173,3 @@ Los parámetros  **"external_hostname"**, **"external_port"**, deben configurars
     * Permit de tráfico entrante desde los puertos 10000 a 30000 UDP
 
 .. _about_install_inventory_oml_trusted_certs:
-
-Parámetros para añadir par llave/certificado digital confiables
-***************************************************************
-
-OMniLeads utiliza por defecto un par de llave/certificado digital autofirmado, lo que hace que siempre salten excepciones en el browser con los conocidos errores **ERR_CERT_AUTORITHY INVALID** (para Google Chrome) y **SEC_ERROR_UNKNOWN_ISSUER** (para Firefox). Si ud posee sus propios certificados firmados por una CA válida puede añadirlos a su instalación de OMniLeads siguiendo estos pasos:
-
-1. Ubique sus certificados en la carpeta *deploy/certs/* dentro del repositorio
-2. Edite y descomente las variables **trusted_key** y **trusted_cert** con el nombre del key y cert que puso en la carpeta
-
-.. code::
-
-  #####################################################################
-  # Trusted Certificates:                                             #
-  #   If you want to use your own certificate/key pair, copy them in  #
-  #   ominicontacto/deploy/certs/ and type here the name of the files #
-  #####################################################################
-  #trusted_cert=
-  #trusted_key=
-
-3. Proceda con la instalación
-
-.. important::
-
-  Tener certificados digitales confiables es imprescindible para poder hacer uso del addon `WebPhone Client <https://gitlab.com/omnileads/webphone-client-releases>`_.

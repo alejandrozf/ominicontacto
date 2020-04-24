@@ -27,8 +27,7 @@
   when: rtpengine_installed.stdout == rtpengine_version and rtpengine_host is not defined
 
 - include: roles/kamailio/tasks/packages_installation.yml
-  tags: kamailio
-  when: rtpengine_installed.stdout != rtpengine_version
+  tags: ['kamailio', 'postinstall']
 
 #  Si rtpengine_installed es failed incluyo la tarea de instalacion. Osea el sistema detecta cuando rtpengine está instalado o no y en caso de que no lo  esté lo instala sino omite
 - include: roles/kamailio/tasks/rtpengine_installation.yml
@@ -60,16 +59,17 @@
   tags: ['kamailio','postinstall']
   when: kamailio_installed.stdout != kamailio_version
 
-- name: Copy trusted certificates in desired locations
-  copy: src=/var/tmp/ominicontacto-build/ominicontacto/deploy/certs dest={{ item }}
+- name: Copy trusted key/cert pair in kamailio location
+  copy: src={{ repo_location }}/deploy/certs/{{ item.src }} dest={{ item.dest }}
   with_items:
-    - "{{ kamailio_location }}/etc"
-    - "{{ install_prefix }}nginx_certs"
-  when: trusted_certs_exists.rc == 0
+    - { src: "cert.pem", dest: "{{ kamailio_location }}/etc/certs/cert.pem" }
+    - { src: "key.pem", dest: "{{ kamailio_location }}/etc/certs/key.pem" }
+  when: trusted_certs == "true"
+  tags: postinstall
 
 - include: certificate_CA.yml
   tags: kamailio
-  when: certs_exists.rc == 1 and trusted_certs_exists.rc == 1
+  when: certs_exists.rc == 1 and trusted_certs == "false"
 
 - include: kamailio_configuration.yml
   tags: ['kamailio']
