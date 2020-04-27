@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-21 10:35-0300\n"
+"POT-Creation-Date: 2020-04-27 17:49-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,13 +24,14 @@ msgstr "Release Notes"
 
 # d82b7aba6425421ab734c9a356b56743
 #: ../../release_notes.rst:4
-msgid "*Abril 21, 2020*"
+msgid "*Abril 27, 2020*"
 msgstr "*April 21, 2020"
 
 # 8376ef42c5614a178a2fc0fe09246ed1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.5.6"
-msgstr "Release 1.5.6 details"
+#, fuzzy
+msgid "Detalles de Release 1.5.7"
+msgstr "Release 1.5.7 details"
 
 # 2f558403c15a436e90409b976c7f07ed
 #: ../../release_notes.rst:10
@@ -40,18 +41,6 @@ msgstr "Fixes and improvements"
 # aad09193077e4992ad8243ec8f4db81a
 #: ../../release_notes.rst:11
 msgid ""
-"Solucionado error en instalación que sobreescribía el archivo de crontab "
-"y se perdía información de las tareas relacionadas con las campañas "
-"preview"
-msgstr ""
-"Fixed installation error that overrides crontab file and lose preview"
-" campaigns tasks"
-
-# 22c4d17b93184f9081221fcff5ad10db
-#: ../../release_notes.rst:12
-msgid ""
-"Solucionada inconsistencia en el proceso de liberación de contactos de "
-"agentes en campañas preview"
-msgstr ""
-"Fixed inconsistency in the process of release contacts from agents on"
-" preview campaigns"
+"Solucionado error en instalación al correr el script de instalacion por "
+"segunda vez"
+msgstr "Fixed installation error when the installation runs for second time"
