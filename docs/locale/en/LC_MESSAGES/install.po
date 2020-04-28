@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-24 16:02-0300\n"
+"POT-Creation-Date: 2020-04-27 16:08-0300\n"
 "PO-Revision-Date: 2019-08-13 12:26-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -155,40 +155,45 @@ msgstr ""
 "distro in which it happened and the stable version that was wanted to "
 "install"
 
-# bb4535c4569a4c7fa9e884ffc0408340
+# f067d7c9a704402e9736576dde67bb36
 #: ../../install.rst:52
 msgid "OMniLeads Cloud"
 msgstr ""
 
-# 521ee21b53364ee597cc0f2e126e1682
+# b966b3ec18764e1fa42e8e44238496de
 #: ../../install.rst:54
 msgid ""
 "OMniLeads puede ser instalado en una instancia en la nube siempre y "
 "cuando se use una imágen de CentOS. Tener en cuenta las siguientes "
 "indicaciones:"
 msgstr ""
+"OMniLeads can be installed in an cloud instance always that the image "
+"used for instance be CentOS. Checkout these conditions:"
 
-# f7994d68cb064615b058e017801b88cd
+# 9b29cdbfb806403290bf118eb0b4894a
 #: ../../install.rst:56
 msgid ""
 "Solamente se puede realizar el tipo de instalación "
 ":ref:`about_install_selfhosted` para deployar OMniLeads en un servidor "
 "Cloud."
 msgstr ""
+"You can only use :ref:`about_install_selfhosted` installation to deploy "
+"OMniLeads in cloud servers."
 
-# fa667849c74a4440a24bd419e65de426
+# e88407dd9684421d869762b3afa60d71
 #: ../../install.rst:57
 msgid ""
 "En el archivo de inventario revisar las "
 ":ref:`about_install_inventory_oml_cloud`."
-msgstr ""
+msgstr "In inventory file check the :ref:`about_install_inventory_oml_cloud`."
 
-# b320251cbd2a4e88aa0b9c059c8edf41
+# d5e0c58615c44a8486d41c6df9418ab0
 #: ../../install.rst:58
 msgid "Se recomienda utilizar certificados digitales confiables."
 msgstr ""
+"Is recommended to use trusted digital certs. "
 
-# b7df6ca7ce6d42c49e9db94c0ef47d70
+# 583228238e9f453d9ee51ea3a2bb51f4
 #: ../../install.rst:62
 msgid ""
 "Desde el equipo de Freetech Solutions hemos probado la instalación en la "
@@ -196,6 +201,10 @@ msgid ""
 "**recomienda** utilizar esta distro si va a hostear su OMniLeads en "
 "Amazon Web Services."
 msgstr ""
+"We have tested installation in the `Amazon Linux 2 "
+"<https://aws.amazon.com/es/amazon-linux-2/>`_ distribution. We "
+"**recommends** to use this distro if you are going to host in Amazon Web "
+"Services."
 
 # 1624df8b5afc41df980108ba688dfaae
 #: ../../install.rst:64
@@ -241,8 +250,9 @@ msgstr "Proceed with installation"
 msgid ""
 "Dejar sus certificados en la carpeta *deploy/certs/*, para que al "
 "actualizar el software se mantenga el uso de estos certificados."
-msgstr "Leave your certs in *deploy/certs/* forlder, so when you want to "
-"upgrade the software, the same certs will be used."
+msgstr ""
+"Leave your certs in *deploy/certs/* forlder, so when you want to upgrade "
+"the software, the same certs will be used."
 
 # bf3312ab2a424b78bff357fafe858774
 #: ../../install.rst:78
@@ -296,15 +306,3 @@ msgstr "Once installed the software, go to this section for the first access:"
 #: ../../install.rst:109
 msgid "FAQ y errores comunes"
 msgstr "FAQ and common errors"
-
-# 427ca6d86b5e4f1ebabc80e3cffdaa1b
-#~ msgid ""
-#~ "Tener certificados digitales confiables es "
-#~ "imprescindible para poder hacer uso del"
-#~ " addon `WebPhone Client "
-#~ "<https://gitlab.com/omnileads/webphone-client-releases>`_."
-#~ msgstr ""
-#~ "The trusted certificate for HTTPS "
-#~ "connection is mandatory to use the "
-#~ "`WebPhone Client <https://gitlab.com/omnileads"
-#~ "/webphone-client-releases>`_ addon."

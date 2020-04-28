@@ -5,8 +5,7 @@ local   all             all                                     peer
 # IPv4 local connections:
 host    all             all             127.0.0.1/32             md5
 {% if  is_docker == "true" %}
-host    all             all             "{{ subnet }}"          md5
-host    all             all             {{ omni_fqdn }}          md5
+host    all             all             {{ subnet }}             md5
 {% endif %}
 # IPv6 local connections:
 host    all             all             ::1/128                 md5

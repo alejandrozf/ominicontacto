@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-22 11:08-0300\n"
+"POT-Creation-Date: 2020-04-27 16:08-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -140,7 +140,6 @@ msgstr "**MySQL**"
 
 # 1bd1631817f248c586f6497a1ab028d3
 #: ../../install_inventory_file.rst:83
-
 msgid "**Constraseña del usuario \"admin\" de OMniLeads**"
 msgstr "**OMniLeads \"admin\" user password**"
 
@@ -214,10 +213,10 @@ msgstr ""
 "The variables *registry_email* and *registry_password* are neccesary just"
 " when you want to make a **build** of your own images."
 
-# a9db0f69c34a4146aeea1ef9c64c6e46
+# f663cdb763ce45c5955a1334abc0f4bb
 #: ../../install_inventory_file.rst:152
 msgid "Variables OMniLeads Cloud"
-msgstr ""
+msgstr "OMniLeads Cloud variables"
 
 # 313de912bc174e4896214f387b680553
 #: ../../install_inventory_file.rst:154
@@ -228,9 +227,9 @@ msgid ""
 "**https://external_hostname:external_port**, sin tener una conexion LAN "
 "directa o atraves de VPN hacia el OMniLeads."
 msgstr ""
-"The settings **\"external_hostname\"**, **\"external_port\"**, "
-"must be configured if you want to install OMniLeads in"
-" a cloud server, where the agents will connect to an URL composed by "
+"The settings **\"external_hostname\"**, **\"external_port\"**, must be "
+"configured if you want to install OMniLeads in a cloud server, where the "
+"agents will connect to an URL composed by "
 "**https://external_hostname:external_port**, without having a LAN direct "
 "connection or through VPN to the OMniLeads server."
 
@@ -251,88 +250,9 @@ msgstr ""
 msgid "Permit de tráfico saliente desde los puertos 10000 a 30000 UDP"
 msgstr "Permit outbound traffic in this port range: 10000-30000 UDP"
 
-# eb61a016d71343d6ba5dbb480537fa24
+# 1ed0f3904d5c4a3db22a74e6bb92d7ac
 #: ../../install_inventory_file.rst:173
+#, fuzzy
 msgid "Permit de tráfico entrante desde los puertos 10000 a 30000 UDP"
-msgstr "Permit inbound traffic in this port range: 10000-30000 UDP"
+msgstr "Permit outbound traffic in this port range: 10000-30000 UDP"
 
-# f3a1537235d841ddbc9b2021aee6a357
-#~ msgid ""
-#~ "Las variables necesarias para **deploy** "
-#~ "de los containers son: * "
-#~ "**registry_username:** si se va a "
-#~ "deployar las imagenes oficiales de "
-#~ "Freetech Solutions, dejar esta variable "
-#~ "como está * **oml_release:** la versión"
-#~ " de OMniLeads a instalar. * "
-#~ "**subnet:** se refiere a la red "
-#~ "LAN con la que se levantarán los"
-#~ " containers."
-#~ msgstr "The neccesary variables to deploy the containers are: "
-
-# 5c8d5081327d4f709d314bd356ed4b90
-#~ msgid "OMniLeads Cloud"
-#~ msgstr ""
-
-# 726bb51481434c5aa9cdead512b0a458
-#~ msgid "Parámetros para añadir par llave/certificado digital confiables"
-#~ msgstr "Settings to add trusted key/certificate pair"
-
-# a8b40e82adfa4dc295691d77de41c544
-#~ msgid ""
-#~ "OMniLeads utiliza por defecto un par "
-#~ "de llave/certificado digital autofirmado, lo"
-#~ " que hace que siempre salten "
-#~ "excepciones en el browser con los "
-#~ "conocidos errores **ERR_CERT_AUTORITHY INVALID** "
-#~ "(para Google Chrome) y "
-#~ "**SEC_ERROR_UNKNOWN_ISSUER** (para Firefox). Si "
-#~ "ud posee sus propios certificados "
-#~ "firmados por una CA válida puede "
-#~ "añadirlos a su instalación de OMniLeads"
-#~ " siguiendo estos pasos:"
-#~ msgstr ""
-#~ "By default, OMniLeads uses it own "
-#~ "selfsigned key/certifate pair for HTTPS "
-#~ "connections. This invokes the well known"
-#~ " errors in browsers: **ERR_CERT_AUTORITHY "
-#~ "INVALID** (Google Chrome) and "
-#~ "**SEC_ERROR_UNKNOWN_ISSUER** (Firefox). If you "
-#~ "own your own certificates signed by "
-#~ "a valid CA you can add them "
-#~ "to your OMniLeads installation, with "
-#~ "this steps:"
-
-# 005010374168420581a169fd14d399e7
-#~ msgid ""
-#~ "Ubique sus certificados en la carpeta"
-#~ " *deploy/certs/* dentro del repositorio"
-#~ msgstr "Place the files in the folder *deploy/certs/* inside the repository"
-
-# 49b26bdd86b6430191694a2c51ba5953
-#~ msgid ""
-#~ "Edite y descomente las variables "
-#~ "**trusted_key** y **trusted_cert** con el "
-#~ "nombre del key y cert que puso "
-#~ "en la carpeta"
-#~ msgstr ""
-#~ "Edit and uncomment the variables "
-#~ "**trusted_key** and **trusted_cert** with the"
-#~ " name of the key and cert files"
-#~ " in the folder"
-
-# b315f80c942641dabe6182ee59d4ae53
-#~ msgid "Proceda con la instalación"
-#~ msgstr "Proceed with the installation"
-
-# 0711416198ec4649a53a586f69b0eb8f
-#~ msgid ""
-#~ "Tener certificados digitales confiables es "
-#~ "imprescindible para poder hacer uso del"
-#~ " addon `WebPhone Client "
-#~ "<https://gitlab.com/omnileads/webphone-client-releases>`_."
-#~ msgstr ""
-#~ "The trusted certificate for HTTPS "
-#~ "connection is mandatory to use the "
-#~ "`WebPhone Client <https://gitlab.com/omnileads"
-#~ "/webphone-client-releases>`_ addon."
