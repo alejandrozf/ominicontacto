@@ -1701,3 +1701,26 @@ class OrdenarAsignacionContactosForm(forms.Form):
     Agentes en Contactos en un archivo .csv
     """
     agentes_en_contactos_ordenados = forms.FileField()
+    campo_desactivacion = forms.CharField(
+        required=False, widget=forms.HiddenInput(
+            attrs={'id': 'campoDesactivacionImport'}))
+
+
+class CampanaPreviewCampoDesactivacion(forms.ModelForm):
+
+    campo_desactivacion = forms.ChoiceField(
+        required=False, widget=forms.Select(
+            attrs={'class': 'form-control', 'id': 'campoDesactivacion'}))
+
+    def __init__(self, *args, **kwargs):
+        super(CampanaPreviewCampoDesactivacion, self).__init__(*args, **kwargs)
+        campana = self.instance
+        nombres_columnas_datos = campana.bd_contacto.get_metadata().nombres_de_columnas_de_datos
+        nombres_columnas_datos_choices = [(i, i) for i in nombres_columnas_datos]
+        choices = [EMPTY_CHOICE] + nombres_columnas_datos_choices
+        self.fields['campo_desactivacion'].choices = choices
+        self.fields['campo_desactivacion'].label = _('Campo desactivación')
+
+    class Meta:
+        model = Campana
+        fields = ('campo_desactivacion',)

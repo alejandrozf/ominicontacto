@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-21 14:25-0300\n"
+"POT-Creation-Date: 2020-05-04 18:03-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,11 +41,11 @@ msgstr "Select a valid option. That option is not available."
 #: api_app/tests/tests_api_click2call.py:158
 #: api_app/tests/tests_api_contactos.py:170
 #: api_app/tests/tests_api_contactos.py:262 api_app/views/agente.py:170
-#: api_app/views/base.py:86 api_app/views/base.py:201
+#: api_app/views/base.py:86 api_app/views/base.py:214
 msgid "Sistema externo inexistente."
 msgstr "Unkown external system"
 
-#: api_app/tests/tests_api_contactos.py:114 api_app/views/base.py:158
+#: api_app/tests/tests_api_contactos.py:114 api_app/views/base.py:171
 msgid "Contacto agregado"
 msgstr "Contact added"
 
@@ -53,7 +53,7 @@ msgstr "Contact added"
 #: api_app/tests/tests_api_contactos.py:160
 #: api_app/tests/tests_api_contactos.py:229
 #: api_app/tests/tests_api_contactos.py:252 api_app/views/base.py:117
-#: api_app/views/base.py:233
+#: api_app/views/base.py:246
 msgid "No tiene permiso para editar la campaña."
 msgstr "You don't have permission to edit the campaign"
 
@@ -61,13 +61,13 @@ msgstr "You don't have permission to edit the campaign"
 #: api_app/tests/tests_api_contactos.py:195
 #: api_app/tests/tests_api_contactos.py:272
 #: api_app/tests/tests_api_contactos.py:292 api_app/views/base.py:110
-#: api_app/views/base.py:226
+#: api_app/views/base.py:239
 msgid "Campaña inexistente."
 msgstr "Campaign not found"
 
 #: api_app/tests/tests_api_contactos.py:186
 #: api_app/tests/tests_api_contactos.py:282 api_app/views/base.py:98
-#: api_app/views/base.py:213
+#: api_app/views/base.py:226
 msgid "Debe indicar un idCampaign válido."
 msgstr "You must provide a valid idCampaign"
 
@@ -84,7 +84,7 @@ msgid "Se recibieron campos incorrectos"
 msgstr "Incorrect fields were received"
 
 #: api_app/views/agente.py:169 api_app/views/agente.py:203
-#: api_app/views/base.py:75 api_app/views/base.py:190
+#: api_app/views/base.py:75 api_app/views/base.py:203
 msgid "Hubo errores en los datos recibidos"
 msgstr "There were errors on received data"
 

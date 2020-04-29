@@ -39,7 +39,8 @@ from django.views.generic import ListView, View, DetailView, DeleteView, Templat
 from ominicontacto_app.forms import (CampanaPreviewForm, OpcionCalificacionFormSet,
                                      ParametrosCrmFormSet, CampanaSupervisorUpdateForm,
                                      QueueMemberFormset, AsignacionContactosForm,
-                                     OrdenarAsignacionContactosForm)
+                                     OrdenarAsignacionContactosForm,
+                                     CampanaPreviewCampoDesactivacion)
 from ominicontacto_app.models import AgenteEnContacto, Campana, AgenteProfile, Contacto
 from ominicontacto_app.views_campana_creacion import (CampanaWizardMixin,
                                                       CampanaTemplateCreateMixin,
@@ -410,13 +411,21 @@ class OrdenarAsignacionContactosView(FormView):
         campana = Campana.objects.get(pk=pk_campana)
         context = super(OrdenarAsignacionContactosView, self).get_context_data(**kwargs)
         context['campana'] = campana
+        campana_form = CampanaPreviewCampoDesactivacion(instance=campana)
+        context['campana_form'] = campana_form
         return context
 
     def form_valid(self, form):
         cleaned_data = form.cleaned_data
+        campo_desactivacion = cleaned_data['campo_desactivacion']
         csv_file = cleaned_data['agentes_en_contactos_ordenados']
         pk_campana = self.kwargs.get('pk_campana')
+
+        # salvamos la eleccion del campo de desactivacion
         campana = Campana.objects.get(pk=pk_campana)
+        campana.campo_desactivacion = campo_desactivacion
+        campana.save()
+
         bd_contacto = campana.bd_contacto
         nombres_columnas_datos = bd_contacto.get_metadata().nombres_de_columnas_de_datos
         # import file
@@ -428,9 +437,10 @@ class OrdenarAsignacionContactosView(FormView):
             message = _('Se ha realizado la importación con éxito.')
             messages.success(self.request, message)
         else:
-            message = _('Hubo un error al importar el archivo de orden de contactos')
+            message = _('Hubo un error al importar el archivo de status de contactos')
             logger.error(
-                'Error al importar el archivo de orden de contactos en campaña {0}'.format(campana))
+                'Error al importar el archivo de status de contactos en campaña {0}'.format(
+                    campana))
             messages.error(self.request, message)
         return super(OrdenarAsignacionContactosView, self).form_valid(form)
 
@@ -442,16 +452,23 @@ class DescargarOrdenAgentesEnContactosView(View):
     http_method_names = ['post']
 
     def post(self, request, *args, **kwargs):
-
         pk_campana = kwargs.get('pk_campana')
+        campo_desactivacion = request.POST.get('campoDesactivacionExport')
+
+        # salvamos la eleccion del campo de desactivacion
         campana = Campana.objects.get(pk=pk_campana)
+        campana.campo_desactivacion = campo_desactivacion
+        campana.save()
+
         bd_contacto = campana.bd_contacto
         nombres_columnas_datos = bd_contacto.get_metadata().nombres_de_columnas_de_datos
         response = HttpResponse(content_type='text/csv')
         content_disposition = 'attachment; filename="agents-contacs-campaign-{0}.csv"'.format(
             pk_campana)
         response['Content-Disposition'] = content_disposition
-        agentes_en_contacto_qs = AgenteEnContacto.objects.filter(campana_id=pk_campana)
+        agentes_en_contacto_qs = AgenteEnContacto.objects.filter(
+            campana_id=pk_campana,
+            estado__in=[AgenteEnContacto.ESTADO_ENTREGADO, AgenteEnContacto.ESTADO_INICIAL])
         dataset = AgenteEnContactoResourceExport().export(agentes_en_contacto_qs)
         writer = csv.writer(response)
         columnas_headers = ['id', 'agent_id', 'contact_id', 'phone'] + nombres_columnas_datos

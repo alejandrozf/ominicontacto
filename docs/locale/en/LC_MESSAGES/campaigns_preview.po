@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-21 15:25-0300\n"
+"POT-Creation-Date: 2020-05-05 10:18-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -305,8 +305,8 @@ msgstr ""
 
 # ab50e3c7a848423c8ba110b26021045a
 #: ../../campaigns_preview.rst:100
-msgid "Ordenamiento de la entrega de contactos"
-msgstr "Reorder of contacts assignments"
+msgid "Gestión de la entrega de contactos"
+msgstr "Management of contacts assignments"
 
 # f33dfcd474014f8682538ecce4c1ae4e
 #: ../../campaigns_preview.rst:102
@@ -316,9 +316,10 @@ msgid ""
 "AgenteEnContacto, esta funcionalidad permite editar ese orden usando la "
 "exportación/importación de archivos en formato .csv."
 msgstr ""
-"Once the campaing is created the available contacts for every agent will be "
-"assign following an order established on the model AgenteEnContacto, this feature "
-"allows edit that order using the exportation/importation of .csv files"
+"Once the campaing is created the available contacts for every agent will "
+"be assign following an order established on the model AgenteEnContacto, "
+"this feature allows edit that order using the exportation/importation of "
+".csv files"
 
 # e91934d430694aeba4ad307788ddd979
 #: ../../campaigns_preview.rst:104
@@ -348,3 +349,42 @@ msgstr "Figure 8: Access to reorder contacts assignments page"
 #: ../../campaigns_preview.rst:116
 msgid "*Figura 9: Página de reordenamiento de entrega de contactos*"
 msgstr "Figure 9: Reorder contacts assignments page"
+
+# e428112c36e9448a852cc81a58f9471c
+#: ../../campaigns_preview.rst:119
+msgid ""
+"También es posible marcar como desactivados los contactos que se desee, "
+"los cuales no serán entregados a ningun agente."
+msgstr ""
+"Also, is possible to tag contacts as disabled, which will not delivered"
+" to any agent"
+
+# e25fe78d29f144168078819e75af7789
+#: ../../campaigns_preview.rst:121
+msgid ""
+"Esto es posible definiendo en la misma vista un campo de desactivación "
+"para la campaña de entre las columnas de datos de la base de contactos. "
+"Ver Figura 10."
+msgstr ""
+"This is posible by defining a deactivation field for the campaign "
+"choosing between the data colums in contacts database"
+
+# 78d466d37ad746929891335f5f7758cd
+#: ../../campaigns_preview.rst:123
+msgid "*Figura 10: Campo de desactivación de contactos*"
+msgstr "*Figure 10: Deactivation contacts field*"
+
+# 81a1c76e9fc74a99abc801cf256961c9
+#: ../../campaigns_preview.rst:127
+msgid ""
+"Después de realizar la exportación del orden actual de contactos se puede"
+" editar la columna de desactivación con los valores 0 ó FALSE lo cual, "
+"luego de la importación del archivo .csv indicará al sistema que no se "
+"deben entregar esos contactos a ningun agente. Cualquier otro valor "
+"distinto a estos hace que el sistema asuma que el contacto puede "
+"entregarse."
+msgstr ""
+"After make current contacts order exportation is possible to edit the "
+"deactivation field column with values 0 or FALSE wich, after importation of"
+".csv file will indicates to the system to not deliver this contacts to any agent."
+"Any other value different to 0 or FALSE makes the system can deliver the contact."
