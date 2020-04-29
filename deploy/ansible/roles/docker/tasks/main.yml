@@ -16,23 +16,28 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 ---
 
+# Se crea el directorio $USER_HOME/omnileads
 - name: Create root path of docker omnileads
   file: path={{ docker_root }}/omnileads/ state=directory recurse=yes owner={{ docker_user }} group={{ docker_user }}
 
+# Se incluyen las variables globales de docker
 - name: Include docker global variables
   include_vars: group_vars/docker_general_vars.yml
   tags: always
 
+# Se incluyen las variables para devenv
 - name: Include docker devenv variables
   include_vars: group_vars/docker_devenv_vars.yml
   when: devenv == 1
   tags: ['docker_build','docker_deploy']
 
+# Se incluyen las variables para prodenv
 - name: Include docker prodenv variables
   include_vars: group_vars/docker_prodenv_vars.yml
   when: prodenv == 1
   tags: ['docker_build','docker_deploy']
 
+# Se incluyen las tareas de chequeos iniciales para ver si ya existen variables de entorno, hago este include solo para el deploy
 - include_tasks: roles/prerequisitos/tasks/checks.yml
   tags: ['never', 'docker_deploy']
 
@@ -42,5 +47,6 @@
 - include: deploy.yml
   tags: docker_deploy
 
+# Por ultimo se cambia los permisos de la carpeta raiz del entorno.
 - name: Change ownership of {{ docker_root }}/omnileads folder
   file: state=directory owner={{ docker_user }} group={{ docker_user }} path={{ docker_root }}/omnileads recurse=yes

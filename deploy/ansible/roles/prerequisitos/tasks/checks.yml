@@ -17,6 +17,8 @@
 #
 ---
 
+# Incluye variables para centos o amazon linux
+
 - name: Include centos variables
   include_vars: group_vars/centos_vars.yml
   tags: always
@@ -27,9 +29,9 @@
   tags: always
   when: ansible_distribution == "Amazon"
 
-##########
-# Checks #
-##########
+########################################################################
+# Chequeos de red, de servicios instalados, folders y archivos creados #
+########################################################################
 
 # Obtengo hostname del nodo
 - name: Get the hostname of node
@@ -38,11 +40,12 @@
   tags: always
   changed_when: false
 
+# Seteo variable omni_fqdn con hostname obtenido
 - set_fact: omni_fqdn="{{ hostname.stdout }}"
   tags: always
   changed_when: false
 
-# Obtengo IP del nodo
+# Obtengo IP privada del nodo
 - name: Get IP adress of node (selfhosted)
   set_fact: omni_ip={{ hostvars[inventory_hostname]['ansible_' + iface]['ipv4']['address'] }}
   when: iface != "none"
@@ -54,6 +57,7 @@
   register: public_ip
   tags: always
 
+# Valido si lo que devolvió la tarea anterior es una IP
 - name: Validate IP public obtained
   shell: if [[ {{ public_ip.stdout }} =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then echo 0; else echo 1; fi
   args:
@@ -62,6 +66,7 @@
   tags: always
   failed_when: false
 
+# Si no es una IP tiro este mensaje de error
 - fail:
     msg: "The public IP obtained is wrong, check in shell if you obtain a public IP with this command 'curl http://ipinfo.io/ip', after that please run the script again"
   when: ip_val.stdout != '0'
@@ -76,31 +81,36 @@
   changed_when: false
   tags: always
 
-- name: Get the network/submask configured in default interface
+# Obtengo la subnet_address/netmask para la red de la IP privada
+- name: Get the subnet_address/netmask configured for private IP
   shell: route | grep {{ omni_ip.split(".")[0] }} |tail -1 |awk -F " " '{print $1"/"$3}'
   register: network_submask
   changed_when: false
   tags: always
 
-# nos aseguramos q' "omni_distribution" esté dentro de los SO permitidos. Si no es asi, esta task generara un error
+# Me aseguro que se quiera instalar OML esté dentro de los SO permitidos.
 - name: Print omni_distribution
   debug: msg="omni_distribution es {{ ansible_os_family }}"
   changed_when: false
   when: is_docker == "false"
   tags: always
 
-- name: Get linux distro
-  shell: awk -F= '/^NAME/{print $2}' /etc/os-release
-  register: docker_distribution
-  tags: always
-
-- name: Check linux distro
+# Si no es asi, esta task generara un error esto es para AIO
+- name: Check omni_distribution
   fail: msg="omni_distribution con valor {{ ansible_os_family }} es invalida"
   when: ansible_os_family != "RedHat" and ansible_os_family != "Sangoma" and prodenv == 1
   changed_when: false
   tags: always
 
-- name: Check python version inside virtualenv
+# Obtengo distro para PE, aca lo hago viendo el NAME del archivo os-release, asi obtengo la variable docker_distribution
+- name: Get distribution for docker prodenv
+  shell: awk -F= '/^NAME/{print $2}' /etc/os-release
+  register: docker_distribution
+  when: is_docker == "true"
+  tags: docker_deploy
+
+# Chequeo si la versión de python instalada en el virtualenv es {{ python_version_desired }}
+- name: Get python version inside virtualenv
   shell: "source {{ install_prefix }}virtualenv/bin/activate; python -V"
   register: python_version
   failed_when: false
@@ -113,6 +123,7 @@
   register: asterisk_installed
   tags: ['asterisk','postinstall']
 
+# Chequeo si la version de asterisk instalada es {{ postgresql_version }}
 - name: Check if posgresql-{{ postgresql_version }} is installed
   shell:  bash -lc 'output=` find /usr -wholename '*/bin/postgres'`; if [[ $output == *"{{ postgresql_old_version }}"* ]]; then exit 2; elif [[ $output == *"{{ postgresql_version }}"* ]]; then exit 3; else exit 1; fi'
   failed_when: false
@@ -133,6 +144,7 @@
   register: kamailio_installed
   tags: ['kamailio','postinstall']
 
+# Chequeo si existen ya los archivos custom y override dialplan, para no pisarlos
 - name: Check if custom and override files for dialplan exists
   shell: "if [ $(ls -l {{ asterisk_location}}/etc/asterisk/oml_extensions_*_override.conf 2>/dev/null | wc -l) -gt 0 ] && [ $(ls -l {{ asterisk_location}}/etc/asterisk/oml_extensions_*_custom.conf 2>/dev/null | wc -l) -gt 0 ]; then exit 0; else exit 1; fi"
   changed_when: false
@@ -155,6 +167,18 @@
   failed_when: false
   register: certs_exists
   tags: always
+
+######################################################################################################
+# Chequeo de variables de entorno:                                                                   #
+# Se hace para que no sea necesario volver a ingresar las variables en el inventory al hacer upgrade #
+# Las tasks que no estan comentadas siguen este patrón                                               #
+# 1. # Chequeo si existe $ENVAR, equivale al parametro del inventory                                 #
+# 2. Si el comando anterior retornó 0, se setea parametro de inventory con el valor de $ENVAR        #
+# 3. Si el comando anterior retorna 1, no hace nada                                                  #
+# 4. Si alguna $ENVAR no está declarada y no se seteó el parametro del inventory quiere decir que    #
+# el usuario olvidó agregar algún parametro y deveolverá un mensaje de error diciendole que variable #
+#  faltó                                                                                             #
+######################################################################################################
 
 - name: Check if $DOCKER_USER was defined previously
   shell: bash -lc 'if [ -z $DOCKER_USER ]; then exit 1; else echo $DOCKER_USER; exit 0; fi'
@@ -355,50 +379,42 @@
     msg: registry_username variable undefined, edit registry_username variable in inventory file
   when: registry_username is not defined and assert_docker_user.rc == 1 and devenv == 1
   tags: docker_deploy
-
-# Chequea si timezone esta definido
 - name: Check if TimeZone variable is defined
   fail:
     msg: TimeZone variable undefined, edit TZ variable in inventory file
   when: TZ is not defined and assert_tz.rc == 1
   tags: always
 
-# Chequea si postgres_user esta definido
 - name: Check if postgres user variable is defined
   fail:
     msg: Postgres user undefined, edit postgres_user in inventory file
   when: postgres_user is not defined and assert_pguser.rc == 1
   tags: always
 
-# Chequea si postgres_password esta definido
 - name: Check if postgres password variable is defined
   fail:
     msg: Postgres password undefined, edit postgres_password in inventory file
   when: postgres_password is not defined and assert_pgpass.rc == 1
   tags: always
 
-# Chequea si ami_user esta definido
 - name: Check if AMI user variable is defined
   fail:
     msg: AMI user undefined, edit ami_user in inventory file
   when: ami_user is not defined and assert_amiuser.rc == 1
   tags: always
 
-# Chequea si ami_password esta definido
 - name: Check if AMI password variable is defined
   fail:
     msg: AMI password undefined, edit ami_password in inventory file
   when: ami_password is not defined and assert_amipass.rc == 1
   tags: always
 
-# Chequea si dialer_user esta definido
 - name: Check if WD user variable is defined
   fail:
     msg: WD user undefined, edit dialer_user in inventory file
   when: dialer_user is not defined and assert_dialeruser.rc == 1
   tags: always
 
-# Chequea si dialer_password esta definido
 - name: Check if WD pass variable is defined
   fail:
     msg: WD pass undefined, edit dialer_password in inventory file

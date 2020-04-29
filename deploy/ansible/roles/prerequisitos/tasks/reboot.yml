@@ -17,6 +17,7 @@
 #
 ---
 
+# Se hace reboot del server
 - name: Reboot of the server
   shell: sleep 2 && shutdown -r now "Ansible updates triggered"
   async: 1
