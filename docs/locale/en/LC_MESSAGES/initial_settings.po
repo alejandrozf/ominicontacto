@@ -355,20 +355,6 @@ msgstr ""
 "falling into an induced pause ACW, the system will leave it online again "
 "after X seconds (as indicated in this parameter). "
 
-# ba6909a2a7c547cd993f757fed2dfa3d
-#: ../../initial_settings.rst:122
-msgid ""
-"**Auto_attend_ics:** si este valor está checkeado entonces las llamadas "
-"provenientes del Addon de OMniLeads ICS (Interactive Contact System), "
-"llamadas derivadas del IVR blaster press-one serán atendidas "
-"automáticamente por el agente sin dar la posibilidad de que exista ring "
-"en su webphone."
-msgstr ""
-"**Auto_attend_ics:** if this value is checked then the calls coming from "
-"the OMniLeads ICS (Interactive Contact System) Addon, calls derived from "
-"the IVR blaster press-one will be automatically answered by the agent "
-"without providing the possibility of a ring on his webphone."
-
 # 85fa197422f1494eb14a6cd200bfd7d6
 #: ../../initial_settings.rst:123
 msgid ""

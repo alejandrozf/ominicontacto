@@ -29,7 +29,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <tr>
             <th>{% trans 'id' %}</th>
             <th>{% trans 'Nombre' %}</th>
-            <th>{% trans 'Auto attend ics' %}</th>
             <th>{% trans 'Auto attend inbound' %}</th>
             <th>{% trans 'Auto attend dialer' %}</th>
             <th>{% trans 'Auto unpause' %}</th>
@@ -43,13 +42,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <tr id="{{ grupo.nombre }}">
             <td>{{ grupo.id }}</td>
             <td>{{ grupo.nombre }}</td>
-            <td>
-                {% if grupo.auto_attend_ics %}
-                    <span class="icon icon-check" aria-hidden="true"></span>
-                {% else %}
-                    <span class="icon icon-cancel" aria-hidden="true"></span>
-                {% endif %}
-            </td>
             <td>
                 {% if grupo.auto_attend_inbound %}
                     <span class="icon icon-check" aria-hidden="true"></span>
