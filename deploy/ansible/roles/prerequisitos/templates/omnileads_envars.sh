@@ -27,6 +27,7 @@ MYSQL_HOST={{ mysql_host }}
 NGINX_HOSTNAME={{ external_hostname }}
 {% else %}
 NGINX_HOSTNAME={{ omni_fqdn }}
+{% endif %}
 LOGIN_FAILURE_LIMIT={{ LOGIN_FAILURE_LIMIT }}
 OMNILEADS_HOSTNAME=localhost
 {% if postgres_host is defined %}

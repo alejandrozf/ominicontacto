@@ -49,6 +49,7 @@
     state: present
     block: |
       export MYSQL_PWD={{ mysql_root_password }}
+  when: is_docker == "false"
 
 - name: Reload privilege tables
   command: "mysql -ne \"FLUSH PRIVILEGES\""
