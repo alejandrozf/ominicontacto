@@ -323,7 +323,7 @@ class CalificacionClienteFormView(FormView):
         if nuevo_contacto:
             self.contacto.bd_contacto = self.campana.bd_contacto
         self.contacto.datos = contacto_form.get_datos_json()
-        # TODO: OML-1016 Verificar bien que hacer aca o si ya se hizo
+        # TODO: OML-1016 Verificar bien que hacer aca (Hace falta hacer algo si ya se calificó?)
         if nuevo_contacto:
             self.contacto.es_originario = False
         self.contacto.save()

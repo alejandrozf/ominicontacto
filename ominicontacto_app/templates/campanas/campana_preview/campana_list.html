@@ -70,6 +70,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </a>
                         <a class="dropdown-item" href="{% url 'ordenar_entrega_contactos_preview' campana.pk %}">
                             <span class="icon icon-contacts"></span>{% trans 'Ordenar entrega contactos' %}
+                        <a class="dropdown-item" href="{% url 'agregar_contacto_a_campana' campana.pk %}">
+                            <span class="icon icon-plus"></span>{% trans 'Agregar Contacto' %}
+                        </a>
+                        <a class="dropdown-item" href="{% url 'update_base_datos_contacto_de_campana' campana.pk %}">
+                            <span class="icon icon-plus"></span>{% trans 'Agregar Contactos' %}
                         </a>
                         <a class="dropdown-item" href="{% url 'campana_preview_delete' campana.pk %}">
                             <span class="icon icon-trash"></span>{% trans 'Eliminar' %}

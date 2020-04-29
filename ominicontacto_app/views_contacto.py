@@ -28,7 +28,7 @@ import json
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import (ListView, CreateView, UpdateView, FormView, DeleteView,
                                   TemplateView)
 from django.utils.translation import ugettext as _
@@ -60,8 +60,7 @@ class ContactoUpdateView(UpdateView):
         self.object = form.save(commit=False)
         self.object.datos = form.get_datos_json()
         self.object.save()
-        # TODO: OML-1016
-        # TODO: Ver si no hay que modificar AgenteEnContacto o algo en Wombat
+        # TODO: OML-1016 - Ver si no hay que modificar datos en Wombat
         message = _('Se han guardado los cambios en el contacto.')
         messages.success(self.request, message)
         return super(ContactoUpdateView, self).form_valid(form)
@@ -142,33 +141,77 @@ class ContactoBDContactoCreateView(CreateView):
     template_name = 'base_create_update_form.html'
     form_class = FormularioNuevoContacto
 
+    URL_POR_TIPO = {
+        Campana.TYPE_ENTRANTE: 'campana_list',
+        Campana.TYPE_MANUAL: 'campana_manual_list',
+        Campana.TYPE_DIALER: 'campana_dialer_list',
+        Campana.TYPE_PREVIEW: 'campana_preview_list',
+    }
+
+    def dispatch(self, request, *args, **kwargs):
+        self.campana = None
+        if 'bd_contacto' in kwargs:
+            try:
+                self.bd_contacto = BaseDatosContacto.objects.get(pk=kwargs['bd_contacto'])
+            except BaseDatosContacto.DoesNotExist:
+                message = _('La base de datos no existe')
+                messages.warning(request, message)
+                return redirect('lista_base_datos_contacto')
+        if 'pk_campana' in kwargs:
+            try:
+                self.campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+            except Campana.DoesNotExist:
+                message = _('La campaña no existe')
+                messages.warning(request, message)
+                return redirect('index')
+            if not self._user_tiene_permiso_en_campana(self.campana):
+                message = _('No tiene permiso para agregar contactos a la Campaña.')
+                messages.warning(request, message)
+                return redirect(self.URL_POR_TIPO[self.campana.type])
+            self.bd_contacto = self.campana.bd_contacto
+
+        return super(ContactoBDContactoCreateView, self).dispatch(request, *args, **kwargs)
+
+    def _user_tiene_permiso_en_campana(self, campana):
+        user = self.request.user
+        if user.get_is_administrador():
+            return True
+        return campana.reported_by == user or campana.supervisors.filter(id=user.id).exists()
+
     def get_initial(self):
         initial = super(ContactoBDContactoCreateView, self).get_initial()
-        initial.update({'bd_contacto': self.kwargs['bd_contacto']})
+        initial.update({'bd_contacto': self.bd_contacto.id})
 
     def get_form_kwargs(self):
         kwargs = super(ContactoBDContactoCreateView, self).get_form_kwargs()
-        base_datos = BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
-        kwargs['base_datos'] = base_datos
+        kwargs['base_datos'] = self.bd_contacto
         return kwargs
 
     def form_valid(self, form):
         # TODO: Decidir si esto lo tiene que hacer el form o la vista
         self.object = form.save(commit=False)
-        base_datos = BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
-        base_datos.cantidad_contactos += 1
-        base_datos.save()
+        self.bd_contacto.cantidad_contactos += 1
+        self.bd_contacto.save()
         self.object.datos = form.get_datos_json()
         self.object.save()
 
         # TODO: OML-1016
         # TODO: En caso de que la base corresponda a una campaña Dialer, agregar en Wombat
-        # TODO: En caso de que la base corresponda a una campaña Preview, agregar AgenteEnContacto
+
+        # Si se agrega a una a una campaña Preview agregar AgenteEnContacto
+        if self.campana is not None and self.campana.type == Campana.TYPE_PREVIEW:
+            self.campana.adicionar_agente_en_contacto(self.object, -1)
+
+        message = _('Contacto creado satisfactoriamente.')
+        messages.success(self.request, message)
 
         return super(ContactoBDContactoCreateView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('lista_base_datos_contacto')
+        if self.campana is None:
+            return reverse('lista_base_datos_contacto')
+        else:
+            return reverse(self.URL_POR_TIPO[self.campana.type])
 
 
 class ContactoBDContactoListView(ListView):
@@ -189,7 +232,7 @@ class ContactoBDContactoListView(ListView):
 
 
 class ContactoBDContactoUpdateView(UpdateView):
-    """Vista para modificar un contacto de la base de datos"""
+    """Vista de Supervisor para modificar un contacto de la base de datos"""
     model = Contacto
     template_name = 'base_create_update_form.html'
     form_class = FormularioNuevoContacto
@@ -201,8 +244,7 @@ class ContactoBDContactoUpdateView(UpdateView):
         self.object = form.save(commit=False)
         self.object.datos = form.get_datos_json()
         self.object.save()
-        # TODO: OML-1016
-        # TODO: Ver si no hay que modificar AgenteEnContacto o algo en Wombat
+        # TODO: OML-1016 - Ver si no hay que modificar datos en Wombat
         return super(ContactoBDContactoUpdateView, self).form_valid(form)
 
     def get_success_url(self):
@@ -343,9 +385,14 @@ class FormularioNuevoContactoFormView(FormView):
         contacto.es_originario = False
         contacto.save()
 
-        # TODO: OML-1016 Tener en cuenta esto al hacer esta card.
+        agente = self.request.user.get_agente_profile()
+
+        # TODO: OML-1016 - Ver si hay que agregar el contacto en Wombat.
+
         if self.campana.type == Campana.TYPE_PREVIEW:
-            self.campana.adicionar_agente_en_contacto(contacto)
+            # Se crea el agente en contacto únicamente para esta campaña, asignado a este agente.
+            self.campana.adicionar_agente_en_contacto(
+                contacto, agente_id=agente.id, es_originario=False)
 
         if self.accion == 'calificar':
             return HttpResponseRedirect(
@@ -353,7 +400,6 @@ class FormularioNuevoContactoFormView(FormView):
                         kwargs={"pk_campana": self.kwargs['pk_campana'],
                                 "pk_contacto": contacto.pk}))
         else:
-            agente = self.request.user.get_agente_profile()
             click2call_type = 'contactos'
             if self.telefono:
                 telefono = self.telefono
