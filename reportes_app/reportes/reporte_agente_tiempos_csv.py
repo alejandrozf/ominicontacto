@@ -71,7 +71,7 @@ class ArchivoDeReporteCsv(object):
 
     def escribir_archivo_tiempos_csv(self, estadisticas):
 
-        with open(self.ruta, 'w', newline='') as csvfile:
+        with open(self.ruta, 'w', newline='', encoding='utf-8') as csvfile:
             # Creamos encabezado
             encabezado = []
 
@@ -134,7 +134,7 @@ class ArchivoDeReporteCsv(object):
 
     def escribir_archivo_pausas_csv(self, estadisticas):
 
-        with open(self.ruta, 'w', newline='') as csvfile:
+        with open(self.ruta, 'w', newline='', encoding='utf-8') as csvfile:
             # Creamos encabezado
             encabezado = []
 
@@ -167,7 +167,7 @@ class ArchivoDeReporteCsv(object):
 
     def escribir_archivo_llamadas_csv(self, estadisticas):
 
-        with open(self.ruta, 'w', newline='') as csvfile:
+        with open(self.ruta, 'w', newline='', encoding='utf-8') as csvfile:
             # Creamos encabezado
             encabezado = []
 
@@ -200,7 +200,7 @@ class ArchivoDeReporteCsv(object):
 
     def escribir_archivo_llamadas_tipo_csv(self, estadisticas):
 
-        with open(self.ruta, 'w', newline='') as csvfile:
+        with open(self.ruta, 'w', newline='', encoding='utf-8') as csvfile:
             # Creamos encabezado
             encabezado = []
 

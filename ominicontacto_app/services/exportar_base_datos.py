@@ -74,7 +74,7 @@ class ArchivoDeReporteCsv(object):
     def escribir_archivo_csv(self, contactos, metadata, campana, telefonos,
                              usa_contestador, prefijo_discador):
 
-        with open(self.ruta, 'wb') as csvfile:
+        with open(self.ruta, 'wb', encoding='utf-8') as csvfile:
             nombres_de_columnas = metadata.nombres_de_columnas
 
             # Creamos encabezado
