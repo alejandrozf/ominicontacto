@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-21 14:25-0300\n"
+"POT-Creation-Date: 2020-05-05 16:31-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -88,9 +88,9 @@ msgstr ""
 "file will be overwritten"
 
 #: reportes_app/reportes/reporte_agente_tiempos_csv.py:78
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:141
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:174
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:207
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:139
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:172
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:205
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:138
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:235
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:292
@@ -111,7 +111,7 @@ msgid "Tiempo de sesion"
 msgstr "Session time"
 
 #: reportes_app/reportes/reporte_agente_tiempos_csv.py:80
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:144
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:142
 msgid "Tiempo de pausa"
 msgstr "Pause time"
 
@@ -136,7 +136,7 @@ msgid "Porcentaje en espera"
 msgstr "% On wait"
 
 #: reportes_app/reportes/reporte_agente_tiempos_csv.py:85
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:177
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:175
 #: reportes_app/templates/reporte_agente.html:116
 msgid "Cantidad de llamadas procesadas"
 msgstr "Number of processed calls"
@@ -151,27 +151,27 @@ msgstr "Average Call time"
 msgid "Cantidad de intentos fallidos"
 msgstr "Number of Failed attempts"
 
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:142
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:140
 #: reportes_app/templates/reportes_agentes_tiempos.html:166
 #: reportes_app/templates/reportes_agentes_tiempos.html:282
 msgid "Pausa"
 msgstr "Pause"
 
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:143
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:141
 msgid "Tipo de pausa"
 msgstr "Pause type"
 
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:175
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:173
 #: reportes_app/templates/reportes_agentes_tiempos.html:198
 msgid "Cola"
 msgstr "Queue"
 
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:176
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:174
 #: reportes_app/templates/reportes_agentes_tiempos.html:199
 msgid "Tiempo de llamadas"
 msgstr "Calls time"
 
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:208
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:206
 #: reportes_app/reportes/reporte_llamadas.py:546
 #: reportes_app/reportes/reporte_llamadas.py:664
 #: reportes_app/reportes/reporte_llamadas.py:711
@@ -185,31 +185,31 @@ msgstr "Calls time"
 msgid "Total"
 msgstr "Total"
 
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:209
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:207
 msgid "ICS"
 msgstr "ICS"
 
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:210
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:208
 #: reportes_app/templates/reportes_agentes_tiempos.html:231
 msgid "DIALER"
 msgstr "DIALER"
 
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:211
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:209
 #: reportes_app/templates/reportes_agentes_tiempos.html:232
 msgid "INBOUND"
 msgstr "INBOUND"
 
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:212
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:210
 #: reportes_app/templates/reportes_agentes_tiempos.html:233
 msgid "MANUAL"
 msgstr "MANUAL"
 
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:213
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:211
 #: reportes_app/templates/reportes_agentes_tiempos.html:234
 msgid "TRANSFERIDAS"
 msgstr "TRANSFERRED"
 
-#: reportes_app/reportes/reporte_agente_tiempos_csv.py:276
+#: reportes_app/reportes/reporte_agente_tiempos_csv.py:274
 #: reportes_app/reportes/reporte_llamados_contactados_csv.py:454
 #, python-brace-format
 msgid ""

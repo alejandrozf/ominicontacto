@@ -86,14 +86,19 @@ A veces no es deseable que los Agentes puedan ver o editar algún campo de un co
 
 .. image:: images/campaigns_restrict_field_action.png
 
+*Figure 8: Restrict contacts fields option*
+
 Luego en esta pantalla se deben seleccionar para bloquear los campos que no deben ser editables y para ocultar los campos que ni siquiera deben poder ser vistos por los Agentes. Sólo será posible ocultar los campos que esten seleccionados como bloqueados. El campo principal de teléfono no podrá ser ocultado.
 
 .. image:: images/campaigns_restricted_fields_selection.png
+
+*Figure 9: Selecting contacts fields for blocking or hiding*
 
 Cuando un Agente quiera editar un contacto no se le mostrarán los campos ocultos y se le presentarán deshabilitados los campos seleccionados como bloqueados que no esten ocultos. Tener en cuenta que al crear el contacto el agente podrá ingresar por única vez valores en los campos que solamente estén bloqueados.
 
 .. image:: images/campaigns_restricted_fields_for_agent.png
 
+*Figure 10: Restricted and hidden contacts fields*
 
 Formularios
 ***********
@@ -115,13 +120,13 @@ En la figura 8 se ejemplifica un campo del tipo "combo" dentro de la creación d
 
 .. image:: images/campaigns_newform_1.png
 
-*Figure 8: New campaign form*
+*Figure 11: New campaign form*
 
 Podemos generar un formulario de ejemplo de encuesta de satisfacción con el aspecto de la figura 9.
 
 .. image:: images/campaigns_newform_2.png
 
-*Figure 9: Survey campaign form*
+*Figure 12: Survey campaign form*
 
 
 Campañas, Calificaciones & Formularios
@@ -137,7 +142,7 @@ calificaciones, se van a poder definir calificaciones normales y calificaciones 
 
 .. image:: images/campaigns_calldispositions_add.png
 
-*Figure 10: Call dispositions inside campaign*
+*Figure 13: Call dispositions inside campaign*
 
 En el ejemplo de la figura 10, contamos con dos calificaciones del tipo engaged, por un lado la calificación "Survey on demand client"
 que tiene asociado el formulario "Survey On Demand" y por el otro la calificación "Survey" que dispara el formulario "Survey Clients".
@@ -148,7 +153,7 @@ el formulario asociado a la calificación dentro de la campaña.
 
 .. image:: images/campaigns_dispositions_engaged.png
 
-*Figure 11: Engaged dispostions and forms*
+*Figure 14: Engaged dispostions and forms*
 
 
 Campañas Manuales
@@ -216,7 +221,7 @@ la opción *Create campaign from template*. Cada nueva campaña estará disponib
 
 .. image:: images/campaigns_template.png
 
-*Figure 13: templates*
+*Figure 15: templates*
 
 Interacción con sistemas de gestión externos
 ***********************************************
