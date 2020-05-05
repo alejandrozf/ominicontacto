@@ -1018,7 +1018,10 @@ class Campana(models.Model):
     nombre_template = models.CharField(max_length=128, null=True, blank=True)
     es_manual = models.BooleanField(default=False)
     objetivo = models.PositiveIntegerField(default=0)
-    tiempo_desconexion = models.PositiveIntegerField(default=0)  # para uso en campañas preview
+
+    # para uso en campañas preview
+    tiempo_desconexion = models.PositiveIntegerField(default=0)
+    campo_desactivacion = models.CharField(max_length=128, null=True, blank=True)
 
     mostrar_nombre = models.BooleanField(default=True)
 
@@ -2376,8 +2379,16 @@ class Contacto(models.Model):
         return self.datos_contacto
 
     def _sincronizar_agente_en_contacto(self):
-        AgenteEnContacto.objects.filter(
-            contacto_id=self.pk).update(telefono_contacto=self.telefono, datos_contacto=self.datos)
+        # obtenemos los campos de la BD del contacto
+        metadata = self.bd_contacto.get_metadata()
+        campos_contacto = metadata.nombres_de_columnas_de_datos
+
+        # y los hacemos en estructura json para AgenteEnContacto
+        datos_contacto = literal_eval(self.datos)
+        datos_contacto = dict(zip(campos_contacto, datos_contacto))
+        datos_contacto_json = json.dumps(datos_contacto)
+        AgenteEnContacto.objects.filter(contacto_id=self.pk).update(
+            telefono_contacto=self.telefono, datos_contacto=datos_contacto_json)
 
     def save(self, *args, **kwargs):
         if self.pk is not None:
@@ -3286,6 +3297,20 @@ class AgenteEnContactoManager(models.Manager):
         return self.contacto_asignado(agente_id, campana_id).filter(
             contacto_id=contacto_id).exists()
 
+    def activos(self, campana_id):
+        # Devuelve los que estan activos de acuerdo al campo de desactivacion definido en la
+        # campaña
+        campana = Campana.objects.get(pk=campana_id)
+        campo_desactivacion = campana.campo_desactivacion
+        desactivacion_booleana = {campo_desactivacion: "FALSE"}
+        desactivacion_numerica = {campo_desactivacion: "0"}
+        # deberiamos tener algo como "desactivado: FALSE" o  "desactivado: 0", sin llaves
+        desactivacion_booleana_str = json.dumps(desactivacion_booleana)[1:-1]
+        desactivacion_numerica_str = json.dumps(desactivacion_numerica)[1:-1]
+        return self.filter(campana_id=campana_id).exclude(
+            Q(datos_contacto__contains=desactivacion_booleana_str) |
+            Q(datos_contacto__contains=desactivacion_numerica_str))
+
 
 class AgenteEnContacto(models.Model):
     """
@@ -3365,9 +3390,12 @@ class AgenteEnContacto(models.Model):
         orden = (orden + 1) % (numero_agentes_contacto + 1)
 
         try:
-            qs_agentes_contactos = cls.objects.select_for_update().filter(
-                agente_id__in=[-1, agente.pk], estado=AgenteEnContacto.ESTADO_INICIAL,
-                campana_id=campana_id, orden__gte=orden)
+            qs_agentes_contactos_no_orden = cls.objects.activos(
+                campana_id=campana_id).filter(
+                    agente_id__in=[-1, agente.pk], estado=AgenteEnContacto.ESTADO_INICIAL,
+                    campana_id=campana_id)
+            qs_agentes_contactos = qs_agentes_contactos_no_orden.filter(orden__gte=orden)
+            qs_agentes_contactos = qs_agentes_contactos.select_for_update()
         except DatabaseError:
             return {'result': 'Error',
                     'code': 'error-concurrencia',
@@ -3378,6 +3406,19 @@ class AgenteEnContacto(models.Model):
             # de acuerdo al orden definido en el atributo 'orden'
             # desde la lista de los contactos disponibles para el agente
             agente_en_contacto = qs_agentes_contactos.first()
+            agente_en_contacto.estado = AgenteEnContacto.ESTADO_ENTREGADO
+            agente_en_contacto.agente_id = agente.id
+            agente_en_contacto.save()
+            data = model_to_dict(agente_en_contacto)
+            data['datos_contacto'] = literal_eval(data['datos_contacto'])
+            data['result'] = 'OK'
+            data['code'] = 'contacto-entregado'
+            return data
+        elif qs_agentes_contactos_no_orden.select_for_update().exists():
+            # significa que no se encontro contacto porque se llego al final del
+            # orden, asi que tomamos el primero recibido sin tener en cuenta el orden
+            # en el filtro ()
+            agente_en_contacto = qs_agentes_contactos_no_orden.first()
             agente_en_contacto.estado = AgenteEnContacto.ESTADO_ENTREGADO
             agente_en_contacto.agente_id = agente.id
             agente_en_contacto.save()
