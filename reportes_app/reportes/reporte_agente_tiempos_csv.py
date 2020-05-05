@@ -108,9 +108,7 @@ class ArchivoDeReporteCsv(object):
                 if agente.get_string_tiempo_pausa():
                     tiempo_pausa = agente.get_string_tiempo_pausa() + "hs"
                 lista_opciones.append(tiempo_pausa)
-                tiempo_llamada = "Ohs"
-                if agente.get_string_tiempo_llamada():
-                    tiempo_llamada = str(agente.get_string_tiempo_llamada()) + "hs"
+                tiempo_llamada = str(agente.tiempo_llamada) + "hs"
                 lista_opciones.append(tiempo_llamada)
                 porcentaje_llamada = "O%"
                 if agente.tiempo_porcentaje_llamada:

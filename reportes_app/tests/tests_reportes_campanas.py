@@ -422,7 +422,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
         agente_data = estadisticas['agente_tiempo']
         self.assertEqual(agente_data.cantidad_llamadas_procesadas, 3)
         self.assertEqual(agente_data.cantidad_intentos_fallidos, 1)
-        self.assertEqual(agente_data.tiempo_llamada, 2 * self.DURACION_LLAMADA)
+        self.assertEqual(agente_data.tiempo_llamada.total_seconds(), 2 * self.DURACION_LLAMADA)
 
     def test_datos_reporte_agente_detalle_actividad_coinciden_estadisticas_sistema(self):
         DURACION_AGENTE_SESION = 3600

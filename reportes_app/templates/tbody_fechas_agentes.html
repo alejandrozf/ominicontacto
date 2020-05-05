@@ -37,7 +37,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     0{% trans 'hs' %}
                 {% endif %}
             </td>
-            <td>{{agente.get_string_tiempo_llamada}}{% trans 'hs' %}</td>
+            <td>{{agente.tiempo_llamada}}{% trans 'hs' %}</td>
             <td>
                 {% if agente.tiempo_porcentaje_llamada %}
                     {{agente.tiempo_porcentaje_llamada|floatformat:2}}%
