@@ -995,6 +995,10 @@ class Campana(models.Model):
         related_name="%(class)ss",
         on_delete=models.CASCADE
     )
+    # Listas en formato JSON con los nombres de los campos
+    campos_bd_no_editables = models.CharField(max_length=512, default='')
+    campos_bd_ocultos = models.CharField(max_length=512, default='')
+
     oculto = models.BooleanField(default=False)
     # TODO: Sacar este campo
     campaign_id_wombat = models.IntegerField(null=True, blank=True)
@@ -1290,6 +1294,30 @@ class Campana(models.Model):
 
     def obtener_agentes(self):
         return self.queue_campana.members.all()
+
+    def get_campos_no_editables(self):
+        if self.campos_bd_no_editables:
+            return json.loads(self.campos_bd_no_editables)
+        return []
+
+    def set_campos_no_editables(self, campos_no_editables, guardar=False):
+        self.campos_bd_no_editables = ""
+        if campos_no_editables:
+            self.campos_bd_no_editables = json.dumps(campos_no_editables)
+        if guardar:
+            self.save()
+
+    def get_campos_ocultos(self):
+        if self.campos_bd_ocultos:
+            return json.loads(self.campos_bd_ocultos)
+        return []
+
+    def set_campos_ocultos(self, campos_ocultos, guardar=False):
+        self.campos_bd_ocultos = ""
+        if campos_ocultos:
+            self.campos_bd_ocultos = json.dumps(campos_ocultos)
+        if guardar:
+            self.save()
 
     @property
     def tiene_interaccion_con_sitio_externo(self):

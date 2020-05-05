@@ -270,12 +270,19 @@ urlpatterns = [
                                              mostrar_bases_datos_borradas_ocultas_view),
         name='mostrar_bases_datos_ocultas', ),
 
+    #  ===== Configuracion de BD Contacto de Campaña para supervisor ====
+    url(r'^campana/(?P<pk_campana>\d+)/bloquear_campos_para_agente/$',
+        administrador_o_supervisor_requerido(
+            views_contacto.BloquearCamposParaAgenteFormView.as_view()),
+        name='bloquear_campos_para_agente',
+        ),
+
     #  ===== Vistas de contacto para agente ====
     url(r'^contacto/list/$',
         agente_requerido(views_contacto.ContactoListView.as_view()),
         name='contacto_list',
         ),
-    url(r'^contacto/(?P<pk_contacto>\d+)/update/$',
+    url(r'^campana/(?P<pk_campana>\d+)/contacto/(?P<pk_contacto>\d+)/update/$',
         agente_requerido(views_contacto.ContactoUpdateView.as_view()),
         name='contacto_update',
         ),

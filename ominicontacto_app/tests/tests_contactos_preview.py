@@ -234,16 +234,18 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
     def test_modificacion_contacto_desde_lista_de_contactos_actualiza_agente_en_contacto(self):
         contacto = ContactoFactory()
         agente_en_contacto = AgenteEnContactoFactory(
-            contacto_id=contacto.pk, telefono_contacto=contacto.telefono)
+            contacto_id=contacto.pk, campana_id=self.campana_preview.id,
+            telefono_contacto=contacto.telefono)
         telefono_nuevo = contacto.telefono + '111'
         self.assertEqual(agente_en_contacto.telefono_contacto, contacto.telefono)
-        url = reverse('contacto_update', args=[contacto.pk])
+        url = reverse('contacto_update', args=[self.campana_preview.pk, contacto.pk])
         post_data = {
             'telefono': telefono_nuevo,
             'datos': str(["xxxxxx", "yyyyy", "CORDOBA", "21000003"]),
-            'bd_contacto': contacto.bd_contacto.pk
         }
         self.client.post(url, post_data)
+        contacto.refresh_from_db()
+        self.assertEqual(contacto.telefono, str(telefono_nuevo))
         agente_en_contacto.refresh_from_db()
         self.assertEqual(agente_en_contacto.telefono_contacto, str(telefono_nuevo))
 
@@ -323,3 +325,25 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
         resultado = json.loads(response.content)
         id_contacto = resultado['contacto_id']
         self.assertEqual(id_contacto, agente_en_contacto2.contacto_id)
+
+    def test_campos_bloqueados_no_se_modifican(self):
+        self.campana_preview.campos_bd_no_editables = json.dumps(['telefono'])
+        self.campana_preview.save()
+        contacto = ContactoFactory()
+        agente_en_contacto = AgenteEnContactoFactory(
+            contacto_id=contacto.pk, campana_id=self.campana_preview.id,
+            telefono_contacto=contacto.telefono)
+
+        telefono_viejo = contacto.telefono
+        telefono_nuevo = contacto.telefono + '111'
+        url = reverse('contacto_update', args=[self.campana_preview.pk, contacto.pk])
+        post_data = {
+            'telefono': telefono_nuevo,
+            'datos': str(["xxxxxx", "yyyyy", "CORDOBA", "21000003"]),
+            'bd_contacto': contacto.bd_contacto.pk
+        }
+        self.client.post(url, post_data)
+        contacto.refresh_from_db()
+        agente_en_contacto.refresh_from_db()
+        self.assertEqual(contacto.telefono, telefono_viejo)
+        self.assertEqual(agente_en_contacto.telefono_contacto, str(telefono_viejo))
