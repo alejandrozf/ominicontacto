@@ -39,6 +39,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
+from django.conf import settings
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView
 )
@@ -336,6 +337,7 @@ class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
         context['sip_usuario'] = sip_usuario
         context['sip_password'] = sip_password
         context['agentes'] = AgenteProfile.objects.obtener_activos().exclude(id=agente_profile.id)
+        context['max_session_age'] = settings.SESSION_COOKIE_AGE
 
         return context
 

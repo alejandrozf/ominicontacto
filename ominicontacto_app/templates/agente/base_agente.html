@@ -614,9 +614,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </button>
                     </div>
 
+                    <!-- Configs -->
                     <input type="hidden" value="{{ agente_profile.id }}" id="idagt"/>
-                        <input type="hidden" value="{{ sip_usuario }}" id="sipExt"/>
-                        <input value="{{ sip_password }}" id="sipSec" type="hidden"/>
+                    <input type="hidden" value="{{ sip_usuario }}" id="sipExt"/>
+                    <input value="{{ sip_password }}" id="sipSec" type="hidden"/>
+                    <input value="{{ max_session_age }}" id="max_session_age" type="hidden"/>
+
                 </div>
                 <div class="wrapper-info">
                     <input type="hidden" value="{{ agente_profile.grupo.auto_attend_inbound }}" id="auto_attend_IN"/>
