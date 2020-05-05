@@ -168,7 +168,6 @@ class IntegrationTests(unittest.TestCase):
         href_create_group = link_create_group.get_attribute('href')
         self.browser.get(href_create_group)
         self.browser.find_element_by_id('id_nombre').send_keys(group_name)
-        self.browser.find_element_by_id('id_auto_attend_ics').click()
         self.browser.find_element_by_id('id_auto_attend_inbound').click()
         self.browser.find_element_by_id('id_auto_attend_dialer').click()
         self.browser.find_element_by_xpath((
@@ -388,7 +387,6 @@ class IntegrationTests(unittest.TestCase):
         auto_unpause = random.randrange(1, 99)
         self.browser.find_element_by_id('id_nombre').send_keys(group_name)
         self.browser.find_element_by_id('id_auto_unpause').send_keys(auto_unpause)
-        self.browser.find_element_by_id('id_auto_attend_ics').click()
         self.browser.find_element_by_id('id_auto_attend_inbound').click()
         self.browser.find_element_by_id('id_auto_attend_dialer').click()
         self.browser.find_element_by_xpath((

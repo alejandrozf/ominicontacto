@@ -169,11 +169,9 @@ class User(AbstractUser):
 
 class Grupo(models.Model):
     nombre = models.CharField(max_length=20, unique=True, verbose_name=_('Nombre'))
-    auto_attend_ics = models.BooleanField(default=False, verbose_name=_('Auto atender ics'))
     auto_attend_inbound = models.BooleanField(default=False, verbose_name=_(
         'Auto atender entrantes'))
     auto_attend_dialer = models.BooleanField(default=False, verbose_name=_('Auto atender dailer'))
-    auto_pause = models.BooleanField(default=True, verbose_name=_('Pausar automaticamente'))
     auto_unpause = models.PositiveIntegerField(verbose_name=_('Despausar automaticamente'))
 
     def __str__(self):
