@@ -716,7 +716,7 @@ class ConfigFile(object):
     def write(self, contenidos):
         tmp_fd, tmp_filename = tempfile.mkstemp()
         try:
-            tmp_file_obj = os.fdopen(tmp_fd, 'w')
+            tmp_file_obj = os.fdopen(tmp_fd, 'w', encoding='utf-8')
             for contenido in contenidos:
                 assert isinstance(contenido, str), \
                     _("Objeto NO es unicode: {0}".format(type(contenido)))
