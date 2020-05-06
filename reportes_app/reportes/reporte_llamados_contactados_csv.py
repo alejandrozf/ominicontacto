@@ -31,7 +31,7 @@ import datetime
 
 from django.conf import settings
 from django.utils.encoding import force_text
-from django.utils.timezone import localtime
+from django.utils.timezone import localtime, timedelta
 from django.utils.translation import ugettext as _
 
 from ominicontacto_app.models import AgenteProfile, Campana, Contacto, OpcionCalificacion
@@ -120,7 +120,7 @@ class ArchivoDeReporteCsv(object):
     def escribir_archivo_contactados_csv(self, campana, llamadas, calificaciones_dict):
         # TODO: Debe listar los llamadas contactados: EVENTOS_FIN_CONEXION
         # Agregarle a los llamadas los datos del (posible) contacto
-        with open(self.ruta, 'w', newline='') as csvfile:
+        with open(self.ruta, 'w', newline='', encoding='utf-8') as csvfile:
             # Creamos encabezado
             bd_metadata = campana.bd_contacto.get_metadata()
             encabezado = []
@@ -131,6 +131,7 @@ class ArchivoDeReporteCsv(object):
             campos_contacto_datos = bd_metadata.nombres_de_columnas_de_datos
             encabezado.extend(campos_contacto)
             encabezado.append(_("Fecha-Hora Contacto"))
+            encabezado.append(_("Duración"))
             encabezado.append(_("Tel status"))
             encabezado.append(_("Calificado"))
             encabezado.append(_("Observaciones"))
@@ -173,7 +174,7 @@ class ArchivoDeReporteCsv(object):
                                           self.agentes_dict.get(llamada_log.agente_id, -1)]
                 else:
                     datos_calificacion = [calificacion.opcion_calificacion.nombre,
-                                          calificacion.observaciones,
+                                          calificacion.observaciones.replace('\r\n', ' '),
                                           calificacion.agente]
                     # TODO: ver la forma de relacionar con respuestas vieja.
                     respuesta_formulario_gestion = calificacion.history_object.get_venta()
@@ -197,14 +198,21 @@ class ArchivoDeReporteCsv(object):
                         datos_gestion.append('')
                         campos = campos_formulario_opciones[id_opcion]
                         for campo in campos:
-                            datos_gestion.append(datos[campo.nombre_campo])
+                            datos_gestion.append(datos[campo.nombre_campo].replace('\r\n', ' '))
 
                 fecha_local_llamada = localtime(llamada_log.time)
+                duracion_llamada = llamada_log.duracion_llamada
+                if duracion_llamada > 0:
+                    duracion_llamada = timedelta(0, duracion_llamada)
+                else:
+                    duracion_llamada = 'N/A'
+
                 registro = []
                 registro.append(llamada_log.numero_marcado)
                 registro.append(telefono_contacto)
                 registro.extend(datos_contacto)
                 registro.append(fecha_local_llamada.strftime("%Y/%m/%d %H:%M:%S"))
+                registro.append(str(duracion_llamada))
                 registro.append(tel_status)
                 registro.extend(datos_calificacion)
                 registro.append(bd_contacto)
@@ -214,7 +222,7 @@ class ArchivoDeReporteCsv(object):
                 self._escribir_csv_writer_utf_8(csvwiter, registro)
 
     def escribir_archivo_no_atendidos_csv(self, campana, no_contactados):
-        with open(self.ruta, 'w', newline='') as csvfile:
+        with open(self.ruta, 'w', newline='', encoding='utf-8') as csvfile:
             # Creamos encabezado
             bd_metadata = campana.bd_contacto.get_metadata()
             encabezado = []
@@ -269,7 +277,7 @@ class ArchivoDeReporteCsv(object):
         return llamada.numero_marcado
 
     def escribir_archivo_calificado_csv(self, campana, calificaciones):
-        with open(self.ruta, 'w', newline='') as csvfile:
+        with open(self.ruta, 'w', newline='', encoding='utf-8') as csvfile:
             # Creamos encabezado
             bd_metadata = campana.bd_contacto.get_metadata()
             encabezado = []
@@ -305,11 +313,16 @@ class ArchivoDeReporteCsv(object):
             # guardamos encabezado
             self._escribir_csv_writer_utf_8(csvwiter, encabezado)
 
+            # Asumo calificaciones vienen ordenadas por fecha decreciente. Puede ser con historico.
+            callids_ya_iteradas = set()
             # Iteramos cada uno de las metadata de la gestion del formulario
             for calificacion_val in calificaciones:
                 lista_opciones = []
                 # --- Buscamos datos
                 if campana.es_entrante:
+                    if calificacion_val.callid in callids_ya_iteradas:
+                        continue
+                    callids_ya_iteradas.add(calificacion_val.callid)
                     calificacion = calificacion_val.history_object
                     calificacion_fecha_local = localtime(calificacion_val.history_date)
                 else:
@@ -324,7 +337,7 @@ class ArchivoDeReporteCsv(object):
                 numero_marcado = self._obtener_numero_marcado(calificacion)
                 lista_opciones.append(numero_marcado)
                 lista_opciones.append(calificacion.opcion_calificacion.nombre)
-                lista_opciones.append(calificacion.observaciones)
+                lista_opciones.append(calificacion.observaciones.replace('\r\n', ' '))
                 lista_opciones.append(calificacion.agente)
                 if calificacion.contacto.es_originario:
                     lista_opciones.append(calificacion.contacto.bd_contacto)
@@ -347,7 +360,7 @@ class ArchivoDeReporteCsv(object):
                     lista_opciones.append('')
                     campos = campos_formulario_opciones[id_opcion]
                     for campo in campos:
-                        lista_opciones.append(datos[campo.nombre_campo])
+                        lista_opciones.append(datos[campo.nombre_campo].replace('\r\n', ' '))
 
                 # --- Finalmente, escribimos la linea
                 self._escribir_csv_writer_utf_8(csvwiter, lista_opciones)

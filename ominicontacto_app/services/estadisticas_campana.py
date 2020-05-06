@@ -87,11 +87,23 @@ class EstadisticasService():
                     'opcion_calificacion__nombre').annotate(
                     cantidad=Count('opcion_calificacion__nombre'))
         else:
-            calificaciones_query = CalificacionCliente.history.filter(
+            # Contabilizar solo una calificacion por callid
+            callids_utilizados = set()
+            ids_histories = []
+            pre_query = CalificacionCliente.history.filter(
                 opcion_calificacion__campana=campana,
-                history_date__range=(fecha_desde, fecha_hasta)).values(
+                history_date__range=(fecha_desde, fecha_hasta)).only(
+                'callid', 'history_id').order_by('-history_date')
+            for calif in pre_query:
+                if calif.callid not in callids_utilizados:
+                    callids_utilizados.add(calif.callid)
+                    ids_histories.append(calif.history_id)
+
+            calificaciones_query = CalificacionCliente.history.filter(
+                history_id__in=ids_histories).values(
                     'opcion_calificacion__nombre').annotate(
                     cantidad=Count('opcion_calificacion__nombre')).order_by()
+
         calificaciones_nombre = []
         calificaciones_cantidad = []
         total_calificados = 0
@@ -279,9 +291,20 @@ class EstadisticasService():
             calificaciones_campana_qs = CalificacionCliente.objects.filter(
                 opcion_calificacion__campana=campana, fecha__range=(fecha_desde, fecha_hasta))
         else:
-            calificaciones_campana_qs = CalificacionCliente.history.filter(
+            # Contabilizar solo una calificacion por callid
+            callids_utilizados = set()
+            ids_histories = []
+            pre_query = CalificacionCliente.history.filter(
                 opcion_calificacion__campana=campana,
-                history_date__range=(fecha_desde, fecha_hasta)).order_by()
+                history_date__range=(fecha_desde, fecha_hasta)).only('callid', 'history_id')
+            for calif in pre_query:
+                if calif.callid not in callids_utilizados:
+                    callids_utilizados.add(calif.callid)
+                    ids_histories.append(calif.history_id)
+
+            calificaciones_campana_qs = CalificacionCliente.history.filter(
+                history_id__in=ids_histories).order_by()
+
         calificaciones_agentes_dict = calificaciones_campana_qs.values(
             'agente__user__first_name', 'agente__user__last_name', 'agente',
             'opcion_calificacion__nombre', 'opcion_calificacion__tipo').annotate(

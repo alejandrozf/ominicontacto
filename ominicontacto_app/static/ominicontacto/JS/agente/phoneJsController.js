@@ -143,7 +143,7 @@ class PhoneJSController {
         });
 
         this.view.hangUpButton.click(function() {
-            self.phone.hangUp();
+            self.hangUp();
         });
 
         this.view.tagCallButton.click(function() {
@@ -599,6 +599,9 @@ class PhoneJSController {
         }
     }
 
+    hangUp() {
+        this.phone.hangUp();
+    }
 
     recordCall() {
         // TODO: mover a modulo phoneJsSip.js

@@ -67,10 +67,20 @@ class AgentesStatusAPIView(APIView):
 
     agentes_parseados = SupervisorActivityAmiManager()
 
+    def _obtener_ids_agentes_propios(self, request):
+        supervisor_profile = request.user.get_supervisor_profile()
+        campanas_asignadas_actuales = supervisor_profile.campanas_asignadas_actuales()
+        ids_agentes = list(campanas_asignadas_actuales.values_list(
+            'queue_campana__members__pk', flat=True).distinct())
+        return ids_agentes
+
     def get(self, request):
         online = []
+        ids_agentes_propios = self._obtener_ids_agentes_propios(request)
         for data_agente in self.agentes_parseados._obtener_agentes_activos():
-            if not data_agente.get('status', '') == 'OFFLINE':
+            id_agente = int(data_agente.get('id', -1))
+            status_agente = data_agente.get('status', '')
+            if status_agente != 'OFFLINE' and id_agente in ids_agentes_propios:
                 online.append(data_agente)
         return Response(data=online)
 

@@ -220,9 +220,9 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
 
         for agente in agentes_tiempo:
             if agente.agente.id == self.agente.id:
-                self.assertEqual(149, agente.tiempo_llamada)
+                self.assertEqual(timezone.timedelta(seconds=149), agente.tiempo_llamada)
             elif agente.agente.id == self.agente1.id:
-                self.assertEqual(58, agente.tiempo_llamada)
+                self.assertEqual(timezone.timedelta(seconds=58), agente.tiempo_llamada)
             else:
                 self.fail("Agente no calculado revisar test")
 
@@ -327,7 +327,7 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
 
         for agente in agentes_tiempo:
             if agente.agente.id == self.agente.id:
-                self.assertEqual(149, agente.tiempo_llamada)
+                self.assertEqual(timezone.timedelta(seconds=149), agente.tiempo_llamada)
                 self.assertEqual(tiempo_sesion_agente, agente.tiempo_sesion)
                 self.assertEqual(total_pausa_agente, agente.tiempo_pausa)
                 self.assertEqual(porcentaje_llamada_agente,
@@ -339,7 +339,7 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
                 self.assertEqual(2, agente.cantidad_llamadas_procesadas)
                 self.assertEqual(promedio_agente, agente.tiempo_promedio_llamadas())
             elif agente.agente.id == self.agente1.id:
-                self.assertEqual(58, agente.tiempo_llamada)
+                self.assertEqual(timezone.timedelta(seconds=58), agente.tiempo_llamada)
                 self.assertEqual(tiempo_sesion_agente1, agente.tiempo_sesion)
                 self.assertEqual(total_pausa_agente1, agente.tiempo_pausa)
                 self.assertEqual(porcentaje_llamada_agente1,
@@ -770,10 +770,10 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
 
         for agente in agentes_tiempo:
             if time_llamada == agente.agente:
-                self.assertEqual(106, agente.tiempo_llamada)
+                self.assertEqual(106, agente.tiempo_llamada.total_seconds())
                 self.assertEqual(2, agente.cantidad_llamadas_procesadas)
             elif time_llamada1 == agente.agente:
-                self.assertEqual(88, agente.tiempo_llamada)
+                self.assertEqual(88, agente.tiempo_llamada.total_seconds())
                 self.assertEqual(1, agente.cantidad_llamadas_procesadas)
             else:
                 self.fail("Fecha no calculado para agente revisar test")
@@ -916,13 +916,13 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
             if time_sesion == agente.agente:
                 self.assertEqual(tiempo_sesion_agente, agente.tiempo_sesion)
                 self.assertEqual(total_pausa_agente, agente.tiempo_pausa)
-                self.assertEqual(106, agente.tiempo_llamada)
+                self.assertEqual(106, agente.tiempo_llamada.total_seconds())
                 self.assertEqual(2, agente.cantidad_llamadas_procesadas)
                 self.assertEqual(2, agente.cantidad_intentos_fallidos)
             elif time_sesion1 == agente.agente:
                 self.assertEqual(tiempo_sesion_agente1, agente.tiempo_sesion)
                 self.assertEqual(total_pausa_agente1, agente.tiempo_pausa)
-                self.assertEqual(88, agente.tiempo_llamada)
+                self.assertEqual(88, agente.tiempo_llamada.total_seconds())
                 self.assertEqual(1, agente.cantidad_llamadas_procesadas)
                 self.assertEqual(1, agente.cantidad_intentos_fallidos)
             else:

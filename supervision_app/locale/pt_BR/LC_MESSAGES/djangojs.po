@@ -1,0 +1,185 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-02-13 13:21-0300\n"
+"PO-Revision-Date: 2020-03-21 23:05-0300\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.2.4\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: pt_BR\n"
+
+#: supervision_app/static/supervision_app/JS/campanas_entrantes.js:37
+#: supervision_app/static/supervision_app/JS/campanas_salientes.js:37
+#: supervision_app/static/supervision_app/JS/supervision_agentes.js:53
+msgid "Error al ejecutar => "
+msgstr "Erro ao executar => "
+
+#: supervision_app/static/supervision_app/JS/campanas_entrantes.js:54
+#: supervision_app/static/supervision_app/JS/campanas_entrantes.js:57
+msgid " segundos"
+msgstr " segundos"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:60
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:65
+#: supervision_app/static/supervision_app/JS/phoneJsView.js:89
+msgid "Desconectado"
+msgstr "Desconectado"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:70
+msgid "Conectado"
+msgstr "Conectado"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:80
+msgid "Llamando"
+msgstr "Chamando"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:85
+msgid "En llamado"
+msgstr "Em chamada"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:90
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:95
+msgid "Transfiriendo"
+msgstr "Transferindo"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:100
+msgid "Recibiendo llamado"
+msgstr "Recebendo chamada"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:106
+msgid "En espera"
+msgstr "Em espera"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:119
+msgid "Supervisor registrado"
+msgstr "Supervisor registado"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:166
+msgid "Conectado a %(fromUser)s"
+msgstr "Conectado a %(fromUser)s"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:182
+msgid "Disponible"
+msgstr "Disponível"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:195
+msgid "Ocupado, intente maás tarde"
+msgstr "Ocupado, tente novamente mais tarde"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:198
+msgid "Rechazado, intente maás tarde"
+msgstr "Rejeitado, tente novamente mais tarde"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:201
+msgid "No disponible, contacte a su administrador"
+msgstr "Não disponível, contate o seu administrador"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:205
+msgid "Error, verifique el número marcado"
+msgstr "Erro, verifique o número digitado"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:209
+msgid "Error de autenticación, contacte a su administrador"
+msgstr "Erro de autenticação, contate o seu administrador"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:212
+msgid "Error, Falta SDP"
+msgstr "Erro, falha SDP"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:215
+msgid "Dirección incompleta"
+msgstr "Endereço incompleto"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:219
+msgid "Servicio no disponible, contacte a su administrador"
+msgstr "Serviço não disponível, contate o seu administrador"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:223
+msgid "Error WebRTC: El usuario no permite acceso al medio"
+msgstr "Erro WebRTC: O utilizador não permite o acesso aos meios"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:226
+msgid "Error: Llamado fallido"
+msgstr "Erro: Falha na chamada"
+
+#: supervision_app/static/supervision_app/JS/phoneJsController.js:233
+msgid "Conectado a llamada"
+msgstr "Conectado à chamada"
+
+#: supervision_app/static/supervision_app/JS/phoneJsView.js:90
+msgid "Registrado"
+msgstr "Registrado"
+
+#: supervision_app/static/supervision_app/JS/phoneJsView.js:91
+msgid "No Registrado"
+msgstr "Não registrado"
+
+#: supervision_app/static/supervision_app/JS/phoneJsView.js:93
+msgid "El SIP Proxy no responde, contacte a su administrador"
+msgstr "O SIP Proxy não responde, contate o seu administrador"
+
+#: supervision_app/static/supervision_app/JS/phoneJsView.js:97
+msgid "Fallo en la registración, contacte a su administrador"
+msgstr "Falha no registro, contate o seu administrador"
+
+#: supervision_app/static/supervision_app/JS/supervision.js:71
+msgid "Buscar: "
+msgstr "Buscar: "
+
+#: supervision_app/static/supervision_app/JS/supervision.js:72
+msgid "(filtrando de un total de _MAX_ contactos)"
+msgstr "(filtrando de um total de contatos _MAX_)"
+
+#: supervision_app/static/supervision_app/JS/supervision.js:74
+msgid "Primero "
+msgstr "Primeiro "
+
+#: supervision_app/static/supervision_app/JS/supervision.js:75
+msgid "Anterior "
+msgstr "Anterior "
+
+#: supervision_app/static/supervision_app/JS/supervision.js:76
+msgid " Siguiente"
+msgstr " Seguinte"
+
+#: supervision_app/static/supervision_app/JS/supervision.js:77
+msgid " Último"
+msgstr " Último"
+
+#: supervision_app/static/supervision_app/JS/supervision.js:79
+msgid "Mostrar _MENU_ entradas"
+msgstr "Mostrar _MENU_ entradas"
+
+#: supervision_app/static/supervision_app/JS/supervision.js:80
+msgid "Mostrando _START_ a _END_ de _TOTAL_ entradas"
+msgstr "Mostrando _START_ a _END_ de _TOTAL_ entradas"
+
+#: supervision_app/static/supervision_app/JS/supervision.js:96
+msgid "Susurrar"
+msgstr "Sussurrar"
+
+#: supervision_app/static/supervision_app/JS/supervision.js:109
+msgid "Espiar"
+msgstr "Espiar"
+
+#: supervision_app/static/supervision_app/JS/supervision.js:138
+msgid "Logout"
+msgstr "Sair"
+
+#: supervision_app/static/supervision_app/JS/supervision_agentes.js:39
+msgid "Atención!"
+msgstr "Atenção!"
+
+#: supervision_app/static/supervision_app/JS/supervision_agentes.js:40
+msgid "Debe finalizar la acción actual antes de realizar otra."
+msgstr "Você deve terminar a ação atual antes de poder executar outra."

@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-04 11:08-0300\n"
+"POT-Creation-Date: 2020-05-05 10:18-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 # dc4d3b7c89124042837d572967b4f022
 #: ../../campaigns_preview.rst:4
@@ -303,3 +303,88 @@ msgstr ""
 " in the contact form, until finally selecting a disposition and moving to"
 " a new one."
 
+# ab50e3c7a848423c8ba110b26021045a
+#: ../../campaigns_preview.rst:100
+msgid "Gestión de la entrega de contactos"
+msgstr "Management of contacts assignments"
+
+# f33dfcd474014f8682538ecce4c1ae4e
+#: ../../campaigns_preview.rst:102
+msgid ""
+"Una vez creada la campaña los contactos disponibles para cada agente "
+"serán entregados siguiendo un orden establecido en el modelo "
+"AgenteEnContacto, esta funcionalidad permite editar ese orden usando la "
+"exportación/importación de archivos en formato .csv."
+msgstr ""
+"Once the campaing is created the available contacts for every agent will "
+"be assign following an order established on the model AgenteEnContacto, "
+"this feature allows edit that order using the exportation/importation of "
+".csv files"
+
+# e91934d430694aeba4ad307788ddd979
+#: ../../campaigns_preview.rst:104
+msgid ""
+"La idea es que el administrador puede descargarse el orden actual de "
+"contactos hacia un archivo .csv, reordenar las filas y luego importar "
+"dicho archivo con lo cual el nuevo orden se impacte en el orden de la "
+"asignación de contactos a agentes en la campaña."
+msgstr ""
+
+# d3dd0c93218945328fa6a28776b9fdaf
+#: ../../campaigns_preview.rst:106
+msgid "A esta funcionalidad se puede acceder usando el menú de la campaña preview"
+msgstr "This feature is accessible using the preview campaign menu"
+
+# f89ba8a612e0460d9793d7791fa32961
+#: ../../campaigns_preview.rst:108
+msgid "Ver imágenes 8 y 9"
+msgstr "See figures 8 and 9"
+
+# e1f6edc355b34e6eb14a193d8aa0556d
+#: ../../campaigns_preview.rst:112
+msgid "*Figura 8: Accesso a página de reordenamiento de entrega de contactos*"
+msgstr "Figure 8: Access to reorder contacts assignments page"
+
+# 0d9d1dd125d94c8eb1b7aff43f8fa21a
+#: ../../campaigns_preview.rst:116
+msgid "*Figura 9: Página de reordenamiento de entrega de contactos*"
+msgstr "Figure 9: Reorder contacts assignments page"
+
+# e428112c36e9448a852cc81a58f9471c
+#: ../../campaigns_preview.rst:119
+msgid ""
+"También es posible marcar como desactivados los contactos que se desee, "
+"los cuales no serán entregados a ningun agente."
+msgstr ""
+"Also, is possible to tag contacts as disabled, which will not delivered"
+" to any agent"
+
+# e25fe78d29f144168078819e75af7789
+#: ../../campaigns_preview.rst:121
+msgid ""
+"Esto es posible definiendo en la misma vista un campo de desactivación "
+"para la campaña de entre las columnas de datos de la base de contactos. "
+"Ver Figura 10."
+msgstr ""
+"This is posible by defining a deactivation field for the campaign "
+"choosing between the data colums in contacts database"
+
+# 78d466d37ad746929891335f5f7758cd
+#: ../../campaigns_preview.rst:123
+msgid "*Figura 10: Campo de desactivación de contactos*"
+msgstr "*Figure 10: Deactivation contacts field*"
+
+# 81a1c76e9fc74a99abc801cf256961c9
+#: ../../campaigns_preview.rst:127
+msgid ""
+"Después de realizar la exportación del orden actual de contactos se puede"
+" editar la columna de desactivación con los valores 0 ó FALSE lo cual, "
+"luego de la importación del archivo .csv indicará al sistema que no se "
+"deben entregar esos contactos a ningun agente. Cualquier otro valor "
+"distinto a estos hace que el sistema asuma que el contacto puede "
+"entregarse."
+msgstr ""
+"After make current contacts order exportation is possible to edit the "
+"deactivation field column with values 0 or FALSE wich, after importation of"
+".csv file will indicates to the system to not deliver this contacts to any agent."
+"Any other value different to 0 or FALSE makes the system can deliver the contact."

@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-04 11:08-0300\n"
+"POT-Creation-Date: 2020-04-21 16:35-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 # a9d0e7201d9344439fe4b288f1b724e2
 #: ../../install_docker_linux.rst:5
@@ -188,15 +188,16 @@ msgstr ""
 "Linuxhost LAN IP (where docker-engine runs) does not match with this "
 "range mentioned."
 
-# 55808596f6c846aebce61e0b9651e81a
+# 4a05b568114b42f0a2599a65da013c4c
 #: ../../install_docker_linux.rst:57
 msgid ""
-"Para una instalación de ceros, en la variable *mysql_root_password* "
-"ingresar **LA MISMA** contraseña de mysql que se ingresó a la hora de "
-"instalar el FreePBX e Issabel."
-msgstr ""
-"For fresh install, the variable *mysql_root_password* must be **THE "
-"SAME** mysql password used when you installed the FreePBX or Issabel"
+"Para una instalación en FreePBX o Issabel la variable "
+"*mysql_root_password* no es necesario ingresarla, para Issabel va a tomar"
+" el valor que encuentre en /etc/issabel.conf y para FreePBX tomará un "
+"valor vacio, ya que FreePBX por default no setea contraseña de mysql."
+msgstr "For installations in FreePBX or Issabel, the variable *mysql_root_password* is not necessary "
+"for Issabel the value we are going to use is in /etc/issabel.conf file, and for FreePBX we are going "
+"to use empty value, due to FreePBX doesn't set a mysql password."
 
 # d4f2ee07a697466d8347a24ab4689ead
 #: ../../install_docker_linux.rst:59
@@ -285,4 +286,5 @@ msgstr "These two commands will make ready the OMniLeads instance in FreePBX"
 #: ../../install_docker_linux.rst:120
 msgid "En próximas versiones se tratará de optimizar la ejecución sobre FreePBX."
 msgstr ""
-"On next versions we will try to optimize the OMniLeads execution in FreePBX"
+"On next versions we will try to optimize the OMniLeads execution in "
+"FreePBX"

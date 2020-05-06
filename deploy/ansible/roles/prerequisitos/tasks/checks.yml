@@ -77,7 +77,7 @@
   tags: always
 
 - name: Get the network/submask configured in default interface
-  shell: default_if=$(ip route show | awk '/^default/ {print $5}'); route | grep $default_if|tail -1 |awk -F " " '{print $1"/"$3}'
+  shell: route | grep {{ omni_ip.split(".")[0] }} |tail -1 |awk -F " " '{print $1"/"$3}'
   register: network_submask
   changed_when: false
   tags: always
@@ -89,17 +89,16 @@
   when: is_docker == "false"
   tags: always
 
-- name: Check omni_distribution
-  fail: msg="omni_distribution con valor {{ ansible_os_family }} es invalida"
-  when: ansible_os_family != "RedHat" and is_docker == "false"
-  changed_when: false
-  tags: always
-
-- name: Check omni_distribution
+- name: Get linux distro
   shell: awk -F= '/^NAME/{print $2}' /etc/os-release
   register: docker_distribution
-  when: is_docker == "true"
-  tags: docker_deploy
+  tags: always
+
+- name: Check linux distro
+  fail: msg="omni_distribution con valor {{ ansible_os_family }} es invalida"
+  when: ansible_os_family != "RedHat" and ansible_os_family != "Sangoma"
+  changed_when: false
+  tags: always
 
 - name: Check python version inside virtualenv
   shell: "source {{ install_prefix }}virtualenv/bin/activate; python -V"
@@ -115,7 +114,7 @@
   tags: ['asterisk','postinstall']
 
 - name: Check if posgresql-{{ postgresql_version }} is installed
-  shell:  bash -lc 'output=`psql -c "SELECT version()"`; if [[ $output == *"{{ postgresql_old_version }}"* ]]; then exit 2; elif [[ $output == *"{{ postgresql_version }}"* ]]; then exit 3; else exit 1; fi'
+  shell:  bash -lc 'output=` find /usr -wholename '*/bin/postgres'`; if [[ $output == *"{{ postgresql_old_version }}"* ]]; then exit 2; elif [[ $output == *"{{ postgresql_version }}"* ]]; then exit 3; else exit 1; fi'
   failed_when: false
   register: postgresql_new_installed
   tags: ['database','postinstall','docker_deploy']
@@ -134,20 +133,10 @@
   register: kamailio_installed
   tags: ['kamailio','postinstall']
 
-# Chequeo si el usuario puso sus certificados
-- name: Check if trusted certificates exists
-  shell: "if [ -z \"$(ls -A /var/tmp/ominicontacto-build/ominicontacto/deploy/certs)\" ]; then exit 1; else exit 0; fi"
-  failed_when: false
-  changed_when: false
-  delegate_to: localhost
-  register: trusted_certs_exists
-  tags: always
-
 - name: Check if custom and override files for dialplan exists
-  shell: "[ -f {{ asterisk_location }}/etc/asterisk/oml_extensions_commonsub_custom.conf ]"
+  shell: "if [ $(ls -l {{ asterisk_location}}/etc/asterisk/oml_extensions_*_override.conf 2>/dev/null | wc -l) -gt 0 ] && [ $(ls -l {{ asterisk_location}}/etc/asterisk/oml_extensions_*_custom.conf 2>/dev/null | wc -l) -gt 0 ]; then exit 0; else exit 1; fi"
   changed_when: false
   failed_when: false
-  delegate_to: localhost
   register: ast_custom_exists
   tags: always
 
@@ -310,6 +299,32 @@
   when: assert_ecctl.rc == 0
   tags: always
 
+- name: Check if $EXTERNAL_URL was defined previously
+  shell: bash -lc 'if [ -z $EXTERNAL_URL ]; then exit 1; else echo $EXTERNAL_URL; exit 0; fi'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_externalurl
+  tags: always
+
+- set_fact: external_hostname="{{ assert_externalurl.stdout }}"
+  when: assert_externalurl.rc == 0
+  tags: always
+
+- name: Check if $EXTERNAL_PORT was defined previously
+  shell: bash -lc 'if [ -z $EXTERNAL_PORT ]; then exit 1; else echo $EXTERNAL_PORT; exit 0; fi'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_externalport
+  tags: always
+
+- set_fact: external_port="{{ assert_externalport.stdout }}"
+  when: assert_externalport.rc == 0
+  tags: always
+
 - name: Check if $MONITORFORMAT was defined previously
   shell: bash -lc 'if [ -z $MONITORFORMAT ]; then exit 1; else echo $MONITORFORMAT; exit 0; fi'
   args:
@@ -323,6 +338,9 @@
   when: assert_monitorformat.rc == 0
   tags: always
 
+- debug: msg="{{ docker_distribution.stdout }}"
+  tags: always
+
 - name: Check if $MYSQL_PWD was defined previously
   shell: bash -lc 'if [ -z $MYSQL_PWD ]; then exit 1; else echo $MYSQL_PWD; exit 0; fi'
   args:
@@ -330,17 +348,39 @@
   changed_when: false
   failed_when: false
   register: assert_mysqlpwd
+#  when: docker_distribution.stdout == '"CentOS Linux"'
   tags: ['never','postinstall','docker_deploy']
 
-- set_fact: mysql_root_password="{{ assert_mysqlpwd.stdout }}"
-  when: assert_mysqlpwd.rc == 0 and mysql_root_password is not defined
+- name: Set mysql_root_password variable
+  set_fact: mysql_root_password="{{ assert_mysqlpwd.stdout }}"
+  when: assert_mysqlpwd.rc == 0 and mysql_root_password is not defined and docker_distribution.stdout == '"CentOS Linux"'
   tags: ['never','postinstall','docker_deploy']
 
-- name: Get actual mysql root password
+- name: Get old mysql root password
   set_fact: mysql_old_root_password="{{ assert_mysqlpwd.stdout }}"
-  when: assert_mysqlpwd.rc == 0
+  when: assert_mysqlpwd.rc == 0 and docker_distribution.stdout == '"CentOS Linux"'
   tags: ['never','postinstall','docker_deploy']
 
+- name: Get mysql root password of Issabel
+  shell: cat /etc/issabel.conf | grep mysqlrootpwd |awk -F "=" '{print $2}'
+  when: docker_distribution.stdout == '"Issabel PBX"'
+  register: issabel_mysql_root_pass
+  tags: ['never', 'docker_deploy']
+
+- name: Set mysql_root_password_variable
+  set_fact: mysql_root_password="{{ issabel_mysql_root_pass.stdout }}"
+  when: docker_distribution.stdout == '"Issabel PBX"'
+  tags: ['never', 'docker_deploy']
+
+- name: Set mysql_root_password variable
+  set_fact: mysql_root_password=""
+  when: docker_distribution.stdout == '"Sangoma Linux"'
+  tags: ['never', 'docker_deploy']
+
+- set_fact: mysql_old_root_password=""
+  when: mysql_old_root_password is not defined and docker_distribution.stdout == '"CentOS Linux"'
+  tags: docker_deploy
+  
 # Chequea si registry_username esta definido
 - name: Check if registry_username variable is defined
   fail:
@@ -401,7 +441,7 @@
 - name: Check if MYSQL password variable is defined
   fail:
     msg: MYSQL password undefined, edit $mysql_root_password in inventory file
-  when: mysql_root_password is not defined and assert_mysqlpwd.rc == 1
+  when: mysql_root_password is not defined and assert_mysqlpwd.rc == 1 and docker_distribution.stdout == "CentOS Linux"
   tags: ['never','postinstall','docker_deploy']
 
 # Chequea si web admin password esta definido
@@ -410,15 +450,3 @@
     msg: Web admin variable undefined, edit $admin_pass in inventory file
   when: admin_pass is not defined and assert_djangopass.rc == 1
   tags: always
-
-- name: Set mysql root installed (issabel)
-  set_fact: mysql_old_root_password="{{ mysql_root_password }}"
-  when: mysql_old_root_password is not defined and docker_distribution.stdout == '"Issabel PBX"'
-  tags: ['never', 'docker_deploy']
-
-- set_fact: mysql_old_root_password=""
-  when: mysql_old_root_password is not defined and docker_distribution.stdout != '"Issabel PBX"'
-  tags: ['never', 'docker_deploy']
-
-- set_fact: mysql_old_root_password=""
-  when: mysql_old_root_password is not defined and is_docker == "false"

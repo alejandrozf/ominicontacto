@@ -23,7 +23,6 @@ Servicio para generar reporte grafico de un agente en particular para una campan
 
 from __future__ import unicode_literals
 
-import datetime
 import logging as _logging
 
 import pygal
@@ -31,7 +30,7 @@ from pygal.style import Style
 
 from django.db.models import Count, Q
 from django.utils.translation import ugettext as _
-from django.utils import timezone
+from django.utils.timezone import now, timedelta
 
 from ominicontacto_app.utiles import datetime_hora_maxima_dia, datetime_hora_minima_dia
 from ominicontacto_app.models import CalificacionCliente, Campana
@@ -110,7 +109,7 @@ class EstadisticasAgenteService():
         return calificaciones_nombre, calificaciones_cantidad, total_asignados
 
     def _obtener_actividad_agente(self, logs_actividad_agente):
-        tiempo_sesion, tiempo_pausa = (datetime.timedelta(), datetime.timedelta())
+        tiempo_sesion, tiempo_pausa = (timedelta(), timedelta())
         tiempo_actual_sesion, tiempo_actual_pausa = (None, None)
         evento_anterior = None
         for i, log_actividad_agente in enumerate(logs_actividad_agente):
@@ -129,7 +128,7 @@ class EstadisticasAgenteService():
                 tiempo_actual_sesion = tiempo_log
                 # reiniciamos el tiempo que se generó de pausa desde el inicio del día pues no es
                 # un evento de día anterior sino que se genera antes de loguearse el agente
-                tiempo_pausa = datetime.timedelta()
+                tiempo_pausa = timedelta()
             elif (evento == 'ADDMEMBER' and tiempo_actual_sesion is None and
                   evento_anterior != 'UNPAUSEALL'):
                 tiempo_actual_sesion = tiempo_log
@@ -157,7 +156,7 @@ class EstadisticasAgenteService():
         return tiempo_sesion, tiempo_pausa
 
     def _obtener_estadisticas_llamadas_agente(self, logs_llamadas_agente):
-        tiempo_en_llamada = 0
+        tiempo_en_llamada = timedelta(0)
         tiempo_en_llamada_manual = 0
         cantidad_llamadas_procesadas = 0
         cantidad_llamadas_perdidas = 0
@@ -167,7 +166,7 @@ class EstadisticasAgenteService():
             duracion_llamada = log_llamada_agente.duracion_llamada
             es_llamada_manual = (log_llamada_agente.tipo_llamada == LlamadaLog.LLAMADA_MANUAL)
             if evento in LlamadaLog.EVENTOS_FIN_CONEXION:
-                tiempo_en_llamada += duracion_llamada
+                tiempo_en_llamada += timedelta(seconds=duracion_llamada)
                 if es_llamada_manual:
                     tiempo_en_llamada_manual += duracion_llamada
             elif evento in ['ANSWER', 'CONNECT']:
@@ -180,7 +179,7 @@ class EstadisticasAgenteService():
                 cantidad_llamadas_perdidas, cantidad_llamadas_manuales)
 
     def calcular_tiempo_agente(self, agente, fecha_desde, fecha_hasta, campana):
-        ahora = timezone.now()
+        ahora = now()
         if fecha_hasta.date() == ahora.date():
             # estamos calculando hasta el día actual
             fecha_hasta = ahora

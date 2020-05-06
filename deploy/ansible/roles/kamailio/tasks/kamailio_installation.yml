@@ -20,7 +20,7 @@
 
 # Se crea /opt/omnileads/kamailio directory
 - name: Create prefix directory
-  file: state=directory path={{ install_prefix }} owner={{ usuario }} group={{ usuario }}
+  file: state=directory path={{ kamailio_location }}/etc/certs owner={{ usuario }} group={{ usuario }} recurse=yes
 
   # Descargo kamailio desde la fuente, me descarga un .tar.gz
 - name: Download of Kamailio

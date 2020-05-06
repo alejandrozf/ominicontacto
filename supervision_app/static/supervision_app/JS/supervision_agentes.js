@@ -30,6 +30,8 @@ $(function (){
     var sipSecret = $('#sipSec').val();
 
     phone_controller = new PhoneJSController(supervisor_id, sipExtension, sipSecret);
+
+    window.addEventListener('beforeunload', preventLeaveOnCall);
 });
 
 function executeSupervisorAction(pk_agent, action) {
@@ -53,4 +55,20 @@ function executeSupervisorAction(pk_agent, action) {
             console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
         },
     });    
+}
+
+function preventLeaveOnCall(event) {
+    if (phone_controller.is_on_call()) {
+        phone_controller.phone.hangUp();
+
+        $.growl.warning({ 
+            title: gettext('Atención!'),
+            message: gettext('Se ha registrado un intento de salir de esta pantalla. Su llamado ha finalizado.')});
+
+        // Cancel the event as stated by the standard.
+        event.preventDefault();
+        // Chrome requires returnValue to be set.
+        event.returnValue = gettext('Debe finalizar la acción actual antes de salir de esta pantalla.');
+        return gettext('Debe finalizar la acción actual antes de salir de esta pantalla.');
+    }
 }

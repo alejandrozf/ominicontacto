@@ -42,6 +42,15 @@
     MYSQL_PWD: "{{ mysql_old_root_password }}"
   when: mysql_root_password != ""
 
+- name: Set MYSQL_PWD in omnileads_envars.sh
+  blockinfile:
+    path: /etc/profile.d/omnileads_envars.sh
+    insertafter: EOF
+    state: present
+    block: |
+      export MYSQL_PWD={{ mysql_root_password }}
+  when: is_docker == "false"
+
 - name: Reload privilege tables
   command: "mysql -ne \"FLUSH PRIVILEGES\""
   environment:

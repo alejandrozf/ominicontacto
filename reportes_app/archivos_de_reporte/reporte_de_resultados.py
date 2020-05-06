@@ -60,7 +60,7 @@ class ReporteDeResultadosCSV(object):
     def generar_archivo_descargable(self, reporte):
         self._crear_archivo_en_directorio()
 
-        with open(self.ruta, 'w', newline='') as csvfile:
+        with open(self.ruta, 'w', newline='', encoding='utf-8') as csvfile:
             # Creamos encabezado
             encabezado = []
 

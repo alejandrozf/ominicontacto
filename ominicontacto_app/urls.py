@@ -216,19 +216,33 @@ urlpatterns = [
             views_base_de_datos_contacto.BaseDatosContactoUpdateView.as_view()),
         name='update_base_datos_contacto'
         ),
+    url(r'^campana/base_datos_contacto/(?P<pk_campana>\d+)/actualizar/$',
+        administrador_o_supervisor_requerido(
+            views_base_de_datos_contacto.BaseDatosContactoUpdateView.as_view()),
+        name='update_base_datos_contacto_de_campana'
+        ),
     url(r'^base_datos_contacto/(?P<pk>\d+)/validacion/$',
         administrador_o_supervisor_requerido(
             views_base_de_datos_contacto.DefineBaseDatosContactoView.as_view()),
         name='define_base_datos_contacto',
         ),
-    url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/agregar/$',
+    url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/agregar_contacto/$',
         administrador_o_supervisor_requerido(views_contacto.ContactoBDContactoCreateView.as_view()),
         name='agregar_contacto',
+        ),
+    url(r'^campana/base_datos_contacto/(?P<pk_campana>\d+)/agregar_contacto/$',
+        administrador_o_supervisor_requerido(views_contacto.ContactoBDContactoCreateView.as_view()),
+        name='agregar_contacto_a_campana',
         ),
     url(r'^base_datos_contacto/(?P<pk>\d+)/validacion_actualizacion/$',
         administrador_o_supervisor_requerido(
             views_base_de_datos_contacto.ActualizaBaseDatosContactoView.as_view()),
         name='actualiza_base_datos_contacto',
+        ),
+    url(r'^campana/base_datos_contacto/(?P<pk_campana>\d+)/validacion_actualizacion/$',
+        administrador_o_supervisor_requerido(
+            views_base_de_datos_contacto.ActualizaBaseDatosContactoView.as_view()),
+        name='actualiza_base_datos_contacto_de_campana',
         ),
 
     url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/list_contacto/$',
@@ -256,12 +270,19 @@ urlpatterns = [
                                              mostrar_bases_datos_borradas_ocultas_view),
         name='mostrar_bases_datos_ocultas', ),
 
+    #  ===== Configuracion de BD Contacto de Campaña para supervisor ====
+    url(r'^campana/(?P<pk_campana>\d+)/bloquear_campos_para_agente/$',
+        administrador_o_supervisor_requerido(
+            views_contacto.BloquearCamposParaAgenteFormView.as_view()),
+        name='bloquear_campos_para_agente',
+        ),
+
     #  ===== Vistas de contacto para agente ====
     url(r'^contacto/list/$',
         agente_requerido(views_contacto.ContactoListView.as_view()),
         name='contacto_list',
         ),
-    url(r'^contacto/(?P<pk_contacto>\d+)/update/$',
+    url(r'^campana/(?P<pk_campana>\d+)/contacto/(?P<pk_contacto>\d+)/update/$',
         agente_requerido(views_contacto.ContactoUpdateView.as_view()),
         name='contacto_update',
         ),
@@ -670,6 +691,14 @@ urlpatterns = [
         administrador_o_supervisor_requerido(
             views_campana_preview.LiberarContactoAsignado.as_view()),
         name="liberar_contacto_asignado"),
+    url(r'^campana_preview/ordenar_contactos_asignados/(?P<pk_campana>\d+)/$',
+        administrador_o_supervisor_requerido(
+            views_campana_preview.OrdenarAsignacionContactosView.as_view()),
+        name="ordenar_entrega_contactos_preview"),
+    url(r'^campana_preview/descargar_asignacion_contactos/(?P<pk_campana>\d+)/$',
+        administrador_o_supervisor_requerido(
+            views_campana_preview.DescargarOrdenAgentesEnContactosView.as_view()),
+        name="descargar_orden_contactos_actual_preview"),
     # ==========================================================================
     # Campana Entrante
     # ==========================================================================

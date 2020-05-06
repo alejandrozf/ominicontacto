@@ -22,7 +22,7 @@
 /*      - omlAPI.js         */
 /* 		- click2Call.js     */
 
-/* globals Timer OMLAPI Click2CallDispatcher PhoneJSController */
+/* globals Timer OMLAPI Click2CallDispatcher PhoneJSController gettext */
 
 /* DEBUG*/
 $('#wrapperWebphone').toggleClass('active');
@@ -34,7 +34,22 @@ var USER_STATUS_PAUSE = 3; //  Agente en estado pausa
 var phone_controller = undefined;
 var click2call = undefined;
 
+var logoffEvent = undefined;
+
 $(function () {
+
+    navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(function(stream) {
+            startPhoneJs();
+        })
+        .catch(function(err) {
+            alert(gettext('No se ha podido acceder a su micrófono. \n\
+Permita el acceso al mismo y recargue la página para comenzar a trabajar.'));
+            return;
+        });
+});
+
+function startPhoneJs() {
     var timers = {
         'operacion': new Timer('horaO', 'minsO', 'segsO'),
         'pausa': new Timer('horaP', 'minsP', 'segsP'),
@@ -55,13 +70,25 @@ $(function () {
 
     timers.operacion.start();
     oml_api.changeStatus(USER_STATUS_ONLINE, agent_id);
-});
+
+    window.addEventListener('beforeunload', preventLeaveWithoutLogoff);
+}
 
 function subscribirEventosBotonesGenerales(oml_api, agent_id) {
 
     $('#logout').click(function () {
+        window.removeEventListener('beforeunload', preventLeaveWithoutLogoff);
         oml_api.changeStatus(3, agent_id);
     });
+}
+
+function preventLeaveWithoutLogoff(event) {
+    // Cancel the event as stated by the standard.
+    event.preventDefault();
+    phone_controller.hangUp();
+    // Chrome requires returnValue to be set.
+    event.returnValue = gettext('Recuerde cerrar la sesión antes de salir de esta pantalla.');
+    return gettext('Recuerde cerrar la sesión antes de salir de esta pantalla.');
 }
 
 function subscribirEventosBotonesOtrosMedios() {

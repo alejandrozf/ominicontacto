@@ -94,3 +94,35 @@ del contacto. En la figura 7 se muestra dicho escenario.
 *Figure 7: Multinum contact database*
 
 Por lo tanto, el agente puede intentar contactar a todos los números disponibles como "link" en la ficha del contacto, hasta finalmente calificar y pasar a uno nuevo.
+
+
+Gestión de la entrega de contactos
+***************************************
+
+Una vez creada la campaña los contactos disponibles para cada agente serán entregados siguiendo un orden establecido en el modelo AgenteEnContacto, esta funcionalidad permite editar ese orden usando la exportación/importación de archivos en formato .csv.
+
+La idea es que el administrador puede descargarse el orden actual de contactos hacia un archivo .csv, reordenar las filas y luego importar dicho archivo con lo cual el nuevo orden se impacte en el orden de la asignación de contactos a agentes en la campaña.
+
+A esta funcionalidad se puede acceder usando el menú de la campaña preview
+
+Ver imágenes 8 y 9
+
+.. image:: images/access_to_reorden_contacts.png
+
+*Figura 8: Accesso a página de reordenamiento de entrega de contactos*
+
+.. image:: images/reorder_contacts_page.png
+
+*Figura 9: Página de reordenamiento de entrega de contactos*
+
+
+También es posible marcar como desactivados los contactos que se desee, los cuales no serán entregados a ningun agente.
+
+Esto es posible definiendo en la misma vista un campo de desactivación para la campaña de entre las columnas de datos de la base de contactos. Ver Figura 10.
+
+*Figura 10: Campo de desactivación de contactos*
+
+.. image:: images/deactivation_field.png
+
+Después de realizar la exportación del orden actual de contactos se puede editar la columna de desactivación con los valores 0 ó FALSE lo cual, luego de la importación del archivo .csv indicará al sistema que no se deben entregar esos contactos a ningun agente.
+Cualquier otro valor distinto a estos hace que el sistema asuma que el contacto puede entregarse.

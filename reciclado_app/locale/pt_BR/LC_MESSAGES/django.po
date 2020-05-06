@@ -1,0 +1,79 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-02-13 13:20-0300\n"
+"PO-Revision-Date: 2020-03-21 22:12-0300\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.2.4\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: pt_BR\n"
+
+#: reciclado_app/resultado_contactacion.py:52
+msgid "No Contesta"
+msgstr "Sem Concurso"
+
+#: reciclado_app/resultado_contactacion.py:53
+msgid "Cancelado"
+msgstr "Cancelado"
+
+#: reciclado_app/resultado_contactacion.py:54
+msgid "Ocupado"
+msgstr "Ocupado"
+
+#: reciclado_app/resultado_contactacion.py:55
+msgid "Canal no disponible"
+msgstr "Canal não disponível"
+
+#: reciclado_app/resultado_contactacion.py:56
+msgid "Otro"
+msgstr "Outro"
+
+#: reciclado_app/resultado_contactacion.py:57
+msgid "Falla"
+msgstr "Falha"
+
+#: reciclado_app/resultado_contactacion.py:58
+msgid "Contestador"
+msgstr "Cx Postal"
+
+#: reciclado_app/resultado_contactacion.py:59
+msgid "Blacklist"
+msgstr "Blacklist"
+
+#: reciclado_app/resultado_contactacion.py:60
+msgid "Expiradas"
+msgstr "Expiradas"
+
+#: reciclado_app/resultado_contactacion.py:61
+msgid "Abandono"
+msgstr "Abandono"
+
+#: reciclado_app/resultado_contactacion.py:62
+msgid "Congestion"
+msgstr "Congestionamento"
+
+#: reciclado_app/resultado_contactacion.py:63
+msgid "Problema de enrutamiento"
+msgstr "Problema de roteamento"
+
+#: reciclado_app/resultado_contactacion.py:73
+msgid "Agente no califico"
+msgstr "Agente não qualificado"
+
+#: reciclado_app/templates/nuevo_reciclado.html:46
+msgid "Como desea reciclar esta campana"
+msgstr "Como deseja reciclar esta campana"
+
+#: reciclado_app/templates/nuevo_reciclado.html:55
+msgid "Reciclar"
+msgstr "Reciclar"

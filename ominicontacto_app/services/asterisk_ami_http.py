@@ -446,7 +446,7 @@ class AsteriskHttpClient(object):
             prefix = "http-ami-respones-"
             try:
                 tmp_fd, tmp_filename = tempfile.mkstemp(".xml", prefix=prefix)
-                tmp_file_obj = os.fdopen(tmp_fd, 'w')
+                tmp_file_obj = os.fdopen(tmp_fd, 'w', encoding='utf-8')
                 tmp_file_obj.write(response.content)
                 logger.info("AsteriskHttpClient - Dump: %s", tmp_filename)
             except Exception as e:

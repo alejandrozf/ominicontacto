@@ -38,7 +38,7 @@ from ominicontacto_app.errors import (
     OmlParserCsvImportacionError, OmlArchivoImportacionInvalidoError)
 from ominicontacto_app.forms import (
     BaseDatosContactoForm, PrimerLineaEncabezadoForm, CamposDeBaseDeDatosForm, )
-from ominicontacto_app.models import BaseDatosContacto
+from ominicontacto_app.models import BaseDatosContacto, Campana, AgenteEnContacto
 from ominicontacto_app.parser import ParserCsv
 from ominicontacto_app.services.base_de_datos_contactos import (
     CreacionBaseDatosService, PredictorMetadataService,
@@ -124,8 +124,19 @@ class BaseDatosContactoUpdateView(UpdateView):
     context_object_name = 'base_datos_contacto'
     form_class = BaseDatosContactoForm
 
+    def dispatch(self, request, *args, **kwargs):
+        self.campana = None
+        if 'pk_bd_contacto' in kwargs:
+            self.bd_contacto = BaseDatosContacto.objects.get(pk=kwargs['pk_bd_contacto'])
+        else:
+            id_campana = kwargs['pk_campana']
+            self.campana = Campana.objects.get(id=id_campana)
+            self.bd_contacto = self.campana.bd_contacto
+
+        return super(BaseDatosContactoUpdateView, self).dispatch(request, *args, **kwargs)
+
     def get_object(self, queryset=None):
-        return BaseDatosContacto.objects.get(pk=self.kwargs['pk_bd_contacto'])
+        return self.bd_contacto
 
     def form_valid(self, form):
 
@@ -151,9 +162,12 @@ class BaseDatosContactoUpdateView(UpdateView):
         return redirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse(
-            'actualiza_base_datos_contacto',
-            kwargs={"pk": self.object.pk})
+        if self.campana is None:
+            return reverse('actualiza_base_datos_contacto',
+                           kwargs={"pk": self.object.pk})
+        else:
+            return reverse('actualiza_base_datos_contacto_de_campana',
+                           kwargs={"pk_campana": self.campana.id})
 
 
 class DefineBaseDatosContactoView(UpdateView):
@@ -548,12 +562,21 @@ class ActualizaBaseDatosContactoView(UpdateView):
     # @@@@@@@@@@@@@@@@@@@@
 
     def dispatch(self, request, *args, **kwargs):
-        self.base_datos_contacto = \
-            BaseDatosContacto.objects.obtener_en_actualizada_para_editar(
-                self.kwargs['pk'])
-        return super(ActualizaBaseDatosContactoView, self).dispatch(request,
-                                                                    *args,
-                                                                    **kwargs)
+        self.campana = None
+        if 'pk' in kwargs:
+            self.base_datos_contacto = \
+                BaseDatosContacto.objects.obtener_en_actualizada_para_editar(
+                    self.kwargs['pk'])
+        else:
+            id_campana = kwargs['pk_campana']
+            self.campana = Campana.objects.get(id=id_campana)
+            self.base_datos_contacto = self.campana.bd_contacto
+            self.id_ultimo_contacto = self.base_datos_contacto.contactos.order_by('id').last().id
+
+        return super(ActualizaBaseDatosContactoView, self).dispatch(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        return self.base_datos_contacto
 
     def obtiene_previsualizacion_archivo(self, base_datos_contacto):
         """
@@ -774,7 +797,26 @@ class ActualizaBaseDatosContactoView(UpdateView):
                 messages.SUCCESS,
                 message,
             )
+
+            # En caso de que sea agregar a una campaña preview, genero los AgenteEnContacto
+            # para los contactos nuevos.
+            if self.campana is not None and self.campana.type == Campana.TYPE_PREVIEW:
+                self._generar_relaciones_agente_en_contacto()
+
             return redirect(self.get_success_url())
+
+    def _generar_relaciones_agente_en_contacto(self):
+        contactos = self.campana.bd_contacto.contactos.filter(id__gt=self.id_ultimo_contacto)
+        agente_en_contacto_list = []
+        campos_contacto = self.campana.bd_contacto.get_metadata().nombres_de_columnas_de_datos
+        orden = AgenteEnContacto.ultimo_id() + 1
+        for contacto in contactos:
+            agente_en_contacto = self.campana._crear_agente_en_contacto(
+                contacto, -1, campos_contacto, AgenteEnContacto.ESTADO_INICIAL, orden=orden)
+            agente_en_contacto_list.append(agente_en_contacto)
+            orden += 1
+        # insertamos las instancias en la BD
+        AgenteEnContacto.objects.bulk_create(agente_en_contacto_list)
 
     def post(self, request, *args, **kwargs):
 
@@ -794,7 +836,16 @@ class ActualizaBaseDatosContactoView(UpdateView):
         return redirect(reverse('nueva_base_datos_contacto'))
 
     def get_success_url(self):
-        return reverse('lista_base_datos_contacto')
+        if self.campana is None:
+            return reverse('lista_base_datos_contacto')
+        else:
+            url_por_tipo = {
+                Campana.TYPE_ENTRANTE: 'campana_list',
+                Campana.TYPE_MANUAL: 'campana_manual_list',
+                Campana.TYPE_DIALER: 'campana_dialer_list',
+                Campana.TYPE_PREVIEW: 'campana_preview_list',
+            }
+            return reverse(url_por_tipo[self.campana.type])
 
 
 class OcultarBaseView(RedirectView):

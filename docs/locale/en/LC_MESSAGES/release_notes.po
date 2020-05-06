@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-03 14:45-0300\n"
+"POT-Creation-Date: 2020-04-27 17:49-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,53 +24,23 @@ msgstr "Release Notes"
 
 # 7cb6be6322af4d678643b0d6beead1a9
 #: ../../release_notes.rst:4
-msgid "*Abril 3, 2020*"
-msgstr "*April 3, 2020"
+msgid "*Abril 27, 2020*"
+msgstr "*April 21, 2020"
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.5.3"
-msgstr "Release 1.5.3 details"
+#, fuzzy
+msgid "Detalles de Release 1.5.7"
+msgstr "Release 1.5.7 details"
 
-# 08671eb233f04abb94799e4b0e1d9251
+# 2f558403c15a436e90409b976c7f07ed
 #: ../../release_notes.rst:10
-msgid "Bug fixes"
-msgstr "Bug fixes"
+msgid "Bug fixes y mejoras"
+msgstr "Fixes and improvements"
 
-# 45e1d5f063fa4af7aa01b44d38793768
+# aad09193077e4992ad8243ec8f4db81a
 #: ../../release_notes.rst:11
 msgid ""
-"Solucionado error en instalación que impedía crear la base de datos en "
-"ambientes cloud"
-msgstr ""
-"Fixed installation error on database creation on cloud environments"
-
-# daec947aee8c419fb3fce7ded1d29b05
-#: ../../release_notes.rst:12
-msgid ""
-"Solucionado error al mostrar la información del estado de actualización "
-"del release instalado"
-msgstr ""
-"Fixed error on release update status information"
-
-# 49907451420e4bce8f353bbd1558425b
-#: ../../release_notes.rst:13
-msgid ""
-"Solucionada inconsistencia en los logs generados cuando el agente "
-"actualiza su página"
-msgstr ""
-"Fixed inconsistency on log events generated when agent refresh the page"
-
-# 46e38b4fd9fb4c29a1cdc075898f33f3
-#: ../../release_notes.rst:14
-msgid ""
-"Solucionado error en el reporte de supervisión de llamadas entrantes "
-"cuando solo han ocurrido transferencias para una campaña en el día"
-msgstr ""
-"Fixed error on inbound calls supervision report when there are only transfer "
-"calls in the campaign in the current day"
-
-# b3b1c0e6248e4a859ba8ade29663bb6a
-#: ../../release_notes.rst:15
-msgid "Solucionado error en la sincronización del logout entre Django y Asterisk"
-msgstr "Fixed error on logout sincronization between Django/Asterisk"
+"Solucionado error en instalación al correr el script de instalacion por "
+"segunda vez"
+msgstr "Fixed installation error when the installation runs for second time"

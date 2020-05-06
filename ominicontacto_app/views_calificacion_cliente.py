@@ -95,6 +95,16 @@ class CalificacionClienteFormView(FormView):
         agente = self._get_agente()
         return agente.esta_asignado_a_campana(self.campana)
 
+    def _get_campos_bloqueados(self):
+        if self.contacto:
+            return self.campana.get_campos_no_editables()
+        return []
+
+    def _get_campos_ocultos(self):
+        if self.contacto:
+            return self.campana.get_campos_ocultos()
+        return []
+
     def dispatch(self, *args, **kwargs):
         id_contacto = None
         self.call_data = None
@@ -140,6 +150,9 @@ class CalificacionClienteFormView(FormView):
         self.object = self.get_object()
 
         self.agente = self._get_agente()
+
+        self.campos_bloqueados = self._get_campos_bloqueados()
+        self.campos_ocultos = self._get_campos_ocultos()
 
         self.configuracion_sitio_externo = None
         # Si no hay call data no puedo interactuar con el sitio_externo
@@ -198,6 +211,7 @@ class CalificacionClienteFormView(FormView):
         initial = {}
         if self.contacto is not None:
             kwargs['instance'] = self.contacto
+            kwargs['campos_bloqueados'] = self.campos_bloqueados
         else:
             if 'call_data_json' in self.kwargs:
                 initial['telefono'] = self.call_data['telefono']
@@ -205,6 +219,7 @@ class CalificacionClienteFormView(FormView):
                 # TODO: Cuando las manuales vengan con call_data sacar esto
                 initial['telefono'] = self.kwargs['telefono']
 
+        kwargs['campos_ocultos'] = self.campos_ocultos
         kwargs['initial'] = initial
 
         if self.request.method == 'POST':
@@ -267,7 +282,7 @@ class CalificacionClienteFormView(FormView):
 
     def _check_metadata_no_accion_delete(self, calificacion):
         """ En caso que sea una calificacion de no gestion elimina metadatacliente"""
-        if calificacion.opcion_calificacion.tipo is OpcionCalificacion.NO_ACCION \
+        if calificacion.opcion_calificacion.tipo != OpcionCalificacion.GESTION \
                 and calificacion.get_venta():
             calificacion.get_venta().delete()
 
@@ -323,7 +338,7 @@ class CalificacionClienteFormView(FormView):
         if nuevo_contacto:
             self.contacto.bd_contacto = self.campana.bd_contacto
         self.contacto.datos = contacto_form.get_datos_json()
-        # TODO: OML-1016 Verificar bien que hacer aca o si ya se hizo
+        # TODO: OML-1016 Verificar bien que hacer aca (Hace falta hacer algo si ya se calificó?)
         if nuevo_contacto:
             self.contacto.es_originario = False
         self.contacto.save()
@@ -399,6 +414,12 @@ class AuditarCalificacionClienteFormView(CalificacionClienteFormView):
         supervisor = self.request.user.get_supervisor_profile()
         return supervisor.esta_asignado_a_campana(self.campana)
 
+    def _get_campos_bloqueados(self):
+        return []
+
+    def _get_campos_ocultos(self):
+        return []
+
     def get_success_url_venta(self):
         return reverse('auditar_formulario_venta',
                        kwargs={"pk_calificacion": self.object_calificacion.id})
@@ -432,8 +453,10 @@ class RespuestaFormularioDetailView(DetailView):
         nombres = bd_contacto.get_metadata().nombres_de_columnas_de_datos
         datos = json.loads(contacto.datos)
         mas_datos = []
+        campos_a_ocultar = respuesta.calificacion.opcion_calificacion.campana.get_campos_ocultos()
         for nombre, dato in zip(nombres, datos):
-            mas_datos.append((nombre, dato))
+            if nombre not in campos_a_ocultar:
+                mas_datos.append((nombre, dato))
 
         context['contacto'] = contacto
         context['mas_datos'] = mas_datos
@@ -545,6 +568,14 @@ class RespuestaFormularioCreateUpdateFormView(CreateView):
 
 class RespuestaFormularioCreateUpdateAgenteFormView(RespuestaFormularioCreateUpdateFormView):
     template_name = 'formulario/respuesta_formulario_gestion_agente.html'
+
+    def get_contacto_form_kwargs(self):
+        kwargs = super(
+            RespuestaFormularioCreateUpdateAgenteFormView, self).get_contacto_form_kwargs()
+        campana = self.calificacion.opcion_calificacion.campana
+        kwargs['campos_bloqueados'] = campana.get_campos_no_editables()
+        kwargs['campos_ocultos'] = campana.get_campos_ocultos()
+        return kwargs
 
     def _get_calificacion(self):
         return CalificacionCliente.objects.get(id=self.kwargs['pk_calificacion'])

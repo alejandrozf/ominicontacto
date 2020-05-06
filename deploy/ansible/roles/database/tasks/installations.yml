@@ -66,6 +66,9 @@
   until: result is success
   when: postgresql_new_installed.rc != 3 and ansible_distribution == "Amazon" and postgres_host is not defined
 
-- name: Install of postgresql client
-  yum: name=postgresql state=present
+- name: Install of postgresql client and postgresql-odbc
+  yum: name={{ item }} state=present
+  with_items:
+    - postgresql
+    - postgresql-odbc
   when: ansible_distribution == "Amazon" and postgres_host is defined
