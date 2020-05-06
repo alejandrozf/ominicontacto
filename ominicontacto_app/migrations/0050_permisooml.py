@@ -7,7 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('auth', '0011_update_proxy_permissions'),
-        ('ominicontacto_app', '0044_crear_roles_predefinidos'),
+        ('ominicontacto_app', '0049_crear_roles_predefinidos'),
     ]
 
     operations = [
