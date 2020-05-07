@@ -96,7 +96,7 @@
 
 - name: Check linux distro
   fail: msg="omni_distribution con valor {{ ansible_os_family }} es invalida"
-  when: ansible_os_family != "RedHat" and ansible_os_family != "Sangoma"
+  when: ansible_os_family != "RedHat" and ansible_os_family != "Sangoma" and prodenv == 1
   changed_when: false
   tags: always
 
@@ -338,9 +338,6 @@
   when: assert_monitorformat.rc == 0
   tags: always
 
-- debug: msg="{{ docker_distribution.stdout }}"
-  tags: always
-
 - name: Check if $MYSQL_PWD was defined previously
   shell: bash -lc 'if [ -z $MYSQL_PWD ]; then exit 1; else echo $MYSQL_PWD; exit 0; fi'
   args:
@@ -380,7 +377,7 @@
 - set_fact: mysql_old_root_password=""
   when: mysql_old_root_password is not defined and docker_distribution.stdout == '"CentOS Linux"'
   tags: docker_deploy
-  
+
 # Chequea si registry_username esta definido
 - name: Check if registry_username variable is defined
   fail:
