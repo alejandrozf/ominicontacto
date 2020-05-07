@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-07 15:18-0300\n"
+"POT-Creation-Date: 2020-04-27 17:49-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,31 +17,30 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-# 18c344e47d08434da7909369483b021c
+# ad472e9e5da84af080e880f4bdf6ab8f
 #: ../../release_notes.rst:2
 msgid "Release Notes"
 msgstr "Release Notes"
 
-# 0b4a4995d2a84ccf8442c5fcd6684d61
+# 7cb6be6322af4d678643b0d6beead1a9
 #: ../../release_notes.rst:4
-#, fuzzy
 msgid "*Abril 27, 2020*"
 msgstr "*April 21, 2020"
 
-# 7c92cf8036904722a7dd8655fdee092e
+# 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
 #, fuzzy
 msgid "Detalles de Release 1.5.7"
 msgstr "Release 1.5.7 details"
 
-# f4765fdad1424373a2dc7988f8bfbfa6
+# 2f558403c15a436e90409b976c7f07ed
 #: ../../release_notes.rst:10
 msgid "Bug fixes y mejoras"
-msgstr ""
+msgstr "Fixes and improvements"
 
-# f8f65fba1a414d9c997e87115ea1ca57
+# aad09193077e4992ad8243ec8f4db81a
 #: ../../release_notes.rst:11
 msgid ""
 "Solucionado error en instalación al correr el script de instalacion por "
 "segunda vez"
-msgstr ""
+msgstr "Fixed installation error when the installation runs for second time"

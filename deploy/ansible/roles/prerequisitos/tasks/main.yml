@@ -17,6 +17,9 @@
 #
 ---
 
+- name: Installing net-tools, necessary for network checks
+  yum: name=net-tools state=present update_cache=yes
+
 # Chequeos internos
 - name: Check if Omnileads has been installed previously
   include: checks.yml

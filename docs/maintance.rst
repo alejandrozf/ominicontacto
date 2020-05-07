@@ -32,7 +32,6 @@ Para consultar dichas variables podemos ejecutar un *cat* sobre el archivo */etc
  KAMAILIO_HOSTNAME=localhost.localdomain
  KAMAILIO_LOCATION=/opt/omnileads/kamailio
  MONITORFORMAT=mp3
- MYSQL_PWD=098098ZZZ
  NGINX_HOSTNAME=localhost.localdomain
  OMNILEADS_HOSTNAME=localhost.localdomain
  PGHOST=localhost.localdomain
@@ -47,7 +46,7 @@ Para consultar dichas variables podemos ejecutar un *cat* sobre el archivo */etc
  WOMBAT_USER=demoadmin
  WOMBAT_PASSWORD=demo
 
- export AMI_USER AMI_PASSWORD ASTERISK_IP ASTERISK_HOSTNAME ASTERISK_LOCATION CALIFICACION_REAGENDA DJANGO_SETTINGS_MODULE DJANGO_PASS EPHEMERAL_USER_TTL EXTERNAL_PORT INSTALL_PREFIX KAMAILIO_IP KAMAILIO_HOSTNAME KAMAILIO_LOCATION MONITORFORMAT MYSQL_PWD NGINX_HOSTNAME OMNILEADS_HOSTNAME PGHOST PGDATABASE PGUSER PGPASSWORD PYTHONPATH REDIS_HOSTNAME SESSION_COOKIE_AGE TZ WOMBAT_HOSTNAME WOMBAT_USER WOMBAT_PASSWORD
+ export AMI_USER AMI_PASSWORD ASTERISK_IP ASTERISK_HOSTNAME ASTERISK_LOCATION CALIFICACION_REAGENDA DJANGO_SETTINGS_MODULE DJANGO_PASS EPHEMERAL_USER_TTL EXTERNAL_PORT INSTALL_PREFIX KAMAILIO_IP KAMAILIO_HOSTNAME KAMAILIO_LOCATION MONITORFORMAT NGINX_HOSTNAME OMNILEADS_HOSTNAME PGHOST PGDATABASE PGUSER PGPASSWORD PYTHONPATH REDIS_HOSTNAME SESSION_COOKIE_AGE TZ WOMBAT_HOSTNAME WOMBAT_USER WOMBAT_PASSWORD
 
 De esta manera el administrador podrá disponer de todos estos parámeros operativos cuando desee.
 
@@ -95,9 +94,7 @@ Luego es el momento de ingresar la clave del usuario root de MySQL y hacer click
 
 .. Note::
 
-  El password del usuario root de MySQL fue configurado en el archivo *inventory* al momento de la instalación y quedó disonible como variable de entorno que puede ser consultada
-  según el procedimiento expuesto al comienzo de esta sección.
-
+  A partir de la versión 1.6.0 OMniLeads no setea password de usuario root de MySQL, dejar este campo vacio.
 
 Procedemos entonces con la creación de la base de datos MySQL que utilizará de ahora en más el componente Wombat Dialer.
 
@@ -347,7 +344,7 @@ Actualización Docker containers
 
 .. important::
 
-  Si ya tiene un entorno instalado con el script *install.sh* y quiere pasar a actualizar con Ansible, tiene que ingresar las variables correspondientes en el archivo de inventario. Es **MUY IMPORTANTE** que ingrese la misma password MYSQL.
+  Si ya tiene un entorno instalado con el script *install.sh* y quiere pasar a actualizar con Ansible, tiene que ingresar las variables correspondientes en el archivo de inventario.
 
 Una vez instalado OMniLeads en docker no siempre va a a ser necesario ejecutar el instalador de Ansible para realizar la actualización de la plataforma, salvo en estos casos:
 

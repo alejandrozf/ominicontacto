@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-07 15:18-0300\n"
+"POT-Creation-Date: 2020-05-08 12:01-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,13 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-# 75bd2378e9b0417cacd4b376da3a4143
+# 0d88da29b83d423984d193d8d7f04c83
 #: ../../campaigns_preview.rst:4
-#, fuzzy
 msgid "Creación campaña preview"
 msgstr "Preview campaigns creation"
 
-# 5865276ae73a415bb78e6851fb3ced2b
+# 74cdb67ccff54037982493a2f0ee0af4
 #: ../../campaigns_preview.rst:6
 msgid ""
 "Para crear una nueva campaña preview se debe ingresar al punto de menú "
@@ -33,7 +32,7 @@ msgstr ""
 "To create a new preview campaign you must enter the menu item Preview "
 "Campaigns -> New Campaign. "
 
-# 0649c88611ce421d81b42324aa55cccd
+# ac6b8facb517405b9240e795ac2943fe
 #: ../../campaigns_preview.rst:9
 msgid ""
 "En la primera etapa se deben indicar una serie de parámetros de campaña, "
@@ -42,17 +41,17 @@ msgstr ""
 "The first view invites us to indicate a series of campaign parameters, as"
 " indicated in Figure 1."
 
-# 5dc0524ba6e44068a54f450d8dab577a
+# 9af9a44c9a454b709a2a20ba2446e8e6
 #: ../../campaigns_preview.rst:13
 msgid "*Figure 1: Campaigns parameters*"
 msgstr ""
 
-# d80912f6233346e891f8c650b7a21736
+# 1b75f7d7bd264cac96b54c651cba1868
 #: ../../campaigns_preview.rst:15
 msgid "**Name:** nombre de la campaña."
 msgstr "**Name:** campaign name"
 
-# 7fe7c3649f3b4fd9955620bc9ad40378
+# c34cb3b9205e4415b88513bd9e13de39
 #: ../../campaigns_preview.rst:16
 msgid ""
 "**Contact database:** la base de contactos que utilzará el discador "
@@ -61,9 +60,8 @@ msgstr ""
 "**Contact database:** contact database that the preview dialer will use "
 "when delivering on demand contacts to each agent."
 
-# b7246579fcec4644801550cbe98a9e93
+# d85d13ab979949dc810236fac18bafb2
 #: ../../campaigns_preview.rst:17
-#, fuzzy
 msgid ""
 "**External system:** aquí se adjudica el sistema de gestión externo que "
 "ejecutaría \"click to call\" sobre la campaña, en caso de así desearlo."
@@ -71,38 +69,45 @@ msgstr ""
 "**External system:** external CRM system linked to launch *click to call "
 "actions or dispositions* on campaign contacts, through the API."
 
-# 3f58ab79ff8e44aab2e7608518eff9fc
+# 19d1d2145bfd47f8a00de558c8719435
 #: ../../campaigns_preview.rst:18
 msgid ""
 "**ID on external system:**  este campo debe contener el ID que posee la "
 "campaña dentro del sistema de gestión externo desde el cual llegarán los "
 "*click to call* o *solicitudes de calificación* de contactos."
 msgstr ""
+"**ID on external system:**  this field must containe the ID of the "
+"campaignin the external system from where the *click to call* or contact "
+"*disposition requests* will be triggered."
 
-# 8e04f0c87f494c76b71753b6222402fd
+# e7858d3ff57f4dfcbf6491a6359e11af
 #: ../../campaigns_preview.rst:19
 msgid ""
 "**Type of interaction:** indica si la campaña va a operar con formularios"
 " de OMniLeads o bien va a ejecutar una invocación hacia un CRM por cada "
 "llamada conectada."
 msgstr ""
+"**Type of interaction:** sets if the campaign will work with OMniLeads "
+"forms or make a request to the CRM for each connected call."
 
-# f2a01f3c6824463faa186065aa3f168b
+# 8cebb6759c384ed6b7ecde94be69e38b
 #: ../../campaigns_preview.rst:20
 msgid ""
 "**External URL:** en caso de haber seleccionado la invocación a un URL "
 "externo en cada llamada, aquí se indica cual de los CRMs definidos debe "
 "invocar la campaña."
 msgstr ""
+"**External URL:** in case of selecting an external URL interaction, this "
+"fields sets wich CRMs must the campaign trigger."
 
-# 95dc324e016f47d99f82979e88e0efc9
+# 20e62d9689124dd1a4c99a4c4abb36bb
 #: ../../campaigns_preview.rst:21
 msgid ""
 "**Enable recordings:** habilita que todas las llamadas de la campaña sean"
 " grabadas."
 msgstr "**Enable recordings:** Enable all campaign calls to be recorded."
 
-# bb3ed6784fe64ddd99dd29f0a34a64d3
+# 1a03631985414db1837c2712fab61eae
 #: ../../campaigns_preview.rst:22
 msgid ""
 "**Outbound Routes:** Se le asigna una ruta saliente existente a una "
@@ -110,7 +115,7 @@ msgid ""
 msgstr ""
 "**Outbound Routes:** An existing outbound route is assigned to an campaign."
 
-# 691d2536773b40d79f42f12fb7784ca5
+# c4c7820a5c28488abf400a69c5bb493b
 #: ../../campaigns_preview.rst:23
 msgid ""
 "**CID on Outbound Routes:** Este campo debe contener el CID asignado para"
@@ -119,7 +124,7 @@ msgstr ""
 "**CID on Outbound Routes:** This field must contain the CID assigned for "
 "an existing outbound route to a campaign."
 
-# a96e5d83f14748018e105ae69b7a1624
+# 4c9f57e0825b49da94b2149731d2fc69
 #: ../../campaigns_preview.rst:24
 msgid ""
 "**Scope:** se define como la cantidad de *gestiones positivas* esperadas "
@@ -131,7 +136,7 @@ msgstr ""
 "campaign's arrival with respect to the defined objective is shown in real"
 " time."
 
-# b63aa60a446a4a4f9be8e760099120ec
+# c01046e0927c442882139e87f9d5fe75
 #: ../../campaigns_preview.rst:25
 msgid ""
 "**Disconection time:** es el tiempo que el *discador preview* reserva un "
@@ -142,7 +147,7 @@ msgstr ""
 "assigned to an agent, after that time the contact is released so that it "
 "can be sued by another agent."
 
-# 5558f1358c6f4a71aa9ddfbb6a4b46e0
+# 73ddb971bcda48c3892c9ce4f39b2107
 #: ../../campaigns_preview.rst:27
 msgid ""
 "En la segunda pantalla se deben asignar las calificaciones que se "
@@ -152,12 +157,12 @@ msgstr ""
 "On the second screen you must assign the dispositions that are required "
 "as available to the agents when classifying each call to each contact."
 
-# 3e9bcbfe4c35499e9fe5dace7c1899c0
+# 5e16971da2634996bb6f984034b2d942
 #: ../../campaigns_preview.rst:31
 msgid "*Figure 2: Call dispositions*"
 msgstr ""
 
-# eb95f410d7824b398b4875c95f2b74bf
+# d9d9bd42a1554b5ba64965822f1972da
 #: ../../campaigns_preview.rst:33
 msgid ""
 "Luego resta asignar a los supervisores y agentes que podrán trabajar en "
@@ -168,17 +173,17 @@ msgstr ""
 "campaign. An assignment of agents to a campaign is exemplified in Figures"
 " 3 and 4."
 
-# acb5429693ad448d8ea8aba9b6c16016
+# 596e8d2828814af2af5f07e1532d8f3d
 #: ../../campaigns_preview.rst:38
 msgid "*Figure 3: supervisor assignment*"
 msgstr ""
 
-# e6d660a2bc1c4d978a3b7da63b2d0a9d
+# 65ebf3b45f8742828504a7c1fd8f4bef
 #: ../../campaigns_preview.rst:43
 msgid "*Figure 4: agent assignment*"
 msgstr ""
 
-# 4938aa7396fe4fde9c8f048995f4802c
+# 8379872d149842aa9ac97f821a312439
 #: ../../campaigns_preview.rst:45
 msgid ""
 "Por último, en la etapa final del wizard se permite opcionalmente "
@@ -189,17 +194,17 @@ msgstr ""
 "assignation of contacs to agents. This operation can be made using two "
 "variants"
 
-# 078da9fef9db4a41a058b58331378742
+# 195a4b083e9b47a5a8757317346659fa
 #: ../../campaigns_preview.rst:48
 msgid "La primera variante es mostrada en la siguiente imagen:"
 msgstr "The fist way is shown in the next figure:"
 
-# 0f8a37ba5ed7472c91ef1766026c5c36
+# 8446956fe4fd4eca9a80db7cf159e31e
 #: ../../campaigns_preview.rst:53
 msgid "Asignación de contactos"
 msgstr ""
 
-# d23cf9e681874e5fba42df3f237e111a
+# 9ea467ca69f24cc695e4961e49572d75
 #: ../../campaigns_preview.rst:55
 msgid ""
 "Si se le selecciona la opción de asignar proporcionalmente el sistema "
@@ -215,7 +220,7 @@ msgstr ""
 "contacts or free contactos. See this distribution on Django admin in the "
 "following picture."
 
-# 3e99ce5c14bd4e8b8556ed185a8d06c4
+# 6574d6c2720241a29ca81516371081c0
 #: ../../campaigns_preview.rst:59
 msgid ""
 "Al momento de seleccionar la opción se preasignación proporcional el "
@@ -224,7 +229,7 @@ msgstr ""
 "At the moment of select the proportionally pre-assignation the system "
 "shows the random selection"
 
-# 2dd044691f6f41b2a721e2dd3c4cee82
+# 8e683d2df186487c8b55113a5e0576fc
 #: ../../campaigns_preview.rst:63
 msgid ""
 "Esta opción permite que los contactos sean asignados en orden aleatorio a"
@@ -233,7 +238,7 @@ msgstr ""
 "This option allows that the contacts could be assigned in random order to"
 " the agents, as is shown next:"
 
-# 9e5d6de5015a46389008303f52e7e0c8
+# 01408513efdf48f7bbb557bddd7ca894
 #: ../../campaigns_preview.rst:67
 msgid ""
 "Finalmente nuestra campaña queda disponible para comenzar a operar. Por "
@@ -245,17 +250,17 @@ msgstr ""
 " agents assigned to it perform a login to the platform, they should have "
 "the preview campaign as shown in Figure 5."
 
-# 17a809e98cf949359865552e4208834b
+# 6aad9b281a5644af868bd655c6698df7
 #: ../../campaigns_preview.rst:73
 msgid "*Figure 5: Preview agents view*"
 msgstr ""
 
-# a529b1408f13497a96f0cc9fd039c0dd
+# 6bbec9f9bde3432b96fe1c9d6cd41cc9
 #: ../../campaigns_preview.rst:76
 msgid "Interacción de agente con campaña"
-msgstr ""
+msgstr "Agent-campaign interaction"
 
-# e982427e41044e36aea051485e8d88cd
+# bdd7177d86d44f48b92b3984b86cc236
 #: ../../campaigns_preview.rst:78
 msgid ""
 "Si el agente hace click sobre el teléfono entonces se dispara la llamada,"
@@ -268,18 +273,17 @@ msgstr ""
 "view allowing the agent to classify the call with any of the ratings "
 "assigned to the campaign."
 
-# d1f367c0ebfb427990a4c8515cb044a1
+# 2ff88f8508434db0be0a56de3533bcde
 #: ../../campaigns_preview.rst:84
 msgid "*Figure 6: Contact called*"
 msgstr ""
 
-# b7e11bfc70a546bb95ee5c097047d414
+# 3763c6daa229430a8bea9323ad0d8e2e
 #: ../../campaigns_preview.rst:87
-#, fuzzy
 msgid "Campaña con base de datos Multinum"
 msgstr "Campaign with Multinum database"
 
-# c42de35304004ed594601a31f807717d
+# c238394b0e254d99bc5e3be07e768880
 #: ../../campaigns_preview.rst:89
 msgid ""
 "Como sabemos, OMniLeads admite que cada contacto de una base posea \"n\" "
@@ -300,12 +304,12 @@ msgstr ""
 "presented on the agent screen. Clicking on that link triggers a call to "
 "the extra telephone number of the contact. Figure 11 shows this scenario."
 
-# 43b915a80e774ac792cdf0f347797d8f
+# db4fcd26380f41d59ed0dfd0adc07b69
 #: ../../campaigns_preview.rst:96
 msgid "*Figure 7: Multinum contact database*"
 msgstr ""
 
-# bb65766e45a64e479b224c75ef5832c8
+# 03726e49f0dc48919b0f83398cf6b2b5
 #: ../../campaigns_preview.rst:98
 msgid ""
 "Por lo tanto, el agente puede intentar contactar a todos los números "
@@ -316,12 +320,12 @@ msgstr ""
 " in the contact form, until finally selecting a disposition and moving to"
 " a new one."
 
-# 5d0b359e93b44e5fafd3e497fd8dc4a3
+# 42e468923a964c36abbd3682a0ae73ce
 #: ../../campaigns_preview.rst:102
 msgid "Gestión de la entrega de contactos"
-msgstr ""
+msgstr "Management of contacts assignments"
 
-# 7da4a6ae6b204059a7e7413427ac1e40
+# 4c47e4caa9c344f6b0e3044d87b70601
 #: ../../campaigns_preview.rst:104
 msgid ""
 "Una vez creada la campaña los contactos disponibles para cada agente "
@@ -329,8 +333,12 @@ msgid ""
 "AgenteEnContacto, esta funcionalidad permite editar ese orden usando la "
 "exportación/importación de archivos en formato .csv."
 msgstr ""
+"Once the campaing is created the available contacts for every agent will "
+"be assign following an order established on the model AgenteEnContacto, "
+"this feature allows edit that order using the exportation/importation of "
+".csv files"
 
-# cfb6361845e5430ca84c0f95d6d301e0
+# cc5c579168ba4a318bc2e62395c15bb3
 #: ../../campaigns_preview.rst:106
 msgid ""
 "La idea es que el administrador puede descargarse el orden actual de "
@@ -339,47 +347,51 @@ msgid ""
 "asignación de contactos a agentes en la campaña."
 msgstr ""
 
-# 50707e71848b41f4ac7e7c62ff34f758
+# bc4d89a4ba5145ac94c08a243ef73023
 #: ../../campaigns_preview.rst:108
 msgid "A esta funcionalidad se puede acceder usando el menú de la campaña preview"
-msgstr ""
+msgstr "This feature is accessible using the preview campaign menu"
 
-# 50d81fb39f414cd48a9f500e8b2fc741
+# 284124f0154e4d7daf7f1605681a9f5d
 #: ../../campaigns_preview.rst:110
 msgid "Ver imágenes 8 y 9"
-msgstr ""
+msgstr "See figures 8 and 9"
 
-# 91c8e49e195d4ea59aba29dd9761aa72
+# 888bc6124ee0437e94e8f7663b7c919b
 #: ../../campaigns_preview.rst:114
 msgid "*Figura 8: Accesso a página de reordenamiento de entrega de contactos*"
-msgstr ""
+msgstr "Figure 8: Access to reorder contacts assignments page"
 
-# 7a25996693794f24a81b6ecac4bc502c
+# 4e6d8756d5fb42b69e487c5ad4a28f3b
 #: ../../campaigns_preview.rst:118
 msgid "*Figura 9: Página de reordenamiento de entrega de contactos*"
-msgstr ""
+msgstr "Figure 9: Reorder contacts assignments page"
 
-# a3108407acdd40e4802e38589a60f52a
+# d51ede29862a47e4897a597e80a6bbfc
 #: ../../campaigns_preview.rst:121
 msgid ""
 "También es posible marcar como desactivados los contactos que se desee, "
 "los cuales no serán entregados a ningun agente."
 msgstr ""
+"Also, is possible to tag contacts as disabled, which will not delivered "
+"to any agent"
 
-# fc96961dc8554b3dbb743e465a6a0534
+# 535503c2f21f4079860f85eb368fbc8d
 #: ../../campaigns_preview.rst:123
 msgid ""
 "Esto es posible definiendo en la misma vista un campo de desactivación "
 "para la campaña de entre las columnas de datos de la base de contactos. "
 "Ver Figura 10."
 msgstr ""
+"This is posible by defining a deactivation field for the campaign "
+"choosing between the data colums in contacts database"
 
-# 3a6f7d4ec0b24e889e89a2e23d907af3
+# e3ce306133d3479fa1287859a7e52a78
 #: ../../campaigns_preview.rst:125
 msgid "*Figura 10: Campo de desactivación de contactos*"
-msgstr ""
+msgstr "*Figure 10: Deactivation contacts field*"
 
-# 069766b83aee4df08b3bd79adcb8949b
+# c88becf1799a487585d2dafe634486aa
 #: ../../campaigns_preview.rst:129
 msgid ""
 "Después de realizar la exportación del orden actual de contactos se puede"
@@ -389,3 +401,8 @@ msgid ""
 "distinto a estos hace que el sistema asuma que el contacto puede "
 "entregarse."
 msgstr ""
+"After make current contacts order exportation is possible to edit the "
+"deactivation field column with values 0 or FALSE wich, after importation "
+"of.csv file will indicates to the system to not deliver this contacts to "
+"any agent.Any other value different to 0 or FALSE makes the system can "
+"deliver the contact."

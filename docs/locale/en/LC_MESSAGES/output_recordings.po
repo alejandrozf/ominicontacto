@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-07 15:18-0300\n"
+"POT-Creation-Date: 2020-03-04 11:08-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,12 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-# 994cda441c47435d8a9e464afe2ad3ce
+# 22e643a3ba0b47ffbf84afd76542810f
 #: ../../output_recordings.rst:4
 msgid "Acceso al menú"
-msgstr ""
+msgstr "Menu access"
 
-# ab3fd15cf8024ef3bac99af807e91f4f
+# 08bfe83a242e4d3f97069e878a4679b8
 #: ../../output_recordings.rst:6
 msgid ""
 "Para acceder al buscador de grabaciones debemos llegar al punto de menú "
@@ -36,14 +36,14 @@ msgstr ""
 "displayed according to a filter criteria like date and a set of "
 "parameters as:"
 
-# 69cfa6aa4bb9466486e69c66758cba3c
+# 1e21b7577c2a433bae17c1f91d96e109
 #: ../../output_recordings.rst:10
 msgid ""
 "**Fecha:** permite acotar la búsqueda a una fecja o rango de fechas en "
 "particular."
 msgstr "**Date:** allows to filter your search by date or specific date range."
 
-# d778cfb94f9649e69951f11c254e810a
+# 113a9b36709d4d12a92d125d7e75fb34
 #: ../../output_recordings.rst:11
 msgid ""
 "**Tipo de llamada:** se puede filtrar por tipo de llamada (manua, "
@@ -52,7 +52,7 @@ msgstr ""
 "**Call Type:** allows to filter according to call type criteria (manual, "
 "incoming, preview, predictive dialer)."
 
-# 64c1a1e1fff643afa11188c8515c9c6f
+# 5f411f4671394ae194621c903af324b8
 #: ../../output_recordings.rst:12
 msgid ""
 "**Teléfono del contacto:** este campo permite acotar la búsqueda a "
@@ -61,7 +61,7 @@ msgstr ""
 "**Phone Number:** this field allows to filter search engine by a specific"
 " telephone number."
 
-# d102b4887e2b47eb89f71680eb67297b
+# 4945c9350fde41f1880e47433130a067
 #: ../../output_recordings.rst:13
 msgid ""
 "**Agente:** se puede acotar la búsqueda a llamadas en las que un agente "
@@ -70,14 +70,14 @@ msgstr ""
 "**Agent:** allows to filter search engine for calls managed by specific "
 "agent."
 
-# 71ffd23a7b494aaab3a3f4a31f04759e
+# 14dcc7c815504ad3b1163e654dd78d9e
 #: ../../output_recordings.rst:14
 msgid "**Campaña:** filtro para listar llamadas asociadas a una cierta campaña."
 msgstr ""
 "**Campaign:** allows to filter search engine for calls managed by "
 "specific campaign."
 
-# 6e45e7863ff5490cb4306c9d05ef1b43
+# 9c98392a41f94713a81bb508a2798615
 #: ../../output_recordings.rst:15
 msgid ""
 "**Llamada observada:** este check sirve para recuperar grabaciones de "
@@ -87,7 +87,7 @@ msgstr ""
 "**Checked:** this check is used to recover recordings of calls that have "
 "been observed/marked by agent during conversation."
 
-# cec4dd4a8870472a9be07a77668b19ee
+# dd40e999c35545cf940c0551b3f6572e
 #: ../../output_recordings.rst:16
 msgid ""
 "**Duración mínima:** este campo sirve para acotar la búsqueda a "
@@ -96,7 +96,7 @@ msgstr ""
 "**Minimum duration:** this field is used to limit search engine for "
 "Recordings with a specific value of duration, as minimum."
 
-# 0d78b24c6fca4804a0d476732bd08589
+# 690bc5faf4ca43d5abd633c3b5e79f6e
 #: ../../output_recordings.rst:17
 msgid ""
 "**Llamadas asociadas a una gestión positiva:** como bien sabemos, en "
@@ -110,8 +110,7 @@ msgstr ""
 "campaign forms. In this case, this check allows administrator/supervisor "
 "to recover dispositioned calls of type Engaged."
 
-# ecd0ddbb4ba440ef9721131175d54ba9
+# 216cf025c299453eacd3a73d9c1062fa
 #: ../../output_recordings.rst:21
 msgid "*Figure 1: recordings*"
 msgstr ""
-

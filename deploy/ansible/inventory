@@ -52,12 +52,11 @@ postgres_database=omnileads
 #######################################
 #ami_user=omnileadsami
 #ami_password=5_MeO_DMT
-#####################################################
-# Wombat dialer credentials and MYSQL root password #
-#####################################################
+#############################
+# Wombat dialer credentials #
+#############################
 #dialer_user=demoadmin
 #dialer_password=demo
-#mysql_root_password=my_very_strong_pass
 #################################################################################################
 # Set the timezone where the nodes are. UNCOMMENT and set this if you are doing a fresh install #
 #################################################################################################

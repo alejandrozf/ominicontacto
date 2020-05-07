@@ -45,7 +45,7 @@ kamailio_location: "{{ install_prefix }}kamailio"
 static_route: "{{ install_prefix }}ominicontacto/ominicontacto_app/static/ominicontacto"
 odbc_location: /etc/
 rtpengine_name: "rtpengine-mr{{ rtpengine_version }}"
-
+mysql_root_password: ""
 ######### VoIP ports ###########
 kam_tls_port: 5061
 kam_ws_port: 1080

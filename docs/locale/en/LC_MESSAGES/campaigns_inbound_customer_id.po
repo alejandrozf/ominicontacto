@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-07 15:18-0300\n"
+"POT-Creation-Date: 2020-03-04 11:08-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,17 +17,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-# 58ba0433590645308ddfdf2977be21f2
+# e4985c559eab48ce82ba5a92283d66db
 #: ../../campaigns_inbound_customer_id.rst:6
 msgid "Identificación de llamada entrante"
 msgstr "Customer identification on incoming calls"
 
-# 33178ed246e54ee080d7aec2b0a82ac0
+# 6ec9c4541a174740ab85a3fccd1431d3
 #: ../../campaigns_inbound_customer_id.rst:9
 msgid "Presentación"
-msgstr ""
+msgstr "Presentation"
 
-# 43b7e0e1b60743d7adb65e4e9d15d120
+# 92da6d40ecaa4748b42d63eca80c5ad4
 #: ../../campaigns_inbound_customer_id.rst:11
 msgid ""
 "Dentro del flujo de una llamada entrante se puede añadir un nodo con la "
@@ -44,7 +44,7 @@ msgstr ""
 "being able to involve the CRM on the choose that destination, through the"
 " interaction between OMniLeads and the defined CRM system."
 
-# 5f321e957cbe4931a4e9421b1adf7131
+# b9e5a2e14dfc4a28a46a6202d63f6e94
 #: ../../campaigns_inbound_customer_id.rst:16
 msgid ""
 "En su funcionamiento más básico el módulo implementa la posibilidad de "
@@ -64,7 +64,7 @@ msgstr ""
 " for launch an interaction with the CRM, so the CRM can wiil take control"
 " of incoming calls routing."
 
-# 61f5e8da55104298be5e3c087e578b37
+# a23ac0a237ba45b582483e543c18c46f
 #: ../../campaigns_inbound_customer_id.rst:22
 msgid ""
 "En ambos escenarios (modo básico y modo interactivo con CRM), se consigue"
@@ -78,17 +78,17 @@ msgstr ""
 "customer data and render it on the agent view (either on the contact view"
 " or in the external CRM configured for the campaign)."
 
-# 3104d4345a5c4b378f895732c387ec83
+# 08e5676aff394783a6e974a04ed4e67b
 #: ../../campaigns_inbound_customer_id.rst:26
 msgid "El módulo permite tres modos de funcionamiento:"
 msgstr "The module allows three configuration modes:"
 
-# 15a3f90183d84f89a6264e3ca7a65974
+# 5b910858dcef4ee692d47ef52ca09596
 #: ../../campaigns_inbound_customer_id.rst:29
 msgid "Solamente solicitar identificación"
 msgstr "Basic behavior"
 
-# 40894c11f1aa41829964e8344d99b327
+# 354c788ae2d940209f2e44736cae8682
 #: ../../campaigns_inbound_customer_id.rst:31
 msgid ""
 "Bajo esta configuración cuando una llamada entrante es enviada hacia este"
@@ -106,19 +106,19 @@ msgstr ""
 "an identification or *destination B* has been entered if the caller did "
 "not."
 
-# 8d4828721d984b8cb0165f0758c917ca
+# 70372b5a66ae43bc827aa748b4e265d1
 #: ../../campaigns_inbound_customer_id.rst:38
 msgid "*Figure 1: Customer id without CRM interaction*"
 msgstr ""
 
-# 87b30d5acde0472eaa86a89677b4b7f1
+# c780f4c4d3744713b410359232449e96
 #: ../../campaigns_inbound_customer_id.rst:42
 msgid ""
 "Solicitar identificación, notificar al CRM y aguardar respuesta *true / "
 "false*"
 msgstr "CRM interaction *true or false*"
 
-# 85221ea42c1d44c6b347879534a83a51
+# c34c09f0665e4b16a0c0636d28ea7a86
 #: ../../campaigns_inbound_customer_id.rst:44
 msgid ""
 "Bajo esta configuración cuando una llamada entrante es enviada hacia este"
@@ -131,12 +131,12 @@ msgstr ""
 "recording played on the customer telephone channel and this entered value"
 " its deliver inside a http-request to the CRM web service."
 
-# 05451d825dae428f854e132bd3fcbef7
+# d960eea4c8ba4856a0e8da604ac5a98b
 #: ../../campaigns_inbound_customer_id.rst:50
 msgid "*Figure 2: Customer id with CRM interaction true/false*"
 msgstr ""
 
-# 8297ffb90a8046bda5785f7e4ac0ff76
+# 41580295b31d49f3900aaf352b66941f
 #: ../../campaigns_inbound_customer_id.rst:52
 msgid ""
 "Aquí el sistema de gestión CRM toma partido en lo que respecta al "
@@ -154,7 +154,7 @@ msgstr ""
 "of the two possible previously configured destinations *destination A* if"
 " the CRM returns true or *destination B* if the CRM returns false."
 
-# a560f7208e3945dca11ecbee0c864980
+# 640ce73c3f5e4e82989141fc072fa8aa
 #: ../../campaigns_inbound_customer_id.rst:57
 msgid ""
 "Un ejemplo podría ser el de una compañía que comprueba si el \"número de "
@@ -166,7 +166,7 @@ msgstr ""
 "incoming campaign to be answered by an agent or instead be sent to "
 "another destination."
 
-# 4370c25a35924233bcd77d81f49dda43
+# 2e7125f2f5d54093b72b85bb25719dde
 #: ../../campaigns_inbound_customer_id.rst:62
 msgid ""
 "Solicitar identificación, notificar al CRM y aguardar respuesta *destino "
@@ -175,7 +175,7 @@ msgstr ""
 "The external CRM choose the OMniLeads destination where route customer "
 "calls"
 
-# 17b4a66a8b574f958391908817c7938b
+# 9dce9d7fab664178a463d8d13c7c481a
 #: ../../campaigns_inbound_customer_id.rst:64
 msgid ""
 "Bajo este modo, cuando una llamada entrante invoca la ejecución del nodo,"
@@ -188,12 +188,12 @@ msgstr ""
 "recording played on the customer telephone channel and this entered value"
 " its deliver inside a http-request to the CRM web service."
 
-# 857330006aa2482ba52c36bff3202b56
+# 275cf15d2cad4482b08f0a7f701871c9
 #: ../../campaigns_inbound_customer_id.rst:69
 msgid "*Figure 3: Customer id with interaction and destination chosen by CRM*"
 msgstr ""
 
-# 10e271657ef04fe2badfa35f8c09a727
+# 620c0377af484d94adb7371985e5c99e
 #: ../../campaigns_inbound_customer_id.rst:71
 msgid ""
 "El sistema de gestión CRM toma partido respecto al encaminamiento de un "
@@ -210,7 +210,7 @@ msgstr ""
 "internal destination like response, finally OMniLeads must route the "
 "calls to the destination selected by CRM"
 
-# fa0cbc9d86a043d5a466d989762c4baa
+# 52dc68185e89423283f115ac68e49e5d
 #: ../../campaigns_inbound_customer_id.rst:76
 msgid ""
 "Un aplicación de esta funcionalidad podría ser, notificar al CRM acerca "
@@ -223,12 +223,12 @@ msgstr ""
 "incoming campaign where to route this call. The destination choice can be"
 " base on the type of customer subscription plan."
 
-# e2b09c80da0f43569d4d74aabebc1b36
+# c070410d3ae74159aba4b2615cc7f0ff
 #: ../../campaigns_inbound_customer_id.rst:82
 msgid "Crear un nuevo punto de solicitud de identificación de clientes"
 msgstr "Create a new customer identification node"
 
-# 92b6d9ce50a949c891b24e1445f88c42
+# a11c98ad32c448768aac1b5c744845a0
 #: ../../campaigns_inbound_customer_id.rst:84
 msgid ""
 "Para generar un nuevo nodo, se debe acceder al punto de menú: \"Telefonía"
@@ -237,66 +237,66 @@ msgstr ""
 "To generate a new node, you must access the menu item: *Telephony - "
 "Customer identification*"
 
-# 7646bd61ec4841cf9cfd3d726be14d08
+# 96c14201bbbe439a864ee41313f5aeb8
 #: ../../campaigns_inbound_customer_id.rst:88
 msgid "*Figure 4: New customer id node*"
 msgstr ""
 
-# 26583a03d1d54de593a2e8407a4c7d8a
+# 5cff8f29e42244b099e28bf2baeaece7
 #: ../../campaigns_inbound_customer_id.rst:90
 msgid "A continuación se detallan los campos del formulario:"
 msgstr "The form fields are detailed below:"
 
-# d6573cd9257b42aeb4541ea9beffc111
+# 59d293914ddc4e579046b4852517caaa
 #: ../../campaigns_inbound_customer_id.rst:93
 msgid "Campo"
 msgstr "Field"
 
-# fa847bebdd9e450082fb0919223ae2c6
+# 65271fa59bc64ed8b872cc6811f0842f
 #: ../../campaigns_inbound_customer_id.rst:93
 msgid "Descripción"
 msgstr "Description"
 
-# 864f6bab43104d03a3b1fc90f1a60ec0
+# a6f8baab39c946379f1ac7eecdc169a2
 #: ../../campaigns_inbound_customer_id.rst:95
 msgid "Nombre"
 msgstr "Name"
 
-# 816a947c7a284e19910c5d65c64418b8
+# 44ed7a4b62e54e0d9fe5f06558d917b4
 #: ../../campaigns_inbound_customer_id.rst:95
 msgid "Nombre de referencia del nodo"
 msgstr "Object reference name"
 
-# 8962253e3fd943f39c1743884e761404
+# e130cdf8fbf4497580f5276a309dc965
 #: ../../campaigns_inbound_customer_id.rst:97
 msgid "Tipo de interacción"
 msgstr "Interaction type"
 
-# 8474108feb0c43b48f11e4c8ba80ef75
+# 8e0f2e83efaf4d9588ff610b73ec3022
 #: ../../campaigns_inbound_customer_id.rst:97
 msgid "Sin Interacción: solo se comprueba si hubo o no un ingreso y su logitud"
 msgstr "Without CRM integration: just ask for identification"
 
-# 75c4fd8721e942d0bc80763dd3d97da0
+# 1715029e1d904607b0b6f48075e1eaea
 #: ../../campaigns_inbound_customer_id.rst:98
 msgid ""
 "Interacción externa tipo 1: se envía id de cliente y se espera "
 "\"true/false\" como respuesta"
 msgstr "CRM interaction true or false"
 
-# 3776797f674f41a0af0eb116a46858d3
+# 8f98f1c2662445d4b4de2254fafda9fa
 #: ../../campaigns_inbound_customer_id.rst:99
 msgid ""
 "Interacción externa tipo 2:se envía id de cliente y se espera un destino "
 "como respuesta"
 msgstr "The CRM choose the OMniLeads destination for each customer caller"
 
-# b37e4b6e9be041b3986ab682ca2fbad3
+# 3e20dcda59544678b90f4ede6e365951
 #: ../../campaigns_inbound_customer_id.rst:101
 msgid "URL servicio ident"
 msgstr "CRM web service URL"
 
-# 1bd74517dfdc42818cf911332ac42085
+# 6373067a54354464b88a0293d6ab885f
 #: ../../campaigns_inbound_customer_id.rst:101
 msgid ""
 "Aquí se indica la dirección del servicio web hacia donde enviar el número"
@@ -305,12 +305,12 @@ msgstr ""
 "here we indicate the web service address where send the requests from "
 "OMniLeads to CRM"
 
-# 991d924acc9c4c33ad8d4d08f2d65353
+# c396d3766ff642d280dba5655cb0a99a
 #: ../../campaigns_inbound_customer_id.rst:103
 msgid "Audio"
 msgstr "Audio to be played on caller channel"
 
-# 9b0c26a541f3432a881b701e4817f3ab
+# 628cf594ae07407e821ff6780ab65e73
 #: ../../campaigns_inbound_customer_id.rst:103
 msgid ""
 "Se trata del audio que se reproduce sobre la llamada entrantes, para "
@@ -319,24 +319,24 @@ msgstr ""
 "This is the recording that we can choose to request the customer "
 "identification"
 
-# 1aef092f7539416093b86d47155ada17
+# 63421dbcb2824b0c9716c33cb3dfd71f
 #: ../../campaigns_inbound_customer_id.rst:106
 msgid "Logitud id esperado"
 msgstr "Maximum acceptable number of digits"
 
-# 5a672dbcaf284f03b39b31adb2716efe
+# 14e1c84751c94736948f40a454fa390d
 #: ../../campaigns_inbound_customer_id.rst:106
 msgid "Se puede indicar el largo esperado de código de identificación"
 msgstr ""
 "We can set the maximum acceptable number of digits for the customer id "
 "input"
 
-# e108b273d72e48b58c0b7a4cd0f2074c
+# d2da6f95cdf0439fafb00f9f5231f24f
 #: ../../campaigns_inbound_customer_id.rst:108
 msgid "Timeout"
 msgstr "Timeout"
 
-# 054470c2d15b44819b3a8b05c7777252
+# ee3f57c7e3bc4fb590272e01041e989e
 #: ../../campaigns_inbound_customer_id.rst:108
 msgid ""
 "El tiempo en segudos que el sistema espera a que se ingrese la "
@@ -350,12 +350,12 @@ msgstr ""
 "considered a timeout. After a timeout, the system follows the "
 "unsuccesfull destination defined below."
 
-# 2be4f38efc0c4dc6a751c2ae06908739
+# 6516c7c2622041f9b9126617450ace26
 #: ../../campaigns_inbound_customer_id.rst:112
 msgid "Retries"
 msgstr "Retries"
 
-# c8fc52a28a5f41aca5ffcf1d2eb00d4b
+# a4ec4d17144849b393253fccca63a3cd
 #: ../../campaigns_inbound_customer_id.rst:112
 msgid ""
 "La cantidad de intentos erróneos que se permiten al ingresar la "
@@ -364,12 +364,12 @@ msgstr ""
 "Number of times to retry when receiving an invalid or null input from the"
 " caller"
 
-# fa67d0a4acc84704a68c6ecfe9973222
+# 946b9d9169a94382abe75d6d3e2b5c56
 #: ../../campaigns_inbound_customer_id.rst:114
 msgid "Destino Identificación exitosa"
 msgstr "Successfull destiny"
 
-# 13256701b83041e69ba7fe02c9f2fa0d
+# 9a700943b6ff404ea8e136ec1bae2c3d
 #: ../../campaigns_inbound_customer_id.rst:114
 msgid ""
 "Tipo de destino y destino puntual para dicho tipo al que se derivan las "
@@ -380,12 +380,12 @@ msgstr ""
 "successful calls. This option apply to *basic behavior* setting mode or "
 "*CRM interaction true or false*."
 
-# 7b4618a179e24bb68d2e221d4b11e1c1
+# 28db5350997f4696b7a8dc391996d6c6
 #: ../../campaigns_inbound_customer_id.rst:117
 msgid "Destino Identificación no exitosa"
 msgstr "Unsuccessful destiny"
 
-# a844cd4ee9ad4c35b1a6050686d435b8
+# b64992c38cd74a429671e7ce6441f02c
 #: ../../campaigns_inbound_customer_id.rst:117
 msgid ""
 "Tipo de destino y destino puntual para dicho tipo al que se derivan las "
@@ -395,7 +395,7 @@ msgstr ""
 "Destiny for unsuccessful calls. This option apply to *basic behavior* "
 "setting mode or *CRM interaction true or false*."
 
-# 9e2b50ede58047578bdc4f261b70f9d6
+# 9a3bc38c1ee843c092dd863441cec742
 #: ../../campaigns_inbound_customer_id.rst:124
 msgid ""
 "Para poder implementar los modos que implican enviar la identificación "
@@ -408,7 +408,7 @@ msgstr ""
 " CRM, you must consider the fact that the management system has a web "
 "service to receive requests of this type."
 
-# cebd5a535d16453988bc54fd806a5d9b
+# cb991349d4ac4554a1403c4bb3000cbd
 #: ../../campaigns_inbound_customer_id.rst:129
 msgid ""
 "Para los desarrolladores que deseen habilitar en el sistema de gestión "
@@ -420,12 +420,12 @@ msgstr ""
 "find more information in our API documentation "
 ":ref:`about_customer_id_request`."
 
-# f85013cde1534b9da74c857fdb5dc5f6
+# 8cf57c9852384c178110e43de8c60e34
 #: ../../campaigns_inbound_customer_id.rst:135
 msgid "Solicitud de enrutamiento hacia el sistema CRM externo"
 msgstr "Routing request to the external CRM"
 
-# f37b49d27aa247f09864503edc1510df
+# a0363a1e5c2b48a8bf0e344cac1e0a95
 #: ../../campaigns_inbound_customer_id.rst:137
 msgid ""
 "Esta interacción implica que OMniLeads ejecute una solicitud HTTP-POST "
@@ -436,14 +436,14 @@ msgstr ""
 "OMniLeads send an HTTP-POST request (plain/text) to the URL of the "
 "external CRM inside the :ref:`about_customer_id_form` module."
 
-# c1844874230947c98aff54ac69752f8a
+# eea93ca6f92a43b88c6b24584a0525bb
 #: ../../campaigns_inbound_customer_id.rst:140
 msgid ""
 "Este POST enviado hacia el sistema de gestión CRM tiene el siguiente "
 "aspecto"
 msgstr "This post sent to the external CRM must be in this way:"
 
-# 8aa76a6e48ee4588be02eeeee6ed7f37
+# 4bad0c3df8be46c38c527f671432b595
 #: ../../campaigns_inbound_customer_id.rst:144
 msgid ""
 "Como podemos observar el \"User-Agent\" debe llegar como \"OMniLeads\" y "
@@ -453,12 +453,12 @@ msgstr ""
 "The \"User-Agent\" must be \"OMniLeads\" and the body of Post must be the"
 " id number sent in the call identified by \"idContact\"."
 
-# ce4d7eba5e724eab8202b109d2660266
+# 319e3ebcb13f4756a4245931cab49b6e
 #: ../../campaigns_inbound_customer_id.rst:146
 msgid "**Respuesta que debe generar el servicio web del sistema de gestión CRM**"
 msgstr "**Answer generated by the web service's external CRM**"
 
-# 83cd2db354034a1a879e108dda02541d
+# f7c5cc4995fa4daa93227f5028c6efd9
 #: ../../campaigns_inbound_customer_id.rst:148
 msgid ""
 "El servicio recibe de OMniLeads el request HTTP-Post con el número de "
@@ -470,17 +470,17 @@ msgstr ""
 " number and must generate an answer to the request. The system has the "
 "possibilitie to generate three kinds of responses:"
 
-# 38d396ea9ff948cc9eae9e94c7587682
+# a4d414d85a6241cc9b1f3a9d7f8a4365
 #: ../../campaigns_inbound_customer_id.rst:151
 msgid "**true**"
 msgstr "**true**"
 
-# f5449d43d7fd4286a82ec0e1d67c34a0
+# 438420c5845b44968f7877f882f34fff
 #: ../../campaigns_inbound_customer_id.rst:152
 msgid "**false**"
 msgstr "**false**"
 
-# 9db971bc26f14333a1953d1df833bc48
+# 7d8ff06614cb4fd1b3ef87cc7878b617
 #: ../../campaigns_inbound_customer_id.rst:153
 msgid ""
 "**X,Y**: donde \"X\" es un número entero y corresponde con el tipo de "
@@ -496,17 +496,17 @@ msgstr ""
 "will be routed to an inbound campaign (1) which id is (3). The key "
 "associated to the response is \"response\"."
 
-# 069cb1e519f34b9dba7d1b35cd4b3b02
+# b4b772061c714253befc3f84bc219294
 #: ../../campaigns_inbound_customer_id.rst:155
 msgid "El formato de respuesta debe ser \"JSON\"."
 msgstr "The response's format must be \"JSON\"."
 
-# 2f77572bfe694b31859d55cd809b7fce
+# dd5d4a6c60334432bd61a982456c3257
 #: ../../campaigns_inbound_customer_id.rst:157
 msgid "Respuesta JSON"
 msgstr "JSON response"
 
-# 2337619ae9c443f7834363a1cd6204db
+# fd5a1b9b6dbc43a3b3a6c7077aea775c
 #: ../../campaigns_inbound_customer_id.rst:169
 msgid ""
 "Donde \"status\" puede ser *ok* o *fail* y \"destination\" podrá ser "
@@ -515,7 +515,7 @@ msgstr ""
 "Where \"status\" can be *ok* or *fail* and \"destination\" can be any of "
 "the three responses specified above."
 
-# 175a393d50c94648866c4edb24cd95aa
+# 92362449d34149efb302d33327843fa6
 #: ../../campaigns_inbound_customer_id.rst:173
 msgid ""
 "El sistema debe respetar el formato y nombre de parámetros (status y "
@@ -524,7 +524,7 @@ msgstr ""
 "The system must respect the format and name of parameters (status and "
 "destination)."
 
-# f39f7d04ed4a4459978559ccf112047a
+# 04bdbee15bf84601a05a6335099b9d4c
 #: ../../campaigns_inbound_customer_id.rst:175
 msgid ""
 "En caso de generar una respuesta con el destino del enrutamiento, se "
@@ -533,32 +533,32 @@ msgstr ""
 "In case of generate a response with routing destination, the types of "
 "destinations are:"
 
-# 2b75906419754bcd8e643b27957843c8
+# ae1ae330b1b24aba9b689d0ce2bfbd42
 #: ../../campaigns_inbound_customer_id.rst:177
 msgid "1: Campaña entrante"
 msgstr "1: Inbound campaign"
 
-# bc74672fe68c46c597a4f4d10aeea6bd
+# 27c19959a21b4c979327c80de0b4104d
 #: ../../campaigns_inbound_customer_id.rst:178
 msgid "2: Condicional basado en tiempo"
 msgstr "2: Conditional based on time"
 
-# 8f2e003948134ec385b8c8b6c0232636
+# b33d5009bb74428698fda4accb97be1c
 #: ../../campaigns_inbound_customer_id.rst:179
 msgid "3: IVR"
 msgstr "3. IVR"
 
-# 3b612b4144a94773968d9a06c0a21268
+# 6dc90c54317e44d08bbd52f961163e6b
 #: ../../campaigns_inbound_customer_id.rst:180
 msgid "5: Hangup de la llamada"
 msgstr "5: Call hangup"
 
-# ec28663fc72847bc93a0668c7b10ebcd
+# fdedf51786e44568900a8cbd1779dc30
 #: ../../campaigns_inbound_customer_id.rst:181
 msgid "9: Solicitud de identificación"
 msgstr "9. Identification request"
 
-# 52b2b6b2d313479e99888a12892140da
+# 276fbdbbaaa94775acbed63ca2ed4ac1
 #: ../../campaigns_inbound_customer_id.rst:183
 msgid ""
 "En un futuro se implementará un endpoint de la API para listar cada "
@@ -574,7 +574,7 @@ msgstr ""
 "OMniLeads, could make this in the web interface and inside each "
 "destination type could list the same and check the id"
 
-# 5b6f5c01834546a18bb15bc5cfc54689
+# 71f339fb487a47509a5db0f342a0c05f
 #: ../../campaigns_inbound_customer_id.rst:185
 msgid ""
 "**Ejemplo de respuesta con destino de llamada**: se desea validar cada id"
@@ -587,7 +587,7 @@ msgstr ""
 "routing type. In a side the inbound campaign called \"gold customers\" "
 "and other called \"bronze customers\"."
 
-# 7f5cba8b30df40419cd500a5947d2c00
+# 770b03689d1e41e4a76b027b4ac4cee3
 #: ../../campaigns_inbound_customer_id.rst:187
 msgid ""
 "Para ello suponemos que existen las dos campañas entrantes como se indica"
@@ -596,7 +596,7 @@ msgstr ""
 "By that we suppose that exist two inbound campaigns as indicated in the "
 "image."
 
-# 9ef2a9e5d98d4f2b988fec36ebfd3075
+# 294e828dfad54b42bb8a42b4c216f064
 #: ../../campaigns_inbound_customer_id.rst:191
 msgid ""
 "Tan solo con posicionar el mouse sobre el nombre de la campaña, podremos "
@@ -605,7 +605,7 @@ msgstr ""
 "With just move the cursor in the campaign name, you can check the \"id\" "
 "of each one."
 
-# fd66d7a212584abdae1aadd2abff990c
+# dc0631ac97b74696afad04774ff996d4
 #: ../../campaigns_inbound_customer_id.rst:193
 msgid ""
 "Por lo tanto, a partir de conocer los \"id\" de cada campaña el sistema "
