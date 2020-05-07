@@ -461,21 +461,17 @@ class PhoneJSController {
         var pause_id = return_to_pause? this.pause_manager.pause_id: undefined;
         var pause_name = return_to_pause? this.pause_manager.pause_name: undefined;
 
-        if (this.agent_config.auto_pause) {
-            var self = this;
-            this.phone.cleanLastCallData();
-            this.setPause(ACW_PAUSE_ID, ACW_PAUSE_NAME);
-            if (this.agent_config.auto_unpause > 0) {
-                var m_seconds = this.agent_config.auto_unpause * 1000;
-                this.ACW_pause_timeout_handler = setTimeout(
-                    function() {self.autoLeaveACWPause(return_to_pause, pause_id, pause_name);},
-                    m_seconds
-                );
-            } else {
-                this.phone.cleanLastCallData();
-            }
+        // Al finalizar la llamda se manda el agente a Pausa forzada.
+        var self = this;
+        this.phone.cleanLastCallData();
+        this.setPause(ACW_PAUSE_ID, ACW_PAUSE_NAME);
+        if (this.agent_config.auto_unpause > 0) {
+            var m_seconds = this.agent_config.auto_unpause * 1000;
+            this.ACW_pause_timeout_handler = setTimeout(
+                function() {self.autoLeaveACWPause(return_to_pause, pause_id, pause_name);},
+                m_seconds
+            );
         } else {
-            this.timers.operacion.start();
             this.phone.cleanLastCallData();
         }
     }
@@ -774,7 +770,6 @@ class OutTransferData {
 
 class AgentConfig {
     constructor() {
-        this.auto_pause = $('#auto_pause').val() == 'True';
         this.auto_unpause = Number($('#auto_unpause').val());
         this.auto_attend_DIALER = $('#auto_attend_DIALER').val() == 'True';
         this.auto_attend_IN = $('#auto_attend_IN').val() == 'True';
