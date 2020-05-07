@@ -179,12 +179,12 @@ msgstr ""
 "dockerized version, it will be necessary to modify these variables:"
 
 # 4ce491c3a1d244d5b5704bdb4310b520
-#: ../../install_inventory_file.rst:141
+#: ../../install_inventory_file.rst:140
 msgid "Las variables necesarias para **deploy** de los containers son:"
 msgstr "The neccesary variables for deploying containers are:"
 
 # f3a1537235d841ddbc9b2021aee6a357
-#: ../../install_inventory_file.rst:143
+#: ../../install_inventory_file.rst:142
 msgid ""
 "**registry_username:** si se va a deployar las imagenes oficiales de "
 "Freetech Solutions, dejar esta variable como está"
@@ -192,20 +192,15 @@ msgstr ""
 "**registry_username:** if you are going to deploy official "
 "FreetechSolutions imamges, leave the value how it is."
 
-# 10107bca88e84786acaca1d81cfd0117
-#: ../../install_inventory_file.rst:144
-msgid "**oml_release:** la versión de OMniLeads a instalar."
-msgstr "**oml_release:** OMniLeads version to install."
-
 # 83383e68c9c54b0ba96bbf479f595a61
-#: ../../install_inventory_file.rst:145
+#: ../../install_inventory_file.rst:143
 msgid ""
 "**subnet:** se refiere a la red LAN con la que se levantarán los "
 "containers."
 msgstr "**subnet:** it refers to internal docker LAN network "
 
 # e4b6c519f50140df9fdf5e297d4c9e24
-#: ../../install_inventory_file.rst:147
+#: ../../install_inventory_file.rst:145
 msgid ""
 "Las variables *registry_email* y *registry_password* son necesarias en "
 "caso de querer hacer un **build** de sus propias imágenes."
@@ -213,13 +208,13 @@ msgstr ""
 "The variables *registry_email* and *registry_password* are neccesary just"
 " when you want to make a **build** of your own images."
 
-# f663cdb763ce45c5955a1334abc0f4bb
-#: ../../install_inventory_file.rst:152
+# a9db0f69c34a4146aeea1ef9c64c6e46
+#: ../../install_inventory_file.rst:150
 msgid "Variables OMniLeads Cloud"
 msgstr "OMniLeads Cloud variables"
 
 # 313de912bc174e4896214f387b680553
-#: ../../install_inventory_file.rst:154
+#: ../../install_inventory_file.rst:152
 msgid ""
 "Los parámetros  **\"external_hostname\"**, **\"external_port\"**, deben "
 "configurarse si se quiere instalar un OMniLeads en un servidor en la "
@@ -234,7 +229,7 @@ msgstr ""
 "connection or through VPN to the OMniLeads server."
 
 # c58c5527e3244f11afda84f653c5fe8e
-#: ../../install_inventory_file.rst:170
+#: ../../install_inventory_file.rst:168
 msgid ""
 "Se deben establecer dos reglas de firewall en la GUI del proveedor del "
 "servidor cloud, el cual actua como un router de borde, dejando a OML "
@@ -246,13 +241,11 @@ msgstr ""
 " provider)"
 
 # 1ed0f3904d5c4a3db22a74e6bb92d7ac
-#: ../../install_inventory_file.rst:172
+#: ../../install_inventory_file.rst:170
 msgid "Permit de tráfico saliente desde los puertos 10000 a 30000 UDP"
 msgstr "Permit outbound traffic in this port range: 10000-30000 UDP"
 
-# 1ed0f3904d5c4a3db22a74e6bb92d7ac
-#: ../../install_inventory_file.rst:173
-#, fuzzy
+# eb61a016d71343d6ba5dbb480537fa24
+#: ../../install_inventory_file.rst:171
 msgid "Permit de tráfico entrante desde los puertos 10000 a 30000 UDP"
-msgstr "Permit outbound traffic in this port range: 10000-30000 UDP"
-
+msgstr "Permit inbound traffic in this port range: 10000-30000 UDP"

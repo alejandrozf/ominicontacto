@@ -164,6 +164,9 @@ services:
       - WOMBAT_HOSTNAME=${WOMBAT_HOSTNAME}
       - WOMBAT_USER=${WOMBAT_USER}
       - WOMBAT_PASSWORD=${WOMBAT_PASSWORD}
+      - OML_BRANCH=${RELEASE}
+      - OML_COMMIT=${OML_COMMIT}
+      - OML_BUILD_DATE="${OML_BUILD_DATE}"
     image: {{ omniapp_builded_image }}
     networks:
       - {{ subnet_name }}
