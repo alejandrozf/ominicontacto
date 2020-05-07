@@ -26,7 +26,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
   <script type="text/javascript"
           src="{% static 'ominicontacto/JS/agente/formularioNuevaEditaCampana.js' %}">
   </script>
-  <script type="text/javascript" src="{% static 'ominicontacto/JS/interaccionsitioexterno.js' %}"></script>
+  <script type="text/javascript" src="{% static 'ominicontacto/JS/interaccion.js' %}"></script>
   {% get_current_language as LANGUAGE_CODE %}
   <input class="hidden" value="{{ LANGUAGE_CODE }}" id="languageCode">
   <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/campana_dialer/nueva_edita_campana.js' %}">
@@ -60,7 +60,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     {% with form as form %}
         {{ form.non_field_errors }}
         <div class="form-row">
-            <div class="col-md-6">
+            <div class="col-md-5">
                 <label for="{{ form.nombre.id_for_label }}">{% trans 'Nombre:' %}</label>
                 {{ form.nombre|add_class:"form-control" }}
                 <small id="nameHelpBlock" class="form-text text-muted">
@@ -68,34 +68,33 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </small>
                 {{ form.nombre.errors }}
             </div>
-            <div class="col-md-6">
+            <div class="col-md-2">
                 <label for="{{ form.mostrar_nombre.id_for_label }}">{% trans "Mostrar nombre al recibir llamado" %}: </label>
                 {{ form.mostrar_nombre }}
             </div>
+            <div class="col-md-5">
+                <label for="{{ form.bd_contacto.id_for_label }}">{% trans 'Base de Datos de Contactos:' %}</label>
+                {{ form.bd_contacto }}
+                {{ form.bd_contacto.errors }}
+            </div>
             {% if not form.initial.es_template %}
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <label for="{{ form.fecha_inicio.id_for_label }}">{% trans 'Fecha inicio:' %}</label>
                     {{ form.fecha_inicio|attr:"id:id_fecha_inicio" }}
                     {{ form.fecha_inicio.errors }}
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <label for="{{ form.fecha_fin.id_for_label }}">{% trans 'Fecha fin:' %}</label>
                     {{ form.fecha_fin|attr:"id:id_fecha_fin" }}
                     {{ form.fecha_fin.errors }}
                 </div>
             {% endif %}
-            <div class="col-md-6">
-                <label for="{{ form.bd_contacto.id_for_label }}">{% trans 'Base de Datos de Contactos:' %}</label>
-                {{ form.bd_contacto }}
-                {{ form.bd_contacto.errors }}
-            </div>
-
-            <div class="col-md-6">
+            <div class="col-md-3">
                 <label for="{{ form.sistema_externo.id_for_label }}">{% trans 'Sistema externo:' %}</label>
                 {{ form.sistema_externo }}
                 {{ form.sistema_externo.errors }}
             </div>
-            <div class="col-md-6">
+            <div class="col-md-3">
                 <label for="{{ form.id_externo.id_for_label }}">{% trans 'ID en sistema externo:' %}</label>
                 {{ form.id_externo }}
                 {{ form.id_externo.errors }}
@@ -103,18 +102,28 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
         {% block tipo_interaccion %}
             {{ form.tipo_interaccion.errors }}
-            <div class="col-md-6">
+            <div class="col-md-2">
               <label> {% trans "Tipo de Interacción" %}</label>
                 <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.0 }}</div>
                 <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.1 }}</div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-3">
                 <label><div class="myradio">{% trans "Url Externa" %}</div> </label>
                 {{ form.sitio_externo.errors }}
                 {{ form.sitio_externo }}
             </div>
         {% endblock %}
-            <div class="col-md-6">
+            <div class="col-md-3">
+                <label for="{{ form.outr.id_for_label }}">{% trans 'Ruta Saliente: ' %}</label>
+                {{form.outr}}
+                {{form.outr.errors}}
+            </div>
+            <div class="col-md-3">
+                <label for="{{ form.outcid.id_for_label }}">{% trans ' CID Ruta Saliente' %}</label>
+                {{form.outcid}}
+                {{form.outcid.errors}}
+            </div>
+            <div class="col-md-1">
                 <label>{% trans 'Objetivo:' %}</label>
                 {{ form.objetivo }}
                 {{ form.objetivo.errors }}

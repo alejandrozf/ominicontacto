@@ -27,7 +27,7 @@ import logging
 from django.urls import reverse, reverse_lazy
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
@@ -373,6 +373,14 @@ class EliminarRutaSaliente(DeleteView):
     template_name = 'eliminar_ruta_saliente.html'
     context_object_name = 'ruta_saliente'
 
+    def dispatch(self, request, *args, **kwargs):
+        ruta_saliente = RutaSaliente.objects.get(pk=self.kwargs['pk'])
+        if ruta_saliente.campana_set.exists():
+            message = _("No está permitido eliminar una Ruta Saliente asociado a una campaña")
+            messages.warning(self.request, message)
+            return HttpResponseRedirect(reverse('lista_rutas_salientes', args=(1,)))
+        return super(EliminarRutaSaliente, self).dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(EliminarRutaSaliente, self).get_context_data(**kwargs)
         huerfanos = []
@@ -440,6 +448,16 @@ class RutaEntranteDeleteView(DeleteView):
     success_url = reverse_lazy('lista_rutas_entrantes', args=(1,))
     template_name = 'eliminar_ruta_entrante.html'
     context_object_name = 'ruta_entrante'
+
+    def dispatch(self, request, *args, **kwargs):
+        ruta_entrante = RutaEntrante.objects.get(pk=self.kwargs['pk'])
+        if ruta_entrante.destino.tipo == 1:
+            if ruta_entrante.destino.content_object.outr:
+                message = _("No está permitido eliminar una Ruta Entrante asociada"
+                            "con una campaña que tiene una Ruta Saliente.")
+                messages.warning(self.request, message)
+                return HttpResponseRedirect(reverse('lista_rutas_entrantes', args=(1,)))
+        return super(RutaEntranteDeleteView, self).dispatch(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
         return RutaEntrante.objects.get(pk=self.kwargs['pk'])
