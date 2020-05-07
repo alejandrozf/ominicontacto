@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-04 13:06-0300\n"
+"POT-Creation-Date: 2020-05-07 15:18-0300\n"
 "PO-Revision-Date: 2019-08-13 16:42-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -19,12 +19,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-# 9c23735372174648b8b77d7129850752
+# 095bac736a19493cb82a92c864ccf51d
 #: ../../install_remote.rst:5
 msgid "Instalación desde ansible remoto"
 msgstr "Installation from remote ansible"
 
-# 7a8340eced5c4ab387f717bff9daff8e
+# 7377179d8d5a4796b3a5b3eb40af0fd4
 #: ../../install_remote.rst:7
 msgid ""
 "Este tipo de instalación implica que la descarga del proyecto desde el "
@@ -37,7 +37,7 @@ msgstr ""
 "since the sysadmin workstation, due to since it is based on Ansible the "
 "installation is viable this method."
 
-# 32696f76008e4236bda0a4e184d8488b
+# 1d0f3cf151844c0988ccf4608d27d4b3
 #: ../../install_remote.rst:10
 msgid ""
 "La ventaja principal de esta opción es que el sysadmin puede instalar y "
@@ -46,37 +46,37 @@ msgstr ""
 "The main advantaje of this option is that the sysadmin can install and "
 "maintain several instances of OMniLeads from a single \"deployer\" node."
 
-# b32469a4eedb4cb8a22ee42dc641fb6b
+# 9a41e472edbf4b5a9712279e74b7ca75
 #: ../../install_remote.rst:14
 msgid "*Figure 1: remote ansible install*"
 msgstr "*Figure 1: remote ansible install*"
 
-# 9ae23841d02e439bb68aafa9adbe1808
+# 6c08ae46b8a24ac6ad494e1ab5ff69bb
 #: ../../install_remote.rst:17
 msgid "Preparación máquina para OMniLeads"
-msgstr "OMniLeads machine preparation"
+msgstr ""
 
-# dbfa3016da52402f872f47eb8553723b
+# 347986a585d54c8cb350f6c648a9fef3
 #: ../../install_remote.rst:19
 msgid "Una instancia de GNU/Linux CentOS 7 (minimal)"
-msgstr "A GNU/Linux CentOS 7 (minimal) instance"
+msgstr ""
 
-# 338f920ccafd4f2faae8f095e8b37ea8
+# 6933ec13ba754174aa4058d76e7c7acf
 #: ../../install_remote.rst:20
 msgid "20 GB de espacio en disco"
 msgstr "20 GB of disk space"
 
-# d04fa9d2ac374380ad890d964a7733db
+# 47c5b70cae4f435abb5c81eb2e9eee87
 #: ../../install_remote.rst:21
 msgid "4 GB de memoria RAM"
 msgstr "4 GB of RAM memory"
 
-# 3383d2b8666345d8a27af773b9deeecd
+# 7040b5c9ee274327817c4f9cec716ff4
 #: ../../install_remote.rst:22
 msgid "Dejar la hora correctamente configurada en el host."
 msgstr "It is very important to leave the time correctly set on the host."
 
-# 0a59cb8615ff4849b93cd97e471ddcda
+# cb3cb60ed1b7463f86888a3c23cd5ab1
 #: ../../install_remote.rst:23
 msgid ""
 "Configurar una *dirección IP* y un *hostname* fijo en el host destino de "
@@ -85,14 +85,14 @@ msgstr ""
 "Configure an *IP address* and a fixed *hostname* in the destination host "
 "of the installation."
 
-# e3f911a49d604b8894e5b35adfa5cbb5
+# e30fc20b4b854dc4b7d26b12d46e29cd
 #: ../../install_remote.rst:24
 msgid ""
 "Instalar paquete kernel-devel, realizar el update del sistema operativo y"
 " rebotear la máquina."
 msgstr "Install kernel-devel package, update the SO and reboot the machine"
 
-# 27484dfe0e1d4b8db52f535344d5f9dd
+# a9766737d04a4eed93a5cd46d1800a35
 #: ../../install_remote.rst:34
 msgid ""
 "Luego del reboot es importante revisar que el paquete kernel-devel "
@@ -101,22 +101,21 @@ msgstr ""
 "After the reboot is very important to check that the kernel-devel package"
 " coincide with the kernel shown by the command *uname -a*"
 
-# 1b05693ef62a4be1b1f2973345427047
+# 95375628e44848b7945ad41017b1529e
 #: ../../install_remote.rst:40
 msgid "Preparación del deployer"
-msgstr "Deployer machine preparation"
+msgstr ""
 
-# bdacb3d4e62b4438bb949d8ac82b6457
+# bc6bf45f49da4c67805968b29d62c75d
 #: ../../install_remote.rst:42
 msgid ""
 "La máquina deployer puede ser un Linux de las siguientes distros: Centos "
 "7, Ubuntu 18.04 o Debian (9 en adelante)"
 msgstr ""
-"The deployer machine can be any of these Linux distros: Centos 7, Ubuntu "
-"18.04 o Debian (9 en adelante)"
 
-# c96f0058ff1c4eeda150c7444effb61c
+# 29781063624f496696a18a64b19b569a
 #: ../../install_remote.rst:43
+#, fuzzy
 msgid ""
 "Debemos contar con el paquete git para luego clonar el repositorio del "
 "proyecto y seleccionar el release a instalar."
@@ -124,7 +123,7 @@ msgstr ""
 "We must have the git package to clone the project repository then and "
 "select the release to install."
 
-# 340733341c5f4640850e8829e9ca5b8c
+# ea9c477922ae4c9cbad4c0ae64f11d12
 #: ../../install_remote.rst:53
 msgid ""
 "Debemos asegurarnos de contar con una clave pública generada en la "
@@ -133,7 +132,7 @@ msgstr ""
 "We must be sure of counting with a public password generated in the "
 "folder /root/.ssh/"
 
-# 5386f15a3e5f4e358424db660811b146
+# 56de4da16f0c43d3b2c0382525f12301
 #: ../../install_remote.rst:60
 msgid ""
 "Es probable que ya contemos con una clave pública (id_rsa.pub), como se "
@@ -142,12 +141,12 @@ msgstr ""
 "It is possible that we already have a public password (id_rsa.pub), as "
 "appreciated on *figure 1*."
 
-# 0afb2f7c517448888853d70107b1867b
+# b3beef791e5242e0a5fe0fee4e9f46af
 #: ../../install_remote.rst:64
 msgid "*Figure 1: ls -a /root/.ssh command output*"
 msgstr ""
 
-# 09c74a36cc8048a2885742f14ccc1acb
+# df69e039ec894f4a9d8bcd6f0643fdb5
 #: ../../install_remote.rst:66
 msgid ""
 "En caso de NO disponer de una, se puede generar rápidamente con el "
@@ -156,19 +155,19 @@ msgstr ""
 "In case of not having one, it can be quickly generated with the following"
 " command:"
 
-# 59b20a2f5d2a43b6a72e46585f62c1dd
+# dc62e73c722d48a5ae09da8eee1878d4
 #: ../../install_remote.rst:74
 msgid "*Figure 2: ssh-keygen command output*"
 msgstr ""
 
-# 38b7f39c23e0440981c5e9657d55af88
+# 4b3d220a2e0f478ca30fbde9b2ad3f91
 #: ../../install_remote.rst:76
 msgid ""
 "Este comando genera nuestra clave *id_rsa.pub* que mencionamos "
 "anteriormente."
 msgstr "This command generate our password *id_rsa.pub* previously mentioned."
 
-# 8ad831e1a95546399507f801ad7733e6
+# 7544746214664a68b6701cffc2d179c2
 #: ../../install_remote.rst:78
 #, fuzzy
 msgid ""
@@ -178,17 +177,17 @@ msgstr ""
 "We check the *IP address* and *hostname* that the destination host of the"
 " installation owns, to then adjust the inventory file."
 
-# c90d8ece9f6c4ed5a49cef15e4fd59b1
+# e3b73aa5ab634e37a46a0e810677441d
 #: ../../install_remote.rst:87
 msgid "*Figure 3: hostname command output*"
 msgstr ""
 
-# 0a3f45b33c174d808e53ae95b94f7d36
+# 0d6c032ebf6b494882a208f46e93d761
 #: ../../install_remote.rst:91
 msgid "*Figure 4: ip a command output*"
 msgstr ""
 
-# deb68f8b2374487e9fd5cc9b3da55ab1
+# 9c73eef2bf764cb6b2ef7a05365cd846
 #: ../../install_remote.rst:94
 msgid ""
 "En este paso debemos trabajar sobre el archivo de inventario disponible "
@@ -196,12 +195,8 @@ msgid ""
 "esta sección: :ref:`about_install_inventory_docker`. No olvidar que "
 "estamos instalando **Ansible remoto**."
 msgstr ""
-"In this step you must work in the inventory file available in this folder"
-" of the repo \"PATH/ominicontacto/deploy/ansible\". Refer to this section"
-" :ref:`about_install_inventory_docker`. Don't forget that we are "
-"installing **Ansible Host-Node**."
 
-# a766dd3681a1492d8e476763b26665a7
+# 545079e82e4e4e46b4058bff38ae82cd
 #: ../../install_remote.rst:96
 msgid ""
 "Luego en el inventory mismo debemos ajustar las "
@@ -210,7 +205,7 @@ msgstr ""
 "Then, in the same inventory adjust the "
 ":ref:`about_install_inventory_vars` of the instance"
 
-# 58e90813ade34a2f9867ebf675447e1b
+# 58f83ca0bc3f48738049facf187c5abe
 #: ../../install_remote.rst:98
 msgid ""
 "Una vez ajustados todos los parámetros del archivo de inventario, "
@@ -219,12 +214,13 @@ msgstr ""
 "Once adjusted all the parameters in inventory file, you should execute "
 "the installation script"
 
-# 96d2d1710c3849cd9f79184cc7543666
+# 196f73046aed40c0af64482cfc612c67
 #: ../../install_remote.rst:101
+#, fuzzy
 msgid "Ejecución del script de instalación"
 msgstr "Executing of the installation script"
 
-# 24fa5a8407574528991b7fc7f4b37a03
+# 7a6e6254b98346c492a153fb4a1d1e67
 #: ../../install_remote.rst:103
 msgid ""
 "La instalación de OMniLeads se realiza mediante el script *deploy.sh*, "
@@ -235,7 +231,7 @@ msgstr ""
 "located within the folder deploy/ansible respect to the root file of the "
 "project (omnicontacto)."
 
-# e36022bb485d436c9c684dbf32271a26
+# fea6d5239f1f437da89d3be98a4796a5
 #: ../../install_remote.rst:106
 msgid ""
 "Una vez configuradas las variables citadas, se procede con la ejecución "
@@ -244,13 +240,13 @@ msgstr ""
 "Once configured the mentioned variables, we proceed with the execution of"
 " the installation script (using sudo)."
 
-# fb1b114c3be342cfbf09db2ba0db69b7
+# bddc923285784fba8096851bdc01d493
 #: ../../install_remote.rst:114
 #, fuzzy
 msgid "*Figure 5: remote root password*"
 msgstr "*Figure 9: remote root password*"
 
-# a49f1143451742468bb7452c02cafd3d
+# 26db13fceccd45d4a5489f8ded9c70d4
 #: ../../install_remote.rst:116
 msgid ""
 "La diferencia respecto de la instalación 'Self-Hosted', es que el script "
@@ -261,7 +257,7 @@ msgstr ""
 "the script asks the password of the user *root* of the destination host "
 "of the installation."
 
-# 982cfce74ba04a7d84a8dcfe265127f1
+# ca2211c7607f4054acb563f05b4fad9e
 #: ../../install_remote.rst:118
 msgid ""
 "El tiempo de instalación dependerá mayormente de la velocidad de conexión"
@@ -275,8 +271,9 @@ msgstr ""
 "corresponding to the different components of the systme must be "
 "downloaded, installed and configured."
 
-# 1472617ea2d04be3a09e89dc81267156
+# 3865d50f362e4ed1a2c07ffd365681f7
 #: ../../install_remote.rst:120
+#, fuzzy
 msgid ""
 "Si la ejecución de la instalación finaliza exitosamente, se despliega una"
 " vista como la de la figura 6."
@@ -284,7 +281,7 @@ msgstr ""
 "If the installation execution ends succesfully, a view as the one on "
 "figure 6 is displayed."
 
-# af878fd965974e768e76825cd94c5487
+# 7e981e4c95e7473e8a94f8b107f51343
 #: ../../install_remote.rst:124
 msgid "*Figure 6: OMniLeads installation ended succesfuly*"
 msgstr ""

@@ -3,26 +3,25 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-13 11:31-0300\n"
+"POT-Creation-Date: 2020-05-07 15:18-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.4.0\n"
 
-# 4cab248af4f5415ea505d991ec5ff6d3
+# c55ee5aecf4044079c2d5d8ea84eb71a
 #: ../../telephony_pjsip_templates.rst:5
 msgid "Troncal contra un proveedor SIP sobre Internet"
 msgstr "SIP trunk with Internet SIP provider"
 
-# 173bf608889044859626da574c7195c1
+# 47f473d0bd874dee981f48658b0459ca
 #: ../../telephony_pjsip_templates.rst:7
 msgid ""
 "Se trata del tipo de proveedor de troncales SIP al que se puede acceder a"
@@ -33,8 +32,8 @@ msgstr ""
 "When your SIP provider is on Internet, use this template, to use SIP "
 "authentication to send calls and registration as subscriber."
 
-# ee8f722858e14bb192b7bb670d9b10ae
-# b91195667d1a480a85c9dc86c182d9d1
+# 75c219a4b2e24274945145634c7f318d
+# 98169021e90b4b04a4864b250141622d
 #: ../../telephony_pjsip_templates.rst:13
 #: ../../telephony_pjsip_templates.rst:79
 msgid ""
@@ -46,7 +45,7 @@ msgstr ""
 "<https://wiki.asterisk.org/wiki/display/AST/PJSIP+Configuration+Wizard>`_"
 " which is an example to see."
 
-# 54e003b5b6684fec8401c9d95c089178
+# 5f1505a05f1c4e8f8d3abc61adcf7a6d
 #: ../../telephony_pjsip_templates.rst:36
 msgid ""
 "Los últimos cuatro parámetros tienen que ver con los datos que el "
@@ -57,17 +56,17 @@ msgid ""
 "cada REGISTER e INVITE generado desde OMniLeads."
 msgstr ""
 
-# 57c147a57da044d083278072f68ac4d4
+# d596f5b2a8b842769d78666d139f62f7
 #: ../../telephony_pjsip_templates.rst:40
 msgid "Respecto al resto de los parámetros vamos a enfatizar:"
 msgstr "About the other parameters:"
 
-# f561c9c0de7a454c910b707cd9c3657b
+# 4060dd6d6de34a0c8dde20eafde4e6ba
 #: ../../telephony_pjsip_templates.rst:42
 msgid "**transport=trunk-nat-transport**"
 msgstr ""
 
-# 292a505943a542b19531eeb594d042f2
+# 040fa3aa0e5e4a99ac04baabdab08de5
 #: ../../telephony_pjsip_templates.rst:44
 msgid ""
 "Este parámetro indica a la pila PJSIP de Asterisk que debe *advertir* la "
@@ -79,7 +78,7 @@ msgstr ""
 "This parameter indicate to PJSIP that must *know* the public IP and port "
 "needed to send SIP packages."
 
-# 8fb68f3c9bdf4b3c897e246c91338251
+# 3d2045c307b54e13a65cae172d88b5bc
 #: ../../telephony_pjsip_templates.rst:47
 msgid ""
 "Los próximos 4 parámetros hacen alusión al hecho de que típicamente bajo "
@@ -96,29 +95,29 @@ msgstr ""
 "register needs to be constant to make know the SIP provider that our "
 "OMniLeads is available. We are talking about this values: "
 
-# 72cc59259afd41ebb098ec8736cd9be8
+# 7bed129dcf8149e5ae853aa28ca7491e
 #: ../../telephony_pjsip_templates.rst:51
 msgid "**accepts_registrations=no**"
 msgstr ""
 
-# 1fbe6cbdcc1e426d97a467c7404ceb91
+# cc1af82604f343a5813b167cff4efd72
 #: ../../telephony_pjsip_templates.rst:52
 msgid "**accepts_auth=no**"
 msgstr ""
 
-# 8447c3ddb45b4dfe8e9f5a928053bd94
-# 21914f90a96d433a8a2c4458ec6e513b
+# d28494b810d047f98fa146023faf5525
+# a945e4e6262a4e49b179a64cd79cbd51
 #: ../../telephony_pjsip_templates.rst:53
 #: ../../telephony_pjsip_templates.rst:156
 msgid "**sends_auth=yes**"
 msgstr ""
 
-# e2bf28c6ea21447e93915e5a090df3a1
+# 7b0f9cc7e275455a953b713bf9053610
 #: ../../telephony_pjsip_templates.rst:54
 msgid "**sends_registrations=yes**"
 msgstr ""
 
-# 8bf01a58171e4bc5bf3e6063f3036aef
+# 20e19c72316c49eaa2df0a1aefc8cfc2
 #: ../../telephony_pjsip_templates.rst:56
 msgid ""
 "Los siguientes tres parámetros tienen que ver con los codecs a utilizar, "
@@ -128,27 +127,27 @@ msgstr ""
 "The next three parameters are realted to codecs, DTMF mode and the "
 "context: "
 
-# 62658646ba3446459033eefc8ed48497
+# b26f471dc0314f209d3d54503589dc8d
 #: ../../telephony_pjsip_templates.rst:59
 msgid "**endpoint/allow=alaw,ulaw**"
 msgstr ""
 
-# 14289b2d59da47ec8228a0d0bd193f3c
+# 442cdc8586f14ae8982d28feb9a8ec0c
 #: ../../telephony_pjsip_templates.rst:60
 msgid "**endpoint/dtmf_mode=rfc4733**"
 msgstr ""
 
-# 2cfdbee66930486ca6a5768eaed74989
+# c5db7b52dd9f4e278df9ed12b5c31990
 #: ../../telephony_pjsip_templates.rst:61
 msgid "**endpoint/context=from-pstn**."
 msgstr ""
 
-# acf156b8c5f74787abca07fa927a72f1
+# cdcdd473f3ad47b39dcb0fea1c0b6916
 #: ../../telephony_pjsip_templates.rst:68
 msgid "Troncal contra un proveedor SIP backbone dedicado"
 msgstr "SIP trunk with local SIP backboone"
 
-# db8f7187dab54db588911fe7bd81eea9
+# b14f4f2f56d74ba58d38b0bea1143c7a
 #: ../../telephony_pjsip_templates.rst:70
 msgid ""
 "Bajo esta clasificación tenemos a los proveedores de vínculos SIP que "
@@ -162,7 +161,7 @@ msgstr ""
 "the same LAN that the OMniLeads is. Tipically in this scenario the "
 "provider doesn't request authentication and NAT is not important."
 
-# f3dda436596748cebafa95d6073e5380
+# 621dc194ad864b7a878ec0a5abe51eb2
 #: ../../telephony_pjsip_templates.rst:101
 msgid ""
 "Donde los últmos dos parámetros tienen que ver con los datos que el "
@@ -177,7 +176,7 @@ msgstr ""
 "expected. Username and Password is not necessary because there is no "
 "authentication requested."
 
-# 190256779bb94e82aa23629b5a8c4e5d
+# 10788d444afd4f1eb40904af43ef14da
 #: ../../telephony_pjsip_templates.rst:105
 msgid ""
 "El parámetro: **transport=trunk-transport**, hace referencia al hecho de "
@@ -187,17 +186,17 @@ msgstr ""
 "The parameter **transport=trunk-transport**, is related to the fact that "
 "no public IP is needed, because NAT is not important."
 
-# 61a2ef76b3724dc3a9e0ce1cb4bc04b7
+# ef005c2441ec41d384d62badcf68733b
 #: ../../telephony_pjsip_templates.rst:107
 msgid "El resto de los parámetros ya fueron discutidos en el caso anterior."
 msgstr "The other parameters were mentioned in the section above."
 
-# cd63ad8c6c3a4854b391d64970a66848
+# 71388ba2ca31493a92d410f97dd0105e
 #: ../../telephony_pjsip_templates.rst:114
 msgid "Troncal contra una PBX dentro de la LAN"
 msgstr "Trunk with a PBX in LAN"
 
-# 4544691a71e44e028082d9abe4f1a748
+# b4aba0b86cd3444fa387685eec1112e1
 #: ../../telephony_pjsip_templates.rst:116
 msgid ""
 "Un esquema muy implementado tiene que ver con la conexión vía troncal SIP"
@@ -215,7 +214,7 @@ msgstr ""
 "outbound calls are pass through the PBX. For inbound calls the PBX route "
 "the calls to OMniLeads, making the appropiate configuration."
 
-# 7caa23caff0a492c8bab6a826771d58c
+# 6d6bfcfb40c54660bc7b0fdfd018de41
 #: ../../telephony_pjsip_templates.rst:121
 msgid ""
 "Bajo esta configuración una compañía puede desplegar una potente "
@@ -224,7 +223,7 @@ msgstr ""
 "Under this configuration the company can deploy OMniLeads in the same "
 "machine that operates the PBX."
 
-# ef271187b7e640ff801b2e0f9db5e954
+# e51914a51bfc434e91727bdae2279ad1
 #: ../../telephony_pjsip_templates.rst:127
 msgid ""
 "La plantilla `PJSIP configuration Wizard "
@@ -237,7 +236,7 @@ msgstr ""
 " is proposed to complete according to the configuration made in the PBX "
 "is: "
 
-# 5ed0de6035844f9da8851abe6eebfc18
+# d7a22e8b28844bd69f6c815b6e6f4e4f
 #: ../../telephony_pjsip_templates.rst:153
 msgid ""
 "Se plantea autenticar vía SIP las llamadas salientes (desde OMniLeads "
@@ -248,42 +247,42 @@ msgstr ""
 "SIP Authentication is needed for outbound and inbound calls, so, the "
 "following parameters are needed:"
 
-# d9abec40803f4b2eb50421565c78e868
+# c92d4a462e2e45c0b24b151868ed359e
 #: ../../telephony_pjsip_templates.rst:157
 msgid "**accepts_auth=yes**"
 msgstr ""
 
-# 43cdae9dda5b47e088a8af08e603d955
+# 4b8705f969964d2da6adc9192043d7ae
 #: ../../telephony_pjsip_templates.rst:158
 msgid "**remote_hosts=****IPADDR-or-FQDN:PORT******"
 msgstr ""
 
-# 9c345d1e30e8430b85b49f8f15e0420d
+# e72c1a6c662d40f3b6b4a97308abcb6e
 #: ../../telephony_pjsip_templates.rst:159
 msgid "**inbound_auth/username=****SIP_USER PBX -> OML******"
 msgstr ""
 
-# 4c176fd006a044348ab9a87463b5382e
+# c9fbade8f73b4036b62ef9a86f283761
 #: ../../telephony_pjsip_templates.rst:160
 msgid "**inbound_auth/password=****SIP_PASS PBX -> OML******"
 msgstr ""
 
-# e7b68761d36648b2b4643e4ccbd34b00
+# 9f4b330826144212abdc7860def6a824
 #: ../../telephony_pjsip_templates.rst:161
 msgid "**outbound_auth/username=****SIP_USER OML -> PBX******"
 msgstr ""
 
-# e5f85ecf75284ec9834c762aba165eb0
+# 2ede363dd2484835bf449a9160b89ab2
 #: ../../telephony_pjsip_templates.rst:162
 msgid "**outbound_auth/password=****SIP_PASS OML -> PBX******"
 msgstr ""
 
-# 161e7b59ecfd448ba97d50129a434f49
+# ad26247ffe7e4595a8760439e57053c4
 #: ../../telephony_pjsip_templates.rst:163
 msgid "**endpoint/from_user=****SIP_USER OML -> PBX******"
 msgstr ""
 
-# 8052cc4dc2bc428abec872d3e1dbbd7c
+# 6988494b006842f29e1cfe5db14c6235
 #: ../../telephony_pjsip_templates.rst:165
 msgid ""
 "Damos por sentado la interpretación de los parámetros a partir de sus "
@@ -296,7 +295,7 @@ msgstr ""
 "registration is needed but the credentials are sent to authenticate "
 "INVITES for outbound and inbound calls."
 
-# ade83f0903b14f59acab2da2aa208473
+# 95ece2d163a84c729a78dc415d5119d3
 #: ../../telephony_pjsip_templates.rst:168
 msgid ""
 "Por otro lado los parámetros **transport=trunk-transport** y "
@@ -307,7 +306,7 @@ msgstr ""
 "**endpoint/force_rport=no** are related to the fact that no NAT is "
 "neeeded for SIP packages."
 
-# d4da90ee75494f9f861a2d1946781c84
+# 1bd89c21b6e94c81a8374300c6faaf46
 #: ../../telephony_pjsip_templates.rst:170
 msgid ""
 "Finalmente resaltamos el parámetro; **endpoint/context=from-pbx** que "
@@ -322,12 +321,12 @@ msgstr ""
 " calls from PSTN, because using the context from-pbx you can call and "
 "transfer between OMniLeads agents and PBX extensions."
 
-# 4012a8d3bd144df5aa03e3138dfdae4b
+# 63486d6415104cba927735a71ca91144
 #: ../../telephony_pjsip_templates.rst:178
 msgid "Troncal contra una PBX a  través de Internet"
 msgstr "Trunk with a PBX through Internet"
 
-# 999915e57db54f4ab3576c4eafa6a0bf
+# 99858ad00fe0496c86c41912bfa0c9ed
 #: ../../telephony_pjsip_templates.rst:180
 msgid ""
 "Al igual que en el caso anterior, se plantea una vinculación entre ambos "
@@ -341,8 +340,8 @@ msgstr ""
 " not in same LAN, so the NAT is involved. An example of this is an "
 "OMniLeads installed on a VPS and a PBX inside the LAN of company."
 
-# e91dfd32094e4faa9423fcd6e7781aa7
-# bc53705241c2475f9c95ca336cc3b221
+# 01554a1fd0b8431fb63ef0276e85af2e
+# 75fa34109c9a4b9593a780d05aba73b6
 #: ../../telephony_pjsip_templates.rst:188
 #: ../../telephony_pjsip_templates.rst:231
 msgid ""
@@ -350,7 +349,7 @@ msgid ""
 "parámetros:"
 msgstr "The configuration template change in this parameters: "
 
-# f1046aee328f494a9dc042826f7c709e
+# d1234f93d28e4e09a6109fe0717238fd
 #: ../../telephony_pjsip_templates.rst:213
 msgid ""
 "Se plantea entonces una registración hacia la IP-PBX; "
@@ -365,19 +364,19 @@ msgstr ""
 "=trunk-nat-transport** and **endpoint/force_rport=yes** indicates that "
 "NAT is needed for SIP packages."
 
-# 1fda46d56d4e4336af0f195cab8ac75d
+# 8ec6287630664cb6bafe6c28897011c7
 #: ../../telephony_pjsip_templates.rst:217
 msgid ""
 "El resto de los parámetros son similares a los aplicados en el esquema "
 "anterior."
 msgstr "The other parameters are similar to previous scenarios."
 
-# 2fbf43ab1c734033963e903cf9c7cfd3
+# 715c05fcf299411e89e35c6227530ff4
 #: ../../telephony_pjsip_templates.rst:223
 msgid "OMniLeads inside IPPBX"
 msgstr ""
 
-# 6d41cbf028274bc6914e36bee6adecf7
+# 253bfeed819642e1aad8f22234272777
 #: ../../telephony_pjsip_templates.rst:225
 msgid ""
 "Esta plantilla hace alusión a una instalación "
@@ -392,7 +391,7 @@ msgstr ""
 "where is installed the PBX. OMniLeads Asterisk is dockerized so the PJSIP"
 " trunk needs to have some particular parameters to have a good VoIP flow."
 
-# b289cbcc369e4039adaf29468ba257cf
+# 46337760da124d588c0d4d062811ae16
 #: ../../telephony_pjsip_templates.rst:256
 msgid ""
 "Respecto a los parámetros vamos a observar que se trata de una "
@@ -411,19 +410,19 @@ msgstr ""
 " from OMniLeads, because the docker containers are in their own LAN and "
 "we need to have the packages with the IP address of the machine."
 
-# 213ef8b1d5584fcd845502dd5201e7c7
+# 063062f9d1c643dfbe97f71b2d710066
 #: ../../telephony_pjsip_templates.rst:260
 msgid ""
 "El resto de los parámetros son similares a los aplicados en los esquemas "
 "anteriores."
 msgstr "The other parameters are similar to the previous scenarios."
 
-# 3be91544376349d9ba59ba4d0f1fba08
+# b4aecb82b45f4309a81168d27bc72a48
 #: ../../telephony_pjsip_templates.rst:265
 msgid "Troncal PJSIP Custom"
 msgstr "PJSIP custom trunk"
 
-# abc7ee5317fc4ede9dd8c002c41b79c1
+# 32dbac6b56f14e0b9a6b0f2554771add
 #: ../../telephony_pjsip_templates.rst:267
 msgid ""
 "Aquí el administrador podrá escribir a medida su propia configuración "

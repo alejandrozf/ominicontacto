@@ -18,6 +18,8 @@ Se debe completar la primera pantalla del wizard, como lo expone la figura 1.
 - **External URL:** en caso de haber seleccionado la invocación a un URL externo en cada llamada, aquí se indica cual de los CRMs definidos debe invocar la campaña.
 - **External system:** aquí se adjudica el sistema de gestión externo que ejecutaría "click to call" sobre la campaña, en caso de así desearlo.
 - **ID on external system:**  este campo debe contener el ID que posee la campaña dentro del sistema de gestión externo desde el cual llegarán los *click to call* o *solicitudes de calificación* de contactos.
+- **Outbound Routes:** Se le asigna una ruta saliente existente a una campaña.
+- **CID on Outbound Routes:** Este campo debe contener el CID asignado para una ruta saliente existente a una campaña.
 - **Enable recordings:** habilita que todas las llamadas de la campaña sean grabadas.
 - **Scope:** se define como la cantidad de gestiones positivas que se esperan para la campaña. En la supervisión de la campaña se muestra en tiempo real el porcentaje de avence de la campaña respecto al objetivo definido.
 

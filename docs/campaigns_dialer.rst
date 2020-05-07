@@ -36,6 +36,8 @@ La primera pantalla luce como la figura 1.
 - **External URL:** URL (http-request) a disparar cada vez que el discador conecte una llamada hacia un agente.
 - **External system:** sistema de gestión externo que se admite para lanzar acciones de *click to call o calificación* sobre contactos de la campaña.
 - **ID on external system:**  este campo debe contener el ID que posee la campaña dentro del sistema de gestión externo desde el cual llegarán los *click to call* o *solicitudes de calificación*.
+- **Outbound Routes:** Se le asigna una ruta saliente existente a una campaña.
+- **CID on Outbound Routes:** Este campo debe contener el CID asignado para una ruta saliente existente a una campaña.
 - **Scope:** se define como la cantidad de gestiones positivas que se esperan para la campaña. En la supervisión de la campaña se muestra en tiempo real el porcentaje de avence de la campaña respecto al objetivo definido.
 
 Una vez completados estos campos, se debe dar click al botón "Next", para continuar con la configuración de nuestra campaña.

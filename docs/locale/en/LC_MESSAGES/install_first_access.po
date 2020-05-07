@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-04 11:08-0300\n"
+"POT-Creation-Date: 2020-05-07 15:18-0300\n"
 "PO-Revision-Date: 2019-08-13 15:12-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -19,22 +19,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-# c6b0a638883445e28c394547ce8c983c
+# 574df2ebbda148d985fbdc0aa984dca4
 #: ../../install_first_access.rst:4
 msgid "Primer acceso a OMniLeads"
 msgstr "First access to OMniLeads"
 
-# f2260ec65fbd46d4b62ab1f4a2b7d56e
+# 30b4b2a8c0464254880aa2ebd2d7a4a9
 #: ../../install_first_access.rst:6
 msgid "Para acceder al sistema OMniLeads debe ingresar a:"
 msgstr "To access the OMniLeads system you must enter to:"
 
-# 877689c655a24132b11b6968951e2d41
+# 158b679ed2704c9aa8db0bc895e4b03f
 #: ../../install_first_access.rst:8
 msgid "https://omnileads-hostname"
 msgstr "https://omnileads-hostname"
 
-# 3aa6f14106ac4311a5e189bf5b9fd3da
+# 4bea7c760110421981b19462daf3e7e6
 #: ../../install_first_access.rst:10
 msgid ""
 "Nota: El acceso web a OMniLeads debe ser a través del hostname.domain del"
@@ -44,7 +44,7 @@ msgstr ""
 "Note: Web access to OMniLeads must be through the hostname.domain of the "
 "host. Therefore there are two possibilities when solving the hostname:"
 
-# 7d0a7e26df3b486baaf97015b1304555
+# fde5e82844174ba2b1e868d7f3cd60b1
 #: ../../install_first_access.rst:13
 msgid ""
 "1 - Que los DNS de la red lo hagan. 2 - Añadir el hostname.domain del "
@@ -55,13 +55,14 @@ msgstr ""
 "inside the file *hosts* (Windows, Linux or Mac of each PC that have "
 "access to OMniLeads."
 
-# f6d15d40871d4ac5b64bc9f49575f18c
+# c89beea7f8f44bdf84988110b11a4325
 #: ../../install_first_access.rst:18
 msgid "*Figure 1: hosts file*"
 msgstr ""
 
-# 5333584bb2dc40078d551266563607c4
+# 7c597fe5743540aeb0794877d11be89d
 #: ../../install_first_access.rst:20
+#, fuzzy
 msgid ""
 "Al encontrarnos con la pantalla de login, simplemente se debe ingresar el"
 " usuario admin y la clave generada durante la instalación, como se expone"
@@ -71,35 +72,34 @@ msgstr ""
 "password generated during the installation (my_inventory), as shown on "
 "figure 2."
 
-# 7f5b1c74c56e41b68b20c096276e7c64
+# 24d1eba3b30641b985fa2f255fa25159
 #: ../../install_first_access.rst:24
 msgid "*Figure 2: First login*"
 msgstr ""
 
-# 9fa4400cb091448886efc23b3f19e04a
+# f7eb88df8fc34650b672dc932c748d4f
 #: ../../install_first_access.rst:28
 msgid ""
 "Si no recuerda la contraseña de admin web, podemos consultar su valor "
 ":ref:`about_maintance_envvars`."
-msgstr "If you don't remember admin web password, you can check the value in :ref:`about_maintance_envvars`."
+msgstr ""
 
-# c2445b2ce963412a9c18ad284d790f3d
+# 725b3fe89c4f4188887e273e7b609924
 #: ../../install_first_access.rst:32
 msgid ""
 "Si realizó **instalación con Docker** se usa el puerto 444 para el acceso"
 " web, ejemplo:"
-msgstr "If you made **Docker installation** the port 444 is used to the web access, for example:"
+msgstr ""
 
-# c11007adfbd54124ae3b43c53b64abe2  
+# bda26543d00b4de6b37cb90c9e6983b0
 #: ../../install_first_access.rst:34
-
+#, fuzzy
 msgid "https://omnileads-hostname:444"
-msgstr "https://omnileads-hostname:444"
+msgstr "https://omnileads-hostname"
 
-# 40326fe819ab4a35827c5538b9f083a1
+# 682a46306c174741b756b80e14eeaf5c
 #: ../../install_first_access.rst:36
 msgid ""
 "Esto es con el fin de que no conflictue con el clásico 443 que ya lo usan"
 " la web de FreePBX o Issabel"
-msgstr "This because FreePBX and Issabel web GUI's use the classic HTTPS port 443."
-
+msgstr ""

@@ -18,4 +18,24 @@ function interaccionUrl(){
 
 $(function(){
     interaccionUrl();
+    inicializarCampoOutr();
 });
+
+function inicializarCampoOutr() {
+  var $outr = $('#id_0-outr');
+  $outr.on('change', actualizarEstadoOutcid);
+  actualizarEstadoOutcid();
+}
+
+function actualizarEstadoOutcid() {
+  var $outr = $('#id_0-outr');
+  var $outcid = $('#id_0-outcid');
+  if ($outr.val() == ''){
+    $outcid.prop('disabled', true);
+    $outcid.val('');
+  }
+  else
+    $outcid.prop('disabled', false)
+}
+
+

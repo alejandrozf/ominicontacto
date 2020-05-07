@@ -8,19 +8,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-13 11:31-0300\n"
+"POT-Creation-Date: 2020-05-07 15:18-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.4.0\n"
 
+# 4dcc062a1b21448790254a17030a8f50
 #: ../../agent_contact_managment.rst:2
 msgid "Listado de contactos de la campaña"
 msgstr "Campaign Contact List"
 
+# 4e1d31e81f1a4e84bd8c291f1d3ea149
 #: ../../agent_contact_managment.rst:4
 msgid ""
 "El agente puede ingresar a los contactos de cada campaña a la que se "
@@ -31,6 +33,7 @@ msgstr ""
 "assigned. This is achieved by entering the menu item \"Contact - Contact "
 "list\"."
 
+# 25a9de31415a4a83a338c90c00a5d7d4
 #: ../../agent_contact_managment.rst:7
 msgid ""
 "Allí se despliega una vista que permite seleccionar la campaña a la cual "
@@ -39,10 +42,12 @@ msgstr ""
 "A contact view is displayed, where agent is able to select the campaign "
 "to look for contacts. "
 
+# bda82dbdd29e4a4cb38d84fe0f0fbf6c
 #: ../../agent_contact_managment.rst:11
 msgid "*Figure 1: campaign contact list*"
 msgstr ""
 
+# 7c37af8282a748b5bb63e34def9caf56
 #: ../../agent_contact_managment.rst:13
 msgid ""
 "Al listar todos los contactos de la campaña, el agente puede recorrer "
@@ -52,10 +57,12 @@ msgstr ""
 "By listing all contacts in the campaign, the agent can go through each of"
 " them or perform a search by contact id, telephone, name, surname, etc."
 
+# f1d00665a30d4330909dd187a617197f
 #: ../../agent_contact_managment.rst:18
 msgid "*Figure 2: contact search*"
 msgstr ""
 
+# 149c819a527c4f0ea6b4be378b63ff60
 #: ../../agent_contact_managment.rst:20
 msgid ""
 "Por ejemplo podemos buscar un número de teléfono en el listado de "
@@ -64,22 +71,27 @@ msgstr ""
 "For example, agent can search for a phone number in the list of contacts,"
 " as shown in figure 3."
 
+# d66f6925e919446ab8c8c5a68035b295
 #: ../../agent_contact_managment.rst:24
 msgid "*Figure 3: contact search*"
 msgstr ""
 
+# 927a3a14090c42e0a941b0748f4cb1b8
 #: ../../agent_contact_managment.rst:26
 msgid "La herramienta permite poder editar cualquiera de estos contactos."
 msgstr "The view allows to edit/modify any of the contacts listed."
 
+# db22d1b77baf483faacb217a70ef4985
 #: ../../agent_contact_managment.rst:30
 msgid "*Figure 4: contact search*"
 msgstr ""
 
+# b5514a684def450ca52c18ebea79965e
 #: ../../agent_contact_managment.rst:34
 msgid "Agendas pendientes"
 msgstr "Pending Agendas"
 
+# 035630e44d8d4725ac3b1384704a8a3e
 #: ../../agent_contact_managment.rst:36
 msgid ""
 "El agente puede acceder a su agenda de llamadas pendientes de realizar. "
@@ -89,10 +101,12 @@ msgstr ""
 "The agent can access her/his phonebook of pending calls. This section "
 "lists all the entries that the agent has registered during operation."
 
+# 845c43b46c1c45bdbab77573eb90b4b3
 #: ../../agent_contact_managment.rst:42
 msgid "*Figure 5: Agenda*"
 msgstr ""
 
+# 356aec31202e47f09362400dae73f744
 #: ../../agent_contact_managment.rst:44
 msgid ""
 "El agente cuenta con cada contacto agendado y su descripción. A partir de"
@@ -103,10 +117,12 @@ msgstr ""
 "the phone number, it automatically triggers a dial attempt to the "
 "contact's phone."
 
+# 4267591a20d941f9abfbc3d6c8ce0cef
 #: ../../agent_contact_managment.rst:49
 msgid "Histórico de calificaciones del agente"
 msgstr "Agent Call Dispositions"
 
+# 41a94be4e339472db9622ea139f3be44
 #: ../../agent_contact_managment.rst:51
 msgid ""
 "En este menú el agente podrá listar a todos los contactos que ha "
@@ -117,10 +133,13 @@ msgstr ""
 "historical level. Therefore the agent counts on with a backward control "
 "of each managed contact."
 
+# 265c67eb39724b20b499d74fb7457e41
+# f2451afe15c446f6abb968fbea6b1e9e
 #: ../../agent_contact_managment.rst:56 ../../agent_contact_managment.rst:76
 msgid "*Figure 6: call disposition list*"
 msgstr ""
 
+# 40f87b29d5c84b149a4c7f7f3eafd1cc
 #: ../../agent_contact_managment.rst:58
 msgid ""
 "Se puede filtrar por fecha la búsqueda y además el agente podrá ingresar "
@@ -131,10 +150,12 @@ msgstr ""
 "to the selected contact to review their data or modify the call "
 "disposition."
 
+# 7f9a15c134014c56a5c1b8e7874c1030
 #: ../../agent_contact_managment.rst:63
 msgid "*Figure 7: call disposition edit*"
 msgstr ""
 
+# b0db98d8c5da414594915aa7c23232c9
 #: ../../agent_contact_managment.rst:65
 msgid ""
 "Como se puede observar, el agente puede modificar los datos de la "
@@ -145,24 +166,23 @@ msgstr ""
 "and the form data in the case the contact is dispositioned with a call "
 "disposition of type \"Engaged\"."
 
+# 000487e75da744349873a7a2d81a046e
 #: ../../agent_contact_managment.rst:70
+#, fuzzy
 msgid "Búsqueda de grabaciones del agente"
-msgstr "Agent's recordings search"
+msgstr "Agent Call Dispositions"
 
-# 7a5697a006e14e78ad4d0f3eb5062b45
+# 23b5dd7526144e0c941f33534b5648fc
 #: ../../agent_contact_managment.rst:72
 msgid ""
 "En este menú el agente podrá buscar las grabaciones de las llamadas en "
 "las que haya participado."
-msgstr "In this menú the agent can search for the recordings of his calls."
+msgstr ""
 
-# 119d1462092c4348812a0bed387c8d0a
+# f28c4b88ea7d4d3e83315b1692d34eb0
 #: ../../agent_contact_managment.rst:78
 msgid ""
 "Se puede filtrar por fecha, tipo de llamada, teléfono del cliente, call "
 "ID, campaña, si fue marcada, si esta calificada como gestión y por su "
 "duración."
-msgstr "REcordings can be filtered by date, call type, client phone number, "
-"call ID, campaign, if the call was tagged, if it has call disposition and "
-"call duration"
-
+msgstr ""
