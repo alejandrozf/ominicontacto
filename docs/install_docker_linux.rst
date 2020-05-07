@@ -36,7 +36,7 @@ Procedimiento de instalación
 ****************************
 
 Como primer paso se procede con el ingreso al host Linux para luego descargar el repositorio de OMniLeads y una vez clonado el repositorio
-debemos posicionarnos sobre el path *relativo*; ominicontacto/deploy/docker/prodenv.
+debemos posicionarnos sobre el path *relativo*; ominicontacto/deploy/ansible.
 
   .. code-block:: bash
 

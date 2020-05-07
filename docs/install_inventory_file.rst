@@ -135,13 +135,11 @@ Ademas de las variables vistas anteriormente, si se quiere instalar OMniLeads en
   registry_username=freetechsolutions
   #registry_email=
   #registry_password=
-  oml_release=release-1.4.0
   subnet=192.168.15.0/24
 
 Las variables necesarias para **deploy** de los containers son:
 
 * **registry_username:** si se va a deployar las imagenes oficiales de Freetech Solutions, dejar esta variable como está
-* **oml_release:** la versión de OMniLeads a instalar.
 * **subnet:** se refiere a la red LAN con la que se levantarán los containers.
 
 Las variables *registry_email* y *registry_password* son necesarias en caso de querer hacer un **build** de sus propias imágenes.

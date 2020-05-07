@@ -28,9 +28,12 @@ REDIS_HOSTNAME = os.getenv('REDIS_HOSTNAME')
 RTPENGINE_HOSTNAME = os.getenv('RTPENGINE_HOSTNAME')
 SESSION_COOKIE_AGE = int(os.getenv('SESSION_COOKIE_AGE'))
 TIME_ZONE = os.getenv('TZ')
+# Settings para version de OML
+OML_BRANCH=os.getenv('OML_BRANCH')
+OML_COMMIT=os.getenv('OML_COMMIT')
+OML_BUILD_DATE=os.getenv('OML_BUILD_DATE')
 
 # Credenciales para wombat API
-
 OML_WOMBAT_USER = os.getenv('WOMBAT_USER')
 OML_WOMBAT_PASSWORD = os.getenv('WOMBAT_PASSWORD')
 

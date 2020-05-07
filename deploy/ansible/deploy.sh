@@ -131,7 +131,7 @@ AnsibleInstall() {
 
 CodeCopy() {
   current_tag="`git tag -l --points-at HEAD`"
-  release_name="`git show ${current_tag} | awk 'FNR == 5 {print}'`"
+  release_name=$(git show ${current_tag} |grep "Merge branch" |awk -F " " '{print $3}' |tr -d "'")
   branch_name="`git branch | grep \* | cut -d ' ' -f2`"
   if [ $branch_name == "master" ]; then git pull; fi
   if [ -z "$current_tag" ]
@@ -191,33 +191,11 @@ CertsValidation() {
 VersionGeneration() {
   echo "Getting release data..."
   commit="$(git rev-parse HEAD)"
-  author="$(id -un)@$(hostname)"
-  echo -e "Creating version file
+  build_date="$(env LC_hosts=C LC_TIME=C date)"
+  echo -e "OMniLeads version to install
      Branch: $release_name
      Commit: $commit
-     Autor: $author"
-  cat > $TMP_OMINICONTACTO/ominicontacto_app/version.py <<EOF
-
-# -*- coding: utf-8 -*-
-
-##############################
-#### Archivo autogenerado ####
-##############################
-
-OML_BRANCH="${release_name}"
-OML_COMMIT="${commit}"
-OML_BUILD_DATE="$(env LC_hosts=C LC_TIME=C date)"
-OML_AUTHOR="${author}"
-
-if __name__ == '__main__':
-    print (OML_COMMIT)
-
-EOF
-
-  #echo "Validando version.py - Commit:"
-  python $TMP_OMINICONTACTO/ominicontacto_app/version.py > /dev/null 2>&1
-  # ----------
-  export DO_CHECKS="${DO_CHECKS:-no}"
+     Build date: $build_date"
 }
 
 AnsibleExec() {
@@ -229,7 +207,17 @@ AnsibleExec() {
     fi
     echo "Beginning the Omnileads installation with Ansible, this installation process can last between 30-40 minutes"
     echo ""
-    ${ANSIBLE}-playbook $verbose $TMP_ANSIBLE/omnileads.yml --extra-vars "trusted_certs=$TRUSTED_CERTS iface=$INTERFACE build_dir=$TMP_OMINICONTACTO repo_location=$REPO_LOCATION docker_root=$USER_HOME build_images=$BUILD_IMAGES" --tags "$tag" -i $TMP_ANSIBLE/inventory
+    ${ANSIBLE}-playbook $verbose $TMP_ANSIBLE/omnileads.yml \
+      --extra-vars "trusted_certs=$TRUSTED_CERTS \
+                    iface=$INTERFACE \
+                    build_dir=$TMP_OMINICONTACTO \
+                    repo_location=$REPO_LOCATION \
+                    docker_root=$USER_HOME \
+                    build_images=$BUILD_IMAGES \
+                    oml_release=$release_name \
+                    commit=$commit \
+                    build_date=\"$build_date\"" \
+      --tags "$tag" -i $TMP_ANSIBLE/inventory
     ResultadoAnsible=`echo $?`
     if [ $ResultadoAnsible == 0 ];then
       echo "
