@@ -198,6 +198,7 @@ class QueueEntranteForm(forms.ModelForm):
         self.fields['timeout'].required = True
         self.fields['retry'].required = True
         self.fields['announce_frequency'].required = False
+        self.fields['wait_announce_frequency'].required = False
         self.fields['audios'].queryset = ArchivoDeAudio.objects.all()
         self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
         self.fields['musiconhold'].queryset = Playlist.objects.annotate(
@@ -229,8 +230,9 @@ class QueueEntranteForm(forms.ModelForm):
         fields = ('name', 'timeout', 'retry', 'maxlen', 'wrapuptime', 'servicelevel',
                   'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
                   'audios', 'announce_frequency', 'audio_de_ingreso', 'campana',
-                  'tipo_destino', 'destino', 'ivr_breakdown', 'announce_holdtime',
-                  'announce_position', 'musiconhold')
+                  'tipo_destino', 'destino', 'ivr_breakdown',
+                  'announce_holdtime', 'announce_position', 'musiconhold',
+                  'wait_announce_frequency',)
 
         help_texts = {
             'timeout': _('En segundos'),
@@ -238,6 +240,7 @@ class QueueEntranteForm(forms.ModelForm):
             'announce_frequency': _('En segundos'),
             'wait': _('En segundos'),
             'wrapuptime': _('En segundos'),
+            'wait_announce_frequency': _('En segundos'),
         }
         widgets = {
             'name': forms.HiddenInput(),
@@ -258,6 +261,7 @@ class QueueEntranteForm(forms.ModelForm):
             'destino': forms.Select(attrs={'class': 'form-control', 'id': 'destino'}),
             'ivr_breakdown': forms.Select(attrs={'class': 'form-control'}),
             'musiconhold': forms.Select(attrs={'class': 'form-control'}),
+            'wait_announce_frequency': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
     def clean_maxlen(self):
