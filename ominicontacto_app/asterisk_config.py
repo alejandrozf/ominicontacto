@@ -292,6 +292,7 @@ class QueuesCreator(object):
             'oml_announce-holdtime': campana.queue_campana.announce_holdtime,
             'oml_ivr-breakdown': campana.queue_campana.ivr_breakdown,
             'oml_announce_position': 'yes' if campana.queue_campana.announce_position else 'no',
+            'oml_announce_frequency': campana.queue_campana.wait_announce_frequency,
         }
 
         ivr_breakdown = campana.queue_campana.ivr_breakdown
