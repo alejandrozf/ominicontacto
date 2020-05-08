@@ -71,12 +71,19 @@ class User(AbstractUser):
     SUPERVISOR = 'Supervisor'
     REFERENTE = 'Referente'
     AGENTE = 'Agente'
+    CLIENTE_WEBPHONE = 'Cliente Webphone'
 
     is_agente = models.BooleanField(default=False)
     is_supervisor = models.BooleanField(default=False)
     is_cliente_webphone = models.BooleanField(default=False)
     last_session_key = models.CharField(blank=True, null=True, max_length=40)
     borrado = models.BooleanField(default=False, editable=False)
+
+    @property
+    def rol(self):
+        # Se asume que tiene un solo grupo
+        rol = self.groups.first()
+        return rol
 
     def get_agente_profile(self):
         agente_profile = None

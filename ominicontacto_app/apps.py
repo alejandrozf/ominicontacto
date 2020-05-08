@@ -29,6 +29,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'registrar_usuario',
              'roles': ['Administrador', ]},
+            {'nombre': 'user_nuevo',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'user_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'user_delete',
@@ -85,11 +87,17 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'update_base_datos_contacto',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'update_base_datos_contacto_de_campana',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'define_base_datos_contacto',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'agregar_contacto',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'agregar_contacto_a_campana',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'actualiza_base_datos_contacto',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'actualiza_base_datos_contacto_de_campana',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'contacto_list_bd_contacto',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
@@ -102,6 +110,8 @@ class OminicontactoAppConfig(AppConfig):
             {'nombre': 'desoculta_base_datos',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'mostrar_bases_datos_ocultas',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'bloquear_campos_para_agente',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'contacto_list',
              'roles': ['Agente', ]},
@@ -267,6 +277,10 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'liberar_contacto_asignado',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'ordenar_entrega_contactos_preview',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'descargar_orden_contactos_actual_preview',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'campana_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'campana_nuevo',
@@ -360,6 +374,8 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Consola de Agente'), 'version': '1.5.1'},
         'registrar_usuario':
             {'descripcion': _('Registrar la llave del usuario OML'), 'version': '1.5.1'},
+        'user_nuevo':
+            {'descripcion': _('Crear un Usuario'), 'version': '1.5.1'},
         'user_list':
             {'descripcion': _('Ver lista de Usuarios'), 'version': '1.5.1'},
         'user_delete':
@@ -422,6 +438,10 @@ class OminicontactoAppConfig(AppConfig):
         'update_base_datos_contacto':
             {'descripcion': _('Agregar lista de contactos a base de datos de contacto'),
              'version': '1.5.1'},
+        'update_base_datos_contacto_de_campana':
+            {'descripcion':
+             _('Agregar lista de contactos a base de datos de contacto de una Campaña'),
+             'version': '1.5.1'},
         'define_base_datos_contacto':
             {'descripcion':
              _('Define base de datos de contacto. Paso necesario al momento de la creación'),
@@ -429,9 +449,16 @@ class OminicontactoAppConfig(AppConfig):
         'agregar_contacto':
             {'descripcion': _('Agregar un contacto a base de datos de contacto'),
              'version': '1.5.1'},
+        'agregar_contacto_a_campana':
+            {'descripcion': _('Agregar un contacto a base de datos de contacto de una campaña'),
+             'version': '1.5.1'},
         'actualiza_base_datos_contacto':
             {'descripcion':
              _('Define base de datos de contacto. Paso necesario al momento de la creación'),
+             'version': '1.5.1'},
+        'actualiza_base_datos_contacto_de_campana':
+            {'descripcion':
+             _('Define base de datos de contacto para una campaña. Agrega contactos'),
              'version': '1.5.1'},
         'contacto_list_bd_contacto':
             {'descripcion': _('Ver lista de contactos de una Base de datos de contactos'),
@@ -446,6 +473,8 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Desocultar una base de datos de contactos'), 'version': '1.5.1'},
         'mostrar_bases_datos_ocultas':
             {'descripcion': _('Mostrar bases de datos de contactos ocultas'), 'version': '1.5.1'},
+        'bloquear_campos_para_agente':
+            {'descripcion': _('Restringir campos de Contacto para Agente'), 'version': '1.5.1'},
         'contacto_list':
             {'descripcion': _('Lista de contactos para una campaña'), 'version': '1.5.1'},
         'contacto_update':
@@ -628,6 +657,12 @@ class OminicontactoAppConfig(AppConfig):
         'liberar_contacto_asignado':
             {'descripcion': _('Liberar un contacto de una campaña Preview asignado a un agente'),
              'version': '1.5.1'},
+        'ordenar_entrega_contactos_preview':
+            {'descripcion': _('Definir orden de asignacion de contactos de una campaña Preview'),
+             'version': '1.5.2'},
+        'descargar_orden_contactos_actual_preview':
+            {'descripcion': _('Descargar orden de asignacion de contactos de una campaña Preview'),
+             'version': '1.5.2'},
         'campana_list':
             {'descripcion': _('Ver lista de campañas Entrantes'), 'version': '1.5.1'},
         'campana_nuevo':
