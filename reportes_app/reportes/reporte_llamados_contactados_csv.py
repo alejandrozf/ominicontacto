@@ -34,7 +34,8 @@ from django.utils.encoding import force_text
 from django.utils.timezone import localtime, timedelta
 from django.utils.translation import ugettext as _
 
-from ominicontacto_app.models import AgenteProfile, Campana, Contacto, OpcionCalificacion
+from ominicontacto_app.models import (AgenteProfile, Campana, Contacto, OpcionCalificacion,
+                                      HistoricalCalificacionCliente)
 from ominicontacto_app.utiles import crear_archivo_en_media_root
 
 from reportes_app.models import LlamadaLog
@@ -177,17 +178,25 @@ class ArchivoDeReporteCsv(object):
                                           calificacion.observaciones.replace('\r\n', ' '),
                                           calificacion.agente]
                     # TODO: ver la forma de relacionar con respuestas vieja.
-                    respuesta_formulario_gestion = calificacion.history_object.get_venta()
+                    if calificacion.next_record is None:
+                        es_ultima_calificacion_historica = True
+                    else:
+                        es_ultima_calificacion_historica = False
                     if hasattr(calificacion, 'es_gestion'):
                         es_gestion = calificacion.es_gestion()
                     else:
                         es_gestion = (calificacion.opcion_calificacion.tipo ==
                                       OpcionCalificacion.GESTION)
-                    if (es_gestion and
+                    if es_gestion:
+                        respuesta_formulario_gestion = calificacion.history_object.get_venta()
+                    else:
+                        respuesta_formulario_gestion = None
+                    if (es_gestion and es_ultima_calificacion_historica and
                         campana.tipo_interaccion is Campana.FORMULARIO and
                             respuesta_formulario_gestion is not None):
-
-                        # Agrego Datos de la respuesta del formulario
+                        # si es la ultima calificacion historica, que coincide con el valor
+                        # final de la calificacion y es de gestion, entonces mostramos el valor de
+                        # la gestión (si existe) y se muestran Datos de la respuesta del formulario
                         datos = json.loads(respuesta_formulario_gestion.metadata)
                         id_opcion = respuesta_formulario_gestion.calificacion.opcion_calificacion_id
                         posicion = posicion_opciones[id_opcion]
@@ -198,7 +207,8 @@ class ArchivoDeReporteCsv(object):
                         datos_gestion.append('')
                         campos = campos_formulario_opciones[id_opcion]
                         for campo in campos:
-                            datos_gestion.append(datos[campo.nombre_campo].replace('\r\n', ' '))
+                            datos_gestion.append(
+                                datos.get(campo.nombre_campo, '').replace('\r\n', ' '))
 
                 fecha_local_llamada = localtime(llamada_log.time)
                 duracion_llamada = llamada_log.duracion_llamada
@@ -343,7 +353,13 @@ class ArchivoDeReporteCsv(object):
                     lista_opciones.append(calificacion.contacto.bd_contacto)
                 else:
                     lista_opciones.append(_("Fuera de base"))
-                respuesta_formulario_gestion = calificacion.get_venta()
+                if isinstance(calificacion_val, HistoricalCalificacionCliente) and \
+                   calificacion_val.next_record is not None:
+                    # Es una calificacion historica que no es la ultima sobre el contacto
+                    # (campaña entrante)
+                    respuesta_formulario_gestion = None
+                else:
+                    respuesta_formulario_gestion = calificacion.get_venta()
                 if (calificacion.es_gestion() and
                     campana.tipo_interaccion is Campana.FORMULARIO and
                         respuesta_formulario_gestion is not None):
@@ -360,7 +376,8 @@ class ArchivoDeReporteCsv(object):
                     lista_opciones.append('')
                     campos = campos_formulario_opciones[id_opcion]
                     for campo in campos:
-                        lista_opciones.append(datos[campo.nombre_campo].replace('\r\n', ' '))
+                        lista_opciones.append(
+                            datos.get(campo.nombre_campo, '').replace('\r\n', ' '))
 
                 # --- Finalmente, escribimos la linea
                 self._escribir_csv_writer_utf_8(csvwiter, lista_opciones)
