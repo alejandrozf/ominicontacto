@@ -299,6 +299,14 @@ class QueueEntranteForm(forms.ModelForm):
             raise forms.ValidationError(_('Debe seleccionar un anuncio periódico'))
         return ivr_breakdown
 
+    def clean_wait_announce_frequency(self):
+        announce_position = self.cleaned_data.get('announce_position')
+        wait_announce_frequency = self.cleaned_data.get('wait_announce_frequency')
+        if announce_position is True and wait_announce_frequency is None:
+            raise forms.ValidationError(_('Debe ingresar una frecuencia de '
+                                          'anuncios de espera/posición'))
+        return wait_announce_frequency
+
 
 class QueueMemberForm(forms.ModelForm):
     """
