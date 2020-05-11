@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-07 15:18-0300\n"
+"POT-Creation-Date: 2020-05-08 12:01-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,13 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-# 69b1f4c560c14870abc189dd655e3205
+# 5d1ffdd6b3c04c7c9d6cf184b042fe84
 #: ../../campaigns_inbound.rst:4
-#, fuzzy
 msgid "Creación de nueva campaña"
 msgstr "Inbound campaign creation"
 
-# 22c27fa06d0641649cc920b255cb8983
+# 7bac3e030f12435fb140f4d15826fa01
 #: ../../campaigns_inbound.rst:6
 msgid ""
 "Para crear una nueva campaña, se debe ir a Campaña → Campañas Entrantes →"
@@ -32,24 +31,24 @@ msgstr ""
 "To create a new inbound campaign you must enter the menu item Inbound "
 "Campaigns -> New Campaign."
 
-# 9b3489c0a2f9459f94811ef6f4553a9a
+# 597bdcce1b664aed8404b5bee2ce2e5c
 #: ../../campaigns_inbound.rst:8
 msgid ""
 "Se debe completar la primera pantalla del wizard, como lo expone la "
 "figura 1."
 msgstr "The first stage looks like figure 1."
 
-# 339d7330e3f5493d8a34214f1c076702
+# e6bb30708d104b759c9fd2ea823e8f15
 #: ../../campaigns_inbound.rst:13
 msgid "*Figure 1: Campaigns parameters*"
 msgstr ""
 
-# 1b0202d4006749af912266e4013ed894
+# cb962523c73840b5b5f96ce1b6c899fb
 #: ../../campaigns_inbound.rst:16
 msgid "**Name:** nombre de la campaña."
 msgstr "**Name:** campaign name"
 
-# a19f7fa687f74070b1789592447992fb
+# c8a1703c83904785896eec66aa83023c
 #: ../../campaigns_inbound.rst:17
 msgid ""
 "**Contact database:** (campo opcional) se utiliza para desplegar datos a "
@@ -59,17 +58,18 @@ msgstr ""
 "campaigns can use to take and display extra data to the telephone number "
 "of person that makes the incoming call."
 
-# 14ba714e842c46c1ab6717d94da1f5e9
+# a29bea8c798547ccabefc1ca378d79c2
 #: ../../campaigns_inbound.rst:18
 msgid ""
 "**External URL:** en caso de haber seleccionado la invocación a un URL "
 "externo en cada llamada, aquí se indica cual de los CRMs definidos debe "
 "invocar la campaña."
 msgstr ""
+"**External URL:** in case of selecting an external URL interaction for "
+"each call, this field selects to wich CRMs should the campaign invoque."
 
-# 6f0acdfbf1f741c3b5dee8cdf410b1e1
+# d5ac2a2a8dc649f1b8b1262b68bfeffb
 #: ../../campaigns_inbound.rst:19
-#, fuzzy
 msgid ""
 "**External system:** aquí se adjudica el sistema de gestión externo que "
 "ejecutaría \"click to call\" sobre la campaña, en caso de así desearlo."
@@ -77,15 +77,18 @@ msgstr ""
 "**External system:** external CRM system linked to launch *click to call "
 "actions or dispositions* on campaign contacts, through the API."
 
-# d07d00553e8044be812849922ef5d510
+# 981585660fda4bf9bc03f051af4a46ea
 #: ../../campaigns_inbound.rst:20
 msgid ""
 "**ID on external system:**  este campo debe contener el ID que posee la "
 "campaña dentro del sistema de gestión externo desde el cual llegarán los "
 "*click to call* o *solicitudes de calificación* de contactos."
 msgstr ""
+"**ID on external system:**  this fields must have the campaign's ID in "
+"the external system from where the *click to call* or the *disposition "
+"requests* will be sent."
 
-# 506fb0dce2d1482589a4552e72986c46
+# 227d9cbceb9f4f3fb0a2f74384665b51
 #: ../../campaigns_inbound.rst:21
 msgid ""
 "**Outbound Routes:** Se le asigna una ruta saliente existente a una "
@@ -93,7 +96,7 @@ msgid ""
 msgstr ""
 "**Outbound Routes:** An existing outbound route is assigned to an campaign."
 
-# 6f8f4c7279cb4c21b37c32ea11031b66
+# abb5e039de174767b09af870841bbd30
 #: ../../campaigns_inbound.rst:22
 msgid ""
 "**CID on Outbound Routes:** Este campo debe contener el CID asignado para"
@@ -102,14 +105,14 @@ msgstr ""
 "**CID on Outbound Routes:** This field must contain the CID assigned for "
 "an existing outbound route to a campaign."
 
-# fbd0a14c7c764827948f9817a448cc66
+# bc44f9b23d244cee89286383960c747a
 #: ../../campaigns_inbound.rst:23
 msgid ""
 "**Enable recordings:** habilita que todas las llamadas de la campaña sean"
 " grabadas."
 msgstr "**Enable recordings:** Enable all campaign calls to be recorded."
 
-# 74b034d5bdc143098e013d3942110f5a
+# 0d76974e18ec4fd7ba7a7e3b1cb2a61c
 #: ../../campaigns_inbound.rst:24
 msgid ""
 "**Scope:** se define como la cantidad de gestiones positivas que se "
@@ -122,7 +125,7 @@ msgstr ""
 "campaign's arrival with respect to the defined objective is shown in real"
 " time."
 
-# d298ab82b68c4e45b42cd07510c9c81b
+# 990bb38e45bd4b2ab1e79db77f5626f6
 #: ../../campaigns_inbound.rst:28
 msgid ""
 "El tema de la base de contactos en las campañas entrantes (y también "
@@ -139,17 +142,17 @@ msgstr ""
 "telephone number of a contact at the base of the campaign.Assigning a "
 "contact base to an incoming campaign is optional"
 
-# 922645d1fa2e49cd94b6a74bfe369f67
+# bb0548d601914118b0f9bee118e46366
 #: ../../campaigns_inbound.rst:31
 msgid "A continuación se prosigue con la creación de nuestra campaña entrante."
 msgstr "Then we continue with the creation of our incoming campaign."
 
-# 986883efd2e340359158ff950fc7f928
+# 305f6be61e604662bcaa3a42e6314d75
 #: ../../campaigns_inbound.rst:37
 msgid "*Figure 2: Campaigns parameters*"
 msgstr ""
 
-# 34977747e22747a88710f83763aedc08
+# 16afe1429e2f400db66259165afca691
 #: ../../campaigns_inbound.rst:40
 msgid ""
 "**Ring time:** es la cantidad de *tiempo de ring* que la campaña utiliza "
@@ -163,7 +166,7 @@ msgstr ""
 "sense whenever the agent does not work within a group configured with the"
 " *Auto-attend inbound calls* mode."
 
-# a2e18414c09d48de85c55c33959e4e7a
+# 7a1e77919f8f4edc9b90b3f0e6837b18
 #: ../../campaigns_inbound.rst:41
 msgid ""
 "**Agent callback time:** es el tiempo (en segundos) que la llamada "
@@ -173,7 +176,7 @@ msgstr ""
 "**Agent callback time:** the number of seconds to wait before trying call"
 " to a ready agent "
 
-# 4fde948c2d4f4aeda590ed73ede5dc09
+# aa0b8621fe434a9d8c139559d99b68de
 #: ../../campaigns_inbound.rst:42
 msgid ""
 "**Welcome message:** permite definir si se reproducirá algún audio sobre "
@@ -182,7 +185,7 @@ msgid ""
 "previamente el archivo desde el menú \"Audios\"."
 msgstr "The announcement played to callers before they join the campaign queue"
 
-# ee2a25d76fef48a4b8795f6ac7f9ba8f
+# 7589d5c5f4b34ad09a9215af83c1c3ad
 #: ../../campaigns_inbound.rst:43
 msgid ""
 "**Max amount of calls:** es el número de llamadas que se permiten poner "
@@ -194,7 +197,7 @@ msgstr ""
 " and the maximum capacity is reached, additional calls would be sent to "
 "the failover destination "
 
-# 43e371f71b884897b639850f5293b00c
+# 6a5010eec072410da80e59a6d84103ee
 #: ../../campaigns_inbound.rst:44
 msgid ""
 "**Service level:** es un parámetro para medir cuántas de las llamadas "
@@ -204,7 +207,7 @@ msgstr ""
 "**Service level:** used for service level statistics (calls answered "
 "within service level time frame)."
 
-# 456c469e431243eeaf133bffb138dd5b
+# f7faefa2b5b24bc4ab11d543974ac3f5
 #: ../../campaigns_inbound.rst:45
 msgid ""
 "**Distribution strategy:** método de distribución de llamadas que usará "
@@ -214,7 +217,7 @@ msgstr ""
 "**Distribution strategy:**  A strategy for how to handle the queue and "
 "divide calls between queue members"
 
-# d50539f34ce749ae952076ccc2a4d739
+# 9d5ef378f8904f4d975889b4aaa3b39c
 #: ../../campaigns_inbound.rst:46
 msgid ""
 "**Campaign priority:** Es un parámetro lineal en la escala del 1 al 10, "
@@ -228,7 +231,7 @@ msgstr ""
 "agents common to multiple campaigns, the campaign with the highest "
 "priority will deliver its calls first."
 
-# 41ca1a8e5a2f4919bedb7dfa85f897e7
+# 3febca47b99146c9acaa32a1c477ec14
 #: ../../campaigns_inbound.rst:47
 msgid ""
 "**Tiempo de espera en cola:** es el tiempo (en segundos), que la llamada "
@@ -238,14 +241,14 @@ msgstr ""
 "**Queue timeout:** when the *Queue timeout* of a caller is hit, they will"
 " be pulled out of the queue immediately to the failover destination"
 
-# 862d531ff1fb4805884436b171c0fb9b
+# ec0383cd45b147fda2b79c9fc0204e94
 #: ../../campaigns_inbound.rst:48
 msgid ""
 "**Enable recordings:** se debe tildar este check en caso de requerir que "
 "los llamados sean grabados."
 msgstr "**Enable recordings:** Enable all campaign calls to be recorded."
 
-# 9449fda952f74f1b90dd35b690f955f9
+# 2dd66d2003a1409d9161ba20fc310f02
 #: ../../campaigns_inbound.rst:49
 msgid ""
 "**Periodic Announcement:** podemos seleccionar algún audio de nuestro "
@@ -255,7 +258,7 @@ msgstr ""
 "**Periodic Announcement:**  we can select some audio from our repository "
 "to play as a periodic announcement about the call on hold."
 
-# fdeec6a8581d4f31a476d57973e39842
+# 44dbf711516a41038c779f33226d4e2d
 #: ../../campaigns_inbound.rst:50
 msgid ""
 "**Announcement frequency:** cantidad de segundos entre cada reproducción "
@@ -264,7 +267,7 @@ msgstr ""
 "**Announcement frequency:**  how often (seconds) to announce a voice menu"
 " to the caller."
 
-# 985d6568c4514da4a50e20911a15817b
+# 930ce8c85b114e079f640c14d9e7e36e
 #: ../../campaigns_inbound.rst:51
 msgid ""
 "**Failover dst:** destino hacia el cual se enviarán las llamadas que "
@@ -275,7 +278,7 @@ msgstr ""
 "destination if they exit the queue for reasons such as maximum wait time,"
 " queue capacity, or join empty/leave empty settings"
 
-# c01372586deb4adc98e08a4b9a69371f
+# fc3203806d54497d868babc5bc9e85c1
 #: ../../campaigns_inbound.rst:52
 msgid ""
 "**Autopausar agentes que fallan al responder:** indica si se debe pausar "
@@ -284,7 +287,7 @@ msgstr ""
 "**Autopause agentes who fail to answer:** sets if the agents that fail to"
 " answer a call should be automatically sent to pause."
 
-# 341b2a0f9ba349368e545a79bd42da5b
+# 4945eda80eab45dea14802f7df6ce729
 #: ../../campaigns_inbound.rst:53
 msgid ""
 "**Autopausar agentes que dan ocupado:** indica si se debe pausar "
@@ -293,7 +296,7 @@ msgstr ""
 "**Autopause busy agents:** sets if the agents that are busy should be "
 "automatically sent to pause."
 
-# aabfe6967c0d4c228a78fa555279654d
+# aab624f5426c41478d023a1a867110d9
 #: ../../campaigns_inbound.rst:54
 msgid ""
 "**Anunciar tiempo promedio de espera** permite al usuario especificar el "
@@ -302,7 +305,7 @@ msgstr ""
 "**Announce hold time** allows the user to specify the average hold "
 "timethat the caller will wait for be attend by an agent"
 
-# 11cda76c3a784e09bbc3c30a8af0229a
+# fe843051d9f84399a986554e5f2a8a95
 #: ../../campaigns_inbound.rst:55
 msgid ""
 "**IVR Breakdown:** es un destino de tipo IVR que el usuario puede escoger"
@@ -317,19 +320,21 @@ msgstr ""
 "audio messages that instructs the user how to 'escape' to these IVR "
 "destination."
 
-# 12cc74ec577c48fe91654dcea55fb51c
+# cf1632b94bbc4252b90769d016905d5b
 #: ../../campaigns_inbound.rst:56
 msgid "**Posición de anuncio:** Anunciar posición del llamante en la cola."
 msgstr "**Announce position:** Announce the caller's position in the queue."
 
-# 7c063374ed494739b02dd7d8e56c3782
+# 7af23a00ee48476a9692c893cd6a9258
 #: ../../campaigns_inbound.rst:57
 msgid ""
 "**Musica de espera:** Indica el Playlist que escuchará el cliente cuando "
 "su llamada este en espera."
 msgstr ""
+"**Music on hold:** Configures wich Playlist will be played for the client"
+" when his call is put on hold."
 
-# e169e084b9fc4aa3a2effbea2e26447e
+# 12f1754030c44e93a496673fa0da4fc1
 #: ../../campaigns_inbound.rst:60
 msgid ""
 "Los parámetros Ring time y Agent callback time, quedan sin efecto para "
@@ -340,7 +345,7 @@ msgstr ""
 " that receive agents whose *agent group* is configured with the incoming "
 "calls attribute *Auto attend inbound*."
 
-# 1bc6f884d2e2408d8a0eace0704e4bd3
+# 27cf649b73d540439a9c62d3076347aa
 #: ../../campaigns_inbound.rst:63
 msgid ""
 "En la siguiente etapa de configuración se deben asignar las "
@@ -350,22 +355,22 @@ msgstr ""
 "In the next configuration stage, the dispostiions that the campaign "
 "requires for agents to rate each contact call must be assigned."
 
-# 152fbcc5425f4745a0d2629c14c7cf37
+# 73237ffe0e7c48ce97fe05e7bb3b216c
 #: ../../campaigns_inbound.rst:67
 msgid "*Figure 3: Campaign dispositions*"
 msgstr ""
 
-# 86ef359027a443999fe83af0aa151583
+# 982c7bd038954ed7b981244c900862f0
 #: ../../campaigns_inbound.rst:69
 msgid "Finalmente, los agentes pueden ser asignados a la campaña."
 msgstr "Finally, agents can be assigned to the campaign."
 
-# a2c9238f763d47088c873decdbbdefa7
+# 88e6a797efa84d92a178c7febf2d10d2
 #: ../../campaigns_inbound.rst:73
 msgid "*Figure 4: agent assignment*"
 msgstr ""
 
-# edc5d3bcf41c4626819eaf36483d5f67
+# df28d56cb7bd43adad910c10cd120308
 #: ../../campaigns_inbound.rst:75
 msgid ""
 "En el resto del capítulo se detalla todo acerca del enrutamiento de las "
@@ -374,12 +379,12 @@ msgstr ""
 "The rest of the chapter details all about routing calls from trunk to our"
 " incoming campaigns."
 
-# 3e8986631fe84bb2bd2fdd0c331d3cdc
+# 6dd09665edb546d69d296f73dc7f01cf
 #: ../../campaigns_inbound.rst:78
 msgid "Ringing VS Atención automática de llamadas entrantes"
 msgstr "Ringing VS Automatic incoming call attention"
 
-# c398a1de712c4d208d7ac3d9bb814b6b
+# 04e53b7665ce4237807a7cbbac2e8eac
 #: ../../campaigns_inbound.rst:80
 msgid ""
 "El comportamiento del Webphone del agente frente a una llamada "
@@ -388,7 +393,7 @@ msgstr ""
 "The function mode of the agent's Webphone against a call coming from an "
 "incoming campaign can be:"
 
-# 122e2aaa2c294cc1bd9424ae13b1da10
+# 6dc0989967c045e38788b6825283a62f
 #: ../../campaigns_inbound.rst:82
 msgid ""
 "**Ringing normal** y con una duración asociada al parámetro \"Ring time\""
@@ -400,7 +405,7 @@ msgstr ""
 "During that time the agent's phone notifies the incoming call, awaiting "
 "the action of the agent that determines the attention or not of the call."
 
-# 3ba8aeb0e3c841f8949cb92fcc8b5088
+# 6c0a60a8da7c4b0c863a576d4cfeaa02
 #: ../../campaigns_inbound.rst:84
 msgid ""
 "**Atención automática de la llamada**. Este comportamiento implica que "
@@ -413,7 +418,7 @@ msgstr ""
 "notifying him with a *beep* before leaving it in line with the "
 "counterpart of the call."
 
-# c3dc1330daa44ce2a8b924c1e229156e
+# f64ca4e91eda47689048cd6433d684fa
 #: ../../campaigns_inbound.rst:86
 msgid ""
 "Dicho comportamiento depende de la configuración a nivel \"Grupo de "
@@ -430,7 +435,7 @@ msgstr ""
 " the calls of any campaign, making no effect the parameters \"Ring time\""
 " and \"Agent callback time\" as is mentioned in the note of this section"
 
-# e420814545064a9494bc833c050f9f83
+# b7932e786b89464a850d922064d6d3d2
 #: ../../campaigns_inbound.rst:91
 msgid "*Figure 5: agent group config*"
 msgstr "*Figure 5: agent group config*"

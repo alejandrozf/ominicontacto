@@ -3,11 +3,12 @@
 # This file is distributed under the same license as the OMniLeads package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
 #
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-07 15:18-0300\n"
+"POT-Creation-Date: 2020-02-28 10:33-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,12 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.4.0\n"
 
-# 4f5d51a672ba4f14ae711b9882cba507
+# 852caeaea58c49dc9b037abd7c921ef7
 #: ../../agent_call_actions.rst:2
 msgid "Llamadas hacia otros agentes"
 msgstr "Call to an Agent"
 
-# 52cda435f92048cd94ba4874537374bd
+# 9468a459e5e94a34bb375c91654e130e
 #: ../../agent_call_actions.rst:4
 msgid ""
 "Para ejecutar una llamada hacia otro agente de OMniLeads, debemos acudir "
@@ -36,12 +37,12 @@ msgstr ""
 "of an agent from a list available and then the call is performed (Figure "
 "1)."
 
-# 565c01d5fd5a4759b843833071136671
+# cd7260a6bf08407793ee6e198fe02c5b
 #: ../../agent_call_actions.rst:8
 msgid "Llamadas externas sin campaña asociada"
 msgstr "Outbound Calls Out of Campaign"
 
-# b945c70241534b9281571a437fe994e5
+# e7744837d2754d23806af9e5ec555ab5
 #: ../../agent_call_actions.rst:10
 msgid ""
 "A veces es necesario ejecutar una llamada hacia el exterior (número de "
@@ -57,17 +58,17 @@ msgstr ""
 " out of Campaign\" button available at the bottom of the webphone. The "
 "displayed window has a field to enter the number to be dialed (figure 1)."
 
-# ec87c884ac0045b8a5bd593617a540f3
+# 5fe09437d1dd4a29be2c712818b87440
 #: ../../agent_call_actions.rst:17
 msgid "*Figure 1: without camp calls*"
 msgstr ""
 
-# a9a9bc7436c34f0ebadf7b2a46063bd2
+# d924d22a03614f7f9e81366cf4ce47d5
 #: ../../agent_call_actions.rst:20
 msgid "Poner en espera una llamada"
 msgstr "Put a call On Hold"
 
-# 94786dc0a4a348dd9090dd0f2dc6f5a9
+# 08b5ad76b4734357b989103e13603f6b
 #: ../../agent_call_actions.rst:22
 msgid ""
 "En medio de cualquier tipo de llamada en curso, el agente puede poner en "
@@ -77,12 +78,12 @@ msgstr ""
 "During a call, the agent has the ability to hold the call for a while. "
 "This is possible by clicking the \"hold\" button in the webphone."
 
-# 758b51e1b20d4e34bf347ee9fbd34806
+# fab06fe76aa64417b6df2821bf48944f
 #: ../../agent_call_actions.rst:27
 msgid "*Figure 2: call on hold*"
 msgstr "*Figure 2: call on hold*"
 
-# 704576bffd94445a9047c7a2d982710f
+# 026b761c430843feb582eca91a14f480
 #: ../../agent_call_actions.rst:29
 msgid ""
 "Al disparar la acción de hold, el otro extremo de la llamada que "
@@ -94,22 +95,22 @@ msgstr ""
 "the agent can unhold the call when he wishes, justo clicking in unhold, "
 "as seen in figure 2."
 
-# 19f0679d146d4b75a5a95de8d9362393
+# 9497090561f54f019cae8ef5ffbdc1ba
 #: ../../agent_call_actions.rst:34
 msgid "*Figure 3: unhold*"
 msgstr "*Figure 3: unhold*"
 
-# ce73691347d747e8ba9ab541a0ed0ce9
+# 716d919605394357b7714d6f4cc3c19d
 #: ../../agent_call_actions.rst:36
 msgid "Esta funcionalidad puede ser utilizada en cualquier tipo de llamada."
 msgstr "This functionality can be used with any type of call."
 
-# 7199e5e77a4942cbb0002b4122e13635
+# 37516d57acd74b809e06b03f290db609
 #: ../../agent_call_actions.rst:39
 msgid "Transferencias y conferencias"
 msgstr "Call transfer and Conferences"
 
-# 9c4da1a2b1aa48fabe49ce352b157af1
+# b61ef769c1664b2f886edd34890c5eda
 #: ../../agent_call_actions.rst:41
 msgid ""
 "Dentro del abanico de posibilidades de transferencias de llamadas que se "
@@ -118,12 +119,12 @@ msgstr ""
 "Within the range of possibilities for call transfers that can be made in "
 "the system, we have the following:"
 
-# 452e04925eb942f29fe4de062de66ad9
+# c9543f3d6dae44faa83061f7e46e524f
 #: ../../agent_call_actions.rst:44
 msgid "**Transferencia directa hacia otro agente**"
 msgstr "**Blind Transfer to another Agent**"
 
-# d89c3bb8f2894e7f892cdb1869d3c5a5
+# f436400ef67d427db70a658a94c5902d
 #: ../../agent_call_actions.rst:46
 msgid ""
 "El \"agente A\" se encuentra en una llamada activa y desea transferir la "
@@ -137,12 +138,12 @@ msgstr ""
 " button, inside the webphone and then selects \"blind transfer\". After "
 "that, she/he can select the agent."
 
-# 79564bae91d844328990daa7c1dfdde0
+# e47a1e381e1f4c398ba049fbcf3a0705
 #: ../../agent_call_actions.rst:51
 msgid "*Figure 4: \"Agent A\" to \"Agent B\" blind transfer*"
 msgstr "*Figure 4: \"Agent A\" to \"Agent B\" blind transfer*"
 
-# 8da161c5bea14b37a83ae939a71db0dc
+# 06f7c53097714807ae6a22e6149ddcee
 #: ../../agent_call_actions.rst:53
 msgid ""
 "En este caso, la llamada automáticamente es despachada hacia el agente B,"
@@ -156,12 +157,12 @@ msgstr ""
 "recovered, neither \"agent A\" can know if the transfer was attended by "
 "\"agent B\"."
 
-# c9d2097e1e804e8a970a5d6a8491c2b9
+# 28b829331fca4982bb528fad425d9f91
 #: ../../agent_call_actions.rst:56
 msgid "**Transferencia directa hacia teléfono externo**"
 msgstr "**Blind transfer to an external number**"
 
-# bf84abf60a3e434eb596d3e9305c7d41
+# 23932c8bb5954580b848a96e9e1ca48b
 #: ../../agent_call_actions.rst:58
 msgid ""
 "El \"agente A\" se encuentra en una llamada activa y desea transferir la "
@@ -175,7 +176,7 @@ msgstr ""
 " is generated outside the system. It can be a PBX extension within the "
 "company or an external telephone number of the PSTN."
 
-# 7d78c2929ac643669d1ad3971dce07d3
+# 7e6474844fbc4342b20ea0df4fc4edd9
 #: ../../agent_call_actions.rst:61
 msgid ""
 "En este caso se hunde el botón de transferencia disponible en el webphone"
@@ -187,12 +188,12 @@ msgstr ""
 "\"blind transfer\" as the type of transfer. You must enter the "
 "destination number in the box as indicated in the figure 5."
 
-# c7f5a41fc83b4d92b635dc456d647d99
+# 8845bfb67738427387d816f7b776ce76
 #: ../../agent_call_actions.rst:66
 msgid "*Figure 5: \"Agent A\" to \"External telephone\" blind transfer*"
 msgstr "*Figure 5: \"Agent A\" to \"External Number\" blind transfer*"
 
-# 90ce61a127c0407a91cdb5a6cd9fdef3
+# 9e109f884ee64a7e92dea199dcd024f7
 #: ../../agent_call_actions.rst:68
 msgid ""
 "En este caso, la llamada automáticamente es despachada hacia el teléfono "
@@ -207,12 +208,12 @@ msgstr ""
 "and \"agent A\" cannot know if the call was attended or not by the "
 "transfer destination phone."
 
-# 8bdb1f00e4f44c36b327c048f5498222
+# bf36f50c88ee4bad96b612c4e3dbba9d
 #: ../../agent_call_actions.rst:71
 msgid "**Transferencia con consulta hacia otro agente**"
 msgstr "**Consultative Transfer to another Agent**"
 
-# c07db29c18474554bc13258d1ec12c5b
+# 2584201109ad424ebf66cab963d6ec0f
 #: ../../agent_call_actions.rst:73
 msgid ""
 "El \"agente A\" se encuentra en una llamada activa y desea transferir la "
@@ -231,18 +232,18 @@ msgstr ""
 "drops the call and automatically the external telephone is bridged with "
 "the \"agent B\"."
 
-# e56caa9f6be04416a965570a655bfd8b
+# 650119dab2fc48ce86ad40e6aacaba1b
 #: ../../agent_call_actions.rst:79
 msgid "*Figure 6: \"Agent A\" to \"Agent B\" consultative transfer*"
 msgstr "*Figure 6: \"Agent A\" to \"Agent B\" consultative transfer*"
 
-# 2af3c1c24bfd4ea2a280f221d5aac97d
-# 5c2954d57b9f4143b766ba0917b666ec
+# d97033d3bb6842528d7c9f74012a9ab5
+# 5145f9fe1818468eb1221618d52fa171
 #: ../../agent_call_actions.rst:81 ../../agent_call_actions.rst:111
 msgid "En este escenario también puede ocurrir:"
 msgstr "In this scenario, another possibility is:"
 
-# 222e4d87820742059960f38ff34896b4
+# 6526c8dfc6c246c2994db13efe5bd910
 #: ../../agent_call_actions.rst:83
 msgid ""
 "Que no se logre contactar al \"agente B\", entonces el \"agente A\" puede"
@@ -253,7 +254,7 @@ msgstr ""
 "can cancel the transfer during the ringing phase to the \"agent B\" using"
 " the button \"Cancel Transfer\" of the webphone."
 
-# 6f18062d39974c5c9dfef1482aa6076e
+# 5ed9871eb2014804a074cc54a8802628
 #: ../../agent_call_actions.rst:86
 msgid ""
 "Se logra el contacto con el \"agente B\" pero éste no pueda/quiera "
@@ -266,12 +267,12 @@ msgstr ""
 "must drop the call and automically the \"agent A\" remains with the "
 "connected conversation."
 
-# 1b9f16b863ec4d588b29b2c6366ceffd
+# d531ad61fc6d44b0927359cdf036e576
 #: ../../agent_call_actions.rst:89
 msgid "**Conferencia de a tres entre el número externo, agente A y agente B**"
 msgstr "**Three Way Conference: external number, Agent A and Agent B**"
 
-# 85602634cbd54f93a991f4cfb073f287
+# a7c312f6ce094532a88cdf22e0bba514
 #: ../../agent_call_actions.rst:91
 msgid ""
 "Este caso es un escenario posible dentro de una transferencia "
@@ -291,19 +292,19 @@ msgstr ""
 "\"Confer \" button available on the agent Webphone and thus remain the "
 "three parties in a conference call."
 
-# aca64d6e9f164ee1bb6394b463d632e4
+# 96aab38ba9be45c59f5d067ea014781f
 #: ../../agent_call_actions.rst:98
 msgid ""
 "*Figure 7: \"Agent A\", \"Agent B\" and External number three way "
 "conference*"
 msgstr ""
 
-# c57919a3372c4e3b84f661512c5398c0
+# 0a13c7bd6d1c469293df20c2f2af7e5f
 #: ../../agent_call_actions.rst:100
 msgid "**Transferencia con consulta hacia teléfono externo**"
 msgstr "**Consultative Transfer to external number**"
 
-# a7f7a96daf184aa19624f797ddbe990c
+# 1cd96b54d7a54a5889b4bb7b8a0a8e34
 #: ../../agent_call_actions.rst:102
 msgid ""
 "El \"agente A\" se encuentra en una llamada activa y desea transferir la "
@@ -323,12 +324,12 @@ msgstr ""
 " \"agent A\" drops the call and automatically the \"external telephone "
 "A\" is joined to the \"external telephone B\"."
 
-# cb9936f0c0c24b76b71bcde8a8efebd3
+# 7cc56167da754d62b6d819cda1e95d6f
 #: ../../agent_call_actions.rst:109
 msgid "*Figure 8: \"Agent A\" to \"External telephone\" consultative transfer*"
 msgstr "*Figure 8: \"Agent A\" to \"External telephone\" consultative transfer*"
 
-# a89341ba7d774363928de62b0d304acf
+# b1ab9ee7dedb47d6a68cbda6f736adb1
 #: ../../agent_call_actions.rst:113
 msgid ""
 "Que no se logre contactar al \"teléfono externo B\", entonces el \"agente"
@@ -340,7 +341,7 @@ msgstr ""
 "\"external phone B\" using the \"Cancel Transfer\" button on the "
 "webphone."
 
-# dbe4627ec1e943b8b66fe7ba09cb13ce
+# 9a63593bf6184fd8a81947fb3f36c511
 #: ../../agent_call_actions.rst:116
 msgid ""
 "Se logra el contacto con el \"telefono externo B\" pero éste no "
@@ -353,7 +354,7 @@ msgstr ""
 "\"external telephone B\" hangs up the call and the \"agent A\" remains "
 "connected to \"external telephone A\"."
 
-# ddcb8b3ffcbb430da3b7f5fcc974dc60
+# 724760c05b22429a907b61d2a8a7d0d9
 #: ../../agent_call_actions.rst:119
 msgid ""
 "**Conferencia de a tres entre el número externo A, agente y un número "
@@ -362,7 +363,7 @@ msgstr ""
 "**Three Way Conference: external telephone A, Agent, external telephone "
 "B**"
 
-# 29f6dafb2c41458e9aae7fc3b6a3d8c9
+# f8803148fc7a4d69a796cffc5fdd80f9
 #: ../../agent_call_actions.rst:121
 msgid ""
 "Bajo este escenario el \"agente A\" puede armar una conferencia de a tres"
@@ -377,7 +378,7 @@ msgstr ""
 "can be the extension of a PBX or a subscriber of the PSTN. In such a way,"
 " all the parties remain in a conference room."
 
-# ab9711e3fe104652977f5c489e8c6ee2
+# 8b89e1485eba484e996709f014720bb8
 #: ../../agent_call_actions.rst:125
 msgid ""
 "Para llevar a cabo esta acción, el \"agente A\" debe iniciar una "
@@ -389,7 +390,7 @@ msgstr ""
 "*consultative transfer* to the \"external number B\" and once in call the"
 " agent must click on the \"Confer \" button of the webphone (Figure 9)."
 
-# fc0ca0aa9230468f9849adfe42bad216
+# f1f48c3acfa94193aff61d2164a15097
 #: ../../agent_call_actions.rst:130
 msgid ""
 "*Figure 9: \"Agent A\", \"Subscriber A\" and \"Subscriber B\" three way "
@@ -398,17 +399,17 @@ msgstr ""
 "*Figure 9: \"Agent A\", \"Subscriber A\" and \"Subscriber B\" three way "
 "conference*"
 
-# 736ff1e48a564d1da19732204f9acd3b
+# 1961004180d64244923b2e86e4df3457
 #: ../../agent_call_actions.rst:134
 msgid "*Figure 10: Webphone confer switch*"
 msgstr ""
 
-# 1e93a1ce30cc4b6dbb3cbf538fbe587e
+# 1f6c60916e6748f9bb74fe553303f43e
 #: ../../agent_call_actions.rst:137
 msgid "**Transferencia a otra campaña**"
 msgstr "**Transfer to another Campaign**"
 
-# 671af9dbf17541f991107500099a3b9d
+# 9c5ddaa0601044388069e26c05168fed
 #: ../../agent_call_actions.rst:139
 msgid ""
 "Bajo este escenario el \"agente A\" se encuentra en una llamada activa y "
@@ -421,12 +422,12 @@ msgstr ""
 "transfer \" option since the call is transferred to the queue of the "
 "target campaign."
 
-# a44752756253446baf5cc9b1a1002741
+# f93960adf6cb4460b9e493df29d0e2ce
 #: ../../agent_call_actions.rst:144
 msgid "*Figure 11: \"Agent A\" to \"inbound campaign\" transfer*"
 msgstr "*Figure 11: \"Agent A\" to \"inbound campaign\" transfer*"
 
-# bb5e2157964e49cf92d284075b32c9c0
+# df29deaea04c4af497c75c796b562e9f
 #: ../../agent_call_actions.rst:146
 msgid ""
 "Como se trata de una transferencia directa, la llamada automáticamente es"
@@ -440,12 +441,12 @@ msgstr ""
 " transfer is triggered, it cannot be retrieved, and \"agent A\" cannot "
 "know if the call was really answered."
 
-# 6b6ce1c5af0e4de9aa4959653763ab22
+# e18e6d65d13d4b07937a76bcb6aae1d3
 #: ../../agent_call_actions.rst:151
 msgid "Observar grabación de llamada"
 msgstr "Tag a Recording Call"
 
-# 18ab05571d8541df9ab185ded2ff7790
+# 377ddc6f40d84c9b9f8d67eacd2f2c28
 #: ../../agent_call_actions.rst:153
 msgid ""
 "Esta funcionalidad del webphone de agente, permite a éste poder generar "
@@ -458,12 +459,12 @@ msgstr ""
 "recording call. The idea for this flag is to be reachable from Recording "
 "Module. "
 
-# 5ba8b3fc65714effbe9abdad99479e58
+# a6b13e6e043d4c4ab3db9836a8356c43
 #: ../../agent_call_actions.rst:158
 msgid "*Figure 12: call recording tag*"
 msgstr "*Figure 12: call recording tag*"
 
-# 9fda4466567c40bf95f986209ca66267
+# 878262e85f2840e9bb249bf2819ce15b
 #: ../../agent_call_actions.rst:160
 msgid ""
 "Como se indica en la figura 12, luego de hundir el botón para marcar la "
@@ -474,7 +475,7 @@ msgstr ""
 "text field is displayed so that the agent can describe  the situation or "
 "add a specific comment."
 
-# ee63d44917d7456e819bff5b464745cc
+# f9aa11ca0d5f4f4ebd7b2b05c2109e4d
 #: ../../agent_call_actions.rst:162
 msgid ""
 "Finalmente en el módulo de grabación de OMniLeads, se puede recuperar "
@@ -483,12 +484,12 @@ msgstr ""
 "Finally, using the OMniLeads recording module, you can recover that "
 "recording and see what the agent has written on it."
 
-# 5b4910091db04454b518dd5a7bd53d7e
+# 46b8d66370a24e78ac380a9737ed221c
 #: ../../agent_call_actions.rst:166
 msgid "Grabar llamada bajo demanda"
-msgstr ""
+msgstr "On demand call recording"
 
-# 7bee130d29c649a6b25d4041ae04e7b2
+# bc26ab15f78445ee896ee03e92582706
 #: ../../agent_call_actions.rst:167
 msgid ""
 "Esta funcionalidad permite grabar una llamada, a partir del momento de "
@@ -496,21 +497,27 @@ msgid ""
 "funcionalidad esta habilitada exclusivamente para llamadas pertecientes a"
 " campañas con la opción de realizar grabaciones desactivada."
 msgstr ""
+"This feature allows agents to record a call on demand, since clicked the "
+"button shown in next picture. This feature is only available for calls "
+"related to campaigns with recording calls option disabled"
 
-# 3e89c5e235e444bc9154e87fca85d00f
+# b24c0658bcc84c26ab58be2ae9e79bb4
 #: ../../agent_call_actions.rst:171
 msgid ""
 "La grabación de la llamada puede terminarse a elección del usuario "
 "presionando el mismo botón en medio de dicha grabación, si no se hace "
 "esto la llamada se grabará hasta el final de la llamada"
 msgstr ""
+"The call recording can be stopped if user want it, clicking the same button in "
+"the middle of the recording, if the user cannot do that the call will be "
+"recorded until the end of the call."
 
-# c6d64f3d5a89479c9e5b32536975f7ee
+# f1fff66989044a43b6ad61ed35ae947a
 #: ../../agent_call_actions.rst:177
 msgid "Agendamiento de llamadas"
 msgstr "Scheduled Callbacks"
 
-# 2dcd09c652254cc385ac3f9b31a846d4
+# 741c5f37d67b44389ac363f677b18c6a
 #: ../../agent_call_actions.rst:179
 msgid ""
 "La funcionalidad de agendamiento de llamadas permite al sistema volver a "
@@ -521,12 +528,12 @@ msgstr ""
 "specific contact based on time and date. The idea is not to discard it, "
 "but keep managing it."
 
-# 57abaabd6ade4579bcb3836c4e4285ef
+# cdec1a63f32242d2bbada55963881867
 #: ../../agent_call_actions.rst:181
 msgid "**Agendamiento personal:**"
 msgstr "**Personal Callback**"
 
-# 7a6a091076984c5fac90fe0c773cc0e9
+# 8c344678e1a04d7183ee00427837268a
 #: ../../agent_call_actions.rst:183
 msgid ""
 "Cuando el agente requiere volver a llamar a un contacto determinado, "
@@ -538,19 +545,19 @@ msgstr ""
 "to generate a reminder in the personal agenda, and then listing them in "
 "order to call them back."
 
-# b109cb61b80142ee99c25b54b0f5c518
+# eeb2c90d106d475d98e1bd18f4091780
 #: ../../agent_call_actions.rst:186
 msgid ""
 "El agendamiento de llamadas es una calificación que se encuentra por "
 "defecto siempre como calificación de contacto."
 msgstr "Agenda is a default call disposition of the system."
 
-# af6433af500f44d8a5c65c8f55aeb03c
+# 561da4434eb549898d31f17ec6deada8
 #: ../../agent_call_actions.rst:190
 msgid "*Figure 13: agenda personal*"
 msgstr "*Figure 13: Personal Callback*"
 
-# 68dc1616a285475781443fdffc872bba
+# 547ae1827df44f96bda1550653fbf2ef
 #: ../../agent_call_actions.rst:192
 msgid ""
 "Luego de guardar la calificación, se despliega un formulario para "
@@ -559,12 +566,12 @@ msgstr ""
 "After call is dispositioned, a form is displayed for selecting the date, "
 "time and reason of the agenda being in place."
 
-# 84086ff9f54844c1a8cfc65646378e9e
+# 8eaaf1e367cd46deab798e7b81466468
 #: ../../agent_call_actions.rst:196
 msgid "*Figure 14: detalles de la agenda personal*"
 msgstr "*Figure 14: Personal Callback details*"
 
-# 50df85dfd3114c93b3c53f9da4e36de3
+# fc224a5fa57444669744bd83a4c4415f
 #: ../../agent_call_actions.rst:198
 msgid ""
 "Finalmente, la entrada en la agenda personal del agente quedará "
@@ -573,17 +580,17 @@ msgstr ""
 "Finally, the entry in the Personal Agenda remains available and can be "
 "seen by clicking in the Agenda menu."
 
-# b3ed3f675267453187bd9eee3d7bcd4e
+# e13a99aefcf24e8c8f1da3d9dba07c7e
 #: ../../agent_call_actions.rst:202
 msgid "*Figure 15: detalles de la agenda personal*"
 msgstr "*Figure 25: Agenda details*"
 
-# b571a68cf2f147e3a076c53b9a648ff9
+# 2e627ea3b1d847fca1d332d969419940
 #: ../../agent_call_actions.rst:204
 msgid "**Agendamiento global de llamadas predictivas**"
 msgstr "**Global Callbacks for Outbound Dialer Campaigns**"
 
-# 423cd15a8cab47bfbcbe63aeb33a51a3
+# 7950db4ed5c3490dbbda16b863a5aa9c
 #: ../../agent_call_actions.rst:206
 msgid ""
 "Este tipo de agendamiento es solo aplicable a campañas con discador "
@@ -599,7 +606,7 @@ msgstr ""
 " by the dialer. In this scenario the dialer simply calls the scheduled "
 "number."
 
-# 144f3cc9eda9473ab94b84ac44f10f66
+# d64ec7bc5c1b4a95b25634265eeada93
 #: ../../agent_call_actions.rst:210
 msgid ""
 "Se trata de una funcionalidad que permite no descartar al contacto, pero "
@@ -609,7 +616,7 @@ msgstr ""
 "contact wants agent to call again later, maybe because an impossibility "
 "to attend the call in that moment."
 
-# 9b76510268e8427786a1497923b8632f
+# be5b4ccabf134d5688803ca8f7d8997e
 #: ../../agent_call_actions.rst:212
 msgid ""
 "Para generar una agenda de este tipo, se debe calificar al contacto con "

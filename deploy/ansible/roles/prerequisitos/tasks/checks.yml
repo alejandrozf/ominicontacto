@@ -338,45 +338,16 @@
   when: assert_monitorformat.rc == 0
   tags: always
 
-- name: Check if $MYSQL_PWD was defined previously
-  shell: bash -lc 'if [ -z $MYSQL_PWD ]; then exit 1; else echo $MYSQL_PWD; exit 0; fi'
-  args:
-    executable: /bin/bash
-  changed_when: false
-  failed_when: false
-  register: assert_mysqlpwd
-#  when: docker_distribution.stdout == '"CentOS Linux"'
-  tags: ['never','postinstall','docker_deploy']
-
-- name: Set mysql_root_password variable
-  set_fact: mysql_root_password="{{ assert_mysqlpwd.stdout }}"
-  when: assert_mysqlpwd.rc == 0 and mysql_root_password is not defined and docker_distribution.stdout == '"CentOS Linux"'
-  tags: ['never','postinstall','docker_deploy']
-
-- name: Get old mysql root password
-  set_fact: mysql_old_root_password="{{ assert_mysqlpwd.stdout }}"
-  when: assert_mysqlpwd.rc == 0 and docker_distribution.stdout == '"CentOS Linux"'
-  tags: ['never','postinstall','docker_deploy']
-
 - name: Get mysql root password of Issabel
   shell: cat /etc/issabel.conf | grep mysqlrootpwd |awk -F "=" '{print $2}'
   when: docker_distribution.stdout == '"Issabel PBX"'
   register: issabel_mysql_root_pass
   tags: ['never', 'docker_deploy']
 
-- name: Set mysql_root_password_variable
+- name: Set mysql_root_password_variable for issabel
   set_fact: mysql_root_password="{{ issabel_mysql_root_pass.stdout }}"
   when: docker_distribution.stdout == '"Issabel PBX"'
   tags: ['never', 'docker_deploy']
-
-- name: Set mysql_root_password variable
-  set_fact: mysql_root_password=""
-  when: docker_distribution.stdout == '"Sangoma Linux"'
-  tags: ['never', 'docker_deploy']
-
-- set_fact: mysql_old_root_password=""
-  when: mysql_old_root_password is not defined and docker_distribution.stdout == '"CentOS Linux"'
-  tags: docker_deploy
 
 # Chequea si registry_username esta definido
 - name: Check if registry_username variable is defined
@@ -433,13 +404,6 @@
     msg: WD pass undefined, edit dialer_password in inventory file
   when: dialer_password is not defined and assert_dialerpass.rc == 1
   tags: always
-
-# Chequea si mysql_root_password esta definido
-- name: Check if MYSQL password variable is defined
-  fail:
-    msg: MYSQL password undefined, edit $mysql_root_password in inventory file
-  when: mysql_root_password is not defined and assert_mysqlpwd.rc == 1 and docker_distribution.stdout == "CentOS Linux"
-  tags: ['never','postinstall','docker_deploy']
 
 # Chequea si web admin password esta definido
 - name: Check if web admin password is defined

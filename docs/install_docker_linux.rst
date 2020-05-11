@@ -54,7 +54,6 @@ Hay que tener en cuenta estas cosas:
 .. note::
 
    * La variable *subnet=192.168.15.0/24*, debe modificarse OBLIGATORIAMENTE en caso de que su dirección IP LAN del Linux host (donde se ejecuta el docker-engine) coincida con este rango aquí citadas.
-   * Para una instalación en FreePBX o Issabel la variable *mysql_root_password* no es necesario ingresarla, para Issabel va a tomar el valor que encuentre en /etc/issabel.conf y para FreePBX tomará un valor vacio, ya que FreePBX por default no setea contraseña de mysql.
 
 4. Ejecutar el script deploy.sh de la siguiente forma:
 

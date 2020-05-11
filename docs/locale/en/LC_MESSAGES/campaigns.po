@@ -8,28 +8,28 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-07 15:18-0300\n"
+"POT-Creation-Date: 2020-05-05 17:45-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.7.0\n"
 
-# 34e248222078452da8d993d6a1a6be5e
+# fca645e02e104ce9a47b4f97b3a99099
 #: ../../campaigns.rst:4
 msgid "Campañas Telefónicas"
 msgstr "Telephone Campaigns"
 
-# b400f8b0964a42f6b8b149c58d37a1ee
+# cda20eed13e14b34a0a95bf22e4713d9
 #: ../../campaigns.rst:6
 msgid ""
 "Una campaña representa una manera de encapsular (dentro de la plataforma)"
 " a una operación de Contact Center conformada por:"
 msgstr "A campaign represents a Contact Center operation that groups:"
 
-# 1782e878b317415ea98dad1b12c31cc1
+# 78407c3c3aa1416aa1bb8a910eebc82d
 #: ../../campaigns.rst:9
 msgid ""
 "Un grupo de agentes procesando llamadas en alguna dirección (outbound o "
@@ -38,12 +38,12 @@ msgstr ""
 "An agent group processing phone calls in one direction (outbound or  "
 "inbound)"
 
-# 8a99ff4fe6e645ffae62ccd5a8c07a02
+# 0577739e882d486eab9f37c4ef5eaa6a
 #: ../../campaigns.rst:10
 msgid "Una base de contactos asociada a la campaña."
 msgstr "A contact base associated with the campaign."
 
-# 6721fd58f3ec468eb98b300ea9894ae5
+# ce6bc741cdf4417997eb5e867ba1878c
 #: ../../campaigns.rst:11
 msgid ""
 "Un listado de calificaciones disponibles a la hora de clasificar la "
@@ -52,7 +52,7 @@ msgstr ""
 "A dispositions list that are displayed when classifying the callprocessed"
 " by the agent."
 
-# a3c7c4c5c800460eaa0115c9ae613336
+# 3143f19c6eda459a954b93bf73c76113
 #: ../../campaigns.rst:12
 msgid ""
 "Uno o varios formularios de campaña, a ser lanzados en caso de que el "
@@ -65,17 +65,17 @@ msgstr ""
 " form is displayed by said engage disposition and the agent can complete "
 "it according to the contact details of the ongoing call."
 
-# 0d330fdacfef4e2585eb29465a205412
+# 4fdc306aed2b4544a3960b0a197ca547
 #: ../../campaigns.rst:14
 msgid "En la figura 1 se representa una campaña y sus componentes."
 msgstr "Figure 1 shows a campaign and its components."
 
-# 99d3837477db48abaa145f94f24f1dea
+# 99d4c3c294b04270ad219f882a2eb8c4
 #: ../../campaigns.rst:18
 msgid "*Figure 1: the campaigns elements*"
 msgstr ""
 
-# 3754a7679dd640dcbcd33cf0842c7375
+# 7ddc3eb4e9494431b4dcf44b5919220c
 #: ../../campaigns.rst:20
 msgid ""
 "El hecho de trabajar bajo campañas, permite a los perfiles de usuarios "
@@ -94,17 +94,17 @@ msgstr ""
 "in OMniLeads and leaving records about the calls transacted by the "
 "agents."
 
-# d3b3bbb534664f91ad225f213e63ed89
+# 438fcf2715014dfaa6b13bb0a358b953
 #: ../../campaigns.rst:28
 msgid "*Figure 2: Campaigns, agents, supervisors and backoffice*"
 msgstr ""
 
-# e87d0190bf3f428c8f3ed830e90d1013
+# c7db102cf27a4975abcff9eda6ef24ee
 #: ../../campaigns.rst:32
 msgid "Calificaciones"
 msgstr "Dispositions"
 
-# 4f75e45a325e4e2fb7a23eae28e7dc36
+# 222f183c8beb42bb9bf7ae86e97c2a60
 #: ../../campaigns.rst:34
 msgid ""
 "Las calificaciones constituyen un listado de \"etiquetas\" disponibles "
@@ -116,7 +116,7 @@ msgstr ""
 "campaign, so that agents can classify each call within a campaign, with "
 "any of these dispositions."
 
-# 1fe577c2c7bc4d75ba1cce1b9bf85025
+# 113884eefebc4961860ccb5e9fa3225e
 #: ../../campaigns.rst:37
 msgid ""
 "Las calificaciones son generadas por el supervisor o administrador y se "
@@ -125,14 +125,14 @@ msgstr ""
 "Dispositions are defined by the supervisor or administrator and can be "
 "related to several aspects, for example:"
 
-# 88c7c05a4c11445b9ffefd9831c8e8f5
+# 04c1c281055c48a8bfa948a962ac5731
 #: ../../campaigns.rst:39
 msgid ""
 "El resultado de la llamada hacia un contacto de la campaña (ocupado, no "
 "atendió, numero equivocado, buzón de mensajes, etc.)"
 msgstr "The telephone call result (busy, no answer, wrong number, voicemail, etc.)"
 
-# 75e68ab1fc4240af83fce08ebd5db529
+# 6f43953761664b1fbfe872ad331d18df
 #: ../../campaigns.rst:40
 msgid ""
 "El resultado asociado a una llamada atendida (interesado, no interesado, "
@@ -141,7 +141,7 @@ msgstr ""
 "The result of an interaction in a call answered (sale, survey completed, "
 "schedule call, etc.)"
 
-# 8729bda57d5e479a88ece58443442370
+# d2ef232f63b24842b442c1e3d3e5cd3b
 #: ../../campaigns.rst:42
 msgid ""
 "Las calificaciones pueden ser totalmente arbitrarias y para generarlas se"
@@ -151,7 +151,7 @@ msgstr ""
 "Dispositions can be totally arbitrary and to generate them you must enter"
 " the screen*Campaigns → Call Dispositions → New Call Dispositions*."
 
-# 41c063703f9c4946b55eae3ea687df50
+# 1020117c4fcc48bdb722217e8fc9312c
 #: ../../campaigns.rst:44
 msgid ""
 "Podemos listar las calificaciones generadas dentro de *Campaigns → Call "
@@ -160,17 +160,17 @@ msgstr ""
 "We can list the ratings generated within *Campaigns → Call Dispositions →"
 " Call Dispositions*"
 
-# 77a01984270a4875826afe6c56ea43b9
+# 5772963da4664b078d9bcf9af74e1688
 #: ../../campaigns.rst:48
 msgid "*Figure 3: Call dispositions*"
 msgstr ""
 
-# bcab991bb2694e34a42004942ca51e85
+# c6dccce45d34425985bc364740b5535e
 #: ../../campaigns.rst:51
 msgid "Base de contactos"
 msgstr "Campaign contact database"
 
-# beed1426cfbc4773abfc7a55b1da13d0
+# 559eb253b99c4a6daaf34ae8c8c6f1e1
 #: ../../campaigns.rst:52
 msgid ""
 "Las bases de contactos son utilizadas en las campañas salientes aunque "
@@ -188,7 +188,7 @@ msgstr ""
 "the complementary data to the phone number that is displayed on the "
 "agent's screen every time a call comes in."
 
-# 64c09fc260094cc0a923d8698df90b3b
+# ec128fbd56d34e408bbf3ee8322ddeb8
 #: ../../campaigns.rst:56
 msgid ""
 "Éstas bases son proporcionadas en archivos con formato CSV con los campos"
@@ -208,17 +208,17 @@ msgstr ""
 "main telephone. This data is displayed on the agent screen when "
 "establishing a communication between both (agent and base contact)."
 
-# 62ebeaf7dab64c31bc25b5702cb8aef5
+# 6e70941d218749988246dbf52a968015
 #: ../../campaigns.rst:63
 msgid "*Figure 4: Contacts CSV file - text editor view*"
 msgstr ""
 
-# 273d1718c04542288ccdb26c00527f77
+# ae59d5a5d18b4aa2ad36ee63a97f0e5b
 #: ../../campaigns.rst:67
 msgid "*Figure 5: Contacts CSV file - libreoffice excel view*"
 msgstr ""
 
-# 0f0d0cf9d867465e80fb14465afbc7bd
+# 824c8ad8f7ad40f1ac4af8caa925191e
 #: ../../campaigns.rst:69
 msgid ""
 "Se dispone entonces de una base de contactos (csv) para proceder con la "
@@ -229,12 +229,12 @@ msgstr ""
 " file into the system by accessing the menu item; *Contacts → New "
 "contacts database*"
 
-# b59d892d96a14116b68371ab758e01af
+# fd8607b60db741d4a976738d599d62e4
 #: ../../campaigns.rst:73
 msgid "*Figure 6: New contact database*"
 msgstr ""
 
-# c144efa64442466a8f585c28afd0af7b
+# 13e4278f839e4bf98bc62d43c0d87a20
 #: ../../campaigns.rst:75
 msgid ""
 "Se debe indicar con un check, cuales columnas son las que almacenan "
@@ -243,12 +243,12 @@ msgstr ""
 "It should be indicated with a check, which columns are the ones that "
 "store phones, as indicated in figure 7."
 
-# 451b9906d6b3417d965e32a9687510b3
+# cdfd1885879148be98a25efaeeb8e2fd
 #: ../../campaigns.rst:79
 msgid "*Figure 7: Tel check*"
 msgstr ""
 
-# 19d695a18fb943f38cda063a428dd47f
+# 1bff87688fa9424492b69c1031f09d1b
 #: ../../campaigns.rst:81
 msgid ""
 "Finalmente se salva el archivo y el mismo queda disponible como una base "
@@ -257,12 +257,12 @@ msgstr ""
 "Finally, the form is saved and the CSV file is now available as a system "
 "contact database available for any campaign."
 
-# 7f0f826d366542e6a1370db03fbf48f5
+# 63270c1a0a41460bbcf3d96264503ae6
 #: ../../campaigns.rst:84
 msgid "Configuración de restricciones sobre campos de Contactos"
-msgstr ""
+msgstr "Restriction configuration for Contacts fields"
 
-# b551248e68204a9f90ee92356b45ee43
+# 66219f24f89948d389557163473592b4
 #: ../../campaigns.rst:85
 msgid ""
 "A veces no es deseable que los Agentes puedan ver o editar algún campo de"
@@ -270,13 +270,17 @@ msgid ""
 "qué campos restringir ingresando desde la lista de campañas a la opción "
 "de \"Restringir campos de contacto\"."
 msgstr ""
+"Sometimes Agents should not be able to see or edit certain fields of the"
+" database contacts. For this cases, restrictions over this fields can be"
+" set entering the option \"Restrict contacts fields\" from the campaign's"
+" list."
 
-# 32be629c28a346a49583a505e21d3349
+# f3711e3c10074cdcaca37ad02b5a2489
 #: ../../campaigns.rst:89
 msgid "*Figure 8: Restrict contacts fields option*"
 msgstr ""
 
-# 7ea0c1546774465ab95a05c7b1bb1416
+# ca0e138437714a5e826b3ea9098d0c3a
 #: ../../campaigns.rst:91
 msgid ""
 "Luego en esta pantalla se deben seleccionar para bloquear los campos que "
@@ -285,13 +289,16 @@ msgid ""
 "que esten seleccionados como bloqueados. El campo principal de teléfono "
 "no podrá ser ocultado."
 msgstr ""
+"In this screen the fields to block or hide to the agents must be selected."
+" Only the fields selected as blocked can be selected as hidden. The main"
+" phone field can't be set as hidden."
 
-# 8041bfe52a544985847d1dc87c981811
+# 2dcdcd100a95422d9e05091ad8dad5a5
 #: ../../campaigns.rst:95
 msgid "*Figure 9: Selecting contacts fields for blocking or hiding*"
 msgstr ""
 
-# 6c94c40b424946b5bfb47afaf44109bc
+# 52a810b417df4e5787031abf699beef1
 #: ../../campaigns.rst:97
 msgid ""
 "Cuando un Agente quiera editar un contacto no se le mostrarán los campos "
@@ -300,18 +307,22 @@ msgid ""
 " el agente podrá ingresar por única vez valores en los campos que "
 "solamente estén bloqueados."
 msgstr ""
+"When an Agent is to edit a contact the hidden fields will not be present"
+" and the fields set as blocked (and not hidden) will be disabled for"
+" edition. When creating a contact, the fields set only as blocked will be"
+" enabled for only this first time."
 
-# 69f633a4461c4d5491186f3b09971be0
+# 47fc73a641ed49039df795c81ee5e694
 #: ../../campaigns.rst:101
 msgid "*Figure 10: Restricted and hidden contacts fields*"
 msgstr ""
 
-# 890fdd32a653464988cbb960e4a80d6f
+# 1a0ef41d8d004300bca45adb6af34d57
 #: ../../campaigns.rst:104
 msgid "Formularios"
 msgstr "Forms"
 
-# 42724204aa7a4818b8b6fdd3043c02f8
+# 44b3d908e80d487e807f4cfb4d7489b2
 #: ../../campaigns.rst:105
 msgid ""
 "Los formularios de campaña constituyen el método por defecto para "
@@ -328,51 +339,51 @@ msgstr ""
 " text area), being able to order them according to the need of the "
 "campaign."
 
-# 87e8296aaa754c0aa5ecdeadb3f457a2
+# c23a389b940e447f89ca10f95c4bd115
 #: ../../campaigns.rst:110
 msgid ""
 "Para crear formularios se debe acceder al punto de menú; *Campaigns → New"
 " form*. Allí"
 msgstr "To create forms you must access the menu item; *Campaigns → New form*"
 
-# e3dbec61ec78474a9d1e3ae6062a801d
+# 0643081e2bb04c86a3430e3dcdeb4601
 #: ../../campaigns.rst:112
 msgid "Los formularios pueden contener campos del tipo:"
 msgstr "Campaign forms may contain field types like"
 
-# 8339a65ba42d44478efd9c22d96ba5d1
+# 15da4f673eca4fb095f5b092efbbc468
 #: ../../campaigns.rst:114
 msgid "**Texto**"
 msgstr "**Text**"
 
-# c2817f9ba0154b139616b65b2352ceeb
+# c591d8df4eb94eb093ccaf667725d9bf
 #: ../../campaigns.rst:115
 msgid "**Fecha**"
 msgstr "**Date**"
 
-# 936ed935f1a245d5a8e04423d7653e24
+# 3c302e840dd74aad94885b25aa05d643
 #: ../../campaigns.rst:116
 msgid "**Combo de selección múltiple**"
 msgstr "**List**"
 
-# a26d70dbf8034319ba659852048460ef
+# a9cb59fe5f594f13b9d0e93d5c19e89c
 #: ../../campaigns.rst:117
 msgid "**Campo de complementarios**"
 msgstr "**Text area box**"
 
-# 2a71454926a64607b7909f495db2812a
+# 89bfbe2225a74d7b85c08dc70b1bb75d
 #: ../../campaigns.rst:119
 msgid ""
 "En la figura 8 se ejemplifica un campo del tipo \"combo\" dentro de la "
 "creación de un formulario."
 msgstr "Figure 8 exemplifies a campaign form creation."
 
-# dea63869c7e647ffa6fd29dbf31ce2e3
+# c8a994b1c1444b7ba5c7d6c58af4953b
 #: ../../campaigns.rst:123
 msgid "*Figure 11: New campaign form*"
 msgstr ""
 
-# db1c7b205b4c4d81990e4e937889d721
+# e81e2dc77f0b4f7fad7eee9351000116
 #: ../../campaigns.rst:125
 msgid ""
 "Podemos generar un formulario de ejemplo de encuesta de satisfacción con "
@@ -381,17 +392,17 @@ msgstr ""
 "We can generate a sample satisfaction survey form with the appearance of "
 "figure 9."
 
-# becef7e0fcbd4aef9045c37cbae90dad
+# f759a7257d8546d3ad734a39d5de8873
 #: ../../campaigns.rst:129
 msgid "*Figure 12: Survey campaign form*"
 msgstr ""
 
-# f59c270370b847b1aaa666eec42a4d8e
+# 1cbc468e2fd746cbbe3728afbf2edba0
 #: ../../campaigns.rst:133
 msgid "Campañas, Calificaciones & Formularios"
 msgstr "Campaigns, Dispositions & Forms"
 
-# e5aad0144e8f4773a04d7d5ac37a3b9f
+# abb75c82addb4713a18359e0b5f7a178
 #: ../../campaigns.rst:135
 msgid ""
 "Para explicar la relación entre éstos componentes, debemos recordar que "
@@ -409,7 +420,7 @@ msgstr ""
 "information associated with the interaction between the OMniLeads agent "
 "and the person at the other end of the communication within the campaign."
 
-# 694e386d90054b2e94f722770014d761
+# 021ce5f5c7ea4f3a861a334ed5f28286
 #: ../../campaigns.rst:139
 msgid ""
 "Resulta importante explicar conceptualmente cómo se utilizan los "
@@ -424,12 +435,12 @@ msgstr ""
 "assigning ratings, it will be possible to define normal and *engaged "
 "disposition*. The latter are the ones that trigger the campaign forms. "
 
-# b714b1b02b5b4d69a1e1646caae147d3
+# f3711e3c10074cdcaca37ad02b5a2489
 #: ../../campaigns.rst:145
 msgid "*Figure 13: Call dispositions inside campaign*"
 msgstr ""
 
-# 7d4296a2a7cb417ab5bc4eac01c9f1d5
+# 13d6de33661047aea56b8c2defb776dc
 #: ../../campaigns.rst:147
 msgid ""
 "En el ejemplo de la figura 10, contamos con dos calificaciones del tipo "
@@ -442,7 +453,7 @@ msgstr ""
 "on demand* form, and on the other the *Survey* disposition that triggers "
 "the *Survey clients* form."
 
-# f79036a641d54907b8af7608278ad679
+# 0131a8fd528d45dd800669630db61d64
 #: ../../campaigns.rst:150
 msgid ""
 "Siempre que haya una llamada activa entre un agente y un contacto de la "
@@ -459,19 +470,18 @@ msgstr ""
 "disposition* then the form associated with the engaged disposition within"
 " the campaign is triggered on the agent screen."
 
-# cd50ccb06688430189ffe77cbccea583
+# 78c864bdd3ac44eeb5f1624d895e797c
 #: ../../campaigns.rst:156
 msgid "*Figure 14: Engaged dispostions and forms*"
 msgstr ""
 
-# 29109df8d2d44be0b6a51002df6d2b67
+# f7d54ae7fa3841dbbfb8797cfcd85574
 #: ../../campaigns.rst:160
 msgid "Campañas Manuales"
 msgstr "Manual Campaigns"
 
-# ccfdfb0b8efd4c62969c9833c520bd86
+# 4e3617c4991348afabc0023c0cc240b3
 #: ../../campaigns.rst:162
-#, fuzzy
 msgid ""
 "Dentro de este inciso se ejemplifica el paso a paso de cómo administrar "
 "campañas manuales."
@@ -479,14 +489,13 @@ msgstr ""
 "Within this subsection the step-by-step example of how to manage Manual "
 "Campaigns is exemplified."
 
-# f445fc3b31c24104a42e3f05848637a9
+# 2ee67d64918640879004a51df649dea2
 #: ../../campaigns.rst:171
 msgid "Campañas Preview"
 msgstr "Preview Campaigns"
 
-# 5025e642b9d84796b0f632717f1d4e70
+# 9d9bfaa012474b98a0462b174c9ac309
 #: ../../campaigns.rst:173
-#, fuzzy
 msgid ""
 "Dentro de este inciso se ejemplifica el paso a paso de cómo administrar "
 "campañas preview"
@@ -494,14 +503,13 @@ msgstr ""
 "Within this subsection the step-by-step example of how to manage Preview "
 "Campaigns is exemplified."
 
-# 36570ab3aeef44c9b2c1ff65d897d32f
+# f3d6774087eb489a8c9adb8a4e919bd1
 #: ../../campaigns.rst:181
 msgid "Campañas con discador predictivo"
 msgstr "Predictive dialer campaigns"
 
-# e208957015334a6f9fd012d471a7771e
+# 8a9c2b31a7084aacb03e483a00d0a5dc
 #: ../../campaigns.rst:183
-#, fuzzy
 msgid ""
 "Dentro de este inciso se ejemplifica el paso a paso de cómo administrar "
 "campañas dialer."
@@ -509,12 +517,12 @@ msgstr ""
 "Within this subsection the step-by-step example of how to manage "
 "Predictive dialer Campaigns is exemplified."
 
-# b347d442f8ce4094952161f21bf185a0
+# 9ae32118f5fa425b93d95ddd828a6a1f
 #: ../../campaigns.rst:191
 msgid "Campañas Entrantes"
 msgstr "Inbound Campaigns"
 
-# d09d98e658fa45138c4c0248aa0605cf
+# e5bfe9a0436e4441a6cfcff001a51ff3
 #: ../../campaigns.rst:193
 msgid ""
 "Al hablar de llamadas entrantes nos toca desplegar cada funcionalidad "
@@ -529,12 +537,12 @@ msgstr ""
 "agent. Therefore we will extend the concept of \"incoming campaigns\" to "
 "the following configuration items."
 
-# 413b8cd621a741a88226f4c230f1e6b9
+# 3d4b5a8a43b442108d3bcab4b6bf7169
 #: ../../campaigns.rst:209
 msgid "Plantillas de Campaña"
 msgstr "Campaign Templates"
 
-# ce5339e630b148da979ebe66ba604842
+# 7ce657acdc0d4ff1bdeb87602d8c5750
 #: ../../campaigns.rst:211
 msgid ""
 "Suele ser recurrente que los parámetros de una \"clase\" de campañas (por"
@@ -551,12 +559,12 @@ msgstr ""
 "always from scratch, you can generate templates and then quickly create "
 "new campaigns from cloning those templates. "
 
-# f6a38f52d6cc4b7dbba65bd8a98a3469
+# d948855579594e69a300a37cec554e16
 #: ../../campaigns.rst:216
 msgid "Esta funcionalidad la otorgan los *Templates* de campañas de OMniLeads."
 msgstr "This functionality is granted by the OMniLeads campaigns *Templates*."
 
-# 0deeb5aea2f740b9b6a83cddb732b69e
+# 2dbd2428f0f84ef294cb6d32d6766ac2
 #: ../../campaigns.rst:218
 msgid ""
 "A partir de la generación de una plantilla (que se genera de manera "
@@ -570,17 +578,17 @@ msgstr ""
 "and the *Create campaign from template* option. Each new campaign will be"
 " available with all the parameters specified in its parent template. "
 
-# 2a3fc765a76844a193b233e6d1fd030c
+# b54c98407cb64a26a8f9fbed858ef2ba
 #: ../../campaigns.rst:224
 msgid "*Figure 15: templates*"
 msgstr ""
 
-# d3630689cf7e4635b2ad14f7d40914a9
+# c6d88dfd4d044879a5c9840263302944
 #: ../../campaigns.rst:227
 msgid "Interacción con sistemas de gestión externos"
 msgstr "Interaction with external CRMs"
 
-# f311b3adc7704a29a2738ac6f1d52783
+# 04dc4f4c26434454a12b8d2888fb5fa7
 #: ../../campaigns.rst:229
 msgid ""
 "OMniLeads está diseñado desde una perspectiva en la que se prioriza una "
@@ -595,7 +603,7 @@ msgstr ""
 "appropriate to its vertical market (health, sales, customer service, "
 "etc.)."
 
-# b418722ef6ca4e2eb353d52c8e3693f0
+# 1e10f018de1d41d49b959c7170c75d17
 #: ../../campaigns.rst:232
 msgid ""
 "Mediante funcionalidades propias y métodos de la API, OMniLeads permite "
@@ -604,7 +612,7 @@ msgstr ""
 "Through its own functionalities and API methods, OMniLeads allows the "
 "following interactions:"
 
-# 0b5bea09da5847f4b7cd637a31316ecc
+# 24257a688de04c6088e495c6a46edc07
 #: ../../campaigns.rst:235
 msgid ""
 "Abrir una vista concreta del CRM en una comunicación entrante o saliente,"
@@ -616,7 +624,7 @@ msgstr ""
 " using communication parameters (agent id, contact id, campaign id, etc.)"
 " as dynamic data to invoke the CRM."
 
-# 916ffaf137d842378742a9e65a7e68d7
+# e13369c612c34e64a8e0644686dcf3a1
 #: ../../campaigns.rst:236
 msgid ""
 "Permitir realizar una llamada \"click to call\" desde una vista de "
@@ -626,7 +634,7 @@ msgstr ""
 "Execute *click to call* from a contact view in the CRM and thus activate "
 "a call through a campaign and OMniLeads agent."
 
-# 7a1c81b8ca564b8aada4f60391fbf97c
+# 31ade16850de41a8b1f1518f8b0af838
 #: ../../campaigns.rst:237
 msgid ""
 "Permitir calificar la gestión de un contacto del CRM y que la "
@@ -638,7 +646,7 @@ msgstr ""
 "OMniLeads, so that there is a correlation between the CRM system and the "
 "Contact Center system within each campaign."
 
-# 06fbef71f60b474ea8b50feb345f8f83
+# d69f3115830b4f84bffb3da2c6135c7d
 #: ../../campaigns.rst:238
 msgid ""
 "OMniLeads en las llamadas entrantes puede solicitar el ID del llamante y "
@@ -649,7 +657,7 @@ msgstr ""
 "the CRM (via http request) and wait for the latter to respond on which "
 "OMniLeads campaign to route a call. "
 
-# 13a940cb85f34cdebf7d61ac92a4979d
+# ecacfb4a71db47b98ee35b191ea4f4b0
 #: ../../campaigns.rst:240
 msgid ""
 "Ampliamos todos estos conceptos y configuraciones en el siguiente link "
