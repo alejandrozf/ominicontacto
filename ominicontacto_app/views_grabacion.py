@@ -132,7 +132,7 @@ class BusquedaGrabacionFormView(FormView):
             # Pero si la grabacion no tiene esos datos uso el callid
             else:
                 callids.append(callid)
-        calificaciones = CalificacionCliente.objects.filter(filtro | Q(callid__in=callids))
+        calificaciones = CalificacionCliente.history.filter(filtro | Q(callid__in=callids))
         return calificaciones
 
 

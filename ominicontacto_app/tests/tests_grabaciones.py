@@ -29,6 +29,8 @@ from django.conf import settings
 from django.urls import reverse
 from django.utils.timezone import now, timedelta
 
+from simple_history.utils import update_change_reason
+
 from ominicontacto_app.models import Grabacion, GrabacionMarca, OpcionCalificacion, Campana
 
 from ominicontacto_app.tests.factories import (GrabacionFactory, GrabacionMarcaFactory,
@@ -64,6 +66,7 @@ class BaseGrabacionesTests(OMLBaseTest):
         self.opcion_calificacion = OpcionCalificacionFactory(
             campana=self.campana1, tipo=OpcionCalificacion.GESTION)
         self.calificacion = CalificacionClienteFactory(opcion_calificacion=self.opcion_calificacion)
+        update_change_reason(self.calificacion, 'calificacion')
         self.grabacion1 = GrabacionFactory.create(
             duracion=1, agente=self.agente1, callid=self.calificacion.callid,
             campana=self.campana1, id_cliente='-1')
