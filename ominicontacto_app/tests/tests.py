@@ -775,8 +775,8 @@ class IntegrationTests(unittest.TestCase):
             print('--ERROR: No se pudo crear una BD Multinum.--')
         # Agregar un Contacto
         try:
-            agregar_contacto = '//tr[@id=\'{0}\']//td//a[contains(@href, "/agregar/")]'.format(
-                BD_nueva)
+            agregar_contacto = '//tr[@id=\'{0}\']//td//a[contains'\
+                               '(@href, "/agregar_contacto/")]'.format(BD_nueva)
             self.get_href(agregar_contacto)
             telefono = '3456789'
             cell = '154352879'
@@ -819,9 +819,9 @@ class IntegrationTests(unittest.TestCase):
             self.get_href(lista_contacto)
             self.assertTrue(self.browser.find_elements_by_xpath('//tr[@id=\'{0}\']'.format(
                 numero)))
-            print('--Se puede agregar contactos a la BD a través de un .CSV--')
+            print('--Se puede agregar contactos a la BD a traves de un .CSV--')
         except ValueError:
-            print('--ERROR: No se pudo agregar contactos a la BD a través de un CSV.--')
+            print('--ERROR: No se pudo agregar contactos a la BD a traves de un CSV.--')
 
     def test_crear_blacklist(self):
         try:

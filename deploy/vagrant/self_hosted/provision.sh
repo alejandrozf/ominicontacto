@@ -1,9 +1,7 @@
 #!/bin/bash
 
-CENTOS_IP="192.168.99.132"
-
-echo "Installing git"
-yum install git -y
+echo "Installing git and net-tools"
+yum install git net-tools -y
 cd /var/tmp/
 git clone https://gitlab.com/omnileads/ominicontacto.git
 cd ominicontacto
