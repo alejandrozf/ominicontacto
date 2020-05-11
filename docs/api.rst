@@ -335,3 +335,13 @@ Endpoints de la API utilizados por el WebPhone mediante los cuales puede control
   :maxdepth: 2
 
   api_agent_session.rst
+
+
+Endpoint para obtener las credenciales SIP de Agente
+****************************************************
+
+Este enpoint provee las credenciales necesarias para autenticar al agente en el servidor SIP mediante un WebPhone.
+
+**URL**: GET https://<omnileads_addr>/api/v1/sip/credentials/agent/
+
+.. image:: images/api_agent_sip_credentials.png
