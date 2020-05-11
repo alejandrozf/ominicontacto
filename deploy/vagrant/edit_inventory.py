@@ -23,32 +23,34 @@ import sys
 parser = argparse.ArgumentParser(description='Modify Ansible inventory')
 
 parser.add_argument("--self_hosted", help="Modifies if the install is selfhosted")
-parser.add_argument("--admin_password", help="Omnileads admin web password")
+parser.add_argument("--host_node", help="Modifies if the install is selfhosted")
+parser.add_argument("--docker_build", help="Modifies if the install is selfhosted")
+parser.add_argument("--docker_deploy", help="Modifies if the install is selfhosted")
+parser.add_argument("--admin_password", default="098098ZZZ", help="Omnileads admin web password")
 parser.add_argument("--internal_ip", help="Sets internal IP in external server, say 172.16.20.44")
-parser.add_argument("--remote_port", help="Sets external ssh port to connect on remote server")
+parser.add_argument("--remote_port", default=22, help="Sets external ssh port to connect on remote"
+                    "server")
 parser.add_argument("-dlu", "--docker_login_user", help="Username for docker hub")
 parser.add_argument("-dle", "--docker_login_email", help="User email for docker hub")
 parser.add_argument("-dlp", "--docker_login_password", help="User password for docker hub")
 parser.add_argument("-tag", "--tag_docker_images", help="Specifies de tag for generated docker"
                     "images")
-parser.add_argument("--ami_user", help="Specifies de tag for generated docker images")
-parser.add_argument("--ami_password", help="Specifies de tag for generated docker images")
-parser.add_argument("--dialer_host", help="Specifies de tag for generated docker images")
-parser.add_argument("--dialer_user", help="Specifies de tag for generated docker images")
-parser.add_argument("--dialer_password", help="Specifies de tag for generated docker images")
-parser.add_argument("--ecctl", help="Specifies de tag for generated docker images")
-parser.add_argument("--sca", help="Specifies de tag for generated docker images")
-parser.add_argument("--external_hostname", help="Specifies de tag for generated docker images")
-parser.add_argument("--postgres_host", help="Specifies de tag for generated docker images")
-parser.add_argument("--postgres_database", help="Specifies de tag for generated docker images")
-parser.add_argument("--postgres_user", help="Specifies de tag for generated docker images")
-parser.add_argument("--postgres_password", help="Postgresql and mariadb passwords")
+parser.add_argument("--ami_user", default="omnileadsami", help="Specifies ami user")
+parser.add_argument("--ami_password", default="5_MeO_DMT", help="Specifies ami password")
+parser.add_argument("--dialer_host", help="Specifies dialer host")
+parser.add_argument("--dialer_user", default="demoadmin", help="Specifies dialer user")
+parser.add_argument("--dialer_password", default="demo", help="Specifies dialer passowrd")
+parser.add_argument("--ecctl", help="Specifies ECCTL")
+parser.add_argument("--sca", help="Specifies SCA")
+parser.add_argument("--external_hostname", help="Specifies external hostname")
+parser.add_argument("--postgres_host", help="Specifies postgresql host")
+parser.add_argument("--postgres_database", help="Specifies postgresql database")
+parser.add_argument("--postgres_user", default="omnileads", help="Specifies postgresql user")
+parser.add_argument("--postgres_password", default="admin123", help="Specifies postgresql user")
 parser.add_argument("--mysql_host", help="Specifies de tag for generated docker images")
-parser.add_argument("--mysql_password", help="Postgresql and mariadb passwords")
 parser.add_argument("--rtpengine_host", help="Specifies de tag for generated docker images")
 parser.add_argument("--schedule", help="Specifies de tag for generated docker images")
-parser.add_argument("--TZ", help="Specifies de tag for generated docker"
-                    "images")
+parser.add_argument("--TZ", default="America/Argentina/Cordoba", help="Specifies TZ")
 args = parser.parse_args()
 
 # omininicontacto directorio raíz
@@ -57,56 +59,28 @@ inventory_path = os.path.join(base_dir, 'ansible/inventory')
 inventory_file = open(inventory_path, 'r+')
 inventory_contents = inventory_file.read()
 
-if args.remote_port:
-    remote_ssh_port = args.remote_port
-else:
-    remote_ssh_port = 22
-
 if args.admin_password:
-    admin_password = args.admin_password
-else:
-    admin_password = "098098ZZZ"
-
+    inventory_contents = inventory_contents.replace(
+        "#admin_pass=my_very_strong_pass", "admin_pass={0}".format(args.admin_password))
 if args.ami_user:
-    ami_user = args.ami_user
-else:
-    ami_user = "omnileadsami"
-
+    inventory_contents = inventory_contents.replace(
+        "#ami_user=omnileadsami", "ami_user={0}".format(args.ami_user))
 if args.ami_password:
-    ami_password = args.ami_password
-else:
-    ami_password = "5_MeO_DMT"
-
+    inventory_contents = inventory_contents.replace(
+        "#ami_password=5_MeO_DMT", "ami_password={0}".format(args.ami_password))
 if args.dialer_user:
-    dialer_user = args.dialer_user
-else:
-    dialer_user = "demoadmin"
-
+    inventory_contents = inventory_contents.replace(
+        "#dialer_user=demoadmin", "dialer_user={0}".format(args.dialer_user))
 if args.dialer_password:
-    dialer_password = args.dialer_password
-else:
-    dialer_password = "demo"
-
-if args.mysql_password:
-    mysql_password = args.mysql_password
-else:
-    mysql_password = "admin123"
-
+    inventory_contents = inventory_contents.replace(
+        "#dialer_password=demo", "dialer_password={0}".format(args.dialer_password))
 if args.postgres_user:
-    postgres_user = args.postgres_user
-else:
-    postgres_user = "omnileads"
-
+    inventory_contents = inventory_contents.replace(
+        "#postgres_user=omnileads", "postgres_user={0}".format(args.postgres_user))
 if args.postgres_password:
-    postgres_password = args.postgres_password
-else:
-    postgres_password = "admin123"
-
-if args.TZ:
-    TZ = args.TZ
-else:
-    TZ = "America/Argentina/Cordoba"
-
+    inventory_contents = inventory_contents.replace(
+        "#postgres_password=my_very_strong_pass", "postgres_password={0}".format(
+            args.postgres_password))
 if args.postgres_database:
     inventory_contents = inventory_contents.replace(
         "postgres_database=omnileads", "postgres_database={0}".format(args.postgres_database))
@@ -134,11 +108,14 @@ if args.sca:
 if args.schedule:
     inventory_contents = inventory_contents.replace(
         "schedule=Agenda", "schedule={0}".format(args.schedule))
+if args.TZ:
+    inventory_contents = inventory_contents.replace(
+        "#TZ=America/Argentina/Cordoba", "TZ={0}".format(args.TZ))
 inventory_file.seek(0)
 inventory_file.truncate()
 inventory_file.write(inventory_contents)
 
-if args.internal_ip and args.self_hosted == "no":
+if args.internal_ip and args.host_node == "yes":
     # modificamos el setting que define el servidor externo donde se va a instalar
     # el sistema
     inventory_file.seek(0)
@@ -147,19 +124,7 @@ if args.internal_ip and args.self_hosted == "no":
         "#X.X.X.X ansible_ssh_port=22 ansible_user=root"
         " #(this line is for node-host installation)",
         "{0} ansible_ssh_port={1} ansible_user=root".format(
-            args.internal_ip, remote_ssh_port)).replace(
-        "#TZ=America/Argentina/Cordoba", "TZ={0}".format(TZ)).replace(
-        "#admin_pass=my_very_strong_pass", "admin_pass={0}".format(admin_password)).replace(
-        "#postgres_password=my_very_strong_pass", "postgres_password={0}".format(
-            postgres_password)).replace(
-        "#mysql_root_password=my_very_strong_pass", "mysql_root_password={0}".format(
-            mysql_password)).replace(
-        "#postgres_user=omnileads", "postgres_user={0}".format(
-            postgres_user)).replace(
-        "#ami_user=omnileadsami", "ami_user={0}".format(ami_user)).replace(
-        "#ami_password=5_MeO_DMT", "ami_password={0}".format(ami_password)).replace(
-        "#dialer_user=demoadmin", "dialer_user={0}".format(dialer_user)).replace(
-        "#dialer_password=demo", "dialer_password={0}".format(dialer_password)))
+            args.internal_ip, args.remote_port)))
     sys.exit()
 
 if args.self_hosted == "yes":
@@ -170,31 +135,29 @@ if args.self_hosted == "yes":
     inventory_file.write(inventory_contents.replace(
         "#localhost ansible_connection=local ansible_user=root"
         " #(this line is for self-hosted installation)",
-        "localhost ansible_connection=local ansible_user=root").replace(
-        "#TZ=America/Argentina/Cordoba", "TZ={0}".format(TZ)).replace(
-        "#admin_pass=my_very_strong_pass", "admin_pass={0}".format(admin_password)).replace(
-        "#postgres_password=my_very_strong_pass", "postgres_password={0}".format(
-            postgres_password)).replace(
-        "#mysql_root_password=my_very_strong_pass", "mysql_root_password={0}".format(
-            mysql_password)).replace(
-        "#postgres_user=omnileads", "postgres_user={0}".format(
-            postgres_user)).replace(
-        "#ami_user=omnileadsami", "ami_user={0}".format(ami_user)).replace(
-        "#ami_password=5_MeO_DMT", "ami_password={0}".format(ami_password)).replace(
-        "#dialer_user=demoadmin", "dialer_user={0}".format(dialer_user)).replace(
-        "#dialer_password=demo", "dialer_password={0}".format(dialer_password)))
+        "localhost ansible_connection=local ansible_user=root"))
+    sys.exit()
+
+if args.docker_deploy == "yes":
+    # modificamos el setting que define el servidor externo donde se va a instalar
+    # el sistema
+    inventory_file.seek(0)
+    inventory_file.truncate()
+    inventory_file.write(inventory_contents.replace(
+        "#X.X.X.X ansible_ssh_port=22 ansible_user=root"
+        " #(for node-host installation, replace X.X.X.X with the IP of Docker Host)",
+        "{0} ansible_ssh_port={1} ansible_user=root".format(
+            args.internal_ip, args.remote_port)))
     sys.exit()
 
 if args.docker_login_user and args.docker_login_email and args.docker_login_password \
-   and args.tag_docker_images:
+   and args.tag_docker_images and args.docker_build == "yes":
     # editamos las líneas del inventory que indican que se va hacer un build
     # de imágenes de producción de los componentes del sistema
     # 1) modificando inventory
     inventory_contents = inventory_contents.replace(
         "[prodenv-container]\n#localhost ansible_connection=local",
         "[prodenv-container]\nlocalhost ansible_connection=local")
-    inventory_contents = inventory_contents.replace(
-        "#TZ=America/Argentina/Cordoba", "TZ=America/Argentina/Cordoba")
     inventory_contents = inventory_contents.replace(
         "docker_user='{{ lookup(\"env\",\"SUDO_USER\") }}'", "docker_user='root'")
     inventory_contents = inventory_contents.replace(
@@ -204,14 +167,6 @@ if args.docker_login_user and args.docker_login_email and args.docker_login_pass
         "#registry_email=", "registry_email={0}".format(args.docker_login_email))
     inventory_contents = inventory_contents.replace(
         "#registry_password=", "registry_password={0}".format(args.docker_login_password))
-    inventory_contents = inventory_contents.replace(
-        "oml_release=", "oml_release={0}".format(args.tag_docker_images))
-    inventory_contents = inventory_contents.replace(
-        "#postgres_user=omnileads", "postgres_user=omnileads")
-    inventory_contents = inventory_contents.replace(
-        "#ami_user=omnileadsami", "ami_user=omnileadsami")
-    inventory_contents = inventory_contents.replace(
-        "#ami_password=5_MeO_DMT", "ami_password=5_MeO_DMT")
     inventory_file.seek(0)
     inventory_file.truncate()
     inventory_file.write(inventory_contents)
