@@ -5,7 +5,7 @@ ENV JAVA_CONNECTOR_VERSION 2.3.0
 RUN apk update \
     && apk add wget unzip \
     && cd /usr/local/tomcat/webapps/ \
-    && wget http://downloads.loway.ch/wd/WombatDialer-${WD_VERSION}.tar.gz  \
+    && wget {{ wombat_repo }} \
     && tar xzvf WombatDialer-${WD_VERSION}.tar.gz \
     && mv wombatdialer-{{  wombat_version.split("-")[0] | lower }} wombat \
     && rm -rf  WombatDialer-${WD_VERSION}.tar.gz \

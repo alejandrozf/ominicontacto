@@ -17,6 +17,36 @@
 #
 ---
 
+ # Se imprime que kamailio no esta instalado si la version actual es inferior a la requerida
+- debug: msg="Kamailio {{ kamailio_version }} is not installed, proceeding to install"
+  tags: postinstall
+  when: kamailio_installed.stdout != kamailio_version
+
+# Por lo contrario se imprime que ya está instalada la version mas actual
+- debug: msg="Kamailio is already installed in version {{ kamailio_version }}, skipping installation steps"
+  tags: postinstall
+  when: kamailio_installed.stdout == kamailio_version
+
+# Se instala el paquete de la version mas actual de kamailio
+- name: Install kamailio-{{ kamailio_version }} package
+  yum: name={{ kamailio_package }} state=latest update_cache=yes
+  when: kamailio_installed.stdout != kamailio_version
+  tags: postinstall
+
+# Si existen trusted certs se ubican en donde kamailio los necesita
+- name: Copy trusted key/cert pair in kamailio location
+  copy: src={{ repo_location }}/deploy/certs/{{ item.src }} dest={{ item.dest }}
+  with_items:
+    - { src: "cert.pem", dest: "{{ kamailio_location }}/etc/certs/cert.pem" }
+    - { src: "key.pem", dest: "{{ kamailio_location }}/etc/certs/key.pem" }
+  when: trusted_certs == "true"
+  tags: postinstall
+
+# Si no existen trusted certs ejecuta las tareas para crear los certs autofirmados
+- include: certificate_CA.yml
+  tags: kamailio
+  when: certs_exists.rc == 1 and trusted_certs == "false"
+
 # Es necesario crear el directorio donde va a estar el pid de kamailio
 - name: Creation of kamamailio run directories
   file: "path={{ item }} state=directory mode=0755"
@@ -30,16 +60,7 @@
 
 - file: path=/var/log/kamailio/kamailio.log state=touch mode=0755
 
-# Se cre el archivo kamailio en /etc/default este archivo contiene variables que va a usar systemctl para levantar kamailio
-- name: Creation of kamailio file in /etc/default
-  template: src=templates/systemd/kamailio.j2 dest=/etc/default/kamailio owner=root group=root mode=755
-
-# Se crea el archivo de systemd para el servicio kamailio
-- name: Creation of kamailio.service file in systemd
-  template: src=templates/systemd/kamailio.service.j2 dest=/etc/systemd/system/kamailio.service owner=root group=root mode=650
-  tags: postinstall
-
-# Se cambia el ownership del directorio de kamailio al usuario omnileads
+# Se le pone de ownership a la carpeta de kamailio el usuario omnileads
 - name: Change owner of kamailio directory
   file: state=directory path={{ kamailio_location }} owner={{ usuario }} group={{ usuario }} recurse=yes
 
@@ -68,8 +89,6 @@
 # Habilitamos y empezamos redis. Redis es necesario para rtpengine y para django-defender
 - name: Start and enable redis service
   service: name=redis state=restarted enabled=yes
-  become: yes
-  become_method: sudo
 
 # Restarteo kamailio
 - name: Restart kamailio service

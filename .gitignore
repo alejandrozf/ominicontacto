@@ -1,4 +1,3 @@
-requirements.txt
 ominicontacto_voip/kamailio-files/kamailio-local.cfg
 *.vagrant
 /docs/_build

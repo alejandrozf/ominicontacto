@@ -17,14 +17,41 @@
 #
 ---
 
-# Se crea el archivo de configuracion de rtpengine, el cual tiene el comando que se ejecuta al hacer start con systemctl
-- name: Creation of RTPengine config file
-  template: src=roles/kamailio/templates/systemd/sysconfig_rtpengine.j2 dest=/etc/rtpengine-config.conf
+# mensaje para mostrar si rtpengine no está instalado
+- debug: msg="RTPengine no está instalado, se procede a la instalación"
+  when: rtpengine_installed.stdout != rtpengine_version and rtpengine_host is not defined
   tags: postinstall
 
-# Se copia el archivo para el systemd, (revisarlo y revisar systemd para mas informacion)
-- name: Copy of rtpengine service file to systemd
-  template: src=roles/kamailio/templates/systemd/rtpengine.service dest=/etc/systemd/system owner=root group=root mode=650
+# mensaje si rtpengine está instalado
+- debug: msg="RTPengine ya se encuentra instalado se omite instalación"
+  when: rtpengine_installed.stdout == rtpengine_version and rtpengine_host is not defined
+  tags: postinstall
+
+- name: Install rtpengine preliminar packages
+  yum: name={{ item }} state=present update_cache=yes
+  with_items:
+    - libpcap
+    - xmlrpc-c-client
+    - json-glib
+    - libevent
+  tags: postinstall
+  when: rtpengine_installed.stdout != rtpengine_version and rtpengine_host is not defined
+
+- name: Install rtpengine-{{ rtpengine_version }} package
+  yum: name={{ rtpengine_package }} state=latest update_cache=yes
+  when: rtpengine_installed.stdout != rtpengine_version and rtpengine_host is not defined
+  tags: postinstall
+
+# Se inserta el modulo creado
+- name: Insert the RTPengine kernel module
+  shell: "insmod xt_RTPENGINE.ko chdir=/root"
+  register: command_result
+  failed_when: false
+
+# Se crea el archivo de configuracion de rtpengine, el cual tiene el comando que se ejecuta al hacer start con systemctl
+- name: Creation of RTPengine config file
+  template: src=roles/kamailio/templates/etc/sysconfig_rtpengine.j2 dest=/etc/rtpengine-config.conf
+  tags: postinstall
 
 # Tengo un template de rsyslog modificado para tener logs de rtpengine y kamailio en sus propios archivos (ver template para mas info)
 - name: Modify of /etc/rsyslog.conf
@@ -38,10 +65,6 @@
 # No se para que se crea esta carpeta pero estaba en los pasos de fabi
 - name: Create /var/spool/rtpengine directory
   file: path=/var/spool/rtpengine state=directory recurse=yes owner=root
-
-# Hago copia del binario creado a /usr/local/bin
-- name: Copy the rtpengine binary to /usr/local/bin
-  copy: src=/usr/src/{{ rtpengine_name }}/daemon/rtpengine dest=/usr/local/bin remote_src=yes mode=755
 
 # Inicio y habilito el servicio
 - name: Start and enable rtpengine service

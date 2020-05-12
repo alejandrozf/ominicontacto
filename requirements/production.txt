@@ -1,3 +1,0 @@
-# production requirements
--r base.txt
-uWSGI==2.0.15

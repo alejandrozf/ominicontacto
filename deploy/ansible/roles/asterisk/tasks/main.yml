@@ -17,7 +17,7 @@
 #
 ---
 
-- debug: msg="Asterisk {{ asterisk_version }} is nost installed, proceeding to install"
+- debug: msg="Asterisk {{ asterisk_version }} is not installed, proceeding to install"
   when: asterisk_installed.stdout != asterisk_version
   tags: ['asterisk','postinstall']
 
@@ -25,22 +25,10 @@
   when: asterisk_installed.stdout == asterisk_version
   tags: ['asterisk','postinstall']
 
-- name: Uninstall previous asterisk version
-  file: state=absent path={{ item }}
-  with_items:
-    - "{{ asterisk_location }}/sbin/"
-    - "{{ asterisk_location }}/var/lib/"
-    - "{{ asterisk_location }}/lib64/"
-    - /usr/sbin/asterisk
+- name: Install asterisk-{{ asterisk_version }} package
+  yum: name={{ asterisk_package }} state=latest update_cache=yes
   when: asterisk_installed.stdout != asterisk_version
-  tags: ['never','postinstall']
-
-- include: packages_installation.yml
-  tags: asterisk
-
-- include: install.yml
-  when: asterisk_installed.stdout != asterisk_version
-  tags: ['asterisk','postinstall']
+  tags: postinstall
 
 - include: configuration.yml
   tags: asterisk

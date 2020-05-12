@@ -13,33 +13,13 @@ La ventaja principal de esta opción es que el sysadmin puede instalar y mantene
 
 *Figure 1: remote ansible install*
 
-Preparación máquina para OMniLeads
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-- Una instancia de GNU/Linux CentOS 7 (minimal)
-- 20 GB de espacio en disco
-- 4 GB de memoria RAM
-- Dejar la hora correctamente configurada en el host.
-- Configurar una *dirección IP* y un *hostname* fijo en el host destino de la instalación.
-- Instalar paquete kernel-devel, realizar el update del sistema operativo y rebotear la máquina.
-
-.. code-block:: bash
-
-      yum install kernel-devel -y
-      yum update -y
-      reboot
-
-.. important::
-
-    Luego del reboot es importante revisar que el paquete kernel-devel coincida con el kernel que se muestre con el comando *uname -a*
-
 
 .. _about_install_remote_deployer:
 
 Preparación del deployer
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- La máquina deployer puede ser un Linux de las siguientes distros: Centos 7, Ubuntu 18.04 o Debian (9 en adelante) 
+- La máquina deployer puede ser un Linux de las siguientes distros: Centos 7, Ubuntu 18.04 o Debian (9 en adelante)
 - Debemos contar con el paquete git para luego clonar el repositorio del proyecto y seleccionar el release a instalar.
 
 .. code-block:: bash
@@ -122,4 +102,3 @@ Si la ejecución de la instalación finaliza exitosamente, se despliega una vist
 .. image:: images/install_ok.png
 
 *Figure 6: OMniLeads installation ended succesfuly*
-

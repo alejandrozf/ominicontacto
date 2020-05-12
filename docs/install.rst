@@ -24,8 +24,69 @@ Instalación AIO
 *****************
 
 OMniLeads puede correr como una aplicación tradicional desplegando una instalación de todos los componentes sobre un server físico, máquina virtual o VPS. Siempre y cuando se utilice como base
-GNU/Linux: `CentOS minimal 7.7 <http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso>`_. A este tipo de instalación lo llamamos **OMniLeads AIO (All In One)**.
+GNU/Linux. A este tipo de instalación lo llamamos **OMniLeads AIO (All In One)**.
 
+
+* Si se va a instalar en un server físico o máquina virtual utilizar esta versión de CentOS `CentOS minimal 7.7 <http://centos.zero.com.ar/centos/7.8.2003/isos/x86_64/CentOS-7-x86_64-Minimal-2003.iso>`_.
+
+* Si se va a instalar en un VPS o cloud provider (DigitalOcean, Vultr, OVH, etc) escoger un CentOS lo más parecido posible al minimal y tener en cuenta lo siguiente:
+
+  1. Solamente se puede realizar el tipo de instalación :ref:`about_install_selfhosted` para deployar OMniLeads en un servidor Cloud.
+  2. En el archivo de inventario revisar las :ref:`about_install_inventory_oml_cloud`.
+  3. Se recomienda utilizar certificados digitales confiables.
+
+.. note::
+
+  Desde el equipo de Freetech Solutions hemos probado la instalación en la distro `Amazon Linux 2 <https://aws.amazon.com/es/amazon-linux-2/>`_. Se **recomienda** utilizar esta distro si va a hostear su OMniLeads en Amazon Web Services.
+
+**Añadir par key/cert confiables**
+
+OMniLeads utiliza por defecto un par de key/cert digital autofirmado, lo que hace que siempre salten excepciones en el browser con los conocidos errores **ERR_CERT_AUTORITHY INVALID** (para Google Chrome) y **SEC_ERROR_UNKNOWN_ISSUER** (para Firefox). Si ud posee su propio par key/cert certificados firmados por una CA válida puede añadirlos a su instalación de OMniLeads siguiendo estos pasos:
+
+  1. Ubique sus par de archivos en la carpeta *deploy/certs/* dentro del repositorio
+  2. Los archivos tienen que estar en formato *.pem*
+  3. Proceda con la instalación
+
+.. important::
+
+  Dejar sus certificados en la carpeta *deploy/certs/*, para que al actualizar el software se mantenga el uso de estos certificados.
+
+Prerequisitos maquina a instalar
+#################################
+
+Ya sea que se vaya a instalar en un VPS, server físico o maquina virtual, tener en cuenta lo siguiente:
+
+- Una instancia de GNU/Linux CentOS 7 (minimal)
+- 4 GB de memoria RAM
+- Dejar la hora correctamente configurada.
+- Configurar una *dirección IP* y un *hostname* fijo.
+- Revisar si tiene instalado *firewalld*, si está instalado stopear el servicio y deshabilitarlo:
+
+.. code-block:: bash
+
+  systemctl status firewalld
+  systemctl stop firewalld
+  systemctl disable firewalld
+
+- Revisar si se tiene selinux activado, para ello ver si existe el archivo `/etc/sysconfig/selinux`. En caso de que si, deshabilitarlo:
+
+.. code-block:: bash
+
+  sed -i 's/^SELINUX=.*/SELINUX=disabled/' /etc/sysconfig/selinux
+  sed -i 's/^SELINUX=.*/SELINUX=disabled/' /etc/selinux/config
+
+- Realizar un update de la máquina y rebootear
+
+.. code-block:: bash
+
+  yum update -y
+  reboot
+
+  .. important::
+
+    Luego del reboot es importante revisar que el paquete kernel-devel coincida con el kernel que se muestre con el comando *uname -a*
+
+Con esto, la máquina queda lista para proceder con el tipo de instalación que se quiera realizar.
 
 Tipos de instalación AIO
 ########################
@@ -42,36 +103,12 @@ A partir de lo que se configure en el archivo de inventario podemos tener dos ti
 
   **Recomendaciones:**
 
-  * Tanto el host como el nodo a instalar tienen que tener conexión buena y estable a internet
+  * Tanto el deployer(host-node) como la máquina a instalar deben tener conexión buena y estable a internet
   * Que no haya ningún elemento de red para salir a internet (firewall bloqueando puerto 443, proxy)
-  * Usar la ISO de CentOS recomendada
   * En caso de fallo de alguna task de ansible volver a correr el script de instalación
   * En caso de que vuelva a fallar levantar un issue a https://gitlab.com/omnileads/ominicontacto/issues especificando distro en la que sucedió y la versión que se intentó instalar
 
-OMniLeads Cloud
-################
-
-OMniLeads puede ser instalado en una instancia en la nube siempre y cuando se use una imágen de CentOS. Tener en cuenta las siguientes indicaciones:
-
-1. Solamente se puede realizar el tipo de instalación :ref:`about_install_selfhosted` para deployar OMniLeads en un servidor Cloud.
-2. En el archivo de inventario revisar las :ref:`about_install_inventory_oml_cloud`.
-3. Se recomienda utilizar certificados digitales confiables.
-
-.. note::
-
-  Desde el equipo de Freetech Solutions hemos probado la instalación en la distro `Amazon Linux 2 <https://aws.amazon.com/es/amazon-linux-2/>`_. Se **recomienda** utilizar esta distro si va a hostear su OMniLeads en Amazon Web Services.
-
-**Añadir par key/cert confiables**
-
-OMniLeads utiliza por defecto un par de key/cert digital autofirmado, lo que hace que siempre salten excepciones en el browser con los conocidos errores **ERR_CERT_AUTORITHY INVALID** (para Google Chrome) y **SEC_ERROR_UNKNOWN_ISSUER** (para Firefox). Si ud posee su propio par key/cert certificados firmados por una CA válida puede añadirlos a su instalación de OMniLeads siguiendo estos pasos:
-
-1. Ubique sus par de archivos en la carpeta *deploy/certs/* dentro del repositorio
-2. Los archivos tienen que estar en formato *.pem*
-3. Proceda con la instalación
-
-.. important::
-
-  Dejar sus certificados en la carpeta *deploy/certs/*, para que al actualizar el software se mantenga el uso de estos certificados.
+.. _about_install_cloud:
 
 
 Instalación en contenedores

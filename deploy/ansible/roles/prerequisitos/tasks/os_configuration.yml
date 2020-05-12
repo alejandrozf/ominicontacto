@@ -33,19 +33,13 @@
     - /root/
   tags: postinstall
 
-# se deshabilita selinux que viene por defecto instalado en centos7 minimal ISO
-- name: Disable Selinux
-  command: "{{ item }}"
-  with_items:
-      - sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/sysconfig/selinux
-      - sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/selinux/config
-
 # Se setea el archivo de template de environment variables, según lo que se haya ingresado en el inventory
 - name: Set environment variables for this installation
   template: src=templates/omnileads_envars.sh dest=/etc/profile.d/ mode=644 owner=root group=root
   tags: postinstall
   when: is_docker == "false"
 
+# Se escribe en archivo de hosts relacion IP fqdn
 - name: Write the /etc/hosts of server
   blockinfile:
     path: /etc/hosts
@@ -76,56 +70,46 @@
   ini_file: path=/etc/yum.conf section=main option="{{ item.option }}" no_extra_spaces=yes value="{{ item.value }}" state=present
   with_items:
     - { option: "sslverify", value: "0" }
-    - { option: "timeout", value: "300" }
+    - { option: "timeout", value: "600" }
     - { option: "minrate", value: "100" }
 
-# Se para y deshabilita firewalld que viene por defecto en ISO centos7 minimal
-- name: Stop firewalld
-  shell: "{{ item }}"
-  with_items:
-      - systemctl stop firewalld
-      - systemctl disable firewalld
-  when: ansible_distribution != "Amazon"
-
 # Se descarga e instala el repositorio epel-release
-- name: Install of epel-release repo
+- name: Install of epel-release repo (centos)
   yum: name={{ epel_repository }} state=present update_cache=yes
-  when: ansible_os_family == "RedHat"
-
-# Se descarga e instala el repositorio epel-release
-- name: Install of centos-release-scl-rh repo (centos)
-  yum: name=centos-release-scl-rh state=present update_cache=yes
-  when: ansible_distribution != "Amazon"
-
-# Se descarga e instala el repositorio epel-release
-- name: Install of llvm-toolset-7-clang repo (centos)
-  yum: name=llvm-toolset-7-clang state=present update_cache=yes
-  when: ansible_distribution != "Amazon"
+  when: docker_distribution.stdout != '"Sangoma Linux"'
 
 # Se instalan paquetes basicos que se necesitan
 - name: Install of dependencies
   yum: name={{ item }} state=present update_cache=yes
   with_items:
-      - tftp-server
-      - crontabs
-      - gcc
-      - gcc-c++
-      - cronie
-      - openssl-devel
-      - cronie-anacron
-      - make
-      - gdb
-      - which
-      - vim
-      - net-tools
-      - gnutls-devel
-      - python-devel
-      - texinfo
-      - kernel-headers
-      - acl
-      - bind-utils
-      - python-psycopg2
+    - tftp-server
+    - crontabs
+    - cronie
+    - cronie-anacron
+    - which
+    - vim
+    - texinfo
+    - kernel-headers
+    - acl
+    - bind-utils
+    - hiredis
+    - python-psycopg2
+    - nginx
+    - nginx-all-modules
+    - redis
+    - rsync
+    - sox
+    - lame
+    - unixODBC
+    - unzip
+    - libxslt
+    - uriparser
+    - wget
   retries: 3
   delay: 3
   register: result
   until: result is success
+
+- name: Install of unixODBC-devel package
+  yum: name=unixODBC-devel state=present
+  when: ansible_distribution == "Amazon"

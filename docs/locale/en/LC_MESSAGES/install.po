@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-27 16:08-0300\n"
+"POT-Creation-Date: 2020-05-28 15:03-0300\n"
 "PO-Revision-Date: 2019-08-13 12:26-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -17,7 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.8.0\n"
 
 # 9b9308075d544f91bb967ec4921521b3
 #: ../../install.rst:5
@@ -78,100 +78,41 @@ msgstr ""
 msgid "Instalación AIO"
 msgstr "AIO installation"
 
-# 422da8cbf1e847bebea598a809d7ae3f
+# bcba4f97168446f496f8fd929953b73f
 #: ../../install.rst:26
 msgid ""
 "OMniLeads puede correr como una aplicación tradicional desplegando una "
 "instalación de todos los componentes sobre un server físico, máquina "
-"virtual o VPS. Siempre y cuando se utilice como base GNU/Linux: `CentOS "
-"minimal 7.7 "
-"<http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso>`_."
-" A este tipo de instalación lo llamamos **OMniLeads AIO (All In One)**."
+"virtual o VPS. Siempre y cuando se utilice como base GNU/Linux. A este "
+"tipo de instalación lo llamamos **OMniLeads AIO (All In One)**."
 msgstr ""
-"OMniLeads can run as a traditional application, deploying an installation"
-" of all its components on premise, can be a VM, physical server or VPS. "
-"The only conditoin is that you must to use as base GNU/Linux distro: "
-"`CentOS minimal 7.7 "
-"<http://isoredirect.centos.org/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso>`_."
+"OMniLeads can run as a monolithic app deploying the services in a "
+"physical server, VM or VPS. Always using GNU/Linux as base SO. These type"
+" of installation is called **OMniLeads AIO (All In One)**."
 
-# 8e79bdef2c594890b5a796e2f95344e8
-#: ../../install.rst:31
-msgid "Tipos de instalación AIO"
-msgstr "AIO installation types"
-
-# c47512e20e6c41ada89aa19c58834b87
-#: ../../install.rst:33
+# f407b00915294e58adb85486ae5e0061
+#: ../../install.rst:30
 msgid ""
-"A partir de lo que se configure en el archivo de inventario podemos tener"
-" dos tipos de instalación AIO:"
+"Si se va a instalar en un server físico o máquina virtual utilizar esta "
+"versión de CentOS `CentOS minimal 7.7 "
+"<http://centos.zero.com.ar/centos/7.8.2003/isos/x86_64/CentOS-7-x86_64-Minimal-2003.iso>`_."
 msgstr ""
-"From what you configure in the inventory file, you can have to types of "
-"AIO installation: "
+"If you are going to install in a pyshical machine or VM use this CentOS "
+"version `CentOS minimal 7.7 "
+"<http://centos.zero.com.ar/centos/7.8.2003/isos/x86_64/CentOS-7-x86_64-Minimal-2003.iso>`_."
 
-# 2b13a56d496e488692b23e300ab020f9
-#: ../../install.rst:43
-msgid "**Recomendaciones:**"
-msgstr "**Recommendations:**"
-
-# fea48aae4a174eddb94d05fcfff755ef
-#: ../../install.rst:45
+# 248f41896dab43e9b1dd1a530edd60cc
+#: ../../install.rst:32
 msgid ""
-"Tanto el host como el nodo a instalar tienen que tener conexión buena y "
-"estable a internet"
-msgstr ""
-"Both the host and the node to be installed must have a good and stable "
-"internet connection"
-
-# 02cd0a2aa9fc4024b2684e42f36e8f78
-#: ../../install.rst:46
-msgid ""
-"Que no haya ningún elemento de red para salir a internet (firewall "
-"bloqueando puerto 443, proxy)"
-msgstr ""
-"That there is no network element to go out to the internet (firewall "
-"blocking 443 port, proxy)"
-
-# 644feac9d2bb436ca340c6e7b9e9b74d
-#: ../../install.rst:47
-msgid "Usar la ISO de CentOS recomendada"
-msgstr "Use the CentOS ISO recommended"
-
-# 7cba25295e784637b0b5d87d326d8a3b
-#: ../../install.rst:48
-msgid ""
-"En caso de fallo de alguna task de ansible volver a correr el script de "
-"instalación"
-msgstr "In case of failure of any ansible task run the installation script again"
-
-# fb2706a037944c9994a1233832b0e8a2
-#: ../../install.rst:49
-msgid ""
-"En caso de que vuelva a fallar levantar un issue a "
-"https://gitlab.com/omnileads/ominicontacto/issues especificando distro en"
-" la que sucedió y la versión que se intentó instalar"
-msgstr ""
-"In case it fails again raise an issue to "
-"https://gitlab.com/omnileads/ominicontacto/issues specifying the Linux "
-"distro in which it happened and the stable version that was wanted to "
-"install"
-
-# f067d7c9a704402e9736576dde67bb36
-#: ../../install.rst:52
-msgid "OMniLeads Cloud"
-msgstr ""
-
-# b966b3ec18764e1fa42e8e44238496de
-#: ../../install.rst:54
-msgid ""
-"OMniLeads puede ser instalado en una instancia en la nube siempre y "
-"cuando se use una imágen de CentOS. Tener en cuenta las siguientes "
-"indicaciones:"
-msgstr ""
-"OMniLeads can be installed in an cloud instance always that the image "
-"used for instance be CentOS. Checkout these conditions:"
+"Si se va a instalar en un VPS o cloud provider (DigitalOcean, Vultr, OVH,"
+" etc) escoger un CentOS lo más parecido posible al minimal y tener en "
+"cuenta lo siguiente:"
+msgstr "If you are going to install in a VPS or cloud provider (DigitalOcean, Vultr, OVH,"
+" etc) you must choice a CentOS version as similar as the one provided in the URL, also "
+"take care of these considerations:"
 
 # 9b29cdbfb806403290bf118eb0b4894a
-#: ../../install.rst:56
+#: ../../install.rst:34
 msgid ""
 "Solamente se puede realizar el tipo de instalación "
 ":ref:`about_install_selfhosted` para deployar OMniLeads en un servidor "
@@ -181,20 +122,19 @@ msgstr ""
 "OMniLeads in cloud servers."
 
 # e88407dd9684421d869762b3afa60d71
-#: ../../install.rst:57
+#: ../../install.rst:35
 msgid ""
 "En el archivo de inventario revisar las "
 ":ref:`about_install_inventory_oml_cloud`."
 msgstr "In inventory file check the :ref:`about_install_inventory_oml_cloud`."
 
 # d5e0c58615c44a8486d41c6df9418ab0
-#: ../../install.rst:58
+#: ../../install.rst:36
 msgid "Se recomienda utilizar certificados digitales confiables."
-msgstr ""
-"Is recommended to use trusted digital certs. "
+msgstr "Is recommended to use trusted digital certs. "
 
 # 583228238e9f453d9ee51ea3a2bb51f4
-#: ../../install.rst:62
+#: ../../install.rst:40
 msgid ""
 "Desde el equipo de Freetech Solutions hemos probado la instalación en la "
 "distro `Amazon Linux 2 <https://aws.amazon.com/es/amazon-linux-2/>`_. Se "
@@ -207,12 +147,12 @@ msgstr ""
 "Services."
 
 # 1624df8b5afc41df980108ba688dfaae
-#: ../../install.rst:64
+#: ../../install.rst:42
 msgid "**Añadir par key/cert confiables**"
 msgstr "Add trusted key/cert pairt"
 
 # 98fdf707899548f48b2125742bb82043
-#: ../../install.rst:66
+#: ../../install.rst:44
 msgid ""
 "OMniLeads utiliza por defecto un par de key/cert digital autofirmado, lo "
 "que hace que siempre salten excepciones en el browser con los conocidos "
@@ -229,24 +169,24 @@ msgstr ""
 "with this steps:"
 
 # 57b14612f6ca44f3be92aa09298200c2
-#: ../../install.rst:68
+#: ../../install.rst:46
 msgid ""
 "Ubique sus par de archivos en la carpeta *deploy/certs/* dentro del "
 "repositorio"
 msgstr "Place the files in the folder *deploy/certs/* inside the repository"
 
 # c8e0c14ec3b747a4b5c4322ad26ebc67
-#: ../../install.rst:69
+#: ../../install.rst:47
 msgid "Los archivos tienen que estar en formato *.pem*"
 msgstr "The files must be in *.pem* format"
 
 # 8e79bdef2c594890b5a796e2f95344e8
-#: ../../install.rst:70
+#: ../../install.rst:48
 msgid "Proceda con la instalación"
 msgstr "Proceed with installation"
 
 # 759f974d6b534141af4a46cb27f07c3f
-#: ../../install.rst:74
+#: ../../install.rst:52
 msgid ""
 "Dejar sus certificados en la carpeta *deploy/certs/*, para que al "
 "actualizar el software se mantenga el uso de estos certificados."
@@ -254,13 +194,129 @@ msgstr ""
 "Leave your certs in *deploy/certs/* forlder, so when you want to upgrade "
 "the software, the same certs will be used."
 
-# bf3312ab2a424b78bff357fafe858774
+# 9bb177ff02ef491bbc5a7d02bdebe0f8
+#: ../../install.rst:55
+msgid "Prerequisitos maquina a instalar"
+msgstr "Prerequisites machine to install OMniLeads"
+
+# 245836d77fce47c987295ea347f7c49d
+#: ../../install.rst:57
+msgid ""
+"Ya sea que se vaya a instalar en un VPS, server físico o maquina virtual,"
+" tener en cuenta lo siguiente:"
+msgstr "Take care of these considerations:"
+
+# 900e192377904d7c9b5579fa43c454f8
+#: ../../install.rst:59
+msgid "Una instancia de GNU/Linux CentOS 7 (minimal)"
+msgstr "GNU/Linux Centos7 Minimal instance"
+
+# 047cd03ce93a4b48a6f213d0facce148
+#: ../../install.rst:60
+msgid "4 GB de memoria RAM"
+msgstr "4GB RAM memory"
+
+# 9e09c62e593e4c049d88689fbab8a6f9
+#: ../../install.rst:61
+msgid "Dejar la hora correctamente configurada."
+msgstr "The timezone of server must be configured correctly"
+
+# 0b13822f7c334fe482abab1e9677ea58
+#: ../../install.rst:62
+msgid "Configurar una *dirección IP* y un *hostname* fijo."
+msgstr "Configure a static *IP address* and *hostname*."
+
+# a2d9be4b07d840ef8ac82b02a0b840c5
+#: ../../install.rst:63
+msgid ""
+"Revisar si tiene instalado *firewalld*, si está instalado stopear el "
+"servicio y deshabilitarlo:"
+msgstr "Check if the *firewalld* service is installed. If it is, stop the service "
+"and disable it:"
+
+# 59ebf606abab4545aacb840e414b29f2
+#: ../../install.rst:71
+msgid ""
+"Revisar si se tiene selinux activado, para ello ver si existe el archivo "
+"`/etc/sysconfig/selinux`. En caso de que si, deshabilitarlo:"
+msgstr "Check if selinux is activated. To see this check the file `/etc/sysconfig/selinux` "
+"In case is activated, disable it:"
+
+# dc653719f0ad46eb99f112ddaeb51447
 #: ../../install.rst:78
+msgid "Realizar un update de la máquina y rebootear"
+msgstr "Update the machine and reboot it"
+
+# 516027c786ac46928047488ca78eee1c
+#: ../../install.rst:89
+msgid ""
+"Con esto, la máquina queda lista para proceder con el tipo de instalación"
+" que se quiera realizar."
+msgstr "With that the machine is ready to proceed with the installation type you want to do."
+
+# 8e79bdef2c594890b5a796e2f95344e8
+#: ../../install.rst:92
+msgid "Tipos de instalación AIO"
+msgstr "AIO installation types"
+
+# c47512e20e6c41ada89aa19c58834b87
+#: ../../install.rst:94
+msgid ""
+"A partir de lo que se configure en el archivo de inventario podemos tener"
+" dos tipos de instalación AIO:"
+msgstr ""
+"From what you configure in the inventory file, you can have to types of "
+"AIO installation: "
+
+# 2b13a56d496e488692b23e300ab020f9
+#: ../../install.rst:104
+msgid "**Recomendaciones:**"
+msgstr "**Recommendations:**"
+
+# fea48aae4a174eddb94d05fcfff755ef
+#: ../../install.rst:106
+msgid ""
+"Tanto el deployer(host-node) como la máquina a instalar deben tener "
+"conexión buena y estable a internet"
+msgstr ""
+"Both the host and the node to be installed must have a good and stable "
+"internet connection"
+
+# 02cd0a2aa9fc4024b2684e42f36e8f78
+#: ../../install.rst:107
+msgid ""
+"Que no haya ningún elemento de red para salir a internet (firewall "
+"bloqueando puerto 443, proxy)"
+msgstr ""
+"That there is no network element to go out to the internet (firewall "
+"blocking 443 port, proxy)"
+
+# 7cba25295e784637b0b5d87d326d8a3b
+#: ../../install.rst:108
+msgid ""
+"En caso de fallo de alguna task de ansible volver a correr el script de "
+"instalación"
+msgstr "In case of failure of any ansible task run the installation script again"
+
+# fb2706a037944c9994a1233832b0e8a2
+#: ../../install.rst:109
+msgid ""
+"En caso de que vuelva a fallar levantar un issue a "
+"https://gitlab.com/omnileads/ominicontacto/issues especificando distro en"
+" la que sucedió y la versión que se intentó instalar"
+msgstr ""
+"In case it fails again raise an issue to "
+"https://gitlab.com/omnileads/ominicontacto/issues specifying the Linux "
+"distro in which it happened and the stable version that was wanted to "
+"install"
+
+# bf3312ab2a424b78bff357fafe858774
+#: ../../install.rst:115
 msgid "Instalación en contenedores"
 msgstr "Containers Installation"
 
 # a70e26d192e34008ae3ad30410619e4f
-#: ../../install.rst:80
+#: ../../install.rst:117
 msgid ""
 "OMniLeads puede ser desplegado utilizando contenedores `Docker "
 "<https://www.docker.com>`_, esto extiende la posibilidad de ejecución de "
@@ -276,12 +332,12 @@ msgstr ""
 "solutions inside the same host."
 
 # d9e741eb84c2411b82adda41e208db77
-#: ../../install.rst:84
+#: ../../install.rst:121
 msgid "En esta sección puede ver los pasos para lograr esta instalación:"
 msgstr "In this section you can see the steps to achieve this installation:"
 
 # dc292b0b354541dc93a8b1bc78e0638c
-#: ../../install.rst:91
+#: ../../install.rst:128
 msgid ""
 "El siguiente apartado esta dirigido a usuarios avanzados de Docker, los "
 "cuales quieran involucrarse mas con la creacion de imagenes para el "
@@ -291,18 +347,18 @@ msgstr ""
 " their own images for the project: "
 
 # 05188bc1bc8f4f22bf7fb817a9dfb6c7
-#: ../../install.rst:99
+#: ../../install.rst:136
 msgid "Primer acceso al sistema"
 msgstr "First access to system"
 
 # 1cac7311a8c04da3874692bae8514999
-#: ../../install.rst:101
+#: ../../install.rst:138
 msgid ""
 "Una vez instalado el software, remitirse a esta sección para el primer "
 "acceso:"
 msgstr "Once installed the software, go to this section for the first access:"
 
 # 358fe882d6a04d118662f64c63d4cc0c
-#: ../../install.rst:109
+#: ../../install.rst:146
 msgid "FAQ y errores comunes"
 msgstr "FAQ and common errors"
