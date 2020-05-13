@@ -112,6 +112,7 @@ class EstadisticasAgenteService():
         tiempo_sesion, tiempo_pausa = (timedelta(), timedelta())
         tiempo_actual_sesion, tiempo_actual_pausa = (None, None)
         evento_anterior = None
+        # TODO: Revisar algoritmo para que se corresponda con el resto de los reportes.
         for i, log_actividad_agente in enumerate(logs_actividad_agente):
             # se calculan los tiempos de sesión del agente
             evento = log_actividad_agente.event
@@ -124,6 +125,9 @@ class EstadisticasAgenteService():
                 # se cierra la sesión de un agente que estuvo conectado previamente
                 tiempo_sesion += tiempo_log - tiempo_actual_sesion
                 tiempo_actual_sesion = None
+                if tiempo_actual_pausa is not None:
+                    tiempo_pausa += tiempo_log - tiempo_actual_pausa
+                    tiempo_actual_pausa = None
             elif (evento == 'ADDMEMBER' and evento_anterior == 'UNPAUSEALL' and i == 1):
                 tiempo_actual_sesion = tiempo_log
                 # reiniciamos el tiempo que se generó de pausa desde el inicio del día pues no es
@@ -184,6 +188,7 @@ class EstadisticasAgenteService():
             # estamos calculando hasta el día actual
             fecha_hasta = ahora
         logs_actividad_agente = ActividadAgenteLog.objects.filter(
+            agente_id=agente.id,
             time__range=(fecha_desde, fecha_hasta)).order_by('time')
         logs_llamadas_agente = LlamadaLog.objects.filter(
             time__range=(fecha_desde, fecha_hasta), campana_id=campana.pk, agente_id=agente.pk)
