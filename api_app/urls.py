@@ -68,7 +68,6 @@ router.register(
 urlpatterns = [
     # ###########   TODOS/BASE    ############ #
     url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'api/v1/login', login, name='api_login'),
 
     url(r'api/v1/new_contact/', ContactoCreateView.as_view(),
