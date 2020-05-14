@@ -112,7 +112,6 @@ staging-self-hosted:
     - build-aio
   only:
     - /.*ansible-selfhosted.*$/
-    - /^pre-release-.*$/
     - schedules
     - web
 
