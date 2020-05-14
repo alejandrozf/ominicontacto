@@ -788,6 +788,11 @@ class ValidacionFechaHoraUpdateView(ValidacionFechaHoraMixin, UpdateView):
             self.request.POST, prefix='validacion_fecha_hora')
         if form.is_valid() and validacion_fecha_hora_formset.is_valid():
             validacion = form.save()
+            if form.changed_data == ['nombre']:
+                # si el nombre cambio actualizamos el nombre del destino entrante
+                nodo_validacion = DestinoEntrante.get_nodo_ruta_entrante(validacion)
+                nodo_validacion.nombre = validacion.nombre
+                nodo_validacion.save()
             validacion_fecha_hora_formset.save()
             # escribe el nodo creado y sus relaciones en asterisk
             sincronizador = self.get_sincronizador_de_configuracion()
