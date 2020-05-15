@@ -70,7 +70,7 @@ class CreacionBaseDatosService(object):
         filename = base_datos_contacto.nombre_archivo_importacion
         extension = os.path.splitext(filename)[1].lower()
         if extension not in csv_extensions:
-            logger.warn(_("La extensión {0} no es CSV. ".format(extension)))
+            logger.warn(_("La extension {0} no es CSV. ".format(extension)))
             raise(OmlArchivoImportacionInvalidoError(file_invalid_msg))
         base_datos_contacto.save()
 
