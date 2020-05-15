@@ -47,7 +47,7 @@
             <form method="post" action="{% url 'descargar_orden_contactos_actual_preview' campana.pk %}">
                 {% csrf_token  %}
                 <input type="hidden" id="campoDesactivacionExport" name="campoDesactivacionExport" value=""/>
-                <button class="btn btn-primary" type="submit">{% trans 'Exportar' %}</button>
+                <button class="btn btn-primary" type="submit">{% trans 'Exportar y desactivar' %}</button>
             </form>
         </div>
         <div class="col-md-6 form-control">
@@ -60,7 +60,7 @@
                 {{ form.agentes_en_contactos_ordenados.errors }}
                 {{ form.campo_desactivacion }}
                 {{ form.campo_desactivacion.errors }}
-                <button class="btn btn-primary" type="submit">{% trans 'Importar' %}</button>
+                <button class="btn btn-primary" type="submit">{% trans 'Importar y desactivar' %}</button>
             </form>
         </div>
     </div>

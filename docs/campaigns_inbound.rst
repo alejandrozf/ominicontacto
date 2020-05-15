@@ -54,6 +54,7 @@ A continuación se prosigue con la creación de nuestra campaña entrante.
 - **Anunciar tiempo promedio de espera** permite al usuario especificar el tiempo promedio  que deberá esperar el llamante para ser atendido
 - **IVR Breakdown:** es un destino de tipo IVR que el usuario puede escoger para 'escapar' hacia él en medio del tiempo de espera, este parámetro está relacionado con el de anuncio periódico pues éste último es donde se reproduciría el mensaje que guíe al usuario para realizar el escape hacia dicho destino IVR.
 - **Posición de anuncio:** Anunciar posición del llamante en la cola.
+- **Wait/position announce frecuency:** Es el tiempo (en segundos) de espera o posición para una frecuencia de anuncios.
 - **Musica de espera:** Indica el Playlist que escuchará el cliente cuando su llamada este en espera.
 
 .. note::
