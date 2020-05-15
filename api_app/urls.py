@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 
 from django.conf.urls import url, include
 from rest_framework import routers
+from django.contrib.auth.decorators import login_required
 
 from api_app.views.base import login, ContactoCreateView, CampaignDatabaseMetadataView
 from api_app.views.administrador import AgentesActivosGrupoViewSet
@@ -33,8 +34,6 @@ from api_app.views.agente import (
     API_ObtenerContactosCampanaView, Click2CallView, AgentLogoutView,
     AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk
 )
-
-from ominicontacto_app.auth.decorators import supervisor_requerido, agente_requerido
 
 router = routers.DefaultRouter()
 
@@ -86,16 +85,16 @@ urlpatterns = [
 
     # ###########   SUPERVISOR    ############ #
     url(r'api/v1/supervision/agentes',
-        supervisor_requerido(AgentesStatusAPIView.as_view()),
+        login_required(AgentesStatusAPIView.as_view()),
         name='api_agentes_activos'),
     url('api/v1/supervision/status_campanas/entrantes/$',
-        supervisor_requerido(StatusCampanasEntrantesView.as_view()),
+        login_required(StatusCampanasEntrantesView.as_view()),
         name='api_supervision_campanas_entrantes'),
     url('api/v1/supervision/status_campanas/salientes/$',
-        supervisor_requerido(StatusCampanasSalientesView.as_view()),
+        login_required(StatusCampanasSalientesView.as_view()),
         name='api_supervision_campanas_salientes'),
     url(r'api/v1/supervision/accion_sobre_agente/(?P<pk>\d+)/$',
-        supervisor_requerido(InteraccionDeSupervisorSobreAgenteView.as_view()),
+        login_required(InteraccionDeSupervisorSobreAgenteView.as_view()),
         name='api_accion_sobre_agente'),
 
     # ###########     AGENTE      ############ #
@@ -108,7 +107,7 @@ urlpatterns = [
         AgentLoginAsterisk.as_view(), name='api_agent_asterisk_login'),
     url(r'^api/v1/asterisk_logout/$',
         AgentLogoutAsterisk.as_view(), name='api_agent_asterisk_logout'),
-    url(r'^agente/logout/$', agente_requerido(AgentLogoutView.as_view()),
+    url(r'^agente/logout/$', login_required(AgentLogoutView.as_view()),
         name='api_agente_logout'),
     url(r'^api/v1/asterisk_pause/$',
         AgentPauseAsterisk.as_view(), name='api_make_pause'),

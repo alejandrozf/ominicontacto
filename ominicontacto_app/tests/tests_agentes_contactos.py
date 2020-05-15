@@ -28,18 +28,19 @@ from django.utils.translation import ugettext as _
 from django.urls import reverse
 
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, QueueFactory,
-                                               QueueMemberFactory, SupervisorProfileFactory)
+                                               QueueMemberFactory)
 from ominicontacto_app.tests.utiles import OMLBaseTest
-from ominicontacto_app.models import AgenteEnContacto, Campana
+from ominicontacto_app.models import AgenteEnContacto, Campana, User
 
 
 class AgentesContactosTests(OMLBaseTest):
 
-    PWD = u'admin123'
-
     def setUp(self):
-        self.usuario_agente = self._crear_agente()
-        self.usuario_supervisor = self._crear_supervisor()
+        super(AgentesContactosTests, self).setUp()
+        self.agente_profile = self.crear_agente_profile()
+        self.usuario_agente = self.agente_profile.user
+        self.supervisor_profile = self.crear_supervisor_profile(User.SUPERVISOR)
+
         self.campana_dialer, self.contacto_camp_dialer = \
             self._agregar_campana_y_contacto(
                 self.usuario_agente, Campana.TYPE_DIALER)
@@ -52,7 +53,7 @@ class AgentesContactosTests(OMLBaseTest):
         self.campana_preview, self.contacto_camp_preview = \
             self._agregar_campana_y_contacto(
                 self.usuario_agente, Campana.TYPE_PREVIEW)
-        self.client.login(username=self.usuario_agente.username, password=self.PWD)
+        self.client.login(username=self.usuario_agente.username, password=self.DEFAULT_PASSWORD)
 
     def _agregar_campana_y_contacto(self, agente_profile, tipo_campana):
         campana = CampanaFactory.create(
@@ -60,19 +61,6 @@ class AgentesContactosTests(OMLBaseTest):
         self._hacer_miembro(agente_profile, campana)
         contacto = ContactoFactory.create(bd_contacto=campana.bd_contacto)
         return campana, contacto
-
-    def _crear_supervisor(self):
-        usuario_supervisor = SupervisorProfileFactory()
-        usuario_supervisor.user.set_password(self.PWD)
-        usuario_supervisor.save()
-        return usuario_supervisor
-
-    def _crear_agente(self):
-        usuario_agente = self.crear_user_agente()
-        usuario_agente.set_password(self.PWD)
-        usuario_agente.save()
-        self.crear_agente_profile(usuario_agente)
-        return usuario_agente
 
     def _hacer_miembro(self, usuario_agente, campana):
         agente = usuario_agente.get_agente_profile()
@@ -82,39 +70,40 @@ class AgentesContactosTests(OMLBaseTest):
             id_campana='{0}_{1}'.format(campana.pk, campana.nombre))
 
     def test_contacto_list_muestra_campanas_entrantes_agente(self):
-        self.client.login(username=self.usuario_agente.username, password=self.PWD)
+        self.client.login(username=self.usuario_agente.username, password=self.DEFAULT_PASSWORD)
         url = reverse('contacto_list')
         response = self.client.get(url, follow=True)
         ids_campanas_devueltas = [int(pk) for pk, _ in response.context_data['campanas']]
         self.assertTrue(self.campana_entrante.pk in ids_campanas_devueltas)
 
     def test_contacto_list_muestra_campanas_dialer_agente(self):
-        self.client.login(username=self.usuario_agente.username, password=self.PWD)
+        self.client.login(username=self.usuario_agente.username, password=self.DEFAULT_PASSWORD)
         url = reverse('contacto_list')
         response = self.client.get(url, follow=True)
         ids_campanas_devueltas = [int(pk) for pk, _ in response.context_data['campanas']]
         self.assertTrue(self.campana_dialer.pk in ids_campanas_devueltas)
 
     def test_contacto_list_muestra_campanas_manuales_agente(self):
-        self.client.login(username=self.usuario_agente.username, password=self.PWD)
+        self.client.login(username=self.usuario_agente.username, password=self.DEFAULT_PASSWORD)
         url = reverse('contacto_list')
         response = self.client.get(url, follow=True)
         ids_campanas_devueltas = [int(pk) for pk, _ in response.context_data['campanas']]
         self.assertTrue(self.campana_manual.pk in ids_campanas_devueltas)
 
     def test_contacto_list_muestra_campanas_preview_agente(self):
-        self.client.login(username=self.usuario_agente.username, password=self.PWD)
+        self.client.login(username=self.usuario_agente.username, password=self.DEFAULT_PASSWORD)
         url = reverse('contacto_list')
         response = self.client.get(url, follow=True)
         ids_campanas_devueltas = [int(pk) for pk, _ in response.context_data['campanas']]
         self.assertTrue(self.campana_preview.pk in ids_campanas_devueltas)
 
     def test_api_contacto_list_devuelve_datos_campana_agente(self):
-        self.client.login(username=self.usuario_agente.username, password=self.PWD)
+        self.client.login(username=self.usuario_agente.username, password=self.DEFAULT_PASSWORD)
         url = reverse(
             'api_contactos_campana',
             kwargs={'pk_campana': self.campana_dialer.pk})
         response = self.client.get(url, {'start': 0, 'length': 1, 'draw': 1, 'search[value]': ''})
+        self.assertEqual(response.status_code, 200)
         json_content = json.loads(response.content)
         self.assertEqual(json_content['draw'], 1)
         self.assertEqual(json_content['recordsTotal'], 1)
@@ -177,7 +166,8 @@ class AgentesContactosTests(OMLBaseTest):
 
     def test_usuario_no_agente_no_accede_vista_contactos_telefono_repetidos(self):
         self.client.logout()
-        self.client.login(username=self.usuario_supervisor.user.username, password=self.PWD)
+        self.client.login(
+            username=self.supervisor_profile.user.username, password=self.DEFAULT_PASSWORD)
         campana_dialer = self.campana_dialer
         contacto = campana_dialer.bd_contacto.contactos.first()
         url = reverse(
@@ -185,7 +175,7 @@ class AgentesContactosTests(OMLBaseTest):
                                                          contacto.telefono,
                                                          'false'])
         response = self.client.get(url, follow=True)
-        self.assertTemplateUsed(response, 'registration/login.html')
+        self.assertEqual(response.status_code, 403)
 
     def test_usuario_agente_accede_vista_contactos_telefono_repetidos(self):
         campana_dialer = self.campana_dialer

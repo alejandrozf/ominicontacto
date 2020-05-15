@@ -26,7 +26,7 @@ from __future__ import unicode_literals, division
 from django.utils import timezone
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from reportes_app.tests.utiles import GeneradorDeLlamadaLogs
-from ominicontacto_app.models import Campana, AgenteProfile
+from ominicontacto_app.models import Campana, AgenteProfile, User
 from ominicontacto_app.tests.factories import (
     CampanaFactory, ContactoFactory, ActividadAgenteLogFactory, PausaFactory,
     LlamadaLogFactory
@@ -57,8 +57,8 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         self.fin_sesion_agente1 = ActividadAgenteLogFactory.create(
             time=fin_sesion, event='REMOVEMEMBER', agente_id=self.agente1.id)
 
-        self.user_supervisor = self.crear_user_supervisor()
-        self.supervisor_profile = self.crear_supervisor_profile(user=self.user_supervisor)
+        self.supervisor_profile = self.crear_supervisor_profile(rol=User.SUPERVISOR)
+        self.user_supervisor = self.supervisor_profile.user
         self.manual = CampanaFactory.create(
             type=Campana.TYPE_MANUAL, reported_by=self.user_supervisor,
             estado=Campana.ESTADO_ACTIVA)

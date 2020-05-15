@@ -38,6 +38,7 @@ class PermisoOML(Permission):
     class Meta:
         proxy = True
         verbose_name = "permiso_oml"
+        app_label = "permiso_oml"
 
     def save(self, *args, **kwargs):
         ct, created = ContentType.objects.get_or_create(
@@ -53,6 +54,9 @@ class PermisoOML(Permission):
     @property
     def version(self):
         return VERSIONES.get(self.codename, '1.0.0')
+
+    def __str__(self):
+        return self.codename
 
 
 def cargar_descripciones():

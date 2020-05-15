@@ -34,6 +34,9 @@ import tempfile
 from django.test import TestCase, TransactionTestCase
 from django.conf import settings
 from django.test.utils import override_settings
+from django.core.management import call_command
+from django.contrib.auth.models import Group
+
 from ominicontacto_app.models import (
     User, AgenteProfile, SupervisorProfile, Contacto,
     BaseDatosContacto, NombreCalificacion, Campana, Queue, OpcionCalificacion,
@@ -134,19 +137,37 @@ class OMLTestUtilsMixin(object):
         if user is None:
             user = self.crear_user_agente()
         grupo = GrupoFactory(auto_unpause=0)
-        return AgenteProfile.objects.create(
+        profile = AgenteProfile.objects.create(
             user=user,
             sip_extension=1000 + user.id,
             sip_password="sdsfhdfhfdhfd",
             grupo=grupo,
             reported_by=user
         )
+        profile.user.groups.set([Group.objects.get(name=User.AGENTE)])
+        return profile
 
-    def crear_supervisor_profile(self, user=None, is_administrador=False, is_customer=False):
+    def crear_supervisor_profile(self, rol=User.GERENTE, user=None):
+
         if user is None:
             user = self.crear_user_supervisor()
-        assert not(is_administrador and is_customer), "No puede ser customer "
-        "y administrador a la vez"
+
+        roles_permitidos = [User.ADMINISTRADOR, User.GERENTE, User.SUPERVISOR, User.REFERENTE]
+        assert rol in roles_permitidos, "Rol incorrecto: {0}".format(rol)
+
+        is_administrador = False
+        is_customer = False
+        if rol == User.ADMINISTRADOR:
+            is_administrador = True
+            user.groups.set([Group.objects.get(name=User.ADMINISTRADOR)])
+        elif rol == User.GERENTE:
+            user.groups.set([Group.objects.get(name=User.GERENTE)])
+        elif rol == User.REFERENTE:
+            is_customer = True
+            user.groups.set([Group.objects.get(name=User.REFERENTE)])
+        elif rol == User.SUPERVISOR:
+            user.groups.set([Group.objects.get(name=User.SUPERVISOR)])
+
         return SupervisorProfile.objects.create(
             user=user,
             sip_extension=1000 + user.id,
@@ -171,8 +192,7 @@ class OMLTestUtilsMixin(object):
             user.username = "admin_" + str(user.id)
         user.save()
 
-        profile = self.crear_supervisor_profile(user, )
-        profile.is_administrador = True
+        profile = self.crear_supervisor_profile(user=user, rol=User.ADMINISTRADOR)
         profile.save()
 
         return user
@@ -303,7 +323,7 @@ class OMLTestUtilsMixin(object):
         # creo usuario supervisor
         if not user:
             user = self.crear_user_supervisor()
-            self.crear_supervisor_profile(user)
+            self.crear_supervisor_profile(user=user)
 
         c = Campana(
             nombre="campaña-" + ru(),
@@ -518,6 +538,12 @@ class OMLBaseTest(TestCase, OMLTestUtilsMixin):
         if hasattr(settings, 'DESHABILITAR_MIGRACIONES_EN_TESTS') and \
                 settings.DESHABILITAR_MIGRACIONES_EN_TESTS:
             NombreCalificacionFactory(nombre=settings.CALIFICACION_REAGENDA)
+            Group.objects.create(name=User.ADMINISTRADOR)
+            Group.objects.create(name=User.GERENTE)
+            Group.objects.create(name=User.SUPERVISOR)
+            Group.objects.create(name=User.REFERENTE)
+            Group.objects.create(name=User.AGENTE)
+        call_command('actualizar_permisos')
 
 
 class OMLTransaccionBaseTest(TransactionTestCase, OMLTestUtilsMixin):

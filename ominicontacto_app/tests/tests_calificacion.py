@@ -30,9 +30,9 @@ from django.urls import reverse
 from django.forms import ValidationError
 from django.utils import timezone
 
-from ominicontacto_app.tests.utiles import OMLBaseTest
-from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory, UserFactory,
-                                               ContactoFactory, AgenteProfileFactory,
+from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
+from ominicontacto_app.tests.factories import (CampanaFactory, QueueFactory,
+                                               ContactoFactory,
                                                QueueMemberFactory,
                                                SitioExternoFactory, ParametrosCrmFactory,
                                                CalificacionClienteFactory,
@@ -47,13 +47,13 @@ from ominicontacto_app.models import (AgendaContacto, NombreCalificacion, Campan
 
 
 class CalificacionTests(OMLBaseTest):
-    PWD = u'admin123'
 
     def setUp(self):
         super(CalificacionTests, self).setUp()
-        self.usuario_agente = UserFactory(is_agente=True)
-        self.usuario_agente.set_password(self.PWD)
-        self.usuario_agente.save()
+
+        self.agente_profile = self.crear_agente_profile()
+        self.usuario_agente = self.agente_profile.user
+
         self.campana = CampanaFactory.create()
         self.nombre_opcion_gestion = NombreCalificacionFactory.create()
         self.nombre_calificacion_agenda = NombreCalificacion.objects.get(
@@ -75,7 +75,6 @@ class CalificacionTests(OMLBaseTest):
         self.campana.bd_contacto.contactos.add(self.contacto)
 
         self.queue = QueueFactory.create(campana=self.campana)
-        self.agente_profile = AgenteProfileFactory.create(user=self.usuario_agente)
 
         self.calificacion_cliente = CalificacionClienteFactory(
             opcion_calificacion=self.opcion_calificacion_camp_manual, agente=self.agente_profile,
@@ -83,7 +82,7 @@ class CalificacionTests(OMLBaseTest):
 
         QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
 
-        self.client.login(username=self.usuario_agente.username, password=self.PWD)
+        self.client.login(username=self.usuario_agente.username, password=PASSWORD)
 
     def _setUp_campana_dialer(self):
         self.campana_dialer = CampanaFactory.create(type=Campana.TYPE_DIALER)

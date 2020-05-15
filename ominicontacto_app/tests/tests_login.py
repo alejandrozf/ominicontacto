@@ -25,13 +25,14 @@ from __future__ import unicode_literals
 from django.urls import reverse
 from mock import patch
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
+from ominicontacto_app.models import User
 
 
 class LoginTests(OMLBaseTest):
 
     def setUp(self):
         self.agente = self.crear_agente_profile()
-        self.supervisor = self.crear_supervisor_profile()
+        self.supervisor = self.crear_supervisor_profile(rol=User.SUPERVISOR)
 
     @patch('defender.utils.is_already_locked')
     @patch('defender.utils.check_request')

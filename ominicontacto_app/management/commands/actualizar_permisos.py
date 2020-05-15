@@ -41,7 +41,7 @@ class Command(BaseCommand):
                 configuraciones_de_permisos = app.configuraciones_de_permisos()
                 for configuracion in configuraciones_de_permisos:
                     configuracion_de_permiso = ConfiguracionDePermiso(
-                        app.name, configuracion, gestor_de_permisos.roles_predefinidos)
+                        app.name, configuracion, gestor_de_permisos.permisos_por_rol)
                     if configuracion_de_permiso.nombre in nombres_de_permisos:
                         raise ConfiguracionDePermisoError(
                             nombre=app.name,
@@ -49,6 +49,11 @@ class Command(BaseCommand):
                                 configuracion_de_permiso.nombre))
                     gestor_de_permisos.gestionar_permiso(configuracion_de_permiso)
                     nombres_de_permisos.append(configuracion_de_permiso.nombre)
+
+        # Se persisten así al final los permisos para cada grupo para que sea más rápido que
+        # persistir los grupos de cada permiso por cada permiso gestionado.
+        gestor_de_permisos.persistir_permisos()
+
         # TODO: Discutir
         # Borrar permisos viejos que ya no están en nombres_de_permisos.
         #     (que pasa con addons? si se olvidan de configurarla se borraran los permisos de
@@ -66,29 +71,36 @@ class GestorDePermisos(object):
 
     def __init__(self, *args, **kwargs):
         super(GestorDePermisos, self).__init__(*args, **kwargs)
-        self.roles_predefinidos = {
-            User.ADMINISTRADOR: Group.objects.get(name=User.ADMINISTRADOR),
-            User.GERENTE: Group.objects.get(name=User.GERENTE),
-            User.SUPERVISOR: Group.objects.get(name=User.SUPERVISOR),
-            User.REFERENTE: Group.objects.get(name=User.REFERENTE),
-            User.AGENTE: Group.objects.get(name=User.AGENTE),
+        # TODO: Cargar los permisos que ya estan asignados a cada rol
+        self.permisos_por_rol = {
+            User.ADMINISTRADOR: [],
+            User.GERENTE: [],
+            User.SUPERVISOR: [],
+            User.REFERENTE: [],
+            User.AGENTE: [],
         }
 
     def _obtener_permiso(self, nombre):
-        permiso, created = PermisoOML.objects.get_or_create(codename=nombre)
+        permiso, created = PermisoOML.objects.get_or_create(codename=nombre, name=nombre)
         return permiso
 
     def gestionar_permiso(self, configuracion_de_permiso):
         permiso = self._obtener_permiso(configuracion_de_permiso.nombre)
-        for nombre_rol, rol in self.roles_predefinidos.items():
-            if rol in configuracion_de_permiso.roles:
-                rol.permissions.add(permiso)
+        for nombre_rol in self.permisos_por_rol.keys():
+            if nombre_rol in configuracion_de_permiso.roles:
+                self.permisos_por_rol[nombre_rol].append(permiso)
             else:
-                rol.permissions.remove(permiso)
+                # TODO: eliminar los permisos asignados anteriormente que ya no van
+                pass
+
+    def persistir_permisos(self):
+        for nombre_rol, permisos in self.permisos_por_rol.items():
+            grupo = Group.objects.get(name=nombre_rol)
+            grupo.permissions.set(permisos)
 
 
 class ConfiguracionDePermiso(object):
-    def __init__(self, app_name, configuracion, roles_predefinidos):
+    def __init__(self, app_name, configuracion, permisos_por_rol):
         self.app_name = app_name
         if 'nombre' not in configuracion:
             raise ConfiguracionDePermisoError(
@@ -111,12 +123,12 @@ class ConfiguracionDePermiso(object):
         self.nombre = configuracion['nombre']
         self.roles = []
         for rol in configuracion['roles']:
-            if rol not in roles_predefinidos:
+            if rol not in permisos_por_rol:
                 raise ConfiguracionDePermisoError(
                     app_name=app_name,
                     mensaje=_('Rol predefinido inexistente: {0}, para permiso: {1}').format(
                         rol, self.nombre))
-            self.roles.append(roles_predefinidos[rol])
+            self.roles.append(rol)
 
 
 class ConfiguracionDePermisoError(OmlError):

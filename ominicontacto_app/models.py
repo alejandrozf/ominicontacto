@@ -34,7 +34,7 @@ from ast import literal_eval
 
 from crontab import CronTab
 
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, _user_has_perm
 from django.contrib.sessions.models import Session
 from django.db import (models,
                        # connection
@@ -151,6 +151,13 @@ class User(AbstractUser):
         elif self.get_is_supervisor_normal():
             return True
         return False
+
+    def tiene_permiso_oml(self, nombre_permiso):
+        if PermisoOML.objects.filter(codename=nombre_permiso).exists():
+            full_name = 'permiso_oml.{0}'.format(nombre_permiso)
+            return _user_has_perm(self, full_name, None)
+        # Si no existe el permiso la vista no esta restringida
+        return True
 
     def set_session_key(self, key):
         if self.last_session_key and not self.last_session_key == key:

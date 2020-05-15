@@ -18,38 +18,19 @@
 #
 
 from __future__ import unicode_literals
-
-from rest_framework.permissions import BasePermission
-
-
-class EsSupervisorPermiso(BasePermission):
-    """Permiso para aplicar a vistas solo para supervisores"""
-
-    def has_permission(self, request, view):
-        super(EsSupervisorPermiso, self).has_permission(request, view)
-        superv_profile = request.user.get_supervisor_profile()
-        return superv_profile is not None
+from rest_framework.permissions import IsAuthenticated
+from utiles_globales import request_url_name
 
 
-class EsAdminPermiso(BasePermission):
-    """Permiso para aplicar a vistas solo para administradores"""
+class TienePermisoOML(IsAuthenticated):
+    """Permiso para aplicar a vistas restringidas por PermisoOML"""
 
     def has_permission(self, request, view):
-        super(EsAdminPermiso, self).has_permission(request, view)
-        return request.user.get_is_administrador()
+        has_permission = super(TienePermisoOML, self).has_permission(request, view)
+        if not has_permission:
+            return has_permission
 
-
-class EsAgentePermiso(BasePermission):
-    """Permiso para aplicar a vistas solo para agentes"""
-
-    def has_permission(self, request, view):
-        super(EsAgentePermiso, self).has_permission(request, view)
-        return request.user.get_is_agente()
-
-
-class EsSupervisorOAgentePermiso(BasePermission):
-    """Permiso para aplicar a vistas solo para supervisores normales o agentes"""
-
-    def has_permission(self, request, view):
-        super(EsSupervisorOAgentePermiso, self).has_permission(request, view)
-        return request.user.get_is_agente() or request.user.get_is_supervisor_normal()
+        current_url_name = request_url_name(request)
+        if hasattr(view, 'basename'):
+            current_url_name = view.basename
+        return request.user.tiene_permiso_oml(current_url_name)

@@ -29,24 +29,16 @@ from django.urls import reverse
 
 from constance import config
 
-from ominicontacto_app.tests.factories import UserFactory
-from ominicontacto_app.tests.utiles import OMLBaseTest
+from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 
 
 class RegistroTest(OMLBaseTest):
 
-    PWD = u'admin123'
-
     def setUp(self):
-        self.usuario_agente = UserFactory(is_agente=True)
-        self.usuario_agente.set_password(self.PWD)
-        self.usuario_agente.save()
-
-        self.usuario_admin = UserFactory(is_staff=True)
-        self.usuario_admin.set_password(self.PWD)
-        self.usuario_admin.save()
-
-        self.client.login(username=self.usuario_agente.username, password=self.PWD)
+        super(RegistroTest, self).setUp()
+        self.usuario_agente = self.crear_agente_profile().user
+        self.usuario_admin = self.crear_administrador()
+        self.client.login(username=self.usuario_agente.username, password=PASSWORD)
 
     def test_usuario_no_administrador_no_puede_registrar_instancia(self):
         url = reverse('registrar_usuario')
@@ -61,7 +53,7 @@ class RegistroTest(OMLBaseTest):
     @patch('requests.post')
     def test_usuario_no_administrador_puede_acceder_al_registro_de_su_instancia(self, post):
         self.client.logout()
-        self.client.login(username=self.usuario_admin.username, password=self.PWD)
+        self.client.login(username=self.usuario_admin.username, password=PASSWORD)
         url = reverse('registrar_usuario')
         response = requests.models.Response()
         response.status_code = 200

@@ -31,6 +31,7 @@ from ominicontacto_app.tests.utiles import PASSWORD
 class AgentsAsteriskSessionAPITest(OMLBaseTest):
 
     def setUp(self):
+        super(AgentsAsteriskSessionAPITest, self).setUp()
         usr_agente = self.crear_user_agente(username='agente1')
         self.agente = self.crear_agente_profile(usr_agente)
         url = reverse('api_login')

@@ -29,7 +29,7 @@ import datetime
 import logging as _logging
 
 from ominicontacto_app.tests.utiles import OMLBaseTest
-from ominicontacto_app.models import Campana, ReglasIncidencia
+from ominicontacto_app.models import Campana, ReglasIncidencia, User
 from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 
 logger = _logging.getLogger(__name__)
@@ -46,7 +46,7 @@ class UtilesTest(OMLBaseTest):
     def test_get_supervisor_profile(self):
         ua = self.crear_user_supervisor()
         self.assertEqual(ua.get_supervisor_profile(), None)
-        sp = self.crear_supervisor_profile(ua)
+        sp = self.crear_supervisor_profile(user=ua, rol=User.SUPERVISOR)
         self.assertEqual(ua.get_supervisor_profile(), sp)
 
     def test_agente_inactivo(self):
