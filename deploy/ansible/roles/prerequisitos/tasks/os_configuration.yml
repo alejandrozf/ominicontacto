@@ -124,6 +124,7 @@
       - acl
       - bind-utils
       - llvm-toolset-7-clang
+      - python-psycopg2
   retries: 3
   delay: 3
   register: result
