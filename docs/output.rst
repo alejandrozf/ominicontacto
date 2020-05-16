@@ -7,41 +7,57 @@ Grabaciones
 Todas las campañas que operen con la opción de grabación de llamadas habilitada generan sus archivos con grabaciones para posterior escucha o descarga.
 El módulo de *Grabaciones* de OMniLeads permite la búsqueda de grabaciones utilizando los filtros como criterio de búsqueda.
 
+.. toctree::
+  :maxdepth: 1
 
-* :ref:`about_recordings`.
+  output_recordings.rst
 
 Output de las campañas entrantes
 ********************************
 
 En esta sección se expone y analiza todo lo inherente al "output" generado por las campañas de llamadas entrantes.
 
-* :ref:`about_inbound_camp_reports`.
+.. toctree::
+  :maxdepth: 1
+
+  output_inbound_camp.rst
 
 Output de las campañas salientes
 ********************************
 
 En esta sección se expone y analiza todo lo inherente al "output" generado por las campañas de llamadas salientes.
 
-* :ref:`about_outbound_camp_reports`.
+.. toctree::
+  :maxdepth: 1
 
+  output_outbound_camp.rst
 
 Reportes general de llamadas
 ******************************
 
 Esta sección repasa cada informe generado por el reporte general de llamadas. *Reportes -- Llamadas*.
 
-* :ref:`about_general_reports`.
+.. toctree::
+  :maxdepth: 1
+
+  output_reports_general.rst
 
 Reportes de agentes
 *******************
 
 Esta sección repasa cada informe generado por el reporte general de actividad de agente. *Reportes – Agentes*
 
-* :ref:`about_agent_reports`.
+.. toctree::
+  :maxdepth: 1
+
+  output_reports_agents.rst
 
 Supervisión realtime
 ********************
 
 Esta sección repasa el módulo de supervisión de OMniLeads.
 
-* :ref:`about_supervision`.
+.. toctree::
+  :maxdepth: 1
+
+  output_supervision.rst

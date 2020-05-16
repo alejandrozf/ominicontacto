@@ -3,7 +3,6 @@
 Primer acceso a OMniLeads
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-
 Para acceder al sistema OMniLeads debe ingresar a:
 
 https://omnileads-hostname
@@ -23,3 +22,15 @@ Al encontrarnos con la pantalla de login, simplemente se debe ingresar el usuari
 .. image:: images/install_1st_login.png
 
 *Figure 2: First login*
+
+.. note::
+
+  Si no recuerda la contraseña de admin web, podemos consultar su valor :ref:`about_maintance_envvars`.
+
+.. important::
+
+    Si realizó **instalación con Docker** se usa el puerto 444 para el acceso web, ejemplo:
+    
+    * https://omnileads-hostname:444
+
+    Esto es con el fin de que no conflictue con el clásico 443 que ya lo usan la web de FreePBX o Issabel

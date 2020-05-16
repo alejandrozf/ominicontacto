@@ -1,10 +1,6 @@
 .. _about_inboundcamp:
 
-******************
-Campañas entrantes
-******************
-
-Cómo crear una nueva campaña
+Creación de nueva campaña
 ****************************
 
 Para crear una nueva campaña, se debe ir a Campaña → Campañas Entrantes → Nueva campaña.
@@ -22,6 +18,8 @@ Se debe completar la primera pantalla del wizard, como lo expone la figura 1.
 - **External URL:** en caso de haber seleccionado la invocación a un URL externo en cada llamada, aquí se indica cual de los CRMs definidos debe invocar la campaña.
 - **External system:** aquí se adjudica el sistema de gestión externo que ejecutaría "click to call" sobre la campaña, en caso de así desearlo.
 - **ID on external system:**  este campo debe contener el ID que posee la campaña dentro del sistema de gestión externo desde el cual llegarán los *click to call* o *solicitudes de calificación* de contactos.
+- **Outbound Routes:** Se le asigna una ruta saliente existente a una campaña.
+- **CID on Outbound Routes:** Este campo debe contener el CID asignado para una ruta saliente existente a una campaña.
 - **Enable recordings:** habilita que todas las llamadas de la campaña sean grabadas.
 - **Scope:** se define como la cantidad de gestiones positivas que se esperan para la campaña. En la supervisión de la campaña se muestra en tiempo real el porcentaje de avence de la campaña respecto al objetivo definido.
 
@@ -56,6 +54,7 @@ A continuación se prosigue con la creación de nuestra campaña entrante.
 - **Anunciar tiempo promedio de espera** permite al usuario especificar el tiempo promedio  que deberá esperar el llamante para ser atendido
 - **IVR Breakdown:** es un destino de tipo IVR que el usuario puede escoger para 'escapar' hacia él en medio del tiempo de espera, este parámetro está relacionado con el de anuncio periódico pues éste último es donde se reproduciría el mensaje que guíe al usuario para realizar el escape hacia dicho destino IVR.
 - **Posición de anuncio:** Anunciar posición del llamante en la cola.
+- **Wait/position announce frecuency:** Es el tiempo (en segundos) de espera o posición para una frecuencia de anuncios.
 - **Musica de espera:** Indica el Playlist que escuchará el cliente cuando su llamada este en espera.
 
 .. note::
@@ -78,6 +77,7 @@ En el resto del capítulo se detalla todo acerca del enrutamiento de las llamada
 
 Ringing VS Atención automática de llamadas entrantes
 ****************************************************
+
 El comportamiento del Webphone del agente frente a una llamada proveniente de una campaña entrante puede ser:
 
 - **Ringing normal** y con una duración asociada al parámetro "Ring time" presente en la creación de la campaña entrante. Durante ese tiempo el teléfono del agente notifica la llamada entrante, aguardando la acción del agente que determine la atención o no de la llamada.

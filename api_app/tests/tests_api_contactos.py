@@ -22,10 +22,10 @@ import json
 from django.utils.translation import ugettext as _
 from django.urls import reverse
 
-from ominicontacto_app.models import Contacto
+from ominicontacto_app.models import Contacto, AgenteEnContacto
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.tests.factories import (
-    SistemaExternoFactory, QueueMemberFactory
+    SistemaExternoFactory, QueueMemberFactory, CampanaFactory, QueueFactory
 )
 
 from ominicontacto_app.models import AgenteEnSistemaExterno, Campana
@@ -124,7 +124,7 @@ class APITest(OMLBaseTest):
 
 
 class DatabaseMetadataTest(APITest):
-    URL = reverse('campaign_database_metadata')
+    URL = reverse('api_campaign_database_metadata')
 
     def test_usuario_no_loggeado(self):
         self.client.logout()
@@ -361,3 +361,40 @@ class CrearContactoTest(APITest):
         self.contacto_ok['id'] = Contacto.objects.last().id
         response_json = response.json()
         self.assertEqual(response_json, self.contacto_ok)
+
+    def test_creacion_usuario_preview_por_agente_crea_agente_en_contacto(self):
+        campana = CampanaFactory(type=Campana.TYPE_PREVIEW, estado=Campana.ESTADO_ACTIVA,
+                                 bd_contacto=self.campana.bd_contacto)
+        QueueFactory(campana=campana)
+        QueueMemberFactory.create(member=self.agente, queue_name=campana.queue_campana)
+        post_data = self.post_data_contacto
+        post_data['idCampaign'] = str(campana.id)
+        response = self.client.post(self.URL, json.dumps(post_data),
+                                    format='json', content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        agente_en_contacto = AgenteEnContacto.objects.filter(
+            campana_id=campana.id, contacto_id=response.json()['id'],
+            agente_id=self.agente.id, es_originario=False)
+        self.assertEqual(agente_en_contacto.count(), 1)
+
+    def test_creacion_usuario_preview_por_supervisor_crea_agente_en_contacto(self):
+        usr_supervisor = self.campana.reported_by
+        campana = CampanaFactory(type=Campana.TYPE_PREVIEW, estado=Campana.ESTADO_ACTIVA,
+                                 bd_contacto=self.campana.bd_contacto,
+                                 reported_by=usr_supervisor)
+        campana.supervisors.add(usr_supervisor)
+        QueueFactory(campana=campana)
+        QueueMemberFactory.create(member=self.agente, queue_name=campana.queue_campana)
+        self.client.logout()
+        self.client.login(username=usr_supervisor.username, password=self.PWD)
+
+        post_data = self.post_data_contacto
+        post_data['idCampaign'] = str(campana.id)
+        response = self.client.post(self.URL, json.dumps(post_data),
+                                    format='json', content_type='application/json')
+
+        self.assertEqual(response.status_code, 200)
+        agente_en_contacto = AgenteEnContacto.objects.filter(
+            campana_id=campana.id, contacto_id=response.json()['id'],
+            agente_id=-1, es_originario=True)
+        self.assertEqual(agente_en_contacto.count(), 1)

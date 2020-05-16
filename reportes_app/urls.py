@@ -26,7 +26,7 @@ from reportes_app.views import (ReporteLlamadasFormView, ExportarReporteLlamadas
                                 ExportarZipReportesLlamadasFormView,
                                 ReporteDeResultadosView, ReporteDeResultadosCSVView)
 from reportes_app import (views_campanas_preview_reportes, views_campanas_dialer_reportes,
-                          views_reportes, views_api_supervision)
+                          views_reportes, )
 
 urlpatterns = [
     # ==========================================================================
@@ -74,6 +74,11 @@ urlpatterns = [
         permiso_administracion_requerido(
             views_reportes.CampanaReporteCalificacionListView.as_view()),
         name="campana_reporte_calificacion"),
+    url(r'^campana/(?P<pk_campana>\d+)/exporta/$',
+        permiso_administracion_requerido(
+            views_reportes.ExportaCampanaReporteCalificacionView.as_view()),
+        name='exporta_campana_reporte_calificacion',
+        ),
     url(r'^campana/(?P<pk_campana>\d+)/reporte_grafico/$',
         permiso_administracion_requerido(
             views_reportes.CampanaReporteGraficoView.as_view()),
@@ -81,22 +86,17 @@ urlpatterns = [
         ),
     url(r'^campana/(?P<pk_campana>\d+)/reporte_pdf/$',
         permiso_administracion_requerido(
-            views_reportes.ExportaCampanaReportePDFView.as_view()),
-        name="campana_reporte_pdf"),
+            views_reportes.ExportaCampanaReporteGraficoPDFView.as_view()),
+        name="campana_reporte_grafico_pdf"),
     url(r'^campana/(?P<pk_campana>\d+)/reporte_grafico/(?P<pk_agente>\d+)/agente/$',
         permiso_administracion_requerido(
             views_reportes.AgenteCampanaReporteGrafico.as_view()),
-        name='campana_reporte_agente',
-        ),
-    url(r'^campana/(?P<pk_campana>\d+)/exporta/$',
-        permiso_administracion_requerido(
-            views_reportes.ExportaReporteCampanaView.as_view()),
-        name='exporta_campana_reporte',
+        name='campana_reporte_grafico_agente',
         ),
     url(r'^formulario/(?P<pk_campana>\d+)/exporta/$',
         permiso_administracion_requerido(
             views_reportes.ExportaReporteFormularioVentaView.as_view()),
-        name='exporta_formulario_reporte',
+        name='exporta_reporte_calificaciones_gestion',
         ),
     url(r'^campana/(?P<pk_campana>\d+)/exporta_contactados/$',
         permiso_administracion_requerido(
@@ -139,16 +139,5 @@ urlpatterns = [
         permiso_administracion_requerido(
             ReporteDeResultadosCSVView.as_view()),
         name='reporte_de_resultados_csv',
-        ),
-    # ==========================================================================
-    # Api Supervision
-    # ==========================================================================
-    url(r'^api_supervision/llamadas_campana/(?P<pk_campana>\d+)/$',
-        views_api_supervision.LlamadasDeCampanaView.as_view(),
-        name='api_supervision_llamadas_campana',
-        ),
-    url(r'^api_supervision/calificaciones_campana/(?P<pk_campana>\d+)/$',
-        views_api_supervision.CalificacionesDeCampanaView.as_view(),
-        name='api_supervision_calificaciones_campana',
         ),
 ]

@@ -248,7 +248,9 @@ ul.errorlist li {
 
 /* ///// Search form
 */
-
+#id_buscar_btn{
+  margin-top: 0;
+}
 #wrapper-search {
     margin-bottom: 40px;
 }
@@ -259,7 +261,7 @@ ul.errorlist li {
 #wrapperSearchForm .btn-primary {
     padding-left: 40px;
     padding-right: 40px;
-    margin-top: 10px;
+    
 }
 #btnCollapse[data-toggle="collapse"] {
     text-align: left;
@@ -436,7 +438,15 @@ ul.errorlist li {
     #navBar > ul > li:hover ul.submenu {
         display: block;
     }
+    #navMainMenu {
+      display: flex;
+      align-items: center;
+    }
+    #nav-logo {
+      margin-right: 30px;
+    }
 }
+
 
 /* ///// Navbar chevron icons
 */
@@ -783,7 +793,6 @@ body > h1 {
   bottom: 0px;
   padding: 10px 0;
   color: #FFFFFF;
-  background: #6A716A;
   text-align: center;
 }
 #bottomBar > div {
@@ -793,6 +802,7 @@ body > h1 {
   width: 48px;
   height: 48px;
   margin: 0 10px;
+  border: solid #6A716A 2px;
   border-radius: 100px;
   background-color: #FFFFFF;
   font-size: 1.6rem;
@@ -800,16 +810,16 @@ body > h1 {
   cursor: pointer;
 }
 #bottomBar #txtSms {
-  color: #CCCCCC;
+  color: #6A716A;
 }
 #bottomBar #webCall {
   color: #52C159;
 }
 #bottomBar #webChat {
-  color: #CCCCCC;
+  color: #6A716A;
 }
 #bottomBar #facebookChat {
-  color: #CCCCCC;
+  color: #6A716A;
 }
 #bottomBar # {
   color: #FF7373;

@@ -30,12 +30,11 @@
 #  failed_when: false
 
 - name: Create of .pgpass file
-  template: src=templates/.pgpass dest={{ item }}.pgpass mode=0600 owner={{ usuario }} group={{ usuario }}
+  template: src=roles/prerequisitos/templates/.pgpass dest={{ item }}.pgpass mode=0600 owner={{ usuario }} group={{ usuario }}
   with_items:
     - "{{ install_prefix }}"
     - /root/
   tags: postinstall
-  when: is_docker == "false"
 
 ##################################
 ##         Centos tasks         ##
@@ -92,6 +91,15 @@
   with_items:
       - systemctl stop firewalld
       - systemctl disable firewalld
+  when: ansible_distribution != "Amazon"
+
+# Se descarga e instala el repositorio epel-release
+- name: Install of epel-release and centos-release-scl-rh repo (centos)
+  yum: name={{ item }} state=present update_cache=yes
+  with_items:
+    - "{{ epel_repository }}"
+    - centos-release-scl-rh
+  when: ansible_os_family == "RedHat"
 
 # Se instalan paquetes basicos que se necesitan
 - name: Install of dependencies
@@ -115,12 +123,9 @@
       - kernel-headers
       - acl
       - bind-utils
+      - llvm-toolset-7-clang
+      - python-psycopg2
   retries: 3
   delay: 3
   register: result
   until: result is success
-
-# Se descarga e instala el repositorio epel-release
-- name: Install of epel-release repo (centos)
-  yum: name={{ epel_repository }} state=present update_cache=yes
-  when: ansible_os_family == "RedHat"

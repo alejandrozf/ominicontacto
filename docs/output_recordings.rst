@@ -1,7 +1,7 @@
 .. _about_recordings:
 
-Grabaciones
-***********
+Acceso al menú
+***************
 
 Para acceder al buscador de grabaciones debemos llegar al punto de menú *Grabaciones*. A continuación se depliega
 la vista del módulo, donde se listan las grabaciones del día de la fecha y un conjunto de parámetros

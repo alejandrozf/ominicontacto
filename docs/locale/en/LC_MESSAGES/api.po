@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-13 11:31-0300\n"
+"POT-Creation-Date: 2020-05-11 12:56-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -105,7 +105,7 @@ msgstr ""
 # 495163a4139d4dcd8ca741be0a73e386
 #: ../../api.rst:32
 msgid "**URL**: POST https://<omnileads_addr>/api/v1/login"
-msgstr "**URL**: POST https://<omnileads_addr>/api/v1/login"
+msgstr ""
 
 # c05d24411af1483f8b26cb658485a98f
 #: ../../api.rst:36
@@ -829,3 +829,24 @@ msgid ""
 msgstr ""
 "API endpoints used by the WebPhone to control the Asterisk's Agent "
 "sessions."
+
+# d6a569b20b634bcda5c0a98a8769836e
+#: ../../api.rst:341
+msgid "Endpoint para obtener las credenciales SIP de Agente"
+msgstr "Agent SIP credentials endpoint "
+
+# af6d3b91420a48bdac30b4d747f77a2b
+#: ../../api.rst:343
+msgid ""
+"Este enpoint provee las credenciales necesarias para autenticar al agente"
+" en el servidor SIP mediante un Webphone."
+msgstr ""
+"This endpoint provides the necessary credentials for the agent's authentication "
+"in the SIP server using a Webphone."
+
+# 495163a4139d4dcd8ca741be0a73e386
+#: ../../api.rst:345
+#, fuzzy
+msgid "**URL**: GET https://<omnileads_addr>/api/v1/sip/credentials/agent/"
+msgstr ""
+

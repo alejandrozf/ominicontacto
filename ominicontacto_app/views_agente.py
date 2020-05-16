@@ -188,7 +188,7 @@ class LlamarContactoView(RedirectView):
                             ' Asegurese de no haber perdido la reserva')
                 messages.warning(self.request, message)
                 return HttpResponseRedirect(
-                    reverse('agenda_agente_list'))
+                    reverse('campana_preview_activas_miembro'))
 
         originator = Click2CallOriginator()
         originator.call_originate(
@@ -235,7 +235,8 @@ class LiberarContactoAsignado(View):
         # TODO: Validar que el supervisor tiene permisos sobre la campaña
         campana_id = request.POST.get('campana_id')
         agente = request.user.get_agente_profile()
-        if AgenteEnContacto.liberar_contacto(agente.id, campana_id):
+        status, ___ = AgenteEnContacto.liberar_contacto(agente.id, campana_id)
+        if status:
             return JsonResponse({'status': 'OK'})
         else:
             return JsonResponse({'status': 'ERROR'})

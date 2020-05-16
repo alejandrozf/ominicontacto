@@ -32,8 +32,11 @@
     - libuuid
     - libuuid-devel
     - lynx
-    - postgresql96-devel
+    #- postgresql96-devel
     - redis
+    - hiredis
+    - hiredis-devel
+    - python-devel
   tags: ['kamailio']
   retries: 3
   delay: 3
@@ -62,3 +65,4 @@
   delay: 3
   register: result
   until: result is success
+  when: rtpengine_host is not defined

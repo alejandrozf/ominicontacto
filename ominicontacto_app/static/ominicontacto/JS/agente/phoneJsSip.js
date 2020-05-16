@@ -128,6 +128,7 @@ class PhoneJS {
         var options = {
             all: true
         };
+        this.userAgent.terminateSessions();
         this.userAgent.unregister(options);
     }
 

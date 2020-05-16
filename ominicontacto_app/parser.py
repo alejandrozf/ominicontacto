@@ -156,7 +156,7 @@ class ParserCsv(object):
                 fechas = [curr_row[columna]
                           for columna in metadata.columnas_con_fecha]
                 if not validate_fechas(fechas):
-                    logger.warn(_("Error en la imporación de contactos: No "
+                    logger.warn(_("Error en la importacion de contactos: No "
                                   "valida el formato fecha en la linea {0}".format(curr_row)))
                     raise OmlParserCsvImportacionError(
                         numero_fila=i,
@@ -168,7 +168,7 @@ class ParserCsv(object):
                 horas = [curr_row[columna]
                          for columna in metadata.columnas_con_hora]
                 if not validate_horas(horas):
-                    logger.warn(_("Error en la imporación de contactos: No "
+                    logger.warn(_("Error en la importacion de contactos: No "
                                   "valida el formato hora en la linea {0}".format(curr_row)))
                     raise OmlParserCsvImportacionError(
                         numero_fila=i,
@@ -190,7 +190,7 @@ class ParserCsv(object):
             cantidad_importados += 1
             yield curr_row
 
-        logger.info(_("{0} contactos importados - {1} valores ignoradas.".format(
+        logger.info(_("{0} contactos importados - {1} valores ignorados.".format(
             cantidad_importados, self.vacias)))
 
     def _sanear_nombre_de_columna(self, nombre):

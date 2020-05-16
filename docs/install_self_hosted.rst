@@ -12,7 +12,7 @@ script de instalación allí en dicho host.
 
 *Figure 1: self-hosted install*
 
-Pre-requisitos:
+Pre-requisitos
 ^^^^^^^^^^^^^^^
 
 - Una instancia de GNU/Linux CentOS 7 (minimal), Debian 9 (netinstall) ó Ubuntu Server 18.04
@@ -21,12 +21,10 @@ Pre-requisitos:
 - Dejar la hora correctamente configurada en el host.
 - Configurar una *dirección IP* y un *hostname* fijo, antes de ejecutar la instalación.
 
-Ajustes necesarios antes  de la ejecución de script:
+Ajustes necesarios antes  de la ejecución de script
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - Debemos contar con git para luego clonar el repositorio del proyecto y seleccionar el release a instalar
-
-**CentOS:**
 
 .. code-block:: bash
 
@@ -53,18 +51,13 @@ Ajustes necesarios antes  de la ejecución de script:
 
  cd deploy/ansible
 
-- En este paso debemos trabajar sobre el archivo  :ref:`about_install_inventory` disponible dentro del directorio "PATH/ominicontacto/deploy/ansible".
+- En este paso debemos trabajar sobre el archivo de inventario disponible dentro del directorio "PATH/ominicontacto/deploy/ansible". Remitirse a esta sección: :ref:`about_install_inventory_aio`. No olvidar que estamos instalando **Self Hosted**
 
-.. note::
-
-   OMniLeads utiliza ansible para realizar la instalación, por lo tanto existe un "archivo de inventario" que debe ser modificado de acuerdo a los parámetros
-   del host sobre el que estamos trabajando.
-
-Luego, allí en el inventory mismo debemos ajustar las :ref:`about_install_inventory_vars` de la instanacia.
+- Luego, allí en el inventory mismo debemos ajustar las :ref:`about_install_inventory_vars` de la instanacia.
 
 Una vez ajustados todos los parámetros del archivo de inventario, procedemos con la ejecución de la instalación.
 
-Ejecución del script de instalación:
+Ejecución del script de instalación
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 La instalación de OMniLeads se realiza mediante el script *deploy.sh*, ubicado dentro de la carpeta deploy/ansible con respecto a la carpeta
@@ -90,42 +83,3 @@ Si la ejecución de la instalación finaliza exitosamente, se despliega una vist
 
 *Figure 5: OMniLeads installation ended succesfuly*
 
-Primer acceso a OMniLeads:
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Para acceder al sistema OMniLeads debe ingresar a:
-
-https://omnileads-hostname
-
-.. Important::
-  El acceso web a OMniLeads debe ser a través del hostname.domain del host. Por lo tanto existen dos posibilidades a la hora de resolver el
-  hostname:
-
-  * Que los DNS de la red lo hagan.
-  * Añadir el hostname.domain del host, dentro del archivo de *hosts* (Windows, Linux o Mac de cada PC que tenga que acceder a OMniLeads.
-
-En el segundo caso, podemos editar el archivo de *hosts* de nuestro Sistema Operativo:
-
-.. image:: images/install_dns_hosts.png
-
-
-Una vez ajustado el método por el cual se resolverá el FQDN o hostname de nuestra instanacia de OMniLeads, se procede con el acceso al URL a través de cualquier browser moderno.
-Al encontrarnos con la pantalla de login, simplemente se debe ingresar el usuario admin y la clave generada durante la instalación, como se expone en las figura.
-
-.. image:: images/install_1st_login.png
-
-
-.. Note::
-
-  Si no recuerda la contraseña de admin web, podemos consultar su valor :ref:`about_maintance_envvars`.
-
-Errores comunes:
-^^^^^^^^^^^^^^^^
-
-- El server no tiene internet o no resuelve dominios (configuración de DNS). **Compruebe el acceso a internet del host (por ej: actualizando paquetes - apt-get update | yum update).**
-
-- Timeout de algún paquete que se intenta bajar. Puede volver a intentar ejecutar el deploy y si vuelve a fallar, la opción puede ser instalar el paquete desde la terminal.
-
-- No ejecutó el script de deploy con *sudo*, en el host deployer.
-
-- En caso de contar con algún host Ubuntu-Debian, recordar que se deben instalar paquetes como *sudo, openssh-server o python-minimal* antes de correr el script de *deploy.sh*

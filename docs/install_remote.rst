@@ -13,34 +13,14 @@ La ventaja principal de esta opción es que el sysadmin puede instalar y mantene
 
 *Figure 1: remote ansible install*
 
-Pre-requisitos:
-^^^^^^^^^^^^^^^
+Preparación máquina para OMniLeads
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- Una instancia de GNU/Linux CentOS 7 (minimal), Debian 9 (netinstall) ó Ubuntu Server 18.04
+- Una instancia de GNU/Linux CentOS 7 (minimal)
 - 20 GB de espacio en disco
 - 4 GB de memoria RAM
 - Dejar la hora correctamente configurada en el host.
 - Configurar una *dirección IP* y un *hostname* fijo en el host destino de la instalación.
-
-
-.. _about_install_remote_deployer:
-
-************************************************************
-Preparación en la máquina que ejecuta la instalación remota
-************************************************************
-
-- Debemos contar con el paquete git para luego clonar el repositorio del protyecto y seleccionar el release a instalar.
-
-**CentOS:**
-
-.. code-block:: bash
-
-  yum install git
-  git clone https://gitlab.com/omnileads/ominicontacto.git
-  cd ominicontacto
-  git checkout master
-
-
 - Instalar paquete kernel-devel, realizar el update del sistema operativo y rebotear la máquina.
 
 .. code-block:: bash
@@ -52,6 +32,23 @@ Preparación en la máquina que ejecuta la instalación remota
 .. important::
 
     Luego del reboot es importante revisar que el paquete kernel-devel coincida con el kernel que se muestre con el comando *uname -a*
+
+
+.. _about_install_remote_deployer:
+
+Preparación del deployer
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- La máquina deployer puede ser un Linux de las siguientes distros: Centos 7, Ubuntu 18.04 o Debian (9 en adelante) 
+- Debemos contar con el paquete git para luego clonar el repositorio del proyecto y seleccionar el release a instalar.
+
+.. code-block:: bash
+
+  yum install git (para centos)
+  apt-get install git (para debian o ubuntu)
+  git clone https://gitlab.com/omnileads/ominicontacto.git
+  cd ominicontacto
+  git checkout master
 
 - Debemos asegurarnos de contar con una clave pública generada en la carpeta /root/.ssh/
 
@@ -78,7 +75,7 @@ En caso de NO disponer de una, se puede generar rápidamente con el siguiente co
 
 Este comando genera nuestra clave *id_rsa.pub* que mencionamos anteriormente.
 
-- Se comprueba la *dirección IP* y *hostname* que posee el host destino de la instalación, para luego ajustar el archivo *inventory* que se utiliza a la hora de tomar los parámetros de la instalación.
+- Se comprueba la *dirección IP* y *hostname* que posee de la máquina donde se instalará OMniLeads, para luego ajustar el archivo de inventario.
 
 ::
 
@@ -89,37 +86,18 @@ Este comando genera nuestra clave *id_rsa.pub* que mencionamos anteriormente.
 
 *Figure 3: hostname command output*
 
-
 .. image:: images/install_ip_a_command.png
 
 *Figure 4: ip a command output*
 
-Preparación del archivo *inventory*:
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- En este paso debemos trabajar sobre el archivo  :ref:`about_install_inventory` disponible dentro del directorio "PATH/ominicontacto/deploy/ansible".
+- En este paso debemos trabajar sobre el archivo de inventario disponible dentro del directorio "PATH/ominicontacto/deploy/ansible". Remitirse a esta sección: :ref:`about_install_inventory_docker`. No olvidar que estamos instalando **Ansible remoto**.
 
-.. note::
-
-   OMniLeads utiliza ansible para realizar la instalación, por lo tanto existe un "archivo de inventario" que debe ser modificado de acuerdo a los parámetros
-   del host sobre el que estamos trabajando.
-
-Modificar y descomentar la segunda linea, editando el parámetro X.X.X.X' con la dirección IP del host remoto (donde se va a instalar OMniLeads).
-
-.. code-block:: bash
-
- ##########################################################################################
- # If you are installing a prodenv (PE) AIO y bare-metal, change the IP and hostname here #
- ##########################################################################################
- [prodenv-aio]
- #localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
- 10.10.10.100 ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
-
-Luego en el inventory mismo debemos ajustar las :ref:`about_install_inventory_vars` de la instancia.
+- Luego en el inventory mismo debemos ajustar las :ref:`about_install_inventory_vars` de la instancia.
 
 Una vez ajustados todos los parámetros del archivo de inventario, procedemos con la ejecución de la instalación.
 
-Ejecución del script de instalación:
+Ejecución del script de instalación
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 La instalación de OMniLeads se realiza mediante el script *deploy.sh*, ubicado dentro de la carpeta deploy/ansible con respecto a la carpeta
@@ -133,54 +111,15 @@ Una vez configuradas las variables citadas, se procede con la ejecución del scr
 
 .. image:: images/install_deploysh_remote.png
 
-*Figure 9: remote root password*
+*Figure 5: remote root password*
 
 La diferencia respecto de la instalación 'Self-Hosted', es que el script nos pide la contraseña del usuario *root* del host destino de la instalación.
 
 El tiempo de instalación dependerá mayormente de la velocidad de conexión a internet del host sobre ek que se está corriendo el deplot de  OML, ya que se deben descargar, instalar y configurar varios paquetes correspondientes a los diferentes componentes de software que conforman el sistema.
 
-Si la ejecución de la instalación finaliza exitosamente, se despliega una vista como la de la figura 8.
+Si la ejecución de la instalación finaliza exitosamente, se despliega una vista como la de la figura 6.
 
 .. image:: images/install_ok.png
 
-*Figure 10: OMniLeads installation ended succesfuly*
+*Figure 6: OMniLeads installation ended succesfuly*
 
-.. _about_install_first_login:
-
-Primer acceso a OMniLeads:
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Para acceder al sistema OMniLeads debe ingresar a:
-
-https://omnileads-hostname
-
-.. Important::
-  El acceso web a OMniLeads debe ser a través del hostname.domain del host. Por lo tanto existen dos posibilidades a la hora de resolver el
-  hostname:
-
-  * Que los DNS de la red lo hagan.
-  * Añadir el hostname.domain del host, dentro del archivo de *hosts* (Windows, Linux o Mac de cada PC que tenga que acceder a OMniLeads.
-
-En el segundo caso, podemos editar el archivo de *hosts* de nuestro Sistema Operativo:
-
-.. image:: images/install_dns_hosts.png
-
-
-Una vez ajustado el método por el cual se resolverá el FQDN o hostname de nuestra instancia de OMniLeads, se procede con el acceso al URL a través de cualquier browser moderno.
-Al encontrarnos con la pantalla de login, simplemente se debe ingresar el usuario admin y la clave generada durante la instalación, como se expone en las figura.
-
-.. image:: images/install_1st_login.png
-
-.. Note::
-
-  Si no recuerda la contraseña de admin web, podemos consultar su valor :ref:`about_maintance_envvars`.
-
-
-Errores comunes:
-^^^^^^^^^^^^^^^^
-
-- El server no tiene internet o no resuelve dominios (configuración de DNS).*Compruebe el acceso a internet del host (por ej: actualizando paquetes - apt-get update | yum update).*
-- Timeout de algún paquete que se intenta bajar. Puede volver a intentar ejecutar el deploy y si vuelve a fallar, la opción puede ser. *Instalar el paquete desde la terminal.*
-- Falla por mala sintaxis o falta de definición de *hostname* y *dirección IP* en el archivo *inventory*. *Revisar archivo inventory*
-- No se configuró correctamente el acceso ssh del host destino de la instalación. *Revisar estado del firewall. Comprobar acceso remoto por ssh con el usuario root*
-- En caso de contar con algún host Ubuntu-Debian, recordar que se deben instalar paquetes como *sudo, openssh-server o python-minimal* antes de correr el script de *deploy.sh*

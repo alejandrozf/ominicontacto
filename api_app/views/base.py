@@ -152,7 +152,20 @@ class ContactoCreateView(APIView):
             contacto.datos = form.get_datos_json()
             contacto.save()
 
-            # TODO: OML-1016
+            # TODO: OML-1016 - Agregar en Wombat si quien lo crea es supervisor.
+
+            # Agrego la relación de AgenteEnContacto
+            if campana.type == Campana.TYPE_PREVIEW:
+                es_originario = True
+                agente_id = -1
+                es_agente = self.request.user.get_is_agente()
+                if es_agente:
+                    agente_id = self.request.user.get_agente_profile().id
+                    es_originario = False
+
+                campana.adicionar_agente_en_contacto(
+                    contacto, agente_id=agente_id, es_originario=es_originario)
+
             return Response(data={
                 'status': 'OK',
                 'message': _('Contacto agregado'),

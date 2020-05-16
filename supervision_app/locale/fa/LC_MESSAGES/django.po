@@ -1,0 +1,106 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Hamed Kouhfallah <k.haamed@gmail.com>, 2019.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-09-02 16:23-0300\n"
+"PO-Revision-Date: 2019-11-05 10:15+0330\n"
+"Language: fa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.2\n"
+
+#: supervision_app/templates/supervision_agentes.html:48
+msgid "Agentes"
+msgstr "اپراتور"
+
+#: supervision_app/templates/supervision_agentes.html:76
+msgid "Finalizar"
+msgstr "پایان مکالمه"
+
+#: supervision_app/templates/supervision_agentes.html:85
+#: supervision_app/templates/supervision_campanas_entrantes.html:37
+#: supervision_app/templates/supervision_campanas_salientes.html:36
+msgid "Nombre"
+msgstr "نام"
+
+#: supervision_app/templates/supervision_agentes.html:86
+msgid "Status"
+msgstr "نتیجه"
+
+#: supervision_app/templates/supervision_agentes.html:87
+msgid "Tiempo"
+msgstr "زمان"
+
+#: supervision_app/templates/supervision_agentes.html:88
+msgid "Acciones"
+msgstr "اقدام"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:32
+msgid "Campañas Entrantes"
+msgstr "کمپین ورودی"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:38
+msgid "Llamadas"
+msgstr "تماس"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:39
+#: supervision_app/templates/supervision_campanas_salientes.html:38
+msgid "Atendidas"
+msgstr "Attended"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:40
+msgid "Abandonadas"
+msgstr "Abandoned"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:41
+msgid "Abandonadas en anuncio"
+msgstr "Abandoned during welcome audio"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:42
+msgid "T. promedio espera"
+msgstr "T. waiting average"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:43
+msgid "Expiradas"
+msgstr "منقضی شده"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:44
+msgid "En espera"
+msgstr "داخل صف"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:45
+msgid "T. promedio abandono"
+msgstr "T. waiting abandon"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:46
+#: supervision_app/templates/supervision_campanas_salientes.html:40
+msgid "Gestiones"
+msgstr "Engagements"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:57
+msgid "segundos"
+msgstr "ثانیه"
+
+#: supervision_app/templates/supervision_campanas_entrantes.html:60
+msgid " segundos"
+msgstr " ثانیه"
+
+#: supervision_app/templates/supervision_campanas_salientes.html:31
+msgid "Campañas Salientes"
+msgstr "کمپین های خروجی"
+
+#: supervision_app/templates/supervision_campanas_salientes.html:37
+msgid "Llamadas discadas"
+msgstr "تماس های گرفته شده"
+
+#: supervision_app/templates/supervision_campanas_salientes.html:39
+msgid "No atendidas"
+msgstr "Unattended"

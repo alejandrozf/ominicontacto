@@ -19,7 +19,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% load i18n  %}
 {% for base_datos_contacto in bases_datos_contacto %}
-                            <tr>
+                            <tr id="{{ base_datos_contacto.nombre }}">
                                 <td>
                                     {{ base_datos_contacto.nombre }}
                                 </td>

@@ -7,4 +7,12 @@
 
 #align_box {
 	padding-top: 20px;
+}
+
+#destino {
+	margin-bottom: 0;
+}
+
+#destino h3{
+	text-decoration: underline;
 }  

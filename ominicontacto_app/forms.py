@@ -46,7 +46,7 @@ from ominicontacto_app.models import (
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
                                       validar_solo_ascii_y_sin_espacios, elimina_tildes)
-from configuracion_telefonia_app.models import DestinoEntrante, Playlist
+from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSaliente
 
 from utiles_globales import validar_extension_archivo_audio
 
@@ -198,6 +198,7 @@ class QueueEntranteForm(forms.ModelForm):
         self.fields['timeout'].required = True
         self.fields['retry'].required = True
         self.fields['announce_frequency'].required = False
+        self.fields['wait_announce_frequency'].required = False
         self.fields['audios'].queryset = ArchivoDeAudio.objects.all()
         self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
         self.fields['musiconhold'].queryset = Playlist.objects.annotate(
@@ -230,7 +231,8 @@ class QueueEntranteForm(forms.ModelForm):
                   'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
                   'audios', 'announce_frequency', 'audio_de_ingreso', 'campana',
                   'tipo_destino', 'destino', 'ivr_breakdown',
-                  'announce_holdtime', 'announce_position', 'musiconhold')
+                  'announce_holdtime', 'announce_position', 'musiconhold',
+                  'wait_announce_frequency',)
 
         help_texts = {
             'timeout': _('En segundos'),
@@ -238,6 +240,7 @@ class QueueEntranteForm(forms.ModelForm):
             'announce_frequency': _('En segundos'),
             'wait': _('En segundos'),
             'wrapuptime': _('En segundos'),
+            'wait_announce_frequency': _('En segundos'),
         }
         widgets = {
             'name': forms.HiddenInput(),
@@ -258,6 +261,7 @@ class QueueEntranteForm(forms.ModelForm):
             'destino': forms.Select(attrs={'class': 'form-control', 'id': 'destino'}),
             'ivr_breakdown': forms.Select(attrs={'class': 'form-control'}),
             'musiconhold': forms.Select(attrs={'class': 'form-control'}),
+            'wait_announce_frequency': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
     def clean_maxlen(self):
@@ -295,6 +299,14 @@ class QueueEntranteForm(forms.ModelForm):
             raise forms.ValidationError(_('Debe seleccionar un anuncio periódico'))
         return ivr_breakdown
 
+    def clean_wait_announce_frequency(self):
+        announce_position = self.cleaned_data.get('announce_position')
+        wait_announce_frequency = self.cleaned_data.get('wait_announce_frequency')
+        if announce_position is True and wait_announce_frequency is None:
+            raise forms.ValidationError(_('Debe ingresar una frecuencia de '
+                                          'anuncios de espera/posición'))
+        return wait_announce_frequency
+
 
 class QueueMemberForm(forms.ModelForm):
     """
@@ -313,6 +325,12 @@ class QueueMemberForm(forms.ModelForm):
 
 
 class BaseDatosContactoForm(forms.ModelForm):
+
+    def clean_nombre(self):
+        # controlamos que el nombre no tenga espacios y caracteres no ascii
+        nombre = self.cleaned_data.get('nombre')
+        validar_solo_ascii_y_sin_espacios(nombre)
+        return nombre
 
     class Meta:
         model = BaseDatosContacto
@@ -543,11 +561,20 @@ class CampanaMixinForm(object):
             raise forms.ValidationError(msg)
         return id_externo
 
+    def clean_outcid(self):
+        ruta_saliente = self.cleaned_data.get('outr')
+        id_ruta_saliente = self.cleaned_data.get('outcid')
+        if ruta_saliente and not id_ruta_saliente:
+            msg = _("No se puede indicar una Ruta Saliente sin un CID de Ruta Saliente.")
+            raise forms.ValidationError(msg)
+        return id_ruta_saliente
+
 
 class CampanaForm(CampanaMixinForm, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CampanaForm, self).__init__(*args, **kwargs)
+        self.fields['outr'].queryset = RutaSaliente.objects.all()
         instance = getattr(self, 'instance', None)
         if instance.pk is None:
             self.fields['bd_contacto'].required = False
@@ -577,7 +604,8 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'bd_contacto', 'sistema_externo', 'id_externo',
-                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre')
+                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
+                  'outcid', 'outr')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -590,6 +618,8 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
+            'outcid': forms.TextInput(attrs={'class': 'form-control'}),
+            'outr': forms.Select(attrs={'class': 'form-control'}),
         }
 
 
@@ -910,8 +940,11 @@ class FormularioNuevoContacto(forms.ModelForm):
             "id_externo": forms.TextInput(attrs={'class': 'form-control'}),
         }
 
-    def __init__(self, base_datos=None, *args, **kwargs):
+    def __init__(self, base_datos=None, campos_bloqueados=[], campos_ocultos=[], *args, **kwargs):
+        campos_a_bloquear = []  # Son los campos a bloquear para la edicion.
+        campos_a_ocultar = campos_ocultos  # Son los campos a bloquear para la edicion Y creación.
         if 'instance' in kwargs and kwargs['instance'] is not None:
+            campos_a_bloquear = campos_bloqueados
             contacto = kwargs['instance']
             self.base_datos = contacto.bd_contacto
             bd_metadata = contacto.bd_contacto.get_metadata()
@@ -926,19 +959,33 @@ class FormularioNuevoContacto(forms.ModelForm):
         nombre_campo_telefono = bd_metadata.nombre_campo_telefono
         nombre_campo_id_externo = bd_metadata.nombre_campo_id_externo
         for campo in bd_metadata.nombres_de_columnas:
+            bloquear_campo = campo in campos_a_bloquear
+            ocultar_campo = campo in campos_a_ocultar
             if campo == nombre_campo_telefono:
-                nombre_campo = convertir_ascii_string(campo)
-                self.fields['telefono'].label = nombre_campo
+                if ocultar_campo:
+                    self.fields.pop('telefono')
+                else:
+                    nombre_campo = convertir_ascii_string(campo)
+                    self.fields['telefono'].label = nombre_campo
+                    if bloquear_campo:
+                        self.fields['telefono'].disabled = True
             elif campo == nombre_campo_id_externo:
-                nombre_campo = convertir_ascii_string(campo)
-                self.fields['id_externo'].label = nombre_campo
-                self.fields['id_externo'].required = False
-            else:
+                if ocultar_campo:
+                    self.fields.pop('id_externo')
+                else:
+                    nombre_campo = convertir_ascii_string(campo)
+                    self.fields['id_externo'].label = nombre_campo
+                    self.fields['id_externo'].required = False
+                    if bloquear_campo:
+                        self.fields['id_externo'].disabled = True
+            elif not ocultar_campo:
                 nombre_campo = self.get_nombre_input(campo)
                 self.fields[nombre_campo] = forms.CharField(
                     required=False,
                     label=campo, widget=forms.TextInput(
                         attrs={'class': 'form-control'}))
+                if bloquear_campo:
+                    self.fields[nombre_campo].disabled = True
 
         if nombre_campo_id_externo is None:
             self.fields.pop('id_externo')
@@ -962,7 +1009,7 @@ class FormularioNuevoContacto(forms.ModelForm):
         """ Devuelve datos en json listos para guardar en el modelo Contacto """
         datos = []
         for nombre in self.bd_metadata.nombres_de_columnas_de_datos:
-            campo = self.cleaned_data.get(self.get_nombre_input(nombre))
+            campo = self.cleaned_data.get(self.get_nombre_input(nombre), '')
             datos.append(campo)
         return json.dumps(datos)
 
@@ -991,6 +1038,40 @@ class FormularioNuevoContacto(forms.ModelForm):
         if not self.instance.id:
             self.instance.bd_contacto = self.base_datos
         return super(FormularioNuevoContacto, self).clean()
+
+
+class BloquearCamposParaAgenteForm(forms.Form):
+
+    PREFIJO_BLOQUEAR = 'bloquear_'
+    PREFIJO_OCULTAR = 'ocultar_'
+
+    def __init__(self, campos, campo_telefono, lang, *args, **kwargs):
+        super(BloquearCamposParaAgenteForm, self).__init__(*args, **kwargs)
+        for campo in campos:
+            self.fields['bloquear_' + campo] = forms.BooleanField(
+                required=False, label=lang['bloquear'].format(campo),
+                widget=forms.CheckboxInput(attrs={'class': 'form-control'}))
+            if campo != campo_telefono:
+                self.fields['ocultar_' + campo] = forms.BooleanField(
+                    required=False, label=lang['ocultar'].format(campo),
+                    widget=forms.CheckboxInput(attrs={'class': 'form-control'}))
+
+    def clean(self):
+        bloqueados = set()
+        ocultos = set()
+        for nombre, seleccionado in self.cleaned_data.items():
+            if nombre.startswith(self.PREFIJO_BLOQUEAR) and seleccionado:
+                bloqueados.add(nombre[9:])
+            if nombre.startswith(self.PREFIJO_OCULTAR) and seleccionado:
+                ocultos.add(nombre[8:])
+
+        if not ocultos.issubset(bloqueados):
+            msg = _('Todos los campos ocultos deben marcarse como bloqueados')
+            raise forms.ValidationError(msg)
+
+        self.lista_campos_bloqueados = list(bloqueados)
+        self.lista_campos_ocultos = list(ocultos)
+        return super(BloquearCamposParaAgenteForm, self).clean()
 
 
 class FormularioCampanaContacto(forms.Form):
@@ -1122,7 +1203,7 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         self.fields['fecha_fin'].help_text = 'Ejemplo: 20/04/2014'
         self.fields['fecha_inicio'].required = not es_template
         self.fields['fecha_fin'].required = not es_template
-
+        self.fields['outr'].queryset = RutaSaliente.objects.all()
         if self.instance.pk:
             self.fields['nombre'].disabled = not es_template
             self.fields['bd_contacto'].disabled = True
@@ -1146,7 +1227,8 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin',
                   'bd_contacto', 'sistema_externo', 'id_externo',
-                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre')
+                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
+                  'outcid', 'outr')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -1158,6 +1240,8 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
+            'outcid': forms.TextInput(attrs={'class': 'form-control'}),
+            'outr': forms.Select(attrs={'class': 'form-control'}),
         }
 
 
@@ -1440,6 +1524,7 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CampanaManualForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
+        self.fields['outr'].queryset = RutaSaliente.objects.all()
         if instance.pk is None:
             self.fields['bd_contacto'].required = False
         else:
@@ -1451,7 +1536,7 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'bd_contacto', 'sistema_externo', 'id_externo',
-                  'tipo_interaccion', 'sitio_externo', 'objetivo')
+                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'outcid', 'outr')
 
         widgets = {
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
@@ -1460,6 +1545,8 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'outcid': forms.TextInput(attrs={'class': 'form-control'}),
+            'outr': forms.Select(attrs={'class': 'form-control'})
         }
 
     def requiere_bd_contacto(self):
@@ -1471,6 +1558,7 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CampanaPreviewForm, self).__init__(*args, **kwargs)
+        self.fields['outr'].queryset = RutaSaliente.objects.all()
         instance = getattr(self, 'instance', None)
         if instance and instance.pk and not self.initial.get('es_template', False):
             self.fields['nombre'].disabled = True
@@ -1483,7 +1571,7 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
         model = Campana
         fields = ('nombre', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'bd_contacto',
-                  'tiempo_desconexion')
+                  'tiempo_desconexion', 'outr', 'outcid')
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
@@ -1493,6 +1581,8 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
             'tiempo_desconexion': forms.NumberInput(attrs={'class': 'form-control'}),
+            'outcid': forms.TextInput(attrs={'class': 'form-control'}),
+            'outr': forms.Select(attrs={'class': 'form-control'})
         }
 
     def requiere_bd_contacto(self):
@@ -1569,7 +1659,7 @@ class GrupoForm(forms.ModelForm):
 
     class Meta:
         model = Grupo
-        fields = ('nombre', 'auto_unpause', 'auto_attend_ics', 'auto_attend_inbound',
+        fields = ('nombre', 'auto_unpause', 'auto_attend_inbound',
                   'auto_attend_dialer')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
@@ -1694,3 +1784,33 @@ class AsignacionContactosForm(forms.Form):
                 _('Debe seleccionar la asignación proporcional si quiere escoger'
                   'la asignación en orden aleatorio'))
         return cleaned_data
+
+
+class OrdenarAsignacionContactosForm(forms.Form):
+    """Formulario para importar el orden realizado sobre los
+    Agentes en Contactos en un archivo .csv
+    """
+    agentes_en_contactos_ordenados = forms.FileField()
+    campo_desactivacion = forms.CharField(
+        required=False, widget=forms.HiddenInput(
+            attrs={'id': 'campoDesactivacionImport'}))
+
+
+class CampanaPreviewCampoDesactivacion(forms.ModelForm):
+
+    campo_desactivacion = forms.ChoiceField(
+        required=False, widget=forms.Select(
+            attrs={'class': 'form-control', 'id': 'campoDesactivacion'}))
+
+    def __init__(self, *args, **kwargs):
+        super(CampanaPreviewCampoDesactivacion, self).__init__(*args, **kwargs)
+        campana = self.instance
+        nombres_columnas_datos = campana.bd_contacto.get_metadata().nombres_de_columnas_de_datos
+        nombres_columnas_datos_choices = [(i, i) for i in nombres_columnas_datos]
+        choices = [EMPTY_CHOICE] + nombres_columnas_datos_choices
+        self.fields['campo_desactivacion'].choices = choices
+        self.fields['campo_desactivacion'].label = _('Campo desactivación')
+
+    class Meta:
+        model = Campana
+        fields = ('campo_desactivacion',)

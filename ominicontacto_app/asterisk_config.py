@@ -292,6 +292,7 @@ class QueuesCreator(object):
             'oml_announce-holdtime': campana.queue_campana.announce_holdtime,
             'oml_ivr-breakdown': campana.queue_campana.ivr_breakdown,
             'oml_announce_position': 'yes' if campana.queue_campana.announce_position else 'no',
+            'oml_announce_frequency': campana.queue_campana.wait_announce_frequency,
         }
 
         ivr_breakdown = campana.queue_campana.ivr_breakdown
@@ -716,7 +717,7 @@ class ConfigFile(object):
     def write(self, contenidos):
         tmp_fd, tmp_filename = tempfile.mkstemp()
         try:
-            tmp_file_obj = os.fdopen(tmp_fd, 'w')
+            tmp_file_obj = os.fdopen(tmp_fd, 'w', encoding='utf-8')
             for contenido in contenidos:
                 assert isinstance(contenido, str), \
                     _("Objeto NO es unicode: {0}".format(type(contenido)))

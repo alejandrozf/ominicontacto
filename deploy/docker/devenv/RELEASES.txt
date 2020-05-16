@@ -23,6 +23,8 @@ Omniapp:
   - Upgrade to python3 and django 2.2.8
 1.2.5
   - Fork of pyst2 library to fix bug in AMI connection: https://github.com/rdegges/pyst2/pull/51
+1.2.6
+  - Included package django-import-export
 
 Asterisk:
 

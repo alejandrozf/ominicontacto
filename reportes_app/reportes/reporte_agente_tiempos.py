@@ -22,7 +22,7 @@ from collections import OrderedDict
 import pygal
 
 from django.utils.translation import ugettext as _
-from django.utils import timezone
+from django.utils.timezone import timedelta
 from reportes_app.actividad_agente_log import AgenteTiemposReporte
 from reportes_app.models import ActividadAgenteLog, LlamadaLog
 from reportes_app.reportes.reporte_llamadas import LLAMADA_TRANSF_INTERNA
@@ -114,8 +114,8 @@ class TiemposAgente(object):
                 tiempos_agente = tiempos_agente[0]
             else:
                 agregar_tiempos = True
-                cero = timezone.timedelta(0)
-                tiempos_agente = AgenteTiemposReporte(agente, cero, 0, 0, 0, 0, 0, 0)
+                tiempos_agente = AgenteTiemposReporte(
+                    agente, timedelta(0), timedelta(0), timedelta(0), 0, 0, 0, 0)
 
             datos_ultima_sesion = {
                 'inicio': None,
@@ -186,13 +186,10 @@ class TiemposAgente(object):
                                                   self.agentes_tiempo))
                     if agente_en_lista:
                         agente_nuevo = agente_en_lista[0]
-                        if agente_nuevo.tiempo_pausa:
-                            agente_nuevo._tiempo_pausa += resta
-                        else:
-                            agente_nuevo._tiempo_pausa = resta
+                        agente_nuevo._tiempo_pausa += resta
                     else:
                         agente_nuevo = AgenteTiemposReporte(
-                            agente, None, resta, 0, 0, 0, 0, 0)
+                            agente, timedelta(0), resta, timedelta(0), 0, 0, 0, 0)
                         self.agentes_tiempo.append(agente_nuevo)
                     agente_nuevo = None
                     is_unpause = False
@@ -216,15 +213,16 @@ class TiemposAgente(object):
 
         for log in logs_time:
 
+            tiempo_llamada = timedelta(seconds=int(log[1]))
             agente = AgenteProfile.objects.get(pk=int(log[0]))
             agente_en_lista = list(filter(lambda x: x.agente == agente,
                                           self.agentes_tiempo))
             if agente_en_lista:
                 agente_nuevo = agente_en_lista[0]
-                agente_nuevo._tiempo_llamada = int(log[1])
+                agente_nuevo._tiempo_llamada = tiempo_llamada
             else:
                 agente_nuevo = AgenteTiemposReporte(
-                    agente, None, None, int(log[1]), 0, 0, 0, 0)
+                    agente, timedelta(0), timedelta(0), tiempo_llamada, 0, 0, 0, 0)
                 self.agentes_tiempo.append(agente_nuevo)
 
     def calcular_cantidad_llamadas(self, agentes, fecha_inferior, fecha_superior):
@@ -241,16 +239,16 @@ class TiemposAgente(object):
             agentes_id)
 
         for log in logs_time:
-
+            cantidad = int(log[1])
             agente = AgenteProfile.objects.get(pk=int(log[0]))
             agente_en_lista = list(filter(lambda x: x.agente == agente,
                                           self.agentes_tiempo))
             if agente_en_lista:
                 agente_nuevo = agente_en_lista[0]
-                agente_nuevo._cantidad_llamadas_procesadas = int(log[1])
+                agente_nuevo._cantidad_llamadas_procesadas = cantidad
             else:
                 agente_nuevo = AgenteTiemposReporte(
-                    agente, None, 0, 0, logs_time.count(), 0, 0, 0)
+                    agente, timedelta(0), timedelta(0), timedelta(0), cantidad, 0, 0, 0)
                 self.agentes_tiempo.append(agente_nuevo)
 
     def calcular_intentos_fallidos(self, agentes, fecha_inferior, fecha_superior):
@@ -269,15 +267,16 @@ class TiemposAgente(object):
 
         for log in logs_time:
 
+            cantidad = int(log[1])
             agente = AgenteProfile.objects.get(pk=int(log[0]))
             agente_en_lista = list(filter(lambda x: x.agente == agente,
                                           self.agentes_tiempo))
             if agente_en_lista:
                 agente_nuevo = agente_en_lista[0]
-                agente_nuevo._cantidad_intentos_fallidos = int(log[1])
+                agente_nuevo._cantidad_intentos_fallidos = cantidad
             else:
                 agente_nuevo = AgenteTiemposReporte(
-                    agente, None, 0, 0, 0, int(log[1]), 0, 0)
+                    agente, timedelta(0), timedelta(0), timedelta(0), 0, cantidad, 0, 0)
                 self.agentes_tiempo.append(agente_nuevo)
 
     def calcular_tiempo_pausa_tipo(self, agentes, fecha_inferior, fecha_superior):
@@ -323,7 +322,7 @@ class TiemposAgente(object):
                     is_unpause = True
             for id_pausa in tiempos_pausa:
                 datos_de_pausa = self._obtener_datos_de_pausa(id_pausa)
-                tiempo = str(timezone.timedelta(seconds=tiempos_pausa[id_pausa].seconds))
+                tiempo = str(timedelta(seconds=tiempos_pausa[id_pausa].seconds))
                 tiempo_agente = {
                     'id': agente.id,
                     'nombre_agente': agente.user.get_full_name(),
@@ -360,7 +359,7 @@ class TiemposAgente(object):
                 tiempo_agente = []
                 tiempo_agente.append(agente.user.get_full_name())
                 tiempo_agente.append(self._get_nombre_campana(campanas, log[ID_CAMPANA]))
-                tiempo_agente.append(str(timezone.timedelta(0, log[SUM_DURACION])))
+                tiempo_agente.append(str(timedelta(seconds=log[SUM_DURACION])))
                 tiempo_agente.append(log[CANTIDAD])
                 agentes_tiempo.append(tiempo_agente)
 
@@ -543,8 +542,8 @@ class TiemposAgente(object):
         if tiempos_fechas and tiempos_fechas[-1].agente == fecha_inicio:
             tiempos = tiempos_fechas[-1]
         else:
-            cero = timezone.timedelta(0)
-            tiempos = AgenteTiemposReporte(fecha_inicio, cero, 0, 0, 0, 0, 0, 0)
+            tiempos = AgenteTiemposReporte(
+                fecha_inicio, timedelta(0), timedelta(0), timedelta(0), 0, 0, 0, 0)
             tiempos_fechas.append(tiempos)
 
         if fecha_fin == tiempos.agente:
@@ -554,7 +553,8 @@ class TiemposAgente(object):
             tiempos._tiempo_sesion += fin_dia - inicio
             inicio_dia = datetime_hora_minima_dia(fecha_fin)
             duracion = fin - inicio_dia
-            tiempos = AgenteTiemposReporte(fecha_fin, duracion, 0, 0, 0, 0, 0, 0)
+            tiempos = AgenteTiemposReporte(
+                fecha_fin, duracion, timedelta(0), timedelta(0), 0, 0, 0, 0)
             tiempos_fechas.append(tiempos)
 
     def calcular_tiempo_session_fecha_agente(self, agente, fecha_inferior,
@@ -639,13 +639,10 @@ class TiemposAgente(object):
                                               agente_fecha))
                 if agente_en_lista:
                     agente_nuevo = agente_en_lista[0]
-                    if agente_nuevo.tiempo_pausa:
-                        agente_nuevo._tiempo_pausa += resta
-                    else:
-                        agente_nuevo._tiempo_pausa = resta
+                    agente_nuevo._tiempo_pausa += resta
                 else:
                     agente_nuevo = AgenteTiemposReporte(
-                        fecha_local(time_actual), None, resta, 0, 0, 0, 0, 0)
+                        fecha_local(time_actual), timedelta(0), resta, timedelta(0), 0, 0, 0, 0)
                     agente_fecha.append(agente_nuevo)
                 is_unpause = False
                 time_actual = None
@@ -673,17 +670,14 @@ class TiemposAgente(object):
             date_time_actual = fecha_local(log.time)
             agente_en_lista = list(filter(lambda x: x.agente == date_time_actual,
                                           agente_fecha))
+            duracion_llamada = timedelta(seconds=log.duracion_llamada)
             if agente_en_lista:
                 agente_nuevo = agente_en_lista[0]
-                if agente_nuevo._tiempo_llamada:
-                    agente_nuevo._tiempo_llamada += log.duracion_llamada
-                    agente_nuevo._cantidad_llamadas_procesadas += 1
-                else:
-                    agente_nuevo._tiempo_llamada = log.duracion_llamada
-                    agente_nuevo._cantidad_llamadas_procesadas = 1
+                agente_nuevo._tiempo_llamada += duracion_llamada
+                agente_nuevo._cantidad_llamadas_procesadas += 1
             else:
                 agente_nuevo = AgenteTiemposReporte(
-                    date_time_actual, None, None, log.duracion_llamada, 1, 0, 0, 0)
+                    date_time_actual, timedelta(0), timedelta(0), duracion_llamada, 1, 0, 0, 0)
                 agente_fecha.append(agente_nuevo)
         return agente_fecha
 
@@ -702,7 +696,6 @@ class TiemposAgente(object):
             agente.id)
         for log in logs_time:
             date_time_actual = log['fecha']
-            print(date_time_actual)
             agente_en_lista = list(filter(lambda x: x.agente == date_time_actual,
                                           agente_fecha))
             if agente_en_lista:
@@ -710,7 +703,8 @@ class TiemposAgente(object):
                 agente_nuevo._cantidad_intentos_fallidos = int(log['cantidad'])
             else:
                 agente_nuevo = AgenteTiemposReporte(
-                    date_time_actual, None, 0, 0, 0, int(log['cantidad']), 0, 0)
+                    date_time_actual, timedelta(0), timedelta(0), timedelta(0),
+                    0, int(log['cantidad']), 0, 0)
                 agente_fecha.append(agente_nuevo)
         return agente_fecha
 
@@ -735,12 +729,9 @@ class TiemposAgente(object):
         Calcula el tiempo de pausa de los agentes en el periodo evaluado
         :return: un listado de agentes con el tiempo de pausa
         """
-        eventos_pausa = ['PAUSEALL', 'UNPAUSEALL', 'REMOVEMEMBER']
-
         agentes_tiempo = []
         # iterar por agente evaluando los eventos de pausa
         logs_time = ActividadAgenteLog.objects.obtener_pausas_por_agente_fechas_pausa(
-            eventos_pausa,
             fecha_inferior,
             fecha_superior,
             agente.id,
@@ -768,7 +759,7 @@ class TiemposAgente(object):
                 is_unpause = True
         for item in tiempos_pausa:
             datos_de_pausa = self._obtener_datos_de_pausa(str(pausa_id))
-            tiempo = str(timezone.timedelta(seconds=tiempos_pausa[item].seconds))
+            tiempo = str(timedelta(seconds=tiempos_pausa[item].seconds))
             tiempo_agente = {
                 'fecha': item,
                 'pausa': datos_de_pausa['nombre'],

@@ -79,7 +79,7 @@ class APITest(TestCase):
     def test_api_campanas_supervisor_usuario_supervisor_admin_obtiene_todas_campanas_activas(
             self):
         self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
-        url = reverse('supervisor_campanas-list', kwargs={'format': 'json'})
+        url = reverse('api_campanas_de_supervisor-list', kwargs={'format': 'json'})
         response = self.client.get(url)
         ids_campanas_esperadas = set(Campana.objects.obtener_activas().values_list('id', flat=True))
         ids_campanas_devueltas = set([campana['id'] for campana in response.data])
@@ -88,19 +88,19 @@ class APITest(TestCase):
     def test_api_campanas_supervisor_usuario_supervisor_no_admin_obtiene_campanas_activas_asignadas(
             self):
         self.client.login(username=self.supervisor.user.username, password=self.PWD)
-        url = reverse('supervisor_campanas-list', kwargs={'format': 'json'})
+        url = reverse('api_campanas_de_supervisor-list', kwargs={'format': 'json'})
         response = self.client.get(url)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['id'], self.campana_activa_supervisor.id)
 
     def test_servicio_campanas_supervisor_usuario_agente_no_accede_a_servicio(self):
         self.client.login(username=self.agente_profile.user.username, password=self.PWD)
-        url = reverse('supervisor_campanas-list', kwargs={'format': 'json'})
+        url = reverse('api_campanas_de_supervisor-list', kwargs={'format': 'json'})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
 
     def test_servicio_campanas_supervisor_usuario_no_logueado_no_accede_a_servicio(self):
-        url = reverse('supervisor_campanas-list', kwargs={'format': 'json'})
+        url = reverse('api_campanas_de_supervisor-list', kwargs={'format': 'json'})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
 
@@ -413,7 +413,7 @@ class APITest(TestCase):
         self.assertEqual(agent1_dict['pause_id'], '0')
 
     def test_api_login_devuelve_token_asociado_al_usuario_password(self):
-        url = 'https://{0}{1}'.format(settings.OML_OMNILEADS_IP, reverse('api_login'))
+        url = 'https://{0}{1}'.format(settings.OML_OMNILEADS_HOSTNAME, reverse('api_login'))
         user = self.supervisor_admin.user
         password = self.PWD
         post_data = {
@@ -451,7 +451,7 @@ class APITest(TestCase):
         client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_agente)
         observaciones = 'calificacion externa'
         contacto = ContactoFactory(bd_contacto=self.campana_activa.bd_contacto)
-        url = reverse('disposition-list')
+        url = reverse('api_disposition-list')
         post_data = {
             'idContact': contacto.pk,
             'idDispositionOption': self.opcion_calificacion.pk,
@@ -469,7 +469,7 @@ class APITest(TestCase):
             agente=self.agente_profile, sistema_externo=self.sistema_externo)
         ContactoFactory(bd_contacto=self.campana_activa.bd_contacto,
                         id_externo=id_contacto_externo)
-        url = reverse('disposition-list')
+        url = reverse('api_disposition-list')
         post_data = {
             'idExternalSystem': self.sistema_externo.pk,
             'idContact': id_contacto_externo,
@@ -483,7 +483,7 @@ class APITest(TestCase):
     def test_api_adiciona_calificacion_ids_internos_no_se_accede_credenciales_no_agente(self):
         observaciones = 'calificacion externa'
         contacto = ContactoFactory(bd_contacto=self.campana_activa.bd_contacto)
-        url = reverse('disposition-list')
+        url = reverse('api_disposition-list')
         post_data = {
             'idContact': contacto.pk,
             'idAgent': self.agente_profile.pk,
@@ -493,7 +493,7 @@ class APITest(TestCase):
         token_supervisor = Token.objects.get(user=self.supervisor_admin.user).key
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_supervisor)
-        url = reverse('disposition-list')
+        url = reverse('api_disposition-list')
         response = client.post(url, post_data)
         self.assertEqual(response.status_code, 403)
 
@@ -502,7 +502,7 @@ class APITest(TestCase):
         observaciones = 'calificacion externa'
         phone = '1232343523'
         id_contacto_externo = 'contacto_externo_1'
-        url = reverse('disposition_new_contact-list')
+        url = reverse('api_disposition_new_contact-list')
         post_data = {
             'phone': phone,
             'idExternalContact': id_contacto_externo,
@@ -522,7 +522,7 @@ class APITest(TestCase):
         observaciones = 'calificacion externa'
         phone = '1232343523'
         id_contacto_externo = 'contacto_externo_1'
-        url = reverse('disposition_new_contact-list')
+        url = reverse('api_disposition_new_contact-list')
         post_data = {
             'phone': phone,
             'idExternalContact': id_contacto_externo,
@@ -550,7 +550,7 @@ class APITest(TestCase):
             'idDispositionOption': self.opcion_calificacion.pk,
             'comments': observaciones
         }
-        url = reverse('disposition-list')
+        url = reverse('api_disposition-list')
         response = client.post(url, post_data)
         self.assertEqual(response.status_code, 400)
 
@@ -569,7 +569,7 @@ class APITest(TestCase):
             'idDispositionOption': self.opcion_calificacion.pk,
             'comments': observaciones
         }
-        url = reverse('disposition-detail', args=(self.calificacion_cliente.pk,))
+        url = reverse('api_disposition-detail', args=(self.calificacion_cliente.pk,))
         response = client.put(url, post_data)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(str(response.data['status']), 'ERROR')
@@ -581,7 +581,7 @@ class APITest(TestCase):
         token_agente = Token.objects.get(user=self.agente_profile.user).key
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_agente)
-        url = reverse('disposition-list')
+        url = reverse('api_disposition-list')
         response = client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
@@ -591,7 +591,7 @@ class APITest(TestCase):
     def test_api_vista_login_de_agente_retorno_de_valores_correctos(self, login_agent, manager):
         self.client.login(username=self.agente_profile.user.username, password=self.PWD)
         login_agent.return_value = False
-        url = reverse('agent_asterisk_login')
+        url = reverse('api_agent_asterisk_login')
         response = self.client.post(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['status'], 'OK')
@@ -601,7 +601,7 @@ class APITest(TestCase):
     def test_api_vista_login_de_agente_retorno_de_valores_erroneos(self, login_agent, manager):
         self.client.login(username=self.agente_profile.user.username, password=self.PWD)
         login_agent.return_value = True
-        url = reverse('agent_asterisk_login')
+        url = reverse('api_agent_asterisk_login')
         response = self.client.post(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['status'], 'ERROR')
@@ -611,7 +611,7 @@ class APITest(TestCase):
     def test_api_vista_pausa_de_agente_retorno_de_valores_correctos(self, pause_agent, manager):
         self.client.login(username=self.agente_profile.user.username, password=self.PWD)
         pause_agent.return_value = False, False
-        url = reverse('make_pause')
+        url = reverse('api_make_pause')
         post_data = {
             'pause_id': 1
         }
@@ -624,7 +624,7 @@ class APITest(TestCase):
     def test_api_vista_pausa_de_agente_retorno_de_valores_erroneos(self, pause_agent, manager):
         self.client.login(username=self.agente_profile.user.username, password=self.PWD)
         pause_agent.return_value = True, False
-        url = reverse('make_pause')
+        url = reverse('api_make_pause')
         post_data = {
             'pause_id': 1
         }
@@ -638,7 +638,7 @@ class APITest(TestCase):
             self, unpause_agent, manager):
         self.client.login(username=self.agente_profile.user.username, password=self.PWD)
         unpause_agent.return_value = False, False
-        url = reverse('make_unpause')
+        url = reverse('api_make_unpause')
         post_data = {
             'pause_id': 1
         }
@@ -651,7 +651,7 @@ class APITest(TestCase):
     def test_api_vista_despausa_de_agente_retorno_de_valores_erroneos(self, unpause_agent, manager):
         self.client.login(username=self.agente_profile.user.username, password=self.PWD)
         unpause_agent.return_value = True, False
-        url = reverse('make_unpause')
+        url = reverse('api_make_unpause')
         post_data = {
             'pause_id': 1
         }

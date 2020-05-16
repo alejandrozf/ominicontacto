@@ -21,6 +21,8 @@ services:
     image: {{ ast_builded_image }}
     networks:
       - {{ subnet_name }}
+    ports:
+      - 5130-5133:5160-5163/udp
     privileged: true
     restart: on-failure
     stop_grace_period: 1m30s
@@ -88,6 +90,7 @@ services:
     container_name: oml-{{ mariadb_fqdn }}-{{ customer }}
     dns: 8.8.8.8
     environment:
+      - ALLOW_EMPTY_PASSWORD=yes
       - TZ={{ TZ }}
       - MARIADB_ROOT_PASSWORD={{ mysql_root_password }}
       - MARIADB_DATABASE=wombat
@@ -114,7 +117,7 @@ services:
       - {{ subnet_name }}
     privileged: true
     ports:
-     - "{{ nginx_external_port }}:443/tcp"
+     - "${NGINX_EXT_PORT}:443/tcp"
     restart: on-failure
     stop_grace_period: 1m30s
     volumes:
@@ -162,6 +165,9 @@ services:
       - WOMBAT_HOSTNAME=${WOMBAT_HOSTNAME}
       - WOMBAT_USER=${WOMBAT_USER}
       - WOMBAT_PASSWORD=${WOMBAT_PASSWORD}
+      - OML_BRANCH=${RELEASE}
+      - OML_COMMIT=${OML_COMMIT}
+      - OML_BUILD_DATE="${OML_BUILD_DATE}"
     image: {{ omniapp_builded_image }}
     networks:
       - {{ subnet_name }}
@@ -184,7 +190,7 @@ services:
       - ./recordings:/opt/omnileads/grabaciones
       - ast_conf_files:/etc/asterisk/
       - ./sounds:/var/lib/asterisk/sounds/
-      - ominicontacto:{{ install_prefix }}ominicontacto/
+    #  - ominicontacto:{{ install_prefix }}ominicontacto/
 {% endif %}
     working_dir: {{ install_prefix}}ominicontacto
 
@@ -276,5 +282,5 @@ volumes:
   sounds:
 {% else %}
   ast_conf_files:
-  ominicontacto:
+  #ominicontacto:
 {% endif %}

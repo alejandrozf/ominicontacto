@@ -1,14 +1,14 @@
 ---
 
-prefix: "-"
-sufix:
+pg_service_name: "postgresql-{{ postgresql_version }}"
 pg_bin_old_location: /usr/pgsql-{{ postgresql_old_version }}/bin
 pg_bin_location: /usr/pgsql-{{ postgresql_version }}/bin
 pg_lib_location_no_version: /var/lib/pgsql
 pg_lib_old_location: "{{ pg_lib_location_no_version }}/{{ postgresql_old_version}}/data"
 pg_lib_location: "{{ pg_lib_location_no_version }}/{{ postgresql_version }}/data"
+pg_setup_location: "/usr/pgsql-{{ postgresql_version }}/bin/postgresql-{{ postgresql_version }}-setup"
 postgresql_key: https://ftp.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-{{ postgresql_version }}
 postgresql_repo: https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7.6-x86_64/pgdg-redhat-repo-latest.noarch.rpm
-psycopg2_repo: ftp://ftp.pbone.net/mirror/ftp.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/python-psycopg2-2.7.5-1.rhel7.x86_64.rpm
 cron_location: /var/spool/cron/omnileads
-mysql_host: localhost
+mariadb_host: localhost
+python_version_desired: "3.6.8"

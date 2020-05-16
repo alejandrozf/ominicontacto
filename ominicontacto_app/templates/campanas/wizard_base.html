@@ -43,7 +43,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {% endblock %}
                 {% endif %}
             </table>
-            <hr>
             {% if wizard.steps.prev %}
                 <button class="btn btn-outline-primary" name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">{% trans "first step" %}</button>
                 <button class="btn btn-outline-primary" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">{% trans "prev step" %}</button>

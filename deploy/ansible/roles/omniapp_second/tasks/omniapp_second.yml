@@ -30,8 +30,8 @@
 - name: Copy of the certificates in nginx
   copy: "src={{ kamailio_location }}/etc/certs/{{ item }} dest={{ install_prefix }}nginx_certs/ remote_src=yes"
   with_items:
-    - "{{ cert }}"
-    - "{{ key }}"
+    - cert.pem
+    - key.pem
   tags: postinstall
 
 - name: Copy register server certificate in default location
@@ -51,6 +51,11 @@
 # Se ejecuta una funcion de sql que hizo ale, esto es para los reportes
 - name: Add queuelog trigger to database
   shell: psql -c '\i {{ install_prefix }}ominicontacto/reportes_app/sql/plperl/replace_insert_queue_log_ominicontacto_queue_log.sql'
+  environment:
+    PGPASSWORD: "{{ postgres_password }}"
+  become: true
+  become_user: "{{ usuario }}"
+  become_method: su
   tags: ['never','postinstall']
 
 # Se sube el script de backup-restore

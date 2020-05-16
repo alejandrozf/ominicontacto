@@ -44,6 +44,12 @@ OSValidation(){
       yum install epel-release -y
       echo "Installing python2-pip"
       yum install python-pip -y
+      echo
+    elif [ "$os" == '"Amazon Linux"' ]; then
+      echo "Habilitating epel repository"
+      amazon-linux-extras enable epel
+      echo "Installing python2-pip"
+      yum install python-pip patch libedit-devel libuuid-devel -y
     else
       echo "The OS you are trying to install is not supported to install this software."
       exit 1
@@ -125,8 +131,9 @@ AnsibleInstall() {
 
 CodeCopy() {
   current_tag="`git tag -l --points-at HEAD`"
-  release_name="`git show ${current_tag} | awk 'FNR == 5 {print}'`"
+  release_name=$(git show ${current_tag} |grep "Merge branch" |awk -F " " '{print $3}' |tr -d "'")
   branch_name="`git branch | grep \* | cut -d ' ' -f2`"
+  if [ $branch_name == "master" ]; then git pull; fi
   if [ -z "$current_tag" ]
   then
       release_name=$branch_name
@@ -146,8 +153,7 @@ CodeCopy() {
   echo "Copying the Omnileads code to temporal directory"
   git archive --format=tar $(git rev-parse HEAD) | tar x -f - -C $TMP_OMINICONTACTO
   sleep 2
-  echo "Copying trusted certificates if exists"
-  cp -r $REPO_LOCATION/deploy/certs/. $TMP_OMINICONTACTO/deploy/certs/
+  CertsValidation
   echo "Deleting unnecesary files..."
   rm -rf $TMP_OMINICONTACTO/docs
   rm -rf $TMP_OMINICONTACTO/deploy/ansible
@@ -155,36 +161,41 @@ CodeCopy() {
   sleep 2
 }
 
+CertsValidation() {
+  echo "Checking if you put trusted key/cert pair under deploy/certs folder"
+  certs_location="$REPO_LOCATION/deploy/certs"
+  if [ $(ls -l $certs_location/*.pem 2>/dev/null | wc -l) -gt 0 ]; then
+    TRUSTED_CERTS=true
+    if [ $(ls -l $certs_location/*.pem 2>/dev/null | wc -l) -eq 4 ]; then
+      rm -rf $certs_location/key.pem $certs_location/cert.pem
+    fi
+    if [ $(ls -l $certs_location/*key* 2>/dev/null | wc -l) -eq 1 ] && [ $(ls -l $certs_location/*.pem 2>/dev/null | wc -l) -eq 2 ]; then
+      if [ ! -f $certs_location/key.pem ]; then
+        key=$( basename $certs_location/*key*)
+        cp $certs_location/$key $certs_location/key.pem
+      fi
+      if [ ! -f $certs_location/cert.pem ]; then
+        cert=$(ls $certs_location/*.pem |grep -v key)
+        cp $cert $certs_location/cert.pem
+      fi
+    else
+      echo "A pair of trusted cert/key pem files weren't recognized in {{ repo_location }}/deploy/certs, maybe:
+        1. You didn't include the string "key" in you .pem file related to private key
+        2. You put more than two .pem files in the certs folder"; exit 1
+    fi
+  else
+    TRUSTED_CERTS=false
+  fi
+}
+
 VersionGeneration() {
   echo "Getting release data..."
   commit="$(git rev-parse HEAD)"
-  author="$(id -un)@$(hostname)"
-  echo -e "Creating version file
+  build_date="$(env LC_hosts=C LC_TIME=C date)"
+  echo -e "OMniLeads version to install
      Branch: $release_name
      Commit: $commit
-     Autor: $author"
-  cat > $TMP_OMINICONTACTO/ominicontacto_app/version.py <<EOF
-
-# -*- coding: utf-8 -*-
-
-##############################
-#### Archivo autogenerado ####
-##############################
-
-OML_BRANCH="${release_name}"
-OML_COMMIT="${commit}"
-OML_BUILD_DATE="$(env LC_hosts=C LC_TIME=C date)"
-OML_AUTHOR="${author}"
-
-if __name__ == '__main__':
-    print (OML_COMMIT)
-
-EOF
-
-  #echo "Validando version.py - Commit:"
-  python $TMP_OMINICONTACTO/ominicontacto_app/version.py > /dev/null 2>&1
-  # ----------
-  export DO_CHECKS="${DO_CHECKS:-no}"
+     Build date: $build_date"
 }
 
 AnsibleExec() {
@@ -196,7 +207,17 @@ AnsibleExec() {
     fi
     echo "Beginning the Omnileads installation with Ansible, this installation process can last between 30-40 minutes"
     echo ""
-    ${ANSIBLE}-playbook $verbose $TMP_ANSIBLE/omnileads.yml --extra-vars "iface=$INTERFACE build_dir=$TMP_OMINICONTACTO repo_location=$REPO_LOCATION docker_root=$USER_HOME build_images=$BUILD_IMAGES" --tags "$tag" -i $TMP_ANSIBLE/inventory
+    ${ANSIBLE}-playbook $verbose $TMP_ANSIBLE/omnileads.yml \
+      --extra-vars "trusted_certs=$TRUSTED_CERTS \
+                    iface=$INTERFACE \
+                    build_dir=$TMP_OMINICONTACTO \
+                    repo_location=$REPO_LOCATION \
+                    docker_root=$USER_HOME \
+                    build_images=$BUILD_IMAGES \
+                    oml_release=$release_name \
+                    commit=$commit \
+                    build_date=\"$build_date\"" \
+      --tags "$tag" -i $TMP_ANSIBLE/inventory
     ResultadoAnsible=`echo $?`
     if [ $ResultadoAnsible == 0 ];then
       echo "
@@ -238,6 +259,9 @@ AnsibleExec() {
 echo "Deleting temporal files created"
 rm -rf $TMP_ANSIBLE
 rm -rf $TMP_OMINICONTACTO
+if [ $(ls -l $certs_location/*.pem 2>/dev/null | wc -l) -eq 4 ]; then
+  rm -rf $certs_location/key.pem $certs_location/cert.pem
+fi
 }
 UserValidation
 OSValidation
@@ -260,7 +284,7 @@ do
               -da --database: execute tasks related to database
               -di --dialer: execute tasks related to dialer (Wombat Dialer)
               --docker-deploy: deploy Omnileads in docker containers using docker-compose.
-              --docker-build: build and push Omnileads images to a registry. 
+              --docker-build: build and push Omnileads images to a registry.
               --docker-no-build: execute build images steps without building and pushing the images.
               -i --install: make a fresh install of Omnileads.
               -k --kamailio: execute kamailio related tasks.

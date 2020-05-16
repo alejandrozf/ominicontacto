@@ -15,16 +15,10 @@ Vamos a dividir el archivo en dos fragmentos:
 
 .. _about_install_inventory_aio:
 
-Configuración acerca del tipo de instalación
-**********************************************
+Configuración entorno AIO
+**************************
 
-En la primera parte del archivo se especifica el tipo de despliegue a realizar, en donde tenemos para elegir:
-
-
-* **Entorno de producción AIO (All In One).**
-
-Como podemos observar esta sección involucra dos lineas que vienen comentadas, las cuales están atañadas al formato de instalación de un entorno productivo AIO.
-Ambas son mutuamente excluyentes, la primera hace referencia a una instalación :ref:`about_install_selfhosted` y la segunda se utiliza cuando se desea ejecutar una :ref:`about_install_remote`.
+En la primera parte del archivo se encuentra la seccion **[prodenv-aio]**:
 
 .. code-block:: bash
 
@@ -35,25 +29,47 @@ Ambas son mutuamente excluyentes, la primera hace referencia a una instalación 
  #localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
  #X.X.X.X ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
 
+* **Para Self Hosted:** descomentar la primera línea, para que quede así:
 
-* **Entorno de desarrollo basado en Docker.**
+.. code:: bash
 
-En caso de requerir el despliegue de un entorno de desarrollo, se debe hacer foco en dicha sección. Aquí simplemente se debe desomentar la linea
-"#localhost ansible_connection=local".
+   localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
+
+* **Para Ansible Remoto** descomentar la segunda línea, y reemplazar el X.X.X.X por la IP de la máquina a instalar OMniLeads, ejemplo:
+
+.. code:: bash
+
+  192.168.1.206 ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
+
+.. _about_install_inventory_docker:
+
+Configuración entorno Docker
+*****************************
+
+En la segunda parte, se encuentra la sección **[prodenv-container]** para la instalación de OMniLeads en containers:
 
 .. code-block:: bash
 
-  ##############################################################################
-  # Docker host is localhost because the application is deployed in localhost. #
-  # Uncomment the line if you want to deploy DE or PE                          #
-  ##############################################################################
   # If you are installing a devenv (PE) uncomment
   [prodenv-container]
-  #localhost ansible_connection=local
-  # If you are installing a devenv (DE) uncomment
-  [devenv-container]
-  #localhost ansible_connection=local
+  #localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
+  #X.X.X.X ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation, replace X.X.X.X with the IP of Docker Host)
 
+* **Para Self Hosted:** descomentar la primera línea, para que quede así:
+
+.. code:: bash
+
+   localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
+
+* **Para Ansible Remoto** descomentar la segunda línea, y reemplazar el X.X.X.X por la IP de la máquina a instalar OMniLeads, ejemplo:
+
+.. code:: bash
+
+  192.168.1.206 ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
+
+.. important::
+
+  Tener mucho cuidado a la hora de descomentar las líneas, no descomentar las de entorno de container si se quiere instalar AIO, por ejemplo.
 
 .. _about_install_inventory_vars:
 
@@ -63,9 +79,11 @@ Parámetros y contraseñas
 En la tercera sección del archivo se ajusta todo lo respectivo a contraseñas de algunos componentes y parámetro para configuración de zona horaria:
 
 * **Postgres SQL**
-* **MySQL**
-* **Usuario "admin" de OMniLeads**
+* **Constraseña del usuario "admin" de OMniLeads**
 * **TZ**
+* **Usuario de la DB postgresql**
+* **Usuario y contraseña para asterisk AMI**
+* **Usuario y contraseña para web de Wombat Dialer**
 
 .. code-block:: bash
 
@@ -80,7 +98,7 @@ En la tercera sección del archivo se ajusta todo lo respectivo a contraseñas d
   #                    SET POSTGRESQL PASSWORD                        #
   #####################################################################
   postgres_database=omnileads
-  postgres_user=omnileads
+  #postgres_user=omnileads
   #postgres_password=my_very_strong_pass
   #####################################################################
   #                           Web Admin                               #
@@ -90,20 +108,19 @@ En la tercera sección del archivo se ajusta todo lo respectivo a contraseñas d
   #######################################
   # AMI for wombat dialer and OMniLeads #
   #######################################
-  ami_user=omnileadsami
-  ami_password=5_MeO_DMT
-  #####################################################
-  # Wombat dialer credentials and MYSQL root password #
-  #####################################################
-  dialer_user=demoadmin
-  dialer_password=demo
-  #mysql_root_password=my_very_strong_pass
+  #ami_user=omnileadsami
+  #ami_password=5_MeO_DMT
+  #############################
+  # Wombat dialer credentials #
+  #############################
+  #dialer_user=demoadmin
+  #dialer_password=demo
   #################################################################################################
   # Set the timezone where the nodes are. UNCOMMENT and set this if you are doing a fresh install #
   #################################################################################################
   #TZ=America/Argentina/Cordoba
 
-.. _about_install_inventory_docker:
+.. _about_install_inventory_docker_vars:
 
 Variables para Docker
 **********************
@@ -116,20 +133,21 @@ Ademas de las variables vistas anteriormente, si se quiere instalar OMniLeads en
   registry_username=freetechsolutions
   #registry_email=
   #registry_password=
-  oml_release=release-1.4.0
   subnet=192.168.15.0/24
 
 Las variables necesarias para **deploy** de los containers son:
+
 * **registry_username:** si se va a deployar las imagenes oficiales de Freetech Solutions, dejar esta variable como está
-* **oml_release:** la versión de OMniLeads a instalar.
 * **subnet:** se refiere a la red LAN con la que se levantarán los containers.
 
-Las variables *registry_email* y *registry_password* son necesarias en caso de querer hacer un **build** de sus propias imágenes. 
+Las variables *registry_email* y *registry_password* son necesarias en caso de querer hacer un **build** de sus propias imágenes.
 
-OMniLeads Cloud:
-*****************
+.. _about_install_inventory_oml_cloud:
 
-Los parámetros  **"external_hostname"**, **"external_port"**  y **"public_ip"**, deben configurarse si se quiere instalar un OMniLeads en un servidor en la nube, donde los agentes se conectarán a la URL conformada por **https://external_hostname:external_port**, sin tener una conexion LAN directa o atraves de VPN hacia el OMniLeads.
+Variables OMniLeads Cloud
+**************************
+
+Los parámetros  **"external_hostname"**, **"external_port"**, deben configurarse si se quiere instalar un OMniLeads en un servidor en la nube, donde los agentes se conectarán a la URL conformada por **https://external_hostname:external_port**, sin tener una conexion LAN directa o atraves de VPN hacia el OMniLeads.
 
 .. code-block:: bash
 
@@ -142,7 +160,6 @@ Los parámetros  **"external_hostname"**, **"external_port"**  y **"public_ip"**
   #######################################################################################
   #external_port=
   #external_hostname=
-  #public_ip=
 
 .. important::
 
@@ -151,26 +168,4 @@ Los parámetros  **"external_hostname"**, **"external_port"**  y **"public_ip"**
     * Permit de tráfico saliente desde los puertos 10000 a 30000 UDP
     * Permit de tráfico entrante desde los puertos 10000 a 30000 UDP
 
-Parámetros para añadir par llave/certificado digital confiables
-***************************************************************
-
-OMniLeads utiliza por defecto un par de llave/certificado digital autofirmado, lo que hace que siempre salten excepciones en el browser con los conocidos errores **ERR_CERT_AUTORITHY INVALID** (para Google Chrome) y **SEC_ERROR_UNKNOWN_ISSUER** (para Firefox). Si ud posee sus propios certificados firmados por una CA válida puede añadirlos a su instalación de OMniLeads siguiendo estos pasos:
-
-1. Ubique sus certificados en la carpeta *deploy/certs/* dentro del repositorio
-2. Edite y descomente las variables **trusted_key** y **trusted_cert** con el nombre del key y cert que puso en la carpeta
-
-.. code::
-
-  #####################################################################
-  # Trusted Certificates:                                             #
-  #   If you want to use your own certificate/key pair, copy them in  #
-  #   ominicontacto/deploy/certs/ and type here the name of the files #
-  #####################################################################
-  #trusted_cert=
-  #trusted_key=
-
-3. Proceda con la instalación
-
-.. important::
-
-  Tener certificados digitales confiables es imprescindible para poder hacer uso del addon `WebPhone Client <https://gitlab.com/omnileads/webphone-client-releases>`_.
+.. _about_install_inventory_oml_trusted_certs:

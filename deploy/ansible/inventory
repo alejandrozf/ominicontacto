@@ -52,31 +52,15 @@ postgres_database=omnileads
 #######################################
 #ami_user=omnileadsami
 #ami_password=5_MeO_DMT
-#####################################################
-# Wombat dialer credentials and MYSQL root password #
-#####################################################
+#############################
+# Wombat dialer credentials #
+#############################
 #dialer_user=demoadmin
 #dialer_password=demo
-#mysql_root_password=my_very_strong_pass
 #################################################################################################
 # Set the timezone where the nodes are. UNCOMMENT and set this if you are doing a fresh install #
 #################################################################################################
 #TZ=America/Argentina/Cordoba
-#######################################################################################
-#                                OMniLeads cloud:			 	      #
-# If you are wishing to install OML in a cloud provider you must set these variables: #
-#  - external_port: the outside port where OML web server will listen requests        #
-#  - external_hostname: the dns external users will connect to                        #
-#######################################################################################
-#external_port=
-#external_hostname=
-#####################################################################
-# Trusted Certificates:                                             #
-#   If you want to use your own certificate/key pair, copy them in  #
-#   ominicontacto/deploy/certs/ and type here the name of the files #
-#####################################################################
-#trusted_cert=
-#trusted_key=
 ####################################################################################################
 # Session Cookie Age (SCA) is the time in seconds that will last the https session when inactivity #
 # is detected in the session (by default is 1 hour)                                                #
@@ -106,6 +90,25 @@ LOGIN_FAILURE_LIMIT=10
 ####################################
 schedule=Agenda
 
+#######################################################################################
+#                                OMniLeads cloud:			 	      #
+# If you are wishing to install OML in a cloud provider you must set these variables: #
+#  - external_port: the outside port where OML web server will listen requests        #
+#  - external_hostname: the dns external users will connect to                        #
+#######################################################################################
+#external_port=
+#external_hostname=
+##############################################################################################
+# Variables below are used when you have postgresql, mysql , wombat dialer or rtpengine      #
+# in diferent servers. Uncomment the variables and place the hostnames of these servers      #
+##############################################################################################
+#postgres_host=
+#default_postgres_user=
+#default_postgres_password=
+#mysql_host=
+#rtpengine_host=
+#dialer_host=
+
 #################################################################################################
 # Edit these variables with information of registry to build OMniLeads Docker images 		#
 # Note: you need the variable registry_username to deploy images, by default use the FTS images #
@@ -114,10 +117,9 @@ schedule=Agenda
 registry_username=freetechsolutions
 #registry_email=
 #registry_password=
-##############################################################
-# Variables oml_release and subnet are necessary for prodenv #
-##############################################################
-oml_release=
+############################################
+# Variable subnet is necessary for prodenv #
+############################################
 subnet=192.168.15.0/24
 #################################
 # Do not change variables below #

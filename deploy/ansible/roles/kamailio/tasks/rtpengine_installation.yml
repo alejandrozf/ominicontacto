@@ -40,11 +40,11 @@
 # https://voipmagazine.wordpress.com/2015/02/17/rtpengine-compilation-and-installation-in-fedora-redhat/
 
 # Importacion de la llave para instalar ffmpeg (lo pide la version que usamos de rtpengine)
-- name: Import of ffmpeg repository key (centos)
+- name: Import of ffmpeg repository key
   rpm_key: state=present key=http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro validate_certs=no
 
 # Instalo el repositorio
-- name: Install of ffmpeg repository (centos)
+- name: Install of ffmpeg repository
   yum: name=http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm state=present
   retries: 3
   delay: 3
@@ -52,20 +52,18 @@
   until: result is success
 
 # Instalo los paquetes que se necesitan
-- name: Install of ffmpeg (centos)
-  yum: name={{ item }} state=present
+- name: Install of ffmpeg
+  yum: name={{ item }} state=present skip_broken=yes
   with_items:
       - ffmpeg
       - ffmpeg-devel
-  become: true
-  become_method: sudo
   retries: 3
   delay: 3
   register: result
   until: result is success
 
 # Make de rtpengine en /usr/src/rtpengine/daemon
-- name: Installation of RTPengine (centos)
+- name: Installation of RTPengine
   shell: "make chdir=/usr/src/{{ rtpengine_name }}/daemon"
 
 # Aca hago la modificacion del makefile del modulo de kernel, uso la variable que setee en el set_fact

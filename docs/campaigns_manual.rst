@@ -1,8 +1,7 @@
 .. _about_manualcamp:
 
-*****************
-Campañas manuales
-*****************
+Creación campaña manual
+************************
 
 Para crear una nueva campaña manual se debe ingresar al punto de menú *Manual Campaigns -> New  Campaign*. El proceso de creación consta de
 un wizard de dos pantallas.
@@ -20,6 +19,8 @@ La primera pantalla nos invita a indicar una serie de parámtros de la campaña,
 - **ID on external system:**  este campo debe contener el ID que posee la campaña dentro del sistema de gestión externo desde el cual llegarán los *click to call* o *solicitudes de calificación*.
 - **Type of interaction:** indica si la campaña va a operar con formularios de OMniLeads o bien va a ejecutar una invocación hacia un CRM por cada llamada conectada.
 - **External URL:** en caso de haber seleccionado la invocación a un URL externo en cada llamada, aquí se indica cual de los CRMs definidos debe invocar la campaña.
+- **Outbound Routes:** Se le asigna una ruta saliente existente a una campaña.
+- **CID on Outbound Routes:** Este campo debe contener el CID asignado para una ruta saliente existente a una campaña.
 - **Enable recordings:** habilitar la grabación de todas las llamadas que se cursen por la campaña.
 - **Scope:** se define como la cantidad de gestiones positivas que se esperan para la campaña. En la supervisión de la campaña se muestra en tiempo real el porcentaje de avence de la campaña respecto al objetivo definido.
 
@@ -41,6 +42,9 @@ En los siguientes pasos se pueden añadir supervisores y agentes a nuestra campa
 .. image:: images/campaigns_manual_wizard_3.png
 
 *Figure 3: agent assignment*
+
+Interacción de agente con campaña
+*********************************
 
 Finalmente contamos con nuestra nueva campaña manual. cuando un agente asignado a la misma realice un login a la plataforma y comience a marcar llamadas desde
 su webphone, el sistema le permitirá seleccionar la campaña sobre la cual va a asignar cada llamada manual generada desde el webphone, tal como se expone
@@ -93,7 +97,8 @@ Finalmente se despliegan el nuevo contacto y la opción de clasificar la llamada
 
 *Figure 10: new contact called*
 
-**Campaña con base de datos Multinum**
+Campaña con base de datos Multinum
+***********************************
 
 Como sabemos, OMniLeads admite que cada contacto de una base posea "n" números de teléfono de contacto, de manera tal que si el contacto no es encontrado en su número principal
 (el primero de nuestro archivo CSV de base), pueda ser contactado a los demás números. En este caso, cada número de teléfono (que indicamos en la carga de la base) se genera

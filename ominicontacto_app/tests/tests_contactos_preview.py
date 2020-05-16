@@ -164,7 +164,7 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
         self.assertFalse(_call_originate.called)
         inicial = AgenteEnContacto.ESTADO_INICIAL
         self.assertFalse(AgenteEnContacto.objects.exclude(estado=inicial).exists())
-        self.assertContains(response, u'No es posible llamar al contacto.')
+        self.assertContains(response, _(u'No es posible llamar al contacto.'))
 
     def test_agente_libera_contacto_asignado(self):
         # Un agente puede liberar un contacto asignado
@@ -234,15 +234,116 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
     def test_modificacion_contacto_desde_lista_de_contactos_actualiza_agente_en_contacto(self):
         contacto = ContactoFactory()
         agente_en_contacto = AgenteEnContactoFactory(
-            contacto_id=contacto.pk, telefono_contacto=contacto.telefono)
+            contacto_id=contacto.pk, campana_id=self.campana_preview.id,
+            telefono_contacto=contacto.telefono)
         telefono_nuevo = contacto.telefono + '111'
         self.assertEqual(agente_en_contacto.telefono_contacto, contacto.telefono)
-        url = reverse('contacto_update', args=[contacto.pk])
+        url = reverse('contacto_update', args=[self.campana_preview.pk, contacto.pk])
+        post_data = {
+            'telefono': telefono_nuevo,
+            'datos': str(["xxxxxx", "yyyyy", "CORDOBA", "21000003"]),
+        }
+        self.client.post(url, post_data)
+        contacto.refresh_from_db()
+        self.assertEqual(contacto.telefono, str(telefono_nuevo))
+        agente_en_contacto.refresh_from_db()
+        self.assertEqual(agente_en_contacto.telefono_contacto, str(telefono_nuevo))
+
+    def test_se_entregan_contactos_de_acuerdo_al_orden(self):
+        # el primero sera el entregado de acuerdo al orden
+        # ya que es el orden definido en la campaña
+        pk_campana = self.campana_preview.pk
+        agente_en_contacto = AgenteEnContacto.objects.filter(campana_id=pk_campana).first()
+        url = reverse('campana_preview_dispatcher', args=[pk_campana])
+        response = self.client.post(url, follow=True)
+        resultado = json.loads(response.content)
+        id_contacto = resultado['contacto_id']
+        self.assertEqual(id_contacto, agente_en_contacto.contacto_id)
+
+    def test_se_entregan_contactos_consecutivamente_de_acuerdo_al_orden(self):
+        pk_campana = self.campana_preview.pk
+        agentes_en_contactos = list(AgenteEnContacto.objects.filter(campana_id=pk_campana))
+        agente_en_contacto1 = agentes_en_contactos[0]
+        agente_en_contacto1.estado = AgenteEnContacto.ESTADO_ENTREGADO
+        agente_en_contacto1.agente_id = self.agente_1.pk
+        agente_en_contacto1.save()
+        agente_en_contacto2 = agentes_en_contactos[1]
+        url = reverse('campana_preview_dispatcher', args=[pk_campana])
+        response = self.client.post(url, follow=True)
+        resultado = json.loads(response.content)
+        id_contacto = resultado['contacto_id']
+        self.assertEqual(id_contacto, agente_en_contacto2.contacto_id)
+
+    def test_se_entregan_contactos_circularmente_de_acuerdo_al_orden(self):
+        pk_campana = self.campana_preview.pk
+        agentes_en_contactos = list(AgenteEnContacto.objects.filter(campana_id=pk_campana))
+        agente_en_contacto2 = agentes_en_contactos[1]
+        agente_en_contacto2.estado = AgenteEnContacto.ESTADO_ENTREGADO
+        agente_en_contacto2.agente_id = self.agente_1.pk
+        agente_en_contacto2.save()
+        agente_en_contacto1 = agentes_en_contactos[0]
+        url = reverse('campana_preview_dispatcher', args=[pk_campana])
+        response = self.client.post(url, follow=True)
+        resultado = json.loads(response.content)
+        id_contacto = resultado['contacto_id']
+        self.assertEqual(id_contacto, agente_en_contacto1.contacto_id)
+
+    def test_no_se_entregan_contactos_desactivados_con_FALSE(self):
+        pk_campana = self.campana_preview.pk
+        self.campana_preview.campo_desactivacion = 'dni'
+        self.campana_preview.save()
+        agentes_en_contactos = list(AgenteEnContacto.objects.filter(campana_id=pk_campana))
+        agente_en_contacto1 = agentes_en_contactos[0]
+        agente_en_contacto2 = agentes_en_contactos[1]
+        datos_contacto = agente_en_contacto1.datos_contacto
+        datos_contacto_dict = json.loads(datos_contacto)
+        datos_contacto_dict['dni'] = 'FALSE'
+        datos_contacto = json.dumps(datos_contacto_dict)
+        agente_en_contacto1.datos_contacto = datos_contacto
+        agente_en_contacto1.save()
+        url = reverse('campana_preview_dispatcher', args=[pk_campana])
+        response = self.client.post(url, follow=True)
+        resultado = json.loads(response.content)
+        id_contacto = resultado['contacto_id']
+        self.assertEqual(id_contacto, agente_en_contacto2.contacto_id)
+
+    def test_no_se_entregan_contactos_desactivados_con_0(self):
+        pk_campana = self.campana_preview.pk
+        self.campana_preview.campo_desactivacion = 'dni'
+        self.campana_preview.save()
+        agentes_en_contactos = list(AgenteEnContacto.objects.filter(campana_id=pk_campana))
+        agente_en_contacto1 = agentes_en_contactos[0]
+        agente_en_contacto2 = agentes_en_contactos[1]
+        datos_contacto = agente_en_contacto1.datos_contacto
+        datos_contacto_dict = json.loads(datos_contacto)
+        datos_contacto_dict['dni'] = '0'
+        datos_contacto = json.dumps(datos_contacto_dict)
+        agente_en_contacto1.datos_contacto = datos_contacto
+        agente_en_contacto1.save()
+        url = reverse('campana_preview_dispatcher', args=[pk_campana])
+        response = self.client.post(url, follow=True)
+        resultado = json.loads(response.content)
+        id_contacto = resultado['contacto_id']
+        self.assertEqual(id_contacto, agente_en_contacto2.contacto_id)
+
+    def test_campos_bloqueados_no_se_modifican(self):
+        self.campana_preview.campos_bd_no_editables = json.dumps(['telefono'])
+        self.campana_preview.save()
+        contacto = ContactoFactory()
+        agente_en_contacto = AgenteEnContactoFactory(
+            contacto_id=contacto.pk, campana_id=self.campana_preview.id,
+            telefono_contacto=contacto.telefono)
+
+        telefono_viejo = contacto.telefono
+        telefono_nuevo = contacto.telefono + '111'
+        url = reverse('contacto_update', args=[self.campana_preview.pk, contacto.pk])
         post_data = {
             'telefono': telefono_nuevo,
             'datos': str(["xxxxxx", "yyyyy", "CORDOBA", "21000003"]),
             'bd_contacto': contacto.bd_contacto.pk
         }
         self.client.post(url, post_data)
+        contacto.refresh_from_db()
         agente_en_contacto.refresh_from_db()
-        self.assertEqual(agente_en_contacto.telefono_contacto, str(telefono_nuevo))
+        self.assertEqual(contacto.telefono, telefono_viejo)
+        self.assertEqual(agente_en_contacto.telefono_contacto, str(telefono_viejo))

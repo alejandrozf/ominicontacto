@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'api_app',
     'constance',
     'django_js_reverse',
+    'import_export',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -205,7 +206,7 @@ OML_DUMP_HTTP_AMI_RESPONSES = False
 # DEPLOY -> Asterisk
 # ==============================================================================
 
-OML_OMNILEADS_IP = None
+OML_OMNILEADS_HOSTNAME = None
 OML_ASTERISK_REMOTEPATH = None
 OML_SIP_FILENAME = None
 OML_QUEUES_FILENAME = None
@@ -375,8 +376,10 @@ LOCALE_PATHS = (
 )
 
 LANGUAGES = (
+    ('pt-br', 'Portuguese-Br'),
     ('en', 'English'),
     ('es', 'Spanish'),
+    ('fa', 'Persian'),
 )
 
 LANGUAGE_CODE = 'es'

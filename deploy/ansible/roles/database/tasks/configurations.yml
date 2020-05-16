@@ -19,28 +19,30 @@
 
 # El initdb de postgres toca ejecutarlo solo para centos
 - name: Setup of postgresql
-  command: "/usr/pgsql-{{ postgresql_version }}/bin/postgresql-{{ postgresql_version }}-setup initdb"
+  command: "{{ pg_setup_location }} initdb"
   register: commandresult
   failed_when:
+    - "'is not empty' not in commandresult.stderr"
     - "'is not empty' not in commandresult.stdout"
     - "commandresult.rc != 0"
   tags: postinstall
-  when: postgresql_new_installed.rc != 3
+  when: postgresql_new_installed.rc != 3 and postgres_host is not defined
 
 # Se modifica el pg_hba.conf
 - name: Modify of pg_hba.conf file
   template: src=roles/database/templates/pg_hba.conf.j2 dest={{ pg_lib_location }}/pg_hba.conf
+  when: postgres_host is not defined
 
 #Se modifica la ip en la que escucha postgres
 - name: Modify postgresql listen address (centos)
   lineinfile: path={{ pg_lib_location }}/postgresql.conf regexp="^#listen_addresses" line="listen_addresses = '*'" state=present
   tags: postinstall
-  when: postgresql_new_installed.rc != 3
+  when: postgresql_new_installed.rc != 3 and postgres_host is not defined
 
 # Restarteamos servicio
 - name: Restart postgres service
-  service: name=postgresql{{prefix}}{{ postgresql_version }}{{sufix}} state=restarted enabled=yes
-  when: postgresql_new_installed.rc != 2
+  service: name={{ pg_service_name }} state=restarted enabled=yes
+  when: postgresql_new_installed.rc != 2 and postgres_host is not defined
   tags: postinstall
 
 # Se crea el usuario de postgres
@@ -50,6 +52,7 @@
   become_method: sudo
   become_user: postgres
   tags: postinstall
+  when: postgres_host is not defined
 
 # Se crea el usuario de postgres
 - name: Create ro postgres user
@@ -57,10 +60,12 @@
   become: yes
   become_method: sudo
   become_user: postgres
+  when: postgres_host is not defined
 
 # Se crea base de datos omnileads
 - name: Create of the database
   postgresql_db: name={{ postgres_database }} state=present login_user={{ postgres_user }} login_password={{ postgres_password }} owner={{ postgres_user }} login_host=localhost
+  when: postgres_host is not defined
 
 # Se crea el lenguaje plperl en todo el cluster.
 - name: Create language plperl in database
@@ -72,6 +77,7 @@
   tags: postinstall
   become_user: postgres
   failed_when: false
+  when: postgres_host is not defined
 
 - name: Erasing pg_dump and psql binaries from {{ postgresql_old_version }}
   file: name=/usr/bin/{{ item }} state=absent
@@ -80,6 +86,7 @@
     - pg_restore
     - pg_dump
   tags: postinstall
+  when: ansible_distribution != "Amazon" and postgres_host is not defined
 
 - name: Create link of pg{{ postgresql_version }} binaries in /usr/bin/
   file: state=link src=/usr/pgsql-{{ postgresql_version }}/bin/{{ item }} dest=/usr/bin/{{ item }} force=true owner=root group=root mode=755
@@ -88,3 +95,29 @@
     - pg_restore
     - pg_dump
   tags: postinstall
+  when: ansible_distribution != "Amazon" and postgres_host is not defined
+
+########
+# Las tareas a continuacion se ejecutan cuando tenemos postgresql en un servidor externo
+#########
+
+# Se crea el usuario de postgres
+- name: Create/modify postgres user
+  postgresql_user: name={{ postgres_user }} password={{ postgres_password }} login_user={{ default_postgres_user }} login_host={{ postgres_host }} login_password={{ default_postgres_password }} role_attr_flags=CREATEROLE,CREATEDB,INHERIT,LOGIN encrypted=yes
+  when: postgres_host is defined and default_postgres_user is defined and default_postgres_password is defined
+
+# Se crea base de datos omnileads
+- name: Create of the database
+  postgresql_db: name={{ postgres_database }} state=present login_user={{ postgres_user }} login_password={{ postgres_password }} owner={{ postgres_user }} login_host={{ postgres_host }}
+  when: postgres_host is defined and default_postgres_user is defined and default_postgres_password is defined
+
+# Se crea el lenguaje plperl en todo el cluster.
+- name: Create language plperl in database
+  shell: psql -U {{ postgres_user }} -h {{ postgres_host }} -d {{ item }} -c 'CREATE EXTENSION plperl'
+  environment:
+    - PGPASSWORD: "{{ postgres_password }}"
+  with_items:
+    - "{{ postgres_database }}"
+    - template1
+  when: postgres_host is defined
+  failed_when: false

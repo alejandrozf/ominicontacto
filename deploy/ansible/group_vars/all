@@ -30,9 +30,6 @@ wombat: http://downloads.loway.ch/wd/WombatDialer-{{ wombat_version }}.tar.gz
 rtpengine_repo: https://github.com/sipwise/rtpengine/archive/mr{{ rtpengine_version }}.tar.gz
 kamailio_repo: https://github.com/kamailio/kamailio/archive/{{ kamailio_version }}.tar.gz
 res_json_repo: https://github.com/felipem1210/asterisk-res_json.git
-##Parametros de la aplicación
-cert: cert.pem
-key: key.pem
 country_code: 54
 admin_user: admin
 usuario: omnileads
@@ -48,7 +45,7 @@ kamailio_location: "{{ install_prefix }}kamailio"
 static_route: "{{ install_prefix }}ominicontacto/ominicontacto_app/static/ominicontacto"
 odbc_location: /etc/
 rtpengine_name: "rtpengine-mr{{ rtpengine_version }}"
-
+mysql_root_password: ""
 ######### VoIP ports ###########
 kam_tls_port: 5061
 kam_ws_port: 1080

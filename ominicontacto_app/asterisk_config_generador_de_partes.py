@@ -319,9 +319,9 @@ class GeneradorParaQueueEntrante(GeneradorDePedazoDeQueue):
 
         [{oml_queue_name}]
         announce=beep
-        announce-frequency=0
         announce-holdtime={oml_announce-holdtime}
         announce-position={oml_announce_position}
+        announce-frequency={oml_announce_frequency}
         autofill=yes
         eventmemberstatus=yes
         eventwhencalled=yes

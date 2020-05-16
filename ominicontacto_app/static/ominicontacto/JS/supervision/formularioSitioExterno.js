@@ -23,49 +23,67 @@ var OBJETIVO_EMBEBIDO = '1';    // SistemaExterno.JSON
 var METODO_GET = '1';           // SistemaExterno.GET
 
 $(function () {
-  inicializarCampos();
+    inicializarCampos();
 });
 
 function inicializarCampos() {
-  var $disparador = $('#id_disparador');
-  $disparador.on('change', actualizarEstadoObjetivo);
-  actualizarEstadoObjetivo();
-  var $metodo = $('#id_metodo');
-  $metodo.on('change', actualizarEstadoFormato);
-  actualizarEstadoFormato();
+    var $disparador = $('#id_disparador');
+    $disparador.on('change', actualizarEstadoObjetivo);
+    actualizarEstadoObjetivo();
+    var $metodo = $('#id_metodo');
+    $metodo.on('change', actualizarEstadoFormato);
+    actualizarEstadoFormato();
+    var $formato = $('#id_formato');
+    $formato.on('change', actualizarObjetivo);
+    actualizarObjetivo();
+
 }
 
 function actualizarEstadoObjetivo() {
-  var $disparador = $('#id_disparador');
-  var $formato = $('#id_formato');
-  var $objetivo = $('#id_objetivo');
-  if ($disparador.val() == DISPARADOR_SERVER || $formato.val() == FORMATO_JSON){
-    $objetivo.prop('disabled', true);
-    $objetivo.val('');
-    $objetivo.find('option[value=""]').prop('disabled', false);
-  }
-  else{
-    $objetivo.prop('disabled', false)
-    if ($objetivo.val() == '') {
-      $objetivo.val(OBJETIVO_EMBEBIDO);
+    var $disparador = $('#id_disparador');
+    var $formato = $('#id_formato');
+    var $objetivo = $('#id_objetivo');
+    if ($disparador.val() == DISPARADOR_SERVER || $formato.val() == FORMATO_JSON){
+        $objetivo.prop('disabled', true);
+        $objetivo.val('');
+        $objetivo.find('option[value=""]').prop('disabled', false);
     }
-    $objetivo.find('option[value=""]').prop('disabled', true);
-  }
+    else{
+        $objetivo.prop('disabled', false);
+        if ($objetivo.val() == '') {
+            $objetivo.val(OBJETIVO_EMBEBIDO);
+        }
+        $objetivo.find('option[value=""]').prop('disabled', true);
+    }
 }
 
 function actualizarEstadoFormato() {
-  var $metodo = $('#id_metodo');
-  var $formato = $('#id_formato');
-  if ($metodo.val() == METODO_GET){
-    $formato.prop('disabled', true);
-    $formato.val('');
-    $formato.find('option[value=""]').prop('disabled', false);
-  }
-  else {
-    $formato.prop('disabled', false);
-    if ($formato.val() == '') {
-      $formato.val(FORMATO_MULTIPART);
+    var $metodo = $('#id_metodo');
+    var $formato = $('#id_formato'); 
+    if ($metodo.val() == METODO_GET){
+        $formato.prop('disabled', true);
+        $formato.val('');
+        $formato.find('option[value=""]').prop('disabled', false);
     }
-    $formato.find('option[value=""]').prop('disabled', true);
-  }
+    else {
+        $formato.prop('disabled', false);
+        if ($formato.val() == '') {
+            $formato.val(FORMATO_MULTIPART);
+        }
+        $formato.find('option[value=""]').prop('disabled', true);
+    }
+}
+
+function actualizarObjetivo(){
+    var $metodo = $('#id_metodo');
+    var $objetivo = $('#id_objetivo');
+    var $formato = $('#id_formato');
+    if ($metodo.val() != METODO_GET){
+        if ($formato.val() == FORMATO_JSON){
+            $objetivo.prop('disabled', true);
+        }
+        else{
+            $objetivo.prop('disabled', false);
+        }
+    }   
 }

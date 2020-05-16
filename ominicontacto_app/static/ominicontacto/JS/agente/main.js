@@ -22,7 +22,7 @@
 /*      - omlAPI.js         */
 /* 		- click2Call.js     */
 
-/* globals Timer OMLAPI Click2CallDispatcher PhoneJSController */
+/* globals Timer OMLAPI KeepAliveSender Click2CallDispatcher PhoneJSController gettext */
 
 /* DEBUG*/
 $('#wrapperWebphone').toggleClass('active');
@@ -33,8 +33,24 @@ var USER_STATUS_PAUSE = 3; //  Agente en estado pausa
 
 var phone_controller = undefined;
 var click2call = undefined;
+var keep_alive_sender = undefined;
+
+var logoffEvent = undefined;
 
 $(function () {
+
+    navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(function(stream) {
+            startPhoneJs();
+        })
+        .catch(function(err) {
+            alert(gettext('No se ha podido acceder a su micrófono. \n\
+Permita el acceso al mismo y recargue la página para comenzar a trabajar.'));
+            return;
+        });
+});
+
+function startPhoneJs() {
     var timers = {
         'operacion': new Timer('horaO', 'minsO', 'segsO'),
         'pausa': new Timer('horaP', 'minsP', 'segsP'),
@@ -44,24 +60,39 @@ $(function () {
     var agent_id = $('#idagt').val();
     var sipExtension = $('#sipExt').val();
     var sipSecret = $('#sipSec').val();
+    var max_session_age = $('#max_session_age').val();
 
     var oml_api = new OMLAPI();
 
     click2call = new Click2CallDispatcher(oml_api, agent_id);
-    phone_controller = new PhoneJSController(agent_id, sipExtension, sipSecret, timers, click2call);
+    keep_alive_sender = new KeepAliveSender(max_session_age);
+    phone_controller = new PhoneJSController(
+        agent_id, sipExtension, sipSecret, timers, click2call, keep_alive_sender);
 
     subscribirEventosBotonesGenerales(oml_api, agent_id, timers);
     subscribirEventosBotonesOtrosMedios(oml_api);
 
     timers.operacion.start();
     oml_api.changeStatus(USER_STATUS_ONLINE, agent_id);
-});
+
+    window.addEventListener('beforeunload', preventLeaveWithoutLogoff);
+}
 
 function subscribirEventosBotonesGenerales(oml_api, agent_id) {
 
     $('#logout').click(function () {
+        window.removeEventListener('beforeunload', preventLeaveWithoutLogoff);
         oml_api.changeStatus(3, agent_id);
     });
+}
+
+function preventLeaveWithoutLogoff(event) {
+    // Cancel the event as stated by the standard.
+    event.preventDefault();
+    phone_controller.hangUp();
+    // Chrome requires returnValue to be set.
+    event.returnValue = gettext('Recuerde cerrar la sesión antes de salir de esta pantalla.');
+    return gettext('Recuerde cerrar la sesión antes de salir de esta pantalla.');
 }
 
 function subscribirEventosBotonesOtrosMedios() {

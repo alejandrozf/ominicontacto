@@ -25,7 +25,7 @@ from django.contrib.auth.decorators import login_required
 from ominicontacto_app import (
     views, views_base_de_datos_contacto, views_contacto, views_campana_creacion,
     views_grabacion, views_calificacion, views_formulario, views_agente,
-    views_calificacion_cliente, views_campana, views_campana_reportes, views_pdf,
+    views_calificacion_cliente, views_campana, views_campana_reportes,
     views_agenda_contacto, views_campana_dialer_creacion, views_campana_dialer,
     views_back_list, views_sitio_externo, views_queue_member,
     views_campana_dialer_template, views_campana_manual_creacion, views_campana_manual,
@@ -38,7 +38,7 @@ from ominicontacto_app.views_utils import (
 
 from ominicontacto_app.auth.decorators import (
     administrador_requerido, administrador_o_supervisor_requerido, agente_requerido,
-    permiso_administracion_requerido, supervisor_requerido)
+    permiso_administracion_requerido)
 
 handler400 = handler400
 handler403 = handler403
@@ -48,15 +48,35 @@ handler500 = handler500
 
 urlpatterns = [
     url(r'^admin/defender/', include('defender.urls')),  # defender admin
-    url(r'^ajax/mensaje_recibidos/',
-        views.mensajes_recibidos_view,
-        name='ajax_mensaje_recibidos'),
+
+    # ==========================================================================
+    # Base
+    # ==========================================================================
     url(r'^$', views.index_view, name='index'),
+
+    url(r'^accounts/login/$', views.login_view, name='login'),
+
+    url(r'^consola/$',
+        agente_requerido(views.ConsolaAgenteView.as_view()),
+        name='consola_de_agente'),
+
+    url(r'^acerca/$',
+        login_required(views.AcercaTemplateView.as_view()),
+        name='acerca',
+        ),
+
+    url(r'^blanco/$',
+        login_required(views.BlancoView.as_view()),
+        name='view_blanco'),
+
+    url(r'^registro/$',
+        administrador_requerido(views.RegistroFormView.as_view()),
+        name='registrar_usuario',
+        ),
 
     # ==========================================================================
     # Usuarios y Perfiles
     # ==========================================================================
-    url(r'^accounts/login/$', views.login_view, name='login'),
     url(r'^user/nuevo/$',
         administrador_o_supervisor_requerido(views_user_profiles.CustomUserWizard.as_view()),
         name='user_nuevo',
@@ -124,6 +144,7 @@ urlpatterns = [
         administrador_o_supervisor_requerido(views.GrupoDeleteView.as_view()),
         name='grupo_delete',
         ),
+
     # ==========================================================================
     # Pausas
     # ==========================================================================
@@ -143,20 +164,6 @@ urlpatterns = [
         administrador_o_supervisor_requerido(views.PausaToggleDeleteView.as_view()),
         name='pausa_delete',
         ),
-
-    url(r'^consola/$',
-        agente_requerido(views.ConsolaAgenteView.as_view()),
-        name='consola_de_agente'),
-
-    url(r'^smsThread/$',
-        login_required(views.mensajes_recibidos_enviado_remitente_view),
-        name='view_sms_thread'),
-    url(r'^sms/getAll/$',
-        login_required(views.mensajes_recibidos_view),
-        name='view_sms_get_all'),
-    url(r'^blanco/$',
-        login_required(views.BlancoView.as_view()),
-        name='view_blanco'),
 
     # ==========================================================================
     # Grabaciones
@@ -179,45 +186,18 @@ urlpatterns = [
         name='grabacion_agente_buscar',
         ),
 
-    url(r'^agenda/nuevo/$',
-        agente_requerido(views.nuevo_evento_agenda_view),
-        name='agenda_nuevo',
-        ),
-    url(r'^agenda/agente_list/$',
-        agente_requerido(views.AgenteEventosFormView.as_view()),
-        name='agenda_agente_list',
-        ),
-    url(r'^chat/mensaje/$',
-        login_required(views.mensaje_chat_view),
-        name='nueva_mensaje_chat',
-        ),
-    url(r'^chat/create/$',
-        login_required(views.crear_chat_view),
-        name='chat_create',
-        ),
-    url(r'^supervision_externa/$',
-        supervisor_requerido(views.supervision_url_externa),
-        name='supervision_externa_url',
-        ),
-    url(r'^registro/$',
-        administrador_requerido(views.RegistroFormView.as_view()),
-        name='registrar_usuario',
-        ),
-    url(r'^acerca/$',
-        login_required(views.AcercaTemplateView.as_view()),
-        name='acerca',
-        ),
     # ==========================================================================
     # Servicios para phoneJS
     # ==========================================================================
     url(r'^service/campana/activas/$',
-        login_required(
+        agente_requerido(
             views_agente.CampanasActivasView.as_view()),
         name="service_campanas_activas"),
     url(r'^service/agente/otros_agentes_de_grupo/$',
-        login_required(
+        agente_requerido(
             views_agente.AgentesDeGrupoPropioView.as_view()),
         name="service_agentes_de_grupo"),
+
     # ==========================================================================
     # Base Datos Contacto
     # ==========================================================================
@@ -236,20 +216,33 @@ urlpatterns = [
             views_base_de_datos_contacto.BaseDatosContactoUpdateView.as_view()),
         name='update_base_datos_contacto'
         ),
-    # TODO: Verificar que esta vista se use
+    url(r'^campana/base_datos_contacto/(?P<pk_campana>\d+)/actualizar/$',
+        administrador_o_supervisor_requerido(
+            views_base_de_datos_contacto.BaseDatosContactoUpdateView.as_view()),
+        name='update_base_datos_contacto_de_campana'
+        ),
     url(r'^base_datos_contacto/(?P<pk>\d+)/validacion/$',
         administrador_o_supervisor_requerido(
             views_base_de_datos_contacto.DefineBaseDatosContactoView.as_view()),
         name='define_base_datos_contacto',
         ),
-    url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/agregar/$',
+    url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/agregar_contacto/$',
         administrador_o_supervisor_requerido(views_contacto.ContactoBDContactoCreateView.as_view()),
         name='agregar_contacto',
+        ),
+    url(r'^campana/base_datos_contacto/(?P<pk_campana>\d+)/agregar_contacto/$',
+        administrador_o_supervisor_requerido(views_contacto.ContactoBDContactoCreateView.as_view()),
+        name='agregar_contacto_a_campana',
         ),
     url(r'^base_datos_contacto/(?P<pk>\d+)/validacion_actualizacion/$',
         administrador_o_supervisor_requerido(
             views_base_de_datos_contacto.ActualizaBaseDatosContactoView.as_view()),
         name='actualiza_base_datos_contacto',
+        ),
+    url(r'^campana/base_datos_contacto/(?P<pk_campana>\d+)/validacion_actualizacion/$',
+        administrador_o_supervisor_requerido(
+            views_base_de_datos_contacto.ActualizaBaseDatosContactoView.as_view()),
+        name='actualiza_base_datos_contacto_de_campana',
         ),
 
     url(r'^base_datos_contacto/(?P<bd_contacto>\d+)/list_contacto/$',
@@ -277,12 +270,19 @@ urlpatterns = [
                                              mostrar_bases_datos_borradas_ocultas_view),
         name='mostrar_bases_datos_ocultas', ),
 
+    #  ===== Configuracion de BD Contacto de Campaña para supervisor ====
+    url(r'^campana/(?P<pk_campana>\d+)/bloquear_campos_para_agente/$',
+        administrador_o_supervisor_requerido(
+            views_contacto.BloquearCamposParaAgenteFormView.as_view()),
+        name='bloquear_campos_para_agente',
+        ),
+
     #  ===== Vistas de contacto para agente ====
     url(r'^contacto/list/$',
         agente_requerido(views_contacto.ContactoListView.as_view()),
         name='contacto_list',
         ),
-    url(r'^contacto/(?P<pk_contacto>\d+)/update/$',
+    url(r'^campana/(?P<pk_campana>\d+)/contacto/(?P<pk_contacto>\d+)/update/$',
         agente_requerido(views_contacto.ContactoUpdateView.as_view()),
         name='contacto_update',
         ),
@@ -372,9 +372,6 @@ urlpatterns = [
             views_agente.ExportaReporteFormularioVentaView.as_view()),
         name='exporta_reporte_formularios',
         ),
-    # url(r'^agente/logout/$',
-    # login_required(views_agente.logout_view), name='agente_logout',
-    # ),
     url(r'^agente/llamar/$',
         agente_requerido(
             views_agente.LlamarContactoView.as_view()),
@@ -530,29 +527,22 @@ urlpatterns = [
     # Agente
     # ==========================================================================
     url(r'^agente/cambiar_estado/$',
-        views_agente.cambiar_estado_agente_view,
+        agente_requerido(views_agente.cambiar_estado_agente_view),
         name='agente_cambiar_estado',
         ),
     # ==========================================================================
     # Supervision
     # ==========================================================================
+    # Vistas utilizadas en la supervision PHP.
+    # TODO: Mover e implementar mejora en supervision_app o en api_app segun corresponda
     url(r'^llamadas/activas/$',
-        login_required(views_campana_reportes.LlamadasActivasView.as_view()),
+        administrador_o_supervisor_requerido(views_campana_reportes.LlamadasActivasView.as_view()),
         name='llamadas_activas',
         ),
     url(r'^supervision/agentes/campana/(?P<campana_id>\d+)$',
         administrador_o_supervisor_requerido(views_agente.AgentesLogueadosCampana.as_view()),
         name='supervision_agentes_logueados',
         ),
-    # ==========================================================================
-    # Reportes PDF
-    # ==========================================================================
-    url(r'^reporte_personas_pdf/$',
-        login_required(views_pdf.ReportePersonasPDF.as_view()),
-        name="reporte_personas_pdf"),
-    url(r'^reporte/(?P<pk_campana>\d+)/campana/$',
-        login_required(views_pdf.ReporteCampanaPDF.as_view()),
-        name="reporte_campana_pdf"),
     # ==========================================================================
     # Agenda Contacto
     # ==========================================================================
@@ -701,6 +691,14 @@ urlpatterns = [
         administrador_o_supervisor_requerido(
             views_campana_preview.LiberarContactoAsignado.as_view()),
         name="liberar_contacto_asignado"),
+    url(r'^campana_preview/ordenar_contactos_asignados/(?P<pk_campana>\d+)/$',
+        administrador_o_supervisor_requerido(
+            views_campana_preview.OrdenarAsignacionContactosView.as_view()),
+        name="ordenar_entrega_contactos_preview"),
+    url(r'^campana_preview/descargar_asignacion_contactos/(?P<pk_campana>\d+)/$',
+        administrador_o_supervisor_requerido(
+            views_campana_preview.DescargarOrdenAgentesEnContactosView.as_view()),
+        name="descargar_orden_contactos_actual_preview"),
     # ==========================================================================
     # Campana Entrante
     # ==========================================================================
@@ -728,14 +726,6 @@ urlpatterns = [
     url(r'^campana/(?P<pk_campana>\d+)/desocultar/$',
         administrador_o_supervisor_requerido(views_campana.DesOcultarCampanaView.as_view()),
         name='desoculta_campana', ),
-    url(r'^campana/llamadas_cola/$',
-        login_required(
-            views_campana.CampanaReporteQueueListView.as_view()),
-        name='reporte_llamadas_queue',
-        ),
-    url(r'^campana/(?P<pk_campana>\d+)/mostrar_json/$',
-        login_required(views_campana.campana_json_view),
-        ),
     url(r'^campana/(?P<pk_campana>\d+)/supervisors/$',
         administrador_requerido(
             views_campana.CampanaSupervisorUpdateView.as_view()),
@@ -905,7 +895,39 @@ urlpatterns = [
             views_archivo_de_audio.ArchivoAudioDeleteView.as_view()),
         name='eliminar_archivo_audio',
         ),
-    url(r'^user/(?P<username>\w{0,50})/$', views.profile_page,),
+
+
+    # ######################
+    # DEPRECATED ?
+    # ######################
+
+    url(r'^agenda/nuevo/$',
+        agente_requerido(views.nuevo_evento_agenda_view),
+        name='agenda_nuevo',
+        ),
+    url(r'^agenda/agente_list/$',
+        agente_requerido(views.AgenteEventosFormView.as_view()),
+        name='agenda_agente_list',
+        ),
+    url(r'^chat/mensaje/$',
+        login_required(views.mensaje_chat_view),
+        name='nueva_mensaje_chat',
+        ),
+    url(r'^chat/create/$',
+        login_required(views.crear_chat_view),
+        name='chat_create',
+        ),
+    # url(r'^ajax/mensaje_recibidos/',
+    #     views.mensajes_recibidos_view,
+    #     name='ajax_mensaje_recibidos'),
+    # url(r'^smsThread/$',
+    #     login_required(views.mensajes_recibidos_enviado_remitente_view),
+    #     name='view_sms_thread'),
+    # url(r'^sms/getAll/$',
+    #     login_required(views.mensajes_recibidos_view),
+    #     name='view_sms_get_all'),
+    # url(r'^user/(?P<username>\w{0,50})/$', views.profile_page,),
+
 
 ]
 
