@@ -439,7 +439,7 @@ class OrdenarAsignacionContactosView(FormView):
         else:
             message = _('Hubo un error al importar el archivo de status de contactos')
             logger.error(
-                'Error al importar el archivo de status de contactos en campaña {0}'.format(
+                'Error al importar el archivo de status de contactos en campana {0}'.format(
                     campana))
             messages.error(self.request, message)
         return super(OrdenarAsignacionContactosView, self).form_valid(form)

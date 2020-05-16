@@ -52,7 +52,7 @@ class PlaylistDirectoryManager(object):
             logger.info(_('Error creando directorio: {0}').format(directory))
             return False
         else:
-            logger.info(_('Se creó el directorio: {0}').format(directory))
+            logger.info(_('Se creo el directorio: {0}').format(directory))
         return True
 
     def eliminar_directorio(self, nombre):

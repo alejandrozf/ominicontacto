@@ -729,12 +729,9 @@ class TiemposAgente(object):
         Calcula el tiempo de pausa de los agentes en el periodo evaluado
         :return: un listado de agentes con el tiempo de pausa
         """
-        eventos_pausa = ['PAUSEALL', 'UNPAUSEALL', 'REMOVEMEMBER']
-
         agentes_tiempo = []
         # iterar por agente evaluando los eventos de pausa
         logs_time = ActividadAgenteLog.objects.obtener_pausas_por_agente_fechas_pausa(
-            eventos_pausa,
             fecha_inferior,
             fecha_superior,
             agente.id,

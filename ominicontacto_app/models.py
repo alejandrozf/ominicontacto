@@ -144,7 +144,7 @@ class User(AbstractUser):
             except Session.DoesNotExist:
                 # TODO: Este log aparece toda vez que se loggee un usuario y la key sea otra
                 #       O no exista sesion
-                logger.exception(_("Excepción detectada al obtener session "
+                logger.exception(_("Excepcion detectada al obtener session "
                                    "con el key {0} no existe".format(self.last_session_key)))
         self.last_session_key = key
         self.save()

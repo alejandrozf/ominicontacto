@@ -326,6 +326,12 @@ class QueueMemberForm(forms.ModelForm):
 
 class BaseDatosContactoForm(forms.ModelForm):
 
+    def clean_nombre(self):
+        # controlamos que el nombre no tenga espacios y caracteres no ascii
+        nombre = self.cleaned_data.get('nombre')
+        validar_solo_ascii_y_sin_espacios(nombre)
+        return nombre
+
     class Meta:
         model = BaseDatosContacto
         fields = ('nombre', 'archivo_importacion')

@@ -93,6 +93,14 @@
       - systemctl disable firewalld
   when: ansible_distribution != "Amazon"
 
+# Se descarga e instala el repositorio epel-release
+- name: Install of epel-release and centos-release-scl-rh repo (centos)
+  yum: name={{ item }} state=present update_cache=yes
+  with_items:
+    - "{{ epel_repository }}"
+    - centos-release-scl-rh
+  when: ansible_os_family == "RedHat"
+
 # Se instalan paquetes basicos que se necesitan
 - name: Install of dependencies
   yum: name={{ item }} state=present update_cache=yes
@@ -108,25 +116,15 @@
       - gdb
       - which
       - vim
+      - net-tools
       - gnutls-devel
       - python-devel
       - texinfo
       - kernel-headers
       - acl
       - bind-utils
-  retries: 3
-  delay: 3
-  register: result
-  until: result is success
-
-# Se descarga e instala el repositorio epel-release
-- name: Install of epel-release repo (centos)
-  yum: name={{ epel_repository }} state=present update_cache=yes
-  when: docker_distribution.stdout != '"Sangoma Linux"'
-
-- name: Install of python-psycopg2
-  yum: name=python-psycopg2 state=present
-  when: postgresql_new_installed.rc != 3
+      - llvm-toolset-7-clang
+      - python-psycopg2
   retries: 3
   delay: 3
   register: result
