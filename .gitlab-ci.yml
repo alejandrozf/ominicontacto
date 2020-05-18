@@ -165,7 +165,7 @@ prod-aio:
     - vagrant halt centos
     - vagrant destroy centos -f
     - ./vagrantup.sh centos
-    - python ../edit_ansible.py --internal_ip=$STAGING_IP_CENTOS --self_hosted=no --admin_pass=$DJANGO_PASS --databases_pass=$DATABASES_PASS
+    - python ../edit_inventory.py --internal_ip=$STAGING_IP_CENTOS --host_node=yes
     - cd ../../ansible
     - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
     - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
