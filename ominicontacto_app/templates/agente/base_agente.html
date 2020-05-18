@@ -776,37 +776,39 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </div> <!-- wrapper-main -->
 
 <!-- container que une la agenda con el crm-->
-<div id="bottomBar">
-    <div>
-      <div class="iconApp" id="webCall">
-        <span class="icon icon-solid-phone"></span>
-      </div>
-      <div>{% trans 'Webphone' %}</div>
-    </div>
-    <div>
-      <div class="iconApp" id="txtSms">
-        <span class="icon icon-solid-messages"></span>
-      </div>
-      <div>{% trans 'SMS' %}</div>
-    </div>
-    <div>
-      <div class="iconApp" id="webChat">
-        <span class="icon icon-solid-chat"></span>
-      </div>
-      <div>{% trans 'Webchat' %}</div>
-    </div>
-    <div>
-      <div class="iconApp" id="facebookChat">
-        <span class="icon icon-solid-fb-chat"></span>
-      </div>
-      <div>{% trans 'Social chat' %}</div>
-    </div>
-    <div>
-      <div class="iconApp" id="facebookChat">
-        <i id="fbNotReadMessagesCounter" class="material-icons"></i>
-        <span class="icon icon-solid-mail"></span>
-      </div>
-      <div>{% trans 'Email' %}</div>
+<div class="container-toolbar">
+    <div id="bottomBar">
+        <div>
+          <div class="iconApp" id="webCall">
+            <span class="icon icon-solid-phone"></span>
+          </div>
+          <div class="hidden">{% trans 'Webphone' %}</div>
+        </div>
+        <div>
+          <div class="iconApp" id="txtSms">
+            <span class="icon icon-solid-messages"></span>
+          </div>
+          <div class="hidden">{% trans 'SMS' %}</div>
+        </div>
+        <div>
+          <div class="iconApp" id="webChat">
+            <span class="icon icon-solid-chat"></span>
+          </div>
+          <div class="hidden">{% trans 'Webchat' %}</div>
+        </div>
+        <div>
+          <div class="iconApp" id="facebookChat">
+            <span class="icon icon-solid-fb-chat"></span>
+          </div>
+          <div class="hidden">{% trans 'Social chat' %}</div>
+        </div>
+        <div>
+          <div class="iconApp" id="facebookChat">
+            <i id="fbNotReadMessagesCounter" class="material-icons"></i>
+            <span class="icon icon-solid-mail"></span>
+          </div>
+          <div class="hidden">{% trans 'Email' %}</div>
+        </div>
     </div>
 </div>
 {% include 'config.html' %}
