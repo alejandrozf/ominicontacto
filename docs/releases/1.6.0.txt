@@ -1,0 +1,33 @@
+===================================
+Omnileads (OML) 1.6.0 release notes
+===================================
+
+*May 16, 2020*
+
+What's new
+=========================
+- A new API endpoint for get agent sip credential was added
+- The system now allows to specify and outbound route for outbound calls for every campaign
+- The system now allows to configure what form fields the agent can see or edit for every campaign
+- A message that ask to the agent to close its session when attempts to refresh or close the window
+- Preview campaigns allows now edit the delivering order of contacts to agents using .csv exportation/importation files.
+- Preview campaigns allows now activate/deactivate the deliver of selected contacts to agents using .csv exportation/importation files.
+- Preview campaigns allows now to directly assign agents to contacts using .csv exportation/importation files.
+- Preview campaigns allows to add new contacts to be delivered to agents while campaign is ctive
+- Persion and Portuguese translations were added to our system, thanks to @voipiran & @mssmello contributions!
+- The system allows now to be installed with external databases and rtpengine components
+- The system can be installed now on Amazon Linux
+- Contacts database name now cannot be formed with non-ASCII or space characters
+
+
+Fixes and improvements
+----------------------------------------
+- Fixed installation error by missing pyscopg2 and llvm packages
+- Fixed inconsistency error in campaign agent activity report
+- Fixed encoding related errors
+- Fixed IVR breakout dialplan related error
+- Fixed inconsistency in timezone of database entries inserted by dialplan
+- Fixed error when a contact was re-dispositioned with an engaged disposition with different form
+- Fixed inconsistency in call recordings page
+- Fixed error that not get agent in ACW pause when finished manual call
+- Fixed visualization error when creating an external site
