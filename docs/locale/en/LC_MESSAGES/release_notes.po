@@ -8,30 +8,29 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-27 17:49-0300\n"
+"POT-Creation-Date: 2020-05-19 10:36-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 # ad472e9e5da84af080e880f4bdf6ab8f
 #: ../../release_notes.rst:2
 msgid "Release Notes"
 msgstr "Release Notes"
 
-# 7cb6be6322af4d678643b0d6beead1a9
+# 73ee1e870afd4a31b43364589dd0e1ee
 #: ../../release_notes.rst:4
-msgid "*Abril 27, 2020*"
-msgstr "*April 21, 2020"
+msgid "*Mayo 19, 2020*"
+msgstr ""
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-#, fuzzy
-msgid "Detalles de Release 1.5.7"
-msgstr "Release 1.5.7 details"
+msgid "Detalles de Release 1.6.1"
+msgstr "Release 1.6.1 details"
 
 # 2f558403c15a436e90409b976c7f07ed
 #: ../../release_notes.rst:10
@@ -40,7 +39,15 @@ msgstr "Fixes and improvements"
 
 # aad09193077e4992ad8243ec8f4db81a
 #: ../../release_notes.rst:11
-msgid ""
-"Solucionado error en instalación al correr el script de instalacion por "
-"segunda vez"
-msgstr "Fixed installation error when the installation runs for second time"
+msgid "Solucionado error en instalación en Amazon Linux"
+msgstr "Fixed installation error on Amazon Linux"
+
+# aad09193077e4992ad8243ec8f4db81a
+#: ../../release_notes.rst:12
+msgid "Solucionado error de dialplan en codigo relacion con IVR breakout"
+msgstr "Fixed dialplan error in code related to IVR breakout"
+
+# aad09193077e4992ad8243ec8f4db81a
+#: ../../release_notes.rst:13
+msgid "Solucionado error de visualizacion en consola"
+msgstr "Fixed visualization issue on agent console"

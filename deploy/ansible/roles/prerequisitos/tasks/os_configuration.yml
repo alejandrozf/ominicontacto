@@ -94,12 +94,19 @@
   when: ansible_distribution != "Amazon"
 
 # Se descarga e instala el repositorio epel-release
-- name: Install of epel-release and centos-release-scl-rh repo (centos)
-  yum: name={{ item }} state=present update_cache=yes
-  with_items:
-    - "{{ epel_repository }}"
-    - centos-release-scl-rh
+- name: Install of epel-release repo
+  yum: name={{ epel_repository }} state=present update_cache=yes
   when: ansible_os_family == "RedHat"
+
+# Se descarga e instala el repositorio epel-release
+- name: Install of centos-release-scl-rh repo (centos)
+  yum: name=centos-release-scl-rh state=present update_cache=yes
+  when: ansible_distribution != "Amazon"
+
+# Se descarga e instala el repositorio epel-release
+- name: Install of llvm-toolset-7-clang repo (centos)
+  yum: name=llvm-toolset-7-clang state=present update_cache=yes
+  when: ansible_distribution != "Amazon"
 
 # Se instalan paquetes basicos que se necesitan
 - name: Install of dependencies
@@ -123,7 +130,6 @@
       - kernel-headers
       - acl
       - bind-utils
-      - llvm-toolset-7-clang
       - python-psycopg2
   retries: 3
   delay: 3
