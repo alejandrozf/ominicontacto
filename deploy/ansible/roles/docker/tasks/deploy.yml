@@ -16,6 +16,9 @@
   changed_when: false
   failed_when: false
 
+- debug: msg="Docker wasn't found on system, install it following these steps:https://docs.docker.com/get-docker/"
+  when: '"docker" not in docker_installed.stdout'
+
 # Chequeo si docker-compose está instalado
 - name: Check if docker-compose is installed
   shell: which docker-compose
@@ -26,7 +29,7 @@
 # Si docker no está instalado lo instalo
 - name: Adding docker repository
   command: yum-config-manager -y --add-repo {{ docker_repository_url }}
-  when: '"docker" not in docker_installed.stdout'
+  when: '"docker" not in docker_installed.stdout and prodenv == 1'
 
 - name: Installing docker
   yum: name={{ item }} state=present update_cache=yes
@@ -37,7 +40,7 @@
     - docker-ce
     - docker-ce-cli
     - containerd.io
-  when: '"docker" not in docker_installed.stdout'
+  when: '"docker" not in docker_installed.stdout and prodenv == 1'
   retries: 3
   delay: 3
   register: result
@@ -49,7 +52,7 @@
     curl -m 3000 -L "https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     chmod +x /usr/local/bin/docker-compose
     ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-  when: "'docker-compose' not in docker_compose_installed.stdout"
+  when: "'docker-compose' not in docker_compose_installed.stdout and prodenv == 1"
   retries: 3
   delay: 3
   register: result
@@ -84,8 +87,6 @@
 - name: Generate scripts and configuration files of some services
   template: src=roles/{{ item.src }} dest={{ item.dest }} mode=755 owner={{ usuario }} group={{ usuario }}
   with_items:
-    - { src: docker/files/docker_compose_files/docker-compose.yml, dest: "{{ deploy_location }}/docker-compose.yml"}
-    - { src: docker/files/docker_compose_files/.env, dest: "{{ deploy_location }}/.env"}
     - { src: docker/files/scripts/run_asterisk.sh, dest: "{{ ast_other_location }}/run_asterisk.sh"}
     - { src: docker/files/scripts/run_omniapp.sh, dest: "{{ omniapp_location }}/run_omniapp.sh"}
     - { src: omniapp_second/templates/bin/conversor.sh, dest: "{{ omniapp_location}}/conversor.sh" }
@@ -143,12 +144,12 @@
 # Tareas para devenv y prodenv #
 ################################
 
-# Se generan los archivos .env y docker-compose, en los templates se renderizan diferentes cosas dependiendo de si es prodenv o devenv
-- name: Generate docker-compose and .env file
-  template: src=roles/{{ item.src }} dest={{ item.dest }} mode=755 owner={{ usuario }} group={{ usuario }}
-  with_items:
-    - { src: docker/files/docker_compose_files/docker-compose.yml, dest: "{{ deploy_location }}/docker-compose.yml"}
-    - { src: docker/files/docker_compose_files/.env, dest: "{{ deploy_location }}/.env"}
+- name: Link omnileads_envars.sh file to .env file in {{ deploy_location }}
+  file: state=link src=/etc/environment dest={{ deploy_location }}/.env force=true owner={{ docker_user }} group={{ docker_user }}
+
+  # Se generan el archivo docker-compose, en los templates se renderizan diferentes cosas dependiendo de si es prodenv o devenv
+- name: Generate docker-compose file
+  template: src=files/docker_compose_files/docker-compose.yml dest={{ deploy_location }}/docker-compose.yml mode=755 owner={{ usuario }} group={{ usuario }}
 
 # Se crea el archivo kamailio-local, Este archivo contiene las variables que usa el kamailio.cfg
 - name: Creation of kamailio-local.cfg file (devenv)
@@ -189,7 +190,3 @@
     - docker
     - "omnileads-{{ customer }}"
   when: prodenv == 1
-
-# Seteo las variables de entorno en la maquina que ejecutó ansible, asi no tiene que estar ingresando los parametros en el inventory
-- name: Set environment variables for this installation
-  template: src=roles/prerequisitos/templates/omnileads_envars.sh dest=/etc/profile.d/ mode=644 owner=root group=root

@@ -352,16 +352,18 @@ Una vez instalado OMniLeads en docker no siempre va a a ser necesario ejecutar e
 2. Modificación de algún parámetro del docker-compose file.
 3. Adición de una variable de entorno nueva que requiera el sistema.
 
-En cada release nos encargaremos de avisar si es necesario o no ejecutar el instalador.
-
 * **En caso de ser necesario:** basta con seguir los pasos para :ref:`about_install_docker_linux` a excepción de que ya no es necesario ingresar :ref:`about_install_inventory_vars`, a no ser que se quiera modificar alguna variable. En la variable **oml_release**, ingresar el release al que se quiere upgradear.
-* **En caso de NO ser necesario:** basta con ingresar al folder `/home/omnileads/prodenv/` y alli modificar la variable **RELEASE** del archivo `.env`.
+* **En caso de NO ser necesario:** realizar los siguientes pasos:
+
+  * Ingresar al folder `/home/omnileads/prodenv/`
+  * Alli modificar la variable **RELEASE** del archivo `.env`.
+  * Desloguearse de la sesión actual y volverse a loguear.
 
 Luego realizar un `service omnileads-prodenv restart`.
 
 .. code-block:: bash
 
-  systemctl restart omnileads-pbx
+  systemctl restart omnileads-prodenv
 
 En el proceso de reinicio cuando se invoca el *docker-compose* al percatarse del *tag* de versión modificado se procede con la descarga de las nuevas imagenes que implementan el release especificado.
 

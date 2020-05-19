@@ -16,6 +16,10 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 ---
 
+- name: Delete omnileads_envars.sh
+  file: path=/etc/profile.d/omnileads_envars.sh state=absent
+  tags: ['docker_build','docker_deploy']
+
 # Se crea el directorio $USER_HOME/omnileads
 - name: Create root path of docker omnileads
   file: path={{ docker_root }}/omnileads/ state=directory recurse=yes owner={{ docker_user }} group={{ docker_user }}
@@ -40,6 +44,10 @@
 # Se incluyen las tareas de chequeos iniciales para ver si ya existen variables de entorno, hago este include solo para el deploy
 - include_tasks: roles/prerequisitos/tasks/checks.yml
   tags: ['never', 'docker_deploy']
+
+- name: Set environment variables for this installation
+  template: src=files/docker_compose_files/.env dest=/etc/environment mode=644 owner=root group=root
+  tags: ['docker_build','docker_deploy']
 
 - include: build.yml
   tags: docker_build

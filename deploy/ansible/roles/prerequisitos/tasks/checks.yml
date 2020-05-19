@@ -178,19 +178,6 @@
 #  faltó                                                                                             #
 ######################################################################################################
 
-- name: Check if $DOCKER_USER was defined previously
-  shell: bash -lc 'if [ -z $DOCKER_USER ]; then exit 1; else echo $DOCKER_USER; exit 0; fi'
-  args:
-    executable: /bin/bash
-  changed_when: false
-  failed_when: false
-  register: assert_docker_user
-  tags: docker_deploy
-
-- set_fact: registry_username="{{ assert_docker_user.stdout }}"
-  when: assert_docker_user.rc == 0 and registry_username is not defined
-  tags: docker_deploy
-
 - name: Check if $TZ was defined previously
   shell: bash -lc 'if [ -z $TZ ]; then exit 1; else echo $TZ; exit 0; fi'
   args:
@@ -371,12 +358,7 @@
   when: docker_distribution.stdout == '"Issabel PBX"'
   tags: ['never', 'docker_deploy']
 
-# Chequea si registry_username esta definido
-- name: Check if registry_username variable is defined
-  fail:
-    msg: registry_username variable undefined, edit registry_username variable in inventory file
-  when: registry_username is not defined and assert_docker_user.rc == 1 and devenv == 1
-  tags: docker_deploy
+# Chequea si timezone esta definido
 - name: Check if TimeZone variable is defined
   fail:
     msg: TimeZone variable undefined, edit TZ variable in inventory file
