@@ -37,7 +37,7 @@
   tags: postinstall
 
 # Se copian para docker prodenv (build)
-- name: Copy of asterisk dialplan files for OML (cluster)
+- name: Copy of asterisk dialplan files for OML (docker)
   copy: src={{ repo_location }}/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ ast_conf_location }} owner={{ usuario }} group={{ usuario }}
   with_items:
     - oml_extensions_bridgecall.conf
@@ -91,34 +91,10 @@
   when: is_docker == "false"
   tags: postinstall
 
-# Aca se encuentan los custom y override que son generados solo para instalacion desde ceros
-- name: Copy of all asterisk config files
+# Los archivos-no-enlaces se copian a la a /etc/asterisk
+- name: Copy of custom/override files
   copy: "src=roles/asterisk/templates/conf/archivos-no-enlaces/ dest={{ ast_conf_location }}/ owner={{ usuario }} group={{ usuario }} mode=755"
-
-- name: Copy of dialplan custom and override files
-  copy: "src=roles/asterisk/templates/conf/archivos-no-enlaces/{{ item }} dest={{ ast_conf_location }}/ owner={{ usuario }} group={{ usuario }} mode=755"
-  with_items:
-    - oml_extensions_bridgecall_custom.conf
-    - oml_extensions_commonsub_custom.conf
-    - oml_extensions_modules_custom.conf
-    - oml_extensions_postcall_custom.conf
-    - oml_extensions_precall_custom.conf
-    - oml_extensions_bridgecall_override.conf
-    - oml_extensions_commonsub_override.conf
-    - oml_extensions_modules_override.conf
-    - oml_extensions_postcall_override.conf
-    - oml_extensions_precall_override.conf
-  tags: postinstall
   when: ast_custom_exists.rc != 0
-
-# Se hace una tarea aparte para los custom y override pjsip, para que se añadan en un postinstall
-- name: Copy of pjsip custom and override files
-  copy: "src=roles/asterisk/templates/conf/archivos-no-enlaces/{{ item }} dest={{ ast_conf_location }}/ owner={{ usuario }} group={{ usuario }} mode=755"
-  with_items:
-    - oml_pjsip_custom.conf
-    - oml_pjsip_wizard_custom.conf
-    - oml_pjsip_override.conf
-    - oml_pjsip_wizard_override.conf
   tags: postinstall
 
 # Genero los agis desde ansible
