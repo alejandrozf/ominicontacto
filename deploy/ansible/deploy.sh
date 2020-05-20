@@ -37,6 +37,7 @@ export ANSIBLE_CONFIG=$TMP_ANSIBLE
 arg1=$1
 
 OSValidation(){
+  if [ -z $INTERFACE ]; then INTERFACE=none; fi
   if [ -z $PIP ]; then
     os=`awk -F= '/^NAME/{print $2}' /etc/os-release`
     if [ "$os" == '"CentOS Linux"' ] || [ "$os" == '"Issabel PBX"' ] || [ "$os" == '"Sangoma Linux"' ]; then
@@ -50,8 +51,11 @@ OSValidation(){
       amazon-linux-extras enable epel
       echo "Installing python2-pip"
       yum install python-pip patch libedit-devel libuuid-devel -y
+    elif [ "$os" == '"Ubuntu"' ] || [ "$os" == '"Debian GNU/Linux"' ] && [ "$INTERFACE" == "none" ]; then
+      echo "Installing python-pip"
+      apt-get install python-minimal python-pip -y
     else
-      echo "The OS you are trying to install is not supported to install this software."
+      echo "The OS you are trying to install is not supported to install in this mode."
       exit 1
     fi
   PIP=`which pip`
@@ -221,7 +225,6 @@ EOF
 }
 
 AnsibleExec() {
-    if [ -z $INTERFACE ]; then INTERFACE=none; fi
     echo "Checking if there are hosts to deploy from inventory file"
     if ${ANSIBLE} all --list-hosts -i $TMP_ANSIBLE/inventory | grep -q '(0)' 2>/dev/null; then
       echo "All hosts in inventory file are commented, please check the file according to documentation"
@@ -285,8 +288,7 @@ if [ $(ls -l $certs_location/*.pem 2>/dev/null | wc -l) -eq 4 ]; then
   rm -rf $certs_location/key.pem $certs_location/cert.pem
 fi
 }
-UserValidation
-OSValidation
+
 for i in "$@"
 do
   case $i in
@@ -354,6 +356,8 @@ else
       exit 1
     fi
 fi
+UserValidation
+OSValidation
 AnsibleInstall
 CodeCopy
 VersionGeneration
