@@ -619,6 +619,14 @@ class ActualizaBaseDatosContactoView(UpdateView):
                 messages.ERROR,
                 message,
             )
+        except Exception as e:
+            message = _('Error al procesar el archivo de base de contactos: {0}'.format(e))
+            logger.error(message)
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
         else:
             return estructura_archivo
 
@@ -667,7 +675,8 @@ class ActualizaBaseDatosContactoView(UpdateView):
                 form_primer_linea_encabezado=form_primer_linea_encabezado
             ))
 
-        return redirect(reverse('nueva_base_datos_contacto'))
+        return redirect(
+            reverse('update_base_datos_contacto_de_campana', kwargs={'pk_campana': '9'}))
 
     def form_invalid(self, estructura_archivo,
                      form_primer_linea_encabezado, error=None):
