@@ -27,7 +27,6 @@ from django.views.generic import View
 
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -36,7 +35,7 @@ from api_app.authentication import ExpiringTokenAuthentication
 from api_app.forms import Click2CallOMLParametersForm, Click2CallExternalSiteParametersForm
 from api_app.serializers import (OpcionCalificacionSerializer, CalificacionClienteSerializer,
                                  CalificacionClienteNuevoContactoSerializer)
-from api_app.views.permissions import EsAgentePermiso
+from api_app.views.permissions import TienePermisoOML
 
 from ominicontacto_app.models import (Campana, SistemaExterno, CalificacionCliente, Contacto)
 from ominicontacto_app.services.asterisk.agent_activity import AgentActivityAmiManager
@@ -47,7 +46,7 @@ class OpcionesCalificacionViewSet(viewsets.ModelViewSet):
     """Servicio que devuelve las opciones de calificación de una campaña
     """
     serializer_class = OpcionCalificacionSerializer
-    permission_classes = (IsAuthenticated, EsAgentePermiso)
+    permission_classes = (TienePermisoOML, )
     http_method_names = ['get']
 
     def _validar_parametros(self, pk_campana, pk_sistema_externo):
@@ -87,7 +86,7 @@ class OpcionesCalificacionViewSet(viewsets.ModelViewSet):
 class ApiCalificacionClienteView(viewsets.ModelViewSet):
     """Vista que permite gestionar calificaciones """
 
-    permission_classes = (IsAuthenticated, EsAgentePermiso)
+    permission_classes = (TienePermisoOML, )
     serializer_class = CalificacionClienteSerializer
     http_method_names = ['get', 'post', 'put']
 
@@ -99,14 +98,14 @@ class ApiCalificacionClienteView(viewsets.ModelViewSet):
 
 class ApiCalificacionClienteCreateView(viewsets.ModelViewSet):
     """Vista que permite crear una calificación"""
-    permission_classes = (IsAuthenticated, EsAgentePermiso)
+    permission_classes = (TienePermisoOML, )
     serializer_class = CalificacionClienteNuevoContactoSerializer
     http_method_names = ['post']
 
 
 class API_ObtenerContactosCampanaView(APIView):
 
-    permission_classes = (IsAuthenticated, EsAgentePermiso)
+    permission_classes = (TienePermisoOML, )
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication)
 
     def _procesar_api(self, request, campana):
@@ -153,7 +152,7 @@ class Click2CallView(APIView):
         - idExternalSystem (opcional)
         - idCampaign, idAgent, idContact, phone
     """
-    permission_classes = (IsAuthenticated, EsAgentePermiso, )
+    permission_classes = (TienePermisoOML, )
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
     renderer_classes = (JSONRenderer, )
 
@@ -206,7 +205,7 @@ class Click2CallView(APIView):
 
 
 class AgentLoginAsterisk(APIView):
-    permission_classes = (IsAuthenticated, EsAgentePermiso, )
+    permission_classes = (TienePermisoOML, )
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
     renderer_classes = (JSONRenderer, )
     http_method_names = ['post']
@@ -230,7 +229,7 @@ class AgentLoginAsterisk(APIView):
 
 
 class AgentLogoutAsterisk(APIView):
-    permission_classes = (IsAuthenticated, EsAgentePermiso, )
+    permission_classes = (TienePermisoOML, )
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
     renderer_classes = (JSONRenderer, )
     http_method_names = ['post']
@@ -272,7 +271,7 @@ class AgentPauseAsterisk(APIView):
         Vista para ejecutar la pausa de agente a asterisk, realizando las acciones
         que solia hacer la extension 0077X
     """
-    permission_classes = (IsAuthenticated, EsAgentePermiso, )
+    permission_classes = (TienePermisoOML, )
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
     renderer_classes = (JSONRenderer, )
     http_method_names = ['post']
@@ -298,7 +297,7 @@ class AgentUnpauseAsterisk(APIView):
         Vista para ejecutar la despausa de agente a asterisk, realizando las acciones
         que solia hacer la extension 0077UNPAUSE
     """
-    permission_classes = (IsAuthenticated, EsAgentePermiso, )
+    permission_classes = (TienePermisoOML, )
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
     renderer_classes = (JSONRenderer, )
     http_method_names = ['post']

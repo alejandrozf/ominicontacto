@@ -84,6 +84,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'defender.middleware.FailedLoginMiddleware',
+    'ominicontacto_app.middleware.permiso_oml.PermisoOMLMiddleware'
 ]
 
 

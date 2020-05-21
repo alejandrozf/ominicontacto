@@ -32,27 +32,25 @@ from configuracion_telefonia_app.tests.factories import (
     RutaEntranteFactory, IVRFactory, OpcionDestinoFactory, ValidacionTiempoFactory,
     ValidacionFechaHoraFactory)
 
-from ominicontacto_app.models import Campana
+from ominicontacto_app.models import Campana, User
 from ominicontacto_app.tests.factories import CampanaFactory, ArchivoDeAudioFactory
-from ominicontacto_app.tests.utiles import OMLBaseTest
+from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 
 
 class TestsRutasEntrantes(OMLBaseTest):
-    PWD = u'admin123'
 
     def setUp(self, *args, **kwargs):
         super(TestsRutasEntrantes, self).setUp(*args, **kwargs)
 
         self.admin = self.crear_administrador()
-        self.admin.set_password(self.PWD)
 
         # Creo un Supervisor Normal
-        self.usr_sup = self.crear_user_supervisor()
-        self.crear_supervisor_profile(self.usr_sup)
+        self.supervisor = self.crear_supervisor_profile(rol=User.SUPERVISOR)
+        self.usr_sup = self.supervisor.user
 
         # Creo un Supervisor Customer
-        self.usr_customer = self.crear_user_supervisor()
-        self.crear_supervisor_profile(self.usr_customer, is_customer=True)
+        self.referente = self.crear_supervisor_profile(rol=User.REFERENTE)
+        self.usr_referente = self.referente.user
 
         self.campana_entrante = CampanaFactory(type=Campana.TYPE_ENTRANTE)
         self.destino_campana_entrante = DestinoEntrante.crear_nodo_ruta_entrante(
@@ -103,7 +101,7 @@ class TestsRutasEntrantes(OMLBaseTest):
 
     def test_usuario_sin_administracion_no_puede_crear_ruta_entrante(self):
         url = reverse('crear_ruta_entrante')
-        self.client.login(username=self.usr_sup.username, password=self.PWD)
+        self.client.login(username=self.usr_sup.username, password=PASSWORD)
         post_data = self._obtener_post_data_ruta_entrante()
         n_rutas_entrantes = RutaEntrante.objects.count()
         self.client.post(url, post_data, follow=True)
@@ -112,7 +110,7 @@ class TestsRutasEntrantes(OMLBaseTest):
     @patch('configuracion_telefonia_app.views.base.escribir_ruta_entrante_config')
     def test_usuario_administrador_puede_crear_ruta_entrante(self, escribir_ruta_entrante_config):
         url = reverse('crear_ruta_entrante')
-        self.client.login(username=self.admin.username, password=self.PWD)
+        self.client.login(username=self.admin.username, password=PASSWORD)
         post_data = self._obtener_post_data_ruta_entrante()
         n_rutas_entrantes = RutaEntrante.objects.count()
         self.client.post(url, post_data, follow=True)
@@ -121,7 +119,7 @@ class TestsRutasEntrantes(OMLBaseTest):
     def test_usuario_sin_administracion_no_puede_modificar_ruta_entrante(self):
         nuevo_nombre = 'ruta_entrante_modificada'
         url = reverse('editar_ruta_entrante', args=[self.ruta_entrante.pk])
-        self.client.login(username=self.usr_sup.username, password=self.PWD)
+        self.client.login(username=self.usr_sup.username, password=PASSWORD)
         post_data = self._obtener_post_data_ruta_entrante()
         post_data['id'] = self.ruta_entrante.pk
         post_data['nombre'] = nuevo_nombre
@@ -135,7 +133,7 @@ class TestsRutasEntrantes(OMLBaseTest):
             self, eliminar_ruta_entrante_config, escribir_ruta_entrante_config):
         nuevo_nombre = 'ruta_entrante_modificada'
         url = reverse('editar_ruta_entrante', args=[self.ruta_entrante.pk])
-        self.client.login(username=self.admin.username, password=self.PWD)
+        self.client.login(username=self.admin.username, password=PASSWORD)
         post_data = self._obtener_post_data_ruta_entrante()
         post_data['id'] = self.ruta_entrante.pk
         post_data['nombre'] = nuevo_nombre
@@ -146,7 +144,7 @@ class TestsRutasEntrantes(OMLBaseTest):
 
     def test_usuario_sin_administracion_no_puede_eliminar_ruta_entrante(self):
         url = reverse('eliminar_ruta_entrante', args=[self.ruta_entrante.pk])
-        self.client.login(username=self.usr_sup.username, password=self.PWD)
+        self.client.login(username=self.usr_sup.username, password=PASSWORD)
         n_rutas_entrantes = RutaEntrante.objects.count()
         self.client.post(url, follow=True)
         self.assertEqual(RutaEntrante.objects.count(), n_rutas_entrantes)
@@ -155,7 +153,7 @@ class TestsRutasEntrantes(OMLBaseTest):
     def test_usuario_administrador_puede_eliminar_ruta_entrante(
             self, eliminar_ruta_entrante_config):
         url = reverse('eliminar_ruta_entrante', args=[self.ruta_entrante.pk])
-        self.client.login(username=self.admin.username, password=self.PWD)
+        self.client.login(username=self.admin.username, password=PASSWORD)
         n_rutas_entrantes = RutaEntrante.objects.count()
         self.client.post(url, follow=True)
         self.assertEqual(RutaEntrante.objects.count(), n_rutas_entrantes - 1)
@@ -196,7 +194,7 @@ class TestsRutasEntrantes(OMLBaseTest):
 
     def test_usuario_sin_administracion_no_puede_crear_ivr(self):
         url = reverse('crear_ivr')
-        self.client.login(username=self.usr_sup.username, password=self.PWD)
+        self.client.login(username=self.usr_sup.username, password=PASSWORD)
         post_data = self._obtener_post_data_ivr()
         n_ivrs = IVR.objects.count()
         response = self.client.post(url, post_data, follow=True)
@@ -206,7 +204,7 @@ class TestsRutasEntrantes(OMLBaseTest):
     @patch('configuracion_telefonia_app.views.base.escribir_nodo_entrante_config')
     def test_usuario_administrador_puede_crear_ivr(self, escribir_nodo_entrante_config):
         url = reverse('crear_ivr')
-        self.client.login(username=self.admin.username, password=self.PWD)
+        self.client.login(username=self.admin.username, password=PASSWORD)
         post_data = self._obtener_post_data_ivr()
         n_ivrs = IVR.objects.count()
         response = self.client.post(url, post_data, follow=True)
@@ -216,7 +214,7 @@ class TestsRutasEntrantes(OMLBaseTest):
     def test_usuario_sin_administracion_no_puede_modificar_ivr(self):
         url = reverse('editar_ivr', args=[self.ivr.pk])
         nuevo_nombre = 'ivr_modificado'
-        self.client.login(username=self.usr_sup.username, password=self.PWD)
+        self.client.login(username=self.usr_sup.username, password=PASSWORD)
         post_data = self._obtener_post_data_ivr()
         post_data['nombre'] = nuevo_nombre
         post_data['ivr-0-id'] = self.opc_dest_ivr_camp_entrante_1.pk
@@ -230,7 +228,7 @@ class TestsRutasEntrantes(OMLBaseTest):
     def test_usuario_administrar_puede_modificar_ivr(self, escribir_nodo_entrante_config):
         url = reverse('editar_ivr', args=[self.ivr.pk])
         nuevo_nombre = 'ivr_modificado'
-        self.client.login(username=self.admin.username, password=self.PWD)
+        self.client.login(username=self.admin.username, password=PASSWORD)
         post_data = self._obtener_post_data_ivr()
         post_data['nombre'] = nuevo_nombre
         post_data['ivr-0-id'] = self.opc_dest_ivr_camp_entrante_1.pk
@@ -243,7 +241,7 @@ class TestsRutasEntrantes(OMLBaseTest):
     @patch('configuracion_telefonia_app.views.base.escribir_nodo_entrante_config')
     def test_creacion_ivr_crea_nodo_generico_correspondiente(self, escribir_nodo_entrante_config):
         url = reverse('crear_ivr')
-        self.client.login(username=self.admin.username, password=self.PWD)
+        self.client.login(username=self.admin.username, password=PASSWORD)
         post_data = self._obtener_post_data_ivr()
         n_dests_ivrs = DestinoEntrante.objects.filter(tipo=DestinoEntrante.IVR).count()
         response = self.client.post(url, post_data, follow=True)
@@ -271,7 +269,7 @@ class TestsRutasEntrantes(OMLBaseTest):
 
     def test_usuario_customer_no_puede_crear_grupo_horario(self):
         url = reverse('crear_grupo_horario')
-        self.client.login(username=self.usr_customer.username, password=self.PWD)
+        self.client.login(username=self.usr_referente.username, password=PASSWORD)
         post_data = self._obtener_post_data_grupo_horario()
         n_grupos_horarios = GrupoHorario.objects.count()
         self.client.post(url, post_data, follow=True)
@@ -280,7 +278,7 @@ class TestsRutasEntrantes(OMLBaseTest):
     @patch('ominicontacto_app.services.asterisk_database.GrupoHorarioFamily.regenerar_family')
     def test_usuario_supervisor_puede_crear_grupo_horario(self, regenerar_family):
         url = reverse('crear_grupo_horario')
-        self.client.login(username=self.usr_sup.username, password=self.PWD)
+        self.client.login(username=self.usr_sup.username, password=PASSWORD)
         post_data = self._obtener_post_data_grupo_horario()
         n_grupos_horarios = GrupoHorario.objects.count()
         self.client.post(url, post_data, follow=True)
@@ -289,7 +287,7 @@ class TestsRutasEntrantes(OMLBaseTest):
     @patch('ominicontacto_app.services.asterisk_database.GrupoHorarioFamily.regenerar_family')
     def test_usuario_administrador_puede_crear_grupo_horario(self, regenerar_family):
         url = reverse('crear_grupo_horario')
-        self.client.login(username=self.admin.username, password=self.PWD)
+        self.client.login(username=self.admin.username, password=PASSWORD)
         post_data = self._obtener_post_data_grupo_horario()
         n_grupos_horarios = GrupoHorario.objects.count()
         self.client.post(url, post_data, follow=True)
@@ -299,7 +297,7 @@ class TestsRutasEntrantes(OMLBaseTest):
     def test_usuario_customer_no_puede_modificar_grupo_horario(self, regenerar_family):
         url = reverse('editar_grupo_horario', args=[self.grupo_horario.pk])
         nuevo_nombre = 'grupo_horario_modificado'
-        self.client.login(username=self.usr_customer.username, password=self.PWD)
+        self.client.login(username=self.usr_referente.username, password=PASSWORD)
         post_data = self._obtener_post_data_grupo_horario()
         post_data['nombre'] = nuevo_nombre
         post_data['validacion_tiempo-0-id'] = self.validacion_tiempo.pk
@@ -312,7 +310,7 @@ class TestsRutasEntrantes(OMLBaseTest):
     def test_usuario_supervisor_puede_modificar_grupo_horario(self, regenerar_family):
         url = reverse('editar_grupo_horario', args=[self.grupo_horario.pk])
         nuevo_nombre = 'grupo_horario_modificado'
-        self.client.login(username=self.usr_sup.username, password=self.PWD)
+        self.client.login(username=self.usr_sup.username, password=PASSWORD)
         post_data = self._obtener_post_data_grupo_horario()
         post_data['nombre'] = nuevo_nombre
         post_data['validacion_tiempo-0-id'] = self.validacion_tiempo.pk
@@ -326,7 +324,7 @@ class TestsRutasEntrantes(OMLBaseTest):
     def test_usuario_administrador_puede_modificar_grupo_horario(self, regenerar_family):
         url = reverse('editar_grupo_horario', args=[self.grupo_horario.pk])
         nuevo_nombre = 'grupo_horario_modificado'
-        self.client.login(username=self.admin.username, password=self.PWD)
+        self.client.login(username=self.admin.username, password=PASSWORD)
         post_data = self._obtener_post_data_grupo_horario()
         post_data['nombre'] = nuevo_nombre
         post_data['validacion_tiempo-0-id'] = self.validacion_tiempo.pk
@@ -356,7 +354,7 @@ class TestsRutasEntrantes(OMLBaseTest):
 
     def test_usuario_customer_no_puede_crear_validacion_fecha_hora(self):
         url = reverse('crear_validacion_fecha_hora')
-        self.client.login(username=self.usr_customer.username, password=self.PWD)
+        self.client.login(username=self.usr_referente.username, password=PASSWORD)
         post_data = self._obtener_post_data_validacion_fecha_hora()
         n_validaciones_fecha_hora = ValidacionFechaHora.objects.count()
         self.client.post(url, post_data, follow=True)
@@ -366,7 +364,7 @@ class TestsRutasEntrantes(OMLBaseTest):
     def test_usuario_supervisor_puede_crear_validacion_fecha_hora(
             self, escribir_nodo_entrante_config):
         url = reverse('crear_validacion_fecha_hora')
-        self.client.login(username=self.usr_sup.username, password=self.PWD)
+        self.client.login(username=self.usr_sup.username, password=PASSWORD)
         post_data = self._obtener_post_data_validacion_fecha_hora()
         n_validaciones_fecha_hora = ValidacionFechaHora.objects.count()
         response = self.client.post(url, post_data, follow=True)
@@ -377,7 +375,7 @@ class TestsRutasEntrantes(OMLBaseTest):
     def test_usuario_administrador_puede_crear_validacion_fecha_hora(
             self, escribir_nodo_entrante_config):
         url = reverse('crear_validacion_fecha_hora')
-        self.client.login(username=self.admin.username, password=self.PWD)
+        self.client.login(username=self.admin.username, password=PASSWORD)
         post_data = self._obtener_post_data_validacion_fecha_hora()
         n_validaciones_fecha_hora = ValidacionFechaHora.objects.count()
         response = self.client.post(url, post_data, follow=True)
@@ -387,7 +385,7 @@ class TestsRutasEntrantes(OMLBaseTest):
     def test_usuario_customer_no_puede_modificar_validacion_fecha_hora(self):
         nuevo_nombre = 'validacion_fecha_hora_modificada'
         url = reverse('editar_validacion_fecha_hora', args=[self.validacion_fecha_hora.pk])
-        self.client.login(username=self.usr_customer.username, password=self.PWD)
+        self.client.login(username=self.usr_referente.username, password=PASSWORD)
         post_data = self._obtener_post_data_validacion_fecha_hora()
         post_data['nombre'] = nuevo_nombre
         post_data['validacion_fecha_hora-0-id'] = self.opc_dest_val_fecha_hora_true.pk
@@ -401,7 +399,7 @@ class TestsRutasEntrantes(OMLBaseTest):
             self, escribir_nodo_entrante_config):
         nuevo_nombre = 'validacion_fecha_hora_modificada'
         url = reverse('editar_validacion_fecha_hora', args=[self.validacion_fecha_hora.pk])
-        self.client.login(username=self.usr_sup.username, password=self.PWD)
+        self.client.login(username=self.usr_sup.username, password=PASSWORD)
         post_data = self._obtener_post_data_validacion_fecha_hora()
         post_data['nombre'] = nuevo_nombre
         post_data['validacion_fecha_hora-0-id'] = self.opc_dest_val_fecha_hora_true.pk
@@ -416,7 +414,7 @@ class TestsRutasEntrantes(OMLBaseTest):
             self, escribir_nodo_entrante_config):
         nuevo_nombre = 'validacion_fecha_hora_modificada'
         url = reverse('editar_validacion_fecha_hora', args=[self.validacion_fecha_hora.pk])
-        self.client.login(username=self.admin.username, password=self.PWD)
+        self.client.login(username=self.admin.username, password=PASSWORD)
         post_data = self._obtener_post_data_validacion_fecha_hora()
         post_data['nombre'] = nuevo_nombre
         post_data['validacion_fecha_hora-0-id'] = self.opc_dest_val_fecha_hora_true.pk
@@ -430,7 +428,7 @@ class TestsRutasEntrantes(OMLBaseTest):
     def test_creacion_validacion_fecha_hora_crea_nodo_generico_correspondiente(
             self, escribir_nodo_entrante_config):
         url = reverse('crear_validacion_fecha_hora')
-        self.client.login(username=self.admin.username, password=self.PWD)
+        self.client.login(username=self.admin.username, password=PASSWORD)
         post_data = self._obtener_post_data_validacion_fecha_hora()
         n_dests_validaciones_fecha_hora = DestinoEntrante.objects.filter(
             tipo=DestinoEntrante.VALIDACION_FECHA_HORA).count()
@@ -442,7 +440,7 @@ class TestsRutasEntrantes(OMLBaseTest):
 
     def test_form_validacion_fecha_hora_destinos_iguales_es_invalido(self):
         url = reverse('crear_validacion_fecha_hora')
-        self.client.login(username=self.admin.username, password=self.PWD)
+        self.client.login(username=self.admin.username, password=PASSWORD)
         post_data = self._obtener_post_data_validacion_fecha_hora()
         post_data['validacion_fecha_hora-0-destino_siguiente'] = self.destino_campana_entrante.pk,
         post_data['validacion_fecha_hora-1-destino_siguiente'] = self.destino_campana_entrante.pk,
@@ -451,7 +449,7 @@ class TestsRutasEntrantes(OMLBaseTest):
 
     def test_form_ivr_escoger_audio_ppal_externo_no_coincide_tipo_audio_es_invalido(self):
         url = reverse('crear_ivr')
-        self.client.login(username=self.admin.username, password=self.PWD)
+        self.client.login(username=self.admin.username, password=PASSWORD)
         post_data = self._obtener_post_data_ivr()
         post_data['audio_ppal_escoger'] = IVRForm.AUDIO_EXTERNO
         img = BytesIO(b'mybinarydata')
@@ -463,7 +461,7 @@ class TestsRutasEntrantes(OMLBaseTest):
 
     def test_form_ivr_escoger_audio_time_out_externo_no_coincide_tipo_audio_es_invalido(self):
         url = reverse('crear_ivr')
-        self.client.login(username=self.admin.username, password=self.PWD)
+        self.client.login(username=self.admin.username, password=PASSWORD)
         post_data = self._obtener_post_data_ivr()
         post_data['time_out_audio_escoger'] = IVRForm.AUDIO_EXTERNO
         img = BytesIO(b'mybinarydata')
@@ -476,7 +474,7 @@ class TestsRutasEntrantes(OMLBaseTest):
     def test_form_ivr_escoger_audio_destino_invalido_externo_no_coincide_tipo_audio_es_invalido(
             self):
         url = reverse('crear_ivr')
-        self.client.login(username=self.admin.username, password=self.PWD)
+        self.client.login(username=self.admin.username, password=PASSWORD)
         post_data = self._obtener_post_data_ivr()
         post_data['invalid_destination_audio_escoger'] = IVRForm.AUDIO_EXTERNO
         img = BytesIO(b'mybinarydata')
@@ -488,7 +486,7 @@ class TestsRutasEntrantes(OMLBaseTest):
 
     def test_no_se_permite_crear_destino_nombre_no_alfanumerico(self):
         url = reverse('crear_destino_personalizado')
-        self.client.login(username=self.admin.username, password=self.PWD)
+        self.client.login(username=self.admin.username, password=PASSWORD)
         post_data = {
             'nombre': 'aaa bb',
             'custom_destination': 'bbb',
@@ -502,7 +500,7 @@ class TestsRutasEntrantes(OMLBaseTest):
 
     def test_no_se_permite_crear_destino_custom_destino_no_alfanumerico(self):
         url = reverse('crear_destino_personalizado')
-        self.client.login(username=self.admin.username, password=self.PWD)
+        self.client.login(username=self.admin.username, password=PASSWORD)
         post_data = {
             'nombre': 'aaabb',
             'custom_destination': 'bbb aaa',
@@ -516,7 +514,7 @@ class TestsRutasEntrantes(OMLBaseTest):
 
     def test_no_se_permite_crear_destino_custom_sin_failover(self):
         url = reverse('crear_destino_personalizado')
-        self.client.login(username=self.admin.username, password=self.PWD)
+        self.client.login(username=self.admin.username, password=PASSWORD)
         post_data = {
             'nombre': 'aaabb',
             'custom_destination': 'bbbaaa'}

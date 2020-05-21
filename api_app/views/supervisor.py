@@ -27,12 +27,11 @@ from django.http import JsonResponse
 from django.db.models import Count
 
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api_app.views.permissions import EsSupervisorPermiso
+from api_app.views.permissions import TienePermisoOML
 from api_app.serializers import (CampanaSerializer, )
 from ominicontacto_app.models import (Campana, CalificacionCliente, )
 from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorActivityAmiManager
@@ -48,7 +47,7 @@ class SupervisorCampanasActivasViewSet(viewsets.ModelViewSet):
     si este no es admin y todas las campañas activas en el caso de sí lo sea
     """
     serializer_class = CampanaSerializer
-    permission_classes = (IsAuthenticated, EsSupervisorPermiso,)
+    permission_classes = (TienePermisoOML, )
     queryset = Campana.objects.obtener_activas()
     http_method_names = ['get']
 
@@ -61,7 +60,7 @@ class SupervisorCampanasActivasViewSet(viewsets.ModelViewSet):
 
 class AgentesStatusAPIView(APIView):
     """Devuelve información de los agentes en el sistema"""
-    permission_classes = (IsAuthenticated, EsSupervisorPermiso,)
+    permission_classes = (TienePermisoOML, )
     renderer_classes = (JSONRenderer, )
     http_method_names = ['get']
 
@@ -86,7 +85,7 @@ class AgentesStatusAPIView(APIView):
 
 
 class StatusCampanasEntrantesView(APIView):
-    permission_classes = (IsAuthenticated, EsSupervisorPermiso,)
+    permission_classes = (TienePermisoOML, )
     renderer_classes = (JSONRenderer, )
     http_method_names = ['get']
 
@@ -97,7 +96,7 @@ class StatusCampanasEntrantesView(APIView):
 
 
 class StatusCampanasSalientesView(APIView):
-    permission_classes = (IsAuthenticated, EsSupervisorPermiso,)
+    permission_classes = (TienePermisoOML, )
     renderer_classes = (JSONRenderer, )
     http_method_names = ['get']
 
@@ -108,7 +107,7 @@ class StatusCampanasSalientesView(APIView):
 
 
 class InteraccionDeSupervisorSobreAgenteView(APIView):
-    permission_classes = (IsAuthenticated, EsSupervisorPermiso,)
+    permission_classes = (TienePermisoOML, )
     renderer_classes = (JSONRenderer, )
     http_method_names = ['post']
 

@@ -18,22 +18,22 @@
 #
 
 from django.conf.urls import url
-from ominicontacto_app.auth.decorators import supervisor_requerido
+from django.contrib.auth.decorators import login_required
 from supervision_app.views import (
     SupervisionAgentesView, SupervisionCampanasEntrantesView, SupervisionCampanasSalientesView
 )
 
 urlpatterns = [
     url(r'^supervision/agentes/$',
-        supervisor_requerido(SupervisionAgentesView.as_view()),
+        login_required(SupervisionAgentesView.as_view()),
         name='supervision_agentes',
         ),
     url(r'^supervision/campanas/entrantes/$',
-        supervisor_requerido(SupervisionCampanasEntrantesView.as_view()),
+        login_required(SupervisionCampanasEntrantesView.as_view()),
         name='supervision_campanas_entrantes',
         ),
     url(r'^supervision/campanas/salientes/$',
-        supervisor_requerido(SupervisionCampanasSalientesView.as_view()),
+        login_required(SupervisionCampanasSalientesView.as_view()),
         name='supervision_campanas_salientes',
         ),
 ]
