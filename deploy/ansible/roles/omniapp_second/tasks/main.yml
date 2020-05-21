@@ -17,8 +17,5 @@
 #
 ---
 
-- include: django_migrations.yml
-  tags: [omniapp']
-
 - include: omniapp_second.yml
   tags: ['omniapp']
