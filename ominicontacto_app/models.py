@@ -1014,7 +1014,7 @@ class Campana(models.Model):
     )
     reported_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    outcid = models.IntegerField(null=True, blank=True)
+    outcid = models.CharField(max_length=128, null=True, blank=True)
     outr = models.ForeignKey('configuracion_telefonia_app.RutaSaliente', blank=True, null=True,
                              on_delete=models.CASCADE)
 
