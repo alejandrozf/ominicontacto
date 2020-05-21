@@ -42,7 +42,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <tbody>
         {% for formulario in object_list %}
             {% if not formulario.oculto or mostrar_ocultos %}
-                <tr class="formularioElem">
+                <tr class="formularioElem" id="{{ formulario.nombre }}">
                     <td>{{ formulario.nombre }}</td>
                     <td>{{ formulario.descripcion }}</td>
                     <td><a class="btn btn-light" href="{% url 'formulario_vista' formulario.pk %}">{% trans 'Ver' %}</a></td>
@@ -54,11 +54,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         {% endif %}
                         {% if formulario.oculto %}
                             <div class="mostrarOcultar" id="{{ formulario.pk }}" data-mostrar-ocultos="{{ mostrar_ocultos }}">
-                                <a href="#"><span class="icon icon-eye-slash">{% trans 'Mostrar' %}</span></a>
+                                <a href="#"><span class="icon icon-eye-slash" id="mostrar">{% trans 'Mostrar' %}</span></a>
                             </div>
                         {% else %}
                             <div class="mostrarOcultar" id="{{ formulario.pk }}" data-mostrar-ocultos="{{ mostrar_ocultos }}">
-                                <a href="#"><span class="icon icon-eye">{% trans 'Ocultar' %}</span></a>
+                                <a href="#"><span class="icon icon-eye" id="ocultar">{% trans 'Ocultar' %}</span></a>
                             </div>
                         {% endif %}
                     </td>

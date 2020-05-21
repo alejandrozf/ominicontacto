@@ -34,7 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </thead>
     <tbody id="t_body_ocultas">
         {% for sistema in object_list %}
-            <tr>
+            <tr id="{{sistema.nombre}}">
                 <td>
                     {{ sistema.id }}
                 </td>
