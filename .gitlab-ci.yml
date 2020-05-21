@@ -93,6 +93,7 @@ staging-centos:
   tags:
     - build-aio
   only:
+    - /.*test-de-integración.*$/
     - schedules
     - web
 
