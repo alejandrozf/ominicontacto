@@ -1071,6 +1071,12 @@ class BloquearCamposParaAgenteForm(forms.Form):
 
         self.lista_campos_bloqueados = list(bloqueados)
         self.lista_campos_ocultos = list(ocultos)
+
+        if self.lista_campos_bloqueados:
+            str_a_persistir = json.dumps(self.lista_campos_bloqueados, separators=(',', ':'))
+            # Verifico que no se pase del limite de caracteres del campo
+            if len(str_a_persistir) > 2052:
+                raise forms.ValidationError(_('Demasiados campos bloqueados seleccionados.'))
         return super(BloquearCamposParaAgenteForm, self).clean()
 
 
