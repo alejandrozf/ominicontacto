@@ -28,6 +28,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <button type="submit" class="btn btn-danger">
             {% trans 'Eliminar' %}
         </button>
-        <a class="btn btn-outline-danger" href="{% url 'lista_identificador_cliente' %}">{% trans 'Cancelar' %}</a>
+        <a class="btn btn-outline-danger" href="{% url 'lista_identificador_cliente' page=1 %}">{% trans 'Cancelar' %}</a>
     </form>
 {% endblock %}
