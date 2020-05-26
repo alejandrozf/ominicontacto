@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-19 10:36-0300\n"
+"POT-Creation-Date: 2020-05-26 18:05-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,13 +24,13 @@ msgstr "Release Notes"
 
 # 73ee1e870afd4a31b43364589dd0e1ee
 #: ../../release_notes.rst:4
-msgid "*Mayo 19, 2020*"
-msgstr ""
+msgid "*Mayo 26, 2020*"
+msgstr "May 26, 2020"
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.6.1"
-msgstr "Release 1.6.1 details"
+msgid "Detalles de Release 1.6.2"
+msgstr "Release 1.6.2 details"
 
 # 2f558403c15a436e90409b976c7f07ed
 #: ../../release_notes.rst:10
@@ -39,15 +39,21 @@ msgstr "Fixes and improvements"
 
 # aad09193077e4992ad8243ec8f4db81a
 #: ../../release_notes.rst:11
-msgid "Solucionado error en instalación en Amazon Linux"
-msgstr "Fixed installation error on Amazon Linux"
+msgid "Solucionado error en exportación de calificaciones de gestión"
+msgstr "Fixed error when user select large number of restricted fields"
 
-# aad09193077e4992ad8243ec8f4db81a
+# 8d8c2bed3fb04706b9d55d9bf10a0ff2
 #: ../../release_notes.rst:12
-msgid "Solucionado error de dialplan en codigo relacion con IVR breakout"
-msgstr "Fixed dialplan error in code related to IVR breakout"
+msgid ""
+"Solucionado error cuando el usuario selecciona un gran numero de campos a"
+" restringir"
+msgstr ""
+"Fixed error when user select large number of restricted fields"
 
-# aad09193077e4992ad8243ec8f4db81a
+# d4277b49407b44bc91e9f2839fa73e51
 #: ../../release_notes.rst:13
-msgid "Solucionado error de visualizacion en consola"
-msgstr "Fixed visualization issue on agent console"
+msgid ""
+"Solucionado mensaje de error cuando en la creacion de base de contactos "
+"el archivo de entrada tiene columnas repetidas"
+msgstr ""
+"Fixed error message in contact database creation when input file has repeated columns"
