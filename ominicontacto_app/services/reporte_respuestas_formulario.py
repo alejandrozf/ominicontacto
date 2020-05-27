@@ -140,7 +140,7 @@ class ArchivoDeReporteRespuestaFormularioCsv(object):
                 lista_opciones.append('')
                 campos = campos_formulario_opciones[id_opcion]
                 for campo in campos:
-                    lista_opciones.append(datos[campo.nombre_campo].replace('\r\n', ' '))
+                    lista_opciones.append(datos.get(campo.nombre_campo, '').replace('\r\n', ' '))
 
                 # --- Finalmente, escribimos la linea
 
