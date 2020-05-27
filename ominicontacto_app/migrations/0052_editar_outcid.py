@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ominicontacto_app', '0050_queue_wait_announce_frequency'),
+        ('ominicontacto_app', '0051_tamano_campana_campos_restriccion'),
     ]
 
     operations = [
