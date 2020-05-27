@@ -25,7 +25,7 @@ from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP_200_OK
@@ -33,7 +33,7 @@ from rest_framework.views import APIView
 
 from api_app.authentication import token_expire_handler, expires_in, ExpiringTokenAuthentication
 from api_app.serializers import UserSigninSerializer, UserSerializer
-from api_app.views.permissions import EsSupervisorOAgentePermiso
+from api_app.views.permissions import TienePermisoOML
 from ominicontacto_app.forms import FormularioNuevoContacto
 from ominicontacto_app.models import SistemaExterno, Campana
 
@@ -66,7 +66,7 @@ def login(request):
 
 
 class ContactoCreateView(APIView):
-    permission_classes = (IsAuthenticated, EsSupervisorOAgentePermiso)
+    permission_classes = (TienePermisoOML, )
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication)
     http_method_names = ['post']
     renderer_classes = (JSONRenderer, )
@@ -194,7 +194,7 @@ class ContactoCreateView(APIView):
 
 
 class CampaignDatabaseMetadataView(APIView):
-    permission_classes = (IsAuthenticated, EsSupervisorOAgentePermiso)
+    permission_classes = (TienePermisoOML, )
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication)
     http_method_names = ['post']
     renderer_classes = (JSONRenderer, )

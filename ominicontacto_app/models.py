@@ -34,11 +34,12 @@ from ast import literal_eval
 
 from crontab import CronTab
 
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, _user_has_perm
 from django.contrib.sessions.models import Session
 from django.db import (models,
                        # connection
                        )
+
 from django.db.models import Max, Q, Count, Sum
 from django.db.utils import DatabaseError
 from django.conf import settings
@@ -52,6 +53,8 @@ from simple_history.models import HistoricalRecords
 from ominicontacto_app.utiles import (
     ValidadorDeNombreDeCampoExtra, fecha_local, datetime_hora_maxima_dia,
     datetime_hora_minima_dia, remplace_espacio_por_guion, dividir_lista)
+from ominicontacto_app.permisos import PermisoOML
+PermisoOML
 
 logger = logging.getLogger(__name__)
 
@@ -61,11 +64,26 @@ SUBSITUTE_ALFANUMERICO = re.compile(r'[^\w]')
 
 
 class User(AbstractUser):
+
+    # Roles predefinidos
+    ADMINISTRADOR = 'Administrador'
+    GERENTE = 'Gerente'
+    SUPERVISOR = 'Supervisor'
+    REFERENTE = 'Referente'
+    AGENTE = 'Agente'
+    CLIENTE_WEBPHONE = 'Cliente Webphone'
+
     is_agente = models.BooleanField(default=False)
     is_supervisor = models.BooleanField(default=False)
     is_cliente_webphone = models.BooleanField(default=False)
     last_session_key = models.CharField(blank=True, null=True, max_length=40)
     borrado = models.BooleanField(default=False, editable=False)
+
+    @property
+    def rol(self):
+        # Se asume que tiene un solo grupo
+        rol = self.groups.first()
+        return rol
 
     def get_agente_profile(self):
         agente_profile = None
@@ -133,6 +151,13 @@ class User(AbstractUser):
         elif self.get_is_supervisor_normal():
             return True
         return False
+
+    def tiene_permiso_oml(self, nombre_permiso):
+        if PermisoOML.objects.filter(codename=nombre_permiso).exists():
+            full_name = 'permiso_oml.{0}'.format(nombre_permiso)
+            return _user_has_perm(self, full_name, None)
+        # Si no existe el permiso la vista no esta restringida
+        return True
 
     def set_session_key(self, key):
         if self.last_session_key and not self.last_session_key == key:
@@ -310,6 +335,7 @@ class SupervisorProfile(models.Model):
     is_customer = models.BooleanField(default=False)
     borrado = models.BooleanField(default=False, editable=False)
     timestamp = models.CharField(max_length=64, blank=True, null=True)
+    # TODO: OML-1448 eliminar los campos timestamp y sip_password
 
     def __str__(self):
         return self.user.get_full_name()

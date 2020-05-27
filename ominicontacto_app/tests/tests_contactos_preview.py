@@ -31,7 +31,7 @@ from django.urls import reverse
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, QueueFactory,
                                                AgenteEnContactoFactory)
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
-from ominicontacto_app.models import AgenteEnContacto, Campana
+from ominicontacto_app.models import AgenteEnContacto, Campana, User
 
 
 class AsignacionDeContactosPreviewTests(OMLBaseTest):
@@ -39,7 +39,7 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
     def setUp(self):
         self.agente_1 = self.crear_agente_profile()
         self.agente_2 = self.crear_agente_profile()
-        self.supervisor = self.crear_supervisor_profile()
+        self.supervisor = self.crear_supervisor_profile(rol=User.SUPERVISOR)
         self.campana_preview = CampanaFactory.create(
             type=Campana.TYPE_PREVIEW, tiempo_desconexion=2, estado=Campana.ESTADO_ACTIVA)
         QueueFactory.create(campana=self.campana_preview)

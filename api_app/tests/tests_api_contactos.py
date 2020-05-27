@@ -23,31 +23,31 @@ from django.utils.translation import ugettext as _
 from django.urls import reverse
 
 from ominicontacto_app.models import Contacto, AgenteEnContacto
-from ominicontacto_app.tests.utiles import OMLBaseTest
+from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 from ominicontacto_app.tests.factories import (
     SistemaExternoFactory, QueueMemberFactory, CampanaFactory, QueueFactory
 )
 
-from ominicontacto_app.models import AgenteEnSistemaExterno, Campana
+from ominicontacto_app.models import AgenteEnSistemaExterno, Campana, User
 
 
 class APITest(OMLBaseTest):
     """ Tests para la api de Click2Call"""
-    PWD = u'admin123'
 
     def setUp(self):
+        super(APITest, self).setUp()
 
         self.sistema_externo = SistemaExternoFactory()
         # self.sistema_externo_2 = SistemaExternoFactory()
         usr_supervisor = self.crear_user_supervisor(username='sup1')
-        self.crear_supervisor_profile(usr_supervisor)
+        self.crear_supervisor_profile(user=usr_supervisor, rol=User.SUPERVISOR)
         usr_supervisor2 = self.crear_user_supervisor(username='sup2')
-        self.crear_supervisor_profile(usr_supervisor2)
+        self.crear_supervisor_profile(user=usr_supervisor2, rol=User.SUPERVISOR)
 
         usr_agente = self.crear_user_agente(username='agente1')
         self.agente = self.crear_agente_profile(usr_agente)
 
-        self.client.login(username=usr_agente.username, password=self.PWD)
+        self.client.login(username=usr_agente.username, password=PASSWORD)
 
         self.agente_2 = self.crear_agente_profile()
 
@@ -133,7 +133,7 @@ class DatabaseMetadataTest(APITest):
 
     def test_usuario_supervisor_no_asignado(self):
         self.client.logout()
-        self.client.login(username='sup2', password=self.PWD)
+        self.client.login(username='sup2', password=PASSWORD)
         response = self.client.post(self.URL, {'idCampaign': str(self.campana.id), })
         self.assertEqual(response.status_code, 400)
         response_json = json.loads(response.content)
@@ -143,7 +143,7 @@ class DatabaseMetadataTest(APITest):
 
     def test_usuario_supervisor_asignado(self):
         self.client.logout()
-        self.client.login(username='sup1', password=self.PWD)
+        self.client.login(username='sup1', password=PASSWORD)
         response = self.client.post(self.URL, {'idCampaign': str(self.campana.id), })
         self.assertEqual(response.status_code, 200)
         response_json = response.json()
@@ -151,7 +151,7 @@ class DatabaseMetadataTest(APITest):
 
     def test_usuario_agente_no_asignado(self):
         self.client.logout()
-        self.client.login(username=self.agente_2.user.username, password=self.PWD)
+        self.client.login(username=self.agente_2.user.username, password=PASSWORD)
         response = self.client.post(self.URL, {'idCampaign': str(self.campana.id), })
         self.assertEqual(response.status_code, 400)
         response_json = json.loads(response.content)
@@ -219,7 +219,7 @@ class CrearContactoTest(APITest):
 
     def test_usuario_supervisor_no_asignado(self):
         self.client.logout()
-        self.client.login(username='sup2', password=self.PWD)
+        self.client.login(username='sup2', password=PASSWORD)
         response = self.client.post(self.URL, json.dumps(self.post_data_contacto),
                                     format='json', content_type='application/json')
         self.assertEqual(response.status_code, 400)
@@ -230,7 +230,7 @@ class CrearContactoTest(APITest):
 
     def test_usuario_supervisor_asignado(self):
         self.client.logout()
-        self.client.login(username='sup1', password=self.PWD)
+        self.client.login(username='sup1', password=PASSWORD)
         cant_inicial = Contacto.objects.count()
         response = self.client.post(self.URL, json.dumps(self.post_data_contacto),
                                     format='json', content_type='application/json')
@@ -242,7 +242,7 @@ class CrearContactoTest(APITest):
 
     def test_usuario_agente_no_asignado(self):
         self.client.logout()
-        self.client.login(username=self.agente_2.user.username, password=self.PWD)
+        self.client.login(username=self.agente_2.user.username, password=PASSWORD)
         response = self.client.post(self.URL, json.dumps(self.post_data_contacto),
                                     format='json', content_type='application/json')
         self.assertEqual(response.status_code, 400)
@@ -386,7 +386,7 @@ class CrearContactoTest(APITest):
         QueueFactory(campana=campana)
         QueueMemberFactory.create(member=self.agente, queue_name=campana.queue_campana)
         self.client.logout()
-        self.client.login(username=usr_supervisor.username, password=self.PWD)
+        self.client.login(username=usr_supervisor.username, password=PASSWORD)
 
         post_data = self.post_data_contacto
         post_data['idCampaign'] = str(campana.id)

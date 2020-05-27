@@ -20,10 +20,9 @@
 from __future__ import unicode_literals
 
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
 
 from api_app.serializers import (AgenteProfileSerializer, )
-from api_app.views.permissions import EsAdminPermiso
+from api_app.views.permissions import TienePermisoOML
 from ominicontacto_app.models import (AgenteProfile, )
 
 
@@ -31,7 +30,7 @@ class AgentesActivosGrupoViewSet(viewsets.ModelViewSet):
     """Servicio que devuelve las agentes activos de un grupo
     """
     serializer_class = AgenteProfileSerializer
-    permission_classes = (IsAuthenticated, EsAdminPermiso,)
+    permission_classes = (TienePermisoOML, )
     http_method_names = ['get']
 
     def get_queryset(self):

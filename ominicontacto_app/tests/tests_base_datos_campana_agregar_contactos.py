@@ -24,13 +24,13 @@ from django.utils.translation import ugettext as _
 
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 from ominicontacto_app.tests.factories import CampanaFactory
-from ominicontacto_app.models import Campana, Contacto, AgenteEnContacto
+from ominicontacto_app.models import Campana, Contacto, AgenteEnContacto, User
 
 
 class AgregarContactoACampanaTest(OMLBaseTest):
 
     def setUp(self):
-        self.supervisor = self.crear_supervisor_profile()
+        self.supervisor = self.crear_supervisor_profile(rol=User.SUPERVISOR)
 
         self.client.login(username=self.supervisor.user.username, password=PASSWORD)
 

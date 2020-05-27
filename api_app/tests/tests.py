@@ -23,7 +23,7 @@ from mock import patch
 
 from django.conf import settings
 from django.urls import reverse
-from django.test import TestCase, RequestFactory
+from django.test import RequestFactory
 
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient
@@ -32,34 +32,24 @@ from api_app.views.base import login
 from ominicontacto_app.services.asterisk.agent_activity import AgentActivityAmiManager
 from ominicontacto_app.models import Campana, User, Contacto
 from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnector
-from ominicontacto_app.tests.factories import (CampanaFactory, SupervisorProfileFactory,
-                                               AgenteProfileFactory, SistemaExternoFactory,
+from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
+from ominicontacto_app.tests.factories import (CampanaFactory, SistemaExternoFactory,
                                                AgenteEnSistemaExternoFactory,
                                                OpcionCalificacionFactory, ContactoFactory,
                                                CalificacionCliente, QueueFactory,
                                                QueueMemberFactory, CalificacionClienteFactory)
 
 
-class APITest(TestCase):
+class APITest(OMLBaseTest):
     """Agrupa todos los test relacionados con los servicios creados para la API del sistema"""
 
-    PWD = u'generica123'
-
     def setUp(self):
+        super(APITest, self).setUp()
         self.factory = RequestFactory()
 
-        self.supervisor_admin = SupervisorProfileFactory(is_administrador=True)
-        self.supervisor_admin.user.set_password(self.PWD)
-        self.supervisor_admin.user.save()
-
-        self.supervisor = SupervisorProfileFactory(is_administrador=False)
-        self.supervisor.user.set_password(self.PWD)
-        self.supervisor.user.save()
-
-        self.agente_profile = AgenteProfileFactory()
-        self.agente_profile.user.set_password(self.PWD)
-        self.agente_profile.user.is_agente = True
-        self.agente_profile.user.save()
+        self.supervisor_admin = self.crear_supervisor_profile(rol=User.ADMINISTRADOR)
+        self.supervisor = self.crear_supervisor_profile(rol=User.SUPERVISOR)
+        self.agente_profile = self.crear_agente_profile()
 
         self.campana_activa = CampanaFactory.create(estado=Campana.ESTADO_ACTIVA)
         self.campana_activa_supervisor = CampanaFactory.create(estado=Campana.ESTADO_ACTIVA)
@@ -78,7 +68,7 @@ class APITest(TestCase):
 
     def test_api_campanas_supervisor_usuario_supervisor_admin_obtiene_todas_campanas_activas(
             self):
-        self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
+        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
         url = reverse('api_campanas_de_supervisor-list', kwargs={'format': 'json'})
         response = self.client.get(url)
         ids_campanas_esperadas = set(Campana.objects.obtener_activas().values_list('id', flat=True))
@@ -87,14 +77,14 @@ class APITest(TestCase):
 
     def test_api_campanas_supervisor_usuario_supervisor_no_admin_obtiene_campanas_activas_asignadas(
             self):
-        self.client.login(username=self.supervisor.user.username, password=self.PWD)
+        self.client.login(username=self.supervisor.user.username, password=PASSWORD)
         url = reverse('api_campanas_de_supervisor-list', kwargs={'format': 'json'})
         response = self.client.get(url)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['id'], self.campana_activa_supervisor.id)
 
     def test_servicio_campanas_supervisor_usuario_agente_no_accede_a_servicio(self):
-        self.client.login(username=self.agente_profile.user.username, password=self.PWD)
+        self.client.login(username=self.agente_profile.user.username, password=PASSWORD)
         url = reverse('api_campanas_de_supervisor-list', kwargs={'format': 'json'})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
@@ -116,7 +106,7 @@ class APITest(TestCase):
 
     def test_servicio_opciones_calificaciones_usuario_no_agente_no_accede_a_servicio(self):
         url = reverse('api_campana_opciones_calificacion-list', args=[self.campana_activa.pk, 1])
-        self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
+        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
         response = self.client.get(url, follow=True)
         self.assertEqual(response.status_code, 403)
 
@@ -125,7 +115,7 @@ class APITest(TestCase):
         self.sistema_externo.campanas.add(self.campana_activa)
         self.campana_activa.id_externo = id_externo
         self.campana_activa.save()
-        self.client.login(username=self.agente_profile.user.username, password=self.PWD)
+        self.client.login(username=self.agente_profile.user.username, password=PASSWORD)
         url = reverse(
             'api_campana_opciones_calificacion-list', args=[id_externo, self.sistema_externo.pk])
         response = self.client.get(url, follow=True)
@@ -192,7 +182,8 @@ class APITest(TestCase):
         linea_status = 'Output: /OML/AGENT/{0}/STATUS                               : {1}:155439223'
         response = []
         self.ag1 = self.agente_profile
-        self.ag2, self.ag3 = AgenteProfileFactory.create_batch(2)
+        self.ag2 = self.crear_agente_profile()
+        self.ag3 = self.crear_agente_profile()
         QueueMemberFactory.create(member=self.ag2, queue_name=self.queue)
         QueueMemberFactory.create(member=self.ag3, queue_name=self.queue)
         datos_agentes = [{'id': self.ag1.pk, 'status': 'READY'},
@@ -209,9 +200,9 @@ class APITest(TestCase):
     @patch.object(AMIManagerConnector, "_ami_manager")
     def test_servicio_agentes_activos_muestra_activos_no_offline(self, _ami_manager, manager):
         self.campana_activa.supervisors.add(self.supervisor_admin.user)
-        agente = AgenteProfileFactory()
+        agente = self.crear_agente_profile()
         QueueMemberFactory.create(member=agente, queue_name=self.queue)
-        self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
+        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
         _ami_manager.return_value = self._generar_ami_manager_response_agentes()
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
@@ -229,9 +220,9 @@ class APITest(TestCase):
             self, _ami_manager, manager):
         self.campana_activa.supervisors.add(self.supervisor_admin.user)
         ag1 = self.agente_profile
-        ag2 = AgenteProfileFactory()
+        ag2 = self.crear_agente_profile()
         QueueMemberFactory.create(member=ag2, queue_name=self.queue)
-        self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
+        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
         _ami_manager.return_value = (
             "/OML/AGENT/{0}/NAME                       : John Perkins\r\n".format(ag1.pk) +
             "/OML/AGENT/{0}/NAME                       : Silvia Pensive\r\n".format(ag2.pk) +
@@ -250,9 +241,9 @@ class APITest(TestCase):
     def test_servicio_agentes_no_adiciona_grupo_headers_desconocidos(self, _ami_manager, manager):
         self.campana_activa.supervisors.add(self.supervisor_admin.user)
         ag1 = self.agente_profile
-        ag2 = AgenteProfileFactory()
+        ag2 = self.crear_agente_profile()
         QueueMemberFactory.create(member=ag2, queue_name=self.queue)
-        self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
+        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
         _ami_manager.return_value = (
             "/OML/AGENT/{0}/NAME                         : John Perkins\r\n".format(ag1.pk) +
             "/OML/AGENT/{0}/SIP                          : 1001\r\n".format(ag1.pk) +
@@ -279,9 +270,9 @@ class APITest(TestCase):
             self, logger, _ami_manager, manager):
         self.campana_activa.supervisors.add(self.supervisor_admin.user)
         ag1 = self.agente_profile
-        ag2 = AgenteProfileFactory()
+        ag2 = self.crear_agente_profile()
         QueueMemberFactory.create(member=ag2, queue_name=self.queue)
-        self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
+        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
         _ami_manager.return_value = (
             "/OML/AGENT/{0}/NAME                           : John Perkins\r\n".format(ag1.pk) +
             "/OML/AGENT/{0}/SIP                            : \r\n".format(ag1.pk) +
@@ -301,11 +292,13 @@ class APITest(TestCase):
             self, logger, _ami_manager, manager):
         self.campana_activa.supervisors.add(self.supervisor_admin.user)
         ag1 = self.agente_profile
-        ag2, ag3, ag4 = AgenteProfileFactory.create_batch(3)
+        ag2 = self.crear_agente_profile()
+        ag3 = self.crear_agente_profile()
+        ag4 = self.crear_agente_profile()
         QueueMemberFactory.create(member=ag2, queue_name=self.queue)
         QueueMemberFactory.create(member=ag3, queue_name=self.queue)
         QueueMemberFactory.create(member=ag4, queue_name=self.queue)
-        self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
+        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
         _ami_manager.return_value = (
             "/OML/AGENT/{0}/NAME                          : John Perkins\r\n".format(ag1.pk) +
             "/OML/AGENT/{0}/SIP                           : 1001\r\n".format(ag1.pk) +
@@ -330,10 +323,11 @@ class APITest(TestCase):
             self, logger, _ami_manager, manager):
         self.campana_activa.supervisors.add(self.supervisor_admin.user)
         ag1 = self.agente_profile
-        ag10, ag11 = AgenteProfileFactory.create_batch(2)
+        ag10 = self.crear_agente_profile()
+        ag11 = self.crear_agente_profile()
         QueueMemberFactory.create(member=ag10, queue_name=self.queue)
         QueueMemberFactory.create(member=ag11, queue_name=self.queue)
-        self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
+        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
         _ami_manager.return_value = (
             "/OML/AGENT/{0}/NAME                          : Agente 01\r\n".format(ag1.pk) +
             "/OML/AGENT/{0}/SIP                           : 1004 \r\n".format(ag1.pk) +
@@ -356,9 +350,10 @@ class APITest(TestCase):
             self, logger, _ami_manager, manager):
         self.campana_activa.supervisors.add(self.supervisor_admin.user)
         ag1 = self.agente_profile
-        ag10, ag11 = AgenteProfileFactory.create_batch(2)
+        ag10 = self.crear_agente_profile()
+        ag11 = self.crear_agente_profile()
         QueueMemberFactory.create(member=ag10, queue_name=self.queue)
-        self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
+        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
         _ami_manager.return_value = (
             "/OML/AGENT/{0}/NAME                          : Agente 01\r\n".format(ag1.pk) +
             "/OML/AGENT/{0}/SIP                           : 1004\r\n".format(ag1.pk) +
@@ -384,11 +379,13 @@ class APITest(TestCase):
             self, logger, _ami_manager, manager):
         ag1_pk = self.agente_profile.pk
         self.campana_activa.supervisors.add(self.supervisor_admin.user)
-        ag2, ag3, ag4 = AgenteProfileFactory.create_batch(3)
+        ag2 = self.crear_agente_profile()
+        ag3 = self.crear_agente_profile()
+        ag4 = self.crear_agente_profile()
         QueueMemberFactory.create(member=ag2, queue_name=self.queue)
         QueueMemberFactory.create(member=ag3, queue_name=self.queue)
         QueueMemberFactory.create(member=ag4, queue_name=self.queue)
-        self.client.login(username=self.supervisor_admin.user.username, password=self.PWD)
+        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
         _ami_manager.return_value = (
             "/OML/AGENT/{0}/NAME                            : John Perkins\r\n".format(ag1_pk) +
             "/OML/AGENT/{0}/PAUSE_ID                        : 1\r\n".format(ag1_pk) +
@@ -415,7 +412,7 @@ class APITest(TestCase):
     def test_api_login_devuelve_token_asociado_al_usuario_password(self):
         url = 'https://{0}{1}'.format(settings.OML_OMNILEADS_HOSTNAME, reverse('api_login'))
         user = self.supervisor_admin.user
-        password = self.PWD
+        password = PASSWORD
         post_data = {
             'username': user.username,
             'password': password,
@@ -462,7 +459,7 @@ class APITest(TestCase):
         self.assertEqual(CalificacionCliente.objects.count(), calificaciones_count + 1)
 
     def test_api_adiciona_calificacion_ids_externos(self):
-        self.client.login(username=self.agente_profile.user.username, password=self.PWD)
+        self.client.login(username=self.agente_profile.user.username, password=PASSWORD)
         observaciones = 'calificacion externa'
         id_contacto_externo = 'contacto_externo_1'
         AgenteEnSistemaExternoFactory(
@@ -498,7 +495,7 @@ class APITest(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_api_crea_nueva_calificacion_con_nuevo_contacto_metadata_vacia(self):
-        self.client.login(username=self.agente_profile.user.username, password=self.PWD)
+        self.client.login(username=self.agente_profile.user.username, password=PASSWORD)
         observaciones = 'calificacion externa'
         phone = '1232343523'
         id_contacto_externo = 'contacto_externo_1'
@@ -589,7 +586,7 @@ class APITest(TestCase):
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AgentActivityAmiManager, "login_agent")
     def test_api_vista_login_de_agente_retorno_de_valores_correctos(self, login_agent, manager):
-        self.client.login(username=self.agente_profile.user.username, password=self.PWD)
+        self.client.login(username=self.agente_profile.user.username, password=PASSWORD)
         login_agent.return_value = False
         url = reverse('api_agent_asterisk_login')
         response = self.client.post(url)
@@ -599,7 +596,7 @@ class APITest(TestCase):
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AgentActivityAmiManager, "login_agent")
     def test_api_vista_login_de_agente_retorno_de_valores_erroneos(self, login_agent, manager):
-        self.client.login(username=self.agente_profile.user.username, password=self.PWD)
+        self.client.login(username=self.agente_profile.user.username, password=PASSWORD)
         login_agent.return_value = True
         url = reverse('api_agent_asterisk_login')
         response = self.client.post(url)
@@ -609,7 +606,7 @@ class APITest(TestCase):
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AgentActivityAmiManager, "pause_agent")
     def test_api_vista_pausa_de_agente_retorno_de_valores_correctos(self, pause_agent, manager):
-        self.client.login(username=self.agente_profile.user.username, password=self.PWD)
+        self.client.login(username=self.agente_profile.user.username, password=PASSWORD)
         pause_agent.return_value = False, False
         url = reverse('api_make_pause')
         post_data = {
@@ -622,7 +619,7 @@ class APITest(TestCase):
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AgentActivityAmiManager, "pause_agent")
     def test_api_vista_pausa_de_agente_retorno_de_valores_erroneos(self, pause_agent, manager):
-        self.client.login(username=self.agente_profile.user.username, password=self.PWD)
+        self.client.login(username=self.agente_profile.user.username, password=PASSWORD)
         pause_agent.return_value = True, False
         url = reverse('api_make_pause')
         post_data = {
@@ -636,7 +633,7 @@ class APITest(TestCase):
     @patch.object(AgentActivityAmiManager, "unpause_agent")
     def test_api_vista_despausa_de_agente_retorno_de_valores_correctos(
             self, unpause_agent, manager):
-        self.client.login(username=self.agente_profile.user.username, password=self.PWD)
+        self.client.login(username=self.agente_profile.user.username, password=PASSWORD)
         unpause_agent.return_value = False, False
         url = reverse('api_make_unpause')
         post_data = {
@@ -649,7 +646,7 @@ class APITest(TestCase):
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AgentActivityAmiManager, "unpause_agent")
     def test_api_vista_despausa_de_agente_retorno_de_valores_erroneos(self, unpause_agent, manager):
-        self.client.login(username=self.agente_profile.user.username, password=self.PWD)
+        self.client.login(username=self.agente_profile.user.username, password=PASSWORD)
         unpause_agent.return_value = True, False
         url = reverse('api_make_unpause')
         post_data = {

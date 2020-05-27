@@ -31,7 +31,7 @@ from django.utils.timezone import now, timedelta
 
 from simple_history.utils import update_change_reason
 
-from ominicontacto_app.models import Grabacion, GrabacionMarca, OpcionCalificacion, Campana
+from ominicontacto_app.models import Grabacion, GrabacionMarca, OpcionCalificacion, Campana, User
 
 from ominicontacto_app.tests.factories import (GrabacionFactory, GrabacionMarcaFactory,
                                                CalificacionClienteFactory, CampanaFactory,
@@ -45,8 +45,8 @@ from ominicontacto_app.utiles import fecha_hora_local
 class BaseGrabacionesTests(OMLBaseTest):
 
     def setUp(self):
-        self.supervisor1 = self.crear_supervisor_profile()
-        self.supervisor2 = self.crear_supervisor_profile()
+        self.supervisor1 = self.crear_supervisor_profile(rol=User.SUPERVISOR)
+        self.supervisor2 = self.crear_supervisor_profile(rol=User.SUPERVISOR)
 
         self.agente1 = self.crear_agente_profile()
         self.agente2 = self.crear_agente_profile()
