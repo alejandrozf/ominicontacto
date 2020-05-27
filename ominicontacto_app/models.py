@@ -996,8 +996,8 @@ class Campana(models.Model):
         on_delete=models.CASCADE
     )
     # Listas en formato JSON con los nombres de los campos
-    campos_bd_no_editables = models.CharField(max_length=512, default='')
-    campos_bd_ocultos = models.CharField(max_length=512, default='')
+    campos_bd_no_editables = models.CharField(max_length=2052, default='')
+    campos_bd_ocultos = models.CharField(max_length=2052, default='')
 
     oculto = models.BooleanField(default=False)
     # TODO: Sacar este campo
@@ -1307,7 +1307,7 @@ class Campana(models.Model):
     def set_campos_no_editables(self, campos_no_editables, guardar=False):
         self.campos_bd_no_editables = ""
         if campos_no_editables:
-            self.campos_bd_no_editables = json.dumps(campos_no_editables)
+            self.campos_bd_no_editables = json.dumps(campos_no_editables, separators=(',', ':'))
         if guardar:
             self.save()
 
@@ -1319,7 +1319,7 @@ class Campana(models.Model):
     def set_campos_ocultos(self, campos_ocultos, guardar=False):
         self.campos_bd_ocultos = ""
         if campos_ocultos:
-            self.campos_bd_ocultos = json.dumps(campos_ocultos)
+            self.campos_bd_ocultos = json.dumps(campos_ocultos, separators=(',', ':'))
         if guardar:
             self.save()
 

@@ -1,13 +1,13 @@
 Release Notes
 *************
 
-*Mayo 19, 2020*
+*Mayo 26, 2020*
 
-Detalles de Release 1.6.1
+Detalles de Release 1.6.2
 =========================
 
 Bug fixes y mejoras
 --------------------------
-- Solucionado error en instalación en Amazon Linux
-- Solucionado error de dialplan en codigo relacion con IVR breakout
-- Solucionado error de visualizacion en consola
+- Solucionado error en exportación de calificaciones de gestión
+- Solucionado error cuando el usuario selecciona un gran numero de campos a restringir
+- Solucionado mensaje de error cuando en la creacion de base de contactos el archivo de entrada tiene columnas repetidas

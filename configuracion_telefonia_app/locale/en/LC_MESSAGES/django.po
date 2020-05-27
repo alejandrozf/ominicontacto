@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-07 13:09-0300\n"
+"POT-Creation-Date: 2020-05-26 14:24-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,7 +40,7 @@ msgstr "Select a valid option. That option is not available."
 
 #: api_app/tests/tests_api_click2call.py:158
 #: api_app/tests/tests_api_contactos.py:170
-#: api_app/tests/tests_api_contactos.py:262 api_app/views/agente.py:170
+#: api_app/tests/tests_api_contactos.py:262 api_app/views/agente.py:197
 #: api_app/views/base.py:86 api_app/views/base.py:214
 msgid "Sistema externo inexistente."
 msgstr "Unkown external system"
@@ -83,12 +83,16 @@ msgstr "The field is required"
 msgid "Se recibieron campos incorrectos"
 msgstr "Incorrect fields were received"
 
-#: api_app/views/agente.py:169 api_app/views/agente.py:203
+#: api_app/views/agente.py:64
+msgid "Error al generar sip password"
+msgstr "Error creating sip password"
+
+#: api_app/views/agente.py:196 api_app/views/agente.py:230
 #: api_app/views/base.py:75 api_app/views/base.py:203
 msgid "Hubo errores en los datos recibidos"
 msgstr "There were errors on received data"
 
-#: api_app/views/agente.py:194
+#: api_app/views/agente.py:221
 msgid "Error al ejecutar la llamada"
 msgstr "Error when executing the call"
 
@@ -1262,7 +1266,7 @@ msgstr "Music on Hold deleted successfully"
 #: configuracion_telefonia_app/views/base.py:470
 #: configuracion_telefonia_app/views/base.py:642
 #: configuracion_telefonia_app/views/base.py:696
-#: configuracion_telefonia_app/views/base.py:871
+#: configuracion_telefonia_app/views/base.py:876
 #, python-brace-format
 msgid "<strong>¡Cuidado!</strong> con el siguiente error: {0} ."
 msgstr "<strong>Warning!</strong> with the following error: {0} ."
@@ -1300,7 +1304,9 @@ msgstr "Deleting an Outbound Route associated with a campaign is not allowed."
 msgid ""
 "No está permitido eliminar una Ruta Entrante asociadacon una campaña que "
 "tiene una Ruta Saliente."
-msgstr "Deleting an Inbound Route associated with a campaign that has an Outbound Route is not allowed"
+msgstr ""
+"Deleting an Inbound Route associated with a campaign that has an Outbound "
+"Route is not allowed"
 
 #: configuracion_telefonia_app/views/base.py:478
 msgid "Se ha eliminado la Ruta Entrante."
@@ -1330,16 +1336,16 @@ msgstr "Time Condition created successfully"
 msgid "Se ha modificado la validacion horaria con éxito"
 msgstr "Time Condition updated successfully"
 
-#: configuracion_telefonia_app/views/base.py:807
+#: configuracion_telefonia_app/views/base.py:812
 msgid "No se puede eliminar un objeto que es destino en un flujo de llamada."
 msgstr "You cannot delete an object that is current destination in a call flow"
 
-#: configuracion_telefonia_app/views/base.py:808
+#: configuracion_telefonia_app/views/base.py:813
 msgid "Se ha eliminado el Nodo."
 msgstr "Node deleted"
 
-#: configuracion_telefonia_app/views/base.py:836
-#: configuracion_telefonia_app/views/base.py:860
+#: configuracion_telefonia_app/views/base.py:841
+#: configuracion_telefonia_app/views/base.py:865
 #, python-brace-format
 msgid ""
 "No se puede eliminar la campaña. Es usada como destino failover de las "
@@ -1348,34 +1354,34 @@ msgstr ""
 "You cannot delete a campaign that is set as a failover destination in "
 "campaigns: {0}"
 
-#: configuracion_telefonia_app/views/base.py:891
+#: configuracion_telefonia_app/views/base.py:896
 msgid "No se puede eliminar un IVR que es destino en un flujo de llamada."
 msgstr "You cannot delete an IVR that is current destination in a call flow"
 
-#: configuracion_telefonia_app/views/base.py:892
+#: configuracion_telefonia_app/views/base.py:897
 msgid "Se ha eliminado el IVR."
 msgstr "IVR deleted"
 
-#: configuracion_telefonia_app/views/base.py:900
+#: configuracion_telefonia_app/views/base.py:905
 msgid ""
 "No se puede eliminar una Validación Fecha Hora mientras sea destino en un "
 "flujo de llamada."
 msgstr ""
 "You cannot delete a Time Condition that is current destination in a call flow"
 
-#: configuracion_telefonia_app/views/base.py:902
+#: configuracion_telefonia_app/views/base.py:907
 msgid "Se ha eliminado la Validación Fecha Hora."
 msgstr "Time Condition deleted"
 
-#: configuracion_telefonia_app/views/base.py:929
+#: configuracion_telefonia_app/views/base.py:934
 msgid "Se ha creado el Identificador de clientes con éxito"
 msgstr "Client Identification service created successfully"
 
-#: configuracion_telefonia_app/views/base.py:989
+#: configuracion_telefonia_app/views/base.py:994
 msgid "Se ha modificado el Identificador de clientes con éxito"
 msgstr "Client Identification service updated successfully"
 
-#: configuracion_telefonia_app/views/base.py:1068
+#: configuracion_telefonia_app/views/base.py:1073
 msgid ""
 "No se puede eliminar un Identificador de clientes que es destino en un flujo "
 "de llamada."
@@ -1383,14 +1389,14 @@ msgstr ""
 "You cannot delete an Client Identification service that is a current "
 "destination in a call flow"
 
-#: configuracion_telefonia_app/views/base.py:1070
+#: configuracion_telefonia_app/views/base.py:1075
 msgid "Se ha eliminado el Identificador de Clientes."
 msgstr "Client Identification service route removed"
 
-#: configuracion_telefonia_app/views/base.py:1097
+#: configuracion_telefonia_app/views/base.py:1102
 msgid "Se ha creado el nodo de Destino Personalizado con éxito"
 msgstr "Custom Destination created successfully"
 
-#: configuracion_telefonia_app/views/base.py:1130
+#: configuracion_telefonia_app/views/base.py:1135
 msgid "Se ha modificado el nodo de Destino Personalizado con éxito"
 msgstr "Custom Destination updated successfully"
