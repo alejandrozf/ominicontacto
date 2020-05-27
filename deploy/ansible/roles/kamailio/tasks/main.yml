@@ -38,6 +38,7 @@
   tags: kamailio
   when: rtpengine_host is not defined
 
+# Se hace lo mismo para kamailio
 - debug: msg="Kamailio {{ kamailio_version }} is not installed, proceeding to install"
   tags: ['kamailio','postinstall']
   when: kamailio_installed.stdout != kamailio_version
@@ -46,6 +47,7 @@
   tags: ['kamailio','postinstall']
   when: kamailio_installed.stdout == kamailio_version
 
+# Se desinstala la version actual de kamailio para instalar la version nueva
 - name: Uninstall actual kamailio version
   file: state=absent path={{ kamailio_location }}/{{ item }}
   with_items:
@@ -55,10 +57,12 @@
   when: kamailio_installed.stdout != kamailio_version
   tags: postinstall
 
+# Se incluyen las tareas de instalación
 - include: kamailio_installation.yml
   tags: ['kamailio','postinstall']
   when: kamailio_installed.stdout != kamailio_version
 
+# Si el deploy.sh seteó la variable trusted_certs en true, se copian los certificados trusted a la ubicacion que necesita kamailio
 - name: Copy trusted key/cert pair in kamailio location
   copy: src={{ repo_location }}/deploy/certs/{{ item.src }} dest={{ item.dest }}
   with_items:
@@ -67,9 +71,11 @@
   when: trusted_certs == "true"
   tags: postinstall
 
+# En caso contrario, "trusted_certs=false" se ejecutan las tareas para generar certs autofirmados
 - include: certificate_CA.yml
   tags: kamailio
   when: certs_exists.rc == 1 and trusted_certs == "false"
 
+# Se incluyen tareas de configuracion de kamailio
 - include: kamailio_configuration.yml
   tags: ['kamailio']

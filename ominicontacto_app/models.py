@@ -169,7 +169,7 @@ class User(AbstractUser):
             except Session.DoesNotExist:
                 # TODO: Este log aparece toda vez que se loggee un usuario y la key sea otra
                 #       O no exista sesion
-                logger.exception(_("Excepción detectada al obtener session "
+                logger.exception(_("Excepcion detectada al obtener session "
                                    "con el key {0} no existe".format(self.last_session_key)))
         self.last_session_key = key
         self.save()
@@ -1022,8 +1022,8 @@ class Campana(models.Model):
         on_delete=models.CASCADE
     )
     # Listas en formato JSON con los nombres de los campos
-    campos_bd_no_editables = models.CharField(max_length=512, default='')
-    campos_bd_ocultos = models.CharField(max_length=512, default='')
+    campos_bd_no_editables = models.CharField(max_length=2052, default='')
+    campos_bd_ocultos = models.CharField(max_length=2052, default='')
 
     oculto = models.BooleanField(default=False)
     # TODO: Sacar este campo
@@ -1039,6 +1039,10 @@ class Campana(models.Model):
         default=FORMULARIO,
     )
     reported_by = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    outcid = models.CharField(max_length=128, null=True, blank=True)
+    outr = models.ForeignKey('configuracion_telefonia_app.RutaSaliente', blank=True, null=True,
+                             on_delete=models.CASCADE)
 
     # TODO: 'supervisors' debería referenciar a SupervisorProfile no a User
     supervisors = models.ManyToManyField(User, related_name="campanasupervisors")
@@ -1329,7 +1333,7 @@ class Campana(models.Model):
     def set_campos_no_editables(self, campos_no_editables, guardar=False):
         self.campos_bd_no_editables = ""
         if campos_no_editables:
-            self.campos_bd_no_editables = json.dumps(campos_no_editables)
+            self.campos_bd_no_editables = json.dumps(campos_no_editables, separators=(',', ':'))
         if guardar:
             self.save()
 
@@ -1341,7 +1345,7 @@ class Campana(models.Model):
     def set_campos_ocultos(self, campos_ocultos, guardar=False):
         self.campos_bd_ocultos = ""
         if campos_ocultos:
-            self.campos_bd_ocultos = json.dumps(campos_ocultos)
+            self.campos_bd_ocultos = json.dumps(campos_ocultos, separators=(',', ':'))
         if guardar:
             self.save()
 
@@ -1428,9 +1432,6 @@ class Queue(models.Model):
 
     objects = QueueManager()
 
-    RINGALL = 'ringall'
-    # ring all available channels until one answers (default)
-
     RRORDERED = 'rrordered'
     # same as rrmemory, except the queue member order from config file is preserved
 
@@ -1447,7 +1448,6 @@ class Queue(models.Model):
     # round robin with memory, remember where we left off last ring pass
 
     STRATEGY_CHOICES = (
-        (RINGALL, 'Ringall'),
         (RRORDERED, 'Rrordered'),
         (LEASTRECENT, 'Leastrecent'),
         (FEWESTCALLS, 'Fewestcalls'),
@@ -1497,6 +1497,7 @@ class Queue(models.Model):
     # TODO: OML-496 Borrar, usar 'audios.audio_asterisk.name'
     # announcements
     announce_position = models.BooleanField(default=False)
+    wait_announce_frequency = models.BigIntegerField(blank=True, null=True)
     announce = models.CharField(max_length=128, blank=True, null=True)
     announce_frequency = models.BigIntegerField(blank=True, null=True)
 

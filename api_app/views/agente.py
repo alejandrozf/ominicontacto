@@ -41,6 +41,33 @@ from ominicontacto_app.models import (Campana, SistemaExterno, CalificacionClien
 from ominicontacto_app.services.asterisk.agent_activity import AgentActivityAmiManager
 from ominicontacto_app.services.click2call import Click2CallOriginator
 
+from ominicontacto_app.services.kamailio_service import KamailioService
+
+
+class ObtenerCredencialesSIPAgenteView(APIView):
+    permission_classes = (TienePermisoOML, )
+    # authentication_classes = (BasicAuthentication, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['get', ]
+
+    def get(self, request):
+        usuario_agente = request.user
+        agente_profile = usuario_agente.get_agente_profile()
+        kamailio_service = KamailioService()
+        sip_user = kamailio_service.generar_sip_user(agente_profile.sip_extension)
+        sip_password = kamailio_service.generar_sip_password(sip_user)
+
+        if sip_password is None:
+            return Response(data={
+                'status': 'ERROR',
+                'message': _('Error al generar sip password'),
+            })
+        return Response(data={
+            'status': 'OK',
+            'sip_user': sip_user,
+            'sip_password': sip_password,
+        })
+
 
 class OpcionesCalificacionViewSet(viewsets.ModelViewSet):
     """Servicio que devuelve las opciones de calificación de una campaña

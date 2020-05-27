@@ -47,7 +47,7 @@ from ominicontacto_app.models import (
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
                                       validar_solo_ascii_y_sin_espacios, elimina_tildes)
-from configuracion_telefonia_app.models import DestinoEntrante, Playlist
+from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSaliente
 
 from utiles_globales import validar_extension_archivo_audio
 
@@ -167,6 +167,7 @@ class QueueEntranteForm(forms.ModelForm):
         self.fields['timeout'].required = True
         self.fields['retry'].required = True
         self.fields['announce_frequency'].required = False
+        self.fields['wait_announce_frequency'].required = False
         self.fields['audios'].queryset = ArchivoDeAudio.objects.all()
         self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
         self.fields['musiconhold'].queryset = Playlist.objects.annotate(
@@ -199,7 +200,8 @@ class QueueEntranteForm(forms.ModelForm):
                   'strategy', 'weight', 'wait', 'auto_grabacion', 'campana',
                   'audios', 'announce_frequency', 'audio_de_ingreso', 'campana',
                   'tipo_destino', 'destino', 'ivr_breakdown',
-                  'announce_holdtime', 'announce_position', 'musiconhold')
+                  'announce_holdtime', 'announce_position', 'musiconhold',
+                  'wait_announce_frequency',)
 
         help_texts = {
             'timeout': _('En segundos'),
@@ -207,6 +209,7 @@ class QueueEntranteForm(forms.ModelForm):
             'announce_frequency': _('En segundos'),
             'wait': _('En segundos'),
             'wrapuptime': _('En segundos'),
+            'wait_announce_frequency': _('En segundos'),
         }
         widgets = {
             'name': forms.HiddenInput(),
@@ -227,6 +230,7 @@ class QueueEntranteForm(forms.ModelForm):
             'destino': forms.Select(attrs={'class': 'form-control', 'id': 'destino'}),
             'ivr_breakdown': forms.Select(attrs={'class': 'form-control'}),
             'musiconhold': forms.Select(attrs={'class': 'form-control'}),
+            'wait_announce_frequency': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
     def clean_maxlen(self):
@@ -264,6 +268,14 @@ class QueueEntranteForm(forms.ModelForm):
             raise forms.ValidationError(_('Debe seleccionar un anuncio periódico'))
         return ivr_breakdown
 
+    def clean_wait_announce_frequency(self):
+        announce_position = self.cleaned_data.get('announce_position')
+        wait_announce_frequency = self.cleaned_data.get('wait_announce_frequency')
+        if announce_position is True and wait_announce_frequency is None:
+            raise forms.ValidationError(_('Debe ingresar una frecuencia de '
+                                          'anuncios de espera/posición'))
+        return wait_announce_frequency
+
 
 class QueueMemberForm(forms.ModelForm):
     """
@@ -282,6 +294,12 @@ class QueueMemberForm(forms.ModelForm):
 
 
 class BaseDatosContactoForm(forms.ModelForm):
+
+    def clean_nombre(self):
+        # controlamos que el nombre no tenga espacios y caracteres no ascii
+        nombre = self.cleaned_data.get('nombre')
+        validar_solo_ascii_y_sin_espacios(nombre)
+        return nombre
 
     class Meta:
         model = BaseDatosContacto
@@ -512,11 +530,20 @@ class CampanaMixinForm(object):
             raise forms.ValidationError(msg)
         return id_externo
 
+    def clean_outcid(self):
+        ruta_saliente = self.cleaned_data.get('outr')
+        id_ruta_saliente = self.cleaned_data.get('outcid')
+        if ruta_saliente and not id_ruta_saliente:
+            msg = _("No se puede indicar una Ruta Saliente sin un CID de Ruta Saliente.")
+            raise forms.ValidationError(msg)
+        return id_ruta_saliente
+
 
 class CampanaForm(CampanaMixinForm, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CampanaForm, self).__init__(*args, **kwargs)
+        self.fields['outr'].queryset = RutaSaliente.objects.all()
         instance = getattr(self, 'instance', None)
         if instance.pk is None:
             self.fields['bd_contacto'].required = False
@@ -546,7 +573,8 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'bd_contacto', 'sistema_externo', 'id_externo',
-                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre')
+                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
+                  'outcid', 'outr')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -559,6 +587,8 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
+            'outcid': forms.TextInput(attrs={'class': 'form-control'}),
+            'outr': forms.Select(attrs={'class': 'form-control'}),
         }
 
 
@@ -1010,6 +1040,12 @@ class BloquearCamposParaAgenteForm(forms.Form):
 
         self.lista_campos_bloqueados = list(bloqueados)
         self.lista_campos_ocultos = list(ocultos)
+
+        if self.lista_campos_bloqueados:
+            str_a_persistir = json.dumps(self.lista_campos_bloqueados, separators=(',', ':'))
+            # Verifico que no se pase del limite de caracteres del campo
+            if len(str_a_persistir) > 2052:
+                raise forms.ValidationError(_('Demasiados campos bloqueados seleccionados.'))
         return super(BloquearCamposParaAgenteForm, self).clean()
 
 
@@ -1142,7 +1178,7 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         self.fields['fecha_fin'].help_text = 'Ejemplo: 20/04/2014'
         self.fields['fecha_inicio'].required = not es_template
         self.fields['fecha_fin'].required = not es_template
-
+        self.fields['outr'].queryset = RutaSaliente.objects.all()
         if self.instance.pk:
             self.fields['nombre'].disabled = not es_template
             self.fields['bd_contacto'].disabled = True
@@ -1166,7 +1202,8 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         model = Campana
         fields = ('nombre', 'fecha_inicio', 'fecha_fin',
                   'bd_contacto', 'sistema_externo', 'id_externo',
-                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre')
+                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
+                  'outcid', 'outr')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -1178,6 +1215,8 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
             'sitio_externo': forms.Select(attrs={'class': 'form-control'}),
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
+            'outcid': forms.TextInput(attrs={'class': 'form-control'}),
+            'outr': forms.Select(attrs={'class': 'form-control'}),
         }
 
 
@@ -1458,6 +1497,7 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CampanaManualForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
+        self.fields['outr'].queryset = RutaSaliente.objects.all()
         if instance.pk is None:
             self.fields['bd_contacto'].required = False
         else:
@@ -1469,7 +1509,7 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'bd_contacto', 'sistema_externo', 'id_externo',
-                  'tipo_interaccion', 'sitio_externo', 'objetivo')
+                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'outcid', 'outr')
 
         widgets = {
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
@@ -1478,6 +1518,8 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
+            'outcid': forms.TextInput(attrs={'class': 'form-control'}),
+            'outr': forms.Select(attrs={'class': 'form-control'})
         }
 
     def requiere_bd_contacto(self):
@@ -1489,6 +1531,7 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CampanaPreviewForm, self).__init__(*args, **kwargs)
+        self.fields['outr'].queryset = RutaSaliente.objects.all()
         instance = getattr(self, 'instance', None)
         if instance and instance.pk and not self.initial.get('es_template', False):
             self.fields['nombre'].disabled = True
@@ -1501,7 +1544,7 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
         model = Campana
         fields = ('nombre', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'bd_contacto',
-                  'tiempo_desconexion')
+                  'tiempo_desconexion', 'outr', 'outcid')
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
@@ -1511,6 +1554,8 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
             'tipo_interaccion': forms.RadioSelect(),
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
             'tiempo_desconexion': forms.NumberInput(attrs={'class': 'form-control'}),
+            'outcid': forms.TextInput(attrs={'class': 'form-control'}),
+            'outr': forms.Select(attrs={'class': 'form-control'})
         }
 
     def requiere_bd_contacto(self):

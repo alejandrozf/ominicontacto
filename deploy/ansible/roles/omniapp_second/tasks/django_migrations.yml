@@ -30,6 +30,7 @@
   template: src=templates/bin/manage.sh.j2 dest={{ install_prefix }}bin/manage.sh owner={{ usuario }} group={{ usuario }} mode=755
   tags: postinstall
 
+# Se ejecutan los comandos de django que necesita omnileads
 - name: Execute django commands
   command: "{{ install_prefix }}bin/manage.sh {{ item }}"
   with_items:

@@ -19,6 +19,8 @@ En la primera etapa se deben indicar una serie de parámetros de campaña, como 
 - **Type of interaction:** indica si la campaña va a operar con formularios de OMniLeads o bien va a ejecutar una invocación hacia un CRM por cada llamada conectada.
 - **External URL:** en caso de haber seleccionado la invocación a un URL externo en cada llamada, aquí se indica cual de los CRMs definidos debe invocar la campaña.
 - **Enable recordings:** habilita que todas las llamadas de la campaña sean grabadas.
+- **Outbound Routes:** Se le asigna una ruta saliente existente a una campaña.
+- **CID on Outbound Routes:** Este campo debe contener el CID asignado para una ruta saliente existente a una campaña.
 - **Scope:** se define como la cantidad de *gestiones positivas* esperadas en la campaña. En la supervisión de la campaña se muestra en tiempo real el porcentaje de avence de la campaña respecto a este objetivo definido.
 - **Disconection time:** es el tiempo que el *discador preview* reserva un contacto asignado a un agente, luego de ese tiempo el contacto se libera de manera tal que pueda ser demandado por otro agente.
 

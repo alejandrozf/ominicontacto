@@ -17,7 +17,7 @@
 #
 ---
 
-# Se crea /opt/omnileads/kamailio directory
+# Se crea /opt/omnileads/asterisk directory
 - name: Create prefix directory
   file: state=directory path={{ install_prefix }} owner={{ usuario }} group={{ usuario }}
 

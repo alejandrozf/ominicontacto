@@ -8,30 +8,29 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-27 17:49-0300\n"
+"POT-Creation-Date: 2020-05-26 18:05-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 # ad472e9e5da84af080e880f4bdf6ab8f
 #: ../../release_notes.rst:2
 msgid "Release Notes"
 msgstr "Release Notes"
 
-# 7cb6be6322af4d678643b0d6beead1a9
+# 73ee1e870afd4a31b43364589dd0e1ee
 #: ../../release_notes.rst:4
-msgid "*Abril 27, 2020*"
-msgstr "*April 21, 2020"
+msgid "*Mayo 26, 2020*"
+msgstr "May 26, 2020"
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-#, fuzzy
-msgid "Detalles de Release 1.5.7"
-msgstr "Release 1.5.7 details"
+msgid "Detalles de Release 1.6.2"
+msgstr "Release 1.6.2 details"
 
 # 2f558403c15a436e90409b976c7f07ed
 #: ../../release_notes.rst:10
@@ -40,7 +39,21 @@ msgstr "Fixes and improvements"
 
 # aad09193077e4992ad8243ec8f4db81a
 #: ../../release_notes.rst:11
+msgid "Solucionado error en exportación de calificaciones de gestión"
+msgstr "Fixed error when user select large number of restricted fields"
+
+# 8d8c2bed3fb04706b9d55d9bf10a0ff2
+#: ../../release_notes.rst:12
 msgid ""
-"Solucionado error en instalación al correr el script de instalacion por "
-"segunda vez"
-msgstr "Fixed installation error when the installation runs for second time"
+"Solucionado error cuando el usuario selecciona un gran numero de campos a"
+" restringir"
+msgstr ""
+"Fixed error when user select large number of restricted fields"
+
+# d4277b49407b44bc91e9f2839fa73e51
+#: ../../release_notes.rst:13
+msgid ""
+"Solucionado mensaje de error cuando en la creacion de base de contactos "
+"el archivo de entrada tiene columnas repetidas"
+msgstr ""
+"Fixed error message in contact database creation when input file has repeated columns"

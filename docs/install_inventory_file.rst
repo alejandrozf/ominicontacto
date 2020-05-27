@@ -79,7 +79,6 @@ Parámetros y contraseñas
 En la tercera sección del archivo se ajusta todo lo respectivo a contraseñas de algunos componentes y parámetro para configuración de zona horaria:
 
 * **Postgres SQL**
-* **MySQL**
 * **Constraseña del usuario "admin" de OMniLeads**
 * **TZ**
 * **Usuario de la DB postgresql**
@@ -111,12 +110,11 @@ En la tercera sección del archivo se ajusta todo lo respectivo a contraseñas d
   #######################################
   #ami_user=omnileadsami
   #ami_password=5_MeO_DMT
-  #####################################################
-  # Wombat dialer credentials and MYSQL root password #
-  #####################################################
+  #############################
+  # Wombat dialer credentials #
+  #############################
   #dialer_user=demoadmin
   #dialer_password=demo
-  #mysql_root_password=my_very_strong_pass
   #################################################################################################
   # Set the timezone where the nodes are. UNCOMMENT and set this if you are doing a fresh install #
   #################################################################################################
@@ -135,13 +133,11 @@ Ademas de las variables vistas anteriormente, si se quiere instalar OMniLeads en
   registry_username=freetechsolutions
   #registry_email=
   #registry_password=
-  oml_release=release-1.4.0
   subnet=192.168.15.0/24
 
 Las variables necesarias para **deploy** de los containers son:
 
 * **registry_username:** si se va a deployar las imagenes oficiales de Freetech Solutions, dejar esta variable como está
-* **oml_release:** la versión de OMniLeads a instalar.
 * **subnet:** se refiere a la red LAN con la que se levantarán los containers.
 
 Las variables *registry_email* y *registry_password* son necesarias en caso de querer hacer un **build** de sus propias imágenes.

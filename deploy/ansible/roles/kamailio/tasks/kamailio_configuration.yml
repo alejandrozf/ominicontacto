@@ -39,6 +39,7 @@
   template: src=templates/systemd/kamailio.service.j2 dest=/etc/systemd/system/kamailio.service owner=root group=root mode=650
   tags: postinstall
 
+# Se cambia el ownership del directorio de kamailio al usuario omnileads
 - name: Change owner of kamailio directory
   file: state=directory path={{ kamailio_location }} owner={{ usuario }} group={{ usuario }} recurse=yes
 

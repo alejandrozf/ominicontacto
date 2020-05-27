@@ -23,8 +23,6 @@ service rtpengine stop
 service redis stop
 echo "** [oml-uninstall] Deleting Omnileads database"
 psql -U {{ usuario }} -d postgres -c "DROP DATABASE {{ postgres_database }}"
-echo "** [oml-uninstall] Deleting Wombat dialer database"
-MYSQL_PWD={{ mysql_root_password }} mysql -u root -e "DROP DATABASE wombat"
 service mariadb stop
 service postgresql-{{ postgresql_version }} stop
 service queuemetrics stop

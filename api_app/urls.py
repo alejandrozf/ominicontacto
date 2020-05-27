@@ -30,6 +30,7 @@ from api_app.views.supervisor import (
     StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView, LlamadasDeCampanaView,
     CalificacionesDeCampanaView)
 from api_app.views.agente import (
+    ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
     API_ObtenerContactosCampanaView, Click2CallView, AgentLogoutView,
     AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk
@@ -65,6 +66,10 @@ router.register(
 
 
 urlpatterns = [
+    # ###########  GRANDI  ############ #
+    url(r'api/v1/sip/credentials/agent/', ObtenerCredencialesSIPAgenteView.as_view(),
+        name='api_credenciales_sip_agente'),
+
     # ###########   TODOS/BASE    ############ #
     url(r'^', include(router.urls)),
     url(r'api/v1/login', login, name='api_login'),

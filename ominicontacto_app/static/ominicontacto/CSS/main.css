@@ -785,9 +785,17 @@ body > h1 {
 
 /* ///// Bottom bar
 */
-
+.container-toolbar {
+  display: flex;
+  justify-content: center; 
+}
+#bottomBar div {
+  visibility: hidden;
+}
+#bottomBar:hover div  {
+  visibility: visible;
+}
 #bottomBar {
-  width: 100%;
   height: 80px;
   position: fixed;
   bottom: 0px;

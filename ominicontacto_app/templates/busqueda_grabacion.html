@@ -25,6 +25,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% endblock %}
 {% block content %}
 
+{% load calificacion_grabacion %}
+
 <h1>{% trans 'Buscar grabación' %}</h1>
 
 <div id="wrapper-search">
@@ -72,9 +74,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </td>
                 <td>
                     {% for calificacion in calificaciones %}
-                        {% if grabacion.id_cliente == calificacion.contacto_id|stringformat:"i" and grabacion.campana_id == calificacion.opcion_calificacion.campana_id%}
-                            <a href="{% url 'auditar_calificacion' calificacion.opcion_calificacion.campana_id calificacion.contacto_id %}">{{ calificacion.opcion_calificacion.nombre }}</a>
-                        {% elif  grabacion.callid == calificacion.callid %}
+                        {% es_calificacion_llamada grabacion calificacion as calificacion %}
+                        {% if calificacion %}
                             <a href="{% url 'auditar_calificacion' calificacion.opcion_calificacion.campana_id calificacion.contacto_id %}">{{ calificacion.opcion_calificacion.nombre }}</a>
                         {% endif %}
                     {% endfor %}
@@ -142,7 +143,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% endblock %}
 
 {% block extra_js %}
-    
+
     <script>
      /* se activa en todos los campos de selección un plugin para
         JQuery que permite una mejor búsqueda */

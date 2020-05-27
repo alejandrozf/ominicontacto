@@ -8,21 +8,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-21 16:35-0300\n"
+"POT-Creation-Date: 2020-05-08 12:25-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.4.0\n"
 
-# a9d0e7201d9344439fe4b288f1b724e2
+# bdb817ef4d994ca7a9d6e23915ae8505
 #: ../../install_docker_linux.rst:5
 msgid "Instalación de OMniLeads utilizando Docker"
 msgstr "OMniLeads Installation using Docker"
 
-# 430575d90ebb4a1faba32b396d0edaee
+# 5ca9407605514cb58834df3dcee0f9cb
 #: ../../install_docker_linux.rst:7
 msgid ""
 "A partir de la versión 1.4.0, OMniLeads puede ser desplegado en "
@@ -36,7 +36,7 @@ msgstr ""
 "application using this novel \"virtualization\" techonology over "
 "CentOS-7, Issabel or FreePBX  as underlying operating system."
 
-# eb67683896db46e1bdcc17e630308610
+# 8cff86eb42a64b5b9d9e17b574f62703
 #: ../../install_docker_linux.rst:12
 msgid ""
 "Antes de avanzar aclaramos que todo lo expuesto a continuación, tiene "
@@ -53,7 +53,7 @@ msgstr ""
 "<https://downloads.freepbxdistro.org/ISO/SNG7-FPBX-64bit-1910-2.iso>`_ "
 "exists a workaround detailed at the end of this section."
 
-# a33ee3888c774ff99c333beb46061c3a
+# 4e2dcb3ee6f6465b9aed55f6e3f00474
 #: ../../install_docker_linux.rst:16
 msgid ""
 "Al ejecutar el proceso de instalación disponible en el repositorio, se "
@@ -62,32 +62,32 @@ msgstr ""
 "When executing the installation process available on repository, we "
 "proceds with the installation of:"
 
-# 299c41c2746b4c718a25b0f1f8d8b954
+# 6313675a0169407592a8dd5014fc1039
 #: ../../install_docker_linux.rst:18
 msgid "Docker"
 msgstr ""
 
-# f65ce42f82fb41529f68fcb30cd4a3a1
+# 866f55ca2a4e47beba940e9f082e96b3
 #: ../../install_docker_linux.rst:19
 msgid "docker-compose"
 msgstr ""
 
-# 79c4ce4e660b435bbdc4910b3d4e5d42
+# 524f8621212049299b9b97349a546477
 #: ../../install_docker_linux.rst:20
 msgid "PostgreSQL"
 msgstr ""
 
-# d5d504349b1242749254bc27d945832f
+# 87f8ef1e16734cb0b6f932b99a2bf78b
 #: ../../install_docker_linux.rst:21
 msgid "MySQL"
 msgstr ""
 
-# 94b9c83417b14c5bbd4c3d19ce1f7960
+# 21cdc8f13c894d4d9dcf7342c5832445
 #: ../../install_docker_linux.rst:22
 msgid "RTPEngine"
 msgstr ""
 
-# a01fe87a6ffe4966a876a8d106d598ff
+# 248aef092109485b939d98a1cc5cd032
 #: ../../install_docker_linux.rst:24
 msgid ""
 "Estos componentes serán instalados y se van a ejecutar directamente sobre"
@@ -102,7 +102,7 @@ msgstr ""
 "representative scheme about how is deployed OMniLeads alongside an IPPBX "
 "stack is shown\""
 
-# f3178e6694a247a481f12d5afadcfef2
+# 7c6f0275facf4b27b4852286c7d74ee5
 #: ../../install_docker_linux.rst:31
 msgid ""
 "Como se puede observar los componentes: Asterisk, Kamailio, Nginx, Wombat"
@@ -123,24 +123,24 @@ msgstr ""
 "<https://docs.docker.com/network/bridge/>`_. The default LAN for this is "
 "192.168.15.0/24."
 
-# 0b33645103c541f3b31bfebbaf017bf8
+# 72bced130c224a4c954224e6aab1b355
 #: ../../install_docker_linux.rst:36
 msgid "Procedimiento de instalación"
 msgstr "Installation procedure"
 
-# 8a925266f84d438498ac2f13e4d6f136
+# ea10b06c41b847d393107f232ab43aff
 #: ../../install_docker_linux.rst:38
 msgid ""
 "Como primer paso se procede con el ingreso al host Linux para luego "
 "descargar el repositorio de OMniLeads y una vez clonado el repositorio "
 "debemos posicionarnos sobre el path *relativo*; "
-"ominicontacto/deploy/docker/prodenv."
+"ominicontacto/deploy/ansible."
 msgstr ""
 "As first step we proced with the login to the Linux host for then "
 "download the OMniLeadsand once cloned the repository we must go to the "
-"*relative* path; ominicontacto/deploy/docker/prodenv."
+"*relative* path; ominicontacto/deploy/ansible."
 
-# c8fd0349f43c438384c9a043cb71e72c
+# a2e8758e6d62480688a26430c3fdb229
 #: ../../install_docker_linux.rst:47
 msgid ""
 "Una vez terminado el reboot se procede a usar Ansible para la "
@@ -152,7 +152,7 @@ msgstr ""
 "can do it :ref:`about_install_selfhosted` o :ref:`about_install_remote`. "
 "Take care about two things."
 
-# c1cb6988601d43d0950ca492fed07c85
+# cb92e8970fde4d5b873fab08ffbe3fff
 #: ../../install_docker_linux.rst:50
 msgid ""
 "Revisar la sección :ref:`about_install_inventory_docker` del archivo de "
@@ -161,7 +161,7 @@ msgstr ""
 "Verify the section :ref:`about_install_inventory_docker` to see the "
 "docker variables to modify."
 
-# 90393c4d19644223932c8a0f6855c9f8
+# d13d574b237f4291bfee75765e0c46e9
 #: ../../install_docker_linux.rst:51
 msgid ""
 "Revisar la sección :ref:`about_install_inventory_docker_vars` para ver "
@@ -170,14 +170,14 @@ msgstr ""
 "Verify the section :ref:`about_install_inventory_docker_vars` to see the "
 "docker variables to modify."
 
-# 5010ae3aeed040deafee097fd9ae112d
+# 9de9013c66bf479f89fcf7caf924be7d
 #: ../../install_docker_linux.rst:52
 msgid ""
 "Modificar las variables del archivo de inventario "
 ":ref:`about_install_inventory_vars`."
 msgstr "Modify the inventory file variables :ref:`about_install_inventory_vars`."
 
-# fc780f31bdd44377b89d3b3f7928b774
+# 367b43b12ace484f86f75fbf8135be5a
 #: ../../install_docker_linux.rst:56
 msgid ""
 "La variable *subnet=192.168.15.0/24*, debe modificarse OBLIGATORIAMENTE "
@@ -188,34 +188,23 @@ msgstr ""
 "Linuxhost LAN IP (where docker-engine runs) does not match with this "
 "range mentioned."
 
-# 4a05b568114b42f0a2599a65da013c4c
-#: ../../install_docker_linux.rst:57
-msgid ""
-"Para una instalación en FreePBX o Issabel la variable "
-"*mysql_root_password* no es necesario ingresarla, para Issabel va a tomar"
-" el valor que encuentre en /etc/issabel.conf y para FreePBX tomará un "
-"valor vacio, ya que FreePBX por default no setea contraseña de mysql."
-msgstr "For installations in FreePBX or Issabel, the variable *mysql_root_password* is not necessary "
-"for Issabel the value we are going to use is in /etc/issabel.conf file, and for FreePBX we are going "
-"to use empty value, due to FreePBX doesn't set a mysql password."
-
-# d4f2ee07a697466d8347a24ab4689ead
-#: ../../install_docker_linux.rst:59
+# 36e2fab3c073416fbb75ef371e2515bb
+#: ../../install_docker_linux.rst:58
 msgid "Ejecutar el script deploy.sh de la siguiente forma:"
 msgstr "Execute the deploy.sh script, this way:"
 
-# 11f10d914fd0400ab73cc6e8ddf00f27
-#: ../../install_docker_linux.rst:61
+# ac0217be8dc246179d68096946d32078
+#: ../../install_docker_linux.rst:60
 msgid "**Para ansible remoto:**"
 msgstr "**For ansible host-node:**"
 
-# 0d4d1d5199564a71baa82416d96584ce
-#: ../../install_docker_linux.rst:67
+# 8675a6c63421442596a493bb592d97c1
+#: ../../install_docker_linux.rst:66
 msgid "**Para ansible self-hosted:**"
 msgstr "**For ansible self-hosted:**"
 
-# 412a19f242c64603a1991fc450f49787
-#: ../../install_docker_linux.rst:73
+# 65d94e3711564ffdbe4521837bcd5c3b
+#: ../../install_docker_linux.rst:72
 msgid ""
 "Donde **<your_iface>** es la interfaz con la IP que se quiere usar para "
 "levantar los servicios que componen OMniLeads (suele ser la IP de la "
@@ -225,13 +214,13 @@ msgstr ""
 "use to raise up the services that compose OMniLeads (it usually is the "
 "LAN interface of the host)."
 
-# 1e49ce8a658246aaa512c858dcb2d096
-#: ../../install_docker_linux.rst:77
+# 12988c6bfacc462f920af2b88e241ae6
+#: ../../install_docker_linux.rst:76
 msgid "Systemd - omnileads-prodenv"
 msgstr ""
 
-# 35f4726d73e8411fb2a79403d7914694
-#: ../../install_docker_linux.rst:79
+# 3aa339f4b26248e5aed1845315c4e768
+#: ../../install_docker_linux.rst:78
 msgid ""
 "A partir de la instalación se deja disponible el servicio: omnileads-"
 "prodenv.service el cual servirá para parar/levantar la aplicación. El "
@@ -242,33 +231,33 @@ msgstr ""
 "will manage the up/down of environment. The service is configured to "
 "start automatically after a reboot."
 
-# 50fbde994b2f47e789dc7e04ab50a232
-#: ../../install_docker_linux.rst:82
+# e640b1a0c87c4cf280c121c31420ae14
+#: ../../install_docker_linux.rst:81
 msgid "Para verificar el servicio:"
 msgstr "To verifiy the service:"
 
-# bd6c9f903eb344d59f5a94e233f0f5a6
-#: ../../install_docker_linux.rst:88
+# 90c3f2867e344a8d8d562c515ab06d7d
+#: ../../install_docker_linux.rst:87
 msgid "Si todo es correcto deberíamos obtener la siguiente salida:"
 msgstr "If everything is correct we should get the following output:"
 
-# 959e40216bb2421ea8332d6e15945dc3
-#: ../../install_docker_linux.rst:93
+# 4e81f5ecfd8d42769c8912b96cde7a0b
+#: ../../install_docker_linux.rst:92
 msgid "Para bajar el servicio:"
 msgstr "To stop the service:"
 
-# 51d39624f49f4541855bb9da8da41ac5
-#: ../../install_docker_linux.rst:99
+# 47b699e345e84415a68d97f834ea2fa7
+#: ../../install_docker_linux.rst:98
 msgid "Para levantar el servicio:"
 msgstr "To start the service"
 
-# 94d92b8387334000826cc544c1ca1988
-#: ../../install_docker_linux.rst:106
+# ebfc5d9d68c74d7ebb2533a0b07a3993
+#: ../../install_docker_linux.rst:105
 msgid "Workaround para freePBX"
 msgstr "FreePBX workaround"
 
-# b3658a14ced94f7d9c55c85e0a1cfa05
-#: ../../install_docker_linux.rst:108
+# 0c5348577d394834bf12c9a5628efee8
+#: ../../install_docker_linux.rst:107
 msgid ""
 "Luego de cada *reboot* del sistema operativo se deberán ejecutar los "
 "siguientes comandos para dejar apta la instancia para comenzar a "
@@ -277,13 +266,13 @@ msgstr ""
 "After every operating system *reboot* we must execute the following "
 "commands in order to make the instance ready to start to work"
 
-# 98bfa49e88d24dae91a82eac2d54860f
-#: ../../install_docker_linux.rst:115
+# 9bc38dfc194d41e68e4494e5ff7c489b
+#: ../../install_docker_linux.rst:114
 msgid "Estos dos comandos dejaran lista la instancia de OMniLeads sobre FreePBX."
 msgstr "These two commands will make ready the OMniLeads instance in FreePBX"
 
-# 16363db4458f421dbd00932389ca2c51
-#: ../../install_docker_linux.rst:120
+# b841d0c4f63b4aef8903d378553f3bce
+#: ../../install_docker_linux.rst:119
 msgid "En próximas versiones se tratará de optimizar la ejecución sobre FreePBX."
 msgstr ""
 "On next versions we will try to optimize the OMniLeads execution in "

@@ -39,6 +39,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render
+from django.conf import settings
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, FormView, TemplateView
 )
@@ -336,6 +337,7 @@ class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
         context['sip_usuario'] = sip_usuario
         context['sip_password'] = sip_password
         context['agentes'] = AgenteProfile.objects.obtener_activos().exclude(id=agente_profile.id)
+        context['max_session_age'] = settings.SESSION_COOKIE_AGE
 
         return context
 
@@ -390,7 +392,7 @@ class RegistroFormView(FormView):
             email = form.cleaned_data['email']
             telefono = form.cleaned_data['telefono']
         except AttributeError:
-            msg = _('No tiene settings de conexión configurados')
+            msg = _('No tiene settings de conexion configurados')
             logger.error(msg)
             return {'status': 'ERROR', 'msg': msg}
         post_data = {'client': client, 'password': password, 'email': email, 'phone': telefono}
@@ -398,7 +400,7 @@ class RegistroFormView(FormView):
             result = requests.post(
                 create_url, json=post_data, verify=config_constance.SSL_CERT_FILE)
         except requests.exceptions.RequestException as e:
-            msg = _('Error en el intento de conexión a: {0} debido {1}'.format(create_url, e))
+            msg = _('Error en el intento de conexion a: {0} debido {1}'.format(create_url, e))
             logger.error(msg)
             return {'status': 'ERROR', 'msg': msg}
         return result.json()

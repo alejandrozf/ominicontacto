@@ -22,7 +22,7 @@
 /*      - omlAPI.js         */
 /* 		- click2Call.js     */
 
-/* globals Timer OMLAPI Click2CallDispatcher PhoneJSController gettext */
+/* globals Timer OMLAPI KeepAliveSender Click2CallDispatcher PhoneJSController gettext */
 
 /* DEBUG*/
 $('#wrapperWebphone').toggleClass('active');
@@ -33,6 +33,7 @@ var USER_STATUS_PAUSE = 3; //  Agente en estado pausa
 
 var phone_controller = undefined;
 var click2call = undefined;
+var keep_alive_sender = undefined;
 
 var logoffEvent = undefined;
 
@@ -59,11 +60,14 @@ function startPhoneJs() {
     var agent_id = $('#idagt').val();
     var sipExtension = $('#sipExt').val();
     var sipSecret = $('#sipSec').val();
+    var max_session_age = $('#max_session_age').val();
 
     var oml_api = new OMLAPI();
 
     click2call = new Click2CallDispatcher(oml_api, agent_id);
-    phone_controller = new PhoneJSController(agent_id, sipExtension, sipSecret, timers, click2call);
+    keep_alive_sender = new KeepAliveSender(max_session_age);
+    phone_controller = new PhoneJSController(
+        agent_id, sipExtension, sipSecret, timers, click2call, keep_alive_sender);
 
     subscribirEventosBotonesGenerales(oml_api, agent_id, timers);
     subscribirEventosBotonesOtrosMedios(oml_api);

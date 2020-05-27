@@ -17,6 +17,7 @@
 #
 ---
 
+# Se descarga la key para el repositorio de postgres
 - name: Download postgresql-{{ postgresql_version }} key
   rpm_key: key="{{ postgresql_key }}" state=present validate_certs=no
   retries: 3
@@ -66,6 +67,7 @@
   until: result is success
   when: postgresql_new_installed.rc != 3 and ansible_distribution == "Amazon" and postgres_host is not defined
 
+# Se instala el postgres client y odbc para amazon
 - name: Install of postgresql client and postgresql-odbc
   yum: name={{ item }} state=present
   with_items:

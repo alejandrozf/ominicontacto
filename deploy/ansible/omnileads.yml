@@ -19,17 +19,18 @@
 # Utilza como variables de entorno el archivo group_vars/all y el archivo de inventario hosts
 # Utiliza como archivo de configuracion /var/tmp/ansible/ansible.cfg
 # Cositas a tener en cuenta:
-# https://docs.ansible.com/ansible/2.5/user_guide/playbooks_conditionals.html
-# https://docs.ansible.com/ansible/2.5/user_guide/playbooks_loops.html
-# https://docs.ansible.com/ansible/2.4/intro_configuration.html
+# https://docs.ansible.com/ansible/2.9/user_guide/playbooks_conditionals.html
+# https://docs.ansible.com/ansible/2.9/user_guide/playbooks_loops.html
+# https://docs.ansible.com/ansible/2.9/intro_configuration.html
 ---
 
+# hosts: le decimos que seccion del hosts se va  usar: [prodenv-container]
 - name: Omnileads-Docker integration
   hosts: docker
   roles:
     - { role: docker }
 
-# hosts: le decimos que seccion del hosts se va  usar: [omnileads]
+# hosts: le decimos que seccion del hosts se va  usar: [prodenv-aio]
 - name: OMniLeads AIO installation
   hosts: prodenv-aio
 

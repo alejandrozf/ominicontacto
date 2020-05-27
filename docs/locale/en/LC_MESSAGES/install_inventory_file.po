@@ -8,21 +8,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-27 16:08-0300\n"
+"POT-Creation-Date: 2020-05-08 12:25-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.4.0\n"
 
-# b927029617bf47ed91ae2b378659afa5
+# cae544f0eed94c1083aaa09e771dbe1c
 #: ../../install_inventory_file.rst:5
 msgid "Archivo de inventario"
 msgstr "Inventory file"
 
-# 907a48a077ce47858d75a2dd9d7c3b68
+# f243ad93b1cc4f4cbc98d4e7bffb6d87
 #: ../../install_inventory_file.rst:7
 msgid ""
 "Al utilizar Ansible como tecnología para realizar los despliegues de "
@@ -33,14 +33,14 @@ msgstr ""
 "(physical machine or virtual machine). Ansible works with a file called "
 "\"inventory\" where these things are configured:"
 
-# a42f41a48cde4ef9a84c2b11ba5ce90b
+# ac003d35747446759a88c301d90f1ae9
 #: ../../install_inventory_file.rst:9
 msgid ""
 "Tipo de instalación a realizar (self-hosted, en remoto, cluster, entorno "
 "de desarrollo, etc.)"
 msgstr "Installation type (self-hosted, host-node, cluster, devenv, etc.)"
 
-# 20b7f0f62e7e4dfeb04e3c6857c8b8c6
+# 07399b58eae04d2b9da6e071079dc97b
 #: ../../install_inventory_file.rst:10
 msgid ""
 "Passwords de los diferentes componentes (postgres, asterisk-AMI, acceso "
@@ -49,39 +49,39 @@ msgstr ""
 "Passwords of different components (PostgreSQL, asterisk-AMI, web admin "
 "access, etc.)"
 
-# 89f47646ca6f45a5820484ec67b4e14a
+# 470247db12ca4ec9a1d8529467171e3a
 #: ../../install_inventory_file.rst:11
 msgid "Zona horaria"
 msgstr "Timezone"
 
-# 4b6d3a4ebc9b49d4a8d3d7452e57befc
+# d2759ece9abf4737b2e030430282483a
 #: ../../install_inventory_file.rst:12
 msgid "Soporte para NAT"
 msgstr "NAT support"
 
-# 3de4c33b9e1344d29e8ed7cec7495cf5
+# 1b5570f530964233a0fd6e9697f8b4dc
 #: ../../install_inventory_file.rst:14
 msgid "Vamos a dividir el archivo en dos fragmentos:"
 msgstr "Let's divide the file in two parts:"
 
-# f746971a21ff490e8df31ba027075871
+# bec86fc803dd4dc7ace59462f7261cab
 #: ../../install_inventory_file.rst:19
 msgid "Configuración entorno AIO"
 msgstr "AIO environment configuration"
 
-# 0752d98ebcfe416cb75ea95c2580311f
+# 463a5c9a941543e6bd73b9cf48422e85
 #: ../../install_inventory_file.rst:21
 msgid "En la primera parte del archivo se encuentra la seccion **[prodenv-aio]**:"
 msgstr "In the first part of the file you will find the **[prodenv-aio]** section:"
 
-# f640d6f940bc4c348b8eae9c1b096742
-# a96a9fdfda0b4e1fb8f6ce1eb7a7c2a7
+# 963ea4455a734dbf9012151b134b3d6d
+# b2b5fe195f8d4751bc0a92db17d44c0b
 #: ../../install_inventory_file.rst:32 ../../install_inventory_file.rst:58
 msgid "**Para Self Hosted:** descomentar la primera línea, para que quede así:"
 msgstr "**For Self Hosted:** uncomment the first line, it should see this way:"
 
-# 3eef712924434f6ca25a0837fbc93eee
-# e47d18b33f8a4fab802add30225bf9a4
+# 724c821c8e0547e6a3b6580848336647
+# 896b41fdaca741708bd661b4b724e923
 #: ../../install_inventory_file.rst:38 ../../install_inventory_file.rst:64
 msgid ""
 "**Para Ansible Remoto** descomentar la segunda línea, y reemplazar el "
@@ -90,12 +90,12 @@ msgstr ""
 "**For Host-Node:** uncomment the second line, replace the X.X.X.X with "
 "the IP of the machine where OMniLeads will be installed, for example:"
 
-# 09d40598f66c4143b5b09296214c710e
+# 8c1a0c1e38774a10913242715dbf55c5
 #: ../../install_inventory_file.rst:47
 msgid "Configuración entorno Docker"
 msgstr "Docker environment configuration"
 
-# 2253e0c19afc4966a30a152aa723dd60
+# df4138226887451ab50176a5fd84bbd3
 #: ../../install_inventory_file.rst:49
 msgid ""
 "En la segunda parte, se encuentra la sección **[prodenv-container]** para"
@@ -104,7 +104,7 @@ msgstr ""
 "In the second part you can see the **[prodenv-container]** section, to "
 "install OMniLeads in containers:"
 
-# 8da67ae1bbf049028e969cbae9e7ea32
+# 3f42c4a773924b06a19cf21625dd7880
 #: ../../install_inventory_file.rst:72
 msgid ""
 "Tener mucho cuidado a la hora de descomentar las líneas, no descomentar "
@@ -113,12 +113,12 @@ msgstr ""
 "Be very careful when you uncomment the lines, for example, do not "
 "uncomment docker environment if you want to install AIO."
 
-# d79beb99cfdd4aa3a87b2462d065a856
+# cee8b70834734b7aa37789bafe2de44b
 #: ../../install_inventory_file.rst:77
 msgid "Parámetros y contraseñas"
 msgstr "Passwords and parameters"
 
-# e4835d8ecee64b4abc157380bd21477b
+# c468fd6b61f44f9395de39544954ec1b
 #: ../../install_inventory_file.rst:79
 msgid ""
 "En la tercera sección del archivo se ajusta todo lo respectivo a "
@@ -128,48 +128,43 @@ msgstr ""
 "The third section of the file refers to passwords of some components and "
 "the setting to configure timezone:"
 
-# ed025e2f64b446ea93076b658cabcd0a
+# 8fece2075f6f4429af082d07c77eabd4
 #: ../../install_inventory_file.rst:81
 msgid "**Postgres SQL**"
 msgstr "**PostgreSQL**"
 
-# 56beedb0d5644b11b64fc6ff8a866349
+# 5a4733b9e5e94e5498ed7f963150ab09
 #: ../../install_inventory_file.rst:82
-msgid "**MySQL**"
-msgstr "**MySQL**"
-
-# 1bd1631817f248c586f6497a1ab028d3
-#: ../../install_inventory_file.rst:83
 msgid "**Constraseña del usuario \"admin\" de OMniLeads**"
 msgstr "**OMniLeads \"admin\" user password**"
 
-# 7a6b3cd6ff944c96bf965656a8968187
-#: ../../install_inventory_file.rst:84
+# c716445e384b48a2936ee5848c6af5dd
+#: ../../install_inventory_file.rst:83
 msgid "**TZ**"
 msgstr "**TZ**"
 
-# 664c163a1e7e4a108b06015aa3ca6d9b
-#: ../../install_inventory_file.rst:85
+# 2d031c19afa24915ae4ad59c2053679f
+#: ../../install_inventory_file.rst:84
 msgid "**Usuario de la DB postgresql**"
 msgstr "Posgresql DB user"
 
-# 5ae15b55f27b42ff94adb9a2f56de0c2
-#: ../../install_inventory_file.rst:86
+# e05237fab299490585750364d5b147a3
+#: ../../install_inventory_file.rst:85
 msgid "**Usuario y contraseña para asterisk AMI**"
 msgstr "User and password for asterisk AMI"
 
-# 5091f9e54b12453b9604689c9f0df350
-#: ../../install_inventory_file.rst:87
+# a339fd2ebf824cf99d92ab32b32e8e85
+#: ../../install_inventory_file.rst:86
 msgid "**Usuario y contraseña para web de Wombat Dialer**"
 msgstr "User and password for web of Wombat Dialer"
 
-# 25d75730f4a349c3984ab38b100137d3
-#: ../../install_inventory_file.rst:128
+# 7a1fd85b54ab41698c411cc7fa76979d
+#: ../../install_inventory_file.rst:126
 msgid "Variables para Docker"
 msgstr "Docker variables"
 
-# ff4a8031bc754d7daa52e21ac1d21b65
-#: ../../install_inventory_file.rst:130
+# f14cbdad838f4b9e820ed392d6fa5f98
+#: ../../install_inventory_file.rst:128
 msgid ""
 "Ademas de las variables vistas anteriormente, si se quiere instalar "
 "OMniLeads en su versión dockerizada, será necesario modificar estas "
@@ -178,13 +173,13 @@ msgstr ""
 "Besides the variables seen, if you want to install OMniLeads in its "
 "dockerized version, it will be necessary to modify these variables:"
 
-# 4ce491c3a1d244d5b5704bdb4310b520
-#: ../../install_inventory_file.rst:141
+# b3885d5d1435420180ffcdb9a1fd2c4e
+#: ../../install_inventory_file.rst:138
 msgid "Las variables necesarias para **deploy** de los containers son:"
 msgstr "The neccesary variables for deploying containers are:"
 
-# f3a1537235d841ddbc9b2021aee6a357
-#: ../../install_inventory_file.rst:143
+# 9b1a861d9d8a4d4eb389e906225dce5c
+#: ../../install_inventory_file.rst:140
 msgid ""
 "**registry_username:** si se va a deployar las imagenes oficiales de "
 "Freetech Solutions, dejar esta variable como está"
@@ -192,20 +187,15 @@ msgstr ""
 "**registry_username:** if you are going to deploy official "
 "FreetechSolutions imamges, leave the value how it is."
 
-# 10107bca88e84786acaca1d81cfd0117
-#: ../../install_inventory_file.rst:144
-msgid "**oml_release:** la versión de OMniLeads a instalar."
-msgstr "**oml_release:** OMniLeads version to install."
-
-# 83383e68c9c54b0ba96bbf479f595a61
-#: ../../install_inventory_file.rst:145
+# 9f661e2607b24453b91aba7b2601b20b
+#: ../../install_inventory_file.rst:141
 msgid ""
 "**subnet:** se refiere a la red LAN con la que se levantarán los "
 "containers."
 msgstr "**subnet:** it refers to internal docker LAN network "
 
-# e4b6c519f50140df9fdf5e297d4c9e24
-#: ../../install_inventory_file.rst:147
+# 7f78a465ca5846ce80eae2d2e07959bd
+#: ../../install_inventory_file.rst:143
 msgid ""
 "Las variables *registry_email* y *registry_password* son necesarias en "
 "caso de querer hacer un **build** de sus propias imágenes."
@@ -213,13 +203,13 @@ msgstr ""
 "The variables *registry_email* and *registry_password* are neccesary just"
 " when you want to make a **build** of your own images."
 
-# f663cdb763ce45c5955a1334abc0f4bb
-#: ../../install_inventory_file.rst:152
+# 31eb672ded244f4ab63f6950f581d662
+#: ../../install_inventory_file.rst:148
 msgid "Variables OMniLeads Cloud"
 msgstr "OMniLeads Cloud variables"
 
-# 313de912bc174e4896214f387b680553
-#: ../../install_inventory_file.rst:154
+# 6b8cf396f64f41358090d72333e62784
+#: ../../install_inventory_file.rst:150
 msgid ""
 "Los parámetros  **\"external_hostname\"**, **\"external_port\"**, deben "
 "configurarse si se quiere instalar un OMniLeads en un servidor en la "
@@ -233,8 +223,8 @@ msgstr ""
 "**https://external_hostname:external_port**, without having a LAN direct "
 "connection or through VPN to the OMniLeads server."
 
-# c58c5527e3244f11afda84f653c5fe8e
-#: ../../install_inventory_file.rst:170
+# f500b9b3672b46809ed0cf51b23c856e
+#: ../../install_inventory_file.rst:166
 msgid ""
 "Se deben establecer dos reglas de firewall en la GUI del proveedor del "
 "servidor cloud, el cual actua como un router de borde, dejando a OML "
@@ -245,14 +235,12 @@ msgstr ""
 "NAT border router (if you don't know how to do it, make contact with your"
 " provider)"
 
-# 1ed0f3904d5c4a3db22a74e6bb92d7ac
-#: ../../install_inventory_file.rst:172
+# 68ee08ee6aa3404aa71738c25bb93f55
+#: ../../install_inventory_file.rst:168
 msgid "Permit de tráfico saliente desde los puertos 10000 a 30000 UDP"
 msgstr "Permit outbound traffic in this port range: 10000-30000 UDP"
 
-# 1ed0f3904d5c4a3db22a74e6bb92d7ac
-#: ../../install_inventory_file.rst:173
-#, fuzzy
+# 09480ca42bb44360adbbde94594637b1
+#: ../../install_inventory_file.rst:169
 msgid "Permit de tráfico entrante desde los puertos 10000 a 30000 UDP"
-msgstr "Permit outbound traffic in this port range: 10000-30000 UDP"
-
+msgstr "Permit inbound traffic in this port range: 10000-30000 UDP"

@@ -1,0 +1,15 @@
+===================================
+Omnileads (OML) 1.6.2 release notes
+===================================
+
+*May 26, 2020*
+
+
+This is a "bugfix" release improving the stability and performance of the codebase.
+
+
+Fixes and improvements
+=========================
+- Fixed error when user select large number of restricted fields
+- Fixed error on exporting engaged dispositions
+- Fixed error message in contact database creation when input file has repeated columns

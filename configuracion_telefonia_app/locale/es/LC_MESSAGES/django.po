@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-05 16:31-0300\n"
+"POT-Creation-Date: 2020-05-26 14:24-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,7 +41,7 @@ msgstr ""
 
 #: api_app/tests/tests_api_click2call.py:158
 #: api_app/tests/tests_api_contactos.py:170
-#: api_app/tests/tests_api_contactos.py:262 api_app/views/agente.py:170
+#: api_app/tests/tests_api_contactos.py:262 api_app/views/agente.py:197
 #: api_app/views/base.py:86 api_app/views/base.py:214
 msgid "Sistema externo inexistente."
 msgstr ""
@@ -84,12 +84,16 @@ msgstr ""
 msgid "Se recibieron campos incorrectos"
 msgstr ""
 
-#: api_app/views/agente.py:169 api_app/views/agente.py:203
+#: api_app/views/agente.py:64
+msgid "Error al generar sip password"
+msgstr ""
+
+#: api_app/views/agente.py:196 api_app/views/agente.py:230
 #: api_app/views/base.py:75 api_app/views/base.py:203
 msgid "Hubo errores en los datos recibidos"
 msgstr ""
 
-#: api_app/views/agente.py:194
+#: api_app/views/agente.py:221
 msgid "Error al ejecutar la llamada"
 msgstr ""
 
@@ -1169,12 +1173,12 @@ msgid "Destino si NO cumple la condición de tiempo"
 msgstr ""
 
 #: configuracion_telefonia_app/tests/tests_restriccion_eliminacion.py:65
-#: configuracion_telefonia_app/views/base.py:690
+#: configuracion_telefonia_app/views/base.py:708
 msgid "Se ha eliminado el Grupo Horario."
 msgstr ""
 
 #: configuracion_telefonia_app/tests/tests_restriccion_eliminacion.py:80
-#: configuracion_telefonia_app/views/base.py:682
+#: configuracion_telefonia_app/views/base.py:700
 msgid ""
 "No se puede eliminar un Grupo Horario utilizado en una Validacion Fecha Hora"
 msgstr ""
@@ -1196,12 +1200,12 @@ msgid "Este campo es requerido."
 msgstr ""
 
 #: configuracion_telefonia_app/tests/tests_rutas_salientes.py:98
-#: configuracion_telefonia_app/views/base.py:394
+#: configuracion_telefonia_app/views/base.py:402
 msgid "Se ha eliminado la Ruta Saliente."
 msgstr ""
 
 #: configuracion_telefonia_app/tests/tests_rutas_salientes.py:113
-#: configuracion_telefonia_app/views/base.py:391
+#: configuracion_telefonia_app/views/base.py:399
 msgid "No se ha podido eliminar la Ruta Saliente."
 msgstr ""
 
@@ -1250,10 +1254,10 @@ msgstr ""
 #: configuracion_telefonia_app/views/base.py:152
 #: configuracion_telefonia_app/views/base.py:170
 #: configuracion_telefonia_app/views/base.py:189
-#: configuracion_telefonia_app/views/base.py:452
-#: configuracion_telefonia_app/views/base.py:624
-#: configuracion_telefonia_app/views/base.py:678
-#: configuracion_telefonia_app/views/base.py:853
+#: configuracion_telefonia_app/views/base.py:470
+#: configuracion_telefonia_app/views/base.py:642
+#: configuracion_telefonia_app/views/base.py:696
+#: configuracion_telefonia_app/views/base.py:876
 #, python-brace-format
 msgid "<strong>¡Cuidado!</strong> con el siguiente error: {0} ."
 msgstr ""
@@ -1283,90 +1287,100 @@ msgstr ""
 msgid "Ruta saliente modificada con éxito"
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:460
+#: configuracion_telefonia_app/views/base.py:379
+msgid "No está permitido eliminar una Ruta Saliente asociado a una campaña"
+msgstr ""
+
+#: configuracion_telefonia_app/views/base.py:456
+msgid ""
+"No está permitido eliminar una Ruta Entrante asociadacon una campaña que "
+"tiene una Ruta Saliente."
+msgstr ""
+
+#: configuracion_telefonia_app/views/base.py:478
 msgid "Se ha eliminado la Ruta Entrante."
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:499
+#: configuracion_telefonia_app/views/base.py:517
 msgid "Se ha creado el IVR con éxito"
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:546
+#: configuracion_telefonia_app/views/base.py:564
 msgid "Se ha modificado el IVR con éxito"
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:640
+#: configuracion_telefonia_app/views/base.py:658
 msgid "Se ha creado el grupo horario con éxito"
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:654
+#: configuracion_telefonia_app/views/base.py:672
 msgid "Se ha modificado el grupo horario con éxito"
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:719
+#: configuracion_telefonia_app/views/base.py:737
 msgid "Se ha creado la validacion horaria con éxito"
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:755
+#: configuracion_telefonia_app/views/base.py:773
 msgid "Se ha modificado la validacion horaria con éxito"
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:789
+#: configuracion_telefonia_app/views/base.py:812
 msgid "No se puede eliminar un objeto que es destino en un flujo de llamada."
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:790
+#: configuracion_telefonia_app/views/base.py:813
 msgid "Se ha eliminado el Nodo."
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:818
-#: configuracion_telefonia_app/views/base.py:842
+#: configuracion_telefonia_app/views/base.py:841
+#: configuracion_telefonia_app/views/base.py:865
 #, python-brace-format
 msgid ""
 "No se puede eliminar la campaña. Es usada como destino failover de las "
 "campañas: {0}"
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:873
+#: configuracion_telefonia_app/views/base.py:896
 msgid "No se puede eliminar un IVR que es destino en un flujo de llamada."
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:874
+#: configuracion_telefonia_app/views/base.py:897
 msgid "Se ha eliminado el IVR."
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:882
+#: configuracion_telefonia_app/views/base.py:905
 msgid ""
 "No se puede eliminar una Validación Fecha Hora mientras sea destino en un "
 "flujo de llamada."
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:884
+#: configuracion_telefonia_app/views/base.py:907
 msgid "Se ha eliminado la Validación Fecha Hora."
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:911
+#: configuracion_telefonia_app/views/base.py:934
 msgid "Se ha creado el Identificador de clientes con éxito"
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:971
+#: configuracion_telefonia_app/views/base.py:994
 msgid "Se ha modificado el Identificador de clientes con éxito"
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:1050
+#: configuracion_telefonia_app/views/base.py:1073
 msgid ""
 "No se puede eliminar un Identificador de clientes que es destino en un flujo "
 "de llamada."
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:1052
+#: configuracion_telefonia_app/views/base.py:1075
 msgid "Se ha eliminado el Identificador de Clientes."
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:1079
+#: configuracion_telefonia_app/views/base.py:1102
 msgid "Se ha creado el nodo de Destino Personalizado con éxito"
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:1112
+#: configuracion_telefonia_app/views/base.py:1135
 msgid "Se ha modificado el nodo de Destino Personalizado con éxito"
 msgstr ""

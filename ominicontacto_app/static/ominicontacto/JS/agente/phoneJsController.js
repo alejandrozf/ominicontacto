@@ -34,7 +34,7 @@ var ACW_PAUSE_NAME = 'ACW';
 
 class PhoneJSController {
     // Connects PhoneJS with a PhoneJSView.
-    constructor(agent_id, sipExtension, sipSecret, timers, click_2_call_dispatcher) {
+    constructor(agent_id, sipExtension, sipSecret, timers, click_2_call_dispatcher, keep_alive_sender) {
         this.oml_api = new OMLAPI();
         this.view = new PhoneJSView();
         this.timers = timers;
@@ -43,6 +43,7 @@ class PhoneJSController {
         this.agent_config = new AgentConfig();
         this.pause_manager = new PauseManager();
         this.click_2_call_dispatcher = click_2_call_dispatcher;
+        this.keep_alive_sender = keep_alive_sender;
 
         /* Local Variables */
         this.agent_id = agent_id;
@@ -266,12 +267,14 @@ class PhoneJSController {
                 self.view.setStateInputStatus('Initial');
                 self.phone.startSipSession();
                 self.click_2_call_dispatcher.disable();
+                self.keep_alive_sender.deactivate();
             },
             onEnd: function() {
                 self.view.setUserStatus('label label-success', gettext('Desconectado'));
                 self.view.closeAllModalMenus();
                 self.view.setStateInputStatus('End');
                 self.click_2_call_dispatcher.disable();
+                self.keep_alive_sender.deactivate();
             },
             onReady: function() {
                 phone_logger.log('FSM: onReady');
@@ -279,6 +282,7 @@ class PhoneJSController {
                 self.view.closeAllModalMenus();
                 self.view.setStateInputStatus('Ready');
                 self.click_2_call_dispatcher.enable();
+                self.keep_alive_sender.deactivate();
             },
             onPaused: function() {
                 phone_logger.log('FSM: onPaused');
@@ -286,6 +290,7 @@ class PhoneJSController {
                 self.view.closeAllModalMenus();
                 self.view.setStateInputStatus('Paused');
                 self.click_2_call_dispatcher.enable();
+                self.keep_alive_sender.deactivate();
             },
             onCalling: function() {
                 phone_logger.log('FSM: onCalling');
@@ -293,6 +298,7 @@ class PhoneJSController {
                 self.view.closeAllModalMenus();
                 self.view.setStateInputStatus('Calling');
                 self.click_2_call_dispatcher.disable();
+                self.keep_alive_sender.activate();
             },
             onOncall: function() {
                 phone_logger.log('FSM: onOncall');
@@ -301,6 +307,7 @@ class PhoneJSController {
                 self.view.setStateInputStatus('OnCall');
                 self.view.toogleVisibilityRecordButtons(self.phone.session_data);
                 self.click_2_call_dispatcher.disable();
+                self.keep_alive_sender.activate();
             },
             onDialingtransfer: function() {
                 phone_logger.log('FSM: onDialingTransfer');
@@ -308,6 +315,7 @@ class PhoneJSController {
                 self.view.closeAllModalMenus();
                 self.view.setStateInputStatus('DialingTransfer');
                 self.click_2_call_dispatcher.disable();
+                self.keep_alive_sender.activate();
             },
             onTransfering: function() {
                 phone_logger.log('FSM: onTransfering');
@@ -316,6 +324,7 @@ class PhoneJSController {
                 self.view.setStateInputStatus('Transfering');
                 self.view.toogleVisibilityRecordButtons(self.phone.session_data);
                 self.click_2_call_dispatcher.disable();
+                self.keep_alive_sender.activate();
             },
             onReceivingcall: function() {
                 phone_logger.log('FSM: onReceivingCall');
@@ -323,6 +332,7 @@ class PhoneJSController {
                 self.view.closeAllModalMenus();
                 self.view.setStateInputStatus('ReceivingCall');
                 self.click_2_call_dispatcher.disable();
+                self.keep_alive_sender.activate();
             },
             onOnhold: function() {
                 phone_logger.log('FSM: onOnHold');
@@ -330,6 +340,7 @@ class PhoneJSController {
                 self.view.closeAllModalMenus();
                 self.view.setStateInputStatus('OnHold');
                 self.click_2_call_dispatcher.disable();
+                self.keep_alive_sender.activate();
             },
         });
     }
@@ -461,21 +472,17 @@ class PhoneJSController {
         var pause_id = return_to_pause? this.pause_manager.pause_id: undefined;
         var pause_name = return_to_pause? this.pause_manager.pause_name: undefined;
 
-        if (this.agent_config.auto_pause) {
-            var self = this;
-            this.phone.cleanLastCallData();
-            this.setPause(ACW_PAUSE_ID, ACW_PAUSE_NAME);
-            if (this.agent_config.auto_unpause > 0) {
-                var m_seconds = this.agent_config.auto_unpause * 1000;
-                this.ACW_pause_timeout_handler = setTimeout(
-                    function() {self.autoLeaveACWPause(return_to_pause, pause_id, pause_name);},
-                    m_seconds
-                );
-            } else {
-                this.phone.cleanLastCallData();
-            }
+        // Al finalizar la llamda se manda el agente a Pausa forzada.
+        var self = this;
+        this.phone.cleanLastCallData();
+        this.setPause(ACW_PAUSE_ID, ACW_PAUSE_NAME);
+        if (this.agent_config.auto_unpause > 0) {
+            var m_seconds = this.agent_config.auto_unpause * 1000;
+            this.ACW_pause_timeout_handler = setTimeout(
+                function() {self.autoLeaveACWPause(return_to_pause, pause_id, pause_name);},
+                m_seconds
+            );
         } else {
-            this.timers.operacion.start();
             this.phone.cleanLastCallData();
         }
     }
@@ -743,6 +750,29 @@ class PauseManager {
     }
 }
 
+class KeepAliveSender {
+    constructor(max_session_age) {
+        this.oml_api = new OMLAPI();
+        this.interval = max_session_age / 2;
+        this.interval_handler = undefined;
+    }
+    activate() {
+        if (this.interval_handler == undefined) {
+            var self = this;
+            this.interval_handler = setInterval(function() { self.sendKeepAlive(); }, this.interval * 1000);
+        }
+    }
+    deactivate() {
+        if (this.interval_handler != undefined) {
+            clearInterval(this.interval_handler);
+            this.interval_handler = undefined;
+        }   
+    }
+    sendKeepAlive() {
+        this.oml_api.sendKeepAlive();
+    }
+}
+
 class OutTransferData {
     constructor() {
         var blindTransf = document.getElementById('blindTransf');
@@ -774,7 +804,6 @@ class OutTransferData {
 
 class AgentConfig {
     constructor() {
-        this.auto_pause = $('#auto_pause').val() == 'True';
         this.auto_unpause = Number($('#auto_unpause').val());
         this.auto_attend_DIALER = $('#auto_attend_DIALER').val() == 'True';
         this.auto_attend_IN = $('#auto_attend_IN').val() == 'True';

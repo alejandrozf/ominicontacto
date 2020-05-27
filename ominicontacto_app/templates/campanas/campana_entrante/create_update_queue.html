@@ -59,12 +59,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <h1 id="text_line">{% trans 'Parámetros de la campaña' %}</h1>
     </div>
     <div class="form-row">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label for="{{ form.maxlen.id_for_label }}">{% trans 'Cantidad Max de llamadas:' %}</label>
             {{ form.maxlen }}
             {{ form.maxlen.errors }}
         </div>
-        <div class="col-md-4">
+        <div class="col-md-2">
+            <label for="{{ form.auto_grabacion.id_for_label }}">{% trans 'Grabar llamados:' %}</label>
+            {{ form.auto_grabacion }}
+            {{ form.auto_grabacion.errors }}
+        </div>
+        <div class="col-md-3">
             <label for="{{ form.weight.id_for_label }}">{% trans 'Importancia de campaña:' %}</label>
             {{ form.weight }}
             {{ form.weight.errors }}
@@ -75,12 +80,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {{ form.strategy }}
             {{ form.strategy.errors }}
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label>{% trans 'Musica de espera:' %}</label>
             {{ form.musiconhold }}
             {{ form.musiconhold.errors }}
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label for="{{ form.wait.id_for_label }}">{% trans 'Tiempo de espera en cola:' %}</label>
             {{ form.wait }}
             {{ form.wait.errors }}
@@ -88,25 +93,20 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ form.wait.help_text }}
             </small>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label for="{{ form.ivr_breakdown.id_for_label }}">{% trans 'IVR de escape:' %}</label>
             {{ form.ivr_breakdown }}
             {{ form.ivr_breakdown.errors }}
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <label for="{{ form.servicelevel.id_for_label }}">{% trans 'Nivel de Servicio:' %}</label>
             {{ form.servicelevel }}
             {{ form.servicelevel.errors }}
         </div>
-        <div class="col-md-4">
-            <label for="{{ form.auto_grabacion.id_for_label }}">{% trans 'Grabar llamados:' %}</label>
-            {{ form.auto_grabacion }}
-            {{ form.auto_grabacion.errors }}
+        <div class="col-md-12">
+            <label><h3>{% trans 'Destino en caso de timeout:' %}</h3></label>
         </div>
-        <div class="col-md-7">
-            <label >{% trans 'Destino en caso de timeout' %}</label>
-        </div>
-        <div class="col-md-7">
+        <div class="col-md-6">
             <div class="row">
                 <div class="col-md-6">
                     <label for="{{ form.tipo_destino.id_for_label }}">{% trans 'Tipo destino:' %}</label>
@@ -133,16 +133,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {{ form.audio_de_ingreso.errors }}
                 </div>
                 <div class="col-md-6">
-                </div>
-                <div class="col-md-6">
                     <label for="{{ form.announce_holdtime.id_for_label }}">{% trans 'Anunciar tiempo promedio espera:' %}</label>
                     {{ form.announce_holdtime }}
                     {{ form.announce_holdtime.errors }}
                 </div>
-                <div class="col-md-6">
-                    <label for="{{ form.announce_position.id_for_label }}">{% trans 'Posición de anuncio:'%}</label>
+                <div class="col-md-5">
+                    <label for="{{ form.announce_position.id_for_label }}">{% trans 'Anunciar Posición:'%}</label>
                     {{ form.announce_position }}
                     {{ form.announce_position.errors }}
+                </div>
+                <div class="col-md-7">
+                    <label for="{{ form.wait_announce_frequency.id_for_label}}">{% trans 'Frecuencia de anuncios de espera/posición' %}</label>
+                    {{form.wait_announce_frequency}}
+                    {{form.wait_announce_frequency.errors}}
+                    <small class="form-text text-muted">
+                        {{ form.wait_announce_frequency.help_text }}
+                    </small>
                 </div>
                 <div class="col-md-6">
                     <label for="{{ form.audios.id_for_label }}">{% trans 'Anuncio periódico:' %}</label>
@@ -150,7 +156,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {{ form.audios.errors }}
                 </div>
                 <div class="col-md-6">
-                    <label for="{{ form.announce_frequency.id_for_label }}">{% trans 'Frecuencia del anuncio:' %}</label>
+                    <label for="{{ form.announce_frequency.id_for_label }}">{% trans 'Frecuencia de anuncio periodico:' %}</label>
                     {{ form.announce_frequency }}
                     {{ form.announce_frequency.errors }}
                     <small class="form-text text-muted">

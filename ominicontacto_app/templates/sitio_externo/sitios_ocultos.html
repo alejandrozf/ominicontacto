@@ -19,7 +19,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 {% load i18n %}
         {% for sitio in sitios_externos %}
-            <tr>
+            <tr id="{{sitio.nombre}}">
                 <td>
                     {{ sitio.nombre }}
                 </td>

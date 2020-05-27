@@ -17,6 +17,7 @@
 #
 ---
 
+# Se instala mariadb
 - name: Installation of mariadb
   yum: name={{ item }} state=present
   with_items:
@@ -30,26 +31,6 @@
 # En estas tasks se hacen tareas de segurizacion de mariadb, es como hacer un mariadb-secure no voy a explicar una por una, nunca fallan
 - name: Enable and start MariaDB
   service: name=mariadb enabled=yes state=started
-
-- name: Remove .my.cnf
-  file: path=/root/.my.cnf state=absent
-  tags: postinstall
-
-- name: Set root Password
-  mysql_user: name=root host={{ mariadb_host }} password={{ mysql_root_password }} login_host={{ mariadb_host }} state=present update_password=always
-  environment:
-    mariadb_host: "{{ mariadb_host }}"
-    MYSQL_PWD: "{{ mysql_old_root_password }}"
-  when: mysql_root_password != ""
-
-- name: Set MYSQL_PWD in omnileads_envars.sh
-  blockinfile:
-    path: /etc/profile.d/omnileads_envars.sh
-    insertafter: EOF
-    state: present
-    block: |
-      export MYSQL_PWD={{ mysql_root_password }}
-  when: is_docker == "false"
 
 - name: Reload privilege tables
   command: "mysql -ne \"FLUSH PRIVILEGES\""
@@ -78,6 +59,7 @@
     mariadb_host: "{{ mariadb_host }}"
     MYSQL_PWD: "{{ mysql_root_password}}"
 
+# Se habilita e inicia mariadb
 - name: Enable and start MariaDB (centos)
   service: name=mariadb enabled=yes state=started
   become: true
