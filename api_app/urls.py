@@ -66,9 +66,6 @@ router.register(
 
 
 urlpatterns = [
-    # ###########  GRANDI  ############ #
-    url(r'api/v1/sip/credentials/agent/', ObtenerCredencialesSIPAgenteView.as_view(),
-        name='api_credenciales_sip_agente'),
 
     # ###########   TODOS/BASE    ############ #
     url(r'^', include(router.urls)),
@@ -78,15 +75,6 @@ urlpatterns = [
         name='api_new_contact'),
     url(r'api/v1/campaign/database_metadata/', CampaignDatabaseMetadataView.as_view(),
         name='api_campaign_database_metadata'),
-
-    url(r'^api_supervision/llamadas_campana/(?P<pk_campana>\d+)/$',
-        LlamadasDeCampanaView.as_view(),
-        name='api_supervision_llamadas_campana',
-        ),
-    url(r'^api_supervision/calificaciones_campana/(?P<pk_campana>\d+)/$',
-        CalificacionesDeCampanaView.as_view(),
-        name='api_supervision_calificaciones_campana',
-        ),
 
     # ###########   SUPERVISOR    ############ #
     url(r'api/v1/supervision/agentes',
@@ -101,6 +89,15 @@ urlpatterns = [
     url(r'api/v1/supervision/accion_sobre_agente/(?P<pk>\d+)/$',
         login_required(InteraccionDeSupervisorSobreAgenteView.as_view()),
         name='api_accion_sobre_agente'),
+    url(r'^api_supervision/llamadas_campana/(?P<pk_campana>\d+)/$',
+        LlamadasDeCampanaView.as_view(),
+        name='api_supervision_llamadas_campana',
+        ),
+    url(r'^api_supervision/calificaciones_campana/(?P<pk_campana>\d+)/$',
+        CalificacionesDeCampanaView.as_view(),
+        name='api_supervision_calificaciones_campana',
+        ),
+
 
     # ###########     AGENTE      ############ #
     url(r'^api/v1/campaign/(?P<pk_campana>\d+)/contacts/$',
@@ -118,5 +115,7 @@ urlpatterns = [
         AgentPauseAsterisk.as_view(), name='api_make_pause'),
     url(r'^api/v1/asterisk_unpause/$',
         AgentUnpauseAsterisk.as_view(), name='api_make_unpause'),
+    url(r'api/v1/sip/credentials/agent/', ObtenerCredencialesSIPAgenteView.as_view(),
+        name='api_credenciales_sip_agente'),
 
 ]

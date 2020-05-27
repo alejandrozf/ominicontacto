@@ -63,9 +63,9 @@ class SupervisionAppConfig(AppConfig):
 
     informacion_de_permisos = {
         'supervision_agentes':
-            {'descripcion': _('Estado de agentes en supervisión'), 'version': '1.5.1'},
+            {'descripcion': _('Estado de agentes en supervisión'), 'version': '1.6.2'},
         'supervision_campanas_entrantes':
-            {'descripcion': _('Estado de campañas entrantes en supervisión'), 'version': '1.5.1'},
+            {'descripcion': _('Estado de campañas entrantes en supervisión'), 'version': '1.6.2'},
         'supervision_campanas_salientes':
-            {'descripcion': _('Estado de campañas salientes en supervision'), 'version': '1.5.1'},
+            {'descripcion': _('Estado de campañas salientes en supervision'), 'version': '1.6.2'},
     }

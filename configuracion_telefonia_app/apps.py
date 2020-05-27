@@ -182,86 +182,86 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
 
     informacion_de_permisos = {
         'lista_troncal_sip':
-            {'descripcion': _('Ver la lista de Troncales SIP'), 'version': '1.5.1'},
+            {'descripcion': _('Ver la lista de Troncales SIP'), 'version': '1.6.2'},
         'crear_troncal_sip':
-            {'descripcion': _('Crear un Troncal SIP'), 'version': '1.5.1'},
+            {'descripcion': _('Crear un Troncal SIP'), 'version': '1.6.2'},
         'editar_troncal_sip':
-            {'descripcion': _('Editar un Troncal SIP'), 'version': '1.5.1'},
+            {'descripcion': _('Editar un Troncal SIP'), 'version': '1.6.2'},
         'eliminar_troncal_sip':
-            {'descripcion': _('Eliminar un Troncal SIP'), 'version': '1.5.1'},
+            {'descripcion': _('Eliminar un Troncal SIP'), 'version': '1.6.2'},
         'lista_rutas_salientes':
-            {'descripcion': _('Ver la lista de Rutas Salientes'), 'version': '1.5.1'},
+            {'descripcion': _('Ver la lista de Rutas Salientes'), 'version': '1.6.2'},
         'ordenar_rutas_salientes':
-            {'descripcion': _('Modificar el orden de las Rutas Salientes'), 'version': '1.5.1'},
+            {'descripcion': _('Modificar el orden de las Rutas Salientes'), 'version': '1.6.2'},
         'crear_ruta_saliente':
-            {'descripcion': _('Crear una Ruta Saliente'), 'version': '1.5.1'},
+            {'descripcion': _('Crear una Ruta Saliente'), 'version': '1.6.2'},
         'editar_ruta_saliente':
-            {'descripcion': _('Editar una Ruta Saliente'), 'version': '1.5.1'},
+            {'descripcion': _('Editar una Ruta Saliente'), 'version': '1.6.2'},
         'eliminar_ruta_saliente':
-            {'descripcion': _('Eliminar una Ruta Saliente'), 'version': '1.5.1'},
+            {'descripcion': _('Eliminar una Ruta Saliente'), 'version': '1.6.2'},
         'lista_rutas_entrantes':
-            {'descripcion': _('Ver la lista de Rutas Entrantes'), 'version': '1.5.1'},
+            {'descripcion': _('Ver la lista de Rutas Entrantes'), 'version': '1.6.2'},
         'crear_ruta_entrante':
-            {'descripcion': _('Crear una Ruta Entrante'), 'version': '1.5.1'},
+            {'descripcion': _('Crear una Ruta Entrante'), 'version': '1.6.2'},
         'editar_ruta_entrante':
-            {'descripcion': _('Editar una Ruta Entrante'), 'version': '1.5.1'},
+            {'descripcion': _('Editar una Ruta Entrante'), 'version': '1.6.2'},
         'eliminar_ruta_entrante':
-            {'descripcion': _('Eliminar una Ruta Entrante'), 'version': '1.5.1'},
+            {'descripcion': _('Eliminar una Ruta Entrante'), 'version': '1.6.2'},
         'obtener_destinos_tipo':
             {'descripcion':
              _('Lista con posibles destinos. Usado en varios formularios de configuración.'),
-             'version': '1.5.1'},
+             'version': '1.6.2'},
         'lista_ivrs':
-            {'descripcion': _('Ver la lista de IVRs'), 'version': '1.5.1'},
+            {'descripcion': _('Ver la lista de IVRs'), 'version': '1.6.2'},
         'crear_ivr':
-            {'descripcion': _('Crear un IVR'), 'version': '1.5.1'},
+            {'descripcion': _('Crear un IVR'), 'version': '1.6.2'},
         'editar_ivr':
-            {'descripcion': _('Editar IVR'), 'version': '1.5.1'},
+            {'descripcion': _('Editar IVR'), 'version': '1.6.2'},
         'eliminar_ivr':
-            {'descripcion': _('Eliminar IVR'), 'version': '1.5.1'},
+            {'descripcion': _('Eliminar IVR'), 'version': '1.6.2'},
         'lista_grupos_horarios':
-            {'descripcion': _('Ver lista de Grupos Horarios'), 'version': '1.5.1'},
+            {'descripcion': _('Ver lista de Grupos Horarios'), 'version': '1.6.2'},
         'crear_grupo_horario':
-            {'descripcion': _('Crear un Grupo Horario'), 'version': '1.5.1'},
+            {'descripcion': _('Crear un Grupo Horario'), 'version': '1.6.2'},
         'editar_grupo_horario':
-            {'descripcion': _('Editar un Grupo Horario'), 'version': '1.5.1'},
+            {'descripcion': _('Editar un Grupo Horario'), 'version': '1.6.2'},
         'eliminar_grupo_horario':
-            {'descripcion': _('Eliminar un Grupo Horario'), 'version': '1.5.1'},
+            {'descripcion': _('Eliminar un Grupo Horario'), 'version': '1.6.2'},
         'lista_validaciones_fecha_hora':
-            {'descripcion': _('Ver lista de Validaciones horarias'), 'version': '1.5.1'},
+            {'descripcion': _('Ver lista de Validaciones horarias'), 'version': '1.6.2'},
         'crear_validacion_fecha_hora':
-            {'descripcion': _('Crear Validacion horaria'), 'version': '1.5.1'},
+            {'descripcion': _('Crear Validacion horaria'), 'version': '1.6.2'},
         'editar_validacion_fecha_hora':
-            {'descripcion': _('Editar Validacion horaria'), 'version': '1.5.1'},
+            {'descripcion': _('Editar Validacion horaria'), 'version': '1.6.2'},
         'eliminar_validacion_fecha_hora':
-            {'descripcion': _('Eliminar Validacion horaria'), 'version': '1.5.1'},
+            {'descripcion': _('Eliminar Validacion horaria'), 'version': '1.6.2'},
         'lista_identificador_cliente':
-            {'descripcion': _('Ver lista de Identificadores de clientes'), 'version': '1.5.1'},
+            {'descripcion': _('Ver lista de Identificadores de clientes'), 'version': '1.6.2'},
         'crear_identificador_cliente':
-            {'descripcion': _('Crear un Identificador de clientes'), 'version': '1.5.1'},
+            {'descripcion': _('Crear un Identificador de clientes'), 'version': '1.6.2'},
         'editar_identificador_cliente':
-            {'descripcion': _('Editar un Identificador de clientes'), 'version': '1.5.1'},
+            {'descripcion': _('Editar un Identificador de clientes'), 'version': '1.6.2'},
         'eliminar_identificador_cliente':
-            {'descripcion': _('Eliminar un Identificador de clientes'), 'version': '1.5.1'},
+            {'descripcion': _('Eliminar un Identificador de clientes'), 'version': '1.6.2'},
         'lista_destinos_personalizados':
-            {'descripcion': _('Ver lista de destinos personalizados'), 'version': '1.5.1'},
+            {'descripcion': _('Ver lista de destinos personalizados'), 'version': '1.6.2'},
         'crear_destino_personalizado':
-            {'descripcion': _('Crear un Destino personalizado'), 'version': '1.5.1'},
+            {'descripcion': _('Crear un Destino personalizado'), 'version': '1.6.2'},
         'editar_destino_personalizado':
-            {'descripcion': _('Editar un Destino personalizado'), 'version': '1.5.1'},
+            {'descripcion': _('Editar un Destino personalizado'), 'version': '1.6.2'},
         'eliminar_destino_personalizado':
-            {'descripcion': _('Eliminar un Destino personalizado'), 'version': '1.5.1'},
+            {'descripcion': _('Eliminar un Destino personalizado'), 'version': '1.6.2'},
         'adicionar_audios_asterisk':
             {'descripcion': _('Menu para instalar paquetes de audio de Asterisk'),
-             'version': '1.5.1'},
+             'version': '1.6.2'},
         'lista_playlist':
-            {'descripcion': _('Ver listas de Musicas de espera'), 'version': '1.5.1'},
+            {'descripcion': _('Ver listas de Musicas de espera'), 'version': '1.6.2'},
         'crear_playlist':
-            {'descripcion': _('Crear lista de Musicas de espera'), 'version': '1.5.1'},
+            {'descripcion': _('Crear lista de Musicas de espera'), 'version': '1.6.2'},
         'eliminar_playlist':
-            {'descripcion': _('Eliminar lista de Musicas de espera'), 'version': '1.5.1'},
+            {'descripcion': _('Eliminar lista de Musicas de espera'), 'version': '1.6.2'},
         'editar_playlist':
-            {'descripcion': _('Editar lista de Musicas de espera'), 'version': '1.5.1'},
+            {'descripcion': _('Editar lista de Musicas de espera'), 'version': '1.6.2'},
         'eliminar_musica_de_espera':
-            {'descripcion': _('Eliminar Musica de espera'), 'version': '1.5.1'},
+            {'descripcion': _('Eliminar Musica de espera'), 'version': '1.6.2'},
     }

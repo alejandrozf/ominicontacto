@@ -31,5 +31,5 @@ class RecicladoAppConfig(AppConfig):
 
     informacion_de_permisos = {
         'reciclar_campana_dialer':
-            {'descripcion': _('Reciclado de campañas Dialer'), 'version': '1.5.1'},
+            {'descripcion': _('Reciclado de campañas Dialer'), 'version': '1.6.2'},
     }
