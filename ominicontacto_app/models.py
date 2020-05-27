@@ -1406,9 +1406,6 @@ class Queue(models.Model):
 
     objects = QueueManager()
 
-    RINGALL = 'ringall'
-    # ring all available channels until one answers (default)
-
     RRORDERED = 'rrordered'
     # same as rrmemory, except the queue member order from config file is preserved
 
@@ -1425,7 +1422,6 @@ class Queue(models.Model):
     # round robin with memory, remember where we left off last ring pass
 
     STRATEGY_CHOICES = (
-        (RINGALL, 'Ringall'),
         (RRORDERED, 'Rrordered'),
         (LEASTRECENT, 'Leastrecent'),
         (FEWESTCALLS, 'Fewestcalls'),
