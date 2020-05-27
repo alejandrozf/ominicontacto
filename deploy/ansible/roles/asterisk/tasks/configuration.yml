@@ -42,7 +42,7 @@
   when: is_docker == "false"
   tags: postinstall
 
-# Se copian si es un cluster
+# Se copian para docker prodenv (build)
 - name: Copy of asterisk dialplan files for OML (cluster)
   copy: src={{ repo_location }}/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ ast_conf_location }} owner={{ usuario }} group={{ usuario }}
   with_items:
@@ -55,6 +55,7 @@
   when: prodenv == 1 and is_docker == "true"
   tags: postinstall
 
+#Se generan los archivos de configuracion que vienen en sus templates
 - name: Copy of asterisk config files
   template: "src=roles/asterisk/templates/conf/{{ item }} dest={{ ast_conf_location }}/{{ item }} owner={{ usuario }} group={{ usuario }} mode=755"
   with_items:
@@ -90,12 +91,13 @@
       - udptl.conf
   tags: postinstall
 
+# Se genera el archivo de logger para AIO
 - name: Copy of asterisk logger config file
   template: "src=roles/asterisk/templates/conf/logger.conf dest={{ ast_conf_location }}/logger.conf owner={{ usuario }} group={{ usuario }} mode=755"
   when: is_docker == "false"
   tags: postinstall
 
-# Los archivos-no-enlaces se copian a la a /etc/asterisk
+# Aca se encuentan los custom y override que son generados solo para instalacion desde ceros
 - name: Copy of all asterisk config files
   copy: "src=roles/asterisk/templates/conf/archivos-no-enlaces/ dest={{ ast_conf_location }}/ owner={{ usuario }} group={{ usuario }} mode=755"
 
@@ -115,6 +117,7 @@
   tags: postinstall
   when: ast_custom_exists.rc != 0
 
+# Se hace una tarea aparte para los custom y override pjsip, para que se añadan en un postinstall
 - name: Copy of pjsip custom and override files
   copy: "src=roles/asterisk/templates/conf/archivos-no-enlaces/{{ item }} dest={{ ast_conf_location }}/ owner={{ usuario }} group={{ usuario }} mode=755"
   with_items:
@@ -136,11 +139,13 @@
   become_method: sudo
   tags: postinstall
 
+# Se borra el archivo de cron de la vieja ubicacion que tenia desde 1.2.X para atras
 - name: Erase omnileads crontab.d task
   file: state=absent path=/etc/cron.d/cron-omnileads
   when: is_docker == "false" and MONITORFORMAT == "mp3"
   tags: postinstall
 
+# Se genera el archivo de crontab para AIO.
 - name: Create crontab file
   template: src=templates/cron-grabaciones dest={{ cron_location }} owner={{ usuario }} group={{ usuario }} mode=600 force=yes
   tags: postinstall

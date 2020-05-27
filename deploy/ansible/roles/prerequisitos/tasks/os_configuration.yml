@@ -21,14 +21,11 @@
 - name: Creation of {{ usuario }} group
   group: name={{ usuario }} state=present
 
+# Se crea el usuario omnileads con home en /opt/omnileads y con llaves ssh generadas
 - name: Creation of {{ usuario }} user
   user: name={{ usuario }} group={{ usuario }} create_home=yes shell=/bin/bash home=/opt/{{ usuario }} generate_ssh_key=yes ssh_key_bits=2048 state=present
 
-# se crea el grupo de usuario omnileads
-#- name: Creation of {{ usuario }} user and group
-#  shell: addgroup -g 1000 -S {{ usuario }} &&  adduser -u 1000 -S {{ usuario }} -G {{ usuario }} -h {{ install_prefix }} -s /bin/bash
-#  failed_when: false
-
+# Se crea el archivo .pgpass para manejar las conexiones a postgresql desde consola
 - name: Create of .pgpass file
   template: src=roles/prerequisitos/templates/.pgpass dest={{ item }}.pgpass mode=0600 owner={{ usuario }} group={{ usuario }}
   with_items:
@@ -36,17 +33,14 @@
     - /root/
   tags: postinstall
 
-##################################
-##         Centos tasks         ##
-##################################
-
-# se deshabilita selinux https://docs.ansible.com/ansible/2.5/modules/command_module.html
+# se deshabilita selinux que viene por defecto instalado en centos7 minimal ISO
 - name: Disable Selinux
   command: "{{ item }}"
   with_items:
       - sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/sysconfig/selinux
       - sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/selinux/config
 
+# Se setea el archivo de template de environment variables, según lo que se haya ingresado en el inventory
 - name: Set environment variables for this installation
   template: src=templates/omnileads_envars.sh dest=/etc/profile.d/ mode=644 owner=root group=root
   tags: postinstall
@@ -77,6 +71,7 @@
 ###        Centos tasks         ##
 ##################################
 
+# Tareas configuracion de yum para que funcione bien con ansible
 - name: Configure yum for ansible
   ini_file: path=/etc/yum.conf section=main option="{{ item.option }}" no_extra_spaces=yes value="{{ item.value }}" state=present
   with_items:
@@ -84,8 +79,7 @@
     - { option: "timeout", value: "300" }
     - { option: "minrate", value: "100" }
 
-# Se para y deshabilita firewalld
-# https://docs.ansible.com/ansible/2.5/modules/shell_module.html#shell-module
+# Se para y deshabilita firewalld que viene por defecto en ISO centos7 minimal
 - name: Stop firewalld
   shell: "{{ item }}"
   with_items:

@@ -17,15 +17,18 @@
 #
 ---
 
+# Se hace un backup de la base 9.6
 - name: Making backup of actual database
   postgresql_db: name={{ postgres_database }} state=dump login_user={{ postgres_user }} login_password={{ postgres_password }} owner={{ postgres_user }} login_host={{ omni_fqdn }} target={{ install_prefix }}base_backup
 
+# Se paran los servicios de postgres 9.6 y 11
 - name: Stopping old and new postgresql services
   systemd: name=postgresql{{ prefix }}{{ item }}{{ sufix }} state=stopped
   with_items:
     - "{{ postgresql_old_version }}"
     - "{{ postgresql_version }}"
 
+# Se corre el comando pg_upgrade que hace el upgrade
 - name: Running pg_upgrade to upgrade database (centos)
   shell: '{{ pg_bin_location }}/pg_upgrade --old-datadir "{{ pg_lib_old_location }}" --new-datadir "{{ pg_lib_location }}" --old-bindir "{{ pg_bin_old_location }}" --new-bindir "{{ pg_bin_location }}"'
   args:
@@ -38,9 +41,11 @@
   become: true
   become_user: postgres
 
+# Se restartea postgres-11
 - name: Restart postgres service
   service: name=postgresql{{ prefix }}{{ postgresql_version }}{{ sufix }} state=restarted enabled=yes
 
+# Se corren dos scripts de postgres que analizan que se haya bien la migracion
 - name: Running analyze_new_cluster.sh and delete_old_cluster.sh scripts (centos)
   shell: "{{ item }}"
   with_items:

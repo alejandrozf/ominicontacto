@@ -17,10 +17,12 @@
 #
 ---
 
+# Solo en postinstall se desinstala este paquete que genera problemas con python3
 - name: Remove python2-devel package
   yum: name=python2-devel state=absent
   tags: ['never', 'postinstall']
 
+# Se instalan estos paquetes que no vienen con la instalacion de python3 para Amazon linux
 - name: Install python-gevent and python-greenletpackages
   yum: name={{ item }} state=present
   with_items:
@@ -28,6 +30,7 @@
     - http://mirror.centos.org/centos/7/extras/x86_64/Packages/python-gevent-1.0-3.el7.x86_64.rpm
   when: ansible_distribution == "Amazon"
 
+# Se instala python3 de esta manera cuando NO es Amazon Linux
 - name: Install python3 packages
   yum: name={{ item }} state=present
   with_items:
@@ -37,10 +40,12 @@
   when: ansible_distribution != "Amazon"
   tags: postinstall
 
+# Se instala python3 para Amazon Linux
 - name: Install python3 packages
   shell: amazon-linux-extras install python3
   when: ansible_distribution == "Amazon"
 
+# Se instala python3-devel deshabilitando el repo amzn2-core para que deje python en version 3.6
 - name: Install python3-devel package
   yum: name=python3-devel state=present disablerepo=amzn2-core
   when: ansible_distribution == "Amazon"
@@ -80,6 +85,7 @@
   until: result is success
   tags: postinstall
 
+# Se inicia y habilita redis
 - name: Start and enable redis service
   service: name=redis state=restarted enabled=yes
   become: yes

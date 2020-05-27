@@ -17,6 +17,7 @@
 #
 ---
 
+# Se instala mariadb
 - name: Installation of mariadb
   yum: name={{ item }} state=present
   with_items:
@@ -58,6 +59,7 @@
     mariadb_host: "{{ mariadb_host }}"
     MYSQL_PWD: "{{ mysql_root_password}}"
 
+# Se habilita e inicia mariadb
 - name: Enable and start MariaDB (centos)
   service: name=mariadb enabled=yes state=started
   become: true

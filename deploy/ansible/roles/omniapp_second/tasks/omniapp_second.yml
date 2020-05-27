@@ -34,6 +34,7 @@
     - key.pem
   tags: postinstall
 
+# Se copia el certificado del servidor de llaves, para poder registrar la instancia de OML
 - name: Copy register server certificate in default location
   copy: src=/var/tmp/ansible/cert dest={{ install_prefix }} owner={{ usuario }} group={{ usuario }}
   tags: postinstall
@@ -67,6 +68,7 @@
     - { src: reinstall_addons.sh, dest: reinstall_addons.sh }
   tags: postinstall
 
+# Se ejecuta el script reinstal_addons.sh el cual detecta si un addon está instalado en el OML para asi volver a ejecutar los scripts de instalacion de dichos addons y queden funcionales.
 - name: Execute reinstall_addons.sh script
   command: "{{ install_prefix }}bin/reinstall_addons.sh"
   tags: postinstall
@@ -76,6 +78,7 @@
   systemd: name=omnileads state=restarted enabled=yes daemon_reload=yes
   tags: postinstall
 
+# Se borra la supervision en php que viene desde 1.2.X para atras
 - name: Erase files related to php supervision
   file: state=absent path={{ item }}
   with_items:
@@ -88,9 +91,11 @@
   service: name=nginx state=reloaded enabled=yes
   tags: ['postinstall','kamailio']
 
+# Se cambia el ownership de este path para que no tire el error 500 cuando se quiere acceder a la parte de subir audios
 - name: Change ownership of /var/lib/nginx/tmp/
   file: state=directory owner={{ usuario }} group={{ usuario }} path=/var/lib/nginx recurse=yes
 
+# Se crea el script de desinstalacion de OML
 - name: Creation of Omnileads uninstall script
   template: src=templates/bin/oml-uninstall.sh dest=/usr/sbin/oml-uninstall mode=755 owner=root group=root
   tags: postinstall

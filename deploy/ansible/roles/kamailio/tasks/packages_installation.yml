@@ -17,7 +17,7 @@
 #
 ---
 
-# Instalo paquetes de kamailio/rtpengine
+# Instalo paquetes de kamailio
 - name: Installation of kamailio packages
   yum: name={{ item }} state=present
   with_items:
@@ -37,14 +37,14 @@
     - hiredis
     - hiredis-devel
     - python-devel
-  tags: ['kamailio']
+  tags: kamailio
   retries: 3
   delay: 3
   register: result
   until: result is success
   when: is_docker == "false"
 
-# Instalo paquetes de kamailio/rtpengine
+# Instalo paquetes de rtpengine
 - name: Installation of rtpengine packages
   yum: name={{ item }} state=present
   with_items:
@@ -60,7 +60,7 @@
     - libpcap-devel
     - hiredis
     - hiredis-devel
-  tags: ['kamailio']
+  tags: kamailio
   retries: 3
   delay: 3
   register: result
