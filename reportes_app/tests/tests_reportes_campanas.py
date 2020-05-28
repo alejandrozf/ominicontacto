@@ -326,7 +326,8 @@ class ReportesCampanasTests(BaseTestDeReportes):
         self.generador_log_llamadas.generar_log(
             campana_entrante, False, 'ABANDON', self.telefono1, agente=self.agente_profile,
             time=hoy, bridge_wait_time=4)
-        LlamadaLogFactory(tipo_campana=Campana.TYPE_ENTRANTE, campana_id=campana_entrante.pk,
+        LlamadaLogFactory(tipo_campana=Campana.TYPE_ENTRANTE,
+                          tipo_llamada=LlamadaLog.LLAMADA_ENTRANTE, campana_id=campana_entrante.pk,
                           event='ABANDONWEL', bridge_wait_time=5, time=hoy)
         estadisticas_service = EstadisticasService()
         _, _, _, _, tiempo_promedio_abandono = estadisticas_service.obtener_total_llamadas(

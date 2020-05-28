@@ -178,6 +178,7 @@ class LlamadaLogManager(models.Manager):
             Campana.objects.obtener_borradas().values_list('pk', flat=True))
         return self.filter(
             tipo_campana=Campana.TYPE_ENTRANTE,
+            tipo_llamada=LlamadaLog.LLAMADA_ENTRANTE,
             event__in=['ABANDON', 'ABANDONWEL']).exclude(
                 campana_id__in=campanas_eliminadas_ids)
 

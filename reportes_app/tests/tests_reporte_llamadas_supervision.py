@@ -21,6 +21,7 @@ from mock import patch
 from django.urls import reverse
 from django.test import TestCase
 
+from reportes_app.models import LlamadaLog
 from reportes_app.reportes.reporte_llamadas_supervision import (
     ReporteDeLLamadasEntrantesDeSupervision, ReporteDeLLamadasSalientesDeSupervision
 )
@@ -160,7 +161,9 @@ class ReporteDeLLamadasEntrantesDeSupervisionTest(TestCase):
         self.generador.generar_log(self.entrante1, False, 'ABANDON', '35100001111',
                                    agente=self.agente1, contacto=None, bridge_wait_time=5,
                                    duracion_llamada=10, archivo_grabacion='', time=None)
-        LlamadaLogFactory(tipo_campana=Campana.TYPE_ENTRANTE, campana_id=self.entrante1.pk,
+        LlamadaLogFactory(tipo_campana=Campana.TYPE_ENTRANTE,
+                          tipo_llamada=LlamadaLog.LLAMADA_ENTRANTE,
+                          campana_id=self.entrante1.pk,
                           event='ABANDONWEL', bridge_wait_time=2)
         self.client.login(username=self.supervisor.user.username, password=self.PWD)
         url = reverse('supervision_campanas_entrantes')
