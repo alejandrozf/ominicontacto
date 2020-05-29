@@ -1120,8 +1120,8 @@ class RespuestaFormularioGestionForm(forms.ModelForm):
                         attrs={'class': 'class-fecha form-control'}),
                     required=campo.is_required)
             elif campo.tipo is FieldFormulario.TIPO_LISTA:
-                choices = [(option, option)
-                           for option in json.loads(campo.values_select)]
+                choices = (EMPTY_CHOICE,) + tuple((option, option)
+                                                  for option in json.loads(campo.values_select))
                 self.fields[campo.nombre_campo] = forms.ChoiceField(
                     choices=choices,
                     label=campo.nombre_campo, widget=forms.Select(
