@@ -109,6 +109,8 @@ class CampanaTemplateCreateCampanaMixin(object):
                 'tipo_interaccion': campana_template.tipo_interaccion,
                 'sitio_externo': campana_template.sitio_externo,
                 'objetivo': campana_template.objetivo,
+                'outr': campana_template.outr,
+                'outcid': campana_template.outcid,
                 'es_template': False}
         elif step == self.COLA:
             step_cleaned_data = self.get_cleaned_data_for_step(self.INICIAL)
