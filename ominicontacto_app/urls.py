@@ -29,7 +29,8 @@ from ominicontacto_app import (
     views_agenda_contacto, views_campana_dialer_creacion, views_campana_dialer,
     views_back_list, views_sitio_externo, views_queue_member,
     views_campana_dialer_template, views_campana_manual_creacion, views_campana_manual,
-    views_campana_preview, views_archivo_de_audio, views_user_profiles, views_sistema_externo
+    views_campana_preview, views_archivo_de_audio, views_user_profiles, views_sistema_externo,
+    views_auditorias
 )
 
 from ominicontacto_app.views_utils import (
@@ -181,6 +182,15 @@ urlpatterns = [
         login_required(views_grabacion.BusquedaGrabacionAgenteFormView.as_view()),
         name='grabacion_agente_buscar',
         ),
+
+
+    # ==========================================================================
+    # Auditorías (Backoffice)
+    # ==========================================================================
+    url(r'^auditar_gestion/buscar/(?P<pagina>\d+)/$',
+        login_required(
+            views_auditorias.AuditarCalificacionesFormView.as_view()),
+        name='buscar_auditorias_gestion',),
 
     # ==========================================================================
     # Servicios para phoneJS

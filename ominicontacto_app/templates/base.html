@@ -303,6 +303,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <a class="menu-link" href="{% url 'grabacion_buscar' 1 %}">{% trans 'Buscar Grabación' %}</a>
                 </li>
 
+                <li class="main-menu-li">
+                    <span class="icon icon-search"></span>
+                    <a class="menu-link" href="{% url 'buscar_auditorias_gestion' 1 %}">{% trans 'Buscar Auditorías' %}</a>
+                </li>
+
                 {% if ADMIN_MENU_ITEMS %}
                   {% for main_item in ADMIN_MENU_ITEMS %}
                     <li class="main-menu-li">

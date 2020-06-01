@@ -25,7 +25,7 @@ from .checks import (check_settings_variables, process_middleware_settings,
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-INSTALLED_APPS += ['debug_toolbar', 'django_extensions', 'corsheaders'] + ADDONS_APPS
+INSTALLED_APPS += ['debug_toolbar', 'corsheaders'] + ADDONS_APPS
 LOCALE_PATHS += ADDONS_LOCALE_PATHS
 MIDDLEWARE_CLASSES = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE_CLASSES
 MIDDLEWARE_CLASSES += ['debug_toolbar.middleware.DebugToolbarMiddleware']

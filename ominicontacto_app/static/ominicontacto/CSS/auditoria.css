@@ -1,0 +1,19 @@
+.pendiente {
+    background: #cfcbca;
+}
+
+.rechazada {
+    background: red;
+}
+
+.aprobada {
+    background: #86cf3d;
+}
+
+.observada {
+    background: #fe832f;
+}
+
+.detalles {
+    color: white;
+}
