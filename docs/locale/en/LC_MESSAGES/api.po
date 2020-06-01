@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-11 12:56-0300\n"
+"POT-Creation-Date: 2020-05-28 14:51-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.8.0\n"
 
 # 5cf09c411fe14c4d990cb48d96c13a7c
 #: ../../api.rst:5
@@ -839,14 +839,12 @@ msgstr "Agent SIP credentials endpoint "
 #: ../../api.rst:343
 msgid ""
 "Este enpoint provee las credenciales necesarias para autenticar al agente"
-" en el servidor SIP mediante un Webphone."
+" en el servidor SIP mediante un WebPhone."
 msgstr ""
-"This endpoint provides the necessary credentials for the agent's authentication "
-"in the SIP server using a Webphone."
+"This endpoint provides the necessary credentials for the agent's "
+"authentication in the SIP server using a Webphone."
 
 # 495163a4139d4dcd8ca741be0a73e386
 #: ../../api.rst:345
-#, fuzzy
 msgid "**URL**: GET https://<omnileads_addr>/api/v1/sip/credentials/agent/"
 msgstr ""
-

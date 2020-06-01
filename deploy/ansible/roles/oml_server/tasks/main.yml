@@ -17,18 +17,105 @@
 #
 ---
 
-#----------------------------------------------------------------------
-# Deploy de la app
-#
-# Tags mas utiles:
-#  - virtualenv: setup de virtualenv & requirements
-#  - deploy: deploy de la APP (EXCEPTUANDO cambios en otros
-#       compoenentes)
+# Se imprime que el virtualenv no esta instalado si la version actual es inferior a la requerida
+- debug: msg="Virtualenv {{ virtualenv_version }} is not installed, proceeding to install"
+  when: virtualenv_installed.stdout != virtualenv_version
+  tags: ['virtualenv','postinstall']
+
+# Por lo contrario se imprime que ya está instalada la version mas actual
+- debug: msg="virtualenv is already installed in version {{ virtualenv_version }}, skipping installation steps"
+  when: virtualenv_installed.stdout == virtualenv_version
+  tags: ['virtualenv','postinstall']
+
+# Esta tarea es para eliminar virtualenv de python2.7 y no generar inconsistencia de binarios
+- name: Erase virtualenv if exists
+  file: path={{ install_prefix }}virtualenv state=absent
+  tags: postinstall
+  when: "virtualenv_installed.stdout != virtualenv_version"
+
+# Se instala el paquete de virtualenv
+- name: Install virtualenv-{{ virtualenv_version }} package
+  yum: name={{ virtualenv_package }} state=latest update_cache=yes
+  tags: postinstall
+  when: "virtualenv_installed.stdout != virtualenv_version"
 
 #----------------------------------------------------------------------
+# Directorios básicos
+#----------------------------------------------------------------------
 
-- include: packages_installation.yml
-  tags: ['omniapp']
+# Se elimina este paquete para no generar inconsistencia con python3
+- name: Remove python2-devel package
+  yum: name=python2-devel state=absent
+  tags: ['never', 'postinstall']
 
-- include: deploy.yml
-  tags: [omniapp']
+- name: Install python3.6 necessary for pytho3-devel package
+  shell: amazon-linux-extras install python3
+  when: ansible_distribution == "Amazon"
+
+- name: Install python3-devel package
+  yum: name=python3-devel state=present disablerepo=amzn2-core
+  when: ansible_distribution == "Amazon"
+
+- name: Start and enable redis service
+  service: name=redis state=restarted enabled=yes
+  become: yes
+  become_method: sudo
+
+# Se crea la llave publica y privada del usuario omnileads #https://docs.ansible.com/ansible/2.5/modules/user_module.html
+- name: Create {{ usuario }} user and public key
+  user: name={{ usuario }} generate_ssh_key=yes group={{ usuario }} ssh_key_bits=2048 state=present shell=/bin/bash
+  tags: omniapp
+
+# Creo directorio padre, home del usuario omnileads
+- name: Create the ominicontacto directorie
+  file: "dest={{ install_prefix }} state=directory owner={{ usuario }} group={{ usuario }} recurse=yes"
+  tags: omniapp
+
+# Se crean los directorios basicos
+- name: Create other directories
+  file: "dest={{ item }} state=directory owner={{ usuario }} group={{ usuario }} mode=0755 recurse=yes"
+  with_items:
+    - "{{ install_prefix }}.pip"
+    - "{{ install_prefix }}wombat-json"
+    - "{{ install_prefix }}backup"
+    - "{{ install_prefix }}bin"
+    - "{{ install_prefix }}nginx_certs"
+    - "{{ install_prefix }}media_root/reporte_campana"
+    - "{{ install_prefix }}static"
+    - "{{ install_prefix }}log"
+    - "{{ install_prefix }}run"
+    - "{{ asterisk_location }}/etc/asterisk"
+  tags: omniapp
+
+# El codigo que está en /var/tmp/ominicontacto_build/ se pasa a /opt/omnileeads/ominicontacto
+- name: Upload code (rsync to /ominicontacto)
+  synchronize: "src={{ build_dir }}/{{ item }} dest={{ install_prefix }}ominicontacto/ delete=yes checksum=yes times=no"
+  with_items:
+    - api_app
+    - configuracion_telefonia_app
+    - manage.py
+    - ominicontacto
+    - ominicontacto_app
+    - ominicontacto_voip
+    - reciclado_app
+    - reportes_app
+    - requirements
+    - supervision_app
+    - test
+    - tests
+    - utiles_globales.py
+  tags: postinstall
+
+# Seteo posesion de ominicontacto al usuario omnileads
+- name: Change owner and group of ominicontacto
+  file: "path={{ install_prefix }}ominicontacto owner={{ usuario }} group={{ usuario }} recurse=yes"
+  tags: postinstall
+
+# Se borran los antiguos archivos de settings en caso de upgradear un oml muy viejo
+- name: Erase old folder of settings
+  file: path={{ install_prefix }}{{ item }} state=absent
+  with_items:
+    - ominicontacto/oml_settings_local.py
+    - ominicontacto/oml_settings_local.pyc
+    - local/
+  tags: ['never','postinstall']

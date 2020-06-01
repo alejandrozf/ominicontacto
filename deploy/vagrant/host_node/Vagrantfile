@@ -11,9 +11,10 @@ Vagrant.configure("2") do |config|
                       mkdir /root/.ssh/;
                       touch /root/.ssh/authorized_keys;
                       echo $VAR >> /root/.ssh/authorized_keys;
-                      sudo yum install kernel-devel -y;
                       sudo yum update -y;
-                      sed -i \'0,/127.0.0.1/{/127.0.0.1/d;}\' /etc/hosts
+                      systemctl disable firewalld && systemctl stop firewalld;
+                      sed -i \'s/^SELINUX=.*/SELINUX=disabled/\' /etc/sysconfig/selinux;
+                      sed -i \'s/^SELINUX=.*/SELINUX=disabled/\' /etc/selinux/config
                       '"
     nodo1.vm.provider "virtualbox" do |vb|
       vb.name = "Centos-Staging"

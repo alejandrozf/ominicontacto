@@ -47,3 +47,13 @@ tinycss==0.4
 traitlets==4.3.1
 unicodecsv==0.14.1
 wcwidth==0.1.7
+
+# local installations requirements e.g, developer debug libs
+django-cors-headers==2.4.0
+django-debug-toolbar==1.9.1
+django-extensions==1.9.8
+ipdb==0.10.1
+mock==2.0.0
+
+# production requirements
+uWSGI==2.0.15

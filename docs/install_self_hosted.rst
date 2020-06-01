@@ -12,19 +12,10 @@ script de instalación allí en dicho host.
 
 *Figure 1: self-hosted install*
 
-Pre-requisitos
-^^^^^^^^^^^^^^^
-
-- Una instancia de GNU/Linux CentOS 7 (minimal), Debian 9 (netinstall) ó Ubuntu Server 18.04
-- 20 GB de espacio en disco
-- 4 GB de memoria RAM
-- Dejar la hora correctamente configurada en el host.
-- Configurar una *dirección IP* y un *hostname* fijo, antes de ejecutar la instalación.
-
 Ajustes necesarios antes  de la ejecución de script
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- Debemos contar con git para luego clonar el repositorio del proyecto y seleccionar el release a instalar
+- Instalar git para luego clonar el repositorio del proyecto y seleccionar el release a instalar
 
 .. code-block:: bash
 
@@ -32,18 +23,6 @@ Ajustes necesarios antes  de la ejecución de script
   git clone https://gitlab.com/omnileads/ominicontacto.git
   cd ominicontacto
   git checkout master
-
-- Instalar paquete kernel-devel, realizar el update del sistema operativo y rebotear la máquina.
-
-  .. code-block:: bash
-
-    yum install kernel-devel -y
-    yum update -y
-    reboot
-
-.. important::
-
-  Luego del reboot es importante revisar que el paquete kernel-devel coincida con el kernel que se muestre con el comando *uname -a*
 
 - La instalación se trabaja en el directorio "deploy/ansible", disponible desde la raíz del proyecto (PATH/ominicontacto/deploy/ansible):
 
@@ -82,4 +61,3 @@ Si la ejecución de la instalación finaliza exitosamente, se despliega una vist
 .. image:: images/install_ok.png
 
 *Figure 5: OMniLeads installation ended succesfuly*
-

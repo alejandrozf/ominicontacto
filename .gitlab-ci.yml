@@ -42,7 +42,7 @@ test:
     - touch /opt/omnileads/ominicontacto/django.log
     - mkdir -p /opt/omnileads/static
     - mkdir -p /opt/omnileads/media_root
-    - pip install -r requirements/tests.txt
+    - pip install -r requirements/requirements.txt
   variables:
     POSTGRES_DB: omnileads
     POSTGRES_USER: omnileads
@@ -72,11 +72,29 @@ docker-prodenv-build-push:
   tags:
     - build-docker
   only:
+    - /.*build.*$/
     - schedules
     - web
 
-staging-centos:
+build-aio:
   stage: build
+  script:
+    - export BRANCH=$CI_COMMIT_REF_NAME
+    - bash /home/ftsinfra/git_cleanup.sh
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/build/
+    - ./vagrantsh.sh
+    - vagrant up --provision
+    - vagrant halt
+  tags:
+    - build-aio
+  only:
+    - /.*build.*$/
+    - schedules
+    - web
+
+deploy-host-node:
+  stage: deploy
+  environment: FTS-CENTOS7
   script:
   #  - export CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME STAGING_IP_CENTOS=$STAGING_IP_CENTOS
     - bash /home/ftsinfra/git_cleanup.sh
@@ -88,17 +106,20 @@ staging-centos:
     - cd ../../ansible
     - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
     - TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=$STAGING_HOST_CENTOS ADMIN_USERNAME=admin ADMIN_PASSWORD=$DJANGO_PASS LOGIN_FAILURE_LIMIT=$LOGIN_FAILURE_LIMIT python /home/ftsinfra/ominicontacto/ominicontacto_app/tests/tests.py
+    - /home/ftsinfra/ominicontacto/deploy/vagrant/releases/package.sh
     - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
     - vagrant halt centos
   tags:
-    - build-aio
+    - deploy-aio
   only:
     - /.*test-de-integración.*$/
+    - /.*deploy.*$/
     - schedules
     - web
 
-staging-self-hosted:
-  stage: build
+
+deploy-self-hosted:
+  stage: deploy
   script:
     - export BRANCH=$CI_COMMIT_REF_NAME CENTOS_IP=$STAGING_IP_CENTOS
     - bash /home/ftsinfra/git_cleanup.sh
@@ -110,14 +131,14 @@ staging-self-hosted:
     - vagrant halt
     - vagrant destroy -f
   tags:
-    - build-aio
+    - deploy-aio
   only:
-    - /.*ansible-selfhosted.*$/
+    - /.*deploy.*$/
     - schedules
     - web
 
-staging-centos-docker:
-  stage: build
+deploy-centos-docker:
+  stage: deploy
   script:
     - bash /home/ftsinfra/git_cleanup.sh
     - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
@@ -130,13 +151,14 @@ staging-centos-docker:
     - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
     - vagrant halt centos
   tags:
-    - build-docker
+    - deploy-docker
   only:
+    - /.*deploy.*$/
     - schedules
     - web
 
 upgrade-aio:
-  stage: build
+  stage: deploy
   script:
     - export CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME RELEASE_TO_UPGRADE=$RELEASE_TO_UPGRADE
     - bash /home/ftsinfra/git_cleanup.sh
@@ -151,29 +173,6 @@ upgrade-aio:
     - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -u
     - cd /home/ftsinfra/ominicontacto/deploy/vagrant/releases
     - vagrant halt centos
-  tags:
-    - build-aio
-  only:
-    - web
-
-prod-aio:
-  stage: deploy
-  environment: FTS-CENTOS7
-  script:
-    - export CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME
-    - bash /home/ftsinfra/git_cleanup.sh
-    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
-    - vagrant halt centos
-    - vagrant destroy centos -f
-    - ./vagrantup.sh centos
-    - python ../edit_inventory.py --internal_ip=$STAGING_IP_CENTOS --host_node=yes
-    - cd ../../ansible
-    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
-    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
-    - vagrant package --base Centos-Staging --output centos-$CI_COMMIT_REF_NAME.box
-    - cp centos-$CI_COMMIT_REF_NAME.box /home/ftsinfra/oml-boxes
-    - cp -a .vagrant/machines/centos/virtualbox/private_key /home/ftsinfra/oml-boxes/centos_private_key_$CI_COMMIT_REF_NAME
-    - rm -rf centos-$CI_COMMIT_REF_NAME.box
   tags:
     - deploy-aio
   only:

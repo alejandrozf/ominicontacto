@@ -17,12 +17,6 @@
 #
 ---
 
-# Se crea el servicico de asterisk  para systemctl
-- name: Creation of asterisk.service
-  template: src=templates/asterisk.service dest=/etc/systemd/system/asterisk.service owner=root group=root mode=650
-  when: is_docker == "false"
-  tags: postinstall
-
 # Linkeo el binario a /usr/sbin
 - name: Create simbolic link of asterisk binarie
   file: state=link src={{ asterisk_location }}/sbin/asterisk dest=/usr/sbin/asterisk force=true

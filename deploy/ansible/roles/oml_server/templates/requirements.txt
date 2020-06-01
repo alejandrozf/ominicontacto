@@ -1,5 +1,0 @@
-{% if devenv == 1 %}
--r requirements/develop.txt
-{% else %}
--r requirements/production.txt
-{% endif %}

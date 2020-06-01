@@ -54,15 +54,7 @@
   tags: postinstall
   when: postgres_host is not defined
 
-# Se crea el usuario de postgres
-- name: Create ro postgres user
-  postgresql_user: name={{ postgres_user}}ro password={{ postgres_password }}ro role_attr_flags=SUPERUSER encrypted=yes
-  become: yes
-  become_method: sudo
-  become_user: postgres
-  when: postgres_host is not defined
-
-# Se crea base de datos para OML, para postgres interno
+# Se crea base de datos omnileads
 - name: Create of the database
   postgresql_db: name={{ postgres_database }} state=present login_user={{ postgres_user }} login_password={{ postgres_password }} owner={{ postgres_user }} login_host=localhost
   when: postgres_host is not defined

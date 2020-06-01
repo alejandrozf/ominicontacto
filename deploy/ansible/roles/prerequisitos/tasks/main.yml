@@ -17,6 +17,7 @@
 #
 ---
 
+# Se instala net-tools necesario para obtener la subnet privada
 - name: Installing net-tools, necessary for network checks
   yum: name=net-tools state=present update_cache=yes
 

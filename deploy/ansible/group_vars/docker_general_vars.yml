@@ -40,3 +40,9 @@ postgresql_fqdn: postgresql
 redis_fqdn: redis
 rtpengine_fqdn: rtpengine
 database_fqdn: "{{ postgresql_fqdn }}"
+
+asterisk_repo: https://downloads.asterisk.org/pub/telephony/asterisk/old-releases/asterisk-{{ asterisk_version }}.tar.gz
+wombat_repo: http://downloads.loway.ch/wd/WombatDialer-{{ wombat_version }}.tar.gz
+rtpengine_repo: https://github.com/sipwise/rtpengine/archive/mr{{ rtpengine_version }}.tar.gz
+kamailio_repo: https://github.com/kamailio/kamailio/archive/{{ kamailio_version }}.tar.gz
+res_json_repo: https://github.com/felipem1210/asterisk-res_json.git
