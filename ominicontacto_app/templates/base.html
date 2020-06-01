@@ -21,6 +21,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load compress %}
 {% load i18n %}
 {% load custom_messages %}
+{% load oml_permissions %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -117,6 +118,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <li>
                             <a href="{% url 'grupo_nuevo' %}">{% trans 'Nuevo Grupo de agentes' %}</a>
                         </li>
+                        {% if user|has_oml_permission:'user_role_management' %}
+                        <li>
+                            <a href="{% url 'user_role_management' %}">{% trans 'Roles y permisos' %}</a>
+                        </li>
+                        {% endif %}
 
                     </ul>
                 </li>
