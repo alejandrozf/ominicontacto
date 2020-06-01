@@ -2832,6 +2832,36 @@ class RespuestaFormularioGestion(models.Model):
                              self.calificacion.opcion_calificacion.campana)
 
 
+class AuditoriaCalificacion(models.Model):
+    """Representa el resultado de la auditoría que realiza un auditor (o backofficer)
+    de un departamento
+    de backoffice sobre la calificacion de un agente sobre un contacto
+    """
+
+    # el auditor aprueba la calificacion
+    APROBADA = 0
+
+    # el auditor aprueba la calificacion
+    RECHAZADA = 1
+
+    # el auditor realiza algunas observaciones al agente
+    OBSERVADA = 2
+
+    RESULTADO_CHOICES = (
+        (APROBADA, _('Aprobada')),
+        (RECHAZADA, _('Rechazada')),
+        (OBSERVADA, _('Observada')),
+    )
+
+    def __str__(self):
+        return str(_("Auditoría de calificacion con id={0} fue {1}".format(
+            self.calificacion.pk, self.get_resultado_display())))
+
+    calificacion = models.OneToOneField(CalificacionCliente, on_delete=models.CASCADE)
+    resultado = models.IntegerField(choices=RESULTADO_CHOICES)
+    observaciones = models.TextField(blank=True, null=True)
+
+
 class Chat(models.Model):
     agente = models.ForeignKey(AgenteProfile, related_name="chatsagente", on_delete=models.CASCADE)
     user = models.ForeignKey(User, related_name="chatsusuario", on_delete=models.CASCADE)
