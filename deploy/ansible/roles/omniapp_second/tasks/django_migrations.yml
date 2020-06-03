@@ -42,6 +42,7 @@
     - compress --force
     - regenerar_asterisk
     - regenerar_tareas_preview
+    - actualizar_permisos
   become: true
   become_method: su
   become_user: "{{ usuario }}"
