@@ -57,7 +57,7 @@ class RoleManager {
     }
 
     updateVisibleRoles() {
-        $('[role_row]').hide();
+        $('table[id^=role_row_]').hide();
         var selected_visible = $('#visible_roles').val();
         if (selected_visible == null) return;
         for (var i = selected_visible.length - 1; i >= 0; i--) {
@@ -127,7 +127,7 @@ class RoleManager {
                 console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
             }
         });
-        $('#modalCreateRole').modal('hide');
+        $('#modalDeleteRole').modal('hide');
     }
 
     removeRole(role_id) {
@@ -303,17 +303,17 @@ var templates = {
     
     apply_role_option: '<option value="{{ role_id }}">{{ role_name }}</option>',
     
-    permission_cell: '<div class="grid-item"><p>{{ permission }}</p></div>',
+    permission_cell: '<tr><td>{{ permission }}</td></tr>',
     
-    role_column:
-    '<div class="grid-col" role_row="true" id="role_row_{{ role_id }}">' +
-    '  <div class="grid-item grid-item--header dropdown show"><p>{{ role_name }} {{{ submenu }}}</p></div>' +
-    '  {{{ permissions_cells }}}' +
-    '</div>',
+    role_column: 
+    '<table class="table table-bordered"  id="role_row_{{ role_id }}">'+
+    '  <thead><tr><td>{{ role_name }} {{{ submenu }}}</td></tr></thead>'+
+    '  <tbody>{{{ permissions_cells }}}</tbody>'+
+    '</table>',
     
 
     role_submenu: 
-    '<a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownRole{{ role_id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">X</a>' +
+    '<a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownRole{{ role_id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>' +
     '  <div class="dropdown-menu" aria-labelledby="dropdownRole{{ role_id }}">' +
     '    <a class="dropdown-item" href="javascript:" onclick="saveRole({{ role_id }})">Guardar</a>' +
     '    <a class="dropdown-item" href="javascript:" onclick="mimicRolePermissionsForm({{ role_id }})">Imitar permisos de..</a>' +
@@ -321,8 +321,7 @@ var templates = {
     '    <a class="dropdown-item" href="javascript:" onclick="deleteRoleForm({{ role_id }})">Eliminar</a>' +
     '  </div>',
 
-    permission_checkbox: '<div class="grid-item"><p>' +
-    '  <input type="checkbox" permission_role="{{ role_id }}" name="{{ permission }}" permission_id="{{ permission_id }}" {{ checked }} {{disabled}}>' +
-    '  </p>' +
-    '</div>',
+    permission_checkbox:'<tr><td>'+
+    '<input type="checkbox" permission_role="{{ role_id }}" name="{{ permission }}" permission_id="{{ permission_id }}" {{ checked }} {{disabled}}>'+
+    '</td></tr>',
 };

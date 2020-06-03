@@ -31,28 +31,44 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% endblock head_js %}
 
 {% block content %}
-<input type="hidden" name="permisos" id="permisos" value="{{ permisos }}">
-<input type="hidden" name="roles" id="roles" value="{{ roles }}">
-
-<h1>{% trans 'Asignación de permisos a Roles' %}</h1>
-
-<div>
-    <button id="create_role_btn" class="btn btn-primary">
-        {% trans 'Crear Rol' %}
-    </button>
-    <label for="visible_roles"> Mostrar:</label>
-    <select multiple name='visible_roles' id="visible_roles"></select>
-</div>
-
-<div class="grid-container">
-  <div class="grid" id='main_grid'>
-    <div class="grid-col grid-col--fixed-left" id="permissions_row">
-      <div class="grid-item grid-item--header">
-        <p>{% trans "Permiso" %}</p>
-      </div>
+<div class="container-fluid">
+    <input type="hidden" name="permisos" id="permisos" value="{{ permisos }}">
+    <input type="hidden" name="roles" id="roles" value="{{ roles }}">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>{% trans 'Asignación de permisos a Roles' %}</h1>
+        </div>
+        <div class="col-md-6">
+            <button id="create_role_btn" class="btn btn-primary">
+                {% trans 'Crear Rol' %}
+            </button>
+        </div>
     </div>
-
-  </div>
+    <div class="row">
+        <div class="col-md-12">
+            <label for="visible_roles"> {% trans "Mostrar:" %}</label>
+        </div>
+        <div class="col-md-3">
+            <select class="form-control" multiple name='visible_roles' id="visible_roles"></select>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="table-responsive table_permisos">
+            <div class="sticky_column">
+                <table class="table table-bordered" id="permiso_resp">
+                    <thead>
+                        <tr>
+                            <td>{% trans "Permiso" %}</td>
+                        </tr>
+                    </thead>
+                    <tbody id="permissions_row"></tbody>
+                </table>
+            </div>
+            <div id="main_grid"> 
+            </div>         
+        </div>
+    </div>
 </div>
 
 <!-- Modal Creacion -->
