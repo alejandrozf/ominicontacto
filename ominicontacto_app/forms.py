@@ -520,6 +520,12 @@ class AuditoriaBusquedaForm(forms.Form):
             (self.AUDITORIA_PENDIENTE_CHOICE,) + status_auditoria_choices
 
 
+class AuditoriaCalificacionForm(forms.ModelForm):
+    class Meta:
+        model = AuditoriaCalificacion
+        fields = ('resultado', 'observaciones')
+
+
 class CampanaMixinForm(object):
     def __init__(self, *args, **kwargs):
         super(CampanaMixinForm, self).__init__(*args, **kwargs)
