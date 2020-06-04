@@ -912,6 +912,8 @@ class FormularioNuevoContacto(forms.ModelForm):
     def __init__(self, base_datos=None, campos_bloqueados=[], campos_ocultos=[], *args, **kwargs):
         campos_a_bloquear = []  # Son los campos a bloquear para la edicion.
         campos_a_ocultar = campos_ocultos  # Son los campos a bloquear para la edicion Y creación.
+        self.campos_a_bloquear = campos_a_bloquear
+        self.campos_a_ocultar = campos_a_ocultar
         if 'instance' in kwargs and kwargs['instance'] is not None:
             campos_a_bloquear = campos_bloqueados
             contacto = kwargs['instance']
@@ -979,6 +981,11 @@ class FormularioNuevoContacto(forms.ModelForm):
         datos = []
         for nombre in self.bd_metadata.nombres_de_columnas_de_datos:
             campo = self.cleaned_data.get(self.get_nombre_input(nombre), '')
+            if campo == '' and nombre in self.campos_a_ocultar and self.instance.pk is not None:
+                # los campos a ocultar se guardan mantienen su valor de BD en el
+                # caso de que se les quiera ocultar al usuario en edicion
+                datos_contacto_dict = self.instance.obtener_datos()
+                campo = datos_contacto_dict.get(self.get_nombre_input(nombre), '')
             datos.append(campo)
         return json.dumps(datos)
 
