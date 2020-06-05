@@ -13,7 +13,7 @@ services:
       - AMI_USER=${AMI_USER}
       - AMI_PASSWORD=${AMI_PASSWORD}
       - ASTERISK_LOCATION=${ASTERISK_LOCATION}
-      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - PATH=${PATH}
       - PGPASSWORD=${PGPASSWORD}
       - PGHOST=${PGHOST}
       - PGUSER=${PGUSER}
@@ -71,7 +71,7 @@ services:
       - asterisk
     dns: 8.8.8.8
     environment:
-      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - PATH=${PATH}
       - TZ=${TZ}
     image: {{ kamailio_builded_image }}
     networks:
@@ -110,7 +110,7 @@ services:
     container_name: oml-{{ nginx_fqdn }}-{{ customer }}
     dns: 8.8.8.8
     environment:
-      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - PATH=${PATH}
       - TZ={{ TZ }}
     image: {{ nginx_builded_image }}
     networks:
@@ -152,7 +152,7 @@ services:
       - KAMAILIO_HOSTNAME=${KAMAILIO_HOSTNAME}
       - KAMAILIO_LOCATION=${KAMAILIO_LOCATION}
       - OMNILEADS_HOSTNAME=${OMNILEADS_HOSTNAME}
-      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - PATH=${PATH}
       - PGHOST=${PGHOST}
       - PGDATABASE=${PGDATABASE}
       - PGUSER=${PGUSER}
