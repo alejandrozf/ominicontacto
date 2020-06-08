@@ -79,12 +79,11 @@ if [ "$ASTERISK_VERSION_INSTALLED" != "$ASTERISK_VERSION" ]; then
   cd /
   rm -rf /usr/src/asterisk \
          /usr/src/codecs
-
+fi
   # Build of rpm using fpm
   echo "Build asterisk rpm"
-  cd /root/oml_build/rpms
+  cd /vagrant/build/rpms
   fpm -s dir -t rpm -n asterisk -v {{ asterisk_version }} {{ asterisk_location}} /etc/systemd/system/asterisk.service || true
   # Upload of rpm to VPS fts server
   echo "Uploading rpm to public server"
   scp $SSH_OPTIONS -P 40404 -i /vagrant/vps_key.pem asterisk-{{ asterisk_version }}* root@www.freetech.com.ar:/var/www/html/omnileads/build
-fi

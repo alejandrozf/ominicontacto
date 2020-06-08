@@ -205,7 +205,7 @@ AnsibleExec() {
       echo "All hosts in inventory file are commented, please check the file according to documentation"
       exit 1
     fi
-    echo "Beginning the Omnileads installation with Ansible, this installation process can last between 30-40 minutes"
+    echo "Beginning the Omnileads installation with Ansible, this installation process can last between 20-25 minutes, depending of your internet connection"
     echo ""
     ${ANSIBLE}-playbook $verbose $TMP_ANSIBLE/omnileads.yml \
       --extra-vars "trusted_certs=$TRUSTED_CERTS \

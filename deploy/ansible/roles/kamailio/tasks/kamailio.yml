@@ -27,11 +27,27 @@
   tags: postinstall
   when: kamailio_installed.stdout == kamailio_version
 
-# Se instala el paquete de la version mas actual de kamailio
-- name: Install kamailio-{{ kamailio_version }} package
-  yum: name={{ kamailio_package }} state=latest update_cache=yes
+- name: Install kamailio-{{ kamailio_version }} package (from s3 source)
+  yum: name={{ s3_packages_url }}/kamailio-{{ kamailio_version }}-1.x86_64.rpm state=latest update_cache=yes
   when: kamailio_installed.stdout != kamailio_version
   tags: postinstall
+  retries: 3
+  delay: 3
+  register: s3_download
+  until: s3_download is success
+  ignore_errors: true
+
+- debug: msg="The download of kamailio-{{ kamailio_version }} package from s3 source failed, trying the vps source"
+  when: kamailio_installed.stdout != kamailio_version and s3_download is failed
+
+- name: Install kamailio-{{ kamailio_version }} package (from vps source)
+  yum: name={{ vps_packages_url }}/kamailio-{{ kamailio_version }}-1.x86_64.rpm state=latest update_cache=yes
+  when: kamailio_installed.stdout != kamailio_version and s3_download is failed
+  tags: postinstall
+  retries: 3
+  delay: 3
+  register: vps_download
+  until: vps_download is success
 
 # Si existen trusted certs se ubican en donde kamailio los necesita
 - name: Copy trusted key/cert pair in kamailio location
@@ -63,7 +79,8 @@
 # Se le pone de ownership a la carpeta de kamailio el usuario omnileads
 - name: Change owner of kamailio directory
   file: state=directory path={{ kamailio_location }} owner={{ usuario }} group={{ usuario }} recurse=yes
-
+  tags: postinstall
+  
 # Se crea el archivo kamailio-local, Este archivo contiene las variables que usa el kamailio.cfg
 - name: Creation of kamailio-local.cfg file
   template: src=templates/etc/kamailio-local.cfg dest={{ kamailio_location }}/etc/kamailio/ owner={{ usuario }} group={{ usuario }}

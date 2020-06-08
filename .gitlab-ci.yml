@@ -81,9 +81,9 @@ build-aio:
   script:
     - export BRANCH=$CI_COMMIT_REF_NAME
     - bash /home/ftsinfra/git_cleanup.sh
-    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/build/
-    - ./vagrantsh.sh
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/build/ && ./vagrantsh.sh
     - vagrant up --provision
+    - ./utils.sh
     - vagrant halt
   tags:
     - build-aio
@@ -116,7 +116,6 @@ deploy-host-node:
     - /.*deploy.*$/
     - schedules
     - web
-
 
 deploy-self-hosted:
   stage: deploy

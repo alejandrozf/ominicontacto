@@ -73,22 +73,25 @@
       - rubygems
 
   # Se instala la herramienta fpm
-  - name: Installing fpm
-    shell: gem install --no-ri --no-rdoc fpm
+  - name: Installing ffi v1.12.2 and fpm
+    shell: "{{ item }}"
+    with_items:
+      - gem install ffi -v 1.12.2
+      - gem install --no-ri --no-rdoc fpm
 
   # Se crean los directorios para el build
   - name: Create build directories
     file: name={{ item }} state=directory recurse=yes owner=root group=root
     with_items:
-      - /root/oml_build/build_scripts/
-      - /root/oml_build/rpms/
+      - /vagrant/build/build_scripts/
+      - /vagrant/build/rpms/
       - "{{ asterisk_location }}"
       - "{{ kamailio_location }}"
       - "{{ virtualenv_location }}"
 
   # Se generan los scripts de buildeo
   - name: Generating build scripts
-    template: src=templates/build_scripts/{{ item }} dest=/root/oml_build/build_scripts/ mode=755
+    template: src=templates/build_scripts/{{ item }} dest=/vagrant/build/build_scripts/ mode=755
     with_items:
       - build_asterisk.sh
       - build_kamailio.sh
@@ -117,7 +120,7 @@
 
   # Se ejecutan los scripts de build
   - name: Execute build scripts
-    command: "{{ item }} chdir=/root/oml_build/build_scripts"
+    command: "{{ item }} chdir=/vagrant/build/build_scripts"
     with_items:
       - ./build_asterisk.sh
       - ./build_kamailio.sh

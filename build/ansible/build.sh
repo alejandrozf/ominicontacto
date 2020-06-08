@@ -7,7 +7,6 @@ ANSIBLE=`which ansible`
 TMP_ANSIBLE='/var/tmp/ansible'
 ANSIBLE_VERSION_DESIRED='2.9.2'
 ANSIBLE_VERSION_INSTALLED="`~/.local/bin/ansible --version |head -1| awk -F ' ' '{print $2}'`"
-REPO_LOCATION="`git rev-parse --show-toplevel`"
 USER_HOME=$(eval echo ~${SUDO_USER})
 export ANSIBLE_CONFIG=$TMP_ANSIBLE
 arg1=$1
@@ -15,6 +14,7 @@ arg1=$1
 AnsibleInstall() {
   echo "Installing python-pip and epel-release"
   yum install epel-release -y
+  sleep 5
   yum install python-pip -y
   PIP=`which pip`
   echo "Detecting if Ansible $ANSIBLE_VERSION_DESIRED is installed"
@@ -42,14 +42,6 @@ AnsibleInstall() {
   echo "Creating the installation process log file"
   mkdir -p /var/tmp/log
   touch /var/tmp/log/oml_install
-  current_tag="`git tag -l --points-at HEAD`"
-  release_name=$(git show ${current_tag} |grep "Merge branch" |awk -F " " '{print $3}' |tr -d "'")
-  branch_name="`git branch | grep \* | cut -d ' ' -f2`"
-  if [ $branch_name == "master" ]; then git pull; fi
-  if [ -z "$current_tag" ]
-  then
-      release_name=$branch_name
-  fi
 }
 
 AnsibleExec() {
@@ -61,7 +53,6 @@ AnsibleExec() {
     echo "Beginning the Omnileads installation with Ansible, this installation process can last between 30-40 minutes"
     echo ""
     ${ANSIBLE}-playbook $verbose $TMP_ANSIBLE/build.yml \
-      --extra-vars "oml_release=$release_name" \
       -i $TMP_ANSIBLE/inventory
     ResultadoAnsible=`echo $?`
     if [ $ResultadoAnsible == 0 ];then

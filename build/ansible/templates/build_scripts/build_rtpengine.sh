@@ -53,11 +53,9 @@ if [ "$RTPENGINE_VERSION_INSTALLED" != "$RTPENGINE_VERSION" ]; then
   cd iptables-extension && make && cp libxt_RTPENGINE.so /lib64/xtables && cd ..
 
   rm -rf /usr/src/rtpengine
-
-  echo "Building rtpengine rpm"
-  cd /root/oml_build/rpms
-  fpm -s dir -t rpm -n rtpengine -v {{ rtpengine_version }} /usr/local/bin/rtpengine /root/xt_RTPENGINE.ko /lib64/xtables/libxt_RTPENGINE.so /etc/systemd/system/rtpengine.service || true
-  echo "Uploading rpm to public server"
-  scp $SSH_OPTIONS -P 40404 -i /vagrant/vps_key.pem rtpengine-{{ rtpengine_version }}* root@www.freetech.com.ar:/var/www/html/omnileads/build
-
 fi
+echo "Building rtpengine rpm"
+cd /vagrant/build/rpms
+fpm -s dir -t rpm -n rtpengine -v {{ rtpengine_version }} /usr/local/bin/rtpengine /root/xt_RTPENGINE.ko /lib64/xtables/libxt_RTPENGINE.so /etc/systemd/system/rtpengine.service || true
+echo "Uploading rpm to public server"
+scp $SSH_OPTIONS -P 40404 -i /vagrant/vps_key.pem rtpengine-{{ rtpengine_version }}* root@www.freetech.com.ar:/var/www/html/omnileads/build
