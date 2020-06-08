@@ -52,6 +52,9 @@ function createDataTable() {
                     if (data.search('DIALING') != -1) {
                         $status.attr('class', 'dialing');
                     }
+                    if (data.search('UNAVAILABLE') != -1) {
+                        $status.attr('class', 'unavailable');
+                    }
                     return $status.prop('outerHTML');
                 },
             },

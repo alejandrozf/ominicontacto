@@ -32,6 +32,7 @@ class SupervisorActivityAmiManager(object):
                    "CHANSPYWISHPER", "CHANSPY", "CHANCONFER"]
 
     manager = AMIManagerConnector()
+    agent_activity = AgentActivityAmiManager()
 
     def originate_call(self, originate_data):
         content = originate_data
@@ -47,7 +48,6 @@ class SupervisorActivityAmiManager(object):
 
     def ejecutar_accion_sobre_agente(self, supervisor, agente_id, exten):
         agente_profile = AgenteProfile.objects.get(id=agente_id)
-        agent_activity = AgentActivityAmiManager()
         supervisor_activity = SupervisorActivityAmiManager()
         if exten not in self.EXTENSIONES:
             return _("La acción indicada no existe")
@@ -57,10 +57,23 @@ class SupervisorActivityAmiManager(object):
         # Genero la llamada via originate por AMI
         if exten == "AGENTLOGOUT":
             agente_profile.force_logout()
-            agent_activity.logout_agent(agente_profile)
+            self.agent_activity.logout_agent(agente_profile)
         elif exten == "AGENTPAUSE":
-            agent_activity.pause_agent(agente_profile, '00')
+            self.agent_activity.pause_agent(agente_profile, '00')
         elif exten == "AGENTUNPAUSE":
-            agent_activity.unpause_agent(agente_profile, '00')
+            self.agent_activity.unpause_agent(agente_profile, '00')
         else:
             supervisor_activity.originate_call(originate_data)
+
+    def escribir_agentes_unavailable_astdb(self):
+        agentes_profiles = []
+        user_activity_list, error = self.manager._ami_manager('command', 'queue show')
+        for activity_line in user_activity_list.splitlines():
+            if activity_line.find("Unavailable") != -1:
+                fields_activity = activity_line.split()
+                agente_id = fields_activity[1].split('_')[0]
+                agente_profile = AgenteProfile.objects.get(id=agente_id)
+                if agente_profile not in agentes_profiles:
+                    agentes_profiles.append(agente_profile)
+        for agente_profile in agentes_profiles:
+            self.agent_activity._insert_astb_status(agente_profile, 'UNAVAILABLE')
