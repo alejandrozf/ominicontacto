@@ -47,7 +47,7 @@
 
 - name: Set environment variables for this installation
   template: src=files/docker_compose_files/.env dest=/etc/environment mode=644 owner=root group=root
-  tags: ['docker_build','docker_deploy']
+  tags: ['never', 'docker_deploy']
 
 - include: build.yml
   tags: docker_build
