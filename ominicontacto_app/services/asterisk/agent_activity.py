@@ -82,6 +82,8 @@ class AgentActivityAmiManager(object):
             value = 'OFFLINE:' + str(tiempo_actual)
         elif 'PAUSE' in action:
             value = action + ':' + str(tiempo_actual)
+        elif 'UNAVAILABLE' in action:
+            value = action + ':' + str(tiempo_actual)
         content = [family, key, value]
         return content
 
