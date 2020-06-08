@@ -37,6 +37,7 @@ session_cookie_age: 3600
 install_prefix: /opt/omnileads/
 asterisk_location: "{{ install_prefix }}asterisk"
 ast_agis_location: "{{ asterisk_location }}/var/lib/asterisk/agi-bin"
+ast_blacklist_location: "{{ asterisk_location }}/var/spool/asterisk/blacklist"
 ast_conf_location: "{{ asterisk_location }}/etc/asterisk"
 ast_logs_location: "{{ asterisk_location }}/var/log/asterisk"
 ast_sounds_location: "{{ asterisk_location }}/var/lib/asterisk/sounds"
