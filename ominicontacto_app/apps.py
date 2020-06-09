@@ -53,6 +53,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', ]},
             {'nombre': 'cliente_webphone_toggle_activacion',
              'roles': ['Administrador', 'Gerente', ]},
+            {'nombre': 'user_role_management',
+             'roles': ['Administrador', ]},
             {'nombre': 'grupo_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'grupo_nuevo',
@@ -398,6 +400,8 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Ver lista de Clientes WebPhone'), 'version': '1.6.2'},
         'cliente_webphone_toggle_activacion':
             {'descripcion': _('Activar/Desactivar cliente WebPhone'), 'version': '1.6.2'},
+        'user_role_management':
+            {'descripcion': _('Administración de roles'), 'version': '1.6.2'},
         'grupo_list':
             {'descripcion': _('Ver lista de Grupos'), 'version': '1.6.2'},
         'grupo_nuevo':

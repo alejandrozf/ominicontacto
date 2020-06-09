@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-14 11:56-0300\n"
+"POT-Creation-Date: 2020-06-09 10:54-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,6 +34,18 @@ msgstr ""
 #: supervision_app/apps.py:46
 #: supervision_app/templates/supervision_campanas_salientes.html:31
 msgid "Campañas Salientes"
+msgstr ""
+
+#: supervision_app/apps.py:66
+msgid "Estado de agentes en supervisión"
+msgstr ""
+
+#: supervision_app/apps.py:68
+msgid "Estado de campañas entrantes en supervisión"
+msgstr ""
+
+#: supervision_app/apps.py:70
+msgid "Estado de campañas salientes en supervision"
 msgstr ""
 
 #: supervision_app/templates/supervision_agentes.html:76

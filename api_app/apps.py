@@ -43,6 +43,12 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente', ]},
             {'nombre': 'api_campaign_database_metadata',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', 'Agente', ]},
+            {'nombre': 'api_new_role',
+             'roles': ['Administrador', ]},
+            {'nombre': 'api_delete_role',
+             'roles': ['Administrador', ]},
+            {'nombre': 'api_update_role_permissions',
+             'roles': ['Administrador', ]},
             {'nombre': 'api_agentes_activos',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'api_supervision_campanas_entrantes',
@@ -92,6 +98,12 @@ class ApiAppConfig(AppConfig):
             {'descripcion': _('Crear contacto'), 'version': '1.6.2'},
         'api_campaign_database_metadata':
             {'descripcion': _('Metadata de la base de datos de una campaña'), 'version': '1.6.2'},
+        'api_new_role':
+            {'descripcion': _('Crear nuevo rol'), 'version': '1.6.3'},
+        'api_delete_role':
+            {'descripcion': _('Eliminar rol'), 'version': '1.6.3'},
+        'api_update_role_permissions':
+            {'descripcion': _('Actualizar permisos de Rol'), 'version': '1.6.3'},
         'api_agentes_activos':
             {'descripcion': _('Devuelve información de los agentes en el sistema'),
              'version': '1.6.2'},

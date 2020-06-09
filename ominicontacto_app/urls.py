@@ -71,7 +71,7 @@ urlpatterns = [
         ),
 
     # ==========================================================================
-    # Usuarios y Perfiles
+    # Usuarios, Perfiles y Roles
     # ==========================================================================
     url(r'^user/nuevo/$',
         login_required(views_user_profiles.CustomUserWizard.as_view()),
@@ -122,6 +122,11 @@ urlpatterns = [
         login_required(
             views_user_profiles.ToggleActivarClienteWebPhoneView.as_view()),
         name="cliente_webphone_toggle_activacion"),
+    # Roles  ==================================================================
+    url(r'^roles/manager/$',
+        login_required(
+            views_user_profiles.UserRoleManagementView.as_view()),
+        name="user_role_management"),
 
     # ==========================================================================
     # Grupos

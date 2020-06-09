@@ -24,7 +24,8 @@ from rest_framework import routers
 from django.contrib.auth.decorators import login_required
 
 from api_app.views.base import login, ContactoCreateView, CampaignDatabaseMetadataView
-from api_app.views.administrador import AgentesActivosGrupoViewSet
+from api_app.views.administrador import (
+    AgentesActivosGrupoViewSet, CrearRolView, EliminarRolView, ActualizarPermisosDeRolView)
 from api_app.views.supervisor import (
     SupervisorCampanasActivasViewSet, AgentesStatusAPIView, StatusCampanasEntrantesView,
     StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView, LlamadasDeCampanaView,
@@ -75,6 +76,17 @@ urlpatterns = [
         name='api_new_contact'),
     url(r'api/v1/campaign/database_metadata/', CampaignDatabaseMetadataView.as_view(),
         name='api_campaign_database_metadata'),
+
+    # ###########   ADMINISTRADOR    ############ #
+    url(r'api/v1/permissions/new_role/$',
+        CrearRolView.as_view(),
+        name='api_new_role'),
+    url(r'api/v1/permissions/delete_role/$',
+        EliminarRolView.as_view(),
+        name='api_delete_role'),
+    url(r'api/v1/permissions/update_role_permissions/$',
+        ActualizarPermisosDeRolView.as_view(),
+        name='api_update_role_permissions'),
 
     # ###########   SUPERVISOR    ############ #
     url(r'api/v1/supervision/agentes',

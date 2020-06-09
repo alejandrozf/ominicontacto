@@ -21,7 +21,7 @@
 sip extension y sip password"""
 
 from __future__ import unicode_literals
-
+import json
 from formtools.wizard.views import SessionWizardView
 
 from django.utils.translation import ugettext as _
@@ -29,7 +29,8 @@ from django.contrib import messages
 from django.contrib.auth.models import Group
 from django.urls import reverse
 from django.http import HttpResponseRedirect
-from django.views.generic import UpdateView, ListView, DeleteView, RedirectView, FormView
+from django.views.generic import (
+    UpdateView, ListView, DeleteView, RedirectView, FormView, TemplateView, )
 
 from constance import config
 
@@ -40,6 +41,7 @@ from ominicontacto_app.forms import (
 from ominicontacto_app.models import (
     SupervisorProfile, AgenteProfile, ClienteWebPhoneProfile, User, QueueMember, Grupo,
 )
+from ominicontacto_app.permisos import PermisoOML
 
 from ominicontacto_app.views_queue_member import activar_cola, remover_agente_cola_asterisk
 
@@ -425,3 +427,28 @@ class ToggleActivarClienteWebPhoneView(RedirectView):
         messages.success(request, msg)
 
         return HttpResponseRedirect(reverse('cliente_webphone_list'))
+
+
+class UserRoleManagementView(TemplateView):
+    template_name = 'user/user_role_management.html'
+
+    def _get_informacion_de_roles(self):
+        roles = []
+        roles_inmutables = [
+            User.ADMINISTRADOR, User.GERENTE, User.SUPERVISOR, User.REFERENTE, User.AGENTE,
+            User.CLIENTE_WEBPHONE]
+        for rol in Group.objects.all():
+            roles.append({
+                'id': rol.id,
+                'is_immutable': rol.name in roles_inmutables,
+                'name': rol.name,  # TODO: Mostrar nombres de Roles de OML traducidos
+                'permissions': list(rol.permissions.values_list('id', flat=True))
+            })
+        return roles
+
+    def get_context_data(self, **kwargs):
+        context = super(UserRoleManagementView, self).get_context_data(**kwargs)
+        # Necesita Lista de permisos
+        context['roles'] = json.dumps(self._get_informacion_de_roles())
+        context['permisos'] = json.dumps(dict(PermisoOML.objects.values_list('id', 'name')))
+        return context
