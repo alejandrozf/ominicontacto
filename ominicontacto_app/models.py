@@ -43,11 +43,14 @@ from django.db import (models,
 from django.db.models import Max, Q, Count, Sum
 from django.db.utils import DatabaseError
 from django.conf import settings
-from django.core.exceptions import ValidationError, SuspiciousOperation
+from django.core.exceptions import ValidationError, SuspiciousOperation, ObjectDoesNotExist
 from django.core.validators import RegexValidator
 from django.forms.models import model_to_dict
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now, timedelta
+
+from django_extensions.db.models import TimeStampedModel
+
 from simple_history.models import HistoricalRecords
 
 from ominicontacto_app.utiles import (
@@ -2740,8 +2743,59 @@ class CalificacionClienteManager(models.Manager):
         """
         return self.filter(opcion_calificacion__tipo=OpcionCalificacion.GESTION)
 
+    def obtener_calificaciones_auditadas(self):
+        """
+        Devuelve todas las calificaciones con auditoria asociada
+        """
+        return self.filter(auditoriacalificacion__isnull=False)
 
-class CalificacionCliente(models.Model):
+    def obtener_calificaciones_auditoria(self):
+        """Devuelve un queryset con todas las calificaciones finales
+        de gestion o que tengan una auditoria asociada
+        """
+        calificaciones_gestion = self.obtener_calificaciones_gestion()
+        calificaciones_auditadas = self.obtener_calificaciones_auditadas()
+        result = calificaciones_gestion | calificaciones_auditadas
+        result = result.prefetch_related('auditoriacalificacion', 'contacto', 'agente')
+        return result.order_by('-fecha')
+
+    def calificacion_por_filtro(self, fecha_desde, fecha_hasta, agente, campana, grupo_agentes,
+                                id_contacto, telefono, callid, status_auditoria):
+        """Devuelve un queryset con la las calificaciones de acuerdo a los filtros aplicados"""
+
+        calificaciones = self.obtener_calificaciones_auditoria()
+
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime_hora_minima_dia(fecha_desde)
+            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
+            calificaciones = calificaciones.filter(modified__range=(fecha_desde,
+                                                                    fecha_hasta))
+        if agente:
+            calificaciones = calificaciones.filter(agente=agente)
+        if campana:
+            calificaciones = calificaciones.filter(opcion_calificacion__campana=campana)
+        if grupo_agentes and not agente:
+            agentes_ids = list(AgenteProfile.objects.filter(grupo=grupo_agentes).values_list(
+                'pk', flat=True))
+            calificaciones = calificaciones.filter(agente__pk__in=agentes_ids)
+        if id_contacto:
+            calificaciones = calificaciones.filter(contacto__pk=id_contacto)
+        if telefono:
+            calificaciones = calificaciones.filter(contacto__telefono__contains=telefono)
+        if callid:
+            calificaciones = calificaciones.filter(callid=callid)
+        if status_auditoria:
+            if AuditoriaCalificacion.es_pendiente(int(status_auditoria)):
+                calificaciones = calificaciones.filter(
+                    auditoriacalificacion__isnull=True)
+            else:
+                calificaciones = calificaciones.filter(
+                    auditoriacalificacion__resultado=status_auditoria)
+
+        return calificaciones
+
+
+class CalificacionCliente(TimeStampedModel, models.Model):
     objects = CalificacionClienteManager()
 
     contacto = models.ForeignKey(Contacto, on_delete=models.CASCADE)
@@ -2806,6 +2860,27 @@ class CalificacionCliente(models.Model):
         # return self.opcion_calificacion.es_agenda()
         return self.opcion_calificacion.tipo == OpcionCalificacion.AGENDA
 
+    def obtener_auditoria(self):
+        """Devuelve el valor de la auditoria asociada o None si no tiene
+        """
+        try:
+            auditoria = self.auditoriacalificacion
+        except ObjectDoesNotExist:
+            return None
+        return auditoria
+
+    def tiene_auditoria_pendiente(self):
+        return self.obtener_auditoria() is None
+
+    def tiene_auditoria_aprobada(self):
+        return self.obtener_auditoria().resultado == AuditoriaCalificacion.APROBADA
+
+    def tiene_auditoria_rechazada(self):
+        return self.obtener_auditoria().resultado == AuditoriaCalificacion.RECHAZADA
+
+    def tiene_auditoria_observada(self):
+        return self.obtener_auditoria().resultado == AuditoriaCalificacion.OBSERVADA
+
     @classmethod
     def obtener_califs_gestion_campanas(cls, campanas):
         """Obtiene las calificaciones históricas de gestión de un conjunto de
@@ -2853,13 +2928,18 @@ class AuditoriaCalificacion(models.Model):
         (OBSERVADA, _('Observada')),
     )
 
-    def __str__(self):
-        return str(_("Auditoría de calificacion con id={0} fue {1}".format(
-            self.calificacion.pk, self.get_resultado_display())))
-
     calificacion = models.OneToOneField(CalificacionCliente, on_delete=models.CASCADE)
     resultado = models.IntegerField(choices=RESULTADO_CHOICES)
     observaciones = models.TextField(blank=True, null=True)
+
+    @classmethod
+    def es_pendiente(cls, valor_resultado):
+        "Determina si un valor corresponde a una auditoria aun pendiente"
+        return valor_resultado not in [cls.APROBADA, cls.RECHAZADA, cls.OBSERVADA]
+
+    def __str__(self):
+        return str(_("Auditoría de calificacion con id={0} fue {1}".format(
+            self.calificacion.pk, self.get_resultado_display())))
 
 
 class Chat(models.Model):
