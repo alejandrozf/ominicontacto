@@ -69,7 +69,8 @@ class CampanaPreviewDetailView(DetailView):
 
             finalizadas_gestiones_count = qs_finalizadas_gestiones.count()
             finalizadas_otras_categorias_count_dict = qs_finalizadas_otras_categorias.values(
-                'opcion_calificacion__nombre').annotate(Count('opcion_calificacion__nombre'))
+                'opcion_calificacion__nombre').annotate(
+                    Count('opcion_calificacion__nombre')).order_by()
             cats_dict = self._crear_dict_categorias(
                 finalizadas_gestiones_count, finalizadas_otras_categorias_count_dict)
             context['categorias'] = cats_dict
