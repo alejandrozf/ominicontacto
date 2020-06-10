@@ -32,6 +32,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/bootstrap-datetimepicker.min.css' %}"></link>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/auditoria.css' %}" ></link>
     <!-- Fonts -->
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/google-font.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
@@ -102,12 +103,23 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
           <th>{% trans 'Gestionado' %}</th>
           <th>{% trans 'Calificación' %}</th>
           <th>{% trans 'Observaciones' %}</th>
+          <th>{% trans 'Auditoria' %}</th>
           <th>{% trans 'Acciones' %}</th>
         </tr>
       </thead>
       <tbody>
           {% for calificacion_cliente in listado_calificaciones %}
-              <tr>
+            {% with auditoria=calificacion_cliente.obtener_auditoria %}
+              {% if auditoria.get_resultado_display == 'Aprobada' %}
+                <tr class="aprobada">
+              {% elif auditoria.get_resultado_display == 'Rechazada' %}
+                <tr class="rechazada">
+              {% elif auditoria.get_resultado_display == 'Observada' %}
+                <tr class="observada">
+              {% else %}
+                <tr>
+              {% endif %}
+            {% endwith%}
                   <td>
                       <a class="btn btn-submit btn-outline-primary" href="javascript:;"
                         onclick="makeClick2Call('{{ calificacion_cliente.opcion_calificacion.campana.pk }}', '{{ calificacion_cliente.opcion_calificacion.campana.type }}', '{{calificacion_cliente.contacto.pk}}', '{{ calificacion_cliente.contacto.telefono }}', 'calificaciones');">{{ calificacion_cliente.contacto.telefono }}</a>
@@ -131,6 +143,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                       {% endif %}
                   </td>
                   <td>
+                    {% with auditoria=calificacion_cliente.obtener_auditoria %}
+                      {% if auditoria %}
+                        <button class="btn" type="button" data-toggle="modal" data-target="#mostrarAuditoria{{ forloop.counter }}" id="mostrar_info">{% trans 'Mostrar' %}</button>
+                      {% endif%}
+                    {% endwith%}
+                  </td>
+                  <td>
                     <div class="dropdown">
                         <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {% trans 'Opciones' %}
@@ -152,5 +171,26 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
       </tbody>
   </table>
 </div>
+<!-- Modal Resultados Auditoria -->
+{% for calificacion_cliente in listado_calificaciones %}
+<div class="modal fade" id="mostrarAuditoria{{ forloop.counter }}" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content modalAuditoria">
+          {% with auditoria=calificacion_cliente.obtener_auditoria %}
+            <div class="modal-header">
+                <h2 class="modal-title">{% trans 'Resultado Auditoria' %}</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><b>{% trans 'Resultado Auditoria: '%}</b>{{auditoria.get_resultado_display}}</p>
+                <p><b>{% trans 'Observaciones: '%}</b>{{auditoria.observaciones}}</p>
+            </div>
+          {% endwith %}
+        </div>
+    </div>
+</div> 
+{% endfor %}
 </body>
 </html>

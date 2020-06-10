@@ -27,31 +27,33 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <link rel="stylesheet" href="{% static 'bootstrap-3.3.6/css/bootstrap.min.css' %}">
 </head>
 <body>
-{%include "agenda_contacto/messages_agenda.html"%}  
-<div class="row">
-    <div class="col-md-9">
-        <table class="table table-striped">
-            <tr>
-                <td><strong>{% trans 'Agenda para el contacto con el teléfono' %}</strong></td>
-                <td>{{object.contacto.telefono}}</td>
-            </tr>
-            <tr>
-                <td>{% trans 'Fecha' %}</td>
-                <td>{{object.fecha}}</td>
-            </tr>
-            <tr>
-                <td>{% trans 'Hora' %}</td>
-                <td>{{object.hora}}</td>
-            </tr>
-            <tr>
-                <td>{% trans 'Tipo' %}</td>
-                <td>{{object.get_tipo_agenda_display}}</td>
-            </tr>
-            <tr>
-                <td>{% trans 'Observaciones' %}</td>
-                <td>{{object.observaciones}}</td>
-            </tr>
-        </table>
+{%include "agenda_contacto/messages_agenda.html"%} 
+<div class="container">
+    <div class="row">
+        <div class="col-md-9">
+            <table class="table table-striped">
+                <tr>
+                    <td><strong>{% trans 'Agenda para el contacto con el teléfono' %}</strong></td>
+                    <td>{{object.contacto.telefono}}</td>
+                </tr>
+                <tr>
+                    <td>{% trans 'Fecha' %}</td>
+                    <td>{{object.fecha}}</td>
+                </tr>
+                <tr>
+                    <td>{% trans 'Hora' %}</td>
+                    <td>{{object.hora}}</td>
+                </tr>
+                <tr>
+                    <td>{% trans 'Tipo' %}</td>
+                    <td>{{object.get_tipo_agenda_display}}</td>
+                </tr>
+                <tr>
+                    <td>{% trans 'Observaciones' %}</td>
+                    <td>{{object.observaciones}}</td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>
 </body>

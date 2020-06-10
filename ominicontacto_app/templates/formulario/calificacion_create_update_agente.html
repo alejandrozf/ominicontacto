@@ -23,6 +23,7 @@
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.growl.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/formulario_contacto.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/auditoria.css' %}" >
 {% endblock extra_css%}
 {% block head_js %}
     <!-- Scripts -->
@@ -80,8 +81,17 @@
             </div>
             <div class="col-md-6">
                 <div {% if llamada_entrante %}class="hidden"{% endif %} data="toHide">
-                    {{calificacion_form.as_table}}
+                    {{calificacion_form.as_table}}  
                 </div>
+                    {% with auditoria=calificacion_form.instance.obtener_auditoria %}
+                        {% if auditoria%}
+                            <div class="calificacion_auditada">
+                                <h2>{% trans 'Calificación Auditada'%}</h2>
+                                <p><b>{% trans 'Resultado Auditoria: '%}</b>{{auditoria.get_resultado_display}}</p>
+                                <p><b>{% trans 'Observaciones: '%}</b>{{auditoria.observaciones}}</p>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
                 <br>
                 <div {% if llamada_entrante %}class="hidden"{% endif %} data="toHide">
                     {% if calificacion_form.historico_calificaciones %}
