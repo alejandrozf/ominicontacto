@@ -45,74 +45,75 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% endcompress %}
     </head>
     <body>
-        <h1>
-            {% trans 'Identificar Contacto a llamar' %}
-        </h1>
-        <h2>
-            {% trans "Contactos Sugeridos" %}
-        </h2>
-        <div>
-            <form action="" method="POST">
-                {% csrf_token %}
-                {{ form.non_field_errors }}
-                <div class="form-row">
-                    <div class="col-md-6">
-                        {{ form.buscar }}
-                        {{ form.buscar.errors }}
+        <div class="container">
+            <h1>
+                {% trans 'Identificar Contacto a llamar' %}
+            </h1>
+            <h2>
+                {% trans "Contactos Sugeridos" %}
+            </h2>
+            <div>
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            {{ form.buscar }}
+                            {{ form.buscar.errors }}
+                        </div>
+                        <div class="col-md-6">
+                            <button type="submit" class="btn btn-primary">
+                                {% trans "Buscar" %}
+                            </button>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <button type="submit" class="btn btn-primary">
-                            {% trans "Buscar" %}
-                        </button>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>{% trans 'Teléfono' %}</th>
+                        {% for campo in campos_bd %}
+                            <th>{{ campo }}</th>
+                        {% endfor %}
+                        <th>{% trans 'Acciones' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for  contacto in contactos_busqueda %}
+                    <tr>
+                        <td>
+                            <a class="btn btn-submit btn-outline-primary" href="javascript:;" onclick="makeClick2Call('{{ campana.pk }}', '{{ campana.type }}', '{{ contacto.id }}', '{{ contacto.telefono }}', 'contactos');">
+                                {{ contacto.telefono }}
+                            </a>
+                        </td>
+                        {% for campo in campos_bd %}
+                            <td>{{ contacto.obtener_datos|get_item:campo }}</td>
+                        {% endfor %}
+                        <td>
+                            <button class="contacto-lista btn btn-light btn-sm">
+                                <span class="icon-phone" aria-hidden="true" title="{% trans 'Llamar' %}" onclick="makeClick2Call('{{ campana.pk }}', '{{ campana.type }}', '{{ contacto.id }}', '{{ telefono }}', 'contactos');"></span>
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+
+
+            <div>
+                <a href="{% url 'nuevo_contacto_campana_a_llamar' campana.pk telefono %}">
+                    <button type="button" id="id_buscar_btn" class="btn btn-primary">
+                        {% trans "Es contacto nuevo" %}
+                    </button>
+                </a>
+                <a href="javascript:;" onclick="makeClick2Call('{{ campana.pk }}', '{{ campana.type }}', '-1', '{{ telefono }}', 'contactos');" id="llamarSinIdentificar">
+                    <button type="button" id="id_btn_no_identificar" class="btn btn-primary">
+                        {% trans "Llamar sin identificar" %}
+                    </button>
+                </a>
+            </div>
         </div>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>{% trans 'Teléfono' %}</th>
-                    {% for campo in campos_bd %}
-                        <th>{{ campo }}</th>
-                    {% endfor %}
-                    <th>{% trans 'Acciones' %}</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for  contacto in contactos_busqueda %}
-                <tr>
-                    <td>
-                        <a class="btn btn-submit btn-outline-primary" href="javascript:;" onclick="makeClick2Call('{{ campana.pk }}', '{{ campana.type }}', '{{ contacto.id }}', '{{ contacto.telefono }}', 'contactos');">
-                            {{ contacto.telefono }}
-                        </a>
-                    </td>
-                    {% for campo in campos_bd %}
-                        <td>{{ contacto.obtener_datos|get_item:campo }}</td>
-                    {% endfor %}
-                    <td>
-                        <button class="contacto-lista btn btn-light btn-sm">
-                            <span class="icon-phone" aria-hidden="true" title="{% trans 'Llamar' %}" onclick="makeClick2Call('{{ campana.pk }}', '{{ campana.type }}', '{{ contacto.id }}', '{{ telefono }}', 'contactos');"></span>
-                        </button>
-                    </td>
-                </tr>
-            {% endfor %}
-
-            </tbody>
-        </table>
-
-
-        <div>
-            <a href="{% url 'nuevo_contacto_campana_a_llamar' campana.pk telefono %}">
-                <button type="button" id="id_buscar_btn" class="btn btn-primary">
-                    {% trans "Es contacto nuevo" %}
-                </button>
-            </a>
-            <a href="javascript:;" onclick="makeClick2Call('{{ campana.pk }}', '{{ campana.type }}', '-1', '{{ telefono }}', 'contactos');" id="llamarSinIdentificar">
-                <button type="button" id="id_btn_no_identificar" class="btn btn-primary">
-                    {% trans "Llamar sin identificar" %}
-                </button>
-            </a>
-        </div>
-
     </body>
 </html>
