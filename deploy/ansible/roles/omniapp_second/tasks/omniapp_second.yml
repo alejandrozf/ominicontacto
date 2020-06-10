@@ -68,6 +68,19 @@
   command: "{{ install_prefix }}bin/reinstall_addons.sh"
   tags: postinstall
 
+- name: Increase number of connections accepted by UNIX sockets
+  command: sysctl -w net.core.somaxconn=2048
+  tags: postinstall
+
+- name: Write the number of max connections in /etc/sysctl.conf
+  blockinfile:
+    path: /etc/sysctl.conf
+    insertafter: EOF
+    state: present
+    block: |
+      net.core.somaxconn=2048
+  tags: postinstall
+
 # Se inicia y habilita el servicio
 - name: Start the omnileads-daemon service
   systemd: name=omnileads state=restarted enabled=yes daemon_reload=yes
