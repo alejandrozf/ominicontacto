@@ -2733,7 +2733,8 @@ class CalificacionClienteManager(models.Manager):
     def obtener_cantidad_calificacion_campana(self, campana):
         try:
             return self.values('calificacion').annotate(
-                cantidad=Count('calificacion')).filter(opcion_calificacion__campana=campana)
+                cantidad=Count('calificacion')).filter(
+                    opcion_calificacion__campana=campana).order_by()
         except CalificacionCliente.DoesNotExist:
             raise (SuspiciousOperation(_("No se encontro calificaciones ")))
 

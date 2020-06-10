@@ -151,7 +151,7 @@ class EstadisticasContactacion():
 
         calificaciones_query = campana.obtener_calificaciones().values(
             'opcion_calificacion__nombre', 'opcion_calificacion__id').annotate(
-                Count('opcion_calificacion')).filter(opcion_calificacion__count__gt=0)
+                Count('opcion_calificacion')).filter(opcion_calificacion__count__gt=0).order_by()
 
         calificaciones = []
         for calificacion in calificaciones_query:

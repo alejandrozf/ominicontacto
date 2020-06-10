@@ -200,7 +200,7 @@ class CalificacionesDeCampanaView(View):
             fecha__gt=datetime_hora_minima_dia(now()),
             opcion_calificacion__campana_id=pk_campana)
         cantidades = calificaciones.values('opcion_calificacion__nombre').annotate(
-            cantidad=Count('opcion_calificacion__nombre'))
+            cantidad=Count('opcion_calificacion__nombre')).order_by()
 
         for opcion in cantidades:
             data[opcion['opcion_calificacion__nombre']] = opcion['cantidad']
