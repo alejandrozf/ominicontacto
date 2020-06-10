@@ -37,10 +37,27 @@
   tags: postinstall
   when: rtpengine_installed.stdout != rtpengine_version and rtpengine_host is not defined
 
-- name: Install rtpengine-{{ rtpengine_version }} package
-  yum: name={{ rtpengine_package }} state=latest update_cache=yes
-  when: rtpengine_installed.stdout != rtpengine_version and rtpengine_host is not defined
+- name: Install rtpengine-{{ rtpengine_version }} package (from s3 source)
+  yum: name={{ s3_packages_url }}/rtpengine-{{ rtpengine_version }}-1.x86_64.rpm state=latest update_cache=yes
+  when: rtpengine_installed.stdout != rtpengine_version
   tags: postinstall
+  retries: 3
+  delay: 3
+  register: s3_download
+  until: s3_download is success
+  ignore_errors: true
+
+- debug: msg="The download of rtpengine-{{ rtpengine_version }} package from s3 source failed, trying the vps source"
+  when: rtpengine_installed.stdout != rtpengine_version and s3_download is failed
+
+- name: Install rtpengine-{{ rtpengine_version }} package (from vps source)
+  yum: name={{ vps_packages_url }}/rtpengine-{{ rtpengine_version }}-1.x86_64.rpm state=latest update_cache=yes
+  when: rtpengine_installed.stdout != rtpengine_version and s3_download is failed
+  tags: postinstall
+  retries: 3
+  delay: 3
+  register: vps_download
+  until: vps_download is success
 
 # Se inserta el modulo creado
 - name: Insert the RTPengine kernel module

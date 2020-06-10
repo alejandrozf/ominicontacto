@@ -45,10 +45,9 @@ if [ "$VIRTUALENV_VERSION_INSTALLED" != "$VIRTUALENV_VERSION" ]; then
   cd {{ virtualenv_location }}
   pip3 install -r /vagrant/requirements/requirements.txt --exists-action 'w'
   echo "{{ virtualenv_version }}" > {{ install_prefix }}/virtualenv_version
-
-  echo "Building virtualenv rpm"
-  cd /root/oml_build/rpms
-  fpm -s dir -t rpm -n virtualenv -v {{ virtualenv_version }} {{ virtualenv_location}} /etc/systemd/system/omnileads.service || true
-  echo "Uploading rpm to public server"
-  scp $SSH_OPTIONS -P 40404 -i /vagrant/vps_key.pem virtualenv-{{ virtualenv_version }}* root@www.freetech.com.ar:/var/www/html/omnileads/build
 fi
+echo "Building virtualenv rpm"
+cd /vagrant/build/rpms
+fpm -s dir -t rpm -n virtualenv -v {{ virtualenv_version }} {{ virtualenv_location}} /etc/systemd/system/omnileads.service || true
+echo "Uploading rpm to public server"
+scp $SSH_OPTIONS -P 40404 -i /vagrant/vps_key.pem virtualenv-{{ virtualenv_version }}* root@www.freetech.com.ar:/var/www/html/omnileads/build

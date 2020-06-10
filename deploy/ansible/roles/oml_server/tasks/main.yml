@@ -34,11 +34,27 @@
   when: "virtualenv_installed.stdout != virtualenv_version"
 
 # Se instala el paquete de virtualenv
-- name: Install virtualenv-{{ virtualenv_version }} package
-  yum: name={{ virtualenv_package }} state=latest update_cache=yes
+- name: Install virtualenv-{{ virtualenv_version }} package (from s3 source)
+  yum: name={{ s3_packages_url }}/virtualenv-{{ virtualenv_version }}-1.x86_64.rpm state=latest update_cache=yes
+  when: virtualenv_installed.stdout != virtualenv_version
   tags: postinstall
-  when: "virtualenv_installed.stdout != virtualenv_version"
+  retries: 3
+  delay: 3
+  register: s3_download
+  ignore_errors: true
+  until: s3_download is success
 
+- debug: msg="The download of virtualenv-{{ virtualenv_version }} package from s3 source failed, trying the vps source"
+  when: virtualenv_installed.stdout != virtualenv_version and s3_download is failed
+
+- name: Install virtualenv-{{ virtualenv_version }} package (from vps source)
+  yum: name={{ vps_packages_url }}/virtualenv-{{ virtualenv_version }}-1.x86_64.rpm state=latest update_cache=yes
+  when: virtualenv_installed.stdout != virtualenv_version and s3_download is failed
+  tags: postinstall
+  retries: 3
+  delay: 3
+  register: vps_download
+  until: vps_download is success
 #----------------------------------------------------------------------
 # Directorios básicos
 #----------------------------------------------------------------------
@@ -84,7 +100,7 @@
     - "{{ install_prefix }}static"
     - "{{ install_prefix }}log"
     - "{{ install_prefix }}run"
-    - "{{ asterisk_location }}/etc/asterisk"
+    - "{{ asterisk_location }}/etc/virtualenv"
   tags: omniapp
 
 # El codigo que está en /var/tmp/ominicontacto_build/ se pasa a /opt/omnileeads/ominicontacto

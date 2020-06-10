@@ -30,7 +30,8 @@ virtualenv_package: "{{ packages_url }}/virtualenv-{{ virtualenv_version }}-1.x8
 ################ URL's ############################
 epel_repository: https://download-ib01.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 #URLS para descargar asterisk
-packages_url: http://freetech.com.ar/rpms
+vps_packages_url: http://freetech.com.ar/rpms
+s3_packages_url: https://fts-public-packages.s3.amazonaws.com
 admin_user: admin
 usuario: omnileads
 session_cookie_age: 3600
