@@ -77,7 +77,7 @@
                                 <td>{% trans 'Pendiente' %}</td>
                             {% endif %}
                         {% endwith %}
-                        <td><a class="detalles" href="#{#% url 'auditar_gestion' calificacion.pk %#}">{% trans 'Auditar calificación' %}</a></td>
+                        <td><a class="detalles" href="{% url 'auditar_calificacion_cliente' calificacion.pk %}">{% trans 'Auditar calificación' %}</a></td>
                             </tr>
                 {% empty %}
                     <tr>

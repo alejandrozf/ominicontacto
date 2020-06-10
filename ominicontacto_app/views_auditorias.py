@@ -17,11 +17,15 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-from django.views.generic import FormView
+from django.http import HttpResponseRedirect
+from django.contrib import messages
 from django.core import paginator as django_paginator
+from django.urls import reverse_lazy
+from django.utils.translation import ugettext_lazy as _
+from django.views.generic import FormView
 
-from ominicontacto_app.forms import AuditoriaBusquedaForm
-from ominicontacto_app.models import CalificacionCliente
+from ominicontacto_app.forms import AuditoriaBusquedaForm, AuditoriaCalificacionForm
+from ominicontacto_app.models import CalificacionCliente, Grabacion
 
 from .utiles import convert_fecha_datetime
 
@@ -104,3 +108,77 @@ class AuditarCalificacionesFormView(FormView):
 
         return self.render_to_response(self.get_context_data(
             listado_de_calificaciones=listado_de_calificaciones, pagina=pagina))
+
+
+class AuditoriaCalificacionFormView(FormView):
+    template_name = 'auditoria/crear_editar_auditoria.html'
+    form_class = AuditoriaCalificacionForm
+    success_url = reverse_lazy('buscar_auditorias_gestion', args=(1,))
+
+    def dispatch(self, request, *args, **kwargs):
+        id_calificacion = kwargs['pk_calificacion']
+        try:
+            calificacion = CalificacionCliente.objects.get(id=id_calificacion)
+        except CalificacionCliente.DoesNotExist:
+            message = _("Calificación Inexistente")
+            messages.warning(self.request, message)
+            return HttpResponseRedirect(self.success_url)
+
+        # Verifico que corresponda a una campaña que tenga asociada
+        if not request.user.get_is_administrador():
+            campana_id = calificacion.opcion_calificacion.campana_id
+            if not request.user.campanasupervisors.filter(id=campana_id).exists():
+                message = _("No tiene permiso para auditar calificaciones de esta campaña.")
+                messages.warning(self.request, message)
+                return HttpResponseRedirect(self.success_url)
+
+        self.auditoria = None
+        if hasattr(calificacion, 'auditoriacalificacion'):
+            self.auditoria = calificacion.auditoriacalificacion
+        if not calificacion.es_gestion() and self.auditoria is None:
+            message = _("Sólo pueden auditarse calificaciones de gestión.")
+            messages.warning(self.request, message)
+            return HttpResponseRedirect(self.success_url)
+
+        self.calificacion = calificacion
+
+        return super(AuditoriaCalificacionFormView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(AuditoriaCalificacionFormView, self).get_context_data(**kwargs)
+        context['calificacion'] = self.calificacion
+
+        # Cargo el historial asociando las grabaciones a la primer calificacion q tenga su callid
+        historia = []
+        callids = set()
+        for historica in self.calificacion.history.all().order_by('history_date'):
+            historia.append({'calificacion': historica})
+            if historica.callid:
+                callids.add(historica.callid)
+
+        grabaciones = Grabacion.objects.filter(callid__in=callids)
+        grabaciones_por_callid = {}
+        for grabacion in grabaciones:
+            grabaciones_por_callid[grabacion.callid] = grabacion
+
+        for historica in historia:
+            callid = historica['calificacion'].callid
+            if callid in grabaciones_por_callid:
+                historica['grabacion'] = grabaciones_por_callid.pop(callid)
+        historia.reverse()
+        context['historia'] = historia
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super(AuditoriaCalificacionFormView, self).get_form_kwargs()
+        if self.auditoria is not None:
+            kwargs['instance'] = self.auditoria
+        return kwargs
+
+    def form_valid(self, form):
+        auditoria = form.save(commit=False)
+        auditoria.calificacion = self.calificacion
+        auditoria.save()
+        message = _("Auditoría de calificación guardada.")
+        messages.success(self.request, message)
+        return HttpResponseRedirect(self.success_url)

@@ -191,6 +191,10 @@ urlpatterns = [
         login_required(
             views_auditorias.AuditarCalificacionesFormView.as_view()),
         name='buscar_auditorias_gestion',),
+    url(r'^auditar_gestion/editar/(?P<pk_calificacion>\d+)/$',
+        login_required(views_auditorias.AuditoriaCalificacionFormView.as_view()),
+        name='auditar_calificacion_cliente'),
+
 
     # ==========================================================================
     # Servicios para phoneJS
@@ -900,7 +904,6 @@ urlpatterns = [
             views_archivo_de_audio.ArchivoAudioDeleteView.as_view()),
         name='eliminar_archivo_audio',
         ),
-
 
     # ######################
     # DEPRECATED ?
