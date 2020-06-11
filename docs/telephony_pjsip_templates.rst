@@ -1,5 +1,15 @@
 .. _about_telephony_pjsip_internet_provider:
 
+.. important::
+
+  Debemos recordar muy bien que OMniLeads NO utiliza el puerto 5060 como puerto para los troncales SIP. El puerto 5060 es utilizado por Kamailio en su labor WebRTC
+  en sesiones contra los agentes. A la hora de generar un troncal SIP entre OML y un proveedor SIP o PBX, debemos saber que los puertos a utilizar son y varian
+  de acuerdo a los escenrios debajo descriptos.
+
+  - Puerto **5161** para troncales donde NO debemos advertir la IP publica. Es decir donde no hay NAT de por medio.
+  - Puerto **5162** para troncales donde SI debemos advertir la IP pública que va a afectar con NAT los paquetes SIP que salgan de OML.
+  - Puerto **5163** para troncales utilizando OML sobre Docker.
+
 ***********************************************
 Troncal contra un proveedor SIP sobre Internet
 ***********************************************
@@ -135,7 +145,7 @@ generada del lado de la IP-PBX es:
   sends_auth=yes
   sends_registrations=no
   accepts_auth=yes
-  endpoint/rtp_symmetric=nov
+  endpoint/rtp_symmetric=no
   endpoint/force_rport=no
   endpoint/rewrite_contact=no
   endpoint/timers=yes
@@ -238,7 +248,7 @@ Por ello es que la plantilla de configuración cambia en un par de parámetros:
  sends_auth=yes
  sends_registrations=no
  accepts_auth=yes
- endpoint/rtp_symmetric=nov
+ endpoint/rtp_symmetric=yes
  endpoint/force_rport=yes
  endpoint/rewrite_contact=yes
  endpoint/timers=yes

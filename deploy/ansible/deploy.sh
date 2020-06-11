@@ -195,7 +195,29 @@ VersionGeneration() {
   echo -e "OMniLeads version to install
      Branch: $release_name
      Commit: $commit
-     Build date: $build_date"
+     Autor: $author"
+  cat > $TMP_OMINICONTACTO/ominicontacto_app/version.py <<EOF
+
+# -*- coding: utf-8 -*-
+
+##############################
+#### Archivo autogenerado ####
+##############################
+
+OML_BRANCH="${release_name}"
+OML_COMMIT="${commit}"
+OML_BUILD_DATE="$(env LC_hosts=C LC_TIME=C date)"
+OML_AUTHOR="${author}"
+
+if __name__ == '__main__':
+    print (OML_COMMIT)
+
+EOF
+
+  #echo "Validando version.py - Commit:"
+  python $TMP_OMINICONTACTO/ominicontacto_app/version.py > /dev/null 2>&1
+  # ----------
+  export DO_CHECKS="${DO_CHECKS:-no}"
 }
 
 AnsibleExec() {
