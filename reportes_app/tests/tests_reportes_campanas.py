@@ -29,7 +29,6 @@ from mock import patch
 
 from django.conf import settings
 from django.urls import reverse
-from django.test import TestCase
 from django.utils import timezone
 
 from simple_history.utils import update_change_reason
@@ -42,29 +41,26 @@ from reportes_app.reportes.reporte_llamados_contactados_csv import (
     ReporteCampanaContactadosCSV, ArchivoDeReporteCsv)
 from ominicontacto_app.services.reporte_respuestas_formulario import (
     ReporteRespuestaFormularioGestionService)
+from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 from ominicontacto_app.tests.factories import (AgenteProfileFactory, ActividadAgenteLogFactory,
                                                CalificacionClienteFactory, ContactoFactory,
                                                CampanaFactory, NombreCalificacionFactory,
-                                               OpcionCalificacionFactory, UserFactory,
+                                               OpcionCalificacionFactory,
                                                LlamadaLogFactory)
 from ominicontacto_app.utiles import fecha_hora_local, fecha_local
 from reportes_app.models import LlamadaLog
 from reportes_app.tests.utiles import GeneradorDeLlamadaLogs
 
 
-class BaseTestDeReportes(TestCase):
-
-    PWD = 'admin123'
+class BaseTestDeReportes(OMLBaseTest):
 
     GESTION = 'Gestión'
     CALIFICACION_NOMBRE = "calificacion_nombre"
     DURACION_LLAMADA = 80
 
     def setUp(self):
-        self.usuario_admin_supervisor = UserFactory(is_staff=True, is_supervisor=True)
-        self.usuario_admin_supervisor.set_password(self.PWD)
-        self.usuario_admin_supervisor.save()
-        self.agente_profile = AgenteProfileFactory.create(user=self.usuario_admin_supervisor)
+        self.usuario_admin_supervisor = self.crear_administrador()
+        self.agente_profile = self.crear_agente_profile()
 
         self.nombre_calificacion = NombreCalificacionFactory.create(nombre=self.CALIFICACION_NOMBRE)
         self.nombre_calificacion_gestion = NombreCalificacionFactory.create(nombre=self.GESTION)
@@ -118,7 +114,7 @@ class BaseTestDeReportes(TestCase):
             contacto=self.contacto_calificado_no_accion, callid=callid_no_accion)
         CalificacionCliente.history.all().update(history_change_reason='calificacion')
 
-        self.client.login(username=self.usuario_admin_supervisor.username, password=self.PWD)
+        self.client.login(username=self.usuario_admin_supervisor.username, password=PASSWORD)
 
 
 class ReportesCampanasTests(BaseTestDeReportes):

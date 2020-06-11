@@ -592,8 +592,8 @@ class SupervisorCampanaTests(CampanasTests):
         self.client.post(url, post_step4_data, follow=True)
         self.client.post(url, post_step5_data, follow=True)
 
-        self.assertEqual(list(AgenteEnContacto.objects.values_list('agente_id', flat=True)),
-                         [self.agente_profile.pk, agente_2.pk])
+        self.assertEqual(set(list(AgenteEnContacto.objects.values_list('agente_id', flat=True))),
+                         set([self.agente_profile.pk, agente_2.pk]))
 
     def test_usuario_no_agente_no_obtiene_contacto_campana_preview(self):
         url = reverse('campana_preview_dispatcher', args=[self.campana_activa.pk])

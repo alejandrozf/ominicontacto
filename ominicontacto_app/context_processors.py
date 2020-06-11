@@ -19,21 +19,12 @@
 
 from __future__ import unicode_literals
 
+from operator import itemgetter
+
 from django.conf import settings
 from django.apps import apps
 
-from constance import config
-
-
-def admin_supervisor(request):
-    es_supervisor_o_admin = request.user.is_authenticated
-    if es_supervisor_o_admin:
-        es_supervisor_o_admin &= request.user.get_is_administrador() or request.user.is_supervisor
-    if es_supervisor_o_admin:
-        return {
-            'WEBPHONE_CLIENT_ENABLED': config.WEBPHONE_CLIENT_ENABLED,
-        }
-    return {}
+from ominicontacto_app.permisos import PermisoOML
 
 
 def global_settings(request):
@@ -48,12 +39,15 @@ def addon_menu_items(request):
     """
     menu_items = []
     if request.user.is_authenticated and request.user.get_tiene_permiso_administracion():
+        rol = request.user.rol
+        permissions = set(PermisoOML.objects.filter(group=rol).values_list('codename', flat=True))
         for app in apps.get_app_configs():
             if hasattr(app, 'supervision_menu_items'):
-                app_items = app.supervision_menu_items(request)
+                app_items = app.supervision_menu_items(request, permissions)
                 if app_items:
                     menu_items += app_items
     if menu_items:
+        menu_items.sort(key=itemgetter('order'))
         return {
             'ADMIN_MENU_ITEMS': menu_items,
         }

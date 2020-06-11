@@ -109,6 +109,8 @@ class User(AbstractUser):
         supervisor = self.get_supervisor_profile()
         if supervisor and supervisor.is_administrador:
             return True
+        # TODO: Tal vez no deberían incluirse los usuarios is_staff porque pueden llegar a crearse
+        # sin SupervisorProfile asociado
         elif self.is_staff:
             return True
         return False
@@ -139,13 +141,8 @@ class User(AbstractUser):
     def get_tiene_permiso_administracion(self):
         """Funcion devuelve true si tiene permiso de acceso a la pagina
         de adminstracion del sistema"""
-        if self.get_is_administrador():
-            return True
-        elif self.get_is_supervisor_normal():
-            return True
-        elif self.get_is_supervisor_customer():
-            return True
-        return False
+        # Indica si tiene SupervisorProfile asociado. (Tiene permisos de Gestión)
+        return hasattr(self, 'supervisorprofile')
 
     def get_es_administrador_o_supervisor_normal(self):
         """Funcion devuelve true si el usuario es Administrador o Supervisor Normal"""
