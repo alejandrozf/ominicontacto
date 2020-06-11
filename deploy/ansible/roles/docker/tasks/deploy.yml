@@ -144,8 +144,8 @@
 # Tareas para devenv y prodenv #
 ################################
 
-- name: Link omnileads_envars.sh file to .env file in {{ deploy_location }}
-  file: state=link src=/etc/environment dest={{ deploy_location }}/.env force=true owner={{ docker_user }} group={{ docker_user }}
+- name: Link /etc/environment file to .env file in {{ deploy_location }}
+  file: state=link src=/etc/environment dest={{ deploy_location }}/.env force=true owner={{ usuario }} group={{ usuario }}
 
   # Se generan el archivo docker-compose, en los templates se renderizan diferentes cosas dependiendo de si es prodenv o devenv
 - name: Generate docker-compose file

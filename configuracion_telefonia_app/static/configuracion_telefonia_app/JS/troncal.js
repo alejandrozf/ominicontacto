@@ -72,7 +72,7 @@ accepts_registrations=no\n\
 sends_auth=yes\n\
 sends_registrations=no\n\
 accepts_auth=yes\n\
-endpoint/rtp_symmetric=nov\n\
+endpoint/rtp_symmetric=no\n\
 endpoint/force_rport=no\n\
 endpoint/rewrite_contact=no\n\
 endpoint/timers=yes\n\
@@ -112,15 +112,15 @@ outbound_auth/password=****SIP_PASS OML -> PBX****\n\
 endpoint/from_user=****SIP_USER OML -> PBX****',
     },
     {
-        'name': 'OMniLeads inside PBX',
+        'name': 'OML Docker',
         'template':
         'type=wizard\n\
 transport=trunk-nat-docker-transport\n\
 accepts_registrations=no\n\
 sends_auth=yes\n\
-sends_registrations=no\n\
-accepts_auth=yes\n\
-endpoint/rtp_symmetric=nov\n\
+sends_registrations=yes\n\
+accepts_auth=no\n\
+endpoint/rtp_symmetric=yes\n\
 endpoint/force_rport=yes\n\
 endpoint/rewrite_contact=yes\n\
 endpoint/timers=yes\n\
