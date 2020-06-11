@@ -70,24 +70,10 @@ class ArchivoDeReportePDF(object):
             self.prefijo_nombre_de_archivo,
             self.sufijo_nombre_de_archivo)
 
-    def cabecera(self, pdf, campana):
-
-        # archivo_imagen = settings.STATIC_ROOT + '/ominicontacto/Img/fts.png'
-        # pdf.drawImage(archivo_imagen, 40, 750, 120, 90,
-        #             preserveAspectRatio=True)
-        # Establecemos el tamaño de letra en 16 y el tipo de letra Helvetica
-        pdf.setFont("Helvetica", 16)
-        # Dibujamos una cadena en la ubicación X,Y especificada
-        pdf.drawString(180, 790, u"Omnileads")
-        pdf.setFont("Helvetica", 14)
-        nombre_reporte = u"Reporte de campana: {0}".format(campana.nombre)
-        pdf.drawString(200, 770, nombre_reporte)
-
     def get(self, campana, estadisticas):
         # Canvas nos permite hacer el reporte con coordenadas X y Y
 
         pdf = canvas.Canvas(self.ruta)
-        self.cabecera(pdf, campana)
 
         self.tabla_calificacion(pdf, estadisticas['dict_campana_counter'],
                                 estadisticas['total_asignados'])
@@ -103,6 +89,7 @@ class ArchivoDeReportePDF(object):
         pdf.save()
 
     def tabla_calificacion(self, pdf, dict_calificacion, total_asignados):
+
         # Creamos una tupla de encabezados para neustra tabla
         encabezados = ('Calificacion', 'Cantidad')
         # Creamos una lista de tuplas que van a contener a las personas
@@ -124,21 +111,31 @@ class ArchivoDeReportePDF(object):
                 ('FONTSIZE', (0, 0), (-1, -1), 7),
             ]
         ))
-        pdf.setFont("Helvetica", 10)
-        pdf.drawString(0.75 * inch, 740, _("Cantidad por calificacion"))
         # Establecemos el tamaño de la hoja que ocupará la tabla
-        detalle_orden.wrapOn(pdf, 800, 600)
+        he, we = detalle_orden.wrapOn(pdf, 0, 0)
+
+        pdf.setPageSize((he + 320, we + 400))
+
+        # Establecemos el tamaño de letra en 16 y el tipo de letra Helvetica
+        pdf.setFont("Helvetica", 16)
+        # Dibujamos una cadena en la ubicación X,Y especificada
+        pdf.drawString(he / 2, we + 300, "Omnileads")
+        pdf.setFont("Helvetica", 13)
+        nombre_reporte = "Reporte de campana: {0}".format(self._campana.nombre)
+        pdf.drawString(he / 4, we + 280, nombre_reporte)
+
+        pdf.setFont("Helvetica", 10)
+        pdf.drawString(50, we + 260, _("Cantidad por calificacion"))
         # Definimos la coordenada donde se dibujará la tabla
-        # 0,75 mas cercano del margen derecho
-        # 6.75 mas cercano del margen TOP
-        detalle_orden.drawOn(pdf, 0.75 * inch, 8.75 * inch)
+        detalle_orden.drawOn(pdf, 50, 250)
         archivo_imagen = settings.MEDIA_ROOT + \
             '/reporte_campana/barra_campana_calificacion.png'
 
-        pdf.drawImage(archivo_imagen, 4 * inch, 7.5 * inch, 250, 200,
+        pdf.drawImage(archivo_imagen, he + 51, 251, 250, 200,
                       preserveAspectRatio=True, mask="auto")
 
     def tabla_no_atendidos(self, pdf, dict_no_atendidos, total_no_atendidos):
+        pdf.setPageSize((600, 600))
         # Creamos una tupla de encabezados para neustra tabla
         encabezados = ('Calificacion', 'Cantidad')
         # Creamos una lista de tuplas que van a contener a las personas
@@ -160,17 +157,17 @@ class ArchivoDeReportePDF(object):
             ]
         ))
         pdf.setFont("Helvetica", 10)
-        pdf.drawString(0.75 * inch, 740, _("Cantidad de llamados no atendidos"))
+        pdf.drawString(0.75 * inch, 520, _("Cantidad de llamados no atendidos"))
         # Establecemos el tamaño de la hoja que ocupará la tabla
         detalle_orden.wrapOn(pdf, 800, 600)
         # Definimos la coordenada donde se dibujará la tabla
         # 0,75 mas cercano del margen derecho
         # 6.75 mas cercano del margen TOP
-        detalle_orden.drawOn(pdf, 0.75 * inch, 6.75 * inch)
+        detalle_orden.drawOn(pdf, 0.75 * inch, 270)
         archivo_imagen = settings.MEDIA_ROOT + \
             '/reporte_campana/barra_campana_no_atendido.png'
 
-        pdf.drawImage(archivo_imagen, 4 * inch, 7.5 * inch, 250, 200,
+        pdf.drawImage(archivo_imagen, 4 * inch, 4.5 * inch, 250, 200,
                       preserveAspectRatio=True, mask="auto")
 
     def tabla_agente(self, pdf, agentes_venta, nombres_calificaciones):
@@ -200,11 +197,14 @@ class ArchivoDeReportePDF(object):
         ))
         pdf.setFont("Helvetica", 10)
         # Establecemos el tamaño de la hoja que ocupará la tabla
-        detalle_orden.wrapOn(pdf, 800, 600)
+        he, we = detalle_orden.wrapOn(pdf, 0, 0)
+        pdf.setPageSize((he + 300, we + 300))
         # Definimos la coordenada donde se dibujará la tabla
         # 0,75 mas cercano del margen derecho
         # 6.75 mas cercano del margen TOP
-        detalle_orden.drawOn(pdf, 0.75 * inch, 9.75 * inch)
+        pdf.setFont("Helvetica", 10)
+        pdf.drawString(100, we + 200, _("Calificaciones agentes"))
+        detalle_orden.drawOn(pdf, 100, we + 150)
 
     def ya_existe(self):
         return os.path.exists(self.ruta)
