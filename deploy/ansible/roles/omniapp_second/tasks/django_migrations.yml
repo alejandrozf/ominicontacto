@@ -60,8 +60,6 @@
 # Se adiciona el perfil del supervisor al admin
 - name: Adicionar perfil supervisor admin
   command: "{{ install_prefix }}bin/manage.sh adicionar_perfil_supervisor_admin"
-  register: result
-  failed_when: false
   become: yes
   become_method: su
   become_user: "{{ usuario }}"
