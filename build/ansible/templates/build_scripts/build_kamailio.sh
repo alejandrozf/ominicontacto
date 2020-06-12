@@ -1,7 +1,6 @@
 #!/bin/bash
 PROGNAME=$(basename $0)
 PATH=$PATH:/usr/local/bin
-
 KAMAILIO_VERSION_INSTALLED=$({{ kamailio_location }}/sbin/kamailio -v |head -1 |awk -F " " '{print $3}')
 KAMAILIO_VERSION={{ kamailio_version }}
 SSH_OPTIONS="-o stricthostkeychecking=no -o ConnectTimeout=10"

@@ -1,7 +1,6 @@
 #!/bin/bash
 PROGNAME=$(basename $0)
 PATH=$PATH:/usr/local/bin
-
 ASTERISK_VERSION_INSTALLED=$({{ asterisk_location }}/sbin/asterisk -V |awk -F " " '{print $2}')
 ASTERISK_VERSION={{ asterisk_version }}
 SSH_OPTIONS="-o stricthostkeychecking=no -o ConnectTimeout=10"

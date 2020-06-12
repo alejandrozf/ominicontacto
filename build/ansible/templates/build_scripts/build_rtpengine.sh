@@ -1,7 +1,6 @@
 #!/bin/bash
 PROGNAME=$(basename $0)
 PATH=$PATH:/usr/local/bin
-
 RTPENGINE_VERSION_INSTALLED=$(rtpengine -v 2>&1 |awk -F "~" '{print $2}'|cut -c 3-)
 RTPENGINE_VERSION={{ rtpengine_version }}
 SSH_OPTIONS="-o stricthostkeychecking=no -o ConnectTimeout=10"

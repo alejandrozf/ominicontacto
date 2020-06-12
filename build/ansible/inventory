@@ -5,7 +5,7 @@ localhost ansible_connection=local ansible_user=root
 asterisk_version=16.9.0
 kamailio_version=5.2.3
 rtpengine_version=5.5.3.1
-virtualenv_version=1.6.0
+virtualenv_version=
 install_prefix=/opt/omnileads/
 asterisk_location="{{ install_prefix }}asterisk"
 kamailio_location="{{ install_prefix }}kamailio"

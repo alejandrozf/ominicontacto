@@ -72,7 +72,8 @@ docker-prodenv-build-push:
   tags:
     - build-docker
   only:
-    - /.*build.*$/
+    - /.*build-all.*$/
+    - /.*build-docker.*$/
     - schedules
     - web
 
@@ -88,7 +89,8 @@ build-aio:
   tags:
     - build-aio
   only:
-    - /.*build.*$/
+    - /.*build-all.*$/
+    - /.*build-aio.*$/
     - schedules
     - web
 
