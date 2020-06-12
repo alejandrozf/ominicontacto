@@ -1,7 +1,7 @@
 #!/bin/bash
 PROGNAME=$(basename $0)
 PATH=$PATH:/usr/local/bin
-
+BRANCH={{ virtualenv_version }}
 VIRTUALENV_VERSION_INSTALLED=$(cat {{ install_prefix}}/virtualenv_version)
 VIRTUALENV_VERSION={{ virtualenv_version }}
 SSH_OPTIONS="-o stricthostkeychecking=no -o ConnectTimeout=10"
@@ -44,10 +44,15 @@ if [ "$VIRTUALENV_VERSION_INSTALLED" != "$VIRTUALENV_VERSION" ]; then
   pip3 install setuptools --upgrade
   cd {{ virtualenv_location }}
   pip3 install -r /vagrant/requirements/requirements.txt --exists-action 'w'
-  echo "{{ virtualenv_version }}" > {{ install_prefix }}/virtualenv_version
+  echo "{{ virtualenv_version }}" > {{ install_prefix }}virtualenv_version
 fi
 echo "Building virtualenv rpm"
 cd /vagrant/build/rpms
-fpm -s dir -t rpm -n virtualenv -v {{ virtualenv_version }} {{ virtualenv_location}} /etc/systemd/system/omnileads.service || true
+if [[ $BRANCH == *"release"* ]]; then
+  BRANCH=$(echo $BRANCH|awk -F '-' '{print $2}')
+elif [[ $BRANCH == *"oml-"* ]]; then
+  BRANCH=$(echo $BRANCH|awk -F '-' '{print $1 $2}')
+fi
+fpm -s dir -t rpm -n virtualenv -v $BRANCH {{ virtualenv_location}} /etc/systemd/system/omnileads.service || true
 echo "Uploading rpm to public server"
-scp $SSH_OPTIONS -P 40404 -i /vagrant/vps_key.pem virtualenv-{{ virtualenv_version }}* root@www.freetech.com.ar:/var/www/html/omnileads/build
+scp $SSH_OPTIONS -P 40404 -i /vagrant/vps_key.pem virtualenv-$BRANCH* root@www.freetech.com.ar:/var/www/html/omnileads/build
