@@ -57,6 +57,15 @@
   become_method: su
   become_user: "{{ usuario }}"
 
+# Se adiciona el perfil del supervisor al admin
+- name: Adicionar perfil supervisor admin
+  command: "{{ install_prefix }}bin/manage.sh adicionar_perfil_supervisor_admin"
+  register: result
+  failed_when: false
+  become: yes
+  become_method: su
+  become_user: "{{ usuario }}"
+
 # Se crea un pequeño script que utiliza expect para setear automaticamente la password del superusuario
 - name: Change password of superuser
   template: "src=roles/omniapp_second/templates/bin/changepassword.sh dest={{ install_prefix }}ominicontacto/changepassword.sh mode=0755"
