@@ -93,6 +93,7 @@ class AuditarCalificacionesFormView(FormView):
         campana = form.cleaned_data.get('campana')
         grupo_agente = form.cleaned_data.get('grupo_agente')
         id_contacto = form.cleaned_data.get('id_contacto')
+        id_contacto_externo = form.cleaned_data.get('id_contacto_externo')
         telefono = form.cleaned_data.get('telefono')
         callid = form.cleaned_data.get('callid')
         status_auditoria = form.cleaned_data.get('status_auditoria')
@@ -103,7 +104,7 @@ class AuditarCalificacionesFormView(FormView):
             'pk', flat=True))
         listado_de_calificaciones = CalificacionCliente.objects.calificacion_por_filtro(
             fecha_desde, fecha_hasta, agente, campana, grupo_agente, id_contacto,
-            telefono, callid, status_auditoria).filter(
+            id_contacto_externo, telefono, callid, status_auditoria).filter(
                 opcion_calificacion__campana__pk__in=campanas_supervisor_ids)
 
         return self.render_to_response(self.get_context_data(

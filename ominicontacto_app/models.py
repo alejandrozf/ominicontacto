@@ -2761,7 +2761,8 @@ class CalificacionClienteManager(models.Manager):
         return result.order_by('-fecha')
 
     def calificacion_por_filtro(self, fecha_desde, fecha_hasta, agente, campana, grupo_agentes,
-                                id_contacto, telefono, callid, status_auditoria):
+                                id_contacto, id_contacto_externo, telefono, callid,
+                                status_auditoria):
         """Devuelve un queryset con la las calificaciones de acuerdo a los filtros aplicados"""
 
         calificaciones = self.obtener_calificaciones_auditoria()
@@ -2779,6 +2780,8 @@ class CalificacionClienteManager(models.Manager):
             agentes_ids = list(AgenteProfile.objects.filter(grupo=grupo_agentes).values_list(
                 'pk', flat=True))
             calificaciones = calificaciones.filter(agente__pk__in=agentes_ids)
+        if id_contacto_externo:
+            calificaciones = calificaciones.filter(contacto__id_externo=id_contacto_externo)
         if id_contacto:
             calificaciones = calificaciones.filter(contacto__pk=id_contacto)
         if telefono:

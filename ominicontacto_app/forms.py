@@ -486,6 +486,8 @@ class AuditoriaBusquedaForm(forms.Form):
     grupo_agente = forms.ChoiceField(
         required=False, choices=(), label=_('Grupo de agentes'),
         widget=forms.Select(attrs={'class': 'form-control'}))
+    id_contacto_externo = forms.CharField(required=False, label=_('ID de contacto externo'),
+                                          widget=forms.TextInput(attrs={'class': 'form-control'}))
     id_contacto = forms.CharField(required=False, label=_('Id del contacto'),
                                   widget=forms.NumberInput(attrs={'class': 'form-control'}))
     telefono = forms.CharField(required=False, label=_('Teléfono Cliente'),
