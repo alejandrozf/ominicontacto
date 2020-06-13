@@ -17,6 +17,7 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
+import json
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.core import paginator as django_paginator
@@ -168,6 +169,12 @@ class AuditoriaCalificacionFormView(FormView):
                 historica['grabacion'] = grabaciones_por_callid.pop(callid)
         historia.reverse()
         context['historia'] = historia
+        context['datos_contacto'] = self.calificacion.contacto.obtener_datos()
+
+        if self.calificacion.respuesta_formulario_gestion.exists():
+            respuesta_formulario = self.calificacion.respuesta_formulario_gestion.first()
+            context['respuesta_formulario'] = json.loads(respuesta_formulario.metadata)
+            historia[0]['mostrar_respuesta'] = True
         return context
 
     def get_form_kwargs(self):
