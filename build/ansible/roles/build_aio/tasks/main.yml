@@ -1,0 +1,112 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+---
+
+# se deshabilita selinux https://docs.ansible.com/ansible/2.5/modules/command_module.html
+- name: Disable Selinux
+  command: "{{ item }}"
+  with_items:
+      - sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/sysconfig/selinux
+      - sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/selinux/config
+
+- name: Configure yum for ansible
+  ini_file: path=/etc/yum.conf section=main option="{{ item.option }}" no_extra_spaces=yes value="{{ item.value }}" state=present
+  with_items:
+    - { option: "sslverify", value: "0" }
+    - { option: "timeout", value: "300" }
+    - { option: "minrate", value: "100" }
+
+# Paquetes preliminares para el buildeo
+- name: Installing preliminar packages
+  yum: name={{ item }} state=present update_cache=yes
+  with_items:
+    - tftp-server
+    - crontabs
+    - gcc
+    - gcc-c++
+    - cronie
+    - openssl-devel
+    - cronie-anacron
+    - make
+    - gdb
+    - which
+    - vim
+    - net-tools
+    - gnutls-devel
+    - python-devel
+    - texinfo
+    - kernel-headers
+    - acl
+    - bind-utils
+    - ruby-devel
+    - rpm-build
+    - rubygems
+
+# Se instala la herramienta fpm
+- name: Installing ffi v1.12.2 and fpm
+  shell: "{{ item }}"
+  with_items:
+    - gem install ffi -v 1.12.2
+    - gem install --no-ri --no-rdoc fpm
+
+# Se crean los directorios para el build
+- name: Create build directories
+  file: name={{ item }} state=directory recurse=yes owner=root group=root
+  with_items:
+    - /vagrant/build/build_scripts/
+    - /vagrant/build/rpms/
+    - "{{ asterisk_location }}"
+    - "{{ kamailio_location }}"
+    - "{{ virtualenv_location }}"
+
+# Se generan los scripts de buildeo
+- name: Generating build scripts
+  template: src=templates/build_scripts/{{ item }} dest=/vagrant/build/build_scripts/ mode=755
+  with_items:
+    - build_asterisk.sh
+    - build_kamailio.sh
+    - build_virtualenv.sh
+    - build_rtpengine.sh
+
+# Se crean los scripts de systemd de cada servicio
+- name: Generating systemd scripts
+  template: src=templates/systemd/{{ item }} dest=/etc/systemd/system/
+  with_items:
+    - asterisk.service
+    - kamailio.service
+    - omnileads.service
+    - rtpengine.service
+
+# Additional Kamailio files
+- name: Creation of kamamailio run directories
+  file: "path={{ item }} state=directory mode=0755"
+  with_items:
+      - "{{ kamailio_location }}/run/"
+      - "{{ kamailio_location }}/run/kamailio/"
+
+# Se cre el archivo kamailio en /etc/default este archivo contiene variables que va a usar systemctl para levantar kamailio
+- name: Creation of kamailio file in /etc/default
+  template: src=templates/systemd/kamailio.j2 dest=/etc/default/kamailio owner=root group=root mode=755
+
+# Se ejecutan los scripts de build
+- name: Execute build scripts
+  command: "{{ item }} chdir=/vagrant/build/build_scripts"
+  with_items:
+    - ./build_asterisk.sh
+    - ./build_kamailio.sh
+    - ./build_virtualenv.sh
+    - ./build_rtpengine.sh

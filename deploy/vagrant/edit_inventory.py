@@ -24,17 +24,13 @@ parser = argparse.ArgumentParser(description='Modify Ansible inventory')
 
 parser.add_argument("--self_hosted", help="Modifies if the install is selfhosted")
 parser.add_argument("--host_node", help="Modifies if the install is selfhosted")
-parser.add_argument("--docker_build", help="Modifies if the install is selfhosted")
 parser.add_argument("--docker_deploy", help="Modifies if the install is selfhosted")
+parser.add_argument("--devenv", help="Modifies if the install is selfhosted")
+parser.add_argument("--prodenv", help="Modifies if the install is selfhosted")
 parser.add_argument("--admin_password", default="098098ZZZ", help="Omnileads admin web password")
 parser.add_argument("--internal_ip", help="Sets internal IP in external server, say 172.16.20.44")
 parser.add_argument("--remote_port", default=22, help="Sets external ssh port to connect on remote"
                     "server")
-parser.add_argument("-dlu", "--docker_login_user", help="Username for docker hub")
-parser.add_argument("-dle", "--docker_login_email", help="User email for docker hub")
-parser.add_argument("-dlp", "--docker_login_password", help="User password for docker hub")
-parser.add_argument("-tag", "--tag_docker_images", help="Specifies de tag for generated docker"
-                    "images")
 parser.add_argument("--ami_user", default="omnileadsami", help="Specifies ami user")
 parser.add_argument("--ami_password", default="5_MeO_DMT", help="Specifies ami password")
 parser.add_argument("--dialer_host", help="Specifies dialer host")
@@ -141,33 +137,19 @@ if args.self_hosted == "yes":
 if args.docker_deploy == "yes":
     # modificamos el setting que define el servidor externo donde se va a instalar
     # el sistema
-    inventory_file.seek(0)
-    inventory_file.truncate()
-    inventory_file.write(inventory_contents.replace(
-        "#X.X.X.X ansible_ssh_port=22 ansible_user=root"
-        " #(for node-host installation, replace X.X.X.X with the IP of Docker Host)",
-        "{0} ansible_ssh_port={1} ansible_user=root".format(
-            args.internal_ip, args.remote_port)))
-    sys.exit()
-
-if args.docker_login_user and args.docker_login_email and args.docker_login_password \
-   and args.tag_docker_images and args.docker_build == "yes":
-    # editamos las líneas del inventory que indican que se va hacer un build
-    # de imágenes de producción de los componentes del sistema
-    # 1) modificando inventory
-    inventory_contents = inventory_contents.replace(
-        "[prodenv-container]\n#localhost ansible_connection=local",
-        "[prodenv-container]\nlocalhost ansible_connection=local")
-    inventory_contents = inventory_contents.replace(
-        "docker_user='{{ lookup(\"env\",\"SUDO_USER\") }}'", "docker_user='root'")
-    inventory_contents = inventory_contents.replace(
-        "registry_username=freetechsolutions", "registry_username={0}".format(
-            args.docker_login_user))
-    inventory_contents = inventory_contents.replace(
-        "#registry_email=", "registry_email={0}".format(args.docker_login_email))
-    inventory_contents = inventory_contents.replace(
-        "#registry_password=", "registry_password={0}".format(args.docker_login_password))
-    inventory_file.seek(0)
-    inventory_file.truncate()
-    inventory_file.write(inventory_contents)
+    if args.prodenv:
+        inventory_file.seek(0)
+        inventory_file.truncate()
+        inventory_file.write(inventory_contents.replace(
+            "#X.X.X.X ansible_ssh_port=22 ansible_user=root"
+            " #(for node-host installation, replace X.X.X.X with the IP of Docker Host)",
+            "{0} ansible_ssh_port={1} ansible_user=root".format(
+                args.internal_ip, args.remote_port)))
+    elif args.devenv:
+        inventory_contents = inventory_contents.replace(
+            "[devenv-container]\n#localhost ansible_connection=local ansible_user=root",
+            "[devenv-container]\nlocalhost ansible_connection=local ansible_user=root")
+        inventory_file.seek(0)
+        inventory_file.truncate()
+        inventory_file.write(inventory_contents)
     sys.exit()
