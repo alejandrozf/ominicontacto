@@ -97,7 +97,8 @@ class IntegrationTests(unittest.TestCase):
             pass
         group_name = 'group' + uuid.uuid4().hex[:5]
         cls.crear_grupo(group_name)
-        cls.crear_agente(AGENTE_USERNAME, AGENTE_PASSWORD)
+        tipo_usuario = 'Agente'
+        cls.crear_user(AGENTE_USERNAME, AGENTE_PASSWORD, tipo_usuario)
         if BROWSER_REAL == 'True':
             cls.asignar_agente_campana_manual()
         cls.tearDown()
@@ -131,6 +132,27 @@ class IntegrationTests(unittest.TestCase):
         self.browser.find_element_by_tag_name('button').click()
         sleep(2)
 
+    @classmethod
+    def crear_user(self, username, password, tipo_usuario):
+        link_create_user = self.browser.find_element_by_id('newUser')
+        href_create_user = link_create_user.get_attribute('href')
+        self.browser.get(href_create_user)
+        self.browser.find_element_by_id('id_0-username').send_keys(username)
+        self.browser.find_element_by_id('id_0-first_name').send_keys(username)
+        self.browser.find_element_by_id('id_0-password1').send_keys(password)
+        self.browser.find_element_by_id('id_0-password2').send_keys(password)
+        self.browser.find_element_by_xpath("//select[@id='id_0-rol']//option[contains\
+                                           (text(), \'{0}\')]".format(tipo_usuario)).click()
+        if tipo_usuario == 'Agente':
+            self.browser.find_element_by_xpath("//form[@id=\'wizardForm\']/button").click()
+            sleep(1)
+            self.browser.find_elements_by_xpath("//select[@id='id_1-grupo']/option")[1].click()
+            self.browser.find_elements_by_xpath("//form[@id=\'wizardForm\']/button")[2].click()
+            sleep(1)
+        else:
+            self.browser.find_element_by_xpath('//form[@id=\'wizardForm\']/button').click()
+            sleep(1)
+
     def get_href(self, href):
         link = self.browser.find_element_by_xpath(href)
         href = link.get_attribute('href')
@@ -150,22 +172,6 @@ class IntegrationTests(unittest.TestCase):
                                            .format(AGENTE_USERNAME)).click()
         self.browser.find_element_by_xpath((
             "//button[@id='id_guardar']")).click()
-        sleep(1)
-
-    @classmethod
-    def crear_agente(self, username, password):
-        link_create_user = self.browser.find_element_by_id('newUser')
-        href_create_user = link_create_user.get_attribute('href')
-        self.browser.get(href_create_user)
-        self.browser.find_element_by_id('id_0-username').send_keys(username)
-        self.browser.find_element_by_id('id_0-first_name').send_keys(username)
-        self.browser.find_element_by_id('id_0-password1').send_keys(password)
-        self.browser.find_element_by_id('id_0-password2').send_keys(password)
-        self.browser.find_element_by_id('id_0-is_agente').click()
-        self.browser.find_element_by_xpath('//form[@id=\'wizardForm\']/button').click()
-        sleep(1)
-        self.browser.find_elements_by_xpath('//select[@id=\'id_2-grupo\']/option')[1].click()
-        self.browser.find_elements_by_xpath('//form[@id=\'wizardForm\']/button')[2].click()
         sleep(1)
 
     @classmethod
@@ -263,28 +269,6 @@ class IntegrationTests(unittest.TestCase):
         self.browser.find_element_by_xpath("//button[@type='submit']").click()
         sleep(1)
 
-    def crear_supervisor(self, username, password):
-        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
-        link_create_user = self.browser.find_element_by_id('newUser')
-        href_create_user = link_create_user.get_attribute('href')
-        self.browser.get(href_create_user)
-        self.browser.find_element_by_id('id_0-username').send_keys(username)
-        self.browser.find_element_by_id('id_0-password1').send_keys(password)
-        self.browser.find_element_by_id('id_0-password2').send_keys(password)
-        self.browser.find_element_by_id('id_0-is_supervisor').click()
-        self.browser.find_element_by_xpath('//form[@id=\'wizardForm\']/button').click()
-        sleep(1)
-
-    def crear_supervisor_tipo_customer(self):
-        self.browser.find_elements_by_xpath('//select[@id=\'id_1-rol\']/option')[2].click()
-        self.browser.find_elements_by_xpath('//form[@id=\'wizardForm\']/button')[2].click()
-        sleep(1)
-
-    def crear_supervisor_tipo_gerente(self):
-        self.browser.find_elements_by_xpath('//select[@id=\'id_1-rol\']/option')[0].click()
-        self.browser.find_elements_by_xpath('//form[@id=\'wizardForm\']/button')[2].click()
-        sleep(1)
-
     @unittest.skipIf(BROWSER_REAL != 'True', MSG_MICROFONO)
     def test_agente_se_registra_correctamente(self):
         try:
@@ -352,7 +336,8 @@ class IntegrationTests(unittest.TestCase):
             agente_username = 'agente' + uuid.uuid4().hex[:5]
             agente_password = AGENTE_PASSWORD
             # rellenar etapa1 del wizard de creación de usuario (agente)
-            self.crear_agente(agente_username, agente_password)
+            tipo_usuario = 'Agente'
+            self.crear_user(agente_username, agente_password, tipo_usuario)
             self.browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
             self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
                 agente_username))
@@ -388,7 +373,8 @@ class IntegrationTests(unittest.TestCase):
             self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
             agente_username = 'agente' + uuid.uuid4().hex[:5]
             agente_password = AGENTE_PASSWORD
-            self.crear_agente(agente_username, agente_password)
+            tipo_usuario = 'Agente'
+            self.crear_user(agente_username, agente_password, tipo_usuario)
             group_name = 'grupo' + uuid.uuid4().hex[:5]
             self.crear_grupo(group_name)
             user_list = '//a[contains(@href,"/user/list/page1/")]'
@@ -428,85 +414,49 @@ class IntegrationTests(unittest.TestCase):
             print('--ERROR: No se pudo eliminar un agente.--\n{0}'.format(e))
             raise e
 
-    def test_crear_usuario_tipo_customer(self):
-        # Creación de clientes
-        try:
-            customer_username = 'cliente' + uuid.uuid4().hex[:5]
-            customer_password = '098098ZZZ'
-            self.crear_supervisor(customer_username, customer_password)
-            self.crear_supervisor_tipo_customer()
-            self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(customer_username))
-            print('--Se pudo crear un usuario tipo customer.--')
-        except Exception as e:
-            print('--ERROR: No se pudo crear un usuario tipo customer.--\n{0}'.format(e))
-            raise e
-        # modificar perfil a un perfil de supervisor
-        try:
-            user_list = '//a[contains(@href,"/user/list/page1/")]'
-            self.get_href(user_list)
-            link_update = "//tr[@id=\'{0}\']/td/a[contains(@href, '/supervisor/')]".format(
-                          customer_username)
-            self.get_href(link_update)
-            self.browser.find_elements_by_xpath("//select[@id=\'id_rol\']/option")[0].click()
-            self.browser.find_element_by_xpath((
-                "//button[@type='submit' and @id='id_registrar']")).click()
-            sleep(1)
-            self.get_href(user_list)
-            self.get_href(link_update)
-            self.assertTrue(self.browser.find_elements_by_xpath(
-                "//select[@id=\'id_rol\']/option[@value='2' and @selected]"))
-            print('--Se pudo modificar a un perfil de supervisor.--')
-        except Exception as e:
-            print('--ERROR: No se pudo modificar a un perfil de supervisor.--\n{0}'.format(e))
-            raise e
-        # Volver a modificiar a un perfil de cliente
-        try:
-            self.get_href(user_list)
-            self.get_href(link_update)
-            self.browser.find_elements_by_xpath("//select[@id=\'id_rol\']/option")[2].click()
-            self.browser.find_element_by_xpath((
-                "//button[@type='submit' and @id='id_registrar']")).click()
-            sleep(1)
-            self.get_href(user_list)
-            self.get_href(link_update)
-            self.assertTrue(self.browser.find_elements_by_xpath(
-                "//select[@id=\'id_rol\']/option[@value='4' and @selected]"))
-            print('--Se pudo modificar a un perfil de cliente.--')
-        except Exception as e:
-            print('--ERROR: No se pudo modificar a un perfil de cliente.--\n{0}'.format(e))
-            raise e
-
-    def test_crear_usuario_tipo_supervisor(self):
-        # Creación de supervisor
-        try:
-            supervisor_username = 'supervisor' + uuid.uuid4().hex[:5]
-            supervisor_password = '098098ZZZ'
-            self.crear_supervisor(supervisor_username, supervisor_password)
-            self.crear_supervisor_tipo_gerente()
-            self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(supervisor_username))
-            print('--Se pudo crear un Supervisor Gerente.--')
-        except Exception as e:
-            print('--ERROR: No se pudo crear un Supervisor Gerente.--\n{0}'.format(e))
-            raise e
-        # modificar perfil a un perfil de administrador
-        try:
-            user_list = '//a[contains(@href,"/user/list/page1/")]'
-            self.get_href(user_list)
-            link_update = '//tr[@id=\'{0}\']/td/a[contains(@href, "/supervisor/")]'.format(
-                          supervisor_username)
-            self.get_href(link_update)
-            self.browser.find_elements_by_xpath("//select[@id=\'id_rol\']/option")[1].click()
-            self.browser.find_element_by_xpath((
-                "//button[@type='submit' and @id='id_registrar']")).click()
-            sleep(1)
-            self.get_href(user_list)
-            self.get_href(link_update)
-            self.assertTrue(self.browser.find_elements_by_xpath(
-                "//select[@id=\'id_rol\']/option[@value='1' and @selected]"))
-            print('--Se pudo modificar a un perfil de administrador.')
-        except Exception as e:
-            print('--ERROR: No se pudo modificar a un perfil de administrador.--\n{0}'.format(e))
-            raise e
+    def test_crear_editar_usuarios_supervisorprofile(self):
+        # Creacion de usuarios con SupervisorProfile
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        tipo_usuario = ['Administrador', 'Gerente', 'Supervisor', 'Referente']
+        for usuario in tipo_usuario:
+            try:
+                user = usuario + uuid.uuid4().hex[:5]
+                password = '098098ZZZ'
+                self.crear_user(user, password, usuario)
+                self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(user))
+                print('Se pudo crear un ' + usuario + ' con exito.')
+            except Exception as e:
+                print('--ERROR: No se pudo crear un ' + usuario + ' .--\n{0}'.format(e))
+                raise e
+            # modificar a otro perfil
+            try:
+                self.browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
+                link_update = "//tr[@id=\'{0}\']/td/a[contains(@href, '/supervisor/')]".format(
+                    user)
+                self.get_href(link_update)
+                if usuario == 'Administrador':
+                    cambio_perfil = 'Gerente'
+                elif usuario == 'Gerente':
+                    cambio_perfil = 'Supervisor'
+                elif usuario == 'Supervisor':
+                    cambio_perfil = 'Referente'
+                else:
+                    cambio_perfil = 'Administrador'
+                self.browser.find_element_by_xpath("//select[@id='id_rol']//option[contains\
+                                               (text(), \'{0}\')]".format(cambio_perfil)).click()
+                self.browser.find_element_by_xpath((
+                    "//button[@type='submit' and @id='id_registrar']")).click()
+                sleep(1)
+                user_list = '//a[contains(@href,"/user/list/page1/")]'
+                self.get_href(user_list)
+                self.get_href(link_update)
+                self.assertTrue(self.browser.find_element_by_xpath("//select[@id='id_rol']//option[contains\
+                                               (text(), \'{0}\')]".format(cambio_perfil)))
+                print('Se pudo modificar a un Perfil de ' + cambio_perfil)
+            except Exception as e:
+                print('--ERROR: No se pudo modificar a un perfil de \
+                      ' + cambio_perfil + ' .--\n{0}'.format(e))
+                raise e
 
     # test de creación y edición de grupos
 
@@ -624,84 +574,49 @@ class IntegrationTests(unittest.TestCase):
             raise e
 
     # Acceso web Supervisor
-    def test_accesos_web_supervisor_acceso_exitoso(self):
-        try:
-            supervisor_username = 'supervisor' + uuid.uuid4().hex[:5]
-            supervisor_password = '098098ZZZ'
-            self.crear_supervisor(supervisor_username, supervisor_password)
-            self.crear_supervisor_tipo_gerente()
-            # Deslogueo como admin
-            deslogueo = '//a[contains(@href, "/accounts/logout/")]'
-            self.get_href(deslogueo)
-            # Logueo como supervisor
-            self._login(supervisor_username, supervisor_password)
-            self.assertTrue(self.browser.find_element_by_xpath(
-                '//a[contains(@href, "/accounts/logout/")]'))
-            print('--Acceso web supervisor: Acceso exitoso.--')
-        except Exception as e:
-            print('--ERROR: Acceso web supervisor: Acceso NO exitoso.--\n{0}'.format(e))
-            raise e
+    def test_accesos_web_usuarios_con_supervisorprofile_acceso_exitoso(self):
+        tipo_usuario = ['Administrador', 'Gerente', 'Supervisor', 'Referente']
+        for usuario in tipo_usuario:
+            try:
+                self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+                user = usuario + uuid.uuid4().hex[:5]
+                password = '098098ZZZ'
+                self.crear_user(user, password, usuario)
+                # Deslogueo
+                deslogueo = '//a[contains(@href, "/accounts/logout/")]'
+                self.get_href(deslogueo)
+                # Logueo
+                self._login(user, password)
+                self.assertTrue(self.browser.find_element_by_xpath(
+                    '//a[contains(@href, "/accounts/logout/")]'))
+                self.get_href(deslogueo)
+                print('--Acceso web ' + usuario + ': Acceso exitoso.--')
+            except Exception as e:
+                print('--ERROR: Acceso web ' + usuario + ': Acceso NO exitoso.--\n{0}'.format(e))
+                raise e
 
-    def test_acceso_web_supervisor_acceso_denegado(self):
-        try:
-            # Creación supervisor que vamos a usar para simular un acceso denegado
-            supervisor_username = 'supervisor' + uuid.uuid4().hex[:5]
-            supervisor_password = '098098ZZZ'
-            self.crear_supervisor(supervisor_username, supervisor_password)
-            clave_erronea = 'test'
-            # Deslogueo como admin
-            deslogueo = '//a[contains(@href, "/accounts/logout/")]'
-            self.get_href(deslogueo)
-            # Logueo como supervisor
-            self._login(supervisor_username, clave_erronea)
-            self.assertEqual(self.browser.find_element_by_xpath(
-                '//div[@class="alert alert-danger"]/p').text,
-                'Invalid Username/Password, please try again')
-            print('--Acceso web supervisor: Acceso denegado.--')
-        except Exception as e:
-            print('--ERROR: Acceso web supervisor: Acceso NO denegado.--\n{0}'.format(e))
-            raise e
-
-    # Acceso web Customer
-    def test_acceso_web_cliente_acceso_exitoso(self):
-        try:
-            # Creación supervisor que vamos a usar para simular un acceso exitoso
-            customer_username = 'cliente' + uuid.uuid4().hex[:5]
-            customer_password = '098098ZZZ'
-            self.crear_supervisor(customer_username, customer_password)
-            self.crear_supervisor_tipo_customer()
-            # Deslogue como admin
-            deslogueo = '//a[contains(@href, "/accounts/logout/")]'
-            self.get_href(deslogueo)
-            # Logueo como cliente
-            self._login(customer_username, customer_password)
-            self.assertTrue(self.browser.find_element_by_xpath(
-                '//div/a[contains(@href, "/accounts/logout/")]'))
-            print('--Acceso web cliente: Acceso exitoso.--')
-        except Exception as e:
-            print('--ERROR: Acceso web cliente: Acceso NO exitoso.--\n{0}'.format(e))
-            raise e
-
-    def test_acceso_web_cliente_acceso_denegado(self):
-        try:
-            # Creación supervisor que vamos a usar para simular un acceso denegado
-            customer_username = 'cliente' + uuid.uuid4().hex[:5]
-            customer_password = '098098ZZZ'
-            self.crear_supervisor(customer_username, customer_password)
-            self.crear_supervisor_tipo_customer()
-            clave_erronea = 'test'
-            # Deslogue como admin
-            deslogueo = '//a[contains(@href, "/accounts/logout/")]'
-            self.get_href(deslogueo)
-            # Logueo como cliente
-            self._login(customer_username, clave_erronea)
-            self.assertEqual(self.browser.find_element_by_xpath(
-                '//div[@class="alert alert-danger"]/p').text,
-                'Invalid Username/Password, please try again')
-            print('--Acceso web cliente: Acceso denegado.--')
-        except Exception as e:
-            print('--ERROR: Acceso web cliente: Acceso NO denegado.--\n{0}'.format(e))
-            raise e
+    def test_acceso_web_usuarios_con_supervisorprofile_acceso_denegado(self):
+        tipo_usuario = ['Administrador', 'Gerente', 'Supervisor', 'Referente']
+        for usuario in tipo_usuario:
+            try:
+                # Creación supervisor que vamos a usar para simular un acceso denegado
+                self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+                user = usuario + uuid.uuid4().hex[:5]
+                password = '098098ZZZ'
+                self.crear_user(user, password, usuario)
+                clave_erronea = 'test'
+                # Deslogueo como admin
+                deslogueo = '//a[contains(@href, "/accounts/logout/")]'
+                self.get_href(deslogueo)
+                # Logueo como supervisor
+                self._login(user, clave_erronea)
+                self.assertEqual(self.browser.find_element_by_xpath(
+                    '//div[@class="alert alert-danger"]/p').text,
+                    'Invalid Username/Password, please try again')
+                print('--Acceso web ' + usuario + ': Acceso denegado.--')
+            except Exception as e:
+                print('--ERROR: Acceso web ' + usuario + ': Acceso NO denegado.--\n{0}'.format(e))
+                raise e
 
     def test_bloqueo_y_desbloqueo_de_un_usuario(self):
         try:
