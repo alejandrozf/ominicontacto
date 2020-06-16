@@ -26,29 +26,31 @@ from django.apps import AppConfig
 class SupervisionAppConfig(AppConfig):
     name = 'supervision_app'
 
-    def supervision_menu_items(self, request):
-        if request.user.get_supervisor_profile():
-            return [
-                {
-                    'label': _('Supervisión'),
-                    'icon': 'icon-headset',
-                    'id': 'menuSupervise',
-                    'children': [
-                        {
-                            'label': _('Agentes'),
-                            'url': reverse('supervision_agentes'),
-                        },
-                        {
-                            'label': _('Campañas Entrantes'),
-                            'url': reverse('supervision_campanas_entrantes'),
-                        },
-                        {
-                            'label': _('Campañas Salientes'),
-                            'url': reverse('supervision_campanas_salientes'),
-                        },
-                    ],
-                },
-            ]
+    def supervision_menu_items(self, request, permissions):
+        items = []
+        if 'supervision_agentes' in permissions:
+            items.append({
+                'label': _('Agentes'),
+                'url': reverse('supervision_agentes'),
+            })
+        if 'supervision_agentes' in permissions:
+            items.append({
+                'label': _('Campañas Entrantes'),
+                'url': reverse('supervision_campanas_entrantes'),
+            })
+        if 'supervision_agentes' in permissions:
+            items.append({
+                'label': _('Campañas Salientes'),
+                'url': reverse('supervision_campanas_salientes'),
+            })
+        if items:
+            return [{
+                'order': 900,
+                'label': _('Supervisión'),
+                'icon': 'icon-headset',
+                'id': 'menuSupervise',
+                'children': items
+            }]
         return None
 
     def configuraciones_de_permisos(self):
@@ -63,9 +65,9 @@ class SupervisionAppConfig(AppConfig):
 
     informacion_de_permisos = {
         'supervision_agentes':
-            {'descripcion': _('Estado de agentes en supervisión'), 'version': '1.6.2'},
+            {'descripcion': _('Estado de agentes en supervisión'), 'version': '1.7.0'},
         'supervision_campanas_entrantes':
-            {'descripcion': _('Estado de campañas entrantes en supervisión'), 'version': '1.6.2'},
+            {'descripcion': _('Estado de campañas entrantes en supervisión'), 'version': '1.7.0'},
         'supervision_campanas_salientes':
-            {'descripcion': _('Estado de campañas salientes en supervision'), 'version': '1.6.2'},
+            {'descripcion': _('Estado de campañas salientes en supervision'), 'version': '1.7.0'},
     }
