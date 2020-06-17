@@ -92,16 +92,10 @@ TagCheck() {
     tag="dialer"
   elif [ "$arg1" == "--database" ] || [ "$arg1" == "-da" ]; then
     tag="database"
-  elif [ "$arg1" == "--docker-build" ]; then
-    tag="docker_build"
-    BUILD_IMAGES=true
   elif [ "$arg1" == "--docker-deploy" ]; then
     tag="docker_deploy"
   elif [ "$arg1" == "--integration-tests" ]; then
     tag="all,integration-tests"
-  elif [ "$arg1" == "--docker-no-build" ]; then
-    tag="docker_build"
-    BUILD_IMAGES=false
   fi
 }
 
@@ -329,33 +323,29 @@ do
     ;;
   esac
 done
-if [ "$arg1" == "--docker-build" ] || [ "$arg1" == "--docker-no-build" ]; then
-  echo ""
-else
-  ./keytransfer.sh $INTERFACE
-  ResultadoKeyTransfer=`echo $?`
-    if [ "$ResultadoKeyTransfer" == 1 ]; then
-      echo "It seems that you don't have generated keys in the server you are executing this script"
-      echo "Try with ssh-keygen or check the ssh port configured in server"
-      rm -rf /var/tmp/servers_installed
-      exit 1
-    elif [ "$ResultadoKeyTransfer" == 2 ]; then
-      echo "#######################################################################"
-      echo "# The option --interface must be used only in selfhosted installation #"
-      echo "#######################################################################"
-      exit 1
-    elif [ "$ResultadoKeyTransfer" == 3 ]; then
-      echo "#####################################"
-      echo "# Option --interface must be passed #"
-      echo "#####################################"
-      exit 1
-    elif [ "$ResultadoKeyTransfer" == 4 ]; then
-      echo "###############################################################"
-      echo "# It seems you typed a wrong interface in --interface option  #"
-      echo "###############################################################"
-      exit 1
-    fi
-fi
+./keytransfer.sh $INTERFACE
+ResultadoKeyTransfer=`echo $?`
+  if [ "$ResultadoKeyTransfer" == 1 ]; then
+    echo "It seems that you don't have generated keys in the server you are executing this script"
+    echo "Try with ssh-keygen or check the ssh port configured in server"
+    rm -rf /var/tmp/servers_installed
+    exit 1
+  elif [ "$ResultadoKeyTransfer" == 2 ]; then
+    echo "#######################################################################"
+    echo "# The option --interface must be used only in selfhosted installation #"
+    echo "#######################################################################"
+    exit 1
+  elif [ "$ResultadoKeyTransfer" == 3 ]; then
+    echo "#####################################"
+    echo "# Option --interface must be passed #"
+    echo "#####################################"
+    exit 1
+  elif [ "$ResultadoKeyTransfer" == 4 ]; then
+    echo "###############################################################"
+    echo "# It seems you typed a wrong interface in --interface option  #"
+    echo "###############################################################"
+    exit 1
+  fi
 UserValidation
 OSValidation
 AnsibleInstall
