@@ -4,7 +4,8 @@
 
 version: "{{ oml_release }}"
 customer: prodenv
-
+kamailio_builded_version: "{{ kamailio_version }}"
+nginx_builded_version: 1.19.0
 asterisk_builded_version: "{{ version }}"
 root_password: Sup3rS3cr3tP4ssw0rd
 
@@ -14,9 +15,9 @@ ast_local_location: "{{ build_location }}/asterisk"
 ast_agis_location: "{{ ast_local_location }}/agis"
 ast_conf_location: "{{ ast_local_location }}/conf"
 ast_other_location: "{{ build_location }}/scripts"
-build_location: "{{ docker_root }}/omnileads/build"
+ast_sounds_location: "{{ ast_local_location }}/sounds"
+build_location: "{{ docker_root }}/omnileads/build/{{ customer }}"
 certs_location: "{{ build_location }}/certs"
-deploy_location: "/home/omnileads/{{ customer }}"
 kamailio_location: "{{ build_location }}/kamailio"
 nginx_location: "{{ build_location }}/nginx"
 omniapp_location: "{{ build_location }}/omniapp"

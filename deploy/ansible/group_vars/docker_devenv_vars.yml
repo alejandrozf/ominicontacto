@@ -20,6 +20,7 @@ asterisk_location:
 ast_local_location: "{{ deploy_location }}/asterisk"
 ast_agis_location: "{{ ast_local_location }}/agis"
 ast_conf_location: "{{ ast_local_location }}/conf"
+ast_sounds_location: "{{ ast_local_location }}/sounds"
 ast_other_location: "{{ ast_local_location }}/others"
 build_location: "{{ docker_root }}/omnileads/build"
 certs_location: "{{ deploy_location }}/certs"

@@ -8,8 +8,8 @@ Type=oneshot
 {% if devenv == 1 %}
 User={{ docker_user }}
 {% else %}
-ExecStartPost=/bin/bash {{ deploy_location }}/postinstall.sh
-ExecStopPost=/usr/sbin/iptables -D DOCKER -p udp -m udp -d $CIP/32 ! -i docker0 -o docker0 --dport $RTP_START:$RTP_FINISH -j ACCEPT
+ExecStartPost=/bin/bash {{ deploy_location }}/postinstall.sh start
+ExecStopPost=/bin/bash {{ deploy_location }}/postinstall.sh stop
 {% endif %}
 EnvironmentFile={{ deploy_location }}/.env
 Environment=COMPOSE_FILE={{ deploy_location }}/docker-compose.yml

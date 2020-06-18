@@ -11,7 +11,7 @@ base_image: alpine:3.10
 dialer_image: tomcat:8.5-alpine
 kamailio_image: kamailio/kamailio-ci:5.2
 mariadb_image: bitnami/mariadb:latest
-nginx_image: nginx:mainline-alpine
+nginx_image: nginx:1.19.0-alpine
 postgres_image: postgres:{{ postgresql_version }}
 rtpengine_image: ubuntu:18.04
 redis_image: "redis:{{ redis_version }}-alpine"
