@@ -110,11 +110,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
       <tbody>
           {% for calificacion_cliente in listado_calificaciones %}
             {% with auditoria=calificacion_cliente.obtener_auditoria %}
-              {% if auditoria.get_resultado_display == 'Aprobada' %}
+              {% if auditoria.es_aprobada %}
                 <tr class="aprobada">
-              {% elif auditoria.get_resultado_display == 'Rechazada' %}
+              {% elif auditoria.es_rechazada %}
                 <tr class="rechazada">
-              {% elif auditoria.get_resultado_display == 'Observada' %}
+              {% elif auditoria.es_observada %}
                 <tr class="observada">
               {% else %}
                 <tr>
