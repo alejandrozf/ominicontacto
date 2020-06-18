@@ -58,15 +58,24 @@ class AgenteReporteCalificaciones(FormView):
     model = AgenteProfile
     form_class = ReporteForm
 
+    def dispatch(self, request, *args, **kwargs):
+        self.agente = request.user.get_agente_profile()
+        return super(AgenteReporteCalificaciones, self).dispatch(request, *args, **kwargs)
+
     def get_object(self, queryset=None):
-        return AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
+        return self.agente
+
+    def get_context_data(self, **kwargs):
+        context = super(AgenteReporteCalificaciones, self).get_context_data(**kwargs)
+        context['agente'] = self.agente
+        return context
 
     def get(self, request, *args, **kwargs):
         service = ReporteAgenteService()
         service_formulario = ReporteFormularioVentaService()
         hoy_ahora = datetime.datetime.today()
         hoy = hoy_ahora.date()
-        agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
+        agente = self.agente
         # Crear reporte csv para las calficaciones no interesada(no gestion) y gestion
         service.crea_reporte_csv(agente, hoy, hoy_ahora)
         service_formulario.crea_reporte_csv(agente, hoy, hoy_ahora)
@@ -75,26 +84,35 @@ class AgenteReporteCalificaciones(FormView):
         listado_calificaciones = agente.calificaciones.filter(fecha__range=(
             fecha_desde, fecha_hasta))
         return self.render_to_response(self.get_context_data(
-            listado_calificaciones=listado_calificaciones, agente=agente))
+            listado_calificaciones=listado_calificaciones))
 
     def form_valid(self, form):
         fecha = form.cleaned_data.get('fecha')
         fecha_desde, fecha_hasta = fecha.split('-')
         fecha_desde = convert_fecha_datetime(fecha_desde)
         fecha_hasta = convert_fecha_datetime(fecha_hasta)
+        resultado = form.cleaned_data.get('resultado_auditoria')
         service = ReporteAgenteService()
         service_formulario = ReporteFormularioVentaService()
-        agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
+        agente = self.agente
         # Crear reporte csv para las calficaciones no interesada(no gestion) y gestion
         # de acuerdo al periodo de fecha seleccionado
-        service.crea_reporte_csv(agente, fecha_desde, fecha_hasta)
-        service_formulario.crea_reporte_csv(agente, fecha_desde, fecha_hasta)
+        if not resultado == ReporteForm.TODOS_RESULTADOS:
+            service.crea_reporte_csv(agente, fecha_desde, fecha_hasta)
+            service_formulario.crea_reporte_csv(agente, fecha_desde, fecha_hasta)
+        else:
+            service.crea_reporte_csv(agente, fecha_desde, fecha_hasta, resultado=resultado)
+            service_formulario.crea_reporte_csv(agente, fecha_desde, fecha_hasta,
+                                                resultado=resultado)
         fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         listado_calificaciones = agente.calificaciones.filter(fecha__range=(
             fecha_desde, fecha_hasta))
+        if not resultado == ReporteForm.TODOS_RESULTADOS:
+            listado_calificaciones = listado_calificaciones.filter(
+                auditoriacalificacion__resultado=resultado)
         return self.render_to_response(self.get_context_data(
-            listado_calificaciones=listado_calificaciones, agente=agente))
+            listado_calificaciones=listado_calificaciones))
 
 
 class ExportaReporteFormularioVentaView(UpdateView):

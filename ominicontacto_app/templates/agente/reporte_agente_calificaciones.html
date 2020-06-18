@@ -82,10 +82,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                   <div class="col-md-1">
                     <h2>{% trans 'Buscar' %}</h2>
                   </div>
-                  <div class="col-md-7">
+                  <div class="col-md-4">
                      {{form.fecha}}
                   </div>
+                  <div class="col-md-1">
+                    <h2>{% trans 'Auditoría' %}</h2>
+                  </div>
                   <div class="col-md-4">
+                     {{form.resultado_auditoria}}
+                  </div>
+                  <div class="col-md-2">
                     <button type="submit" id="id_buscar_btn" class="btn btn-primary">
                     {% trans 'Filtrar' %}
                     </button>

@@ -371,7 +371,7 @@ urlpatterns = [
         login_required(
             views_agente.LiberarContactoAsignado.as_view()),
         name="liberar_contacto_asignado_agente"),
-    url(r'^agente/(?P<pk_agente>\d+)/reporte/$',
+    url(r'^agente/reporte/calificaciones/$',
         login_required(
             views_agente.AgenteReporteCalificaciones.as_view()),
         name='reporte_agente_calificaciones',

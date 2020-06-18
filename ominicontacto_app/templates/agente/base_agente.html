@@ -517,7 +517,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </li>
             <li class="main-menu-li">
                 <span class="icon icon-ratings"></span>
-                <a class="menu-link" href="{% url 'reporte_agente_calificaciones' agente_profile.pk %}" target="crm">{% trans 'Calificaciones' %}</a>
+                <a class="menu-link" href="{% url 'reporte_agente_calificaciones' %}" target="crm">{% trans 'Calificaciones' %}</a>
             </li>
             {% if campanas_preview_activas %}
             <li class="main-menu-li">
@@ -558,7 +558,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </li>
 
             <li>
-                <a href="{% url 'reporte_agente_calificaciones' agente_profile.pk %}" target="crm">Calificaciones</a>
+                <a href="{% url 'reporte_agente_calificaciones'%}" target="crm">Calificaciones</a>
             </li>
 
             {% if campanas_preview_activas %}
