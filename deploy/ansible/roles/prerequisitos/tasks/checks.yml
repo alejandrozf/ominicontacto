@@ -292,7 +292,7 @@
   tags: always
 
 - set_fact: SCA="{{ assert_sca.stdout }}"
-  when: assert_sca.rc == 0
+  when: assert_sca.rc == 0 and SCA is not defined
   tags: always
 
 - name: Check if $EPHEMERAL_USER_TTL was defined previously
@@ -305,7 +305,7 @@
   tags: always
 
 - set_fact: ECCTL="{{ assert_ecctl.stdout }}"
-  when: assert_ecctl.rc == 0
+  when: assert_ecctl.rc == 0 and ECCTL is not defined
   tags: always
 
 - name: Check if $EXTERNAL_URL was defined previously
@@ -318,7 +318,7 @@
   tags: always
 
 - set_fact: external_hostname="{{ assert_externalurl.stdout }}"
-  when: assert_externalurl.rc == 0
+  when: assert_externalurl.rc == 0 and external_hostname is not defined
   tags: always
 
 - name: Check if $EXTERNAL_PORT was defined previously
@@ -331,7 +331,7 @@
   tags: always
 
 - set_fact: external_port="{{ assert_externalport.stdout }}"
-  when: assert_externalport.rc == 0
+  when: assert_externalport.rc == 0 and external_port is not defined
   tags: always
 
 - name: Check if $MONITORFORMAT was defined previously
@@ -344,7 +344,7 @@
   tags: always
 
 - set_fact: MONITORFORMAT="{{ assert_monitorformat.stdout }}"
-  when: assert_monitorformat.rc == 0
+  when: assert_monitorformat.rc == 0 and MONITORFORMAT is not defined
   tags: always
 
 - name: Get mysql root password of Issabel
