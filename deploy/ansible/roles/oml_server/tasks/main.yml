@@ -27,6 +27,11 @@
   when: virtualenv_installed.stdout == virtualenv_version
   tags: ['virtualenv','postinstall']
 
+# Esta tarea es para pasar los datos de constance de redis a postgres
+- name: Dump information of constance database
+  shell: "{{ install_prefix }}bin/manage.sh constance list > {{ install_prefix }}bin/constances_values.txt"
+  tags: ['never', 'postinstall']
+
 # Esta tarea es para eliminar virtualenv de python2.7 y no generar inconsistencia de binarios
 - name: Erase virtualenv if exists
   file: path={{ install_prefix }}virtualenv state=absent

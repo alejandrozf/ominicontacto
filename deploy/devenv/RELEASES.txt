@@ -25,6 +25,8 @@ Omniapp:
   - Fork of pyst2 library to fix bug in AMI connection: https://github.com/rdegges/pyst2/pull/51
 1.2.6
   - Included package django-import-export
+1.2.7
+  - Included packages django-constance[database] and django-picklefield
 
 Asterisk:
 
