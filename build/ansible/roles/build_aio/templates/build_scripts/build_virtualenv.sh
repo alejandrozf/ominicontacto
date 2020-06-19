@@ -51,7 +51,8 @@ cd /vagrant/build/rpms
 if [[ $BRANCH == *"release"* ]]; then
   BRANCH=$(echo $BRANCH|awk -F '-' '{print $2}')
 elif [[ $BRANCH == *"oml-"* ]]; then
-  BRANCH=$(echo $BRANCH|awk -F '-' '{print $1 $2}')
+  BRANCH=$(echo $BRANCH|awk -F '-' '{print $2}')
+  BRANCH=$(echo ${BRANCH:0:2}.${BRANCH})
 fi
 fpm -s dir -t rpm -n virtualenv -v $BRANCH {{ virtualenv_location}} /etc/systemd/system/omnileads.service || true
 echo "Uploading rpm to public server"

@@ -220,13 +220,16 @@ OML_PLAYLIST_FOLDER = 'moh/'
 DURACION_ASIGNACION_CONTACTO_PREVIEW = 30
 
 CONSTANCE_CONFIG = {
-    'CLIENT_NAME': ('', 'Nombre usuario'),
-    'CLIENT_PASSWORD': ('', 'Contraseña usuario'),
-    'CLIENT_KEY': ('', 'Llave para acceder a addons'),
-    'CLIENT_EMAIL': ('', 'Dirección de email'),
-    'CLIENT_PHONE': ('', 'Teléfono'),
-    'KEYS_SERVER_HOST': ('', 'Dirección url base para acceder a los addons'),
+    'KEYS_SERVER_HOST': ('https://keys-server.freetech.com.ar:20852', 'KEYS_SERVER_HOST', str),
+    'SSL_CERT_FILE': ('/opt/omnileads/cert', 'SSL_CERT_FILE', str),
+    'CLIENT_NAME': ('', 'CLIENT_NAME', str),
+    'CLIENT_KEY': ('', 'CLIENT_KEY', str),
+    'CLIENT_PASSWORD': ('', 'CLIENT_PASSWORD', str),
+    'CLIENT_EMAIL': ('', 'CLIENT_EMAIL', str),
+    'CLIENT_PHONE': ('', 'CLIENT_PHONE', str),
+    'CLIENT_PHONE': ('', 'CLIENT_PHONE', str),
     'WEBPHONE_CLIENT_ENABLED': (False, 'WEBPHONE_CLIENT_ENABLED', bool),
+    'WEBPHONE_CLIENT_TTL': (1200, 'WEBPHONE_CLIENT_TTL', int),
 }
 
 MIDDLEWARE_PREPPEND = []
@@ -258,3 +261,5 @@ class DisableMigrations(object):
         return None
 
 # MIGRATION_MODULES = DisableMigrations()
+
+INSTALL_PREFIX = os.getenv('INSTALL_PREFIX')

@@ -8,13 +8,14 @@ cssselect==1.0.1
 decorator==4.0.10
 Django==2.2.7
 django-compressor==2.2
-django-constance==2.3.1
+django-constance[database]==2.3.1
 django-cors-headers==2.4.0
 django-crispy-forms==1.8.1
 django-defender==0.6.2
 django-formtools==2.1
 django-import-export==2.0.2
 django-js-reverse==0.8.2
+django-picklefield==2.1.1
 django-simple-history==2.7.3
 django-widget-tweaks==1.4.1
 djangorestframework==3.10.3
