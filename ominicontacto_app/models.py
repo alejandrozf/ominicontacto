@@ -2938,6 +2938,18 @@ class AuditoriaCalificacion(models.Model):
         "Determina si un valor corresponde a una auditoria aun pendiente"
         return valor_resultado not in [cls.APROBADA, cls.RECHAZADA, cls.OBSERVADA]
 
+    @property
+    def es_aprobada(self):
+        return self.resultado == self.APROBADA
+
+    @property
+    def es_rechazada(self):
+        return self.resultado == self.RECHAZADA
+
+    @property
+    def es_observada(self):
+        return self.resultado == self.OBSERVADA
+
     def __str__(self):
         return str(_("Auditoría de calificacion con id={0} fue {1}".format(
             self.calificacion.pk, self.get_resultado_display())))

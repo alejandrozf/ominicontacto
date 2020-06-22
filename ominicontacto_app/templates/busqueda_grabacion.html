@@ -81,11 +81,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                       {% endif %}
                       {% with auditoria=calificacion.instance.obtener_auditoria %}
                         {% if auditoria %}
-                          {% if auditoria.get_resultado_display == 'Aprobada' %}
+                          {% if auditoria.es_aprobada %}
                               <button class="btn aprobada" type="button" data-toggle="modal" data-target="#mostrarAuditoria{{ forloop.counter }}" id="mostrar_info">
-                          {% elif auditoria.get_resultado_display == 'Rechazada' %}
+                          {% elif auditoria.es_rechazada %}
                               <button class="btn rechazada" type="button" data-toggle="modal" data-target="#mostrarAuditoria{{ forloop.counter }}" id="mostrar_info">
-                          {% elif auditoria.get_resultado_display == 'Observada' %}
+                          {% elif auditoria.es_observada %}
                             <button class="btn observada" type="button" data-toggle="modal" data-target="#mostrarAuditoria{{ forloop.counter }}" id="mostrar_info">
                           {% else %}
                             <button class="btn" type="button" data-toggle="modal" data-target="#mostrarAuditoria{{ forloop.counter }}" id="mostrar_info">
