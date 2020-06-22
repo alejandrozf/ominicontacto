@@ -66,7 +66,7 @@ docker-prodenv-build-push:
   script:
     - bash /home/ftsinfra/git_cleanup.sh
     - cd /home/ftsinfra/ominicontacto/deploy/vagrant
-    - python edit_inventory.py --docker_build=yes -tag=$CI_COMMIT_REF_NAME -dlu=$DOCKER_LOGIN_USER -dle=$DOCKER_LOGIN_EMAIL -dlp=$DOCKER_LOGIN_PASSWORD
+    - python edit_inventory.py --docker_build=yes -dle=$DOCKER_LOGIN_EMAIL -dlp=$DOCKER_LOGIN_PASSWORD
     - cd /home/ftsinfra/ominicontacto/deploy/ansible
     - echo "$FTSINFRA_PASS" | sudo -S ./deploy.sh --docker-build
   tags:

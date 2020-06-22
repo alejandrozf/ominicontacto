@@ -150,8 +150,7 @@ if args.docker_deploy == "yes":
             args.internal_ip, args.remote_port)))
     sys.exit()
 
-if args.docker_login_user and args.docker_login_email and args.docker_login_password \
-   and args.tag_docker_images and args.docker_build == "yes":
+if args.docker_login_email and args.docker_login_password and args.docker_build == "yes":
     # editamos las líneas del inventory que indican que se va hacer un build
     # de imágenes de producción de los componentes del sistema
     # 1) modificando inventory
@@ -160,9 +159,6 @@ if args.docker_login_user and args.docker_login_email and args.docker_login_pass
         "[prodenv-container]\nlocalhost ansible_connection=local")
     inventory_contents = inventory_contents.replace(
         "docker_user='{{ lookup(\"env\",\"SUDO_USER\") }}'", "docker_user='root'")
-    inventory_contents = inventory_contents.replace(
-        "registry_username=freetechsolutions", "registry_username={0}".format(
-            args.docker_login_user))
     inventory_contents = inventory_contents.replace(
         "#registry_email=", "registry_email={0}".format(args.docker_login_email))
     inventory_contents = inventory_contents.replace(
