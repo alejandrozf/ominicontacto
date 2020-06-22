@@ -33,7 +33,7 @@ from rest_framework.views import APIView
 
 from api_app.views.permissions import TienePermisoOML
 from api_app.serializers import (CampanaSerializer, )
-from ominicontacto_app.models import (Campana, CalificacionCliente, )
+from ominicontacto_app.models import (Campana, CalificacionCliente, AgenteProfile, Grupo)
 from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorActivityAmiManager
 from reportes_app.reportes.reporte_llamadas_supervision import (
     ReporteDeLLamadasEntrantesDeSupervision, ReporteDeLLamadasSalientesDeSupervision
@@ -73,13 +73,35 @@ class AgentesStatusAPIView(APIView):
             'queue_campana__members__pk', flat=True).distinct())
         return ids_agentes
 
+    def _obtener_grupo_activos(self, id_agente):
+        id_grupo_activos = AgenteProfile.objects.filter(id__in=[id_agente]).values_list(
+            'grupo_id', flat=True).distinct()
+        grupo_activo = Grupo.objects.filter(id__in=id_grupo_activos).values_list(
+            'nombre', flat=True).get()
+        return grupo_activo
+
+    def _obtener_campana_activa(self, request, id_agente):
+        campana_activas = []
+        supervisor_profile = request.user.get_supervisor_profile()
+        campanas_asignadas_actuales = supervisor_profile.campanas_asignadas_actuales()
+        for campana in campanas_asignadas_actuales:
+            campana_member_id = campana.queue_campana.queuemember.values_list(
+                'member_id', flat=True)
+            if id_agente in campana_member_id:
+                campana_activas.append(campana.nombre)
+        return campana_activas
+
     def get(self, request):
         online = []
         ids_agentes_propios = self._obtener_ids_agentes_propios(request)
         for data_agente in self.agentes_parseados._obtener_agentes_activos():
             id_agente = int(data_agente.get('id', -1))
             status_agente = data_agente.get('status', '')
+            grupo_activo = self._obtener_grupo_activos(id_agente)
+            campanas_activas = self._obtener_campana_activa(request, id_agente)
             if status_agente != 'OFFLINE' and id_agente in ids_agentes_propios:
+                data_agente['grupo'] = grupo_activo
+                data_agente['campana'] = campanas_activas
                 online.append(data_agente)
         return Response(data=online)
 

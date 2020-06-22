@@ -67,11 +67,30 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
     <div class="container py-3">
         <div class="row" id="timebar">
-            <div class="col col-xs-9 col-md-9 col-lg-9">
+            <div class="col col-xs-4 col-md-4 col-lg-4">
                 <div id="CallStatus"></div>
                 <div id="SipStatus"></div>
             </div>
-            <div class="col col-xs-3 col-md-3 col-lg-3">
+            <div class="col col-xs-3 col-md-3 col-lg-3 filter_group">
+                <div class="col-md-5"><label>{% trans 'Filtrar grupo' %}</label></div>
+                <div class="col-md-7"><select class="form-control" id="filter_group">
+                    <option value="" selected="selected" label="------------"></option>
+                    {%for nombre_grupo in grupo%}
+
+                    <option value="{{nombre_grupo}}">{{nombre_grupo}}</option>
+                    {% endfor %}
+                </select></div>
+            </div>
+            <div class="col col-xs-3 col-md-3 col-lg-3 filter_group">
+                <div class="col-md-5"><label>{% trans 'Filtrar Campaña' %}</label></div>
+                <div class="col-md-7"><select class="form-control" id="filter_campana">
+                    <option value="" selected="selected" label="------------"></option>
+                    {%for campana in campanas%}
+                    <option value="{{campana}}">{{campana}}</option>
+                    {% endfor %}
+                </select></div>
+            </div>    
+            <div class="col col-xs-2 col-md-2 col-lg-2">
                 <button class="btn btn-danger" id="endCall" type="button" placeholder='finalizar' >
                 {% trans "Finalizar" %}
                 </button>
@@ -83,6 +102,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <thead>
             <tr>
                 <th>{% trans 'Nombre' %}</th>
+                <th type="hidden"></th>
+                <th type="hidden"></th>
                 <th>{% trans 'Status' %}</th>
                 <th>{% trans 'Tiempo' %}</th>
                 <th>{% trans 'Acciones' %}</th>
