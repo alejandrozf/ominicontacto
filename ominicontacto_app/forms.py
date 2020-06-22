@@ -852,8 +852,12 @@ class ReporteForm(forms.Form):
     """
     El form para reporte con fecha
     """
+    TODOS_RESULTADOS = '-1'
     fecha = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control'}))
+    resultado_auditoria = forms.ChoiceField(
+        label=_('Auditoria'), widget=forms.Select(attrs={'class': 'form-control'}),
+        choices=((TODOS_RESULTADOS, _('Todas')), ) + AuditoriaCalificacion.RESULTADO_CHOICES)
 
 
 class FormularioForm(forms.ModelForm):
