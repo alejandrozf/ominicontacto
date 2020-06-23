@@ -29,7 +29,8 @@ from ominicontacto_app import (
     views_agenda_contacto, views_campana_dialer_creacion, views_campana_dialer,
     views_back_list, views_sitio_externo, views_queue_member,
     views_campana_dialer_template, views_campana_manual_creacion, views_campana_manual,
-    views_campana_preview, views_archivo_de_audio, views_user_profiles, views_sistema_externo
+    views_campana_preview, views_archivo_de_audio, views_user_profiles, views_sistema_externo,
+    views_auditorias
 )
 
 from ominicontacto_app.views_utils import (
@@ -186,6 +187,19 @@ urlpatterns = [
         login_required(views_grabacion.BusquedaGrabacionAgenteFormView.as_view()),
         name='grabacion_agente_buscar',
         ),
+
+
+    # ==========================================================================
+    # Auditorías (Backoffice)
+    # ==========================================================================
+    url(r'^auditar_gestion/buscar/(?P<pagina>\d+)/$',
+        login_required(
+            views_auditorias.AuditarCalificacionesFormView.as_view()),
+        name='buscar_auditorias_gestion',),
+    url(r'^auditar_gestion/editar/(?P<pk_calificacion>\d+)/$',
+        login_required(views_auditorias.AuditoriaCalificacionFormView.as_view()),
+        name='auditar_calificacion_cliente'),
+
 
     # ==========================================================================
     # Servicios para phoneJS
@@ -357,7 +371,7 @@ urlpatterns = [
         login_required(
             views_agente.LiberarContactoAsignado.as_view()),
         name="liberar_contacto_asignado_agente"),
-    url(r'^agente/(?P<pk_agente>\d+)/reporte/$',
+    url(r'^agente/reporte/calificaciones/$',
         login_required(
             views_agente.AgenteReporteCalificaciones.as_view()),
         name='reporte_agente_calificaciones',
@@ -895,7 +909,6 @@ urlpatterns = [
             views_archivo_de_audio.ArchivoAudioDeleteView.as_view()),
         name='eliminar_archivo_audio',
         ),
-
 
     # ######################
     # DEPRECATED ?

@@ -7,15 +7,36 @@ ANSIBLE=`which ansible`
 TMP_ANSIBLE='/var/tmp/ansible'
 ANSIBLE_VERSION_DESIRED='2.9.2'
 ANSIBLE_VERSION_INSTALLED="`~/.local/bin/ansible --version |head -1| awk -F ' ' '{print $2}'`"
-REPO_LOCATION="`git rev-parse --show-toplevel`"
 USER_HOME=$(eval echo ~${SUDO_USER})
 export ANSIBLE_CONFIG=$TMP_ANSIBLE
 arg1=$1
 
+UserValidation(){
+  echo -e "\n"
+  echo "###############################################################"
+  echo "##          Welcome to omnileads deployment script           ##"
+  echo "###############################################################"
+  echo ""
+  whoami="`whoami`"
+  if [ "$whoami" == "root" ]; then
+    echo "You have the permise to run the script, continue"
+  else
+    echo "You need to be root or have sudo permission to run this script, exiting"
+    exit 1
+  fi
+}
+
 AnsibleInstall() {
-  echo "Installing python-pip and epel-release"
-  yum install epel-release -y
-  yum install python-pip -y
+  os=`awk -F= '/^NAME/{print $2}' /etc/os-release`
+  if [ "$os" == '"CentOS Linux"' ]; then
+    echo "Installing python-pip and epel-release"
+    yum install epel-release -y
+    sleep 5
+    yum install git python-pip -y
+  elif [ "$os" == '"Ubuntu"' ] || [ "$os" == '"Debian GNU/Linux"' ]; then
+    echo "Installing python-pip"
+    apt-get install git python-minimal python-pip -y
+  fi
   PIP=`which pip`
   echo "Detecting if Ansible $ANSIBLE_VERSION_DESIRED is installed"
   if [ -z "$ANSIBLE" ] || [ "$ANSIBLE_VERSION_INSTALLED" != "$ANSIBLE_VERSION_DESIRED" ]; then
@@ -42,6 +63,10 @@ AnsibleInstall() {
   echo "Creating the installation process log file"
   mkdir -p /var/tmp/log
   touch /var/tmp/log/oml_install
+}
+
+OmlRelease() {
+  REPO_LOCATION="`git rev-parse --show-toplevel`"
   current_tag="`git tag -l --points-at HEAD`"
   release_name=$(git show ${current_tag} |grep "Merge branch" |awk -F " " '{print $3}' |tr -d "'")
   branch_name="`git branch | grep \* | cut -d ' ' -f2`"
@@ -49,6 +74,32 @@ AnsibleInstall() {
   if [ -z "$current_tag" ]
   then
       release_name=$branch_name
+  fi
+}
+
+TagCheck() {
+  if [ "$arg1" == "--docker-pe-build" ]; then
+    tag="docker_build"
+    DEVENV=0
+    PRODENV=1
+    BUILD_IMAGES=true
+  elif [ "$arg1" == "--docker-de-build" ]; then
+    tag="docker_build"
+    DEVENV=1
+    PRODENV=0
+    BUILD_IMAGES=true
+  elif [ "$arg1" == "--docker-pe-no-build" ]; then
+    DEVENV=0
+    PRODENV=1
+    tag="docker_build"
+    BUILD_IMAGES=false
+  elif [ "$arg1" == "--docker-de-no-build" ]; then
+    DEVENV=1
+    PRODENV=0
+    tag="docker_build"
+    BUILD_IMAGES=false
+  elif [ "$arg1" == "--aio-build" ]; then
+    tag="aio_build"
   fi
 }
 
@@ -61,7 +112,12 @@ AnsibleExec() {
     echo "Beginning the Omnileads installation with Ansible, this installation process can last between 30-40 minutes"
     echo ""
     ${ANSIBLE}-playbook $verbose $TMP_ANSIBLE/build.yml \
-      --extra-vars "oml_release=$release_name" \
+      --extra-vars "oml_release=$release_name \
+                    docker_root=$USER_HOME \
+                    repo_location=$REPO_LOCATION \
+                    docker_root=$USER_HOME \
+                    build_images=$BUILD_IMAGES" \
+      --extra-vars "{\"devenv\":$DEVENV,\"prodenv\":$PRODENV }" \
       -i $TMP_ANSIBLE/inventory
     ResultadoAnsible=`echo $?`
     if [ $ResultadoAnsible == 0 ];then
@@ -103,5 +159,36 @@ AnsibleExec() {
 echo "Deleting temporal files created"
 rm -rf $TMP_ANSIBLE
 }
-AnsibleInstall
-AnsibleExec
+
+for i in "$@"
+do
+  case $i in
+    --docker-pe-build|--docker-pe-no-build|--docker-de-build|--docker-de-no-build|--aio-build)
+      UserValidation
+      TagCheck
+      AnsibleInstall
+      OmlRelease
+      AnsibleExec
+      shift
+    ;;
+    --help|-h)
+      echo "
+        Omnileads build script
+        How to use it:
+              --aio-build: build AIO rpms
+              --docker-build: build and push Omnileads images to a registry.
+              --docker-no-build: execute build images steps without building and pushing the images.
+            "
+      shift
+      exit 1
+    ;;
+    -v*)
+      verbose=$1
+      shift
+    ;;
+    *)
+      echo "One or more invalid options, use ./build.sh -h or ./build.sh --help"
+      exit 1
+    ;;
+  esac
+done

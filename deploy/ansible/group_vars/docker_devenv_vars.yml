@@ -10,15 +10,12 @@ root_password: toor123
 # Networking settings
 subnet: 172.20.0.0/24
 subnet_name: dev_net
-dialer_ip: 172.20.0.10
-asterisk_ip: 172.20.0.10
-kamailio_ip: 172.20.0.11
-omniapp_ip: 172.20.0.12
 nginx_external_port: 443
 pg_external_port: 4444
 wd_external_port: 4442
 
 # Folder locations
+usuario: "{{ docker_user }}"
 asterisk_location:
 ast_local_location: "{{ deploy_location }}/asterisk"
 ast_agis_location: "{{ ast_local_location }}/agis"

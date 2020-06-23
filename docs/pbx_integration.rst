@@ -21,13 +21,13 @@ Configuración del troncal SIP en la IPPBX
 Seleccionamos la creación de un nuevo troncal SIP y completamos la configuración con los siguientes parámetros:
 
 
-* En caso de tener OMniLeads en un Host y la IPPBX en otro Host.-
+* En caso de tener OMniLeads en un Host y la IPPBX en otro Host dentro de la red LAN.-
 
 .. code-block:: bash
 
  type=friend
  host=XXX.XXX.XXX.OML
- port=5160
+ port=5161
  disallow=all
  allow=alaw
  qualify=yes
@@ -35,6 +35,22 @@ Seleccionamos la creación de un nuevo troncal SIP y completamos la configuraci�
  fromuser=issabel
  defaultuser=issabel
  context=from-internal
+
+* En caso de tener OMniLeads en la Nube y la IPPBX en otro Host dentro de la red LAN.-
+
+.. code-block:: bash
+
+ type=friend
+ host=XXX.XXX.XXX.OML
+ port=5162
+ disallow=all
+ allow=alaw
+ qualify=yes
+ secret=omnileads
+ fromuser=issabel
+ defaultuser=issabel
+ context=from-internal
+
 
 * En caso de ejecutar OMniLeads con Docker dentro de sistema operativo base de la IPPBX.-
 
@@ -52,11 +68,8 @@ Seleccionamos la creación de un nuevo troncal SIP y completamos la configuraci�
  context=from-internal
 
 
-Observar que lo único que cambia entre ambas posibilidades es el parámetro **port**, entre 5160 (OMniLeads en un host aparte) y 5163 (OmniLeads dockerizado sobre el mismo host de la IPPBX) y además
-el parámetro **host** el cual posee el valor de la IP LAN de la IPPBX.
-
-
-Una vez disponible nuestro troncal SIP, pasamos a comprobar accesibilidad utilizando el CLI de Asterisk de la IPPBX.
+Observar que lo único que cambia entre las diferentes posibilidades es el parámetro **port**. Esto está relacionado con el hecho de que en OML se utiliza un puerto SIP
+para cada tipo de escenario: LAN, NAT cloud o Docker.
 
 
  .. image:: images/telephony_pjsip_LAN_pbx_issabel_trunk.png
@@ -65,13 +78,14 @@ Una vez disponible nuestro troncal SIP, pasamos a comprobar accesibilidad utiliz
 .. image:: images/telephony_pjsip_LAN_pbx_issabel_trunk2.png
       :align: center
 
+Una vez disponible nuestro troncal SIP, pasamos a comprobar accesibilidad utilizando el CLI de Asterisk de la IPPBX.
 Estrablecemos una sesión bash dentro del host donde se ejecuta Issabel-PBX y lanzamos el comando:
 
 .. code-block:: bash
 
   asterisk -rx 'sip show peers'
 
-Si todo va bien, deberíamos observar OK en la linea de salida correspondiente al nuevo troncal SIP, ya sea con el puerto 5160 o 5163.
+Si todo va bien, deberíamos observar OK en la linea de salida correspondiente al nuevo troncal SIP, ya sea con el puerto 5161, 5162 o 5163.
 
 .. image:: images/telephony_pjsip_LAN_pbx_issabel_trunk3.png
       :align: center
@@ -82,7 +96,7 @@ Configuración del troncal SIP en OMniLeads
 
 Una vez generado el troncal SIP del lado de la IP-PBX, se procede con la generación de la contraparte correspondiente en OMniLeads.
 
-* En caso de tener OMniLeads en un Host y la IPPBX en otro Host, utilizamos la plantilla PBX Omnileads (LAN).-
+* En caso de tener OMniLeads en un Host y la IPPBX en otro Host, utilizamos el siguiente bloque de configuración (plantilla PBX LAN).-
 
 .. code-block:: bash
 
@@ -107,8 +121,33 @@ Una vez generado el troncal SIP del lado de la IP-PBX, se procede con la generac
  outbound_auth/password=issabelOML
  endpoint/from_user=omnileads
 
+* En caso de tener OMniLeads en un Host Cloud y la IPPBX en otro Host,  utilizamos el siguiente bloque de configuración (plantilla PBX WAN).-
 
-* En caso de ejecutar OMniLeads con Docker dentro de sistema operativo base de la IPPBX, utilizamos la plantilla Omnileads inside PBX.-
+.. code-block:: bash
+
+ type=wizard
+ transport=trunk-nat-transport
+ accepts_registrations=no
+ sends_auth=yes
+ sends_registrations=no
+ accepts_auth=yes
+ endpoint/rtp_symmetric=yes
+ endpoint/force_rport=yes
+ endpoint/rewrite_contact=no
+ endpoint/timers=yes
+ aor/qualify_frequency=60
+ endpoint/allow=alaw,ulaw
+ endpoint/dtmf_mode=rfc4733
+ endpoint/context=from-pbx
+ remote_hosts=XXX.XXX.XXX.PBX:5060
+ inbound_auth/username=issabel
+ inbound_auth/password=issabelOML
+ outbound_auth/username=omnileads
+ outbound_auth/password=issabelOML
+ endpoint/from_user=omnileads
+
+
+* En caso de ejecutar OMniLeads con Docker dentro de sistema operativo base de la IPPBX,  utilizamos el siguiente bloque de configuración (plantilla Docker).-
 
 .. code-block:: bash
 
@@ -118,7 +157,7 @@ Una vez generado el troncal SIP del lado de la IP-PBX, se procede con la generac
  sends_auth=yes
  sends_registrations=no
  accepts_auth=yes
- endpoint/rtp_symmetric=no
+ endpoint/rtp_symmetric=yes
  endpoint/force_rport=yes
  endpoint/rewrite_contact=yes
  endpoint/timers=yes
@@ -126,6 +165,7 @@ Una vez generado el troncal SIP del lado de la IP-PBX, se procede con la generac
  endpoint/allow=alaw,ulaw
  endpoint/dtmf_mode=rfc4733
  endpoint/context=from-pbx
+ endpoint/rtp_symmetric=yes
  remote_hosts=XXX.XXX.XXX.PBX:5060
  inbound_auth/username=issabel
  inbound_auth/password=issabelOML
@@ -203,17 +243,26 @@ Como mención final, está claro que podremos tener en la IPPBX tantas custom ex
 Llamadas hacia agentes de OMniLeads
 ************************************
 
-Para el caso de vincular un Agente de OMniLeads en la IPPBX (es decir que desde una extensión se pueda marcar el número de una *custom extension* y ésta termine enlazando en una llamada
-a un agente de OMniLeads), el número a enviar en la cadena de Dial de la custom extension estará conformado ya no por un DID de ruta entrante de OMniLeads, sino que será una combinación
-del ID del agente y su número SIP.
-
-Vayamos al grano con esto:
+Partiendo de la figura (listado de agentes), tomemos al agente *Adrian Belew*. Observar que su ID es igual a 1 y su número SIP es 1006. Por lo tanto a la hora de conformar un llamado
+hacia el webphone de dicho agente, se debe *discar* un número conformado por: el *Número SIP* con su *ID de agente*; en nuestro ejemplo sería **10061** para el agente *Adrian Belew* y **10072** para el agente *Mikael Ackerfeldt*.
 
 .. image:: images/pbx_integration_agents_oml.png
       :align: center
 
-Partiendo de la figura, tomemos al agente *Adrian Belew*. Observar que su ID es igual a 1 y su número SIP es 1006. Por lo tanto a la hora de conformar entonces el número a enviar en la cadena
-Dial de la custom extension de la IPPBX debemos concatenar el *Número SIP* con su *ID de agente*; en nuestro ejemplo sería **10061** para el agente *Adrian Belew* y **10072** para el agente *Mikael Ackerfeldt*.
+
+Ahora bien, a la hora de generar la configuración en el PBX para poder enviar llamadas a los agentes, tenemos dos alternativas:
+
+1 - Utilizar una ruta saliente desde el PBX hacia OMniLeads como indicamos en la siguiente figura:
+
+.. image:: images/pbx_integration_agents_oml_outr.png
+      :align: center
+
+En este caso cualquier extensión de la PBX podrá generar una llamada hacia un agente marcando la combinación citada en el párrafo anterior.
+
+2 - Generar una *custom extensions* por cada agente de OML, osea que la cadena de *Dial* de la custom extension estará conformado ya no por un DID de ruta entrante de OMniLeads como
+fue en el caso de vincular con rutas entrantes, sino que será una combinación del *ID del agente* y su *número SIP*.
+
+Como lo indica la figura:
 
 .. image:: images/pbx_integration_exten_to_agent.png
       :align: center
@@ -225,7 +274,9 @@ En la figura remarcamos tres elementos:
 (3) - El número a enviar por el trunk tiene que coincidir con la concatenación del ID de agente y su número SIP (10061 para nuestro ejemplo).
 
 Se deberá repetir el procedimiento para cada agente que haya que vincular dentro de la IPPBX.
+De esta manera el integrador de la PBX podrá utilizar para las extensiones una numeración flexible.
 
+Cualquiera de las dos alternativas son viables y obtendrán el resultado deseado.
 
 Llamadas desde OMniLeads hacia la PSTN y recursos de la IPPBX
 ***************************************************************

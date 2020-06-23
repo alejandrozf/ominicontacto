@@ -92,7 +92,8 @@ class EstadisticasAgenteService():
             agente=agente, opcion_calificacion__campana=campana, fecha__range=(
                 fecha_desde, fecha_hasta))
         calificaciones_agrupadas_qs = calificaciones_query.values(
-            'opcion_calificacion__nombre').annotate(cantidad=Count('opcion_calificacion__nombre'))
+            'opcion_calificacion__nombre').annotate(
+                cantidad=Count('opcion_calificacion__nombre')).order_by()
         calificaciones_nombre = []
         calificaciones_cantidad = []
         total_calificados = 0

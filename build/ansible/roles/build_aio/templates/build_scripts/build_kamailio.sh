@@ -1,7 +1,6 @@
 #!/bin/bash
 PROGNAME=$(basename $0)
 PATH=$PATH:/usr/local/bin
-
 KAMAILIO_VERSION_INSTALLED=$({{ kamailio_location }}/sbin/kamailio -v |head -1 |awk -F " " '{print $3}')
 KAMAILIO_VERSION={{ kamailio_version }}
 SSH_OPTIONS="-o stricthostkeychecking=no -o ConnectTimeout=10"
@@ -55,10 +54,9 @@ if [ "$KAMAILIO_VERSION_INSTALLED" != "$KAMAILIO_VERSION" ]; then
   make install
 
   rm -rf /usr/src/kamailio
-
-  echo "Building kamailio rpm"
-  cd /root/oml_build/rpms
-  fpm -s dir -t rpm -n kamailio -v {{ kamailio_version }} {{ kamailio_location}} /etc/systemd/system/kamailio.service || true
-  echo "Uploading rpm to public server"
-  scp $SSH_OPTIONS -P 40404 -i /vagrant/vps_key.pem kamailio-{{ kamailio_version }}* root@www.freetech.com.ar:/var/www/html/omnileads/build
 fi
+echo "Building kamailio rpm"
+cd /vagrant/build/rpms
+fpm -s dir -t rpm -n kamailio -v {{ kamailio_version }} {{ kamailio_location}} /etc/systemd/system/kamailio.service || true
+echo "Uploading rpm to public server"
+scp $SSH_OPTIONS -P 40404 -i /vagrant/vps_key.pem kamailio-{{ kamailio_version }}* root@www.freetech.com.ar:/var/www/html/omnileads/build

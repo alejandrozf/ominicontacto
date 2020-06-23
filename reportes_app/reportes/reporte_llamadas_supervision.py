@@ -64,7 +64,7 @@ class ReporteDeLlamadasDeSupervision(object):
             opcion_calificacion__campana_id__in=self.campanas.keys(),
             opcion_calificacion__tipo=OpcionCalificacion.GESTION
         ).values('opcion_calificacion__campana_id').annotate(
-            cantidad=Count('opcion_calificacion__campana_id'))
+            cantidad=Count('opcion_calificacion__campana_id')).order_by()
 
         for cantidad in calificaciones:
             campana_id = cantidad['opcion_calificacion__campana_id']

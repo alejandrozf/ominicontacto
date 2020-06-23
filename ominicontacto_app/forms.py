@@ -42,7 +42,8 @@ from ominicontacto_app.models import (
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
     SistemaExterno, ReglasIncidencia, SupervisorProfile, ArchivoDeAudio,
-    NombreCalificacion, OpcionCalificacion, ParametrosCrm, AgenteEnSistemaExterno
+    NombreCalificacion, OpcionCalificacion, ParametrosCrm, AgenteEnSistemaExterno,
+    AuditoriaCalificacion
 )
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
@@ -467,6 +468,64 @@ class GrabacionBusquedaSupervisorForm(GrabacionBusquedaForm):
                    'agente', 'campana', 'pagina', 'marcadas', 'duracion', 'gestion']
 
 
+class AuditoriaBusquedaForm(forms.Form):
+    """Formulario para los aplicar los filtros al buscar calificaciones para auditar
+    """
+
+    AUDITORIA_PENDIENTE = 3
+    AUDITORIA_PENDIENTE_CHOICE = (AUDITORIA_PENDIENTE, _('Pendiente'))
+
+    fecha = forms.CharField(required=False,
+                            widget=forms.TextInput(attrs={'class': 'form-control'}),
+                            label=_('Fecha'))
+    agente = forms.ModelChoiceField(queryset=AgenteProfile.objects.none(),
+                                    required=False, label=_('Agente'))
+    campana = forms.ChoiceField(
+        required=False, choices=(), label=_('Campaña'),
+        widget=forms.Select(attrs={'class': 'form-control'}))
+    grupo_agente = forms.ChoiceField(
+        required=False, choices=(), label=_('Grupo de agentes'),
+        widget=forms.Select(attrs={'class': 'form-control'}))
+    id_contacto = forms.CharField(required=False, label=_('Id del contacto'),
+                                  widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    telefono = forms.CharField(required=False, label=_('Teléfono Cliente'),
+                               widget=forms.TextInput(attrs={'class': 'form-control'}))
+    callid = forms.CharField(required=False, label=_('Call ID'),
+                             widget=forms.TextInput(attrs={'class': 'form-control'}))
+    status_auditoria = forms.ChoiceField(
+        required=False, choices=(), label=_('Status de auditoría'),
+        widget=forms.Select(attrs={'class': 'form-control'}))
+
+    def __init__(self, *args, **kwargs):
+        supervisor = kwargs.pop('supervisor')
+        super(AuditoriaBusquedaForm, self).__init__(*args, **kwargs)
+        # generamos las choices para el filtro de campaña
+        campanas = supervisor.campanas_asignadas_actuales().values('pk', 'nombre')
+        campanas_ids = [campana['pk'] for campana in campanas]
+        campana_choices = [(campana['pk'], campana['nombre'])
+                           for campana in campanas]
+        campana_choices.insert(0, EMPTY_CHOICE)
+        self.fields['campana'].choices = campana_choices
+        # generamos las choices para la lista de agentes
+        agentes = AgenteProfile.objects.filter(queue__campana__in=campanas_ids).distinct(
+        ).select_related('user', 'grupo')
+        self.fields['agente'].queryset = agentes
+        # generamos las choices para el filtro de grupo de agentes
+        grupo_choices = list(set([(agente.grupo.pk, agente.grupo.nombre) for agente in agentes]))
+        grupo_choices.insert(0, EMPTY_CHOICE)
+        self.fields['grupo_agente'].choices = grupo_choices
+        # generamos choices para el filtro por resultado de auditoria
+        status_auditoria_choices = AuditoriaCalificacion.RESULTADO_CHOICES
+        self.fields['status_auditoria'].choices = (EMPTY_CHOICE,) + \
+            (self.AUDITORIA_PENDIENTE_CHOICE,) + status_auditoria_choices
+
+
+class AuditoriaCalificacionForm(forms.ModelForm):
+    class Meta:
+        model = AuditoriaCalificacion
+        fields = ('resultado', 'observaciones')
+
+
 class CampanaMixinForm(object):
     def __init__(self, *args, **kwargs):
         super(CampanaMixinForm, self).__init__(*args, **kwargs)
@@ -793,8 +852,12 @@ class ReporteForm(forms.Form):
     """
     El form para reporte con fecha
     """
+    TODOS_RESULTADOS = '-1'
     fecha = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control'}))
+    resultado_auditoria = forms.ChoiceField(
+        label=_('Auditoria'), widget=forms.Select(attrs={'class': 'form-control'}),
+        choices=((TODOS_RESULTADOS, _('Todas')), ) + AuditoriaCalificacion.RESULTADO_CHOICES)
 
 
 class FormularioForm(forms.ModelForm):

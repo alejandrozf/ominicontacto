@@ -15,16 +15,22 @@ El DevEnv y el ProdEnv
 
 OMniLeads provee de un entorno de desarrollo (DevEnv) para programadores Django que quieran involucrarse en  el proyecto, nosotros nos encargamos del mantenimiento de estas imágenes y competen los 9 servicios que componen el sistema.
 Este entorno es el ideal para desarrollar cambios en el código y tener en tiempo real el cambio, sin necesidad de reiniciar containers.
-A su vez, el ProdEnv es el entorno ideal para ambientes productivos, usando imágenes de 5 servicios (todos menos mysql, postgresql y rtpengine). 
+A su vez, el ProdEnv es el entorno ideal para ambientes productivos, usando imágenes de 5 servicios (todos menos mysql, postgresql y rtpengine).
 
-Build de imágenes 
+Build de imágenes
 ******************
 
 Para buildear imágenes seguir los siguientes pasos:
 
-1. Especificar en el archivo de inventario de ansible que entorno se desea. Descomentar la linea que dice #localhost dependiendo del entorno.
+1. Instalar el paquete docker-py
 
-  .. code-block:: bash
+.. code-block:: bash
+
+  sudo pip install docker-py
+
+2. Especificar en el archivo de inventario de ansible que entorno se desea. Descomentar la linea que dice #localhost dependiendo del entorno.
+
+.. code-block:: bash
 
     # If you are installing a devenv (PE) uncomment
     [prodenv-container]
@@ -33,7 +39,7 @@ Para buildear imágenes seguir los siguientes pasos:
     [devenv-container]
     #localhost ansible_connection=local
 
-2. En el mismo archivo observar la seccion [docker:vars], en el verá unas variables sin valor:
+3. En el mismo archivo observar la seccion [docker:vars], en el verá unas variables sin valor:
 
   .. code-block:: bash
 
@@ -46,7 +52,7 @@ Para buildear imágenes seguir los siguientes pasos:
 Ingresar ahí el nombre de usuario, email y contraseña del *Registry* donde quiere subir sus imágenes.
 La variable **oml_release** es usada solo cuando se quiere buildear imagenes para **ProdEnv**. Esta variable va a definir el **Tag** que van a tener las imágenes
 
-3. Por último, ejecutar el script *deploy.sh* de la siguiente forma:
+4. Por último, ejecutar el script *deploy.sh* de la siguiente forma:
 
 .. code-block:: bash
 
@@ -56,8 +62,8 @@ La variable **oml_release** es usada solo cuando se quiere buildear imagenes par
 
   Durante la ejecución se realiza de una vez el build y push de las imágenes, por lo que si experimenta algun error a la hora del build debido a problemas de conexion a internet, es recomendable volver a correr el script.
 
-4. Tenemos la opción de crear todo el entorno de build (con todos los archivos necesarios para dicho build renderizados) pero sin que se realice el build/push de las imágenes.
-   De esta forma damos la opción de que el desarrollador estudie mas a fondo los Dockerfile de cada servicio. 
+5. Tenemos la opción de crear todo el entorno de build (con todos los archivos necesarios para dicho build renderizados) pero sin que se realice el build/push de las imágenes.
+   De esta forma damos la opción de que el desarrollador estudie mas a fondo los Dockerfile de cada servicio.
    Ejecutar el script *deploy.sh* de la siguiente forma:
 
 .. code-block:: bash

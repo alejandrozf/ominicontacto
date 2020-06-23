@@ -55,23 +55,25 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'configuracion_telefonia_app',
+    'configuracion_telefonia_app.apps.ConfiguracionTelefoniaAppConfig',
     'crispy_forms',
     'compressor',
     'defender',
     'formtools',
-    'ominicontacto_app',
-    'reciclado_app',
-    'reportes_app',
-    'supervision_app',
+    'ominicontacto_app.apps.OminicontactoAppConfig',
+    'reciclado_app.apps.RecicladoAppConfig',
+    'reportes_app.apps.ReportesAppConfig',
+    'supervision_app.apps.SupervisionAppConfig',
     'simple_history',
     'widget_tweaks',
     'rest_framework',
     'rest_framework.authtoken',
-    'api_app',
+    'api_app.apps.ApiAppConfig',
     'constance',
     'django_js_reverse',
     'import_export',
+    'django_extensions',
+    'constance.backends.database',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -390,3 +392,5 @@ LANGUAGE_CODE = 'es'
 TOKEN_EXPIRED_AFTER_SECONDS = None
 
 ALLOW_FEEDBACK = False
+
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'

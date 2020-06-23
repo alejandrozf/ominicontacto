@@ -116,7 +116,7 @@ class ArchivoDeReporteCsv(object):
 
 class ReporteAgenteService(object):
 
-    def crea_reporte_csv(self, agente, fecha_desde, fecha_hasta):
+    def crea_reporte_csv(self, agente, fecha_desde, fecha_hasta, resultado=None):
         # assert campana.estado == Campana.ESTADO_ACTIVA
 
         archivo_de_reporte = ArchivoDeReporteCsv(agente)
@@ -125,7 +125,8 @@ class ReporteAgenteService(object):
 
         calificaciones = self._obtener_listado_calificaciones_fecha(agente,
                                                                     fecha_desde,
-                                                                    fecha_hasta)
+                                                                    fecha_hasta,
+                                                                    resultado)
 
         archivo_de_reporte.escribir_archivo_csv(calificaciones)
 
@@ -142,8 +143,11 @@ class ReporteAgenteService(object):
         assert os.path.exists(archivo_de_reporte.url_descarga)
 
     def _obtener_listado_calificaciones_fecha(self, agente, fecha_desde,
-                                              fecha_hasta):
+                                              fecha_hasta, resultado):
         fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
-        return agente.calificaciones.filter(fecha__range=(fecha_desde,
-                                                          fecha_hasta))
+        calificaciones = agente.calificaciones.filter(fecha__range=(fecha_desde,
+                                                                    fecha_hasta))
+        if resultado:
+            return calificaciones.filter(auditoriacalificacion__resultado=resultado)
+        return calificaciones

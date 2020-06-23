@@ -37,6 +37,7 @@ export ANSIBLE_CONFIG=$TMP_ANSIBLE
 arg1=$1
 
 OSValidation(){
+  if [ -z $INTERFACE ]; then INTERFACE=none; fi
   if [ -z $PIP ]; then
     os=`awk -F= '/^NAME/{print $2}' /etc/os-release`
     if [ "$os" == '"CentOS Linux"' ] || [ "$os" == '"Issabel PBX"' ] || [ "$os" == '"Sangoma Linux"' ]; then
@@ -50,8 +51,11 @@ OSValidation(){
       amazon-linux-extras enable epel
       echo "Installing python2-pip"
       yum install python-pip patch libedit-devel libuuid-devel -y
+    elif [ "$os" == '"Ubuntu"' ] || [ "$os" == '"Debian GNU/Linux"' ] && [ "$INTERFACE" == "none" ]; then
+      echo "Installing python-pip"
+      apt-get install python-minimal python-pip -y
     else
-      echo "The OS you are trying to install is not supported to install this software."
+      echo "The OS you are trying to install is not supported to install in this mode."
       exit 1
     fi
   PIP=`which pip`
@@ -88,16 +92,10 @@ TagCheck() {
     tag="dialer"
   elif [ "$arg1" == "--database" ] || [ "$arg1" == "-da" ]; then
     tag="database"
-  elif [ "$arg1" == "--docker-build" ]; then
-    tag="docker_build"
-    BUILD_IMAGES=true
   elif [ "$arg1" == "--docker-deploy" ]; then
     tag="docker_deploy"
   elif [ "$arg1" == "--integration-tests" ]; then
     tag="all,integration-tests"
-  elif [ "$arg1" == "--docker-no-build" ]; then
-    tag="docker_build"
-    BUILD_IMAGES=false
   fi
 }
 
@@ -195,17 +193,38 @@ VersionGeneration() {
   echo -e "OMniLeads version to install
      Branch: $release_name
      Commit: $commit
-     Build date: $build_date"
+     Autor: $author"
+  cat > $TMP_OMINICONTACTO/ominicontacto_app/version.py <<EOF
+
+# -*- coding: utf-8 -*-
+
+##############################
+#### Archivo autogenerado ####
+##############################
+
+OML_BRANCH="${release_name}"
+OML_COMMIT="${commit}"
+OML_BUILD_DATE="$(env LC_hosts=C LC_TIME=C date)"
+OML_AUTHOR="${author}"
+
+if __name__ == '__main__':
+    print (OML_COMMIT)
+
+EOF
+
+  #echo "Validando version.py - Commit:"
+  python $TMP_OMINICONTACTO/ominicontacto_app/version.py > /dev/null 2>&1
+  # ----------
+  export DO_CHECKS="${DO_CHECKS:-no}"
 }
 
 AnsibleExec() {
-    if [ -z $INTERFACE ]; then INTERFACE=none; fi
     echo "Checking if there are hosts to deploy from inventory file"
     if ${ANSIBLE} all --list-hosts -i $TMP_ANSIBLE/inventory | grep -q '(0)' 2>/dev/null; then
       echo "All hosts in inventory file are commented, please check the file according to documentation"
       exit 1
     fi
-    echo "Beginning the Omnileads installation with Ansible, this installation process can last between 30-40 minutes"
+    echo "Beginning the Omnileads installation with Ansible, this installation process can last between 20-25 minutes, depending of your internet connection"
     echo ""
     ${ANSIBLE}-playbook $verbose $TMP_ANSIBLE/omnileads.yml \
       --extra-vars "trusted_certs=$TRUSTED_CERTS \
@@ -263,8 +282,7 @@ if [ $(ls -l $certs_location/*.pem 2>/dev/null | wc -l) -eq 4 ]; then
   rm -rf $certs_location/key.pem $certs_location/cert.pem
 fi
 }
-UserValidation
-OSValidation
+
 for i in "$@"
 do
   case $i in
@@ -305,33 +323,31 @@ do
     ;;
   esac
 done
-if [ "$arg1" == "--docker-build" ] || [ "$arg1" == "--docker-no-build" ]; then
-  echo ""
-else
-  ./keytransfer.sh $INTERFACE
-  ResultadoKeyTransfer=`echo $?`
-    if [ "$ResultadoKeyTransfer" == 1 ]; then
-      echo "It seems that you don't have generated keys in the server you are executing this script"
-      echo "Try with ssh-keygen or check the ssh port configured in server"
-      rm -rf /var/tmp/servers_installed
-      exit 1
-    elif [ "$ResultadoKeyTransfer" == 2 ]; then
-      echo "#######################################################################"
-      echo "# The option --interface must be used only in selfhosted installation #"
-      echo "#######################################################################"
-      exit 1
-    elif [ "$ResultadoKeyTransfer" == 3 ]; then
-      echo "#####################################"
-      echo "# Option --interface must be passed #"
-      echo "#####################################"
-      exit 1
-    elif [ "$ResultadoKeyTransfer" == 4 ]; then
-      echo "###############################################################"
-      echo "# It seems you typed a wrong interface in --interface option  #"
-      echo "###############################################################"
-      exit 1
-    fi
-fi
+./keytransfer.sh $INTERFACE
+ResultadoKeyTransfer=`echo $?`
+  if [ "$ResultadoKeyTransfer" == 1 ]; then
+    echo "It seems that you don't have generated keys in the server you are executing this script"
+    echo "Try with ssh-keygen or check the ssh port configured in server"
+    rm -rf /var/tmp/servers_installed
+    exit 1
+  elif [ "$ResultadoKeyTransfer" == 2 ]; then
+    echo "#######################################################################"
+    echo "# The option --interface must be used only in selfhosted installation #"
+    echo "#######################################################################"
+    exit 1
+  elif [ "$ResultadoKeyTransfer" == 3 ]; then
+    echo "#####################################"
+    echo "# Option --interface must be passed #"
+    echo "#####################################"
+    exit 1
+  elif [ "$ResultadoKeyTransfer" == 4 ]; then
+    echo "###############################################################"
+    echo "# It seems you typed a wrong interface in --interface option  #"
+    echo "###############################################################"
+    exit 1
+  fi
+UserValidation
+OSValidation
 AnsibleInstall
 CodeCopy
 VersionGeneration

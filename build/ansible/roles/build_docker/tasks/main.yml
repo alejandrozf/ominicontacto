@@ -1,4 +1,41 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
 ---
+
+- name: Delete omnileads_envars.sh
+  file: path=/etc/profile.d/omnileads_envars.sh state=absent
+
+# Se crea el directorio $USER_HOME/omnileads
+- name: Create root path of docker omnileads
+  file: path={{ docker_root }}/omnileads/ state=directory recurse=yes owner={{ docker_user }} group={{ docker_user }}
+
+# Se incluyen las variables globales de docker
+- name: Include docker global variables
+  include_vars: group_vars/docker_general_vars.yml
+
+# Se incluyen las variables para devenv
+- name: Include docker devenv variables
+  include_vars: group_vars/docker_devenv_vars.yml
+  when: devenv == 1
+
+# Se incluyen las variables para prodenv
+- name: Include docker prodenv variables
+  include_vars: group_vars/docker_prodenv_vars.yml
+  when: prodenv == 1
 
 # Estas tres primeras tasks tambien se hacen en los checks pero no incluyo todo el yml de checks pues solo necesito 3, asi que las pongo aca
 
@@ -34,7 +71,7 @@
 
 # Genera los dockerfiles en cada template esta lo que va a renderizar dependiendo si es prodenv o devenv
 - name: Generate Dockerfiles images
-  template: src=roles/docker/files/Dockerfiles/Dockerfile-{{ item }} dest={{ build_location}} owner={{ docker_user }} group={{ docker_user }}
+  template: src=roles/build_docker/files/Dockerfiles/Dockerfile-{{ item }} dest={{ build_location}} owner={{ docker_user }} group={{ docker_user }}
   with_items:
     - asterisk
     - dialer
@@ -47,12 +84,12 @@
 
 # Se incluyen las tareas de configuracion de asterisk para prodenv
 - name: Creation of asterisk build content
-  include: roles/asterisk/tasks/configuration.yml
+  include: "{{ repo_location }}/deploy/ansible/roles/asterisk/tasks/configuration.yml"
   when: prodenv == 1
 
 # Se incluye el codigo django de omnileads para prodenv
 - name: Upload built (rsync to /ominicontacto)
-  synchronize: "src={{ build_dir }}/{{ item }} dest={{ omniapp_location }}/ominicontacto delete=yes checksum=yes times=no"
+  synchronize: "src={{ repo_location }}/{{ item }} dest={{ omniapp_location }}/ominicontacto delete=yes checksum=yes times=no"
   with_items:
     - api_app
     - configuracion_telefonia_app
@@ -76,18 +113,16 @@
 - name: Copy of Dockerfiles content
   copy: src={{ item.src }} dest={{ item.dest }}/ owner={{ docker_user }} group={{ docker_user }}
   with_items:
-    - { src: /var/tmp/ansible/roles/docker/files/pbxemulator-files, dest: "{{ build_location }}" }
+    - { src: roles/build_docker/files/pbxemulator-files, dest: "{{ build_location }}" }
     - { src: "{{ repo_location }}/requirements", dest: "{{ build_location }}" }
     - { src: "{{ repo_location }}/ominicontacto_voip/kamailio-files/kamailio.cfg", dest: "{{ kamailio_location }}" }
 
 # Se generan los scripts y otros archivos de configuracion necesarios para el build
 - name: Generate Dockerfiles content
-  template: src={{ item.src }} dest={{ item.dest }} mode=755 owner={{ docker_user }} group={{ docker_user }}
+  template: src={{ repo_location }}/deploy/ansible/{{ item.src }} dest={{ item.dest }} mode=755 owner={{ docker_user }} group={{ docker_user }}
   with_items:
     - { src: roles/docker/files/scripts/build-asterisk.sh, dest: "{{ build_location }}/scripts" }
     - { src: roles/docker/files/scripts/create_language.sh, dest: "{{ build_location }}/scripts" }
-  #  - { src: roles/oml_server/templates/pip.conf, dest: "{{ build_location }}/scripts" }
-  #  - { src: roles/oml_server/templates/requirements.txt, dest: "{{ build_location }}/scripts" }
     - { src: roles/docker/files/scripts/run_asterisk.sh, dest: "{{ build_location }}/scripts" }
     - { src: roles/docker/files/scripts/run_rtpengine.sh, dest: "{{ build_location }}/scripts" }
     - { src: roles/docker/files/scripts/run_omniapp.sh, dest: "{{ omniapp_location }}/run_omniapp.sh"}
@@ -155,3 +190,7 @@
   delay: 3
   register: result
   until: result is success
+
+# Por ultimo se cambia los permisos de la carpeta raiz del entorno.
+- name: Change ownership of {{ docker_root }}/omnileads folder
+  file: state=directory owner={{ docker_user }} group={{ docker_user }} path={{ docker_root }}/omnileads recurse=yes

@@ -31,6 +31,7 @@
 # Se modifica el pg_hba.conf para postgres externo no hace falta
 - name: Modify of pg_hba.conf file
   template: src=roles/database/templates/pg_hba.conf.j2 dest={{ pg_lib_location }}/pg_hba.conf
+  tags: postinstall
   when: postgres_host is not defined
 
 #Se modifica la ip en la que escucha postgres para postgres externo no hace falta
@@ -47,7 +48,7 @@
 
 # Se crea el usuario de postgres para OML, para postgres interno
 - name: Create/modify postgres user
-  postgresql_user: name={{ postgres_user }} password={{ postgres_password }} role_attr_flags=SUPERUSER encrypted=yes
+  postgresql_user: name={{ postgres_user }} db=postgres login_host=127.0.0.1 password={{ postgres_password }} role_attr_flags=SUPERUSER encrypted=yes
   become: yes
   become_method: sudo
   become_user: postgres
@@ -61,15 +62,18 @@
 
 # Se crea el lenguaje plperl, para postgres interno.
 - name: Create language plperl in database
-  shell: psql -d {{ item }} -c 'CREATE EXTENSION plperl'
+  shell: psql -U {{ postgres_user }} -d {{ item }} -h 127.0.0.1 -c 'CREATE EXTENSION plperl'
+  environment:
+    - PGPASSWORD: "{{ postgres_password }}"
   with_items:
     - "{{ postgres_database }}"
     - template1
-  become: true
+  register: plperl_result
   tags: postinstall
-  become_user: postgres
-  failed_when: false
   when: postgres_host is not defined
+  failed_when:
+    - "plperl_result.rc != 1"
+    - "plperl_result.rc != 0"
 
 # Se Borran los binarios de postgres en /usr/bin en caso de que queden los binarios de 9.6
 - name: Erasing pg_dump and psql binaries from {{ postgresql_old_version }}
@@ -97,7 +101,7 @@
 
 # Se crea el usuario de postgres
 - name: Create/modify postgres user
-  postgresql_user: name={{ postgres_user }} password={{ postgres_password }} login_user={{ default_postgres_user }} login_host={{ postgres_host }} login_password={{ default_postgres_password }} role_attr_flags=CREATEROLE,CREATEDB,INHERIT,LOGIN encrypted=yes
+  postgresql_user: name={{ postgres_user }} db=postgres password={{ postgres_password }} login_user={{ default_postgres_user }} login_host={{ postgres_host }} login_password={{ default_postgres_password }} role_attr_flags=CREATEROLE,CREATEDB,INHERIT,LOGIN encrypted=yes
   when: postgres_host is defined and default_postgres_user is defined and default_postgres_password is defined
 
 # Se crea base de datos omnileads
@@ -105,13 +109,17 @@
   postgresql_db: name={{ postgres_database }} state=present login_user={{ postgres_user }} login_password={{ postgres_password }} owner={{ postgres_user }} login_host={{ postgres_host }}
   when: postgres_host is defined and default_postgres_user is defined and default_postgres_password is defined
 
-# Se crea el lenguaje plperl en todo el cluster.
+# Se crea el lenguaje plperl, para postgres interno.
 - name: Create language plperl in database
-  shell: psql -U {{ postgres_user }} -h {{ postgres_host }} -d {{ item }} -c 'CREATE EXTENSION plperl'
+  shell: psql -U {{ postgres_user }} -d {{ item }} -h 127.0.0.1 -c 'CREATE EXTENSION plperl'
   environment:
-    - PGPASSWORD: "{{ postgres_password }}"
+    PGPASSWORD: "{{ postgres_password }}"
   with_items:
     - "{{ postgres_database }}"
     - template1
-  when: postgres_host is defined
-  failed_when: false
+  register: plperl_result
+  tags: postinstall
+  when: postgres_host is not defined
+  failed_when:
+    - "plperl_result.rc != 1"
+    - "plperl_result.rc != 0"

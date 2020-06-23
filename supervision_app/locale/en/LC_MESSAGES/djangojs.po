@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-14 12:17-0300\n"
+"POT-Creation-Date: 2020-06-10 17:05-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -130,47 +130,47 @@ msgstr "SIP Proxy not responding, contact your Administrator"
 msgid "Fallo en la registración, contacte a su administrador"
 msgstr "Registration Failed, contact your Administrator"
 
-#: supervision_app/static/supervision_app/JS/supervision.js:71
+#: supervision_app/static/supervision_app/JS/supervision.js:74
 msgid "Buscar: "
 msgstr "Search:"
 
-#: supervision_app/static/supervision_app/JS/supervision.js:72
+#: supervision_app/static/supervision_app/JS/supervision.js:75
 msgid "(filtrando de un total de _MAX_ contactos)"
 msgstr "(filtering a total of _MAX_ contacts)"
 
-#: supervision_app/static/supervision_app/JS/supervision.js:74
+#: supervision_app/static/supervision_app/JS/supervision.js:77
 msgid "Primero "
 msgstr "First"
 
-#: supervision_app/static/supervision_app/JS/supervision.js:75
+#: supervision_app/static/supervision_app/JS/supervision.js:78
 msgid "Anterior "
 msgstr "Previous"
 
-#: supervision_app/static/supervision_app/JS/supervision.js:76
+#: supervision_app/static/supervision_app/JS/supervision.js:79
 msgid " Siguiente"
 msgstr "Next"
 
-#: supervision_app/static/supervision_app/JS/supervision.js:77
+#: supervision_app/static/supervision_app/JS/supervision.js:80
 msgid " Último"
 msgstr "Last"
 
-#: supervision_app/static/supervision_app/JS/supervision.js:79
+#: supervision_app/static/supervision_app/JS/supervision.js:82
 msgid "Mostrar _MENU_ entradas"
 msgstr "Show _MENU_ entries"
 
-#: supervision_app/static/supervision_app/JS/supervision.js:80
+#: supervision_app/static/supervision_app/JS/supervision.js:83
 msgid "Mostrando _START_ a _END_ de _TOTAL_ entradas"
 msgstr "Showing _START_ to _END_ of _TOTAL_ entries"
 
-#: supervision_app/static/supervision_app/JS/supervision.js:96
+#: supervision_app/static/supervision_app/JS/supervision.js:99
 msgid "Susurrar"
 msgstr "Whisper"
 
-#: supervision_app/static/supervision_app/JS/supervision.js:109
+#: supervision_app/static/supervision_app/JS/supervision.js:112
 msgid "Espiar"
 msgstr "Spy"
 
-#: supervision_app/static/supervision_app/JS/supervision.js:138
+#: supervision_app/static/supervision_app/JS/supervision.js:141
 msgid "Logout"
 msgstr "Logout"
 

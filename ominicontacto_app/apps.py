@@ -369,6 +369,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'eliminar_archivo_audio',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'buscar_auditorias_gestion',
+             'roles': ['Administrador', 'Gerente', ]},
         ]
 
     informacion_de_permisos = {
@@ -759,4 +761,8 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Editar un Archivo de Audio'), 'version': '1.6.2'},
         'eliminar_archivo_audio':
             {'descripcion': _('Eliminar un Archivo de Audio'), 'version': '1.6.2'},
+        # Auditorías
+        'buscar_auditorias_gestion':
+            {'descripcion': _('Acceder al listado de calificaciones a auditar'),
+             'version': '1.6.2'}
     }

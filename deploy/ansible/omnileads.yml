@@ -28,7 +28,7 @@
 - name: Omnileads-Docker integration
   hosts: docker
   roles:
-    - { role: docker }
+    - { role: docker, tags: docker_deploy }
 
 # hosts: le decimos que seccion del hosts se va  usar: [prodenv-aio]
 - name: OMniLeads AIO installation

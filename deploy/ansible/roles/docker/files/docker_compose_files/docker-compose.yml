@@ -118,7 +118,11 @@ services:
       - {{ subnet_name }}
     privileged: true
     ports:
+{% if external_port is defined %}
+     - "${EXTERNAL_PORT}:443/tcp"
+{% else %}
      - "${NGINX_EXT_PORT}:443/tcp"
+{% endif %}
     restart: on-failure
     stop_grace_period: 1m30s
     volumes:
@@ -146,9 +150,17 @@ services:
       - DOCKER_IP=${DOCKER_IP}
       - LOGIN_FAILURE_LIMIT=${LOGIN_FAILURE_LIMIT}
       - MONITORFORMAT=${MONITORFORMAT}
+{% if external_hostname is defined %}
+      - NGINX_HOSTNAME=${EXTERNAL_HOSTNAME}
+{% else %}
       - NGINX_HOSTNAME=${DOCKER_HOSTNAME}
+{% endif %}
       - EPHEMERAL_USER_TTL=${ECTTL}
+{% if external_port is defined %}
+      - EXTERNAL_PORT=${EXTERNAL_PORT}
+{% else %}
       - EXTERNAL_PORT=${NGINX_EXT_PORT}
+{% endif %}
       - INSTALL_PREFIX=${INSTALL_PREFIX}
       - KAMAILIO_HOSTNAME=${KAMAILIO_HOSTNAME}
       - KAMAILIO_LOCATION=${KAMAILIO_LOCATION}

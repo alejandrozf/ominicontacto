@@ -35,7 +35,8 @@ from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana,
                                       AgenteEnContacto, QueueMember, CalificacionCliente,
                                       OpcionCalificacion, ArchivoDeAudio, ParametrosCrm,
                                       ActuacionVigente, Pausa, RespuestaFormularioGestion, Backlist,
-                                      AgendaContacto, SistemaExterno, AgenteEnSistemaExterno)
+                                      AgendaContacto, SistemaExterno, AgenteEnSistemaExterno,
+                                      AuditoriaCalificacion)
 
 from reportes_app.models import LlamadaLog, ActividadAgenteLog
 
@@ -298,6 +299,15 @@ class CalificacionClienteFactory(DjangoModelFactory):
     contacto = SubFactory(ContactoFactory)
     agente = SubFactory(AgenteProfileFactory)
     fecha = lazy_attribute(lambda a: timezone.now())
+    observaciones = lazy_attribute(lambda a: faker.text(15))
+
+
+class AuditoriaCalificacionFactory(DjangoModelFactory):
+    class Meta:
+        model = AuditoriaCalificacion
+
+    resultado = AuditoriaCalificacion.APROBADA
+    calificacion = SubFactory(CalificacionClienteFactory)
     observaciones = lazy_attribute(lambda a: faker.text(15))
 
 
