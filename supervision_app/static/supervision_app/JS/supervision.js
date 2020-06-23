@@ -25,7 +25,8 @@ var table_agentes;
 
 $(function() {
     createDataTable();
-    setInterval( function () { table_agentes.ajax.reload(); }, 5000 );
+    subcribeFilterChange();
+    setInterval( function () { table_agentes.ajax.reload(); }, 5000 );  
 });
 
 function createDataTable() {
@@ -36,6 +37,8 @@ function createDataTable() {
         },
         columns: [
             {'data': 'nombre'},
+            {'data': 'grupo', 'visible': false},
+            {'data': 'campana[, ]', 'visible': false },
             {'data' : 'status',
                 'render': function (data) {  //( data, type, row, meta)
                     var $status = create_node('p');
@@ -68,8 +71,18 @@ function createDataTable() {
                 'render': function (data, type, row) {  // (data, type, row, meta)
                     return obtenerNodosAcciones(row['id'], row['status']);
                 },
-            }
+            },
+
         ],
+        'searchCols': [
+            null,
+            {'search': filtro_grupo(),},
+            {'search': filtro_campana(),},
+            null,
+            null,
+            null,
+        ],
+
         language: {
             search: gettext('Buscar: '),
             infoFiltered: gettext('(filtrando de un total de _MAX_ contactos)'),
@@ -150,3 +163,35 @@ function obtenerNodosAcciones(pk_agent, status) {
 
     return $div.prop('outerHTML');
 }
+
+function filtro_grupo(){
+    var grupo = $('#filter_group option:selected').html();
+    return grupo ;
+}
+
+function filtro_campana(){
+    var campana = $('#filter_campana option:selected').html();
+    return campana ;
+}
+
+function subcribeFilterChange(){
+
+    $('#filter_group').change(function(){
+        console.log('1');
+        var selection = $('#filter_group').find('option:selected');
+        $('#filter_group option').not(selection).removeAttr('selected');
+        selection.attr('selected', true);
+        $('#tableAgentes').DataTable().destroy();
+        createDataTable();
+    });
+
+    $('#filter_campana').change(function(){
+        console.log('2');
+        var selection = $('#filter_campana').find('option:selected');
+        $('#filter_campana option').not(selection).removeAttr('selected');
+        selection.attr('selected', true);
+        $('#tableAgentes').DataTable().destroy();
+        createDataTable();
+    });
+}
+

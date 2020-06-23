@@ -23,10 +23,14 @@ from reportes_app.reportes.reporte_llamadas_supervision import \
     ReporteDeLLamadasEntrantesDeSupervision, ReporteDeLLamadasSalientesDeSupervision
 
 from utiles_globales import AddSettingsContextMixin
+from ominicontacto_app.forms import GrupoAgenteForm
+
+from ominicontacto_app.models import Grupo, AgenteProfile
 
 
 class SupervisionAgentesView(AddSettingsContextMixin, TemplateView):
     template_name = 'supervision_agentes.html'
+    form_class = GrupoAgenteForm
 
     def get_context_data(self, **kwargs):
         context = super(SupervisionAgentesView, self).get_context_data(**kwargs)
@@ -34,6 +38,15 @@ class SupervisionAgentesView(AddSettingsContextMixin, TemplateView):
         kamailio_service = KamailioService()
         sip_usuario = kamailio_service.generar_sip_user(supervisor.sip_extension)
         sip_password = kamailio_service.generar_sip_password(sip_usuario)
+        campanas = supervisor.campanas_asignadas_actuales()
+        ids_agentes = list(campanas.values_list(
+            'queue_campana__members__pk', flat=True).distinct())
+        id_grupo = AgenteProfile.objects.filter(id__in=ids_agentes).values_list(
+            'grupo_id', flat=True).distinct()
+        grupo = Grupo.objects.filter(id__in=id_grupo).values_list(
+            'nombre', flat=True)
+        context['campanas'] = campanas
+        context['grupo'] = grupo
         context['sip_usuario'] = sip_usuario
         context['sip_password'] = sip_password
         return context

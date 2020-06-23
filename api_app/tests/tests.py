@@ -261,7 +261,7 @@ class APITest(OMLBaseTest):
         self.assertEqual(datos_agente_2['id'], str(ag2.pk))
         self.assertEqual(datos_agente_2['status'], 'PAUSE')
         self.assertEqual([i for i in datos_agente_1.keys()],
-                         ['id', 'nombre', 'sip', 'status', 'tiempo'])
+                         ['id', 'nombre', 'sip', 'status', 'tiempo', 'grupo', 'campana'])
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AMIManagerConnector, "_ami_manager")
