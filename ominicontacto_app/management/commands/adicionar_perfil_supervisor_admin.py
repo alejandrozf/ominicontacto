@@ -17,19 +17,21 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 
 from django.core.management.base import BaseCommand, CommandError
-
+from django.contrib.auth.models import Group
 from ominicontacto_app.models import User, SupervisorProfile
 
 
 class Command(BaseCommand):
 
-    help = 'Adiciona perfil de supervisor al admin por defecto del sistema si no tiene'
+    help = 'Agrega SupervisorProfile y rol Administraodr al admin por defecto del sistema si falta'
 
     def adicionar_perfil_supervisor(self):
         admin = User.objects.get(username='admin')
         if admin.get_supervisor_profile() is None:
             SupervisorProfile.objects.create(
                 user=admin, sip_extension=admin.id + 1000, is_administrador=True)
+        if not admin.groups.exists():
+            admin.groups.add(Group.objects.get(name=User.ADMINISTRADOR))
 
     def handle(self, *args, **options):
         try:
