@@ -31,9 +31,12 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from simple_history.utils import update_change_reason
+
 from api_app.views.permissions import TienePermisoOML
 from api_app.serializers import (CampanaSerializer, )
-from ominicontacto_app.models import (Campana, CalificacionCliente, AgenteProfile, Grupo)
+from ominicontacto_app.models import (
+    Campana, CalificacionCliente, AgenteProfile, Grupo, AgendaContacto, )
 from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorActivityAmiManager
 from reportes_app.reportes.reporte_llamadas_supervision import (
     ReporteDeLLamadasEntrantesDeSupervision, ReporteDeLLamadasSalientesDeSupervision
@@ -154,6 +157,86 @@ class InteraccionDeSupervisorSobreAgenteView(APIView):
             return Response(data={
                 'status': 'OK',
             })
+
+
+class ReasignarAgendaContactoView(APIView):
+    permission_classes = (TienePermisoOML, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['post', ]
+
+    def post(self, request):
+        agenda_id = request.data.get('agenda_id')
+        agente_id = request.data.get('agent_id')
+
+        try:
+            agenda = AgendaContacto.objects.get(id=agenda_id,
+                                                tipo_agenda=AgendaContacto.TYPE_PERSONAL)
+        except AgendaContacto.DoesNotExist:
+            return Response(data={
+                'status': 'ERROR',
+                'message': _('ID Agenda incorrecto')
+            })
+        try:
+            agente = agenda.campana.queue_campana.members.get(id=agente_id)
+        except AgenteProfile.DoesNotExist:
+            return Response(data={
+                'status': 'ERROR',
+                'message': _('ID Agente incorrecto')
+            })
+
+        supervisor_profile = self.request.user.get_supervisor_profile()
+        campanas_asignadas_actuales = supervisor_profile.campanas_asignadas_actuales()
+        if not campanas_asignadas_actuales.filter(id=agenda.campana.id).exists():
+            return Response(data={
+                'status': 'ERROR',
+                'message': _('No tiene permiso para editar esta Agenda')
+            })
+
+        agenda.agente = agente
+        agenda.save()
+        calificacion = CalificacionCliente.objects.get(contacto=agenda.contacto,
+                                                       opcion_calificacion__campana=agenda.campana)
+        calificacion.agente = agente
+        calificacion.save()
+        update_change_reason(calificacion, 'reasignacion')
+
+        return Response(data={
+            'status': 'OK',
+            'agenda_id': agenda_id,
+            'agent_name': agente.user.get_full_name()
+        })
+
+
+class DataAgendaContactoView(APIView):
+    permission_classes = (TienePermisoOML, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['get', ]
+
+    def get(self, request, agenda_id):
+
+        try:
+            agenda = AgendaContacto.objects.get(id=agenda_id,
+                                                tipo_agenda=AgendaContacto.TYPE_PERSONAL)
+        except AgendaContacto.DoesNotExist:
+            return Response(data={
+                'status': 'ERROR',
+                'message': _('ID Agenda incorrecto')
+            })
+        supervisor_profile = self.request.user.get_supervisor_profile()
+        campanas_asignadas_actuales = supervisor_profile.campanas_asignadas_actuales()
+        if not campanas_asignadas_actuales.filter(id=agenda.campana.id).exists():
+            return Response(data={
+                'status': 'ERROR',
+                'message': _('No tiene permiso para editar esta Agenda')
+            })
+
+        contact_data = agenda.contacto.obtener_datos()
+        return Response(data={
+            'status': 'OK',
+            'agenda_id': agenda_id,
+            'observations': agenda.observaciones,
+            'contact_data': contact_data
+        })
 
 
 # ########################################################

@@ -537,6 +537,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'agenda_contacto_listado',
              'roles': ['Agente', ]},
+            {'nombre': 'agenda_contactos_por_campana',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'campana_dialer_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'campana_dialer_create',
@@ -917,6 +919,9 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Ver el detalle de la Agenda de un contacto'), 'version': '1.6.2'},
         'agenda_contacto_listado':
             {'descripcion': _('Listado de Agendas de contactos'), 'version': '1.6.2'},
+        'agenda_contactos_por_campana':
+            {'descripcion': _('Listado para reasignar Agendas de contactos por Campaña'),
+             'version': '1.7.0'},
         'campana_dialer_list':
             {'descripcion': _('Ver listado de campañas Dialer'), 'version': '1.6.2'},
         'campana_dialer_create':
