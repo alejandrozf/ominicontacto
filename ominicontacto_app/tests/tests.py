@@ -134,7 +134,7 @@ class IntegrationTests(unittest.TestCase):
 
     @classmethod
     def crear_user(self, username, password, tipo_usuario):
-        link_create_user = self.browser.find_element_by_id('newUser')
+        link_create_user = self.browser.find_element_by_xpath('//a[contains(@href,"/user/nuevo/")]')
         href_create_user = link_create_user.get_attribute('href')
         self.browser.get(href_create_user)
         self.browser.find_element_by_id('id_0-username').send_keys(username)
