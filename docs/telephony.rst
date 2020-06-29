@@ -2,29 +2,23 @@
 Configuración de acceso a la PSTN
 *********************************
 
-En este capítulo vamos a explicar cómo dejar configurada la capa de *acceso a la PSTN* de OMniLeads para operar de acuerdo a los contextos planteados.
-OMniLeads admite solamente SIP como tecnología de interconexión con otros conmutadores de telefonía. Por lo tanto el integrador podrá configurar troncales SIP de proveedores ITSP,
-troncales SIP contra sistemas PBX y/o troncales SIP contra Gateways FXO o E1/T1.
+En esta sección se exponen las configuraciones necesarias a realizar para que nuestra App pueda interactuar con la PSTN (red telefónica pública), de manera tal que
+los agentes puedan tomar llamadas provenientes del exterior así como también marcar llamadas hacia teléfonos externos.
 
 .. important::
 
-  A partir del **Release-1.4.0** OMniLeads implementa y recomienda el uso de troncales SIP basados en el módulo PJSIP de Asterisk, debido a su eficiencia en términos
-  de recursos informáticos utilizados, así como también por el estado de *deprecated* en el cual se encuentra el módulo CHAN_SIP a partir de la versión 17 de Asterisk.
+  OMniLeads admite solamente SIP como tecnología de interconexión con otros conmutadores de telefonía. Por lo tanto el integrador podrá configurar troncales SIP de proveedores ITSP,
+  troncales SIP contra sistemas PBX y/o troncales SIP contra Gateways FXO y/o E1/T1.
 
-  Por lo tanto a la hora de plantear el uso de troncales SIP en esta documentación se utilizará PJSIP.
-  Para disponer de la explicación de troncales utilizando chan_sip, usted podrá visitar las versiones anteriores de esta documentación.
+Configuración de troncales SIP
+******************************
 
-
-Explicación del ABM para troncales PJSIP
-*****************************************
-
-Para acceder a la configuración debemos ingresar en el punto de menú *(Telephony -> SIP Trunks)* y allí añadir una nueva
-troncal PJSIP. Se va a desplegar un formulario similar al de la figura 1.
+Para acceder a la configuración debemos ingresar en el punto de menú *(Telephony -> SIP Trunks)* y allí añadir un nuevo troncal PJSIP.
+Se va a desplegar un formulario similar al de la figura.
 
 .. image:: images/telephony_pjsiptrunk_abm.png
        :align: center
 
-*Figure 1: New SIP Trunk*
 
 Los campos del formulario son:
 
@@ -33,10 +27,7 @@ Los campos del formulario son:
 - **Caller id**: el número con el que saldrán las llamadas por el troncal.
 - **SIP details**: en este campo de texto se proporcionan los parámetros SIP usando sintaxis de `PJSIP configuration Wizard <https://wiki.asterisk.org/wiki/display/AST/PJSIP+Configuration+Wizard>`_ de Asterisk.
 
-Como se puede apreciar en la figura 1, existen una serie de *plantillas* de configuración en base al tipo de conexión troncal que se desea configurar, que pueden
-facilitar bastante el trabajo de configuración  .
-
-A continuación desplegamos las plantillas sugeridas para los tipos de escenarios planteados como casos de uso típicos de OMniLeads.
+A continuación desplegamos algunas plantillas sugeridas para los tipos de escenarios planteados como casos de uso típicos de OMniLeads.
 
 .. toctree::
   :maxdepth: 1
