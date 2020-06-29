@@ -1,63 +1,84 @@
 .. _about_install_selfhosted:
 
-***************************
-Ansible Self-Hosted Install
-***************************
+**********************************
+Método de instalación Self-Hosted
+**********************************
+(:ref:`about_install_method_selfhosted`)
 
-Al mencionar "Ansible Self-Hosted" nos referimos a instalar OMniLeads sobre un sistema operativo (GNU/linux kernel) en un despliegue monolítico
-(todos los servicios corriendo sobre dicho host). Se descarga el proyecto (repositorio) sobre el host destino de la instalación, para posteriormente ejecutar el
-script de instalación allí en dicho host.
 
-.. image:: images/install_gitlab_repo.png
-
-*Figure 1: self-hosted install*
-
-Ajustes necesarios antes  de la ejecución de script
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-- Instalar git para luego clonar el repositorio del proyecto y seleccionar el release a instalar
+Partimos desde el punto de haber realizado los pasos de pre-requisitos sobre el host. Volvemos a establcer conexión SSH con el host y se procede con la descargar del repo de la App.
 
 .. code-block:: bash
 
-  yum install git
+  yum install bash-completion bash-completion-extras -y
+  source /etc/bash_completion.d/git
   git clone https://gitlab.com/omnileads/ominicontacto.git
-  cd ominicontacto
-  git checkout master
+  cd ./ominicontacto/deploy/ansible
+  git checkout release-V.V.V
 
-- La instalación se trabaja en el directorio "deploy/ansible", disponible desde la raíz del proyecto (PATH/ominicontacto/deploy/ansible):
+
+Donde V.V.V es la combinación asociada a la versión de la App. Utilizando la tecla *Tab* se obtienen todas las versiones disponibles.
+
+.. image:: images/install_releases.png
+
+Una vez seleccionada la versión a instalar, se procede con la configuración de :ref:`about_install_inventory` y posterior ejecución del instalador.
+
+.. important::
+
+ Antes de seguir, asegurese que ha configurado su archivo de inventario, de acuerdo al tipo de instalación y arquitectura a desplegar.
+
+Despliegue de OMniLeads arquitectura tradicional (AIO)
+******************************************************
+(:ref:`about_install_tradicional`)
+
+Es necesario trabajar en la sección **[prodenv-aio]** del archivo de inventario, tal cual se explica allí.
+Luego se deben ajustar todas los parámetros y variables.
+
+Una vez ajustado el archivo de inventario, se procede con la ejecución del script de instalación.
 
 .. code-block:: bash
 
- cd deploy/ansible
+  ./deploy.sh -i --iface=NETWORK_INTERFACE
 
-- En este paso debemos trabajar sobre el archivo de inventario disponible dentro del directorio "PATH/ominicontacto/deploy/ansible". Remitirse a esta sección: :ref:`about_install_inventory_aio`. No olvidar que estamos instalando **Self Hosted**
+.. image:: images/install_deploy_aio_exec.png
 
-- Luego, allí en el inventory mismo debemos ajustar las :ref:`about_install_inventory_vars` de la instanacia.
+A partir de este punto el proceso comienza su ejecución y puede tomar unas decenas de minutos siempre dependiendo de la velocidad de la conexión a Internet y la capacidad de procesamiento
+del host.
 
-Una vez ajustados todos los parámetros del archivo de inventario, procedemos con la ejecución de la instalación.
+Despliegue de OMniLeads sobre contenedores Docker
+*************************************************
+(:ref:`about_install_contenedores`)
 
-Ejecución del script de instalación
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Es necesario trabajar en la sección **[prodenv-conatainer]** del archivo de inventario, tal cual se explica allí.
+Luego se deben ajustar todas los parámetros y variables.
 
-La instalación de OMniLeads se realiza mediante el script *deploy.sh*, ubicado dentro de la carpeta deploy/ansible con respecto a la carpeta
-raíz del proyecto (ominicontacto).
-
-Una vez configuradas las variables citadas, se procede con la ejecución del script de instalación (como usuario root o con privilegios sudo):
+Una vez ajustado el archivo de inventario, se procede con la ejecución del script de instalación.
 
 .. code-block:: bash
 
-  sudo ./deploy.sh -i --iface=<your_iface>
+  ./deploy.sh --docker-deploy --iface=NETWORK_INTERFACE
 
-Donde **<your_iface>** es la interfaz con la IP que se quiere usar para levantar los servicios que componen OMniLeads (suele ser la IP de la interfaz LAN del servidor).
+.. image:: images/install_deploy_docker_exec.png
 
-El tiempo de instalación dependerá mayormente de la velocidad de conexión a internet del host OML, ya que se deben descargar, instalar y configurar varios paquetes correspondientes a los diferentes componentes de software que conforman el sistema. Aproximadamente, este tiempo es de 20 a 30 minutos.
+A partir de este punto el proceso comienza su ejecución y puede tomar unas decenas de minutos siempre dependiendo de la velocidad de la conexión a Internet y la capacidad de procesamiento
+del host.
 
-.. image:: images/install_deploysh.png
 
-*Figure 4: install running*
+.. note::
 
-Si la ejecución de la instalación finaliza exitosamente, se despliega una vista como la de la figura 8.
+  Usted deberá reemplazar NETWORK_INTERFACE por la interfaz de red del host a la cual se quiera atañar todos los servicios
+  y componenetes que ejecuta OMniLeads. (Por ej: eth0, ens18, eth1, wlp2s0, etc.)
+
+
+Instalación finalizada
+**********************
+
+Al cabo de unos minutos el proceso de instalación finaliza arrojando una pantalla que evidencia la culminación exitosa del procedimiento.
 
 .. image:: images/install_ok.png
 
-*Figure 5: OMniLeads installation ended succesfuly*
+.. important::
+
+  Una vez finalizado la instalación, aplicar un reinicio del host.
+
+Usted podrá proceder con el :ref:`about_first_access`

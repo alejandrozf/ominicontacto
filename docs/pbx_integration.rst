@@ -4,22 +4,21 @@
 Integración entre OMniLeads & PBXs
 **********************************
 
-Vamos a abordar nuestro ejemplo utilizando Issabel-PBX un proyecto de software libre bien conocido donde además todo lo expuesto aquí puede ser
-extrapolado como configuración para cualquier IPPBX basada en Asterisk.
+Vamos a abordar nuestro ejemplo utilizando Issabel-PBX un proyecto de software libre bien conocido, sin embargo todo lo expuesto aquí puede ser
+extrapolado como configuración para cualquier PBX con soporte SIP.
 
 .. image:: images/pbx_integration.png
       :align: center
 
 .. Note::
 
-  Los pasos descriptos en esta sección son aplicables tanto al esquema donde OMniLeads se encuentra en un host exclusivo y la IPPBX en otro, así como también para el caso en que
-  OMniLeads se ejecuta en Docker conviviendo dentro del mismo host de la IPPBX.
+  Los pasos descriptos en esta sección son aplicables tanto al esquema donde OMniLeads se encuentra en un host exclusivo y la PBX en otro, así como también para el caso en que
+  OMniLeads se ejecuta en Docker conviviendo dentro del mismo host de la PBX.
 
-Configuración del troncal SIP en la IPPBX
-*******************************************
+Configuración del troncal SIP en la PBX
+****************************************
 
 Seleccionamos la creación de un nuevo troncal SIP y completamos la configuración con los siguientes parámetros:
-
 
 * En caso de tener OMniLeads en un Host y la IPPBX en otro Host dentro de la red LAN.-
 
@@ -119,7 +118,6 @@ Una vez generado el troncal SIP del lado de la IP-PBX, se procede con la generac
  inbound_auth/password=issabelOML
  outbound_auth/username=omnileads
  outbound_auth/password=issabelOML
- endpoint/from_user=omnileads
 
 * En caso de tener OMniLeads en un Host Cloud y la IPPBX en otro Host,  utilizamos el siguiente bloque de configuración (plantilla PBX WAN).-
 
@@ -144,8 +142,6 @@ Una vez generado el troncal SIP del lado de la IP-PBX, se procede con la generac
  inbound_auth/password=issabelOML
  outbound_auth/username=omnileads
  outbound_auth/password=issabelOML
- endpoint/from_user=omnileads
-
 
 * En caso de ejecutar OMniLeads con Docker dentro de sistema operativo base de la IPPBX,  utilizamos el siguiente bloque de configuración (plantilla Docker).-
 
@@ -171,8 +167,6 @@ Una vez generado el troncal SIP del lado de la IP-PBX, se procede con la generac
  inbound_auth/password=issabelOML
  outbound_auth/username=omnileads
  outbound_auth/password=issabelOML
- endpoint/from_user=omnileads
-
 
 Quedando efectiva nuestra troncal, pasamos a controlar si Issabel está accesible desde OMniLeads, utilizando el CLI de Asterisk de OMniLeads.
 

@@ -8,144 +8,153 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-28 14:41-0300\n"
+"POT-Creation-Date: 2020-06-29 10:25-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.6.0\n"
 
-# 5c9bcc155b494e9b84d2a4904687a5d4
+# e9848450d3c649949f5a541709ae8068
 #: ../../api_agent_session.rst:5
 msgid "API de sesión de Agente en Asterisk"
 msgstr "Asterisk's Agent Sessions API"
 
-# ced0e380ec694c1b9391d3ff64755bb4
+# 3cef224024c54debbf3894274ae9474c
 #: ../../api_agent_session.rst:7
 msgid ""
 "Endpoints para controlar la sesion del agente en Asterisk para el uso del"
 " Webphone"
-msgstr "Endpoints to control the Asterisk's Agent Session to be used by the WebPhone."
+msgstr ""
+"Endpoints to control the Asterisk's Agent Session to be used by the "
+"WebPhone."
 
-# fd27a5b325b047bc9f1e9272cc08d544
+# 2a93cf88744845849917d40f5a051c2c
 #: ../../api_agent_session.rst:11
 msgid "Inicio de sesión de agente en Asterisk"
 msgstr "Asterisk agent session login"
 
-# 9d017b856102472dbf1b67871784a407
+# 101e863718fc463eba1dad02dc20b177
 #: ../../api_agent_session.rst:13
+#, fuzzy
 msgid ""
-"Establece el estado de sesión del Agente (:ref:`about_agent_user`) en "
-"Asterisk como iniciada. Las credenciales deberán pertenecer al Agente, y "
-"no hace falta enviar ningún parámetro extra."
-msgstr "Establishes the agent's session state (:ref:`about_agent_user`) as "
-"logged in. The credential must belong to the agent. No extra parameters "
+"Establece el estado de sesión del Agente (:ref:`about_users`) en Asterisk"
+" como iniciada. Las credenciales deberán pertenecer al Agente, y no hace "
+"falta enviar ningún parámetro extra."
+msgstr ""
+"Establishes the agent's session state (:ref:`about_agent_user`) as logged"
+" in. The credential must belong to the agent. No extra parameters "
 "required."
 
-# 853a76d24ce44991b88fcc673ab8314d
+# 6039e13f68da47ca9b5caef19fc8a94e
 #: ../../api_agent_session.rst:15
 msgid "**URL**: POST https://<omnileads_addr>/api/v1/asterisk_login/"
 msgstr ""
 
-# 28078d57d53247df9fa521ee4a3f1f90
+# 500642a2539040caa0930077a20bb349
 #: ../../api_agent_session.rst:18
 msgid "Cierre de sesión de agente en Asterisk"
 msgstr "Asterisk agent session logout"
 
-# 7a16165e0d6a4f2087b3fb6aff615d9a
+# 81bf4cefe24c45f186574d61f07571d4
 #: ../../api_agent_session.rst:20
+#, fuzzy
 msgid ""
-"Establece el estado de sesión del Agente (:ref:`about_agent_user`) en "
-"Asterisk como finalizada. Las credenciales deberán pertenecer al Agente, "
-"y no hace falta enviar ningún parámetro extra."
-msgstr "Establishes the agent's session state (:ref:`about_agent_user`) as "
-"logged out. The credential must belong to the agent. No extra parameters "
+"Establece el estado de sesión del Agente (:ref:`about_users`) en Asterisk"
+" como finalizada. Las credenciales deberán pertenecer al Agente, y no "
+"hace falta enviar ningún parámetro extra."
+msgstr ""
+"Establishes the agent's session state (:ref:`about_agent_user`) as logged"
+" out. The credential must belong to the agent. No extra parameters "
 "required."
 
-# b35d2a1a5464407ebf13b19dd20f8ef9
+# d5e39ab74c21451bacdb65aa804c2e0a
 #: ../../api_agent_session.rst:22
 msgid "**URL**: POST https://<omnileads_addr>/api/v1/asterisk_logout/"
 msgstr ""
 
-# 9aff5e368e8f4f5280cd7048936e4a54
+# 819dbb4578f9491f9116dd9b51eaab5e
 #: ../../api_agent_session.rst:25
 msgid "Ingreso en pausa de agente"
 msgstr "Agent Pause start"
 
-# a411cbd4bcc34739a64a4187a6ef830e
+# 3504d8eb5da54b91a605f106285e20f8
 #: ../../api_agent_session.rst:27
+#, fuzzy
 msgid ""
-"Establece el estado de sesión del Agente (:ref:`about_agent_user`) en "
-"Asterisk como en Pausa (:ref:`about_agent_session_pause`). Las "
-"credenciales deberán pertenecer al Agente."
-msgstr "Establishes the agent's session state (:ref:`about_agent_user`) as "
+"Establece el estado de sesión del Agente (:ref:`about_users`) en Asterisk"
+" como en Pausa (:ref:`about_agent_session_pause`). Las credenciales "
+"deberán pertenecer al Agente."
+msgstr ""
+"Establishes the agent's session state (:ref:`about_agent_user`) as "
 "PAUSED. The credential must belong to the agent."
 
-# 328f0f94cd244ab7a952e8469a66c122
+# 4bb043cb63e64687be254e4d9ad8ba37
 #: ../../api_agent_session.rst:29
 msgid "**URL**: POST https://<omnileads_addr>/api/v1/asterisk_pause/"
 msgstr ""
 
-# e37f913d69504c45a801ab2a701b923f
-# fc6e77dd0ea8427ebda66518e3b541df
+# 073f1088657842128253fa1de5201da3
+# 9c5692d64798449a9a60669aad0021a8
 #: ../../api_agent_session.rst:32 ../../api_agent_session.rst:46
 msgid "field name"
 msgstr "field name"
 
-# d543c835f1184d0d81bb7244459df452
-# 52249f940fde4a52a2c384b4bb10d591
+# 604908caaa964a049323bb17e9ff45d8
+# fdc260d6968243d4a17f41c82cde8850
 #: ../../api_agent_session.rst:32 ../../api_agent_session.rst:46
 msgid "type"
 msgstr "type"
 
-# c7f544ce998045b5990a60e07c89b108
-# a34f2dc4bf8944bebf652502e8e1e6a2
+# eaa0587794c948bfac3eaa0634e1ff22
+# 1ea225f811c646b4adc2221a46a1a818
 #: ../../api_agent_session.rst:32 ../../api_agent_session.rst:46
 msgid "description"
 msgstr "description"
 
-# c49635acc8e34d1c988c1819b5e1fd51
-# 4c0af04f34e341659aa7b1b291db880c
+# 0f08d17a35aa4606b529bb612af98013
+# 1ea1fa0b7f0141f5b5d6bbc26143338b
 #: ../../api_agent_session.rst:34 ../../api_agent_session.rst:48
 msgid "pause_id"
 msgstr "pause_id"
 
-# 078ff4b57d16472a8016e815f1bd9d3a
-# 2d5a61a11dc64bb580bfecaf70c1a0c8
+# 51dc7bf44a9649a4bddff0399d74f433
+# 260856e7305b46a79c716dad9e53a6ed
 #: ../../api_agent_session.rst:34 ../../api_agent_session.rst:48
 msgid "string"
 msgstr "string"
 
-# 4b843b15eec24098ac0cf85fa74f6c9d
+# c1d4c777ffaa426aa8af6e8c34067ab1
 #: ../../api_agent_session.rst:34
 msgid "Id de la pausa en la que entra el Agente."
 msgstr "ID of the pause the agent starts."
 
-# c075b8b1ac8f4e8791497d850bbf0ea8
+# 5ac353b5228a4718be6ad8b7345db8d6
 #: ../../api_agent_session.rst:38
 msgid "Salida de pausa de agente"
 msgstr "Agent Pause End"
 
-# b931fcde461f48bca1c4b10ff969e254
+# 2caa417c58f9459c994a28ad9333cbb5
 #: ../../api_agent_session.rst:41
+#, fuzzy
 msgid ""
-"Establece el estado de sesión del Agente (:ref:`about_agent_user`) en "
-"Asterisk como \"Disponible\" e indica ela finalizacion de una Pausa "
+"Establece el estado de sesión del Agente (:ref:`about_users`) en Asterisk"
+" como \"Disponible\" e indica ela finalizacion de una Pausa "
 "(:ref:`about_agent_session_pause`). Las credenciales deberán pertenecer "
 "al Agente."
-msgstr "Establishes the agent's session state (:ref:`about_agent_user`) as "
-"\"Available\" and signals the pause end. The credential must belong to the "
-"agent. No extra parameters "
-"required."""
+msgstr ""
+"Establishes the agent's session state (:ref:`about_agent_user`) as "
+"\"Available\" and signals the pause end. The credential must belong to "
+"the agent. No extra parameters required.\"\""
 
-# d9ab11bae389444583f820143433eff4
+# efe9853839af49ffa49f60606ce5516e
 #: ../../api_agent_session.rst:43
 msgid "**URL**: POST https://<omnileads_addr>/api/v1/asterisk_unpause/"
 msgstr ""
 
-# 6be9b80905ca4a028d7721a5c2562a3c
+# e503dd47988d4d0e86083d3d536742c5
 #: ../../api_agent_session.rst:48
 msgid "Id de la pausa de la que sale el Agente."
 msgstr "ID of the pause the agent ends."
