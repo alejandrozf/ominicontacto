@@ -104,9 +104,6 @@ class CampanaPreviewCreateView(CampanaPreviewMixin, CampanaManualCreateView):
         asignacion_aleatoria = asignar_contactos_form.cleaned_data.get('aleatorio', False)
         queue.campana.establecer_valores_iniciales_agente_contacto(
             asignacion_proporcional, asignacion_aleatoria)
-        # crear(sobreescribir) archivo de crontab con la configuración de llamadas al procedimiento
-        # de actualización de las asignaciones de agente a contactos
-        queue.campana.crear_tarea_actualizacion()
         campana = queue.campana
         self.alertas_por_sistema_externo(campana)
         return HttpResponseRedirect(reverse('campana_preview_list'))

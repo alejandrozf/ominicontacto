@@ -4,3 +4,5 @@ SHELL=/bin/bash
 {% if MONITORFORMAT == "mp3" %}
 0 1 * * * ASTERISK_LOCATION={{ asterisk_location }} /opt/omnileads/bin/conversor.sh 1 0 >> /opt/omnileads/log/conversor.log
 {% endif %}
+
+* * * * * source /etc/profile.d/omnileads_envars.sh; /opt/omnileads/virtualenv/bin/python3 /opt/omnileads/ominicontacto/manage.py actualizar_campanas_preview
