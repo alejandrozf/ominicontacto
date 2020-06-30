@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-02 17:33-0300\n"
+"POT-Creation-Date: 2020-06-04 11:06-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.8.0\n"
 
 # 23063c0c59ac42729667a4645b75d328
 #: ../../output_supervision.rst:4
@@ -43,10 +43,11 @@ msgstr "Agent Status View"
 
 # 76a6e9fddbb844f788ebbb8d604f7af1
 #: ../../output_supervision.rst:15
+#, fuzzy
 msgid ""
 "En la sección de agentes se observan todos los agentes logueados en el "
 "sistema y el estado en el que se encuentran (READY, OnCall, Paused, "
-"Dialing, Offline) ."
+"Dialing, Offline, Unavailable) ."
 msgstr ""
 "In Agent section, it is possible to appreciate all the Active Agents "
 "operating on the system and the status they are in (Ready, On Call, "
@@ -63,21 +64,29 @@ msgstr ""
 
 # 19e0b6e1436f41b180c36f5e0ea03fec
 #: ../../output_supervision.rst:20
+#, fuzzy
 msgid ""
-"Cuando un agente pasa al estado \"Offline\" permanece solo unos segundos "
-"en dicho estado y luego desaparece del listado de agentes."
+"Cuando un agente pasa al estado \"Offline\" desaparece del listado de "
+"agentes."
 msgstr ""
 "When an agent logs out of the system, she/he changes the active status to"
 " \"Offline\", remaining only a few seconds in that transition before "
 "disappearing from the list of agents."
 
+# c9020c676afd4ab7b616fab463d47d21
+#: ../../output_supervision.rst:21
+msgid ""
+"Cuando un agente pasa al estado \"Unavailable\" quiere decir que el "
+"agente perdió conexión o cerró el browser sin desloguearse."
+msgstr ""
+
 # 61d18e70a3014ef6addcc1523c0061fc
-#: ../../output_supervision.rst:24
+#: ../../output_supervision.rst:25
 msgid "*Figure2: View of realtime supervision*"
 msgstr ""
 
 # 667484f260514869a03f867a272af368
-#: ../../output_supervision.rst:26
+#: ../../output_supervision.rst:27
 msgid ""
 "Un supervisor puede tomar acciones sobre cada agente. Para ello son los "
 "cuatro botones que aparecen al lado del estado. A continuación se "
@@ -88,7 +97,7 @@ msgstr ""
 "functions will be explained further below (from left to right)."
 
 # 2b1527c594c64d008f6524fd094dab7d
-#: ../../output_supervision.rst:28
+#: ../../output_supervision.rst:29
 msgid ""
 "**Espiar:** el supervisor escucha la **llamada activa** entre agente y "
 "cliente. Hacer click en el botón *Finalizar* para terminar de escuchar, "
@@ -99,7 +108,7 @@ msgstr ""
 "the listening action."
 
 # 1f2206b8245a4281bfbb4393f23e126e
-#: ../../output_supervision.rst:29
+#: ../../output_supervision.rst:30
 msgid ""
 "**Espiar y susurrar:** el supervisor puede hablar al agente sin que el "
 "cliente lo perciba, durante una **llamada activa**. Hacer click en el "
@@ -110,7 +119,7 @@ msgstr ""
 "button, allows supervisor to finish listening and whispering actions."
 
 # f07cc30cecbf4eb49d2678d437c63699
-#: ../../output_supervision.rst:30
+#: ../../output_supervision.rst:31
 msgid ""
 "**Pausar agente:** suponiendo que el agente se fue a break y se le olvidó"
 " ponerse en pausa, el supervisor puede con este botón inducir una pausa "
@@ -124,7 +133,7 @@ msgstr ""
 " same button again."
 
 # da3bd8a6bb3944fe898808861fac658b
-#: ../../output_supervision.rst:31
+#: ../../output_supervision.rst:32
 msgid ""
 "**Desloguear agente:** suponiendo que el agente terminó su sesión y no se"
 " deslogueó correctamente del sistema (no presionó su nombre y dió click "
@@ -141,7 +150,7 @@ msgstr ""
 "session from log-out button!)."
 
 # 30ff81ac6f524f2a8d49ab62b933759e
-#: ../../output_supervision.rst:35
+#: ../../output_supervision.rst:36
 msgid ""
 "El supervisor cuenta con un pequeño webphone. Para poder hacer estas "
 "acciones es necesario que aparezca el mensaje de **Supervisor "
@@ -152,12 +161,12 @@ msgstr ""
 " present on supervisor console."
 
 # 3a5a011c04054ede846266075cf4e63d
-#: ../../output_supervision.rst:38
+#: ../../output_supervision.rst:39
 msgid "Visualización de campañas entrantes"
 msgstr "Inbound Campaigns View"
 
 # 70569e656f714d9ea37af23d02576e0b
-#: ../../output_supervision.rst:40
+#: ../../output_supervision.rst:41
 msgid ""
 "Esta vista expone un resumen de todas las campañas entrantes productivas,"
 " en término de los resultados acumulados del día de la operación; "
@@ -168,22 +177,22 @@ msgid ""
 msgstr ""
 "This view exposes a summary of all productive Inbound Campaigns, in terms"
 " of the accumulated results of the operation day: received calls, "
-"answered calls, abandoned calls, abandoned during welcome audio calls, average waiting time,"
-"expired calls, on queue calls, average abandon time, and Engaged CallsDispositions (*) per "
-"campaign."
+"answered calls, abandoned calls, abandoned during welcome audio calls, "
+"average waiting time,expired calls, on queue calls, average abandon time,"
+" and Engaged CallsDispositions (*) per campaign."
 
 # 84651eaa5a4a436c903f2ceeff00871f
-#: ../../output_supervision.rst:44
+#: ../../output_supervision.rst:45
 msgid "*Figure3: view of realtime inbound campaigns*"
 msgstr ""
 
 # d2433af37fa544749416b473a6e2e6ad
-#: ../../output_supervision.rst:47
+#: ../../output_supervision.rst:48
 msgid "Visualización de campañas salientes"
 msgstr "Outbound Campaigns View"
 
 # 20a6cdf456a143dcb4c0df4799a531ac
-#: ../../output_supervision.rst:49
+#: ../../output_supervision.rst:50
 msgid ""
 "Al igual que en el punto anterior, las campañas salientes tambien cuentan"
 " con un resumen actualizado en tiempo real, de los resultados de cada "
@@ -196,12 +205,12 @@ msgstr ""
 " (*)."
 
 # 71e6f91131a0445c8ecd90e8e50dd748
-#: ../../output_supervision.rst:53
+#: ../../output_supervision.rst:54
 msgid "*Figure4: view of realtime outbound campaigns*"
 msgstr ""
 
 # 85381ac47e504b3aadc370718c603343
-#: ../../output_supervision.rst:57
+#: ../../output_supervision.rst:58
 msgid ""
 "Se entiende por día el día a dia de operación desde las 00:00 hasta las "
 "23:59. En el siguiente día las estadísticas de campañas entrantes y "
@@ -211,7 +220,7 @@ msgstr ""
 "from 00:00 to 23:59. After that time range, statistics are reset."
 
 # dadc485e969a4d63ba91f6454ff19f4e
-#: ../../output_supervision.rst:61
+#: ../../output_supervision.rst:62
 msgid ""
 "Se entiende por Gestión positiva a una llamada que el agente calificó con"
 " una calificación de gestión, calificación capaz de ejecutar un "
@@ -219,3 +228,4 @@ msgid ""
 msgstr ""
 "Engaged Call means a call that the agent closes with an engaged call "
 "disposition, the one in charged of triggering a campaign form."
+

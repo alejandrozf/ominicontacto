@@ -85,7 +85,7 @@ class EstadisticasService():
                 opcion_calificacion__campana=campana,
                 fecha__range=(fecha_desde, fecha_hasta)).values(
                     'opcion_calificacion__nombre').annotate(
-                    cantidad=Count('opcion_calificacion__nombre'))
+                    cantidad=Count('opcion_calificacion__nombre')).order_by()
         else:
             # Contabilizar solo una calificacion por callid
             callids_utilizados = set()
@@ -308,7 +308,7 @@ class EstadisticasService():
         calificaciones_agentes_dict = calificaciones_campana_qs.values(
             'agente__user__first_name', 'agente__user__last_name', 'agente',
             'opcion_calificacion__nombre', 'opcion_calificacion__tipo').annotate(
-                cantidad=Count('pk'))
+                cantidad=Count('pk')).order_by()
         dict_agentes = {}
         for calificacion_data in calificaciones_agentes_dict:
             agente_id = calificacion_data['agente']

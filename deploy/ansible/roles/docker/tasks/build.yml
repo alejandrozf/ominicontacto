@@ -1,5 +1,7 @@
 ---
 
+# Estas tres primeras tasks tambien se hacen en los checks pero no incluyo todo el yml de checks pues solo necesito 3, asi que las pongo aca
+
 - name: Get the network/submask configured in default interface
   shell: default_if=$(ip route show | awk '/^default/ {print $5}'); route | grep $default_if|tail -1 |awk -F " " '{print $1"/"$3}'
   register: network_submask
@@ -18,11 +20,7 @@
   delegate_to: localhost
   register: ast_custom_exists
 
-- name: Create directory to copy Omnileads-Docker folders
-  file: path={{ item }} state=directory recurse=yes owner={{ docker_user }} group={{ docker_user }}
-  with_items:
-    - "{{ build_location }}/scripts"
-
+# Creo los directorios que van a contener toda la data del build
 - name: Create directories for build
   file: path={{ item }} state=directory recurse=yes owner={{ docker_user }} group={{ docker_user }}
   with_items:
@@ -32,7 +30,9 @@
     - "{{ kamailio_location }}"
     - "{{ nginx_location }}/conf.d"
     - "{{ omniapp_location }}/ominicontacto"
+    - "{{ build_location }}/scripts"
 
+# Genera los dockerfiles en cada template esta lo que va a renderizar dependiendo si es prodenv o devenv
 - name: Generate Dockerfiles images
   template: src=roles/docker/files/Dockerfiles/Dockerfile-{{ item }} dest={{ build_location}} owner={{ docker_user }} group={{ docker_user }}
   with_items:
@@ -45,10 +45,12 @@
     - postgresql
     - rtpengine
 
+# Se incluyen las tareas de configuracion de asterisk para prodenv
 - name: Creation of asterisk build content
   include: roles/asterisk/tasks/configuration.yml
   when: prodenv == 1
 
+# Se incluye el codigo django de omnileads para prodenv
 - name: Upload built (rsync to /ominicontacto)
   synchronize: "src={{ build_dir }}/{{ item }} dest={{ omniapp_location }}/ominicontacto delete=yes checksum=yes times=no"
   with_items:
@@ -70,6 +72,7 @@
   become_user: "{{ docker_user }}"
   when: prodenv == 1
 
+# Se incluyen otros archivos que se necesitan para el build, que estan en otras fuentes
 - name: Copy of Dockerfiles content
   copy: src={{ item.src }} dest={{ item.dest }}/ owner={{ docker_user }} group={{ docker_user }}
   with_items:
@@ -77,13 +80,14 @@
     - { src: "{{ repo_location }}/requirements", dest: "{{ build_location }}" }
     - { src: "{{ repo_location }}/ominicontacto_voip/kamailio-files/kamailio.cfg", dest: "{{ kamailio_location }}" }
 
+# Se generan los scripts y otros archivos de configuracion necesarios para el build
 - name: Generate Dockerfiles content
   template: src={{ item.src }} dest={{ item.dest }} mode=755 owner={{ docker_user }} group={{ docker_user }}
   with_items:
     - { src: roles/docker/files/scripts/build-asterisk.sh, dest: "{{ build_location }}/scripts" }
     - { src: roles/docker/files/scripts/create_language.sh, dest: "{{ build_location }}/scripts" }
-    - { src: roles/oml_server/templates/pip.conf, dest: "{{ build_location }}/scripts" }
-    - { src: roles/oml_server/templates/requirements.txt, dest: "{{ build_location }}/scripts" }
+  #  - { src: roles/oml_server/templates/pip.conf, dest: "{{ build_location }}/scripts" }
+  #  - { src: roles/oml_server/templates/requirements.txt, dest: "{{ build_location }}/scripts" }
     - { src: roles/docker/files/scripts/run_asterisk.sh, dest: "{{ build_location }}/scripts" }
     - { src: roles/docker/files/scripts/run_rtpengine.sh, dest: "{{ build_location }}/scripts" }
     - { src: roles/docker/files/scripts/run_omniapp.sh, dest: "{{ omniapp_location }}/run_omniapp.sh"}
@@ -93,13 +97,19 @@
     - { src: roles/omniapp_second/templates/etc/nginx.conf.j2, dest: "{{ nginx_location }}/nginx.conf"}
     - { src: roles/docker/files/scripts/mime.types, dest: "{{ nginx_location }}/mime.types"}
 
+# Se hace un login por consola en el dockerhub
 - name: Log into DockerHub
   docker_login:
     username: "{{ docker_login_user }}"
     password: "{{ docker_login_pass }}"
     email: "{{ docker_login_email }}"
   when: build_images == "true"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
+# Se hace el build/push de las imagenes, dependiendo de si es DE o PE los valores de los tags de dockers van a ser diferentes
 - name: Build images for PE and DE
   docker_image:
     build:
@@ -119,7 +129,12 @@
     - { dockerfile: "postgresql", image: "postgresql", version: "{{ postgresql_version }}" }
     - { dockerfile: "rtpengine", image: "rtpengine", version: "{{ rtpengine_version }}" }
   when: build_images == "true"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
 
+# Se buildean/pushean las las imagenes de kamailio y nginx, exclusivas para PE
 - name: Build {{ version }} images (PE)
   docker_image:
     build:
@@ -136,3 +151,7 @@
     - { dockerfile: "kamailio", image: "kamailio", version: "{{ version }}" }
     - { dockerfile: "nginx", image: "nginx", version: "{{ version }}" }
   when: prodenv == 1 and build_images == "true"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success

@@ -12,12 +12,13 @@ Este módulo permite visualizar el estado de las campañas entrantes, campañas 
 Visualización de status de Agentes
 ***********************************
 
-En la sección de agentes se observan todos los agentes logueados en el sistema y el estado en el que se encuentran (READY, OnCall, Paused, Dialing, Offline) .
+En la sección de agentes se observan todos los agentes logueados en el sistema y el estado en el que se encuentran (READY, OnCall, Paused, Dialing, Offline, Unavailable) .
 
 .. important::
 
   * Un agente debe estar asignado al menos a una campaña para que aparezca en este módulo
-  * Cuando un agente pasa al estado "Offline" permanece solo unos segundos en dicho estado y luego desaparece del listado de agentes.
+  * Cuando un agente pasa al estado "Offline" desaparece del listado de agentes.
+  * Cuando un agente pasa al estado "Unavailable" quiere decir que el agente perdió conexión o cerró el browser sin desloguearse.
 
 .. image:: images/output_supervision_agentes.png
 

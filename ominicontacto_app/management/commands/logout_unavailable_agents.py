@@ -24,6 +24,7 @@ from django.contrib.sessions.models import Session
 from django.utils.timezone import now
 
 from ominicontacto_app.services.asterisk.agent_activity import AgentActivityAmiManager
+from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorActivityAmiManager
 
 from ominicontacto_app.models import AgenteProfile
 
@@ -56,9 +57,20 @@ class Command(BaseCommand):
         if agentes_deslogueados:
             logger.info("Expired Sessions detected: " + str(agentes_deslogueados))
 
+    """
+    Comando para desloguear agentes que no se hayan deslogueado correctamente
+    """
+
+    help = u"Comando para desloguear agentes que no se hayan deslogueado correctamente"
+
+    def set_astdb_unavailable_state(self):
+        supervisor_activity = SupervisorActivityAmiManager()
+        supervisor_activity.escribir_agentes_unavailable_astdb()
+
     def handle(self, *args, **options):
         try:
             self.logout_expired_sessions()
+            self.set_astdb_unavailable_state()
         except Exception as e:
-            logging.error('Fallo del comando: {0}'.format(e))
-            raise CommandError('Fallo del comando: {0}'.format(e))
+            logging.error('Fallo del comando: {0}'.format(e.message))
+            raise CommandError('Fallo del comando: {0}'.format(e.message))

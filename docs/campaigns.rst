@@ -128,6 +128,7 @@ Podemos generar un formulario de ejemplo de encuesta de satisfacción con el asp
 
 *Figure 12: Survey campaign form*
 
+.. _about_calificaciones_forms:
 
 Campañas, Calificaciones & Formularios
 *****************************************

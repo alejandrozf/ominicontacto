@@ -34,7 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </thead>
     <tbody>
     {% for calificacion in object_list %}
-        <tr>
+        <tr id="{{ calificacion.nombre }}">
             <td>{{ calificacion.nombre }}</td>
             <td>
                 <div class="dropdown">

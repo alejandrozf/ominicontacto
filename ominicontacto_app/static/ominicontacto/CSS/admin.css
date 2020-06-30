@@ -887,3 +887,50 @@ body.wrapper-page-error {
     }
 
 }
+
+/* Personalization of Permisos*/
+.sticky_column{
+    position: sticky;
+    left:0;
+    z-index: 1;
+
+}
+.table_permisos{
+    display: flex;
+    overflow-x: visible;
+}
+#permiso_resp {
+    text-align: center;
+    display: inline-block;
+    background-color: white;
+}
+#main_grid .btn-secondary,
+#permiso_resp thead {
+    background-color: #8FC641;
+    color: white;
+}
+#permiso_resp tbody tr {
+    font-size: 0.85em;
+}
+#main_grid{
+    display: -webkit-inline-box;
+    position: relative;
+    width: 250px;
+}
+#main_grid .btn-secondary{
+    height: 20px;
+}
+#main_grid .btn-secondary::after{
+    vertical-align: .65em;
+}
+#permiso_resp thead td,
+#main_grid thead td {
+    height:50px;
+    display: block;
+}
+#permiso_resp tbody td,
+#main_grid tbody td {
+    height:45px;
+    display: block;
+
+}

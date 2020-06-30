@@ -72,7 +72,7 @@ Si el login no es exitoso, el método devuelve la siguiente salida:
 
 Endpoint obtener estructura de Base de Datos de Contactos
 *********************************************************
-Esta endpoint habilita la posibilidad de obtener información de los campos de una base de datos de contactos de una campaña. Con esta información será posible luego crear un contacto. Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`) o a un Supervisor (:ref:`about_supervisor_user`) que estén asociados a la campaña.
+Esta endpoint habilita la posibilidad de obtener información de los campos de una base de datos de contactos de una campaña. Con esta información será posible luego crear un contacto. Las credenciales deberán pertenecer a un Agente (:ref:`about_users`) o a un Supervisor (:ref:`about_users`) que estén asociados a la campaña.
 
 **URL**: POST https://<omnileads_addr>/api/v1/campaign/database_metadata/
 
@@ -98,7 +98,7 @@ En caso de haber errores se devolverá un JSON con el campo “status”:”ERRO
 
 Endpoint creacion de contacto
 *****************************
-Esta endpoint habilita la posibilidad de agregar un contacto a una base de datos de contactos de una campaña. Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`) o a un Supervisor (:ref:`about_supervisor_user`) que estén asociados a la campaña.
+Esta endpoint habilita la posibilidad de agregar un contacto a una base de datos de contactos de una campaña. Las credenciales deberán pertenecer a un Agente (:ref:`about_users`) o a un Supervisor (:ref:`about_users`) que estén asociados a la campaña.
 
 **URL**: POST https://<omnileads_addr>/api/v1/new_contact/
 
@@ -125,7 +125,7 @@ En caso de haber errores se devolverá un JSON con el campo “status”:”ERRO
 Endpoint de Generación de llamadas
 ***********************************
 
-Permite generar llamadas (click to call) desde un Sistema CRM Externo. Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`).
+Permite generar llamadas (click to call) desde un Sistema CRM Externo. Las credenciales deberán pertenecer a un Agente (:ref:`about_users`).
 
 **URL**: POST https://<omnileads_addr>/api/v1/makeCall
 
@@ -165,7 +165,7 @@ Endpoint listado de opciones de calificación
 
 **URL** GET https://<omnileads_addr>/api/v1/campaign/<idc:string>/dispositionOptions/<ids:integer>/  (2)
 
-Este método permite obtener un listado de las opciones de  calificación disponibles para calificar a un contacto en una campaña Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`).
+Este método permite obtener un listado de las opciones de  calificación disponibles para calificar a un contacto en una campaña Las credenciales deberán pertenecer a un Agente (:ref:`about_users`).
 
 Los parámetros de este endpoint se especifican en la url. El mismo tiene dos formas de uso, si usa la variante (1), con un solo parámetro, el valor del parámetro 'idc' deberá ser un entero especificando el id interno de una campaña de OML.
 
@@ -184,7 +184,7 @@ Endpoint listado de calificaciones
 ************************************
 
 Este método permite obtener un listado de las calificaciones que ha realizado un agente.
-Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`).
+Las credenciales deberán pertenecer a un Agente (:ref:`about_users`).
 
 **URL**: GET https://<omnileads_addr>/api/v1/disposition/
 
@@ -195,7 +195,7 @@ En caso de no haber errores se devolverá la lista de calificaciones realizadas 
 
 Endpoint crear nueva calificación
 **********************************
-Esta endpoint habilita la posibilidad de "calificar" una gestión sobre un contacto. Cuando un usuario del CRM finaliza una gestión, es normal que se cierre con una calificación, por lo que con éste método el Sistema CRM externo puede impactar la calificación en OMniLeads. Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`).
+Esta endpoint habilita la posibilidad de "calificar" una gestión sobre un contacto. Cuando un usuario del CRM finaliza una gestión, es normal que se cierre con una calificación, por lo que con éste método el Sistema CRM externo puede impactar la calificación en OMniLeads. Las credenciales deberán pertenecer a un Agente (:ref:`about_users`).
 
 **URL**: POST https://<omnileads_addr>/api/v1/disposition/
 
@@ -240,7 +240,7 @@ Si no se encuentra el id de la opcion de calificación en la bd de la campaña s
 Endpoint crear nuevo contacto y asignarle calificación
 *********************************************************
 Esta endpoint habilita la posibilidad de "calificar" una gestión al mismo tiempo crear un contacto, es decir, se crea el contacto y se le asocia a la calificación que se va a crear
-Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`).
+Las credenciales deberán pertenecer a un Agente (:ref:`about_users`).
 
 **URL**: POST https://<omnileads_addr>/api/v1/new_contact/disposition/
 
@@ -279,7 +279,7 @@ Endpoint para modificar una calificación existente
 
 Esta endpoint habilita la posibilidad de modificar una calificación existente en OMniLeads.
 
-Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`).
+Las credenciales deberán pertenecer a un Agente (:ref:`about_users`).
 
 **URL**: PUT https://<omnileads_addr>/api/v1/disposition/<idDisposition>
 

@@ -20,7 +20,9 @@
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
-
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/auditoria.css' %}" >
+{% endblock extra_css%}
 {% block head_js %}
   <script src="{% static 'ominicontacto/JS/agente/formularioCalificacion.js' %}"></script>
 {% endblock head_js %}
@@ -68,13 +70,20 @@
                         </td>
                     </tr>
                 {% endfor %}
-
-
-                <div {% if llamada_entrante %}class="hidden"{% endif %} data="toHide">
-                    {{calificacion_form.as_table}}
-                </div>
             </div>
             <div class="col-md-6">
+                <div {% if llamada_entrante %}class="hidden"{% endif %} data="toHide" id="calificacion_form">
+                    {{calificacion_form.as_table}}
+                </div>
+                {% with auditoria=calificacion_form.instance.obtener_auditoria %}
+                  {% if auditoria%}
+                      <div class="calificacion_auditada">
+                        <h2>{% trans 'Calificación Auditada'%}</h2>
+                        <p><b>{% trans 'Resultado Auditoria: '%}</b>{{auditoria.get_resultado_display}}</p>
+                        <p><b>{% trans 'Observaciones: '%}</b>{{auditoria.observaciones}}</p>
+                      </div>
+                  {% endif %}
+                {% endwith %}
                 <div {% if llamada_entrante %}class="hidden"{% endif %} data="toHide">
                     {% if calificacion_form.historico_calificaciones %}
                         {% include 'historico_calificaciones.html' with calificaciones=calificacion_form.instance.history.all %}

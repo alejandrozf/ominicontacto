@@ -23,26 +23,26 @@ from mock import patch
 from django.utils.translation import ugettext as _
 from django.urls import reverse
 
-from ominicontacto_app.tests.utiles import OMLBaseTest
+from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 from ominicontacto_app.tests.factories import (
     SistemaExternoFactory, QueueMemberFactory
 )
-from ominicontacto_app.models import AgenteEnSistemaExterno, Campana
+from ominicontacto_app.models import AgenteEnSistemaExterno, Campana, User
 
 
 class Click2CallAPITest(OMLBaseTest):
     """ Tests para la api de Click2Call"""
-    PWD = u'admin123'
 
     def setUp(self):
+        super(Click2CallAPITest, self).setUp()
 
         self.sistema_externo = SistemaExternoFactory()
         self.sistema_externo_2 = SistemaExternoFactory()
         usr_supervisor = self.crear_user_supervisor(username='sup1')
-        self.crear_supervisor_profile(usr_supervisor)
+        self.crear_supervisor_profile(user=usr_supervisor, rol=User.SUPERVISOR)
         usr_agente = self.crear_user_agente(username='agente1')
         self.agente = self.crear_agente_profile(usr_agente)
-        self.client.login(username=usr_agente.username, password=self.PWD)
+        self.client.login(username=usr_agente.username, password=PASSWORD)
         self.agente_2 = self.crear_agente_profile()
 
         self.campana = self.crear_campana_manual(cant_contactos=3,

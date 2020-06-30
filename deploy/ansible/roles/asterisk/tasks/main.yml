@@ -17,7 +17,7 @@
 #
 ---
 
-- debug: msg="Asterisk {{ asterisk_version }} is nost installed, proceeding to install"
+- debug: msg="Asterisk {{ asterisk_version }} is not installed, proceeding to install"
   when: asterisk_installed.stdout != asterisk_version
   tags: ['asterisk','postinstall']
 
@@ -25,22 +25,27 @@
   when: asterisk_installed.stdout == asterisk_version
   tags: ['asterisk','postinstall']
 
-- name: Uninstall previous asterisk version
-  file: state=absent path={{ item }}
-  with_items:
-    - "{{ asterisk_location }}/sbin/"
-    - "{{ asterisk_location }}/var/lib/"
-    - "{{ asterisk_location }}/lib64/"
-    - /usr/sbin/asterisk
+- name: Install asterisk-{{ asterisk_version }} package (from s3 source)
+  yum: name={{ s3_packages_url }}/asterisk-{{ asterisk_version }}-1.x86_64.rpm state=latest update_cache=yes
   when: asterisk_installed.stdout != asterisk_version
-  tags: ['never','postinstall']
+  tags: postinstall
+  retries: 3
+  delay: 3
+  ignore_errors: true
+  register: s3_download
+  until: s3_download is success
 
-- include: packages_installation.yml
-  tags: asterisk
+- debug: msg="The download of asterisk-{{ asterisk_version }} package from s3 source failed, trying the vps source"
+  when: asterisk_installed.stdout != asterisk_version and s3_download is failed
 
-- include: install.yml
-  when: asterisk_installed.stdout != asterisk_version
-  tags: ['asterisk','postinstall']
+- name: Install asterisk-{{ asterisk_version }} package (from vps source)
+  yum: name={{ vps_packages_url }}/asterisk-{{ asterisk_version }}-1.x86_64.rpm state=latest update_cache=yes
+  when: asterisk_installed.stdout != asterisk_version and s3_download is failed
+  tags: postinstall
+  retries: 3
+  delay: 3
+  register: vps_download
+  until: vps_download is success
 
 - include: configuration.yml
   tags: asterisk

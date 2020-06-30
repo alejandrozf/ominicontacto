@@ -46,7 +46,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </thead>
     <tbody id="t_body_ocultas">
         {% for sitio in sitios_externos %}
-            <tr>
+            <tr id="{{sitio.nombre}}">
                 <td>
                     <a  href="{% url 'modificar_sitio_externo' sitio.id %}">
                         {{ sitio.nombre }}
@@ -55,7 +55,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <td>
                     {{ sitio.url }}
                 </td>
-                <td>
+                <td id="{{ sitio.get_disparador_display }}">
                     {{ sitio.get_disparador_display }}
                 </td>
                 <td>

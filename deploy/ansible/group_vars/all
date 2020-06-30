@@ -21,22 +21,24 @@ kamailio_version: 5.2.3
 postgresql_old_version: 9.6
 postgresql_version: 11
 rtpengine_version: 5.5.3.1
-wombat_version: 20.02.1-271
+virtualenv_version: "1.7.0"
+wombat_version: 20.02.1-272
+asterisk_package: "{{ packages_url }}/asterisk-{{ asterisk_version }}-1.x86_64.rpm"
+kamailio_package: "{{ packages_url }}/kamailio-{{ kamailio_version }}-1.x86_64.rpm"
+rtpengine_package: "{{ packages_url }}/rtpengine-{{ rtpengine_version }}-1.x86_64.rpm"
+virtualenv_package: "{{ packages_url }}/virtualenv-{{ virtualenv_version }}-1.x86_64.rpm"
 ################ URL's ############################
 epel_repository: https://download-ib01.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 #URLS para descargar asterisk
-asterisk_repo: https://downloads.asterisk.org/pub/telephony/asterisk/old-releases/asterisk-{{ asterisk_version }}.tar.gz
-wombat: http://downloads.loway.ch/wd/WombatDialer-{{ wombat_version }}.tar.gz
-rtpengine_repo: https://github.com/sipwise/rtpengine/archive/mr{{ rtpengine_version }}.tar.gz
-kamailio_repo: https://github.com/kamailio/kamailio/archive/{{ kamailio_version }}.tar.gz
-res_json_repo: https://github.com/felipem1210/asterisk-res_json.git
-country_code: 54
+vps_packages_url: http://freetech.com.ar/rpms
+s3_packages_url: https://fts-public-packages.s3.amazonaws.com
 admin_user: admin
 usuario: omnileads
 session_cookie_age: 3600
 install_prefix: /opt/omnileads/
 asterisk_location: "{{ install_prefix }}asterisk"
 ast_agis_location: "{{ asterisk_location }}/var/lib/asterisk/agi-bin"
+ast_blacklist_location: "{{ asterisk_location }}/var/spool/asterisk/blacklist"
 ast_conf_location: "{{ asterisk_location }}/etc/asterisk"
 ast_logs_location: "{{ asterisk_location }}/var/log/asterisk"
 ast_sounds_location: "{{ asterisk_location }}/var/lib/asterisk/sounds"

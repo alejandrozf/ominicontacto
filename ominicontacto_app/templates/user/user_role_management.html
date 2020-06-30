@@ -1,0 +1,140 @@
+<!--
+Copyright (C) 2018 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'CSS/fixed-grid.css' %}">
+{% endblock extra_css %}
+{% block head_js %}
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
+    <script type="text/javascript" src="{% static 'JS/ext/mustache-4.0.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/supervision/userRoleManagement.js' %}"></script>
+{% endblock head_js %}
+
+{% block content %}
+<div class="container-fluid">
+    <input type="hidden" name="permisos" id="permisos" value="{{ permisos }}">
+    <input type="hidden" name="roles" id="roles" value="{{ roles }}">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>{% trans 'Asignación de permisos a Roles' %}</h1>
+        </div>
+        <div class="col-md-6">
+            <button id="create_role_btn" class="btn btn-primary">
+                {% trans 'Crear Rol' %}
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <label for="visible_roles"> {% trans "Mostrar:" %}</label>
+        </div>
+        <div class="col-md-3">
+            <select class="form-control" multiple name='visible_roles' id="visible_roles"></select>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="table-responsive table_permisos">
+            <div class="sticky_column">
+                <table class="table table-bordered" id="permiso_resp">
+                    <thead>
+                        <tr>
+                            <td>{% trans "Permiso" %}</td>
+                        </tr>
+                    </thead>
+                    <tbody id="permissions_row"></tbody>
+                </table>
+            </div>
+            <div id="main_grid"> 
+            </div>         
+        </div>
+    </div>
+</div>
+
+<!-- Modal Creacion -->
+<div class="modal fade" id="modalCreateRole" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title">{% trans 'Crear Rol' %}</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="new_role_name" name="new_role_name" class="form-control">
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="create_role_submit" class="btn btn-primary">{% trans 'Crear' %}</button>
+            </div>
+        </div>
+    </div>
+</div> 
+<!-- FIN Creacion -->
+
+<!-- Modal Imitar/Aplicar Permisos -->
+<div class="modal fade" id="modalApplyPermissions" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="apply_permissions_title" >{% trans 'Copiar Permisos de Rol' %}</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="apply_action" name="apply_action">
+                <input type="hidden" id="target_role" name="target_role">
+                <select id="role_model" name="role_model" class="form-control">
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="apply_permissions_submit" class="btn btn-primary">{% trans 'Aplicar' %}</button>
+            </div>
+        </div>
+    </div>
+</div> 
+<!-- FIN Imitar/Aplicar Permisos -->
+
+<!-- Modal Eliminar Rol -->
+<div class="modal fade" id="modalDeleteRole" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="apply_permissions_title" >{% trans '¿Desea eliminar el rol?' %}</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="role_to_delete" name="role_to_delete">
+                <label id='delete_role_label'></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="delete_role_submit" class="btn btn-primary">{% trans 'Borrar' %}</button>
+            </div>
+        </div>
+    </div>
+</div> 
+<!-- FIN Eliminar Rol -->
+{% endblock content%}

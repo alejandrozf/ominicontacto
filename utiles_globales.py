@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 
 import os
 
+from django.urls import resolve
 from django.conf import settings
 from django.forms import ValidationError
 from django.utils.translation import ugettext as _
@@ -106,6 +107,11 @@ def adicionar_render_unicode(pygal_object):
 
     pygal_object.render_unicode = render_unicode
     return pygal_object
+
+
+def request_url_name(request):
+    resolver = resolve(request.path_info)
+    return resolver.url_name
 
 
 class AddSettingsContextMixin(object):

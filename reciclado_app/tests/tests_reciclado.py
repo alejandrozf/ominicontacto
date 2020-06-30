@@ -102,7 +102,7 @@ class RecicladoTest(OMLBaseTest):
         calificaciones_query = self.campana.obtener_calificaciones().values(
             'opcion_calificacion__nombre', 'opcion_calificacion__id').annotate(
             Count('opcion_calificacion')).filter(
-            opcion_calificacion__count__gt=0)
+            opcion_calificacion__count__gt=0).order_by()
 
         contactados_dict = {}
         for contactado in calificados:

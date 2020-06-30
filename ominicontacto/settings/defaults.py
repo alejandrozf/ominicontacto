@@ -72,6 +72,7 @@ INSTALLED_APPS = [
     'constance',
     'django_js_reverse',
     'import_export',
+    'django_extensions',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -84,6 +85,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'defender.middleware.FailedLoginMiddleware',
+    'ominicontacto_app.middleware.permiso_oml.PermisoOMLMiddleware'
 ]
 
 
@@ -110,7 +112,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'ominicontacto_app.context_processors.admin_supervisor',
                 'ominicontacto_app.context_processors.global_settings',
                 'ominicontacto_app.context_processors.addon_menu_items',
             ],
@@ -369,10 +370,12 @@ REST_FRAMEWORK = {
 }
 
 LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'api_app/locale'),
     os.path.join(BASE_DIR, 'configuracion_telefonia_app/locale'),
     os.path.join(BASE_DIR, 'ominicontacto_app/locale'),
     os.path.join(BASE_DIR, 'reportes_app/locale'),
     os.path.join(BASE_DIR, 'reciclado_app/locale'),
+    os.path.join(BASE_DIR, 'supervision_app/locale'),
 )
 
 LANGUAGES = (

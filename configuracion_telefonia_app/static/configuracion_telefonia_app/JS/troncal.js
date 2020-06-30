@@ -38,7 +38,6 @@ endpoint/allow=alaw,ulaw\n\
 endpoint/dtmf_mode=rfc4733\n\
 endpoint/context=from-pstn\n\
 remote_hosts=****IPADDR-or-FQDN:PORT****\n\
-endpoint/from_user=****YOUR SIP_USERNAME****\n\
 outbound_auth/username=****YOUR SIP_USERNAME****\n\
 outbound_auth/password=****YOUR SIP_PASSWORD****'
     },
@@ -60,8 +59,7 @@ endpoint/dtmf_mode=rfc4733\n\
 endpoint/timers=yes\n\
 endpoint/language=es\n\
 endpoint/context=from-pstn\n\
-remote_hosts=****IPADDR-or-FQDN:PORT****\n\
-endpoint/from_user=****YOUR SIP_USER****',
+remote_hosts=****IPADDR-or-FQDN:PORT****',
     },
     {
         'name': 'PBX OmniLeads (LAN)',
@@ -72,7 +70,7 @@ accepts_registrations=no\n\
 sends_auth=yes\n\
 sends_registrations=no\n\
 accepts_auth=yes\n\
-endpoint/rtp_symmetric=nov\n\
+endpoint/rtp_symmetric=no\n\
 endpoint/force_rport=no\n\
 endpoint/rewrite_contact=no\n\
 endpoint/timers=yes\n\
@@ -84,8 +82,7 @@ remote_hosts=****IPADDR-or-FQDN:PORT****\n\
 inbound_auth/username=****SIP_USER PBX -> OML****\n\
 inbound_auth/password=****SIP_PASS PBX -> OML****\n\
 outbound_auth/username=****SIP_USER OML -> PBX****\n\
-outbound_auth/password=****SIP_PASS OML -> PBX****\n\
-endpoint/from_user=****SIP_USER OML -> PBX****',
+outbound_auth/password=****SIP_PASS OML -> PBX****',
     },
     {
         'name': 'PBX OmniLeads (NAT)',
@@ -108,19 +105,18 @@ remote_hosts=****IPADDR-or-FQDN:PORT****\n\
 inbound_auth/username=****SIP_USER PBX -> OML****\n\
 inbound_auth/password=****SIP_PASS PBX -> OML****\n\
 outbound_auth/username=****SIP_USER OML -> PBX****\n\
-outbound_auth/password=****SIP_PASS OML -> PBX****\n\
-endpoint/from_user=****SIP_USER OML -> PBX****',
+outbound_auth/password=****SIP_PASS OML -> PBX****',
     },
     {
-        'name': 'OMniLeads inside PBX',
+        'name': 'OML Docker',
         'template':
         'type=wizard\n\
 transport=trunk-nat-docker-transport\n\
 accepts_registrations=no\n\
 sends_auth=yes\n\
-sends_registrations=no\n\
-accepts_auth=yes\n\
-endpoint/rtp_symmetric=nov\n\
+sends_registrations=yes\n\
+accepts_auth=no\n\
+endpoint/rtp_symmetric=yes\n\
 endpoint/force_rport=yes\n\
 endpoint/rewrite_contact=yes\n\
 endpoint/timers=yes\n\
@@ -132,8 +128,7 @@ remote_hosts=****IPADDR-or-FQDN:PORT****\n\
 inbound_auth/username=****SIP_USER PBX -> OML****\n\
 inbound_auth/password=****SIP_PASS PBX -> OML****\n\
 outbound_auth/username=****SIP_USER OML -> PBX****\n\
-outbound_auth/password=****SIP_PASS OML -> PBX****\n\
-endpoint/from_user=****SIP_USER OML -> PBX****',
+outbound_auth/password=****SIP_PASS OML -> PBX****',
     },
     {
         'name': 'Custom',

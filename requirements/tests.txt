@@ -1,4 +1,0 @@
-# local installations requirements e.g, developer debug libs
-
--r base.txt
-mock==2.0.0

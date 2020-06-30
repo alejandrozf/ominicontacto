@@ -34,24 +34,30 @@ from ast import literal_eval
 
 from crontab import CronTab
 
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, _user_has_perm
 from django.contrib.sessions.models import Session
 from django.db import (models,
                        # connection
                        )
+
 from django.db.models import Max, Q, Count, Sum
 from django.db.utils import DatabaseError
 from django.conf import settings
-from django.core.exceptions import ValidationError, SuspiciousOperation
+from django.core.exceptions import ValidationError, SuspiciousOperation, ObjectDoesNotExist
 from django.core.validators import RegexValidator
 from django.forms.models import model_to_dict
 from django.utils.translation import ugettext_lazy as _
 from django.utils.timezone import now, timedelta
+
+from django_extensions.db.models import TimeStampedModel
+
 from simple_history.models import HistoricalRecords
 
 from ominicontacto_app.utiles import (
     ValidadorDeNombreDeCampoExtra, fecha_local, datetime_hora_maxima_dia,
     datetime_hora_minima_dia, remplace_espacio_por_guion, dividir_lista)
+from ominicontacto_app.permisos import PermisoOML
+PermisoOML
 
 logger = logging.getLogger(__name__)
 
@@ -61,11 +67,26 @@ SUBSITUTE_ALFANUMERICO = re.compile(r'[^\w]')
 
 
 class User(AbstractUser):
+
+    # Roles predefinidos
+    ADMINISTRADOR = 'Administrador'
+    GERENTE = 'Gerente'
+    SUPERVISOR = 'Supervisor'
+    REFERENTE = 'Referente'
+    AGENTE = 'Agente'
+    CLIENTE_WEBPHONE = 'Cliente Webphone'
+
     is_agente = models.BooleanField(default=False)
     is_supervisor = models.BooleanField(default=False)
     is_cliente_webphone = models.BooleanField(default=False)
     last_session_key = models.CharField(blank=True, null=True, max_length=40)
     borrado = models.BooleanField(default=False, editable=False)
+
+    @property
+    def rol(self):
+        # Se asume que tiene un solo grupo
+        rol = self.groups.first()
+        return rol
 
     def get_agente_profile(self):
         agente_profile = None
@@ -88,6 +109,8 @@ class User(AbstractUser):
         supervisor = self.get_supervisor_profile()
         if supervisor and supervisor.is_administrador:
             return True
+        # TODO: Tal vez no deberían incluirse los usuarios is_staff porque pueden llegar a crearse
+        # sin SupervisorProfile asociado
         elif self.is_staff:
             return True
         return False
@@ -118,13 +141,8 @@ class User(AbstractUser):
     def get_tiene_permiso_administracion(self):
         """Funcion devuelve true si tiene permiso de acceso a la pagina
         de adminstracion del sistema"""
-        if self.get_is_administrador():
-            return True
-        elif self.get_is_supervisor_normal():
-            return True
-        elif self.get_is_supervisor_customer():
-            return True
-        return False
+        # Indica si tiene SupervisorProfile asociado. (Tiene permisos de Gestión)
+        return hasattr(self, 'supervisorprofile')
 
     def get_es_administrador_o_supervisor_normal(self):
         """Funcion devuelve true si el usuario es Administrador o Supervisor Normal"""
@@ -133,6 +151,13 @@ class User(AbstractUser):
         elif self.get_is_supervisor_normal():
             return True
         return False
+
+    def tiene_permiso_oml(self, nombre_permiso):
+        if PermisoOML.objects.filter(codename=nombre_permiso).exists():
+            full_name = 'permiso_oml.{0}'.format(nombre_permiso)
+            return _user_has_perm(self, full_name, None)
+        # Si no existe el permiso la vista no esta restringida
+        return True
 
     def set_session_key(self, key):
         if self.last_session_key and not self.last_session_key == key:
@@ -310,6 +335,7 @@ class SupervisorProfile(models.Model):
     is_customer = models.BooleanField(default=False)
     borrado = models.BooleanField(default=False, editable=False)
     timestamp = models.CharField(max_length=64, blank=True, null=True)
+    # TODO: OML-1448 eliminar los campos timestamp y sip_password
 
     def __str__(self):
         return self.user.get_full_name()
@@ -1014,7 +1040,7 @@ class Campana(models.Model):
     )
     reported_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    outcid = models.IntegerField(null=True, blank=True)
+    outcid = models.CharField(max_length=128, null=True, blank=True)
     outr = models.ForeignKey('configuracion_telefonia_app.RutaSaliente', blank=True, null=True,
                              on_delete=models.CASCADE)
 
@@ -1406,9 +1432,6 @@ class Queue(models.Model):
 
     objects = QueueManager()
 
-    RINGALL = 'ringall'
-    # ring all available channels until one answers (default)
-
     RRORDERED = 'rrordered'
     # same as rrmemory, except the queue member order from config file is preserved
 
@@ -1425,7 +1448,6 @@ class Queue(models.Model):
     # round robin with memory, remember where we left off last ring pass
 
     STRATEGY_CHOICES = (
-        (RINGALL, 'Ringall'),
         (RRORDERED, 'Rrordered'),
         (LEASTRECENT, 'Leastrecent'),
         (FEWESTCALLS, 'Fewestcalls'),
@@ -2708,7 +2730,8 @@ class CalificacionClienteManager(models.Manager):
     def obtener_cantidad_calificacion_campana(self, campana):
         try:
             return self.values('calificacion').annotate(
-                cantidad=Count('calificacion')).filter(opcion_calificacion__campana=campana)
+                cantidad=Count('calificacion')).filter(
+                    opcion_calificacion__campana=campana).order_by()
         except CalificacionCliente.DoesNotExist:
             raise (SuspiciousOperation(_("No se encontro calificaciones ")))
 
@@ -2718,8 +2741,62 @@ class CalificacionClienteManager(models.Manager):
         """
         return self.filter(opcion_calificacion__tipo=OpcionCalificacion.GESTION)
 
+    def obtener_calificaciones_auditadas(self):
+        """
+        Devuelve todas las calificaciones con auditoria asociada
+        """
+        return self.filter(auditoriacalificacion__isnull=False)
 
-class CalificacionCliente(models.Model):
+    def obtener_calificaciones_auditoria(self):
+        """Devuelve un queryset con todas las calificaciones finales
+        de gestion o que tengan una auditoria asociada
+        """
+        calificaciones_gestion = self.obtener_calificaciones_gestion()
+        calificaciones_auditadas = self.obtener_calificaciones_auditadas()
+        result = calificaciones_gestion | calificaciones_auditadas
+        result = result.prefetch_related('auditoriacalificacion', 'contacto', 'agente')
+        return result.order_by('-fecha')
+
+    def calificacion_por_filtro(self, fecha_desde, fecha_hasta, agente, campana, grupo_agentes,
+                                id_contacto, id_contacto_externo, telefono, callid,
+                                status_auditoria):
+        """Devuelve un queryset con la las calificaciones de acuerdo a los filtros aplicados"""
+
+        calificaciones = self.obtener_calificaciones_auditoria()
+
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime_hora_minima_dia(fecha_desde)
+            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
+            calificaciones = calificaciones.filter(modified__range=(fecha_desde,
+                                                                    fecha_hasta))
+        if agente:
+            calificaciones = calificaciones.filter(agente=agente)
+        if campana:
+            calificaciones = calificaciones.filter(opcion_calificacion__campana=campana)
+        if grupo_agentes and not agente:
+            agentes_ids = list(AgenteProfile.objects.filter(grupo=grupo_agentes).values_list(
+                'pk', flat=True))
+            calificaciones = calificaciones.filter(agente__pk__in=agentes_ids)
+        if id_contacto_externo:
+            calificaciones = calificaciones.filter(contacto__id_externo=id_contacto_externo)
+        if id_contacto:
+            calificaciones = calificaciones.filter(contacto__pk=id_contacto)
+        if telefono:
+            calificaciones = calificaciones.filter(contacto__telefono__contains=telefono)
+        if callid:
+            calificaciones = calificaciones.filter(callid=callid)
+        if status_auditoria:
+            if AuditoriaCalificacion.es_pendiente(int(status_auditoria)):
+                calificaciones = calificaciones.filter(
+                    auditoriacalificacion__isnull=True)
+            else:
+                calificaciones = calificaciones.filter(
+                    auditoriacalificacion__resultado=status_auditoria)
+
+        return calificaciones
+
+
+class CalificacionCliente(TimeStampedModel, models.Model):
     objects = CalificacionClienteManager()
 
     contacto = models.ForeignKey(Contacto, on_delete=models.CASCADE)
@@ -2784,6 +2861,27 @@ class CalificacionCliente(models.Model):
         # return self.opcion_calificacion.es_agenda()
         return self.opcion_calificacion.tipo == OpcionCalificacion.AGENDA
 
+    def obtener_auditoria(self):
+        """Devuelve el valor de la auditoria asociada o None si no tiene
+        """
+        try:
+            auditoria = self.auditoriacalificacion
+        except ObjectDoesNotExist:
+            return None
+        return auditoria
+
+    def tiene_auditoria_pendiente(self):
+        return self.obtener_auditoria() is None
+
+    def tiene_auditoria_aprobada(self):
+        return self.obtener_auditoria().resultado == AuditoriaCalificacion.APROBADA
+
+    def tiene_auditoria_rechazada(self):
+        return self.obtener_auditoria().resultado == AuditoriaCalificacion.RECHAZADA
+
+    def tiene_auditoria_observada(self):
+        return self.obtener_auditoria().resultado == AuditoriaCalificacion.OBSERVADA
+
     @classmethod
     def obtener_califs_gestion_campanas(cls, campanas):
         """Obtiene las calificaciones históricas de gestión de un conjunto de
@@ -2808,6 +2906,53 @@ class RespuestaFormularioGestion(models.Model):
         return "Respuesta del Formulario para el contacto {0} de la campana{1} " \
                "{1} ".format(self.calificacion.contacto,
                              self.calificacion.opcion_calificacion.campana)
+
+
+class AuditoriaCalificacion(models.Model):
+    """Representa el resultado de la auditoría que realiza un auditor (o backofficer)
+    de un departamento
+    de backoffice sobre la calificacion de un agente sobre un contacto
+    """
+
+    # el auditor aprueba la calificacion
+    APROBADA = 0
+
+    # el auditor aprueba la calificacion
+    RECHAZADA = 1
+
+    # el auditor realiza algunas observaciones al agente
+    OBSERVADA = 2
+
+    RESULTADO_CHOICES = (
+        (APROBADA, _('Aprobada')),
+        (RECHAZADA, _('Rechazada')),
+        (OBSERVADA, _('Observada')),
+    )
+
+    calificacion = models.OneToOneField(CalificacionCliente, on_delete=models.CASCADE)
+    resultado = models.IntegerField(choices=RESULTADO_CHOICES)
+    observaciones = models.TextField(blank=True, null=True)
+
+    @classmethod
+    def es_pendiente(cls, valor_resultado):
+        "Determina si un valor corresponde a una auditoria aun pendiente"
+        return valor_resultado not in [cls.APROBADA, cls.RECHAZADA, cls.OBSERVADA]
+
+    @property
+    def es_aprobada(self):
+        return self.resultado == self.APROBADA
+
+    @property
+    def es_rechazada(self):
+        return self.resultado == self.RECHAZADA
+
+    @property
+    def es_observada(self):
+        return self.resultado == self.OBSERVADA
+
+    def __str__(self):
+        return str(_("Auditoría de calificacion con id={0} fue {1}".format(
+            self.calificacion.pk, self.get_resultado_display())))
 
 
 class Chat(models.Model):

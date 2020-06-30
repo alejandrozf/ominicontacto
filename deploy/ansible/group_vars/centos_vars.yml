@@ -11,4 +11,3 @@ postgresql_key: https://ftp.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-{{ pos
 postgresql_repo: https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7.6-x86_64/pgdg-redhat-repo-latest.noarch.rpm
 cron_location: /var/spool/cron/omnileads
 mariadb_host: localhost
-python_version_desired: "3.6.8"

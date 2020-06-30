@@ -17,59 +17,9 @@
 #
 ---
 
-# mensaje para mostrar si rtpengine no está instalado
-- debug: msg="RTPengine no está instalado, se procede a la instalación"
-  when: rtpengine_installed.stdout != rtpengine_version and rtpengine_host is not defined
-  tags: kamailio
-
-# mensaje si rtpengine está instalado
-- debug: msg="RTPengine ya se encuentra instalado se omite instalación"
-  when: rtpengine_installed.stdout == rtpengine_version and rtpengine_host is not defined
-
-- include: roles/kamailio/tasks/packages_installation.yml
-  tags: ['kamailio', 'postinstall']
-
-#  Si rtpengine_installed es failed incluyo la tarea de instalacion. Osea el sistema detecta cuando rtpengine está instalado o no y en caso de que no lo  esté lo instala sino omite
-- include: roles/kamailio/tasks/rtpengine_installation.yml
-  tags: kamailio
-  when: rtpengine_installed.stdout != rtpengine_version and rtpengine_host is not defined
-
-- include: roles/kamailio/tasks/rtpengine_configuration.yml
+- include: rtpengine.yml
   tags: kamailio
   when: rtpengine_host is not defined
 
-- debug: msg="Kamailio {{ kamailio_version }} is not installed, proceeding to install"
-  tags: ['kamailio','postinstall']
-  when: kamailio_installed.stdout != kamailio_version
-
-- debug: msg="Kamailio is already installed in version {{ kamailio_version }}, skipping installation steps"
-  tags: ['kamailio','postinstall']
-  when: kamailio_installed.stdout == kamailio_version
-
-- name: Uninstall actual kamailio version
-  file: state=absent path={{ kamailio_location }}/{{ item }}
-  with_items:
-    - sbin
-    - etc/kamailio
-    - lib64
-  when: kamailio_installed.stdout != kamailio_version
-  tags: postinstall
-
-- include: kamailio_installation.yml
-  tags: ['kamailio','postinstall']
-  when: kamailio_installed.stdout != kamailio_version
-
-- name: Copy trusted key/cert pair in kamailio location
-  copy: src={{ repo_location }}/deploy/certs/{{ item.src }} dest={{ item.dest }}
-  with_items:
-    - { src: "cert.pem", dest: "{{ kamailio_location }}/etc/certs/cert.pem" }
-    - { src: "key.pem", dest: "{{ kamailio_location }}/etc/certs/key.pem" }
-  when: trusted_certs == "true"
-  tags: postinstall
-
-- include: certificate_CA.yml
+- include: kamailio.yml
   tags: kamailio
-  when: certs_exists.rc == 1 and trusted_certs == "false"
-
-- include: kamailio_configuration.yml
-  tags: ['kamailio']

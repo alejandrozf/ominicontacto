@@ -1,125 +1,106 @@
 .. _about_install_remote:
 
-********************************
-Instalación desde ansible remoto
-********************************
+*************************************
+Método de instalación Deployer-nodes
+*************************************
+(:ref:`about_install_method_deployer`)
 
-Este tipo de instalación implica que la descarga del proyecto desde el repositorio y la ejecución del script de instalación se realiza desde
-la estación de trabajo del sysadmin, ya que precisamente al estar basada en Ansible la instalación se hace viable éste método.
 
-La ventaja principal de esta opción es que el sysadmin puede instalar y mantener varias instancias de OMniLeads desde un único nodo "deployer".
+Partimos desde el punto de haber realizado los pasos de pre-requisitos sobre el host. Volvemos a establcer conexión SSH con el host y se procede con la ejecución de la instalación desde
+nuestro deployer.
 
-.. image:: images/install_ansible_remote.png
+.. note::
 
-*Figure 1: remote ansible install*
+  Actualmente podemos establecer como *deployer* los SO Ubuntu-18.04 o Debian 10
 
-Preparación máquina para OMniLeads
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Asumiendo que contamos con el repositorio descargado dentro de cualquiera de los SO mencionados, debemos posicionarnos sobre el directorio donde reside el instalador e inventario.
+Luego escojer una versión de la App a desplegar:
 
-- Una instancia de GNU/Linux CentOS 7 (minimal)
-- 20 GB de espacio en disco
-- 4 GB de memoria RAM
-- Dejar la hora correctamente configurada en el host.
-- Configurar una *dirección IP* y un *hostname* fijo en el host destino de la instalación.
-- Instalar paquete kernel-devel, realizar el update del sistema operativo y rebotear la máquina.
+.. code:: bash
 
-.. code-block:: bash
+  cd ./ominicontacto/deploy/ansible
+  git checkout release-V.V.V
 
-      yum install kernel-devel -y
-      yum update -y
-      reboot
+Donde V.V.V es la combinación asociada a la versión de la App. Utilizando la tecla *Tab* se obtienen todas las versiones disponibles.
+
+.. image:: images/install_releases_deployer.png
+
+Una vez seleccionada la versión a instalar, se procede con la configuración de :ref:`about_install_inventory` y posterior ejecución del instalador.
 
 .. important::
 
-    Luego del reboot es importante revisar que el paquete kernel-devel coincida con el kernel que se muestre con el comando *uname -a*
+ Antes de seguir, asegurese que ha configurado su archivo de inventario, de acuerdo al tipo de instalación y arquitectura a desplegar.
 
+Despliegue de OMniLeads arquitectura tradicional (AIO)
+******************************************************
+(:ref:`about_install_contenedores`)
 
-.. _about_install_remote_deployer:
+Es necesario trabajar en la sección **[prodenv-aio]** del archivo de inventario, tal cual se explica allí.
+Luego se deben ajustar todas los parámetros y variables.
 
-Preparación del deployer
-^^^^^^^^^^^^^^^^^^^^^^^^^
+.. code:: bash
 
-- La máquina deployer puede ser un Linux de las siguientes distros: Centos 7, Ubuntu 18.04 o Debian (9 en adelante) 
-- Debemos contar con el paquete git para luego clonar el repositorio del proyecto y seleccionar el release a instalar.
+  [prodenv-aio]
+  #localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
+  201.216.40.210 ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
 
-.. code-block:: bash
+.. note::
 
-  yum install git (para centos)
-  apt-get install git (para debian o ubuntu)
-  git clone https://gitlab.com/omnileads/ominicontacto.git
-  cd ominicontacto
-  git checkout master
+  Se debe tener en cuenta que para instalación remota, se debe utilizar la línea con el parámetro "ansible_ssh_port=22" (donde 22 es el puerto por defecto, pero es normal tambien que se utilice otro puerto) dentro de la sección [prodenv-aio]
 
-- Debemos asegurarnos de contar con una clave pública generada en la carpeta /root/.ssh/
+Luego se deben ajustar todas los parámetros y variables.
+Una vez ajustado el archivo de inventario, se procede con la ejecución del script de instalación.
 
-.. code-block:: bash
+.. note::
 
-   code content
-   sudo ls -l /root/.ssh/
-
-Es probable que ya contemos con una clave pública (id_rsa.pub), como se aprecia en la *figura 1*.
-
-.. image:: images/install_id_rsa.png
-
-*Figure 1: ls -a /root/.ssh command output*
-
-En caso de NO disponer de una, se puede generar rápidamente con el siguiente comando:
-
-::
-
- sudo ssh-keygen
-
-.. image:: images/install_sshkeygen_remote.png
-
-*Figure 2: ssh-keygen command output*
-
-Este comando genera nuestra clave *id_rsa.pub* que mencionamos anteriormente.
-
-- Se comprueba la *dirección IP* y *hostname* que posee de la máquina donde se instalará OMniLeads, para luego ajustar el archivo de inventario.
-
-::
-
- hostname
- ip a
-
-.. image:: images/install_hostname_command.png
-
-*Figure 3: hostname command output*
-
-.. image:: images/install_ip_a_command.png
-
-*Figure 4: ip a command output*
-
-
-- En este paso debemos trabajar sobre el archivo de inventario disponible dentro del directorio "PATH/ominicontacto/deploy/ansible". Remitirse a esta sección: :ref:`about_install_inventory_docker`. No olvidar que estamos instalando **Ansible remoto**.
-
-- Luego en el inventory mismo debemos ajustar las :ref:`about_install_inventory_vars` de la instancia.
-
-Una vez ajustados todos los parámetros del archivo de inventario, procedemos con la ejecución de la instalación.
-
-Ejecución del script de instalación
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-La instalación de OMniLeads se realiza mediante el script *deploy.sh*, ubicado dentro de la carpeta deploy/ansible con respecto a la carpeta
-raíz del proyecto (ominicontacto).
-
-Una vez configuradas las variables citadas, se procede con la ejecución del script de instalación (uitilizando sudo).
+  Tener a mano el password de root del host a desplegar (remoto), ya que será solicitado la primera vez que el deployer instala la App.
 
 .. code-block:: bash
 
   sudo ./deploy.sh -i
 
-.. image:: images/install_deploysh_remote.png
+.. image:: images/install_deploy_remote_aio_exec.png
 
-*Figure 5: remote root password*
+Despliegue de OMniLeads sobre contenedores Docker
+*************************************************
+(:ref:`about_install_contenedores`)
 
-La diferencia respecto de la instalación 'Self-Hosted', es que el script nos pide la contraseña del usuario *root* del host destino de la instalación.
+Es necesario trabajar en la sección **[prodenv-conatainer]** del archivo de inventario, tal cual se explica allí.
+Luego se deben ajustar todas los parámetros y variables.
 
-El tiempo de instalación dependerá mayormente de la velocidad de conexión a internet del host sobre ek que se está corriendo el deplot de  OML, ya que se deben descargar, instalar y configurar varios paquetes correspondientes a los diferentes componentes de software que conforman el sistema.
+.. code:: bash
 
-Si la ejecución de la instalación finaliza exitosamente, se despliega una vista como la de la figura 6.
+  [prodenv-container]
+  #localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
+  190.22.40.72 ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation, replace X.X.X.X with the IP of Docker Host)
+
+.. note::
+
+  Se debe tener en cuenta que para instalación remota, se debe utilizar la línea con el parámetro "ansible_ssh_port=22" (donde 22 es el puerto por defecto, pero es normal tambien que se utilice otro puerto) dentro de la sección [prodenv-aio]
+
+Luego se deben ajustar todas los parámetros y variables.
+Una vez ajustado el archivo de inventario, se procede con la ejecución del script de instalación.
+
+.. note::
+
+  Tener a mano el password de root del host a desplegar (remoto), ya que será solicitado la primera vez que el deployer instala la App.
+
+.. code-block:: bash
+
+  sudo ./deploy.sh --docker-deploy
+
+.. image:: images/install_deploy_remote_docker_exec.png
+
+
+Instalación finalizada
+**********************
+
+Al cabo de unos minutos el proceso de instalación finaliza arrojando una pantalla que evidencia la culminación exitosa del procedimiento.
 
 .. image:: images/install_ok.png
 
-*Figure 6: OMniLeads installation ended succesfuly*
+.. important::
 
+  Una vez finalizado la instalación, aplicar un reinicio del host.
+
+Usted podrá proceder con el :ref:`about_first_access`

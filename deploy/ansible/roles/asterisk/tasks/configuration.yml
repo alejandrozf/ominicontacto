@@ -17,12 +17,6 @@
 #
 ---
 
-# Se crea el servicico de asterisk  para systemctl
-- name: Creation of asterisk.service
-  template: src=templates/asterisk.service dest=/etc/systemd/system/asterisk.service owner=root group=root mode=650
-  when: is_docker == "false"
-  tags: postinstall
-
 # Linkeo el binario a /usr/sbin
 - name: Create simbolic link of asterisk binarie
   file: state=link src={{ asterisk_location }}/sbin/asterisk dest=/usr/sbin/asterisk force=true
@@ -42,8 +36,8 @@
   when: is_docker == "false"
   tags: postinstall
 
-# Se copian si es un cluster
-- name: Copy of asterisk dialplan files for OML (cluster)
+# Se copian para docker prodenv (build)
+- name: Copy of asterisk dialplan files for OML (docker)
   copy: src={{ repo_location }}/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ ast_conf_location }} owner={{ usuario }} group={{ usuario }}
   with_items:
     - oml_extensions_bridgecall.conf
@@ -55,6 +49,7 @@
   when: prodenv == 1 and is_docker == "true"
   tags: postinstall
 
+#Se generan los archivos de configuracion que vienen en sus templates
 - name: Copy of asterisk config files
   template: "src=roles/asterisk/templates/conf/{{ item }} dest={{ ast_conf_location }}/{{ item }} owner={{ usuario }} group={{ usuario }} mode=755"
   with_items:
@@ -90,38 +85,16 @@
       - udptl.conf
   tags: postinstall
 
+# Se genera el archivo de logger para AIO
 - name: Copy of asterisk logger config file
   template: "src=roles/asterisk/templates/conf/logger.conf dest={{ ast_conf_location }}/logger.conf owner={{ usuario }} group={{ usuario }} mode=755"
   when: is_docker == "false"
   tags: postinstall
 
 # Los archivos-no-enlaces se copian a la a /etc/asterisk
-- name: Copy of all asterisk config files
+- name: Copy of custom/override files
   copy: "src=roles/asterisk/templates/conf/archivos-no-enlaces/ dest={{ ast_conf_location }}/ owner={{ usuario }} group={{ usuario }} mode=755"
-
-- name: Copy of dialplan custom and override files
-  copy: "src=roles/asterisk/templates/conf/archivos-no-enlaces/{{ item }} dest={{ ast_conf_location }}/ owner={{ usuario }} group={{ usuario }} mode=755"
-  with_items:
-    - oml_extensions_bridgecall_custom.conf
-    - oml_extensions_commonsub_custom.conf
-    - oml_extensions_modules_custom.conf
-    - oml_extensions_postcall_custom.conf
-    - oml_extensions_precall_custom.conf
-    - oml_extensions_bridgecall_override.conf
-    - oml_extensions_commonsub_override.conf
-    - oml_extensions_modules_override.conf
-    - oml_extensions_postcall_override.conf
-    - oml_extensions_precall_override.conf
-  tags: postinstall
   when: ast_custom_exists.rc != 0
-
-- name: Copy of pjsip custom and override files
-  copy: "src=roles/asterisk/templates/conf/archivos-no-enlaces/{{ item }} dest={{ ast_conf_location }}/ owner={{ usuario }} group={{ usuario }} mode=755"
-  with_items:
-    - oml_pjsip_custom.conf
-    - oml_pjsip_wizard_custom.conf
-    - oml_pjsip_override.conf
-    - oml_pjsip_wizard_override.conf
   tags: postinstall
 
 # Genero los agis desde ansible
@@ -136,11 +109,13 @@
   become_method: sudo
   tags: postinstall
 
+# Se borra el archivo de cron de la vieja ubicacion que tenia desde 1.2.X para atras
 - name: Erase omnileads crontab.d task
   file: state=absent path=/etc/cron.d/cron-omnileads
   when: is_docker == "false" and MONITORFORMAT == "mp3"
   tags: postinstall
 
+# Se genera el archivo de crontab para AIO.
 - name: Create crontab file
   template: src=templates/cron-grabaciones dest={{ cron_location }} owner={{ usuario }} group={{ usuario }} mode=600 force=yes
   tags: postinstall
@@ -154,9 +129,12 @@
     - odbc.ini
   tags: postinstall
 
-# Creo los directorios que tendran los audios subidos por la web
-- name: Make of the sounds dirs
-  file: state=directory path={{ ast_sounds_location }}/oml owner={{ usuario }} group={{ usuario }} mode=755
+# Creo los irectorios que tendran los audios subidos por la web
+- name: Creation of the sounds and blacklist dirs
+  file: state=directory path={{ item }} owner={{ usuario }} group={{ usuario }} mode=755
+  with_items:
+    - "{{ ast_sounds_location }}/oml"
+    - "{{ ast_blacklist_location }}"
   when: is_docker == "false"
   tags: postinstall
 

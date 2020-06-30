@@ -592,8 +592,8 @@ class SupervisorCampanaTests(CampanasTests):
         self.client.post(url, post_step4_data, follow=True)
         self.client.post(url, post_step5_data, follow=True)
 
-        self.assertEqual(list(AgenteEnContacto.objects.values_list('agente_id', flat=True)),
-                         [self.agente_profile.pk, agente_2.pk])
+        self.assertEqual(set(list(AgenteEnContacto.objects.values_list('agente_id', flat=True))),
+                         set([self.agente_profile.pk, agente_2.pk]))
 
     def test_usuario_no_agente_no_obtiene_contacto_campana_preview(self):
         url = reverse('campana_preview_dispatcher', args=[self.campana_activa.pk])
@@ -735,7 +735,7 @@ class SupervisorCampanaTests(CampanasTests):
             '1-audio_de_ingreso': audio_ingreso.pk,
             '1-maxlen': 1,
             '1-servicelevel': 1,
-            '1-strategy': 'ringall',
+            '1-strategy': 'rrordered',
             '1-weight': 1,
             '1-wrapuptime': 2,
             '1-wait': 1,
@@ -807,7 +807,7 @@ class SupervisorCampanaTests(CampanasTests):
             '1-audio_de_ingreso': audio_ingreso.pk,
             '1-maxlen': 1,
             '1-servicelevel': 1,
-            '1-strategy': 'ringall',
+            '1-strategy': 'rrordered',
             '1-weight': 1,
             '1-wait': 1,
             '1-auto_grabacion': 'on',

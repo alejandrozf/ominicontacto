@@ -13,7 +13,7 @@ services:
       - AMI_USER=${AMI_USER}
       - AMI_PASSWORD=${AMI_PASSWORD}
       - ASTERISK_LOCATION=${ASTERISK_LOCATION}
-      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - PATH=${PATH}
       - PGPASSWORD=${PGPASSWORD}
       - PGHOST=${PGHOST}
       - PGUSER=${PGUSER}
@@ -41,6 +41,7 @@ services:
       - ./sounds:/var/lib/asterisk/sounds/
       - ast_conf_files:/etc/asterisk/
 {% endif %}
+      - blacklist:/var/spool/asterisk/blacklist
     working_dir: /etc/asterisk
 
   dialer:
@@ -71,7 +72,7 @@ services:
       - asterisk
     dns: 8.8.8.8
     environment:
-      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - PATH=${PATH}
       - TZ=${TZ}
     image: {{ kamailio_builded_image }}
     networks:
@@ -110,14 +111,18 @@ services:
     container_name: oml-{{ nginx_fqdn }}-{{ customer }}
     dns: 8.8.8.8
     environment:
-      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - PATH=${PATH}
       - TZ={{ TZ }}
     image: {{ nginx_builded_image }}
     networks:
       - {{ subnet_name }}
     privileged: true
     ports:
+{% if external_port is defined %}
+     - "${EXTERNAL_PORT}:443/tcp"
+{% else %}
      - "${NGINX_EXT_PORT}:443/tcp"
+{% endif %}
     restart: on-failure
     stop_grace_period: 1m30s
     volumes:
@@ -145,14 +150,22 @@ services:
       - DOCKER_IP=${DOCKER_IP}
       - LOGIN_FAILURE_LIMIT=${LOGIN_FAILURE_LIMIT}
       - MONITORFORMAT=${MONITORFORMAT}
+{% if external_hostname is defined %}
+      - NGINX_HOSTNAME=${EXTERNAL_HOSTNAME}
+{% else %}
       - NGINX_HOSTNAME=${DOCKER_HOSTNAME}
+{% endif %}
       - EPHEMERAL_USER_TTL=${ECTTL}
+{% if external_port is defined %}
+      - EXTERNAL_PORT=${EXTERNAL_PORT}
+{% else %}
       - EXTERNAL_PORT=${NGINX_EXT_PORT}
+{% endif %}
       - INSTALL_PREFIX=${INSTALL_PREFIX}
       - KAMAILIO_HOSTNAME=${KAMAILIO_HOSTNAME}
       - KAMAILIO_LOCATION=${KAMAILIO_LOCATION}
       - OMNILEADS_HOSTNAME=${OMNILEADS_HOSTNAME}
-      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - PATH=${PATH}
       - PGHOST=${PGHOST}
       - PGDATABASE=${PGDATABASE}
       - PGUSER=${PGUSER}
@@ -187,11 +200,12 @@ services:
       - grabaciones:{{ install_prefix }}grabaciones
       - sounds:/var/lib/asterisk/sounds/
 {% else %}
-      - ./recordings:/opt/omnileads/grabaciones
       - ast_conf_files:/etc/asterisk/
+      - ./recordings:/opt/omnileads/grabaciones
       - ./sounds:/var/lib/asterisk/sounds/
     #  - ominicontacto:{{ install_prefix }}ominicontacto/
 {% endif %}
+      - blacklist:/var/spool/asterisk/blacklist
     working_dir: {{ install_prefix}}ominicontacto
 
 {% if devenv == 1 %}
@@ -284,3 +298,4 @@ volumes:
   ast_conf_files:
   #ominicontacto:
 {% endif %}
+  blacklist:

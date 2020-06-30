@@ -1,0 +1,118 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
+---
+
+ # Se imprime que kamailio no esta instalado si la version actual es inferior a la requerida
+- debug: msg="Kamailio {{ kamailio_version }} is not installed, proceeding to install"
+  tags: postinstall
+  when: kamailio_installed.stdout != kamailio_version
+
+# Por lo contrario se imprime que ya está instalada la version mas actual
+- debug: msg="Kamailio is already installed in version {{ kamailio_version }}, skipping installation steps"
+  tags: postinstall
+  when: kamailio_installed.stdout == kamailio_version
+
+- name: Install kamailio-{{ kamailio_version }} package (from s3 source)
+  yum: name={{ s3_packages_url }}/kamailio-{{ kamailio_version }}-1.x86_64.rpm state=latest update_cache=yes
+  when: kamailio_installed.stdout != kamailio_version
+  tags: postinstall
+  retries: 3
+  delay: 3
+  register: s3_download
+  until: s3_download is success
+  ignore_errors: true
+
+- debug: msg="The download of kamailio-{{ kamailio_version }} package from s3 source failed, trying the vps source"
+  when: kamailio_installed.stdout != kamailio_version and s3_download is failed
+
+- name: Install kamailio-{{ kamailio_version }} package (from vps source)
+  yum: name={{ vps_packages_url }}/kamailio-{{ kamailio_version }}-1.x86_64.rpm state=latest update_cache=yes
+  when: kamailio_installed.stdout != kamailio_version and s3_download is failed
+  tags: postinstall
+  retries: 3
+  delay: 3
+  register: vps_download
+  until: vps_download is success
+
+# Si existen trusted certs se ubican en donde kamailio los necesita
+- name: Copy trusted key/cert pair in kamailio location
+  copy: src={{ repo_location }}/deploy/certs/{{ item.src }} dest={{ item.dest }}
+  with_items:
+    - { src: "cert.pem", dest: "{{ kamailio_location }}/etc/certs/cert.pem" }
+    - { src: "key.pem", dest: "{{ kamailio_location }}/etc/certs/key.pem" }
+  when: trusted_certs == "true"
+  tags: postinstall
+
+# Si no existen trusted certs ejecuta las tareas para crear los certs autofirmados
+- include: certificate_CA.yml
+  tags: kamailio
+  when: certs_exists.rc == 1 and trusted_certs == "false"
+
+# Es necesario crear el directorio donde va a estar el pid de kamailio
+- name: Creation of kamamailio run directories
+  file: "path={{ item }} state=directory mode=0755"
+  with_items:
+      - "{{ kamailio_location }}/run/"
+      - "{{ kamailio_location }}/run/kamailio/"
+
+# Se crea el directorio y el archivo para el log
+- name: Create kamailio.log file and directory
+  file: path=/var/log/kamailio/ state=directory mode=0755
+
+- file: path=/var/log/kamailio/kamailio.log state=touch mode=0755
+
+# Se le pone de ownership a la carpeta de kamailio el usuario omnileads
+- name: Change owner of kamailio directory
+  file: state=directory path={{ kamailio_location }} owner={{ usuario }} group={{ usuario }} recurse=yes
+  tags: postinstall
+  
+# Se crea el archivo kamailio-local, Este archivo contiene las variables que usa el kamailio.cfg
+- name: Creation of kamailio-local.cfg file
+  template: src=templates/etc/kamailio-local.cfg dest={{ kamailio_location }}/etc/kamailio/ owner={{ usuario }} group={{ usuario }}
+  tags: postinstall
+
+# Se borra el kamailio.cfg que se crea por default a  la  hora de instalar
+- name: Erase of default kamailio.cfg file
+  shell: rm -rf {{ kamailio_location }}/etc/kamailio/kamailio.cfg
+  tags: postinstall
+
+# Se linkea el kamailio.cfg de omnileads a su ubicacion /etc/kamailio
+- name: Link kamailio.cfg repo file to {{ kamailio_location }}
+  file: state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/kamailio-files/kamailio.cfg dest={{ kamailio_location }}/etc/kamailio/kamailio.cfg force=true owner={{ usuario }} group={{ usuario }} mode=644
+  tags: postinstall
+
+# Linkeamos dos binarios de kamailio que son necesarios para el buen funcionamiento del proceso de autenticacion
+- name: Link kamcmd binarie to /usr/sbin
+  file: state=link src={{ kamailio_location }}/sbin/kamcmd dest=/usr/sbin/kamcmd mode=755 force=true
+
+- name: Link kamctl binarie to /usr/sbin
+  file: state=link src={{ kamailio_location }}/sbin/kamctl dest=/usr/sbin/kamctl mode=755 force=true
+
+# Habilitamos y empezamos redis. Redis es necesario para rtpengine y para django-defender
+- name: Start and enable redis service
+  service: name=redis state=restarted enabled=yes
+
+# Restarteo kamailio
+- name: Restart kamailio service
+  systemd: name=kamailio state=restarted enabled=yes daemon_reload=yes
+  tags: postinstall
+
+# Se restartea rsyslog se habilita kamailio y se hace el daemon-reload.
+- name: Restart de rsyslog
+  service: name=rsyslog.service state=restarted enabled=yes
+  tags: postinstall

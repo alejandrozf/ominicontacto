@@ -21,9 +21,11 @@ from __future__ import unicode_literals
 
 from django.conf.urls import url, include
 from rest_framework import routers
+from django.contrib.auth.decorators import login_required
 
 from api_app.views.base import login, ContactoCreateView, CampaignDatabaseMetadataView
-from api_app.views.administrador import AgentesActivosGrupoViewSet
+from api_app.views.administrador import (
+    AgentesActivosGrupoViewSet, CrearRolView, EliminarRolView, ActualizarPermisosDeRolView)
 from api_app.views.supervisor import (
     SupervisorCampanasActivasViewSet, AgentesStatusAPIView, StatusCampanasEntrantesView,
     StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView, LlamadasDeCampanaView,
@@ -34,8 +36,6 @@ from api_app.views.agente import (
     API_ObtenerContactosCampanaView, Click2CallView, AgentLogoutView,
     AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk
 )
-
-from ominicontacto_app.auth.decorators import supervisor_requerido, agente_requerido
 
 router = routers.DefaultRouter()
 
@@ -67,13 +67,9 @@ router.register(
 
 
 urlpatterns = [
-    # ###########  GRANDI  ############ #
-    url(r'api/v1/sip/credentials/agent/', ObtenerCredencialesSIPAgenteView.as_view(),
-        name='api_credenciales_sip_agente'),
 
     # ###########   TODOS/BASE    ############ #
     url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'api/v1/login', login, name='api_login'),
 
     url(r'api/v1/new_contact/', ContactoCreateView.as_view(),
@@ -81,6 +77,30 @@ urlpatterns = [
     url(r'api/v1/campaign/database_metadata/', CampaignDatabaseMetadataView.as_view(),
         name='api_campaign_database_metadata'),
 
+    # ###########   ADMINISTRADOR    ############ #
+    url(r'api/v1/permissions/new_role/$',
+        CrearRolView.as_view(),
+        name='api_new_role'),
+    url(r'api/v1/permissions/delete_role/$',
+        EliminarRolView.as_view(),
+        name='api_delete_role'),
+    url(r'api/v1/permissions/update_role_permissions/$',
+        ActualizarPermisosDeRolView.as_view(),
+        name='api_update_role_permissions'),
+
+    # ###########   SUPERVISOR    ############ #
+    url(r'api/v1/supervision/agentes',
+        login_required(AgentesStatusAPIView.as_view()),
+        name='api_agentes_activos'),
+    url('api/v1/supervision/status_campanas/entrantes/$',
+        login_required(StatusCampanasEntrantesView.as_view()),
+        name='api_supervision_campanas_entrantes'),
+    url('api/v1/supervision/status_campanas/salientes/$',
+        login_required(StatusCampanasSalientesView.as_view()),
+        name='api_supervision_campanas_salientes'),
+    url(r'api/v1/supervision/accion_sobre_agente/(?P<pk>\d+)/$',
+        login_required(InteraccionDeSupervisorSobreAgenteView.as_view()),
+        name='api_accion_sobre_agente'),
     url(r'^api_supervision/llamadas_campana/(?P<pk_campana>\d+)/$',
         LlamadasDeCampanaView.as_view(),
         name='api_supervision_llamadas_campana',
@@ -90,19 +110,6 @@ urlpatterns = [
         name='api_supervision_calificaciones_campana',
         ),
 
-    # ###########   SUPERVISOR    ############ #
-    url(r'api/v1/supervision/agentes',
-        supervisor_requerido(AgentesStatusAPIView.as_view()),
-        name='api_agentes_activos'),
-    url('api/v1/supervision/status_campanas/entrantes/$',
-        supervisor_requerido(StatusCampanasEntrantesView.as_view()),
-        name='api_supervision_campanas_entrantes'),
-    url('api/v1/supervision/status_campanas/salientes/$',
-        supervisor_requerido(StatusCampanasSalientesView.as_view()),
-        name='api_supervision_campanas_salientes'),
-    url(r'api/v1/supervision/accion_sobre_agente/(?P<pk>\d+)/$',
-        supervisor_requerido(InteraccionDeSupervisorSobreAgenteView.as_view()),
-        name='api_accion_sobre_agente'),
 
     # ###########     AGENTE      ############ #
     url(r'^api/v1/campaign/(?P<pk_campana>\d+)/contacts/$',
@@ -114,11 +121,13 @@ urlpatterns = [
         AgentLoginAsterisk.as_view(), name='api_agent_asterisk_login'),
     url(r'^api/v1/asterisk_logout/$',
         AgentLogoutAsterisk.as_view(), name='api_agent_asterisk_logout'),
-    url(r'^agente/logout/$', agente_requerido(AgentLogoutView.as_view()),
+    url(r'^agente/logout/$', login_required(AgentLogoutView.as_view()),
         name='api_agente_logout'),
     url(r'^api/v1/asterisk_pause/$',
         AgentPauseAsterisk.as_view(), name='api_make_pause'),
     url(r'^api/v1/asterisk_unpause/$',
         AgentUnpauseAsterisk.as_view(), name='api_make_unpause'),
+    url(r'api/v1/sip/credentials/agent/', ObtenerCredencialesSIPAgenteView.as_view(),
+        name='api_credenciales_sip_agente'),
 
 ]

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-26 14:24-0300\n"
+"POT-Creation-Date: 2020-06-09 10:54-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,146 +15,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: api_app/forms.py:53 api_app/forms.py:98
-#: api_app/tests/tests_api_click2call.py:136
-#: api_app/tests/tests_api_click2call.py:208
-msgid "El agente no participa en la campaña."
-msgstr "The agent is not related to campaign"
-
-#: api_app/forms.py:62 api_app/tests/tests_api_click2call.py:144
-msgid "El contacto no corresponde a la campaña."
-msgstr "The contact is not related to campaign."
-
-#: api_app/forms.py:100 api_app/tests/tests_api_click2call.py:174
-#: api_app/tests/tests_api_click2call.py:196
-msgid "El agente no corresponde al sistema externo."
-msgstr "The agent is not related to external system."
-
-#: api_app/tests/tests_api_click2call.py:105
-#: api_app/tests/tests_api_click2call.py:113
-#: api_app/tests/tests_api_click2call.py:121
-#: api_app/tests/tests_api_click2call.py:166
-msgid "Escoja una opción válida. Esa opción no está entre las disponibles."
-msgstr "Select a valid option. That option is not available."
-
-#: api_app/tests/tests_api_click2call.py:158
-#: api_app/tests/tests_api_contactos.py:170
-#: api_app/tests/tests_api_contactos.py:262 api_app/views/agente.py:197
-#: api_app/views/base.py:86 api_app/views/base.py:214
-msgid "Sistema externo inexistente."
-msgstr "Unkown external system"
-
-#: api_app/tests/tests_api_contactos.py:114 api_app/views/base.py:171
-msgid "Contacto agregado"
-msgstr "Contact added"
-
-#: api_app/tests/tests_api_contactos.py:142
-#: api_app/tests/tests_api_contactos.py:160
-#: api_app/tests/tests_api_contactos.py:229
-#: api_app/tests/tests_api_contactos.py:252 api_app/views/base.py:117
-#: api_app/views/base.py:246
-msgid "No tiene permiso para editar la campaña."
-msgstr "You don't have permission to edit the campaign"
-
-#: api_app/tests/tests_api_contactos.py:178
-#: api_app/tests/tests_api_contactos.py:195
-#: api_app/tests/tests_api_contactos.py:272
-#: api_app/tests/tests_api_contactos.py:292 api_app/views/base.py:110
-#: api_app/views/base.py:239
-msgid "Campaña inexistente."
-msgstr "Campaign not found"
-
-#: api_app/tests/tests_api_contactos.py:186
-#: api_app/tests/tests_api_contactos.py:282 api_app/views/base.py:98
-#: api_app/views/base.py:226
-msgid "Debe indicar un idCampaign válido."
-msgstr "You must provide a valid idCampaign"
-
-#: api_app/tests/tests_api_contactos.py:302
-msgid "Ya existe un contacto con ese id externo en la base de datos"
-msgstr "Already exists a contact with this external id on the database"
-
-#: api_app/tests/tests_api_contactos.py:334 api_app/views/base.py:134
-msgid "El campo es obligatorio"
-msgstr "The field is required"
-
-#: api_app/tests/tests_api_contactos.py:345 api_app/views/base.py:126
-msgid "Se recibieron campos incorrectos"
-msgstr "Incorrect fields were received"
-
-#: api_app/views/agente.py:64
-msgid "Error al generar sip password"
-msgstr "Error creating sip password"
-
-#: api_app/views/agente.py:196 api_app/views/agente.py:230
-#: api_app/views/base.py:75 api_app/views/base.py:203
-msgid "Hubo errores en los datos recibidos"
-msgstr "There were errors on received data"
-
-#: api_app/views/agente.py:221
-msgid "Error al ejecutar la llamada"
-msgstr "Error when executing the call"
-
-#: api_app/views/supervisor.py:145
-msgid "Recibidas"
-msgstr "Received"
-
-#: api_app/views/supervisor.py:146
-msgid "Efectuadas"
-msgstr "Dialed"
-
-#: api_app/views/supervisor.py:147
-msgid "Atendidas"
-msgstr "Attended"
-
-#: api_app/views/supervisor.py:148
-msgid "Conectadas"
-msgstr "Connected"
-
-#: api_app/views/supervisor.py:149
-msgid "No Conectadas"
-msgstr "Not connected"
-
-#: api_app/views/supervisor.py:150
-msgid "Abandonadas"
-msgstr "Abandon"
-
-#: api_app/views/supervisor.py:151
-msgid "Expiradas"
-msgstr "Expired"
-
-#: api_app/views/supervisor.py:152
-msgid "Tiempo de Espera de Conexión(prom.)"
-msgstr "Waiting time for connection(avg.)"
-
-#: api_app/views/supervisor.py:153
-msgid "Tiempo de Espera de Atención(prom.)"
-msgstr "Waiting time for attention(avg.)"
-
-#: api_app/views/supervisor.py:154
-msgid "Tiempo de Abandono(prom.)"
-msgstr "Abandon time(avg.)"
-
-#: api_app/views/supervisor.py:157
-msgid "Efectuadas Manuales"
-msgstr "Manual dialed calls"
-
-#: api_app/views/supervisor.py:158
-msgid "Conectadas Manuales"
-msgstr "Manual connected calls"
-
-#: api_app/views/supervisor.py:159
-msgid "No Conectadas Manuales"
-msgstr "Manual not connected calls"
-
-#: api_app/views/supervisor.py:160
-msgid "Tiempo de Espera de Conexión Manuales(prom.)"
-msgstr "Manual calls waiting time for connection(avg.)"
-
-#: api_app/views/supervisor.py:180 api_app/views/supervisor.py:195
-msgid "No existe la campaña"
-msgstr "Campaign does not exists"
 
 #: configuracion_telefonia_app/apps.py:35
 #: configuracion_telefonia_app/templates/lista_troncal_sip.html:25
@@ -211,6 +71,168 @@ msgstr "Music on Hold playlists"
 #: configuracion_telefonia_app/apps.py:91
 msgid "Telefonía"
 msgstr "Telephony"
+
+#: configuracion_telefonia_app/apps.py:185
+msgid "Ver la lista de Troncales SIP"
+msgstr "View SIP trunks list"
+
+#: configuracion_telefonia_app/apps.py:187
+msgid "Crear un Troncal SIP"
+msgstr "Create SIP trunk"
+
+#: configuracion_telefonia_app/apps.py:189
+msgid "Editar un Troncal SIP"
+msgstr "Edit SIP trunk"
+
+#: configuracion_telefonia_app/apps.py:191
+msgid "Eliminar un Troncal SIP"
+msgstr "Delete SIP trunk"
+
+#: configuracion_telefonia_app/apps.py:193
+msgid "Ver la lista de Rutas Salientes"
+msgstr "View Outbound route list"
+
+#: configuracion_telefonia_app/apps.py:195
+msgid "Modificar el orden de las Rutas Salientes"
+msgstr "Modify Outbound route order"
+
+#: configuracion_telefonia_app/apps.py:197
+msgid "Crear una Ruta Saliente"
+msgstr "Create Outbound route"
+
+#: configuracion_telefonia_app/apps.py:199
+msgid "Editar una Ruta Saliente"
+msgstr "Edit Outbound route"
+
+#: configuracion_telefonia_app/apps.py:201
+msgid "Eliminar una Ruta Saliente"
+msgstr "Delete Outbound route"
+
+#: configuracion_telefonia_app/apps.py:203
+msgid "Ver la lista de Rutas Entrantes"
+msgstr "View Inbound route list"
+
+#: configuracion_telefonia_app/apps.py:205
+msgid "Crear una Ruta Entrante"
+msgstr "Create Inbound route"
+
+#: configuracion_telefonia_app/apps.py:207
+msgid "Editar una Ruta Entrante"
+msgstr "Edit inbound route"
+
+#: configuracion_telefonia_app/apps.py:209
+msgid "Eliminar una Ruta Entrante"
+msgstr "Delete Inbound route"
+
+#: configuracion_telefonia_app/apps.py:212
+msgid ""
+"Lista con posibles destinos. Usado en varios formularios de configuración."
+msgstr "Possible destinations list. Used en several configuration forms."
+
+#: configuracion_telefonia_app/apps.py:215
+msgid "Ver la lista de IVRs"
+msgstr "View IVR list"
+
+#: configuracion_telefonia_app/apps.py:217
+msgid "Crear un IVR"
+msgstr "Create IVR"
+
+#: configuracion_telefonia_app/apps.py:219
+#: configuracion_telefonia_app/templates/editar_ivr.html:25
+msgid "Editar IVR"
+msgstr "Edit IVR"
+
+#: configuracion_telefonia_app/apps.py:221
+msgid "Eliminar IVR"
+msgstr "Delete IVR"
+
+#: configuracion_telefonia_app/apps.py:223
+msgid "Ver lista de Grupos Horarios"
+msgstr "View Group of Hours list."
+
+#: configuracion_telefonia_app/apps.py:225
+msgid "Crear un Grupo Horario"
+msgstr "Create Group of Hours"
+
+#: configuracion_telefonia_app/apps.py:227
+msgid "Editar un Grupo Horario"
+msgstr "Edit Group of Hours"
+
+#: configuracion_telefonia_app/apps.py:229
+msgid "Eliminar un Grupo Horario"
+msgstr "Delete Group of Hours."
+
+#: configuracion_telefonia_app/apps.py:231
+msgid "Ver lista de Validaciones horarias"
+msgstr "View Time Conditions list"
+
+#: configuracion_telefonia_app/apps.py:233
+msgid "Crear Validacion horaria"
+msgstr "Create Time Condition"
+
+#: configuracion_telefonia_app/apps.py:235
+msgid "Editar Validacion horaria"
+msgstr "Edit Time Condition"
+
+#: configuracion_telefonia_app/apps.py:237
+msgid "Eliminar Validacion horaria"
+msgstr "Delete Time Condition"
+
+#: configuracion_telefonia_app/apps.py:239
+msgid "Ver lista de Identificadores de clientes"
+msgstr "View Client Identification services list"
+
+#: configuracion_telefonia_app/apps.py:241
+msgid "Crear un Identificador de clientes"
+msgstr "Create Client Identification service"
+
+#: configuracion_telefonia_app/apps.py:243
+msgid "Editar un Identificador de clientes"
+msgstr "Edit Client Identification service"
+
+#: configuracion_telefonia_app/apps.py:245
+msgid "Eliminar un Identificador de clientes"
+msgstr "Delete Client Identification service"
+
+#: configuracion_telefonia_app/apps.py:247
+msgid "Ver lista de destinos personalizados"
+msgstr "View Custom destinations list"
+
+#: configuracion_telefonia_app/apps.py:249
+msgid "Crear un Destino personalizado"
+msgstr "Create Custom Destination"
+
+#: configuracion_telefonia_app/apps.py:251
+msgid "Editar un Destino personalizado"
+msgstr "Update Custom Destination"
+
+#: configuracion_telefonia_app/apps.py:253
+msgid "Eliminar un Destino personalizado"
+msgstr "Delete Custom Destination"
+
+#: configuracion_telefonia_app/apps.py:255
+msgid "Menu para instalar paquetes de audio de Asterisk"
+msgstr "Asterisk audio packages installation menu"
+
+#: configuracion_telefonia_app/apps.py:258
+msgid "Ver listas de Musicas de espera"
+msgstr "View Music on Hold playlists"
+
+#: configuracion_telefonia_app/apps.py:260
+msgid "Crear lista de Musicas de espera"
+msgstr "Create Music on Hold Playlist"
+
+#: configuracion_telefonia_app/apps.py:262
+msgid "Eliminar lista de Musicas de espera"
+msgstr "Delete Music on Hold playlists"
+
+#: configuracion_telefonia_app/apps.py:264
+msgid "Editar lista de Musicas de espera"
+msgstr "Edit Music on Hold playlist"
+
+#: configuracion_telefonia_app/apps.py:266
+msgid "Eliminar Musica de espera"
+msgstr "Delete Music on Hold"
 
 #: configuracion_telefonia_app/forms.py:59
 msgid "Nombre Troncal"
@@ -834,10 +856,6 @@ msgstr "Edit Group of Hours"
 msgid "Editar Identificador de Clientes"
 msgstr "Edit Client Identification service"
 
-#: configuracion_telefonia_app/templates/editar_ivr.html:25
-msgid "Editar IVR"
-msgstr "Edit IVR"
-
 #: configuracion_telefonia_app/templates/editar_ruta_entrante.html:25
 msgid "Editar ruta entrante"
 msgstr "Edit inbound route"
@@ -1189,28 +1207,27 @@ msgid ""
 "No se puede eliminar un Grupo Horario utilizado en una Validacion Fecha Hora"
 msgstr "Cannot remove a Group of Hours being in use by a Time Condition"
 
-#: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:462
-#: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:474
-#: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:487
-#: utiles_globales.py:36
+#: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:460
+#: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:472
+#: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:485
 msgid "Archivos permitidos: .wav"
 msgstr "Allowed files: .wav"
 
-#: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:501
-#: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:515
+#: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:499
+#: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:513
 msgid "Introduzca un valor válido."
 msgstr "Insert a valid value"
 
-#: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:526
+#: configuracion_telefonia_app/tests/tests_rutas_entrantes.py:524
 msgid "Este campo es requerido."
 msgstr "This field is required"
 
-#: configuracion_telefonia_app/tests/tests_rutas_salientes.py:98
+#: configuracion_telefonia_app/tests/tests_rutas_salientes.py:96
 #: configuracion_telefonia_app/views/base.py:402
 msgid "Se ha eliminado la Ruta Saliente."
 msgstr "Outbound route removed"
 
-#: configuracion_telefonia_app/tests/tests_rutas_salientes.py:113
+#: configuracion_telefonia_app/tests/tests_rutas_salientes.py:111
 #: configuracion_telefonia_app/views/base.py:399
 msgid "No se ha podido eliminar la Ruta Saliente."
 msgstr "Unable to remove Outbound route"
