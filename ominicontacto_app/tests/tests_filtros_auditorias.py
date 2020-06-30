@@ -65,6 +65,8 @@ class AuditoriasCalificacionesTests(OMLBaseTest):
             opcion_calificacion=opcion_calificacion21_gestion)
         self.calificacion25 = CalificacionClienteFactory(
             opcion_calificacion=opcion_calificacion21_gestion)
+        self.calificacion26 = CalificacionClienteFactory(
+            opcion_calificacion=opcion_calificacion21_gestion)
         self.queue_campana_2 = QueueFactory(campana=self.campana2)
         QueueMemberFactory(member=self.calificacion25.agente, queue_name=self.queue_campana_2)
 
@@ -72,8 +74,11 @@ class AuditoriasCalificacionesTests(OMLBaseTest):
             calificacion=self.calificacion23, resultado=AuditoriaCalificacion.APROBADA)
         self.auditoria_rechazada = AuditoriaCalificacionFactory(
             calificacion=self.calificacion24, resultado=AuditoriaCalificacion.RECHAZADA)
-        self.auditoria_rechazada = AuditoriaCalificacionFactory(
+        self.auditoria_observada = AuditoriaCalificacionFactory(
             calificacion=self.calificacion25, resultado=AuditoriaCalificacion.OBSERVADA)
+        self.auditoria_observada_revisada = AuditoriaCalificacionFactory(
+            calificacion=self.calificacion26, resultado=AuditoriaCalificacion.OBSERVADA,
+            revisada=True)
 
         self.campana2.supervisors.add(self.supervisor2.user)
         self.campana3.supervisors.add(self.supervisor2.user)
@@ -118,7 +123,7 @@ class AuditoriasCalificacionesTests(OMLBaseTest):
                      'id_contacto': '', 'telefono': '', 'callid': '', 'status_auditoria': ''}
         response = self.client.post(url, post_data, follow=True)
         calificaciones = response.context_data['listado_de_calificaciones']
-        self.assertEqual(calificaciones.count(), 5)
+        self.assertEqual(calificaciones.count(), 6)
         self.assertFalse(calificaciones.filter(
             opcion_calificacion__tipo=OpcionCalificacion.NO_ACCION,
             auditoriacalificacion__isnull=True).exists())
@@ -230,3 +235,15 @@ class AuditoriasCalificacionesTests(OMLBaseTest):
         # y las calificaciones fueron creadas hoy
         self.assertEqual(calificaciones.count(), 1)
         self.assertEqual(calificaciones.first().pk, self.calificacion25.pk)
+
+    def test_filtro_revisadas_se_muestra_correctamente(self):
+        url = reverse('buscar_auditorias_gestion', kwargs={'pagina': 1})
+        post_data = {'fecha': '', 'agente': '', 'campana': '', 'grupo_agente': '',
+                     'id_contacto': '', 'telefono': '', 'callid': '',
+                     'status_auditoria': '', 'revisadas': '1'}
+        response = self.client.post(url, post_data, follow=True)
+        calificaciones = response.context_data['listado_de_calificaciones']
+        # no deberíamos tener calificaciones ya que el filtro es para mañana
+        # y las calificaciones fueron creadas hoy
+        self.assertEqual(calificaciones.count(), 1)
+        self.assertEqual(calificaciones.first().pk, self.calificacion26.pk)

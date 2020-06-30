@@ -127,6 +127,7 @@ class ReporteAgenteService(object):
                                                                     fecha_desde,
                                                                     fecha_hasta,
                                                                     resultado)
+        calificaciones = calificaciones.select_related('opcion_calificacion', 'contacto')
 
         archivo_de_reporte.escribir_archivo_csv(calificaciones)
 

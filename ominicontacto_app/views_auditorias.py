@@ -45,7 +45,7 @@ class AuditarCalificacionesFormView(FormView):
         if 'listado_de_calificaciones' in [key for key in context.keys()]:
             listado_de_calificaciones = context['listado_de_calificaciones']
 
-        qs = listado_de_calificaciones
+        qs = listado_de_calificaciones.select_related('opcion_calificacion__campana', 'contacto')
         # ----- <Paginate> -----
         page = self.kwargs['pagina']
         if context.get('pagina', False):
@@ -98,6 +98,7 @@ class AuditarCalificacionesFormView(FormView):
         telefono = form.cleaned_data.get('telefono')
         callid = form.cleaned_data.get('callid')
         status_auditoria = form.cleaned_data.get('status_auditoria')
+        revisadas = form.cleaned_data.get('revisadas')
 
         pagina = form.cleaned_data.get('pagina')
         supervisor = self.request.user.get_supervisor_profile()
@@ -107,6 +108,9 @@ class AuditarCalificacionesFormView(FormView):
             fecha_desde, fecha_hasta, agente, campana, grupo_agente, id_contacto,
             id_contacto_externo, telefono, callid, status_auditoria).filter(
                 opcion_calificacion__campana__pk__in=campanas_supervisor_ids)
+        if revisadas:
+            listado_de_calificaciones = listado_de_calificaciones.filter(
+                auditoriacalificacion__revisada=True)
 
         return self.render_to_response(self.get_context_data(
             listado_de_calificaciones=listado_de_calificaciones, pagina=pagina))
@@ -186,6 +190,7 @@ class AuditoriaCalificacionFormView(FormView):
     def form_valid(self, form):
         auditoria = form.save(commit=False)
         auditoria.calificacion = self.calificacion
+        auditoria.revisada = False
         auditoria.save()
         message = _("Auditoría de calificación guardada.")
         messages.success(self.request, message)

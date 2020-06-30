@@ -37,7 +37,8 @@ from api_app.serializers import (OpcionCalificacionSerializer, CalificacionClien
                                  CalificacionClienteNuevoContactoSerializer)
 from api_app.views.permissions import TienePermisoOML
 
-from ominicontacto_app.models import (Campana, SistemaExterno, CalificacionCliente, Contacto)
+from ominicontacto_app.models import (
+    Campana, SistemaExterno, CalificacionCliente, Contacto, AuditoriaCalificacion)
 from ominicontacto_app.services.asterisk.agent_activity import AgentActivityAmiManager
 from ominicontacto_app.services.click2call import Click2CallOriginator
 
@@ -343,3 +344,36 @@ class AgentUnpauseAsterisk(APIView):
             return Response(data={
                 'status': 'OK',
             })
+
+
+class SetEstadoRevisionAuditoria(APIView):
+    """ Vista para marcar si una auditoria fue revisada """
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['post']
+
+    def post(self, request):
+        auditoria_id = request.data.get('audit_id')
+        status = request.data.get('revised') == 'true'
+        agente_profile = self.request.user.get_agente_profile()
+        try:
+            auditoria = AuditoriaCalificacion.objects.get(id=auditoria_id)
+        except AuditoriaCalificacion.DoesNotExist:
+            return Response(data={
+                'status': 'ERROR',
+                'message': _('Auditoría inexistente'),
+            })
+        if not auditoria.calificacion.agente == agente_profile:
+            return Response(data={
+                'status': 'ERROR',
+                'message': _('No tiene permiso para modificar la auditoría'),
+            })
+
+        auditoria.revisada = status
+        auditoria.save()
+
+        return Response(data={
+            'status': 'OK',
+            'audit_status': status
+        })
