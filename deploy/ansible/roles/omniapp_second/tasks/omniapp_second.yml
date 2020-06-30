@@ -20,7 +20,8 @@
 # Se sube el archivo de config de nginx
 - name: Upload nginx.conf configuration
   template: src=templates/etc/nginx.conf.j2 dest=/etc/nginx/nginx.conf
-
+  tags: postinstall
+  
 # Se sube el archivo de configuracion de omnileads para nginx
 - name: Create of ominicontacto.conf
   template: src=templates/etc/ominicontacto.conf dest=/etc/nginx/conf.d/ominicontacto.conf owner={{ usuario }} group={{ usuario }}

@@ -167,6 +167,21 @@ class AuditoriasCalificacionesTests(OMLBaseTest):
         self.assertEqual(calificaciones.count(), 1)
         self.assertEqual(calificaciones.first().contacto.pk, id_contacto)
 
+    def test_filtro_id_externo_se_muestra_correctamente(self):
+        id_contacto_externo = "an-external-id23"
+        contacto = self.calificacion24.contacto
+        contacto.id_externo = id_contacto_externo
+        contacto.save()
+
+        url = reverse('buscar_auditorias_gestion', kwargs={'pagina': 1})
+        post_data = {'fecha': '', 'agente': '', 'campana': '', 'grupo_agente': '',
+                     'id_contacto_externo': id_contacto_externo, 'telefono': '', 'callid': '',
+                     'status_auditoria': ''}
+        response = self.client.post(url, post_data, follow=True)
+        calificaciones = response.context_data['listado_de_calificaciones']
+        self.assertEqual(calificaciones.count(), 1)
+        self.assertEqual(calificaciones.first().contacto.pk, contacto.pk)
+
     def test_filtro_campana_se_muestra_correctamente(self):
         url = reverse('buscar_auditorias_gestion', kwargs={'pagina': 1})
         post_data = {'fecha': '', 'agente': '', 'campana': self.campana3.pk, 'grupo_agente': '',

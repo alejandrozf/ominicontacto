@@ -78,6 +78,7 @@ class GestorDePermisos(object):
             User.SUPERVISOR: [],
             User.REFERENTE: [],
             User.AGENTE: [],
+            User.CLIENTE_WEBPHONE: [],
         }
 
     def _obtener_permiso(self, nombre):

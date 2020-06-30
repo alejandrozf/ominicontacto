@@ -30,11 +30,32 @@
   template: src=templates/bin/manage.sh.j2 dest={{ install_prefix }}bin/manage.sh owner={{ usuario }} group={{ usuario }} mode=755
   tags: postinstall
 
+# Se ejecuta primero las migraciones
+- name: Run migrations of database
+  command: "{{ install_prefix }}bin/manage.sh migrate --noinput"
+  become: true
+  become_method: su
+  become_user: "{{ usuario }}"
+  tags: postinstall
+
+# Se crea el usuario admin
+- name: Create admin superuser
+  command: "{{ install_prefix }}bin/manage.sh createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com"
+  register: result
+  #failed_when: false
+  failed_when:
+      - "'is already taken' not in result.stderr"
+      - "'is already taken' not in result.stdout"
+      - "commandresult.rc != 0"
+  become: true
+  become_method: su
+  become_user: "{{ usuario }}"
+
 # Se ejecutan los comandos de django que necesita omnileads
 - name: Execute django commands
   command: "{{ install_prefix }}bin/manage.sh {{ item }}"
   with_items:
-    - migrate --noinput
+    - adicionar_perfil_supervisor_admin
     - populate_history
     - compilemessages
     - collectstatic --noinput
@@ -47,15 +68,6 @@
   become_method: su
   become_user: "{{ usuario }}"
   tags: postinstall
-
-# Se crea el usuario admin
-- name: Create admin superuser
-  command: "{{ install_prefix }}bin/manage.sh createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com"
-  register: result
-  failed_when: false
-  become: yes
-  become_method: su
-  become_user: "{{ usuario }}"
 
 # Se crea un pequeño script que utiliza expect para setear automaticamente la password del superusuario
 - name: Change password of superuser

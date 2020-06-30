@@ -8,21 +8,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-28 14:51-0300\n"
+"POT-Creation-Date: 2020-06-29 10:24-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.6.0\n"
 
-# 5cf09c411fe14c4d990cb48d96c13a7c
+# a63babe193114a5498e313b926168267
 #: ../../api.rst:5
 msgid "OMniLeads RESTful API"
 msgstr "OMniLeads RESTful API"
 
-# 2e40cec90b6045638d1f7cae33b97cf4
+# 98865d991e16445bbb08d89f679f9e9f
 #: ../../api.rst:7
 msgid ""
 "Esta sección está destinada hacia aquellos desarrolladores que desean "
@@ -35,7 +35,7 @@ msgstr ""
 "terminology and information provided here has software developers as its "
 "public target."
 
-# b44d2a06d7ca4601a4376eda993ee794
+# 11764354e86a4c348949348c6cd0f402
 #: ../../api.rst:10
 msgid ""
 "OMniLeads dispone de una RESTful API basada en HTTPS / JSON. La API "
@@ -48,7 +48,7 @@ msgstr ""
 "interface, allowing this way that external systems could communicate in a"
 " simple way with OMniLeads."
 
-# fb7271ccf8804aa0b91586a933626ef6
+# 421578dc11dc403d88de4c10015746eb
 #: ../../api.rst:12
 msgid ""
 "Las formas de autenticación disponibles para utilizar esta api son por "
@@ -62,17 +62,17 @@ msgstr ""
 "credentials to obtaing a token)\" and then passing it on the headers of "
 "the request:"
 
-# 8ab110cf4a464f6e9c2738fb959ca7fc
+# 2159028a19be47988918433e8fbe7078
 #: ../../api.rst:14
 msgid "\"Authorization: Bearer <token obtenido>\""
 msgstr "\"\"Authorization: Bearer <token value>\"\""
 
-# 7095076608b2406aaf6435d15937c6fb
+# 9f8d99b5d20d44898ac7f68fa97fcb2d
 #: ../../api.rst:16
 msgid "Por ejemplo:"
 msgstr "For example:"
 
-# ebd30c0a7f2a4d14a8dc2d5d6c75952f
+# 31739ef2003c44988c1c33e50cc89e1a
 #: ../../api.rst:22
 msgid ""
 "Con el transcurrir de los nuevos releases, esta sección irá siempre "
@@ -80,17 +80,17 @@ msgid ""
 "los releases."
 msgstr "In new releases this section will increase, in order to add new endpoints."
 
-# 26d8a57ef0c341ec8b498c3ec2e25170
+# ebe5a8449e6e45bd98b006a9c55c35e1
 #: ../../api.rst:24
 msgid "A continuación se describen los endpoints disponibles."
 msgstr "Then when describe the availables endpoints"
 
-# 2606f06dbd124c28b438317447426e49
+# 989dfed14c1843f09d543909fdf20406
 #: ../../api.rst:28
 msgid "Endpoint de Login"
 msgstr "Login Endpoint"
 
-# 2fe9f92e94bc46298ae1d7420e0d89bf
+# 1576349da0af418eadfdfc1e50226c62
 #: ../../api.rst:30
 msgid ""
 "Este método proporciona la posibilidad de autenticarse como usuario del "
@@ -102,47 +102,76 @@ msgstr ""
 "success, it allows access to others availables endpoints depending of the"
 " user profile"
 
-# 495163a4139d4dcd8ca741be0a73e386
+# 0fd9cd8c09ff4c478cea1a3bf08baaa1
 #: ../../api.rst:32
 msgid "**URL**: POST https://<omnileads_addr>/api/v1/login"
 msgstr ""
 
-# c05d24411af1483f8b26cb658485a98f
+# fc597665bde34c31a20c383ff3c537fb
 #: ../../api.rst:36
 msgid "*figure 1: endpoint login request*"
 msgstr "*figure 1: endpoint login request*"
 
-# c5d3f14ba84a43b697421f3cb24bf64b
-# 02f3b67d93d74319a95835267cb41c7c
+# 8b9810d5b97441ffbe60797ce30aaed6
+# 26094ca1eac342be80895db98c0a5bc0
+# 03d5e910932d4c8c9aae12e9ccf1493c
+# d8f4a58b6bdd4c6b914ab380c184b346
+# b84359640db84d2a978861aeeadc0694
+# 0042353735d24a4e91b75181d7c95091
+# 6b43a39f318d44919dd53a6429124031
 #: ../../api.rst:39 ../../api.rst:80 ../../api.rst:106 ../../api.rst:137
 #: ../../api.rst:203 ../../api.rst:248 ../../api.rst:288
 msgid "field name"
 msgstr "filed name"
 
-# ec940aab80f24fa781b4401bf5e59e2c
-# f6049d2dffb54abbadea42fb816864d2
+# 8a7dfc1d15ea4f2f86101bd1c3f5a781
+# 7c0b4591fff143e19fe9ea9aa98e1e64
+# 8d060b55d49f47e0a164a94780be52da
+# 843a5e243597426c8fa2432e90eba045
+# fedf21684d2b4b388eb26ab6ffc05bcf
+# 78ee9a1300584cf5bbe6f1f5844dada3
+# e5934a99b180492dbd68dedd58fc7b80
 #: ../../api.rst:39 ../../api.rst:80 ../../api.rst:106 ../../api.rst:137
 #: ../../api.rst:203 ../../api.rst:248 ../../api.rst:288
 msgid "type"
 msgstr "type"
 
-# 847aba1319384443a271d5de2dea607a
-# 8c728ac882fc4a65b5ef5c8074dade6c
+# ebaee36931ff41e8978fa9868fb6266f
+# 369d8e42651548a7ac09da8cc6474c69
+# 40801af1725b46bfa2310ec8684020d9
+# 80063328bbb04af7a64f137426af7d33
+# 980d28fa531f49d79d52c736a6601afe
+# e807f38b64174e1e8ca6fe422173918c
+# 8c7ad3c52d774a87bc6939b704d9a1be
 #: ../../api.rst:39 ../../api.rst:80 ../../api.rst:106 ../../api.rst:137
 #: ../../api.rst:203 ../../api.rst:248 ../../api.rst:288
 msgid "description"
 msgstr "description"
 
-# d024440548284c1694894aacfaba3411
+# f24d8754be21460cb8629775bcadc85a
 #: ../../api.rst:41
 msgid "username"
 msgstr "username"
 
-# 459775b2269545a3a695fc88f8ce3b49
-# 9d8a8d0f17234a7d8919cc9ca6669af7
-# 400b881ca6274305bec9b2f64e11b536
-# 967c807350674b799718fc82e5b75534
-# 660cbed2f06e4c84bcc64477edad91b8
+# 614975d65140433a8f4a30bc0060db7f
+# 5125ac9fe8e2448591cbf4fd1137cb43
+# a24e06c3314943428069daf568fcf143
+# bb95ebccfe3e4f77adf9be619ae0d84a
+# bb0b4077819443e9a899a0f136fcf1f2
+# 0c7a44d25dd047cea4627fc1abfea82c
+# ff81e67a4f3e4a1785458c6e4763da99
+# 024e71cb712a47ccb05d49f918310a0b
+# 92fa039d0a57413ca88426db207fbba8
+# 97fbc69ff4764cc7826e4b8952333eea
+# cd9a0e4ba7854ce7a45cc668bf67cde4
+# b475265f694c4ab6848092765f40c41f
+# e07e2e9c610f4a0ebb0f1f4e4307ca4a
+# 14675d2a3fa04e9b9a04f0492a496e9d
+# bdca9642973b40fc9625628147f1684e
+# 8051147b71274fd28f01808a8e529e26
+# cca291b399574baa830bd2e2016fd142
+# 18d84c0fb75641edb465bbb950363b9c
+# 5ba7e43d528a42f9a0e17f0be7bb81d7
 #: ../../api.rst:41 ../../api.rst:43 ../../api.rst:87 ../../api.rst:113
 #: ../../api.rst:139 ../../api.rst:142 ../../api.rst:147 ../../api.rst:152
 #: ../../api.rst:211 ../../api.rst:218 ../../api.rst:220 ../../api.rst:250
@@ -151,37 +180,37 @@ msgstr "username"
 msgid "string"
 msgstr "string"
 
-# 22a0ca61a4b646b29d78b28ac21cceeb
+# d3060226c70d47c2bf8602eeb2920525
 #: ../../api.rst:41
 msgid "username del usuario generado en el menú de creación de usuarios de OML"
 msgstr "username value generated from the OML users creation menu"
 
-# db88777d87464163a8cf0aebc69597ac
+# be2eeb2108b14547889f5855a15f971a
 #: ../../api.rst:43
 msgid "password"
 msgstr "password"
 
-# a8ea7971a3e1423ca05bf69eb76d14b4
+# 86a5f08e555d474390d6445d182d3254
 #: ../../api.rst:43
 msgid "password del usuario generado en el menú de creación de usuarios de OML"
 msgstr "password value generated from the OML users creation menu"
 
-# 0bd092d739b54d289536556d49f70487
+# ea8d6c492cd24195bdfb9a8b5ea489b4
 #: ../../api.rst:46
 msgid "**Autenticación exitosa**"
 msgstr "**Successful authentication**"
 
-# 68ba1b3f2ba146b0b57fd59429ce1195
+# e86641779d5949dca6953f451e5ea94d
 #: ../../api.rst:48
 msgid "Si el login es exitoso, el método devuelve la siguiente salida:"
 msgstr "If the login is successful, the endpoint shows the following output:"
 
-# 87e7b49a08c1441a9eb34d12a74f7293
+# 0faf337ff908443095a63329fe936172
 #: ../../api.rst:52
 msgid "*figure 2: endpoint login request ok*"
 msgstr ""
 
-# 05f5033e6d6c441a977869350c4151a0
+# 4f7da65e3e3b43ea9d239840106170e1
 #: ../../api.rst:55
 msgid ""
 "Como se puede observar en la figura, un login exitoso devuelve entre "
@@ -195,7 +224,7 @@ msgstr ""
 "authenticated user. Also, in the field \"expires_in\" indicates the token"
 " lifetime"
 
-# 6931176ec5fd4893bfbade3a70a8141f
+# 36a0c8e7600a4dcb9846f7d2ddafde49
 #: ../../api.rst:57
 msgid ""
 "En caso de que el sistema lance una petición y el token de seguridad haya"
@@ -205,7 +234,7 @@ msgstr ""
 "In case that the system makes a request and the security token has "
 "expired, then a new authentication request must be done."
 
-# f81162420f3544fca37f869817655839
+# d7f1a9f95ab54ae6a24c660f3257be8e
 #: ../../api.rst:60
 msgid ""
 "El tiempo de duración del token de seguridad se configura bajo el "
@@ -216,35 +245,35 @@ msgstr ""
 "\"TOKEN_EXPIRED_AFTER_SECONDS\" parameter located on "
 "\"/opt/omnileads/ominicontacto/ominicontacto/settings/production.py\""
 
-# ad47cbd535774ea7bf497a339a356fdc
+# e922ad7bb3da41e1982798eca7194565
 #: ../../api.rst:62
 msgid "**Autenticación fallida**"
 msgstr "**Authentication failed**"
 
-# b879ccb71fef4b0f89cb4e7f1e322afb
+# dd256d90f98f421b8d04eb6c8eb38962
 #: ../../api.rst:64
 msgid "Si el login no es exitoso, el método devuelve la siguiente salida:"
 msgstr "If the login failed, the endpoint returns the following output:"
 
-# 83386ff31b10449e8a4b796bf4fc5461
+# 1989e2400cb74760ac16031cb0ecf7c8
 #: ../../api.rst:69
 msgid "*figure 3: endpoint login request fail*"
 msgstr ""
 
-# 30ecb7265a424ea694995dc87c197e70
+# c21ca047b9a24ba5916803a5afbc542b
 #: ../../api.rst:74
 msgid "Endpoint obtener estructura de Base de Datos de Contactos"
 msgstr "Endpoint to obtain Contact database structure"
 
-# 9ae2aaa3f1d9443ab2d1c5252256b86b
+# 6532910346ec4a98b389a8f074cb2ef3
 #: ../../api.rst:75
+#, fuzzy
 msgid ""
 "Esta endpoint habilita la posibilidad de obtener información de los "
 "campos de una base de datos de contactos de una campaña. Con esta "
 "información será posible luego crear un contacto. Las credenciales "
-"deberán pertenecer a un Agente (:ref:`about_agent_user`) o a un "
-"Supervisor (:ref:`about_supervisor_user`) que estén asociados a la "
-"campaña."
+"deberán pertenecer a un Agente (:ref:`about_users`) o a un Supervisor "
+"(:ref:`about_users`) que estén asociados a la campaña."
 msgstr ""
 "This endpoint makes possible to obtain information fields informationof "
 "contacts database related to a campaign. With this information is "
@@ -252,24 +281,35 @@ msgstr ""
 "Agent(:ref:`about_agent_user`) or a Supervisor "
 "(:ref:`about_supervisor_user`)associated to a campaign"
 
-# de909b8d78f44ee2850c99af4bea8577
+# c6fdb24d15b44c5685188e94ec5e2568
 #: ../../api.rst:77
 msgid "**URL**: POST https://<omnileads_addr>/api/v1/campaign/database_metadata/"
 msgstr ""
 
-# cb5612fc9748440ebfac8a40afcef3d2
+# 9a2a8879f6114af7a269724f816c2fe3
+# 8c243b9d63fd403c9f6405b1ce53e960
+# f97ac370c6e4421e9e9c42b68fdfe222
+# 721a2a1b66c74ab289f0c82700980937
+# 203cc82c0c5b4213ac42f148484abf8f
 #: ../../api.rst:82 ../../api.rst:108 ../../api.rst:139 ../../api.rst:205
 #: ../../api.rst:290
 msgid "idExternalSystem"
 msgstr "idExternalSystem"
 
-# e24e8b5314d946eeac7cab08fbee30a4
+# 37a39488169f4e74875ed92741996407
+# 6144171880dd400b9e4997a9ca2abdfe
+# dc80c51a74f4480a91035a86e0f10e5a
+# c97344f485d544758b3e41598f50c38d
+# b242438b5c9f49088288cd5a772798ca
+# 328fd803865745bfb882309c560b037b
+# 75150e4afb3741b5aba3006fcafe3c18
 #: ../../api.rst:82 ../../api.rst:108 ../../api.rst:205 ../../api.rst:214
 #: ../../api.rst:255 ../../api.rst:290 ../../api.rst:299
 msgid "integer"
 msgstr "integer"
 
-# 91fb3501b15f4a31a8a2ff678dde3e9d
+# e0ff0c0ca9e34ac6ad9323ef6c4cab81
+# d173ea0c9f384efd9958e036999e5dcc
 #: ../../api.rst:82 ../../api.rst:108
 msgid ""
 "Parámetro opcional, si se especifica el sistema intentará localizar la "
@@ -282,12 +322,15 @@ msgstr ""
 "will assume that the value of the paramater 'idContact' is the intern id "
 "on OML"
 
-# e0707b82868b4f24b0347b6f765c0be0
+# dca71ff58ad248698d57872f661f7349
+# 0ff85abe90f04cb79b0d0fc0aaa504de
+# afafc55b85da46c6a4bb1911c587d84d
 #: ../../api.rst:87 ../../api.rst:113 ../../api.rst:142
 msgid "idCampaign"
 msgstr "idCampaign"
 
-# 6b0bd504201645809abee173ee48bb40
+# dfd4131c7ed24e24aaeec4e9df5ab1b1
+# cf314d8520e04d36b3034d7513a338b0
 #: ../../api.rst:87 ../../api.rst:113
 msgid ""
 "Id de la campaña a la que pertenece la base de datos el significado de su"
@@ -296,7 +339,7 @@ msgstr ""
 "Contact identifier to tag, its value depends on if 'idExternalSystem' "
 "parameter is sent"
 
-# 0e0a9e0cd135476ca8d1a8376ca2b63f
+# b98940a9ba0b4eacbcc14d642d997550
 #: ../../api.rst:91
 msgid ""
 "En caso de no haber errores se devolverá un output como este, con los "
@@ -305,7 +348,7 @@ msgstr ""
 "In case of no errors ocurred it will show an output like this, with data "
 "of the new disposition created"
 
-# 7a9184ae300a4807be282e80a3bf1a31
+# 0a966a7b47444eba8c70ee5520a93820
 #: ../../api.rst:95
 msgid ""
 "El campo 'fields' indica la lista de todos los campos de la base de "
@@ -321,7 +364,8 @@ msgstr ""
 "field correspond to the external id of contact.When the database doesn't "
 "have external id, the 'external_id' field will be None."
 
-# 7ae04d0bcc574c55928f3f93ca093006
+# 8a14ff37ff8e4a46be6e8f9e5a596167
+# 659ace096c424322a250f0d7e1ce889a
 #: ../../api.rst:97 ../../api.rst:123
 msgid ""
 "En caso de haber errores se devolverá un JSON con el campo "
@@ -332,29 +376,30 @@ msgstr ""
 "'status':'ERROR' and the detailed information of the error on the "
 "field'errors'. On other case the 'status' field value will be 'OK'"
 
-# 59cd58eabf9a46a4961d7401b544f442
+# 9ecd0c402812467884c9a120620b21ac
 #: ../../api.rst:100
 msgid "Endpoint creacion de contacto"
 msgstr "Endpoit to create contact"
 
-# 8d6cb495301b476aa6a72ab5f4f09077
+# 10c01c9539b24e6ab440bcc9cf902af1
 #: ../../api.rst:101
+#, fuzzy
 msgid ""
 "Esta endpoint habilita la posibilidad de agregar un contacto a una base "
 "de datos de contactos de una campaña. Las credenciales deberán pertenecer"
-" a un Agente (:ref:`about_agent_user`) o a un Supervisor "
-"(:ref:`about_supervisor_user`) que estén asociados a la campaña."
+" a un Agente (:ref:`about_users`) o a un Supervisor (:ref:`about_users`) "
+"que estén asociados a la campaña."
 msgstr ""
 "This endpoint allows to add a contact in a database referred to a "
 "campaign.The credentials must belong to an Agent(:ref:`about_agent_user`)"
 " or a Supervisor (:ref:`about_supervisor_user`)associated to a campaign"
 
-# de909b8d78f44ee2850c99af4bea8577
+# bd7be7c230f8422197afe5ce2a99656d
 #: ../../api.rst:103
 msgid "**URL**: POST https://<omnileads_addr>/api/v1/new_contact/"
 msgstr ""
 
-# 6f92d092cd0b4b6b8611284b1021f961
+# 4004312299d74743bee820413cb45dd3
 #: ../../api.rst:117
 msgid ""
 "Además deberán enviarse los valores de los campos correspondientes a los "
@@ -373,7 +418,7 @@ msgstr ""
 " database has external id, the field's value 'external_id' mustn't exist "
 "previously in other contact of database."
 
-# e8147166c169408cb233cf63f5e5e64d
+# 711144e0e5b0491a884eca135caf6ced
 #: ../../api.rst:119
 msgid ""
 "En caso de no haber errores se devolverá un output como este, con los "
@@ -382,32 +427,32 @@ msgstr ""
 "In case of no errors ocurred it will show an output like this, with data "
 "of the new disposition created"
 
-# 59cd58eabf9a46a4961d7401b544f442
+# c07fbeae2095496797cb56bd3ebb3389
 #: ../../api.rst:126
 msgid "Endpoint de Generación de llamadas"
 msgstr "Call generator endpoint"
 
-# 68507951744a4ef9a47937d2e731e943
+# 85760f0002f4476eb462ea6e9b91ac6b
 #: ../../api.rst:128
+#, fuzzy
 msgid ""
 "Permite generar llamadas (click to call) desde un Sistema CRM Externo. "
-"Las credenciales deberán pertenecer a un Agente "
-"(:ref:`about_agent_user`)."
+"Las credenciales deberán pertenecer a un Agente (:ref:`about_users`)."
 msgstr ""
 "Allows to generate calls (click to call) from an External CRM System.The "
 "credentials must belong to an Agent"
 
-# 9574902555bd47c49946483d3f7cc95b
+# 22591303de2e45659da1377a8a4fc360
 #: ../../api.rst:130
 msgid "**URL**: POST https://<omnileads_addr>/api/v1/makeCall"
 msgstr ""
 
-# c05d24411af1483f8b26cb658485a98f
+# 584e5147929c42f5895d9556fcb2ef1d
 #: ../../api.rst:134
 msgid "*figure 4: endpoint new call request*"
 msgstr "*figure 4: endpoint new call request*"
 
-# ff84abb986484896a6fa94cb14cd5724
+# 1a932b82da814bff8a47d6cc887d3601
 #: ../../api.rst:139
 msgid ""
 "Es un parámetro opcional, debe enviarse en caso de que se quiera "
@@ -416,7 +461,7 @@ msgstr ""
 "Optional parameter, it must be sent if needed to link campaign with the "
 "external CRM system"
 
-# d4483bd3e3b44005bed389aa8f2cee68
+# 46bc961115e14698b8b68112498c61c5
 #: ../../api.rst:142
 msgid ""
 "Es un parámetro obligatorio, debe corresponder al identificador de una "
@@ -429,12 +474,12 @@ msgstr ""
 "\"external identifier\" of a campaign associated to the External System "
 "specified"
 
-# 2199d0af28334b5eb89bfe1ed1d42920
+# 59160a116b164b60bad02efc1f0703d4
 #: ../../api.rst:147
 msgid "idAgent"
 msgstr "idAgent"
 
-# 0ee76ff58e764b37b0a06e5c7113bed2
+# 8ce1a9d339ac41c0822c0f1e8c639eaa
 #: ../../api.rst:147
 msgid ""
 "Es un parámetro obligatorio, debe corresponder al identificador de un "
@@ -446,12 +491,12 @@ msgstr ""
 "parameter 'idExternalSystem' is sent must match to the field \"external "
 "identifier\"of an Agent associated to the external CRM System"
 
-# 8899133231e443d387b30455baa1e141
+# 25e43009493d410f887cc911bcfd6a7d
 #: ../../api.rst:152
 msgid "idContacto"
 msgstr "idContact"
 
-# 7f3651f5e2694480b67b0f91cbdf3d40
+# c586386838264b12a6fb291d36da8e1b
 #: ../../api.rst:152
 msgid ""
 "Es un parámetro opcional, si no es enviado se asume que es un contacto "
@@ -465,7 +510,7 @@ msgstr ""
 "databasecontact. If the 'idExternalSystem' is sent, it must match with "
 "the contacts database field marked as an external identifier"
 
-# 7ae04d0bcc574c55928f3f93ca093006
+# f8eac52b5b4b4f9d94870ecf9adb2c3a
 #: ../../api.rst:159
 msgid ""
 "En caso de haber errores se devolverá un JSON con el campo "
@@ -476,12 +521,12 @@ msgstr ""
 "'status':'ERROR' and the detailed information of the error on the "
 "field'errors'. On other case the 'status' field value will be 'OK'"
 
-# 31e88e8c28834832bd3846f15dbcfbd9
+# 2b003a8e14514b13ac72ee7bab730183
 #: ../../api.rst:162
 msgid "Endpoint listado de opciones de calificación"
 msgstr "Disposition options list endpoint"
 
-# 4289f4b2f21f48f4852b5ab5ac974bb5
+# c936f87c3f6f4f9bb22aa59979127777
 #: ../../api.rst:164
 msgid ""
 "**URL** GET "
@@ -489,7 +534,7 @@ msgid ""
 "               (1)"
 msgstr ""
 
-# 6d68aef5f81a4c0692e9cc58032380e2
+# 1ddc1c66a6d54a10ba026e68079441bb
 #: ../../api.rst:166
 msgid ""
 "**URL** GET "
@@ -497,18 +542,19 @@ msgid ""
 "  (2)"
 msgstr ""
 
-# 4e3a0f19271c4414869b88795105f785
+# 9ba8c1f3b2984de48172ebd246d286f2
 #: ../../api.rst:168
+#, fuzzy
 msgid ""
 "Este método permite obtener un listado de las opciones de  calificación "
 "disponibles para calificar a un contacto en una campaña Las credenciales "
-"deberán pertenecer a un Agente (:ref:`about_agent_user`)."
+"deberán pertenecer a un Agente (:ref:`about_users`)."
 msgstr ""
 "This endpoint allows to get a disposition options list avalaible for tag "
 "a contact on a campaign. The credentials must belong to an Agent "
 "(:ref:`about_agent_user`)"
 
-# 8d009d8fac964b589979b83ef34bf7cc
+# 439266886f864e0aa4690e225117e6ce
 #: ../../api.rst:170
 msgid ""
 "Los parámetros de este endpoint se especifican en la url. El mismo tiene "
@@ -521,7 +567,7 @@ msgstr ""
 "'idc' parameter value must be an integer specifying the OML intern "
 "campaignidentifier"
 
-# 1022aaa946b642cf9decd87b132d1ded
+# ea67ed77a46e42d4af3072d63210fb8d
 #: ../../api.rst:172
 msgid ""
 "La variante (2) es para ser usada en la interacción desde un sistema de "
@@ -534,7 +580,7 @@ msgstr ""
 "system id and the 'idc' parameter must indicates the identifier of one "
 "campaign in this external system"
 
-# 9f5a90de90864d2d8acc5d5de6560a01
+# 2c5748d8d0604008a0a3e346d471c869
 #: ../../api.rst:174
 msgid ""
 "En el caso de que el endpoint se ejecute sin errores se devolverá un "
@@ -543,7 +589,7 @@ msgstr ""
 "In case of the execution without errors the endpoint will return a "
 "disposition options list like the following:"
 
-# d5f5ad26f9d146af88046bce0b844611
+# d5752187cddf44a5a3bd1cf49726ccdd
 #: ../../api.rst:178
 msgid ""
 "En caso de que se no ingrese un id de una campaña o sistema de CRM "
@@ -552,27 +598,28 @@ msgstr ""
 "In case that the id does not match with an id of a campaign or CRM system"
 " the endpoint will return an output like:"
 
-# 3039374f19b544b18903268b7cd7d6dd
+# 5e9b15942e4a40c38ddf257cd0fa3953
 #: ../../api.rst:184
 msgid "Endpoint listado de calificaciones"
 msgstr "Dispositions list endpoint"
 
-# b058135991b24dc882a927653158a2b0
+# 67a87a8d34054d53aea06ad39e0641a6
 #: ../../api.rst:186
+#, fuzzy
 msgid ""
 "Este método permite obtener un listado de las calificaciones que ha "
 "realizado un agente. Las credenciales deberán pertenecer a un Agente "
-"(:ref:`about_agent_user`)."
+"(:ref:`about_users`)."
 msgstr ""
 "This endpoint allows get a dispositions list made by the agent who make "
 "the request. (:ref:`about_agent_user`)"
 
-# 963b466acf734e92b982d461dd9fbeac
+# 2d97d8cd19764d01a0f14d1a0db9f0d2
 #: ../../api.rst:189
 msgid "**URL**: GET https://<omnileads_addr>/api/v1/disposition/"
 msgstr ""
 
-# c8dd29e2a5664f9a8a7b1c8f9426b876
+# 06de64be97804ac599423b0f599719e7
 #: ../../api.rst:191
 msgid ""
 "En caso de no haber errores se devolverá la lista de calificaciones "
@@ -581,19 +628,20 @@ msgstr ""
 "In case of no errors ocurred, it returns the dispositions list made it by"
 " the agent"
 
-# 98582c4d085342c9a0f59fdd73947900
+# 59be2ea08c5c4412b5e6e67c95d09f06
 #: ../../api.rst:197
 msgid "Endpoint crear nueva calificación"
 msgstr "Create new disposition endpoint"
 
-# 7b24dd09180142eb99584eb432711da5
+# dc6c6861f8e44f20afe802455e94ac27
 #: ../../api.rst:198
+#, fuzzy
 msgid ""
 "Esta endpoint habilita la posibilidad de \"calificar\" una gestión sobre "
 "un contacto. Cuando un usuario del CRM finaliza una gestión, es normal "
 "que se cierre con una calificación, por lo que con éste método el Sistema"
 " CRM externo puede impactar la calificación en OMniLeads. Las "
-"credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`)."
+"credenciales deberán pertenecer a un Agente (:ref:`about_users`)."
 msgstr ""
 "This endpoint allows to \"tag\" the result of a management about a "
 "contact. When a CRM user ends a management, it is normal that management "
@@ -601,12 +649,13 @@ msgstr ""
 "System can integrate this action to OML. The credentials used must belong"
 " to an Agent (:ref:`about_agent_user`)."
 
-# 1dc2651f9dda4eefaab747b6adaf9658
+# 03092388cf6548798d61cd2c82fc8704
 #: ../../api.rst:200
 msgid "**URL**: POST https://<omnileads_addr>/api/v1/disposition/"
 msgstr ""
 
-# 91fb3501b15f4a31a8a2ff678dde3e9d
+# 825aed5e00ea44b98da945fd85327dcf
+# 71ae16b20ba344a8b1887ef57eadaecf
 #: ../../api.rst:205 ../../api.rst:290
 msgid ""
 "Parámetro opcional, si se especifica el sistema intentará localizar al "
@@ -619,12 +668,14 @@ msgstr ""
 "will assume that the value of the paramater 'idContact' is the intern id "
 "on OML"
 
-# 1ce73fe8fbca492086d462fe3e9b45de
+# 82c62f9eb2254b4d88fb9549184a45a9
+# 3effffeb5d20481d81d0391fb347fa6a
 #: ../../api.rst:211 ../../api.rst:296
 msgid "idContact"
 msgstr "idContact"
 
-# 067143800dbf4db1b7bfa4328c26515b
+# 4335f283e2794f35acc7ebfd883e272e
+# fb384fa85dac48b081183d610babb337
 #: ../../api.rst:211 ../../api.rst:296
 msgid ""
 "Id del contacto que se quiere calificar, el significado de su valor "
@@ -633,12 +684,16 @@ msgstr ""
 "Contact identifier to tag, its value depends on if 'idExternalSystem' "
 "parameter is sent"
 
-# 6188b69f80ef442ba8556b56ab2fa5ff
+# b996b218b2634b078562b0a3f957be9d
+# fd0ce53832184690926ebb08f3937239
+# 0bdfc31ac54844d99667dfe978a320ef
 #: ../../api.rst:214 ../../api.rst:255 ../../api.rst:299
 msgid "idDispositionOption"
 msgstr "idDispositionOption"
 
-# d6bd17b01b724a22a39611afc5fdb475
+# f425bbbf62b743d486b4cb28e26c9074
+# ca03678b995b41f9a345e3e8359957a1
+# bfa31646f38b4f2498534baef5a53744
 #: ../../api.rst:214 ../../api.rst:255 ../../api.rst:299
 msgid ""
 "El id de la opción de calificación de la campaña  con que se va a "
@@ -649,29 +704,36 @@ msgstr ""
 "each campaign defines its disposition options. See the endpoint that "
 "allows to obtain that values"
 
-# a3916a0ca32b48379f8794c16084b2d1
+# 9dc1a3daf9024f7c96b78406076711a1
+# f6affbaa6e324262bfdc875dd86fd7d8
+# fde42f3f02364577b8a08c77a9198620
 #: ../../api.rst:218 ../../api.rst:261 ../../api.rst:303
 msgid "callid"
 msgstr "callid"
 
-# 8ae793fe92664660ba70828908746ba3
+# 0ffbee724f0f4ceb9dcbfc0d301573cd
+# 8349d32ddbd24414ab8311f340c7d769
+# 461b34134cef4acca5fd400a4da59525
 #: ../../api.rst:218 ../../api.rst:261 ../../api.rst:303
 msgid "Parámetro opcional, el id de la llamada"
 msgstr "Optional parameter, call identifier"
 
-# 395dd3eecac64e5182f7c405df4ad7f3
-# 5691a4f300824cc893fee2707819f462
+# 2a8cc3e68baf48eabf368498c8c6ced2
+# 8286612a676c41898d283148d7b3e612
+# a8a4f8cec86c48b8ab45f9e05bd6cdf3
 #: ../../api.rst:220 ../../api.rst:259 ../../api.rst:305
 msgid "comments"
 msgstr "comments"
 
-# 1692b04ca3e64d2d9400b58647e319ae
-# 697712ecaa324b88815faa617a8d4c5b
+# ee29a726194a4140b8b10f7f7ab94852
+# 55928d372d314f479bcdd76d2c4f8099
+# b7464c3245184e04ab750cefef8a7ccf
 #: ../../api.rst:220 ../../api.rst:259 ../../api.rst:305
 msgid "Las observaciones del agente en la calificación"
 msgstr "The agent observations in the disposition"
 
-# 0e0a9e0cd135476ca8d1a8376ca2b63f
+# dfa189e455214c79a5ad40a01ae65cf4
+# d480c17f26e047dcb5e40d8518bc569c
 #: ../../api.rst:223 ../../api.rst:268
 msgid ""
 "En caso de no haber errores se devolverá un output como este, con los "
@@ -680,7 +742,7 @@ msgstr ""
 "In case of no errors ocurred it will show an output like this, with data "
 "of the new disposition created"
 
-# 78ee9e76435849edb45cc827a99183e9
+# f5c548915cec45b1a5e85bf8e4124a4a
 #: ../../api.rst:227
 msgid ""
 "Si se intenta crear una nueva instancia de calificación a un contacto ya "
@@ -690,7 +752,8 @@ msgstr ""
 "already tagged on the campaign, the endpoint will return the following "
 "error:"
 
-# c16ed7a74b87472784e781992e60d0fe
+# ebf1c433ebbb401e8743ed481e1eda8b
+# cce7ef3d85a74b9bb278499ad397b883
 #: ../../api.rst:231 ../../api.rst:320
 msgid ""
 "Si no se encuentra el id del contacto en la bd de la campaña se devolverá"
@@ -699,7 +762,9 @@ msgstr ""
 "If the contact id on the campaign database is not found the endpoint will"
 " return the following error:"
 
-# 71f78bb6fbe740bca8a96b8a8addf92f
+# 69d2e0308520449f8043ebb2e4d0cdc3
+# 8b53baf2098a460ba977c98b2f91eaba
+# 92f5d0cab69846b491f45fbfb462c927
 #: ../../api.rst:235 ../../api.rst:272 ../../api.rst:324
 msgid ""
 "Si no se encuentra el id de la opcion de calificación en la bd de la "
@@ -708,55 +773,56 @@ msgstr ""
 "If the disposition option id is not found the endpoint will return the "
 "following error:"
 
-# 363c1540fcc749d198d4b1b0ff3ee503
+# 705c917ab76c4cb3bcac077616f0fe31
 #: ../../api.rst:241
 msgid "Endpoint crear nuevo contacto y asignarle calificación"
 msgstr "Create new contact and assign it a new disposition endpoint"
 
-# afa380ddbd744c95b2efedb03da303e8
+# 349538c15905474e81ac5962782353fc
 #: ../../api.rst:242
+#, fuzzy
 msgid ""
 "Esta endpoint habilita la posibilidad de \"calificar\" una gestión al "
 "mismo tiempo crear un contacto, es decir, se crea el contacto y se le "
 "asocia a la calificación que se va a crear Las credenciales deberán "
-"pertenecer a un Agente (:ref:`about_agent_user`)."
+"pertenecer a un Agente (:ref:`about_users`)."
 msgstr ""
 "This endpoint allows to 'tag' a management and, at a same time, to create"
 " a contact, it means that it creates the contact and the disposition is "
 "linked to this new contact. The credentials used must belong to an Agent "
 "(:ref:`about_agent_user`)."
 
-# de909b8d78f44ee2850c99af4bea8577
+# 7b4b03ade2cf4e2b95669bc1b67a8d8f
 #: ../../api.rst:245
 msgid "**URL**: POST https://<omnileads_addr>/api/v1/new_contact/disposition/"
 msgstr ""
 
-# e9c8bf39fbb84d668a8059092157764c
+# fd6854b4ce684a23a27b7b97f3cbca5a
 #: ../../api.rst:250
 msgid "phone"
 msgstr "phone"
 
-# 44f36522735d40e6b1b62dbe42c8dd0b
+# 22d64e3d401a432497bdd5bbb0849a44
 #: ../../api.rst:250
 msgid "El número de teléfono del contacto"
 msgstr "The contact phone number"
 
-# 2425c84475b745309243a0e712133b96
+# 096c811bac47408aa73d82f654d0623a
 #: ../../api.rst:252
 msgid "idExternalContact"
 msgstr "idExternalContact"
 
-# 80ca34b695c6498a8413d073119b145b
+# 4762437cb15a418eaf4dfb99592ed76e
 #: ../../api.rst:252
 msgid "Parámetro opcional, el id del contacto en un sistema de CRM externo"
 msgstr "Optional parameter, the contact id on an external CRM system"
 
-# 31f0c44ce22a4136b2469b4f06f71ebc
+# e36d2712173d4dd19e0d51e60ac32401
 #: ../../api.rst:263
 msgid "<optional_bd_field>"
 msgstr "<optional_bd_field>"
 
-# 511e83425c9f46f6b5945eba7e91bc03
+# 36404bd9a2e54b9292d5dda63285d5d8
 #: ../../api.rst:263
 msgid ""
 "Parámetros opcionales, pueden definirse valores para rellenar los datos "
@@ -767,34 +833,35 @@ msgstr ""
 "the contact that will be created, the field names must match with the "
 "fields of campaign database"
 
-# 2b835e139f644927959c5f48582b2c8f
+# c65768c6a7e64d24aec1a6e2b646d7ed
 #: ../../api.rst:278
 msgid "Endpoint para modificar una calificación existente"
 msgstr "Disposition update endpoint"
 
-# bd4af87847ca49be954ebe3b2973fdcd
+# a36634464afa41d6a1e6743f99a913fa
 #: ../../api.rst:280
 msgid ""
 "Esta endpoint habilita la posibilidad de modificar una calificación "
 "existente en OMniLeads."
 msgstr "This endpoint allows to update an existent disposition in OMniLeads"
 
-# 90118e55a62a42a1a138e2ce78bfdff7
+# 14d2b0965897460f894e592eac99472b
 #: ../../api.rst:282
-msgid "Las credenciales deberán pertenecer a un Agente (:ref:`about_agent_user`)."
+#, fuzzy
+msgid "Las credenciales deberán pertenecer a un Agente (:ref:`about_users`)."
 msgstr "The credentials must belong to an Agent (:ref:`about_agent_user`)"
 
-# 5f7cfdcafcc74730984bce9cf9721ccb
+# 861873dd790446f1ad3810c2ef7e9e8b
 #: ../../api.rst:284
 msgid "**URL**: PUT https://<omnileads_addr>/api/v1/disposition/<idDisposition>"
 msgstr ""
 
-# 10693a7aee264ea980301481318abd92
+# 11788cd6e29a4e3b8bfc26faffeb0a69
 #: ../../api.rst:308
 msgid "Si no existe error se devolverá el siguiente tipo de output:"
 msgstr "If doesn't exist, the endpoint returns the following output:"
 
-# dbf4a74094494f5ca39b437f00195350
+# 2b66ed5c785a4d7493e73f3508bb3120
 #: ../../api.rst:312
 msgid ""
 "Si en la url se especifica un id de calificación inexistente se devolverá"
@@ -803,7 +870,7 @@ msgstr ""
 "If in the url a non-existent disposition id is specified, the endpoint "
 "will return the following output error:"
 
-# 55c8add595a044faa846e64b8432ec24
+# fce0943e1c8d4ccb9acd5f554488a82c
 #: ../../api.rst:316
 msgid ""
 "Si se intenta modificar la instancia de calificación, cambiando los "
@@ -816,12 +883,12 @@ msgstr ""
 "this would make to disposition for the oen contact on the same campaing "
 "the endpoint will return the following error output:"
 
-# 1692b04ca3e64d2d9400b58647e319ae
+# 7c13f9067140441491c7ad13fb50d636
 #: ../../api.rst:330
 msgid "API de Sesión de Agente en Asterisk"
 msgstr "Asterisk Agent Session API"
 
-# d2e93577172344cea4ae50ad050c08ca
+# f2d4c537a5cd402dab173b0a26e14048
 #: ../../api.rst:332
 msgid ""
 "Endpoints de la API utilizados por el WebPhone mediante los cuales puede "
@@ -830,12 +897,12 @@ msgstr ""
 "API endpoints used by the WebPhone to control the Asterisk's Agent "
 "sessions."
 
-# d6a569b20b634bcda5c0a98a8769836e
+# 2eb443d690bc44a5b460839a5cb3579a
 #: ../../api.rst:341
 msgid "Endpoint para obtener las credenciales SIP de Agente"
 msgstr "Agent SIP credentials endpoint "
 
-# af6d3b91420a48bdac30b4d747f77a2b
+# b05ff4a7dec14c1e91413f446335b3fe
 #: ../../api.rst:343
 msgid ""
 "Este enpoint provee las credenciales necesarias para autenticar al agente"
@@ -844,7 +911,8 @@ msgstr ""
 "This endpoint provides the necessary credentials for the agent's "
 "authentication in the SIP server using a Webphone."
 
-# 495163a4139d4dcd8ca741be0a73e386
+# a9a7e26a5af24714bdc09884bc0b544a
 #: ../../api.rst:345
 msgid "**URL**: GET https://<omnileads_addr>/api/v1/sip/credentials/agent/"
 msgstr ""
+

@@ -40,6 +40,7 @@ EOF
   $COMMAND regenerar_asterisk
   $COMMAND regenerar_tareas_preview
   $COMMAND actualizar_permisos
+  $COMMAND adicionar_perfil_supervisor_admin
   sudo /usr/sbin/crond -l 0 -L /opt/omnileads/log/crond.log
   sudo chown -R omnileads. ${INSTALL_PREFIX}
   echo "Iniciando Django Server"

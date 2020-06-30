@@ -17,6 +17,7 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
+import json
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.core import paginator as django_paginator
@@ -93,6 +94,7 @@ class AuditarCalificacionesFormView(FormView):
         campana = form.cleaned_data.get('campana')
         grupo_agente = form.cleaned_data.get('grupo_agente')
         id_contacto = form.cleaned_data.get('id_contacto')
+        id_contacto_externo = form.cleaned_data.get('id_contacto_externo')
         telefono = form.cleaned_data.get('telefono')
         callid = form.cleaned_data.get('callid')
         status_auditoria = form.cleaned_data.get('status_auditoria')
@@ -103,7 +105,7 @@ class AuditarCalificacionesFormView(FormView):
             'pk', flat=True))
         listado_de_calificaciones = CalificacionCliente.objects.calificacion_por_filtro(
             fecha_desde, fecha_hasta, agente, campana, grupo_agente, id_contacto,
-            telefono, callid, status_auditoria).filter(
+            id_contacto_externo, telefono, callid, status_auditoria).filter(
                 opcion_calificacion__campana__pk__in=campanas_supervisor_ids)
 
         return self.render_to_response(self.get_context_data(
@@ -167,6 +169,12 @@ class AuditoriaCalificacionFormView(FormView):
                 historica['grabacion'] = grabaciones_por_callid.pop(callid)
         historia.reverse()
         context['historia'] = historia
+        context['datos_contacto'] = self.calificacion.contacto.obtener_datos()
+
+        if self.calificacion.respuesta_formulario_gestion.exists():
+            respuesta_formulario = self.calificacion.respuesta_formulario_gestion.first()
+            context['respuesta_formulario'] = json.loads(respuesta_formulario.metadata)
+            historia[0]['mostrar_respuesta'] = True
         return context
 
     def get_form_kwargs(self):

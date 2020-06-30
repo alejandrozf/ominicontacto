@@ -91,10 +91,9 @@ Hacer click en botón remarcado en la figura 1.
 
 Luego es el momento de ingresar la clave del usuario root de MySQL y hacer click en botón remarcado en la figura 2.
 
-
 .. Note::
 
-  A partir de la versión 1.6.0 OMniLeads no setea password de usuario root de MySQL, dejar este campo vacio.
+  A partir de la versión 1.6.0 OMniLeads no setea password de usuario root de MySQL, dejar este campo vacio. A no ser que el Administrador haya generado una clave de MySQL de root.
 
 Procedemos entonces con la creación de la base de datos MySQL que utilizará de ahora en más el componente Wombat Dialer.
 
@@ -259,23 +258,34 @@ A continuación se exponen los pasos a seguir para llevar a cabo una nueva actua
 Las actualizaciones se anuncian por los canales de comunicaciones oficiales del proyecto.
 Dependiendo el método de instalación que se haya seleccionado:
 
-Actualización Self-Hosted
-##########################
+Actualizaciones en instalaciones Self-Hosted
+############################################
+
+Para proceder en este escenario:
 
 * Acceder como root a la maquina con OMniLeads instalado
-* Posicionarse sobre el directorio donde reside el script “deploy.sh”
+* Posicionarse sobre el directorio donde reside el script *deploy.sh*
 
 ::
 
  cd ominicontacto/deploy/ansible
 
-* Asumiendo que estamos trabajando sobre los release estables (master). Se debe ejecutar un "git pull origin master" para traernos las actualizaciones del repositorio.
+* Una vez posicionado sobre dicho directorio, procedemos a traer todos los cambios que se hayan realizado sobre el repositorio.
 
 .. code-block:: bash
 
- git pull origin master
+ git fetch
 
-* Descomentar en el archivo de inventario la línea para instalación self-hosted
+Para luego seleccionar el release al cual se desea saltar:
+
+.. code-block:: bash
+
+ git checkout release-V.V.V
+
+Recordar que la tecla *Tab* al presionar más de una vez, autocompleta el comando desplegando todos los releases.
+Una vez seleccionado el release:
+
+* Descomentar en el archivo de inventario la línea correspondiente al tipo de instalación self-hosted y arquitectura desplegada.
 
 .. code-block:: bash
 
@@ -286,11 +296,11 @@ Actualización Self-Hosted
   localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
   #10.10.10.100 ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
 
-* A continuación se ejecuta el script con el parámetro -u (update). Esta ejecución tomará unos minutos e implica el aplicar todas las actualizaciones descargadas con el "git pull origin master" sobre nuestra instancia de OMniLeads.
+* Finalmente se debe ejecutar el script deploy.sh con el parámetro -u (update). Esta ejecución tomará unos minutos e implica el aplicar todas las actualizaciones que aplica el nuevo release.
 
 ::
 
- ./deploy.sh -u --iface=**your_NIC_name**
+ ./deploy.sh -u --iface=$NETWORK_INTERFACE
 
 * Si todo fluye correctamente, al finalizar la ejecución de la tarea veremos una pantalla como muestra la figura 13.
 
@@ -298,18 +308,22 @@ Actualización Self-Hosted
 
 *Figure 13: updates OK*
 
-Actualización Ansible Remoto
-#############################
+Actualizaciones en utilizando método Deloyer-Nodes
+##################################################
 
-* Se debe acceder al repositorio clonado en nuestra maquina workstation, para desde allí correr la actualización sobre el host Linux OMniLeads.
+* Se debe acceder al repositorio clonado dentro del deployer, para desde allí correr la actualización sobre el host que aloja la App.
 
 ::
 
  cd PATH_repo_OML
- git pull origin master
  cd ominicontacto/deploy/ansible
+ git fetch
+ git checkout release-V.V.V
 
-* A continuación y como en cada ejecución del script "deploy.sh", se debe repasar el archivo de inventory, velando por la coincidencia de la dirección IP de host donde corre OMniLeads y vamos a actualizar.
+Recordar que la tecla *Tab* al presionar más de una vez, autocompleta el comando desplegando todos los releases.
+Una vez seleccionado el release:
+
+* Descomentar en el archivo de inventario la línea correspondiente al tipo de instalación self-hosted y arquitectura desplegada.
 
 ::
 
@@ -320,14 +334,11 @@ Actualización Ansible Remoto
   #localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
   10.10.10.100 ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
 
-.. note::
-
-  * Se debe tener en cuenta que para instalación remota, se debe utilizar la línea con el parámetro "ansible_ssh_port=22" (donde 22 es el puerto por defecto, pero es normal tambien que se utilice otro puerto) dentro de la sección [prodenv-aio]
-  * Se ejecuta el script con el parámetro -u (update). Esta ejecución tomará unos minutos e implica el aplicar todas las actualizaciones descargadas con el "git pull origin master" sobre nuestra instancia de OMniLeads.
+* Finalmente se debe ejecutar el script deploy.sh con el parámetro -u (update). Esta ejecución tomará unos minutos e implica el aplicar todas las actualizaciones que aplica el nuevo release.
 
 ::
 
-	./deploy.sh -u
+	sudo ./deploy.sh -u
 
 * Finalmente, la plataforma queda actualizada a la última versión estable "master"
 
@@ -339,14 +350,10 @@ Actualización Ansible Remoto
 
   Las instalaciones AIO dejarán de ser soportadas en un futuro para Debian y Ubuntu, por lo que se recomienda usar CentOS
 
-Actualización Docker containers
-################################
+Actualización de OMniLeads basado Docker containers
+###################################################
 
-.. important::
-
-  Si ya tiene un entorno instalado con el script *install.sh* y quiere pasar a actualizar con Ansible, tiene que ingresar las variables correspondientes en el archivo de inventario.
-
-Una vez instalado OMniLeads en docker no siempre va a a ser necesario ejecutar el instalador de Ansible para realizar la actualización de la plataforma, salvo en estos casos:
+Una vez instalado OMniLeads en docker no siempre va a a ser necesario ejecutar el script *deploy.sh* para realizar la actualización de la plataforma, salvo en estos casos:
 
 1. Upgrade de algun componente que se instala en el Docker Host (rtpengine o postgresql).
 2. Modificación de algún parámetro del docker-compose file.
@@ -369,7 +376,7 @@ En el proceso de reinicio cuando se invoca el *docker-compose* al percatarse del
 
 .. note::
 
-  1. Los nuevos releases suelen traer nuevo codigo JavaScript. El browser mantiene el código viejo en su cache por lo que se **recomienda** instalar en el browser un addon para borrar la cache. *Clear cache* para *Google Chrome*, por ejemplo
+  Los nuevos releases suelen traer nuevo codigo JavaScript. El browser mantiene el código viejo en su cache por lo que se **recomienda** instalar en el browser un addon para borrar la cache. *Clear cache* para *Google Chrome*, por ejemplo
 
 .. _about_maintance_change_ip_passwords:
 
@@ -457,3 +464,69 @@ Este script:
 .. important::
 
   Tener cuidado al ejecutarlo, una vez ejecutado no hay forma de recuperar el sistema.
+
+  .. _about_install_docker_build:
+
+Creando imágenes Docker de OMniLeads
+************************************
+
+OMniLeads cuenta con una imagen para cada servicio que compone el software, dichas imágenes oficiales están disponibles en nuestro `Docker-Hub <https://hub.docker.com/u/freetechsolutions>`_.
+Usted podrá crear sus propias imágenes basándose en los Dockerfiles que tenemos predefinidos para cada servicio, debe tener en cuenta lo siguiente:
+
+* Se usa Ansible como herramienta para buildear muchas imagenes al tiempo, por lo que los Dockerfiles son templates de Ansible, ubicados en el `deploy/ansible/roles/docker/files/Dockerfiles`. Esto quiere decir que si quiere hacer algún cambio en los Dockerfiles debe tener conocimiento en Ansible.
+
+El DevEnv y el ProdEnv
+#######################
+
+OMniLeads provee de un entorno de desarrollo (DevEnv) para programadores Django que quieran involucrarse en  el proyecto, nosotros nos encargamos del mantenimiento de estas imágenes y competen los 9 servicios que componen el sistema.
+Este entorno es el ideal para desarrollar cambios en el código y tener en tiempo real el cambio, sin necesidad de reiniciar containers.
+A su vez, el ProdEnv es el entorno ideal para ambientes productivos, usando imágenes de 5 servicios (todos menos mysql, postgresql y rtpengine).
+
+Build de imágenes
+#######################
+
+Para buildear imágenes seguir los siguientes pasos:
+
+1. Especificar en el archivo de inventario de ansible que entorno se desea. Descomentar la linea que dice #localhost dependiendo del entorno.
+
+.. code-block:: bash
+
+  # If you are installing a devenv (PE) uncomment
+  [prodenv-container]
+  #localhost ansible_connection=local
+  # If you are installing a devenv (DE) uncomment
+  [devenv-container]
+  #localhost ansible_connection=local
+
+2. En el mismo archivo observar la seccion [docker:vars], en el verá unas variables sin valor:
+
+.. code-block:: bash
+
+  [docker:vars]
+  registry_username=
+  #registry_email=
+  #registry_password=
+  oml_release=
+
+Ingresar ahí el nombre de usuario, email y contraseña del *Registry* donde quiere subir sus imágenes.
+La variable **oml_release** es usada solo cuando se quiere buildear imagenes para **ProdEnv**. Esta variable va a definir el **Tag** que van a tener las imágenes
+
+3. Por último, ejecutar el script *deploy.sh* de la siguiente forma:
+
+.. code-block:: bash
+
+  ./deploy.sh --docker-build
+
+.. note::
+
+  Durante la ejecución se realiza de una vez el build y push de las imágenes, por lo que si experimenta algun error a la hora del build debido a problemas de conexion a internet, es recomendable volver a correr el script.
+
+4. Tenemos la opción de crear todo el entorno de build (con todos los archivos necesarios para dicho build renderizados) pero sin que se realice el build/push de las imágenes.
+   De esta forma damos la opción de que el desarrollador estudie mas a fondo los Dockerfile de cada servicio.
+   Ejecutar el script *deploy.sh* de la siguiente forma:
+
+.. code-block:: bash
+
+  ./deploy.sh --docker-no-build
+
+Todo este contenido lo encontrará en `~/omnileads/build`

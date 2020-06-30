@@ -8,35 +8,130 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-13 11:31-0300\n"
+"POT-Creation-Date: 2020-06-23 19:58-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.6.0\n"
 
-# 4cab248af4f5415ea505d991ec5ff6d3
+# 32bef8a99c204f8a9da71030be34b408
 #: ../../telephony_pjsip_templates.rst:5
-msgid "Troncal contra un proveedor SIP sobre Internet"
-msgstr "SIP trunk with Internet SIP provider"
+msgid "Parámetros generales SIP Trunk"
+msgstr "General SIP Trunk parameters"
 
-# 173bf608889044859626da574c7195c1
+# 60c7991ceefd44b19db13742bd552b64
 #: ../../telephony_pjsip_templates.rst:7
 msgid ""
-"Se trata del tipo de proveedor de troncales SIP al que se puede acceder a"
-" través de nuestra propia conexión a internet, utilizando generalmente la"
-" autenticación SIP para el envío de llamadas y la registración como "
-"suscriptor."
+"Como bien se anticipó PJSIP es el módulo que implementa SIP para este "
+"tipo de troncales. Pero además la sintaxis elegida para generar la "
+"configuración a nivel Asterisk es `pjsip wizard "
+"<https://wiki.asterisk.org/wiki/display/AST/PJSIP+Configuration+Wizard>`_."
 msgstr ""
-"When your SIP provider is on Internet, use this template, to use SIP "
-"authentication to send calls and registration as subscriber."
+"As well anticipated PJSIP is the module that implements SIP for this kind "
+"of trunks. But also the syntax chosen to generate the configuration at the "
+"Asterisk conf is `pjsip wizard "
+"<https://wiki.asterisk.org/wiki/display/AST/PJSIP+Configuration+Wizard>`_."
 
-# ee8f722858e14bb192b7bb670d9b10ae
-# b91195667d1a480a85c9dc86c182d9d1
-#: ../../telephony_pjsip_templates.rst:13
-#: ../../telephony_pjsip_templates.rst:79
+# 1d61b199682f499fa90c3803f7a49269
+#: ../../telephony_pjsip_templates.rst:12
+msgid ""
+"Debemos recordar muy bien que OMniLeads NO utiliza el puerto 5060 como "
+"puerto para los troncales SIP. El puerto 5060 es utilizado por Kamailio "
+"en su labor WebRTC en sesiones contra los agentes. A la hora de generar "
+"un troncal SIP entre OML y un proveedor SIP o PBX, debemos saber que los "
+"puertos a utilizar son y varian de acuerdo a los escenrios debajo "
+"descriptos."
+msgstr ""
+"We must remember very well that OMniLeads does NOT use port 5060 as the "
+"port for SIP trunks. Port 5060 is used by Kamailio in its WebRTC work in "
+"sessions against agents. When generating a SIP trunk between OML and a SIP "
+"or PBX provider, we must know that the ports to be used are and vary according "
+"to the scenarios described below."
+
+# 1396ebe215fc4ff6bc318ef5a2296550
+#: ../../telephony_pjsip_templates.rst:16
+msgid ""
+"Puerto **5161** para troncales donde NO debemos advertir la IP publica. "
+"Es decir donde no hay NAT de por medio."
+msgstr ""
+"**Port 5161** for trunks where we must NOT warn the public IP. That is, "
+"where there is no NAT involved."
+
+# a92dd8342615424d83d429e81423ca63
+#: ../../telephony_pjsip_templates.rst:17
+msgid ""
+"Puerto **5162** para troncales donde SI debemos advertir la IP pública "
+"que va a afectar con NAT los paquetes SIP que salgan de OML."
+msgstr ""
+"**Port 5162** for trunks where we MUST warn the public IP, since they will"
+"affect with NAT the SIP packets that leave OML."
+
+# 11db4cf7a7404d728d954dfd45b0da09
+#: ../../telephony_pjsip_templates.rst:18
+msgid ""
+"Puerto **5163** para troncales utilizados en la arquitectura OML sobre "
+"contenedores Docker."
+msgstr ""
+"**Port 5163** for trunks used in OML architecture over Docker containers."
+
+# e69b28f252784faf9efeefb1bd3c0859
+#: ../../telephony_pjsip_templates.rst:20
+msgid ""
+"A continuación se proponen los siguientes escenarios de instancias "
+"OMniLeads y su conexión con un SIP provider con terminación a la PSTN."
+msgstr ""
+"The following scenarios are proposed for OMniLeads instances and their "
+"connection to a SIP provider with termination to the PSTN."
+
+# bae3257978d24331b26cf5a2760a95f6
+#: ../../telephony_pjsip_templates.rst:26
+msgid "OMniLeads detrás de NAT"
+msgstr "OMniLeads behind NAT"
+
+# 889dee908b1b45c887113c39dc34e102
+#: ../../telephony_pjsip_templates.rst:28
+msgid ""
+"Bajo este escenario tenemos como posibilidad a la App desplegada sobre un"
+" proveedor Cloud saliendo a Internet a través de un *gateway*. También "
+"cae afectado por el NAT el despliegue de una instancia on-premise en una "
+"LAN corporativa en la cual se sale a Internet a través del Router de la "
+"compañía utilizando una IP Pública para realizar el NAT sobre los "
+"paquetes generados desde OMniLeads hacia el proveedor SIP."
+msgstr ""
+"Under this scenario we have the possibility of the App deployed on a Cloud "
+"provider going out to the Internet through a gateway. The NAT also affects "
+"the deployment of an on-premise instance in a corporate LAN in which the "
+"Internet is routed through the company's router using a Public IP to perform "
+"the NAT on the packets generated from OMniLeads to the SIP provider."
+
+# 42d81a90e670406d95d9fdcdcff0c390
+#: ../../telephony_pjsip_templates.rst:34
+msgid ""
+"Aquí Asterisk utiliza el puerto **UDP 5162** ya que es el puerto que "
+"implementa el hecho de advertir en los REQUEST o RESPONSE SIP la IP "
+"Pública con la que los paquetes saldrán al exterior y llegarán al otro "
+"extremo de la troncal SIP. Esta adaptación de los paquetes mencionados se"
+" realiza a nivel SIP (señalización) y SDP (negociación de media). Por lo "
+"tanto el destinatario externo de los paquetes no se percata de que "
+"nuestro Asterisk está detrás de NAT, llegando los paquetes ensamblados "
+"con la IP pública del dispositivo de red que realiza el NAT sobre los "
+"paquetes enviados."
+msgstr ""
+"Here, Asterisk uses the UDP port 5162 since it is the port that implements "
+"the fact of warning in the REQUEST or RESPONSE SIP the Public IP with which "
+"the packets will go abroad and reach the other end of the SIP trunk. "
+"This adaptation of the mentioned packets is done at the SIP (signaling) and SDP "
+"(media negotiation) levels. Therefore, the external recipient of the packets does "
+"not realize that our Asterisk is behind NAT. The packets assembled arrive with "
+"the public IP of the network device that performs NAT on the sent packets."
+
+# 8144d615ed4e4f198a55b1a2e4254b98
+# fac5eda2d6364d63b613fc80c83b82b1
+#: ../../telephony_pjsip_templates.rst:39
+#: ../../telephony_pjsip_templates.rst:157
 msgid ""
 "Para este esquema analizamos la plantilla `PJSIP configuration Wizard "
 "<https://wiki.asterisk.org/wiki/display/AST/PJSIP+Configuration+Wizard>`_"
@@ -46,41 +141,42 @@ msgstr ""
 "<https://wiki.asterisk.org/wiki/display/AST/PJSIP+Configuration+Wizard>`_"
 " which is an example to see."
 
-# 54e003b5b6684fec8401c9d95c089178
-#: ../../telephony_pjsip_templates.rst:36
+# f541af2d34b4479ca0e6db0b77b0937f
+#: ../../telephony_pjsip_templates.rst:61
 msgid ""
-"Los últimos cuatro parámetros tienen que ver con los datos que el "
-"proveedor nos facilita, esto es; la dirección o FQDN y puerto "
-"correspondiente hacia donde debemos disparar nuestros REGISTER o INVITE "
-"para registrar el troncal o enviar una llamada saliente y además los "
-"valores de *username* y *password* con los cuales el proveedor autentica "
-"cada REGISTER e INVITE generado desde OMniLeads."
+"Los últimos tres parámetros tienen que ver con los datos que el proveedor"
+" nos facilita a la hora de contratar el servicio, esto es; la dirección o"
+" FQDN y puerto correspondiente de su SIP Server hacia a donde disparar "
+"nuestros REGISTER para registrar el troncal o o INVITE a la hora de "
+"enviar llamadas salientes. Además se disponen de los valores de "
+"*username* y *password* con los cuales el proveedor autentica dichos "
+"REQUEST."
 msgstr ""
+"The last three parameters have to do with the data that the provider "
+"provides us when contracting the service. That is, the address or FQDN "
+"and corresponding port of its SIP Server where to shoot our REGISTER to "
+"register the trunk or INVITE when sending outgoing calls. In addition, "
+"the username and password values with which the provider authenticates "
+"those REQUEST are available."
 
-# 57c147a57da044d083278072f68ac4d4
-#: ../../telephony_pjsip_templates.rst:40
+# d0e2b98974484b5c9cf65c94dbb19f70
+#: ../../telephony_pjsip_templates.rst:65
 msgid "Respecto al resto de los parámetros vamos a enfatizar:"
-msgstr "About the other parameters:"
+msgstr "Regarding the rest of the parameters, we will emphasize:"
 
-# f561c9c0de7a454c910b707cd9c3657b
-#: ../../telephony_pjsip_templates.rst:42
-msgid "**transport=trunk-nat-transport**"
-msgstr ""
-
-# 292a505943a542b19531eeb594d042f2
-#: ../../telephony_pjsip_templates.rst:44
+# ba08541900f04936b5ef737116c8a9c2
+#: ../../telephony_pjsip_templates.rst:71
 msgid ""
-"Este parámetro indica a la pila PJSIP de Asterisk que debe *advertir* la "
-"IP pública y puerto público con la que saldrán \"nateados\" los paquetes "
-"SIP a la hora de alcanzar el SIP-Server del proveedor. (Asumimos que "
-"OMniLeads se encuentra detrás de NAT con respecto a los paquetes que "
-"salen hacia el proveedor SIP)"
+"Este parámetro es el que indica a la pila PJSIP de Asterisk que debe "
+"*advertir* la IP pública y puerto público con la que saldrán los paquetes"
+" SIP a la hora de alcanzar el SIP-Server del proveedor."
 msgstr ""
-"This parameter indicate to PJSIP that must *know* the public IP and port "
-"needed to send SIP packages."
+"This parameter indicates the Asterisk PJSIP stack that it must warn the "
+"public IP and public port with which the SIP packets will leave when reaching "
+"the provider's SIP-Server."
 
-# 8fb68f3c9bdf4b3c897e246c91338251
-#: ../../telephony_pjsip_templates.rst:47
+# f664ee76f5c3412b9853b3aee56c3bb8
+#: ../../telephony_pjsip_templates.rst:73
 msgid ""
 "Los próximos 4 parámetros hacen alusión al hecho de que típicamente bajo "
 "este esquema OMniLeads no solicita autenticación al proveedor SIP en caso"
@@ -90,66 +186,113 @@ msgid ""
 "conectarle llamadas entrantes. Estamos hablando puntualmente de los "
 "parámetros y sus valores:"
 msgstr ""
-"The other 4 parameters are related to the fact that OMniLeads doesn't "
-"request authentication to SIP provider for inbound calls, but as "
-"mentioned before it needs to register to send calls to provider, this "
-"register needs to be constant to make know the SIP provider that our "
-"OMniLeads is available. We are talking about this values: "
+"The next 4 parameters allude to the fact that typically under this scheme "
+"OMniLeads does not request authentication from the SIP provider in case of "
+"incoming calls, but must authenticate when sending calls to the provider and "
+"that it must also send a recurring register to be able to be reached by the "
+"SIP provider when connecting incoming calls. We are specifically talking about "
+"the parameters and their values:"
 
-# 72cc59259afd41ebb098ec8736cd9be8
-#: ../../telephony_pjsip_templates.rst:51
-msgid "**accepts_registrations=no**"
-msgstr ""
-
-# 1fbe6cbdcc1e426d97a467c7404ceb91
-#: ../../telephony_pjsip_templates.rst:52
-msgid "**accepts_auth=no**"
-msgstr ""
-
-# 8447c3ddb45b4dfe8e9f5a928053bd94
-# 21914f90a96d433a8a2c4458ec6e513b
-#: ../../telephony_pjsip_templates.rst:53
-#: ../../telephony_pjsip_templates.rst:156
-msgid "**sends_auth=yes**"
-msgstr ""
-
-# e2bf28c6ea21447e93915e5a090df3a1
-#: ../../telephony_pjsip_templates.rst:54
-msgid "**sends_registrations=yes**"
-msgstr ""
-
-# 8bf01a58171e4bc5bf3e6063f3036aef
-#: ../../telephony_pjsip_templates.rst:56
+# 958c8f58bb6c4547b56a99162a3ca096
+#: ../../telephony_pjsip_templates.rst:84
 msgid ""
 "Los siguientes tres parámetros tienen que ver con los codecs a utilizar, "
-"el modo de los DTMF y muy importante el punto de entrada de las llamadas "
-"que lleguen por el troncal. Osea:"
+"el protocolo utilizado para el intercambio de DTMF. Finalmente el punto "
+"de entrada (dialplan context) de las llamadas que lleguen por el troncal."
 msgstr ""
-"The next three parameters are realted to codecs, DTMF mode and the "
-"context: "
+"The following three parameters have to do with the codecs to use, "
+"the protocol used for the DTMF exchange. Finally the entry point "
+"(dialplan context) of the calls that arrive through the trunk."
 
-# 62658646ba3446459033eefc8ed48497
-#: ../../telephony_pjsip_templates.rst:59
-msgid "**endpoint/allow=alaw,ulaw**"
+# 1dec0d9af010410f8366525961004dc9
+#: ../../telephony_pjsip_templates.rst:96
+msgid ""
+"A la hora de declarar el SIP trunk en el otro extremo, tener en cuenta "
+"que OMniLeads utilizará el puerto SIP UDP **5162** en estos entornos con "
+"NAT."
 msgstr ""
+"When declaring the SIP trunk at the other end, keep in mind that OMniLeads "
+"will use the SIP UDP port 5162 in these NAT environments."
 
-# 14289b2d59da47ec8228a0d0bd193f3c
-#: ../../telephony_pjsip_templates.rst:60
-msgid "**endpoint/dtmf_mode=rfc4733**"
+# 569a35a718d247d28c483f748c74ece2
+#: ../../telephony_pjsip_templates.rst:102
+msgid "OMniLeads en entornos sin NAT"
+msgstr "OMniLeads in environments without NAT"
+
+# 2b21d447160043de83e1cc24d5c8d723
+#: ../../telephony_pjsip_templates.rst:104
+msgid ""
+"Bajo este escenario tenemos como posibilidad a la App desplegada sobre un"
+" VPS con IP pública cuyo proveedor SIP está también en una IP pública por"
+" lo tanto no existe NAT. También cae en este escenario a un despliegue "
+"efectuado sobre una LAN corporativa (on premise) saliendo a Internet por "
+"el Router de la compañía o bien utilizando un SBC ó PSTN-GW, el cual se "
+"encarga (entre otras cosas) del asunto de NAT."
 msgstr ""
+"Under this scenario, we have the possibility of the App deployed on a VPS "
+"with a public IP whose SIP provider is also on a public IP. Therefore, there "
+"is no NAT. This scenario includes a deployment performed on a corporate LAN "
+"(on premise) connecting to the Internet through the company's Router or using "
+"a SBC or PSTN-GW, which is in charge (among other things) of the NAT issue."
 
-# 2cfdbee66930486ca6a5768eaed74989
-#: ../../telephony_pjsip_templates.rst:61
-msgid "**endpoint/context=from-pstn**."
+# 9b840d795e594c7fb895715425464f56
+#: ../../telephony_pjsip_templates.rst:109
+msgid "SIP trunk en internet"
+msgstr "SIP trunk on the Internet"
+
+# 133714856e67460f98967f55097bb29c
+#: ../../telephony_pjsip_templates.rst:111
+msgid ""
+"Al igual que en el ítem anterior se plantea un proveedor SIP disponible "
+"en Internet cuya IP pública ahora es alcanzada sin la afección del NAT, "
+"ya que nuestro OMniLeads se encuentra disponible con una IP pública. El "
+"proveedor al igual que antes nos facilita la IP o FQDN del SIP Server al "
+"que debemos enviar todos los REQUEST por un lado y un usuario y "
+"contraseña para autenticar los mismos, por el otro."
 msgstr ""
+"As in the previous item, a SIP provider available on the Internet is proposed. "
+"Its public IP is now reached without the affection of the NAT, since OMniLeads "
+"is available with a public IP. Just as before, the provider facilitates us with "
+"the IP or FQDN of the SIP Server to which we must send all the REQUEST, on the "
+"one hand, and a username and password to authenticate them, on the other."
 
-# acf156b8c5f74787abca07fa927a72f1
-#: ../../telephony_pjsip_templates.rst:68
-msgid "Troncal contra un proveedor SIP backbone dedicado"
-msgstr "SIP trunk with local SIP backboone"
+# 012bd58f88e5450f88410bd5e3cd6813
+#: ../../telephony_pjsip_templates.rst:117
+msgid ""
+"Para este esquema analizamos la plantilla `PJSIP configuration Wizard "
+"<https://wiki.asterisk.org/wiki/display/AST/PJSIP+Configuration+Wizard>`_"
+" que se propone para completar con sus datos.:"
+msgstr ""
+"For this scheme we analyze the `PJSIP configuration Wizard "
+"<https://wiki.asterisk.org/wiki/display/AST/PJSIP+Configuration+Wizard>`_ "
+"template that is proposed to complete with your data: "
 
-# db8f7187dab54db588911fe7bd81eea9
-#: ../../telephony_pjsip_templates.rst:70
+
+# 04ab28046df14cd6beaf03c45e10b529
+#: ../../telephony_pjsip_templates.rst:139
+msgid ""
+"En donde el único parámetro que cambia respecto a los ejemplos con NAT, "
+"es:"
+msgstr ""
+"The only parameter that changes with in regard to the examples with NAT is:"
+
+# 699070a0968846989608e791da6fa1f6
+#: ../../telephony_pjsip_templates.rst:145
+msgid ""
+"Donde se indica la utilización de un transporte PJSIP donde simplemente "
+"los paquetes fluyan a través del puerto **UDP 5161** sin realizar ningún "
+"tratamiento de NAT."
+msgstr ""
+"Where the use of a PJSIP transport is indicated, where the packets simply "
+"flow through the UDP 5161 port without any NAT treatment."
+
+# fa1174c198804eb693570c5f3b516e82
+#: ../../telephony_pjsip_templates.rst:149
+msgid "SIP Trunk corporativo"
+msgstr "Corporate SIP Trunk"
+
+# 298ecbe07ffe4c0795a4cc085797dfca
+#: ../../telephony_pjsip_templates.rst:151
 msgid ""
 "Bajo esta clasificación tenemos a los proveedores de vínculos SIP que "
 "llegan con su propio backbone de conectividad a la locación física donde "
@@ -158,74 +301,74 @@ msgid ""
 "llamadas sobre el backbone privado del proveedor la cuestión del NAT deja"
 " de ser un factor a resolver desde nuestro lado."
 msgstr ""
-"This section is related to connections between SIP providers that are in "
-"the same LAN that the OMniLeads is. Tipically in this scenario the "
-"provider doesn't request authentication and NAT is not important."
+"Under this classification we have SIP link providers that arrive with "
+"their own connectivity backbone to the physical location where the data "
+"center is located. In this scenario it is frequent that the provider does "
+"not request authentication or registration. Besides, when making calls on "
+"the provider's private backbone the NAT issue is no longer a problem to be solved."
 
-# f3dda436596748cebafa95d6073e5380
-#: ../../telephony_pjsip_templates.rst:101
+# 3ba197eb2ec14b85b6d1c392746bb672
+#: ../../telephony_pjsip_templates.rst:178
 msgid ""
 "Donde los últmos dos parámetros tienen que ver con los datos que el "
 "proveedor nos facilita, es decir; la dirección IP / FQDN y puerto "
-"correspondiente hacia donde debemos disparar nuestros INVITE a la hora de"
-" enviar una llamadas salientes y el **endpoint/from_user** esperado. "
-"Tener en cuenta que bajo este esquema asumimos que el proveedor SIP no "
-"nos autentica vía SIP, por lo tanto no usamos username ni password.."
+"correspondiente hacia donde debemos disparar nuestros REQUEST. Tener en "
+"cuenta que bajo este esquema asumimos que el proveedor SIP no nos "
+"autentica vía SIP, por lo tanto no usamos username ni password."
 msgstr ""
-"Where the last two parameters are related: IP/FQDN address and port given"
-" by provider to send INVITES for outbound calls and the FROM USER "
-"expected. Username and Password is not necessary because there is no "
-"authentication requested."
+"The last two parameters have to do with the data that the provider facilitates "
+"us. That is, the IP / FQDN address and corresponding port where we should fire "
+"our REQUEST. Keep in mind that under this scheme we assume that the SIP provider "
+"does not authenticate us via SIP, therefore we do not use username or password. "
 
-# 190256779bb94e82aa23629b5a8c4e5d
-#: ../../telephony_pjsip_templates.rst:105
+# 1b1ddd3b9cac4bb287e0f54841bd227c
+#: ../../telephony_pjsip_templates.rst:182
 msgid ""
-"El parámetro: **transport=trunk-transport**, hace referencia al hecho de "
-"que no hace falta advertir ninguna IP pública, ya que como bien "
-"mencionamos bajo este esquema nos desentendemos del NAT."
+"Nuevamente se utiliza el: **transport=trunk-transport**, implicando la no"
+" afección de NAT."
 msgstr ""
-"The parameter **transport=trunk-transport**, is related to the fact that "
-"no public IP is needed, because NAT is not important."
+"Once again the transport = trunk-transport is used, implying that NAT is not affected."
 
-# 61a2ef76b3724dc3a9e0ce1cb4bc04b7
-#: ../../telephony_pjsip_templates.rst:107
+# b4f5638e27c548508ddf8afda8ef11c5
+#: ../../telephony_pjsip_templates.rst:184
 msgid "El resto de los parámetros ya fueron discutidos en el caso anterior."
-msgstr "The other parameters were mentioned in the section above."
+msgstr "The rest of the parameters were already discussed in the previous case."
 
-# cd63ad8c6c3a4854b391d64970a66848
-#: ../../telephony_pjsip_templates.rst:114
-msgid "Troncal contra una PBX dentro de la LAN"
-msgstr "Trunk with a PBX in LAN"
+# 26c3a5983c924399aee7eb5b35352fe6
+#: ../../telephony_pjsip_templates.rst:191
+msgid "OML SIP trunk con PBX en LAN"
+msgstr "OML SIP trunk with PBX on LAN"
 
-# 4544691a71e44e028082d9abe4f1a748
-#: ../../telephony_pjsip_templates.rst:116
+# 90d8ceb7043c4d1384b3e4466db44ba9
+#: ../../telephony_pjsip_templates.rst:193
 msgid ""
 "Un esquema muy implementado tiene que ver con la conexión vía troncal SIP"
-" entre OMniLeads y la central IP-PBX de la compañía. Bajo esta modalidad "
-"el acceso a la PSTN es proporcionado por la central IP-PBX, de manera tal"
-" que las llamadas salientes hacia la PSTN se cursan por el troncal SIP "
-"hasta la IP-PBX y luego ésta se encarga de rutear las llamadas hacia los "
-"destinos concretos a través de sus vínculos hacia la PSTN. Para el caso "
-"de las llamadas entrantes, la IP-PBX puede derivar llamadas desde "
-"diversos recursos propios (opciones del IVR, rutas entrantes, anuncios, "
-"time conditions, etc.) hacia OMniLeads."
+" entre OMniLeads y la central PBX de la compañía. Bajo esta modalidad el "
+"acceso a la PSTN es proporcionado por la central PBX, de manera tal que "
+"las llamadas salientes hacia la PSTN se cursan por el troncal SIP hasta "
+"la PBX y luego ésta se encarga de rutear las llamadas hacia los destinos "
+"concretos a través de sus vínculos hacia la PSTN. Para el caso de las "
+"llamadas entrantes, la PBX puede derivar llamadas desde diversos recursos"
+" propios (opciones del IVR, rutas entrantes, anuncios, time conditions, "
+"etc.) hacia rutas entrantes de OMniLeads."
 msgstr ""
-"This a very common scenario, related to the conection between OMniLeads "
-"and the company's PBX. The access to PSTN is given by the PBX, so the "
-"outbound calls are pass through the PBX. For inbound calls the PBX route "
-"the calls to OMniLeads, making the appropiate configuration."
+"A highly implemented scheme has to do with the SIP trunk connection between "
+"OMniLeads and the company's PBX. Under this modality, access to the PSTN is "
+"provided by the central PBX. The outgoing calls to the PSTN are made through "
+"the SIP trunk to the PBX and then the latter is in charge of routing the calls "
+"to the specific destinations through their links to the PSTN. "
 
-# 7caa23caff0a492c8bab6a826771d58c
-#: ../../telephony_pjsip_templates.rst:121
+# 37449b51d3c2435c9fbcaf6de1c98db8
+#: ../../telephony_pjsip_templates.rst:198
 msgid ""
-"Bajo esta configuración una compañía puede desplegar una potente "
-"herramienta de Contact Center totalmente integrada con su central IP-PBX."
+"Bajo esta configuración una compañía puede desplegar una App de Contact "
+"Center totalmente integrada con su central PBX."
 msgstr ""
-"Under this configuration the company can deploy OMniLeads in the same "
-"machine that operates the PBX."
+"Under this configuration, a company can deploy a Contact Center App fully "
+"integrated with its central PBX."
 
-# ef271187b7e640ff801b2e0f9db5e954
-#: ../../telephony_pjsip_templates.rst:127
+# 91209738b7ed4526bfa90df75f5e46ab
+#: ../../telephony_pjsip_templates.rst:202
 msgid ""
 "La plantilla `PJSIP configuration Wizard "
 "<https://wiki.asterisk.org/wiki/display/AST/PJSIP+Configuration+Wizard>`_"
@@ -233,58 +376,63 @@ msgid ""
 " lado de la IP-PBX es:"
 msgstr ""
 "The template `PJSIP configuration Wizard "
-"<https://wiki.asterisk.org/wiki/display/AST/PJSIP+Configuration+Wizard>`_that"
-" is proposed to complete according to the configuration made in the PBX "
-"is: "
+"<https://wiki.asterisk.org/wiki/display/AST/PJSIP+Configuration+Wizard>`_ "
+"that is proposed to be completed according to the configuration generated "
+"on the IP-PBX side is:"
 
-# 5ed0de6035844f9da8851abe6eebfc18
-#: ../../telephony_pjsip_templates.rst:153
+# 0279ae5433944ffd93c27179df3d9292
+#: ../../telephony_pjsip_templates.rst:228
 msgid ""
 "Se plantea autenticar vía SIP las llamadas salientes (desde OMniLeads "
-"hacia la IPPBX) y las llamadas entrantes (desde la IPPBX hacia "
-"OMniLeads). Por eso la razón de ser de los siguientes parámetros y sus "
-"valores:"
+"hacia la PBX) y las llamadas entrantes (desde la IPPBX hacia OMniLeads). "
+"Por eso la razón de ser de los siguientes parámetros y sus valores:"
 msgstr ""
-"SIP Authentication is needed for outbound and inbound calls, so, the "
-"following parameters are needed:"
+"Outgoing calls (from OMniLeads to the PBX) and incoming calls "
+"(from the IPPBX to OMniLeads) are proposed to be authenticated "
+"via SIP. That explains the following parameters and their values:"
 
-# d9abec40803f4b2eb50421565c78e868
-#: ../../telephony_pjsip_templates.rst:157
+# 4a9be4a377614092986a4b2f0f9ae28d
+#: ../../telephony_pjsip_templates.rst:231
+msgid "**sends_auth=yes**"
+msgstr ""
+
+# c622685d8c574c70a7fc058ba28c9f8e
+#: ../../telephony_pjsip_templates.rst:232
 msgid "**accepts_auth=yes**"
 msgstr ""
 
-# 43cdae9dda5b47e088a8af08e603d955
-#: ../../telephony_pjsip_templates.rst:158
+# 2d6ec78c1594441fb045cfee4429d3e1
+#: ../../telephony_pjsip_templates.rst:233
 msgid "**remote_hosts=****IPADDR-or-FQDN:PORT******"
 msgstr ""
 
-# 9c345d1e30e8430b85b49f8f15e0420d
-#: ../../telephony_pjsip_templates.rst:159
+# 16400e00002f4376942d4ecfe864690a
+#: ../../telephony_pjsip_templates.rst:234
 msgid "**inbound_auth/username=****SIP_USER PBX -> OML******"
 msgstr ""
 
-# 4c176fd006a044348ab9a87463b5382e
-#: ../../telephony_pjsip_templates.rst:160
+# 18b52f20f00944f2b32c5c138691dcc0
+#: ../../telephony_pjsip_templates.rst:235
 msgid "**inbound_auth/password=****SIP_PASS PBX -> OML******"
 msgstr ""
 
-# e7b68761d36648b2b4643e4ccbd34b00
-#: ../../telephony_pjsip_templates.rst:161
+# 240bf81b85bb4ea29390ef094edef889
+#: ../../telephony_pjsip_templates.rst:236
 msgid "**outbound_auth/username=****SIP_USER OML -> PBX******"
 msgstr ""
 
-# e5f85ecf75284ec9834c762aba165eb0
-#: ../../telephony_pjsip_templates.rst:162
+# 7ff673899f824f8bbef930406df2dd88
+#: ../../telephony_pjsip_templates.rst:237
 msgid "**outbound_auth/password=****SIP_PASS OML -> PBX******"
 msgstr ""
 
-# 161e7b59ecfd448ba97d50129a434f49
-#: ../../telephony_pjsip_templates.rst:163
+# 21ca1c1b731b40a5a88a3883d7a291ce
+#: ../../telephony_pjsip_templates.rst:238
 msgid "**endpoint/from_user=****SIP_USER OML -> PBX******"
 msgstr ""
 
-# 8052cc4dc2bc428abec872d3e1dbbd7c
-#: ../../telephony_pjsip_templates.rst:165
+# 0ded6d84308f488ab9920f9a0ef2e9a3
+#: ../../telephony_pjsip_templates.rst:240
 msgid ""
 "Damos por sentado la interpretación de los parámetros a partir de sus "
 "sugestivos nombres. Además se resalta el hecho de no implicar "
@@ -292,23 +440,26 @@ msgid ""
 " ya que ambos sistemas se encuentran en una red LAN y con una dirección "
 "IP o FQDN asignado."
 msgstr ""
-"You can complete the data according to the clear suggestions. No SIP "
-"registration is needed but the credentials are sent to authenticate "
-"INVITES for outbound and inbound calls."
+"We take for granted the interpretation of the parameters from their "
+"suggestive names. We also highlight the fact of not involving any SIP "
+"registration -either from OMniLeads to the PBX or the other way around- "
+"since both systems are on a LAN network and with an IP address or "
+"assigned FQDN."
 
-# ade83f0903b14f59acab2da2aa208473
-#: ../../telephony_pjsip_templates.rst:168
+# 3eb2f56dc45a4c4e964891feb8a411af
+#: ../../telephony_pjsip_templates.rst:243
 msgid ""
 "Por otro lado los parámetros **transport=trunk-transport** y "
 "**endpoint/force_rport=no** nos dicen que no se aplica ningún tipo de "
 "tratamiento de NAT a los paquetes SIP engendrados desde OMniLeads."
 msgstr ""
-"The parameters **transport=trunk-transport** and "
-"**endpoint/force_rport=no** are related to the fact that no NAT is "
-"neeeded for SIP packages."
+"On the other hand, the parameters **transport=trunk-transport** and "
+"**endpoint/force_rport=no** not tell us that any type of NAT treatment "
+"is applied to the SIP packets generated from OMniLeads."
 
-# d4da90ee75494f9f861a2d1946781c84
-#: ../../telephony_pjsip_templates.rst:170
+
+# 786b26127db24692a235708cc543a1ee
+#: ../../telephony_pjsip_templates.rst:245
 msgid ""
 "Finalmente resaltamos el parámetro; **endpoint/context=from-pbx** que "
 "indica que las llamadas provenientes desde la IP-PBX tienen un punto de "
@@ -322,110 +473,265 @@ msgstr ""
 " calls from PSTN, because using the context from-pbx you can call and "
 "transfer between OMniLeads agents and PBX extensions."
 
-# 4012a8d3bd144df5aa03e3138dfdae4b
-#: ../../telephony_pjsip_templates.rst:178
-msgid "Troncal contra una PBX a  través de Internet"
-msgstr "Trunk with a PBX through Internet"
-
-# 999915e57db54f4ab3576c4eafa6a0bf
-#: ../../telephony_pjsip_templates.rst:180
+# a088203deb8b4a039ace269450e99e4a
+#: ../../telephony_pjsip_templates.rst:251
 msgid ""
-"Al igual que en el caso anterior, se plantea una vinculación entre ambos "
-"sistemas de telefonía solo que ahora se considera que la conectividad SIP"
-" atraviesa un ambiente de NAT en internet. Podemos asumir un escenario "
-"bajo el cual OMniLeads se encuentra montado sobre un VPS en internet en "
-"donde puede ser pertinente que se haga una registración contra la IP-PBX "
-"ubicada en el centro de datos de la compañía."
+"A la hora de declarar el SIP trunk en el otro extremo, tener en cuenta "
+"que OMniLeads utilizará el puerto SIP UDP **5161** en estos entornos SIN "
+"NAT."
 msgstr ""
-"This scenario is related to connection between OMniLeads and PBX that are"
-" not in same LAN, so the NAT is involved. An example of this is an "
-"OMniLeads installed on a VPS and a PBX inside the LAN of company."
+"When declaring the SIP trunk at the other end, keep in mind that OMniLeads "
+"will use SIP UDP  5161 port in these NAT-free environments."
 
-# e91dfd32094e4faa9423fcd6e7781aa7
-# bc53705241c2475f9c95ca336cc3b221
-#: ../../telephony_pjsip_templates.rst:188
-#: ../../telephony_pjsip_templates.rst:231
-msgid ""
-"Por ello es que la plantilla de configuración cambia en un par de "
-"parámetros:"
-msgstr "The configuration template change in this parameters: "
-
-# f1046aee328f494a9dc042826f7c709e
-#: ../../telephony_pjsip_templates.rst:213
-msgid ""
-"Se plantea entonces una registración hacia la IP-PBX; "
-"**sends_registrations=yes**, siendo este parámetro el indicador para "
-"generar los REGISTER. Observemos además los valores asignados a los "
-"parámetros; **transport=trunk-nat-transport** y "
-"**endpoint/force_rport=yes** implican un tratamiento en términos del NAT "
-"y los paquetes SIP gestados desde OMniLeads."
-msgstr ""
-"Registration from OMniLeads to PBX is needed; so the parameter "
-"**sends_registrations=yes**, indicates this. The parameters **transport"
-"=trunk-nat-transport** and **endpoint/force_rport=yes** indicates that "
-"NAT is needed for SIP packages."
-
-# 1fda46d56d4e4336af0f195cab8ac75d
-#: ../../telephony_pjsip_templates.rst:217
-msgid ""
-"El resto de los parámetros son similares a los aplicados en el esquema "
-"anterior."
-msgstr "The other parameters are similar to previous scenarios."
-
-# 2fbf43ab1c734033963e903cf9c7cfd3
-#: ../../telephony_pjsip_templates.rst:223
-msgid "OMniLeads inside IPPBX"
-msgstr ""
-
-# 6d41cbf028274bc6914e36bee6adecf7
-#: ../../telephony_pjsip_templates.rst:225
-msgid ""
-"Esta plantilla hace alusión a una instalación "
-":ref:`about_install_docker_linux`. Es decir bajo este escenario OMniLeads"
-" se encuentra corriendo en el mismo host que el software de IPPBX. Lo "
-"cual implica que se establezca un PJSIP trunk desde el *Asterisk "
-"dockerizado* dentro del host y el Asterisk que se ejecuta como servicio a"
-" nivel sistema operativo de base de la IPPBX."
-msgstr ""
-"This template refers to OMniLeads deployed with Docker "
-":ref:`about_install_docker`. The software is running in the same machine "
-"where is installed the PBX. OMniLeads Asterisk is dockerized so the PJSIP"
-" trunk needs to have some particular parameters to have a good VoIP flow."
-
-# b289cbcc369e4039adaf29468ba257cf
-#: ../../telephony_pjsip_templates.rst:256
-msgid ""
-"Respecto a los parámetros vamos a observar que se trata de una "
-"configuración muy similar al escenario "
-":ref:`about_telephony_pjsip_lan_pbx`, solo que al tener el componente "
-"Asterisk dockerizado, se realiza un tratamiento de NAT, observar los "
-"parámetros **trunk-nat-docker-transport** y **endpoint/force_rport=yes** "
-"que se encargan de alterar la dirección IP de los paquetes SIP "
-"engendrados desde OMniLeads dockerizado para que salgan con la IP del "
-"host IPPBX en lugar de hacerlo con la IP dinámica del asterisk Docker."
-msgstr ""
-"The scenario is very similar to :ref:`about_telephony_pjsip_lan_pbx`, the"
-" difference is that NAT is needed, because Asterisk is dockerized in a "
-"different LAN. So the parameters **trunk-nat-docker-transport** y "
-"**endpoint/force_rport=yes** change the IP address of packages originated"
-" from OMniLeads, because the docker containers are in their own LAN and "
-"we need to have the packages with the IP address of the machine."
-
-# 213ef8b1d5584fcd845502dd5201e7c7
-#: ../../telephony_pjsip_templates.rst:260
-msgid ""
-"El resto de los parámetros son similares a los aplicados en los esquemas "
-"anteriores."
-msgstr "The other parameters are similar to the previous scenarios."
-
-# 3be91544376349d9ba59ba4d0f1fba08
-#: ../../telephony_pjsip_templates.rst:265
+# 8944081d140847bf84b4f0cbf603fc8e
+#: ../../telephony_pjsip_templates.rst:255
 msgid "Troncal PJSIP Custom"
 msgstr "PJSIP custom trunk"
 
-# abc7ee5317fc4ede9dd8c002c41b79c1
-#: ../../telephony_pjsip_templates.rst:267
+# 2bc91dc633e54bdf8a4dc0f302dfc20f
+#: ../../telephony_pjsip_templates.rst:257
 msgid ""
 "Aquí el administrador podrá escribir a medida su propia configuración "
-"PJSIP wizard."
-msgstr "Here the administrator can write its own PJSIP configuration."
+"PJSIP wizard. Más allá de las plantillas proporcionadas siempre el "
+"Administrador cuenta con la posibilidad de ajustar la configuración de "
+"acuerdo al escenario puntual y las particularidades de cada caso, por "
+"ello es muy recomendable que se estudien bien los parámetros del stack "
+"PJSIP de Asterisk ya que cuenta con un gran nivel de personalización."
+msgstr ""
+"Here the Administrator will be able to customize his or her own PJSIP "
+"wizard configuration. Beyond the templates provided, the Administrator "
+"always has the possibility of adjusting the configuration according to "
+"the specific scenario and to the particularities of each case. It is "
+"therefore highly recommended to fully comprehend the parameters of the "
+"Asterisk PJSIP stack  due to their high level of customization."
+
+# 4cab248af4f5415ea505d991ec5ff6d3
+#~ msgid "Troncal contra un proveedor SIP sobre Internet"
+#~ msgstr "SIP trunk with Internet SIP provider"
+
+# 173bf608889044859626da574c7195c1
+#~ msgid ""
+#~ "Se trata del tipo de proveedor de"
+#~ " troncales SIP al que se puede "
+#~ "acceder a través de nuestra propia "
+#~ "conexión a internet, utilizando generalmente"
+#~ " la autenticación SIP para el envío"
+#~ " de llamadas y la registración como"
+#~ " suscriptor."
+#~ msgstr ""
+#~ "When your SIP provider is on "
+#~ "Internet, use this template, to use "
+#~ "SIP authentication to send calls and "
+#~ "registration as subscriber."
+
+# 54e003b5b6684fec8401c9d95c089178
+#~ msgid ""
+#~ "Los últimos cuatro parámetros tienen que"
+#~ " ver con los datos que el "
+#~ "proveedor nos facilita, esto es; la "
+#~ "dirección o FQDN y puerto "
+#~ "correspondiente hacia donde debemos disparar"
+#~ " nuestros REGISTER o INVITE para "
+#~ "registrar el troncal o enviar una "
+#~ "llamada saliente y además los valores"
+#~ " de *username* y *password* con los"
+#~ " cuales el proveedor autentica cada "
+#~ "REGISTER e INVITE generado desde "
+#~ "OMniLeads."
+#~ msgstr ""
+
+# f561c9c0de7a454c910b707cd9c3657b
+#~ msgid "**transport=trunk-nat-transport**"
+#~ msgstr ""
+
+# 72cc59259afd41ebb098ec8736cd9be8
+#~ msgid "**accepts_registrations=no**"
+#~ msgstr ""
+
+# 1fbe6cbdcc1e426d97a467c7404ceb91
+#~ msgid "**accepts_auth=no**"
+#~ msgstr ""
+
+# e2bf28c6ea21447e93915e5a090df3a1
+#~ msgid "**sends_registrations=yes**"
+#~ msgstr ""
+
+# 8bf01a58171e4bc5bf3e6063f3036aef
+#~ msgid ""
+#~ "Los siguientes tres parámetros tienen "
+#~ "que ver con los codecs a utilizar,"
+#~ " el modo de los DTMF y muy "
+#~ "importante el punto de entrada de "
+#~ "las llamadas que lleguen por el "
+#~ "troncal. Osea:"
+#~ msgstr ""
+#~ "The next three parameters are realted"
+#~ " to codecs, DTMF mode and the "
+#~ "context: "
+
+# 62658646ba3446459033eefc8ed48497
+#~ msgid "**endpoint/allow=alaw,ulaw**"
+#~ msgstr ""
+
+# 14289b2d59da47ec8228a0d0bd193f3c
+#~ msgid "**endpoint/dtmf_mode=rfc4733**"
+#~ msgstr ""
+
+# 2cfdbee66930486ca6a5768eaed74989
+#~ msgid "**endpoint/context=from-pstn**."
+#~ msgstr ""
+
+# acf156b8c5f74787abca07fa927a72f1
+#~ msgid "Troncal contra un proveedor SIP backbone dedicado"
+#~ msgstr "SIP trunk with local SIP backboone"
+
+# 190256779bb94e82aa23629b5a8c4e5d
+#~ msgid ""
+#~ "El parámetro: **transport=trunk-transport**, "
+#~ "hace referencia al hecho de que no"
+#~ " hace falta advertir ninguna IP "
+#~ "pública, ya que como bien mencionamos"
+#~ " bajo este esquema nos desentendemos "
+#~ "del NAT."
+#~ msgstr ""
+#~ "The parameter **transport=trunk-transport**, "
+#~ "is related to the fact that no "
+#~ "public IP is needed, because NAT "
+#~ "is not important."
+
+# cd63ad8c6c3a4854b391d64970a66848
+#~ msgid "Troncal contra una PBX dentro de la LAN"
+#~ msgstr "Trunk with a PBX in LAN"
+
+# 4012a8d3bd144df5aa03e3138dfdae4b
+#~ msgid "Troncal contra una PBX a  través de Internet"
+#~ msgstr "Trunk with a PBX through Internet"
+
+# 999915e57db54f4ab3576c4eafa6a0bf
+#~ msgid ""
+#~ "Al igual que en el caso anterior,"
+#~ " se plantea una vinculación entre "
+#~ "ambos sistemas de telefonía solo que "
+#~ "ahora se considera que la conectividad"
+#~ " SIP atraviesa un ambiente de NAT "
+#~ "en internet. Podemos asumir un escenario"
+#~ " bajo el cual OMniLeads se encuentra"
+#~ " montado sobre un VPS en internet "
+#~ "en donde puede ser pertinente que "
+#~ "se haga una registración contra la "
+#~ "IP-PBX ubicada en el centro de "
+#~ "datos de la compañía."
+#~ msgstr ""
+#~ "This scenario is related to connection"
+#~ " between OMniLeads and PBX that are"
+#~ " not in same LAN, so the NAT"
+#~ " is involved. An example of this "
+#~ "is an OMniLeads installed on a VPS"
+#~ " and a PBX inside the LAN of"
+#~ " company."
+
+# e91dfd32094e4faa9423fcd6e7781aa7
+# bc53705241c2475f9c95ca336cc3b221
+#~ msgid ""
+#~ "Por ello es que la plantilla de"
+#~ " configuración cambia en un par de"
+#~ " parámetros:"
+#~ msgstr "The configuration template change in this parameters: "
+
+# f1046aee328f494a9dc042826f7c709e
+#~ msgid ""
+#~ "Se plantea entonces una registración "
+#~ "hacia la IP-PBX; **sends_registrations=yes**,"
+#~ " siendo este parámetro el indicador "
+#~ "para generar los REGISTER. Observemos "
+#~ "además los valores asignados a los "
+#~ "parámetros; **transport=trunk-nat-transport** "
+#~ "y **endpoint/force_rport=yes** implican un "
+#~ "tratamiento en términos del NAT y "
+#~ "los paquetes SIP gestados desde "
+#~ "OMniLeads."
+#~ msgstr ""
+#~ "Registration from OMniLeads to PBX is"
+#~ " needed; so the parameter "
+#~ "**sends_registrations=yes**, indicates this. The "
+#~ "parameters **transport=trunk-nat-transport** "
+#~ "and **endpoint/force_rport=yes** indicates that "
+#~ "NAT is needed for SIP packages."
+
+# 1fda46d56d4e4336af0f195cab8ac75d
+#~ msgid ""
+#~ "El resto de los parámetros son "
+#~ "similares a los aplicados en el "
+#~ "esquema anterior."
+#~ msgstr "The other parameters are similar to previous scenarios."
+
+# 2fbf43ab1c734033963e903cf9c7cfd3
+#~ msgid "OMniLeads inside IPPBX"
+#~ msgstr ""
+
+# 6d41cbf028274bc6914e36bee6adecf7
+#~ msgid ""
+#~ "Esta plantilla hace alusión a una "
+#~ "instalación :ref:`about_install_docker_linux`. Es "
+#~ "decir bajo este escenario OMniLeads se"
+#~ " encuentra corriendo en el mismo host"
+#~ " que el software de IPPBX. Lo "
+#~ "cual implica que se establezca un "
+#~ "PJSIP trunk desde el *Asterisk "
+#~ "dockerizado* dentro del host y el "
+#~ "Asterisk que se ejecuta como servicio"
+#~ " a nivel sistema operativo de base"
+#~ " de la IPPBX."
+#~ msgstr ""
+#~ "This template refers to OMniLeads "
+#~ "deployed with Docker :ref:`about_install_docker`."
+#~ " The software is running in the "
+#~ "same machine where is installed the "
+#~ "PBX. OMniLeads Asterisk is dockerized so"
+#~ " the PJSIP trunk needs to have "
+#~ "some particular parameters to have a "
+#~ "good VoIP flow."
+
+# b289cbcc369e4039adaf29468ba257cf
+#~ msgid ""
+#~ "Respecto a los parámetros vamos a "
+#~ "observar que se trata de una "
+#~ "configuración muy similar al escenario "
+#~ ":ref:`about_telephony_pjsip_lan_pbx`, solo que al"
+#~ " tener el componente Asterisk dockerizado,"
+#~ " se realiza un tratamiento de NAT,"
+#~ " observar los parámetros **trunk-nat-"
+#~ "docker-transport** y **endpoint/force_rport=yes** "
+#~ "que se encargan de alterar la "
+#~ "dirección IP de los paquetes SIP "
+#~ "engendrados desde OMniLeads dockerizado para"
+#~ " que salgan con la IP del host"
+#~ " IPPBX en lugar de hacerlo con "
+#~ "la IP dinámica del asterisk Docker."
+#~ msgstr ""
+#~ "The scenario is very similar to "
+#~ ":ref:`about_telephony_pjsip_lan_pbx`, the difference "
+#~ "is that NAT is needed, because "
+#~ "Asterisk is dockerized in a different"
+#~ " LAN. So the parameters **trunk-"
+#~ "nat-docker-transport** y "
+#~ "**endpoint/force_rport=yes** change the IP "
+#~ "address of packages originated from "
+#~ "OMniLeads, because the docker containers "
+#~ "are in their own LAN and we "
+#~ "need to have the packages with the"
+#~ " IP address of the machine."
+
+# 213ef8b1d5584fcd845502dd5201e7c7
+#~ msgid ""
+#~ "El resto de los parámetros son "
+#~ "similares a los aplicados en los "
+#~ "esquemas anteriores."
+#~ msgstr "The other parameters are similar to the previous scenarios."
+
+# abc7ee5317fc4ede9dd8c002c41b79c1
+#~ msgid ""
+#~ "Aquí el administrador podrá escribir a"
+#~ " medida su propia configuración PJSIP "
+#~ "wizard."
+#~ msgstr "Here the administrator can write its own PJSIP configuration."
