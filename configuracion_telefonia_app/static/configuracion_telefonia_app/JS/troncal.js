@@ -38,7 +38,6 @@ endpoint/allow=alaw,ulaw\n\
 endpoint/dtmf_mode=rfc4733\n\
 endpoint/context=from-pstn\n\
 remote_hosts=****IPADDR-or-FQDN:PORT****\n\
-endpoint/from_user=****YOUR SIP_USERNAME****\n\
 outbound_auth/username=****YOUR SIP_USERNAME****\n\
 outbound_auth/password=****YOUR SIP_PASSWORD****'
     },
@@ -60,8 +59,7 @@ endpoint/dtmf_mode=rfc4733\n\
 endpoint/timers=yes\n\
 endpoint/language=es\n\
 endpoint/context=from-pstn\n\
-remote_hosts=****IPADDR-or-FQDN:PORT****\n\
-endpoint/from_user=****YOUR SIP_USER****',
+remote_hosts=****IPADDR-or-FQDN:PORT****',
     },
     {
         'name': 'PBX OmniLeads (LAN)',
@@ -84,8 +82,7 @@ remote_hosts=****IPADDR-or-FQDN:PORT****\n\
 inbound_auth/username=****SIP_USER PBX -> OML****\n\
 inbound_auth/password=****SIP_PASS PBX -> OML****\n\
 outbound_auth/username=****SIP_USER OML -> PBX****\n\
-outbound_auth/password=****SIP_PASS OML -> PBX****\n\
-endpoint/from_user=****SIP_USER OML -> PBX****',
+outbound_auth/password=****SIP_PASS OML -> PBX****',
     },
     {
         'name': 'PBX OmniLeads (NAT)',
@@ -108,8 +105,7 @@ remote_hosts=****IPADDR-or-FQDN:PORT****\n\
 inbound_auth/username=****SIP_USER PBX -> OML****\n\
 inbound_auth/password=****SIP_PASS PBX -> OML****\n\
 outbound_auth/username=****SIP_USER OML -> PBX****\n\
-outbound_auth/password=****SIP_PASS OML -> PBX****\n\
-endpoint/from_user=****SIP_USER OML -> PBX****',
+outbound_auth/password=****SIP_PASS OML -> PBX****',
     },
     {
         'name': 'OML Docker',
@@ -132,8 +128,7 @@ remote_hosts=****IPADDR-or-FQDN:PORT****\n\
 inbound_auth/username=****SIP_USER PBX -> OML****\n\
 inbound_auth/password=****SIP_PASS PBX -> OML****\n\
 outbound_auth/username=****SIP_USER OML -> PBX****\n\
-outbound_auth/password=****SIP_PASS OML -> PBX****\n\
-endpoint/from_user=****SIP_USER OML -> PBX****',
+outbound_auth/password=****SIP_PASS OML -> PBX****',
     },
     {
         'name': 'Custom',

@@ -105,6 +105,8 @@ class User(AbstractUser):
         supervisor = self.get_supervisor_profile()
         if supervisor and supervisor.is_administrador:
             return True
+        # TODO: Tal vez no deberían incluirse los usuarios is_staff porque pueden llegar a crearse
+        # sin SupervisorProfile asociado
         elif self.is_staff:
             return True
         return False
@@ -135,13 +137,8 @@ class User(AbstractUser):
     def get_tiene_permiso_administracion(self):
         """Funcion devuelve true si tiene permiso de acceso a la pagina
         de adminstracion del sistema"""
-        if self.get_is_administrador():
-            return True
-        elif self.get_is_supervisor_normal():
-            return True
-        elif self.get_is_supervisor_customer():
-            return True
-        return False
+        # Indica si tiene SupervisorProfile asociado. (Tiene permisos de Gestión)
+        return hasattr(self, 'supervisorprofile')
 
     def get_es_administrador_o_supervisor_normal(self):
         """Funcion devuelve true si el usuario es Administrador o Supervisor Normal"""
@@ -2721,7 +2718,8 @@ class CalificacionClienteManager(models.Manager):
         return result.order_by('-fecha')
 
     def calificacion_por_filtro(self, fecha_desde, fecha_hasta, agente, campana, grupo_agentes,
-                                id_contacto, telefono, callid, status_auditoria):
+                                id_contacto, id_contacto_externo, telefono, callid,
+                                status_auditoria):
         """Devuelve un queryset con la las calificaciones de acuerdo a los filtros aplicados"""
 
         calificaciones = self.obtener_calificaciones_auditoria()
@@ -2739,6 +2737,8 @@ class CalificacionClienteManager(models.Manager):
             agentes_ids = list(AgenteProfile.objects.filter(grupo=grupo_agentes).values_list(
                 'pk', flat=True))
             calificaciones = calificaciones.filter(agente__pk__in=agentes_ids)
+        if id_contacto_externo:
+            calificaciones = calificaciones.filter(contacto__id_externo=id_contacto_externo)
         if id_contacto:
             calificaciones = calificaciones.filter(contacto__pk=id_contacto)
         if telefono:
@@ -2897,6 +2897,18 @@ class AuditoriaCalificacion(models.Model):
     def es_pendiente(cls, valor_resultado):
         "Determina si un valor corresponde a una auditoria aun pendiente"
         return valor_resultado not in [cls.APROBADA, cls.RECHAZADA, cls.OBSERVADA]
+
+    @property
+    def es_aprobada(self):
+        return self.resultado == self.APROBADA
+
+    @property
+    def es_rechazada(self):
+        return self.resultado == self.RECHAZADA
+
+    @property
+    def es_observada(self):
+        return self.resultado == self.OBSERVADA
 
     def __str__(self):
         return str(_("Auditoría de calificacion con id={0} fue {1}".format(

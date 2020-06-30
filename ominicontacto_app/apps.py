@@ -18,10 +18,328 @@
 from __future__ import unicode_literals
 from django.apps import AppConfig
 from django.utils.translation import ugettext_lazy as _
+from django.urls import reverse
+from constance import config
 
 
 class OminicontactoAppConfig(AppConfig):
     name = 'ominicontacto_app'
+
+    def supervision_menu_items(self, request, permissions):
+        items = []
+
+        # Usuarios y grupos
+        usuarios_y_grupos = []
+
+        usuarios = []
+        if 'user_list' in permissions:
+            usuarios.append({
+                'label': _('Usuarios'),
+                'url': reverse('user_list', args=(1, ))
+            })
+        if 'user_nuevo' in permissions:
+            usuarios.append({
+                'label': _('Nuevo usuario'),
+                'url': reverse('user_nuevo')
+            })
+        if 'agente_list' in permissions:
+            usuarios.append({
+                'label': _('Agentes'),
+                'url': reverse('agente_list')
+            })
+        if 'supervisor_list' in permissions:
+            usuarios.append({
+                'label': _('Supervisores'),
+                'url': reverse('supervisor_list')
+            })
+        if config.WEBPHONE_CLIENT_ENABLED and 'cliente_webphone_list' in permissions:
+            usuarios.append({
+                'label': _('Clientes WebPhone'),
+                'url': reverse('cliente_webphone_list')
+            })
+        if usuarios:
+            usuarios_y_grupos.append({
+                'label': _('Lista de usuarios'),
+                'id': 'menuUsers',
+                'children': usuarios,
+            })
+        if 'grupo_list' in permissions:
+            usuarios_y_grupos.append({
+                'label': _('Grupos de agentes'),
+                'url': reverse('grupo_list')
+            })
+        if 'grupo_nuevo' in permissions:
+            usuarios_y_grupos.append({
+                'label': _('Nuevo Grupo de agentes'),
+                'url': reverse('grupo_nuevo')
+            })
+        if 'user_role_management' in permissions:
+            usuarios_y_grupos.append({
+                'label': _('Roles y permisos'),
+                'url': reverse('user_role_management')
+            })
+        if usuarios_y_grupos:
+            items.append({'order': 100,
+                          'label': _('Usuarios y grupos'),
+                          'id': 'menuUsersGroups',
+                          'icon': 'icon-user',
+                          'children': usuarios_y_grupos})
+
+        # Campañas
+        campanas = []
+        #  Dialers
+        dialers = []
+        if 'campana_dialer_list' in permissions:
+            dialers.append({
+                'label': _('Listado de campañas'),
+                'url': reverse('campana_dialer_list')
+            })
+        if 'campana_dialer_create' in permissions:
+            dialers.append({
+                'label': _('Nueva campaña'),
+                'url': reverse('campana_dialer_create')
+            })
+        if 'lista_campana_dialer_template' in permissions:
+            dialers.append({
+                'label': _('Templates'),
+                'url': reverse('lista_campana_dialer_template')
+            })
+        if 'campana_dialer_template_create' in permissions:
+            dialers.append({
+                'label': _('Nuevo template'),
+                'url': reverse('campana_dialer_template_create')
+            })
+        if dialers:
+            campanas.append({
+                'label': _('Campañas dialer'),
+                'id': 'menuCampaignDialer',
+                'children': dialers
+            })
+        #  Preview
+        previews = []
+        if 'campana_preview_list' in permissions:
+            previews.append({
+                'label': _('Listado de campañas'),
+                'url': reverse('campana_preview_list')
+            })
+        if 'campana_preview_create' in permissions:
+            previews.append({
+                'label': _('Nueva campaña'),
+                'url': reverse('campana_preview_create')
+            })
+        if 'campana_preview_template_list' in permissions:
+            previews.append({
+                'label': _('Templates'),
+                'url': reverse('campana_preview_template_list')
+            })
+        if 'campana_preview_template_create' in permissions:
+            previews.append({
+                'label': _('Nuevo template'),
+                'url': reverse('campana_preview_template_create')
+            })
+        if previews:
+            campanas.append(({
+                'label': _('Campañas preview'),
+                'id': 'menuCampaignPreview',
+                'children': previews
+            }))
+        #  Entrantes
+        entrantes = []
+        if 'campana_list' in permissions:
+            entrantes.append({
+                'label': _('Listado de campañas'),
+                'url': reverse('campana_list')
+            })
+        if 'campana_nuevo' in permissions:
+            entrantes.append({
+                'label': _('Nueva campaña'),
+                'url': reverse('campana_nuevo')
+            })
+        if 'campana_entrante_template_list' in permissions:
+            entrantes.append({
+                'label': _('Templates'),
+                'url': reverse('campana_entrante_template_list')
+            })
+        if 'campana_entrante_template_create' in permissions:
+            entrantes.append({
+                'label': _('Nuevo template'),
+                'url': reverse('campana_entrante_template_create')
+            })
+        if entrantes:
+            campanas.append({
+                'label': _('Campañas entrantes'),
+                'id': 'menuCampaignIn',
+                'children': entrantes
+            })
+        #  Manuales
+        manuales = []
+        if 'campana_manual_list' in permissions:
+            manuales.append({
+                'label': _('Listado de campañas'),
+                'url': reverse('campana_manual_list')
+            })
+        if 'campana_manual_create' in permissions:
+            manuales.append({
+                'label': _('Nueva campaña'),
+                'url': reverse('campana_manual_create')
+            })
+        if 'campana_manual_template_list' in permissions:
+            manuales.append({
+                'label': _('Templates'),
+                'url': reverse('campana_manual_template_list')
+            })
+        if 'campana_manual_template_create' in permissions:
+            manuales.append({
+                'label': _('Nuevo template'),
+                'url': reverse('campana_manual_template_create')
+            })
+        if manuales:
+            campanas.append({
+                'label': _('Campañas manuales'),
+                'id': 'menuCampaignManual',
+                'children': manuales
+            })
+        #  Calificaciones
+        calificaciones = []
+        if 'calificacion_list' in permissions:
+            calificaciones.append({
+                'label': _('Listado de calificaciones'),
+                'url': reverse('calificacion_list')
+            })
+        if 'calificacion_nuevo' in permissions:
+            calificaciones.append({
+                'label': _('Nueva Calificación'),
+                'url': reverse('calificacion_nuevo')
+            })
+        if calificaciones:
+            campanas.append({
+                'label': _('Calificaciones'),
+                'id': 'menuQualifications',
+                'children': calificaciones
+            })
+        #  Formularios
+        formularios = []
+        if 'formulario_nuevo' in permissions:
+            formularios.append({
+                'label': _('Nuevo formulario'),
+                'url': reverse('formulario_nuevo')
+            })
+        if 'formulario_list' in permissions:
+            formularios.append({
+                'label': _('Listado de formularios'),
+                'url': reverse('formulario_list')
+            })
+        if formularios:
+            campanas.append({
+                'label': _('Formularios'),
+                'id': 'menuForms',
+                'children': formularios
+            })
+        #  Sitios Externos
+        sitios_externos = []
+        if 'sitio_externo_create' in permissions:
+            sitios_externos.append({
+                'label': _('Nuevo sitio'),
+                'url': reverse('sitio_externo_create')
+            })
+        if 'sitio_externo_list' in permissions:
+            sitios_externos.append({
+                'label': _('Listado de sitios'),
+                'url': reverse('sitio_externo_list')
+            })
+            campanas.append({
+                'label': _('Sitios Externos'),
+                'id': 'menuSites',
+                'children': sitios_externos
+            })
+        #  Sistemas EXternos
+        sistemas_externos = []
+        if 'sistema_externo_create' in permissions:
+            sistemas_externos.append({
+                'label': _('Nuevo sistema'),
+                'url': reverse('sistema_externo_create')
+            })
+        if 'sistema_externo_list' in permissions:
+            sistemas_externos.append({
+                'label': _('Listado de sistemas'),
+                'url': reverse('sistema_externo_list')
+            })
+        if sistemas_externos:
+            campanas.append({
+                'label': _('Sistemas Externos'),
+                'id': 'menuSystems',
+                'children': sistemas_externos
+            })
+
+        if campanas:
+            items.append({'order': 200,
+                          'label': _('Campañas'),
+                          'id': 'menuCampaign',
+                          'icon': 'icon-campaign',
+                          'children': campanas})
+
+        # Pausas
+        pausas = []
+        if 'pausa_list' in permissions:
+            pausas.append({
+                'label': _('Listado de pausas'),
+                'url': reverse('pausa_list')
+            })
+        if 'pausa_nuevo' in permissions:
+            pausas.append({
+                'label': _('Nueva pausa'),
+                'url': reverse('pausa_nuevo')
+            })
+        if pausas:
+            items.append({'order': 200,
+                          'label': _('Pausas'),
+                          'icon': 'icon-pause',
+                          'id': 'menuBreaks',
+                          'children': pausas})
+        # Contactos
+        contactos = []
+        if 'lista_base_datos_contacto' in permissions:
+            contactos.append({
+                'label': _('Base de datos de contactos'),
+                'url': reverse('lista_base_datos_contacto')
+            })
+        if 'nueva_base_datos_contacto' in permissions:
+            contactos.append({
+                'label': _('Nueva base de datos de contactos'),
+                'url': reverse('nueva_base_datos_contacto')
+            })
+        if contactos:
+            contactos.append({'line': True})
+
+        if 'back_list_list' in permissions:
+            contactos.append({
+                'label': _('Blacklists'),
+                'url': reverse('back_list_list')
+            })
+        if 'back_list_create' in permissions:
+            contactos.append({
+                'label': _('Nueva Blacklist'),
+                'url': reverse('back_list_create')
+            })
+        if contactos:
+            items.append({'order': 400,
+                          'label': _('Contactos'),
+                          'icon': 'icon-contacts',
+                          'id': 'menuContacts',
+                          'children': contactos})
+
+        # Grabaciones y Auditorias
+        if 'grabacion_buscar' in permissions:
+            items.append({'order': 500,
+                          'label': _('Buscar Grabación'),
+                          'icon': 'icon-search',
+                          'url': reverse('grabacion_buscar', args=(1,))})
+        if 'buscar_auditorias_gestion' in permissions:
+            items.append({'order': 600,
+                          'label': _('Buscar Auditorías'),
+                          'icon': 'icon-search',
+                          'url': reverse('buscar_auditorias_gestion', args=(1,))})
+        return items
 
     def configuraciones_de_permisos(self):
         return [
@@ -79,6 +397,10 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'grabacion_agente_buscar',
              'roles': ['Agente', ]},
+            {'nombre': 'buscar_auditorias_gestion',
+             'roles': ['Administrador', 'Gerente', ]},
+            {'nombre': 'auditar_calificacion_cliente',
+             'roles': ['Administrador', 'Gerente', ]},
             {'nombre': 'service_campanas_activas',
              'roles': ['Agente', ]},
             {'nombre': 'service_agentes_de_grupo',
@@ -369,8 +691,6 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'eliminar_archivo_audio',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'buscar_auditorias_gestion',
-             'roles': ['Administrador', 'Gerente', ]},
         ]
 
     informacion_de_permisos = {
@@ -430,6 +750,11 @@ class OminicontactoAppConfig(AppConfig):
              'version': '1.6.2'},
         'grabacion_agente_buscar':
             {'descripcion': _('Busqueda de grabaciones propias para Agentes'), 'version': '1.6.2'},
+        'buscar_auditorias_gestion':
+            {'descripcion': _('Acceder al listado de calificaciones a auditar'),
+             'version': '1.6.2'},
+        'auditar_calificacion_cliente':
+            {'descripcion': _('Crear/editar auditoría de calificacion'), 'version': '1.7.0'},
         'service_campanas_activas':
             {'descripcion':
              _('Lista de Campanas activas. Se usan como opciones para transferencias.'),
@@ -761,8 +1086,4 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Editar un Archivo de Audio'), 'version': '1.6.2'},
         'eliminar_archivo_audio':
             {'descripcion': _('Eliminar un Archivo de Audio'), 'version': '1.6.2'},
-        # Auditorías
-        'buscar_auditorias_gestion':
-            {'descripcion': _('Acceder al listado de calificaciones a auditar'),
-             'version': '1.6.2'}
     }

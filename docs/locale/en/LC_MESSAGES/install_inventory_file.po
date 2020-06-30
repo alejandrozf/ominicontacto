@@ -8,194 +8,337 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-08 12:25-0300\n"
+"POT-Creation-Date: 2020-06-25 13:14-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.6.0\n"
 
-# cae544f0eed94c1083aaa09e771dbe1c
+# 78da12680fbf49b0a2c84d272f6cd61f
 #: ../../install_inventory_file.rst:5
 msgid "Archivo de inventario"
 msgstr "Inventory file"
 
-# f243ad93b1cc4f4cbc98d4e7bffb6d87
+# 7ad56241fcae4bb6a88a2e0a9917c95d
 #: ../../install_inventory_file.rst:7
 msgid ""
-"Al utilizar Ansible como tecnología para realizar los despliegues de "
-"OMniLeads, se trabaja con un archivo de \"inventario\" en el cual se "
-"configuran cuestiones como:"
+"En las diferentes secciones del *archivo de inventario* se presentan "
+"parámetros relacionados al despliegue de la App:"
 msgstr ""
-"Ansible is the technology used to deploy OMniLeads in a bare metal "
-"(physical machine or virtual machine). Ansible works with a file called "
-"\"inventory\" where these things are configured:"
+"In the different sections of the inventory file, parameters related to "
+"the App deployment are described:"
 
-# ac003d35747446759a88c301d90f1ae9
+# 2aaee2f073924940bad9cfa7d56b848c
 #: ../../install_inventory_file.rst:9
-msgid ""
-"Tipo de instalación a realizar (self-hosted, en remoto, cluster, entorno "
-"de desarrollo, etc.)"
-msgstr "Installation type (self-hosted, host-node, cluster, devenv, etc.)"
+msgid "Tipo de instalación a ejecutar"
+msgstr "Deployment type to be executed"
 
-# 07399b58eae04d2b9da6e071079dc97b
+# 90bfc7ab16ed4a17a1c4f3ba38690eb5
 #: ../../install_inventory_file.rst:10
-msgid ""
-"Passwords de los diferentes componentes (postgres, asterisk-AMI, acceso "
-"de admin, etc.)"
-msgstr ""
-"Passwords of different components (PostgreSQL, asterisk-AMI, web admin "
-"access, etc.)"
+msgid "Arquitectura de OMniLeads a desplegar"
+msgstr "OMniLeads architecture that will be deployed"
 
-# 470247db12ca4ec9a1d8529467171e3a
+# b5f5349a40824ea2b56e8c870ca9a2a1
 #: ../../install_inventory_file.rst:11
+msgid "Usuarios y Contraseñas de los diferentes componentes de la App"
+msgstr "Users and passwords of the different components"
+
+# e060f33591ae42cc93a62c19496a0a63
+#: ../../install_inventory_file.rst:12
+msgid "Tiempos de sesión"
+msgstr "Session times"
+
+# d4d259661d224f8686627edc50ccc4e0
+#: ../../install_inventory_file.rst:13
+msgid "Formato de las grabaciones"
+msgstr "Recordings format"
+
+# 95ddac34518b4f09b0c39c8d51226e77
+#: ../../install_inventory_file.rst:14
 msgid "Zona horaria"
 msgstr "Timezone"
 
-# d2759ece9abf4737b2e030430282483a
-#: ../../install_inventory_file.rst:12
+# 6fdd8e63cf4e4d2d827fab22a530a2f6
+#: ../../install_inventory_file.rst:15
 msgid "Soporte para NAT"
 msgstr "NAT support"
 
-# 1b5570f530964233a0fd6e9697f8b4dc
-#: ../../install_inventory_file.rst:14
-msgid "Vamos a dividir el archivo en dos fragmentos:"
-msgstr "Let's divide the file in two parts:"
+# 6e5380d97f794a90902c78ca0fda009c
+#: ../../install_inventory_file.rst:18
+msgid "Tipo de arquitectura a desplegar"
+msgstr "OMniLeads architecture"
 
-# bec86fc803dd4dc7ace59462f7261cab
-#: ../../install_inventory_file.rst:19
-msgid "Configuración entorno AIO"
-msgstr "AIO environment configuration"
-
-# 463a5c9a941543e6bd73b9cf48422e85
-#: ../../install_inventory_file.rst:21
-msgid "En la primera parte del archivo se encuentra la seccion **[prodenv-aio]**:"
-msgstr "In the first part of the file you will find the **[prodenv-aio]** section:"
-
-# 963ea4455a734dbf9012151b134b3d6d
-# b2b5fe195f8d4751bc0a92db17d44c0b
-#: ../../install_inventory_file.rst:32 ../../install_inventory_file.rst:58
-msgid "**Para Self Hosted:** descomentar la primera línea, para que quede así:"
-msgstr "**For Self Hosted:** uncomment the first line, it should see this way:"
-
-# 724c821c8e0547e6a3b6580848336647
-# 896b41fdaca741708bd661b4b724e923
-#: ../../install_inventory_file.rst:38 ../../install_inventory_file.rst:64
+# 2453ecc8017f40ca8ca4afd3fe51a5cf
+#: ../../install_inventory_file.rst:20
 msgid ""
-"**Para Ansible Remoto** descomentar la segunda línea, y reemplazar el "
-"X.X.X.X por la IP de la máquina a instalar OMniLeads, ejemplo:"
+"Comenzamos por explicar la primera sección del archivo, en donde se "
+"especifica el tipo de Arquitectura a desplegar y bajo qué método de "
+"instalación. Recordemos que las combinaciones posibles son:"
 msgstr ""
-"**For Host-Node:** uncomment the second line, replace the X.X.X.X with "
-"the IP of the machine where OMniLeads will be installed, for example:"
+"We begin by explaining the first section of the file, where the type of "
+"Architecture to deploy and under which installation method is specified. "
+"Remember that the possible combinations are:"
 
-# 8c1a0c1e38774a10913242715dbf55c5
+# f01fac82a293443ba2afb982810f8f26
+#: ../../install_inventory_file.rst:23
+msgid ""
+"**1-a)** OMniLeads arquitectura tradicional (AIO) a través de una "
+"instalación Self-Hosted"
+msgstr ""
+"**1-a)** OMniLeads Traditional Architecture (AIO) through a Self-Hosted "
+"deployment"
+
+# 6305da0646ee45cab5e042f294ac9957
+#: ../../install_inventory_file.rst:24
+msgid ""
+"**1-b)** OMniLeads arquitectura tradicional (AIO) a través de una "
+"instalación Deployer-Nodes"
+msgstr ""
+"**1-b)** OMniLeads Traditional Architecture (AIO) through a Deployer-"
+"nodes deployment"
+
+# 05d94e8aae11435a9d427dbfa07bc91f
+#: ../../install_inventory_file.rst:25
+msgid ""
+"**2-a)** OMniLeads sobre Contenedores Docker a través de una instalación "
+"Self-Hosted"
+msgstr "**2-a)** OMniLeads on Docker Containers through a Self-Hosted Deployment"
+
+# 667dd918dbb044a291af4ce1a13371da
+#: ../../install_inventory_file.rst:26
+msgid ""
+"**2-b)** OMniLeads sobre Contenedores Docker a través de una instalación "
+"Deployer-Nodes"
+msgstr ""
+"**2-b)** OMniLeads on Docker Containers through a Deployer-nodes "
+"deployment"
+
+# e1fd13e074f4453db25e292a983336d7
+#: ../../install_inventory_file.rst:27
+msgid "**3)** OMniLeads devenv (Entorno de desarrollo)"
+msgstr "**3)** OMniLeads devenv (development environment)"
+
+# e6ae9548dc9e48f98359f35def1d6573
+#: ../../install_inventory_file.rst:35
+msgid "OMniLeads arquitectura tradicional (AIO)"
+msgstr "OMniLeads Traditional Architecture (AIO)"
+
+# edb8c99433ee4c07bdfb4d1137113578
+#: ../../install_inventory_file.rst:36
+msgid ""
+"Para desplegar esta arquitectura [:ref:`about_install_tradicional`], se "
+"debe trabajar con la seccion **[prodenv-aio]** (1-a y 1-b):"
+msgstr ""
+"To deploy this architecture [:ref:`about_install_tradicional`], you "
+"should work with the [prodenv-aio] section"
+
+# 58ed4f1a99334dc5a7f6f0ed8538ca86
 #: ../../install_inventory_file.rst:47
-msgid "Configuración entorno Docker"
-msgstr "Docker environment configuration"
-
-# df4138226887451ab50176a5fd84bbd3
-#: ../../install_inventory_file.rst:49
 msgid ""
-"En la segunda parte, se encuentra la sección **[prodenv-container]** para"
-" la instalación de OMniLeads en containers:"
+"**Instalación Self-Hosted:** en el caso de aplicar (1-a), se debe "
+"descomentar la primera línea, quedando:"
 msgstr ""
-"In the second part you can see the **[prodenv-container]** section, to "
-"install OMniLeads in containers:"
+"**Self-Hosted Deployment:** in the case of applying (1-a), the first line"
+" should be uncommented, leaving:"
 
-# 3f42c4a773924b06a19cf21625dd7880
-#: ../../install_inventory_file.rst:72
+# 19f282dae1584e9881f918a2f4d5afb9
+#: ../../install_inventory_file.rst:55
 msgid ""
-"Tener mucho cuidado a la hora de descomentar las líneas, no descomentar "
-"las de entorno de container si se quiere instalar AIO, por ejemplo."
+"**Instalación deployer-nodes:** en el caso de aplicar (1-b), se debe "
+"descomentar la segunda línea, y reemplazar la cadena *X.X.X.X* por la IP "
+"del nodo a desplegar:"
 msgstr ""
-"Be very careful when you uncomment the lines, for example, do not "
-"uncomment docker environment if you want to install AIO."
+"**Deployer-Nodes Deployment:** in the case of applying (1-b), the second "
+"line should be uncommented and replace the string X.X.X.X with the IP of "
+"the node to be displayed:"
 
-# cee8b70834734b7aa37789bafe2de44b
-#: ../../install_inventory_file.rst:77
+# 2046e96322a5467c81766f8831922892
+#: ../../install_inventory_file.rst:66
+msgid "OMniLeads sobre contenedores Docker"
+msgstr "OMniLeads on Docker Containers"
+
+# 35d277ae53f248709fbbaa841034ab19
+#: ../../install_inventory_file.rst:67
+msgid ""
+"Para desplegar esta arquitectura [:ref:`about_install_contenedores`], se "
+"debe trabajar con la sección **[prodenv-container]** (2-a y 2-b):"
+msgstr ""
+"To deploy this architecture [:ref:`about_install_docker`], you should "
+"work with the [prodenv-container] section"
+
+# c6e507b089244ebb8f07f39551a1eb14
+#: ../../install_inventory_file.rst:76
+msgid ""
+"**Instalación Self-Hosted:** en el caso de aplicar (2-a), se debe "
+"descomentar la primera línea, quedando:"
+msgstr ""
+"**Self-hosted Deployment:** in the case of applying (2-a), the first line"
+" should be uncommented, leaving:"
+
+# 198f6dd3e46042b1bc0aa17498cb15fd
+#: ../../install_inventory_file.rst:84
+msgid ""
+"**Instalación deployer-nodes:** en el caso de aplicar (2-b), se debe "
+"descomentar la segunda línea, y reemplazar la cadena *X.X.X.X* por la IP "
+"del nodo a desplegar:"
+msgstr ""
+"**Deployer-Nodes Deployment:** in the case of applying (2-b), the second "
+"line should be uncommented and replace the string X.X.X.X with the IP of "
+"the node to be displayed:"
+
+# 3c5de3647a8445c4b2e0ccdbdd51bf07
+#: ../../install_inventory_file.rst:94
+msgid ""
+"Estar muy atento a la hora de descomentar las líneas adecuadas de acuerdo"
+" a la arquitectura a desplegar y su método de instalación. No descomentar"
+" las de entorno de container si se quiere instalar AIO, por ejemplo."
+msgstr ""
+"Be very attentive when uncommenting the appropriate lines according to "
+"the architecture to be deployed and its installation method. For example;"
+" Do not uncomment those of container environment if you want to install "
+"AIO."
+
+# 34ab99c021e94f3d83a6c478e69c87fe
+#: ../../install_inventory_file.rst:99
 msgid "Parámetros y contraseñas"
 msgstr "Passwords and parameters"
 
-# c468fd6b61f44f9395de39544954ec1b
-#: ../../install_inventory_file.rst:79
+# 7da6ec70a35c4beeb89a6be139275036
+#: ../../install_inventory_file.rst:100
 msgid ""
-"En la tercera sección del archivo se ajusta todo lo respectivo a "
-"contraseñas de algunos componentes y parámetro para configuración de zona"
-" horaria:"
+"Una vez configurada la parte inherente a la arquitectura y tipo de "
+"instalación, se avanza con todo lo respectivo a usuarios y contraseñas de"
+" algunos componentes así como también ciertos parámetros de la App:"
 msgstr ""
-"The third section of the file refers to passwords of some components and "
-"the setting to configure timezone:"
+"Once the part inherent to the architecture and type of installation has "
+"been configured, we proceed with everything related to users and "
+"passwords of some components as well as certain parameters of the App:"
 
-# 8fece2075f6f4429af082d07c77eabd4
-#: ../../install_inventory_file.rst:81
-msgid "**Postgres SQL**"
-msgstr "**PostgreSQL**"
+# cfd964ee09d34b53a9ce678a070368d7
+#: ../../install_inventory_file.rst:166
+msgid ""
+"Como se puede observar, el archivo viene completamente documentado en "
+"términos de cada variable o parámetro."
+msgstr ""
+"As you can see, the file is fully documented in terms of each variable or"
+" parameter."
 
-# 5a4733b9e5e94e5498ed7f963150ab09
-#: ../../install_inventory_file.rst:82
-msgid "**Constraseña del usuario \"admin\" de OMniLeads**"
-msgstr "**OMniLeads \"admin\" user password**"
+# 24bd85480c73474495852ea1af286d42
+#: ../../install_inventory_file.rst:170
+msgid ""
+"A la hora de los despliegues hay que descomentar los parámetros citados. "
+"Si usted no los descomenta la instalación fallará."
+msgstr ""
+"When deploying, the mentioned parameters must be uncommented. "
+"If you do not uncomment them the installation will fail."
 
-# c716445e384b48a2936ee5848c6af5dd
-#: ../../install_inventory_file.rst:83
-msgid "**TZ**"
-msgstr "**TZ**"
+# 2016acc67e8d48698881c22f0712580e
+#: ../../install_inventory_file.rst:175
+msgid "Parámetros para desplegar detrás NAT"
+msgstr "Parameters to deploy behind NAT"
 
-# 2d031c19afa24915ae4ad59c2053679f
-#: ../../install_inventory_file.rst:84
-msgid "**Usuario de la DB postgresql**"
-msgstr "Posgresql DB user"
+# 7f42a6398c2f44f2a9bacecfb539324e
+#: ../../install_inventory_file.rst:177
+msgid ""
+"Los parámetros **external_hostname**, **external_port**, deben "
+"configurarse si e quiere instalar un OMniLeads en un servidor detrás de "
+"NAT, en donde los agentes se conectan a la URL conformada por "
+"**https://external_hostname:external_port**, desde Internet."
+msgstr ""
+"The settings **external_hostname**, **external_port**, must be "
+"configured if you want to install OMniLeads in a cloud server behind NAT, where the "
+"agents will connect to an URL composed by "
+"**https://external_hostname:external_port**, without having a LAN direct "
+"connection or through VPN to the OMniLeads server."
 
-# e05237fab299490585750364d5b147a3
-#: ../../install_inventory_file.rst:85
-msgid "**Usuario y contraseña para asterisk AMI**"
-msgstr "User and password for asterisk AMI"
+# 5b1914afac954e548d8e5bd476473349
+#: ../../install_inventory_file.rst:182
+msgid ""
+"Como se intenta expresar en la imagen, se asume que los usuarios "
+"*remotos* accederán a la App utilizando una URL (dominio y puerto) que "
+"resuelve en la IP pública de la interfaz WAN router/firewall."
+msgstr ""
+"As it is attempted to express in the image, it is assumed that remote users "
+"will access the App using a URL (domain and port) that resolves to the public IP "
+"of the WAN router / firewall interface."
 
-# a339fd2ebf824cf99d92ab32b32e8e85
-#: ../../install_inventory_file.rst:86
-msgid "**Usuario y contraseña para web de Wombat Dialer**"
-msgstr "User and password for web of Wombat Dialer"
+# fe0d31f0c2394028824600b4b67899ed
+#: ../../install_inventory_file.rst:184
+msgid ""
+"Luego el firewall deberá reenviar el tráfico de voz y datos hacia los "
+"puertos UDP: 20000-30000 y y TCP: 443 del host donde reside la App."
+msgstr ""
+"Then the firewall must forward the voice and data traffic to the UDP: 20000-30000 "
+"and TCP: 443 ports of the host where the App resides."
 
-# 7a1fd85b54ab41698c411cc7fa76979d
-#: ../../install_inventory_file.rst:126
-msgid "Variables para Docker"
+# 546d614dec47440890e0362357ea0be7
+#: ../../install_inventory_file.rst:200
+msgid "Se deben establecer dos reglas de firewall entrantes y una saliente:"
+msgstr "Two inbound and one outbound firewall rules must be established:"
+
+# 904e5b7a9fda4de6a287bd9b71148ea1
+#: ../../install_inventory_file.rst:202
+msgid ""
+"Reenviar tráfico entrante desde los puertos 20000 a 30000 UDP hacia los "
+"puertos 20000 a 30000 del host OMniLeads"
+msgstr ""
+"Forward incoming traffic from ports 20,000 to 30,000 UDP to ports "
+"20,000 to 30,000 on the OMniLeads host"
+
+# 2c0bd5fc6ecf471dba39592b1fa68e6f
+#: ../../install_inventory_file.rst:203
+msgid ""
+"Reenviar tráfico desde el *external_port* elegido hacia el puerto 443 del"
+" host OMniLeads"
+msgstr ""
+"Forward traffic from the chosen external port to port 443 of the "
+"OMniLeads host"
+
+# 1bc5894a18db46f1aa38ae982b1c4968
+#: ../../install_inventory_file.rst:204
+msgid ""
+"Permitir tráfico saliente desde el host OMniLeads hacia internet por los "
+"puertos 10000 al 20000"
+msgstr "Permit outbound traffic from OMniLeads to internet, port range: 10000-30000 UDP"
+
+# ee9dd72e1aad447790aaa7f1d6f5c6c2
+#: ../../install_inventory_file.rst:210
+msgid "Variables Docker"
 msgstr "Docker variables"
 
-# f14cbdad838f4b9e820ed392d6fa5f98
-#: ../../install_inventory_file.rst:128
+# 6923c484a6a641f8bc5e749109f28f80
+#: ../../install_inventory_file.rst:211
 msgid ""
-"Ademas de las variables vistas anteriormente, si se quiere instalar "
-"OMniLeads en su versión dockerizada, será necesario modificar estas "
-"variables:"
+"Esta sección permite personalizar dos parámetros a la hora de desplegar "
+"OMniLeads como contenedores docker."
 msgstr ""
-"Besides the variables seen, if you want to install OMniLeads in its "
-"dockerized version, it will be necessary to modify these variables:"
+"This section allows you to customize two parameters when deploying OMniLeads "
+"as docker containers."
 
-# b3885d5d1435420180ffcdb9a1fd2c4e
-#: ../../install_inventory_file.rst:138
-msgid "Las variables necesarias para **deploy** de los containers son:"
-msgstr "The neccesary variables for deploying containers are:"
-
-# 9b1a861d9d8a4d4eb389e906225dce5c
-#: ../../install_inventory_file.rst:140
+# 2f99f96c8c7149d4a5f7ec5b1e305bd0
+#: ../../install_inventory_file.rst:222
 msgid ""
 "**registry_username:** si se va a deployar las imagenes oficiales de "
-"Freetech Solutions, dejar esta variable como está"
+"OMniLeads, dejar esta variable como está. En caso de contar con sus "
+"propias imágenes, aquí se indicará el nombre del docker-registry "
+"pertinente."
 msgstr ""
-"**registry_username:** if you are going to deploy official "
-"FreetechSolutions imamges, leave the value how it is."
+"if you are going to deploy the official OMniLeads images, "
+"leave this variable as is. If you have your own images, the name of "
+"the relevant docker-registry will be indicated here."
 
-# 9f661e2607b24453b91aba7b2601b20b
-#: ../../install_inventory_file.rst:141
+# e36c5512eab54671a6118b2055cef500
+#: ../../install_inventory_file.rst:223
 msgid ""
 "**subnet:** se refiere a la red LAN con la que se levantarán los "
 "containers."
 msgstr "**subnet:** it refers to internal docker LAN network "
 
-# 7f78a465ca5846ce80eae2d2e07959bd
-#: ../../install_inventory_file.rst:143
+# 42f4c3b5f81f4a7b8a725db7c686feab
+#: ../../install_inventory_file.rst:225
 msgid ""
 "Las variables *registry_email* y *registry_password* son necesarias en "
 "caso de querer hacer un **build** de sus propias imágenes."
@@ -203,44 +346,187 @@ msgstr ""
 "The variables *registry_email* and *registry_password* are neccesary just"
 " when you want to make a **build** of your own images."
 
-# 31eb672ded244f4ab63f6950f581d662
-#: ../../install_inventory_file.rst:148
-msgid "Variables OMniLeads Cloud"
-msgstr "OMniLeads Cloud variables"
+# f243ad93b1cc4f4cbc98d4e7bffb6d87
+#~ msgid ""
+#~ "Al utilizar Ansible como tecnología para"
+#~ " realizar los despliegues de OMniLeads, "
+#~ "se trabaja con un archivo de "
+#~ "\"inventario\" en el cual se configuran"
+#~ " cuestiones como:"
+#~ msgstr ""
+#~ "Ansible is the technology used to "
+#~ "deploy OMniLeads in a bare metal "
+#~ "(physical machine or virtual machine). "
+#~ "Ansible works with a file called "
+#~ "\"inventory\" where these things are "
+#~ "configured:"
 
-# 6b8cf396f64f41358090d72333e62784
-#: ../../install_inventory_file.rst:150
-msgid ""
-"Los parámetros  **\"external_hostname\"**, **\"external_port\"**, deben "
-"configurarse si se quiere instalar un OMniLeads en un servidor en la "
-"nube, donde los agentes se conectarán a la URL conformada por "
-"**https://external_hostname:external_port**, sin tener una conexion LAN "
-"directa o atraves de VPN hacia el OMniLeads."
-msgstr ""
-"The settings **\"external_hostname\"**, **\"external_port\"**, must be "
-"configured if you want to install OMniLeads in a cloud server, where the "
-"agents will connect to an URL composed by "
-"**https://external_hostname:external_port**, without having a LAN direct "
-"connection or through VPN to the OMniLeads server."
+# ac003d35747446759a88c301d90f1ae9
+#~ msgid ""
+#~ "Tipo de instalación a realizar (self-"
+#~ "hosted, en remoto, cluster, entorno de"
+#~ " desarrollo, etc.)"
+#~ msgstr "Installation type (self-hosted, host-node, cluster, devenv, etc.)"
+
+# 07399b58eae04d2b9da6e071079dc97b
+#~ msgid ""
+#~ "Passwords de los diferentes componentes "
+#~ "(postgres, asterisk-AMI, acceso de "
+#~ "admin, etc.)"
+#~ msgstr ""
+#~ "Passwords of different components (PostgreSQL,"
+#~ " asterisk-AMI, web admin access, "
+#~ "etc.)"
+
+# 1b5570f530964233a0fd6e9697f8b4dc
+#~ msgid "Vamos a dividir el archivo en dos fragmentos:"
+#~ msgstr "Let's divide the file in two parts:"
+
+# bec86fc803dd4dc7ace59462f7261cab
+#~ msgid "Configuración entorno AIO"
+#~ msgstr "AIO environment configuration"
+
+# 463a5c9a941543e6bd73b9cf48422e85
+#~ msgid ""
+#~ "En la primera parte del archivo se"
+#~ " encuentra la seccion **[prodenv-aio]**:"
+#~ msgstr ""
+#~ "In the first part of the file "
+#~ "you will find the **[prodenv-aio]** "
+#~ "section:"
+
+# 724c821c8e0547e6a3b6580848336647
+# 896b41fdaca741708bd661b4b724e923
+#~ msgid ""
+#~ "**Para Ansible Remoto** descomentar la "
+#~ "segunda línea, y reemplazar el X.X.X.X"
+#~ " por la IP de la máquina a "
+#~ "instalar OMniLeads, ejemplo:"
+#~ msgstr ""
+#~ "**For Host-Node:** uncomment the second"
+#~ " line, replace the X.X.X.X with the"
+#~ " IP of the machine where OMniLeads"
+#~ " will be installed, for example:"
+
+# 8c1a0c1e38774a10913242715dbf55c5
+#~ msgid "Configuración entorno Docker"
+#~ msgstr "Docker environment configuration"
+
+# df4138226887451ab50176a5fd84bbd3
+#~ msgid ""
+#~ "En la segunda parte, se encuentra "
+#~ "la sección **[prodenv-container]** para "
+#~ "la instalación de OMniLeads en "
+#~ "containers:"
+#~ msgstr ""
+#~ "In the second part you can see "
+#~ "the **[prodenv-container]** section, to "
+#~ "install OMniLeads in containers:"
+
+# 3f42c4a773924b06a19cf21625dd7880
+#~ msgid ""
+#~ "Tener mucho cuidado a la hora de"
+#~ " descomentar las líneas, no descomentar "
+#~ "las de entorno de container si se"
+#~ " quiere instalar AIO, por ejemplo."
+#~ msgstr ""
+#~ "Be very careful when you uncomment "
+#~ "the lines, for example, do not "
+#~ "uncomment docker environment if you want"
+#~ " to install AIO."
+
+# c468fd6b61f44f9395de39544954ec1b
+#~ msgid ""
+#~ "En la tercera sección del archivo "
+#~ "se ajusta todo lo respectivo a "
+#~ "contraseñas de algunos componentes y "
+#~ "parámetro para configuración de zona "
+#~ "horaria:"
+#~ msgstr ""
+#~ "The third section of the file "
+#~ "refers to passwords of some components"
+#~ " and the setting to configure "
+#~ "timezone:"
+
+# 8fece2075f6f4429af082d07c77eabd4
+#~ msgid "**Postgres SQL**"
+#~ msgstr "**PostgreSQL**"
+
+# 5a4733b9e5e94e5498ed7f963150ab09
+#~ msgid "**Constraseña del usuario \"admin\" de OMniLeads**"
+#~ msgstr "**OMniLeads \"admin\" user password**"
+
+# c716445e384b48a2936ee5848c6af5dd
+#~ msgid "**TZ**"
+#~ msgstr "**TZ**"
+
+# 2d031c19afa24915ae4ad59c2053679f
+#~ msgid "**Usuario de la DB postgresql**"
+#~ msgstr "Posgresql DB user"
+
+# e05237fab299490585750364d5b147a3
+#~ msgid "**Usuario y contraseña para asterisk AMI**"
+#~ msgstr "User and password for asterisk AMI"
+
+# a339fd2ebf824cf99d92ab32b32e8e85
+#~ msgid "**Usuario y contraseña para web de Wombat Dialer**"
+#~ msgstr "User and password for web of Wombat Dialer"
+
+# f14cbdad838f4b9e820ed392d6fa5f98
+#~ msgid ""
+#~ "Ademas de las variables vistas "
+#~ "anteriormente, si se quiere instalar "
+#~ "OMniLeads en su versión dockerizada, "
+#~ "será necesario modificar estas variables:"
+#~ msgstr ""
+#~ "Besides the variables seen, if you "
+#~ "want to install OMniLeads in its "
+#~ "dockerized version, it will be necessary"
+#~ " to modify these variables:"
+
+# b3885d5d1435420180ffcdb9a1fd2c4e
+#~ msgid "Las variables necesarias para **deploy** de los containers son:"
+#~ msgstr "The neccesary variables for deploying containers are:"
+
+# 9b1a861d9d8a4d4eb389e906225dce5c
+#~ msgid ""
+#~ "**registry_username:** si se va a "
+#~ "deployar las imagenes oficiales de "
+#~ "Freetech Solutions, dejar esta variable "
+#~ "como está"
+#~ msgstr ""
+#~ "**registry_username:** if you are going "
+#~ "to deploy official FreetechSolutions imamges,"
+#~ " leave the value how it is."
+
+# 31eb672ded244f4ab63f6950f581d662
+#~ msgid "Variables OMniLeads Cloud"
+#~ msgstr "OMniLeads Cloud variables"
 
 # f500b9b3672b46809ed0cf51b23c856e
-#: ../../install_inventory_file.rst:166
-msgid ""
-"Se deben establecer dos reglas de firewall en la GUI del proveedor del "
-"servidor cloud, el cual actua como un router de borde, dejando a OML "
-"\"detrás de un NAT\". (si no sabe como hacerlo pongase en contacto con su"
-" proveedor)"
-msgstr ""
-"You must set two firewall rules in cloud provider GUI, which serves as a "
-"NAT border router (if you don't know how to do it, make contact with your"
-" provider)"
-
-# 68ee08ee6aa3404aa71738c25bb93f55
-#: ../../install_inventory_file.rst:168
-msgid "Permit de tráfico saliente desde los puertos 10000 a 30000 UDP"
-msgstr "Permit outbound traffic in this port range: 10000-30000 UDP"
+#~ msgid ""
+#~ "Se deben establecer dos reglas de "
+#~ "firewall en la GUI del proveedor "
+#~ "del servidor cloud, el cual actua "
+#~ "como un router de borde, dejando a"
+#~ " OML \"detrás de un NAT\". (si "
+#~ "no sabe como hacerlo pongase en "
+#~ "contacto con su proveedor)"
+#~ msgstr ""
+#~ "You must set two firewall rules in"
+#~ " cloud provider GUI, which serves as"
+#~ " a NAT border router (if you "
+#~ "don't know how to do it, make "
+#~ "contact with your provider)"
 
 # 09480ca42bb44360adbbde94594637b1
-#: ../../install_inventory_file.rst:169
-msgid "Permit de tráfico entrante desde los puertos 10000 a 30000 UDP"
-msgstr "Permit inbound traffic in this port range: 10000-30000 UDP"
+#~ msgid "Permit de tráfico entrante desde los puertos 10000 a 30000 UDP"
+#~ msgstr "Permit inbound traffic in this port range: 10000-30000 UDP"
+
+# 24bd85480c73474495852ea1af286d42
+#~ msgid ""
+#~ "Para la instalación siempre se deben "
+#~ "descomentar los parámetros citados. Si "
+#~ "usted no los descomenta la instalación"
+#~ " fallará."
+#~ msgstr ""

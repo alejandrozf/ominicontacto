@@ -8,127 +8,206 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-04 13:04-0300\n"
+"POT-Creation-Date: 2020-06-26 15:49-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.6.0\n"
 
-# 01102cf1ef8e450ca61beb680e91d6ac
+# 10b071cb11944b8fb8c9aae1b97e8828
 #: ../../install_faq.rst:5
 msgid "Errores comunes"
-msgstr "Common mistakes"
+msgstr "Frequent errors"
 
-# 812a6ab2da834924957cf8aa7e72499d
-#: ../../install_faq.rst:8
-msgid "Self Hosted"
-msgstr "Self Hosted"
-
-# de104f95a36142c9872e1f7e487fc650
-#: ../../install_faq.rst:10
+# 03b5a21918604513a42bb64ea4057d68
+#: ../../install_faq.rst:7
 msgid ""
-"El server no tiene internet o no resuelve dominios (configuración de "
-"DNS). **Compruebe el acceso a internet del host (por ej: actualizando "
-"paquetes - apt-get update | yum update).**"
+"A continuación se listan los problemas típicos que se presentan a la hora"
+" de realizar una instalación:"
 msgstr ""
-"The server does not have internet or it does not solve domains (DNS "
-"configuration). *Check the internet access of the host (eg. updating "
-"packages - apt-get update | yum update).*"
+"The following are typical problems that arise when performing an "
+"installation:"
 
-# 149bc25a54174cbaacf0d021d830b832
+# c7fc5442c69b4bc995fd11ffad3613ab
+#: ../../install_faq.rst:9
+#, fuzzy
+msgid ""
+"**La instalación finaliza exitosamente, sin embargo al ingresar a la URL "
+"tenemos un error o directamente no aparece la pantalla de login**"
+msgstr ""
+"**The installation finishes successfully, however when entering the URL "
+"we have an error or the login screen does not appear directly**"
+
+# 3bd4076d6df047bab6ebb464f2214191
 #: ../../install_faq.rst:11
 msgid ""
-"Timeout de algún paquete que se intenta bajar. Puede volver a intentar "
-"ejecutar el deploy y si vuelve a fallar, la opción puede ser instalar el "
-"paquete desde la terminal."
+"Compruebe que ha deshabilitado SELinux y Firewald "
+"(:ref:`about_install_prerequisitos`)."
 msgstr ""
-"Timeout of any package that you try to download. You can try again to "
-"execute the deploy and if it fails again, the option can be. *Install the"
-" package from the terminal.*"
+"Verify that you have disabled SELinux and Firewald "
+"(:ref:`about_install_prerequisitos`)."
 
-# 571cf4748dc446c7b522de56e2bda1a8
-#: ../../install_faq.rst:12
-msgid "No ejecutó el script de deploy con *sudo*, en el host deployer."
-msgstr "It does not execute the deploy script with *sudo*, in the deployer host."
+# 8ed1e9bfed5e44d1a78534a3da63c52a
+#: ../../install_faq.rst:13
+msgid ""
+"**Al ejecutar el script de deploy falla la lectura de variables del "
+"inventory**"
+msgstr ""
+"**When executing the deploy script the lecture of the inventory variables"
+" fails.**"
 
-# 3fab89dc568141919f3fa0d408fa9722
+# fdfcf5c9de3348d3af1299dd3b59ac5e
 #: ../../install_faq.rst:15
-msgid "Ansible Remoto"
-msgstr "Ansible Host-Node"
-
-# 2d25a0bacdcc4494a4caaba225425ce8
-#: ../../install_faq.rst:16
 msgid ""
-"En caso de que el deployer sea Ubuntu-Debian, recordar que se deben "
-"instalar paquetes como *sudo, openssh-server o python-minimal* antes de "
-"correr el script de *deploy.sh*"
+"Comprobar que las variables (TZ, postgres_user, postgres_password, "
+"admin_pass, ami_user, ami_pass y TZ) estén descomentadas y con un valor "
+"asignado. Aunque se utilicen los valores por defecto (no recomendable en "
+"producción), se debe descomentar la linea correspondiente a cada "
+"variable."
 msgstr ""
-"In case your deployer is Ubuntu-Debian host, remember that packages such as "
-"*sudo, openssh-server or Python-minimal* must be installed before running"
-" the script *deploy.sh*"
+"Verify that the variables (TZ, postgres_user, postgres_password, "
+"admin_pass, ami_user, ami_pass and TZ) are uncommented and with an "
+"assigned value. Although the default values are used (not recommended in "
+"production), the line corresponding to each variable must be uncommented."
 
-# 66342d6dd04c4625a1f9f6f3b97dddff
-#: ../../install_faq.rst:17
-msgid ""
-"Timeout de algún paquete que se intenta bajar. Puede volver a intentar "
-"ejecutar el deploy y si vuelve a fallar, la opción puede ser. *Instalar "
-"el paquete desde la terminal.*"
-msgstr ""
-"Timeout of any package that you try to download. You can try again to "
-"execute the deploy and if it fails again, the option can be. *Install the"
-" package from the terminal.*"
-
-# 0de4731316cb4adfa3da0e4fc711bda3
+# 2f525a2ee04e43328c49ebba98c56174
 #: ../../install_faq.rst:18
-msgid ""
-"Falla por mala sintaxis o falta de definición de *hostname* y *dirección "
-"IP* en el archivo *inventory*. *Revisar archivo inventory*"
-msgstr ""
-"Failure due to bad syntax or lack of definition of *hostname* and *IP "
-"address* in the file *inventory*. *Check the file inventory*"
+msgid "**Al ejecutar el script de deploy falla en el parámetro iface**"
+msgstr "**When executing the deploy script the parameter iface fails.**"
 
-# 54ec46f42dfa4d668632c83a9c3baa85
-#: ../../install_faq.rst:19
-msgid ""
-"No se configuró correctamente el acceso ssh del host destino de la "
-"instalación. *Revisar estado del firewall. Comprobar acceso remoto por "
-"ssh con el usuario root*"
-msgstr ""
-"The ssh access of the destination host of the installation was not "
-"configured. *Review the firewall state. Check ssh remote access with the "
-"root user*."
-
-# b593f9d2b91942cbb920f989f500d020
+# 3f00a680bd484ebf9204008a648117d5
 #: ../../install_faq.rst:20
 msgid ""
-"En caso de contar con algún host Ubuntu-Debian, recordar que se deben "
-"instalar paquetes como *sudo, openssh-server o python-minimal* antes de "
-"correr el script de *deploy.sh*"
+"Recordar que *iface* hace referencia a la interfaz de red del host (eth0,"
+" eth1, ens18, ens0s3, etc.)."
 msgstr ""
-"In case of having any Ubuntu-Debian host, remember that packages such as "
-"*sudo, openssh-server or Python-minimal* must be installed before running"
-" the script *deploy.sh*"
+"Remember that iface refers to the host's network interface (eth0, eth1, "
+"ens18, ens0s3, etc.)."
 
-# 039ce3e2e5bd49728c7bfd3f5ba78d76
-#: ../../install_faq.rst:23
-msgid "Para instalación docker"
-msgstr "For Docker installation"
+# 03492e2e91f547afa24618d30c14c61b
+#: ../../install_faq.rst:22
+msgid ""
+"**El server NO tiene salida a internet / El server no resuelve dominios "
+"(no funcionan o no tiene configurados los DNS)**"
+msgstr ""
+"**The server does NOT have access to the internet / The server does not "
+"solve domains**"
 
-# f058b427b0974734abb08f2589feeaa5
-#: ../../install_faq.rst:25
+# 549e71ff423f44c3818693f7fe065ea2
+#: ../../install_faq.rst:24
+msgid ""
+"**Falla por timeout de algún paquete o repositorio no disponible "
+"temporalmente**"
+msgstr "**Timeout failure of some package or repository temporarily unavailable.**"
+
+# cfbff92237da4b4bb6e48249d722e150
+#: ../../install_faq.rst:26
+msgid ""
+"En estos casos se debe volver a ejecutar el deploy. Al utilizar paquetes "
+"de internet, la no disponibilidad temporal de algún repositorio o "
+"conexión a internet puede afectar la isntalación."
+msgstr ""
+"In these cases, the deploy must be run again. When using web packages, "
+"the temporary unavailability of a repository or web connection can affect"
+" the installation."
+
+# 7597c4a2f80042f5a54072a72bd4bc41
+#: ../../install_faq.rst:28
+msgid ""
+"**Equivocarse a la hora de ejecutar un método de instalación y tipo de "
+"arquitectura con respecto a la sección del archivo inventory**"
+msgstr ""
+"**Making a mistake when executing an installation method and architecture"
+" type regarding the inventory file section.**"
+
+# 79a51939cfa34975b2cf8f38b348fea5
+#: ../../install_faq.rst:30
+msgid ""
+"A la hora de ejecutar una instalación Self-Hosted o Deployer-Nodes de una"
+" arquitectura clasica (AIO) o basada en contenedores, hay que estar muy "
+"atentos en trabajar con las secciones adecuadas para cada combinación: "
+"[prodenv-aio], [prodenv-docker] y sus lineas."
+msgstr ""
+"When executing a Self-Hosted or Deployer-Nodes installation of a classic "
+"architecture (AIO) or based on containers, one has to pay special "
+"attention to work with the appropriate sections for each combination: "
+"[prodenv-aio], [prodenv- docker] and its lines."
+
+# 8f48b88fe4014729a414f29437d8de11
+#: ../../install_faq.rst:33
+msgid "**Falla en la Task asociada a RTPengine**"
+msgstr "**Failure in the Task associated with RTPengine**"
+
+# c41ecbd8b89649f8a5f1f5570def6226
+#: ../../install_faq.rst:35
+msgid ""
+"Esto sucede cuando no se ha instalado el paquete *kernel-devel* o bien el"
+" paquete no coincide con la versión del kernel "
+"(:ref:`about_install_prerequisitos`)."
+msgstr ""
+"This happens when the kernel-devel package has not been installed or the "
+"package does not match the kernel version "
+"(:ref:`about_install_prerequisitos`)."
+
+# 1487cd9813e047188cd1187d352edb4d
+#: ../../install_faq.rst:39
+msgid "Errores en método de instalación Deployer-nodes"
+msgstr "Errors in the Deployer-nodes installation method"
+
+# 8a7caf33cc924c7d93eb5dddf3c8bba8
+#: ../../install_faq.rst:41
+msgid "**El script de deploy nos arroja falta de permisos**"
+msgstr "**Lack of permissions when executing the deploy script.**"
+
+# 146d81c696c542408e80de2a8518f09a
+#: ../../install_faq.rst:43
+msgid ""
+"Recordar que en el *deployer* se debe ejecutar el script con *sudo*. "
+"Recordar que se deben instalar paquetes como *sudo, openssh-server o "
+"python-minimal* antes de correr el script de *deploy.sh*"
+msgstr ""
+"Remember that in the deployer the script must be executed with sudo. "
+"Remember that packages like sudo, openssh-server or python-minimal must "
+"be installed before running the deploy.sh script."
+
+# 7b81fabba2c844ef9eacf98d01621882
+#: ../../install_faq.rst:45
+msgid ""
+"**No se configuró correctamente el acceso ssh del host destino de la "
+"instalación**."
+msgstr ""
+"**The ssh access of the installation target host was not configured "
+"correctly.**"
+
+# 0fdd17e145534a9890a2ed0e6356c70b
+#: ../../install_faq.rst:47
+msgid ""
+"Revisar estado del firewall. Comprobar acceso remoto por ssh con el "
+"usuario *root*"
+msgstr ""
+"Check firewall status. Check remote access by ssh with the **  root** "
+"user."
+
+# 373f6ba48803476bb580ca56192ff77b
+#: ../../install_faq.rst:51
+msgid "Arquitectura basada en contenedores docker"
+msgstr "Architecture based on docker containers"
+
+# d09c601bb2f64e39876e2da71be47d2f
+#: ../../install_faq.rst:53
 msgid "**Como cambiar las contraseñas de los containers docker?**"
 msgstr "**How do I change passwords of docker containers?**"
 
-# b8c5f2f8d9b247b6a4edf5a868d41e9c
-#: ../../install_faq.rst:29
+# 0ff54e6b05b240bf9a6d8e23808e4e9d
+#: ../../install_faq.rst:57
 msgid "Hay tres contraseñas importantes:"
 msgstr "There are three important password services:"
 
-# 013ae1891303435ca724ddbe900212d0
-#: ../../install_faq.rst:28
+# 9ca2aa1fa3454193be52449107d6c0d6
+#: ../../install_faq.rst:56
 msgid ""
 "**OMniLeads Web GUI:** cambiar la variable $DJANGO_PASS en el archivo "
 ".env y reiniciar el container de omniapp: **docker restart oml-omniapp-"
@@ -137,8 +216,8 @@ msgstr ""
 "**OMniLeads web GUI:** change the $DJANGO_PASS variable in .env file and "
 "restart the omniapp container: **docker restart oml-omniapp-prodenv**"
 
-# 2bc4df25bccc4de88bd108e4d836132f
-#: ../../install_faq.rst:29
+# d43a745902134209b3942573f7b9ccee
+#: ../../install_faq.rst:57
 msgid ""
 "**Postgresql y MySQL:** observar la sección de "
 ":ref:`about_maintance_change_ip_passwords`"
@@ -146,26 +225,30 @@ msgstr ""
 "**Postgresql y MySQL:** see the section "
 ":ref:`about_maintance_change_ip_passwords`."
 
-# cf49758737624d57a41177caed3f71cb
-#: ../../install_faq.rst:31
+# 2a38b7c9fb39401687c6123da05cefc7
+#: ../../install_faq.rst:59
 msgid ""
-"**Mi segmento de red LAN es 192.168.15.0/24 o está dentro de este "
-"segmento**"
-msgstr "**My LAN subnet is 192.168.15.0/24 or is inside this segment**"
-
-# 4f58c7935c7b47288a96e0ecab503375
-#: ../../install_faq.rst:33
-msgid ""
-"Por defecto el entorno docker se levanta con esta subred interna. Cambiar"
-" la variable **SUBNET** en el archivo .env y reiniciar el servicio "
-"**omnileads-prodenv**."
+"**El segmento de red LAN donde hay que desplegar OML es *192.168.15.0/24*"
+" o cae dentro de un segmento que lo abarca**"
 msgstr ""
-"By default the environment will use this subnet for internal docker "
-"networking. Change the variable **SUBNET** in .env file and restart "
-"**omnileads-prodenv** service."
+"**The LAN network segment where OML must be deployed is *192.168.15.0/24*"
+" or falls within a segment that encompasses it.**"
 
-# ffd56d88ff3a43bdb64cfa18df1c8c0f
-#: ../../install_faq.rst:35
+# 406b3d33c7b44b418c48a02a94e3e424
+#: ../../install_faq.rst:61
+msgid ""
+"Por defecto el entorno docker se levanta con esta subred interna dentro "
+"del rango mencionado. Cambiar la variable **SUBNET** y utilizar otro "
+"segmento de red que no colisione con el de vuestra LAN, esto se hace en "
+"el archivo .env. Luego reiniciar el servicio **omnileads-prodenv**."
+msgstr ""
+"By default the docker environment is raised with the internal subnet "
+"within the mentioned range. Change the SUBNET variable and use another "
+"network segment that does not collide with that of your LAN. This is done"
+" in the .env file. Then restart the omnileads-prodenv service."
+
+# c01b22d86205406e818f4c0154ba5a25
+#: ../../install_faq.rst:64
 msgid ""
 "**El entorno no inicia debido a que docker-compose dice que hay un puerto"
 " en uso, que hago?**"
@@ -173,8 +256,8 @@ msgstr ""
 "**The environment doesn't start due to docker-compose tells that there is"
 " an used port, what should I do?**"
 
-# 0bdadbf3ac864c0eb85b1ce826b1a061
-#: ../../install_faq.rst:37
+# 89582435f1f44109977f0b24db244897
+#: ../../install_faq.rst:66
 msgid ""
 "Hay tres puertos del Docker Host que se usan para mapear puertos internos"
 " de los containers, estos son:"
@@ -182,30 +265,130 @@ msgstr ""
 "There are three of Docker Host used to map ports inside containers, these"
 " are:"
 
-# 021a0c297dbc4fb0bede6ab28838b270
-#: ../../install_faq.rst:39
+# 1d887ce740dd4ce8b47efeb3a0379a8d
+#: ../../install_faq.rst:68
+#, fuzzy
 msgid ""
-"WD_EXT_PORT=442  --> mapea con el puerto 8080/tcp en Wombat Dialer, para "
-"acceder a la GUI"
+"WD_EXT_PORT=442  --> mapea con el puerto 8080/tcp del contenedor que "
+"aloja el componente Wombat Dialer. Esto permite acceder a la GUI de WD."
 msgstr ""
 "WD_EXT_PORT=442  --> maps the 8080/tcp port in Wombat Dialer, to access "
 "WD GUI"
 
-# e8a3f204088d4ef0a660b22107a57937
-#: ../../install_faq.rst:40
+# 8edffc324fa14170bf7ee63a5e4c45fb
+#: ../../install_faq.rst:69
+#, fuzzy
 msgid ""
 "NGINX_EXT_PORT=444 --> mapea con el puerto 443/tcp en Omniapp para "
-"acceder a OMniLeads GUI"
+"acceder a la GUI de OMniLeads."
 msgstr ""
 "NGINX_EXT_PORT=444 --> maps the 443/tcp port in Omniapp to access "
 "OMniLeads GUI"
 
+# 812a6ab2da834924957cf8aa7e72499d
+#~ msgid "Self Hosted"
+#~ msgstr "Self Hosted"
+
+# de104f95a36142c9872e1f7e487fc650
+#~ msgid ""
+#~ "El server no tiene internet o no"
+#~ " resuelve dominios (configuración de DNS)."
+#~ " **Compruebe el acceso a internet del"
+#~ " host (por ej: actualizando paquetes "
+#~ "- apt-get update | yum update).**"
+#~ msgstr ""
+#~ "The server does not have internet "
+#~ "or it does not solve domains (DNS"
+#~ " configuration). *Check the internet access"
+#~ " of the host (eg. updating packages"
+#~ " - apt-get update | yum "
+#~ "update).*"
+
+# 149bc25a54174cbaacf0d021d830b832
+#~ msgid ""
+#~ "Timeout de algún paquete que se "
+#~ "intenta bajar. Puede volver a intentar"
+#~ " ejecutar el deploy y si vuelve "
+#~ "a fallar, la opción puede ser "
+#~ "instalar el paquete desde la terminal."
+#~ msgstr ""
+#~ "Timeout of any package that you "
+#~ "try to download. You can try again"
+#~ " to execute the deploy and if "
+#~ "it fails again, the option can be."
+#~ " *Install the package from the "
+#~ "terminal.*"
+
+# 3fab89dc568141919f3fa0d408fa9722
+#~ msgid "Ansible Remoto"
+#~ msgstr "Ansible Host-Node"
+
+# 66342d6dd04c4625a1f9f6f3b97dddff
+#~ msgid ""
+#~ "Timeout de algún paquete que se "
+#~ "intenta bajar. Puede volver a intentar"
+#~ " ejecutar el deploy y si vuelve "
+#~ "a fallar, la opción puede ser. "
+#~ "*Instalar el paquete desde la terminal.*"
+#~ msgstr ""
+#~ "Timeout of any package that you "
+#~ "try to download. You can try again"
+#~ " to execute the deploy and if "
+#~ "it fails again, the option can be."
+#~ " *Install the package from the "
+#~ "terminal.*"
+
+# 0de4731316cb4adfa3da0e4fc711bda3
+#~ msgid ""
+#~ "Falla por mala sintaxis o falta de"
+#~ " definición de *hostname* y *dirección "
+#~ "IP* en el archivo *inventory*. *Revisar"
+#~ " archivo inventory*"
+#~ msgstr ""
+#~ "Failure due to bad syntax or lack"
+#~ " of definition of *hostname* and *IP"
+#~ " address* in the file *inventory*. "
+#~ "*Check the file inventory*"
+
+# b593f9d2b91942cbb920f989f500d020
+#~ msgid ""
+#~ "En caso de contar con algún host"
+#~ " Ubuntu-Debian, recordar que se deben"
+#~ " instalar paquetes como *sudo, openssh-"
+#~ "server o python-minimal* antes de "
+#~ "correr el script de *deploy.sh*"
+#~ msgstr ""
+#~ "In case of having any Ubuntu-"
+#~ "Debian host, remember that packages such"
+#~ " as *sudo, openssh-server or "
+#~ "Python-minimal* must be installed before"
+#~ " running the script *deploy.sh*"
+
+# 039ce3e2e5bd49728c7bfd3f5ba78d76
+#~ msgid "Para instalación docker"
+#~ msgstr "For Docker installation"
+
+# 4f58c7935c7b47288a96e0ecab503375
+#~ msgid ""
+#~ "Por defecto el entorno docker se "
+#~ "levanta con esta subred interna. Cambiar"
+#~ " la variable **SUBNET** en el archivo"
+#~ " .env y reiniciar el servicio "
+#~ "**omnileads-prodenv**."
+#~ msgstr ""
+#~ "By default the environment will use "
+#~ "this subnet for internal docker "
+#~ "networking. Change the variable **SUBNET** "
+#~ "in .env file and restart **omnileads-"
+#~ "prodenv** service."
+
 # 6cdd926431e846469848965d10d0de7f
-#: ../../install_faq.rst:41
-msgid ""
-"PG_EXT_PORT=445  --> mapea con el puerto 5038/tcp en Postgresql para "
-"acceder a la base de datos de OMniLeads"
-msgstr ""
-"PG_EXT_PORT=445  --> maps the 5038/tcp port in Postgresql to acces "
-"OMniLeads database"
+#~ msgid ""
+#~ "PG_EXT_PORT=445  --> mapea con el puerto"
+#~ " 5038/tcp en Postgresql para acceder "
+#~ "a la base de datos de OMniLeads"
+#~ msgstr ""
+#~ "PG_EXT_PORT=445  --> maps the 5038/tcp "
+#~ "port in Postgresql to acces OMniLeads"
+#~ " database"
 

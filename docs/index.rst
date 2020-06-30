@@ -3,30 +3,28 @@ INTRODUCCION A OMNILEADS
 ************************
 
 
-`OMniLeads <https://www.omnileads.net/>`_ es un Software `GPLV3  <https://www.gnu.org/licenses/gpl-3.0.en.html/>`_ para Contact Centers basado en `WebRTC <https://www.webrtc.org/>`_ ,
-que permite implementar y gestionar un Contact Center administrando operaciones entrantes y salientes, con acceso a métricas, reportes e indicadores, supervisión real-time de agentes y demás funcionalidades avanzadas
-de QA, gestión de contactos y campañas.
+`OMniLeads <https://www.omnileads.net/>`_ es una Aplicación Web para Contact Centers basada en la licencia de software libre `GPLV3  <https://www.gnu.org/licenses/gpl-3.0.en.html/>`_.
 
-A partir de una sencilla instalación junto a unos pocos pasos de Configuración post-instalación, se dispone de una instancia funcional
-de OMniLeads lista para traccionar operaciones de Contact Center en términos de campañas entrantes y salientes.
+Esta App permite implementar y gestionar operaciones de Contact Center tanto entrantes como salientes y en modalidad Blended. La App pone a disposición métricas, reportes e indicadores,
+supervisión real-time de agentes, módulos de auditorías para backoffice y demás funcionalidades avanzadas de QA, gestión de contactos y campañas.
 
-Esta aplicación puede adaptarse a una compañia u organización que necesita
-montar su propio Contact Center integrado a su central IP-PBX, así como también asumir la función de "núcleo" de comunicaciones para
-una compañía que brinda servicios de Customer Contact (Business Outsourcing Process) o bien ser ejecutada en instancias del tipo VPS o proveedores de nube pública.
+El hecho de ser 100% `WebRTC <https://www.webrtc.org/>`_ convierte en ideal para montar operaciones con agentes en modalidad home-office debido a la eficiencia y seguridad criptográfica que
+implica la tecnología WebRTC en su operación por defecto al momento de mantener sesiones de voz y/o video a través de Internet.
 
-Dentro de un universo 100% web, los diferentes perfiles de usuarios; agentes, supervisores, administradores, clientes, acceden a OMniLeads desde
-cualquier navegador web moderno con soporte `WebRTC <https://www.webrtc.org/>`_. Al no requerir del uso de aplicaciones de escritorio *Softphones*, OMniLeads
-reduce a nada respecto a la configuración de las estaciones de trabajo de los agentes, tan solo con acceder a la dirección web HTTPS, agentes y supervisores pueden estar
-online gestionando comunicaciones con los clientes. Esta facilidad hace de OMniLeads una gran opción para implementar CCaaS "Contact Center as a Service" !
+Los diferentes perfiles de usuarios; agentes, supervisores, administradores o clientes acceden a OMniLeads desde cualquier navegador web moderno. Al no requerir del uso de aplicaciones de escritorio
+*Softphones* no es necesario realizar las típicas configuraciones sobre las estaciones de trabajo de los agentes de contact center, tan solo con acceder a la dirección web HTTPS donde reside
+la App, agentes y supervisores pueden estar online gestionando comunicaciones con los clientes. Esta facilidad implica una gran ventaja a la hora de brindar servicios de Cloud CCaaS (Contact Center as a Service).
 
+OMniLeads puede adaptarse a una compañia u organización que necesita montar su propio Contact Center integrado a su central PBX, así como también escalar hacia compañías
+que brindan servicios de Customer Contact (Business Outsourcing Process) ya sea en entornos on-premise así como también en despliegues en Cloud.
 
 .. image:: images/what_is.png
         :align: center
 
 
-Cómo lo obtengo ?
+Cómo la obtengo ?
 *****************
-`Nuestro repositorio  <https://gitlab.com/omnileads/ominicontacto>`_ se encuentra disponible en GitLab, para libre descarga, instalación, modificación y uso del Software.
+`El repositorio  <https://gitlab.com/omnileads/ominicontacto>`_ se encuentra disponible en GitLab, para libre descarga, instalación, modificación y uso del Software.
 
 
 Cómo lo instalo ?
@@ -54,19 +52,14 @@ Dónde y cómo lo puedo usar ?
 Cómo me capacito ?
 ******************
 
-Esta documentación cubre todos los aspectos del producto. Desde cuestiones técnicas inherentes al administrador IT hasta aspectos funcionales orientados a los supervisores
+Esta documentación cubre todos los aspectos del producto. Desde cuestiones técnicas inherentes al administrador IT, hasta aspectos funcionales orientados a los agentes, supervisores
 o líderes del contact center.
-
-Además ponemos a disposición un **Curso online gratuito**, en el cual se exponen videos que ejemplifican los tópicos planteados en esta documentación. Es un material complementario
-y a su vez basado en todos los temas aquí postulados.
-
-Para registrarse **sin cargo** acceder a `ESTE LINK <http://www.techxpert.guru/omnileads-takeoff/>`_
 
 ***********
 INSTALACIÓN
 ***********
 
-En este capítulo se cubren todos los tipos de instalación del software.
+En este capítulo se cubren todos los tipos de instalación de la App.
 
 .. toctree::
   :maxdepth: 2
@@ -121,6 +114,17 @@ métricas, reportes, grabaciones, supervisión en tiempo real, etc.
    :maxdepth: 2
 
    output.rst
+
+
+************************************
+AUDITORIA SOBRE GESTIONES DE AGENTES
+************************************
+Cada vez que un agente genera una *gestión positiva* con un contacto, existe la posibilidad de auditar la misma desde el *módulo de auditorías*.
+
+   .. toctree::
+    :maxdepth: 2
+
+    backoffice.rst
 
 
 ****************

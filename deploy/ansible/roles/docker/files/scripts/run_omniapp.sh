@@ -39,6 +39,7 @@ EOF
   psql -U $PGUSER -h $PGHOST -d $PGDATABASE -c '\i {{ install_prefix }}ominicontacto/reportes_app/sql/plperl/replace_insert_queue_log_ominicontacto_queue_log.sql'
   $COMMAND regenerar_asterisk
   $COMMAND actualizar_permisos
+  $COMMAND adicionar_perfil_supervisor_admin
   sudo /usr/sbin/crond -l 0 -L /opt/omnileads/log/crond.log
   sudo chown -R omnileads. ${INSTALL_PREFIX}
   echo "Iniciando Django Server"

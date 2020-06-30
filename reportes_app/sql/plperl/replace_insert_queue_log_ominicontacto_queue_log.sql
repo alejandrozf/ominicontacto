@@ -132,9 +132,10 @@ sub procesar_datos_transferencias {
         $numero_extra = $valor_transf_2;
     }
     elsif ( grep $_ eq $event,  ('BTOUT-ANSWER', 'BTOUT-BUSY', 'BTOUT-CANCEL', 'BTOUT-CONGESTION',
-                                 'BTOUT-CHANUNAVAIL', 'CTOUT-ANSWER', 'CTOUT-ACCEPT', 'CTOUT-DISCARD',
-                                 'CTOUT-BUSY', 'CTOUT-CANCEL', 'CTOUT-CHANUNAVAIL', 'CTOUT-CONGESTION',
-                                 'COMPLETE-BTOUT', 'COMPLETE-CTOUT', 'CTOUT-ABANDON')) {
+                                 'BTOUT-CHANUNAVAIL', 'BTOUT-ABANDON', 'CTOUT-ANSWER', 'CTOUT-ACCEPT',
+                                 'CTOUT-DISCARD', 'CTOUT-BUSY', 'CTOUT-CANCEL', 'CTOUT-CHANUNAVAIL',
+                                 'CTOUT-CONGESTION', 'COMPLETE-BTOUT', 'COMPLETE-CTOUT',
+                                 'CTOUT-ABANDON')) {
         # el valor del campo 'agent' tiene un número de telefono
         $agente_id_modificado = -1;
         $numero_extra = $valor_transf_1;
