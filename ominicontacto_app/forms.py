@@ -51,6 +51,7 @@ from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_ca
 from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSaliente
 
 from utiles_globales import validar_extension_archivo_audio
+from .utiles import convert_fecha_datetime
 
 TIEMPO_MINIMO_DESCONEXION = 2
 EMPTY_CHOICE = ('', '---------')
@@ -1859,3 +1860,27 @@ class CampanaPreviewCampoDesactivacion(forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('campo_desactivacion',)
+
+
+class FiltroUsuarioFechaForm(forms.Form):
+    fecha = forms.CharField(required=True,
+                            widget=forms.TextInput(attrs={'class': 'form-control'}),
+                            label=_('Fecha'))
+    usuario = forms.ModelChoiceField(
+        queryset=User.objects.all(), label=_('Agente'),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=False)
+
+    def clean_fecha(self):
+        fecha = self.cleaned_data.get('fecha')
+        fecha_desde, fecha_hasta = fecha.split('-')
+        fecha_desde = convert_fecha_datetime(fecha_desde)
+        fecha_hasta = convert_fecha_datetime(fecha_hasta)
+        if fecha_hasta < fecha_desde:
+            raise forms.ValidationError(_('La fecha inicial debe ser anterior a la final'))
+        self.fecha_desde = fecha_desde
+        self.fecha_hasta = fecha_hasta
+
+    def __init__(self, users_choices, *args, **kwargs):
+        super(FiltroUsuarioFechaForm, self).__init__(*args, **kwargs)
+        self.fields['usuario'].queryset = users_choices

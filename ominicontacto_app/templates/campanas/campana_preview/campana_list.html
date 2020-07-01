@@ -79,6 +79,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <a class="dropdown-item" href="{% url 'bloquear_campos_para_agente' campana.pk %}">
                             <span class="icon icon-cancel"></span>{% trans 'Restringir campos de contacto' %}
                         </a>
+                        <a class="dropdown-item" href="{% url 'agenda_contactos_por_campana' campana.pk %}">
+                            <span class="icon icon-agenda"></span>{% trans 'Ver Agendas' %}
+                        </a>
                         <a class="dropdown-item" href="{% url 'campana_preview_delete' campana.pk %}">
                             <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
                         </a>

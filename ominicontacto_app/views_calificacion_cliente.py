@@ -383,8 +383,7 @@ class CalificacionClienteFormView(FormView):
                                "pk_contacto": self.contacto.id})
 
     def get_success_url_reporte(self):
-        return reverse('reporte_agente_calificaciones',
-                       kwargs={"pk_agente": self.object_calificacion.agente.pk})
+        return reverse('reporte_agente_calificaciones')
 
     def get_success_url(self):
         return reverse('recalificacion_formulario_update_or_create',

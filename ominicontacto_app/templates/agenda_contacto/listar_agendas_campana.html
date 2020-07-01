@@ -1,0 +1,114 @@
+<!--
+Copyright (C) 2018 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{% block content %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.growl.css' %}">
+{% endblock extra_css %}
+
+{% block head_js %}
+  <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
+  <script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.growl.js' %}"></script>
+  <script type="text/javascript" src="{% static 'ominicontacto/JS/supervision/reasignarAgendas.js' %}"></script>
+{% endblock head_js %}
+<h1>{% trans 'Gestionar Agendas' %}</h1>
+
+<div id="wrapper-search">
+    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> {% trans 'Buscar' %}</button>
+    <div id="wrapperSearchForm" class="show">
+        <form id="form-buscar-agenda" role="form" method="post" enctype="multipart/form-data" >
+            {% include "base_form_fields.html" with form=form %}
+            <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                {% trans 'Buscar' %}
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="wrapper-results">
+    <table class="table table-stripped">
+        <thead>
+            <tr>
+                <th>{% trans 'Agente' %}</th>
+                <th>{% trans 'Fecha' %}</th>
+                <th>{% trans 'hora' %}</th>
+                <th>{% trans 'Contacto' %}</th>
+                <th>{% trans 'Acciones' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for agenda in agendas %}
+            <tr>
+              <td id="agente_agenda_{{ agenda.id }}">{{ agenda.agente }}</td>
+              <td>{{ agenda.fecha }}</td>
+              <td>{{ agenda.hora }}</td>
+              <td>{{ agenda.contacto.telefono}}</td>
+              <td>
+                <a onclick="openAgendaReasignWindow({{agenda.id}})" href="javascript:;">{% trans "Reasignar" %}</a>
+              </td>
+          </tr>
+       {% empty %}
+            <tr>
+                <td colspan="7">{% trans 'No existen agendas para esta campaña' %}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+<!-- Modal Reasignar Agenda -->
+<div class="modal fade" id="modalReassign" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title" id="modal_reassign_title" >{% trans 'Reasignar Agenda' %}</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="id_agenda" name="id_agenda">
+                <select id="id_agent" name="id_agent" class="form-control">
+                  {% for member in members %}
+                    <option value="{{ member.member_id }}">{{ member.member }}</option>
+                  {% endfor %}
+                </select>
+                <div class="row">
+                  <div class="col-md-12">
+                    <table class="table table-stripped">
+                      <tbody id="contact_data">
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="reassign_submit" onclick="reassignAgenda();" class="btn btn-primary">{% trans 'Reasignar' %}</button>
+            </div>
+        </div>
+    </div>
+</div> 
+<!-- FIN Reasignar Agenda -->
+
+{% endblock %}

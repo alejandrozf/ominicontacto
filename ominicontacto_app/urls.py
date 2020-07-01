@@ -569,6 +569,10 @@ urlpatterns = [
     url(r'^agenda_contacto/eventos/$',
         login_required(views_agenda_contacto.AgendaContactoListFormView.as_view()),
         name="agenda_contacto_listado"),
+    url(r'^campana/(?P<pk_campana>\d+)/agenda_contacto/list/$',
+        login_required(views_agenda_contacto.AgendaContactosPorCampanaView.as_view()),
+        name="agenda_contactos_por_campana"),
+
     # ==========================================================================
     # Campana Dialer
     # ==========================================================================
