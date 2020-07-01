@@ -29,7 +29,7 @@ class Command(BaseCommand):
             'entorno DJANGO_ADMIN_PASS')
 
     def cambiar_admin_pass(self):
-        django_admin_pass = os.getenv('DJANGO_ADMIN_PASS')
+        django_admin_pass = os.getenv('DJANGO_PASS')
         admin = User.objects.get(username='admin')
         admin.set_password(django_admin_pass)
         admin.save()

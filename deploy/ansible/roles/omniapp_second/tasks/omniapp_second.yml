@@ -17,11 +17,64 @@
 #
 ---
 
+# Se borra el cache de javascript, esto solo se hace cuando es postinstall
+- name: Erase the javascript cache files (if exists)
+  file: path="{{ install_prefix }}static/CACHE/{{ item }}" state=absent
+  with_items:
+    - js
+    - manifest.json
+  tags: ['never','postinstall']
+
+# Este script sirve para hacer comandos de manage.py sin necesidad de activar virualenv primero
+- name: Generate manage.sh script
+  template: src=templates/bin/manage.sh.j2 dest={{ install_prefix }}bin/manage.sh owner={{ usuario }} group={{ usuario }} mode=755
+  tags: postinstall
+
+# Se ejecuta primero las migraciones
+- name: Run migrations of database
+  command: "{{ install_prefix }}bin/manage.sh migrate --noinput"
+  become: true
+  become_method: su
+  become_user: "{{ usuario }}"
+  tags: postinstall
+
+# Se crea el usuario admin
+- name: Create admin superuser
+  command: "{{ install_prefix }}bin/manage.sh createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com"
+  register: result
+  #failed_when: false
+  failed_when:
+      - "'is already taken' not in result.stderr"
+      - "'is already taken' not in result.stdout"
+      - "commandresult.rc != 0"
+  become: true
+  become_method: su
+  become_user: "{{ usuario }}"
+
+# Se ejecutan los comandos de django que necesita omnileads
+- name: Execute django commands
+  command: "{{ install_prefix }}bin/manage.sh {{ item }}"
+  with_items:
+    - adicionar_perfil_supervisor_admin
+    - populate_history
+    - cambiar_admin_password
+    - compilemessages
+    - collectstatic --noinput
+    - collectstatic_js_reverse
+    - compress --force
+    - regenerar_asterisk
+    - regenerar_tareas_preview
+    - actualizar_permisos
+  become: true
+  become_method: su
+  become_user: "{{ usuario }}"
+  tags: postinstall
+
 # Se sube el archivo de config de nginx
 - name: Upload nginx.conf configuration
   template: src=templates/etc/nginx.conf.j2 dest=/etc/nginx/nginx.conf
   tags: postinstall
-  
+
 # Se sube el archivo de configuracion de omnileads para nginx
 - name: Create of ominicontacto.conf
   template: src=templates/etc/ominicontacto.conf dest=/etc/nginx/conf.d/ominicontacto.conf owner={{ usuario }} group={{ usuario }}
