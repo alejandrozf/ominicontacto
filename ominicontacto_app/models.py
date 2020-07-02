@@ -2932,6 +2932,7 @@ class AuditoriaCalificacion(models.Model):
     calificacion = models.OneToOneField(CalificacionCliente, on_delete=models.CASCADE)
     resultado = models.IntegerField(choices=RESULTADO_CHOICES)
     observaciones = models.TextField(blank=True, null=True)
+    revisada = models.BooleanField(default=False)
 
     @classmethod
     def es_pendiente(cls, valor_resultado):

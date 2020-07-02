@@ -498,6 +498,9 @@ class AuditoriaBusquedaForm(forms.Form):
     status_auditoria = forms.ChoiceField(
         required=False, choices=(), label=_('Status de auditoría'),
         widget=forms.Select(attrs={'class': 'form-control'}))
+    revisadas = forms.BooleanField(
+        required=False, widget=forms.CheckboxInput(attrs={'class': 'form-control'}),
+        label=_('Únicamente revisadas por Agente'))
 
     def __init__(self, *args, **kwargs):
         supervisor = kwargs.pop('supervisor')
@@ -526,7 +529,11 @@ class AuditoriaBusquedaForm(forms.Form):
 class AuditoriaCalificacionForm(forms.ModelForm):
     class Meta:
         model = AuditoriaCalificacion
-        fields = ('resultado', 'observaciones')
+        fields = ('resultado', 'revisada', 'observaciones')
+
+    revisada = forms.BooleanField(
+        disabled=True, widget=forms.CheckboxInput(attrs={'class': 'form-control'}),
+        label=_('Revisada por Agente'), required=False)
 
 
 class CampanaMixinForm(object):

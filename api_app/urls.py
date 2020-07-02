@@ -34,7 +34,8 @@ from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
     API_ObtenerContactosCampanaView, Click2CallView, AgentLogoutView,
-    AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk
+    AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk,
+    SetEstadoRevisionAuditoria
 )
 
 router = routers.DefaultRouter()
@@ -135,5 +136,7 @@ urlpatterns = [
         AgentUnpauseAsterisk.as_view(), name='api_make_unpause'),
     url(r'api/v1/sip/credentials/agent/', ObtenerCredencialesSIPAgenteView.as_view(),
         name='api_credenciales_sip_agente'),
+    url(r'api/v1/audit/set_revision_status/', SetEstadoRevisionAuditoria.as_view(),
+        name='api_set_estado_revision'),
 
 ]
