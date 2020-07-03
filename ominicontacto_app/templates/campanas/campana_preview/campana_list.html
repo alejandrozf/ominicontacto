@@ -134,6 +134,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                                     <span class="icon icon-graph"></span>{% trans 'Reportes'  %}
                                 </a>
+                                <a class="dropdown-item" href="{% url 'reciclar_campana_preview' campana.pk %}">
+                                    <span class="icon icon-refresh"></span>{% trans 'Reciclar'  %}
+                                </a>
                                 <a class="dropdown-item" href="{% url 'campana_preview_delete' campana.pk %}">
                                     <span class="icon icon-trash"></span>{% trans 'Eliminar'  %}
                                 </a>

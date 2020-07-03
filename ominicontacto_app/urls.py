@@ -873,7 +873,8 @@ urlpatterns = [
         login_required(
             views_campana_preview.CampanaPreviewTemplateCreateView.as_view()),
         name="campana_preview_template_create"),
-    url(r'^campana_preview_template/crear_campana/(?P<pk_campana_template>\d+)$',
+    url(r'^campana_preview_template/crear_campana/(?P<pk_campana_template>\d+)/'
+        r'(?P<borrar_template>\d+)$',
         login_required(
             views_campana_preview.CampanaPreviewTemplateCreateCampanaView.as_view()),
         name="campana_preview_template_create_campana"),

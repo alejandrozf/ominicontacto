@@ -833,20 +833,20 @@ class CampanaManager(models.Manager):
             initial_boost_factor=campana.queue_campana.initial_boost_factor,
 
         )
-
-        # Replica Actuacion Vigente
-        ActuacionVigente.objects.create(
-            campana=campana_replicada,
-            domingo=campana.actuacionvigente.domingo,
-            lunes=campana.actuacionvigente.lunes,
-            martes=campana.actuacionvigente.martes,
-            miercoles=campana.actuacionvigente.miercoles,
-            jueves=campana.actuacionvigente.jueves,
-            viernes=campana.actuacionvigente.viernes,
-            sabado=campana.actuacionvigente.sabado,
-            hora_desde=campana.actuacionvigente.hora_desde,
-            hora_hasta=campana.actuacionvigente.hora_hasta,
-        )
+        if campana.type == Campana.TYPE_DIALER:
+            # Replica Actuacion Vigente
+            ActuacionVigente.objects.create(
+                campana=campana_replicada,
+                domingo=campana.actuacionvigente.domingo,
+                lunes=campana.actuacionvigente.lunes,
+                martes=campana.actuacionvigente.martes,
+                miercoles=campana.actuacionvigente.miercoles,
+                jueves=campana.actuacionvigente.jueves,
+                viernes=campana.actuacionvigente.viernes,
+                sabado=campana.actuacionvigente.sabado,
+                hora_desde=campana.actuacionvigente.hora_desde,
+                hora_hasta=campana.actuacionvigente.hora_hasta,
+            )
 
         # Replica Reglas Incidentes
         reglas = campana.reglas_incidencia.all()
