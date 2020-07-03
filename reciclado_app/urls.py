@@ -25,4 +25,7 @@ urlpatterns = [
     url(r'^reciclar/(?P<pk_campana>\d+)/dialer/$',
         login_required(views.ReciclarCampanaDialerFormView.as_view()),
         name='reciclar_campana_dialer'),
+    url(r'^reciclar/(?P<pk_campana>\d+)/preview/$',
+        login_required(views.ReciclarCampanaPreviewFormView.as_view()),
+        name='reciclar_campana_preview'),
 ]
