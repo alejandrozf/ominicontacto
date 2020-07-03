@@ -81,6 +81,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'api_credenciales_sip_agente',
              'roles': ['Agente', ]},
+            {'nombre': 'api_set_estado_revision',
+             'roles': ['Agente', ]},
         ]
 
     informacion_de_permisos = {
@@ -145,5 +147,7 @@ class ApiAppConfig(AppConfig):
             {'descripcion': _('Saca al agente de una pausa'), 'version': '1.7.0'},
         'api_credenciales_sip_agente':
             {'descripcion': _('Devuelve credenciales SIP de un agente'), 'version': '1.7.0'},
-
+        'api_set_estado_revision':
+            {'descripcion': _('Establece el estado de revisión de una Auditoría'),
+             'version': '1.8.0'},
     }
