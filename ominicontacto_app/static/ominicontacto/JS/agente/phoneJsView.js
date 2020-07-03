@@ -296,8 +296,8 @@ var PHONE_STATUS_CONFIGS = {
     },
     'Paused': {
         keypad_enabled: true,
-        enabled_buttons: ['Resume', 'changeCampAssocManualCall', 'call', 'numberToCall', 'redial',
-            'call_off_campaign_menu'],
+        enabled_buttons: ['Pause', 'Resume', 'changeCampAssocManualCall', 'call', 'numberToCall',
+            'redial', 'call_off_campaign_menu'],
         color: '#e0b93d',
     },
     'Calling': {

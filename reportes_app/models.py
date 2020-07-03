@@ -302,13 +302,13 @@ class ActividadAgenteLogManager(models.Manager):
         return values
 
     def obtener_pausas_por_agente_fechas_pausa(self, fecha_desde,
-                                               fecha_hasta, agente_id, pausa_id):
+                                               fecha_hasta, agente_id):
         """Devuelve todas las pausas del agente por una pausa en particular"""
         if fecha_desde and fecha_hasta:
             fecha_desde = datetime_hora_minima_dia(fecha_desde)
             fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
         try:
-            es_evento_pausa = Q(event__in=['PAUSEALL', 'UNPAUSEALL'], pausa_id=pausa_id)
+            es_evento_pausa = Q(event__in=['PAUSEALL', 'UNPAUSEALL'])
             es_evento_sesion = Q(event='REMOVEMEMBER')
             return self.filter(agente_id=agente_id, time__range=(fecha_desde, fecha_hasta)).filter(
                 es_evento_pausa | es_evento_sesion).order_by('-time')
