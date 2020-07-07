@@ -22,17 +22,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 
 {% block content %}
-<h1>{% trans 'Usuarios' %}</h1>
+
 
 <div class="form-row">
-    <form method="GET" action="{% url 'user_list' page=1 %}">
-        <div class="col-md-5">
+    <div class="col-md-9">
+        <h1>{% trans 'Usuarios' %}</h1>
+    </div>
+    <div class="col-md-3">
+        <form method="GET" action="{% url 'user_list' page=1 %}" class="filter-flex">
             <input type="text" class="form-control" name="search" value="{{ search }}">
-        </div>
-        <div class="col-md-5">
             <input type="submit" class="btn btn-primary" value="{% trans 'Filtrar' %}">
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 
 <table class="table">
