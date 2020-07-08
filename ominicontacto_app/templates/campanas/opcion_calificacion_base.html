@@ -21,14 +21,28 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 {% load static %}
 {% load widget_tweaks %}
-
-{% block extra_css %}
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/opcion-calificacion.css' %}"></link>
-{% endblock %}
-
 {% block extra_js %}
     <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/opcion_calificacion_base.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/select2.min.js' %}"></script>
+    <script>
+     /* se activa en todos los campos de selección un plugin para
+        JQuery que permite una mejor búsqueda */
+        $(document).ready(function() {
+
+            $('select.form-control').each(function() {
+                $(this).select2();});
+            $('.addFormset').click(function(){
+                $('select.form-control').each(function() {
+                $(this).select2();});
+            });
+
+        });
+    </script>
+{% endblock %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/select2.min.css' %}"></link>
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/opcion-calificacion.css' %}"></link>
 {% endblock %}
 
 {% block formset_render %}
@@ -78,3 +92,4 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </table>
     {{ wizard.form.management_form }}
 {% endblock %}
+
