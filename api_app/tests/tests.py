@@ -198,7 +198,12 @@ class APITest(OMLBaseTest):
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AMIManagerConnector, "_ami_manager")
-    def test_servicio_agentes_activos_muestra_activos_no_offline(self, _ami_manager, manager):
+    @patch.object(AMIManagerConnector, "disconnect")
+    @patch.object(AMIManagerConnector, "connect")
+    def test_servicio_agentes_activos_muestra_activos_no_offline(
+            self, ami_connect, ami_disconnect, _ami_manager, manager):
+        ami_connect.return_value = False
+        ami_disconnect.return_value = False
         self.campana_activa.supervisors.add(self.supervisor_admin.user)
         agente = self.crear_agente_profile()
         QueueMemberFactory.create(member=agente, queue_name=self.queue)
@@ -216,18 +221,22 @@ class APITest(OMLBaseTest):
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AMIManagerConnector, "_ami_manager")
+    @patch.object(AMIManagerConnector, "disconnect")
+    @patch.object(AMIManagerConnector, "connect")
     def test_servicio_agentes_activos_detecta_grupos_menos_lineas_previstas(
-            self, _ami_manager, manager):
+            self, ami_connect, ami_disconnect, _ami_manager, manager):
         self.campana_activa.supervisors.add(self.supervisor_admin.user)
         ag1 = self.agente_profile
         ag2 = self.crear_agente_profile()
         QueueMemberFactory.create(member=ag2, queue_name=self.queue)
         self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
+        ami_connect.return_value = False
+        ami_disconnect.return_value = False
         _ami_manager.return_value = (
-            "/OML/AGENT/{0}/NAME                       : John Perkins\r\n".format(ag1.pk) +
-            "/OML/AGENT/{0}/NAME                       : Silvia Pensive\r\n".format(ag2.pk) +
-            "/OML/AGENT/{0}/SIP                        : 1001\r\n".format(ag2.pk) +
-            "/OML/AGENT/{0}/STATUS                     : READY:1582309000\r\n".format(ag2.pk) +
+            "/OML/AGENT/{0}/NAME                       : John Perkins\r\n".format(ag1.pk) + ""
+            "/OML/AGENT/{0}/NAME                       : Silvia Pensive\r\n".format(ag2.pk) + ""
+            "/OML/AGENT/{0}/SIP                        : 1001\r\n".format(ag2.pk) + ""
+            "/OML/AGENT/{0}/STATUS                     : READY:1582309000\r\n".format(ag2.pk) + ""
             "2 results found."), None
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
@@ -238,20 +247,25 @@ class APITest(OMLBaseTest):
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AMIManagerConnector, "_ami_manager")
-    def test_servicio_agentes_no_adiciona_grupo_headers_desconocidos(self, _ami_manager, manager):
+    @patch.object(AMIManagerConnector, "disconnect")
+    @patch.object(AMIManagerConnector, "connect")
+    def test_servicio_agentes_no_adiciona_grupo_headers_desconocidos(
+            self, ami_connect, ami_disconnect, _ami_manager, manager):
         self.campana_activa.supervisors.add(self.supervisor_admin.user)
         ag1 = self.agente_profile
         ag2 = self.crear_agente_profile()
         QueueMemberFactory.create(member=ag2, queue_name=self.queue)
         self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
+        ami_connect.return_value = False
+        ami_disconnect.return_value = False
         _ami_manager.return_value = (
-            "/OML/AGENT/{0}/NAME                         : John Perkins\r\n".format(ag1.pk) +
-            "/OML/AGENT/{0}/SIP                          : 1001\r\n".format(ag1.pk) +
-            "/OML/AGENT/{0}/STATUS                       : READY:1582309000\r\n".format(ag1.pk) +
-            "/OML/AGENT/{0}/STRANGE-HEADER               : strange-value\r\n".format(ag1.pk) +
-            "/OML/AGENT/{0}/NAME                         : Silvia Pensive\r\n".format(ag2.pk) +
-            "/OML/AGENT/{0}/SIP                          : 1002\r\n".format(ag2.pk) +
-            "/OML/AGENT/{0}/STATUS                       : PAUSE:1582309000\r\n".format(ag2.pk) +
+            "/OML/AGENT/{0}/NAME                         : John Perkins\r\n".format(ag1.pk) + ""
+            "/OML/AGENT/{0}/SIP                          : 1001\r\n".format(ag1.pk) + ""
+            "/OML/AGENT/{0}/STATUS                       : READY:1582309000\r\n".format(ag1.pk) + ""
+            "/OML/AGENT/{0}/STRANGE-HEADER               : strange-value\r\n".format(ag1.pk) + ""
+            "/OML/AGENT/{0}/NAME                         : Silvia Pensive\r\n".format(ag2.pk) + ""
+            "/OML/AGENT/{0}/SIP                          : 1002\r\n".format(ag2.pk) + ""
+            "/OML/AGENT/{0}/STATUS                       : PAUSE:1582309000\r\n".format(ag2.pk) + ""
             "2 results found."), None
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
@@ -265,21 +279,25 @@ class APITest(OMLBaseTest):
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AMIManagerConnector, "_ami_manager")
+    @patch.object(AMIManagerConnector, "disconnect")
+    @patch.object(AMIManagerConnector, "connect")
     @patch('api_app.utiles.logger')
     def test_servicio_agentes_activos_detecta_grupos_headers_incompletos(
-            self, logger, _ami_manager, manager):
+            self, logger, ami_connect, ami_disconnect, _ami_manager, manager):
+        ami_connect.return_value = False
+        ami_disconnect.return_value = False
         self.campana_activa.supervisors.add(self.supervisor_admin.user)
         ag1 = self.agente_profile
         ag2 = self.crear_agente_profile()
         QueueMemberFactory.create(member=ag2, queue_name=self.queue)
         self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
         _ami_manager.return_value = (
-            "/OML/AGENT/{0}/NAME                           : John Perkins\r\n".format(ag1.pk) +
-            "/OML/AGENT/{0}/SIP                            : \r\n".format(ag1.pk) +
-            "/OML/AGENT/{0}/STATUS                         : READY:1582309000\r\n".format(ag1.pk) +
-            "/OML/AGENT/{0}/NAME                           : Silvia Pensive\r\n".format(ag2.pk) +
-            "/OML/AGENT/{0}/SIP                            : 1002\r\n".format(ag2.pk) +
-            "/OML/AGENT/{0}/STATUS                         : PAUSE:1582309000\r\n".format(ag2.pk) +
+            "/OML/AGENT/{0}/NAME                         : John Perkins\r\n".format(ag1.pk) + ""
+            "/OML/AGENT/{0}/SIP                          : \r\n".format(ag1.pk) + ""
+            "/OML/AGENT/{0}/STATUS                       : READY:1582309000\r\n".format(ag1.pk) + ""
+            "/OML/AGENT/{0}/NAME                         : Silvia Pensive\r\n".format(ag2.pk) + ""
+            "/OML/AGENT/{0}/SIP                          : 1002\r\n".format(ag2.pk) + ""
+            "/OML/AGENT/{0}/STATUS                       : PAUSE:1582309000\r\n".format(ag2.pk) + ""
             "2 results found."), None
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
@@ -287,9 +305,13 @@ class APITest(OMLBaseTest):
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AMIManagerConnector, "_ami_manager")
+    @patch.object(AMIManagerConnector, "disconnect")
+    @patch.object(AMIManagerConnector, "connect")
     @patch('api_app.utiles.logger')
     def test_servicio_agentes_activos_entradas_menos_lineas_son_detectadas_y_excluidas(
-            self, logger, _ami_manager, manager):
+            self, logger, ami_connect, ami_disconnect, _ami_manager, manager):
+        ami_connect.return_value = False
+        ami_disconnect.return_value = False
         self.campana_activa.supervisors.add(self.supervisor_admin.user)
         ag1 = self.agente_profile
         ag2 = self.crear_agente_profile()
@@ -300,17 +322,17 @@ class APITest(OMLBaseTest):
         QueueMemberFactory.create(member=ag4, queue_name=self.queue)
         self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
         _ami_manager.return_value = (
-            "/OML/AGENT/{0}/NAME                          : John Perkins\r\n".format(ag1.pk) +
-            "/OML/AGENT/{0}/SIP                           : 1001\r\n".format(ag1.pk) +
-            "/OML/AGENT/{0}/STATUS                        : READY:1582309100\r\n".format(ag1.pk) +
-            "/OML/AGENT/{0}/NAME                          : Silvia Pensive\r\n".format(ag2.pk) +
-            "/OML/AGENT/{0}/SIP                           : 1002\r\n".format(ag2.pk) +
-            "/OML/AGENT/{0}/STATUS                        : PAUSE:1582309000\r\n".format(ag2.pk) +
-            "/OML/AGENT/{0}/NAME                          : Homero Simpson\r\n".format(ag3.pk) +
-            "/OML/AGENT/{0}/NAME                          : Marge Simpson\r\n".format(ag4.pk) +
-            "/OML/AGENT/{0}/SIP                           : 1003\r\n".format(ag4.pk) +
-            "/OML/AGENT/{0}/STATUS                        : PAUSE:1582309500\r\n".format(ag4.pk) +
-            "/OML/AGENT/{0}/SIP                           : 1004\r\n".format(ag4.pk) +
+            "/OML/AGENT/{0}/NAME                         : John Perkins\r\n".format(ag1.pk) + ""
+            "/OML/AGENT/{0}/SIP                          : 1001\r\n".format(ag1.pk) + ""
+            "/OML/AGENT/{0}/STATUS                       : READY:1582309100\r\n".format(ag1.pk) + ""
+            "/OML/AGENT/{0}/NAME                         : Silvia Pensive\r\n".format(ag2.pk) + ""
+            "/OML/AGENT/{0}/SIP                          : 1002\r\n".format(ag2.pk) + ""
+            "/OML/AGENT/{0}/STATUS                       : PAUSE:1582309000\r\n".format(ag2.pk) + ""
+            "/OML/AGENT/{0}/NAME                         : Homero Simpson\r\n".format(ag3.pk) + ""
+            "/OML/AGENT/{0}/NAME                         : Marge Simpson\r\n".format(ag4.pk) + ""
+            "/OML/AGENT/{0}/SIP                          : 1003\r\n".format(ag4.pk) + ""
+            "/OML/AGENT/{0}/STATUS                       : PAUSE:1582309500\r\n".format(ag4.pk) + ""
+            "/OML/AGENT/{0}/SIP                          : 1004\r\n".format(ag4.pk) + ""
             "2 results found."), None
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
@@ -318,9 +340,13 @@ class APITest(OMLBaseTest):
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AMIManagerConnector, "_ami_manager")
+    @patch.object(AMIManagerConnector, "disconnect")
+    @patch.object(AMIManagerConnector, "connect")
     @patch('api_app.utiles.logger')
     def test_servicio_agentes_activos_no_incluye_entradas_lineas_status_vacio(
-            self, logger, _ami_manager, manager):
+            self, logger, ami_connect, ami_disconnect, _ami_manager, manager):
+        ami_connect.return_value = False
+        ami_disconnect.return_value = False
         self.campana_activa.supervisors.add(self.supervisor_admin.user)
         ag1 = self.agente_profile
         ag10 = self.crear_agente_profile()
@@ -329,15 +355,15 @@ class APITest(OMLBaseTest):
         QueueMemberFactory.create(member=ag11, queue_name=self.queue)
         self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
         _ami_manager.return_value = (
-            "/OML/AGENT/{0}/NAME                          : Agente 01\r\n".format(ag1.pk) +
-            "/OML/AGENT/{0}/SIP                           : 1004 \r\n".format(ag1.pk) +
-            "/OML/AGENT/{0}/STATUS                        : \r\n".format(ag1.pk) +
-            "/OML/AGENT/{0}/NAME                          : Agente10 \n".format(ag10.pk) +
-            "/OML/AGENT/{0}/SIP                           : 1013\r\n".format(ag10.pk) +
-            "/OML/AGENT/{0}/STATUS                        : \r\n".format(ag10.pk) +
-            "/OML/AGENT/{0}/NAME                          : Agente11\r\n".format(ag11.pk) +
-            "/OML/AGENT/{0}/SIP                           : 1014\r\n".format(ag11.pk) +
-            "/OML/AGENT/{0}/STATUS                        : READY:1582309100\r\n".format(ag11.pk) +
+            "/OML/AGENT/{0}/NAME                        : Agente 01\r\n".format(ag1.pk) + ""
+            "/OML/AGENT/{0}/SIP                         : 1004 \r\n".format(ag1.pk) + ""
+            "/OML/AGENT/{0}/STATUS                      : \r\n".format(ag1.pk) + ""
+            "/OML/AGENT/{0}/NAME                        : Agente10 \n".format(ag10.pk) + ""
+            "/OML/AGENT/{0}/SIP                         : 1013\r\n".format(ag10.pk) + ""
+            "/OML/AGENT/{0}/STATUS                      : \r\n".format(ag10.pk) + ""
+            "/OML/AGENT/{0}/NAME                        : Agente11\r\n".format(ag11.pk) + ""
+            "/OML/AGENT/{0}/SIP                         : 1014\r\n".format(ag11.pk) + ""
+            "/OML/AGENT/{0}/STATUS                      : READY:1582309100\r\n".format(ag11.pk) + ""
             "3 results found."), None
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
@@ -345,9 +371,13 @@ class APITest(OMLBaseTest):
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AMIManagerConnector, "_ami_manager")
+    @patch.object(AMIManagerConnector, "disconnect")
+    @patch.object(AMIManagerConnector, "connect")
     @patch('api_app.utiles.logger')
     def test_servicio_agentes_activos_no_incluye_agentes_no_asignados_al_supervisor(
-            self, logger, _ami_manager, manager):
+            self, logger, ami_connect, ami_disconnect, _ami_manager, manager):
+        ami_connect.return_value = False
+        ami_disconnect.return_value = False
         self.campana_activa.supervisors.add(self.supervisor_admin.user)
         ag1 = self.agente_profile
         ag10 = self.crear_agente_profile()
@@ -355,15 +385,15 @@ class APITest(OMLBaseTest):
         QueueMemberFactory.create(member=ag10, queue_name=self.queue)
         self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
         _ami_manager.return_value = (
-            "/OML/AGENT/{0}/NAME                          : Agente 01\r\n".format(ag1.pk) +
-            "/OML/AGENT/{0}/SIP                           : 1004\r\n".format(ag1.pk) +
-            "/OML/AGENT/{0}/STATUS                        : READY:1582309004\r\n".format(ag1.pk) +
-            "/OML/AGENT/{0}/NAME                          : Agente10\r\n".format(ag10.pk) +
-            "/OML/AGENT/{0}/SIP                           : 1013\r\n".format(ag10.pk) +
-            "/OML/AGENT/{0}/STATUS                        : READY:1582309102\r\n".format(ag10.pk) +
-            "/OML/AGENT/{0}/NAME                          : Agente11\r\n".format(ag11.pk) +
-            "/OML/AGENT/{0}/SIP                           : 1014\r\n".format(ag11.pk) +
-            "/OML/AGENT/{0}/STATUS                        : READY:1582309100\r\n".format(ag11.pk) +
+            "/OML/AGENT/{0}/NAME                        : Agente 01\r\n".format(ag1.pk) + ""
+            "/OML/AGENT/{0}/SIP                         : 1004\r\n".format(ag1.pk) + ""
+            "/OML/AGENT/{0}/STATUS                      : READY:1582309004\r\n".format(ag1.pk) + ""
+            "/OML/AGENT/{0}/NAME                        : Agente10\r\n".format(ag10.pk) + ""
+            "/OML/AGENT/{0}/SIP                         : 1013\r\n".format(ag10.pk) + ""
+            "/OML/AGENT/{0}/STATUS                      : READY:1582309102\r\n".format(ag10.pk) + ""
+            "/OML/AGENT/{0}/NAME                        : Agente11\r\n".format(ag11.pk) + ""
+            "/OML/AGENT/{0}/SIP                         : 1014\r\n".format(ag11.pk) + ""
+            "/OML/AGENT/{0}/STATUS                      : READY:1582309100\r\n".format(ag11.pk) + ""
             "3 results found."), None
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
@@ -374,9 +404,13 @@ class APITest(OMLBaseTest):
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
     @patch.object(AMIManagerConnector, "_ami_manager")
+    @patch.object(AMIManagerConnector, "disconnect")
+    @patch.object(AMIManagerConnector, "connect")
     @patch('api_app.utiles.logger')
     def test_servicio_agentes_activos_entradas_mixtas_lineas_pause_id_aceptadas(
-            self, logger, _ami_manager, manager):
+            self, logger, ami_connect, ami_disconnect, _ami_manager, manager):
+        ami_connect.return_value = False
+        ami_disconnect.return_value = False
         ag1_pk = self.agente_profile.pk
         self.campana_activa.supervisors.add(self.supervisor_admin.user)
         ag2 = self.crear_agente_profile()
@@ -387,20 +421,20 @@ class APITest(OMLBaseTest):
         QueueMemberFactory.create(member=ag4, queue_name=self.queue)
         self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
         _ami_manager.return_value = (
-            "/OML/AGENT/{0}/NAME                            : John Perkins\r\n".format(ag1_pk) +
-            "/OML/AGENT/{0}/PAUSE_ID                        : 1\r\n".format(ag1_pk) +
-            "/OML/AGENT/{0}/SIP                             : 1001\r\n".format(ag1_pk) +
-            "/OML/AGENT/{0}/STATUS                          : \r\n".format(ag1_pk) +
-            "/OML/AGENT/{0}/NAME                            : Silvia Pensive\r\n".format(ag2.pk) +
-            "/OML/AGENT/{0}/SIP                             : 1002\r\n".format(ag2.pk) +
-            "/OML/AGENT/{0}/STATUS                          : PAUSE:1582309000\r\n".format(ag2.pk) +
-            "/OML/AGENT/{0}/NAME                            : FERNANDO XXX\r\n".format(ag3.pk) +
-            "/OML/AGENT/{0}/SIP                             : 1105\r\n".format(ag3.pk) +
-            "/OML/AGENT/{0}/STATUS                          : \r\n".format(ag3.pk) +
-            "/OML/AGENT/{0}/NAME                            : Marge Simpson\r\n".format(ag4.pk) +
-            "/OML/AGENT/{0}/PAUSE_ID                        : 0\r\n".format(ag4.pk) +
-            "/OML/AGENT/{0}/SIP                             : 1003\r\n".format(ag4.pk) +
-            "/OML/AGENT/{0}/STATUS                          : PAUSE:1582309500\r\n".format(ag4.pk) +
+            "/OML/AGENT/{0}/NAME                         : John Perkins\r\n".format(ag1_pk) + ""
+            "/OML/AGENT/{0}/PAUSE_ID                     : 1\r\n".format(ag1_pk) + ""
+            "/OML/AGENT/{0}/SIP                          : 1001\r\n".format(ag1_pk) + ""
+            "/OML/AGENT/{0}/STATUS                       : \r\n".format(ag1_pk) + ""
+            "/OML/AGENT/{0}/NAME                         : Silvia Pensive\r\n".format(ag2.pk) + ""
+            "/OML/AGENT/{0}/SIP                          : 1002\r\n".format(ag2.pk) + ""
+            "/OML/AGENT/{0}/STATUS                       : PAUSE:1582309000\r\n".format(ag2.pk) + ""
+            "/OML/AGENT/{0}/NAME                         : FERNANDO XXX\r\n".format(ag3.pk) + ""
+            "/OML/AGENT/{0}/SIP                          : 1105\r\n".format(ag3.pk) + ""
+            "/OML/AGENT/{0}/STATUS                       : \r\n".format(ag3.pk) + ""
+            "/OML/AGENT/{0}/NAME                         : Marge Simpson\r\n".format(ag4.pk) + ""
+            "/OML/AGENT/{0}/PAUSE_ID                     : 0\r\n".format(ag4.pk) + ""
+            "/OML/AGENT/{0}/SIP                          : 1003\r\n".format(ag4.pk) + ""
+            "/OML/AGENT/{0}/STATUS                       : PAUSE:1582309500\r\n".format(ag4.pk) + ""
             "2 results found."), None
         url = reverse('api_agentes_activos')
         response = self.client.get(url)

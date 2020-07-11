@@ -64,8 +64,6 @@ class AgentesStatusAPIView(APIView):
     renderer_classes = (JSONRenderer, )
     http_method_names = ['get']
 
-    agentes_parseados = SupervisorActivityAmiManager()
-
     def _obtener_ids_agentes_propios(self, request):
         supervisor_profile = request.user.get_supervisor_profile()
         campanas_asignadas_actuales = supervisor_profile.campanas_asignadas_actuales()
@@ -75,8 +73,9 @@ class AgentesStatusAPIView(APIView):
 
     def get(self, request):
         online = []
+        agentes_parseados = SupervisorActivityAmiManager()
         ids_agentes_propios = self._obtener_ids_agentes_propios(request)
-        for data_agente in self.agentes_parseados._obtener_agentes_activos():
+        for data_agente in agentes_parseados.obtener_agentes_activos():
             id_agente = int(data_agente.get('id', -1))
             status_agente = data_agente.get('status', '')
             if status_agente != 'OFFLINE' and id_agente in ids_agentes_propios:

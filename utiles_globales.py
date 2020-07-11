@@ -64,8 +64,9 @@ def validar_estructura_csv(data_csv_memory, err_message, logger):
 
 
 def obtener_sip_agentes_sesiones_activas():
+    # TODO: Controlar cantidad de conexiones a Asterisk con AMIManagerConnector
     agentes_activos_service = SupervisorActivityAmiManager()
-    agentes = list(agentes_activos_service._obtener_agentes_activos())
+    agentes = list(agentes_activos_service.obtener_agentes_activos())
     sips_agentes = []
     for agente in agentes:
         if agente['status'] != 'OFFLINE':

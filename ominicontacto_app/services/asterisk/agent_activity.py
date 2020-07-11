@@ -28,26 +28,42 @@ from api_app.utiles import AgentesParsing
 
 class AgentActivityAmiManager(object):
 
-    manager = AMIManagerConnector()
+    def __init__(self, *args, **kwargs):
+        self.manager = AMIManagerConnector()
 
-    def login_agent(self, agente_profile):
+    def connect_manager(self):
+        self.manager.connect()
 
+    def disconnect_manager(self):
+        self.manager.disconnect()
+
+    def login_agent(self, agente_profile, manage_connection=False):
+        if manage_connection:
+            self.connect_manager()
         error = self._close_open_session(agente_profile)
         # Inicio nueva sesión
         if not error:
-            error = self.queue_add_remove(agente_profile, 'QueueAdd')
+            error = self._queue_add_remove(agente_profile, 'QueueAdd')
         if not error:
             error = self._insert_astb_status(agente_profile, 'login')
+        if manage_connection:
+            self.disconnect_manager()
         return error
 
-    def logout_agent(self, agente_profile):
-        queue_remove_error = self.queue_add_remove(agente_profile, 'QueueRemove')
+    def logout_agent(self, agente_profile, manage_connection=False):
+        if manage_connection:
+            self.connect_manager()
+        queue_remove_error = self._queue_add_remove(agente_profile, 'QueueRemove')
         insert_astdb_error = self._insert_astb_status(agente_profile, 'logout')
+        if manage_connection:
+            self.disconnect_manager()
         return queue_remove_error, insert_astdb_error
 
-    def pause_agent(self, agente_profile, pause_id):
+    def pause_agent(self, agente_profile, pause_id, manage_connection=False):
+        if manage_connection:
+            self.connect_manager()
         pause_name = ''
-        queue_pause_error = self.queue_pause_unpause(agente_profile, pause_id, 'pause')
+        queue_pause_error = self._queue_pause_unpause(agente_profile, pause_id, 'pause')
         if pause_id == '0':
             pause_name = 'ACW'
         elif pause_id == '00':
@@ -55,15 +71,27 @@ class AgentActivityAmiManager(object):
         else:
             pause_name = Pausa.objects.activa_by_pauseid(pause_id).nombre
         insert_astdb_error = self._insert_astb_status(agente_profile, 'PAUSE-' + str(pause_name))
-        # TODO: Refactorizar para hacer todo en la misma session del AMIManagerConnector
         if not insert_astdb_error:
-            insert_astdb_error = self.insert_astdb_pause_id(agente_profile, pause_id)
+            insert_astdb_error = self._insert_astdb_pause_id(agente_profile, pause_id)
+        if manage_connection:
+            self.disconnect_manager()
         return queue_pause_error, insert_astdb_error
 
-    def unpause_agent(self, agente_profile, pause_id):
-        queue_unpause_error = self.queue_pause_unpause(agente_profile, pause_id, 'unpause')
+    def unpause_agent(self, agente_profile, pause_id, manage_connection=False):
+        if manage_connection:
+            self.connect_manager()
+        queue_unpause_error = self._queue_pause_unpause(agente_profile, pause_id, 'unpause')
         insert_astdb_error = self._insert_astb_status(agente_profile, 'unpause')
+        if manage_connection:
+            self.disconnect_manager()
         return queue_unpause_error, insert_astdb_error
+
+    def set_agent_as_unavailable(self, agente_profile, manage_connection=False):
+        if manage_connection:
+            self.connect_manager()
+        self._insert_astb_status(agente_profile, 'UNAVAILABLE')
+        if manage_connection:
+            self.manager_disconnect()
 
     def get_pause_id(self, pause_id):
         return pause_id
@@ -87,7 +115,7 @@ class AgentActivityAmiManager(object):
         content = [family, key, value]
         return content
 
-    def get_queue_data(self, agente_profile):
+    def _get_queue_data(self, agente_profile):
         agent_id = agente_profile.id
         member_name = agente_profile.get_asterisk_caller_id()
         queues = QueueMember.objects.obtener_queue_por_agent(agent_id)
@@ -97,17 +125,17 @@ class AgentActivityAmiManager(object):
         content = [agent_id, member_name, queues, penalties, interface]
         return content
 
-    def queue_add_remove(self, agente_profile, action):
-        content = self.get_queue_data(agente_profile)
+    def _queue_add_remove(self, agente_profile, action):
+        content = self._get_queue_data(agente_profile)
         data_returned, error = self.manager._ami_manager(action, content)
         return error
 
-    def queue_pause_unpause(self, agente_profile, pause_id, action):
+    def _queue_pause_unpause(self, agente_profile, pause_id, action):
         if action == 'unpause':
             pause_state = 'false'
         elif action == 'pause':
             pause_state = 'true'
-        content = self.get_queue_data(agente_profile)
+        content = self._get_queue_data(agente_profile)
         content.append(pause_id)
         content.append(pause_state)
         data_returned, error = self.manager._ami_manager('QueuePause', content)
@@ -117,7 +145,7 @@ class AgentActivityAmiManager(object):
         data_returned, error = self.manager._ami_manager('dbput', content)
         return error
 
-    def insert_astdb_pause_id(self, agente_profile, pause_id):
+    def _insert_astdb_pause_id(self, agente_profile, pause_id):
         family = self._get_family(agente_profile)
         key = 'PAUSE_ID'
         value = pause_id
@@ -129,10 +157,10 @@ class AgentActivityAmiManager(object):
         status, error = self._get_astdb_agent_status(agente_profile)
         if not error and not status == 'OFFLINE':
             # Finalizo posibles pausas en curso.
-            error = self.queue_pause_unpause(agente_profile, '', 'unpause')
+            error = self._queue_pause_unpause(agente_profile, '', 'unpause')
             # Finalizo posible sesión en curso.
             if not error:
-                error = self.queue_add_remove(agente_profile, 'QueueRemove')
+                error = self._queue_add_remove(agente_profile, 'QueueRemove')
         return error
 
     def _get_astdb_agent_status(self, agente_profile):

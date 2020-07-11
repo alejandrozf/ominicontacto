@@ -242,9 +242,9 @@ class AgentLoginAsterisk(APIView):
         que solia hacer la extension 0077LOGIN
     """
     def post(self, request):
-        agent_login_manager = AgentActivityAmiManager()
         agente_profile = self.request.user.get_agente_profile()
-        error = agent_login_manager.login_agent(agente_profile)
+        agent_login_manager = AgentActivityAmiManager()
+        error = agent_login_manager.login_agent(agente_profile, manage_connection=True)
         if error:
             return Response(data={
                 'status': 'ERROR',
@@ -266,9 +266,10 @@ class AgentLogoutAsterisk(APIView):
     """
 
     def post(self, request, *args, **kwargs):
-        agent_login_manager = AgentActivityAmiManager()
         agente_profile = self.request.user.get_agente_profile()
-        queue_remove_error, insert_astdb_error = agent_login_manager.logout_agent(agente_profile)
+        agent_login_manager = AgentActivityAmiManager()
+        queue_remove_error, insert_astdb_error = agent_login_manager.logout_agent(
+            agente_profile, manage_connection=True)
         if insert_astdb_error or queue_remove_error:
             return Response(data={
                 'status': 'ERROR',
@@ -286,9 +287,9 @@ class AgentLogoutView(View):
     """
 
     def dispatch(self, request, *args, **kwargs):
-        agent_login_manager = AgentActivityAmiManager()
         agente_profile = self.request.user.get_agente_profile()
-        agent_login_manager.logout_agent(agente_profile)
+        agent_login_manager = AgentActivityAmiManager()
+        agent_login_manager.logout_agent(agente_profile, manage_connection=True)
         logout(request)
         return redirect('login')
 
@@ -308,7 +309,7 @@ class AgentPauseAsterisk(APIView):
         pause_id = request.data.get('pause_id')
         agente_profile = self.request.user.get_agente_profile()
         queue_pause_error, insert_astdb_error = agent_login_manager.pause_agent(
-            agente_profile, pause_id)
+            agente_profile, pause_id, manage_connection=True)
         if queue_pause_error or insert_astdb_error:
             return Response(data={
                 'status': 'ERROR',
@@ -334,7 +335,7 @@ class AgentUnpauseAsterisk(APIView):
         pause_id = request.data.get('pause_id')
         agente_profile = self.request.user.get_agente_profile()
         queue_pause_error, insert_astdb_error = agent_login_manager.unpause_agent(
-            agente_profile, pause_id)
+            agente_profile, pause_id, manage_connection=True)
         if queue_pause_error or insert_astdb_error:
             return Response(data={
                 'status': 'ERROR',

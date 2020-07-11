@@ -41,6 +41,7 @@ class Command(BaseCommand):
     def logout_expired_sessions(self):
         agentes_deslogueados = []
         agent_activity = AgentActivityAmiManager()
+        conectado = False
         hora_actual = now()
         for agente_profile in AgenteProfile.objects.all():
             session = None
@@ -50,10 +51,14 @@ class Command(BaseCommand):
                 except Session.DoesNotExist:
                     pass
             if session and session.expire_date < hora_actual:
+                if not conectado:
+                    agent_activity.connect_manager()
+                    conectado = True
                 agentes_deslogueados.append(str(agente_profile.id))
                 agente_profile.force_logout()
-                agent_activity.logout_agent(agente_profile)
-
+                agent_activity.logout_agent(agente_profile, manage_connection=False)
+        if conectado:
+            agent_activity.disconnect_manager()
         if agentes_deslogueados:
             logger.info("Expired Sessions detected: " + str(agentes_deslogueados))
 
@@ -68,9 +73,11 @@ class Command(BaseCommand):
         supervisor_activity.escribir_agentes_unavailable_astdb()
 
     def handle(self, *args, **options):
+        self.logout_expired_sessions()
+        self.set_astdb_unavailable_state()
         try:
-            self.logout_expired_sessions()
-            self.set_astdb_unavailable_state()
+            pass
+            # TODO: Estas 2 funciones generan conexiones distintas a asterisk AMIManagerConnector.
         except Exception as e:
-            logging.error('Fallo del comando: {0}'.format(e.message))
-            raise CommandError('Fallo del comando: {0}'.format(e.message))
+            logging.error('Fallo del comando: {0}'.format(e))
+            raise CommandError('Fallo del comando: {0}'.format(e))

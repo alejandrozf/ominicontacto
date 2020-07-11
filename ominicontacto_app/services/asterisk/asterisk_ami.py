@@ -23,6 +23,7 @@ import logging as _logging
 from asterisk.manager import Manager, ManagerSocketException, ManagerAuthException, ManagerException
 
 from django.conf import settings
+from ominicontacto_app.errors import OmlError
 
 logger = _logging.getLogger(__name__)
 
@@ -30,21 +31,46 @@ logger = _logging.getLogger(__name__)
 class AMIManagerConnector(object):
     """Establece la conexión AMI utilizando la librería pyst2, para manipular asterisk
     """
+    def __init__(self):
+        self.manager = Manager()
+        self.disconnected = False
 
-    # TODO: Refactorizar esta clase. Nombres mas descriptivos.
-    #       Permitir ejecutar varios comandos con la misma sesion.
-    def _ami_manager(self, action, content):
+    def connect(self):
         error = False
-        data_returned = ''
-        manager = Manager()
         ami_manager_user = settings.ASTERISK['AMI_USERNAME']
         ami_manager_pass = settings.ASTERISK['AMI_PASSWORD']
         ami_manager_host = str(settings.ASTERISK_HOSTNAME)
         try:
-            manager.connect(ami_manager_host)
-            manager.login(ami_manager_user, ami_manager_pass)
-            data_returned = self._ami_action(manager, action, content)
-            manager.close()
+            self.manager.connect(ami_manager_host)
+            self.manager.login(ami_manager_user, ami_manager_pass)
+        except ManagerSocketException as e:
+            logger.exception("Error connecting to the manager: {0}".format(e))
+            error = True
+        except ManagerAuthException as e:
+            logger.exception("Error logging in to the manager: {0}".format(e))
+            error = True
+        except ManagerException as e:
+            logger.exception("Error {0}".format(e))
+            error = True
+        return error
+
+    def disconnect(self):
+        # Atención: El Manager solo permite una sola conexión
+        self.manager.close()
+        self.disconnected = True
+
+    # TODO: Refactorizar esta clase. Nombres mas descriptivos.
+    #       Permitir ejecutar varios comandos con la misma sesion.
+    def _ami_manager(self, action, content):
+        if self.disconnected:
+            raise OmlError(message='La conexión del Asterisk Manager ya ha sido cerrada')
+        if not self.manager.connected():
+            raise OmlError(message='El Asterisk Manager no ha sido conectado')
+
+        error = False
+        data_returned = ''
+        try:
+            data_returned = self._ami_action(action, content)
         except ManagerSocketException as e:
             logger.exception("Error connecting to the manager: {0}".format(e))
             error = True
@@ -56,9 +82,9 @@ class AMIManagerConnector(object):
             error = True
         return data_returned, error
 
-    def _ami_action(self, manager, action, content):
+    def _ami_action(self, action, content):
         if action == 'command':
-            data_returned = manager.command(content).data
+            data_returned = self.manager.command(content).data
         elif action == 'QueueAdd':
             event_queuelog = 'ADDMEMBER'
             for i in range(len(content[2])):
@@ -70,7 +96,7 @@ class AMIManagerConnector(object):
                     'Paused': 0,
                     'MemberName': content[1]
                 }
-                data_returned = manager.send_action(dict)
+                data_returned = self.manager.send_action(dict)
         elif action == 'QueueRemove':
             event_queuelog = 'REMOVEMEMBER'
             for i in range(len(content[2])):
@@ -79,7 +105,7 @@ class AMIManagerConnector(object):
                     'Queue': content[2][i],
                     'Interface': content[4],
                 }
-                data_returned = manager.send_action(dict)
+                data_returned = self.manager.send_action(dict)
         elif action == 'QueuePause':
             if content[6] == 'true':
                 event_queuelog = 'PAUSEALL'
@@ -90,16 +116,16 @@ class AMIManagerConnector(object):
                 'Interface': content[4],
                 'Paused': content[6],
             }
-            data_returned = manager.send_action(dict)
+            data_returned = self.manager.send_action(dict)
         elif action == 'dbput':
             family = content[0]
             key = content[1]
             value = content[2]
-            data_returned = manager.dbput(family, key, value)
+            data_returned = self.manager.dbput(family, key, value)
         elif action == 'originate':
             channel = content[0]
             exten = content[1]
-            data_returned = manager.originate(
+            data_returned = self.manager.originate(
                 channel,
                 exten,
                 context=content[2],
@@ -116,5 +142,15 @@ class AMIManagerConnector(object):
             }
             if action == 'QueuePause':
                 dict['Message'] = content[5]
-            data_returned = manager.send_action(dict)
+            data_returned = self.manager.send_action(dict)
         return data_returned
+
+
+class AMIManagerConnectorError(OmlError):
+
+    def __init__(self, message, *args, **kwargs):
+        super(AMIManagerConnectorError, self).__init__(*args, **kwargs)
+        self.message = message
+
+    def __str__(self):
+        return ('Error al utilizar AMIManagerConnector: {1}').format(self.message)
