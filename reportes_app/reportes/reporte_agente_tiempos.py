@@ -173,14 +173,13 @@ class TiemposAgente(object):
         TIME = 1
         EVENT = 2
         for agente in agentes:
-            agente_nuevo = None
-            is_unpause = False
             time_actual = None
 
             logs_agente = self._filter_query_por_agente(logs_time, agente.id)
 
             for log in logs_agente:
-                if is_unpause and log[EVENT] == 'PAUSEALL':
+                # Descarto Pausas sin log de finalización
+                if log[EVENT] == 'PAUSEALL' and time_actual is not None:
                     resta = time_actual - log[TIME]
                     agente_en_lista = list(filter(lambda x: x.agente == agente,
                                                   self.agentes_tiempo))
@@ -191,12 +190,9 @@ class TiemposAgente(object):
                         agente_nuevo = AgenteTiemposReporte(
                             agente, timedelta(0), resta, timedelta(0), 0, 0, 0, 0)
                         self.agentes_tiempo.append(agente_nuevo)
-                    agente_nuevo = None
-                    is_unpause = False
-                    time_actual = None
+                    time_actual = log[TIME]
                 if log[EVENT] == 'UNPAUSEALL' or log[EVENT] == 'REMOVEMEMBER':
                     time_actual = log[TIME]
-                    is_unpause = True
 
     def calcular_tiempo_llamada(self, agentes, fecha_inferior, fecha_superior):
         """ Calcula el tiempo de llamada teniendo en cuenta los eventos
@@ -281,7 +277,7 @@ class TiemposAgente(object):
 
     def calcular_tiempo_pausa_tipo(self, agentes, fecha_inferior, fecha_superior):
         """
-        Calcula el tiempo de pausa de los agentes en el periodo evaluado
+        Calcula el tiempo por tipo de pausa de los agentes en el periodo evaluado
         :return: un listado de agentes con el tiempo de pausa
         """
         eventos_pausa = ['PAUSEALL', 'UNPAUSEALL', 'REMOVEMEMBER']
@@ -300,26 +296,24 @@ class TiemposAgente(object):
         ID_PAUSA = 3
         for agente in agentes:
 
-            is_unpause = False
             time_actual = None
             tiempos_pausa = {}
             logs_agente = self._filter_query_por_agente(logs_time, agente.id)
-            # iterar los log teniendo en cuenta que si encuentra un evento
-            # UNPAUSEALL/REMOVEMEMBER y luego un PAUSEALL calcula el tiempo de session
+            # Iterar los logs (del último al primero) y contabiliza pausas cada vez que encuentra
+            # un PAUSEALL seguido de otro evento PAUSEALL, UNPAUSEALL o REMOVEMEMBER
 
             for log in logs_agente:
-                if is_unpause and log[EVENT] == 'PAUSEALL':
+                # Descarto Pausas sin log de finalización
+                if log[EVENT] == 'PAUSEALL' and time_actual is not None:
                     resta = time_actual - log[TIME]
                     id_pausa = log[ID_PAUSA]
                     if id_pausa in tiempos_pausa.keys():
                         tiempos_pausa[id_pausa] += resta
                     else:
                         tiempos_pausa.update({id_pausa: resta})
-                    is_unpause = False
-                    time_actual = None
+                    time_actual = log[TIME]
                 if log[EVENT] == 'UNPAUSEALL' or log[EVENT] == 'REMOVEMEMBER':
                     time_actual = log[TIME]
-                    is_unpause = True
             for id_pausa in tiempos_pausa:
                 datos_de_pausa = self._obtener_datos_de_pausa(id_pausa)
                 tiempo = str(timedelta(seconds=tiempos_pausa[id_pausa].seconds))
@@ -627,11 +621,11 @@ class TiemposAgente(object):
         TIME = 1
         EVENT = 2
         time_actual = None
-        is_unpause = False
         for log in logs_time:
             agente_nuevo = None
 
-            if is_unpause and log[EVENT] == 'PAUSEALL':
+            # Descarto Pausas sin log de finalización
+            if log[EVENT] == 'PAUSEALL' and time_actual is not None:
 
                 resta = time_actual - log[TIME]
                 date_time_actual = fecha_local(time_actual)
@@ -644,12 +638,10 @@ class TiemposAgente(object):
                     agente_nuevo = AgenteTiemposReporte(
                         fecha_local(time_actual), timedelta(0), resta, timedelta(0), 0, 0, 0, 0)
                     agente_fecha.append(agente_nuevo)
-                is_unpause = False
-                time_actual = None
+                time_actual = log[TIME]
 
             if log[EVENT] == 'UNPAUSEALL' or log[EVENT] == 'REMOVEMEMBER':
                 time_actual = log[TIME]
-                is_unpause = True
         return agente_fecha
 
     def calcular_tiempo_llamada_agente_fecha(self, agente, fecha_inferior,
@@ -734,10 +726,8 @@ class TiemposAgente(object):
         logs_time = ActividadAgenteLog.objects.obtener_pausas_por_agente_fechas_pausa(
             fecha_inferior,
             fecha_superior,
-            agente.id,
-            pausa_id)
+            agente.id)
 
-        is_unpause = False
         time_actual = None
         tiempos_pausa = {}
 
@@ -745,18 +735,20 @@ class TiemposAgente(object):
         # UNPAUSEALL/REMOVEMEMBER y luego un PAUSEALL calcula el tiempo de session
 
         for log in logs_time:
-            if is_unpause and log.event == 'PAUSEALL':
+            # Descarto otras Pausas, pero las tengo en cuenta para contabilizar finalizaciones
+            if log.event == 'PAUSEALL' and log.pausa_id != pausa_id:
+                time_actual = log.time
+            # Descarto Pausas sin log de finalización
+            elif log.event == 'PAUSEALL' and time_actual is not None:
                 resta = time_actual - log.time
-                time_actual = fecha_local(time_actual)
-                if time_actual in tiempos_pausa.keys():
-                    tiempos_pausa[time_actual] += resta
+                fecha_pausa = fecha_local(time_actual)
+                if fecha_pausa in tiempos_pausa.keys():
+                    tiempos_pausa[fecha_pausa] += resta
                 else:
-                    tiempos_pausa.update({time_actual: resta})
-                is_unpause = False
-                time_actual = None
+                    tiempos_pausa.update({fecha_pausa: resta})
+                time_actual = log.time
             if log.event == 'UNPAUSEALL' or log.event == 'REMOVEMEMBER':
                 time_actual = log.time
-                is_unpause = True
         for item in tiempos_pausa:
             datos_de_pausa = self._obtener_datos_de_pausa(str(pausa_id))
             tiempo = str(timedelta(seconds=tiempos_pausa[item].seconds))
