@@ -78,7 +78,7 @@ urlpatterns = [
         login_required(views_user_profiles.CustomUserWizard.as_view()),
         name='user_nuevo',
         ),
-    url(r'^user/list/page(?P<page>[0-9]+)/$',
+    url(r'^user/list/(?P<page>[0-9]+)/$',
         login_required(views_user_profiles.UserListView.as_view()),
         name='user_list'
         ),
