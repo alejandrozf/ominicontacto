@@ -29,12 +29,13 @@ from api_app.views.administrador import (
 from api_app.views.supervisor import (
     SupervisorCampanasActivasViewSet, AgentesStatusAPIView, StatusCampanasEntrantesView,
     StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView, LlamadasDeCampanaView,
-    CalificacionesDeCampanaView)
+    CalificacionesDeCampanaView, ReasignarAgendaContactoView, DataAgendaContactoView)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
     API_ObtenerContactosCampanaView, Click2CallView, AgentLogoutView,
-    AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk
+    AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk,
+    SetEstadoRevisionAuditoria
 )
 
 router = routers.DefaultRouter()
@@ -92,10 +93,10 @@ urlpatterns = [
     url(r'api/v1/supervision/agentes',
         login_required(AgentesStatusAPIView.as_view()),
         name='api_agentes_activos'),
-    url('api/v1/supervision/status_campanas/entrantes/$',
+    url(r'api/v1/supervision/status_campanas/entrantes/$',
         login_required(StatusCampanasEntrantesView.as_view()),
         name='api_supervision_campanas_entrantes'),
-    url('api/v1/supervision/status_campanas/salientes/$',
+    url(r'api/v1/supervision/status_campanas/salientes/$',
         login_required(StatusCampanasSalientesView.as_view()),
         name='api_supervision_campanas_salientes'),
     url(r'api/v1/supervision/accion_sobre_agente/(?P<pk>\d+)/$',
@@ -109,6 +110,12 @@ urlpatterns = [
         CalificacionesDeCampanaView.as_view(),
         name='api_supervision_calificaciones_campana',
         ),
+    url(r'api/v1/supervision/reasignar_agenda_contacto/$',
+        ReasignarAgendaContactoView.as_view(),
+        name='api_reasignar_agenda_contacto'),
+    url(r'api/v1/supervision/data_agenda_contacto/(?P<agenda_id>\d+)/$',
+        DataAgendaContactoView.as_view(),
+        name='api_data_agenda_contacto'),
 
 
     # ###########     AGENTE      ############ #
@@ -129,5 +136,7 @@ urlpatterns = [
         AgentUnpauseAsterisk.as_view(), name='api_make_unpause'),
     url(r'api/v1/sip/credentials/agent/', ObtenerCredencialesSIPAgenteView.as_view(),
         name='api_credenciales_sip_agente'),
+    url(r'api/v1/audit/set_revision_status/', SetEstadoRevisionAuditoria.as_view(),
+        name='api_set_estado_revision'),
 
 ]

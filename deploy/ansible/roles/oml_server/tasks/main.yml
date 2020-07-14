@@ -105,8 +105,8 @@
     - "{{ install_prefix }}static"
     - "{{ install_prefix }}log"
     - "{{ install_prefix }}run"
-    - "{{ asterisk_location }}/etc/virtualenv"
-  tags: omniapp
+    - "{{ install_prefix }}/addons"
+  tags: postinstall
 
 # El codigo que está en /var/tmp/ominicontacto_build/ se pasa a /opt/omnileeads/ominicontacto
 - name: Upload code (rsync to /ominicontacto)

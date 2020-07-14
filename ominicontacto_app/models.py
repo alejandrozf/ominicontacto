@@ -829,20 +829,20 @@ class CampanaManager(models.Manager):
             initial_boost_factor=campana.queue_campana.initial_boost_factor,
 
         )
-
-        # Replica Actuacion Vigente
-        ActuacionVigente.objects.create(
-            campana=campana_replicada,
-            domingo=campana.actuacionvigente.domingo,
-            lunes=campana.actuacionvigente.lunes,
-            martes=campana.actuacionvigente.martes,
-            miercoles=campana.actuacionvigente.miercoles,
-            jueves=campana.actuacionvigente.jueves,
-            viernes=campana.actuacionvigente.viernes,
-            sabado=campana.actuacionvigente.sabado,
-            hora_desde=campana.actuacionvigente.hora_desde,
-            hora_hasta=campana.actuacionvigente.hora_hasta,
-        )
+        if campana.type == Campana.TYPE_DIALER:
+            # Replica Actuacion Vigente
+            ActuacionVigente.objects.create(
+                campana=campana_replicada,
+                domingo=campana.actuacionvigente.domingo,
+                lunes=campana.actuacionvigente.lunes,
+                martes=campana.actuacionvigente.martes,
+                miercoles=campana.actuacionvigente.miercoles,
+                jueves=campana.actuacionvigente.jueves,
+                viernes=campana.actuacionvigente.viernes,
+                sabado=campana.actuacionvigente.sabado,
+                hora_desde=campana.actuacionvigente.hora_desde,
+                hora_hasta=campana.actuacionvigente.hora_hasta,
+            )
 
         # Replica Reglas Incidentes
         reglas = campana.reglas_incidencia.all()
@@ -2633,58 +2633,6 @@ class GrabacionMarca(models.Model):
         db_table = 'ominicontacto_app_grabacion_marca'
 
 
-class AgendaManager(models.Manager):
-
-    def eventos_fecha_hoy(self):
-        try:
-            return self.filter(fecha=fecha_local(now()))
-        except Agenda.DoesNotExist:
-            raise (SuspiciousOperation(_("No se encontro evenos en el dia de la "
-                                         "fecha")))
-
-    def eventos_filtro_fecha(self, fecha_desde, fecha_hasta):
-        eventos = self.filter()
-        if fecha_desde and fecha_hasta:
-            fecha_desde = datetime_hora_minima_dia(fecha_desde)
-            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
-            eventos = eventos.filter(fecha__range=(fecha_desde, fecha_hasta))
-        return eventos.order_by('-fecha')
-
-
-class Agenda(models.Model):
-    objects = AgendaManager()
-
-    MEDIO_SMS = 1
-    """Medio de comunicacion sms"""
-
-    MEDIO_LLAMADA = 2
-    """Medio de comunicacion llamada"""
-
-    MEDIO_EMAIL = 3
-    """Medio de comunicacion email"""
-
-    MEDIO_COMUNICACION_CHOICES = (
-        (MEDIO_SMS, 'SMS'),
-        (MEDIO_LLAMADA, 'LLAMADA'),
-        (MEDIO_EMAIL, 'EMAIL'),
-    )
-    agente = models.ForeignKey(AgenteProfile, blank=True, null=True,
-                               related_name='eventos', on_delete=models.CASCADE)
-    es_personal = models.BooleanField()
-    fecha = models.DateField()
-    hora = models.TimeField()
-    es_smart = models.BooleanField()
-    medio_comunicacion = models.PositiveIntegerField(
-        choices=MEDIO_COMUNICACION_CHOICES)
-    telefono = models.CharField(max_length=128, blank=True, null=True)
-    email = models.CharField(max_length=128, blank=True, null=True)
-    descripcion = models.TextField()
-
-    def __str__(self):
-        return "Evento programado para la fecha {0} a las {1} hs".format(
-            self.fecha, self.hora)
-
-
 class CalificacionClienteManager(models.Manager):
 
     def obtener_cantidad_calificacion_campana(self, campana):
@@ -2892,6 +2840,7 @@ class AuditoriaCalificacion(models.Model):
     calificacion = models.OneToOneField(CalificacionCliente, on_delete=models.CASCADE)
     resultado = models.IntegerField(choices=RESULTADO_CHOICES)
     observaciones = models.TextField(blank=True, null=True)
+    revisada = models.BooleanField(default=False)
 
     @classmethod
     def es_pendiente(cls, valor_resultado):

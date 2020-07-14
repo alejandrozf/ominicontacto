@@ -569,6 +569,10 @@ urlpatterns = [
     url(r'^agenda_contacto/eventos/$',
         login_required(views_agenda_contacto.AgendaContactoListFormView.as_view()),
         name="agenda_contacto_listado"),
+    url(r'^campana/(?P<pk_campana>\d+)/agenda_contacto/list/$',
+        login_required(views_agenda_contacto.AgendaContactosPorCampanaView.as_view()),
+        name="agenda_contactos_por_campana"),
+
     # ==========================================================================
     # Campana Dialer
     # ==========================================================================
@@ -869,7 +873,8 @@ urlpatterns = [
         login_required(
             views_campana_preview.CampanaPreviewTemplateCreateView.as_view()),
         name="campana_preview_template_create"),
-    url(r'^campana_preview_template/crear_campana/(?P<pk_campana_template>\d+)$',
+    url(r'^campana_preview_template/crear_campana/(?P<pk_campana_template>\d+)/'
+        r'(?P<borrar_template>\d+)$',
         login_required(
             views_campana_preview.CampanaPreviewTemplateCreateCampanaView.as_view()),
         name="campana_preview_template_create_campana"),
@@ -908,19 +913,6 @@ urlpatterns = [
         login_required(
             views_archivo_de_audio.ArchivoAudioDeleteView.as_view()),
         name='eliminar_archivo_audio',
-        ),
-
-    # ######################
-    # DEPRECATED ?
-    # ######################
-
-    url(r'^agenda/nuevo/$',
-        login_required(views.nuevo_evento_agenda_view),
-        name='agenda_nuevo',
-        ),
-    url(r'^agenda/agente_list/$',
-        login_required(views.AgenteEventosFormView.as_view()),
-        name='agenda_agente_list',
         ),
     url(r'^chat/mensaje/$',
         login_required(views.mensaje_chat_view),

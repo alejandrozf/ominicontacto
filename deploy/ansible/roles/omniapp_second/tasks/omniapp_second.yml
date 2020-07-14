@@ -17,11 +17,72 @@
 #
 ---
 
+# Se borra el cache de javascript, esto solo se hace cuando es postinstall
+- name: Erase the javascript cache files (if exists)
+  file: path="{{ install_prefix }}static/CACHE/{{ item }}" state=absent
+  with_items:
+    - js
+    - manifest.json
+  tags: ['never','postinstall']
+
+# Este script sirve para hacer comandos de manage.py sin necesidad de activar virualenv primero
+- name: Generate manage.sh and reinstal_addons script
+  template: src=templates/bin/{{ item }} dest={{ install_prefix }}bin/ owner={{ usuario }} group={{ usuario }} mode=755
+  with_items:
+    - manage.sh
+    - reinstall_addons.sh
+  tags: postinstall
+
+# Se ejecuta el script reinstal_addons.sh el cual detecta si un addon está instalado en el OML para asi volver a ejecutar los scripts de instalacion de dichos addons y queden funcionales.
+- name: Execute reinstall_addons.sh script
+  command: "{{ install_prefix }}bin/reinstall_addons.sh"
+  tags: postinstall
+
+# Se ejecuta primero las migraciones
+- name: Run migrations of database
+  command: "{{ install_prefix }}bin/manage.sh migrate --noinput"
+  become: true
+  become_method: su
+  become_user: "{{ usuario }}"
+  tags: postinstall
+
+# Se crea el usuario admin
+- name: Create admin superuser
+  shell: "{{ install_prefix }}bin/manage.sh createsuperuser --noinput --username={{ admin_user }} --email=admin@example.com"
+  register: result
+  #failed_when: false
+  failed_when:
+      - "'is already taken' not in result.stderr"
+      - "'is already taken' not in result.stdout"
+      - "result.rc != 0"
+  become: true
+  become_method: su
+  become_user: "{{ usuario }}"
+
+# Se ejecutan los comandos de django que necesita omnileads
+- name: Execute django commands
+  command: "{{ install_prefix }}bin/manage.sh {{ item }}"
+  with_items:
+    - adicionar_perfil_supervisor_admin
+    - populate_history
+    - cambiar_admin_password
+    - compilemessages
+    - collectstatic --noinput
+    - collectstatic_js_reverse
+    - compress --force
+    - regenerar_asterisk
+    - regenerar_tareas_preview
+    - actualizar_permisos
+  become: true
+  become_method: su
+  become_user: "{{ usuario }}"
+  tags: postinstall
+
 # Se sube el archivo de config de nginx
 - name: Upload nginx.conf configuration
   template: src=templates/etc/nginx.conf.j2 dest=/etc/nginx/nginx.conf
   tags: postinstall
-  
+
 # Se sube el archivo de configuracion de omnileads para nginx
 - name: Create of ominicontacto.conf
   template: src=templates/etc/ominicontacto.conf dest=/etc/nginx/conf.d/ominicontacto.conf owner={{ usuario }} group={{ usuario }}
@@ -61,12 +122,6 @@
   with_items:
     - { src: backup-restore.sh, dest: backup-restore.sh }
     - { src: conversor.sh, dest: conversor.sh }
-    - { src: reinstall_addons.sh, dest: reinstall_addons.sh }
-  tags: postinstall
-
-# Se ejecuta el script reinstal_addons.sh el cual detecta si un addon está instalado en el OML para asi volver a ejecutar los scripts de instalacion de dichos addons y queden funcionales.
-- name: Execute reinstall_addons.sh script
-  command: "{{ install_prefix }}bin/reinstall_addons.sh"
   tags: postinstall
 
 - name: Increase number of connections accepted by UNIX sockets

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-29 12:53-0300\n"
+"POT-Creation-Date: 2020-07-13 15:00-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,138 +24,20 @@ msgstr "Release Notes"
 
 # 73ee1e870afd4a31b43364589dd0e1ee
 #: ../../release_notes.rst:4
-msgid "*Junio 29, 2020*"
-msgstr "June 29, 2020"
+msgid "*Julio 13, 2020*"
+msgstr "July 13, 2020"
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.7.0"
-msgstr "Release 1.7.0 details"
-
-# b3c4906a629c4d95b4ec90b1435e0d2e
-#: ../../release_notes.rst:10
-msgid "Nuevas funcionalidades"
-msgstr "New features"
-
-# 9fea34ffb16a4f47b7ee4c7137ad780e
-#: ../../release_notes.rst:11
-msgid ""
-"Un nuevo sistema de permisos fue implementado, reescribiendo y "
-"generalizando el existente, ahora es posible crear roles de usuarios y "
-"administrar sus permisos a las funcionalidades del sistema"
-msgstr ""
-"A new user permisssions squema was implemented, rewriting and superseeding the existent,"
-" now is possible to create custom user roles and manage its permissions to"
-" system features."
-
-# 52aa8a48f61140d693f869e2988dce5a
-#: ../../release_notes.rst:12
-msgid ""
-"Fue implementada una funcionalidad para auditar las calificaciones de "
-"llamadas a contactos por agentes. Se permite además filtrar "
-"calificaciones y se muestra el valor de dicha auditoría en el formulario "
-"de calificaciones para agentes"
-msgstr ""
-"An audit feature allowing set audit tags for dispositioned calls was implemented."
-"It allows also filtering and adds the audit value to the disposition form for agents"
-
-# ce0d7a96416f4f4794fc829cf0845b34
-#: ../../release_notes.rst:13
-msgid ""
-"La página de supervisión de agentes ahora muestra información de estado "
-"de agentes que están no disponibles (UNAVAILABLE)"
-msgstr ""
-"Supervision agents page shows agents state when they are unavailable"
+msgid "Detalles de Release 1.7.1"
+msgstr "Release 1.7.1 details"
 
 # 2f558403c15a436e90409b976c7f07ed
-#: ../../release_notes.rst:17
-msgid "Bug fixes y mejoras"
+#: ../../release_notes.rst:10
+msgid "Fixes y mejoras"
 msgstr "Fixes and improvements"
 
-# 34ef152fdffc4932879f41780d6bb6f8
-#: ../../release_notes.rst:18
-msgid ""
-"Solucionado error que escribía datos inconsistentes en AstDB para "
-"llamadas entrantes."
-msgstr ""
-"An error that write inconsistent data on AstDB for inbound calls was fixed"
-
-# d4277b49407b44bc91e9f2839fa73e51
-#: ../../release_notes.rst:19
-msgid ""
-"Solucionado error que escribía datos vacíos para campos ocultos de "
-"contactos en una campaña"
-msgstr ""
-"Fixed error that saves empty hidden contact fields"
-
-# 8d8c2bed3fb04706b9d55d9bf10a0ff2
-#: ../../release_notes.rst:20
-msgid ""
-"Solucionado problema al restringir el campo CID en wizard de creación de "
-"campaña saliente"
-msgstr ""
-"Fixed CID restriccion issue on outbound campaign creation wizard"
-
-# 8d8c2bed3fb04706b9d55d9bf10a0ff2
-#: ../../release_notes.rst:21
-msgid "Solucionado error al eliminar un nodo destino entrante"
-msgstr "Fixed error raised on deleting inbound destination node"
-
-# aad09193077e4992ad8243ec8f4db81a
-#: ../../release_notes.rst:22
-msgid "Solucionado error en vista de supervisión de agentes"
-msgstr "Fixed error when on supervision agents page"
-
-# 8d8c2bed3fb04706b9d55d9bf10a0ff2
-#: ../../release_notes.rst:23
-msgid ""
-"Solucionado error que no permitía retroceder en los wizards de campañas "
-"dialer y entrantes"
-msgstr ""
-"Fixed error that did not allowed to step back on inbound & dialer "
-"respective campaign wizards"
-
-# f62048c2eb2c48edbfa1146f348201eb
-#: ../../release_notes.rst:24
-msgid ""
-"Solucionado error que mostraba siempre la primera opción a agentes en el "
-"formulario de la campaña"
-msgstr ""
-"Fixed issue that shows always first option to agents in campaign forms"
-
-# aad09193077e4992ad8243ec8f4db81a
-#: ../../release_notes.rst:25
-msgid ""
-"Solucionado error de instalación que duplicaba algunos archivos de "
-"dialplan"
-msgstr ""
-"Fixed installation error that duplicates some dialplan files"
-
-# d4277b49407b44bc91e9f2839fa73e51
-#: ../../release_notes.rst:26
-msgid ""
-"Solucionado error en job de gitlab para crear imágenes de docker para "
-"entornos productivos"
-msgstr ""
-"Fixed error on gitlab job for build docker images for production environments"
-
-# 6b71d538747549b8b4f825facd66a806
-#: ../../release_notes.rst:27
-msgid ""
-"Solucionado error en Ubuntu que detenía la instalación si el SO no tenía "
-"python-pip instalado"
-msgstr ""
-"Fixed error on Ubuntu that stops installation whent OS had not python-pip installed"
-
-# 8d8c2bed3fb04706b9d55d9bf10a0ff2
-#: ../../release_notes.rst:28
-msgid ""
-"Solucionados errores de audio en una sola dirección en algunos ambientes "
-"de Cloud"
-msgstr ""
-"Fixed one-way audio error on some Cloud environments"
-
-# aad09193077e4992ad8243ec8f4db81a
-#: ../../release_notes.rst:29
-msgid "Solucionada incorrecta exportación de reporte de campaña a PDF"
-msgstr "Fixed incorrect campaign report exportation to PDF"
+# 72d7a7e920d04b78b2959720acb3fec5
+#: ../../release_notes.rst:11
+msgid "Refactor para crear menos conexiones AMI a Asterisk"
+msgstr "Implemented refactor to make less AMI connections to Asterisk"

@@ -41,50 +41,80 @@ class AgentsAsteriskSessionAPITest(OMLBaseTest):
         self.pausa = PausaFactory(nombre='pausa')
 
     @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.login_agent')
-    def test_asterisk_session_login_ok(self, login_agent):
+    @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.'
+           'disconnect_manager')
+    @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.'
+           'connect_manager')
+    def test_asterisk_session_login_ok(self, connect_manager, disconnect_manager, login_agent):
+        connect_manager.return_value = False
+        disconnect_manager.return_value = False
         login_agent.return_value = False
         url = reverse('api_agent_asterisk_login')
         response = self.client.post(url, HTTP_AUTHORIZATION=self.auth_header)
         self.assertEqual(response.status_code, 200)
         self.assertIn('status', response.json())
         self.assertEqual(response.json()['status'], 'OK')
-        login_agent.assert_called_once_with(self.agente)
+        login_agent.assert_called_once_with(self.agente, manage_connection=True)
 
     @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.login_agent')
-    def test_asterisk_session_login_error(self, login_agent):
+    @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.'
+           'disconnect_manager')
+    @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.'
+           'connect_manager')
+    def test_asterisk_session_login_error(self, connect_manager, disconnect_manager, login_agent):
+        connect_manager.return_value = False
+        disconnect_manager.return_value = False
         login_agent.return_value = True
         url = reverse('api_agent_asterisk_login')
         response = self.client.post(url, HTTP_AUTHORIZATION=self.auth_header)
         self.assertEqual(response.status_code, 200)
         self.assertIn('status', response.json())
         self.assertEqual(response.json()['status'], 'ERROR')
-        login_agent.assert_called_once_with(self.agente)
+        login_agent.assert_called_once_with(self.agente, manage_connection=True)
 
     @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.'
            'logout_agent')
-    def test_asterisk_session_logout_ok(self, logout_agent):
+    @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.'
+           'disconnect_manager')
+    @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.'
+           'connect_manager')
+    def test_asterisk_session_logout_ok(self, connect_manager, disconnect_manager, logout_agent):
+        connect_manager.return_value = False
+        disconnect_manager.return_value = False
         logout_agent.return_value = False, False
         url = reverse('api_agent_asterisk_logout')
         response = self.client.post(url, HTTP_AUTHORIZATION=self.auth_header)
         self.assertEqual(response.status_code, 200)
         self.assertIn('status', response.json())
         self.assertEqual(response.json()['status'], 'OK')
-        logout_agent.assert_called_once_with(self.agente)
+        logout_agent.assert_called_once_with(self.agente, manage_connection=True)
 
     @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.'
            'logout_agent')
-    def test_asterisk_session_logout_error(self, logout_agent):
+    @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.'
+           'disconnect_manager')
+    @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.'
+           'connect_manager')
+    def test_asterisk_session_logout_error(self, connect_manager, disconnect_manager, logout_agent):
+        connect_manager.return_value = False
+        disconnect_manager.return_value = False
         logout_agent.return_value = False, True
         url = reverse('api_agent_asterisk_logout')
         response = self.client.post(url, HTTP_AUTHORIZATION=self.auth_header)
         self.assertEqual(response.status_code, 200)
         self.assertIn('status', response.json())
         self.assertEqual(response.json()['status'], 'ERROR')
-        logout_agent.assert_called_once_with(self.agente)
+        logout_agent.assert_called_once_with(self.agente, manage_connection=True)
 
     @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.'
            'pause_agent')
-    def test_asterisk_session_pause_agent(self, pause_agent):
+    @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.'
+           'disconnect_manager')
+    @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.'
+           'connect_manager')
+    def test_asterisk_session_pause_agent(self, connect_manager, disconnect_manager, pause_agent):
+        connect_manager.return_value = False
+        disconnect_manager.return_value = False
         pause_agent.return_value = False, False
         url = reverse('api_make_pause')
         response = self.client.post(url, data={'pause_id': self.pausa.id},
@@ -92,11 +122,18 @@ class AgentsAsteriskSessionAPITest(OMLBaseTest):
         self.assertEqual(response.status_code, 200)
         self.assertIn('status', response.json())
         self.assertEqual(response.json()['status'], 'OK')
-        pause_agent.assert_called_once_with(self.agente, str(self.pausa.id))
+        pause_agent.assert_called_once_with(self.agente, str(self.pausa.id), manage_connection=True)
 
     @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.'
            'unpause_agent')
-    def test_asterisk_session_unpause_agent(self, unpause_agent):
+    @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.'
+           'disconnect_manager')
+    @patch('ominicontacto_app.services.asterisk.agent_activity.AgentActivityAmiManager.'
+           'connect_manager')
+    def test_asterisk_session_unpause_agent(self, connect_manager, disconnect_manager,
+                                            unpause_agent):
+        connect_manager.return_value = False
+        disconnect_manager.return_value = False
         unpause_agent.return_value = False, False
         url = reverse('api_make_unpause')
         response = self.client.post(url, data={'pause_id': self.pausa.id},
@@ -104,4 +141,5 @@ class AgentsAsteriskSessionAPITest(OMLBaseTest):
         self.assertEqual(response.status_code, 200)
         self.assertIn('status', response.json())
         self.assertEqual(response.json()['status'], 'OK')
-        unpause_agent.assert_called_once_with(self.agente, str(self.pausa.id))
+        unpause_agent.assert_called_once_with(self.agente, str(self.pausa.id),
+                                              manage_connection=True)

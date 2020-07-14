@@ -61,6 +61,10 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'api_supervision_calificaciones_campana',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
+            {'nombre': 'api_reasignar_agenda_contacto',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'api_data_agenda_contacto',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'api_contactos_campana',
              'roles': ['Agente', ]},
             {'nombre': 'api_click2call',
@@ -76,6 +80,8 @@ class ApiAppConfig(AppConfig):
             {'nombre': 'api_make_unpause',
              'roles': ['Agente', ]},
             {'nombre': 'api_credenciales_sip_agente',
+             'roles': ['Agente', ]},
+            {'nombre': 'api_set_estado_revision',
              'roles': ['Agente', ]},
         ]
 
@@ -121,6 +127,10 @@ class ApiAppConfig(AppConfig):
         'api_supervision_calificaciones_campana':
             {'descripcion': _('Cantidades por tipo de calificación en una campaña'),
              'version': '1.7.0'},
+        'api_reasignar_agenda_contacto':
+            {'descripcion': _('Reasignar una Agenda a otro Agente'), 'version': '1.7.0'},
+        'api_data_agenda_contacto':
+            {'descripcion': _('Información de contacto de una  Agenda'), 'version': '1.7.0'},
         'api_contactos_campana':
             {'descripcion': _('Contactos de una campaña'), 'version': '1.7.0'},
         'api_click2call':
@@ -137,5 +147,7 @@ class ApiAppConfig(AppConfig):
             {'descripcion': _('Saca al agente de una pausa'), 'version': '1.7.0'},
         'api_credenciales_sip_agente':
             {'descripcion': _('Devuelve credenciales SIP de un agente'), 'version': '1.7.0'},
-
+        'api_set_estado_revision':
+            {'descripcion': _('Establece el estado de revisión de una Auditoría'),
+             'version': '1.8.0'},
     }

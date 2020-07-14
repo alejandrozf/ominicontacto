@@ -37,7 +37,8 @@ from api_app.serializers import (OpcionCalificacionSerializer, CalificacionClien
                                  CalificacionClienteNuevoContactoSerializer)
 from api_app.views.permissions import TienePermisoOML
 
-from ominicontacto_app.models import (Campana, SistemaExterno, CalificacionCliente, Contacto)
+from ominicontacto_app.models import (
+    Campana, SistemaExterno, CalificacionCliente, Contacto, AuditoriaCalificacion)
 from ominicontacto_app.services.asterisk.agent_activity import AgentActivityAmiManager
 from ominicontacto_app.services.click2call import Click2CallOriginator
 
@@ -242,9 +243,9 @@ class AgentLoginAsterisk(APIView):
         que solia hacer la extension 0077LOGIN
     """
     def post(self, request):
-        agent_login_manager = AgentActivityAmiManager()
         agente_profile = self.request.user.get_agente_profile()
-        error = agent_login_manager.login_agent(agente_profile)
+        agent_login_manager = AgentActivityAmiManager()
+        error = agent_login_manager.login_agent(agente_profile, manage_connection=True)
         if error:
             return Response(data={
                 'status': 'ERROR',
@@ -266,9 +267,10 @@ class AgentLogoutAsterisk(APIView):
     """
 
     def post(self, request, *args, **kwargs):
-        agent_login_manager = AgentActivityAmiManager()
         agente_profile = self.request.user.get_agente_profile()
-        queue_remove_error, insert_astdb_error = agent_login_manager.logout_agent(agente_profile)
+        agent_login_manager = AgentActivityAmiManager()
+        queue_remove_error, insert_astdb_error = agent_login_manager.logout_agent(
+            agente_profile, manage_connection=True)
         if insert_astdb_error or queue_remove_error:
             return Response(data={
                 'status': 'ERROR',
@@ -286,9 +288,9 @@ class AgentLogoutView(View):
     """
 
     def dispatch(self, request, *args, **kwargs):
-        agent_login_manager = AgentActivityAmiManager()
         agente_profile = self.request.user.get_agente_profile()
-        agent_login_manager.logout_agent(agente_profile)
+        agent_login_manager = AgentActivityAmiManager()
+        agent_login_manager.logout_agent(agente_profile, manage_connection=True)
         logout(request)
         return redirect('login')
 
@@ -308,7 +310,7 @@ class AgentPauseAsterisk(APIView):
         pause_id = request.data.get('pause_id')
         agente_profile = self.request.user.get_agente_profile()
         queue_pause_error, insert_astdb_error = agent_login_manager.pause_agent(
-            agente_profile, pause_id)
+            agente_profile, pause_id, manage_connection=True)
         if queue_pause_error or insert_astdb_error:
             return Response(data={
                 'status': 'ERROR',
@@ -334,7 +336,7 @@ class AgentUnpauseAsterisk(APIView):
         pause_id = request.data.get('pause_id')
         agente_profile = self.request.user.get_agente_profile()
         queue_pause_error, insert_astdb_error = agent_login_manager.unpause_agent(
-            agente_profile, pause_id)
+            agente_profile, pause_id, manage_connection=True)
         if queue_pause_error or insert_astdb_error:
             return Response(data={
                 'status': 'ERROR',
@@ -343,3 +345,36 @@ class AgentUnpauseAsterisk(APIView):
             return Response(data={
                 'status': 'OK',
             })
+
+
+class SetEstadoRevisionAuditoria(APIView):
+    """ Vista para marcar si una auditoria fue revisada """
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['post']
+
+    def post(self, request):
+        auditoria_id = request.data.get('audit_id')
+        status = request.data.get('revised') == 'true'
+        agente_profile = self.request.user.get_agente_profile()
+        try:
+            auditoria = AuditoriaCalificacion.objects.get(id=auditoria_id)
+        except AuditoriaCalificacion.DoesNotExist:
+            return Response(data={
+                'status': 'ERROR',
+                'message': _('Auditoría inexistente'),
+            })
+        if not auditoria.calificacion.agente == agente_profile:
+            return Response(data={
+                'status': 'ERROR',
+                'message': _('No tiene permiso para modificar la auditoría'),
+            })
+
+        auditoria.revisada = status
+        auditoria.save()
+
+        return Response(data={
+            'status': 'OK',
+            'audit_status': status
+        })

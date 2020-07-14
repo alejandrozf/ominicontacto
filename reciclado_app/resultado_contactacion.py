@@ -88,7 +88,12 @@ class EstadisticasContactacion():
             filtro_contactados_r1 += "','".join([str(x) for x in contactados])
             filtro_contactados_r1 += "')"
 
-        params = {'campana_id': campana.id, 'tipo_dialer': Campana.TYPE_DIALER,
+        if campana.type == Campana.TYPE_DIALER:
+            campana_tipo = Campana.TYPE_DIALER
+        if campana.type == Campana.TYPE_PREVIEW:
+            campana_tipo = Campana.TYPE_PREVIEW
+
+        params = {'campana_id': campana.id, 'tipo_dialer': campana_tipo,
                   'filtro_contactados': filtro_contactados,
                   'filtro_contactados_r1': filtro_contactados_r1, }
         sql = """
@@ -131,9 +136,14 @@ class EstadisticasContactacion():
 
         count_estados = {}
 
+        if campana.type == Campana.TYPE_DIALER:
+            campana_tipo = Campana.TYPE_DIALER
+        if campana.type == Campana.TYPE_PREVIEW:
+            campana_tipo = Campana.TYPE_PREVIEW
+
         contactados = LlamadaLog.objects.filter(campana_id=campana.id,
-                                                tipo_campana=Campana.TYPE_DIALER,
-                                                tipo_llamada=Campana.TYPE_DIALER,
+                                                tipo_campana=campana_tipo,
+                                                tipo_llamada=campana_tipo,
                                                 event='CONNECT').values_list('contacto_id',
                                                                              flat=True)
 
@@ -249,9 +259,14 @@ class RecicladorContactosCampanaDIALER():
                     filtro_eventos += ","
                 filtro_eventos += "'%s'" % evento
 
+        if campana.type == Campana.TYPE_DIALER:
+            campana_tipo = Campana.TYPE_DIALER
+        if campana.type == Campana.TYPE_PREVIEW:
+            campana_tipo = Campana.TYPE_PREVIEW
+
         contactados = LlamadaLog.objects.filter(campana_id=campana.id,
-                                                tipo_campana=Campana.TYPE_DIALER,
-                                                tipo_llamada=Campana.TYPE_DIALER,
+                                                tipo_campana=campana_tipo,
+                                                tipo_llamada=campana_tipo,
                                                 event='CONNECT').values_list('contacto_id',
                                                                              flat=True)
 
@@ -274,7 +289,7 @@ class RecicladorContactosCampanaDIALER():
                 filtro_contactados += "','".join([str(x) for x in contactados])
                 filtro_contactados += "')"
 
-            params = {'campana_id': campana.id, 'tipo_dialer': Campana.TYPE_DIALER,
+            params = {'campana_id': campana.id, 'tipo_dialer': campana_tipo,
                       'filtro_contactados': filtro_contactados,
                       'filtro_contactados_r1': filtro_contactados_r1,
                       'filtro_eventos': filtro_eventos}

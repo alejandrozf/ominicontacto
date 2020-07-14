@@ -82,7 +82,7 @@ class AuditoriaDeGestionTests(OMLBaseTest):
     def test_permite_auditar_calificaciones_no_gestion_ya_auditadas(self):
         auditoria = AuditoriaCalificacion(
             calificacion=self.calificacion_no_gestion, resultado=AuditoriaCalificacion.OBSERVADA,
-            observaciones='Observaciones sobre la auditoría')
+            observaciones='Observaciones sobre la auditoría', revisada=True)
         auditoria.save()
         url = reverse('auditar_calificacion_cliente', args=(self.calificacion_no_gestion.id, ))
         response = self.client.get(url, follow=True)
@@ -100,6 +100,7 @@ class AuditoriaDeGestionTests(OMLBaseTest):
         self.assertEqual(auditoria.calificacion, self.calificacion_no_gestion)
         self.assertEqual(auditoria.resultado, AuditoriaCalificacion.APROBADA)
         self.assertEqual(auditoria.observaciones, nueva_observacion)
+        self.assertFalse(auditoria.revisada)
 
     def test_auditar_calificaciones_no_auditada(self):
         url = reverse('auditar_calificacion_cliente', args=(self.calificacion_gestion.id, ))
@@ -117,3 +118,25 @@ class AuditoriaDeGestionTests(OMLBaseTest):
         auditoria = AuditoriaCalificacion.objects.get(calificacion=self.calificacion_gestion)
         self.assertEqual(auditoria.resultado, AuditoriaCalificacion.APROBADA)
         self.assertEqual(auditoria.observaciones, nueva_observacion)
+        self.assertFalse(auditoria.revisada)
+
+    def test_api_set_estado_revision_auditoria(self):
+        self.client.logout()
+        self.client.login(username=self.agente.user.username, password=PASSWORD)
+        auditoria = AuditoriaCalificacion(calificacion=self.calificacion_gestion,
+                                          resultado=AuditoriaCalificacion.OBSERVADA)
+        auditoria.save()
+        url = reverse('api_set_estado_revision')
+        response = self.client.post(url, data={'audit_id': auditoria.id, 'revised': 'true'})
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(AuditoriaCalificacion.objects.get(id=auditoria.id).revisada)
+        response_json = response.json()
+        self.assertEqual(response_json['status'], 'OK')
+        self.assertTrue(response_json['audit_status'])
+
+        response = self.client.post(url, data={'audit_id': auditoria.id, 'revised': 'false'})
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(AuditoriaCalificacion.objects.get(id=auditoria.id).revisada)
+        response_json = response.json()
+        self.assertEqual(response_json['status'], 'OK')
+        self.assertFalse(response_json['audit_status'])

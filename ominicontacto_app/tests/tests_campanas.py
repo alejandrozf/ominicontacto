@@ -1744,7 +1744,7 @@ class SupervisorCampanaTests(CampanasTests):
             campana=campana, tipo=OpcionCalificacion.GESTION,
             nombre=self.calificacion.nombre, formulario=self.formulario)
         # param_extra_web_form = ParametroExtraParaWebformFactory.create(campana=campana)
-        url = reverse('campana_preview_template_create_campana', args=[campana.pk])
+        url = reverse('campana_preview_template_create_campana', args=[campana.pk, 0])
         nombre_campana = 'campana_preview_clonada'
         (post_step0_data, post_step1_data, post_step2_data, post_step3_data,
          post_step4_data,
