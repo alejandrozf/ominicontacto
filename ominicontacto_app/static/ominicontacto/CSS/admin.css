@@ -934,3 +934,13 @@ body.wrapper-page-error {
     display: block;
 
 }
+/* Personalizacion del plugin jquery select */
+.addFormset {
+    margin-top: 10px !important;
+}
+
+.select2-selection--single {
+    height: calc(2.25rem + 2px) !important;
+    padding: .375rem .75rem;
+    border: 1px solid #ced4da !important;
+}
