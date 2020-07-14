@@ -678,7 +678,9 @@ class AsteriskConfigReloader(object):
         """Realiza reload de configuracion de Asterisk usando AMI
         """
         manager = AMIManagerConnector()
+        manager.connect()
         manager._ami_manager('command', 'module reload')
+        manager.disconnect()
 
     def reload_module(self, module):
         """
@@ -686,7 +688,9 @@ class AsteriskConfigReloader(object):
         ATENCION: El comando parece estar blacklisted.
         """
         manager = AMIManagerConnector()
+        manager.connect()
         manager._ami_manager('command', 'module reload {0}'.format(module))
+        manager.disconnect()
 
 
 class AsteriskMOHConfigReloader(object):
@@ -698,10 +702,11 @@ class AsteriskMOHConfigReloader(object):
         #       esta devolviendo estos headers:
         #       {'Response': 'Error', 'ActionID': 'xxx', 'Message': 'Command blacklisted'}
         manager = AMIManagerConnector()
+        manager.connect()
         manager._ami_manager('command', 'module unload res_musiconhold.so')
         time.sleep(2)
-        manager = AMIManagerConnector()
         manager._ami_manager('command', 'module load res_musiconhold.so')
+        manager.disconnect()
 
 
 # #########################################
