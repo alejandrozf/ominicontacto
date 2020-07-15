@@ -119,7 +119,7 @@
 
 # Incluyo el folder de los certificados autofirmados
 - name: Copy certificate and key pair
-  copy: src=/var/tmp/ansible/roles/docker/files/certs dest={{ deploy_location }}
+  copy: src={{ repo_location}}/deploy/certs dest={{ deploy_location }}
 
 # Genero los scripts y archivos de configuracion que necesitan los containers
 - name: Generate scripts and configuration files of some services
