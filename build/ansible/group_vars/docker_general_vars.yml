@@ -14,7 +14,7 @@ mariadb_image: bitnami/mariadb:latest
 nginx_image: nginx:mainline-alpine
 postgres_image: postgres:{{ postgresql_version }}
 rtpengine_image: ubuntu:18.04
-redis_image: redis:5-alpine
+redis_image: "redis:{{ redis_version }}-alpine"
 # Images for EFK
 elasticsearch_image: elasticsearch:7.1.0
 fluentd_image: qqbuby/fluentd:v1.2-es

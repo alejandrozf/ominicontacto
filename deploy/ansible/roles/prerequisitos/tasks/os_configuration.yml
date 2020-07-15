@@ -96,7 +96,6 @@
     - python-psycopg2
     - nginx
     - nginx-all-modules
-    - redis
     - rsync
     - sox
     - lame
