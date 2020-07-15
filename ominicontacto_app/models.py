@@ -2705,9 +2705,10 @@ class CalificacionClienteManager(models.Manager):
         result = result.prefetch_related('auditoriacalificacion', 'contacto', 'agente')
         return result.order_by('-fecha')
 
-    def calificacion_por_filtro(self, fecha_desde, fecha_hasta, agente, campana, grupo_agentes,
-                                id_contacto, id_contacto_externo, telefono, callid,
-                                status_auditoria):
+    def calificacion_por_filtro(self, fecha_desde=False, fecha_hasta=False, agente=False,
+                                campana=False, grupo_agentes=False, id_contacto=False,
+                                id_contacto_externo=False,
+                                telefono=False, callid=False, status_auditoria=False):
         """Devuelve un queryset con la las calificaciones de acuerdo a los filtros aplicados"""
 
         calificaciones = self.obtener_calificaciones_auditoria()
