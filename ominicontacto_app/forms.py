@@ -484,6 +484,7 @@ class AuditoriaBusquedaForm(forms.Form):
     campana = forms.ChoiceField(
         required=False, choices=(), label=_('Campaña'),
         widget=forms.Select(attrs={'class': 'form-control'}))
+    pagina = forms.CharField(required=False, widget=forms.HiddenInput(), label=_('Página'))
     grupo_agente = forms.ChoiceField(
         required=False, choices=(), label=_('Grupo de agentes'),
         widget=forms.Select(attrs={'class': 'form-control'}))
