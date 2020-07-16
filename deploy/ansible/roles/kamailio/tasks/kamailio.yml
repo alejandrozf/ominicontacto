@@ -49,12 +49,19 @@
   register: vps_download
   until: vps_download is success
 
+# Es necesario crear el directorio donde va a estar el pid de kamailio
+- name: Creation of kamamailio additional directories
+  file: "path={{ item }} state=directory mode=0755"
+  with_items:
+      - "{{ kamailio_location }}/run/"
+      - "{{ certs_location }}"
+
 # Si existen trusted certs se ubican en donde kamailio los necesita
 - name: Copy trusted key/cert pair in kamailio location
   copy: src={{ repo_location }}/deploy/certs/{{ item.src }} dest={{ item.dest }}
   with_items:
-    - { src: "cert.pem", dest: "{{ kamailio_location }}/etc/certs/cert.pem" }
-    - { src: "key.pem", dest: "{{ kamailio_location }}/etc/certs/key.pem" }
+    - { src: "cert.pem", dest: "{{ certs_location }}/cert.pem" }
+    - { src: "key.pem", dest: "{{ certs_location }}/key.pem" }
   when: trusted_certs == "true"
   tags: postinstall
 
@@ -62,13 +69,6 @@
 - include: certificate_CA.yml
   tags: kamailio
   when: certs_exists.rc == 1 and trusted_certs == "false"
-
-# Es necesario crear el directorio donde va a estar el pid de kamailio
-- name: Creation of kamamailio run directories
-  file: "path={{ item }} state=directory mode=0755"
-  with_items:
-      - "{{ kamailio_location }}/run/"
-      - "{{ kamailio_location }}/run/kamailio/"
 
 # Se crea el directorio y el archivo para el log
 - name: Create kamailio.log file and directory
@@ -80,7 +80,7 @@
 - name: Change owner of kamailio directory
   file: state=directory path={{ kamailio_location }} owner={{ usuario }} group={{ usuario }} recurse=yes
   tags: postinstall
-  
+
 # Se crea el archivo kamailio-local, Este archivo contiene las variables que usa el kamailio.cfg
 - name: Creation of kamailio-local.cfg file
   template: src=templates/etc/kamailio-local.cfg dest={{ kamailio_location }}/etc/kamailio/ owner={{ usuario }} group={{ usuario }}

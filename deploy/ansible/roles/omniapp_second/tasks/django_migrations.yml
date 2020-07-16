@@ -46,7 +46,7 @@
   failed_when:
       - "'is already taken' not in result.stderr"
       - "'is already taken' not in result.stdout"
-      - "commandresult.rc != 0"
+      - "result.rc != 0"
   become: true
   become_method: su
   become_user: "{{ usuario }}"
