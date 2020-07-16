@@ -24,9 +24,6 @@
 - name: Modificacion del /etc/pki/tls/openssl.cnf
   template: src=roles/kamailio/templates/etc/openssl.cnf.j2 dest=/etc/pki/tls/openssl.cnf
 
-- name: Creacion de {{ certs_location }}
-  file: path={{ certs_location }} state=directory mode=0700
-
 - name: Creacion de {{ certs_location }}/demoCA y /newcerts
   file: "path={{ item }} state=directory mode=0700"
   with_items:
