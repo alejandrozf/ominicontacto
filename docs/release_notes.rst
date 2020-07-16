@@ -1,11 +1,11 @@
 Release Notes
 *************
 
-*Julio 13, 2020*
+*Julio 16, 2020*
 
-Detalles de Release 1.7.1
+Detalles de Release 1.7.2
 =========================
 
 Fixes y mejoras
 --------------------------
-- Refactor para crear menos conexiones AMI a Asterisk
+- Solucionado error de instalación al usar certificados confiables
