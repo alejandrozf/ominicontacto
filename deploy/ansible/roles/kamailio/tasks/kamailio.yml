@@ -50,11 +50,12 @@
   until: vps_download is success
 
 # Es necesario crear el directorio donde va a estar el pid de kamailio
-- name: Creation of kamamailio additional directories
+- name: Creation of kamamailio run directories
   file: "path={{ item }} state=directory mode=0755"
   with_items:
-      - "{{ kamailio_location }}/run/"
-      - "{{ certs_location }}"
+    - "{{ kamailio_location }}/run/"
+    - "{{ kamailio_location }}/run/kamailio/"
+    - "{{ certs_location }}"
 
 # Si existen trusted certs se ubican en donde kamailio los necesita
 - name: Copy trusted key/cert pair in kamailio location
@@ -62,13 +63,7 @@
   with_items:
     - { src: "cert.pem", dest: "{{ certs_location }}/cert.pem" }
     - { src: "key.pem", dest: "{{ certs_location }}/key.pem" }
-  when: trusted_certs == "true"
   tags: postinstall
-
-# Si no existen trusted certs ejecuta las tareas para crear los certs autofirmados
-- include: certificate_CA.yml
-  tags: kamailio
-  when: certs_exists.rc == 1 and trusted_certs == "false"
 
 # Se crea el directorio y el archivo para el log
 - name: Create kamailio.log file and directory
