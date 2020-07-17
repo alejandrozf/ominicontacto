@@ -27,7 +27,7 @@ from rest_framework import serializers
 
 from ominicontacto_app.forms import FormularioNuevoContacto
 from ominicontacto_app.models import (Campana, AgenteProfile, CalificacionCliente,
-                                      OpcionCalificacion, User, Contacto)
+                                      OpcionCalificacion, User, Contacto, AgenteEnContacto)
 
 
 class CalificacionClienteSerializerMixin(object):
@@ -183,6 +183,9 @@ class CalificacionClienteNuevoContactoSerializer(
         agente = request.user.agenteprofile
         campana = opcion_calificacion.campana
         bd_contacto = campana.bd_contacto
+        # obtenemos los campos de la BD del contacto
+        metadata = bd_contacto.get_metadata()
+        campos_contacto = metadata.nombres_de_columnas_de_datos
 
         datos = []
         for nombre in bd_contacto.get_metadata().nombres_de_columnas_de_datos:
@@ -198,6 +201,12 @@ class CalificacionClienteNuevoContactoSerializer(
         contacto_serializer = ContactoSerializer(data=tmp_data)
         if contacto_serializer.is_valid():
             contacto = contacto_serializer.save()
+            if campana.type == Campana.TYPE_PREVIEW:
+                # se registra la asignacion del agente al contacto
+                agente_en_contacto = campana._crear_agente_en_contacto(
+                    contacto, agente.pk, campos_contacto,
+                    estado=AgenteEnContacto.ESTADO_ASIGNADO, orden=1)
+                agente_en_contacto.save()
         else:
             errors = {'contacto': 'Contact data is invalid'}
             raise serializers.ValidationError(errors)
