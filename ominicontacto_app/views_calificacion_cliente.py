@@ -308,11 +308,6 @@ class CalificacionClienteFormView(FormView):
         # cambios realizados directamente desde una llamada de las otras modificaciones
         update_change_reason(self.object_calificacion, self.kwargs.get('from'))
 
-        # Finalizar relacion de contacto con agente
-        # Optimizacion: si ya hay calificacion ya se termino la relacion agente contacto antes.
-        if self.campana.type == Campana.TYPE_PREVIEW and self.object is None:
-            self.campana.gestionar_finalizacion_relacion_agente_contacto(self.contacto.id)
-
         # check metadata en calificaciones de no accion y eliminar
         self._check_metadata_no_accion_delete(self.object_calificacion)
 

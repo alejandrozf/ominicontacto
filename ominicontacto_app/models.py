@@ -2789,6 +2789,11 @@ class CalificacionCliente(TimeStampedModel, models.Model):
 
     def save(self, *args, **kwargs):
         self._validar_unicidad_calificacion()
+        # Finalizar relacion de contacto con agente
+        # Optimizacion: si ya hay calificacion ya se termino la relacion agente contacto antes.
+        campana = self.opcion_calificacion.campana
+        if campana.type == Campana.TYPE_PREVIEW and self.pk is None:
+            campana.gestionar_finalizacion_relacion_agente_contacto(self.contacto.id)
         # gestionamos las agendas
         if self.opcion_calificacion.tipo != OpcionCalificacion.AGENDA:
             # eliminamos las agendas existentes (si hubiera alguna)
