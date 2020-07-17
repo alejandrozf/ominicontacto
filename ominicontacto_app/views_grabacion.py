@@ -34,7 +34,7 @@ from django.http import JsonResponse
 
 from ominicontacto_app.forms import GrabacionBusquedaForm, GrabacionBusquedaSupervisorForm
 from ominicontacto_app.models import (
-    Grabacion, GrabacionMarca, Campana, CalificacionCliente
+    Grabacion, GrabacionMarca, Campana, CalificacionCliente,
 )
 from .utiles import convert_fecha_datetime, fecha_local
 
@@ -47,7 +47,6 @@ class BusquedaGrabacionFormView(FormView):
     def get_context_data(self, **kwargs):
         context = super(BusquedaGrabacionFormView, self).get_context_data(
             **kwargs)
-
         listado_de_grabaciones = []
 
         if 'listado_de_grabaciones' in context:
@@ -69,7 +68,6 @@ class BusquedaGrabacionFormView(FormView):
         context['listado_de_grabaciones'] = qs
 
         context['calificaciones'] = self._get_calificaciones(qs)
-
         return context
 
     def _get_campanas(self):
@@ -85,7 +83,7 @@ class BusquedaGrabacionFormView(FormView):
         return self.render_to_response(
             self.get_context_data(
                 listado_de_grabaciones=self._get_grabaciones_del_dia(),
-                pagina=self.kwargs['pagina']))
+                pagina=self.kwargs['pagina'],))
 
     def get_form(self):
         self.form_class = self.get_form_class()
@@ -106,6 +104,7 @@ class BusquedaGrabacionFormView(FormView):
         tipo_llamada = form.cleaned_data.get('tipo_llamada')
         tel_cliente = form.cleaned_data.get('tel_cliente')
         callid = form.cleaned_data.get('callid')
+        id_contacto_externo = form.cleaned_data.get('id_contacto_externo')
         agente = self._get_filtro_agente(form)
         campana = form.cleaned_data.get('campana')
         marcadas = form.cleaned_data.get('marcadas', False)
@@ -114,7 +113,7 @@ class BusquedaGrabacionFormView(FormView):
         campanas = self._get_campanas()
         pagina = form.cleaned_data.get('pagina')
         listado_de_grabaciones = Grabacion.objects.grabacion_by_filtro(
-            fecha_desde, fecha_hasta, tipo_llamada, tel_cliente, callid,
+            fecha_desde, fecha_hasta, tipo_llamada, tel_cliente, callid, id_contacto_externo,
             agente, campana, campanas, marcadas, duracion, gestion)
 
         return self.render_to_response(self.get_context_data(
