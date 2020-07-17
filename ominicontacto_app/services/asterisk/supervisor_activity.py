@@ -19,11 +19,18 @@
 
 from __future__ import unicode_literals
 
+import redis
+
+from time import time
+
+from django.conf import settings
 from django.utils.translation import ugettext as _
-from api_app.utiles import AgentesParsing
+
 from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnector
 from ominicontacto_app.services.asterisk.agent_activity import AgentActivityAmiManager
 from ominicontacto_app.models import AgenteProfile
+
+LONGITUD_MINIMA_HEADERS = 4
 
 
 class SupervisorActivityAmiManager(object):
@@ -43,12 +50,32 @@ class SupervisorActivityAmiManager(object):
         return data_returned
 
     def obtener_agentes_activos(self):
-        agentes_parseados = AgentesParsing()
         agentes_activos = []
-        self.manager.connect()
-        data_returned, error = self.manager._ami_manager("command", "database show OML/AGENT")
-        self.manager.disconnect()
-        agentes_activos = agentes_parseados._parsear_datos_agentes(data_returned)
+        redis_connection = redis.Redis(
+            host=settings.REDIS_HOSTNAME, port=settings.CONSTANCE_REDIS_CONNECTION['port'],
+            decode_responses=True)
+        # TODO: cambiar a usar el metodo 'scan' que es mas eficiente con datos muy grandes
+        # y realiza una especie de paginación
+        keys_agentes = redis_connection.keys('OML:AGENT*')
+        agentes_activos = []
+        for key in keys_agentes:
+            agente_info = redis_connection.hgetall(key)
+            status = agente_info.get('STATUS', '')
+            id_agente = key.split(':')[-1]
+            if status != '' and len(agente_info) >= LONGITUD_MINIMA_HEADERS:
+                agente_info['nombre'] = agente_info['NAME']
+                agente_info['status'] = status
+                agente_info['sip'] = agente_info['SIP']
+                agente_info['pause_id'] = agente_info.get('PAUSE_ID', '')
+                tiempo_actual = int(time())
+                tiempo_estado = tiempo_actual - int(agente_info['TIMESTAMP'])
+                agente_info['tiempo'] = tiempo_estado
+                del agente_info['NAME']
+                del agente_info['STATUS']
+                del agente_info['TIMESTAMP']
+                del agente_info['SIP']
+                agente_info['id'] = int(id_agente)
+                agentes_activos.append(agente_info)
         return agentes_activos
 
     def ejecutar_accion_sobre_agente(self, supervisor, agente_id, exten):
