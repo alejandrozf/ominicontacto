@@ -33,12 +33,24 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django.utils.timezone import now
-from django.views.generic import CreateView, FormView
+from django.views.generic import CreateView, FormView, UpdateView
 from django.views.generic.detail import DetailView
 from ominicontacto_app.models import AgendaContacto, Contacto, Campana, CalificacionCliente, User
 from ominicontacto_app.forms import (
     AgendaContactoForm, AgendaBusquedaForm, FiltroUsuarioFechaForm, )
 from ominicontacto_app.utiles import convert_fecha_datetime
+
+
+class AgendaContactoUpdateView(UpdateView):
+    """Vista para modificar una agenda existente"""
+    template_name = 'agenda_contacto/update_agenda_contacto.html'
+    model = AgendaContacto
+    context_object_name = 'agendacontacto'
+    form_class = AgendaContactoForm
+
+    def get_success_url(self):
+        return reverse(
+            'agenda_contacto_detalle', kwargs={'pk': self.object.pk})
 
 
 class AgendaContactoCreateView(CreateView):

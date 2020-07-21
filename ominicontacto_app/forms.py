@@ -1239,7 +1239,11 @@ class AgendaContactoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AgendaContactoForm, self).__init__(*args, **kwargs)
-        if not kwargs['initial']['campana'].type == Campana.TYPE_DIALER:
+        if self.instance.pk:
+            campana = self.instance.campana
+        else:
+            campana = kwargs['initial']['campana']
+        if not campana.type == Campana.TYPE_DIALER:
             self.fields['tipo_agenda'].choices = [(AgendaContacto.TYPE_PERSONAL, 'PERSONAL')]
 
     def clean_tipo_agenda(self):
