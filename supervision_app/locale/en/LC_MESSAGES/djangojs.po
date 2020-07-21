@@ -193,6 +193,5 @@ msgstr ""
 
 #: supervision_app/static/supervision_app/JS/supervision_agentes.js:71
 #: supervision_app/static/supervision_app/JS/supervision_agentes.js:72
-#, fuzzy
 msgid "Debe finalizar la acción actual antes de salir de esta pantalla."
 msgstr "You must end current action before leaving this page."

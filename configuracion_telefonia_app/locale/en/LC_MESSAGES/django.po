@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-09 10:54-0300\n"
+"POT-Creation-Date: 2020-07-21 15:07-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,12 +16,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: configuracion_telefonia_app/apps.py:35
+#: configuracion_telefonia_app/apps.py:33
 #: configuracion_telefonia_app/templates/lista_troncal_sip.html:25
 msgid "Troncales SIP"
 msgstr "SIP trunks"
 
-#: configuracion_telefonia_app/apps.py:39
+#: configuracion_telefonia_app/apps.py:38
 msgid "Rutas entrantes"
 msgstr "Inbound routes"
 
@@ -29,7 +29,7 @@ msgstr "Inbound routes"
 msgid "Rutas salientes"
 msgstr "Outbound routes"
 
-#: configuracion_telefonia_app/apps.py:47
+#: configuracion_telefonia_app/apps.py:48
 #: configuracion_telefonia_app/models.py:350
 msgid "IVR"
 msgstr "IVR"
@@ -39,198 +39,198 @@ msgstr "IVR"
 msgid "Grupos horarios"
 msgstr "Group of Hours"
 
-#: configuracion_telefonia_app/apps.py:57
+#: configuracion_telefonia_app/apps.py:58
 #: configuracion_telefonia_app/templates/lista_validaciones_fecha_hora.html:25
 msgid "Validaciones Horarias"
 msgstr "Time Conditions"
 
-#: configuracion_telefonia_app/apps.py:61
+#: configuracion_telefonia_app/apps.py:63
 msgid "Identificación de Clientes"
 msgstr "Client Identification service"
 
-#: configuracion_telefonia_app/apps.py:65
+#: configuracion_telefonia_app/apps.py:68
 msgid "Destinos personalizados"
 msgstr "Custom destinations"
 
-#: configuracion_telefonia_app/apps.py:69
-msgid "Audios"
-msgstr "Audios"
-
-#: configuracion_telefonia_app/apps.py:74
+#: configuracion_telefonia_app/apps.py:75
 msgid "Paquetes de Audio de Asterisk"
 msgstr "Asterisk audio packages"
 
-#: configuracion_telefonia_app/apps.py:78
+#: configuracion_telefonia_app/apps.py:80
 msgid "Audios Personalizados"
 msgstr "Custom audios"
 
-#: configuracion_telefonia_app/apps.py:82
+#: configuracion_telefonia_app/apps.py:85
 msgid "Listas de Musica de Espera"
 msgstr "Music on Hold playlists"
 
-#: configuracion_telefonia_app/apps.py:91
+#: configuracion_telefonia_app/apps.py:90
+msgid "Audios"
+msgstr "Audios"
+
+#: configuracion_telefonia_app/apps.py:100
 msgid "Telefonía"
 msgstr "Telephony"
 
-#: configuracion_telefonia_app/apps.py:185
+#: configuracion_telefonia_app/apps.py:194
 msgid "Ver la lista de Troncales SIP"
 msgstr "View SIP trunks list"
 
-#: configuracion_telefonia_app/apps.py:187
+#: configuracion_telefonia_app/apps.py:196
 msgid "Crear un Troncal SIP"
 msgstr "Create SIP trunk"
 
-#: configuracion_telefonia_app/apps.py:189
+#: configuracion_telefonia_app/apps.py:198
 msgid "Editar un Troncal SIP"
 msgstr "Edit SIP trunk"
 
-#: configuracion_telefonia_app/apps.py:191
+#: configuracion_telefonia_app/apps.py:200
 msgid "Eliminar un Troncal SIP"
 msgstr "Delete SIP trunk"
 
-#: configuracion_telefonia_app/apps.py:193
+#: configuracion_telefonia_app/apps.py:202
 msgid "Ver la lista de Rutas Salientes"
 msgstr "View Outbound route list"
 
-#: configuracion_telefonia_app/apps.py:195
+#: configuracion_telefonia_app/apps.py:204
 msgid "Modificar el orden de las Rutas Salientes"
 msgstr "Modify Outbound route order"
 
-#: configuracion_telefonia_app/apps.py:197
+#: configuracion_telefonia_app/apps.py:206
 msgid "Crear una Ruta Saliente"
 msgstr "Create Outbound route"
 
-#: configuracion_telefonia_app/apps.py:199
+#: configuracion_telefonia_app/apps.py:208
 msgid "Editar una Ruta Saliente"
 msgstr "Edit Outbound route"
 
-#: configuracion_telefonia_app/apps.py:201
+#: configuracion_telefonia_app/apps.py:210
 msgid "Eliminar una Ruta Saliente"
 msgstr "Delete Outbound route"
 
-#: configuracion_telefonia_app/apps.py:203
+#: configuracion_telefonia_app/apps.py:212
 msgid "Ver la lista de Rutas Entrantes"
 msgstr "View Inbound route list"
 
-#: configuracion_telefonia_app/apps.py:205
+#: configuracion_telefonia_app/apps.py:214
 msgid "Crear una Ruta Entrante"
 msgstr "Create Inbound route"
 
-#: configuracion_telefonia_app/apps.py:207
+#: configuracion_telefonia_app/apps.py:216
 msgid "Editar una Ruta Entrante"
 msgstr "Edit inbound route"
 
-#: configuracion_telefonia_app/apps.py:209
+#: configuracion_telefonia_app/apps.py:218
 msgid "Eliminar una Ruta Entrante"
 msgstr "Delete Inbound route"
 
-#: configuracion_telefonia_app/apps.py:212
+#: configuracion_telefonia_app/apps.py:221
 msgid ""
 "Lista con posibles destinos. Usado en varios formularios de configuración."
 msgstr "Possible destinations list. Used en several configuration forms."
 
-#: configuracion_telefonia_app/apps.py:215
+#: configuracion_telefonia_app/apps.py:224
 msgid "Ver la lista de IVRs"
 msgstr "View IVR list"
 
-#: configuracion_telefonia_app/apps.py:217
+#: configuracion_telefonia_app/apps.py:226
 msgid "Crear un IVR"
 msgstr "Create IVR"
 
-#: configuracion_telefonia_app/apps.py:219
+#: configuracion_telefonia_app/apps.py:228
 #: configuracion_telefonia_app/templates/editar_ivr.html:25
 msgid "Editar IVR"
 msgstr "Edit IVR"
 
-#: configuracion_telefonia_app/apps.py:221
+#: configuracion_telefonia_app/apps.py:230
 msgid "Eliminar IVR"
 msgstr "Delete IVR"
 
-#: configuracion_telefonia_app/apps.py:223
+#: configuracion_telefonia_app/apps.py:232
 msgid "Ver lista de Grupos Horarios"
 msgstr "View Group of Hours list."
 
-#: configuracion_telefonia_app/apps.py:225
+#: configuracion_telefonia_app/apps.py:234
 msgid "Crear un Grupo Horario"
 msgstr "Create Group of Hours"
 
-#: configuracion_telefonia_app/apps.py:227
+#: configuracion_telefonia_app/apps.py:236
 msgid "Editar un Grupo Horario"
 msgstr "Edit Group of Hours"
 
-#: configuracion_telefonia_app/apps.py:229
+#: configuracion_telefonia_app/apps.py:238
 msgid "Eliminar un Grupo Horario"
 msgstr "Delete Group of Hours."
 
-#: configuracion_telefonia_app/apps.py:231
+#: configuracion_telefonia_app/apps.py:240
 msgid "Ver lista de Validaciones horarias"
 msgstr "View Time Conditions list"
 
-#: configuracion_telefonia_app/apps.py:233
+#: configuracion_telefonia_app/apps.py:242
 msgid "Crear Validacion horaria"
 msgstr "Create Time Condition"
 
-#: configuracion_telefonia_app/apps.py:235
+#: configuracion_telefonia_app/apps.py:244
 msgid "Editar Validacion horaria"
 msgstr "Edit Time Condition"
 
-#: configuracion_telefonia_app/apps.py:237
+#: configuracion_telefonia_app/apps.py:246
 msgid "Eliminar Validacion horaria"
 msgstr "Delete Time Condition"
 
-#: configuracion_telefonia_app/apps.py:239
+#: configuracion_telefonia_app/apps.py:248
 msgid "Ver lista de Identificadores de clientes"
 msgstr "View Client Identification services list"
 
-#: configuracion_telefonia_app/apps.py:241
+#: configuracion_telefonia_app/apps.py:250
 msgid "Crear un Identificador de clientes"
 msgstr "Create Client Identification service"
 
-#: configuracion_telefonia_app/apps.py:243
+#: configuracion_telefonia_app/apps.py:252
 msgid "Editar un Identificador de clientes"
 msgstr "Edit Client Identification service"
 
-#: configuracion_telefonia_app/apps.py:245
+#: configuracion_telefonia_app/apps.py:254
 msgid "Eliminar un Identificador de clientes"
 msgstr "Delete Client Identification service"
 
-#: configuracion_telefonia_app/apps.py:247
+#: configuracion_telefonia_app/apps.py:256
 msgid "Ver lista de destinos personalizados"
 msgstr "View Custom destinations list"
 
-#: configuracion_telefonia_app/apps.py:249
+#: configuracion_telefonia_app/apps.py:258
 msgid "Crear un Destino personalizado"
 msgstr "Create Custom Destination"
 
-#: configuracion_telefonia_app/apps.py:251
+#: configuracion_telefonia_app/apps.py:260
 msgid "Editar un Destino personalizado"
 msgstr "Update Custom Destination"
 
-#: configuracion_telefonia_app/apps.py:253
+#: configuracion_telefonia_app/apps.py:262
 msgid "Eliminar un Destino personalizado"
 msgstr "Delete Custom Destination"
 
-#: configuracion_telefonia_app/apps.py:255
+#: configuracion_telefonia_app/apps.py:264
 msgid "Menu para instalar paquetes de audio de Asterisk"
 msgstr "Asterisk audio packages installation menu"
 
-#: configuracion_telefonia_app/apps.py:258
+#: configuracion_telefonia_app/apps.py:267
 msgid "Ver listas de Musicas de espera"
 msgstr "View Music on Hold playlists"
 
-#: configuracion_telefonia_app/apps.py:260
+#: configuracion_telefonia_app/apps.py:269
 msgid "Crear lista de Musicas de espera"
 msgstr "Create Music on Hold Playlist"
 
-#: configuracion_telefonia_app/apps.py:262
+#: configuracion_telefonia_app/apps.py:271
 msgid "Eliminar lista de Musicas de espera"
 msgstr "Delete Music on Hold playlists"
 
-#: configuracion_telefonia_app/apps.py:264
+#: configuracion_telefonia_app/apps.py:273
 msgid "Editar lista de Musicas de espera"
 msgstr "Edit Music on Hold playlist"
 
-#: configuracion_telefonia_app/apps.py:266
+#: configuracion_telefonia_app/apps.py:275
 msgid "Eliminar Musica de espera"
 msgstr "Delete Music on Hold"
 

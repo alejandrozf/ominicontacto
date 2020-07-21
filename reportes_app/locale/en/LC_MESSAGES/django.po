@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-09 10:54-0300\n"
+"POT-Creation-Date: 2020-07-21 15:07-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,110 +16,118 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: reportes_app/apps.py:32
-msgid "Reportes"
-msgstr "Reports"
+#: reportes_app/actividad_agente_log.py:126
+msgid "1 día, "
+msgstr "1 day, "
 
-#: reportes_app/apps.py:37
+#: reportes_app/actividad_agente_log.py:128
+msgid " días, "
+msgstr " days, "
+
+#: reportes_app/apps.py:33
 #: reportes_app/templates/reporte_grafico_campana.html:228
 #: reportes_app/templates/reporte_llamadas.html:33
 msgid "Llamadas"
 msgstr "Calls"
 
-#: reportes_app/apps.py:41
+#: reportes_app/apps.py:38
 #: reportes_app/templates/reportes_agentes_tiempos.html:36
 msgid "Agentes"
 msgstr "Agents"
 
-#: reportes_app/apps.py:100
+#: reportes_app/apps.py:45
+msgid "Reportes"
+msgstr "Reports"
+
+#: reportes_app/apps.py:104
 msgid "Reportes de tiempos de agentes (sesión, pausa, llamada, etc...)"
 msgstr "Agents times report (session, pauses, calls, etc...)"
 
-#: reportes_app/apps.py:103
+#: reportes_app/apps.py:107
 msgid "Exporta reportes de agentes."
 msgstr "Export agents report"
 
-#: reportes_app/apps.py:105
+#: reportes_app/apps.py:109
 msgid "Reporte de tiempos de agente para ventana modal."
 msgstr "Agents times report for modal window"
 
-#: reportes_app/apps.py:108
+#: reportes_app/apps.py:112
 msgid "Reportes de pausas de agente para ventana modal."
 msgstr "Agents pause reports for modal window"
 
-#: reportes_app/apps.py:111
+#: reportes_app/apps.py:115
 msgid "Historico de llamadas para mostrar en la consola de Agente"
 msgstr "Call history to show at Agent console"
 
-#: reportes_app/apps.py:114
+#: reportes_app/apps.py:118
 msgid "Reporte de Llamadas"
 msgstr "Calls Report"
 
-#: reportes_app/apps.py:116
+#: reportes_app/apps.py:120
 msgid "Descarga csv de reporte de llamadas"
 msgstr "Download calls report csv"
 
-#: reportes_app/apps.py:118
+#: reportes_app/apps.py:122
 msgid "Descarga .zip de reporte de llamadas"
 msgstr "Download calls report .zip"
 
-#: reportes_app/apps.py:120
+#: reportes_app/apps.py:124
 msgid "Reporte de calificaciones de campaña"
 msgstr "Campaing dispositions report"
 
-#: reportes_app/apps.py:122
+#: reportes_app/apps.py:126
 msgid "Descargar Reporte de calificaciones de campaña"
 msgstr "Download Campaing dispositions report"
 
-#: reportes_app/apps.py:125
+#: reportes_app/apps.py:129
 msgid "Reporte Grafico de campaña"
 msgstr "Campaign's graphic report"
 
-#: reportes_app/apps.py:127
+#: reportes_app/apps.py:131
 msgid "Descargar Reporte Grafico de campaña"
 msgstr "Download Campaign's graphic report"
 
-#: reportes_app/apps.py:129
+#: reportes_app/apps.py:133
 msgid "Reporte Grafico de Agente en Campana"
 msgstr "Agent's graphic report for Campaing"
 
-#: reportes_app/apps.py:131
+#: reportes_app/apps.py:135
 msgid "Reporte de gestiones de un Agente"
 msgstr "Agent dispositions report"
 
-#: reportes_app/apps.py:133
+#: reportes_app/apps.py:137
 msgid "Descargar Reporte de llamados contactados de una campaña"
 msgstr "Download Campaign contacted calls report"
 
-#: reportes_app/apps.py:136
+#: reportes_app/apps.py:140
 msgid "Descargar Reporte de llamados calificados de una campaña"
 msgstr "Download Campaign's dispositioned calls report"
 
-#: reportes_app/apps.py:139
+#: reportes_app/apps.py:143
 msgid "Descargar Reporte de llamados no atendidos de una campaña"
 msgstr "Download Campaign's not attended Calls Report"
 
-#: reportes_app/apps.py:142
+#: reportes_app/apps.py:146
 msgid "Detalle del estado de una campaña Preview"
 msgstr "Preview Campaign status detail"
 
-#: reportes_app/apps.py:144
+#: reportes_app/apps.py:148
 msgid "Detalle del estado de una campaña Preview (para ventana modal)"
 msgstr "Preview Campaign status detail (modal window)"
 
-#: reportes_app/apps.py:147
+#: reportes_app/apps.py:151
 msgid "Detalle del estado de una campaña Dialer"
 msgstr "Dialer Campaign status detail"
 
-#: reportes_app/apps.py:149
+#: reportes_app/apps.py:153
 msgid "Detalle del estado de una campaña Dialer (para ventana modal)"
 msgstr "Dialer Campaign status detail (modal window)"
 
-#: reportes_app/apps.py:152
+#: reportes_app/apps.py:156
 msgid "Reporte de resultado de contactaciones en una Campaña"
 msgstr "Campaign's contacted calls results report"
 
-#: reportes_app/apps.py:155
+#: reportes_app/apps.py:159
 msgid "Descargar reporte de resultado de contactaciones en una Campaña"
 msgstr "Download Campaign's Contacted Calls results report"
 
@@ -1217,30 +1225,3 @@ msgstr ""
 #: reportes_app/views_reportes.py:63 reportes_app/views_reportes.py:146
 msgid "Usted no puede acceder a esta campaña."
 msgstr "You are not allowed to access to this campaign."
-
-#~ msgid "No Conectadas"
-#~ msgstr "Not connected"
-
-#~ msgid "Tiempo de Espera de Conexión(prom.)"
-#~ msgstr "Waiting time for connection (in average)"
-
-#~ msgid "Tiempo de Espera de Atención(prom.)"
-#~ msgstr "Waiting time for attention (in average)"
-
-#~ msgid "Tiempo de Abandono(prom.)"
-#~ msgstr "Abandon time (in average)"
-
-#~ msgid "Efectuadas Manuales"
-#~ msgstr "Manual Calls Performed"
-
-#~ msgid "Conectadas Manuales"
-#~ msgstr "Manual Calls Connected"
-
-#~ msgid "No Conectadas Manuales"
-#~ msgstr "Manual Calls Not Connected"
-
-#~ msgid "Tiempo de Espera de Conexión Manuales(prom.)"
-#~ msgstr "Waiting time for connection in Manual Calls (in average)"
-
-#~ msgid "No existe la campaña"
-#~ msgstr "Campaign does not exist"
