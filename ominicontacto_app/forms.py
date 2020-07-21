@@ -1226,7 +1226,7 @@ class AgendaContactoForm(forms.ModelForm):
 
     class Meta:
         model = AgendaContacto
-        fields = ('contacto', 'agente', 'campana', 'tipo_agenda', 'fecha', 'hora', 'observaciones')
+        fields = ('contacto', 'agente', 'campana', 'fecha', 'hora', 'observaciones', 'tipo_agenda')
         widgets = {
             'contacto': forms.HiddenInput(),
             'agente': forms.HiddenInput(),
