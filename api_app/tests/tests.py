@@ -56,6 +56,8 @@ class APITest(OMLBaseTest):
         self.campana_activa_supervisor.supervisors.add(self.supervisor.user)
         self.campana_finalizada = CampanaFactory(estado=Campana.ESTADO_FINALIZADA)
         self.queue = QueueFactory.create(campana=self.campana_activa)
+        self.queue2 = QueueFactory.create(campana=self.campana_activa_supervisor)
+        self.queue3 = QueueFactory.create(campana=self.campana_finalizada)
         QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
         self.sistema_externo = SistemaExternoFactory()
         self.opcion_calificacion = OpcionCalificacionFactory(campana=self.campana_activa)
@@ -254,7 +256,9 @@ class APITest(OMLBaseTest):
         self.campana_activa.supervisors.add(self.supervisor_admin.user)
         ag1 = self.agente_profile
         ag2 = self.crear_agente_profile()
-        QueueMemberFactory.create(member=ag2, queue_name=self.queue)
+        ag3 = self.crear_agente_profile()
+        QueueMemberFactory.create(member=ag2, queue_name=self.queue2)
+        QueueMemberFactory.create(member=ag3, queue_name=self.queue3)
         self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
         ami_connect.return_value = False
         ami_disconnect.return_value = False

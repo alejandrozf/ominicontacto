@@ -160,10 +160,8 @@ CodeCopy() {
 }
 
 CertsValidation() {
-  echo "Checking if you put trusted key/cert pair under deploy/certs folder"
   certs_location="$REPO_LOCATION/deploy/certs"
   if [ $(ls -l $certs_location/*.pem 2>/dev/null | wc -l) -gt 0 ]; then
-    TRUSTED_CERTS=true
     if [ $(ls -l $certs_location/*.pem 2>/dev/null | wc -l) -eq 4 ]; then
       rm -rf $certs_location/key.pem $certs_location/cert.pem
     fi
@@ -181,8 +179,6 @@ CertsValidation() {
         1. You didn't include the string "key" in you .pem file related to private key
         2. You put more than two .pem files in the certs folder"; exit 1
     fi
-  else
-    TRUSTED_CERTS=false
   fi
 }
 
@@ -227,8 +223,7 @@ AnsibleExec() {
     echo "Beginning the Omnileads installation with Ansible, this installation process can last between 20-25 minutes, depending of your internet connection"
     echo ""
     ${ANSIBLE}-playbook $verbose $TMP_ANSIBLE/omnileads.yml \
-      --extra-vars "trusted_certs=$TRUSTED_CERTS \
-                    iface=$INTERFACE \
+      --extra-vars "iface=$INTERFACE \
                     build_dir=$TMP_OMINICONTACTO \
                     repo_location=$REPO_LOCATION \
                     docker_root=$USER_HOME \

@@ -68,9 +68,12 @@ class AgentesStatusAPIView(APIView):
     http_method_names = ['get']
 
     def _obtener_ids_agentes_propios(self, request):
-        supervisor_profile = request.user.get_supervisor_profile()
-        campanas_asignadas_actuales = supervisor_profile.campanas_asignadas_actuales()
-        ids_agentes = list(campanas_asignadas_actuales.values_list(
+        if request.user.get_is_administrador():
+            campanas = Campana.objects.all()
+        else:
+            supervisor_profile = request.user.get_supervisor_profile()
+            campanas = supervisor_profile.campanas_asignadas_actuales()
+        ids_agentes = list(campanas.values_list(
             'queue_campana__members__pk', flat=True).distinct())
         return ids_agentes
 
@@ -83,9 +86,12 @@ class AgentesStatusAPIView(APIView):
 
     def _obtener_campana_activa(self, request, id_agente):
         campana_activas = []
-        supervisor_profile = request.user.get_supervisor_profile()
-        campanas_asignadas_actuales = supervisor_profile.campanas_asignadas_actuales()
-        for campana in campanas_asignadas_actuales:
+        if request.user.get_is_administrador():
+            campanas = Campana.objects.all()
+        else:
+            supervisor_profile = request.user.get_supervisor_profile()
+            campanas = supervisor_profile.campanas_asignadas_actuales()
+        for campana in campanas:
             campana_member_id = campana.queue_campana.queuemember.values_list(
                 'member_id', flat=True)
             if id_agente in campana_member_id:
