@@ -25,7 +25,7 @@ from reportes_app.reportes.reporte_llamadas_supervision import \
 from utiles_globales import AddSettingsContextMixin
 from ominicontacto_app.forms import GrupoAgenteForm
 
-from ominicontacto_app.models import Grupo, AgenteProfile
+from ominicontacto_app.models import Campana, Grupo, AgenteProfile
 
 
 class SupervisionAgentesView(AddSettingsContextMixin, TemplateView):
@@ -38,13 +38,17 @@ class SupervisionAgentesView(AddSettingsContextMixin, TemplateView):
         kamailio_service = KamailioService()
         sip_usuario = kamailio_service.generar_sip_user(supervisor.sip_extension)
         sip_password = kamailio_service.generar_sip_password(sip_usuario)
-        campanas = supervisor.campanas_asignadas_actuales()
-        ids_agentes = list(campanas.values_list(
-            'queue_campana__members__pk', flat=True).distinct())
-        id_grupo = AgenteProfile.objects.filter(id__in=ids_agentes).values_list(
-            'grupo_id', flat=True).distinct()
-        grupo = Grupo.objects.filter(id__in=id_grupo).values_list(
-            'nombre', flat=True)
+        if self.request.user.get_is_administrador():
+            campanas = Campana.objects.all()
+            grupo = Grupo.objects.all()
+        else:
+            campanas = supervisor.campanas_asignadas_actuales()
+            ids_agentes = list(campanas.values_list(
+                'queue_campana__members__pk', flat=True).distinct())
+            id_grupo = AgenteProfile.objects.filter(id__in=ids_agentes).values_list(
+                'grupo_id', flat=True).distinct()
+            grupo = Grupo.objects.filter(id__in=id_grupo).values_list(
+                'nombre', flat=True)
         context['campanas'] = campanas
         context['grupo'] = grupo
         context['sip_usuario'] = sip_usuario

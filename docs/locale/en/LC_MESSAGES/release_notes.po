@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-13 15:00-0300\n"
+"POT-Creation-Date: 2020-07-16 13:11-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,20 +24,20 @@ msgstr "Release Notes"
 
 # 73ee1e870afd4a31b43364589dd0e1ee
 #: ../../release_notes.rst:4
-msgid "*Julio 13, 2020*"
-msgstr "July 13, 2020"
+msgid "*Julio 16, 2020*"
+msgstr "July 16, 2020"
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.7.1"
-msgstr "Release 1.7.1 details"
+msgid "Detalles de Release 1.7.2"
+msgstr "Release 1.7.2 details"
 
 # 2f558403c15a436e90409b976c7f07ed
 #: ../../release_notes.rst:10
 msgid "Fixes y mejoras"
 msgstr "Fixes and improvements"
 
-# 72d7a7e920d04b78b2959720acb3fec5
+# 9af30c7649d44482a64f236dd8c5b5fb
 #: ../../release_notes.rst:11
-msgid "Refactor para crear menos conexiones AMI a Asterisk"
-msgstr "Implemented refactor to make less AMI connections to Asterisk"
+msgid "Solucionado error de instalación al usar certificados confiables"
+msgstr "Fixed installation error when using trusted SSL certificates"

@@ -36,8 +36,22 @@
 # Se incluyen las tareas de chequeos iniciales para ver si ya existen variables de entorno, hago este include solo para el deploy
 - include_tasks: roles/prerequisitos/tasks/checks.yml
 
+# Se escribe en archivo de hosts relacion IP fqdn
 - name: Set environment variables for this installation
-  template: src=files/docker_compose_files/.env dest=/etc/environment mode=644 owner=root group=root
+  blockinfile:
+    path: /etc/environment
+    insertafter: EOF
+    state: present
+    block: |
+      PGUSER={{ postgres_user }}
+      PGPASSWORD={{ postgres_password }}
+      DJANGO_PASS={{ admin_pass }}
+      AMI_USER={{ ami_user }}
+      AMI_PASSWORD={{ ami_password }}
+      WOMBAT_USER={{ dialer_user }}
+      WOMBAT_PASSWORD={{ dialer_password }}
+      TZ={{ TZ }}
+  tags: postinstall
 
 # Incluyo las tasks de configuraciones iniciales de SO para prodenv
 - include: roles/prerequisitos/tasks/os_configuration.yml
@@ -119,7 +133,7 @@
 
 # Incluyo el folder de los certificados autofirmados
 - name: Copy certificate and key pair
-  copy: src=/var/tmp/ansible/roles/docker/files/certs dest={{ deploy_location }}
+  copy: src={{ repo_location}}/deploy/certs dest={{ deploy_location }}
 
 # Genero los scripts y archivos de configuracion que necesitan los containers
 - name: Generate scripts and configuration files of some services
@@ -128,6 +142,7 @@
     - { src: docker/files/scripts/run_asterisk.sh, dest: "{{ ast_other_location }}/run_asterisk.sh"}
     - { src: docker/files/scripts/run_omniapp.sh, dest: "{{ omniapp_location }}/run_omniapp.sh"}
     - { src: omniapp_second/templates/bin/conversor.sh, dest: "{{ omniapp_location}}/conversor.sh" }
+    - { src: omniapp_second/templates/run/oml_uwsgi.ini, dest: "{{ omniapp_location }}/oml_uwsgi.ini"}
     - { src: omniapp_second/templates/etc/ominicontacto.conf, dest: "{{ nginx_location }}/conf.d"}
     - { src: omniapp_second/templates/etc/nginx.conf.j2, dest: "{{ nginx_location }}/nginx.conf"}
     - { src: docker/files/scripts/mime.types, dest: "{{ nginx_location }}/mime.types"}
@@ -182,12 +197,12 @@
 # Tareas para devenv y prodenv #
 ################################
 
-- name: Link /etc/environment file to .env file in {{ deploy_location }}
-  file: state=link src=/etc/environment dest={{ deploy_location }}/.env force=true owner={{ usuario }} group={{ usuario }}
-
-  # Se generan el archivo docker-compose, en los templates se renderizan diferentes cosas dependiendo de si es prodenv o devenv
-- name: Generate docker-compose file
-  template: src=files/docker_compose_files/docker-compose.yml dest={{ deploy_location }}/docker-compose.yml mode=755 owner={{ usuario }} group={{ usuario }}
+# Se generan el archivo docker-compose y .env, en los templates se renderizan diferentes cosas dependiendo de si es prodenv o devenv
+- name: Generate docker-compose and .env file
+  template: src=files/docker_compose_files/{{ item }} dest={{ deploy_location }} mode=755 owner={{ usuario }} group={{ usuario }}
+  with_items:
+    - docker-compose.yml
+    - .env
 
 # Se crea el archivo kamailio-local, Este archivo contiene las variables que usa el kamailio.cfg
 - name: Creation of kamailio-local.cfg file (devenv)
