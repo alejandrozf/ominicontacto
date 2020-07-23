@@ -54,6 +54,7 @@ class CampanaDialerDetailView(DetailView):
                 context['efectuadas'] = dato_campana['n_calls_attempted']
                 context['terminadas'] = dato_campana['n_calls_completed']
                 context['estimadas'] = dato_campana['n_est_remaining_calls']
+                context['reintentos_abiertos'] = dato_campana['n_open_retries']
                 context['status'] = status
                 context['resultado'] = True
             else:
@@ -79,6 +80,7 @@ def detalle_campana_dialer_view(request):
             'efectuadas': dato_campana['n_calls_attempted'],
             'terminadas': dato_campana['n_calls_completed'],
             'estimadas': dato_campana['n_est_remaining_calls'],
+            'reintentos_abiertos': dato_campana['n_open_retries'],
             'status': status
 
         }
