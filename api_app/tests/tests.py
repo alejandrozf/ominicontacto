@@ -19,6 +19,8 @@
 
 from __future__ import unicode_literals
 
+from datetime import datetime
+
 from mock import patch
 
 from django.conf import settings
@@ -31,7 +33,6 @@ from rest_framework.test import APIClient
 from api_app.views.base import login
 from ominicontacto_app.services.asterisk.agent_activity import AgentActivityAmiManager
 from ominicontacto_app.models import Campana, User, Contacto
-from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnector
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 from ominicontacto_app.tests.factories import (CampanaFactory, SistemaExternoFactory,
                                                AgenteEnSistemaExternoFactory,
@@ -176,276 +177,116 @@ class APITest(OMLBaseTest):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()[0]['name'], self.opcion_calificacion.nombre)
 
-    def _generar_ami_manager_response_agentes(self):
-        # genera datos que simulan lo más aproximadamente posible las lineas de output de
-        # los estados de los agentes obtenidos por el comando AMI 'database show OML/AGENT'
-        linea_agente = 'Output: /OML/AGENT/{0}/NAME                                 : agente{0}'
-        linea_sip = 'Output: /OML/AGENT/{0}/SIP                                  : 100{0}'
-        linea_status = 'Output: /OML/AGENT/{0}/STATUS                               : {1}:155439223'
-        response = []
-        self.ag1 = self.agente_profile
-        self.ag2 = self.crear_agente_profile()
-        self.ag3 = self.crear_agente_profile()
-        QueueMemberFactory.create(member=self.ag2, queue_name=self.queue)
-        QueueMemberFactory.create(member=self.ag3, queue_name=self.queue)
-        datos_agentes = [{'id': self.ag1.pk, 'status': 'READY'},
-                         {'id': self.ag2.pk, 'status': 'PAUSE'},
-                         {'id': self.ag3.pk, 'status': 'OFFLINE'}]
-        for datos_agente in datos_agentes:
-            id_agente = datos_agente['id']
-            status_agente = datos_agente['status']
-            response.extend([linea_agente.format(id_agente), linea_sip.format(id_agente),
-                             linea_status.format(id_agente, status_agente)])
-        return '\r\n'.join(response), None
+    def set_redis_mock_return_values(self, redis_mock_class, keys, values):
 
-    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
-    @patch.object(AMIManagerConnector, "_ami_manager")
-    @patch.object(AMIManagerConnector, "disconnect")
-    @patch.object(AMIManagerConnector, "connect")
-    def test_servicio_agentes_activos_muestra_activos_no_offline(
-            self, ami_connect, ami_disconnect, _ami_manager, manager):
-        ami_connect.return_value = False
-        ami_disconnect.return_value = False
-        self.campana_activa.supervisors.add(self.supervisor_admin.user)
-        agente = self.crear_agente_profile()
-        QueueMemberFactory.create(member=agente, queue_name=self.queue)
-        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
-        _ami_manager.return_value = self._generar_ami_manager_response_agentes()
-        url = reverse('api_agentes_activos')
-        response = self.client.get(url)
-        self.assertEqual(len(response.json()), 2)
-        for datos_agente in response.json():
-            self.assertIn(datos_agente['id'], [str(self.ag1.pk), str(self.ag2.pk)])
-            if datos_agente['id'] == str(self.ag1.pk):
-                self.assertEqual(datos_agente['status'], 'READY')
-            else:
-                self.assertEqual(datos_agente['status'], 'PAUSE')
+        redis_fake_dict = dict(zip(keys, values))
+        redis_mock_class.return_value.keys.return_value = keys
 
-    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
-    @patch.object(AMIManagerConnector, "_ami_manager")
-    @patch.object(AMIManagerConnector, "disconnect")
-    @patch.object(AMIManagerConnector, "connect")
-    def test_servicio_agentes_activos_detecta_grupos_menos_lineas_previstas(
-            self, ami_connect, ami_disconnect, _ami_manager, manager):
-        self.campana_activa.supervisors.add(self.supervisor_admin.user)
-        ag1 = self.agente_profile
-        ag2 = self.crear_agente_profile()
-        QueueMemberFactory.create(member=ag2, queue_name=self.queue)
-        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
-        ami_connect.return_value = False
-        ami_disconnect.return_value = False
-        _ami_manager.return_value = (
-            "/OML/AGENT/{0}/NAME                       : John Perkins\r\n".format(ag1.pk) + ""
-            "/OML/AGENT/{0}/NAME                       : Silvia Pensive\r\n".format(ag2.pk) + ""
-            "/OML/AGENT/{0}/SIP                        : 1001\r\n".format(ag2.pk) + ""
-            "/OML/AGENT/{0}/STATUS                     : READY:1582309000\r\n".format(ag2.pk) + ""
-            "2 results found."), None
-        url = reverse('api_agentes_activos')
-        response = self.client.get(url)
-        self.assertEqual(len(response.json()), 1)
-        datos_agente = response.json()[0]
-        self.assertEqual(datos_agente['id'], str(ag2.pk))
-        self.assertEqual(datos_agente['status'], 'READY')
+        def hgetall_fake(key):
+            return redis_fake_dict[key]
 
-    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
-    @patch.object(AMIManagerConnector, "_ami_manager")
-    @patch.object(AMIManagerConnector, "disconnect")
-    @patch.object(AMIManagerConnector, "connect")
-    def test_servicio_agentes_no_adiciona_grupo_headers_desconocidos(
-            self, ami_connect, ami_disconnect, _ami_manager, manager):
-        self.campana_activa.supervisors.add(self.supervisor_admin.user)
-        ag1 = self.agente_profile
-        ag2 = self.crear_agente_profile()
-        ag3 = self.crear_agente_profile()
-        QueueMemberFactory.create(member=ag2, queue_name=self.queue2)
-        QueueMemberFactory.create(member=ag3, queue_name=self.queue3)
-        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
-        ami_connect.return_value = False
-        ami_disconnect.return_value = False
-        _ami_manager.return_value = (
-            "/OML/AGENT/{0}/NAME                         : John Perkins\r\n".format(ag1.pk) + ""
-            "/OML/AGENT/{0}/SIP                          : 1001\r\n".format(ag1.pk) + ""
-            "/OML/AGENT/{0}/STATUS                       : READY:1582309000\r\n".format(ag1.pk) + ""
-            "/OML/AGENT/{0}/STRANGE-HEADER               : strange-value\r\n".format(ag1.pk) + ""
-            "/OML/AGENT/{0}/NAME                         : Silvia Pensive\r\n".format(ag2.pk) + ""
-            "/OML/AGENT/{0}/SIP                          : 1002\r\n".format(ag2.pk) + ""
-            "/OML/AGENT/{0}/STATUS                       : PAUSE:1582309000\r\n".format(ag2.pk) + ""
-            "2 results found."), None
-        url = reverse('api_agentes_activos')
-        response = self.client.get(url)
-        self.assertEqual(len(response.json()), 2)
-        datos_agente_1 = response.json()[0]
-        datos_agente_2 = response.json()[1]
-        self.assertEqual(datos_agente_2['id'], str(ag2.pk))
-        self.assertEqual(datos_agente_2['status'], 'PAUSE')
-        self.assertEqual([i for i in datos_agente_1.keys()],
-                         ['id', 'nombre', 'sip', 'status', 'tiempo', 'grupo', 'campana'])
+        redis_mock_class.return_value.hgetall = hgetall_fake
 
-    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
-    @patch.object(AMIManagerConnector, "_ami_manager")
-    @patch.object(AMIManagerConnector, "disconnect")
-    @patch.object(AMIManagerConnector, "connect")
-    @patch('api_app.utiles.logger')
-    def test_servicio_agentes_activos_detecta_grupos_headers_incompletos(
-            self, logger, ami_connect, ami_disconnect, _ami_manager, manager):
-        ami_connect.return_value = False
-        ami_disconnect.return_value = False
-        self.campana_activa.supervisors.add(self.supervisor_admin.user)
-        ag1 = self.agente_profile
-        ag2 = self.crear_agente_profile()
-        QueueMemberFactory.create(member=ag2, queue_name=self.queue)
-        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
-        _ami_manager.return_value = (
-            "/OML/AGENT/{0}/NAME                         : John Perkins\r\n".format(ag1.pk) + ""
-            "/OML/AGENT/{0}/SIP                          : \r\n".format(ag1.pk) + ""
-            "/OML/AGENT/{0}/STATUS                       : READY:1582309000\r\n".format(ag1.pk) + ""
-            "/OML/AGENT/{0}/NAME                         : Silvia Pensive\r\n".format(ag2.pk) + ""
-            "/OML/AGENT/{0}/SIP                          : 1002\r\n".format(ag2.pk) + ""
-            "/OML/AGENT/{0}/STATUS                       : PAUSE:1582309000\r\n".format(ag2.pk) + ""
-            "2 results found."), None
-        url = reverse('api_agentes_activos')
-        response = self.client.get(url)
-        self.assertEqual(len(response.json()), 2)
+        return redis_mock_class
 
-    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
-    @patch.object(AMIManagerConnector, "_ami_manager")
-    @patch.object(AMIManagerConnector, "disconnect")
-    @patch.object(AMIManagerConnector, "connect")
-    @patch('api_app.utiles.logger')
-    def test_servicio_agentes_activos_entradas_menos_lineas_son_detectadas_y_excluidas(
-            self, logger, ami_connect, ami_disconnect, _ami_manager, manager):
-        ami_connect.return_value = False
-        ami_disconnect.return_value = False
-        self.campana_activa.supervisors.add(self.supervisor_admin.user)
-        ag1 = self.agente_profile
-        ag2 = self.crear_agente_profile()
-        ag3 = self.crear_agente_profile()
-        ag4 = self.crear_agente_profile()
-        QueueMemberFactory.create(member=ag2, queue_name=self.queue)
-        QueueMemberFactory.create(member=ag3, queue_name=self.queue)
-        QueueMemberFactory.create(member=ag4, queue_name=self.queue)
-        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
-        _ami_manager.return_value = (
-            "/OML/AGENT/{0}/NAME                         : John Perkins\r\n".format(ag1.pk) + ""
-            "/OML/AGENT/{0}/SIP                          : 1001\r\n".format(ag1.pk) + ""
-            "/OML/AGENT/{0}/STATUS                       : READY:1582309100\r\n".format(ag1.pk) + ""
-            "/OML/AGENT/{0}/NAME                         : Silvia Pensive\r\n".format(ag2.pk) + ""
-            "/OML/AGENT/{0}/SIP                          : 1002\r\n".format(ag2.pk) + ""
-            "/OML/AGENT/{0}/STATUS                       : PAUSE:1582309000\r\n".format(ag2.pk) + ""
-            "/OML/AGENT/{0}/NAME                         : Homero Simpson\r\n".format(ag3.pk) + ""
-            "/OML/AGENT/{0}/NAME                         : Marge Simpson\r\n".format(ag4.pk) + ""
-            "/OML/AGENT/{0}/SIP                          : 1003\r\n".format(ag4.pk) + ""
-            "/OML/AGENT/{0}/STATUS                       : PAUSE:1582309500\r\n".format(ag4.pk) + ""
-            "/OML/AGENT/{0}/SIP                          : 1004\r\n".format(ag4.pk) + ""
-            "2 results found."), None
-        url = reverse('api_agentes_activos')
-        response = self.client.get(url)
-        self.assertEqual(len(response.json()), 3)
-
-    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
-    @patch.object(AMIManagerConnector, "_ami_manager")
-    @patch.object(AMIManagerConnector, "disconnect")
-    @patch.object(AMIManagerConnector, "connect")
-    @patch('api_app.utiles.logger')
-    def test_servicio_agentes_activos_no_incluye_entradas_lineas_status_vacio(
-            self, logger, ami_connect, ami_disconnect, _ami_manager, manager):
-        ami_connect.return_value = False
-        ami_disconnect.return_value = False
-        self.campana_activa.supervisors.add(self.supervisor_admin.user)
-        ag1 = self.agente_profile
-        ag10 = self.crear_agente_profile()
-        ag11 = self.crear_agente_profile()
-        QueueMemberFactory.create(member=ag10, queue_name=self.queue)
-        QueueMemberFactory.create(member=ag11, queue_name=self.queue)
-        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
-        _ami_manager.return_value = (
-            "/OML/AGENT/{0}/NAME                        : Agente 01\r\n".format(ag1.pk) + ""
-            "/OML/AGENT/{0}/SIP                         : 1004 \r\n".format(ag1.pk) + ""
-            "/OML/AGENT/{0}/STATUS                      : \r\n".format(ag1.pk) + ""
-            "/OML/AGENT/{0}/NAME                        : Agente10 \n".format(ag10.pk) + ""
-            "/OML/AGENT/{0}/SIP                         : 1013\r\n".format(ag10.pk) + ""
-            "/OML/AGENT/{0}/STATUS                      : \r\n".format(ag10.pk) + ""
-            "/OML/AGENT/{0}/NAME                        : Agente11\r\n".format(ag11.pk) + ""
-            "/OML/AGENT/{0}/SIP                         : 1014\r\n".format(ag11.pk) + ""
-            "/OML/AGENT/{0}/STATUS                      : READY:1582309100\r\n".format(ag11.pk) + ""
-            "3 results found."), None
-        url = reverse('api_agentes_activos')
-        response = self.client.get(url)
-        self.assertEqual(len(response.json()), 1)
-
-    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
-    @patch.object(AMIManagerConnector, "_ami_manager")
-    @patch.object(AMIManagerConnector, "disconnect")
-    @patch.object(AMIManagerConnector, "connect")
-    @patch('api_app.utiles.logger')
-    def test_servicio_agentes_activos_no_incluye_agentes_no_asignados_al_supervisor(
-            self, logger, ami_connect, ami_disconnect, _ami_manager, manager):
-        ami_connect.return_value = False
-        ami_disconnect.return_value = False
-        self.campana_activa.supervisors.add(self.supervisor_admin.user)
-        ag1 = self.agente_profile
-        ag10 = self.crear_agente_profile()
-        ag11 = self.crear_agente_profile()
-        QueueMemberFactory.create(member=ag10, queue_name=self.queue)
-        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
-        _ami_manager.return_value = (
-            "/OML/AGENT/{0}/NAME                        : Agente 01\r\n".format(ag1.pk) + ""
-            "/OML/AGENT/{0}/SIP                         : 1004\r\n".format(ag1.pk) + ""
-            "/OML/AGENT/{0}/STATUS                      : READY:1582309004\r\n".format(ag1.pk) + ""
-            "/OML/AGENT/{0}/NAME                        : Agente10\r\n".format(ag10.pk) + ""
-            "/OML/AGENT/{0}/SIP                         : 1013\r\n".format(ag10.pk) + ""
-            "/OML/AGENT/{0}/STATUS                      : READY:1582309102\r\n".format(ag10.pk) + ""
-            "/OML/AGENT/{0}/NAME                        : Agente11\r\n".format(ag11.pk) + ""
-            "/OML/AGENT/{0}/SIP                         : 1014\r\n".format(ag11.pk) + ""
-            "/OML/AGENT/{0}/STATUS                      : READY:1582309100\r\n".format(ag11.pk) + ""
-            "3 results found."), None
-        url = reverse('api_agentes_activos')
-        response = self.client.get(url)
-        response_json = response.json()
-        self.assertEqual(len(response_json), 2)
-        for datos_agente in response_json:
-            self.assertTrue(datos_agente.get('id') != str(ag11.pk))
-
-    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AMIManagerConnector')
-    @patch.object(AMIManagerConnector, "_ami_manager")
-    @patch.object(AMIManagerConnector, "disconnect")
-    @patch.object(AMIManagerConnector, "connect")
-    @patch('api_app.utiles.logger')
-    def test_servicio_agentes_activos_entradas_mixtas_lineas_pause_id_aceptadas(
-            self, logger, ami_connect, ami_disconnect, _ami_manager, manager):
-        ami_connect.return_value = False
-        ami_disconnect.return_value = False
+    @patch('ominicontacto_app.services.asterisk.supervisor_activity.redis.Redis')
+    def test_servicio_agentes_activos_funciona_correctamente(
+            self, Redis):
         ag1_pk = self.agente_profile.pk
         self.campana_activa.supervisors.add(self.supervisor_admin.user)
         ag2 = self.crear_agente_profile()
-        ag3 = self.crear_agente_profile()
-        ag4 = self.crear_agente_profile()
         QueueMemberFactory.create(member=ag2, queue_name=self.queue)
-        QueueMemberFactory.create(member=ag3, queue_name=self.queue)
-        QueueMemberFactory.create(member=ag4, queue_name=self.queue)
+        key1 = 'OML:AGENT:{0}'.format(ag1_pk)
+        key2 = 'OML:AGENT:{0}'.format(ag2.pk)
+        now = datetime.now()
+        timestamp = datetime.timestamp(now)
+        key1_value = {
+            'TIMESTAMP': timestamp,
+            'STATUS': 'READY',
+            'NAME': self.agente_profile.user.get_full_name(),
+            'SIP': self.agente_profile.sip_extension
+        }
+        key2_value = {
+            'TIMESTAMP': timestamp,
+            'NAME': ag2.user.get_full_name(),
+            'SIP': ag2.sip_extension,
+            'STATUS': 'PAUSE',
+        }
+
+        Redis = self.set_redis_mock_return_values(Redis, [key1, key2], [key1_value, key2_value])
+
         self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
-        _ami_manager.return_value = (
-            "/OML/AGENT/{0}/NAME                         : John Perkins\r\n".format(ag1_pk) + ""
-            "/OML/AGENT/{0}/PAUSE_ID                     : 1\r\n".format(ag1_pk) + ""
-            "/OML/AGENT/{0}/SIP                          : 1001\r\n".format(ag1_pk) + ""
-            "/OML/AGENT/{0}/STATUS                       : \r\n".format(ag1_pk) + ""
-            "/OML/AGENT/{0}/NAME                         : Silvia Pensive\r\n".format(ag2.pk) + ""
-            "/OML/AGENT/{0}/SIP                          : 1002\r\n".format(ag2.pk) + ""
-            "/OML/AGENT/{0}/STATUS                       : PAUSE:1582309000\r\n".format(ag2.pk) + ""
-            "/OML/AGENT/{0}/NAME                         : FERNANDO XXX\r\n".format(ag3.pk) + ""
-            "/OML/AGENT/{0}/SIP                          : 1105\r\n".format(ag3.pk) + ""
-            "/OML/AGENT/{0}/STATUS                       : \r\n".format(ag3.pk) + ""
-            "/OML/AGENT/{0}/NAME                         : Marge Simpson\r\n".format(ag4.pk) + ""
-            "/OML/AGENT/{0}/PAUSE_ID                     : 0\r\n".format(ag4.pk) + ""
-            "/OML/AGENT/{0}/SIP                          : 1003\r\n".format(ag4.pk) + ""
-            "/OML/AGENT/{0}/STATUS                       : PAUSE:1582309500\r\n".format(ag4.pk) + ""
-            "2 results found."), None
         url = reverse('api_agentes_activos')
         response = self.client.get(url)
         response_json = response.json()
-        agent1_dict = response_json[1]
+        ag1_value = response_json[0]
+        ag2_value = response_json[1]
         self.assertEqual(len(response_json), 2)
-        self.assertEqual(agent1_dict['pause_id'], '0')
+        self.assertEqual(ag1_value['id'], ag1_pk)
+        self.assertEqual(ag2_value['id'], ag2.pk)
+
+    @patch('ominicontacto_app.services.asterisk.supervisor_activity.redis.Redis')
+    def test_servicio_agentes_activos_no_muestra_entradas_status_vacio(
+            self, Redis):
+        ag1_pk = self.agente_profile.pk
+        self.campana_activa.supervisors.add(self.supervisor_admin.user)
+        ag2 = self.crear_agente_profile()
+        QueueMemberFactory.create(member=ag2, queue_name=self.queue)
+        key1 = 'OML:AGENT:{0}'.format(ag1_pk)
+        key2 = 'OML:AGENT:{0}'.format(ag2.pk)
+        now = datetime.now()
+        timestamp = datetime.timestamp(now)
+        key1_value = {
+            'TIMESTAMP': timestamp,
+            'STATUS': 'READY',
+            'NAME': self.agente_profile.user.get_full_name(),
+            'SIP': self.agente_profile.sip_extension
+        }
+        key2_value = {
+            'TIMESTAMP': timestamp,
+            'NAME': ag2.user.get_full_name(),
+            'SIP': ag2.sip_extension
+        }
+
+        Redis = self.set_redis_mock_return_values(Redis, [key1, key2], [key1_value, key2_value])
+
+        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
+        url = reverse('api_agentes_activos')
+        response = self.client.get(url)
+        response_json = response.json()
+        ag_value = response_json[0]
+        self.assertEqual(len(response_json), 1)
+        self.assertEqual(ag_value['id'], ag1_pk)
+
+    @patch('ominicontacto_app.services.asterisk.supervisor_activity.redis.Redis')
+    def test_servicio_agentes_activos_no_muestra_entradas_con_menos_campos(
+            self, Redis):
+        ag1_pk = self.agente_profile.pk
+        self.campana_activa.supervisors.add(self.supervisor_admin.user)
+        ag2 = self.crear_agente_profile()
+        QueueMemberFactory.create(member=ag2, queue_name=self.queue)
+        key1 = 'OML:AGENT:{0}'.format(ag1_pk)
+        key2 = 'OML:AGENT:{0}'.format(ag2.pk)
+        now = datetime.now()
+        timestamp = datetime.timestamp(now)
+        key1_value = {
+            'STATUS': 'READY',
+            'NAME': self.agente_profile.user.get_full_name(),
+            'SIP': self.agente_profile.sip_extension
+        }
+        key2_value = {
+            'TIMESTAMP': timestamp,
+            'NAME': ag2.user.get_full_name(),
+            'SIP': ag2.sip_extension
+        }
+
+        Redis = self.set_redis_mock_return_values(Redis, [key1, key2], [key1_value, key2_value])
+
+        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
+        url = reverse('api_agentes_activos')
+        response = self.client.get(url)
+        response_json = response.json()
+        self.assertEqual(len(response_json), 0)
 
     def test_api_login_devuelve_token_asociado_al_usuario_password(self):
         url = 'https://{0}{1}'.format(settings.OML_OMNILEADS_HOSTNAME, reverse('api_login'))
