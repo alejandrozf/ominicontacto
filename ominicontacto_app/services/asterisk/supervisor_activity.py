@@ -69,13 +69,13 @@ class SupervisorActivityAmiManager(object):
         else:
             self._originate_call(originate_data)
 
-    def escribir_agentes_unavailable_astdb(self):
-        """ Abre una conexion para setear a los agentes como UNAVAILABLE en ASTDB  """
-        self.agent_activity.connect_manager()
+    def escribir_estado_agentes_unavailable(self):
+        """ Busca en el queue de Asterisk si hay agentes Unavailable para reportarlo en Redis"""
+        self.manager.connect()
+        user_activity_list, error = self.manager._ami_manager('command', 'queue show')
+        self.manager.disconnect()
+
         agentes_profiles = []
-        # Nota: Accedo al manager del agent_activity para no crear otra conexion
-        user_activity_list, error = self.agent_activity.manager._ami_manager(
-            'command', 'queue show')
         for activity_line in user_activity_list.splitlines():
             if activity_line.find("Unavailable") != -1:
                 fields_activity = activity_line.split()
@@ -83,8 +83,7 @@ class SupervisorActivityAmiManager(object):
                 agente_profile = AgenteProfile.objects.get(id=agente_id)
                 if agente_profile not in agentes_profiles:
                     agentes_profiles.append(agente_profile)
+
         if agentes_profiles:
             for agente_profile in agentes_profiles:
-                self.agent_activity.set_agent_as_unavailable(
-                    agente_profile, manage_connection=False)
-        self.agent_activity.disconnect_manager()
+                self.agent_activity.set_agent_as_unavailable(agente_profile)
