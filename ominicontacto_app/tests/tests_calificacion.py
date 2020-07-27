@@ -220,7 +220,8 @@ class CalificacionTests(OMLBaseTest):
         post_data = self._obtener_post_data_calificacion_cliente()
         post_data['opcion_calificacion'] = self.opcion_calificacion_agenda.pk
         response = self.client.post(url, post_data, follow=True)
-        self.assertTemplateUsed(response, 'agenda_contacto/create_agenda_contacto.html')
+        self.assertTemplateUsed(response,
+                                'agente/frame/agenda_contacto/create_agenda_contacto.html')
 
     @patch('requests.post')
     def test_calificacion_agenda_modificacion_redirecciona_update_agenda(self, post):

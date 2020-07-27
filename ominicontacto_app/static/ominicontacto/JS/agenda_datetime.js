@@ -18,9 +18,6 @@
 */
 $ (function() {
 
-        $('#id_fecha').datetimepicker({format: 'YYYY-MM-DD'});
-      $('#id_hora').datetimepicker({
-      format: 'HH:mm',
-
-      });
-    });
+    $('#id_fecha').datetimepicker({format: 'YYYY-MM-DD'});
+    $('#id_hora').datetimepicker({format: 'HH:mm'});
+});

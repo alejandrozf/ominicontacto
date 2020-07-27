@@ -1,0 +1,47 @@
+<!--
+Copyright (C) 2018 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% extends "agente/frame/base_frame.html" %}
+{% load compress %}
+{% load static %}
+{% load i18n %}
+
+{% block head_js %}
+  <script type="text/javascript" src="{% static 'ominicontacto/JS/agenda_datetime.js'%}"></script>
+{% endblock head_js %}
+
+{% block content %}
+  <div class="container-fluid">
+    <h1>{% trans 'Agenda para el contacto con el teléfono ' %} {{contacto.telefono}} </h1>
+    <div>
+      <form action = "" method = "post">
+          {% include "base_form_fields.html" with form=form %}
+          <hr>
+          
+          <input class="btn btn-danger" action="action" type="button" value="{% trans "Volver a Calificación" %}" onclick="history.go(-1);" />
+          <button type="submit" id="id_guardar" class="btn btn-success btn-lg">
+            {% trans 'Guardar' %}
+          </button>
+
+      </form>
+
+    </div>
+      
+  </div>
+{% endblock content %}
