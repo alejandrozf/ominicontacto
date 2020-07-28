@@ -533,6 +533,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'agenda_contacto_create',
              'roles': ['Agente', ]},
+            {'nombre': 'agenda_contacto_update',
+             'roles': ['Agente', ]},
             {'nombre': 'agenda_contacto_detalle',
              'roles': ['Agente', ]},
             {'nombre': 'agenda_contacto_listado',
@@ -915,6 +917,8 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Agentes logueados'), 'version': '1.7.0'},
         'agenda_contacto_create':
             {'descripcion': _('Agenda para un contacto'), 'version': '1.7.0'},
+        'agenda_contacto_update':
+            {'descripcion': _('Re-agenda para un contacto'), 'version': '1.8.0'},
         'agenda_contacto_detalle':
             {'descripcion': _('Ver el detalle de la Agenda de un contacto'), 'version': '1.7.0'},
         'agenda_contacto_listado':
