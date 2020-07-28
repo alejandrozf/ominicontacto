@@ -1,29 +1,30 @@
 Release Notes
 *************
 
-*Junio 29, 2020*
+*Julio 28, 2020*
 
-Detalles de Release 1.7.0
+Detalles de Release 1.8.0
 =========================
 
 Nuevas funcionalidades
 --------------------------
-- Un nuevo sistema de permisos fue implementado, reescribiendo y generalizando el existente, ahora es posible crear roles de usuarios y administrar sus permisos a las funcionalidades del sistema
-- Fue implementada una funcionalidad para auditar las calificaciones de llamadas a contactos por agentes. Se permite además filtrar calificaciones y se muestra el valor de dicha auditoría en el formulario de calificaciones para agentes
-- La página de supervisión de agentes ahora muestra información de estado de agentes que están no disponibles (UNAVAILABLE)
+- Las campañas preview pueden ser ahora recicladas
+- El sistema permite filtrar por nombre y por grupo a los agentes en la vista de supervisión
+- Un agente puede moverse de una pausa a otra sin que se generen eventos UNPAUSE
+- Se implementó una vía de comunicar feeback entre agentes y auditores
+- Los supervisores ahora pueden inspeccionar las agendas y reasignar los agentes relacionados
+- OMniLeads puede ser instalado ahora en los entornos de cloud Google Cloud, Microsoft Azure y OVH.
+- La vista de auditorías permite filtrar por estado de auditoría
 
 
 Bug fixes y mejoras
 --------------------------
-- Solucionado error que escribía datos inconsistentes en AstDB para llamadas entrantes.
-- Solucionado error que escribía datos vacíos para campos ocultos de contactos en una campaña
-- Solucionado problema al restringir el campo CID en wizard de creación de campaña saliente
-- Solucionado error al eliminar un nodo destino entrante
-- Solucionado error en vista de supervisión de agentes
-- Solucionado error que no permitía retroceder en los wizards de campañas dialer y entrantes
-- Solucionado error que mostraba siempre la primera opción a agentes en el formulario de la campaña
-- Solucionado error de instalación que duplicaba algunos archivos de dialplan
-- Solucionado error en job de gitlab para crear imágenes de docker para entornos productivos
-- Solucionado error en Ubuntu que detenía la instalación si el SO no tenía python-pip instalado
-- Solucionados errores de audio en una sola dirección en algunos ambientes de Cloud
-- Solucionada incorrecta exportación de reporte de campaña a PDF
+- Solucionado error en dialplan al realizar transferencias de agentes desde la PBX
+- Solucionado error de visualización al crear una agenda
+- Solucionado error en selección de filtro de fecha al filtrar agendas
+- Solucionado error al modificar una agenda
+- Solucionada inconsistencia en cálculo de tiempos de sesión en el reporte de agentes
+- Solucionado error en paginación y filtrado inicial en página de auditorías
+- Solucionado error de sincronización en endpoint de calificación
+- Solucionado error de instalación cuando la BD de PostgreSQL está en un host externo
+- Solucionado error al generar las imágenes de Docker

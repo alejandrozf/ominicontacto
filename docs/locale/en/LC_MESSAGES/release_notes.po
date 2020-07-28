@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-29 12:53-0300\n"
+"POT-Creation-Date: 2020-07-28 15:58-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,138 +24,124 @@ msgstr "Release Notes"
 
 # 73ee1e870afd4a31b43364589dd0e1ee
 #: ../../release_notes.rst:4
-msgid "*Junio 29, 2020*"
-msgstr "June 29, 2020"
+msgid "*Julio 28, 2020*"
+msgstr "July 28, 2020"
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.7.0"
-msgstr "Release 1.7.0 details"
+msgid "Detalles de Release 1.8.0"
+msgstr "Release 1.8.0 details"
 
 # b3c4906a629c4d95b4ec90b1435e0d2e
 #: ../../release_notes.rst:10
 msgid "Nuevas funcionalidades"
 msgstr "New features"
 
-# 9fea34ffb16a4f47b7ee4c7137ad780e
+# 830cfd2adfce422fb4a7de51f31725c5
 #: ../../release_notes.rst:11
-msgid ""
-"Un nuevo sistema de permisos fue implementado, reescribiendo y "
-"generalizando el existente, ahora es posible crear roles de usuarios y "
-"administrar sus permisos a las funcionalidades del sistema"
-msgstr ""
-"A new user permisssions squema was implemented, rewriting and superseeding the existent,"
-" now is possible to create custom user roles and manage its permissions to"
-" system features."
+msgid "Las campañas preview pueden ser ahora recicladas"
+msgstr "Preview campaigns can be recycled now"
 
-# 52aa8a48f61140d693f869e2988dce5a
+# c43475bfd3d44641a8cd7d53fac9de77
 #: ../../release_notes.rst:12
 msgid ""
-"Fue implementada una funcionalidad para auditar las calificaciones de "
-"llamadas a contactos por agentes. Se permite además filtrar "
-"calificaciones y se muestra el valor de dicha auditoría en el formulario "
-"de calificaciones para agentes"
+"El sistema permite filtrar por nombre y por grupo a los agentes en la "
+"vista de supervisión"
 msgstr ""
-"An audit feature allowing set audit tags for dispositioned calls was implemented."
-"It allows also filtering and adds the audit value to the disposition form for agents"
+"The system now allows filtering by name and by group for agents in"
+" supervision page"
 
-# ce0d7a96416f4f4794fc829cf0845b34
+# b91d6447d1874213b015f2f0db9bbd6d
 #: ../../release_notes.rst:13
 msgid ""
-"La página de supervisión de agentes ahora muestra información de estado "
-"de agentes que están no disponibles (UNAVAILABLE)"
+"Un agente puede moverse de una pausa a otra sin que se generen eventos "
+"UNPAUSE"
 msgstr ""
-"Supervision agents page shows agents state when they are unavailable"
+"The agent now can move from a pause to another pause directly without"
+" UNPAUSE events"
+
+# 9622eadc5e1d410a96562707ef49a027
+#: ../../release_notes.rst:14
+msgid "Se implementó una vía de comunicar feeback entre agentes y auditores"
+msgstr "A way to communicate feedback from auditor to agent was implemented"
+
+# f4237b33a3b7449aab4e5f7581ef2074
+#: ../../release_notes.rst:15
+msgid ""
+"Los supervisores ahora pueden inspeccionar las agendas y reasignar los "
+"agentes relacionados"
+msgstr ""
+"Supervisors can inspect agendas and re-assign agents involveds"
+
+# 8218526d9ee1440c894a6538323f35a8
+#: ../../release_notes.rst:16
+msgid ""
+"OMniLeads puede ser instalado ahora en los entornos de cloud Google "
+"Cloud, Microsoft Azure y OVH."
+msgstr ""
+"OMniLeads can be installed now on Google Cloud, Microsoft Azure and "
+"OVH cloud environments"
+
+# 1f78e57af88145d382ae9ef4fda279fa
+#: ../../release_notes.rst:17
+msgid "La vista de auditorías permite filtrar por estado de auditoría"
+msgstr "The allows filtering engaged dispositions for audit status"
 
 # 2f558403c15a436e90409b976c7f07ed
-#: ../../release_notes.rst:17
+#: ../../release_notes.rst:21
 msgid "Bug fixes y mejoras"
 msgstr "Fixes and improvements"
 
-# 34ef152fdffc4932879f41780d6bb6f8
-#: ../../release_notes.rst:18
-msgid ""
-"Solucionado error que escribía datos inconsistentes en AstDB para "
-"llamadas entrantes."
-msgstr ""
-"An error that write inconsistent data on AstDB for inbound calls was fixed"
-
-# d4277b49407b44bc91e9f2839fa73e51
-#: ../../release_notes.rst:19
-msgid ""
-"Solucionado error que escribía datos vacíos para campos ocultos de "
-"contactos en una campaña"
-msgstr ""
-"Fixed error that saves empty hidden contact fields"
-
-# 8d8c2bed3fb04706b9d55d9bf10a0ff2
-#: ../../release_notes.rst:20
-msgid ""
-"Solucionado problema al restringir el campo CID en wizard de creación de "
-"campaña saliente"
-msgstr ""
-"Fixed CID restriccion issue on outbound campaign creation wizard"
-
-# 8d8c2bed3fb04706b9d55d9bf10a0ff2
-#: ../../release_notes.rst:21
-msgid "Solucionado error al eliminar un nodo destino entrante"
-msgstr "Fixed error raised on deleting inbound destination node"
-
-# aad09193077e4992ad8243ec8f4db81a
+# c8571a570e0d4d6ea3d529a2d84d4024
 #: ../../release_notes.rst:22
-msgid "Solucionado error en vista de supervisión de agentes"
-msgstr "Fixed error when on supervision agents page"
-
-# 8d8c2bed3fb04706b9d55d9bf10a0ff2
-#: ../../release_notes.rst:23
 msgid ""
-"Solucionado error que no permitía retroceder en los wizards de campañas "
-"dialer y entrantes"
+"Solucionado error en dialplan al realizar transferencias de agentes desde"
+" la PBX"
 msgstr ""
-"Fixed error that did not allowed to step back on inbound & dialer "
-"respective campaign wizards"
-
-# f62048c2eb2c48edbfa1146f348201eb
-#: ../../release_notes.rst:24
-msgid ""
-"Solucionado error que mostraba siempre la primera opción a agentes en el "
-"formulario de la campaña"
-msgstr ""
-"Fixed issue that shows always first option to agents in campaign forms"
+"Fixed error in dialplan when transferring agents from PBX"
 
 # aad09193077e4992ad8243ec8f4db81a
-#: ../../release_notes.rst:25
-msgid ""
-"Solucionado error de instalación que duplicaba algunos archivos de "
-"dialplan"
-msgstr ""
-"Fixed installation error that duplicates some dialplan files"
+#: ../../release_notes.rst:23
+msgid "Solucionado error de visualización al crear una agenda"
+msgstr "Fixed visualization error creating agenda"
 
-# d4277b49407b44bc91e9f2839fa73e51
+# 9af30c7649d44482a64f236dd8c5b5fb
+#: ../../release_notes.rst:24
+msgid "Solucionado error en selección de filtro de fecha al filtrar agendas"
+msgstr "Fixed filter date picker error when filtering agendas"
+
+# 8d8c2bed3fb04706b9d55d9bf10a0ff2
+#: ../../release_notes.rst:25
+msgid "Solucionado error al modificar una agenda"
+msgstr "Fixed error when updating agenda"
+
+# bd1ff8aa12394867911188030376b4fb
 #: ../../release_notes.rst:26
 msgid ""
-"Solucionado error en job de gitlab para crear imágenes de docker para "
-"entornos productivos"
+"Solucionada inconsistencia en cálculo de tiempos de sesión en el reporte "
+"de agentes"
 msgstr ""
-"Fixed error on gitlab job for build docker images for production environments"
+"Fixed time session inconsistency on agents report"
 
-# 6b71d538747549b8b4f825facd66a806
+# 471ec40e86ab4a4589a5445c1dddaacc
 #: ../../release_notes.rst:27
-msgid ""
-"Solucionado error en Ubuntu que detenía la instalación si el SO no tenía "
-"python-pip instalado"
-msgstr ""
-"Fixed error on Ubuntu that stops installation whent OS had not python-pip installed"
-
-# 8d8c2bed3fb04706b9d55d9bf10a0ff2
-#: ../../release_notes.rst:28
-msgid ""
-"Solucionados errores de audio en una sola dirección en algunos ambientes "
-"de Cloud"
-msgstr ""
-"Fixed one-way audio error on some Cloud environments"
+msgid "Solucionado error en paginación y filtrado inicial en página de auditorías"
+msgstr "Fixed error in pagination and initial date filter of audits page"
 
 # aad09193077e4992ad8243ec8f4db81a
+#: ../../release_notes.rst:28
+msgid "Solucionado error de sincronización en endpoint de calificación"
+msgstr "Fixed syncronization inconsistency on disposition endpoint"
+
+# 9af30c7649d44482a64f236dd8c5b5fb
 #: ../../release_notes.rst:29
-msgid "Solucionada incorrecta exportación de reporte de campaña a PDF"
-msgstr "Fixed incorrect campaign report exportation to PDF"
+msgid ""
+"Solucionado error de instalación cuando la BD de PostgreSQL está en un "
+"host externo"
+msgstr ""
+"Fixed installation error when PostgreSQL database is external"
+
+# 8d8c2bed3fb04706b9d55d9bf10a0ff2
+#: ../../release_notes.rst:30
+msgid "Solucionado error al generar las imágenes de Docker"
+msgstr "Fixed error when building Docker images"

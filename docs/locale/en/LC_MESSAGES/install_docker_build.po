@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-09 23:58-0300\n"
+"POT-Creation-Date: 2020-07-28 15:58-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 # bb6d49e871b74e2fa056488831db379b
 #: ../../install_docker_build.rst:5
@@ -85,8 +85,13 @@ msgstr "Image build"
 msgid "Para buildear imágenes seguir los siguientes pasos:"
 msgstr "To build images follow these steps:"
 
-# e37e28dc129d47dcb148755a25bd3a1e
+# d1bbe12f8e4b4954b843f24ef8756eb8
 #: ../../install_docker_build.rst:25
+msgid "Instalar el paquete docker-py"
+msgstr "Install the package docker-py"
+
+# e37e28dc129d47dcb148755a25bd3a1e
+#: ../../install_docker_build.rst:31
 msgid ""
 "Especificar en el archivo de inventario de ansible que entorno se desea. "
 "Descomentar la linea que dice #localhost dependiendo del entorno."
@@ -95,7 +100,7 @@ msgstr ""
 "Uncomment the line that says #localhost, depending of the environment"
 
 # e1d4c56e2b814b129e91f3d23faa801d
-#: ../../install_docker_build.rst:36
+#: ../../install_docker_build.rst:42
 msgid ""
 "En el mismo archivo observar la seccion [docker:vars], en el verá unas "
 "variables sin valor:"
@@ -104,7 +109,7 @@ msgstr ""
 "variables withouth value:"
 
 # 17e7c39bfb2e4537be7d5f2152ae4d0f
-#: ../../install_docker_build.rst:46
+#: ../../install_docker_build.rst:52
 msgid ""
 "Ingresar ahí el nombre de usuario, email y contraseña del *Registry* "
 "donde quiere subir sus imágenes. La variable **oml_release** es usada "
@@ -117,12 +122,12 @@ msgstr ""
 "define the **Tag** that will have the images."
 
 # c0ccb577135746408a5739c07d27c4bf
-#: ../../install_docker_build.rst:49
+#: ../../install_docker_build.rst:55
 msgid "Por último, ejecutar el script *deploy.sh* de la siguiente forma:"
 msgstr "Lastly, execute the *deploy.sh* script with this option:"
 
 # 43d49ad652504319b35fca144af0988f
-#: ../../install_docker_build.rst:57
+#: ../../install_docker_build.rst:63
 msgid ""
 "Durante la ejecución se realiza de una vez el build y push de las "
 "imágenes, por lo que si experimenta algun error a la hora del build "
@@ -134,20 +139,20 @@ msgstr ""
 "again the script."
 
 # 27fa068e51634a17b8b793943df7055e
-#: ../../install_docker_build.rst:59
+#: ../../install_docker_build.rst:65
 msgid ""
 "Tenemos la opción de crear todo el entorno de build (con todos los "
 "archivos necesarios para dicho build renderizados) pero sin que se "
 "realice el build/push de las imágenes. De esta forma damos la opción de "
 "que el desarrollador estudie mas a fondo los Dockerfile de cada servicio."
 " Ejecutar el script *deploy.sh* de la siguiente forma:"
-msgstr "We have the option to create a build environment (containing all the files necessary "
-"for this build) withouth making the build/push itself. This way, we provide the option "
-"for the developer to study deeply the Docker files of eache service. Execute the *deploy.sh* "
-"script, this way:"
+msgstr ""
+"We have the option to create a build environment (containing all the "
+"files necessary for this build) withouth making the build/push itself. "
+"This way, we provide the option for the developer to study deeply the "
+"Docker files of eache service. Execute the *deploy.sh* script, this way:"
 
 # 2ecbd95f7790444380b10681b148a505
-#: ../../install_docker_build.rst:67
+#: ../../install_docker_build.rst:73
 msgid "Todo este contenido lo encontrará en `~/omnileads/build`"
 msgstr "All this content will be in `~/omnileads/build`"
-
