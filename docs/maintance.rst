@@ -120,8 +120,8 @@ Al ingresar se despliega una pantalla como la siguiente, donde debemos acceder c
 
 *Figure 4: Access to WD*
 
-Cambio de credenciales
-#######################
+Cambio de credenciales web
+###########################
 
 Por defecto Wombat Dialer viene con las credenciales web *demoadmin* como user y *demo* como pass. Estas credeciales se pueden cambiar, para ello:
 
@@ -140,6 +140,24 @@ Por defecto Wombat Dialer viene con las credenciales web *demoadmin* como user y
 *Figure 6: WD change credentials 2*
 
 * Una vez finalizado, recargar la página e ingresar con las nuevas credenciales.
+
+Credenciales AMI
+#################
+
+.. note::
+
+  A partir del release-1.8.0 tener esto en cuenta
+
+Wombat Dialer utilizará unas credenciales para AMI aparte de las que usa OMniLeads, por ello se crea un usuario **wombatami** dentro del archivo `oml_manager.conf`. La contraseña de este usuario de AMI se cambia según lo que ingresó el usuario en el parametro **ami_password** del archivo de inventario. Por defecto viene asi:
+
+.. code::
+
+  [wombatami]
+  secret =  5_MeO_DMT
+  deny = 0.0.0.0/0.0.0.0
+  permit = 127.0.0.1/255.255.255.255
+  read = all
+  write = all
 
 Parámetros básicos
 ###################

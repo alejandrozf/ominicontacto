@@ -56,7 +56,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for calificacion in listado_de_calificaciones %}
+                {% for calificacion in calificaciones %}
                     {% if calificacion.tiene_auditoria_pendiente %}
                         <tr class="pendiente">
                     {% elif calificacion.tiene_auditoria_aprobada %}
@@ -89,21 +89,21 @@
 
         <nav aria-label="Page navigation">
             <ul class="pagination">
-                {% if listado_de_calificaciones.has_previous %}
+                {% if calificaciones.has_previous %}
                     <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous" onclick="javascript:filtrar_pagina({{listado_de_calificaciones.previous_page_number}})">
+                        <a class="page-link" href="#" aria-label="Previous" onclick="javascript:filtrar_pagina({{calificaciones.previous_page_number}})">
                             <span aria-hidden="true">&laquo;</span>
                             <span class="sr-only">{% trans 'Anterior' %}</span>
                         </a>
                     </li>
                 {% endif %}
-                {% for page in listado_de_calificaciones.paginator.page_range %}
-                    <li class="page-item {% if listado_de_calificaciones.number == page  %}active{% endif %}"><a class="page-link" href="#" onclick="javascript:filtrar_pagina({{page}})">{{ page }}</a></li>
+                {% for page in calificaciones.paginator.page_range %}
+                    <li class="page-item {% if calificaciones.number == page  %}active{% endif %}"><a class="page-link" href="#" onclick="javascript:filtrar_pagina({{page}})">{{ page }}</a></li>
                 {% endfor %}
 
-                {% if listado_de_calificaciones.has_next %}
+                {% if calificaciones.has_next %}
                     <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next" onclick="javascript:filtrar_pagina({{listado_de_calificaciones.next_page_number}})">
+                        <a class="page-link" href="#" aria-label="Next" onclick="javascript:filtrar_pagina({{calificaciones.next_page_number}})">
                             <span aria-hidden="true">&raquo;</span>
                             <span class="sr-only">{% trans 'Siguiente' %}</span>
                         </a>

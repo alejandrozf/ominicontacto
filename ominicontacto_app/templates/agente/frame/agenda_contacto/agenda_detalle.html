@@ -17,17 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
-{% load staticfiles %}
+{% extends "agente/frame/base_frame.html" %}
+{% load compress %}
+{% load static %}
 {% load i18n %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="{% static 'bootstrap-3.3.6/css/bootstrap.min.css' %}">
-</head>
-<body>
-{%include "agenda_contacto/messages_agenda.html"%} 
+{% block content %}
 <div class="container">
     <div class="row">
         <div class="col-md-9">
@@ -56,5 +51,4 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </div>
     </div>
 </div>
-</body>
-</html>
+{% endblock content %}

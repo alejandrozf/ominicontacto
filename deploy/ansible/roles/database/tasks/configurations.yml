@@ -111,7 +111,7 @@
 
 # Se crea el lenguaje plperl, para postgres interno.
 - name: Create language plperl in database
-  shell: psql -U {{ postgres_user }} -d {{ item }} -h 127.0.0.1 -c 'CREATE EXTENSION plperl'
+  shell: psql -U {{ postgres_user }} -d {{ item }} -h {{ postgres_host }} -c 'CREATE EXTENSION plperl'
   environment:
     PGPASSWORD: "{{ postgres_password }}"
   with_items:
@@ -119,7 +119,7 @@
     - template1
   register: plperl_result
   tags: postinstall
-  when: postgres_host is not defined
+  when: postgres_host is defined
   failed_when:
     - "plperl_result.rc != 1"
     - "plperl_result.rc != 0"

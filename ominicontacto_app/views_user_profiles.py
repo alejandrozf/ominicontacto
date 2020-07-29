@@ -27,6 +27,9 @@ from formtools.wizard.views import SessionWizardView
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.contrib.auth.models import Group
+from django.db.models import Q
+from django.db.models import Value as V
+from django.db.models.functions import Concat
 from django.urls import reverse
 from django.http import HttpResponseRedirect
 from django.views.generic import (
@@ -271,9 +274,21 @@ class UserListView(ListView):
     template_name = 'user/user_list.html'
     paginate_by = 40
 
+    def get_context_data(self, **kwargs):
+        context = super(UserListView, self).get_context_data(**kwargs)
+        if 'search' in self.request.GET:
+            context['search'] = self.request.GET.get('search')
+            context['search_url'] = '?search=' + context['search']
+        return context
+
     def get_queryset(self):
         """Returns user ordernado por id"""
-        return User.objects.exclude(borrado=True).order_by('id')
+        users = User.objects.exclude(borrado=True).order_by('id')
+        if 'search' in self.request.GET:
+            search = self.request.GET.get('search')
+            users = users.annotate(full_name=Concat('first_name', V(' '), 'last_name')).\
+                filter(Q(full_name__icontains=search) | Q(username__icontains=search))
+        return users
 
 
 class SupervisorProfileUpdateView(FormView):

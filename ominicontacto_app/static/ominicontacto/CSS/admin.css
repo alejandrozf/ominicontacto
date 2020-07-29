@@ -943,4 +943,7 @@ body.wrapper-page-error {
     height: calc(2.25rem + 2px) !important;
     padding: .375rem .75rem;
     border: 1px solid #ced4da !important;
+/* Otras personalizaciones*/
+.filter-flex {
+    display: flex;
 }
