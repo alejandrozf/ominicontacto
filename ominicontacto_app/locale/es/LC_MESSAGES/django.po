@@ -4548,6 +4548,11 @@ msgstr ""
 msgid "Llamadas restantes estimadas"
 msgstr ""
 
+#: ominicontacto_app/templates/campanas/campana_dialer/detalle.html:53
+#: ominicontacto_app/templates/campanas/campana_dialer/detalle_campana.html:43
+msgid "Reintentos abiertos"
+msgstr ""
+
 #: ominicontacto_app/templates/campanas/campana_dialer/detalle.html:57
 msgid "No se obtuvieron resultados del discador"
 msgstr ""

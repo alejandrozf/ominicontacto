@@ -40,6 +40,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <p>{% trans 'Llamadas efectuadas:' %} <strong>{{ efectuadas }}</strong></p>
             <p>{% trans 'Llamadas Terminadas' %}<strong>{{ terminadas }}</strong></p>
             <p>{% trans 'Llamadas restantes estimadas' %}<strong>{{ estimadas }}</strong></p>
+            <p>{% trans 'Reintentos abiertos' %}: <strong>{{ reintentos_abiertos }}</strong></p>
             {% for statu in status %}
                 <p>{{statu.gbState}} {{statu.gbStateExt}} <strong>{{statu.nCalls}}</strong></p>
             {% endfor %}
