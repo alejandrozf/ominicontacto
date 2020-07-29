@@ -40,7 +40,7 @@ from ominicontacto_app.forms import (CalificacionClienteForm, FormularioNuevoCon
                                      RespuestaFormularioGestionForm)
 from ominicontacto_app.models import (
     Contacto, Campana, CalificacionCliente, RespuestaFormularioGestion,
-    OpcionCalificacion, SitioExterno)
+    OpcionCalificacion, SitioExterno, AgendaContacto)
 from ominicontacto_app.services.sistema_externo.interaccion_sistema_externo import (
     InteraccionConSistemaExterno)
 
@@ -292,6 +292,9 @@ class CalificacionClienteFormView(FormView):
         return self.object_calificacion.callid
 
     def _calificar_form(self, calificacion_form):
+        calificacion_nueva = False
+        if calificacion_form.instance.pk is None:
+            calificacion_nueva = True
         self.object_calificacion = calificacion_form.save(commit=False)
         self.object_calificacion.callid = self._obtener_call_id()
         self.object_calificacion.agente = self.agente
@@ -308,11 +311,6 @@ class CalificacionClienteFormView(FormView):
         # cambios realizados directamente desde una llamada de las otras modificaciones
         update_change_reason(self.object_calificacion, self.kwargs.get('from'))
 
-        # Finalizar relacion de contacto con agente
-        # Optimizacion: si ya hay calificacion ya se termino la relacion agente contacto antes.
-        if self.campana.type == Campana.TYPE_PREVIEW and self.object is None:
-            self.campana.gestionar_finalizacion_relacion_agente_contacto(self.contacto.id)
-
         # check metadata en calificaciones de no accion y eliminar
         self._check_metadata_no_accion_delete(self.object_calificacion)
 
@@ -323,8 +321,17 @@ class CalificacionClienteFormView(FormView):
             message = _('Operación Exitosa! '
                         'Se llevó a cabo con éxito la calificación del cliente')
             messages.success(self.request, message)
-        if self.object_calificacion.es_agenda():
+        if self.object_calificacion.es_agenda() and calificacion_nueva:
             return redirect(self.get_success_url_agenda())
+        elif self.object_calificacion.es_agenda():
+            # se esta modificando una calificacion de agenda existente
+            # con una agenda creada
+            agenda_calificacion = AgendaContacto.objects.filter(
+                contacto=self.contacto, campana=self.campana, agente=self.agente).first()
+            if agenda_calificacion is not None:
+                return redirect(self.get_success_url_agenda_update(agenda_calificacion.pk))
+            else:
+                return redirect(self.get_success_url_agenda())
         elif self.kwargs['from'] == 'reporte':
             return redirect(self.get_success_url_reporte())
         else:
@@ -382,6 +389,10 @@ class CalificacionClienteFormView(FormView):
                        kwargs={"pk_campana": self.campana.id,
                                "pk_contacto": self.contacto.id})
 
+    def get_success_url_agenda_update(self, agenda_contacto_pk):
+        return reverse('agenda_contacto_update',
+                       kwargs={"pk": agenda_contacto_pk})
+
     def get_success_url_reporte(self):
         return reverse('reporte_agente_calificaciones')
 
@@ -429,6 +440,9 @@ class AuditarCalificacionClienteFormView(CalificacionClienteFormView):
                                "pk_contacto": self.contacto.id})
 
     def get_success_url_agenda(self):
+        return self.get_success_url()
+
+    def get_success_url_agenda_update(self, agenda_contacto):
         return self.get_success_url()
 
     def _get_redireccion_campana_erronea(self):

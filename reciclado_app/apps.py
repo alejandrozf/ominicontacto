@@ -27,9 +27,13 @@ class RecicladoAppConfig(AppConfig):
         return [
             {'nombre': 'reciclar_campana_dialer',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'reciclar_campana_preview',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
         ]
 
     informacion_de_permisos = {
         'reciclar_campana_dialer':
             {'descripcion': _('Reciclado de campañas Dialer'), 'version': '1.7.0'},
+        'reciclar_campana_preview':
+            {'descripcion': _('Reciclado de campañas Preview'), 'version': '1.8.0'},
     }

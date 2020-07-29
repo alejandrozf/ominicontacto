@@ -292,6 +292,15 @@ class PhoneJSController {
                 self.click_2_call_dispatcher.enable();
                 self.keep_alive_sender.deactivate();
             },
+            onChangePause: function() {
+                phone_logger.log('FSM: onChangePause');
+                self.view.setUserStatus('label label-danger', self.pause_manager.pause_name);
+                self.view.closeAllModalMenus();
+                self.view.setStateInputStatus('Paused');
+                self.click_2_call_dispatcher.enable();
+                self.keep_alive_sender.deactivate();
+            },
+
             onCalling: function() {
                 phone_logger.log('FSM: onCalling');
                 self.view.setUserStatus('label label-success', gettext('Llamando'));
@@ -512,8 +521,6 @@ class PhoneJSController {
         this.timers.pausa.start();
         this.timers.operacion.stop();
 
-        // TODO: Investigar por que falla la llamada si se la cancela directamente.
-        //this.phone.makePauseCall(pause_id);
         var self = this;
         var pause_ok = function(){
             self.view.setCallStatus(gettext('Agente en pausa'), 'orange');

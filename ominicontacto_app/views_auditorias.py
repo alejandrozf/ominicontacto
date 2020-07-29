@@ -22,13 +22,14 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.core import paginator as django_paginator
 from django.urls import reverse_lazy
+from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView
 
 from ominicontacto_app.forms import AuditoriaBusquedaForm, AuditoriaCalificacionForm
 from ominicontacto_app.models import CalificacionCliente, Grabacion
 
-from .utiles import convert_fecha_datetime
+from .utiles import convert_fecha_datetime, fecha_local
 
 
 class AuditarCalificacionesFormView(FormView):
@@ -64,11 +65,15 @@ class AuditarCalificacionesFormView(FormView):
         return context
 
     def get(self, request, *args, **kwargs):
+        hoy = fecha_local(now())
         supervisor = request.user.get_supervisor_profile()
         campanas_supervisor_ids = list(supervisor.campanas_asignadas_actuales().values_list(
             'pk', flat=True))
-        calificaciones = CalificacionCliente.objects.obtener_calificaciones_auditoria().filter(
+        calificaciones_a_auditar = CalificacionCliente.objects.obtener_calificaciones_auditoria()
+        calificaciones_a_auditar = calificaciones_a_auditar.filter(
             opcion_calificacion__campana__pk__in=campanas_supervisor_ids)
+        calificaciones_dia_actual = CalificacionCliente.objects.calificacion_por_filtro(hoy, hoy)
+        calificaciones = calificaciones_a_auditar & calificaciones_dia_actual
         return self.render_to_response(
             self.get_context_data(
                 listado_de_calificaciones=calificaciones,

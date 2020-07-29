@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-09 10:54-0300\n"
+"POT-Creation-Date: 2020-07-21 15:07-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,55 +17,63 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: supervision_app/apps.py:33
-msgid "Supervisión"
-msgstr "Supervision"
-
-#: supervision_app/apps.py:38
 #: supervision_app/templates/supervision_agentes.html:48
 msgid "Agentes"
 msgstr "Agents"
 
-#: supervision_app/apps.py:42
+#: supervision_app/apps.py:38
 #: supervision_app/templates/supervision_campanas_entrantes.html:32
 msgid "Campañas Entrantes"
 msgstr "Inbound Campaigns"
 
-#: supervision_app/apps.py:46
+#: supervision_app/apps.py:43
 #: supervision_app/templates/supervision_campanas_salientes.html:31
 msgid "Campañas Salientes"
 msgstr "Outbound Campaigns"
 
-#: supervision_app/apps.py:66
+#: supervision_app/apps.py:49
+msgid "Supervisión"
+msgstr "Supervision"
+
+#: supervision_app/apps.py:68
 msgid "Estado de agentes en supervisión"
 msgstr "Agents status for supervision"
 
-#: supervision_app/apps.py:68
+#: supervision_app/apps.py:70
 msgid "Estado de campañas entrantes en supervisión"
 msgstr "Inbound campaigns status for supervision"
 
-#: supervision_app/apps.py:70
+#: supervision_app/apps.py:72
 msgid "Estado de campañas salientes en supervision"
 msgstr "Outbound campaigns status for supervision"
 
-#: supervision_app/templates/supervision_agentes.html:76
+#: supervision_app/templates/supervision_agentes.html:75
+msgid "Filtrar grupo"
+msgstr "Filter group"
+
+#: supervision_app/templates/supervision_agentes.html:85
+msgid "Filtrar Campaña"
+msgstr "Filter Campaign"
+
+#: supervision_app/templates/supervision_agentes.html:95
 msgid "Finalizar"
 msgstr "End Call"
 
-#: supervision_app/templates/supervision_agentes.html:85
+#: supervision_app/templates/supervision_agentes.html:104
 #: supervision_app/templates/supervision_campanas_entrantes.html:37
 #: supervision_app/templates/supervision_campanas_salientes.html:36
 msgid "Nombre"
 msgstr "Name"
 
-#: supervision_app/templates/supervision_agentes.html:86
+#: supervision_app/templates/supervision_agentes.html:107
 msgid "Status"
 msgstr "Status"
 
-#: supervision_app/templates/supervision_agentes.html:87
+#: supervision_app/templates/supervision_agentes.html:108
 msgid "Tiempo"
 msgstr "Time"
 
-#: supervision_app/templates/supervision_agentes.html:88
+#: supervision_app/templates/supervision_agentes.html:109
 msgid "Acciones"
 msgstr "Actions"
 

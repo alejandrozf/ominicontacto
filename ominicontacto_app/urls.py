@@ -78,7 +78,7 @@ urlpatterns = [
         login_required(views_user_profiles.CustomUserWizard.as_view()),
         name='user_nuevo',
         ),
-    url(r'^user/list/page(?P<page>[0-9]+)/$',
+    url(r'^user/list/(?P<page>[0-9]+)/$',
         login_required(views_user_profiles.UserListView.as_view()),
         name='user_list'
         ),
@@ -563,6 +563,9 @@ urlpatterns = [
     url(r'^agenda_contacto/(?P<pk_contacto>\d+)/create/(?P<pk_campana>\d+)/$',
         login_required(views_agenda_contacto.AgendaContactoCreateView.as_view()),
         name="agenda_contacto_create"),
+    url(r'^agenda_contacto/update/(?P<pk>\d+)/$',
+        login_required(views_agenda_contacto.AgendaContactoUpdateView.as_view()),
+        name="agenda_contacto_update"),
     url(r'^agenda_contacto/(?P<pk>\d+)/detalle/$',
         login_required(views_agenda_contacto.AgendaContactoDetailView.as_view()),
         name="agenda_contacto_detalle"),

@@ -122,6 +122,7 @@ class ReciclarCampanaMixin(object):
             campana.save()
             if campana.type == Campana.TYPE_PREVIEW:
                 campana.establecer_valores_iniciales_agente_contacto(False, False)
+                campana.crear_tarea_actualizacion()
             return HttpResponseRedirect(
                 reverse(update_campana, kwargs={"pk_campana": campana.pk}))
 

@@ -26,6 +26,7 @@ from __future__ import unicode_literals, division
 
 import datetime
 import logging
+from django.utils.translation import ugettext as _
 
 
 logger = logging.getLogger(__name__)
@@ -117,15 +118,22 @@ class AgenteTiemposReporte(object):
             return self.tiempo_wait / self.tiempo_sesion.total_seconds() * 100
         return None
 
+    def _get_string(self, delta):
+        if delta:
+            dias = ''
+            n_dias = delta.days
+            if n_dias == 1:
+                dias = _('1 día, ')
+            elif n_dias > 1:
+                dias = str(n_dias) + _(' días, ')
+            return dias + str(datetime.timedelta(seconds=delta.seconds))
+        return delta
+
     def get_string_tiempo_sesion(self):
-        if self.tiempo_sesion:
-            return str(datetime.timedelta(seconds=self.tiempo_sesion.seconds))
-        return self.tiempo_sesion
+        return self._get_string(self.tiempo_sesion)
 
     def get_string_tiempo_pausa(self):
-        if self.tiempo_pausa:
-            return str(datetime.timedelta(seconds=self.tiempo_pausa.seconds))
-        return self.tiempo_pausa
+        return self._get_string(self.tiempo_pausa)
 
     def get_string_tiempo_llamada(self):
         if self.tiempo_llamada:

@@ -347,7 +347,7 @@ class IntegrationTests(unittest.TestCase):
             raise e
         # Editar agente
         try:
-            user_list = '//a[contains(@href,"/user/list/page1/")]'
+            user_list = '//a[contains(@href,"/user/list/1/")]'
             self.get_href(user_list)
             link_edit = '//tr[@id=\'{0}\']/td/div//a'\
                         '[contains(@href,"/user/update")]'.format(agente_username)
@@ -377,7 +377,7 @@ class IntegrationTests(unittest.TestCase):
             self.crear_user(agente_username, agente_password, tipo_usuario)
             group_name = 'grupo' + uuid.uuid4().hex[:5]
             self.crear_grupo(group_name)
-            user_list = '//a[contains(@href,"/user/list/page1/")]'
+            user_list = '//a[contains(@href,"/user/list/1/")]'
             self.get_href(user_list)
             link_update = "//tr[@id=\'{0}\']/td/a[contains"\
                           "(@href, '/user/agenteprofile/update/')]".format(agente_username)
@@ -447,7 +447,7 @@ class IntegrationTests(unittest.TestCase):
                 self.browser.find_element_by_xpath((
                     "//button[@type='submit' and @id='id_registrar']")).click()
                 sleep(1)
-                user_list = '//a[contains(@href,"/user/list/page1/")]'
+                user_list = '//a[contains(@href,"/user/list/1/")]'
                 self.get_href(user_list)
                 self.get_href(link_update)
                 self.assertTrue(self.browser.find_element_by_xpath("//select[@id='id_rol']//option[contains\

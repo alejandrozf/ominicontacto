@@ -19,11 +19,6 @@
 /* global gettext Urls moment get_ranges */
 
 $(function() {
-    var start = moment().subtract(29, 'days');
-    var end = moment();
-    function cb(start, end) {
-        $('#id_fecha').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
-    }
 
     $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
         $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
@@ -41,11 +36,9 @@ $(function() {
             locale: {
                 format: 'DD/MM/YYYY'
             },
-            autoUpdateInput: false,
+            autoUpdateInput: true,
             ranges: ranges,
-        }, cb);
-
-    cb(start, end);
+        });
 });
 
 function reassignAgenda() {

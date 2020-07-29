@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-16 13:11-0300\n"
+"POT-Creation-Date: 2020-07-28 15:58-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,20 +24,124 @@ msgstr "Release Notes"
 
 # 73ee1e870afd4a31b43364589dd0e1ee
 #: ../../release_notes.rst:4
-msgid "*Julio 16, 2020*"
-msgstr "July 16, 2020"
+msgid "*Julio 28, 2020*"
+msgstr "July 28, 2020"
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.7.2"
-msgstr "Release 1.7.2 details"
+msgid "Detalles de Release 1.8.0"
+msgstr "Release 1.8.0 details"
+
+# b3c4906a629c4d95b4ec90b1435e0d2e
+#: ../../release_notes.rst:10
+msgid "Nuevas funcionalidades"
+msgstr "New features"
+
+# 830cfd2adfce422fb4a7de51f31725c5
+#: ../../release_notes.rst:11
+msgid "Las campañas preview pueden ser ahora recicladas"
+msgstr "Preview campaigns can be recycled now"
+
+# c43475bfd3d44641a8cd7d53fac9de77
+#: ../../release_notes.rst:12
+msgid ""
+"El sistema permite filtrar por nombre y por grupo a los agentes en la "
+"vista de supervisión"
+msgstr ""
+"The system now allows filtering by name and by group for agents in"
+" supervision page"
+
+# b91d6447d1874213b015f2f0db9bbd6d
+#: ../../release_notes.rst:13
+msgid ""
+"Un agente puede moverse de una pausa a otra sin que se generen eventos "
+"UNPAUSE"
+msgstr ""
+"The agent now can move from a pause to another pause directly without"
+" UNPAUSE events"
+
+# 9622eadc5e1d410a96562707ef49a027
+#: ../../release_notes.rst:14
+msgid "Se implementó una vía de comunicar feeback entre agentes y auditores"
+msgstr "A way to communicate feedback from auditor to agent was implemented"
+
+# f4237b33a3b7449aab4e5f7581ef2074
+#: ../../release_notes.rst:15
+msgid ""
+"Los supervisores ahora pueden inspeccionar las agendas y reasignar los "
+"agentes relacionados"
+msgstr ""
+"Supervisors can inspect agendas and re-assign agents involveds"
+
+# 8218526d9ee1440c894a6538323f35a8
+#: ../../release_notes.rst:16
+msgid ""
+"OMniLeads puede ser instalado ahora en los entornos de cloud Google "
+"Cloud, Microsoft Azure y OVH."
+msgstr ""
+"OMniLeads can be installed now on Google Cloud, Microsoft Azure and "
+"OVH cloud environments"
+
+# 1f78e57af88145d382ae9ef4fda279fa
+#: ../../release_notes.rst:17
+msgid "La vista de auditorías permite filtrar por estado de auditoría"
+msgstr "The allows filtering engaged dispositions for audit status"
 
 # 2f558403c15a436e90409b976c7f07ed
-#: ../../release_notes.rst:10
-msgid "Fixes y mejoras"
+#: ../../release_notes.rst:21
+msgid "Bug fixes y mejoras"
 msgstr "Fixes and improvements"
 
+# c8571a570e0d4d6ea3d529a2d84d4024
+#: ../../release_notes.rst:22
+msgid ""
+"Solucionado error en dialplan al realizar transferencias de agentes desde"
+" la PBX"
+msgstr ""
+"Fixed error in dialplan when transferring agents from PBX"
+
+# aad09193077e4992ad8243ec8f4db81a
+#: ../../release_notes.rst:23
+msgid "Solucionado error de visualización al crear una agenda"
+msgstr "Fixed visualization error creating agenda"
+
 # 9af30c7649d44482a64f236dd8c5b5fb
-#: ../../release_notes.rst:11
-msgid "Solucionado error de instalación al usar certificados confiables"
-msgstr "Fixed installation error when using trusted SSL certificates"
+#: ../../release_notes.rst:24
+msgid "Solucionado error en selección de filtro de fecha al filtrar agendas"
+msgstr "Fixed filter date picker error when filtering agendas"
+
+# 8d8c2bed3fb04706b9d55d9bf10a0ff2
+#: ../../release_notes.rst:25
+msgid "Solucionado error al modificar una agenda"
+msgstr "Fixed error when updating agenda"
+
+# bd1ff8aa12394867911188030376b4fb
+#: ../../release_notes.rst:26
+msgid ""
+"Solucionada inconsistencia en cálculo de tiempos de sesión en el reporte "
+"de agentes"
+msgstr ""
+"Fixed time session inconsistency on agents report"
+
+# 471ec40e86ab4a4589a5445c1dddaacc
+#: ../../release_notes.rst:27
+msgid "Solucionado error en paginación y filtrado inicial en página de auditorías"
+msgstr "Fixed error in pagination and initial date filter of audits page"
+
+# aad09193077e4992ad8243ec8f4db81a
+#: ../../release_notes.rst:28
+msgid "Solucionado error de sincronización en endpoint de calificación"
+msgstr "Fixed syncronization inconsistency on disposition endpoint"
+
+# 9af30c7649d44482a64f236dd8c5b5fb
+#: ../../release_notes.rst:29
+msgid ""
+"Solucionado error de instalación cuando la BD de PostgreSQL está en un "
+"host externo"
+msgstr ""
+"Fixed installation error when PostgreSQL database is external"
+
+# 8d8c2bed3fb04706b9d55d9bf10a0ff2
+#: ../../release_notes.rst:30
+msgid "Solucionado error al generar las imágenes de Docker"
+msgstr "Fixed error when building Docker images"
