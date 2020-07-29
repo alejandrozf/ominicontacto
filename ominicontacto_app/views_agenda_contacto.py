@@ -28,17 +28,34 @@ from __future__ import unicode_literals
 import requests
 
 from django.conf import settings
+from django.contrib import messages
+from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import CreateView, FormView
+from django.utils.translation import ugettext as _
+from django.utils.timezone import now
+from django.views.generic import CreateView, FormView, UpdateView
 from django.views.generic.detail import DetailView
-from ominicontacto_app.models import AgendaContacto, Contacto, Campana, CalificacionCliente
-from ominicontacto_app.forms import AgendaContactoForm, AgendaBusquedaForm
+from ominicontacto_app.models import AgendaContacto, Contacto, Campana, CalificacionCliente, User
+from ominicontacto_app.forms import (
+    AgendaContactoForm, AgendaBusquedaForm, FiltroUsuarioFechaForm, )
 from ominicontacto_app.utiles import convert_fecha_datetime
+
+
+class AgendaContactoUpdateView(UpdateView):
+    """Vista para modificar una agenda existente"""
+    template_name = 'agenda_contacto/update_agenda_contacto.html'
+    model = AgendaContacto
+    context_object_name = 'agendacontacto'
+    form_class = AgendaContactoForm
+
+    def get_success_url(self):
+        return reverse(
+            'agenda_contacto_detalle', kwargs={'pk': self.object.pk})
 
 
 class AgendaContactoCreateView(CreateView):
     """Vista para crear una nueva agenda"""
-    template_name = 'agenda_contacto/create_agenda_contacto.html'
+    template_name = 'agente/frame/agenda_contacto/create_agenda_contacto.html'
     model = AgendaContacto
     context_object_name = 'agendacontacto'
     form_class = AgendaContactoForm
@@ -88,7 +105,7 @@ class AgendaContactoCreateView(CreateView):
 
 class AgendaContactoDetailView(DetailView):
     """Detalle de una agenda de contacto"""
-    template_name = 'agenda_contacto/agenda_detalle.html'
+    template_name = 'agente/frame/agenda_contacto/agenda_detalle.html'
     model = AgendaContacto
 
     def get_context_data(self, **kwargs):
@@ -123,3 +140,63 @@ class AgendaContactoListFormView(FormView):
             fecha_desde, fecha_hasta)
         return self.render_to_response(self.get_context_data(
             listado_de_eventos=listado_de_eventos, agente=agente))
+
+
+class AgendaContactosPorCampanaView(FormView):
+    """ Vista para que el supervisor pueda gestionar las agendas PERSONALES de una campaña """
+    form_class = FiltroUsuarioFechaForm
+    template_name = 'agenda_contacto/listar_agendas_campana.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.supervisor = self.request.user.get_supervisor_profile()
+        campana_id = kwargs.get('pk_campana')
+        try:
+            self.campana = Campana.objects.get(id=campana_id)
+        except Campana.DoesNotExist:
+            message = _('La campana indicada no existe.')
+            messages.error(request, message)
+            return redirect('index')
+
+        if not request.user.get_is_administrador():
+            supervisor = self.request.user.get_supervisor_profile()
+            if not supervisor.esta_asignado_a_campana(self.campana):
+                message = _('No tiene permiso para ver las agendas de esta campaña.')
+                url_por_tipo = {
+                    Campana.TYPE_MANUAL: 'campana_manual_list',
+                    Campana.TYPE_DIALER: 'campana_dialer_list',
+                    Campana.TYPE_ENTRANTE: 'campana_list',
+                    Campana.TYPE_PREVIEW: 'campana_preview_list'
+                }
+                return redirect(url_por_tipo[self.campana.type])
+
+        return super(AgendaContactosPorCampanaView, self).dispatch(
+            request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        agendas = AgendaContacto.objects.eventos_filtro_fecha('', '').filter(campana=self.campana)
+        return self.render_to_response(self.get_context_data(agendas=agendas))
+
+    def get_form_kwargs(self):
+        kwargs = super(AgendaContactosPorCampanaView, self).get_form_kwargs()
+        kwargs['initial']['fecha'] = now().date().strftime('%d/%m/%Y - %d/%m/%Y')
+        agents_ids = self.campana.queue_campana.queuemember.values_list('member__user', flat=True)
+        kwargs['users_choices'] = User.objects.filter(id__in=agents_ids)
+        return kwargs
+
+    def form_valid(self, form):
+        fecha_desde = form.fecha_desde
+        fecha_hasta = form.fecha_hasta
+        agendas = AgendaContacto.objects.eventos_filtro_fecha(fecha_desde, fecha_hasta)
+
+        usuario = form.cleaned_data['usuario']
+        if usuario:
+            agente = usuario.get_agente_profile()
+            agendas = agendas.filter(campana=self.campana, agente_id=agente.id)
+        else:
+            agendas = agendas.filter(campana=self.campana)
+        return self.render_to_response(self.get_context_data(agendas=agendas))
+
+    def get_context_data(self, **kwargs):
+        context = super(AgendaContactosPorCampanaView, self).get_context_data(**kwargs)
+        context['members'] = self.campana.queue_campana.queuemember.all()
+        return context

@@ -60,19 +60,35 @@ test:
     - schedules
     - web
 
-
-docker-prodenv-build-push:
+build-docker-devenv:
   stage: build
   script:
     - bash /home/ftsinfra/git_cleanup.sh
-    - cd /home/ftsinfra/ominicontacto/deploy/vagrant
+    - cd /home/ftsinfra/ominicontacto/build/vagrant
     - python edit_inventory.py --docker_build=yes -dle=$DOCKER_LOGIN_EMAIL -dlp=$DOCKER_LOGIN_PASSWORD
-    - cd /home/ftsinfra/ominicontacto/deploy/ansible
-    - echo "$FTSINFRA_PASS" | sudo -S ./deploy.sh --docker-build
+    - cd /home/ftsinfra/ominicontacto/build/ansible
+    - echo "$FTSINFRA_PASS" | sudo -S ./build.sh --docker-de-build
   tags:
     - build-docker
   only:
-    - /.*build.*$/
+    - /.*build-all.*$/
+    - /.*build-docker.*$/
+    - schedules
+    - web
+
+build-docker-prodenv:
+  stage: build
+  script:
+    - bash /home/ftsinfra/git_cleanup.sh
+    - cd /home/ftsinfra/ominicontacto/build/vagrant
+    - python edit_inventory.py --docker_build=yes -dle=$DOCKER_LOGIN_EMAIL -dlp=$DOCKER_LOGIN_PASSWORD
+    - cd /home/ftsinfra/ominicontacto/build/ansible
+    - echo "$FTSINFRA_PASS" | sudo -S ./build.sh --docker-pe-build
+  tags:
+    - build-docker
+  only:
+    - /.*build-all.*$/
+    - /.*build-docker.*$/
     - schedules
     - web
 
@@ -81,18 +97,19 @@ build-aio:
   script:
     - export BRANCH=$CI_COMMIT_REF_NAME
     - bash /home/ftsinfra/git_cleanup.sh
-    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/build/ && ./vagrantsh.sh
+    - cd /home/ftsinfra/ominicontacto/build/vagrant && ./vagrantsh.sh
     - vagrant up --provision
     - ./utils.sh
     - vagrant halt
   tags:
     - build-aio
   only:
-    - /.*build.*$/
+    - /.*build-all.*$/
+    - /.*build-aio.*$/
     - schedules
     - web
 
-deploy-host-node:
+deploy-aio-host-node:
   stage: deploy
   environment: FTS-CENTOS7
   script:
@@ -117,7 +134,7 @@ deploy-host-node:
     - schedules
     - web
 
-deploy-self-hosted:
+deploy-aio-self-hosted:
   stage: deploy
   script:
     - export BRANCH=$CI_COMMIT_REF_NAME CENTOS_IP=$STAGING_IP_CENTOS
@@ -131,26 +148,6 @@ deploy-self-hosted:
     - vagrant destroy -f
   tags:
     - deploy-aio
-  only:
-    - /.*deploy.*$/
-    - schedules
-    - web
-
-deploy-centos-docker:
-  stage: deploy
-  script:
-    - bash /home/ftsinfra/git_cleanup.sh
-    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
-    - vagrant halt centos
-    - vagrant destroy centos -f
-    - ./vagrantup.sh centos
-    - python ../edit_inventory.py --internal_ip=$STAGING_IP_CENTOS --docker_deploy=yes
-    - cd ../../ansible
-    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh --docker-deploy
-    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
-    - vagrant halt centos
-  tags:
-    - deploy-docker
   only:
     - /.*deploy.*$/
     - schedules
@@ -175,4 +172,39 @@ upgrade-aio:
   tags:
     - deploy-aio
   only:
+    - web
+
+deploy-docker-prodenv:
+  stage: deploy
+  script:
+    - bash /home/ftsinfra/git_cleanup.sh
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - vagrant halt centos
+    - vagrant destroy centos -f
+    - ./vagrantup.sh centos
+    - python ../edit_inventory.py --internal_ip=$STAGING_IP_CENTOS --docker_deploy=yes --prodenv=yes
+    - cd ../../ansible
+    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh --docker-deploy
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - vagrant halt centos
+  tags:
+    - deploy-docker
+  only:
+    - /.*deploy.*$/
+    - schedules
+    - web
+
+deploy-docker-devenv:
+  stage: deploy
+  script:
+    - bash /home/ftsinfra/git_cleanup.sh
+    - cd /home/ftsinfra/ominicontacto/deploy/vagrant
+    - python edit_inventory.py --docker_deploy=yes --devenv=yes
+    - cd ../ansible
+    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh --docker-deploy --iface=enp2s0
+  tags:
+    - deploy-docker
+  only:
+    - /.*deploy.*$/
+    - schedules
     - web

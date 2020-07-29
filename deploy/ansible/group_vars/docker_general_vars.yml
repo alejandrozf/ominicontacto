@@ -6,14 +6,9 @@ docker_compose_url: "https://github.com/docker/compose/releases/download/1.25.0/
 omni_ip: "{{ inventory_hostname }}"
 
 # Base images used
-asterisk_image: debian:buster-slim
-base_image: alpine:3.10
-dialer_image: tomcat:8.5-alpine
 kamailio_image: kamailio/kamailio-ci:5.2
 mariadb_image: bitnami/mariadb:latest
 nginx_image: nginx:mainline-alpine
-postgres_image: postgres:{{ postgresql_version }}
-rtpengine_image: ubuntu:18.04
 redis_image: redis:5-alpine
 # Images for EFK
 elasticsearch_image: elasticsearch:7.1.0
@@ -21,14 +16,11 @@ fluentd_image: qqbuby/fluentd:v1.2-es
 kibana_image: kibana:7.1.0
 
 # Settings of folder structure
-usuario: "{{ docker_user }}"
 efk_location: "{{ deploy_location }}/efk"
 odbc_location: "{{ ast_local_location }}"
 
-# Docker hub credentials to push images
+# Docker hub user to pull images
 docker_login_user: "{{ registry_username }}"
-docker_login_email: "{{ registry_email }}"
-docker_login_pass: "{{ registry_password }}"
 
 asterisk_fqdn: asterisk
 dialer_fqdn: dialer

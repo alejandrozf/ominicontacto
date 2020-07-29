@@ -15,6 +15,7 @@ pg_external_port: 446
 wd_external_port: 442
 
 # Folder locations
+usuario: omnileads
 asterisk_location:
 ast_local_location: "{{ build_location }}/asterisk"
 ast_agis_location: "{{ ast_local_location }}/agis"

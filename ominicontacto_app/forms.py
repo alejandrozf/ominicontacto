@@ -51,6 +51,7 @@ from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_ca
 from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSaliente
 
 from utiles_globales import validar_extension_archivo_audio
+from .utiles import convert_fecha_datetime
 
 TIEMPO_MINIMO_DESCONEXION = 2
 EMPTY_CHOICE = ('', '---------')
@@ -483,6 +484,7 @@ class AuditoriaBusquedaForm(forms.Form):
     campana = forms.ChoiceField(
         required=False, choices=(), label=_('Campaña'),
         widget=forms.Select(attrs={'class': 'form-control'}))
+    pagina = forms.CharField(required=False, widget=forms.HiddenInput(), label=_('Página'))
     grupo_agente = forms.ChoiceField(
         required=False, choices=(), label=_('Grupo de agentes'),
         widget=forms.Select(attrs={'class': 'form-control'}))
@@ -497,6 +499,9 @@ class AuditoriaBusquedaForm(forms.Form):
     status_auditoria = forms.ChoiceField(
         required=False, choices=(), label=_('Status de auditoría'),
         widget=forms.Select(attrs={'class': 'form-control'}))
+    revisadas = forms.BooleanField(
+        required=False, widget=forms.CheckboxInput(attrs={'class': 'form-control'}),
+        label=_('Únicamente revisadas por Agente'))
 
     def __init__(self, *args, **kwargs):
         supervisor = kwargs.pop('supervisor')
@@ -525,7 +530,11 @@ class AuditoriaBusquedaForm(forms.Form):
 class AuditoriaCalificacionForm(forms.ModelForm):
     class Meta:
         model = AuditoriaCalificacion
-        fields = ('resultado', 'observaciones')
+        fields = ('resultado', 'revisada', 'observaciones')
+
+    revisada = forms.BooleanField(
+        disabled=True, widget=forms.CheckboxInput(attrs={'class': 'form-control'}),
+        label=_('Revisada por Agente'), required=False)
 
 
 class CampanaMixinForm(object):
@@ -854,8 +863,12 @@ class ReporteForm(forms.Form):
     """
     El form para reporte con fecha
     """
+    TODOS_RESULTADOS = '-1'
     fecha = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control'}))
+    resultado_auditoria = forms.ChoiceField(
+        label=_('Auditoria'), widget=forms.Select(attrs={'class': 'form-control'}),
+        choices=((TODOS_RESULTADOS, _('Todas')), ) + AuditoriaCalificacion.RESULTADO_CHOICES)
 
 
 class FormularioForm(forms.ModelForm):
@@ -1213,7 +1226,7 @@ class AgendaContactoForm(forms.ModelForm):
 
     class Meta:
         model = AgendaContacto
-        fields = ('contacto', 'agente', 'campana', 'tipo_agenda', 'fecha', 'hora', 'observaciones')
+        fields = ('contacto', 'agente', 'campana', 'fecha', 'hora', 'observaciones', 'tipo_agenda')
         widgets = {
             'contacto': forms.HiddenInput(),
             'agente': forms.HiddenInput(),
@@ -1226,7 +1239,11 @@ class AgendaContactoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AgendaContactoForm, self).__init__(*args, **kwargs)
-        if not kwargs['initial']['campana'].type == Campana.TYPE_DIALER:
+        if self.instance.pk:
+            campana = self.instance.campana
+        else:
+            campana = kwargs['initial']['campana']
+        if not campana.type == Campana.TYPE_DIALER:
             self.fields['tipo_agenda'].choices = [(AgendaContacto.TYPE_PERSONAL, 'PERSONAL')]
 
     def clean_tipo_agenda(self):
@@ -1855,3 +1872,27 @@ class CampanaPreviewCampoDesactivacion(forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('campo_desactivacion',)
+
+
+class FiltroUsuarioFechaForm(forms.Form):
+    fecha = forms.CharField(required=True,
+                            widget=forms.TextInput(attrs={'class': 'form-control'}),
+                            label=_('Fecha'))
+    usuario = forms.ModelChoiceField(
+        queryset=User.objects.all(), label=_('Agente'),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=False)
+
+    def clean_fecha(self):
+        fecha = self.cleaned_data.get('fecha')
+        fecha_desde, fecha_hasta = fecha.split('-')
+        fecha_desde = convert_fecha_datetime(fecha_desde)
+        fecha_hasta = convert_fecha_datetime(fecha_hasta)
+        if fecha_hasta < fecha_desde:
+            raise forms.ValidationError(_('La fecha inicial debe ser anterior a la final'))
+        self.fecha_desde = fecha_desde
+        self.fecha_hasta = fecha_hasta
+
+    def __init__(self, users_choices, *args, **kwargs):
+        super(FiltroUsuarioFechaForm, self).__init__(*args, **kwargs)
+        self.fields['usuario'].queryset = users_choices

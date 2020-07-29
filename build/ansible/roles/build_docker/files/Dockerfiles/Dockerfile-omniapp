@@ -16,7 +16,6 @@ COPY omniapp/*.ini omniapp/run_omniapp.sh {{ install_prefix }}run/
 COPY omniapp/conversor.sh omniapp/*.py {{ install_prefix }}bin/
 {% endif %}
 
-COPY scripts/pip.conf  {{ install_prefix }}.pip
 {% if devenv == 1 %}
 COPY requirements/* $INSTALL_LOCATION/requirements/
 {% endif %}

@@ -31,9 +31,12 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from simple_history.utils import update_change_reason
+
 from api_app.views.permissions import TienePermisoOML
 from api_app.serializers import (CampanaSerializer, )
-from ominicontacto_app.models import (Campana, CalificacionCliente, )
+from ominicontacto_app.models import (
+    Campana, CalificacionCliente, AgenteProfile, Grupo, AgendaContacto, )
 from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorActivityAmiManager
 from reportes_app.reportes.reporte_llamadas_supervision import (
     ReporteDeLLamadasEntrantesDeSupervision, ReporteDeLLamadasSalientesDeSupervision
@@ -71,6 +74,24 @@ class AgentesStatusAPIView(APIView):
             'queue_campana__members__pk', flat=True).distinct())
         return ids_agentes
 
+    def _obtener_grupo_activos(self, id_agente):
+        id_grupo_activos = AgenteProfile.objects.filter(id__in=[id_agente]).values_list(
+            'grupo_id', flat=True).distinct()
+        grupo_activo = Grupo.objects.filter(id__in=id_grupo_activos).values_list(
+            'nombre', flat=True).get()
+        return grupo_activo
+
+    def _obtener_campana_activa(self, request, id_agente):
+        campana_activas = []
+        supervisor_profile = request.user.get_supervisor_profile()
+        campanas_asignadas_actuales = supervisor_profile.campanas_asignadas_actuales()
+        for campana in campanas_asignadas_actuales:
+            campana_member_id = campana.queue_campana.queuemember.values_list(
+                'member_id', flat=True)
+            if id_agente in campana_member_id:
+                campana_activas.append(campana.nombre)
+        return campana_activas
+
     def get(self, request):
         online = []
         agentes_parseados = SupervisorActivityAmiManager()
@@ -78,7 +99,11 @@ class AgentesStatusAPIView(APIView):
         for data_agente in agentes_parseados.obtener_agentes_activos():
             id_agente = int(data_agente.get('id', -1))
             status_agente = data_agente.get('status', '')
+            grupo_activo = self._obtener_grupo_activos(id_agente)
+            campanas_activas = self._obtener_campana_activa(request, id_agente)
             if status_agente != 'OFFLINE' and id_agente in ids_agentes_propios:
+                data_agente['grupo'] = grupo_activo
+                data_agente['campana'] = campanas_activas
                 online.append(data_agente)
         return Response(data=online)
 
@@ -131,6 +156,86 @@ class InteraccionDeSupervisorSobreAgenteView(APIView):
             return Response(data={
                 'status': 'OK',
             })
+
+
+class ReasignarAgendaContactoView(APIView):
+    permission_classes = (TienePermisoOML, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['post', ]
+
+    def post(self, request):
+        agenda_id = request.data.get('agenda_id')
+        agente_id = request.data.get('agent_id')
+
+        try:
+            agenda = AgendaContacto.objects.get(id=agenda_id,
+                                                tipo_agenda=AgendaContacto.TYPE_PERSONAL)
+        except AgendaContacto.DoesNotExist:
+            return Response(data={
+                'status': 'ERROR',
+                'message': _('ID Agenda incorrecto')
+            })
+        try:
+            agente = agenda.campana.queue_campana.members.get(id=agente_id)
+        except AgenteProfile.DoesNotExist:
+            return Response(data={
+                'status': 'ERROR',
+                'message': _('ID Agente incorrecto')
+            })
+
+        supervisor_profile = self.request.user.get_supervisor_profile()
+        campanas_asignadas_actuales = supervisor_profile.campanas_asignadas_actuales()
+        if not campanas_asignadas_actuales.filter(id=agenda.campana.id).exists():
+            return Response(data={
+                'status': 'ERROR',
+                'message': _('No tiene permiso para editar esta Agenda')
+            })
+
+        agenda.agente = agente
+        agenda.save()
+        calificacion = CalificacionCliente.objects.get(contacto=agenda.contacto,
+                                                       opcion_calificacion__campana=agenda.campana)
+        calificacion.agente = agente
+        calificacion.save()
+        update_change_reason(calificacion, 'reasignacion')
+
+        return Response(data={
+            'status': 'OK',
+            'agenda_id': agenda_id,
+            'agent_name': agente.user.get_full_name()
+        })
+
+
+class DataAgendaContactoView(APIView):
+    permission_classes = (TienePermisoOML, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['get', ]
+
+    def get(self, request, agenda_id):
+
+        try:
+            agenda = AgendaContacto.objects.get(id=agenda_id,
+                                                tipo_agenda=AgendaContacto.TYPE_PERSONAL)
+        except AgendaContacto.DoesNotExist:
+            return Response(data={
+                'status': 'ERROR',
+                'message': _('ID Agenda incorrecto')
+            })
+        supervisor_profile = self.request.user.get_supervisor_profile()
+        campanas_asignadas_actuales = supervisor_profile.campanas_asignadas_actuales()
+        if not campanas_asignadas_actuales.filter(id=agenda.campana.id).exists():
+            return Response(data={
+                'status': 'ERROR',
+                'message': _('No tiene permiso para editar esta Agenda')
+            })
+
+        contact_data = agenda.contacto.obtener_datos()
+        return Response(data={
+            'status': 'OK',
+            'agenda_id': agenda_id,
+            'observations': agenda.observaciones,
+            'contact_data': contact_data
+        })
 
 
 # ########################################################

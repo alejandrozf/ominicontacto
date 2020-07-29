@@ -37,3 +37,7 @@
     padding: 0px 5px;
     text-align: center;
 }
+.filter_group {
+    display: flex;
+    align-items: center;
+} 

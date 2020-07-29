@@ -22,13 +22,14 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.core import paginator as django_paginator
 from django.urls import reverse_lazy
+from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView
 
 from ominicontacto_app.forms import AuditoriaBusquedaForm, AuditoriaCalificacionForm
 from ominicontacto_app.models import CalificacionCliente, Grabacion
 
-from .utiles import convert_fecha_datetime
+from .utiles import convert_fecha_datetime, fecha_local
 
 
 class AuditarCalificacionesFormView(FormView):
@@ -45,7 +46,7 @@ class AuditarCalificacionesFormView(FormView):
         if 'listado_de_calificaciones' in [key for key in context.keys()]:
             listado_de_calificaciones = context['listado_de_calificaciones']
 
-        qs = listado_de_calificaciones
+        qs = listado_de_calificaciones.select_related('opcion_calificacion__campana', 'contacto')
         # ----- <Paginate> -----
         page = self.kwargs['pagina']
         if context.get('pagina', False):
@@ -64,11 +65,15 @@ class AuditarCalificacionesFormView(FormView):
         return context
 
     def get(self, request, *args, **kwargs):
+        hoy = fecha_local(now())
         supervisor = request.user.get_supervisor_profile()
         campanas_supervisor_ids = list(supervisor.campanas_asignadas_actuales().values_list(
             'pk', flat=True))
-        calificaciones = CalificacionCliente.objects.obtener_calificaciones_auditoria().filter(
+        calificaciones_a_auditar = CalificacionCliente.objects.obtener_calificaciones_auditoria()
+        calificaciones_a_auditar = calificaciones_a_auditar.filter(
             opcion_calificacion__campana__pk__in=campanas_supervisor_ids)
+        calificaciones_dia_actual = CalificacionCliente.objects.calificacion_por_filtro(hoy, hoy)
+        calificaciones = calificaciones_a_auditar & calificaciones_dia_actual
         return self.render_to_response(
             self.get_context_data(
                 listado_de_calificaciones=calificaciones,
@@ -98,6 +103,7 @@ class AuditarCalificacionesFormView(FormView):
         telefono = form.cleaned_data.get('telefono')
         callid = form.cleaned_data.get('callid')
         status_auditoria = form.cleaned_data.get('status_auditoria')
+        revisadas = form.cleaned_data.get('revisadas')
 
         pagina = form.cleaned_data.get('pagina')
         supervisor = self.request.user.get_supervisor_profile()
@@ -107,6 +113,9 @@ class AuditarCalificacionesFormView(FormView):
             fecha_desde, fecha_hasta, agente, campana, grupo_agente, id_contacto,
             id_contacto_externo, telefono, callid, status_auditoria).filter(
                 opcion_calificacion__campana__pk__in=campanas_supervisor_ids)
+        if revisadas:
+            listado_de_calificaciones = listado_de_calificaciones.filter(
+                auditoriacalificacion__revisada=True)
 
         return self.render_to_response(self.get_context_data(
             listado_de_calificaciones=listado_de_calificaciones, pagina=pagina))
@@ -186,6 +195,7 @@ class AuditoriaCalificacionFormView(FormView):
     def form_valid(self, form):
         auditoria = form.save(commit=False)
         auditoria.calificacion = self.calificacion
+        auditoria.revisada = False
         auditoria.save()
         message = _("Auditoría de calificación guardada.")
         messages.success(self.request, message)

@@ -113,7 +113,7 @@ class ArchivoDeReporteCsv(object):
 
 class ReporteFormularioVentaService(object):
 
-    def crea_reporte_csv(self, agente, fecha_desde, fecha_hasta):
+    def crea_reporte_csv(self, agente, fecha_desde, fecha_hasta, resultado=None):
         # assert campana.estado == Campana.ESTADO_ACTIVA
 
         archivo_de_reporte = ArchivoDeReporteCsv(agente)
@@ -122,7 +122,8 @@ class ReporteFormularioVentaService(object):
 
         respuestas = self._obtener_respuestas_formularios_fecha(agente,
                                                                 fecha_desde,
-                                                                fecha_hasta)
+                                                                fecha_hasta,
+                                                                resultado)
 
         archivo_de_reporte.escribir_archivo_csv(respuestas)
 
@@ -138,8 +139,11 @@ class ReporteFormularioVentaService(object):
                        " CSV de descarga para el agente {0}".format(agente.pk)))
 
     def _obtener_respuestas_formularios_fecha(self, agente, fecha_desde,
-                                              fecha_hasta):
+                                              fecha_hasta, resultado):
         fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
-        return RespuestaFormularioGestion.objects.filter(
+        respuestas = RespuestaFormularioGestion.objects.filter(
             calificacion__agente=agente, fecha__range=(fecha_desde, fecha_hasta))
+        if resultado:
+            return respuestas.filter(calificacion__auditoriacalificacion__resultado=resultado)
+        return respuestas

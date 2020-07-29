@@ -51,7 +51,7 @@
 
 #Se generan los archivos de configuracion que vienen en sus templates
 - name: Copy of asterisk config files
-  template: "src=roles/asterisk/templates/conf/{{ item }} dest={{ ast_conf_location }}/{{ item }} owner={{ usuario }} group={{ usuario }} mode=755"
+  template: "src={{ repo_location }}/deploy/ansible/roles/asterisk/templates/conf/{{ item }} dest={{ ast_conf_location }}/{{ item }} owner={{ usuario }} group={{ usuario }} mode=755"
   with_items:
       - amd.conf
       - asterisk.conf
@@ -93,13 +93,13 @@
 
 # Los archivos-no-enlaces se copian a la a /etc/asterisk
 - name: Copy of custom/override files
-  copy: "src=roles/asterisk/templates/conf/archivos-no-enlaces/ dest={{ ast_conf_location }}/ owner={{ usuario }} group={{ usuario }} mode=755"
+  copy: "src={{ repo_location }}/deploy/ansible/roles/asterisk/templates/conf/archivos-no-enlaces/ dest={{ ast_conf_location }}/ owner={{ usuario }} group={{ usuario }} mode=755"
   when: ast_custom_exists.rc != 0
   tags: postinstall
 
 # Genero los agis desde ansible
 - name: Creation of the agis omni-blackist and omni-dialednum
-  template: "src=roles/asterisk/templates/agi-bin/{{ item.src }} dest={{ ast_agis_location }}/{{ item.dest }} mode=755 owner={{ usuario }} group={{ usuario }}"
+  template: "src={{ repo_location }}/deploy/ansible/roles/asterisk/templates/agi-bin/{{ item.src }} dest={{ ast_agis_location }}/{{ item.dest }} mode=755 owner={{ usuario }} group={{ usuario }}"
   with_items:
       - { src: "utiles.py.j2", dest: "utiles.py" }
       - { src: "omni-blacklist.py.j2", dest: "omni-blacklist.py" }
@@ -123,7 +123,7 @@
 
 # Creo el archivo odbcinst.ini desde ansible
 - name: Creation of odbcinst.ini file
-  template: src=roles/asterisk/templates/etc/{{ item }} dest={{ odbc_location }} owner=root group=root mode=644
+  template: "src={{ repo_location }}/deploy/ansible/roles/asterisk/templates/etc/{{ item }} dest={{ odbc_location }} owner=root group=root mode=644"
   with_items:
     - odbcinst.ini
     - odbc.ini

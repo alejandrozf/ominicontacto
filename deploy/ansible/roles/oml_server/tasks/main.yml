@@ -27,6 +27,11 @@
   when: virtualenv_installed.stdout == virtualenv_version
   tags: ['virtualenv','postinstall']
 
+# Esta tarea es para pasar los datos de constance de redis a postgres
+- name: Dump information of constance database
+  shell: "{{ install_prefix }}bin/manage.sh constance list > {{ install_prefix }}bin/constances_values.txt"
+  tags: ['never', 'postinstall']
+
 # Esta tarea es para eliminar virtualenv de python2.7 y no generar inconsistencia de binarios
 - name: Erase virtualenv if exists
   file: path={{ install_prefix }}virtualenv state=absent
@@ -100,8 +105,8 @@
     - "{{ install_prefix }}static"
     - "{{ install_prefix }}log"
     - "{{ install_prefix }}run"
-    - "{{ asterisk_location }}/etc/virtualenv"
-  tags: omniapp
+    - "{{ install_prefix }}/addons"
+  tags: postinstall
 
 # El codigo que está en /var/tmp/ominicontacto_build/ se pasa a /opt/omnileeads/ominicontacto
 - name: Upload code (rsync to /ominicontacto)

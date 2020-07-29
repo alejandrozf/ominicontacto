@@ -50,13 +50,12 @@ from defender import utils
 from defender import config
 
 from ominicontacto_app.models import (
-    User, AgenteProfile, Grupo, Pausa, Agenda,
+    User, AgenteProfile, Grupo, Pausa,
     Chat, MensajeChat, ClienteWebPhoneProfile
 )
-from ominicontacto_app.forms import AgendaBusquedaForm, PausaForm, GrupoForm, RegistroForm
+from ominicontacto_app.forms import PausaForm, GrupoForm, RegistroForm
 from ominicontacto_app.services.kamailio_service import KamailioService
-from ominicontacto_app.utiles import convert_string_in_boolean,\
-    convert_fecha_datetime, fecha_local
+from ominicontacto_app.utiles import fecha_local
 from ominicontacto_app import version
 from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     RestablecerConfiguracionTelefonicaError, SincronizadorDeConfiguracionPausaAsterisk)
@@ -419,79 +418,6 @@ class RegistroFormView(FormView):
         config_constance.CLIENT_EMAIL = result['user_email']
         config_constance.CLIENT_PHONE = result['user_phone']
         return super(RegistroFormView, self).form_valid(form)
-
-
-# #########################################################################
-# DEPRECATED ? - En caso de borrarse, borrar tambien otras clases asociadas
-def nuevo_evento_agenda_view(request):
-    """Vista get para insertar un nuevo evento en la agenda
-        REVISAR si se usa esta vista si no es obsoleta. Referenciada en Calendar.js
-    """
-    # DEPRECATED: Eliminar en OML-1437
-    agente = request.GET['agente']
-    es_personal = request.GET['personal']
-    fecha = request.GET['fechaEvento']
-    fecha = convert_fecha_datetime(fecha)
-    hora = request.GET['horaEvento']
-    es_smart = request.GET['smart']
-    medio_comunicacion = request.GET['channel']
-    medio = request.GET['dirchan']
-    descripcion = request.GET['descripcion']
-    es_smart = convert_string_in_boolean(es_smart)
-    es_personal = convert_string_in_boolean(es_personal)
-
-    agenda = Agenda(fecha=fecha, hora=hora, es_smart=es_smart,
-                    medio_comunicacion=medio_comunicacion,
-                    descripcion=descripcion, es_personal=es_personal)
-
-    # verifico el agente logueado
-    try:
-        agente_logueado = AgenteProfile.objects.get(pk=agente)
-    except AgenteProfile.DoesNotExist:
-        agente_logueado = request.user.get_agente_profile()
-
-    if es_personal:
-        agenda.agente = agente_logueado
-
-    if int(medio_comunicacion) is Agenda.MEDIO_LLAMADA:
-        agenda.telefono = medio
-    elif int(medio_comunicacion) is Agenda.MEDIO_SMS:
-        agenda.telefono = medio
-    elif int(medio_comunicacion) is Agenda.MEDIO_EMAIL:
-        agenda.email = medio
-
-    agenda.save()
-    response = JsonResponse({'status': 'OK'})
-    return response
-
-
-class AgenteEventosFormView(FormView):
-    """Esta vista devuelve el listado de los eventos de agenda por agente"""
-    # DEPRECATED: Eliminar en OML-1437
-    model = AgenteProfile
-    template_name = 'agente/agenda_agente.html'
-    form_class = AgendaBusquedaForm
-
-    def get(self, request, *args, **kwargs):
-        agente = self.request.user.get_agente_profile()
-        listado_de_eventos = agente.eventos.eventos_filtro_fecha('', '')
-        return self.render_to_response(self.get_context_data(
-            listado_de_eventos=listado_de_eventos))
-
-    def form_valid(self, form):
-        fecha = form.cleaned_data.get('fecha')
-        if fecha:
-            fecha_desde, fecha_hasta = fecha.split('-')
-            fecha_desde = convert_fecha_datetime(fecha_desde)
-            fecha_hasta = convert_fecha_datetime(fecha_hasta)
-        else:
-            fecha_desde = ''
-            fecha_hasta = ''
-        agente = self.request.user.get_agente_profile()
-        listado_de_eventos = agente.eventos.eventos_filtro_fecha(fecha_desde,
-                                                                 fecha_hasta)
-        return self.render_to_response(self.get_context_data(
-            listado_de_eventos=listado_de_eventos))
 
 
 def mensaje_chat_view(request):

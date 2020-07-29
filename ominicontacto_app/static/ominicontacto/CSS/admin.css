@@ -934,3 +934,7 @@ body.wrapper-page-error {
     display: block;
 
 }
+/* Otras personalizaciones*/
+.filter-flex {
+    display: flex;
+}

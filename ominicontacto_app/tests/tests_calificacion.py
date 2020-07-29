@@ -220,7 +220,23 @@ class CalificacionTests(OMLBaseTest):
         post_data = self._obtener_post_data_calificacion_cliente()
         post_data['opcion_calificacion'] = self.opcion_calificacion_agenda.pk
         response = self.client.post(url, post_data, follow=True)
-        self.assertTemplateUsed(response, 'agenda_contacto/create_agenda_contacto.html')
+        self.assertTemplateUsed(response,
+                                'agente/frame/agenda_contacto/create_agenda_contacto.html')
+
+    @patch('requests.post')
+    def test_calificacion_agenda_modificacion_redirecciona_update_agenda(self, post):
+        self.calificacion_cliente.opcion_calificacion = self.opcion_calificacion_agenda
+        self.calificacion_cliente.agendado = False
+        self.calificacion_cliente.save()
+        AgendaContactoFactory(
+            agente=self.agente_profile, contacto=self.contacto, campana=self.campana)
+        url = reverse('calificacion_formulario_update_or_create',
+                      kwargs={'pk_campana': self.campana.pk,
+                              'pk_contacto': self.contacto.pk})
+        post_data = self._obtener_post_data_calificacion_cliente()
+        post_data['opcion_calificacion'] = self.opcion_calificacion_agenda.pk
+        response = self.client.post(url, post_data, follow=True)
+        self.assertTemplateUsed(response, 'agenda_contacto/update_agenda_contacto.html')
 
     @patch('requests.post')
     def test_calificacion_cliente_marcada_agendado_cuando_se_salva_agenda(self, post):

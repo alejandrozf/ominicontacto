@@ -27,10 +27,12 @@
 {% endblock extra_css%}
 {% block head_js %}
     <!-- Scripts -->
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.growl.js' %}"></script>
     <script src="{% static 'ominicontacto/JS/agente/formularioCalificacion.js' %}"></script>
     <script src="{% static 'ominicontacto/JS/agente/make_click2call.js' %}"></script>
     <script src="{% static 'ominicontacto/JS/agente/interaccionSitioExterno.js' %}"></script>
+    <script src="{% static 'ominicontacto/JS/agente/revisionAuditoria.js' %}"></script>
 {% endblock head_js %}
 
 {% block content %}
@@ -89,6 +91,19 @@
                                 <h2>{% trans 'Calificación Auditada'%}</h2>
                                 <p><b>{% trans 'Resultado Auditoria: '%}</b>{{auditoria.get_resultado_display}}</p>
                                 <p><b>{% trans 'Observaciones: '%}</b>{{auditoria.observaciones}}</p>
+                                {% if auditoria.es_observada %}
+                                <p>
+                                    {% if auditoria.revisada %}
+                                        <div id="toggle_revision" class="btn btn-primary btn-sm" onclick="toggleRevision({{ auditoria.id }})" revised="{{ auditoria.revisada }}">
+                                            {% trans 'Revisada' %}
+                                        </div>
+                                    {% else %}
+                                        <div id="toggle_revision" class="btn btn-warning btn-sm" onclick="toggleRevision({{ auditoria.id }})" revised="{{ auditoria.revisada }}">
+                                            {% trans 'No revisada'  %}
+                                        </div>
+                                    {% endif %}
+                                </p>
+                                {% endif %}
                             </div>
                         {% endif %}
                     {% endwith %}

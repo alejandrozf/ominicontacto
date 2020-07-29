@@ -1,0 +1,22 @@
+---
+
+# Docker hosts at beginning is localhost because the base containers are raised up in localhost to install the application. Uncomment the line if you want to install DE or PE
+
+version: "{{ oml_release }}"
+customer: prodenv
+
+asterisk_builded_version: "{{ version }}"
+root_password: Sup3rS3cr3tP4ssw0rd
+
+# Folder locations
+asterisk_location:
+ast_local_location: "{{ build_location }}/asterisk"
+ast_agis_location: "{{ ast_local_location }}/agis"
+ast_conf_location: "{{ ast_local_location }}/conf"
+ast_other_location: "{{ build_location }}/scripts"
+build_location: "{{ docker_root }}/omnileads/build"
+certs_location: "{{ build_location }}/certs"
+deploy_location: "/home/omnileads/{{ customer }}"
+kamailio_location: "{{ build_location }}/kamailio"
+nginx_location: "{{ build_location }}/nginx"
+omniapp_location: "{{ build_location }}/omniapp"

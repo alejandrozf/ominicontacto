@@ -533,10 +533,14 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'agenda_contacto_create',
              'roles': ['Agente', ]},
+            {'nombre': 'agenda_contacto_update',
+             'roles': ['Agente', ]},
             {'nombre': 'agenda_contacto_detalle',
              'roles': ['Agente', ]},
             {'nombre': 'agenda_contacto_listado',
              'roles': ['Agente', ]},
+            {'nombre': 'agenda_contactos_por_campana',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'campana_dialer_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'campana_dialer_create',
@@ -695,299 +699,304 @@ class OminicontactoAppConfig(AppConfig):
 
     informacion_de_permisos = {
         'consola_de_agente':
-            {'descripcion': _('Consola de Agente'), 'version': '1.6.2'},
+            {'descripcion': _('Consola de Agente'), 'version': '1.7.0'},
         'registrar_usuario':
-            {'descripcion': _('Registrar la llave del usuario OML'), 'version': '1.6.2'},
+            {'descripcion': _('Registrar la llave del usuario OML'), 'version': '1.7.0'},
         'user_nuevo':
-            {'descripcion': _('Crear un Usuario'), 'version': '1.6.2'},
+            {'descripcion': _('Crear un Usuario'), 'version': '1.7.0'},
         'user_list':
-            {'descripcion': _('Ver lista de Usuarios'), 'version': '1.6.2'},
+            {'descripcion': _('Ver lista de Usuarios'), 'version': '1.7.0'},
         'user_delete':
-            {'descripcion': _('Borrar Usuario'), 'version': '1.6.2'},
+            {'descripcion': _('Borrar Usuario'), 'version': '1.7.0'},
         'user_update':
-            {'descripcion': _('Editar Usuario'), 'version': '1.6.2'},
+            {'descripcion': _('Editar Usuario'), 'version': '1.7.0'},
         'agente_list':
-            {'descripcion': _('Ver lista de Agentes'), 'version': '1.6.2'},
+            {'descripcion': _('Ver lista de Agentes'), 'version': '1.7.0'},
         'agenteprofile_update':
-            {'descripcion': _('Editar Perfil de Agente'), 'version': '1.6.2'},
+            {'descripcion': _('Editar Perfil de Agente'), 'version': '1.7.0'},
         'agente_activar':
-            {'descripcion': _('Activar Agente'), 'version': '1.6.2'},
+            {'descripcion': _('Activar Agente'), 'version': '1.7.0'},
         'agente_desactivar':
-            {'descripcion': _('Desactivar Agente'), 'version': '1.6.2'},
+            {'descripcion': _('Desactivar Agente'), 'version': '1.7.0'},
         'supervisor_list':
-            {'descripcion': _('Ver lista de Supervisores'), 'version': '1.6.2'},
+            {'descripcion': _('Ver lista de Supervisores'), 'version': '1.7.0'},
         'supervisor_update':
-            {'descripcion': _('Editar Perfil de Supervisor'), 'version': '1.6.2'},
+            {'descripcion': _('Editar Perfil de Supervisor'), 'version': '1.7.0'},
         'cliente_webphone_list':
-            {'descripcion': _('Ver lista de Clientes WebPhone'), 'version': '1.6.2'},
+            {'descripcion': _('Ver lista de Clientes WebPhone'), 'version': '1.7.0'},
         'cliente_webphone_toggle_activacion':
-            {'descripcion': _('Activar/Desactivar cliente WebPhone'), 'version': '1.6.2'},
+            {'descripcion': _('Activar/Desactivar cliente WebPhone'), 'version': '1.7.0'},
         'user_role_management':
-            {'descripcion': _('Administración de roles'), 'version': '1.6.2'},
+            {'descripcion': _('Administración de roles'), 'version': '1.7.0'},
         'grupo_list':
-            {'descripcion': _('Ver lista de Grupos'), 'version': '1.6.2'},
+            {'descripcion': _('Ver lista de Grupos'), 'version': '1.7.0'},
         'grupo_nuevo':
-            {'descripcion': _('Crear Grupo'), 'version': '1.6.2'},
+            {'descripcion': _('Crear Grupo'), 'version': '1.7.0'},
         'grupo_update':
-            {'descripcion': _('Modificar Grupo'), 'version': '1.6.2'},
+            {'descripcion': _('Modificar Grupo'), 'version': '1.7.0'},
         'grupo_delete':
-            {'descripcion': _('Borrar Grupo'), 'version': '1.6.2'},
+            {'descripcion': _('Borrar Grupo'), 'version': '1.7.0'},
         'pausa_list':
-            {'descripcion': _('Ver lista de Pausas'), 'version': '1.6.2'},
+            {'descripcion': _('Ver lista de Pausas'), 'version': '1.7.0'},
         'pausa_nuevo':
-            {'descripcion': _('Crear Pausa'), 'version': '1.6.2'},
+            {'descripcion': _('Crear Pausa'), 'version': '1.7.0'},
         'pausa_update':
-            {'descripcion': _('Modificar Pausa'), 'version': '1.6.2'},
+            {'descripcion': _('Modificar Pausa'), 'version': '1.7.0'},
         'pausa_delete':
-            {'descripcion': _('Borrar Pausa'), 'version': '1.6.2'},
+            {'descripcion': _('Borrar Pausa'), 'version': '1.7.0'},
         'grabacion_marcar':
-            {'descripcion': _('Marcar la grabación en curso.'), 'version': '1.6.2'},
+            {'descripcion': _('Marcar la grabación en curso.'), 'version': '1.7.0'},
         'grabacion_descripcion':
             {'descripcion': _('Ver la marca (campo descripcion) de una grabacion.'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'grabacion_buscar':
             {'descripcion': _('Busqueda de grabaciones por parte de un supervisor'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'grabacion_agente_buscar':
-            {'descripcion': _('Busqueda de grabaciones propias para Agentes'), 'version': '1.6.2'},
+            {'descripcion': _('Busqueda de grabaciones propias para Agentes'), 'version': '1.7.0'},
         'buscar_auditorias_gestion':
             {'descripcion': _('Acceder al listado de calificaciones a auditar'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'auditar_calificacion_cliente':
             {'descripcion': _('Crear/editar auditoría de calificacion'), 'version': '1.7.0'},
         'service_campanas_activas':
             {'descripcion':
              _('Lista de Campanas activas. Se usan como opciones para transferencias.'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'service_agentes_de_grupo':
             {'descripcion': _('Lista de Agentes del mismo grupo que el Agente loggeado'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'lista_base_datos_contacto':
-            {'descripcion': _('Lista de bases de datos de contactos'), 'version': '1.6.2'},
+            {'descripcion': _('Lista de bases de datos de contactos'), 'version': '1.7.0'},
         'nueva_base_datos_contacto':
-            {'descripcion': _('Crear base de datos de contacto'), 'version': '1.6.2'},
+            {'descripcion': _('Crear base de datos de contacto'), 'version': '1.7.0'},
         'update_base_datos_contacto':
             {'descripcion': _('Agregar lista de contactos a base de datos de contacto'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'update_base_datos_contacto_de_campana':
             {'descripcion':
              _('Agregar lista de contactos a base de datos de contacto de una Campaña'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'define_base_datos_contacto':
             {'descripcion':
              _('Define base de datos de contacto. Paso necesario al momento de la creación'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'agregar_contacto':
             {'descripcion': _('Agregar un contacto a base de datos de contacto'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'agregar_contacto_a_campana':
             {'descripcion': _('Agregar un contacto a base de datos de contacto de una campaña'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'actualiza_base_datos_contacto':
             {'descripcion':
              _('Define base de datos de contacto. Paso necesario al momento de la creación'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'actualiza_base_datos_contacto_de_campana':
             {'descripcion':
              _('Define base de datos de contacto para una campaña. Agrega contactos'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'contacto_list_bd_contacto':
             {'descripcion': _('Ver lista de contactos de una Base de datos de contactos'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'actualizar_contacto':
-            {'descripcion': _('Actualizar un contacto'), 'version': '1.6.2'},
+            {'descripcion': _('Actualizar un contacto'), 'version': '1.7.0'},
         'eliminar_contacto':
-            {'descripcion': _('Eliminar un contacto'), 'version': '1.6.2'},
+            {'descripcion': _('Eliminar un contacto'), 'version': '1.7.0'},
         'oculta_base_dato':
-            {'descripcion': _('Ocultar una base de datos de contactos'), 'version': '1.6.2'},
+            {'descripcion': _('Ocultar una base de datos de contactos'), 'version': '1.7.0'},
         'desoculta_base_datos':
-            {'descripcion': _('Desocultar una base de datos de contactos'), 'version': '1.6.2'},
+            {'descripcion': _('Desocultar una base de datos de contactos'), 'version': '1.7.0'},
         'mostrar_bases_datos_ocultas':
-            {'descripcion': _('Mostrar bases de datos de contactos ocultas'), 'version': '1.6.2'},
+            {'descripcion': _('Mostrar bases de datos de contactos ocultas'), 'version': '1.7.0'},
         'bloquear_campos_para_agente':
-            {'descripcion': _('Restringir campos de Contacto para Agente'), 'version': '1.6.2'},
+            {'descripcion': _('Restringir campos de Contacto para Agente'), 'version': '1.7.0'},
         'contacto_list':
-            {'descripcion': _('Lista de contactos para una campaña'), 'version': '1.6.2'},
+            {'descripcion': _('Lista de contactos para una campaña'), 'version': '1.7.0'},
         'contacto_update':
-            {'descripcion': _('Actualizar un contacto'), 'version': '1.6.2'},
+            {'descripcion': _('Actualizar un contacto'), 'version': '1.7.0'},
         'seleccion_campana_adicion_contacto':
-            {'descripcion': _('Selección de campaña para agregar un contacto'), 'version': '1.6.2'},
+            {'descripcion': _('Selección de campaña para agregar un contacto'), 'version': '1.7.0'},
         'nuevo_contacto_campana':
-            {'descripcion': _('Crear un nuevo contacto'), 'version': '1.6.2'},
+            {'descripcion': _('Crear un nuevo contacto'), 'version': '1.7.0'},
         'nuevo_contacto_campana_a_llamar':
             {'descripcion': _('Crea un nuevo contacto y luego efectua llamada'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'campana_busqueda_contacto':
-            {'descripcion': _('Búsqueda de contacto para agente.'), 'version': '1.6.2'},
+            {'descripcion': _('Búsqueda de contacto para agente.'), 'version': '1.7.0'},
         'campana_contactos_telefono_repetido':
-            {'descripcion': _('Contactos que comparten un número de teléfono'), 'version': '1.6.2'},
+            {'descripcion': _('Contactos que comparten un número de teléfono'), 'version': '1.7.0'},
         'identificar_contacto_a_llamar':
-            {'descripcion': _('Identificar el contacto para la llamada'), 'version': '1.6.2'},
+            {'descripcion': _('Identificar el contacto para la llamada'), 'version': '1.7.0'},
         'campana_entrante_template_create':
-            {'descripcion': _('Crear template para campaña entrante'), 'version': '1.6.2'},
+            {'descripcion': _('Crear template para campaña entrante'), 'version': '1.7.0'},
         'campana_entrante_template_create_campana':
             {'descripcion': _('Crear campaña entrante a partir de un template'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'campana_entrante_template_list':
-            {'descripcion': _('Ver lista de templates de campañas entrantes'), 'version': '1.6.2'},
+            {'descripcion': _('Ver lista de templates de campañas entrantes'), 'version': '1.7.0'},
         'campana_entrante_template_detail':
             {'descripcion': _('Ver el detalle de un template de campaña entrante'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'campana_entrante_template_delete':
-            {'descripcion': _('Borrar un template de campaña entrante'), 'version': '1.6.2'},
+            {'descripcion': _('Borrar un template de campaña entrante'), 'version': '1.7.0'},
         'campana_preview_activas_miembro':
             {'descripcion': _('Pantalla para llamar contactos de campañas preview'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'liberar_contacto_asignado_agente':
             {'descripcion': _('Liberar un contacto asignado en una campaña preview'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'reporte_agente_calificaciones':
-            {'descripcion': _('Ver calificaciones propias de Agente'), 'version': '1.6.2'},
+            {'descripcion': _('Ver calificaciones propias de Agente'), 'version': '1.7.0'},
         'exporta_reporte_calificaciones':
             {'descripcion': _('Descargar reporte de calificaciones propias de Agente'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'exporta_reporte_formularios':
             {'descripcion': _('Descargar reporte de calificaciones de gestión propias de Agente'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'agente_llamar_contacto':
-            {'descripcion': _('Llamar a un contacto'), 'version': '1.6.2'},
+            {'descripcion': _('Llamar a un contacto'), 'version': '1.7.0'},
         'agente_llamar_sin_campana':
-            {'descripcion': _('Llamar por fuera de las campañas.'), 'version': '1.6.2'},
+            {'descripcion': _('Llamar por fuera de las campañas.'), 'version': '1.7.0'},
         'calificacion_list':
-            {'descripcion': _('Ver lista de opciones de Calificación'), 'version': '1.6.2'},
+            {'descripcion': _('Ver lista de opciones de Calificación'), 'version': '1.7.0'},
         'calificacion_nuevo':
-            {'descripcion': _('Crear nueva Opción de calificación'), 'version': '1.6.2'},
+            {'descripcion': _('Crear nueva Opción de calificación'), 'version': '1.7.0'},
         'calificacion_update':
-            {'descripcion': _('Modificar Opción de calificación'), 'version': '1.6.2'},
+            {'descripcion': _('Modificar Opción de calificación'), 'version': '1.7.0'},
         'calificacion_delete':
-            {'descripcion': _('Borrar opción de calificación'), 'version': '1.6.2'},
+            {'descripcion': _('Borrar opción de calificación'), 'version': '1.7.0'},
         'formulario_list':
-            {'descripcion': _('Ver lista de Formularios de gestión'), 'version': '1.6.2'},
+            {'descripcion': _('Ver lista de Formularios de gestión'), 'version': '1.7.0'},
         'formulario_list_mostrar_ocultos':
-            {'descripcion': _('Mostrar Formularios de gestión ocultos'), 'version': '1.6.2'},
+            {'descripcion': _('Mostrar Formularios de gestión ocultos'), 'version': '1.7.0'},
         'formulario_nuevo':
-            {'descripcion': _('Crear nuevo Formulario de gestión'), 'version': '1.6.2'},
+            {'descripcion': _('Crear nuevo Formulario de gestión'), 'version': '1.7.0'},
         'formulario_field':
-            {'descripcion': _('Crear un campo para un formulario de gestión'), 'version': '1.6.2'},
+            {'descripcion': _('Crear un campo para un formulario de gestión'), 'version': '1.7.0'},
         'campo_formulario_orden':
             {'descripcion': _('Modificar el orden de los campos de un formulario de gestión'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'formulario_field_delete':
-            {'descripcion': _('Borrar un campo de un formulario de gestión'), 'version': '1.6.2'},
+            {'descripcion': _('Borrar un campo de un formulario de gestión'), 'version': '1.7.0'},
         'formulario_vista_previa':
-            {'descripcion': _('Vista previa de un Formulario de gestión'), 'version': '1.6.2'},
+            {'descripcion': _('Vista previa de un Formulario de gestión'), 'version': '1.7.0'},
         'formulario_eliminar':
-            {'descripcion': _('Eliminar un Formulario de gestión'), 'version': '1.6.2'},
+            {'descripcion': _('Eliminar un Formulario de gestión'), 'version': '1.7.0'},
         'formulario_mostrar_ocultar':
-            {'descripcion': _('Mostrar u ocultar un Formulario de gestión'), 'version': '1.6.2'},
+            {'descripcion': _('Mostrar u ocultar un Formulario de gestión'), 'version': '1.7.0'},
         'formulario_vista':
-            {'descripcion': _('Ver Formulario de gestión'), 'version': '1.6.2'},
+            {'descripcion': _('Ver Formulario de gestión'), 'version': '1.7.0'},
         'calificar_llamada':
-            {'descripcion': _('Calificar una llamada (Agente)'), 'version': '1.6.2'},
+            {'descripcion': _('Calificar una llamada (Agente)'), 'version': '1.7.0'},
         'calificar_llamada_con_contacto':
-            {'descripcion': _('Calificar una llamada (Agente)'), 'version': '1.6.2'},
+            {'descripcion': _('Calificar una llamada (Agente)'), 'version': '1.7.0'},
         'calificacion_formulario_update_or_create':
-            {'descripcion': _('Calificar una llamada (Agente)'), 'version': '1.6.2'},
+            {'descripcion': _('Calificar una llamada (Agente)'), 'version': '1.7.0'},
         'recalificacion_formulario_update_or_create':
-            {'descripcion': _('Calificar una llamada (Agente)'), 'version': '1.6.2'},
+            {'descripcion': _('Calificar una llamada (Agente)'), 'version': '1.7.0'},
         'calificacion_cliente_actualiza_desde_reporte':
-            {'descripcion': _('Calificar una llamada (Agente)'), 'version': '1.6.2'},
+            {'descripcion': _('Calificar una llamada (Agente)'), 'version': '1.7.0'},
         'auditar_calificacion':
             {'descripcion': _('Editar una calificacion al auditarla (Supervisor)'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'calificar_por_telefono':
-            {'descripcion': _('Calificar una llamada (Agente)'), 'version': '1.6.2'},
+            {'descripcion': _('Calificar una llamada (Agente)'), 'version': '1.7.0'},
         'formulario_detalle':
-            {'descripcion': _('Ver la respuesta de un Formulario de Gestión'), 'version': '1.6.2'},
+            {'descripcion': _('Ver la respuesta de un Formulario de Gestión'), 'version': '1.7.0'},
         'formulario_venta':
             {'descripcion': _('Crear/editar la respuesta de un Formulario de gestión'), 'version':
-             '1.6.2'},
+             '1.7.0'},
         'auditar_formulario_venta':
             {'descripcion': _('Editar la respuesta de un formulario de gestión al auditarla'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'agente_cambiar_estado':
-            {'descripcion': _('Modificar el estado de un Agente en Asterisk'), 'version': '1.6.2'},
+            {'descripcion': _('Modificar el estado de un Agente en Asterisk'), 'version': '1.7.0'},
         'llamadas_activas':
-            {'descripcion': _('Llamadas activas actuales'), 'version': '1.6.2'},
+            {'descripcion': _('Llamadas activas actuales'), 'version': '1.7.0'},
         'supervision_agentes_logueados':
-            {'descripcion': _('Agentes logueados'), 'version': '1.6.2'},
+            {'descripcion': _('Agentes logueados'), 'version': '1.7.0'},
         'agenda_contacto_create':
-            {'descripcion': _('Agenda para un contacto'), 'version': '1.6.2'},
+            {'descripcion': _('Agenda para un contacto'), 'version': '1.7.0'},
+        'agenda_contacto_update':
+            {'descripcion': _('Re-agenda para un contacto'), 'version': '1.8.0'},
         'agenda_contacto_detalle':
-            {'descripcion': _('Ver el detalle de la Agenda de un contacto'), 'version': '1.6.2'},
+            {'descripcion': _('Ver el detalle de la Agenda de un contacto'), 'version': '1.7.0'},
         'agenda_contacto_listado':
-            {'descripcion': _('Listado de Agendas de contactos'), 'version': '1.6.2'},
+            {'descripcion': _('Listado de Agendas de contactos'), 'version': '1.7.0'},
+        'agenda_contactos_por_campana':
+            {'descripcion': _('Listado para reasignar Agendas de contactos por Campaña'),
+             'version': '1.7.0'},
         'campana_dialer_list':
-            {'descripcion': _('Ver listado de campañas Dialer'), 'version': '1.6.2'},
+            {'descripcion': _('Ver listado de campañas Dialer'), 'version': '1.7.0'},
         'campana_dialer_create':
-            {'descripcion': _('Crear campaña Dialer'), 'version': '1.6.2'},
+            {'descripcion': _('Crear campaña Dialer'), 'version': '1.7.0'},
         'campana_dialer_update':
-            {'descripcion': _('Editar campana Dialer'), 'version': '1.6.2'},
+            {'descripcion': _('Editar campana Dialer'), 'version': '1.7.0'},
         'start_campana_dialer':
-            {'descripcion': _('Dar inicio a una campaña Dialer'), 'version': '1.6.2'},
+            {'descripcion': _('Dar inicio a una campaña Dialer'), 'version': '1.7.0'},
         'pausar_campana_dialer':
-            {'descripcion': _('Pausar una campaña Dialer'), 'version': '1.6.2'},
+            {'descripcion': _('Pausar una campaña Dialer'), 'version': '1.7.0'},
         'activar_campana_dialer':
-            {'descripcion': _('Activar una campaña Dialer'), 'version': '1.6.2'},
+            {'descripcion': _('Activar una campaña Dialer'), 'version': '1.7.0'},
         'campana_dialer_delete':
-            {'descripcion': _('Borrar una campaña Dialer'), 'version': '1.6.2'},
+            {'descripcion': _('Borrar una campaña Dialer'), 'version': '1.7.0'},
         'campana_dialer_ocultar':
-            {'descripcion': _('Ocultar una campaña Dialer'), 'version': '1.6.2'},
+            {'descripcion': _('Ocultar una campaña Dialer'), 'version': '1.7.0'},
         'campana_dialer_desocultar':
-            {'descripcion': _('Mostrar una campaña Dialer oculta'), 'version': '1.6.2'},
+            {'descripcion': _('Mostrar una campaña Dialer oculta'), 'version': '1.7.0'},
         'campana_dialer_update_base':
             {'descripcion': _('Actualizar la base de datos de una Campaña Dialer'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'campana_dialer_supervisors':
-            {'descripcion': _('Asignar supervisores a una campaña Dialer'), 'version': '1.6.2'},
+            {'descripcion': _('Asignar supervisores a una campaña Dialer'), 'version': '1.7.0'},
         'campana_dialer_mostrar_ocultas':
-            {'descripcion': _('Mostrar campañas Dialers ocultas'), 'version': '1.6.2'},
+            {'descripcion': _('Mostrar campañas Dialers ocultas'), 'version': '1.7.0'},
         'campana_dialer_finaliza_activas':
             {'descripcion': _('Finalizar campañas activas que no tengan contactos pendientes'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'campana_manual_list':
-            {'descripcion': _('Ver listado de campañas Manuales'), 'version': '1.6.2'},
+            {'descripcion': _('Ver listado de campañas Manuales'), 'version': '1.7.0'},
         'campana_manual_create':
-            {'descripcion': _('Crear campaña Manual'), 'version': '1.6.2'},
+            {'descripcion': _('Crear campaña Manual'), 'version': '1.7.0'},
         'campana_manual_update':
-            {'descripcion': _('Editar campaña Manual'), 'version': '1.6.2'},
+            {'descripcion': _('Editar campaña Manual'), 'version': '1.7.0'},
         'campana_manual_delete':
-            {'descripcion': _('Borrar campaña Manual'), 'version': '1.6.2'},
+            {'descripcion': _('Borrar campaña Manual'), 'version': '1.7.0'},
         'campana_manual_ocultar':
-            {'descripcion': _('Ocultar campaña Manual'), 'version': '1.6.2'},
+            {'descripcion': _('Ocultar campaña Manual'), 'version': '1.7.0'},
         'campana_manual_desocultar':
-            {'descripcion': _('Mostrar una campaña Manual oculta'), 'version': '1.6.2'},
+            {'descripcion': _('Mostrar una campaña Manual oculta'), 'version': '1.7.0'},
         'campana_manual_supervisors':
-            {'descripcion': _('Asignar supervisores a una campaña Manual'), 'version': '1.6.2'},
+            {'descripcion': _('Asignar supervisores a una campaña Manual'), 'version': '1.7.0'},
         'campana_manual_mostrar_ocultas':
-            {'descripcion': _('Mostrar campañas Manuales ocultas'), 'version': '1.6.2'},
+            {'descripcion': _('Mostrar campañas Manuales ocultas'), 'version': '1.7.0'},
         'campana_preview_list':
-            {'descripcion': _('Ver listado de campañas Preview'), 'version': '1.6.2'},
+            {'descripcion': _('Ver listado de campañas Preview'), 'version': '1.7.0'},
         'campana_preview_create':
-            {'descripcion': _('Crear campaña Preview'), 'version': '1.6.2'},
+            {'descripcion': _('Crear campaña Preview'), 'version': '1.7.0'},
         'campana_preview_update':
-            {'descripcion': _('Editar campaña Preview'), 'version': '1.6.2'},
+            {'descripcion': _('Editar campaña Preview'), 'version': '1.7.0'},
         'campana_preview_delete':
-            {'descripcion': _('Borrar campaña Preview'), 'version': '1.6.2'},
+            {'descripcion': _('Borrar campaña Preview'), 'version': '1.7.0'},
         'campana_preview_supervisors':
-            {'descripcion': _('Asignar supervisores a una campaña Preview'), 'version': '1.6.2'},
+            {'descripcion': _('Asignar supervisores a una campaña Preview'), 'version': '1.7.0'},
         'campana_preview_mostrar_ocultas':
-            {'descripcion': _('Mostrar campañas Preview ocultas'), 'version': '1.6.2'},
+            {'descripcion': _('Mostrar campañas Preview ocultas'), 'version': '1.7.0'},
         'campana_mostrar_ocultar':
-            {'descripcion': _('Ocultar campaña Preview'), 'version': '1.6.2'},
+            {'descripcion': _('Ocultar campaña Preview'), 'version': '1.7.0'},
         'campana_preview_dispatcher':
             {'descripcion': _('Obtener un contacto de una campaña Preview para llamarlo'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'validar_contacto_asignado':
             {'descripcion':
              _('Validar que el agente tiene asignado un contacto de una campaña Preview'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'contactos_preview_asignados':
             {'descripcion': _('Ver los contactos de una campaña Preview asignados a algun agente'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'liberar_contacto_asignado':
             {'descripcion': _('Liberar un contacto de una campaña Preview asignado a un agente'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'ordenar_entrega_contactos_preview':
             {'descripcion': _('Definir orden de asignacion de contactos de una campaña Preview'),
              'version': '1.5.2'},
@@ -995,95 +1004,95 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Descargar orden de asignacion de contactos de una campaña Preview'),
              'version': '1.5.2'},
         'campana_list':
-            {'descripcion': _('Ver lista de campañas Entrantes'), 'version': '1.6.2'},
+            {'descripcion': _('Ver lista de campañas Entrantes'), 'version': '1.7.0'},
         'campana_nuevo':
-            {'descripcion': _('Crear campaña Entrante'), 'version': '1.6.2'},
+            {'descripcion': _('Crear campaña Entrante'), 'version': '1.7.0'},
         'campana_update':
-            {'descripcion': _('Modificar campaña Entrante'), 'version': '1.6.2'},
+            {'descripcion': _('Modificar campaña Entrante'), 'version': '1.7.0'},
         'campana_elimina':
-            {'descripcion': _('Borrar campaña Entrante'), 'version': '1.6.2'},
+            {'descripcion': _('Borrar campaña Entrante'), 'version': '1.7.0'},
         'oculta_campana':
-            {'descripcion': _('Ocultar campaña Entrante'), 'version': '1.6.2'},
+            {'descripcion': _('Ocultar campaña Entrante'), 'version': '1.7.0'},
         'desoculta_campana':
-            {'descripcion': _('Mostrar campaña Entrante oculta'), 'version': '1.6.2'},
+            {'descripcion': _('Mostrar campaña Entrante oculta'), 'version': '1.7.0'},
         'campana_supervisors':
-            {'descripcion': _('Asignar supervisores a una campaña Entrante'), 'version': '1.6.2'},
+            {'descripcion': _('Asignar supervisores a una campaña Entrante'), 'version': '1.7.0'},
         'mostrar_campanas_ocultas':
-            {'descripcion': _('Mostrar campañas Entrantes ocultas'), 'version': '1.6.2'},
+            {'descripcion': _('Mostrar campañas Entrantes ocultas'), 'version': '1.7.0'},
         'back_list_create':
-            {'descripcion': _('Creacion de una Blacklist'), 'version': '1.6.2'},
+            {'descripcion': _('Creacion de una Blacklist'), 'version': '1.7.0'},
         'back_list_list':
-            {'descripcion': _('Ver lista de Blacklists'), 'version': '1.6.2'},
+            {'descripcion': _('Ver lista de Blacklists'), 'version': '1.7.0'},
         'sistema_externo_list':
-            {'descripcion': _('Ver lista de Sistemas Externos'), 'version': '1.6.2'},
+            {'descripcion': _('Ver lista de Sistemas Externos'), 'version': '1.7.0'},
         'sistema_externo_create':
-            {'descripcion': _('Crear un Sistema Externo'), 'version': '1.6.2'},
+            {'descripcion': _('Crear un Sistema Externo'), 'version': '1.7.0'},
         'modificar_sistema_externo':
-            {'descripcion': _('Modificar un Sistema Externo'), 'version': '1.6.2'},
+            {'descripcion': _('Modificar un Sistema Externo'), 'version': '1.7.0'},
         'sitio_externo_list':
-            {'descripcion': _('Ver lista de Sitios Externos'), 'version': '1.6.2'},
+            {'descripcion': _('Ver lista de Sitios Externos'), 'version': '1.7.0'},
         'sitio_externo_create':
-            {'descripcion': _('Crear un Sitio Externo'), 'version': '1.6.2'},
+            {'descripcion': _('Crear un Sitio Externo'), 'version': '1.7.0'},
         'oculta_sitio_externo':
-            {'descripcion': _('Ocultar un Sitio Externo'), 'version': '1.6.2'},
+            {'descripcion': _('Ocultar un Sitio Externo'), 'version': '1.7.0'},
         'desoculta_sitio_externo':
-            {'descripcion': _('Mostrar un Sitio Externo oculto'), 'version': '1.6.2'},
+            {'descripcion': _('Mostrar un Sitio Externo oculto'), 'version': '1.7.0'},
         'mostrar_sitios_externo_ocultos':
-            {'descripcion': _('Mostrar los Sitios Externos ocultos'), 'version': '1.6.2'},
+            {'descripcion': _('Mostrar los Sitios Externos ocultos'), 'version': '1.7.0'},
         'modificar_sitio_externo':
-            {'descripcion': _('Modificar un Sitio Externo'), 'version': '1.6.2'},
+            {'descripcion': _('Modificar un Sitio Externo'), 'version': '1.7.0'},
         'sitio_externo_delete':
-            {'descripcion': _('Borrar un Sitio Externo'), 'version': '1.6.2'},
+            {'descripcion': _('Borrar un Sitio Externo'), 'version': '1.7.0'},
         'queue_member_add':
-            {'descripcion': _('Agregar un Agente a una Campaña'), 'version': '1.6.2'},
+            {'descripcion': _('Agregar un Agente a una Campaña'), 'version': '1.7.0'},
         'queue_member_grupo_agente':
-            {'descripcion': _('Agregar un Grupo de Agentes a una Campaña'), 'version': '1.6.2'},
+            {'descripcion': _('Agregar un Grupo de Agentes a una Campaña'), 'version': '1.7.0'},
         'queue_member_campana':
-            {'descripcion': _('Pantalla de asignacion de Agentes a Campaña'), 'version': '1.6.2'},
+            {'descripcion': _('Pantalla de asignacion de Agentes a Campaña'), 'version': '1.7.0'},
         'queue_member_elimina':
-            {'descripcion': _('Eliminar un Agente de una Campaña'), 'version': '1.6.2'},
+            {'descripcion': _('Eliminar un Agente de una Campaña'), 'version': '1.7.0'},
         'campana_dialer_template_create':
-            {'descripcion': _('Crear un template de una Campaña Dialer'), 'version': '1.6.2'},
+            {'descripcion': _('Crear un template de una Campaña Dialer'), 'version': '1.7.0'},
         'lista_campana_dialer_template':
-            {'descripcion': _('Ver lista de templates de campaña Dialer'), 'version': '1.6.2'},
+            {'descripcion': _('Ver lista de templates de campaña Dialer'), 'version': '1.7.0'},
         'crea_campana_dialer_template':
             {'descripcion': _('Crear una campaña Dialer a partir de un Template'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'campana_dialer_template_detalle':
             {'descripcion': _('Ver el detalle de un template de Campaña Dialer'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'campana_dialer_template_elimina':
-            {'descripcion': _('Eliminar un Template de Campaña Dialer'), 'version': '1.6.2'},
+            {'descripcion': _('Eliminar un Template de Campaña Dialer'), 'version': '1.7.0'},
         'campana_manual_template_create':
-            {'descripcion': _('Crear un template de una Campaña Manual'), 'version': '1.6.2'},
+            {'descripcion': _('Crear un template de una Campaña Manual'), 'version': '1.7.0'},
         'campana_manual_template_create_campana':
             {'descripcion': _('Crear una campaña Manual a partir de un Template'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'campana_manual_template_list':
-            {'descripcion': _('Ver lista de templates de campaña Manual'), 'version': '1.6.2'},
+            {'descripcion': _('Ver lista de templates de campaña Manual'), 'version': '1.7.0'},
         'campana_manual_template_detail':
             {'descripcion': _('Ver el detalle de un template de Campaña Manual'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'campana_manual_template_delete':
-            {'descripcion': _('Eliminar un Template de Campaña Dialer'), 'version': '1.6.2'},
+            {'descripcion': _('Eliminar un Template de Campaña Dialer'), 'version': '1.7.0'},
         'campana_preview_template_create':
-            {'descripcion': _('Crear un template de una Campaña Preview'), 'version': '1.6.2'},
+            {'descripcion': _('Crear un template de una Campaña Preview'), 'version': '1.7.0'},
         'campana_preview_template_create_campana':
             {'descripcion': _('Crear una campaña Preview a partir de un Template'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'campana_preview_template_list':
-            {'descripcion': _('Ver lista de templates de campaña Preview'), 'version': '1.6.2'},
+            {'descripcion': _('Ver lista de templates de campaña Preview'), 'version': '1.7.0'},
         'campana_preview_template_detail':
             {'descripcion': _('Ver el detalle de un template de Campaña Preview'),
-             'version': '1.6.2'},
+             'version': '1.7.0'},
         'campana_preview_template_delete':
-            {'descripcion': _('Eliminar un Template de Campaña Preview'), 'version': '1.6.2'},
+            {'descripcion': _('Eliminar un Template de Campaña Preview'), 'version': '1.7.0'},
         'lista_archivo_audio':
-            {'descripcion': _('Ver la lista de Archivos de Audio'), 'version': '1.6.2'},
+            {'descripcion': _('Ver la lista de Archivos de Audio'), 'version': '1.7.0'},
         'create_archivo_audio':
-            {'descripcion': _('Crear un Archivo de Audio'), 'version': '1.6.2'},
+            {'descripcion': _('Crear un Archivo de Audio'), 'version': '1.7.0'},
         'edita_archivo_audio':
-            {'descripcion': _('Editar un Archivo de Audio'), 'version': '1.6.2'},
+            {'descripcion': _('Editar un Archivo de Audio'), 'version': '1.7.0'},
         'eliminar_archivo_audio':
-            {'descripcion': _('Eliminar un Archivo de Audio'), 'version': '1.6.2'},
+            {'descripcion': _('Eliminar un Archivo de Audio'), 'version': '1.7.0'},
     }
