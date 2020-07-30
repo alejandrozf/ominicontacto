@@ -29,7 +29,7 @@ from django.utils import timezone
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 
-from ominicontacto_app.forms import ReporteForm
+from ominicontacto_app.forms import ReporteCampanaForm
 from ominicontacto_app.models import Campana, AgenteProfile
 from ominicontacto_app.services.estadisticas_campana import EstadisticasService
 from ominicontacto_app.services.reporte_agente import EstadisticasAgenteService
@@ -123,7 +123,7 @@ class CampanaReporteGraficoView(FormView):
 
     context_object_name = 'campana'
     model = Campana
-    form_class = ReporteForm
+    form_class = ReporteCampanaForm
     template_name = 'reporte_grafico_campana.html'
 
     def get_object(self, queryset=None):
@@ -268,7 +268,7 @@ class ExportaReporteCalificadosView(View):
 class AgenteCampanaReporteGrafico(FormView):
     """Esta vista genera el reporte grafico de la campana para un agente"""
     template_name = 'reporte_agente.html'
-    form_class = ReporteForm
+    form_class = ReporteCampanaForm
 
     def get_object(self, queryset=None):
         return Campana.objects.get(pk=self.kwargs['pk_campana'])
