@@ -444,9 +444,10 @@ class GrabacionBusquedaForm(forms.Form):
                                   widget=forms.TextInput(attrs={'class': 'form-control'}))
     callid = forms.CharField(required=False, label=_('Call ID'),
                              widget=forms.TextInput(attrs={'class': 'form-control'}))
-    campana = forms.ChoiceField(
-        required=False, choices=(), label=_('Campaña'),
-        widget=forms.Select(attrs={'class': 'form-control'}))
+    id_contacto_externo = forms.CharField(required=False, label=_('ID de contacto externo'),
+                                          widget=forms.TextInput(attrs={'class': 'form-control'}))
+    campana = forms.ChoiceField(required=False, choices=(), label=_('Campaña'),
+                                widget=forms.Select(attrs={'class': 'form-control'}),)
     pagina = forms.CharField(required=False, widget=forms.HiddenInput(), label=_('Página'))
     marcadas = forms.BooleanField(required=False, label=_('Marcadas'))
     duracion = forms.IntegerField(required=False, min_value=0, initial=0,
@@ -466,7 +467,8 @@ class GrabacionBusquedaSupervisorForm(GrabacionBusquedaForm):
                                     required=False, label=_('Agente'))
 
     field_order = ['fecha', 'tipo_llamada_choice', 'tipo_llamada', 'tel_cliente', 'callid',
-                   'agente', 'campana', 'pagina', 'marcadas', 'duracion', 'gestion']
+                   'agente', 'campana', 'pagina', 'id_contacto_externo', 'duracion',
+                   'marcadas', 'gestion']
 
 
 class AuditoriaBusquedaForm(forms.Form):

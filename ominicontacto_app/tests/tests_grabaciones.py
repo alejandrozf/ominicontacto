@@ -36,7 +36,7 @@ from ominicontacto_app.models import Grabacion, GrabacionMarca, OpcionCalificaci
 from ominicontacto_app.tests.factories import (GrabacionFactory, GrabacionMarcaFactory,
                                                CalificacionClienteFactory, CampanaFactory,
                                                OpcionCalificacionFactory, QueueFactory,
-                                               QueueMemberFactory)
+                                               QueueMemberFactory, ContactoFactory)
 from ominicontacto_app.tests.utiles import OMLBaseTest
 
 from ominicontacto_app.utiles import fecha_hora_local
@@ -61,7 +61,10 @@ class BaseGrabacionesTests(OMLBaseTest):
         QueueMemberFactory(member=self.agente2, queue_name=self.queue_campana_2)
         self.campana2.supervisors.add(self.supervisor2.user)
 
+        self.contacto = ContactoFactory(id_externo='id_ext')
         self.campana3 = CampanaFactory(estado=Campana.ESTADO_ACTIVA)
+        self.campana3.bd_contacto.genera_contactos([self.contacto])
+        self.campana3.supervisors.add(self.supervisor1.user)
 
         self.opcion_calificacion = OpcionCalificacionFactory(
             campana=self.campana1, tipo=OpcionCalificacion.GESTION)
@@ -80,6 +83,9 @@ class BaseGrabacionesTests(OMLBaseTest):
         self.grabacion2_1 = GrabacionFactory.create(
             duracion=1, agente=self.agente2, campana=self.campana2)
         self.marca_campana2_1 = GrabacionMarcaFactory(callid=self.grabacion2_1.callid)
+
+        self.grabacion3_1 = GrabacionFactory.create(
+            tel_cliente=self.contacto.telefono, agente=self.agente2, campana=self.campana3)
 
 
 class GrabacionesTests(BaseGrabacionesTests):
@@ -239,6 +245,15 @@ class FiltrosBusquedaGrabacionesSupervisorTests(BaseGrabacionesTests):
         response = self.client.post(url, post_data, follow=True)
         self.assertContains(response, self.grabacion1.tel_cliente)
         self.assertNotContains(response, self.grabacion2.tel_cliente)
+        self.assertNotContains(response, self.grabacion3.tel_cliente)
+
+    def test_buscar_grabaciones_por_id_contacto_externo(self):
+        url = reverse('grabacion_buscar', kwargs={'pagina': 1})
+        post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'agente': '',
+                     'campana': '', 'marcadas': '', 'duracion': '', 'id_contacto_externo': 'id_ext'}
+        response = self.client.post(url, post_data, follow=True)
+        self.assertContains(response, self.grabacion3_1.tel_cliente)
+        self.assertNotContains(response, self.grabacion1.tel_cliente)
         self.assertNotContains(response, self.grabacion3.tel_cliente)
 
 
