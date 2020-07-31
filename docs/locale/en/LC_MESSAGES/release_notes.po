@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-30 17:18-0300\n"
+"POT-Creation-Date: 2020-07-31 16:01-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,23 +23,24 @@ msgstr "Release Notes"
 
 # 73ee1e870afd4a31b43364589dd0e1ee
 #: ../../release_notes.rst:4
-msgid "*Julio 30, 2020*"
-msgstr "July 30, 2020"
+msgid "*Julio 31, 2020*"
+msgstr "July 31, 2020"
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.8.1"
-msgstr "Release 1.8.1 details"
+msgid "Detalles de Release 1.8.2"
+msgstr "Release 1.8.2 details"
 
 # 2f558403c15a436e90409b976c7f07ed
 #: ../../release_notes.rst:11
 msgid "Fixes y mejoras"
 msgstr "Fixes and improvements"
 
-# 471ec40e86ab4a4589a5445c1dddaacc
+# b961f5f8914b4903a67f8589d0dc5d5e
 #: ../../release_notes.rst:12
 msgid ""
-"Solucionado error que impedía acceder al filtro historico del reporte de "
-"una campaña"
+"Solucionado error de dialplan relacion con prefijos de rutas salientes "
+"que introducía un comportamiento errático en algunas llamadas"
 msgstr ""
-"Fixed error that brokes the campaign general report"
+"Fixed dialplan error when dealing with outbound routes prefixes that "
+"introduced erratic behaviour on some calls"
