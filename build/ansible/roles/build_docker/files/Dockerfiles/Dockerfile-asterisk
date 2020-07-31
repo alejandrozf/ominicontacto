@@ -16,7 +16,7 @@ RUN apt-get update -qq \
     && apt-get update -y \
     && apt-get install sngrep -y \
     && pip3 install -e git+https://github.com/rdegges/pyst2@master#egg=pyst2 \
-    && pip3 install 'six==1.10.0' \
+    && pip3 install 'six==1.10.0' 'redis==3.5.3' \
     && apt-get remove -y --purge python3-pip git \
     && apt autoremove -y \
     && apt-get install -y libedit2 libbinutils

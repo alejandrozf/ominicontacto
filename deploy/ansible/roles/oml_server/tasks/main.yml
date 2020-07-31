@@ -17,6 +17,19 @@
 #
 ---
 
+# Se instala redis5 usando el repositorio REMI
+- name: Install remi repo for redis5
+  yum: name={{ remi_repository }} state=present update_cache=yes
+  tags: postinstall
+
+- name: Enable remi repo
+  command: yum-config-manager --enable remi
+  tags: postinstall
+
+- name: Install redis5
+  yum: "name=redis-{{ redis_version }} state=present update_cache=yes"
+  tags: postinstall
+
 # Se imprime que el virtualenv no esta instalado si la version actual es inferior a la requerida
 - debug: msg="Virtualenv {{ virtualenv_version }} is not installed, proceeding to install"
   when: virtualenv_installed.stdout != virtualenv_version

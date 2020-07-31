@@ -16,6 +16,7 @@ services:
       - PGPASSWORD=${PGPASSWORD}
       - PGHOST=${PGHOST}
       - PGUSER=${PGUSER}
+      - REDIS_HOSTNAME=${REDIS_HOSTNAME}
       - TZ=${TZ}
     image: {{ ast_builded_image }}
     networks:
