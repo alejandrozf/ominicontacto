@@ -95,7 +95,7 @@
   tags: always
 
 # Obtengo distro para PE, aca lo hago viendo el NAME del archivo os-release, asi obtengo la variable docker_distribution
-- name: Get specific CentOS based distribution
+- name: Get specific Linux distribution
   shell: awk -F= '/^NAME/{print $2}' /etc/os-release
   register: docker_distribution
   tags: docker_deploy

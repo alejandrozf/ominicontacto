@@ -77,25 +77,6 @@ def obtener_sip_agentes_sesiones_activas():
 interface = os.popen("ip route list | awk '/^default/ {print $5}'").read().strip("\n")
 
 
-def obtener_oml_network_subnet():
-    network_subnet = os.popen("route | grep " + str(interface) +
-                              "| tail -1 |awk -F \" \" '{print $1\"/\"$3}'").read().strip("\n")
-    return network_subnet
-
-
-def obtener_oml_private_ip():
-    private_ip = os.popen("ifconfig" + str(interface) +
-                          "| grep -Eo 'inet (addr:)?([0-9]*\\.){3}[0-9]*'"
-                          "| grep -Eo '([0-9]*\\.){3}[0-9]*'"
-                          "| grep -v '127.0.0.1'")
-    return private_ip
-
-
-def obtener_oml_public_ip():
-    public_ip = os.popen("wget -qO- http://ipinfo.io/ip").read().strip("\n")
-    return public_ip
-
-
 def adicionar_render_unicode(pygal_object):
     """Adiciona metodo que llama al metodo render
     del objeto de pygal con argumento que permite renderizarlo
