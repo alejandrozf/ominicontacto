@@ -105,6 +105,7 @@
       - { src: "omni-blacklist.py.j2", dest: "omni-blacklist.py" }
       - { src: "omni-dialednum.py.j2", dest: "omni-dialednum.py" }
       - { src: "omni-grabaciones.py.j2", dest: "omni-grabaciones.py" }
+      - { src: "omni-agent-status.py.j2", dest: "omni-agent-status.py" }
   become: yes
   become_method: sudo
   tags: postinstall

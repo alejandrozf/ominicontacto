@@ -23,9 +23,10 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 
 from ominicontacto_app.utiles import convert_audio_asterisk_path_astdb
-from ominicontacto_app.models import Campana, AgenteProfile, Pausa
+from ominicontacto_app.models import Campana, Pausa
 from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
     AsteriskHttpAsteriskDBError
+from ominicontacto_app.services.redis_database import AgenteFamily
 from configuracion_telefonia_app.models import (
     RutaSaliente, TroncalSIP, IVR, RutaEntrante, DestinoEntrante, ValidacionFechaHora, GrupoHorario,
     IdentificadorCliente, DestinoPersonalizado
@@ -44,7 +45,6 @@ class AbstractFamily(object):
     def _create_family(self, family_member):
         """Crea family en database de asterisk
         """
-
         client = AsteriskHttpClient()
         client.login()
         family = self._get_nombre_family(family_member)
@@ -131,7 +131,6 @@ class AbstractFamily(object):
 class CampanaFamily(AbstractFamily):
 
     def _create_dict(self, campana):
-
         dict_campana = {
             'QNAME': "{0}_{1}".format(campana.id, campana.nombre),
             'TYPE': campana.type,
@@ -194,31 +193,6 @@ class CampanaFamily(AbstractFamily):
 
     def _obtener_una_key(self):
         return "QNAME"
-
-
-class AgenteFamily(AbstractFamily):
-
-    def _create_dict(self, agente):
-
-        dict_agente = {
-            'NAME': agente.user.get_full_name(),
-            'SIP': agente.sip_extension,
-            'STATUS': ""
-        }
-        return dict_agente
-
-    def _obtener_todos(self):
-        """Obtengo todos los agentes activos"""
-        return AgenteProfile.objects.obtener_activos()
-
-    def _get_nombre_family(self, agente):
-        return "OML/AGENT/{0}".format(agente.id)
-
-    def get_nombre_families(self):
-        return "OML/AGENT"
-
-    def _obtener_una_key(self):
-        return "NAME"
 
 
 class PausaFamily(AbstractFamily):

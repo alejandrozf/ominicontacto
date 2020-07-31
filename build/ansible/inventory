@@ -10,6 +10,7 @@ kamailio_version=5.2.3
 rtpengine_version=5.5.3.1
 virtualenv_version=
 postgresql_version=11
+redis_version=5.0.9
 rtpengine_version=5.5.3.1
 wombat_version=20.02.1-272
 install_prefix=/opt/omnileads/

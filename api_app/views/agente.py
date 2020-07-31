@@ -269,9 +269,9 @@ class AgentLogoutAsterisk(APIView):
     def post(self, request, *args, **kwargs):
         agente_profile = self.request.user.get_agente_profile()
         agent_login_manager = AgentActivityAmiManager()
-        queue_remove_error, insert_astdb_error = agent_login_manager.logout_agent(
+        queue_remove_error, insert_redis_error = agent_login_manager.logout_agent(
             agente_profile, manage_connection=True)
-        if insert_astdb_error or queue_remove_error:
+        if insert_redis_error or queue_remove_error:
             return Response(data={
                 'status': 'ERROR',
             })
@@ -309,9 +309,9 @@ class AgentPauseAsterisk(APIView):
         agent_login_manager = AgentActivityAmiManager()
         pause_id = request.data.get('pause_id')
         agente_profile = self.request.user.get_agente_profile()
-        queue_pause_error, insert_astdb_error = agent_login_manager.pause_agent(
+        queue_pause_error, insert_redis_error = agent_login_manager.pause_agent(
             agente_profile, pause_id, manage_connection=True)
-        if queue_pause_error or insert_astdb_error:
+        if queue_pause_error or insert_redis_error:
             return Response(data={
                 'status': 'ERROR',
             })
@@ -335,9 +335,9 @@ class AgentUnpauseAsterisk(APIView):
         agent_login_manager = AgentActivityAmiManager()
         pause_id = request.data.get('pause_id')
         agente_profile = self.request.user.get_agente_profile()
-        queue_pause_error, insert_astdb_error = agent_login_manager.unpause_agent(
+        queue_pause_error, insert_redis_error = agent_login_manager.unpause_agent(
             agente_profile, pause_id, manage_connection=True)
-        if queue_pause_error or insert_astdb_error:
+        if queue_pause_error or insert_redis_error:
             return Response(data={
                 'status': 'ERROR',
             })

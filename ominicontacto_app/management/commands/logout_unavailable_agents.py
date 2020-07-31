@@ -68,16 +68,15 @@ class Command(BaseCommand):
 
     help = u"Comando para desloguear agentes que no se hayan deslogueado correctamente"
 
-    def set_astdb_unavailable_state(self):
+    def set_agent_unavailable_state_redis(self):
         supervisor_activity = SupervisorActivityAmiManager()
-        supervisor_activity.escribir_agentes_unavailable_astdb()
+        supervisor_activity.escribir_estado_agentes_unavailable()
 
     def handle(self, *args, **options):
-        self.logout_expired_sessions()
-        self.set_astdb_unavailable_state()
         try:
-            pass
             # TODO: Estas 2 funciones generan conexiones distintas a asterisk AMIManagerConnector.
+            self.logout_expired_sessions()
+            self.set_agent_unavailable_state_redis()
         except Exception as e:
             logging.error('Fallo del comando: {0}'.format(e))
             raise CommandError('Fallo del comando: {0}'.format(e))
