@@ -1,12 +1,12 @@
 Release Notes
 *************
 
-*Julio 30, 2020*
+*Julio 31, 2020*
 
-Detalles de Release 1.8.1
+Detalles de Release 1.8.2
 =========================
 
 
 Fixes y mejoras
 --------------------------
-- Solucionado error que impedía acceder al filtro historico del reporte de una campaña
+- Solucionado error de dialplan relacion con prefijos de rutas salientes que introducía un comportamiento errático en algunas llamadas
