@@ -137,6 +137,11 @@
       net.core.somaxconn=2048
   tags: postinstall
 
+# Seteo posesion de ominicontacto al usuario omnileads
+- name: Change owner and group of /opt/omnileads
+  file: "path={{ install_prefix }} owner={{ usuario }} group={{ usuario }} recurse=yes"
+  tags: postinstall
+
 # Se inicia y habilita el servicio
 - name: Start the omnileads-daemon service
   systemd: name=omnileads state=restarted enabled=yes daemon_reload=yes

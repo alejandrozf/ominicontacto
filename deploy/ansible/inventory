@@ -97,6 +97,9 @@ schedule=Agenda
 #postgres_host=
 #default_postgres_user=
 #default_postgres_password=
+#asterisk_host=
+### If you need to setup glusterfs between asterisk and OMniLeads ####
+gluster_enabled=true
 #mysql_host=
 #rtpengine_host=
 #dialer_host=

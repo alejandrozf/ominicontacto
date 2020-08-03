@@ -1,7 +1,11 @@
 AMI_USER={{ ami_user }}
 AMI_PASSWORD={{ ami_password }}
 ASTERISK_IP={{ omni_ip }}
+{% if asterisk_host is defined %}
+ASTERISK_HOSTNAME={{ asterisk_host}}
+{% else %}
 ASTERISK_HOSTNAME=localhost
+{% endif %}
 ASTERISK_LOCATION={{ asterisk_location }}
 CALIFICACION_REAGENDA={{ schedule }}
 DJANGO_PASS={{ admin_pass }}

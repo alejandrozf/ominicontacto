@@ -24,7 +24,7 @@
   delay: 3
   register: result
   until: result is success
-  when: postgresql_new_installed.rc != 3 and ansible_distribution != "Amazon" and postgres_host is not defined
+  when: postgresql_new_installed.rc != 3 and ansible_distribution != "Amazon"
 
 # Se instala el repo de postgresql
 - name: Install of postgresql-{{ postgresql_version }} repository
@@ -35,10 +35,10 @@
   delay: 3
   register: result
   until: result is success
-  when: postgresql_new_installed.rc != 3 and ansible_distribution != "Amazon" and postgres_host is not defined
+  when: postgresql_new_installed.rc != 3 and ansible_distribution != "Amazon"
 
   #Se instalan todos los paquetes de postgresql
-- name: Install of postgresql-{{ postgresql_version }}
+- name: Install of postgresql-{{ postgresql_version }} packages
   shell: "yum install postgresql{{ postgresql_version }}* --skip-broken -y"
   retries: 3
   delay: 3
@@ -52,7 +52,7 @@
   when: postgresql_new_installed.rc != 3 and ansible_distribution == "Amazon"
 
   #Se instala postgresql amazon linux
-- name: Install of postgresql-{{ postgresql_version }} repository
+- name: Install of postgresql-{{ postgresql_version }} packages
   yum: name={{ item }} state=present update_cache=yes
   with_items:
     - postgresql
@@ -67,10 +67,7 @@
   until: result is success
   when: postgresql_new_installed.rc != 3 and ansible_distribution == "Amazon" and postgres_host is not defined
 
-# Se instala el postgres client y odbc para amazon
-- name: Install of postgresql client and postgresql-odbc
-  yum: name={{ item }} state=present
-  with_items:
-    - postgresql
-    - postgresql-odbc
-  when: ansible_distribution == "Amazon" and postgres_host is defined
+  # Se instala solo el postgresql client para cuando postgres es externo 
+- name: Install of postgresql client
+  yum: name=postgresql11 state=present
+  when: postgres_host is defined
