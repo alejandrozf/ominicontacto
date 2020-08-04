@@ -943,7 +943,19 @@ body.wrapper-page-error {
     height: calc(2.25rem + 2px) !important;
     padding: .375rem .75rem;
     border: 1px solid #ced4da !important;
+}
 /* Otras personalizaciones*/
 .filter-flex {
     display: flex;
+}
+
+.add_supervisor li {
+    display: inline-block !important;
+    width: 240px;
+}
+.add_supervisor ul {
+    padding: 10px;
+}
+.add_supervisor h3 {
+    color: #80B13A;
 }

@@ -23,10 +23,11 @@
 
 {% block form_render %}
     {{ form.non_field_errors }}
-    <div class="form-row">
-        <div class="col-md-6">
-            <label for="{{ form.bd_contacto.id_for_label }}">{% trans 'Supervisores' %}:</label>
-            {{ form.supervisors }}
+    <div class="form-row add_supervisor">
+        <div class="col-md-12">
+            <h3 for="{{ form.bd_contacto.id_for_label }}">{% trans 'Agregar Supervisores: ' %}</h3>
+            {{ form.supervisors}}
+            
             {{ form.supervisors.errors }}
         </div>
     </div>
