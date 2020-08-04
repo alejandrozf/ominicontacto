@@ -83,6 +83,7 @@
   yum: name={{ item }} state=present update_cache=yes
   with_items:
     - tftp-server
+    - cairo
     - crontabs
     - cronie
     - cronie-anacron
