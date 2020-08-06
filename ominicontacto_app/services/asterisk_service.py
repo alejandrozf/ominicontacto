@@ -28,7 +28,7 @@ from django.utils.translation import ugettext as _
 from ominicontacto_app.asterisk_config import (
     SipConfigCreator, AsteriskConfigReloader)
 from ominicontacto_app.errors import OmlError
-from ominicontacto_app.services.asterisk_database import AgenteFamily
+from ominicontacto_app.services.asterisk.redis_database import AgenteFamily
 logger = logging.getLogger(__name__)
 
 
