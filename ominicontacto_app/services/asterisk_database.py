@@ -28,7 +28,7 @@ from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
     AsteriskHttpAsteriskDBError
 from ominicontacto_app.services.asterisk.redis_database import AgenteFamily
 from configuracion_telefonia_app.models import (
-    RutaSaliente, TroncalSIP, IVR, RutaEntrante, DestinoEntrante, ValidacionFechaHora, GrupoHorario,
+    TroncalSIP, IVR, RutaEntrante, DestinoEntrante, ValidacionFechaHora, GrupoHorario,
     IdentificadorCliente, DestinoPersonalizado
 )
 import logging as _logging
@@ -216,86 +216,6 @@ class PausaFamily(AbstractFamily):
 
     def _obtener_una_key(self):
         return "NAME"
-
-
-class RutaSalienteFamily(AbstractFamily):
-
-    def _create_dict(self, ruta):
-
-        dict_ruta = {
-            'NAME': ruta.nombre,
-            'RINGTIME': ruta.ring_time,
-            'OPTIONS': ruta.dial_options,
-            'TRUNKS': len(ruta.secuencia_troncales.all())
-        }
-
-        patrones = self._obtener_patrones_ordenados(ruta)
-        for orden, patron in patrones:
-            if patron.prefix:
-                prefix = len(str(patron.prefix))
-            else:
-                prefix = None
-            clave_prefix = "PREFIX/{0}".format(orden)
-            clave_prepend = "PREPEND/{0}".format(orden)
-            dict_ruta.update({clave_prefix: prefix, clave_prepend: patron.prepend})
-
-        troncales = self._obtener_troncales_ordenados(ruta)
-        for orden, troncal in troncales:
-            dict_ruta.update({"TRUNK/{0}".format(orden): troncal.troncal.id})
-
-        return dict_ruta
-
-    def _obtener_todos(self):
-        """Obtengo todos las rutas salientes para generar family"""
-        return RutaSaliente.objects.all()
-
-    def _obtener_patrones_ordenados(self, ruta):
-        """ devuelve patrones ordenados con enumerate"""
-        return list(enumerate(ruta.patrones_de_discado.all(), start=1))
-
-    def _obtener_troncales_ordenados(self, ruta):
-        """ devuelve troncales ordenados con enumerate"""
-        return list(enumerate(ruta.secuencia_troncales.all().order_by("orden"), start=1))
-
-    def _get_nombre_family(self, ruta):
-        return "OML/OUTR/{0}".format(ruta.id)
-
-    def get_nombre_families(self):
-        return "OML/OUTR"
-
-    def _obtener_una_key(self):
-        return "NAME"
-
-    def _regenero_trunks_ruta(self, ruta):
-        """
-        Regenero las entradas para los trunks en la ruta
-            /OML/OUTR/XX/TRUNK/N donde xx es la id de la ruta y N el numero de troncal
-        """
-
-        # regenero lo datos de los troncales
-        troncales = self._obtener_troncales_ordenados(ruta)
-        for orden, troncal in troncales:
-            logger.info(_("Creando familys para troncales {0}".format(troncal.troncal.id)))
-
-            try:
-                client = AsteriskHttpClient()
-                client.login()
-                family = self._get_nombre_family(ruta)
-                key = "TRUNK/{0}".format(orden)
-                val = troncal.troncal.id
-                client.asterisk_db("DBPut", family, key=key, val=val)
-            except AsteriskHttpAsteriskDBError:
-                logger.exception(_("Error al intentar DBPut al insertar"
-                                   " en la family {0} la siguiente key={1}"
-                                   " y val={2}".format(family, key, val)))
-
-    def regenerar_family_trunk_ruta(self, ruta):
-        """regeneros lso troncales de la ruta"""
-        family = self._get_nombre_family(ruta)
-        key = self._obtener_una_key()
-        existe_family = self._existe_family_key(family, key)
-        if existe_family:
-            self._regenero_trunks_ruta(ruta)
 
 
 class TrunkFamily(AbstractFamily):

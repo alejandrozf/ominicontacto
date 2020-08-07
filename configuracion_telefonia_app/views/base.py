@@ -76,7 +76,7 @@ def _asignar_destino_anterior(opcion_destino_formset, nodo_entrante):
 def escribir_ruta_saliente_config(self, ruta_saliente):
     try:
         sincronizador = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
-        sincronizador.regenerar_rutas_salientes(ruta_saliente)
+        sincronizador.regenerar_asterisk(ruta_saliente)
     except RestablecerConfiguracionTelefonicaError as e:
         message = _("<strong>¡Cuidado!</strong> "
                     "con el siguiente error: {0} .".format(e))
@@ -91,7 +91,7 @@ def eliminar_ruta_saliente_config(self, ruta_saliente):
     """Elimina las ruta en asterisk"""
     try:
         sincronizador = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
-        sincronizador.eliminar_ruta_y_regenerar_asterisk(ruta_saliente)
+        sincronizador.eliminar_y_regenerar_asterisk(ruta_saliente)
     except RestablecerConfiguracionTelefonicaError as e:
         message = _("<strong>¡Cuidado!</strong> "
                     "con el siguiente error: {0} .".format(e))
@@ -175,24 +175,6 @@ class TroncalSIPMixin(object):
                 message,
             )
             return self.form_invalid(form)
-        # en caso de un update de un troncal vamos a verificar si el troncal se encuentra en una
-        # ruta y actualizar astdb
-        if update:
-            ordenes_troncales = self.object.ordenes_en_rutas_salientes.all()
-            if ordenes_troncales:
-                for orden in ordenes_troncales:
-                    ruta = orden.ruta_saliente
-                    try:
-                        sincronizador_ruta = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
-                        sincronizador_ruta.regenerar_troncales_en_ruta_asterisk(ruta)
-                    except RestablecerConfiguracionTelefonicaError as e:
-                        message = _("<strong>¡Cuidado!</strong> "
-                                    "con el siguiente error: {0} .".format(e))
-                        messages.add_message(
-                            self.request,
-                            messages.WARNING,
-                            message,
-                        )
         return super(TroncalSIPMixin, self).form_valid(form)
 
     def get_success_url(self):

@@ -28,9 +28,11 @@ from mock import patch
 from django.conf import settings
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.services.asterisk_database import (
-    CampanaFamily, RutaSalienteFamily, TrunkFamily, GlobalsFamily
+    CampanaFamily, TrunkFamily, GlobalsFamily
 )
-from ominicontacto_app.services.asterisk.redis_database import AgenteFamily
+from ominicontacto_app.services.asterisk.redis_database import (
+    AgenteFamily, RutaSalienteFamily
+)
 from configuracion_telefonia_app.tests.factories import (
     TroncalSIPFactory, RutaSalienteFactory, PatronDeDiscadoFactory, PlaylistFactory)
 from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
@@ -174,7 +176,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         """
         ruta = RutaSalienteFactory()
         patron_1_1 = PatronDeDiscadoFactory(ruta_saliente=ruta)
-        patron_1_2 = PatronDeDiscadoFactory(ruta_saliente=ruta)
+        patron_1_2 = PatronDeDiscadoFactory(ruta_saliente=ruta, prefix='123', prepend='123')
 
         servicio = RutaSalienteFamily()
 
@@ -190,15 +192,17 @@ class AsteriskDatabaseTest(OMLBaseTest):
         if patron_1_1.prefix:
             prefix = len(str(patron_1_1.prefix))
         else:
-            prefix = None
-        self.assertEqual(dict_ruta['PREFIX/1'], prefix)
-        self.assertEqual(dict_ruta['PREPEND/1'], patron_1_1.prepend)
-        if patron_1_1.prefix:
-            prefix = len(str(patron_1_1.prefix))
+            prefix = ''
+        prepend = patron_1_1.prepend if patron_1_1.prepend is not None else ''
+        self.assertEqual(dict_ruta['PREFIX-1'], prefix)
+        self.assertEqual(dict_ruta['PREPEND-1'], prepend)
+        if patron_1_2.prefix:
+            prefix = len(str(patron_1_2.prefix))
         else:
-            prefix = None
-        self.assertEqual(dict_ruta['PREFIX/2'], prefix)
-        self.assertEqual(dict_ruta['PREPEND/2'], patron_1_2.prepend)
+            prefix = ''
+        prepend = patron_1_2.prepend if patron_1_2.prepend is not None else ''
+        self.assertEqual(dict_ruta['PREFIX-2'], prefix)
+        self.assertEqual(dict_ruta['PREPEND-2'], prepend)
 
     def test_devuelve_correctamente_values_troncales(self):
         """
