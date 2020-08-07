@@ -28,8 +28,9 @@ from mock import patch
 from django.conf import settings
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.services.asterisk_database import (
-    CampanaFamily, AgenteFamily, RutaSalienteFamily, TrunkFamily, GlobalsFamily
+    CampanaFamily, RutaSalienteFamily, TrunkFamily, GlobalsFamily
 )
+from ominicontacto_app.services.asterisk.redis_database import AgenteFamily
 from configuracion_telefonia_app.tests.factories import (
     TroncalSIPFactory, RutaSalienteFactory, PatronDeDiscadoFactory, PlaylistFactory)
 from ominicontacto_app.services.audio_conversor import ConversorDeAudioService

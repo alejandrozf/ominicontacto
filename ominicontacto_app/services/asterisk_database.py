@@ -26,7 +26,7 @@ from ominicontacto_app.utiles import convert_audio_asterisk_path_astdb
 from ominicontacto_app.models import Campana, Pausa
 from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
     AsteriskHttpAsteriskDBError
-from ominicontacto_app.services.redis_database import AgenteFamily
+from ominicontacto_app.services.asterisk.redis_database import AgenteFamily
 from configuracion_telefonia_app.models import (
     RutaSaliente, TroncalSIP, IVR, RutaEntrante, DestinoEntrante, ValidacionFechaHora, GrupoHorario,
     IdentificadorCliente, DestinoPersonalizado
