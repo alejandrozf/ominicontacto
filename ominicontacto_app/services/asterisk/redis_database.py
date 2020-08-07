@@ -23,6 +23,9 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 
 from ominicontacto_app.models import AgenteProfile
+from configuracion_telefonia_app.models import (
+    RutaSaliente,
+)
 
 import logging as _logging
 import redis
@@ -134,3 +137,50 @@ class AgenteFamily(AbstractRedisFamily):
 
     def get_nombre_families(self):
         return "OML:AGENT"
+
+
+class RutaSalienteFamily(AbstractRedisFamily):
+
+    def _create_dict(self, ruta):
+
+        dict_ruta = {
+            'NAME': ruta.nombre,
+            'RINGTIME': ruta.ring_time,
+            'OPTIONS': ruta.dial_options,
+            'TRUNKS': len(ruta.secuencia_troncales.all())
+        }
+
+        patrones = self._obtener_patrones_ordenados(ruta)
+        for orden, patron in patrones:
+            if patron.prefix:
+                len_prefix = len(str(patron.prefix))
+            else:
+                len_prefix = ''
+            clave_prefix = "PREFIX-{0}".format(orden)
+            clave_prepend = "PREPEND-{0}".format(orden)
+            prepend = patron.prepend if patron.prepend is not None else ''
+            dict_ruta.update({clave_prefix: len_prefix, clave_prepend: prepend})
+
+        troncales = self._obtener_troncales_ordenados(ruta)
+        for orden, troncal in troncales:
+            dict_ruta.update({"TRUNK-{0}".format(orden): troncal.troncal.id})
+
+        return dict_ruta
+
+    def _obtener_todos(self):
+        """Obtengo todos las rutas salientes para generar family"""
+        return RutaSaliente.objects.all()
+
+    def _obtener_patrones_ordenados(self, ruta):
+        """ devuelve patrones ordenados con enumerate"""
+        return list(enumerate(ruta.patrones_de_discado.all(), start=1))
+
+    def _obtener_troncales_ordenados(self, ruta):
+        """ devuelve troncales ordenados con enumerate"""
+        return list(enumerate(ruta.secuencia_troncales.all().order_by("orden"), start=1))
+
+    def _get_nombre_family(self, ruta):
+        return "{0}:{1}".format(self.get_nombre_families(), ruta.id)
+
+    def get_nombre_families(self):
+        return "OML:OUTR"
