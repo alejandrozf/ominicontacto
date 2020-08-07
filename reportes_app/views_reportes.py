@@ -69,12 +69,15 @@ class CampanaReporteCalificacionListView(ListView):
         context = super(CampanaReporteCalificacionListView, self).get_context_data(
             **kwargs)
 
-        service = ReporteCampanaService()
-        service_formulario = ReporteRespuestaFormularioGestionService()
+        service = ReporteCampanaService(self.campana)
+        calificaciones_qs = service.calificaciones_qs
+        service.crea_reporte_csv()
 
-        service.crea_reporte_csv(self.campana)
+        service_formulario = ReporteRespuestaFormularioGestionService()
         service_formulario.crea_reporte_csv(self.campana)
+
         context['campana'] = self.campana
+        context['calificaciones'] = calificaciones_qs
         return context
 
 
@@ -92,8 +95,8 @@ class ExportaCampanaReporteCalificacionView(View):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        service = ReporteCampanaService()
-        url = service.obtener_url_reporte_csv_descargar(self.object)
+        service = ReporteCampanaService(self.object)
+        url = service.obtener_url_reporte_csv_descargar()
 
         return redirect(url)
 
