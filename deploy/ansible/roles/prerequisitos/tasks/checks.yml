@@ -95,7 +95,7 @@
   tags: always
 
 # Obtengo distro para PE, aca lo hago viendo el NAME del archivo os-release, asi obtengo la variable docker_distribution
-- name: Get specific CentOS based distribution
+- name: Get specific Linux distribution
   shell: awk -F= '/^NAME/{print $2}' /etc/os-release
   register: docker_distribution
   tags: docker_deploy
@@ -291,32 +291,6 @@
 
 - set_fact: ECCTL="{{ assert_ecctl.stdout }}"
   when: assert_ecctl.rc == 0 and ECCTL is not defined
-  tags: always
-
-- name: Check if $EXTERNAL_URL was defined previously
-  shell: bash -lc 'if [ -z $EXTERNAL_URL ]; then exit 1; else echo $EXTERNAL_URL; exit 0; fi'
-  args:
-    executable: /bin/bash
-  changed_when: false
-  failed_when: false
-  register: assert_externalurl
-  tags: always
-
-- set_fact: external_hostname="{{ assert_externalurl.stdout }}"
-  when: assert_externalurl.rc == 0 and external_hostname is not defined
-  tags: always
-
-- name: Check if $EXTERNAL_PORT was defined previously
-  shell: bash -lc 'if [ -z $EXTERNAL_PORT ]; then exit 1; else echo $EXTERNAL_PORT; exit 0; fi'
-  args:
-    executable: /bin/bash
-  changed_when: false
-  failed_when: false
-  register: assert_externalport
-  tags: always
-
-- set_fact: external_port="{{ assert_externalport.stdout }}"
-  when: assert_externalport.rc == 0 and external_port is not defined
   tags: always
 
 - name: Check if $MONITORFORMAT was defined previously

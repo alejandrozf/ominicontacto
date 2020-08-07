@@ -1584,6 +1584,10 @@ class CampanaSupervisorUpdateForm(forms.ModelForm):
         model = Campana
         fields = ('supervisors',)
 
+        widgets = {
+            'supervisors': forms.CheckboxSelectMultiple(),
+        }
+
 
 class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
     auto_grabacion = forms.BooleanField(required=False)

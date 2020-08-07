@@ -1,0 +1,10 @@
+=========================
+Omnileads 1.8.2 release notes
+=========================
+
+This is a "bugfix" release improving the stability and performance of the codebase.
+
+
+Fixes and improvements
+=========================
+- Fixed dialplan error when dealing with outbound routes prefixes that introduced erratic behaviour on some calls

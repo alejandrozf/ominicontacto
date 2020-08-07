@@ -77,25 +77,6 @@ def obtener_sip_agentes_sesiones_activas():
 interface = os.popen("ip route list | awk '/^default/ {print $5}'").read().strip("\n")
 
 
-def obtener_oml_network_subnet():
-    network_subnet = os.popen("route | grep " + str(interface) +
-                              "| tail -1 |awk -F \" \" '{print $1\"/\"$3}'").read().strip("\n")
-    return network_subnet
-
-
-def obtener_oml_private_ip():
-    private_ip = os.popen("ifconfig" + str(interface) +
-                          "| grep -Eo 'inet (addr:)?([0-9]*\\.){3}[0-9]*'"
-                          "| grep -Eo '([0-9]*\\.){3}[0-9]*'"
-                          "| grep -v '127.0.0.1'")
-    return private_ip
-
-
-def obtener_oml_public_ip():
-    public_ip = os.popen("wget -qO- http://ipinfo.io/ip").read().strip("\n")
-    return public_ip
-
-
 def adicionar_render_unicode(pygal_object):
     """Adiciona metodo que llama al metodo render
     del objeto de pygal con argumento que permite renderizarlo
@@ -115,11 +96,31 @@ def request_url_name(request):
     return resolver.url_name
 
 
+def obtener_request_host_port(request):
+    host = request.META['HTTP_HOST']
+    port = request.META['HTTP_X_FORWARDED_PORT']
+
+    if ':' in host:
+        host_split = host.split(':')
+        host = host_split[0]
+        port = host_split[1]
+    return host, port
+
+
+def crear_grabaciones_url(host, port):
+    """Obtiene la URL para acceder a las grabaciones, dependiendo de lo que reciba del
+    proxy nginx"""
+    grabaciones_url = "https://{0}:{1}/grabaciones".format(host, port)
+    return grabaciones_url
+
+
 class AddSettingsContextMixin(object):
 
     def get_context_data(self, *args, **kwargs):
         context = super(AddSettingsContextMixin, self).get_context_data(*args, **kwargs)
+        host, port = obtener_request_host_port(self.request)
         context['KAMAILIO_HOSTNAME'] = settings.KAMAILIO_HOSTNAME
-        context['NGINX_HOSTNAME'] = settings.NGINX_HOSTNAME
-        context['EXTERNAL_PORT'] = settings.OML_EXTERNAL_PORT
+        context['NGINX_HOSTNAME'] = host
+        context['EXTERNAL_PORT'] = port
+        context['GRABACIONES_URL'] = crear_grabaciones_url(host, port)
         return context

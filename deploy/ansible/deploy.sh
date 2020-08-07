@@ -94,8 +94,6 @@ TagCheck() {
     tag="database"
   elif [ "$arg1" == "--docker-deploy" ]; then
     tag="docker_deploy"
-  elif [ "$arg1" == "--integration-tests" ]; then
-    tag="all,integration-tests"
   fi
 }
 
@@ -134,7 +132,12 @@ CodeCopy() {
   if [ $branch_name == "master" ]; then git pull; fi
   if [ -z "$current_tag" ]
   then
-      release_name=$branch_name
+    release_name=$branch_name
+    if [ ! -z ${DOCKER_TAG} ] && [ "$arg1" == "--docker-deploy" ]; then
+      release_name=${DOCKER_TAG}
+    elif [ -z ${DOCKER_TAG} ] && [ "$arg1" == "--docker-deploy" ]; then
+      release_name=$(echo ${branch_name}|awk -F "-" '{print $1"-"$2}')
+    fi
   fi
   cd ../..
   echo "Checking the release to install"
@@ -281,12 +284,16 @@ fi
 for i in "$@"
 do
   case $i in
-    --upgrade|-u|--install|-i|--kamailio|-k|--asterisk|-a|--omniapp|-o|--omnivoip|--dialer|-di|--database|-da|--change-network|-cnet|--change-passwords|-cp|--docker-no-build|--docker-build|--docker-deploy|--integration-tests)
+    --upgrade|-u|--install|-i|--kamailio|-k|--asterisk|-a|--omniapp|-o|--omnivoip|--dialer|-di|--database|-da|--change-network|-cnet|--change-passwords|-cp|--docker-no-build|--docker-build|--docker-deploy)
       TagCheck
       shift
     ;;
     --iface=*|--interface=*)
       INTERFACE="${i#*=}"
+      shift
+    ;;
+    --docker-tag=*)
+      DOCKER_TAG="${i#*=}"
       shift
     ;;
     --help|-h)

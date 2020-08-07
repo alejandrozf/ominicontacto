@@ -392,3 +392,7 @@ def get_oml_last_release():
         current_release_tag = "Release {0}".format(nodos_tags[0].text)
         current_release_branch = "release-{0}".format(nodos_tags[0].text)
         return [current_release_tag, current_release_branch]
+
+
+def crear_segmento_grabaciones_url():
+    return "/grabaciones"

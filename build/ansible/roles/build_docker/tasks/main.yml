@@ -64,6 +64,7 @@
     - "{{ ast_conf_location }}"
     - "{{ ast_agis_location }}"
     - "{{ ast_other_location }}"
+    - "{{ ast_sounds_location}}/oml"
     - "{{ kamailio_location }}"
     - "{{ nginx_location }}/conf.d"
     - "{{ omniapp_location }}/ominicontacto"
@@ -183,8 +184,8 @@
     force_tag: yes
     push: yes
   with_items:
-    - { dockerfile: "kamailio", image: "kamailio", version: "{{ version }}" }
-    - { dockerfile: "nginx", image: "nginx", version: "{{ version }}" }
+    - { dockerfile: "kamailio", image: "kamailio", version: "{{ kamailio_builded_version }}" }
+    - { dockerfile: "nginx", image: "nginx", version: "{{ nginx_builded_version }}" }
   when: prodenv == 1 and build_images == "true"
   retries: 3
   delay: 3

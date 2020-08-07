@@ -28,6 +28,10 @@ from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 from ominicontacto_app.models import User
 
 
+def request_host_port(request):
+    return request.get_host(), request.get_port()
+
+
 class LoginTests(OMLBaseTest):
 
     def setUp(self):
@@ -49,6 +53,7 @@ class LoginTests(OMLBaseTest):
 
     @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_user')
     @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_password')
+    @patch('utiles_globales.obtener_request_host_port', request_host_port)
     def test_redirects_agent_to_agent_view(self, generar_sip_password, generar_sip_user):
         self.client.login(username=self.agente.user.username, password=PASSWORD)
         index_url = reverse('index')
