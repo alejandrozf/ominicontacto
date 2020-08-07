@@ -22,9 +22,11 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.utils.translation import ugettext as _
 
+
 from ominicontacto_app.models import AgenteProfile
+from ominicontacto_app.utiles import convert_audio_asterisk_path_astdb
 from configuracion_telefonia_app.models import (
-    RutaSaliente,
+    RutaSaliente, IVR, DestinoEntrante, ValidacionFechaHora, GrupoHorario, IdentificadorCliente,
 )
 
 import logging as _logging
@@ -184,3 +186,165 @@ class RutaSalienteFamily(AbstractRedisFamily):
 
     def get_nombre_families(self):
         return "OML:OUTR"
+
+
+class IVRFamily(AbstractRedisFamily):
+
+    def _create_dict(self, ivr):
+        destinos_siguientes = self._obtener_destinos_siguientes(ivr)
+        ivr_audio = convert_audio_asterisk_path_astdb(ivr.audio_principal.audio_asterisk)
+
+        timeout_audio = 'NONE'
+        if ivr.time_out_audio:
+            timeout_audio = convert_audio_asterisk_path_astdb(ivr.time_out_audio.audio_asterisk)
+
+        invalid_audio = 'NONE'
+        if ivr.invalid_audio:
+            invalid_audio = convert_audio_asterisk_path_astdb(ivr.invalid_audio.audio_asterisk)
+
+        dict_ivr = {
+            'NAME': ivr.nombre,
+            'AUDIO': ivr_audio,
+            'TIMEOUT': ivr.time_out,
+            'TORETRY': ivr.time_out_retries,
+            'TOAUDIO': timeout_audio,
+            'INVRETRY': ivr.invalid_retries,
+            'INVAUDIO': invalid_audio,
+            'OPTIONS': len(destinos_siguientes) - 2
+        }
+
+        contador_orden = 0
+        for opcion in destinos_siguientes:
+            # cambiar por contante de la clase ivr
+            dst = "{0},{1}".format(
+                opcion.destino_siguiente.tipo, opcion.destino_siguiente.object_id)
+            if opcion.valor == IVR.VALOR_TIME_OUT:
+                dict_ivr.update({'DEFAULTTODST': dst})
+            elif opcion.valor == IVR.VALOR_DESTINO_INVALIDO:
+                dict_ivr.update({'DEFAULTINVDST': dst})
+            else:
+                contador_orden += 1
+                clave_dst = "OPTIONDST-{0}".format(contador_orden)
+                clave_dmtf = "OPTIONDTMF-{0}".format(contador_orden)
+                dict_ivr.update({clave_dst: dst})
+                dict_ivr.update({clave_dmtf: opcion.valor})
+
+        return dict_ivr
+
+    def _obtener_todos(self):
+        """Obtengo todos los ivr para generar family"""
+        return IVR.objects.all()
+
+    def _obtener_destinos_siguientes(self, ivr):
+        return DestinoEntrante.get_nodo_ruta_entrante(ivr).destinos_siguientes.all()
+
+    def _get_nombre_family(self, ivr):
+        return "{0}:{1}".format(self.get_nombre_families(), ivr.id)
+
+    def get_nombre_families(self):
+        return "OML:IVR"
+
+
+class ValidacionFechaHoraFamily(AbstractRedisFamily):
+
+    def _create_dict(self, family_member):
+        nodo = DestinoEntrante.get_nodo_ruta_entrante(family_member)
+        dict_tc = {
+            'NAME': family_member.nombre,
+            'TGID': family_member.grupo_horario.id,
+        }
+
+        for opcion in nodo.destinos_siguientes.all():
+            dst = "{0},{1}".format(
+                opcion.destino_siguiente.tipo, opcion.destino_siguiente.object_id)
+            if opcion.valor == ValidacionFechaHora.DESTINO_MATCH:
+                dict_tc.update({'TRUEDST': dst})
+            elif opcion.valor == ValidacionFechaHora.DESTINO_NO_MATCH:
+                dict_tc.update({'FALSEDST': dst})
+
+        return dict_tc
+
+    def _obtener_todos(self):
+        """Obtengo todas las ValidacionFechaHora para generar family"""
+        return ValidacionFechaHora.objects.all()
+
+    def _get_nombre_family(self, family_member):
+        return "{0}:{1}".format(self.get_nombre_families(), family_member.id)
+
+    def get_nombre_families(self):
+        return "OML:TC"
+
+
+class GrupoHorarioFamily(AbstractRedisFamily):
+
+    def _create_dict(self, grupo):
+
+        validaciones_tiempo = grupo.validaciones_tiempo.all()
+        dict_grupo = {
+            'NAME': grupo.nombre,
+            'ENTRIES': len(validaciones_tiempo)
+        }
+
+        contador_orden = 0
+        for validacion in validaciones_tiempo:
+            contador_orden += 1
+            entry = "-{0}".format(contador_orden)
+            dict_validacion = {
+                'ENTRYHOURF' + entry: validacion.tiempo_inicial.strftime('%H:%M'),
+                'ENTRYHOURT' + entry: validacion.tiempo_final.strftime('%H:%M'),
+                'ENTRYDAYF' + entry: validacion.dia_semana_inicial_str,
+                'ENTRYDAYT' + entry: validacion.dia_semana_final_str,
+                'ENTRYDAYNUMF' + entry: validacion.dia_mes_inicio_str,
+                'ENTRYDAYNUMT' + entry: validacion.dia_mes_final_str,
+                'ENTRYMONTHF' + entry: validacion.mes_inicio_str,
+                'ENTRYMONTHT' + entry: validacion.mes_final_str,
+            }
+            dict_grupo.update(dict_validacion)
+
+        return dict_grupo
+
+    def _obtener_todos(self):
+        """Obtengo todos los grupos horarios para generar family"""
+        return GrupoHorario.objects.all()
+
+    def _get_nombre_family(self, family_member):
+        return "{0}:{1}".format(self.get_nombre_families(), family_member.id)
+
+    def get_nombre_families(self):
+        return "OML:TG"
+
+
+class IdentificadorClienteFamily(AbstractRedisFamily):
+    def _create_dict(self, family_member):
+        nodo = DestinoEntrante.get_nodo_ruta_entrante(family_member)
+        externalurl = family_member.url if family_member.url is not None else ''
+        longitud_id_esperado = ''
+        if family_member.longitud_id_esperado is not None:
+            longitud_id_esperado = family_member.longitud_id_esperado
+        dict_identificador_cliente = {
+            'NAME': family_member.nombre,
+            'TYPE': family_member.tipo_interaccion,
+            'EXTERNALURL': externalurl,
+            'AUDIO': convert_audio_asterisk_path_astdb(family_member.audio.audio_asterisk),
+            'LENGTH': longitud_id_esperado,
+            'TIMEOUT': family_member.timeout,
+            'RETRIES': family_member.intentos,
+        }
+        for opcion in nodo.destinos_siguientes.all():
+            dst = "{0},{1}".format(
+                opcion.destino_siguiente.tipo, opcion.destino_siguiente.object_id)
+            if opcion.valor == IdentificadorCliente.DESTINO_MATCH:
+                dict_identificador_cliente.update({'TRUEDST': dst})
+            elif opcion.valor == IdentificadorCliente.DESTINO_NO_MATCH:
+                dict_identificador_cliente.update({'FALSEDST': dst})
+        return dict_identificador_cliente
+
+    def _obtener_todos(self):
+        """Obtengo todas las ValidacionFechaHora para generar family"""
+        return IdentificadorCliente.objects.all()
+
+    def _get_nombre_family(self, family_member):
+        return "{0}:{1}".format(self.get_nombre_families(), family_member.id)
+
+    def get_nombre_families(self):
+        return "OML:CUSTOMERID"
