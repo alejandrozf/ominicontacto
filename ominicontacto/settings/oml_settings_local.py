@@ -14,14 +14,6 @@ OML_OMNILEADS_HOSTNAME = os.getenv('OMNILEADS_HOSTNAME')
 POSTGRES_HOST = os.getenv('PGHOST')
 POSTGRES_DATABASE = os.getenv('PGDATABASE')
 POSTGRES_USER = os.getenv('PGUSER')
-if os.getenv('EXTERNAL_PORT'):
-    OML_EXTERNAL_PORT = int(os.getenv('EXTERNAL_PORT'))
-else:
-    OML_EXTERNAL_PORT = int(os.getenv('HTTPS_PORT'))
-if os.getenv('EXTERNAL_URL'):
-    NGINX_HOSTNAME = os.getenv('EXTERNAL_URL')
-else:
-    NGINX_HOSTNAME = os.getenv('NGINX_HOSTNAME')
 REDIS_HOSTNAME = os.getenv('REDIS_HOSTNAME')
 SESSION_COOKIE_AGE = int(os.getenv('SESSION_COOKIE_AGE'))
 TIME_ZONE = os.getenv('TZ')
@@ -67,7 +59,6 @@ MEDIA_ROOT = "{0}media_root".format(INSTALL_PREFIX)
 OML_RELOAD_CMD = 'ssh root@{0} \'/usr/sbin/asterisk -rx "core reload"\''.format(ASTERISK_HOSTNAME)
 
 # URL externas
-OML_GRABACIONES_URL = "https://{0}:{1}/grabaciones".format(NGINX_HOSTNAME, OML_EXTERNAL_PORT)
 OML_WOMBAT_URL = "http://{0}:8080/wombat".format(DIALER_HOSTNAME)
 
 # Ubicaciones de archivos

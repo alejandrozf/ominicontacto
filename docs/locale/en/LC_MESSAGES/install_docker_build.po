@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-28 15:58-0300\n"
+"POT-Creation-Date: 2020-07-29 09:56-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -85,7 +85,7 @@ msgstr "Image build"
 msgid "Para buildear imágenes seguir los siguientes pasos:"
 msgstr "To build images follow these steps:"
 
-# d1bbe12f8e4b4954b843f24ef8756eb8
+# 1fcfb110dcea412dabb2ec123bbf249e
 #: ../../install_docker_build.rst:25
 msgid "Instalar el paquete docker-py"
 msgstr "Install the package docker-py"

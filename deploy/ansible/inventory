@@ -90,14 +90,6 @@ LOGIN_FAILURE_LIMIT=10
 ####################################
 schedule=Agenda
 
-#######################################################################################
-#                                OMniLeads cloud:			 	      #
-# If you are wishing to install OML in a cloud provider you must set these variables: #
-#  - external_port: the outside port where OML web server will listen requests        #
-#  - external_hostname: the dns external users will connect to                        #
-#######################################################################################
-#external_port=
-#external_hostname=
 ##############################################################################################
 # Variables below are used when you have postgresql, mysql , wombat dialer or rtpengine      #
 # in diferent servers. Uncomment the variables and place the hostnames of these servers      #

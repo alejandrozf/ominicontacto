@@ -50,7 +50,6 @@ OMniLeads se despliega con certificados SSLv3 para la conexión HTTPS del browse
 
 Sin embargo, se recomienda cargar sus certificados SSL de confianza durante la instalación de la App. Usted deberá ubicar sus archivos **cert** y **key** en formato **.pem** dentro de la carpeta **ominicontacto/deploy/certs**. Durante el proceso de deploy se detectan los archivos en dicha ubicación y por lo tanto se proporcionan a nivel web y webtrc, de manera tal que al finalizar el deploy la plataforma quede disponible y utilizando sus propios certificados de confianza.
 
-
 Ejecución del deploy
 ********************
 
@@ -62,3 +61,28 @@ de instalación y arquitectura de OMniLeads a desplegar.
 
   install_self_hosted.rst
   install_remote.rst
+
+.. _about_install_inventory_oml_cloud:
+
+OMniLeads detrás NAT
+*********************
+
+En un OMniLeads detras de NAT los agentes se conectan a la URL conformada por **https://external_hostname:external_port**, desde Internet.
+
+.. image:: images/install_oml_nat.png
+
+Como se intenta expresar en la imagen, se asume que los usuarios *remotos* accederán a la App utilizando una URL (dominio y puerto) que resuelve en la IP pública de la interfaz WAN router/firewall.
+
+Luego el firewall deberá reenviar el tráfico de voz y datos hacia los puertos UDP: 20000-30000 y y TCP: 443 del host donde reside la App.
+
+.. important::
+
+  Se deben establecer dos reglas de firewall entrantes y una saliente:
+
+      * Reenviar tráfico entrante desde los puertos 20000 a 30000 UDP hacia los puertos 20000 a 30000 del host OMniLeads
+      * Reenviar tráfico desde el *external_port* elegido hacia el puerto 443 del host OMniLeads
+      * Permitir tráfico saliente desde el host OMniLeads hacia internet por los puertos 10000 al 20000
+
+.. note::
+
+  También se puede usar la IP pública en vez de hostname

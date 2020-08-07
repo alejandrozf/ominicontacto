@@ -66,10 +66,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
               <td>{{ grabacion.campana}}</td>
               <td>
                   <audio controls>
-                      <source src="{{ grabacion.url }}" type='audio/mpeg'>
+                      <source src="{{base_url}}{{ grabacion.url }}" type='audio/mpeg'>
                           {% trans 'Escuchar' %}
                   </audio>
-                  <a href="{{ grabacion.url }}" target="_blank">
+                  <a href="{{base_url}}{{ grabacion.url }}" target="_blank">
                       <span class="glyphicon glyphicon-download-alt" aria-hidden="true" title="{% trans 'Descargar' %}"></span>
                   </a>
               </td>

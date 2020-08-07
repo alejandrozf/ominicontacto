@@ -5,16 +5,17 @@ Primer acceso a OMniLeads
 
 Para acceder al sistema OMniLeads debe ingresar a:
 
-https://omnileads-hostname
+https://omnileads-hostname o https://omnileads-ip
 
 .. note::
 
-  El acceso web a OMniLeads debe ser a través del hostname.domain del host.
+  A partir del release-1.9.0 El acceso web a OMniLeads puede ser usando hostname.domain o IP.
 
-Aquí tenemos dos posibilidades:
+Tenemos tres posibilidades para ingresar por hostname:
 
 * 1 - **Que los DNS de la red lo hagan**: la URL con la que usuarios administrativos y agentes acceden a la App debe ser resuelta por los DNS.
 * 2 - **Forzar la resolución utilizando el archivo host de su OS**:  se trata de configurar en cada uno de las estaciones de trabajo que accederán a la App una entrada en el archivo *hosts* con el fin de que se resuelva la URL de OMniLeads con su respectiva IP de host. En el caso de Windows (*C:\Windows\System32\drivers\etc*), Para Linux o Mac (*/etc/hosts*).
+* 3 - **Que un DNS externo resuelva el hostname**: suele ser el escenario mas común en entornos cloud.
 
 
 Ejemplo para MAC / Linux:

@@ -169,42 +169,7 @@ Como se puede observar, el archivo viene completamente documentado en términos 
 
   A la hora de los despliegues hay que descomentar los parámetros citados. Si usted no los descomenta la instalación fallará.
 
-.. _about_install_inventory_oml_cloud:
-
-Parámetros para desplegar detrás NAT
-************************************
-
-Los parámetros **external_hostname**, **external_port**, deben configurarse si e quiere instalar un OMniLeads en un servidor detrás de NAT, en donde
-los agentes se conectan a la URL conformada por **https://external_hostname:external_port**, desde Internet.
-
-.. image:: images/install_oml_nat.png
-
-Como se intenta expresar en la imagen, se asume que los usuarios *remotos* accederán a la App utilizando una URL (dominio y puerto) que resuelve en la IP pública de la interfaz WAN router/firewall.
-
-Luego el firewall deberá reenviar el tráfico de voz y datos hacia los puertos UDP: 20000-30000 y y TCP: 443 del host donde reside la App.
-
-.. code-block:: bash
-
-  #######################################################################################
-  #                                OMniLeads cloud:			 	      #
-  # If you are wishing to install OML in a cloud provider you must set these variables: #
-  #  - external_port: the outside port where OML web server will listen requests        #
-  #  - external_hostname: the dns external users will connect to                        #
-  #  - public_ip: where OML is installed                                                #
-  #######################################################################################
-  #external_port=
-  #external_hostname=
-
-.. important::
-
-  Se deben establecer dos reglas de firewall entrantes y una saliente:
-
-      * Reenviar tráfico entrante desde los puertos 20000 a 30000 UDP hacia los puertos 20000 a 30000 del host OMniLeads
-      * Reenviar tráfico desde el *external_port* elegido hacia el puerto 443 del host OMniLeads
-      * Permitir tráfico saliente desde el host OMniLeads hacia internet por los puertos 10000 al 20000
-
-
- .. _about_install_inventory_docker_vars:
+.. _about_install_inventory_docker_vars:
 
 Variables Docker
 *****************

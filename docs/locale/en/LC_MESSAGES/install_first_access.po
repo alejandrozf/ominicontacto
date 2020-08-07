@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-23 19:58-0300\n"
+"POT-Creation-Date: 2020-07-29 10:21-0300\n"
 "PO-Revision-Date: 2019-08-13 15:12-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -17,7 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.8.0\n"
 
 # f92b1177cf2343408b34be8dd64debd8
 #: ../../install_first_access.rst:4
@@ -31,18 +31,21 @@ msgstr "To access the OMniLeads system you must enter to:"
 
 # 7bf3ed6d50564c6aa8a5ddfc89e34739
 #: ../../install_first_access.rst:8
-msgid "https://omnileads-hostname"
-msgstr "https://omnileads-hostname"
+msgid "https://omnileads-hostname o https://omnileads-ip"
+msgstr "https://omnileads-hostname or https://omnileads-ip"
 
-# 7e6178ab7dd44513a96480503c0b44f2
+# 31da14653dd34290ae67ae395bdc2ec1
 #: ../../install_first_access.rst:12
-msgid "El acceso web a OMniLeads debe ser a través del hostname.domain del host."
-msgstr "Web access to OMniLeads must be through the hostname.domain."
+msgid ""
+"A partir del release-1.9.0 El acceso web a OMniLeads puede ser usando "
+"hostname.domain o IP."
+msgstr "From release-1.9.0 and above, the web access to OMniLeads can be done usin hostname.domain "
+"or IP."
 
-# a3608a7b436e415ebf3f826be5ba0a0b
+# 6dcc2f3b74274013989e422d6a372be5
 #: ../../install_first_access.rst:14
-msgid "Aquí tenemos dos posibilidades:"
-msgstr "Here we have two possibilities"
+msgid "Tenemos tres posibilidades para ingresar por hostname:"
+msgstr "There are three possibilities using hostname:"
 
 # 0c61c31452a646a48c70468c7aeec097
 #: ../../install_first_access.rst:16
@@ -50,8 +53,9 @@ msgid ""
 "1 - **Que los DNS de la red lo hagan**: la URL con la que usuarios "
 "administrativos y agentes acceden a la App debe ser resuelta por los DNS."
 msgstr ""
-"1 - **Let the DNS of the network do it:** the URL with which administrative "
-"users and agents access the App must be resolved by the DNS."
+"1 - **Let the DNS of the network do it:** the URL with which "
+"administrative users and agents access the App must be resolved by the "
+"DNS."
 
 # 95f4bf4ab4144609a7d6ccac7fb2df4d
 #: ../../install_first_access.rst:17
@@ -64,18 +68,25 @@ msgid ""
 "(*/etc/hosts*)."
 msgstr ""
 "2 - **Force resolution using the host file of your OS:** it is about "
-"configuring each of the workstations that will access the App an entry in "
-"the hosts file in order to resolve the OMniLeads URL with its respective IP "
-"of host. In the case of Windows (*C:\\Windows\\System32\\drivers\\etc*), "
-"On Linux or Mac (*/etc/hosts*)."
+"configuring each of the workstations that will access the App an entry in"
+" the hosts file in order to resolve the OMniLeads URL with its respective"
+" IP of host. In the case of Windows "
+"(*C:\\Windows\\System32\\drivers\\etc*), On Linux or Mac (*/etc/hosts*)."
+
+# 54476317a3d64f96bbb95dc19ace6695
+#: ../../install_first_access.rst:18
+msgid ""
+"3 - **Que un DNS externo resuelva el hostname**: suele ser el escenario "
+"mas común en entornos cloud."
+msgstr "**External DNS resolving hostname**: this is very common in cloud environments."
 
 # c8da3ee3de3e4930bb697b81a1e35596
-#: ../../install_first_access.rst:20
+#: ../../install_first_access.rst:21
 msgid "Ejemplo para MAC / Linux:"
 msgstr "Example for Mac or Linux:"
 
 # 2482acf635034d999eae958217779d71
-#: ../../install_first_access.rst:24
+#: ../../install_first_access.rst:25
 msgid ""
 "Al encontrarnos con la pantalla de login, simplemente se debe ingresar el"
 " usuario admin y la clave generada durante la instalación, como se expone"
@@ -86,18 +97,18 @@ msgstr ""
 "figure 2."
 
 # 12bea01d6a8b496dbc43e7af56d1c24e
-#: ../../install_first_access.rst:30
+#: ../../install_first_access.rst:31
 msgid ""
 "Si la instalación no cuenta con certificados de confianza y en su lugar "
 "el deploy generó certificados auto-firmados, nos vamos a encontrar con la"
 " advertencia del navegador, la cual se deberá ignorar y acceder al sitio."
 msgstr ""
-"If the deployment does not have trusted certificates and instead the deploy "
-"generated self-signed certificates, we will find the browser warning, "
-"which should be ignored and access the site."
+"If the deployment does not have trusted certificates and instead the "
+"deploy generated self-signed certificates, we will find the browser "
+"warning, which should be ignored and access the site."
 
 # 9d62cb296a9f4e6b8c237a2a23869b8b
-#: ../../install_first_access.rst:36
+#: ../../install_first_access.rst:37
 msgid ""
 "Si no recuerda la contraseña de admin web, podemos consultar su valor "
 "consultando la :ref:`about_maintance_envvars` pertinente."
@@ -106,7 +117,7 @@ msgstr ""
 ":ref:`about_maintance_envvars`."
 
 # dd880e119f0746d0bf04449649240b78
-#: ../../install_first_access.rst:40
+#: ../../install_first_access.rst:41
 msgid ""
 "Si realizó **instalación con Docker** se usa el puerto 444 para el acceso"
 " web, ejemplo:"
@@ -115,36 +126,13 @@ msgstr ""
 "access, for example:"
 
 # 237ca7e742ca44af8be216a440e39cb5
-#: ../../install_first_access.rst:42
+#: ../../install_first_access.rst:43
 msgid "https://omnileads-hostname:444"
 msgstr "https://omnileads-hostname:444"
 
 # 58452e14abb14f97adeb524a712d893d
-#: ../../install_first_access.rst:44
+#: ../../install_first_access.rst:45
 msgid ""
 "Esto es con el fin de que no conflictue con el clásico 443 que ya lo usan"
 " la web de FreePBX o Issabel"
 msgstr "This because FreePBX and Issabel web GUI's use the classic HTTPS port 443."
-
-# 7d0a7e26df3b486baaf97015b1304555
-#~ msgid ""
-#~ "1 - Que los DNS de la red"
-#~ " lo hagan. 2 - Añadir el "
-#~ "hostname.domain del host, dentro del "
-#~ "archivo de *hosts* (Windows, Linux o "
-#~ "Mac de cada PC que tenga que "
-#~ "acceder a OMniLeads."
-#~ msgstr ""
-#~ "1 - That the Network DNS do "
-#~ "it. 2 - Add the hostname.domain of"
-#~ " the host, inside the file *hosts*"
-#~ " (Windows, Linux or Mac of each "
-#~ "PC that have access to OMniLeads."
-
-# f6d15d40871d4ac5b64bc9f49575f18c
-#~ msgid "*Figure 1: hosts file*"
-#~ msgstr ""
-
-# 7f5b1c74c56e41b68b20c096276e7c64
-#~ msgid "*Figure 2: First login*"
-#~ msgstr ""
