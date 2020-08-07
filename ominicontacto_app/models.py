@@ -55,7 +55,8 @@ from simple_history.models import HistoricalRecords
 
 from ominicontacto_app.utiles import (
     ValidadorDeNombreDeCampoExtra, fecha_local, datetime_hora_maxima_dia,
-    datetime_hora_minima_dia, remplace_espacio_por_guion, dividir_lista)
+    datetime_hora_minima_dia, remplace_espacio_por_guion, dividir_lista,
+    crear_segmento_grabaciones_url)
 from ominicontacto_app.permisos import PermisoOML
 PermisoOML
 
@@ -2654,7 +2655,7 @@ class Grabacion(models.Model):
     def url(self):
         hoy = fecha_local(now())
         dia_grabacion = fecha_local(self.fecha)
-        filename = "/".join([settings.OML_GRABACIONES_URL,
+        filename = "/".join([crear_segmento_grabaciones_url(),
                              dia_grabacion.strftime("%Y-%m-%d"),
                              self.grabacion])
         if dia_grabacion < hoy:
