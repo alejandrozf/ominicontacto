@@ -120,6 +120,7 @@
   with_items:
     - "{{ ast_conf_location }}"
     - "{{ ast_agis_location }}"
+    - "{{ ast_sounds_location }}/oml"
     - "{{ nginx_location }}/conf.d"
     - "{{ ast_other_location }}"
     - "{{ omniapp_location }}"
@@ -215,12 +216,12 @@
   when: prodenv == 1
 
 # Genero el archivo odbc.ini y oml_res_odbc.conf
-- name: Creation of odbc.ini and oml_res_odbc.conf file (prodenv)
-  template: src=roles/asterisk/templates/etc/odbc.ini dest={{ deploy_location }} owner={{ usuario }} group={{ usuario }}
-  with_items:
-    - odbc.ini
-    - oml_res_odbc.conf
-  when: prodenv == 1
+#- name: Creation of odbc.ini and oml_res_odbc.conf file (prodenv)
+#  template: src=roles/asterisk/templates/etc/odbc.ini dest={{ deploy_location }} owner={{ usuario }} group={{ usuario }}
+#  with_items:
+#    - odbc.ini
+#    - oml_res_odbc.conf
+#  when: prodenv == 1
 
 # Creo el script de systemd para levantar y tumbar el entorno con un servicio
 - name: Create omnileads-{{ customer }} systemd service
@@ -236,9 +237,24 @@
   template: src=files/scripts/postinstall.sh dest={{ deploy_location }} owner={{ usuario }} group={{ usuario }} variable_start_string="[[" variable_end_string="]]"
   when: prodenv == 1
 
+- name: Creation of deploy folders structure
+  file: "dest={{ ast_sounds_location }}/oml state=directory owner={{ usuario }} group={{ usuario }} mode=0755 recurse=yes"
+  when: prodenv == 1
+
+# Untareo los sonidos de agentes, que vienen desde el repo
+- name: Untar the sounds for agents
+  unarchive: "src={{ repo_location }}/ominicontacto_voip/asterisk-files/sounds/oml.tar.gz dest={{ ast_sounds_location }}/oml"
+  when: prodenv == 1
+
+- name: Make /etc/docker folder
+  file: state=directory owner=root group=root path=/etc/docker
+
+- name: Generate daemon.json docker file
+  template: src=files/systemd/daemon.json dest=/etc/docker owner=root group=root
+
 # Habilito e inicio el servicio omnileads-prodenv para prodenv
 - name: Start and enable docker and omnileads-{{ customer }} services
-  systemd: name={{ item }} state=restarted enabled=yes
+  systemd: name={{ item }} state=restarted enabled=yes daemon_reload=yes
   with_items:
     - docker
     - "omnileads-{{ customer }}"

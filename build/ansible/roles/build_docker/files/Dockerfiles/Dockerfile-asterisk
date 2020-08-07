@@ -14,9 +14,10 @@ RUN apt-get update -qq \
     && echo "deb http://packages.irontec.com/debian stretch main" >> /etc/apt/sources.list \
     && wget http://packages.irontec.com/public.key -q -O - | apt-key add - \
     && apt-get update -y \
-    && apt-get install sngrep -y \
+    && apt-get install sngrep libgsm1 -y \
     && pip3 install -e git+https://github.com/rdegges/pyst2@master#egg=pyst2 \
     && pip3 install 'six==1.10.0' 'redis==3.5.3' \
+    &&   mkdir /var/lib/asterisk/sounds/oml \
     && apt-get remove -y --purge python3-pip git \
     && apt autoremove -y \
     && apt-get install -y libedit2 libbinutils
@@ -27,5 +28,6 @@ EXPOSE 22 5038/tcp 7088/tcp 5060/udp 5060/tcp
 COPY asterisk/conf/* /etc/asterisk/
 COPY asterisk/agis/* /var/lib/asterisk/agi-bin/
 COPY asterisk/*.ini /etc/
+COPY asterisk/sounds/* /var/lib/asterisk/sounds/oml
 COPY scripts/run_asterisk.sh /home/
 {% endif %}
