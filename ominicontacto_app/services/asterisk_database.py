@@ -26,7 +26,7 @@ from ominicontacto_app.models import Campana
 from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
     AsteriskHttpAsteriskDBError
 from ominicontacto_app.services.asterisk.redis_database import (
-    AgenteFamily, PausaFamily)
+    AgenteFamily, CampanaFamily, PausaFamily)
 import logging as _logging
 
 logger = _logging.getLogger(__name__)
@@ -124,7 +124,7 @@ class AbstractFamily(object):
         self._create_families(modelo=family_member)
 
 
-class CampanaFamily(AbstractFamily):
+class CampanaAsteriskFamily(AbstractFamily):
 
     def _create_dict(self, campana):
         dict_campana = {
