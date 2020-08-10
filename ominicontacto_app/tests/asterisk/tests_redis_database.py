@@ -25,12 +25,15 @@ from ominicontacto_app.tests.utiles import OMLBaseTest
 
 from ominicontacto_app.services.asterisk.redis_database import (
     IVRFamily, ValidacionFechaHoraFamily, GrupoHorarioFamily, IdentificadorClienteFamily,
+    PausaFamily, RutaEntranteFamily, TrunkFamily, DestinoPersonalizadoFamily
 )
 
 from configuracion_telefonia_app.models import DestinoEntrante, OpcionDestino, IVR
 from configuracion_telefonia_app.tests.factories import (
     IVRFactory, ArchivoDeAudioFactory, ValidacionFechaHoraFactory, GrupoHorarioFactory,
-    IdentificadorClienteFactory, ValidacionTiempoFactory)
+    IdentificadorClienteFactory, ValidacionTiempoFactory, RutaEntranteFactory, TroncalSIPFactory,
+    DestinoPersonalizadoFactory)
+from ominicontacto_app.tests.factories import (PausaFactory)
 
 
 class RedisDatabaseTest(OMLBaseTest):
@@ -51,6 +54,12 @@ class RedisDatabaseTest(OMLBaseTest):
 
         self.id_cliente = IdentificadorClienteFactory(audio=audio_1)
         self.nodo_id_cliente = DestinoEntrante.crear_nodo_ruta_entrante(self.id_cliente)
+        self.pausa = PausaFactory()
+        self.inr = RutaEntranteFactory(destino=self.nodo_ivr)
+        self.trunk = TroncalSIPFactory()
+        self.destino_personalizado = DestinoPersonalizadoFactory()
+        self.nodo_destino_personalizado = DestinoEntrante.crear_nodo_ruta_entrante(
+            self.destino_personalizado)
 
 
 class IVRFamilyTest(RedisDatabaseTest):
@@ -129,3 +138,53 @@ class IdentificadorClienteFamilyTest(RedisDatabaseTest):
         }
         family = IdentificadorClienteFamily()
         self.assertEqual(dict, family._create_dict(self.id_cliente))
+
+
+class PausaFamilyTest(RedisDatabaseTest):
+    def test_devuelve_diccionario_con_datos_correctos(self):
+
+        dict = {
+            'NAME': self.pausa.nombre,
+        }
+        family = PausaFamily()
+        self.assertEqual(dict, family._create_dict(self.pausa))
+
+
+class RutaEntranteFamilyTest(RedisDatabaseTest):
+    def test_devuelve_diccionario_con_datos_correctos(self):
+
+        dict = {
+            'NAME': self.inr.nombre,
+            "DST": "{0},{1}".format(self.nodo_ivr.tipo, self.nodo_ivr.object_id),
+            "ID": self.inr.id,
+            "LANG": self.inr.sigla_idioma,
+        }
+        family = RutaEntranteFamily()
+        self.assertEqual(dict, family._create_dict(self.inr))
+
+
+class TrunkFamilyTest(RedisDatabaseTest):
+    def test_devuelve_diccionario_con_datos_correctos(self):
+
+        dict = {
+            'TECH': self.trunk.tecnologia_astdb,
+            'NAME': self.trunk.nombre,
+            'CHANNELS': self.trunk.canales_maximos,
+            'CALLERID': self.trunk.caller_id,
+        }
+        family = TrunkFamily()
+        self.assertEqual(dict, family._create_dict(self.trunk))
+
+
+class DestinoPersonalizadoFamilyTest(RedisDatabaseTest):
+    def test_devuelve_diccionario_con_datos_correctos(self):
+
+        OpcionDestino.crear_opcion_destino(
+            self.nodo_destino_personalizado, self.nodo_ivr, 'failover')
+        dict = {
+            'NAME': self.destino_personalizado.nombre,
+            'DST': self.destino_personalizado.custom_destination,
+            'FAILOVER': "{0},{1}".format(self.nodo_ivr.tipo, self.nodo_ivr.object_id)
+        }
+        family = DestinoPersonalizadoFamily()
+        self.assertEqual(dict, family._create_dict(self.destino_personalizado))

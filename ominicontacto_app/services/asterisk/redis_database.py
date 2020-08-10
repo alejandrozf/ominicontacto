@@ -23,10 +23,11 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 
 
-from ominicontacto_app.models import AgenteProfile
+from ominicontacto_app.models import AgenteProfile, Pausa
 from ominicontacto_app.utiles import convert_audio_asterisk_path_astdb
 from configuracion_telefonia_app.models import (
     RutaSaliente, IVR, DestinoEntrante, ValidacionFechaHora, GrupoHorario, IdentificadorCliente,
+    TroncalSIP, RutaEntrante, DestinoPersonalizado
 )
 
 import logging as _logging
@@ -348,3 +349,97 @@ class IdentificadorClienteFamily(AbstractRedisFamily):
 
     def get_nombre_families(self):
         return "OML:CUSTOMERID"
+
+
+class PausaFamily(AbstractRedisFamily):
+
+    def _create_dict(self, pausa):
+
+        dict_pausa = {
+            'NAME': pausa.nombre,
+        }
+        return dict_pausa
+
+    def _obtener_todos(self):
+        """Obtener todas pausas"""
+        return Pausa.objects.activas()
+
+    def _get_nombre_family(self, family_member):
+        return "{0}:{1}".format(self.get_nombre_families(), family_member.id)
+
+    def get_nombre_families(self):
+        return "OML:PAUSE"
+
+
+class TrunkFamily(AbstractRedisFamily):
+
+    def _create_dict(self, trunk):
+
+        dict_trunk = {
+            'TECH': trunk.tecnologia_astdb,
+            'NAME': trunk.nombre,
+            'CHANNELS': trunk.canales_maximos,
+            'CALLERID': trunk.caller_id if trunk.caller_id is not None else '',
+        }
+
+        return dict_trunk
+
+    def _obtener_todos(self):
+        """Obtengo todos los troncales sip para generar family"""
+        return TroncalSIP.objects.all()
+
+    def _get_nombre_family(self, family_member):
+        return "{0}:{1}".format(self.get_nombre_families(), family_member.id)
+
+    def get_nombre_families(self):
+        return "OML:TRUNK"
+
+
+class RutaEntranteFamily(AbstractRedisFamily):
+
+    def _create_dict(self, ruta):
+
+        dst = "{0},{1}".format(ruta.destino.tipo, ruta.destino.object_id)
+        dict_ruta = {
+            "NAME": ruta.nombre,
+            "DST": dst,
+            "ID": ruta.id,
+            "LANG": ruta.sigla_idioma,
+        }
+        return dict_ruta
+
+    def _obtener_todos(self):
+        """Obtengo todas las rutas entrantes para generar family"""
+        return RutaEntrante.objects.all()
+
+    def _get_nombre_family(self, family_member):
+        return "{0}:{1}".format(self.get_nombre_families(), family_member.id)
+
+    def get_nombre_families(self):
+        return "OML:INR"
+
+
+class DestinoPersonalizadoFamily(AbstractRedisFamily):
+    def _create_dict(self, family_member):
+        nodo = DestinoEntrante.get_nodo_ruta_entrante(family_member)
+        dict_destino_personalizado = {
+            'NAME': family_member.nombre,
+            'DST': family_member.custom_destination,
+        }
+        # sólo tendría un destino siguiente (FAILOVER)
+        opcion_destino_failover = nodo.destinos_siguientes.first()
+        dst = "{0},{1}".format(
+            opcion_destino_failover.destino_siguiente.tipo,
+            opcion_destino_failover.destino_siguiente.object_id)
+        dict_destino_personalizado.update({'FAILOVER': dst})
+        return dict_destino_personalizado
+
+    def _obtener_todos(self):
+        """Obtengo todas las ValidacionFechaHora para generar family"""
+        return DestinoPersonalizado.objects.all()
+
+    def _get_nombre_family(self, family_member):
+        return "{0}:{1}".format(self.get_nombre_families(), family_member.id)
+
+    def get_nombre_families(self):
+        return "OML:CUSTOMDST"

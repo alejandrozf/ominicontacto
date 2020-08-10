@@ -149,7 +149,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.client.post(url, follow=True)
         self.assertEqual(RutaEntrante.objects.count(), n_rutas_entrantes)
 
-    @patch('ominicontacto_app.services.asterisk_database.RutaEntranteFamily.delete_family')
+    @patch('ominicontacto_app.services.asterisk.redis_database.RutaEntranteFamily.delete_family')
     def test_usuario_administrador_puede_eliminar_ruta_entrante(
             self, eliminar_ruta_entrante_config):
         url = reverse('eliminar_ruta_entrante', args=[self.ruta_entrante.pk])
