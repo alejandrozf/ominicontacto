@@ -25,15 +25,15 @@ from ominicontacto_app.tests.utiles import OMLBaseTest
 
 from ominicontacto_app.services.asterisk.redis_database import (
     IVRFamily, ValidacionFechaHoraFamily, GrupoHorarioFamily, IdentificadorClienteFamily,
-    PausaFamily, RutaEntranteFamily, TrunkFamily, DestinoPersonalizadoFamily
+    PausaFamily, RutaEntranteFamily, TrunkFamily, DestinoPersonalizadoFamily, CampanaFamily
 )
 
-from configuracion_telefonia_app.models import DestinoEntrante, OpcionDestino, IVR
+from configuracion_telefonia_app.models import DestinoEntrante, OpcionDestino, IVR, Campana
 from configuracion_telefonia_app.tests.factories import (
     IVRFactory, ArchivoDeAudioFactory, ValidacionFechaHoraFactory, GrupoHorarioFactory,
     IdentificadorClienteFactory, ValidacionTiempoFactory, RutaEntranteFactory, TroncalSIPFactory,
     DestinoPersonalizadoFactory)
-from ominicontacto_app.tests.factories import (PausaFactory)
+from ominicontacto_app.tests.factories import (PausaFactory, CampanaFactory, QueueFactory)
 
 
 class RedisDatabaseTest(OMLBaseTest):
@@ -60,6 +60,14 @@ class RedisDatabaseTest(OMLBaseTest):
         self.destino_personalizado = DestinoPersonalizadoFactory()
         self.nodo_destino_personalizado = DestinoEntrante.crear_nodo_ruta_entrante(
             self.destino_personalizado)
+        self.campana_entrante = CampanaFactory(type=Campana.TYPE_ENTRANTE)
+        QueueFactory(campana=self.campana_entrante)
+        self.campana_dialer = CampanaFactory(type=Campana.TYPE_DIALER)
+        QueueFactory(campana=self.campana_dialer)
+        self.campana_preview = CampanaFactory(type=Campana.TYPE_PREVIEW)
+        QueueFactory(campana=self.campana_preview)
+        self.campana_manual = CampanaFactory(type=Campana.TYPE_MANUAL)
+        QueueFactory(campana=self.campana_manual)
 
 
 class IVRFamilyTest(RedisDatabaseTest):
@@ -188,3 +196,102 @@ class DestinoPersonalizadoFamilyTest(RedisDatabaseTest):
         }
         family = DestinoPersonalizadoFamily()
         self.assertEqual(dict, family._create_dict(self.destino_personalizado))
+
+
+class CampanaFamilyTest(RedisDatabaseTest):
+
+    def test_devuelve_diccionario_con_datos_correctos_entrante(self):
+        dict = {
+            'QNAME': "{0}_{1}".format(self.campana_entrante.id, self.campana_entrante.nombre),
+            'TYPE': self.campana_entrante.type,
+            'REC': str(self.campana_entrante.queue_campana.auto_grabacion),
+            'AMD': str(self.campana_entrante.queue_campana.detectar_contestadores),
+            'CALLAGENTACTION': self.campana_entrante.tipo_interaccion,
+            'RINGTIME': "",
+            'QUEUETIME': self.campana_entrante.queue_campana.wait,
+            'MAXQCALLS': self.campana_entrante.queue_campana.maxlen,
+            'SL': self.campana_entrante.queue_campana.servicelevel,
+            'OUTR': "",
+            'OUTCID': "",
+            'IDEXTERNALURL': "",
+            'FAILOVER': "0",
+            'TC': "",  # a partir de esta variable no se usan las siguientes variables:
+            'IDJSON': "",
+            'PERMITOCCULT': "",
+            'MAXCALLS': "",
+        }
+        family = CampanaFamily()
+
+        self.assertEqual(dict, family._create_dict(self.campana_entrante))
+
+    def test_devuelve_diccionario_con_datos_correctos_dialer(self):
+        dict = {
+            'QNAME': "{0}_{1}".format(self.campana_dialer.id, self.campana_dialer.nombre),
+            'TYPE': self.campana_dialer.type,
+            'REC': str(self.campana_dialer.queue_campana.auto_grabacion),
+            'AMD': str(self.campana_dialer.queue_campana.detectar_contestadores),
+            'CALLAGENTACTION': self.campana_dialer.tipo_interaccion,
+            'RINGTIME': "",
+            'QUEUETIME': self.campana_dialer.queue_campana.wait,
+            'MAXQCALLS': self.campana_dialer.queue_campana.maxlen,
+            'SL': self.campana_dialer.queue_campana.servicelevel,
+            'OUTR': "",
+            'OUTCID': "",
+            'IDEXTERNALURL': "",
+            'FAILOVER': "0",
+            'TC': "",  # a partir de esta variable no se usan las siguientes variables:
+            'IDJSON': "",
+            'PERMITOCCULT': "",
+            'MAXCALLS': "",
+        }
+        family = CampanaFamily()
+
+        self.assertEqual(dict, family._create_dict(self.campana_dialer))
+
+    def test_devuelve_diccionario_con_datos_correctos_manual(self):
+        dict = {
+            'QNAME': "{0}_{1}".format(self.campana_manual.id, self.campana_manual.nombre),
+            'TYPE': self.campana_manual.type,
+            'REC': str(self.campana_manual.queue_campana.auto_grabacion),
+            'AMD': str(self.campana_manual.queue_campana.detectar_contestadores),
+            'CALLAGENTACTION': self.campana_manual.tipo_interaccion,
+            'RINGTIME': "",
+            'QUEUETIME': self.campana_manual.queue_campana.wait,
+            'MAXQCALLS': self.campana_manual.queue_campana.maxlen,
+            'SL': self.campana_manual.queue_campana.servicelevel,
+            'OUTR': "",
+            'OUTCID': "",
+            'IDEXTERNALURL': "",
+            'FAILOVER': "0",
+            'TC': "",  # a partir de esta variable no se usan las siguientes variables:
+            'IDJSON': "",
+            'PERMITOCCULT': "",
+            'MAXCALLS': "",
+        }
+        family = CampanaFamily()
+
+        self.assertEqual(dict, family._create_dict(self.campana_manual))
+
+    def test_devuelve_diccionario_con_datos_correctos_preview(self):
+        dict = {
+            'QNAME': "{0}_{1}".format(self.campana_preview.id, self.campana_preview.nombre),
+            'TYPE': self.campana_preview.type,
+            'REC': str(self.campana_preview.queue_campana.auto_grabacion),
+            'AMD': str(self.campana_preview.queue_campana.detectar_contestadores),
+            'CALLAGENTACTION': self.campana_preview.tipo_interaccion,
+            'RINGTIME': "",
+            'QUEUETIME': self.campana_preview.queue_campana.wait,
+            'MAXQCALLS': self.campana_preview.queue_campana.maxlen,
+            'SL': self.campana_preview.queue_campana.servicelevel,
+            'OUTR': "",
+            'OUTCID': "",
+            'IDEXTERNALURL': "",
+            'FAILOVER': "0",
+            'TC': "",  # a partir de esta variable no se usan las siguientes variables:
+            'IDJSON': "",
+            'PERMITOCCULT': "",
+            'MAXCALLS': "",
+        }
+        family = CampanaFamily()
+
+        self.assertEqual(dict, family._create_dict(self.campana_preview))

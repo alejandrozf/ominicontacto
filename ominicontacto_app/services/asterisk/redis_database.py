@@ -124,30 +124,22 @@ class CampanaFamily(AbstractRedisFamily):
 
     def _create_dict(self, campana):
 
-        grabacion = "False"
-        if campana.queue_campana.auto_grabacion:
-            grabacion = "True"
-
-        contestador = "False"
-        if campana.queue_campana.detectar_contestadores:
-            contestador = "True"
-
         dict_campana = {
             'QNAME': "{0}_{1}".format(campana.id, campana.nombre),
             'TYPE': campana.type,
-            'REC': grabacion,
-            'AMD': contestador,
+            'REC': str(campana.queue_campana.auto_grabacion),
+            'AMD': str(campana.queue_campana.detectar_contestadores),
             'CALLAGENTACTION': campana.tipo_interaccion,
             'RINGTIME': "",
             'QUEUETIME': campana.queue_campana.wait,
             'MAXQCALLS': campana.queue_campana.maxlen,
             'SL': campana.queue_campana.servicelevel,
-            'TC': "",  # a partir de esta variable no se usan
+            'OUTR': "",
+            'OUTCID': "",
+            'TC': "",  # a partir de esta variable no se usan las siguientes variables:
             'IDJSON': "",
             'PERMITOCCULT': "",
             'MAXCALLS': "",
-            'OUTR': "",
-            'OUTCID': "",
         }
 
         if campana.queue_campana.timeout:

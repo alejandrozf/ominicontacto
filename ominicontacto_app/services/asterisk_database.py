@@ -19,10 +19,8 @@
 
 from __future__ import unicode_literals
 
-from django.conf import settings
 from django.utils.translation import ugettext as _
 
-from ominicontacto_app.models import Campana
 from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
     AsteriskHttpAsteriskDBError
 from ominicontacto_app.services.asterisk.redis_database import (
@@ -122,73 +120,6 @@ class AbstractFamily(object):
         """regenera una family"""
         self.delete_family(family_member)
         self._create_families(modelo=family_member)
-
-
-class CampanaAsteriskFamily(AbstractFamily):
-
-    def _create_dict(self, campana):
-        dict_campana = {
-            'QNAME': "{0}_{1}".format(campana.id, campana.nombre),
-            'TYPE': campana.type,
-            'REC': campana.queue_campana.auto_grabacion,
-            'AMD': campana.queue_campana.detectar_contestadores,
-            'CALLAGENTACTION': campana.tipo_interaccion,
-            'RINGTIME': campana.queue_campana.timeout,
-            'QUEUETIME': campana.queue_campana.wait,
-            'MAXQCALLS': campana.queue_campana.maxlen,
-            'SL': campana.queue_campana.servicelevel,
-            'TC': "",  # a partir de esta variable no se usan
-            'IDJSON': "",
-            'PERMITOCCULT': "",
-            'MAXCALLS': "",
-            'OUTR': campana.outr_id,
-            'OUTCID': campana.outcid,
-        }
-
-        if campana.queue_campana.audio_para_contestadores:
-            dict_campana.update({'AMDPLAY': "{0}{1}".format(
-                settings.OML_AUDIO_FOLDER,
-                campana.queue_campana.audio_para_contestadores.get_filename_audio_asterisk())})
-
-        if campana.queue_campana.audio_de_ingreso:
-            dict_campana.update({'WELCOMEPLAY': "{0}{1}".format(
-                settings.OML_AUDIO_FOLDER,
-                campana.queue_campana.audio_de_ingreso.get_filename_audio_asterisk())})
-
-        if campana.sitio_externo:
-            dict_campana.update({'IDEXTERNALURL': campana.sitio_externo.pk})
-        else:
-            dict_campana.update({'IDEXTERNALURL': ""})
-
-        if campana.queue_campana.destino:
-            dst = "{0},{1}".format(campana.queue_campana.destino.tipo,
-                                   campana.queue_campana.destino.object_id)
-            dict_campana.update({'FAILOVER': 1, 'FAILOVERDST': dst})
-        else:
-            dict_campana.update({'FAILOVER': str(0)})
-
-        if campana.queue_campana.ivr_breakdown:
-            dict_campana.update(
-                {'IVRBREAKOUTID': campana.queue_campana.ivr_breakdown.object_id})
-
-        if campana.queue_campana.musiconhold:
-            dict_campana['MOH'] = campana.queue_campana.musiconhold.nombre
-
-        return dict_campana
-
-    def _obtener_todos(self):
-        """Devuelve las campanas para generar .
-        """
-        return Campana.objects.obtener_all_dialplan_asterisk()
-
-    def _get_nombre_family(self, campana):
-        return "OML/CAMP/{0}".format(campana.id)
-
-    def get_nombre_families(self):
-        return "OML/CAMP"
-
-    def _obtener_una_key(self):
-        return "QNAME"
 
 
 class RegenerarAsteriskFamilysOML(object):
