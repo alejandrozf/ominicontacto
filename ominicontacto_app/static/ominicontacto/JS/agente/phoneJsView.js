@@ -316,7 +316,7 @@ var PHONE_STATUS_CONFIGS = {
         color: '#bfef7a',
     },
     'Transfering': {
-        keypad_enabled: false,
+        keypad_enabled: true,
         enabled_buttons: ['EndTransfer', 'SignCall', 'endCall', 'Confer', 'recordCall'],
         color: '#bfef7a',
     },
