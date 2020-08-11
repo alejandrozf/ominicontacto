@@ -29,8 +29,7 @@
 - name: Install redis5
   yum: "name=redis-{{ redis_version }} state=present update_cache=yes"
   tags: postinstall
-  when: asterisk_host is defined
-
+  
 - name: Modifying redis for listening in all addresses
   lineinfile: path=/etc/redis.conf regexp="^bind" line="#bind" state=present
   tags: postinstall
