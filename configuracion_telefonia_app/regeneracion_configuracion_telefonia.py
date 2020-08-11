@@ -34,11 +34,8 @@ from ominicontacto_app.asterisk_config import (
 )
 from ominicontacto_app.services.asterisk.redis_database import (
     RutaSalienteFamily, IVRFamily, ValidacionFechaHoraFamily, GrupoHorarioFamily,
-    IdentificadorClienteFamily
-)
-from ominicontacto_app.services.asterisk_database import (
-    TrunkFamily, RutaEntranteFamily,
-    PausaFamily, DestinoPersonalizadoFamily
+    IdentificadorClienteFamily, PausaFamily, TrunkFamily, RutaEntranteFamily,
+    DestinoPersonalizadoFamily
 )
 
 logger = logging.getLogger(__name__)
