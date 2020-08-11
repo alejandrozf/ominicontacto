@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-11 17:57-0300\n"
+"POT-Creation-Date: 2020-08-11 19:26-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,27 +28,19 @@ msgstr "August 11, 2020"
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.8.3"
-msgstr "Release 1.8.3 details"
+msgid "Detalles de Release 1.8.4"
+msgstr "Release 1.8.4 details"
 
 # 2f558403c15a436e90409b976c7f07ed
 #: ../../release_notes.rst:11
 msgid "Fixes y mejoras"
 msgstr "Fixes and improvements"
 
-# ca708bf85f0e4e1b839c1aefbf3ffd57
+# 214280dedaeb440cb64a7eccfb4e08fa
 #: ../../release_notes.rst:12
 msgid ""
-"Solucionada incidencia de performance en filtros de campaña y grupos en "
-"vista de supervisión de agentes"
+"Solucionado error en la supervisión cuando hay agentes logueados que "
+"pertenecen exclusivamente a diferentes supervisores"
 msgstr ""
-"Fixed performance issue in campaign and group filters on agents supervision "
-"page"
-
-# b961f5f8914b4903a67f8589d0dc5d5e
-#: ../../release_notes.rst:13
-msgid ""
-"Solucionada incidencia relacionada con envío de DTMF en medio de una "
-"transferencia asistida de una llamada"
-msgstr ""
-"Fixed issue on sending DTMF in a middle of assisted transferred call"
+"Fixed error in supervision when there are logged agents exclusive "
+"assigned to differents supervisors"

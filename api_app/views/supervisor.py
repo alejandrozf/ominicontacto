@@ -91,10 +91,10 @@ class AgentesStatusAPIView(APIView):
         for data_agente in agentes_parseados.obtener_agentes_activos():
             id_agente = int(data_agente.get('id', -1))
             status_agente = data_agente.get('status', '')
-            agente = agentes_dict.get(id_agente, '')
-            grupo_activo = agente.grupo.nombre
-            campanas_activas = agente.queue_set.values_list('campana__nombre', flat=True)
             if status_agente != 'OFFLINE' and id_agente in agentes_dict:
+                agente = agentes_dict.get(id_agente, '')
+                grupo_activo = agente.grupo.nombre
+                campanas_activas = agente.queue_set.values_list('campana__nombre', flat=True)
                 data_agente['grupo'] = grupo_activo
                 data_agente['campana'] = campanas_activas
                 online.append(data_agente)
