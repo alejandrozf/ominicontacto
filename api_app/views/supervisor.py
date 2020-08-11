@@ -36,7 +36,7 @@ from simple_history.utils import update_change_reason
 from api_app.views.permissions import TienePermisoOML
 from api_app.serializers import (CampanaSerializer, )
 from ominicontacto_app.models import (
-    Campana, CalificacionCliente, AgenteProfile, Grupo, AgendaContacto, )
+    Campana, CalificacionCliente, AgenteProfile, AgendaContacto, )
 from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorActivityAmiManager
 from reportes_app.reportes.reporte_llamadas_supervision import (
     ReporteDeLLamadasEntrantesDeSupervision, ReporteDeLLamadasSalientesDeSupervision
@@ -72,36 +72,27 @@ class AgentesStatusAPIView(APIView):
         campanas_asignadas_actuales = supervisor_profile.campanas_asignadas_actuales()
         ids_agentes = list(campanas_asignadas_actuales.values_list(
             'queue_campana__members__pk', flat=True).distinct())
-        return ids_agentes
-
-    def _obtener_grupo_activos(self, id_agente):
-        id_grupo_activos = AgenteProfile.objects.filter(id__in=[id_agente]).values_list(
-            'grupo_id', flat=True).distinct()
-        grupo_activo = Grupo.objects.filter(id__in=id_grupo_activos).values_list(
-            'nombre', flat=True).get()
-        return grupo_activo
-
-    def _obtener_campana_activa(self, request, id_agente):
-        campana_activas = []
-        supervisor_profile = request.user.get_supervisor_profile()
-        campanas_asignadas_actuales = supervisor_profile.campanas_asignadas_actuales()
-        for campana in campanas_asignadas_actuales:
-            campana_member_id = campana.queue_campana.queuemember.values_list(
-                'member_id', flat=True)
-            if id_agente in campana_member_id:
-                campana_activas.append(campana.nombre)
-        return campana_activas
+        ids_campanas = list(campanas_asignadas_actuales.values_list(
+            'pk', flat=True))
+        agentes_dict = {}
+        for agente in AgenteProfile.objects.filter(
+                pk__in=ids_agentes,
+                campana_member__queue_name__campana__pk__in=ids_campanas).select_related(
+                'grupo').prefetch_related('campana_member__queue_name__campana'):
+            agentes_dict[agente.pk] = agente
+        return agentes_dict
 
     def get(self, request):
         online = []
         agentes_parseados = SupervisorActivityAmiManager()
-        ids_agentes_propios = self._obtener_ids_agentes_propios(request)
+        agentes_dict = self._obtener_ids_agentes_propios(request)
         for data_agente in agentes_parseados.obtener_agentes_activos():
             id_agente = int(data_agente.get('id', -1))
             status_agente = data_agente.get('status', '')
-            grupo_activo = self._obtener_grupo_activos(id_agente)
-            campanas_activas = self._obtener_campana_activa(request, id_agente)
-            if status_agente != 'OFFLINE' and id_agente in ids_agentes_propios:
+            agente = agentes_dict.get(id_agente, '')
+            grupo_activo = agente.grupo.nombre
+            campanas_activas = agente.queue_set.values_list('campana__nombre', flat=True)
+            if status_agente != 'OFFLINE' and id_agente in agentes_dict:
                 data_agente['grupo'] = grupo_activo
                 data_agente['campana'] = campanas_activas
                 online.append(data_agente)
