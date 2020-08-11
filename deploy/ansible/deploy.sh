@@ -136,7 +136,11 @@ CodeCopy() {
     if [ ! -z ${DOCKER_TAG} ] && [ "$arg1" == "--docker-deploy" ]; then
       release_name=${DOCKER_TAG}
     elif [ -z ${DOCKER_TAG} ] && [ "$arg1" == "--docker-deploy" ]; then
-      release_name=$(echo ${branch_name}|awk -F "-" '{print $1"-"$2}')
+      if [[ $release_name == *"pre-release"* ]]; then
+        release_name=$(echo ${branch_name}|awk -F "-" '{print $1"-"$2"-"$3}')
+      else
+        release_name=$(echo ${branch_name}|awk -F "-" '{print $1"-"$2}')
+      fi
     fi
   fi
   cd ../..
