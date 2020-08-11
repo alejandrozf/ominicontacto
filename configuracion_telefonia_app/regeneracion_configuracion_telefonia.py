@@ -33,11 +33,12 @@ from ominicontacto_app.asterisk_config import (
     SipTrunksConfigCreator, SipRegistrationsConfigCreator,
 )
 from ominicontacto_app.services.asterisk.redis_database import (
-    RutaSalienteFamily
+    RutaSalienteFamily, IVRFamily, ValidacionFechaHoraFamily, GrupoHorarioFamily,
+    IdentificadorClienteFamily
 )
 from ominicontacto_app.services.asterisk_database import (
-    TrunkFamily, RutaEntranteFamily, IVRFamily, ValidacionFechaHoraFamily,
-    GrupoHorarioFamily, PausaFamily, IdentificadorClienteFamily, DestinoPersonalizadoFamily
+    TrunkFamily, RutaEntranteFamily,
+    PausaFamily, DestinoPersonalizadoFamily
 )
 
 logger = logging.getLogger(__name__)
