@@ -350,11 +350,13 @@ Ejemplo:
 
 OML_WOMBAT_USER = None
 OML_WOMBAT_PASSWORD = None
+OML_WOMBAT_TIMEOUT = None
 """
 User y password por el cual se conectan con la api de WOMBAT DIALER
 Ejemplo:
     OML_WOMBAT_USER = "user_test"
     OML_WOMBAT_PASSWORD = "user123"
+OML_WOMBAT_TIMEOUT es el tiempo de timeout de la request hacia Wombat API
 """
 
 CALIFICACION_REAGENDA = None

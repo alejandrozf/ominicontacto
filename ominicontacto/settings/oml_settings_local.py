@@ -33,7 +33,7 @@ OML_BUILD_DATE=os.getenv('OML_BUILD_DATE')
 # Credenciales para wombat API
 OML_WOMBAT_USER = os.getenv('WOMBAT_USER')
 OML_WOMBAT_PASSWORD = os.getenv('WOMBAT_PASSWORD')
-
+OML_WOMBAT_TIMEOUT = '600'
 
 ALLOWED_HOSTS = [
     "*",
