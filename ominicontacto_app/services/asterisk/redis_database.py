@@ -519,3 +519,20 @@ class DestinoPersonalizadoFamily(AbstractRedisFamily):
 
     def get_nombre_families(self):
         return "OML:CUSTOMDST"
+
+
+class RegenerarAsteriskFamilysOML(object):
+    """
+    Regenera las Families en Asterisk para los objetos que no tienen un Sincronizador como los de
+    configuracion_telefonia_app.regeneracion_configuracion_telefonia.AbstractConfiguracionAsterisk
+    """
+
+    def __init__(self):
+        self.campana_family = CampanaFamily()
+        self.agente_family = AgenteFamily()
+        self.pausa_family = PausaFamily()
+
+    def regenerar_asterisk(self):
+        self.campana_family.regenerar_families()
+        self.agente_family.regenerar_families()
+        self.pausa_family.regenerar_families()

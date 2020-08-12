@@ -31,7 +31,7 @@ from django.utils.translation import ugettext as _
 from ominicontacto_app.errors import OmlError
 from ominicontacto_app.asterisk_config import (
     AsteriskConfigReloader, QueuesCreator)
-from ominicontacto_app.services.asterisk_database import CampanaFamily
+from ominicontacto_app.services.asterisk.redis_database import CampanaFamily
 
 logger = logging.getLogger(__name__)
 
