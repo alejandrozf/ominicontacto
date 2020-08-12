@@ -8,6 +8,9 @@ host    all             all             127.0.0.1/32             md5
 {% if  is_docker == "true" %}
 host    all             all             {{ subnet }}             md5
 {% endif %}
+{% if asterisk_host is defined %}
+host    all             all             {{ asterisk_host }}/32   md5
+{% endif %}
 # IPv6 local connections:
 host    all             all             ::1/128                 md5
 # Allow replication connections from localhost, by a user with the

@@ -29,6 +29,16 @@
 - name: Install redis5
   yum: "name=redis-{{ redis_version }} state=present update_cache=yes"
   tags: postinstall
+  
+- name: Modifying redis for listening in all addresses
+  lineinfile: path=/etc/redis.conf regexp="^bind" line="#bind" state=present
+  tags: postinstall
+  when: asterisk_host is defined
+
+- name: Modifying redis for not starting in protectd mode
+  lineinfile: path=/etc/redis.conf regexp="^protected-mode" line="protected-mode no" state=present
+  tags: postinstall
+  when: asterisk_host is defined
 
 # Se imprime que el virtualenv no esta instalado si la version actual es inferior a la requerida
 - debug: msg="Virtualenv {{ virtualenv_version }} is not installed, proceeding to install"
@@ -77,13 +87,20 @@
   yum: name=python2-devel state=absent
   tags: ['never', 'postinstall']
 
+# Para amazon linux toca instalar python3 de esta manera
 - name: Install python3.6 necessary for pytho3-devel package
   shell: amazon-linux-extras install python3
   when: ansible_distribution == "Amazon"
 
+# Y luego instalar python3-devel de esta manera
 - name: Install python3-devel package
   yum: name=python3-devel state=present disablerepo=amzn2-core
   when: ansible_distribution == "Amazon"
+
+# Para postgres afuera de oml, toca instalar python3-devel
+- name: Install python3-devel package
+  yum: name=python3-devel state=present
+  when: ansible_distribution != "Amazon" and postgres_host is defined
 
 - name: Start and enable redis service
   service: name=redis state=restarted enabled=yes
@@ -148,3 +165,23 @@
     - ominicontacto/oml_settings_local.pyc
     - local/
   tags: ['never','postinstall']
+
+# Glusterfs settings, cuando asterisk está en otro host
+- name: Install glusterfs-client
+  yum: name={{ item }} state=present
+  with_items:
+    - glusterfs
+    - glusterfs-fuse
+  when: asterisk_host is defined and gluster_enabled == "true"
+
+- name: Create location of volume mount
+  file: state=directory path={{ asterisk_location }}/var/spool/asterisk/monitor/ owner={{ usuario }} group={{ usuario }} mode=755
+  when: asterisk_host is defined and gluster_enabled == "true"
+
+- name: Script for mounting the volume after reboot
+  template: src=templates/glusterfs-mount dest=/etc/init.d/glusterfs-mount owner=root group=root mode=755
+  when: asterisk_host is defined and gluster_enabled == "true"
+
+- name: Enable and start of the script
+  service: name=glusterfs-mount state=restarted enabled=yes
+  when: asterisk_host is defined and gluster_enabled == "true"

@@ -18,16 +18,16 @@
 ---
 
 - debug: msg="Asterisk {{ asterisk_version }} is not installed, proceeding to install"
-  when: asterisk_installed.stdout != asterisk_version
+  when: asterisk_installed.stdout != asterisk_version and asterisk_host is not defined
   tags: ['asterisk','postinstall']
 
 - debug: msg="Asterisk is already installed in version {{ asterisk_version }}, skipping installation steps"
-  when: asterisk_installed.stdout == asterisk_version
+  when: asterisk_installed.stdout == asterisk_version and asterisk_host is not defined
   tags: ['asterisk','postinstall']
 
 - name: Install asterisk-{{ asterisk_version }} package (from s3 source)
   yum: name={{ s3_packages_url }}/asterisk-{{ asterisk_version }}-1.x86_64.rpm state=latest update_cache=yes
-  when: asterisk_installed.stdout != asterisk_version
+  when: asterisk_installed.stdout != asterisk_version and asterisk_host is not defined
   tags: postinstall
   retries: 3
   delay: 3
@@ -36,11 +36,11 @@
   until: s3_download is success
 
 - debug: msg="The download of asterisk-{{ asterisk_version }} package from s3 source failed, trying the vps source"
-  when: asterisk_installed.stdout != asterisk_version and s3_download is failed
+  when: asterisk_installed.stdout != asterisk_version and s3_download is failed and asterisk_host is not defined
 
 - name: Install asterisk-{{ asterisk_version }} package (from vps source)
   yum: name={{ vps_packages_url }}/asterisk-{{ asterisk_version }}-1.x86_64.rpm state=latest update_cache=yes
-  when: asterisk_installed.stdout != asterisk_version and s3_download is failed
+  when: asterisk_installed.stdout != asterisk_version and s3_download is failed and asterisk_host is not defined
   tags: postinstall
   retries: 3
   delay: 3

@@ -1,12 +1,12 @@
 Release Notes
 *************
 
-*Julio 31, 2020*
+*Agosto 11, 2020*
 
-Detalles de Release 1.8.2
+Detalles de Release 1.8.4
 =========================
 
 
 Fixes y mejoras
 --------------------------
-- Solucionado error de dialplan relacion con prefijos de rutas salientes que introducía un comportamiento errático en algunas llamadas
+- Solucionado error en la supervisión cuando hay agentes logueados que pertenecen exclusivamente a diferentes supervisores
