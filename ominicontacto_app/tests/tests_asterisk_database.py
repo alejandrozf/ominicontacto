@@ -84,9 +84,10 @@ class AsteriskDatabaseTest(OMLBaseTest):
                                           self.campana_entrante.nombre)
         self.assertEqual(dict_campana['QNAME'], nombre_campana)
         self.assertEqual(dict_campana['TYPE'], self.campana_entrante.type)
-        self.assertEqual(dict_campana['REC'], self.campana_entrante.queue_campana.auto_grabacion)
+        self.assertEqual(dict_campana['REC'], str(
+            self.campana_entrante.queue_campana.auto_grabacion))
         self.assertEqual(dict_campana['AMD'],
-                         self.campana_entrante.queue_campana.detectar_contestadores)
+                         str(self.campana_entrante.queue_campana.detectar_contestadores))
         self.assertEqual(dict_campana['CALLAGENTACTION'], self.campana_entrante.tipo_interaccion)
         self.assertEqual(dict_campana['RINGTIME'], self.campana_entrante.queue_campana.timeout)
         self.assertEqual(dict_campana['QUEUETIME'], self.campana_entrante.queue_campana.wait)
@@ -122,11 +123,11 @@ class AsteriskDatabaseTest(OMLBaseTest):
                                           self.campana_dialer.nombre)
         self.assertEqual(dict_campana['QNAME'], nombre_campana)
         self.assertEqual(dict_campana['TYPE'], self.campana_dialer.type)
-        self.assertEqual(dict_campana['REC'], self.campana_dialer.queue_campana.auto_grabacion)
+        self.assertEqual(dict_campana['REC'], str(self.campana_dialer.queue_campana.auto_grabacion))
         self.assertEqual(dict_campana['AMD'],
-                         self.campana_dialer.queue_campana.detectar_contestadores)
+                         str(self.campana_dialer.queue_campana.detectar_contestadores))
         self.assertEqual(dict_campana['CALLAGENTACTION'], self.campana_dialer.tipo_interaccion)
-        self.assertEqual(dict_campana['RINGTIME'], self.campana_dialer.queue_campana.timeout)
+        self.assertEqual(dict_campana['RINGTIME'], "")
         self.assertEqual(dict_campana['QUEUETIME'], self.campana_dialer.queue_campana.wait)
         self.assertEqual(dict_campana['MAXQCALLS'], self.campana_dialer.queue_campana.maxlen)
         self.assertEqual(dict_campana['SL'], self.campana_dialer.queue_campana.servicelevel)

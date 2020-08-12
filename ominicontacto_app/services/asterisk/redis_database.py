@@ -22,8 +22,7 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.utils.translation import ugettext as _
 
-
-from ominicontacto_app.models import AgenteProfile, Pausa
+from ominicontacto_app.models import AgenteProfile, Pausa, Campana
 from ominicontacto_app.utiles import convert_audio_asterisk_path_astdb
 from configuracion_telefonia_app.models import (
     RutaSaliente, IVR, DestinoEntrante, ValidacionFechaHora, GrupoHorario, IdentificadorCliente,
@@ -119,6 +118,83 @@ class AbstractRedisFamily(object):
         """regenera una family"""
         self.delete_family(family_member)
         self._create_family(family_member)
+
+
+class CampanaFamily(AbstractRedisFamily):
+
+    def _create_dict(self, campana):
+
+        dict_campana = {
+            'QNAME': "{0}_{1}".format(campana.id, campana.nombre),
+            'TYPE': campana.type,
+            'REC': str(campana.queue_campana.auto_grabacion),
+            'AMD': str(campana.queue_campana.detectar_contestadores),
+            'CALLAGENTACTION': campana.tipo_interaccion,
+            'RINGTIME': "",
+            'QUEUETIME': campana.queue_campana.wait,
+            'MAXQCALLS': campana.queue_campana.maxlen,
+            'SL': campana.queue_campana.servicelevel,
+            'OUTR': "",
+            'OUTCID': "",
+            'TC': "",  # a partir de esta variable no se usan las siguientes variables:
+            'IDJSON': "",
+            'PERMITOCCULT': "",
+            'MAXCALLS': "",
+        }
+
+        if campana.queue_campana.timeout:
+            ring_time = campana.queue_campana.timeout
+            dict_campana.update({'RINGTIME': ring_time})
+
+        if campana.outr_id:
+            outr = campana.outr_id
+            dict_campana.update({'OUTR': outr})
+
+        if campana.outcid:
+            outcid = campana.outcid
+            dict_campana.update({'OUTCID': outcid})
+
+        if campana.queue_campana.audio_para_contestadores:
+            dict_campana.update({'AMDPLAY': "{0}{1}".format(
+                settings.OML_AUDIO_FOLDER,
+                campana.queue_campana.audio_para_contestadores.get_filename_audio_asterisk())})
+
+        if campana.queue_campana.audio_de_ingreso:
+            dict_campana.update({'WELCOMEPLAY': "{0}{1}".format(
+                settings.OML_AUDIO_FOLDER,
+                campana.queue_campana.audio_de_ingreso.get_filename_audio_asterisk())})
+
+        if campana.sitio_externo:
+            dict_campana.update({'IDEXTERNALURL': campana.sitio_externo.pk})
+        else:
+            dict_campana.update({'IDEXTERNALURL': ""})
+
+        if campana.queue_campana.destino:
+            dst = "{0},{1}".format(campana.queue_campana.destino.tipo,
+                                   campana.queue_campana.destino.object_id)
+            dict_campana.update({'FAILOVER': 1, 'FAILOVERDST': dst})
+        else:
+            dict_campana.update({'FAILOVER': str(0)})
+
+        if campana.queue_campana.ivr_breakdown:
+            dict_campana.update(
+                {'IVRBREAKOUTID': campana.queue_campana.ivr_breakdown.object_id})
+
+        if campana.queue_campana.musiconhold:
+            dict_campana.update({'MOH': campana.queue_campana.musiconhold.nombre})
+
+        return dict_campana
+
+    def _obtener_todos(self):
+        """Devuelve las campanas para generar .
+        """
+        return Campana.objects.obtener_all_dialplan_asterisk()
+
+    def _get_nombre_family(self, campana):
+        return "{0}:{1}".format(self.get_nombre_families(), campana.id)
+
+    def get_nombre_families(self):
+        return "OML:CAMP"
 
 
 class AgenteFamily(AbstractRedisFamily):
