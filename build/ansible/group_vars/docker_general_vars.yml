@@ -9,7 +9,7 @@
 asterisk_image: debian:buster-slim
 base_image: alpine:3.10
 dialer_image: tomcat:8.5-alpine
-kamailio_image: kamailio/kamailio-ci:5.2
+kamailio_image: "kamailio/kamailio-ci:{{ kamailio_version.split('.')[0] }}.{{ kamailio_version.split('.')[1] }}"
 mariadb_image: bitnami/mariadb:latest
 nginx_image: nginx:1.19.0-alpine
 postgres_image: postgres:{{ postgresql_version }}

@@ -25,7 +25,7 @@
 
 # Se linkean los .conf de asterisk (los que estan afuera de archivos-no-enlaces) a /opt/omnileads/asterisk/etc/asterisk
 - name: Copy of asterisk dialplan files for OML
-  copy: "src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ ast_conf_location }}/{{ item }} force=true owner={{ usuario }} group={{ usuario }} mode=755 remote_src=yes"
+  copy: "src={{ repo_location }}/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ ast_conf_location }}/{{ item }} force=true owner={{ usuario }} group={{ usuario }} mode=755"
   with_items:
     - oml_extensions_bridgecall.conf
     - oml_extensions_commonsub.conf

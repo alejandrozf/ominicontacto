@@ -10,11 +10,6 @@ start() {
   $iptables -A DOCKER -p udp -m udp -d $CIP/32 ! -i docker0 -o docker0 --dport $RTP_START:$RTP_FINISH -j ACCEPT
   $iptables -A POSTROUTING -t nat -p udp -m udp -s $CIP/32 -d $CIP/32 --dport $RTP_START:$RTP_FINISH -j MASQUERADE
   sleep 10
-  #$DOCKER cp /home/[[ usuario ]]/[[ customer ]]/odbc.ini  oml-[[ asterisk_fqdn ]]-[[ customer ]]:/etc/odbc.ini
-  #$DOCKER cp /home/[[ usuario ]]/[[ customer ]]/oml_res_odbc.conf  oml-[[ asterisk_fqdn ]]-[[ customer ]]:/etc/asterisk/oml_res_odbc.conf
-  $DOCKER cp  /home/[[ usuario ]]/[[ customer ]]/kamailio-local.cfg oml-[[ kamailio_fqdn ]]-[[ customer ]]:/etc/kamailio/kamailio-local.cfg
-  #$DOCKER restart oml-[[ asterisk_fqdn ]]-[[ customer ]]
-  $DOCKER restart oml-[[ kamailio_fqdn ]]-[[ customer ]]
   cp -a /tmp/*_{custom.conf,override.conf} [[ install_prefix ]]volumes/prodenv_ast_conf_files/_data
   rm -rf /tmp/*_{custom.conf,override.conf}
 }

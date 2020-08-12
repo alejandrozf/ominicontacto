@@ -17,7 +17,7 @@ ca_organizationalunit: Freetech Solutions
 ################# Versiones de aplicaciones ####################
 
 asterisk_version: 16.9.0
-kamailio_version: 5.2.3
+kamailio_version: 5.3.5
 postgresql_old_version: 9.6
 postgresql_version: 11
 redis_version: 5.0.9
@@ -50,10 +50,3 @@ static_route: "{{ install_prefix }}ominicontacto/ominicontacto_app/static/ominic
 odbc_location: /etc/
 rtpengine_name: "rtpengine-mr{{ rtpengine_version }}"
 mysql_root_password: ""
-######### VoIP ports ###########
-kam_tls_port: 5061
-kam_ws_port: 1080
-kam_wss_port: 14443
-kam_sip_port: 5060
-ast_sip_port: 5160
-rtpengine_port: 22222

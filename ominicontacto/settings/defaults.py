@@ -227,16 +227,6 @@ Ejemplos:
     OML_RUTAS_SALIENTES_FILENAME = "/etc/asterisk/oml_extensions_outr.conf"
 """
 
-OML_RELOAD_CMD = None
-"""Comando a ejecutar para hacer reload de Asterisk
-
-Ejemplo:
-
-.. code-block:: python
-
-    OML_RELOAD_CMD = ["/usr/bin/asterisk", "-x", "reload"]
-"""
-
 ASTERISK = {
     'AMI_USERNAME': None,  # Usuario para AMI
     'AMI_PASSWORD': None,  # Password para usuario para AMI
