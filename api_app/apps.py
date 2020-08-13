@@ -83,6 +83,9 @@ class ApiAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'api_set_estado_revision',
              'roles': ['Agente', ]},
+            {'nombre': 'api_upload_base_contactos',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+
         ]
 
     informacion_de_permisos = {
@@ -150,4 +153,7 @@ class ApiAppConfig(AppConfig):
         'api_set_estado_revision':
             {'descripcion': _('Establece el estado de revisión de una Auditoría'),
              'version': '1.8.0'},
+        'api_upload_base_contactos':
+            {'descripcion': _('Almacena en la base de datos los contactos subidos en archivo csv'),
+             'version': '1.7.0'},
     }
