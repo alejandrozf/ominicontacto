@@ -18,7 +18,7 @@
 #
 
 """
-Tests del metodo 'ominicontacto_app.services.asterisk_database'
+Tests del modulo 'ominicontacto_app.services.asterisk.redis_database'
 """
 
 from __future__ import unicode_literals
@@ -27,11 +27,8 @@ from mock import patch
 
 from django.conf import settings
 from ominicontacto_app.tests.utiles import OMLBaseTest
-from ominicontacto_app.services.asterisk_database import (
-    CampanaFamily
-)
 from ominicontacto_app.services.asterisk.redis_database import (
-    AgenteFamily, RutaSalienteFamily, TrunkFamily
+    AgenteFamily, RutaSalienteFamily, TrunkFamily, CampanaFamily
 )
 from configuracion_telefonia_app.tests.factories import (
     TroncalSIPFactory, RutaSalienteFactory, PatronDeDiscadoFactory, PlaylistFactory)
