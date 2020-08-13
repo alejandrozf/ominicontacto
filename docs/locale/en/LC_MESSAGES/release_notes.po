@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-31 16:01-0300\n"
+"POT-Creation-Date: 2020-08-11 19:26-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,24 +23,24 @@ msgstr "Release Notes"
 
 # 73ee1e870afd4a31b43364589dd0e1ee
 #: ../../release_notes.rst:4
-msgid "*Julio 31, 2020*"
-msgstr "July 31, 2020"
+msgid "*Agosto 11, 2020*"
+msgstr "August 11, 2020"
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.8.2"
-msgstr "Release 1.8.2 details"
+msgid "Detalles de Release 1.8.4"
+msgstr "Release 1.8.4 details"
 
 # 2f558403c15a436e90409b976c7f07ed
 #: ../../release_notes.rst:11
 msgid "Fixes y mejoras"
 msgstr "Fixes and improvements"
 
-# b961f5f8914b4903a67f8589d0dc5d5e
+# 214280dedaeb440cb64a7eccfb4e08fa
 #: ../../release_notes.rst:12
 msgid ""
-"Solucionado error de dialplan relacion con prefijos de rutas salientes "
-"que introducía un comportamiento errático en algunas llamadas"
+"Solucionado error en la supervisión cuando hay agentes logueados que "
+"pertenecen exclusivamente a diferentes supervisores"
 msgstr ""
-"Fixed dialplan error when dealing with outbound routes prefixes that "
-"introduced erratic behaviour on some calls"
+"Fixed error in supervision when there are logged agents exclusive "
+"assigned to differents supervisors"
