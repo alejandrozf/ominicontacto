@@ -25,7 +25,8 @@ from django.contrib.auth.decorators import login_required
 
 from api_app.views.base import login, ContactoCreateView, CampaignDatabaseMetadataView
 from api_app.views.administrador import (
-    AgentesActivosGrupoViewSet, CrearRolView, EliminarRolView, ActualizarPermisosDeRolView)
+    AgentesActivosGrupoViewSet, CrearRolView, EliminarRolView, ActualizarPermisosDeRolView,
+    SubirBaseContactosView)
 from api_app.views.supervisor import (
     SupervisorCampanasActivasViewSet, AgentesStatusAPIView, StatusCampanasEntrantesView,
     StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView, LlamadasDeCampanaView,
@@ -88,6 +89,10 @@ urlpatterns = [
     url(r'api/v1/permissions/update_role_permissions/$',
         ActualizarPermisosDeRolView.as_view(),
         name='api_update_role_permissions'),
+    url(r'api/v1/crear_base_contactos/$',
+        SubirBaseContactosView.as_view(),
+        name='api_upload_base_contactos'),
+
 
     # ###########   SUPERVISOR    ############ #
     url(r'api/v1/supervision/agentes',

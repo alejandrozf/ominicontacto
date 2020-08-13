@@ -31,8 +31,11 @@ from rest_framework.views import APIView
 from api_app.authentication import ExpiringTokenAuthentication
 from api_app.serializers import AgenteProfileSerializer
 from api_app.views.permissions import TienePermisoOML
+from api_app.services.base_datos_contacto_service import BaseDatosContactoService
 from ominicontacto_app.models import AgenteProfile, User
 from ominicontacto_app.permisos import PermisoOML
+from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError, OmlError, \
+    OmlParserRepeatedColumnsError
 
 
 class AgentesActivosGrupoViewSet(viewsets.ModelViewSet):
@@ -134,3 +137,81 @@ class EliminarRolView(APIView):
                                   'message': _('No se puede borrar un rol asignado a usuarios.')})
         rol.delete()
         return Response(data={'status': 'OK'})
+
+
+class SubirBaseContactosView(APIView):
+    """Subir y almacenar una base de contactos desde archivo csv"""
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['post']
+    base_datos_contacto_service = BaseDatosContactoService()
+
+    def post(self, request):
+        id = None
+        error = True
+        try:
+            file = request.FILES['filename']
+            filename = file.name
+            db_name = self._obtiene_parametro(request, 'nombre')
+            campos_telefono_str = self._obtiene_parametro(request, 'campos_telefono')
+            id_externo = self._obtiene_parametro(request, 'id_externo', True)
+            if id_externo is not None:
+                id_externo = id_externo.capitalize()
+            id = self.base_datos_contacto_service.crear_bd_contactos(file, filename, db_name)
+            campos_telefono = self._procesa_campos_telefono(campos_telefono_str)
+            self._comprueba_campo_id_externo(id_externo)
+
+            self.base_datos_contacto_service.importa_contactos_desde_api(id, campos_telefono,
+                                                                         id_externo)
+            error = False
+        except OmlArchivoImportacionInvalidoError:
+            return Response(data={'status': 'ERROR',
+                                  'message': _('la extensión del archivo no es .CSV')})
+        except KeyError:
+            return Response(data={'status': 'ERROR',
+                                  'message': _('falta parámetro filename en request')})
+        except OmlParserRepeatedColumnsError:
+            return Response(data={'status': 'ERROR',
+                                  'message': _("El archivo a procesar tiene nombres de columnas "
+                                               "repetidos.")})
+        except OmlError as e:
+            return Response(data={'status': 'ERROR',
+                                  'message': e.__str__()})
+        except Exception:
+            return Response(data={'status': 'ERROR',
+                                  'message': _('no se pudo crear la base de datos de contacto')})
+        finally:
+            if id is not None and error:
+                self.base_datos_contacto_service.remove_db(id)
+
+        return Response(data={'status': 'OK', 'id': id})
+
+    def _obtiene_parametro(self, request, nombre_parametro, parametro_opcional=False) -> str:
+        param = request.data.get(nombre_parametro, None)
+        if param is not None or parametro_opcional is True:
+            return param
+
+        message = _('falta parámetro:') + nombre_parametro
+        raise OmlError(message)
+
+    def _procesa_campos_telefono(self, campos_telefono_str) -> list:
+        ct = campos_telefono_str \
+            .strip() \
+            .lstrip(',') \
+            .rstrip(',') \
+            .split(',')
+        campos_telefono = [x.capitalize() for x in ct]
+
+        if len(campos_telefono) == 0:
+            raise OmlError(_('lista de campos teléfono vacia'))
+        for campo_t in campos_telefono:
+            if campo_t not in self.base_datos_contacto_service.parser.columnas:
+                raise OmlError(_('campo de teléfono no coincide con nombre de columna'))
+
+        return campos_telefono
+
+    def _comprueba_campo_id_externo(self, id_externo):
+        if id_externo is not None and \
+                id_externo not in self.base_datos_contacto_service.parser.columnas:
+            raise OmlError(_('campo de id externo no coincide con nombre de columna'))
