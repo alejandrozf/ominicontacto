@@ -1,0 +1,23 @@
+===================================
+Omnileads (OML) 1.9.0 release notes
+===================================
+
+*August 13, 2020*
+
+What's new
+=========================
+- Supervision was refactored to save its real-time agents information on Redis instead of AstDB for improve performance
+- The UI for choose a disposition option in campaign creation wizards was improved
+- A filter by external contact id was added to recordings page
+- The open retries statistics parameter information was added to detail report on dialer campaings
+- In installation the system a unique SSL cert for all components
+- Added support for bigger contacts databases for dialer campaigns
+
+
+
+Fixes and improvements
+--------------------
+- Fixed error on supervisor roles assigned to a campaign that generates an exception when attempting to block fields for agents
+- Fixed dialplan error when saving database recordings data on consultative transfers calls
+- Fixed installation upgrade error when updating virtualenv package
+- Fixed inconsistency error when an agent passes from ACW pause (with timeout) to another pause
