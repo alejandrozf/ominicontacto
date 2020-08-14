@@ -129,6 +129,8 @@ OML_WOMBAT_USER = "demoadmin"
 
 OML_WOMBAT_PASSWORD = "demo"
 
+OML_WOMBAT_TIMEOUT = '600'
+
 EPHEMERAL_USER_TTL = 28800
 OML_KAMAILIO_HOSTNAME = "root@{{ kamailio_fqdn }}"
 OML_KAMAILIO_CMD = "kamcmd -s {{ kamailio_location }}/run/kamailio/kamailio_ct autheph.dump_secrets"

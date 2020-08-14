@@ -74,8 +74,8 @@ class WombatService():
             out = subprocess.check_output(['curl', '--user',
                                            ':'.join([settings.OML_WOMBAT_USER,
                                                      settings.OML_WOMBAT_PASSWORD]),
-                                           '-m', '60', '-X', 'POST', '-w', 'string',
-                                           '-d', "@{0}".format(filename_archivo),
+                                           '-m', settings.OML_WOMBAT_TIMEOUT, '-X', 'POST', '-w',
+                                           'string', '-d', "@{0}".format(filename_archivo),
                                            '/'.join([settings.OML_WOMBAT_URL,
                                                      url_edit])])
             return out
