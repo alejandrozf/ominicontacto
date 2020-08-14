@@ -35,7 +35,7 @@ License
 GPLv3. Every source code file contains the license preamble and copyright details.
 
 Actual version
-1.3.X.
+1.9.X.
 
 Documentation
 Official documentation for the proyect can be found at: https://omnileads.net/.
