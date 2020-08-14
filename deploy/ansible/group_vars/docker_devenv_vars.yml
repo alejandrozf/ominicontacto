@@ -2,8 +2,8 @@
 
 # Docker hosts at beginning is localhost because the base containers are raised up in localhost to install the application. Uncomment the line if you want to install DE or PE
 
-version: de1.2.6
-asterisk_builded_version: 16.9.0
+version: de1.2.8
+asterisk_builded_version: 16.9.0-redispy
 customer: devenv
 root_password: toor123
 
@@ -20,6 +20,7 @@ asterisk_location:
 ast_local_location: "{{ deploy_location }}/asterisk"
 ast_agis_location: "{{ ast_local_location }}/agis"
 ast_conf_location: "{{ ast_local_location }}/conf"
+ast_sounds_location: "{{ ast_local_location }}/sounds"
 ast_other_location: "{{ ast_local_location }}/others"
 build_location: "{{ docker_root }}/omnileads/build"
 certs_location: "{{ deploy_location }}/certs"

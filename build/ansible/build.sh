@@ -75,6 +75,9 @@ OmlRelease() {
   then
       release_name=$branch_name
   fi
+  if [ ! -z ${DOCKER_TAG} ]; then
+    release_name=$(echo ${DOCKER_TAG}|awk -F "-" '{print $1"-"$2}')
+  fi
 }
 
 TagCheck() {
@@ -164,11 +167,11 @@ for i in "$@"
 do
   case $i in
     --docker-pe-build|--docker-pe-no-build|--docker-de-build|--docker-de-no-build|--aio-build)
-      UserValidation
       TagCheck
-      AnsibleInstall
-      OmlRelease
-      AnsibleExec
+      shift
+    ;;
+    --docker-tag=*)
+      DOCKER_TAG="${i#*=}"
       shift
     ;;
     --help|-h)
@@ -192,3 +195,7 @@ do
     ;;
   esac
 done
+UserValidation
+AnsibleInstall
+OmlRelease
+AnsibleExec

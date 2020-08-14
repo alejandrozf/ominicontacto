@@ -2556,7 +2556,8 @@ class GrabacionManager(models.Manager):
                                          "tel de cliente")))
 
     def grabacion_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada, tel_cliente, callid,
-                            agente, campana, campanas, marcadas, duracion, gestion):
+                            id_contacto_externo, agente, campana, campanas, marcadas, duracion,
+                            gestion):
         grabaciones = self.filter(campana__in=campanas)
 
         if fecha_desde and fecha_hasta:
@@ -2570,6 +2571,10 @@ class GrabacionManager(models.Manager):
             grabaciones = grabaciones.filter(tel_cliente__contains=tel_cliente)
         if callid:
             grabaciones = grabaciones.filter(callid=callid)
+        if id_contacto_externo:
+            telefonos_contacto = Contacto.objects.values('telefono')
+            telefono_id_externo = telefonos_contacto.filter(id_externo=id_contacto_externo)
+            grabaciones = grabaciones.filter(tel_cliente__contains=telefono_id_externo)
         if agente:
             grabaciones = grabaciones.filter(agente=agente)
         if campana:

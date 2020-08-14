@@ -20,8 +20,9 @@ asterisk_version: 16.9.0
 kamailio_version: 5.2.3
 postgresql_old_version: 9.6
 postgresql_version: 11
+redis_version: 5.0.9
 rtpengine_version: 5.5.3.1
-virtualenv_version: "1.8.0"
+virtualenv_version: "1.9.0"
 wombat_version: 20.02.1-272
 asterisk_package: "{{ packages_url }}/asterisk-{{ asterisk_version }}-1.x86_64.rpm"
 kamailio_package: "{{ packages_url }}/kamailio-{{ kamailio_version }}-1.x86_64.rpm"
@@ -29,6 +30,7 @@ rtpengine_package: "{{ packages_url }}/rtpengine-{{ rtpengine_version }}-1.x86_6
 virtualenv_package: "{{ packages_url }}/virtualenv-{{ virtualenv_version }}-1.x86_64.rpm"
 ################ URL's ############################
 epel_repository: https://download-ib01.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+remi_repository: http://rpms.remirepo.net/enterprise/remi-release-7.rpm
 #URLS para descargar asterisk
 vps_packages_url: http://freetech.com.ar/rpms
 s3_packages_url: https://fts-public-packages.s3.amazonaws.com

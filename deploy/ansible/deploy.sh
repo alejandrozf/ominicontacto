@@ -94,8 +94,6 @@ TagCheck() {
     tag="database"
   elif [ "$arg1" == "--docker-deploy" ]; then
     tag="docker_deploy"
-  elif [ "$arg1" == "--integration-tests" ]; then
-    tag="all,integration-tests"
   fi
 }
 
@@ -134,7 +132,16 @@ CodeCopy() {
   if [ $branch_name == "master" ]; then git pull; fi
   if [ -z "$current_tag" ]
   then
-      release_name=$branch_name
+    release_name=$branch_name
+    if [ ! -z ${DOCKER_TAG} ] && [ "$arg1" == "--docker-deploy" ]; then
+      release_name=${DOCKER_TAG}
+    elif [ -z ${DOCKER_TAG} ] && [ "$arg1" == "--docker-deploy" ]; then
+      if [[ $release_name == *"pre-release"* ]]; then
+        release_name=$(echo ${branch_name}|awk -F "-" '{print $1"-"$2"-"$3}')
+      else
+        release_name=$(echo ${branch_name}|awk -F "-" '{print $1"-"$2}')
+      fi
+    fi
   fi
   cd ../..
   echo "Checking the release to install"
@@ -160,10 +167,8 @@ CodeCopy() {
 }
 
 CertsValidation() {
-  echo "Checking if you put trusted key/cert pair under deploy/certs folder"
   certs_location="$REPO_LOCATION/deploy/certs"
   if [ $(ls -l $certs_location/*.pem 2>/dev/null | wc -l) -gt 0 ]; then
-    TRUSTED_CERTS=true
     if [ $(ls -l $certs_location/*.pem 2>/dev/null | wc -l) -eq 4 ]; then
       rm -rf $certs_location/key.pem $certs_location/cert.pem
     fi
@@ -181,8 +186,6 @@ CertsValidation() {
         1. You didn't include the string "key" in you .pem file related to private key
         2. You put more than two .pem files in the certs folder"; exit 1
     fi
-  else
-    TRUSTED_CERTS=false
   fi
 }
 
@@ -227,8 +230,7 @@ AnsibleExec() {
     echo "Beginning the Omnileads installation with Ansible, this installation process can last between 20-25 minutes, depending of your internet connection"
     echo ""
     ${ANSIBLE}-playbook $verbose $TMP_ANSIBLE/omnileads.yml \
-      --extra-vars "trusted_certs=$TRUSTED_CERTS \
-                    iface=$INTERFACE \
+      --extra-vars "iface=$INTERFACE \
                     build_dir=$TMP_OMINICONTACTO \
                     repo_location=$REPO_LOCATION \
                     docker_root=$USER_HOME \
@@ -286,12 +288,16 @@ fi
 for i in "$@"
 do
   case $i in
-    --upgrade|-u|--install|-i|--kamailio|-k|--asterisk|-a|--omniapp|-o|--omnivoip|--dialer|-di|--database|-da|--change-network|-cnet|--change-passwords|-cp|--docker-no-build|--docker-build|--docker-deploy|--integration-tests)
+    --upgrade|-u|--install|-i|--kamailio|-k|--asterisk|-a|--omniapp|-o|--omnivoip|--dialer|-di|--database|-da|--change-network|-cnet|--change-passwords|-cp|--docker-no-build|--docker-build|--docker-deploy)
       TagCheck
       shift
     ;;
     --iface=*|--interface=*)
       INTERFACE="${i#*=}"
+      shift
+    ;;
+    --docker-tag=*)
+      DOCKER_TAG="${i#*=}"
       shift
     ;;
     --help|-h)

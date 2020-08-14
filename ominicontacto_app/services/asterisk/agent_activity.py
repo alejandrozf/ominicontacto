@@ -19,14 +19,16 @@
 from __future__ import unicode_literals
 
 import time
+import redis
+from django.conf import settings
 
 from ominicontacto_app.models import QueueMember, Pausa
 from ominicontacto_app.services.asterisk_database import AgenteFamily
 from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnector
-from api_app.utiles import AgentesParsing
 
 
 class AgentActivityAmiManager(object):
+    redis_connection = None
 
     def __init__(self, *args, **kwargs):
         self.manager = AMIManagerConnector()
@@ -45,7 +47,7 @@ class AgentActivityAmiManager(object):
         if not error:
             error = self._queue_add_remove(agente_profile, 'QueueAdd')
         if not error:
-            error = self._insert_astb_status(agente_profile, 'login')
+            error = self._set_agent_redis_status(agente_profile, 'login')
         if manage_connection:
             self.disconnect_manager()
         return error
@@ -54,44 +56,42 @@ class AgentActivityAmiManager(object):
         if manage_connection:
             self.connect_manager()
         queue_remove_error = self._queue_add_remove(agente_profile, 'QueueRemove')
-        insert_astdb_error = self._insert_astb_status(agente_profile, 'logout')
         if manage_connection:
             self.disconnect_manager()
-        return queue_remove_error, insert_astdb_error
+        insert_redis_error = self._set_agent_redis_status(agente_profile, 'logout')
+        return queue_remove_error, insert_redis_error
 
     def pause_agent(self, agente_profile, pause_id, manage_connection=False):
         if manage_connection:
             self.connect_manager()
         pause_name = ''
         queue_pause_error = self._queue_pause_unpause(agente_profile, pause_id, 'pause')
+        if manage_connection:
+            self.disconnect_manager()
+
         if pause_id == '0':
             pause_name = 'ACW'
         elif pause_id == '00':
             pause_name = 'Supervision'
         else:
             pause_name = Pausa.objects.activa_by_pauseid(pause_id).nombre
-        insert_astdb_error = self._insert_astb_status(agente_profile, 'PAUSE-' + str(pause_name))
-        if not insert_astdb_error:
-            insert_astdb_error = self._insert_astdb_pause_id(agente_profile, pause_id)
-        if manage_connection:
-            self.disconnect_manager()
-        return queue_pause_error, insert_astdb_error
+
+        insert_redis_error = self._set_agent_pause_redis_status(
+            agente_profile, pause_name, pause_id)
+
+        return queue_pause_error, insert_redis_error
 
     def unpause_agent(self, agente_profile, pause_id, manage_connection=False):
         if manage_connection:
             self.connect_manager()
         queue_unpause_error = self._queue_pause_unpause(agente_profile, pause_id, 'unpause')
-        insert_astdb_error = self._insert_astb_status(agente_profile, 'unpause')
         if manage_connection:
             self.disconnect_manager()
-        return queue_unpause_error, insert_astdb_error
+        insert_redis_error = self._set_agent_redis_status(agente_profile, 'unpause')
+        return queue_unpause_error, insert_redis_error
 
-    def set_agent_as_unavailable(self, agente_profile, manage_connection=False):
-        if manage_connection:
-            self.connect_manager()
-        self._insert_astb_status(agente_profile, 'UNAVAILABLE')
-        if manage_connection:
-            self.manager_disconnect()
+    def set_agent_as_unavailable(self, agente_profile):
+        self._set_agent_redis_status(agente_profile, 'UNAVAILABLE')
 
     def get_pause_id(self, pause_id):
         return pause_id
@@ -100,20 +100,20 @@ class AgentActivityAmiManager(object):
         agente_family = AgenteFamily()
         return agente_family._get_nombre_family(agente_profile)
 
-    def _get_astdb_status_data(self, agente_profile, action):
-        family = self._get_family(agente_profile)
-        tiempo_actual = int(time.time())
-        key = 'STATUS'
+    def _get_redis_status_data(self, action):
         if action == 'login' or action == 'unpause':
-            value = 'READY:' + str(tiempo_actual)
+            status = 'READY'
         elif action == 'logout':
-            value = 'OFFLINE:' + str(tiempo_actual)
+            status = 'OFFLINE'
         elif 'PAUSE' in action:
-            value = action + ':' + str(tiempo_actual)
+            status = action
         elif 'UNAVAILABLE' in action:
-            value = action + ':' + str(tiempo_actual)
-        content = [family, key, value]
-        return content
+            status = action
+
+        return {
+            'STATUS': status,
+            'TIMESTAMP': str(int(time.time()))
+        }
 
     def _get_queue_data(self, agente_profile):
         agent_id = agente_profile.id
@@ -140,21 +140,8 @@ class AgentActivityAmiManager(object):
         content.append(pause_state)
         data_returned, error = self.manager._ami_manager('QueuePause', content)
 
-    def _insert_astb_status(self, agente_profile, action):
-        content = self._get_astdb_status_data(agente_profile, action)
-        data_returned, error = self.manager._ami_manager('dbput', content)
-        return error
-
-    def _insert_astdb_pause_id(self, agente_profile, pause_id):
-        family = self._get_family(agente_profile)
-        key = 'PAUSE_ID'
-        value = pause_id
-        content = [family, key, value]
-        data_returned, error = self.manager._ami_manager('dbput', content)
-        return error
-
     def _close_open_session(self, agente_profile):
-        status, error = self._get_astdb_agent_status(agente_profile)
+        status, error = self._get_redis_agent_status(agente_profile)
         if not error and not status == 'OFFLINE':
             # Finalizo posibles pausas en curso.
             error = self._queue_pause_unpause(agente_profile, '', 'unpause')
@@ -163,12 +150,44 @@ class AgentActivityAmiManager(object):
                 error = self._queue_add_remove(agente_profile, 'QueueRemove')
         return error
 
-    def _get_astdb_agent_status(self, agente_profile):
-        family = self._get_family(agente_profile)
-        data_returned, error = self.manager._ami_manager("command", "database show {0}".format(
-            family))
-        if not error:
-            parser = AgentesParsing()
-            agent_data = parser.parsear_datos_agente(data_returned)
-            status = agent_data.get('status', 'OFFLINE')
+    def get_redis_connection(self):
+        if self.redis_connection is None:
+            self.redis_connection = redis.Redis(
+                host=settings.REDIS_HOSTNAME,
+                port=settings.CONSTANCE_REDIS_CONNECTION['port'],
+                decode_responses=True)
+        return self.redis_connection
+
+    def _save_agent_data(self, agente_profile, data):
+        error = False
+        family = self._get_family(agente_profile).replace('/', ':')
+        redis_connection = self.get_redis_connection()
+        try:
+            redis_connection.hset(family, mapping=data)
+        except redis.exceptions.RedisError:
+            error = True
+        return error
+
+    def _set_agent_redis_status(self, agente_profile, action):
+        data = self._get_redis_status_data(action)
+        return self._save_agent_data(agente_profile, data)
+
+    def _set_agent_pause_redis_status(self, agente_profile, pause_name, pause_id):
+        action = 'PAUSE-' + pause_name
+        data = self._get_redis_status_data(action)
+        data['PAUSE_ID'] = pause_id
+        return self._save_agent_data(agente_profile, data)
+
+    def _get_redis_agent_status(self, agente_profile):
+        family = self._get_family(agente_profile).replace('/', ':')
+        redis_connection = self.get_redis_connection()
+        status = None
+        error = False
+        try:
+            status = redis_connection.hget(family, 'STATUS')
+            if status is None:
+                error = True
+        except redis.exceptions.RedisError:
+            error = True
+
         return status, error

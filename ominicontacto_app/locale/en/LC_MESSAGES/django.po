@@ -4629,6 +4629,11 @@ msgstr "Completed Calls"
 msgid "Llamadas restantes estimadas"
 msgstr "Estimated Pending Calls"
 
+#: ominicontacto_app/templates/campanas/campana_dialer/detalle.html:53
+#: ominicontacto_app/templates/campanas/campana_dialer/detalle_campana.html:43
+msgid "Reintentos abiertos"
+msgstr "Open retries"
+
 #: ominicontacto_app/templates/campanas/campana_dialer/detalle.html:57
 msgid "No se obtuvieron resultados del discador"
 msgstr "There are no results for dialer"

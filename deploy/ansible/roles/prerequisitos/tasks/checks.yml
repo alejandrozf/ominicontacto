@@ -95,7 +95,7 @@
   tags: always
 
 # Obtengo distro para PE, aca lo hago viendo el NAME del archivo os-release, asi obtengo la variable docker_distribution
-- name: Get specific CentOS based distribution
+- name: Get specific Linux distribution
   shell: awk -F= '/^NAME/{print $2}' /etc/os-release
   register: docker_distribution
   tags: docker_deploy
@@ -149,14 +149,6 @@
     - { var: cert, value: "{{ trusted_cert }}" }
     - { var: key, value: "{{ trusted_key }}" }
   when: trusted_key is defined and trusted_cert is defined
-  tags: always
-
-# Chequeo si el folder de certificado existe
-- name: Check if auto-signed certificates folder exists
-  shell: "[ -d {{ kamailio_location }}/etc/certs ]"
-  changed_when: false
-  failed_when: false
-  register: certs_exists
   tags: always
 
 ######################################################################################################

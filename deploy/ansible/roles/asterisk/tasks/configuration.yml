@@ -105,6 +105,7 @@
       - { src: "omni-blacklist.py.j2", dest: "omni-blacklist.py" }
       - { src: "omni-dialednum.py.j2", dest: "omni-dialednum.py" }
       - { src: "omni-grabaciones.py.j2", dest: "omni-grabaciones.py" }
+      - { src: "omni-agent-status.py.j2", dest: "omni-agent-status.py" }
   become: yes
   become_method: sudo
   tags: postinstall
@@ -122,7 +123,7 @@
   when: is_docker == "false"
 
 # Creo el archivo odbcinst.ini desde ansible
-- name: Creation of odbcinst.ini file
+- name: Creation of odbcinst.ini and odbc.ini files
   template: "src={{ repo_location }}/deploy/ansible/roles/asterisk/templates/etc/{{ item }} dest={{ odbc_location }} owner=root group=root mode=644"
   with_items:
     - odbcinst.ini
@@ -140,8 +141,7 @@
 
 # Untareo los sonidos de agentes, que vienen desde el repo
 - name: Untar the sounds for agents
-  unarchive: "src=/var/tmp/ominicontacto-build/ominicontacto/ominicontacto_voip/asterisk-files/sounds/oml.tar.gz dest={{ ast_sounds_location }}/oml/"
-  when: is_docker == "false"
+  unarchive: "src={{ repo_location }}/ominicontacto_voip/asterisk-files/sounds/oml.tar.gz dest={{ ast_sounds_location }}/oml/"
   tags: postinstall
 
 # Permiso de usuario a la carpeta de asterisk

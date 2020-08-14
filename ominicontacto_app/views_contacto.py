@@ -319,7 +319,8 @@ class BloquearCamposParaAgenteFormView(FormView):
 
         if not request.user.get_is_administrador():
             supervisor = request.user.get_supervisor_profile()
-            if not (self.campana.reported_by == supervisor or supervisor.esta_asignado_a_campana()):
+            if not (self.campana.reported_by == supervisor or supervisor.esta_asignado_a_campana(
+                    self.campana)):
                 message = _('No tiene permiso para editar esa campaña.')
                 messages.error(request, message)
                 return redirect(URL_LISTA_CAMPANAS_POR_TIPO[self.campana.type])
