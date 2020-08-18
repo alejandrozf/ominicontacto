@@ -139,7 +139,9 @@ You can simulate inbound calls registering an extension from the pbx-emulator. Y
 
   username: 01155001122
   secret: OMLtraining72
-  domanin: pbx-emulator
+  domain: YOUR_HOSTNAME
+
+(Change "YOUR_HOSTNAME" with the hostname or your machine)
 
 After registering the extension you can call this numbers for receiving the call to a Omnileads inbound campaign (check manuals to configure inbound campaign and inbound routing)
 
