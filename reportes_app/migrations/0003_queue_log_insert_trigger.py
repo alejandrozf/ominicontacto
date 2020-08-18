@@ -37,7 +37,7 @@ def create_procedemiento_trigger(apps, schema_editor):
 
         print("Creando funcion desde {0}".format(tmp))
         filename = tmp
-        sql = open(filename, "r").read()
+        sql = open(filename, "r", encoding="utf-8").read()
         cursor = connection.cursor()
         cursor.execute(sql)
 
