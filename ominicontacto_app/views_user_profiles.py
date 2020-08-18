@@ -276,6 +276,11 @@ class UserListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(UserListView, self).get_context_data(**kwargs)
+        user = self.request.user
+        context['modifica_perfil_agente'] = user.tiene_permiso_oml('agenteprofile_update')
+        context['modifica_perfil_supervisor'] = user.tiene_permiso_oml('supervisor_update')
+        context['edita_user'] = user.tiene_permiso_oml('user_update')
+        context['elimina_user'] = user.tiene_permiso_oml('user_delete')
         if 'search' in self.request.GET:
             context['search'] = self.request.GET.get('search')
             context['search_url'] = '?search=' + context['search']
