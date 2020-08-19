@@ -100,10 +100,6 @@ ASTERISK = {
     'HTTP_AMI_URL': "http://172.16.20.88:7088",
 }
 
-# 'OML_RELOAD_CMD': comando a ejecutar para realizar el reload de la configuracion de Asterisk
-# **** RECORDAR: revisar permisos, usuario, etc.
-OML_RELOAD_CMD = '["ssh root@172.16.20.222",  "/usr/sbin/asterisk", "-rx", "reload"]'
-
 # 'OML_WOMBAT_URL': url donde se encuentra el discador de wombat
 # ejemplo "http://172.16.20.222/wombat"
 

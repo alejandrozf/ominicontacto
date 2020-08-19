@@ -6,9 +6,9 @@ docker_compose_url: "https://github.com/docker/compose/releases/download/1.25.0/
 omni_ip: "{{ inventory_hostname }}"
 
 # Base images used
-kamailio_image: kamailio/kamailio-ci:5.2
+kamailio_image: "kamailio/kamailio-ci:{{ kamailio_version.split('.')[0] }}.{{ kamailio_version.split('.')[1] }}"
 mariadb_image: bitnami/mariadb:latest
-nginx_image: nginx:mainline-alpine
+nginx_image: nginx:1.19.0-alpine
 redis_image: "redis:{{ redis_version }}-alpine"
 # Images for EFK
 elasticsearch_image: elasticsearch:7.1.0

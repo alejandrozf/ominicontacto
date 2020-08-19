@@ -205,16 +205,6 @@
     - docker-compose.yml
     - .env
 
-# Se crea el archivo kamailio-local, Este archivo contiene las variables que usa el kamailio.cfg
-- name: Creation of kamailio-local.cfg file (devenv)
-  template: src=roles/kamailio/templates/etc/kamailio-local.cfg dest={{ repo_location }}/ominicontacto_voip/kamailio-files/ owner={{ usuario }} group={{ usuario }}
-  when: devenv == 1
-
-# Se crea el archivo kamailio-local, Este archivo contiene las variables que usa el kamailio.cfg
-- name: Creation of kamailio-local.cfg file (prodenv)
-  template: src=roles/kamailio/templates/etc/kamailio-local.cfg dest={{ deploy_location }} owner={{ usuario }} group={{ usuario }}
-  when: prodenv == 1
-
 # Genero el archivo odbc.ini y oml_res_odbc.conf
 #- name: Creation of odbc.ini and oml_res_odbc.conf file (prodenv)
 #  template: src=roles/asterisk/templates/etc/odbc.ini dest={{ deploy_location }} owner={{ usuario }} group={{ usuario }}

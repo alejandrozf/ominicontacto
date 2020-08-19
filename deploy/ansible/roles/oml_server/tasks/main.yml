@@ -79,10 +79,6 @@
   register: vps_download
   until: vps_download is success
 
-# Esta tarea es para pasar los datos de constance de redis a postgres
-- name: Dump information of constance database
-  shell: "{{ install_prefix }}bin/manage.sh constance list > {{ install_prefix }}bin/constances_values.txt"
-  tags: ['never', 'postinstall']
 #----------------------------------------------------------------------
 # Directorios básicos
 #----------------------------------------------------------------------
@@ -161,6 +157,11 @@
 - name: Change owner and group of ominicontacto
   file: "path={{ install_prefix }}ominicontacto owner={{ usuario }} group={{ usuario }} recurse=yes"
   tags: postinstall
+
+# Esta tarea es para pasar los datos de constance de redis a postgres
+- name: Dump information of constance database
+  shell: "{{ install_prefix }}bin/manage.sh constance list > {{ install_prefix }}bin/constances_values.txt"
+  tags: ['never', 'postinstall']
 
 # Se borran los antiguos archivos de settings en caso de upgradear un oml muy viejo
 - name: Erase old folder of settings

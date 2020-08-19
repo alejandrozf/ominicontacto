@@ -8,6 +8,7 @@ Type=forking
 User={{ usuario }}
 Environment=SHM_SIZE=64
 Environment=PKG_SIZE=8
+EnvironmentFile=/etc/profile.d/omnileads_envars.sh
 ExecStartPre={{ kamailio_location }}/sbin/kamailio -c
 ExecStartPre=/usr/bin/redis-cli -n 1 FLUSHDB
 ExecStart={{ kamailio_location }}/sbin/kamailio -m $SHM_SIZE -M $PKG_SIZE -P {{ kamailio_location }}/run/kamailio/kamailio.pid

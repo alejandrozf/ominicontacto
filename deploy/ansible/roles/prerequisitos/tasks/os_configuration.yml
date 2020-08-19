@@ -33,11 +33,6 @@
     - /root/
   tags: postinstall
 
-# Esta tarea es para pasar los datos de constance de redis a postgres
-- name: Dump information of constance database
-  shell: "{{ install_prefix }}bin/manage.sh constance list > {{ install_prefix }}bin/constances_values.txt"
-  tags: ['never', 'postinstall']
-
 # Se setea el archivo de template de environment variables, según lo que se haya ingresado en el inventory
 - name: Set environment variables for this installation
   template: src=templates/omnileads_envars.sh dest=/etc/profile.d/ mode=644 owner=root group=root
