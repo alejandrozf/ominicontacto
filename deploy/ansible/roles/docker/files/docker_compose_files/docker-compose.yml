@@ -73,6 +73,11 @@ services:
       - asterisk
     dns: 8.8.8.8
     environment:
+      - ASTERISK_HOSTNAME=${ASTERISK_HOSTNAME}
+      - KAMAILIO_HOSTNAME=${KAMAILIO_HOSTNAME}
+      - KAMAILIO_CERTS_LOCATION=${KAMAILIO_CERTS_LOCATION}
+      - REDIS_HOSTNAME=${REDIS_HOSTNAME}
+      - RTPENGINE_HOSTNAME=${RTPENGINE_HOSTNAME}
       - TZ=${TZ}
     image: {{ kamailio_builded_image }}
     networks:

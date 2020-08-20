@@ -200,6 +200,7 @@ class ParserCsv(object):
         - NO pasar a mayusculas
         - reemplazar espacios por '_'
         - eliminar tildes
+        - formatear nombre usando capitalize() para estandarizar
 
         Los caracteres invalidos NO son borrados.
         """
@@ -207,6 +208,7 @@ class ParserCsv(object):
         nombre = nombre.strip()  # .upper()
         nombre = DOUBLE_SPACES.sub("_", nombre)
         nombre = elimina_tildes(nombre)
+        nombre = nombre.capitalize()
         return nombre
 
     def _sanear_nombres_de_columnas(self, nombres):

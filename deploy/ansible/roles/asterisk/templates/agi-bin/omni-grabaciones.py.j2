@@ -1,7 +1,7 @@
-{% if is_docker == "false" %}
-#!{{ install_prefix }}virtualenv/bin/python3
-{% else %}
+{% if is_docker == "true" or asterisk_host is defined %}
 #! /usr/bin/python3
+{% else %}
+#!{{ install_prefix }}virtualenv/bin/python3
 {% endif %}
 # -*- coding: utf-8 -*-
 

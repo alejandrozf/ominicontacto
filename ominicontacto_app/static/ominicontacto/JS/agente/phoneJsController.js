@@ -140,6 +140,7 @@ class PhoneJSController {
         this.view.setPauseButton.click(function() {
             var pause_id = $('#pauseType').val();
             var pause_name = $('#pauseType option:selected').html().replace(' ', '');
+            clearTimeout(self.ACW_pause_timeout_handler);
             self.setPause(pause_id, pause_name);
         });
 
@@ -251,7 +252,7 @@ class PhoneJSController {
         var self = this;
         $('.key').click(function(e) {
             var pressed_key = e.currentTarget.childNodes[0].data;
-            if (self.phone_fsm.state == 'OnCall'){
+            if (self.phone_fsm.state == 'OnCall' || self.phone_fsm.state == 'Transfering'){
                 self.phone.currentSession.sendDTMF(pressed_key);
             }
         });

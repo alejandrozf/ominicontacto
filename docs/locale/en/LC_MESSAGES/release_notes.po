@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-31 16:01-0300\n"
+"POT-Creation-Date: 2020-08-13 15:48-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,24 +23,106 @@ msgstr "Release Notes"
 
 # 73ee1e870afd4a31b43364589dd0e1ee
 #: ../../release_notes.rst:4
-msgid "*Julio 31, 2020*"
-msgstr "July 31, 2020"
+msgid "*August 13, 2020*"
+msgstr "August 13, 2020"
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.8.2"
-msgstr "Release 1.8.2 details"
+msgid "Detalles de Release 1.9.0"
+msgstr "Release 1.9.0 details"
+
+# dd19a93b2d9f445abeed27910f0e6d54
+#: ../../release_notes.rst:11
+msgid "Nuevas funcionalidades"
+msgstr "New features"
+
+# 14d9c7e025164356837f83274977eba1
+#: ../../release_notes.rst:12
+msgid ""
+"La supervisión fue refactorizada para almacenar su informacion en tiempo "
+"real en Redis desde AstDB para mejorar la performance"
+msgstr ""
+"Supervision was refactored to save its real-time agents information on Redis "
+"instead of AstDB for improve performance"
+
+# d02fadfb8db247eca6b355935eec14f9
+#: ../../release_notes.rst:13
+msgid ""
+"La IU para escoger una opción de calificación en los wizards de creación "
+"de campañas fue mejorada"
+msgstr ""
+"The UI for choose a disposition option in campaign creation wizards was improved"
+
+# b1caa7899e364e69a6c9d96f1bb6dbf1
+#: ../../release_notes.rst:14
+msgid ""
+"Se implementó un filtro por id de contacto externo en la vista de "
+"grabaciones"
+msgstr ""
+"A filter by external contact id was added to recordings page"
+
+
+# 1a92041b33dc4e3b95335f0576ceef45
+#: ../../release_notes.rst:15
+msgid ""
+"Se adicionó la estadística de cantidad de reintentos abiertos en la vista"
+" de detalle de campañas dialer"
+msgstr ""
+"In installation the system a unique SSL cert for all components"
+
+# f0132f790844401f9d39e7f6377c2ac0
+#: ../../release_notes.rst:16
+msgid ""
+"En la instalación del sistema ahora se utiliza un único certficado SSL "
+"para todos los componentes"
+msgstr ""
+"In installation the system a unique SSL cert for all components"
+
+# 7dcb729b108644af8e6eef88218cea0e
+#: ../../release_notes.rst:17
+msgid ""
+"Se adicionó soporte para bases de contactos de mayor tamaño en campañas "
+"dialer"
+msgstr ""
+"Added support for bigger contacts databases for dialer campaigns"
 
 # 2f558403c15a436e90409b976c7f07ed
-#: ../../release_notes.rst:11
+#: ../../release_notes.rst:21
 msgid "Fixes y mejoras"
 msgstr "Fixes and improvements"
 
-# b961f5f8914b4903a67f8589d0dc5d5e
-#: ../../release_notes.rst:12
+# 214280dedaeb440cb64a7eccfb4e08fa
+#: ../../release_notes.rst:22
 msgid ""
-"Solucionado error de dialplan relacion con prefijos de rutas salientes "
-"que introducía un comportamiento errático en algunas llamadas"
+"Solucionado error cuando un supervisor asignado a un campaña intentaba "
+"bloquear campos para agente lanzaba un error"
 msgstr ""
-"Fixed dialplan error when dealing with outbound routes prefixes that "
-"introduced erratic behaviour on some calls"
+"Fixed error on supervisor roles assigned to a campaign that generates an "
+"exception when attempting to block fields for agents"
+
+# 32b60018e83e4dc2b4d56007227c106f
+#: ../../release_notes.rst:23
+msgid ""
+"Solucionar error de dialplan que se generaba al intentar guardar "
+"información de la grabación de una llamada en medio de una transferencia "
+"consultativa"
+msgstr ""
+"Fixed dialplan error when saving database recordings data on consultative"
+" transfers calls"
+
+# 214280dedaeb440cb64a7eccfb4e08fa
+#: ../../release_notes.rst:24
+msgid ""
+"Solucionado error de instalación de upgrade al actualizar el paquete "
+"virtualenv"
+msgstr ""
+"Fixed installation upgrade error when updating virtualenv package"
+
+# 214280dedaeb440cb64a7eccfb4e08fa
+#: ../../release_notes.rst:25
+msgid ""
+"Solucionada inconsistencia cuando un agente pasa de un pausa ACW (con el "
+"timeout) a otra pausa"
+msgstr ""
+"Fixed inconsistency error when an agent passes from ACW pause (with timeout)"
+" to another pause"

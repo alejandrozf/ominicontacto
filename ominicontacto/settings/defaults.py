@@ -227,16 +227,6 @@ Ejemplos:
     OML_RUTAS_SALIENTES_FILENAME = "/etc/asterisk/oml_extensions_outr.conf"
 """
 
-OML_RELOAD_CMD = None
-"""Comando a ejecutar para hacer reload de Asterisk
-
-Ejemplo:
-
-.. code-block:: python
-
-    OML_RELOAD_CMD = ["/usr/bin/asterisk", "-x", "reload"]
-"""
-
 ASTERISK = {
     'AMI_USERNAME': None,  # Usuario para AMI
     'AMI_PASSWORD': None,  # Password para usuario para AMI
@@ -339,11 +329,13 @@ Ejemplo:
 
 OML_WOMBAT_USER = None
 OML_WOMBAT_PASSWORD = None
+OML_WOMBAT_TIMEOUT = None
 """
 User y password por el cual se conectan con la api de WOMBAT DIALER
 Ejemplo:
     OML_WOMBAT_USER = "user_test"
     OML_WOMBAT_PASSWORD = "user123"
+OML_WOMBAT_TIMEOUT es el tiempo de timeout de la request hacia Wombat API
 """
 
 CALIFICACION_REAGENDA = None

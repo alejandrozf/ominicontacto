@@ -1,0 +1,11 @@
+=========================
+Omnileads 1.8.3 release notes
+=========================
+
+This is a "bugfix" release improving the stability and performance of the codebase.
+
+
+Fixes and improvements
+=========================
+- Fixed performance issue in campaign and group filters on agents supervision page
+- Fixed issue on sending DTMF in a middle of assisted transferred call
