@@ -29,7 +29,11 @@ PGDATABASE={{ postgres_database }}
 PGUSER={{ postgres_user }}
 PGPASSWORD={{ postgres_password }}
 PYTHONPATH=$INSTALL_PREFIX
+{% if redis_host is defined %}
+REDIS_HOSTNAME={{ redis_host }}
+{% else %}
 REDIS_HOSTNAME=localhost
+{% endif %}
 {% if rtpengine_host is defined %}
 RTPENGINE_HOSTNAME={{ rtpengine_host }}
 {% else %}

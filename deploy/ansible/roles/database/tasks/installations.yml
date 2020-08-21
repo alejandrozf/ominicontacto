@@ -67,7 +67,12 @@
   until: result is success
   when: postgresql_new_installed.rc != 3 and ansible_distribution == "Amazon" and postgres_host is not defined
 
-  # Se instala solo el postgresql client para cuando postgres es externo 
+  # Se instala solo el postgresql client para cuando postgres es externo
 - name: Install of postgresql client
   yum: name=postgresql11 state=present
-  when: postgres_host is defined
+  when: postgres_host is defined and ansible_distribution != "Amazon"
+
+  # Se instala solo el postgresql client para cuando postgres es externo
+- name: Install of postgresql client
+  yum: name=postgresql state=present
+  when: postgres_host is defined and ansible_distribution == "Amazon"
