@@ -13,16 +13,12 @@ if [ "$1" = "" ]; then
   ln -s /usr/share/zoneinfo/$TZ /etc/localtime
 {% if devenv == 1 %}
   echo "Creating symlink of asterisk dialplan files"
-  array=(oml_extensions_bridgecall.conf oml_extensions_commonsub.conf oml_extensions_modules.conf oml_extensions_postcall.conf oml_extensions_precall.conf oml_extensions.conf)
-  for i in $(seq 0 6); do
-    if [ ! -f /etc/asterisk/${array[i]} ]; then ln -s /var/tmp/${array[i]} /etc/asterisk/${array[i]}; fi
+  cd /var/tmp
+  array=($(ls *.conf))
+  for i in "${array[@]}"; do
+    if [ ! -f /etc/asterisk/$i} ]; then ln -s /var/tmp/$i /etc/asterisk/$i; fi
   done
-{% else %}
-  echo "Modifying manager.conf file"
-  sed -i "s/^\[bla\].*/[${AMI_USER}]/g" /etc/asterisk/oml_manager.conf
-  sed -i "s/^secret.*/secret = ${AMI_PASSWORD}/g" /etc/asterisk/oml_manager.conf
-  sed -i "/^permit = 127.0.0.1.*/a permit = ${INTERNAL_NETADDR}\/${INTERNAL_NETMASK}" /etc/asterisk/oml_manager.conf
-
+{% endif %}
   echo "Writting the IP in pjsip files"
   sed -i "0,/external_media_address=.*/s//external_media_address=${PUBLIC_IP}/g" /etc/asterisk/oml_pjsip_transports.conf
   sed -i "0,/external_signaling_address=.*/s//external_signaling_address=${PUBLIC_IP}/g" /etc/asterisk/oml_pjsip_transports.conf
@@ -37,7 +33,6 @@ if [ "$1" = "" ]; then
 
   echo "Writing oml_res_odbc.conf file"
   sed -i "s/^username.*/username => ${PGUSER}/g" /etc/asterisk/oml_res_odbc.conf
-{% endif %}
 
   echo "Initializing asterisk"
   COMMAND="/usr/sbin/asterisk -T -U ${ASTERISK_USER} -p -vvvvvvvf"
