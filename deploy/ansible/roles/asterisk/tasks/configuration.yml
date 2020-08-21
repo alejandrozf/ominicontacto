@@ -34,6 +34,7 @@
     - oml_extensions_precall.conf
     - oml_extensions.conf
   tags: postinstall
+  when: prodenv == 1
 
 #Se generan los archivos de configuracion que vienen en sus templates
 - name: Copy of asterisk config files
