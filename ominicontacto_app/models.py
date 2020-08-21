@@ -182,6 +182,7 @@ class User(AbstractUser):
         logger.info(_("Seteando Usuario {0} como BORRADO".format(self.id)))
 
         self.borrado = True
+        self.username = str(uuid.uuid4())
         self.is_active = False
         self.save()
 
