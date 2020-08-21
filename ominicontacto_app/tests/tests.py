@@ -115,7 +115,7 @@ class IntegrationTests(unittest.TestCase):
         chrome_options.add_experimental_option('prefs', {'intl.accept_languages': 'en,en'})
         chrome_options.add_argument('--ignore-certificate-errors')
         # si se pone visible=1 se muestra el browser en medio de los tests
-        self.display = Display(visible=0, size=(1366, 768))
+        self.display = Display(visible=1, size=(1366, 768))
         self.display.start()
         self.browser = webdriver.Chrome(options=chrome_options)
 
@@ -197,10 +197,10 @@ class IntegrationTests(unittest.TestCase):
         sleep(1)
 
         if multinum:
-            self.browser.find_element_by_xpath('//label/input[@value = "phone"]').click()
-            self.browser.find_element_by_xpath('//label/input[@value = "cell"]').click()
+            self.browser.find_element_by_xpath('//label/input[@value = "Phone"]').click()
+            self.browser.find_element_by_xpath('//label/input[@value = "Cell"]').click()
         else:
-            self.browser.find_element_by_xpath('//label/input[@value = "telefono"]').click()
+            self.browser.find_element_by_xpath('//label/input[@value = "Telefono"]').click()
 
         self.browser.find_element_by_xpath("//button[@type='submit']").click()
         sleep(1)
@@ -416,6 +416,7 @@ class IntegrationTests(unittest.TestCase):
 
     def test_crear_editar_usuarios_supervisorprofile(self):
         # Creacion de usuarios con SupervisorProfile
+        import ipdb; ipdb.set_trace()
         self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
         tipo_usuario = ['Administrador', 'Gerente', 'Supervisor', 'Referente']
         for usuario in tipo_usuario:
@@ -970,7 +971,7 @@ class IntegrationTests(unittest.TestCase):
             telefono = '3456789'
             cell = '154352879'
             self.browser.find_element_by_id('id_telefono').send_keys(telefono)
-            self.browser.find_element_by_id('id_cell').send_keys(cell)
+            self.browser.find_element_by_id('id_Cell').send_keys(cell)
             self.browser.find_element_by_xpath("//button[@type='submit']").click()
             sleep(1)
             self.browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
