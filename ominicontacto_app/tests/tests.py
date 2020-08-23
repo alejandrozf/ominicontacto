@@ -115,7 +115,7 @@ class IntegrationTests(unittest.TestCase):
         chrome_options.add_experimental_option('prefs', {'intl.accept_languages': 'en,en'})
         chrome_options.add_argument('--ignore-certificate-errors')
         # si se pone visible=1 se muestra el browser en medio de los tests
-        self.display = Display(visible=1, size=(1366, 768))
+        self.display = Display(visible=0, size=(1366, 768))
         self.display.start()
         self.browser = webdriver.Chrome(options=chrome_options)
 
@@ -416,7 +416,6 @@ class IntegrationTests(unittest.TestCase):
 
     def test_crear_editar_usuarios_supervisorprofile(self):
         # Creacion de usuarios con SupervisorProfile
-        import ipdb; ipdb.set_trace()
         self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
         tipo_usuario = ['Administrador', 'Gerente', 'Supervisor', 'Referente']
         for usuario in tipo_usuario:
@@ -425,7 +424,7 @@ class IntegrationTests(unittest.TestCase):
                 password = '098098ZZZ'
                 self.crear_user(user, password, usuario)
                 self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(user))
-                print('Se pudo crear un ' + usuario + ' con exito.')
+                print('--Se pudo crear un ' + usuario + ' con exito.')
             except Exception as e:
                 print('--ERROR: No se pudo crear un ' + usuario + ' .--\n{0}'.format(e))
                 raise e
@@ -453,7 +452,7 @@ class IntegrationTests(unittest.TestCase):
                 self.get_href(link_update)
                 self.assertTrue(self.browser.find_element_by_xpath("//select[@id='id_rol']//option[contains\
                                                (text(), \'{0}\')]".format(cambio_perfil)))
-                print('Se pudo modificar a un Perfil de ' + cambio_perfil)
+                print('--Se pudo modificar a un Perfil de ' + cambio_perfil)
             except Exception as e:
                 print('--ERROR: No se pudo modificar a un perfil de \
                       ' + cambio_perfil + ' .--\n{0}'.format(e))
