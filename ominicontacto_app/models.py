@@ -1318,6 +1318,18 @@ class Campana(models.Model):
     def es_entrante(self):
         return self.type == self.TYPE_ENTRANTE
 
+    @property
+    def _es_manual(self):
+        return self.type == self.TYPE_MANUAL
+
+    @property
+    def es_preview(self):
+        return self.type == self.TYPE_PREVIEW
+
+    @property
+    def es_dialer(self):
+        return self.type == self.TYPE_DIALER
+
 
 class OpcionCalificacion(models.Model):
     """
@@ -3569,7 +3581,7 @@ class AgenteEnContacto(models.Model):
                 agente_en_contacto_ids.append(agente_en_contacto.pk)
         liberados = AgenteEnContacto.objects.filter(pk__in=agente_en_contacto_ids).update(
             agente_id=-1, estado=AgenteEnContacto.ESTADO_INICIAL)
-        return liberados.count()
+        return liberados
 
     @classmethod
     def ultimo_id(cls):

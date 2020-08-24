@@ -35,7 +35,7 @@ from ominicontacto_app.services.estadisticas_campana import EstadisticasService
 from ominicontacto_app.services.reporte_agente import EstadisticasAgenteService
 from ominicontacto_app.services.reporte_campana_calificacion import ReporteCampanaService
 from ominicontacto_app.services.reporte_campana_pdf import ReporteCampanaPDFService
-from reportes_app.reportes.reporte_llamados_contactados_csv import ReporteCampanaContactadosCSV
+from reportes_app.reportes.reporte_llamados_contactados_csv import ExportacionCampanaCSV
 from ominicontacto_app.services.reporte_respuestas_formulario import (
     ReporteRespuestaFormularioGestionService)
 from ominicontacto_app.utiles import convert_fecha_datetime, fecha_hora_local
@@ -148,14 +148,13 @@ class CampanaReporteGraficoView(FormView):
         if not campana:
             messages.warning(self.request, _(u"Usted no puede acceder a esta campaña."))
             return redirect('index')
-        service = EstadisticasService()
         hoy_ahora = fecha_hora_local(timezone.now())
         hoy = hoy_ahora.date()
-        # genera reporte de llamadas contactados
-        calificados_csv = ReporteCampanaContactadosCSV()
-        calificados_csv.crea_reporte_csv(campana, hoy, hoy_ahora)
+        fecha_desde = datetime.datetime.combine(hoy, datetime.time.min)
+        fecha_hasta = datetime.datetime.combine(hoy_ahora, datetime.time.max)
+        service = EstadisticasService(campana, fecha_desde, fecha_hasta)
         # genera los reportes grafico de la campana
-        graficos_estadisticas = service.general_campana(campana, hoy, hoy_ahora)
+        graficos_estadisticas = service.general_campana()
         # generar el reporte pdf
         service_pdf = ReporteCampanaPDFService()
         service_pdf.crea_reporte_pdf(campana, graficos_estadisticas)
@@ -176,12 +175,11 @@ class CampanaReporteGraficoView(FormView):
         fecha_desde, fecha_hasta = fecha.split('-')
         fecha_desde = convert_fecha_datetime(fecha_desde)
         fecha_hasta = convert_fecha_datetime(fecha_hasta)
-        # genera reporte de llamadas contactados
-        calificados_csv = ReporteCampanaContactadosCSV()
-        calificados_csv.crea_reporte_csv(self.get_object(), fecha_desde, fecha_hasta)
+        fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
+        fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         # generar el reporte grafico de acuerdo al periodo de fecha seleccionado
-        service = EstadisticasService()
-        graficos_estadisticas = service.general_campana(self.get_object(), fecha_desde, fecha_hasta)
+        service = EstadisticasService(self.get_object(), fecha_desde, fecha_hasta)
+        graficos_estadisticas = service.general_campana()
         # genera el reporte pdf de la campana
         service_pdf = ReporteCampanaPDFService()
         service_pdf.crea_reporte_pdf(self.get_object(), graficos_estadisticas)
@@ -221,7 +219,7 @@ class ExportaReporteLlamadosContactadosView(View):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        service_csv = ReporteCampanaContactadosCSV()
+        service_csv = ExportacionCampanaCSV()
         url = service_csv.obtener_url_reporte_csv_descargar(
             self.object, "contactados")
 
@@ -241,7 +239,7 @@ class ExportaReporteNoAtendidosView(View):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        service_csv = ReporteCampanaContactadosCSV()
+        service_csv = ExportacionCampanaCSV()
         url = service_csv.obtener_url_reporte_csv_descargar(
             self.object, "no_atendidos")
 
@@ -261,7 +259,7 @@ class ExportaReporteCalificadosView(View):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        service_csv = ReporteCampanaContactadosCSV()
+        service_csv = ExportacionCampanaCSV()
         url = service_csv.obtener_url_reporte_csv_descargar(
             self.object, "calificados")
 
