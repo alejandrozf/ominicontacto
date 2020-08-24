@@ -20,19 +20,15 @@
 from __future__ import unicode_literals
 
 import datetime
-import getpass
 import json
 import logging
 import os
 import random
 import re
-import sys
 import uuid
 
 
 from ast import literal_eval
-
-from crontab import CronTab
 
 from django.contrib.auth.models import AbstractUser, _user_has_perm
 from django.contrib.sessions.models import Session
@@ -1062,35 +1058,6 @@ class Campana(models.Model):
     def __str__(self):
         return self.nombre
 
-    def crear_tarea_actualizacion(self):
-        """
-        Adiciona una tarea que llama al procedimiento de actualización de cada
-        asignación de agente a contacto para la campaña preview actual
-        """
-        # conectar con cron
-        crontab = CronTab(user=getpass.getuser())
-        ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python')
-        ruta_manage_py = os.path.join(settings.BASE_DIR, 'manage.py')
-        # adicionar nuevo cron job
-        env_vars_command = 'source /etc/profile.d/omnileads_envars.sh;'
-        job = crontab.new(
-            command='{0} {1} {2} actualizar_campanas_preview {3} {4}'.format(
-                env_vars_command, ruta_python_virtualenv, ruta_manage_py, self.pk,
-                self.tiempo_desconexion),
-            comment=str(self.pk))
-        # adicionar tiempo de periodicidad al cron job
-        job.minute.every(self.TIEMPO_ACTUALIZACION_CONTACTOS)
-        crontab.write_to_user(user=getpass.getuser())
-
-    def eliminar_tarea_actualizacion(self):
-        """
-        Elimina la tarea que llama al procedimiento de actualización de cada
-        asignación de agente a contacto para la campaña preview actual
-        """
-        crontab = CronTab(user=getpass.getuser())
-        crontab.remove_all(comment=str(self.pk))
-        crontab.write_to_user(user=getpass.getuser())
-
     def guardar_campaign_id_wombat(self, campaign_id_wombat):
         self.campaign_id_wombat = campaign_id_wombat
         self.save()
@@ -1120,9 +1087,6 @@ class Campana(models.Model):
         """Setea la campaña como ESTADO_BORRADA"""
         logger.info(_("Seteando campana {0} como ESTADO_BORRADA".format(self.id)))
         if self.type == Campana.TYPE_PREVIEW:
-            # eliminamos el proceso que actualiza las conexiones de agentes a contactos
-            # en la campaña
-            self.eliminar_tarea_actualizacion()
             # eliminamos todos las entradas de AgenteEnContacto relativas a la campaña
             AgenteEnContacto.objects.filter(campana_id=self.pk).delete()
         # assert self.estado == Campana.ESTADO_ACTIVA
@@ -1134,10 +1098,6 @@ class Campana(models.Model):
         logger.info(_("Seteando campana {0} como ESTADO_FINALIZADA".format(self.id)))
         # assert self.estado == Campana.ESTADO_ACTIVA
         self.estado = Campana.ESTADO_FINALIZADA
-        if self.type == Campana.TYPE_PREVIEW:
-            # eliminamos la planificación de actualización de relaciones de agentes con contactos
-            # de la campaña
-            self.eliminar_tarea_actualizacion()
         self.save()
 
     def ocultar(self):
@@ -1358,6 +1318,18 @@ class Campana(models.Model):
     @property
     def es_entrante(self):
         return self.type == self.TYPE_ENTRANTE
+
+    @property
+    def _es_manual(self):
+        return self.type == self.TYPE_MANUAL
+
+    @property
+    def es_preview(self):
+        return self.type == self.TYPE_PREVIEW
+
+    @property
+    def es_dialer(self):
+        return self.type == self.TYPE_DIALER
 
 
 class OpcionCalificacion(models.Model):
@@ -3582,23 +3554,34 @@ class AgenteEnContacto(models.Model):
         return False, -1
 
     @classmethod
-    def liberar_contactos_por_tiempo(cls, campana_id, tiempo_de_reserva):
+    def liberar_contactos_por_tiempo(cls):
+
+        # obtenemos las campañas preview activas y almacenamos en un dict su
+        # tiempo de reserva
+        campanas_preview_dict = {}
+        campanas_preview_activas = Campana.objects.obtener_campanas_preview().filter(
+            estado=Campana.ESTADO_ACTIVA)
+
         tiempo_actual = now()
-        delta_tiempo_desconexion = timedelta(minutes=tiempo_de_reserva)
-        hora_limite_reserva = tiempo_actual - delta_tiempo_desconexion
-        reservados = Q(estado=AgenteEnContacto.ESTADO_ENTREGADO,
-                       modificado__lte=hora_limite_reserva)
+        for campana_preview in campanas_preview_activas:
+            campanas_preview_dict[campana_preview.pk] = campana_preview.tiempo_desconexion
 
-        delta_tiempo_asignacion = timedelta(minutes=settings.DURACION_ASIGNACION_CONTACTO_PREVIEW)
-        hora_limite_asignacion = tiempo_actual - delta_tiempo_asignacion
-        asignados = Q(estado=AgenteEnContacto.ESTADO_ASIGNADO,
-                      modificado__lte=hora_limite_asignacion)
-
-        qs_agentes_liberados = AgenteEnContacto.objects.filter(campana_id=campana_id,).filter(
-            asignados | reservados)
-        liberados = qs_agentes_liberados.count()
-        qs_agentes_liberados.update(agente_id=-1, estado=AgenteEnContacto.ESTADO_INICIAL)
-
+        agente_en_contacto_ids = []
+        for agente_en_contacto in AgenteEnContacto.objects.filter(
+                estado__in=[AgenteEnContacto.ESTADO_ENTREGADO, AgenteEnContacto.ESTADO_ASIGNADO]):
+            campana_id = agente_en_contacto.campana_id
+            tiempo_de_reserva = campanas_preview_dict[campana_id]
+            delta_tiempo_desconexion = timedelta(minutes=tiempo_de_reserva)
+            hora_limite_reserva = tiempo_actual - delta_tiempo_desconexion
+            ultima_modificacion = agente_en_contacto.modificado
+            delta_tiempo_asignacion = timedelta(
+                minutes=settings.DURACION_ASIGNACION_CONTACTO_PREVIEW)
+            hora_limite_asignacion = tiempo_actual - delta_tiempo_asignacion
+            if ultima_modificacion <= hora_limite_reserva or \
+               ultima_modificacion <= hora_limite_asignacion:
+                agente_en_contacto_ids.append(agente_en_contacto.pk)
+        liberados = AgenteEnContacto.objects.filter(pk__in=agente_en_contacto_ids).update(
+            agente_id=-1, estado=AgenteEnContacto.ESTADO_INICIAL)
         return liberados
 
     @classmethod
