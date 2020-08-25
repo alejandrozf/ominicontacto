@@ -13,6 +13,7 @@
 MOUNTPOINT="{{ asterisk_location }}"
 GLUSTERFS_SERVER="{{ asterisk_host }}"
 GLUSTERFS_VOLUME="asterisk"
+USER="{{ usuario }}"
 
 # Some things that run always at boot
 mount -t glusterfs $GLUSTERFS_SERVER:/$GLUSTERFS_VOLUME $MOUNTPOINT
@@ -25,6 +26,7 @@ case "$1" in
   start)
     echo "Mounting glusterfs volumes "
     mount -t glusterfs $GLUSTERFS_SERVER:/$GLUSTERFS_VOLUME $MOUNTPOINT
+    chown -R $USER. $MOUNTPOINT
     ;;
   stop)
     echo "Unmount glusterfs volumes"
