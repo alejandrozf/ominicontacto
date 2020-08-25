@@ -325,7 +325,9 @@ ul.errorlist li {
 .modal-title {
     line-height: 1.4rem;
 }
-
+.modal-body p {
+    word-break: break-all !important;
+}
 /* ///// Modals
 */
 input[type=file].form-control {

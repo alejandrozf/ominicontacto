@@ -374,7 +374,9 @@ ul.errorlist li {
 .modal-title .icon {
     margin-right: 10px;
 }
-
+.modal-body p {
+    word-break: break-all !important;
+}
 /* ///// Modals right and left
 */
 
