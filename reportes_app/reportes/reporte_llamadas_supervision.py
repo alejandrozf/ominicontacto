@@ -17,6 +17,10 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 from __future__ import unicode_literals
+from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorActivityAmiManager
+from ominicontacto_app.utiles import datetime_hora_maxima_dia, datetime_hora_minima_dia
+from reportes_app.models import LlamadaLog
+from ominicontacto_app.models import CalificacionCliente, Campana, OpcionCalificacion
 
 import logging as _logging
 
@@ -28,10 +32,6 @@ from asterisk.manager import Manager, ManagerSocketException, ManagerAuthExcepti
 from django.conf import settings
 from django.db.models import Avg, Count
 from django.utils.encoding import force_text
-
-from ominicontacto_app.models import Campana, OpcionCalificacion, CalificacionCliente
-from reportes_app.models import LlamadaLog
-from ominicontacto_app.utiles import datetime_hora_maxima_dia, datetime_hora_minima_dia
 
 logger = _logging.getLogger(__name__)
 
@@ -76,15 +76,17 @@ class ReporteDeLlamadasDeSupervision(object):
         logs = self._obtener_logs_de_llamadas()
         for log in logs:
             if log.campana_id not in self.estadisticas:
-                self._inicializar_conteo_de_campana(self.campanas[log.campana_id])
+                self._inicializar_conteo_de_campana(
+                    self.campanas[log.campana_id])
             estadisticas_campana = self.estadisticas[log.campana_id]
-            self._contabilizar_tipos_de_llamada_por_campana(estadisticas_campana, log)
+            self._contabilizar_tipos_de_llamada_por_campana(
+                estadisticas_campana, log)
 
     @property
     def INICIALES(self):
         raise NotImplementedError
 
-    def _obtener_campanas(user_supervisor):
+    def _obtener_campanas(self, user_supervisor):
         raise NotImplementedError
 
     def _obtener_logs_de_llamadas(self):
@@ -96,14 +98,14 @@ class ReporteDeLlamadasDeSupervision(object):
 
 class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
     INICIALES = {
-        'recibidas': 0,
+        'agentes_online': 0,
+        'agentes_llamada': 0,
+        'agentes_pausa': 0,
         'atendidas': 0,
-        'expiradas': 0,
         'abandonadas': 0,
-        'abandonadas_anuncio': 0,
-        't_promedio_espera': 0,
-        'en_cola': 0,
+        'expiradas': 0,
         't_promedio_abandono': 0,
+        't_promedio_espera': 0,
         'gestiones': 0,
     }
     EVENTOS_LLAMADA = ['ENTERQUEUE', 'ENTERQUEUE-TRANSFER', 'CONNECT', 'EXITWITHTIMEOUT', 'ABANDON',
@@ -114,6 +116,7 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
         self._contabilizar_llamadas_en_espera_por_campana()
         self._contabilizar_llamadas_promedio_espera()
         self._contabilizar_tiempo_promedio_abandono_por_campana()
+        self._contabilizar_agentes(user_supervisor)
 
     def _obtener_campanas(self, user_supervisor):
         if user_supervisor.get_is_administrador():
@@ -133,19 +136,14 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
                                          tipo_llamada=LlamadaLog.LLAMADA_ENTRANTE)
 
     def _contabilizar_tipos_de_llamada_por_campana(self, datos_campana, log):
-        if log.event == 'ENTERQUEUE':
-            datos_campana['recibidas'] += 1
-        elif log.event == 'ENTERQUEUE-TRANSFER':
-            datos_campana['recibidas'] += 1
-        elif log.event == 'CONNECT':
+        if log.event == 'CONNECT':
             datos_campana['atendidas'] += 1
         elif log.event == 'EXITWITHTIMEOUT':
             datos_campana['expiradas'] += 1
         elif log.event == 'ABANDON':
             datos_campana['abandonadas'] += 1
         elif log.event == 'ABANDONWEL':
-            datos_campana['abandonadas_anuncio'] += 1
-            datos_campana['recibidas'] += 1
+            datos_campana['abandonadas'] += 1
 
     def _parsear_queue_status_pasada_1(self, queue_status_raw):
         # almacenamos una lista de pares con la información del tipo de evento
@@ -231,6 +229,47 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
             promedio_abandono = log_llamada['tiempo_abandono']
             self.estadisticas[campana_id]['t_promedio_abandono'] = promedio_abandono
 
+    def _contabilizar_agentes(self, user_supervisor):
+        agentes_activos = SupervisorActivityAmiManager().obtener_agentes_activos()
+        agentes_activos_dict = {x['id']: x for x in agentes_activos}
+        # TODO: Revisar si es más eficiente usar el prefetch_related de campanas que obtener
+        # tupla de (campana_id, agente_id) y construir agentes_activos_campana_id_dict
+        agentes_activos_campana_id_dict = self._genera_agentes_activos_campana_dict(
+            agentes_activos_dict.keys())
+        if agentes_activos_dict and agentes_activos_campana_id_dict:
+            for campana in self.campanas.values():
+                agentes_pausa = 0
+                agentes_llamada = 0
+                agentes_online = 0
+                for agente_id in agentes_activos_campana_id_dict.get(campana.id, []):
+                    agente_status = agentes_activos_dict[agente_id]['status']
+                    if str(agente_status).startswith("PAUSE"):
+                        agentes_pausa += 1
+                    elif str(agente_status).startswith("ONCALL"):
+                        agentes_llamada += 1
+                    agentes_online += 1
+                if campana.id not in self.estadisticas and \
+                        (agentes_llamada > 0 or agentes_pausa > 0 or agentes_online > 0):
+                    self._inicializar_conteo_de_campana(campana)
+                if self.estadisticas.get(campana.id, False) is not False:
+                    self.estadisticas[campana.id]['agentes_online'] = agentes_online
+                    self.estadisticas[campana.id]['agentes_llamada'] = agentes_llamada
+                    self.estadisticas[campana.id]['agentes_pausa'] = agentes_pausa
+
+    def _genera_agentes_activos_campana_dict(self, agentes_activos_list):
+        tuplas = Campana.objects.filter(
+            queue_campana__members__id__in=agentes_activos_list)\
+            .filter(id__in=self.campanas.keys()).values_list('id', 'queue_campana__members__id')
+
+        res = {}
+        for t in tuplas:
+            campana_id = t[0]
+            agente_id = t[1]
+            if res.get(campana_id, None) is None:
+                res[campana_id] = []
+            res[campana_id].append(agente_id)
+        return res
+
 
 class ReporteDeLLamadasSalientesDeSupervision(ReporteDeLlamadasDeSupervision):
     INICIALES = {
@@ -239,7 +278,8 @@ class ReporteDeLLamadasSalientesDeSupervision(ReporteDeLlamadasDeSupervision):
         'no_conectadas': 0,
         'gestiones': 0,
     }
-    EVENTOS_LLAMADA = ('DIAL', 'CONNECT', 'ANSWER') + LlamadaLog.EVENTOS_NO_CONEXION
+    EVENTOS_LLAMADA = ('DIAL', 'CONNECT', 'ANSWER') + \
+        LlamadaLog.EVENTOS_NO_CONEXION
 
     def _obtener_campanas(self, user_supervisor):
         if user_supervisor.get_is_administrador():
