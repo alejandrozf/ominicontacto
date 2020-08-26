@@ -1602,7 +1602,6 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
         else:
             self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].required = True
-            self.fields['tipo_interaccion'].disabled = True
             self.fields['tipo_interaccion'].required = False
 
     class Meta:
@@ -1636,7 +1635,6 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
             self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].disabled = True
             self.fields['tiempo_desconexion'].disabled = True
-            self.fields['tipo_interaccion'].disabled = True
             self.fields['tipo_interaccion'].required = False
 
     class Meta:
