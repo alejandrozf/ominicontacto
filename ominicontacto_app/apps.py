@@ -354,6 +354,8 @@ class OminicontactoAppConfig(AppConfig):
             {'nombre': 'user_delete',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'user_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente']},
+            {'nombre': 'user_change_password',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'agente_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
@@ -710,6 +712,8 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Borrar Usuario'), 'version': '1.7.0'},
         'user_update':
             {'descripcion': _('Editar Usuario'), 'version': '1.7.0'},
+        'user_change_password':
+            {'descripcion': _('Forzar cambio de password'), 'version': '1.9.0'},
         'agente_list':
             {'descripcion': _('Ver lista de Agentes'), 'version': '1.7.0'},
         'agenteprofile_update':

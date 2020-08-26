@@ -139,6 +139,19 @@ class UserChangeForm(forms.ModelForm):
         }
 
 
+class ForcePasswordChangeForm(UserChangeForm):
+    class Meta:
+        model = User
+        fields = ('password1', 'password2')
+
+    def __init__(self, *args, **kwargs):
+        super(ForcePasswordChangeForm, self).__init__(*args, **kwargs)
+        self.fields['password1'].required = True
+        self.fields['password2'].required = True
+        self.fields['password1'].help_text = _('Ingrese la nueva contraseña')
+        self.fields['password2'].help_text = _('Ingrese la nueva contraseña')
+
+
 class AgenteProfileForm(forms.ModelForm):
     """A form for updating users. Includes all the fields on
     the user, but replaces the password field with admin's

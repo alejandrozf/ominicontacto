@@ -90,6 +90,10 @@ urlpatterns = [
         login_required(views_user_profiles.CustomerUserUpdateView.as_view()),
         name='user_update',
         ),
+    url(r'^user/password/$',
+        login_required(views_user_profiles.CustomerUserUpdateView.as_view()),
+        name='user_change_password', kwargs={'change_password': ''}
+        ),
     # Perfil Agente  ==========================================================
     url(r'^agente/list/$',
         login_required(views_user_profiles.AgenteListView.as_view()),
