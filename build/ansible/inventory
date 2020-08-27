@@ -5,8 +5,8 @@
 #localhost ansible_connection=local ansible_user=root
 
 [all:vars]
-asterisk_version=16.9.0
-kamailio_version=5.2.3
+asterisk_version=16.12.0
+kamailio_version=5.3.5
 rtpengine_version=5.5.3.1
 virtualenv_version=
 postgresql_version=11

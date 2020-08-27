@@ -96,35 +96,12 @@ class ReciclarCampanaMixin(object):
                 )
                 return self.form_invalid(form)
 
-            if campana.type == Campana.TYPE_DIALER:
-                crea_campana_template = reverse("crea_campana_dialer_template",
-                                                kwargs={"pk_campana_template": campana_reciclada.pk,
-                                                        "borrar_template": 1})
-                update_campana = "campana_dialer_update"
-            if campana.type == Campana.TYPE_PREVIEW:
-                crea_campana_template = reverse("campana_preview_template_create_campana",
-                                                kwargs={"pk_campana_template": campana_reciclada.pk,
-                                                        "borrar_template": 1}
-                                                )
-
+            crea_campana_template = self._reciclar_crear_nueva_campana(campana_reciclada)
             return HttpResponseRedirect(crea_campana_template)
-
         elif reciclado_radio == 'misma_campana':
             campana.update_basedatoscontactos(bd_contacto_reciclada)
-            if campana.type == Campana.TYPE_DIALER:
-                campana_service = CampanaService()
-                campana_service.cambiar_base(campana, [], False, False, "")
-                update_campana = "campana_dialer_update"
-                campana.estado = Campana.ESTADO_INACTIVA
-            if campana.type == Campana.TYPE_PREVIEW:
-                update_campana = "campana_preview_update"
-                campana.estado = Campana.ESTADO_ACTIVA
-            campana.save()
-            if campana.type == Campana.TYPE_PREVIEW:
-                campana.establecer_valores_iniciales_agente_contacto(False, False)
-                campana.crear_tarea_actualizacion()
-            return HttpResponseRedirect(
-                reverse(update_campana, kwargs={"pk_campana": campana.pk}))
+            update_campana = self._reciclar_misma_campana(campana)
+            return HttpResponseRedirect(reverse(update_campana, kwargs={"pk_campana": campana.pk}))
 
 
 class ReciclarCampanaDialerFormView(ReciclarCampanaMixin, FormView):
@@ -132,6 +109,19 @@ class ReciclarCampanaDialerFormView(ReciclarCampanaMixin, FormView):
     Esta vista muestra los distintos tipo de reciclados de las campanas
     dialer
     """
+    def _reciclar_crear_nueva_campana(self, campana_reciclada):
+        crea_campana_template = reverse("crea_campana_dialer_template",
+                                        kwargs={"pk_campana_template": campana_reciclada.pk,
+                                                "borrar_template": 1})
+        return crea_campana_template
+
+    def _reciclar_misma_campana(self, campana):
+        campana_service = CampanaService()
+        campana_service.cambiar_base(campana, [], False, False, "")
+        update_campana = "campana_dialer_update"
+        campana.estado = Campana.ESTADO_INACTIVA
+        campana.save()
+        return update_campana
 
 
 class ReciclarCampanaPreviewFormView(ReciclarCampanaMixin, FormView):
@@ -139,3 +129,15 @@ class ReciclarCampanaPreviewFormView(ReciclarCampanaMixin, FormView):
     Esta vista muestra los distintos tipo de reciclados de las campanas
     preview
     """
+    def _reciclar_crear_nueva_campana(self, campana_reciclada):
+        crea_campana_template = reverse("campana_preview_template_create_campana",
+                                        kwargs={"pk_campana_template": campana_reciclada.pk,
+                                                "borrar_template": 1})
+        return crea_campana_template
+
+    def _reciclar_misma_campana(self, campana):
+        update_campana = "campana_preview_update"
+        campana.estado = Campana.ESTADO_ACTIVA
+        campana.save()
+        campana.establecer_valores_iniciales_agente_contacto(False, False)
+        return update_campana

@@ -91,7 +91,8 @@ class ArchivoDeReporteRespuestaFormularioCsv(object):
                 campos_formulario_opciones = {}
                 posicion_opciones = {}
                 for opcion in campana.opciones_calificacion.filter(
-                        tipo=OpcionCalificacion.GESTION):
+                        tipo=OpcionCalificacion.GESTION).select_related(
+                            'formulario').prefetch_related('formulario__campos'):
                     if opcion.nombre not in posicion_opciones:
                         posicion_opciones[opcion.id] = len(encabezado)
                         campos = opcion.formulario.campos.all()
@@ -110,7 +111,12 @@ class ArchivoDeReporteRespuestaFormularioCsv(object):
 
             # Iteramos cada una de las respuestas de la gestion del formulario
             respuestas = RespuestaFormularioGestion.objects.filter(
-                calificacion__opcion_calificacion__campana=campana)
+                calificacion__opcion_calificacion__campana=campana).select_related(
+                    'calificacion').prefetch_related(
+                        'calificacion__contacto', 'calificacion__agente',
+                        'calificacion__agente__user',
+                        'calificacion__contacto__bd_contacto',
+                        'calificacion__opcion_calificacion')
             for respuesta in respuestas:
                 lista_opciones = []
 

@@ -25,7 +25,7 @@ OML_BUILD_DATE=os.getenv('OML_BUILD_DATE')
 # Credenciales para wombat API
 OML_WOMBAT_USER = os.getenv('WOMBAT_USER')
 OML_WOMBAT_PASSWORD = os.getenv('WOMBAT_PASSWORD')
-
+OML_WOMBAT_TIMEOUT = '600'
 
 ALLOWED_HOSTS = [
     "*",
@@ -52,11 +52,6 @@ DATABASES = {
 STATIC_ROOT = "{0}static".format(INSTALL_PREFIX)
 MEDIA_ROOT = "{0}media_root".format(INSTALL_PREFIX)
 
-# IPs y hostnames
-# OML_KAMAILIO_IP = "{0}/255.255.255.255".format(KAMAILIO_IP)
-
-# Comandos que se ejecutan desde django
-OML_RELOAD_CMD = 'ssh root@{0} \'/usr/sbin/asterisk -rx "core reload"\''.format(ASTERISK_HOSTNAME)
 
 # URL externas
 OML_WOMBAT_URL = "http://{0}:8080/wombat".format(DIALER_HOSTNAME)

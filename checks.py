@@ -48,6 +48,7 @@ else:
 if rama_actual.startswith('oml'):
     rama_regex_search = re.search(
         r'oml-(\d+)-(ext|doc|dev|fix|hotfix|epica)-+.', rama_actual)
+    print("rama_regex_search")
     numero_tarjeta = rama_regex_search.group(1)
     tipo_tarjeta = rama_regex_search.group(2)
     sys.exit(int(numero_rama_existente(numero_tarjeta, tipo_tarjeta)))

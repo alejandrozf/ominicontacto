@@ -105,10 +105,6 @@ ASTERISK = {
 
 OML_OMNILEADS_HOSTNAME = os.getenv('OMNILEADS_HOSTNAME')
 
-# 'OML_RELOAD_CMD': comando a ejecutar para realizar el reload de la configuracion de Asterisk
-# **** RECORDAR: revisar permisos, usuario, etc.
-OML_RELOAD_CMD = '["ssh root@172.16.20.222",  "/usr/sbin/asterisk", "-rx", "reload"]'
-
 # 'OML_WOMBAT_URL': url donde se encuentra el discador de wombat
 # ejemplo "http://172.16.20.222/wombat"
 
@@ -128,6 +124,8 @@ OML_WOMBAT_USER = "demoadmin"
 # "user123"
 
 OML_WOMBAT_PASSWORD = "demo"
+
+OML_WOMBAT_TIMEOUT = '600'
 
 EPHEMERAL_USER_TTL = 28800
 OML_KAMAILIO_HOSTNAME = "root@{{ kamailio_fqdn }}"

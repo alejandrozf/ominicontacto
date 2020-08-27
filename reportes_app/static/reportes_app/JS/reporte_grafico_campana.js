@@ -17,33 +17,35 @@
 
 */
 
+/* global moment get_ranges */
+
 $(function() {
-   var start = moment();
-   var end = moment();
-   function cb(start, end) {
-     $('#id_fecha').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-   }
+    var start = moment();
+    var end = moment();
+    function cb(start, end) {
+        $('#id_fecha').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+    }
 
-   $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
-     $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-   });
+    $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+    });
 
-   $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
-     $(this).val('');
-   });
+    $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });
 
-   // Init daterange plugin
-   var ranges = get_ranges($('#campana_fecha_inicio').val());
-   $('#id_fecha').daterangepicker(
-     {
-       locale: {
-         format: 'DD/MM/YYYY'
-       },
+    // Init daterange plugin
+    var ranges = get_ranges($('#campana_fecha_inicio').val());
+    $('#id_fecha').daterangepicker(
+        {
+            locale: {
+                format: 'DD/MM/YYYY'
+            },
 
-       startDate: start,
-       endDate: end,
-       ranges: ranges,
-     }, cb);
+            startDate: start,
+            endDate: end,
+            ranges: ranges,
+        }, cb);
 
-   cb(start, end);
+    cb(start, end);
 });

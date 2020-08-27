@@ -179,6 +179,6 @@ class ValidaDataService(object):
             raise(NoSePuedeInferirMetadataError(_("Las lineas no poseen ninguna "
                                                   "columna")))
 
-        if primer_linea[0] != 'telefono':
+        if str(primer_linea[0]).lower() != 'telefono':
             raise (NoSePuedeInferirMetadataErrorEncabezado(_("El nombre de la primera "
                                                              "columna debe ser telefono")))

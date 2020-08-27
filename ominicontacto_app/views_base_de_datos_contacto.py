@@ -35,7 +35,8 @@ from django.utils.translation import ugettext as _
 from ominicontacto_app.errors import (
     OmlParserCsvDelimiterError, OmlParserMinRowError, OmlParserOpenFileError,
     OmlParserMaxRowError, OmlDepuraBaseDatoContactoError, OmlParserRepeatedColumnsError,
-    OmlParserCsvImportacionError, OmlArchivoImportacionInvalidoError)
+    OmlParserCsvImportacionError, OmlArchivoImportacionInvalidoError,
+    OmlError)
 from ominicontacto_app.forms import (
     BaseDatosContactoForm, PrimerLineaEncabezadoForm, CamposDeBaseDeDatosForm, )
 from ominicontacto_app.models import BaseDatosContacto, Campana, AgenteEnContacto
@@ -44,6 +45,8 @@ from ominicontacto_app.services.base_de_datos_contactos import (
     CreacionBaseDatosService, PredictorMetadataService,
     NoSePuedeInferirMetadataError, NoSePuedeInferirMetadataErrorEncabezado,
     ContactoExistenteError, CreacionBaseDatosServiceIdExternoError)
+
+from api_app.services.base_datos_contacto_service import BaseDatosContactoService
 
 import logging as logging_
 
@@ -83,33 +86,32 @@ class BaseDatosContactoCreateView(CreateView):
     form_class = BaseDatosContactoForm
 
     def form_valid(self, form):
-        nombre_archivo_importacion = \
-            self.request.FILES['archivo_importacion'].name
+        archivo = self.request.FILES['archivo_importacion']
+        archivo_nombre = archivo.name
+        nombre_base_contactos = form.cleaned_data['nombre']
 
-        self.object = form.save(commit=False)
-        self.object.nombre_archivo_importacion = nombre_archivo_importacion
+        base_datos_contacto_service = BaseDatosContactoService()
 
         try:
-            creacion_base_datos = CreacionBaseDatosService()
-            creacion_base_datos.genera_base_dato_contacto(self.object)
-        except OmlArchivoImportacionInvalidoError:
-            message = _('<strong>Operación Errónea!</strong> ') +\
-                _('El archivo especificado para realizar la importación de contactos '
-                  'no es válido.')
+            id = base_datos_contacto_service \
+                .crear_bd_contactos(archivo, archivo_nombre, nombre_base_contactos)
 
-            messages.add_message(
-                self.request,
-                messages.ERROR,
-                message,
-            )
-            return self.form_invalid(form)
+            return redirect(self.get_success_url(id))
 
-        return redirect(self.get_success_url())
+        except OmlError as e:
+            message = e.__str__()
 
-    def get_success_url(self):
+        messages.add_message(
+            self.request,
+            messages.ERROR,
+            message,
+        )
+        return self.form_invalid(form)
+
+    def get_success_url(self, id):
         return reverse(
             'define_base_datos_contacto',
-            kwargs={"pk": self.object.pk})
+            kwargs={"pk": id})
 
 
 class BaseDatosContactoUpdateView(UpdateView):
@@ -185,7 +187,7 @@ class DefineBaseDatosContactoView(UpdateView):
     model = BaseDatosContacto
     context_object_name = 'base_datos_contacto'
     fields = '__all__'
-
+    base_datos_contacto_service = BaseDatosContactoService()
     # @@@@@@@@@@@@@@@@@@@@
 
     def get_object(self, *args, **kwargs):
@@ -202,9 +204,8 @@ class DefineBaseDatosContactoView(UpdateView):
         #       Estas validaciones deberían realizarse antes de crear la Base de datos
         #       Sino queda una instancia creada inutilizable
         try:
-            parser = ParserCsv()
-            estructura_archivo = parser.previsualiza_archivo(
-                base_datos_contacto)
+            estructura_archivo = self.base_datos_contacto_service \
+                .obtiene_subconjunto_filas_archivo(base_datos_contacto)
 
         except OmlParserCsvDelimiterError:
             message = _('<strong>Operación Errónea!</strong> ') +\
@@ -254,10 +255,8 @@ class DefineBaseDatosContactoView(UpdateView):
             try:
                 error_predictor = False
                 error_predictor_encabezado = False
+                metadata = self.base_datos_contacto_service.inferir_metadata(estructura_archivo)
 
-                predictor_metadata = PredictorMetadataService()
-                metadata = predictor_metadata.inferir_metadata_desde_lineas(
-                    estructura_archivo)
             except NoSePuedeInferirMetadataError:
                 initial_predecido_datos_extras = {}
                 initial_predecido_encabezado = {}
@@ -265,7 +264,6 @@ class DefineBaseDatosContactoView(UpdateView):
             except NoSePuedeInferirMetadataErrorEncabezado:
                 initial_predecido_datos_extras = {}
                 initial_predecido_encabezado = {}
-
                 error_predictor_encabezado = True
             else:
                 initial_predecido_datos_extras = dict(
@@ -376,13 +374,10 @@ class DefineBaseDatosContactoView(UpdateView):
         metadata.primer_fila_es_encabezado = es_encabezado
         metadata.save()
 
-        creacion_base_datos = CreacionBaseDatosService()
-
         try:
-            # creacion_base_datos.valida_contactos(self.object)
-            creacion_base_datos.importa_contactos(self.object,
-                                                  campos_telefonicos,
-                                                  columna_id_externo)
+            self.base_datos_contacto_service.importa_contactos(self.object,
+                                                               campos_telefonicos,
+                                                               columna_id_externo)
         except CreacionBaseDatosServiceIdExternoError as e:
             message = _('<strong>Operación Errónea!</strong> ') +\
                 _('El archivo que seleccionó posee contactos con identificadores externos '
@@ -445,8 +440,6 @@ class DefineBaseDatosContactoView(UpdateView):
             )
             return redirect(reverse('lista_base_datos_contacto'))
         else:
-            creacion_base_datos.define_base_dato_contacto(self.object)
-
             message = _('<strong>Operación Exitosa!</strong> ') +\
                 _('Se llevó a cabo con éxito la creación de '
                   'la Base de Datos de Contactos.')
@@ -796,8 +789,6 @@ class ActualizaBaseDatosContactoView(UpdateView):
             )
             return redirect(reverse('lista_base_datos_contacto'))
         else:
-            creacion_base_datos.define_base_dato_contacto(self.object)
-
             message = _('<strong>Operación Exitosa!</strong> ') +\
                 _('Se llevó a cabo con éxito la creación de la Base de Datos de Contactos.')
 
