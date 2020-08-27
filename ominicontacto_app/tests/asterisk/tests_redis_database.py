@@ -169,6 +169,7 @@ class RutaEntranteFamilyTest(RedisDatabaseTest):
         }
         family = RutaEntranteFamily()
         self.assertEqual(dict, family._create_dict(self.inr))
+        self.assertEqual('OML:INR:' + self.inr.telefono, family._get_nombre_family(self.inr))
 
 
 class TrunkFamilyTest(RedisDatabaseTest):
