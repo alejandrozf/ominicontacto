@@ -73,9 +73,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {% if form.instance.tipo_interaccion == 2 %}
                     <div class="col-md-6">
                         <label>{% trans "Sitio Externo" %}</label>
-                        <input id="urlSitioExterno" type="text" class="form-control"
-                               value="{{ form.instance.sitio_externo.url }}" disabled/>
-                        {{ form.sitio_externo }}
+                        {{ form.sitio_externo|add_class:"edit_url" }}
                         {{ form.sitio_externo.errors }}
                     </div>
                 {% endif %}
