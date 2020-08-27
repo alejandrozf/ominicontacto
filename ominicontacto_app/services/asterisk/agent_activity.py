@@ -23,7 +23,7 @@ import redis
 from django.conf import settings
 
 from ominicontacto_app.models import QueueMember, Pausa
-from ominicontacto_app.services.asterisk_database import AgenteFamily
+from ominicontacto_app.services.asterisk.redis_database import AgenteFamily
 from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnector
 
 
@@ -160,7 +160,7 @@ class AgentActivityAmiManager(object):
 
     def _save_agent_data(self, agente_profile, data):
         error = False
-        family = self._get_family(agente_profile).replace('/', ':')
+        family = self._get_family(agente_profile)
         redis_connection = self.get_redis_connection()
         try:
             redis_connection.hset(family, mapping=data)
@@ -179,7 +179,7 @@ class AgentActivityAmiManager(object):
         return self._save_agent_data(agente_profile, data)
 
     def _get_redis_agent_status(self, agente_profile):
-        family = self._get_family(agente_profile).replace('/', ':')
+        family = self._get_family(agente_profile)
         redis_connection = self.get_redis_connection()
         status = None
         error = False

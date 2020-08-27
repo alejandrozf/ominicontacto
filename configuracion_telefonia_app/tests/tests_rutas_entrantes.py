@@ -149,7 +149,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.client.post(url, follow=True)
         self.assertEqual(RutaEntrante.objects.count(), n_rutas_entrantes)
 
-    @patch('ominicontacto_app.services.asterisk_database.RutaEntranteFamily.delete_family')
+    @patch('ominicontacto_app.services.asterisk.redis_database.RutaEntranteFamily.delete_family')
     def test_usuario_administrador_puede_eliminar_ruta_entrante(
             self, eliminar_ruta_entrante_config):
         url = reverse('eliminar_ruta_entrante', args=[self.ruta_entrante.pk])
@@ -275,7 +275,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         self.assertEqual(GrupoHorario.objects.count(), n_grupos_horarios)
 
-    @patch('ominicontacto_app.services.asterisk_database.GrupoHorarioFamily.regenerar_family')
+    @patch('ominicontacto_app.services.asterisk.redis_database.GrupoHorarioFamily.regenerar_family')
     def test_usuario_supervisor_puede_crear_grupo_horario(self, regenerar_family):
         url = reverse('crear_grupo_horario')
         self.client.login(username=self.usr_sup.username, password=PASSWORD)
@@ -284,7 +284,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         self.assertEqual(GrupoHorario.objects.count(), n_grupos_horarios + 1)
 
-    @patch('ominicontacto_app.services.asterisk_database.GrupoHorarioFamily.regenerar_family')
+    @patch('ominicontacto_app.services.asterisk.redis_database.GrupoHorarioFamily.regenerar_family')
     def test_usuario_administrador_puede_crear_grupo_horario(self, regenerar_family):
         url = reverse('crear_grupo_horario')
         self.client.login(username=self.admin.username, password=PASSWORD)
@@ -293,7 +293,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.client.post(url, post_data, follow=True)
         self.assertEqual(GrupoHorario.objects.count(), n_grupos_horarios + 1)
 
-    @patch('ominicontacto_app.services.asterisk_database.GrupoHorarioFamily.regenerar_family')
+    @patch('ominicontacto_app.services.asterisk.redis_database.GrupoHorarioFamily.regenerar_family')
     def test_usuario_customer_no_puede_modificar_grupo_horario(self, regenerar_family):
         url = reverse('editar_grupo_horario', args=[self.grupo_horario.pk])
         nuevo_nombre = 'grupo_horario_modificado'
@@ -306,7 +306,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.grupo_horario.refresh_from_db()
         self.assertNotEqual(self.grupo_horario.nombre, nuevo_nombre)
 
-    @patch('ominicontacto_app.services.asterisk_database.GrupoHorarioFamily.regenerar_family')
+    @patch('ominicontacto_app.services.asterisk.redis_database.GrupoHorarioFamily.regenerar_family')
     def test_usuario_supervisor_puede_modificar_grupo_horario(self, regenerar_family):
         url = reverse('editar_grupo_horario', args=[self.grupo_horario.pk])
         nuevo_nombre = 'grupo_horario_modificado'
@@ -320,7 +320,7 @@ class TestsRutasEntrantes(OMLBaseTest):
         self.grupo_horario.refresh_from_db()
         self.assertEqual(self.grupo_horario.nombre, nuevo_nombre)
 
-    @patch('ominicontacto_app.services.asterisk_database.GrupoHorarioFamily.regenerar_family')
+    @patch('ominicontacto_app.services.asterisk.redis_database.GrupoHorarioFamily.regenerar_family')
     def test_usuario_administrador_puede_modificar_grupo_horario(self, regenerar_family):
         url = reverse('editar_grupo_horario', args=[self.grupo_horario.pk])
         nuevo_nombre = 'grupo_horario_modificado'

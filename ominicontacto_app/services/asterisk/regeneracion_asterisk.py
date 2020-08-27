@@ -37,7 +37,7 @@ from ominicontacto_app.errors import OmlError
 from ominicontacto_app.asterisk_config import (
     AsteriskConfigReloader, QueuesCreator, SipConfigCreator, PlaylistsConfigCreator
 )
-from ominicontacto_app.services.asterisk_database import RegenerarAsteriskFamilysOML
+from ominicontacto_app.services.asterisk.redis_database import RegenerarAsteriskFamilysOML
 from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     SincronizadorDeConfiguracionTelefonicaEnAsterisk)
 

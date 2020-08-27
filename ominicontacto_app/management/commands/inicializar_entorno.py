@@ -217,7 +217,7 @@ class Command(BaseCommand):
         PatronDeDiscadoFactory(ruta_saliente=ruta_saliente, match_pattern="X.")
         OrdenTroncalFactory(ruta_saliente=ruta_saliente, orden=0, troncal=troncal_pbx_emulator)
         sincronizador_ruta_saliente = SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk()
-        sincronizador_ruta_saliente.regenerar_rutas_salientes(ruta_saliente)
+        sincronizador_ruta_saliente.regenerar_asterisk(ruta_saliente)
 
         # crear ruta entrante
         self._crear_ruta_entrante(campana_entrante)
