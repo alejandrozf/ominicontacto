@@ -542,9 +542,6 @@ class AuditoriaCalificacionForm(forms.ModelForm):
 class CampanaMixinForm(object):
     def __init__(self, *args, **kwargs):
         super(CampanaMixinForm, self).__init__(*args, **kwargs)
-        instance = getattr(self, 'instance', None)
-        if instance.pk is not None:
-            self.fields['sitio_externo'].widget = forms.TextInput(attrs={'class': 'hidden'})
         self.fields['bd_contacto'].required = not self.initial.get('es_template', False)
         if self.fields.get('bd_contacto', False):
             self.fields['bd_contacto'].queryset = BaseDatosContacto.objects.obtener_definidas()

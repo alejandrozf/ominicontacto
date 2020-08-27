@@ -14,6 +14,7 @@ function interaccionUrl(){
             $('#id_0-sitio_externo').prop('disabled', true);
         }
     }
+    $('.edit_url').prop('disabled', false);
 }
 
 $(function(){
@@ -22,20 +23,20 @@ $(function(){
 });
 
 function inicializarCampoOutr() {
-  var $outr = $('#id_0-outr');
-  $outr.on('change', actualizarEstadoOutcid);
-  actualizarEstadoOutcid();
+    var $outr = $('#id_0-outr');
+    $outr.on('change', actualizarEstadoOutcid);
+    actualizarEstadoOutcid();
 }
 
 function actualizarEstadoOutcid() {
-  var $outr = $('#id_0-outr');
-  var $outcid = $('#id_0-outcid');
-  if ($outr.val() == ''){
-    $outcid.prop('disabled', true);
-    $outcid.val('');
-  }
-  else
-    $outcid.prop('disabled', false)
+    var $outr = $('#id_0-outr');
+    var $outcid = $('#id_0-outcid');
+    if ($outr.val() == ''){
+        $outcid.prop('disabled', true);
+        $outcid.val('');
+    }
+    else
+        $outcid.prop('disabled', false);
 }
 
 
