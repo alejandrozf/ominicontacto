@@ -489,7 +489,7 @@ class RutaEntranteFamily(AbstractRedisFamily):
         return RutaEntrante.objects.all()
 
     def _get_nombre_family(self, family_member):
-        return "{0}:{1}".format(self.get_nombre_families(), family_member.id)
+        return "{0}:{1}".format(self.get_nombre_families(), family_member.telefono)
 
     def get_nombre_families(self):
         return "OML:INR"

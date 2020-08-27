@@ -52,6 +52,7 @@
       - manager.conf
       - modules.conf
       - musiconhold.conf
+      - oml_extensions_globals.conf
       - oml_func_odbc.conf
       - oml_appmap.conf
       - oml_res_odbc.conf
@@ -93,6 +94,7 @@
       - { src: "omni-dialednum.py.j2", dest: "omni-dialednum.py" }
       - { src: "omni-grabaciones.py.j2", dest: "omni-grabaciones.py" }
       - { src: "omni-agent-status.py.j2", dest: "omni-agent-status.py" }
+      - { src: "omni-retrieve-conf.py.j2", dest: "omni-retrieve-conf.py" }
   become: yes
   become_method: sudo
   tags: postinstall
