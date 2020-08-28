@@ -79,6 +79,11 @@ class User(AbstractUser):
     last_session_key = models.CharField(blank=True, null=True, max_length=40)
     borrado = models.BooleanField(default=False, editable=False)
 
+    @classmethod
+    def numero_usuarios_activos(cls):
+        """Devuelve el numero de usuarios activos en el sistema"""
+        return User.objects.exclude(borrado=True).count() - 1
+
     @property
     def rol(self):
         # Se asume que tiene un solo grupo
