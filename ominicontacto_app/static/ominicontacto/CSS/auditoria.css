@@ -1,48 +1,58 @@
+/*---Color que SI hay que modificar para los rebrands*/
+/* Color para :hover, :focus,etc */
+/* ---Color que no hay que modificar para los rebrands---*/
+/* Gris oscuro */
+/* Gris claro */
+/*Gris muy clarito*/
 .pendiente {
-    background: #cfcbca;
+  background: #cfcbca;
 }
 
 .rechazada {
-    background: red;
+  background: red;
 }
 
 .aprobada {
-    background: #86cf3d;
+  background: #9FD84E;
 }
 
 .observada {
-    background: #fe832f;
+  background: #fe832f;
 }
 
 .detalles {
-    color: white;
+  color: white;
 }
 
 /*
 Resultados de Auditoria en calificacion styles
 */
-.calificacion_auditada{
-    border: 1px solid #8FC641;
-    border-radius: 10px;
-    padding-left: 10%;
-    padding-top: 3%;
+.calificacion_auditada {
+  border: 1px solid #8FC641;
+  border-radius: 10px;
+  padding-left: 10%;
+  padding-top: 3%;
 }
+
 .calificacion_auditada h2 {
-    text-decoration: underline;
-    text-decoration-color: #8FC641;
-    text-transform: uppercase;
-    color: gray;
-} 
-.modalAuditoria .modal-header,
-.modalAuditoria .modal-header span{
-    background-color: #8FC641;
-    color: white;
-    text-transform: uppercase;
+  text-decoration: underline;
+  text-decoration-color: #8FC641;
+  text-transform: uppercase;
+  color: gray;
 }
+
+.modalAuditoria .modal-header,
+.modalAuditoria .modal-header span {
+  background-color: #8FC641;
+  color: white;
+  text-transform: uppercase;
+}
+
 .calificacion_auditada b,
-.modalAuditoria .modal-body b{
+.modalAuditoria .modal-body b {
   color: #8FC641;
 }
+
 #calificacion_form textarea {
   width: 100%;
 }
