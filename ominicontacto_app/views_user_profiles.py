@@ -281,6 +281,7 @@ class UserListView(ListView):
         context['modifica_perfil_supervisor'] = user.tiene_permiso_oml('supervisor_update')
         context['edita_user'] = user.tiene_permiso_oml('user_update')
         context['elimina_user'] = user.tiene_permiso_oml('user_delete')
+        context['numero_usuarios_activos'] = User.numero_usuarios_activos()
         if 'search' in self.request.GET:
             context['search'] = self.request.GET.get('search')
             context['search_url'] = '?search=' + context['search']
