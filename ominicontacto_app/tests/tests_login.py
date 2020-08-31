@@ -23,6 +23,7 @@ Tests relacionados con la lista de contactos de los Agentes
 from __future__ import unicode_literals
 
 from django.urls import reverse
+from django.utils.timezone import now
 from mock import patch
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 from ominicontacto_app.models import User
@@ -43,6 +44,8 @@ class LoginTests(OMLBaseTest):
     @patch('defender.utils.add_login_attempt_to_db')
     def test_redirects_to_next_url_on_login(
             self, add_login_attempt_to_db, check_request, is_already_locked):
+        self.supervisor.user.last_login = now()
+        self.supervisor.user.save()
         is_already_locked.return_value = False
         check_request.return_value = True
         next_url = reverse('agente_list')
@@ -50,6 +53,19 @@ class LoginTests(OMLBaseTest):
         login_data = {'username': self.supervisor.user.username, 'password': PASSWORD}
         response = self.client.post(login_url, login_data, follow=True)
         self.assertRedirects(response, next_url)
+
+    @patch('defender.utils.is_already_locked')
+    @patch('defender.utils.check_request')
+    @patch('defender.utils.add_login_attempt_to_db')
+    def test_redirects_to_change_password_on_first_login(
+            self, add_login_attempt_to_db, check_request, is_already_locked):
+        is_already_locked.return_value = False
+        check_request.return_value = True
+        next_url = reverse('agente_list')
+        login_url = reverse('login') + '?next=' + next_url
+        login_data = {'username': self.supervisor.user.username, 'password': PASSWORD}
+        response = self.client.post(login_url, login_data, follow=True)
+        self.assertRedirects(response, reverse('user_change_password'))
 
     @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_user')
     @patch('ominicontacto_app.services.kamailio_service.KamailioService.generar_sip_password')
