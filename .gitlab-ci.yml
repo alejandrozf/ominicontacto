@@ -83,7 +83,7 @@ build-docker-prodenv:
     - cd /home/ftsinfra/ominicontacto/build/vagrant
     - python edit_inventory.py --docker_build=yes -dle=$DOCKER_LOGIN_EMAIL -dlp=$DOCKER_LOGIN_PASSWORD
     - cd /home/ftsinfra/ominicontacto/build/ansible
-    - echo "$FTSINFRA_PASS" | sudo -S ./build.sh --docker-pe-build
+    - echo "$FTSINFRA_PASS" | sudo -S ./build.sh --docker-pe-build --docker-tag=$CI_COMMIT_REF_NAME
   tags:
     - build-docker
   only:
