@@ -80,6 +80,7 @@
     - build_asterisk.sh
     - build_kamailio.sh
     - build_virtualenv.sh
+    - build_redis.sh
     - build_rtpengine.sh
 
 # Se crean los scripts de systemd de cada servicio
@@ -89,6 +90,7 @@
     - asterisk.service
     - kamailio.service
     - omnileads.service
+    - redis.service
     - rtpengine.service
 
 # Additional Kamailio files
@@ -109,4 +111,5 @@
     - ./build_asterisk.sh
     - ./build_kamailio.sh
     - ./build_virtualenv.sh
+    - ./build_redis.sh
     - ./build_rtpengine.sh
