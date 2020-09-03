@@ -545,3 +545,8 @@ class CalificacionTests(OMLBaseTest):
             calificacion.contacto = self.contacto
             calificacion.save()
         self.assertRaises(ValidationError, modificar_calificacion)
+
+    def test_no_permitir_eliminar_calificacion_agenda_por_url(self):
+        url = reverse('calificacion_delete', kwargs={'pk': 1})
+        response = self.client.get(url, follow=True)
+        self.assertEqual(response.status_code, 403)
