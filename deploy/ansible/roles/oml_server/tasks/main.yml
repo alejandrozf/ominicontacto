@@ -17,18 +17,27 @@
 #
 ---
 
-# Se instala redis5 usando el repositorio REMI
-- name: Install remi repo for redis5
-  yum: name={{ remi_repository }} state=present update_cache=yes
+# Se instala el paquete de redis
+- name: Install redis-{{ redis_version }} package (from s3 source)
+  yum: name={{ s3_packages_url }}/redis-{{ redis_version }}-1.x86_64.rpm state=latest update_cache=yes
   tags: postinstall
+  retries: 3
+  delay: 3
+  register: s3_download
+  ignore_errors: true
+  until: s3_download is success
 
-- name: Enable remi repo
-  command: yum-config-manager --enable remi
-  tags: postinstall
+- debug: msg="The download of redis-{{ redis_version }} package from s3 source failed, trying the vps source"
+  when: s3_download is failed
 
-- name: Install redis5
-  yum: "name=redis-{{ redis_version }} state=present update_cache=yes"
+- name: Install redis-{{ redis_version }} package (from vps source)
+  yum: name={{ vps_packages_url }}/redis-{{ redis_version }}-1.x86_64.rpm state=latest update_cache=yes
+  when: s3_download is failed
   tags: postinstall
+  retries: 3
+  delay: 3
+  register: vps_download
+  until: vps_download is success
 
 # Se imprime que el virtualenv no esta instalado si la version actual es inferior a la requerida
 - debug: msg="Virtualenv {{ virtualenv_version }} is not installed, proceeding to install"
@@ -91,7 +100,7 @@
   when: ansible_distribution == "Amazon"
 
 - name: Start and enable redis service
-  service: name=redis state=restarted enabled=yes
+  service: name=redis state=restarted enabled=yes daemon_reload=yes
   become: yes
   become_method: sudo
 

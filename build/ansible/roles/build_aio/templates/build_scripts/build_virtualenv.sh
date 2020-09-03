@@ -54,6 +54,6 @@ elif [[ $BRANCH == *"oml-"* ]]; then
   BRANCH=$(echo $BRANCH|awk -F '-' '{print $2}')
   BRANCH=$(echo ${BRANCH:0:2}.${BRANCH})
 fi
-fpm -s dir -t rpm -n virtualenv -v $BRANCH {{ virtualenv_location}} /etc/systemd/system/omnileads.service || true
+fpm -s dir -t rpm -n virtualenv -v $BRANCH -f {{ virtualenv_location}} /etc/systemd/system/omnileads.service || true
 echo "Uploading rpm to public server"
 scp $SSH_OPTIONS -P 40404 -i /vagrant/vps_key.pem virtualenv-$BRANCH* root@www.freetech.com.ar:/var/www/html/omnileads/build
