@@ -105,6 +105,7 @@
     - libxslt
     - uriparser
     - wget
+    - jemalloc
   retries: 3
   delay: 3
   register: result
