@@ -84,6 +84,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             {{ form.formulario|add_class:"form-control fieldsFormset" }}
                         </td>
                     {% endif %}
+                    <td>
+                    {% if not form.instance.es_agenda %}
+                        {{ form.oculta.label }}
+                        {{ form.oculta.errors }}
+                        {{ form.oculta|add_class:"form-control" }}
+                    {% endif %}
+                    </td>
 
                     <td>{{ form.id }}</td>
                 </tr>

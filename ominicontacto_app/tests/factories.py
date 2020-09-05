@@ -288,6 +288,7 @@ class OpcionCalificacionFactory(DjangoModelFactory):
     tipo = lazy_attribute(lambda a: faker.random_int(0, 1))
     nombre = lazy_attribute(lambda a: faker.text(15))
     formulario = SubFactory(FormularioFactory)
+    oculta = False
 
 
 class CalificacionClienteFactory(DjangoModelFactory):

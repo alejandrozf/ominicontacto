@@ -1380,6 +1380,7 @@ class OpcionCalificacion(models.Model):
     tipo = models.IntegerField(choices=FORMULARIO_CHOICES, default=NO_ACCION)
     nombre = models.CharField(max_length=50)
     formulario = models.ForeignKey(Formulario, null=True, blank=True, on_delete=models.CASCADE)
+    oculta = models.BooleanField(default=False, verbose_name=_('Ocultar'))
 
     def __str__(self):
         return str(_('Opción "{0}" para campaña "{1}" de tipo "{2}"'.format(
