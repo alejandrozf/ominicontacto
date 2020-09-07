@@ -518,15 +518,16 @@ class ReportesCampanasTests(BaseTestDeReportes):
         fecha_hasta = datetime_hora_maxima_dia_utc(hoy_ahora)
         reporte_contactados_csv = ReporteContactadosCSV(
             self.campana_activa, key_task, fecha_desde, fecha_hasta)
-        # muestra el histórico de contactados
-        self.assertEqual(len(reporte_contactados_csv.datos), 3)
+        # muestra el histórico de contactados (aqui cuenta la linea de header)
+        self.assertEqual(len(reporte_contactados_csv.datos), 4)
 
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
     @patch.object(ExportacionCampanaCSV, 'exportar_reportes_csv')
     def test_reporte_contactados_campanas_no_entrantes_muestran_valor_calificacion_historica(
             self, exportar_reportes_csv, crea_reporte_pdf):
         id_llamada = '000000'
-        LlamadaLogFactory(callid=id_llamada, campana_id=self.campana_activa.pk)
+        LlamadaLogFactory(callid=id_llamada, campana_id=self.campana_activa.pk,
+                          event='COMPLETEOUTNUM')
         self.calif_gestion.callid = id_llamada
         self.calif_gestion.save()
         key_task = 'key_task'
@@ -535,8 +536,8 @@ class ReportesCampanasTests(BaseTestDeReportes):
         fecha_hasta = datetime_hora_maxima_dia_utc(hoy_ahora)
         reporte_contactados_csv = ReporteContactadosCSV(
             self.campana_activa, key_task, fecha_desde, fecha_hasta)
-        # muestra el histórico de contactados
-        self.assertEqual(len(reporte_contactados_csv.datos), 3)
+        # muestra el histórico de contactados (aqui cuenta la linea de header)
+        self.assertEqual(len(reporte_contactados_csv.datos), 5)
 
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
     @patch.object(Bar, 'render_to_png')

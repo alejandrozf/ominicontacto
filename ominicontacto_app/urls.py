@@ -564,6 +564,11 @@ urlpatterns = [
         login_required(views_agente.cambiar_estado_agente_view),
         name='agente_cambiar_estado',
         ),
+
+    url(r'^agente/dashboard/$',
+        login_required(views_agente.DashboardAgenteView.as_view()),
+        name='agente_dashboard',
+        ),
     # ==========================================================================
     # Supervision
     # ==========================================================================

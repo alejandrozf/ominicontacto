@@ -514,6 +514,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </div>
             </div>
             <li class="main-menu-li">
+                <span class="icon icon-agenda"></span>
+                <a class="menu-link" href="{% url 'agente_dashboard' %}" target="crm">{% trans 'Dashboard' %}</a>
+            </li>
+            <li class="main-menu-li">
                 <span class="icon icon-notebook"></span>
                 <a class="menu-header" href="#menuContacts" role="button" data-toggle="collapse" aria-expanded="false">{% trans 'Contactos' %}</a>
                 <ul class="collapse list-unstyled submenu" id="menuContacts" data-parent="#navMainMenu">
@@ -602,7 +606,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </div>
 
         <div id="wrapperInner">
-
             <div id="wrapperInnerContent">
                 <button class="btn btn-primary"  id="buttonVideo" style="display:none;">
                     <i class="fas fa-video"></i>
@@ -653,8 +656,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <input type="hidden" value="{{ agente_profile.grupo.auto_attend_inbound }}" id="auto_attend_IN"/>
                     <input type="hidden" value="{{ agente_profile.grupo.auto_attend_dialer }}" id="auto_attend_DIALER"/>
                     <input type="hidden" value="{{ agente_profile.grupo.auto_unpause }}" id="auto_unpause"/>
-                    <iframe src="{% url 'agenda_contacto_listado' %}" id="dataView" class="crm" name="crm">
-                    </iframe>
+                    <iframe src="{% url 'agente_dashboard' %}" id="dataView" class="crm" name="crm"></iframe>
                 </div>
             </div>
 
