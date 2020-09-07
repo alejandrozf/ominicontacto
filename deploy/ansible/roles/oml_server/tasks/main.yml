@@ -19,7 +19,7 @@
 
 # Se instala el paquete de redis
 - name: Install redis-{{ redis_version }} package (from s3 source)
-  yum: name={{ s3_packages_url }}/redis-{{ redis_version }}-1.x86_64.rpm state=latest update_cache=yes
+  yum: name={{ s3_packages_url }}/redis-{{ redis_version }}-1.x86_64.rpm state=present update_cache=yes
   tags: postinstall
   retries: 3
   delay: 3
@@ -31,7 +31,7 @@
   when: s3_download is failed
 
 - name: Install redis-{{ redis_version }} package (from vps source)
-  yum: name={{ vps_packages_url }}/redis-{{ redis_version }}-1.x86_64.rpm state=latest update_cache=yes
+  yum: name={{ vps_packages_url }}/redis-{{ redis_version }}-1.x86_64.rpm state=present update_cache=yes
   when: s3_download is failed
   tags: postinstall
   retries: 3
