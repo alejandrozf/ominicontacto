@@ -35,22 +35,22 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
       </tr>
     </thead>
     <tbody id="t_body_ocultas">
-        {% for backlist in back_lists %}
+        {% for blacklist in black_lists %}
             <tr>
                 <td>
-                    {{ backlist.nombre }}
+                    {{ blacklist.nombre }}
                 </td>
                 <td>
-                    {{ backlist.fecha_alta|date:"d/m/Y - H:i:s" }}
+                    {{ blacklist.fecha_alta|date:"d/m/Y - H:i:s" }}
                 </td>
                 <td>
-                    {{ backlist.cantidad_contactos }}
+                    {{ blacklist.cantidad_contactos }}
                 </td>
             </tr>
         {% empty %}
             <tr>
                 <td>
-                    <p>{% trans 'No se encontraron Backlist creadas.' %}</p>
+                    <p>{% trans 'No se encontraron Blacklist creadas.' %}</p>
                 </td>
             </tr>
         {% endfor %}

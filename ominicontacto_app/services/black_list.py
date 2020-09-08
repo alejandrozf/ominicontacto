@@ -34,9 +34,9 @@ from django.utils.translation import ugettext as _
 
 from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError, \
     OmlError, OmlParserMaxRowError, OmlParserCsvImportacionError
-from ominicontacto_app.models import ContactoBacklist
+from ominicontacto_app.models import ContactoBlacklist
 from ominicontacto_app.parser import ParserCsv
-from ominicontacto_app.asterisk_config import BackListConfigFile
+from ominicontacto_app.asterisk_config import BlackListConfigFile
 
 from utiles_globales import validar_estructura_csv
 
@@ -44,11 +44,11 @@ from utiles_globales import validar_estructura_csv
 logger = logging.getLogger(__name__)
 
 
-class CreacionBacklistService(object):
+class CreacionBlacklistService(object):
 
-    def genera_back_list(self, back_list):
+    def genera_black_list(self, black_list):
         """
-        Primer paso de la creación de una Backlist.
+        Primer paso de la creación de una Blacklist.
 
         Este método se encarga de validar los datos para la creación del
         del objeto y llevar a cabo el guardado del mismo.
@@ -64,19 +64,19 @@ class CreacionBacklistService(object):
 
         file_invalid_msg = _("El archivo especificado para realizar la importación de contactos "
                              "no es válido.")
-        filename = back_list.nombre_archivo_importacion
+        filename = black_list.nombre_archivo_importacion
         extension = os.path.splitext(filename)[1].lower()
         if extension not in csv_extensions:
             logger.warn(_("La extension {0} no es CSV. ".format(extension)))
             raise(OmlArchivoImportacionInvalidoError(file_invalid_msg))
         file_obj = codecs.iterdecode(
-            back_list.archivo_importacion, 'utf-8', errors='ignore')
+            black_list.archivo_importacion, 'utf-8', errors='ignore')
         data = csv.reader(file_obj, skipinitialspace=True)
         validar_estructura_csv(data, file_invalid_msg, logger)
 
-    def importa_contactos(self, backlist):
+    def importa_contactos(self, blacklist):
         """
-        Segundo paso de la creación de una Backlist.
+        Segundo paso de la creación de una Blacklist.
         Este método se encarga de generar los objectos Contacto por cada linea
         del archivo de importación especificado para la base de datos de
         contactos.
@@ -85,39 +85,39 @@ class CreacionBacklistService(object):
         parser = ParserCsv()
 
         try:
-            estructura_archivo = parser.get_estructura_archivo(backlist)
+            estructura_archivo = parser.get_estructura_archivo(blacklist)
             cantidad_contactos = 0
-            if backlist.cantidad_contactos:
-                cantidad_contactos = backlist.cantidad_contactos
+            if blacklist.cantidad_contactos:
+                cantidad_contactos = blacklist.cantidad_contactos
             for lista_dato in estructura_archivo[1:]:
                 cantidad_contactos += 1
-                ContactoBacklist.objects.create(
+                ContactoBlacklist.objects.create(
                     telefono=lista_dato[0],
-                    back_list=backlist,
+                    black_list=blacklist,
                 )
         except OmlParserMaxRowError:
-            backlist.elimina_contactos()
+            blacklist.elimina_contactos()
             raise
 
         except OmlParserCsvImportacionError:
-            backlist.elimina_contactos()
+            blacklist.elimina_contactos()
             raise
 
-        backlist.cantidad_contactos = cantidad_contactos
-        backlist.save()
+        blacklist.cantidad_contactos = cantidad_contactos
+        blacklist.save()
 
-    def crear_archivo_backlist(self, back_list):
-        """ Crear archivo de backlist para ser importado al discador para tener en
+    def crear_archivo_blacklist(self, black_list):
+        """ Crear archivo de blacklist para ser importado al discador para tener en
         en cuenta y no llamar a estos contactos
         """
-        contactos = ContactoBacklist.objects.filter(back_list=back_list)
+        contactos = ContactoBlacklist.objects.filter(black_list=black_list)
         lista_contacto = []
         for contacto in contactos:
             telefono = contacto.telefono + "\n"
             lista_contacto.append(telefono)
-        backlist_config_file = BackListConfigFile()
-        backlist_config_file.write(lista_contacto)
-        backlist_config_file.copy_asterisk()
+        blacklist_config_file = BlackListConfigFile()
+        blacklist_config_file.write(lista_contacto)
+        blacklist_config_file.copy_asterisk()
 
 
 class NoSePuedeInferirMetadataErrorFormatoFilas(OmlError):
