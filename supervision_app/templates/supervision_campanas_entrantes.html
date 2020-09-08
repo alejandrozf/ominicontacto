@@ -33,16 +33,24 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <div>
     <table class="table">
         <thead>
+            <tr class="row-entrante">
+                <th></th>
+                <th class="col-entrante" colspan="3">{% trans 'Agentes' %}</th>
+                <th class="col-entrante" colspan="4">{% trans 'Llamadas' %}</th>
+                <th class="col-entrante" colspan="2">{% trans 'T. promedio' %}</th>
+                <th></th>
+            </tr>
             <tr>
                 <th>{% trans 'Nombre' %}</th>
-                <th>{% trans 'Agentes online' %}</th>
-                <th>{% trans 'Agentes en llamada' %}</th>
-                <th>{% trans 'Agentes en pausa' %}</th>
-                <th>{% trans 'Llamadas atendidas' %}</th>
+                <th class="left-entrante">{% trans 'Online' %}</th>
+                <th>{% trans 'En llamada' %}</th>
+                <th class="right-entrante">{% trans 'En pausa' %}</th>
+                <th class="left-entrante">{% trans 'En espera' %}</th>
+                <th>{% trans 'Atendidas' %}</th>
                 <th>{% trans 'Abandonadas' %}</th>
-                <th>{% trans 'Expiradas' %}</th>
-                <th>{% trans 'T. promedio abandono' %}</th>
-                <th>{% trans 'T. promedio espera' %}</th>
+                <th class="right-entrante">{% trans 'Expiradas' %}</th>
+                <th class="left-entrante">{% trans 'Abandono' %}</th>
+                <th class="right-entrante">{% trans 'Espera' %}</th>
                 <th>{% trans 'Gestiones' %}</th>
             </tr>
         </thead>
@@ -53,11 +61,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <td>{{ datos_campana.agentes_online }}</td>
                 <td>{{ datos_campana.agentes_llamada }}</td>
                 <td>{{ datos_campana.agentes_pausa }}</td>
+                <td>{{ datos_campana.llamadas_en_espera }}</td>
                 <td>{{ datos_campana.atendidas }}</td>
                 <td>{{ datos_campana.abandonadas }}</td>
                 <td>{{ datos_campana.expiradas }}</td>
-                <td>{{ datos_campana.t_promedio_abandono|floatformat }} {% trans ' segundos' %}</td>
-                <td>{{ datos_campana.t_promedio_espera|floatformat }} {% trans 'segundos' %}</td>
+                <td>{{ datos_campana.t_promedio_abandono|floatformat }} {% trans ' seg' %}</td>
+                <td>{{ datos_campana.t_promedio_espera|floatformat }} {% trans 'seg' %}</td>
                 <td>{{ datos_campana.gestiones }}</td>
             </tr>
 
