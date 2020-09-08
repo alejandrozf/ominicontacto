@@ -773,6 +773,21 @@ table.campana-reglas .td-remove .btn {
     border-color: #24B3BC;
     color: #24B3BC;
 }
+table .row-entrante th{
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+table .col-entrante{
+    text-align: center;
+    border-left: solid 1px #dee2e6;
+    border-right: solid 1px #dee2e6;
+}
+table .left-entrante{
+    border-left: solid 1px #dee2e6;
+}
+table .right-entrante{
+    border-right: solid 1px #dee2e6;
+}
 
 /* ///// Tabs
 */

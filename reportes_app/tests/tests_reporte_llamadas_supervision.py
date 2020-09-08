@@ -20,16 +20,16 @@ from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorAc
 from ominicontacto_app.models import Campana, OpcionCalificacion
 from mock import patch
 
-from django.urls import reverse
 from django.test import TestCase
 
-from reportes_app.models import LlamadaLog
 from reportes_app.reportes.reporte_llamadas_supervision import (
     ReporteDeLLamadasEntrantesDeSupervision, ReporteDeLLamadasSalientesDeSupervision
 )
+
+from reportes_app.services.redis_service import RedisService
 from reportes_app.tests.utiles import GeneradorDeLlamadaLogs
 from ominicontacto_app.tests.factories import AgenteProfileFactory, CalificacionClienteFactory, \
-    CampanaFactory, LlamadaLogFactory, OpcionCalificacionFactory, QueueFactory, \
+    CampanaFactory, OpcionCalificacionFactory, QueueFactory, \
     QueueMemberFactory, SupervisorProfileFactory
 
 
@@ -58,104 +58,12 @@ class ReporteDeLLamadasEntrantesDeSupervisionTest(TestCase):
                                                estado=Campana.ESTADO_ACTIVA)
         self.queue = QueueFactory.create(campana=self.entrante1)
 
-    def test_reporte_vacio(self):
+    @patch.object(RedisService, 'obtener_estadisticas_campanas_entrantes')
+    def test_reporte_vacio(self, obtener_estadisticas_campanas_entrantes):
+        obtener_estadisticas_campanas_entrantes.return_value = {}
         reporte = ReporteDeLLamadasEntrantesDeSupervision(self.supervisor.user)
         self.assertNotIn(self.entrante1.id, reporte.estadisticas)
         self.assertNotIn(self.entrante2.id, reporte.estadisticas)
-
-    def test_contabiliza_atendidas(self):
-        self.generador.generar_log(self.entrante1, False, 'COMPLETEAGENT', '35100001111',
-                                   agente=self.agente1, contacto=None, bridge_wait_time=-1,
-                                   duracion_llamada=10, archivo_grabacion='', time=None)
-        # No debe contar esta manual
-        self.generador.generar_log(self.entrante1, True, 'COMPLETEAGENT', '35100001112',
-                                   agente=self.agente1, contacto=None, bridge_wait_time=-1,
-                                   duracion_llamada=10, archivo_grabacion='', time=None)
-        reporte = ReporteDeLLamadasEntrantesDeSupervision(self.supervisor.user)
-        self.assertEqual(
-            reporte.estadisticas[self.entrante1.id]['atendidas'], 1)
-        self.assertEqual(
-            reporte.estadisticas[self.entrante1.id]['expiradas'], 0)
-        self.assertEqual(
-            reporte.estadisticas[self.entrante1.id]['abandonadas'], 0)
-        self.assertEqual(
-            reporte.estadisticas[self.entrante1.id]['gestiones'], 0)
-
-    def test_contabiliza_expiradas(self):
-        self.generador.generar_log(self.entrante1, False, 'EXITWITHTIMEOUT', '35100001111',
-                                   agente=self.agente1, contacto=None, bridge_wait_time=-1,
-                                   duracion_llamada=-1, archivo_grabacion='', time=None)
-        reporte = ReporteDeLLamadasEntrantesDeSupervision(self.supervisor.user)
-        self.assertEqual(
-            reporte.estadisticas[self.entrante1.id]['atendidas'], 0)
-        self.assertEqual(
-            reporte.estadisticas[self.entrante1.id]['expiradas'], 1)
-        self.assertEqual(
-            reporte.estadisticas[self.entrante1.id]['abandonadas'], 0)
-        self.assertEqual(
-            reporte.estadisticas[self.entrante1.id]['gestiones'], 0)
-
-    def test_contabiliza_gestiones(self):
-        self.generador.generar_log(self.entrante1, False, 'COMPLETEAGENT', '35100001111',
-                                   agente=self.agente1, contacto=None, bridge_wait_time=-1,
-                                   duracion_llamada=10, archivo_grabacion='', time=None)
-        CalificacionClienteFactory(opcion_calificacion=self.opcion_calificacion,
-                                   agente=self.agente1)
-        reporte = ReporteDeLLamadasEntrantesDeSupervision(self.supervisor.user)
-        self.assertEqual(
-            reporte.estadisticas[self.entrante1.id]['atendidas'], 1)
-        self.assertEqual(
-            reporte.estadisticas[self.entrante1.id]['expiradas'], 0)
-        self.assertEqual(
-            reporte.estadisticas[self.entrante1.id]['abandonadas'], 0)
-        self.assertEqual(
-            reporte.estadisticas[self.entrante1.id]['gestiones'], 1)
-
-    def test_contabiliza_promedio_tiempo_espera(self):
-        callid_call1 = 1
-        callid_call2 = 2
-        self.entrante2.supervisors.add(self.supervisor.user)
-        self.generador.generar_log(self.entrante1, False, 'COMPLETEAGENT', '35100001111',
-                                   agente=self.agente1, contacto=None, bridge_wait_time=3,
-                                   duracion_llamada=10, archivo_grabacion='', time=None,
-                                   callid=callid_call1)
-        self.generador.generar_log(self.entrante1, False, 'COMPLETEOUTNUM', '35100001112',
-                                   agente=self.agente1, contacto=None, bridge_wait_time=7,
-                                   duracion_llamada=10, archivo_grabacion='', time=None,
-                                   callid=callid_call1)
-        self.generador.generar_log(self.entrante2, False, 'COMPLETEAGENT', '3510000117',
-                                   agente=self.agente1, contacto=None, bridge_wait_time=4,
-                                   duracion_llamada=10, archivo_grabacion='', time=None,
-                                   callid=callid_call2)
-        self.generador.generar_log(self.entrante2, False, 'COMPLETEAGENT', '35100001110',
-                                   agente=self.agente1, contacto=None, bridge_wait_time=8,
-                                   duracion_llamada=10, archivo_grabacion='', time=None,
-                                   callid=callid_call2)
-        self.client.login(
-            username=self.supervisor.user.username, password=self.PWD)
-        url = reverse('supervision_campanas_entrantes')
-        response = self.client.get(url)
-        estadisticas = response.context_data['estadisticas']
-        self.assertEqual(
-            estadisticas[self.entrante1.pk]['t_promedio_espera'], 5)
-        self.assertEqual(
-            estadisticas[self.entrante2.pk]['t_promedio_espera'], 6)
-
-    def test_contabilizar_promedio_llamadas_abandonadas(self):
-        self.generador.generar_log(self.entrante1, False, 'ABANDON', '35100001111',
-                                   agente=self.agente1, contacto=None, bridge_wait_time=5,
-                                   duracion_llamada=10, archivo_grabacion='', time=None)
-        LlamadaLogFactory(tipo_campana=Campana.TYPE_ENTRANTE,
-                          tipo_llamada=LlamadaLog.LLAMADA_ENTRANTE,
-                          campana_id=self.entrante1.pk,
-                          event='ABANDONWEL', bridge_wait_time=2)
-        self.client.login(
-            username=self.supervisor.user.username, password=self.PWD)
-        url = reverse('supervision_campanas_entrantes')
-        response = self.client.get(url)
-        estadisticas = response.context_data['estadisticas']
-        self.assertEqual(
-            estadisticas[self.entrante1.pk]['t_promedio_abandono'], 3.5)
 
     def _obtener_agentes_activos(self):
         return [{
@@ -168,15 +76,59 @@ class ReporteDeLLamadasEntrantesDeSupervisionTest(TestCase):
         }
         ]
 
+    def _obtener_estadisticas_redis(self):
+        return {
+            self.entrante1.id: {
+                'nombre': self.entrante1.nombre,
+                'atendidas': 0,
+                'abandonadas': 1,
+                'expiradas': 1,
+                'gestiones': 0,
+                't_promedio_abandono': 12.5,
+                't_promedio_espera': 1,
+                'llamadas_en_espera': 1
+            }
+        }
+
+    @patch.object(RedisService, 'obtener_estadisticas_campanas_entrantes')
     @patch.object(SupervisorActivityAmiManager, 'obtener_agentes_activos')
-    def test_contabilizar_agentes_activos_reporte_vacio(self, obtener_agentes_activos):
+    def test_contabilizar_estadisticas_campanas(self, obtener_agentes_activos,
+                                                obtener_estadisticas_campanas_entrantes):
         obtener_agentes_activos.return_value = []
+        obtener_estadisticas_campanas_entrantes.return_value = self._obtener_estadisticas_redis()
+        reporte = ReporteDeLLamadasEntrantesDeSupervision(self.supervisor.user)
+        self.assertNotIn(self.entrante2.id, reporte.estadisticas)
+        self.assertEqual(
+            reporte.estadisticas[self.entrante1.id]['atendidas'], 0)
+        self.assertEqual(
+            reporte.estadisticas[self.entrante1.id]['abandonadas'], 1)
+        self.assertEqual(
+            reporte.estadisticas[self.entrante1.id]['expiradas'], 1)
+        self.assertEqual(
+            reporte.estadisticas[self.entrante1.id]['gestiones'], 0)
+        self.assertEqual(
+            reporte.estadisticas[self.entrante1.id]['t_promedio_abandono'], 12.5)
+        self.assertEqual(
+            reporte.estadisticas[self.entrante1.id]['t_promedio_espera'], 1)
+        self.assertEqual(
+            reporte.estadisticas[self.entrante1.id]['llamadas_en_espera'], 1)
+
+    @patch.object(SupervisorActivityAmiManager, 'obtener_agentes_activos')
+    @patch.object(RedisService, 'obtener_estadisticas_campanas_entrantes')
+    def test_contabilizar_agentes_activos_reporte_vacio(self,
+                                                        obtener_estadisticas_campanas_entrantes,
+                                                        obtener_agentes_activos):
+        obtener_agentes_activos.return_value = []
+        obtener_estadisticas_campanas_entrantes.return_value = {}
         reporte = ReporteDeLLamadasEntrantesDeSupervision(self.supervisor.user)
         self.assertNotIn(self.entrante1.id, reporte.estadisticas)
         self.assertNotIn(self.entrante2.id, reporte.estadisticas)
 
+    @patch.object(RedisService, 'obtener_estadisticas_campanas_entrantes')
     @patch.object(SupervisorActivityAmiManager, 'obtener_agentes_activos')
-    def test_contabilizar_agentes_pausa(self, obtener_agentes_activos):
+    def test_contabilizar_agentes_pausa(self, obtener_agentes_activos,
+                                        obtener_estadisticas_campanas_entrantes):
+        obtener_estadisticas_campanas_entrantes.return_value = self._obtener_estadisticas_redis()
         obtener_agentes_activos.return_value = self._obtener_agentes_activos()
         QueueMemberFactory.create(member=self.agente1, queue_name=self.queue)
 
@@ -184,18 +136,24 @@ class ReporteDeLLamadasEntrantesDeSupervisionTest(TestCase):
         self.assertEqual(
             reporte.estadisticas[self.entrante1.id]['agentes_pausa'], 1)
 
+    @patch.object(RedisService, 'obtener_estadisticas_campanas_entrantes')
     @patch.object(SupervisorActivityAmiManager, 'obtener_agentes_activos')
-    def test_contabilizar_agentes_llamada(self, obtener_agentes_activos):
+    def test_contabilizar_agentes_llamada(self, obtener_agentes_activos,
+                                          obtener_estadisticas_campanas_entrantes):
         obtener_agentes_activos.return_value = self._obtener_agentes_activos()
+        obtener_estadisticas_campanas_entrantes.return_value = self._obtener_estadisticas_redis()
         QueueMemberFactory.create(member=self.agente2, queue_name=self.queue)
 
         reporte = ReporteDeLLamadasEntrantesDeSupervision(self.supervisor.user)
         self.assertEqual(
             reporte.estadisticas[self.entrante1.id]['agentes_llamada'], 1)
 
+    @patch.object(RedisService, 'obtener_estadisticas_campanas_entrantes')
     @patch.object(SupervisorActivityAmiManager, 'obtener_agentes_activos')
-    def test_contabilizar_agentes_llamada_pausa_activos(self, obtener_agentes_activos):
+    def test_contabilizar_agentes_llamada_pausa_activos(self, obtener_agentes_activos,
+                                                        obtener_estadisticas_campanas_entrantes):
         obtener_agentes_activos.return_value = self._obtener_agentes_activos()
+        obtener_estadisticas_campanas_entrantes.return_value = self._obtener_estadisticas_redis()
         QueueMemberFactory.create(member=self.agente1, queue_name=self.queue)
         QueueMemberFactory.create(member=self.agente2, queue_name=self.queue)
 

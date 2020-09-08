@@ -51,6 +51,7 @@ function cargarEstadisticasEntrantes(estadisticas) {
             '<td>' + datos_campana['agentes_online'] + '</td>' +
             '<td>' + datos_campana['agentes_llamada'] + '</td>' +
             '<td>' + datos_campana['agentes_pausa'] + '</td>' +
+            '<td>' + datos_campana['llamadas_en_espera'] + '</td>' +
             '<td>' + datos_campana['atendidas'] + '</td>' +
             '<td>' + datos_campana['abandonadas'] + '</td>' +
             '<td>' + datos_campana['expiradas'] + '</td>' +
