@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
+from mock import patch
+
 from ominicontacto_app.models import Campana, OpcionCalificacion
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.tests.factories import (
@@ -47,7 +49,8 @@ class ReporteDeLLamadasEntrantesDeSupervisionTest(OMLBaseTest):
                                                estado=Campana.ESTADO_ACTIVA)
         self.queue = QueueFactory.create(campana=self.entrante1)
 
-    def test_contabiliza_expiradas(self):
+    @patch.object(ReporteDeLLamadasEntrantesDeSupervision, '_obtener_llamadas_en_espera_raw')
+    def test_contabiliza_expiradas(self, _obtener_llamadas_en_espera_raw):
         self.generador.generar_log(self.entrante1, False, 'EXITWITHTIMEOUT', '35100001111',
                                    agente=self.agente1, contacto=None, bridge_wait_time=-1,
                                    duracion_llamada=-1, archivo_grabacion='', time=None)
@@ -61,7 +64,8 @@ class ReporteDeLLamadasEntrantesDeSupervisionTest(OMLBaseTest):
         self.assertEqual(
             reporte.estadisticas[self.entrante1.id]['gestiones'], 0)
 
-    def test_contabiliza_gestiones(self):
+    @patch.object(ReporteDeLLamadasEntrantesDeSupervision, '_obtener_llamadas_en_espera_raw')
+    def test_contabiliza_gestiones(self, _obtener_llamadas_en_espera_raw):
         self.generador.generar_log(self.entrante1, False, 'COMPLETEAGENT', '35100001111',
                                    agente=self.agente1, contacto=None, bridge_wait_time=-1,
                                    duracion_llamada=10, archivo_grabacion='', time=None)
@@ -77,7 +81,8 @@ class ReporteDeLLamadasEntrantesDeSupervisionTest(OMLBaseTest):
         self.assertEqual(
             reporte.estadisticas[self.entrante1.id]['gestiones'], 1)
 
-    def test_contabiliza_promedio_tiempo_espera(self):
+    @patch.object(ReporteDeLLamadasEntrantesDeSupervision, '_obtener_llamadas_en_espera_raw')
+    def test_contabiliza_promedio_tiempo_espera(self, _obtener_llamadas_en_espera_raw):
         callid_call1 = 1
         callid_call2 = 2
         self.generador.generar_log(self.entrante1, False, 'COMPLETEAGENT', '35100001111',
@@ -104,7 +109,8 @@ class ReporteDeLLamadasEntrantesDeSupervisionTest(OMLBaseTest):
         self.assertEqual(
             estadisticas[self.entrante2.pk]['tiempo_acumulado_espera'], 12)
 
-    def test_contabilizar_promedio_llamadas_abandonadas(self):
+    @patch.object(ReporteDeLLamadasEntrantesDeSupervision, '_obtener_llamadas_en_espera_raw')
+    def test_contabilizar_promedio_llamadas_abandonadas(self, _obtener_llamadas_en_espera_raw):
         self.generador.generar_log(self.entrante1, False, 'ABANDON', '35100001111',
                                    agente=self.agente1, contacto=None, bridge_wait_time=5,
                                    duracion_llamada=10, archivo_grabacion='', time=None)
@@ -117,12 +123,14 @@ class ReporteDeLLamadasEntrantesDeSupervisionTest(OMLBaseTest):
         self.assertEqual(
             estadisticas[self.entrante1.pk]['tiempo_acumulado_abandonadas'], 7)
 
-    def test_reporte_vacio(self):
+    @patch.object(ReporteDeLLamadasEntrantesDeSupervision, '_obtener_llamadas_en_espera_raw')
+    def test_reporte_vacio(self, _obtener_llamadas_en_espera_raw):
         reporte = ReporteDeLLamadasEntrantesDeSupervision()
         self.assertNotIn(self.entrante1.id, reporte.estadisticas)
         self.assertNotIn(self.entrante2.id, reporte.estadisticas)
 
-    def test_contabiliza_atendidas(self):
+    @patch.object(ReporteDeLLamadasEntrantesDeSupervision, '_obtener_llamadas_en_espera_raw')
+    def test_contabiliza_atendidas(self, _obtener_llamadas_en_espera_raw):
         self.generador.generar_log(self.entrante1, False, 'COMPLETEAGENT', '35100001111',
                                    agente=self.agente1, contacto=None, bridge_wait_time=-1,
                                    duracion_llamada=10, archivo_grabacion='', time=None)
@@ -139,3 +147,25 @@ class ReporteDeLLamadasEntrantesDeSupervisionTest(OMLBaseTest):
             reporte.estadisticas[self.entrante1.id]['llamadas_abandonadas'], 0)
         self.assertEqual(
             reporte.estadisticas[self.entrante1.id]['gestiones'], 0)
+
+    def _generar_ami_response_llamadas_espera(self, campana_entrante):
+        return ('Event: QueueEntry\r\nQueue: {0}_{1}\r\nMax: 5\r\nStrategy: '
+                'rrmemory\r\nCalls: 0\r\nHoldtime: 0\r\nTalkTime: 0\r\n'
+                'Completed: 0\r\nAbandoned: 0\r\n'
+                'ServiceLevel: 30\r\nServicelevelPerf: 0.0\r\nServicelevelPerf2: 0.0\r\n'
+                'Weight: 0\r\n'
+                'ActionID: d9555aefdc48-00000001\r\n\r\nEvent: QueueStatusComplete\r\nActionID: '
+                'd9555aefdc48-00000001\r\n'
+                'EventList: Complete\r\nListItems: 31\r\n').format(campana_entrante.id,
+                                                                   campana_entrante.nombre)
+
+    @patch.object(ReporteDeLLamadasEntrantesDeSupervision, '_obtener_llamadas_en_espera_raw')
+    def test_contabilizar_llamadas_en_espera(self, _obtener_llamadas_en_espera_raw):
+        self.generador.generar_log(self.entrante1, False, 'COMPLETEAGENT', '35100001111',
+                                   agente=self.agente1, contacto=None, bridge_wait_time=-1,
+                                   duracion_llamada=10, archivo_grabacion='', time=None)
+        _obtener_llamadas_en_espera_raw.return_value = self._generar_ami_response_llamadas_espera(
+            self.entrante1)
+        reporte = ReporteDeLLamadasEntrantesDeSupervision()
+        estadisticas = reporte.estadisticas
+        self.assertEqual(estadisticas[self.entrante1.pk]['llamadas_en_espera'], 1)
