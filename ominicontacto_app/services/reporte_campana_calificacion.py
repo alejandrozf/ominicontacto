@@ -68,7 +68,7 @@ class ArchivoDeReporteCsv(object):
             self.prefijo_nombre_de_archivo,
             self.sufijo_nombre_de_archivo)
 
-    def escribir_archivo_csv(self, campana):
+    def escribir_archivo_csv(self, calificaciones_qs):
 
         with open(self.ruta, 'w', encoding='utf-8') as csvfile:
             # Creamos encabezado
@@ -78,7 +78,7 @@ class ArchivoDeReporteCsv(object):
             encabezado.append(_("Agente"))
             encabezado.append(_("Tel status"))
             encabezado.append(_("Tel contactado"))
-            nombres = campana.bd_contacto.get_metadata().nombres_de_columnas_de_datos
+            nombres = self._campana.bd_contacto.get_metadata().nombres_de_columnas_de_datos
             for nombre in nombres:
                 encabezado.append(nombre)
             encabezado.append(_("Calificado"))
@@ -93,7 +93,7 @@ class ArchivoDeReporteCsv(object):
             csvwiter.writerow(lista_encabezados_utf8)
 
             # Iteramos cada uno de las calificaciones de la campana
-            for calificacion in campana.obtener_calificaciones():
+            for calificacion in calificaciones_qs:
                 lista_opciones = []
 
                 # --- Buscamos datos
@@ -123,19 +123,25 @@ class ArchivoDeReporteCsv(object):
 
 class ReporteCampanaService(object):
 
-    def crea_reporte_csv(self, campana):
-        archivo_de_reporte = ArchivoDeReporteCsv(campana)
+    def __init__(self, campana):
+        self.campana = campana
+        self.calificaciones_qs = campana.obtener_calificaciones().select_related(
+            'opcion_calificacion', 'contacto').prefetch_related(
+                'contacto__bd_contacto', 'agente__user')
+
+    def crea_reporte_csv(self):
+        archivo_de_reporte = ArchivoDeReporteCsv(self.campana)
 
         archivo_de_reporte.crear_archivo_en_directorio()
 
-        archivo_de_reporte.escribir_archivo_csv(campana)
+        archivo_de_reporte.escribir_archivo_csv(self.calificaciones_qs)
 
-    def obtener_url_reporte_csv_descargar(self, campana):
-        archivo_de_reporte = ArchivoDeReporteCsv(campana)
+    def obtener_url_reporte_csv_descargar(self):
+        archivo_de_reporte = ArchivoDeReporteCsv(self.campana)
         if archivo_de_reporte.ya_existe():
             return archivo_de_reporte.url_descarga
 
         # Esto no debería suceder.
         logger.error(_("obtener_url_reporte_csv_descargar(): NO existe archivo"
-                       " CSV de descarga para la campana {0}".format(campana.pk)))
+                       " CSV de descarga para la campana {0}".format(self.campana.pk)))
         assert os.path.exists(archivo_de_reporte.url_descarga)

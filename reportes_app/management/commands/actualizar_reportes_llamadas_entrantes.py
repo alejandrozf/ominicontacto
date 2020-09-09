@@ -18,27 +18,23 @@
 #
 
 import logging
-
 from django.core.management.base import BaseCommand
+from reportes_app.reportes.reporte_llamadas_entrantes import ReporteLlamadasEntranteFamily
 
-from ominicontacto_app.models import Campana
 
 logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    """Reescribe los archivos de tareas de cron para cada campaña preview activa en el sistema
-    Esto es util para casos donde se hayan eliminado accidentalmente algunas de estas tareas
+    """
+    Calcula y carga en Redis los datos del reporte de llamadas entrantes.
     """
 
-    def _regenerar_tareas_campanas_preview_activas(self):
-        campanas_preview_activas = Campana.objects.obtener_campanas_preview().filter(
-            estado=Campana.ESTADO_ACTIVA)
-        for campana in campanas_preview_activas:
-            campana.crear_tarea_actualizacion()
+    help = 'Calcula y carga en Redis los datos del reporte de llamadas entrantes.'
 
     def handle(self, *args, **options):
+        family = ReporteLlamadasEntranteFamily()
         try:
-            self._regenerar_tareas_campanas_preview_activas()
+            family.regenerar_families()
         except Exception as e:
-            logging.error('Fallo del comando: {0}'.format(e))
+            logger.error('Fallo del comando: {0}'.format(e))

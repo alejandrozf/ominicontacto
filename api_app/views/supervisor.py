@@ -75,8 +75,7 @@ class AgentesStatusAPIView(APIView):
             campanas = supervisor_profile.campanas_asignadas_actuales()
         ids_agentes = list(campanas.values_list(
             'queue_campana__members__pk', flat=True).distinct())
-        ids_campanas = list(campanas.values_list(
-            'pk', flat=True))
+        ids_campanas = list(campanas.values_list('pk', flat=True))
         agentes_dict = {}
         for agente in AgenteProfile.objects.filter(
                 pk__in=ids_agentes,

@@ -76,11 +76,6 @@
   file: state=directory path={{ kamailio_location }} owner={{ usuario }} group={{ usuario }} recurse=yes
   tags: postinstall
 
-# Se crea el archivo kamailio-local, Este archivo contiene las variables que usa el kamailio.cfg
-- name: Creation of kamailio-local.cfg file
-  template: src=templates/etc/kamailio-local.cfg dest={{ kamailio_location }}/etc/kamailio/ owner={{ usuario }} group={{ usuario }}
-  tags: postinstall
-
 # Se borra el kamailio.cfg que se crea por default a  la  hora de instalar
 - name: Erase of default kamailio.cfg file
   shell: rm -rf {{ kamailio_location }}/etc/kamailio/kamailio.cfg

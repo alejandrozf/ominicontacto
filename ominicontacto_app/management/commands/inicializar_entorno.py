@@ -18,9 +18,11 @@
 #
 import logging
 
+from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand, CommandError
+from django.db import transaction
 
-from ominicontacto_app.models import Campana, Queue, User, OpcionCalificacion
+from ominicontacto_app.models import Campana, Queue, User, OpcionCalificacion, QueueMember
 from ominicontacto_app.tests.factories import (GrupoFactory, AgenteProfileFactory,
                                                ArchivoDeAudioFactory, FormularioFactory,
                                                FieldFormularioFactory, BaseDatosContactoFactory,
@@ -40,6 +42,10 @@ from configuracion_telefonia_app.views.base import escribir_ruta_entrante_config
 
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 from ominicontacto_app.services.asterisk_service import ActivacionAgenteService
+
+from ominicontacto_app.views_queue_member import adicionar_agente_activo_cola, activar_cola
+
+from utiles_globales import obtener_sip_agentes_sesiones_activas
 
 logger = logging.getLogger(__name__)
 
@@ -61,6 +67,27 @@ class Command(BaseCommand):
         OpcionCalificacionFactory(
             nombre=self.angry.nombre, campana=campana, tipo=OpcionCalificacion.NO_ACCION)
 
+    def _asignar_agente_a_campana(self, agente, campana, penalty=0):
+        try:
+            with transaction.atomic():
+                queue_member = QueueMember(penalty=penalty)
+                queue_member_defaults = QueueMember.get_defaults(agente, campana)
+                queue_member.member = agente
+                queue_member.queue_name = campana.queue_campana
+                queue_member.id_campana = queue_member_defaults['id_campana']
+                queue_member.membername = queue_member_defaults['membername']
+                queue_member.interface = queue_member_defaults['interface']
+                # por ahora no definimos 'paused'
+                queue_member.paused = queue_member_defaults['paused']
+                queue_member.save()
+                # adicionamos el agente a la cola actual que esta corriendo
+                sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
+                adicionar_agente_activo_cola(queue_member, campana, sip_agentes_logueados)
+                activar_cola()
+        except Exception as e:
+            print("Can't assign agent to campaign due to {0}".error(e))
+            raise e
+
     def _crear_campana_manual(self):
         # crear campaña manual
         campana = CampanaFactory(
@@ -80,7 +107,8 @@ class Command(BaseCommand):
             ringinuse=True,
             setinterfacevar=True,
             weight=0,
-            wait=120
+            wait=120,
+            auto_grabacion=True,
         )
 
         self._crear_opciones_calificacion(campana)
@@ -108,7 +136,8 @@ class Command(BaseCommand):
             ringinuse=True,
             setinterfacevar=True,
             weight=0,
-            wait=120
+            wait=120,
+            auto_grabacion=True,
         )
 
         self._crear_opciones_calificacion(campana)
@@ -138,6 +167,8 @@ class Command(BaseCommand):
         agente.user.save()
         agente.save()
 
+        agente.user.groups.add(Group.objects.get(name='Agente'))
+
         asterisk_sip_service = ActivacionAgenteService()
         asterisk_sip_service.activar()
 
@@ -160,7 +191,7 @@ class Command(BaseCommand):
 
         ContactoFactory.create_batch(3, bd_contacto=self.bd_contacto)
 
-        self._crear_campana_manual()
+        campana_manual = self._crear_campana_manual()
         campana_entrante = self._crear_campana_entrante()
 
         activacion_queue_service = ActivacionQueueService()
@@ -190,10 +221,13 @@ class Command(BaseCommand):
 
         # crear ruta entrante
         self._crear_ruta_entrante(campana_entrante)
+        self._asignar_agente_a_campana(agente, campana_manual)
+        self._asignar_agente_a_campana(agente, campana_entrante)
 
     def handle(self, *args, **options):
         try:
             self._crear_datos_entorno()
+            print("Some initial data created for the OML fresh installation")
         except Exception as e:
             logging.error('Fallo del comando: {0}'.format(e))
             raise CommandError('Fallo del comando: {0}'.format(e))

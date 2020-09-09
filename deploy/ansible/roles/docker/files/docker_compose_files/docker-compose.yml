@@ -73,6 +73,11 @@ services:
       - asterisk
     dns: 8.8.8.8
     environment:
+      - ASTERISK_HOSTNAME=${ASTERISK_HOSTNAME}
+      - KAMAILIO_HOSTNAME=${KAMAILIO_HOSTNAME}
+      - KAMAILIO_CERTS_LOCATION=${KAMAILIO_CERTS_LOCATION}
+      - REDIS_HOSTNAME=${REDIS_HOSTNAME}
+      - RTPENGINE_HOSTNAME=${RTPENGINE_HOSTNAME}
       - TZ=${TZ}
     image: {{ kamailio_builded_image }}
     networks:
@@ -117,11 +122,7 @@ services:
       - {{ subnet_name }}
     privileged: true
     ports:
-{% if external_port is defined %}
-     - "${EXTERNAL_PORT}:443/tcp"
-{% else %}
-     - "${NGINX_EXT_PORT}:443/tcp"
-{% endif %}
+      - "${NGINX_EXT_PORT}:443/tcp"
     restart: on-failure
     stop_grace_period: 1m30s
     volumes:
@@ -147,19 +148,9 @@ services:
       - DJANGO_PASS=${DJANGO_PASS}
       - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
       - DOCKER_IP=${DOCKER_IP}
+      - EPHEMERAL_USER_TTL=${ECTTL}
       - LOGIN_FAILURE_LIMIT=${LOGIN_FAILURE_LIMIT}
       - MONITORFORMAT=${MONITORFORMAT}
-{% if external_hostname is defined %}
-      - NGINX_HOSTNAME=${EXTERNAL_HOSTNAME}
-{% else %}
-      - NGINX_HOSTNAME=${DOCKER_HOSTNAME}
-{% endif %}
-      - EPHEMERAL_USER_TTL=${ECTTL}
-{% if external_port is defined %}
-      - EXTERNAL_PORT=${EXTERNAL_PORT}
-{% else %}
-      - EXTERNAL_PORT=${NGINX_EXT_PORT}
-{% endif %}
       - INSTALL_PREFIX=${INSTALL_PREFIX}
       - KAMAILIO_HOSTNAME=${KAMAILIO_HOSTNAME}
       - OMNILEADS_HOSTNAME=${OMNILEADS_HOSTNAME}

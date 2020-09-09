@@ -22,8 +22,8 @@ ast_sounds_location: "{{ install_prefix }}volumes/prodenv_sounds/_data/"
 # Imagenes usadas en el docker-compose file
 ast_builded_image: "{{ docker_login_user }}/asterisk:${RELEASE}"
 dialer_builded_image: "{{ docker_login_user }}/dialer:${DIALER_VERSION}"
-kamailio_builded_image: "{{ docker_login_user }}/kamailio:${RELEASE}"
-nginx_builded_image: "{{ docker_login_user }}/nginx:${RELEASE}"
+kamailio_builded_image: "{{ docker_login_user }}/kamailio:{{ kamailio_version }}"
+nginx_builded_image: "{{ docker_login_user }}/nginx:1.19.0"
 omniapp_builded_image: "{{ docker_login_user }}/omniapp:${RELEASE}"
 
 # Como en prodenv las db estan en el docker host tengo que hacer esta jugadita

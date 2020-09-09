@@ -197,10 +197,10 @@ class IntegrationTests(unittest.TestCase):
         sleep(1)
 
         if multinum:
-            self.browser.find_element_by_xpath('//label/input[@value = "phone"]').click()
-            self.browser.find_element_by_xpath('//label/input[@value = "cell"]').click()
+            self.browser.find_element_by_xpath('//label/input[@value = "Phone"]').click()
+            self.browser.find_element_by_xpath('//label/input[@value = "Cell"]').click()
         else:
-            self.browser.find_element_by_xpath('//label/input[@value = "telefono"]').click()
+            self.browser.find_element_by_xpath('//label/input[@value = "Telefono"]').click()
 
         self.browser.find_element_by_xpath("//button[@type='submit']").click()
         sleep(1)
@@ -424,7 +424,7 @@ class IntegrationTests(unittest.TestCase):
                 password = '098098ZZZ'
                 self.crear_user(user, password, usuario)
                 self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(user))
-                print('Se pudo crear un ' + usuario + ' con exito.')
+                print('--Se pudo crear un ' + usuario + ' con exito.')
             except Exception as e:
                 print('--ERROR: No se pudo crear un ' + usuario + ' .--\n{0}'.format(e))
                 raise e
@@ -452,7 +452,7 @@ class IntegrationTests(unittest.TestCase):
                 self.get_href(link_update)
                 self.assertTrue(self.browser.find_element_by_xpath("//select[@id='id_rol']//option[contains\
                                                (text(), \'{0}\')]".format(cambio_perfil)))
-                print('Se pudo modificar a un Perfil de ' + cambio_perfil)
+                print('--Se pudo modificar a un Perfil de ' + cambio_perfil)
             except Exception as e:
                 print('--ERROR: No se pudo modificar a un perfil de \
                       ' + cambio_perfil + ' .--\n{0}'.format(e))
@@ -970,7 +970,7 @@ class IntegrationTests(unittest.TestCase):
             telefono = '3456789'
             cell = '154352879'
             self.browser.find_element_by_id('id_telefono').send_keys(telefono)
-            self.browser.find_element_by_id('id_cell').send_keys(cell)
+            self.browser.find_element_by_id('id_Cell').send_keys(cell)
             self.browser.find_element_by_xpath("//button[@type='submit']").click()
             sleep(1)
             self.browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')

@@ -325,7 +325,9 @@ ul.errorlist li {
 .modal-title {
     line-height: 1.4rem;
 }
-
+.modal-body p {
+    word-break: break-all !important;
+}
 /* ///// Modals
 */
 input[type=file].form-control {
@@ -771,6 +773,21 @@ table.campana-reglas .td-remove .btn {
     border-color: #24B3BC;
     color: #24B3BC;
 }
+table .row-entrante th{
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+table .col-entrante{
+    text-align: center;
+    border-left: solid 1px #dee2e6;
+    border-right: solid 1px #dee2e6;
+}
+table .left-entrante{
+    border-left: solid 1px #dee2e6;
+}
+table .right-entrante{
+    border-right: solid 1px #dee2e6;
+}
 
 /* ///// Tabs
 */
@@ -943,7 +960,19 @@ body.wrapper-page-error {
     height: calc(2.25rem + 2px) !important;
     padding: .375rem .75rem;
     border: 1px solid #ced4da !important;
+}
 /* Otras personalizaciones*/
 .filter-flex {
     display: flex;
+}
+
+.add_supervisor li {
+    display: inline-block !important;
+    width: 240px;
+}
+.add_supervisor ul {
+    padding: 10px;
+}
+.add_supervisor h3 {
+    color: #80B13A;
 }

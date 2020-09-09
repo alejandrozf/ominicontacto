@@ -542,9 +542,6 @@ class AuditoriaCalificacionForm(forms.ModelForm):
 class CampanaMixinForm(object):
     def __init__(self, *args, **kwargs):
         super(CampanaMixinForm, self).__init__(*args, **kwargs)
-        instance = getattr(self, 'instance', None)
-        if instance.pk is not None:
-            self.fields['sitio_externo'].widget = forms.TextInput(attrs={'class': 'hidden'})
         self.fields['bd_contacto'].required = not self.initial.get('es_template', False)
         if self.fields.get('bd_contacto', False):
             self.fields['bd_contacto'].queryset = BaseDatosContacto.objects.obtener_definidas()
@@ -1584,6 +1581,10 @@ class CampanaSupervisorUpdateForm(forms.ModelForm):
         model = Campana
         fields = ('supervisors',)
 
+        widgets = {
+            'supervisors': forms.CheckboxSelectMultiple(),
+        }
+
 
 class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
     auto_grabacion = forms.BooleanField(required=False)
@@ -1598,7 +1599,6 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
         else:
             self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].required = True
-            self.fields['tipo_interaccion'].disabled = True
             self.fields['tipo_interaccion'].required = False
 
     class Meta:
@@ -1632,7 +1632,6 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
             self.fields['nombre'].disabled = True
             self.fields['bd_contacto'].disabled = True
             self.fields['tiempo_desconexion'].disabled = True
-            self.fields['tipo_interaccion'].disabled = True
             self.fields['tipo_interaccion'].required = False
 
     class Meta:

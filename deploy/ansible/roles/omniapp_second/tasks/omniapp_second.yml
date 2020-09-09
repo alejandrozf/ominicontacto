@@ -71,7 +71,6 @@
     - collectstatic_js_reverse
     - compress --force
     - regenerar_asterisk
-    - regenerar_tareas_preview
     - actualizar_permisos
   become: true
   become_method: su
@@ -135,6 +134,11 @@
     state: present
     block: |
       net.core.somaxconn=2048
+  tags: postinstall
+
+# Seteo posesion de ominicontacto al usuario omnileads
+- name: Change owner and group of /opt/omnileads
+  file: "path={{ install_prefix }} owner={{ usuario }} group={{ usuario }} recurse=yes"
   tags: postinstall
 
 # Se inicia y habilita el servicio

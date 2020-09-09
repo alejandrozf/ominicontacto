@@ -30,34 +30,29 @@ logger = logging.getLogger(__name__)
 
 class Command(BaseCommand):
     """
-    Libera un contacto asignado a un agente en una campaña
+    Libera los contactos asignados a agentes en campañas
     preview al sobrepasar el tiempo máximo definido para atenderlo.
     El contacto podrá ser asignado a un nuevo agente para la finalización de
     su gestión
     """
 
-    help = u'Actualiza relaciones de agentes con contactos'
+    help = 'Actualiza relaciones de agentes con contactos'
 
-    def add_arguments(self, parser):
-        parser.add_argument('args', nargs=2, type=int)
-
-    def _actualizar_relacion_agente_contacto(self, campana_id, tiempo_desconexion):
+    def _actualizar_relaciones_agente_contacto(self):
         """
-        Procedimiento que libera los contactos reservados y asignados a agentes en una campaña
+        Procedimiento que libera los contactos reservados y asignados a los agentes de las campañas
         preview al sobrepasar el tiempo máximo definido para atenderlo.
-        El contacto podrá ser asignado a un nuevo agente para la finalización de
+        Los contactos liberados podrán ser asignados a nuevos agentes para la finalización de
         su gestión
         """
-        liberados = AgenteEnContacto.liberar_contactos_por_tiempo(campana_id, tiempo_desconexion)
+        liberados = AgenteEnContacto.liberar_contactos_por_tiempo()
 
         logger.info(
-            _("Actualizando {0} asignaciones de contactos a agentes en campaña {1}".format(
-                liberados, campana_id)))
+            _("Actualizando {0} asignaciones de contactos a agentes en campañas preview".format(
+                liberados)))
 
     def handle(self, *args, **options):
-        campana_id = args[0]
-        tiempo_desconexion = args[1]
         try:
-            self._actualizar_relacion_agente_contacto(campana_id, tiempo_desconexion)
+            self._actualizar_relaciones_agente_contacto()
         except Exception as e:
             logger.error('Fallo del comando: {0}'.format(e))

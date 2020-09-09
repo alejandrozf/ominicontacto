@@ -31,14 +31,12 @@ from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
 
-from simple_history.utils import update_change_reason
-
 from ominicontacto_app.models import Campana, CalificacionCliente, OpcionCalificacion
-from ominicontacto_app.services.estadisticas_campana import EstadisticasService
 from ominicontacto_app.services.reporte_campana_calificacion import ReporteCampanaService
+from ominicontacto_app.services.estadisticas_campana import (EstadisticasService, CampanaService,
+                                                             ExportacionCampanaCSV)
 from ominicontacto_app.services.reporte_campana_pdf import ReporteCampanaPDFService
-from reportes_app.reportes.reporte_llamados_contactados_csv import (
-    ReporteCampanaContactadosCSV, ArchivoDeReporteCsv)
+from reportes_app.reportes.reporte_llamados_contactados_csv import ArchivoDeReporteCsv
 from ominicontacto_app.services.reporte_respuestas_formulario import (
     ReporteRespuestaFormularioGestionService)
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
@@ -47,7 +45,8 @@ from ominicontacto_app.tests.factories import (AgenteProfileFactory, ActividadAg
                                                CampanaFactory, NombreCalificacionFactory,
                                                OpcionCalificacionFactory,
                                                LlamadaLogFactory)
-from ominicontacto_app.utiles import fecha_hora_local, fecha_local
+from ominicontacto_app.utiles import (fecha_hora_local,
+                                      datetime_hora_minima_dia_utc, datetime_hora_maxima_dia_utc)
 from reportes_app.models import LlamadaLog
 from reportes_app.tests.utiles import GeneradorDeLlamadaLogs
 
@@ -154,34 +153,35 @@ class ReportesCampanasTests(BaseTestDeReportes):
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed(response, 'registration/login.html')
 
+    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_datos_csv')
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
-    @patch.object(ReporteCampanaContactadosCSV, 'crea_reporte_csv')
     def test_usuario_logueado_accede_reporte_grafico_campana(
-            self, crea_reporte_pdf, crea_reporte_csv):
+            self, crea_reporte_pdf, escribir_archivo_datos_csv):
         url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed(response, 'reporte_grafico_campana.html')
 
+    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_datos_csv')
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
-    @patch.object(ReporteCampanaContactadosCSV, 'crea_reporte_csv')
-    def test_reporte_grafico_exporta_pdf_resumen(self, crea_reporte_pdf, crea_reporte_csv):
+    def test_reporte_grafico_exporta_pdf_resumen(
+            self, crea_reporte_pdf, escribir_archivo_datos_csv):
         url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
         self.client.get(url, follow=True)
         self.assertTrue(crea_reporte_pdf.called)
 
+    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_datos_csv')
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
-    @patch.object(ReporteCampanaContactadosCSV, 'crea_reporte_csv')
     def test_reporte_grafico_exporta_reportes_estadisticas_contactos(
-            self, crea_reporte_pdf, crea_reporte_csv):
+            self, crea_reporte_pdf, escribir_archivo_datos_csv):
         url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
         self.client.get(url, follow=True)
-        self.assertTrue(crea_reporte_csv.called)
+        self.assertTrue(escribir_archivo_datos_csv.called)
 
+    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_datos_csv')
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
-    @patch.object(ReporteCampanaContactadosCSV, 'crea_reporte_csv')
     @patch.object(Bar, 'render_to_png')
     def test_datos_reporte_grafico_calificaciones_coinciden_estadisticas_sistema(
-            self, render_to_png, crea_reporte_pdf, crea_reporte_csv):
+            self, render_to_png, crea_reporte_pdf, escribir_archivo_datos_csv):
         url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
         response = self.client.get(url, follow=True)
         estadisticas = response.context_data['graficos_estadisticas']['estadisticas']
@@ -189,50 +189,53 @@ class ReportesCampanasTests(BaseTestDeReportes):
                                self.calif_no_accion.opcion_calificacion.nombre]
         atendidas_sin_calificacion = len([self.contacto_no_calificado])
         total_asignados = len(calificaciones_list) + atendidas_sin_calificacion
-        calificaciones_list.append('Llamadas Atendidas sin calificacion')
+        calificaciones_list.append('Llamadas Atendidas sin calificación')
         self.assertEqual(estadisticas['total_asignados'], total_asignados)
         self.assertEqual(set(estadisticas['calificaciones_nombre']), set(calificaciones_list))
-        self.assertEqual(estadisticas['calificaciones_cantidad'], [1, 1, 1])
+        self.assertEqual(list(estadisticas['calificaciones_cantidad']), [1, 1, 1])
 
+    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_datos_csv')
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
-    @patch.object(ReporteCampanaContactadosCSV, 'crea_reporte_csv')
     @patch.object(Bar, 'render_to_png')
-    def test_datos_reporte_grafico_llamadas_analizan_no_atendidas_que_modifican_calificaciones(
-            self, render_to_png, crea_reporte_pdf, crea_reporte_csv):
-        # simulamos otra llamada a un contacto ya calificado y una modificación en la calificación
-        # existente
-        self.calif_gestion.observaciones = "Nueva observacion"
-        self.calif_gestion.save()
-        update_change_reason(self.calif_gestion, 'recalificacion')
+    def test_datos_reporte_grafico_llamadas_analizan_no_calificadas(
+            self, render_to_png, crea_reporte_pdf, escribir_archivo_datos_csv):
+        # hay una llamada a un contacto pero no se califica (self.contacto_no_calificado)
         url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
         response = self.client.get(url, follow=True)
         estadisticas = response.context_data['graficos_estadisticas']['estadisticas']
         atendidas_sin_calificacion = len([self.contacto_no_calificado])
-        self.assertEqual(estadisticas['calificaciones_cantidad'][-1], atendidas_sin_calificacion)
+        self.assertEqual(
+            list(estadisticas['calificaciones_cantidad'])[-1], atendidas_sin_calificacion)
 
+    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_datos_csv')
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
-    @patch.object(ReporteCampanaContactadosCSV, 'crea_reporte_csv')
     @patch.object(Bar, 'render_to_png')
     def test_datos_reporte_grafico_no_contactados_coinciden_estadisticas_sistema(
-            self, render_to_png, crea_reporte_pdf, crea_reporte_csv):
+            self, render_to_png, crea_reporte_pdf, escribir_archivo_datos_csv):
         url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
         response = self.client.get(url, follow=True)
         estadisticas = response.context_data['graficos_estadisticas']['estadisticas']
         total_no_atendidos = estadisticas['total_no_atendidos']
         self.assertEqual(total_no_atendidos, 1)
 
+    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_datos_csv')
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
-    @patch.object(ReporteCampanaContactadosCSV, 'crea_reporte_csv')
     @patch.object(Bar, 'render_to_png')
     def test_datos_reporte_grafico_calificaciones_por_agente_coinciden_estadisticas_sistema(
-            self, render_to_png, crea_reporte_pdf, crea_reporte_csv):
+            self, render_to_png, crea_reporte_pdf, escribir_archivo_datos_csv):
         agente_profile1, agente_profile2, agente_profile3 = AgenteProfileFactory.create_batch(3)
+        log1 = LlamadaLogFactory(campana_id=self.campana_activa.pk, agente_id=agente_profile1.pk)
+        log2 = LlamadaLogFactory(campana_id=self.campana_activa.pk, agente_id=agente_profile2.pk)
+        log3 = LlamadaLogFactory(campana_id=self.campana_activa.pk, agente_id=agente_profile3.pk)
         CalificacionClienteFactory(
-            opcion_calificacion=self.opcion_calificacion_gestion, agente=agente_profile1)
+            callid=log1.callid, opcion_calificacion=self.opcion_calificacion_gestion,
+            agente=agente_profile1)
         CalificacionClienteFactory(
-            opcion_calificacion=self.opcion_calificacion_noaccion, agente=agente_profile2)
+            callid=log2.callid, opcion_calificacion=self.opcion_calificacion_noaccion,
+            agente=agente_profile2)
         CalificacionClienteFactory(
-            opcion_calificacion=self.opcion_calificacion_noaccion, agente=agente_profile3)
+            callid=log3.callid, opcion_calificacion=self.opcion_calificacion_noaccion,
+            agente=agente_profile3)
         url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
         response = self.client.get(url, follow=True)
         estadisticas = response.context_data['graficos_estadisticas']['estadisticas']
@@ -257,9 +260,12 @@ class ReportesCampanasTests(BaseTestDeReportes):
             campana_entrante, True, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
             campana_entrante, True, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile)
-        estadisticas_service = EstadisticasService()
-        hoy = fecha_local(timezone.now())
-        reporte = estadisticas_service.calcular_cantidad_llamadas(campana_entrante, hoy, hoy)
+        hoy_ahora = fecha_hora_local(timezone.now())
+        fecha_desde = datetime_hora_minima_dia_utc(hoy_ahora)
+        fecha_hasta = datetime_hora_maxima_dia_utc(hoy_ahora)
+        estadisticas_service = EstadisticasService(campana_entrante, fecha_desde, fecha_hasta)
+        estadisticas_service.calcular_estadisticas_totales()
+        reporte = estadisticas_service.reporte_detalle_llamadas.reporte
         self.assertEqual(reporte['Recibidas'], 4)
         self.assertEqual(reporte['Atendidas'], 2)
         self.assertEqual(reporte['Expiradas'], 1)
@@ -279,11 +285,12 @@ class ReportesCampanasTests(BaseTestDeReportes):
         self.generador_log_llamadas.generar_log(
             campana_entrante, False, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile,
             time=hoy)
-        estadisticas_service = EstadisticasService()
-        hoy = fecha_local(timezone.now())
-        _, _, llamadas_recibidas, _, _ = estadisticas_service.obtener_total_llamadas(
-            campana_entrante)
-        self.assertEqual(llamadas_recibidas, 1)
+        hoy_ahora = fecha_hora_local(timezone.now())
+        fecha_desde = datetime_hora_minima_dia_utc(hoy_ahora)
+        fecha_hasta = datetime_hora_maxima_dia_utc(hoy_ahora)
+        estadisticas_service = EstadisticasService(campana_entrante, fecha_desde, fecha_hasta)
+        estadisticas_service.calcular_estadisticas_totales()
+        self.assertEqual(estadisticas_service.reporte_totales_llamadas.llamadas_recibidas, 1)
 
     def test_datos_reporte_grafico_llamadas_entrantes_realizadas_muestran_solo_dia_actual(
             self):
@@ -296,11 +303,12 @@ class ReportesCampanasTests(BaseTestDeReportes):
         self.generador_log_llamadas.generar_log(
             campana_entrante, True, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile,
             time=hoy)
-        estadisticas_service = EstadisticasService()
-        hoy = fecha_local(timezone.now())
-        _, llamadas_realizadas, _, _, _ = estadisticas_service.obtener_total_llamadas(
-            campana_entrante)
-        self.assertEqual(llamadas_realizadas, 1)
+        hoy_ahora = fecha_hora_local(timezone.now())
+        fecha_desde = datetime_hora_minima_dia_utc(hoy_ahora)
+        fecha_hasta = datetime_hora_maxima_dia_utc(hoy_ahora)
+        estadisticas_service = EstadisticasService(campana_entrante, fecha_desde, fecha_hasta)
+        estadisticas_service.calcular_estadisticas_totales()
+        self.assertEqual(estadisticas_service.reporte_totales_llamadas.llamadas_realizadas, 1)
 
     def test_datos_reporte_grafico_llamadas_entrantes_promedio_tiempo_espera(self):
         campana_entrante = CampanaFactory(type=Campana.TYPE_ENTRANTE, estado=Campana.ESTADO_ACTIVA)
@@ -311,10 +319,12 @@ class ReportesCampanasTests(BaseTestDeReportes):
         self.generador_log_llamadas.generar_log(
             campana_entrante, False, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile,
             time=hoy, bridge_wait_time=2, callid=2)
-        estadisticas_service = EstadisticasService()
-        _, _, _, tiempo_promedio_espera, _ = estadisticas_service.obtener_total_llamadas(
-            campana_entrante)
-        self.assertEqual(tiempo_promedio_espera, 3)
+        hoy_ahora = fecha_hora_local(timezone.now())
+        fecha_desde = datetime_hora_minima_dia_utc(hoy_ahora)
+        fecha_hasta = datetime_hora_maxima_dia_utc(hoy_ahora)
+        estadisticas_service = EstadisticasService(campana_entrante, fecha_desde, fecha_hasta)
+        estadisticas_service.calcular_estadisticas_totales()
+        self.assertEqual(estadisticas_service.reporte_totales_llamadas.tiempo_promedio_espera, 3)
 
     def test_datos_reporte_grafico_llamadas_entrantes_promedio_tiempo_abandono(self):
         campana_entrante = CampanaFactory(type=Campana.TYPE_ENTRANTE, estado=Campana.ESTADO_ACTIVA)
@@ -325,12 +335,18 @@ class ReportesCampanasTests(BaseTestDeReportes):
         LlamadaLogFactory(tipo_campana=Campana.TYPE_ENTRANTE,
                           tipo_llamada=LlamadaLog.LLAMADA_ENTRANTE, campana_id=campana_entrante.pk,
                           event='ABANDONWEL', bridge_wait_time=5, time=hoy)
-        estadisticas_service = EstadisticasService()
-        _, _, _, _, tiempo_promedio_abandono = estadisticas_service.obtener_total_llamadas(
-            campana_entrante)
-        self.assertEqual(tiempo_promedio_abandono, 4.5)
+        hoy_ahora = fecha_hora_local(timezone.now())
+        fecha_desde = datetime_hora_minima_dia_utc(hoy_ahora)
+        fecha_hasta = datetime_hora_maxima_dia_utc(hoy_ahora)
+        estadisticas_service = EstadisticasService(campana_entrante, fecha_desde, fecha_hasta)
+        estadisticas_service.calcular_estadisticas_totales()
+        self.assertEqual(
+            estadisticas_service.reporte_totales_llamadas.tiempo_promedio_abandono, 4.5)
 
-    def test_datos_reporte_grafico_detalle_llamadas_dialer_coinciden_estadisticas_sistema(self):
+    @patch.object(CampanaService, 'obtener_dato_campana_run')
+    def test_datos_reporte_grafico_detalle_llamadas_dialer_coinciden_estadisticas_sistema(
+            self, obtener_dato_campana_run):
+        obtener_dato_campana_run.return_value = {'n_est_remaining_calls': 0}
         campana_dialer = CampanaFactory(type=Campana.TYPE_DIALER, estado=Campana.ESTADO_ACTIVA)
         self.generador_log_llamadas.generar_log(
             campana_dialer, False, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile)
@@ -348,9 +364,12 @@ class ReportesCampanasTests(BaseTestDeReportes):
             campana_dialer, True, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
             campana_dialer, True, 'NOANSWER', self.telefono2, agente=self.agente_profile)
-        estadisticas_service = EstadisticasService()
-        hoy = fecha_local(timezone.now())
-        reporte = estadisticas_service.calcular_cantidad_llamadas(campana_dialer, hoy, hoy)
+        hoy_ahora = fecha_hora_local(timezone.now())
+        fecha_desde = datetime_hora_minima_dia_utc(hoy_ahora)
+        fecha_hasta = datetime_hora_maxima_dia_utc(hoy_ahora)
+        estadisticas_service = EstadisticasService(campana_dialer, fecha_desde, fecha_hasta)
+        estadisticas_service.calcular_estadisticas_totales()
+        reporte = estadisticas_service.reporte_detalle_llamadas.reporte
         self.assertEqual(reporte['Discadas'], 5)
         self.assertEqual(reporte['Conectadas al agente'], 2)
         self.assertEqual(reporte['Atendidas'], 4)
@@ -367,17 +386,23 @@ class ReportesCampanasTests(BaseTestDeReportes):
             campana_manual, True, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
             campana_manual, True, 'FAIL', self.telefono3, agente=self.agente_profile)
-        estadisticas_service = EstadisticasService()
-        hoy = fecha_local(timezone.now())
-        reporte = estadisticas_service.calcular_cantidad_llamadas(campana_manual, hoy, hoy)
+        hoy_ahora = fecha_hora_local(timezone.now())
+        fecha_desde = datetime_hora_minima_dia_utc(hoy_ahora)
+        fecha_hasta = datetime_hora_maxima_dia_utc(hoy_ahora)
+        estadisticas_service = EstadisticasService(campana_manual, fecha_desde, fecha_hasta)
+        estadisticas_service.calcular_estadisticas_totales()
+        reporte = estadisticas_service.reporte_detalle_llamadas.reporte
         self.assertEqual(reporte['Discadas'], 3)
         self.assertEqual(reporte['Discadas atendidas'], 2)
         self.assertEqual(reporte['Discadas no atendidas'], 1)
 
     def test_datos_reporte_grafico_detalle_llamadas_preview_coinciden_estadisticas_sistema(self):
-        estadisticas_service = EstadisticasService()
-        hoy = fecha_local(timezone.now())
-        reporte = estadisticas_service.calcular_cantidad_llamadas(self.campana_activa, hoy, hoy)
+        hoy_ahora = fecha_hora_local(timezone.now())
+        fecha_desde = datetime_hora_minima_dia_utc(hoy_ahora)
+        fecha_hasta = datetime_hora_maxima_dia_utc(hoy_ahora)
+        estadisticas_service = EstadisticasService(self.campana_activa, fecha_desde, fecha_hasta)
+        estadisticas_service.calcular_estadisticas_totales()
+        reporte = estadisticas_service.reporte_detalle_llamadas.reporte
         # se usan los logs de llamadas del setUp pues la campaña usada es preview
         self.assertEqual(reporte['Discadas'], 2)
         self.assertEqual(reporte['Conectadas'], 2)
@@ -528,55 +553,59 @@ class ReportesCampanasTests(BaseTestDeReportes):
         opcion_calificacion_agenda = OpcionCalificacionFactory(
             nombre=settings.CALIFICACION_REAGENDA, campana=campana_manual,
             tipo=OpcionCalificacion.AGENDA)
+        log = LlamadaLogFactory(campana_id=campana_manual.pk)
         CalificacionClienteFactory(
+            callid=log.callid,
             opcion_calificacion=opcion_calificacion_agenda, agente=self.agente_profile)
-        estadisticas_service = EstadisticasService()
-        llamadas_pendientes, _, _, _, _ = estadisticas_service.obtener_total_llamadas(
-            campana_manual)
-        self.assertEqual(llamadas_pendientes, 1)
+        hoy_ahora = fecha_hora_local(timezone.now())
+        fecha_desde = datetime_hora_minima_dia_utc(hoy_ahora)
+        fecha_hasta = datetime_hora_maxima_dia_utc(hoy_ahora)
+        estadisticas_service = EstadisticasService(campana_manual, fecha_desde, fecha_hasta)
+        estadisticas_service.calcular_estadisticas_totales()
+        self.assertEqual(estadisticas_service.reporte_totales_llamadas.llamadas_pendientes, 1)
 
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
-    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_contactados_csv')
-    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_no_atendidos_csv')
-    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_calificado_csv')
+    @patch.object(ExportacionCampanaCSV, 'exportar_reportes_csv')
     def test_reporte_contactados_campanas_entrantes_linkean_calificaciones_llamadas(
-            self, escribir_archivo_calificado_csv, escribir_archivo_no_atendidos_csv,
-            escribir_archivo_contactados_csv, crea_reporte_pdf):
+            self, exportar_reportes_csv, crea_reporte_pdf):
         self.campana_activa.type = Campana.TYPE_ENTRANTE
         self.campana_activa.save()
         self.calif_gestion.callid = '000000'
         self.calif_gestion.save()
         url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
         self.client.get(url, follow=True)
-        calificados_dict = escribir_archivo_contactados_csv.call_args[0][2]
+        calificados_list = exportar_reportes_csv.call_args[0][2]
         # muestra el histórico de calificacions
-        self.assertEqual(len(calificados_dict), 3)
+        self.assertEqual(len(calificados_list), 3)
 
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
-    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_contactados_csv')
-    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_no_atendidos_csv')
-    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_calificado_csv')
+    @patch.object(ExportacionCampanaCSV, 'exportar_reportes_csv')
     def test_reporte_contactados_campanas_no_entrantes_muestran_valor_calificacion_historica(
-            self, escribir_archivo_calificado_csv, escribir_archivo_no_atendidos_csv,
-            escribir_archivo_contactados_csv, crea_reporte_pdf):
+            self, exportar_reportes_csv, crea_reporte_pdf):
         url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
-        self.calif_gestion.callid = '000000'
+        id_llamada = '000000'
+        LlamadaLogFactory(callid=id_llamada, campana_id=self.campana_activa.pk)
+        self.calif_gestion.callid = id_llamada
         self.calif_gestion.save()
         self.client.get(url, follow=True)
-        calificados_dict = escribir_archivo_contactados_csv.call_args[0][2]
+        calificados_dict = exportar_reportes_csv.call_args[0][2]
         # muestra los valores finales de las calificaciones
         self.assertEqual(len(calificados_dict), 3)
 
+    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_datos_csv')
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
-    @patch.object(ReporteCampanaContactadosCSV, 'crea_reporte_csv')
     @patch.object(Bar, 'render_to_png')
     def test_datos_reporte_grafico_campana_entrantes_totales_calificaciones_contabiliza_historico(
             self, render_to_png, crea_reporte_pdf, crea_reporte_csv):
         self.campana_activa.type = Campana.TYPE_ENTRANTE
+        id_llamada_1 = '000000'
+        id_llamada_2 = '111111'
+        LlamadaLogFactory(callid=id_llamada_1, campana_id=self.campana_activa.pk)
+        LlamadaLogFactory(callid=id_llamada_2, campana_id=self.campana_activa.pk)
         self.campana_activa.save()
-        self.calif_gestion.callid = '000000'
+        self.calif_gestion.callid = id_llamada_1
         self.calif_gestion.save()
-        self.calif_no_accion.callid = '111111'
+        self.calif_no_accion.callid = id_llamada_2
         self.calif_no_accion.save()
         url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
         response = self.client.get(url, follow=True)
@@ -598,9 +627,12 @@ class ReportesCampanasTests(BaseTestDeReportes):
             campana_entrante, True, 'COMPLETEAGENT', self.telefono1, agente=self.agente_profile)
         self.generador_log_llamadas.generar_log(
             campana_entrante, True, 'COMPLETEOUTNUM', self.telefono2, agente=self.agente_profile)
-        estadisticas_service = EstadisticasService()
-        hoy = fecha_local(timezone.now())
-        reporte = estadisticas_service.calcular_cantidad_llamadas(campana_entrante, hoy, hoy)
+        hoy_ahora = fecha_hora_local(timezone.now())
+        fecha_desde = datetime_hora_minima_dia_utc(hoy_ahora)
+        fecha_hasta = datetime_hora_maxima_dia_utc(hoy_ahora)
+        estadisticas_service = EstadisticasService(campana_entrante, fecha_desde, fecha_hasta)
+        estadisticas_service.calcular_estadisticas_totales()
+        reporte = estadisticas_service.reporte_detalle_llamadas.reporte
         self.assertEqual(reporte['Recibidas'], 4)
         self.assertEqual(reporte['Atendidas'], 2)
         self.assertEqual(reporte['Expiradas'], 1)

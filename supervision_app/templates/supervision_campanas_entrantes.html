@@ -22,9 +22,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 
 {% block head_js %}
-    <script type="text/javascript" src="{% static 'supervision_app/JS/campanas_entrantes.js' %}"></script>
-    {% include 'config.html' %}
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/config.js' %}"></script>
+<script type="text/javascript" src="{% static 'supervision_app/JS/campanas_entrantes.js' %}"></script>
+{% include 'config.html' %}
+<script type="text/javascript" src="{% static 'ominicontacto/JS/config.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -33,33 +33,43 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <div>
     <table class="table">
         <thead>
+            <tr class="row-entrante">
+                <th></th>
+                <th class="col-entrante" colspan="3">{% trans 'Agentes' %}</th>
+                <th class="col-entrante" colspan="4">{% trans 'Llamadas' %}</th>
+                <th class="col-entrante" colspan="2">{% trans 'T. promedio' %}</th>
+                <th></th>
+            </tr>
             <tr>
                 <th>{% trans 'Nombre' %}</th>
-                <th>{% trans 'Llamadas' %}</th>
+                <th class="left-entrante">{% trans 'Online' %}</th>
+                <th>{% trans 'En llamada' %}</th>
+                <th class="right-entrante">{% trans 'En pausa' %}</th>
+                <th class="left-entrante">{% trans 'En espera' %}</th>
                 <th>{% trans 'Atendidas' %}</th>
                 <th>{% trans 'Abandonadas' %}</th>
-                <th>{% trans 'Abandonadas en anuncio' %}</th>
-                <th>{% trans 'T. promedio espera' %}</th>
-                <th>{% trans 'Expiradas' %}</th>
-                <th>{% trans 'En espera' %}</th>
-                <th>{% trans 'T. promedio abandono' %}</th>
+                <th class="right-entrante">{% trans 'Expiradas' %}</th>
+                <th class="left-entrante">{% trans 'Abandono' %}</th>
+                <th class="right-entrante">{% trans 'Espera' %}</th>
                 <th>{% trans 'Gestiones' %}</th>
             </tr>
         </thead>
         <tbody id="table-campanas">
             {% for datos_campana in estadisticas.values %}
-                <tr>
-                    <td>{{ datos_campana.nombre }}</td>
-                    <td>{{ datos_campana.recibidas }}</td>
-                    <td>{{ datos_campana.atendidas }}</td>
-                    <td>{{ datos_campana.abandonadas }}</td>
-                    <td>{{ datos_campana.abandonadas_anuncio }}</td>
-                    <td>{{ datos_campana.t_promedio_espera|floatformat }} {% trans 'segundos' %}</td>
-                    <td>{{ datos_campana.expiradas }}</td>
-                    <td>{{ datos_campana.en_cola }}</td>
-                    <td>{{ datos_campana.t_promedio_abandono|floatformat }} {% trans ' segundos' %}</td>
-                    <td>{{ datos_campana.gestiones }}</td>
-                </tr>
+            <tr>
+                <td>{{ datos_campana.nombre }}</td>
+                <td>{{ datos_campana.agentes_online }}</td>
+                <td>{{ datos_campana.agentes_llamada }}</td>
+                <td>{{ datos_campana.agentes_pausa }}</td>
+                <td>{{ datos_campana.llamadas_en_espera }}</td>
+                <td>{{ datos_campana.atendidas }}</td>
+                <td>{{ datos_campana.abandonadas }}</td>
+                <td>{{ datos_campana.expiradas }}</td>
+                <td>{{ datos_campana.t_promedio_abandono|floatformat }} {% trans ' seg' %}</td>
+                <td>{{ datos_campana.t_promedio_espera|floatformat }} {% trans 'seg' %}</td>
+                <td>{{ datos_campana.gestiones }}</td>
+            </tr>
+
             {% endfor %}
         </tbody>
     </table>

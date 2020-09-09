@@ -272,6 +272,14 @@ def fecha_hora_local(fecha_hora):
     return fecha_hora.astimezone(timezone.get_current_timezone())
 
 
+def datetime_hora_minima_dia_utc(fecha_utc):
+    return fecha_utc.replace(hour=0, minute=0, second=0, microsecond=0)
+
+
+def datetime_hora_maxima_dia_utc(fecha_utc):
+    return fecha_utc.replace(hour=23, minute=59, second=59, microsecond=999999)
+
+
 def convertir_ascii_string(cadena):
     """ Devuelve ascii ignorando caracteres extraños"""
     return cadena.encode('ascii', errors='ignore').decode('utf-8')
@@ -392,3 +400,7 @@ def get_oml_last_release():
         current_release_tag = "Release {0}".format(nodos_tags[0].text)
         current_release_branch = "release-{0}".format(nodos_tags[0].text)
         return [current_release_tag, current_release_branch]
+
+
+def crear_segmento_grabaciones_url():
+    return "/grabaciones"

@@ -20,12 +20,12 @@
 # Linkeo el binario a /usr/sbin
 - name: Create simbolic link of asterisk binarie
   file: state=link src={{ asterisk_location }}/sbin/asterisk dest=/usr/sbin/asterisk force=true
-  when: is_docker == "false"
+  when: is_docker == "false" and asterisk_host is not defined
   tags: postinstall
 
 # Se linkean los .conf de asterisk (los que estan afuera de archivos-no-enlaces) a /opt/omnileads/asterisk/etc/asterisk
 - name: Copy of asterisk dialplan files for OML
-  file: "state=link src={{ install_prefix }}ominicontacto/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ ast_conf_location }}/{{ item }} force=true owner={{ usuario }} group={{ usuario }} mode=755"
+  copy: "src={{ repo_location }}/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ ast_conf_location }}/{{ item }} force=true owner={{ usuario }} group={{ usuario }} mode=755"
   with_items:
     - oml_extensions_bridgecall.conf
     - oml_extensions_commonsub.conf
@@ -33,21 +33,8 @@
     - oml_extensions_postcall.conf
     - oml_extensions_precall.conf
     - oml_extensions.conf
-  when: is_docker == "false"
   tags: postinstall
-
-# Se copian para docker prodenv (build)
-- name: Copy of asterisk dialplan files for OML (docker)
-  copy: src={{ repo_location }}/ominicontacto_voip/asterisk-files/conf/{{ item }} dest={{ ast_conf_location }} owner={{ usuario }} group={{ usuario }}
-  with_items:
-    - oml_extensions_bridgecall.conf
-    - oml_extensions_commonsub.conf
-    - oml_extensions_modules.conf
-    - oml_extensions_postcall.conf
-    - oml_extensions_precall.conf
-    - oml_extensions.conf
-  when: prodenv == 1 and is_docker == "true"
-  tags: postinstall
+  when: prodenv == 1
 
 #Se generan los archivos de configuracion que vienen en sus templates
 - name: Copy of asterisk config files
@@ -129,6 +116,7 @@
     - odbcinst.ini
     - odbc.ini
   tags: postinstall
+  when: asterisk_host is not defined
 
 # Creo los irectorios que tendran los audios subidos por la web
 - name: Creation of the sounds and blacklist dirs
@@ -153,14 +141,19 @@
 # Borro el archivo de inicio de asterisk en el init.d
 - name: Erase default asterisk init.d service
   file: state=absent path=/etc/init.d/asterisk
-  when: is_docker == "false"
+  when: is_docker == "false" and asterisk_host is not defined
   tags: postinstall
 
 # Habilito e inicio asterisk
 - name: Start and enable asterisk
   systemd: name=asterisk state=restarted enabled=yes daemon_reload=yes
-  when: is_docker == "false"
+  when: is_docker == "false" and asterisk_host is not defined
   tags: postinstall
+
+#- name: Reload of external asterisk
+#  command: "{{ asterisk_location}}/sbin/asterisk -rx 'module reload'"
+#  when: is_docker == "false" and asterisk_host is defined
+#  tags: postinstall
 
 # Añado un archivo para el logrotate
 - name: Configuration of logrotate

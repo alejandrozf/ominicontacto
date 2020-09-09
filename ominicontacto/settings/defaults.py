@@ -227,16 +227,6 @@ Ejemplos:
     OML_RUTAS_SALIENTES_FILENAME = "/etc/asterisk/oml_extensions_outr.conf"
 """
 
-OML_RELOAD_CMD = None
-"""Comando a ejecutar para hacer reload de Asterisk
-
-Ejemplo:
-
-.. code-block:: python
-
-    OML_RELOAD_CMD = ["/usr/bin/asterisk", "-x", "reload"]
-"""
-
 ASTERISK = {
     'AMI_USERNAME': None,  # Usuario para AMI
     'AMI_PASSWORD': None,  # Password para usuario para AMI
@@ -316,17 +306,6 @@ OML_PLAYLIST_PATH_ASTERISK = None
 
 Ejemplo:
     OML_PLAYLIST_PATH_ASTERISK = '/var/lib/asterisk/sounds/moh/'
-"""
-
-# ==============================================================================
-# URL DE GRABACIONES DE ELASTIX
-# ==============================================================================
-
-OML_GRABACIONES_URL = None
-"""Url de donde buscar las grabaciones de las llamadas
-
-Ejemplo:
-    OML_GRABACIONES_URL = "http://172.16.20.222/grabaciones"
 """
 
 # ==============================================================================

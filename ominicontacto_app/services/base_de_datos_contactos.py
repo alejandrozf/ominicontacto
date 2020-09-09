@@ -318,7 +318,7 @@ class PredictorMetadataService(object):
         set_cant_columnas = set([len(linea) for linea in lineas])
         if len(set_cant_columnas) != 1:
             logger.debug(_("Distintas cantidades "
-                           "de columnas: {0}".fomat(set_cant_columnas)))
+                           "de columnas: {0}".format(set_cant_columnas)))
             raise(NoSePuedeInferirMetadataError(_("Las lineas recibidas "
                                                   "poseen distintas cantidades "
                                                   "de columnas")))
