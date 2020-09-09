@@ -7,11 +7,10 @@
 [all:vars]
 asterisk_version=16.12.0
 kamailio_version=5.3.5
-rtpengine_version=5.5.3.1
+rtpengine_version=5.5.12.1
 virtualenv_version=
 postgresql_version=11
 redis_version=5.0.9
-rtpengine_version=5.5.3.1
 wombat_version=20.02.1-272
 install_prefix=/opt/omnileads/
 asterisk_location="{{ install_prefix }}asterisk"

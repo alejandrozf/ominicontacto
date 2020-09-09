@@ -19,19 +19,18 @@
 from __future__ import unicode_literals
 from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorActivityAmiManager
 from ominicontacto_app.utiles import datetime_hora_maxima_dia, datetime_hora_minima_dia
-from reportes_app.models import LlamadaLog
 from ominicontacto_app.models import CalificacionCliente, Campana, OpcionCalificacion
+
+from reportes_app.models import LlamadaLog
+from reportes_app.services.redis_service import RedisService
 
 import logging as _logging
 
-from collections import defaultdict
 from datetime import datetime
 
-from asterisk.manager import Manager, ManagerSocketException, ManagerAuthException, ManagerException
-
-from django.conf import settings
-from django.db.models import Avg, Count
+from django.db.models import Count
 from django.utils.encoding import force_text
+from collections import defaultdict
 
 logger = _logging.getLogger(__name__)
 
@@ -96,11 +95,12 @@ class ReporteDeLlamadasDeSupervision(object):
         raise NotImplementedError
 
 
-class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
+class ReporteDeLLamadasEntrantesDeSupervision(object):
     INICIALES = {
         'agentes_online': 0,
         'agentes_llamada': 0,
         'agentes_pausa': 0,
+        'llamadas_en_espera': 0,
         'atendidas': 0,
         'abandonadas': 0,
         'expiradas': 0,
@@ -108,15 +108,26 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
         't_promedio_espera': 0,
         'gestiones': 0,
     }
-    EVENTOS_LLAMADA = ['ENTERQUEUE', 'ENTERQUEUE-TRANSFER', 'CONNECT', 'EXITWITHTIMEOUT', 'ABANDON',
-                       'ABANDONWEL']
 
     def __init__(self, user_supervisor):
-        super(ReporteDeLLamadasEntrantesDeSupervision, self).__init__(user_supervisor)
-        self._contabilizar_llamadas_en_espera_por_campana()
-        self._contabilizar_llamadas_promedio_espera()
-        self._contabilizar_tiempo_promedio_abandono_por_campana()
-        self._contabilizar_agentes(user_supervisor)
+        self.campanas = {campana.id: campana for campana in self._obtener_campanas(user_supervisor)}
+        self.estadisticas = {}
+
+        self._contabilizar_agentes()
+        self._contabilizar_datos_campanas()
+
+    def _inicializar_conteo_de_campana(self, campana_id):
+        self.estadisticas.update({campana_id: self.INICIALES.copy()})
+        self.estadisticas[campana_id]['nombre'] = force_text(self.campanas[campana_id].nombre)
+
+    def _contabilizar_datos_campanas(self):
+        redis_service = RedisService()
+        estadisticas_redis = redis_service.obtener_estadisticas_campanas_entrantes(
+            self.campanas.keys())
+        for st in estadisticas_redis.keys():
+            if not self.estadisticas.get(st, False):
+                self._inicializar_conteo_de_campana(st)
+            self.estadisticas[st].update(estadisticas_redis[st])
 
     def _obtener_campanas(self, user_supervisor):
         if user_supervisor.get_is_administrador():
@@ -125,148 +136,47 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteDeLlamadasDeSupervision):
             supervisor = user_supervisor.get_supervisor_profile()
             campanas = supervisor.campanas_asignadas_actuales()
 
-        campanas = campanas.filter(type=Campana.TYPE_ENTRANTE)
+        campanas = campanas.filter(type=Campana.TYPE_ENTRANTE).order_by('id')
         return campanas
 
-    def _obtener_logs_de_llamadas(self):
-        return LlamadaLog.objects.filter(time__gte=self.desde,
-                                         time__lte=self.hasta,
-                                         campana_id__in=self.campanas.keys(),
-                                         event__in=self.EVENTOS_LLAMADA,
-                                         tipo_llamada=LlamadaLog.LLAMADA_ENTRANTE)
-
-    def _contabilizar_tipos_de_llamada_por_campana(self, datos_campana, log):
-        if log.event == 'CONNECT':
-            datos_campana['atendidas'] += 1
-        elif log.event == 'EXITWITHTIMEOUT':
-            datos_campana['expiradas'] += 1
-        elif log.event == 'ABANDON':
-            datos_campana['abandonadas'] += 1
-        elif log.event == 'ABANDONWEL':
-            datos_campana['abandonadas'] += 1
-
-    def _parsear_queue_status_pasada_1(self, queue_status_raw):
-        # almacenamos una lista de pares con la información del tipo de evento
-        # y la cola relacionada
-        events_info = []
-        event_queue = []
-        for line in queue_status_raw.split('\n'):
-            if line.startswith('Event'):
-                event_queue.append(line)
-            elif line.startswith('Queue'):
-                event_queue.append(line)
-                events_info.append(event_queue)
-                event_queue = []
-        return events_info
-
-    def _parsear_queue_status_pasada_2(self, lista_queue_status):
-        llamadas_en_cola_por_campana = defaultdict(int)
-        for event in lista_queue_status:
-            if event[0].find('QueueEntry') > -1:
-                # obtenemos el id de la campana desde entradas como:
-                # u'Queue: 29_Dialer-3\r'
-                campana_id = int(event[1].split(' ')[1].split('_')[0])
-                if campana_id in self.campanas.keys():
-                    # por si es de una dialer, en ese caso se excluye
-                    llamadas_en_cola_por_campana[campana_id] += 1
-        return llamadas_en_cola_por_campana
-
-    def _obtener_llamadas_en_espera_raw(self):
-        manager = Manager()
-        ami_manager_user = settings.ASTERISK['AMI_USERNAME']
-        ami_manager_pass = settings.ASTERISK['AMI_PASSWORD']
-        ami_manager_host = str(settings.ASTERISK_HOSTNAME)
-        queue_status_raw = {}
-        try:
-            manager.connect(ami_manager_host)
-            manager.login(ami_manager_user, ami_manager_pass)
-            queue_status_raw = manager.send_action({"Action": "QueueStatus"}).data
-
-        except ManagerSocketException as e:
-            logger.exception("Error connecting to the manager: {0}".format(e))
-        except ManagerAuthException as e:
-            logger.exception("Error logging in to the manager: {0}".format(e))
-        except ManagerException as e:
-            logger.exception("Error {0}".format(e))
-        finally:
-            manager.close()
-            return queue_status_raw
-
-    def _obtener_llamadas_en_espera(self):
-        queue_status_raw = self._obtener_llamadas_en_espera_raw()
-        try:
-            self.llamadas_en_cola = self._parsear_queue_status_pasada_2(
-                self._parsear_queue_status_pasada_1(queue_status_raw))
-        except Exception as e:
-            logger.exception("Error {0}".format(e))
-            self.llamadas_en_cola = defaultdict(int)
-
-    def _contabilizar_llamadas_en_espera_por_campana(self):
-        self._obtener_llamadas_en_espera()
-        for campana, llamadas_en_cola_campana in self.llamadas_en_cola.items():
-            self.estadisticas[campana]['en_cola'] = llamadas_en_cola_campana
-
-    def _contabilizar_llamadas_promedio_espera(self):
-        logs_llamadas_espera = LlamadaLog.objects.entrantes_espera()
-        logs_llamadas_espera_hoy = logs_llamadas_espera.filter(
-            tipo_llamada=LlamadaLog.LLAMADA_ENTRANTE,
-            time__gte=self.desde, campana_id__in=self.campanas.keys(), time__lte=self.hasta)
-        logs_agrupados_espera = logs_llamadas_espera_hoy.values('campana_id').annotate(
-            tiempo_espera=Avg('bridge_wait_time'))
-        for log_llamada in logs_agrupados_espera:
-            campana_id = log_llamada['campana_id']
-            promedio_espera = log_llamada['tiempo_espera']
-            self.estadisticas[campana_id]['t_promedio_espera'] = promedio_espera
-
-    def _contabilizar_tiempo_promedio_abandono_por_campana(self):
-        logs_llamadas_abandonadas = LlamadaLog.objects.entrantes_abandono()
-        logs_llamadas_abandonadas_hoy = logs_llamadas_abandonadas.filter(
-            time__gte=self.desde, campana_id__in=self.campanas.keys(), time__lte=self.hasta)
-        logs_agrupados_abandono = logs_llamadas_abandonadas_hoy.values('campana_id').annotate(
-            tiempo_abandono=Avg('bridge_wait_time'))
-        for log_llamada in logs_agrupados_abandono:
-            campana_id = log_llamada['campana_id']
-            promedio_abandono = log_llamada['tiempo_abandono']
-            self.estadisticas[campana_id]['t_promedio_abandono'] = promedio_abandono
-
-    def _contabilizar_agentes(self, user_supervisor):
-        agentes_activos = SupervisorActivityAmiManager().obtener_agentes_activos()
-        agentes_activos_dict = {x['id']: x for x in agentes_activos}
+    def _contabilizar_agentes(self):
+        agentes_activos_dict = {
+            agente['id']: agente for agente in SupervisorActivityAmiManager()
+            .obtener_agentes_activos()}
         # TODO: Revisar si es más eficiente usar el prefetch_related de campanas que obtener
         # tupla de (campana_id, agente_id) y construir agentes_activos_campana_id_dict
         agentes_activos_campana_id_dict = self._genera_agentes_activos_campana_dict(
             agentes_activos_dict.keys())
-        if agentes_activos_dict and agentes_activos_campana_id_dict:
-            for campana in self.campanas.values():
-                agentes_pausa = 0
-                agentes_llamada = 0
-                agentes_online = 0
-                for agente_id in agentes_activos_campana_id_dict.get(campana.id, []):
-                    agente_status = agentes_activos_dict[agente_id]['status']
-                    if str(agente_status).startswith("PAUSE"):
-                        agentes_pausa += 1
-                    elif str(agente_status).startswith("ONCALL"):
-                        agentes_llamada += 1
-                    agentes_online += 1
-                if campana.id not in self.estadisticas and \
-                        (agentes_llamada > 0 or agentes_pausa > 0 or agentes_online > 0):
-                    self._inicializar_conteo_de_campana(campana)
-                if self.estadisticas.get(campana.id, False) is not False:
-                    self.estadisticas[campana.id]['agentes_online'] = agentes_online
-                    self.estadisticas[campana.id]['agentes_llamada'] = agentes_llamada
-                    self.estadisticas[campana.id]['agentes_pausa'] = agentes_pausa
+        for campana_id in agentes_activos_campana_id_dict.keys():
+            self._contabiliza_agentes_campana(
+                campana_id, agentes_activos_campana_id_dict[campana_id], agentes_activos_dict)
+
+    def _contabiliza_agentes_campana(self, campana_id, lista_agentes_campana, agentes_activos):
+        agentes_pausa = 0
+        agentes_llamada = 0
+        agentes_online = 0
+        for agente in lista_agentes_campana:
+            agente_status = agentes_activos[agente]['status']
+            if str(agente_status).startswith("PAUSE"):
+                agentes_pausa += 1
+            elif str(agente_status).startswith("ONCALL"):
+                agentes_llamada += 1
+            if str(agente_status) != 'OFFLINE':
+                agentes_online += 1
+        if agentes_pausa != 0 or agentes_llamada != 0 or agentes_online != 0:
+            if not self.estadisticas.get(campana_id, False):
+                self._inicializar_conteo_de_campana(campana_id)
+            self.estadisticas[campana_id]['agentes_online'] = agentes_online
+            self.estadisticas[campana_id]['agentes_llamada'] = agentes_llamada
+            self.estadisticas[campana_id]['agentes_pausa'] = agentes_pausa
 
     def _genera_agentes_activos_campana_dict(self, agentes_activos_list):
         tuplas = Campana.objects.filter(
             queue_campana__members__id__in=agentes_activos_list)\
             .filter(id__in=self.campanas.keys()).values_list('id', 'queue_campana__members__id')
 
-        res = {}
-        for t in tuplas:
-            campana_id = t[0]
-            agente_id = t[1]
-            if res.get(campana_id, None) is None:
-                res[campana_id] = []
+        res = defaultdict(list)
+        for campana_id, agente_id in tuplas:
             res[campana_id].append(agente_id)
         return res
 

@@ -2747,6 +2747,11 @@ class CalificacionCliente(TimeStampedModel, models.Model):
     es_calificacion_manual = models.BooleanField(default=False)
     history = HistoricalRecords()
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['fecha', ])
+        ]
+
     def __str__(self):
         return "Calificacion para la campana {0} para el contacto " \
                "{1} ".format(self.opcion_calificacion.campana, self.contacto)
