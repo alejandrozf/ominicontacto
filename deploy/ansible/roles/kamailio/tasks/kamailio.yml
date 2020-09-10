@@ -94,8 +94,8 @@
   file: state=link src={{ kamailio_location }}/sbin/kamctl dest=/usr/sbin/kamctl mode=755 force=true
 
 # Habilitamos y empezamos redis. Redis es necesario para rtpengine y para django-defender
-- name: Start and enable redis service
-  service: name=redis state=restarted enabled=yes
+#- name: Start and enable redis service
+#  service: name=redis state=restarted enabled=yes
 
 # Restarteo kamailio
 - name: Restart kamailio service
