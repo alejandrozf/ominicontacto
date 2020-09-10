@@ -161,8 +161,8 @@ class BusquedaGrabacionAgenteFormView(BusquedaGrabacionFormView):
 
     def _get_campanas(self):
         agente = self.request.user.get_agente_profile()
-        queues = agente.queue_set.all()
-        return [queue.campana for queue in queues]
+        campanas_ids = list(agente.queue_set.values_list('campana_id', flat=True))
+        return Campana.objects.filter(pk__in=campanas_ids)
 
     def _get_filtro_agente(self, form):
         return self.request.user.get_agente_profile()
