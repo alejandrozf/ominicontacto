@@ -38,6 +38,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ form.auto_unpause.help_text }}
             </small>
         </div>
+    </div>
+    <div class="form-row">
         <div class="col-md-3">
             {{ form.auto_attend_inbound.label_tag }} {{ form.auto_attend_inbound }}
             {{ form.auto_attend_inbound.errors }}
@@ -45,6 +47,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <div class="col-md-2">
             {{ form.auto_attend_dialer.label_tag }} {{ form.auto_attend_dialer }}
             {{ form.auto_attend_dialer.errors }}
+        </div>
+        <div class="col-md-4">
+            {{ form.obligar_calificacion.label_tag}} {{ form.obligar_calificacion}}
+            {{ form.obligar_calificacion.errors }}
         </div>
     </div>
     <button type="submit" id="id_registrar" class="btn btn-primary">

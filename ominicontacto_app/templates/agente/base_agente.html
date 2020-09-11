@@ -239,6 +239,21 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </div>
     </div>
 </div>
+<!-- Modal que se despliega cuando no califique una llamada -->
+<div id="obligarCalificarCall" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" style="max-width:400px">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h2 class="modal-title">{% trans 'No puede hacer una nueva llamada hasta calificar la ultima llamada.' %}</h2>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="obligarCalificarCall_submit" class="btn btn-primary">
+                    {% trans 'Calificar' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- FIN transferencias -->
 
 <!-- WEBCHAT -->
@@ -619,6 +634,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <input type="hidden" value="{{ sip_usuario }}" id="sipExt"/>
                     <input value="{{ sip_password }}" id="sipSec" type="hidden"/>
                     <input value="{{ max_session_age }}" id="max_session_age" type="hidden"/>
+                    <input value="{{ agente_profile.grupo.obligar_calificacion }}" id="obligar-calificacion" type="hidden"/>
 
                 </div>
                 <div class="wrapper-info">
@@ -684,7 +700,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                     </div>
                                     <div class="col-md-2 paddingNull">
                                         <div id="phoneKeysActions">
-                                                <button type="button" id="call" class="btn btn-outline-primary" title="{% trans 'Llamar' %}">
+                                                <button type="button" id="call" class="btn btn-outline-primary" onclick="Click2CallDispatcher.make_call" title="{% trans 'Llamar' %}">
                                                     <span class="icon icon-solid-phone-call"></span>
                                                 </button>
                                                 <button type="button" id="endCall" class="btn btn-outline-danger" title="{% trans 'Finalizar llamada' %}">

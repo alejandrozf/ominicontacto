@@ -85,6 +85,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'api_upload_base_contactos',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_status_calificacion_llamada',
+             'roles': ['Agente', ]},
 
         ]
 
@@ -156,4 +158,7 @@ class ApiAppConfig(AppConfig):
         'api_upload_base_contactos':
             {'descripcion': _('Almacena en la base de datos los contactos subidos en archivo csv'),
              'version': '1.7.0'},
+        'api_status_calificacion_llamada':
+            {'descripcion': _('Detecta si una llamada esta calificada.'),
+             'version': '1.8.0'}
     }

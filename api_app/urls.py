@@ -36,7 +36,7 @@ from api_app.views.agente import (
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
     API_ObtenerContactosCampanaView, Click2CallView, AgentLogoutView,
     AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk,
-    SetEstadoRevisionAuditoria
+    SetEstadoRevisionAuditoria, ApiStatusCalificacionLlamada
 )
 
 router = routers.DefaultRouter()
@@ -143,5 +143,7 @@ urlpatterns = [
         name='api_credenciales_sip_agente'),
     url(r'api/v1/audit/set_revision_status/', SetEstadoRevisionAuditoria.as_view(),
         name='api_set_estado_revision'),
+    url(r'api/v1/calificar_llamada/', ApiStatusCalificacionLlamada.as_view(),
+        name='api_status_calificacion_llamada'),
 
 ]
