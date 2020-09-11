@@ -35,6 +35,7 @@
 # 4) Instalar xvfb y pyvirtualdisplay
 # sudo apk add xvfb
 # pip install pyvirtualdisplay --user
+# pip install html-testRunner --user
 
 # 3) Probar este codigo como punto de partida hacia un server sin DJANGO_DEBUG_TOOLBAR
 
