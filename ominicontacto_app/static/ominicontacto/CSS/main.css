@@ -377,6 +377,9 @@ ul.errorlist li {
 .modal-body p {
     word-break: break-all !important;
 }
+#transfer-modal select {
+  width: 250px;
+}
 /* ///// Modals right and left
 */
 
