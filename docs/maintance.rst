@@ -191,6 +191,23 @@ Por último, recuerde dar "play" al servicio de dialer, tal como lo indica la si
 
 Finalmente la plataforma se encuentra habilitada para gestionar llamadas predictivas. La instalación por defecto cuenta con una licencia de Wombat Dialer demo de un canal.
 
+Cambiar certificados SSL
+************************
+
+Si desea cambiar los certificados SSL con los que instaló la plataforma necesita tener el par llave/certificado en formato **.pem**. Renombre los archivos, tienen que llamarse ***cert.pem** y **key.pem**. Luego Ubique estos archivos en las siguientes carpetas:
+
+.. code::
+
+  /opt/omnileads/nginx_certs/
+  /opt/omnileads/kamailio/etc/certs
+
+Luego de ubicar los archivos, reiniciar los siguientes servicios:
+
+.. code::
+
+  service nginx restart
+  service kamailio restart
+
 Backup & Restore
 ****************
 OMniLeads dispone de un script para llevar a cabo las tareas de backup/restore.

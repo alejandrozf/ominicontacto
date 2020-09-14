@@ -93,7 +93,6 @@
   with_items:
     - cert.pem
     - key.pem
-  tags: postinstall
 
 # Se copia el certificado del servidor de llaves, para poder registrar la instancia de OML
 - name: Copy register server certificate in default location
