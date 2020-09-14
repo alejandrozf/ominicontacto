@@ -34,11 +34,8 @@ from pygal.style import LightGreenStyle, DefaultStyle
 from django.conf import settings
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext as _
-from django.utils import timezone
 from django.utils.timezone import localtime, timedelta
 
-from ominicontacto_app.utiles import (datetime_hora_minima_dia_utc,
-                                      datetime_hora_maxima_dia_utc)
 from ominicontacto_app.models import (AgenteEnContacto, CalificacionCliente, Campana,
                                       Contacto, AgenteProfile, HistoricalCalificacionCliente,
                                       OpcionCalificacion, RespuestaFormularioGestion)
@@ -761,13 +758,13 @@ class EstadisticasService:
 
     def _obtener_total_llamadas(
             self, evento, es_campana_entrante, calificacion_final, callid,
-            callids_analizados, fecha, fecha_desde, fecha_hasta, bridge_wait_time):
+            callids_analizados, bridge_wait_time):
         if calificacion_final and calificacion_final.opcion_calificacion.es_agenda() and \
            callid not in callids_analizados:
             self.reporte_totales_llamadas._llamadas_pendientes += 1
         if evento == 'DIAL':
             self.reporte_totales_llamadas.llamadas_realizadas += 1
-        if es_campana_entrante and fecha > fecha_desde and fecha < fecha_hasta:
+        if es_campana_entrante:
             if evento in ['ENTERQUEUE', 'ABANDONWEL', 'ENTERQUEUE-TRANSFER']:
                 self.reporte_totales_llamadas._llamadas_recibidas += 1
                 if evento == 'ABANDONWEL':
@@ -862,15 +859,11 @@ class EstadisticasService:
         for log_llamada in self.logs_llamadas_dict.values():
             evento = log_llamada.event
             callid = log_llamada.callid
-            fecha = log_llamada.time
             tipo_llamada = log_llamada.tipo_llamada
             bridge_wait_time = log_llamada.bridge_wait_time
             es_campana_entrante = self.campana.es_entrante
             calificacion_historica = self.calificaciones_historicas_dict.get(callid, False)
             calificacion_final = self.calificaciones_finales_dict.get(callid, False)
-            hoy_ahora = timezone.now()
-            fecha_desde = datetime_hora_minima_dia_utc(hoy_ahora)
-            fecha_hasta = datetime_hora_maxima_dia_utc(hoy_ahora)
             self._obtener_llamadas_atendidas_sin_calificacion(
                 evento, calificacion_final, calificacion_historica)
             # obtener_detalle_llamadas(log_llamada)
@@ -882,7 +875,7 @@ class EstadisticasService:
             # obtener_total_llamadas (log_llamada)
             self._obtener_total_llamadas(
                 evento, es_campana_entrante, calificacion_final, callid, callids_analizados,
-                fecha, fecha_desde, fecha_hasta, bridge_wait_time)
+                bridge_wait_time)
             # obtener_total_calificacion_agente(log_llamada) y reporte csv_calificados
             self._obtener_total_calificacion_agente_datos_calificaciones(
                 es_campana_entrante, calificacion_historica, calificacion_final, log_llamada,
