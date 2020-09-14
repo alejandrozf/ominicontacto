@@ -29,6 +29,8 @@ from django.urls import reverse
 from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView,
 )
+from django.shortcuts import render
+
 from ominicontacto_app.models import NombreCalificacion
 from ominicontacto_app.forms import CalificacionForm
 
@@ -62,6 +64,15 @@ class CalificacionDeleteView(DeleteView):
     """
     model = NombreCalificacion
     template_name = 'calificacion/delete_calificacion.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        agenda = NombreCalificacion.objects.get(nombre=settings.CALIFICACION_REAGENDA)
+        if self.get_object() == agenda:
+            response = render(request, '403.html')
+            response.status_code = 403
+            return response
+        return super(CalificacionDeleteView, self).dispatch(
+            request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse('calificacion_list')
