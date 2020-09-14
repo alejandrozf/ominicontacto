@@ -206,7 +206,7 @@ class IntegrationTests(unittest.TestCase):
         sleep(1)
 
     def crear_blacklist(self, path, base_datos):
-        link_create_blacklist = '//a[contains(@href,"/backlist/nueva")]'
+        link_create_blacklist = '//a[contains(@href,"/blacklist/nueva")]'
         self.get_href(link_create_blacklist)
         self.browser.find_element_by_id('id_nombre').send_keys(base_datos)
         self.browser.find_element_by_id('id_archivo_importacion').send_keys(path)

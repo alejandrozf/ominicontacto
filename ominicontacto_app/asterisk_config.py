@@ -790,12 +790,12 @@ class SipRegistrationsConfigFile(ConfigFile):
         super(SipRegistrationsConfigFile, self).__init__(filename, remote_path)
 
 
-class BackListConfigFile(ConfigFile):
+class BlackListConfigFile(ConfigFile):
     def __init__(self):
         filename = os.path.join(settings.OML_BACKLIST_REMOTEPATH,
                                 "oml_backlist.txt")
         remote_path = settings.OML_BACKLIST_REMOTEPATH
-        super(BackListConfigFile, self).__init__(filename, remote_path)
+        super(BlackListConfigFile, self).__init__(filename, remote_path)
 
 
 class PlaylistsConfigFile(ConfigFile):

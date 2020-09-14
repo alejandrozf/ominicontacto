@@ -311,15 +311,15 @@ class OminicontactoAppConfig(AppConfig):
         if contactos:
             contactos.append({'line': True})
 
-        if 'back_list_list' in permissions:
+        if 'black_list_list' in permissions:
             contactos.append({
                 'label': _('Blacklists'),
-                'url': reverse('back_list_list')
+                'url': reverse('black_list_list')
             })
-        if 'back_list_create' in permissions:
+        if 'black_list_create' in permissions:
             contactos.append({
                 'label': _('Nueva Blacklist'),
-                'url': reverse('back_list_create')
+                'url': reverse('black_list_create')
             })
         if contactos:
             items.append({'order': 400,
@@ -627,9 +627,9 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', ]},
             {'nombre': 'mostrar_campanas_ocultas',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
-            {'nombre': 'back_list_create',
+            {'nombre': 'black_list_create',
              'roles': ['Administrador', ]},
-            {'nombre': 'back_list_list',
+            {'nombre': 'black_list_list',
              'roles': ['Administrador', ]},
             {'nombre': 'sistema_externo_list',
              'roles': ['Administrador', ]},
@@ -1023,9 +1023,9 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Asignar supervisores a una campaña Entrante'), 'version': '1.7.0'},
         'mostrar_campanas_ocultas':
             {'descripcion': _('Mostrar campañas Entrantes ocultas'), 'version': '1.7.0'},
-        'back_list_create':
+        'black_list_create':
             {'descripcion': _('Creacion de una Blacklist'), 'version': '1.7.0'},
-        'back_list_list':
+        'black_list_list':
             {'descripcion': _('Ver lista de Blacklists'), 'version': '1.7.0'},
         'sistema_externo_list':
             {'descripcion': _('Ver lista de Sistemas Externos'), 'version': '1.7.0'},

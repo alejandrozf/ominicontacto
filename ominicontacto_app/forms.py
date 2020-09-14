@@ -40,7 +40,7 @@ from constance import config
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
-    RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
+    RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Blacklist, SitioExterno,
     SistemaExterno, ReglasIncidencia, SupervisorProfile, ArchivoDeAudio,
     NombreCalificacion, OpcionCalificacion, ParametrosCrm, AgenteEnSistemaExterno,
     AuditoriaCalificacion
@@ -1354,10 +1354,10 @@ class ActuacionVigenteForm(forms.ModelForm):
         }
 
 
-class BacklistForm(forms.ModelForm):
+class BlacklistForm(forms.ModelForm):
 
     class Meta:
-        model = Backlist
+        model = Blacklist
         fields = ('nombre', 'archivo_importacion')
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),

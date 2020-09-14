@@ -3157,7 +3157,7 @@ class ActuacionVigente(models.Model):
         return dias
 
 
-class Backlist(models.Model):
+class Blacklist(models.Model):
 
     nombre = models.CharField(
         max_length=128, verbose_name=_('Nombre')
@@ -3185,14 +3185,14 @@ class Backlist(models.Model):
                                              self.cantidad_contactos)
 
 
-class ContactoBacklist(models.Model):
+class ContactoBlacklist(models.Model):
     """
     Lista de contacto que no quieren que los llamen
     """
 
     telefono = models.CharField(max_length=128)
-    back_list = models.ForeignKey(
-        Backlist, related_name='contactosbacklist', blank=True, null=True,
+    black_list = models.ForeignKey(
+        Blacklist, related_name='contactosblacklist', blank=True, null=True,
         on_delete=models.CASCADE)
 
     def __str__(self):
