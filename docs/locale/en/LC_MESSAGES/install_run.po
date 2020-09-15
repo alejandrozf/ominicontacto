@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-29 10:21-0300\n"
+"POT-Creation-Date: 2020-09-14 10:31-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -90,13 +90,13 @@ msgid ""
 msgstr ""
 "OMniLeads is deployed with SSLv3 certificates for HTTPS conecction "
 "between the browser and web server (Nginx), using a self-signed cert/key "
-"in PEM format. The issued certificate uses SHA-512 with RSA encryption as the signing "
-"algorithm and a key size of 4096 bits. As it is a self-signed "
-"certificate, it produces an Unsure Site Warning in the browser when "
-"accessing the system for the first time (since the certifying authority "
-"or CA is not within the Repository of Trusted CAs of the Browser). Once "
-"the exception is added to trust it securely, the certificate is now "
-"configured for acceptance."
+"in PEM format. The issued certificate uses SHA-512 with RSA encryption as"
+" the signing algorithm and a key size of 4096 bits. As it is a self-"
+"signed certificate, it produces an Unsure Site Warning in the browser "
+"when accessing the system for the first time (since the certifying "
+"authority or CA is not within the Repository of Trusted CAs of the "
+"Browser). Once the exception is added to trust it securely, the "
+"certificate is now configured for acceptance."
 
 # eb7e222badb64ac5aeda3d2620e24a60
 #: ../../install_run.rst:51
@@ -104,25 +104,28 @@ msgid ""
 "Sin embargo, se recomienda cargar sus certificados SSL de confianza "
 "durante la instalación de la App. Usted deberá ubicar sus archivos "
 "**cert** y **key** en formato **.pem** dentro de la carpeta "
-"**ominicontacto/deploy/certs**. Durante el proceso de deploy se detectan "
-"los archivos en dicha ubicación y por lo tanto se proporcionan a nivel "
-"web y webtrc, de manera tal que al finalizar el deploy la plataforma "
-"quede disponible y utilizando sus propios certificados de confianza."
+"**ominicontacto/deploy/certs**. Para agregar sus certificados, basta con "
+"borrar el **cert.pem** y **key.pem** que vienen por defecto y ubicar los "
+"suyos. Durante el proceso de deploy se detectan los archivos en dicha "
+"ubicación y por lo tanto se proporcionan a nivel web y webtrc, de manera "
+"tal que al finalizar el deploy la plataforma quede disponible y "
+"utilizando sus propios certificados de confianza."
 msgstr ""
 "However, it is recommended to load your trusted SSL certificates during "
 "the installation of the App. You must locate your cert and key files in "
-".pem format inside the ominicontacto / deploy / certs folder. During the "
+".pem format inside the **ominicontacto/deploy/certs** folder. To add the certificates, "
+"you must erase the **cert.pem** and **key.pem** files in the folder and place yours. During the "
 "deploy process, the files are detected in this location and therefore "
 "they are provided at the web and webtrc levels, so that when the deploy "
 "ends, the platform is available and using its own trusted certificates."
 
 # e127f3a578634c39a161c41724390351
-#: ../../install_run.rst:60
+#: ../../install_run.rst:55
 msgid "Ejecución del deploy"
 msgstr "Run deploy.sh"
 
 # 791a08a3736049ba9f6b3cabb74f2f77
-#: ../../install_run.rst:62
+#: ../../install_run.rst:57
 msgid ""
 "Una vez disponible el host, se procede con la instalación. Aquí es donde "
 "debemos elegir el tipo de instalación y arquitectura de OMniLeads a "
@@ -133,12 +136,12 @@ msgstr ""
 "deploy."
 
 # d6596f4c429e4208a588a37d27694b13
-#: ../../install_run.rst:74
+#: ../../install_run.rst:69
 msgid "OMniLeads detrás NAT"
 msgstr "OMniLeads behind NAT"
 
 # e40a463a96b044b0a28f3b2efb471502
-#: ../../install_run.rst:76
+#: ../../install_run.rst:71
 msgid ""
 "En un OMniLeads detras de NAT los agentes se conectan a la URL conformada"
 " por **https://external_hostname:external_port**, desde Internet."
@@ -147,7 +150,7 @@ msgstr ""
 "**https://external_hostname:external_port**, from Internet."
 
 # 2386009f96614685ac6813a605b4b413
-#: ../../install_run.rst:80
+#: ../../install_run.rst:75
 msgid ""
 "Como se intenta expresar en la imagen, se asume que los usuarios "
 "*remotos* accederán a la App utilizando una URL (dominio y puerto) que "
@@ -158,7 +161,7 @@ msgstr ""
 "router/firewall."
 
 # 97cfd8f735f24436bc99bbe7d1c8c589
-#: ../../install_run.rst:82
+#: ../../install_run.rst:77
 msgid ""
 "Luego el firewall deberá reenviar el tráfico de voz y datos hacia los "
 "puertos UDP: 20000-30000 y y TCP: 443 del host donde reside la App."
@@ -167,12 +170,12 @@ msgstr ""
 "20000-30000 and TCP: 443 of the host hosting the App."
 
 # 503392d351ea48bba1796a6b852e330b
-#: ../../install_run.rst:86
+#: ../../install_run.rst:81
 msgid "Se deben establecer dos reglas de firewall entrantes y una saliente:"
 msgstr "You must insert two inbound and un outbound firewall rules:"
 
 # 3bcf6154d951454c8719683e100bf5dd
-#: ../../install_run.rst:88
+#: ../../install_run.rst:83
 msgid ""
 "Reenviar tráfico entrante desde los puertos 20000 a 30000 UDP hacia los "
 "puertos 20000 a 30000 del host OMniLeads"
@@ -181,7 +184,7 @@ msgstr ""
 "to 30,000 on the OMniLeads host"
 
 # 6bda51a2f5a9413398cd5ff933c4f11a
-#: ../../install_run.rst:89
+#: ../../install_run.rst:84
 msgid ""
 "Reenviar tráfico desde el *external_port* elegido hacia el puerto 443 del"
 " host OMniLeads"
@@ -190,7 +193,7 @@ msgstr ""
 "OMniLeads host"
 
 # 06f59984a1ff4c6d860bf044b17cc369
-#: ../../install_run.rst:90
+#: ../../install_run.rst:85
 msgid ""
 "Permitir tráfico saliente desde el host OMniLeads hacia internet por los "
 "puertos 10000 al 20000"
@@ -199,6 +202,6 @@ msgstr ""
 "10000-30000 UDP"
 
 # 51ff04b31576460e8a16305788f31b5c
-#: ../../install_run.rst:94
+#: ../../install_run.rst:89
 msgid "También se puede usar la IP pública en vez de hostname"
 msgstr "You can use public IP instead of hostname"

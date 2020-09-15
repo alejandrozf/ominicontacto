@@ -48,7 +48,8 @@ Proporcionar Certificados SSL confiables
 
 OMniLeads se despliega con certificados SSLv3 para la conexión HTTPS del browser con el servidor web (Nginx), utilizando un par cert/key en formato PEM auto-firmado. Utiliza SHA-512 con encriptación RSA como algoritmo de firma y un tamaño de clave 4096 bits. Al ser auto-firmado, produce en el browser un **Warning de Sitio No Seguro** al momento de acceder al sistema por primera vez (ya que la autoridad certificadora o CA no está dentro del repositorio de CAs Confiables del Browser). Una vez agregada la excepción para confiar en él de manera segura, dicho certificado ya queda configurado para su aceptación.
 
-Sin embargo, se recomienda cargar sus certificados SSL de confianza durante la instalación de la App. Usted deberá ubicar sus archivos **cert** y **key** en formato **.pem** dentro de la carpeta **ominicontacto/deploy/certs**. Durante el proceso de deploy se detectan los archivos en dicha ubicación y por lo tanto se proporcionan a nivel web y webtrc, de manera tal que al finalizar el deploy la plataforma quede disponible y utilizando sus propios certificados de confianza.
+Sin embargo, se recomienda cargar sus certificados SSL de confianza durante la instalación de la App. Usted deberá ubicar sus archivos **cert** y **key** en formato **.pem** dentro de la carpeta **ominicontacto/deploy/certs**.
+Para agregar sus certificados, basta con borrar el **cert.pem** y **key.pem** que vienen por defecto y ubicar los suyos. Durante el proceso de deploy se detectan los archivos en dicha ubicación y por lo tanto se proporcionan a nivel web y webtrc, de manera tal que al finalizar el deploy la plataforma quede disponible y utilizando sus propios certificados de confianza.
 
 Ejecución del deploy
 ********************
