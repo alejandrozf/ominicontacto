@@ -22,34 +22,24 @@
 from __future__ import unicode_literals
 
 import os
-import socket
 import unittest
 import uuid
 
 from time import sleep
 
-from integracion_metodos import (login, crear_user, crear_grupo, get_href)
-
 try:
     from pyvirtualdisplay import Display
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
+    from integracion_metodos import (login, crear_user, crear_grupo, get_href, ADMIN_USERNAME,
+                                     ADMIN_PASSWORD, AGENTE_PASSWORD, ADMIN_PASSWORD_RESET,
+                                     TESTS_INTEGRACION_HOSTNAME)
 except ImportError:
     pass
 
-ADMIN_USERNAME = os.getenv('ADMIN_USERNAME')
-ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
-
 AGENTE_USERNAME = 'agente' + uuid.uuid4().hex[:5]
-AGENTE_PASSWORD = '098098ZZZ'
-
-TESTS_INTEGRACION = os.getenv('TESTS_INTEGRACION')
 LOGIN_FAILURE_LIMIT = int(os.getenv('LOGIN_FAILURE_LIMIT'))
-
-
-TESTS_INTEGRACION_HOSTNAME = os.getenv('TESTS_INTEGRACION_HOSTNAME')
-if not TESTS_INTEGRACION_HOSTNAME:
-    TESTS_INTEGRACION_HOSTNAME = socket.gethostname()
+TESTS_INTEGRACION = os.getenv('TESTS_INTEGRACION')
 
 
 @unittest.skipIf(TESTS_INTEGRACION != 'True', 'Ignorando tests de integracion')
@@ -93,29 +83,6 @@ class AccesoWebTests(unittest.TestCase):
     def tearDown(self):
         self.browser.close()
         self.display.stop()
-
-    # Acceso Web Administrador
-    def test_acceso_web_administrador_acceso_exitoso(self):
-        try:
-            login(self.browser, ADMIN_USERNAME, ADMIN_PASSWORD)
-            self.assertTrue(self.browser.find_element_by_xpath(
-                '//div/a[contains(@href, "/accounts/logout/")]'))
-            print('--Acceso web administrador: Acceso exitoso.--')
-        except Exception as e:
-            print('--ERROR: Acceso web administrador: Acceso NO exitoso.--\n{0}'.format(e))
-            raise e
-
-    def test_acceso_web_administrador_acceso_denegado(self):
-        try:
-            clave_erronea = "test"
-            login(self.browser, ADMIN_USERNAME, clave_erronea)
-            self.assertEqual(self.browser.find_element_by_xpath(
-                '//div[@class="alert alert-danger"]/p').text,
-                'Invalid Username/Password, please try again')
-            print('--Acceso web administrador: Acceso denegado.--')
-        except Exception as e:
-            print('--ERROR: Acceso web administrador: Acceso NO denegado.--\n{0}'.format(e))
-            raise e
 
     # Acceso web Agente
     def test_acceso_web_agente_acceso_exitoso(self):
@@ -202,9 +169,20 @@ class AccesoWebTests(unittest.TestCase):
             # Vamos al Admin de django para desbloquear este usuario
             self.browser.get('https://{0}/admin'.format(TESTS_INTEGRACION_HOSTNAME))
             self.browser.find_element_by_name('username').send_keys(ADMIN_USERNAME)
-            self.browser.find_element_by_name('password').send_keys(ADMIN_PASSWORD)
-            self.browser.find_element_by_xpath('//div/input[@type="submit"]').click()
-            sleep(2)
+            # Prueba con la password reseteada
+            try:
+                self.browser.find_element_by_name('password').send_keys(ADMIN_PASSWORD_RESET)
+                self.browser.find_element_by_xpath('//div/input[@type="submit"]').click()
+                sleep(2)
+            except Exception:
+                pass
+            # Prueba con la password por defecto del admin
+            try:
+                self.browser.find_element_by_name('password').send_keys(ADMIN_PASSWORD)
+                self.browser.find_element_by_xpath('//div/input[@type="submit"]').click()
+                sleep(2)
+            except Exception:
+                pass
             defender = '//a[contains(@href, "/admin/defender/")]'
             get_href(self.browser, defender)
             bloqued_user = '//a[contains(@href, "/admin/defender/blocks/")]'

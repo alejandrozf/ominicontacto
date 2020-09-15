@@ -21,25 +21,21 @@
 
 from __future__ import unicode_literals
 
-import os
 import unittest
 import uuid
 import random
+import os
 
 from time import sleep
-
-from integracion_metodos import (login, crear_grupo, crear_user, get_href)
 
 try:
     from pyvirtualdisplay import Display
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
+    from integracion_metodos import (login, crear_grupo, crear_user, get_href, ADMIN_USERNAME,
+                                     ADMIN_PASSWORD, AGENTE_PASSWORD)
 except ImportError:
     pass
-
-ADMIN_USERNAME = os.getenv('ADMIN_USERNAME')
-ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
-AGENTE_PASSWORD = '098098ZZZ'
 
 TESTS_INTEGRACION = os.getenv('TESTS_INTEGRACION')
 
@@ -105,7 +101,7 @@ class UsuariosTests(unittest.TestCase):
             user_list = '//a[contains(@href,"/user/list/1/")]'
             get_href(self.browser, user_list)
             link_edit = '//tr[@id=\'{0}\']/td/div//a'\
-                        '[contains(@href,"/user/update")]'.format(agente_username)
+                        '[contains(@href,"/user/agent/update")]'.format(agente_username)
             get_href(self.browser, link_edit)
             nuevo_username = 'agente' + uuid.uuid4().hex[:5]
             self.browser.find_element_by_id('id_username').clear()
@@ -156,7 +152,7 @@ class UsuariosTests(unittest.TestCase):
         try:
             get_href(self.browser, user_list)
             link_delete = "//tr[@id=\'{0}\']/td/div//"\
-                          "a[contains(@href,'/user/delete')]".format(agente_username)
+                          "a[contains(@href,'/user/agent/delete')]".format(agente_username)
             get_href(self.browser, link_delete)
             self.browser.find_element_by_xpath((
                 "//button[@type='submit']")).click()
@@ -280,6 +276,7 @@ class UsuariosTests(unittest.TestCase):
             print('--ERROR: No se pudo eliminar un grupo.--\n{0}'.format(e))
             raise e
 
-    if __name__ == '__main__':
-        # para poder ejecutar los tests desde fuera del entorno
-        unittest.main()
+
+if __name__ == '__main__':
+    # para poder ejecutar los tests desde fuera del entorno
+    unittest.main()

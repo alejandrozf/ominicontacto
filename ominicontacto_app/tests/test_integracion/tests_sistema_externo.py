@@ -21,24 +21,22 @@
 
 from __future__ import unicode_literals
 
-import os
 import unittest
 import uuid
+import os
 
 from time import sleep
-
-from integracion_metodos import (login, get_href)
 
 try:
     from pyvirtualdisplay import Display
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
+    from integracion_metodos import (login, get_href, crear_grupo, crear_user, ADMIN_USERNAME,
+                                     ADMIN_PASSWORD, AGENTE_PASSWORD)
 except ImportError:
     pass
 
-ADMIN_USERNAME = os.getenv('ADMIN_USERNAME')
-ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
-
+AGENTE_USERNAME = 'agente' + uuid.uuid4().hex[:5]
 TESTS_INTEGRACION = os.getenv('TESTS_INTEGRACION')
 
 
@@ -57,6 +55,10 @@ class SistemaExternoTests(unittest.TestCase):
                 exit()
         except Exception:
             pass
+        group_name = 'group' + uuid.uuid4().hex[:5]
+        crear_grupo(cls.browser, group_name)
+        tipo_usuario = 'Agente'
+        crear_user(cls.browser, AGENTE_USERNAME, AGENTE_PASSWORD, tipo_usuario)
         cls.tearDown()
 
     @classmethod
@@ -103,6 +105,13 @@ class SistemaExternoTests(unittest.TestCase):
             raise e
         # Modificar Sistema Externo
         try:
+            group_name = 'group' + uuid.uuid4().hex[:5]
+            crear_grupo(self.browser, group_name)
+            tipo_usuario = 'Agente'
+            agente = 'agente' + uuid.uuid4().hex[:5]
+            crear_user(self.browser, agente, AGENTE_PASSWORD, tipo_usuario)
+            lista_sistema = '//li/a[contains(@href, "/sistema_externo/list/")]'
+            get_href(self.browser, lista_sistema)
             update_sistema = '//tr[@id=\'{0}\']//a[contains(@href, "/update/")]'.format(
                 sistema_externo)
             get_href(self.browser, update_sistema)

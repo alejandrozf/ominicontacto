@@ -41,50 +41,46 @@
 
 # 4)Para testear los tests de integración:
 """ "$TESTS_INTEGRACION='True' BROWSER_REAL='True' LOGIN_FAILURE_LIMIT=10 python
-     ominicontacto_app/tests/test_integracion/test_all.py" """
-# Se puede ver el resultado del reporte:
-# ominicontacto_app/tests/test_integracion/reports/reporte_test_integracion.html
+ominicontacto_app/tests/test_integracion/test_all.py" """
 
-from unittest import TestLoader, TestSuite
-from HtmlTestRunner import HTMLTestRunner
-
+import unittest
 import os
 
-from tests_consola import ConsolaTests
-from tests_usuarios import UsuariosTests
-from tests_acceso_web import AccesoWebTests
-from tests_audio import AudioTests
-from tests_pausas import PausaTests
-from tests_contacto import ContactoTests
-from tests_calificacion import CalificacionTests
-from tests_formulario import FormularioTests
-from tests_sistema_externo import SistemaExternoTests
-from tests_sitio_externo import SitioExternoTests
+try:
+    from tests_consola import ConsolaTests
+    from tests_usuarios import UsuariosTests
+    from tests_acceso_web import AccesoWebTests
+    from tests_audio import AudioTests
+    from tests_pausas import PausaTests
+    from tests_contacto import ContactoTests
+    from tests_calificacion import CalificacionTests
+    from tests_formulario import FormularioTests
+    from tests_sistema_externo import SistemaExternoTests
+    from tests_sitio_externo import SitioExternoTests
+except ImportError:
+    pass
 
-consola = TestLoader().loadTestsFromTestCase(ConsolaTests)
-usuarios = TestLoader().loadTestsFromTestCase(UsuariosTests)
-acceso_web = TestLoader().loadTestsFromTestCase(AccesoWebTests)
-audio = TestLoader().loadTestsFromTestCase(AudioTests)
-pausa = TestLoader().loadTestsFromTestCase(PausaTests)
-contacto = TestLoader().loadTestsFromTestCase(ContactoTests)
-calificacion = TestLoader().loadTestsFromTestCase(CalificacionTests)
-formulario = TestLoader().loadTestsFromTestCase(FormularioTests)
-sistema_externo = TestLoader().loadTestsFromTestCase(SistemaExternoTests)
-sitio_externo = TestLoader().loadTestsFromTestCase(SitioExternoTests)
-
-tests_integracion = TestSuite([consola, usuarios, acceso_web, audio, pausa, contacto,
-                               calificacion, formulario, sistema_externo, sitio_externo])
+TESTS_INTEGRACION = os.getenv('TESTS_INTEGRACION')
 
 
-current_directory = os.getcwd()
-output_file = current_directory + "/ominicontacto_app/tests/test_integracion/reports/"
+@unittest.skipIf(TESTS_INTEGRACION != 'True', 'Ignorando tests de integracion')
+class TestIntegracionSuite(unittest.TestCase):
+    def testSuite(self):
 
-runner = HTMLTestRunner(
-    output=output_file,
-    combine_reports=True,
-    report_name="reporte_test_integracion",
-    add_timestamp=False,
-    report_title='Reporte test de integracion OMnileads'
-)
+        tests_integracion = unittest.TestSuite()
+        tests_integracion.addTests([
+            unittest.defaultTestLoader.loadTestsFromTestCase(ConsolaTests),
+            unittest.defaultTestLoader.loadTestsFromTestCase(UsuariosTests),
+            unittest.defaultTestLoader.loadTestsFromTestCase(AccesoWebTests),
+            unittest.defaultTestLoader.loadTestsFromTestCase(AudioTests),
+            unittest.defaultTestLoader.loadTestsFromTestCase(PausaTests),
+            unittest.defaultTestLoader.loadTestsFromTestCase(ContactoTests),
+            unittest.defaultTestLoader.loadTestsFromTestCase(CalificacionTests),
+            unittest.defaultTestLoader.loadTestsFromTestCase(FormularioTests),
+            unittest.defaultTestLoader.loadTestsFromTestCase(SistemaExternoTests),
+            unittest.defaultTestLoader.loadTestsFromTestCase(SitioExternoTests),
+        ])
 
-runner.run(tests_integracion)
+
+if __name__ == '__main__':
+    unittest.main()

@@ -21,23 +21,17 @@
 
 from __future__ import unicode_literals
 
-import os
 import unittest
-
+import os
 from time import sleep
-
-from integracion_metodos import (login, crear_calificacion)
 
 try:
     from pyvirtualdisplay import Display
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
+    from integracion_metodos import (login, crear_calificacion, ADMIN_USERNAME, ADMIN_PASSWORD)
 except ImportError:
     pass
-
-ADMIN_USERNAME = os.getenv('ADMIN_USERNAME')
-ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
-
 TESTS_INTEGRACION = os.getenv('TESTS_INTEGRACION')
 
 

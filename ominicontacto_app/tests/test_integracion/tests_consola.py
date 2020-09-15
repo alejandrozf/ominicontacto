@@ -27,29 +27,22 @@ import uuid
 
 from time import sleep
 
-from integracion_metodos import (login, crear_grupo, crear_user, asignar_agente_campana_manual)
-
 try:
     from pyvirtualdisplay import Display
     from selenium import webdriver
     from selenium.webdriver.common.keys import Keys
     from selenium.webdriver.chrome.options import Options
+    from integracion_metodos import (login, crear_grupo, crear_user, asignar_agente_campana_manual,
+                                     ADMIN_USERNAME, ADMIN_PASSWORD, AGENTE_PASSWORD)
 except ImportError:
     pass
 
-ADMIN_USERNAME = os.getenv('ADMIN_USERNAME')
-ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
-USER = os.getenv('USER')
-
-CAMPANA_MANUAL = os.getenv('CAMPANA_MANUAL')
-
 AGENTE_USERNAME = 'agente' + uuid.uuid4().hex[:5]
-AGENTE_PASSWORD = '098098ZZZ'
 
 BROWSER_REAL = os.getenv('BROWSER_REAL')
-TESTS_INTEGRACION = os.getenv('TESTS_INTEGRACION')
 
 MSG_MICROFONO = 'Se necesita un browser real con microfono'
+TESTS_INTEGRACION = os.getenv('TESTS_INTEGRACION')
 
 
 @unittest.skipIf(TESTS_INTEGRACION != 'True', 'Ignorando tests de integracion')

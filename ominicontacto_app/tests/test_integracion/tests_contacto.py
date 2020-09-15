@@ -21,24 +21,20 @@
 
 from __future__ import unicode_literals
 
-import os
 import unittest
 import uuid
+import os
 
 from time import sleep
-
-from integracion_metodos import (login, get_href, crear_BD, crear_blacklist)
 
 try:
     from pyvirtualdisplay import Display
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
+    from integracion_metodos import (login, get_href, crear_BD, crear_blacklist, ADMIN_USERNAME,
+                                     ADMIN_PASSWORD, USER)
 except ImportError:
     pass
-
-ADMIN_USERNAME = os.getenv('ADMIN_USERNAME')
-ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
-USER = os.getenv('USER')
 
 TESTS_INTEGRACION = os.getenv('TESTS_INTEGRACION')
 
@@ -188,7 +184,7 @@ class ContactoTests(unittest.TestCase):
             telefono = '3456789'
             cell = '154352879'
             self.browser.find_element_by_id('id_telefono').send_keys(telefono)
-            self.browser.find_element_by_id('id_Cell').send_keys(cell)
+            self.browser.find_element_by_id('id_cell').send_keys(cell)
             self.browser.find_element_by_xpath("//button[@type='submit']").click()
             sleep(1)
             self.browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
