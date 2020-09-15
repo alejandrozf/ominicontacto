@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-08 18:44-0300\n"
+"POT-Creation-Date: 2020-09-15 15:20-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,110 +23,64 @@ msgstr "Release Notes"
 
 # 73ee1e870afd4a31b43364589dd0e1ee
 #: ../../release_notes.rst:4
-msgid "*Septiembre 8, 2020*"
-msgstr "September 8, 2020"
+msgid "*Septiembre 15, 2020*"
+msgstr "September 15, 2020"
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.10.0"
-msgstr "Release 1.10.0 details"
-
-# ee2447f104a941f794591a652bad12d5
-#: ../../release_notes.rst:10
-msgid "Nuevas funcionalidades"
-msgstr "New features"
-
-# 2450b2d0cfbe4c2fba6cfc9a3c88b0e9
-#: ../../release_notes.rst:11
-msgid ""
-"La página de supervisión de campañas entrantes fue optimizada para ser "
-"más performantes"
-msgstr ""
-"Supervision page of inbound campaigns reportes was optimized for performance"
-
-# 1ce90e120efd4cbc86be429ce6c97178
-#: ../../release_notes.rst:12
-msgid ""
-"Asterisk puede ser ahora opcionalmente separado para que se ejecute en "
-"otro host"
-msgstr ""
-"Asterisk component can be optionally separated to run on other host"
-
-# e55da23b4c9e4d01b62c57383755ee5b
-#: ../../release_notes.rst:13
-msgid "Asterisk fue actualizado a la version 16.12.0"
-msgstr "Asterisk component was updated to 16.12.0 version"
-
-# eb06e652ae2b4a1a89b455be83b99a7e
-#: ../../release_notes.rst:14
-msgid "Se adicionó un endpoint para la API para crear bases de contactos"
-msgstr "An endpoint to create contacts database was added"
-
-# 7b3a5e0ced5640c9bb72654a5f97f88d
-#: ../../release_notes.rst:15
-msgid ""
-"Las páginas de reportes de una campaña fueron optimizadas para ser más "
-"performantes"
-msgstr ""
-"Campaign reports pages were optimized"
-
-# adfcaca6a6184ab0b4840d7db036d783
-#: ../../release_notes.rst:16
-msgid ""
-"La UI de la página de asignación de supervisores a una campaña creada fue"
-" mejorada"
-msgstr ""
-"UI to assigned supervisors to a created campaign was improved"
+msgid "Detalles de Release 1.10.1"
+msgstr "Release 1.10.1 details"
 
 # 2f558403c15a436e90409b976c7f07ed
-#: ../../release_notes.rst:20
+#: ../../release_notes.rst:10
 msgid "Fixes y mejoras"
 msgstr "Fixes and improvements"
 
-# ca72674adaf94d78a2bab4eefe0826d8
-#: ../../release_notes.rst:21
+# 31b5a2834b2c42a3bf4328b8d8dae2e0
+#: ../../release_notes.rst:11
 msgid ""
-"Solucionado error al conectar con Kamailio cuando este se encontraba "
-"separado en otro host"
+"Solucionado error que se generaba cuando el agente filtraba grabaciones "
+"de llamadas calificadas como gestión"
 msgstr ""
-"Fixed connection error when Kamailio component was separated to run "
-"on other host"
+"Fixed error when agent filtered recordings of calls engaged dispositioned"
 
-# a2fef5c6c50b402e9adeb92df3b65091
-#: ../../release_notes.rst:22
+# 4859d569d3794c63a4e2f98ddd11532f
+#: ../../release_notes.rst:12
 msgid ""
-"Solucionado error de inconsitencia en permisos que no permitía a "
-"supervisores editar perfiles de agentes"
+"Solucionada inconsistencia en el reporte de campañas entrantes, ahora "
+"todos los datos que se muestran están ligados al rengo de tiempo escogido"
+" por el usuario"
 msgstr ""
-"Fixed permission inconsistency error that didn't allow supervisors "
-"to edit users profiles"
+"Fixed inconsistency on campaign inbound report, now all data shown is "
+"bounded to the date filter chosen by the user"
 
 # 843c4f494c3e40fbb88dc8e294b263c7
-#: ../../release_notes.rst:23
+#: ../../release_notes.rst:13
 msgid ""
-"Solucionado error que impedía editar campañas preview cuando se escogía "
-"el parámetro de sitio externo para editar"
+"Solucionado error en la supervisión de las campañas entrantes si el "
+"supervisor no es un administrador"
 msgstr ""
-"Fixed error that didn't allow to edit preview campaign when editing"
-" external site parameter"
+"Fixed error in supervision inbound campaigns report if the supervisor"
+" is not administrator."
 
-# 3111eaf476924770827efc0639f774f0
-#: ../../release_notes.rst:24
+# 1680630ae4bc485d94445cefe09d960e
+#: ../../release_notes.rst:14
 msgid ""
-"Solucionado error al intentar linkear los archivos de dialplan de "
-"Asterisk al container de Asterisk correspondiente"
+"Solucionado error que sobreescribía los certificados personalizados SSL "
+"al realizar una actualización de una instancia"
 msgstr ""
-"Fixed error on linking asterisk dialplan files to Asterisk container"
+"Fixed error that overwrites client custom SSL certificates when"
+" upgrading instance"
 
-# ed9ce0a087654415ab1accf86f4fa49c
-#: ../../release_notes.rst:25
-msgid "Solucionado error de encoding al aplicar migración de trigger de la BD"
-msgstr "Fixed encoding error when applying database trigger migration"
+# 56dc691718134665905bb7ae605cf01e
+#: ../../release_notes.rst:15
+msgid "Se adicionan nuevas opciones al componente RtpEngine"
+msgstr "Added new options to RtpEngine component"
 
-# b6d7936f5ce647819eb1fdbd507158ea
-#: ../../release_notes.rst:26
+# fcc7e765860c45eb851de211d0218026
+#: ../../release_notes.rst:16
 msgid ""
-"Solucionado error que impedía usar el nombre de usuario de un usuario "
-"eliminado"
+"El componente Asterisk fue configurado para evitar el error \"Too much "
+"open files\""
 msgstr ""
-"Fixed error that prevented to used username of removed users"
+"Asterisk component was configured to avoid the error \"Too much open files\""
