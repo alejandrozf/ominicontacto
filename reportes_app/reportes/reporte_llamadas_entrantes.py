@@ -19,7 +19,7 @@
 from collections import defaultdict
 from django.conf import settings
 from django.utils.encoding import force_text
-from django.utils.timezone import now
+from django.utils.timezone import now, localtime
 from django.db.models import Count
 from asterisk.manager import Manager, ManagerSocketException, ManagerAuthException, ManagerException
 
@@ -139,7 +139,7 @@ class ReporteDeLLamadasEntrantesDeSupervision(object):
         for campana in query_campanas:
             self.campanas[campana.id] = campana
 
-        hoy = now()
+        hoy = localtime(now())
         self.desde = datetime_hora_minima_dia(hoy)
         self.hasta = datetime_hora_maxima_dia(hoy)
         self.estadisticas = {}
@@ -254,8 +254,10 @@ class ReporteDeLLamadasEntrantesDeSupervision(object):
 
     def _contabilizar_llamadas_en_espera_por_campana(self):
         self._obtener_llamadas_en_espera()
-        for campana, llamadas_en_cola_campana in self.llamadas_en_cola.items():
-            self.estadisticas[campana]['llamadas_en_espera'] = llamadas_en_cola_campana
+        for campana_id, llamadas_en_cola_campana in self.llamadas_en_cola.items():
+            if campana_id not in self.estadisticas:
+                self._inicializar_conteo_de_campana(self.campanas[campana_id])
+            self.estadisticas[campana_id]['llamadas_en_espera'] = llamadas_en_cola_campana
 
 
 class ReporteLlamadasEntranteFamily(AbstractRedisFamily):
