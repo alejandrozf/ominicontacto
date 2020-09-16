@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'import_export',
     'django_extensions',
     'constance.backends.database',
+    'django_sass',
 ]
 
 MIDDLEWARE_CLASSES = [

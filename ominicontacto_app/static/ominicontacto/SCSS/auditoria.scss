@@ -1,0 +1,50 @@
+@import 'variables';
+
+.pendiente {
+    background: #cfcbca;
+}
+
+.rechazada {
+    background: red;
+}
+
+.aprobada {
+    background: $primary-light-color;
+}
+
+.observada {
+    background: #fe832f;
+}
+
+.detalles {
+    color: white;
+}
+
+/*
+Resultados de Auditoria en calificacion styles
+*/
+.calificacion_auditada{
+    border: 1px solid $primary-color;
+    border-radius: 10px;
+    padding-left: 10%;
+    padding-top: 3%;
+}
+.calificacion_auditada h2 {
+    text-decoration: underline;
+    text-decoration-color: $primary-color;
+    text-transform: uppercase;
+    color: gray;
+} 
+.modalAuditoria .modal-header,
+.modalAuditoria .modal-header span{
+    background-color: $primary-color;
+    color: white;
+    text-transform: uppercase;
+}
+.calificacion_auditada b,
+.modalAuditoria .modal-body b{
+  color: $primary-color;
+}
+#calificacion_form textarea {
+  width: 100%;
+}
