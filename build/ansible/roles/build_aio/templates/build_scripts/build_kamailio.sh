@@ -57,6 +57,6 @@ if [ "$KAMAILIO_VERSION_INSTALLED" != "$KAMAILIO_VERSION" ]; then
 fi
 echo "Building kamailio rpm"
 cd /vagrant/build/rpms
-fpm -s dir -t rpm -n kamailio -v {{ kamailio_version }} {{ kamailio_location}} /etc/systemd/system/kamailio.service || true
+fpm -s dir -t rpm -n kamailio -v {{ kamailio_version }} -f {{ kamailio_location}} /etc/systemd/system/kamailio.service || true
 echo "Uploading rpm to public server"
 scp $SSH_OPTIONS -P 40404 -i /vagrant/vps_key.pem kamailio-{{ kamailio_version }}* root@www.freetech.com.ar:/var/www/html/omnileads/build

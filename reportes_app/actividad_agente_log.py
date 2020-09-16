@@ -144,7 +144,7 @@ class AgenteTiemposReporte(object):
         tiempo_llamada = self.tiempo_llamada.total_seconds()
         if tiempo_llamada > 0:
             promedio_llamadas = tiempo_llamada / self.cantidad_llamadas_procesadas
-            return promedio_llamadas
+            return float('%.2f' % promedio_llamadas)
         return 0
 
     def get_nombre_agente(self):

@@ -17,7 +17,7 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-"""Vista Backlist para crear una nueva Backlist o llamada listas negras de telefonos"""
+"""Vista Blacklist para crear una nueva Blacklist o llamada listas negras de telefonos"""
 
 from __future__ import unicode_literals
 
@@ -32,11 +32,11 @@ from django.views.generic.list import ListView
 from ominicontacto_app.errors import (
     OmlParserCsvDelimiterError, OmlParserMinRowError, OmlParserOpenFileError,
     OmlArchivoImportacionInvalidoError)
-from ominicontacto_app.forms import BacklistForm
-from ominicontacto_app.models import Backlist
+from ominicontacto_app.forms import BlacklistForm
+from ominicontacto_app.models import Blacklist
 from ominicontacto_app.parser import ParserCsv
-from ominicontacto_app.services.back_list import (
-    CreacionBacklistService, ValidaDataService, NoSePuedeInferirMetadataError,
+from ominicontacto_app.services.black_list import (
+    CreacionBlacklistService, ValidaDataService, NoSePuedeInferirMetadataError,
     NoSePuedeInferirMetadataErrorEncabezado, NoSePuedeInferirMetadataErrorFormatoFilas)
 
 import logging as logging_
@@ -45,32 +45,32 @@ import logging as logging_
 logger = logging_.getLogger(__name__)
 
 
-class BackListView(ListView):
+class BlackListView(ListView):
     """
     Esta vista es para generar el listado de
     Lista de Contactos.
     """
 
     template_name = 'black_list/lista_black_list.html'
-    context_object_name = 'back_lists'
-    model = Backlist
+    context_object_name = 'black_lists'
+    model = Blacklist
 
     def get_queryset(self):
 
-        queryset = super(BackListView, self).get_queryset()
+        queryset = super(BlackListView, self).get_queryset()
         queryset = queryset.order_by('-fecha_alta')
         queryset = queryset[:1]
         return queryset
 
 
-class BacklistCreateView(CreateView):
+class BlacklistCreateView(CreateView):
     """
-    Esta vista crea una instancia de Backlist
+    Esta vista crea una instancia de Blacklist
     sin definir, lo que implica que no esta disponible
     hasta que se procese su definición.
     """
 
-    def obtiene_previsualizacion_archivo(self, back_list):
+    def obtiene_previsualizacion_archivo(self, black_list):
         """
         Instancia el servicio ParserCsv e intenta obtener un resumen de las
         primeras 3 lineas del csv.
@@ -79,7 +79,7 @@ class BacklistCreateView(CreateView):
         try:
             parser = ParserCsv()
             estructura_archivo = parser.previsualiza_archivo(
-                back_list)
+                black_list)
 
         except OmlParserCsvDelimiterError:
             message = _('<strong>Operación Errónea!</strong> '
@@ -113,11 +113,14 @@ class BacklistCreateView(CreateView):
             )
         else:
             return estructura_archivo
-
     template_name = 'black_list/nueva_edita_black_list.html'
-    model = Backlist
-    context_object_name = 'backlist'
-    form_class = BacklistForm
+    model = Blacklist
+    context_object_name = 'blacklist'
+    form_class = BlacklistForm
+
+    def _eliminar_blacklist_anterior(self):
+        blacklist_antiguos = Blacklist.objects.all()
+        blacklist_antiguos.delete()
 
     def form_valid(self, form):
         nombre_archivo_importacion = \
@@ -127,8 +130,8 @@ class BacklistCreateView(CreateView):
         self.object.nombre_archivo_importacion = nombre_archivo_importacion
 
         try:
-            creacion_back_list = CreacionBacklistService()
-            creacion_back_list.genera_back_list(self.object)
+            creacion_black_list = CreacionBlacklistService()
+            creacion_black_list.genera_black_list(self.object)
         except OmlArchivoImportacionInvalidoError:
             message = _('<strong>Operación Errónea!</strong> ') +\
                 _('El archivo especificado para realizar la importación de contactos '
@@ -176,12 +179,14 @@ class BacklistCreateView(CreateView):
                 message,
             )
             return self.form_invalid(form)
+
+        self._eliminar_blacklist_anterior()  # antes de guardar la blacklist, elimina los anteriores
         self.object.save()
-        creacion_back_list = CreacionBacklistService()
-        creacion_back_list.importa_contactos(self.object)
-        creacion_back_list.crear_archivo_backlist(self.object)
+        creacion_black_list = CreacionBlacklistService()
+        creacion_black_list.importa_contactos(self.object)
+        creacion_black_list.crear_archivo_blacklist(self.object)
         return redirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse(
-            'back_list_list')
+            'black_list_list')

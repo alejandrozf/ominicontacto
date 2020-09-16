@@ -7,6 +7,7 @@ Type=forking
 User=omnileads
 EnvironmentFile=/etc/profile.d/omnileads_envars.sh
 Environment=USER={{ usuario }}
+LimitNOFILE=infinity
 ExecStart=/usr/sbin/asterisk -U $USER -G $USER -g
 ExecReload=/usr/sbin/asterisk -x 'core restart gracefully'
 ExecStop=/usr/sbin/asterisk -x 'core stop now'

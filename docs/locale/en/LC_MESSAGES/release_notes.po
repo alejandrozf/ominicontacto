@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-13 15:48-0300\n"
+"POT-Creation-Date: 2020-09-15 15:20-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,106 +23,64 @@ msgstr "Release Notes"
 
 # 73ee1e870afd4a31b43364589dd0e1ee
 #: ../../release_notes.rst:4
-msgid "*August 13, 2020*"
-msgstr "August 13, 2020"
+msgid "*Septiembre 15, 2020*"
+msgstr "September 15, 2020"
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.9.0"
-msgstr "Release 1.9.0 details"
-
-# dd19a93b2d9f445abeed27910f0e6d54
-#: ../../release_notes.rst:11
-msgid "Nuevas funcionalidades"
-msgstr "New features"
-
-# 14d9c7e025164356837f83274977eba1
-#: ../../release_notes.rst:12
-msgid ""
-"La supervisión fue refactorizada para almacenar su informacion en tiempo "
-"real en Redis desde AstDB para mejorar la performance"
-msgstr ""
-"Supervision was refactored to save its real-time agents information on Redis "
-"instead of AstDB for improve performance"
-
-# d02fadfb8db247eca6b355935eec14f9
-#: ../../release_notes.rst:13
-msgid ""
-"La IU para escoger una opción de calificación en los wizards de creación "
-"de campañas fue mejorada"
-msgstr ""
-"The UI for choose a disposition option in campaign creation wizards was improved"
-
-# b1caa7899e364e69a6c9d96f1bb6dbf1
-#: ../../release_notes.rst:14
-msgid ""
-"Se implementó un filtro por id de contacto externo en la vista de "
-"grabaciones"
-msgstr ""
-"A filter by external contact id was added to recordings page"
-
-
-# 1a92041b33dc4e3b95335f0576ceef45
-#: ../../release_notes.rst:15
-msgid ""
-"Se adicionó la estadística de cantidad de reintentos abiertos en la vista"
-" de detalle de campañas dialer"
-msgstr ""
-"In installation the system a unique SSL cert for all components"
-
-# f0132f790844401f9d39e7f6377c2ac0
-#: ../../release_notes.rst:16
-msgid ""
-"En la instalación del sistema ahora se utiliza un único certficado SSL "
-"para todos los componentes"
-msgstr ""
-"In installation the system a unique SSL cert for all components"
-
-# 7dcb729b108644af8e6eef88218cea0e
-#: ../../release_notes.rst:17
-msgid ""
-"Se adicionó soporte para bases de contactos de mayor tamaño en campañas "
-"dialer"
-msgstr ""
-"Added support for bigger contacts databases for dialer campaigns"
+msgid "Detalles de Release 1.10.1"
+msgstr "Release 1.10.1 details"
 
 # 2f558403c15a436e90409b976c7f07ed
-#: ../../release_notes.rst:21
+#: ../../release_notes.rst:10
 msgid "Fixes y mejoras"
 msgstr "Fixes and improvements"
 
-# 214280dedaeb440cb64a7eccfb4e08fa
-#: ../../release_notes.rst:22
+# 31b5a2834b2c42a3bf4328b8d8dae2e0
+#: ../../release_notes.rst:11
 msgid ""
-"Solucionado error cuando un supervisor asignado a un campaña intentaba "
-"bloquear campos para agente lanzaba un error"
+"Solucionado error que se generaba cuando el agente filtraba grabaciones "
+"de llamadas calificadas como gestión"
 msgstr ""
-"Fixed error on supervisor roles assigned to a campaign that generates an "
-"exception when attempting to block fields for agents"
+"Fixed error when agent filtered recordings of calls engaged dispositioned"
 
-# 32b60018e83e4dc2b4d56007227c106f
-#: ../../release_notes.rst:23
+# 4859d569d3794c63a4e2f98ddd11532f
+#: ../../release_notes.rst:12
 msgid ""
-"Solucionar error de dialplan que se generaba al intentar guardar "
-"información de la grabación de una llamada en medio de una transferencia "
-"consultativa"
+"Solucionada inconsistencia en el reporte de campañas entrantes, ahora "
+"todos los datos que se muestran están ligados al rengo de tiempo escogido"
+" por el usuario"
 msgstr ""
-"Fixed dialplan error when saving database recordings data on consultative"
-" transfers calls"
+"Fixed inconsistency on campaign inbound report, now all data shown is "
+"bounded to the date filter chosen by the user"
 
-# 214280dedaeb440cb64a7eccfb4e08fa
-#: ../../release_notes.rst:24
+# 843c4f494c3e40fbb88dc8e294b263c7
+#: ../../release_notes.rst:13
 msgid ""
-"Solucionado error de instalación de upgrade al actualizar el paquete "
-"virtualenv"
+"Solucionado error en la supervisión de las campañas entrantes si el "
+"supervisor no es un administrador"
 msgstr ""
-"Fixed installation upgrade error when updating virtualenv package"
+"Fixed error in supervision inbound campaigns report if the supervisor"
+" is not administrator."
 
-# 214280dedaeb440cb64a7eccfb4e08fa
-#: ../../release_notes.rst:25
+# 1680630ae4bc485d94445cefe09d960e
+#: ../../release_notes.rst:14
 msgid ""
-"Solucionada inconsistencia cuando un agente pasa de un pausa ACW (con el "
-"timeout) a otra pausa"
+"Solucionado error que sobreescribía los certificados personalizados SSL "
+"al realizar una actualización de una instancia"
 msgstr ""
-"Fixed inconsistency error when an agent passes from ACW pause (with timeout)"
-" to another pause"
+"Fixed error that overwrites client custom SSL certificates when"
+" upgrading instance"
+
+# 56dc691718134665905bb7ae605cf01e
+#: ../../release_notes.rst:15
+msgid "Se adicionan nuevas opciones al componente RtpEngine"
+msgstr "Added new options to RtpEngine component"
+
+# fcc7e765860c45eb851de211d0218026
+#: ../../release_notes.rst:16
+msgid ""
+"El componente Asterisk fue configurado para evitar el error \"Too much "
+"open files\""
+msgstr ""
+"Asterisk component was configured to avoid the error \"Too much open files\""

@@ -44,12 +44,12 @@ class TestsBlacklist (OMLBaseTest):
         self.client.login(username=self.admin.username, password=self.PWD)
 
     def test_mostrar_ultima_blacklist_cargada(self):
-        url = reverse('back_list_list')
+        url = reverse('black_list_list')
         response = self.client.get(url, follow=True)
         self.assertContains(response, self.nueva_blacklist.nombre)
 
     def test_mostrar_una_blacklist(self):
-        url = reverse('back_list_list')
+        url = reverse('black_list_list')
         response = self.client.get(url, follow=True)
         data = response.context_data['object_list']
         n_blacklist = data.count()

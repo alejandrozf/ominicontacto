@@ -27,6 +27,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <div class="form-row">
     <div class="col-md-9">
         <h1>{% trans 'Usuarios' %}</h1>
+        <h3>{% trans 'Activos:' %} {{ numero_usuarios_activos  }}</h1>
     </div>
     <div class="col-md-3">
         <form method="GET" action="{% url 'user_list' page=1 %}" class="filter-flex">
@@ -91,10 +92,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         {% if elimina_user and usuario.id != 1 %}
                         <a class="dropdown-item" href="{% url 'user_delete' usuario.id %}">
                             <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
-                        </a>  
-                        {% endif %}                          
+                        </a>
+                        {% endif %}
                     </div>
-                </div>    
+                </div>
             </td>
             {% endif %}
         </tr>

@@ -27,7 +27,7 @@ from ominicontacto_app import (
     views_grabacion, views_calificacion, views_formulario, views_agente,
     views_calificacion_cliente, views_campana, views_campana_reportes,
     views_agenda_contacto, views_campana_dialer_creacion, views_campana_dialer,
-    views_back_list, views_sitio_externo, views_queue_member,
+    views_black_list, views_sitio_externo, views_queue_member,
     views_campana_dialer_template, views_campana_manual_creacion, views_campana_manual,
     views_campana_preview, views_archivo_de_audio, views_user_profiles, views_sistema_externo,
     views_auditorias
@@ -89,6 +89,10 @@ urlpatterns = [
     url(r'^user/update/(?P<pk>\d+)/$',
         login_required(views_user_profiles.CustomerUserUpdateView.as_view()),
         name='user_update',
+        ),
+    url(r'^user/password/$',
+        login_required(views_user_profiles.CustomerUserUpdateView.as_view()),
+        name='user_change_password', kwargs={'change_password': ''}
         ),
     # Perfil Agente  ==========================================================
     url(r'^agente/list/$',
@@ -758,12 +762,12 @@ urlpatterns = [
     # ==========================================================================
     # Blacklist
     # ==========================================================================
-    url(r'^backlist/nueva/$',
-        login_required(views_back_list.BacklistCreateView.as_view()),
-        name="back_list_create"),
-    url(r'^backlist/lista/$',
-        login_required(views_back_list.BackListView.as_view()),
-        name="back_list_list"),
+    url(r'^blacklist/nueva/$',
+        login_required(views_black_list.BlacklistCreateView.as_view()),
+        name="black_list_create"),
+    url(r'^blacklist/lista/$',
+        login_required(views_black_list.BlackListView.as_view()),
+        name="black_list_list"),
     # ==========================================================================
     # Sistema Externo
     # ==========================================================================

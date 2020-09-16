@@ -79,6 +79,11 @@ class User(AbstractUser):
     last_session_key = models.CharField(blank=True, null=True, max_length=40)
     borrado = models.BooleanField(default=False, editable=False)
 
+    @classmethod
+    def numero_usuarios_activos(cls):
+        """Devuelve el numero de usuarios activos en el sistema"""
+        return User.objects.exclude(borrado=True).count() - 1
+
     @property
     def rol(self):
         # Se asume que tiene un solo grupo
@@ -2742,6 +2747,11 @@ class CalificacionCliente(TimeStampedModel, models.Model):
     es_calificacion_manual = models.BooleanField(default=False)
     history = HistoricalRecords()
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['fecha', ])
+        ]
+
     def __str__(self):
         return "Calificacion para la campana {0} para el contacto " \
                "{1} ".format(self.opcion_calificacion.campana, self.contacto)
@@ -3147,7 +3157,7 @@ class ActuacionVigente(models.Model):
         return dias
 
 
-class Backlist(models.Model):
+class Blacklist(models.Model):
 
     nombre = models.CharField(
         max_length=128, verbose_name=_('Nombre')
@@ -3175,14 +3185,14 @@ class Backlist(models.Model):
                                              self.cantidad_contactos)
 
 
-class ContactoBacklist(models.Model):
+class ContactoBlacklist(models.Model):
     """
     Lista de contacto que no quieren que los llamen
     """
 
     telefono = models.CharField(max_length=128)
-    back_list = models.ForeignKey(
-        Backlist, related_name='contactosbacklist', blank=True, null=True,
+    black_list = models.ForeignKey(
+        Blacklist, related_name='contactosblacklist', blank=True, null=True,
         on_delete=models.CASCADE)
 
     def __str__(self):

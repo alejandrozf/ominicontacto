@@ -34,9 +34,9 @@ from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana,
                                       SitioExterno, User, Contacto, SupervisorProfile,
                                       AgenteEnContacto, QueueMember, CalificacionCliente,
                                       OpcionCalificacion, ArchivoDeAudio, ParametrosCrm,
-                                      ActuacionVigente, Pausa, RespuestaFormularioGestion, Backlist,
-                                      AgendaContacto, SistemaExterno, AgenteEnSistemaExterno,
-                                      AuditoriaCalificacion)
+                                      ActuacionVigente, Pausa, RespuestaFormularioGestion,
+                                      Blacklist, AgendaContacto, SistemaExterno,
+                                      AgenteEnSistemaExterno, AuditoriaCalificacion)
 
 from reportes_app.models import LlamadaLog, ActividadAgenteLog
 
@@ -99,7 +99,7 @@ class SistemaExternoFactory(DjangoModelFactory):
 
 class BlackListFactory(DjangoModelFactory):
     class Meta:
-        model = Backlist
+        model = Blacklist
 
     nombre = lazy_attribute(lambda a: faker.text(15))
     fecha_alta = lazy_attribute(lambda a: timezone.now())
