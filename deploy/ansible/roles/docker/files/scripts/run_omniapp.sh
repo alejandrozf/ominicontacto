@@ -29,7 +29,6 @@ EOF
 
   $COMMAND migrate --noinput
   $COMMAND createsuperuser --noinput --username=admin --email=admin@example.com || true
-  $COMMAND cambiar_admin_password
   $COMMAND populate_history
   $COMMAND compilemessages
   echo 'yes' | $COMMAND collectstatic
