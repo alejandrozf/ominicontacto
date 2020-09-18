@@ -122,7 +122,8 @@ class CreacionBaseDatosService(object):
 
         try:
             estructura_archivo = parser.get_estructura_archivo(base_datos_contacto)
-            posicion_primer_telefono = estructura_archivo[0].index(campos_telefonicos[0])
+            posicion_primer_telefono = estructura_archivo[0].index(
+                str(campos_telefonicos[0]).capitalize())
             cantidad_contactos = 0
 
             if base_datos_contacto.cantidad_contactos:
@@ -505,7 +506,7 @@ class PredictorMetadataService(object):
 
         # chequeamos que el nombre de las columnas sean los mismo cargado previamente
         for columna_base, columna_csv in zip(metadata.nombres_de_columnas, primer_linea):
-            if columna_base != columna_csv:
+            if str(columna_base).capitalize() != str(columna_csv).capitalize():
                 raise (NoSePuedeInferirMetadataErrorEncabezado(
                     _("El nombre de la  columna {0} no coincide con el "
                       "guardado en la base ".format(columna_base))))
