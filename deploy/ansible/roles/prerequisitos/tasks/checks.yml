@@ -202,6 +202,23 @@
   when: assert_pgpass.rc == 0 and postgres_password is not defined
   tags: always
 
+- name: Check if $PGPORT was defined previously
+  shell: bash -lc 'if [ -z $PGPORT ]; then exit 1; else echo $PGPORT; exit 0; fi'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_pgport
+  tags: always
+
+- set_fact: postgres_port="{{ assert_pgport.stdout }}"
+  when: assert_pgport.rc == 0 and postgres_port is not defined
+  tags: always
+
+- set_fact: postgres_port=5432
+  when: assert_pgport.rc == 1 and postgres_port is not defined
+  tags: always
+
 - name: Check if $AMI_USER was defined previously
   shell: bash -lc 'if [ -z $AMI_USER ]; then exit 1; else echo $AMI_USER; exit 0; fi'
   args:

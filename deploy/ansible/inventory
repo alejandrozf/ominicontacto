@@ -95,6 +95,8 @@ schedule=Agenda
 # in diferent servers. Uncomment the variables and place the hostnames of these servers      #
 ##############################################################################################
 #postgres_host=
+#postgres_port=
+#default_postgres_database=
 #default_postgres_user=
 #default_postgres_password=
 #asterisk_host=
