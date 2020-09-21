@@ -16,6 +16,7 @@ django-formtools==2.1
 django-import-export==2.0.2
 django-js-reverse==0.8.2
 django-picklefield==2.1.1
+django-sass==1.0.0
 django-simple-history==2.7.3
 django-widget-tweaks==1.4.1
 djangorestframework==3.10.3
@@ -23,6 +24,7 @@ enum34==1.1.6
 factory-boy==2.9.2
 ipython==6.5.0
 ipython-genutils==0.2.0
+libsass==0.20.1
 lxml==4.3.4
 olefile==0.44
 paramiko==2.4.2

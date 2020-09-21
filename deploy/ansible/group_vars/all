@@ -22,7 +22,7 @@ postgresql_old_version: 9.6
 postgresql_version: 11
 redis_version: 5.0.9
 rtpengine_version: 5.5.12.1
-virtualenv_version: "1.9.0"
+virtualenv_version: "17.1725"
 wombat_version: 20.02.1-272
 asterisk_package: "{{ packages_url }}/asterisk-{{ asterisk_version }}-1.x86_64.rpm"
 kamailio_package: "{{ packages_url }}/kamailio-{{ kamailio_version }}-1.x86_64.rpm"
