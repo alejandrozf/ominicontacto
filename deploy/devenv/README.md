@@ -135,7 +135,9 @@ Adittionally with omnileads container is the pbx-emulator, this an emulation of 
 
 ## Inbound calls
 
-You can simulate inbound calls registering an extension from the pbx-emulator. You can use the softphone you want. This are the extensions credentials:
+You can simulate inbound calls:
+
+A) Registering an extension from the pbx-emulator. You can use the softphone you want. This are the extensions credentials:
 
   username: 01155001122
   secret: OMLtraining72
@@ -143,7 +145,19 @@ You can simulate inbound calls registering an extension from the pbx-emulator. Y
 
 (Change "YOUR_HOSTNAME" with the hostname or your machine)
 
-After registering the extension you can call this numbers for receiving the call to a Omnileads inbound campaign (check manuals to configure inbound campaign and inbound routing)
+B) With sipp utility, this option permit to execute many inbound calls from pbx-emulator to OMniLeads. Here we can to perform a stress test also:
+
+```sh
+docker exec -it pbx-emulator sipp -sn uac localhost:5060 -s stress -r 1 -d 60000 -l 10
+```
+
+For more details run:
+
+```sh
+sipp --help
+```
+
+You can call this numbers for receiving the call to a Omnileads inbound campaign (check manuals to configure inbound campaign and inbound routing)
 
   0117766001[1-9] => you will receive the call with a random numeric CID
   0117766002[1-9] => you will receive the call with the word “unknown” as CID
