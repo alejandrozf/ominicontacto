@@ -22,93 +22,95 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.dataTables.min.css' %}">
-    <link rel="stylesheet" href="{% static 'supervision_app/CSS/supervision.css' %}">
+<link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'supervision_app/CSS/supervision.css' %}">
 {% endblock %}
 
 {% block head_js %}
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/utiles.js' %}"></script>
-    <script type="text/javascript" src="{% static 'supervision_app/JS/supervision.js' %}"></script>
-    {% include 'config.html' %}
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/config.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/jssip.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/state-machine-min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/agente/phoneJsFSM.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/agente/phoneJsSip.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/utiles.js' %}"></script>
+<script type="text/javascript" src="{% static 'supervision_app/JS/supervision.js' %}"></script>
+{% include 'config.html' %}
+<script type="text/javascript" src="{% static 'ominicontacto/JS/config.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/jssip.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/state-machine-min.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/agente/phoneJsFSM.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/agente/phoneJsSip.js' %}"></script>
 
 
-    <script type="text/javascript" src="{% static 'supervision_app/JS/phoneJsView.js' %}"></script>
-    <script type="text/javascript" src="{% static 'supervision_app/JS/phoneJsController.js' %}"></script>
-    <script type="text/javascript" src="{% static 'supervision_app/JS/supervision_agentes.js' %}"></script>
+<script type="text/javascript" src="{% static 'supervision_app/JS/phoneJsView.js' %}"></script>
+<script type="text/javascript" src="{% static 'supervision_app/JS/phoneJsController.js' %}"></script>
+<script type="text/javascript" src="{% static 'supervision_app/JS/supervision_agentes.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-    <h1>{% trans 'Agentes' %}</h1>
+<h1>{% trans 'Agentes' %}</h1>
 
-    <!-- Contenido oculto necesario para el PhoneJS -->
-    <input type="hidden" value="{{ user.get_supervisor_profile.id }}" id="supervisor_id"/>
-    <input type="hidden" value="{{ sip_usuario }}" id="sipExt"/>
-    <input type="hidden" value="{{ sip_password }}" id="sipSec"/>
+<!-- Contenido oculto necesario para el PhoneJS -->
+<input type="hidden" value="{{ user.get_supervisor_profile.id }}" id="supervisor_id" />
+<input type="hidden" value="{{ sip_usuario }}" id="sipExt" />
+<input type="hidden" value="{{ sip_password }}" id="sipSec" />
 
-    <audio id="remoteAudio" autoplay="autoplay"></audio>
-    <audio id="localAudio" muted="muted"></audio>
-    <audio id="RingIn">
-        <source id="fuenteIn" src="{% static "ominicontacto/ring/Kuma.mp3" %}" type="audio/mpeg">
-    </audio>
-    <audio id="RingOut">
-        <source id="fuenteOut" src="{% static "ominicontacto/ring/tonoallamar.mp3" %}" type="audio/mpeg">
-    </audio>
-    <audio id="RingBusy">
-        <source id="fuentebOut" src="{% static "ominicontacto/ring/busy.mp3" %}" type="audio/mpeg">
-    </audio>
-    <!-- FIN Contenido oculto necesario para el PhoneJS -->
+<audio id="remoteAudio" autoplay="autoplay"></audio>
+<audio id="localAudio" muted="muted"></audio>
+<audio id="RingIn">
+    <source id="fuenteIn" src="{% static "ominicontacto/ring/Kuma.mp3" %}" type="audio/mpeg">
+</audio>
+<audio id="RingOut">
+    <source id="fuenteOut" src="{% static "ominicontacto/ring/tonoallamar.mp3" %}" type="audio/mpeg">
+</audio>
+<audio id="RingBusy">
+    <source id="fuentebOut" src="{% static "ominicontacto/ring/busy.mp3" %}" type="audio/mpeg">
+</audio>
+<!-- FIN Contenido oculto necesario para el PhoneJS -->
 
-    <div class="container py-3">
-        <div class="row" id="timebar">
-            <div class="col col-xs-4 col-md-4 col-lg-4">
-                <div id="CallStatus"></div>
-                <div id="SipStatus"></div>
-            </div>
-            <div class="col col-xs-3 col-md-3 col-lg-3 filter_group">
-                <div class="col-md-5"><label>{% trans 'Filtrar grupo' %}</label></div>
-                <div class="col-md-7"><select class="form-control" id="filter_group">
+<div class="container py-3">
+    <div class="row" id="timebar">
+        <div class="col col-xs-4 col-md-4 col-lg-4">
+            <div id="CallStatus"></div>
+            <div id="SipStatus"></div>
+        </div>
+        <div class="col col-xs-3 col-md-3 col-lg-3 filter_group">
+            <div class="col-md-5"><label>{% trans 'Filtrar grupo' %}</label></div>
+            <div class="col-md-7"><select class="form-control" id="filter_group">
                     <option value="" selected="selected" label="------------"></option>
                     {%for nombre_grupo in grupo%}
 
                     <option value="{{nombre_grupo}}">{{nombre_grupo}}</option>
                     {% endfor %}
                 </select></div>
-            </div>
-            <div class="col col-xs-3 col-md-3 col-lg-3 filter_group">
-                <div class="col-md-5"><label>{% trans 'Filtrar Campaña' %}</label></div>
-                <div class="col-md-7"><select class="form-control" id="filter_campana">
+        </div>
+        <div class="col col-xs-3 col-md-3 col-lg-3 filter_group">
+            <div class="col-md-5"><label>{% trans 'Filtrar Campaña' %}</label></div>
+            <div class="col-md-7"><select class="form-control" id="filter_campana">
                     <option value="" selected="selected" label="------------"></option>
                     {%for campana in campanas%}
                     <option value="{{campana}}">{{campana}}</option>
                     {% endfor %}
                 </select></div>
-            </div>    
-            <div class="col col-xs-2 col-md-2 col-lg-2">
-                <button class="btn btn-danger" id="endCall" type="button" placeholder='finalizar' >
+        </div>
+        <div class="col col-xs-2 col-md-2 col-lg-2">
+            <button class="btn btn-danger" id="endCall" type="button" placeholder='finalizar'>
                 {% trans "Finalizar" %}
-                </button>
-            </div>
+            </button>
         </div>
     </div>
+</div>
 
-    <table id="tableAgentes" class="table">
-        <thead>
-            <tr>
-                <th>{% trans 'Nombre' %}</th>
-                <th type="hidden"></th>
-                <th type="hidden"></th>
-                <th>{% trans 'Status' %}</th>
-                <th>{% trans 'Tiempo' %}</th>
-                <th>{% trans 'Acciones' %}</th>
-            </tr>
-        </thead>
-    </table>
+<table id="tableAgentes" class="table">
+    <thead>
+        <tr>
+            <th>{% trans 'Nombre' %}</th>
+            <th type="hidden"></th>
+            <th type="hidden"></th>
+            <th>{% trans 'Campaña' %}</th>
+            <th>{% trans 'Contacto' %}</th>
+            <th>{% trans 'Status' %}</th>
+            <th>{% trans 'Tiempo' %}</th>
+            <th>{% trans 'Acciones' %}</th>
+        </tr>
+    </thead>
+</table>
 
 {% endblock content %}

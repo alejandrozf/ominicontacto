@@ -67,6 +67,8 @@ class SupervisorActivityAmiManager(object):
                 agente_info['status'] = status
                 agente_info['sip'] = agente_info['SIP']
                 agente_info['pause_id'] = agente_info.get('PAUSE_ID', '')
+                agente_info['campana_llamada'] = agente_info.get('CAMPAIGN', '')
+                agente_info['contacto'] = agente_info.get('CONTACT_NUMBER', '')
                 tiempo_actual = int(time())
                 tiempo_estado = tiempo_actual - int(agente_info['TIMESTAMP'])
                 agente_info['tiempo'] = tiempo_estado

@@ -170,6 +170,10 @@ class AgentActivityAmiManager(object):
 
     def _set_agent_redis_status(self, agente_profile, action):
         data = self._get_redis_status_data(action)
+        if data['STATUS'] == 'READY' or (('PAUSE' in data['STATUS'])
+                                         and ('ACW' not in data['STATUS'])):
+            data['CAMPAIGN'] = ''
+            data['CONTACT_NUMBER'] = ''
         return self._save_agent_data(agente_profile, data)
 
     def _set_agent_pause_redis_status(self, agente_profile, pause_name, pause_id):
