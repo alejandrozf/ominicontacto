@@ -701,7 +701,7 @@ class ActualizaBaseDatosContactoView(UpdateView):
 
         for columna_base, columna_csv in zip(metadata.nombres_de_columnas,
                                              lista_columnas_encabezado):
-            if columna_base != columna_csv:
+            if str(columna_base).capitalize() != str(columna_csv).capitalize():
                 error = _("El nombre de la columna debe ser {0} en vez de {1}".
                           format(columna_base, columna_csv))
 
