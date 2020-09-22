@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-21 10:50-0300\n"
+"POT-Creation-Date: 2020-09-22 18:07-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,81 +23,29 @@ msgstr "Release Notes"
 
 # 73ee1e870afd4a31b43364589dd0e1ee
 #: ../../release_notes.rst:4
-msgid "*Septiembre 21, 2020*"
-msgstr "September 21, 2020"
+msgid "*Septiembre 22, 2020*"
+msgstr "September 22, 2020"
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.10.2"
-msgstr "Release 1.10.2 details"
+msgid "Detalles de Release 1.10.3"
+msgstr "Release 1.10.3 details"
 
 # 2f558403c15a436e90409b976c7f07ed
 #: ../../release_notes.rst:10
 msgid "Fixes y mejoras"
 msgstr "Fixes and improvements"
 
-# 843c4f494c3e40fbb88dc8e294b263c7
+# 68b026bbe1164ac3bcd176199e108ab0
 #: ../../release_notes.rst:11
 msgid ""
-"Solucionado error al adicionar contactos a campañas preview creadas antes"
-" del release 1.10.0"
+"Solucionado error en tarea programada para campañas preview que libera "
+"contactos de agente de acuerdos a parámetros de tiempo de expiración"
 msgstr ""
-"Fixed error when adding contacts to preview campaigns created before 1.10.0"
-" release"
-
-
-# 31b5a2834b2c42a3bf4328b8d8dae2e0
-#~ msgid ""
-#~ "Solucionado error que se generaba cuando"
-#~ " el agente filtraba grabaciones de "
-#~ "llamadas calificadas como gestión"
-#~ msgstr ""
-#~ "Fixed error when agent filtered "
-#~ "recordings of calls engaged dispositioned"
-
-# 4859d569d3794c63a4e2f98ddd11532f
-#~ msgid ""
-#~ "Solucionada inconsistencia en el reporte "
-#~ "de campañas entrantes, ahora todos los"
-#~ " datos que se muestran están ligados"
-#~ " al rengo de tiempo escogido por "
-#~ "el usuario"
-#~ msgstr ""
-#~ "Fixed inconsistency on campaign inbound "
-#~ "report, now all data shown is "
-#~ "bounded to the date filter chosen "
-#~ "by the user"
+"Fixed error on preview campaigns scheduled task that release contacts from"
+" agents according time expiration parameters"
 
 # 843c4f494c3e40fbb88dc8e294b263c7
-#~ msgid ""
-#~ "Solucionado error en la supervisión de"
-#~ " las campañas entrantes si el "
-#~ "supervisor no es un administrador"
-#~ msgstr ""
-#~ "Fixed error in supervision inbound "
-#~ "campaigns report if the supervisor is"
-#~ " not administrator."
-
-# 1680630ae4bc485d94445cefe09d960e
-#~ msgid ""
-#~ "Solucionado error que sobreescribía los "
-#~ "certificados personalizados SSL al realizar"
-#~ " una actualización de una instancia"
-#~ msgstr ""
-#~ "Fixed error that overwrites client "
-#~ "custom SSL certificates when upgrading "
-#~ "instance"
-
-# 56dc691718134665905bb7ae605cf01e
-#~ msgid "Se adicionan nuevas opciones al componente RtpEngine"
-#~ msgstr "Added new options to RtpEngine component"
-
-# fcc7e765860c45eb851de211d0218026
-#~ msgid ""
-#~ "El componente Asterisk fue configurado "
-#~ "para evitar el error \"Too much "
-#~ "open files\""
-#~ msgstr ""
-#~ "Asterisk component was configured to "
-#~ "avoid the error \"Too much open "
-#~ "files\""
+#: ../../release_notes.rst:12
+msgid "Solucionado problema de performance en reportes de campañas dialer"
+msgstr "Fixed performance issue on dialer campaigns reports"
