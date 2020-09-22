@@ -597,6 +597,13 @@ class ReporteTotalesLlamadas:
             llamadas_pendientes_extra = AgenteEnContacto.objects.filter(
                 estado=AgenteEnContacto.ESTADO_INICIAL, campana_id=self.campana.pk,
                 es_originario=True).count()
+        if self.campana.es_dialer:
+            campana_service = CampanaService()
+            dato_campana = campana_service.obtener_dato_campana_run(self.campana)
+            llamadas_pendientes_extra = 0
+            if dato_campana:
+                llamadas_pendientes_extra = dato_campana.get(
+                    'n_est_remaining_calls', 0)
         return self._llamadas_pendientes + llamadas_pendientes_extra
 
     @property
@@ -776,13 +783,6 @@ class EstadisticasService:
             elif evento == 'CONNECT':
                 self.reporte_totales_llamadas._llamadas_conectadas += 1
                 self.reporte_totales_llamadas._tiempo_acumulado_espera += bridge_wait_time
-        if self.campana.es_dialer:
-            campana_service = CampanaService()
-            dato_campana = campana_service.obtener_dato_campana_run(self.campana)
-            self.reporte_totales_llamadas._llamadas_pendientes = 0
-            if dato_campana:
-                self.reporte_totales_llamadas._llamadas_pendientes = dato_campana.get(
-                    'n_est_remaining_calls', 0)
 
     def _obtener_reporte_no_atendidos(self, log_llamada, evento):
         # obtener_cantidad_no_atendidos(log_llamada) + datos_csv
