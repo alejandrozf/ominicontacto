@@ -115,11 +115,6 @@ así como también ciertos parámetros de la App:
   postgres_database=omnileads
   #postgres_user=omnileads
   #postgres_password=my_very_strong_pass
-  #####################################################################
-  #                           Web Admin                               #
-  #                     SET WEB ADMIN PASSWORD                        #
-  #####################################################################
-  #admin_pass=my_very_strong_pass
   #######################################
   # AMI for wombat dialer and OMniLeads #
   #######################################

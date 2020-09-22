@@ -271,19 +271,6 @@
   when: assert_wombatpass.rc == 0 and dialer_password is not defined
   tags: always
 
-- name: Check if $DJANGO_PASS was defined previously
-  shell: bash -lc 'if [ -z $DJANGO_PASS ]; then exit 1; else echo $DJANGO_PASS; exit 0; fi'
-  args:
-    executable: /bin/bash
-  changed_when: false
-  failed_when: false
-  register: assert_djangopass
-  tags: always
-
-- set_fact: admin_pass="{{ assert_djangopass.stdout }}"
-  when: assert_djangopass.rc == 0 and admin_pass is not defined
-  tags: always
-
 - name: Check if $SESSION_COOKIE_AGE was defined previously
   shell: bash -lc 'if [ -z $SESSION_COOKIE_AGE ]; then exit 1; else echo $SESSION_COOKIE_AGE; exit 0; fi'
   args:
@@ -375,11 +362,4 @@
   fail:
     msg: WD pass undefined, edit dialer_password in inventory file
   when: dialer_password is not defined and assert_dialerpass.rc == 1
-  tags: always
-
-# Chequea si web admin password esta definido
-- name: Check if web admin password is defined
-  fail:
-    msg: Web admin variable undefined, edit $admin_pass in inventory file
-  when: admin_pass is not defined and assert_djangopass.rc == 1
   tags: always

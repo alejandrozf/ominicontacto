@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-29 10:21-0300\n"
+"POT-Creation-Date: 2020-09-21 10:13-0300\n"
 "PO-Revision-Date: 2019-08-13 15:12-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -37,10 +37,11 @@ msgstr "https://omnileads-hostname or https://omnileads-ip"
 # 31da14653dd34290ae67ae395bdc2ec1
 #: ../../install_first_access.rst:12
 msgid ""
-"A partir del release-1.9.0 El acceso web a OMniLeads puede ser usando "
+"A partir del release-1.10.0 El acceso web a OMniLeads puede ser usando "
 "hostname.domain o IP."
-msgstr "From release-1.9.0 and above, the web access to OMniLeads can be done usin hostname.domain "
-"or IP."
+msgstr ""
+"From release-1.10.0 and above, the web access to OMniLeads can be done "
+"usin hostname.domain or IP."
 
 # 6dcc2f3b74274013989e422d6a372be5
 #: ../../install_first_access.rst:14
@@ -78,7 +79,9 @@ msgstr ""
 msgid ""
 "3 - **Que un DNS externo resuelva el hostname**: suele ser el escenario "
 "mas común en entornos cloud."
-msgstr "**External DNS resolving hostname**: this is very common in cloud environments."
+msgstr ""
+"**External DNS resolving hostname**: this is very common in cloud "
+"environments."
 
 # c8da3ee3de3e4930bb697b81a1e35596
 #: ../../install_first_access.rst:21
@@ -88,12 +91,12 @@ msgstr "Example for Mac or Linux:"
 # 2482acf635034d999eae958217779d71
 #: ../../install_first_access.rst:25
 msgid ""
-"Al encontrarnos con la pantalla de login, simplemente se debe ingresar el"
-" usuario admin y la clave generada durante la instalación, como se expone"
-" en la figura 2."
+"Al encontrarnos con la pantalla de login, ingrese con las siguientes "
+"credenciales: usuario **admin** y contraseña **admin**, como se expone en"
+" la figura 2."
 msgstr ""
-"When finding the login screen, we just enter the admin user and the "
-"password generated during the installation (my_inventory), as shown on "
+"When finding the login screen, we just enter with the following credentials: "
+"user **admin** and password **admin**, as shown on "
 "figure 2."
 
 # 12bea01d6a8b496dbc43e7af56d1c24e
@@ -107,14 +110,12 @@ msgstr ""
 "deploy generated self-signed certificates, we will find the browser "
 "warning, which should be ignored and access the site."
 
-# 9d62cb296a9f4e6b8c237a2a23869b8b
+# fa2fb65a59a84699bedfd6ae61635210
 #: ../../install_first_access.rst:37
 msgid ""
-"Si no recuerda la contraseña de admin web, podemos consultar su valor "
-"consultando la :ref:`about_maintance_envvars` pertinente."
+"Luego de ingresar con las credenciales por defecto, podrá cambiar la "
+"contraseña del usuario admin."
 msgstr ""
-"If you don't remember admin web password, you can check the value in "
-":ref:`about_maintance_envvars`."
 
 # dd880e119f0746d0bf04449649240b78
 #: ../../install_first_access.rst:41
