@@ -3582,9 +3582,13 @@ class AgenteEnContacto(models.Model):
             delta_tiempo_asignacion = timedelta(
                 minutes=settings.DURACION_ASIGNACION_CONTACTO_PREVIEW)
             hora_limite_asignacion = tiempo_actual - delta_tiempo_asignacion
-            if ultima_modificacion <= hora_limite_reserva or \
-               ultima_modificacion <= hora_limite_asignacion:
+            if ultima_modificacion <= hora_limite_reserva and \
+               agente_en_contacto.estado == AgenteEnContacto.ESTADO_ENTREGADO:
                 agente_en_contacto_ids.append(agente_en_contacto.pk)
+            elif (ultima_modificacion <= hora_limite_asignacion and
+                  agente_en_contacto.estado == AgenteEnContacto.ESTADO_ASIGNADO):
+                agente_en_contacto_ids.append(agente_en_contacto.pk)
+
         liberados = AgenteEnContacto.objects.filter(pk__in=agente_en_contacto_ids).update(
             agente_id=-1, estado=AgenteEnContacto.ESTADO_INICIAL)
         return liberados
