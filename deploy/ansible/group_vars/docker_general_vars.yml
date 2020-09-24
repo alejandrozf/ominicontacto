@@ -10,6 +10,7 @@ kamailio_image: "kamailio/kamailio-ci:{{ kamailio_version.split('.')[0] }}.{{ ka
 mariadb_image: bitnami/mariadb:latest
 nginx_image: nginx:1.19.0-alpine
 redis_image: "redis:{{ redis_version }}-alpine"
+rtpengine_image: drachtio/rtpengine:latest
 # Images for EFK
 elasticsearch_image: elasticsearch:7.1.0
 fluentd_image: qqbuby/fluentd:v1.2-es
