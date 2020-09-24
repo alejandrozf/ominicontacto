@@ -180,7 +180,8 @@ class SubirBaseContactosTest(OMLBaseTest):
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_admin)
         url = reverse('api_upload_base_contactos')
-        file = SimpleUploadedFile("file.csv", b"col1,col2,Col1", content_type="text/plain")
+        file = SimpleUploadedFile(
+            "file.csv", b"col1,col2,col1\n1,2,3\n1,2,3", content_type="text/plain")
         payload = {"filename": file, 'nombre': 'test', 'campos_telefono': 'col1'}
         response = client.post(url, payload, format="multipart")
         self.assertEqual(response.status_code, 200)
