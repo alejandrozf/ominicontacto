@@ -36,6 +36,9 @@ from ominicontacto_app.models import AgenteProfile, User
 from ominicontacto_app.permisos import PermisoOML
 from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError, OmlError, \
     OmlParserRepeatedColumnsError
+from django.utils.encoding import smart_text
+from ominicontacto_app.utiles import elimina_tildes
+import re
 
 
 class AgentesActivosGrupoViewSet(viewsets.ModelViewSet):
@@ -156,11 +159,9 @@ class SubirBaseContactosView(APIView):
             db_name = self._obtiene_parametro(request, 'nombre')
             campos_telefono_str = self._obtiene_parametro(request, 'campos_telefono')
             id_externo = self._obtiene_parametro(request, 'id_externo', True)
-            if id_externo is not None:
-                id_externo = id_externo.capitalize()
             id = self.base_datos_contacto_service.crear_bd_contactos(file, filename, db_name)
             campos_telefono = self._procesa_campos_telefono(campos_telefono_str)
-            self._comprueba_campo_id_externo(id_externo)
+            id_externo = self._comprueba_campo_id_externo(id_externo)
 
             self.base_datos_contacto_service.importa_contactos_desde_api(id, campos_telefono,
                                                                          id_externo)
@@ -201,7 +202,7 @@ class SubirBaseContactosView(APIView):
             .lstrip(',') \
             .rstrip(',') \
             .split(',')
-        campos_telefono = [x.capitalize() for x in ct]
+        campos_telefono = [self._sanear_nombre_de_columna(x) for x in ct]
 
         if len(campos_telefono) == 0:
             raise OmlError(_('lista de campos teléfono vacia'))
@@ -212,6 +213,28 @@ class SubirBaseContactosView(APIView):
         return campos_telefono
 
     def _comprueba_campo_id_externo(self, id_externo):
+        id_externo = self._sanear_nombre_de_columna(id_externo)
         if id_externo is not None and \
                 id_externo not in self.base_datos_contacto_service.parser.columnas:
             raise OmlError(_('campo de id externo no coincide con nombre de columna'))
+        return id_externo
+
+    def _sanear_nombre_de_columna(self, nombre):
+        """Realiza saneamiento básico del nombre de la columna. Con basico
+        se refiere a:
+        - eliminar trailing spaces
+        - NO pasar a mayusculas
+        - reemplazar espacios por '_'
+        - eliminar tildes
+
+        Los caracteres invalidos NO son borrados.
+        """
+        if nombre is not None:
+            nombre = smart_text(nombre)
+            nombre = nombre.strip()
+            nombre = DOUBLE_SPACES.sub("_", nombre)
+            nombre = elimina_tildes(nombre)
+        return nombre
+
+
+DOUBLE_SPACES = re.compile(r' +')
