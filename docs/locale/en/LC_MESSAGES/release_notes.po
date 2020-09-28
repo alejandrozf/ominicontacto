@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-22 18:07-0300\n"
+"POT-Creation-Date: 2020-09-28 16:07-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,29 +23,24 @@ msgstr "Release Notes"
 
 # 73ee1e870afd4a31b43364589dd0e1ee
 #: ../../release_notes.rst:4
-msgid "*Septiembre 22, 2020*"
-msgstr "September 22, 2020"
+msgid "*Septiembre 28, 2020*"
+msgstr "September 28, 2020"
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.10.3"
-msgstr "Release 1.10.3 details"
+msgid "Detalles de Release 1.10.4"
+msgstr "Release 1.10.4 details"
 
 # 2f558403c15a436e90409b976c7f07ed
 #: ../../release_notes.rst:10
 msgid "Fixes y mejoras"
 msgstr "Fixes and improvements"
 
-# 68b026bbe1164ac3bcd176199e108ab0
+# d96a84aa08bd4652b7ac310b7841acab
 #: ../../release_notes.rst:11
 msgid ""
-"Solucionado error en tarea programada para campañas preview que libera "
-"contactos de agente de acuerdos a parámetros de tiempo de expiración"
+"Se vuelve atrás parte del código relacionado con el procesamiento de "
+"headers en el proceso de creación de bases de contactos"
 msgstr ""
-"Fixed error on preview campaigns scheduled task that release contacts from"
-" agents according time expiration parameters"
-
-# 843c4f494c3e40fbb88dc8e294b263c7
-#: ../../release_notes.rst:12
-msgid "Solucionado problema de performance en reportes de campañas dialer"
-msgstr "Fixed performance issue on dialer campaigns reports"
+"Rollback of the part of code related to headers processing on contacts"
+" database creation process"

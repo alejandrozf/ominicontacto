@@ -23,6 +23,9 @@ import csv
 import os
 
 from abc import ABC, abstractmethod
+from django.utils.encoding import smart_text
+import re
+from ominicontacto_app.utiles import elimina_tildes
 
 
 class BaseDatosContactoArchivoCampo(object):
@@ -62,6 +65,25 @@ class BaseDatosContactoArchivoCSVParser(BaseDatosContactoArchivoParser):
 
     def headers_no_repetidos(self) -> bool:
         headers = next(csv.reader(self.archivo_str))
-        headers_set = set([x.strip().capitalize() for x in headers])
+        headers_set = set([self._sanear_nombre_de_columna(x) for x in headers])
         self.columnas = headers_set
         return len(headers) == len(headers_set)
+
+    def _sanear_nombre_de_columna(self, nombre):
+        """Realiza saneamiento básico del nombre de la columna. Con basico
+        se refiere a:
+        - eliminar trailing spaces
+        - NO pasar a mayusculas
+        - reemplazar espacios por '_'
+        - eliminar tildes
+
+        Los caracteres invalidos NO son borrados.
+        """
+        nombre = smart_text(nombre)
+        nombre = nombre.strip()
+        nombre = DOUBLE_SPACES.sub("_", nombre)
+        nombre = elimina_tildes(nombre)
+        return nombre
+
+
+DOUBLE_SPACES = re.compile(r' +')

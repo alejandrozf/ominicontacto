@@ -123,7 +123,7 @@ class CreacionBaseDatosService(object):
         try:
             estructura_archivo = parser.get_estructura_archivo(base_datos_contacto)
             posicion_primer_telefono = estructura_archivo[0].index(
-                str(campos_telefonicos[0]).capitalize())
+                str(campos_telefonicos[0]))
             cantidad_contactos = 0
 
             if base_datos_contacto.cantidad_contactos:
