@@ -61,15 +61,15 @@ class TestGeneraBaseDatosContacto(OMLBaseTest):
         metadata.columna_con_telefono = 0
         metadata.columnas_con_telefono = [0, 2]
         metadata.columna_id_externo = 1
-        metadata.nombres_de_columnas = ["Telefono",
-                                        "Nombre",
-                                        "Celular"]
+        metadata.nombres_de_columnas = ["telefono",
+                                        "nombre",
+                                        "velular"]
         metadata.save()
 
         # -----
 
         creacion_base_de_datos_service = CreacionBaseDatosService()
-        creacion_base_de_datos_service.importa_contactos(bd, ["Telefono", "Celular"], 1)
+        creacion_base_de_datos_service.importa_contactos(bd, ["telefono", "celular"], 1)
 
         self.assertEqual(bd.contactos.count(), 4)
         for contacto in bd.contactos.all():
@@ -223,11 +223,11 @@ class TestImportarDesdeCsvNoAscii(OMLBaseTest):
         metadata.cantidad_de_columnas = 2
         metadata.columna_con_telefono = 0
         metadata.columnas_con_telefono = [0]
-        metadata.nombres_de_columnas = ["Telefono", "Nombre"]
+        metadata.nombres_de_columnas = ["telefono", "Nombre"]
         metadata.primer_fila_es_encabezado = True
         metadata.save()
 
-        service.importa_contactos(bd, ['Telefono'], None)
+        service.importa_contactos(bd, ['telefono'], None)
 
         self.assertEquals(Contacto.objects.count(), 2)
         contactos = list(Contacto.objects.all())
