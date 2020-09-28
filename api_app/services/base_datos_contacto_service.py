@@ -83,7 +83,6 @@ class BaseDatosContactoService(object):
         del archivo de importación especificado para la base de datos de
         contactos.
         """
-
         assert (base_datos_contacto.estado in
                 (BaseDatosContacto.ESTADO_EN_DEFINICION,
                  BaseDatosContacto.ESTADO_DEFINIDA_ACTUALIZADA))
@@ -91,7 +90,6 @@ class BaseDatosContactoService(object):
         ids_externos = base_datos_contacto.contactos.values_list('id_externo', flat=True)
         ids_externos = set(ids_externos)
         ids_nuevos_contactos = []
-
         try:
             estructura_archivo = self.legacy_parser.get_estructura_archivo(base_datos_contacto)
             posicion_primer_telefono = estructura_archivo[0].index(campos_telefonicos[0])
