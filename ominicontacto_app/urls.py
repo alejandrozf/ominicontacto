@@ -90,6 +90,14 @@ urlpatterns = [
         login_required(views_user_profiles.CustomerUserUpdateView.as_view()),
         name='user_update',
         ),
+    url(r'^user/agent/delete/(?P<pk>\d+)/$',
+        login_required(views_user_profiles.UserDeleteView.as_view()),
+        name='agent_delete', kwargs={'for_agent': ''}
+        ),
+    url(r'^user/agent/update/(?P<pk>\d+)/$',
+        login_required(views_user_profiles.CustomerUserUpdateView.as_view()),
+        name='agent_update', kwargs={'for_agent': ''}
+        ),
     url(r'^user/password/$',
         login_required(views_user_profiles.CustomerUserUpdateView.as_view()),
         name='user_change_password', kwargs={'change_password': ''}
