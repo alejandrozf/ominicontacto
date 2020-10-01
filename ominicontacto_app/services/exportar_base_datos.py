@@ -164,6 +164,9 @@ class SincronizarBaseDatosContactosService(object):
             # El indice indica cual es la posicion en la lista de "nombres" de las columnas
             # Como en la lista de "datos" no aparece el primer telefono, le resto 1 a la posicion
             posicion_en_datos = indice - 1
+            if metadata.columna_id_externo is not None:
+                if indice > metadata.columna_id_externo:
+                    posicion_en_datos -= 1
             list_multinum.append(('MULTINUM' + str((n_multinum)), posicion_en_datos))
 
         lista_contactos = "numbers="
