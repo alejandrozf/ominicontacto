@@ -164,7 +164,7 @@ upgrade-aio:
     - vagrant halt
     - vagrant destroy -f
     - ./vagrantup.sh centos
-    - python ../edit_inventory.py --internal_ip=192.168.99.63 --host_node=yes
+    - python ../edit_inventory.py --internal_ip=172.16.20.63 --host_node=yes
     - cd ../../ansible
     - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -u
     - cd /home/ftsinfra/ominicontacto/deploy/vagrant/releases
