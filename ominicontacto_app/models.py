@@ -2295,7 +2295,7 @@ class BaseDatosContacto(models.Model):
         else:
             bd_reciclada_id = 0
         copia = BaseDatosContacto.objects.create(
-            nombre='{0}-{1} (reciclada)'.format(self.nombre, bd_reciclada_id),
+            nombre='{0}-{1}-reciclada'.format(self.pk, bd_reciclada_id),
             archivo_importacion=self.archivo_importacion,
             nombre_archivo_importacion=self.nombre_archivo_importacion,
             metadata=self.metadata,
