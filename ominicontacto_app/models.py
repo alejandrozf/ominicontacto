@@ -194,6 +194,17 @@ class User(AbstractUser):
             except Session.DoesNotExist:
                 pass
 
+    def tiene_agente_asignado(self, agente_profile):
+        """
+        Verifica si el agente pasado como parametro esta asignado a alguna de las campañas en las
+        que el usuario esta asignado como supervisor.
+        """
+        campanas_supervisor = set(self.campanasupervisors.values_list('id', flat=True))
+        campanas_agent = set(agente_profile.campana_member.values_list(
+            'queue_name__campana_id', flat=True))
+        # Si las campañas son disjuntas es porque no esta asignado
+        return not campanas_supervisor.isdisjoint(campanas_agent)
+
 
 class Grupo(models.Model):
     nombre = models.CharField(max_length=20, unique=True, verbose_name=_('Nombre'))
