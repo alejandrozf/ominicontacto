@@ -995,7 +995,7 @@ class EstadisticasService:
         # Barra: Cantidad de calificacion de cliente
         barra_campana_calificacion = pygal.Bar(  # @UndefinedVariable
             show_legend=False, style=LightGreenStyle)
-        barra_campana_calificacion.title = _('Cantidad de calificacion de cliente ')
+        barra_campana_calificacion.title = _('Calificaciones de Clientes Contactados ')
 
         barra_campana_calificacion.x_labels = \
             estadisticas['calificaciones_nombre']
