@@ -19,12 +19,18 @@
 
 from __future__ import unicode_literals
 
+import logging as _logging
+
+import json
+import redis
+
 from collections import OrderedDict
 from django.views.generic import View
 from django.utils.translation import ugettext as _
 from django.utils.timezone import now
 from django.http import JsonResponse
 from django.db.models import Count
+from django.conf import settings
 
 from rest_framework import viewsets
 from rest_framework.renderers import JSONRenderer
@@ -43,6 +49,8 @@ from reportes_app.reportes.reporte_llamadas_supervision import (
 )
 from reportes_app.reportes.reporte_llamadas import ReporteTipoDeLlamadasDeCampana
 from ominicontacto_app.utiles import datetime_hora_minima_dia
+
+logger = _logging.getLogger(__name__)
 
 
 class SupervisorCampanasActivasViewSet(viewsets.ModelViewSet):
@@ -67,21 +75,20 @@ class AgentesStatusAPIView(APIView):
     renderer_classes = (JSONRenderer, )
     http_method_names = ['get']
 
+    def _obtener_datos_agentes(self, supervisor_pk):
+        redis_connection = redis.Redis(
+            host=settings.REDIS_HOSTNAME,
+            port=settings.CONSTANCE_REDIS_CONNECTION['port'],
+            decode_responses=True)
+        response = redis_connection.hgetall('OML:SUPERVISOR:{0}'.format(supervisor_pk))
+        result = {}
+        for agent_id, dato in response.items():
+            result[agent_id] = json.loads(dato)
+        return result
+
     def _obtener_ids_agentes_propios(self, request):
-        if request.user.get_is_administrador():
-            campanas = Campana.objects.all()
-        else:
-            supervisor_profile = request.user.get_supervisor_profile()
-            campanas = supervisor_profile.campanas_asignadas_actuales()
-        ids_agentes = list(campanas.values_list(
-            'queue_campana__members__pk', flat=True).distinct())
-        ids_campanas = list(campanas.values_list('pk', flat=True))
-        agentes_dict = {}
-        for agente in AgenteProfile.objects.filter(
-                pk__in=ids_agentes,
-                campana_member__queue_name__campana__pk__in=ids_campanas).select_related(
-                'grupo').prefetch_related('campana_member__queue_name__campana'):
-            agentes_dict[agente.pk] = agente
+        supervisor_pk = request.user.get_supervisor_profile().user.pk
+        agentes_dict = self._obtener_datos_agentes(supervisor_pk)
         return agentes_dict
 
     def get(self, request):
@@ -91,10 +98,10 @@ class AgentesStatusAPIView(APIView):
         for data_agente in agentes_parseados.obtener_agentes_activos():
             id_agente = int(data_agente.get('id', -1))
             status_agente = data_agente.get('status', '')
-            if status_agente != 'OFFLINE' and id_agente in agentes_dict:
-                agente = agentes_dict.get(id_agente, '')
-                grupo_activo = agente.grupo.nombre
-                campanas_activas = agente.queue_set.values_list('campana__nombre', flat=True)
+            if status_agente != 'OFFLINE' and str(id_agente) in agentes_dict:
+                agente_dict = agentes_dict.get(str(id_agente), '')
+                grupo_activo = agente_dict.get('grupo', '')
+                campanas_activas = agente_dict.get('campana', [])
                 data_agente['grupo'] = grupo_activo
                 data_agente['campana'] = campanas_activas
                 online.append(data_agente)
