@@ -2405,18 +2405,7 @@ class Contacto(models.Model):
         if not hasattr(self, 'datos_contacto'):
             bd_metadata = self.bd_contacto.get_metadata()
             columnas = bd_metadata.nombres_de_columnas
-            datos = self.lista_de_datos()
-            pos_primer_telefono = bd_metadata.columnas_con_telefono[0]
-            if bd_metadata.columna_id_externo is not None:
-                # Inserto primero el de menor indice para que se respete el orden
-                if (pos_primer_telefono < bd_metadata.columna_id_externo):
-                    datos.insert(pos_primer_telefono, self.telefono)
-                    datos.insert(bd_metadata.columna_id_externo, self.id_externo)
-                else:
-                    datos.insert(bd_metadata.columna_id_externo, self.id_externo)
-                    datos.insert(pos_primer_telefono, self.telefono)
-            else:
-                datos.insert(pos_primer_telefono, self.telefono)
+            datos = self.lista_de_datos_completa()
 
             self.datos_contacto = dict(zip(columnas, datos))
         return self.datos_contacto
@@ -2440,6 +2429,26 @@ class Contacto(models.Model):
 
     def lista_de_datos(self):
         return json.loads(self.datos)
+
+    def lista_de_datos_completa(self):
+        """ Devuelve un diccionario con todos los datos, incluido el telefono """
+        if not hasattr(self, 'lista_datos_contacto'):
+            bd_metadata = self.bd_contacto.get_metadata()
+            datos = self.lista_de_datos()
+            pos_primer_telefono = bd_metadata.columnas_con_telefono[0]
+            if bd_metadata.columna_id_externo is not None:
+                # Inserto primero el de menor indice para que se respete el orden
+                if (pos_primer_telefono < bd_metadata.columna_id_externo):
+                    datos.insert(pos_primer_telefono, self.telefono)
+                    datos.insert(bd_metadata.columna_id_externo, self.id_externo)
+                else:
+                    datos.insert(bd_metadata.columna_id_externo, self.id_externo)
+                    datos.insert(pos_primer_telefono, self.telefono)
+            else:
+                datos.insert(pos_primer_telefono, self.telefono)
+
+            self.lista_datos_contacto = datos
+        return self.lista_datos_contacto
 
     def __str__(self):
         return '{0} >> {1}'.format(
