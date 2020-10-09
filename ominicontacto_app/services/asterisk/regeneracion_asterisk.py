@@ -69,9 +69,11 @@ class RegeneracionAsteriskService(object):
         self.tareas_programadas_ids = [
             'asterisk_logout_script',
             'queue_log_clean_job',
-            'actualizar_reportes_de_entrantes_job']
+            'actualizar_reportes_de_entrantes_job',
+            'actualizar_reporte_supervisores']
         self.TIEMPO_CHEQUEO_CONTACTOS_INACTIVOS = 2
         self.TIEMPO_ACTUALIZAR_REPORTES_LLAMADAS_ENTRANTES = 1
+        self.TIEMPO_ACTUALIZAR_REPORTE_SUPERVISORES = 5
 
     def _generar_y_recargar_configuracion_asterisk(self):
         proceso_ok = True
@@ -183,8 +185,32 @@ class RegeneracionAsteriskService(object):
             job.minute.every(self.TIEMPO_ACTUALIZAR_REPORTES_LLAMADAS_ENTRANTES)
             crontab.write_to_user(user=getpass.getuser())
 
+    def _generar_tarea_script_actualizar_reporte_datos_supervisores(self):
+        """Adiciona una tarea programada que llama al script de que calcula el reportes
+        los agentes y campanas asociados a cada supervisor
+        """
+        # conectar con cron
+        crontab = CronTab(user=getpass.getuser())
+        ruta_source_envars = 'source /etc/profile.d/omnileads_envars.sh;'
+        ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python3')
+        ruta_script = os.path.join(
+            settings.INSTALL_PREFIX,
+            'ominicontacto/manage.py actualizar_reporte_supervisores')
+        # adicionar nuevo cron job para esta tarea si no existe anteriormente
+        job = crontab.find_comment(self.tareas_programadas_ids[3])
+        crontab.remove_all(comment=self.tareas_programadas_ids[3])
+        if list(job) == []:
+            job = crontab.new(
+                command='{0} {1} {2}'.format(
+                    ruta_source_envars, ruta_python_virtualenv, ruta_script),
+                comment=self.tareas_programadas_ids[2])
+            # adicionar tiempo de periodicidad al cron job
+            job.minute.every(self.TIEMPO_ACTUALIZAR_REPORTE_SUPERVISORES)
+            crontab.write_to_user(user=getpass.getuser())
+
     def regenerar(self):
         self._generar_y_recargar_configuracion_asterisk()
         self._generar_tarea_script_logout_agentes_inactivos()
         self._generar_tarea_limpieza_diaria_queuelog()
         self._generar_tarea_script_actualizar_reportes_llamadas_entrantes()
+        self._generar_tarea_script_actualizar_reporte_datos_supervisores()

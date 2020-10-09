@@ -19,6 +19,8 @@
 
 from __future__ import unicode_literals
 
+import json
+
 from datetime import datetime
 
 from mock import patch
@@ -198,6 +200,7 @@ class APITest(OMLBaseTest):
         QueueMemberFactory.create(member=ag2, queue_name=self.queue)
         key1 = 'OML:AGENT:{0}'.format(ag1_pk)
         key2 = 'OML:AGENT:{0}'.format(ag2.pk)
+        key3 = 'OML:SUPERVISOR:{0}'.format(self.supervisor_admin.user.pk)
         now = datetime.now()
         timestamp = datetime.timestamp(now)
         key1_value = {
@@ -212,8 +215,17 @@ class APITest(OMLBaseTest):
             'SIP': ag2.sip_extension,
             'STATUS': 'PAUSE',
         }
+        key3_value = {
+            str(ag1_pk): json.dumps({
+                'grupo': self.agente_profile.grupo.nombre,
+                'campana': [self.campana_activa.nombre, ]}),
+            str(ag2.pk): json.dumps({
+                'grupo': ag2.grupo.nombre,
+                'campana': [self.campana_activa.nombre, ]}),
+        }
 
-        Redis = self.set_redis_mock_return_values(Redis, [key1, key2], [key1_value, key2_value])
+        Redis = self.set_redis_mock_return_values(
+            Redis, [key1, key2, key3], [key1_value, key2_value, key3_value])
 
         self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
         url = reverse('api_agentes_activos')
@@ -234,6 +246,7 @@ class APITest(OMLBaseTest):
         QueueMemberFactory.create(member=ag2, queue_name=self.queue)
         key1 = 'OML:AGENT:{0}'.format(ag1_pk)
         key2 = 'OML:AGENT:{0}'.format(ag2.pk)
+        key3 = 'OML:SUPERVISOR:{0}'.format(self.supervisor_admin.user.pk)
         now = datetime.now()
         timestamp = datetime.timestamp(now)
         key1_value = {
@@ -247,8 +260,13 @@ class APITest(OMLBaseTest):
             'NAME': ag2.user.get_full_name(),
             'SIP': ag2.sip_extension
         }
-
-        Redis = self.set_redis_mock_return_values(Redis, [key1, key2], [key1_value, key2_value])
+        key3_value = {
+            str(ag1_pk): json.dumps({
+                'grupo': self.agente_profile.grupo.nombre,
+                'campana': [self.campana_activa.nombre, ]})
+        }
+        Redis = self.set_redis_mock_return_values(
+            Redis, [key1, key2, key3], [key1_value, key2_value, key3_value])
 
         self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
         url = reverse('api_agentes_activos')
@@ -267,6 +285,7 @@ class APITest(OMLBaseTest):
         QueueMemberFactory.create(member=ag2, queue_name=self.queue)
         key1 = 'OML:AGENT:{0}'.format(ag1_pk)
         key2 = 'OML:AGENT:{0}'.format(ag2.pk)
+        key3 = 'OML:SUPERVISOR:{0}'.format(self.supervisor_admin.user.pk)
         now = datetime.now()
         timestamp = datetime.timestamp(now)
         key1_value = {
@@ -279,8 +298,13 @@ class APITest(OMLBaseTest):
             'NAME': ag2.user.get_full_name(),
             'SIP': ag2.sip_extension
         }
-
-        Redis = self.set_redis_mock_return_values(Redis, [key1, key2], [key1_value, key2_value])
+        key3_value = {
+            str(ag1_pk): json.dumps({
+                'grupo': self.agente_profile.grupo.nombre,
+                'campana': [self.campana_activa.nombre, ]})
+        }
+        Redis = self.set_redis_mock_return_values(
+            Redis, [key1, key2, key3], [key1_value, key2_value, key3_value])
 
         self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
         url = reverse('api_agentes_activos')
