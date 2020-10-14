@@ -2325,6 +2325,7 @@ class BaseDatosContacto(models.Model):
                 telefono=contacto.telefono,
                 datos=contacto.datos,
                 bd_contacto=self,
+                id_externo=contacto.id_externo,
             )
         self.cantidad_contactos = len(lista_contactos)
 
