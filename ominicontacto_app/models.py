@@ -2571,9 +2571,9 @@ class GrabacionManager(models.Manager):
         if callid:
             grabaciones = grabaciones.filter(callid=callid)
         if id_contacto_externo:
-            telefonos_contacto = Contacto.objects.values('telefono')
-            telefono_id_externo = telefonos_contacto.filter(id_externo=id_contacto_externo)
-            grabaciones = grabaciones.filter(tel_cliente__contains=telefono_id_externo)
+            contactos_id_externo = Contacto.objects.filter(id_externo=id_contacto_externo)
+            telefonos_contacto = contactos_id_externo.values_list('telefono', flat=True)
+            grabaciones = grabaciones.filter(tel_cliente__in=telefonos_contacto)
         if agente:
             grabaciones = grabaciones.filter(agente=agente)
         if campana:
