@@ -22,7 +22,6 @@ from __future__ import unicode_literals
 import logging
 import os
 import csv
-import json
 
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import force_text
@@ -64,9 +63,7 @@ class ReporteDeResultadosCSV(object):
             # Creamos encabezado
             encabezado = []
 
-            # TODO: Discutir si Poner mismo nombre del campo telefono en la base de datos?
-            encabezado.append(_("Teléfono"))
-            nombres = self.campana.bd_contacto.get_metadata().nombres_de_columnas_de_datos
+            nombres = self.campana.bd_contacto.get_metadata().nombres_de_columnas
             for nombre in nombres:
                 encabezado.append(nombre)
             encabezado.append(_("Calificación"))
@@ -81,10 +78,8 @@ class ReporteDeResultadosCSV(object):
 
             for contactacion in reporte.contactaciones.values():
                 lista_opciones = []
-                lista_opciones.append(contactacion['contacto'].telefono)
-                datos = json.loads(contactacion['contacto'].datos)
-                for dato in datos:
-                    lista_opciones.append(dato)
+                datos = contactacion['contacto'].lista_de_datos_completa()
+                lista_opciones.extend(datos)
                 if contactacion['calificacion'] is not None:
                     lista_opciones.append(contactacion['calificacion'])
                 else:
