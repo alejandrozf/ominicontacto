@@ -29,8 +29,8 @@ parser.add_argument("--devenv", help="Modifies if the install is selfhosted")
 parser.add_argument("--prodenv", help="Modifies if the install is selfhosted")
 parser.add_argument("--admin_password", default="098098ZZZ", help="Omnileads admin web password")
 parser.add_argument("--internal_ip", help="Sets internal IP in external server, say 172.16.20.44")
-parser.add_argument("--remote_port", default=22, help="Sets external ssh port to connect on remote"
-                    "server")
+parser.add_argument("--remote_port", default=22,
+                    help="Sets external ssh port to connect on remote server")
 parser.add_argument("--ami_user", default="omnileadsami", help="Specifies ami user")
 parser.add_argument("--ami_password", default="5_MeO_DMT", help="Specifies ami password")
 parser.add_argument("--asterisk_host", help="Specifies asterisk host")
@@ -41,9 +41,13 @@ parser.add_argument("--ecctl", help="Specifies ECCTL")
 parser.add_argument("--gluster_enabled", help="Set if gluster is enabled or not for cluster")
 parser.add_argument("--sca", help="Specifies SCA")
 parser.add_argument("--postgres_host", help="Specifies postgresql host")
+parser.add_argument("--postgres_port", help="Specifies postgresql port")
 parser.add_argument("--postgres_database", help="Specifies postgresql database")
 parser.add_argument("--postgres_user", default="omnileads", help="Specifies postgresql user")
 parser.add_argument("--postgres_password", default="admin123", help="Specifies postgresql user")
+parser.add_argument("--default_postgres_database", help="Specifies postgresql default DB")
+parser.add_argument("--default_postgres_user", help="Specifies postgresql default user")
+parser.add_argument("--default_postgres_password", help="Specifies postgresql default password")
 parser.add_argument("--mysql_host", help="Specifies external mysql host")
 parser.add_argument("--redis_host", help="Specifies external redis host")
 parser.add_argument("--rtpengine_host", help="Specifies external rtpengine host")
@@ -91,6 +95,20 @@ if args.postgres_database:
 if args.postgres_host:
     inventory_contents = inventory_contents.replace(
         "#postgres_host=", "postgres_host={0}".format(args.postgres_host))
+if args.postgres_port:
+    inventory_contents = inventory_contents.replace(
+        "#postgres_port=", "postgres_port={0}".format(args.postgres_port))
+if args.default_postgres_database:
+    inventory_contents = inventory_contents.replace(
+        "#default_postgres_database=", "default_postgres_database={0}".format(
+            args.default_postgres_database))
+if args.default_postgres_user:
+    inventory_contents = inventory_contents.replace(
+        "#default_postgres_user=", "default_postgres_user={0}".format(args.default_postgres_user))
+if args.default_postgres_password:
+    inventory_contents = inventory_contents.replace(
+        "#default_postgres_password=", "default_postgres_password={0}".format(
+            args.default_postgres_password))
 if args.ecctl:
     inventory_contents = inventory_contents.replace(
         "ECCTL=28800", "ECCTL={0}".format(args.ecctl))
