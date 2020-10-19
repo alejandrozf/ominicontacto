@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-21 15:07-0300\n"
+"POT-Creation-Date: 2020-10-19 11:35-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,117 +17,125 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: api_app/apps.py:90
+#: api_app/apps.py:95
 msgid "Lista de agentes activos de un Grupo"
 msgstr "Active agents list for a Group"
 
-#: api_app/apps.py:92
+#: api_app/apps.py:97
 msgid "Campañas relacionadas a un supervisor"
 msgstr "Campaigns related to a supervisor"
 
-#: api_app/apps.py:94
+#: api_app/apps.py:99
 msgid "Opciones de calificacion de una campaña (id campaña externo)"
 msgstr "Campaign disposition options (external campaign id)"
 
-#: api_app/apps.py:97
+#: api_app/apps.py:102
 msgid "Opciones de calificacion de una campaña (id campaña oml)"
 msgstr "Campaign disposition options (OML campaign id)"
 
-#: api_app/apps.py:100
+#: api_app/apps.py:105
 msgid "Ver/editar calificación cliente"
 msgstr "View/edit Client Disposition"
 
-#: api_app/apps.py:102
+#: api_app/apps.py:107
 msgid "Crear calificacion cliente"
 msgstr "Create Call Disposition"
 
-#: api_app/apps.py:104
+#: api_app/apps.py:109
 msgid "Crear contacto"
 msgstr "Create Contact"
 
-#: api_app/apps.py:106
+#: api_app/apps.py:111
 msgid "Metadata de la base de datos de una campaña"
 msgstr "Campaign database metadata"
 
-#: api_app/apps.py:108
+#: api_app/apps.py:113
 msgid "Crear nuevo rol"
 msgstr "Create new Role"
 
-#: api_app/apps.py:110
+#: api_app/apps.py:115
 msgid "Eliminar rol"
 msgstr "Delete Role"
 
-#: api_app/apps.py:112
+#: api_app/apps.py:117
 msgid "Actualizar permisos de Rol"
 msgstr "Update Role Permissions"
 
-#: api_app/apps.py:114
+#: api_app/apps.py:119
 msgid "Devuelve información de los agentes en el sistema"
 msgstr "Returns Agents information"
 
-#: api_app/apps.py:117
+#: api_app/apps.py:122
 msgid "Reporte de llamadas entrantes de supervisión."
 msgstr "Supervision Inbound calls report"
 
-#: api_app/apps.py:119
+#: api_app/apps.py:124
 msgid "Reporte de llamadas salientes de supervisión."
 msgstr "Supervision Outbound calls report"
 
-#: api_app/apps.py:122
+#: api_app/apps.py:127
 msgid "Ejecuta acciones de supervisión sobre agente (Deslogueo, pausas, etc..)"
 msgstr "Apply supervision actions on Agent (Logoff, Pauses, etc..)"
 
-#: api_app/apps.py:125
+#: api_app/apps.py:130
 msgid "Cantidades por tipos de llamada en una campaña"
 msgstr "Call types ammount for a Campaign"
 
-#: api_app/apps.py:128
+#: api_app/apps.py:133
 msgid "Cantidades por tipo de calificación en una campaña"
 msgstr "Disposition types ammount for a Campaign"
 
-#: api_app/apps.py:131
+#: api_app/apps.py:136
 msgid "Reasignar una Agenda a otro Agente"
 msgstr "Reassign Agenda to another Agent"
 
-#: api_app/apps.py:133
+#: api_app/apps.py:138
 msgid "Información de contacto de una  Agenda"
 msgstr "Agenda's contact information"
 
-#: api_app/apps.py:135
+#: api_app/apps.py:140
 msgid "Contactos de una campaña"
 msgstr "Campaign contacts"
 
-#: api_app/apps.py:137
+#: api_app/apps.py:142
 msgid "Ejecuta un click 2 call"
 msgstr "Start a click 2 call"
 
-#: api_app/apps.py:139
+#: api_app/apps.py:144
 msgid "Ejecuta el login del agente en Asterisk."
 msgstr "Agent's Asterisk login"
 
-#: api_app/apps.py:141
+#: api_app/apps.py:146
 msgid "Ejecuta el logout del agente en Asterisk"
 msgstr "Agent's Asterisk logout"
 
-#: api_app/apps.py:143
+#: api_app/apps.py:148
 msgid "Logout del agente en OML"
 msgstr "Agent's OML logout"
 
-#: api_app/apps.py:145
+#: api_app/apps.py:150
 msgid "Pone al agente en una pausa"
 msgstr "Start an Agent's pause"
 
-#: api_app/apps.py:147
+#: api_app/apps.py:152
 msgid "Saca al agente de una pausa"
 msgstr "Stop an Agent's pause"
 
-#: api_app/apps.py:149
+#: api_app/apps.py:154
 msgid "Devuelve credenciales SIP de un agente"
 msgstr "Return Agent's SIP credentials"
 
-#: api_app/apps.py:151
+#: api_app/apps.py:156
 msgid "Establece el estado de revisión de una Auditoría"
 msgstr "Establishes review status for an Audit"
+
+#: api_app/apps.py:159
+msgid "Almacena en la base de datos los contactos subidos en archivo csv"
+msgstr "Stores uploaded contact of a database in a csv file"
+
+#: api_app/apps.py:162
+msgid "Detecta si una llamada esta calificada."
+msgstr "Detect if an call is qualified"
 
 #: api_app/forms.py:53 api_app/forms.py:98
 #: api_app/tests/tests_api_click2call.py:136
@@ -144,6 +152,32 @@ msgstr "The contact is not related to campaign."
 msgid "El agente no corresponde al sistema externo."
 msgstr "The agent is not related to external system."
 
+#: api_app/services/base_datos_contacto_service.py:45
+#, fuzzy
+#| msgid "Ya existe un rol con ese nombre"
+msgid "Ya existe una base de datos de contactos con ese nombre"
+msgstr "A Role with that name already exists"
+
+#: api_app/services/base_datos_contacto_service.py:49
+msgid ""
+"El archivo especificado para realizar la importación de contactos no es "
+"válido."
+msgstr "The file specified to import contacts is not valid"
+
+#: api_app/services/base_datos_contacto_service.py:54
+#: api_app/tests/tests_api_subir_base_contactos.py:189
+#: api_app/views/administrador.py:177
+msgid "El archivo a procesar tiene nombres de columnas repetidos."
+msgstr "The file to be processed has repeated column names."
+
+#: api_app/services/base_datos_contacto_service.py:125
+msgid "Archivo excede máximo de filas permitidas"
+msgstr "File exceeds maximum rows allowed"
+
+#: api_app/services/base_datos_contacto_service.py:129
+msgid "Error al parsear el archivo csv"
+msgstr "Error parsing csv file"
+
 #: api_app/tests/tests_api_click2call.py:105
 #: api_app/tests/tests_api_click2call.py:113
 #: api_app/tests/tests_api_click2call.py:121
@@ -153,7 +187,7 @@ msgstr "Select a valid option. That option is not available."
 
 #: api_app/tests/tests_api_click2call.py:158
 #: api_app/tests/tests_api_contactos.py:170
-#: api_app/tests/tests_api_contactos.py:262 api_app/views/agente.py:197
+#: api_app/tests/tests_api_contactos.py:262 api_app/views/agente.py:198
 #: api_app/views/base.py:86 api_app/views/base.py:214
 msgid "Sistema externo inexistente."
 msgstr "Unkown external system"
@@ -196,128 +230,164 @@ msgstr "The field is required"
 msgid "Se recibieron campos incorrectos"
 msgstr "Incorrect fields were received"
 
-#: api_app/tests/tests_api_permisos.py:56 api_app/views/administrador.py:67
+#: api_app/tests/tests_api_permisos.py:56 api_app/views/administrador.py:73
 msgid "Ya existe un rol con ese nombre"
 msgstr "A Role with that name already exists"
 
-#: api_app/tests/tests_api_permisos.py:66 api_app/views/administrador.py:62
+#: api_app/tests/tests_api_permisos.py:66 api_app/views/administrador.py:68
 msgid "Se esperaba el campo \"name\""
 msgstr "Field \"name\" expected"
 
-#: api_app/tests/tests_api_permisos.py:96 api_app/views/administrador.py:92
+#: api_app/tests/tests_api_permisos.py:96 api_app/views/administrador.py:98
 msgid "Se esperaba el campo \"role_id\" (numérico)"
 msgstr "Field \"role_id\" (numeric) expected"
 
 #: api_app/tests/tests_api_permisos.py:103
 #: api_app/tests/tests_api_permisos.py:111
-#: api_app/tests/tests_api_permisos.py:171 api_app/views/administrador.py:99
-#: api_app/views/administrador.py:129
+#: api_app/tests/tests_api_permisos.py:171 api_app/views/administrador.py:105
+#: api_app/views/administrador.py:135
 msgid "Id de Rol incorrecto"
 msgstr "Wrong Role Id"
 
 #: api_app/tests/tests_api_permisos.py:120
-#: api_app/tests/tests_api_permisos.py:129 api_app/views/administrador.py:103
+#: api_app/tests/tests_api_permisos.py:129 api_app/views/administrador.py:109
 msgid "Se esperaba el campo \"permissions\" (lista)"
 msgstr "Field \"permissions\" (list) expected"
 
-#: api_app/tests/tests_api_permisos.py:139 api_app/views/administrador.py:108
+#: api_app/tests/tests_api_permisos.py:139 api_app/views/administrador.py:114
 msgid "Lista de permisos incorrecta"
 msgstr "Wrong permission list"
 
-#: api_app/tests/tests_api_permisos.py:162 api_app/views/administrador.py:134
+#: api_app/tests/tests_api_permisos.py:162 api_app/views/administrador.py:140
 msgid "No se puede borrar un rol asignado a usuarios."
 msgstr "Deleting a Role assigned to a User is forbidden"
 
-#: api_app/views/agente.py:64
+#: api_app/tests/tests_api_subir_base_contactos.py:101
+#: api_app/views/administrador.py:174
+msgid "falta parámetro filename en request"
+msgstr "Filename parameter missing in request"
+
+#: api_app/tests/tests_api_subir_base_contactos.py:113
+#: api_app/tests/tests_api_subir_base_contactos.py:125
+#: api_app/views/administrador.py:196
+msgid "falta parámetro:"
+msgstr "Missing parameter"
+
+#: api_app/tests/tests_api_subir_base_contactos.py:138
+#: api_app/views/administrador.py:211
+msgid "campo de teléfono no coincide con nombre de columna"
+msgstr "Phone field does not match column name"
+
+#: api_app/tests/tests_api_subir_base_contactos.py:151
+#: api_app/views/administrador.py:219
+msgid "campo de id externo no coincide con nombre de columna"
+msgstr "External id field does not match column name"
+
+#: api_app/tests/tests_api_subir_base_contactos.py:163
+#: api_app/views/administrador.py:171
+msgid "la extensión del archivo no es .CSV"
+msgstr "The file extension is not .CSV"
+
+#: api_app/views/administrador.py:184
+#, fuzzy
+#| msgid "Metadata de la base de datos de una campaña"
+msgid "no se pudo crear la base de datos de contacto"
+msgstr "Campaign database metadata"
+
+#: api_app/views/administrador.py:208
+msgid "lista de campos teléfono vacia"
+msgstr "List of fields phone empty"
+
+#: api_app/views/agente.py:65
 msgid "Error al generar sip password"
 msgstr "Error creating sip password"
 
-#: api_app/views/agente.py:196 api_app/views/agente.py:230
+#: api_app/views/agente.py:197 api_app/views/agente.py:231
 #: api_app/views/base.py:75 api_app/views/base.py:203
 msgid "Hubo errores en los datos recibidos"
 msgstr "There were errors on received data"
 
-#: api_app/views/agente.py:221
+#: api_app/views/agente.py:222
 msgid "Error al ejecutar la llamada"
 msgstr "Error when executing the call"
 
-#: api_app/views/agente.py:365
+#: api_app/views/agente.py:367
 msgid "Auditoría inexistente"
 msgstr "Audit not found"
 
-#: api_app/views/agente.py:370
+#: api_app/views/agente.py:372
 msgid "No tiene permiso para modificar la auditoría"
 msgstr "You don't have permission to edit the audit"
 
-#: api_app/views/supervisor.py:177 api_app/views/supervisor.py:223
+#: api_app/views/supervisor.py:169 api_app/views/supervisor.py:215
 msgid "ID Agenda incorrecto"
 msgstr "Wrong Agenda Id"
 
-#: api_app/views/supervisor.py:184
+#: api_app/views/supervisor.py:176
 msgid "ID Agente incorrecto"
 msgstr "Wrong Agent Id"
 
-#: api_app/views/supervisor.py:192 api_app/views/supervisor.py:230
+#: api_app/views/supervisor.py:184 api_app/views/supervisor.py:222
 msgid "No tiene permiso para editar esta Agenda"
 msgstr "You don't have permission to edit this Agenda"
 
-#: api_app/views/supervisor.py:249
+#: api_app/views/supervisor.py:241
 msgid "Recibidas"
 msgstr "Received"
 
-#: api_app/views/supervisor.py:250
+#: api_app/views/supervisor.py:242
 msgid "Efectuadas"
 msgstr "Dialed"
 
-#: api_app/views/supervisor.py:251
+#: api_app/views/supervisor.py:243
 msgid "Atendidas"
 msgstr "Attended"
 
-#: api_app/views/supervisor.py:252
+#: api_app/views/supervisor.py:244
 msgid "Conectadas"
 msgstr "Connected"
 
-#: api_app/views/supervisor.py:253
+#: api_app/views/supervisor.py:245
 msgid "No Conectadas"
 msgstr "Not connected"
 
-#: api_app/views/supervisor.py:254
+#: api_app/views/supervisor.py:246
 msgid "Abandonadas"
 msgstr "Abandon"
 
-#: api_app/views/supervisor.py:255
+#: api_app/views/supervisor.py:247
 msgid "Expiradas"
 msgstr "Expired"
 
-#: api_app/views/supervisor.py:256
+#: api_app/views/supervisor.py:248
 msgid "Tiempo de Espera de Conexión(prom.)"
 msgstr "Waiting time for connection(avg.)"
 
-#: api_app/views/supervisor.py:257
+#: api_app/views/supervisor.py:249
 msgid "Tiempo de Espera de Atención(prom.)"
 msgstr "Waiting time for attention(avg.)"
 
-#: api_app/views/supervisor.py:258
+#: api_app/views/supervisor.py:250
 msgid "Tiempo de Abandono(prom.)"
 msgstr "Abandon time(avg.)"
 
-#: api_app/views/supervisor.py:261
+#: api_app/views/supervisor.py:253
 msgid "Efectuadas Manuales"
 msgstr "Manual dialed calls"
 
-#: api_app/views/supervisor.py:262
+#: api_app/views/supervisor.py:254
 msgid "Conectadas Manuales"
 msgstr "Manual connected calls"
 
-#: api_app/views/supervisor.py:263
+#: api_app/views/supervisor.py:255
 msgid "No Conectadas Manuales"
 msgstr "Manual not connected calls"
 
-#: api_app/views/supervisor.py:264
+#: api_app/views/supervisor.py:256
 msgid "Tiempo de Espera de Conexión Manuales(prom.)"
 msgstr "Manual calls waiting time for connection(avg.)"
 
-#: api_app/views/supervisor.py:284 api_app/views/supervisor.py:299
+#: api_app/views/supervisor.py:276 api_app/views/supervisor.py:291
 msgid "No existe la campaña"
 msgstr "Campaign does not exists"
 
