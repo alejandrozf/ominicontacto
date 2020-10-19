@@ -467,3 +467,22 @@ class ExportarCSVNoAtendidos(ExportarCSVMixin, APIView):
             'msg': _('Exportación de no atendidos a .csv en proceso'),
             'id': task_id,
         })
+
+
+class ContactosAsignadosCampanaPreviewView(APIView):
+    permission_classes = (TienePermisoOML, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['get', ]
+
+    def get(self, request, pk_campana):
+        campana = Campana.objects.get(id=pk_campana)
+        contactos = campana.bd_contacto.contactos.all()
+        data_contacto = []
+        for contacto in contactos:
+            datos = {}
+            datos['id'] = contacto.id
+            datos['telefono'] = contacto.telefono
+            datos['id_externo'] = contacto.id_externo
+            data_contacto.append(datos)
+
+        return Response(data=data_contacto)

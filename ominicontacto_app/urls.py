@@ -754,10 +754,10 @@ urlpatterns = [
         login_required(
             views_campana_preview.CampanaPreviewContactosAsignados.as_view()),
         name="contactos_preview_asignados"),
-    url(r'^campana_preview/liberar_contacto_asignado/$',
+    url(r'^campana_preview/liberar_reservar_contacto_asignado/$',
         login_required(
-            views_campana_preview.LiberarContactoAsignado.as_view()),
-        name="liberar_contacto_asignado"),
+            views_campana_preview.LiberarReservarContactoAsignado.as_view()),
+        name="liberar_reservar_contacto_asignado"),
     url(r'^campana_preview/ordenar_contactos_asignados/(?P<pk_campana>\d+)/$',
         login_required(
             views_campana_preview.OrdenarAsignacionContactosView.as_view()),

@@ -307,25 +307,119 @@ class CampanaPreviewContactosAsignados(TemplateView):
     def get_context_data(self, pk_campana, **kwargs):
         context = super(CampanaPreviewContactosAsignados, self).get_context_data(**kwargs)
         context['campana'] = self.campana
+        context['agentes'] = self.campana.obtener_agentes()
         context['agentes_en_contacto'] = self.datos_de_agentes_en_contacto()
         return context
 
 
-class LiberarContactoAsignado(View):
+class LiberarReservarContactoAsignado(View):
     """
     Libera un contacto Asignado en AgenteEnContacto
     """
+    def _liberar_contacto(self, contacto_id, campana_id, agente_id):
+
+        entregado_asignado = AgenteEnContacto.objects.filter(estado__in=[
+            AgenteEnContacto.ESTADO_ENTREGADO, AgenteEnContacto.ESTADO_ASIGNADO],
+            agente_id=agente_id, campana_id=campana_id, contacto_id=contacto_id)
+        reservado = AgenteEnContacto.objects.filter(estado=AgenteEnContacto.ESTADO_INICIAL,
+                                                    agente_id=agente_id, campana_id=campana_id,
+                                                    contacto_id=contacto_id)
+        finalizado = AgenteEnContacto.objects.filter(
+            contacto_id=contacto_id, estado=AgenteEnContacto.ESTADO_FINALIZADO)
+        if finalizado.exists():
+            status = 'finalizado'
+            return status
+        else:
+            if entregado_asignado.exists():
+                contacto_por_liberar = entregado_asignado.first()
+                contacto_por_liberar.agente_id = -1
+                contacto_por_liberar.estado = AgenteEnContacto.ESTADO_INICIAL
+                contacto_por_liberar.save()
+
+            if reservado.exists():
+                contacto_por_liberar = reservado.first()
+                contacto_por_liberar.agente_id = -1
+                contacto_por_liberar.save()
+
+        status = 'liberado'  # El contacto ya esta liberado
+        return status
+
+    def _reservar_contacto(self, contacto_id, campana_id, id_agente):
+        finalizado = AgenteEnContacto.objects.filter(
+            contacto_id=contacto_id, estado=AgenteEnContacto.ESTADO_FINALIZADO)
+        contacto_esta_reservado = AgenteEnContacto.objects.filter(
+            contacto_id=contacto_id).first()
+        contacto_liberado = AgenteEnContacto.objects.activos(
+            campana_id=campana_id).filter(agente_id=-1,
+                                          estado=AgenteEnContacto.ESTADO_INICIAL,
+                                          campana_id=campana_id, contacto_id=contacto_id)
+
+        if finalizado.exists():
+            status = 'finalizado'
+            return status
+        else:
+
+            # Cuando el contacto esta liberado
+            if contacto_liberado.exists():
+                contacto_por_asignar = contacto_liberado.first()
+                contacto_por_asignar.agente_id = id_agente
+                contacto_por_asignar.save()
+
+            if contacto_esta_reservado.agente_id != id_agente:
+                contacto_reservado = AgenteEnContacto.objects.get(campana_id=campana_id,
+                                                                  contacto_id=contacto_id)
+                # si el contacto esta reservado por otro agente, se lo asigna al nuevo agente
+                contacto_reservado.agente_id = id_agente
+                # se reservar el contacto, poniendolo en estado inicial
+                contacto_reservado.estado = AgenteEnContacto.ESTADO_INICIAL
+                contacto_reservado.save()
+
+            status = 'reservado'
+            return status
+
     def post(self, request, *args, **kwargs):
         # TODO: Validar que el supervisor tiene permisos sobre la campaña
-        campana_id = request.POST.get('campana_id')
-        agente_id = request.POST.get('agente_id')
-        status, ___ = AgenteEnContacto.liberar_contacto(agente_id, campana_id)
-        if status:
-            message = _(u'El Contacto ha sido liberado.')
-            messages.success(self.request, message)
-        else:
-            message = _(u'No se pudo liberar el contacto. Intente nuevamente.')
-            messages.warning(self.request, message)
+        campana_id = json.loads(request.POST.get('campana_id'))
+        id_agente = json.loads(request.POST.get('id_agente'))
+        accion = request.POST.get('accion')
+        contacts_selected = json.loads(request.POST.get('contacts_selected'))
+        if accion == 'liberar':
+            contactos_liberados = ''
+            contactos_finalizados = ''
+            for contacto in contacts_selected:
+                status = self._liberar_contacto(contacto, campana_id, id_agente)
+
+                if status == 'liberado':
+                    contactos_liberados = str(contacto) + ', ' + contactos_liberados
+                if status == 'finalizado':
+                    contactos_finalizados = str(contacto) + ', ' + contactos_finalizados
+
+            if contactos_liberados:
+                message = _(u'Se han liberado los contactos con los siguientes ID: '
+                            ) + contactos_liberados
+                messages.success(self.request, message)
+            if contactos_finalizados:
+                message = _(u'Se encuentran finalizados los contactos con los siguientes ID: '
+                            ) + contactos_finalizados
+                messages.warning(self.request, message)
+        if accion == 'reservar':
+            contactos_reservados = ''
+            contactos_finalizados = ''
+            for contacto in contacts_selected:
+                status = self._reservar_contacto(contacto, campana_id, id_agente)
+
+                if status == 'reservado':
+                    contactos_reservados = str(contacto) + ', ' + contactos_reservados
+                if status == 'finalizado':
+                    contactos_finalizados = str(contacto) + ', ' + contactos_finalizados
+            if contactos_reservados:
+                message = _(u'Se han reservado los contactos con los siguientes ID: '
+                            ) + contactos_reservados
+                messages.success(self.request, message)
+            if contactos_finalizados:
+                message = _(u'Se encuentran finalizados los contactos con los siguientes ID: '
+                            ) + contactos_finalizados
+                messages.warning(self.request, message)
 
         return HttpResponseRedirect(reverse('contactos_preview_asignados', args=[campana_id]))
 
