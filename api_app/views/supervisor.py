@@ -87,7 +87,7 @@ class AgentesStatusAPIView(APIView):
         return result
 
     def _obtener_ids_agentes_propios(self, request):
-        supervisor_pk = request.user.get_supervisor_profile().user.pk
+        supervisor_pk = request.user.get_supervisor_profile().pk
         agentes_dict = self._obtener_datos_agentes(supervisor_pk)
         return agentes_dict
 

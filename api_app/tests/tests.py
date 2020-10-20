@@ -200,7 +200,7 @@ class APITest(OMLBaseTest):
         QueueMemberFactory.create(member=ag2, queue_name=self.queue)
         key1 = 'OML:AGENT:{0}'.format(ag1_pk)
         key2 = 'OML:AGENT:{0}'.format(ag2.pk)
-        key3 = 'OML:SUPERVISOR:{0}'.format(self.supervisor_admin.user.pk)
+        key3 = 'OML:SUPERVISOR:{0}'.format(self.supervisor_admin.pk)
         now = datetime.now()
         timestamp = datetime.timestamp(now)
         key1_value = {
@@ -246,7 +246,7 @@ class APITest(OMLBaseTest):
         QueueMemberFactory.create(member=ag2, queue_name=self.queue)
         key1 = 'OML:AGENT:{0}'.format(ag1_pk)
         key2 = 'OML:AGENT:{0}'.format(ag2.pk)
-        key3 = 'OML:SUPERVISOR:{0}'.format(self.supervisor_admin.user.pk)
+        key3 = 'OML:SUPERVISOR:{0}'.format(self.supervisor_admin.pk)
         now = datetime.now()
         timestamp = datetime.timestamp(now)
         key1_value = {
@@ -285,7 +285,7 @@ class APITest(OMLBaseTest):
         QueueMemberFactory.create(member=ag2, queue_name=self.queue)
         key1 = 'OML:AGENT:{0}'.format(ag1_pk)
         key2 = 'OML:AGENT:{0}'.format(ag2.pk)
-        key3 = 'OML:SUPERVISOR:{0}'.format(self.supervisor_admin.user.pk)
+        key3 = 'OML:SUPERVISOR:{0}'.format(self.supervisor_admin.pk)
         now = datetime.now()
         timestamp = datetime.timestamp(now)
         key1_value = {
