@@ -28,6 +28,7 @@ kam_wss_port=14443
 kam_sip_port=5060
 ast_sip_port=5160
 rtpengine_port=22222
+postgres_port=5432
 postgres_database=omnileads
 postgres_user=omnileads
 subnet=bla

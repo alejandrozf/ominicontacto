@@ -62,6 +62,7 @@ except ImportError:
 
 ADMIN_USERNAME = os.getenv('ADMIN_USERNAME')
 ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
+ADMIN_PASSWORD_RESET = '098098ZZZ'
 USER = os.getenv('USER')
 
 CAMPANA_MANUAL = os.getenv('CAMPANA_MANUAL')
@@ -87,7 +88,17 @@ class IntegrationTests(unittest.TestCase):
     def setUpClass(cls):
         # super(IntegrationTests, cls).setUpClass()
         cls.setUp()
-        cls._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        try:
+            # Para logearse por primera vez en un entorno desde cero
+            cls._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        except Exception:
+            pass
+        try:
+            # Cuando ya tiene la nueva contraseña seteada
+            cls._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
+        except Exception:
+            pass
+
         try:
             if cls.browser.find_elements_by_id('djHideToolBarButton'):
                 print('--ERROR: Se olvido de deshabilitar Django Toolbar.--')
@@ -131,6 +142,13 @@ class IntegrationTests(unittest.TestCase):
         self.browser.find_element_by_name('password').send_keys(password)
         self.browser.find_element_by_tag_name('button').click()
         sleep(2)
+        try:
+            self.browser.find_element_by_name('password1').send_keys(ADMIN_PASSWORD_RESET)
+            self.browser.find_element_by_name('password2').send_keys(ADMIN_PASSWORD_RESET)
+            self.browser.find_element_by_tag_name('button').click()
+            sleep(1)
+        except Exception:
+            pass
 
     @classmethod
     def crear_user(self, username, password, tipo_usuario):
@@ -188,7 +206,7 @@ class IntegrationTests(unittest.TestCase):
         sleep(1)
 
     def crear_BD(self, path, base_datos, multinum):
-        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
         href_nueva_BD = '//a[contains(@href,"/base_datos_contacto/nueva/")]'
         self.get_href(href_nueva_BD)
         self.browser.find_element_by_id('id_nombre').send_keys(base_datos)
@@ -197,10 +215,10 @@ class IntegrationTests(unittest.TestCase):
         sleep(1)
 
         if multinum:
-            self.browser.find_element_by_xpath('//label/input[@value = "Phone"]').click()
-            self.browser.find_element_by_xpath('//label/input[@value = "Cell"]').click()
+            self.browser.find_element_by_xpath('//label/input[@value = "phone"]').click()
+            self.browser.find_element_by_xpath('//label/input[@value = "cell"]').click()
         else:
-            self.browser.find_element_by_xpath('//label/input[@value = "Telefono"]').click()
+            self.browser.find_element_by_xpath('//label/input[@value = "telefono"]').click()
 
         self.browser.find_element_by_xpath("//button[@type='submit']").click()
         sleep(1)
@@ -332,7 +350,7 @@ class IntegrationTests(unittest.TestCase):
     def test_crear_usuario_tipo_agente_como_administrador(self):
         # Creación de un agente
         try:
-            self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+            self._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
             agente_username = 'agente' + uuid.uuid4().hex[:5]
             agente_password = AGENTE_PASSWORD
             # rellenar etapa1 del wizard de creación de usuario (agente)
@@ -350,7 +368,7 @@ class IntegrationTests(unittest.TestCase):
             user_list = '//a[contains(@href,"/user/list/1/")]'
             self.get_href(user_list)
             link_edit = '//tr[@id=\'{0}\']/td/div//a'\
-                        '[contains(@href,"/user/update")]'.format(agente_username)
+                '[contains(@href,"/user/agent/update")]'.format(agente_username)
             self.get_href(link_edit)
             nuevo_username = 'agente' + uuid.uuid4().hex[:5]
             self.browser.find_element_by_id('id_username').clear()
@@ -370,7 +388,7 @@ class IntegrationTests(unittest.TestCase):
     def test_modificar_eliminar_agente(self):
         # modificar grupo del agente.
         try:
-            self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+            self._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
             agente_username = 'agente' + uuid.uuid4().hex[:5]
             agente_password = AGENTE_PASSWORD
             tipo_usuario = 'Agente'
@@ -401,7 +419,7 @@ class IntegrationTests(unittest.TestCase):
         try:
             self.get_href(user_list)
             link_delete = "//tr[@id=\'{0}\']/td/div//"\
-                          "a[contains(@href,'/user/delete')]".format(agente_username)
+                "a[contains(@href,'/user/agent/delete')]".format(agente_username)
             self.get_href(link_delete)
             self.browser.find_element_by_xpath((
                 "//button[@type='submit']")).click()
@@ -416,7 +434,7 @@ class IntegrationTests(unittest.TestCase):
 
     def test_crear_editar_usuarios_supervisorprofile(self):
         # Creacion de usuarios con SupervisorProfile
-        self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+        self._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
         tipo_usuario = ['Administrador', 'Gerente', 'Supervisor', 'Referente']
         for usuario in tipo_usuario:
             try:
@@ -462,7 +480,7 @@ class IntegrationTests(unittest.TestCase):
 
     def test_crear_grupo_con_Autounpause(self):
         try:
-            self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+            self._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
             link_create_group = '//a[contains(@href,"/grupo/nuevo")]'
             self.get_href(link_create_group)
             group_name = 'grupo' + uuid.uuid4().hex[:5]
@@ -502,7 +520,7 @@ class IntegrationTests(unittest.TestCase):
 
     def test_crear_eliminar_grupo_sin_Autounpause(self):
         try:
-            self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+            self._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
             group_name = 'grupo' + uuid.uuid4().hex[:5]
             self.crear_grupo(group_name)
             self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(group_name))
@@ -530,7 +548,7 @@ class IntegrationTests(unittest.TestCase):
     # Acceso Web Administrador
     def test_acceso_web_administrador_acceso_exitoso(self):
         try:
-            self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+            self._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
             self.assertTrue(self.browser.find_element_by_xpath(
                 '//div/a[contains(@href, "/accounts/logout/")]'))
             print('--Acceso web administrador: Acceso exitoso.--')
@@ -578,7 +596,7 @@ class IntegrationTests(unittest.TestCase):
         tipo_usuario = ['Administrador', 'Gerente', 'Supervisor', 'Referente']
         for usuario in tipo_usuario:
             try:
-                self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+                self._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
                 user = usuario + uuid.uuid4().hex[:5]
                 password = '098098ZZZ'
                 self.crear_user(user, password, usuario)
@@ -600,7 +618,7 @@ class IntegrationTests(unittest.TestCase):
         for usuario in tipo_usuario:
             try:
                 # Creación supervisor que vamos a usar para simular un acceso denegado
-                self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+                self._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
                 user = usuario + uuid.uuid4().hex[:5]
                 password = '098098ZZZ'
                 self.crear_user(user, password, usuario)
@@ -635,7 +653,7 @@ class IntegrationTests(unittest.TestCase):
             # Vamos al Admin de django para desbloquear este usuario
             self.browser.get('https://{0}/admin'.format(TESTS_INTEGRACION_HOSTNAME))
             self.browser.find_element_by_name('username').send_keys(ADMIN_USERNAME)
-            self.browser.find_element_by_name('password').send_keys(ADMIN_PASSWORD)
+            self.browser.find_element_by_name('password').send_keys(ADMIN_PASSWORD_RESET)
             self.browser.find_element_by_xpath('//div/input[@type="submit"]').click()
             sleep(2)
             defender = '//a[contains(@href, "/admin/defender/")]'
@@ -662,7 +680,7 @@ class IntegrationTests(unittest.TestCase):
     def test_crear_modificar_eliminar_audio(self):
         try:
             # Crear audio
-            self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+            self._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
             audio_list = '//a[contains(@href,"/audios/")]'
             self.get_href(audio_list)
             audio_create = '//a[contains(@href,"/audios/create/")]'
@@ -718,7 +736,7 @@ class IntegrationTests(unittest.TestCase):
 
     def test_subir_audio_erroneo(self):
         try:
-            self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+            self._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
             audio_list = '//a[contains(@href,"/audios/")]'
             self.get_href(audio_list)
             audio_create = '//a[contains(@href,"/audios/create/")]'
@@ -738,7 +756,7 @@ class IntegrationTests(unittest.TestCase):
     def test_pausa_productiva(self):
         try:
             # crear pausa productiva
-            self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+            self._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
             link_create_pausa = '//a[contains(@href,"/pausa/nuevo")]'
             self.get_href(link_create_pausa)
             pausa_nueva = 'pausa_pro' + uuid.uuid4().hex[:5]
@@ -801,7 +819,7 @@ class IntegrationTests(unittest.TestCase):
     def test_pausa_recreativa(self):
         try:
             # crear pausa recreativa
-            self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+            self._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
             link_create_pausa = '//a[contains(@href,"/pausa/nuevo")]'
             self.get_href(link_create_pausa)
             pausa_nueva = 'pausa_rec' + uuid.uuid4().hex[:5]
@@ -970,7 +988,7 @@ class IntegrationTests(unittest.TestCase):
             telefono = '3456789'
             cell = '154352879'
             self.browser.find_element_by_id('id_telefono').send_keys(telefono)
-            self.browser.find_element_by_id('id_Cell').send_keys(cell)
+            self.browser.find_element_by_id('id_cell').send_keys(cell)
             self.browser.find_element_by_xpath("//button[@type='submit']").click()
             sleep(1)
             self.browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
@@ -1018,7 +1036,7 @@ class IntegrationTests(unittest.TestCase):
     def test_crear_blacklist(self):
         try:
             # Crear nueva blacklist
-            self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+            self._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
             blacklist = 'blacklist' + uuid.uuid4().hex[:5]
             csv_path = "/home/{0}/ominicontacto/test/planilla-ejemplo-0.csv".format(USER)
             self.crear_blacklist(csv_path, blacklist)
@@ -1046,7 +1064,7 @@ class IntegrationTests(unittest.TestCase):
     def test_crear_update_calificaciones(self):
         # Crear 7 nuevas calificaciones.
         try:
-            self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+            self._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
             lista_calificaciones = ['Venta', 'No Venta', 'No Interesado',
                                     'No conoce', 'Ya Tiene', 'Es jubilado']
             self.crear_calificacion(lista_calificaciones)
@@ -1080,7 +1098,7 @@ class IntegrationTests(unittest.TestCase):
     def test_delete_calificaciones(self):
         # Eliminar la calificación: "No se encuentra".
         try:
-            self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+            self._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
             calificacion = 'No se encuentra'
             lista_calificaciones = [calificacion]
             self.crear_calificacion(lista_calificaciones)
@@ -1102,7 +1120,7 @@ class IntegrationTests(unittest.TestCase):
 
     def test_crear_formularios(self):
         try:
-            self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+            self._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
             nuevo_formulario = '//a[contains(@href, "/formulario/nuevo")]'
             self.get_href(nuevo_formulario)
             nombre_form = 'form' + uuid.uuid4().hex[:5]
@@ -1153,7 +1171,7 @@ class IntegrationTests(unittest.TestCase):
     def test_sistema_externo(self):
         # Crear Sistema Externo
         try:
-            self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+            self._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
             nuevo_sistema = '//a[contains(@href, "/sistema_externo/nuevo/")]'
             self.get_href(nuevo_sistema)
             sistema_externo = 'sistema' + uuid.uuid4().hex[:5]
@@ -1193,7 +1211,7 @@ class IntegrationTests(unittest.TestCase):
 
     def test_crear_delete_sitio_externo_agente_get(self):
         try:
-            self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+            self._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
             sitio_get = 'sitio' + uuid.uuid4().hex[:5]
             url = 'www.test' + uuid.uuid4().hex[:5] + '.com'
             # Metodo Get
@@ -1226,7 +1244,7 @@ class IntegrationTests(unittest.TestCase):
     def test_crear_update_sitio_externo_agente_post(self):
         try:
             # Metodo Post
-            self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+            self._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
             url = 'www.test' + uuid.uuid4().hex[:5] + '.com'
             formato = ['multipart', 'urlencoded', 'text', 'json']
             for items in formato:
@@ -1258,7 +1276,7 @@ class IntegrationTests(unittest.TestCase):
 
     def test_crear_update_sitio_externo_automatico_get(self):
         try:
-            self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+            self._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
             sitio_get = 'sitio' + uuid.uuid4().hex[:5]
             url = 'www.test' + uuid.uuid4().hex[:5] + '.com'
             # Metodo Get
@@ -1291,7 +1309,7 @@ class IntegrationTests(unittest.TestCase):
 
     def test_sitio_externo_automatico_post(self):
         try:
-            self._login(ADMIN_USERNAME, ADMIN_PASSWORD)
+            self._login(ADMIN_USERNAME, ADMIN_PASSWORD_RESET)
             url = 'www.test' + uuid.uuid4().hex[:5] + '.com'
             # Metodo Post
             formato = ['multipart', 'urlencoded', 'text', 'json']
