@@ -45,7 +45,6 @@
     block: |
       PGUSER={{ postgres_user }}
       PGPASSWORD={{ postgres_password }}
-      DJANGO_PASS={{ admin_pass }}
       AMI_USER={{ ami_user }}
       AMI_PASSWORD={{ ami_password }}
       WOMBAT_USER={{ dialer_user }}

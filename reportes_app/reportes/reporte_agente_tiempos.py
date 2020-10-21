@@ -22,7 +22,7 @@ from collections import OrderedDict
 import pygal
 
 from django.utils.translation import ugettext as _
-from django.utils.timezone import timedelta
+from django.utils.timezone import now, timedelta
 from reportes_app.actividad_agente_log import AgenteTiemposReporte
 from reportes_app.models import ActividadAgenteLog, LlamadaLog
 from reportes_app.reportes.reporte_llamadas import LLAMADA_TRANSF_INTERNA
@@ -104,6 +104,12 @@ class TiemposAgente(object):
             fecha_superior,
             agentes_id)
 
+        # Establezco un limite hasta al cual calcular la ultima sesion abierta
+        hora_limite = now()
+        hora_maxima = datetime_hora_maxima_dia(fecha_superior)
+        if hora_maxima < hora_limite:
+            hora_limite = hora_maxima
+
         TIME = 1
         EVENT = 2
         for agente in agentes:
@@ -154,6 +160,12 @@ class TiemposAgente(object):
 
                     # Si el ultimo log es ADDMEMBER, se ignora esa sesion.
 
+            # Caso en que la última sesión puede estar en curso:
+            if datos_ultima_sesion['inicio'] is not None and datos_ultima_sesion['fin'] is None:
+                # Contabilizo duracion de sesión hasta la hora actual o fecha limite del reporte
+                duracion = hora_limite - datos_ultima_sesion['inicio']
+                tiempos_agente._tiempo_sesion += duracion
+
             if agregar_tiempos and tiempos_agente._tiempo_sesion:
                 self.agentes_tiempo.append(tiempos_agente)
 
@@ -170,16 +182,22 @@ class TiemposAgente(object):
             fecha_superior,
             agentes_id)
 
+        # Establezco un limite hasta al cual calcular la ultima pausa no finalizada
+        hora_limite = now()
+        hora_maxima = datetime_hora_maxima_dia(fecha_superior)
+        if hora_maxima < hora_limite:
+            hora_limite = hora_maxima
+
         TIME = 1
         EVENT = 2
         for agente in agentes:
-            time_actual = None
+            time_actual = hora_limite
 
             logs_agente = self._filter_query_por_agente(logs_time, agente.id)
 
             for log in logs_agente:
-                # Descarto Pausas sin log de finalización
-                if log[EVENT] == 'PAUSEALL' and time_actual is not None:
+                # Asumo que si la pausa no esta finalizada, es porque el agente esta online
+                if log[EVENT] == 'PAUSEALL':
                     resta = time_actual - log[TIME]
                     agente_en_lista = list(filter(lambda x: x.agente == agente,
                                                   self.agentes_tiempo))
@@ -291,20 +309,26 @@ class TiemposAgente(object):
             fecha_superior,
             agentes_id)
 
+        # Establezco un limite hasta al cual calcular la ultima pausa no finalizada
+        hora_limite = now()
+        hora_maxima = datetime_hora_maxima_dia(fecha_superior)
+        if hora_maxima < hora_limite:
+            hora_limite = hora_maxima
+
         TIME = 1
         EVENT = 2
         ID_PAUSA = 3
         for agente in agentes:
 
-            time_actual = None
+            time_actual = hora_limite
             tiempos_pausa = {}
             logs_agente = self._filter_query_por_agente(logs_time, agente.id)
             # Iterar los logs (del último al primero) y contabiliza pausas cada vez que encuentra
             # un PAUSEALL seguido de otro evento PAUSEALL, UNPAUSEALL o REMOVEMEMBER
 
             for log in logs_agente:
-                # Descarto Pausas sin log de finalización
-                if log[EVENT] == 'PAUSEALL' and time_actual is not None:
+                # Asumo que si la pausa no esta finalizada, es porque el agente esta online
+                if log[EVENT] == 'PAUSEALL':
                     resta = time_actual - log[TIME]
                     id_pausa = log[ID_PAUSA]
                     if id_pausa in tiempos_pausa.keys():
@@ -600,9 +624,14 @@ class TiemposAgente(object):
                 else:
                     datos_ultima_sesion['inicio'] = log[TIME]
 
-        # Si la ultima sesion esta incompleta, se ignora esa sesion.
+        # Si la ultima sesion esta incompleta, aviso de logs erroneos / sesiones incompletas.
         if datos_ultima_sesion['inicio'] is not None and datos_ultima_sesion['fin'] is None:
             logs_erroneos = True
+            hora_reporte = now()
+            # Contabilizo duracion de sesión hasta la hora actual
+            self._computar_tiempo_session_fecha(tiempos_fechas,
+                                                datos_ultima_sesion['inicio'],
+                                                hora_reporte)
         return tiempos_fechas, logs_erroneos
 
     def calcular_tiempo_pausa_fecha_agente(self, agente, fecha_inferior,
@@ -618,14 +647,20 @@ class TiemposAgente(object):
             fecha_superior,
             [agente.id])
 
+        # Establezco un limite hasta al cual calcular la ultima pausa no finalizada
+        hora_limite = now()
+        hora_maxima = datetime_hora_maxima_dia(fecha_superior)
+        if hora_maxima < hora_limite:
+            hora_limite = hora_maxima
+
         TIME = 1
         EVENT = 2
-        time_actual = None
+        time_actual = hora_limite
         for log in logs_time:
             agente_nuevo = None
 
             # Descarto Pausas sin log de finalización
-            if log[EVENT] == 'PAUSEALL' and time_actual is not None:
+            if log[EVENT] == 'PAUSEALL':
 
                 resta = time_actual - log[TIME]
                 date_time_actual = fecha_local(time_actual)
@@ -728,7 +763,13 @@ class TiemposAgente(object):
             fecha_superior,
             agente.id)
 
-        time_actual = None
+        # Establezco un limite hasta al cual calcular la ultima pausa no finalizada
+        hora_limite = now()
+        hora_maxima = datetime_hora_maxima_dia(fecha_superior)
+        if hora_maxima < hora_limite:
+            hora_limite = hora_maxima
+
+        time_actual = hora_limite
         tiempos_pausa = {}
 
         # iterar los log teniendo en cuenta que si encuentra un evento
@@ -739,7 +780,7 @@ class TiemposAgente(object):
             if log.event == 'PAUSEALL' and log.pausa_id != pausa_id:
                 time_actual = log.time
             # Descarto Pausas sin log de finalización
-            elif log.event == 'PAUSEALL' and time_actual is not None:
+            elif log.event == 'PAUSEALL':
                 resta = time_actual - log.time
                 fecha_pausa = fecha_local(time_actual)
                 if fecha_pausa in tiempos_pausa.keys():

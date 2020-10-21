@@ -18,7 +18,7 @@
 #
 
 """
-Tests del metodo 'ominicontacto_app.services.asterisk_database'
+Tests del modulo 'ominicontacto_app.services.asterisk.redis_database'
 """
 
 from __future__ import unicode_literals
@@ -27,8 +27,8 @@ from mock import patch
 
 from django.conf import settings
 from ominicontacto_app.tests.utiles import OMLBaseTest
-from ominicontacto_app.services.asterisk_database import (
-    CampanaFamily, AgenteFamily, RutaSalienteFamily, TrunkFamily, GlobalsFamily
+from ominicontacto_app.services.asterisk.redis_database import (
+    AgenteFamily, RutaSalienteFamily, TrunkFamily, CampanaFamily
 )
 from configuracion_telefonia_app.tests.factories import (
     TroncalSIPFactory, RutaSalienteFactory, PatronDeDiscadoFactory, PlaylistFactory)
@@ -81,9 +81,10 @@ class AsteriskDatabaseTest(OMLBaseTest):
                                           self.campana_entrante.nombre)
         self.assertEqual(dict_campana['QNAME'], nombre_campana)
         self.assertEqual(dict_campana['TYPE'], self.campana_entrante.type)
-        self.assertEqual(dict_campana['REC'], self.campana_entrante.queue_campana.auto_grabacion)
+        self.assertEqual(dict_campana['REC'], str(
+            self.campana_entrante.queue_campana.auto_grabacion))
         self.assertEqual(dict_campana['AMD'],
-                         self.campana_entrante.queue_campana.detectar_contestadores)
+                         str(self.campana_entrante.queue_campana.detectar_contestadores))
         self.assertEqual(dict_campana['CALLAGENTACTION'], self.campana_entrante.tipo_interaccion)
         self.assertEqual(dict_campana['RINGTIME'], self.campana_entrante.queue_campana.timeout)
         self.assertEqual(dict_campana['QUEUETIME'], self.campana_entrante.queue_campana.wait)
@@ -119,11 +120,11 @@ class AsteriskDatabaseTest(OMLBaseTest):
                                           self.campana_dialer.nombre)
         self.assertEqual(dict_campana['QNAME'], nombre_campana)
         self.assertEqual(dict_campana['TYPE'], self.campana_dialer.type)
-        self.assertEqual(dict_campana['REC'], self.campana_dialer.queue_campana.auto_grabacion)
+        self.assertEqual(dict_campana['REC'], str(self.campana_dialer.queue_campana.auto_grabacion))
         self.assertEqual(dict_campana['AMD'],
-                         self.campana_dialer.queue_campana.detectar_contestadores)
+                         str(self.campana_dialer.queue_campana.detectar_contestadores))
         self.assertEqual(dict_campana['CALLAGENTACTION'], self.campana_dialer.tipo_interaccion)
-        self.assertEqual(dict_campana['RINGTIME'], self.campana_dialer.queue_campana.timeout)
+        self.assertEqual(dict_campana['RINGTIME'], "")
         self.assertEqual(dict_campana['QUEUETIME'], self.campana_dialer.queue_campana.wait)
         self.assertEqual(dict_campana['MAXQCALLS'], self.campana_dialer.queue_campana.maxlen)
         self.assertEqual(dict_campana['SL'], self.campana_dialer.queue_campana.servicelevel)
@@ -173,7 +174,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         """
         ruta = RutaSalienteFactory()
         patron_1_1 = PatronDeDiscadoFactory(ruta_saliente=ruta)
-        patron_1_2 = PatronDeDiscadoFactory(ruta_saliente=ruta)
+        patron_1_2 = PatronDeDiscadoFactory(ruta_saliente=ruta, prefix='123', prepend='123')
 
         servicio = RutaSalienteFamily()
 
@@ -189,15 +190,17 @@ class AsteriskDatabaseTest(OMLBaseTest):
         if patron_1_1.prefix:
             prefix = len(str(patron_1_1.prefix))
         else:
-            prefix = None
-        self.assertEqual(dict_ruta['PREFIX/1'], prefix)
-        self.assertEqual(dict_ruta['PREPEND/1'], patron_1_1.prepend)
-        if patron_1_1.prefix:
-            prefix = len(str(patron_1_1.prefix))
+            prefix = ''
+        prepend = patron_1_1.prepend if patron_1_1.prepend is not None else ''
+        self.assertEqual(dict_ruta['PREFIX-1'], prefix)
+        self.assertEqual(dict_ruta['PREPEND-1'], prepend)
+        if patron_1_2.prefix:
+            prefix = len(str(patron_1_2.prefix))
         else:
-            prefix = None
-        self.assertEqual(dict_ruta['PREFIX/2'], prefix)
-        self.assertEqual(dict_ruta['PREPEND/2'], patron_1_2.prepend)
+            prefix = ''
+        prepend = patron_1_2.prepend if patron_1_2.prepend is not None else ''
+        self.assertEqual(dict_ruta['PREFIX-2'], prefix)
+        self.assertEqual(dict_ruta['PREPEND-2'], prepend)
 
     def test_devuelve_correctamente_values_troncales(self):
         """
@@ -218,32 +221,3 @@ class AsteriskDatabaseTest(OMLBaseTest):
         self.assertEqual(dict_troncal['NAME'], troncal_2.nombre)
         self.assertEqual(dict_troncal['CHANNELS'], troncal_2.canales_maximos)
         self.assertEqual(dict_troncal['CALLERID'], troncal_2.caller_id)
-
-    def test_devuelve_correctamente_values_globals(self):
-        """
-        Este verifica que se genere bien el dict de las variables globales que están ingresadas
-        como constantes
-        """
-        servicio = GlobalsFamily()
-
-        dict_globals = servicio._create_dict("")
-        self.assertTrue(dict_globals['DEFAULTQUEUETIME'], 90)
-        self.assertTrue(dict_globals['DEFAULTRINGTIME'], 45)
-        self.assertTrue(dict_globals['LANG'], 'es')
-        self.assertTrue(dict_globals['OBJ/1'], 'sub-oml-in-check-set,s,1')
-        self.assertTrue(dict_globals['OBJ/2'], 'sub-oml-module-tc,s,1')
-        self.assertTrue(dict_globals['OBJ/3'], 'sub-oml-module-ivr,s,1')
-        self.assertTrue(dict_globals['OBJ/4'], 'sub-oml-module-ext,s,1')
-        self.assertTrue(dict_globals['OBJ/5'], 'sub-oml-hangup,s,1')
-        self.assertTrue(dict_globals['OBJ/6'], 'sub-oml-module-survey,s,1')
-        self.assertTrue(dict_globals['OBJ/7'], 'sub-oml-module-custom-dst,s,1')
-        self.assertTrue(dict_globals['OBJ/8'], 'sub-oml-module-voicemail,s,1')
-        self.assertTrue(dict_globals['RECFILEPATH'], '/var/spool/asterisk/monitor')
-        self.assertTrue(dict_globals['TYPECALL/1'], 'manualCall')
-        self.assertTrue(dict_globals['TYPECALL/2'], 'dialerCall')
-        self.assertTrue(dict_globals['TYPECALL/3'], 'inboundCall')
-        self.assertTrue(dict_globals['TYPECALL/4'], 'previewCall')
-        self.assertTrue(dict_globals['TYPECALL/5'], 'icsCall')
-        self.assertTrue(dict_globals['TYPECALL/7'], 'internalCall')
-        self.assertTrue(dict_globals['TYPECALL/8'], 'transferCall')
-        self.assertTrue(dict_globals['TYPECALL/9'], 'transferOutNumCall')

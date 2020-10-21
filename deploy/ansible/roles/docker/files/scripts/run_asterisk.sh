@@ -30,6 +30,7 @@ if [ "$1" = "" ]; then
   sed -i "s/postgresql/${PGHOST}/g" /etc/odbc.ini
   sed -i "s/^Database.*/Database            = ${PGDATABASE}/g" /etc/odbc.ini
   sed -i "s/^UserName.*/UserName            = ${PGUSER}/g" /etc/odbc.ini
+  sed -i "s/^Port.*/Port            = ${PGPORT}/g" /etc/odbc.ini
 
   echo "Writing oml_res_odbc.conf file"
   sed -i "s/^username.*/username => ${PGUSER}/g" /etc/asterisk/oml_res_odbc.conf

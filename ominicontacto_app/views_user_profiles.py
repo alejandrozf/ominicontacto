@@ -27,6 +27,7 @@ from formtools.wizard.views import SessionWizardView
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.contrib.auth.models import Group
+from django.contrib.auth import login
 from django.db.models import Q
 from django.db.models import Value as V
 from django.db.models.functions import Concat
@@ -39,6 +40,7 @@ from constance import config
 
 from ominicontacto_app.forms import (
     CustomUserCreationForm, SupervisorProfileForm, UserChangeForm, AgenteProfileForm,
+    ForcePasswordChangeForm,
 )
 
 from ominicontacto_app.models import (
@@ -197,8 +199,51 @@ class CustomUserWizard(SessionWizardView):
 class CustomerUserUpdateView(UpdateView):
     """Vista para modificar un usuario"""
     model = User
-    form_class = UserChangeForm
-    template_name = 'user/user_create_update_form.html'
+
+    def dispatch(self, *args, **kwargs):
+        self.force_password_change = False
+        self.for_agent = False
+        if 'change_password' in kwargs:
+            self.force_password_change = True
+        else:
+            user = self.get_object()
+            if 'for_agent' in kwargs:
+                self.for_agent = True
+                if not user.is_agente:
+                    raise ValueError(_('URL incorrecta'))
+            else:
+                if user.is_agente:
+                    raise ValueError(_('URL incorrecta'))
+            if not self._can_edit_user(user):
+                message = _('No tiene permiso para editar al usuario {}'.format(
+                    user.get_full_name()))
+                messages.warning(self.request, message)
+                return HttpResponseRedirect(reverse('user_list', kwargs={"page": 1}))
+        return super(CustomerUserUpdateView, self).dispatch(*args, **kwargs)
+
+    def _can_edit_user(self, user):
+        # Solo un administrador puede editar otro administrador
+        if user.get_is_administrador() and not self.request.user.get_is_administrador():
+            return False
+        if self.for_agent:
+            if self.request.user.is_supervisor:
+                return self.request.user.tiene_agente_asignado(user.get_agente_profile())
+        return True
+
+    def get_object(self, *args, **kwargs):
+        if self.force_password_change:
+            return self.request.user
+        return super(CustomerUserUpdateView, self).get_object(*args, **kwargs)
+
+    def get_template_names(self, *args, **kwargs):
+        if self.force_password_change:
+            return ['user/force_password_change.html', ]
+        return ['user/user_create_update_form.html', ]
+
+    def get_form_class(self, *args, **kwargs):
+        if self.force_password_change:
+            return ForcePasswordChangeForm
+        return UserChangeForm
 
     def get_context_data(self, **kwargs):
         context = super(CustomerUserUpdateView, self).get_context_data(**kwargs)
@@ -214,13 +259,19 @@ class CustomerUserUpdateView(UpdateView):
             updated_user.set_password(form['password1'].value())
             updated_user.save()
 
+        if self.force_password_change:
+            login(self.request, updated_user)
+            updated_user.set_session_key(self.request.session.session_key)
+
         messages.success(self.request,
                          _('El usuario fue actualizado correctamente'))
 
         return ret
 
     def get_success_url(self):
-        return reverse('user_list', kwargs={"page": 1})
+        if self.request.user.tiene_permiso_oml('user_list'):
+            return reverse('user_list', kwargs={"page": 1})
+        return reverse('index')
 
 
 class UserDeleteView(DeleteView):
@@ -236,7 +287,30 @@ class UserDeleteView(DeleteView):
         if usuario.id == 1:
             return HttpResponseRedirect(
                 reverse('user_list', kwargs={"page": 1}))
+        self.for_agent = False
+        user = self.get_object()
+        if 'for_agent' in kwargs:
+            self.for_agent = True
+            if not user.is_agente:
+                raise ValueError(_('URL incorrecta'))
+        else:
+            if user.is_agente:
+                raise ValueError(_('URL incorrecta'))
+        if not self._can_delete_user(user):
+            message = _('No tiene permiso para eliminar al usuario {}'.format(
+                user.get_full_name()))
+            messages.warning(self.request, message)
+            return HttpResponseRedirect(reverse('user_list', kwargs={"page": 1}))
         return super(UserDeleteView, self).dispatch(request, *args, **kwargs)
+
+    def _can_delete_user(self, user):
+        # Solo un administrador puede eliminar otro administrador
+        if user.get_is_administrador() and not self.request.user.get_is_administrador():
+            return False
+        if self.for_agent:
+            if self.request.user.is_supervisor:
+                return self.request.user.tiene_agente_asignado(user.get_agente_profile())
+        return True
 
     def get_context_data(self, **kwargs):
         context = super(UserDeleteView, self).get_context_data(**kwargs)
@@ -281,6 +355,9 @@ class UserListView(ListView):
         context['modifica_perfil_supervisor'] = user.tiene_permiso_oml('supervisor_update')
         context['edita_user'] = user.tiene_permiso_oml('user_update')
         context['elimina_user'] = user.tiene_permiso_oml('user_delete')
+        context['edita_agente'] = user.tiene_permiso_oml('agent_update')
+        context['elimina_agente'] = user.tiene_permiso_oml('agent_delete')
+        context['numero_usuarios_activos'] = User.numero_usuarios_activos()
         if 'search' in self.request.GET:
             context['search'] = self.request.GET.get('search')
             context['search_url'] = '?search=' + context['search']

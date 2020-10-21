@@ -16,11 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 
-import os
-
 from django.core.management.base import BaseCommand, CommandError
 
 from ominicontacto_app.models import User
+
+DJANGO_PASS = 'admin'
 
 
 class Command(BaseCommand):
@@ -29,7 +29,7 @@ class Command(BaseCommand):
             'entorno DJANGO_ADMIN_PASS')
 
     def cambiar_admin_pass(self):
-        django_admin_pass = os.getenv('DJANGO_PASS')
+        django_admin_pass = DJANGO_PASS
         admin = User.objects.get(username='admin')
         admin.set_password(django_admin_pass)
         admin.save()

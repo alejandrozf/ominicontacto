@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import Group
+from django.forms import ValidationError
 
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
@@ -37,7 +38,7 @@ from ominicontacto_app.permisos import PermisoOML
 from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError, OmlError, \
     OmlParserRepeatedColumnsError
 from django.utils.encoding import smart_text
-from ominicontacto_app.utiles import elimina_tildes
+from ominicontacto_app.utiles import elimina_tildes, validar_longitud_nombre_base_de_contactos
 import re
 
 
@@ -153,10 +154,12 @@ class SubirBaseContactosView(APIView):
     def post(self, request):
         id = None
         error = True
+        LONGITUD_MAXIMA = 45
         try:
             file = request.FILES['filename']
             filename = file.name
             db_name = self._obtiene_parametro(request, 'nombre')
+            validar_longitud_nombre_base_de_contactos(db_name)
             campos_telefono_str = self._obtiene_parametro(request, 'campos_telefono')
             id_externo = self._obtiene_parametro(request, 'id_externo', True)
             id = self.base_datos_contacto_service.crear_bd_contactos(file, filename, db_name)
@@ -166,6 +169,12 @@ class SubirBaseContactosView(APIView):
             self.base_datos_contacto_service.importa_contactos_desde_api(id, campos_telefono,
                                                                          id_externo)
             error = False
+        except ValidationError:
+            return Response(
+                data={'status': 'ERROR',
+                      'message': _(
+                          'La longitud del nombre no debe exceder los {0} caracteres'.format(
+                              LONGITUD_MAXIMA))})
         except OmlArchivoImportacionInvalidoError:
             return Response(data={'status': 'ERROR',
                                   'message': _('la extensión del archivo no es .CSV')})

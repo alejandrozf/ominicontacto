@@ -4,7 +4,7 @@ Vagrant.configure("2") do |config|
     nodo1.vm.box = "centos/7"
     nodo1.vm.box_version = "1905.1"
     nodo1.vm.hostname = "build-example.com"
-    nodo1.vm.network "public_network", bridge: "enp2s0", ip: "192.168.99.130", use_dhcp_assigned_default_route: true
+    nodo1.vm.network "public_network", bridge: "enp2s0", ip: "172.16.20.130", use_dhcp_assigned_default_route: true
     nodo1.vm.provision "shell", path: "provision.sh", env: {"BRANCH" => ENV['BRANCH']}
     nodo1.vm.provider "virtualbox" do |vb|
       vb.name = "Centos-BuildAIO"

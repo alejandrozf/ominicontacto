@@ -351,6 +351,17 @@ def validar_nombres_campanas(nombre):
     validar_solo_ascii_y_sin_espacios(nombre, error_ascii, error_espacios)
 
 
+def validar_longitud_nombre_base_de_contactos(nombre):
+    """Valida que la cadena del nombre de la campaña
+    tenga no mas de un numero fijo de caracteres
+    """
+    LONGITUD_MAXIMA = 45
+    if len(nombre) > LONGITUD_MAXIMA:
+        raise ValidationError(
+            _('La longitud del nombre no debe exceder los {0} caracteres'.format(
+                LONGITUD_MAXIMA)))
+
+
 def obtener_opciones_columnas_bd(bd_contacto, columnas_bd_default):
     """Obtiene los nombres de las columnas de una base de contactos.
     En caso de recibir None como parámetro devuelve una lista de columnas fijas

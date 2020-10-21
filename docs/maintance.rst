@@ -208,6 +208,15 @@ Luego de ubicar los archivos, reiniciar los siguientes servicios:
   service nginx restart
   service kamailio restart
 
+Resetear contraseña web de admin
+*********************************
+
+Si ha olvidado su contraseña de usuario admin podrá resetear la misma a sus valor por defecto (admin/admin), para ello ingrese por SSH al OMniLeads y ejecute el siguiente comando:
+
+.. code::
+
+  /opt/omnileads/bin/manage.sh cambiar_admin_password
+
 Backup & Restore
 ****************
 OMniLeads dispone de un script para llevar a cabo las tareas de backup/restore.

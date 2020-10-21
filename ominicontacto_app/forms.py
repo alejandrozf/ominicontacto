@@ -40,14 +40,15 @@ from constance import config
 from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
-    RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Backlist, SitioExterno,
+    RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Blacklist, SitioExterno,
     SistemaExterno, ReglasIncidencia, SupervisorProfile, ArchivoDeAudio,
     NombreCalificacion, OpcionCalificacion, ParametrosCrm, AgenteEnSistemaExterno,
     AuditoriaCalificacion
 )
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
-                                      validar_solo_ascii_y_sin_espacios, elimina_tildes)
+                                      validar_solo_ascii_y_sin_espacios, elimina_tildes,
+                                      validar_longitud_nombre_base_de_contactos)
 from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSaliente
 
 from utiles_globales import validar_extension_archivo_audio
@@ -137,6 +138,19 @@ class UserChangeForm(forms.ModelForm):
             'username': {'unique':
                          _('No se puede volver a utilizar dos veces el mismo nombre de usuario')}
         }
+
+
+class ForcePasswordChangeForm(UserChangeForm):
+    class Meta:
+        model = User
+        fields = ('password1', 'password2')
+
+    def __init__(self, *args, **kwargs):
+        super(ForcePasswordChangeForm, self).__init__(*args, **kwargs)
+        self.fields['password1'].required = True
+        self.fields['password2'].required = True
+        self.fields['password1'].help_text = _('Ingrese la nueva contraseña')
+        self.fields['password2'].help_text = _('Ingrese la nueva contraseña')
 
 
 class AgenteProfileForm(forms.ModelForm):
@@ -301,6 +315,7 @@ class BaseDatosContactoForm(forms.ModelForm):
         # controlamos que el nombre no tenga espacios y caracteres no ascii
         nombre = self.cleaned_data.get('nombre')
         validar_solo_ascii_y_sin_espacios(nombre)
+        validar_longitud_nombre_base_de_contactos(nombre)
         return nombre
 
     class Meta:
@@ -1341,10 +1356,10 @@ class ActuacionVigenteForm(forms.ModelForm):
         }
 
 
-class BacklistForm(forms.ModelForm):
+class BlacklistForm(forms.ModelForm):
 
     class Meta:
-        model = Backlist
+        model = Blacklist
         fields = ('nombre', 'archivo_importacion')
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),

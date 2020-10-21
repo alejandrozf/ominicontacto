@@ -106,10 +106,10 @@ class BaseDatosContactoService(object):
                     # El id_externo no puede estar repetido
                     if id_externo in ids_externos:
                         base_datos_contacto.contactos.filter(id__in=ids_nuevos_contactos).delete()
-                        raise(CreacionBaseDatosServiceIdExternoError(numero_fila,
+                        raise CreacionBaseDatosServiceIdExternoError(numero_fila,
                                                                      columna_id_externo,
                                                                      lista_dato,
-                                                                     id_externo))
+                                                                     id_externo)
                     else:
                         ids_externos.add(id_externo)
 
@@ -120,6 +120,9 @@ class BaseDatosContactoService(object):
                     id_externo=id_externo
                 )
                 ids_nuevos_contactos.append(contacto.id)
+        except CreacionBaseDatosServiceIdExternoError as e:
+            raise e
+
         except OmlParserMaxRowError:
             base_datos_contacto.contactos.filter(id__in=ids_nuevos_contactos).delete()
             raise OmlError(_("Archivo excede máximo de filas permitidas"))

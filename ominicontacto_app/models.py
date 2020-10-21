@@ -79,6 +79,11 @@ class User(AbstractUser):
     last_session_key = models.CharField(blank=True, null=True, max_length=40)
     borrado = models.BooleanField(default=False, editable=False)
 
+    @classmethod
+    def numero_usuarios_activos(cls):
+        """Devuelve el numero de usuarios activos en el sistema"""
+        return User.objects.exclude(borrado=True).count() - 1
+
     @property
     def rol(self):
         # Se asume que tiene un solo grupo
@@ -188,6 +193,17 @@ class User(AbstractUser):
                 Session.objects.get(session_key=self.last_session_key).delete()
             except Session.DoesNotExist:
                 pass
+
+    def tiene_agente_asignado(self, agente_profile):
+        """
+        Verifica si el agente pasado como parametro esta asignado a alguna de las campañas en las
+        que el usuario esta asignado como supervisor.
+        """
+        campanas_supervisor = set(self.campanasupervisors.values_list('id', flat=True))
+        campanas_agent = set(agente_profile.campana_member.values_list(
+            'queue_name__campana_id', flat=True))
+        # Si las campañas son disjuntas es porque no esta asignado
+        return not campanas_supervisor.isdisjoint(campanas_agent)
 
 
 class Grupo(models.Model):
@@ -2279,7 +2295,7 @@ class BaseDatosContacto(models.Model):
         else:
             bd_reciclada_id = 0
         copia = BaseDatosContacto.objects.create(
-            nombre='{0}-{1} (reciclada)'.format(self.nombre, bd_reciclada_id),
+            nombre='{0}-{1}-reciclada'.format(self.pk, bd_reciclada_id),
             archivo_importacion=self.archivo_importacion,
             nombre_archivo_importacion=self.nombre_archivo_importacion,
             metadata=self.metadata,
@@ -2309,6 +2325,7 @@ class BaseDatosContacto(models.Model):
                 telefono=contacto.telefono,
                 datos=contacto.datos,
                 bd_contacto=self,
+                id_externo=contacto.id_externo,
             )
         self.cantidad_contactos = len(lista_contactos)
 
@@ -2389,18 +2406,7 @@ class Contacto(models.Model):
         if not hasattr(self, 'datos_contacto'):
             bd_metadata = self.bd_contacto.get_metadata()
             columnas = bd_metadata.nombres_de_columnas
-            datos = self.lista_de_datos()
-            pos_primer_telefono = bd_metadata.columnas_con_telefono[0]
-            if bd_metadata.columna_id_externo is not None:
-                # Inserto primero el de menor indice para que se respete el orden
-                if (pos_primer_telefono < bd_metadata.columna_id_externo):
-                    datos.insert(pos_primer_telefono, self.telefono)
-                    datos.insert(bd_metadata.columna_id_externo, self.id_externo)
-                else:
-                    datos.insert(bd_metadata.columna_id_externo, self.id_externo)
-                    datos.insert(pos_primer_telefono, self.telefono)
-            else:
-                datos.insert(pos_primer_telefono, self.telefono)
+            datos = self.lista_de_datos_completa()
 
             self.datos_contacto = dict(zip(columnas, datos))
         return self.datos_contacto
@@ -2424,6 +2430,26 @@ class Contacto(models.Model):
 
     def lista_de_datos(self):
         return json.loads(self.datos)
+
+    def lista_de_datos_completa(self):
+        """ Devuelve un diccionario con todos los datos, incluido el telefono """
+        if not hasattr(self, 'lista_datos_contacto'):
+            bd_metadata = self.bd_contacto.get_metadata()
+            datos = self.lista_de_datos()
+            pos_primer_telefono = bd_metadata.columnas_con_telefono[0]
+            if bd_metadata.columna_id_externo is not None:
+                # Inserto primero el de menor indice para que se respete el orden
+                if (pos_primer_telefono < bd_metadata.columna_id_externo):
+                    datos.insert(pos_primer_telefono, self.telefono)
+                    datos.insert(bd_metadata.columna_id_externo, self.id_externo)
+                else:
+                    datos.insert(bd_metadata.columna_id_externo, self.id_externo)
+                    datos.insert(pos_primer_telefono, self.telefono)
+            else:
+                datos.insert(pos_primer_telefono, self.telefono)
+
+            self.lista_datos_contacto = datos
+        return self.lista_datos_contacto
 
     def __str__(self):
         return '{0} >> {1}'.format(
@@ -2546,9 +2572,9 @@ class GrabacionManager(models.Manager):
         if callid:
             grabaciones = grabaciones.filter(callid=callid)
         if id_contacto_externo:
-            telefonos_contacto = Contacto.objects.values('telefono')
-            telefono_id_externo = telefonos_contacto.filter(id_externo=id_contacto_externo)
-            grabaciones = grabaciones.filter(tel_cliente__contains=telefono_id_externo)
+            contactos_id_externo = Contacto.objects.filter(id_externo=id_contacto_externo)
+            telefonos_contacto = contactos_id_externo.values_list('telefono', flat=True)
+            grabaciones = grabaciones.filter(tel_cliente__in=telefonos_contacto)
         if agente:
             grabaciones = grabaciones.filter(agente=agente)
         if campana:
@@ -3152,7 +3178,7 @@ class ActuacionVigente(models.Model):
         return dias
 
 
-class Backlist(models.Model):
+class Blacklist(models.Model):
 
     nombre = models.CharField(
         max_length=128, verbose_name=_('Nombre')
@@ -3180,14 +3206,14 @@ class Backlist(models.Model):
                                              self.cantidad_contactos)
 
 
-class ContactoBacklist(models.Model):
+class ContactoBlacklist(models.Model):
     """
     Lista de contacto que no quieren que los llamen
     """
 
     telefono = models.CharField(max_length=128)
-    back_list = models.ForeignKey(
-        Backlist, related_name='contactosbacklist', blank=True, null=True,
+    black_list = models.ForeignKey(
+        Blacklist, related_name='contactosblacklist', blank=True, null=True,
         on_delete=models.CASCADE)
 
     def __str__(self):

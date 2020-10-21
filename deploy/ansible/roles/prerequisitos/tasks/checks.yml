@@ -202,6 +202,23 @@
   when: assert_pgpass.rc == 0 and postgres_password is not defined
   tags: always
 
+- name: Check if $PGPORT was defined previously
+  shell: bash -lc 'if [ -z $PGPORT ]; then exit 1; else echo $PGPORT; exit 0; fi'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_pgport
+  tags: always
+
+- set_fact: postgres_port="{{ assert_pgport.stdout }}"
+  when: assert_pgport.rc == 0 and postgres_port is not defined
+  tags: always
+
+- set_fact: postgres_port=5432
+  when: assert_pgport.rc == 1 and postgres_port is not defined
+  tags: always
+
 - name: Check if $AMI_USER was defined previously
   shell: bash -lc 'if [ -z $AMI_USER ]; then exit 1; else echo $AMI_USER; exit 0; fi'
   args:
@@ -252,19 +269,6 @@
 
 - set_fact: dialer_password="{{ assert_wombatpass.stdout }}"
   when: assert_wombatpass.rc == 0 and dialer_password is not defined
-  tags: always
-
-- name: Check if $DJANGO_PASS was defined previously
-  shell: bash -lc 'if [ -z $DJANGO_PASS ]; then exit 1; else echo $DJANGO_PASS; exit 0; fi'
-  args:
-    executable: /bin/bash
-  changed_when: false
-  failed_when: false
-  register: assert_djangopass
-  tags: always
-
-- set_fact: admin_pass="{{ assert_djangopass.stdout }}"
-  when: assert_djangopass.rc == 0 and admin_pass is not defined
   tags: always
 
 - name: Check if $SESSION_COOKIE_AGE was defined previously
@@ -358,11 +362,4 @@
   fail:
     msg: WD pass undefined, edit dialer_password in inventory file
   when: dialer_password is not defined and assert_dialerpass.rc == 1
-  tags: always
-
-# Chequea si web admin password esta definido
-- name: Check if web admin password is defined
-  fail:
-    msg: Web admin variable undefined, edit $admin_pass in inventory file
-  when: admin_pass is not defined and assert_djangopass.rc == 1
   tags: always

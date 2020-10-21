@@ -65,7 +65,7 @@ elif command == 'GET':
     else:
         if agent_data:
             try:
-                agi.set_variable('OMLAGENTNAME', agent_data['NAME'])
+                agi.set_variable('__OMLAGENTNAME', agent_data['NAME'])
                 agi.set_variable('OMLAGENTSIP', agent_data['SIP'])
                 agi.set_variable('OMLAGENTSTATUS', agent_data['STATUS'])
                 agi.set_variable('PAUSE_ID', agent_data.get('PAUSE_ID', ''))
@@ -78,7 +78,9 @@ elif command == 'GET':
 elif command == 'SET':
     data = {
         'STATUS': sys.argv[3],
-        'TIMESTAMP': sys.argv[4]
+        'TIMESTAMP': sys.argv[4],
+        'CAMPAIGN': sys.argv[5] if len(sys.argv) >= 6 else '',
+        'CONTACT_NUMBER': sys.argv[6] if len(sys.argv) >= 6 else '',
     }
     try:
         agent_data = redis_connection.hset(agent_key, mapping=data)

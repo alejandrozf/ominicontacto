@@ -19,9 +19,9 @@ generar sus propios Roles personalizados para la operación.
 A continuación se listan los roles predefinidos:
 
 * **Referente**: los usuarios generados a partir de este rol podrán solo listar todas las campañas, consultar reportes generales de agentes y llamadas, acceder a la supervisión de agentes y campañas.
-* **Supervisor**: los usuarios generados a partir de este rol podrán trabajar con todas las campañas (crear, modificar, eliminar y listar), acceder a la supervisión y reportes generales de llamadas y agentes. También podrán crear usuarios y grupos de agentes. Buscar grabaciones de sus campañas, listar y subir bases de contactos y acceder al módulo de telefonía donde podrán trabajar con algunas secciones.
+* **Supervisor**: los usuarios generados a partir de este rol podrán trabajar con todas las campañas a las que estén asignados (crear, modificar, eliminar y listar), acceder a la supervisión y reportes generales de llamadas y agentes. También podrán crear usuarios y grupos de agentes, pero sólo podrán editar o eliminar agentes que esten asignados a alguna campaña a la que ellos mismos estén asignados. Buscar grabaciones de sus campañas, listar y subir bases de contactos y acceder al módulo de telefonía donde podrán trabajar con algunas secciones.
 * **Gerente**: los usuarios generados a partir de este rol podrán realizar todas las acciones de un supervisor y además puede visualizar el módulo de Auditorías.
-* **Administrador**: los usuarios generados a partir de este rol tienen acceso a todo el sistema.
+* **Administrador**: los usuarios generados a partir de este rol tienen acceso a todo el sistema. Solamente los administradores pueden editar o borrar usuarios con perfil Administrador.
 
 Para generar un *Rol personalizado*, se debe acceder al módulo de *Usuarios y grupos*, sección *Roles y permisos*, luego allí indicar *Crear rol*.
 Al nuevo rol se le asigna un nombre y luego se marcan los permisos que tendrá. Para no iniciar de cero, el usuario puede partir de una base de permisos de cierto perfil y luego seguir personalizando
@@ -47,7 +47,7 @@ suma los permisos a los que ya han sido checkeados en el nuevo rol.
 Usuarios
 *********
 
-Vamos a diferenciar entre usuarios del tipo Agente y Administrativos. Los usuarios *Agente* son quienes gestionan las comunicaciones y los usuarios *Administrivos* gestionan la aplicación.
+Vamos a diferenciar entre usuarios del tipo Agente y Administrativos. Los usuarios *Agente* son quienes gestionan las comunicaciones y los usuarios *Administrativos* gestionan la aplicación.
 
 .. important::
   Antes de crear un usuario *Agente* al menos debe existir un *Grupo de agentes*

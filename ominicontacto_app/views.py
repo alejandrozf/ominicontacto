@@ -110,8 +110,11 @@ def login_view(request):
 
         if user_not_blocked and not user_is_blocked and not login_unsuccessful:
             if form.is_valid():
+                primer_log = user.last_login is None
                 login(request, user)
                 user.set_session_key(request.session.session_key)
+                if user.get_supervisor_profile() is not None and primer_log:
+                    return HttpResponseRedirect(reverse('user_change_password'))
                 if 'next' in request.GET and request.GET.get('next') != reverse(
                         'api_agente_logout'):
                     return redirect(request.GET.get('next'))
