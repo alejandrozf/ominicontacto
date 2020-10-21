@@ -258,7 +258,7 @@ services:
     dns: 8.8.8.8
     environment:
       - TZ=${TZ}
-    image: {{ rtpengine_builded_image }}
+    image: {{ rtpengine_image }}
     networks:
       - {{ subnet_name }}
     privileged: true
