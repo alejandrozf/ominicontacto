@@ -45,7 +45,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <th>{% trans 'Nombre' %}</th>
             <th>{% trans 'Apellido' %}</th>
             <th>{% trans 'Perfil' %}</th>
-            {% if edita_user or elimina_user %}
+            {% if edita_user or elimina_user or edita_agente or elimina_agente %}
               <th>{% trans 'Acciones' %}</th>
             {% endif %}
         </tr>
@@ -77,27 +77,52 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {% endif %}
             </td>
 
-            {% if edita_user or elimina_user %}
-            <td>
-                <div class="dropdown">
-                    <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {% trans 'Opciones' %}
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
+            {% if edita_user or elimina_user or edita_agente or elimina_agente %}
+              <td>
+                {% if usuario.is_agente %}
+                  {% if edita_agente or elimina_agente %}
+                    <div class="dropdown">
+                      <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      {% trans 'Opciones' %}
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
+                        {% if edita_agente %}
+                            <a class="dropdown-item" href="{% url 'agent_update' usuario.id %}">
+                                <span class="icon icon-pencil"></span>{% trans 'Editar' %}
+                            </a>
+                        {% endif %}
+                        {% if elimina_agente %}
+                            <a class="dropdown-item" href="{% url 'agent_delete' usuario.id %}">
+                                <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
+                            </a>
+                        {% endif %}
+                      </div>
+                    </div>
+                  {% endif %}
+                {% else %}
+                  {% if edita_user or elimina_user %}
+                    <div class="dropdown">
+                      <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      {% trans 'Opciones' %}
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
                         {% if edita_user %}
                             <a class="dropdown-item" href="{% url 'user_update' usuario.id %}">
                                 <span class="icon icon-pencil"></span>{% trans 'Editar' %}
                             </a>
                         {% endif %}
                         {% if elimina_user and usuario.id != 1 %}
-                        <a class="dropdown-item" href="{% url 'user_delete' usuario.id %}">
-                            <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
-                        </a>
+                            <a class="dropdown-item" href="{% url 'user_delete' usuario.id %}">
+                                <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
+                            </a>
                         {% endif %}
+                      </div>
                     </div>
-                </div>
-            </td>
+                  {% endif %}
+                {% endif %}
+              </td>
             {% endif %}
+
         </tr>
    {% empty %}
     <tr>

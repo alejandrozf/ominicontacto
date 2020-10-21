@@ -21,7 +21,6 @@ This environment can be deployed in any linux distro. Linux distro tested by our
 ```sh
     #postgres_user=omnileads
     #postgres_password=my_very_strong_pass
-    #admin_pass=my_very_strong_pass
     #ami_user=omnileadsami
     #ami_password=5_MeO_DMT
     #dialer_user=demoadmin
