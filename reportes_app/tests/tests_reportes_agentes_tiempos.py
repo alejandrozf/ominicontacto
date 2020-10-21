@@ -668,8 +668,6 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
             if fecha_hoy == agente.agente:
                 self.assertTrue(agente.tiempo_sesion > duracion_minima)
                 self.assertTrue(agente.tiempo_sesion < duracion_maxima)
-            else:
-                self.assertEqual(agente.tiempo_sesion, timezone.timedelta())
 
         # verificamos que haya logs erroneos (0 incompletos)
         self.assertTrue(logs_erroneos, "Se verifico un removember sin addmember")
