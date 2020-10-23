@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-20 16:15-0300\n"
+"POT-Creation-Date: 2020-10-23 14:32-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,106 +23,20 @@ msgstr "Release Notes"
 
 # 73ee1e870afd4a31b43364589dd0e1ee
 #: ../../release_notes.rst:4
-msgid "*Octubre 20, 2020*"
-msgstr "October 20, 2020"
+msgid "*October 23, 2020*"
+msgstr "October 23, 2020"
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.11.0"
-msgstr "Release 1.11.0 details"
-
-# 6acae80f2d124b7dbb7b7f485e81c870
-#: ../../release_notes.rst:11
-msgid "Nuevas funcionalidades"
-msgstr "New features"
-
-# b8db3e34fb9c4a4390e586e1a8d63754
-#: ../../release_notes.rst:12
-msgid ""
-"Fue realizado un refactor para usar Redis en vez de AstBD para la mayor "
-"parte de los datos que se usan en tiempo real en el proyecto"
-msgstr ""
-"Refactor to use Redis instead of AstDB for all realtime related information"
-
-# 1a44a40719054cc2ad7562dc4136b7e6
-#: ../../release_notes.rst:13
-msgid ""
-"Fue adicionada información del teléfono contactado y la campaña en la "
-"página de supervision de agentes"
-msgstr ""
-"Information about contacted phone number and campaign were added to supervision agents page"
-
-# 61917f98cde640ffb8c7eeca13bdc07c
-#: ../../release_notes.rst:14
-msgid ""
-"A los usuarios no agentes se les requiere cambiar su contraseña en su "
-"primer login"
-msgstr ""
-"Non agent users are now required to change theirs passwords on its first login"
-
-# c1abda88831940e3a6bc1b25de3b6614
-#: ../../release_notes.rst:15
-msgid ""
-"El sistema genera una contraseña por defecto para el usuario admin por "
-"defecto"
-msgstr ""
-"The system gives now a default password for default admin user"
-
-# 14b3e732085047f4908dcdca7a1c4eec
-#: ../../release_notes.rst:16
-msgid "Es posible separar el componente Redis para usarlo en otro host"
-msgstr "The system now allows to install Redis component on other host"
-
-# eef579f723b142d0a61d38a4e12f38e0
-#: ../../release_notes.rst:17
-msgid ""
-"Se creó un simulador de tráfico de llamadas entrantes para el entorno de "
-"desarrollo"
-msgstr ""
-"A simulator of traffic of inbound calls for developer enviroment was created"
-
-# 7637540d75f2424eafc3e7340c5198cb
-#: ../../release_notes.rst:18
-msgid "Se mejoró la interfaz de usuario del diálogo de llamadas entrantes"
-msgstr "UI of transfer calls dialog was improved"
+msgid "Detalles de Release 1.11.1"
+msgstr "Release 1.11.1 details"
 
 # 2f558403c15a436e90409b976c7f07ed
-#: ../../release_notes.rst:22
+#: ../../release_notes.rst:10
 msgid "Fixes y mejoras"
 msgstr "Fixes and improvements"
 
-# a754932072b44d1ab8e32cb1a6509744
-#: ../../release_notes.rst:23
-msgid ""
-"Se solucionó inconsistencia en Reportes de Agentes para casos que no "
-"tenían eventos de cierre de sesión en logs"
-msgstr ""
-"Fixed inconsistency on Agents reports for cases whithout session closing"
-" events on logs"
-
-# cd9c73e9fbad47c781ccd71e46f268bd
-#: ../../release_notes.rst:24
-msgid "Se solucionó inconsistencia en headers enviados desde dialplan"
-msgstr "Fixed inconsistency on headers sent on dialplan code"
-
-# 677d1fbc9e144393afd2771d091d540e
-#: ../../release_notes.rst:25
-msgid ""
-"Se limitó la longitud del nombre de las bases de contactos hasta 45 "
-"caracteres"
-msgstr ""
-"A limit of 45 characters for contact databases length name was set"
-
-# 132a0d008c174479926a9ddbcbffd4be
-#: ../../release_notes.rst:26
-msgid "Se cambió la nomenclatura en la creación de bases de contactos recicladas"
-msgstr "Recycled contact database nomenclature was changed to be more compact"
-
 # 54e8275c486e4fd4a42874ba94f18109
-#: ../../release_notes.rst:27
-msgid ""
-"Se solucionó el error generado cuando una base de contactos contenía "
-"algún id externo duplicado"
-msgstr ""
-"Fixed error generated when an external id value of a contacts database"
-" is duplicated"
+#: ../../release_notes.rst:11
+msgid "Se soluciona error de dialplan que insertaba valores innecesarios en Redis"
+msgstr "Fixed dialplan error that inserted unnecessary data into Redis database"
