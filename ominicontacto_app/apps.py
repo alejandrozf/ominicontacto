@@ -42,6 +42,11 @@ class OminicontactoAppConfig(AppConfig):
                 'label': _('Nuevo usuario'),
                 'url': reverse('user_nuevo')
             })
+        if 'user_new_agent' in permissions:
+            usuarios.append({
+                'label': _('Nuevo usuario Agente'),
+                'url': reverse('user_new_agent')
+            })
         if 'agente_list' in permissions:
             usuarios.append({
                 'label': _('Agentes'),
@@ -348,7 +353,9 @@ class OminicontactoAppConfig(AppConfig):
             {'nombre': 'registrar_usuario',
              'roles': ['Administrador', ]},
             {'nombre': 'user_nuevo',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+             'roles': ['Administrador', 'Gerente', ]},
+            {'nombre': 'user_new_agent',
+             'roles': ['Supervisor', ]},
             {'nombre': 'user_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'user_delete',
@@ -710,6 +717,8 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Registrar la llave del usuario OML'), 'version': '1.7.0'},
         'user_nuevo':
             {'descripcion': _('Crear un Usuario'), 'version': '1.7.0'},
+        'user_new_agent':
+            {'descripcion': _('Crear un Usuario con rol Agente'), 'version': '1.11.0'},
         'user_list':
             {'descripcion': _('Ver lista de Usuarios'), 'version': '1.7.0'},
         'user_delete':
