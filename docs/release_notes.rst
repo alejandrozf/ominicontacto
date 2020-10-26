@@ -1,11 +1,11 @@
 Release Notes
 *************
 
-*October 23, 2020*
+*Octubre 26, 2020*
 
-Detalles de Release 1.11.1
+Detalles de Release 1.11.2
 =============================
 
 Fixes y mejoras
----------------------------------------------------------------------------
-- Se soluciona error de dialplan que insertaba valores innecesarios en Redis
+--------------------------
+- Se soluciona error en command que escribe datos de supervisores en Redis
