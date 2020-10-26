@@ -170,7 +170,13 @@ class ReporteCalificadosCSV(ReporteCSV):
         datos = calificacion.contacto.lista_de_datos_completa()
         lista_opciones.extend(datos)
         lista_opciones.append(calificacion_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
-        lista_opciones.append(_("Contactado"))
+        # analizamos el log para ver si se muestra como contactado o no
+        # mas alla de que se haya calificado, ya que deberíamos estar analizando el
+        # ultimo evento disponible
+        if log_llamada.event in LlamadaLog.EVENTOS_NO_CONEXION:
+            lista_opciones.append(NO_CONECTADO_DESCRIPCION[log_llamada.event])
+        else:
+            lista_opciones.append(_("Contactado"))
         numero_marcado = log_llamada.numero_marcado
         lista_opciones.append(numero_marcado)
         lista_opciones.append(calificacion.opcion_calificacion.nombre)
