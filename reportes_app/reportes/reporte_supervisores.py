@@ -50,7 +50,8 @@ class ReporteSupervisores(object):
                     'grupo': agente.grupo.nombre,
                     'campana': list(agente.queue_set.values_list('campana__nombre', flat=True))
                 }
-            supervisors_dict[supervisor_profile.pk] = agentes_dict
+            if agentes_dict != {}:
+                supervisors_dict[supervisor_profile.pk] = agentes_dict
         self.estadisticas = supervisors_dict
 
 
