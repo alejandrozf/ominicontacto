@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-19 11:35-0300\n"
+"POT-Creation-Date: 2020-10-26 15:37-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -163,16 +163,16 @@ msgid ""
 msgstr ""
 
 #: api_app/services/base_datos_contacto_service.py:54
-#: api_app/tests/tests_api_subir_base_contactos.py:189
-#: api_app/views/administrador.py:177
+#: api_app/tests/tests_api_subir_base_contactos.py:204
+#: api_app/views/administrador.py:186
 msgid "El archivo a procesar tiene nombres de columnas repetidos."
 msgstr ""
 
-#: api_app/services/base_datos_contacto_service.py:125
+#: api_app/services/base_datos_contacto_service.py:128
 msgid "Archivo excede máximo de filas permitidas"
 msgstr ""
 
-#: api_app/services/base_datos_contacto_service.py:129
+#: api_app/services/base_datos_contacto_service.py:132
 msgid "Error al parsear el archivo csv"
 msgstr ""
 
@@ -228,69 +228,75 @@ msgstr ""
 msgid "Se recibieron campos incorrectos"
 msgstr ""
 
-#: api_app/tests/tests_api_permisos.py:56 api_app/views/administrador.py:73
+#: api_app/tests/tests_api_permisos.py:56 api_app/views/administrador.py:74
 msgid "Ya existe un rol con ese nombre"
 msgstr ""
 
-#: api_app/tests/tests_api_permisos.py:66 api_app/views/administrador.py:68
+#: api_app/tests/tests_api_permisos.py:66 api_app/views/administrador.py:69
 msgid "Se esperaba el campo \"name\""
 msgstr ""
 
-#: api_app/tests/tests_api_permisos.py:96 api_app/views/administrador.py:98
+#: api_app/tests/tests_api_permisos.py:96 api_app/views/administrador.py:99
 msgid "Se esperaba el campo \"role_id\" (numérico)"
 msgstr ""
 
 #: api_app/tests/tests_api_permisos.py:103
 #: api_app/tests/tests_api_permisos.py:111
-#: api_app/tests/tests_api_permisos.py:171 api_app/views/administrador.py:105
-#: api_app/views/administrador.py:135
+#: api_app/tests/tests_api_permisos.py:171 api_app/views/administrador.py:106
+#: api_app/views/administrador.py:136
 msgid "Id de Rol incorrecto"
 msgstr ""
 
 #: api_app/tests/tests_api_permisos.py:120
-#: api_app/tests/tests_api_permisos.py:129 api_app/views/administrador.py:109
+#: api_app/tests/tests_api_permisos.py:129 api_app/views/administrador.py:110
 msgid "Se esperaba el campo \"permissions\" (lista)"
 msgstr ""
 
-#: api_app/tests/tests_api_permisos.py:139 api_app/views/administrador.py:114
+#: api_app/tests/tests_api_permisos.py:139 api_app/views/administrador.py:115
 msgid "Lista de permisos incorrecta"
 msgstr ""
 
-#: api_app/tests/tests_api_permisos.py:162 api_app/views/administrador.py:140
+#: api_app/tests/tests_api_permisos.py:162 api_app/views/administrador.py:141
 msgid "No se puede borrar un rol asignado a usuarios."
 msgstr ""
 
 #: api_app/tests/tests_api_subir_base_contactos.py:101
-#: api_app/views/administrador.py:174
+#: api_app/views/administrador.py:183
 msgid "falta parámetro filename en request"
 msgstr ""
 
 #: api_app/tests/tests_api_subir_base_contactos.py:113
 #: api_app/tests/tests_api_subir_base_contactos.py:125
-#: api_app/views/administrador.py:196
+#: api_app/views/administrador.py:205
 msgid "falta parámetro:"
 msgstr ""
 
 #: api_app/tests/tests_api_subir_base_contactos.py:138
-#: api_app/views/administrador.py:211
+#: api_app/views/administrador.py:220
 msgid "campo de teléfono no coincide con nombre de columna"
 msgstr ""
 
 #: api_app/tests/tests_api_subir_base_contactos.py:151
-#: api_app/views/administrador.py:219
+#: api_app/views/administrador.py:228
 msgid "campo de id externo no coincide con nombre de columna"
 msgstr ""
 
 #: api_app/tests/tests_api_subir_base_contactos.py:163
-#: api_app/views/administrador.py:171
+#: api_app/views/administrador.py:180
 msgid "la extensión del archivo no es .CSV"
 msgstr ""
 
-#: api_app/views/administrador.py:184
+#: api_app/tests/tests_api_subir_base_contactos.py:177
+#: api_app/views/administrador.py:176
+#, python-brace-format
+msgid "La longitud del nombre no debe exceder los {0} caracteres"
+msgstr ""
+
+#: api_app/views/administrador.py:193
 msgid "no se pudo crear la base de datos de contacto"
 msgstr ""
 
-#: api_app/views/administrador.py:208
+#: api_app/views/administrador.py:217
 msgid "lista de campos teléfono vacia"
 msgstr ""
 
@@ -315,75 +321,75 @@ msgstr ""
 msgid "No tiene permiso para modificar la auditoría"
 msgstr ""
 
-#: api_app/views/supervisor.py:169 api_app/views/supervisor.py:215
+#: api_app/views/supervisor.py:176 api_app/views/supervisor.py:222
 msgid "ID Agenda incorrecto"
 msgstr ""
 
-#: api_app/views/supervisor.py:176
+#: api_app/views/supervisor.py:183
 msgid "ID Agente incorrecto"
 msgstr ""
 
-#: api_app/views/supervisor.py:184 api_app/views/supervisor.py:222
+#: api_app/views/supervisor.py:191 api_app/views/supervisor.py:229
 msgid "No tiene permiso para editar esta Agenda"
 msgstr ""
 
-#: api_app/views/supervisor.py:241
+#: api_app/views/supervisor.py:248
 msgid "Recibidas"
 msgstr ""
 
-#: api_app/views/supervisor.py:242
+#: api_app/views/supervisor.py:249
 msgid "Efectuadas"
 msgstr ""
 
-#: api_app/views/supervisor.py:243
+#: api_app/views/supervisor.py:250
 msgid "Atendidas"
 msgstr ""
 
-#: api_app/views/supervisor.py:244
+#: api_app/views/supervisor.py:251
 msgid "Conectadas"
 msgstr ""
 
-#: api_app/views/supervisor.py:245
+#: api_app/views/supervisor.py:252
 msgid "No Conectadas"
 msgstr ""
 
-#: api_app/views/supervisor.py:246
+#: api_app/views/supervisor.py:253
 msgid "Abandonadas"
 msgstr ""
 
-#: api_app/views/supervisor.py:247
+#: api_app/views/supervisor.py:254
 msgid "Expiradas"
 msgstr ""
 
-#: api_app/views/supervisor.py:248
+#: api_app/views/supervisor.py:255
 msgid "Tiempo de Espera de Conexión(prom.)"
 msgstr ""
 
-#: api_app/views/supervisor.py:249
+#: api_app/views/supervisor.py:256
 msgid "Tiempo de Espera de Atención(prom.)"
 msgstr ""
 
-#: api_app/views/supervisor.py:250
+#: api_app/views/supervisor.py:257
 msgid "Tiempo de Abandono(prom.)"
 msgstr ""
 
-#: api_app/views/supervisor.py:253
+#: api_app/views/supervisor.py:260
 msgid "Efectuadas Manuales"
 msgstr ""
 
-#: api_app/views/supervisor.py:254
+#: api_app/views/supervisor.py:261
 msgid "Conectadas Manuales"
 msgstr ""
 
-#: api_app/views/supervisor.py:255
+#: api_app/views/supervisor.py:262
 msgid "No Conectadas Manuales"
 msgstr ""
 
-#: api_app/views/supervisor.py:256
+#: api_app/views/supervisor.py:263
 msgid "Tiempo de Espera de Conexión Manuales(prom.)"
 msgstr ""
 
-#: api_app/views/supervisor.py:276 api_app/views/supervisor.py:291
+#: api_app/views/supervisor.py:283 api_app/views/supervisor.py:298
 msgid "No existe la campaña"
 msgstr ""
 
