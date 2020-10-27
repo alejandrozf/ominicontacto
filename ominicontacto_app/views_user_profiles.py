@@ -54,6 +54,8 @@ from .services.asterisk_service import ActivacionAgenteService, RestablecerConfi
 
 
 import logging as logging_
+from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnectorError, \
+    AmiManagerClient
 
 logger = logging_.getLogger(__name__)
 
@@ -330,9 +332,15 @@ class UserDeleteView(DeleteView):
             agente_profile.borrar()
             # ahora vamos a remover el agente de la cola de asterisk
             queues_member_agente = agente_profile.campana_member.all()
+            try:
+                client = AmiManagerClient()
+                client.connect()
+            except AMIManagerConnectorError:
+                logger.exception(_("QueueRemove failed "))
             for queue_member in queues_member_agente:
                 campana = queue_member.queue_name.campana
-                remover_agente_cola_asterisk(campana, agente_profile)
+                remover_agente_cola_asterisk(campana, agente_profile, client)
+            client.disconnect()
             activar_cola()
             QueueMember.objects.borrar_member_queue(agente_profile)
 

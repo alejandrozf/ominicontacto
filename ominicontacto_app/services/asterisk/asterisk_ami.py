@@ -31,6 +31,7 @@ logger = _logging.getLogger(__name__)
 class AMIManagerConnector(object):
     """Establece la conexión AMI utilizando la librería pyst2, para manipular asterisk
     """
+
     def __init__(self):
         self.manager = Manager()
         self.disconnected = False
@@ -129,6 +130,7 @@ class AMIManagerConnector(object):
                 channel,
                 exten,
                 context=content[2],
+                caller_id=exten,
                 priority=1,
                 timeout='25000',
                 variables=content[3])
@@ -144,6 +146,54 @@ class AMIManagerConnector(object):
                 dict['Message'] = content[5]
             data_returned = self.manager.send_action(dict)
         return data_returned
+
+
+class AmiManagerClient(AMIManagerConnector):
+
+    def __init__(self):
+        super(AmiManagerClient, self).__init__()
+
+    def originate(self, channel, context, es_aplicacion, variables_de_canal, is_async,
+                  aplication=None, exten=None, priority=None, timeout=None):
+
+        content = {}
+        content[0] = channel
+        content[1] = exten
+        content[2] = context
+        content[3] = variables_de_canal
+        content[4] = priority or 1
+        content[5] = timeout or '25000'
+        return self._ami_action('originate', content)
+
+    def dbput(self, family, key, val):
+        content = {}
+        content[0] = family
+        content[1] = key
+        content[2] = val
+        return self._ami_action('dbput', content)
+
+    def dbget(self, family, key):
+        return self.dbget(family, key)
+
+    # TODO: Ver de donde sacar la key para enviar al manager
+    def dbdeltree(self, family, key):
+        return self.manager.dbdeltree(family, key)
+
+    def queue_add(self, queue, interface, penalty, paused, member_name):
+        content = {}
+        content[2] = [queue]
+        content[4] = content[0] = interface
+        content[3] = [penalty]
+        content[1] = member_name
+
+        return self._ami_action('QueueAdd', content)
+
+    def queue_remove(self, queue, interface):
+        content = {}
+        content[2] = [queue]
+        content[4] = content[0] = interface
+
+        return self._ami_action('QueueRemove', content)
 
 
 class AMIManagerConnectorError(OmlError):

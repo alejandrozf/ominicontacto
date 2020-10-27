@@ -49,6 +49,8 @@ from utiles_globales import obtener_sip_agentes_sesiones_activas
 
 
 import logging as logging_
+from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnectorError, \
+    AmiManagerClient
 
 logger = logging_.getLogger(__name__)
 
@@ -339,6 +341,12 @@ class CampanaWizardMixin(object):
 
             # se asignan valores por defecto en cada una de las instancias
             # de QueueMember a salvar y se adicionan a sus respectivas colas en asterisk
+            try:
+                client = AmiManagerClient()
+                client.connect()
+            except AMIManagerConnectorError:
+                logger.exception(_("QueueAdd failed "))
+
             for queue_form in queue_member_formset.forms:
                 if queue_form.cleaned_data != {}:
                     # no se tienen en cuenta formularios vacíos
@@ -354,8 +362,8 @@ class CampanaWizardMixin(object):
                         queue_form_created = False
                     queue_form.save(commit=False)
                     if (agente.sip_extension in sip_agentes_logueados) and queue_form_created:
-                        adicionar_agente_cola(agente, queue_form.instance, campana)
-
+                        adicionar_agente_cola(agente, queue_form.instance, campana, client)
+            client.disconnect()
             queue_member_formset.save()
 
     def alertas_por_sistema_externo(self, campana):

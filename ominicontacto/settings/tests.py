@@ -100,7 +100,6 @@ DATABASE_MYSQL_ASTERISK = {
 ASTERISK = {
     'AMI_USERNAME': "wombat",  # Usuario para AMI
     'AMI_PASSWORD': "fop222",  # Password para usuario para AMI
-    'HTTP_AMI_URL': "http://172.16.20.88:7088",
 }
 
 OML_OMNILEADS_HOSTNAME = os.getenv('OMNILEADS_HOSTNAME')

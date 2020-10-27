@@ -46,6 +46,7 @@ from ominicontacto_app.services.asterisk_service import ActivacionAgenteService
 from ominicontacto_app.views_queue_member import adicionar_agente_activo_cola, activar_cola
 
 from utiles_globales import obtener_sip_agentes_sesiones_activas
+from ominicontacto_app.services.asterisk.asterisk_ami import AmiManagerClient
 
 logger = logging.getLogger(__name__)
 
@@ -69,6 +70,8 @@ class Command(BaseCommand):
 
     def _asignar_agente_a_campana(self, agente, campana, penalty=0):
         try:
+            client = AmiManagerClient()
+            client.connect()
             with transaction.atomic():
                 queue_member = QueueMember(penalty=penalty)
                 queue_member_defaults = QueueMember.get_defaults(agente, campana)
@@ -82,8 +85,9 @@ class Command(BaseCommand):
                 queue_member.save()
                 # adicionamos el agente a la cola actual que esta corriendo
                 sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
-                adicionar_agente_activo_cola(queue_member, campana, sip_agentes_logueados)
+                adicionar_agente_activo_cola(queue_member, campana, sip_agentes_logueados, client)
                 activar_cola()
+            client.disconnect()
         except Exception as e:
             print("Can't assign agent to campaign due to {0}".error(e))
             raise e
