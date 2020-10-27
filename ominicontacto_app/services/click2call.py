@@ -21,9 +21,8 @@ from __future__ import unicode_literals
 
 from django.utils.translation import ugettext as _
 
-from ominicontacto_app.services.asterisk_ami_http import (
-    AsteriskHttpClient, AsteriskHttpOriginateError
-)
+from ominicontacto_app.services.asterisk.asterisk_ami import AmiManagerClient
+
 import logging as _logging
 
 
@@ -48,15 +47,10 @@ class Click2CallOriginator(object):
         channel = "Local/{0}@click2call/n".format(agente.sip_extension)
         # Genero la llamada via originate por AMI
         try:
-            client = AsteriskHttpClient()
-            client.login()
+            client = AmiManagerClient()
+            client.connect()
             client.originate(channel, "from-oml", False, variables, True,
                              exten=telefono, priority=1, timeout=45000)
-
-        except AsteriskHttpOriginateError:
-            error = _("Originate failed - contacto: {0} ".format(telefono))
-            logger.exception(error)
-            return error
 
         except Exception as e:
             error = _("Originate failed by {0} - contacto: {1}".format(e, telefono))
@@ -87,16 +81,10 @@ class Click2CallOriginator(object):
 
         # Genero la llamada via originate por AMI
         try:
-            client = AsteriskHttpClient()
-            client.login()
+            client = AmiManagerClient()
+            client.connect()
             client.originate(channel, context, False, variables, True,
                              exten=exten, priority=1, timeout=45000)
-
-        except AsteriskHttpOriginateError:
-            error = _("Originate failed - tipo_destino: {0}  - numero {1}".format(
-                tipo_destino, numero))
-            logger.exception(error)
-            return error
 
         except Exception as e:
             error = _("Originate failed by {0} - tipo_destino: {1}  - numero {2}".format(

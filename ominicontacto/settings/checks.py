@@ -70,7 +70,7 @@ def check_settings_variables(variables_pairs):
 
 
 def check_asterisk_connect_settings(ASTERISK):
-    for key in ('AMI_USERNAME', 'AMI_PASSWORD', 'HTTP_AMI_URL'):
+    for key in ('AMI_USERNAME', 'AMI_PASSWORD'):
         assert key in ASTERISK, \
             "Falta key '{0}' en configuracion de ASTERISK".\
             format(key)

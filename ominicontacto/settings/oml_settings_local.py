@@ -71,7 +71,6 @@ OML_KAMAILIO_HOSTNAME = "root@{0}".format(KAMAILIO_HOSTNAME)
 ASTERISK = {
     'AMI_USERNAME': AMI_USER,  # Usuario para AMI
     'AMI_PASSWORD': AMI_PASSWORD,  # Password para usuario para AMI
-    'HTTP_AMI_URL': "http://{0}:7088".format(ASTERISK_HOSTNAME),
 }
 
 # Seteo de logging
