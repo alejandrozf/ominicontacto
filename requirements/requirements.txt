@@ -3,7 +3,7 @@ cairocffi==0.8.0
 CairoSVG==1.0.22
 cffi==1.9.1
 coverage==4.4.1
-cryptography==2.4.2
+cryptography==3.2
 cssselect==1.0.1
 decorator==4.0.10
 Django==2.2.7
