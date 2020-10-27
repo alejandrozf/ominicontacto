@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-26 17:16-0300\n"
+"POT-Creation-Date: 2020-10-27 11:26-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,20 +23,24 @@ msgstr "Release Notes"
 
 # 73ee1e870afd4a31b43364589dd0e1ee
 #: ../../release_notes.rst:4
-msgid "*Octubre 26, 2020*"
-msgstr "October 26, 2020"
+msgid "*Octubre 27, 2020*"
+msgstr "*October 27, 2020*"
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.11.2"
-msgstr "Release 1.11.2 details"
+msgid "Detalles de Release 1.11.3"
+msgstr "Release 1.11.3 details"
 
 # 2f558403c15a436e90409b976c7f07ed
-#: ../../release_notes.rst:10
+#: ../../release_notes.rst:11
 msgid "Fixes y mejoras"
 msgstr "Fixes and improvements"
 
-# 54e8275c486e4fd4a42874ba94f18109
-#: ../../release_notes.rst:11
-msgid "Se soluciona error en command que escribe datos de supervisores en Redis"
-msgstr "Fixed error on command that inserts supervisors related information on Redis"
+# d29c9508d828411eb55ba43b77f115cc
+#: ../../release_notes.rst:12
+msgid ""
+"Se soluciona error en dialplan que genera un comportamiento errático en "
+"llamadas con prefijo cuando una ruta saliente es asignada a una campaña"
+msgstr ""
+"Fixed dialplan error that makes erratic behauviour on prefix phone calls"
+" when an outbound route is assigned to a campaign"
