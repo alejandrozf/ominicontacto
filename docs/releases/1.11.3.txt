@@ -1,0 +1,11 @@
+=========================
+Omnileads 1.11.3 release notes
+=========================
+
+This is a "bugfix" release improving the stability and performance of the codebase.
+
+
+Fixes and improvements
+=========================
+
+- Fixed dialplan error that makes erratic behauviour on prefix phone calls when an outbound route is assigned to a campaign
