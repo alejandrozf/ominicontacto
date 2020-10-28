@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-27 11:26-0300\n"
+"POT-Creation-Date: 2020-10-28 10:29-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,24 +23,24 @@ msgstr "Release Notes"
 
 # 73ee1e870afd4a31b43364589dd0e1ee
 #: ../../release_notes.rst:4
-msgid "*Octubre 27, 2020*"
-msgstr "*October 27, 2020*"
+msgid "*Octubre 28, 2020*"
+msgstr "*October 28, 2020*"
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.11.3"
-msgstr "Release 1.11.3 details"
+msgid "Detalles de Release 1.11.4"
+msgstr "Release 1.11.4 details"
 
 # 2f558403c15a436e90409b976c7f07ed
-#: ../../release_notes.rst:11
+#: ../../release_notes.rst:10
 msgid "Fixes y mejoras"
 msgstr "Fixes and improvements"
 
 # d29c9508d828411eb55ba43b77f115cc
-#: ../../release_notes.rst:12
+#: ../../release_notes.rst:11
 msgid ""
-"Se soluciona error en dialplan que genera un comportamiento errático en "
-"llamadas con prefijo cuando una ruta saliente es asignada a una campaña"
+"Solucionado error de dialplan relacionado con llamadas hacia agentes "
+"desde PBX y rutas salientes asignadas a campañas"
 msgstr ""
-"Fixed dialplan error that makes erratic behauviour on prefix phone calls"
-" when an outbound route is assigned to a campaign"
+"Fixed dialplan error related with PBX calls to Agents and Outbound routes"
+" assigned to campaigns"

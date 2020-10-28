@@ -1,12 +1,11 @@
 Release Notes
 *************
 
-*Octubre 27, 2020*
+*Octubre 28, 2020*
 
-Detalles de Release 1.11.3
+Detalles de Release 1.11.4
 =============================
-
 
 Fixes y mejoras
 --------------------------
-- Se soluciona error en dialplan que genera un comportamiento errático en llamadas con prefijo cuando una ruta saliente es asignada a una campaña
+- Solucionado error de dialplan relacionado con llamadas hacia agentes desde PBX y rutas salientes asignadas a campañas
