@@ -343,6 +343,50 @@ class CalificacionTests(OMLBaseTest):
         datos_contacto_form = set(contacto_form.initial.values())
         self.assertEqual(datos_contacto_form, set([telefono]))
 
+    def test_ocultar_opciones_de_calificacion(self):
+        contacto = self.contacto
+        telefono = contacto.telefono
+        url = reverse('calificar_por_telefono',
+                      kwargs={'pk_campana': self.campana.pk, 'telefono': telefono})
+        response = self.client.get(url, follow=True)
+        opciones_form = response.context_data['form']
+        choices = [x for x in opciones_form.fields['opcion_calificacion'].choices]
+        # Controlo que estén todas las opciones
+        self.assertEqual(len(choices), self.campana.opciones_calificacion.count() + 1)
+        opcion = self.opcion_calificacion_no_accion
+        self.assertIn((opcion.id, opcion.nombre), choices)
+
+        opcion.oculta = True
+        opcion.save()
+        response = self.client.get(url, follow=True)
+        opciones_form = response.context_data['form']
+        choices = [x for x in opciones_form.fields['opcion_calificacion'].choices]
+        # Controlo que no este la opción oculta
+        self.assertEqual(len(choices), self.campana.opciones_calificacion.count())
+        self.assertNotIn((opcion.id, opcion.nombre), choices)
+
+    def test_no_ocultar_opciones_de_calificacion_oculta_si_corresponde_a_la_calificacion(self):
+        contacto = self.contacto
+        telefono = contacto.telefono
+        url = reverse('calificar_por_telefono',
+                      kwargs={'pk_campana': self.campana.pk, 'telefono': telefono})
+        response = self.client.get(url, follow=True)
+        opciones_form = response.context_data['form']
+        choices = [x for x in opciones_form.fields['opcion_calificacion'].choices]
+        # Controlo que estén todas las opciones
+        self.assertEqual(len(choices), self.campana.opciones_calificacion.count() + 1)
+        opcion = self.calificacion_cliente.opcion_calificacion
+        self.assertIn((opcion.id, opcion.nombre), choices)
+
+        opcion.oculta = True
+        opcion.save()
+        response = self.client.get(url, follow=True)
+        opciones_form = response.context_data['form']
+        # Controlo que estén todas las opciones
+        choices = [x for x in opciones_form.fields['opcion_calificacion'].choices]
+        self.assertEqual(len(choices), self.campana.opciones_calificacion.count() + 1)
+        self.assertIn((opcion.id, opcion.nombre), choices)
+
     def test_llamada_manual_telefono_con_1_contacto_muestra_datos_contacto_formulario(self):
         contacto = self.contacto
         telefono = contacto.telefono

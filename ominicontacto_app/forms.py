@@ -27,7 +27,7 @@ from django.contrib.auth.forms import (
     UserChangeForm,
     UserCreationForm
 )
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import ugettext_lazy as _
 
@@ -679,7 +679,7 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
 class OpcionCalificacionForm(forms.ModelForm):
     class Meta:
         model = OpcionCalificacion
-        fields = ('tipo', 'nombre', 'formulario', 'campana')
+        fields = ('tipo', 'nombre', 'formulario', 'campana', 'oculta')
 
         widgets = {
             'nombre': forms.Select(),
@@ -784,13 +784,14 @@ class OpcionCalificacionBaseFormset(BaseInlineFormSet):
         for form in save_candidates_forms:
             nombre = form.cleaned_data.get('nombre', None)
             tipo = form.cleaned_data.get('tipo', None)
+            oculta = form.cleaned_data.get('oculta')
             if nombre is None or tipo is None:
                 raise forms.ValidationError(_("Rellene los campos en blanco"), code='invalid')
             if nombre in nombres:
                 raise forms.ValidationError(
                     _("Los nombres de las opciones de calificación deben ser distintos"),
                     code="invalid")
-            if tipo == OpcionCalificacion.GESTION:
+            if tipo == OpcionCalificacion.GESTION and not oculta:
                 tipos_gestion_cont += 1
             nombres.append(nombre)
         if tipos_gestion_cont == 0:
@@ -833,7 +834,12 @@ class CalificacionClienteForm(forms.ModelForm):
         self.campana = campana
         self.es_auditoria = es_auditoria
         self.historico_calificaciones = historico_calificaciones
-        self.fields['opcion_calificacion'].queryset = campana.opciones_calificacion.all()
+
+        filtro = Q(oculta=False)
+        if self.instance.pk:
+            if self.instance.opcion_calificacion.oculta:
+                filtro = filtro | Q(id=self.instance.opcion_calificacion.id)
+        self.fields['opcion_calificacion'].queryset = campana.opciones_calificacion.filter(filtro)
 
     def clean_opcion_calificacion(self):
         opcion = self.cleaned_data.get('opcion_calificacion')
@@ -841,6 +847,10 @@ class CalificacionClienteForm(forms.ModelForm):
             if 'opcion_calificacion' in self.changed_data and opcion.es_agenda():
                 raise forms.ValidationError(
                     _('Sólo el Agente puede cambiar la calificacion a Agenda.'))
+        else:
+            if 'opcion_calificacion' in self.changed_data and opcion.oculta:
+                raise forms.ValidationError(
+                    _('No puede elegir una opción de calificacion oculta.'))
         return opcion
 
     class Meta:
