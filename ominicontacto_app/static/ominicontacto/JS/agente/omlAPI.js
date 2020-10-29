@@ -242,6 +242,9 @@ class OMLAPI {
                 if (data['calificada'] == 'True'){
                     callback_calificada();
                 }
+                if (call_data == 'null'){
+                    callback_calificada();
+                }
                 else{
                     var call_data = JSON.parse(data['calldata']);
                     callback_no_calificada(call_data);
