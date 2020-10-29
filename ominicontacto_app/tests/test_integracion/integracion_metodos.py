@@ -54,6 +54,14 @@ def login(browser, username, password):
     except Exception:
         pass
 
+    # Prueba si Django toolbar esta abierto y lo cierra
+    try:
+        if browser.find_elements_by_id('djHideToolBarButton'):
+            browser.find_element_by_id('djHideToolBarButton').click()
+            sleep(1)
+    except Exception:
+        pass
+
 
 def crear_user(browser, username, password, tipo_usuario):
     link_create_user = browser.find_element_by_xpath('//a[contains(@href,"/user/nuevo/")]')
