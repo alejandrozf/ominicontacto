@@ -48,13 +48,6 @@ class SistemaExternoTests(unittest.TestCase):
         # super(IntegrationTests, cls).setUpClass()
         cls.setUp()
         login(cls.browser, ADMIN_USERNAME, ADMIN_PASSWORD)
-        try:
-            if cls.browser.find_elements_by_id('djHideToolBarButton'):
-                print('--ERROR: Se olvido de deshabilitar Django Toolbar.--')
-                raise
-                exit()
-        except Exception:
-            pass
         group_name = 'group' + uuid.uuid4().hex[:5]
         crear_grupo(cls.browser, group_name)
         tipo_usuario = 'Agente'

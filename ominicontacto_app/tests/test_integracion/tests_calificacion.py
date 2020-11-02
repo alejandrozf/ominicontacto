@@ -43,13 +43,6 @@ class CalificacionTests(unittest.TestCase):
         # super(IntegrationTests, cls).setUpClass()
         cls.setUp()
         login(cls.browser, ADMIN_USERNAME, ADMIN_PASSWORD)
-        try:
-            if cls.browser.find_elements_by_id('djHideToolBarButton'):
-                print('--ERROR: Se olvido de deshabilitar Django Toolbar.--')
-                raise
-                exit()
-        except Exception:
-            pass
         cls.tearDown()
 
     @classmethod
