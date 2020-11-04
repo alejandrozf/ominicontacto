@@ -26,7 +26,7 @@ from django.contrib.auth.decorators import login_required
 from api_app.views.base import login, ContactoCreateView, CampaignDatabaseMetadataView
 from api_app.views.administrador import (
     AgentesActivosGrupoViewSet, CrearRolView, EliminarRolView, ActualizarPermisosDeRolView,
-    SubirBaseContactosView)
+    SubirBaseContactosView, EnviarKeyRegistro)
 from api_app.views.supervisor import (
     SupervisorCampanasActivasViewSet, AgentesStatusAPIView, StatusCampanasEntrantesView,
     StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView, LlamadasDeCampanaView,
@@ -92,8 +92,9 @@ urlpatterns = [
     url(r'api/v1/crear_base_contactos/$',
         SubirBaseContactosView.as_view(),
         name='api_upload_base_contactos'),
-
-
+    url(r'api/v1/reenviar_key_registro/$',
+        EnviarKeyRegistro.as_view(),
+        name='reenviar_key_registro'),
     # ###########   SUPERVISOR    ############ #
     url(r'api/v1/supervision/agentes',
         login_required(AgentesStatusAPIView.as_view()),

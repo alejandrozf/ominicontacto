@@ -19,9 +19,13 @@
 
 from __future__ import unicode_literals
 
+import requests
+
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import Group
 from django.forms import ValidationError
+
+from constance import config as config_constance
 
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
@@ -40,6 +44,11 @@ from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError, OmlErro
 from django.utils.encoding import smart_text
 from ominicontacto_app.utiles import elimina_tildes, validar_longitud_nombre_base_de_contactos
 import re
+
+import logging as _logging
+
+
+logger = _logging.getLogger(__name__)
 
 
 class AgentesActivosGrupoViewSet(viewsets.ModelViewSet):
@@ -247,3 +256,31 @@ class SubirBaseContactosView(APIView):
 
 
 DOUBLE_SPACES = re.compile(r' +')
+
+
+class EnviarKeyRegistro(APIView):
+    """Realiza la petición de envío de la información de llave por email de la instancia de OML
+    registrada
+    """
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['post']
+
+    def post(self, request):
+        client = config_constance.CLIENT_NAME
+        password = config_constance.CLIENT_PASSWORD
+        key = config_constance.CLIENT_KEY
+        email = config_constance.CLIENT_EMAIL
+        post_data = {'client': client, 'password': password, 'email': email, 'key': key}
+        send_key_url = '{0}/resend_key_mail/'.format(config_constance.KEYS_SERVER_HOST)
+        try:
+            result = requests.post(
+                send_key_url, json=post_data, verify=config_constance.SSL_CERT_FILE)
+        except requests.exceptions.RequestException as e:
+            msg = _('Error en el intento de conexion a: {0} debido {1}'.format(send_key_url, e))
+            logger.error(msg)
+            return Response(data={'status': 'ERROR-CONN-SAAS', 'msg': msg})
+        if result.status_code == 200:
+            return Response(data=result.json())
+        return Response(data={'status': 'ERROR', 'msg': _('Error en el servidor externo')})
