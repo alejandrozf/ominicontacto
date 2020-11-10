@@ -20,7 +20,7 @@ from __future__ import unicode_literals
 
 import json
 
-from ominicontacto_app.models import Campana, AgenteProfile, SupervisorProfile
+from ominicontacto_app.models import Campana, AgenteProfile, SupervisorProfile, QueueMember
 from ominicontacto_app.services.asterisk.redis_database import AbstractRedisFamily
 
 
@@ -28,31 +28,60 @@ class ReporteSupervisores(object):
 
     def __init__(self):
         self.estadisticas = {}
-        self._obtener_datos_agentes_propios_supervisores()
+        self.calcular_datos_de_agentes_asignados_por_supervisor()
 
-    def _obtener_datos_agentes_propios_supervisores(self):
-        # FIXME: hace un loop mandando queries, hacerlo mas óptimo
-        supervisors_dict = {}
-        for supervisor_profile in SupervisorProfile.objects.all():
-            if supervisor_profile.user.get_is_administrador():
-                campanas = Campana.objects.all()
+    def calcular_datos_de_agentes_asignados_por_supervisor(self):
+
+        nombres_campanas = dict(Campana.objects.values_list('id', 'nombre'))
+        agentes_por_campana = {}
+        for id_campana in nombres_campanas.keys():
+            agentes_por_campana[id_campana] = set()
+
+        # Obtengo los datos de cada agente
+        datos_por_agente = {}
+        # Grupo
+        grupos_de_agentes = AgenteProfile.objects.all().values('id', 'grupo__nombre')
+        for grupo_de_agente in grupos_de_agentes:
+            datos_por_agente[grupo_de_agente['id']] = {
+                'grupo': grupo_de_agente['grupo__nombre'],
+                'campana': []
+            }
+        # Nombres de campañas a la que esta asignado
+        asignaciones_agentes = QueueMember.objects.values('member_id', 'queue_name__campana_id')
+        for asignacion in asignaciones_agentes:
+            id_campana = asignacion['queue_name__campana_id']
+            id_agente = asignacion['member_id']
+            datos_por_agente[id_agente]['campana'].append(nombres_campanas[id_campana])
+            agentes_por_campana[id_campana].add(id_agente)
+
+        # Los administradores tendran asignados a todos los agentes
+        administradores = []
+        agentes_por_supervisor = {}
+        for supervisor in SupervisorProfile.objects.all():
+            if supervisor.is_administrador:
+                administradores.append(supervisor.id)
             else:
-                campanas = supervisor_profile.campanas_asignadas_actuales()
-            ids_agentes = list(campanas.values_list(
-                'queue_campana__members__pk', flat=True).distinct())
-            ids_campanas = list(campanas.values_list('pk', flat=True))
-            agentes_dict = {}
-            for agente in AgenteProfile.objects.filter(
-                    pk__in=ids_agentes,
-                    campana_member__queue_name__campana__pk__in=ids_campanas).select_related(
-                        'grupo').prefetch_related('campana_member__queue_name__campana'):
-                agentes_dict[agente.pk] = {
-                    'grupo': agente.grupo.nombre,
-                    'campana': list(agente.queue_set.values_list('campana__nombre', flat=True))
-                }
-            if agentes_dict != {}:
-                supervisors_dict[supervisor_profile.pk] = agentes_dict
-        self.estadisticas = supervisors_dict
+                agentes_por_supervisor[supervisor.id] = set()
+
+        # Calculo ids de agentes asociados a supervisores a traves de campañas
+        asignaciones_campanas = Campana.objects.obtener_actuales().values(
+            'id', 'supervisors__supervisorprofile')
+        for asignacion in asignaciones_campanas:
+            id_campana = asignacion['id']
+            id_supervisor = asignacion['supervisors__supervisorprofile']
+            if id_supervisor in agentes_por_supervisor:
+                agentes_por_supervisor[id_supervisor].update(agentes_por_campana[id_campana])
+
+        # Para cada supervisor asigno los datos completos de sus agentes asignados
+        for id_supervisor, ids_agentes in agentes_por_supervisor.items():
+            if ids_agentes:
+                self.estadisticas[id_supervisor] = {}
+                for id_agente in ids_agentes:
+                    self.estadisticas[id_supervisor][id_agente] = datos_por_agente[id_agente]
+
+        # Completo los datos de todos los agentes para todos los administradores
+        for id_administrador in administradores:
+            self.estadisticas[id_administrador] = datos_por_agente
 
 
 class ReporteSupervisoresFamily(AbstractRedisFamily):
@@ -61,6 +90,9 @@ class ReporteSupervisoresFamily(AbstractRedisFamily):
         return family_member[1]
 
     def _obtener_todos(self):
+        return self.reporte_resultado
+
+    def _obtener_resultado(self):
         reporte_resultado = []
         reporte = ReporteSupervisores()
         for (supervisor_id, datos) in reporte.estadisticas.items():
@@ -78,6 +110,8 @@ class ReporteSupervisoresFamily(AbstractRedisFamily):
 
     def regenerar_families(self):
         """regenera la family"""
+        # Precalculo el resultado para que no quede vacio redis mientras calcula
+        self.reporte_resultado = self._obtener_resultado()
         self._delete_tree_family()
         self._create_families()
 

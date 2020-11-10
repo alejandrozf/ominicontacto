@@ -667,12 +667,6 @@ class CampanaManager(models.Manager):
         """
         return self.filter(estado=Campana.ESTADO_BORRADA)
 
-    def obtener_all_except_borradas(self):
-        """
-        Devuelve campañas excluyendo las campanas borradas
-        """
-        return self.exclude(estado=Campana.ESTADO_BORRADA)
-
     def obtener_all_dialplan_asterisk(self):
         """
         Devuelve campañas excluyendo las campanas borradas
@@ -1402,26 +1396,10 @@ class OpcionCalificacion(models.Model):
         return self.es_agenda() or self.usada_en_calificacion()
 
 
-class QueueManager(models.Manager):
-
-    def obtener_all_except_borradas(self):
-        """
-        Devuelve queue excluyendo las campanas borradas
-        """
-        return self.exclude(campana__estado=Campana.ESTADO_BORRADA)
-
-
 class Queue(models.Model):
     """
     Clase cola para el servidor de kamailio-debian
     """
-    objects_default = models.Manager()
-    # Por defecto django utiliza el primer manager instanciado. Se aplica al
-    # admin de django, y no aplica las customizaciones del resto de los
-    # managers que se creen.
-
-    objects = QueueManager()
-
     RRORDERED = 'rrordered'
     # same as rrmemory, except the queue member order from config file is preserved
 
