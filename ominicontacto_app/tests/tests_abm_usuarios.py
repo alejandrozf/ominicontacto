@@ -257,10 +257,11 @@ class BorrarUsuariosTest(ABMUsuariosTest):
             user_agente.get_full_name()))
         self.assertContains(response, message)
 
+    @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     @patch('ominicontacto_app.services.creacion_queue.ActivacionQueueService.activar')
     @patch('ominicontacto_app.views_queue_member.remover_agente_cola_asterisk')
     def test_supevisor_puede_borrar_agentes_asignados_a_sus_campanas(
-            self, remover_agente_cola_asterisk, activar):
+            self, remover_agente_cola_asterisk, activar, connect):
         self.client.login(username=self.supervisor.user.username, password=PASSWORD)
         self.campana.supervisors.add(self.supervisor.user)
         user_agente = self.agente.user
