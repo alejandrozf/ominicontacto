@@ -211,7 +211,7 @@ class LlamadaLog(models.Model):
         'BT-BUSY', 'BT-CANCEL', 'BT-CHANUNAVAIL', 'BT-CONGESTION', 'BT-NOANSWER', 'BT-ABANDON',
         'CT-DISCARD', 'CT-BUSY', 'CT-CANCEL', 'CT-CHANUNAVAIL', 'CT-CONGESTION',
         'BTOUT-BUSY', 'BTOUT-CANCEL', 'BTOUT-CONGESTION', 'BTOUT-CHANUNAVAIL', 'BTOUT-ABANDON',
-        'CTOUT-DISCARD', 'CTOUT-BUSY', 'CTOUT-CANCEL', 'CTOUT-CHANUNAVAIL', 'CTOUT-CONGESTION'
+        'CTOUT-BUSY', 'CTOUT-CANCEL', 'CTOUT-CHANUNAVAIL', 'CTOUT-CONGESTION'
     ]
 
     # Eventos que marcan el fin de la conexion con un agente. (Puede ser por conectar con otro)
@@ -220,7 +220,7 @@ class LlamadaLog(models.Model):
                             'CAMPT-COMPLETE', 'CAMPT-FAIL', 'COMPLETE-CAMPT',
                             'CT-COMPLETE', 'COMPLETE-CT',
                             'BTOUT-TRY',
-                            'CTOUT-COMPLETE', ]
+                            'CTOUT-COMPLETE', 'ABANDON-CTOUT']
 
     # Marcan el fin de la conexion por una transferencia para el agente original
     EVENTOS_FIN_CONEXION_POR_TRANSFER = ['BT-TRY', 'BTOUT-TRY',
