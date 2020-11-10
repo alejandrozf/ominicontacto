@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-28 16:30-0300\n"
+"POT-Creation-Date: 2020-11-10 14:36-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,24 +23,31 @@ msgstr "Release Notes"
 
 # 73ee1e870afd4a31b43364589dd0e1ee
 #: ../../release_notes.rst:4
-msgid "*Octubre 28, 2020*"
-msgstr "*October 28, 2020*"
+msgid "*Noviembre 10, 2020*"
+msgstr "*November 10, 2020*"
 
 # 055b005f9cfc482d8744696cf2c460c1
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.11.5"
-msgstr "Release 1.11.5 details"
+msgid "Detalles de Release 1.11.6"
+msgstr "Release 1.11.6 details"
 
 # 2f558403c15a436e90409b976c7f07ed
-#: ../../release_notes.rst:10
+#: ../../release_notes.rst:11
 msgid "Fixes y mejoras"
 msgstr "Fixes and improvements"
 
-# 3e89c852a2b94e94b126cab3306f3b81
-#: ../../release_notes.rst:11
+# c1f13b19d6e748ee8415a35c96c99d6e
+#: ../../release_notes.rst:12
 msgid ""
-"Fix en rutina de IVR error y TYPO en validacion de destino timout en "
-"código dialplan"
+"Se solucionan errores de dialplan relacionados con logs de transferencia "
+"de llamadas"
 msgstr ""
-"Fix on IVR subroutine error and fix TYPO on validation of timeout destination, "
-"both in dialplan code"
+"Fixed dialplan errors related with transfer calls logs"
+
+# 4668cadf00be4ed587e41b4485c1bec1
+#: ../../release_notes.rst:13
+msgid ""
+"La vista de supervisión de agentes fue optimizada para mejorar su "
+"performance"
+msgstr ""
+"Supervision agents report page was optimized for performance"
