@@ -23,7 +23,7 @@ import os
 from ominicontacto.settings.defaults import BASE_DIR
 
 CONSTANCE_CONFIG = {
-    'KEYS_SERVER_HOST': ('https://keys-server.freetech.com.ar:20852', 'KEYS_SERVER_HOST', str),
+    'KEYS_SERVER_HOST': ('https://keys-server.freetech.com.ar', 'KEYS_SERVER_HOST', str),
     'SSL_CERT_FILE': ('/opt/omnileads/cert', 'SSL_CERT_FILE', str),
     'CLIENT_NAME': ('', 'CLIENT_NAME', str),
     'CLIENT_KEY': ('', 'CLIENT_KEY', str),
