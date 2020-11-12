@@ -5883,7 +5883,7 @@ msgstr "Copy Role's Permissions"
 
 #: ominicontacto_app/templates/user/user_role_management.html:112
 msgid "Aplicar"
-msgstr "Call Disposition"
+msgstr "Apply"
 
 #: ominicontacto_app/templates/user/user_role_management.html:124
 msgid "¿Desea eliminar el rol?"
