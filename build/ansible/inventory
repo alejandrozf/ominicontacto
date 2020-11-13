@@ -34,6 +34,7 @@ postgres_user=omnileads
 subnet=bla
 ami_user=bla
 ami_password=bla
+extern_ip=auto
 registry_username=freetechsolutions
 #registry_email=
 #registry_password=
