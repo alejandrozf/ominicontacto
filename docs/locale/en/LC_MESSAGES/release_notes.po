@@ -7,47 +7,42 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-10 14:36-0300\n"
+"POT-Creation-Date: 2020-11-17 16:08-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.4.0\n"
 
-# ad472e9e5da84af080e880f4bdf6ab8f
+# b2aee7291352480f8b821d2609541398
 #: ../../release_notes.rst:2
 msgid "Release Notes"
 msgstr "Release Notes"
 
-# 73ee1e870afd4a31b43364589dd0e1ee
+# 3a7fc49d02324b0a8d60cc23cdca531d
 #: ../../release_notes.rst:4
-msgid "*Noviembre 10, 2020*"
+#, fuzzy
+msgid "*Noviembre 17, 2020*"
 msgstr "*November 10, 2020*"
 
-# 055b005f9cfc482d8744696cf2c460c1
+# 03ab3c13b69d4f0d80eac13e9038983f
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.11.6"
+#, fuzzy
+msgid "Detalles de Release 1.11.7"
 msgstr "Release 1.11.6 details"
 
-# 2f558403c15a436e90409b976c7f07ed
+# 46afe1405c66423e9f32d32b09e66305
 #: ../../release_notes.rst:11
 msgid "Fixes y mejoras"
 msgstr "Fixes and improvements"
 
-# c1f13b19d6e748ee8415a35c96c99d6e
+# 5073ae031aeb43aa8fc6272bb77c4c6b
 #: ../../release_notes.rst:12
 msgid ""
-"Se solucionan errores de dialplan relacionados con logs de transferencia "
-"de llamadas"
+"Se solucionan inconsistencias en código dialplan en logs generados en "
+"llamadas manuales y transferencias"
 msgstr ""
-"Fixed dialplan errors related with transfer calls logs"
-
-# 4668cadf00be4ed587e41b4485c1bec1
-#: ../../release_notes.rst:13
-msgid ""
-"La vista de supervisión de agentes fue optimizada para mejorar su "
-"performance"
-msgstr ""
-"Supervision agents report page was optimized for performance"
+"Fixed dialplan inconsistencies on logs generated off manual calls "
+"and transfer calls"
