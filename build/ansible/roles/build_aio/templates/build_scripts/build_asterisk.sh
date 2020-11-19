@@ -69,12 +69,11 @@ if [ "$ASTERISK_VERSION_INSTALLED" != "$ASTERISK_VERSION" ]; then
   sed -i -E 's/^;(run)(user|group)/\1\2/' {{ asterisk_location }}/etc/asterisk/asterisk.conf
 
   # Install opus, for some reason menuselect option above does not working
-  mkdir -p /usr/src/codecs/opus \
-    && cd /usr/src/codecs/opus \
-    && curl -vsL http://downloads.digium.com/pub/telephony/codec_opus/${OPUS_CODEC}.tar.gz | tar --strip-components 1 -xz \
-    && cp *.so {{ asterisk_location }}/usr/lib64/asterisk/modules/ \
-    && cp codec_opus_config-en_US.xml {{ asterisk_location }}/var/lib/asterisk/documentation/
-
+  mkdir -p /usr/src/codecs \
+    && cd /usr/src/codecs \
+    && wget https://fts-public-packages.s3.amazonaws.com/codec_g729.so \
+    && chmod 755 codec_g729.so \
+    && cp *.so {{ asterisk_location }}/lib64/asterisk/modules/
   cd /
   rm -rf /usr/src/asterisk \
          /usr/src/codecs
