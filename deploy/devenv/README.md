@@ -26,6 +26,7 @@ This environment can be deployed in any linux distro. Linux distro tested by our
     #dialer_user=demoadmin
     #dialer_password=demo
     #TZ=America/Argentina/Cordoba
+    #extern_ip=auto
 ```
 2. Check the network assgined to devenv in group_vars/docker_devenv_vars.yml. By default the subnet 172.20.0.0/24 is assgined to the environment. Change the subnet if it clashes with your WLAN o LAN subnet
 3. Go to deploy/ansible and run:

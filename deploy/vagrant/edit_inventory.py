@@ -38,6 +38,7 @@ parser.add_argument("--dialer_host", help="Specifies dialer host")
 parser.add_argument("--dialer_user", default="demoadmin", help="Specifies dialer user")
 parser.add_argument("--dialer_password", default="demo", help="Specifies dialer passowrd")
 parser.add_argument("--ecctl", help="Specifies ECCTL")
+parser.add_argument("--extern_ip", default="auto", help="Specifies the extern_ip")
 parser.add_argument("--gluster_enabled", help="Set if gluster is enabled or not for cluster")
 parser.add_argument("--sca", help="Specifies SCA")
 parser.add_argument("--postgres_host", help="Specifies postgresql host")
@@ -76,6 +77,9 @@ if args.asterisk_host:
 if args.dialer_user:
     inventory_contents = inventory_contents.replace(
         "#dialer_user=demoadmin", "dialer_user={0}".format(args.dialer_user))
+if args.extern_ip:
+    inventory_contents = inventory_contents.replace(
+        "#extern_ip=auto", "extern_ip={0}".format(args.extern_ip))
 if args.dialer_password:
     inventory_contents = inventory_contents.replace(
         "#dialer_password=demo", "dialer_password={0}".format(args.dialer_password))
