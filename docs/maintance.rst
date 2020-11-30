@@ -191,6 +191,28 @@ Por último, recuerde dar "play" al servicio de dialer, tal como lo indica la si
 
 Finalmente la plataforma se encuentra habilitada para gestionar llamadas predictivas. La instalación por defecto cuenta con una licencia de Wombat Dialer demo de un canal.
 
+Backup/restore de base de datos
+###############################
+
+Se puede realizar el backup/restore de la base de datos MariaDB del discador, ejcutando los siguientes comandos en la máquina donde esta corriendo Wombat/MariaDB.
+
+Para hacer el backup:
+
+.. code::
+
+  # mysqldump -B wombat -u root -p > $ubicacion_archivo_dump/dump.sql
+  Enter password:
+
+Donde `$ubicacion_archivo_dump` es la ruta donde se va a ubicar el archivo dump
+
+Para hacer el restore, en un nuevo servidor Mariadb:
+
+.. code::
+
+  mysql -u root -p qstats < dump.sql
+
+Hay que tener el archivo de backup en este nuevo server para hacer el restore
+
 Cambiar certificados SSL
 ************************
 
@@ -236,7 +258,7 @@ Debemos acceder por ssh al host donde tenemos corriendo OMniLeads. Una vez dentr
 
   su omnileads -
   cd /opt/omnileads/bin
-  ./backup-restore.sh -b
+  ./backup-restore.sh --backup
 
 La ejecución del script arroja una salida similar a la de la figura 11.
 
@@ -250,13 +272,24 @@ Dentro del path **/opt/omnileads/backup**, se generan los archivos ".tgz" que co
 
 Si el restore se realiza en nuevo host, entonces se debe dejar disponible el archivo generado en el backup dentro del path **/opt/omnileads/backup**.
 
+.. note::
+
+  * El backup va a detectar si existen addons instalados, si existen, hará backup de los mismos
+  * El backup realiza una copia del archivo omnileads_envars.sh
+
+Si no se quiere realizar un backup de la base de datos, se puede hacer el backup con la opción --no-database
+
+::
+
+  ./backup-restore.sh --backup --no-database
+
 Para llevar a cabo un restore, se debe ejecutar:
 
 ::
 
   su omnileads
   cd /opt/omnileads/bin/
- ./backup-restore.sh -r nombre_del_archivo_de_backup
+ ./backup-restore.sh --restore=nombre_del_archivo_de_backup
 
 
 Por ejemplo:
@@ -265,7 +298,7 @@ Por ejemplo:
 
   su omnileads
   cd /opt/omnileads/bin/
- ./backup-restore.sh -r 20190211_database.tgz
+ ./backup-restore.sh --restore=20190211_database.tgz
 
 No hace falta agregar el path completo de ubicación del backup.
 
@@ -280,6 +313,13 @@ Una vez finalizado el restore, ejecutar el siguiente comando para regenerar los 
 ::
 
  /opt/omnileads/bin/manage.sh regenerar_asterisk
+
+.. note::
+
+ * Si el backup no contiene backup de base de datos el restore no va a modificar la base de datos
+ * Una copia del archivo omnileads_envars.sh va a quedar en `/opt/omnileads/bin/omnileads_envars.backup`
+ * Si el backup contiene addons instalados, el restore va a ejecutar la reinstalación de dichos addons
+
 
 Actualizaciones
 ***************
