@@ -26,6 +26,10 @@ function set_url_parameters(url, parameters){
     return new_url;
 }
 
+// TODO - Modelar un componente que se encargue de toda esta funcionalidad
+
+var peticion_preview_en_curso = false;
+
 $(document).ready(function(){
 
     var $errorAsignacionContacto = $('#errorAsignacionContacto');
@@ -59,13 +63,17 @@ $(document).ready(function(){
         $button.attr('title', data['data']);
     }
 
-    $('#validar_contacto').on('click', function(){
+    function validarContacto() {
+        if (peticion_preview_en_curso)
+            return;
+
         var url = Urls.validar_contacto_asignado();
         var data = {
             'pk_agente': $inputAgente.val(),
             'pk_campana': $inputCampana.val(),
             'pk_contacto': $inputContacto.val(),
         };
+        peticion_preview_en_curso = true;
         $.post(url, data).success(function(data) {
             // comprobamos si el contacto todavía sigue asignado al agente
             // antes de llamar
@@ -86,11 +94,19 @@ $(document).ready(function(){
 Por favor intente solicitar uno nuevo');
                 $errorAsignacionContacto.html(errorMessage);
             }
+        }).always(function () {
+            peticion_preview_en_curso = false;
         });
-    });
+    }
+
+    $('#validar_contacto').on('click', validarContacto);
 
     $('.obtener-contacto').each(function() {
         $(this).on('click', function() {
+            if (peticion_preview_en_curso){
+                return;
+            }
+            peticion_preview_en_curso = true;
             var $button = $(this);
             var nombreCampana = $button.text();
             var idCampana = $button.attr('data-campana');
@@ -147,31 +163,42 @@ Por favor intente solicitar uno nuevo');
                 .error( function (data) {
                     informarError(data, $button);
                     console.log('Error: ', data);
+                })
+                .always( function () {
+                    peticion_preview_en_curso = false;
                 });
         });
     });
 
     $('#liberar_contacto').on('click', function(){
+        if (peticion_preview_en_curso){
+            return;
+        }
+        peticion_preview_en_curso = true;
         var url = Urls.liberar_contacto_asignado_agente();
         var data = {
             'campana_id': $inputCampana.val(),
         };
-        $.post(url, data).success(function(data) {
-            // comprobamos si el contacto todavía sigue asignado al agente
-            // antes de llamar
-            if (data['status'] == 'OK') {
-                $errorAsignacionContacto.html('');
-                $contactoOtrosDatos.html(gettext('Contacto Liberado'));
-                $('#validar_contacto').hide();
-                $('#liberar_contacto').hide();
-                $('#calificar_contacto').hide();
-            }
-            else {
-                // se muestra modal con mensaje de error
-                var errorMessage = gettext('No se pudo liberar al contacto. Intente pedir otro.');
-                $errorAsignacionContacto.html(errorMessage);
-            }
-        });
+        $.post(url, data)
+            .success(function(data) {
+                // comprobamos si el contacto todavía sigue asignado al agente
+                // antes de llamar
+                if (data['status'] == 'OK') {
+                    $errorAsignacionContacto.html('');
+                    $contactoOtrosDatos.html(gettext('Contacto Liberado'));
+                    $('#validar_contacto').hide();
+                    $('#liberar_contacto').hide();
+                    $('#calificar_contacto').hide();
+                }
+                else {
+                    // se muestra modal con mensaje de error
+                    var errorMessage = gettext('No se pudo liberar al contacto. Intente pedir otro.');
+                    $errorAsignacionContacto.html(errorMessage);
+                }
+            })
+            .always( function () {
+                peticion_preview_en_curso = false;
+            });
 
     });
 
