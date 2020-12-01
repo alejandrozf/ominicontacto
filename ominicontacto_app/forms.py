@@ -104,7 +104,7 @@ class UserChangeForm(forms.ModelForm):
     password hash display field.
     """
 
-    password1 = forms.CharField(max_length=20,
+    password1 = forms.CharField(max_length=128,
                                 required=False,
                                 # will be overwritten by __init__()
                                 help_text=_('Ingrese la nueva contraseña '
@@ -114,7 +114,7 @@ class UserChangeForm(forms.ModelForm):
                                 label=_('Contraseña'))
 
     password2 = forms.CharField(
-        max_length=20,
+        max_length=128,
         required=False,  # will be overwritten by __init__()
         # will be overwritten by __init__()
         help_text=_('Ingrese la nueva contraseña (sólo si desea cambiarla)'),
