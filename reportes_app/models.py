@@ -20,7 +20,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, connection
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Sum
 from django.db.models.functions import TruncDate
 from django.core.exceptions import SuspiciousOperation
 from django.utils.translation import ugettext as _
@@ -63,22 +63,14 @@ class LlamadaLogManager(models.Manager):
             fecha_desde = datetime_hora_minima_dia(fecha_desde)
             fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
 
-        cursor = connection.cursor()
-        sql = """select agente_id, SUM(duracion_llamada::integer)
-                 from reportes_app_llamadalog where time between %(fecha_desde)s and
-                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agente_id = ANY(%(agentes)s)
-                 GROUP BY agente_id order by agente_id
-        """
-        params = {
-            'fecha_desde': fecha_desde,
-            'fecha_hasta': fecha_hasta,
-            'eventos': eventos,
-            'agentes': agentes,
-        }
+        result = LlamadaLog.objects.values_list('agente_id') \
+                                   .annotate(sum=Sum('duracion_llamada')) \
+                                   .filter(time__gte=fecha_desde, time__lte=fecha_hasta) \
+                                   .filter(event__in=eventos) \
+                                   .filter(agente_id__in=agentes) \
+                                   .order_by('agente_id')
 
-        cursor.execute(sql, params)
-        values = cursor.fetchall()
-        return values
+        return result
 
     def obtener_count_evento_agente(self, eventos, fecha_desde, fecha_hasta, agentes):
         if fecha_desde and fecha_hasta:
@@ -282,24 +274,13 @@ class ActividadAgenteLogManager(models.Manager):
             fecha_desde = datetime_hora_minima_dia(fecha_desde)
             fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
 
-        cursor = connection.cursor()
-        sql = """select agente_id, time, event, pausa_id
-                 from reportes_app_actividadagentelog where
-                 time between %(fecha_desde)s and %(fecha_hasta)s and
-                 event = ANY(%(eventos)s) and agente_id = ANY(%(agentes)s)
-                 order by agente_id, time desc
-        """
-        params = {
-            'fecha_desde': fecha_desde,
-            'fecha_hasta': fecha_hasta,
-            'eventos': eventos,
-            'agentes': agentes,
+        result = ActividadAgenteLog.objects.values_list('agente_id', 'time', 'event', 'pausa_id') \
+                                           .filter(time__gte=fecha_desde, time__lte=fecha_hasta) \
+                                           .filter(event__in=eventos) \
+                                           .filter(agente_id__in=agentes) \
+                                           .order_by('agente_id', '-time')
 
-        }
-
-        cursor.execute(sql, params)
-        values = cursor.fetchall()
-        return values
+        return result
 
     def obtener_pausas_por_agente_fechas_pausa(self, fecha_desde,
                                                fecha_hasta, agente_id):

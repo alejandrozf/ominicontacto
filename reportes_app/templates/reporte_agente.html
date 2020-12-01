@@ -17,15 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
-{% extends "base.html" %}
-{% load static %}
-{% load i18n %}
-{% block head_js %}
-  <script type="text/javascript" src="{% static 'reportes_app/JS/reporte_agente.js' %}"></script>
-{% endblock %}
-{% block content %}
- <script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.js' %}"></script>
+{% extends "base.html" %} {% load static %} {% load i18n %} {% block head_js %}
+<script type="text/javascript" src="{% static 'reportes_app/JS/reporte_agente.js' %}"></script>
+{% endblock %} {% block content %}
+<script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.js' %}"></script>
 
 
 
@@ -35,23 +31,23 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 </div>
 <div class="col-md-6">
 
-    <form role="form" method="post" enctype="multipart/form-data" >
+    <form role="form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <table class="table">
-           <tr>
-               <td>
-                   <div class="input-group date pull-right active" id="">
-                       {{form.fecha}}
+            <tr>
+                <td>
+                    <div class="input-group date pull-right active" id="">
+                        {{form.fecha}}
                         <span class="input-group-addon cursor"><i class="fa fa-calendar"></i>
                         </span>
                     </div>
-               </td>
-               <td>
-                   <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                </td>
+                <td>
+                    <button type="submit" id="id_buscar_btn" class="btn btn-primary">
                        {% trans 'Filtrar por esa fecha' %}
                    </button>
-               </td>
-           </tr>
+                </td>
+            </tr>
         </table>
     </form>
 </div>
@@ -59,50 +55,54 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 
+<table class="table table-bordered">
+    <thead>
+        <tr class="fts-table-bg">
+            <td colspan="2">
+                <h4>{% trans 'Cantidad de calificaciones por el agente' %}</h4>
+            </td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td width="50%">
                 <table class="table table-bordered">
-                        <thead>
-                            <tr class="fts-table-bg">
-                                <td colspan="2">
-                                    <h4>{% trans 'Cantidad de calificaciones por el agente' %}</h4>
-                                </td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td width="50%">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                        <tr>
-                                            <th>{% trans 'Calificación' %}</th>
-                                            <th>{% trans 'cantidad' %} </th>
+                    <thead>
+                        <tr>
+                            <th>{% trans 'Calificación' %}</th>
+                            <th>{% trans 'cantidad' %} </th>
 
 
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for calificaciones_nombre, calificaciones_cantidad in graficos_estadisticas.dict_campana_counter %}
-                                                <tr>
-                                                    <td><h5>{{ calificaciones_nombre }} </h5></td>
-                                                    <td><h5>{{ calificaciones_cantidad }} </h5></td>
-                                                </tr>
-                                            {% endfor %}
-                                                <tr>
-                                                    <td><strong>{% trans 'Total asignados' %}</strong></td>
-                                                    <td><strong>{{graficos_estadisticas.total_asignados}}</strong></td>
-                                                </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                                <td width="50%" align="center">
-                                    <div class="graficos-avances">
-                                        <figure>
-                                            {{ graficos_estadisticas.barra_campana_calificacion.render_unicode|safe }}
-                                        </figure>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for calificaciones_nombre, calificaciones_cantidad in graficos_estadisticas.dict_campana_counter %}
+                        <tr>
+                            <td>
+                                <h5>{{ calificaciones_nombre }} </h5>
+                            </td>
+                            <td>
+                                <h5>{{ calificaciones_cantidad }} </h5>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td><strong>{% trans 'Total asignados' %}</strong></td>
+                            <td><strong>{{graficos_estadisticas.total_asignados}}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td width="50%" align="center">
+                <div class="graficos-avances">
+                    <figure>
+                        {{ graficos_estadisticas.barra_campana_calificacion.render_unicode|safe }}
+                    </figure>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
 
 <table class="table table-bordered">
     <thead>
@@ -119,17 +119,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </tr>
     </thead>
 
-        <tr>
-            <td>{{graficos_estadisticas.estadisticas.agente_tiempo.get_string_tiempo_sesion|default_if_none:0}}hs</td>
-            <td>{{graficos_estadisticas.estadisticas.agente_tiempo.get_string_tiempo_pausa|default_if_none:0}}hs</td>
-            <td>{{graficos_estadisticas.estadisticas.agente_tiempo.tiempo_llamada}}hs</td>
-            <td>{{graficos_estadisticas.estadisticas.agente_tiempo.tiempo_porcentaje_llamada|default_if_none:0|floatformat:2}}%</td>
-            <td>{{graficos_estadisticas.estadisticas.agente_tiempo.tiempo_porcentaje_pausa|default_if_none:0|floatformat:2}}%</td>
-            <td>{{graficos_estadisticas.estadisticas.agente_tiempo.tiempo_porcentaje_wait|default_if_none:0|floatformat:2}}%</td>
-            <td>{{graficos_estadisticas.estadisticas.agente_tiempo.cantidad_llamadas_procesadas}}</td>
-            <td>{{graficos_estadisticas.estadisticas.agente_tiempo.tiempo_promedio_llamadas|default_if_none:0}}s</td>
-            <td>{{graficos_estadisticas.estadisticas.agente_tiempo.cantidad_llamadas_perdidas}}</td>
-        </tr>
+    <tr>
+        <td>{{graficos_estadisticas.estadisticas.agente_tiempo.get_string_tiempo_sesion|default_if_none:0}}hs</td>
+        <td>{{graficos_estadisticas.estadisticas.agente_tiempo.get_string_tiempo_pausa|default_if_none:0}}hs</td>
+        <td>{{graficos_estadisticas.estadisticas.agente_tiempo.tiempo_llamada}}hs</td>
+        <td>{{graficos_estadisticas.estadisticas.agente_tiempo.tiempo_porcentaje_llamada|default_if_none:0|floatformat:2}}%</td>
+        <td>{{graficos_estadisticas.estadisticas.agente_tiempo.tiempo_porcentaje_pausa|default_if_none:0|floatformat:2}}%</td>
+        <td>{{graficos_estadisticas.estadisticas.agente_tiempo.tiempo_porcentaje_wait|default_if_none:0|floatformat:2}}%</td>
+        <td>{{graficos_estadisticas.estadisticas.agente_tiempo.cantidad_llamadas_procesadas}}</td>
+        <td>{{graficos_estadisticas.estadisticas.agente_tiempo.tiempo_promedio_llamadas|default_if_none:0}}s</td>
+        <td>{{graficos_estadisticas.estadisticas.agente_tiempo.cantidad_intentos_fallidos}}</td>
+    </tr>
 
     <tbody>
 
@@ -139,9 +139,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 <div class="col-md-12">
-    <a class="btn btn-default"  href="{% url 'campana_reporte_grafico' pk_campana %}">{% trans 'Volver a reporte campana' %}</a>
+    <a class="btn btn-default" href="{% url 'campana_reporte_grafico' pk_campana %}">{% trans 'Volver a reporte campana' %}</a>
 
 </div>
 
-{% endwith %}
-{% endblock %}
+{% endwith %} {% endblock %}

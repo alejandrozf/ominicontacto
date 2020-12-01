@@ -40,11 +40,9 @@ from reportes_app.reportes.reporte_llamados_contactados_csv import ArchivoDeRepo
 from ominicontacto_app.services.reporte_respuestas_formulario import (
     ReporteRespuestaFormularioGestionService)
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
-from ominicontacto_app.tests.factories import (AgenteProfileFactory, ActividadAgenteLogFactory,
-                                               CalificacionClienteFactory, ContactoFactory,
-                                               CampanaFactory, NombreCalificacionFactory,
-                                               OpcionCalificacionFactory,
-                                               LlamadaLogFactory)
+from ominicontacto_app.tests.factories import ActividadAgenteLogFactory, AgenteProfileFactory, \
+    CalificacionClienteFactory, CampanaFactory, ContactoFactory, LlamadaLogFactory, \
+    NombreCalificacionFactory, OpcionCalificacionFactory
 from ominicontacto_app.utiles import (fecha_hora_local,
                                       datetime_hora_minima_dia_utc, datetime_hora_maxima_dia_utc)
 from reportes_app.models import LlamadaLog
@@ -457,13 +455,17 @@ class ReportesCampanasTests(BaseTestDeReportes):
             microseconds=DURACION_AGENTE_PAUSA)
         tiempo_agente_logout = tiempo_agente_login + timedelta(microseconds=DURACION_AGENTE_SESION)
         ActividadAgenteLogFactory(
-            agente_id=self.agente_profile.pk, time=tiempo_agente_login, event='ADDMEMBER')
+            agente_id=self.agente_profile.pk, time=tiempo_agente_login, event='ADDMEMBER',
+            pausa_id=0)
         ActividadAgenteLogFactory(
-            agente_id=self.agente_profile.pk, time=tiempo_agente_inicio_pausa, event='PAUSEALL')
+            agente_id=self.agente_profile.pk, time=tiempo_agente_inicio_pausa, event='PAUSEALL',
+            pausa_id=0)
         ActividadAgenteLogFactory(
-            agente_id=self.agente_profile.pk, time=tiempo_agente_final_pausa, event='UNPAUSEALL')
+            agente_id=self.agente_profile.pk, time=tiempo_agente_final_pausa, event='UNPAUSEALL',
+            pausa_id=0)
         ActividadAgenteLogFactory(
-            agente_id=self.agente_profile.pk, time=tiempo_agente_logout, event='REMOVEMEMBER')
+            agente_id=self.agente_profile.pk, time=tiempo_agente_logout, event='REMOVEMEMBER',
+            pausa_id=0)
         url = reverse(
             'campana_reporte_grafico_agente', args=[self.campana_activa.pk, self.agente_profile.pk])
         response = self.client.get(url, follow=True)
@@ -471,52 +473,6 @@ class ReportesCampanasTests(BaseTestDeReportes):
         agente_data = estadisticas['agente_tiempo']
         self.assertEqual(agente_data.tiempo_sesion.microseconds, DURACION_AGENTE_SESION)
         self.assertEqual(agente_data.tiempo_pausa.microseconds, DURACION_AGENTE_PAUSA)
-
-    def test_datos_reporte_agente_actividad_dia_anterior_coincide_estadisticas_sistema(self):
-        # si el agente comenzó sesión y pausa el día anterior y terminó en el actual
-        # se  testea que se sume el tiempo de los eventos desde que inicia el día actual en el
-        # reporte
-        DURACION_FIN_PAUSA_A_FIN_SESION = 600
-        inicio_dia = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
-        tiempo_agente_final_pausa = timezone.now()
-        tiempo_agente_logout = tiempo_agente_final_pausa + timedelta(
-            microseconds=DURACION_FIN_PAUSA_A_FIN_SESION)
-        tiempo_pausa = tiempo_agente_final_pausa - inicio_dia
-        tiempo_sesion = tiempo_agente_logout - inicio_dia
-        ActividadAgenteLogFactory(
-            agente_id=self.agente_profile.pk, time=tiempo_agente_final_pausa, event='UNPAUSEALL')
-        ActividadAgenteLogFactory(
-            agente_id=self.agente_profile.pk, time=tiempo_agente_logout, event='REMOVEMEMBER')
-        url = reverse(
-            'campana_reporte_grafico_agente', args=[self.campana_activa.pk, self.agente_profile.pk])
-        response = self.client.get(url, follow=True)
-        estadisticas = response.context_data['graficos_estadisticas']['estadisticas']
-        agente_data = estadisticas['agente_tiempo']
-        self.assertEqual(agente_data.tiempo_sesion, tiempo_sesion)
-        self.assertEqual(agente_data.tiempo_pausa, tiempo_pausa)
-
-    def test_datos_reporte_agente_actividad_dia_incompleta_coincide_estadisticas_sistema(self):
-        # si el agente comenzó sesión y pausa en el día actual y terminó en el siguiente
-        # se testea que se sume el tiempo de los eventos desde que inician hasta el final del día
-        # actual en el reporte
-        DURACION_INICIO_SESION_A_INICIO_PAUSA = 600
-        final_dia = timezone.now().replace(hour=23, minute=59, second=59, microsecond=999999)
-        tiempo_agente_login = timezone.now()
-        tiempo_agente_inicio_pausa = tiempo_agente_login + timedelta(
-            microseconds=DURACION_INICIO_SESION_A_INICIO_PAUSA)
-        tiempo_pausa = final_dia - tiempo_agente_inicio_pausa
-        tiempo_sesion = final_dia - tiempo_agente_login
-        ActividadAgenteLogFactory(
-            agente_id=self.agente_profile.pk, time=tiempo_agente_login, event='ADDMEMBER')
-        ActividadAgenteLogFactory(
-            agente_id=self.agente_profile.pk, time=tiempo_agente_inicio_pausa, event='PAUSEALL')
-        url = reverse(
-            'campana_reporte_grafico_agente', args=[self.campana_activa.pk, self.agente_profile.pk])
-        response = self.client.get(url, follow=True)
-        estadisticas = response.context_data['graficos_estadisticas']['estadisticas']
-        agente_data = estadisticas['agente_tiempo']
-        self.assertEqual(agente_data.tiempo_sesion, tiempo_sesion)
-        self.assertEqual(agente_data.tiempo_pausa, tiempo_pausa)
 
     def test_usuario_no_logueado_no_accede_a_vista_detalle_campana_preview(self):
         self.client.logout()
