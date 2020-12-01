@@ -423,6 +423,18 @@ class DefineBaseDatosContactoView(UpdateView):
                 message,
             )
 
+        except OmlError as e:
+
+            message = _('<strong>Operación Errónea!</strong> ') +\
+                _('El archivo que seleccionó posee registros inválidos.<br> '
+                  'ERROR: {0}.').format(e)
+
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+
             return self.render_to_response(self.get_context_data(
                 estructura_archivo=estructura_archivo,
                 form_primer_linea_encabezado=form_primer_linea_encabezado,

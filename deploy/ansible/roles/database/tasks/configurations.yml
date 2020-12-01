@@ -101,22 +101,36 @@
 
 # Se crea el usuario de postgres
 - name: Create/modify postgres user
-  postgresql_user: name={{ postgres_user }} db=postgres password={{ postgres_password }} login_user={{ default_postgres_user }} login_host={{ postgres_host }} login_password={{ default_postgres_password }} role_attr_flags=CREATEROLE,CREATEDB,INHERIT,LOGIN encrypted=yes
-  when: postgres_host is defined and default_postgres_user is defined and default_postgres_password is defined
+  postgresql_user:
+    name: "{{ postgres_user }}"
+    db: "{{ default_postgres_database }}"
+    password: "{{ postgres_password }}"
+    login_user: "{{ default_postgres_user }}"
+    login_host: "{{ postgres_host }}"
+    login_password: "{{ default_postgres_password }}"
+    role_attr_flags: CREATEROLE,CREATEDB,INHERIT,LOGIN
+    encrypted: yes
+    port: "{{ postgres_port }}"
+  when: postgres_host is defined and default_postgres_user is defined and default_postgres_password is defined and default_postgres_password is defined
 
 # Se crea base de datos omnileads
 - name: Create of the database
-  postgresql_db: name={{ postgres_database }} state=present login_user={{ postgres_user }} login_password={{ postgres_password }} owner={{ postgres_user }} login_host={{ postgres_host }}
+  postgresql_db:
+    name: "{{ postgres_database }}"
+    state: present
+    login_user: "{{ postgres_user }}"
+    login_password: "{{ postgres_password }}"
+    owner: "{{ postgres_user }}"
+    login_host: "{{ postgres_host }}"
+    port: "{{ postgres_port }}"
+    maintenance_db: "{{ default_postgres_database }}"
   when: postgres_host is defined and default_postgres_user is defined and default_postgres_password is defined
 
 # Se crea el lenguaje plperl, para postgres interno.
 - name: Create language plperl in database
-  shell: psql -U {{ postgres_user }} -d {{ item }} -h {{ postgres_host }} -c 'CREATE EXTENSION plperl'
+  shell: psql -U {{ postgres_user }} -d {{ postgres_database }} -h {{ postgres_host }} -c 'CREATE EXTENSION plperl' -p {{ postgres_port }}
   environment:
     PGPASSWORD: "{{ postgres_password }}"
-  with_items:
-    - "{{ postgres_database }}"
-    - template1
   register: plperl_result
   tags: postinstall
   when: postgres_host is defined

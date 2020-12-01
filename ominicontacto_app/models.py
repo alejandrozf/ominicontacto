@@ -194,6 +194,17 @@ class User(AbstractUser):
             except Session.DoesNotExist:
                 pass
 
+    def tiene_agente_asignado(self, agente_profile):
+        """
+        Verifica si el agente pasado como parametro esta asignado a alguna de las campañas en las
+        que el usuario esta asignado como supervisor.
+        """
+        campanas_supervisor = set(self.campanasupervisors.values_list('id', flat=True))
+        campanas_agent = set(agente_profile.campana_member.values_list(
+            'queue_name__campana_id', flat=True))
+        # Si las campañas son disjuntas es porque no esta asignado
+        return not campanas_supervisor.isdisjoint(campanas_agent)
+
 
 class Grupo(models.Model):
     nombre = models.CharField(max_length=20, unique=True, verbose_name=_('Nombre'))
@@ -201,6 +212,8 @@ class Grupo(models.Model):
         'Auto atender entrantes'))
     auto_attend_dialer = models.BooleanField(default=False, verbose_name=_('Auto atender dailer'))
     auto_unpause = models.PositiveIntegerField(verbose_name=_('Despausar automaticamente'))
+    obligar_calificacion = models.BooleanField(default=False, verbose_name=_(
+        'Forzar calificación'))
 
     def __str__(self):
         return self.nombre
@@ -655,12 +668,6 @@ class CampanaManager(models.Manager):
         Devuelve campañas en estado borradas.
         """
         return self.filter(estado=Campana.ESTADO_BORRADA)
-
-    def obtener_all_except_borradas(self):
-        """
-        Devuelve campañas excluyendo las campanas borradas
-        """
-        return self.exclude(estado=Campana.ESTADO_BORRADA)
 
     def obtener_all_dialplan_asterisk(self):
         """
@@ -1367,6 +1374,7 @@ class OpcionCalificacion(models.Model):
     tipo = models.IntegerField(choices=FORMULARIO_CHOICES, default=NO_ACCION)
     nombre = models.CharField(max_length=50)
     formulario = models.ForeignKey(Formulario, null=True, blank=True, on_delete=models.CASCADE)
+    oculta = models.BooleanField(default=False, verbose_name=_('Ocultar'))
 
     def __str__(self):
         return str(_('Opción "{0}" para campaña "{1}" de tipo "{2}"'.format(
@@ -1391,26 +1399,10 @@ class OpcionCalificacion(models.Model):
         return self.es_agenda() or self.usada_en_calificacion()
 
 
-class QueueManager(models.Manager):
-
-    def obtener_all_except_borradas(self):
-        """
-        Devuelve queue excluyendo las campanas borradas
-        """
-        return self.exclude(campana__estado=Campana.ESTADO_BORRADA)
-
-
 class Queue(models.Model):
     """
     Clase cola para el servidor de kamailio-debian
     """
-    objects_default = models.Manager()
-    # Por defecto django utiliza el primer manager instanciado. Se aplica al
-    # admin de django, y no aplica las customizaciones del resto de los
-    # managers que se creen.
-
-    objects = QueueManager()
-
     RRORDERED = 'rrordered'
     # same as rrmemory, except the queue member order from config file is preserved
 
@@ -2284,7 +2276,7 @@ class BaseDatosContacto(models.Model):
         else:
             bd_reciclada_id = 0
         copia = BaseDatosContacto.objects.create(
-            nombre='{0}-{1} (reciclada)'.format(self.nombre, bd_reciclada_id),
+            nombre='{0}-{1}-reciclada'.format(self.pk, bd_reciclada_id),
             archivo_importacion=self.archivo_importacion,
             nombre_archivo_importacion=self.nombre_archivo_importacion,
             metadata=self.metadata,
@@ -2314,6 +2306,7 @@ class BaseDatosContacto(models.Model):
                 telefono=contacto.telefono,
                 datos=contacto.datos,
                 bd_contacto=self,
+                id_externo=contacto.id_externo,
             )
         self.cantidad_contactos = len(lista_contactos)
 
@@ -2394,18 +2387,7 @@ class Contacto(models.Model):
         if not hasattr(self, 'datos_contacto'):
             bd_metadata = self.bd_contacto.get_metadata()
             columnas = bd_metadata.nombres_de_columnas
-            datos = self.lista_de_datos()
-            pos_primer_telefono = bd_metadata.columnas_con_telefono[0]
-            if bd_metadata.columna_id_externo is not None:
-                # Inserto primero el de menor indice para que se respete el orden
-                if (pos_primer_telefono < bd_metadata.columna_id_externo):
-                    datos.insert(pos_primer_telefono, self.telefono)
-                    datos.insert(bd_metadata.columna_id_externo, self.id_externo)
-                else:
-                    datos.insert(bd_metadata.columna_id_externo, self.id_externo)
-                    datos.insert(pos_primer_telefono, self.telefono)
-            else:
-                datos.insert(pos_primer_telefono, self.telefono)
+            datos = self.lista_de_datos_completa()
 
             self.datos_contacto = dict(zip(columnas, datos))
         return self.datos_contacto
@@ -2429,6 +2411,26 @@ class Contacto(models.Model):
 
     def lista_de_datos(self):
         return json.loads(self.datos)
+
+    def lista_de_datos_completa(self):
+        """ Devuelve un diccionario con todos los datos, incluido el telefono """
+        if not hasattr(self, 'lista_datos_contacto'):
+            bd_metadata = self.bd_contacto.get_metadata()
+            datos = self.lista_de_datos()
+            pos_primer_telefono = bd_metadata.columnas_con_telefono[0]
+            if bd_metadata.columna_id_externo is not None:
+                # Inserto primero el de menor indice para que se respete el orden
+                if (pos_primer_telefono < bd_metadata.columna_id_externo):
+                    datos.insert(pos_primer_telefono, self.telefono)
+                    datos.insert(bd_metadata.columna_id_externo, self.id_externo)
+                else:
+                    datos.insert(bd_metadata.columna_id_externo, self.id_externo)
+                    datos.insert(pos_primer_telefono, self.telefono)
+            else:
+                datos.insert(pos_primer_telefono, self.telefono)
+
+            self.lista_datos_contacto = datos
+        return self.lista_datos_contacto
 
     def __str__(self):
         return '{0} >> {1}'.format(
@@ -2551,9 +2553,9 @@ class GrabacionManager(models.Manager):
         if callid:
             grabaciones = grabaciones.filter(callid=callid)
         if id_contacto_externo:
-            telefonos_contacto = Contacto.objects.values('telefono')
-            telefono_id_externo = telefonos_contacto.filter(id_externo=id_contacto_externo)
-            grabaciones = grabaciones.filter(tel_cliente__contains=telefono_id_externo)
+            contactos_id_externo = Contacto.objects.filter(id_externo=id_contacto_externo)
+            telefonos_contacto = contactos_id_externo.values_list('telefono', flat=True)
+            grabaciones = grabaciones.filter(tel_cliente__in=telefonos_contacto)
         if agente:
             grabaciones = grabaciones.filter(agente=agente)
         if campana:
@@ -3587,9 +3589,13 @@ class AgenteEnContacto(models.Model):
             delta_tiempo_asignacion = timedelta(
                 minutes=settings.DURACION_ASIGNACION_CONTACTO_PREVIEW)
             hora_limite_asignacion = tiempo_actual - delta_tiempo_asignacion
-            if ultima_modificacion <= hora_limite_reserva or \
-               ultima_modificacion <= hora_limite_asignacion:
+            if ultima_modificacion <= hora_limite_reserva and \
+               agente_en_contacto.estado == AgenteEnContacto.ESTADO_ENTREGADO:
                 agente_en_contacto_ids.append(agente_en_contacto.pk)
+            elif (ultima_modificacion <= hora_limite_asignacion and
+                  agente_en_contacto.estado == AgenteEnContacto.ESTADO_ASIGNADO):
+                agente_en_contacto_ids.append(agente_en_contacto.pk)
+
         liberados = AgenteEnContacto.objects.filter(pk__in=agente_en_contacto_ids).update(
             agente_id=-1, estado=AgenteEnContacto.ESTADO_INICIAL)
         return liberados

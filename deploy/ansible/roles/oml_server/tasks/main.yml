@@ -41,12 +41,12 @@
 - name: Modifying redis for listening in all addresses
   lineinfile: path=/etc/redis.conf regexp="^bind" line="#bind" state=present
   tags: postinstall
-  when: redis_host is not defined
+  when: asterisk_host is defined
 
 - name: Modifying redis for not starting in protectd mode
   lineinfile: path=/etc/redis.conf regexp="^protected-mode" line="protected-mode no" state=present
   tags: postinstall
-  when: redis_host is not defined
+  when: asterisk_host is defined
 
 # Se imprime que el virtualenv no esta instalado si la version actual es inferior a la requerida
 - debug: msg="Virtualenv {{ virtualenv_version }} is not installed, proceeding to install"

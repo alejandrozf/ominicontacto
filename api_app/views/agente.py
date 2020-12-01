@@ -43,6 +43,7 @@ from ominicontacto_app.services.asterisk.agent_activity import AgentActivityAmiM
 from ominicontacto_app.services.click2call import Click2CallOriginator
 
 from ominicontacto_app.services.kamailio_service import KamailioService
+from api_app.services.calificacion_llamada import CalificacionLLamada
 
 
 class ObtenerCredencialesSIPAgenteView(APIView):
@@ -378,3 +379,25 @@ class SetEstadoRevisionAuditoria(APIView):
             'status': 'OK',
             'audit_status': status
         })
+
+
+class ApiStatusCalificacionLlamada(APIView):
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['post']
+
+    def post(self, request):
+        redis_data = CalificacionLLamada()
+        agente = self.request.user.get_agente_profile()
+        calificacion = redis_data.get_value(agente, 'CALIFICADA')
+        call_data = redis_data.get_value(agente, 'CALLDATA')
+        if calificacion == 'TRUE':
+            return Response(data={
+                'calificada': 'True',
+            })
+        else:
+            return Response(data={
+                'calificada': 'False',
+                'calldata': call_data,
+            })

@@ -43,6 +43,7 @@ from ominicontacto_app.models import (
     OpcionCalificacion, SitioExterno, AgendaContacto)
 from ominicontacto_app.services.sistema_externo.interaccion_sistema_externo import (
     InteraccionConSistemaExterno)
+from api_app.services.calificacion_llamada import CalificacionLLamada
 
 from reportes_app.models import LlamadaLog
 
@@ -242,12 +243,14 @@ class CalificacionClienteFormView(FormView):
 
     def get(self, request, *args, **kwargs):
         formulario_llamada_entrante = self._formulario_llamada_entrante()
-
         contacto_form = self.get_contacto_form()
         calificacion_form = self.get_form(historico_calificaciones=formulario_llamada_entrante)
         bd_metadata = self.campana.bd_contacto.get_metadata()
         campos_telefono = bd_metadata.nombres_de_columnas_de_telefonos + ['telefono']
-
+        if self.agente.grupo.obligar_calificacion and self.call_data:
+            calificacion_llamada = CalificacionLLamada()
+            calificacion_llamada.create_family(self.agente, self.call_data,
+                                               self.kwargs['call_data_json'], calificado=False)
         return self.render_to_response(self.get_context_data(
             contacto=self.contacto,
             campos_telefono=campos_telefono,
@@ -349,6 +352,10 @@ class CalificacionClienteFormView(FormView):
         if nuevo_contacto:
             self.contacto.es_originario = False
         self.contacto.save()
+        if self.agente.grupo.obligar_calificacion and self.call_data:
+            calificacion_llamada = CalificacionLLamada()
+            calificacion_llamada.create_family(self.agente, self.call_data,
+                                               self.kwargs['call_data_json'], calificado=True)
         if calificacion_form is not None:
             # el formulario de calificación no es generado por una llamada entrante
             return self._calificar_form(calificacion_form)

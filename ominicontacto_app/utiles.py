@@ -36,6 +36,8 @@ import uuid
 import unicodedata
 import datetime
 
+import pytz
+
 from django.utils.translation import ugettext as _
 from django.utils import timezone
 
@@ -256,12 +258,24 @@ def convert_fecha_datetime(fecha, final_dia=False):
 
 def datetime_hora_minima_dia(fecha):
     minima = timezone.datetime.combine(fecha, datetime.time.min)
-    return timezone.make_aware(minima, timezone.get_current_timezone())
+    try:
+        return timezone.make_aware(minima, timezone.get_current_timezone())
+    except (pytz.NonExistentTimeError, pytz.AmbiguousTimeError):
+        return timezone.make_aware(
+            datetime.fromtimestamp(minima) + timezone.timedelta(hours=1),
+            timezone=pytz.timezone(settings.TIME_ZONE)
+        )
 
 
 def datetime_hora_maxima_dia(fecha):
     maxima = timezone.datetime.combine(fecha, datetime.time.max)
-    return timezone.make_aware(maxima, timezone.get_current_timezone())
+    try:
+        return timezone.make_aware(maxima, timezone.get_current_timezone())
+    except (pytz.NonExistentTimeError, pytz.AmbiguousTimeError):
+        return timezone.make_aware(
+            datetime.fromtimestamp(maxima) + timezone.timedelta(hours=1),
+            timezone=pytz.timezone(settings.TIME_ZONE)
+        )
 
 
 def fecha_local(fecha_hora):
@@ -349,6 +363,17 @@ def validar_nombres_campanas(nombre):
     error_ascii = _('el nombre no puede contener tildes ni caracteres no ASCII')
     error_espacios = _('el nombre no puede contener espacios')
     validar_solo_ascii_y_sin_espacios(nombre, error_ascii, error_espacios)
+
+
+def validar_longitud_nombre_base_de_contactos(nombre):
+    """Valida que la cadena del nombre de la campaña
+    tenga no mas de un numero fijo de caracteres
+    """
+    LONGITUD_MAXIMA = 45
+    if len(nombre) > LONGITUD_MAXIMA:
+        raise ValidationError(
+            _('La longitud del nombre no debe exceder los {0} caracteres'.format(
+                LONGITUD_MAXIMA)))
 
 
 def obtener_opciones_columnas_bd(bd_contacto, columnas_bd_default):

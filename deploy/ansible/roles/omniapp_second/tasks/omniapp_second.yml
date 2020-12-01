@@ -59,13 +59,19 @@
   become_method: su
   become_user: "{{ usuario }}"
 
+# Se setea la constraseña de admin por default
+- name: Set admin superuser default password
+  command: "{{ install_prefix }}bin/manage.sh cambiar_admin_password"
+  become: true
+  become_method: su
+  become_user: "{{ usuario }}"
+
 # Se ejecutan los comandos de django que necesita omnileads
 - name: Execute django commands
   command: "{{ install_prefix }}bin/manage.sh {{ item }}"
   with_items:
     - adicionar_perfil_supervisor_admin
     - populate_history
-    - cambiar_admin_password
     - compilemessages
     - collectstatic --noinput
     - collectstatic_js_reverse

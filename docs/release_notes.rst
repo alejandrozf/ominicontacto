@@ -1,11 +1,12 @@
 Release Notes
 *************
 
-*Septiembre 21, 2020*
+*Noviembre 17, 2020*
 
-Detalles de Release 1.10.2
-==========================
+Detalles de Release 1.11.7
+=============================
+
 
 Fixes y mejoras
 --------------------------
-- Solucionado error al adicionar contactos a campañas preview creadas antes del release 1.10.0
+- Se solucionan inconsistencias en código dialplan en logs generados en llamadas manuales y transferencias

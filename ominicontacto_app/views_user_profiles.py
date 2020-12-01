@@ -54,6 +54,8 @@ from .services.asterisk_service import ActivacionAgenteService, RestablecerConfi
 
 
 import logging as logging_
+from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnectorError, \
+    AmiManagerClient
 
 logger = logging_.getLogger(__name__)
 
@@ -78,6 +80,9 @@ class CustomUserWizard(SessionWizardView):
         return grupos.count() > 0
 
     def dispatch(self, request, *args, **kwargs):
+        self.crear_agentes_unicamente = False
+        if 'create_agent' in kwargs:
+            self.crear_agentes_unicamente = True
         if not self._grupos_disponibles():
             message = _(u"Para poder crear un Usuario Agente asegurese de contar con al menos "
                         "un Grupo cargado.")
@@ -96,14 +101,17 @@ class CustomUserWizard(SessionWizardView):
     def get_form_kwargs(self, step):
         kwargs = super(CustomUserWizard, self).get_form_kwargs(step)
         if step == self.USER:
-            # TODO: Limitar los tipos de Usuarios que puede crear segun el tipo de usuario
-            # Admin y gerentes: Agentes y Supervisores
-            # Supervisores: Agentes y ¿Supervisores?
+            # Gerentes no pueden crear Administradores
+            # Supervisores solo pueden crear agentes.
             roles_queryset = Group.objects.all()
+            if not self.request.user.get_is_administrador():
+                roles_queryset = roles_queryset.exclude(name=User.ADMINISTRADOR)
             if not config.WEBPHONE_CLIENT_ENABLED:
                 roles_queryset = roles_queryset.exclude(name=User.CLIENTE_WEBPHONE)
             if not self._grupos_disponibles():
                 roles_queryset = roles_queryset.exclude(name=User.AGENTE)
+            if self.crear_agentes_unicamente:
+                roles_queryset = Group.objects.filter(name=User.AGENTE)
 
             kwargs['roles_queryset'] = roles_queryset
 
@@ -202,9 +210,33 @@ class CustomerUserUpdateView(UpdateView):
 
     def dispatch(self, *args, **kwargs):
         self.force_password_change = False
+        self.for_agent = False
         if 'change_password' in kwargs:
             self.force_password_change = True
+        else:
+            user = self.get_object()
+            if 'for_agent' in kwargs:
+                self.for_agent = True
+                if not user.is_agente:
+                    raise ValueError(_('URL incorrecta'))
+            else:
+                if user.is_agente:
+                    raise ValueError(_('URL incorrecta'))
+            if not self._can_edit_user(user):
+                message = _('No tiene permiso para editar al usuario {}'.format(
+                    user.get_full_name()))
+                messages.warning(self.request, message)
+                return HttpResponseRedirect(reverse('user_list', kwargs={"page": 1}))
         return super(CustomerUserUpdateView, self).dispatch(*args, **kwargs)
+
+    def _can_edit_user(self, user):
+        # Solo un administrador puede editar otro administrador
+        if user.get_is_administrador() and not self.request.user.get_is_administrador():
+            return False
+        if self.for_agent:
+            if self.request.user.is_supervisor:
+                return self.request.user.tiene_agente_asignado(user.get_agente_profile())
+        return True
 
     def get_object(self, *args, **kwargs):
         if self.force_password_change:
@@ -263,7 +295,30 @@ class UserDeleteView(DeleteView):
         if usuario.id == 1:
             return HttpResponseRedirect(
                 reverse('user_list', kwargs={"page": 1}))
+        self.for_agent = False
+        user = self.get_object()
+        if 'for_agent' in kwargs:
+            self.for_agent = True
+            if not user.is_agente:
+                raise ValueError(_('URL incorrecta'))
+        else:
+            if user.is_agente:
+                raise ValueError(_('URL incorrecta'))
+        if not self._can_delete_user(user):
+            message = _('No tiene permiso para eliminar al usuario {}'.format(
+                user.get_full_name()))
+            messages.warning(self.request, message)
+            return HttpResponseRedirect(reverse('user_list', kwargs={"page": 1}))
         return super(UserDeleteView, self).dispatch(request, *args, **kwargs)
+
+    def _can_delete_user(self, user):
+        # Solo un administrador puede eliminar otro administrador
+        if user.get_is_administrador() and not self.request.user.get_is_administrador():
+            return False
+        if self.for_agent:
+            if self.request.user.is_supervisor:
+                return self.request.user.tiene_agente_asignado(user.get_agente_profile())
+        return True
 
     def get_context_data(self, **kwargs):
         context = super(UserDeleteView, self).get_context_data(**kwargs)
@@ -277,9 +332,15 @@ class UserDeleteView(DeleteView):
             agente_profile.borrar()
             # ahora vamos a remover el agente de la cola de asterisk
             queues_member_agente = agente_profile.campana_member.all()
+            try:
+                client = AmiManagerClient()
+                client.connect()
+            except AMIManagerConnectorError:
+                logger.exception(_("QueueRemove failed "))
             for queue_member in queues_member_agente:
                 campana = queue_member.queue_name.campana
-                remover_agente_cola_asterisk(campana, agente_profile)
+                remover_agente_cola_asterisk(campana, agente_profile, client)
+            client.disconnect()
             activar_cola()
             QueueMember.objects.borrar_member_queue(agente_profile)
 
@@ -308,6 +369,8 @@ class UserListView(ListView):
         context['modifica_perfil_supervisor'] = user.tiene_permiso_oml('supervisor_update')
         context['edita_user'] = user.tiene_permiso_oml('user_update')
         context['elimina_user'] = user.tiene_permiso_oml('user_delete')
+        context['edita_agente'] = user.tiene_permiso_oml('agent_update')
+        context['elimina_agente'] = user.tiene_permiso_oml('agent_delete')
         context['numero_usuarios_activos'] = User.numero_usuarios_activos()
         if 'search' in self.request.GET:
             context['search'] = self.request.GET.get('search')
@@ -330,15 +393,28 @@ class SupervisorProfileUpdateView(FormView):
     template_name = 'base_create_update_form.html'
     form_class = SupervisorProfileForm
 
-    # TODO: Dispatch - Verificar si tiene permisos para editar al usuario segun el rol.
+    def _puede_editar_profile(self):
+        # Solo un administrador puede editar otro administrador
+        if self.profile.is_administrador and not self.request.user.get_is_administrador():
+            return False
+        return True
+
     def dispatch(self, request, *args, **kwargs):
         self.profile = SupervisorProfile.objects.get(id=kwargs['pk'])
+        if not self._puede_editar_profile():
+            message = _('No tiene permiso para editar al usuario {}'.format(
+                self.profile.user.get_full_name()))
+            messages.warning(self.request, message)
+            return HttpResponseRedirect(reverse('user_list', kwargs={"page": 1}))
         return super(SupervisorProfileUpdateView, self).dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super(SupervisorProfileUpdateView, self).get_form_kwargs()
         kwargs['rol'] = self.profile.user.rol
-        roles_de_supervision = Group.objects.exclude(name__in=[User.AGENTE, User.CLIENTE_WEBPHONE])
+        excluidos = [User.AGENTE, User.CLIENTE_WEBPHONE]
+        if not self.request.user.get_is_administrador():
+            excluidos.append(User.ADMINISTRADOR)
+        roles_de_supervision = Group.objects.exclude(name__in=excluidos)
         kwargs['roles_de_supervisores_queryset'] = roles_de_supervision
         return kwargs
 

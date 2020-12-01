@@ -23,23 +23,26 @@
 
 var table_agentes;
 
-$(function() {
+$(function () {
     createDataTable();
     subcribeFilterChange();
-    setInterval( function () { table_agentes.ajax.reload(); }, 5000 );  
+    setInterval(function () { table_agentes.ajax.reload(); }, 5000);
 });
 
 function createDataTable() {
-    table_agentes =  $('#tableAgentes').DataTable({
+    table_agentes = $('#tableAgentes').DataTable({
         ajax: {
             url: Urls.api_agentes_activos(),
             dataSrc: ''
         },
         columns: [
-            {'data': 'nombre'},
-            {'data': 'grupo', 'visible': false},
-            {'data': 'campana[, ]', 'visible': false },
-            {'data' : 'status',
+            { 'data': 'nombre' },
+            { 'data': 'grupo', 'visible': false },
+            { 'data': 'campana[, ]', 'visible': false },
+            { 'data': 'campana_llamada' },
+            { 'data': 'contacto' },
+            {
+                'data': 'status',
                 'render': function (data) {  //( data, type, row, meta)
                     var $status = create_node('p');
                     $status.text(data);
@@ -61,13 +64,15 @@ function createDataTable() {
                     return $status.prop('outerHTML');
                 },
             },
-            {'data' : 'tiempo',
+            {
+                'data': 'tiempo',
                 'render': function (data) {  // ( data, type, row, meta)
                     var duration = moment.duration(data, 'seconds');
                     return moment.utc(duration.as('milliseconds')).format('HH:mm:ss');
                 },
             },
-            {'data' : 'id',
+            {
+                'data': 'id',
                 'render': function (data, type, row) {  // (data, type, row, meta)
                     return obtenerNodosAcciones(row['id'], row['status']);
                 },
@@ -76,8 +81,10 @@ function createDataTable() {
         ],
         'searchCols': [
             null,
-            {'search': filtro_grupo(),},
-            {'search': filtro_campana(),},
+            { 'search': filtro_grupo(), },
+            { 'search': filtro_campana(), },
+            null,
+            null,
             null,
             null,
             null,
@@ -127,8 +134,8 @@ function obtenerNodosAcciones(pk_agent, status) {
     $spy.append($spanSpy);
 
     var in_pause = status.indexOf('PAUSE') == 0;
-    var pause_action = in_pause?'AGENTUNPAUSE':'AGENTPAUSE';
-    var pause_text = in_pause?'Unpause':'Pause';
+    var pause_action = in_pause ? 'AGENTUNPAUSE' : 'AGENTPAUSE';
+    var pause_text = in_pause ? 'Unpause' : 'Pause';
     var $pause = create_node('a', {
         'class': 'btn btn-light btn-sm',
         'role': 'button',
@@ -164,19 +171,19 @@ function obtenerNodosAcciones(pk_agent, status) {
     return $div.prop('outerHTML');
 }
 
-function filtro_grupo(){
+function filtro_grupo() {
     var grupo = $('#filter_group option:selected').html();
-    return grupo ;
+    return grupo;
 }
 
-function filtro_campana(){
+function filtro_campana() {
     var campana = $('#filter_campana option:selected').html();
-    return campana ;
+    return campana;
 }
 
-function subcribeFilterChange(){
+function subcribeFilterChange() {
 
-    $('#filter_group').change(function(){
+    $('#filter_group').change(function () {
         console.log('1');
         var selection = $('#filter_group').find('option:selected');
         $('#filter_group option').not(selection).removeAttr('selected');
@@ -185,7 +192,7 @@ function subcribeFilterChange(){
         createDataTable();
     });
 
-    $('#filter_campana').change(function(){
+    $('#filter_campana').change(function () {
         console.log('2');
         var selection = $('#filter_campana').find('option:selected');
         $('#filter_campana option').not(selection).removeAttr('selected');

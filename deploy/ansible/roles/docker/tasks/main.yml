@@ -45,12 +45,12 @@
     block: |
       PGUSER={{ postgres_user }}
       PGPASSWORD={{ postgres_password }}
-      DJANGO_PASS={{ admin_pass }}
       AMI_USER={{ ami_user }}
       AMI_PASSWORD={{ ami_password }}
       WOMBAT_USER={{ dialer_user }}
       WOMBAT_PASSWORD={{ dialer_password }}
       TZ={{ TZ }}
+      EXTERN_IP={{ extern_ip }}
   tags: postinstall
 
 # Incluyo las tasks de configuraciones iniciales de SO para prodenv

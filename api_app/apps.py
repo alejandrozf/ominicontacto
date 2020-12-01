@@ -49,6 +49,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', ]},
             {'nombre': 'api_update_role_permissions',
              'roles': ['Administrador', ]},
+            {'nombre': 'reenviar_key_registro',
+             'roles': ['Administrador', ]},
             {'nombre': 'api_agentes_activos',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'api_supervision_campanas_entrantes',
@@ -85,6 +87,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'api_upload_base_contactos',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_status_calificacion_llamada',
+             'roles': ['Agente', ]},
 
         ]
 
@@ -156,4 +160,9 @@ class ApiAppConfig(AppConfig):
         'api_upload_base_contactos':
             {'descripcion': _('Almacena en la base de datos los contactos subidos en archivo csv'),
              'version': '1.7.0'},
+        'api_status_calificacion_llamada':
+            {'descripcion': _('Detecta si una llamada esta calificada.'),
+             'version': '1.8.0'},
+        'reenviar_key_registro':
+            {'description': _('Reenvía la llave de la instancia registrada por email')}
     }

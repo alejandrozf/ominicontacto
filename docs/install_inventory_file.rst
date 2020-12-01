@@ -115,11 +115,6 @@ así como también ciertos parámetros de la App:
   postgres_database=omnileads
   #postgres_user=omnileads
   #postgres_password=my_very_strong_pass
-  #####################################################################
-  #                           Web Admin                               #
-  #                     SET WEB ADMIN PASSWORD                        #
-  #####################################################################
-  #admin_pass=my_very_strong_pass
   #######################################
   # AMI for wombat dialer and OMniLeads #
   #######################################
@@ -162,6 +157,14 @@ así como también ciertos parámetros de la App:
   # Language of schedule disposition #
   ####################################
   schedule=Agenda
+  #########################################################################################################################################
+  # External IP. This parameter will set the public IP for SIP and RTP traffic, on environments where calls go through a firewall.        #
+  # auto = The public IP will be obtained from http://ipinfo.io/ip. It depends on the WAN connection that OML is using to go to Internet. #
+  # X.X.X.X = The public IP is set manually.                                                                                              #
+  # none = If the agents are working on a LAN environment, and don't need a public IP.                                                    #
+  #########################################################################################################################################
+  #extern_ip=auto
+
 
 Como se puede observar, el archivo viene completamente documentado en términos de cada variable o parámetro.
 

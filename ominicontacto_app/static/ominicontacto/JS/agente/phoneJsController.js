@@ -538,7 +538,27 @@ class PhoneJSController {
         this.oml_api.makePause(pause_id, pause_ok, pause_error);
     }
 
-    leavePause() {
+    leavePause(){
+        this.obligarCalificacion = $('#obligar-calificacion').val();
+        if (this.obligarCalificacion == 'True'){
+            var self = this;
+            this.oml_api.llamadaCalificada(function(){self.doLeavePause();}, function(calldata){
+                $('#obligarCalificarCall').modal('show');
+                $('#obligarCalificarCall_submit').click(function(){
+                    var call_data_json = JSON.stringify(calldata);
+                    var url = Urls.calificar_llamada(encodeURIComponent(call_data_json));
+                    $('#dataView').attr('src', url);
+                    $('#obligarCalificarCall').modal('hide');
+                });
+            });
+        }
+        else {
+            this.doLeavePause();
+        }
+    }
+
+
+    doLeavePause() {
         clearTimeout(this.ACW_pause_timeout_handler);
         var pause_id = this.pause_manager.pause_id;
         this.pause_manager.leavePause();

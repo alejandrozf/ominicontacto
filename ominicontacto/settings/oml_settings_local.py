@@ -14,6 +14,7 @@ OML_OMNILEADS_HOSTNAME = os.getenv('OMNILEADS_HOSTNAME')
 POSTGRES_HOST = os.getenv('PGHOST')
 POSTGRES_DATABASE = os.getenv('PGDATABASE')
 POSTGRES_USER = os.getenv('PGUSER')
+POSTGRES_PORT = os.getenv('PGPORT')
 REDIS_HOSTNAME = os.getenv('REDIS_HOSTNAME')
 SESSION_COOKIE_AGE = int(os.getenv('SESSION_COOKIE_AGE'))
 TIME_ZONE = os.getenv('TZ')
@@ -40,7 +41,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'HOST': POSTGRES_HOST,
-        'PORT': 5432,
+        'PORT': POSTGRES_PORT,
         'NAME': POSTGRES_DATABASE,
         'USER': POSTGRES_USER,
         'CONN_MAX_AGE': 300,
@@ -70,7 +71,6 @@ OML_KAMAILIO_HOSTNAME = "root@{0}".format(KAMAILIO_HOSTNAME)
 ASTERISK = {
     'AMI_USERNAME': AMI_USER,  # Usuario para AMI
     'AMI_PASSWORD': AMI_PASSWORD,  # Password para usuario para AMI
-    'HTTP_AMI_URL': "http://{0}:7088".format(ASTERISK_HOSTNAME),
 }
 
 # Seteo de logging

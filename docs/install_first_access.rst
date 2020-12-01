@@ -9,7 +9,7 @@ https://omnileads-hostname o https://omnileads-ip
 
 .. note::
 
-  A partir del release-1.9.0 El acceso web a OMniLeads puede ser usando hostname.domain o IP.
+  A partir del release-1.10.0 El acceso web a OMniLeads puede ser usando hostname.domain o IP.
 
 Tenemos tres posibilidades para ingresar por hostname:
 
@@ -22,7 +22,7 @@ Ejemplo para MAC / Linux:
 
 .. image:: images/install_dns_hosts.png
 
-Al encontrarnos con la pantalla de login, simplemente se debe ingresar el usuario admin y la clave generada durante la instalación, como se expone en la figura 2.
+Al encontrarnos con la pantalla de login, ingrese con las siguientes credenciales: usuario **admin** y contraseña **admin**, como se expone en la figura 2.
 
 .. image:: images/install_1st_login.png
 
@@ -34,7 +34,7 @@ Al encontrarnos con la pantalla de login, simplemente se debe ingresar el usuari
 
 .. note::
 
-  Si no recuerda la contraseña de admin web, podemos consultar su valor consultando la :ref:`about_maintance_envvars` pertinente.
+  Luego de ingresar con las credenciales por defecto, podrá cambiar la contraseña del usuario admin.
 
 .. important::
 

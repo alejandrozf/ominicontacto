@@ -69,26 +69,23 @@ NO_CONECTADO_DESCRIPCION = {
 class ReporteCSV:
 
     def _obtener_datos_contacto(self, contacto_id, campos_contacto, contactos_dict):
-        telefono_contacto = ''
         contacto = contactos_dict.get(contacto_id, -1)
         if contacto != -1:
-            telefono_contacto = contacto.telefono
-            return json.loads(contacto.datos), telefono_contacto
-        return [""] * len(campos_contacto), telefono_contacto
+            return contacto.lista_de_datos_completa()
+        return [""] * len(campos_contacto)
 
 
 class ReporteNoAtendidosCSV(ReporteCSV):
     def __init__(self, bd_metadata):
         self.bd_metadata = bd_metadata
-        self.campos_contacto = self.bd_metadata.nombres_de_columnas_de_datos
+        self.campos_contacto = self.bd_metadata.nombres_de_columnas
         self.datos = []
         self._escribir_encabezado()
 
     def _escribir_encabezado(self):
         encabezado = []
         encabezado.append(_("Telefono de llamada"))
-        encabezado.append(self.bd_metadata.nombre_campo_telefono)
-        encabezado.extend(self.campos_contacto)
+        encabezado.extend(self.bd_metadata.nombres_de_columnas)
         encabezado.append(_("Fecha-Hora Contacto"))
         encabezado.append(_("Tel status"))
         encabezado.append(_("Agente"))
@@ -102,9 +99,8 @@ class ReporteNoAtendidosCSV(ReporteCSV):
         estado = NO_CONECTADO_DESCRIPCION.get(log_no_contactado.event, "")
         lista_opciones.append(log_no_contactado.numero_marcado)
         contacto_id = log_no_contactado.contacto_id
-        datos_contacto, telefono_contacto = self._obtener_datos_contacto(
+        datos_contacto = self._obtener_datos_contacto(
             contacto_id, self.campos_contacto, contactos_dict)
-        lista_opciones.append(telefono_contacto)
         lista_opciones.extend(datos_contacto)
         lista_opciones.append(log_no_contactado_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
         lista_opciones.append(estado)
@@ -137,8 +133,7 @@ class ReporteCalificadosCSV(ReporteCSV):
     def _escribir_encabezado(self):
         # Creamos encabezado
         encabezado = []
-        encabezado.append(self.bd_metadata.nombre_campo_telefono)
-        campos_contacto = self.bd_metadata.nombres_de_columnas_de_datos
+        campos_contacto = self.bd_metadata.nombres_de_columnas
         encabezado.extend(campos_contacto)
         encabezado.append(_("Fecha-Hora Contacto"))
         encabezado.append(_("Tel status"))
@@ -172,11 +167,16 @@ class ReporteCalificadosCSV(ReporteCSV):
         else:
             calificacion = calificacion_val
             calificacion_fecha_local = localtime(calificacion.fecha)
-        lista_opciones.append(calificacion.contacto.telefono)
-        datos = json.loads(calificacion.contacto.datos)
+        datos = calificacion.contacto.lista_de_datos_completa()
         lista_opciones.extend(datos)
         lista_opciones.append(calificacion_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
-        lista_opciones.append(_("Contactado"))
+        # analizamos el log para ver si se muestra como contactado o no
+        # mas alla de que se haya calificado, ya que deberíamos estar analizando el
+        # ultimo evento disponible
+        if log_llamada.event in LlamadaLog.EVENTOS_NO_CONEXION:
+            lista_opciones.append(NO_CONECTADO_DESCRIPCION[log_llamada.event])
+        else:
+            lista_opciones.append(_("Contactado"))
         numero_marcado = log_llamada.numero_marcado
         lista_opciones.append(numero_marcado)
         lista_opciones.append(calificacion.opcion_calificacion.nombre)
@@ -226,7 +226,7 @@ class ReporteContactadosCSV(ReporteCSV):
         self.contactos_dict = contactos_dict
         self.bd_metadata = bd_metadata
         self.opciones_calificacion = opciones_calificacion
-        self.campos_contacto_datos = self.bd_metadata.nombres_de_columnas_de_datos
+        self.campos_contacto_datos = self.bd_metadata.nombres_de_columnas
         self.datos = []
         self.campos_formulario_opciones = {}
         self.posiciones_opciones = {}
@@ -235,17 +235,15 @@ class ReporteContactadosCSV(ReporteCSV):
     def _obtener_datos_contacto_contactados(self, llamada_log, calificacion, datos_contacto):
         tel_status = _('Fuera de base')
         bd_contacto = _('Fuera de base')
-        telefono_contacto = ''
         contacto = calificacion.contacto if calificacion else None
         if contacto is None:
             contacto = self.contactos_dict.get(llamada_log.contacto_id)
         if contacto is not None:
-            telefono_contacto = contacto.telefono
             tel_status = _('Contactado')
-            datos_contacto = json.loads(contacto.datos)
+            datos_contacto = contacto.lista_de_datos_completa()
             if contacto.es_originario:
                 bd_contacto = contacto.bd_contacto
-        return tel_status, bd_contacto, datos_contacto, telefono_contacto
+        return tel_status, bd_contacto, datos_contacto
 
     def _escribir_encabezado(self):
         encabezado = []
@@ -283,16 +281,16 @@ class ReporteContactadosCSV(ReporteCSV):
     def _escribir_linea_log(self, llamada_log, datos_calificacion, calificacion_historica):
         datos_contacto = [''] * len(self.campos_contacto_datos)
         calificacion = calificacion_historica
-        tel_status, bd_contacto, datos_contacto, telefono_contacto = self.\
+        tel_status, bd_contacto, datos_contacto = self.\
             _obtener_datos_contacto_contactados(llamada_log, calificacion, datos_contacto)
         datos_gestion = []
         if calificacion:
             calificacion_final = calificacion_historica.history_object
             # TODO: ver la forma de relacionar con respuestas vieja.
-            if calificacion_historica.history_date == calificacion_final.modified:
-                es_ultima_calificacion_historica = True
-            else:
-                es_ultima_calificacion_historica = False
+
+            es_ultima_calificacion_historica = self.get_es_ultima_calificacion_historica(
+                calificacion_historica, calificacion_final)
+
             if hasattr(calificacion, 'es_gestion'):
                 es_gestion = calificacion.es_gestion()
             else:
@@ -311,7 +309,7 @@ class ReporteContactadosCSV(ReporteCSV):
                 # la gestión (si existe) y se muestran Datos de la respuesta del formulario
                 datos = json.loads(respuesta_formulario_gestion.metadata)
                 id_opcion = respuesta_formulario_gestion.calificacion.opcion_calificacion_id
-                posicion = self.posicion_opciones[id_opcion]
+                posicion = self.posiciones_opciones[id_opcion]
                 # Relleno las posiciones vacias anteriores (de columnas de otro formulario)
                 posiciones_vacias = posicion - len(datos_gestion)
                 datos_gestion = datos_gestion + [''] * posiciones_vacias
@@ -331,7 +329,6 @@ class ReporteContactadosCSV(ReporteCSV):
 
         registro = []
         registro.append(llamada_log.numero_marcado)
-        registro.append(telefono_contacto)
         registro.extend(datos_contacto)
         registro.append(fecha_local_llamada.strftime("%Y/%m/%d %H:%M:%S"))
         registro.append(str(duracion_llamada))
@@ -342,6 +339,15 @@ class ReporteContactadosCSV(ReporteCSV):
 
         lista_datos_utf8 = [force_text(item) for item in registro]
         self.datos.append(lista_datos_utf8)
+
+    def get_es_ultima_calificacion_historica(self, calificacion_historica, calificacion_final):
+        """ Si tienen practicamente la misma fecha asumo que corresponden a la misma """
+        diff = calificacion_historica.history_date - calificacion_final.modified
+        if calificacion_historica.history_date < calificacion_final.modified:
+            diff = calificacion_final.modified - calificacion_historica.history_date
+        if diff < timedelta(microseconds=100000):
+            return True
+        return False
 
 
 class ReporteDetalleLlamadasPreview:
@@ -597,6 +603,13 @@ class ReporteTotalesLlamadas:
             llamadas_pendientes_extra = AgenteEnContacto.objects.filter(
                 estado=AgenteEnContacto.ESTADO_INICIAL, campana_id=self.campana.pk,
                 es_originario=True).count()
+        if self.campana.es_dialer:
+            campana_service = CampanaService()
+            dato_campana = campana_service.obtener_dato_campana_run(self.campana)
+            llamadas_pendientes_extra = 0
+            if dato_campana:
+                llamadas_pendientes_extra = dato_campana.get(
+                    'n_est_remaining_calls', 0)
         return self._llamadas_pendientes + llamadas_pendientes_extra
 
     @property
@@ -776,13 +789,6 @@ class EstadisticasService:
             elif evento == 'CONNECT':
                 self.reporte_totales_llamadas._llamadas_conectadas += 1
                 self.reporte_totales_llamadas._tiempo_acumulado_espera += bridge_wait_time
-        if self.campana.es_dialer:
-            campana_service = CampanaService()
-            dato_campana = campana_service.obtener_dato_campana_run(self.campana)
-            self.reporte_totales_llamadas._llamadas_pendientes = 0
-            if dato_campana:
-                self.reporte_totales_llamadas._llamadas_pendientes = dato_campana.get(
-                    'n_est_remaining_calls', 0)
 
     def _obtener_reporte_no_atendidos(self, log_llamada, evento):
         # obtener_cantidad_no_atendidos(log_llamada) + datos_csv
@@ -995,7 +1001,7 @@ class EstadisticasService:
         # Barra: Cantidad de calificacion de cliente
         barra_campana_calificacion = pygal.Bar(  # @UndefinedVariable
             show_legend=False, style=LightGreenStyle)
-        barra_campana_calificacion.title = _('Cantidad de calificacion de cliente ')
+        barra_campana_calificacion.title = _('Calificaciones de Clientes Contactados ')
 
         barra_campana_calificacion.x_labels = \
             estadisticas['calificaciones_nombre']

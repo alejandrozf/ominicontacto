@@ -78,6 +78,10 @@ urlpatterns = [
         login_required(views_user_profiles.CustomUserWizard.as_view()),
         name='user_nuevo',
         ),
+    url(r'^user/new/agent/$',
+        login_required(views_user_profiles.CustomUserWizard.as_view()),
+        name='user_new_agent', kwargs={'create_agent': ''}
+        ),
     url(r'^user/list/(?P<page>[0-9]+)/$',
         login_required(views_user_profiles.UserListView.as_view()),
         name='user_list'
@@ -89,6 +93,14 @@ urlpatterns = [
     url(r'^user/update/(?P<pk>\d+)/$',
         login_required(views_user_profiles.CustomerUserUpdateView.as_view()),
         name='user_update',
+        ),
+    url(r'^user/agent/delete/(?P<pk>\d+)/$',
+        login_required(views_user_profiles.UserDeleteView.as_view()),
+        name='agent_delete', kwargs={'for_agent': ''}
+        ),
+    url(r'^user/agent/update/(?P<pk>\d+)/$',
+        login_required(views_user_profiles.CustomerUserUpdateView.as_view()),
+        name='agent_update', kwargs={'for_agent': ''}
         ),
     url(r'^user/password/$',
         login_required(views_user_profiles.CustomerUserUpdateView.as_view()),

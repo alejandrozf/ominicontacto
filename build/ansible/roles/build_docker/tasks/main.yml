@@ -81,7 +81,6 @@
     - omniapp
     - pbxemulator
     - postgresql
-    - rtpengine
 
 # Se incluyen las tareas de configuracion de asterisk para prodenv
 - name: Creation of asterisk build content
@@ -125,7 +124,6 @@
     - { src: roles/docker/files/scripts/build-asterisk.sh, dest: "{{ build_location }}/scripts" }
     - { src: roles/docker/files/scripts/create_language.sh, dest: "{{ build_location }}/scripts" }
     - { src: roles/docker/files/scripts/run_asterisk.sh, dest: "{{ build_location }}/scripts" }
-    - { src: roles/docker/files/scripts/run_rtpengine.sh, dest: "{{ build_location }}/scripts" }
     - { src: roles/docker/files/scripts/run_omniapp.sh, dest: "{{ omniapp_location }}/run_omniapp.sh"}
     - { src: roles/omniapp_second/templates/bin/conversor.sh, dest: "{{ omniapp_location }}" }
     - { src: roles/omniapp_second/templates/run/oml_uwsgi.ini, dest: "{{ omniapp_location }}/oml_uwsgi.ini"}
@@ -163,7 +161,6 @@
     - { dockerfile: "dialer", image: "dialer", version: "{{ wombat_version }}" }
     - { dockerfile: "omniapp", image: "omniapp", version: "{{ version }}" }
     - { dockerfile: "postgresql", image: "postgresql", version: "{{ postgresql_version }}" }
-    - { dockerfile: "rtpengine", image: "rtpengine", version: "{{ rtpengine_version }}" }
   when: build_images == "true"
   retries: 3
   delay: 3

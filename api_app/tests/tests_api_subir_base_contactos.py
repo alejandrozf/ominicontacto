@@ -162,6 +162,21 @@ class SubirBaseContactosTest(OMLBaseTest):
         self.assertEqual(response.json()['status'], 'ERROR')
         self.assertEqual(response.json()['message'], _('la extensión del archivo no es .CSV'))
 
+    def test_api_subir_base_contacto_no_permite_nombre_mayor_45_caracteres(self):
+        LONGITUD_MAXIMA = 45
+        token_admin = Token.objects.get(user=self.admin.user).key
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_admin)
+        url = reverse('api_upload_base_contactos')
+        file = SimpleUploadedFile("file.txt", b"abc,cxf", content_type="text/plain")
+        payload = {"filename": file, 'nombre': 't' * 46, 'campos_telefono': '1'}
+        response = client.post(url, payload, format="multipart")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['status'], 'ERROR')
+        self.assertEqual(response.json()['message'],
+                         _('La longitud del nombre no debe exceder los {0} caracteres'.format(
+                             LONGITUD_MAXIMA)))
+
     def test_api_subir_base_contacto_base_guardada_retorna_id(self):
         token_admin = Token.objects.get(user=self.admin.user).key
         client = APIClient()
@@ -180,7 +195,8 @@ class SubirBaseContactosTest(OMLBaseTest):
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION='Bearer ' + token_admin)
         url = reverse('api_upload_base_contactos')
-        file = SimpleUploadedFile("file.csv", b"col1,col2,Col1", content_type="text/plain")
+        file = SimpleUploadedFile(
+            "file.csv", b"col1,col2,col1\n1,2,3\n1,2,3", content_type="text/plain")
         payload = {"filename": file, 'nombre': 'test', 'campos_telefono': 'col1'}
         response = client.post(url, payload, format="multipart")
         self.assertEqual(response.status_code, 200)

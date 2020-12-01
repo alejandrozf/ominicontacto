@@ -63,10 +63,10 @@ test:
 build-docker-devenv:
   stage: build
   script:
-    - bash /home/ftsinfra/git_cleanup.sh
-    - cd /home/ftsinfra/ominicontacto/build/vagrant
+    - bash ~/git_cleanup.sh
+    - cd ~/ominicontacto/build/vagrant
     - python edit_inventory.py --docker_build=yes -dle=$DOCKER_LOGIN_EMAIL -dlp=$DOCKER_LOGIN_PASSWORD
-    - cd /home/ftsinfra/ominicontacto/build/ansible
+    - cd ~/ominicontacto/build/ansible
     - echo "$FTSINFRA_PASS" | sudo -S ./build.sh --docker-de-build
   tags:
     - build-docker
@@ -79,10 +79,10 @@ build-docker-devenv:
 build-docker-prodenv:
   stage: build
   script:
-    - bash /home/ftsinfra/git_cleanup.sh
-    - cd /home/ftsinfra/ominicontacto/build/vagrant
+    - bash ~/git_cleanup.sh
+    - cd ~/ominicontacto/build/vagrant
     - python edit_inventory.py --docker_build=yes -dle=$DOCKER_LOGIN_EMAIL -dlp=$DOCKER_LOGIN_PASSWORD
-    - cd /home/ftsinfra/ominicontacto/build/ansible
+    - cd ~/ominicontacto/build/ansible
     - echo "$FTSINFRA_PASS" | sudo -S ./build.sh --docker-pe-build --docker-tag=$CI_COMMIT_REF_NAME
   tags:
     - build-docker
@@ -96,8 +96,8 @@ build-aio:
   stage: build
   script:
     - export BRANCH=$CI_COMMIT_REF_NAME
-    - bash /home/ftsinfra/git_cleanup.sh
-    - cd /home/ftsinfra/ominicontacto/build/vagrant && ./vagrantsh.sh
+    - bash ~/git_cleanup.sh
+    - cd ~/ominicontacto/build/vagrant && ./vagrantsh.sh
     - vagrant up --provision
     - ./utils.sh
     - vagrant halt
@@ -113,23 +113,20 @@ deploy-aio-host-node:
   stage: deploy
   environment: FTS-CENTOS7
   script:
-  #  - export CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME STAGING_IP_CENTOS=$STAGING_IP_CENTOS
-    - bash /home/ftsinfra/git_cleanup.sh
-    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - bash ~/git_cleanup.sh
+    - cd ~/ominicontacto/deploy/vagrant/host_node/
     - vagrant halt centos
     - vagrant destroy centos -f
     - ./vagrantup.sh centos
     - python ../edit_inventory.py --internal_ip=$STAGING_IP_CENTOS --host_node=yes
     - cd ../../ansible
     - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
-    - TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=$STAGING_HOST_CENTOS ADMIN_USERNAME=admin ADMIN_PASSWORD=$DJANGO_PASS LOGIN_FAILURE_LIMIT=$LOGIN_FAILURE_LIMIT python /home/ftsinfra/ominicontacto/ominicontacto_app/tests/tests.py
-    - /home/ftsinfra/ominicontacto/deploy/vagrant/releases/package.sh
-    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - ~/ominicontacto/deploy/vagrant/releases/package.sh
+    - cd ~/ominicontacto/deploy/vagrant/host_node/
     - vagrant halt centos
   tags:
     - deploy-aio
   only:
-    - /.*test-de-integración.*$/
     - /.*deploy.*$/
     - schedules
     - web
@@ -138,8 +135,8 @@ deploy-aio-self-hosted:
   stage: deploy
   script:
     - export BRANCH=$CI_COMMIT_REF_NAME CENTOS_IP=$STAGING_IP_CENTOS
-    - bash /home/ftsinfra/git_cleanup.sh
-    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/self_hosted/
+    - bash ~/git_cleanup.sh
+    - cd ~/ominicontacto/deploy/vagrant/self_hosted/
     - vagrant halt; RC=0
     - vagrant destroy -f; RC=0
     - ./vagrantsh.sh
@@ -157,17 +154,17 @@ upgrade-aio:
   stage: deploy
   script:
     - export CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME RELEASE_TO_UPGRADE=$RELEASE_TO_UPGRADE
-    - bash /home/ftsinfra/git_cleanup.sh
-    - cd /home/ftsinfra/oml-boxes
+    - bash ~/git_cleanup.sh
+    - cd ~/oml-boxes
     - vagrant box add centos-release-$RELEASE_TO_UPGRADE.box --name centos-release-$RELEASE_TO_UPGRADE --force
-    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/releases
+    - cd ~/ominicontacto/deploy/vagrant/releases
     - vagrant halt
     - vagrant destroy -f
     - ./vagrantup.sh centos
-    - python ../edit_inventory.py --internal_ip=192.168.99.63 --host_node=yes
+    - python ../edit_inventory.py --internal_ip=172.16.20.63 --host_node=yes
     - cd ../../ansible
     - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -u
-    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/releases
+    - cd ~/ominicontacto/deploy/vagrant/releases
     - vagrant halt centos
   tags:
     - deploy-aio
@@ -177,15 +174,15 @@ upgrade-aio:
 deploy-docker-prodenv:
   stage: deploy
   script:
-    - bash /home/ftsinfra/git_cleanup.sh
-    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - bash ~/git_cleanup.sh
+    - cd ~/ominicontacto/deploy/vagrant/host_node/
     - vagrant halt centos
     - vagrant destroy centos -f
     - ./vagrantup.sh centos
     - python ../edit_inventory.py --internal_ip=$STAGING_IP_CENTOS --docker_deploy=yes --prodenv=yes
     - cd ../../ansible
     - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh --docker-deploy
-    - cd /home/ftsinfra/ominicontacto/deploy/vagrant/host_node/
+    - cd ~/ominicontacto/deploy/vagrant/host_node/
     - vagrant halt centos
   tags:
     - deploy-docker
@@ -197,14 +194,22 @@ deploy-docker-prodenv:
 deploy-docker-devenv:
   stage: deploy
   script:
-    - bash /home/ftsinfra/git_cleanup.sh
-    - cd /home/ftsinfra/ominicontacto/deploy/vagrant
+    - bash ~/git_cleanup.sh
+    - cd ~/omnileads/devenv && docker-compose down
+    - docker volume rm devenv_postgresql_data
+    - cd ~/ominicontacto/deploy/vagrant
     - python edit_inventory.py --docker_deploy=yes --devenv=yes
     - cd ../ansible
     - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh --docker-deploy --iface=enp2s0
+    - cd ~/omnileads/devenv && docker-compose up -d
+    - until curl -sk --head  --request GET https://localhost |grep "302" > /dev/null; do echo "Environment still being installed, sleeping 80 seconds"; sleep 80; done; echo "Environment is up"
+    - docker exec -u omnileads -d oml-omniapp-devenv python3 manage.py cambiar_admin_password
+    - TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=localhost ADMIN_USERNAME=admin ADMIN_PASSWORD=admin LOGIN_FAILURE_LIMIT=10 python ~/ominicontacto/ominicontacto_app/tests/test_integracion/test_all.py
   tags:
     - deploy-docker
   only:
+    - merge_requests
+    - /.*test-de-integracion.*$/
     - /.*deploy.*$/
     - schedules
     - web

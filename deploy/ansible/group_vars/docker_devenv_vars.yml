@@ -2,8 +2,8 @@
 
 # Docker hosts at beginning is localhost because the base containers are raised up in localhost to install the application. Uncomment the line if you want to install DE or PE
 
-version: de1.2.8
-asterisk_builded_version: 16.12.0
+version: de1.2.9
+asterisk_builded_version: 16.14.0
 customer: devenv
 root_password: toor123
 
@@ -37,4 +37,3 @@ nginx_builded_image: "{{ nginx_image }}"
 omniapp_builded_image: "{{ docker_login_user }}/omniapp:${DEVENV_VERSION}"
 postgres_builded_image: "{{ docker_login_user }}/postgresql:${POSTGRES_VERSION}"
 pbxemulator_builded_image: "{{ docker_login_user }}/pbx-emulator:${PBXEMULATOR_VERSION}"
-rtpengine_builded_image: "{{ docker_login_user }}/rtpengine:${RTPENGINE_VERSION}"

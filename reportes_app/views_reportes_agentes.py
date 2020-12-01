@@ -30,6 +30,7 @@ from ominicontacto_app.utiles import convert_fecha_datetime, fecha_local
 from reportes_app.reportes.reporte_agente_tiempos import TiemposAgente
 from reportes_app.reportes.reporte_agente_tiempos_csv import ReporteAgenteCSVService
 from reportes_app.models import LlamadaLog
+from reportes_app.reportes.reporte_agentes import ReporteAgentes
 
 
 class ReportesTiemposAgente(FormView):
@@ -84,9 +85,9 @@ class ReportesTiemposAgente(FormView):
                 agentes = AgenteProfile.objects.obtener_activos()
 
         # generamos los reportes graficos
-        tiempos_agentes = TiemposAgente()
-        graficos_estadisticas = tiempos_agentes.generar_reportes(
-            agentes, fecha_desde, fecha_hasta, self.request.user)
+        reporte_tiempos = ReporteAgentes(self.request.user)
+        graficos_estadisticas = reporte_tiempos.devuelve_reporte_agentes(
+            agentes, fecha_desde, fecha_hasta)
         # generar reporte csv
         reporte_csv = ReporteAgenteCSVService()
         reporte_csv.crea_reporte_csv(graficos_estadisticas)

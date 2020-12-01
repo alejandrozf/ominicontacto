@@ -42,6 +42,11 @@ class OminicontactoAppConfig(AppConfig):
                 'label': _('Nuevo usuario'),
                 'url': reverse('user_nuevo')
             })
+        if 'user_new_agent' in permissions:
+            usuarios.append({
+                'label': _('Nuevo usuario Agente'),
+                'url': reverse('user_new_agent')
+            })
         if 'agente_list' in permissions:
             usuarios.append({
                 'label': _('Agentes'),
@@ -348,15 +353,21 @@ class OminicontactoAppConfig(AppConfig):
             {'nombre': 'registrar_usuario',
              'roles': ['Administrador', ]},
             {'nombre': 'user_nuevo',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+             'roles': ['Administrador', 'Gerente', ]},
+            {'nombre': 'user_new_agent',
+             'roles': ['Supervisor', ]},
             {'nombre': 'user_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'user_delete',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+             'roles': ['Administrador', 'Gerente', ]},
             {'nombre': 'user_update',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente']},
-            {'nombre': 'user_change_password',
+             'roles': ['Administrador', 'Gerente', ]},
+            {'nombre': 'agent_delete',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'agent_update',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'user_change_password',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente']},
             {'nombre': 'agente_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'agenteprofile_update',
@@ -706,12 +717,18 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Registrar la llave del usuario OML'), 'version': '1.7.0'},
         'user_nuevo':
             {'descripcion': _('Crear un Usuario'), 'version': '1.7.0'},
+        'user_new_agent':
+            {'descripcion': _('Crear un Usuario con rol Agente'), 'version': '1.11.0'},
         'user_list':
             {'descripcion': _('Ver lista de Usuarios'), 'version': '1.7.0'},
         'user_delete':
-            {'descripcion': _('Borrar Usuario'), 'version': '1.7.0'},
+            {'descripcion': _('Borrar Usuario (no agente)'), 'version': '1.7.0'},
         'user_update':
-            {'descripcion': _('Editar Usuario'), 'version': '1.7.0'},
+            {'descripcion': _('Editar Usuario (no agente)'), 'version': '1.7.0'},
+        'agent_delete':
+            {'descripcion': _('Borrar Usuario Agente'), 'version': '1.7.0'},
+        'agent_update':
+            {'descripcion': _('Editar Usuario Agente'), 'version': '1.7.0'},
         'user_change_password':
             {'descripcion': _('Forzar cambio de password'), 'version': '1.9.0'},
         'agente_list':

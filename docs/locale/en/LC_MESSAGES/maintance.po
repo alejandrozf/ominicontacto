@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-14 10:37-0300\n"
+"POT-Creation-Date: 2020-11-27 15:05-0300\n"
 "PO-Revision-Date: 2019-08-14 20:44-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -408,14 +408,52 @@ msgstr ""
 "Finally the platform is enabled to manage predictive calls. The default "
 "installation has a Wombat Dialer demo license for a channel."
 
-# 22cdf68a38184265be44d4c322aca0cd
+# e95ad490f0884b98b1cb5a9eb9633bb0
 #: ../../maintance.rst:195
+msgid "Backup/restore de base de datos"
+msgstr "Backup/restore of database"
+
+# 725b13e1315d43f69bcb097239b09f6f
+#: ../../maintance.rst:197
+msgid ""
+"Se puede realizar el backup/restore de la base de datos MariaDB del "
+"discador, ejcutando los siguientes comandos en la máquina donde esta "
+"corriendo Wombat/MariaDB."
+msgstr "You can make a backup/restore of MariaDB dialer database, executing "
+"the following commands in the host where Wombat/MariaDB is running."
+
+# e74d4dbeb5a04d34a13ac51c2f0400c8
+#: ../../maintance.rst:199
+msgid "Para hacer el backup:"
+msgstr "To perform a Backup:"
+
+# db345f85f08746c580757b731fc0f526
+#: ../../maintance.rst:206
+msgid ""
+"Donde `$ubicacion_archivo_dump` es la ruta donde se va a ubicar el "
+"archivo dump"
+msgstr "Where `$ubicacion_archivo_dump` is the path where you are going to place "
+"the dump file"
+
+# 5bfa2e8259b34f0584c6a2eda0a73d76
+#: ../../maintance.rst:208
+msgid "Para hacer el restore, en un nuevo servidor Mariadb:"
+msgstr "To make the restore, in a new MariaDB server: "
+
+# 857b556a03754921ae5574cd9f7e2431
+#: ../../maintance.rst:214
+msgid ""
+"Hay que tener el archivo de backup en este nuevo server para hacer el "
+"restore"
+msgstr "You must have the backup file in the new server to restore the database"
+
+# 22cdf68a38184265be44d4c322aca0cd
+#: ../../maintance.rst:217
 msgid "Cambiar certificados SSL"
 msgstr "Change SSL certificates"
 
 # a2ad7a1b070b496a90a7542ed3a1b076
-#: ../../maintance.rst:197
-#, fuzzy
+#: ../../maintance.rst:219
 msgid ""
 "Si desea cambiar los certificados SSL con los que instaló la plataforma "
 "necesita tener el par llave/certificado en formato **.pem**. Renombre los"
@@ -423,51 +461,68 @@ msgid ""
 "estos archivos en las siguientes carpetas:"
 msgstr ""
 "If you want to change the SSL certificates you need to have yours in "
-"**.pem** format. Rename the files, they must be ***cert.pem** and **key.pem**. Then place them in these folders:"
+"**.pem** format. Rename the files, they must be ***cert.pem** and "
+"**key.pem**. Then place them in these folders:"
 
 # 41a355b7ea1b42909eb8511ab2b3d2cb
-#: ../../maintance.rst:204
+#: ../../maintance.rst:226
 msgid "Luego de ubicar los archivos, reiniciar los siguientes servicios:"
 msgstr "After that, restart the following services:"
 
+# 74e064f01eab4e2898ee52174c6e486e
+#: ../../maintance.rst:234
+msgid "Resetear contraseña web de admin"
+msgstr "Reset admin web password"
+
+# fa9c103d64af4169baf1e44774250174
+#: ../../maintance.rst:236
+msgid ""
+"Si ha olvidado su contraseña de usuario admin podrá resetear la misma a "
+"sus valor por defecto (admin/admin), para ello ingrese por SSH al "
+"OMniLeads y ejecute el siguiente comando:"
+msgstr ""
+"If you have forgotten the password for admin user you can reset the same "
+"to its default values (admin/admin), for that SSH into OMniLeads and "
+"execute this command:"
+
 # 6a7c5bfaa1fd414a8f722a0807fc4bf9
-#: ../../maintance.rst:212
+#: ../../maintance.rst:243
 msgid "Backup & Restore"
 msgstr ""
 
 # d3aa7f23260c4e63b7033d3dd4351807
-#: ../../maintance.rst:213
+#: ../../maintance.rst:244
 msgid ""
 "OMniLeads dispone de un script para llevar a cabo las tareas de "
 "backup/restore."
 msgstr "OMniLeads has a script to perform the Backup/restore tasks."
 
 # 4a7d1f8e7a0c4a938293818a78cc8ca0
-#: ../../maintance.rst:217
+#: ../../maintance.rst:248
 msgid ""
 "En caso de hacer el restore en una nueva máquina, es necesario que dicha "
 "máquina:"
 msgstr "In case of perform the restore in a new machine, that machine must:"
 
 # 142216a413f040b09f1bac704c1c9921
-#: ../../maintance.rst:219
+#: ../../maintance.rst:250
 msgid "Tenga OMniLeads instalado en la misma version que la maquina productiva"
 msgstr "Has OMniLeads installed in the same version that the productive machine"
 
 # 4be88e4d5f04425fb5a13728374c22d1
-#: ../../maintance.rst:220
+#: ../../maintance.rst:251
 msgid ""
 "Tenga misma IP, mismo hostname y misma credenciales de la maquina "
 "productiva"
 msgstr "Has the same IP and the same hostname of the productive machine"
 
 # e74d4dbeb5a04d34a13ac51c2f0400c8
-#: ../../maintance.rst:222
+#: ../../maintance.rst:253
 msgid "Para realizar un backup:"
 msgstr "To perform a Backup:"
 
 # 8edade8ba38442b2b66182bdb4e2cb8b
-#: ../../maintance.rst:224
+#: ../../maintance.rst:255
 msgid ""
 "Debemos acceder por ssh al host donde tenemos corriendo OMniLeads. Una "
 "vez dentro del host se ejecutan los siguiente comandos."
@@ -476,26 +531,26 @@ msgstr ""
 "inside the host we execute the following commands."
 
 # fac33b7749d7404e805a7eea5abd61f7
-#: ../../maintance.rst:232
+#: ../../maintance.rst:263
 msgid "La ejecución del script arroja una salida similar a la de la figura 11."
 msgstr ""
 "The execution of the script throws an output similar to the one on figure"
 " 11. "
 
 # 7c05f9e4a22b4b1d93566f1e39cfc75f
-#: ../../maintance.rst:236
+#: ../../maintance.rst:267
 msgid "*Figure 11: backup*"
 msgstr ""
 
 # 15a29bad1a2d4509a3198d26805816de
-#: ../../maintance.rst:238
+#: ../../maintance.rst:269
 msgid ""
 "Como se puede observar, nos indica cómo realizar el restore de dicho "
 "backup."
 msgstr "As we can see, it indicates us how to perform the restore of that Backup."
 
 # a49471bff6314b108e3d2af6231147ec
-#: ../../maintance.rst:240
+#: ../../maintance.rst:271
 msgid ""
 "Dentro del path **/opt/omnileads/backup**, se generan los archivos "
 "\".tgz\" que contienen los backups ejecutados."
@@ -504,7 +559,7 @@ msgstr ""
 "contain the executed backups are generated."
 
 # 6c601e12089d4958b40e07e04dd54a99
-#: ../../maintance.rst:242
+#: ../../maintance.rst:273
 msgid ""
 "Si el restore se realiza en nuevo host, entonces se debe dejar disponible"
 " el archivo generado en el backup dentro del path "
@@ -513,33 +568,53 @@ msgstr ""
 "If the restore is performed in a new host, then the file generated in the"
 " Backup within the path **/opt/omnileads/backup** must be left available."
 
+# 368a5ef8d7ed48318e526321a2adb335
+#: ../../maintance.rst:277
+msgid ""
+"El backup va a detectar si existen addons instalados, si existen, hará "
+"backup de los mismos"
+msgstr "The script will detect if there are addons installed, and will backup them."
+
+# 8e800abc13b14b4d99d5ec7042417de3
+#: ../../maintance.rst:278
+msgid "El backup realiza una copia del archivo omnileads_envars.sh"
+msgstr "The backup makes a copy of omnileads_envars.sh file"
+
+# 4b6b986c8a7240728cf8570a03915277
+#: ../../maintance.rst:280
+msgid ""
+"Si no se quiere realizar un backup de la base de datos, se puede hacer el"
+" backup con la opción --no-database"
+msgstr "If you dont want to make a database backup you can run script with the "
+"--no-database option"
+
 # 6541660fcb8242e890b4d31557bd77c6
-#: ../../maintance.rst:244
+#: ../../maintance.rst:286
 msgid "Para llevar a cabo un restore, se debe ejecutar:"
 msgstr "To perform a restore, we must execute:"
 
 # 9434a9daa48142ffb6be80d72541b9c5
-#: ../../maintance.rst:253
+#: ../../maintance.rst:295
 msgid "Por ejemplo:"
 msgstr "For example:"
 
 # e9f41b167cb14792be891f1f6188249e
-#: ../../maintance.rst:261
+#: ../../maintance.rst:303
 msgid "No hace falta agregar el path completo de ubicación del backup."
 msgstr "It is no needed to add the full location path of the backup."
 
 # 968d41594d994ed995c55765bea9c4fd
-#: ../../maintance.rst:263
+#: ../../maintance.rst:305
 msgid "Un restore exitoso arroja una salida similar a la figura 12."
 msgstr "A succesful restore throws an output similar to figure 12."
 
 # e472e9dd38f04a2e88cc8696d8e20bd0
-#: ../../maintance.rst:267
+#: ../../maintance.rst:309
 msgid "*Figure 12: restore*"
 msgstr ""
 
 # 1a5325d5ea4f4fa49a263e9d4cb30374
-#: ../../maintance.rst:269
+#: ../../maintance.rst:311
 msgid ""
 "Una vez finalizado el restore, ejecutar el siguiente comando para "
 "regenerar los archivos de configuración y valores de AstDB de la "
@@ -548,13 +623,35 @@ msgstr ""
 "Once the restore is finished, execute the following command to regenerate"
 " the configuration files and AstDB values of the restored instance:"
 
+# 943e987b5779487595f1cbf2e5457728
+#: ../../maintance.rst:319
+msgid ""
+"Si el backup no contiene backup de base de datos el restore no va a "
+"modificar la base de datos"
+msgstr "If there is no database backup, the restore of database isn't done"
+
+# df3c2e8071474b0d8457cd39b93342ef
+#: ../../maintance.rst:320
+msgid ""
+"Una copia del archivo omnileads_envars.sh va a quedar en "
+"`/opt/omnileads/bin/omnileads_envars.backup`"
+msgstr "A copy of omnileads_envars-sh file will be placed in "
+"`/opt/omnileads/bin/omnileads_envars.backup`"
+# 9b996faf06fb48d4a289a3a69c45821a
+#: ../../maintance.rst:321
+msgid ""
+"Si el backup contiene addons instalados, el restore va a ejecutar la "
+"reinstalación de dichos addons"
+msgstr "If the backup includes addons, the restore is going to execute "
+"te reinstall of theses addons"
+
 # 75ffcc8fefde4c049aebc024fff9fd19
-#: ../../maintance.rst:276
+#: ../../maintance.rst:325
 msgid "Actualizaciones"
 msgstr "Upgrades"
 
 # 00b6b37edf5d4ae88a90f998067bba88
-#: ../../maintance.rst:278
+#: ../../maintance.rst:327
 msgid ""
 "OMniLeads genera releases continuos, lo cual implica tener que actualizar"
 " el sistema periodicamente."
@@ -563,12 +660,12 @@ msgstr ""
 "upgrade de software periodically."
 
 # 1029d88a4062445986986e4954bf4b37
-#: ../../maintance.rst:282
+#: ../../maintance.rst:331
 msgid "**Upgrade anterior a release-1.3.1 (incluyendolo)**"
 msgstr "Upgrade under release-1.3.1 to release-1.3.1 (including it) "
 
 # 9b3f6c0c46aa4c29bead38f7171bd858
-#: ../../maintance.rst:284
+#: ../../maintance.rst:333
 msgid ""
 "Es **IMPRESCINDIBLE** contar con las contraseñas de *postgresql*, *mysql*"
 " y *django admin* que se usaron durante la instalación. Tendrá que "
@@ -583,7 +680,7 @@ msgstr ""
 "set up the passwords you typed in inventory file"
 
 # 597e77a12b6b45739bd01e7538685942
-#: ../../maintance.rst:285
+#: ../../maintance.rst:334
 msgid ""
 "Si no utiliza la misma contraseña de MySQL que se tenia previamente, el "
 "upgrade fallará."
@@ -592,12 +689,12 @@ msgstr ""
 "upgrade will fail"
 
 # c0e5c6c0fcf24130bb19550791012c38
-#: ../../maintance.rst:287
+#: ../../maintance.rst:336
 msgid "**Upgrade después de release-1.3.1**"
 msgstr "**Upgrade after release-1.3.1**"
 
 # 5b24fe2d851948bb8a21b7fa5c00479a
-#: ../../maintance.rst:289
+#: ../../maintance.rst:338
 msgid ""
 "Si no se quieren cambiar alguna variable basta con definir el tipo de "
 "instalación."
@@ -606,7 +703,7 @@ msgstr ""
 " type."
 
 # d55fbd8606244851a63eec64de6e3095
-#: ../../maintance.rst:290
+#: ../../maintance.rst:339
 msgid ""
 "Si se quieren cambiar alguna variable, ingresarla y la actualización se "
 "encargará de ello."
@@ -615,7 +712,7 @@ msgstr ""
 " upgrade process will change it for you."
 
 # d25beadd7cdf42cb896505aeb36138c6
-#: ../../maintance.rst:292
+#: ../../maintance.rst:341
 msgid ""
 "A continuación se exponen los pasos a seguir para llevar a cabo una nueva"
 " actualización de la plataforma. Esta tarea también se realiza con el "
@@ -627,42 +724,42 @@ msgstr ""
 "This task is also performed with the script \"deploy.sh\"."
 
 # 138077952bd4425da2e423127a4f9236
-#: ../../maintance.rst:297
+#: ../../maintance.rst:346
 msgid "Actualizaciones en instalaciones Self-Hosted"
 msgstr "**Self-Hosted Upgrade**"
 
 # c73a828c7953442d98ecc386f415319b
-#: ../../maintance.rst:299
+#: ../../maintance.rst:348
 msgid "Para proceder en este escenario:"
 msgstr ""
 
 # ae65e185f71b45e7b7a8d84dbc3e2c5c
-#: ../../maintance.rst:301
+#: ../../maintance.rst:350
 msgid "Acceder como root a la maquina con OMniLeads instalado"
 msgstr "Access as root user in the machine with OMniLeads installed"
 
 # 0a0bf837fe944e28807117869d778218
-#: ../../maintance.rst:302
+#: ../../maintance.rst:351
 msgid "Posicionarse sobre el directorio donde reside el script *deploy.sh*"
 msgstr ""
 "Access the host omnileads as root Position on the directory where the "
 "script “deploy.sh” resides"
 
 # 121b8190e44b46e8aaec2d1293d389ea
-#: ../../maintance.rst:308
+#: ../../maintance.rst:357
 msgid ""
 "Una vez posicionado sobre dicho directorio, procedemos a traer todos los "
 "cambios que se hayan realizado sobre el repositorio."
 msgstr ""
 
 # 49de3149f84a473687d9f08cb26f79aa
-#: ../../maintance.rst:314
+#: ../../maintance.rst:363
 msgid "Para luego seleccionar el release al cual se desea saltar:"
 msgstr ""
 
 # cd65f1c2a46a4000a2c26704a10faae5
 # ca8ef36872f246bab8604acbc296cb04
-#: ../../maintance.rst:320 ../../maintance.rst:358
+#: ../../maintance.rst:369 ../../maintance.rst:407
 msgid ""
 "Recordar que la tecla *Tab* al presionar más de una vez, autocompleta el "
 "comando desplegando todos los releases. Una vez seleccionado el release:"
@@ -670,7 +767,7 @@ msgstr ""
 
 # 7ba52e46aa714bbfa1d70b6a99094210
 # b74809e20f1b41d4a59751db1d978a0a
-#: ../../maintance.rst:323 ../../maintance.rst:361
+#: ../../maintance.rst:372 ../../maintance.rst:410
 msgid ""
 "Descomentar en el archivo de inventario la línea correspondiente al tipo "
 "de instalación self-hosted y arquitectura desplegada."
@@ -678,7 +775,7 @@ msgstr "Uncomment the line for self-hosted installation in the inventory file"
 
 # e15fca0961834715b340a69188785c74
 # 9389954284734c8dbcf3c701358520b9
-#: ../../maintance.rst:334 ../../maintance.rst:372
+#: ../../maintance.rst:383 ../../maintance.rst:421
 msgid ""
 "Finalmente se debe ejecutar el script deploy.sh con el parámetro -u "
 "(update). Esta ejecución tomará unos minutos e implica el aplicar todas "
@@ -689,7 +786,7 @@ msgstr ""
 "downloaded with the \"git pull origin master\" on our OMniLeads instance."
 
 # 3f63780ba8cc4dbfa3cd13341e2b9a37
-#: ../../maintance.rst:340
+#: ../../maintance.rst:389
 msgid ""
 "Si todo fluye correctamente, al finalizar la ejecución de la tarea "
 "veremos una pantalla como muestra la figura 13."
@@ -698,17 +795,17 @@ msgstr ""
 "see a screen as shown in figure 13."
 
 # 582a5e6f2a304e339a3f411a3fe1edd1
-#: ../../maintance.rst:344
+#: ../../maintance.rst:393
 msgid "*Figure 13: updates OK*"
 msgstr ""
 
 # f93ae075b7b0438eb02bf3fe057ad300
-#: ../../maintance.rst:347
+#: ../../maintance.rst:396
 msgid "Actualizaciones en utilizando método Deloyer-Nodes"
 msgstr ""
 
 # 4ecf00f87f634793a919c0f17a05e7a2
-#: ../../maintance.rst:349
+#: ../../maintance.rst:398
 msgid ""
 "Se debe acceder al repositorio clonado dentro del deployer, para desde "
 "allí correr la actualización sobre el host que aloja la App."
@@ -717,19 +814,19 @@ msgstr ""
 "run the update on the Linux OMniLeads host."
 
 # cb7bd3536336499691d51c87f507152d
-#: ../../maintance.rst:378
+#: ../../maintance.rst:427
 msgid ""
 "Finalmente, la plataforma queda actualizada a la última versión estable "
 "\"master\""
 msgstr "Finally, the platform is updated to the last stable version \"master\""
 
 # fbe92f80292240eeab7c8499c67bbfba
-#: ../../maintance.rst:382
+#: ../../maintance.rst:431
 msgid "*Figure 14: updates from ansible remote OK*"
 msgstr ""
 
 # a30ddfcad1894a3ea3cd30f05cfbe00e
-#: ../../maintance.rst:386
+#: ../../maintance.rst:435
 msgid ""
 "Las instalaciones AIO dejarán de ser soportadas en un futuro para Debian "
 "y Ubuntu, por lo que se recomienda usar CentOS"
@@ -738,12 +835,12 @@ msgstr ""
 "so, is recommended to use CentOS."
 
 # b3b3e0759844446692909092089736dd
-#: ../../maintance.rst:389
+#: ../../maintance.rst:438
 msgid "Actualización de OMniLeads basado Docker containers"
 msgstr "Docker containers Upgrade"
 
 # 630949dd78f941758fdfed38589f0830
-#: ../../maintance.rst:391
+#: ../../maintance.rst:440
 msgid ""
 "Una vez instalado OMniLeads en docker no siempre va a a ser necesario "
 "ejecutar el script *deploy.sh* para realizar la actualización de la "
@@ -753,7 +850,7 @@ msgstr ""
 "to use Ansible to make an upgrade of system, except in this cases:"
 
 # 299993c0f1cd46b4961cf2e357697498
-#: ../../maintance.rst:393
+#: ../../maintance.rst:442
 msgid ""
 "Upgrade de algun componente que se instala en el Docker Host (rtpengine o"
 " postgresql)."
@@ -762,17 +859,17 @@ msgstr ""
 "postgresql)."
 
 # b665e5ebaa45465aa11b3870f7983da8
-#: ../../maintance.rst:394
+#: ../../maintance.rst:443
 msgid "Modificación de algún parámetro del docker-compose file."
 msgstr "Modification of some parameter in docker-compose file."
 
 # 1644f7a354ba47e0b0977461c3c4dc7a
-#: ../../maintance.rst:395
+#: ../../maintance.rst:444
 msgid "Adición de una variable de entorno nueva que requiera el sistema."
 msgstr "Addition of a new envar."
 
 # dd7bc73fa31f4f13ba9741ff82ba048d
-#: ../../maintance.rst:397
+#: ../../maintance.rst:446
 msgid ""
 "**En caso de ser necesario:** basta con seguir los pasos para "
 ":ref:`about_install_docker_linux` a excepción de que ya no es necesario "
@@ -787,32 +884,32 @@ msgstr ""
 "to upgrade."
 
 # 5e319d7a44af4c94b9fe394a33a6abb8
-#: ../../maintance.rst:398
+#: ../../maintance.rst:447
 msgid "**En caso de NO ser necesario:** realizar los siguientes pasos:"
 msgstr "**In case there is NO necessity:** do the following steps:"
 
 # 2077c29834174063a262da40752cadd2
-#: ../../maintance.rst:400
+#: ../../maintance.rst:449
 msgid "Ingresar al folder `/home/omnileads/prodenv/`"
 msgstr "Go to `/home/omnileads/prodenv/` folder"
 
 # eb3b1bb4b8364f86a48a3b9f094f3dd4
-#: ../../maintance.rst:401
+#: ../../maintance.rst:450
 msgid "Alli modificar la variable **RELEASE** del archivo `.env`."
 msgstr "There modify the **RELEASE** variable in `.env` file."
 
 # 4cfe3b48d4944e25a6386dc23b487720
-#: ../../maintance.rst:402
+#: ../../maintance.rst:451
 msgid "Desloguearse de la sesión actual y volverse a loguear."
 msgstr "Logout of actual session and login again."
 
 # 2b4650095da94af7bd3daaa6279f30e2
-#: ../../maintance.rst:404
+#: ../../maintance.rst:453
 msgid "Luego realizar un `service omnileads-prodenv restart`."
 msgstr "After that make `service omnileads-prodenv restart`."
 
 # fc6dc34a36914e8f95ba0eaf7dc3c43c
-#: ../../maintance.rst:410
+#: ../../maintance.rst:459
 msgid ""
 "En el proceso de reinicio cuando se invoca el *docker-compose* al "
 "percatarse del *tag* de versión modificado se procede con la descarga de "
@@ -823,7 +920,7 @@ msgstr ""
 "release."
 
 # 45e9f616df84449abe445d1a41a4d14b
-#: ../../maintance.rst:414
+#: ../../maintance.rst:463
 msgid ""
 "Los nuevos releases suelen traer nuevo codigo JavaScript. El browser "
 "mantiene el código viejo en su cache por lo que se **recomienda** "
@@ -836,7 +933,7 @@ msgstr ""
 "example "
 
 # d91dc213408140aaba4d87a7c10de736
-#: ../../maintance.rst:419
+#: ../../maintance.rst:468
 msgid ""
 "Cambios de los parámetros de red (Hostname y/o Dirección IP) y cambios de"
 " contraseñas de servicios"
@@ -845,19 +942,19 @@ msgstr ""
 " passwords of services"
 
 # 37edabbe3b484a428476a89c390ee6f3
-#: ../../maintance.rst:422
+#: ../../maintance.rst:471
 msgid "Entorno AIO"
 msgstr "AIO Environment"
 
 # 0a267478924948eab822f47576184a28
-#: ../../maintance.rst:424
+#: ../../maintance.rst:473
 msgid ""
 "Para llevar a cabo éstas tareas, debemos ejecutar nuevamente el script "
 "\"deploy.sh\"."
 msgstr "To do these tasks, you must execute again the deploy.sh script"
 
 # 9410f6ffd79142e18c5b3266f9b9f456
-#: ../../maintance.rst:425
+#: ../../maintance.rst:474
 msgid ""
 "**Si se quiere cambiar IP** Se debe ingresar con el usuario root al "
 "sistema, cambiar la dirección IP a nivel sistema operativo y/o hostname y"
@@ -869,7 +966,7 @@ msgstr ""
 " A **reboot** of the system is recommended."
 
 # 1e49436e160343f2a879186f630cf684
-#: ../../maintance.rst:426
+#: ../../maintance.rst:475
 msgid ""
 "**Si se quieren cambiar constraseñas** cambiar la contraseña que se "
 "desee, remitirse a :ref:`about_install_inventory_vars` para revisar las "
@@ -880,12 +977,12 @@ msgstr ""
 "passwords."
 
 # 4d5f98fd149e463f85d8001925a0bd36
-#: ../../maintance.rst:428
+#: ../../maintance.rst:477
 msgid "Llevar a cabo esta tarea conlleva ejecutar el script deploy.sh asi:"
 msgstr "You must execute the deploy.sh script, this way:"
 
 # 1b87380bf9da462cacca4e27485b4691
-#: ../../maintance.rst:436
+#: ../../maintance.rst:485
 msgid ""
 "Asegurarse de correr el script en el mismo release en el cual se "
 "encuentra instalado el sistema, de lo contrario realizará actualización "
@@ -895,12 +992,12 @@ msgstr ""
 "in the system, otherwises an upgrade of software will be done."
 
 # 967bcc62f17f461dbc904b888a65278b
-#: ../../maintance.rst:439
+#: ../../maintance.rst:488
 msgid "Entorno Docker"
 msgstr "Docker Environment"
 
 # 8b22cb52ba1e414faf7f65ab7005f6a6
-#: ../../maintance.rst:441
+#: ../../maintance.rst:490
 msgid ""
 "La única diferencia con el entorno AIO es que debe correr el script "
 "deploy.sh así:"
@@ -909,12 +1006,12 @@ msgstr ""
 "deploy.sh script in this way:"
 
 # 803a91f197ac4ebfa6a60d8b0d5c0f98
-#: ../../maintance.rst:448
+#: ../../maintance.rst:497
 msgid "Desbloqueo de usuarios"
 msgstr "Users unblock"
 
 # 591c59cd0a5d47aeb80c4a6ffa65d1c4
-#: ../../maintance.rst:450
+#: ../../maintance.rst:499
 msgid ""
 "OMniLeads cuenta con un sistema de bloqueo de usuarios, cuando alguno "
 "ingresa la contraseña erronea tres veces. Esta es una medida de seguridad"
@@ -930,7 +1027,7 @@ msgstr ""
 "entering the wrong password unintentionally. "
 
 # 6bf4f36e5a2a477889fd8c8f81a4cc32
-#: ../../maintance.rst:453
+#: ../../maintance.rst:502
 msgid ""
 "Para desbloquearlo se ingresa a la siguiente URL: https://omnileads-"
 "hostname/admin, esta URL despliega la llamada **Consola de Administración"
@@ -940,12 +1037,12 @@ msgstr ""
 "hostname/admin, this URL displays the **Django Administrator Console**."
 
 # 756bb553783e42498e5d21a9395b77fb
-#: ../../maintance.rst:457
+#: ../../maintance.rst:506
 msgid "*Figure 15: Django admin console*"
 msgstr ""
 
 # 856cb766dad94a73a1408190f331d341
-#: ../../maintance.rst:460
+#: ../../maintance.rst:509
 msgid ""
 "Allí, ingresar las credenciales del usuario admin. Luego hacer click en "
 "el botón **Defender**"
@@ -954,12 +1051,12 @@ msgstr ""
 "**Defend**"
 
 # 054951aa57354d5b875b2f00d02d6f3b
-#: ../../maintance.rst:464
+#: ../../maintance.rst:513
 msgid "*Figure 16: Defender in django admin*"
 msgstr ""
 
 # 902b9f45d77c41cc88e548d5e96ccabd
-#: ../../maintance.rst:466
+#: ../../maintance.rst:515
 msgid ""
 "Esto abre la administración de **Django Defender** "
 "(https://github.com/kencochrane/django-defender) que es el plugin de "
@@ -970,34 +1067,34 @@ msgstr ""
 " used to manage this. Click on **Blocked Users**"
 
 # e9b354574d5e4e0196ee1efe45a47316
-#: ../../maintance.rst:470
+#: ../../maintance.rst:519
 msgid "*Figure 17: Blocked users view*"
 msgstr ""
 
 # a1deb877e20e4ce09352d6c6c8ed3ed6
-#: ../../maintance.rst:472
+#: ../../maintance.rst:521
 msgid ""
 "Se observará el usuario bloqueado. Basta con hacer click en **Unblock** "
 "para desbloquearlo."
 msgstr "You will see the blocked user. Just click on **Unblock** to unblock it."
 
 # ba4d26311ce84900855bdb5b5e35c597
-#: ../../maintance.rst:476
+#: ../../maintance.rst:525
 msgid "*Figure 18: Unblock user view*"
 msgstr ""
 
 # 361b6f68aee141e3aa289c1f33cadfb5
-#: ../../maintance.rst:478
+#: ../../maintance.rst:527
 msgid "Ya el usuario podrá loguearse sin problema."
 msgstr "Now the user can login without problem."
 
 # 7336f45ba7774b268fb1e966453d49a8
-#: ../../maintance.rst:481
+#: ../../maintance.rst:530
 msgid "Desinstalación de OMniLeads"
 msgstr "OMniLeads unistall"
 
 # 761dbe6bacbb4d08b41bfd2bf0c003b4
-#: ../../maintance.rst:483
+#: ../../maintance.rst:532
 msgid ""
 "Si por alguna razón quiere desinstalar OMniLeads de su máquina o VM se "
 "cuenta con un script para ello. Ya viene incorporado en el proceso de "
@@ -1008,12 +1105,12 @@ msgstr ""
 "process, just execute it:"
 
 # 9fbcb07d26c94e97be84fb203769e469
-#: ../../maintance.rst:489
+#: ../../maintance.rst:538
 msgid "Este script:"
 msgstr "This script:"
 
 # e32a5baf195141efab862210d76d1cbd
-#: ../../maintance.rst:491
+#: ../../maintance.rst:540
 msgid ""
 "Desinstala los servicios esenciales de omnileads: asterisk, kamailio, "
 "rtpengine, mariadb, postgresql, wombat dialer, redis, nginx y omniapp."
@@ -1022,17 +1119,17 @@ msgstr ""
 "rtpengine, mariadb, postgreSQL, wombat dialer, redis, nginx and omniapp."
 
 # 2c2578d0ee084e28bc8dc8cb71304dc5
-#: ../../maintance.rst:492
+#: ../../maintance.rst:541
 msgid "Borra la carpeta /opt/omnileads (incluyendo grabaciones)"
 msgstr "Delete the file /opt/omnileads (including recordings)"
 
 # 9457370355074984849d017eb6de8fae
-#: ../../maintance.rst:493
+#: ../../maintance.rst:542
 msgid "Elimina las bases de datos"
 msgstr "Remove the databases"
 
 # a1a4288779714e4b9e784db00313ffb7
-#: ../../maintance.rst:497
+#: ../../maintance.rst:546
 msgid ""
 "El script no desinstala la paquetería de dependencias usadas para la "
 "instalación de los servicios."
@@ -1041,7 +1138,7 @@ msgstr ""
 "services."
 
 # 2ead7bba99764ed4b2c04fbf2a36ecfd
-#: ../../maintance.rst:501
+#: ../../maintance.rst:550
 msgid ""
 "Tener cuidado al ejecutarlo, una vez ejecutado no hay forma de recuperar "
 "el sistema."
@@ -1050,12 +1147,12 @@ msgstr ""
 "the system."
 
 # ed0a6a50365541dd8650722af0f0816a
-#: ../../maintance.rst:506
+#: ../../maintance.rst:555
 msgid "Creando imágenes Docker de OMniLeads"
 msgstr ""
 
 # 7ad2f141534a46c789083d1a73d08e28
-#: ../../maintance.rst:508
+#: ../../maintance.rst:557
 msgid ""
 "OMniLeads cuenta con una imagen para cada servicio que compone el "
 "software, dichas imágenes oficiales están disponibles en nuestro `Docker-"
@@ -1065,7 +1162,7 @@ msgid ""
 msgstr ""
 
 # dfbdbd3d106241a7990612517b9cd437
-#: ../../maintance.rst:511
+#: ../../maintance.rst:560
 msgid ""
 "Se usa Ansible como herramienta para buildear muchas imagenes al tiempo, "
 "por lo que los Dockerfiles son templates de Ansible, ubicados en el "
@@ -1075,12 +1172,12 @@ msgid ""
 msgstr ""
 
 # 06f1dd91ff7640759e3a723f231c36d3
-#: ../../maintance.rst:514
+#: ../../maintance.rst:563
 msgid "El DevEnv y el ProdEnv"
 msgstr "The Docker DevEnv and ProdEnv"
 
 # f91f784f69cc4cff80f3d18e456b564c
-#: ../../maintance.rst:516
+#: ../../maintance.rst:565
 msgid ""
 "OMniLeads provee de un entorno de desarrollo (DevEnv) para programadores "
 "Django que quieran involucrarse en  el proyecto, nosotros nos encargamos "
@@ -1101,17 +1198,17 @@ msgstr ""
 "and rtpengine)."
 
 # 6362a692f0c447c3aa5c232f67e3dcc4
-#: ../../maintance.rst:521
+#: ../../maintance.rst:570
 msgid "Build de imágenes"
 msgstr "Images build"
 
 # 16b6bf278da943108a6780d9a664bb9d
-#: ../../maintance.rst:523
+#: ../../maintance.rst:572
 msgid "Para buildear imágenes seguir los siguientes pasos:"
 msgstr "To builde images follow the next steps:"
 
 # 7635173c89d64559b84aac21c88f838d
-#: ../../maintance.rst:525
+#: ../../maintance.rst:574
 msgid ""
 "Especificar en el archivo de inventario de ansible que entorno se desea. "
 "Descomentar la linea que dice #localhost dependiendo del entorno."
@@ -1120,7 +1217,7 @@ msgstr ""
 "Uncomment the line that says #localhost depending on the environment."
 
 # c85ff7931c8442b08b8bfe2eda5f6481
-#: ../../maintance.rst:536
+#: ../../maintance.rst:585
 msgid ""
 "En el mismo archivo observar la seccion [docker:vars], en el verá unas "
 "variables sin valor:"
@@ -1129,7 +1226,7 @@ msgstr ""
 "some variables without value:"
 
 # 0353057fb9cd429e8ace2b273dc6a5db
-#: ../../maintance.rst:546
+#: ../../maintance.rst:595
 msgid ""
 "Ingresar ahí el nombre de usuario, email y contraseña del *Registry* "
 "donde quiere subir sus imágenes. La variable **oml_release** es usada "
@@ -1142,12 +1239,12 @@ msgstr ""
 " that the images will have"
 
 # a20016d4494d4385961d951d449b500d
-#: ../../maintance.rst:549
+#: ../../maintance.rst:598
 msgid "Por último, ejecutar el script *deploy.sh* de la siguiente forma:"
 msgstr "Lastly, run the deploy.sh script as follows:"
 
 # b4561948d1b242eba48dfc73cd8b453d
-#: ../../maintance.rst:557
+#: ../../maintance.rst:606
 msgid ""
 "Durante la ejecución se realiza de una vez el build y push de las "
 "imágenes, por lo que si experimenta algun error a la hora del build "
@@ -1159,7 +1256,7 @@ msgstr ""
 "problems, it is recommended to run the script again."
 
 # 82ad1fa021764f979875bfb859965f71
-#: ../../maintance.rst:559
+#: ../../maintance.rst:608
 msgid ""
 "Tenemos la opción de crear todo el entorno de build (con todos los "
 "archivos necesarios para dicho build renderizados) pero sin que se "
@@ -1174,7 +1271,7 @@ msgstr ""
 "follows:"
 
 # 7fe750f8646e450a9cfed1929a026c7c
-#: ../../maintance.rst:567
+#: ../../maintance.rst:616
 msgid "Todo este contenido lo encontrará en `~/omnileads/build`"
 msgstr "You will find all this content in"
 
