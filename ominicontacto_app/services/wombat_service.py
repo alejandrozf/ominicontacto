@@ -106,3 +106,44 @@ class WombatService():
             logger.warn(_("Exit status erroneo: {0}".format(e.returncode)))
             logger.warn(_(" - Comando ejecutado: {0}".format(e.cmd)))
             print(e)
+
+    def set_call_ext_status(self, url_set_status):
+        try:
+            # subprocess.check_call(settings.FTS_RELOAD_CMD,
+            #                      stdout=stdout_file, stderr=stderr_file)
+            out = subprocess.check_output(['curl', '--user',
+                                           ':'.join([settings.OML_WOMBAT_USER,
+                                                     settings.OML_WOMBAT_PASSWORD]),
+                                           '-X', 'POST',
+                                           '/'.join([settings.OML_WOMBAT_URL,
+                                                     url_set_status])])
+            if 'Event CALLSTATUS queued' in str(out):
+                logger.info(_("Set extStatus en WOMBAT OK"))
+            return True
+        except subprocess.CalledProcessError as e:
+            logger.warn(_("Exit status erroneo: {0}".format(e.returncode)))
+            logger.warn(_(" - Comando ejecutado: {0}".format(e.cmd)))
+            print(e)
+
+    def post_json(self, url_delete, object):
+        """Realiza un POST a wombat enviando el json de un objeto usando data-urlencode
+
+        :returns: json -- exit status de proceso ejecutado.
+                  otro valor si se produjo un error
+        """
+        try:
+            # subprocess.check_call(settings.FTS_RELOAD_CMD,
+            #                      stdout=stdout_file, stderr=stderr_file)
+            out = subprocess.check_output(['curl', '--user',
+                                           ':'.join([settings.OML_WOMBAT_USER,
+                                                     settings.OML_WOMBAT_PASSWORD]),
+                                           '-X', 'POST', '--data-urlencode',
+                                           "data={0}".format(json.dumps(object)),
+                                           '/'.join([settings.OML_WOMBAT_URL,
+                                                     url_delete])])
+            logger.info(_("POST en WOMBAT OK"))
+            return json.loads(out)
+        except subprocess.CalledProcessError as e:
+            logger.warn(_("Exit status erroneo: {0}".format(e.returncode)))
+            logger.warn(_(" - Comando ejecutado: {0}".format(e.cmd)))
+            print(e)

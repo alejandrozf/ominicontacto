@@ -582,6 +582,14 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'campana_dialer_finaliza_activas',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'disposition_incidence_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'disposition_incidence_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'disposition_incidence_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'disposition_incidence_edit',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'campana_manual_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'campana_manual_create',
@@ -982,6 +990,16 @@ class OminicontactoAppConfig(AppConfig):
         'campana_dialer_finaliza_activas':
             {'descripcion': _('Finalizar campañas activas que no tengan contactos pendientes'),
              'version': '1.7.0'},
+        'disposition_incidence_list':
+            {'descripcion': _('Listado de Reglas de incidencia por calificación'),
+             'version': '1.11.8'},
+        'disposition_incidence_delete':
+            {'descripcion': _('Eliminar Reglas de incidencia por calificación'),
+             'version': '1.11.8'},
+        'disposition_incidence_create':
+            {'descripcion': _('Crear Regla de incidencia por calificación'), 'version': '1.11.8'},
+        'disposition_incidence_edit':
+            {'descripcion': _('Editar Regla de incidencia por calificación'), 'version': '1.11.8'},
         'campana_manual_list':
             {'descripcion': _('Ver listado de campañas Manuales'), 'version': '1.7.0'},
         'campana_manual_create':

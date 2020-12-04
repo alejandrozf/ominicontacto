@@ -453,6 +453,8 @@ class SessionData {
             call_data.call_wait_duration = invite_request.headers.Omlcallwaitduration[0].raw;
         else
             call_data.call_wait_duration = '';
+        if (invite_request.headers.Omldialerid)
+            call_data.dialer_id = invite_request.headers.Omldialerid[0].raw;
 
         // For outside campaign calls
         if (invite_request.headers.withoutCamp)
