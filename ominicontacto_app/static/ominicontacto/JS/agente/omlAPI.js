@@ -233,7 +233,7 @@ class OMLAPI {
         });
     }
 
-    llamadaCalificada(callback_calificada, callback_no_calificada) {
+    llamadaCalificada(callback_calificada, callback_no_calificada, callback_error) {
         var URL = Urls.api_status_calificacion_llamada();
         $.ajax({
             url: URL,
@@ -251,6 +251,7 @@ class OMLAPI {
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
+                callback_error();
                 console.log(gettext('Error => ') + textStatus + ' - ' + errorThrown);
             }
 

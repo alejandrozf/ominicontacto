@@ -539,18 +539,34 @@ class PhoneJSController {
     }
 
     leavePause(){
+        // TODO: desacoplar obligar-calificacion
         this.obligarCalificacion = $('#obligar-calificacion').val();
         if (this.obligarCalificacion == 'True'){
             var self = this;
-            this.oml_api.llamadaCalificada(function(){self.doLeavePause();}, function(calldata){
-                $('#obligarCalificarCall').modal('show');
-                $('#obligarCalificarCall_submit').click(function(){
-                    var call_data_json = JSON.stringify(calldata);
-                    var url = Urls.calificar_llamada(encodeURIComponent(call_data_json));
-                    $('#dataView').attr('src', url);
-                    $('#obligarCalificarCall').modal('hide');
-                });
-            });
+            if (self.verificando_calificacion_por_pausa){
+                return;
+            }
+            self.verificando_calificacion_por_pausa = true;
+            this.oml_api.llamadaCalificada(
+                function(){
+                    self.doLeavePause();
+                    self.verificando_calificacion_por_pausa = false;
+                },
+                function(calldata){
+                    $('#obligarCalificarCall').modal('show');
+                    $('#obligarCalificarCall_submit').click(function(){
+                        var call_data_json = JSON.stringify(calldata);
+                        var url = Urls.calificar_llamada(encodeURIComponent(call_data_json));
+                        $('#dataView').attr('src', url);
+                        $('#obligarCalificarCall').modal('hide');
+                    });
+                    self.verificando_calificacion_por_pausa = false;
+                },
+                function(){
+                    self.verificando_calificacion_por_pausa = false;
+                    alert(gettext('No se pudo salir de la pausa.'));
+                }
+            );
         }
         else {
             this.doLeavePause();
