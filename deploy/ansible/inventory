@@ -92,6 +92,14 @@ schedule=Agenda
 #########################################################################################################################################
 #extern_ip=auto
 
+#######################################################################################
+# Variables when you have OMniLeads Websocket installed in other host 		      #
+# websocket_host=IP or domain of that host. Default: websockets			      #
+# websocket_port=the port configured in the app in that host. Default: 8000	      #
+#######################################################################################
+websocket_host=websockets
+websocket_port=8000
+
 ##############################################################################################
 # Variables below are used when you have postgresql, mysql , wombat dialer or rtpengine      #
 # in diferent servers. Uncomment the variables and place the hostnames of these servers      #

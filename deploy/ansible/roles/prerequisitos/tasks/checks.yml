@@ -86,6 +86,13 @@
   changed_when: false
   tags: postinstall
 
+# Chequeo si la version de websockets instalada es {{ websockets_version }}
+- name: Check if omnileads-websockets {{ websockets_version }} is installed
+  shell:  yum list installed |grep omnileads-websockets| awk -F " " '{print $2}' |awk -F "-" '{print $1}'
+  register: websockets_installed
+  changed_when: false
+  tags: postinstall
+
   # Chequeo si la version de asterisk instalada es {{ asterisk_version }}
 - name: Check if Asterisk {{ asterisk_version }} is installed
   shell:  yum list installed |grep asterisk| awk -F " " '{print $2}' |awk -F "-" '{print $1}'
@@ -224,6 +231,32 @@
   when: assert_amipass.rc == 0 and ami_password is not defined
   tags: always
 
+- name: Check if $WEBSOCKET_HOST was defined previously
+  shell: bash -lc 'if [ -z $WEBSOCKET_HOST ]; then exit 1; else echo $WEBSOCKET_HOST; exit 0; fi'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_websockethost
+  tags: always
+
+- set_fact: websocket_host="{{ assert_websockethost.stdout }}"
+  when: assert_websockethost.rc == 0 and websocket_host == "websockets"
+  tags: always
+
+- name: Check if $WEBSOCKET_PORT was defined previously
+  shell: bash -lc 'if [ -z $WEBSOCKET_PORT ]; then exit 1; else echo $WEBSOCKET_PORT; exit 0; fi'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_websocketport
+  tags: always
+
+- set_fact: websocket_port="{{ assert_websocketport.stdout }}"
+  when: assert_websocketport.rc == 0 and websocket_port == 8000
+  tags: always
+
 - name: Check if $WOMBAT_USER was defined previously
   shell: bash -lc 'if [ -z $WOMBAT_USER ]; then exit 1; else echo $WOMBAT_USER; exit 0; fi'
   args:
@@ -260,7 +293,7 @@
   tags: always
 
 - set_fact: SCA="{{ assert_sca.stdout }}"
-  when: assert_sca.rc == 0 and SCA is not defined
+  when: assert_sca.rc == 0 and SCA == 3600
   tags: always
 
 - name: Check if $EPHEMERAL_USER_TTL was defined previously
@@ -273,7 +306,7 @@
   tags: always
 
 - set_fact: ECCTL="{{ assert_ecctl.stdout }}"
-  when: assert_ecctl.rc == 0 and ECCTL is not defined
+  when: assert_ecctl.rc == 0 and ECCTL == 28800
   tags: always
 
 - name: Check if $MONITORFORMAT was defined previously

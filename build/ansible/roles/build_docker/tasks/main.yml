@@ -66,7 +66,7 @@
     - "{{ ast_other_location }}"
     - "{{ ast_sounds_location}}/oml"
     - "{{ kamailio_location }}"
-    - "{{ nginx_location }}/conf.d"
+    - "{{ nginx_location }}/conf.d/consumers"
     - "{{ omniapp_location }}/ominicontacto"
     - "{{ build_location }}/scripts"
 

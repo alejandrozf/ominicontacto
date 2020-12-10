@@ -41,12 +41,12 @@
 - name: Modifying redis for listening in all addresses
   lineinfile: path=/etc/redis.conf regexp="^bind" line="#bind" state=present
   tags: postinstall
-  when: asterisk_host is defined
+  when: asterisk_host is defined or websockets_host is defined
 
 - name: Modifying redis for not starting in protectd mode
   lineinfile: path=/etc/redis.conf regexp="^protected-mode" line="protected-mode no" state=present
   tags: postinstall
-  when: asterisk_host is defined
+  when: asterisk_host is defined or websockets_host is defined
 
 # Se imprime que el virtualenv no esta instalado si la version actual es inferior a la requerida
 - debug: msg="Virtualenv {{ virtualenv_version }} is not installed, proceeding to install"
@@ -86,6 +86,38 @@
   delay: 3
   register: vps_download
   until: vps_download is success
+
+# Se imprime que el omnileads-websockets no esta instalado si la version actual es inferior a la requerida
+- debug: msg="Omnileads-websockets {{ websockets_version }} is not installed, proceeding to install"
+  when: websockets_installed.stdout != websockets_version and websocket_host == "websockets"
+  tags: ['virtualenv','postinstall']
+
+# Por lo contrario se imprime que ya está instalada la version mas actual
+- debug: msg="Omnileads-websockets is already installed in version {{ websockets_version }}, skipping installation steps"
+  when: websockets_installed.stdout == websockets_version and websocket_host == "websockets"
+  tags: ['virtualenv','postinstall']
+
+# Esta tarea es para eliminar paquete viejo de virtualenv generar inconsistencia de binarios
+- name: Delete old omnileads-websockets package
+  yum: name=omnileads-websockets state=absent
+  tags: postinstall
+  when: websockets_installed.stdout != websockets_version and websocket_host == "websockets"
+
+# Se instala el paquete de websockets
+- name: Install omnileads-websockets {{ websockets_version }} package (from s3 source)
+  yum: name={{ websockets_package }} state=latest update_cache=yes
+  tags: postinstall
+  retries: 3
+  delay: 3
+  register: s3_download
+  until: s3_download is success
+  when: websockets_installed.stdout != websockets_version and websocket_host == "websockets"
+
+- name: Linking python3 binarie to omnileads-websockets files
+  file: state=link src=/usr/bin/python3 dest={{ websockets_location }}/bin/python3 mode=755 force=true
+  tags: postinstall
+  when: websockets_installed.stdout != websockets_version and websocket_host == "websockets"
+
 
 #----------------------------------------------------------------------
 # Directorios básicos
