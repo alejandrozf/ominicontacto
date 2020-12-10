@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-10 17:05-0300\n"
+"POT-Creation-Date: 2020-12-09 11:51-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,14 +17,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: supervision_app/static/supervision_app/JS/campanas_entrantes.js:37
+#: supervision_app/static/supervision_app/JS/campanas_entrantes.js:38
 #: supervision_app/static/supervision_app/JS/campanas_salientes.js:37
 #: supervision_app/static/supervision_app/JS/supervision_agentes.js:55
 msgid "Error al ejecutar => "
 msgstr ""
 
-#: supervision_app/static/supervision_app/JS/campanas_entrantes.js:54
-#: supervision_app/static/supervision_app/JS/campanas_entrantes.js:57
+#: supervision_app/static/supervision_app/JS/campanas_entrantes.js:58
+#: supervision_app/static/supervision_app/JS/campanas_entrantes.js:59
 msgid " segundos"
 msgstr ""
 
@@ -131,47 +131,47 @@ msgstr ""
 msgid "Fallo en la registración, contacte a su administrador"
 msgstr ""
 
-#: supervision_app/static/supervision_app/JS/supervision.js:74
+#: supervision_app/static/supervision_app/JS/supervision.js:94
 msgid "Buscar: "
 msgstr ""
 
-#: supervision_app/static/supervision_app/JS/supervision.js:75
+#: supervision_app/static/supervision_app/JS/supervision.js:95
 msgid "(filtrando de un total de _MAX_ contactos)"
 msgstr ""
 
-#: supervision_app/static/supervision_app/JS/supervision.js:77
+#: supervision_app/static/supervision_app/JS/supervision.js:97
 msgid "Primero "
 msgstr ""
 
-#: supervision_app/static/supervision_app/JS/supervision.js:78
+#: supervision_app/static/supervision_app/JS/supervision.js:98
 msgid "Anterior "
 msgstr ""
 
-#: supervision_app/static/supervision_app/JS/supervision.js:79
+#: supervision_app/static/supervision_app/JS/supervision.js:99
 msgid " Siguiente"
 msgstr ""
 
-#: supervision_app/static/supervision_app/JS/supervision.js:80
+#: supervision_app/static/supervision_app/JS/supervision.js:100
 msgid " Último"
 msgstr ""
 
-#: supervision_app/static/supervision_app/JS/supervision.js:82
+#: supervision_app/static/supervision_app/JS/supervision.js:102
 msgid "Mostrar _MENU_ entradas"
 msgstr ""
 
-#: supervision_app/static/supervision_app/JS/supervision.js:83
+#: supervision_app/static/supervision_app/JS/supervision.js:103
 msgid "Mostrando _START_ a _END_ de _TOTAL_ entradas"
 msgstr ""
 
-#: supervision_app/static/supervision_app/JS/supervision.js:99
+#: supervision_app/static/supervision_app/JS/supervision.js:119
 msgid "Susurrar"
 msgstr ""
 
-#: supervision_app/static/supervision_app/JS/supervision.js:112
+#: supervision_app/static/supervision_app/JS/supervision.js:132
 msgid "Espiar"
 msgstr ""
 
-#: supervision_app/static/supervision_app/JS/supervision.js:141
+#: supervision_app/static/supervision_app/JS/supervision.js:161
 msgid "Logout"
 msgstr ""
 

@@ -171,26 +171,6 @@ upgrade-aio:
   only:
     - web
 
-deploy-docker-prodenv:
-  stage: deploy
-  script:
-    - bash ~/git_cleanup.sh
-    - cd ~/ominicontacto/deploy/vagrant/host_node/
-    - vagrant halt centos
-    - vagrant destroy centos -f
-    - ./vagrantup.sh centos
-    - python ../edit_inventory.py --internal_ip=$STAGING_IP_CENTOS --docker_deploy=yes --prodenv=yes
-    - cd ../../ansible
-    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh --docker-deploy
-    - cd ~/ominicontacto/deploy/vagrant/host_node/
-    - vagrant halt centos
-  tags:
-    - deploy-docker
-  only:
-    - /.*deploy.*$/
-    - schedules
-    - web
-
 deploy-docker-devenv:
   stage: deploy
   script:
@@ -201,7 +181,9 @@ deploy-docker-devenv:
     - python edit_inventory.py --docker_deploy=yes --devenv=yes
     - cd ../ansible
     - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh --docker-deploy --iface=enp2s0
+    - cd ~/omnileads/devenv && if [ ! -d omnileads-websockets ]; then git clone https://gitlab.com/omnileads/omnileads-websockets.git; fi
     - cd ~/omnileads/devenv && docker-compose up -d
+    - cd ~/omnileads/devenv/omnileads-websockets/deploy && docker-compose up -d
     - until curl -sk --head  --request GET https://localhost |grep "302" > /dev/null; do echo "Environment still being installed, sleeping 80 seconds"; sleep 80; done; echo "Environment is up"
     - docker exec -u omnileads -d oml-omniapp-devenv python3 manage.py cambiar_admin_password
     - TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=localhost ADMIN_USERNAME=admin ADMIN_PASSWORD=admin LOGIN_FAILURE_LIMIT=10 python ~/ominicontacto/ominicontacto_app/tests/test_integracion/test_all.py

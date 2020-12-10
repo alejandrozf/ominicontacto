@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-14 12:17-0300\n"
+"POT-Creation-Date: 2020-12-09 11:52-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: reportes_app/static/reportes_app/JS/reporte_grafico_campana.js:27
+msgid "Descargar Reporte de "
+msgstr "Download report of"
+
+#: reportes_app/static/reportes_app/JS/reporte_grafico_campana.js:45
+msgid "Error al ejecutar => "
+msgstr "Error when executing =>"
+
+#: reportes_app/static/reportes_app/JS/reporte_grafico_campana.js:76
+msgid "Exportación completa"
+msgstr "Exportation complete"
+
+#: reportes_app/static/reportes_app/JS/reporte_grafico_campana.js:78
+msgid "La exportación a .csv del reporte de "
+msgstr "The exportation to .csv of report of"
 
 #: reportes_app/static/reportes_app/JS/reportes_agentes_tiempos.js:103
 msgid ""
