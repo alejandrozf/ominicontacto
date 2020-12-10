@@ -27,6 +27,7 @@ from django.shortcuts import redirect
 from django.views.generic import FormView, ListView, View
 from django.utils import timezone
 from django.contrib import messages
+from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _
 
 from ominicontacto_app.forms import ReporteCampanaForm
@@ -129,19 +130,19 @@ class CampanaReporteGraficoView(FormView):
     form_class = ReporteCampanaForm
     template_name = 'reporte_grafico_campana.html'
 
+    campana = None
+
     def get_object(self, queryset=None):
-        user = self.request.user
+        if self.campana is None:
+            user = self.request.user
+            asignadas = Campana.objects.all()
 
-        asignadas = Campana.objects.all()
-
-        if not user.get_is_administrador():
-            supervisor = user.get_supervisor_profile()
-            asignadas = supervisor.campanas_asignadas_actuales()
-
-        try:
-            return asignadas.get(pk=self.kwargs['pk_campana'])
-        except Campana.DoesNotExist:
-            return None
+            if not user.get_is_administrador():
+                supervisor = user.get_supervisor_profile()
+                asignadas = supervisor.campanas_asignadas_actuales()
+            self.campana = asignadas.filter(
+                pk=self.kwargs['pk_campana']).select_related('bd_contacto').first()
+        return self.campana
 
     def get(self, request, *args, **kwargs):
         campana = self.get_object()
@@ -165,12 +166,14 @@ class CampanaReporteGraficoView(FormView):
     def get_context_data(self, **kwargs):
         context = super(CampanaReporteGraficoView, self).get_context_data(
             **kwargs)
-        campana = self.get_object()
-        context['campana'] = campana
-        context['campana_entrante'] = (campana.type == Campana.TYPE_ENTRANTE)
+        self.campana = self.get_object()
+        context['campana'] = self.campana
+        context['campana_entrante'] = (self.campana.type == Campana.TYPE_ENTRANTE)
+        context['task_id'] = get_random_string(8)
         return context
 
     def form_valid(self, form):
+        campana = self.get_object()
         fecha = form.cleaned_data.get('fecha')
         fecha_desde, fecha_hasta = fecha.split('-')
         fecha_desde = convert_fecha_datetime(fecha_desde)
@@ -178,13 +181,15 @@ class CampanaReporteGraficoView(FormView):
         fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
         fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         # generar el reporte grafico de acuerdo al periodo de fecha seleccionado
-        service = EstadisticasService(self.get_object(), fecha_desde, fecha_hasta)
+        service = EstadisticasService(campana, fecha_desde, fecha_hasta)
         graficos_estadisticas = service.general_campana()
         # genera el reporte pdf de la campana
         service_pdf = ReporteCampanaPDFService()
-        service_pdf.crea_reporte_pdf(self.get_object(), graficos_estadisticas)
+        service_pdf.crea_reporte_pdf(campana, graficos_estadisticas)
         return self.render_to_response(self.get_context_data(
             graficos_estadisticas=graficos_estadisticas,
+            reporte_fecha_desde_elegida=fecha_desde.strftime("%m/%d/%Y"),
+            reporte_fecha_hasta_elegida=fecha_hasta.strftime("%m/%d/%Y"),
             pk_campana=self.kwargs['pk_campana']))
 
 

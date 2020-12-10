@@ -54,6 +54,8 @@ parser.add_argument("--redis_host", help="Specifies external redis host")
 parser.add_argument("--rtpengine_host", help="Specifies external rtpengine host")
 parser.add_argument("--schedule", help="Specifies de tag for generated docker images")
 parser.add_argument("--TZ", default="America/Argentina/Cordoba", help="Specifies TZ")
+parser.add_argument("--websocket_host", help="Specifies websocket host")
+parser.add_argument("--websocket_port", help="Specifies websocket port")
 args = parser.parse_args()
 
 # omininicontacto directorio raíz
@@ -137,6 +139,12 @@ if args.schedule:
 if args.TZ:
     inventory_contents = inventory_contents.replace(
         "#TZ=America/Argentina/Cordoba", "TZ={0}".format(args.TZ))
+if args.websocket_host:
+    inventory_contents = inventory_contents.replace(
+        "#websocket_host=", "websocket_host={0}".format(args.websocket_host))
+if args.websocket_port:
+    inventory_contents = inventory_contents.replace(
+        "#websocket_port=", "websocket_port={0}".format(args.websocket_port))
 inventory_file.seek(0)
 inventory_file.truncate()
 inventory_file.write(inventory_contents)

@@ -121,7 +121,7 @@
     - "{{ ast_conf_location }}"
     - "{{ ast_agis_location }}"
     - "{{ ast_sounds_location }}/oml"
-    - "{{ nginx_location }}/conf.d"
+    - "{{ nginx_location }}/conf.d/"
     - "{{ ast_other_location }}"
     - "{{ omniapp_location }}"
     - "{{ efk_location }}"

@@ -67,6 +67,12 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'api_data_agenda_contacto',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'api_exportar_csv_contactados',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'api_exportar_csv_calificados',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'api_exportar_csv_no_atendidos',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'api_contactos_campana',
              'roles': ['Agente', ]},
             {'nombre': 'api_click2call',
@@ -138,6 +144,15 @@ class ApiAppConfig(AppConfig):
             {'descripcion': _('Reasignar una Agenda a otro Agente'), 'version': '1.7.0'},
         'api_data_agenda_contacto':
             {'descripcion': _('Información de contacto de una  Agenda'), 'version': '1.7.0'},
+        'api_exportar_csv_contactados':
+            {'descripcion': _('Exportar reporte de contactados de una campaña a csv'),
+             'version': '1.11.6'},
+        'api_exportar_csv_calificados':
+            {'descripcion': _('Exportar reporte de calificados de una campaña a csv'),
+             'version': '1.11.6'},
+        'api_exportar_csv_no_atendidos':
+            {'descripcion': _('Exportar reporte de no atendidos de una campaña a csv'),
+             'version': '1.11.6'},
         'api_contactos_campana':
             {'descripcion': _('Contactos de una campaña'), 'version': '1.7.0'},
         'api_click2call':
