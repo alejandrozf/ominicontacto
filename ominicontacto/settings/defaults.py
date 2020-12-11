@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'constance.backends.database',
     'django_sass',
+    'django_sendfile'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -244,7 +245,7 @@ DJANGO_DEBUG_TOOLBAR = None
 ######################
 
 DEFENDER_BEHIND_REVERSE_PROXY = None
-#Variable obligatoria, se tiene que saber que el defender está detras de un proxy
+# Variable obligatoria, se tiene que saber que el defender está detras de un proxy
 
 #######################################
 # Ephemeral SIP credentials variables #
@@ -257,7 +258,7 @@ EPHEMERAL_USER_TTL = None
 # Tiempo de duración de credenciales efimeras
 
 OML_KAMAILIO_HOSTNAME = None
-#Hostname para conectarse a Kamailio
+# Hostname para conectarse a Kamailio
 
 """Comando para obtener el secret_key de kamailio y asi poder generar la SIP password
 

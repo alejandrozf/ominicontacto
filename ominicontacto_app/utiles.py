@@ -428,4 +428,4 @@ def get_oml_last_release():
 
 
 def crear_segmento_grabaciones_url():
-    return "/grabaciones"
+    return "/api/v1/grabacion/archivo/?filename="

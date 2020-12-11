@@ -39,6 +39,7 @@ from api_app.views.agente import (
     AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk,
     SetEstadoRevisionAuditoria, ApiStatusCalificacionLlamada
 )
+from api_app.views.grabaciones import ObtenerArchivoGrabacionView
 
 router = routers.DefaultRouter()
 
@@ -156,5 +157,9 @@ urlpatterns = [
         name='api_set_estado_revision'),
     url(r'api/v1/calificar_llamada/', ApiStatusCalificacionLlamada.as_view(),
         name='api_status_calificacion_llamada'),
+
+    # ###########     GRABACIONES      ############ #
+    url(r'^api/v1/grabacion/archivo/$',
+        ObtenerArchivoGrabacionView.as_view(), name='api_grabacion_archivo'),
 
 ]

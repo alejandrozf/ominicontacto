@@ -31,15 +31,15 @@ from django.utils.timezone import now, timedelta
 
 from simple_history.utils import update_change_reason
 
-from ominicontacto_app.models import Grabacion, GrabacionMarca, OpcionCalificacion, Campana, User
+from ominicontacto_app.models import GrabacionMarca, OpcionCalificacion, Campana, User
 
-from ominicontacto_app.tests.factories import (GrabacionFactory, GrabacionMarcaFactory,
-                                               CalificacionClienteFactory, CampanaFactory,
-                                               OpcionCalificacionFactory, QueueFactory,
-                                               QueueMemberFactory, ContactoFactory)
+from ominicontacto_app.tests.factories import CalificacionClienteFactory, CampanaFactory, \
+    ContactoFactory, GrabacionMarcaFactory, LlamadaLogFactory, \
+    OpcionCalificacionFactory, QueueFactory, QueueMemberFactory
 from ominicontacto_app.tests.utiles import OMLBaseTest
 
 from ominicontacto_app.utiles import fecha_hora_local
+from reportes_app.models import LlamadaLog
 
 
 class BaseGrabacionesTests(OMLBaseTest):
@@ -70,22 +70,26 @@ class BaseGrabacionesTests(OMLBaseTest):
             campana=self.campana1, tipo=OpcionCalificacion.GESTION)
         self.calificacion = CalificacionClienteFactory(opcion_calificacion=self.opcion_calificacion)
         update_change_reason(self.calificacion, 'calificacion')
-        self.grabacion1 = GrabacionFactory.create(
-            duracion=1, agente=self.agente1, callid=self.calificacion.callid,
-            campana=self.campana1, id_cliente='-1')
-        self.grabacion2 = GrabacionFactory(
-            duracion=1, agente=self.agente1, campana=self.campana1)
-        self.grabacion3 = GrabacionFactory(
-            duracion=1, agente=self.agente1, campana=self.campana1)
-        self.marca_campana1 = GrabacionMarcaFactory(callid=self.grabacion1.callid)
-        self.marca_campana2 = GrabacionMarcaFactory(callid=self.grabacion2.callid)
 
-        self.grabacion2_1 = GrabacionFactory.create(
-            duracion=1, agente=self.agente2, campana=self.campana2)
-        self.marca_campana2_1 = GrabacionMarcaFactory(callid=self.grabacion2_1.callid)
+        self.llamada_log1 = LlamadaLogFactory.create(duracion_llamada=1, agente_id=self.agente1.id,
+                                                     callid=self.calificacion.callid,
+                                                     campana_id=self.campana1.id,
+                                                     contacto_id='-1')
+        self.llamada_log2 = LlamadaLogFactory.create(duracion_llamada=1, agente_id=self.agente1.id,
+                                                     campana_id=self.campana1.id)
+        self.llamada_log3 = LlamadaLogFactory.create(duracion_llamada=1, agente_id=self.agente1.id,
+                                                     campana_id=self.campana1.id)
+        self.marca_campana1 = GrabacionMarcaFactory(callid=self.llamada_log1.callid)
+        self.marca_campana2 = GrabacionMarcaFactory(callid=self.llamada_log2.callid)
 
-        self.grabacion3_1 = GrabacionFactory.create(
-            tel_cliente=self.contacto.telefono, agente=self.agente2, campana=self.campana3)
+        self.llamada_log2_1 = LlamadaLogFactory.create(duracion_llamada=1,
+                                                       agente_id=self.agente2.id,
+                                                       campana_id=self.campana2.id)
+        self.marca_campana2_1 = GrabacionMarcaFactory(callid=self.llamada_log2_1.callid)
+
+        self.llamada_log3_1 = LlamadaLogFactory.create(numero_marcado=self.contacto.telefono,
+                                                       agente_id=self.agente2.id,
+                                                       campana_id=self.campana3.id)
 
 
 class GrabacionesTests(BaseGrabacionesTests):
@@ -97,37 +101,37 @@ class GrabacionesTests(BaseGrabacionesTests):
     def test_vista_creacion_grabaciones_marcadas(self):
         url = reverse('grabacion_marcar')
         descripcion = 'descripcion de prueba'
-        post_data = {'callid': self.grabacion3.callid,
+        post_data = {'callid': self.llamada_log3.callid,
                      'descripcion': descripcion}
         self.client.post(url, post_data)
 
         self.assertTrue(GrabacionMarca.objects.filter(
-            callid=self.grabacion3.callid, descripcion=descripcion).exists())
+            callid=self.llamada_log3.callid, descripcion=descripcion).exists())
 
     def test_usuarios_no_logueados_no_acceden_a_vista_creacion_grabaciones_marcadas(self):
         self.client.logout()
         url = reverse('grabacion_marcar')
         descripcion = 'descripcion de prueba'
-        post_data = {'callid': self.grabacion3.callid,
+        post_data = {'callid': self.llamada_log3.callid,
                      'descripcion': descripcion}
         self.client.post(url, post_data)
         self.assertFalse(GrabacionMarca.objects.filter(
-            callid=self.grabacion3.callid, descripcion=descripcion).exists())
+            callid=self.llamada_log3.callid, descripcion=descripcion).exists())
 
     def test_usuarios_no_logueados_no_acceden_a_obtener_descripciones_grabaciones(self):
         self.client.logout()
-        url = reverse('grabacion_descripcion', kwargs={'callid': self.grabacion1.callid})
+        url = reverse('grabacion_descripcion', kwargs={'callid': self.llamada_log1.callid})
         response = self.client.get(url, follow=True)
         self.assertEqual(response.template_name, 'registration/login.html')
 
     def test_respuesta_api_descripciones_grabaciones_marcadas(self):
-        url = reverse('grabacion_descripcion', kwargs={'callid': self.grabacion2.callid})
+        url = reverse('grabacion_descripcion', kwargs={'callid': self.llamada_log2.callid})
         response = self.client.get(url, follow=True)
         data_response = json.loads(response.content)
         self.assertEqual(data_response['result'], 'Descripción')
 
     def test_respuesta_api_descripciones_grabaciones_no_marcadas(self):
-        url = reverse('grabacion_descripcion', kwargs={'callid': self.grabacion3.callid})
+        url = reverse('grabacion_descripcion', kwargs={'callid': self.llamada_log3.callid})
         response = self.client.get(url, follow=True)
         data_response = json.loads(response.content)
         self.assertEqual(data_response['result'], 'No encontrada')
@@ -135,10 +139,10 @@ class GrabacionesTests(BaseGrabacionesTests):
     def test_url_de_grabacion_segun_fecha(self):
         hoy = now()
         hace_mucho = hoy - timedelta(days=3)
-        self.grabacion2.fecha = hace_mucho
-        self.grabacion1.fecha = hoy
-        self.assertTrue(self.grabacion2.url.endswith(settings.MONITORFORMAT))
-        self.assertTrue(self.grabacion1.url.endswith('.wav'))
+        self.llamada_log2.time = hace_mucho
+        self.llamada_log1.time = hoy
+        self.assertTrue(self.llamada_log2.url_archivo_grabacion.endswith(settings.MONITORFORMAT))
+        self.assertTrue(self.llamada_log1.url_archivo_grabacion.endswith('.wav'))
 
 
 class FiltrosBusquedaGrabacionesSupervisorTests(BaseGrabacionesTests):
@@ -148,7 +152,7 @@ class FiltrosBusquedaGrabacionesSupervisorTests(BaseGrabacionesTests):
         self.client.login(username=self.supervisor1.user, password=self.DEFAULT_PASSWORD)
 
     def test_filtro_grabaciones_marcadas(self):
-        self.assertEqual(Grabacion.objects.marcadas().count(), 3)
+        self.assertEqual(LlamadaLog.objects.obtener_grabaciones_marcadas().count(), 3)
 
     def test_buscar_grabaciones_por_duracion(self):
         url = reverse('grabacion_buscar', kwargs={'pagina': 1})
@@ -156,22 +160,25 @@ class FiltrosBusquedaGrabacionesSupervisorTests(BaseGrabacionesTests):
                      'campana': '', 'marcadas': '', 'duracion': '1'}
 
         response = self.client.post(url, post_data, follow=True)
-        self.assertContains(response, self.grabacion1.tel_cliente)
-        self.assertContains(response, self.grabacion2.tel_cliente)
-        self.assertContains(response, self.grabacion3.tel_cliente)
+        self.assertContains(response, self.llamada_log1.numero_marcado)
+        self.assertContains(response, self.llamada_log2.numero_marcado)
+        self.assertContains(response, self.llamada_log3.numero_marcado)
         # Aseguro que no traiga la grabacion de una campaña que no tiene asignada.
-        self.assertNotContains(response, self.grabacion2_1.tel_cliente)
+        self.assertNotContains(response, self.llamada_log2_1.numero_marcado)
 
-        Grabacion.objects.filter(id=self.grabacion2.id).update(duracion=15, tel_cliente='42222222')
-        Grabacion.objects.filter(id=self.grabacion1.id).update(duracion=15, tel_cliente='41111111')
-        Grabacion.objects.filter(id=self.grabacion3.id).update(duracion=12, tel_cliente='43333333')
+        LlamadaLog.objects.filter(id=self.llamada_log2.id).update(
+            duracion_llamada=15, numero_marcado='42222222')
+        LlamadaLog.objects.filter(id=self.llamada_log1.id).update(
+            duracion_llamada=15, numero_marcado='41111111')
+        LlamadaLog.objects.filter(id=self.llamada_log3.id).update(
+            duracion_llamada=12, numero_marcado='43333333')
 
         post_data['duracion'] = 12
         response = self.client.post(url, post_data, follow=True)
         self.assertContains(response, '41111111')
         self.assertContains(response, '42222222')
         self.assertContains(response, '43333333')
-        self.assertNotContains(response, self.grabacion2_1.tel_cliente)
+        self.assertNotContains(response, self.llamada_log2_1.numero_marcado)
 
         post_data['duracion'] = 15
         response = self.client.post(url, post_data, follow=True)
@@ -195,10 +202,12 @@ class FiltrosBusquedaGrabacionesSupervisorTests(BaseGrabacionesTests):
         (hoy, hace_mucho, ahora) = self._obtener_fechas()
         if hoy.date() < ahora.date():
             (hoy, hace_mucho, ahora) = self._obtener_fechas()
-        Grabacion.objects.filter(id=self.grabacion2.id).update(fecha=hace_mucho,
-                                                               tel_cliente='42222222')
-        Grabacion.objects.filter(id=self.grabacion1.id).update(fecha=hoy, tel_cliente='41111111')
-        Grabacion.objects.filter(id=self.grabacion3.id).update(fecha=hoy, tel_cliente='43333333')
+        LlamadaLog.objects.filter(id=self.llamada_log2.id).update(time=hace_mucho,
+                                                                  numero_marcado='42222222')
+        LlamadaLog.objects.filter(id=self.llamada_log1.id).update(
+            time=hoy, numero_marcado='41111111')
+        LlamadaLog.objects.filter(id=self.llamada_log3.id).update(
+            time=hoy, numero_marcado='43333333')
         url = reverse('grabacion_buscar', kwargs={'pagina': 1})
         post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'agente': '',
                      'campana': '', 'marcadas': '', 'duracion': '0'}
@@ -223,38 +232,37 @@ class FiltrosBusquedaGrabacionesSupervisorTests(BaseGrabacionesTests):
         post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'agente': '',
                      'campana': '', 'marcadas': '', 'duracion': '0', 'gestion': True}
         response = self.client.post(url, post_data, follow=True)
-        self.assertContains(response, self.grabacion1.tel_cliente)
-        self.assertContains(response, self.opcion_calificacion.nombre)
-        self.assertNotContains(response, self.grabacion2.tel_cliente)
-        self.assertNotContains(response, self.grabacion3.tel_cliente)
+        self.assertContains(response, self.llamada_log1.numero_marcado)
+        self.assertNotContains(response, self.llamada_log2.numero_marcado)
+        self.assertNotContains(response, self.llamada_log3.numero_marcado)
 
     def test_filtro_grabaciones_calificadas_gestion_excluye_no_gestionadas(self):
         url = reverse('grabacion_buscar', kwargs={'pagina': 1})
         post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'agente': '',
                      'campana': '', 'marcadas': '', 'duracion': '0', 'gestion': False}
         response = self.client.post(url, post_data, follow=True)
-        self.assertContains(response, self.grabacion1.tel_cliente)
-        self.assertContains(response, self.grabacion2.tel_cliente)
-        self.assertContains(response, self.grabacion3.tel_cliente)
+        self.assertContains(response, self.llamada_log1.numero_marcado)
+        self.assertContains(response, self.llamada_log2.numero_marcado)
+        self.assertContains(response, self.llamada_log3.numero_marcado)
 
     def test_buscar_grabaciones_por_callid(self):
-        Grabacion.objects.filter(id=self.grabacion1.id).update(callid='1')
+        LlamadaLog.objects.filter(id=self.llamada_log1.id).update(callid='1')
         url = reverse('grabacion_buscar', kwargs={'pagina': 1})
         post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'agente': '',
                      'campana': '', 'marcadas': '', 'duracion': '', 'callid': '1'}
         response = self.client.post(url, post_data, follow=True)
-        self.assertContains(response, self.grabacion1.tel_cliente)
-        self.assertNotContains(response, self.grabacion2.tel_cliente)
-        self.assertNotContains(response, self.grabacion3.tel_cliente)
+        self.assertContains(response, self.llamada_log1.numero_marcado)
+        self.assertNotContains(response, self.llamada_log2.numero_marcado)
+        self.assertNotContains(response, self.llamada_log3.numero_marcado)
 
     def test_buscar_grabaciones_por_id_contacto_externo(self):
         url = reverse('grabacion_buscar', kwargs={'pagina': 1})
         post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'agente': '',
                      'campana': '', 'marcadas': '', 'duracion': '', 'id_contacto_externo': 'id_ext'}
         response = self.client.post(url, post_data, follow=True)
-        self.assertContains(response, self.grabacion3_1.tel_cliente)
-        self.assertNotContains(response, self.grabacion1.tel_cliente)
-        self.assertNotContains(response, self.grabacion3.tel_cliente)
+        self.assertContains(response, self.llamada_log3_1.numero_marcado)
+        self.assertNotContains(response, self.llamada_log1.numero_marcado)
+        self.assertNotContains(response, self.llamada_log3.numero_marcado)
 
 
 class FiltrosBusquedaGrabacionesAgenteTests(BaseGrabacionesTests):
@@ -270,21 +278,21 @@ class FiltrosBusquedaGrabacionesAgenteTests(BaseGrabacionesTests):
         response = self.client.post(url, post_data, follow=True)
 
         response = self.client.post(url, post_data, follow=True)
-        self.assertContains(response, self.grabacion1.tel_cliente)
-        self.assertContains(response, self.grabacion2.tel_cliente)
-        self.assertContains(response, self.grabacion3.tel_cliente)
-        self.assertNotContains(response, self.grabacion2_1.tel_cliente)
+        self.assertContains(response, self.llamada_log1.numero_marcado)
+        self.assertContains(response, self.llamada_log2.numero_marcado)
+        self.assertContains(response, self.llamada_log3.numero_marcado)
+        self.assertNotContains(response, self.llamada_log2_1.numero_marcado)
 
     def test_ve_solamente_grabaciones_propias_antes_de_filtrar(self):
         agente3 = self.crear_agente_profile()
         QueueMemberFactory(member=agente3, queue_name=self.queue_campana_1)
-        grabacion3_3 = GrabacionFactory.create(
-            duracion=1, agente=agente3, campana=self.campana1)
+        llamada_log3_3 = LlamadaLogFactory.create(
+            duracion_llamada=1, agente_id=agente3.id, campana_id=self.campana1.id)
 
         url = reverse('grabacion_agente_buscar', kwargs={'pagina': 1})
         response = self.client.get(url, follow=True)
 
-        self.assertContains(response, self.grabacion1.tel_cliente)
-        self.assertContains(response, self.grabacion2.tel_cliente)
-        self.assertContains(response, self.grabacion3.tel_cliente)
-        self.assertNotContains(response, grabacion3_3.tel_cliente)
+        self.assertContains(response, self.llamada_log1.numero_marcado)
+        self.assertContains(response, self.llamada_log2.numero_marcado)
+        self.assertContains(response, self.llamada_log3.numero_marcado)
+        self.assertNotContains(response, llamada_log3_3.numero_marcado)

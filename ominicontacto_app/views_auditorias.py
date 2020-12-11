@@ -27,9 +27,10 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView
 
 from ominicontacto_app.forms import AuditoriaBusquedaForm, AuditoriaCalificacionForm
-from ominicontacto_app.models import CalificacionCliente, Grabacion
+from ominicontacto_app.models import CalificacionCliente
 
 from .utiles import convert_fecha_datetime, fecha_local
+from reportes_app.models import LlamadaLog
 
 
 class AuditarCalificacionesFormView(FormView):
@@ -167,7 +168,7 @@ class AuditoriaCalificacionFormView(FormView):
             if historica.callid:
                 callids.add(historica.callid)
 
-        grabaciones = Grabacion.objects.filter(callid__in=callids)
+        grabaciones = LlamadaLog.objects.filter(callid__in=callids)
         grabaciones_por_callid = {}
         for grabacion in grabaciones:
             grabaciones_por_callid[grabacion.callid] = grabacion

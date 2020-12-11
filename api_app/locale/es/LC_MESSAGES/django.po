@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-09 11:52-0300\n"
+"POT-Creation-Date: 2020-12-11 10:52-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,140 +17,144 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: api_app/apps.py:103
+#: api_app/apps.py:104
 msgid "Lista de agentes activos de un Grupo"
 msgstr ""
 
-#: api_app/apps.py:105
+#: api_app/apps.py:106
 msgid "Campañas relacionadas a un supervisor"
 msgstr ""
 
-#: api_app/apps.py:107
+#: api_app/apps.py:108
 msgid "Opciones de calificacion de una campaña (id campaña externo)"
 msgstr ""
 
-#: api_app/apps.py:110
+#: api_app/apps.py:111
 msgid "Opciones de calificacion de una campaña (id campaña oml)"
 msgstr ""
 
-#: api_app/apps.py:113
+#: api_app/apps.py:114
 msgid "Ver/editar calificación cliente"
 msgstr ""
 
-#: api_app/apps.py:115
+#: api_app/apps.py:116
 msgid "Crear calificacion cliente"
 msgstr ""
 
-#: api_app/apps.py:117
+#: api_app/apps.py:118
 msgid "Crear contacto"
 msgstr ""
 
-#: api_app/apps.py:119
+#: api_app/apps.py:120
 msgid "Metadata de la base de datos de una campaña"
 msgstr ""
 
-#: api_app/apps.py:121
+#: api_app/apps.py:122
 msgid "Crear nuevo rol"
 msgstr ""
 
-#: api_app/apps.py:123
+#: api_app/apps.py:124
 msgid "Eliminar rol"
 msgstr ""
 
-#: api_app/apps.py:125
+#: api_app/apps.py:126
 msgid "Actualizar permisos de Rol"
 msgstr ""
 
-#: api_app/apps.py:127
+#: api_app/apps.py:128
 msgid "Devuelve información de los agentes en el sistema"
 msgstr ""
 
-#: api_app/apps.py:130
+#: api_app/apps.py:131
 msgid "Reporte de llamadas entrantes de supervisión."
 msgstr ""
 
-#: api_app/apps.py:132
+#: api_app/apps.py:133
 msgid "Reporte de llamadas salientes de supervisión."
 msgstr ""
 
-#: api_app/apps.py:135
+#: api_app/apps.py:136
 msgid "Ejecuta acciones de supervisión sobre agente (Deslogueo, pausas, etc..)"
 msgstr ""
 
-#: api_app/apps.py:138
+#: api_app/apps.py:139
 msgid "Cantidades por tipos de llamada en una campaña"
 msgstr ""
 
-#: api_app/apps.py:141
+#: api_app/apps.py:142
 msgid "Cantidades por tipo de calificación en una campaña"
 msgstr ""
 
-#: api_app/apps.py:144
+#: api_app/apps.py:145
 msgid "Reasignar una Agenda a otro Agente"
 msgstr ""
 
-#: api_app/apps.py:146
+#: api_app/apps.py:147
 msgid "Información de contacto de una  Agenda"
 msgstr ""
 
-#: api_app/apps.py:148
+#: api_app/apps.py:149
 msgid "Exportar reporte de contactados de una campaña a csv"
 msgstr ""
 
-#: api_app/apps.py:151
+#: api_app/apps.py:152
 msgid "Exportar reporte de calificados de una campaña a csv"
 msgstr ""
 
-#: api_app/apps.py:154
+#: api_app/apps.py:155
 msgid "Exportar reporte de no atendidos de una campaña a csv"
 msgstr ""
 
-#: api_app/apps.py:157
+#: api_app/apps.py:158
 msgid "Contactos de una campaña"
 msgstr ""
 
-#: api_app/apps.py:159
+#: api_app/apps.py:160
 msgid "Ejecuta un click 2 call"
 msgstr ""
 
-#: api_app/apps.py:161
+#: api_app/apps.py:162
 msgid "Ejecuta el login del agente en Asterisk."
 msgstr ""
 
-#: api_app/apps.py:163
+#: api_app/apps.py:164
 msgid "Ejecuta el logout del agente en Asterisk"
 msgstr ""
 
-#: api_app/apps.py:165
+#: api_app/apps.py:166
 msgid "Logout del agente en OML"
 msgstr ""
 
-#: api_app/apps.py:167
+#: api_app/apps.py:168
 msgid "Pone al agente en una pausa"
 msgstr ""
 
-#: api_app/apps.py:169
+#: api_app/apps.py:170
 msgid "Saca al agente de una pausa"
 msgstr ""
 
-#: api_app/apps.py:171
+#: api_app/apps.py:172
 msgid "Devuelve credenciales SIP de un agente"
 msgstr ""
 
-#: api_app/apps.py:173
+#: api_app/apps.py:174
 msgid "Establece el estado de revisión de una Auditoría"
 msgstr ""
 
-#: api_app/apps.py:176
+#: api_app/apps.py:177
 msgid "Almacena en la base de datos los contactos subidos en archivo csv"
 msgstr ""
 
-#: api_app/apps.py:179
+#: api_app/apps.py:180
 msgid "Detecta si una llamada esta calificada."
 msgstr ""
 
-#: api_app/apps.py:182
+#: api_app/apps.py:183
 msgid "Reenvía la llave de la instancia registrada por email"
+msgstr ""
+
+#: api_app/apps.py:185
+msgid "Retorna el archivo de grabación especificado"
 msgstr ""
 
 #: api_app/forms.py:53 api_app/forms.py:98
