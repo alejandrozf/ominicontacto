@@ -19,7 +19,7 @@ virtualenv_location="{{ install_prefix}}virtualenv"
 usuario=omnileads
 
 [build-docker:vars]
-version=de1.2.9
+version=de1.3.0
 docker_user='{{ lookup("env","SUDO_USER") }}'
 is_docker=true
 kam_tls_port=5061

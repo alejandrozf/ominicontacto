@@ -38,7 +38,7 @@ from django.contrib.auth.models import Group
 from constance import config
 
 from ominicontacto_app.models import (
-    User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
+    User, AgenteProfile, Queue, QueueMember, BaseDatosContacto,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Blacklist, SitioExterno,
     SistemaExterno, ReglasIncidencia, SupervisorProfile, ArchivoDeAudio,
@@ -53,6 +53,7 @@ from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSa
 
 from utiles_globales import validar_extension_archivo_audio
 from .utiles import convert_fecha_datetime
+from reportes_app.models import LlamadaLog
 
 TIEMPO_MINIMO_DESCONEXION = 2
 EMPTY_CHOICE = ('', '---------')
@@ -377,7 +378,7 @@ class DefineNombreColumnaForm(forms.Form):
                 forms.CharField(label="", initial='Columna{0}'.format(columna),
                                 error_messages={'required': ''},
                                 widget=forms.TextInput(attrs={'class':
-                                                       'nombre-columna'}))
+                                                              'nombre-columna'}))
             crispy_fields.append(Field('nombre-columna-{0}'.format(columna)))
         self.helper.layout = Layout(crispy_fields)
 
@@ -450,7 +451,7 @@ class GrabacionBusquedaForm(forms.Form):
     fecha = forms.CharField(required=False,
                             widget=forms.TextInput(attrs={'class': 'form-control'}),
                             label=_('Fecha'))
-    tipo_llamada_choice = list(Grabacion.TYPE_LLAMADA_CHOICES)
+    tipo_llamada_choice = list(LlamadaLog.TYPE_LLAMADA_CHOICES)
     tipo_llamada_choice.insert(0, EMPTY_CHOICE)
     tipo_llamada = forms.ChoiceField(
         required=False, choices=tipo_llamada_choice, label=_('Tipo de llamada'),
@@ -1543,7 +1544,7 @@ class QueueDialerForm(forms.ModelForm):
         dial_timeout = self.cleaned_data.get('dial_timeout')
         if dial_timeout < 10 or dial_timeout > 90:
             raise forms.ValidationError(_('El valor de dial timeout deberá estar comprendido entre'
-                                        ' 10 y 90 segundos'))
+                                          ' 10 y 90 segundos'))
 
         return self.cleaned_data
 

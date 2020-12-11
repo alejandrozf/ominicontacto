@@ -250,3 +250,7 @@ class DisableMigrations(object):
 # MIGRATION_MODULES = DisableMigrations()
 
 INSTALL_PREFIX = os.getenv('INSTALL_PREFIX')
+# configuraciones de django_sendfile para grabaciones
+SENDFILE_ROOT = "/var/spool/asterisk/monitor"
+SENDFILE_URL = '/grabaciones'
+SENDFILE_BACKEND = 'django_sendfile.backends.nginx'

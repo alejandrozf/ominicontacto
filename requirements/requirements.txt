@@ -17,6 +17,7 @@ django-import-export==2.0.2
 django-js-reverse==0.8.2
 django-picklefield==2.1.1
 django-sass==1.0.0
+django-sendfile2==0.6.0
 django-simple-history==2.7.3
 django-widget-tweaks==1.4.1
 djangorestframework==3.10.3

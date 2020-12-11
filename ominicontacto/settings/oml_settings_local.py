@@ -19,9 +19,9 @@ REDIS_HOSTNAME = os.getenv('REDIS_HOSTNAME')
 SESSION_COOKIE_AGE = int(os.getenv('SESSION_COOKIE_AGE'))
 TIME_ZONE = os.getenv('TZ')
 # Settings para version de OML
-OML_BRANCH=os.getenv('OML_BRANCH')
-OML_COMMIT=os.getenv('OML_COMMIT')
-OML_BUILD_DATE=os.getenv('OML_BUILD_DATE')
+OML_BRANCH = os.getenv('OML_BRANCH')
+OML_COMMIT = os.getenv('OML_COMMIT')
+OML_BUILD_DATE = os.getenv('OML_BUILD_DATE')
 
 # Credenciales para wombat API
 OML_WOMBAT_USER = os.getenv('WOMBAT_USER')
@@ -145,3 +145,8 @@ CONSTANCE_REDIS_CONNECTION = {
     'port': 6379,
     'db': 0,
 }
+
+# configuraciones de django_sendfile para grabaciones
+SENDFILE_ROOT = "{0}/var/spool/asterisk/monitor".format(ASTERISK_LOCATION)
+SENDFILE_URL = '/grabaciones'
+SENDFILE_BACKEND = 'django_sendfile.backends.nginx'

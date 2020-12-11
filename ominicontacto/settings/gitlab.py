@@ -236,3 +236,7 @@ OML_EXTERNAL_PORT = 'trash'
 MIDDLEWARE = MIDDLEWARE_CLASSES
 
 INSTALL_PREFIX = '/opt/omnileads/'
+# configuraciones de django_sendfile para grabaciones
+SENDFILE_ROOT = "/var/spool/asterisk/monitor"
+SENDFILE_URL = '/grabaciones'
+SENDFILE_BACKEND = 'django_sendfile.backends.nginx'

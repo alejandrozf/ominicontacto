@@ -184,10 +184,10 @@ services:
       - ./omniapp/:{{ install_prefix }}run/
       - ./omniapp/conversor.sh:{{ install_prefix }}bin/conversor.sh
       - ./omniapp/omni-asterisk-logout.py:{{ install_prefix }}bin/omni-asterisk-logout.py
-      - grabaciones:{{ install_prefix }}grabaciones
+      - grabaciones:/var/spool/asterisk/monitor/
 {% else %}
       - ast_conf_files:/etc/asterisk/
-      - recordings:/opt/omnileads/grabaciones
+      - recordings:/var/spool/asterisk/monitor/
     #  - ominicontacto:{{ install_prefix }}ominicontacto/
 {% endif %}
       - sounds:/var/lib/asterisk/sounds/
