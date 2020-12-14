@@ -29,7 +29,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
-from django.views.generic import ListView, DeleteView, FormView
+from django.views.generic import ListView, DeleteView, FormView, View
 from django.views.generic.base import RedirectView
 
 from ominicontacto_app.models import Campana
@@ -391,4 +391,44 @@ class FinalizarCampanasActivasView(RedirectView):
             campanas.filter(estado=Campana.ESTADO_ACTIVA))
         if error_finalizadas:
             messages.add_message(self.request, messages.WARNING, error_finalizadas)
+        return HttpResponseRedirect(reverse('campana_dialer_list'))
+
+
+class FinalizarCampanaDialerView(View):
+    """
+    Esta vista actualiza la campañana finalizandola.
+    """
+    def post(self, request, *args, **kwargs):
+        campana_id = request.POST.get('campana_pk')
+        campana = Campana.objects.get(pk=campana_id)
+        try:
+            campana_service = CampanaService()
+            campana_service.remove_campana_wombat(campana)
+            campana.finalizar()
+            message = _('<strong>Operación Exitosa!</strong>\
+                             Se llevó a cabo con éxito la finalización de\
+                             la Campaña.')
+
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                message,
+            )
+        except WombatDialerError as e:
+            message = _("<strong>¡Cuidado!</strong> "
+                        "con el siguiente error: ") + "{0} .".format(e)
+            messages.add_message(
+                self.request,
+                messages.WARNING,
+                message,
+            )
+        except RequestException as e:
+            e = _(u'Imposible conectarse con el servicio Wombat')
+            message = _("<strong>¡Cuidado!</strong> "
+                        "con el siguiente error: ") + "{0} .".format(e)
+            messages.add_message(
+                self.request,
+                messages.WARNING,
+                message,
+            )
         return HttpResponseRedirect(reverse('campana_dialer_list'))
