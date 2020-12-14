@@ -270,6 +270,21 @@ class CustomerUserUpdateView(UpdateView):
         if self.force_password_change:
             login(self.request, updated_user)
             updated_user.set_session_key(self.request.session.session_key)
+        else:
+            agente_profile = form.instance.get_agente_profile()
+            if agente_profile:
+                # generar archivos sip en asterisk
+                asterisk_sip_service = ActivacionAgenteService()
+                try:
+                    asterisk_sip_service.activar_agente(agente_profile, preservar_status=True)
+                except RestablecerConfigSipError as e:
+                    message = _("<strong>¡Cuidado!</strong> "
+                                "con el siguiente error{0} .".format(e))
+                    messages.add_message(
+                        self.request,
+                        messages.WARNING,
+                        message,
+                    )
 
         messages.success(self.request,
                          _('El usuario fue actualizado correctamente'))

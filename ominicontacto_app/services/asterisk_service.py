@@ -45,7 +45,8 @@ class ActivacionAgenteService(object):
         self.reload_asterisk_config = AsteriskConfigReloader()
         self.asterisk_database = AgenteFamily()
 
-    def _generar_y_recargar_configuracion_asterisk(self, regenerar_families=True, agente=None):
+    def _generar_y_recargar_configuracion_asterisk(self, regenerar_families=True, agente=None,
+                                                   preservar_status=False):
         proceso_ok = True
         mensaje_error = ""
 
@@ -68,11 +69,12 @@ class ActivacionAgenteService(object):
                 if agente is None:
                     self.asterisk_database.regenerar_families()
                 else:
-                    self.asterisk_database.regenerar_family(agente)
+                    self.asterisk_database.regenerar_family(
+                        agente, preservar_status=preservar_status)
 
     def activar(self, regenerar_families=True):
         self._generar_y_recargar_configuracion_asterisk(regenerar_families=regenerar_families)
 
-    def activar_agente(self, agente):
+    def activar_agente(self, agente, preservar_status=False):
         self._generar_y_recargar_configuracion_asterisk(
-            regenerar_families=True, agente=agente)
+            regenerar_families=True, agente=agente, preservar_status=preservar_status)

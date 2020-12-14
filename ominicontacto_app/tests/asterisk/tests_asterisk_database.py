@@ -146,7 +146,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         servicio = AgenteFamily()
         dict_agente = servicio._create_dict(self.agente)
 
-        self.assertEqual(['NAME', 'SIP', 'STATUS'], list(dict_agente.keys()))
+        self.assertEqual(['NAME', 'SIP', 'STATUS', 'TIMESTAMP'], list(dict_agente.keys()))
 
     def test_falla_dict_agente_asterisk(self):
         """
