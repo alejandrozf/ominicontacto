@@ -39,7 +39,7 @@ from configuracion_telefonia_app.models import DestinoEntrante
 from ominicontacto_app.models import (AgenteEnContacto, Campana, QueueMember, OpcionCalificacion,
                                       Formulario, ParametrosCrm)
 from ominicontacto_app.forms import (CampanaPreviewForm, TIEMPO_MINIMO_DESCONEXION,
-                                     CampanaDialerForm, CampanaForm)
+                                     CampanaDialerForm, CampanaEntranteForm)
 from ominicontacto_app.tests.factories import (CampanaFactory, ContactoFactory, UserFactory,
                                                QueueFactory, AgenteProfileFactory,
                                                AgenteEnContactoFactory, QueueMemberFactory,
@@ -250,7 +250,7 @@ class CampanasTests(OMLBaseTest):
                                  'objetivo': 1,
                                  'sitio_externo': sitio_externo.pk,
                                  'tiempo_desconexion': 2}
-        campana_entrante_form = CampanaForm(data=campana_entrante_data)
+        campana_entrante_form = CampanaEntranteForm(data=campana_entrante_data)
         message = _('No se puede elegir un URL externo si selecciono un formulario.')
         self.assertEqual(campana_entrante_form.errors['sitio_externo'], [message])
 

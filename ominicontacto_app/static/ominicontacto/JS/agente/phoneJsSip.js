@@ -466,6 +466,10 @@ class SessionData {
         if (invite_request.headers.Namecontactics)
             call_data.nombre_contacto_ics = invite_request.headers.Namecontactics[0].raw;
 
+        if (invite_request.headers.Omlvideo){
+            call_data.video_channel = invite_request.headers.Omlvideo[0].raw;
+        }
+
         return call_data;
     }
 

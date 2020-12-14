@@ -77,6 +77,9 @@ class PhoneJSView {
         this.tagCallMenu = $('#modalSignCall');
         this.makeTransferButton = $('#makeTransfer');
         this.callOffCampaignMenu = $('#modalCallOffCamp');
+        this.reload_video_button = $('#reload_video_id');
+        this.buttonVideo = $('#buttonVideo');
+        this.videoJitsi = $('#video-container');
 
         this.startKeypad();
         this.startTransferMenu();
@@ -274,6 +277,10 @@ class PhoneJSView {
 
     getStateConfig(state_name) {
         return PHONE_STATUS_CONFIGS[state_name];
+    }
+
+    showHideVideo(){
+        this.videoJitsi.toggle();
     }
 }
 
