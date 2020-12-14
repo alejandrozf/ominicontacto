@@ -1824,6 +1824,12 @@ class ParametrosCrmForm(forms.ModelForm):
                 _('El valor debe corresponder a un dato válido de la llamada'))
         if tipo == ParametrosCrm.CUSTOM:
             validar_solo_ascii_y_sin_espacios(valor)
+        if tipo == ParametrosCrm.DIALPLAN:
+            if not valor.startswith(ParametrosCrm.PREFIJO_DIALPLAN):
+                raise (forms.ValidationError(
+                    _('El valor debe tener el prefijo {0}'.format(ParametrosCrm.PREFIJO_DIALPLAN))))
+            else:
+                return valor.capitalize()
         return valor
 
     def clean_nombre(self):

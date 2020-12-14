@@ -472,7 +472,18 @@ class SessionData {
             call_data.video_channel = invite_request.headers.Omlvideo[0].raw;
         }
 
+        this.setDialplanCallData(invite_request.headers, call_data);
+
         return call_data;
+    }
+
+    setDialplanCallData(headers, call_data){
+        for (var header in headers) {
+            if (header.startsWith('Omlcrm')) {
+                var value = headers[header][0].raw;
+                call_data[header] = value;
+            }
+        }
     }
 
     get is_remote () {

@@ -3500,12 +3500,14 @@ class ParametrosCrm(models.Model):
     DATO_CONTACTO = 2
     DATO_LLAMADA = 3
     CUSTOM = 4
+    DIALPLAN = 5
 
     TIPOS = (
         (DATO_CAMPANA, _('Dato de Campaña')),
         (DATO_CONTACTO, _('Dato de Contacto')),
         (DATO_LLAMADA, _('Dato de Llamada')),
         (CUSTOM, _('Fijo')),
+        (DIALPLAN, _('Dato de Dialplan'))
     )
 
     OPCIONES_CAMPANA = (
@@ -3525,6 +3527,8 @@ class ParametrosCrm(models.Model):
     )
     OPCIONES_LLAMADA_KEYS = [key for key, value in OPCIONES_LLAMADA]
 
+    PREFIJO_DIALPLAN = 'Omlcrm'
+
     campana = models.ForeignKey(Campana, related_name='parametros_crm', on_delete=models.CASCADE)
     nombre = models.CharField(max_length=128)
     valor = models.CharField(max_length=256)
@@ -3539,26 +3543,28 @@ class ParametrosCrm(models.Model):
 
     def obtener_valor(self, agente, contacto, datos_de_llamada):
         if self.tipo == ParametrosCrm.DATO_CAMPANA:
-            return self.obtener_valor_de_campana()
+            return self._obtener_valor_de_campana()
         if self.tipo == ParametrosCrm.DATO_CONTACTO:
-            return self.obtener_valor_de_contacto(contacto)
+            return self._obtener_valor_de_contacto(contacto)
         if self.tipo == ParametrosCrm.DATO_LLAMADA:
-            return self.obtener_valor_de_llamada(agente, datos_de_llamada)
+            return self._obtener_valor_de_llamada(agente, datos_de_llamada)
         if self.tipo == ParametrosCrm.CUSTOM:
             return self.valor
+        if self.tipo == ParametrosCrm.DIALPLAN:
+            return datos_de_llamada.get(self.valor, '')
 
-    def obtener_valor_de_campana(self):
+    def _obtener_valor_de_campana(self):
         if self.valor == 'tipo':
             return self.campana.get_type_display()
         return getattr(self.campana, self.valor)
 
-    def obtener_valor_de_contacto(self, contacto):
+    def _obtener_valor_de_contacto(self, contacto):
         if contacto is None:
             return ''
         datos_contacto = contacto.obtener_datos()
         return datos_contacto[self.valor]
 
-    def obtener_valor_de_llamada(self, agente, datos_de_llamada):
+    def _obtener_valor_de_llamada(self, agente, datos_de_llamada):
         if self.valor == 'agent_id':
             return agente.id
         return datos_de_llamada[self.valor]

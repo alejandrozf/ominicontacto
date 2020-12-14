@@ -80,7 +80,7 @@ Luego queda realizar la asignación de parámetros a enviar hacia el CRM. Esto s
 *Figure 5: CRM campaign params*
 
 En esta etapa de la configuración de cualquier campaña, podemos indicar cada uno de los parámetros disponibles en OMniLeads y que se deben enviar hacia el CRM cada vez que se conecte una llamada a un agente.
-Dichos parámetros disponibles se agrupan en cuatro familias:
+Dichos parámetros disponibles se agrupan en cinco familias:
 
 * **Dato de campaña**, conformado por los parámetros;
      * **id**: es el id de la campaña
@@ -97,6 +97,8 @@ Dichos parámetros disponibles se agrupan en cuatro familias:
 * **Dato de base de contactos**, serían parámetros disponibles a partir de las columnas de la base de contactos de campaña actual. Entonces quiere decir que podemos citar a cualquier columna de la base como parámetro a enviar en una llamada al CRM.
 
 * **Parámetro Fijo**, se puede fijar un parámetro a enviar en cada llamada.
+
+* **Dato de Dialplan**, es un parámetro que el Dialplan debe enviar en un header en el originate
 
 Una vez descriptos cada parámetro del sistema, se observa en la *figura 5* que por cada parámetro a enviar se deben completar tres campos:
 
@@ -186,3 +188,4 @@ La diferencia respecto a las URLs estándares (HTTP GET) que se expuso en el *ej
 *Figure 10: Campaign and CRM parameters*
 
 Finalmente resaltamos la relación entra las columnas 2 y 3 de cada parámetro, en el marco de las "clean URLs" .
+
