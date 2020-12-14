@@ -624,10 +624,10 @@ class CampanaMixinForm(object):
         return id_ruta_saliente
 
 
-class CampanaForm(CampanaMixinForm, forms.ModelForm):
+class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
-        super(CampanaForm, self).__init__(*args, **kwargs)
+        super(CampanaEntranteForm, self).__init__(*args, **kwargs)
         self.fields['outr'].queryset = RutaSaliente.objects.all()
         instance = getattr(self, 'instance', None)
         if instance.pk is None:
@@ -659,7 +659,7 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
         model = Campana
         fields = ('nombre', 'bd_contacto', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
-                  'outcid', 'outr')
+                  'outcid', 'outr', 'videocall_habilitada')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }

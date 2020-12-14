@@ -140,6 +140,7 @@ class CampanaFamily(AbstractRedisFamily):
             'IDJSON': "",
             'PERMITOCCULT': "",
             'MAXCALLS': "",
+            'VIDEOCALL': str(campana.videocall_habilitada),
         }
 
         if campana.queue_campana.timeout:

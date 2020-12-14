@@ -55,6 +55,9 @@ function createDataTable() {
                     if (data.search('ONCALL') != -1) {
                         $status.attr('class', 'oncall');
                     }
+                    if (data.search('ONVIDEO') != -1) {
+                        $status.attr('class', 'oncall');
+                    }
                     if (data.search('DIALING') != -1) {
                         $status.attr('class', 'dialing');
                     }
