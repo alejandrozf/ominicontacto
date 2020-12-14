@@ -159,6 +159,15 @@ class CampanasThreadsTests(OMLTransaccionBaseTest):
 
         self.assertTrue(test_condition)
 
+    def test_campana_dialer_finalizar_campana_activa(self):
+        self.campana.estado = Campana.ESTADO_ACTIVA
+        self.campana.save()
+        url = reverse('finalizar_campana_dialer')
+        post_data = {'campana_pk': self.campana.id}
+        self.client.post(url, post_data, follow=True)
+        campanas_finalizadas = Campana.objects.filter(estado=Campana.ESTADO_FINALIZADA)
+        self.assertIn(self.campana, campanas_finalizadas)
+
 
 class CampanasTests(OMLBaseTest):
 

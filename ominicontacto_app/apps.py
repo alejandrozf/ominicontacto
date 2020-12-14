@@ -708,6 +708,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'eliminar_archivo_audio',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'finalizar_campana_dialer',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
         ]
 
     informacion_de_permisos = {
@@ -1116,4 +1118,6 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Editar un Archivo de Audio'), 'version': '1.7.0'},
         'eliminar_archivo_audio':
             {'descripcion': _('Eliminar un Archivo de Audio'), 'version': '1.7.0'},
+        'finalizar_campana_dialer':
+            {'descripcion': _('Finalizar una campana dialer activa'), 'version': '1.7.0'},
     }

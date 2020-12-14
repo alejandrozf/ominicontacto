@@ -646,6 +646,10 @@ urlpatterns = [
         login_required(
             views_campana_dialer.FinalizarCampanasActivasView.as_view()),
         name="campana_dialer_finaliza_activas"),
+    url(r'^campana_dialer/finalizar/$',
+        login_required(
+            views_campana_dialer.FinalizarCampanaDialerView.as_view()),
+        name="finalizar_campana_dialer"),
     # ==========================================================================
     # Campana Manual
     # ==========================================================================
