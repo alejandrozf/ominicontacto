@@ -1074,3 +1074,30 @@ body > h1 {
     display: block;
   }
 }
+
+/* Video Llamadas */
+#buttonVideo {
+  position: fixed;
+  top: 150px;
+  height: 150px;
+  width: 55px;
+  padding: 0;
+  opacity: 0.75;
+  z-index: 1000;
+  right: 300px;
+}
+
+#video-container {
+  position: fixed;
+  right: 370px;
+  top: 150px;
+  width: 640px;
+}
+
+#reload_video_id {
+  position: fixed;
+  top: 150px;
+  right: 360px;
+  z-index: 1001;
+  background-color: white;
+}

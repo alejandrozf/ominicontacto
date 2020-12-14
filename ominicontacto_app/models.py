@@ -51,8 +51,7 @@ from simple_history.models import HistoricalRecords
 
 from ominicontacto_app.utiles import (
     ValidadorDeNombreDeCampoExtra, fecha_local, datetime_hora_maxima_dia,
-    datetime_hora_minima_dia, remplace_espacio_por_guion, dividir_lista,
-    crear_segmento_grabaciones_url)
+    datetime_hora_minima_dia, remplace_espacio_por_guion, dividir_lista)
 from ominicontacto_app.permisos import PermisoOML
 PermisoOML
 
@@ -1066,6 +1065,7 @@ class Campana(models.Model):
     campo_desactivacion = models.CharField(max_length=128, null=True, blank=True)
 
     mostrar_nombre = models.BooleanField(default=True)
+    videocall_habilitada = models.BooleanField(default=False)
 
     def __str__(self):
         return self.nombre
@@ -2485,163 +2485,6 @@ class MensajeEnviado(models.Model):
 
     class Meta:
         db_table = 'mensaje_enviado'
-
-
-class GrabacionManager(models.Manager):
-
-    def grabacion_by_fecha(self, fecha):
-        try:
-            return self.filter(fecha=fecha)
-        except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation(_("No se encontro contactos con esa "
-                                         "fecha")))
-
-    def grabacion_by_fecha_intervalo(self, fecha_inicio, fecha_fin):
-        fecha_inicio = datetime_hora_minima_dia(fecha_inicio)
-        fecha_fin = datetime_hora_maxima_dia(fecha_fin)
-        try:
-            return self.filter(fecha__range=(fecha_inicio, fecha_fin))
-        except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation(_("No se encontro contactos con ese rango "
-                                         "de fechas")))
-
-    def grabacion_by_fecha_intervalo_campanas(self, fecha_inicio, fecha_fin, campanas):
-        fecha_inicio = datetime_hora_minima_dia(fecha_inicio)
-        fecha_fin = datetime_hora_maxima_dia(fecha_fin)
-        try:
-            return self.filter(fecha__range=(fecha_inicio, fecha_fin),
-                               campana__in=campanas).order_by('-fecha')
-        except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation(_("No se encontro contactos con ese rango "
-                                         "de fechas")))
-
-    def grabacion_by_tipo_llamada(self, tipo_llamada):
-        try:
-            return self.filter(tipo_llamada=tipo_llamada)
-        except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation(_("No se encontro contactos con esa "
-                                         "tipo llamada")))
-
-    def grabacion_by_id_cliente(self, id_cliente):
-        try:
-            return self.filter(id_cliente__contains=id_cliente)
-        except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation(_("No se encontro contactos con esa "
-                                         "id cliente")))
-
-    def grabacion_by_tel_cliente(self, tel_cliente):
-        try:
-            return self.filter(tel_cliente__contains=tel_cliente)
-        except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation(_("No se encontro contactos con esa "
-                                         "tel de cliente")))
-
-    def grabacion_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada, tel_cliente, callid,
-                            id_contacto_externo, agente, campana, campanas, marcadas, duracion,
-                            gestion):
-        grabaciones = self.filter(campana__in=campanas)
-
-        if fecha_desde and fecha_hasta:
-            fecha_desde = datetime_hora_minima_dia(fecha_desde)
-            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
-            grabaciones = grabaciones.filter(fecha__range=(fecha_desde,
-                                                           fecha_hasta))
-        if tipo_llamada:
-            grabaciones = grabaciones.filter(tipo_llamada=tipo_llamada)
-        if tel_cliente:
-            grabaciones = grabaciones.filter(tel_cliente__contains=tel_cliente)
-        if callid:
-            grabaciones = grabaciones.filter(callid=callid)
-        if id_contacto_externo:
-            contactos_id_externo = Contacto.objects.filter(id_externo=id_contacto_externo)
-            telefonos_contacto = contactos_id_externo.values_list('telefono', flat=True)
-            grabaciones = grabaciones.filter(tel_cliente__in=telefonos_contacto)
-        if agente:
-            grabaciones = grabaciones.filter(agente=agente)
-        if campana:
-            grabaciones = grabaciones.filter(campana=campana)
-        if duracion and duracion > 0:
-            grabaciones = grabaciones.filter(duracion__gte=duracion)
-        if marcadas:
-            total_grabaciones_marcadas = Grabacion.objects.marcadas()
-            grabaciones = grabaciones & total_grabaciones_marcadas
-        if gestion:
-            calificaciones_gestion_campanas = CalificacionCliente.obtener_califs_gestion_campanas(
-                campanas)
-            callids_calificaciones_gestion = list(calificaciones_gestion_campanas.values_list(
-                'callid', flat=True))
-            grabaciones = grabaciones.filter(callid__in=callids_calificaciones_gestion)
-
-        return grabaciones.order_by('-fecha')
-
-    def obtener_count_campana(self):
-        try:
-            return self.values('campana', 'campana__nombre').annotate(
-                cantidad=Count('campana')).order_by('campana')
-        except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation(_("No se encontro grabaciones ")))
-
-    def obtener_count_agente(self):
-        try:
-            return self.values('agente_id').annotate(
-                cantidad=Count('agente_id')).order_by('agente_id')
-        except Grabacion.DoesNotExist:
-            raise (SuspiciousOperation(_("No se encontro grabaciones ")))
-
-    def marcadas(self):
-        marcaciones = GrabacionMarca.objects.values_list('callid', flat=True)
-        return self.filter(callid__in=marcaciones)
-
-
-class Grabacion(models.Model):
-    objects_default = models.Manager()
-    # Por defecto django utiliza el primer manager instanciado. Se aplica al
-    # admin de django, y no aplica las customizaciones del resto de los
-    # managers que se creen.
-
-    objects = GrabacionManager()
-    TYPE_MANUAL = 1
-    """Tipo de llamada manual"""
-
-    TYPE_DIALER = 2
-    """Tipo de llamada DIALER"""
-
-    TYPE_INBOUND = 3
-    """Tipo de llamada inbound"""
-
-    TYPE_PREVIEW = 4
-    """Tipo de llamada preview"""
-    TYPE_LLAMADA_CHOICES = (
-        (TYPE_DIALER, 'DIALER'),
-        (TYPE_INBOUND, 'INBOUND'),
-        (TYPE_MANUAL, 'MANUAL'),
-        (TYPE_PREVIEW, 'PREVIEW'),
-    )
-    fecha = models.DateTimeField()
-    tipo_llamada = models.PositiveIntegerField(choices=TYPE_LLAMADA_CHOICES)
-    id_cliente = models.CharField(max_length=255)
-    tel_cliente = models.CharField(max_length=255)
-    grabacion = models.CharField(max_length=255)
-    agente = models.ForeignKey(AgenteProfile, related_name='grabaciones', on_delete=models.CASCADE)
-    campana = models.ForeignKey(Campana, related_name='grabaciones', on_delete=models.CASCADE)
-    callid = models.CharField(max_length=45, blank=True, null=True)
-    duracion = models.IntegerField(default=0)
-
-    def __str__(self):
-        return "grabacion del agente {0} con el cliente {1}".format(
-            self.agente.user.get_full_name(), self.id_cliente)
-
-    @property
-    def url(self):
-        hoy = fecha_local(now())
-        dia_grabacion = fecha_local(self.fecha)
-        filename = "/".join([crear_segmento_grabaciones_url(),
-                             dia_grabacion.strftime("%Y-%m-%d"),
-                             self.grabacion])
-        if dia_grabacion < hoy:
-            return filename + '.' + settings.MONITORFORMAT
-        else:
-            return filename + '.wav'
 
 
 class GrabacionMarca(models.Model):

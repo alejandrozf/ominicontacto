@@ -34,9 +34,9 @@ from django.utils.translation import ugettext as _
 from formtools.wizard.views import SessionWizardView
 
 from configuracion_telefonia_app.models import DestinoEntrante
-from ominicontacto_app.forms import (CampanaForm, QueueEntranteForm, OpcionCalificacionFormSet,
-                                     ParametrosCrmFormSet, CampanaSupervisorUpdateForm,
-                                     QueueMemberFormset, GrupoAgenteForm)
+from ominicontacto_app.forms import (
+    CampanaEntranteForm, QueueEntranteForm, OpcionCalificacionFormSet, ParametrosCrmFormSet,
+    CampanaSupervisorUpdateForm, QueueMemberFormset, GrupoAgenteForm)
 from ominicontacto_app.models import (Campana, ArchivoDeAudio, SupervisorProfile, AgenteProfile,
                                       QueueMember)
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
@@ -214,7 +214,7 @@ class CampanaWizardMixin(object):
     ADICION_SUPERVISORES = '4'
     ADICION_AGENTES = '5'
 
-    FORMS = [(INICIAL, CampanaForm),
+    FORMS = [(INICIAL, CampanaEntranteForm),
              (COLA, QueueEntranteForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (PARAMETROS_CRM, ParametrosCrmFormSet),
@@ -501,7 +501,7 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
     OPCIONES_CALIFICACION = '2'
     PARAMETROS_CRM = '3'
 
-    FORMS = [(INICIAL, CampanaForm),
+    FORMS = [(INICIAL, CampanaEntranteForm),
              (COLA, QueueEntranteForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (PARAMETROS_CRM, ParametrosCrmFormSet)]
@@ -563,7 +563,7 @@ class CampanaEntranteTemplateCreateView(CampanaTemplateCreateMixin, CampanaEntra
     OPCIONES_CALIFICACION = '2'
     PARAMETROS_CRM = '3'
 
-    FORMS = [(INICIAL, CampanaForm),
+    FORMS = [(INICIAL, CampanaEntranteForm),
              (COLA, QueueEntranteForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (PARAMETROS_CRM, ParametrosCrmFormSet)]

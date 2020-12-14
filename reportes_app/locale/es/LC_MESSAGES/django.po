@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-09 11:52-0300\n"
+"POT-Creation-Date: 2020-12-11 10:52-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -156,11 +156,39 @@ msgstr ""
 msgid "Formato JSON invalido"
 msgstr ""
 
-#: reportes_app/models.py:128 reportes_app/models.py:140
+#: reportes_app/models.py:134 reportes_app/models.py:146
 msgid "No se encontraron llamadas "
 msgstr ""
 
-#: reportes_app/models.py:298
+#: reportes_app/models.py:363
+msgid "Llamada manual"
+msgstr ""
+
+#: reportes_app/models.py:364
+msgid "Llamada dialer"
+msgstr ""
+
+#: reportes_app/models.py:365
+msgid "Llamada entrante"
+msgstr ""
+
+#: reportes_app/models.py:366
+msgid "Llamada preview"
+msgstr ""
+
+#: reportes_app/models.py:367
+msgid "Llamada click2call"
+msgstr ""
+
+#: reportes_app/models.py:368
+msgid "Llamada transferencia interna"
+msgstr ""
+
+#: reportes_app/models.py:369
+msgid "Llamada transferencia externa"
+msgstr ""
+
+#: reportes_app/models.py:411
 msgid "No se encontraron pausas "
 msgstr ""
 

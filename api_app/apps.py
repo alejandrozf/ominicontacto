@@ -95,7 +95,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_status_calificacion_llamada',
              'roles': ['Agente', ]},
-
+            {'nombre': 'api_grabacion_archivo',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
         ]
 
     informacion_de_permisos = {
@@ -179,5 +180,8 @@ class ApiAppConfig(AppConfig):
             {'descripcion': _('Detecta si una llamada esta calificada.'),
              'version': '1.8.0'},
         'reenviar_key_registro':
-            {'description': _('Reenvía la llave de la instancia registrada por email')}
+            {'description': _('Reenvía la llave de la instancia registrada por email')},
+        'api_grabacion_archivo':
+            {'descripcion': _('Retorna el archivo de grabación especificado'),
+             'version': '1.11.0'},
     }

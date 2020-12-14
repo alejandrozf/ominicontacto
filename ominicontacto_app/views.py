@@ -326,6 +326,9 @@ class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
         kamailio_service = KamailioService()
         sip_usuario = kamailio_service.generar_sip_user(agente_profile.sip_extension)
         sip_password = kamailio_service.generar_sip_password(sip_usuario)
+        video_domain = ''
+        if 'WEBPHONE_VIDEO_DOMAIN' in settings.CONSTANCE_CONFIG:
+            video_domain = config_constance.WEBPHONE_VIDEO_DOMAIN
 
         hoy = fecha_local(now())
         registros = LlamadaLog.objects.obtener_llamadas_finalizadas_del_dia(agente_profile.id, hoy)
@@ -340,6 +343,7 @@ class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
         context['sip_password'] = sip_password
         context['agentes'] = AgenteProfile.objects.obtener_activos().exclude(id=agente_profile.id)
         context['max_session_age'] = settings.SESSION_COOKIE_AGE
+        context['video_domain'] = video_domain
 
         return context
 
