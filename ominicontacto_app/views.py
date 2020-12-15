@@ -454,38 +454,24 @@ def crear_chat_view(request):
     return response
 
 
-# DEPRECATED ? - En caso de borrarse, borrar tambien otras clases asociadas
+class AddonsInfoView(TemplateView):
+    """Vista que se muestra todos los addons disponibles
+    """
 
-# def mensajes_recibidos_enviado_remitente_view(request):
-#     remitente = request.GET['phoneNumber']
-#     service_sms = SmsManager()
-#     mensajes = service_sms.obtener_mensaje_enviado_recibido(remitente)
-#     response = JsonResponse(service_sms.
-#                             armar_json_mensajes_recibidos_enviados(mensajes),
-#                             safe=False)
-#     return response
+    template_name = 'addons.html'
 
+    def _obtener_datos_addons(self):
+        addons_info_url = '{0}/addons/info'.format(config_constance.KEYS_SERVER_HOST)
+        try:
+            info_addons = requests.get(addons_info_url, verify=config_constance.SSL_CERT_FILE)
+        except requests.RequestException as e:
+            logger.info(_("No se pudo acceder a la url debido a: {0}".format(e)))
+            return []
+        else:
+            info_addons_list = info_addons.json()['data']
+            return info_addons_list
 
-# def mensajes_recibidos_view(request):
-#     service_sms = SmsManager()
-#     mensajes = service_sms.obtener_mensajes_recibidos_por_remitente()
-#     response = JsonResponse(
-#         service_sms.armar_json_mensajes_recibidos_por_remitente(mensajes),
-#         safe=False
-#     )
-
-#     return response
-
-# def mensajes_recibidos_view(request):
-#
-#     service_sms = SmsManager()
-#     mensajes = service_sms.obtener_ultimo_mensaje_por_numero()
-#     response = JsonResponse(service_sms.armar_json_mensajes_recibidos(mensajes))
-#     return response
-
-# # TEST para probar sitio externo
-# def profile_page(request, username):
-#     prueba = request.GET.get('q', '')
-#     print(prueba)
-#     return render_to_response('blanco.html',
-#                               context_instance=RequestContext(request))
+    def get_context_data(self, **kwargs):
+        context = super(AddonsInfoView, self).get_context_data(**kwargs)
+        context['addons_info'] = self._obtener_datos_addons()
+        return context

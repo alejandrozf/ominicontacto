@@ -70,6 +70,11 @@
                         <a class="menu-link" href="{% url 'acerca' %}">{% trans 'Acerca de' %}</a>
                     </li>
                 {% endif %}
+                {% if user|has_oml_permission:'addons_disponibles' %}
+                    <li>
+                        <a class="menu-link" href="{% url 'addons_disponibles' %}">{% trans 'Addons' %}</a>
+                    </li>
+                {% endif %}
             </ul>
         </li>
         {% endif %}

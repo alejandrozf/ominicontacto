@@ -22,6 +22,7 @@ from __future__ import unicode_literals
 import json
 from django import forms
 from django.conf import settings
+
 from django.forms.models import inlineformset_factory, BaseInlineFormSet, ModelChoiceField
 from django.contrib.auth.forms import (
     UserChangeForm,
@@ -1843,9 +1844,9 @@ class RegistroForm(forms.Form):
     password = forms.CharField(label=_("Inserte su contraseña de acceso"),
                                widget=forms.PasswordInput(attrs={'class': 'form-control'}),
                                required=True)
-    email = forms.CharField(label=_("Inserte su correo electrónico"),
-                            widget=forms.TextInput(attrs={'class': 'form-control'}),
-                            required=True)
+    email = forms.EmailField(label=_("Inserte su correo electrónico"),
+                             widget=forms.TextInput(attrs={'class': 'form-control'}),
+                             required=True)
     telefono = forms.CharField(label=_("Inserte su teléfono"),
                                widget=forms.TextInput(attrs={'class': 'form-control'}),
                                required=False)

@@ -61,6 +61,10 @@ urlpatterns = [
         login_required(views.AcercaTemplateView.as_view()),
         name='acerca',
         ),
+    url(r'^addons/$',
+        login_required(views.AddonsInfoView.as_view()),
+        name='addons_disponibles',
+        ),
 
     url(r'^blanco/$',
         login_required(views.BlancoView.as_view()),
