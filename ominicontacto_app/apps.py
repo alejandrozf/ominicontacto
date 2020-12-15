@@ -352,6 +352,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'registrar_usuario',
              'roles': ['Administrador', ]},
+            {'nombre': 'addons_disponibles',
+             'roles': ['Administrador', ]},
             {'nombre': 'user_nuevo',
              'roles': ['Administrador', 'Gerente', ]},
             {'nombre': 'user_new_agent',
@@ -717,6 +719,9 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Consola de Agente'), 'version': '1.7.0'},
         'registrar_usuario':
             {'descripcion': _('Registrar la llave del usuario OML'), 'version': '1.7.0'},
+        'addons_disponibles':
+            {'descripcion': _('Obtener información de los addons disponibles'),
+             'version': '1.11.6'},
         'user_nuevo':
             {'descripcion': _('Crear un Usuario'), 'version': '1.7.0'},
         'user_new_agent':
