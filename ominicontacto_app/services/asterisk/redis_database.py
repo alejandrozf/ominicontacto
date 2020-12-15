@@ -232,6 +232,7 @@ class AgenteFamily(AbstractRedisFamily):
     def regenerar_family(self, agente, preservar_status=False):
         """Regenera una family de Agente y preserva su status actual en Asterisk"""
         agente_status = ''
+        agente_timestamp = ''
         if preservar_status:
             redis_connection = self.get_redis_connection()
             agente_info = redis_connection.hgetall(
