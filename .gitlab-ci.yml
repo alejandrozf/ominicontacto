@@ -186,7 +186,7 @@ deploy-docker-devenv:
     - cd ~/omnileads/devenv && docker-compose up -d
     - cd ~/omnileads/devenv/omnileads-websockets/deploy && docker-compose up -d
     - until curl -sk --head  --request GET https://localhost |grep "302" > /dev/null; do echo "Environment still being installed, sleeping 80 seconds"; sleep 80; done; echo "Environment is up"
-    - docker exec -u omnileads -d oml-omniapp-devenv python3 manage.py cambiar_admin_password
+    - docker exec -u omnileads -d oml-omniapp-devenv python3 manage.py cambiar_admin_password && sleep 10
     - TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=localhost ADMIN_USERNAME=admin ADMIN_PASSWORD=admin LOGIN_FAILURE_LIMIT=10 python ~/ominicontacto/ominicontacto_app/tests/test_integracion/test_all.py
   tags:
     - deploy-docker

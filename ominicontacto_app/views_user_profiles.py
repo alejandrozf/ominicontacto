@@ -51,11 +51,11 @@ from ominicontacto_app.permisos import PermisoOML
 from ominicontacto_app.views_queue_member import activar_cola, remover_agente_cola_asterisk
 
 from .services.asterisk_service import ActivacionAgenteService, RestablecerConfigSipError
-
-
-import logging as logging_
 from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnectorError, \
     AmiManagerClient
+
+import logging as logging_
+import os
 
 logger = logging_.getLogger(__name__)
 
@@ -540,6 +540,12 @@ class ClienteWebPhoneListView(ListView):
     model = ClienteWebPhoneProfile
     template_name = 'user/cliente_webphone_list.html'
 
+    def _get_addon_version(self):
+        if os.getenv('WEBPHONE_CLIENT_VERSION'):
+            return os.getenv('WEBPHONE_CLIENT_VERSION')
+        else:
+            return "DEVENV"
+
     def get_context_data(self, **kwargs):
         context = super(ClienteWebPhoneListView, self).get_context_data(
             **kwargs)
@@ -548,6 +554,7 @@ class ClienteWebPhoneListView(ListView):
         # TODO: Limitar la lista a los clientes que tiene asignado
 
         context['clientes'] = clientes
+        context['version'] = self._get_addon_version()
         return context
 
 

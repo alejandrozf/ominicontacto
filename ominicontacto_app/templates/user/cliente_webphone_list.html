@@ -22,7 +22,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 
 {% block content %}
-<h1>{% trans 'Clientes WebPhone' %}</h1>
+<div class="row mt-1">
+  <div class="col-md-10">
+    <h1>{% trans 'Clientes WebPhone' %}</h1>
+  </div>
+  <div class="col-md-2">
+    <h2> v{{ version}} </h2>
+  </div>
+</div>
 
 <table class="table">
     <thead>
