@@ -4551,10 +4551,8 @@ msgid "Url"
 msgstr "URL"
 
 #: ominicontacto_app/templates/sitio_externo/sitio_externo_list.html:40
-#, fuzzy
-#| msgid "Administrador"
 msgid "Disparador"
-msgstr "مدیر"
+msgstr "ماشه"
 
 #: ominicontacto_app/templates/sitio_externo/sitio_externo_list.html:41
 msgid "Método"
@@ -5234,18 +5232,3 @@ msgstr ""
 #: ominicontacto_app/views_user_profiles.py:421
 msgid "El Cliente WebPhone fue activado"
 msgstr ""
-
-#~ msgid "Credenciales creadas para esta instancia"
-#~ msgstr "Created credentials for this instance"
-
-#~ msgid "Trigger"
-#~ msgstr "مدیر"
-
-#~ msgid "tipo"
-#~ msgstr "نوع"
-
-#~ msgid "número"
-#~ msgstr "شماره تلفن"
-
-#~ msgid "fecha"
-#~ msgstr "تاریخ"

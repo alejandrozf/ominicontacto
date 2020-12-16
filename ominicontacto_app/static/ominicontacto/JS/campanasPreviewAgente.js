@@ -14,9 +14,9 @@
 
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see http://www.gnu.org/licenses/.
-
 */
-/* global gettext Urls*/
+/* global gettext Urls OMLAPI */
+
 function set_url_parameters(url, parameters){
     var new_url = url;
     for (var i = 0; i < parameters.length; i++) {
@@ -80,13 +80,16 @@ $(document).ready(function(){
             if (data['contacto_asignado'] == true) {
                 // hacemos click en el botón del form para iniciar la
                 // llamada
-                var campaign_id = $('#pk_campana').val();
-                var campaign_type = $('#tipo_campana').val();
-                var contact_id = $('#pk_contacto').val();
-                var phone = data['telefono_contacto'];
-                var call_type = $('#click2call_type').val();
-                var click2call = window.parent.click2call;
-                click2call.call_contact(campaign_id, campaign_type, contact_id, phone, call_type);
+                if (data['obligar_calificacion'] == true){
+                    var oml_api = new OMLAPI();
+                    oml_api.llamadaCalificada(function(){
+                        $('#llamar_contacto').trigger('click');}, function(call_data){
+                        var click2call = window.parent.click2call;
+                        click2call.make_disposition(call_data);});
+                }
+                else {
+                    $('#llamar_contacto').trigger('click');
+                }
             }
             else {
                 // se muestra modal con mensaje de error

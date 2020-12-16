@@ -352,6 +352,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'registrar_usuario',
              'roles': ['Administrador', ]},
+            {'nombre': 'addons_disponibles',
+             'roles': ['Administrador', ]},
             {'nombre': 'user_nuevo',
              'roles': ['Administrador', 'Gerente', ]},
             {'nombre': 'user_new_agent',
@@ -580,6 +582,14 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'campana_dialer_finaliza_activas',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'disposition_incidence_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'disposition_incidence_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'disposition_incidence_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'disposition_incidence_edit',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'campana_manual_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'campana_manual_create',
@@ -708,6 +718,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'eliminar_archivo_audio',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'finalizar_campana_dialer',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
         ]
 
     informacion_de_permisos = {
@@ -715,6 +727,9 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Consola de Agente'), 'version': '1.7.0'},
         'registrar_usuario':
             {'descripcion': _('Registrar la llave del usuario OML'), 'version': '1.7.0'},
+        'addons_disponibles':
+            {'descripcion': _('Obtener información de los addons disponibles'),
+             'version': '1.11.6'},
         'user_nuevo':
             {'descripcion': _('Crear un Usuario'), 'version': '1.7.0'},
         'user_new_agent':
@@ -975,6 +990,16 @@ class OminicontactoAppConfig(AppConfig):
         'campana_dialer_finaliza_activas':
             {'descripcion': _('Finalizar campañas activas que no tengan contactos pendientes'),
              'version': '1.7.0'},
+        'disposition_incidence_list':
+            {'descripcion': _('Listado de Reglas de incidencia por calificación'),
+             'version': '1.11.8'},
+        'disposition_incidence_delete':
+            {'descripcion': _('Eliminar Reglas de incidencia por calificación'),
+             'version': '1.11.8'},
+        'disposition_incidence_create':
+            {'descripcion': _('Crear Regla de incidencia por calificación'), 'version': '1.11.8'},
+        'disposition_incidence_edit':
+            {'descripcion': _('Editar Regla de incidencia por calificación'), 'version': '1.11.8'},
         'campana_manual_list':
             {'descripcion': _('Ver listado de campañas Manuales'), 'version': '1.7.0'},
         'campana_manual_create':
@@ -1116,4 +1141,6 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Editar un Archivo de Audio'), 'version': '1.7.0'},
         'eliminar_archivo_audio':
             {'descripcion': _('Eliminar un Archivo de Audio'), 'version': '1.7.0'},
+        'finalizar_campana_dialer':
+            {'descripcion': _('Finalizar una campana dialer activa'), 'version': '1.7.0'},
     }

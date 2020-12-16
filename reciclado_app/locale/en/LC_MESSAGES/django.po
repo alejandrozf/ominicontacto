@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-26 15:37-0300\n"
+"POT-Creation-Date: 2020-12-15 11:18-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -83,3 +83,20 @@ msgstr "How do you want to recycle this campaign?"
 #: reciclado_app/templates/nuevo_reciclado.html:55
 msgid "Reciclar"
 msgstr "Recycle"
+
+#: reciclado_app/views.py:68
+msgid ""
+"<strong>Operación Errónea!</strong>                         Debe seleccionar "
+"al menos una opcion para reciclar "
+msgstr "<strong>Errr!</strong>                         You must select "
+"at least one option to recycle"
+
+#: reciclado_app/views.py:90
+msgid ""
+"<strong>Operación Errónea!</strong>                No se pudo reciclar la "
+"Campana."
+msgstr "<strong>Error!</strong>                         Campaign could not be recycled "
+
+#: reciclado_app/views.py:119
+msgid "Esta campaña no se puede reciclar."
+msgstr "This campaign cannot be recycled."

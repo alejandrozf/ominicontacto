@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the PACKAGE package.
 # Hamed Kouhfallah <k.haamed@gmail.com>, 2019.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"

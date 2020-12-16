@@ -61,6 +61,10 @@ urlpatterns = [
         login_required(views.AcercaTemplateView.as_view()),
         name='acerca',
         ),
+    url(r'^addons/$',
+        login_required(views.AddonsInfoView.as_view()),
+        name='addons_disponibles',
+        ),
 
     url(r'^blanco/$',
         login_required(views.BlancoView.as_view()),
@@ -646,6 +650,27 @@ urlpatterns = [
         login_required(
             views_campana_dialer.FinalizarCampanasActivasView.as_view()),
         name="campana_dialer_finaliza_activas"),
+    url(r'^campana_dialer/finalizar/$',
+        login_required(
+            views_campana_dialer.FinalizarCampanaDialerView.as_view()),
+        name="finalizar_campana_dialer"),
+    url(r'^campana_dialer/reglas_incidencia_calificacion/(?P<pk_campana>\d+)/lista/$',
+        login_required(
+            views_campana_dialer.ReglasDeIncidenciaDeCalificacionesListView.as_view()),
+        name="disposition_incidence_list"),
+    url(r'^campana_dialer/reglas_incidencia_calificacion/(?P<pk>\d+)/borrar/$',
+        login_required(
+            views_campana_dialer.ReglasDeIncidenciaDeCalificacionesDeleteView.as_view()),
+        name="disposition_incidence_delete"),
+    url(r'^campana_dialer/reglas_incidencia_calificacion/(?P<pk_campana>\d+)/crear/$',
+        login_required(
+            views_campana_dialer.ReglasDeIncidenciaDeCalificacionesCreateView.as_view()),
+        name="disposition_incidence_create"),
+    url(r'^campana_dialer/reglas_incidencia_calificacion/(?P<pk>\d+)/editar/$',
+        login_required(
+            views_campana_dialer.ReglasDeIncidenciaDeCalificacionesUpdateView.as_view()),
+        name="disposition_incidence_edit"),
+
     # ==========================================================================
     # Campana Manual
     # ==========================================================================

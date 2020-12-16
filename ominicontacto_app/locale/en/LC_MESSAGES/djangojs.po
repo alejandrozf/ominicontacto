@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-09 11:52-0300\n"
+"POT-Creation-Date: 2020-12-15 11:18-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,8 +46,8 @@ msgstr ""
 "Could not access your microphone. \n"
 "Grant access to it and reload the page to start working."
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/main.js:94
 #: ominicontacto_app/static/ominicontacto/JS/agente/main.js:95
+#: ominicontacto_app/static/ominicontacto/JS/agente/main.js:96
 msgid "Recuerde cerrar la sesión antes de salir de esta pantalla."
 msgstr "Remember to logout before leaving this page."
 
@@ -83,149 +83,149 @@ msgstr "The call could not be started. Try again."
 msgid "Error => "
 msgstr "Error =>"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:73
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:76
 msgid "Grabar llamada"
 msgstr "Record call"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:80
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:83
 msgid "Parar grabación llamada"
 msgstr "Stop recording call"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:209
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:212
 msgid "Seleccione una opción válida"
 msgstr "Please choose a valid option"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:237
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:443
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:710
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:240
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:453
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:723
 msgid "Conectado a %(fromUser)s"
 msgstr "Connected to %(fromUser)s"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:266
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:282
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:276
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:292
 msgid "Conectado"
 msgstr "Connected"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:274
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:336
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:284
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:343
 msgid "Desconectado"
 msgstr "Disconnected"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:307
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:317
 msgid "Llamando"
 msgstr "Dialing"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:315
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:325
 msgid "En llamado"
 msgstr "On Call"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:324
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:332
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:334
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:342
 msgid "Transfiriendo"
 msgstr "Transferring"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:341
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:351
 msgid "Recibiendo llamado"
 msgstr "Receiving Call"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:349
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:359
 msgid "En espera"
 msgstr "On Hold"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:364
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:374
 msgid "Conectando a asterisk  .."
 msgstr "Connecting to asterisk .."
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:367
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:377
 msgid "Agente conectado a asterisk"
 msgstr "Agent connected to asterisk"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:371
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:381
 msgid "Agente no conectado a asterisk, contacte a su administrador"
 msgstr "Agent not connected to asterisk. Please contact your Administrator"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:465
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:585
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:477
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:598
 msgid "Disponible"
 msgstr "Ready"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:517
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:530
 msgid "Obteniendo pausa: %(pause_name)s"
 msgstr "Getting pause: %(pause_name)s"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:527
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:540
 msgid "Agente en pausa"
 msgstr "Agent in Pause"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:530
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:543
 msgid "No se puede realizar la pausa, contacte a su administrador"
 msgstr "Unable to establish Pause, please reach your Administrator"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:567
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:580
 msgid "No se pudo salir de la pausa."
 msgstr "Could not exit of pause: "
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:588
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:601
 msgid "No se puede liberar la pausa, contacte a su administrador"
 msgstr "Unable to release Pause, please reach your Administrator"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:599
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:612
 msgid "Liberando pausa..."
 msgstr "Releasing Pause..."
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:670
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:683
 msgid "Ocupado, intente maás tarde"
 msgstr "Busy, try again later"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:673
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:686
 msgid "Rechazado, intente maás tarde"
 msgstr "Rejected, try again later"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:676
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:689
 msgid "No disponible, contacte a su administrador"
 msgstr "Not Available, contact your Administrator"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:679
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:692
 msgid "Error, verifique el número marcado"
 msgstr "Error, please check the number and try again"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:683
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:696
 msgid "Error de autenticación, contacte a su administrador"
 msgstr "Authentication Error, contact your Administrator"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:686
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:699
 msgid "Error, Falta SDP"
 msgstr "Error, Missing SDP"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:689
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:702
 msgid "Dirección incompleta"
 msgstr "Address Incomplete"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:693
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:706
 msgid "Servicio no disponible, contacte a su administrador"
 msgstr "Service Unavailable, contact your Administrator"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:697
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:710
 msgid "Error WebRTC: El usuario no permite acceso al medio"
 msgstr "WebRTC Error: Unable to access media"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:700
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:713
 msgid "Error: Llamado fallido"
 msgstr "Errorr: Failed Attempt"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:337
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:344
 msgid "Registrado"
 msgstr "Registered"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:338
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:345
 msgid "No Registrado"
 msgstr "Not Registered"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:340
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:347
 msgid "El SIP Proxy no responde, contacte a su administrador"
 msgstr "SIP Proxy not responding, contact your Administrator"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:344
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsView.js:351
 msgid "Fallo en la registración, contacte a su administrador"
 msgstr "Registration Failed, contact your Administrator"
 

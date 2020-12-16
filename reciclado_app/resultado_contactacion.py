@@ -228,6 +228,13 @@ class RecicladorContactosCampanaDIALER():
                 campana, reciclado_no_contactacion))
         return contactos_reciclados
 
+    def _obtener_contactos_no_llamados(self, campana):
+        llamadas = LlamadaLog.objects.filter(campana_id=campana.id)
+        contacto_ids = llamadas.values_list('contacto_id', flat=True).distinct()
+        queryset_no_llamados = campana.bd_contacto.contactos.exclude(id__in=contacto_ids)
+        contactos_no_llamados = [no_llamado for no_llamado in queryset_no_llamados]
+        return contactos_no_llamados
+
     def _obtener_contactos_calificados(self, campana, reciclado_calificacion):
         """
             Este metodo se encarga obtener los contactos calificados por las
@@ -323,6 +330,11 @@ class RecicladorContactosCampanaDIALER():
         # Obtener los contactos reciclados
         contactos_reciclados = self.obtener_contactos_reciclados(
             campana, reciclado_calificacion, reciclado_no_contactacion)
+
+        # Si quiero reciclar una campana activa puede existir contactos que no fueron llamados
+        if campana.estado == Campana.ESTADO_ACTIVA:
+            contactos_no_llamados = self._obtener_contactos_no_llamados(campana)
+            contactos_reciclados.update(contactos_no_llamados)
 
         # Creamos la instancia de BaseDatosContacto para el reciclado.
         bd_contacto_reciclada = campana.bd_contacto.copia_para_reciclar()

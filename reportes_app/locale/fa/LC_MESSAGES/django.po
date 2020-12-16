@@ -1159,12 +1159,3 @@ msgstr ""
 #: reportes_app/views_reportes.py:62 reportes_app/views_reportes.py:144
 msgid "Usted no puede acceder a esta campaña."
 msgstr "شما مجاز به دسترسی به این کمپین نیستید"
-
-#~ msgid "Base de datos"
-#~ msgstr "دیتابیس"
-
-#~ msgid "Fuera de Base"
-#~ msgstr "خارج از دیتابیس"
-
-#~ msgid "Telefono"
-#~ msgstr "شماره تلفن"

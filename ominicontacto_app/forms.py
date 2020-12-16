@@ -22,6 +22,7 @@ from __future__ import unicode_literals
 import json
 from django import forms
 from django.conf import settings
+
 from django.forms.models import inlineformset_factory, BaseInlineFormSet, ModelChoiceField
 from django.contrib.auth.forms import (
     UserChangeForm,
@@ -41,8 +42,8 @@ from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Blacklist, SitioExterno,
-    SistemaExterno, ReglasIncidencia, SupervisorProfile, ArchivoDeAudio,
-    NombreCalificacion, OpcionCalificacion, ParametrosCrm, AgenteEnSistemaExterno,
+    SistemaExterno, ReglasIncidencia, ReglaIncidenciaPorCalificacion, SupervisorProfile,
+    ArchivoDeAudio, NombreCalificacion, OpcionCalificacion, ParametrosCrm, AgenteEnSistemaExterno,
     AuditoriaCalificacion
 )
 from ominicontacto_app.services.campana_service import CampanaService
@@ -1492,6 +1493,32 @@ ReglasIncidenciaFormSet = inlineformset_factory(
     extra=1, min_num=0)
 
 
+class OpcionCalificacionChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.nombre
+
+
+class ReglaIncidenciaPorCalificacionForm(forms.ModelForm):
+    opcion_calificacion = OpcionCalificacionChoiceField(
+        queryset=OpcionCalificacion.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = ReglaIncidenciaPorCalificacion
+        fields = ('opcion_calificacion', 'intento_max', 'reintentar_tarde', 'en_modo')
+        widgets = {
+            "intento_max": forms.NumberInput(attrs={'class': 'form-control'}),
+            "reintentar_tarde": forms.NumberInput(attrs={'class': 'form-control'}),
+            'en_modo': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, campana, *args, **kwargs):
+        super(ReglaIncidenciaPorCalificacionForm, self).__init__(*args, **kwargs)
+        if self.instance.pk:
+            campana = self.instance.opcion_calificacion.campana
+        self.fields['opcion_calificacion'].queryset = campana.opciones_calificacion.all()
+
+
 class QueueDialerForm(forms.ModelForm):
     """
     El form de cola para las llamadas
@@ -1843,9 +1870,9 @@ class RegistroForm(forms.Form):
     password = forms.CharField(label=_("Inserte su contraseña de acceso"),
                                widget=forms.PasswordInput(attrs={'class': 'form-control'}),
                                required=True)
-    email = forms.CharField(label=_("Inserte su correo electrónico"),
-                            widget=forms.TextInput(attrs={'class': 'form-control'}),
-                            required=True)
+    email = forms.EmailField(label=_("Inserte su correo electrónico"),
+                             widget=forms.TextInput(attrs={'class': 'form-control'}),
+                             required=True)
     telefono = forms.CharField(label=_("Inserte su teléfono"),
                                widget=forms.TextInput(attrs={'class': 'form-control'}),
                                required=False)

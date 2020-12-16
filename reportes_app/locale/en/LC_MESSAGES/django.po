@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-11 10:56-0400\n"
+"POT-Creation-Date: 2020-12-15 11:18-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -160,44 +160,30 @@ msgid "No se encontraron llamadas "
 msgstr "Calls not found"
 
 #: reportes_app/models.py:363
-#, fuzzy
-#| msgid "Llamada"
 msgid "Llamada manual"
 msgstr "Manual call"
 
 #: reportes_app/models.py:364
-#, fuzzy
-#| msgid "Llamadas Pendientes"
 msgid "Llamada dialer"
 msgstr "Dialer call"
 
 #: reportes_app/models.py:365
-#, fuzzy
-#| msgid "Llamadas Entrantes"
 msgid "Llamada entrante"
 msgstr "Inbound call"
 
 #: reportes_app/models.py:366
-#, fuzzy
-#| msgid "Llamadas salientes Preview"
 msgid "Llamada preview"
 msgstr "Preview call"
 
 #: reportes_app/models.py:367
-#, fuzzy
-#| msgid "Llamadas Recibidas"
 msgid "Llamada click2call"
 msgstr "click2call"
 
 #: reportes_app/models.py:368
-#, fuzzy
-#| msgid "Llamadas Transferidas a Campañas"
 msgid "Llamada transferencia interna"
 msgstr "Internal transfer"
 
 #: reportes_app/models.py:369
-#, fuzzy
-#| msgid "Llamadas Transferidas a Campañas"
 msgid "Llamada transferencia externa"
 msgstr "External transfer"
 

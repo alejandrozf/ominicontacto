@@ -16,48 +16,52 @@
  along with this program.  If not, see http://www.gnu.org/licenses/.
 
 */
+/* global Urls */
 
 $(function(){
 
     setInterval(function() {
-    window.location.reload(true)
+        window.location.reload(true);
     }, 180000);
 
-    $(".btn-submit").click(function (){
-        var campana_id = $(this).attr("id");
-        var action = $(this).attr("name");
+    $('.btn-submit').click(function (){
+        var campana_id = $(this).attr('id');
+        var action = $(this).attr('name');
         submit_form(campana_id, action);
-    })
+    });
 
-function submit_form(campana_id, action){
-    $("#campana_id").val(campana_id);
-    $("#form_estados_campanas").attr("action", action);
-    $("#form_estados_campanas").submit();
-}
+    function submit_form(campana_id, action){
+        $('#campana_id').val(campana_id);
+        $('#form_estados_campanas').attr('action', action);
+        $('#form_estados_campanas').submit();
+    }
 });
 
 function mostrar_detalle_campana(pk_campana) {
     if ($('#modal_ventana').attr('first-time') == 'true'){
-        $('#modal_ventana').attr('first-time', 'false')
+        $('#modal_ventana').attr('first-time', 'false');
     }
     else{
         $('#modal_ventana').fadeOut('slow');
     }
-    $('#modal_ventana').html("");
+    $('#modal_ventana').html('');
     $.get(Urls.campana_dialer_detalle_wombat(), {pk_campana: pk_campana},
-            function (data) {
-                $('#modal_ventana').html(data);
-                $('#modal_ventana').fadeIn('slow');
-            });
+        function (data) {
+            $('#modal_ventana').html(data);
+            $('#modal_ventana').fadeIn('slow');
+        });
 }
-;
 
 function mostrar_campanas_dialer_ocultas() {
 
     $.get(Urls.campana_dialer_mostrar_ocultas(),
-            function (data) {
-                $('#t_body_borradas').html(data);
+        function (data) {
+            $('#t_body_borradas').html(data);
 
-            });
-    }
-    ;
+        });
+}
+
+function finalizar_campana(campana_pk){
+    $('#campana_pk').val(campana_pk);
+    $('#finalizar_campana').submit();
+}

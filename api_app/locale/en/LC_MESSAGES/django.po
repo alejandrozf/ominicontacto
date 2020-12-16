@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-11 10:56-0400\n"
+"POT-Creation-Date: 2020-12-15 11:18-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -94,22 +94,16 @@ msgid "Información de contacto de una  Agenda"
 msgstr "Agenda's contact information"
 
 #: api_app/apps.py:149
-#, fuzzy
-#| msgid "Contactos de una campaña"
 msgid "Exportar reporte de contactados de una campaña a csv"
-msgstr "Campaign contacts"
+msgstr "Export contacted campaign calls report to csv"
 
 #: api_app/apps.py:152
-#, fuzzy
-#| msgid "Cantidades por tipo de calificación en una campaña"
 msgid "Exportar reporte de calificados de una campaña a csv"
-msgstr "Disposition types ammount for a Campaign"
+msgstr "Export dispositioned campaign calls report to csv"
 
 #: api_app/apps.py:155
-#, fuzzy
-#| msgid "Metadata de la base de datos de una campaña"
 msgid "Exportar reporte de no atendidos de una campaña a csv"
-msgstr "Campaign database metadata"
+msgstr "Export unnatended campaign calls report to csv"
 
 #: api_app/apps.py:158
 msgid "Contactos de una campaña"
@@ -157,7 +151,7 @@ msgstr "Detect if an call is qualified"
 
 #: api_app/apps.py:183
 msgid "Reenvía la llave de la instancia registrada por email"
-msgstr ""
+msgstr "Sends registered instance key by email"
 
 #: api_app/apps.py:185
 msgid "Retorna el archivo de grabación especificado"
@@ -335,7 +329,7 @@ msgstr "Error in connection attempt to: {0} due to {1}"
 msgid "Error en el servidor externo"
 msgstr "Error on the external server"
 
-#: api_app/views/agente.py:65
+#: api_app/views/agente.py:65 webphone_client_app/views.py:50
 msgid "Error al generar sip password"
 msgstr "Error creating sip password"
 
@@ -443,3 +437,11 @@ msgstr "Exportation of not attended calls to a .csv file in process"
 #: utiles_globales.py:37
 msgid "Archivos permitidos: .wav"
 msgstr "Allowed files: .wav"
+
+#: webphone_client_app/apps.py:36
+msgid "Credenciales SIP para Cliente Webphone"
+msgstr "Sip credentials for Webphone Client"
+
+#: webphone_client_app/views.py:55
+msgid "Error al obtener WEBPHONE_VIDEO_DOMAIN"
+msgstr "Error obtaining WEBPHONE_VIDEO_DOMAIN"

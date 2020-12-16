@@ -29,12 +29,12 @@ from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
-from django.views.generic import ListView, DeleteView, FormView
+from django.views.generic import ListView, DeleteView, FormView, CreateView, UpdateView, View
 from django.views.generic.base import RedirectView
 
-from ominicontacto_app.models import Campana
+from ominicontacto_app.models import Campana, ReglaIncidenciaPorCalificacion
 from ominicontacto_app.services.campana_service import CampanaService, WombatDialerError
-from ominicontacto_app.forms import UpdateBaseDatosForm
+from ominicontacto_app.forms import UpdateBaseDatosForm, ReglaIncidenciaPorCalificacionForm
 from ominicontacto_app.views_campana import CampanaSupervisorUpdateView, CampanasDeleteMixin
 from requests.exceptions import RequestException
 
@@ -392,3 +392,202 @@ class FinalizarCampanasActivasView(RedirectView):
         if error_finalizadas:
             messages.add_message(self.request, messages.WARNING, error_finalizadas)
         return HttpResponseRedirect(reverse('campana_dialer_list'))
+
+
+class FinalizarCampanaDialerView(View):
+    """
+    Esta vista actualiza la campañana finalizandola.
+    """
+    def post(self, request, *args, **kwargs):
+        campana_id = request.POST.get('campana_pk')
+        campana = Campana.objects.get(pk=campana_id)
+        try:
+            campana_service = CampanaService()
+            campana_service.remove_campana_wombat(campana)
+            campana.finalizar()
+            message = _('<strong>Operación Exitosa!</strong>\
+                             Se llevó a cabo con éxito la finalización de\
+                             la Campaña.')
+
+            messages.add_message(
+                self.request,
+                messages.SUCCESS,
+                message,
+            )
+        except WombatDialerError as e:
+            message = _("<strong>¡Cuidado!</strong> "
+                        "con el siguiente error: ") + "{0} .".format(e)
+            messages.add_message(
+                self.request,
+                messages.WARNING,
+                message,
+            )
+        except RequestException as e:
+            e = _(u'Imposible conectarse con el servicio Wombat')
+            message = _("<strong>¡Cuidado!</strong> "
+                        "con el siguiente error: ") + "{0} .".format(e)
+            messages.add_message(
+                self.request,
+                messages.WARNING,
+                message,
+            )
+        return HttpResponseRedirect(reverse('campana_dialer_list'))
+
+
+class VerificarPremisoEnCampanaMixin():
+
+    def _user_tiene_permiso_en_campana(self, campana):
+        user = self.request.user
+        if user.get_is_administrador():
+            return True
+        return campana.reported_by == user or campana.supervisors.filter(id=user.id).exists()
+
+
+class ReglasDeIncidenciaDeCalificacionesListView(ListView, VerificarPremisoEnCampanaMixin):
+    model = ReglaIncidenciaPorCalificacion
+    template_name = 'campanas/campana_dialer/reglas_incidencia_calificacion_list.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        if not self._user_tiene_permiso_en_campana(self.campana):
+            message = _('No tiene permiso para editar esta Campaña.')
+            messages.warning(request, message)
+            return redirect('campana_dialer_list')
+
+        return super(ReglasDeIncidenciaDeCalificacionesListView, self).dispatch(
+            request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(ReglasDeIncidenciaDeCalificacionesListView, self).get_context_data(**kwargs)
+        context['campana'] = self.campana
+        return context
+
+    def get_queryset(self):
+        """Returns user ordernado por id"""
+        return ReglaIncidenciaPorCalificacion.objects.filter(
+            opcion_calificacion__campana_id=self.campana.id)
+
+
+class ReglasDeIncidenciaDeCalificacionesDeleteView(DeleteView, VerificarPremisoEnCampanaMixin):
+    model = ReglaIncidenciaPorCalificacion
+    template_name = 'campanas/campana_dialer/reglas_incidencia_calificacion_delete.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        regla = self.get_object()
+        self.campana = regla.opcion_calificacion.campana
+        if not self._user_tiene_permiso_en_campana(self.campana):
+            message = _('No tiene permiso para editar esta Campaña.')
+            messages.warning(request, message)
+            return redirect('campana_dialer_list')
+
+        return super(ReglasDeIncidenciaDeCalificacionesDeleteView, self).dispatch(
+            request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        service = CampanaService()
+        # remueve campana de wombat
+        remover = service.eliminar_reschedule_por_calificacion_wombat(self.object)
+        if not remover:
+            message = _("<strong>Operación Errónea!</strong> "
+                        "No se pudo eliminar la Regla de Incidencia por calificación: {0}").format(
+                            self.object.opcion_calificacion.nombre)
+            messages.add_message(
+                self.request,
+                messages.ERROR,
+                message,
+            )
+        else:
+            super(ReglasDeIncidenciaDeCalificacionesDeleteView, self).delete(
+                request, *args, **kwargs)
+            messages.success(request, _('Regla de incidencia eliminada.'))
+        return HttpResponseRedirect(success_url)
+
+    def get_success_url(self):
+        return reverse('disposition_incidence_list', kwargs={'pk_campana': self.campana.id})
+
+
+class ReglasDeIncidenciaDeCalificacionesCreateView(CreateView, VerificarPremisoEnCampanaMixin):
+    model = ReglaIncidenciaPorCalificacion
+    template_name = 'base_create_update_form.html'
+    form_class = ReglaIncidenciaPorCalificacionForm
+
+    def dispatch(self, request, *args, **kwargs):
+        self.campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        if not self._user_tiene_permiso_en_campana(self.campana):
+            message = _('No tiene permiso para editar esta Campaña.')
+            messages.warning(request, message)
+            return redirect('campana_dialer_list')
+
+        return super(ReglasDeIncidenciaDeCalificacionesCreateView, self).dispatch(
+            request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super(ReglasDeIncidenciaDeCalificacionesCreateView, self).get_form_kwargs()
+        kwargs['campana'] = self.campana
+        return kwargs
+
+    def get_success_url(self):
+        return reverse('disposition_incidence_list', kwargs={'pk_campana': self.campana.id})
+
+    def form_valid(self, form):
+        regla = form.save(commit=False)
+        try:
+            campana_service = CampanaService()
+            campana_service.crear_reschedule_por_calificacion_wombat(
+                self.campana, regla, ReglaIncidenciaPorCalificacion.ESTADO_WOMBAT)
+        except WombatDialerError as e:
+            error_message = _("Error al registrar regla de incidencia: ") + "{0} .".format(e)
+            logger.error(error_message)
+            messages.error(_('No se pudo guardar la regla de incidencia.'))
+            return self.form_invalid(form)
+
+        regla.save()
+
+        return super(ReglasDeIncidenciaDeCalificacionesCreateView, self).form_valid(form)
+
+
+class ReglasDeIncidenciaDeCalificacionesUpdateView(UpdateView, VerificarPremisoEnCampanaMixin):
+    model = ReglaIncidenciaPorCalificacion
+    template_name = 'base_create_update_form.html'
+    form_class = ReglaIncidenciaPorCalificacionForm
+
+    def dispatch(self, request, *args, **kwargs):
+        regla = self.get_object()
+        self.wombat_id = regla.wombat_id
+        self.campana = regla.opcion_calificacion.campana
+        if not self._user_tiene_permiso_en_campana(self.campana):
+            message = _('No tiene permiso para editar esta Campaña.')
+            messages.warning(request, message)
+            return redirect('campana_dialer_list')
+
+        return super(ReglasDeIncidenciaDeCalificacionesUpdateView, self).dispatch(
+            request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super(ReglasDeIncidenciaDeCalificacionesUpdateView, self).get_form_kwargs()
+        kwargs['campana'] = self.campana
+        return kwargs
+
+    def get_success_url(self):
+        return reverse('disposition_incidence_list', kwargs={'pk_campana': self.campana.id})
+
+    def form_valid(self, form):
+        regla = form.save(commit=False)
+        try:
+            campana_service = CampanaService()
+            editado = campana_service.editar_reschedule_por_calificacion_wombat(
+                regla, self.wombat_id)
+            if not editado:
+                messages.error(_('No se pudo guardar la regla de incidencia.'))
+                return self.form_invalid(form)
+        except WombatDialerError as e:
+            error_message = _("Error al editar regla de incidencia: ") + "{0} .".format(e)
+            logger.error(error_message)
+            messages.error(_('No se pudo guardar la regla de incidencia.'))
+            return self.form_invalid(form)
+
+        regla.save()
+
+        return super(ReglasDeIncidenciaDeCalificacionesUpdateView, self).form_valid(form)

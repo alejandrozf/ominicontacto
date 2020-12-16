@@ -151,10 +151,13 @@
   tags: postinstall
 
 # Se inicia y habilita el servicio
+- name: Start the omnileads services
+  systemd: name=omnileads state=restarted enabled=yes daemon_reload=yes
+  tags: postinstall
+
+# Se inicia y habilita el servicio
 - name: Start the omnileads-websockets services
-  systemd: name={{ item }} state=restarted enabled=yes daemon_reload=yes
-  with_items:
-    - omnileads-websockets
+  systemd: name=omnileads-websockets state=restarted enabled=yes daemon_reload=yes
   tags: postinstall
   when: websocket_host == "websockets"
 

@@ -44,6 +44,7 @@ class RecicladoTest(OMLBaseTest):
     def setUp(self, _convertir_audio):
         base_datos = self.crear_base_datos_contacto(cant_contactos=100)
         self.campana = self.crear_campana_dialer(bd_contactos=base_datos)
+        self.campana_2 = self.crear_campana_dialer(bd_contactos=base_datos)
         user_agente = self.crear_user_agente()
         self.agente = self.crear_agente_profile(user_agente)
 
@@ -178,3 +179,17 @@ class RecicladoTest(OMLBaseTest):
                 logs = LlamadaLog.objects.filter(contacto_id=contacto.id).order_by('-id')
                 self.assertTrue(logs.count() > 0)
                 self.assertEqual(logs[0].event, estado)
+
+    def test_obtiene_contactos_no_llamados_campana_activas(self):
+        reciclador = RecicladorContactosCampanaDIALER()
+        contactos = self.campana_2.bd_contacto.contactos.all()
+        generador = GeneradorDeLlamadaLogs()
+        cant_llamados = 20
+        # Al ser una campana activa puede haber contactos no llamados, por lo tanto
+        # solo llamamos a 20 de 100 contactos
+        for i in range(0, cant_llamados):
+            contacto = contactos[i]
+            estado = random.choice(self.estados)
+            generador.generar_log(self.campana_2, False, estado, contacto.telefono, None, contacto)
+        contactos_no_llamados = reciclador._obtener_contactos_no_llamados(self.campana_2)
+        self.assertEqual(len(contactos_no_llamados), 80)

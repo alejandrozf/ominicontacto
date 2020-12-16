@@ -40,9 +40,10 @@ from ominicontacto_app.forms import (CalificacionClienteForm, FormularioNuevoCon
                                      RespuestaFormularioGestionForm)
 from ominicontacto_app.models import (
     Contacto, Campana, CalificacionCliente, RespuestaFormularioGestion,
-    OpcionCalificacion, SitioExterno, AgendaContacto)
+    OpcionCalificacion, SitioExterno, AgendaContacto, ReglaIncidenciaPorCalificacion)
 from ominicontacto_app.services.sistema_externo.interaccion_sistema_externo import (
     InteraccionConSistemaExterno)
+from ominicontacto_app.services.campana_service import CampanaService
 from api_app.services.calificacion_llamada import CalificacionLLamada
 
 from reportes_app.models import LlamadaLog
@@ -316,6 +317,16 @@ class CalificacionClienteFormView(FormView):
 
         # check metadata en calificaciones de no accion y eliminar
         self._check_metadata_no_accion_delete(self.object_calificacion)
+
+        # Verificar si es dialer y hay regla de incidencia por calificacion
+        if self.call_data and 'dialer_id' in self.call_data:
+            regla = ReglaIncidenciaPorCalificacion.objects.filter(
+                opcion_calificacion=self.object_calificacion.opcion_calificacion)
+            if regla:
+                regla = regla[0]
+                campana_service = CampanaService()
+                campana_service.notificar_incidencia_por_calificacion(
+                    self.call_data['dialer_id'], regla)
 
         if self.object_calificacion.es_gestion() and \
                 not self.campana.tiene_interaccion_con_sitio_externo:
