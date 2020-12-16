@@ -25,13 +25,11 @@ module.exports = {
             "error",
             "unix"
         ],
-        "quotes": [
-            "error",
-            "single"
-        ],
+        "quotes": ["error", "single", { "allowTemplateLiterals": true }],
         "semi": [
             "error",
             "always"
-        ]
+        ],
+        "no-prototype-builtins": "warn",
     }
 };

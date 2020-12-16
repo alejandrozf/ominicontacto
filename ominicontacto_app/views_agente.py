@@ -165,6 +165,17 @@ def cambiar_estado_agente_view(request):
     return response
 
 
+class DashboardAgenteView(TemplateView):
+    """Vista que renderiza el dashboard con los datos diarios del agente
+    """
+    template_name = 'agente/dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(DashboardAgenteView, self).get_context_data(**kwargs)
+        context['agente_id'] = self.request.user.get_agente_profile().pk
+        return context
+
+
 class LlamarContactoView(RedirectView):
     """
     Esta vista realiza originate hacia Asterisk para llamar dentro de una campaña

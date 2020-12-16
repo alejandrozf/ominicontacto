@@ -19,6 +19,8 @@
 
 from __future__ import unicode_literals
 
+import json
+
 from django.conf import settings
 from django.utils.translation import ugettext as _
 
@@ -117,6 +119,23 @@ class AbstractRedisFamily(object):
     def regenerar_family(self, family_member):
         """regenera una family"""
         self.delete_family(family_member)
+        self._create_family(family_member)
+
+
+class AbstractRedisChanelPublisher(AbstractRedisFamily):
+    def _create_family(self, family_member):
+        redis_connection = self.get_redis_connection()
+        family = self._get_nombre_family(family_member)
+        variables = self._create_dict(family_member)
+        variables_json = json.dumps(variables)
+        try:
+            redis_crea_family = redis_connection.publish(family, variables_json)
+            return redis_crea_family
+        except (RedisError) as e:
+            raise e
+
+    def regenerar_family(self, family_member):
+        """regenera una family"""
         self._create_family(family_member)
 
 
