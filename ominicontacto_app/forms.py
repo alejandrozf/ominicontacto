@@ -42,8 +42,8 @@ from ominicontacto_app.models import (
     User, AgenteProfile, Queue, QueueMember, BaseDatosContacto,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Blacklist, SitioExterno,
-    SistemaExterno, ReglasIncidencia, SupervisorProfile, ArchivoDeAudio,
-    NombreCalificacion, OpcionCalificacion, ParametrosCrm, AgenteEnSistemaExterno,
+    SistemaExterno, ReglasIncidencia, ReglaIncidenciaPorCalificacion, SupervisorProfile,
+    ArchivoDeAudio, NombreCalificacion, OpcionCalificacion, ParametrosCrm, AgenteEnSistemaExterno,
     AuditoriaCalificacion
 )
 from ominicontacto_app.services.campana_service import CampanaService
@@ -1491,6 +1491,32 @@ class ReglasIncidenciaBaseFomset(BaseInlineFormSet):
 ReglasIncidenciaFormSet = inlineformset_factory(
     Campana, ReglasIncidencia, form=ReglasIncidenciaForm, formset=ReglasIncidenciaBaseFomset,
     extra=1, min_num=0)
+
+
+class OpcionCalificacionChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.nombre
+
+
+class ReglaIncidenciaPorCalificacionForm(forms.ModelForm):
+    opcion_calificacion = OpcionCalificacionChoiceField(
+        queryset=OpcionCalificacion.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = ReglaIncidenciaPorCalificacion
+        fields = ('opcion_calificacion', 'intento_max', 'reintentar_tarde', 'en_modo')
+        widgets = {
+            "intento_max": forms.NumberInput(attrs={'class': 'form-control'}),
+            "reintentar_tarde": forms.NumberInput(attrs={'class': 'form-control'}),
+            'en_modo': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, campana, *args, **kwargs):
+        super(ReglaIncidenciaPorCalificacionForm, self).__init__(*args, **kwargs)
+        if self.instance.pk:
+            campana = self.instance.opcion_calificacion.campana
+        self.fields['opcion_calificacion'].queryset = campana.opciones_calificacion.all()
 
 
 class QueueDialerForm(forms.ModelForm):

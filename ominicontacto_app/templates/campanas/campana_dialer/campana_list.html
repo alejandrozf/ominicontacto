@@ -118,6 +118,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             <a class="dropdown-item" href="{% url 'agenda_contactos_por_campana' campana.pk %}">
                                 <span class="icon icon-agenda"></span>{% trans 'Ver Agendas' %}
                             </a>
+                            <a class="dropdown-item" href="{% url 'disposition_incidence_list' campana.pk %}">
+                                <span class="icon icon-refresh"></span>{% trans 'Reglas de incidencia' %}
+                            </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_delete' campana.pk %}">
                                 <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
                             </a>
@@ -191,6 +194,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                                 <span class="icon icon-graph"></span>{% trans 'Reportes' %}
+                            </a>
+                            <a class="dropdown-item" href="{% url 'disposition_incidence_list' campana.pk %}">
+                                <span class="icon icon-refresh"></span>{% trans 'Reglas de incidencia' %}
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_delete' campana.pk %}">
                                 <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
@@ -268,6 +274,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                                 <span class="icon icon-graph"></span>{% trans 'Reportes' %}
+                            </a>
+                            <a class="dropdown-item" href="{% url 'disposition_incidence_list' campana.pk %}">
+                                <span class="icon icon-refresh"></span>{% trans 'Reglas de incidencia' %}
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_delete' campana.pk %}">
                                 <span class="icon icon-trash"></span>{% trans 'Eliminar' %}

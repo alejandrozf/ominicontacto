@@ -3219,7 +3219,7 @@ class ReglasIncidencia(models.Model):
     estado_personalizado = models.CharField(max_length=128, blank=True, null=True)
     intento_max = models.IntegerField()
     reintentar_tarde = models.IntegerField()
-    en_modo = models.PositiveIntegerField(choices=EN_MODO_CHOICES, default=MULT)
+    en_modo = models.PositiveIntegerField(choices=EN_MODO_CHOICES, default=FIXED)
 
     def __str__(self):
         return "Regla de incidencia para la campana: {0} - estado: {1}".format(
@@ -3238,6 +3238,47 @@ class ReglasIncidencia(models.Model):
             return "RS_TIMEOUT"
         else:
             return ""
+
+    def get_en_modo_wombat(self):
+        if self.en_modo is ReglasIncidencia.FIXED:
+            return "FIXED"
+        elif self.en_modo is ReglasIncidencia.MULT:
+            return "MULT"
+        else:
+            return ""
+
+
+class ReglaIncidenciaPorCalificacion(models.Model):
+    """
+    Reglas de incidencia por calificacion de llamada de wombat para las campañas dialer
+    """
+    ESTADO_WOMBAT = 'TERMINATED'
+    FIXED = 1
+    MULT = 2
+
+    EN_MODO_CHOICES = (
+        (FIXED, "FIXED"),
+        (MULT, "MULT")
+    )
+
+    opcion_calificacion = models.OneToOneField(
+        OpcionCalificacion, related_name='regla_incidencia', on_delete=models.CASCADE,
+        verbose_name=_('Opción de calificación'))
+    intento_max = models.IntegerField(verbose_name=_('Cantidad de reintentos'))
+    reintentar_tarde = models.IntegerField(verbose_name=_('Tiempo entre reintentos (seg)'))
+    en_modo = models.PositiveIntegerField(
+        choices=EN_MODO_CHOICES, default=FIXED, verbose_name=_('Modo'))
+
+    class Meta:
+        verbose_name = _('Regla de incidencia por calificación')
+
+    def __str__(self):
+        return "Regla de incidencia de calificacion para la campana: {0} - opcion: {1}".format(
+            self.opcion_calificacion.campana.nombre, self.opcion_calificacion.nombre)
+
+    @property
+    def wombat_id(self):
+        return "DISP{0}".format(self.opcion_calificacion.id)
 
     def get_en_modo_wombat(self):
         if self.en_modo is ReglasIncidencia.FIXED:
