@@ -338,9 +338,12 @@ def campana_validar_contacto_asignado_view(request, *args, **kwargs):
     campana_id = request.POST.get('pk_campana')
     agente_id = request.POST.get('pk_agente')
     contacto_id = request.POST.get('pk_contacto')
+    agente = AgenteProfile.objects.get(pk=agente_id)
+    obligar_calificacion = agente.grupo.obligar_calificacion
     asignado = AgenteEnContacto.objects.esta_asignado_o_entregado_a_agente(contacto_id, campana_id,
                                                                            agente_id)
-    return JsonResponse({'contacto_asignado': asignado})
+    return JsonResponse({'contacto_asignado': asignado,
+                         'obligar_calificacion': obligar_calificacion})
 
 
 class ObtenerContactoView(View):

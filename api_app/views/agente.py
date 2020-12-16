@@ -396,6 +396,10 @@ class ApiStatusCalificacionLlamada(APIView):
             return Response(data={
                 'calificada': 'True',
             })
+        elif not call_data:
+            return Response(data={
+                'calificada': 'True',
+            })
         else:
             return Response(data={
                 'calificada': 'False',
