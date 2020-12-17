@@ -355,8 +355,7 @@ class ExportarCSVContactados(ExportarCSVMixin, APIView):
         # generar id para la operacion de acuerdo a (timestamp, campana, supervisor)
         # obtener de request
 
-        key_task = 'OML:STATUS_CSV_REPORT:CONTACTED:{0}'.format(task_id)
-
+        key_task = 'OML:STATUS_CSV_REPORT:CONTACTED:{0}:{1}'.format(campana_id, task_id)
         # chequear si el supervisor esta asignado a la campaña
         # chequear si la campaña existe
 
@@ -402,7 +401,7 @@ class ExportarCSVCalificados(ExportarCSVMixin, APIView):
         # generar id para la operacion de acuerdo a (timestamp, campana, supervisor)
         # obtener de request
 
-        key_task = 'OML:STATUS_CSV_REPORT:DISPOSITIONED:{0}'.format(task_id)
+        key_task = 'OML:STATUS_CSV_REPORT:DISPOSITIONED:{0}:{1}'.format(campana_id, task_id)
 
         # chequear si el supervisor esta asignado a la campaña
         # chequear si la campaña existe
@@ -449,7 +448,7 @@ class ExportarCSVNoAtendidos(ExportarCSVMixin, APIView):
         # generar id para la operacion de acuerdo a (timestamp, campana, supervisor)
         # obtener de request
 
-        key_task = 'OML:STATUS_CSV_REPORT:NOT_ATTENDED:{0}'.format(task_id)
+        key_task = 'OML:STATUS_CSV_REPORT:NOT_ATTENDED:{0}:{1}'.format(campana_id, task_id)
 
         # chequear si el supervisor esta asignado a la campaña
         # chequear si la campaña existe

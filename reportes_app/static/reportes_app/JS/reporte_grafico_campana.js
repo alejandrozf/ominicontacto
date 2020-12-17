@@ -81,6 +81,7 @@ function exportarReporteCSV(sufijoUrl, $csvDescarga, urlExportacion, $barraProgr
             setTimeout(function(){
                 notification.close();
             }, 3000);
+            contactadosSocket.close();
         }
     };
 }

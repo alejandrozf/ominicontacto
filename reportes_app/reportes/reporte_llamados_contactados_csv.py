@@ -125,8 +125,8 @@ class ReporteContactadosCSV(EstadisticasBaseCampana, ReporteCSV):
                     datos_calificacion = [calificacion_historica.opcion_calificacion.nombre,
                                           calificacion_historica.observaciones.replace('\r\n', ' '),
                                           calificacion_historica.agente]
-                    self._escribir_linea_log(
-                        log_llamada, datos_calificacion, calificacion_historica)
+                self._escribir_linea_log(
+                    log_llamada, datos_calificacion, calificacion_historica)
 
     def _obtener_datos_contacto_contactados(self, llamada_log, calificacion, datos_contacto):
         tel_status = _('Fuera de base')
@@ -260,12 +260,12 @@ class ReporteCalificadosCSV(EstadisticasBaseCampana, ReporteCSV):
             porcentaje_inicial = 100
         else:
             porcentaje_inicial = 0
+        calificaciones_analizadas = set()
         self.redis_connection.publish(key_task, porcentaje_inicial)  # percentage of task completed
         for i, log_llamada in enumerate(logs_llamadas, start=1):
             percentage = int((i / numero_logs_llamadas) * 100)
             self.redis_connection.publish(key_task, percentage)
             callid = log_llamada.callid
-            calificaciones_analizadas = set()
             calificacion_historica = self.calificaciones_historicas_dict.get(callid, False)
             calificacion_final = self.calificaciones_finales_dict.get(callid, False)
             if campana.es_entrante:
@@ -402,25 +402,26 @@ class ReporteNoAtendidosCSV(EstadisticasBaseCampana, ReporteCSV):
         lista_opciones = []
         # --- Buscamos datos
         log_no_contactado_fecha_local = localtime(log_no_contactado.time)
-        estado = NO_CONECTADO_DESCRIPCION.get(log_no_contactado.event, "")
-        lista_opciones.append(log_no_contactado.numero_marcado)
-        contacto_id = log_no_contactado.contacto_id
-        datos_contacto = self._obtener_datos_contacto(
-            contacto_id, self.campos_contacto, contactos_dict)
-        lista_opciones.extend(datos_contacto)
-        lista_opciones.append(log_no_contactado_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
-        lista_opciones.append(estado)
-        tipo_llamada = log_no_contactado.tipo_llamada
-        if tipo_llamada == Campana.TYPE_DIALER:
-            agente_info = "DIALER"
-        elif tipo_llamada == Campana.TYPE_ENTRANTE:
-            agente_info = "IN"
-        else:
-            agente_info = agentes_dict.get(log_no_contactado.agente_id, -1)
-        lista_opciones.append(agente_info)
-        # --- Finalmente, escribimos la linea
-        lista_datos_utf8 = [force_text(item) for item in lista_opciones]
-        self.datos.append(lista_datos_utf8)
+        estado = NO_CONECTADO_DESCRIPCION.get(log_no_contactado.event, False)
+        if estado:
+            lista_opciones.append(log_no_contactado.numero_marcado)
+            contacto_id = log_no_contactado.contacto_id
+            datos_contacto = self._obtener_datos_contacto(
+                contacto_id, self.campos_contacto, contactos_dict)
+            lista_opciones.extend(datos_contacto)
+            lista_opciones.append(log_no_contactado_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
+            lista_opciones.append(estado)
+            tipo_llamada = log_no_contactado.tipo_llamada
+            if tipo_llamada == Campana.TYPE_DIALER:
+                agente_info = "DIALER"
+            elif tipo_llamada == Campana.TYPE_ENTRANTE:
+                agente_info = "IN"
+            else:
+                agente_info = agentes_dict.get(log_no_contactado.agente_id, -1)
+            lista_opciones.append(agente_info)
+            # --- Finalmente, escribimos la linea
+            lista_datos_utf8 = [force_text(item) for item in lista_opciones]
+            self.datos.append(lista_datos_utf8)
 
 
 class ArchivoDeReporteCsv(object):
