@@ -441,7 +441,7 @@ class EstadisticasService(EstadisticasBaseCampana):
             self, evento, calificacion_final, calificacion_historica):
         # obtener_llamadas_atendidas_sin_calificacion(log_llamada)
         if not calificacion_final and not calificacion_historica:
-            if evento in LlamadaLog.EVENTOS_INICIO_CONEXION:
+            if evento in LlamadaLog.EVENTOS_INICIO_CONEXION_AGENTE:
                 # TODO: analizar consecuencias de que los eventos obtenidos
                 # cada llamada son los ultimos de cada llamada
                 # TODO: ver que pasaría con 'BT-ANSWER', 'CT-ACCEPT'

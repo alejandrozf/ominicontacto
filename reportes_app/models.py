@@ -299,6 +299,10 @@ class LlamadaLog(models.Model):
     EVENTOS_INICIO_CONEXION = ['CONNECT', 'ANSWER',
                                'BT-ANSWER', 'CT-ACCEPT']  # Con id_agente
 
+    # eventos inicio conexion de una llamada
+    # (No incluye valores de eventos de transferencias si ocurren luego)
+    EVENTOS_INICIO_CONEXION_AGENTE = ['CONNECT', 'ANSWER']  # Con id_agente
+
     # EVENTOS_TRANSFER_TRY_IN = ['BT-TRY', 'ENTERQUEUE-TRANSFER', 'CT-TRY']
     # EVENTOS_TRANSFER_TRY_OUT = ['BTOUT-TRY', 'CTOUT-TRY']
     # EVENTOS_TRANSFER_TRY = EVENTOS_TRANSFER_TRY_IN + EVENTOS_TRANSFER_TRY_OUT

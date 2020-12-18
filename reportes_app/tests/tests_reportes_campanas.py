@@ -527,7 +527,7 @@ class ReportesCampanasTests(BaseTestDeReportes):
             self, exportar_reportes_csv, crea_reporte_pdf):
         id_llamada = '000000'
         LlamadaLogFactory(callid=id_llamada, campana_id=self.campana_activa.pk,
-                          event='COMPLETEOUTNUM')
+                          event='ANSWER')
         self.calif_gestion.callid = id_llamada
         self.calif_gestion.save()
         key_task = 'key_task'

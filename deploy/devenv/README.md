@@ -17,7 +17,7 @@ This environment can be deployed in any linux distro. Linux distro tested by our
   [devenv-container]
   #localhost ansible_connection=local
 ```
-  * Uncomment the following variables and change the values as you wish       
+  * Uncomment the following variables and change the values as you wish
 ```sh
     #postgres_user=omnileads
     #postgres_password=my_very_strong_pass
@@ -156,6 +156,8 @@ For more details run:
 ```sh
 sipp --help
 ```
+
+Note: if you want to use this option you must create an inbound route to the number 01177660010
 
 You can call this numbers for receiving the call to a Omnileads inbound campaign (check manuals to configure inbound campaign and inbound routing)
 
