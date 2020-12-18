@@ -738,6 +738,9 @@ class PhoneJSController {
         if (session_data.is_click2call) {
             return true;
         }
+        if (this.pause_manager.pause_enabled && (session_data.is_dialer || session_data.is_inbound)){
+            return false;
+        }
         if (session_data.is_dialer && this.agent_config.auto_attend_DIALER) {
             return true;
         }
