@@ -25,6 +25,7 @@ from __future__ import unicode_literals
 
 import json
 
+from django.db import transaction
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -488,8 +489,9 @@ class FormularioNuevoContactoFormView(FormView):
                 telefono = self.telefono
 
             originator = Click2CallOriginator()
-            originator.call_originate(agente, self.campana.id, str(self.campana.type),
-                                      contacto.id, telefono, click2call_type)
+            transaction.on_commit(lambda: originator.call_originate(
+                agente, self.campana.id, str(self.campana.type),
+                contacto.id, telefono, click2call_type))
             message = _("Contacto creado satisfactoriamente. Efectuando llamada.")
             messages.success(self.request, message)
             return super(FormularioNuevoContactoFormView, self).form_valid(form)
