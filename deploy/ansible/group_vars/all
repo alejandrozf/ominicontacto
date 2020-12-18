@@ -22,7 +22,7 @@ postgresql_old_version: 9.6
 postgresql_version: 11
 redis_version: 5.0.9
 rtpengine_version: 5.5.12.1
-websockets_version: "1.0.0"
+websockets_version: "1.1.0"
 virtualenv_version: "18.1820"
 wombat_version: 20.02.1-272
 asterisk_package: "{{ packages_url }}/asterisk-{{ asterisk_version }}-1.x86_64.rpm"
