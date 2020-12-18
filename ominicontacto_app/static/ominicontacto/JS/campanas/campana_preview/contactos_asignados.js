@@ -16,8 +16,119 @@
  along with this program.  If not, see http://www.gnu.org/licenses/.
 
 */
+/* global Urls */
+/* global gettext */
 
-function liberar_contacto(agente_id){
-    $("#agente_id").val(agente_id);
-    $("#liberar_contacto_form").submit();
-};
+var contactos_asignados;
+
+$(function () {
+    createDataTable();
+    // setInterval(function () { table_agentes.ajax.reload(); }, 5000);
+    liberar_reservar_contacto();
+});
+function createDataTable() {
+    var pk_campana = $('#campana_id').val();
+    contactos_asignados = $('#contactoAsignadoTable').DataTable({
+        ajax: {
+            url: Urls.api_contactos_asignados_campana_preview(pk_campana),
+            dataSrc: '',
+        },
+        columnDefs: [ {
+            orderable: false,
+            className: 'select-checkbox',
+            targets:   0,
+        } ],
+        select: {
+            style:    'multi',
+            selector: 'td:first-child'
+        },
+        order: [[ 1, 'asc' ]],
+        
+        columns: [
+            {   'data': null,
+                'defaultContent': '',
+                'aTargets': [ -1 ]
+            },
+            {   'data': 'id',},
+            { 'data': 'telefono'},
+            { 'data': 'id_externo'},
+        ],
+        language: {
+            search: gettext('Buscar: '),
+            infoFiltered: gettext('(filtrando de un total de _MAX_ contactos)'),
+            paginate: {
+                first: gettext('Primero '),
+                previous: gettext('Anterior '),
+                next: gettext(' Siguiente'),
+                last: gettext(' Último'),
+            },
+            lengthMenu: gettext('Mostrar _MENU_ entradas'),
+            info: gettext('Mostrando _START_ a _END_ de _TOTAL_ entradas'),
+        },
+    });
+}
+
+function liberar_reservar_contacto(){
+    var liberar_reservar_form = $('#liberar_reservar_form');
+    var reservar = $('#reservar');
+    var liberar = $('#liberar');
+    $('#reservar, #liberar').click(function(){
+        if (this.id == 'reservar'){
+            if ($('#agentes').children('option:selected').val() == ''){
+                $('#alertAgente').removeClass('hidden');
+            }
+            else{
+                agente_seleccionado();
+            }
+            if (contactos_asignados.rows({selected:true}).count()==0){
+                $('#alertContacto').removeClass('hidden');
+            }
+            else{
+                contactos_seleccionados();
+            }
+       
+            if ($('#agentes').children('option:selected').val() != '' && contactos_asignados.rows({selected:true}).count()!=0){
+                liberar_reservar_form.prepend('<input type="hidden" name="accion" id="accion" value="reservar">');
+                liberar_reservar_form.submit();
+            } 
+        }
+        if (this.id == 'liberar'){
+
+            if ($('#agentes').children('option:selected').val() == ''){
+                $('#alertAgente').removeClass('hidden');
+            }
+            else{
+                agente_seleccionado();
+            }
+            if (contactos_asignados.rows({selected:true}).count()==0){
+                $('#alertContacto').removeClass('hidden');
+            }
+            else{
+                contactos_seleccionados();
+            }
+      
+            if ($('#agentes').children('option:selected').val() != '' && contactos_asignados.rows({selected:true}).count()!=0){
+                liberar_reservar_form.prepend('<input type="hidden" name="accion" id="accion" value="liberar">');
+                liberar_reservar_form.submit();
+            } 
+        } 
+    });  
+}
+
+function agente_seleccionado(){
+    var liberar_reservar_form = $('#liberar_reservar_form');
+    var id_agente = $('#agentes').children('option:selected').val();
+    liberar_reservar_form.prepend('<input type="hidden" name="id_agente" id="id_agente" value="'+id_agente+'">');
+}
+
+function contactos_seleccionados(){
+    var contacts_selected = contactos_asignados.rows({selected:true}).indexes();
+    var id_contactos = contactos_asignados.cells(contacts_selected, 1).data();
+    var array_ids = id_contactos.toArray();
+    
+    var liberar_reservar_form = $('#liberar_reservar_form');
+    liberar_reservar_form.prepend('<input type="hidden" name="contacts_selected" id="contacts_selected" value="['+array_ids+']">');
+    return id_contactos;
+}
+
+

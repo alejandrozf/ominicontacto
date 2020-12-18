@@ -31,7 +31,8 @@ from api_app.views.supervisor import (
     SupervisorCampanasActivasViewSet, AgentesStatusAPIView, StatusCampanasEntrantesView,
     StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView, LlamadasDeCampanaView,
     CalificacionesDeCampanaView, ReasignarAgendaContactoView, DataAgendaContactoView,
-    ExportarCSVContactados, ExportarCSVCalificados, ExportarCSVNoAtendidos)
+    ExportarCSVContactados, ExportarCSVCalificados, ExportarCSVNoAtendidos,
+    ContactosAsignadosCampanaPreviewView)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
@@ -133,6 +134,9 @@ urlpatterns = [
     url(r'api/v1/exportar_csv_no_atendidos/$',
         ExportarCSVNoAtendidos.as_view(),
         name='api_exportar_csv_no_atendidos'),
+    url(r'api/vi/supervision/contactos_asignados_preview/(?P<pk_campana>\d+)/$',
+        ContactosAsignadosCampanaPreviewView.as_view(),
+        name='api_contactos_asignados_campana_preview'),
 
 
     # ###########     AGENTE      ############ #

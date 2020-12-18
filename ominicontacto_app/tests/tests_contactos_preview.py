@@ -166,57 +166,111 @@ class AsignacionDeContactosPreviewTests(OMLBaseTest):
         self.assertFalse(AgenteEnContacto.objects.exclude(estado=inicial).exists())
         self.assertContains(response, _(u'No es posible llamar al contacto.'))
 
-    def test_agente_libera_contacto_asignado(self):
-        # Un agente puede liberar un contacto asignado
+    # Unitests para Vista de contactos asignados
+    def test_reservar_contacto_estado_asignado_entregado(self):
         AgenteEnContacto.objects.filter(contacto_id=self.contacto_1.id).update(
             agente_id=self.agente_1.id, estado=AgenteEnContacto.ESTADO_ASIGNADO)
-        post_data = {'campana_id': self.campana_preview.id}
-        response = self.client.post(reverse('liberar_contacto_asignado_agente'),
-                                    post_data, follow=True)
-        resultado = json.loads(response.content)
-        self.assertEqual(resultado['status'], 'OK')
-        self.assertTrue(AgenteEnContacto.objects.filter(agente_id=-1,
-                        contacto_id=self.contacto_1.id,
-                        campana_id=self.campana_preview.id,
-                        estado=AgenteEnContacto.ESTADO_INICIAL).exists())
+        contactos = []
+        contactos.append(self.contacto_1.id)
+        post_data = {'campana_id': self.campana_preview.id, 'id_agente': self.agente_1.id,
+                     'contacts_selected': str(contactos), 'accion': 'reservar'}
+        self.client.post(reverse('liberar_reservar_contacto_asignado'),
+                         post_data, follow=True)
+        self.assertTrue(AgenteEnContacto.objects.filter(
+            agente_id=self.agente_1.id,
+            contacto_id=self.contacto_1.id,
+            campana_id=self.campana_preview.id,
+            estado=AgenteEnContacto.ESTADO_ASIGNADO).exists())
 
-    def test_agente_no_libera_contacto_asignado_a_otro(self):
-        # Un agente no puede liberar un contacto asignado a otro agente
+    def test_reservar_contacto_estado_inicial_liberado(self):
+        AgenteEnContacto.objects.filter(contacto_id=self.contacto_1.id).update(
+            agente_id=-1, estado=AgenteEnContacto.ESTADO_INICIAL)
+        contactos = []
+        contactos.append(self.contacto_1.id)
+        post_data = {'campana_id': self.campana_preview.id, 'id_agente': self.agente_1.id,
+                     'contacts_selected': str(contactos), 'accion': 'reservar'}
+        self.client.post(reverse('liberar_reservar_contacto_asignado'),
+                         post_data, follow=True)
+        self.assertTrue(AgenteEnContacto.objects.filter(
+            agente_id=self.agente_1.id,
+            contacto_id=self.contacto_1.id,
+            campana_id=self.campana_preview.id,
+            estado=AgenteEnContacto.ESTADO_INICIAL).exists())
+
+    def test_reservar_contacto_estado_finalizado(self):
+        AgenteEnContacto.objects.filter(contacto_id=self.contacto_1.id).update(
+            agente_id=self.agente_1.id, estado=AgenteEnContacto.ESTADO_FINALIZADO)
+        contactos = []
+        contactos.append(self.contacto_1.id)
+        post_data = {'campana_id': self.campana_preview.id, 'id_agente': self.agente_1.id,
+                     'contacts_selected': str(contactos), 'accion': 'reservar'}
+        self.client.post(reverse('liberar_reservar_contacto_asignado'),
+                         post_data, follow=True)
+        self.assertTrue(AgenteEnContacto.objects.filter(
+            agente_id=self.agente_1.id,
+            contacto_id=self.contacto_1.id,
+            campana_id=self.campana_preview.id,
+            estado=AgenteEnContacto.ESTADO_FINALIZADO).exists())
+
+    def test_reservar_contacto_de_otro_agente(self):
         AgenteEnContacto.objects.filter(contacto_id=self.contacto_1.id).update(
             agente_id=self.agente_2.id, estado=AgenteEnContacto.ESTADO_ASIGNADO)
-        post_data = {'campana_id': self.campana_preview.id}
-        response = self.client.post(reverse('liberar_contacto_asignado_agente'),
-                                    post_data, follow=True)
-        resultado = json.loads(response.content)
-        self.assertEqual(resultado['status'], 'ERROR')
-        self.assertTrue(AgenteEnContacto.objects.filter(agente_id=self.agente_2.id,
-                        contacto_id=self.contacto_1.id,
-                        campana_id=self.campana_preview.id,
-                        estado=AgenteEnContacto.ESTADO_ASIGNADO).exists())
+        contactos = []
+        contactos.append(self.contacto_1.id)
+        post_data = {'campana_id': self.campana_preview.id, 'id_agente': self.agente_1.id,
+                     'contacts_selected': str(contactos), 'accion': 'reservar'}
+        self.client.post(reverse('liberar_reservar_contacto_asignado'),
+                         post_data, follow=True)
+        self.assertTrue(AgenteEnContacto.objects.filter(
+            agente_id=self.agente_1.id,
+            contacto_id=self.contacto_1.id,
+            campana_id=self.campana_preview.id,
+            estado=AgenteEnContacto.ESTADO_INICIAL).exists())
 
-    def test_supervisor_ve_contactos_asignados(self):
-        # Un supervisor ve contactos asignados en la lista
-        self.client.logout()
-        self.client.login(username=self.supervisor.user.username, password=PASSWORD)
+    def test_liberar_contacto_estado_asignado_entregado(self):
         AgenteEnContacto.objects.filter(contacto_id=self.contacto_1.id).update(
             agente_id=self.agente_1.id, estado=AgenteEnContacto.ESTADO_ASIGNADO)
-        response = self.client.get(reverse('contactos_preview_asignados',
-                                           args=[self.campana_preview.id]))
-        self.assertContains(response, self.agente_1.user.get_full_name())
-        self.assertContains(response, self.contacto_1.telefono)
+        contactos = []
+        contactos.append(self.contacto_1.id)
+        post_data = {'campana_id': self.campana_preview.id, 'id_agente': self.agente_1.id,
+                     'contacts_selected': str(contactos), 'accion': 'liberar'}
+        self.client.post(reverse('liberar_reservar_contacto_asignado'),
+                         post_data, follow=True)
+        self.assertTrue(AgenteEnContacto.objects.filter(
+            agente_id=-1,
+            contacto_id=self.contacto_1.id,
+            campana_id=self.campana_preview.id,
+            estado=AgenteEnContacto.ESTADO_INICIAL).exists())
 
-    def test_supervisor_puede_desasignar_contactos(self):
-        # Un supervisor puede liberar un contacto asignado
-        self.client.logout()
-        self.client.login(username=self.supervisor.user.username, password=PASSWORD)
+    def test_liberar_contacto_estado_inicial(self):
         AgenteEnContacto.objects.filter(contacto_id=self.contacto_1.id).update(
-            agente_id=self.agente_1.id, estado=AgenteEnContacto.ESTADO_ASIGNADO)
-        post_data = {'campana_id': self.campana_preview.id,
-                     'agente_id': self.agente_1.id}
-        response = self.client.post(reverse('liberar_contacto_asignado'), post_data, follow=True)
-        self.assertContains(response, _(u'El Contacto ha sido liberado.'))
-        self.assertNotContains(response, self.contacto_1.telefono)
-        self.assertNotContains(response, self.agente_1.user.get_full_name())
+            agente_id=self.agente_1.id, estado=AgenteEnContacto.ESTADO_INICIAL)
+        contactos = []
+        contactos.append(self.contacto_1.id)
+        post_data = {'campana_id': self.campana_preview.id, 'id_agente': self.agente_1.id,
+                     'contacts_selected': str(contactos), 'accion': 'liberar'}
+        self.client.post(reverse('liberar_reservar_contacto_asignado'),
+                         post_data, follow=True)
+        self.assertTrue(AgenteEnContacto.objects.filter(
+            agente_id=-1,
+            contacto_id=self.contacto_1.id,
+            campana_id=self.campana_preview.id,
+            estado=AgenteEnContacto.ESTADO_INICIAL).exists())
+
+    def test_liberar_contacto_estado_finalizado(self):
+        AgenteEnContacto.objects.filter(contacto_id=self.contacto_1.id).update(
+            agente_id=self.agente_1.id, estado=AgenteEnContacto.ESTADO_FINALIZADO)
+        contactos = []
+        contactos.append(self.contacto_1.id)
+        post_data = {'campana_id': self.campana_preview.id, 'id_agente': self.agente_1.id,
+                     'contacts_selected': str(contactos), 'accion': 'liberar'}
+        self.client.post(reverse('liberar_reservar_contacto_asignado'),
+                         post_data, follow=True)
+        self.assertTrue(AgenteEnContacto.objects.filter(
+            agente_id=self.agente_1.id,
+            contacto_id=self.contacto_1.id,
+            campana_id=self.campana_preview.id,
+            estado=AgenteEnContacto.ESTADO_FINALIZADO).exists())
 
     def test_nunca_se_reservan_contactos_asignados_a_otro_agente(self):
         # Al pedir un contacto nunca se entrega uno asignado a OTRO agente

@@ -97,6 +97,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'api_grabacion_archivo',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
+            {'nombre': 'api_contactos_asignados_campana_preview',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
     informacion_de_permisos = {
@@ -184,4 +186,7 @@ class ApiAppConfig(AppConfig):
         'api_grabacion_archivo':
             {'descripcion': _('Retorna el archivo de grabación especificado'),
              'version': '1.11.0'},
+        'api_contactos_asignados_campana_preview':
+            {'descripcion': _('Devuelve los contactos asignados de una campaña preview'),
+             'version': '1.8.0'},
     }
