@@ -34,7 +34,6 @@ from ominicontacto_app.services.wombat_service import WombatService
 from ominicontacto_app.services.wombat_config import (
     CampanaCreator, TrunkCreator, RescheduleRuleCreator, EndPointCreator,
     CampanaEndPointCreator, CampanaListCreator, CampanaDeleteListCreator,
-    CampanaEndPointDelete,
 )
 from ominicontacto_app.services.exportar_base_datos import SincronizarBaseDatosContactosService
 from ominicontacto_app.errors import OmlError
@@ -478,15 +477,18 @@ class CampanaService():
         Desasocia endpoint de campana wombat
         :param campana: campana a la caul se desaciociara el endpoint
         """
-        service_wombat = WombatService()
-
-        # crear json para eliminar lista de la campana en wombat
-        service_wombat_config = CampanaEndPointDelete()
-        service_wombat_config.create_json(campana)
-        url_edit = "api/edit/campaign/ep/?mode=D&parent={0}".format(
+        url_delete = "api/edit/campaign/ep/?mode=D&parent={0}".format(
             campana.campaign_id_wombat)
-        # elimina lista de la campana en wombat
-        service_wombat.update_config_wombat("deletecampaign_ep.json", url_edit)
+        # crear json para eliminar lista de la campana en wombat
+        ep_association_object = {
+            "epId": {
+                "epId": campana.queue_campana.ep_id_wombat
+            }
+        }
+        service_wombat = WombatService()
+        service_wombat.post_json(url_delete, ep_association_object)
+        ep_object = {"epId": campana.queue_campana.ep_id_wombat}
+        service_wombat.post_json('api/edit/ep/?mode=D', ep_object)
 
     def update_endpoint(self, campana):
         """
