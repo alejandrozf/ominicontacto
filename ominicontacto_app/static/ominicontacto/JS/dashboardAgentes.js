@@ -23,16 +23,36 @@ import { DashboardAgente } from './componentes/core.js';
 
 var agenteId = $('#agente_id').val();
 var taskId = 'dashboard1';
-var vue_app = new Vue({
-    data: {core: {
-        mensajeEspera: gettext('Calculando estadísticas del agente ...')
-    }},
-    components: {
-        'dashboard-agente': DashboardAgente,
-    },
-    el: '#dashboard',
-    vuetify: new Vuetify(),
-});
+
+var dataDashboardSession = JSON.parse(sessionStorage.getItem('dataDashboard'));
+
+var vue_app = undefined;
+
+if( dataDashboardSession == undefined ){
+    // al loguearse inicialmente
+    vue_app = new Vue({
+        data: {core: {
+            mensajeEspera: gettext('Calculando estadísticas del agente ...')
+        }},
+        components: {
+            'dashboard-agente': DashboardAgente,
+        },
+        el: '#dashboard',
+        vuetify: new Vuetify(),
+    });
+
+}
+else {
+    vue_app = new Vue({
+        data: {core: dataDashboardSession.core},
+        components: {
+            'dashboard-agente': DashboardAgente,
+        },
+        el: '#dashboard',
+        vuetify: new Vuetify(),
+    });
+}
+
 
 const contactadosSocket = new WebSocket(
     'wss://'
@@ -157,5 +177,6 @@ contactadosSocket.onmessage = function(e) {
                                  values: logsData,
                              }
                          }};
+    sessionStorage.setItem('dataDashboard', JSON.stringify(dashboardData));
     vue_app.core = dashboardData.core;
 };
