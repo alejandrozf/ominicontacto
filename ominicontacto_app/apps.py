@@ -628,7 +628,7 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'contactos_preview_asignados',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
-            {'nombre': 'liberar_contacto_asignado',
+            {'nombre': 'liberar_reservar_contacto_asignado',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'ordenar_entrega_contactos_preview',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
@@ -1044,8 +1044,9 @@ class OminicontactoAppConfig(AppConfig):
         'contactos_preview_asignados':
             {'descripcion': _('Ver los contactos de una campaña Preview asignados a algun agente'),
              'version': '1.7.0'},
-        'liberar_contacto_asignado':
-            {'descripcion': _('Liberar un contacto de una campaña Preview asignado a un agente'),
+        'liberar_reservar_contacto_asignado':
+            {'descripcion': _('Liberar o reservar un contacto de una campaña Preview asignado'
+                              'a un agente'),
              'version': '1.7.0'},
         'ordenar_entrega_contactos_preview':
             {'descripcion': _('Definir orden de asignacion de contactos de una campaña Preview'),
