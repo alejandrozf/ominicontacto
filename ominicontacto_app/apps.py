@@ -542,6 +542,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'agente_cambiar_estado',
              'roles': ['Agente', ]},
+            {'nombre': 'agente_dashboard',
+             'roles': ['Agente', ]},
             {'nombre': 'llamadas_activas',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'supervision_agentes_logueados',
@@ -947,6 +949,8 @@ class OminicontactoAppConfig(AppConfig):
              'version': '1.7.0'},
         'agente_cambiar_estado':
             {'descripcion': _('Modificar el estado de un Agente en Asterisk'), 'version': '1.7.0'},
+        'agente_dashboard':
+        {'descripcion': _('Vista del dashboard de un agente'), 'version': '1.11.7'},
         'llamadas_activas':
             {'descripcion': _('Llamadas activas actuales'), 'version': '1.7.0'},
         'supervision_agentes_logueados':
