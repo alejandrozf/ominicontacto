@@ -1,0 +1,11 @@
+=========================
+Omnileads 1.11.8 release notes
+=========================
+
+This is a "bugfix" release improving the stability and performance of the codebase.
+
+
+Fixes and improvements
+=========================
+
+- Fixed installation error due to a change on an external package provider
