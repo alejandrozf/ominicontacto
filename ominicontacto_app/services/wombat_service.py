@@ -125,7 +125,7 @@ class WombatService():
             logger.warn(_(" - Comando ejecutado: {0}".format(e.cmd)))
             print(e)
 
-    def post_json(self, url_delete, object):
+    def post_json(self, url, object):
         """Realiza un POST a wombat enviando el json de un objeto usando data-urlencode
 
         :returns: json -- exit status de proceso ejecutado.
@@ -140,7 +140,7 @@ class WombatService():
                                            '-X', 'POST', '--data-urlencode',
                                            "data={0}".format(json.dumps(object)),
                                            '/'.join([settings.OML_WOMBAT_URL,
-                                                     url_delete])])
+                                                     url])])
             logger.info(_("POST en WOMBAT OK"))
             return json.loads(out)
         except subprocess.CalledProcessError as e:
