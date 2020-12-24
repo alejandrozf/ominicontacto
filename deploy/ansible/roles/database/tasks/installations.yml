@@ -39,7 +39,7 @@
 
   #Se instalan todos los paquetes de postgresql
 - name: Install of postgresql-{{ postgresql_version }} packages
-  shell: "yum install postgresql{{ postgresql_version }}* --skip-broken -y"
+  shell: "yum install postgresql{{ postgresql_version }}* --skip-broken -y --nogpgcheck"
   retries: 3
   delay: 3
   register: result
