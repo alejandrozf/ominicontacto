@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-17 16:08-0300\n"
+"POT-Creation-Date: 2020-12-24 12:44-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,25 +24,22 @@ msgstr "Release Notes"
 # 3a7fc49d02324b0a8d60cc23cdca531d
 #: ../../release_notes.rst:4
 #, fuzzy
-msgid "*Noviembre 17, 2020*"
-msgstr "*November 10, 2020*"
+msgid "*Diciembre 24, 2020*"
+msgstr "*December 24, 2020*"
 
 # 03ab3c13b69d4f0d80eac13e9038983f
 #: ../../release_notes.rst:7
-#, fuzzy
-msgid "Detalles de Release 1.11.7"
-msgstr "Release 1.11.6 details"
+msgid "Detalles de Release 1.11.8"
+msgstr "Release 1.11.8 details"
 
 # 46afe1405c66423e9f32d32b09e66305
 #: ../../release_notes.rst:11
 msgid "Fixes y mejoras"
 msgstr "Fixes and improvements"
 
-# 5073ae031aeb43aa8fc6272bb77c4c6b
+# 32f2996096864108ab37136160329b5d
 #: ../../release_notes.rst:12
 msgid ""
-"Se solucionan inconsistencias en código dialplan en logs generados en "
-"llamadas manuales y transferencias"
-msgstr ""
-"Fixed dialplan inconsistencies on logs generated off manual calls "
-"and transfer calls"
+"Se soluciona error de instalación debido a un cambio en un proveedor de "
+"paquetes externo"
+msgstr "Fixed installation error due to a change on an external package provider"

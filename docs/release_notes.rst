@@ -1,12 +1,12 @@
 Release Notes
 *************
 
-*Noviembre 17, 2020*
+*Diciembre 24, 2020*
 
-Detalles de Release 1.11.7
+Detalles de Release 1.11.8
 =============================
 
 
 Fixes y mejoras
 --------------------------
-- Se solucionan inconsistencias en código dialplan en logs generados en llamadas manuales y transferencias
+- Se soluciona error de instalación debido a un cambio en un proveedor de paquetes externo
