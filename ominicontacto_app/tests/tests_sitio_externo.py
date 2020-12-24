@@ -112,6 +112,8 @@ class TestsSitioExterno(OMLBaseTest):
             'id_contacto': str(self.contacto.id),
             'rec_filename': 'rec_filename',
             'call_wait_duration': '44',
+            'Omlcrmnombre_1': 'valor_crm_1',
+            'Omlcrmnombre_2': 'valor_crm_2',
         }
         super(TestsSitioExterno, self).setUp(*args, **kwargs)
 
@@ -170,6 +172,19 @@ class TestsSitioExterno(OMLBaseTest):
         self.assertEqual(parametros['nombre_1'], 'valor_1')
         self.assertEqual(parametros['nombre_2'], 'valor_2')
 
+    def test_obtener_parametros_cmr(self):
+        ParametrosCrmFactory(campana=self.campana, tipo=ParametrosCrm.DIALPLAN,
+                             nombre='nombre_1', valor='Omlcrmnombre_1')
+        ParametrosCrmFactory(campana=self.campana, tipo=ParametrosCrm.DATO_LLAMADA,
+                             nombre='nombre_2', valor='Omlcrmnombre_2')
+        parametros = self.sitio_externo.get_parametros(self.agente, self.campana, self.contacto,
+                                                       self.call_data)
+        self.assertEqual(len(parametros), 2)
+        self.assertIn('nombre_1', parametros)
+        self.assertIn('nombre_2', parametros)
+        self.assertEqual(parametros['nombre_1'], 'valor_crm_1')
+        self.assertEqual(parametros['nombre_2'], 'valor_crm_2')
+
     def test_obtener_beautiful_url_con_parametros(self):
         self.sitio_externo.url = 'https://oml.com/{1}/{2}/{3}/{4}'
         ParametrosCrmFactory(campana=self.campana, tipo=ParametrosCrm.DATO_CONTACTO,
@@ -182,8 +197,20 @@ class TestsSitioExterno(OMLBaseTest):
                              nombre='{4}', valor='valor_1')
         url = self.sitio_externo.get_url_interaccion(self.agente, self.campana, self.contacto,
                                                      self.call_data)
-        self.assertEqual(url,
-                         'https://oml.com/' + self.contacto.telefono + '/' + str(self.campana.id) +
-                         '/' + self.call_data['call_id'] + '/valor_1')
+        expected_url = 'https://oml.com/' + self.contacto.telefono + '/' + str(self.campana.id)
+        expected_url += '/' + self.call_data['call_id'] + '/valor_1'
+
+        self.assertEqual(url, expected_url)
         self.assertEqual(self.sitio_externo.get_parametros(self.agente, self.campana, self.contacto,
                                                            self.call_data), {})
+
+    def test_obtener_get_url_con_parametros_crm(self):
+        self.sitio_externo.url = 'https://oml.com/'
+        ParametrosCrmFactory(campana=self.campana, tipo=ParametrosCrm.DIALPLAN,
+                             nombre='nombre_1', valor='Omlcrmnombre_1')
+        ParametrosCrmFactory(campana=self.campana, tipo=ParametrosCrm.DIALPLAN,
+                             nombre='nombre_2', valor='Omlcrmnombre_2')
+        url = self.sitio_externo.get_url_interaccion(self.agente, self.campana, self.contacto,
+                                                     self.call_data, True)
+        self.assertIn("nombre_1=valor_crm_1", url)
+        self.assertIn("nombre_2=valor_crm_2", url)
