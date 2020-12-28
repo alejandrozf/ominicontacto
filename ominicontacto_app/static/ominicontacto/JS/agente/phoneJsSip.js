@@ -527,7 +527,11 @@ class SessionData {
     }
 
     get is_off_campaign() {
-        return this.origin == ORIGIN_OFF_CAMPAIGN;
+        if (this.origin == ORIGIN_OFF_CAMPAIGN)
+            return true;
+        if (this.campaign_id == '0' || this.remote_call.campana_type == '0')
+            return true;
+        return false;
     }
 
     get is_from_agent(){
