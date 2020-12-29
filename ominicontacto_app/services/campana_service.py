@@ -534,3 +534,9 @@ class CampanaService():
             elif resultado['gbState'] == "TERMINATED":
                 resultado['gbState'] = "Finalizada"
         return status
+
+    def reload_campana_wombat(self, campana):
+        id_campana_wombat = '{0}_{1}'.format(campana.pk, campana.nombre)
+        url_api = '{0}/api/campaigns/?op=reload&campaign={1}'.format(
+            settings.OML_WOMBAT_URL, id_campana_wombat)
+        requests.get(url_api)
