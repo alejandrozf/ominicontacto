@@ -134,6 +134,7 @@ class ReporteDetalleLlamadasPreview:
     recibidas
     :return: dicionario con los totales de cada estado de las llamadas recibidas
     """
+
     def __init__(self):
         self.reporte = OrderedDict(
             # se cuentan todos los eventos DIAL  con 'tipo_llamada' no manual
@@ -174,6 +175,7 @@ class ReporteDetalleLlamadasManual:
     recibidas
     :return: dicionario con los totales de cada estado de las llamadas recibidas
     """
+
     def __init__(self):
         self.reporte = OrderedDict(
             # se cuentan todos los eventos DIAL
@@ -249,6 +251,7 @@ class ReporteDetalleLlamadasEntrantes:
     recibidas
     :return: dicionario con los totales de cada estado de las llamadas recibidas
     """
+
     def __init__(self):
         # se cuentan todos los eventos para cada caso
         self.reporte = OrderedDict(
@@ -438,10 +441,12 @@ class EstadisticasService(EstadisticasBaseCampana):
             self.reporte_detalle_llamadas = ReporteDetalleLlamadasPreview()
 
     def _obtener_llamadas_atendidas_sin_calificacion(
-            self, evento, calificacion_final, calificacion_historica):
+            self, evento, agente_id, calificacion_final, calificacion_historica):
         # obtener_llamadas_atendidas_sin_calificacion(log_llamada)
         if not calificacion_final and not calificacion_historica:
-            if evento in LlamadaLog.EVENTOS_INICIO_CONEXION_AGENTE:
+            # Si es dialer, una misma llamada tiene ANSWER y CONNECT por lo que estaba
+            # contabilizando doble
+            if evento in LlamadaLog.EVENTOS_INICIO_CONEXION_AGENTE and agente_id != -1:
                 # TODO: analizar consecuencias de que los eventos obtenidos
                 # cada llamada son los ultimos de cada llamada
                 # TODO: ver que pasaría con 'BT-ANSWER', 'CT-ACCEPT'
@@ -541,13 +546,14 @@ class EstadisticasService(EstadisticasBaseCampana):
         for log_llamada in logs_llamadas:
             evento = log_llamada.event
             callid = log_llamada.callid
+            agente_id = log_llamada.agente_id
             tipo_llamada = log_llamada.tipo_llamada
             bridge_wait_time = log_llamada.bridge_wait_time
             es_campana_entrante = self.campana.es_entrante
             calificacion_historica = self.calificaciones_historicas_dict.get(callid, False)
             calificacion_final = self.calificaciones_finales_dict.get(callid, False)
             self._obtener_llamadas_atendidas_sin_calificacion(
-                evento, calificacion_final, calificacion_historica)
+                evento, agente_id, calificacion_final, calificacion_historica)
             # obtener_detalle_llamadas(log_llamada)
             self.reporte_detalle_llamadas._calcular_detalle(evento, tipo_llamada)
             # obtener_cantidad_no_atendidos(log_llamada) + datos_csv
