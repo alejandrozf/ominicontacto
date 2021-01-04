@@ -192,7 +192,7 @@ class LlamadaLogManager(models.Manager):
     def obtener_grabaciones_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada, tel_cliente,
                                       callid, id_contacto_externo, agente, campana, campanas,
                                       marcadas, duracion, gestion):
-        campanas_id = [campana.id for campana in campanas]
+        campanas_id = [camp.id for camp in campanas]
         grabaciones = self.filter(campana_id__in=campanas_id,
                                   archivo_grabacion__isnull=False,
                                   duracion_llamada__gt=0)
@@ -215,7 +215,19 @@ class LlamadaLogManager(models.Manager):
         if agente:
             grabaciones = grabaciones.filter(agente_id=agente.id)
         if campana:
-            grabaciones = grabaciones.filter(campana_id=campana)
+            if campana != 'activas' and campana != 'borradas':
+                grabaciones = grabaciones.filter(campana_id=campana)
+
+            else:
+                campanas_excluidas_id = []
+                for camp in campanas:
+                    if (camp.estado == Campana.ESTADO_BORRADA and campana == 'activas') or \
+                            (camp.estado != Campana.ESTADO_BORRADA and campana == 'borradas'):
+                        campanas_excluidas_id.append(camp.pk)
+
+                grabaciones = grabaciones.exclude(
+                    campana_id__in=campanas_excluidas_id)
+
         if duracion and duracion > 0:
             grabaciones = grabaciones.filter(duracion_llamada__gte=duracion)
         if id_contacto_externo:

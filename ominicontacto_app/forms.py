@@ -58,6 +58,9 @@ from reportes_app.models import LlamadaLog
 
 TIEMPO_MINIMO_DESCONEXION = 2
 EMPTY_CHOICE = ('', '---------')
+ALL_CAMPAIGNS_ACTIVE_CHOICE = ('activas', _('---- Todas las activas ----'))
+ALL_CAMPAIGNS_INACTIVE_CHOICE = ('borradas', _('---- Todas las borradas ----'))
+ALL_CAMPAIGNS_CHOICE = ('', _('---- Todas ----'))
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -474,7 +477,9 @@ class GrabacionBusquedaForm(forms.Form):
 
     def __init__(self, campana_choice, *args, **kwargs):
         super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
-        campana_choice.insert(0, EMPTY_CHOICE)
+        campana_choice.insert(0, ALL_CAMPAIGNS_CHOICE)
+        campana_choice.insert(1, ALL_CAMPAIGNS_ACTIVE_CHOICE)
+        campana_choice.insert(2, ALL_CAMPAIGNS_INACTIVE_CHOICE)
         self.fields['campana'].choices = campana_choice
         self.fields['duracion'].help_text = _('En segundos')
 

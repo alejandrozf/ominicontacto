@@ -372,6 +372,15 @@ class SupervisorProfile(models.Model):
                    Campana.ESTADO_INACTIVA, Campana.ESTADO_FINALIZADA]
         return self.user.campanasupervisors.filter(estado__in=estados)
 
+    def campanas_asignadas(self):
+        """
+        Devuelve las campañas asignadas, incluidas las BORRADAS a las que esta asignado
+        el Supervisor.
+        """
+        estados = [Campana.ESTADO_ACTIVA, Campana.ESTADO_PAUSADA,
+                   Campana.ESTADO_INACTIVA, Campana.ESTADO_FINALIZADA, Campana.ESTADO_BORRADA]
+        return self.user.campanasupervisors.filter(estado__in=estados)
+
     def campanas_asignadas_actuales_no_finalizadas(self):
         """
         Devuelve las campañas NO BORRADAS a las que esta asignado el Supervisor.

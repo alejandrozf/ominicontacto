@@ -90,8 +90,12 @@ class BusquedaGrabacionFormView(FormView):
     def get_form(self):
         self.form_class = self.get_form_class()
         campanas = self._get_campanas()
-        campana_choice = [(campana.pk, campana.nombre)
-                          for campana in campanas]
+        campana_choice = []
+        for campana in campanas:
+            nombre = campana.nombre
+            if campana.estado == Campana.ESTADO_BORRADA:
+                nombre = nombre + " (%s)" % _('Borrada')
+            campana_choice.append((campana.pk, nombre))
         return self.form_class(campana_choice=campana_choice, **self.get_form_kwargs())
 
     def form_valid(self, form):
@@ -160,7 +164,7 @@ class BusquedaGrabacionSupervisorFormView(BusquedaGrabacionFormView):
         user = self.request.user
         if not user.get_is_administrador():
             supervisor = user.get_supervisor_profile()
-            campanas = supervisor.campanas_asignadas_actuales()
+            campanas = supervisor.campanas_asignadas()
         return campanas
 
     def _get_filtro_agente(self, form):
@@ -169,7 +173,10 @@ class BusquedaGrabacionSupervisorFormView(BusquedaGrabacionFormView):
     def _get_grabaciones_del_dia(self):
         hoy = fecha_local(timezone.now())
         campanas = self._get_campanas()
-        campanas_id = [campana.id for campana in campanas]
+        campanas_id = []
+        for campana in campanas:
+            if campana.estado != Campana.ESTADO_BORRADA:
+                campanas_id.append(campana.id)
         logs = LlamadaLog.objects.obtener_grabaciones_by_fecha_intervalo_campanas(hoy, hoy,
                                                                                   campanas_id)
         return self._procesa_formato_transferencias(logs)
@@ -212,7 +219,8 @@ class BusquedaGrabacionAgenteFormView(BusquedaGrabacionFormView):
         agente = self.request.user.get_agente_profile()
         campanas_ids = list(
             agente.queue_set.values_list('campana_id', flat=True))
-        return Campana.objects.filter(pk__in=campanas_ids)
+        return Campana.objects.filter(pk__in=campanas_ids) \
+            .exclude(estado=Campana.ESTADO_BORRADA)
 
     def _get_filtro_agente(self, form):
         return self.request.user.get_agente_profile()
@@ -220,7 +228,10 @@ class BusquedaGrabacionAgenteFormView(BusquedaGrabacionFormView):
     def _get_grabaciones_del_dia(self):
         hoy = fecha_local(timezone.now())
         campanas = self._get_campanas()
-        campanas_id = [campana.id for campana in campanas]
+        campanas_id = []
+        for campana in campanas:
+            if campana.estado != Campana.ESTADO_BORRADA:
+                campanas_id.append(campana.id)
         grabaciones = LlamadaLog.objects.obtener_grabaciones_by_fecha_intervalo_campanas(
             hoy, hoy, campanas_id)
         return grabaciones.filter(agente_id=self.request.user.get_agente_profile().id)
