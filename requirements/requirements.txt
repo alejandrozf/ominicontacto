@@ -1,6 +1,6 @@
 # base requirements
 cairocffi==0.8.0
-CairoSVG==1.0.22
+CairoSVG==2.5.1
 cffi==1.9.1
 coverage==4.4.1
 cryptography==2.4.2
