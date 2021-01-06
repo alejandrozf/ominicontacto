@@ -131,7 +131,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         onclick="makeClick2Call('{{ calificacion_cliente.opcion_calificacion.campana.pk }}', '{{ calificacion_cliente.opcion_calificacion.campana.type }}', '{{calificacion_cliente.contacto.pk}}', '{{ calificacion_cliente.contacto.telefono }}', 'calificaciones');">{{ calificacion_cliente.contacto.telefono }}</a>
                   </td>
                   <td>
-                      {{ calificacion_cliente.contacto.datos}}
+                      {{ calificacion_cliente.contacto.obtener_datos}}
                   </td>
                   <td>
                       {% if calificacion_cliente.es_gestion %}
@@ -196,7 +196,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
           {% endwith %}
         </div>
     </div>
-</div> 
+</div>
 {% endfor %}
 </body>
 </html>
