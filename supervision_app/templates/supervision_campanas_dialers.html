@@ -1,0 +1,61 @@
+<!--
+Copyright (C) 2018 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% extends "base.html" %} {% load static %} {% load i18n %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.dataTables.min.css' %}"> {% endblock %} {% block head_js %}
+
+<script type="text/javascript" src="{% static 'supervision_app/JS/campanas_dialers.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
+{% include 'config.html' %}
+<script type="text/javascript" src="{% static 'ominicontacto/JS/config.js' %}"></script>
+{% endblock %} {% block content %}
+
+<h1>{% trans 'Campañas Dialer' %}</h1>
+<div>
+    <input id="supervisor_id" type="hidden" value="{{supervisor_id}}">
+    <input id="campanas_list" type="hidden" value="{{campanas}}">
+    <input id="campanas_list_id" type="hidden" value="{{campanas_ids}}">
+
+    <table class="table" id="tableDialers">
+        <thead>
+            <tr class="row-dialer">
+                <th></th>
+                <th colspan="3">{% trans 'Agentes' %}</th>
+                <th colspan="6">{% trans 'Llamadas' %}</th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tr>
+                <th>{% trans 'Nombre' %}</th>
+                <th>{% trans 'Agentes Online' %}</th>
+                <th>{% trans 'Agentes en llamada' %}</th>
+                <th>{% trans 'Agentes en pausa' %}</th>
+                <th>{% trans 'Llamadas discadas' %}</th>
+                <th>{% trans 'Atendidas' %}</th>
+                <th>{% trans 'No atendidas' %}</th>
+                <th>{% trans 'Contestadores' %}</th>
+                <th>{% trans 'Canales discando' %}</th>
+                <th>{% trans 'Llamadas conectadas perdidas' %}</th>
+                <th>{% trans 'Gestiones' %}</th>
+                <th>{% trans 'Llamadas pendientes' %}</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+{% endblock content %}

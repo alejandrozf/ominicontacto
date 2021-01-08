@@ -33,15 +33,20 @@ class SupervisionAppConfig(AppConfig):
                 'label': _('Agentes'),
                 'url': reverse('supervision_agentes'),
             })
-        if 'supervision_agentes' in permissions:
+        if 'supervision_campanas_entrantes' in permissions:
             items.append({
                 'label': _('Campañas Entrantes'),
                 'url': reverse('supervision_campanas_entrantes'),
             })
-        if 'supervision_agentes' in permissions:
+        if 'supervision_campanas_salientes' in permissions:
             items.append({
                 'label': _('Campañas Salientes'),
                 'url': reverse('supervision_campanas_salientes'),
+            })
+        if 'supervision_campanas_dialer' in permissions:
+            items.append({
+                'label': _('Campañas Dialer'),
+                'url': reverse('supervision_campanas_dialer'),
             })
         if items:
             return [{
@@ -61,6 +66,8 @@ class SupervisionAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'supervision_campanas_salientes',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
+            {'nombre': 'supervision_campanas_dialer',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
         ]
 
     informacion_de_permisos = {
@@ -69,5 +76,8 @@ class SupervisionAppConfig(AppConfig):
         'supervision_campanas_entrantes':
             {'descripcion': _('Estado de campañas entrantes en supervisión'), 'version': '1.7.0'},
         'supervision_campanas_salientes':
-            {'descripcion': _('Estado de campañas salientes en supervision'), 'version': '1.7.0'},
+            {'descripcion': _('Estado de campañas salientes (no dialer) en supervision'),
+             'version': '1.7.0'},
+        'supervision_campanas_dialer':
+            {'descripcion': _('Estado de campañas dialer en supervision'), 'version': '1.13.0'},
     }

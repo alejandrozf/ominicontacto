@@ -24,6 +24,7 @@ class RedisGearsService(object):
     AGENTES_TASK_ID = 'agentes'
     ENTRANTES_TASK_ID = 'entrantes'
     SALIENTES_TASK_ID = 'salientes'
+    DIALERS_TASK_ID = 'dialers'
 
     def __init__(self):
         self.conn = redis.Redis(host=settings.REDIS_HOSTNAME,
@@ -45,6 +46,13 @@ class RedisGearsService(object):
         self.__registra_evento_supervision_salientes_change()
         self.__prepara_supervision_salientes_redis_gears(
             supervisor_id, self.SALIENTES_TASK_ID, campanas_ids, campanas_nombres)
+
+    def registra_stream_supervisor_dialers(self, supervisor_id, campanas_ids, campanas_nombres):
+        self.__registra_evento_agente_change()
+        self.__prepara_agentes_redis_gears(supervisor_id, self.DIALERS_TASK_ID)
+        self.__registra_evento_supervision_dialers_change()
+        self.__prepara_supervision_dialers_redis_gears(
+            supervisor_id, self.DIALERS_TASK_ID, campanas_ids, campanas_nombres)
 
     def __prepara_agentes_redis_gears(self, supervisor_id, task_id):
         SCRIPT_NAME = 'prepara_agentes_para_stream_redis.py'
@@ -79,6 +87,15 @@ class RedisGearsService(object):
                 % SUP_CAMPAIGN_KEY
             self.conn.execute_command("RG.PYEXECUTE", script)
 
+    def __registra_evento_supervision_dialers_change(self):
+        SUP_CAMPAIGN_KEY = 'OML:SUPERVISION_DIALER:*'
+        EVENT_DESC = 'sup_dialers'
+        SCRIPT_NAME = 'registrar_evento_supervision_dialers.py'
+        if not self.__existe_evento_key_change(SUP_CAMPAIGN_KEY, EVENT_DESC):
+            script = open(f'{settings.BASE_DIR}/{self.SCRIPT_PATH}/{SCRIPT_NAME}', 'r').read() \
+                % SUP_CAMPAIGN_KEY
+            self.conn.execute_command("RG.PYEXECUTE", script)
+
     def __prepara_supervision_entrantes_redis_gears(self, supervisor_id, stream_task_id,
                                                     campanas_ids, campanas_nombres):
         SCRIPT_NAME = 'prepara_supervision_entrantes_para_stream_redis.py'
@@ -90,6 +107,14 @@ class RedisGearsService(object):
     def __prepara_supervision_salientes_redis_gears(self, supervisor_id, stream_task_id,
                                                     campanas_ids, campanas_nombres):
         SCRIPT_NAME = 'prepara_supervision_salientes_para_stream_redis.py'
+        script = open(f'{settings.BASE_DIR}/{self.SCRIPT_PATH}/{SCRIPT_NAME}', 'r').read() \
+            % (campanas_ids, campanas_nombres, stream_task_id, supervisor_id)
+
+        self.conn.execute_command("RG.PYEXECUTE", script)
+
+    def __prepara_supervision_dialers_redis_gears(self, supervisor_id, stream_task_id,
+                                                  campanas_ids, campanas_nombres):
+        SCRIPT_NAME = 'prepara_supervision_dialers_para_stream_redis.py'
         script = open(f'{settings.BASE_DIR}/{self.SCRIPT_PATH}/{SCRIPT_NAME}', 'r').read() \
             % (campanas_ids, campanas_nombres, stream_task_id, supervisor_id)
 

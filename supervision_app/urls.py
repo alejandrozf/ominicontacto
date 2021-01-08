@@ -20,7 +20,8 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 from supervision_app.views import (
-    SupervisionAgentesView, SupervisionCampanasEntrantesView, SupervisionCampanasSalientesView
+    SupervisionAgentesView, SupervisionCampanasEntrantesView, SupervisionCampanasSalientesView,
+    SupervisionCampanasDialerView
 )
 
 urlpatterns = [
@@ -35,5 +36,9 @@ urlpatterns = [
     url(r'^supervision/campanas/salientes/$',
         login_required(SupervisionCampanasSalientesView.as_view()),
         name='supervision_campanas_salientes',
+        ),
+    url(r'^supervision/campanas/dialer/$',
+        login_required(SupervisionCampanasDialerView.as_view()),
+        name='supervision_campanas_dialer',
         ),
 ]
