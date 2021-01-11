@@ -28,7 +28,7 @@ from ominicontacto_app.utiles import fecha_hora_local
 from reportes_app.models import LlamadaLog
 from reportes_app.utiles import (
     ESTILO_AMARILLO_VERDE_ROJO, ESTILO_AZUL_VIOLETA_NARANJA_CELESTE, ESTILO_VERDE_AZUL,
-    ESTILO_ROJO_VERDE_GRIS_NEGRO, ESTILO_VERDE_GRIS_NEGRO, ESTILO_VERDE_ROJO
+    ESTILO_ROJO_VERDE_GRIS_NEGRO, ESTILO_VERDE_GRIS_NEGRO_ROJO, ESTILO_VERDE_ROJO
 )
 
 from utiles_globales import adicionar_render_unicode
@@ -571,7 +571,7 @@ class GraficosReporteDeLlamadas(object):
         self.graficos['barra_campana_llamadas_dialer'] = adicionar_render_unicode(grafico)
 
     def _generar_grafico_de_barras_de_llamadas_entrantes(self, estadisticas):
-        grafico = pygal.StackedBar(show_legend=True, style=ESTILO_VERDE_GRIS_NEGRO)
+        grafico = pygal.StackedBar(show_legend=True, style=ESTILO_VERDE_GRIS_NEGRO_ROJO)
 
         nombres_campanas = []
         atendidas = []
