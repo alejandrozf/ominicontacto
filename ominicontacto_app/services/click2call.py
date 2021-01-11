@@ -56,6 +56,8 @@ class Click2CallOriginator(object):
             error = _("Originate failed by {0} - contacto: {1}".format(e, telefono))
             logger.exception(error)
             return error
+        else:
+            client.disconnect()
 
     def call_agent(self, agente_origen, agente_destino):
         return self._call_without_campaign(agente_origen, self.AGENT, str(agente_destino.id))
@@ -91,3 +93,5 @@ class Click2CallOriginator(object):
                 e, tipo_destino, numero))
             logger.exception(error)
             return error
+        else:
+            client.disconnect()
