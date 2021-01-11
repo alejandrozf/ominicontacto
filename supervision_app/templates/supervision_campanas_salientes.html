@@ -21,8 +21,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 {% load i18n %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.dataTables.min.css' %}">
+{% endblock %}
 {% block head_js %}
     <script type="text/javascript" src="{% static 'supervision_app/JS/campanas_salientes.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
     {% include 'config.html' %}
     <script type="text/javascript" src="{% static 'ominicontacto/JS/config.js' %}"></script>
 {% endblock %}
@@ -30,7 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block content %}
 <h1>{% trans 'Campañas Salientes' %}</h1>
 <div>
-    <table class="table">
+    <table class="table" id="tableSalientes">
         <thead>
             <tr>
                 <th>{% trans 'Nombre' %}</th>
@@ -40,18 +44,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <th>{% trans 'Gestiones' %}</th>
             </tr>
         </thead>
-        <tbody id="table-campanas">
-            {% for datos_campana in estadisticas.values %}
-                <tr>
-                    <td>{{ datos_campana.nombre }}</td>
-                    <td>{{ datos_campana.efectuadas }}</td>
-                    <td>{{ datos_campana.conectadas }}</td>
-                    <td>{{ datos_campana.no_conectadas }}</td>
-                <td>{{ datos_campana.gestiones }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 </div>
 
 {% endblock content %}

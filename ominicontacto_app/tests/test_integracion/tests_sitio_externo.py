@@ -31,6 +31,7 @@ try:
     from pyvirtualdisplay import Display
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.common.by import By
     from integracion_metodos import (login, get_href, formato_sitio, sitio_externo, ADMIN_USERNAME,
                                      ADMIN_PASSWORD)
 except ImportError:
@@ -197,7 +198,8 @@ class SitioExternoTests(unittest.TestCase):
             self.browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
             self.assertFalse(self.browser.find_elements_by_xpath('//tr[@id=\'{0}\']'.format(
                 sitio_post)))
-            self.browser.find_element_by_xpath('//a[@onclick]').click()
+            self.browser.execute_script('window.scrollTo(0, 0);')
+            self.browser.find_element(By.LINK_TEXT, "Show Hidden").click()
             sleep(1)
             self.browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
             desocultar = '//tr[@id=\'{0}\']//td//a[contains(@href, "/desocultar/")]'.format(

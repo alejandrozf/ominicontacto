@@ -94,9 +94,9 @@ class FormularioTests(unittest.TestCase):
             vista_previa = '//tr[@id = \'{0}\']//a[contains(@href, "/vista/")]'.format(
                 nombre_form)
             get_href(self.browser, vista_previa)
-            id_campos = ['id_Nombre', 'id_Fecha nacimiento', 'id_Opciones', 'id_Comentarios']
+            id_campos = ['Nombre', 'Fecha nacimiento', 'Opciones', 'Comentarios']
             for items in id_campos:
-                self.assertTrue(self.browser.find_elements_by_id(items))
+                self.assertTrue(self.browser.find_elements_by_name(items))
             print('--Se pudo crear un Formulario.--')
         except Exception as e:
             print('--ERROR: No se pudo crear un Formulario.-- \n{0}' .format(e))
