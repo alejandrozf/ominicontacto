@@ -53,6 +53,24 @@ a continuación.
 
 *Figure 6: the OMniLeads agent console*
 
+
+Dashboard de agente:
+
+Al ingresar el agente al sitio va a visualizar en el espacio de contenido una vista en forma de dashboard que muestra las siguientes estadistísticas del día actual del agente:
+
+- La lista de las últimas 10 llamadas recibidas/realizadas
+- El número de llamadas conectadas y un gráfico de pastel mostrando de estas la relación entre las llamadas entrantes y salientes
+- El tiempo de pausa recreativa que ha tenido el agente y un gráfico de pastel que muestra la relación entre el tiempo de sesión total del agente y el tiempo total de pausa.
+- El número de las calificaciones de gestión que ha realizado el agente y un gráfico de pastel que muestra la relación entre las calificaciones de gestión realizadas y de ellas las marcadas como observadas por una auditoría.
+
+Este dashboard se actualiza periódicamente y permite al agente tener información personalizada de su desempeño en el día actual.
+
+Por último, es importante destacar que la lista de llamadas que se visualizan en el dashboard muestra información de su calificación en caso de que se haya calificado la llamada e incluso del valor de la gestión, además de que se permite modificar dichos valores e incluso realizar una llamada al agente a través del número marcado que se muestra en el log.
+
+*Figure 6a: dashboard*
+
+.. image:: images/agent_dashboard.png
+
 **(1) Gestión de contactos**
 
 En esta sección encontramos las funcionalidades que permiten navegar entre los contactos de la base de las campañas,
