@@ -74,22 +74,26 @@ class BaseGrabacionesTests(OMLBaseTest):
         self.llamada_log1 = LlamadaLogFactory.create(duracion_llamada=1, agente_id=self.agente1.id,
                                                      callid=self.calificacion.callid,
                                                      campana_id=self.campana1.id,
-                                                     contacto_id='-1')
+                                                     contacto_id='-1', event='COMPLETEAGENT')
         self.llamada_log2 = LlamadaLogFactory.create(duracion_llamada=1, agente_id=self.agente1.id,
-                                                     campana_id=self.campana1.id)
+                                                     campana_id=self.campana1.id,
+                                                     event='COMPLETEAGENT')
         self.llamada_log3 = LlamadaLogFactory.create(duracion_llamada=1, agente_id=self.agente1.id,
-                                                     campana_id=self.campana1.id)
+                                                     campana_id=self.campana1.id,
+                                                     event='COMPLETEAGENT')
         self.marca_campana1 = GrabacionMarcaFactory(callid=self.llamada_log1.callid)
         self.marca_campana2 = GrabacionMarcaFactory(callid=self.llamada_log2.callid)
 
         self.llamada_log2_1 = LlamadaLogFactory.create(duracion_llamada=1,
                                                        agente_id=self.agente2.id,
-                                                       campana_id=self.campana2.id)
+                                                       campana_id=self.campana2.id,
+                                                       event='COMPLETEAGENT')
         self.marca_campana2_1 = GrabacionMarcaFactory(callid=self.llamada_log2_1.callid)
 
         self.llamada_log3_1 = LlamadaLogFactory.create(numero_marcado=self.contacto.telefono,
                                                        agente_id=self.agente2.id,
-                                                       campana_id=self.campana3.id)
+                                                       campana_id=self.campana3.id,
+                                                       event='COMPLETEAGENT')
 
 
 class GrabacionesTests(BaseGrabacionesTests):

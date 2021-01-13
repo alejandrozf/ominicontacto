@@ -17,6 +17,8 @@ asterisk_location="{{ install_prefix }}asterisk"
 kamailio_location="{{ install_prefix }}kamailio"
 virtualenv_location="{{ install_prefix}}virtualenv"
 usuario=omnileads
+websocket_host=websockets
+websocket_port=5000
 
 [build-docker:vars]
 version=de1.3.0

@@ -411,8 +411,17 @@ class PhoneJSController {
             $('#modalReceiveCalls').modal('show');
         });
         this.phone.eventsCallbacks.onCallReceipt.add(function(session_data) {
-            self.phone_fsm.receiveCall();
-            self.manageCallReceipt(session_data);
+            if (self.phone_fsm.state == 'Initial'){
+                // Delay to allow registration to complete
+                setTimeout(function(){
+                    self.phone_fsm.receiveCall();
+                    self.manageCallReceipt(session_data);
+                }, 1000);
+            }
+            else {
+                self.phone_fsm.receiveCall();
+                self.manageCallReceipt(session_data);
+            }
         });
         this.phone.eventsCallbacks.onSessionFailed.add(function() {
             // Se dispara al fallar Call Sessions

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-27 10:49-0300\n"
+"POT-Creation-Date: 2021-01-13 11:55-0300\n"
 "PO-Revision-Date: 2019-08-12 22:43-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -464,17 +464,17 @@ msgid ""
 "salida que informa el hecho de haber registrado ya la instancia."
 msgstr "After that, every time you go to Register section you will see this."
 
-# 5c0f704a1ebf4ade9197b188360e5c2e
+# 2fdf16b131f6422eb5850d9b3da45d40
 #: ../../initial_settings.rst:156
 msgid ""
 "El registro de la instancia pide como valores obligatorios el nombre del "
 "usuario o empresa, la dirección de email y la contraseña, es opcional el "
 "campo teléfono."
 msgstr ""
-"The registration process asks for required values like username, email address and password,"
-" making optional the phone field."
+"The registration process asks for required values like username, email "
+"address and password, making optional the phone field."
 
-# 97925df9b3a5477884991cae498c8386
+# 08ee28132b8a4d93b5a8f6f155797211
 #: ../../initial_settings.rst:158
 msgid ""
 "Una vez que se ha registrado la instancia satisfactoriamente se el "
@@ -483,16 +483,40 @@ msgid ""
 " con la llave de la instancia un vez registrado puede usar el botón "
 "\"Reenviar\"."
 msgstr ""
-"Once the OML instance is successfully registered, an email is sent to the address entered"
-". In case you want to get the email again you can use the \"Resend\" button."
+"Once the OML instance is successfully registered, an email is sent to the"
+" address entered. In case you want to get the email again you can use the"
+" \"Resend\" button."
 
-# 54e67302a9204a50bfc90e92335c30d2
+# 381a207e087743c2ac30f0718d973617
 #: ../../initial_settings.rst:161
 msgid ""
 "Es importante tener en cuenta que si quiere registrar varias instancias "
 "con una misma dirección de email debe ingresar también la misma "
 "contraseña. En otro caso use una dirección de email diferente."
 msgstr ""
-"Is important to note that if you want register several OML instances with the"
-" same email address you must enter the same password. In other cases you should use a different "
-"email address."
+"Is important to note that if you want register several OML instances with"
+" the same email address you must enter the same password. In other cases "
+"you should use a different email address."
+
+# 3ee1b8cf417041dcacca84e5b3981d63
+#: ../../initial_settings.rst:165
+msgid "Addons comerciales disponibles"
+msgstr "Commercial addons available"
+
+# 92ff3935d5764984a85c15450f659fe3
+#: ../../initial_settings.rst:167
+msgid ""
+"El sistema brinda información sobre los addons comerciales disponibles a "
+"través de la siguiente página:"
+msgstr ""
+"The system shows information about the commercial addons available using"
+" this page:"
+
+# 522d4a7b88024359963255674f2e7e36
+#: ../../initial_settings.rst:171
+msgid ""
+"Desde aquí haciendo click en los nombres de los addons puede accederse a "
+"sus sitios y adquirirlos para instalarlo en su instancia actual."
+msgstr ""
+"From here making click in the addons names you can access to its sites and "
+" for adquire them and installing in your current instance"

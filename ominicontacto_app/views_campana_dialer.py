@@ -30,7 +30,6 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect
 from django.views.generic import ListView, DeleteView, FormView, CreateView, UpdateView, View
-from django.views.generic.base import RedirectView
 
 from ominicontacto_app.models import Campana, ReglaIncidenciaPorCalificacion
 from ominicontacto_app.services.campana_service import CampanaService, WombatDialerError
@@ -82,15 +81,12 @@ class CampanaDialerListView(ListView):
         return context
 
 
-class PlayCampanaDialerView(RedirectView):
+class PlayCampanaDialerView(View):
     """
     Esta vista actualiza la campañana activándola.
     """
-
-    pattern_name = 'campana_dialer_list'
-
     def post(self, request, *args, **kwargs):
-        campana = Campana.objects.get(pk=request.POST['campana_id'])
+        campana = Campana.objects.get(pk=request.POST['campana_pk'])
         try:
             campana_service = CampanaService()
             campana_service.start_campana_wombat(campana)
@@ -120,18 +116,16 @@ class PlayCampanaDialerView(RedirectView):
                 messages.WARNING,
                 message,
             )
-        return super(PlayCampanaDialerView, self).post(request, *args, **kwargs)
+        return HttpResponseRedirect(reverse('campana_dialer_list'))
 
 
-class PausarCampanaDialerView(RedirectView):
+class PausarCampanaDialerView(View):
     """
     Esta vista actualiza la campañana pausandola.
     """
 
-    pattern_name = 'campana_dialer_list'
-
     def post(self, request, *args, **kwargs):
-        campana = Campana.objects.get(pk=request.POST['campana_id'])
+        campana = Campana.objects.get(pk=request.POST['campana_pk'])
         try:
             campana_service = CampanaService()
             campana_service.pausar_campana_wombat(campana)
@@ -163,18 +157,16 @@ class PausarCampanaDialerView(RedirectView):
                 message,
             )
 
-        return super(PausarCampanaDialerView, self).post(request, *args, **kwargs)
+        return HttpResponseRedirect(reverse('campana_dialer_list'))
 
 
-class ActivarCampanaDialerView(RedirectView):
+class ActivarCampanaDialerView(View):
     """
     Esta vista actualiza la campañana activándola.
     """
 
-    pattern_name = 'campana_dialer_list'
-
     def post(self, request, *args, **kwargs):
-        campana = Campana.objects.get(pk=request.POST['campana_id'])
+        campana = Campana.objects.get(pk=request.POST['campana_pk'])
         try:
             campana_service = CampanaService()
             campana_service.despausar_campana_wombat(campana)
@@ -204,7 +196,7 @@ class ActivarCampanaDialerView(RedirectView):
                 messages.WARNING,
                 message,
             )
-        return super(ActivarCampanaDialerView, self).post(request, *args, **kwargs)
+        return HttpResponseRedirect(reverse('campana_dialer_list'))
 
 
 class CampanaDialerDeleteView(CampanasDeleteMixin, DeleteView):
@@ -241,12 +233,10 @@ class CampanaDialerDeleteView(CampanasDeleteMixin, DeleteView):
         return reverse('campana_dialer_list')
 
 
-class OcultarCampanaDialerView(RedirectView):
+class OcultarCampanaDialerView(View):
     """
     Esta vista actualiza la campañana ocultandola.
     """
-
-    pattern_name = 'campana_dialer_list'
 
     def get(self, request, *args, **kwargs):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
@@ -254,12 +244,10 @@ class OcultarCampanaDialerView(RedirectView):
         return HttpResponseRedirect(reverse('campana_dialer_list'))
 
 
-class DesOcultarCampanaDialerView(RedirectView):
+class DesOcultarCampanaDialerView(View):
     """
     Esta vista actualiza la campañana haciendola visible.
     """
-
-    pattern_name = 'campana_dialer_list'
 
     def get(self, request, *args, **kwargs):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
@@ -377,14 +365,12 @@ class CampanaDialerBorradasListView(CampanaDialerListView):
             return JsonResponse({'result': 'desconectado'})
 
 
-class FinalizarCampanasActivasView(RedirectView):
+class FinalizarCampanasActivasView(View):
     """
     Esta vista finaliza las campanas activas de acuerdo si tienen contactos pendientes en wombat
     """
 
-    pattern_name = 'campana_dialer_list'
-
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         campanas = Campana.objects.obtener_campanas_dialer()
         campana_service = CampanaService()
         error_finalizadas = campana_service.chequear_campanas_finalizada_eliminarlas(
@@ -499,6 +485,7 @@ class ReglasDeIncidenciaDeCalificacionesDeleteView(DeleteView, VerificarPremisoE
                 message,
             )
         else:
+            service.reload_campana_wombat(self.campana)
             super(ReglasDeIncidenciaDeCalificacionesDeleteView, self).delete(
                 request, *args, **kwargs)
             messages.success(request, _('Regla de incidencia eliminada.'))
@@ -537,6 +524,7 @@ class ReglasDeIncidenciaDeCalificacionesCreateView(CreateView, VerificarPremisoE
             campana_service = CampanaService()
             campana_service.crear_reschedule_por_calificacion_wombat(
                 self.campana, regla, ReglaIncidenciaPorCalificacion.ESTADO_WOMBAT)
+            campana_service.reload_campana_wombat(self.campana)
         except WombatDialerError as e:
             error_message = _("Error al registrar regla de incidencia: ") + "{0} .".format(e)
             logger.error(error_message)
@@ -582,6 +570,7 @@ class ReglasDeIncidenciaDeCalificacionesUpdateView(UpdateView, VerificarPremisoE
             if not editado:
                 messages.error(_('No se pudo guardar la regla de incidencia.'))
                 return self.form_invalid(form)
+            campana_service.reload_campana_wombat(self.campana)
         except WombatDialerError as e:
             error_message = _("Error al editar regla de incidencia: ") + "{0} .".format(e)
             logger.error(error_message)

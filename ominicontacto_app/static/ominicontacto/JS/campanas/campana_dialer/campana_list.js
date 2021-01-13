@@ -17,6 +17,9 @@
 
 */
 /* global Urls */
+$(function(){
+    acciones_campana();
+});
 
 $(function(){
 
@@ -61,7 +64,38 @@ function mostrar_campanas_dialer_ocultas() {
         });
 }
 
-function finalizar_campana(campana_pk){
+function acciones_campana(){
+    $('.iniciar_campana').on('click', function(){
+        var url = $('.iniciar_campana').attr('value');
+        var campana_pk = $('.iniciar_campana').attr('id');
+        form_option_dialer(campana_pk, url);
+    });
+
+    $('.finalizar_campana').on('click', function(){
+        var url = $('.finalizar_campana').attr('value');
+        var campana_pk = $('.finalizar_campana').attr('id');
+        form_option_dialer(campana_pk, url);
+    });
+
+    $('.pausar_campana').on('click', function(){
+        var url = $('.pausar_campana').attr('value');
+        var campana_pk = $('.pausar_campana').attr('id');
+        form_option_dialer(campana_pk, url);
+    });
+
+    $('.activar_campana').on('click', function(){
+        var url = $('.activar_campana').attr('value');
+        var campana_pk = $('.activar_campana').attr('id');
+        form_option_dialer(campana_pk, url);
+    });
+    $('.finaliza_activas').on('click', function(){
+        var url = $('.finaliza_activas').attr('value');
+        $('#option_dialer').attr('action', url);
+        $('#option_dialer').submit();
+    });
+}
+function form_option_dialer(campana_pk, url){
     $('#campana_pk').val(campana_pk);
-    $('#finalizar_campana').submit();
+    $('#option_dialer').attr('action', url);
+    $('#option_dialer').submit();
 }

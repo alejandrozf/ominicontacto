@@ -48,7 +48,7 @@ from ominicontacto_app.models import (
 )
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
-                                      validar_solo_ascii_y_sin_espacios, elimina_tildes,
+                                      validar_solo_ascii_y_sin_espacios, remplace_espacio_por_guion,
                                       validar_longitud_nombre_base_de_contactos)
 from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSaliente
 
@@ -943,7 +943,7 @@ class FieldFormularioForm(forms.ModelForm):
     def clean_nombre_campo(self):
         formulario = self.cleaned_data.get('formulario')
         nombre_campo = self.cleaned_data.get('nombre_campo')
-        nombre_campo = elimina_tildes(nombre_campo)
+        nombre_campo = remplace_espacio_por_guion(nombre_campo)
         if formulario.campos.filter(nombre_campo=nombre_campo).exists():
             raise forms.ValidationError(_('No se puede crear un campo ya existente'))
         return nombre_campo

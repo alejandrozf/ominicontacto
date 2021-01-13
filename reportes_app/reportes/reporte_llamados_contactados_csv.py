@@ -116,7 +116,8 @@ class ReporteContactadosCSV(EstadisticasBaseCampana, ReporteCSV):
             callid = log_llamada.callid
             evento = log_llamada.event
             calificacion_historica = self.calificaciones_historicas_dict.get(callid, False)
-            if evento in LlamadaLog.EVENTOS_INICIO_CONEXION_AGENTE:
+            if evento in LlamadaLog.EVENTOS_INICIO_CONEXION_AGENTE and \
+                    log_llamada.agente_id != -1:
                 if not calificacion_historica:
                     datos_calificacion = [_("Llamada Atendida sin calificacion"),
                                           '',

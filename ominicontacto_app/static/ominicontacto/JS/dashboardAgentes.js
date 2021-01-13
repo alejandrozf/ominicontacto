@@ -23,16 +23,38 @@ import { DashboardAgente } from './componentes/core.js';
 
 var agenteId = $('#agente_id').val();
 var taskId = 'dashboard1';
-var vue_app = new Vue({
-    data: {core: {
-        mensajeEspera: gettext('Calculando estadísticas del agente ...')
-    }},
-    components: {
-        'dashboard-agente': DashboardAgente,
-    },
-    el: '#dashboard',
-    vuetify: new Vuetify(),
-});
+
+var subscribeConfirmationMessage = 'subscribed!';
+
+var dataDashboardSession = JSON.parse(sessionStorage.getItem('dataDashboard'));
+
+var vue_app = undefined;
+
+if( dataDashboardSession == undefined ){
+    // al loguearse inicialmente
+    vue_app = new Vue({
+        data: {core: {
+            mensajeEspera: gettext('Calculando estadísticas del agente ...')
+        }},
+        components: {
+            'dashboard-agente': DashboardAgente,
+        },
+        el: '#dashboard',
+        vuetify: new Vuetify(),
+    });
+
+}
+else {
+    vue_app = new Vue({
+        data: {core: dataDashboardSession.core},
+        components: {
+            'dashboard-agente': DashboardAgente,
+        },
+        el: '#dashboard',
+        vuetify: new Vuetify(),
+    });
+}
+
 
 const contactadosSocket = new WebSocket(
     'wss://'
@@ -44,118 +66,122 @@ const contactadosSocket = new WebSocket(
 );
 
 contactadosSocket.onmessage = function(e) {
-    var data = JSON.parse(e.data);
-    var conectadasData = JSON.parse(data.conectadas);
-    var pausaData = JSON.parse(data.tiempos);
-    var ventaData = JSON.parse(data.venta);
-    var logsData = JSON.parse(data.logs);
+    if (e.data != subscribeConfirmationMessage) {
+        var data = JSON.parse(e.data);
+        var conectadasData = JSON.parse(data.conectadas);
+        var pausaData = JSON.parse(data.tiempos);
+        var ventaData = JSON.parse(data.venta);
+        var logsData = JSON.parse(data.logs);
 
-    var graficoConectadas = {
-        tooltip: {
-            trigger: 'item',
-            formatter: '{c} ({d}%)'
-        },
-        series: [
-            {
-                type: 'pie',
-                radius: '55%',
-                center: ['50%', '50%'],
-                selectedMode: 'single',
-                data:  [
-                    {value: conectadasData.salientes, name: gettext('Salientes')},
-                    {value: conectadasData.entrantes, name: gettext('Entrantes')},
-                ],
-                emphasis: {
-                    itemStyle: {
-                        shadowBlur: 7,
-                        shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+        var graficoConectadas = {
+            tooltip: {
+                trigger: 'item',
+                formatter: '{c} ({d}%)'
+            },
+            series: [
+                {
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['50%', '50%'],
+                    selectedMode: 'single',
+                    data:  [
+                        {value: conectadasData.salientes, name: gettext('Salientes')},
+                        {value: conectadasData.entrantes, name: gettext('Entrantes')},
+                    ],
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 7,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
                     }
                 }
-            }
-        ]
-    };
+            ]
+        };
 
-    var graficoPausa = {
-        tooltip: {
-            trigger: 'item',
-            formatter: '{c} ({d}%)'
-        },
-        series: [
-            {
-                type: 'pie',
-                radius: '55%',
-                center: ['50%', '50%'],
-                selectedMode: 'single',
-                data:  [
-                    {value: pausaData.pausa, name: gettext('Pausa')},
-                    {value: pausaData.sesion, name: gettext('Sesión')},
-                ],
-                emphasis: {
-                    itemStyle: {
-                        shadowBlur: 7,
-                        shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+        var graficoPausa = {
+            tooltip: {
+                trigger: 'item',
+                formatter: '{c} ({d}%)'
+            },
+            series: [
+                {
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['50%', '50%'],
+                    selectedMode: 'single',
+                    data:  [
+                        {value: pausaData.pausa, name: gettext('Pausa')},
+                        {value: pausaData.sesion, name: gettext('Sesión')},
+                    ],
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 7,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
                     }
                 }
-            }
-        ]
-    };
+            ]
+        };
 
-    var graficoVenta = {
-        tooltip: {
-            trigger: 'item',
-            formatter: '{c} ({d}%)'
-        },
-        series: [
-            {
-                type: 'pie',
-                radius: '55%',
-                center: ['50%', '50%'],
-                selectedMode: 'single',
-                data:  [
-                    {value: ventaData.total, name: gettext('Realizadas')},
-                    {value: ventaData.observadas, name: gettext('Observadas')},
-                ],
-                emphasis: {
-                    itemStyle: {
-                        shadowBlur: 7,
-                        shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+        var graficoVenta = {
+            tooltip: {
+                trigger: 'item',
+                formatter: '{c} ({d}%)'
+            },
+            series: [
+                {
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['50%', '50%'],
+                    selectedMode: 'single',
+                    data:  [
+                        {value: ventaData.total, name: gettext('Realizadas')},
+                        {value: ventaData.observadas, name: gettext('Observadas')},
+                    ],
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 7,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
                     }
                 }
-            }
-        ]
-    };
-    var dashboardData = {core:
-                         {
-                             conectadas: {
-                                 statistics : conectadasData.total,
-                                 title: gettext('Llamadas conectadas'),
-                                 graphic: graficoConectadas,
-                             },
-                             pausa: {
-                                 statistics : pausaData.tiempo_pausa,
-                                 title: gettext('Tiempo de pausa recreativa'),
-                                 graphic: graficoPausa,
-                             },
-                             venta: {
-                                 statistics : ventaData.total,
-                                 title: 'Ventas',
-                                 graphic: graficoVenta,
-                             },
-                             logs: {
-                                 headers: {
-                                     phone: gettext('Número marcado'),
-                                     data: gettext('Datos del contacto'),
-                                     engaged: gettext('Gestionado'),
-                                     callDisposition: gettext('Calificación'),
-                                     comments: gettext('Observaciones'),
-                                     audit: gettext('Auditoría'),
-                                     actions: gettext('Acciones'),
+            ]
+        };
+        var dashboardData = {core:
+                             {
+                                 conectadas: {
+                                     statistics : conectadasData.total,
+                                     title: gettext('Llamadas conectadas'),
+                                     graphic: graficoConectadas,
                                  },
-                                 values: logsData,
-                             }
-                         }};
-    vue_app.core = dashboardData.core;
+                                 pausa: {
+                                     statistics : pausaData.tiempo_pausa,
+                                     title: gettext('Tiempo de pausa recreativa'),
+                                     graphic: graficoPausa,
+                                 },
+                                 venta: {
+                                     statistics : ventaData.total,
+                                     title: 'Ventas',
+                                     graphic: graficoVenta,
+                                 },
+                                 logs: {
+                                     headers: {
+                                         phone: gettext('Número marcado'),
+                                         data: gettext('Datos del contacto'),
+                                         engaged: gettext('Gestionado'),
+                                         callDisposition: gettext('Calificación'),
+                                         comments: gettext('Observaciones'),
+                                         audit: gettext('Auditoría'),
+                                         actions: gettext('Acciones'),
+                                     },
+                                     values: logsData,
+                                 }
+                             }};
+        sessionStorage.setItem('dataDashboard', JSON.stringify(dashboardData));
+        vue_app.core = dashboardData.core;
+    }
+
 };

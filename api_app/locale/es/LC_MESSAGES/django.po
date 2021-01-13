@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-18 10:58-0300\n"
+"POT-Creation-Date: 2021-01-13 13:08-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -333,7 +333,7 @@ msgstr ""
 msgid "Error en el servidor externo"
 msgstr ""
 
-#: api_app/views/agente.py:65 webphone_client_app/views.py:50
+#: api_app/views/agente.py:65
 msgid "Error al generar sip password"
 msgstr ""
 
@@ -440,12 +440,4 @@ msgstr ""
 
 #: utiles_globales.py:37
 msgid "Archivos permitidos: .wav"
-msgstr ""
-
-#: webphone_client_app/apps.py:36
-msgid "Credenciales SIP para Cliente Webphone"
-msgstr ""
-
-#: webphone_client_app/views.py:55
-msgid "Error al obtener WEBPHONE_VIDEO_DOMAIN"
 msgstr ""
