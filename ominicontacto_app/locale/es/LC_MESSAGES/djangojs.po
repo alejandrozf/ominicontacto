@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-15 11:18-0300\n"
+"POT-Creation-Date: 2021-01-12 14:51-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -95,8 +95,8 @@ msgid "Seleccione una opción válida"
 msgstr "Seleccione una opción válida"
 
 #: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:240
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:453
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:723
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:462
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:732
 msgid "Conectado a %(fromUser)s"
 msgstr "Conectado a %(fromUser)s"
 
@@ -143,72 +143,72 @@ msgstr "Agente conectado a asterisk"
 msgid "Agente no conectado a asterisk, contacte a su administrador"
 msgstr "Agente no conectado a asterisk, contacte a su administrador"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:477
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:598
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:486
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:607
 msgid "Disponible"
 msgstr "Disponible"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:530
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:539
 msgid "Obteniendo pausa: %(pause_name)s"
 msgstr "Obteniendo pausa: %(pause_name)s"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:540
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:549
 msgid "Agente en pausa"
 msgstr "Agente en pausa"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:543
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:552
 msgid "No se puede realizar la pausa, contacte a su administrador"
 msgstr "No se puede realizar la pausa, contacte a su administrador"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:580
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:589
 msgid "No se pudo salir de la pausa."
 msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:601
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:610
 msgid "No se puede liberar la pausa, contacte a su administrador"
 msgstr "No se puede liberar la pausa, contacte a su administrador"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:612
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:621
 msgid "Liberando pausa..."
 msgstr "Liberando pausa..."
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:683
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:692
 msgid "Ocupado, intente maás tarde"
 msgstr "Ocupado, intente maás tarde"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:686
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:695
 msgid "Rechazado, intente maás tarde"
 msgstr "Rechazado, intente maás tarde"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:689
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:698
 msgid "No disponible, contacte a su administrador"
 msgstr "No disponible, contacte a su administrador"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:692
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:701
 msgid "Error, verifique el número marcado"
 msgstr "Error, verifique el número marcado"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:696
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:705
 msgid "Error de autenticación, contacte a su administrador"
 msgstr "Error de autenticación, contacte a su administrador"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:699
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:708
 msgid "Error, Falta SDP"
 msgstr "Error, Falta SDP"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:702
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:711
 msgid "Dirección incompleta"
 msgstr "Dirección incompleta"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:706
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:715
 msgid "Servicio no disponible, contacte a su administrador"
 msgstr "Servicio no disponible, contacte a su administrador"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:710
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:719
 msgid "Error WebRTC: El usuario no permite acceso al medio"
 msgstr "Error WebRTC: El usuario no permite acceso al medio"
 
-#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:713
+#: ominicontacto_app/static/ominicontacto/JS/agente/phoneJsController.js:722
 msgid "Error: Llamado fallido"
 msgstr "Error: Llamado fallido"
 
@@ -246,6 +246,48 @@ msgstr ""
 msgid "Error al marcar auditoría"
 msgstr ""
 
+#: ominicontacto_app/static/ominicontacto/JS/campanas/campana_preview/contactos_asignados.js:57
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:101
+msgid "Buscar: "
+msgstr "Buscar: "
+
+#: ominicontacto_app/static/ominicontacto/JS/campanas/campana_preview/contactos_asignados.js:58
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:102
+msgid "(filtrando de un total de _MAX_ contactos)"
+msgstr "(filtrando de un total de _MAX_ contactos)"
+
+#: ominicontacto_app/static/ominicontacto/JS/campanas/campana_preview/contactos_asignados.js:60
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:104
+msgid "Primero "
+msgstr "Primero "
+
+#: ominicontacto_app/static/ominicontacto/JS/campanas/campana_preview/contactos_asignados.js:61
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:105
+msgid "Anterior "
+msgstr "Anterior "
+
+#: ominicontacto_app/static/ominicontacto/JS/campanas/campana_preview/contactos_asignados.js:62
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:106
+msgid " Siguiente"
+msgstr " Siguiente"
+
+#: ominicontacto_app/static/ominicontacto/JS/campanas/campana_preview/contactos_asignados.js:63
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:107
+msgid " Último"
+msgstr " Último"
+
+#: ominicontacto_app/static/ominicontacto/JS/campanas/campana_preview/contactos_asignados.js:65
+#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:47
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:109
+msgid "Mostrar _MENU_ entradas"
+msgstr "Mostrar _MENU_ entradas"
+
+#: ominicontacto_app/static/ominicontacto/JS/campanas/campana_preview/contactos_asignados.js:66
+#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:48
+#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:110
+msgid "Mostrando _START_ a _END_ de _TOTAL_ entradas"
+msgstr "Mostrando _START_ a _END_ de _TOTAL_ entradas"
+
 #: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:40
 msgid "Buscar:"
 msgstr "Buscar:"
@@ -266,17 +308,7 @@ msgstr "Siguiente"
 msgid "Último"
 msgstr "Último"
 
-#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:47
-#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:109
-msgid "Mostrar _MENU_ entradas"
-msgstr "Mostrar _MENU_ entradas"
-
-#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:48
-#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:110
-msgid "Mostrando _START_ a _END_ de _TOTAL_ entradas"
-msgstr "Mostrando _START_ a _END_ de _TOTAL_ entradas"
-
-#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:93
+#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:96
 msgid ""
 "OPS, se venció el tiempo de asignación de este contacto.Por favor intente "
 "solicitar uno nuevo"
@@ -284,7 +316,7 @@ msgstr ""
 "OPS, se venció el tiempo de asignación de este contacto.Por favor intente "
 "solicitar uno nuevo"
 
-#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:134
+#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:137
 msgid ""
 "Contacto asignado por llamado previo. Califique el contacto o liberelo para "
 "poder recibir un nuevo contacto."
@@ -292,11 +324,11 @@ msgstr ""
 "Contacto asignado por llamado previo. Califique el contacto o liberelo para "
 "poder recibir un nuevo contacto."
 
-#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:188
+#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:191
 msgid "Contacto Liberado"
 msgstr "Contacto Liberado"
 
-#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:195
+#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:198
 msgid "No se pudo liberar al contacto. Intente pedir otro."
 msgstr "No se pudo liberar al contacto. Intente pedir otro."
 
@@ -312,29 +344,78 @@ msgstr "Llamar"
 msgid "Enviar email"
 msgstr "Enviar email"
 
-#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:101
-msgid "Buscar: "
-msgstr "Buscar: "
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:37
+msgid "Calculando estadísticas del agente ..."
+msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:102
-msgid "(filtrando de un total de _MAX_ contactos)"
-msgstr "(filtrando de un total de _MAX_ contactos)"
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:88
+#, fuzzy
+#| msgid "Siguiente"
+msgid "Salientes"
+msgstr "Siguiente"
 
-#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:104
-msgid "Primero "
-msgstr "Primero "
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:89
+msgid "Entrantes"
+msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:105
-msgid "Anterior "
-msgstr "Anterior "
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:114
+msgid "Pausa"
+msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:106
-msgid " Siguiente"
-msgstr " Siguiente"
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:115
+msgid "Sesión"
+msgstr ""
 
-#: ominicontacto_app/static/ominicontacto/JS/contactosList.js:107
-msgid " Último"
-msgstr " Último"
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:140
+msgid "Realizadas"
+msgstr ""
+
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:141
+msgid "Observadas"
+msgstr ""
+
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:157
+msgid "Llamadas conectadas"
+msgstr ""
+
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:162
+msgid "Tiempo de pausa recreativa"
+msgstr ""
+
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:167
+msgid "Ventas"
+msgstr ""
+
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:172
+msgid "Número marcado"
+msgstr ""
+
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:173
+msgid "Datos del contacto"
+msgstr ""
+
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:174
+#, fuzzy
+#| msgid "Gestión"
+msgid "Gestionado"
+msgstr "Gestión"
+
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:175
+msgid "Calificación"
+msgstr ""
+
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:176
+#: ominicontacto_app/static/ominicontacto/JS/supervision/reasignarAgendas.js:97
+msgid "Observaciones"
+msgstr ""
+
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:177
+msgid "Auditoría"
+msgstr ""
+
+#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:178
+msgid "Acciones"
+msgstr ""
 
 #: ominicontacto_app/static/ominicontacto/JS/formularios.js:40
 msgid "Ocultar"
@@ -455,10 +536,6 @@ msgstr ""
 #: ominicontacto_app/static/ominicontacto/JS/supervision/reasignarAgendas.js:66
 #: ominicontacto_app/static/ominicontacto/JS/supervision/reasignarAgendas.js:73
 msgid "Error al reasignar"
-msgstr ""
-
-#: ominicontacto_app/static/ominicontacto/JS/supervision/reasignarAgendas.js:97
-msgid "Observaciones"
 msgstr ""
 
 #: ominicontacto_app/static/ominicontacto/JS/supervision/reasignarAgendas.js:107

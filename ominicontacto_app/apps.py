@@ -542,6 +542,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'agente_cambiar_estado',
              'roles': ['Agente', ]},
+            {'nombre': 'agente_dashboard',
+             'roles': ['Agente', ]},
             {'nombre': 'llamadas_activas',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'supervision_agentes_logueados',
@@ -626,7 +628,7 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'contactos_preview_asignados',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
-            {'nombre': 'liberar_contacto_asignado',
+            {'nombre': 'liberar_reservar_contacto_asignado',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'ordenar_entrega_contactos_preview',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
@@ -947,6 +949,8 @@ class OminicontactoAppConfig(AppConfig):
              'version': '1.7.0'},
         'agente_cambiar_estado':
             {'descripcion': _('Modificar el estado de un Agente en Asterisk'), 'version': '1.7.0'},
+        'agente_dashboard':
+        {'descripcion': _('Vista del dashboard de un agente'), 'version': '1.11.7'},
         'llamadas_activas':
             {'descripcion': _('Llamadas activas actuales'), 'version': '1.7.0'},
         'supervision_agentes_logueados':
@@ -1040,8 +1044,9 @@ class OminicontactoAppConfig(AppConfig):
         'contactos_preview_asignados':
             {'descripcion': _('Ver los contactos de una campaña Preview asignados a algun agente'),
              'version': '1.7.0'},
-        'liberar_contacto_asignado':
-            {'descripcion': _('Liberar un contacto de una campaña Preview asignado a un agente'),
+        'liberar_reservar_contacto_asignado':
+            {'descripcion': _('Liberar o reservar un contacto de una campaña Preview asignado'
+                              'a un agente'),
              'version': '1.7.0'},
         'ordenar_entrega_contactos_preview':
             {'descripcion': _('Definir orden de asignacion de contactos de una campaña Preview'),

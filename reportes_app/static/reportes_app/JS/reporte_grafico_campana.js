@@ -19,11 +19,14 @@
 
 /* global moment get_ranges Urls gettext */
 
-function exportarReporteCSV(sufijoUrl, $csvDescarga, urlExportacion, $barraProgresoCSV, $csvDescargaLink, start, end) {
+
+var subscribeConfirmationMessage = 'subscribed!';
+
+function generarReporteCSV(urlExportacion, $csvDescarga, sufijoUrl, start, end,
+    $barraProgresoCSV, campanaId, taskId) {
+
     // realiza request a endpoint q genera el csv
     // en background
-    var campanaId = $('#campana_id').val();
-    var taskId = $('#task_id').val();
     $csvDescarga.val(gettext('Descargar Reporte de '+ sufijoUrl +'(CSV)'));
     $csvDescarga.attr('class', 'btn btn-outline-secondary btn-sm disabled');
     $csvDescarga.attr('disabled', true);
@@ -47,6 +50,15 @@ function exportarReporteCSV(sufijoUrl, $csvDescarga, urlExportacion, $barraProgr
     });
     $barraProgresoCSV.toggle();
 
+}
+
+
+
+function exportarReporteCSV(sufijoUrl, $csvDescarga, urlExportacion, $barraProgresoCSV, $csvDescargaLink, start, end) {
+
+    var campanaId = $('#campana_id').val();
+    var taskId = $('#task_id').val();
+
     // establece conexion a websocket para obtener los status
     // y enviarlos a la barra de progreso
     const contactadosSocket = new WebSocket(
@@ -62,26 +74,32 @@ function exportarReporteCSV(sufijoUrl, $csvDescarga, urlExportacion, $barraProgr
 
     contactadosSocket.onmessage = function(e) {
         var data = e.data;
-        $barraProgresoCSV.find('.progress-bar').width(data + '%');
-        $barraProgresoCSV.find('.progress-bar').text(data + '%');
-        if (data == '100') {
-            $csvDescargaLink.attr('class', 'btn btn-outline-primary btn-sm');
-            $csvDescarga.remove();
-            if(! ('Notification' in window) ){
-                console.log('Web Notification not supported');
-                return;
-            }
+        if (data == subscribeConfirmationMessage) {
+            generarReporteCSV(urlExportacion, $csvDescarga, sufijoUrl, start, end,
+                $barraProgresoCSV, campanaId, taskId);
+        }
+        else {
+            $barraProgresoCSV.find('.progress-bar').width(data + '%');
+            $barraProgresoCSV.find('.progress-bar').text(data + '%');
+            if (data == '100') {
+                $csvDescargaLink.attr('class', 'btn btn-outline-primary btn-sm');
+                $csvDescarga.remove();
+                if(! ('Notification' in window) ){
+                    console.log('Web Notification not supported');
+                    return;
+                }
 
-            var notification = new Notification(
-                gettext('Exportación completa'),
-                {body:gettext(
-                    'La exportación a .csv del reporte de '
-                        + sufijoUrl
-                        + ' ha sido completada completada exitosamente.')});
-            setTimeout(function(){
-                notification.close();
-            }, 3000);
-            contactadosSocket.close();
+                var notification = new Notification(
+                    gettext('Exportación completa'),
+                    {body:gettext(
+                        'La exportación a .csv del reporte de '
+                            + sufijoUrl
+                            + ' ha sido completada completada exitosamente.')});
+                setTimeout(function(){
+                    notification.close();
+                }, 3000);
+                contactadosSocket.close();
+            }
         }
     };
 }

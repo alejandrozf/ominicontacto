@@ -359,7 +359,10 @@ class BaseActividadAgente(object):
             self.fecha_fin = fecha_fin
 
     def calcular_duracion(self):
-        self.duracion = self.fecha_fin - self.fecha_inicio
+        if self.fecha_inicio and self.fecha_fin:
+            self.duracion = self.fecha_fin - self.fecha_inicio
+        else:
+            self.duracion = 0
         return self.duracion
 
 
@@ -374,7 +377,5 @@ class PausaAgente(BaseActividadAgente):
         self.nombre = nombre
 
     def establecer_finalizacion(self, fecha_fin, pausa_id):
-        if self.pausa_id == pausa_id:
-            super(PausaAgente, self).establecer_finalizacion(fecha_fin)
-            return True
-        return False
+        super(PausaAgente, self).establecer_finalizacion(fecha_fin)
+        return True

@@ -183,19 +183,29 @@ class LlamadaLogManager(models.Manager):
     def obtener_grabaciones_by_fecha_intervalo_campanas(self, fecha_inicio, fecha_fin, campanas):
         fecha_inicio = datetime_hora_minima_dia(fecha_inicio)
         fecha_fin = datetime_hora_maxima_dia(fecha_fin)
+        INCLUDED_EVENTS = ['COMPLETEAGENT', 'COMPLETEOUTNUM', 'BT-COMPLETE',
+                           'COMPLETE-BT', 'CT-COMPLETE', 'COMPLETE-CT', 'CAMPT-COMPLETE',
+                           'COMPLETE-CAMPT', 'BTOUT-COMPLETE', 'COMPLETE-BTOUT', 'CTOUT-COMPLETE',
+                           'COMPLETE-CTOUT']
 
         return self.filter(time__range=(fecha_inicio, fecha_fin),
                            campana_id__in=campanas, duracion_llamada__gt=0,
+                           event__in=INCLUDED_EVENTS,
                            archivo_grabacion__isnull=False).order_by('-time').\
             exclude(archivo_grabacion='-1').exclude(event='ENTERQUEUE-TRANSFER')
 
     def obtener_grabaciones_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada, tel_cliente,
                                       callid, id_contacto_externo, agente, campana, campanas,
                                       marcadas, duracion, gestion):
-        campanas_id = [camp.id for camp in campanas]
+        INCLUDED_EVENTS = ['COMPLETEAGENT', 'COMPLETEOUTNUM', 'BT-COMPLETE',
+                           'COMPLETE-BT', 'CT-COMPLETE', 'COMPLETE-CT', 'CAMPT-COMPLETE',
+                           'COMPLETE-CAMPT', 'BTOUT-COMPLETE', 'COMPLETE-BTOUT', 'CTOUT-COMPLETE',
+                           'COMPLETE-CTOUT']
+        campanas_id = [campana.id for campana in campanas]
         grabaciones = self.filter(campana_id__in=campanas_id,
                                   archivo_grabacion__isnull=False,
-                                  duracion_llamada__gt=0)
+                                  duracion_llamada__gt=0,
+                                  event__in=INCLUDED_EVENTS)
 
         grabaciones = grabaciones.exclude(
             archivo_grabacion='-1').exclude(event='ENTERQUEUE-TRANSFER')
