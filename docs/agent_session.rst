@@ -65,7 +65,7 @@ Al ingresar el agente al sitio va a visualizar en el espacio de contenido una vi
 
 Este dashboard se actualiza periódicamente y permite al agente tener información personalizada de su desempeño en el día actual.
 
-Por último, es importante destacar que la lista de llamadas que se visualizan en el dashboard muestra información de su calificación en caso de que se haya calificado la llamada e incluso del valor de la gestión, además de que se permite modificar dichos valores e incluso realizar una llamada al agente a través del número marcado que se muestra en el log.
+Por último, es importante destacar que la lista de llamadas que se visualizan en el dashboard muestra información de su calificación en caso de que se haya calificado la llamada e incluso del valor de la gestión, además de que se permite modificar dichos valores e incluso realizar una llamada al contacto a través del número marcado que se muestra en el log.
 
 *Figure 6a: dashboard*
 
