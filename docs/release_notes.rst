@@ -17,6 +17,7 @@ Nuevas funcionalidades
 - Se adicionó una página con información de los addons comerciales disponibles
 - Ahora es posible realizar el reciclado de una campaña dialer cuando aún se encuentra activa
 - El sistema ahora reproduce un audio cuando se intenta llamar a un número que se encuentra en una lista negra
+- La acción de click2call se deshabilita en medio de un intento de llamada
 - Se mejoró la seguridad del componente Redis
 - Un nuevo parámetro de instalación para el componente RTPEngine fue adicionado
 - El códec g729 es instalado ahora por defecto para el componente Asterisk

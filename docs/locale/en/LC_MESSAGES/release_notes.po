@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-24 12:44-0300\n"
+"POT-Creation-Date: 2021-01-13 12:41-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,23 +23,254 @@ msgstr "Release Notes"
 
 # 3a7fc49d02324b0a8d60cc23cdca531d
 #: ../../release_notes.rst:4
-#, fuzzy
-msgid "*Diciembre 24, 2020*"
-msgstr "*December 24, 2020*"
+msgid "*Enero 13, 2021*"
+msgstr "January 13, 2021"
 
 # 03ab3c13b69d4f0d80eac13e9038983f
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.11.8"
-msgstr "Release 1.11.8 details"
+msgid "Detalles de Release 1.12.0"
+msgstr "Release 1.12.0 details"
+
+# 581389b286854f58bf8b4e113fffe138
+#: ../../release_notes.rst:10
+msgid "Nuevas funcionalidades"
+msgstr "New features"
+
+# 7b59ce1c597249f2be7032f7b0276b77
+#: ../../release_notes.rst:11
+msgid "Toda la comunicación AMI con Asterisk usa TCP AMI ahora en vez de HTTP AMI"
+msgstr "All Asterisk AMI connection now use TCP AMI instead HTTP AMI"
+
+# ad5d57e15dc64e4aa65d9dd35ec979c8
+#: ../../release_notes.rst:12
+msgid ""
+"Los supervisores pueden asignar y liberar contactos de/a agentes en "
+"campañas preview"
+msgstr ""
+"Supervisor roles can now assigned and liberate contacts to/from agents in"
+" preview campaigns"
+
+# accb07c199e54ef99d051fd2706d9f10
+#: ../../release_notes.rst:13
+msgid ""
+"Es posible ahora, opcionalmente, ocultar opciones de calificaciones en "
+"campañas"
+msgstr "Now is possible to optionally hide dispositions options for campaigns"
+
+# 689aa02fc3ac4161aa0ea48a13fa41cc
+#: ../../release_notes.rst:14
+msgid "El sistema ahora logue en la base de datos las llamadas fuera de campaña"
+msgstr "The system now logs in database calls without campaign"
+
+# e46d0d4c8f5f4694bb50ed8588f822eb
+#: ../../release_notes.rst:15
+msgid "Fue implementado un dashboard para agentes"
+msgstr "A dashboard for console agent was implemented"
+
+# 0814615bc22046a5ae3b3cc9af5d5eaf
+#: ../../release_notes.rst:16
+msgid ""
+"Las reglas de incidencia en campañas dialer pueden ser relacionadas con "
+"las opciones de calificación en la campaña de manera permitiendo un "
+"funcionamiento más flexible en campañas dialer"
+msgstr ""
+"Dialer incidence rules can be linked with campaign disposition options "
+"for allow more flexible behaviour in diale"
+
+# 44d6e2adb3964c069817393941af4a11
+#: ../../release_notes.rst:17
+msgid ""
+"Se adicionó una página con información de los addons comerciales "
+"disponibles"
+msgstr "A page with information about commercial addons available was added"
+
+# b91593c984504455bd035d791231e64d
+#: ../../release_notes.rst:18
+msgid ""
+"Ahora es posible realizar el reciclado de una campaña dialer cuando aún "
+"se encuentra activa"
+msgstr "Now is possible to recycle a dialer campaign still active"
+
+# 405e561c63604abe925bac96d8bcd2fa
+#: ../../release_notes.rst:19
+msgid ""
+"El sistema ahora reproduce un audio cuando se intenta llamar a un número "
+"que se encuentra en una lista negra"
+msgstr ""
+"The system now reproduce an audio on attempts to call to a blacklisted "
+"number"
+
+# b5a604bb83e44d929ccf199f5ab879f3
+#: ../../release_notes.rst:20
+msgid "La acción de click2call se deshabilita en medio de un intento de llamada"
+msgstr "The click2call action is disable in a middle of an attempt to call"
+
+# 15159d93e3994fefbd976f4521e50e32
+#: ../../release_notes.rst:21
+msgid "Se mejoró la seguridad del componente Redis"
+msgstr "A layer of security for Redis component was added"
+
+# 32f2996096864108ab37136160329b5d
+#: ../../release_notes.rst:22
+msgid ""
+"Un nuevo parámetro de instalación para el componente RTPEngine fue "
+"adicionado"
+msgstr "A new installation parameter for RTPEngine component was added"
+
+# 255aaf5f86b44a348bb64cd4834abf2f
+#: ../../release_notes.rst:23
+msgid "El códec g729 es instalado ahora por defecto para el componente Asterisk"
+msgstr "Codec g729 is now installed for default in Asterisk component"
+
+# eb2908f55b5848299a58f6aa7bc9827e
+#: ../../release_notes.rst:24
+msgid ""
+"Un botón para reenviar la clave del registro de la instancia de OMniLeads"
+" ya registrada fue implementado."
+msgstr ""
+"A key re-send button was implemented to allow get again the installation "
+"key when OMniLeads instance is registered"
+
+# b6da2fa6a5a7429cb6788b010ed5c4f0
+#: ../../release_notes.rst:25
+msgid ""
+"Los grupos de agentes pueden ser configurados para controlar si los "
+"agentes pueden ir al estado Ready si no han completadp una calificación "
+"pendiente"
+msgstr ""
+"Agent groups can be configured now to control if agents can't go to Ready"
+" status until complete disposition pending"
+
+# dd80b341325c448a814d56996d036239
+#: ../../release_notes.rst:26
+msgid "Es posible realizar videollamadas entrantes usando el addon CLICK2CALL"
+msgstr "Is possible make inbound videocalls using CLICK2CALL addon"
 
 # 46afe1405c66423e9f32d32b09e66305
-#: ../../release_notes.rst:11
+#: ../../release_notes.rst:31
 msgid "Fixes y mejoras"
 msgstr "Fixes and improvements"
 
-# 32f2996096864108ab37136160329b5d
-#: ../../release_notes.rst:12
+# 5efb0949b49b4c12a01d4ead4f0cba2f
+#: ../../release_notes.rst:32
 msgid ""
-"Se soluciona error de instalación debido a un cambio en un proveedor de "
-"paquetes externo"
-msgstr "Fixed installation error due to a change on an external package provider"
+"Solucionado error de dialplan que permitía derivar un número en una lista"
+" negra a ser llamado por un agente en una campaña dialer"
+msgstr ""
+"Fixed dialplan error that allow to derive a black listed number to a "
+"dialer campaign agent"
+
+# 32f2996096864108ab37136160329b5d
+#: ../../release_notes.rst:33
+msgid ""
+"Solucionado error al transferir una llamada fuera de campaña hacia un "
+"agente"
+msgstr ""
+"Fixed error on transfering a out of campaign call to an agent"
+
+# 32f2996096864108ab37136160329b5d
+#: ../../release_notes.rst:34
+msgid "Solucionado error al liberar un contacto en una campaña preview"
+msgstr "Fixed error on liberation of contact in preview campaign"
+
+# c5f7e6c356d44530a5d83342c2bc43d7
+#: ../../release_notes.rst:35
+msgid ""
+"Solucionado error en condición de carrera en la consola de agente cuando "
+"se solapaban el momento de login y una llamada en cola que entra"
+msgstr ""
+"Fixed race condition error on agent console when login and call in queue "
+"ocurred at the same time"
+
+# 32f2996096864108ab37136160329b5d
+#: ../../release_notes.rst:36
+msgid "Solucionado error al reciclar una campaña preview sobre sí misma"
+msgstr "Fixed error on recycling a preview campaign over itself"
+
+# cdb0bc03774d4a319a262636a8f26b57
+#: ../../release_notes.rst:37
+msgid ""
+"Solucionado error en consola de agente cuando un agente recibía una "
+"llamada entrante justo después de cortar una llamada saliente, lo cual no"
+" permitía calificar la llamada saliente"
+msgstr ""
+"Fixed error on agent console when an agent received an inbound call just after "
+"hangup an outbound call that disallowed to disposition the outbound call"
+
+# 32f2996096864108ab37136160329b5d
+#: ../../release_notes.rst:38
+msgid "Solucionado error de dialplan que generaba entradas corruptas en Redis"
+msgstr "Fixed dialplan error that generates corrupted entries in Redis"
+
+# 76552ecb62ed4b6a8e52b601f2be6e14
+#: ../../release_notes.rst:39
+msgid "Solucionada issue #70"
+msgstr "Fixed issue #70"
+
+# 32f2996096864108ab37136160329b5d
+#: ../../release_notes.rst:40
+msgid ""
+"Solucionado error de diaplan que logueaba evento incorrecto para llamadas"
+" en BUSY"
+msgstr ""
+"Fixed dialplan error that logged an incorrect event for BUSY calls"
+
+# 148278d177ec40ea902255dbea1ed615
+#: ../../release_notes.rst:41
+msgid ""
+"Solucionado error al cambiar la contraseña de un usuario y establecer una"
+" mayor o igual a 22 caracteres"
+msgstr ""
+"Fixed error when changing user password using passwords greater than 22"
+" characters"
+
+# b00f1881a40043cd8ebe3f98b7d07163
+#: ../../release_notes.rst:42
+msgid ""
+"Solucionada inconsistencia al comparar estadísticas de actividad de "
+"agente entre diferentes reportes"
+msgstr ""
+"Fixed inconsistency error when comparing agent activity statistics"
+" between diferents reports"
+
+# b2e976bed23b4364a90645a38779e654
+#: ../../release_notes.rst:43
+msgid "Los tests de integración fueron refactorizados para una mejor organización"
+msgstr "Integration test were refactored for better organization"
+
+# d337c8f0f1f94154a7b76c91712eb2c5
+#: ../../release_notes.rst:44
+msgid ""
+"El código de los reportes de campaña fue refactorizado para mejorar su "
+"performance"
+msgstr ""
+"The code of campaign reports was refactored in order to improve performance"
+
+# 11b11089e06f4180a5458a211d62a67c
+#: ../../release_notes.rst:45
+msgid ""
+"El sistema de permisos fue mejorado para garantizar que solo los roles "
+"\"Administrador\" puedan crear o editar otros roles \"Administrador\""
+msgstr ""
+"The permission component was improved to make only \"Administrator\" "
+"roles can create or edit other \"Administrator\" roles"
+
+# 3cf16c52545e4da0aab01eae11638496
+#: ../../release_notes.rst:46
+msgid ""
+"Solucionada inconsistencia en reporte de calificaciones dentro de la "
+"vista del reporte de la campaña, para mostrar exactamente el status del "
+"registro contactado"
+msgstr ""
+"Fixed inconsistency in dispositioned call report, inside campaign report view, "
+"to show exact contacted status"
+
+# b5b282eab2e94c358810b9603486f409
+#: ../../release_notes.rst:47
+msgid "Solucionado error aleatorio de desplazamiento UTC"
+msgstr "Fixed randomly displacement UTC time error"
+
+# 6940328232ef430285bafcf68316de54
+#: ../../release_notes.rst:48
+msgid "El script de backup/restore fue mejorado"
+msgstr "Backup/restore script was improved"

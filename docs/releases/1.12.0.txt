@@ -22,6 +22,7 @@ campaigns
 - Codec g729 is now installed for default in Asterisk component
 - A key re-send button was implemented to allow get again the installation key when OMniLeads instance is registered
 - Agent groups can be configured now to control if agents can't go to Ready status until complete disposition pending
+- Is possible make inbound videocalls using CLICK2CALL addon
 
 
 Fixes and improvements
