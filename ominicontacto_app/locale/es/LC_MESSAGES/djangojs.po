@@ -349,10 +349,8 @@ msgid "Calculando estadísticas del agente ..."
 msgstr ""
 
 #: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:88
-#, fuzzy
-#| msgid "Siguiente"
 msgid "Salientes"
-msgstr "Siguiente"
+msgstr ""
 
 #: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:89
 msgid "Entrantes"
@@ -395,10 +393,8 @@ msgid "Datos del contacto"
 msgstr ""
 
 #: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:174
-#, fuzzy
-#| msgid "Gestión"
 msgid "Gestionado"
-msgstr "Gestión"
+msgstr ""
 
 #: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:175
 msgid "Calificación"
