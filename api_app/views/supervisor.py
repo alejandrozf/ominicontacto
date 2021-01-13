@@ -48,11 +48,11 @@ from ominicontacto_app.models import (
     Campana, CalificacionCliente, AgenteProfile, AgendaContacto, )
 from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorActivityAmiManager
 from reportes_app.reportes.reporte_llamadas_supervision import (
-    ReporteDeLLamadasEntrantesDeSupervision, ReporteDeLLamadasSalientesDeSupervision
-)
+    ReporteDeLLamadasEntrantesDeSupervision)
 from reportes_app.reportes.reporte_llamadas import ReporteTipoDeLlamadasDeCampana
 from reportes_app.reportes.reporte_llamados_contactados_csv import (
     ExportacionCampanaCSV, ReporteCalificadosCSV, ReporteContactadosCSV, ReporteNoAtendidosCSV)
+from reportes_app.reportes.reporte_llamadas_salientes import ReporteLlamadasSalienteFamily
 from ominicontacto_app.utiles import datetime_hora_minima_dia, convert_fecha_datetime
 
 logger = _logging.getLogger(__name__)
@@ -129,10 +129,27 @@ class StatusCampanasSalientesView(APIView):
     renderer_classes = (JSONRenderer, )
     http_method_names = ['get']
 
+    def _obtener_datos_campanas(self, user):
+        redis_saliente = ReporteLlamadasSalienteFamily()
+        if not user.is_supervisor:
+            campanas = Campana.objects.all()
+        else:
+            campanas = user.get_supervisor_profile().obtener_campanas_asignadas_activas()
+        query_campanas = campanas.filter(
+            type__in=[Campana.TYPE_DIALER,
+                      Campana.TYPE_PREVIEW,
+                      Campana.TYPE_MANUAL])
+        data_saliente = []
+        for campana in query_campanas:
+            estadisticas = redis_saliente.get_value(campana, 'ESTADISTICAS')
+            if estadisticas:
+                data_saliente.append(json.loads(estadisticas))
+        return data_saliente
+
     def get(self, request):
-        reporte = ReporteDeLLamadasSalientesDeSupervision(request.user)
-        return Response(data={'errors': None,
-                              'data': reporte.estadisticas})
+        supervisor_pk = request.user
+        datos_campana = self._obtener_datos_campanas(supervisor_pk)
+        return Response(data=datos_campana)
 
 
 class InteraccionDeSupervisorSobreAgenteView(APIView):

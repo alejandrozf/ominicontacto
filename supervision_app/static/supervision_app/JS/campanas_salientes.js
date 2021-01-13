@@ -15,42 +15,47 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see http://www.gnu.org/licenses/.
 
+
+
 */
-
 /* global Urls */
+/* global create_node */
 /* global gettext */
+/* global moment */
 
-$(function(){
-    setInterval(function() {requestEstadisticasSalientes();}, 5000);
+var table_salientes;
+
+$(function () {
+    createDataTable();
+    setInterval(function () { table_salientes.ajax.reload(); }, 5000);
 });
 
-function requestEstadisticasSalientes() {
-    // {% url 'api_supervision_campanas_salientes'%}
-    var url = Urls.api_supervision_campanas_salientes();
-    $.ajax({type: 'get',
-        url: url,
-        contentType: 'text/html',
-        success: function(msg) {
-            cargarEstadisticasSalientes(msg.data);
+function createDataTable() {
+    table_salientes = $('#tableSalientes').DataTable({
+        ajax: {
+            url: Urls.api_supervision_campanas_salientes(),
+            dataSrc: ''
         },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
-        }
-    });
-}
+        columns: [
+            { 'data': 'nombre' },
+            { 'data': 'efectuadas'},
+            { 'data': 'conectadas'},
+            { 'data': 'no_conectadas' },
+            { 'data': 'gestiones' },
 
-function cargarEstadisticasSalientes(estadisticas) {
-    var tabla = $('#table-campanas');
-    tabla.html('');
-    Object.keys(estadisticas).forEach(function(id_campana) {
-        var datos_campana = estadisticas[id_campana];
-        $('#table-campanas').html();
-        tabla.append('<tr>' + 
-                       '<td>' + datos_campana['nombre'] + '</td>' + 
-                       '<td>' + datos_campana['efectuadas'] + '</td>' + 
-                       '<td>' + datos_campana['conectadas'] + '</td>' + 
-                       '<td>' + datos_campana['no_conectadas'] + '</td>' + 
-                       '<td>' + datos_campana['gestiones'] + '</td>' + 
-                     '</tr>');
+        ],
+
+        language: {
+            search: gettext('Buscar: '),
+            infoFiltered: gettext('(filtrando de un total de _MAX_ contactos)'),
+            paginate: {
+                first: gettext('Primero '),
+                previous: gettext('Anterior '),
+                next: gettext(' Siguiente'),
+                last: gettext(' Último'),
+            },
+            lengthMenu: gettext('Mostrar _MENU_ entradas'),
+            info: gettext('Mostrando _START_ a _END_ de _TOTAL_ entradas'),
+        }
     });
 }

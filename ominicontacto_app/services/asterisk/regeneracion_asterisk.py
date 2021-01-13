@@ -71,11 +71,14 @@ class RegeneracionAsteriskService(object):
             'queue_log_clean_job',
             'actualizar_reportes_de_entrantes_job',
             'actualizar_reporte_supervisores',
-            'actualizar_reporte_dia_actual_agentes']
+            'actualizar_reporte_dia_actual_agentes',
+            'actualizar_reportes_salientes']
+
         self.TIEMPO_CHEQUEO_CONTACTOS_INACTIVOS = 2
         self.TIEMPO_ACTUALIZAR_REPORTES_LLAMADAS_ENTRANTES = 1
         self.TIEMPO_ACTUALIZAR_REPORTE_SUPERVISORES = 5
         self.TIEMPO_ACTUALIZAR_DASHBOARD_AGENTES = 1
+        self.TIEMPO_ACTUALIZAR_REPORTES_LLAMADAS_SALIENTES = 1
 
     def _generar_y_recargar_configuracion_asterisk(self):
         proceso_ok = True
@@ -233,10 +236,35 @@ class RegeneracionAsteriskService(object):
             job.minute.every(self.TIEMPO_ACTUALIZAR_DASHBOARD_AGENTES)
             crontab.write_to_user(user=getpass.getuser())
 
+    def _generar_tarea_script_actualizar_reportes_llamadas_salientes(self):
+        """Adiciona una tarea programada que llama al script de que calcula reportes de llamadas
+        salientes
+        """
+        # conectar con cron
+        crontab = CronTab(user=getpass.getuser())
+        ruta_source_envars = 'source /etc/profile.d/omnileads_envars.sh;'
+        ruta_python_virtualenv = os.path.join(sys.prefix, 'bin/python3')
+        ruta_script_logout = os.path.join(
+            settings.INSTALL_PREFIX,
+            'ominicontacto/manage.py actualizar_reportes_llamadas_salientes')
+
+        # adicionar nuevo cron job para esta tarea si no existe anteriormente
+        job = crontab.find_comment(self.tareas_programadas_ids[5])
+        crontab.remove_all(comment=self.tareas_programadas_ids[5])
+        if list(job) == []:
+            job = crontab.new(
+                command='{0} {1} {2}'.format(
+                    ruta_source_envars, ruta_python_virtualenv, ruta_script_logout),
+                comment=self.tareas_programadas_ids[5])
+            # adicionar tiempo de periodicidad al cron job
+            job.minute.every(self.TIEMPO_ACTUALIZAR_REPORTES_LLAMADAS_SALIENTES)
+            crontab.write_to_user(user=getpass.getuser())
+
     def regenerar(self):
         self._generar_y_recargar_configuracion_asterisk()
         self._generar_tarea_script_logout_agentes_inactivos()
         self._generar_tarea_limpieza_diaria_queuelog()
         self._generar_tarea_script_actualizar_reportes_llamadas_entrantes()
+        self._generar_tarea_script_actualizar_reportes_llamadas_salientes()
         self._generar_tarea_script_actualizar_reporte_datos_supervisores()
         self._generar_tarea_script_actualizar_reporte_agentes_dia_actual()
