@@ -2,15 +2,14 @@
 Omnileads (OML) 1.12.0 release notes
 ===================================
 
-*January 12, 2021*
+*January 13, 2021*
 
 What's new
 =========================
-- Inbound video calls now are available!
 - All Asterisk AMI connection now use TCP AMI instead HTTP AMI
 - Supervisor roles can now assigned and liberate contacts to/from agents in preview campaigns
 - Now is possible to optionally hide dispositions options for campaigns
-- The system now logs calls without campaign
+- The system now logs in database calls without campaign
 - A dashboard for console agent was implemented
 - Dialer incidence rules can be linked with campaign disposition options for allow more flexible behaviour in dialer
 campaigns
@@ -19,11 +18,10 @@ campaigns
 - The system now reproduce an audio on attempts to call to a blacklisted number
 - The click2call action is disable in a middle of an attempt to call
 - A layer of security for Redis component was added
-- Backup/restore script was improved
 - A new installation parameter for RTPEngine component was added
 - Codec g729 is now installed for default in Asterisk component
 - A key re-send button was implemented to allow get again the installation key when OMniLeads instance is registered
-- Agent now can't go to Ready status until complete disposition pending
+- Agent groups can be configured now to control if agents can't go to Ready status until complete disposition pending
 
 
 Fixes and improvements
@@ -34,7 +32,7 @@ Fixes and improvements
 - Fixed race condition error on agent console when login and call in queue ocurred at the same time
 - Fixed error on recycling a preview campaign over itself
 - Fixed error on agent console when an agent received an inbound call just after hangup an outbound call that disallowed to disposition the outbound call
-- Fixed dialplan error that generates corrupted entries for Redis
+- Fixed dialplan error that generates corrupted entries in Redis
 - Fixed issue #70
 - Fixed dialplan error that logged an incorrect event for BUSY calls
 - Fixed error when changing user password using passwords greater than 22 characters
@@ -44,3 +42,4 @@ Fixes and improvements
 - The permission component was improved to make only "Administrator" roles can create or edit other "Administrator" roles
 - Fixed inconsistency in dispositioned call report, inside campaign report view, to show exact contacted status
 - Fixed randomly displacement UTC time error
+- Backup/restore script was improved
