@@ -61,6 +61,10 @@ urlpatterns = [
         login_required(views.AcercaTemplateView.as_view()),
         name='acerca',
         ),
+    url(r'^addons/$',
+        login_required(views.AddonsInfoView.as_view()),
+        name='addons_disponibles',
+        ),
 
     url(r'^blanco/$',
         login_required(views.BlancoView.as_view()),
@@ -77,6 +81,10 @@ urlpatterns = [
     url(r'^user/nuevo/$',
         login_required(views_user_profiles.CustomUserWizard.as_view()),
         name='user_nuevo',
+        ),
+    url(r'^user/new/agent/$',
+        login_required(views_user_profiles.CustomUserWizard.as_view()),
+        name='user_new_agent', kwargs={'create_agent': ''}
         ),
     url(r'^user/list/(?P<page>[0-9]+)/$',
         login_required(views_user_profiles.UserListView.as_view()),
@@ -556,6 +564,11 @@ urlpatterns = [
         login_required(views_agente.cambiar_estado_agente_view),
         name='agente_cambiar_estado',
         ),
+
+    url(r'^agente/dashboard/$',
+        login_required(views_agente.DashboardAgenteView.as_view()),
+        name='agente_dashboard',
+        ),
     # ==========================================================================
     # Supervision
     # ==========================================================================
@@ -642,6 +655,27 @@ urlpatterns = [
         login_required(
             views_campana_dialer.FinalizarCampanasActivasView.as_view()),
         name="campana_dialer_finaliza_activas"),
+    url(r'^campana_dialer/finalizar/$',
+        login_required(
+            views_campana_dialer.FinalizarCampanaDialerView.as_view()),
+        name="finalizar_campana_dialer"),
+    url(r'^campana_dialer/reglas_incidencia_calificacion/(?P<pk_campana>\d+)/lista/$',
+        login_required(
+            views_campana_dialer.ReglasDeIncidenciaDeCalificacionesListView.as_view()),
+        name="disposition_incidence_list"),
+    url(r'^campana_dialer/reglas_incidencia_calificacion/(?P<pk>\d+)/borrar/$',
+        login_required(
+            views_campana_dialer.ReglasDeIncidenciaDeCalificacionesDeleteView.as_view()),
+        name="disposition_incidence_delete"),
+    url(r'^campana_dialer/reglas_incidencia_calificacion/(?P<pk_campana>\d+)/crear/$',
+        login_required(
+            views_campana_dialer.ReglasDeIncidenciaDeCalificacionesCreateView.as_view()),
+        name="disposition_incidence_create"),
+    url(r'^campana_dialer/reglas_incidencia_calificacion/(?P<pk>\d+)/editar/$',
+        login_required(
+            views_campana_dialer.ReglasDeIncidenciaDeCalificacionesUpdateView.as_view()),
+        name="disposition_incidence_edit"),
+
     # ==========================================================================
     # Campana Manual
     # ==========================================================================
@@ -720,10 +754,10 @@ urlpatterns = [
         login_required(
             views_campana_preview.CampanaPreviewContactosAsignados.as_view()),
         name="contactos_preview_asignados"),
-    url(r'^campana_preview/liberar_contacto_asignado/$',
+    url(r'^campana_preview/liberar_reservar_contacto_asignado/$',
         login_required(
-            views_campana_preview.LiberarContactoAsignado.as_view()),
-        name="liberar_contacto_asignado"),
+            views_campana_preview.LiberarReservarContactoAsignado.as_view()),
+        name="liberar_reservar_contacto_asignado"),
     url(r'^campana_preview/ordenar_contactos_asignados/(?P<pk_campana>\d+)/$',
         login_required(
             views_campana_preview.OrdenarAsignacionContactosView.as_view()),

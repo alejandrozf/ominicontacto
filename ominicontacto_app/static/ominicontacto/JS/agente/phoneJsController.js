@@ -24,9 +24,11 @@
 /*      - phoneJsFSM.js     */
 /*      - phoneJsSip.js     */
 /*      - click2Call.js     */
+/*      - jitsi_external_api.js     */
 
-/* global click2call gettext interpolate JsSIP OMLAPI PhoneJSView PhoneJS KamailioHost WebSocketPort WebSocketHost PhoneFSM USER_STATUS_PAUSE USER_STATUS_ONLINE Urls*/
-
+/* global click2call gettext interpolate JsSIP OMLAPI PhoneJSView PhoneJS KamailioHost */
+/* global WebSocketPort WebSocketHost PhoneFSM USER_STATUS_PAUSE USER_STATUS_ONLINE Urls*/
+/* global JitsiMeetExternalAPI */
 
 var ACW_PAUSE_ID = '0';
 var ACW_PAUSE_NAME = 'ACW';
@@ -34,7 +36,7 @@ var ACW_PAUSE_NAME = 'ACW';
 
 class PhoneJSController {
     // Connects PhoneJS with a PhoneJSView.
-    constructor(agent_id, sipExtension, sipSecret, timers, click_2_call_dispatcher, keep_alive_sender) {
+    constructor(agent_id, sipExtension, sipSecret, timers, click_2_call_dispatcher, keep_alive_sender, video_domain) {
         this.oml_api = new OMLAPI();
         this.view = new PhoneJSView();
         this.timers = timers;
@@ -47,6 +49,7 @@ class PhoneJSController {
 
         /* Local Variables */
         this.agent_id = agent_id;
+        this.video_domain = video_domain;
         this.lastDialedCall = undefined;
         this.call_after_campaign_selection = false;
         this.manual_campaign_id = undefined;
@@ -244,6 +247,13 @@ class PhoneJSController {
             self.phone.refuseCall();
         };
 
+        this.view.reload_video_button.click(function() {
+            self.reloadVideo();
+        });
+
+        this.view.buttonVideo.click(function() {
+            self.view.showHideVideo();
+        });
     }
 
     subscribeToKeypadEvents() {
@@ -401,8 +411,17 @@ class PhoneJSController {
             $('#modalReceiveCalls').modal('show');
         });
         this.phone.eventsCallbacks.onCallReceipt.add(function(session_data) {
-            self.phone_fsm.receiveCall();
-            self.manageCallReceipt(session_data);
+            if (self.phone_fsm.state == 'Initial'){
+                // Delay to allow registration to complete
+                setTimeout(function(){
+                    self.phone_fsm.receiveCall();
+                    self.manageCallReceipt(session_data);
+                }, 1000);
+            }
+            else {
+                self.phone_fsm.receiveCall();
+                self.manageCallReceipt(session_data);
+            }
         });
         this.phone.eventsCallbacks.onSessionFailed.add(function() {
             // Se dispara al fallar Call Sessions
@@ -451,6 +470,8 @@ class PhoneJSController {
             self.timers.llamada.start();
             self.timers.pausa.stop();           // Ver antes si estaba en pausa
             self.timers.operacion.start();
+
+            self.loadVideoInFrame();
         });
 
         this.phone.eventsCallbacks.onOutCallFailed.add(function(cause) {
@@ -474,6 +495,7 @@ class PhoneJSController {
             var $recordCallButton = self.view.recordCall;
             var $img = $recordCallButton.find('img');
             self.markRecordCallButtonReady(self, $img, $recordCallButton);
+            self.unloadVideo();
         });
     }
 
@@ -538,7 +560,43 @@ class PhoneJSController {
         this.oml_api.makePause(pause_id, pause_ok, pause_error);
     }
 
-    leavePause() {
+    leavePause(){
+        // TODO: desacoplar obligar-calificacion
+        this.obligarCalificacion = $('#obligar-calificacion').val();
+        if (this.obligarCalificacion == 'True'){
+            var self = this;
+            if (self.verificando_calificacion_por_pausa){
+                return;
+            }
+            self.verificando_calificacion_por_pausa = true;
+            this.oml_api.llamadaCalificada(
+                function(){
+                    self.doLeavePause();
+                    self.verificando_calificacion_por_pausa = false;
+                },
+                function(calldata){
+                    $('#obligarCalificarCall').modal('show');
+                    $('#obligarCalificarCall_submit').click(function(){
+                        var call_data_json = JSON.stringify(calldata);
+                        var url = Urls.calificar_llamada(encodeURIComponent(call_data_json));
+                        $('#dataView').attr('src', url);
+                        $('#obligarCalificarCall').modal('hide');
+                    });
+                    self.verificando_calificacion_por_pausa = false;
+                },
+                function(){
+                    self.verificando_calificacion_por_pausa = false;
+                    alert(gettext('No se pudo salir de la pausa.'));
+                }
+            );
+        }
+        else {
+            this.doLeavePause();
+        }
+    }
+
+
+    doLeavePause() {
         clearTimeout(this.ACW_pause_timeout_handler);
         var pause_id = this.pause_manager.pause_id;
         this.pause_manager.leavePause();
@@ -689,6 +747,9 @@ class PhoneJSController {
         if (session_data.is_click2call) {
             return true;
         }
+        if (this.pause_manager.pause_enabled && (session_data.is_dialer || session_data.is_inbound)){
+            return false;
+        }
         if (session_data.is_dialer && this.agent_config.auto_attend_DIALER) {
             return true;
         }
@@ -733,6 +794,65 @@ class PhoneJSController {
 
     getIframe(url) {
         $('#dataView').attr('src', url);
+    }
+
+    loadVideoInFrame() {
+        var options = {
+            'width': 640,
+            'height': 420,
+            'parentNode': $('#video-container')[0],
+            'configOverwrite': {
+                'enableNoAudioDetection': false,
+                'enableNoisyMicDetection': false,
+                'startWithAudioMuted': true,
+                'startWithVideoMuted': false,
+                'startSilent': true,
+                'hideLobbyButton': true,
+                'requireDisplayName': false,
+                'enableWelcomePage': false,
+                'enableInsecureRoomNameWarning': false,
+            },
+            'interfaceConfigOverwrite': {
+                'MOBILE_APP_PROMO': false,
+                'SHOW_CHROME_EXTENSION_BANNER': false,
+                'HIDE_KICK_BUTTON_FOR_GUESTS': true,
+                'HIDE_INVITE_MORE_HEADER': true,
+                'SHOW_JITSI_WATERMARK': false,
+                'ENFORCE_NOTIFICATION_AUTO_DISMISS_TIMEOUT': 100,
+                'TOOLBAR_BUTTONS': ['camera', 'fullscreen', 'chat', 'desktop'],
+            }
+        };
+
+        if (this.phone.session_data.remote_call.video_channel) {
+            var video_channel = this.phone.session_data.remote_call.video_channel;
+            if (video_channel) {
+                options.roomName = video_channel;
+                this.jitsi_api = new JitsiMeetExternalAPI(this.video_domain, options);
+                var jitsi_api = this.jitsi_api;
+                this.jitsi_api.addEventListener('readyToClose', function(a){
+                    jitsi_api.dispose();
+                    this.view.buttonVideo.hide();
+                });
+                this.view.buttonVideo.show();
+                this.view.reload_video_button.show();
+            }
+        }
+    }
+
+    unloadVideo() {
+        if (this.jitsi_api) {
+            this.jitsi_api.dispose();
+            this.jitsi_api = undefined;
+        }
+        this.view.reload_video_button.hide();
+        this.view.buttonVideo.hide();
+    }
+
+    reloadVideo() {
+        if (this.jitsi_api) {
+            this.unloadVideo();
+        }
+        this.loadVideoInFrame();
     }
 
 }

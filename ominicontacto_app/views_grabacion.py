@@ -34,9 +34,9 @@ from django.http import JsonResponse
 
 from ominicontacto_app.forms import GrabacionBusquedaForm, GrabacionBusquedaSupervisorForm
 from ominicontacto_app.models import (
-    Grabacion, GrabacionMarca, Campana, CalificacionCliente,
-)
+    GrabacionMarca, Campana, CalificacionCliente)
 from .utiles import convert_fecha_datetime, fecha_local
+from reportes_app.models import LlamadaLog
 
 
 class BusquedaGrabacionFormView(FormView):
@@ -68,7 +68,8 @@ class BusquedaGrabacionFormView(FormView):
         context['listado_de_grabaciones'] = qs
 
         context['calificaciones'] = self._get_calificaciones(qs)
-        context['base_url'] = "%s://%s" % (self.request.scheme, self.request.get_host())
+        context['base_url'] = "%s://%s" % (self.request.scheme,
+                                           self.request.get_host())
         return context
 
     def _get_campanas(self):
@@ -113,15 +114,30 @@ class BusquedaGrabacionFormView(FormView):
         gestion = form.cleaned_data.get('gestion', False)
         campanas = self._get_campanas()
         pagina = form.cleaned_data.get('pagina')
-        listado_de_grabaciones = Grabacion.objects.grabacion_by_filtro(
-            fecha_desde, fecha_hasta, tipo_llamada, tel_cliente, callid, id_contacto_externo,
-            agente, campana, campanas, marcadas, duracion, gestion)
+        listado_de_grabaciones = self._get_grabaciones_por_filtro(fecha_desde, fecha_hasta,
+                                                                  tipo_llamada, tel_cliente,
+                                                                  callid, id_contacto_externo,
+                                                                  agente, campana, campanas,
+                                                                  marcadas, duracion, gestion)
 
         return self.render_to_response(self.get_context_data(
             listado_de_grabaciones=listado_de_grabaciones, pagina=pagina))
 
+    def _get_grabaciones_por_filtro(self, fecha_desde, fecha_hasta, tipo_llamada, tel_cliente,
+                                    callid, id_contacto_externo, agente, campana, campanas,
+                                    marcadas, duracion, gestion):
+        return LlamadaLog.objects.obtener_grabaciones_by_filtro(
+            fecha_desde, fecha_hasta, tipo_llamada, tel_cliente, callid, id_contacto_externo,
+            agente, campana, campanas, marcadas, duracion, gestion)
+
     def _get_calificaciones(self, grabaciones):
-        identificadores = grabaciones.object_list.values_list('id_cliente', 'campana_id', 'callid')
+        try:
+            identificadores = grabaciones.object_list.values_list(
+                'contacto_id', 'campana_id', 'callid')
+
+        except AttributeError:
+            identificadores = [(str(a['contacto_id']), a['campana_id'], a['callid'])
+                               for a in grabaciones]
         filtro = Q()
         callids = []
         for contacto_id, campana_id, callid in identificadores:
@@ -132,7 +148,8 @@ class BusquedaGrabacionFormView(FormView):
             # Pero si la grabacion no tiene esos datos uso el callid
             else:
                 callids.append(callid)
-        calificaciones = CalificacionCliente.history.filter(filtro | Q(callid__in=callids))
+        calificaciones = CalificacionCliente.history.filter(
+            filtro | Q(callid__in=callids))
         return calificaciones
 
 
@@ -152,7 +169,39 @@ class BusquedaGrabacionSupervisorFormView(BusquedaGrabacionFormView):
     def _get_grabaciones_del_dia(self):
         hoy = fecha_local(timezone.now())
         campanas = self._get_campanas()
-        return Grabacion.objects.grabacion_by_fecha_intervalo_campanas(hoy, hoy, campanas)
+        campanas_id = [campana.id for campana in campanas]
+        logs = LlamadaLog.objects.obtener_grabaciones_by_fecha_intervalo_campanas(hoy, hoy,
+                                                                                  campanas_id)
+        return self._procesa_formato_transferencias(logs)
+
+    def _get_grabaciones_por_filtro(self, fecha_desde, fecha_hasta, tipo_llamada, tel_cliente,
+                                    callid, id_contacto_externo, agente, campana, campanas,
+                                    marcadas, duracion, gestion):
+        logs = LlamadaLog.objects.obtener_grabaciones_by_filtro(
+            fecha_desde, fecha_hasta, tipo_llamada, tel_cliente, callid, id_contacto_externo,
+            agente, campana, campanas, marcadas, duracion, gestion)
+
+        return self._procesa_formato_transferencias(logs)
+
+    def _procesa_formato_transferencias(self, logs):
+        listado_grabaciones = {}
+        for grabacion in logs:
+            if grabacion.callid not in listado_grabaciones:
+                listado_grabaciones[grabacion.callid] = {}
+                listado_grabaciones[grabacion.callid]['origen'] = grabacion
+                listado_grabaciones[grabacion.callid]['contacto_id'] = grabacion.contacto_id
+                listado_grabaciones[grabacion.callid]['campana_id'] = grabacion.campana_id
+                listado_grabaciones[grabacion.callid]['callid'] = grabacion.callid
+            elif listado_grabaciones[grabacion.callid]['origen'].time > grabacion.time:
+                aux = listado_grabaciones[grabacion.callid]['origen']
+                listado_grabaciones[grabacion.callid]['origen'] = grabacion
+                listado_grabaciones[grabacion.callid]['transfer'] = aux
+                listado_grabaciones[grabacion.callid]['contacto_id'] = grabacion.contacto_id
+                listado_grabaciones[grabacion.callid]['campana_id'] = grabacion.campana_id
+            else:
+                listado_grabaciones[grabacion.callid]['transfer'] = grabacion
+
+        return list(listado_grabaciones.values())
 
 
 class BusquedaGrabacionAgenteFormView(BusquedaGrabacionFormView):
@@ -161,7 +210,8 @@ class BusquedaGrabacionAgenteFormView(BusquedaGrabacionFormView):
 
     def _get_campanas(self):
         agente = self.request.user.get_agente_profile()
-        campanas_ids = list(agente.queue_set.values_list('campana_id', flat=True))
+        campanas_ids = list(
+            agente.queue_set.values_list('campana_id', flat=True))
         return Campana.objects.filter(pk__in=campanas_ids)
 
     def _get_filtro_agente(self, form):
@@ -170,8 +220,10 @@ class BusquedaGrabacionAgenteFormView(BusquedaGrabacionFormView):
     def _get_grabaciones_del_dia(self):
         hoy = fecha_local(timezone.now())
         campanas = self._get_campanas()
-        grabaciones = Grabacion.objects.grabacion_by_fecha_intervalo_campanas(hoy, hoy, campanas)
-        return grabaciones.filter(agente=self.request.user.get_agente_profile())
+        campanas_id = [campana.id for campana in campanas]
+        grabaciones = LlamadaLog.objects.obtener_grabaciones_by_fecha_intervalo_campanas(
+            hoy, hoy, campanas_id)
+        return grabaciones.filter(agente_id=self.request.user.get_agente_profile().id)
 
 
 class MarcarGrabacionView(View):
@@ -183,7 +235,8 @@ class MarcarGrabacionView(View):
         callid = self.request.POST.get('callid', False)
         descripcion = self.request.POST.get('descripcion', '')
         try:
-            grabacion_marca, _ = GrabacionMarca.objects.get_or_create(callid=callid)
+            grabacion_marca, _ = GrabacionMarca.objects.get_or_create(
+                callid=callid)
         except Exception as e:
             return JsonResponse({'result': 'failed by {0}'.format(e)})
         else:
@@ -205,5 +258,6 @@ class GrabacionDescripcionView(View):
             response = {u'result': _(u'No encontrada'),
                         u'descripcion': _(u'La grabación no tiene descripción asociada')}
         else:
-            response = {u'result': _(u'Descripción'), u'descripcion': grabacion_marca.descripcion}
+            response = {u'result': _(u'Descripción'),
+                        u'descripcion': grabacion_marca.descripcion}
         return JsonResponse(response)

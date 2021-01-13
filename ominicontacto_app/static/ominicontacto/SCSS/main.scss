@@ -384,7 +384,7 @@ ul.errorlist {
     #navBar {
         background-color: #FFFFFF;
         border-bottom: 2px solid rgba(0,0,0,0.15);
-        padding-top: 10px;
+        padding-top: 30px;
         padding-left: 10px;
         .main-menu-li {
         display: inline-block;
@@ -469,7 +469,7 @@ ul.errorlist {
     -ms-flex-align: initial;
     align-items: initial;
     position: absolute;
-    top: 14px;
+    top: 0px;
     right: 10px;
     .icon {
     margin-right: 4px;
@@ -961,4 +961,29 @@ body > h1 {
     #timers div {
       display: block;
     }
+}
+
+/* Video Llamadas */
+#buttonVideo {
+  position: fixed;
+  top: 150px;
+  height: 150px;
+  width: 55px;
+  padding: 0;
+  opacity: 0.75;
+  z-index: 1000;
+  right: 300px;
+}
+#video-container{
+  position: fixed;
+  right: 370px;
+  top: 150px;
+  width: 640px;
+}
+#reload_video_id{
+  position: fixed;
+  top: 150px;
+  right: 360px;
+  z-index: 1001;
+  background-color: white;
 }

@@ -232,4 +232,30 @@ class OMLAPI {
             }
         });
     }
+
+    llamadaCalificada(callback_calificada, callback_no_calificada, callback_error) {
+        var URL = Urls.api_status_calificacion_llamada();
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            success: function(data){
+                if (data['calificada'] == 'True'){
+                    callback_calificada();
+                }
+                if (call_data == 'null'){
+                    callback_calificada();
+                }
+                else{
+                    var call_data = JSON.parse(data['calldata']);
+                    callback_no_calificada(call_data);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                callback_error();
+                console.log(gettext('Error => ') + textStatus + ' - ' + errorThrown);
+            }
+
+        });
+        
+    }
 }

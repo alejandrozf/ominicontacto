@@ -33,18 +33,17 @@ from django.utils import timezone
 
 from ominicontacto_app.models import Campana, CalificacionCliente, OpcionCalificacion
 from ominicontacto_app.services.reporte_campana_calificacion import ReporteCampanaService
-from ominicontacto_app.services.estadisticas_campana import (EstadisticasService, CampanaService,
-                                                             ExportacionCampanaCSV)
+from ominicontacto_app.services.estadisticas_campana import (
+    EstadisticasService, CampanaService)
 from ominicontacto_app.services.reporte_campana_pdf import ReporteCampanaPDFService
-from reportes_app.reportes.reporte_llamados_contactados_csv import ArchivoDeReporteCsv
+from reportes_app.reportes.reporte_llamados_contactados_csv import (
+    ReporteContactadosCSV, ExportacionCampanaCSV)
 from ominicontacto_app.services.reporte_respuestas_formulario import (
     ReporteRespuestaFormularioGestionService)
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
-from ominicontacto_app.tests.factories import (AgenteProfileFactory, ActividadAgenteLogFactory,
-                                               CalificacionClienteFactory, ContactoFactory,
-                                               CampanaFactory, NombreCalificacionFactory,
-                                               OpcionCalificacionFactory,
-                                               LlamadaLogFactory)
+from ominicontacto_app.tests.factories import ActividadAgenteLogFactory, AgenteProfileFactory, \
+    CalificacionClienteFactory, CampanaFactory, ContactoFactory, LlamadaLogFactory, \
+    NombreCalificacionFactory, OpcionCalificacionFactory
 from ominicontacto_app.utiles import (fecha_hora_local,
                                       datetime_hora_minima_dia_utc, datetime_hora_maxima_dia_utc)
 from reportes_app.models import LlamadaLog
@@ -153,35 +152,24 @@ class ReportesCampanasTests(BaseTestDeReportes):
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed(response, 'registration/login.html')
 
-    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_datos_csv')
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
     def test_usuario_logueado_accede_reporte_grafico_campana(
-            self, crea_reporte_pdf, escribir_archivo_datos_csv):
+            self, crea_reporte_pdf):
         url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed(response, 'reporte_grafico_campana.html')
 
-    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_datos_csv')
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
     def test_reporte_grafico_exporta_pdf_resumen(
-            self, crea_reporte_pdf, escribir_archivo_datos_csv):
+            self, crea_reporte_pdf):
         url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
         self.client.get(url, follow=True)
         self.assertTrue(crea_reporte_pdf.called)
 
-    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_datos_csv')
-    @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
-    def test_reporte_grafico_exporta_reportes_estadisticas_contactos(
-            self, crea_reporte_pdf, escribir_archivo_datos_csv):
-        url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
-        self.client.get(url, follow=True)
-        self.assertTrue(escribir_archivo_datos_csv.called)
-
-    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_datos_csv')
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
     @patch.object(Bar, 'render_to_png')
     def test_datos_reporte_grafico_calificaciones_coinciden_estadisticas_sistema(
-            self, render_to_png, crea_reporte_pdf, escribir_archivo_datos_csv):
+            self, render_to_png, crea_reporte_pdf):
         url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
         response = self.client.get(url, follow=True)
         estadisticas = response.context_data['graficos_estadisticas']['estadisticas']
@@ -194,11 +182,10 @@ class ReportesCampanasTests(BaseTestDeReportes):
         self.assertEqual(set(estadisticas['calificaciones_nombre']), set(calificaciones_list))
         self.assertEqual(list(estadisticas['calificaciones_cantidad']), [1, 1, 1])
 
-    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_datos_csv')
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
     @patch.object(Bar, 'render_to_png')
     def test_datos_reporte_grafico_llamadas_analizan_no_calificadas(
-            self, render_to_png, crea_reporte_pdf, escribir_archivo_datos_csv):
+            self, render_to_png, crea_reporte_pdf):
         # hay una llamada a un contacto pero no se califica (self.contacto_no_calificado)
         url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
         response = self.client.get(url, follow=True)
@@ -207,22 +194,20 @@ class ReportesCampanasTests(BaseTestDeReportes):
         self.assertEqual(
             list(estadisticas['calificaciones_cantidad'])[-1], atendidas_sin_calificacion)
 
-    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_datos_csv')
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
     @patch.object(Bar, 'render_to_png')
     def test_datos_reporte_grafico_no_contactados_coinciden_estadisticas_sistema(
-            self, render_to_png, crea_reporte_pdf, escribir_archivo_datos_csv):
+            self, render_to_png, crea_reporte_pdf):
         url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
         response = self.client.get(url, follow=True)
         estadisticas = response.context_data['graficos_estadisticas']['estadisticas']
         total_no_atendidos = estadisticas['total_no_atendidos']
         self.assertEqual(total_no_atendidos, 1)
 
-    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_datos_csv')
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
     @patch.object(Bar, 'render_to_png')
     def test_datos_reporte_grafico_calificaciones_por_agente_coinciden_estadisticas_sistema(
-            self, render_to_png, crea_reporte_pdf, escribir_archivo_datos_csv):
+            self, render_to_png, crea_reporte_pdf):
         agente_profile1, agente_profile2, agente_profile3 = AgenteProfileFactory.create_batch(3)
         log1 = LlamadaLogFactory(campana_id=self.campana_activa.pk, agente_id=agente_profile1.pk)
         log2 = LlamadaLogFactory(campana_id=self.campana_activa.pk, agente_id=agente_profile2.pk)
@@ -457,13 +442,17 @@ class ReportesCampanasTests(BaseTestDeReportes):
             microseconds=DURACION_AGENTE_PAUSA)
         tiempo_agente_logout = tiempo_agente_login + timedelta(microseconds=DURACION_AGENTE_SESION)
         ActividadAgenteLogFactory(
-            agente_id=self.agente_profile.pk, time=tiempo_agente_login, event='ADDMEMBER')
+            agente_id=self.agente_profile.pk, time=tiempo_agente_login, event='ADDMEMBER',
+            pausa_id=0)
         ActividadAgenteLogFactory(
-            agente_id=self.agente_profile.pk, time=tiempo_agente_inicio_pausa, event='PAUSEALL')
+            agente_id=self.agente_profile.pk, time=tiempo_agente_inicio_pausa, event='PAUSEALL',
+            pausa_id=0)
         ActividadAgenteLogFactory(
-            agente_id=self.agente_profile.pk, time=tiempo_agente_final_pausa, event='UNPAUSEALL')
+            agente_id=self.agente_profile.pk, time=tiempo_agente_final_pausa, event='UNPAUSEALL',
+            pausa_id=0)
         ActividadAgenteLogFactory(
-            agente_id=self.agente_profile.pk, time=tiempo_agente_logout, event='REMOVEMEMBER')
+            agente_id=self.agente_profile.pk, time=tiempo_agente_logout, event='REMOVEMEMBER',
+            pausa_id=0)
         url = reverse(
             'campana_reporte_grafico_agente', args=[self.campana_activa.pk, self.agente_profile.pk])
         response = self.client.get(url, follow=True)
@@ -471,52 +460,6 @@ class ReportesCampanasTests(BaseTestDeReportes):
         agente_data = estadisticas['agente_tiempo']
         self.assertEqual(agente_data.tiempo_sesion.microseconds, DURACION_AGENTE_SESION)
         self.assertEqual(agente_data.tiempo_pausa.microseconds, DURACION_AGENTE_PAUSA)
-
-    def test_datos_reporte_agente_actividad_dia_anterior_coincide_estadisticas_sistema(self):
-        # si el agente comenzó sesión y pausa el día anterior y terminó en el actual
-        # se  testea que se sume el tiempo de los eventos desde que inicia el día actual en el
-        # reporte
-        DURACION_FIN_PAUSA_A_FIN_SESION = 600
-        inicio_dia = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
-        tiempo_agente_final_pausa = timezone.now()
-        tiempo_agente_logout = tiempo_agente_final_pausa + timedelta(
-            microseconds=DURACION_FIN_PAUSA_A_FIN_SESION)
-        tiempo_pausa = tiempo_agente_final_pausa - inicio_dia
-        tiempo_sesion = tiempo_agente_logout - inicio_dia
-        ActividadAgenteLogFactory(
-            agente_id=self.agente_profile.pk, time=tiempo_agente_final_pausa, event='UNPAUSEALL')
-        ActividadAgenteLogFactory(
-            agente_id=self.agente_profile.pk, time=tiempo_agente_logout, event='REMOVEMEMBER')
-        url = reverse(
-            'campana_reporte_grafico_agente', args=[self.campana_activa.pk, self.agente_profile.pk])
-        response = self.client.get(url, follow=True)
-        estadisticas = response.context_data['graficos_estadisticas']['estadisticas']
-        agente_data = estadisticas['agente_tiempo']
-        self.assertEqual(agente_data.tiempo_sesion, tiempo_sesion)
-        self.assertEqual(agente_data.tiempo_pausa, tiempo_pausa)
-
-    def test_datos_reporte_agente_actividad_dia_incompleta_coincide_estadisticas_sistema(self):
-        # si el agente comenzó sesión y pausa en el día actual y terminó en el siguiente
-        # se testea que se sume el tiempo de los eventos desde que inician hasta el final del día
-        # actual en el reporte
-        DURACION_INICIO_SESION_A_INICIO_PAUSA = 600
-        final_dia = timezone.now().replace(hour=23, minute=59, second=59, microsecond=999999)
-        tiempo_agente_login = timezone.now()
-        tiempo_agente_inicio_pausa = tiempo_agente_login + timedelta(
-            microseconds=DURACION_INICIO_SESION_A_INICIO_PAUSA)
-        tiempo_pausa = final_dia - tiempo_agente_inicio_pausa
-        tiempo_sesion = final_dia - tiempo_agente_login
-        ActividadAgenteLogFactory(
-            agente_id=self.agente_profile.pk, time=tiempo_agente_login, event='ADDMEMBER')
-        ActividadAgenteLogFactory(
-            agente_id=self.agente_profile.pk, time=tiempo_agente_inicio_pausa, event='PAUSEALL')
-        url = reverse(
-            'campana_reporte_grafico_agente', args=[self.campana_activa.pk, self.agente_profile.pk])
-        response = self.client.get(url, follow=True)
-        estadisticas = response.context_data['graficos_estadisticas']['estadisticas']
-        agente_data = estadisticas['agente_tiempo']
-        self.assertEqual(agente_data.tiempo_sesion, tiempo_sesion)
-        self.assertEqual(agente_data.tiempo_pausa, tiempo_pausa)
 
     def test_usuario_no_logueado_no_accede_a_vista_detalle_campana_preview(self):
         self.client.logout()
@@ -564,39 +507,42 @@ class ReportesCampanasTests(BaseTestDeReportes):
         estadisticas_service.calcular_estadisticas_totales()
         self.assertEqual(estadisticas_service.reporte_totales_llamadas.llamadas_pendientes, 1)
 
-    @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
-    @patch.object(ExportacionCampanaCSV, 'exportar_reportes_csv')
-    def test_reporte_contactados_campanas_entrantes_linkean_calificaciones_llamadas(
-            self, exportar_reportes_csv, crea_reporte_pdf):
+    def test_reporte_contactados_campanas_entrantes_linkean_calificaciones_llamadas(self):
         self.campana_activa.type = Campana.TYPE_ENTRANTE
         self.campana_activa.save()
         self.calif_gestion.callid = '000000'
         self.calif_gestion.save()
-        url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
-        self.client.get(url, follow=True)
-        calificados_list = exportar_reportes_csv.call_args[0][2]
-        # muestra el histórico de calificacions
-        self.assertEqual(len(calificados_list), 3)
+        key_task = 'key_task'
+        hoy_ahora = fecha_hora_local(timezone.now())
+        fecha_desde = datetime_hora_minima_dia_utc(hoy_ahora)
+        fecha_hasta = datetime_hora_maxima_dia_utc(hoy_ahora)
+        reporte_contactados_csv = ReporteContactadosCSV(
+            self.campana_activa, key_task, fecha_desde, fecha_hasta)
+        # muestra el histórico de contactados (aqui cuenta la linea de header)
+        self.assertEqual(len(reporte_contactados_csv.datos), 4)
 
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
     @patch.object(ExportacionCampanaCSV, 'exportar_reportes_csv')
     def test_reporte_contactados_campanas_no_entrantes_muestran_valor_calificacion_historica(
             self, exportar_reportes_csv, crea_reporte_pdf):
-        url = reverse('campana_reporte_grafico', args=[self.campana_activa.pk])
         id_llamada = '000000'
-        LlamadaLogFactory(callid=id_llamada, campana_id=self.campana_activa.pk)
+        LlamadaLogFactory(callid=id_llamada, campana_id=self.campana_activa.pk,
+                          event='ANSWER')
         self.calif_gestion.callid = id_llamada
         self.calif_gestion.save()
-        self.client.get(url, follow=True)
-        calificados_dict = exportar_reportes_csv.call_args[0][2]
-        # muestra los valores finales de las calificaciones
-        self.assertEqual(len(calificados_dict), 3)
+        key_task = 'key_task'
+        hoy_ahora = fecha_hora_local(timezone.now())
+        fecha_desde = datetime_hora_minima_dia_utc(hoy_ahora)
+        fecha_hasta = datetime_hora_maxima_dia_utc(hoy_ahora)
+        reporte_contactados_csv = ReporteContactadosCSV(
+            self.campana_activa, key_task, fecha_desde, fecha_hasta)
+        # muestra el histórico de contactados (aqui cuenta la linea de header)
+        self.assertEqual(len(reporte_contactados_csv.datos), 5)
 
-    @patch.object(ArchivoDeReporteCsv, 'escribir_archivo_datos_csv')
     @patch.object(ReporteCampanaPDFService, 'crea_reporte_pdf')
     @patch.object(Bar, 'render_to_png')
     def test_datos_reporte_grafico_campana_entrantes_totales_calificaciones_contabiliza_historico(
-            self, render_to_png, crea_reporte_pdf, crea_reporte_csv):
+            self, render_to_png, crea_reporte_pdf):
         self.campana_activa.type = Campana.TYPE_ENTRANTE
         id_llamada_1 = '000000'
         id_llamada_2 = '111111'

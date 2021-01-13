@@ -50,6 +50,7 @@
       WOMBAT_USER={{ dialer_user }}
       WOMBAT_PASSWORD={{ dialer_password }}
       TZ={{ TZ }}
+      EXTERN_IP={{ extern_ip }}
   tags: postinstall
 
 # Incluyo las tasks de configuraciones iniciales de SO para prodenv
@@ -120,7 +121,7 @@
     - "{{ ast_conf_location }}"
     - "{{ ast_agis_location }}"
     - "{{ ast_sounds_location }}/oml"
-    - "{{ nginx_location }}/conf.d"
+    - "{{ nginx_location }}/conf.d/"
     - "{{ ast_other_location }}"
     - "{{ omniapp_location }}"
     - "{{ efk_location }}"

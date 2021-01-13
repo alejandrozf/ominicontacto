@@ -34,10 +34,10 @@ from django.utils.timezone import now, timedelta
 
 from ominicontacto_app.utiles import datetime_hora_maxima_dia, datetime_hora_minima_dia
 from ominicontacto_app.models import CalificacionCliente, Campana
-from reportes_app.actividad_agente_log import AgenteTiemposReporte
-from reportes_app.models import LlamadaLog, ActividadAgenteLog
 
 from utiles_globales import obtener_cantidad_no_calificados, adicionar_render_unicode
+from reportes_app.reportes.reporte_agentes import ReporteAgentes
+from reportes_app.models import LlamadaLog
 
 logger = _logging.getLogger(__name__)
 
@@ -188,23 +188,11 @@ class EstadisticasAgenteService():
         if fecha_hasta.date() == ahora.date():
             # estamos calculando hasta el día actual
             fecha_hasta = ahora
-        logs_actividad_agente = ActividadAgenteLog.objects.filter(
-            agente_id=agente.id,
-            time__range=(fecha_desde, fecha_hasta)).order_by('time')
-        logs_llamadas_agente = LlamadaLog.objects.filter(
-            time__range=(fecha_desde, fecha_hasta), campana_id=campana.pk, agente_id=agente.pk)
-        tiempo_sesion, tiempo_pausa = self._obtener_actividad_agente(logs_actividad_agente)
-        (tiempo_en_llamada, tiempo_en_llamada_manual, cantidad_llamadas_procesadas,
-         cantidad_llamadas_perdidas,
-         cantidad_llamadas_manuales) = self._obtener_estadisticas_llamadas_agente(
-             logs_llamadas_agente)
-        # los valores de las variables 'tiempo_en_llamada_manual' y 'cantidad_llamadas_manuales'
-        # y las estadísticas que a partir de estos se generan no son relevantes en los reportes
-        # actualmente, se mantiene su cálculo previendo su uso a futuro
-        agente_tiempos = AgenteTiemposReporte(
-            agente, tiempo_sesion, tiempo_pausa, tiempo_en_llamada, cantidad_llamadas_procesadas,
-            cantidad_llamadas_perdidas, tiempo_en_llamada_manual, cantidad_llamadas_manuales)
-        return agente_tiempos
+
+        agente_tiempos = ReporteAgentes()
+
+        return agente_tiempos.devuelve_reporte_agente_campana(agente, fecha_desde, fecha_hasta,
+                                                              campana)
 
     def _calcular_estadisticas(self, campana, fecha_desde, fecha_hasta, agente):
         fecha_desde = datetime_hora_minima_dia(fecha_desde)
@@ -212,7 +200,6 @@ class EstadisticasAgenteService():
 
         calificaciones_nombre, calificaciones_cantidad, total_asignados = \
             self.obtener_cantidad_calificacion(campana, fecha_desde, fecha_hasta, agente)
-
         agente_tiempo = self.calcular_tiempo_agente(agente, fecha_desde, fecha_hasta, campana)
 
         dic_estadisticas = {

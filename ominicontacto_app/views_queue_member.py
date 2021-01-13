@@ -34,17 +34,18 @@ from django.utils.translation import ugettext as _
 from ominicontacto_app.forms import QueueMemberForm, GrupoAgenteForm
 from ominicontacto_app.models import Campana, QueueMember, Grupo, AgenteProfile
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
-from ominicontacto_app.services.asterisk_ami_http import AsteriskHttpClient,\
-    AsteriskHttpQueueRemoveError, AsteriskHttpQueueAddError
+
 from utiles_globales import obtener_sip_agentes_sesiones_activas
 
 
 import logging as logging_
+from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnectorError, \
+    AmiManagerClient
 
 logger = logging_.getLogger(__name__)
 
 
-def adicionar_agente_cola(agente, queue_member, campana):
+def adicionar_agente_cola(agente, queue_member, campana, client):
     """Adiciona agente a la cola de su respectiva campaña"""
     queue = "{0}_{1}".format(campana.id, campana.nombre)
     interface = "PJSIP/{0}".format(agente.sip_extension)
@@ -53,22 +54,20 @@ def adicionar_agente_cola(agente, queue_member, campana):
     member_name = "{0}_{1}_{2}".format(agente.id, agente.user.first_name, agente.user.last_name)
 
     try:
-        client = AsteriskHttpClient()
-        client.login()
         client.queue_add(queue, interface, penalty, paused, member_name)
-    except AsteriskHttpQueueAddError:
+    except AMIManagerConnectorError:
         logger.exception(_("QueueAdd failed - agente: {0} de la campana: {1} ".format(
             agente, campana)))
 
 
-def adicionar_agente_activo_cola(queue_member, campana, sip_agentes_logueados):
+def adicionar_agente_activo_cola(queue_member, campana, sip_agentes_logueados, client):
     """Si el agente tiene una sesión activa lo adiciona a la cola de su respectiva
     campaña
     """
     # chequear si el agente tiene sesion activa
     agente = queue_member.member
     if agente.sip_extension in sip_agentes_logueados:
-        adicionar_agente_cola(agente, queue_member, campana)
+        adicionar_agente_cola(agente, queue_member, campana, client)
 
 
 def activar_cola():
@@ -106,6 +105,8 @@ class QueueMemberCreateView(FormView):
             return self.form_invalid(form)
         else:
             try:
+                client = AmiManagerClient()
+                client.connect()
                 with transaction.atomic():
                     agente = self.object.member
                     queue_member_defaults = QueueMember.get_defaults(agente, campana)
@@ -118,8 +119,10 @@ class QueueMemberCreateView(FormView):
                     self.object.save()
                     # adicionamos el agente a la cola actual que esta corriendo
                     sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
-                    adicionar_agente_activo_cola(self.object, campana, sip_agentes_logueados)
+                    adicionar_agente_activo_cola(
+                        self.object, campana, sip_agentes_logueados, client)
                     activar_cola()
+                client.disconnect()
             except Exception as e:
                 message = _("<strong>Operación Errónea!</strong> "
                             "No se pudo confirmar la creación del dialplan debido "
@@ -176,6 +179,8 @@ class GrupoAgenteCreateView(FormView):
         agentes_logueados_grupo = agentes.filter(sip_extension__in=sip_agentes_logueados)
         # agrega los agentes a la campana siempre cuando no se encuentren agregados
         try:
+            client = AmiManagerClient()
+            client.connect()
             with transaction.atomic():
                 for agente in agentes:
                     queue_member, created = QueueMember.objects.get_or_create(
@@ -183,8 +188,9 @@ class GrupoAgenteCreateView(FormView):
                         queue_name=campana.queue_campana,
                         defaults=QueueMember.get_defaults(agente, campana))
                     if created and (agente in agentes_logueados_grupo):
-                        adicionar_agente_cola(agente, queue_member, campana)
+                        adicionar_agente_cola(agente, queue_member, campana, client)
                 activar_cola()
+            client.disconnect()
         except Exception as e:
             message = _("<strong>Operación Errónea!</strong> "
                         "No se pudo confirmar la creación del dialplan debido "
@@ -259,17 +265,14 @@ class QueueMemberCampanaView(TemplateView):
         return context
 
 
-def remover_agente_cola_asterisk(campana, agente):
+def remover_agente_cola_asterisk(campana, agente, client):
     queue = "{0}_{1}".format(campana.id, campana.nombre)
     interface = "PJSIP/{0}".format(agente.sip_extension)
     sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
     if agente.sip_extension in sip_agentes_logueados:
         try:
-            client = AsteriskHttpClient()
-            client.login()
             client.queue_remove(queue, interface)
-
-        except AsteriskHttpQueueRemoveError:
+        except AMIManagerConnectorError:
             logger.exception(_("QueueRemove failed - agente: {0} de la campana: {1} ".format(
                 agente, campana)))
 
@@ -282,7 +285,13 @@ def queue_member_delete_view(request, pk_queuemember, pk_campana):
     campana = Campana.objects.get(pk=pk_campana)
 
     # ahora vamos a remover el agente de la cola de asterisk
-    remover_agente_cola_asterisk(campana, agente)
+    try:
+        client = AmiManagerClient()
+        client.connect()
+    except AMIManagerConnectorError:
+        logger.exception(_("QueueRemove failed "))
+    remover_agente_cola_asterisk(campana, agente, client)
+    client.disconnect()
     activar_cola()
 
     return HttpResponseRedirect(

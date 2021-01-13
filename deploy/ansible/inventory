@@ -84,6 +84,21 @@ LOGIN_FAILURE_LIMIT=10
 # Language of schedule disposition #
 ####################################
 schedule=Agenda
+#########################################################################################################################################
+# External IP. This parameter will set the public IP for SIP and RTP traffic, on environments where calls go through a firewall. 	#
+# auto = The public IP will be obtained from http://ipinfo.io/ip. It depends on the WAN connection that OML is using to go to Internet. #
+# X.X.X.X = The public IP is set manually.  												#
+# none = If the agents are working on a LAN environment, and don't need a public IP.							#
+#########################################################################################################################################
+#extern_ip=auto
+
+#######################################################################################
+# Variables when you have OMniLeads Websocket installed in other host 		      #
+# websocket_host=IP or domain of that host. Default: websockets			      #
+# websocket_port=the port configured in the app in that host. Default: 8000	      #
+#######################################################################################
+websocket_host=websockets
+websocket_port=8000
 
 ##############################################################################################
 # Variables below are used when you have postgresql, mysql , wombat dialer or rtpengine      #

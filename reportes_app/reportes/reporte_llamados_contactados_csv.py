@@ -26,14 +26,23 @@ from __future__ import unicode_literals
 import csv
 import logging
 import os
+import json
+
+import redis
 
 from django.conf import settings
 from django.utils.encoding import force_text
 
+
 from django.utils.translation import ugettext as _
+from django.utils.timezone import localtime, timedelta
 
 from ominicontacto_app.utiles import crear_archivo_en_media_root
 
+from ominicontacto_app.models import Campana, OpcionCalificacion, HistoricalCalificacionCliente
+from ominicontacto_app.services.estadisticas_campana import EstadisticasBaseCampana
+
+from reportes_app.models import LlamadaLog
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +61,368 @@ NO_CONECTADO_DESCRIPCION = {
     'NONDIALPLAN': _('Problema de enrutamiento'),
     'ABANDONWEL': _('Abandonadas durante anuncio'),
 }
+
+
+class ReporteCSV:
+
+    redis_connection = redis.Redis(
+        host=settings.REDIS_HOSTNAME,
+        # FIXME: debería existir un setting para REDIS_PORT
+        port=settings.CONSTANCE_REDIS_CONNECTION['port'],
+        decode_responses=True)
+
+    def _obtener_datos_contacto(self, contacto_id, campos_contacto, contactos_dict):
+        contacto = contactos_dict.get(contacto_id, -1)
+        if contacto != -1:
+            return contacto.lista_de_datos_completa()
+        return [""] * len(campos_contacto)
+
+
+class ReporteContactadosCSV(EstadisticasBaseCampana, ReporteCSV):
+
+    def get_es_ultima_calificacion_historica(self, calificacion_historica, calificacion_final):
+        """ Si tienen practicamente la misma fecha asumo que corresponden a la misma """
+        diff = calificacion_historica.history_date - calificacion_final.modified
+        if calificacion_historica.history_date < calificacion_final.modified:
+            diff = calificacion_final.modified - calificacion_historica.history_date
+        if diff < timedelta(microseconds=100000):
+            return True
+        return False
+
+    def __init__(self, campana, key_task, fecha_desde, fecha_hasta):
+        self.campana = campana
+        self.fecha_desde = fecha_desde
+        self.fecha_hasta = fecha_hasta
+        self._inicializar_valores_estadisticas()
+        self.contactos_dict = {contacto.pk: contacto
+                               for contacto in self.campana.bd_contacto.contactos.all()}
+        self.campos_contacto_datos = self.bd_metadata.nombres_de_columnas
+        self.datos = []
+        self.campos_formulario_opciones = {}
+        self.posiciones_opciones = {}
+        self._escribir_encabezado()
+
+        logs_llamadas = self._obtener_logs_de_llamadas()
+
+        numero_logs_llamadas = logs_llamadas.count()
+        if numero_logs_llamadas == 0:
+            porcentaje_inicial = 100
+        else:
+            porcentaje_inicial = 0
+        self.redis_connection.publish(key_task, porcentaje_inicial)  # percentage of task completed
+        for i, log_llamada in enumerate(logs_llamadas, start=1):
+            percentage = int((i / numero_logs_llamadas) * 100)
+            self.redis_connection.publish(key_task, percentage)
+            callid = log_llamada.callid
+            evento = log_llamada.event
+            calificacion_historica = self.calificaciones_historicas_dict.get(callid, False)
+            if evento in LlamadaLog.EVENTOS_INICIO_CONEXION_AGENTE and \
+                    log_llamada.agente_id != -1:
+                if not calificacion_historica:
+                    datos_calificacion = [_("Llamada Atendida sin calificacion"),
+                                          '',
+                                          self.agentes_dict.get(log_llamada.agente_id, -1)]
+                else:
+                    datos_calificacion = [calificacion_historica.opcion_calificacion.nombre,
+                                          calificacion_historica.observaciones.replace('\r\n', ' '),
+                                          calificacion_historica.agente]
+                self._escribir_linea_log(
+                    log_llamada, datos_calificacion, calificacion_historica)
+
+    def _obtener_datos_contacto_contactados(self, llamada_log, calificacion, datos_contacto):
+        tel_status = _('Fuera de base')
+        bd_contacto = _('Fuera de base')
+        contacto = calificacion.contacto if calificacion else None
+        if contacto is None:
+            contacto = self.contactos_dict.get(llamada_log.contacto_id)
+        if contacto is not None:
+            tel_status = _('Contactado')
+            datos_contacto = contacto.lista_de_datos_completa()
+            if contacto.es_originario:
+                bd_contacto = contacto.bd_contacto
+        return tel_status, bd_contacto, datos_contacto
+
+    def _escribir_encabezado(self):
+        encabezado = []
+        encabezado.append(_("Telefono contactado"))
+        campos_contacto = self.bd_metadata.nombres_de_columnas
+        # TODO: hacer más prolija esta parte, para evitar futuros desfasajes
+        encabezado.extend(campos_contacto)
+        encabezado.append(_("Fecha-Hora Contacto"))
+        encabezado.append(_("Duración"))
+        encabezado.append(_("Tel status"))
+        encabezado.append(_("Calificado"))
+        encabezado.append(_("Observaciones"))
+        encabezado.append(_("Agente"))
+        encabezado.append(_("base de datos"))
+
+        # agrego el encabezado para los campos de los formularios
+        if self.campana.tipo_interaccion is Campana.FORMULARIO:
+            cant_campos_gestion = 0
+            for opcion in self.opciones_calificacion_campana.values():
+                if opcion.id not in self.posiciones_opciones and \
+                   opcion.tipo == OpcionCalificacion.GESTION:
+                    self.posiciones_opciones[opcion.id] = cant_campos_gestion
+                    campos = opcion.formulario.campos.all()
+                    self.campos_formulario_opciones[opcion.id] = campos
+                    encabezado.append(opcion.nombre)
+                    cant_campos_gestion += 1
+                    for campo in campos:
+                        nombre = campo.nombre_campo
+                        encabezado.append(nombre)
+                        cant_campos_gestion += 1
+
+        lista_datos_utf8 = [force_text(item) for item in encabezado]
+        self.datos.append(lista_datos_utf8)
+
+    def _escribir_linea_log(self, llamada_log, datos_calificacion, calificacion_historica):
+        datos_contacto = [''] * len(self.campos_contacto_datos)
+        calificacion = calificacion_historica
+        tel_status, bd_contacto, datos_contacto = self.\
+            _obtener_datos_contacto_contactados(llamada_log, calificacion, datos_contacto)
+        datos_gestion = []
+        if calificacion:
+            calificacion_final = calificacion_historica.history_object
+            # TODO: ver la forma de relacionar con respuestas vieja.
+
+            es_ultima_calificacion_historica = self.get_es_ultima_calificacion_historica(
+                calificacion_historica, calificacion_final)
+
+            if hasattr(calificacion, 'es_gestion'):
+                es_gestion = calificacion.es_gestion()
+            else:
+                es_gestion = (calificacion.opcion_calificacion.tipo ==
+                              OpcionCalificacion.GESTION)
+            if es_gestion:
+                respuesta_formulario_gestion = self.respuestas_formulario_gestion_dict.get(
+                    calificacion.history_object.pk)
+            else:
+                respuesta_formulario_gestion = None
+            if (es_gestion and es_ultima_calificacion_historica and
+                self.campana.tipo_interaccion is Campana.FORMULARIO and
+                    respuesta_formulario_gestion is not None):
+                # si es la ultima calificacion historica, que coincide con el valor
+                # final de la calificacion y es de gestion, entonces mostramos el valor de
+                # la gestión (si existe) y se muestran Datos de la respuesta del formulario
+                datos = json.loads(respuesta_formulario_gestion.metadata)
+                id_opcion = respuesta_formulario_gestion.calificacion.opcion_calificacion_id
+                posicion = self.posiciones_opciones[id_opcion]
+                # Relleno las posiciones vacias anteriores (de columnas de otro formulario)
+                posiciones_vacias = posicion - len(datos_gestion)
+                datos_gestion = datos_gestion + [''] * posiciones_vacias
+                # Columna vacia correspondiente al nombre de la Opcion de calificacion
+                datos_gestion.append('')
+                campos = self.campos_formulario_opciones[id_opcion]
+                for campo in campos:
+                    datos_gestion.append(
+                        datos.get(campo.nombre_campo, '').replace('\r\n', ' '))
+
+        fecha_local_llamada = localtime(llamada_log.time)
+        duracion_llamada = llamada_log.duracion_llamada
+        if duracion_llamada > 0:
+            duracion_llamada = timedelta(0, duracion_llamada)
+        else:
+            duracion_llamada = 'N/A'
+
+        registro = []
+        registro.append(llamada_log.numero_marcado)
+        registro.extend(datos_contacto)
+        registro.append(fecha_local_llamada.strftime("%Y/%m/%d %H:%M:%S"))
+        registro.append(str(duracion_llamada))
+        registro.append(tel_status)
+        registro.extend(datos_calificacion)
+        registro.append(bd_contacto)
+        registro.extend(datos_gestion)
+
+        lista_datos_utf8 = [force_text(item) for item in registro]
+        self.datos.append(lista_datos_utf8)
+
+
+class ReporteCalificadosCSV(EstadisticasBaseCampana, ReporteCSV):
+
+    def __init__(
+            self, campana, key_task, fecha_desde, fecha_hasta):
+        self.campana = campana
+        self.fecha_desde = fecha_desde
+        self.fecha_hasta = fecha_hasta
+        self._inicializar_valores_estadisticas()
+        self.contactos_dict = {contacto.pk: contacto
+                               for contacto in self.campana.bd_contacto.contactos.all()}
+        self.campos_contacto_datos = self.bd_metadata.nombres_de_columnas
+        self.datos = []
+        self.campos_formularios_opciones = {}
+        self.posiciones_opciones = {}
+        self._escribir_encabezado()
+
+        logs_llamadas = self._obtener_logs_de_llamadas()
+
+        numero_logs_llamadas = logs_llamadas.count()
+        if numero_logs_llamadas == 0:
+            porcentaje_inicial = 100
+        else:
+            porcentaje_inicial = 0
+        calificaciones_analizadas = set()
+        self.redis_connection.publish(key_task, porcentaje_inicial)  # percentage of task completed
+        for i, log_llamada in enumerate(logs_llamadas, start=1):
+            percentage = int((i / numero_logs_llamadas) * 100)
+            self.redis_connection.publish(key_task, percentage)
+            callid = log_llamada.callid
+            calificacion_historica = self.calificaciones_historicas_dict.get(callid, False)
+            calificacion_final = self.calificaciones_finales_dict.get(callid, False)
+            if campana.es_entrante:
+                calificacion = calificacion_historica
+            else:
+                calificacion = calificacion_final
+            if calificacion and (calificacion.pk not in calificaciones_analizadas):
+                self._escribir_linea_calificacion(calificacion, log_llamada)
+                calificaciones_analizadas.add(calificacion.pk)
+
+    def _escribir_encabezado(self):
+        # Creamos encabezado
+        encabezado = []
+        campos_contacto = self.bd_metadata.nombres_de_columnas
+        encabezado.extend(campos_contacto)
+        encabezado.append(_("Fecha-Hora Contacto"))
+        encabezado.append(_("Tel status"))
+        encabezado.append(_("Tel contactado"))
+        encabezado.append(_("Calificado"))
+        encabezado.append(_("Observaciones"))
+        encabezado.append(_("Agente"))
+        encabezado.append(_("base de datos"))
+        # agrego el encabezado para los campos de los formularios
+        if self.campana.tipo_interaccion is Campana.FORMULARIO:
+            for opcion in self.opciones_calificacion_campana.values():
+                if opcion.id not in self.posiciones_opciones and \
+                   opcion.tipo == OpcionCalificacion.GESTION:
+                    self.posiciones_opciones[opcion.id] = len(encabezado)
+                    campos = opcion.formulario.campos.all()
+                    self.campos_formularios_opciones[opcion.id] = campos
+                    encabezado.append(opcion.nombre)
+                    for campo in campos:
+                        nombre = campo.nombre_campo
+                        encabezado.append(nombre)
+        lista_datos_utf8 = [force_text(item) for item in encabezado]
+        self.datos.append(lista_datos_utf8)
+
+    def _escribir_linea_calificacion(self, calificacion_val, log_llamada):
+        lista_opciones = []
+        # --- Buscamos datos
+        if self.campana.es_entrante:
+            calificacion = calificacion_val
+            calificacion_fecha_local = localtime(calificacion_val.history_date)
+        else:
+            calificacion = calificacion_val
+            calificacion_fecha_local = localtime(calificacion.fecha)
+        datos = calificacion.contacto.lista_de_datos_completa()
+        lista_opciones.extend(datos)
+        lista_opciones.append(calificacion_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
+        # analizamos el log para ver si se muestra como contactado o no
+        # mas alla de que se haya calificado, ya que deberíamos estar analizando el
+        # ultimo evento disponible
+        if log_llamada.event in LlamadaLog.EVENTOS_NO_CONEXION:
+            lista_opciones.append(NO_CONECTADO_DESCRIPCION[log_llamada.event])
+        else:
+            lista_opciones.append(_("Contactado"))
+        numero_marcado = log_llamada.numero_marcado
+        lista_opciones.append(numero_marcado)
+        lista_opciones.append(calificacion.opcion_calificacion.nombre)
+        lista_opciones.append(calificacion.observaciones.replace('\r\n', ' '))
+        lista_opciones.append(calificacion.agente)
+        if calificacion.contacto.es_originario:
+            lista_opciones.append(calificacion.contacto.bd_contacto)
+        else:
+            lista_opciones.append(_("Fuera de base"))
+        if isinstance(calificacion_val, HistoricalCalificacionCliente) and \
+           calificacion_val.history_date == calificacion.modified:
+            # Es una calificacion historica que no es la ultima sobre el contacto
+            # (campaña entrante)
+            respuesta_formulario_gestion = None
+        else:
+            respuesta_formulario_gestion = self.respuestas_formulario_gestion_dict.get(
+                calificacion.pk)
+        if (calificacion.opcion_calificacion.es_gestion() and
+            self.campana.tipo_interaccion is Campana.FORMULARIO and
+                respuesta_formulario_gestion is not None):
+            datos = json.loads(respuesta_formulario_gestion.metadata)
+
+            # Agrego Datos de la respuesta del formulario
+            datos = json.loads(respuesta_formulario_gestion.metadata)
+            id_opcion = respuesta_formulario_gestion.calificacion.opcion_calificacion_id
+            posicion = self.posiciones_opciones[id_opcion]
+            # Relleno las posiciones vacias anteriores (de columnas de otro formulario)
+            posiciones_vacias = posicion - len(lista_opciones)
+            lista_opciones = lista_opciones + [''] * posiciones_vacias
+            # Columna vacia correspondiente al nombre de la Opcion de calificacion
+            lista_opciones.append('')
+            campos = self.campos_formularios_opciones[id_opcion]
+            for campo in campos:
+                lista_opciones.append(
+                    datos.get(campo.nombre_campo, '').replace('\r\n', ' '))
+
+        lista_datos_utf8 = [force_text(item) for item in lista_opciones]
+        self.datos.append(lista_datos_utf8)
+
+
+class ReporteNoAtendidosCSV(EstadisticasBaseCampana, ReporteCSV):
+    def __init__(self, campana, key_task, fecha_desde, fecha_hasta):
+        self.campana = campana
+        self.fecha_desde = fecha_desde
+        self.fecha_hasta = fecha_hasta
+        self.bd_metadata = self.campana.bd_contacto.get_metadata()
+        self.campos_contacto = self.bd_metadata.nombres_de_columnas
+        self.datos = []
+        self.contactos_dict = {contacto.pk: contacto
+                               for contacto in self.campana.bd_contacto.contactos.all()}
+        self.agentes_dict = {}
+        self._inicializar_valores_agentes()
+        self._escribir_encabezado()
+        logs_llamadas = self._obtener_logs_de_llamadas()
+
+        numero_logs_llamadas = logs_llamadas.count()
+        if numero_logs_llamadas == 0:
+            porcentaje_inicial = 100
+        else:
+            porcentaje_inicial = 0
+        self.redis_connection.publish(key_task, porcentaje_inicial)  # percentage of task completed
+        for i, log_llamada in enumerate(logs_llamadas, start=1):
+            percentage = int((i / numero_logs_llamadas) * 100)
+            self.redis_connection.publish(key_task, percentage)
+            self._escribir_linea_log(log_llamada, self.contactos_dict, self.agentes_dict)
+
+    def _escribir_encabezado(self):
+        encabezado = []
+        encabezado.append(_("Telefono de llamada"))
+        encabezado.extend(self.bd_metadata.nombres_de_columnas)
+        encabezado.append(_("Fecha-Hora Contacto"))
+        encabezado.append(_("Tel status"))
+        encabezado.append(_("Agente"))
+        lista_datos_utf8 = [force_text(item) for item in encabezado]
+        self.datos.append(lista_datos_utf8)
+
+    def _escribir_linea_log(self, log_no_contactado, contactos_dict, agentes_dict):
+        lista_opciones = []
+        # --- Buscamos datos
+        log_no_contactado_fecha_local = localtime(log_no_contactado.time)
+        estado = NO_CONECTADO_DESCRIPCION.get(log_no_contactado.event, False)
+        if estado:
+            lista_opciones.append(log_no_contactado.numero_marcado)
+            contacto_id = log_no_contactado.contacto_id
+            datos_contacto = self._obtener_datos_contacto(
+                contacto_id, self.campos_contacto, contactos_dict)
+            lista_opciones.extend(datos_contacto)
+            lista_opciones.append(log_no_contactado_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
+            lista_opciones.append(estado)
+            tipo_llamada = log_no_contactado.tipo_llamada
+            if tipo_llamada == Campana.TYPE_DIALER:
+                agente_info = "DIALER"
+            elif tipo_llamada == Campana.TYPE_ENTRANTE:
+                agente_info = "IN"
+            else:
+                agente_info = agentes_dict.get(log_no_contactado.agente_id, -1)
+            lista_opciones.append(agente_info)
+            # --- Finalmente, escribimos la linea
+            lista_datos_utf8 = [force_text(item) for item in lista_opciones]
+            self.datos.append(lista_datos_utf8)
 
 
 class ArchivoDeReporteCsv(object):
@@ -112,22 +483,26 @@ class ExportacionCampanaCSV(object):
                        " CSV de descarga para la campana {0}".format(campana.nombre)))
         assert os.path.exists(archivo_de_reporte.url_descarga)
 
-    def exportar_reportes_csv(self, campana, datos_contactados,
-                              datos_calificados, datos_no_atendidos):
-        # Reporte contactados
-        archivo_de_reporte = ArchivoDeReporteCsv(
-            campana, "contactados", datos_contactados)
-        archivo_de_reporte.crear_archivo_en_directorio()
-        archivo_de_reporte.escribir_archivo_datos_csv()
+    def exportar_reportes_csv(self, campana, datos_contactados=None,
+                              datos_calificados=None, datos_no_atendidos=None):
 
-        # Reporte calificados
-        archivo_de_reporte = ArchivoDeReporteCsv(
-            campana, "calificados", datos_calificados)
-        archivo_de_reporte.crear_archivo_en_directorio()
-        archivo_de_reporte.escribir_archivo_datos_csv()
+        if datos_contactados is not None:
+            # Reporte contactados
+            archivo_de_reporte = ArchivoDeReporteCsv(
+                campana, "contactados", datos_contactados)
+            archivo_de_reporte.crear_archivo_en_directorio()
+            archivo_de_reporte.escribir_archivo_datos_csv()
 
-        # Reporte no atendidos
-        archivo_de_reporte = ArchivoDeReporteCsv(
-            campana, "no_atendidos", datos_no_atendidos)
-        archivo_de_reporte.crear_archivo_en_directorio()
-        archivo_de_reporte.escribir_archivo_datos_csv()
+        if datos_calificados is not None:
+            # Reporte calificados
+            archivo_de_reporte = ArchivoDeReporteCsv(
+                campana, "calificados", datos_calificados)
+            archivo_de_reporte.crear_archivo_en_directorio()
+            archivo_de_reporte.escribir_archivo_datos_csv()
+
+        if datos_no_atendidos is not None:
+            # Reporte no atendidos
+            archivo_de_reporte = ArchivoDeReporteCsv(
+                campana, "no_atendidos", datos_no_atendidos)
+            archivo_de_reporte.crear_archivo_en_directorio()
+            archivo_de_reporte.escribir_archivo_datos_csv()

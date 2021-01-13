@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-09 10:54-0300\n"
+"POT-Creation-Date: 2020-12-15 11:18-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,8 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: reciclado_app/apps.py:34
+#: reciclado_app/apps.py:36
 msgid "Reciclado de campañas Dialer"
+msgstr ""
+
+#: reciclado_app/apps.py:38
+msgid "Reciclado de campañas Preview"
 msgstr ""
 
 #: reciclado_app/resultado_contactacion.py:52
@@ -79,4 +83,20 @@ msgstr ""
 
 #: reciclado_app/templates/nuevo_reciclado.html:55
 msgid "Reciclar"
+msgstr ""
+
+#: reciclado_app/views.py:68
+msgid ""
+"<strong>Operación Errónea!</strong>                         Debe seleccionar "
+"al menos una opcion para reciclar "
+msgstr ""
+
+#: reciclado_app/views.py:90
+msgid ""
+"<strong>Operación Errónea!</strong>                No se pudo reciclar la "
+"Campana."
+msgstr ""
+
+#: reciclado_app/views.py:119
+msgid "Esta campaña no se puede reciclar."
 msgstr ""

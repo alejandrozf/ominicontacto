@@ -61,13 +61,14 @@ function startPhoneJs() {
     var sipExtension = $('#sipExt').val();
     var sipSecret = $('#sipSec').val();
     var max_session_age = $('#max_session_age').val();
+    var video_domain = $('#video_domain').val();
 
     var oml_api = new OMLAPI();
 
     click2call = new Click2CallDispatcher(oml_api, agent_id);
     keep_alive_sender = new KeepAliveSender(max_session_age);
     phone_controller = new PhoneJSController(
-        agent_id, sipExtension, sipSecret, timers, click2call, keep_alive_sender);
+        agent_id, sipExtension, sipSecret, timers, click2call, keep_alive_sender, video_domain);
 
     subscribirEventosBotonesGenerales(oml_api, agent_id, timers);
     subscribirEventosBotonesOtrosMedios(oml_api);

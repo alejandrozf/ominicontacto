@@ -38,6 +38,7 @@ parser.add_argument("--dialer_host", help="Specifies dialer host")
 parser.add_argument("--dialer_user", default="demoadmin", help="Specifies dialer user")
 parser.add_argument("--dialer_password", default="demo", help="Specifies dialer passowrd")
 parser.add_argument("--ecctl", help="Specifies ECCTL")
+parser.add_argument("--extern_ip", default="auto", help="Specifies the extern_ip")
 parser.add_argument("--gluster_enabled", help="Set if gluster is enabled or not for cluster")
 parser.add_argument("--sca", help="Specifies SCA")
 parser.add_argument("--postgres_host", help="Specifies postgresql host")
@@ -53,6 +54,8 @@ parser.add_argument("--redis_host", help="Specifies external redis host")
 parser.add_argument("--rtpengine_host", help="Specifies external rtpengine host")
 parser.add_argument("--schedule", help="Specifies de tag for generated docker images")
 parser.add_argument("--TZ", default="America/Argentina/Cordoba", help="Specifies TZ")
+parser.add_argument("--websocket_host", help="Specifies websocket host")
+parser.add_argument("--websocket_port", help="Specifies websocket port")
 args = parser.parse_args()
 
 # omininicontacto directorio raíz
@@ -76,6 +79,9 @@ if args.asterisk_host:
 if args.dialer_user:
     inventory_contents = inventory_contents.replace(
         "#dialer_user=demoadmin", "dialer_user={0}".format(args.dialer_user))
+if args.extern_ip:
+    inventory_contents = inventory_contents.replace(
+        "#extern_ip=auto", "extern_ip={0}".format(args.extern_ip))
 if args.dialer_password:
     inventory_contents = inventory_contents.replace(
         "#dialer_password=demo", "dialer_password={0}".format(args.dialer_password))
@@ -133,6 +139,12 @@ if args.schedule:
 if args.TZ:
     inventory_contents = inventory_contents.replace(
         "#TZ=America/Argentina/Cordoba", "TZ={0}".format(args.TZ))
+if args.websocket_host:
+    inventory_contents = inventory_contents.replace(
+        "#websocket_host=", "websocket_host={0}".format(args.websocket_host))
+if args.websocket_port:
+    inventory_contents = inventory_contents.replace(
+        "#websocket_port=", "websocket_port={0}".format(args.websocket_port))
 inventory_file.seek(0)
 inventory_file.truncate()
 inventory_file.write(inventory_contents)

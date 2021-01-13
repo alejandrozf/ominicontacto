@@ -34,7 +34,7 @@ from ominicontacto_app.services.wombat_service import WombatService
 from ominicontacto_app.services.wombat_config import (
     CampanaCreator, TrunkCreator, RescheduleRuleCreator, EndPointCreator,
     CampanaEndPointCreator, CampanaListCreator, CampanaDeleteListCreator,
-    CampanaEndPointDelete
+    CampanaEndPointDelete,
 )
 from ominicontacto_app.services.exportar_base_datos import SincronizarBaseDatosContactosService
 from ominicontacto_app.errors import OmlError
@@ -178,6 +178,60 @@ class CampanaService():
         # crea reschedule wn wombat
         service_wombat.update_config_wombat("newcampaign_reschedule.json", url_edit)
 
+    def crear_reschedule_por_calificacion_wombat(self, campana, regla, estado_wombat):
+        """
+        Crea reschedule (regla de incidencia) por una calificacion
+        """
+        parametros = [
+            estado_wombat, regla.wombat_id, regla.intento_max, regla.reintentar_tarde,
+            regla.get_en_modo_wombat()]
+        self.crear_reschedule_campana_wombat(campana, parametros)
+
+    def eliminar_reschedule_por_calificacion_wombat(self, regla):
+        campaign_id_wombat = regla.opcion_calificacion.campana.campaign_id_wombat
+        list_url = "api/edit/campaign/reschedule/?mode=L&parent={0}".format(campaign_id_wombat)
+        service_wombat = WombatService()
+        salida = service_wombat.list_config_wombat(list_url)
+        reschedule_data = self.obtener_reschedule_data_wombat(salida, regla.wombat_id)
+        delete_url = "api/edit/campaign/reschedule/?mode=D&parent={0}".format(campaign_id_wombat)
+        salida = service_wombat.post_json(delete_url, reschedule_data)
+        if 'status' in salida and salida['status'] == 'OK':
+            return True
+        return False
+
+    def editar_reschedule_por_calificacion_wombat(self, regla, wombat_id):
+        campaign_id_wombat = regla.opcion_calificacion.campana.campaign_id_wombat
+        list_url = "api/edit/campaign/reschedule/?mode=L&parent={0}".format(campaign_id_wombat)
+        service_wombat = WombatService()
+        salida = service_wombat.list_config_wombat(list_url)
+        reschedule_data = self.obtener_reschedule_data_wombat(salida, wombat_id)
+        edit_url = "api/edit/campaign/reschedule/?mode=E&parent={0}".format(campaign_id_wombat)
+        reschedule_data['statusExt'] = regla.wombat_id
+        reschedule_data['maxAttempts'] = regla.intento_max
+        reschedule_data['retryAfterS'] = regla.reintentar_tarde
+        reschedule_data['mode'] = regla.get_en_modo_wombat()
+        salida = service_wombat.post_json(edit_url, reschedule_data)
+        if 'status' in salida and salida['status'] == 'OK':
+            return True
+        return False
+
+    def obtener_reschedule_data_wombat(self, salida, wombat_id):
+        if 'status' not in salida or not salida['status'] == 'OK':
+            return
+        for rule_data in salida['results']:
+            if rule_data['statusExt'] == wombat_id:
+                return rule_data
+
+    def notificar_incidencia_por_calificacion(self, dialer_call_id, regla):
+        """
+        Notifica que se califico una llamada con una opcion con regla de incidencia
+        Setea el extStatus correspondiente a la opcion elegida en la llamada de Wombat
+        """
+        service_wombat = WombatService()
+        url_notify = '/api/calls/?op=extstatus&wombatid={0}&status={1}'.format(
+            dialer_call_id, regla.wombat_id)
+        service_wombat.set_call_ext_status(url_notify)
+
     def crear_endpoint_campana_wombat(self, campana):
         """
         Crea endpoint para campaign en wombat via curl
@@ -189,8 +243,7 @@ class CampanaService():
         # crea json de endpoint para crear endpoint en wombat
         service_wombat_config = EndPointCreator()
         service_wombat_config.create_json(campana)
-        url_edit = "api/edit/ep/?mode=E".format(
-            campana.campaign_id_wombat)
+        url_edit = "api/edit/ep/?mode=E"
         # crea endpoint en wombat
         salida = service_wombat.update_config_wombat(
             "newep.json", url_edit)
@@ -481,3 +534,9 @@ class CampanaService():
             elif resultado['gbState'] == "TERMINATED":
                 resultado['gbState'] = "Finalizada"
         return status
+
+    def reload_campana_wombat(self, campana):
+        id_campana_wombat = '{0}_{1}'.format(campana.pk, campana.nombre)
+        url_api = '{0}/api/campaigns/?op=reload&campaign={1}'.format(
+            settings.OML_WOMBAT_URL, id_campana_wombat)
+        requests.get(url_api)

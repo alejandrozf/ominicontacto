@@ -171,7 +171,7 @@ Los parámetros de este endpoint se especifican en la url. El mismo tiene dos fo
 
 La variante (2) es para ser usada en la interacción desde un sistema de CRM externo hacia OML y en este caso el parámetro 'ids' deberá especificar el id del sistema de CRM externo y el parámetro 'idc' el identificador de una campaña en ese sistema sistema externo.
 
-En el caso de que el endpoint se ejecute sin errores se devolverá un output con una lista de opciones de calificación parecidos al siguiente:
+En el caso de que el endpoint se ejecute sin errores se devolverá un output con una lista de opciones de calificación indicando cuales de las opciones se encuentran ocultas parecidos al siguiente:
 
 .. image:: images/api_disposition_options.png
 
@@ -213,7 +213,7 @@ Esta endpoint habilita la posibilidad de "calificar" una gestión sobre un conta
 +---------------------+---------+-----------------------------------------------------------------------------+
 | idDispositionOption | integer | El id de la opción de calificación de la campaña  con que se va a calificar |
 |                     |         | al contacto, cada campaña define sus propias opciones de calificación,      |
-|                     |         | ver el endpoint que permite obtenerlas.                                     |
+|                     |         | ver el endpoint que permite obtenerlas. La opción no debe estar oculta.     |
 +---------------------+---------+-----------------------------------------------------------------------------+
 | callid              | string  | Parámetro opcional, el id de la llamada                                     |
 +---------------------+---------+-----------------------------------------------------------------------------+
@@ -232,7 +232,7 @@ Si no se encuentra el id del contacto en la bd de la campaña se devolverá el s
 
 .. image:: images/api_create_disposition_err_contact_not_found.png
 
-Si no se encuentra el id de la opcion de calificación en la bd de la campaña se devolverá el siguiente mensaje de error:
+Si no se encuentra el id de la opcion de calificación en la bd de la campaña, o la opción de calificación se encuentra oculta, se devolverá el siguiente mensaje de error:
 
 .. image:: images/api_create_disposition_err_disp_opt_not_found.png
 
@@ -254,7 +254,7 @@ Las credenciales deberán pertenecer a un Agente (:ref:`about_users`).
 +---------------------+---------+------------------------------------------------------------------------------+
 | idDispositionOption | integer | El id de la opción de calificación de la campaña  con que se va a calificar  |
 |                     |         | al contacto, cada campaña define sus propias opciones de calificación,       |
-|                     |         | ver el endpoint que permite obtenerlas.                                      |
+|                     |         | ver el endpoint que permite obtenerlas. La opción no debe estar oculta.      |
 +---------------------+---------+------------------------------------------------------------------------------+
 | comments            | string  | Las observaciones del agente en la calificación                              |
 +---------------------+---------+------------------------------------------------------------------------------+
@@ -269,7 +269,7 @@ En caso de no haber errores se devolverá un output como este, con los datos de 
 
 .. image:: images/api_create_disposition_output.png
 
-Si no se encuentra el id de la opcion de calificación en la bd de la campaña se devolverá el siguiente mensaje de error:
+Si no se encuentra el id de la opcion de calificación en la bd de la campaña, o la opción de calificación se encuentra oculta, se devolverá el siguiente mensaje de error:
 
 .. image:: images/api_create_disposition_err_disp_opt_not_found.png
 
@@ -298,7 +298,8 @@ Las credenciales deberán pertenecer a un Agente (:ref:`about_users`).
 +---------------------+---------+-----------------------------------------------------------------------------+
 | idDispositionOption | integer | El id de la opción de calificación de la campaña  con que se va a calificar |
 |                     |         | al contacto, cada campaña define sus propias opciones de calificación,      |
-|                     |         | ver el endpoint que permite obtenerlas.                                     |
+|                     |         | ver el endpoint que permite obtenerlas. La opción no debe estar oculta en   |
+|                     |         | caso de que se cambie la original.                                          |
 +---------------------+---------+-----------------------------------------------------------------------------+
 | callid              | string  | Parámetro opcional, el id de la llamada                                     |
 +---------------------+---------+-----------------------------------------------------------------------------+
@@ -321,7 +322,7 @@ Si no se encuentra el id del contacto en la bd de la campaña se devolverá el s
 
 .. image:: images/api_create_disposition_err_contact_not_found.png
 
-Si no se encuentra el id de la opcion de calificación en la bd de la campaña se devolverá el siguiente mensaje de error:
+Si no se encuentra el id de la opcion de calificación en la bd de la campaña, o la nueva opción de calificación se encuentra oculta, se devolverá el siguiente mensaje de error:
 
 .. image:: images/api_create_disposition_err_disp_opt_not_found.png
 

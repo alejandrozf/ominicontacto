@@ -128,17 +128,21 @@
     - { src: conversor.sh, dest: conversor.sh }
   tags: postinstall
 
-- name: Increase number of connections accepted by UNIX sockets
-  command: sysctl -w net.core.somaxconn=2048
+- name: Applying sysctl optimizations for OML
+  command: "{{ item }}"
+  with_items:
+    - sysctl -w net.core.somaxconn=2048
+    - sysctl vm.overcommit_memory=1
   tags: postinstall
 
-- name: Write the number of max connections in /etc/sysctl.conf
+- name: Writing the optimizations in /etc/sysctl.conf
   blockinfile:
     path: /etc/sysctl.conf
     insertafter: EOF
     state: present
     block: |
       net.core.somaxconn=2048
+      vm.overcommit_memory=1
   tags: postinstall
 
 # Seteo posesion de ominicontacto al usuario omnileads
@@ -147,9 +151,15 @@
   tags: postinstall
 
 # Se inicia y habilita el servicio
-- name: Start the omnileads-daemon service
+- name: Start the omnileads services
   systemd: name=omnileads state=restarted enabled=yes daemon_reload=yes
   tags: postinstall
+
+# Se inicia y habilita el servicio
+- name: Start the omnileads-websockets services
+  systemd: name=omnileads-websockets state=restarted enabled=yes daemon_reload=yes
+  tags: postinstall
+  when: websocket_host == "websockets"
 
 # Se borra la supervision en php que viene desde 1.2.X para atras
 - name: Erase files related to php supervision

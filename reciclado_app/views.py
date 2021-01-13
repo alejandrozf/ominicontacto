@@ -24,6 +24,7 @@ from __future__ import unicode_literals
 from django.urls import reverse
 from django.contrib import messages
 from django.shortcuts import HttpResponseRedirect
+from django.utils.translation import ugettext_lazy as _
 from ominicontacto_app.errors import OmlRecicladoCampanaError
 from django.views.generic import FormView
 from ominicontacto_app.models import Campana
@@ -64,8 +65,8 @@ class ReciclarCampanaMixin(object):
         reciclado_radio = form.cleaned_data.get('reciclado_radio')
 
         if not (reciclado_calificacion or reciclado_no_contactacion):
-            message = '<strong>Operación Errónea!</strong> \
-                        Debe seleccionar al menos una opcion para reciclar '
+            message = _(u'<strong>Operación Errónea!</strong> \
+                        Debe seleccionar al menos una opcion para reciclar ')
 
             messages.add_message(
                 self.request,
@@ -86,8 +87,8 @@ class ReciclarCampanaMixin(object):
                     campana, bd_contacto_reciclada)
             except OmlRecicladoCampanaError:
 
-                message = '<strong>Operación Errónea!</strong>\
-                No se pudo reciclar la Campana.'
+                message = _(u'<strong>Operación Errónea!</strong>\
+                No se pudo reciclar la Campana.')
 
                 messages.add_message(
                     self.request,
@@ -96,7 +97,7 @@ class ReciclarCampanaMixin(object):
                 )
                 return self.form_invalid(form)
 
-            crea_campana_template = self._reciclar_crear_nueva_campana(campana_reciclada)
+            crea_campana_template = self._reciclar_crear_nueva_campana(campana_reciclada, campana)
             return HttpResponseRedirect(crea_campana_template)
         elif reciclado_radio == 'misma_campana':
             campana.update_basedatoscontactos(bd_contacto_reciclada)
@@ -109,7 +110,23 @@ class ReciclarCampanaDialerFormView(ReciclarCampanaMixin, FormView):
     Esta vista muestra los distintos tipo de reciclados de las campanas
     dialer
     """
-    def _reciclar_crear_nueva_campana(self, campana_reciclada):
+    def dispatch(self, request, *args, **kwargs):
+        form = self.get_form_kwargs()
+        contactados = form.get('reciclado_choise')
+        no_contactados = form.get('no_contactados_choice')
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        if not (contactados or no_contactados) and campana.estado != Campana.ESTADO_FINALIZADA:
+            message = _(u'Esta campaña no se puede reciclar.')
+            messages.add_message(self.request, messages.WARNING, message)
+            return HttpResponseRedirect(reverse('campana_dialer_list'))
+        return super(ReciclarCampanaMixin, self).dispatch(request, *args, **kwargs)
+
+    def _reciclar_crear_nueva_campana(self, campana_reciclada, campana):
+        if campana.estado != Campana.ESTADO_FINALIZADA:
+            campana_service = CampanaService()
+            campana_service.remove_campana_wombat(campana)
+            campana.estado = Campana.ESTADO_FINALIZADA
+            campana.save()
         crea_campana_template = reverse("crea_campana_dialer_template",
                                         kwargs={"pk_campana_template": campana_reciclada.pk,
                                                 "borrar_template": 1})
@@ -129,7 +146,7 @@ class ReciclarCampanaPreviewFormView(ReciclarCampanaMixin, FormView):
     Esta vista muestra los distintos tipo de reciclados de las campanas
     preview
     """
-    def _reciclar_crear_nueva_campana(self, campana_reciclada):
+    def _reciclar_crear_nueva_campana(self, campana_reciclada, campana):
         crea_campana_template = reverse("campana_preview_template_create_campana",
                                         kwargs={"pk_campana_template": campana_reciclada.pk,
                                                 "borrar_template": 1})

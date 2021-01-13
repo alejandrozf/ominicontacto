@@ -152,3 +152,20 @@ Luego cada vez que ingresemos a la sección de registro, se obtendrá una salida
 
 
 .. image:: images/initial_settings_14.png
+
+El registro de la instancia pide como valores obligatorios el nombre del usuario o empresa, la dirección de email y la contraseña, es opcional el campo teléfono.
+
+Una vez que se ha registrado la instancia satisfactoriamente se el enviará un email a la dirección ingresada con el valor de la clave asignada a la instancia.
+En caso de que quiera que se le reenvíe el email con la llave de la instancia un vez registrado puede usar el botón "Reenviar".
+
+Es importante tener en cuenta que si quiere registrar varias instancias con una misma dirección de email debe ingresar también la misma contraseña. En otro caso use una dirección de email diferente.
+
+
+Addons comerciales disponibles
+******************************
+
+El sistema brinda información sobre los addons comerciales disponibles a través de la siguiente página:
+
+.. image:: images/initial_settings_16.png
+
+Desde aquí haciendo click en los nombres de los addons puede accederse a sus sitios y adquirirlos para instalarlo en su instancia actual.

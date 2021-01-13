@@ -346,6 +346,3 @@ msgstr "ماه گذشته"
 #: ominicontacto_app/static/ominicontacto/JS/ranges-datepicker.js:11
 msgid "Desde el inicio"
 msgstr "از تاریخ ایجاد"
-
-#~ msgid "Llamando: %(dialedNumber)s"
-#~ msgstr "Calling: %(dialedNumber)s"

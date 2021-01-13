@@ -5,7 +5,7 @@
 #localhost ansible_connection=local ansible_user=root
 
 [all:vars]
-asterisk_version=16.12.0
+asterisk_version=16.14.0
 kamailio_version=5.3.5
 rtpengine_version=5.5.12.1
 virtualenv_version=
@@ -17,9 +17,11 @@ asterisk_location="{{ install_prefix }}asterisk"
 kamailio_location="{{ install_prefix }}kamailio"
 virtualenv_location="{{ install_prefix}}virtualenv"
 usuario=omnileads
+websocket_host=websockets
+websocket_port=5000
 
 [build-docker:vars]
-version=de1.2.9
+version=de1.3.0
 docker_user='{{ lookup("env","SUDO_USER") }}'
 is_docker=true
 kam_tls_port=5061
@@ -34,6 +36,7 @@ postgres_user=omnileads
 subnet=bla
 ami_user=bla
 ami_password=bla
+extern_ip=auto
 registry_username=freetechsolutions
 #registry_email=
 #registry_password=

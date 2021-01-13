@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'constance.backends.database',
     'django_sass',
+    'django_sendfile'
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -231,7 +232,6 @@ Ejemplos:
 ASTERISK = {
     'AMI_USERNAME': None,  # Usuario para AMI
     'AMI_PASSWORD': None,  # Password para usuario para AMI
-    'HTTP_AMI_URL': None,
     # URL usado por Daemon p/acceder a Asterisk AMI via HTTP
     # Ej:
     #    "http://1.2.3.4:7088"
@@ -245,7 +245,7 @@ DJANGO_DEBUG_TOOLBAR = None
 ######################
 
 DEFENDER_BEHIND_REVERSE_PROXY = None
-#Variable obligatoria, se tiene que saber que el defender está detras de un proxy
+# Variable obligatoria, se tiene que saber que el defender está detras de un proxy
 
 #######################################
 # Ephemeral SIP credentials variables #
@@ -258,7 +258,7 @@ EPHEMERAL_USER_TTL = None
 # Tiempo de duración de credenciales efimeras
 
 OML_KAMAILIO_HOSTNAME = None
-#Hostname para conectarse a Kamailio
+# Hostname para conectarse a Kamailio
 
 """Comando para obtener el secret_key de kamailio y asi poder generar la SIP password
 

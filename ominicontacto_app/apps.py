@@ -42,6 +42,11 @@ class OminicontactoAppConfig(AppConfig):
                 'label': _('Nuevo usuario'),
                 'url': reverse('user_nuevo')
             })
+        if 'user_new_agent' in permissions:
+            usuarios.append({
+                'label': _('Nuevo usuario Agente'),
+                'url': reverse('user_new_agent')
+            })
         if 'agente_list' in permissions:
             usuarios.append({
                 'label': _('Agentes'),
@@ -347,8 +352,12 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'registrar_usuario',
              'roles': ['Administrador', ]},
+            {'nombre': 'addons_disponibles',
+             'roles': ['Administrador', ]},
             {'nombre': 'user_nuevo',
-             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+             'roles': ['Administrador', 'Gerente', ]},
+            {'nombre': 'user_new_agent',
+             'roles': ['Supervisor', ]},
             {'nombre': 'user_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'user_delete',
@@ -533,6 +542,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'agente_cambiar_estado',
              'roles': ['Agente', ]},
+            {'nombre': 'agente_dashboard',
+             'roles': ['Agente', ]},
             {'nombre': 'llamadas_activas',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'supervision_agentes_logueados',
@@ -573,6 +584,14 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'campana_dialer_finaliza_activas',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'disposition_incidence_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'disposition_incidence_delete',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'disposition_incidence_create',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'disposition_incidence_edit',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'campana_manual_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'campana_manual_create',
@@ -609,7 +628,7 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'contactos_preview_asignados',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
-            {'nombre': 'liberar_contacto_asignado',
+            {'nombre': 'liberar_reservar_contacto_asignado',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'ordenar_entrega_contactos_preview',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
@@ -701,6 +720,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'eliminar_archivo_audio',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'finalizar_campana_dialer',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
         ]
 
     informacion_de_permisos = {
@@ -708,8 +729,13 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Consola de Agente'), 'version': '1.7.0'},
         'registrar_usuario':
             {'descripcion': _('Registrar la llave del usuario OML'), 'version': '1.7.0'},
+        'addons_disponibles':
+            {'descripcion': _('Obtener información de los addons disponibles'),
+             'version': '1.11.6'},
         'user_nuevo':
             {'descripcion': _('Crear un Usuario'), 'version': '1.7.0'},
+        'user_new_agent':
+            {'descripcion': _('Crear un Usuario con rol Agente'), 'version': '1.11.0'},
         'user_list':
             {'descripcion': _('Ver lista de Usuarios'), 'version': '1.7.0'},
         'user_delete':
@@ -923,6 +949,8 @@ class OminicontactoAppConfig(AppConfig):
              'version': '1.7.0'},
         'agente_cambiar_estado':
             {'descripcion': _('Modificar el estado de un Agente en Asterisk'), 'version': '1.7.0'},
+        'agente_dashboard':
+        {'descripcion': _('Vista del dashboard de un agente'), 'version': '1.11.7'},
         'llamadas_activas':
             {'descripcion': _('Llamadas activas actuales'), 'version': '1.7.0'},
         'supervision_agentes_logueados':
@@ -966,6 +994,16 @@ class OminicontactoAppConfig(AppConfig):
         'campana_dialer_finaliza_activas':
             {'descripcion': _('Finalizar campañas activas que no tengan contactos pendientes'),
              'version': '1.7.0'},
+        'disposition_incidence_list':
+            {'descripcion': _('Listado de Reglas de incidencia por calificación'),
+             'version': '1.11.8'},
+        'disposition_incidence_delete':
+            {'descripcion': _('Eliminar Reglas de incidencia por calificación'),
+             'version': '1.11.8'},
+        'disposition_incidence_create':
+            {'descripcion': _('Crear Regla de incidencia por calificación'), 'version': '1.11.8'},
+        'disposition_incidence_edit':
+            {'descripcion': _('Editar Regla de incidencia por calificación'), 'version': '1.11.8'},
         'campana_manual_list':
             {'descripcion': _('Ver listado de campañas Manuales'), 'version': '1.7.0'},
         'campana_manual_create':
@@ -1006,8 +1044,9 @@ class OminicontactoAppConfig(AppConfig):
         'contactos_preview_asignados':
             {'descripcion': _('Ver los contactos de una campaña Preview asignados a algun agente'),
              'version': '1.7.0'},
-        'liberar_contacto_asignado':
-            {'descripcion': _('Liberar un contacto de una campaña Preview asignado a un agente'),
+        'liberar_reservar_contacto_asignado':
+            {'descripcion': _('Liberar o reservar un contacto de una campaña Preview asignado'
+                              'a un agente'),
              'version': '1.7.0'},
         'ordenar_entrega_contactos_preview':
             {'descripcion': _('Definir orden de asignacion de contactos de una campaña Preview'),
@@ -1107,4 +1146,6 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Editar un Archivo de Audio'), 'version': '1.7.0'},
         'eliminar_archivo_audio':
             {'descripcion': _('Eliminar un Archivo de Audio'), 'version': '1.7.0'},
+        'finalizar_campana_dialer':
+            {'descripcion': _('Finalizar una campana dialer activa'), 'version': '1.7.0'},
     }

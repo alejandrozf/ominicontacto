@@ -1,0 +1,65 @@
+<!--
+Copyright (C) 2018 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{% block content %}
+    <h1>{% trans 'Reglas de incidencia por calificación para la campaña: ' %}{{ campana.nombre }}</h1>
+    <div class="row">
+        <div class="column-md-6">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>{% trans 'ID en wombat' %}</th>
+                        <th colspan="1">{% trans 'Opción Calificación' %}</th>
+                        <th colspan="1">{% trans 'Reintentar en (segundos)' %}</th>
+                        <th colspan="1">{% trans 'Modo de reintento' %}</th>
+                        <th colspan="1">{% trans 'Cantidad de reintentos' %}</th>
+                        <th colspan="1">{% trans 'Acciones' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for regla in object_list %}
+                        <tr>
+                            <td>{{ regla.wombat_id }}</td>
+                            <td>{{ regla.opcion_calificacion.nombre }}</td>
+                            <td>{{ regla.reintentar_tarde }}</td>
+                            <td>{{ regla.get_en_modo_wombat }}</td>
+                            <td>{{ regla.intento_max }}</td>
+                            <td>
+                                <a href="{% url 'disposition_incidence_edit' pk=regla.pk %}">
+                                    <span class="icon icon-pencil"></span>{% trans 'Editar' %}
+                                </a>
+                                <a href="{% url 'disposition_incidence_delete' pk=regla.pk %}">
+                                    <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6">{% trans 'No hay Reglas de Incidencia por Calificación configuradas' %}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <a class="btn btn-light btn-sm" href="{% url 'disposition_incidence_create' pk_campana=campana.pk %}" >{% trans 'Agregar Regla de Incidencia por Calificación' %}</a>
+{% endblock %}

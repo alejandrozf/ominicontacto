@@ -11,7 +11,8 @@ module.exports = {
         "SharedArrayBuffer": "readonly"
     },
     "parserOptions": {
-        "ecmaVersion": 2018
+        "ecmaVersion": 2018,
+        "sourceType": "module",
     },
     "rules": {
         "no-console": "off",
@@ -24,13 +25,11 @@ module.exports = {
             "error",
             "unix"
         ],
-        "quotes": [
-            "error",
-            "single"
-        ],
+        "quotes": ["error", "single", { "allowTemplateLiterals": true }],
         "semi": [
             "error",
             "always"
-        ]
+        ],
+        "no-prototype-builtins": "warn",
     }
 };

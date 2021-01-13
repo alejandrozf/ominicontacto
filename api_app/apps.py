@@ -49,6 +49,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', ]},
             {'nombre': 'api_update_role_permissions',
              'roles': ['Administrador', ]},
+            {'nombre': 'reenviar_key_registro',
+             'roles': ['Administrador', ]},
             {'nombre': 'api_agentes_activos',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'api_supervision_campanas_entrantes',
@@ -64,6 +66,12 @@ class ApiAppConfig(AppConfig):
             {'nombre': 'api_reasignar_agenda_contacto',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'api_data_agenda_contacto',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'api_exportar_csv_contactados',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'api_exportar_csv_calificados',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'api_exportar_csv_no_atendidos',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'api_contactos_campana',
              'roles': ['Agente', ]},
@@ -85,7 +93,12 @@ class ApiAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'api_upload_base_contactos',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
-
+            {'nombre': 'api_status_calificacion_llamada',
+             'roles': ['Agente', ]},
+            {'nombre': 'api_grabacion_archivo',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
+            {'nombre': 'api_contactos_asignados_campana_preview',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
     informacion_de_permisos = {
@@ -134,6 +147,15 @@ class ApiAppConfig(AppConfig):
             {'descripcion': _('Reasignar una Agenda a otro Agente'), 'version': '1.7.0'},
         'api_data_agenda_contacto':
             {'descripcion': _('Información de contacto de una  Agenda'), 'version': '1.7.0'},
+        'api_exportar_csv_contactados':
+            {'descripcion': _('Exportar reporte de contactados de una campaña a csv'),
+             'version': '1.11.6'},
+        'api_exportar_csv_calificados':
+            {'descripcion': _('Exportar reporte de calificados de una campaña a csv'),
+             'version': '1.11.6'},
+        'api_exportar_csv_no_atendidos':
+            {'descripcion': _('Exportar reporte de no atendidos de una campaña a csv'),
+             'version': '1.11.6'},
         'api_contactos_campana':
             {'descripcion': _('Contactos de una campaña'), 'version': '1.7.0'},
         'api_click2call':
@@ -156,4 +178,15 @@ class ApiAppConfig(AppConfig):
         'api_upload_base_contactos':
             {'descripcion': _('Almacena en la base de datos los contactos subidos en archivo csv'),
              'version': '1.7.0'},
+        'api_status_calificacion_llamada':
+            {'descripcion': _('Detecta si una llamada esta calificada.'),
+             'version': '1.8.0'},
+        'reenviar_key_registro':
+            {'description': _('Reenvía la llave de la instancia registrada por email')},
+        'api_grabacion_archivo':
+            {'descripcion': _('Retorna el archivo de grabación especificado'),
+             'version': '1.11.0'},
+        'api_contactos_asignados_campana_preview':
+            {'descripcion': _('Devuelve los contactos asignados de una campaña preview'),
+             'version': '1.8.0'},
     }

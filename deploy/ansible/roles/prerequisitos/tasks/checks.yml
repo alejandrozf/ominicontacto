@@ -50,27 +50,6 @@
   when: iface != "none"
   tags: always
 
-# Obtengo IP publica del nodo
-- name: Get public IP address of node
-  shell: curl http://ipinfo.io/ip
-  register: public_ip
-  tags: always
-
-# Valido si lo que devolvió la tarea anterior es una IP
-- name: Validate IP public obtained
-  shell: if [[ {{ public_ip.stdout }} =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then echo 0; else echo 1; fi
-  args:
-    executable: /bin/bash
-  register: ip_val
-  tags: always
-  failed_when: false
-
-# Si no es una IP tiro este mensaje de error
-- fail:
-    msg: "The public IP obtained is wrong, check in shell if you obtain a public IP with this command 'curl http://ipinfo.io/ip', after that please run the script again"
-  when: ip_val.stdout != '0'
-  tags: always
-
 # Comparo si la IP ingresada en el inventory es el mismo  de el nodo
 - name: Compare if IP in inventory file is configured in the server
   assert:
@@ -104,6 +83,13 @@
 - name: Check if virtualenv {{ virtualenv_version }} is installed
   shell:  yum list installed |grep virtualenv| awk -F " " '{print $2}' |awk -F "-" '{print $1}'
   register: virtualenv_installed
+  changed_when: false
+  tags: postinstall
+
+# Chequeo si la version de websockets instalada es {{ websockets_version }}
+- name: Check if omnileads-websockets {{ websockets_version }} is installed
+  shell:  yum list installed |grep omnileads-websockets| awk -F " " '{print $2}' |awk -F "-" '{print $1}'
+  register: websockets_installed
   changed_when: false
   tags: postinstall
 
@@ -245,6 +231,32 @@
   when: assert_amipass.rc == 0 and ami_password is not defined
   tags: always
 
+- name: Check if $WEBSOCKET_HOST was defined previously
+  shell: bash -lc 'if [ -z $WEBSOCKET_HOST ]; then exit 1; else echo $WEBSOCKET_HOST; exit 0; fi'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_websockethost
+  tags: always
+
+- set_fact: websocket_host="{{ assert_websockethost.stdout }}"
+  when: assert_websockethost.rc == 0 and websocket_host == "websockets"
+  tags: always
+
+- name: Check if $WEBSOCKET_PORT was defined previously
+  shell: bash -lc 'if [ -z $WEBSOCKET_PORT ]; then exit 1; else echo $WEBSOCKET_PORT; exit 0; fi'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_websocketport
+  tags: always
+
+- set_fact: websocket_port="{{ assert_websocketport.stdout }}"
+  when: assert_websocketport.rc == 0 and websocket_port == 8000
+  tags: always
+
 - name: Check if $WOMBAT_USER was defined previously
   shell: bash -lc 'if [ -z $WOMBAT_USER ]; then exit 1; else echo $WOMBAT_USER; exit 0; fi'
   args:
@@ -281,7 +293,7 @@
   tags: always
 
 - set_fact: SCA="{{ assert_sca.stdout }}"
-  when: assert_sca.rc == 0 and SCA is not defined
+  when: assert_sca.rc == 0 and SCA == 3600
   tags: always
 
 - name: Check if $EPHEMERAL_USER_TTL was defined previously
@@ -294,7 +306,7 @@
   tags: always
 
 - set_fact: ECCTL="{{ assert_ecctl.stdout }}"
-  when: assert_ecctl.rc == 0 and ECCTL is not defined
+  when: assert_ecctl.rc == 0 and ECCTL == 28800
   tags: always
 
 - name: Check if $MONITORFORMAT was defined previously
@@ -310,6 +322,19 @@
   when: assert_monitorformat.rc == 0 and MONITORFORMAT is not defined
   tags: always
 
+- name: Check if $EXTERN_IP was defined previously
+  shell: bash -lc 'if [ -z $EXTERN_IP ]; then exit 1; else echo $EXTERN_IP; exit 0; fi'
+  args:
+    executable: /bin/bash
+  changed_when: false
+  failed_when: false
+  register: assert_externip
+  tags: always
+
+- set_fact: extern_ip="{{ assert_externip.stdout }}"
+  when: assert_externip.rc == 0 and extern_ip is not defined
+  tags: always
+
 - name: Get mysql root password of Issabel
   shell: cat /etc/issabel.conf | grep mysqlrootpwd |awk -F "=" '{print $2}'
   when: docker_distribution.stdout == '"Issabel PBX"'
@@ -322,6 +347,12 @@
   tags: ['never', 'docker_deploy']
 
 # Chequea si timezone esta definido
+- name: Check if extern_ip variable is defined
+  fail:
+    msg: extern_ip undefined, edit extern_ip in inventory file
+  when: extern_ip is not defined and assert_externip.rc == 1
+  tags: always
+
 - name: Check if TimeZone variable is defined
   fail:
     msg: TimeZone variable undefined, edit TZ variable in inventory file
@@ -362,4 +393,27 @@
   fail:
     msg: WD pass undefined, edit dialer_password in inventory file
   when: dialer_password is not defined and assert_dialerpass.rc == 1
+  tags: always
+
+# Obtengo IP publica del nodo
+- name: Get public IP address of node
+  shell: curl http://ipinfo.io/ip
+  register: public_ip
+  when: extern_ip == "none" or extern_ip == "auto"
+  tags: always
+
+# Valido si lo que devolvió la tarea anterior es una IP
+- name: Validate IP public obtained
+  shell: if [[ {{ public_ip.stdout }} =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then echo 0; else echo 1; fi
+  args:
+    executable: /bin/bash
+  register: ip_val
+  failed_when: false
+  when: extern_ip == "none" or extern_ip == "auto"
+  tags: always
+
+# Si no es una IP tiro este mensaje de error
+- fail:
+    msg: "The public IP obtained is wrong, check in shell if you obtain a public IP with this command 'curl http://ipinfo.io/ip', after that please run the script again"
+  when: ip_val is not skipped and ip_val.stdout != '0'
   tags: always

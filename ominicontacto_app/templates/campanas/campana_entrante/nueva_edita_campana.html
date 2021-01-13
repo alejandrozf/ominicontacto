@@ -80,20 +80,24 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.0 }}</div>
                     <div class="myradio" onclick="interaccionUrl()">{{ form.tipo_interaccion.1 }}</div>
                 </div>
-                <div class="col-md-5">
+                <div class="col-md-7">
                     <label><div class="myradio">{% trans "Url Externa" %}</div> </label>
                     {{ form.sitio_externo.errors }}
                     {{ form.sitio_externo }}
                 </div>
             {% endif %}
-            <div class="col-md-3">
-                <label for="{{ form.mostrar_nombre.id_for_label }}">{% trans 'Mostrar nombre al recibir llamado' %}: </label>
-                {{ form.mostrar_nombre }}
-            </div>
             <div class="col-md-2">
                 <label>{% trans 'Objetivo:' %}</label>
                 {{ form.objetivo }}
                 {{ form.objetivo.errors }}
+            </div>
+            <div class="col-md-6">
+                <label for="{{ form.mostrar_nombre.id_for_label }}">{% trans 'Mostrar nombre al recibir llamado' %}: </label>
+                {{ form.mostrar_nombre }}
+            </div>
+            <div class="col-md-4">
+                <label for="{{ form.videocall_habilitada.id_for_label }}">{% trans 'Habilitar video' %}: </label>
+                {{ form.videocall_habilitada }}
             </div>
             <div class="col-md-3">
                 <label for="{{ form.sistema_externo.id_for_label }}">{% trans 'Sistema externo:' %}</label>

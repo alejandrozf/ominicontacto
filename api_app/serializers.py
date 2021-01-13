@@ -88,10 +88,11 @@ class UserSigninSerializer(serializers.ModelSerializer):
 class OpcionCalificacionSerializer(serializers.ModelSerializer):
 
     name = serializers.CharField(source='nombre')
+    hidden = serializers.BooleanField(source='oculta')
 
     class Meta:
         model = OpcionCalificacion
-        fields = ('id', 'name')
+        fields = ('id', 'name', 'hidden')
 
 
 class CalificacionClienteSerializer(
@@ -110,11 +111,23 @@ class CalificacionClienteSerializer(
         request = self.context['request']
         id_sistema_externo = data.get('idExternalSystem')
         id_contacto = data.get('idContact')
-        id_opcion_calificacion = data.get('idDispositionOption')
         observaciones = data.get('comments', '')
-        opcion_calificacion = OpcionCalificacion.objects.filter(pk=id_opcion_calificacion).first()
+        id_opcion_calificacion = data.get('idDispositionOption')
+        try:
+            id_opcion_calificacion = int(id_opcion_calificacion)
+            if self.instance and self.instance.opcion_calificacion.id == id_opcion_calificacion:
+                opcion_calificacion = self.instance.opcion_calificacion
+            else:
+                opcion_calificacion = OpcionCalificacion.objects.filter(
+                    pk=id_opcion_calificacion, oculta=False).first()
+        except ValueError:
+            opcion_calificacion = None
+
         if opcion_calificacion is None:
-            errors = {'idDispositionOption': 'Disposition option id not found'}
+            errors = {
+                'status': 'ERROR',
+                'idDispositionOption': 'Disposition option id not found'
+            }
             raise serializers.ValidationError(errors)
         agente = request.user.agenteprofile
         contacto = None
@@ -127,7 +140,10 @@ class CalificacionClienteSerializer(
             contacto = opcion_calificacion.campana.bd_contacto.contactos.filter(
                 id_externo=id_contacto).first()
         if contacto is None:
-            errors = {'contact': 'Contact id not found'}
+            errors = {
+                'status': 'ERROR',
+                'idContact': 'Contact id not found'
+            }
             raise serializers.ValidationError(errors)
         return {
             'contacto': contacto,
@@ -150,8 +166,10 @@ class ContactoSerializer(serializers.ModelSerializer):
             base_datos = validated_data.get('bd_contacto')
             contacto_con_id_externo = base_datos.contactos.filter(id_externo=id_externo)
             if contacto_con_id_externo.exists():
-                errors = {'idExternalContact':
-                          'There is another contact with this external id on this database'}
+                errors = {
+                    'status': 'ERROR',
+                    'idExternalContact':
+                        'There is another contact with this external id on this database'}
                 raise serializers.ValidationError(errors)
         return super(ContactoSerializer, self).create(validated_data)
 
@@ -176,9 +194,13 @@ class CalificacionClienteNuevoContactoSerializer(
             id_externo = None
         id_opcion_calificacion = data.get('idDispositionOption')
         observaciones = data.get('comments', '')
-        opcion_calificacion = OpcionCalificacion.objects.filter(pk=id_opcion_calificacion).first()
+        opcion_calificacion = OpcionCalificacion.objects.filter(
+            oculta=False, pk=id_opcion_calificacion).first()
         if opcion_calificacion is None:
-            errors = {'idDispositionOption': 'Disposition option id not found'}
+            errors = {
+                'status': 'ERROR',
+                'idDispositionOption': 'Disposition option id not found'
+            }
             raise serializers.ValidationError(errors)
         agente = request.user.agenteprofile
         campana = opcion_calificacion.campana
@@ -208,7 +230,10 @@ class CalificacionClienteNuevoContactoSerializer(
                     estado=AgenteEnContacto.ESTADO_ASIGNADO, orden=1)
                 agente_en_contacto.save()
         else:
-            errors = {'contacto': 'Contact data is invalid'}
+            errors = {
+                'status': 'ERROR',
+                'contacto': 'Contact data is invalid'
+            }
             raise serializers.ValidationError(errors)
         return {
             'contacto': contacto,

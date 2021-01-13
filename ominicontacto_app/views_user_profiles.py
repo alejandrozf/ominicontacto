@@ -51,9 +51,11 @@ from ominicontacto_app.permisos import PermisoOML
 from ominicontacto_app.views_queue_member import activar_cola, remover_agente_cola_asterisk
 
 from .services.asterisk_service import ActivacionAgenteService, RestablecerConfigSipError
-
+from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnectorError, \
+    AmiManagerClient
 
 import logging as logging_
+import os
 
 logger = logging_.getLogger(__name__)
 
@@ -78,6 +80,9 @@ class CustomUserWizard(SessionWizardView):
         return grupos.count() > 0
 
     def dispatch(self, request, *args, **kwargs):
+        self.crear_agentes_unicamente = False
+        if 'create_agent' in kwargs:
+            self.crear_agentes_unicamente = True
         if not self._grupos_disponibles():
             message = _(u"Para poder crear un Usuario Agente asegurese de contar con al menos "
                         "un Grupo cargado.")
@@ -96,14 +101,17 @@ class CustomUserWizard(SessionWizardView):
     def get_form_kwargs(self, step):
         kwargs = super(CustomUserWizard, self).get_form_kwargs(step)
         if step == self.USER:
-            # TODO: Limitar los tipos de Usuarios que puede crear segun el tipo de usuario
-            # Admin y gerentes: Agentes y Supervisores
-            # Supervisores: Agentes y ¿Supervisores?
+            # Gerentes no pueden crear Administradores
+            # Supervisores solo pueden crear agentes.
             roles_queryset = Group.objects.all()
+            if not self.request.user.get_is_administrador():
+                roles_queryset = roles_queryset.exclude(name=User.ADMINISTRADOR)
             if not config.WEBPHONE_CLIENT_ENABLED:
                 roles_queryset = roles_queryset.exclude(name=User.CLIENTE_WEBPHONE)
             if not self._grupos_disponibles():
                 roles_queryset = roles_queryset.exclude(name=User.AGENTE)
+            if self.crear_agentes_unicamente:
+                roles_queryset = Group.objects.filter(name=User.AGENTE)
 
             kwargs['roles_queryset'] = roles_queryset
 
@@ -262,6 +270,21 @@ class CustomerUserUpdateView(UpdateView):
         if self.force_password_change:
             login(self.request, updated_user)
             updated_user.set_session_key(self.request.session.session_key)
+        else:
+            agente_profile = form.instance.get_agente_profile()
+            if agente_profile:
+                # generar archivos sip en asterisk
+                asterisk_sip_service = ActivacionAgenteService()
+                try:
+                    asterisk_sip_service.activar_agente(agente_profile, preservar_status=True)
+                except RestablecerConfigSipError as e:
+                    message = _("<strong>¡Cuidado!</strong> "
+                                "con el siguiente error{0} .".format(e))
+                    messages.add_message(
+                        self.request,
+                        messages.WARNING,
+                        message,
+                    )
 
         messages.success(self.request,
                          _('El usuario fue actualizado correctamente'))
@@ -324,9 +347,15 @@ class UserDeleteView(DeleteView):
             agente_profile.borrar()
             # ahora vamos a remover el agente de la cola de asterisk
             queues_member_agente = agente_profile.campana_member.all()
+            try:
+                client = AmiManagerClient()
+                client.connect()
+            except AMIManagerConnectorError:
+                logger.exception(_("QueueRemove failed "))
             for queue_member in queues_member_agente:
                 campana = queue_member.queue_name.campana
-                remover_agente_cola_asterisk(campana, agente_profile)
+                remover_agente_cola_asterisk(campana, agente_profile, client)
+            client.disconnect()
             activar_cola()
             QueueMember.objects.borrar_member_queue(agente_profile)
 
@@ -379,15 +408,28 @@ class SupervisorProfileUpdateView(FormView):
     template_name = 'base_create_update_form.html'
     form_class = SupervisorProfileForm
 
-    # TODO: Dispatch - Verificar si tiene permisos para editar al usuario segun el rol.
+    def _puede_editar_profile(self):
+        # Solo un administrador puede editar otro administrador
+        if self.profile.is_administrador and not self.request.user.get_is_administrador():
+            return False
+        return True
+
     def dispatch(self, request, *args, **kwargs):
         self.profile = SupervisorProfile.objects.get(id=kwargs['pk'])
+        if not self._puede_editar_profile():
+            message = _('No tiene permiso para editar al usuario {}'.format(
+                self.profile.user.get_full_name()))
+            messages.warning(self.request, message)
+            return HttpResponseRedirect(reverse('user_list', kwargs={"page": 1}))
         return super(SupervisorProfileUpdateView, self).dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self):
         kwargs = super(SupervisorProfileUpdateView, self).get_form_kwargs()
         kwargs['rol'] = self.profile.user.rol
-        roles_de_supervision = Group.objects.exclude(name__in=[User.AGENTE, User.CLIENTE_WEBPHONE])
+        excluidos = [User.AGENTE, User.CLIENTE_WEBPHONE]
+        if not self.request.user.get_is_administrador():
+            excluidos.append(User.ADMINISTRADOR)
+        roles_de_supervision = Group.objects.exclude(name__in=excluidos)
         kwargs['roles_de_supervisores_queryset'] = roles_de_supervision
         return kwargs
 
@@ -498,6 +540,12 @@ class ClienteWebPhoneListView(ListView):
     model = ClienteWebPhoneProfile
     template_name = 'user/cliente_webphone_list.html'
 
+    def _get_addon_version(self):
+        if os.getenv('WEBPHONE_CLIENT_VERSION'):
+            return os.getenv('WEBPHONE_CLIENT_VERSION')
+        else:
+            return "DEVENV"
+
     def get_context_data(self, **kwargs):
         context = super(ClienteWebPhoneListView, self).get_context_data(
             **kwargs)
@@ -506,6 +554,7 @@ class ClienteWebPhoneListView(ListView):
         # TODO: Limitar la lista a los clientes que tiene asignado
 
         context['clientes'] = clientes
+        context['version'] = self._get_addon_version()
         return context
 
 

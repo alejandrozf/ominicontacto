@@ -34,9 +34,9 @@ from django.utils.translation import ugettext as _
 from formtools.wizard.views import SessionWizardView
 
 from configuracion_telefonia_app.models import DestinoEntrante
-from ominicontacto_app.forms import (CampanaForm, QueueEntranteForm, OpcionCalificacionFormSet,
-                                     ParametrosCrmFormSet, CampanaSupervisorUpdateForm,
-                                     QueueMemberFormset, GrupoAgenteForm)
+from ominicontacto_app.forms import (
+    CampanaEntranteForm, QueueEntranteForm, OpcionCalificacionFormSet, ParametrosCrmFormSet,
+    CampanaSupervisorUpdateForm, QueueMemberFormset, GrupoAgenteForm)
 from ominicontacto_app.models import (Campana, ArchivoDeAudio, SupervisorProfile, AgenteProfile,
                                       QueueMember)
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
@@ -49,6 +49,8 @@ from utiles_globales import obtener_sip_agentes_sesiones_activas
 
 
 import logging as logging_
+from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnectorError, \
+    AmiManagerClient
 
 logger = logging_.getLogger(__name__)
 
@@ -212,7 +214,7 @@ class CampanaWizardMixin(object):
     ADICION_SUPERVISORES = '4'
     ADICION_AGENTES = '5'
 
-    FORMS = [(INICIAL, CampanaForm),
+    FORMS = [(INICIAL, CampanaEntranteForm),
              (COLA, QueueEntranteForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (PARAMETROS_CRM, ParametrosCrmFormSet),
@@ -339,6 +341,12 @@ class CampanaWizardMixin(object):
 
             # se asignan valores por defecto en cada una de las instancias
             # de QueueMember a salvar y se adicionan a sus respectivas colas en asterisk
+            try:
+                client = AmiManagerClient()
+                client.connect()
+            except AMIManagerConnectorError:
+                logger.exception(_("QueueAdd failed "))
+
             for queue_form in queue_member_formset.forms:
                 if queue_form.cleaned_data != {}:
                     # no se tienen en cuenta formularios vacíos
@@ -354,8 +362,8 @@ class CampanaWizardMixin(object):
                         queue_form_created = False
                     queue_form.save(commit=False)
                     if (agente.sip_extension in sip_agentes_logueados) and queue_form_created:
-                        adicionar_agente_cola(agente, queue_form.instance, campana)
-
+                        adicionar_agente_cola(agente, queue_form.instance, campana, client)
+            client.disconnect()
             queue_member_formset.save()
 
     def alertas_por_sistema_externo(self, campana):
@@ -493,7 +501,7 @@ class CampanaEntranteUpdateView(CampanaEntranteMixin, SessionWizardView):
     OPCIONES_CALIFICACION = '2'
     PARAMETROS_CRM = '3'
 
-    FORMS = [(INICIAL, CampanaForm),
+    FORMS = [(INICIAL, CampanaEntranteForm),
              (COLA, QueueEntranteForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (PARAMETROS_CRM, ParametrosCrmFormSet)]
@@ -555,7 +563,7 @@ class CampanaEntranteTemplateCreateView(CampanaTemplateCreateMixin, CampanaEntra
     OPCIONES_CALIFICACION = '2'
     PARAMETROS_CRM = '3'
 
-    FORMS = [(INICIAL, CampanaForm),
+    FORMS = [(INICIAL, CampanaEntranteForm),
              (COLA, QueueEntranteForm),
              (OPCIONES_CALIFICACION, OpcionCalificacionFormSet),
              (PARAMETROS_CRM, ParametrosCrmFormSet)]

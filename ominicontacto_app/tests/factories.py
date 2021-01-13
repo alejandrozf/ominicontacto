@@ -30,7 +30,7 @@ from django.utils import timezone
 
 from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana, Grupo, Queue,
                                       NombreCalificacion, Formulario, FieldFormulario,
-                                      Grabacion, GrabacionMarca,
+                                      GrabacionMarca,
                                       SitioExterno, User, Contacto, SupervisorProfile,
                                       AgenteEnContacto, QueueMember, CalificacionCliente,
                                       OpcionCalificacion, ArchivoDeAudio, ParametrosCrm,
@@ -216,20 +216,6 @@ class CampanaFactory(DjangoModelFactory):
                 self.supervisors.add(supervisor)
 
 
-class GrabacionFactory(DjangoModelFactory):
-    class Meta:
-        model = Grabacion
-
-    fecha = lazy_attribute(lambda a: timezone.now())
-    tipo_llamada = lazy_attribute(lambda a: faker.random_int(1, 3))
-    id_cliente = lazy_attribute(lambda a: format(uuid4().int))
-    tel_cliente = lazy_attribute(lambda a: str(faker.random_number(7)))
-    grabacion = lazy_attribute(lambda a: faker.text(max_nb_chars=5))
-    agente = SubFactory(AgenteProfileFactory)
-    campana = SubFactory(CampanaFactory)
-    callid = lazy_attribute(lambda a: format(uuid4().int))
-
-
 class GrabacionMarcaFactory(DjangoModelFactory):
     class Meta:
         model = GrabacionMarca
@@ -288,6 +274,7 @@ class OpcionCalificacionFactory(DjangoModelFactory):
     tipo = lazy_attribute(lambda a: faker.random_int(0, 1))
     nombre = lazy_attribute(lambda a: faker.text(15))
     formulario = SubFactory(FormularioFactory)
+    oculta = False
 
 
 class CalificacionClienteFactory(DjangoModelFactory):

@@ -36,6 +36,8 @@ import uuid
 import unicodedata
 import datetime
 
+import pytz
+
 from django.utils.translation import ugettext as _
 from django.utils import timezone
 
@@ -256,12 +258,24 @@ def convert_fecha_datetime(fecha, final_dia=False):
 
 def datetime_hora_minima_dia(fecha):
     minima = timezone.datetime.combine(fecha, datetime.time.min)
-    return timezone.make_aware(minima, timezone.get_current_timezone())
+    try:
+        return timezone.make_aware(minima, timezone.get_current_timezone())
+    except (pytz.NonExistentTimeError, pytz.AmbiguousTimeError):
+        return timezone.make_aware(
+            datetime.fromtimestamp(minima) + timezone.timedelta(hours=1),
+            timezone=pytz.timezone(settings.TIME_ZONE)
+        )
 
 
 def datetime_hora_maxima_dia(fecha):
     maxima = timezone.datetime.combine(fecha, datetime.time.max)
-    return timezone.make_aware(maxima, timezone.get_current_timezone())
+    try:
+        return timezone.make_aware(maxima, timezone.get_current_timezone())
+    except (pytz.NonExistentTimeError, pytz.AmbiguousTimeError):
+        return timezone.make_aware(
+            datetime.fromtimestamp(maxima) + timezone.timedelta(hours=1),
+            timezone=pytz.timezone(settings.TIME_ZONE)
+        )
 
 
 def fecha_local(fecha_hora):
@@ -414,4 +428,4 @@ def get_oml_last_release():
 
 
 def crear_segmento_grabaciones_url():
-    return "/grabaciones"
+    return "/api/v1/grabacion/archivo/?filename="

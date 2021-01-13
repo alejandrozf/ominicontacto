@@ -239,6 +239,21 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </div>
     </div>
 </div>
+<!-- Modal que se despliega cuando no califique una llamada -->
+<div id="obligarCalificarCall" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" style="max-width:400px">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h2 class="modal-title">{% trans 'No puede hacer una nueva llamada hasta calificar la ultima llamada.' %}</h2>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="obligarCalificarCall_submit" class="btn btn-primary">
+                    {% trans 'Calificar' %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- FIN transferencias -->
 
 <!-- WEBCHAT -->
@@ -499,6 +514,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </div>
             </div>
             <li class="main-menu-li">
+                <span class="icon icon-agenda"></span>
+                <a class="menu-link" href="{% url 'agente_dashboard' %}" target="crm">{% trans 'Dashboard' %}</a>
+            </li>
+            <li class="main-menu-li">
                 <span class="icon icon-notebook"></span>
                 <a class="menu-header" href="#menuContacts" role="button" data-toggle="collapse" aria-expanded="false">{% trans 'Contactos' %}</a>
                 <ul class="collapse list-unstyled submenu" id="menuContacts" data-parent="#navMainMenu">
@@ -587,8 +606,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </div>
 
         <div id="wrapperInner">
-
             <div id="wrapperInnerContent">
+                <button class="btn btn-primary"  id="buttonVideo" style="display:none;">
+                    <i class="fas fa-video"></i>
+                    <br>
+                    {% trans 'video' %}
+                </button>
+                <div class="container" id="video-container">
+                  <button class="btn btn-outline-primary" id="reload_video_id" style="display:none;">
+                    <img src="{% static 'ominicontacto/Img/reload_green.png' %}" height="10" width="10" align="center">
+                  </button>
+                </div>
+                
                 <div id="timeBar">
                     <div id="timers">
                         <div id="operationTime" class="label label-default">
@@ -618,15 +647,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <input type="hidden" value="{{ agente_profile.id }}" id="idagt"/>
                     <input type="hidden" value="{{ sip_usuario }}" id="sipExt"/>
                     <input value="{{ sip_password }}" id="sipSec" type="hidden"/>
+                    <input value="{{ video_domain }}" id="video_domain" type="hidden"/>
                     <input value="{{ max_session_age }}" id="max_session_age" type="hidden"/>
+                    <input value="{{ agente_profile.grupo.obligar_calificacion }}" id="obligar-calificacion" type="hidden"/>
 
                 </div>
                 <div class="wrapper-info">
                     <input type="hidden" value="{{ agente_profile.grupo.auto_attend_inbound }}" id="auto_attend_IN"/>
                     <input type="hidden" value="{{ agente_profile.grupo.auto_attend_dialer }}" id="auto_attend_DIALER"/>
                     <input type="hidden" value="{{ agente_profile.grupo.auto_unpause }}" id="auto_unpause"/>
-                    <iframe src="{% url 'agenda_contacto_listado' %}" id="dataView" class="crm" name="crm">
-                    </iframe>
+                    <iframe src="{% url 'agente_dashboard' %}" id="dataView" class="crm" name="crm"></iframe>
                 </div>
             </div>
 
@@ -844,6 +874,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <script type="text/javascript" src="{% static 'ominicontacto/JS/bootstrap-datetimepicker.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/Calendar.js' %}"></script>
 {% endcompress %}
+<script type="text/javascript" src="{% static 'JS/ext/jitsi_external_api.js' %}"></script>
 <script type="text/javascript">
 
 $(document).ready(function () {

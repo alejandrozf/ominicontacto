@@ -18,23 +18,29 @@
 #
 
 from __future__ import unicode_literals
+from django.utils.timezone import now
+from ominicontacto_app.utiles import crear_segmento_grabaciones_url, datetime_hora_maxima_dia, \
+    datetime_hora_minima_dia, fecha_local
 
 from django.db import models, connection
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Sum
 from django.db.models.functions import TruncDate
 from django.core.exceptions import SuspiciousOperation
 from django.utils.translation import ugettext as _
+from django.conf import settings
 
-from ominicontacto_app.models import Campana
-from ominicontacto_app.utiles import datetime_hora_minima_dia, datetime_hora_maxima_dia
+from ominicontacto_app.models import AgenteProfile, CalificacionCliente, Campana, Contacto, \
+    GrabacionMarca
 
 
 class QueueLog(models.Model):
     """ Tabla queue_log para la insercion de Logs desde Asterisk """
     # time character varying(26) DEFAULT NULL::character varying,
-    time = models.CharField(max_length=100, blank=True, null=True, default=None)
+    time = models.CharField(max_length=100, blank=True,
+                            null=True, default=None)
     # callid character varying(32) DEFAULT ''::character varying NOT NULL,
-    callid = models.CharField(max_length=100, blank=True, null=False, default='')
+    callid = models.CharField(
+        max_length=100, blank=True, null=False, default='')
     # queuename character varying(32) DEFAULT ''::character varying NOT NULL,
     queuename = models.CharField(max_length=100, blank=True, default='')
     # agent character varying(32) DEFAULT ''::character varying NOT NULL,
@@ -63,22 +69,14 @@ class LlamadaLogManager(models.Manager):
             fecha_desde = datetime_hora_minima_dia(fecha_desde)
             fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
 
-        cursor = connection.cursor()
-        sql = """select agente_id, SUM(duracion_llamada::integer)
-                 from reportes_app_llamadalog where time between %(fecha_desde)s and
-                 %(fecha_hasta)s and event = ANY(%(eventos)s) and agente_id = ANY(%(agentes)s)
-                 GROUP BY agente_id order by agente_id
-        """
-        params = {
-            'fecha_desde': fecha_desde,
-            'fecha_hasta': fecha_hasta,
-            'eventos': eventos,
-            'agentes': agentes,
-        }
+        result = LlamadaLog.objects.values_list('agente_id') \
+                                   .annotate(sum=Sum('duracion_llamada')) \
+                                   .filter(time__gte=fecha_desde, time__lte=fecha_hasta) \
+                                   .filter(event__in=eventos) \
+                                   .filter(agente_id__in=agentes) \
+                                   .order_by('agente_id')
 
-        cursor.execute(sql, params)
-        values = cursor.fetchall()
-        return values
+        return result
 
     def obtener_count_evento_agente(self, eventos, fecha_desde, fecha_hasta, agentes):
         if fecha_desde and fecha_hasta:
@@ -182,6 +180,79 @@ class LlamadaLogManager(models.Manager):
             event__in=['ABANDON', 'ABANDONWEL']).exclude(
                 campana_id__in=campanas_eliminadas_ids)
 
+    def obtener_grabaciones_by_fecha_intervalo_campanas(self, fecha_inicio, fecha_fin, campanas):
+        fecha_inicio = datetime_hora_minima_dia(fecha_inicio)
+        fecha_fin = datetime_hora_maxima_dia(fecha_fin)
+        INCLUDED_EVENTS = ['COMPLETEAGENT', 'COMPLETEOUTNUM', 'BT-COMPLETE',
+                           'COMPLETE-BT', 'CT-COMPLETE', 'COMPLETE-CT', 'CAMPT-COMPLETE',
+                           'COMPLETE-CAMPT', 'BTOUT-COMPLETE', 'COMPLETE-BTOUT', 'CTOUT-COMPLETE',
+                           'COMPLETE-CTOUT']
+
+        return self.filter(time__range=(fecha_inicio, fecha_fin),
+                           campana_id__in=campanas, duracion_llamada__gt=0,
+                           event__in=INCLUDED_EVENTS,
+                           archivo_grabacion__isnull=False).order_by('-time').\
+            exclude(archivo_grabacion='-1').exclude(event='ENTERQUEUE-TRANSFER')
+
+    def obtener_grabaciones_by_filtro(self, fecha_desde, fecha_hasta, tipo_llamada, tel_cliente,
+                                      callid, id_contacto_externo, agente, campana, campanas,
+                                      marcadas, duracion, gestion):
+        INCLUDED_EVENTS = ['COMPLETEAGENT', 'COMPLETEOUTNUM', 'BT-COMPLETE',
+                           'COMPLETE-BT', 'CT-COMPLETE', 'COMPLETE-CT', 'CAMPT-COMPLETE',
+                           'COMPLETE-CAMPT', 'BTOUT-COMPLETE', 'COMPLETE-BTOUT', 'CTOUT-COMPLETE',
+                           'COMPLETE-CTOUT']
+        campanas_id = [campana.id for campana in campanas]
+        grabaciones = self.filter(campana_id__in=campanas_id,
+                                  archivo_grabacion__isnull=False,
+                                  duracion_llamada__gt=0,
+                                  event__in=INCLUDED_EVENTS)
+
+        grabaciones = grabaciones.exclude(
+            archivo_grabacion='-1').exclude(event='ENTERQUEUE-TRANSFER')
+
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime_hora_minima_dia(fecha_desde)
+            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
+            grabaciones = grabaciones.filter(time__range=(fecha_desde,
+                                                          fecha_hasta))
+        if tipo_llamada:
+            grabaciones = grabaciones.filter(tipo_llamada=tipo_llamada)
+        if tel_cliente:
+            grabaciones = grabaciones.filter(
+                numero_marcado__contains=tel_cliente)
+        if callid:
+            grabaciones = grabaciones.filter(callid=callid)
+        if agente:
+            grabaciones = grabaciones.filter(agente_id=agente.id)
+        if campana:
+            grabaciones = grabaciones.filter(campana_id=campana)
+        if duracion and duracion > 0:
+            grabaciones = grabaciones.filter(duracion_llamada__gte=duracion)
+        if id_contacto_externo:
+            telefonos_contacto = Contacto.objects.values('telefono')
+            telefono_id_externo = telefonos_contacto.filter(
+                id_externo=id_contacto_externo)
+            grabaciones = grabaciones.filter(
+                numero_marcado__in=[t['telefono'] for t in telefono_id_externo])
+        if marcadas:
+            total_grabaciones_marcadas = self.obtener_grabaciones_marcadas()
+            grabaciones = grabaciones & total_grabaciones_marcadas
+        if gestion:
+            calificaciones_gestion_campanas = CalificacionCliente.obtener_califs_gestion_campanas(
+                campanas)
+            callids_calificaciones_gestion = list(calificaciones_gestion_campanas.values_list(
+                'callid', flat=True))
+            grabaciones = grabaciones.filter(
+                callid__in=callids_calificaciones_gestion)
+
+        return grabaciones.order_by('-time')
+
+    def obtener_grabaciones_marcadas(self):
+        marcaciones = list(GrabacionMarca.objects.values_list('callid', flat=True))
+        return self.filter(callid__in=marcaciones, archivo_grabacion__isnull=False,
+                           duracion_llamada__gt=0).exclude(archivo_grabacion='-1') \
+            .exclude(event='ENTERQUEUE-TRANSFER')
+
 
 class LlamadaLog(models.Model):
     """
@@ -197,7 +268,15 @@ class LlamadaLog(models.Model):
     LLAMADA_TRANSFER_INTERNA = 8
     LLAMADA_TRANSFER_EXTERNA = 9
 
-    TIPOS_LLAMADAS_SALIENTES = (LLAMADA_MANUAL, LLAMADA_PREVIEW, LLAMADA_CLICK2CALL)
+    TIPOS_LLAMADAS_SALIENTES = (
+        LLAMADA_MANUAL, LLAMADA_PREVIEW, LLAMADA_CLICK2CALL)
+
+    TYPE_LLAMADA_CHOICES = (
+        (LLAMADA_DIALER, 'DIALER'),
+        (LLAMADA_ENTRANTE, 'INBOUND'),
+        (LLAMADA_MANUAL, 'MANUAL'),
+        (LLAMADA_PREVIEW, 'PREVIEW'),
+    )
 
     EVENTOS_NO_CONTACTACION = ('NOANSWER', 'CANCEL', 'BUSY', 'CHANUNAVAIL', 'FAIL', 'OTHER',
                                'BLACKLIST', 'CONGESTION', 'NONDIALPLAN')
@@ -227,7 +306,12 @@ class LlamadaLog(models.Model):
                                          'CAMPT-COMPLETE', 'CAMPT-FAIL',
                                          'CT_COMPLETE', 'CTOUT-COMPLETE']
 
-    EVENTOS_INICIO_CONEXION = ['CONNECT', 'ANSWER', 'BT-ANSWER', 'CT-ACCEPT']  # Con id_agente
+    EVENTOS_INICIO_CONEXION = ['CONNECT', 'ANSWER',
+                               'BT-ANSWER', 'CT-ACCEPT']  # Con id_agente
+
+    # eventos inicio conexion de una llamada
+    # (No incluye valores de eventos de transferencias si ocurren luego)
+    EVENTOS_INICIO_CONEXION_AGENTE = ['CONNECT', 'ANSWER']  # Con id_agente
 
     # EVENTOS_TRANSFER_TRY_IN = ['BT-TRY', 'ENTERQUEUE-TRANSFER', 'CT-TRY']
     # EVENTOS_TRANSFER_TRY_OUT = ['BTOUT-TRY', 'CTOUT-TRY']
@@ -261,13 +345,48 @@ class LlamadaLog(models.Model):
 
     # campos sólo para algunos logs transferencias
     agente_extra_id = models.IntegerField(db_index=True, blank=True, null=True)
-    campana_extra_id = models.IntegerField(db_index=True, blank=True, null=True)
+    campana_extra_id = models.IntegerField(
+        db_index=True, blank=True, null=True)
     numero_extra = models.CharField(max_length=128, blank=True, null=True)
 
     def __str__(self):
         return "Log de llamada con fecha {0} con id de campaña {1} con id de agente {2} " \
-               "con el evento {3} ".format(self.time, self.campana_id,
-                                           self.agente_id, self.event)
+               "con el evento {3} duración {4}".format(self.time, self.campana_id,
+                                                       self.agente_id, self.event,
+                                                       self.duracion_llamada)
+
+    @property
+    def url_archivo_grabacion(self):
+        hoy = fecha_local(now())
+        dia_grabacion = fecha_local(self.time)
+        filename = "/".join([crear_segmento_grabaciones_url(),
+                             dia_grabacion.strftime("%Y-%m-%d"),
+                             self.archivo_grabacion])
+        if dia_grabacion < hoy:
+            return filename + '.' + settings.MONITORFORMAT
+        else:
+            return filename + '.wav'
+
+    @property
+    def campana(self):
+        return Campana.objects.get(id=self.campana_id)
+
+    @property
+    def tipo_llamada_show(self):
+        switcher = {
+            1: _('Llamada manual'),
+            2: _('Llamada dialer'),
+            3: _('Llamada entrante'),
+            4: _('Llamada preview'),
+            6: _('Llamada click2call'),
+            8: _('Llamada transferencia interna'),
+            9: _('Llamada transferencia externa')
+        }
+        return switcher.get(self.tipo_llamada, None)
+
+    @property
+    def agente(self):
+        return AgenteProfile.objects.get(id=self.agente_id)
 
 
 class ActividadAgenteLogManager(models.Manager):
@@ -282,24 +401,13 @@ class ActividadAgenteLogManager(models.Manager):
             fecha_desde = datetime_hora_minima_dia(fecha_desde)
             fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
 
-        cursor = connection.cursor()
-        sql = """select agente_id, time, event, pausa_id
-                 from reportes_app_actividadagentelog where
-                 time between %(fecha_desde)s and %(fecha_hasta)s and
-                 event = ANY(%(eventos)s) and agente_id = ANY(%(agentes)s)
-                 order by agente_id, time desc
-        """
-        params = {
-            'fecha_desde': fecha_desde,
-            'fecha_hasta': fecha_hasta,
-            'eventos': eventos,
-            'agentes': agentes,
+        result = ActividadAgenteLog.objects.values_list('agente_id', 'time', 'event', 'pausa_id') \
+                                           .filter(time__gte=fecha_desde, time__lte=fecha_hasta) \
+                                           .filter(event__in=eventos) \
+                                           .filter(agente_id__in=agentes) \
+                                           .order_by('agente_id', '-time')
 
-        }
-
-        cursor.execute(sql, params)
-        values = cursor.fetchall()
-        return values
+        return result
 
     def obtener_pausas_por_agente_fechas_pausa(self, fecha_desde,
                                                fecha_hasta, agente_id):

@@ -32,6 +32,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <th>{% trans 'Auto attend inbound' %}</th>
             <th>{% trans 'Auto attend dialer' %}</th>
             <th>{% trans 'Auto unpause' %}</th>
+            <th>{% trans 'Forzar Calificación' %}</th>
             {% if user.get_es_administrador_o_supervisor_normal %}
                 <th>{% trans 'acciones' %}</th>
             {% endif %}
@@ -57,6 +58,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {% endif %}
             </td>
             <td>{{grupo.auto_unpause}}</td>
+            <td>
+                {% if grupo.obligar_calificacion %}
+                    <span class="icon icon-check" aria-hidden="true"></span>
+                {% else %}
+                    <span class="icon icon-cancel" aria-hidden="true"><span>
+                {% endif %}
+            </td>
             {% if user.get_es_administrador_o_supervisor_normal %}
             <td>
                 <div class="dropdown">

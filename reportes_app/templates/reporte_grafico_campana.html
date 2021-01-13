@@ -20,8 +20,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
+
 {% block head_js %}
-<script type="text/javascript" src="{% static 'reportes_app/JS/reporte_grafico_campana.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
+    <script type="text/javascript" src="{% static 'reportes_app/JS/reporte_grafico_campana.js' %}"></script>
 {% endblock %}
 {% block content %}
  <script type="text/javascript" src="{% static 'ominicontacto/JS/pygal-tooltips.min.js' %}"></script>
@@ -30,7 +32,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 {% with graficos_estadisticas=graficos_estadisticas %}
-<input id="campana_fecha_inicio" type="hidden" value="{{campana.fecha_inicio|date:"d/m/Y"}}">
+    <input id="task_id" type="hidden" value="{{task_id}}">
+    <input id="campana_id" type="hidden" value="{{campana.pk}}">
+    <input id="campana_fecha_inicio" type="hidden" value="{{campana.fecha_inicio|date:"d/m/Y"}}">
+    <input id="reporte_fecha_desde_elegida" type="hidden" value="{{reporte_fecha_desde_elegida}}">
+    <input id="reporte_fecha_hasta_elegida" type="hidden" value="{{reporte_fecha_hasta_elegida}}">
 <h1>{% trans 'Campaña:' %} {{campana.nombre}}</h1>
 <div class="jumbotron">
     <div class="form-row">
@@ -89,7 +95,25 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <div>
     <h2>{% trans "Reportes de contactados" %}</h2>
-    <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_llamados_contactados' campana.pk %}">{% trans "Exportar Reporte de contactados (CSV)" %}</a>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="row">
+                <input type="button" class="btn btn-outline-primary btn-sm" value="{% trans 'Generar Reporte de contactados (CSV)' %}" id="csvContactadosDescarga"></input>
+                <a class="hidden" id="csvContactadosDescargaLink" href="{% url 'exporta_reporte_llamados_contactados' campana.pk %}">{% trans "Descargar Reporte de contactados (CSV)" %}</a>
+                <div data-toggle="tooltip" data-placement="top"
+                     title="{% trans 'ADVERTENCIA: generar un CSV de mas de un mes mientras estan operando los agentes puede generar lentitud en el sistema' %}">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-question" fill="currentColor" title="sfsdfsd"  xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                    </svg>
+                </div>
+            </div>
+            <div id="barraProgresoCSVContactados" class="hidden">
+                <div class="progress">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+    </div>
     <hr>
     <h3>{% trans "Llamadas conectadas al agente" %}</h3>
     <br>
@@ -124,7 +148,23 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </div>
         </div>
     </div>
-    <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_calificados' campana.pk %}">{% trans "Exportar Reporte de contactos calificadas (CSV)" %}</a>
+    <div class="col-md-3">
+        <div class="row">
+            <input type="button" class="btn btn-outline-primary btn-sm" value="{% trans 'Generar Reporte de calificados (CSV)' %}" id="csvCalificadosDescarga"></input>
+            <a class="hidden" id="csvCalificadosDescargaLink" href="{% url 'exporta_reporte_calificados' campana.pk %}">{% trans "Descargar Reporte de calificados (CSV)" %}</a>
+            <div data-toggle="tooltip" data-placement="top"
+                 title="{% trans 'ADVERTENCIA: generar un CSV de mas de un mes mientras estan operando los agentes puede generar lentitud en el sistema' %}">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-question" fill="currentColor" title="sfsdfsd"  xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                </svg>
+            </div>
+        </div>
+        <div id="barraProgresoCSVCalificados" class="hidden">
+            <div class="progress">
+                <div class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+    </div>
 </div>
 <br>
 <hr>
@@ -163,8 +203,24 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </div>
         </div>
     </div>
-    <div>
-        <a class="btn btn-outline-primary btn-sm" href="{% url 'exporta_reporte_no_atendidos' campana.pk %}">{% trans "Exportar Reporte llamadas no atendidas (CSV)" %}</a>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="row">
+                <input type="button" class="btn btn-outline-primary btn-sm" value="{% trans 'Generar Reporte de no atendidos (CSV)' %}" id="csvNoAtendidosDescarga"></input>
+                <a class="hidden" id="csvNoAtendidosDescargaLink" href="{% url 'exporta_reporte_no_atendidos' campana.pk %}">{% trans "Descargar Reporte de no atendidos (CSV)" %}</a>
+                <div data-toggle="tooltip" data-placement="top"
+                     title="{% trans 'ADVERTENCIA: generar un CSV de mas de un mes mientras estan operando los agentes puede generar lentitud en el sistema' %}">
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-question" fill="currentColor" title="sfsdfsd"  xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                    </svg>
+                </div>
+            </div>
+            <div id="barraProgresoCSVNoAtendidos" class="hidden">
+                <div class="progress">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
     </div>
     <br>
 </div>

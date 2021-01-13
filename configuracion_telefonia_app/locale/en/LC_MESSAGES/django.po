@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-21 15:07-0300\n"
+"POT-Creation-Date: 2020-12-15 11:18-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -648,95 +648,58 @@ msgstr "From node {0} to node {1}"
 msgid "Localización destino"
 msgstr "Custom destination"
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:83
-#, python-brace-format
-msgid "SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk: error {0} al"
-msgstr "SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk: error {0}"
-
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:84
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:169
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:180
-msgid "intentar create_config_asterisk()"
-msgstr "trying to call create_config_asterisk()"
-
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:88
-msgid ""
-"Hubo un inconveniente al crear el archivo de configuracion de rutas de "
-"Asterisk. "
-msgstr "An error ocurred when trying to create routing configuration file"
-
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:104
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:117
-#, python-brace-format
-msgid "SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk: error {0} al "
-msgstr "SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk: error {0}"
-
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:105
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:201
-msgid "intentar regenerar_familys_rutas()"
-msgstr "trying to call regenerar_familys_rutas()"
-
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:107
-msgid ""
-"Hubo un inconveniente al insertar los registros de las rutas en la base de "
-"datos de Asterisk. "
-msgstr ""
-"An error ocurred when trying to insert registers in the routing database"
-
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:86
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:97
 #: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:118
 #: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:131
-msgid "intentar delete_family_ruta()"
-msgstr "trying to call delete_family_ruta()"
-
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:120
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:133
-msgid ""
-"Hubo un inconveniente al eliminar los registros de las rutas en la base de "
-"datos de Asterisk. "
-msgstr "An error ocurred when trying to remove registers from routing database"
-
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:168
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:179
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:200
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:213
 #, python-brace-format
 msgid "SincronizadorDeConfiguracionTroncalSipEnAsterisk: error {0} al "
 msgstr "SincronizadorDeConfiguracionTroncalSipEnAsterisk: error {0}"
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:172
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:87
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:98
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:261
+msgid "intentar create_config_asterisk()"
+msgstr "trying to call create_config_asterisk()"
+
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:90
 msgid ""
 "Hubo un inconveniente al crear el archivo de configuracion de trunks de "
 "Asterisk. "
 msgstr "An error ocurred when trying to create trunk configuration file"
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:183
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:101
 msgid ""
 "Hubo un inconveniente al crear el archivo de configuracion de trunks "
 "registration de Asterisk. "
 msgstr "An error ocurred when trying to create trunk configuration file"
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:203
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:119
+msgid "intentar regenerar_familys_rutas()"
+msgstr "trying to call regenerar_familys_rutas()"
+
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:121
 msgid ""
 "Hubo un inconveniente al insertar los registros del troncal en la base de "
 "datos de Asterisk. "
 msgstr "An error ocurred when trying to insert trunk registers on database"
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:214
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:132
 msgid "intentar delete_family_trunk()"
 msgstr "trying to call delete_family_trunk()"
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:216
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:134
 msgid ""
 "Hubo un inconveniente al eliminar los registros de los troncales en la base "
 "de datos de Asterisk. "
 msgstr "An error ocurred when trying to remove trunk registers on database"
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:244
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:162
 #, python-brace-format
 msgid "Error {0} en la family {1} al intentar regenerar_family()"
 msgstr "Error {0} on families {1} trying to call regenerar_family()"
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:246
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:164
 #, python-brace-format
 msgid ""
 "Hubo un inconveniente al insertar los registros de la family {0} en la base "
@@ -744,18 +707,29 @@ msgid ""
 msgstr ""
 "An error ocurred when trying to insert family {0} registers on database"
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:257
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:175
 #, python-brace-format
 msgid "Error {0} en la family {1} al intentar delete_family()"
 msgstr "Error {0} in families {1} when trying to call delete_family()"
 
-#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:259
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:177
 #, python-brace-format
 msgid ""
 "Hubo un inconveniente al eliminar los registros de la family {0} en la base "
 "de datos de Asterisk. "
 msgstr ""
 "An error ocurred when trying to delete the family {0} registers from database"
+
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:260
+#, python-brace-format
+msgid "SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk: error {0} al"
+msgstr "SincronizadorDeConfiguracionDeRutaSalienteEnAsterisk: error {0}"
+
+#: configuracion_telefonia_app/regeneracion_configuracion_telefonia.py:265
+msgid ""
+"Hubo un inconveniente al crear el archivo de configuracion de rutas de "
+"Asterisk. "
+msgstr "An error ocurred when trying to create routing configuration file"
 
 #: configuracion_telefonia_app/templates/adicionar_audios_asterisk.html:31
 msgid "Adicionar audios de Asterisk"
@@ -1197,12 +1171,12 @@ msgid "Destino si NO cumple la condición de tiempo"
 msgstr "Destination if time condition does not match"
 
 #: configuracion_telefonia_app/tests/tests_restriccion_eliminacion.py:65
-#: configuracion_telefonia_app/views/base.py:708
+#: configuracion_telefonia_app/views/base.py:690
 msgid "Se ha eliminado el Grupo Horario."
 msgstr "Group of Hours removed."
 
 #: configuracion_telefonia_app/tests/tests_restriccion_eliminacion.py:80
-#: configuracion_telefonia_app/views/base.py:700
+#: configuracion_telefonia_app/views/base.py:682
 msgid ""
 "No se puede eliminar un Grupo Horario utilizado en una Validacion Fecha Hora"
 msgstr "Cannot remove a Group of Hours being in use by a Time Condition"
@@ -1223,12 +1197,12 @@ msgid "Este campo es requerido."
 msgstr "This field is required"
 
 #: configuracion_telefonia_app/tests/tests_rutas_salientes.py:96
-#: configuracion_telefonia_app/views/base.py:402
+#: configuracion_telefonia_app/views/base.py:384
 msgid "Se ha eliminado la Ruta Saliente."
 msgstr "Outbound route removed"
 
 #: configuracion_telefonia_app/tests/tests_rutas_salientes.py:111
-#: configuracion_telefonia_app/views/base.py:399
+#: configuracion_telefonia_app/views/base.py:381
 msgid "No se ha podido eliminar la Ruta Saliente."
 msgstr "Unable to remove Outbound route"
 
@@ -1279,45 +1253,44 @@ msgstr "Music on Hold deleted successfully"
 #: configuracion_telefonia_app/views/base.py:137
 #: configuracion_telefonia_app/views/base.py:152
 #: configuracion_telefonia_app/views/base.py:170
-#: configuracion_telefonia_app/views/base.py:189
-#: configuracion_telefonia_app/views/base.py:470
-#: configuracion_telefonia_app/views/base.py:642
-#: configuracion_telefonia_app/views/base.py:696
-#: configuracion_telefonia_app/views/base.py:876
+#: configuracion_telefonia_app/views/base.py:452
+#: configuracion_telefonia_app/views/base.py:624
+#: configuracion_telefonia_app/views/base.py:678
+#: configuracion_telefonia_app/views/base.py:858
 #, python-brace-format
 msgid "<strong>¡Cuidado!</strong> con el siguiente error: {0} ."
 msgstr "<strong>Warning!</strong> with the following error: {0} ."
 
-#: configuracion_telefonia_app/views/base.py:240
+#: configuracion_telefonia_app/views/base.py:222
 msgid ""
 "No se puede eliminar un troncal que está siendo usado en una rutasaliente"
 msgstr "You cannot delete a trunk being in use by an Outbound route"
 
-#: configuracion_telefonia_app/views/base.py:253
+#: configuracion_telefonia_app/views/base.py:235
 msgid "Troncal Sip eliminado con éxito"
 msgstr "SIP trunk deleted successfully"
 
-#: configuracion_telefonia_app/views/base.py:279
+#: configuracion_telefonia_app/views/base.py:261
 msgid "No se pudo guardar el orden"
 msgstr "Could not save order"
 
-#: configuracion_telefonia_app/views/base.py:302
+#: configuracion_telefonia_app/views/base.py:284
 msgid "Orden guardado satisfactoriamente"
 msgstr "Order saved"
 
-#: configuracion_telefonia_app/views/base.py:332
+#: configuracion_telefonia_app/views/base.py:314
 msgid "Ruta saliente creada con éxito"
 msgstr "Outbound route created successfully"
 
-#: configuracion_telefonia_app/views/base.py:345
+#: configuracion_telefonia_app/views/base.py:327
 msgid "Ruta saliente modificada con éxito"
 msgstr "Outbound route updated successfully"
 
-#: configuracion_telefonia_app/views/base.py:379
+#: configuracion_telefonia_app/views/base.py:361
 msgid "No está permitido eliminar una Ruta Saliente asociado a una campaña"
 msgstr "Deleting an Outbound Route associated with a campaign is not allowed."
 
-#: configuracion_telefonia_app/views/base.py:456
+#: configuracion_telefonia_app/views/base.py:438
 msgid ""
 "No está permitido eliminar una Ruta Entrante asociadacon una campaña que "
 "tiene una Ruta Saliente."
@@ -1325,44 +1298,44 @@ msgstr ""
 "Deleting an Inbound Route associated with a campaign that has an Outbound "
 "Route is not allowed"
 
-#: configuracion_telefonia_app/views/base.py:478
+#: configuracion_telefonia_app/views/base.py:460
 msgid "Se ha eliminado la Ruta Entrante."
 msgstr "Inbound route was removed"
 
-#: configuracion_telefonia_app/views/base.py:517
+#: configuracion_telefonia_app/views/base.py:499
 msgid "Se ha creado el IVR con éxito"
 msgstr "IVR created successfully"
 
-#: configuracion_telefonia_app/views/base.py:564
+#: configuracion_telefonia_app/views/base.py:546
 msgid "Se ha modificado el IVR con éxito"
 msgstr "IVR updated successfully"
 
-#: configuracion_telefonia_app/views/base.py:658
+#: configuracion_telefonia_app/views/base.py:640
 msgid "Se ha creado el grupo horario con éxito"
 msgstr "Group of Hours created successfully"
 
-#: configuracion_telefonia_app/views/base.py:672
+#: configuracion_telefonia_app/views/base.py:654
 msgid "Se ha modificado el grupo horario con éxito"
 msgstr "Group of Hours updated successfully"
 
-#: configuracion_telefonia_app/views/base.py:737
+#: configuracion_telefonia_app/views/base.py:719
 msgid "Se ha creado la validacion horaria con éxito"
 msgstr "Time Condition created successfully"
 
-#: configuracion_telefonia_app/views/base.py:773
+#: configuracion_telefonia_app/views/base.py:755
 msgid "Se ha modificado la validacion horaria con éxito"
 msgstr "Time Condition updated successfully"
 
-#: configuracion_telefonia_app/views/base.py:812
+#: configuracion_telefonia_app/views/base.py:794
 msgid "No se puede eliminar un objeto que es destino en un flujo de llamada."
 msgstr "You cannot delete an object that is current destination in a call flow"
 
-#: configuracion_telefonia_app/views/base.py:813
+#: configuracion_telefonia_app/views/base.py:795
 msgid "Se ha eliminado el Nodo."
 msgstr "Node deleted"
 
-#: configuracion_telefonia_app/views/base.py:841
-#: configuracion_telefonia_app/views/base.py:865
+#: configuracion_telefonia_app/views/base.py:823
+#: configuracion_telefonia_app/views/base.py:847
 #, python-brace-format
 msgid ""
 "No se puede eliminar la campaña. Es usada como destino failover de las "
@@ -1371,34 +1344,34 @@ msgstr ""
 "You cannot delete a campaign that is set as a failover destination in "
 "campaigns: {0}"
 
-#: configuracion_telefonia_app/views/base.py:896
+#: configuracion_telefonia_app/views/base.py:878
 msgid "No se puede eliminar un IVR que es destino en un flujo de llamada."
 msgstr "You cannot delete an IVR that is current destination in a call flow"
 
-#: configuracion_telefonia_app/views/base.py:897
+#: configuracion_telefonia_app/views/base.py:879
 msgid "Se ha eliminado el IVR."
 msgstr "IVR deleted"
 
-#: configuracion_telefonia_app/views/base.py:905
+#: configuracion_telefonia_app/views/base.py:887
 msgid ""
 "No se puede eliminar una Validación Fecha Hora mientras sea destino en un "
 "flujo de llamada."
 msgstr ""
 "You cannot delete a Time Condition that is current destination in a call flow"
 
-#: configuracion_telefonia_app/views/base.py:907
+#: configuracion_telefonia_app/views/base.py:889
 msgid "Se ha eliminado la Validación Fecha Hora."
 msgstr "Time Condition deleted"
 
-#: configuracion_telefonia_app/views/base.py:934
+#: configuracion_telefonia_app/views/base.py:916
 msgid "Se ha creado el Identificador de clientes con éxito"
 msgstr "Client Identification service created successfully"
 
-#: configuracion_telefonia_app/views/base.py:994
+#: configuracion_telefonia_app/views/base.py:976
 msgid "Se ha modificado el Identificador de clientes con éxito"
 msgstr "Client Identification service updated successfully"
 
-#: configuracion_telefonia_app/views/base.py:1073
+#: configuracion_telefonia_app/views/base.py:1055
 msgid ""
 "No se puede eliminar un Identificador de clientes que es destino en un flujo "
 "de llamada."
@@ -1406,14 +1379,14 @@ msgstr ""
 "You cannot delete an Client Identification service that is a current "
 "destination in a call flow"
 
-#: configuracion_telefonia_app/views/base.py:1075
+#: configuracion_telefonia_app/views/base.py:1057
 msgid "Se ha eliminado el Identificador de Clientes."
 msgstr "Client Identification service route removed"
 
-#: configuracion_telefonia_app/views/base.py:1102
+#: configuracion_telefonia_app/views/base.py:1084
 msgid "Se ha creado el nodo de Destino Personalizado con éxito"
 msgstr "Custom Destination created successfully"
 
-#: configuracion_telefonia_app/views/base.py:1135
+#: configuracion_telefonia_app/views/base.py:1117
 msgid "Se ha modificado el nodo de Destino Personalizado con éxito"
 msgstr "Custom Destination updated successfully"

@@ -19,6 +19,8 @@
 
 from __future__ import unicode_literals
 
+import json
+
 from django.conf import settings
 from django.utils.translation import ugettext as _
 
@@ -120,6 +122,23 @@ class AbstractRedisFamily(object):
         self._create_family(family_member)
 
 
+class AbstractRedisChanelPublisher(AbstractRedisFamily):
+    def _create_family(self, family_member):
+        redis_connection = self.get_redis_connection()
+        family = self._get_nombre_family(family_member)
+        variables = self._create_dict(family_member)
+        variables_json = json.dumps(variables)
+        try:
+            redis_crea_family = redis_connection.publish(family, variables_json)
+            return redis_crea_family
+        except (RedisError) as e:
+            raise e
+
+    def regenerar_family(self, family_member):
+        """regenera una family"""
+        self._create_family(family_member)
+
+
 class CampanaFamily(AbstractRedisFamily):
 
     def _create_dict(self, campana):
@@ -140,6 +159,7 @@ class CampanaFamily(AbstractRedisFamily):
             'IDJSON': "",
             'PERMITOCCULT': "",
             'MAXCALLS': "",
+            'VIDEOCALL': str(campana.videocall_habilitada),
         }
 
         if campana.queue_campana.timeout:
@@ -199,11 +219,12 @@ class CampanaFamily(AbstractRedisFamily):
 
 class AgenteFamily(AbstractRedisFamily):
 
-    def _create_dict(self, agente):
+    def _create_dict(self, agente, status='', timestamp=''):
         dict_agente = {
             'NAME': agente.user.get_full_name(),
             'SIP': agente.sip_extension,
-            'STATUS': ""
+            'STATUS': status,
+            'TIMESTAMP': timestamp
         }
         return dict_agente
 
@@ -216,6 +237,29 @@ class AgenteFamily(AbstractRedisFamily):
 
     def get_nombre_families(self):
         return "OML:AGENT"
+
+    def _create_family(self, family_member, status='', timestamp=''):
+        redis_connection = self.get_redis_connection()
+        family = self._get_nombre_family(family_member)
+        variables = self._create_dict(family_member, status=status, timestamp=timestamp)
+        try:
+            redis_crea_family = redis_connection.hset(family, mapping=variables)
+            return redis_crea_family
+        except (RedisError) as e:
+            raise e
+
+    def regenerar_family(self, agente, preservar_status=False):
+        """Regenera una family de Agente y preserva su status actual en Asterisk"""
+        agente_status = ''
+        agente_timestamp = ''
+        if preservar_status:
+            redis_connection = self.get_redis_connection()
+            agente_info = redis_connection.hgetall(
+                'OML:AGENT:{0}'.format(agente.pk))
+            agente_status = agente_info.get('STATUS', '')
+            agente_timestamp = agente_info.get('TIMESTAMP', '')
+        self.delete_family(agente)
+        self._create_family(agente, status=agente_status, timestamp=agente_timestamp)
 
 
 class RutaSalienteFamily(AbstractRedisFamily):

@@ -22,12 +22,13 @@ from __future__ import unicode_literals
 import json
 from django import forms
 from django.conf import settings
+
 from django.forms.models import inlineformset_factory, BaseInlineFormSet, ModelChoiceField
 from django.contrib.auth.forms import (
     UserChangeForm,
     UserCreationForm
 )
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import ugettext_lazy as _
 
@@ -38,11 +39,11 @@ from django.contrib.auth.models import Group
 from constance import config
 
 from ominicontacto_app.models import (
-    User, AgenteProfile, Queue, QueueMember, BaseDatosContacto, Grabacion,
+    User, AgenteProfile, Queue, QueueMember, BaseDatosContacto,
     Campana, Contacto, CalificacionCliente, Grupo, Formulario, FieldFormulario, Pausa,
     RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Blacklist, SitioExterno,
-    SistemaExterno, ReglasIncidencia, SupervisorProfile, ArchivoDeAudio,
-    NombreCalificacion, OpcionCalificacion, ParametrosCrm, AgenteEnSistemaExterno,
+    SistemaExterno, ReglasIncidencia, ReglaIncidenciaPorCalificacion, SupervisorProfile,
+    ArchivoDeAudio, NombreCalificacion, OpcionCalificacion, ParametrosCrm, AgenteEnSistemaExterno,
     AuditoriaCalificacion
 )
 from ominicontacto_app.services.campana_service import CampanaService
@@ -53,6 +54,7 @@ from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSa
 
 from utiles_globales import validar_extension_archivo_audio
 from .utiles import convert_fecha_datetime
+from reportes_app.models import LlamadaLog
 
 TIEMPO_MINIMO_DESCONEXION = 2
 EMPTY_CHOICE = ('', '---------')
@@ -104,7 +106,7 @@ class UserChangeForm(forms.ModelForm):
     password hash display field.
     """
 
-    password1 = forms.CharField(max_length=20,
+    password1 = forms.CharField(max_length=128,
                                 required=False,
                                 # will be overwritten by __init__()
                                 help_text=_('Ingrese la nueva contraseña '
@@ -114,7 +116,7 @@ class UserChangeForm(forms.ModelForm):
                                 label=_('Contraseña'))
 
     password2 = forms.CharField(
-        max_length=20,
+        max_length=128,
         required=False,  # will be overwritten by __init__()
         # will be overwritten by __init__()
         help_text=_('Ingrese la nueva contraseña (sólo si desea cambiarla)'),
@@ -377,7 +379,7 @@ class DefineNombreColumnaForm(forms.Form):
                 forms.CharField(label="", initial='Columna{0}'.format(columna),
                                 error_messages={'required': ''},
                                 widget=forms.TextInput(attrs={'class':
-                                                       'nombre-columna'}))
+                                                              'nombre-columna'}))
             crispy_fields.append(Field('nombre-columna-{0}'.format(columna)))
         self.helper.layout = Layout(crispy_fields)
 
@@ -450,7 +452,7 @@ class GrabacionBusquedaForm(forms.Form):
     fecha = forms.CharField(required=False,
                             widget=forms.TextInput(attrs={'class': 'form-control'}),
                             label=_('Fecha'))
-    tipo_llamada_choice = list(Grabacion.TYPE_LLAMADA_CHOICES)
+    tipo_llamada_choice = list(LlamadaLog.TYPE_LLAMADA_CHOICES)
     tipo_llamada_choice.insert(0, EMPTY_CHOICE)
     tipo_llamada = forms.ChoiceField(
         required=False, choices=tipo_llamada_choice, label=_('Tipo de llamada'),
@@ -623,10 +625,10 @@ class CampanaMixinForm(object):
         return id_ruta_saliente
 
 
-class CampanaForm(CampanaMixinForm, forms.ModelForm):
+class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
-        super(CampanaForm, self).__init__(*args, **kwargs)
+        super(CampanaEntranteForm, self).__init__(*args, **kwargs)
         self.fields['outr'].queryset = RutaSaliente.objects.all()
         instance = getattr(self, 'instance', None)
         if instance.pk is None:
@@ -658,7 +660,7 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
         model = Campana
         fields = ('nombre', 'bd_contacto', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
-                  'outcid', 'outr')
+                  'outcid', 'outr', 'videocall_habilitada')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -679,7 +681,7 @@ class CampanaForm(CampanaMixinForm, forms.ModelForm):
 class OpcionCalificacionForm(forms.ModelForm):
     class Meta:
         model = OpcionCalificacion
-        fields = ('tipo', 'nombre', 'formulario', 'campana')
+        fields = ('tipo', 'nombre', 'formulario', 'campana', 'oculta')
 
         widgets = {
             'nombre': forms.Select(),
@@ -784,13 +786,14 @@ class OpcionCalificacionBaseFormset(BaseInlineFormSet):
         for form in save_candidates_forms:
             nombre = form.cleaned_data.get('nombre', None)
             tipo = form.cleaned_data.get('tipo', None)
+            oculta = form.cleaned_data.get('oculta')
             if nombre is None or tipo is None:
                 raise forms.ValidationError(_("Rellene los campos en blanco"), code='invalid')
             if nombre in nombres:
                 raise forms.ValidationError(
                     _("Los nombres de las opciones de calificación deben ser distintos"),
                     code="invalid")
-            if tipo == OpcionCalificacion.GESTION:
+            if tipo == OpcionCalificacion.GESTION and not oculta:
                 tipos_gestion_cont += 1
             nombres.append(nombre)
         if tipos_gestion_cont == 0:
@@ -833,7 +836,12 @@ class CalificacionClienteForm(forms.ModelForm):
         self.campana = campana
         self.es_auditoria = es_auditoria
         self.historico_calificaciones = historico_calificaciones
-        self.fields['opcion_calificacion'].queryset = campana.opciones_calificacion.all()
+
+        filtro = Q(oculta=False)
+        if self.instance.pk:
+            if self.instance.opcion_calificacion.oculta:
+                filtro = filtro | Q(id=self.instance.opcion_calificacion.id)
+        self.fields['opcion_calificacion'].queryset = campana.opciones_calificacion.filter(filtro)
 
     def clean_opcion_calificacion(self):
         opcion = self.cleaned_data.get('opcion_calificacion')
@@ -841,6 +849,10 @@ class CalificacionClienteForm(forms.ModelForm):
             if 'opcion_calificacion' in self.changed_data and opcion.es_agenda():
                 raise forms.ValidationError(
                     _('Sólo el Agente puede cambiar la calificacion a Agenda.'))
+        else:
+            if 'opcion_calificacion' in self.changed_data and opcion.oculta:
+                raise forms.ValidationError(
+                    _('No puede elegir una opción de calificacion oculta.'))
         return opcion
 
     class Meta:
@@ -1481,6 +1493,32 @@ ReglasIncidenciaFormSet = inlineformset_factory(
     extra=1, min_num=0)
 
 
+class OpcionCalificacionChoiceField(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.nombre
+
+
+class ReglaIncidenciaPorCalificacionForm(forms.ModelForm):
+    opcion_calificacion = OpcionCalificacionChoiceField(
+        queryset=OpcionCalificacion.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = ReglaIncidenciaPorCalificacion
+        fields = ('opcion_calificacion', 'intento_max', 'reintentar_tarde', 'en_modo')
+        widgets = {
+            "intento_max": forms.NumberInput(attrs={'class': 'form-control'}),
+            "reintentar_tarde": forms.NumberInput(attrs={'class': 'form-control'}),
+            'en_modo': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, campana, *args, **kwargs):
+        super(ReglaIncidenciaPorCalificacionForm, self).__init__(*args, **kwargs)
+        if self.instance.pk:
+            campana = self.instance.opcion_calificacion.campana
+        self.fields['opcion_calificacion'].queryset = campana.opciones_calificacion.all()
+
+
 class QueueDialerForm(forms.ModelForm):
     """
     El form de cola para las llamadas
@@ -1533,7 +1571,7 @@ class QueueDialerForm(forms.ModelForm):
         dial_timeout = self.cleaned_data.get('dial_timeout')
         if dial_timeout < 10 or dial_timeout > 90:
             raise forms.ValidationError(_('El valor de dial timeout deberá estar comprendido entre'
-                                        ' 10 y 90 segundos'))
+                                          ' 10 y 90 segundos'))
 
         return self.cleaned_data
 
@@ -1742,7 +1780,7 @@ class GrupoForm(forms.ModelForm):
     class Meta:
         model = Grupo
         fields = ('nombre', 'auto_unpause', 'auto_attend_inbound',
-                  'auto_attend_dialer')
+                  'auto_attend_dialer', 'obligar_calificacion')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
         }
@@ -1832,9 +1870,9 @@ class RegistroForm(forms.Form):
     password = forms.CharField(label=_("Inserte su contraseña de acceso"),
                                widget=forms.PasswordInput(attrs={'class': 'form-control'}),
                                required=True)
-    email = forms.CharField(label=_("Inserte su correo electrónico"),
-                            widget=forms.TextInput(attrs={'class': 'form-control'}),
-                            required=True)
+    email = forms.EmailField(label=_("Inserte su correo electrónico"),
+                             widget=forms.TextInput(attrs={'class': 'form-control'}),
+                             required=True)
     telefono = forms.CharField(label=_("Inserte su teléfono"),
                                widget=forms.TextInput(attrs={'class': 'form-control'}),
                                required=False)

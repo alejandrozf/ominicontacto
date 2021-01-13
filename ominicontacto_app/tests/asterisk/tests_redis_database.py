@@ -220,6 +220,7 @@ class CampanaFamilyTest(RedisDatabaseTest):
             'IDJSON': "",
             'PERMITOCCULT': "",
             'MAXCALLS': "",
+            'VIDEOCALL': 'False',
         }
         family = CampanaFamily()
 
@@ -244,6 +245,7 @@ class CampanaFamilyTest(RedisDatabaseTest):
             'IDJSON': "",
             'PERMITOCCULT': "",
             'MAXCALLS': "",
+            'VIDEOCALL': 'False',
         }
         family = CampanaFamily()
 
@@ -268,6 +270,7 @@ class CampanaFamilyTest(RedisDatabaseTest):
             'IDJSON': "",
             'PERMITOCCULT': "",
             'MAXCALLS': "",
+            'VIDEOCALL': 'False',
         }
         family = CampanaFamily()
 
@@ -292,6 +295,7 @@ class CampanaFamilyTest(RedisDatabaseTest):
             'IDJSON': "",
             'PERMITOCCULT': "",
             'MAXCALLS': "",
+            'VIDEOCALL': 'False',
         }
         family = CampanaFamily()
 

@@ -1,6 +1,26 @@
+<!--
+     Copyright (C) 2018 Freetech Solutions
+
+     This file is part of OMniLeads
+
+     This program is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program.  If not, see http://www.gnu.org/licenses/.
+
+   -->
 {% extends 'base_create_update_form.html'  %}
 
 {% load i18n %}
+{% load static %}
 
 {% block submit_button %}
     {% if not registered %}
@@ -10,4 +30,15 @@
     {% else  %}
     	<h3 id="registro">{% trans 'Ya se encuentra registrado.' %}</h3>
     {% endif %}
+{% endblock %}
+
+{% block extra_form %}
+    {% if registered %}
+        <button id="sendKey" class="btn btn-primary">{% trans 'Reenviar llave' %}</button>
+    {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/resend-key.js' %}"></script>
 {% endblock %}

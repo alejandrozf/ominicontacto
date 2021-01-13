@@ -30,6 +30,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <h1>{% trans 'Campañas dialer' %}</h1>
 
 <div>
+    <form role="form" id="finalizar_campana" action="{% url 'finalizar_campana_dialer' %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" id="campana_pk" name="campana_pk">
+    </form>
     <form id="form_estados_campanas" role="form" method="post">
         {% csrf_token %}
         <input type="hidden" id="campana_id" name="campana_id">
@@ -80,6 +84,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
                                 <span class="icon icon-plus"></span>{% trans 'Agregar agentes' %}
                             </a>
+                            <a class="dropdown-item btn-submit" id="{{ campana.id }}" name="{% url 'pausar_campana_dialer' %}">
+                                <span class="icon icon-control-pause"></span>{% trans 'Pausar' %}
+                            </a>
+                            <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">
+                                <span class="icon icon-refresh"></span>{% trans 'Reciclar' %}
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="finalizar_campana({{ campana.pk }})">
+                                <span class="icon icon-cancel"></span>{% trans 'Finalizar' %}
+                            </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_supervisors' campana.pk %}">
                                 <span class="icon icon-eye"></span>{% trans 'Dar permiso para ver' %}
                             </a>
@@ -93,9 +106,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                                 <span class="icon icon-graph"></span>{% trans 'Reportes' %}
                             </a>
-                            <a class="dropdown-item btn-submit" id="{{ campana.id }}" name="{% url 'pausar_campana_dialer' %}">
-                                <span class="icon icon-control-pause"></span>{% trans 'Pausar' %}
-                            </a>
                             <a class="dropdown-item" href="{% url 'agregar_contacto_a_campana' campana.pk %}">
                                 <span class="icon icon-plus"></span>{% trans 'Agregar Contacto' %}
                             </a>
@@ -107,6 +117,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             </a>
                             <a class="dropdown-item" href="{% url 'agenda_contactos_por_campana' campana.pk %}">
                                 <span class="icon icon-agenda"></span>{% trans 'Ver Agendas' %}
+                            </a>
+                            <a class="dropdown-item" href="{% url 'disposition_incidence_list' campana.pk %}">
+                                <span class="icon icon-refresh"></span>{% trans 'Reglas de incidencia' %}
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_delete' campana.pk %}">
                                 <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
@@ -158,11 +171,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         {% trans 'Opciones' %}
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignPaused">
+                            <a class="dropdown-item btn-submit" id="{{ campana.id }}" name="{% url 'activar_campana_dialer' %}">
+                                <span class="icon icon-control-play"></span>{% trans 'Activar' %}
+                            </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_update' campana.pk %}">
                                 <span class="icon icon-pencil"></span>{% trans 'Editar' %}
                             </a>
                             <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
                                 <span class="icon icon-plus"></span>{% trans 'Agregar agentes' %}
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="finalizar_campana({{ campana.pk }})">
+                                <span class="icon icon-cancel"></span>{% trans 'Finalizar' %}
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_supervisors' campana.pk %}">
                                 <span class="icon icon-eye"></span>{% trans 'Dar permisos para ver' %}
@@ -176,8 +195,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                                 <span class="icon icon-graph"></span>{% trans 'Reportes' %}
                             </a>
-                            <a class="dropdown-item btn-submit" id="{{ campana.id }}" name="{% url 'activar_campana_dialer' %}">
-                                <span class="icon icon-control-play"></span>{% trans 'Activar' %}
+                            <a class="dropdown-item" href="{% url 'disposition_incidence_list' campana.pk %}">
+                                <span class="icon icon-refresh"></span>{% trans 'Reglas de incidencia' %}
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_delete' campana.pk %}">
                                 <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
@@ -232,11 +251,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         {% trans 'Opciones' %}
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignInactive">
+                            <a class="dropdown-item btn-submit" id="{{ campana.id }}" name="{% url 'start_campana_dialer' %}">
+                                <span class="icon icon-control-play"></span>{% trans 'Iniciar' %}
+                            </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_update' campana.pk %}">
                                 <span class="icon icon-pencil"></span>{% trans 'Editar' %}
                             </a>
                             <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
                                 <span class="icon icon-plus"></span>{% trans 'Agregar agentes' %}
+                            </a>
+                            <a class="dropdown-item" href="#" onclick="finalizar_campana({{ campana.pk }})">
+                                <span class="icon icon-cancel"></span>{% trans 'Finalizar' %}
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_supervisors' campana.pk %}">
                                 <span class="icon icon-eye"></span>{% trans 'Dar permisos para ver' %}
@@ -250,8 +275,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                                 <span class="icon icon-graph"></span>{% trans 'Reportes' %}
                             </a>
-                            <a class="dropdown-item btn-submit" id="{{ campana.id }}" name="{% url 'start_campana_dialer' %}">
-                                <span class="icon icon-control-play"></span>{% trans 'Iniciar' %}
+                            <a class="dropdown-item" href="{% url 'disposition_incidence_list' campana.pk %}">
+                                <span class="icon icon-refresh"></span>{% trans 'Reglas de incidencia' %}
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_delete' campana.pk %}">
                                 <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
@@ -306,6 +331,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         {% trans 'Opciones' %}
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignFinished">
+                            <a class="dropdown-item btn-submit" id="{{ campana.id }}" name="{% url 'start_campana_dialer' %}">
+                                <span class="icon icon-control-play"></span>{% trans 'Iniciar' %}
+                            </a>
+                            <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">
+                                <span class="icon icon-refresh"></span>{% trans 'Reciclar' %}
+                            </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_supervisors' campana.pk %}">
                                 <span class="icon icon-eye"></span>{% trans 'Dar permisos para ver' %}
                             </a>
@@ -317,12 +348,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_reporte_grafico' campana.pk %}">
                                 <span class="icon icon-graph"></span>{% trans 'Reportes' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">
-                                <span class="icon icon-refresh"></span>{% trans 'Reciclar' %}
-                            </a>
-                            <a class="dropdown-item btn-submit" id="{{ campana.id }}" name="{% url 'start_campana_dialer' %}">
-                                <span class="icon icon-control-play"></span>{% trans 'Iniciar' %}
                             </a>
                             <a class="dropdown-item" href="{% url 'campana_dialer_delete' campana.pk %}">
                                 <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
@@ -391,9 +416,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 <span class="icon icon-eye-slash"></span>{% trans 'Ocultar' %}
                             </a>
                             {% endif %}
-                            <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">
-                                <span class="icon icon-refresh"></span>{% trans 'Reciclar' %}
-                            </a>
                         </div>
                     </div>
                 </td>

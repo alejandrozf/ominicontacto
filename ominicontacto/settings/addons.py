@@ -23,7 +23,7 @@ import os
 from ominicontacto.settings.defaults import BASE_DIR
 
 CONSTANCE_CONFIG = {
-    'KEYS_SERVER_HOST': ('https://keys-server.freetech.com.ar:20852', 'KEYS_SERVER_HOST', str),
+    'KEYS_SERVER_HOST': ('https://keys-server.freetech.com.ar', 'KEYS_SERVER_HOST', str),
     'SSL_CERT_FILE': ('/opt/omnileads/cert', 'SSL_CERT_FILE', str),
     'CLIENT_NAME': ('', 'CLIENT_NAME', str),
     'CLIENT_KEY': ('', 'CLIENT_KEY', str),
@@ -33,6 +33,8 @@ CONSTANCE_CONFIG = {
     'CLIENT_PHONE': ('', 'CLIENT_PHONE', str),
     'WEBPHONE_CLIENT_ENABLED': (False, 'WEBPHONE_CLIENT_ENABLED', bool),
     'WEBPHONE_CLIENT_TTL': (1200, 'WEBPHONE_CLIENT_TTL', int),
+    'WEBPHONE_VIDEO_DOMAIN': ('meet.jit.si', 'WEBPHONE_VIDEO_DOMAIN', str),
+    'LIMIT_USERS_TO': (1, 'LIMIT_USERS_TO', int),
 }
 
 ADDONS_APPS = []

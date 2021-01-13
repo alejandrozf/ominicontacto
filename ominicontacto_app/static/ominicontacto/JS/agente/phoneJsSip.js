@@ -453,6 +453,8 @@ class SessionData {
             call_data.call_wait_duration = invite_request.headers.Omlcallwaitduration[0].raw;
         else
             call_data.call_wait_duration = '';
+        if (invite_request.headers.Omldialerid)
+            call_data.dialer_id = invite_request.headers.Omldialerid[0].raw;
 
         // For outside campaign calls
         if (invite_request.headers.withoutCamp)
@@ -465,6 +467,10 @@ class SessionData {
             call_data.id_contacto_ics = invite_request.headers.Idcontactics[0].raw;
         if (invite_request.headers.Namecontactics)
             call_data.nombre_contacto_ics = invite_request.headers.Namecontactics[0].raw;
+
+        if (invite_request.headers.Omlvideo){
+            call_data.video_channel = invite_request.headers.Omlvideo[0].raw;
+        }
 
         return call_data;
     }
@@ -521,7 +527,11 @@ class SessionData {
     }
 
     get is_off_campaign() {
-        return this.origin == ORIGIN_OFF_CAMPAIGN;
+        if (this.origin == ORIGIN_OFF_CAMPAIGN)
+            return true;
+        if (this.campaign_id == '0' || this.remote_call.campana_type == '0')
+            return true;
+        return false;
     }
 
     get is_from_agent(){

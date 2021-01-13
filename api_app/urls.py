@@ -26,18 +26,21 @@ from django.contrib.auth.decorators import login_required
 from api_app.views.base import login, ContactoCreateView, CampaignDatabaseMetadataView
 from api_app.views.administrador import (
     AgentesActivosGrupoViewSet, CrearRolView, EliminarRolView, ActualizarPermisosDeRolView,
-    SubirBaseContactosView)
+    SubirBaseContactosView, EnviarKeyRegistro)
 from api_app.views.supervisor import (
     SupervisorCampanasActivasViewSet, AgentesStatusAPIView, StatusCampanasEntrantesView,
     StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView, LlamadasDeCampanaView,
-    CalificacionesDeCampanaView, ReasignarAgendaContactoView, DataAgendaContactoView)
+    CalificacionesDeCampanaView, ReasignarAgendaContactoView, DataAgendaContactoView,
+    ExportarCSVContactados, ExportarCSVCalificados, ExportarCSVNoAtendidos,
+    ContactosAsignadosCampanaPreviewView)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
     API_ObtenerContactosCampanaView, Click2CallView, AgentLogoutView,
     AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk,
-    SetEstadoRevisionAuditoria
+    SetEstadoRevisionAuditoria, ApiStatusCalificacionLlamada
 )
+from api_app.views.grabaciones import ObtenerArchivoGrabacionView
 
 router = routers.DefaultRouter()
 
@@ -92,8 +95,9 @@ urlpatterns = [
     url(r'api/v1/crear_base_contactos/$',
         SubirBaseContactosView.as_view(),
         name='api_upload_base_contactos'),
-
-
+    url(r'api/v1/reenviar_key_registro/$',
+        EnviarKeyRegistro.as_view(),
+        name='reenviar_key_registro'),
     # ###########   SUPERVISOR    ############ #
     url(r'api/v1/supervision/agentes',
         login_required(AgentesStatusAPIView.as_view()),
@@ -121,6 +125,18 @@ urlpatterns = [
     url(r'api/v1/supervision/data_agenda_contacto/(?P<agenda_id>\d+)/$',
         DataAgendaContactoView.as_view(),
         name='api_data_agenda_contacto'),
+    url(r'api/v1/exportar_csv_contactados/$',
+        ExportarCSVContactados.as_view(),
+        name='api_exportar_csv_contactados'),
+    url(r'api/v1/exportar_csv_calificados/$',
+        ExportarCSVCalificados.as_view(),
+        name='api_exportar_csv_calificados'),
+    url(r'api/v1/exportar_csv_no_atendidos/$',
+        ExportarCSVNoAtendidos.as_view(),
+        name='api_exportar_csv_no_atendidos'),
+    url(r'api/vi/supervision/contactos_asignados_preview/(?P<pk_campana>\d+)/$',
+        ContactosAsignadosCampanaPreviewView.as_view(),
+        name='api_contactos_asignados_campana_preview'),
 
 
     # ###########     AGENTE      ############ #
@@ -143,5 +159,11 @@ urlpatterns = [
         name='api_credenciales_sip_agente'),
     url(r'api/v1/audit/set_revision_status/', SetEstadoRevisionAuditoria.as_view(),
         name='api_set_estado_revision'),
+    url(r'api/v1/calificar_llamada/', ApiStatusCalificacionLlamada.as_view(),
+        name='api_status_calificacion_llamada'),
+
+    # ###########     GRABACIONES      ############ #
+    url(r'^api/v1/grabacion/archivo/$',
+        ObtenerArchivoGrabacionView.as_view(), name='api_grabacion_archivo'),
 
 ]

@@ -1,0 +1,66 @@
+<!--
+     Copyright (C) 2018 Freetech Solutions
+
+     This file is part of OMniLeads
+
+     This program is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program.  If not, see http://www.gnu.org/licenses/.
+
+   -->
+{% load staticfiles %}
+{% load compress %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <!-- Stylesheets -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}" >
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/daterangepicker.css' %}">
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}" ></link>
+        <!-- Fonts -->
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/google-font.css' %}">
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
+        <!-- Scripts -->
+        <!-- Scripts -->
+        <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+        {% compress js %}
+        <script type="text/javascript" src="{% static 'JS/ext/vue.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'JS/ext/vuetify.js' %}"></script>
+        <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
+        <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'JS/ext/echarts.js' %}"></script>
+        <script type="text/javascript" src="{% static 'JS/ext/vue-echarts@4.0.2.js' %}"></script>
+        <script type="text/javascript" src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
+    {% endcompress %}
+    </head>
+    <body>
+        <input id="agente_id" type="hidden" value="{{agente_id}}">
+        <div id="dashboard">
+            <v-app>
+                <v-main>
+                    <dashboard-agente v-bind="core"></dashboard-agente>
+                </v-main>
+            </v-app>
+        </div>
+        <!-- Dashboard -->
+        <script type="module" src="{% static 'ominicontacto/JS/dashboardAgentes.js' %}"></script>
+    </body>
+</html>
