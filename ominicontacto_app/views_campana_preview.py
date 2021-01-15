@@ -534,7 +534,7 @@ class OrdenarAsignacionContactosView(FormView):
         nombres_columnas_datos = bd_contacto.get_metadata().nombres_de_columnas_de_datos
         # import file
         agents_in_contacts_dat = csv_file.read()
-        imported_data = tablib.Dataset().load(agents_in_contacts_dat.decode('utf8'))
+        imported_data = tablib.Dataset().load(agents_in_contacts_dat.decode('utf8'), format='csv')
         result = AgenteEnContactoResourceImport().import_data(
             imported_data, nombres_columnas_datos=nombres_columnas_datos, dry_run=False)
         if not result.has_errors():
