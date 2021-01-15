@@ -173,7 +173,8 @@ class CampanaSupervisorUpdateView(UpdateView):
     def get_form(self):
         self.form_class = self.get_form_class()
         supervisores = SupervisorProfile.objects.exclude(borrado=True)
-        supervisors_choices = [(supervisor.user.pk, supervisor.user) for supervisor in
+        supervisors_choices = [(supervisor.user.pk, ": ".join([supervisor.user.get_username(),
+                                supervisor.user.get_full_name()])) for supervisor in
                                supervisores]
         kwargs = self.get_form_kwargs()
         kwargs['supervisors_choices'] = supervisors_choices
