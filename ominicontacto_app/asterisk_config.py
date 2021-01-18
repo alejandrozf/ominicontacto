@@ -276,6 +276,14 @@ class QueuesCreator(object):
                 settings.OML_AUDIO_FOLDER, audio_name[0])
         else:
             periodic_announce = ""
+
+        audio_entrada = campana.queue_campana.audio_previo_conexion_llamada
+        if audio_entrada:
+            announce = os.path.join(
+                settings.OML_AUDIO_FOLDER, audio_entrada.get_filename_audio_asterisk())
+        else:
+            announce = ""
+
         partes = []
         param_generales = {
             'oml_queue_name': "{0}_{1}".format(campana.id, campana.nombre),
@@ -293,6 +301,7 @@ class QueuesCreator(object):
             'oml_ivr-breakdown': campana.queue_campana.ivr_breakdown,
             'oml_announce_position': 'yes' if campana.queue_campana.announce_position else 'no',
             'oml_announce_frequency': campana.queue_campana.wait_announce_frequency,
+            'oml_announce': announce,
         }
 
         ivr_breakdown = campana.queue_campana.ivr_breakdown
