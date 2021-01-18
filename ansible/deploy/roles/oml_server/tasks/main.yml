@@ -1,0 +1,213 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
+---
+
+# Se instala el paquete de redis
+- name: Install redis-{{ redis_version }} package
+  command: yum install -y {{ redis_package }}
+  tags: postinstall
+  retries: 3
+  delay: 3
+  register: s3_download
+  until: s3_download is success
+  failed_when:
+    - s3_download.rc != 0
+    - s3_download.rc != 1
+
+- debug: msg="The download of redis-{{ redis_version }} package from s3 source failed, contact your administrator"
+  when: s3_download is failed
+
+- name: Modifying redis for listening in all addresses
+  lineinfile: path=/etc/redis.conf regexp="^bind" line="#bind" state=present
+  tags: postinstall
+  when: asterisk_host is defined or websockets_host is defined
+
+- name: Modifying redis for not starting in protectd mode
+  lineinfile: path=/etc/redis.conf regexp="^protected-mode" line="protected-mode no" state=present
+  tags: postinstall
+  when: asterisk_host is defined or websockets_host is defined
+
+# Se imprime que el virtualenv no esta instalado si la version actual es inferior a la requerida
+- debug: msg="Virtualenv {{ virtualenv_version }} is not installed, proceeding to install"
+  when: virtualenv_installed.stdout != virtualenv_version
+  tags: ['virtualenv','postinstall']
+
+# Por lo contrario se imprime que ya está instalada la version mas actual
+- debug: msg="virtualenv is already installed in version {{ virtualenv_version }}, skipping installation steps"
+  when: virtualenv_installed.stdout == virtualenv_version
+  tags: ['virtualenv','postinstall']
+
+# Esta tarea es para eliminar paquete viejo de virtualenv generar inconsistencia de binarios
+- name: Delete old virtualenv package
+  command: yum remove -y virtualenv
+  tags: postinstall
+  when: "virtualenv_installed.stdout != virtualenv_version"
+
+# Se instala el paquete de virtualenv
+- name: Install virtualenv-{{ virtualenv_version }} package (from s3 source)
+  command: yum install -y {{ virtualenv_package }}
+  when: virtualenv_installed.stdout != virtualenv_version
+  tags: postinstall
+  retries: 3
+  delay: 3
+  register: s3_download
+  until: s3_download is success
+
+# Se imprime que el omnileads-websockets no esta instalado si la version actual es inferior a la requerida
+- debug: msg="Omnileads-websockets {{ websockets_version }} is not installed, proceeding to install"
+  when: websockets_installed.stdout != websockets_version and websocket_host == "websockets"
+  tags: ['virtualenv','postinstall']
+
+# Por lo contrario se imprime que ya está instalada la version mas actual
+- debug: msg="Omnileads-websockets is already installed in version {{ websockets_version }}, skipping installation steps"
+  when: websockets_installed.stdout == websockets_version and websocket_host == "websockets"
+  tags: ['virtualenv','postinstall']
+
+# Esta tarea es para eliminar paquete viejo de virtualenv generar inconsistencia de binarios
+- name: Delete old omnileads-websockets package
+  yum: name=omnileads-websockets state=absent
+  tags: postinstall
+  when: websockets_installed.stdout != websockets_version and websocket_host == "websockets"
+
+# Se instala el paquete de websockets
+- name: Install omnileads-websockets {{ websockets_version }} package (from s3 source)
+  yum: name={{ websockets_package }} state=latest update_cache=yes
+  tags: postinstall
+  retries: 3
+  delay: 3
+  register: s3_download
+  until: s3_download is success
+  when: websockets_installed.stdout != websockets_version and websocket_host == "websockets"
+
+- name: Linking python3 binarie to omnileads-websockets files
+  file: state=link src=/usr/bin/python3 dest={{ websockets_location }}/bin/python3 mode=755 force=true
+  tags: postinstall
+  when: websockets_installed.stdout != websockets_version and websocket_host == "websockets"
+
+
+#----------------------------------------------------------------------
+# Directorios básicos
+#----------------------------------------------------------------------
+
+# Se elimina este paquete para no generar inconsistencia con python3
+- name: Remove python2-devel package
+  command: yum install -y python2-devel
+  tags: ['never', 'postinstall']
+
+# Para amazon linux toca instalar python3 de esta manera
+- name: Install python3.6 necessary for pytho3-devel package
+  shell: amazon-linux-extras install python3
+  when: ansible_distribution == "Amazon"
+
+# Y luego instalar python3-devel de esta manera
+#- name: Install python3-devel package
+#  command: yum install -y name=python3-devel state=present disablerepo=amzn2-core
+#  when: ansible_distribution == "Amazon"
+
+# Para postgres afuera de oml, toca instalar python3-devel
+- name: Install python3-devel package
+  command: yum install -y name=python3-devel state=present
+  when: ansible_distribution != "Amazon" and postgres_host is defined
+
+- name: Start and enable redis service
+  service: name=redis state=restarted enabled=yes daemon_reload=yes
+  when: redis_host is not defined
+
+# Se crea la llave publica y privada del usuario omnileads #https://docs.ansible.com/ansible/2.5/modules/user_module.html
+- name: Create {{ usuario }} user and public key
+  user: name={{ usuario }} generate_ssh_key=yes group={{ usuario }} ssh_key_bits=2048 state=present shell=/bin/bash
+  tags: omniapp
+
+# Creo directorio padre, home del usuario omnileads
+- name: Create the ominicontacto directorie
+  file: "dest={{ install_prefix }}/ state=directory owner={{ usuario }} group={{ usuario }} recurse=yes"
+  tags: omniapp
+
+# Se crean los directorios basicos
+- name: Create other directories
+  file: "dest={{ item }} state=directory owner={{ usuario }} group={{ usuario }} mode=0755 recurse=yes"
+  with_items:
+    - "{{ install_prefix }}/.pip"
+    - "{{ install_prefix }}/wombat-json"
+    - "{{ install_prefix }}/backup"
+    - "{{ install_prefix }}/bin"
+    - "{{ install_prefix }}/nginx_certs"
+    - "{{ install_prefix }}/media_root/reporte_campana"
+    - "{{ install_prefix }}/static"
+    - "{{ install_prefix }}/log"
+    - "{{ install_prefix }}/run"
+    - "{{ install_prefix }}/addons"
+  tags: postinstall
+
+# El codigo que está en /var/tmp/ominicontacto_build/ se pasa a /opt/omnileeads/ominicontacto
+- name: Upload code (rsync to /ominicontacto)
+  synchronize: "src={{ repo_location }}/{{ item }} dest={{ install_prefix }}/ominicontacto/ delete=yes checksum=yes times=no"
+  with_items:
+    - api_app
+    - configuracion_telefonia_app
+    - manage.py
+    - ominicontacto
+    - ominicontacto_app
+    - ominicontacto_voip
+    - reciclado_app
+    - reportes_app
+    - requirements
+    - supervision_app
+    - test
+    - tests
+    - utiles_globales.py
+  tags: postinstall
+
+# Seteo posesion de ominicontacto al usuario omnileads
+- name: Change owner and group of ominicontacto
+  file: "path={{ install_prefix }}/ominicontacto owner={{ usuario }} group={{ usuario }} recurse=yes"
+  tags: postinstall
+
+# Esta tarea es para pasar los datos de constance de redis a postgres
+- name: Dump information of constance database
+  shell: "{{ install_prefix }}/bin/manage.sh constance list > {{ install_prefix }}/bin/constances_values.txt"
+  tags: ['never', 'postinstall']
+
+# Se borran los antiguos archivos de settings en caso de upgradear un oml muy viejo
+- name: Erase old folder of settings
+  file: path={{ install_prefix }}/{{ item }} state=absent
+  with_items:
+    - ominicontacto/oml_settings_local.py
+    - ominicontacto/oml_settings_local.pyc
+    - local/
+  tags: ['never','postinstall']
+
+# Glusterfs settings, cuando asterisk está en otro host
+- name: Install glusterfs-client
+  command: yum install -y name={{ item }} state=present
+  with_items:
+    - glusterfs
+    - glusterfs-fuse
+  when: asterisk_host is defined and gluster_enabled == "true"
+
+- name: Create location of volume mount
+  file: state=directory path={{ asterisk_location }}/var/spool/asterisk/monitor/ owner={{ usuario }} group={{ usuario }} mode=755
+  when: asterisk_host is defined and gluster_enabled == "true"
+
+- name: Script for mounting the volume after reboot
+  template: src=templates/glusterfs-mount dest=/etc/init.d/glusterfs-mount owner=root group=root mode=755
+  when: asterisk_host is defined and gluster_enabled == "true"
+
+- name: Enable and start of the script
+  service: name=glusterfs-mount state=restarted enabled=yes
+  when: asterisk_host is defined and gluster_enabled == "true"

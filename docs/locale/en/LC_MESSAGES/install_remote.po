@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-23 19:58-0300\n"
+"POT-Creation-Date: 2021-01-06 14:28-0300\n"
 "PO-Revision-Date: 2019-08-13 16:42-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -17,7 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.8.0\n"
 
 # e2be270330dd40a89e99c253b89abaa0
 #: ../../install_remote.rst:5
@@ -36,17 +36,16 @@ msgid ""
 "sobre el host. Volvemos a establcer conexión SSH con el host y se procede"
 " con la ejecución de la instalación desde nuestro deployer."
 msgstr ""
-"We start from the point of having performed the prerequisite steps on the "
-"host. We return to establish SSH connection with the host and proceed with "
-"the installation from our deployer."
+"We start from the point of having performed the prerequisite steps on the"
+" host. We return to establish SSH connection with the host and proceed "
+"with the installation from our deployer."
 
 # 07a959f07add4047a0a4cd6ea96385d7
 #: ../../install_remote.rst:14
 msgid ""
 "Actualmente podemos establecer como *deployer* los SO Ubuntu-18.04 o "
 "Debian 10"
-msgstr ""
-"Currently we can set as deployer the Ubuntu-18.04 or Debian 10 OS"
+msgstr "Currently we can set as deployer the Ubuntu-18.04 or Debian 10 OS"
 
 # b8b40008199941ea88ade928939dc953
 #: ../../install_remote.rst:16
@@ -58,7 +57,8 @@ msgid ""
 msgstr ""
 "Assuming that we have the repository downloaded within any of the "
 "mentioned OS, we must position ourselves on the directory where the "
-"installer and inventory reside. Then choose a version of the App to display: "
+"installer and inventory reside. Then choose a version of the App to "
+"display: "
 
 # a78c811029a74da190095c8186866eb7
 #: ../../install_remote.rst:24
@@ -66,8 +66,8 @@ msgid ""
 "Donde V.V.V es la combinación asociada a la versión de la App. Utilizando"
 " la tecla *Tab* se obtienen todas las versiones disponibles."
 msgstr ""
-"Where V.V.V is the combination associated with the App version. "
-"Using the Tab key, all available versions are obtained."
+"Where V.V.V is the combination associated with the App version. Using the"
+" Tab key, all available versions are obtained."
 
 # 3a0fc7cd33af4f95b890f81ed6262c13
 #: ../../install_remote.rst:28
@@ -76,8 +76,8 @@ msgid ""
 "configuración de :ref:`about_install_inventory` y posterior ejecución del"
 " instalador."
 msgstr ""
-"Once the version to install is selected, proceed with the configuration of "
-"Inventory file and subsequent execution of the installer."
+"Once the version to install is selected, proceed with the configuration "
+"of Inventory file and subsequent execution of the installer."
 
 # 4266865a45704ce68ca409e5bb4f4a4e
 #: ../../install_remote.rst:32
@@ -85,8 +85,9 @@ msgid ""
 "Antes de seguir, asegurese que ha configurado su archivo de inventario, "
 "de acuerdo al tipo de instalación y arquitectura a desplegar."
 msgstr ""
-"Before continuing, make sure that you have configured your inventory file, "
-"according to the type of installation and architecture to be deployed."
+"Before continuing, make sure that you have configured your inventory "
+"file, according to the type of installation and architecture to be "
+"deployed."
 
 # 04f00e2ed13e4b3495ea1949d89d9b25
 #: ../../install_remote.rst:35
@@ -95,7 +96,7 @@ msgstr "OMniLeads deployment on Docker containers"
 
 # 165c335612994cc3a2eb55fb7f090207
 # 20f4890bbdfd4a22a0b0097328e4d6ab
-#: ../../install_remote.rst:36 ../../install_remote.rst:66
+#: ../../install_remote.rst:36 ../../install_remote.rst:72
 msgid "(:ref:`about_install_contenedores`)"
 msgstr ""
 
@@ -106,27 +107,27 @@ msgid ""
 "inventario, tal cual se explica allí. Luego se deben ajustar todas los "
 "parámetros y variables."
 msgstr ""
-"You need to work in the [prodenv-aio] section of the inventory file, "
-"as explained there. Then all parameters and variables must be adjusted."
+"You need to work in the [prodenv-aio] section of the inventory file, as "
+"explained there. Then all parameters and variables must be adjusted."
 
 # a9b7691bfaea41e29ab64bac6c620d8e
 # 8c71b102018746208606931cc715a255
-#: ../../install_remote.rst:49 ../../install_remote.rst:79
+#: ../../install_remote.rst:49
 msgid ""
 "Se debe tener en cuenta que para instalación remota, se debe utilizar la "
 "línea con el parámetro \"ansible_ssh_port=22\" (donde 22 es el puerto por"
 " defecto, pero es normal tambien que se utilice otro puerto) dentro de la"
-" sección [prodenv-aio]"
+" sección [prodenv-aio]. También puede cambiar el usuario con el cual se "
+"va a conectar por SSH"
 msgstr ""
 "Note that for remote installation, the line with the parameter "
-"*ansible_ssh_port = 22* (where 22 is the default port, but it is "
-"normal that another port is used as well) within the [prodenv-aio] "
-"section should be used."
+"*ansible_ssh_port = 22* (where 22 is the default port, but it is normal "
+"that another port is used as well) within the [prodenv-aio] section "
+"should be used. Also you can change the user to connect through SSH"
 
 # dc6fc2c958e54d159d31aa13b5e9bf21
 # b100920b3bef4140a7777cb67b5a1080
-#: ../../install_remote.rst:51 ../../install_remote.rst:81
-
+#: ../../install_remote.rst:51 ../../install_remote.rst:87
 msgid ""
 "Luego se deben ajustar todas los parámetros y variables. Una vez ajustado"
 " el archivo de inventario, se procede con la ejecución del script de "
@@ -137,7 +138,7 @@ msgstr ""
 
 # 451832c9b7e8432a8ab0c3d90f4b78a2
 # 73354e2b693e4609bb54a88fd5c778c8
-#: ../../install_remote.rst:56 ../../install_remote.rst:86
+#: ../../install_remote.rst:56 ../../install_remote.rst:92
 msgid ""
 "Tener a mano el password de root del host a desplegar (remoto), ya que "
 "será solicitado la primera vez que el deployer instala la App."
@@ -145,28 +146,52 @@ msgstr ""
 "Have at hand the root password of the host to deploy (remote), since it "
 "will be requested the first time that the deployer installs the App."
 
+# f50441bb5a9a42db8958d71bca0758cc
+#: ../../install_remote.rst:64
+msgid ""
+"Si en vez de usar una password para conectarse por root al host a "
+"desplegar, tiene una llave privada, deberá ubicar esta llave en "
+"`ominicontacto/ansible/deploy` y ejecutar el script con la opción "
+"--key=$NOMBRE_KEY"
+msgstr ""
+
 # b657b68d7cc54d739ee480e234b4ce91
-#: ../../install_remote.rst:65
+#: ../../install_remote.rst:71
 msgid "Despliegue de OMniLeads sobre contenedores Docker"
 msgstr "OMniLeads deployment on Docker containers"
 
 # 38c2712920ce400e8f17f9351a62b05d
-#: ../../install_remote.rst:68
+#: ../../install_remote.rst:74
 msgid ""
 "Es necesario trabajar en la sección **[prodenv-conatainer]** del archivo "
 "de inventario, tal cual se explica allí. Luego se deben ajustar todas los"
 " parámetros y variables."
 msgstr ""
-"You need to work in the **[prodenv-conatainer]** section of the inventory file, "
-"as explained there. Then all parameters and variables must be adjusted."
+"You need to work in the **[prodenv-conatainer]** section of the inventory"
+" file, as explained there. Then all parameters and variables must be "
+"adjusted."
+
+# a9b7691bfaea41e29ab64bac6c620d8e
+# 8c71b102018746208606931cc715a255
+#: ../../install_remote.rst:85
+msgid ""
+"Se debe tener en cuenta que para instalación remota, se debe utilizar la "
+"línea con el parámetro \"ansible_ssh_port=22\" (donde 22 es el puerto por"
+" defecto, pero es normal tambien que se utilice otro puerto) dentro de la"
+" sección [prodenv-aio]"
+msgstr ""
+"Note that for remote installation, the line with the parameter "
+"*ansible_ssh_port = 22* (where 22 is the default port, but it is normal "
+"that another port is used as well) within the [prodenv-aio] section "
+"should be used."
 
 # 462c0dcc7bc84f4cbcfde169109ec085
-#: ../../install_remote.rst:96
+#: ../../install_remote.rst:102
 msgid "Instalación finalizada"
 msgstr "Deployment complete"
 
 # 6501b25869304c529694626cb3c3678b
-#: ../../install_remote.rst:98
+#: ../../install_remote.rst:104
 msgid ""
 "Al cabo de unos minutos el proceso de instalación finaliza arrojando una "
 "pantalla que evidencia la culminación exitosa del procedimiento."
@@ -175,252 +200,11 @@ msgstr ""
 "the successful completion of the procedure."
 
 # 617d74ce64614a60902e8c2217d73cdd
-#: ../../install_remote.rst:104
+#: ../../install_remote.rst:110
 msgid "Una vez finalizado la instalación, aplicar un reinicio del host."
 msgstr "After installation is complete, apply a host reboot."
 
 # 7bcd6aa518884da88ceb4871ba25909c
-#: ../../install_remote.rst:106
+#: ../../install_remote.rst:112
 msgid "Usted podrá proceder con el :ref:`about_first_access`"
 msgstr "You can proceed with the :ref:`about_first_access`"
-
-# 9c23735372174648b8b77d7129850752
-#~ msgid "Instalación desde ansible remoto"
-#~ msgstr "Installation from remote ansible"
-
-# 7a8340eced5c4ab387f717bff9daff8e
-#~ msgid ""
-#~ "Este tipo de instalación implica que "
-#~ "la descarga del proyecto desde el "
-#~ "repositorio y la ejecución del script"
-#~ " de instalación se realiza desde la"
-#~ " estación de trabajo del sysadmin, ya"
-#~ " que precisamente al estar basada en"
-#~ " Ansible la instalación se hace "
-#~ "viable éste método."
-#~ msgstr ""
-#~ "This type of intallation implies that"
-#~ " the download of the project from "
-#~ "the repository and the execution of "
-#~ "the installation script is performed "
-#~ "since the sysadmin workstation, due to"
-#~ " since it is based on Ansible "
-#~ "the installation is viable this method."
-
-# 32696f76008e4236bda0a4e184d8488b
-#~ msgid ""
-#~ "La ventaja principal de esta opción "
-#~ "es que el sysadmin puede instalar "
-#~ "y mantener varias instancias de "
-#~ "OMniLeads desde un único nodo "
-#~ "\"deployer\"."
-#~ msgstr ""
-#~ "The main advantaje of this option "
-#~ "is that the sysadmin can install "
-#~ "and maintain several instances of "
-#~ "OMniLeads from a single \"deployer\" "
-#~ "node."
-
-# b32469a4eedb4cb8a22ee42dc641fb6b
-#~ msgid "*Figure 1: remote ansible install*"
-#~ msgstr "*Figure 1: remote ansible install*"
-
-# 1b05693ef62a4be1b1f2973345427047
-#~ msgid "Preparación del deployer"
-#~ msgstr "Deployer machine preparation"
-
-# bdacb3d4e62b4438bb949d8ac82b6457
-#~ msgid ""
-#~ "La máquina deployer puede ser un "
-#~ "Linux de las siguientes distros: Centos"
-#~ " 7, Ubuntu 18.04 o Debian (9 en"
-#~ " adelante)"
-#~ msgstr ""
-#~ "The deployer machine can be any of"
-#~ " these Linux distros: Centos 7, "
-#~ "Ubuntu 18.04 o Debian (9 en "
-#~ "adelante)"
-
-# c96f0058ff1c4eeda150c7444effb61c
-#~ msgid ""
-#~ "Debemos contar con el paquete git "
-#~ "para luego clonar el repositorio del "
-#~ "proyecto y seleccionar el release a "
-#~ "instalar."
-#~ msgstr ""
-#~ "We must have the git package to"
-#~ " clone the project repository then "
-#~ "and select the release to install."
-
-# 340733341c5f4640850e8829e9ca5b8c
-#~ msgid ""
-#~ "Debemos asegurarnos de contar con una"
-#~ " clave pública generada en la carpeta"
-#~ " /root/.ssh/"
-#~ msgstr ""
-#~ "We must be sure of counting with"
-#~ " a public password generated in the"
-#~ " folder /root/.ssh/"
-
-# 5386f15a3e5f4e358424db660811b146
-#~ msgid ""
-#~ "Es probable que ya contemos con "
-#~ "una clave pública (id_rsa.pub), como se"
-#~ " aprecia en la *figura 1*."
-#~ msgstr ""
-#~ "It is possible that we already "
-#~ "have a public password (id_rsa.pub), as"
-#~ " appreciated on *figure 1*."
-
-# 0afb2f7c517448888853d70107b1867b
-#~ msgid "*Figure 1: ls -a /root/.ssh command output*"
-#~ msgstr ""
-
-# 09c74a36cc8048a2885742f14ccc1acb
-#~ msgid ""
-#~ "En caso de NO disponer de una, "
-#~ "se puede generar rápidamente con el "
-#~ "siguiente comando:"
-#~ msgstr ""
-#~ "In case of not having one, it "
-#~ "can be quickly generated with the "
-#~ "following command:"
-
-# 59b20a2f5d2a43b6a72e46585f62c1dd
-#~ msgid "*Figure 2: ssh-keygen command output*"
-#~ msgstr ""
-
-# 38b7f39c23e0440981c5e9657d55af88
-#~ msgid ""
-#~ "Este comando genera nuestra clave "
-#~ "*id_rsa.pub* que mencionamos anteriormente."
-#~ msgstr "This command generate our password *id_rsa.pub* previously mentioned."
-
-# 8ad831e1a95546399507f801ad7733e6
-#~ msgid ""
-#~ "Se comprueba la *dirección IP* y "
-#~ "*hostname* que posee de la máquina "
-#~ "donde se instalará OMniLeads, para luego"
-#~ " ajustar el archivo de inventario."
-#~ msgstr ""
-#~ "We check the *IP address* and "
-#~ "*hostname* that the destination host of"
-#~ " the installation owns, to then "
-#~ "adjust the inventory file."
-
-# c90d8ece9f6c4ed5a49cef15e4fd59b1
-#~ msgid "*Figure 3: hostname command output*"
-#~ msgstr ""
-
-# 0a3f45b33c174d808e53ae95b94f7d36
-#~ msgid "*Figure 4: ip a command output*"
-#~ msgstr ""
-
-# deb68f8b2374487e9fd5cc9b3da55ab1
-#~ msgid ""
-#~ "En este paso debemos trabajar sobre "
-#~ "el archivo de inventario disponible "
-#~ "dentro del directorio "
-#~ "\"PATH/ominicontacto/deploy/ansible\". Remitirse a "
-#~ "esta sección: :ref:`about_install_inventory_docker`. "
-#~ "No olvidar que estamos instalando "
-#~ "**Ansible remoto**."
-#~ msgstr ""
-#~ "In this step you must work in "
-#~ "the inventory file available in this "
-#~ "folder of the repo "
-#~ "\"PATH/ominicontacto/deploy/ansible\". Refer to this"
-#~ " section :ref:`about_install_inventory_docker`. Don't"
-#~ " forget that we are installing "
-#~ "**Ansible Host-Node**."
-
-# a766dd3681a1492d8e476763b26665a7
-#~ msgid ""
-#~ "Luego en el inventory mismo debemos "
-#~ "ajustar las :ref:`about_install_inventory_vars` de"
-#~ " la instancia."
-#~ msgstr ""
-#~ "Then, in the same inventory adjust "
-#~ "the :ref:`about_install_inventory_vars` of the "
-#~ "instance"
-
-# 96d2d1710c3849cd9f79184cc7543666
-#~ msgid "Ejecución del script de instalación"
-#~ msgstr "Executing of the installation script"
-
-# 24fa5a8407574528991b7fc7f4b37a03
-#~ msgid ""
-#~ "La instalación de OMniLeads se realiza"
-#~ " mediante el script *deploy.sh*, ubicado"
-#~ " dentro de la carpeta deploy/ansible "
-#~ "con respecto a la carpeta raíz del"
-#~ " proyecto (ominicontacto)."
-#~ msgstr ""
-#~ "The installation of OMniLeads is done"
-#~ " using the script *deploy.sh*, located "
-#~ "within the folder deploy/ansible respect "
-#~ "to the root file of the project"
-#~ " (omnicontacto)."
-
-# e36022bb485d436c9c684dbf32271a26
-#~ msgid ""
-#~ "Una vez configuradas las variables "
-#~ "citadas, se procede con la ejecución "
-#~ "del script de instalación (uitilizando "
-#~ "sudo)."
-#~ msgstr ""
-#~ "Once configured the mentioned variables, "
-#~ "we proceed with the execution of "
-#~ "the installation script (using sudo)."
-
-# fb1b114c3be342cfbf09db2ba0db69b7
-#~ msgid "*Figure 5: remote root password*"
-#~ msgstr ""
-
-# a49f1143451742468bb7452c02cafd3d
-#~ msgid ""
-#~ "La diferencia respecto de la instalación"
-#~ " 'Self-Hosted', es que el script "
-#~ "nos pide la contraseña del usuario "
-#~ "*root* del host destino de la "
-#~ "instalación."
-#~ msgstr ""
-#~ "The difference with respect to the "
-#~ "'Self-Hosted' installation, is that the"
-#~ " script asks the password of the "
-#~ "user *root* of the destination host "
-#~ "of the installation."
-
-# 982cfce74ba04a7d84a8dcfe265127f1
-#~ msgid ""
-#~ "El tiempo de instalación dependerá "
-#~ "mayormente de la velocidad de conexión"
-#~ " a internet del host sobre ek "
-#~ "que se está corriendo el deplot de"
-#~ "  OML, ya que se deben descargar, "
-#~ "instalar y configurar varios paquetes "
-#~ "correspondientes a los diferentes componentes"
-#~ " de software que conforman el "
-#~ "sistema."
-#~ msgstr ""
-#~ "The installation time Will depend mostly"
-#~ " of the internet speed conection of"
-#~ " the host on which the OML "
-#~ "deplot is running, since some packages"
-#~ " corresponding to the different components"
-#~ " of the systme must be downloaded,"
-#~ " installed and configured."
-
-# 1472617ea2d04be3a09e89dc81267156
-#~ msgid ""
-#~ "Si la ejecución de la instalación "
-#~ "finaliza exitosamente, se despliega una "
-#~ "vista como la de la figura 6."
-#~ msgstr ""
-#~ "If the installation execution ends "
-#~ "succesfully, a view as the one on"
-#~ " figure 6 is displayed."
-
-# af878fd965974e768e76825cd94c5487
-#~ msgid "*Figure 6: OMniLeads installation ended succesfuly*"
-#~ msgstr ""
