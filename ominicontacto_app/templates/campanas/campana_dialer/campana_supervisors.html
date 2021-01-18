@@ -29,7 +29,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <form action = "" method = "post"> {% csrf_token %}
     {{ form.non_field_errors }}
     <div class="form-row">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <label for="{{ form.bd_contacto.id_for_label }}">{% trans 'Supervisores' %}:</label>
             {{ form.supervisors }}
             {{ form.supervisors.errors }}
