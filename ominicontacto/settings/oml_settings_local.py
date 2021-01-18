@@ -50,8 +50,8 @@ DATABASES = {
 }
 
 # Ubicaciones de staticos y media
-STATIC_ROOT = "{0}static".format(INSTALL_PREFIX)
-MEDIA_ROOT = "{0}media_root".format(INSTALL_PREFIX)
+STATIC_ROOT = "{0}/static".format(INSTALL_PREFIX)
+MEDIA_ROOT = "{0}/media_root".format(INSTALL_PREFIX)
 
 
 # URL externas
@@ -102,7 +102,7 @@ LOGGING = {
         'file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': '{0}log/{1}'.format(INSTALL_PREFIX, _logging_output_file),
+            'filename': '{0}/log/{1}'.format(INSTALL_PREFIX, _logging_output_file),
             'formatter': 'verbose'
         },
     },

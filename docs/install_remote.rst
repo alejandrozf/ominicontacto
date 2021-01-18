@@ -46,7 +46,7 @@ Luego se deben ajustar todas los parámetros y variables.
 
 .. note::
 
-  Se debe tener en cuenta que para instalación remota, se debe utilizar la línea con el parámetro "ansible_ssh_port=22" (donde 22 es el puerto por defecto, pero es normal tambien que se utilice otro puerto) dentro de la sección [prodenv-aio]
+  Se debe tener en cuenta que para instalación remota, se debe utilizar la línea con el parámetro "ansible_ssh_port=22" (donde 22 es el puerto por defecto, pero es normal tambien que se utilice otro puerto) dentro de la sección [prodenv-aio]. También puede cambiar el usuario con el cual se va a conectar por SSH
 
 Luego se deben ajustar todas los parámetros y variables.
 Una vez ajustado el archivo de inventario, se procede con la ejecución del script de instalación.
@@ -60,6 +60,12 @@ Una vez ajustado el archivo de inventario, se procede con la ejecución del scri
   sudo ./deploy.sh -i
 
 .. image:: images/install_deploy_remote_aio_exec.png
+
+Si en vez de usar una password para conectarse por root al host a desplegar, tiene una llave privada, deberá ubicar esta llave en `ominicontacto/ansible/deploy` y ejecutar el script con la opción --key=$NOMBRE_KEY
+
+.. code-block:: bash
+
+  sudo ./deploy.sh -i --key=oml4demo.pem
 
 Despliegue de OMniLeads sobre contenedores Docker
 *************************************************

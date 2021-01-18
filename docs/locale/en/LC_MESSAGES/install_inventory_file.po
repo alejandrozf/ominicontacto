@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-29 09:56-0300\n"
+"POT-Creation-Date: 2021-01-06 14:28-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -155,13 +155,22 @@ msgstr ""
 "line should be uncommented and replace the string X.X.X.X with the IP of "
 "the node to be displayed:"
 
+# 3c5eb69334a34f208cf1f3b23b0ec8a1
+#: ../../install_inventory_file.rst:63
+msgid ""
+"En caso de que la conexión por SSH se vaya a hacer por un puerto "
+"diferente al 22 y un usuario diferente a root, modificar los valores en "
+"`ansible_ssh_port` y `ansible_user`"
+msgstr "In case the SSH connection is in a port different than 22 and the user is "
+"different to root, modify the values `ansible_ssh_port` y `ansible_user`"
+
 # 2046e96322a5467c81766f8831922892
-#: ../../install_inventory_file.rst:66
+#: ../../install_inventory_file.rst:68
 msgid "OMniLeads sobre contenedores Docker"
 msgstr "OMniLeads on Docker Containers"
 
 # 35d277ae53f248709fbbaa841034ab19
-#: ../../install_inventory_file.rst:67
+#: ../../install_inventory_file.rst:69
 msgid ""
 "Para desplegar esta arquitectura [:ref:`about_install_contenedores`], se "
 "debe trabajar con la sección **[prodenv-container]** (2-a y 2-b):"
@@ -170,7 +179,7 @@ msgstr ""
 "work with the [prodenv-container] section"
 
 # c6e507b089244ebb8f07f39551a1eb14
-#: ../../install_inventory_file.rst:76
+#: ../../install_inventory_file.rst:78
 msgid ""
 "**Instalación Self-Hosted:** en el caso de aplicar (2-a), se debe "
 "descomentar la primera línea, quedando:"
@@ -179,7 +188,7 @@ msgstr ""
 " should be uncommented, leaving:"
 
 # 198f6dd3e46042b1bc0aa17498cb15fd
-#: ../../install_inventory_file.rst:84
+#: ../../install_inventory_file.rst:86
 msgid ""
 "**Instalación deployer-nodes:** en el caso de aplicar (2-b), se debe "
 "descomentar la segunda línea, y reemplazar la cadena *X.X.X.X* por la IP "
@@ -190,7 +199,7 @@ msgstr ""
 "the node to be displayed:"
 
 # 3c5de3647a8445c4b2e0ccdbdd51bf07
-#: ../../install_inventory_file.rst:94
+#: ../../install_inventory_file.rst:96
 msgid ""
 "Estar muy atento a la hora de descomentar las líneas adecuadas de acuerdo"
 " a la arquitectura a desplegar y su método de instalación. No descomentar"
@@ -202,12 +211,12 @@ msgstr ""
 "AIO."
 
 # 34ab99c021e94f3d83a6c478e69c87fe
-#: ../../install_inventory_file.rst:99
+#: ../../install_inventory_file.rst:101
 msgid "Parámetros y contraseñas"
 msgstr "Passwords and parameters"
 
 # 7da6ec70a35c4beeb89a6be139275036
-#: ../../install_inventory_file.rst:100
+#: ../../install_inventory_file.rst:102
 msgid ""
 "Una vez configurada la parte inherente a la arquitectura y tipo de "
 "instalación, se avanza con todo lo respectivo a usuarios y contraseñas de"
@@ -218,7 +227,7 @@ msgstr ""
 "passwords of some components as well as certain parameters of the App:"
 
 # cfd964ee09d34b53a9ce678a070368d7
-#: ../../install_inventory_file.rst:166
+#: ../../install_inventory_file.rst:171
 msgid ""
 "Como se puede observar, el archivo viene completamente documentado en "
 "términos de cada variable o parámetro."
@@ -227,7 +236,7 @@ msgstr ""
 " parameter."
 
 # 24bd85480c73474495852ea1af286d42
-#: ../../install_inventory_file.rst:170
+#: ../../install_inventory_file.rst:175
 msgid ""
 "A la hora de los despliegues hay que descomentar los parámetros citados. "
 "Si usted no los descomenta la instalación fallará."
@@ -236,12 +245,12 @@ msgstr ""
 "not uncomment them the installation will fail."
 
 # ee9dd72e1aad447790aaa7f1d6f5c6c2
-#: ../../install_inventory_file.rst:177
+#: ../../install_inventory_file.rst:180
 msgid "Variables Docker"
 msgstr "Docker variables"
 
 # 6923c484a6a641f8bc5e749109f28f80
-#: ../../install_inventory_file.rst:178
+#: ../../install_inventory_file.rst:181
 msgid ""
 "Esta sección permite personalizar dos parámetros a la hora de desplegar "
 "OMniLeads como contenedores docker."
@@ -250,7 +259,7 @@ msgstr ""
 "OMniLeads as docker containers."
 
 # 2f99f96c8c7149d4a5f7ec5b1e305bd0
-#: ../../install_inventory_file.rst:189
+#: ../../install_inventory_file.rst:192
 msgid ""
 "**registry_username:** si se va a deployar las imagenes oficiales de "
 "OMniLeads, dejar esta variable como está. En caso de contar con sus "
@@ -262,14 +271,14 @@ msgstr ""
 "docker-registry will be indicated here."
 
 # e36c5512eab54671a6118b2055cef500
-#: ../../install_inventory_file.rst:190
+#: ../../install_inventory_file.rst:193
 msgid ""
 "**subnet:** se refiere a la red LAN con la que se levantarán los "
 "containers."
 msgstr "**subnet:** it refers to internal docker LAN network "
 
 # 42f4c3b5f81f4a7b8a725db7c686feab
-#: ../../install_inventory_file.rst:192
+#: ../../install_inventory_file.rst:195
 msgid ""
 "Las variables *registry_email* y *registry_password* son necesarias en "
 "caso de querer hacer un **build** de sus propias imágenes."

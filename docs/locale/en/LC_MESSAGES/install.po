@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-23 19:58-0300\n"
+"POT-Creation-Date: 2021-01-07 11:01-0300\n"
 "PO-Revision-Date: 2019-08-13 12:26-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -17,11 +17,11 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.8.0\n"
 
 # fb8952845ba54c5e8c43031aca4deebb|
 # c6aa986454cd40d6ae659c9a2f3ec488
-#: ../../install.rst:5 ../../install.rst:80
+#: ../../install.rst:5 ../../install.rst:86
 msgid "Instalación de OMniLeads"
 msgstr "OMniLeads deploy"
 
@@ -40,14 +40,13 @@ msgid ""
 msgstr ""
 "The installation is based on `Ansible "
 "<https://docs.ansible.com/ansible/latest/index.html>`_ and the code is "
-"versioned within the OMniLeads repository. Specifically, "
-"the installation consists of an `Inventory File "
-"<https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html>`_ "
-"where one must explicitly specify every App parameter "
-"(users, passwords, NAT, etc.) and a script bash which"
-"after execution ends up invoking the `Ansible Playbook, "
-"<https://docs.ansible.com/ansible/latest/cli/ansible-playbook.html>`_ "
-"among other actions."
+"versioned within the OMniLeads repository. Specifically, the installation"
+" consists of an `Inventory File "
+"<https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html>`_"
+" where one must explicitly specify every App parameter (users, passwords,"
+" NAT, etc.) and a script bash whichafter execution ends up invoking the "
+"`Ansible Playbook, <https://docs.ansible.com/ansible/latest/cli/ansible-"
+"playbook.html>`_ among other actions."
 
 # cac88860944b48c8b492886610e199b5
 #: ../../install.rst:11
@@ -55,8 +54,8 @@ msgid ""
 "Éste último es quien realiza los pasos de automatización de la "
 "configuración sobre el Host que alojará nuestra App."
 msgstr ""
-"The latter performs the automation steps of the "
-"configuration on the Host that will contain our App."
+"The latter performs the automation steps of the configuration on the Host"
+" that will contain our App."
 
 # e84b904c5b2f4e838be7a21e9a6ca113
 #: ../../install.rst:15
@@ -64,8 +63,8 @@ msgid ""
 "Existen dos formas en las que se puede ejecutar la instalación (Self-"
 "hosted y Deployer-Nodes)."
 msgstr ""
-"There are two ways of executing the installation: "
-"Self-hosted and Deployer-Nodes."
+"There are two ways of executing the installation: Self-hosted and "
+"Deployer-Nodes."
 
 # 1cf133fe6fd24f2881a405db23201942
 #: ../../install.rst:20
@@ -73,7 +72,7 @@ msgid "Método de instalación Self-Hosted"
 msgstr "Self-Hosted installation method"
 
 # 443e88d7ceb04d27af9088cdeaebc16d
-#: ../../install.rst:21
+#: ../../install.rst:22
 msgid ""
 "Bajo esta modalidad el proceso de instalación y gestión de "
 "actualizaciones se maneja utilizando el bash script *deploy.sh* "
@@ -81,27 +80,27 @@ msgid ""
 "dicho host se debe descargar el repo de la App, allí se trabaja con el "
 "archivo de inventario para luego lanzar el instalador."
 msgstr ""
-"Under this modality the installation and updates management process "
-"is handled by using the *deploy.sh* bash script "
-"directly over the host that will contain OMniLeads. On that "
-"host one must download the repo of the App, since it is there where "
-"one must work with the inventory file to then release the installer."
+"Under this modality the installation and updates management process is "
+"handled by using the *deploy.sh* bash script directly over the host that "
+"will contain OMniLeads. On that host one must download the repo of the "
+"App, since it is there where one must work with the inventory file to "
+"then release the installer."
 
 # 661a07a9acac4315b9b66ac0cf92a136
-#: ../../install.rst:24
+#: ../../install.rst:25
 msgid ""
 "Por cada instancia de OMniLeads que se administre, se deberá ingresar por"
 " SSH, descargar el repositorio y correr la instalación. Luego las "
 "actualizaciones también implicarán que el administrador se conecte a cada"
 " instancia y ejecute los pasos necesarios en cada servidor gestionado."
 msgstr ""
-"For every OMniLeads instance administered, one must enter through "
-"SSH, download the repository and run the installation. The updates will "
-"also imply the administrator to be connected to every instance "
-"and to execute the necessary steps for each managed server."
+"For every OMniLeads instance administered, one must enter through SSH, "
+"download the repository and run the installation. The updates will also "
+"imply the administrator to be connected to every instance and to execute "
+"the necessary steps for each managed server."
 
 # 3e1ec8ab183346c9bde083f3b83dcc5d
-#: ../../install.rst:27
+#: ../../install.rst:28
 msgid ""
 "Esta opción se hace algo inviable en la medida que aumenta la cantidad de"
 " servidores productivos bajo mantenimiento."
@@ -110,35 +109,34 @@ msgstr ""
 "servers under maintenance increases."
 
 # 34a6e3623ba64e53985319dbbe791496
-#: ../../install.rst:34
+#: ../../install.rst:35
 msgid "Método de instalación Deployer-Nodes"
 msgstr "Deployer-Nodes installation methodology"
 
 # 412d8b69c42f4c6fb6d85be68c2da4e1
-#: ../../install.rst:35
+#: ../../install.rst:37
 msgid ""
 "En esta modalidad se plantea utilizar un *deployer* (basada en Ubuntu "
 "18.04 o Debian 10) y luego desde este único deployer instalar y gestionar"
 " actualizaciones de un número ilimitado de instancias con OMniLeads, "
 "facilitando y centralizando la gestión."
 msgstr ""
-"Under this modality, the use of a deployer (based on Ubuntu "
-"18.04 or Debian 10) is proposed From this only *deployer* one can install and manage "
-"updates of an unlimited number of instances with OMniLeads "
+"Under this modality, the use of a deployer (based on Ubuntu 18.04 or "
+"Debian 10) is proposed From this only *deployer* one can install and "
+"manage updates of an unlimited number of instances with OMniLeads "
 "facilitating and centralizing the management."
 
-
 # 449c2c8caa174d49ba41f32dab4c2fc0
-#: ../../install.rst:38
+#: ../../install.rst:40
 msgid ""
 "En esta modalidad, el host a gestionar debe permitir el acceso SSH de "
 "*root* o *sudo* para poder desplegar la App desde el *deployer*."
 msgstr ""
-"In this modality, the host to be managed must allow SSH access "
-"from root or sudo to be able to deploy the App from the *deployer*."
+"In this modality, the host to be managed must allow SSH access from root "
+"or sudo to be able to deploy the App from the *deployer*."
 
 # fe523814ad9549f5b0d95ba9b2d403ab
-#: ../../install.rst:42
+#: ../../install.rst:44
 msgid ""
 "Más allá del método de instalación seleccionado (Self-Hosted ó Deployer-"
 "Node), OMniLeads puede ser desplegado bajo dos posibles arquitecturas."
@@ -147,12 +145,12 @@ msgstr ""
 "Node), OMniLeads can be deployed under two possible architectures."
 
 # 7a61019959404ccbb312e8cf2bae7163
-#: ../../install.rst:47
+#: ../../install.rst:49
 msgid "Despliegue de OMniLeads arquitectura tradicional (AIO)"
 msgstr "OMniLeads Traditional Architecture Deployment (AIO)"
 
 # 356bea891ec8416b8994b0df48aa2c47
-#: ../../install.rst:49
+#: ../../install.rst:51
 msgid ""
 "OMniLeads puede correr como una aplicación tradicional desplegando una "
 "instalación de todos los componentes sobre un server físico, máquina "
@@ -161,31 +159,37 @@ msgid ""
 "(All In One)**."
 msgstr ""
 "OMniLeads can run like a traditional application deploying an "
-"installation of all the components on a physical server, virtual "
-"machine or VPS as long as GNU/Linux CentOS-7 or "
-"Amazon Linux is used as a base. We call this type of installation "
-"*OMniLeads AIO (All In One)*."
-
-
+"installation of all the components on a physical server, virtual machine "
+"or VPS as long as GNU/Linux CentOS-7 or Amazon Linux is used as a base. "
+"We call this type of installation *OMniLeads AIO (All In One)*."
 
 # 6cd144728bc84e4b872428336308d14e
-#: ../../install.rst:57
+#: ../../install.rst:59
 msgid "Despliegue de OMniLeads sobre contenedores Docker"
 msgstr "OMniLeads deployment on Docker containers"
 
+# 6b12f6c2be7d42e28a2fbbfba2c57626
+#: ../../install.rst:63
+msgid ""
+"Estamos realizando una refactorización importante del despliegue de "
+"OMniLeads sobre contenedores Docker. Solo estará disponible el despliegue"
+" que presentamos en esta documentación hasta el release 1.11.X"
+msgstr "We are making a huge refactor in the deploy of OMniLeads on Docker containers. "
+"The deploy shown in this documentation will work just for release 1.11.X and below."
+
 # f1aabc223a8c4955a925359cf3a59110
-#: ../../install.rst:59
+#: ../../install.rst:65
 msgid ""
 "OMniLeads puede ser desplegado utilizando contenedores `Docker "
 "<https://www.docker.com>`_, esto extiende la posibilidad de ejecución de "
 "la aplicación sobre diversas distrubuciones de GNU/Linux."
 msgstr ""
 "OMniLeads can be deployed using `Docker <https://www.docker.com>`_, "
-"containers. This extends the possibility of running the application "
-"on various GNU/Linux distributions."
+"containers. This extends the possibility of running the application on "
+"various GNU/Linux distributions."
 
 # a29b2d24a3234f96b489c725df4b4df6
-#: ../../install.rst:64
+#: ../../install.rst:70
 msgid ""
 "Se resalta el hecho de que mediante este formato es posible desplegar "
 "OMniLeads sobre instancias de Issabel-PBX & FreePBX, de manera tal que "
@@ -198,48 +202,48 @@ msgstr ""
 "Contact Center module."
 
 # dc1ad5aea5344febb51d612668c450a3
-#: ../../install.rst:69
+#: ../../install.rst:75
 msgid "Archivo de inventario"
 msgstr "Inventory file"
 
 # 2739ccee293d4e4491fb3d0761804b11
-#: ../../install.rst:70
+#: ../../install.rst:76
 msgid ""
 "El archivo de *inventario* es el componente fundamental en la instalación"
 " y administración (actualizaciones, cambios de passwords de componentes, "
 "clusterización, etc.) de la App. Es fundamental entender el mismo en su "
 "totalidad antes de comenzar a desplegar OMniLeads."
 msgstr ""
-"The inventory file is the fundamental component in the installation "
-"and administration (updates, changes of component passwords "
-", clustering, etc.) of the App. It is essential to understand "
-"it in its entirety before starting to deploy OMniLeads."
+"The inventory file is the fundamental component in the installation and "
+"administration (updates, changes of component passwords , clustering, "
+"etc.) of the App. It is essential to understand it in its entirety before"
+" starting to deploy OMniLeads."
 
 # dc15ca44b54e4d61a5a106b0a0b82392
-#: ../../install.rst:81
+#: ../../install.rst:87
 msgid ""
 "Ahora si, luego de haber leído y comprendido bien el marco conceptual "
 "introductorio, se procede con la exposición de los pasos necesarios para "
 "ejecutar la instalación de la App."
 msgstr ""
-"After having read and understood the introductory conceptual "
-"framework, we are ready to proceed with the exposition of the "
-"steps necessary to execute the installation of the App."
+"After having read and understood the introductory conceptual framework, "
+"we are ready to proceed with the exposition of the steps necessary to "
+"execute the installation of the App."
 
 # cc5dcf7710d047518784a9f9bf7dd88a
-#: ../../install.rst:90
+#: ../../install.rst:96
 msgid "Primer acceso al sistema"
 msgstr "First access to system"
 
 # 02365bf501594450911fe7265d009571
-#: ../../install.rst:92
+#: ../../install.rst:98
 msgid ""
 "Una vez instalado el software, remitirse a esta sección para el primer "
 "acceso:"
 msgstr "Once installed the software, go to this section for the first access:"
 
 # d7b652f4f29c4fc09edb4c736ab4b511
-#: ../../install.rst:100
+#: ../../install.rst:106
 msgid "FAQ y errores comunes"
 msgstr "FAQ and common errors"
 

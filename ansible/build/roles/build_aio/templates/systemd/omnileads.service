@@ -1,0 +1,21 @@
+[Unit]
+Description=Omnileads - The Open Source Contact Center Solution
+Documentation= http://www.omnileads.net
+After=syslog.target network-online.target postgresql.service
+
+[Service]
+Type=forking
+User={{ usuario }}
+EnvironmentFile=/etc/profile.d/omnileads_envars.sh
+ExecStartPre=/bin/bash -c 'source {{ virtualenv_location }}/bin/activate'
+ExecStart={{ virtualenv_location }}/bin/uwsgi --ini {{ install_prefix }}/run/oml_uwsgi.ini
+ExecReload={{ virtualenv_location }}/bin/uwsgi --reload {{ install_prefix }}/run/oml_uwsgi.pid
+ExecStop={{ virtualenv_location }}/bin/uwsgi --stop {{ install_prefix }}/run/oml_uwsgi.pid
+PIDFile={{ install_prefix }}/run/oml_uwsgi.pid
+RuntimeDirectory=run
+RuntimeDirectoryMode=755
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

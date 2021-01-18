@@ -1,0 +1,83 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
+---
+
+# mensaje para mostrar si rtpengine no está instalado
+- debug: msg="RTPengine no está instalado, se procede a la instalación"
+  when: rtpengine_installed.stdout != rtpengine_version and rtpengine_host is not defined
+  tags: postinstall
+
+# mensaje si rtpengine está instalado
+- debug: msg="RTPengine ya se encuentra instalado se omite instalación"
+  when: rtpengine_installed.stdout == rtpengine_version and rtpengine_host is not defined
+  tags: postinstall
+
+- name: Install rtpengine preliminar packages
+  command: yum install -y {{ item }}
+  with_items:
+    - libpcap
+    - xmlrpc-c-client
+    - json-glib
+    - libevent
+  tags: postinstall
+  when: rtpengine_installed.stdout != rtpengine_version and rtpengine_host is not defined
+
+- name: Install rtpengine-{{ rtpengine_version }} package (from s3 source)
+  command: yum install -y {{ rtpengine_package }}
+  when: rtpengine_installed.stdout != rtpengine_version
+  tags: postinstall
+  retries: 3
+  delay: 3
+  register: s3_download
+  until: s3_download is success
+
+# Se inserta el modulo creado
+- name: Insert the RTPengine kernel module
+  shell: "insmod xt_RTPENGINE.ko chdir=/root"
+  register: command_result
+  failed_when: false
+
+# Se crea el archivo de configuracion de rtpengine, el cual tiene el comando que se ejecuta al hacer start con systemctl
+- name: Creation of RTPengine config file
+  template: src=roles/kamailio/templates/etc/sysconfig_rtpengine.j2 dest=/etc/rtpengine-config.conf
+  tags: postinstall
+
+# Tengo un template de rsyslog modificado para tener logs de rtpengine y kamailio en sus propios archivos (ver template para mas info)
+- name: Modify of /etc/rsyslog.conf
+  template: src=roles/kamailio/templates/etc/rsyslog.conf.j2 dest=/etc/rsyslog.conf
+
+# Creo la carpeta y el archivo donde va a ir el log de rtpengine
+- name: Create rtpengine.log file and directory
+  file: path=/var/log/rtpengine/ state=directory mode=0755
+- file: path=/var/log/rtpengine/rtpengine.log state=touch mode=0755
+
+# No se para que se crea esta carpeta pero estaba en los pasos de fabi
+- name: Create /var/spool/rtpengine directory
+  file: path=/var/spool/rtpengine state=directory recurse=yes owner=root
+
+- name: Creating simbolic link of libip4tc.so and libip6tc.so libraries
+  file: state=link src=/usr/lib64/{{ item.src }} dest=/usr/lib64/{{ item.dest }} mode=755 force=true
+  with_items:
+    - { src: "libip4tc.so.2", dest: "libip4tc.so.0" }
+    - { src: "libip6tc.so.2", dest: "libip6tc.so.0" }
+  when: ansible_distribution == "Amazon"
+
+# Inicio y habilito el servicio
+- name: Start and enable rtpengine service
+  systemd: name=rtpengine state=restarted enabled=yes daemon_reload=yes
+  tags: postinstall

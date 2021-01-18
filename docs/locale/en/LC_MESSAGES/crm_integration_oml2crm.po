@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-30 14:27-0300\n"
+"POT-Creation-Date: 2021-01-06 14:28-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.8.0\n"
 
 # e4a8e74517d045d3b8d991ad63957be7
 #: ../../crm_integration_oml2crm.rst:5
@@ -293,7 +293,7 @@ msgid ""
 "En esta etapa de la configuración de cualquier campaña, podemos indicar "
 "cada uno de los parámetros disponibles en OMniLeads y que se deben enviar"
 " hacia el CRM cada vez que se conecte una llamada a un agente. Dichos "
-"parámetros disponibles se agrupan en cuatro familias:"
+"parámetros disponibles se agrupan en cinco familias:"
 msgstr ""
 "At this configuration phase, we can indicate the expected parameters "
 "available in OMniLeads System that must be sent to the CRM every time a "
@@ -369,8 +369,8 @@ msgid ""
 "enviar en una llamada al CRM."
 msgstr ""
 "**Contact Data**, parameters available from the columns of the current "
-"campaign contact database. Any column can be chosen as a parameter to send"
-" to the CRM."
+"campaign contact database. Any column can be chosen as a parameter to "
+"send to the CRM."
 
 # ee4ce5800287446a8d05dc01f53518be
 #: ../../crm_integration_oml2crm.rst:99
@@ -379,8 +379,15 @@ msgstr ""
 "**Fixed Parameter**, you can set custom parameters to be sent on each "
 "call."
 
-# e1806258b818413b93d493b9969be435
+# 68635316b9b543c883815388d22e04a8
 #: ../../crm_integration_oml2crm.rst:101
+msgid ""
+"**Dato de Dialplan**, es un parámetro que el Dialplan debe enviar en un "
+"header en el originate"
+msgstr ""
+
+# e1806258b818413b93d493b9969be435
+#: ../../crm_integration_oml2crm.rst:103
 msgid ""
 "Una vez descriptos cada parámetro del sistema, se observa en la *figura "
 "5* que por cada parámetro a enviar se deben completar tres campos:"
@@ -390,7 +397,7 @@ msgstr ""
 "sent."
 
 # 160aeacd60c743708e01613840d49b9a
-#: ../../crm_integration_oml2crm.rst:103
+#: ../../crm_integration_oml2crm.rst:105
 msgid ""
 "**1er Campo**: corresponde al tipo de parámetro (dato de campaña, de "
 "llamada, de base de contactos o fijo)."
@@ -399,7 +406,7 @@ msgstr ""
 "data, database data or fixed data)."
 
 # e0521256922248948cb7b493fedc4e76
-#: ../../crm_integration_oml2crm.rst:105
+#: ../../crm_integration_oml2crm.rst:107
 msgid ""
 "**2do Campo**: corresponde con el nombre puntual del parámetro a enviar "
 "(por ejemplo \"nombre\" si es un dato de campaña)."
@@ -408,17 +415,17 @@ msgstr ""
 "sent (for example \"name\" if it is a campaign data)."
 
 # 1e4947545724423e85d28d27909ce077
-#: ../../crm_integration_oml2crm.rst:107
+#: ../../crm_integration_oml2crm.rst:109
 msgid "**3er Campo**: es el nombre de cada parámetro, esperado del lado del CRM."
 msgstr "**3rd Field**: is the name of each parameter, expected from the CRM side."
 
 # e0f6f64f7c6445ac8681c7dd06086682
-#: ../../crm_integration_oml2crm.rst:111
+#: ../../crm_integration_oml2crm.rst:113
 msgid "Ejemplo 1: invocación a un CRM utilizando GET"
 msgstr "Example 1: CRM interaction using GET"
 
 # 0246cd6b699740e58634672a9833370a
-#: ../../crm_integration_oml2crm.rst:113
+#: ../../crm_integration_oml2crm.rst:115
 msgid ""
 "Vamos a suponer que se desea ejecutar el URL: "
 "**https://my_crm.domain.com?idClient=321321321&idCamp=11&lang=es&recordingFile=prev-115-20190604-2-4149014-1559667982.424.wav**"
@@ -428,7 +435,7 @@ msgstr ""
 
 # 78c600d6fb5f47d982fb37db71e37497
 # 1f3ccdfae1d9440c8b32873fd479d706
-#: ../../crm_integration_oml2crm.rst:115 ../../crm_integration_oml2crm.rst:159
+#: ../../crm_integration_oml2crm.rst:117 ../../crm_integration_oml2crm.rst:161
 msgid ""
 "Como se puede leer en nuestra URL de ejemplo, en cada ejecución se debe "
 "facilitar como parámetros:"
@@ -436,31 +443,31 @@ msgstr "As you can note in our example of URL, each execution must provide:"
 
 # dc1653757e4d4eb6b2698792da133047
 # 13f9b9b24dbd4b539914f4231d62f4c2
-#: ../../crm_integration_oml2crm.rst:117 ../../crm_integration_oml2crm.rst:161
+#: ../../crm_integration_oml2crm.rst:119 ../../crm_integration_oml2crm.rst:163
 msgid "ID del contacto"
 msgstr "Contact ID"
 
 # 1a252c6f5a874e888135ceb2464d40a9
 # e113db3df2ea443d91aee2926491151b
-#: ../../crm_integration_oml2crm.rst:118 ../../crm_integration_oml2crm.rst:162
+#: ../../crm_integration_oml2crm.rst:120 ../../crm_integration_oml2crm.rst:164
 msgid "ID de la campaña que invoca al crm"
 msgstr "Campaign ID that will invoke external CRM"
 
 # fcd2e8b1b91e442f8b745b07187ae717
 # 8e89910039f545139f9ef925a74997ad
-#: ../../crm_integration_oml2crm.rst:119 ../../crm_integration_oml2crm.rst:163
+#: ../../crm_integration_oml2crm.rst:121 ../../crm_integration_oml2crm.rst:165
 msgid "Un parámetro \"lang=es\""
 msgstr "Parameter \"lang=es\""
 
 # b33c1a3597af47cda8126469f2322833
 # 8212f67b16b04ce0b5bbe1a96dd0a2e2
-#: ../../crm_integration_oml2crm.rst:120 ../../crm_integration_oml2crm.rst:164
+#: ../../crm_integration_oml2crm.rst:122 ../../crm_integration_oml2crm.rst:166
 msgid "La grabación de la llamada actual"
 msgstr "Recording of the current connected call"
 
 # b45ab0cd7c8d46d096e4ba6086a91574
 # 37cbd78d8f304bd3acfccfa455415653
-#: ../../crm_integration_oml2crm.rst:122 ../../crm_integration_oml2crm.rst:166
+#: ../../crm_integration_oml2crm.rst:124 ../../crm_integration_oml2crm.rst:168
 msgid ""
 "Cómo implementaríamos entonces este requerimiento desde lo que hemos "
 "cubierto en este capítulo ?"
@@ -470,12 +477,12 @@ msgstr ""
 
 # 11326dcbd8014c94a6b2701f3f406e50
 # c8afb4f1473b411aab339534aa9574f3
-#: ../../crm_integration_oml2crm.rst:124 ../../crm_integration_oml2crm.rst:168
+#: ../../crm_integration_oml2crm.rst:126 ../../crm_integration_oml2crm.rst:170
 msgid "**Generar el nuevo CRM**"
 msgstr "**Generate the new CRM**"
 
 # fbf21882edb54ae1904d8440feae0578
-#: ../../crm_integration_oml2crm.rst:126
+#: ../../crm_integration_oml2crm.rst:128
 msgid ""
 "En la *figura 6* se ejemplifica la implementación del CRM propuesto como "
 "ejemplo."
@@ -484,13 +491,13 @@ msgstr ""
 "example."
 
 # 6607cc8c972246abbf14790f4c699186
-#: ../../crm_integration_oml2crm.rst:130
+#: ../../crm_integration_oml2crm.rst:132
 msgid "*Figure 6: CRM definition*"
 msgstr ""
 
 # afa0167617b94205a5c8c5edcd62ab0d
 # 79f63667393148dea49ff98da21b5aa2
-#: ../../crm_integration_oml2crm.rst:132 ../../crm_integration_oml2crm.rst:179
+#: ../../crm_integration_oml2crm.rst:134 ../../crm_integration_oml2crm.rst:181
 msgid ""
 "Por lo tanto ahora pasamos a ejemplificar la configuración de la campaña "
 "para que invoque al CRM con los parámetros especificados arriba."
@@ -499,7 +506,7 @@ msgstr ""
 " CRM with the parameters specified above."
 
 # 294f5dd1642f4f2c81f69a43189a2550
-#: ../../crm_integration_oml2crm.rst:134
+#: ../../crm_integration_oml2crm.rst:136
 msgid ""
 "En la *figura 7*, se expone como configurar la campaña para que trabaje "
 "con el CRM de este ejemplo."
@@ -508,12 +515,12 @@ msgstr ""
 "CRM of this example."
 
 # 76d8898282e34c0db3c5e8f5a1b233f9
-#: ../../crm_integration_oml2crm.rst:138
+#: ../../crm_integration_oml2crm.rst:140
 msgid "*Figure 7: Campaign and CRM*"
 msgstr ""
 
 # a7bdab7203784032b862a7641bacd7bc
-#: ../../crm_integration_oml2crm.rst:140
+#: ../../crm_integration_oml2crm.rst:142
 msgid ""
 "El último paso tiene que ver con la asignación de los parámetros "
 "necesarios para cada invocación al CRM, en la *figura 8* ejemplificamos "
@@ -523,12 +530,12 @@ msgstr ""
 " CRM interaction. In *figure 8* we see an example of this step."
 
 # 38870938dd1341599b86588a8c3a3654
-#: ../../crm_integration_oml2crm.rst:145
+#: ../../crm_integration_oml2crm.rst:147
 msgid "*Figure 8: Campaign CRM parameters*"
 msgstr ""
 
 # 839597830b814f6f95217fd7d7476718
-#: ../../crm_integration_oml2crm.rst:147
+#: ../../crm_integration_oml2crm.rst:149
 msgid ""
 "Finalmente resaltamos la relación entra las columnas 2 y 3 de cada "
 "parámetro, ya que hacen a la asignación de los parámetros del sistema "
@@ -539,12 +546,12 @@ msgstr ""
 "the expected parameter names on the CRM side."
 
 # a8853743d8ac430c9b290baa26e230dc
-#: ../../crm_integration_oml2crm.rst:152
+#: ../../crm_integration_oml2crm.rst:154
 msgid "Ejemplo 2: invocación a un CRM utilizando GET y Clean URLs"
 msgstr "Example 2: CRM Interaction using GET and Clean URLs"
 
 # eb7327d34e8a47d087aab00edec00074
-#: ../../crm_integration_oml2crm.rst:154
+#: ../../crm_integration_oml2crm.rst:156
 msgid ""
 "Vamos a suponer que se desea ejecutar una `Clean URL "
 "<https://en.wikipedia.org/wiki/Clean_URL>`_  : "
@@ -555,7 +562,7 @@ msgstr ""
 "//my_crm.domain.com/idClient/idCamp/lang/recordingFile**"
 
 # 646ed98ed8d8413195648c33219ddb67
-#: ../../crm_integration_oml2crm.rst:156
+#: ../../crm_integration_oml2crm.rst:158
 msgid ""
 "por ejemplo: "
 "https://my_crm.domain.com/321321321/11/es/prev-115-20190604-2-4149014-1559667982.424.wav"
@@ -564,7 +571,7 @@ msgstr ""
 "https://my_crm.domain.com/321321321/11/es/prev-115-20190604-2-4149014-1559667982.424.wav"
 
 # 0fbea58ba0a144a294ba5b7e6d201dc6
-#: ../../crm_integration_oml2crm.rst:170
+#: ../../crm_integration_oml2crm.rst:172
 msgid ""
 "En la *figura 9* se ejemplifica la implementación del CRM propuesto como "
 "ejemplo."
@@ -573,12 +580,12 @@ msgstr ""
 "9*."
 
 # d8073396b9e64de389e19490761fdfc7
-#: ../../crm_integration_oml2crm.rst:174
+#: ../../crm_integration_oml2crm.rst:176
 msgid "*Figure 9: CRM definition with clean URL*"
 msgstr ""
 
 # 432be948d4224fac99710df387889bec
-#: ../../crm_integration_oml2crm.rst:176
+#: ../../crm_integration_oml2crm.rst:178
 msgid ""
 "En la figura se resaltan los \"holders\" necesarios para trabajar con "
 "Clean URLs. A la hora de generar el URL a ejecutar, se deben especificar "
@@ -592,7 +599,7 @@ msgstr ""
 "campaign for that CRM interaction. "
 
 # 61b535aa358f487f9e868d6b46f1acfe
-#: ../../crm_integration_oml2crm.rst:181
+#: ../../crm_integration_oml2crm.rst:183
 msgid ""
 "La diferencia respecto a las URLs estándares (HTTP GET) que se expuso en "
 "el *ejemplo 1*, es que a la hora de asignar parámetros en la campaña, se "
@@ -601,16 +608,16 @@ msgid ""
 msgstr ""
 "The main difference from the standard URLs (HTTP GET) that is exposed in "
 "the *example 1*, is that when assigning parameters in the campaign, "
-"\"holders\" need to be used instead of \"Parameter Names\", as shown in *"
-"figure 10*."
+"\"holders\" need to be used instead of \"Parameter Names\", as shown in "
+"*figure 10*."
 
 # 01cb58fb2f8a4ef29619865e2f191d25
-#: ../../crm_integration_oml2crm.rst:187
+#: ../../crm_integration_oml2crm.rst:188
 msgid "*Figure 10: Campaign and CRM parameters*"
 msgstr ""
 
 # 4f22564a3f5a45b9941d8cec2ae0e6b2
-#: ../../crm_integration_oml2crm.rst:189
+#: ../../crm_integration_oml2crm.rst:190
 msgid ""
 "Finalmente resaltamos la relación entra las columnas 2 y 3 de cada "
 "parámetro, en el marco de las \"clean URLs\" ."
