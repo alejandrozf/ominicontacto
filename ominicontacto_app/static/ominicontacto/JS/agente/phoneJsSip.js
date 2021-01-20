@@ -472,8 +472,22 @@ class SessionData {
             call_data.video_channel = invite_request.headers.Omlvideo[0].raw;
         }
 
-        this.setDialplanCallData(invite_request.headers, call_data);
 
+        // Campaign agent behaviour configuration
+        if (invite_request.headers['Force-Disposition']){
+            call_data.force_disposition = invite_request.headers['Force-Disposition'][0].raw;
+        }
+        if (invite_request.headers['Auto-Unpause']){
+            call_data.auto_unpause = invite_request.headers['Auto-Unpause'][0].raw;
+        }
+        if (this.is_inbound && invite_request.headers['Auto-Attend-Inbound']){
+            call_data.auto_attend = invite_request.headers['Auto-Attend-Inbound'][0].raw;
+        }
+        if (this.is_dialer && invite_request.headers['Auto-Attend-Dialer']){
+            call_data.auto_attend = invite_request.headers['Auto-Attend-Dialer'][0].raw;
+        }
+
+        this.setDialplanCallData(invite_request.headers, call_data);
         return call_data;
     }
 

@@ -76,6 +76,7 @@ class CalificacionLLamada(object):
             raise e
 
     def get_family(self, agente):
+        # Todo: Poner nombre más declarativo para un servicio
         redis_connection = self.get_redis_connection()
         family = self._get_nombre_family(agente)
         try:

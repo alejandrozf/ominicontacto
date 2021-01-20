@@ -82,6 +82,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <a class="dropdown-item" href="{% url 'agenda_contactos_por_campana' campana.pk %}">
                             <span class="icon icon-agenda"></span>{% trans 'Ver Agendas' %}
                         </a>
+                        <a class="dropdown-item" href="{% url 'configurar_agentes_en_campana' campana.pk %}">
+                            <span class="icon icon-pencil"></span>{% trans 'Configuraciones para agentes' %}
+                        </a>
                         <a class="dropdown-item" href="{% url 'campana_preview_delete' campana.pk %}">
                             <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
                         </a>

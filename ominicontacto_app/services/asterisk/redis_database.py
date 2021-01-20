@@ -24,7 +24,7 @@ import json
 from django.conf import settings
 from django.utils.translation import ugettext as _
 
-from ominicontacto_app.models import AgenteProfile, Pausa, Campana
+from ominicontacto_app.models import AgenteProfile, Pausa, Campana, ConfiguracionDeAgentesDeCampana
 from ominicontacto_app.utiles import convert_audio_asterisk_path_astdb
 from configuracion_telefonia_app.models import (
     RutaSaliente, IVR, DestinoEntrante, ValidacionFechaHora, GrupoHorario, IdentificadorCliente,
@@ -202,6 +202,24 @@ class CampanaFamily(AbstractRedisFamily):
 
         if campana.queue_campana.musiconhold:
             dict_campana.update({'MOH': campana.queue_campana.musiconhold.nombre})
+
+        try:
+            configuracion_de_agentes = campana.configuracion_de_agentes
+            if campana.type == Campana.TYPE_ENTRANTE:
+                if configuracion_de_agentes.set_auto_attend_inbound:
+                    attend_inbound = str(configuracion_de_agentes.auto_attend_inbound)
+                    dict_campana['AUTO_ATTEND_INBOUND'] = attend_inbound
+            if campana.type == Campana.TYPE_DIALER:
+                if configuracion_de_agentes.set_auto_attend_dialer:
+                    attend_dialer = str(configuracion_de_agentes.auto_attend_dialer)
+                    dict_campana['AUTO_ATTEND_DIALER'] = attend_dialer
+            if configuracion_de_agentes.set_obligar_calificacion:
+                obligar_calificacion = str(configuracion_de_agentes.obligar_calificacion)
+                dict_campana['FORCE_DISPOSITION'] = obligar_calificacion
+            if configuracion_de_agentes.set_auto_unpause:
+                dict_campana['AUTO_UNPAUSE'] = configuracion_de_agentes.auto_unpause
+        except ConfiguracionDeAgentesDeCampana.DoesNotExist:
+            pass
 
         return dict_campana
 

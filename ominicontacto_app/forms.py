@@ -44,7 +44,7 @@ from ominicontacto_app.models import (
     RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Blacklist, SitioExterno,
     SistemaExterno, ReglasIncidencia, ReglaIncidenciaPorCalificacion, SupervisorProfile,
     ArchivoDeAudio, NombreCalificacion, OpcionCalificacion, ParametrosCrm, AgenteEnSistemaExterno,
-    AuditoriaCalificacion
+    AuditoriaCalificacion, ConfiguracionDeAgentesDeCampana,
 )
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
@@ -1971,3 +1971,26 @@ class FiltroUsuarioFechaForm(forms.Form):
     def __init__(self, users_choices, *args, **kwargs):
         super(FiltroUsuarioFechaForm, self).__init__(*args, **kwargs)
         self.fields['usuario'].queryset = users_choices
+
+
+class ConfiguracionDeAgentesDeCampanaForm(forms.ModelForm):
+    class Meta:
+        model = ConfiguracionDeAgentesDeCampana
+        exclude = ('campana',)
+
+    def __init__(self, campana_type, *args, **kwargs):
+        super(ConfiguracionDeAgentesDeCampanaForm, self).__init__(*args, **kwargs)
+        self.fields['set_auto_attend_inbound'].widget.attrs['class'] = 'form-control'
+        self.fields['auto_attend_inbound'].widget.attrs['class'] = 'form-control'
+        self.fields['set_auto_attend_dialer'].widget.attrs['class'] = 'form-control'
+        self.fields['auto_attend_dialer'].widget.attrs['class'] = 'form-control'
+        self.fields['set_auto_unpause'].widget.attrs['class'] = 'form-control'
+        self.fields['auto_unpause'].widget.attrs['class'] = 'form-control'
+        self.fields['set_obligar_calificacion'].widget.attrs['class'] = 'form-control'
+        self.fields['obligar_calificacion'].widget.attrs['class'] = 'form-control'
+        if not campana_type == Campana.TYPE_ENTRANTE:
+            del self.fields['set_auto_attend_inbound']
+            del self.fields['auto_attend_inbound']
+        if not campana_type == Campana.TYPE_DIALER:
+            del self.fields['set_auto_attend_dialer']
+            del self.fields['auto_attend_dialer']

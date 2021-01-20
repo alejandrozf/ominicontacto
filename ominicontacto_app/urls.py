@@ -969,6 +969,19 @@ urlpatterns = [
             views_archivo_de_audio.ArchivoAudioDeleteView.as_view()),
         name='eliminar_archivo_audio',
         ),
+
+    # ==========================================================================
+    # Configuracion de agentes en campaña
+    # ==========================================================================
+    url(r'^campana/configurar-agentes/(?P<pk_campana>\d+)/$',
+        login_required(
+            views_campana.ConfiguracionDeAgentesDeCampanaView.as_view()),
+        name='configurar_agentes_en_campana',
+        ),
+
+
+
+
     url(r'^chat/mensaje/$',
         login_required(views.mensaje_chat_view),
         name='nueva_mensaje_chat',

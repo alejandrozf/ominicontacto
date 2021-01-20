@@ -390,9 +390,13 @@ class ApiStatusCalificacionLlamada(APIView):
     def post(self, request):
         redis_data = CalificacionLLamada()
         agente = self.request.user.get_agente_profile()
-        calificacion = redis_data.get_value(agente, 'CALIFICADA')
-        call_data = redis_data.get_value(agente, 'CALLDATA')
-        if calificacion == 'TRUE':
+        datos_llamada = redis_data.get_family(agente)
+        call_data = datos_llamada.get('CALLDATA')
+        if not datos_llamada:
+            return Response(data={
+                'calificada': 'True',
+            })
+        if datos_llamada['CALIFICADA'] == 'TRUE':
             return Response(data={
                 'calificada': 'True',
             })
