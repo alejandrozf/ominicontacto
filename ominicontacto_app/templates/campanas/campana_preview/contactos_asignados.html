@@ -56,21 +56,33 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </div>
     </div>
     <br>
+        <div class="col col-xs-12 col-md-12 col-lg-12 filter_agent">
+            <div class="col-md-2"><label>{% trans 'Filtrar por agente' %}</label></div>
+            <div class="col-md-2"><select class="form-control" id="filter_agent">
+                    <option value="" selected="selected" label="------------"></option>
+                    {% for agente in agentes %}
+                        <option value="{{agente.id}}">{{agente}}</option>
+                    {% endfor %}
+                </select></div>
+        </div>
+    <br>
     <div class="row">
-        <div class="col-md-7">
+        <div class="col-md-8">
             <table class="table" id="contactoAsignadoTable">
                 <div class="hidden" id="alertContacto">{% trans "* Tiene que seleccionar minimo 1 contacto" %}</div>
                 <thead>
                     <tr>
-                        <th></th>
+                        <th><input type="checkbox" class="selectAll" name="selectAll" value="all"></th>
                         <th>{% trans "Id" %}</th>
                         <th>{% trans "Telefono" %}</th>
+                        <th>{% trans "Agente" %}</th>
+                        <th>{% trans "Estado" %}</th>
                         <th>{% trans "Id Externo" %}</th>
                     </tr>
                 </thead>
             </table>
         </div>
-        <div class="col-md-5" id="alignTableContacto">
+        <div class="col-md-4" id="alignTableContacto">
             <table class="table" id="reservarLiberarContactoTable">
                 <div class="hidden" id="alertAgente">{% trans "* Tiene que seleccionar un Agente" %}</div>
                 <thead>

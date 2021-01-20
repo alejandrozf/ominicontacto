@@ -23,7 +23,9 @@ var contactos_asignados;
 
 $(function () {
     createDataTable();
-    // setInterval(function () { table_agentes.ajax.reload(); }, 5000);
+    all_checkbox();
+    subcribeFilterChange();
+    
     liberar_reservar_contacto();
 });
 function createDataTable() {
@@ -49,9 +51,19 @@ function createDataTable() {
                 'defaultContent': '',
                 'aTargets': [ -1 ]
             },
-            {   'data': 'id',},
+            { 'data': 'id',},
             { 'data': 'telefono'},
+            { 'data': 'agente'},
+            { 'data': 'estado'},
             { 'data': 'id_externo'},
+        ],
+        'searchCols': [
+            null,
+            null,
+            null,
+            {'search': filtro_agente(), },
+            null,
+            null,
         ],
         language: {
             search: gettext('Buscar: '),
@@ -130,5 +142,33 @@ function contactos_seleccionados(){
     liberar_reservar_form.prepend('<input type="hidden" name="contacts_selected" id="contacts_selected" value="['+array_ids+']">');
     return id_contactos;
 }
+function all_checkbox(){
+    $(document).ready(function () {
+        var datatable = $('#contactoAsignadoTable').DataTable();
+        $('.selectAll').on('click', function(e) {
+            if ($(this).is(':checked')){
+                datatable.rows({filter: 'applied'}).select();        
+            } else {
+                datatable.rows({filter: 'applied'}).deselect(); 
+            }
+        });
+    } );
+}
 
+function filtro_agente() {
+    var grupo = $('#filter_agent option:selected').html();
+    return grupo;
+}
+
+function subcribeFilterChange() {
+
+    $('#filter_agent').change(function () {
+        var selection = $('#filter_agent').find('option:selected');
+        $('#filter_agent option').not(selection).removeAttr('selected');
+        selection.attr('selected', true);
+        $('#contactoAsignadoTable').DataTable().destroy();
+        createDataTable();
+        all_checkbox();
+    });
+}
 
