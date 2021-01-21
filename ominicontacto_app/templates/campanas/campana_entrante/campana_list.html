@@ -36,6 +36,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <table class="table">
         <thead>
             <tr>
+                <th>{% trans 'Id' %}</th>
                 <th>{% trans 'Nombre' %}</th>
                 <th>{% trans 'Base de datos' %}</th>
                 <th>{% trans 'Estado' %}</th>
@@ -45,6 +46,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <tbody>
         {% for campana in activas %}
             <tr>
+                <td>{{ campana.id }}</td>
                 <td width="25%">
                     <a href="{% url 'campana_update' campana.pk %}">{{ campana.nombre }}</a>
                 </td>
@@ -108,6 +110,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <table class="table">
         <thead>
             <tr>
+                <th>{% trans 'Id' %}</th>
                 <th>{% trans 'Nombre' %}</th>
                 <th>{% trans 'Base de datos' %}</th>
                 <th>{% trans 'Estado' %}</th>

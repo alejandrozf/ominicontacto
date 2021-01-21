@@ -20,7 +20,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n  %}
 {% for campana in borradas %}
            <tr>
-                <td width="45%">
+               <td>{{ campana.id }}</td>
+               <td width="45%">
                     {{ campana.nombre }}
                     <a href="{% url 'campana_dialer_detalle' campana.pk %}">
                         <span class="glyphicon glyphicon-zoom-in" aria-hidden="true" title="ver detalles"></span>
