@@ -25,6 +25,8 @@ Asterisk:
   - Added redis-py v3.5.3
 16.12.0
   - Upgraded asterisk version to 16.12.0
+16.16.0
+  - Upgraded asterisk version to 16.16.0
 
 pbx-emulator image versions:
 
