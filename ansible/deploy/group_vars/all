@@ -14,6 +14,7 @@ rtpengine_version: '{{ lookup("env","RTPENGINE_VERSION") }}'
 virtualenv_version: '{{ lookup("env","VIRTUALENV_VERSION") }}'
 postgresql_version: '{{ lookup("env","POSTGRESQL_VERSION") }}'
 redis_version: '{{ lookup("env","REDIS_VERSION") }}'
+redisgears_version: '{{ lookup("env","REDISGEARS_VERSION") }}'
 wombat_version: '{{ lookup("env","WOMBAT_VERSION") }}'
 websockets_version: '{{ lookup("env","WEBSOCKETS_VERSION") }}'
 
@@ -24,10 +25,10 @@ redis_package: "{{ packages_url }}/redis/redis-{{ redis_version }}.x86_64.rpm"
 rtpengine_package: "{{ packages_url }}/rtpengine/rtpengine-{{ rtpengine_version }}.x86_64.rpm"
 virtualenv_package: "{{ packages_url }}/virtualenv/virtualenv-{{ virtualenv_version }}.x86_64.rpm"
 websockets_package: "{{ packages_url }}/omnileads-websockets/omnileads-websockets-{{ websockets_version }}.x86_64.rpm"
+redisgears_package: "{{ packages_url }}/redis/redisgears-{{ redisgears_version }}.so"
 ################ URL's ############################
 epel_repository: https://download-ib01.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 #URLS para descargar asterisk
-vps_packages_url: http://freetech.com.ar/rpms
 admin_user: admin
 usuario: omnileads
 install_prefix: '{{ lookup("env","INSTALL_PREFIX") }}'

@@ -9,7 +9,7 @@ omni_ip: "{{ inventory_hostname }}"
 kamailio_image: "kamailio/kamailio-ci:{{ kamailio_version.split('.')[0] }}.{{ kamailio_version.split('.')[1] }}"
 mariadb_image: bitnami/mariadb:latest
 nginx_image: nginx:1.19.0-alpine
-redis_image: "redis:{{ redis_version }}-alpine"
+redis_image: "redislabs/redisgears:{{ redisgears_version }}"
 rtpengine_image: drachtio/rtpengine:latest
 # Images for EFK
 elasticsearch_image: elasticsearch:7.1.0

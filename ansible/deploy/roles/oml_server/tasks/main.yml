@@ -32,6 +32,10 @@
 - debug: msg="The download of redis-{{ redis_version }} package from s3 source failed, contact your administrator"
   when: s3_download is failed
 
+- name: Downloading redisgears module
+  get_url: url={{ redisgears_package }} dest=/usr/lib64/redis/modules/ mode=755
+  tags: postinstall
+
 - name: Modifying redis for listening in all addresses
   lineinfile: path=/etc/redis.conf regexp="^bind" line="#bind" state=present
   tags: postinstall
@@ -41,6 +45,15 @@
   lineinfile: path=/etc/redis.conf regexp="^protected-mode" line="protected-mode no" state=present
   tags: postinstall
   when: asterisk_host is defined or websockets_host is defined
+
+- name: Modifying redis to include redisgears module
+  blockinfile:
+    path: /etc/redis.conf
+    insertafter: "# loadmodule"
+    state: present
+    block: |
+      loadmodule /usr/lib64/redis/modules/redisgears-{{ redisgears_version }}.so
+  tags: postinstall
 
 # Se imprime que el virtualenv no esta instalado si la version actual es inferior a la requerida
 - debug: msg="Virtualenv {{ virtualenv_version }} is not installed, proceeding to install"
@@ -124,9 +137,14 @@
   command: yum install -y name=python3-devel state=present
   when: ansible_distribution != "Amazon" and postgres_host is defined
 
+- name: Modifying ownership of folder /var/opt and redis.conf
+  shell: chown -R redis. /var/opt /etc/redis.conf /var/log/redis
+  tags: postinstall
+
 - name: Start and enable redis service
   service: name=redis state=restarted enabled=yes daemon_reload=yes
   when: redis_host is not defined
+  tags: postinstall
 
 # Se crea la llave publica y privada del usuario omnileads #https://docs.ansible.com/ansible/2.5/modules/user_module.html
 - name: Create {{ usuario }} user and public key
