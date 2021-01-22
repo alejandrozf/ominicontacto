@@ -70,7 +70,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         {% for campana_pk, campana_nombre in campanas_preview_activas %}
                             <tr>
                                 <td>
-                                    <button class="obtener-contacto btn btn-primary" data-campana="{{ campana_pk }}"
+                                    <button id="preview-{{ campana_pk }}" class="obtener-contacto btn btn-primary" data-campana="{{ campana_pk }}"
                                             data-toggle="tooltip" data-placement="top"
                                             title="{% trans 'Haga click para obtener un contacto de la campaña' %}">{{ campana_nombre }}</button>
                                 </td>
