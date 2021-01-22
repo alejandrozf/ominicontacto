@@ -1290,6 +1290,7 @@ class SupervisorCampanaTests(CampanasTests):
     @patch.object(CampanaService, 'crear_lista_contactos_wombat')
     @patch.object(CampanaService, 'crear_lista_asociacion_campana_wombat')
     @patch.object(CampanaService, 'chequear_campanas_finalizada_eliminarlas')
+    @patch.object(CampanaService, 'reload_campana_wombat')
     @patch.object(SincronizarBaseDatosContactosService, 'crear_lista')
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
@@ -1298,7 +1299,8 @@ class SupervisorCampanaTests(CampanasTests):
             self, adicionar_agente_activo_cola, obtener_sip_agentes_sesiones_activas,
             crear_campana_wombat, crear_trunk_campana_wombat, crear_reschedule_campana_wombat,
             crear_endpoint_campana_wombat, crear_endpoint_asociacion_campana_wombat,
-            crear_lista_contactos_wombat, crear_lista_asociacion_campana_wombat,
+            crear_lista_contactos_wombat, reload_campana_wombat,
+            crear_lista_asociacion_campana_wombat,
             chequear_campanas_finalizada_eliminarlas, crear_lista,
             _generar_y_recargar_configuracion_asterisk, connect):
         url = reverse('campana_dialer_create')
@@ -1330,11 +1332,12 @@ class SupervisorCampanaTests(CampanasTests):
     @patch.object(CampanaService, 'update_endpoint')
     @patch.object(ActivacionQueueService, '_generar_y_recargar_configuracion_asterisk')
     @patch.object(CampanaService, 'chequear_campanas_finalizada_eliminarlas')
+    @patch.object(CampanaService, 'reload_campana_wombat')
     @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
     def test_usuario_logueado_puede_modificar_campana_dialer(
             self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
-            activar, crear_campana_wombat, update_endpoint,
+            reload_campana_wombat, activar, crear_campana_wombat, update_endpoint,
             _generar_y_recargar_configuracion_asterisk, chequear_campanas_finalizada_eliminarlas):
         url = reverse('campana_dialer_update', args=[self.campana_dialer.pk])
         nuevo_objetivo = 3
@@ -1567,13 +1570,15 @@ class SupervisorCampanaTests(CampanasTests):
     @patch.object(SincronizarBaseDatosContactosService, 'crear_lista')
     @patch.object(ActivacionQueueService, "_generar_y_recargar_configuracion_asterisk")
     @patch.object(CampanaService, 'chequear_campanas_finalizada_eliminarlas')
+    @patch.object(CampanaService, 'reload_campana_wombat')
     @patch("ominicontacto_app.views_campana_creacion.obtener_sip_agentes_sesiones_activas")
     @patch("ominicontacto_app.views_campana_creacion.adicionar_agente_cola")
     def test_usuario_logueado_puede_crear_campana_dialer_desde_template(
             self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
-            crear_campana_wombat, crear_trunk_campana_wombat, crear_reschedule_campana_wombat,
-            crear_endpoint_campana_wombat, crear_endpoint_asociacion_campana_wombat,
-            crear_lista_contactos_wombat, crear_lista_asociacion_campana_wombat, crear_lista,
+            reload_campana_wombat, crear_campana_wombat, crear_trunk_campana_wombat,
+            crear_reschedule_campana_wombat, crear_endpoint_campana_wombat,
+            crear_endpoint_asociacion_campana_wombat, crear_lista_contactos_wombat,
+            crear_lista_asociacion_campana_wombat, crear_lista,
             _generar_y_recargar_configuracion_asterisk, chequear_campanas_finalizada_eliminarlas,
             connect):
         url = reverse('crea_campana_dialer_template', args=[self.campana_dialer.pk, 1])
