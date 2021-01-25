@@ -56,6 +56,7 @@ A continuación se prosigue con la creación de nuestra campaña entrante.
 - **Posición de anuncio:** Anunciar posición del llamante en la cola.
 - **Wait/position announce frecuency:** Es el tiempo (en segundos) de espera o posición para una frecuencia de anuncios.
 - **Musica de espera:** Indica el Playlist que escuchará el cliente cuando su llamada este en espera.
+- **Anuncio de entrada para el agente:** Audio que se reproduce al agente cuando recibe una llamada entrante.
 
 .. note::
   Los parámetros Ring time y Agent callback time, quedan sin efecto para aquellas llamadas que reciban agentes cuyo *grupo de agentes* esté configurado con el atributo

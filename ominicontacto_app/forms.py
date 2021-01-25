@@ -191,6 +191,7 @@ class QueueEntranteForm(forms.ModelForm):
         self.fields['wait_announce_frequency'].required = False
         self.fields['audios'].queryset = ArchivoDeAudio.objects.all()
         self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
+        self.fields['audio_previo_conexion_llamada'].queryset = ArchivoDeAudio.objects.all()
         self.fields['musiconhold'].queryset = Playlist.objects.annotate(
             Count('musicas')).filter(musicas__count__gte=1)
         tipo_destino_choices = [EMPTY_CHOICE]
@@ -222,7 +223,7 @@ class QueueEntranteForm(forms.ModelForm):
                   'audios', 'announce_frequency', 'audio_de_ingreso', 'campana',
                   'tipo_destino', 'destino', 'ivr_breakdown',
                   'announce_holdtime', 'announce_position', 'musiconhold',
-                  'wait_announce_frequency',)
+                  'wait_announce_frequency', 'audio_previo_conexion_llamada')
 
         help_texts = {
             'timeout': _('En segundos'),
@@ -252,6 +253,7 @@ class QueueEntranteForm(forms.ModelForm):
             'ivr_breakdown': forms.Select(attrs={'class': 'form-control'}),
             'musiconhold': forms.Select(attrs={'class': 'form-control'}),
             'wait_announce_frequency': forms.TextInput(attrs={'class': 'form-control'}),
+            'audio_previo_conexion_llamada': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def clean_maxlen(self):

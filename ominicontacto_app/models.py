@@ -1489,6 +1489,9 @@ class Queue(models.Model):
     audios = models.ForeignKey(ArchivoDeAudio, blank=True, null=True,
                                on_delete=models.SET_NULL,
                                related_name='queues_anuncio_periodico')
+    audio_previo_conexion_llamada = models.ForeignKey(ArchivoDeAudio, blank=True, null=True,
+                                                      on_delete=models.SET_NULL,
+                                                      related_name='queues_anuncio_entrada')
     dial_timeout = models.PositiveIntegerField(default=25, blank=True, null=True)
 
     # Predictiva
