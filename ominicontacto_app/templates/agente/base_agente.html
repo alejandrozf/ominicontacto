@@ -617,7 +617,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <img src="{% static 'ominicontacto/Img/reload_green.png' %}" height="10" width="10" align="center">
                   </button>
                 </div>
-                
+
                 <div id="timeBar">
                     <div id="timers">
                         <div id="operationTime" class="label label-default">
@@ -629,9 +629,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             <span id="horaP"></span><span id="minsP"></span><span id="segsP"></span>
                         </div>
                         <!-- <div id="sumTime" class="label label-default">
-                            Total:
-                            <span id="horaT"></span><span id="minsT"></span><span id="segsT"></span>
-                        </div> -->
+                             Total:
+                             <span id="horaT"></span><span id="minsT"></span><span id="segsT"></span>
+                             </div> -->
+                    </div>
+                    <div id="nuevoContactoPreviewDiv">
+                        {% if campanas_preview_activas %}
+                            <input class="hidden" name="campanas_preview_activas" id="campanas_preview_activas" type="text" value="{{ campanas_preview_activas }}"/>
+                            <button class="hidden" type="button" id="nuevoContactoPreview">{% trans 'Obtener contacto preview' %}</button>
+                        {% endif %}
                     </div>
                     <div id="timersControls">
                         <span id="UserStatus"></span>
@@ -875,38 +881,39 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <script type="text/javascript" src="{% static 'ominicontacto/JS/Calendar.js' %}"></script>
 {% endcompress %}
 <script type="text/javascript" src="{% static 'JS/ext/jitsi_external_api.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/seleccionContactosPreview.js' %}"></script>
 <script type="text/javascript">
 
-$(document).ready(function () {
+ $(document).ready(function () {
 
-    /* Toggle sidebar */
-    $('#sidebarCollapse').on('click',function(){
-        $('#navBar').toggleClass('active');
-    });
+   /* Toggle sidebar */
+   $('#sidebarCollapse').on('click',function(){
+     $('#navBar').toggleClass('active');
+   });
 
-    /* Toggle webphone from bottom bar and close button */
-    $('#btnCloseWebphone').on('click',function(){
-        $('#wrapperWebphone').removeClass('active');
-    });
+   /* Toggle webphone from bottom bar and close button */
+   $('#btnCloseWebphone').on('click',function(){
+     $('#wrapperWebphone').removeClass('active');
+   });
 
-    /* Toggle webphone from bottom bar and close button */
-    $('#webCall').on('click',function(){
-        $('#wrapperWebphone').toggleClass('active');
-    });
+   /* Toggle webphone from bottom bar and close button */
+   $('#webCall').on('click',function(){
+     $('#wrapperWebphone').toggleClass('active');
+   });
 
-    // Get current window path
-    currentPath = window.location.pathname;
+   // Get current window path
+   currentPath = window.location.pathname;
 
-    // Add active class to current selected anchor
-    $("a[href='" + currentPath + "']").addClass("active");
+   // Add active class to current selected anchor
+   $("a[href='" + currentPath + "']").addClass("active");
 
-    // Expand sidebar first level submenus for current selected anchor
-    $("a[href='" + currentPath + "']").closest('ul .submenu').collapse('show');
+   // Expand sidebar first level submenus for current selected anchor
+   $("a[href='" + currentPath + "']").closest('ul .submenu').collapse('show');
 
-    // Add active class to sidebar icon
-    $("a[href='" + currentPath + "']").closest('.main-menu-li').find('.icon').addClass('active');
+   // Add active class to sidebar icon
+   $("a[href='" + currentPath + "']").closest('.main-menu-li').find('.icon').addClass('active');
 
-});
+ });
 
 </script>
 

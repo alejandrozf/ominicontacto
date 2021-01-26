@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-12 14:51-0300\n"
+"POT-Creation-Date: 2021-01-22 14:46-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -315,7 +315,7 @@ msgid ""
 "solicitar uno nuevo"
 msgstr "Oops, contact assignement timer expired. Please select a new one."
 
-#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:137
+#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:138
 msgid ""
 "Contacto asignado por llamado previo. Califique el contacto o liberelo para "
 "poder recibir un nuevo contacto."
@@ -323,11 +323,11 @@ msgstr ""
 "Last assigned contact. You need to disposition this call, or release the "
 "contact to proceed with a new one."
 
-#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:191
+#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:194
 msgid "Contacto Liberado"
 msgstr "Contact Released"
 
-#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:198
+#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:201
 msgid "No se pudo liberar al contacto. Intente pedir otro."
 msgstr "Unable to release contact. Please select a new one."
 
@@ -378,10 +378,6 @@ msgstr "Connected calls"
 #: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:162
 msgid "Tiempo de pausa recreativa"
 msgstr "Time of recreational pause"
-
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:167
-msgid "Ventas"
-msgstr "Engaged disposition calls"
 
 #: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:172
 msgid "Número marcado"
@@ -581,3 +577,6 @@ msgstr "Mimic role permissions"
 #: ominicontacto_app/static/ominicontacto/JS/supervision/userRoleManagement.js:288
 msgid "Agregar permisos de Rol"
 msgstr "Add Role permissions"
+
+#~ msgid "Ventas"
+#~ msgstr "Engaged disposition calls"

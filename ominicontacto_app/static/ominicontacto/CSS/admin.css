@@ -1033,12 +1033,12 @@ body.wrapper-page-error {
   display: flex;
 }
 
-.add_supervisor li {
+.add_supervisor li, #id_supervisors li{
   display: inline-block !important;
-  width: 240px;
+  width: 310px;
 }
 
-.add_supervisor ul {
+.add_supervisor ul, #id_supervisors ul{
   padding: 10px;
 }
 

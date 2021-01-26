@@ -58,6 +58,10 @@ GNU/Linux CentOS-7 o Amazon Linux. A este tipo de instalación lo llamamos **OMn
 Despliegue de OMniLeads sobre contenedores Docker
 *************************************************
 
+.. danger::
+
+	 Estamos realizando una refactorización importante del despliegue de OMniLeads sobre contenedores Docker. Solo estará disponible el despliegue que presentamos en esta documentación hasta el release 1.11.X
+
 OMniLeads puede ser desplegado utilizando contenedores `Docker <https://www.docker.com>`_, esto extiende la posibilidad de ejecución de la aplicación sobre diversas
 distrubuciones de GNU/Linux.
 

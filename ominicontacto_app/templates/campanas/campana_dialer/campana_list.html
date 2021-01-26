@@ -46,6 +46,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <table class="table">
         <thead>
             <tr>
+                <th>{% trans 'Id' %}</th>
                 <th>{% trans 'Nombre' %}</th>
                 <th>{% trans 'Fecha Ini' %}</th>
                 <th>{% trans 'Fecha Fin' %}</th>
@@ -58,6 +59,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <tbody>
         {% for campana in activas %}
             <tr>
+                <td>{{ campana.id }}</td>
                 <td width="25%">
                     <a  href="#" data-toggle="modal" data-target="#myMapModal"  onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
                     <a href="{% url 'campana_dialer_detalle' campana.pk %}">
@@ -140,6 +142,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <table class="table">
         <thead>
             <tr>
+                <th>{% trans 'Id' %}</th>
                 <th>{% trans 'Nombre' %}</th>
                 <th>{% trans 'Fecha Ini' %}</th>
                 <th>{% trans 'Fecha Fin' %}</th>
@@ -151,6 +154,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <tbody>
         {% for campana in pausadas %}
             <tr>
+                <td>{{ campana.id }}</td>
                 <td width="25%">
                     <a  href="#" data-toggle="modal" data-target="#myMapModal"  onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
                     <a href="{% url 'campana_dialer_detalle' campana.pk %}">
@@ -217,6 +221,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <table class="table">
         <thead>
             <tr>
+                <th>{% trans 'Id' %}</th>
                 <th>{% trans 'Nombre' %}</th>
                 <th>{% trans 'Fecha Ini' %}</th>
                 <th>{% trans 'Fecha Fin' %}</th>
@@ -228,6 +233,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <tbody>
         {% for campana in inactivas %}
             <tr>
+                <td>{{ campana.id }}</td>
                 <td width="25%">
                     {{ campana.nombre }}
                     <a href="{% url 'campana_dialer_detalle' campana.pk %}">
@@ -297,6 +303,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <table class="table">
         <thead>
             <tr>
+                <th>{% trans 'Id' %}</th>
                 <th>{% trans 'Nombre' %}</th>
                 <th>{% trans 'Fecha Ini' %}</th>
                 <th>{% trans 'Fecha Fin' %}</th>
@@ -308,6 +315,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <tbody>
         {% for campana in finalizadas %}
             <tr>
+                <td>{{ campana.id }}</td>
                 <td width="25%">
                     <a  href="#" data-toggle="modal" data-target="#myMapModal"  onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
                     <a href="{% url 'campana_dialer_detalle' campana.pk %}">
@@ -372,6 +380,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <table class="table">
         <thead>
             <tr>
+                <th>{% trans 'Id' %}</th>
                 <th>{% trans 'Nombre' %}</th>
                 <th>{% trans 'Fecha Ini' %}</th>
                 <th>{% trans 'Fecha Fin' %}</th>
@@ -382,6 +391,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <tbody id="t_body_borradas">
         {% for campana in borradas %}
             <tr>
+                <td>{{ campana.id }}</td>
                 <td width="25%">
                     {{ campana.nombre }}<a href="{% url 'campana_dialer_detalle' campana.pk %}">
                         &nbsp;<span class="icon icon-search" aria-hidden="true" title="ver detalles"></span>

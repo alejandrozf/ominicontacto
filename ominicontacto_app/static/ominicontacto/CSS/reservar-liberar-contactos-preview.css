@@ -5,3 +5,9 @@
 #alertContacto, #alertAgente{
 	color: red;
 }
+.select-checkbox{
+	width: 2px;
+}
+.filter_agent{
+	display: flex;
+}

@@ -60,6 +60,8 @@ Para desplegar esta arquitectura [:ref:`about_install_tradicional`], se debe tra
   #localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
   192.168.95.100 ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
 
+En caso de que la conexión por SSH se vaya a hacer por un puerto diferente al 22 y un usuario diferente a root, modificar los valores en `ansible_ssh_port` y `ansible_user`
+
 .. _about_install_inventory_docker:
 
 OMniLeads sobre contenedores Docker

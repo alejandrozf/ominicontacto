@@ -43,3 +43,9 @@ fue generado por el administrador para cada campaña.
 .. image:: images/about_agent_manual_camp_5.png
 
 *Figure 6: call disposition*
+
+El agente tiene también la posibilidad de seleccionar más rápidamente el próximo contacto a llamar en la última campaña preview con que ha interactuado seleccionando el botón que se muestra en la barra de operación.
+
+.. image:: images/get_next_preview_contact.png
+
+*Figure 6: get next preview contact*

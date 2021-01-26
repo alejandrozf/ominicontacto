@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-12 14:51-0300\n"
+"POT-Creation-Date: 2021-01-22 14:46-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -316,7 +316,7 @@ msgstr ""
 "OPS, se venció el tiempo de asignación de este contacto.Por favor intente "
 "solicitar uno nuevo"
 
-#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:137
+#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:138
 msgid ""
 "Contacto asignado por llamado previo. Califique el contacto o liberelo para "
 "poder recibir un nuevo contacto."
@@ -324,11 +324,11 @@ msgstr ""
 "Contacto asignado por llamado previo. Califique el contacto o liberelo para "
 "poder recibir un nuevo contacto."
 
-#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:191
+#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:194
 msgid "Contacto Liberado"
 msgstr "Contacto Liberado"
 
-#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:198
+#: ominicontacto_app/static/ominicontacto/JS/campanasPreviewAgente.js:201
 msgid "No se pudo liberar al contacto. Intente pedir otro."
 msgstr "No se pudo liberar al contacto. Intente pedir otro."
 
@@ -378,10 +378,6 @@ msgstr ""
 
 #: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:162
 msgid "Tiempo de pausa recreativa"
-msgstr ""
-
-#: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:167
-msgid "Ventas"
 msgstr ""
 
 #: ominicontacto_app/static/ominicontacto/JS/dashboardAgentes.js:172

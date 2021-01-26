@@ -114,6 +114,7 @@ Por favor intente solicitar uno nuevo');
             var nombreCampana = $button.text();
             var idCampana = $button.attr('data-campana');
             var url = Urls.campana_preview_dispatcher(idCampana);
+            sessionStorage.setItem('ultimaCampanaPreviewSeleccionada', idCampana);
             $.post(url)
                 .success(function (data) {
                     if (data['result'] != 'OK') {
@@ -139,7 +140,9 @@ Por favor intente solicitar uno nuevo');
                             $('#liberar_contacto').show();
                             $('#calificar_contacto').show();
                             var url_parameters = [idCampana, data['contacto_id'], data['agente_id']];
-                            var calificar_contacto_url = Urls.calificacion_formulario_update_or_create('0000', '1111');
+                            var call_data_json = data['calldata'];
+                            var calificar_contacto_url = Urls.calificacion_formulario_update_or_create(
+                                '0000', '1111') + encodeURIComponent(call_data_json);
                             var calificar_url = set_url_parameters(calificar_contacto_url, url_parameters);
                             $('#calificar_contacto').attr('href', calificar_url);
                         }

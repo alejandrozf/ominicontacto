@@ -508,6 +508,12 @@ urlpatterns = [
         ),
 
     url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
+        '/update_calificacion/(?P<call_data_json>.+)$',
+        login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
+        kwargs={'from': 'calificacion'},
+        name='calificacion_formulario_update_or_create'
+        ),
+    url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
         '/update_calificacion/$',
         login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
         kwargs={'from': 'calificacion'},
