@@ -2,7 +2,6 @@
 
 current_directory=`pwd`
 PATH=$PATH:~/.local/bin/
-PIP=`which pip`
 ANSIBLE=`which ansible`
 TMP_ANSIBLE='/var/tmp/ansible'
 USER_HOME=$(eval echo ~${SUDO_USER})
@@ -80,8 +79,7 @@ AnsibleExec() {
     echo "Beginning the Omnileads installation with Ansible, this installation process can last between 30-40 minutes"
     echo ""
     ${ANSIBLE}-playbook $verbose $TMP_ANSIBLE/build.yml \
-      --extra-vars "oml_release=$release_name \
-                    docker_root=$USER_HOME \
+      --extra-vars "docker_root=$USER_HOME \
                     repo_location=$REPO_LOCATION \
                     build_images=$BUILD_IMAGES" \
       --extra-vars "{\"devenv\":$DEVENV,\"prodenv\":$PRODENV }" \
@@ -114,6 +112,8 @@ AnsibleExec() {
       echo "##          Omnileads build ended successfully        ##"
       echo "###############################################################"
       echo ""
+      git checkout $current_directory/inventory
+      chown $SUDO_USER. $current_directory/inventory
     else
       echo ""
       echo "###################################################################################"

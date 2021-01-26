@@ -1,6 +1,7 @@
 #!/bin/bash
 
 PROGNAME=$(basename $0)
+PATH=$PATH:/usr/local/rvm/gems/ruby-2.7.2/bin
 
 CheckRPM() {
   echo "Checking if RPM exists in AWS s3 bucket"
@@ -19,13 +20,6 @@ AsteriskBuild() {
     echo "${PROGNAME}: ASTERISK_VERSION required" >&2
     exit 1
   fi
-
-  yum install -y  \
-    dh-autoreconf \
-    sqlite-devel \
-    subversion \
-    unixODBC \
-    unzip
 
   mkdir -p /usr/src/asterisk
   cd /usr/src/asterisk
@@ -94,24 +88,6 @@ KamailioBuild() {
     exit 1
   fi
 
-  yum install -y \
-    bison \
-    bison-devel \
-    expat \
-    expat-devel \
-    flex \
-    iptables-services \
-    libtool-ltdl-devel \
-    libxml2-devel \
-    libunistring-devel.x86_64 \
-    libuuid \
-    libuuid-devel \
-    lynx \
-    redis \
-    hiredis \
-    hiredis-devel \
-    python-devel
-
   mkdir -p /usr/src/kamailio
   cd /usr/src/kamailio
 
@@ -143,28 +119,6 @@ VirtualenvBuild() {
     echo "${PROGNAME}: VIRTUALENV_VERSION required" >&2
     exit 1
   fi
-  yum install -y \
-    python3 \
-    python3-devel \
-    python3-pip.noarch \
-    cairo \
-    cairo-devel \
-    libxslt-devel \
-    libxslt-python \
-    libxslt \
-    libjpeg-turbo-devel \
-    libffi-devel \
-    libffi \
-    libpqxx \
-    libpqxx-devel \
-    libsass-devel \
-    libsass \
-    pycairo \
-    pycairo-devel \
-    python2-psycogreen.noarch \
-    python-lxml \
-    python-psycopg2.x86_64 \
-    git
 
   # Setting virtualenv
   python3 -m venv {{ virtualenv_location }}
@@ -182,20 +136,6 @@ RtpengineBuild() {
     exit 1
   fi
 
-  yum install -y \
-    iptables-devel \
-    xmlrpc-c-devel \
-    xmlrpc-c \
-    glib2-devel \
-    glib2 \
-    pcre \
-    pcre-devel \
-    libevent-devel \
-    json-glib-devel \
-    libpcap-devel \
-    hiredis \
-    hiredis-devel
-
   mkdir -p /usr/src/rtpengine
   cd /usr/src/rtpengine
 
@@ -204,18 +144,13 @@ RtpengineBuild() {
   # 1.5 jobs per core works out okay
   : ${JOBS:=$(( $(nproc) + $(nproc) / 2 ))}
 
-  # Install ffmpeg
-  rpm -v --import http://li.nux.ro/download/nux/RPM-GPG-KEY-nux.ro
-  rpm -Uvh http://li.nux.ro/download/nux/dextop/el7/x86_64/nux-dextop-release-0-5.el7.nux.noarch.rpm ||true
-  yum install ffmpeg ffmpeg-devel -y
-
   # Build of daemon
   cd daemon && make && cp rtpengine /usr/local/bin && cd ..
 
   # Modify kernel source in kernel rtpengine module Makefile and make of this module
-  KERNEL_SOURCE="\/usr\/src\/kernels\/\$(shell uname -r)"
-  sed -i "2s/.*/KSRC   ?= $KERNEL_SOURCE/g" kernel-module/Makefile
-  cd kernel-module && make && cp xt_RTPENGINE.ko /root/ && cd ..
+  #KERNEL_SOURCE="\/usr\/src\/kernels\/\$(shell uname -r)"
+  #sed -i "2s/.*/KSRC   ?= $KERNEL_SOURCE/g" kernel-module/Makefile
+  #cd kernel-module && make && cp xt_RTPENGINE.ko /root/ && cd ..
 
   # Make of iptables-extension
   cd iptables-extension && make && cp libxt_RTPENGINE.so /lib64/xtables && cd ..
@@ -248,7 +183,7 @@ do
         THINGS_TO_BUILD="{{ kamailio_location}} /etc/systemd/system/kamailio.service"
         KamailioBuild
       elif [ "$COMPONENT" == "rtpengine" ]; then
-        THINGS_TO_BUILD="/usr/local/bin/rtpengine /root/xt_RTPENGINE.ko /lib64/xtables/libxt_RTPENGINE.so /etc/systemd/system/rtpengine.service"
+        THINGS_TO_BUILD="/usr/local/bin/rtpengine /lib64/xtables/libxt_RTPENGINE.so /etc/systemd/system/rtpengine.service"
         RtpengineBuild
       elif [ "$COMPONENT" == "virtualenv" ]; then
         THINGS_TO_BUILD="{{ virtualenv_location}} /etc/systemd/system/omnileads.service"

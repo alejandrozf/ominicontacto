@@ -78,9 +78,9 @@ build-docker-devenv:
 
 build-aio:
   stage: build
-  image: freetechsolutions/ansible:centos7
+  image: freetechsolutions/fpm-ansible:centos7
   script:
-    - python ansible/build/edit_inventory.py --aio_build=yes
+    - python2 ansible/build/edit_inventory.py --aio_build=yes
     - cd ansible/build && ./build.sh --aio-build
   only:
     - /.*build-all.*$/

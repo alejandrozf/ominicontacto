@@ -23,37 +23,6 @@
     - { option: "timeout", value: "300" }
     - { option: "minrate", value: "100" }
 
-# Paquetes preliminares para el buildeo
-- name: Installing preliminar packages
-  yum: name={{ item }} state=present update_cache=yes
-  with_items:
-    - tftp-server
-    - crontabs
-    - gcc
-    - gcc-c++
-    - cronie
-    - openssl-devel
-    - cronie-anacron
-    - make
-    - gdb
-    - net-tools
-    - gnutls-devel
-    - python-devel
-    - texinfo
-    - kernel-headers
-    - acl
-    - bind-utils
-    - ruby-devel
-    - rpm-build
-    - rubygems
-
-# Se instala la herramienta fpm
-- name: Installing ffi v1.12.2 and fpm
-  shell: "{{ item }}"
-  with_items:
-    - gem install ffi -v 1.12.2
-    - gem install --no-ri --no-rdoc fpm
-
 # Se crean los directorios para el build
 - name: Create build directories
   file: name={{ item }} state=directory recurse=yes owner=root group=root
@@ -96,6 +65,5 @@
   with_items:
     - "./build_component.sh --version={{ asterisk_version }} --component=asterisk"
     - "./build_component.sh --version={{ kamailio_version }} --component=kamailio"
-    - "./build_component.sh --version={{ redis_version }} --component=redis"
     - "./build_component.sh --version={{ rtpengine_version }} --component=rtpengine"
     - "./build_component.sh --version={{ virtualenv_version }} --component=virtualenv"
