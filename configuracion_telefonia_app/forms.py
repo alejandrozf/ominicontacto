@@ -32,7 +32,8 @@ from django.utils.translation import ugettext_lazy as _
 from configuracion_telefonia_app.models import (PatronDeDiscado, RutaSaliente, RutaEntrante,
                                                 TroncalSIP, OrdenTroncal, DestinoEntrante, IVR,
                                                 OpcionDestino, ValidacionTiempo, GrupoHorario,
-                                                IdentificadorCliente, Playlist, MusicaDeEspera)
+                                                IdentificadorCliente, Playlist, MusicaDeEspera,
+                                                AmdConf)
 from ominicontacto_app.models import ArchivoDeAudio
 from ominicontacto_app.views_archivo_de_audio import convertir_archivo_audio
 
@@ -623,6 +624,35 @@ class PlaylistForm(forms.ModelForm):
     class Meta:
         model = Playlist
         exclude = ()
+
+
+class AmdConfForm(forms.ModelForm):
+
+    class Meta:
+        model = AmdConf
+        exclude = ()
+        widgets = {
+            'initial_silence': forms.NumberInput(attrs={'class': 'form-control'}),
+            'greeting': forms.NumberInput(attrs={'class': 'form-control'}),
+            'after_greeting_silence': forms.NumberInput(attrs={'class': 'form-control'}),
+            'total_analysis_time': forms.NumberInput(attrs={'class': 'form-control'}),
+            'min_word_length': forms.NumberInput(attrs={'class': 'form-control'}),
+            'between_words_silence': forms.NumberInput(attrs={'class': 'form-control'}),
+            'maximum_number_of_words': forms.NumberInput(attrs={'class': 'form-control'}),
+            'maximum_word_length': forms.NumberInput(attrs={'class': 'form-control'}),
+            'silence_threshold': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+        labels = {
+            'initial_silence': _('Silencio inicial (ms)'),
+            'greeting': _('Saludo (ms)'),
+            'after_greeting_silence': _('Silencio post saludo (ms)'),
+            'total_analysis_time': _('Tiempo de análisis (ms)'),
+            'min_word_length': _('Duración mínima de cada palabra (ms)'),
+            'between_words_silence': _('Silencio entre palabras (ms)'),
+            'maximum_number_of_words': _('Número máximo de palabras'),
+            'maximum_word_length': _('Largo máximo de cada palabra (ms)'),
+            'silence_threshold': _('Nivel de ruido'),
+        }
 
 
 class MusicaDeEsperaForm(forms.ModelForm):

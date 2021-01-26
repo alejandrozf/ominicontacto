@@ -28,7 +28,7 @@ from ominicontacto_app.models import AgenteProfile, Pausa, Campana
 from ominicontacto_app.utiles import convert_audio_asterisk_path_astdb
 from configuracion_telefonia_app.models import (
     RutaSaliente, IVR, DestinoEntrante, ValidacionFechaHora, GrupoHorario, IdentificadorCliente,
-    TroncalSIP, RutaEntrante, DestinoPersonalizado
+    TroncalSIP, RutaEntrante, DestinoPersonalizado, AmdConf
 )
 
 import logging as _logging
@@ -489,6 +489,35 @@ class PausaFamily(AbstractRedisFamily):
 
     def get_nombre_families(self):
         return "OML:PAUSE"
+
+
+class AmdConfFamily(AbstractRedisFamily):
+
+    def _create_dict(self, amd_conf):
+
+        dict_amd_conf = {
+            'NAME': 'GLOBAL_AMD',
+            'INITIAL_SILENCE': amd_conf.initial_silence,
+            'GREETING': amd_conf.greeting,
+            'AFTER_GREETING_SILENCE': amd_conf.after_greeting_silence,
+            'TOTAL_ANALYSIS_TIME': amd_conf.total_analysis_time,
+            'MIN_WORD_LENGTH': amd_conf.min_word_length,
+            'BETWEEN_WORDS_SILENCE': amd_conf.between_words_silence,
+            'MAXIMUM_NUMBER_OF_WORDS': amd_conf.maximum_number_of_words,
+            'MAXIMUM_WORD_LENGTH': amd_conf.maximum_word_length,
+            'SILENCE_THRESHOLD': amd_conf.silence_threshold,
+        }
+        return dict_amd_conf
+
+    def _obtener_todos(self):
+        """Obtener todas pausas"""
+        return AmdConf.objects.all()
+
+    def _get_nombre_family(self, family_member):
+        return "{0}:{1}".format(self.get_nombre_families(), family_member.id)
+
+    def get_nombre_families(self):
+        return "OML:AMD_CONF"
 
 
 class TrunkFamily(AbstractRedisFamily):

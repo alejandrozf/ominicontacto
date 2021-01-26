@@ -545,3 +545,23 @@ class MusicaDeEspera(models.Model):
     @property
     def descripcion(self):
         return '{0}-{1}'.format(self.id, self.nombre)
+
+
+class AmdConf(models.Model):
+    """
+    Representa la configuración AMD del sistema (toma prioridad por encima de amd.conf)
+    """
+    initial_silence = models.PositiveIntegerField(default=2500)
+
+    greeting = models.PositiveIntegerField(default=1500)
+    after_greeting_silence = models.PositiveIntegerField(default=800)
+
+    total_analysis_time = models.PositiveIntegerField(default=5000)
+
+    min_word_length = models.PositiveIntegerField(default=100)
+    between_words_silence = models.PositiveIntegerField(default=50)
+
+    maximum_number_of_words = models.PositiveIntegerField(default=3)
+
+    maximum_word_length = models.PositiveIntegerField(default=5000)
+    silence_threshold = models.PositiveIntegerField(default=256)
