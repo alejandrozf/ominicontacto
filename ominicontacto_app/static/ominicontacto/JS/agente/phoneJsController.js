@@ -327,6 +327,17 @@ class PhoneJSController {
                 self.view.setStateInputStatus('OnCall');
                 self.view.toogleVisibilityRecordButtons(self.phone.session_data);
                 self.click_2_call_dispatcher.disable();
+
+                if (self.phone.session_data.remote_call && 
+                    self.phone.session_data.remote_call.force_disposition) {
+                    self.click_2_call_dispatcher.last_call_configures_force_disposition = true;
+                    self.click_2_call_dispatcher.last_call_forces_disposition = 
+                        self.phone.session_data.remote_call.force_disposition == 'True';
+                }
+                else {
+                    self.click_2_call_dispatcher.last_call_configures_force_disposition = false;
+                }
+
                 self.keep_alive_sender.activate();
             },
             onDialingtransfer: function() {
@@ -506,10 +517,20 @@ class PhoneJSController {
 
         // Al finalizar la llamda se manda el agente a Pausa forzada.
         var self = this;
+        var call_auto_unpause = this.phone.session_data.remote_call.auto_unpause;
         this.phone.cleanLastCallData();
         this.setPause(ACW_PAUSE_ID, ACW_PAUSE_NAME);
-        if (this.agent_config.auto_unpause > 0) {
-            var m_seconds = this.agent_config.auto_unpause * 1000;
+        if (call_auto_unpause != undefined) {
+            if (call_auto_unpause > 0) {
+                let m_seconds = call_auto_unpause * 1000;
+                this.ACW_pause_timeout_handler = setTimeout(
+                    function() {self.autoLeaveACWPause(return_to_pause, pause_id, pause_name);},
+                    m_seconds
+                );
+            }
+        }
+        else if (this.agent_config.auto_unpause > 0) {
+            let m_seconds = this.agent_config.auto_unpause * 1000;
             this.ACW_pause_timeout_handler = setTimeout(
                 function() {self.autoLeaveACWPause(return_to_pause, pause_id, pause_name);},
                 m_seconds
@@ -561,9 +582,7 @@ class PhoneJSController {
     }
 
     leavePause(){
-        // TODO: desacoplar obligar-calificacion
-        this.obligarCalificacion = $('#obligar-calificacion').val();
-        if (this.obligarCalificacion == 'True'){
+        if (this.click_2_call_dispatcher.disposition_forced){
             var self = this;
             if (self.verificando_calificacion_por_pausa){
                 return;
@@ -751,11 +770,21 @@ class PhoneJSController {
         if (session_data.is_click2call) {
             return true;
         }
-        if (session_data.is_dialer && this.agent_config.auto_attend_DIALER) {
-            return true;
+        if (session_data.is_dialer){
+            if (session_data.remote_call.auto_attend){
+                return session_data.remote_call.auto_attend == 'True';
+            }
+            else if (this.agent_config.auto_attend_DIALER) {
+                return true;
+            }
         }
-        if (session_data.is_inbound && this.agent_config.auto_attend_IN) {
-            return true;
+        if (session_data.is_inbound){
+            if (session_data.remote_call.auto_attend){
+                return session_data.remote_call.auto_attend == 'True';
+            }
+            else if (this.agent_config.auto_attend_IN) {
+                return true;
+            }
         }
         if (session_data.is_off_campaign) {
             return true;

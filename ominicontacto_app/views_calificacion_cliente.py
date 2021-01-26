@@ -248,10 +248,17 @@ class CalificacionClienteFormView(FormView):
         calificacion_form = self.get_form(historico_calificaciones=formulario_llamada_entrante)
         bd_metadata = self.campana.bd_contacto.get_metadata()
         campos_telefono = bd_metadata.nombres_de_columnas_de_telefonos + ['telefono']
-        if self.agente.grupo.obligar_calificacion and self.call_data:
+
+        force_disposition = False
+        if self.call_data:
+            force_disposition = self.agente.grupo.obligar_calificacion
+            if 'force_disposition' in self.call_data:
+                force_disposition = self.call_data['force_disposition']
+        if force_disposition:
             calificacion_llamada = CalificacionLLamada()
             calificacion_llamada.create_family(self.agente, self.call_data,
                                                self.kwargs['call_data_json'], calificado=False)
+
         return self.render_to_response(self.get_context_data(
             contacto=self.contacto,
             campos_telefono=campos_telefono,
@@ -363,7 +370,13 @@ class CalificacionClienteFormView(FormView):
         if nuevo_contacto:
             self.contacto.es_originario = False
         self.contacto.save()
-        if self.agente.grupo.obligar_calificacion and self.call_data:
+
+        force_disposition = False
+        if self.call_data:
+            force_disposition = self.agente.grupo.obligar_calificacion
+            if 'force_disposition' in self.call_data:
+                force_disposition = self.call_data['force_disposition']
+        if force_disposition:
             calificacion_llamada = CalificacionLLamada()
             calificacion_llamada.create_family(self.agente, self.call_data,
                                                self.kwargs['call_data_json'], calificado=True)

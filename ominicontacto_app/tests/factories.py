@@ -36,7 +36,8 @@ from ominicontacto_app.models import (AgenteProfile, BaseDatosContacto, Campana,
                                       OpcionCalificacion, ArchivoDeAudio, ParametrosCrm,
                                       ActuacionVigente, Pausa, RespuestaFormularioGestion,
                                       Blacklist, AgendaContacto, SistemaExterno,
-                                      AgenteEnSistemaExterno, AuditoriaCalificacion)
+                                      AgenteEnSistemaExterno, AuditoriaCalificacion,
+                                      ConfiguracionDeAgentesDeCampana)
 
 from reportes_app.models import LlamadaLog, ActividadAgenteLog
 
@@ -372,3 +373,17 @@ class AgenteEnSistemaExternoFactory(DjangoModelFactory):
 
     class Meta:
         model = AgenteEnSistemaExterno
+
+
+class ConfiguracionDeAgentesDeCampanaFactory(DjangoModelFactory):
+    set_auto_attend_inbound = True
+    auto_attend_inbound = True
+    set_auto_attend_dialer = True
+    auto_attend_dialer = True
+    set_auto_unpause = True
+    auto_unpause = 0
+    set_obligar_calificacion = True
+    set_obligar_calificacion = True
+
+    class Meta:
+        model = ConfiguracionDeAgentesDeCampana

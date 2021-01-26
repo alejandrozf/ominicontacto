@@ -3412,3 +3412,24 @@ class ParametrosCrm(models.Model):
         if self.valor == 'agent_id':
             return agente.id
         return datos_de_llamada[self.valor]
+
+
+class ConfiguracionDeAgentesDeCampana(models.Model):
+
+    campana = models.OneToOneField(
+        Campana, on_delete=models.CASCADE, related_name='configuracion_de_agentes')
+    set_auto_attend_inbound = models.BooleanField(default=True, verbose_name=_(
+        'Configurar auto atender entrantes'))
+    auto_attend_inbound = models.BooleanField(default=False, verbose_name=_(
+        'Auto atender entrantes'))
+    set_auto_attend_dialer = models.BooleanField(default=True, verbose_name=_(
+        'Configurar auto atender dialer'))
+    auto_attend_dialer = models.BooleanField(default=False, verbose_name=_('Auto atender dialer'))
+    set_auto_unpause = models.BooleanField(default=True, verbose_name=_(
+        'Configurar despausar automaticamente'))
+    auto_unpause = models.PositiveIntegerField(default=0, verbose_name=_(
+        'Despausar automaticamente'))
+    set_obligar_calificacion = models.BooleanField(default=True, verbose_name=_(
+        'Configurar forzar calificación'))
+    obligar_calificacion = models.BooleanField(default=False, verbose_name=_(
+        'Forzar calificación'))

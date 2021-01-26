@@ -33,6 +33,10 @@ class Click2CallDispatcher {
         this.verificando_calificacion = false;
         // Cooldown to avoid click2call requests flooding
         this.click2call_cooldown = undefined;
+
+        this.agent_forces_disposition = $('#obligar-calificacion').val() == 'True';
+        this.last_call_configures_force_disposition = false;
+        this.last_call_forces_disposition = false;
     }
 
     enable() {
@@ -45,6 +49,13 @@ class Click2CallDispatcher {
         $('#sumTime').css('background-color', 'forestgreen');
     }
 
+    get disposition_forced() {
+        if (this.last_call_configures_force_disposition)
+            return this.last_call_forces_disposition;
+        else
+            return this.agent_forces_disposition;
+    }
+
     call_contact(campaign_id, campaign_type, contact_id, phone, click2call_type='click2call'){
         if (!this.enabled || this.verificando_calificacion)
             return;
@@ -52,8 +63,7 @@ class Click2CallDispatcher {
             console.log('Call disabled. Awaiting cooldown...');
             return;
         }
-        this.obligarCalificacion = $('#obligar-calificacion').val();
-        if (this.obligarCalificacion == 'True'){
+        if (this.disposition_forced){
             if (this.verificando_calificacion){
                 return;
             }
@@ -106,8 +116,7 @@ class Click2CallDispatcher {
             console.log('Call disabled. Awaiting cooldown...');
             return;
         }
-        this.obligarCalificacion = $('#obligar-calificacion').val();
-        if (this.obligarCalificacion == 'True'){
+        if (this.disposition_forced){
             var self = this;
             if (this.verificando_calificacion){
                 return;
@@ -150,9 +159,7 @@ class Click2CallDispatcher {
             console.log('Call disabled. Awaiting cooldown...');
             return;
         }
-        // TODO: desacoplar obligar-calificacion
-        this.obligarCalificacion = $('#obligar-calificacion').val();
-        if (this.obligarCalificacion == 'True'){
+        if (this.disposition_forced){
             if (this.verificando_calificacion){
                 return;
             }

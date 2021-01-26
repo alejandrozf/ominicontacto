@@ -720,6 +720,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'eliminar_archivo_audio',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'configurar_agentes_en_campana',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'finalizar_campana_dialer',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
         ]
@@ -1146,6 +1148,9 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Editar un Archivo de Audio'), 'version': '1.7.0'},
         'eliminar_archivo_audio':
             {'descripcion': _('Eliminar un Archivo de Audio'), 'version': '1.7.0'},
+        'configurar_agentes_en_campana':
+            {'descripcion': _('Editar configuracion de Agentes para la campaña'),
+             'version': '1.12.0'},
         'finalizar_campana_dialer':
             {'descripcion': _('Finalizar una campana dialer activa'), 'version': '1.7.0'},
     }
