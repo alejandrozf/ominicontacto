@@ -22,19 +22,100 @@
 /* global moment */
 
 var table_agentes;
+var table_data = [];
 
-$(function () {
+$(function() {
     createDataTable();
     subcribeFilterChange();
-    setInterval(function () { table_agentes.ajax.reload(); }, 5000);
+
+    const contactadosSocket = new WebSocket(
+        'wss://' +
+        window.location.host +
+        '/consumers/stream/supervisor/' +
+        $('input#supervisor_id').val() +
+        '/' +
+        'agentes'
+    );
+
+    contactadosSocket.onmessage = function(e) {
+        try {
+            var data = JSON.parse(e.data);
+            var arrData = {};
+            for (let index = 0; index < data.length; index++) {
+                var element = JSON.parse(data[index]
+                    .replaceAll('\'', '"')
+                    .replaceAll('"[', '[')
+                    .replaceAll(']"', ']'));
+                processStreamRow(element, arrData);
+            }
+
+            var newData = crossData(table_agentes.data().toArray(), arrData);
+            table_agentes.clear();
+            table_agentes.rows.add(newData).draw();
+            table_data = newData;
+        } catch (err) {
+            console.log(err);
+        }
+    };
 });
+
+function processStreamRow(row, resultSet) {
+    var id = row.id;
+    if (id && !resultSet[id]) {
+        resultSet[id] = normalizaRow(row);
+    }
+}
+
+function crossData(tableData, newData) {
+    var resData = [...tableData];
+    for (let key in newData) {
+        var found = false;
+        for (let index = 0; index < resData.length; index++) {
+            if (resData[index].id == newData[key].id) {
+                if (newData[key].status == '' || newData[key].status == 'OFFLINE') {
+                    resData.splice(key, 1);
+                } else {
+                    resData[index] = newData[key];
+                }
+                found = true;
+            }
+        }
+        if (!found && newData[key].status != '' && newData[key].status != 'OFFLINE') {
+            resData.push(newData[key]);
+        }
+
+    }
+    return resData;
+}
+
+function normalizaRow(row) {
+    var normalRow = {};
+    normalRow.nombre = row.NAME;
+    normalRow.status = row.STATUS;
+    normalRow.sip = row.SIP;
+    normalRow.pause_id = row.PAUSE_ID;
+    normalRow.campana_llamada = (row.CAMPAIGN != null) ? row.CAMPAIGN : '';
+    normalRow.contacto = (row.CONTACT_NUMBER != null) ? row.CONTACT_NUMBER : '';
+    normalRow.tiempo = parseInt(row.TIMESTAMP);
+    normalRow.grupo = row.GROUP;
+    normalRow.campana = row.CAMPANAS;
+    normalRow.id = row.id;
+
+    return normalRow;
+}
 
 function createDataTable() {
     table_agentes = $('#tableAgentes').DataTable({
-        ajax: {
-            url: Urls.api_agentes_activos(),
-            dataSrc: ''
+        'initComplete': function() {
+            const TIME_COL_NUMBER = 6;
+            var x = setInterval(function() {
+                table_agentes.rows({ page: 'current', search: 'applied' }).every(function(index) {
+                    var cell = this.cell(index, TIME_COL_NUMBER);
+                    cell.data(cell.data());
+                });
+            }, 2000);
         },
+        data: table_data,
         columns: [
             { 'data': 'nombre' },
             { 'data': 'grupo', 'visible': false },
@@ -43,7 +124,7 @@ function createDataTable() {
             { 'data': 'contacto' },
             {
                 'data': 'status',
-                'render': function (data) {  //( data, type, row, meta)
+                'render': function(data) { //( data, type, row, meta)
                     var $status = create_node('p');
                     $status.text(data);
                     if (data.search('READY') != -1) {
@@ -69,14 +150,14 @@ function createDataTable() {
             },
             {
                 'data': 'tiempo',
-                'render': function (data) {  // ( data, type, row, meta)
-                    var duration = moment.duration(data, 'seconds');
+                'render': function(data) { // ( data, type, row, meta)
+                    var duration = moment.duration(Math.round((Date.now() / 1000) - data), 'seconds');
                     return moment.utc(duration.as('milliseconds')).format('HH:mm:ss');
                 },
             },
             {
                 'data': 'id',
-                'render': function (data, type, row) {  // (data, type, row, meta)
+                'render': function(data, type, row) { // (data, type, row, meta)
                     return obtenerNodosAcciones(row['id'], row['status']);
                 },
             },
@@ -186,8 +267,7 @@ function filtro_campana() {
 
 function subcribeFilterChange() {
 
-    $('#filter_group').change(function () {
-        console.log('1');
+    $('#filter_group').change(function() {
         var selection = $('#filter_group').find('option:selected');
         $('#filter_group option').not(selection).removeAttr('selected');
         selection.attr('selected', true);
@@ -195,8 +275,7 @@ function subcribeFilterChange() {
         createDataTable();
     });
 
-    $('#filter_campana').change(function () {
-        console.log('2');
+    $('#filter_campana').change(function() {
         var selection = $('#filter_campana').find('option:selected');
         $('#filter_campana option').not(selection).removeAttr('selected');
         selection.attr('selected', true);
@@ -204,4 +283,3 @@ function subcribeFilterChange() {
         createDataTable();
     });
 }
-

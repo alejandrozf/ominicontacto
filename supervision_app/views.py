@@ -18,6 +18,7 @@
 #
 
 from django.views.generic import TemplateView
+
 from ominicontacto_app.services.kamailio_service import KamailioService
 from reportes_app.reportes.reporte_llamadas_supervision import \
     ReporteDeLLamadasEntrantesDeSupervision, ReporteDeLLamadasSalientesDeSupervision
@@ -26,6 +27,7 @@ from utiles_globales import AddSettingsContextMixin
 from ominicontacto_app.forms import GrupoAgenteForm
 
 from ominicontacto_app.models import Campana, Grupo, AgenteProfile
+from supervision_app.services.redisgears_service import RedisGearsService
 
 
 class SupervisionAgentesView(AddSettingsContextMixin, TemplateView):
@@ -53,6 +55,8 @@ class SupervisionAgentesView(AddSettingsContextMixin, TemplateView):
         context['grupo'] = grupo
         context['sip_usuario'] = sip_usuario
         context['sip_password'] = sip_password
+
+        RedisGearsService().registra_stream_supervisor(supervisor.id)
         return context
 
 
