@@ -35,7 +35,7 @@ from ominicontacto_app.asterisk_config import (
 from ominicontacto_app.services.asterisk.redis_database import (
     RutaSalienteFamily, IVRFamily, ValidacionFechaHoraFamily, GrupoHorarioFamily,
     IdentificadorClienteFamily, PausaFamily, TrunkFamily, RutaEntranteFamily,
-    DestinoPersonalizadoFamily
+    DestinoPersonalizadoFamily, AmdConfFamily
 )
 
 logger = logging.getLogger(__name__)
@@ -229,6 +229,12 @@ class SincronizadorDeConfiguracionPausaAsterisk(AbstractConfiguracionAsterisk):
 
     def _obtener_generador_family(self):
         return PausaFamily()
+
+
+class SincronizadorDeConfiguracionAmdConfAsterisk(AbstractConfiguracionAsterisk):
+
+    def _obtener_generador_family(self):
+        return AmdConfFamily()
 
 
 class SincronizadorDeConfiguracionDestinoPersonalizadoAsterisk(AbstractConfiguracionAsterisk):
