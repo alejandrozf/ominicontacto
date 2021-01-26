@@ -1,0 +1,4 @@
+[submodule "modules/websockets"]
+	path = modules/websockets
+	url = https://gitlab.com/omnileads/omnileads-websockets.git
+	branch = master
