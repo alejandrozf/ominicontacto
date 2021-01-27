@@ -35,6 +35,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.dataTables.min.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/bootstrap-datetimepicker.min.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}">
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.growl.css' %}">
     <!-- Fonts -->
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/google-font.css' %}">
     <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-solid.css' %}">
@@ -51,6 +52,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <script type="text/javascript" src="{% static 'ominicontacto/JS/ranges-datepicker.js' %}"></script>
     <script type="text/javascript" src="{% static 'ominicontacto/JS/config_datetimepicker.js' %}"></script>
     <script type="text/javascript" src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.growl.js' %}"></script>
     {% endcompress %}
     <script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
     <!-- librerías opcionales que activan el soporte de HTML5 para IE8 -->
@@ -58,10 +60,25 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <script src="{% static 'ominicontacto/JS/html5shiv-3.7.0.js' %}"></script>
         <script src="{% static 'ominicontacto/JS/respond-1.4.2.min.js' %}"></script>
     <![endif]-->
+
 </head>
 
 <body>
 
+  <!-- Configs -->
+    <input type="hidden" value="{{ agente_profile.id }}" id="idagt"/>
+    <input type="hidden" value="{{ sip_usuario }}" id="sipExt"/>
+    <input value="{{ sip_password }}" id="sipSec" type="hidden"/>
+    <input value="{{ video_domain }}" id="video_domain" type="hidden"/>
+    <input value="{{ max_session_age }}" id="max_session_age" type="hidden"/>
+    <input value="{{ agente_profile.grupo.obligar_calificacion }}" id="obligar-calificacion" type="hidden"/>
+    <input type="hidden" value="{{ agente_profile.grupo.auto_attend_inbound }}" id="auto_attend_IN"/>
+    <input type="hidden" value="{{ agente_profile.grupo.auto_attend_dialer }}" id="auto_attend_DIALER"/>
+    <input type="hidden" value="{{ agente_profile.grupo.auto_unpause }}" id="auto_unpause"/>
+
+  <!-- Hidden Data -->
+    <input type="hidden" value="{{ fechas_agendas_json }}" id='agendas_dates_json'>
+    
 <!-- Modal de Pausa -->
 <div class="modal fade" id="modalPause" role="dialog">
     <div class="modal-dialog modal-sm">
@@ -530,9 +547,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     </li>
                 </ul>
             </li>
-            <li class="main-menu-li">
+            <li id="btn_agendas" class="main-menu-li">
                 <span class="icon icon-agenda"></span>
-                <a class="menu-link" href="{% url 'agenda_contacto_listado' %}" target="crm">{% trans 'Agendas' %}</a>
+                <a class="menu-link" href="{% url 'agenda_contacto_listado' %}" target="crm">{% trans 'Agendas' %}<b id="num_agendas"></b></a>
             </li>
             <li class="main-menu-li">
                 <span class="icon icon-ratings"></span>
@@ -649,19 +666,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </button>
                     </div>
 
-                    <!-- Configs -->
-                    <input type="hidden" value="{{ agente_profile.id }}" id="idagt"/>
-                    <input type="hidden" value="{{ sip_usuario }}" id="sipExt"/>
-                    <input value="{{ sip_password }}" id="sipSec" type="hidden"/>
-                    <input value="{{ video_domain }}" id="video_domain" type="hidden"/>
-                    <input value="{{ max_session_age }}" id="max_session_age" type="hidden"/>
-                    <input value="{{ agente_profile.grupo.obligar_calificacion }}" id="obligar-calificacion" type="hidden"/>
-
                 </div>
                 <div class="wrapper-info">
-                    <input type="hidden" value="{{ agente_profile.grupo.auto_attend_inbound }}" id="auto_attend_IN"/>
-                    <input type="hidden" value="{{ agente_profile.grupo.auto_attend_dialer }}" id="auto_attend_DIALER"/>
-                    <input type="hidden" value="{{ agente_profile.grupo.auto_unpause }}" id="auto_unpause"/>
                     <iframe src="{% url 'agente_dashboard' %}" id="dataView" class="crm" name="crm"></iframe>
                 </div>
             </div>
@@ -862,6 +868,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <script type="text/javascript" src="{% static 'ominicontacto/JS/agente/phoneJsSip.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/agente/phoneJsController.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/agente/click2Call.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/agente/agendas_notifications.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/agente/main.js' %}"></script>
 <!-- JsSip Debug -->
 <!--<script>JsSIP.debug.enable('JsSIP:*');</script>-->
