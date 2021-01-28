@@ -4,7 +4,7 @@ import json
 def prepara_agentes_para_stream_redis(x):
     POSICION_ID_EN_CLAVE_REDIS = 15
     supervisor_id = x['key'][POSICION_ID_EN_CLAVE_REDIS:]
-    stream = f'supervisor_{supervisor_id}_agentes'
+    stream = f'supervisor_{supervisor_id}_%s'
     for v in x['value'].keys():
         agent_key = f'OML:AGENT:{v}'
         if execute('exists', agent_key) == 1:
