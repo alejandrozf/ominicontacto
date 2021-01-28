@@ -1,3 +1,0 @@
-FROM {{ kamailio_image }}
-
-COPY kamailio/ /etc/kamailio/

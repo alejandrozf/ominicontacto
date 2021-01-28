@@ -22,28 +22,46 @@ stages:
   - build
   - deploy
 
+build-image:
+  stage: build
+  services:
+    - name: docker:dind
+      entrypoint: ["env", "-u", "DOCKER_HOST"]
+      command: ["dockerd-entrypoint.sh"]
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+    # See https://github.com/docker-library/docker/pull/166
+    DOCKER_TLS_CERTDIR: ""
+  image: gitlab/dind
+  script:
+  script:
+    - cd install/docker && bash build_image.sh
+  only:
+    - web
+
+build-rpm:
+  stage: build
+  variables:
+  image: freetechsolutions/fpm-ansible:centos7
+  script:
+    - cd install/onpremise/build/ && bash build_rpm.sh
+  only:
+    - /.*build-all.*$/
+    - /.*build-aio.*$/
+    - schedules
+    - web
+
 test:
   stage: test
-  image: freetechsolutions/python-flake8:3.6
-  # Pick zero or more services to be used on all builds.
-  # Only needed when using a docker container to run your tests in.
-  # Check out: http://docs.gitlab.com/ce/ci/docker/using_docker_images.html#what-is-a-service
+  image: freetechsolutions/omlapp-builder:develop
   services:
-    - name: freetechsolutions/postgresql:11
+    - name: freetechsolutions/omlpgsql:develop
       alias: plpython
     - redis
-  # This folder is cached between builds
-  # http://docs.gitlab.com/ce/ci/yaml/README.html#cache
-  cache:
-    paths:
-      - /root/.cache/pip/
-      - /usr/lib/python3.7/site-packages/
   before_script:
-    - mkdir -p /opt/omnileads/ominicontacto/
-    - touch /opt/omnileads/ominicontacto/django.log
-    - mkdir -p /opt/omnileads/static
-    - mkdir -p /opt/omnileads/media_root
-    - pip install -r requirements/requirements.txt
+    - apk add npm nodejs git bash
+    - npm install eslint --global
   variables:
     POSTGRES_DB: omnileads
     POSTGRES_USER: omnileads
@@ -51,8 +69,8 @@ test:
     DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
     DJANGO_SETTINGS_MODULE: "ominicontacto.settings.gitlab"
   script:
-    # - python checks.py
-    - bash check-js.sh
+    - python checks.py
+    - bash -x check-js.sh
     - flake8
     - python manage.py test --failfast
     - python manage.py compilemessages
@@ -61,50 +79,22 @@ test:
     - schedules
     - web
 
-build-docker-devenv:
-  stage: build
-  script:
-    - bash ~/git_cleanup.sh
-    - python ansible/build/edit_inventory.py --docker_build=yes -dle=$DOCKER_LOGIN_EMAIL -dlp=$DOCKER_LOGIN_PASSWORD
-    - cd ansible/build
-    - echo "$FTSINFRA_PASS" | sudo -S ./build.sh --docker-de-build
-  tags:
-    - build-docker
-  only:
-    - /.*build-all.*$/
-    - /.*build-docker.*$/
-    - schedules
-    - web
-
-build-aio:
-  stage: build
-  image: freetechsolutions/fpm-ansible:centos7
-  script:
-    - python2 ansible/build/edit_inventory.py --aio_build=yes
-    - cd ansible/build && ./build.sh --aio-build
-  only:
-    - /.*build-all.*$/
-    - /.*build-aio.*$/
-    - schedules
-    - web
-
 deploy-aio-host-node:
   stage: deploy
   environment: FTS-CENTOS7
   script:
     - bash ~/git_cleanup.sh
-    - cd ~/ominicontacto/vagrant/deploy/host_node/
+    - cd ~/ominicontacto/install/onpremise/deploy/vagrant/deploy/host_node/
     - vagrant halt centos
     - vagrant destroy centos -f
     - ./vagrantup.sh centos
-    - cd ../../../
-    - python ansible/deploy/edit_inventory.py --internal_ip=$STAGING_IP_CENTOS --host_node=yes
-    - cd ansible/deploy
+    - python ~/ominicontacto/install/onpremise/deploy/ansible/edit_inventory.py --internal_ip=$STAGING_IP_CENTOS --host_node=yes
+    - cd ~/ominicontacto/install/onpremise/deploy/ansible
     - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
     - sleep 180
     - TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=$STAGING_IP_CENTOS ADMIN_USERNAME=admin ADMIN_PASSWORD=admin LOGIN_FAILURE_LIMIT=10 python ~/ominicontacto/ominicontacto_app/tests/test_integracion/test_all.py
-    - ~/ominicontacto/vagrant/deploy/releases/package.sh
-    - cd ~/ominicontacto/vagrant/deploy/host_node/
+    - ~/ominicontacto/install/onpremise/deploy/vagrant/deploy/releases/package.sh
+    - cd ~/ominicontacto/install/onpremise/deploy/vagrant/deploy/host_node/
     - sleep 20 && vagrant halt centos
   tags:
     - deploy-aio
@@ -121,15 +111,14 @@ upgrade-aio:
     - bash ~/git_cleanup.sh
     - cd ~/oml-boxes
     - vagrant box add centos-release-$RELEASE_TO_UPGRADE.box --name centos-release-$RELEASE_TO_UPGRADE --force
-    - cd ~/ominicontacto/vagrant/deploy/releases
+    - cd ~/ominicontacto/install/onpremise/deploy/vagrant/deploy/releases
     - vagrant halt
     - vagrant destroy -f
     - ./vagrantup.sh centos
-    - cd ../../../
-    - python ansible/deploy/edit_inventory.py --internal_ip=$UPGRADE_IP_CENTOS --host_node=yes
-    - cd ansible/deploy
+    - python ~/ominicontacto/install/onpremise/deploy/ansible/edit_inventory.py --internal_ip=$UPGRADE_IP_CENTOS --host_node=yes
+    - cd ~/ominicontacto/install/onpremise/deploy/ansible
     - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -u
-    - cd ~/ominicontacto/vagrant/deploy/releases
+    - cd ~/ominicontacto/install/onpremise/deploy/vagrant/deploy/releases
     - vagrant halt centos
   tags:
     - deploy-aio

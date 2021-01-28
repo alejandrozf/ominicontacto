@@ -30,6 +30,7 @@ import subprocess
 import tempfile
 import traceback
 import time
+import json
 
 from django.conf import settings
 from django.utils.translation import ugettext as _
@@ -44,6 +45,7 @@ from ominicontacto_app.asterisk_config_generador_de_partes import (
     GeneradorDePedazoDeRutasSalientesFactory, GeneradorDePedazoDePlaylistFactory,
 )
 from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnector
+from ominicontacto_app.services.redis.redis_streams import RedisStreams
 import logging as _logging
 
 logger = _logging.getLogger(__name__)
@@ -733,16 +735,25 @@ class ConfigFile(object):
         tmp_fd, tmp_filename = tempfile.mkstemp()
         try:
             tmp_file_obj = os.fdopen(tmp_fd, 'w', encoding='utf-8')
+            contenidos_str = ''
             for contenido in contenidos:
                 assert isinstance(contenido, str), \
                     _("Objeto NO es unicode: {0}".format(type(contenido)))
                 tmp_file_obj.write(contenido)
+                contenidos_str += contenido
 
             tmp_file_obj.close()
 
-            logger.info(_("Copiando file config a {0}".format(self._filename)))
-            shutil.copy(tmp_filename, self._filename)
-            os.chmod(self._filename, 0o644)
+            # logger.info(_("Copiando file config a {0}".format(self._filename)))
+            # shutil.copy(tmp_filename, self._filename)
+            # os.chmod(self._filename, 0o644)
+            redis_stream = RedisStreams()
+            __, nombre_archivo = os.path.split(self._filename)
+            content = {
+                'archivo': nombre_archivo,
+                'content': contenidos_str
+            }
+            redis_stream.write_stream('asterisk_conf_updater', json.dumps(content))
 
         finally:
             try:
@@ -752,7 +763,8 @@ class ConfigFile(object):
                     e, tmp_filename)))
 
     def copy_asterisk(self):
-        subprocess.call(['cp', self._filename, self._remote_path])
+        pass
+        # subprocess.call(['cp', self._filename, self._remote_path])
 
 
 class SipConfigFile(ConfigFile):

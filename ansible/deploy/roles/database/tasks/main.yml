@@ -1,6 +1,0 @@
----
-
-- include: installations.yml
-  tags: postinstall
-
-- include: configurations.yml

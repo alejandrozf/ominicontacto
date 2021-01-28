@@ -1,0 +1,230 @@
+version: '3.7'
+services:
+  acd:
+    container_name: omlacd
+    depends_on:
+      - postgresql
+    dns: 8.8.8.8
+    environment:
+      - AMI_USER=${AMI_USER}
+      - AMI_PASSWORD=${AMI_PASSWORD}
+      - DOCKER_IP=${DOCKER_IP}
+      - PGHOST=${PGHOST}
+      - PGPORT=${PGPORT}
+      - PGDATABASE=${PGDATABASE}
+      - PGPASSWORD=${PGPASSWORD}
+      - PGUSER=${PGUSER}
+      - REDIS_HOSTNAME=${REDIS_HOSTNAME}
+      - TZ=${TZ}
+      - ASTERISK_LOCATION=
+    image: freetechsolutions/omlacd:develop
+    networks:
+      - devenv
+    ports:
+      - 5130-5133:5160-5163/udp
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - ../../../modules/asterisk/grabaciones:/var/spool/asterisk/monitor/
+      - ../../../modules/asterisk/source/astconf/:/etc/asterisk/
+      - ../../../modules/asterisk/source/agis/:/var/lib/asterisk/agi-bin/
+      - ../../../modules/asterisk/source/sounds:/var/lib/asterisk/sounds/
+      - ../../../modules/asterisk/blacklist:/var/spool/asterisk/blacklist
+    working_dir: /etc/asterisk
+
+  app:
+    container_name: omlapp
+    depends_on:
+      - postgresql
+    dns: 8.8.8.8
+    env_file:
+      - .env
+    image: freetechsolutions/omlapp:develop
+    networks:
+      - devenv
+    privileged: true
+    restart: on-failure
+    stdin_open: true
+    stop_grace_period: 1m30s
+    tty: true
+    volumes:
+      - ../../../:/opt/omnileads/ominicontacto/
+      - ../../../modules/asterisk/grabaciones:/var/spool/asterisk/monitor
+      - ../../../modules/asterisk/source/astconf/:/etc/asterisk/
+      - ../../../modules/asterisk/source/sounds:/var/lib/asterisk/sounds/
+      - ../../../modules/asterisk/blacklist:/var/spool/asterisk/blacklist
+    working_dir: /opt/omnileads/ominicontacto
+
+  dialer:
+    command: >
+      bash -c "sed -i '/JDBC_URL/c\JDBC_URL=jdbc:mariadb:\/\/${MYSQL_HOST}\/${WOMBAT_DB}?user=${WOMBAT_DB_USER}&password=${WOMBAT_DB_PASS}&autoReconnect=true' /usr/local/tomcat/webapps/wombat/WEB-INF/tpf.properties && catalina.sh run"
+    container_name: omldialer
+    depends_on:
+      - mariadb
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+      - MYSQL_PWD=${MYSQL_ROOT_PASS}
+    image: freetechsolutions/omldialer:latest
+    networks:
+      - devenv
+    ports:
+      - ${WD_EXT_PORT}:8080/tcp
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+
+  kamailio:
+    command:
+      - /bin/bash
+    container_name: omlkamailio
+    depends_on:
+      - redis
+      - acd
+    dns: 8.8.8.8
+    environment:
+      - AUTHEPH_SK=${AUTHEPH_SK}
+      - ASTERISK_HOSTNAME=${ASTERISK_HOSTNAME}
+      - KAMAILIO_HOSTNAME=${KAMAILIO_HOSTNAME}
+      - REDIS_HOSTNAME=${REDIS_HOSTNAME}
+      - RTPENGINE_HOSTNAME=${RTPENGINE_HOSTNAME}
+      - TZ=${TZ}
+      - SHM_SIZE=${SHM_SIZE}
+      - PKG_SIZE=${PKG_SIZE}
+      - KAMAILIO_CERTS_LOCATION=${KAMAILIO_CERTS_LOCATION}
+    image: freetechsolutions/omlkam:develop
+    networks:
+      - devenv
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - ../../../modules/kamailio/source/conf/:/etc/kamailio/
+
+  mariadb:
+    container_name: omlmariadb
+    dns: 8.8.8.8
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - TZ=${TZ}
+      - MARIADB_ROOT_PASSWORD=${MYSQL_ROOT_PASS}
+      - MARIADB_DATABASE=${WOMBAT_DB}
+      - MARIADB_USER=${WOMBAT_DB_USER}
+      - MARIADB_PASSWORD=${WOMBAT_DB_PASS}
+    image: bitnami/mariadb:latest
+    networks:
+      - devenv
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - mariadb_data:/bitnami
+
+  nginx:
+    container_name: omlnginx
+    depends_on:
+      - app
+      - kamailio
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+      - ENV=devenv
+      - INFRA=docker
+    image: freetechsolutions/omlnginx:develop
+    networks:
+      - devenv
+    privileged: true
+    ports:
+      - 443:443/tcp
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - ../../../modules/nginx/source/conf:/etc/nginx/
+      - ../../../modules/asterisk/grabaciones:/var/spool/asterisk/monitor
+
+  postgresql:
+    container_name: omlpostgresql
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+      - POSTGRES_USER=${PGUSER}
+      - POSTGRES_PASSWORD=${PGPASSWORD}
+      - POSTGRES_DB=${PGDATABASE}
+    image: freetechsolutions/omlpgsql:develop
+    networks:
+      - devenv
+    ports:
+      - ${PG_EXT_PORT}:5432/tcp
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+
+  pbxemulator:
+    container_name: omlpbxemulator
+    hostname: pbxemulator
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+    image: freetechsolutions/omlpbxemulator:develop
+    networks:
+      - devenv
+    ports:
+      - 5060:5060/udp
+      - 10000-10020:10000-10020/udp
+    privileged: true
+    restart: on-failure
+    stdin_open: true
+    stop_grace_period: 1m30s
+    tty: true
+
+  redis:
+    container_name: omlredis
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+    networks:
+      - devenv
+    image: redislabs/redisgears:${REDISGEARS_VERSION}
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - redis_data:/data
+
+  rtpengine:
+    container_name: omlrtpengine
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+    image: drachtio/rtpengine:latest
+    networks:
+      - devenv
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+
+  websockets:
+    tty: true
+    container_name: omlwebsockets
+    image: freetechsolutions/omlwebsockets:develop
+    ports:
+      - "${WEBSOCKET_EXT_PORT}:8000"
+    networks:
+      - devenv
+    volumes:
+      - ../../../modules/websockets/source/:/opt/services/webapp/src/
+
+networks:
+  devenv:
+    ipam:
+      driver: default
+      config:
+        - subnet: "${SUBNET}"
+
+volumes:
+  mariadb_data:
+  postgresql_data:
+  redis_data:

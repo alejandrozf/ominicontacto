@@ -1,0 +1,20 @@
+[Unit]
+Description=Omnileads devenv Application Service
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+ExecStartPost=/bin/bash /opt/omnileads/prodenv/postinstall.sh start
+ExecStopPost=/bin/bash /opt/omnileads/prodenv/postinstall.sh stop
+Environment=COMPOSE_FILE=/opt/omnileads/prodenv/docker-compose.yml
+RemainAfterExit=yes
+WorkingDirectory=/opt/omnileads/prodenv/
+ExecReload=/usr/local/bin/docker-compose up -d
+ExecStart=/usr/local/bin/docker-compose up -d
+ExecStop=/usr/local/bin/docker-compose down
+TimeoutStartSec=0
+TimeoutStopSec=0
+
+[Install]
+WantedBy=multi-user.target

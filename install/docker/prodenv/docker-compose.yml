@@ -1,0 +1,152 @@
+version: '3.7'
+services:
+  acd:
+    container_name: omlacd
+    depends_on:
+      - redis
+    dns: 8.8.8.8
+    environment:
+      - AMI_USER=${AMI_USER}
+      - AMI_PASSWORD=${AMI_PASSWORD}
+      - DOCKER_IP=${DOCKER_IP}
+      - OMNILEADS_HOSTNAME=${OMNILEADS_HOSTNAME}
+      - PGHOST=${PGHOST}
+      - PGPORT=${PGPORT}
+      - PGDATABASE=${PGDATABASE}
+      - PGPASSWORD=${PGPASSWORD}
+      - PGUSER=${PGUSER}
+      - REDIS_HOSTNAME=${REDIS_HOSTNAME}
+      - TZ=${TZ}
+      - ASTERISK_LOCATION=
+    image: freetechsolutions/omlacd:latest
+    networks:
+      - prodenv
+    ports:
+      - 5130-5133:5160-5163/udp
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - ast_conf_files:/etc/asterisk
+      - recordings:/var/spool/asterisk/monitor/
+      - sounds:/var/lib/asterisk/sounds/
+    working_dir: /etc/asterisk
+
+  app:
+    container_name: omlapp
+    depends_on:
+      - acd
+    dns: 8.8.8.8
+    env_file:
+      - .env
+    image: freetechsolutions/omlapp:latest
+    networks:
+      - prodenv
+    privileged: true
+    restart: on-failure
+    stdin_open: true
+    stop_grace_period: 1m30s
+    tty: true
+    volumes:
+      - recordings:/var/spool/asterisk/monitor
+      - sounds:/var/lib/asterisk/sounds/
+    working_dir: /opt/omnileads/ominicontacto
+
+  dialer:
+    command: >
+      bash -c "sed -i '/JDBC_URL/c\JDBC_URL=jdbc:mariadb:\/\/${MYSQL_HOST}\/${WOMBAT_DB}?user=${WOMBAT_DB_USER}&password=${WOMBAT_DB_PASS}&autoReconnect=true' /usr/local/tomcat/webapps/wombat/WEB-INF/tpf.properties && catalina.sh run"
+    container_name: omldialer
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+      - MYSQL_PWD=${MYSQL_ROOT_PASS}
+    image: freetechsolutions/omldialer:latest
+    networks:
+      - prodenv
+    ports:
+      - ${WD_EXT_PORT}:8080/tcp
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+
+  kamailio:
+    command:
+      - /bin/bash
+    container_name: omlkamailio
+    depends_on:
+      - redis
+      - acd
+    dns: 8.8.8.8
+    environment:
+      - AUTHEPH_SK=${AUTHEPH_SK}
+      - ASTERISK_HOSTNAME=${ASTERISK_HOSTNAME}
+      - KAMAILIO_HOSTNAME=${KAMAILIO_HOSTNAME}
+      - REDIS_HOSTNAME=${REDIS_HOSTNAME}
+      - RTPENGINE_HOSTNAME=${RTPENGINE_HOSTNAME}
+      - TZ=${TZ}
+      - SHM_SIZE=${SHM_SIZE}
+      - PKG_SIZE=${PKG_SIZE}
+      - KAMAILIO_CERTS_LOCATION=${KAMAILIO_CERTS_LOCATION}
+    image: freetechsolutions/omlkam:latest
+    networks:
+      - prodenv
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+
+  nginx:
+    container_name: omlnginx
+    depends_on:
+      - app
+      - kamailio
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+      - ENV=prodenv
+      - INFRA=docker
+    image: freetechsolutions/omlnginx:latest
+    networks:
+      - prodenv
+    privileged: true
+    ports:
+      - ${NGINX_EXT_PORT}:443/tcp
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - recordings:/var/spool/asterisk/monitor
+
+  redis:
+    container_name: omlredis
+    dns: 8.8.8.8
+    environment:
+      - TZ=${TZ}
+    networks:
+      - prodenv
+    image: redislabs/redisgears:${REDISGEARS_VERSION}
+    privileged: true
+    restart: on-failure
+    stop_grace_period: 1m30s
+    volumes:
+      - redis_data:/data
+
+  websockets:
+    tty: true
+    container_name: omlwebsockets
+    image: freetechsolutions/omlwebsockets:latest
+    ports:
+      - "${WEBSOCKET_EXT_PORT}:8000"
+    networks:
+      - prodenv
+
+networks:
+  prodenv:
+    ipam:
+      driver: default
+      config:
+        - subnet: "${SUBNET}"
+
+volumes:
+  ast_conf_files:
+  recordings:
+  redis_data:
+  sounds:
