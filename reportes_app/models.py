@@ -267,6 +267,18 @@ class LlamadaLogManager(models.Manager):
                            duracion_llamada__gt=0).exclude(archivo_grabacion='-1') \
             .exclude(event='ENTERQUEUE-TRANSFER')
 
+    def obtener_evento_hold_fecha(self, eventos, fecha_desde, fecha_hasta, agente_id):
+        """devuelve el hold"""
+        if fecha_desde and fecha_hasta:
+            fecha_desde = datetime_hora_minima_dia(fecha_desde)
+            fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
+
+        try:
+            return self.filter(agente_id=agente_id, event__in=eventos,
+                               time__range=(fecha_desde, fecha_hasta))
+        except LlamadaLog.DoesNotExist:
+            raise (SuspiciousOperation(_("No se encontraron holds ")))
+
 
 class LlamadaLog(models.Model):
     """
@@ -330,6 +342,9 @@ class LlamadaLog(models.Model):
     # eventos fin conexion de una llamada
     # (No incluye valores de eventos de transferencias si ocurren luego)
     EVENTOS_FIN_CONEXION_AGENTE = ['COMPLETEAGENT', 'COMPLETEOUTNUM']  # Con id_agente
+
+    # eventos de hold en una llamada
+    EVENTOS_HOLD = ['HOLD', 'UNHOLD']
 
     # EVENTOS_TRANSFER_TRY_IN = ['BT-TRY', 'ENTERQUEUE-TRANSFER', 'CT-TRY']
     # EVENTOS_TRANSFER_TRY_OUT = ['BTOUT-TRY', 'CTOUT-TRY']

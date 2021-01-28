@@ -31,6 +31,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {% endif %}
             </td>
             <td>
+                {% if agente.get_string_tiempo_hold %}
+                    {{ agente.get_string_tiempo_hold}}{% trans 'hs' %}
+                {% else %}
+                    0{% trans 'hs' %}
+                {% endif%}
+            </td>
+            <td>
                 {% if agente.get_string_tiempo_pausa %}
                     {{agente.get_string_tiempo_pausa}}{% trans 'hs' %}
                 {% else %}

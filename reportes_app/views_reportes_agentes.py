@@ -113,7 +113,6 @@ def reporte_por_fecha_modal_agente_view(request):
     de los agentes en una ventana modal"""
     if request.method == 'POST':
         if request.is_ajax():
-
             id_agente = request.POST['id_agente']
             fecha_desde = request.POST['fecha_desde']
             fecha_hasta = request.POST['fecha_hasta']
@@ -122,7 +121,6 @@ def reporte_por_fecha_modal_agente_view(request):
 
             tiempos_agentes = TiemposAgente()
             agente = AgenteProfile.objects.get(pk=int(id_agente))
-
             agentes, error = tiempos_agentes.generar_por_fecha_agente(
                 agente, fecha_desde, fecha_hasta)
             ctx = {'agentes': agentes}

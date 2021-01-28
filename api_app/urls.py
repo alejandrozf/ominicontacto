@@ -38,7 +38,7 @@ from api_app.views.agente import (
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
     API_ObtenerContactosCampanaView, Click2CallView, AgentLogoutView,
     AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk,
-    SetEstadoRevisionAuditoria, ApiStatusCalificacionLlamada
+    SetEstadoRevisionAuditoria, ApiStatusCalificacionLlamada, ApiEventoHold
 )
 from api_app.views.grabaciones import ObtenerArchivoGrabacionView
 
@@ -161,7 +161,8 @@ urlpatterns = [
         name='api_set_estado_revision'),
     url(r'api/v1/calificar_llamada/', ApiStatusCalificacionLlamada.as_view(),
         name='api_status_calificacion_llamada'),
-
+    url(r'api/v1/evento_hold/', ApiEventoHold.as_view(),
+        name='api_evento_hold'),
     # ###########     GRABACIONES      ############ #
     url(r'^api/v1/grabacion/archivo/$',
         ObtenerArchivoGrabacionView.as_view(), name='api_grabacion_archivo'),
