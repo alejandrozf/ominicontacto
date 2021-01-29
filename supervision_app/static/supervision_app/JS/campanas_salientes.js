@@ -24,22 +24,71 @@
 /* global moment */
 
 var table_salientes;
+var table_data = [];
+var dataAux = [];
+var campanas_supervisor = [];
+var campanas_id_supervisor = [];
 
-$(function () {
+$(function() {
     createDataTable();
-    setInterval(function () { table_salientes.ajax.reload(); }, 5000);
+    campanas_supervisor = $('input#campanas_list').val().split(',');
+    campanas_id_supervisor = $('input#campanas_list_id').val().split(',');
+
+    const contactadosSocket = new WebSocket(
+        'wss://' +
+        window.location.host +
+        '/consumers/stream/supervisor/' +
+        $('input#supervisor_id').val() +
+        '/' +
+        'salientes'
+    );
+
+    contactadosSocket.onmessage = function(e) {
+        if (e.data != 'Stream subscribed!') {
+            try {
+                var data = JSON.parse(e.data);
+                processData(data);
+                table_salientes.clear();
+                table_salientes.rows.add(dataAux).draw();
+                table_data = dataAux;
+            } catch (err) {
+                console.log(err);
+            }
+        }
+    };
+
+    function processData(data) {
+        dataAux = [...table_data];
+        for (let index = 0; index < data.length; index++) {
+            var row = JSON.parse(data[index]
+                .replaceAll('\'', '"')
+                .replaceAll('"{', '{')
+                .replaceAll('}"', '}'));
+
+            var existe = false;
+            if (row['NOMBRE']) {
+                for (let j in dataAux) {
+                    if (dataAux[j]['nombre'] == row['NOMBRE']) {
+                        dataAux[j] = row['ESTADISTICAS'];
+                        existe = true;
+                    }
+                }
+                if (!existe) {
+                    dataAux.push(row['ESTADISTICAS']);
+                }
+            }
+        }
+    }
+
 });
 
 function createDataTable() {
     table_salientes = $('#tableSalientes').DataTable({
-        ajax: {
-            url: Urls.api_supervision_campanas_salientes(),
-            dataSrc: ''
-        },
+        data: table_data,
         columns: [
             { 'data': 'nombre' },
-            { 'data': 'efectuadas'},
-            { 'data': 'conectadas'},
+            { 'data': 'efectuadas' },
+            { 'data': 'conectadas' },
             { 'data': 'no_conectadas' },
             { 'data': 'gestiones' },
 
