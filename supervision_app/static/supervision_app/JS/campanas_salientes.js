@@ -15,42 +15,96 @@
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see http://www.gnu.org/licenses/.
 
+
+
 */
-
 /* global Urls */
+/* global create_node */
 /* global gettext */
+/* global moment */
 
-$(function(){
-    setInterval(function() {requestEstadisticasSalientes();}, 5000);
+var table_salientes;
+var table_data = [];
+var dataAux = [];
+var campanas_supervisor = [];
+var campanas_id_supervisor = [];
+
+$(function() {
+    createDataTable();
+    campanas_supervisor = $('input#campanas_list').val().split(',');
+    campanas_id_supervisor = $('input#campanas_list_id').val().split(',');
+
+    const contactadosSocket = new WebSocket(
+        'wss://' +
+        window.location.host +
+        '/consumers/stream/supervisor/' +
+        $('input#supervisor_id').val() +
+        '/' +
+        'salientes'
+    );
+
+    contactadosSocket.onmessage = function(e) {
+        if (e.data != 'Stream subscribed!') {
+            try {
+                var data = JSON.parse(e.data);
+                processData(data);
+                table_salientes.clear();
+                table_salientes.rows.add(dataAux).draw();
+                table_data = dataAux;
+            } catch (err) {
+                console.log(err);
+            }
+        }
+    };
+
+    function processData(data) {
+        dataAux = [...table_data];
+        for (let index = 0; index < data.length; index++) {
+            var row = JSON.parse(data[index]
+                .replaceAll('\'', '"')
+                .replaceAll('"{', '{')
+                .replaceAll('}"', '}'));
+
+            var existe = false;
+            if (row['NOMBRE']) {
+                for (let j in dataAux) {
+                    if (dataAux[j]['nombre'] == row['NOMBRE']) {
+                        dataAux[j] = row['ESTADISTICAS'];
+                        existe = true;
+                    }
+                }
+                if (!existe) {
+                    dataAux.push(row['ESTADISTICAS']);
+                }
+            }
+        }
+    }
+
 });
 
-function requestEstadisticasSalientes() {
-    // {% url 'api_supervision_campanas_salientes'%}
-    var url = Urls.api_supervision_campanas_salientes();
-    $.ajax({type: 'get',
-        url: url,
-        contentType: 'text/html',
-        success: function(msg) {
-            cargarEstadisticasSalientes(msg.data);
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
-        }
-    });
-}
+function createDataTable() {
+    table_salientes = $('#tableSalientes').DataTable({
+        data: table_data,
+        columns: [
+            { 'data': 'nombre' },
+            { 'data': 'efectuadas' },
+            { 'data': 'conectadas' },
+            { 'data': 'no_conectadas' },
+            { 'data': 'gestiones' },
 
-function cargarEstadisticasSalientes(estadisticas) {
-    var tabla = $('#table-campanas');
-    tabla.html('');
-    Object.keys(estadisticas).forEach(function(id_campana) {
-        var datos_campana = estadisticas[id_campana];
-        $('#table-campanas').html();
-        tabla.append('<tr>' + 
-                       '<td>' + datos_campana['nombre'] + '</td>' + 
-                       '<td>' + datos_campana['efectuadas'] + '</td>' + 
-                       '<td>' + datos_campana['conectadas'] + '</td>' + 
-                       '<td>' + datos_campana['no_conectadas'] + '</td>' + 
-                       '<td>' + datos_campana['gestiones'] + '</td>' + 
-                     '</tr>');
+        ],
+
+        language: {
+            search: gettext('Buscar: '),
+            infoFiltered: gettext('(filtrando de un total de _MAX_ contactos)'),
+            paginate: {
+                first: gettext('Primero '),
+                previous: gettext('Anterior '),
+                next: gettext(' Siguiente'),
+                last: gettext(' Último'),
+            },
+            lengthMenu: gettext('Mostrar _MENU_ entradas'),
+            info: gettext('Mostrando _START_ a _END_ de _TOTAL_ entradas'),
+        }
     });
 }
