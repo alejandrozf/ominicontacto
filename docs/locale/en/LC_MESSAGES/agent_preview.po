@@ -8,58 +8,66 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-06 16:12-0300\n"
+"POT-Creation-Date: 2021-01-28 17:43-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.4.0\n"
 
+# 490f72945a5b4cd991d25b323261a284
 #: ../../agent_preview.rst:2
 msgid "Campañas preview"
 msgstr "Preview Campagins"
 
+# 8ab055a3dcad4f838dc0c8fcb8ac01db
 #: ../../agent_preview.rst:4
 msgid ""
 "Cuando un agente trabaja dentro de una campaña preview, antes que nada "
 "debe acceder al botón de campañas preview."
 msgstr ""
-"When an agent is assigned to a Preview Campaign, Preview menu needs to be used."
+"When an agent is assigned to a Preview Campaign, Preview menu needs to be"
+" used."
 
+# ce268e7bc6804a4aa74589e7c902c423
 #: ../../agent_preview.rst:8
 msgid "*Figure 1: preview campaigns list*"
 msgstr ""
 
+# 56532e60a5024a22b4d1b1695a63abfe
 #: ../../agent_preview.rst:10
 msgid ""
 "Allí se van a desplegar todas las campañas preview sobre las que el "
 "agente se encuentre asignado. Entonces el agente debe seleccionar una "
 "campaña y ésta le devolverá un contacto para gestionar."
 msgstr ""
-"All assigned Preview Campaigns are listed here. "
-"Agent must select one of them "
-"and this will return a contact to manage."
+"All assigned Preview Campaigns are listed here. Agent must select one of "
+"them and this will return a contact to manage."
 
+# 1ac256abe4384f63a57679310c606b2c
 #: ../../agent_preview.rst:15
 msgid "*Figure 2: pull new contact*"
 msgstr ""
 
+# abc72baaab48423080a02d72c14bee0c
 #: ../../agent_preview.rst:19
 msgid "*Figure 3: contact delivered*"
 msgstr ""
 
+# d3b5fb0c4cd94804a1918a0b5c357bc8
 #: ../../agent_preview.rst:21
 msgid ""
 "Con el contacto entregado, el agente puede o bien marcar el teléfono del "
 "mismo, haciendo click sobre el número, o bien hacer un nuevo click sobre "
 "la campaña preview para que la misma entregue otro contacto."
 msgstr ""
-"Once the contact is delivered, the agent can either dial the phone number "
-"by clicking on the number, or by clicking again on "
-"the preview campaign in order to retrieve another contact. The last one will be released."
+"Once the contact is delivered, the agent can either dial the phone number"
+" by clicking on the number, or by clicking again on the preview campaign "
+"in order to retrieve another contact. The last one will be released."
 
+# 224f1e47a7324c079bd99c674465014f
 #: ../../agent_preview.rst:24
 msgid ""
 "Suponiendo que se llama a un contacto, simplemente al dar click sobre el "
@@ -67,15 +75,15 @@ msgid ""
 "del contacto sobre la vista del agente, tal como vimos en las llamadas "
 "manuales."
 msgstr ""
-"Assuming a contact is called by clicking on it, "
-"contact information is displayed "
-"on the agent's view, as we have seen in Manual Calls "
-"section."
+"Assuming a contact is called by clicking on it, contact information is "
+"displayed on the agent's view, as we have seen in Manual Calls section."
 
+# dfb22c2673ba4e72bd64642e0043f99f
 #: ../../agent_preview.rst:29
 msgid "*Figure 4: contact called*"
 msgstr ""
 
+# 6f18bdf733974bd6958d2740eb5bef76
 #: ../../agent_preview.rst:31
 msgid ""
 "Si la comunicación a finalizado o bien el teléfono no pudo ser "
@@ -85,26 +93,44 @@ msgid ""
 "cualquiera de los teléfonos extras y automáticamente se buscará contactar"
 " al nuevo teléfono."
 msgstr ""
-"If the communication has ended or the phone could not be "
-"contacted, then the agent can try again with another phone number "
-"(if the contact has more than one phone "
-"loaded). If this is the case, then the agent can click on "
-"any of the extra telephones and will automatically dial the contact to the new number."
+"If the communication has ended or the phone could not be contacted, then "
+"the agent can try again with another phone number (if the contact has "
+"more than one phone loaded). If this is the case, then the agent can "
+"click on any of the extra telephones and will automatically dial the "
+"contact to the new number."
 
+# 7996ddbfdbff4aef9c4c6e7cafe8703f
 #: ../../agent_preview.rst:38
 msgid "*Figure 5: re-call contact*"
 msgstr ""
 
+# abe528c323a94c5c81eb250c9d277154
 #: ../../agent_preview.rst:40
 msgid ""
 "Finalmente, el agente debe calificar al contacto a través del combo de "
 "calificaciones. Este listado de calificaciones fue generado por el "
 "administrador para cada campaña."
 msgstr ""
-"Finally, the agent is able to disposition the call through the combo of"
-" Call Dispositions. This list has been generated from the Admin view."
+"Finally, the agent is able to disposition the call through the combo of "
+"Call Dispositions. This list has been generated from the Admin view."
 
+# b2f2a8575a1743f4912259b9c721c022
 #: ../../agent_preview.rst:45
 msgid "*Figure 6: call disposition*"
 msgstr ""
 
+# febc7fee5e874b0fa9a8f1fb3d9a92ed
+#: ../../agent_preview.rst:47
+msgid ""
+"El agente tiene también la posibilidad de seleccionar más rápidamente el "
+"próximo contacto a llamar en la última campaña preview con que ha "
+"interactuado seleccionando el botón que se muestra en la barra de "
+"operación."
+msgstr ""
+"The agent have the posibility to select more quickly the next contact to call "
+"in the last preview campaign select by clicking on the that is shown in the operation bar"
+
+# 1b0c2f8d4dc94f4489c8123a0dba1efe
+#: ../../agent_preview.rst:51
+msgid "*Figure 6: get next preview contact*"
+msgstr ""

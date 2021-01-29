@@ -1,0 +1,57 @@
+<!--
+     Copyright (C) 2018 Freetech Solutions
+
+     This file is part of OMniLeads
+
+     This program is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+    <h1>{% trans 'Editar esquema de nombre de archivos de grabaciones' %}</h1>
+
+    <form action = "" method = "post">
+        {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+    {% endfor %}
+    {% csrf_token %}
+
+    {{ form.non_field_errors }}
+    <div class="form-row">
+        {% for field in form.visible_fields %}
+            <div class="col-sm-2">
+                {{ field.label_tag }} {{ field }}
+                {% if field.help_text %}
+                    <small class="form-text text-muted">
+                        {{ field.help_text|safe }}
+                    </small>
+                {% endif %}
+                {{ field.errors }}
+            </div>
+            <br/>
+        {% endfor %}
+    </div>
+    <button type="submit" id="id_registrar" class="btn btn-primary">
+        {% trans 'Guardar' %}
+    </button>
+    </form>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript" src="{% static 'configuracion_telefonia_app/JS/esquema_grabacion.js' %}"></script>
+{% endblock %}

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  OMniLeads\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-25 14:38-0300\n"
+"POT-Creation-Date: 2021-01-29 14:36-0300\n"
 "PO-Revision-Date: 2019-08-14 21:24-0300\n"
 "Last-Translator: \n"
 "Language: en\n"
@@ -20,6 +20,7 @@ msgstr ""
 "Generated-By: Babel 2.4.0\n"
 
 # d94fa13ddcc542f7b1b71f75797bfeb6
+#: ../../telephony.rst:3
 msgid "Configuración de módulo de telefonía"
 msgstr "Telephony module configuration"
 
@@ -243,21 +244,59 @@ msgid ""
 "El módulo de AMD de Asterisk, puede configurarse en OMniLeads usando la "
 "siguiente interfaz:"
 msgstr ""
-"The Asterisk AMD module, can be configured in OMniLeads using the following"
-"interface:"
+"The Asterisk AMD module, can be configured in OMniLeads using the "
+"followinginterface:"
 
 # 01024568068f4b05a8e5a773e2a6a777
 #: ../../telephony.rst:74
 msgid "*Figure 2: Amd configuration page*"
 msgstr "*Figura 2: Página de configuración de AMD*"
 
-# 0f2550712a934c84be2ae0f01fd57510
+# e058d70a887b42508d2df18262652c29
 #: ../../telephony.rst:78
+msgid "Configuración esquema de nombres de archivos de grabaciones de llamadas"
+msgstr "Configuration scheme for call recordings filenames"
+
+# 48578515d40a4eb9addcc2ed9a9c9452
+#: ../../telephony.rst:80
+msgid ""
+"La siguiente sección permite configurar el formato que tendrán los "
+"nombres de los archivos de grabaciones generadas por llamadas en el "
+"sistema."
+msgstr ""
+"The following section allowd configure the format that will have "
+"the names of recordings files on the system"
+
+# e2cb83e87b7549c4969bf934da34d274
+#: ../../telephony.rst:83
+msgid ""
+"Al seleccionar algunas de las opciones mostradas en la página esto "
+"impactará directamente en el nombre de los archivos de grabación."
+msgstr ""
+"The selection of some of the options shown in the page will impact directly "
+"on the name of recording files"
+
+# 1ebecb19130a4e608f4b24ec0fa3cb7b
+#: ../../telephony.rst:85
+msgid ""
+"Nota: tener en cuenta que el ID de Agente como variable no está "
+"disponible para campañas Entrantes ni Salientes de Discador."
+msgstr ""
+"Note: notice that the Agent ID as a variable is not available for "
+" inbound campaigns or dialer campaigns"
+
+# dd83c7b111cc4ca1bf73cb9c19573518
+#: ../../telephony.rst:89
+msgid "*Figure 2: Recordings scheme page*"
+msgstr ""
+
+# 0f2550712a934c84be2ae0f01fd57510
+#: ../../telephony.rst:93
 msgid "Configuración de enrutamiento de llamadas entrantes"
 msgstr "Inbound calls routing configuration"
 
 # 3b6918c2fa4c4b99803085fc180e531f
-#: ../../telephony.rst:80
+#: ../../telephony.rst:95
 msgid ""
 "El tratamiento de llamadas entrantes se abordará en la sección *Campañas "
 "Entrantes* de esta documentación ya que para poder operar con dicho "
@@ -270,7 +309,7 @@ msgstr ""
 "incoming campaign, etc.) to where to route each generated DID."
 
 # 806ec7d6d7eb4f4695f8e9af48dc46de
-#: ../../telephony.rst:83
+#: ../../telephony.rst:98
 msgid ":ref:`about_inboundroutes`."
 msgstr ""
 

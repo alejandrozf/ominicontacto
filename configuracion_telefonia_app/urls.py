@@ -176,8 +176,12 @@ urlpatterns = [
         login_required(audio.MusicaDeEsperaDeleteView.as_view()),
         name='eliminar_musica_de_espera',
         ),
-    url(r'^configuracion_telefonia/opciones_avanzadas/(?P<pk>\d+)/$',
+    url(r'^configuracion_telefonia/opciones_avanzadas/editar_amd/(?P<pk>\d+)/$',
         login_required(opciones_avanzadas.ConfiguracionAMDUpdateView.as_view()),
         name='ajustar_configuracion_amd',
+        ),
+    url(r'^configuracion_telefonia/opciones_avanzadas/editar_esquema_grabaciones/(?P<pk>\d+)/$',
+        login_required(opciones_avanzadas.EsquemaGrabacionesUpdateView.as_view()),
+        name='ajustar_formato_grabaciones',
         ),
 ]

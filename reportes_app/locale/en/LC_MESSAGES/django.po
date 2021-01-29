@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-13 13:08-0300\n"
+"POT-Creation-Date: 2021-01-29 14:22-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -159,40 +159,40 @@ msgstr "Invalid JSON format"
 msgid "No se encontraron llamadas "
 msgstr "Calls not found"
 
-#: reportes_app/models.py:389
+#: reportes_app/models.py:393
 msgid "Llamada manual"
 msgstr "Manual call"
 
-#: reportes_app/models.py:390
+#: reportes_app/models.py:394
 msgid "Llamada dialer"
 msgstr "Dialer call"
 
-#: reportes_app/models.py:391
+#: reportes_app/models.py:395
 msgid "Llamada entrante"
 msgstr "Inbound call"
 
-#: reportes_app/models.py:392
+#: reportes_app/models.py:396
 msgid "Llamada preview"
 msgstr "Preview call"
 
-#: reportes_app/models.py:393
+#: reportes_app/models.py:397
 msgid "Llamada click2call"
 msgstr "click2call"
 
-#: reportes_app/models.py:394
+#: reportes_app/models.py:398
 msgid "Llamada transferencia interna"
 msgstr "Internal transfer"
 
-#: reportes_app/models.py:395
+#: reportes_app/models.py:399
 msgid "Llamada transferencia externa"
 msgstr "External transfer"
 
-#: reportes_app/models.py:437
+#: reportes_app/models.py:441
 msgid "No se encontraron pausas "
 msgstr "Pauses not found"
 
 #: reportes_app/reportes/reporte_agente_tiempos.py:292
-#: reportes_app/reportes/reporte_agentes.py:257
+#: reportes_app/reportes/reporte_agentes.py:263
 msgid "ACW"
 msgstr "ACW"
 

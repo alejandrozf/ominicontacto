@@ -28,7 +28,7 @@ from ominicontacto_app.models import AgenteProfile, Pausa, Campana, Configuracio
 from ominicontacto_app.utiles import convert_audio_asterisk_path_astdb
 from configuracion_telefonia_app.models import (
     RutaSaliente, IVR, DestinoEntrante, ValidacionFechaHora, GrupoHorario, IdentificadorCliente,
-    TroncalSIP, RutaEntrante, DestinoPersonalizado, AmdConf
+    TroncalSIP, RutaEntrante, DestinoPersonalizado, AmdConf, EsquemaGrabaciones
 )
 
 import logging as _logging
@@ -536,6 +536,33 @@ class AmdConfFamily(AbstractRedisFamily):
 
     def get_nombre_families(self):
         return "OML:AMD_CONF"
+
+
+class EsquemaGrabacionesFamily(AbstractRedisFamily):
+
+    def _create_dict(self, esquema_grabaciones):
+
+        dict_amd_conf = {
+            'NAME': 'RECORDS_SCHEME',
+            'ID_CONTACTO': str(esquema_grabaciones.id_contacto),
+            'DATE': str(esquema_grabaciones.fecha),
+            'TELEFONO_CONTACTO': str(esquema_grabaciones.telefono_contacto),
+            'ID_CAMPANA': str(esquema_grabaciones.id_campana),
+            'ID_EXTERNO_CONTACTO': str(esquema_grabaciones.id_externo_contacto),
+            'ID_EXTERNO_CAMPANA': str(esquema_grabaciones.id_externo_campana),
+            'ID_AGENTE': str(esquema_grabaciones.id_agente),
+        }
+        return dict_amd_conf
+
+    def _obtener_todos(self):
+        """Obtener todas pausas"""
+        return EsquemaGrabaciones.objects.all()
+
+    def _get_nombre_family(self, family_member):
+        return "{0}:{1}".format(self.get_nombre_families(), family_member.id)
+
+    def get_nombre_families(self):
+        return "OML:RECORDS_SCHEME"
 
 
 class TrunkFamily(AbstractRedisFamily):

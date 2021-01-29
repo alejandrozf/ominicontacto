@@ -565,3 +565,24 @@ class AmdConf(models.Model):
 
     maximum_word_length = models.PositiveIntegerField(default=5000)
     silence_threshold = models.PositiveIntegerField(default=256)
+
+
+class EsquemaGrabaciones(models.Model):
+    """
+    Representa la estructura del nombre del archivo que van a tener
+    las grabaciones que se generan en el sistema
+    Ejemplo:
+    Si se define una configuracion con el siguiente esquema:
+    id_contacto=True
+    id_campana=True
+    id_agente=True
+    Los archivos generados tendrian el siguiente nombre
+    call-1611759898.143-1122-3-1
+    """
+    id_contacto = models.BooleanField(default=False)
+    fecha = models.BooleanField(default=False)
+    telefono_contacto = models.BooleanField(default=False)
+    id_campana = models.BooleanField(default=False)
+    id_externo_contacto = models.BooleanField(default=False)
+    id_externo_campana = models.BooleanField(default=False)
+    id_agente = models.BooleanField(default=False)
