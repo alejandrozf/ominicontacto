@@ -27,9 +27,10 @@ from __future__ import unicode_literals
 
 import logging
 import requests
+import json
 
 from django.utils.translation import ugettext_lazy as _
-from django.utils.timezone import now
+from django.utils.timezone import now, datetime, make_aware
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -50,7 +51,7 @@ from defender import utils
 from defender import config
 
 from ominicontacto_app.models import (
-    User, AgenteProfile, Grupo, Pausa,
+    User, AgenteProfile, Grupo, Pausa, AgendaContacto,
     Chat, MensajeChat, ClienteWebPhoneProfile
 )
 from ominicontacto_app.forms import PausaForm, GrupoForm, RegistroForm
@@ -329,6 +330,10 @@ class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
         video_domain = ''
         if 'WEBPHONE_VIDEO_DOMAIN' in settings.CONSTANCE_CONFIG:
             video_domain = config_constance.WEBPHONE_VIDEO_DOMAIN
+        fechas_agendas = AgendaContacto.objects.proximas(agente_profile).values_list(
+            'fecha', 'hora')
+        fechas_agendas = [
+            make_aware(datetime.combine(x[0], x[1])).isoformat() for x in fechas_agendas]
 
         hoy = fecha_local(now())
         registros = LlamadaLog.objects.obtener_llamadas_finalizadas_del_dia(agente_profile.id, hoy)
@@ -344,6 +349,7 @@ class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
         context['agentes'] = AgenteProfile.objects.obtener_activos().exclude(id=agente_profile.id)
         context['max_session_age'] = settings.SESSION_COOKIE_AGE
         context['video_domain'] = video_domain
+        context['fechas_agendas_json'] = json.dumps(fechas_agendas)
 
         return context
 

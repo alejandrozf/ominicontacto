@@ -26,13 +26,14 @@ o algo por el estilo para que lance una llamada agenda,etc
 from __future__ import unicode_literals
 
 import requests
+import json
 
 from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import ugettext as _
-from django.utils.timezone import now
+from django.utils.timezone import now, datetime, make_aware
 from django.views.generic import CreateView, FormView, UpdateView
 from django.views.generic.detail import DetailView
 from ominicontacto_app.models import AgendaContacto, Contacto, Campana, CalificacionCliente, User
@@ -111,6 +112,12 @@ class AgendaContactoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(
             AgendaContactoDetailView, self).get_context_data(**kwargs)
+        agente_profile = self.request.user.get_agente_profile()
+        fechas_agendas = AgendaContacto.objects.proximas(agente_profile).values_list(
+            'fecha', 'hora')
+        fechas_agendas = [
+            make_aware(datetime.combine(x[0], x[1])).isoformat() for x in fechas_agendas]
+        context['fechas_agendas_json'] = json.dumps(fechas_agendas)
         return context
 
 

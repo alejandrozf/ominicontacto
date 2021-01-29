@@ -23,6 +23,7 @@
 /* 		- click2Call.js     */
 
 /* globals Timer OMLAPI KeepAliveSender Click2CallDispatcher PhoneJSController gettext */
+/* globals AgendasNotifier */
 
 /* DEBUG*/
 $('#wrapperWebphone').toggleClass('active');
@@ -36,8 +37,11 @@ var click2call = undefined;
 var keep_alive_sender = undefined;
 
 var logoffEvent = undefined;
+var agendas_notifier = undefined;
 
 $(function () {
+    let agendas_dates = JSON.parse($('#agendas_dates_json').val());
+    agendas_notifier = new AgendasNotifier(agendas_dates);
 
     navigator.mediaDevices.getUserMedia({ audio: true })
         .then(function(stream) {

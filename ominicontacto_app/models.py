@@ -2743,6 +2743,12 @@ class AgendaContactoManager(models.Manager):
             eventos = eventos.filter(fecha__gte=hoy)
         return eventos.order_by('-fecha')
 
+    def proximas(self, agente):
+        """ Devuelve las agendas programadas para las proximas 8 horas para un agente """
+        por_fecha = self.filter(fecha__range=(now(), now() + timedelta(hours=8)))
+        de_agente = por_fecha.filter(agente=agente, tipo_agenda=AgendaContacto.TYPE_PERSONAL)
+        return de_agente.order_by('fecha')
+
 
 class AgendaContacto(models.Model):
     objects = AgendaContactoManager()
