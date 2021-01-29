@@ -74,6 +74,21 @@ El módulo de AMD de Asterisk, puede configurarse en OMniLeads usando la siguien
 *Figure 2: Amd configuration page*
 
 
+Configuración esquema de nombres de archivos de grabaciones de llamadas
+***********************************************************************
+
+La siguiente sección permite configurar el formato que tendrán los nombres de los archivos de grabaciones generadas por
+llamadas en el sistema.
+
+Al seleccionar algunas de las opciones mostradas en la página esto impactará directamente en el nombre de los archivos de grabación.
+
+Nota: tener en cuenta que el ID de Agente como variable no está disponible para campañas Entrantes ni Salientes de Discador.
+
+.. image:: images/recordings_scheme_page.png
+
+*Figure 2: Recordings scheme page*
+
+
 Configuración de enrutamiento de llamadas entrantes
 ****************************************************
 

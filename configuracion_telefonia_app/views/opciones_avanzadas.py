@@ -27,11 +27,11 @@ from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import UpdateView
 
-from configuracion_telefonia_app.models import AmdConf
-from configuracion_telefonia_app.forms import AmdConfForm
+from configuracion_telefonia_app.models import AmdConf, EsquemaGrabaciones
+from configuracion_telefonia_app.forms import AmdConfForm, EsquemaGrabacionesForm
 
 from configuracion_telefonia_app.regeneracion_configuracion_telefonia import \
-    SincronizadorDeConfiguracionAmdConfAsterisk
+    SincronizadorDeConfiguracionAmdConfAsterisk, SincronizadorDeEsquemaGrabacionesAsterisk
 
 
 logger = logging.getLogger(__name__)
@@ -50,6 +50,26 @@ class ConfiguracionAMDUpdateView(UpdateView):
     def form_valid(self, form):
         response = super(ConfiguracionAMDUpdateView, self).form_valid(form)
         sincronizador = SincronizadorDeConfiguracionAmdConfAsterisk()
+        sincronizador.regenerar_asterisk()
+        messages.add_message(self.request, messages.SUCCESS, self.message)
+        return response
+
+
+class EsquemaGrabacionesUpdateView(UpdateView):
+    """Vista que permite definir el formato que tendran los nombres de
+    archivos de grabaciones
+    """
+    model = EsquemaGrabaciones
+    form_class = EsquemaGrabacionesForm
+    template_name = 'editar_esquema_grabacion.html'
+    message = _('Se ha modificado el formato de los nombres de graciones con éxito')
+
+    def get_success_url(self):
+        return reverse('ajustar_formato_grabaciones', args=(1,))
+
+    def form_valid(self, form):
+        response = super(EsquemaGrabacionesUpdateView, self).form_valid(form)
+        sincronizador = SincronizadorDeEsquemaGrabacionesAsterisk()
         sincronizador.regenerar_asterisk()
         messages.add_message(self.request, messages.SUCCESS, self.message)
         return response

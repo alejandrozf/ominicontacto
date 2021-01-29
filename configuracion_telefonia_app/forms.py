@@ -33,7 +33,7 @@ from configuracion_telefonia_app.models import (PatronDeDiscado, RutaSaliente, R
                                                 TroncalSIP, OrdenTroncal, DestinoEntrante, IVR,
                                                 OpcionDestino, ValidacionTiempo, GrupoHorario,
                                                 IdentificadorCliente, Playlist, MusicaDeEspera,
-                                                AmdConf)
+                                                AmdConf, EsquemaGrabaciones)
 from ominicontacto_app.models import ArchivoDeAudio
 from ominicontacto_app.views_archivo_de_audio import convertir_archivo_audio
 
@@ -652,6 +652,31 @@ class AmdConfForm(forms.ModelForm):
             'maximum_number_of_words': _('Número máximo de palabras'),
             'maximum_word_length': _('Largo máximo de cada palabra (ms)'),
             'silence_threshold': _('Nivel de ruido'),
+        }
+
+
+class EsquemaGrabacionesForm(forms.ModelForm):
+
+    class Meta:
+        model = EsquemaGrabaciones
+        exclude = ()
+        widgets = {
+            'id_contacto': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'fecha': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'telefono_contacto': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'id_campana': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'id_externo_contacto': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'id_externo_campana': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'id_agente': forms.CheckboxInput(attrs={'class': 'form-control'}),
+        }
+        labels = {
+            'id_contacto': _('Id contacto'),
+            'fecha': _('Fecha'),
+            'telefono_contacto': _('Teléfono contacto'),
+            'id_campana': _('Id Campana'),
+            'id_externo_contacto': _('Id externo contacto'),
+            'id_externo_campana': _('Id externo campana'),
+            'id_agente': _('Id agente'),
         }
 
 

@@ -411,7 +411,7 @@ class GeneradorParaPatronRuta(GeneradorDePedazoDeRutaSaliente):
         exten => i,1,Verbose(2, no existe patron)
         same => n,Set(__DIALSTATUS=NONDIALPLAN)
         same => n,Set(SHARED(OMLCALLSTATUS,${{OMLMOTHERCHAN}})=${{DIALSTATUS}})
-        same => n,Gosub(sub-oml-hangup,s,1(FAIL FAIL FAIL no hay ruta para ${{OMLOUTNUM}})
+        same => n,Gosub(sub-oml-hangup,s,1(FAIL FAIL FAIL no hay ruta para ${{OMLOUTNUM}}))
         """
 
     def get_parametros(self):
