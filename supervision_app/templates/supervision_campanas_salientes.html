@@ -17,22 +17,17 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
-{% extends "base.html" %}
-{% load static %}
-{% load i18n %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.dataTables.min.css' %}">
-{% endblock %}
-{% block head_js %}
-    <script type="text/javascript" src="{% static 'supervision_app/JS/campanas_salientes.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
-    {% include 'config.html' %}
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/config.js' %}"></script>
-{% endblock %}
-
-{% block content %}
+{% extends "base.html" %} {% load static %} {% load i18n %} {% block extra_css %}
+<link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.dataTables.min.css' %}"> {% endblock %} {% block head_js %}
+<script type="text/javascript" src="{% static 'supervision_app/JS/campanas_salientes.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
+{% include 'config.html' %}
+<script type="text/javascript" src="{% static 'ominicontacto/JS/config.js' %}"></script>
+{% endblock %} {% block content %}
 <h1>{% trans 'Campañas Salientes' %}</h1>
+<input id="supervisor_id" type="hidden" value="{{supervisor_id}}">
+<input id="campanas_list" type="hidden" value="{{campanas}}">
+<input id="campanas_list_id" type="hidden" value="{{campanas_ids}}">
 <div>
     <table class="table" id="tableSalientes">
         <thead>

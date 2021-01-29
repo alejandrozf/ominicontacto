@@ -20,8 +20,6 @@
 from django.views.generic import TemplateView
 
 from ominicontacto_app.services.kamailio_service import KamailioService
-from reportes_app.reportes.reporte_llamadas_supervision import \
-    ReporteDeLLamadasSalientesDeSupervision
 
 from utiles_globales import AddSettingsContextMixin
 from ominicontacto_app.forms import GrupoAgenteForm
@@ -84,6 +82,17 @@ class SupervisionCampanasSalientesView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(SupervisionCampanasSalientesView, self).get_context_data(**kwargs)
-        reporte = ReporteDeLLamadasSalientesDeSupervision(self.request.user)
-        context['estadisticas'] = reporte.estadisticas
+        supervisor = self.request.user.get_supervisor_profile()
+        context['supervisor_id'] = supervisor.id
+        if self.request.user.get_is_administrador():
+            campanas = Campana.objects.obtener_actuales()
+        else:
+            campanas = supervisor.campanas_asignadas_actuales()
+        campanas = campanas.filter(type__in=[Campana.TYPE_DIALER,
+                                             Campana.TYPE_PREVIEW,
+                                             Campana.TYPE_MANUAL]).order_by('id')
+        context['campanas'] = ",".join([x.nombre for x in campanas])
+        context['campanas_ids'] = ",".join([str(x.id) for x in campanas])
+        RedisGearsService().registra_stream_supervisor_salientes(
+            supervisor.id, context['campanas_ids'], context['campanas'])
         return context
