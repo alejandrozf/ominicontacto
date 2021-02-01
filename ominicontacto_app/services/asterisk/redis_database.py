@@ -20,6 +20,7 @@
 from __future__ import unicode_literals
 
 import json
+import sys
 
 from django.conf import settings
 from django.utils.translation import ugettext as _
@@ -33,7 +34,7 @@ from configuracion_telefonia_app.models import (
 
 import logging as _logging
 import redis
-from redis.exceptions import RedisError
+from redis.exceptions import RedisError, ConnectionError
 
 logger = _logging.getLogger(__name__)
 
@@ -56,8 +57,11 @@ class AbstractRedisFamily(object):
         try:
             redis_crea_family = redis_connection.hset(family, mapping=variables)
             return redis_crea_family
-        except (RedisError) as e:
+        except RedisError as e:
             raise e
+        except ConnectionError as e:
+            logger.exception(e)
+            sys.exit(1)
 
     def _create_families(self, modelo=None, modelos=None):
         """ Crea familys en Redis """
@@ -76,8 +80,11 @@ class AbstractRedisFamily(object):
         try:
             family = self._get_nombre_family(family_member)
             redis_connection.delete(family)
-        except (RedisError) as e:
+        except RedisError as e:
             raise e
+        except ConnectionError as e:
+            logger.exception(e)
+            sys.exit(1)
 
     def _delete_tree_family(self):
         """Elimina todos los objetos de la family """
@@ -95,9 +102,10 @@ class AbstractRedisFamily(object):
                     redis_connection.delete(key)
                 if index == 0:
                     finalizado = True
-            except RedisError as e:
+            except (RedisError, ConnectionError) as e:
                 logger.exception(_("Error al intentar Eliminar families de {0}. Error: {1}".format(
                     nombre_families, e)))
+                sys.exit(1)
 
     def _create_dict(self, family_member):
         raise (NotImplementedError())
@@ -131,8 +139,11 @@ class AbstractRedisChanelPublisher(AbstractRedisFamily):
         try:
             redis_crea_family = redis_connection.publish(family, variables_json)
             return redis_crea_family
-        except (RedisError) as e:
+        except RedisError as e:
             raise e
+        except ConnectionError as e:
+            logger.exception(e)
+            sys.exit(1)
 
     def regenerar_family(self, family_member):
         """regenera una family"""
@@ -263,8 +274,11 @@ class AgenteFamily(AbstractRedisFamily):
         try:
             redis_crea_family = redis_connection.hset(family, mapping=variables)
             return redis_crea_family
-        except (RedisError) as e:
+        except RedisError as e:
             raise e
+        except ConnectionError as e:
+            logger.exception(e)
+            sys.exit(1)
 
     def regenerar_family(self, agente, preservar_status=False):
         """Regenera una family de Agente y preserva su status actual en Asterisk"""
