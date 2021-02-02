@@ -20,7 +20,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
         {% for campana in borradas %}
             <tr>
-                <td>{{ campana.id }}</td>
+                <td width="5%">{{ campana.id }}</td>
                 <td width="25%">
                     <a href="{% url 'campana_update' campana.pk %}">{{ campana.nombre }}</a>
                 </td>

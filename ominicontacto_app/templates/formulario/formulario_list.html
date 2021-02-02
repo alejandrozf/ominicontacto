@@ -33,7 +33,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 <table class="table">
     <thead>
         <tr>
-            <th>{% trans 'Id' %}</th>
+            <th width="5%">{% trans 'Id' %}</th>
             <th>{% trans 'Nombre' %}</th>
             <th>{% trans 'Descripción' %}</th>
             <th>{% trans 'Vista Previa' %}</th>
@@ -44,7 +44,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% for formulario in object_list %}
             {% if not formulario.oculto or mostrar_ocultos %}
                 <tr class="formularioElem" id="{{ formulario.nombre }}">
-                    <td>{{ formulario.id }}</td>
+                    <td width="5%">{{ formulario.id }}</td>
                     <td>{{ formulario.nombre }}</td>
                     <td>{{ formulario.descripcion }}</td>
                     <td><a class="btn btn-light" href="{% url 'formulario_vista' formulario.pk %}">{% trans 'Ver' %}</a></td>

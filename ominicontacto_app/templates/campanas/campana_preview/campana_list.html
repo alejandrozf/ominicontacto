@@ -33,7 +33,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block campanas_activas %}
     {% for campana in activas %}
         <tr>
-            <td>{{ campana.id }}</td>
+            <td width="5%">{{ campana.id }}</td>
             <td width="25%">
                     <a href="#" onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
                     <a href="{% url 'campana_preview_detalle' campana.pk %}">
@@ -104,7 +104,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <table class="table">
         <thead>
             <tr>
-                <th>{% trans 'Id'  %}</th>
+                <th width="5%">{% trans 'Id'  %}</th>
                 <th>{% trans 'Nombre'  %}</th>
                 <th>{% trans 'Estado'  %}</th>
                 <th>{% trans 'Acciones' %}&nbsp;&nbsp;</th>
@@ -113,7 +113,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <tbody>
             {% for campana in finalizadas %}
                 <tr>
-                    <td>{{ campana.id }}</td>
+                    <td width="5%">{{ campana.id }}</td>
                     <td width="25%">
                         <a href="#" onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
                         <a href="{% url 'campana_preview_detalle' campana.pk %}">
@@ -163,7 +163,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block campanas_borradas %}
     {% for campana in borradas %}
         <tr>
-            <td>{{ campana.id }}</td>
+            <td width="5%">{{ campana.id }}</td>
             <td width="25%">
                 {{ campana.nombre }}<a href="{% url 'campana_preview_detalle' campana.pk %}">
                     &nbsp;<span class="icon icon-search" aria-hidden="true" title="ver detalles"></span>
