@@ -150,11 +150,11 @@ def crear_blacklist(browser, path, base_datos):
 
 def crear_campos_formulario(browser, campos):
     for items in campos:
-        browser.find_element_by_id('id_nombre_campo').send_keys(items)
+        browser.find_element_by_name('nombre_campo').send_keys(items)
         if items == 'Nombre':
             browser.find_elements_by_xpath(
                 '//select[@id=\'id_tipo\']/option')[1].click()
-        elif items == 'Fecha nacimiento':
+        elif items == 'Fecha_nacimiento':
             browser.find_elements_by_xpath(
                 '//select[@id=\'id_tipo\']/option')[2].click()
         elif items == 'Opciones':
