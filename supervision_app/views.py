@@ -39,10 +39,10 @@ class SupervisionAgentesView(AddSettingsContextMixin, TemplateView):
         sip_usuario = kamailio_service.generar_sip_user(supervisor.sip_extension)
         sip_password = kamailio_service.generar_sip_password(sip_usuario)
         if self.request.user.get_is_administrador():
-            campanas = Campana.objects.all()
+            campanas = Campana.objects.obtener_all_dialplan_asterisk()
             grupo = Grupo.objects.all()
         else:
-            campanas = supervisor.campanas_asignadas_actuales()
+            campanas = supervisor.campanas_asignadas_actuales_no_finalizadas()
             ids_agentes = list(campanas.values_list(
                 'queue_campana__members__pk', flat=True).distinct())
             id_grupo = AgenteProfile.objects.filter(id__in=ids_agentes).values_list(
