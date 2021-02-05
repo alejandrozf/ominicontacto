@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-29 14:22-0300\n"
+"POT-Creation-Date: 2021-02-05 17:57-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2260,7 +2260,7 @@ msgstr ""
 msgid "Error al eliminar directorio: {0}"
 msgstr ""
 
-#: ominicontacto_app/services/asterisk/redis_database.py:99
+#: ominicontacto_app/services/asterisk/redis_database.py:106
 #, python-brace-format
 msgid "Error al intentar Eliminar families de {0}. Error: {1}"
 msgstr ""
@@ -3009,15 +3009,15 @@ msgid "Acerca de la Aplicación"
 msgstr ""
 
 #: ominicontacto_app/templates/acerca/acerca.html:28
-msgid "Rama"
+msgid "Version: "
 msgstr ""
 
 #: ominicontacto_app/templates/acerca/acerca.html:30
-msgid "Commit"
+msgid "Commit: "
 msgstr ""
 
 #: ominicontacto_app/templates/acerca/acerca.html:32
-msgid "Deploy"
+msgid "Deploy date: "
 msgstr ""
 
 #: ominicontacto_app/templates/addons.html:25
@@ -5437,6 +5437,16 @@ msgstr ""
 
 #: ominicontacto_app/templates/campanas/campana_preview/parametros_crm_sitio_externo.html:24
 msgid "Campaña Preview: Parámetros extra para web form"
+msgstr ""
+
+#: ominicontacto_app/templates/campanas/configuracion_de_agentes_de_campana.html:31
+msgid "Configuracion de comportamiento de agentes en campaña"
+msgstr ""
+
+#: ominicontacto_app/templates/campanas/configuracion_de_agentes_de_campana.html:39
+msgid ""
+"Seleccione las opciones a configurar para cambiar el comportamiento de los "
+"agentes en esta campaña."
 msgstr ""
 
 #: ominicontacto_app/templates/campanas/wizard_base.html:47
