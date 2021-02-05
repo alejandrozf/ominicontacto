@@ -208,7 +208,7 @@ class CampanaBorradasListView(CampanaListView):
 
 class ConfiguracionDeAgentesDeCampanaView(FormView):
     form_class = ConfiguracionDeAgentesDeCampanaForm
-    template_name = 'base_create_update_form.html'
+    template_name = 'campanas/configuracion_de_agentes_de_campana.html'
 
     def dispatch(self, request, *args, **kwargs):
         pk_campana = kwargs.get('pk_campana')
