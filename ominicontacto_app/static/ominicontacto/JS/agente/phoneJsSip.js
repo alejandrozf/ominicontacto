@@ -542,10 +542,10 @@ class SessionData {
     }
 
     get is_dialer() {
-        return this.origin.indexOf('DIALER') == 0;
+        return this.origin != undefined && this.origin.indexOf('DIALER') == 0;
     }
     get is_click2call() {
-        return this.origin.indexOf('CLICK2CALL') == 0;
+        return this.origin != undefined && this.origin.indexOf('CLICK2CALL') == 0;
     }
     get is_inbound() {
         return this.origin == 'IN';
