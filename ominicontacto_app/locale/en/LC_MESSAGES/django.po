@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-29 14:22-0300\n"
+"POT-Creation-Date: 2021-02-05 10:50-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2277,7 +2277,7 @@ msgstr "Error removing directory. The directory does not exists: {0}"
 msgid "Error al eliminar directorio: {0}"
 msgstr "Error removing directory: {0}"
 
-#: ominicontacto_app/services/asterisk/redis_database.py:99
+#: ominicontacto_app/services/asterisk/redis_database.py:106
 #, python-brace-format
 msgid "Error al intentar Eliminar families de {0}. Error: {1}"
 msgstr "Error when attempting families deletion of {0}. Error: {1}"
@@ -3040,16 +3040,19 @@ msgid "Acerca de la Aplicación"
 msgstr "About Application"
 
 #: ominicontacto_app/templates/acerca/acerca.html:28
-msgid "Rama"
-msgstr "Branch"
+msgid "Version: "
+msgstr "Version: "
 
 #: ominicontacto_app/templates/acerca/acerca.html:30
-msgid "Commit"
-msgstr "Commit"
+#| msgid "Commit"
+msgid "Commit: "
+msgstr "Commit: "
 
 #: ominicontacto_app/templates/acerca/acerca.html:32
-msgid "Deploy"
-msgstr "Deploy"
+#, fuzzy
+#| msgid "Deploy"
+msgid "Deploy date: "
+msgstr "Deploy date: "
 
 #: ominicontacto_app/templates/addons.html:25
 msgid "Addons comerciales disponibles"
@@ -6814,6 +6817,9 @@ msgstr "WebPhone client deactivated"
 #: ominicontacto_app/views_user_profiles.py:572
 msgid "El Cliente WebPhone fue activado"
 msgstr "WebPhone client activated"
+
+#~ msgid "Rama"
+#~ msgstr "Branch"
 
 #~ msgid "No se encontro mensaje recibido con esa fecha y remitente"
 #~ msgstr "There is no received message for that datetime and source"

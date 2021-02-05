@@ -59,7 +59,13 @@ Vamos a comenzar con la instalación de ansible. Es necesario tener instalado el
 Centos7 - Selfhosted
 --------------------
 
-Pip y python ya se encuentran instalados por defecto en centos 7, por lo tanto basta con este comando para instalar ansible:
+* Instalar python-pip:
+
+.. code::
+
+  yum install epel-release -y && yum install python-pip -y
+
+* Instalar ansible:
 
 .. code::
 

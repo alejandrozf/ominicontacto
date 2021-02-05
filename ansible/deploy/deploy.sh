@@ -109,6 +109,9 @@ TagCheck() {
 }
 
 CodeCopy() {
+  printf "$GREEN** [OMniLeads] Getting release data $NC \n"
+  commit="$(git rev-parse HEAD)"
+  build_date="$(env LC_hosts=C LC_TIME=C date)"
   current_tag="`git tag -l --points-at HEAD`"
   release_name=$(git show ${current_tag} |grep "Merge branch" |awk -F " " '{print $3}' |tr -d "'")
   branch_name="`git branch | grep \* | cut -d ' ' -f2`"
@@ -131,6 +134,8 @@ CodeCopy() {
   set -e
   echo ""
   echo "      Version: $release_name"
+  echo "      Commit: $commit"
+  echo "      Deploy date: $build_date"
   echo ""
   if [ -e $TMP_OMINICONTACTO ] ; then
     rm -rf $TMP_OMINICONTACTO
