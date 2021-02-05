@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-22 14:46-0300\n"
+"POT-Creation-Date: 2021-02-05 18:18-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,11 +25,11 @@ msgstr ""
 msgid "Error al ejecutar => "
 msgstr ""
 
-#: reportes_app/static/reportes_app/JS/reporte_grafico_campana.js:93
+#: reportes_app/static/reportes_app/JS/reporte_grafico_campana.js:92
 msgid "Exportación completa"
 msgstr ""
 
-#: reportes_app/static/reportes_app/JS/reporte_grafico_campana.js:95
+#: reportes_app/static/reportes_app/JS/reporte_grafico_campana.js:94
 msgid "La exportación a .csv del reporte de "
 msgstr ""
 

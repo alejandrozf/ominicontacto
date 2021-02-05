@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-05 10:50-0300\n"
+"POT-Creation-Date: 2021-02-05 17:57-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -948,10 +948,8 @@ msgid "Eliminar un Archivo de Audio"
 msgstr "Delete Audio File"
 
 #: ominicontacto_app/apps.py:1152
-#, fuzzy
-#| msgid "Pantalla de asignacion de Agentes a Campaña"
 msgid "Editar configuracion de Agentes para la campaña"
-msgstr "Campaign's Agents assignment screen"
+msgstr "Edit agents campaign's configuration"
 
 #: ominicontacto_app/apps.py:1155
 msgid "Finalizar una campana dialer activa"
@@ -3044,13 +3042,10 @@ msgid "Version: "
 msgstr "Version: "
 
 #: ominicontacto_app/templates/acerca/acerca.html:30
-#| msgid "Commit"
 msgid "Commit: "
 msgstr "Commit: "
 
 #: ominicontacto_app/templates/acerca/acerca.html:32
-#, fuzzy
-#| msgid "Deploy"
 msgid "Deploy date: "
 msgstr "Deploy date: "
 
@@ -4534,10 +4529,8 @@ msgstr "Incidence Rules"
 #: ominicontacto_app/templates/campanas/campana_entrante/campana_list.html:91
 #: ominicontacto_app/templates/campanas/campana_manual/campana_list.html:67
 #: ominicontacto_app/templates/campanas/campana_preview/campana_list.html:86
-#, fuzzy
-#| msgid "Calificaciones agentes"
 msgid "Configuraciones para agentes"
-msgstr "Agents Dispositions"
+msgstr "Agent Configurations"
 
 #: ominicontacto_app/templates/campanas/campana_dialer/campana_list.html:138
 #: ominicontacto_app/templates/campanas/campana_dialer/campana_list.html:220
@@ -5394,10 +5387,8 @@ msgid "Reservar o liberar Contactos de la Campaña"
 msgstr "Reserve or release Campaign Contacts"
 
 #: ominicontacto_app/templates/campanas/campana_preview/contactos_asignados.html:60
-#, fuzzy
-#| msgid "Filtrar por esa fecha"
 msgid "Filtrar por agente"
-msgstr "Filter by date"
+msgstr "Filter by agent"
 
 #: ominicontacto_app/templates/campanas/campana_preview/contactos_asignados.html:72
 msgid "* Tiene que seleccionar minimo 1 contacto"
@@ -5478,6 +5469,16 @@ msgstr "Import and Deactivate"
 #: ominicontacto_app/templates/campanas/campana_preview/parametros_crm_sitio_externo.html:24
 msgid "Campaña Preview: Parámetros extra para web form"
 msgstr "Preview Campaign: Extra Web Form Parameters"
+
+#: ominicontacto_app/templates/campanas/configuracion_de_agentes_de_campana.html:31
+msgid "Configuracion de comportamiento de agentes en campaña"
+msgstr "Agent's behaviour configuration for campaign"
+
+#: ominicontacto_app/templates/campanas/configuracion_de_agentes_de_campana.html:39
+msgid ""
+"Seleccione las opciones a configurar para cambiar el comportamiento de los "
+"agentes en esta campaña."
+msgstr "Select the options to configure agent's behaviour for this campaign"
 
 #: ominicontacto_app/templates/campanas/wizard_base.html:47
 msgid "first step"
@@ -6817,24 +6818,3 @@ msgstr "WebPhone client deactivated"
 #: ominicontacto_app/views_user_profiles.py:572
 msgid "El Cliente WebPhone fue activado"
 msgstr "WebPhone client activated"
-
-#~ msgid "Rama"
-#~ msgstr "Branch"
-
-#~ msgid "No se encontro mensaje recibido con esa fecha y remitente"
-#~ msgstr "There is no received message for that datetime and source"
-
-#~ msgid "La hora 'desde' debe ser menor o igual a la hora 'hasta'."
-#~ msgstr "'From' field should be smaller or equal than 'To' "
-
-#~ msgid "La hora 'hasta' debe ser mayor a la hora 'desde'."
-#~ msgstr "'To' should be greater than 'From'"
-
-#~ msgid "Ya esta cubierto el rango horario en ese día semanal."
-#~ msgstr "Time range already covered for the day"
-
-#~ msgid "Ya esta cubierto el rango horario ese día semanal."
-#~ msgstr "Time range already covered for the day"
-
-#~ msgid "Creando json para asociacion campana {0} endpoint"
-#~ msgstr "Generating JSON for mapping campaign {0} endpoint"
