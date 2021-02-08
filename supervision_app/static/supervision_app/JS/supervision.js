@@ -73,7 +73,7 @@ function crossData(tableData, newData) {
         for (let index = 0; index < resData.length; index++) {
             if (resData[index].id == newData[key].id) {
                 if (newData[key].status == '' || newData[key].status == 'OFFLINE') {
-                    resData.splice(key, 1);
+                    resData.splice(index, 1);
                 } else {
                     resData[index] = newData[key];
                 }
