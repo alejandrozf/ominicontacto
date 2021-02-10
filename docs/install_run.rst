@@ -24,15 +24,18 @@ Deshabilitar firewalld y SElinux:
 
 Instalación de actualizaciones, kernel-devel
 ********************************************
+
+
 .. code-block:: bash
 
-  yum update -y && yum install kernel-devel git -y
+yum update --exclude=glibc* && yum install kernel-devel git -y
   reboot
 
-.. important::
 
-  Revisar que el paquete kernel-devel coincida con el kernel.
+.. warning::
 
+  * Revisar que el paquete kernel-devel coincida con el kernel.
+  * Es imprescindible correr el yum update excluyendo el glibc, pues de no hacerlo experimentará errores de dialplan debido a este `Bug de Asterisk <https://www.mail-archive.com/asterisk-users@lists.digium.com/msg287057.html>`_
 
 Ejecutar los comandos:
 
@@ -59,18 +62,19 @@ Vamos a comenzar con la instalación de ansible. Es necesario tener instalado el
 Centos7 - Selfhosted
 --------------------
 
-* Instalar python-pip:
+* Instalar python3-pip y python3 (en caso de no estar instalado):
 
 .. code::
 
-  yum install epel-release -y && yum install python-pip -y
+  yum install epel-release -y && yum install python3-pip pyton3 -y
 
 * Instalar ansible:
 
 .. code::
 
   (con el usuario root)
-  # pip install 'ansible==2.9.2' --user
+  # pip3 install --upgrade pip
+  # pip3 install 'ansible==2.9.2' --user
 
 Todos los binarios de Ansible se encontrarán disponibles en `/root/.local/bin/`
 
