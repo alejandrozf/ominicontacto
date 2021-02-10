@@ -25,17 +25,14 @@ Deshabilitar firewalld y SElinux:
 Instalación de actualizaciones, kernel-devel
 ********************************************
 
-
 .. code-block:: bash
 
-yum update --exclude=glibc* && yum install kernel-devel git -y
+  yum update && yum install kernel-devel git -y
   reboot
 
+.. important::
 
-.. warning::
-
-  * Revisar que el paquete kernel-devel coincida con el kernel.
-  * Es imprescindible correr el yum update excluyendo el glibc, pues de no hacerlo experimentará errores de dialplan debido a este `Bug de Asterisk <https://www.mail-archive.com/asterisk-users@lists.digium.com/msg287057.html>`_
+  Revisar que el paquete kernel-devel coincida con el kernel.
 
 Ejecutar los comandos:
 

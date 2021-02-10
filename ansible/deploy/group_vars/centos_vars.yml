@@ -8,6 +8,6 @@ pg_lib_old_location: "{{ pg_lib_location_no_version }}/{{ postgresql_old_version
 pg_lib_location: "{{ pg_lib_location_no_version }}/{{ postgresql_version }}/data"
 pg_setup_location: "/usr/pgsql-{{ postgresql_version }}/bin/postgresql-{{ postgresql_version }}-setup"
 postgresql_key: https://ftp.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-{{ postgresql_version }}
-postgresql_repo: https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7.6-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+postgresql_repo: https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
 cron_location: /var/spool/cron/omnileads
 mariadb_host: localhost

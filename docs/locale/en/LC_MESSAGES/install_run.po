@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-08 15:40-0300\n"
+"POT-Creation-Date: 2021-02-11 11:12-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -60,45 +60,23 @@ msgstr "Disabled firewalld and SELinux"
 msgid "Instalación de actualizaciones, kernel-devel"
 msgstr "Run upgrades and install kernel-devel paq."
 
-# 986f4585dab84fabaa98ecb3fd892879
-#: ../../install_run.rst:33
-msgid "yum update --exclude=glibc* && yum install kernel-devel git -y"
-msgstr ""
-
-# 1ae5f0affb5240e486a3a6a559484d3b
-#: ../../install_run.rst:32
-msgid "reboot"
-msgstr ""
-
 # 7d050fb47dda4e6cb855b55f7fa684dc
-#: ../../install_run.rst:37
+#: ../../install_run.rst:35
 msgid "Revisar que el paquete kernel-devel coincida con el kernel."
 msgstr "Check that the kernel-devel package matches the kernel."
 
-# 49102b96f8ac485d831e9e26b2033fb9
-#: ../../install_run.rst:38
-msgid ""
-"Es imprescindible correr el yum update excluyendo el glibc, pues de no "
-"hacerlo experimentará errores de dialplan debido a este `Bug de Asterisk "
-"<https://www.mail-archive.com/asterisk-"
-"users@lists.digium.com/msg287057.html>`_"
-msgstr ""
-"It's mandatory to run yum update excluding glibc package, due to an "
-"`Asterisk bug <https://www.mail-archive.com/asterisk-"
-"users@lists.digium.com/msg287057.html>`_ that breaks dialplan. "
-
 # 66dc2dc1409d4e67bcfa197f7e3afc49
-#: ../../install_run.rst:40
+#: ../../install_run.rst:37
 msgid "Ejecutar los comandos:"
 msgstr "Run the commands"
 
 # 4d8625e79b82475e85ba2c9c5251a78b
-#: ../../install_run.rst:50
+#: ../../install_run.rst:47
 msgid "Proporcionar Certificados SSL confiables"
 msgstr "Provide reliable SSL Certificates"
 
 # 45d8d8cbf8c248399d8e2e9ca124d6a6
-#: ../../install_run.rst:52
+#: ../../install_run.rst:49
 msgid ""
 "OMniLeads se despliega con certificados SSLv3 para la conexión HTTPS del "
 "browser con el servidor web (Nginx), utilizando un par cert/key en "
@@ -121,7 +99,7 @@ msgstr ""
 "certificate is now configured for acceptance."
 
 # eb7e222badb64ac5aeda3d2620e24a60
-#: ../../install_run.rst:54
+#: ../../install_run.rst:51
 msgid ""
 "Sin embargo, se recomienda cargar sus certificados SSL de confianza "
 "durante la instalación de la App. Usted deberá ubicar sus archivos "
@@ -143,12 +121,12 @@ msgstr ""
 "available and using its own trusted certificates."
 
 # b394f2da202a43a49daf190c68c4d6ad
-#: ../../install_run.rst:58
+#: ../../install_run.rst:55
 msgid "Instalación de Ansible"
 msgstr "Ansible Installation"
 
 # a897390f453c4b67a03e08d292470b3b
-#: ../../install_run.rst:60
+#: ../../install_run.rst:57
 msgid ""
 "Vamos a comenzar con la instalación de ansible. Es necesario tener "
 "instalado el paquete pip y python. La mayoría de distros de linux vienen "
@@ -159,47 +137,47 @@ msgstr ""
 "packages installed. Other way you must install them."
 
 # d90d9a7492444133baa77195aba7806a
-#: ../../install_run.rst:63
+#: ../../install_run.rst:60
 msgid "Centos7 - Selfhosted"
 msgstr ""
 
 # 67063a0f25414290933237f74ba77e5e
-#: ../../install_run.rst:65
+#: ../../install_run.rst:62
 msgid "Instalar python3-pip y python3 (en caso de no estar instalado):"
 msgstr "Install python3-pip and python3 in case they are not installed:"
 
 # 09ea66c81b1d4a749f2a1e04c4122485
-#: ../../install_run.rst:71
+#: ../../install_run.rst:68
 msgid "Instalar ansible:"
 msgstr "Install ansible:"
 
 # e4deeb594c754073bcdbd8b73019ae8d
 # 9a7f6f3be6774f19b7a9610c19b13936
-#: ../../install_run.rst:79 ../../install_run.rst:96
+#: ../../install_run.rst:76 ../../install_run.rst:93
 msgid ""
 "Todos los binarios de Ansible se encontrarán disponibles en "
 "`/root/.local/bin/`"
 msgstr "All Ansible's binaries are available in `/root/.local/bin/`"
 
 # ecd2181fd98b49d8b3ba79911fc835c9
-#: ../../install_run.rst:82
+#: ../../install_run.rst:79
 msgid "Otras distros Linux - Host Node"
 msgstr "Other Linux distros - Host Node"
 
 # 09ea66c81b1d4a749f2a1e04c4122485
-#: ../../install_run.rst:85
+#: ../../install_run.rst:82
 msgid "Instalar ansible usando pip"
 msgstr "Install ansible using pip"
 
 # 7611532e620849f48f7b7aef12e4b50a
-#: ../../install_run.rst:86
+#: ../../install_run.rst:83
 msgid ""
 "Realizar la instalación de python2 y pip en caso de que en su distro no "
 "se encuentren instalados."
 msgstr "Install python2 and pip in case you don't have them installed."
 
 # cb5d3cb1d6f84f0596faa9630bd81b57
-#: ../../install_run.rst:94
+#: ../../install_run.rst:91
 msgid ""
 "Algunas distribuciones actuales de Ubuntu y Debian no traen mas python2 y"
 " pip, en este caso se puede instalar usando python3 y pip3"
@@ -208,12 +186,12 @@ msgstr ""
 " and pip, in that case, you can install using python3 and pip3."
 
 # 09c8096fefae46af88348b6fb6f99bd6
-#: ../../install_run.rst:99
+#: ../../install_run.rst:96
 msgid "Utilizar la imagen de ansible Dockerizado"
 msgstr "Use Ansible dockerized image"
 
 # 0ebc882c528b47d294df2a5544dd53a9
-#: ../../install_run.rst:101
+#: ../../install_run.rst:98
 msgid ""
 "Freetech Solutions mantiene una imágen de docker de ansible, la cual "
 "puede ser descargada y usada para realizar las instalaciones de "
@@ -223,7 +201,7 @@ msgstr ""
 "and use this image to make OMniLeads installations. Follow these steps:"
 
 # f38556d8f77b40ee90873cb69228c534
-#: ../../install_run.rst:103
+#: ../../install_run.rst:100
 msgid ""
 "Instalar docker en la máquina deployer. Para eso seguir los pasos de "
 "instalación de Docker según su distro/SO."
@@ -232,7 +210,7 @@ msgstr ""
 "installation for your distro/SO."
 
 # c3f57b6ec55146f48a96296f38504e7a
-#: ../../install_run.rst:104
+#: ../../install_run.rst:101
 msgid ""
 "Ejecutar el script `run_ansible.sh`, el cual hará pull de la última "
 "imagen de Ansible buildeada por nosotros y levantará el container."
@@ -241,17 +219,17 @@ msgstr ""
 "Ansible image builded by us and will raise up the container."
 
 # 54a8f3e89ac14200b6701e88a96465d9
-#: ../../install_run.rst:113
+#: ../../install_run.rst:110
 msgid "Con ctrl + D sale del container y este se destruye automáticamente."
 msgstr "Type ctrl + D to exit the container. This will be destroyed automatically"
 
 # e127f3a578634c39a161c41724390351
-#: ../../install_run.rst:116
+#: ../../install_run.rst:113
 msgid "Ejecución del deploy"
 msgstr "Run deploy.sh"
 
 # 791a08a3736049ba9f6b3cabb74f2f77
-#: ../../install_run.rst:118
+#: ../../install_run.rst:115
 msgid ""
 "Una vez disponible el host, se procede con la instalación. Aquí es donde "
 "debemos elegir el tipo de instalación y arquitectura de OMniLeads a "
@@ -262,12 +240,12 @@ msgstr ""
 "deploy."
 
 # d6596f4c429e4208a588a37d27694b13
-#: ../../install_run.rst:130
+#: ../../install_run.rst:127
 msgid "OMniLeads detrás NAT"
 msgstr "OMniLeads behind NAT"
 
 # e40a463a96b044b0a28f3b2efb471502
-#: ../../install_run.rst:132
+#: ../../install_run.rst:129
 msgid ""
 "En un OMniLeads detras de NAT los agentes se conectan a la URL conformada"
 " por **https://external_hostname:external_port**, desde Internet."
@@ -276,7 +254,7 @@ msgstr ""
 "**https://external_hostname:external_port**, from Internet."
 
 # 2386009f96614685ac6813a605b4b413
-#: ../../install_run.rst:136
+#: ../../install_run.rst:133
 msgid ""
 "Como se intenta expresar en la imagen, se asume que los usuarios "
 "*remotos* accederán a la App utilizando una URL (dominio y puerto) que "
@@ -287,7 +265,7 @@ msgstr ""
 "router/firewall."
 
 # 97cfd8f735f24436bc99bbe7d1c8c589
-#: ../../install_run.rst:138
+#: ../../install_run.rst:135
 msgid ""
 "Luego el firewall deberá reenviar el tráfico de voz y datos hacia los "
 "puertos UDP: 20000-30000 y y TCP: 443 del host donde reside la App."
@@ -296,12 +274,12 @@ msgstr ""
 "20000-30000 and TCP: 443 of the host hosting the App."
 
 # 503392d351ea48bba1796a6b852e330b
-#: ../../install_run.rst:142
+#: ../../install_run.rst:139
 msgid "Se deben establecer dos reglas de firewall entrantes y una saliente:"
 msgstr "You must insert two inbound and un outbound firewall rules:"
 
 # 3bcf6154d951454c8719683e100bf5dd
-#: ../../install_run.rst:144
+#: ../../install_run.rst:141
 msgid ""
 "Reenviar tráfico entrante desde los puertos 20000 a 30000 UDP hacia los "
 "puertos 20000 a 30000 del host OMniLeads"
@@ -310,7 +288,7 @@ msgstr ""
 "to 30,000 on the OMniLeads host"
 
 # 6bda51a2f5a9413398cd5ff933c4f11a
-#: ../../install_run.rst:145
+#: ../../install_run.rst:142
 msgid ""
 "Reenviar tráfico desde el *external_port* elegido hacia el puerto 443 del"
 " host OMniLeads"
@@ -319,7 +297,7 @@ msgstr ""
 "OMniLeads host"
 
 # 06f59984a1ff4c6d860bf044b17cc369
-#: ../../install_run.rst:146
+#: ../../install_run.rst:143
 msgid ""
 "Permitir tráfico saliente desde el host OMniLeads hacia internet por los "
 "puertos 10000 al 20000"
@@ -328,29 +306,6 @@ msgstr ""
 "10000-30000 UDP"
 
 # 51ff04b31576460e8a16305788f31b5c
-#: ../../install_run.rst:150
+#: ../../install_run.rst:147
 msgid "También se puede usar la IP pública en vez de hostname"
 msgstr "You can use public IP instead of hostname"
-
-# 9facb8b9de7b4c188e552596ac23cbab
-#~ msgid "Descargar la imágen de ansible:"
-#~ msgstr "Download ansible image:"
-
-# 0bbfb970c1e1487a85265ab01bce1207
-#~ msgid "Levantar el container usando docker-compose:"
-#~ msgstr "Raise up container using docker-compose:"
-
-# a84c33914ea143f1b763541125e96209
-#~ msgid ""
-#~ "Pip y python ya se encuentran "
-#~ "instalados por defecto en centos 7, "
-#~ "por lo tanto basta con este "
-#~ "comando para instalar ansible:"
-#~ msgstr ""
-#~ "Pip and python are installed by "
-#~ "default in Centos7, so just use "
-#~ "this command to install ansible:"
-
-# 09ea66c81b1d4a749f2a1e04c4122485
-#~ msgid "Instalar python-pip:"
-#~ msgstr "Install python-pip:"

@@ -137,7 +137,7 @@ deploy-docker-devenv:
   stage: deploy
   script:
     - bash ~/git_cleanup.sh
-    - if [ -d  ~/omnileads/devenv ]; then cd ~/omnileads/devenv/omnileads-websockets/deploy && docker-compose down && cd ~/omnileads/devenv && docker-compose down && docker volume rm devenv_postgresql_data; fi
+    - if [ -d  ~/omnileads/devenv ]; then cd ~/omnileads/devenv/omnileads-websockets/deploy && docker-compose down && cd ~/omnileads/devenv && docker-compose down || true; docker volume rm devenv_postgresql_data; fi
     - cd ~/ominicontacto/ansible/deploy
     - python edit_inventory.py --docker_deploy=yes --devenv=yes
     - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh --docker-deploy --iface=$CICD_SERVER_IFACE
