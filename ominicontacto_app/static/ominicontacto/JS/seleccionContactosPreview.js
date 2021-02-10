@@ -30,7 +30,7 @@ $(function () {
             var ultimaCampPreviewSeleccionada = sessionStorage.getItem('ultimaCampanaPreviewSeleccionada');
             $('#dataView').attr('src', Urls.campana_preview_activas_miembro());
             setTimeout(function () {
-                $('#dataView').contents().find('preview-' + ultimaCampPreviewSeleccionada).click();
+                $('#dataView').contents().find('#preview-' + ultimaCampPreviewSeleccionada).click();
             }, 1000);
         });
     }
