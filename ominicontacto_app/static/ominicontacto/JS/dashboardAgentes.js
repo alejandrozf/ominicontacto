@@ -24,18 +24,20 @@ import { DashboardAgente } from './componentes/core.js';
 var agenteId = $('#agente_id').val();
 var taskId = 'dashboard1';
 
-var subscribeConfirmationMessage = 'subscribed!';
+var subscribeConfirmationMessage = 'Subscribed!';
 
 var dataDashboardSession = JSON.parse(sessionStorage.getItem('dataDashboard'));
 
 var vue_app = undefined;
 
-if( dataDashboardSession == undefined ){
+if (dataDashboardSession == undefined) {
     // al loguearse inicialmente
     vue_app = new Vue({
-        data: {core: {
-            mensajeEspera: gettext('Calculando estadísticas del agente ...')
-        }},
+        data: {
+            core: {
+                mensajeEspera: gettext('Calculando estadísticas del agente ...')
+            }
+        },
         components: {
             'dashboard-agente': DashboardAgente,
         },
@@ -43,10 +45,9 @@ if( dataDashboardSession == undefined ){
         vuetify: new Vuetify(),
     });
 
-}
-else {
+} else {
     vue_app = new Vue({
-        data: {core: dataDashboardSession.core},
+        data: { core: dataDashboardSession.core },
         components: {
             'dashboard-agente': DashboardAgente,
         },
@@ -57,12 +58,12 @@ else {
 
 
 const contactadosSocket = new WebSocket(
-    'wss://'
-        + window.location.host
-        + '/consumers/reporte_agente/estadisticas_dia_actual/'
-        + agenteId
-        + '/'
-        + taskId
+    'wss://' +
+    window.location.host +
+    '/consumers/reporte_agente/estadisticas_dia_actual/' +
+    agenteId +
+    '/' +
+    taskId
 );
 
 contactadosSocket.onmessage = function(e) {
@@ -78,25 +79,23 @@ contactadosSocket.onmessage = function(e) {
                 trigger: 'item',
                 formatter: '{c} ({d}%)'
             },
-            series: [
-                {
-                    type: 'pie',
-                    radius: '55%',
-                    center: ['50%', '50%'],
-                    selectedMode: 'single',
-                    data:  [
-                        {value: conectadasData.salientes, name: gettext('Salientes')},
-                        {value: conectadasData.entrantes, name: gettext('Entrantes')},
-                    ],
-                    emphasis: {
-                        itemStyle: {
-                            shadowBlur: 7,
-                            shadowOffsetX: 0,
-                            shadowColor: 'rgba(0, 0, 0, 0.5)'
-                        }
+            series: [{
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '50%'],
+                selectedMode: 'single',
+                data: [
+                    { value: conectadasData.salientes, name: gettext('Salientes') },
+                    { value: conectadasData.entrantes, name: gettext('Entrantes') },
+                ],
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 7,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
                     }
                 }
-            ]
+            }]
         };
 
         var graficoPausa = {
@@ -104,25 +103,23 @@ contactadosSocket.onmessage = function(e) {
                 trigger: 'item',
                 formatter: '{c} ({d}%)'
             },
-            series: [
-                {
-                    type: 'pie',
-                    radius: '55%',
-                    center: ['50%', '50%'],
-                    selectedMode: 'single',
-                    data:  [
-                        {value: pausaData.pausa, name: gettext('Pausa')},
-                        {value: pausaData.sesion, name: gettext('Sesión')},
-                    ],
-                    emphasis: {
-                        itemStyle: {
-                            shadowBlur: 7,
-                            shadowOffsetX: 0,
-                            shadowColor: 'rgba(0, 0, 0, 0.5)'
-                        }
+            series: [{
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '50%'],
+                selectedMode: 'single',
+                data: [
+                    { value: pausaData.pausa, name: gettext('Pausa') },
+                    { value: pausaData.sesion, name: gettext('Sesión') },
+                ],
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 7,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
                     }
                 }
-            ]
+            }]
         };
 
         var graficoVenta = {
@@ -130,56 +127,55 @@ contactadosSocket.onmessage = function(e) {
                 trigger: 'item',
                 formatter: '{c} ({d}%)'
             },
-            series: [
-                {
-                    type: 'pie',
-                    radius: '55%',
-                    center: ['50%', '50%'],
-                    selectedMode: 'single',
-                    data:  [
-                        {value: ventaData.total, name: gettext('Realizadas')},
-                        {value: ventaData.observadas, name: gettext('Observadas')},
-                    ],
-                    emphasis: {
-                        itemStyle: {
-                            shadowBlur: 7,
-                            shadowOffsetX: 0,
-                            shadowColor: 'rgba(0, 0, 0, 0.5)'
-                        }
+            series: [{
+                type: 'pie',
+                radius: '55%',
+                center: ['50%', '50%'],
+                selectedMode: 'single',
+                data: [
+                    { value: ventaData.total, name: gettext('Realizadas') },
+                    { value: ventaData.observadas, name: gettext('Observadas') },
+                ],
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 7,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
                     }
                 }
-            ]
+            }]
         };
-        var dashboardData = {core:
-                             {
-                                 conectadas: {
-                                     statistics : conectadasData.total,
-                                     title: gettext('Llamadas conectadas'),
-                                     graphic: graficoConectadas,
-                                 },
-                                 pausa: {
-                                     statistics : pausaData.tiempo_pausa,
-                                     title: gettext('Tiempo de pausa recreativa'),
-                                     graphic: graficoPausa,
-                                 },
-                                 venta: {
-                                     statistics : ventaData.total,
-                                     title: 'Ventas',
-                                     graphic: graficoVenta,
-                                 },
-                                 logs: {
-                                     headers: {
-                                         phone: gettext('Número marcado'),
-                                         data: gettext('Datos del contacto'),
-                                         engaged: gettext('Gestionado'),
-                                         callDisposition: gettext('Calificación'),
-                                         comments: gettext('Observaciones'),
-                                         audit: gettext('Auditoría'),
-                                         actions: gettext('Acciones'),
-                                     },
-                                     values: logsData,
-                                 }
-                             }};
+        var dashboardData = {
+            core: {
+                conectadas: {
+                    statistics: conectadasData.total,
+                    title: gettext('Llamadas conectadas'),
+                    graphic: graficoConectadas,
+                },
+                pausa: {
+                    statistics: pausaData.tiempo_pausa,
+                    title: gettext('Tiempo de pausa recreativa'),
+                    graphic: graficoPausa,
+                },
+                venta: {
+                    statistics: ventaData.total,
+                    title: 'Ventas',
+                    graphic: graficoVenta,
+                },
+                logs: {
+                    headers: {
+                        phone: gettext('Número marcado'),
+                        data: gettext('Datos del contacto'),
+                        engaged: gettext('Gestionado'),
+                        callDisposition: gettext('Calificación'),
+                        comments: gettext('Observaciones'),
+                        audit: gettext('Auditoría'),
+                        actions: gettext('Acciones'),
+                    },
+                    values: logsData,
+                }
+            }
+        };
         sessionStorage.setItem('dataDashboard', JSON.stringify(dashboardData));
         vue_app.core = dashboardData.core;
     }

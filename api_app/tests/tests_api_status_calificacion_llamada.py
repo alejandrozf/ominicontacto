@@ -18,6 +18,7 @@
 #
 from __future__ import unicode_literals
 
+from mock import patch
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 from ominicontacto_app.tests.factories import (
     QueueMemberFactory, ContactoFactory, CampanaFactory, QueueFactory,
@@ -54,56 +55,66 @@ class StatusCalificacionLlamadaTest(OMLBaseTest):
                      "call_wait_duration": ""}
         return call_data
 
-    def get_dict_status_calificacion_llamada(self, call_data, json_call_data, calificada):
-        if calificada is True:
-            calificada = 'TRUE'
-        else:
-            calificada = 'FALSE'
-        dict_status = {
+    @patch('redis.Redis.hset')
+    @patch('redis.Redis.expire')
+    def test_api_create_family(self, expire, hset):
+        service = CalificacionLLamada()
+        call_data = self.get_call_data()
+        json_call_data = json.dumps(call_data)
+        nombre_family = service._get_nombre_family(self.agente)
+        service.create_family(self.agente, call_data, json_call_data, calificado=True)
+        variables = {
             'NAME': self.agente.user.get_full_name(),
-            'ID': str(self.agente.id),
+            'ID': self.agente.id,
             'CALLID': call_data['call_id'],
-            'CAMPANA': str(call_data['id_campana']),
+            'CAMPANA': call_data['id_campana'],
             'TELEFONO': call_data['telefono'],
-            'CALIFICADA': calificada,
+            'CALIFICADA': 'TRUE',
             'CALLDATA': json_call_data,
         }
-        return dict_status
+        expire.assert_called_with(nombre_family, 3600 * 24 * 4)
+        hset.assert_called_with(nombre_family, mapping=variables)
 
-    def status_calificacion_llamada(self):
+    @patch('redis.Redis.hget')
+    def test_api_get_value(self, hget):
+        service = CalificacionLLamada()
+        nombre_family = service._get_nombre_family(self.agente)
+        service.get_value(self.agente, 'CALIFICADA')
+        hget.assert_called_with(nombre_family, 'CALIFICADA')
+
+    @patch('redis.Redis.hgetall')
+    def test_api_get_family(self, hgetall):
+        service = CalificacionLLamada()
+        nombre_family = service._get_nombre_family(self.agente)
+        service.get_family(self.agente)
+        hgetall.assert_called_with(nombre_family)
+
+    @patch('redis.Redis.hgetall')
+    def test_api_status_calificacion_llamada_calificada(self, hgetall):
         url = reverse('api_status_calificacion_llamada')
-        redis = CalificacionLLamada()
-        post_data = redis.get_family(self.agente)
-        response = self.client.post(url, post_data)
-        return response
+        service = CalificacionLLamada()
+        nombre_family = service._get_nombre_family(self.agente)
+        hgetall.return_value = {'CALIFICADA': 'TRUE'}
+        response = self.client.post(url)
+        hgetall.assert_called_with(nombre_family)
+        self.assertEqual(response.json(), {'calificada': 'True'})
 
-    def test_api_creacion_family_redis_calificacion_llamada(self):
-        call_data = self.get_call_data()
-        json_call_data = json.dumps(call_data)
+    @patch('redis.Redis.hgetall')
+    def test_api_status_calificacion_llamada_no_calificada(self, hgetall):
+        url = reverse('api_status_calificacion_llamada')
+        service = CalificacionLLamada()
+        nombre_family = service._get_nombre_family(self.agente)
+        hgetall.return_value = {'CALIFICADA': 'FALSE', 'CALLDATA': 'SOME CALL DATA'}
+        response = self.client.post(url)
+        hgetall.assert_called_with(nombre_family)
+        self.assertEqual(response.json(), {'calificada': 'False', 'calldata': 'SOME CALL DATA'})
 
-        data = self.get_dict_status_calificacion_llamada(call_data, json_call_data, True)
-        family = CalificacionLLamada()
-        family.create_family(self.agente, call_data, json_call_data,
-                             calificado=True)
-        self.assertEqual(data, family.get_family(self.agente))
-
-    def test_api_status_llamada_sin_calificar(self):
-        call_data = self.get_call_data()
-        json_call_data = json.dumps(call_data)
-        family = CalificacionLLamada()
-        family.create_family(self.agente, call_data, json_call_data,
-                             calificado=False)
-        response = self.status_calificacion_llamada()
-        self.assertEqual(response.data['calificada'], 'False')
-
-    def test_api_status_llamada_calificada(self):
-        call_data = self.get_call_data()
-        json_call_data = json.dumps(call_data)
-        family = CalificacionLLamada()
-        family.create_family(self.agente, call_data, json_call_data,
-                             calificado=True)
-        response = self.status_calificacion_llamada()
-        self.assertEqual(response.data['calificada'], 'True')
-        data = self.get_dict_status_calificacion_llamada(call_data,
-                                                         json_call_data, calificada=True)
-        self.assertEqual(data, family.get_family(self.agente))
+    @patch('redis.Redis.hgetall')
+    def test_api_status_calificacion_llamada_sin_datos(self, hgetall):
+        url = reverse('api_status_calificacion_llamada')
+        service = CalificacionLLamada()
+        nombre_family = service._get_nombre_family(self.agente)
+        hgetall.return_value = {}
+        response = self.client.post(url)
+        hgetall.assert_called_with(nombre_family)
+        self.assertEqual(response.json(), {'calificada': 'True'})

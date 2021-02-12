@@ -33,13 +33,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block campanas_activas %}
     {% for campana in activas %}
         <tr>
-            <tr>
-                <td width="25%">
+            <td width="5%">{{ campana.id }}</td>
+            <td width="25%">
                     <a href="#" onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
                     <a href="{% url 'campana_preview_detalle' campana.pk %}">
                         &nbsp;<span class="icon icon-search" aria-hidden="true" title="ver detalles"></span>
                     </a>
-                </td>
+            </td>
             <td> {{campana.get_estado_display}}  </td>
             <td width="14%">
                 <div class="dropdown">
@@ -82,6 +82,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <a class="dropdown-item" href="{% url 'agenda_contactos_por_campana' campana.pk %}">
                             <span class="icon icon-agenda"></span>{% trans 'Ver Agendas' %}
                         </a>
+                        <a class="dropdown-item" href="{% url 'configurar_agentes_en_campana' campana.pk %}">
+                            <span class="icon icon-pencil"></span>{% trans 'Configuraciones para agentes' %}
+                        </a>
                         <a class="dropdown-item" href="{% url 'campana_preview_delete' campana.pk %}">
                             <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
                         </a>
@@ -101,6 +104,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <table class="table">
         <thead>
             <tr>
+                <th width="5%">{% trans 'Id'  %}</th>
                 <th>{% trans 'Nombre'  %}</th>
                 <th>{% trans 'Estado'  %}</th>
                 <th>{% trans 'Acciones' %}&nbsp;&nbsp;</th>
@@ -109,6 +113,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <tbody>
             {% for campana in finalizadas %}
                 <tr>
+                    <td width="5%">{{ campana.id }}</td>
                     <td width="25%">
                         <a href="#" onclick="mostrar_detalle_campana({{ campana.id }})">{{ campana.nombre }}</a>
                         <a href="{% url 'campana_preview_detalle' campana.pk %}">
@@ -118,10 +123,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <td> {{campana.get_estado_display}}  </td>
                     <td width="14%">
                         <div class="dropdown">
-                            <button class="btn btn-light dropdown-toggle" type="button" id="dropdownCampaignFinished" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button class="btn btn-light dropdown-toggle" type="button" id="dropdownCampaignFinished{{ campana.pk }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {% trans 'Opciones'  %}
                             </button>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignFinished">
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownCampaignFinished{{ campana.pk }}">
                                 <a class="dropdown-item" href="{% url 'campana_preview_supervisors' campana.pk %}">
                                     <span class="icon icon-eye"></span>{% trans 'Dar permiso para ver'  %}
                                 </a>
@@ -158,6 +163,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block campanas_borradas %}
     {% for campana in borradas %}
         <tr>
+            <td width="5%">{{ campana.id }}</td>
             <td width="25%">
                 {{ campana.nombre }}<a href="{% url 'campana_preview_detalle' campana.pk %}">
                     &nbsp;<span class="icon icon-search" aria-hidden="true" title="ver detalles"></span>

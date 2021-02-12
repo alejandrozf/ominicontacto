@@ -28,10 +28,13 @@ from configuracion_telefonia_app.models import (OpcionDestino, IdentificadorClie
                                                 DestinoEntrante)
 from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     SincronizadorDeConfiguracionIdentificadorClienteAsterisk,
-    SincronizadorDeConfiguracionDestinoPersonalizadoAsterisk
+    SincronizadorDeConfiguracionDestinoPersonalizadoAsterisk,
+    SincronizadorDeConfiguracionAmdConfAsterisk,
+    SincronizadorDeEsquemaGrabacionesAsterisk
 )
 from ominicontacto_app.models import Campana
 from ominicontacto_app.tests.factories import CampanaFactory
+from configuracion_telefonia_app.models import AmdConf, EsquemaGrabaciones
 from ominicontacto_app.tests.utiles import OMLBaseTest
 from ominicontacto_app.utiles import convert_audio_asterisk_path_astdb
 from ominicontacto_app.asterisk_config import PlaylistsConfigCreator
@@ -129,6 +132,25 @@ class TestsSincronizadores(OMLBaseTest):
         self.assertEqual(dict_astdb['DST'], dest_personalizado.custom_destination)
         self.assertEqual(dict_astdb['FAILOVER'], "{0},{1}".format(
             dest_entrante_1.tipo, dest_entrante_1.object_id))
+
+    def test_creacion_sincronizador_amd_envia_datos_correctos_redis(self):
+        amd_conf = AmdConf.objects.first()
+        sync_amd_conf = SincronizadorDeConfiguracionAmdConfAsterisk()
+        gen_family = sync_amd_conf._obtener_generador_family()
+        dict_astdb = gen_family._create_dict(amd_conf)
+        self.assertEqual(dict_astdb['NAME'], 'GLOBAL_AMD')
+        self.assertEqual(dict_astdb['INITIAL_SILENCE'], amd_conf.initial_silence)
+        self.assertEqual(dict_astdb['GREETING'], amd_conf.greeting)
+
+    def test_creacion_sincronizador_esquema_grabaciones_envia_datos_correctos_redis(self):
+        esquema_grabaciones = EsquemaGrabaciones.objects.first()
+        sync_esquema_grabaciones = SincronizadorDeEsquemaGrabacionesAsterisk()
+        gen_family = sync_esquema_grabaciones._obtener_generador_family()
+        dict_astdb = gen_family._create_dict(esquema_grabaciones)
+        self.assertEqual(dict_astdb['NAME'], 'RECORDS_SCHEME')
+        self.assertEqual(dict_astdb['ID_CONTACTO'], str(esquema_grabaciones.id_contacto))
+        self.assertEqual(
+            dict_astdb['TELEFONO_CONTACTO'], str(esquema_grabaciones.telefono_contacto))
 
 
 class TestConfigCreators(OMLBaseTest):

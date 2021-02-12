@@ -1,6 +1,6 @@
-*********************************
-Configuración de acceso a la PSTN
-*********************************
+************************************
+Configuración de módulo de telefonía
+************************************
 
 En esta sección se exponen las configuraciones necesarias a realizar para que nuestra App pueda interactuar con la PSTN (red telefónica pública), de manera tal que
 los agentes puedan tomar llamadas provenientes del exterior así como también marcar llamadas hacia teléfonos externos.
@@ -62,6 +62,32 @@ Dentro de cada patrón ingresado hay tres campos:
   * **Patrón de discado**: se busca representar en este campo el patrón de dígitos autorizados que la ruta va a procesar para y enviar a un SIP Trunk para sacar la llamada hacia el exterior.
 
 - **Secuencia de troncales**: son los troncales SIP sobre los cuales la ruta saliente va a intentar establecer la llamada discada por OML. Si la llamada falla en un troncal, se sigue intentando en el siguiente.
+
+
+Configuración de módulo AMD
+***************************
+
+El módulo de AMD de Asterisk, puede configurarse en OMniLeads usando la siguiente interfaz:
+
+.. image:: images/amd_conf_page.png
+
+*Figure 2: Amd configuration page*
+
+
+Configuración esquema de nombres de archivos de grabaciones de llamadas
+***********************************************************************
+
+La siguiente sección permite configurar el formato que tendrán los nombres de los archivos de grabaciones generadas por
+llamadas en el sistema.
+
+Al seleccionar algunas de las opciones mostradas en la página esto impactará directamente en el nombre de los archivos de grabación.
+
+Nota: tener en cuenta que el ID de Agente como variable no está disponible para campañas Entrantes ni Salientes de Discador.
+
+.. image:: images/recordings_scheme_page.png
+
+*Figure 2: Recordings scheme page*
+
 
 Configuración de enrutamiento de llamadas entrantes
 ****************************************************

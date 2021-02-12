@@ -80,6 +80,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {{ form.strategy }}
             {{ form.strategy.errors }}
         </div>
+    </div>
+    <div class="form-row">
         <div class="col-md-3">
             <label>{% trans 'Musica de espera:' %}</label>
             {{ form.musiconhold }}
@@ -103,24 +105,30 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {{ form.servicelevel }}
             {{ form.servicelevel.errors }}
         </div>
-        <div class="col-md-12">
+    </div>
+    <div class="row">
+        <div class="col-md-6">
             <label><h3>{% trans 'Destino en caso de timeout:' %}</h3></label>
         </div>
-        <div class="col-md-6">
-            <div class="row">
-                <div class="col-md-6">
-                    <label for="{{ form.tipo_destino.id_for_label }}">{% trans 'Tipo destino:' %}</label>
-                    {{ form.tipo_destino }}
-                    {{ form.tipo_destino.errors }}
-                </div>
-                <div class="col-md-6">
-                    <label for="{{ form.destino.id_for_label }}">{% trans 'Destino:' %}</label>
-                    {{ form.destino }}
-                    {{ form.destino.errors }}
-                </div>
-            </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <label for="{{ form.tipo_destino.id_for_label }}">{% trans 'Tipo destino:' %}</label>
+            {{ form.tipo_destino }}
+            {{ form.tipo_destino.errors }}
+        </div>
+        <div class="col-md-3">
+            <label for="{{ form.destino.id_for_label }}">{% trans 'Destino:' %}</label>
+            {{ form.destino }}
+            {{ form.destino.errors }}
+        </div>
+        <div class="col-md-3">
+            <label for="">{% trans 'Anuncio de entrada para el agente:'%}</label>
+            {{ form.audio_previo_conexion_llamada }}
+            {{ audio_previo_conexion_llamada.errors }}
         </div>
     </div>
+    <br>
     <div class="row">
         <div class="col-md-6">
             <div class="row">

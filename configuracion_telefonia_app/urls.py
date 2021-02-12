@@ -20,7 +20,7 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 
-from configuracion_telefonia_app.views import base, audio
+from configuracion_telefonia_app.views import base, audio, opciones_avanzadas
 
 
 urlpatterns = [
@@ -175,5 +175,13 @@ urlpatterns = [
     url(r'^configuracion_telefonia/playlist/(?P<pk>\d+)/remover_musica_de_espera/$',
         login_required(audio.MusicaDeEsperaDeleteView.as_view()),
         name='eliminar_musica_de_espera',
+        ),
+    url(r'^configuracion_telefonia/opciones_avanzadas/editar_amd/(?P<pk>\d+)/$',
+        login_required(opciones_avanzadas.ConfiguracionAMDUpdateView.as_view()),
+        name='ajustar_configuracion_amd',
+        ),
+    url(r'^configuracion_telefonia/opciones_avanzadas/editar_esquema_grabaciones/(?P<pk>\d+)/$',
+        login_required(opciones_avanzadas.EsquemaGrabacionesUpdateView.as_view()),
+        name='ajustar_formato_grabaciones',
         ),
 ]

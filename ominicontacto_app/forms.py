@@ -44,11 +44,11 @@ from ominicontacto_app.models import (
     RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Blacklist, SitioExterno,
     SistemaExterno, ReglasIncidencia, ReglaIncidenciaPorCalificacion, SupervisorProfile,
     ArchivoDeAudio, NombreCalificacion, OpcionCalificacion, ParametrosCrm, AgenteEnSistemaExterno,
-    AuditoriaCalificacion
+    AuditoriaCalificacion, ConfiguracionDeAgentesDeCampana,
 )
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
-                                      validar_solo_ascii_y_sin_espacios, elimina_tildes,
+                                      validar_solo_ascii_y_sin_espacios, remplace_espacio_por_guion,
                                       validar_longitud_nombre_base_de_contactos)
 from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSaliente
 
@@ -58,6 +58,9 @@ from reportes_app.models import LlamadaLog
 
 TIEMPO_MINIMO_DESCONEXION = 2
 EMPTY_CHOICE = ('', '---------')
+ALL_CAMPAIGNS_ACTIVE_CHOICE = ('activas', _('---- Todas las activas ----'))
+ALL_CAMPAIGNS_INACTIVE_CHOICE = ('borradas', _('---- Todas las borradas ----'))
+ALL_CAMPAIGNS_CHOICE = ('', _('---- Todas ----'))
 
 
 class CustomUserChangeForm(UserChangeForm):
@@ -188,6 +191,7 @@ class QueueEntranteForm(forms.ModelForm):
         self.fields['wait_announce_frequency'].required = False
         self.fields['audios'].queryset = ArchivoDeAudio.objects.all()
         self.fields['audio_de_ingreso'].queryset = ArchivoDeAudio.objects.all()
+        self.fields['audio_previo_conexion_llamada'].queryset = ArchivoDeAudio.objects.all()
         self.fields['musiconhold'].queryset = Playlist.objects.annotate(
             Count('musicas')).filter(musicas__count__gte=1)
         tipo_destino_choices = [EMPTY_CHOICE]
@@ -219,7 +223,7 @@ class QueueEntranteForm(forms.ModelForm):
                   'audios', 'announce_frequency', 'audio_de_ingreso', 'campana',
                   'tipo_destino', 'destino', 'ivr_breakdown',
                   'announce_holdtime', 'announce_position', 'musiconhold',
-                  'wait_announce_frequency',)
+                  'wait_announce_frequency', 'audio_previo_conexion_llamada')
 
         help_texts = {
             'timeout': _('En segundos'),
@@ -249,6 +253,7 @@ class QueueEntranteForm(forms.ModelForm):
             'ivr_breakdown': forms.Select(attrs={'class': 'form-control'}),
             'musiconhold': forms.Select(attrs={'class': 'form-control'}),
             'wait_announce_frequency': forms.TextInput(attrs={'class': 'form-control'}),
+            'audio_previo_conexion_llamada': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def clean_maxlen(self):
@@ -474,7 +479,9 @@ class GrabacionBusquedaForm(forms.Form):
 
     def __init__(self, campana_choice, *args, **kwargs):
         super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
-        campana_choice.insert(0, EMPTY_CHOICE)
+        campana_choice.insert(0, ALL_CAMPAIGNS_CHOICE)
+        campana_choice.insert(1, ALL_CAMPAIGNS_ACTIVE_CHOICE)
+        campana_choice.insert(2, ALL_CAMPAIGNS_INACTIVE_CHOICE)
         self.fields['campana'].choices = campana_choice
         self.fields['duracion'].help_text = _('En segundos')
 
@@ -938,7 +945,7 @@ class FieldFormularioForm(forms.ModelForm):
     def clean_nombre_campo(self):
         formulario = self.cleaned_data.get('formulario')
         nombre_campo = self.cleaned_data.get('nombre_campo')
-        nombre_campo = elimina_tildes(nombre_campo)
+        nombre_campo = remplace_espacio_por_guion(nombre_campo)
         if formulario.campos.filter(nombre_campo=nombre_campo).exists():
             raise forms.ValidationError(_('No se puede crear un campo ya existente'))
         return nombre_campo
@@ -1824,6 +1831,12 @@ class ParametrosCrmForm(forms.ModelForm):
                 _('El valor debe corresponder a un dato válido de la llamada'))
         if tipo == ParametrosCrm.CUSTOM:
             validar_solo_ascii_y_sin_espacios(valor)
+        if tipo == ParametrosCrm.DIALPLAN:
+            if not valor.startswith(ParametrosCrm.PREFIJO_DIALPLAN):
+                raise (forms.ValidationError(
+                    _('El valor debe tener el prefijo {0}'.format(ParametrosCrm.PREFIJO_DIALPLAN))))
+            else:
+                return valor.capitalize()
         return valor
 
     def clean_nombre(self):
@@ -1958,3 +1971,26 @@ class FiltroUsuarioFechaForm(forms.Form):
     def __init__(self, users_choices, *args, **kwargs):
         super(FiltroUsuarioFechaForm, self).__init__(*args, **kwargs)
         self.fields['usuario'].queryset = users_choices
+
+
+class ConfiguracionDeAgentesDeCampanaForm(forms.ModelForm):
+    class Meta:
+        model = ConfiguracionDeAgentesDeCampana
+        exclude = ('campana',)
+
+    def __init__(self, campana_type, *args, **kwargs):
+        super(ConfiguracionDeAgentesDeCampanaForm, self).__init__(*args, **kwargs)
+        self.fields['set_auto_attend_inbound'].widget.attrs['class'] = 'form-control'
+        self.fields['auto_attend_inbound'].widget.attrs['class'] = 'form-control'
+        self.fields['set_auto_attend_dialer'].widget.attrs['class'] = 'form-control'
+        self.fields['auto_attend_dialer'].widget.attrs['class'] = 'form-control'
+        self.fields['set_auto_unpause'].widget.attrs['class'] = 'form-control'
+        self.fields['auto_unpause'].widget.attrs['class'] = 'form-control'
+        self.fields['set_obligar_calificacion'].widget.attrs['class'] = 'form-control'
+        self.fields['obligar_calificacion'].widget.attrs['class'] = 'form-control'
+        if not campana_type == Campana.TYPE_ENTRANTE:
+            del self.fields['set_auto_attend_inbound']
+            del self.fields['auto_attend_inbound']
+        if not campana_type == Campana.TYPE_DIALER:
+            del self.fields['set_auto_attend_dialer']
+            del self.fields['auto_attend_dialer']

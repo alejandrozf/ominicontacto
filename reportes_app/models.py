@@ -186,7 +186,8 @@ class LlamadaLogManager(models.Manager):
         INCLUDED_EVENTS = ['COMPLETEAGENT', 'COMPLETEOUTNUM', 'BT-COMPLETE',
                            'COMPLETE-BT', 'CT-COMPLETE', 'COMPLETE-CT', 'CAMPT-COMPLETE',
                            'COMPLETE-CAMPT', 'BTOUT-COMPLETE', 'COMPLETE-BTOUT', 'CTOUT-COMPLETE',
-                           'COMPLETE-CTOUT']
+                           'COMPLETE-CTOUT', 'CAMPT-FAIL', 'BT-BUSY', 'BTOUT-TRY', 'CT-ABANDON',
+                           'CTOUT-TRY']
 
         return self.filter(time__range=(fecha_inicio, fecha_fin),
                            campana_id__in=campanas, duracion_llamada__gt=0,
@@ -200,7 +201,8 @@ class LlamadaLogManager(models.Manager):
         INCLUDED_EVENTS = ['COMPLETEAGENT', 'COMPLETEOUTNUM', 'BT-COMPLETE',
                            'COMPLETE-BT', 'CT-COMPLETE', 'COMPLETE-CT', 'CAMPT-COMPLETE',
                            'COMPLETE-CAMPT', 'BTOUT-COMPLETE', 'COMPLETE-BTOUT', 'CTOUT-COMPLETE',
-                           'COMPLETE-CTOUT']
+                           'COMPLETE-CTOUT', 'CAMPT-FAIL', 'BT-BUSY', 'BTOUT-TRY', 'CT-ABANDON',
+                           'CTOUT-TRY']
         campanas_id = [campana.id for campana in campanas]
         grabaciones = self.filter(campana_id__in=campanas_id,
                                   archivo_grabacion__isnull=False,
@@ -225,7 +227,19 @@ class LlamadaLogManager(models.Manager):
         if agente:
             grabaciones = grabaciones.filter(agente_id=agente.id)
         if campana:
-            grabaciones = grabaciones.filter(campana_id=campana)
+            if campana != 'activas' and campana != 'borradas':
+                grabaciones = grabaciones.filter(campana_id=campana)
+
+            else:
+                campanas_excluidas_id = []
+                for camp in campanas:
+                    if (camp.estado == Campana.ESTADO_BORRADA and campana == 'activas') or \
+                            (camp.estado != Campana.ESTADO_BORRADA and campana == 'borradas'):
+                        campanas_excluidas_id.append(camp.pk)
+
+                grabaciones = grabaciones.exclude(
+                    campana_id__in=campanas_excluidas_id)
+
         if duracion and duracion > 0:
             grabaciones = grabaciones.filter(duracion_llamada__gte=duracion)
         if id_contacto_externo:
@@ -312,6 +326,10 @@ class LlamadaLog(models.Model):
     # eventos inicio conexion de una llamada
     # (No incluye valores de eventos de transferencias si ocurren luego)
     EVENTOS_INICIO_CONEXION_AGENTE = ['CONNECT', 'ANSWER']  # Con id_agente
+
+    # eventos fin conexion de una llamada
+    # (No incluye valores de eventos de transferencias si ocurren luego)
+    EVENTOS_FIN_CONEXION_AGENTE = ['COMPLETEAGENT', 'COMPLETEOUTNUM']  # Con id_agente
 
     # EVENTOS_TRANSFER_TRY_IN = ['BT-TRY', 'ENTERQUEUE-TRANSFER', 'CT-TRY']
     # EVENTOS_TRANSFER_TRY_OUT = ['BTOUT-TRY', 'CTOUT-TRY']

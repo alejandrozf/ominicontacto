@@ -35,7 +35,7 @@ from ominicontacto_app.asterisk_config import (
 from ominicontacto_app.services.asterisk.redis_database import (
     RutaSalienteFamily, IVRFamily, ValidacionFechaHoraFamily, GrupoHorarioFamily,
     IdentificadorClienteFamily, PausaFamily, TrunkFamily, RutaEntranteFamily,
-    DestinoPersonalizadoFamily
+    DestinoPersonalizadoFamily, AmdConfFamily, EsquemaGrabacionesFamily
 )
 
 logger = logging.getLogger(__name__)
@@ -50,6 +50,8 @@ class SincronizadorDeConfiguracionTelefonicaEnAsterisk(object):
         self.sincronizador_grupo_horario = SincronizadorDeConfiguracionGrupoHorarioAsterisk()
         self.sincronizador_validacion_fh = SincronizadorDeConfiguracionValidacionFechaHoraAsterisk()
         self.sincronizador_ivr = SincronizadorDeConfiguracionIVRAsterisk()
+        self.sincronizador_amd = SincronizadorDeConfiguracionAmdConfAsterisk()
+        self.sincronzador_esquema_grabaciones = SincronizadorDeEsquemaGrabacionesAsterisk()
 
     def sincronizar_en_asterisk(self):
         self.sincronizador_troncales.regenerar_troncales()
@@ -58,6 +60,8 @@ class SincronizadorDeConfiguracionTelefonicaEnAsterisk(object):
         self.sincronizador_grupo_horario.regenerar_asterisk()
         self.sincronizador_validacion_fh.regenerar_asterisk()
         self.sincronizador_ivr.regenerar_asterisk()
+        self.sincronizador_amd.regenerar_asterisk()
+        self.sincronzador_esquema_grabaciones.regenerar_asterisk()
 
 
 class RestablecerConfiguracionTelefonicaError(OmlError):
@@ -229,6 +233,18 @@ class SincronizadorDeConfiguracionPausaAsterisk(AbstractConfiguracionAsterisk):
 
     def _obtener_generador_family(self):
         return PausaFamily()
+
+
+class SincronizadorDeConfiguracionAmdConfAsterisk(AbstractConfiguracionAsterisk):
+
+    def _obtener_generador_family(self):
+        return AmdConfFamily()
+
+
+class SincronizadorDeEsquemaGrabacionesAsterisk(AbstractConfiguracionAsterisk):
+
+    def _obtener_generador_family(self):
+        return EsquemaGrabacionesFamily()
 
 
 class SincronizadorDeConfiguracionDestinoPersonalizadoAsterisk(AbstractConfiguracionAsterisk):

@@ -1,0 +1,41 @@
+---
+
+# Docker hosts at beginning is localhost because the base containers are raised up in localhost to install the application. Uncomment the line if you want to install DE or PE
+
+version: de1.3.0
+asterisk_builded_version: 16.16.0
+customer: devenv
+root_password: toor123
+
+# Networking settings
+subnet: 172.20.0.0/24
+subnet_name: dev_net
+nginx_external_port: 443
+pg_external_port: 4444
+wd_external_port: 4442
+
+docker_login_user: freetechsolutions
+
+# Folder locations
+usuario: "{{ docker_user }}"
+asterisk_location:
+ast_local_location: "{{ deploy_location }}/asterisk"
+ast_agis_location: "{{ ast_local_location }}/agis"
+ast_conf_location: "{{ ast_local_location }}/conf"
+ast_sounds_location: "{{ ast_local_location }}/sounds"
+ast_other_location: "{{ ast_local_location }}/others"
+build_location: "{{ docker_root }}/omnileads/build"
+certs_location: "{{ deploy_location }}/certs"
+deploy_location: "{{ docker_root }}/omnileads/{{ customer }}"
+nginx_location: "{{ deploy_location }}/nginx"
+omniapp_location: "{{ deploy_location }}/omniapp"
+
+# Imagenes usadas en el docker-compose file
+ast_builded_image: "{{ docker_login_user }}/asterisk:${ASTERISK_VERSION}"
+dialer_builded_image: "{{ docker_login_user }}/dialer:${DIALER_VERSION}"
+kamailio_builded_image: "{{ kamailio_image }}"
+mariadb_builded_image: "{{ mariadb_image }}"
+nginx_builded_image: "{{ nginx_image }}"
+omniapp_builded_image: "{{ docker_login_user }}/omniapp:${DEVENV_VERSION}"
+postgres_builded_image: "{{ docker_login_user }}/postgresql:${POSTGRES_VERSION}"
+pbxemulator_builded_image: "{{ docker_login_user }}/pbx-emulator:${PBXEMULATOR_VERSION}"

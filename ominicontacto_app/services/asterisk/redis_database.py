@@ -20,20 +20,21 @@
 from __future__ import unicode_literals
 
 import json
+import sys
 
 from django.conf import settings
 from django.utils.translation import ugettext as _
 
-from ominicontacto_app.models import AgenteProfile, Pausa, Campana
+from ominicontacto_app.models import AgenteProfile, Pausa, Campana, ConfiguracionDeAgentesDeCampana
 from ominicontacto_app.utiles import convert_audio_asterisk_path_astdb
 from configuracion_telefonia_app.models import (
     RutaSaliente, IVR, DestinoEntrante, ValidacionFechaHora, GrupoHorario, IdentificadorCliente,
-    TroncalSIP, RutaEntrante, DestinoPersonalizado
+    TroncalSIP, RutaEntrante, DestinoPersonalizado, AmdConf, EsquemaGrabaciones
 )
 
 import logging as _logging
 import redis
-from redis.exceptions import RedisError
+from redis.exceptions import RedisError, ConnectionError
 
 logger = _logging.getLogger(__name__)
 
@@ -56,8 +57,11 @@ class AbstractRedisFamily(object):
         try:
             redis_crea_family = redis_connection.hset(family, mapping=variables)
             return redis_crea_family
-        except (RedisError) as e:
+        except RedisError as e:
             raise e
+        except ConnectionError as e:
+            logger.exception(e)
+            sys.exit(1)
 
     def _create_families(self, modelo=None, modelos=None):
         """ Crea familys en Redis """
@@ -76,8 +80,11 @@ class AbstractRedisFamily(object):
         try:
             family = self._get_nombre_family(family_member)
             redis_connection.delete(family)
-        except (RedisError) as e:
+        except RedisError as e:
             raise e
+        except ConnectionError as e:
+            logger.exception(e)
+            sys.exit(1)
 
     def _delete_tree_family(self):
         """Elimina todos los objetos de la family """
@@ -95,9 +102,10 @@ class AbstractRedisFamily(object):
                     redis_connection.delete(key)
                 if index == 0:
                     finalizado = True
-            except RedisError as e:
+            except (RedisError, ConnectionError) as e:
                 logger.exception(_("Error al intentar Eliminar families de {0}. Error: {1}".format(
                     nombre_families, e)))
+                sys.exit(1)
 
     def _create_dict(self, family_member):
         raise (NotImplementedError())
@@ -131,8 +139,11 @@ class AbstractRedisChanelPublisher(AbstractRedisFamily):
         try:
             redis_crea_family = redis_connection.publish(family, variables_json)
             return redis_crea_family
-        except (RedisError) as e:
+        except RedisError as e:
             raise e
+        except ConnectionError as e:
+            logger.exception(e)
+            sys.exit(1)
 
     def regenerar_family(self, family_member):
         """regenera una family"""
@@ -203,6 +214,24 @@ class CampanaFamily(AbstractRedisFamily):
         if campana.queue_campana.musiconhold:
             dict_campana.update({'MOH': campana.queue_campana.musiconhold.nombre})
 
+        try:
+            configuracion_de_agentes = campana.configuracion_de_agentes
+            if campana.type == Campana.TYPE_ENTRANTE:
+                if configuracion_de_agentes.set_auto_attend_inbound:
+                    attend_inbound = str(configuracion_de_agentes.auto_attend_inbound)
+                    dict_campana['AUTO_ATTEND_INBOUND'] = attend_inbound
+            if campana.type == Campana.TYPE_DIALER:
+                if configuracion_de_agentes.set_auto_attend_dialer:
+                    attend_dialer = str(configuracion_de_agentes.auto_attend_dialer)
+                    dict_campana['AUTO_ATTEND_DIALER'] = attend_dialer
+            if configuracion_de_agentes.set_obligar_calificacion:
+                obligar_calificacion = str(configuracion_de_agentes.obligar_calificacion)
+                dict_campana['FORCE_DISPOSITION'] = obligar_calificacion
+            if configuracion_de_agentes.set_auto_unpause:
+                dict_campana['AUTO_UNPAUSE'] = configuracion_de_agentes.auto_unpause
+        except ConfiguracionDeAgentesDeCampana.DoesNotExist:
+            pass
+
         return dict_campana
 
     def _obtener_todos(self):
@@ -245,8 +274,11 @@ class AgenteFamily(AbstractRedisFamily):
         try:
             redis_crea_family = redis_connection.hset(family, mapping=variables)
             return redis_crea_family
-        except (RedisError) as e:
+        except RedisError as e:
             raise e
+        except ConnectionError as e:
+            logger.exception(e)
+            sys.exit(1)
 
     def regenerar_family(self, agente, preservar_status=False):
         """Regenera una family de Agente y preserva su status actual en Asterisk"""
@@ -489,6 +521,62 @@ class PausaFamily(AbstractRedisFamily):
 
     def get_nombre_families(self):
         return "OML:PAUSE"
+
+
+class AmdConfFamily(AbstractRedisFamily):
+
+    def _create_dict(self, amd_conf):
+
+        dict_amd_conf = {
+            'NAME': 'GLOBAL_AMD',
+            'INITIAL_SILENCE': amd_conf.initial_silence,
+            'GREETING': amd_conf.greeting,
+            'AFTER_GREETING_SILENCE': amd_conf.after_greeting_silence,
+            'TOTAL_ANALYSIS_TIME': amd_conf.total_analysis_time,
+            'MIN_WORD_LENGTH': amd_conf.min_word_length,
+            'BETWEEN_WORDS_SILENCE': amd_conf.between_words_silence,
+            'MAXIMUM_NUMBER_OF_WORDS': amd_conf.maximum_number_of_words,
+            'MAXIMUM_WORD_LENGTH': amd_conf.maximum_word_length,
+            'SILENCE_THRESHOLD': amd_conf.silence_threshold,
+        }
+        return dict_amd_conf
+
+    def _obtener_todos(self):
+        """Obtener todas pausas"""
+        return AmdConf.objects.all()
+
+    def _get_nombre_family(self, family_member):
+        return "{0}:{1}".format(self.get_nombre_families(), family_member.id)
+
+    def get_nombre_families(self):
+        return "OML:AMD_CONF"
+
+
+class EsquemaGrabacionesFamily(AbstractRedisFamily):
+
+    def _create_dict(self, esquema_grabaciones):
+
+        dict_amd_conf = {
+            'NAME': 'RECORDS_SCHEME',
+            'ID_CONTACTO': str(esquema_grabaciones.id_contacto),
+            'DATE': str(esquema_grabaciones.fecha),
+            'TELEFONO_CONTACTO': str(esquema_grabaciones.telefono_contacto),
+            'ID_CAMPANA': str(esquema_grabaciones.id_campana),
+            'ID_EXTERNO_CONTACTO': str(esquema_grabaciones.id_externo_contacto),
+            'ID_EXTERNO_CAMPANA': str(esquema_grabaciones.id_externo_campana),
+            'ID_AGENTE': str(esquema_grabaciones.id_agente),
+        }
+        return dict_amd_conf
+
+    def _obtener_todos(self):
+        """Obtener todas pausas"""
+        return EsquemaGrabaciones.objects.all()
+
+    def _get_nombre_family(self, family_member):
+        return "{0}:{1}".format(self.get_nombre_families(), family_member.id)
+
+    def get_nombre_families(self):
+        return "OML:RECORDS_SCHEME"
 
 
 class TrunkFamily(AbstractRedisFamily):

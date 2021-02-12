@@ -48,12 +48,14 @@ class ReportesTiemposAgente(FormView):
         kwargs = super(ReportesTiemposAgente, self).get_form_kwargs()
         supervisor = self.request.user.get_supervisor_profile()
         if supervisor:
-            agentes_asociados = AgenteProfile.objects.obtener_agentes_supervisor(supervisor)
+            agentes_asociados = AgenteProfile.objects.obtener_agentes_supervisor(
+                supervisor).select_related('user')
             kwargs['agentes_asociados'] = agentes_asociados
             id_grupos = agentes_asociados.values_list('grupo_id', flat=True)
             kwargs['grupos_asociados'] = Grupo.objects.filter(id__in=id_grupos)
         else:
-            kwargs['agentes_asociados'] = AgenteProfile.objects.filter(is_inactive=False)
+            kwargs['agentes_asociados'] = AgenteProfile.objects.filter(
+                is_inactive=False).select_related('user')
             kwargs['grupos_asociados'] = Grupo.objects.all()
 
         return kwargs
@@ -69,9 +71,7 @@ class ReportesTiemposAgente(FormView):
 
         agentes = []
         if agentes_pk:
-            for agente_pk in agentes_pk:
-                agente = AgenteProfile.objects.get(pk=agente_pk)
-                agentes.append(agente)
+            agentes = AgenteProfile.objects.filter(pk__in=agentes_pk)
         if grupo_id:
             grupo = Grupo.objects.get(pk=int(grupo_id))
             agentes = grupo.agentes.filter(is_inactive=False)
@@ -79,10 +79,13 @@ class ReportesTiemposAgente(FormView):
         if todos_agentes or (agentes == [] and not grupo_id):
             supervisor = self.request.user.get_supervisor_profile()
             if supervisor:
-                agentes = AgenteProfile.objects.obtener_agentes_supervisor(supervisor)
+                agentes = AgenteProfile.objects.obtener_agentes_supervisor(
+                    supervisor)
             else:
                 # Asumo es Administrador
                 agentes = AgenteProfile.objects.obtener_activos()
+
+        agentes = agentes.select_related('user')
 
         # generamos los reportes graficos
         reporte_tiempos = ReporteAgentes(self.request.user)

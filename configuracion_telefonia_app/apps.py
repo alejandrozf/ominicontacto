@@ -69,6 +69,26 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
                 'url': reverse('lista_destinos_personalizados', args=(1,))
             })
 
+        opciones_avanzadas = []
+        if ('ajustar_configuracion_amd' in permissions):
+            opciones_avanzadas.append({
+                'label': _('AMD'),
+                'url': reverse('ajustar_configuracion_amd', args=(1,))
+            })
+
+        if ('ajustar_formato_grabaciones' in permissions):
+            opciones_avanzadas.append({
+                'label': _('Esquema grabaciones'),
+                'url': reverse('ajustar_formato_grabaciones', args=(1,))
+            })
+        if opciones_avanzadas:
+            items.append({
+                'label': _('Configuración avanzada'),
+                'icon': 'icon-audio-file',
+                'id': 'menuConfiguracionAvanzada',
+                'children': opciones_avanzadas
+            })
+
         audios = []
         if 'adicionar_audios_asterisk' in permissions:
             audios.append({
@@ -187,6 +207,10 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'eliminar_musica_de_espera',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'ajustar_configuracion_amd',
+             'roles': ['Administrador', ]},
+            {'nombre': 'ajustar_formato_grabaciones',
+             'roles': ['Administrador', ]},
         ]
 
     informacion_de_permisos = {
@@ -273,4 +297,8 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
             {'descripcion': _('Editar lista de Musicas de espera'), 'version': '1.7.0'},
         'eliminar_musica_de_espera':
             {'descripcion': _('Eliminar Musica de espera'), 'version': '1.7.0'},
+        'ajustar_configuracion_amd':
+            {'descripcion': _('Ajustar configuración AMD'), 'version': '1.12.0'},
+        'ajustar_formato_grabaciones':
+            {'descripcion': _('Ajustar configuración AMD'), 'version': '1.12.0'},
     }

@@ -1,0 +1,17 @@
+[run]
+branch = True
+omit =
+    manage.py
+    /src/pyst2/asterisk/manager.py
+    */migrations/*
+    */tests/*
+    ominicontacto/settings/*
+    */tests.py
+    */tests/tests.py
+    */__init__.py
+
+[report]
+ignore_errors = True
+
+[html]
+directory = /tmp/oml-coverity

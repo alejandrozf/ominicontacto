@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-18 10:58-0300\n"
+"POT-Creation-Date: 2021-02-05 17:57-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -333,7 +333,7 @@ msgstr "Error in connection attempt to: {0} due to {1}"
 msgid "Error en el servidor externo"
 msgstr "Error on the external server"
 
-#: api_app/views/agente.py:65 webphone_client_app/views.py:50
+#: api_app/views/agente.py:65
 msgid "Error al generar sip password"
 msgstr "Error creating sip password"
 
@@ -354,98 +354,102 @@ msgstr "Audit not found"
 msgid "No tiene permiso para modificar la auditoría"
 msgstr "You don't have permission to edit the audit"
 
-#: api_app/views/supervisor.py:181 api_app/views/supervisor.py:227
+#: api_app/views/supervisor.py:198 api_app/views/supervisor.py:244
 msgid "ID Agenda incorrecto"
 msgstr "Wrong Agenda Id"
 
-#: api_app/views/supervisor.py:188
+#: api_app/views/supervisor.py:205
 msgid "ID Agente incorrecto"
 msgstr "Wrong Agent Id"
 
-#: api_app/views/supervisor.py:196 api_app/views/supervisor.py:234
+#: api_app/views/supervisor.py:213 api_app/views/supervisor.py:251
 msgid "No tiene permiso para editar esta Agenda"
 msgstr "You don't have permission to edit this Agenda"
 
-#: api_app/views/supervisor.py:253
+#: api_app/views/supervisor.py:270
 msgid "Recibidas"
 msgstr "Received"
 
-#: api_app/views/supervisor.py:254
+#: api_app/views/supervisor.py:271
 msgid "Efectuadas"
 msgstr "Dialed"
 
-#: api_app/views/supervisor.py:255
+#: api_app/views/supervisor.py:272
 msgid "Atendidas"
 msgstr "Attended"
 
-#: api_app/views/supervisor.py:256
+#: api_app/views/supervisor.py:273
 msgid "Conectadas"
 msgstr "Connected"
 
-#: api_app/views/supervisor.py:257
+#: api_app/views/supervisor.py:274
 msgid "No Conectadas"
 msgstr "Not connected"
 
-#: api_app/views/supervisor.py:258
+#: api_app/views/supervisor.py:275
 msgid "Abandonadas"
 msgstr "Abandon"
 
-#: api_app/views/supervisor.py:259
+#: api_app/views/supervisor.py:276
 msgid "Expiradas"
 msgstr "Expired"
 
-#: api_app/views/supervisor.py:260
+#: api_app/views/supervisor.py:277
 msgid "Tiempo de Espera de Conexión(prom.)"
 msgstr "Waiting time for connection(avg.)"
 
-#: api_app/views/supervisor.py:261
+#: api_app/views/supervisor.py:278
 msgid "Tiempo de Espera de Atención(prom.)"
 msgstr "Waiting time for attention(avg.)"
 
-#: api_app/views/supervisor.py:262
+#: api_app/views/supervisor.py:279
 msgid "Tiempo de Abandono(prom.)"
 msgstr "Abandon time(avg.)"
 
-#: api_app/views/supervisor.py:265
+#: api_app/views/supervisor.py:282
 msgid "Efectuadas Manuales"
 msgstr "Manual dialed calls"
 
-#: api_app/views/supervisor.py:266
+#: api_app/views/supervisor.py:283
 msgid "Conectadas Manuales"
 msgstr "Manual connected calls"
 
-#: api_app/views/supervisor.py:267
+#: api_app/views/supervisor.py:284
 msgid "No Conectadas Manuales"
 msgstr "Manual not connected calls"
 
-#: api_app/views/supervisor.py:268
+#: api_app/views/supervisor.py:285
 msgid "Tiempo de Espera de Conexión Manuales(prom.)"
 msgstr "Manual calls waiting time for connection(avg.)"
 
-#: api_app/views/supervisor.py:288 api_app/views/supervisor.py:303
+#: api_app/views/supervisor.py:305 api_app/views/supervisor.py:320
 msgid "No existe la campaña"
 msgstr "Campaign does not exists"
 
-#: api_app/views/supervisor.py:373
+#: api_app/views/supervisor.py:390
 msgid "Exportación de contactados a .csv en proceso"
 msgstr "Exportation of contacted calls to a .csv file in process"
 
-#: api_app/views/supervisor.py:420
+#: api_app/views/supervisor.py:437
 msgid "Exportación de calificados a .csv en proceso"
 msgstr "Exportation of dispositioned calls to a .csv file in process"
 
-#: api_app/views/supervisor.py:467
+#: api_app/views/supervisor.py:484
 msgid "Exportación de no atendidos a .csv en proceso"
 msgstr "Exportation of not attended calls to a .csv file in process"
+
+#: api_app/views/supervisor.py:496
+msgid "Finalizado"
+msgstr "Finalized"
+
+#: api_app/views/supervisor.py:498
+msgid "Liberado"
+msgstr "Liberated"
+
+#: api_app/views/supervisor.py:500
+msgid "Reservado"
+msgstr "Reserved"
 
 #: utiles_globales.py:37
 msgid "Archivos permitidos: .wav"
 msgstr "Allowed files: .wav"
-
-#: webphone_client_app/apps.py:36
-msgid "Credenciales SIP para Cliente Webphone"
-msgstr "Sip credentials for Webphone Client"
-
-#: webphone_client_app/views.py:55
-msgid "Error al obtener WEBPHONE_VIDEO_DOMAIN"
-msgstr "Error obtaining WEBPHONE_VIDEO_DOMAIN"

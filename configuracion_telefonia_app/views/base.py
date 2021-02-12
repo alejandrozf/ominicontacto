@@ -1136,6 +1136,8 @@ class DestinoPersonalizadoUpdateView(DestinoPersonalizadoMixin, UpdateView):
             instance=nodo_destino_personalizado.destinos_siguientes.first())
         if form.is_valid() and opcion_destino_failover_form.is_valid():
             destino_personalizado = form.save()
+            nodo_destino_personalizado.nombre = destino_personalizado.nombre
+            nodo_destino_personalizado.save()
             opcion_destino_failover_form.save()
             # escribe el nodo creado y sus relaciones en asterisk
             sincronizador = self.get_sincronizador_de_configuracion()

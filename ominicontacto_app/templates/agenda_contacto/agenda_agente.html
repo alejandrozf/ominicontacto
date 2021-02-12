@@ -17,38 +17,23 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
+{% extends "agente/frame/base_frame.html" %}
 {% load staticfiles %}
 {% load compress %}
 {% load i18n %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="{% static 'bootstrap-4.0.0/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/daterangepicker.css' %}">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}">
-    <!-- Fonts -->
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/google-font.css' %}">
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-solid.css' %}">
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fa-regular.css' %}">
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/fontawesome.css' %}">
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/oml-icons.css' %}">
-    <!-- Scripts -->
-    <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
-    {% compress js %}
-    <script src="{% static 'jquery-2.2.4.min.js' %}"></script>
-    <script src="{% static 'bootstrap-4.0.0/js/bootstrap.bundle.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/moment.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/daterangepicker.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/ranges-datepicker.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/config_datetimepicker.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/agente/make_click2call.js' %}"></script>
-    {% endcompress %}
-</head>
-<body>
+{% block head_js %}
+  <script type="text/javascript" src="{% static 'ominicontacto/JS/config_datetimepicker.js' %}"></script>
+  <script type="text/javascript" src="{% static 'ominicontacto/JS/agente/make_click2call.js' %}"></script>
+  <script type="text/javascript">
+    if (window.parent.hasOwnProperty('agendas_notifier')){
+        var agendas_notifier = window.parent.agendas_notifier;
+        agendas_notifier.clear_notifications();
+    }
+  </script>
+{% endblock head_js %}
+
+{% block content %}
 <div class="container-fluid">
     <div id="wrapper-search">
         
@@ -76,6 +61,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <thead>
             <tr>
                 <th>{% trans 'Contacto' %}</th>
+                <th>{% trans 'Datos' %}</th>
                 <th>{% trans 'Fecha' %}</th>
                 <th>{% trans 'Hora' %}</th>
                 <th>{% trans 'Tipo' %}</th>
@@ -92,7 +78,15 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                        {{ agenda.contacto.telefono }}
                     </a>
                 </td>
-                <td>{{ agenda.fecha }}</td>
+                <td>
+                    {{ agenda.contacto.obtener_datos}}
+                </td>
+                <td>
+                    {{ agenda.fecha }}
+                    <a href="{% url 'agenda_contacto_update' agenda.pk %}">
+                        <span class="icon icon-agenda"></span>
+                    </a>
+                </td>
                 <td>{{ agenda.hora}}</td>
                 <td>{{ agenda.get_tipo_agenda_display }}</td>
                 <td>{{ agenda.observaciones }}</td>
@@ -105,5 +99,4 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </tbody>
     </table>
 </div>
-</body>
-</html>
+{% endblock content %}

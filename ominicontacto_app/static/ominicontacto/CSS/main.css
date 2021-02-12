@@ -497,6 +497,10 @@ ul.errorlist li {
   #nav-logo {
     margin-right: 30px;
   }
+  .btn-warning-agenda {
+    background-color: #FF9A3C;
+    border-radius: 6px;
+  }
 }
 
 /* Navbar chevron icons */

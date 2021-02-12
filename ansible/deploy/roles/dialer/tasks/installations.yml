@@ -1,0 +1,40 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
+---
+
+# Para instalar WD en centos es descargar el repo y yum install wombat
+
+- name: Get the wombat dialer repository (centos)
+  shell: "wget -P /etc/yum.repos.d http://yum.loway.ch/loway.repo"
+
+- name: Install wombat dialer (centos)
+  command: yum install -y wombat
+  when: ansible_os_family == "RedHat"
+  retries: 3
+  delay: 3
+  register: result
+  until: result is success
+
+# Se añade este archivo server.xml personalizado
+- name: Add parameters in server.xml of Catalina server
+  template: src=templates/server.xml.j2  dest=/usr/local/queuemetrics/tomcat/conf/server.xml
+
+# Se modifica el host de mysql en caso de que se tenga un mysql externo
+- name: Modify mysql_host in tpf.properties file
+  template: src=templates/tpf.properties  dest=/usr/local/queuemetrics/tomcat/webapps/wombat/WEB-INF/tpf.properties
+  when: mysql_host is defined

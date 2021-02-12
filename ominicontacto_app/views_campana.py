@@ -24,14 +24,16 @@ from __future__ import unicode_literals
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect, JsonResponse
-from django.views.generic import (ListView, UpdateView, DeleteView, )
+from django.shortcuts import redirect, get_object_or_404
+from django.views.generic import (ListView, UpdateView, DeleteView, FormView)
 from django.views.generic.base import RedirectView
 from django.utils.translation import ugettext_lazy as _
 
-from ominicontacto_app.forms import CampanaSupervisorUpdateForm
-from ominicontacto_app.models import Campana, SupervisorProfile
+from ominicontacto_app.forms import CampanaSupervisorUpdateForm, ConfiguracionDeAgentesDeCampanaForm
+from ominicontacto_app.models import Campana, SupervisorProfile, ConfiguracionDeAgentesDeCampana
 from ominicontacto_app.services.creacion_queue import (ActivacionQueueService,
                                                        RestablecerDialplanError)
+from ominicontacto_app.services.asterisk.redis_database import CampanaFamily
 
 from configuracion_telefonia_app.views.base import DeleteNodoDestinoMixin, SincronizadorDummy
 
@@ -173,7 +175,8 @@ class CampanaSupervisorUpdateView(UpdateView):
     def get_form(self):
         self.form_class = self.get_form_class()
         supervisores = SupervisorProfile.objects.exclude(borrado=True)
-        supervisors_choices = [(supervisor.user.pk, supervisor.user) for supervisor in
+        supervisors_choices = [(supervisor.user.pk, ": ".join([supervisor.user.get_username(),
+                                supervisor.user.get_full_name()])) for supervisor in
                                supervisores]
         kwargs = self.get_form_kwargs()
         kwargs['supervisors_choices'] = supervisors_choices
@@ -201,3 +204,42 @@ class CampanaBorradasListView(CampanaListView):
             return super(CampanaBorradasListView, self).get(request, *args, **kwargs)
         else:
             return JsonResponse({'result': 'desconectado'})
+
+
+class ConfiguracionDeAgentesDeCampanaView(FormView):
+    form_class = ConfiguracionDeAgentesDeCampanaForm
+    template_name = 'campanas/configuracion_de_agentes_de_campana.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        pk_campana = kwargs.get('pk_campana')
+        self.campana = get_object_or_404(Campana, pk=pk_campana)
+        if not self.request.user.get_is_administrador():
+            supervisor_profile = self.request.user.get_supervisor_profile()
+            if not supervisor_profile.esta_asignado_a_campana(self.campana):
+                msg = _('No tiene permiso para editar esa campaña.')
+                messages.error(self.request, msg)
+                redirect('index')
+        return super(ConfiguracionDeAgentesDeCampanaView, self).dispatch(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super(ConfiguracionDeAgentesDeCampanaView, self).get_form_kwargs()
+        kwargs['campana_type'] = self.campana.type
+        try:
+            kwargs['instance'] = self.campana.configuracion_de_agentes
+        except ConfiguracionDeAgentesDeCampana.DoesNotExist:
+            pass
+        return kwargs
+
+    def form_valid(self, form):
+        configuracion = form.save(commit=False)
+        configuracion.campana = self.campana
+        configuracion.save()
+        url_por_tipo = {
+            Campana.TYPE_MANUAL: 'campana_manual_list',
+            Campana.TYPE_DIALER: 'campana_dialer_list',
+            Campana.TYPE_ENTRANTE: 'campana_list',
+            Campana.TYPE_PREVIEW: 'campana_preview_list'
+        }
+        campana_service = CampanaFamily()
+        campana_service.regenerar_family(self.campana)
+        return redirect(url_por_tipo[self.campana.type])

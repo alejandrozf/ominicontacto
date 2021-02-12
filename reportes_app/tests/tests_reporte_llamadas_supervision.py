@@ -21,11 +21,12 @@ from ominicontacto_app.models import Campana, OpcionCalificacion
 from mock import patch
 
 from django.test import TestCase
+import json
 
 from reportes_app.reportes.reporte_llamadas_supervision import (
     ReporteDeLLamadasEntrantesDeSupervision, ReporteDeLLamadasSalientesDeSupervision
 )
-
+from reportes_app.reportes.reporte_llamadas_salientes import ReporteLlamadasSalienteFamily
 from reportes_app.services.redis_service import RedisService
 from reportes_app.tests.utiles import GeneradorDeLlamadaLogs
 from ominicontacto_app.tests.factories import AgenteProfileFactory, CalificacionClienteFactory, \
@@ -199,6 +200,15 @@ class ReporteDeLLamadasSalientesDeSupervisionTest(TestCase):
         self.preview2 = CampanaFactory.create(type=Campana.TYPE_PREVIEW, nombre='camp-preview-2',
                                               estado=Campana.ESTADO_ACTIVA)
 
+    def _obtener_estadisticas_redis(self, campana):
+        return {
+            'efectuadas': 0,
+            'conectadas': 0,
+            'no_conectadas': 0,
+            'gestiones': 1,
+            'nombre': campana.nombre,
+        }
+
     def test_reporte_vacio(self):
         reporte = ReporteDeLLamadasSalientesDeSupervision(self.supervisor.user)
         for id_campana in [self.manual.id, self.dialer.id, self.preview.id]:
@@ -285,3 +295,21 @@ class ReporteDeLLamadasSalientesDeSupervisionTest(TestCase):
             self.assertEqual(reporte.estadisticas[id_campana]['conectadas'], 0)
             self.assertEqual(
                 reporte.estadisticas[id_campana]['no_conectadas'], 0)
+
+    def test_supervision_saliente_redis_family(self):
+        CalificacionClienteFactory(opcion_calificacion=self.opcion_calificacion_m1,
+                                   agente=self.agente1)
+        CalificacionClienteFactory(opcion_calificacion=self.opcion_calificacion_d1,
+                                   agente=self.agente1)
+        CalificacionClienteFactory(opcion_calificacion=self.opcion_calificacion_p1,
+                                   agente=self.agente1)
+        reporte = ReporteDeLLamadasSalientesDeSupervision(self.supervisor.user)
+        redis_saliente = ReporteLlamadasSalienteFamily()
+        for id_campana in [self.manual.id, self.dialer.id, self.preview.id]:
+            campana = Campana.objects.get(pk=id_campana)
+            datos_saliente = self._obtener_estadisticas_redis(campana)
+            redis_saliente._create_family(campana, datos_saliente)
+            datos_redis = redis_saliente.get_value(campana, 'ESTADISTICAS')
+            self.assertIn(id_campana, reporte.estadisticas)
+            self.assertEqual(reporte.estadisticas[id_campana], datos_saliente)
+            self.assertEqual(reporte.estadisticas[id_campana], json.loads(datos_redis))

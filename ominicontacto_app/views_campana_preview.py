@@ -23,11 +23,14 @@ import csv
 import json
 import tablib
 
+import redis
+
 from import_export import resources
 
 import logging as logging_
 
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponseRedirect
@@ -461,6 +464,17 @@ class ObtenerContactoView(View):
     def post(self, request, *args, **kwargs):
         campana_id = kwargs.get('pk_campana', False)
         data_entrega = AgenteEnContacto.entregar_contacto(self.agente, campana_id)
+        # adiciona informacion sobre si este contacto tiene una calificacion pendiente
+        # para el agente en cuestión
+        redis_connection = redis.Redis(
+            host=settings.REDIS_HOSTNAME, port=settings.CONSTANCE_REDIS_CONNECTION['port'],
+            decode_responses=True)
+        calificacion_pendiente_agente = redis_connection.hgetall(
+            'OML:CALIFICACION:LLAMADA:{0}'.format(self.agente.pk))
+        if calificacion_pendiente_agente != {} and \
+           calificacion_pendiente_agente.get('TELEFONO', '') == data_entrega.get(
+               'telefono_contacto', False):
+            data_entrega['calldata'] = calificacion_pendiente_agente['CALLDATA']
         return JsonResponse(data_entrega)
 
 
@@ -534,7 +548,7 @@ class OrdenarAsignacionContactosView(FormView):
         nombres_columnas_datos = bd_contacto.get_metadata().nombres_de_columnas_de_datos
         # import file
         agents_in_contacts_dat = csv_file.read()
-        imported_data = tablib.Dataset().load(agents_in_contacts_dat.decode('utf8'))
+        imported_data = tablib.Dataset().load(agents_in_contacts_dat.decode('utf8'), format='csv')
         result = AgenteEnContactoResourceImport().import_data(
             imported_data, nombres_columnas_datos=nombres_columnas_datos, dry_run=False)
         if not result.has_errors():

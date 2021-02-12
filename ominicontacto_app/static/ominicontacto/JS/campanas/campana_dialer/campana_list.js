@@ -17,6 +17,9 @@
 
 */
 /* global Urls */
+$(function(){
+    configure_campaign_actions_links();
+});
 
 $(function(){
 
@@ -61,7 +64,17 @@ function mostrar_campanas_dialer_ocultas() {
         });
 }
 
-function finalizar_campana(campana_pk){
-    $('#campana_pk').val(campana_pk);
-    $('#finalizar_campana').submit();
+function configure_campaign_actions_links(){
+    $('.action_for_campaign').on('click', submit_action_for_campaign);
+}
+
+function submit_action_for_campaign() {
+    let url = $(this).attr('value');
+    $('#option_dialer').attr('action', url);
+    let campaign_id = $(this).attr('camp-id');
+    if (campaign_id != undefined)
+        $('#campana_pk').val(campaign_id);
+    else
+        $('#campana_pk').val('');
+    $('#option_dialer').submit();
 }

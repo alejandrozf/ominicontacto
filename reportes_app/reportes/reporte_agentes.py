@@ -121,12 +121,12 @@ class ReporteAgentes(object):
         logs_time = LlamadaLog.objects.obtener_agentes_campanas_total(
             eventos_llamadas, fecha_inferior, fecha_superior, list(agentes_dict.keys()),
             campanas)
-
+        lista_pausas = list(Pausa.objects.all())
         for log in logs_time:
             agente_id = int(log[0])
             if agente_id not in self.datos_agentes:
                 self.datos_agentes.setdefault(
-                    agente_id, ActividadAgente(agentes_dict[agente_id]))
+                    agente_id, ActividadAgente(agentes_dict[agente_id], lista_pausas=lista_pausas))
             self.datos_agentes[agente_id].obtener_tiempo_total_llamada_campana(
                 campanas_dict[int(log[1])], log)
 
@@ -136,11 +136,12 @@ class ReporteAgentes(object):
         agentes_dict = {agente.id: agente for agente in agentes}
         logs_time = LlamadaLog.objects.obtener_count_evento_agente(
             eventos_llamadas, fecha_inferior, fecha_superior, list(agentes_dict.keys()))
+        lista_pausas = list(Pausa.objects.all())
         for log in logs_time:
             agente_id = int(log[0])
             if agente_id not in self.datos_agentes:
                 self.datos_agentes.setdefault(
-                    agente_id, ActividadAgente(agentes_dict[agente_id]))
+                    agente_id, ActividadAgente(agentes_dict[agente_id], lista_pausas=lista_pausas))
             self.datos_agentes[agente_id].intentos_fallidos += int(log[1])
 
     def _genera_tiempos_totales_agentes(self):
@@ -160,9 +161,10 @@ class ReporteAgentes(object):
     def _procesa_tiempos_pausa(self, agentes, fecha_inicio, fecha_fin):
         agentes_dict = {agente.id: agente for agente in agentes}
         logs_agentes = self._cargar_logs_agentes(list(agentes_dict.keys()), fecha_inicio, fecha_fin)
+        lista_pausas = list(Pausa.objects.all())
         for agente_id, fecha, event, pausa_id in logs_agentes[::-1]:
             datos_agente_actual = self.datos_agentes.setdefault(
-                agente_id, ActividadAgente(agentes_dict[agente_id]))
+                agente_id, ActividadAgente(agentes_dict[agente_id], lista_pausas=lista_pausas))
 
             datos_agente_actual.procesa_log(event, fecha, pausa_id)
 
@@ -239,7 +241,7 @@ class ReporteAgentes(object):
 
 class ActividadAgente(object):
 
-    def __init__(self, agente):
+    def __init__(self, agente, lista_pausas=None):
         self.agente = agente
         self.pausas = []
         self.sesiones = []
@@ -251,11 +253,15 @@ class ActividadAgente(object):
         self.tiempo_pausa = timedelta()
         self.tiempo_llamada = timedelta()
 
-        self.pausas_por_id = self._genera_info_pausas()
+        self.pausas_por_id = self._genera_info_pausas(lista_pausas)
 
-    def _genera_info_pausas(self):
+    def _genera_info_pausas(self, lista_pausas):
+        lista_pausas_oml = lista_pausas
+        if lista_pausas_oml is None:
+            lista_pausas_oml = Pausa.objects.all()
+
         res = {0: Pausa(id=0, nombre=_(u'ACW'))}
-        for pausa in Pausa.objects.all():
+        for pausa in lista_pausas_oml:
             res[pausa.id] = pausa
         return res
 

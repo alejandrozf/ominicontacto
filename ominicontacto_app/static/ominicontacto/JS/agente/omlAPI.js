@@ -242,7 +242,7 @@ class OMLAPI {
                 if (data['calificada'] == 'True'){
                     callback_calificada();
                 }
-                if (call_data == 'null'){
+                else if (data['calldata'] == undefined){
                     callback_calificada();
                 }
                 else{

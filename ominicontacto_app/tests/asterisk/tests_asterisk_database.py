@@ -31,7 +31,9 @@ from ominicontacto_app.services.asterisk.redis_database import (
     AgenteFamily, RutaSalienteFamily, TrunkFamily, CampanaFamily
 )
 from configuracion_telefonia_app.tests.factories import (
-    TroncalSIPFactory, RutaSalienteFactory, PatronDeDiscadoFactory, PlaylistFactory)
+    TroncalSIPFactory, RutaSalienteFactory, PatronDeDiscadoFactory, PlaylistFactory,
+)
+from ominicontacto_app.tests.factories import ConfiguracionDeAgentesDeCampanaFactory
 from ominicontacto_app.services.audio_conversor import ConversorDeAudioService
 
 
@@ -138,6 +140,41 @@ class AsteriskDatabaseTest(OMLBaseTest):
         self.assertEqual(dict_campana['PERMITOCCULT'], "")
         self.assertEqual(dict_campana['MAXCALLS'], "")
         self.assertEqual(dict_campana['FAILOVER'], str(0))
+
+    def test_values_de_configuraciones_de_agentes_no_seteadas_dialer(self):
+        ConfiguracionDeAgentesDeCampanaFactory(
+            campana=self.campana_dialer,
+            set_auto_attend_inbound=False,
+            set_auto_attend_dialer=False,
+            set_auto_unpause=False,
+            set_obligar_calificacion=False)
+        servicio = CampanaFamily()
+        dict_campana = servicio._create_dict(self.campana_dialer)
+        self.assertNotIn('AUTO_ATTEND_INBOUND', dict_campana)
+        self.assertNotIn('AUTO_ATTEND_DIALER', dict_campana)
+        self.assertNotIn('FORCE_DISPOSITION', dict_campana)
+        self.assertNotIn('AUTO_UNPAUSE', dict_campana)
+
+    def test_values_de_configuraciones_de_agentes_seteadas_dialer(self):
+        ConfiguracionDeAgentesDeCampanaFactory(
+            campana=self.campana_dialer,
+            set_auto_attend_inbound=True,
+            auto_attend_inbound=True,
+            set_auto_attend_dialer=True,
+            auto_attend_dialer=True,
+            set_auto_unpause=True,
+            auto_unpause=10,
+            set_obligar_calificacion=True,
+            obligar_calificacion=False,)
+        servicio = CampanaFamily()
+        dict_campana = servicio._create_dict(self.campana_dialer)
+        self.assertNotIn('AUTO_ATTEND_INBOUND', dict_campana)
+        self.assertIn('AUTO_ATTEND_DIALER', dict_campana)
+        self.assertEqual(dict_campana['AUTO_ATTEND_DIALER'], 'True')
+        self.assertIn('FORCE_DISPOSITION', dict_campana)
+        self.assertEqual(dict_campana['FORCE_DISPOSITION'], 'False')
+        self.assertIn('AUTO_UNPAUSE', dict_campana)
+        self.assertEqual(dict_campana['AUTO_UNPAUSE'], 10)
 
     def test_devuelve_correctamente_dict_agente_asterisk(self):
         """

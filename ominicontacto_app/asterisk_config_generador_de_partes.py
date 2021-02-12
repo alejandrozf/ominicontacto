@@ -318,7 +318,7 @@ class GeneradorParaQueueEntrante(GeneradorDePedazoDeQueue):
         return """
 
         [{oml_queue_name}]
-        announce=beep
+        announce={oml_announce}
         announce-holdtime={oml_announce-holdtime}
         announce-position={oml_announce_position}
         announce-frequency={oml_announce_frequency}
@@ -411,7 +411,7 @@ class GeneradorParaPatronRuta(GeneradorDePedazoDeRutaSaliente):
         exten => i,1,Verbose(2, no existe patron)
         same => n,Set(__DIALSTATUS=NONDIALPLAN)
         same => n,Set(SHARED(OMLCALLSTATUS,${{OMLMOTHERCHAN}})=${{DIALSTATUS}})
-        same => n,Gosub(sub-oml-hangup,s,1(FAIL FAIL FAIL no hay ruta para ${{OMLOUTNUM}})
+        same => n,Gosub(sub-oml-hangup,s,1(FAIL FAIL FAIL no hay ruta para ${{OMLOUTNUM}}))
         """
 
     def get_parametros(self):

@@ -19,7 +19,6 @@
 
 from __future__ import unicode_literals
 
-import datetime
 import json
 import logging
 import os
@@ -36,7 +35,7 @@ from django.db import (models,
                        # connection
                        )
 
-from django.db.models import Max, Q, Count, Sum
+from django.db.models import Q, Count, Sum
 from django.db.utils import DatabaseError
 from django.conf import settings
 from django.core.exceptions import ValidationError, SuspiciousOperation, ObjectDoesNotExist
@@ -370,6 +369,15 @@ class SupervisorProfile(models.Model):
         """
         estados = [Campana.ESTADO_ACTIVA, Campana.ESTADO_PAUSADA,
                    Campana.ESTADO_INACTIVA, Campana.ESTADO_FINALIZADA]
+        return self.user.campanasupervisors.filter(estado__in=estados)
+
+    def campanas_asignadas(self):
+        """
+        Devuelve las campañas asignadas, incluidas las BORRADAS a las que esta asignado
+        el Supervisor.
+        """
+        estados = [Campana.ESTADO_ACTIVA, Campana.ESTADO_PAUSADA,
+                   Campana.ESTADO_INACTIVA, Campana.ESTADO_FINALIZADA, Campana.ESTADO_BORRADA]
         return self.user.campanasupervisors.filter(estado__in=estados)
 
     def campanas_asignadas_actuales_no_finalizadas(self):
@@ -1481,6 +1489,9 @@ class Queue(models.Model):
     audios = models.ForeignKey(ArchivoDeAudio, blank=True, null=True,
                                on_delete=models.SET_NULL,
                                related_name='queues_anuncio_periodico')
+    audio_previo_conexion_llamada = models.ForeignKey(ArchivoDeAudio, blank=True, null=True,
+                                                      on_delete=models.SET_NULL,
+                                                      related_name='queues_anuncio_entrada')
     dial_timeout = models.PositiveIntegerField(default=25, blank=True, null=True)
 
     # Predictiva
@@ -2437,56 +2448,6 @@ class Contacto(models.Model):
             self.bd_contacto, self.datos)
 
 
-class MensajeRecibidoManager(models.Manager):
-
-    def mensaje_recibido_por_remitente(self):
-        return self.values('remitente').annotate(Max('timestamp'))
-
-    def mensaje_remitente_fecha(self, remitente, timestamp):
-        try:
-            return self.get(remitente=remitente, timestamp=timestamp)
-        except MensajeRecibido.DoesNotExist:
-            raise (SuspiciousOperation(_("No se encontro mensaje recibido con esa"
-                                         " fecha y remitente")))
-
-
-class MensajeRecibido(models.Model):
-    objects_default = models.Manager()
-    # Por defecto django utiliza el primer manager instanciado. Se aplica al
-    # admin de django, y no aplica las customizaciones del resto de los
-    # managers que se creen.
-
-    objects = MensajeRecibidoManager()
-    remitente = models.CharField(max_length=20)
-    destinatario = models.CharField(max_length=20)
-    timestamp = models.CharField(max_length=255)
-    timezone = models.IntegerField()
-    encoding = models.IntegerField()
-    content = models.TextField()
-    es_leido = models.BooleanField(default=False)
-
-    def __str__(self):
-        return "mensaje recibido del numero {0}".format(self.remitente)
-
-    class Meta:
-        db_table = 'mensaje_recibido'
-
-
-class MensajeEnviado(models.Model):
-    remitente = models.CharField(max_length=20)
-    destinatario = models.CharField(max_length=20)
-    timestamp = models.CharField(max_length=255)
-    agente = models.ForeignKey(AgenteProfile, on_delete=models.CASCADE)
-    content = models.TextField()
-    result = models.IntegerField(blank=True, null=True)
-
-    def __str__(self):
-        return "mensaje enviado al número {0}".format(self.destinatario)
-
-    class Meta:
-        db_table = 'mensaje_enviado'
-
-
 class GrabacionMarca(models.Model):
     """
     Contiene los atributos de una grabación marcada
@@ -2782,6 +2743,12 @@ class AgendaContactoManager(models.Manager):
             eventos = eventos.filter(fecha__gte=hoy)
         return eventos.order_by('-fecha')
 
+    def proximas(self, agente):
+        """ Devuelve las agendas programadas para las proximas 8 horas para un agente """
+        por_fecha = self.filter(fecha__range=(now(), now() + timedelta(hours=8)))
+        de_agente = por_fecha.filter(agente=agente, tipo_agenda=AgendaContacto.TYPE_PERSONAL)
+        return de_agente.order_by('fecha')
+
 
 class AgendaContacto(models.Model):
     objects = AgendaContactoManager()
@@ -2816,123 +2783,6 @@ class AgendaContacto(models.Model):
 # ==============================================================================
 # Actuaciones
 # ==============================================================================
-
-
-class AbstractActuacion(models.Model):
-    """
-    Modelo abstracto para las actuaciones de las campanas
-    de audio y sms.
-    """
-
-    """Dias de la semana, compatibles con datetime.date.weekday()"""
-    LUNES = 0
-    MARTES = 1
-    MIERCOLES = 2
-    JUEVES = 3
-    VIERNES = 4
-    SABADO = 5
-    DOMINGO = 6
-
-    DIA_SEMANAL_CHOICES = (
-        (LUNES, 'LUNES'),
-        (MARTES, 'MARTES'),
-        (MIERCOLES, 'MIERCOLES'),
-        (JUEVES, 'JUEVES'),
-        (VIERNES, 'VIERNES'),
-        (SABADO, 'SABADO'),
-        (DOMINGO, 'DOMINGO'),
-    )
-    dia_semanal = models.PositiveIntegerField(
-        choices=DIA_SEMANAL_CHOICES,
-    )
-
-    hora_desde = models.TimeField()
-    hora_hasta = models.TimeField()
-
-    class Meta:
-        abstract = True
-
-    def verifica_actuacion(self, hoy_ahora):
-        """
-        Este método verifica que el día de la semana y la hora
-        pasada en el parámetro hoy_ahora sea válida para la
-        actuación actual.
-        Devuelve True o False.
-        """
-
-        assert isinstance(hoy_ahora, datetime.datetime)
-
-        dia_semanal = hoy_ahora.weekday()
-        hora_actual = datetime.time(
-            hoy_ahora.hour, hoy_ahora.minute, hoy_ahora.second)
-
-        if not self.dia_semanal == dia_semanal:
-            return False
-
-        if not self.hora_desde <= hora_actual <= self.hora_hasta:
-            return False
-
-        return True
-
-    def dia_concuerda(self, fecha_a_chequear):
-        """Este método evalua si el dia de la actuacion actual `self`
-        concuerda con el dia de la semana de la fecha pasada por parametro.
-
-        :param fecha_a_chequear: fecha a chequear
-        :type fecha_a_chequear: `datetime.date`
-        :returns: bool - True si la actuacion es para el mismo dia de
-                  la semana que el dia de la semana de `fecha_a_chequear`
-        """
-        # NO quiero que funcione con `datatime` ni ninguna otra
-        #  subclase, más que específicamente `datetime.date`,
-        #  por eso no uso `isinstance()`.
-        assert type(fecha_a_chequear) == datetime.date
-
-        return self.dia_semanal == fecha_a_chequear.weekday()
-
-    def es_anterior_a(self, time_a_chequear):
-        """Este método evalua si el rango de tiempo de la actuacion
-        actual `self` es anterior a la hora pasada por parametro.
-        Verifica que sea 'estrictamente' anterior, o sea, ambas horas
-        de la Actuacion deben ser anteriores a la hora a chequear
-        para que devuelva True.
-
-        :param time_a_chequear: hora a chequear
-        :type time_a_chequear: `datetime.time`
-        :returns: bool - True si ambas horas de la actuacion son anteriores
-                  a la hora pasada por parametro `time_a_chequear`.
-        """
-        # NO quiero que funcione con ninguna subclase, más que
-        #  específicamente `datetime.time`, por eso no uso `isinstance()`.
-        assert type(time_a_chequear) == datetime.time
-
-        # Es algo redundante chequear ambos, pero bueno...
-        return self.hora_desde < time_a_chequear and \
-            self.hora_hasta < time_a_chequear
-
-    def clean(self):
-        """
-        Valida que al crear una actuación a una campaña
-        no exista ya una actuación en el rango horario
-        especificado y en el día semanal seleccionado.
-        """
-        if self.hora_desde and self.hora_hasta:
-            if self.hora_desde >= self.hora_hasta:
-                raise ValidationError({
-                    'hora_desde': [_("La hora 'desde' debe ser menor o igual a la hora 'hasta'.")],
-                    'hora_hasta': [_("La hora 'hasta' debe ser mayor a la hora 'desde'.")],
-                })
-
-            conflicto = self.get_campana().actuacionesdialer.filter(
-                dia_semanal=self.dia_semanal,
-                hora_desde__lte=self.hora_hasta,
-                hora_hasta__gte=self.hora_desde,
-            )
-            if any(conflicto):
-                raise ValidationError({
-                    'hora_desde': [_("Ya esta cubierto el rango horario en ese día semanal.")],
-                    'hora_hasta': [_("Ya esta cubierto el rango horario ese día semanal.")],
-                })
 
 
 class ActuacionVigente(models.Model):
@@ -3500,12 +3350,14 @@ class ParametrosCrm(models.Model):
     DATO_CONTACTO = 2
     DATO_LLAMADA = 3
     CUSTOM = 4
+    DIALPLAN = 5
 
     TIPOS = (
         (DATO_CAMPANA, _('Dato de Campaña')),
         (DATO_CONTACTO, _('Dato de Contacto')),
         (DATO_LLAMADA, _('Dato de Llamada')),
         (CUSTOM, _('Fijo')),
+        (DIALPLAN, _('Dato de Dialplan'))
     )
 
     OPCIONES_CAMPANA = (
@@ -3525,6 +3377,8 @@ class ParametrosCrm(models.Model):
     )
     OPCIONES_LLAMADA_KEYS = [key for key, value in OPCIONES_LLAMADA]
 
+    PREFIJO_DIALPLAN = 'Omlcrm'
+
     campana = models.ForeignKey(Campana, related_name='parametros_crm', on_delete=models.CASCADE)
     nombre = models.CharField(max_length=128)
     valor = models.CharField(max_length=256)
@@ -3539,26 +3393,49 @@ class ParametrosCrm(models.Model):
 
     def obtener_valor(self, agente, contacto, datos_de_llamada):
         if self.tipo == ParametrosCrm.DATO_CAMPANA:
-            return self.obtener_valor_de_campana()
+            return self._obtener_valor_de_campana()
         if self.tipo == ParametrosCrm.DATO_CONTACTO:
-            return self.obtener_valor_de_contacto(contacto)
+            return self._obtener_valor_de_contacto(contacto)
         if self.tipo == ParametrosCrm.DATO_LLAMADA:
-            return self.obtener_valor_de_llamada(agente, datos_de_llamada)
+            return self._obtener_valor_de_llamada(agente, datos_de_llamada)
         if self.tipo == ParametrosCrm.CUSTOM:
             return self.valor
+        if self.tipo == ParametrosCrm.DIALPLAN:
+            return datos_de_llamada.get(self.valor, '')
 
-    def obtener_valor_de_campana(self):
+    def _obtener_valor_de_campana(self):
         if self.valor == 'tipo':
             return self.campana.get_type_display()
         return getattr(self.campana, self.valor)
 
-    def obtener_valor_de_contacto(self, contacto):
+    def _obtener_valor_de_contacto(self, contacto):
         if contacto is None:
             return ''
         datos_contacto = contacto.obtener_datos()
         return datos_contacto[self.valor]
 
-    def obtener_valor_de_llamada(self, agente, datos_de_llamada):
+    def _obtener_valor_de_llamada(self, agente, datos_de_llamada):
         if self.valor == 'agent_id':
             return agente.id
         return datos_de_llamada[self.valor]
+
+
+class ConfiguracionDeAgentesDeCampana(models.Model):
+
+    campana = models.OneToOneField(
+        Campana, on_delete=models.CASCADE, related_name='configuracion_de_agentes')
+    set_auto_attend_inbound = models.BooleanField(default=False, verbose_name=_(
+        'Configurar auto atender entrantes'))
+    auto_attend_inbound = models.BooleanField(default=False, verbose_name=_(
+        'Auto atender entrantes'))
+    set_auto_attend_dialer = models.BooleanField(default=False, verbose_name=_(
+        'Configurar auto atender dialer'))
+    auto_attend_dialer = models.BooleanField(default=False, verbose_name=_('Auto atender dialer'))
+    set_auto_unpause = models.BooleanField(default=False, verbose_name=_(
+        'Configurar despausar automaticamente'))
+    auto_unpause = models.PositiveIntegerField(default=0, verbose_name=_(
+        'Despausar automaticamente'))
+    set_obligar_calificacion = models.BooleanField(default=False, verbose_name=_(
+        'Configurar forzar calificación'))
+    obligar_calificacion = models.BooleanField(default=False, verbose_name=_(
+        'Forzar calificación'))

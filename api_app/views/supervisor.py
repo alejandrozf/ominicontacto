@@ -45,14 +45,14 @@ from simple_history.utils import update_change_reason
 from api_app.views.permissions import TienePermisoOML
 from api_app.serializers import (CampanaSerializer, )
 from ominicontacto_app.models import (
-    Campana, CalificacionCliente, AgenteProfile, AgendaContacto, )
+    Campana, CalificacionCliente, AgenteProfile, AgendaContacto, AgenteEnContacto)
 from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorActivityAmiManager
 from reportes_app.reportes.reporte_llamadas_supervision import (
-    ReporteDeLLamadasEntrantesDeSupervision, ReporteDeLLamadasSalientesDeSupervision
-)
+    ReporteDeLLamadasEntrantesDeSupervision)
 from reportes_app.reportes.reporte_llamadas import ReporteTipoDeLlamadasDeCampana
 from reportes_app.reportes.reporte_llamados_contactados_csv import (
     ExportacionCampanaCSV, ReporteCalificadosCSV, ReporteContactadosCSV, ReporteNoAtendidosCSV)
+from reportes_app.reportes.reporte_llamadas_salientes import ReporteLlamadasSalienteFamily
 from ominicontacto_app.utiles import datetime_hora_minima_dia, convert_fecha_datetime
 
 logger = _logging.getLogger(__name__)
@@ -129,10 +129,27 @@ class StatusCampanasSalientesView(APIView):
     renderer_classes = (JSONRenderer, )
     http_method_names = ['get']
 
+    def _obtener_datos_campanas(self, user):
+        redis_saliente = ReporteLlamadasSalienteFamily()
+        if not user.is_supervisor:
+            campanas = Campana.objects.all()
+        else:
+            campanas = user.get_supervisor_profile().obtener_campanas_asignadas_activas()
+        query_campanas = campanas.filter(
+            type__in=[Campana.TYPE_DIALER,
+                      Campana.TYPE_PREVIEW,
+                      Campana.TYPE_MANUAL])
+        data_saliente = []
+        for campana in query_campanas:
+            estadisticas = redis_saliente.get_value(campana, 'ESTADISTICAS')
+            if estadisticas:
+                data_saliente.append(json.loads(estadisticas))
+        return data_saliente
+
     def get(self, request):
-        reporte = ReporteDeLLamadasSalientesDeSupervision(request.user)
-        return Response(data={'errors': None,
-                              'data': reporte.estadisticas})
+        supervisor_pk = request.user
+        datos_campana = self._obtener_datos_campanas(supervisor_pk)
+        return Response(data=datos_campana)
 
 
 class InteraccionDeSupervisorSobreAgenteView(APIView):
@@ -474,15 +491,49 @@ class ContactosAsignadosCampanaPreviewView(APIView):
     renderer_classes = (JSONRenderer, )
     http_method_names = ['get', ]
 
+    def _obtener_estado(self, estado, agente_id):
+        if estado == AgenteEnContacto.ESTADO_FINALIZADO:
+            return _('Finalizado')
+        if estado == AgenteEnContacto.ESTADO_INICIAL and agente_id == -1:
+            return _('Liberado')
+        else:
+            return _('Reservado')
+
+    def _obtener_datos_agente_contacto(self, agentes_contactos, nombres_agentes):
+        datos_agente = {}
+        for agente_contacto in agentes_contactos:
+            datos = {}
+            datos['estado'] = self._obtener_estado(agente_contacto.estado,
+                                                   agente_contacto.agente_id)
+            if not agente_contacto.agente_id == -1:
+                datos['agente'] = nombres_agentes[agente_contacto.agente_id]
+            else:
+                datos['agente'] = ''
+            datos_agente[agente_contacto.contacto_id] = datos
+        return datos_agente
+
     def get(self, request, pk_campana):
         campana = Campana.objects.get(id=pk_campana)
         contactos = campana.bd_contacto.contactos.all()
+        contactos_ids = [contacto.id for contacto in contactos]
+        agentes_contactos = [agente_contacto for agente_contacto in AgenteEnContacto.objects.filter(
+            contacto_id__in=contactos_ids)]
+        agente_ids = [agente_contacto.agente_id for agente_contacto in agentes_contactos]
+        nombres_agentes = {agente.id: agente.user.get_full_name()
+                           for agente in AgenteProfile.objects.select_related(
+                           'user').filter(pk__in=agente_ids)}
+        datos_agente = self._obtener_datos_agente_contacto(agentes_contactos, nombres_agentes)
+
         data_contacto = []
         for contacto in contactos:
             datos = {}
             datos['id'] = contacto.id
             datos['telefono'] = contacto.telefono
             datos['id_externo'] = contacto.id_externo
+            dato_agente = datos_agente[contacto.id]
+            if dato_agente:
+                datos['estado'] = dato_agente['estado']
+                datos['agente'] = dato_agente['agente']
             data_contacto.append(datos)
 
         return Response(data=data_contacto)

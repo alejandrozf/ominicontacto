@@ -69,7 +69,7 @@ ESTILO_ROJO_VERDE_GRIS_NEGRO = Style(
     colors=('#b93229', '#5cb85c', '#a2a7a1', '#161201')
 )
 
-ESTILO_VERDE_GRIS_NEGRO = Style(
+ESTILO_VERDE_GRIS_NEGRO_ROJO = Style(
     background='transparent',
     plot_background='transparent',
     foreground='#555',
@@ -78,7 +78,7 @@ ESTILO_VERDE_GRIS_NEGRO = Style(
     opacity='1',
     opacity_hover='.6',
     transition='400ms ease-in',
-    colors=('#5cb85c', '#a2a7a1', '#161201', '#aeffbf')
+    colors=('#5cb85c', '#a2a7a1', '#161201', '#b93229')
 )
 
 ESTILO_VERDE_ROJO = Style(

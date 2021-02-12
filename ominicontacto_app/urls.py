@@ -508,6 +508,12 @@ urlpatterns = [
         ),
 
     url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
+        '/update_calificacion/(?P<call_data_json>.+)$',
+        login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
+        kwargs={'from': 'calificacion'},
+        name='calificacion_formulario_update_or_create'
+        ),
+    url(r'^formulario/(?P<pk_campana>\d+)/calificacion/(?P<pk_contacto>\d+)'
         '/update_calificacion/$',
         login_required(views_calificacion_cliente.CalificacionClienteFormView.as_view()),
         kwargs={'from': 'calificacion'},
@@ -963,6 +969,19 @@ urlpatterns = [
             views_archivo_de_audio.ArchivoAudioDeleteView.as_view()),
         name='eliminar_archivo_audio',
         ),
+
+    # ==========================================================================
+    # Configuracion de agentes en campaña
+    # ==========================================================================
+    url(r'^campana/configurar-agentes/(?P<pk_campana>\d+)/$',
+        login_required(
+            views_campana.ConfiguracionDeAgentesDeCampanaView.as_view()),
+        name='configurar_agentes_en_campana',
+        ),
+
+
+
+
     url(r'^chat/mensaje/$',
         login_required(views.mensaje_chat_view),
         name='nueva_mensaje_chat',

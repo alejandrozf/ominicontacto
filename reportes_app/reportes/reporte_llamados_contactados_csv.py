@@ -110,14 +110,17 @@ class ReporteContactadosCSV(EstadisticasBaseCampana, ReporteCSV):
         else:
             porcentaje_inicial = 0
         self.redis_connection.publish(key_task, porcentaje_inicial)  # percentage of task completed
+
+        callids_analizados = set()
+
         for i, log_llamada in enumerate(logs_llamadas, start=1):
             percentage = int((i / numero_logs_llamadas) * 100)
             self.redis_connection.publish(key_task, percentage)
             callid = log_llamada.callid
             evento = log_llamada.event
             calificacion_historica = self.calificaciones_historicas_dict.get(callid, False)
-            if evento in LlamadaLog.EVENTOS_INICIO_CONEXION_AGENTE and \
-                    log_llamada.agente_id != -1:
+            if evento in LlamadaLog.EVENTOS_FIN_CONEXION and \
+                    log_llamada.agente_id != -1 and callid not in callids_analizados:
                 if not calificacion_historica:
                     datos_calificacion = [_("Llamada Atendida sin calificacion"),
                                           '',
@@ -128,6 +131,7 @@ class ReporteContactadosCSV(EstadisticasBaseCampana, ReporteCSV):
                                           calificacion_historica.agente]
                 self._escribir_linea_log(
                     log_llamada, datos_calificacion, calificacion_historica)
+                callids_analizados.add(callid)
 
     def _obtener_datos_contacto_contactados(self, llamada_log, calificacion, datos_contacto):
         tel_status = _('Fuera de base')

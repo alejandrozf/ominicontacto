@@ -22,7 +22,21 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 {% load i18n %}
 
+{% block head_js %}
+    <script type="text/javascript">
+    // Load Agendas dates to AgendasNotifier from iframe
+    $(function() {
+        if (window.parent.hasOwnProperty('agendas_notifier')){
+          var agendas_notifier = window.parent.agendas_notifier;
+          let agendas_dates = JSON.parse($('#agendas_dates_json').val());
+          agendas_notifier.set_agendas(agendas_dates);
+        }
+    });
+    </script>
+{% endblock head_js %}
+
 {% block content %}
+<input type="hidden" id="agendas_dates_json" value="{{ fechas_agendas_json }}">
 <div class="container">
     <div class="row">
         <div class="col-md-9">

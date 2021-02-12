@@ -25,6 +25,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block campanas_activas %}
     {% for campana in activas %}
         <tr id="{{campana.nombre}}">
+            <td width="5%">{{ campana.id }}</td>
             <td width="25%">
                 <a href="{% url 'campana_manual_update' campana.pk %}">{{ campana.nombre }}</a>
             </td>
@@ -62,6 +63,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <a class="dropdown-item" href="{% url 'agenda_contactos_por_campana' campana.pk %}">
                             <span class="icon icon-agenda"></span>{% trans 'Ver Agendas' %}
                         </a>
+                        <a class="dropdown-item" href="{% url 'configurar_agentes_en_campana' campana.pk %}">
+                            <span class="icon icon-pencil"></span>{% trans 'Configuraciones para agentes' %}
+                        </a>
                         <a class="dropdown-item" href="{% url 'campana_manual_delete' campana.pk %}">
                             <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
                         </a>
@@ -80,6 +84,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block campanas_borradas %}
     {% for campana in borradas %}
         <tr>
+            <td width="5%">{{ campana.id }}</td>
             <td width="25%">
                 <a href="{% url 'campana_manual_update' campana.pk %}">{{ campana.nombre }}</a>
             </td>

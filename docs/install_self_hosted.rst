@@ -13,7 +13,7 @@ Partimos desde el punto de haber realizado los pasos de pre-requisitos sobre el 
   yum install bash-completion bash-completion-extras -y
   source /etc/bash_completion.d/git
   git clone https://gitlab.com/omnileads/ominicontacto.git
-  cd ./ominicontacto/deploy/ansible
+  cd ./ominicontacto/ansible/deploy
   git checkout release-V.V.V
 
 

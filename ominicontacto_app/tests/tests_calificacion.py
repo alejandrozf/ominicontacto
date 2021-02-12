@@ -594,3 +594,27 @@ class CalificacionTests(OMLBaseTest):
         url = reverse('calificacion_delete', kwargs={'pk': 1})
         response = self.client.get(url, follow=True)
         self.assertEqual(response.status_code, 403)
+
+    @patch('api_app.services.calificacion_llamada.CalificacionLLamada.create_family')
+    def test_campana_fuerza_calificar_llamada_impacta_en_redis_get(self, create_family):
+        self.campana.type = Campana.TYPE_MANUAL
+        call_data = self.get_call_data()
+        call_data['force_disposition'] = True
+        call_data_json = json.dumps(call_data)
+        url = reverse('calificar_llamada', kwargs={'call_data_json': call_data_json})
+        self.client.get(url)
+        create_family.assert_called_with(self.agente_profile, call_data, call_data_json,
+                                         calificado=False)
+
+    @patch('api_app.services.calificacion_llamada.CalificacionLLamada.create_family')
+    def test_campana_fuerza_calificar_llamada_impacta_en_redis_post(self, create_family):
+        self.campana.type = Campana.TYPE_MANUAL
+        call_data = self.get_call_data()
+        call_data['force_disposition'] = True
+        call_data_json = json.dumps(call_data)
+        url = reverse('calificar_llamada', kwargs={'call_data_json': call_data_json})
+        post_data = self._obtener_post_data_calificacion_cliente()
+        post_data['opcion_calificacion'] = self.opcion_calificacion_no_accion.pk
+        self.client.post(url, post_data, follow=True)
+        create_family.assert_called_with(self.agente_profile, call_data, call_data_json,
+                                         calificado=True)

@@ -81,7 +81,7 @@ class FormularioTests(unittest.TestCase):
             self.browser.find_element_by_id('id_descripcion').send_keys(descripcion)
             self.browser.find_element_by_xpath("//button[@type='submit']").click()
             sleep(1)
-            nombre_campos = ['Nombre', 'Fecha nacimiento', 'Opciones', 'Comentarios']
+            nombre_campos = ['Nombre', 'Fecha_nacimiento', 'Opciones', 'Comentarios']
             crear_campos_formulario(self.browser, nombre_campos)
             continuar = '//a[contains(@href, "/vista_previa/")]'
             get_href(self.browser, continuar)
@@ -94,10 +94,9 @@ class FormularioTests(unittest.TestCase):
             vista_previa = '//tr[@id = \'{0}\']//a[contains(@href, "/vista/")]'.format(
                 nombre_form)
             get_href(self.browser, vista_previa)
-            id_campos = ['id_Nombre', 'id_Fecha nacimiento', 'id_Opciones', 'id_Comentarios']
-            for items in id_campos:
-                self.assertTrue(self.browser.find_elements_by_id(items))
-            print('--Se pudo crear un Formulario.--')
+            for items in nombre_campos:
+                self.assertTrue(self.browser.find_elements_by_name(items))
+                print('--Se pudo crear un Formulario con un campo \'{0}\'.--'.format(items))
         except Exception as e:
             print('--ERROR: No se pudo crear un Formulario.-- \n{0}' .format(e))
             raise e
@@ -116,6 +115,7 @@ class FormularioTests(unittest.TestCase):
             self.browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
             self.assertTrue(self.browser.find_elements_by_xpath(
                 '//tr[@id=\'{0}\']'.format(nombre_form)))
+            print('--Se pudo ocultar y mostrar un formulario.--')
         except Exception as e:
             print('--ERROR: No se pudo ocultar y mostrar un formulario.-- \n{0}'.format(e))
             raise e

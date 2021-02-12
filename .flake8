@@ -13,3 +13,4 @@ exclude =
     ominicontacto_app/migrations/*
     reportes_app/migrations/*
     oml_settings_local.py
+    supervision_app/services/redisgears_action_scripts

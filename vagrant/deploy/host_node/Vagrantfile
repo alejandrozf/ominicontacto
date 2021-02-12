@@ -1,0 +1,19 @@
+Vagrant.configure("2") do |config|
+  config.vm.define "centos" do |nodo1|
+  #  config.disksize.size = "20GB"
+    nodo1.vm.box = "centos/7"
+    nodo1.vm.box_version = "1905.1"
+    nodo1.vm.hostname = "centos-example.com"
+    nodo1.vm.network "public_network", bridge: "eth1", ip: ENV['STAGING_IP_CENTOS'], use_dhcp_assigned_default_route: true
+    nodo1.vm.provision "shell" do |s|
+      s.env   = { 'CICD_ROOT_PUBLIC_KEY' => ENV['CICD_ROOT_PUBLIC_KEY'] }
+      s.path  = "provisioner.sh"
+      end
+    nodo1.vm.provider "virtualbox" do |vb|
+      vb.name = "Centos-Staging"
+      vb.memory = "2048"
+      vb.cpus = "2"
+    end
+    nodo1.vm.synced_folder ".", "/vagrant", type: "rsync"
+  end
+end

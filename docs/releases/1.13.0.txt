@@ -1,0 +1,37 @@
+===================================
+Omnileads (OML) 1.13.0 release notes
+===================================
+
+*February 12, 2021*
+
+What's new
+=========================
+- A new interface for configure recording call filename format was added
+- Supervision realtime pages were improved for better performance
+- Realtime alerts for agent agendas were implemented
+- A new interface to configure agents behaviour on a campaign was added
+- Asterisk component was updated to version 16.16
+- A new interface for configure AMD module was implemented
+- The ability to configure a personalize audio file to be played before an inbound calls enters was added
+- Preview campaign contact selection for agent process was improved for usability
+- Agents general report was improved for performance
+- Information about database ids was included in campaign and forms lists pages
+- Page 'View assigned contacts' for preview campaign was improved
+- Name & surname information were added to assign supervisors to campaign step page
+- Now is possible to see recording call filenames for deleted campaings in recordings report
+- Ability to pass Asterisk channel variables as parameters when interacting with an external CRM
+
+Fixes and improvements
+--------------------
+- Fixed inconsistency error in dialplan when handling AMD in dialer calls
+- Fixed inconsistency error in dialplan when transfer call to agent
+- Fixed inconsistencies in campaign contacted calls report
+- Amount of error logs was reduced when Redis component fails
+- Dialer campaign are now reloaded in Wombat after create/update process
+- Fixed race condition error when agent received inbound/dialer calls in a middle of transition from hangup to pause
+- Fixed compatibility with Excel issue when importing .csv files in reorder contacts feature for preview campaigns
+- Ansible component was dockerized to allow remote installation with other OS than Ubuntu-18.04
+- Unicode chars are now visualized in disposition list on agent console and form creation
+- Design of general calls report was improved
+- Fix of custom destination node UI
+- Coverage script was improved for simplicity
