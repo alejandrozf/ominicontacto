@@ -186,7 +186,8 @@ class LlamadaLogManager(models.Manager):
         INCLUDED_EVENTS = ['COMPLETEAGENT', 'COMPLETEOUTNUM', 'BT-COMPLETE',
                            'COMPLETE-BT', 'CT-COMPLETE', 'COMPLETE-CT', 'CAMPT-COMPLETE',
                            'COMPLETE-CAMPT', 'BTOUT-COMPLETE', 'COMPLETE-BTOUT', 'CTOUT-COMPLETE',
-                           'COMPLETE-CTOUT']
+                           'COMPLETE-CTOUT', 'CAMPT-FAIL', 'BT-BUSY', 'BTOUT-TRY', 'CT-ABANDON',
+                           'CTOUT-TRY']
 
         return self.filter(time__range=(fecha_inicio, fecha_fin),
                            campana_id__in=campanas, duracion_llamada__gt=0,
@@ -200,7 +201,8 @@ class LlamadaLogManager(models.Manager):
         INCLUDED_EVENTS = ['COMPLETEAGENT', 'COMPLETEOUTNUM', 'BT-COMPLETE',
                            'COMPLETE-BT', 'CT-COMPLETE', 'COMPLETE-CT', 'CAMPT-COMPLETE',
                            'COMPLETE-CAMPT', 'BTOUT-COMPLETE', 'COMPLETE-BTOUT', 'CTOUT-COMPLETE',
-                           'COMPLETE-CTOUT']
+                           'COMPLETE-CTOUT', 'CAMPT-FAIL', 'BT-BUSY', 'BTOUT-TRY', 'CT-ABANDON',
+                           'CTOUT-TRY']
         campanas_id = [campana.id for campana in campanas]
         grabaciones = self.filter(campana_id__in=campanas_id,
                                   archivo_grabacion__isnull=False,

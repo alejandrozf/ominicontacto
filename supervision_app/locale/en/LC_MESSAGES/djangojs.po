@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-15 11:18-0300\n"
+"POT-Creation-Date: 2021-02-05 18:18-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,16 +16,58 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: supervision_app/static/supervision_app/JS/campanas_entrantes.js:38
-#: supervision_app/static/supervision_app/JS/campanas_salientes.js:37
-#: supervision_app/static/supervision_app/JS/supervision_agentes.js:55
-msgid "Error al ejecutar => "
-msgstr "Error when executing =>"
-
-#: supervision_app/static/supervision_app/JS/campanas_entrantes.js:58
-#: supervision_app/static/supervision_app/JS/campanas_entrantes.js:59
+#: supervision_app/static/supervision_app/JS/campanas_entrantes.js:215
+#: supervision_app/static/supervision_app/JS/campanas_entrantes.js:221
 msgid " segundos"
 msgstr " seconds"
+
+#: supervision_app/static/supervision_app/JS/campanas_entrantes.js:228
+#: supervision_app/static/supervision_app/JS/campanas_salientes.js:98
+#: supervision_app/static/supervision_app/JS/supervision.js:178
+msgid "Buscar: "
+msgstr "Search:"
+
+#: supervision_app/static/supervision_app/JS/campanas_entrantes.js:229
+#: supervision_app/static/supervision_app/JS/campanas_salientes.js:99
+#: supervision_app/static/supervision_app/JS/supervision.js:179
+msgid "(filtrando de un total de _MAX_ contactos)"
+msgstr "(filtering a total of _MAX_ contacts)"
+
+#: supervision_app/static/supervision_app/JS/campanas_entrantes.js:231
+#: supervision_app/static/supervision_app/JS/campanas_salientes.js:101
+#: supervision_app/static/supervision_app/JS/supervision.js:181
+msgid "Primero "
+msgstr "First"
+
+#: supervision_app/static/supervision_app/JS/campanas_entrantes.js:232
+#: supervision_app/static/supervision_app/JS/campanas_salientes.js:102
+#: supervision_app/static/supervision_app/JS/supervision.js:182
+msgid "Anterior "
+msgstr "Previous"
+
+#: supervision_app/static/supervision_app/JS/campanas_entrantes.js:233
+#: supervision_app/static/supervision_app/JS/campanas_salientes.js:103
+#: supervision_app/static/supervision_app/JS/supervision.js:183
+msgid " Siguiente"
+msgstr "Next"
+
+#: supervision_app/static/supervision_app/JS/campanas_entrantes.js:234
+#: supervision_app/static/supervision_app/JS/campanas_salientes.js:104
+#: supervision_app/static/supervision_app/JS/supervision.js:184
+msgid " Último"
+msgstr "Last"
+
+#: supervision_app/static/supervision_app/JS/campanas_entrantes.js:236
+#: supervision_app/static/supervision_app/JS/campanas_salientes.js:106
+#: supervision_app/static/supervision_app/JS/supervision.js:186
+msgid "Mostrar _MENU_ entradas"
+msgstr "Show _MENU_ entries"
+
+#: supervision_app/static/supervision_app/JS/campanas_entrantes.js:237
+#: supervision_app/static/supervision_app/JS/campanas_salientes.js:107
+#: supervision_app/static/supervision_app/JS/supervision.js:187
+msgid "Mostrando _START_ a _END_ de _TOTAL_ entradas"
+msgstr "Showing _START_ to _END_ of _TOTAL_ entries"
 
 #: supervision_app/static/supervision_app/JS/phoneJsController.js:60
 #: supervision_app/static/supervision_app/JS/phoneJsController.js:65
@@ -130,47 +172,15 @@ msgstr "SIP Proxy not responding, contact your Administrator"
 msgid "Fallo en la registración, contacte a su administrador"
 msgstr "Registration Failed, contact your Administrator"
 
-#: supervision_app/static/supervision_app/JS/supervision.js:97
-msgid "Buscar: "
-msgstr "Search:"
-
-#: supervision_app/static/supervision_app/JS/supervision.js:98
-msgid "(filtrando de un total de _MAX_ contactos)"
-msgstr "(filtering a total of _MAX_ contacts)"
-
-#: supervision_app/static/supervision_app/JS/supervision.js:100
-msgid "Primero "
-msgstr "First"
-
-#: supervision_app/static/supervision_app/JS/supervision.js:101
-msgid "Anterior "
-msgstr "Previous"
-
-#: supervision_app/static/supervision_app/JS/supervision.js:102
-msgid " Siguiente"
-msgstr "Next"
-
-#: supervision_app/static/supervision_app/JS/supervision.js:103
-msgid " Último"
-msgstr "Last"
-
-#: supervision_app/static/supervision_app/JS/supervision.js:105
-msgid "Mostrar _MENU_ entradas"
-msgstr "Show _MENU_ entries"
-
-#: supervision_app/static/supervision_app/JS/supervision.js:106
-msgid "Mostrando _START_ a _END_ de _TOTAL_ entradas"
-msgstr "Showing _START_ to _END_ of _TOTAL_ entries"
-
-#: supervision_app/static/supervision_app/JS/supervision.js:122
+#: supervision_app/static/supervision_app/JS/supervision.js:203
 msgid "Susurrar"
 msgstr "Whisper"
 
-#: supervision_app/static/supervision_app/JS/supervision.js:135
+#: supervision_app/static/supervision_app/JS/supervision.js:216
 msgid "Espiar"
 msgstr "Spy"
 
-#: supervision_app/static/supervision_app/JS/supervision.js:164
+#: supervision_app/static/supervision_app/JS/supervision.js:245
 msgid "Logout"
 msgstr "Logout"
 
@@ -182,6 +192,10 @@ msgstr "Attention!"
 #: supervision_app/static/supervision_app/JS/supervision_agentes.js:42
 msgid "Debe finalizar la acción actual antes de realizar otra."
 msgstr "You must end current action before executing another."
+
+#: supervision_app/static/supervision_app/JS/supervision_agentes.js:55
+msgid "Error al ejecutar => "
+msgstr "Error when executing =>"
 
 #: supervision_app/static/supervision_app/JS/supervision_agentes.js:66
 msgid ""

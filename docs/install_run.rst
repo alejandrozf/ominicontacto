@@ -24,15 +24,15 @@ Deshabilitar firewalld y SElinux:
 
 Instalación de actualizaciones, kernel-devel
 ********************************************
+
 .. code-block:: bash
 
-  yum update -y && yum install kernel-devel git -y
+  yum update && yum install kernel-devel git -y
   reboot
 
 .. important::
 
   Revisar que el paquete kernel-devel coincida con el kernel.
-
 
 Ejecutar los comandos:
 
@@ -59,12 +59,19 @@ Vamos a comenzar con la instalación de ansible. Es necesario tener instalado el
 Centos7 - Selfhosted
 --------------------
 
-Pip y python ya se encuentran instalados por defecto en centos 7, por lo tanto basta con este comando para instalar ansible:
+* Instalar python3-pip y python3 (en caso de no estar instalado):
+
+.. code::
+
+  yum install epel-release -y && yum install python3-pip pyton3 -y
+
+* Instalar ansible:
 
 .. code::
 
   (con el usuario root)
-  # pip install 'ansible==2.9.2' --user
+  # pip3 install --upgrade pip
+  # pip3 install 'ansible==2.9.2' --user
 
 Todos los binarios de Ansible se encontrarán disponibles en `/root/.local/bin/`
 

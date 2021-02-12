@@ -93,8 +93,8 @@ class UsuariosTests(unittest.TestCase):
         try:
             user_list = '//a[contains(@href,"/user/list/1/")]'
             get_href(self.browser, user_list)
-            link_edit = '//tr[@id=\'{0}\']/td/div//a'\
-                        '[contains(@href,"/user/agent/update")]'.format(agente_username)
+            # xpath para editar un agente
+            link_edit = '//tr[@id=\'{0}\']/td/div//a[@name="edit_user"]'.format(agente_username)
             get_href(self.browser, link_edit)
             nuevo_username = 'agente' + uuid.uuid4().hex[:5]
             self.browser.find_element_by_id('id_username').clear()
@@ -123,8 +123,8 @@ class UsuariosTests(unittest.TestCase):
             crear_grupo(self.browser, group_name)
             user_list = '//a[contains(@href,"/user/list/1/")]'
             get_href(self.browser, user_list)
-            link_update = "//tr[@id=\'{0}\']/td/a[contains"\
-                          "(@href, '/user/agenteprofile/update/')]".format(agente_username)
+            link_update = '//tr[@id=\'{0}\']/td/a[@name="edit_agent_profile"]'.format(
+                agente_username)
             get_href(self.browser, link_update)
             self.browser.find_element_by_xpath("//select[@id='id_grupo']/option[text()=\'{0}\']"
                                                .format(group_name)).click()
@@ -144,8 +144,7 @@ class UsuariosTests(unittest.TestCase):
         # Eliminar agente
         try:
             get_href(self.browser, user_list)
-            link_delete = "//tr[@id=\'{0}\']/td/div//"\
-                          "a[contains(@href,'/user/agent/delete')]".format(agente_username)
+            link_delete = '//tr[@id=\'{0}\']/td/div//a[@name="delete_user"]'.format(agente_username)
             get_href(self.browser, link_delete)
             self.browser.find_element_by_xpath((
                 "//button[@type='submit']")).click()
@@ -175,8 +174,7 @@ class UsuariosTests(unittest.TestCase):
             # modificar a otro perfil
             try:
                 self.browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
-                link_update = "//tr[@id=\'{0}\']/td/a[contains(@href, '/supervisor/')]".format(
-                    user)
+                link_update = '//tr[@id=\'{0}\']/td/a[@name="edit_profile"]'.format(user)
                 get_href(self.browser, link_update)
                 if usuario == 'Administrador':
                     cambio_perfil = 'Gerente'
@@ -198,8 +196,7 @@ class UsuariosTests(unittest.TestCase):
                                                (text(), \'{0}\')]".format(cambio_perfil)))
                 print('Se pudo modificar a un Perfil de ' + cambio_perfil)
             except Exception as e:
-                print('--ERROR: No se pudo modificar a un perfil de \
-                      ' + cambio_perfil + ' .--\n{0}'.format(e))
+                print('--ERROR: No se pudo modificar el perfil de un supervisor.--\n{0}'.format(e))
                 raise e
 
     def test_crear_grupo_con_Autounpause(self):

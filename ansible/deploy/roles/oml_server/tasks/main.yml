@@ -127,14 +127,9 @@
   shell: amazon-linux-extras install python3
   when: ansible_distribution == "Amazon"
 
-# Y luego instalar python3-devel de esta manera
-#- name: Install python3-devel package
-#  command: yum install -y name=python3-devel state=present disablerepo=amzn2-core
-#  when: ansible_distribution == "Amazon"
-
 # Para postgres afuera de oml, toca instalar python3-devel
 - name: Install python3-devel package
-  command: yum install -y name=python3-devel state=present
+  command: yum install -y python3-devel
   when: ansible_distribution != "Amazon" and postgres_host is defined
 
 - name: Modifying ownership of folder /var/opt and redis.conf

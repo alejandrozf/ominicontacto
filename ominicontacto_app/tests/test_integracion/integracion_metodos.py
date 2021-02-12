@@ -3,6 +3,7 @@ from time import sleep
 
 import os
 import socket
+from selenium.webdriver.common.by import By
 
 ADMIN_USERNAME = os.getenv('ADMIN_USERNAME')
 ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
@@ -114,8 +115,8 @@ def asignar_agente_campana_manual(browser, agente):
     sleep(1)
 
 
-def get_href(browser, href):
-    link = browser.find_element_by_xpath(href)
+def get_href(browser, path):
+    link = browser.find_element(By.XPATH, path)
     href = link.get_attribute('href')
     browser.get(href)
 
@@ -150,11 +151,11 @@ def crear_blacklist(browser, path, base_datos):
 
 def crear_campos_formulario(browser, campos):
     for items in campos:
-        browser.find_element_by_id('id_nombre_campo').send_keys(items)
+        browser.find_element_by_name('nombre_campo').send_keys(items)
         if items == 'Nombre':
             browser.find_elements_by_xpath(
                 '//select[@id=\'id_tipo\']/option')[1].click()
-        elif items == 'Fecha nacimiento':
+        elif items == 'Fecha_nacimiento':
             browser.find_elements_by_xpath(
                 '//select[@id=\'id_tipo\']/option')[2].click()
         elif items == 'Opciones':

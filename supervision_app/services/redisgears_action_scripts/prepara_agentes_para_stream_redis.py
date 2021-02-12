@@ -16,7 +16,7 @@ def prepara_agentes_para_stream_redis(x):
             sup_value = json.loads(x['value'][v])
             agent_group = sup_value['grupo']
             execute('HSET', agent_key, 'GROUP', agent_group,
-                    'CAMPANAS', sup_value['campana'])
+                    'CAMPANAS', sup_value['campana'], 'id', v)
         if execute('exists', stream) == 0:
             execute('XADD', stream, '*', 'start', '{"value": "false"}')
 
