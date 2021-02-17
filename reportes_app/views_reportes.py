@@ -139,7 +139,7 @@ class CampanaReporteGraficoView(FormView):
 
             if not user.get_is_administrador():
                 supervisor = user.get_supervisor_profile()
-                asignadas = supervisor.campanas_asignadas_actuales()
+                asignadas = supervisor.campanas_asignadas()
             self.campana = asignadas.filter(
                 pk=self.kwargs['pk_campana']).select_related('bd_contacto').first()
         return self.campana
