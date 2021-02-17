@@ -99,8 +99,7 @@ class ContactoTests(unittest.TestCase):
             self.browser.find_element_by_xpath('//a[@onclick]').click()
             sleep(1)
             self.browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
-            desocultar = '//tr[@id=\'{0}\']//td//a[contains(@href, "/desocultar/")]'.format(
-                BD_nueva)
+            desocultar = '//tr[@id=\'{0}\']//td//a[4]'.format(BD_nueva)
             get_href(self.browser, desocultar)
             self.assertTrue(self.browser.find_elements_by_xpath('//tr[@id=\'{0}\']'.format(
                 BD_nueva)))

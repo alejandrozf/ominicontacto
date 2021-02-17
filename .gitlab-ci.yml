@@ -101,12 +101,15 @@ deploy-aio-host-node:
     - python ansible/deploy/edit_inventory.py --internal_ip=$STAGING_IP_CENTOS --host_node=yes
     - cd ansible/deploy
     - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
+    - sleep 180
+    - TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=$STAGING_IP_CENTOS ADMIN_USERNAME=admin ADMIN_PASSWORD=admin LOGIN_FAILURE_LIMIT=10 python ~/ominicontacto/ominicontacto_app/tests/test_integracion/test_all.py
     - ~/ominicontacto/vagrant/deploy/releases/package.sh
     - cd ~/ominicontacto/vagrant/deploy/host_node/
     - sleep 20 && vagrant halt centos
   tags:
     - deploy-aio
   only:
+    - /.*test-de-integracion.*$/
     - /.*deploy.*$/
     - schedules
     - web

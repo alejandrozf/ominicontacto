@@ -82,6 +82,7 @@ class FormularioTests(unittest.TestCase):
             self.browser.find_element(By.NAME, 'descripcion').send_keys(descripcion)
             self.browser.find_element(By.CSS_SELECTOR, ".btn-primary").click()
             self.browser.implicitly_wait(3)
+
             nombre_campos = ['Nombre', 'Fecha_nacimiento', 'Opciones', 'Comentarios']
             crear_campos_formulario(self.browser, nombre_campos)
             self.browser.find_element(By.CSS_SELECTOR, ".btn-primary").click()
