@@ -17,38 +17,54 @@
 
 */
 
- $(function() {
-   var start = moment().subtract(29, 'days');
-   var end = moment();
-   function cb(start, end) {
-     $('#id_fecha').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
-   }
+$(function() {
+    var start = moment().subtract(29, 'days');
+    var end = moment();
 
-   $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
-      $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-  });
+    function cb(start, end) {
+        $('#id_fecha').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+    }
 
-   $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
-     $(this).val('');
-   });
+    $('#id_fecha').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+    });
 
-   var ranges = get_ranges();
+    $('#id_fecha').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });
 
-   // Init daterange plugin
-   $('#id_fecha').daterangepicker(
-     {
-       locale: {
-         format: 'DD/MM/YYYY'
-       },
-       autoUpdateInput: false,
-       ranges: ranges,
-     }, cb);
+    var ranges = get_ranges();
 
-   cb(start, end);
+    // Init daterange plugin
+    $('#id_fecha').daterangepicker({
+        locale: {
+            format: 'DD/MM/YYYY'
+        },
+        autoUpdateInput: false,
+        ranges: ranges,
+    }, cb);
 
- });
+    cb(start, end);
 
- function filtrar_pagina(pagina) {
-   $("#id_pagina").val(pagina);
-   $("#form-buscar-grabacion").submit();
- };
+    const checkGeneral = $('#check-general');
+    checkGeneral.on('click', function() {
+        cambiaEstadoChecks(checkGeneral.prop('checked'));
+    });
+
+    $('.check-grabacion').on('click', function() {
+        if (!$('#check-grabacion').prop('checked')) {
+            checkGeneral.prop('checked', false);
+        }
+    });
+
+});
+
+function cambiaEstadoChecks(estado) {
+    console.log('entro');
+    $('.check-grabacion').prop('checked', estado);
+}
+
+function filtrar_pagina(pagina) {
+    $("#id_pagina").val(pagina);
+    $("#form-buscar-grabacion").submit();
+};

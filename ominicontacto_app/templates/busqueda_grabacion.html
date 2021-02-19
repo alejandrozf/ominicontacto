@@ -37,10 +37,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </div>
 </div>
 
+<div class="form-check mb-1 ml-0">
+    <input class="form-check-input ml-0 mt-0" type="checkbox" value="" id="check-general">
+    <label class="ml-3 mt-0" for="check-general">
+    {% trans 'Marcar todo' %}
+  </label>
+</div>
+
 <div class="wrapper-results">
     <table class="table table-stripped">
         <thead>
             <tr>
+                <th></th>
                 <th></th>
                 <th>{% trans 'Fecha' %}</th>
                 <th>{% trans 'Tipo de llamada' %}</th>
@@ -55,6 +63,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <tbody>
             {% for grabacion in listado_de_grabaciones %}
             <tr>
+                <td> <input class="form-check-input ml-0 check-grabacion" type="checkbox" value="" id="defaultCheck1"></td>
                 <td>
                     {% if grabacion.transfer %}
                     <a class="btn btn-primary p-1" data-toggle="collapse" href="#grab{{grabacion.origen.id}}" role="button" aria-expanded="false" aria-controls="collapseExample">
@@ -102,7 +111,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </tr>
             {% if grabacion.transfer %}
             <tr class="collapse grab" id="grab{{grabacion.origen.id}}">
-                <td></td>
+                <td colspan="2"></td>
                 <td>{{ grabacion.transfer.time|date:"Y-m-d H:i"}}</td>
                 <td>{{ grabacion.transfer.tipo_llamada_show}}</td>
                 <td>{{ grabacion.transfer.numero_marcado}}</td>
@@ -222,7 +231,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script>
     /* se activa en todos los campos de selección un plugin para
-                                                                                                                                                                                                                                                                                                                                                                                                                                                       JQuery que permite una mejor búsqueda */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   JQuery que permite una mejor búsqueda */
     $(document).ready(function() {
 
         $('select.form-control').each(function() {
