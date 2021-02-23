@@ -33,6 +33,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <th>{% trans 'Auto attend dialer' %}</th>
             <th>{% trans 'Auto unpause' %}</th>
             <th>{% trans 'Forzar Calificación' %}</th>
+            <th>{% trans 'Llamada fuera de campaña' %}</th>
             {% if user.get_es_administrador_o_supervisor_normal %}
                 <th>{% trans 'acciones' %}</th>
             {% endif %}
@@ -60,6 +61,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <td>{{grupo.auto_unpause}}</td>
             <td>
                 {% if grupo.obligar_calificacion %}
+                    <span class="icon icon-check" aria-hidden="true"></span>
+                {% else %}
+                    <span class="icon icon-cancel" aria-hidden="true"><span>
+                {% endif %}
+            </td>
+            <td>
+                {% if grupo.call_off_camp %}
                     <span class="icon icon-check" aria-hidden="true"></span>
                 {% else %}
                     <span class="icon icon-cancel" aria-hidden="true"><span>
