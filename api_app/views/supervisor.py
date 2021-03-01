@@ -48,7 +48,7 @@ from ominicontacto_app.models import (
     Campana, CalificacionCliente, AgenteProfile, AgendaContacto, AgenteEnContacto)
 from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorActivityAmiManager
 from reportes_app.reportes.reporte_llamadas_supervision import (
-    ReporteDeLLamadasEntrantesDeSupervision)
+    ReporteDeLLamadasEntrantesDeSupervision, )
 from reportes_app.reportes.reporte_llamadas import ReporteTipoDeLlamadasDeCampana
 from reportes_app.reportes.reporte_llamados_contactados_csv import (
     ExportacionCampanaCSV, ReporteCalificadosCSV, ReporteContactadosCSV, ReporteNoAtendidosCSV)

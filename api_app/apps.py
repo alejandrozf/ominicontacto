@@ -132,7 +132,8 @@ class ApiAppConfig(AppConfig):
         'api_supervision_campanas_entrantes':
             {'descripcion': _('Reporte de llamadas entrantes de supervisión.'), 'version': '1.7.0'},
         'api_supervision_campanas_salientes':
-            {'descripcion': _('Reporte de llamadas salientes de supervisión.'), 'version': '1.7.0'},
+            {'descripcion': _('Reporte de llamadas salientes no dialer de supervisión.'),
+             'version': '1.7.0'},
         'api_accion_sobre_agente':
             {'descripcion':
              _('Ejecuta acciones de supervisión sobre agente (Deslogueo, pausas, etc..)'),

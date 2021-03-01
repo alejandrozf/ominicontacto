@@ -96,3 +96,22 @@ class SupervisionCampanasSalientesView(TemplateView):
         RedisGearsService().registra_stream_supervisor_salientes(
             supervisor.id, context['campanas_ids'], context['campanas'])
         return context
+
+
+class SupervisionCampanasDialerView(TemplateView):
+    template_name = 'supervision_campanas_dialers.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SupervisionCampanasDialerView, self).get_context_data(**kwargs)
+        supervisor = self.request.user.get_supervisor_profile()
+        context['supervisor_id'] = supervisor.id
+        if self.request.user.get_is_administrador():
+            campanas = Campana.objects.obtener_actuales()
+        else:
+            campanas = supervisor.campanas_asignadas_actuales()
+        campanas = campanas.filter(type=Campana.TYPE_DIALER).order_by('id')
+        context['campanas'] = ",".join([x.nombre for x in campanas])
+        context['campanas_ids'] = ",".join([str(x.id) for x in campanas])
+        RedisGearsService().registra_stream_supervisor_dialers(
+            supervisor.id, context['campanas_ids'], context['campanas'])
+        return context

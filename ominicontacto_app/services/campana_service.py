@@ -120,6 +120,33 @@ class CampanaService():
                     break
         return dato_campana
 
+    def obtener_datos_campanas_json_de_wombat(self, salida, campanas_por_id_wombat):
+        """
+        Obtiene los datos del json obtenido en wombat formateando los datos que me interesan
+        para las campanas pasada por parametro
+        :param salida: salida del comando de la campanas corriendo en wombat
+        :param campanas_por_id_wombat: dict con campanas indexadas por id_wombat
+        :return: dict con los datos de las campanas indexados por id de campaña
+        """
+        results = salida['result']
+        campanas = results['campaigns']
+        ids_wombat = campanas_por_id_wombat.keys()
+        datos_campanas = {}
+        for campaign in campanas:
+            if campaign['campaignId'] in ids_wombat:
+                campana = campanas_por_id_wombat[campaign['campaignId']]
+                if campana.ESTADO_ACTIVA and campaign['state'] == 'RUNNING':
+                    datos_campanas[campana.id] = campaign
+                elif campana.ESTADO_PAUSADA and campaign['state'] == 'PAUSED':
+                    datos_campanas[campana.id] = campaign
+                elif campaign['state'] == 'COMPLETED':
+                    datos_campanas[campana.id] = campaign
+                elif campaign['state'] == 'WRONG_TIME':
+                    datos_campanas[campana.id] = campaign
+                elif campaign['state'] == 'IDLE':
+                    datos_campanas[campana.id] = campaign
+        return datos_campanas
+
     def obtener_datos_calls(self, salida):
         results = salida['result']
         llamadas = results['hopperState']
@@ -400,6 +427,20 @@ class CampanaService():
         salida = service_wombat.list_config_wombat(url_edit)
         if salida:
             return self.obtener_datos_campana_json_de_wombat(salida, campana)
+        else:
+            return None
+
+    def obtener_datos_campanas_run(self, campanas_por_id_wombat):
+        """
+        obtiene los datos de las campanas pasada por parametro
+        :param campana: diccionario con campanas (por wombat_id) a la cual deseo obtener sus datos
+        :return: dict con los datos de la campanas indexado por id de campaña
+        """
+        service_wombat = WombatService()
+        url_edit = "api/live/runs/"
+        salida = service_wombat.list_config_wombat(url_edit)
+        if salida:
+            return self.obtener_datos_campanas_json_de_wombat(salida, campanas_por_id_wombat)
         else:
             return None
 
