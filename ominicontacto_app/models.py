@@ -212,6 +212,7 @@ class Grupo(models.Model):
     auto_unpause = models.PositiveIntegerField(verbose_name=_('Despausar automaticamente'))
     obligar_calificacion = models.BooleanField(default=False, verbose_name=_(
         'Forzar calificación'))
+    call_off_camp = models.BooleanField(default=False, verbose_name=_('Llamada fuera de campaña'))
 
     def __str__(self):
         return self.nombre

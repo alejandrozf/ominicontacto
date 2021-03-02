@@ -1787,7 +1787,7 @@ class GrupoForm(forms.ModelForm):
     class Meta:
         model = Grupo
         fields = ('nombre', 'auto_unpause', 'auto_attend_inbound',
-                  'auto_attend_dialer', 'obligar_calificacion')
+                  'auto_attend_dialer', 'obligar_calificacion', 'call_off_camp')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
         }

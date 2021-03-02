@@ -294,6 +294,7 @@ class PhoneJSController {
                 self.view.setStateInputStatus('Ready');
                 self.click_2_call_dispatcher.enable();
                 self.keep_alive_sender.deactivate();
+                self.callOfCampPrivilege();
             },
             onPaused: function() {
                 phone_logger.log('FSM: onPaused');
@@ -302,6 +303,7 @@ class PhoneJSController {
                 self.view.setStateInputStatus('Paused');
                 self.click_2_call_dispatcher.enable();
                 self.keep_alive_sender.deactivate();
+                self.callOfCampPrivilege();
             },
             onChangePause: function() {
                 phone_logger.log('FSM: onChangePause');
@@ -885,6 +887,15 @@ class PhoneJSController {
         this.loadVideoInFrame();
     }
 
+    callOfCampPrivilege(){
+        if (this.agent_config.call_off_camp){
+            this.view.callOffCampaignMenuButton.prop('disabled', true);
+        }
+        else {
+            this.view.callOffCampaignMenuButton.prop('disabled', false);
+        }
+    }
+
 }
 
 class PauseManager {
@@ -965,6 +976,7 @@ class AgentConfig {
         this.auto_unpause = Number($('#auto_unpause').val());
         this.auto_attend_DIALER = $('#auto_attend_DIALER').val() == 'True';
         this.auto_attend_IN = $('#auto_attend_IN').val() == 'True';
+        this.call_off_camp = $('#call_off_camp').val() == 'False';
     }
 }
 
