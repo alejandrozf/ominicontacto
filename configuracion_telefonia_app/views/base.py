@@ -392,6 +392,13 @@ class RutaEntranteListView(ListView):
     paginate_by = 40
     context_object_name = 'rutas_entrantes'
 
+    def get_context_data(self, **kwargs):
+        context = super(RutaEntranteListView, self).get_context_data(
+            **kwargs)
+        ruta_entrante = RutaEntrante.objects.all()
+        context['rutas_entrantes'] = ruta_entrante.order_by('id')
+        return context
+
 
 class RutaEntranteMixin(object):
 
