@@ -76,6 +76,7 @@ class BusquedaGrabacionFormView(FormView):
         context['calificaciones'] = self._get_calificaciones(qs)
         context['base_url'] = "%s://%s" % (self.request.scheme,
                                            self.request.get_host())
+        context['user_id'] = self.request.user.id
         return context
 
     def _get_campanas(self):

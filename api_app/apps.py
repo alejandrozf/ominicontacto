@@ -189,6 +189,9 @@ class ApiAppConfig(AppConfig):
         'api_grabacion_archivo':
             {'descripcion': _('Retorna el archivo de grabación especificado'),
              'version': '1.11.0'},
+        'api_grabacion_descarga_masiva':
+            {'descripcion': _('Retorna Zip con archivos de grabación especificados'),
+             'version': '1.14.0'},
         'api_contactos_asignados_campana_preview':
             {'descripcion': _('Devuelve los contactos asignados de una campaña preview'),
              'version': '1.8.0'},

@@ -40,7 +40,7 @@ from api_app.views.agente import (
     AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk,
     SetEstadoRevisionAuditoria, ApiStatusCalificacionLlamada, ApiEventoHold
 )
-from api_app.views.grabaciones import ObtenerArchivoGrabacionView
+from api_app.views.grabaciones import ObtenerArchivoGrabacionView, ObtenerArchivosGrabacionView
 
 router = routers.DefaultRouter()
 
@@ -166,5 +166,7 @@ urlpatterns = [
     # ###########     GRABACIONES      ############ #
     url(r'^api/v1/grabacion/archivo/$',
         ObtenerArchivoGrabacionView.as_view(), name='api_grabacion_archivo'),
+    url(r'^api/v1/grabacion/descarga_masiva',
+        ObtenerArchivosGrabacionView.as_view(), name='api_grabacion_descarga_masiva'),
 
 ]
