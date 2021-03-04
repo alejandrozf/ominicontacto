@@ -99,6 +99,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
             {'nombre': 'api_contactos_asignados_campana_preview',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_evento_hold',
+             'roles': ['Agente', ]},
         ]
 
     informacion_de_permisos = {
@@ -190,4 +192,7 @@ class ApiAppConfig(AppConfig):
         'api_contactos_asignados_campana_preview':
             {'descripcion': _('Devuelve los contactos asignados de una campaña preview'),
              'version': '1.8.0'},
+        'api_evento_hold':
+            {'descripcion': _('Loggea el evento hold o unhold'),
+             'version': '1.13.0'},
     }

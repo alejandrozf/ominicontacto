@@ -258,4 +258,19 @@ class OMLAPI {
         });
         
     }
+
+    eventHold(){
+        var URL = Urls.api_evento_hold();
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            dataType: 'json',
+            success: function(msg){
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
+            }
+        });
+
+    }
 }

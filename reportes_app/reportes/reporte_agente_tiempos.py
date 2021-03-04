@@ -131,7 +131,8 @@ class TiemposAgente(object):
                     agente_nuevo._tiempo_pausa += resta
                 else:
                     agente_nuevo = AgenteTiemposReporte(
-                        fecha_local(time_actual), timedelta(0), resta, timedelta(0), 0, 0, 0, 0)
+                        fecha_local(time_actual), timedelta(0), resta, timedelta(0), 0, 0, 0, 0,
+                        timedelta(0))
                     agente_fecha.append(agente_nuevo)
                 time_actual = log[TIME]
 
@@ -164,7 +165,8 @@ class TiemposAgente(object):
                 agente_nuevo._cantidad_llamadas_procesadas += 1
             else:
                 agente_nuevo = AgenteTiemposReporte(
-                    date_time_actual, timedelta(0), timedelta(0), duracion_llamada, 1, 0, 0, 0)
+                    date_time_actual, timedelta(0), timedelta(0), duracion_llamada, 1, 0, 0, 0,
+                    timedelta(0))
                 agente_fecha.append(agente_nuevo)
         return agente_fecha
 
@@ -191,7 +193,7 @@ class TiemposAgente(object):
             else:
                 agente_nuevo = AgenteTiemposReporte(
                     date_time_actual, timedelta(0), timedelta(0), timedelta(0),
-                    0, int(log['cantidad']), 0, 0)
+                    0, int(log['cantidad']), 0, 0, timedelta(0))
                 agente_fecha.append(agente_nuevo)
         return agente_fecha
 
@@ -208,6 +210,8 @@ class TiemposAgente(object):
         agente_fecha = self.calcular_intentos_fallidos_fecha_agente(
             agente, fecha_inferior, fecha_superior, agente_fecha
         )
+        agente_fecha = self.calcular_tiempo_hold_tipo_fecha(agente, fecha_inferior, fecha_superior,
+                                                            agente_fecha)
         return agente_fecha, error
 
     def calcular_tiempo_pausa_tipo_fecha(self, agente, fecha_inferior,
@@ -263,6 +267,62 @@ class TiemposAgente(object):
 
         return agentes_tiempo
 
+    def calcular_tiempo_hold_tipo_fecha(self, agente, fecha_inferior,
+                                        fecha_superior, agente_fecha):
+        evento_hold = ['HOLD']
+        evento_unhold = ['UNHOLD']
+        tiempo_hold = timedelta(0)
+        hold_fecha = [hold for hold in LlamadaLog.objects.obtener_evento_hold_fecha(
+            evento_hold,
+            fecha_inferior,
+            fecha_superior,
+            agente.id)]
+
+        primer_unhold = LlamadaLog.objects.obtener_evento_hold_fecha(evento_unhold, fecha_inferior,
+                                                                     fecha_superior, agente.id
+                                                                     ).first()
+        if hold_fecha:
+            primer_hold = hold_fecha[0]
+            if primer_unhold.callid != primer_hold.callid:
+                tiempo_hold += primer_unhold.time - fecha_inferior
+
+        for log in hold_fecha:
+            fecha_actual = fecha_local(log.time)
+            agente_en_lista = list(filter(lambda x: x.agente == fecha_actual,
+                                          agente_fecha))
+            inicio_hold = log.time
+            callid = log.callid
+            fecha_desde = datetime_hora_minima_dia(fecha_actual)
+            fecha_hasta = datetime_hora_maxima_dia(fecha_actual)
+            unhold_fecha = LlamadaLog.objects.filter(agente_id=agente.id, callid=callid,
+                                                     event='UNHOLD',
+                                                     time__range=(log.time, fecha_hasta)
+                                                     ).order_by('time').first()
+            if unhold_fecha:
+                # Si existen varios unhold dentro de una llamada se elige el primero
+                fin_hold = unhold_fecha.time
+            else:
+                # Si se corta la llamada sin haber podido hacer unhold o por otro motivo
+                log_llamada = LlamadaLog.objects.filter(agente_id=agente.id, callid=callid,
+                                                        time__range=(fecha_desde, fecha_hasta)
+                                                        ).last()
+                if log_llamada.event == 'HOLD':
+                    fin_hold = now()
+                else:
+                    fin_hold = log_llamada.time
+            tiempo_hold += fin_hold - inicio_hold
+
+            if agente_en_lista:
+                agente_nuevo = agente_en_lista[0]
+                agente_nuevo._tiempo_hold = tiempo_hold
+            else:
+
+                agente_nuevo = AgenteTiemposReporte(fecha_local(fecha_inferior), timedelta(0),
+                                                    timedelta(0), timedelta(0), 0, 0, 0, 0,
+                                                    tiempo_hold)
+                agente_fecha.append(agente_nuevo)
+        return agente_fecha
+
     def _computar_tiempo_session_fecha(self, tiempos_fechas, inicio, fin):
         """ Computa la duracion de la sesion en la lista de tiempos por fecha """
         fecha_inicio = fecha_local(inicio)
@@ -272,7 +332,7 @@ class TiemposAgente(object):
             tiempos = tiempos_fechas[-1]
         else:
             tiempos = AgenteTiemposReporte(
-                fecha_inicio, timedelta(0), timedelta(0), timedelta(0), 0, 0, 0, 0)
+                fecha_inicio, timedelta(0), timedelta(0), timedelta(0), 0, 0, 0, 0, timedelta(0))
             tiempos_fechas.append(tiempos)
 
         if fecha_fin == tiempos.agente:
@@ -283,7 +343,7 @@ class TiemposAgente(object):
             inicio_dia = datetime_hora_minima_dia(fecha_fin)
             duracion = fin - inicio_dia
             tiempos = AgenteTiemposReporte(
-                fecha_fin, duracion, timedelta(0), timedelta(0), 0, 0, 0, 0)
+                fecha_fin, duracion, timedelta(0), timedelta(0), 0, 0, 0, 0, timedelta(0))
             tiempos_fechas.append(tiempos)
 
     def _obtener_datos_de_pausa(self, id_pausa):

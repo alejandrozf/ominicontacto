@@ -24,6 +24,7 @@ from django.contrib.auth import logout
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import View
+from django.utils import timezone
 
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
@@ -39,6 +40,7 @@ from api_app.views.permissions import TienePermisoOML
 
 from ominicontacto_app.models import (
     Campana, SistemaExterno, CalificacionCliente, Contacto, AuditoriaCalificacion)
+from reportes_app.models import LlamadaLog
 from ominicontacto_app.services.asterisk.agent_activity import AgentActivityAmiManager
 from ominicontacto_app.services.click2call import Click2CallOriginator
 
@@ -409,3 +411,33 @@ class ApiStatusCalificacionLlamada(APIView):
                 'calificada': 'False',
                 'calldata': call_data,
             })
+
+
+class ApiEventoHold(APIView):
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['post']
+
+    def post(self, request):
+        agente = self.request.user.get_agente_profile()
+        llamadalog = LlamadaLog.objects.filter(agente_id=agente.id).last()
+        callid = llamadalog.callid
+        campana_id = llamadalog.campana_id
+        tipo_campana = llamadalog.tipo_campana
+        tipo_llamada = llamadalog.tipo_llamada
+        if llamadalog.event == 'HOLD':
+            event = 'UNHOLD'
+        else:
+            event = 'HOLD'
+
+        evento_hold = LlamadaLog.objects.create(duracion_llamada=-1, agente_id=agente.id,
+                                                callid=callid, campana_id=campana_id,
+                                                tipo_campana=tipo_campana,
+                                                tipo_llamada=tipo_llamada,
+                                                event=event, time=timezone.now())
+        evento_hold.save()
+        if evento_hold:
+            return Response(data={'status': 'OK'})
+        else:
+            return Response(data={'status': 'ERROR'})

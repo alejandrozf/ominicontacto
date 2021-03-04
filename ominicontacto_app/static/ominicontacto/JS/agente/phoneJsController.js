@@ -149,6 +149,7 @@ class PhoneJSController {
 
         this.view.hangUpButton.click(function() {
             self.hangUp();
+            self.view.holdButton.html('hold');
         });
 
         this.view.tagCallButton.click(function() {
@@ -160,10 +161,12 @@ class PhoneJSController {
                 self.phone_fsm.startOnHold();
                 self.phone.putOnHold();
                 self.view.holdButton.html('unhold');
+                self.oml_api.eventHold();
             } else if (self.phone_fsm.state == 'OnHold') {
                 self.phone_fsm.releaseHold();
                 self.phone.releaseHold();
                 self.view.holdButton.html('hold');
+                self.oml_api.eventHold();
             } else {
                 phone_logger.log('Error');
             }
@@ -502,6 +505,7 @@ class PhoneJSController {
             self.timers.llamada.restart();
             self.callEndTransition();
             self.updateCallHistory();
+            self.view.holdButton.html('hold');
             // mostramos al botón de grabación bajo demanda de llamada
             // como listo para grabar (aunque en este punto va a estar
             // deshabilitado)
