@@ -47,6 +47,7 @@ from django.utils.timezone import now, timedelta
 from django_extensions.db.models import TimeStampedModel
 
 from simple_history.models import HistoricalRecords
+from simple_history.utils import update_change_reason
 
 from ominicontacto_app.utiles import (
     ValidadorDeNombreDeCampoExtra, fecha_local, datetime_hora_maxima_dia,
@@ -2651,11 +2652,18 @@ class RespuestaFormularioGestion(models.Model):
                                      on_delete=models.CASCADE)
     metadata = models.TextField()
     fecha = models.DateTimeField(auto_now_add=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return "Respuesta del Formulario para el contacto {0} de la campana{1} " \
                "{1} ".format(self.calificacion.contacto,
                              self.calificacion.opcion_calificacion.campana)
+
+    def save(self, *args, **kwargs):
+        id_history_calificacion = CalificacionCliente.history.filter(id=self.calificacion.id)\
+            .latest().history_id
+        super(RespuestaFormularioGestion, self).save(*args, **kwargs)
+        update_change_reason(self, id_history_calificacion)
 
 
 class AuditoriaCalificacion(models.Model):
