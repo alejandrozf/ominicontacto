@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* Copyright (C) 2018 Freetech Solutions
 
  This file is part of OMniLeads
@@ -70,9 +71,9 @@ function cambiaEstadoChecks(estado) {
 }
 
 function filtrar_pagina(pagina) {
-    $("#id_pagina").val(pagina);
-    $("#form-buscar-grabacion").submit();
-};
+    $('#id_pagina').val(pagina);
+    $('#form-buscar-grabacion').submit();
+}
 
 function generarZip() {
     var buttonZip = $('#zipGrabaciones');
