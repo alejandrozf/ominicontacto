@@ -128,6 +128,10 @@ class ReporteCampanaService(object):
         self.calificaciones_qs = campana.obtener_calificaciones().select_related(
             'opcion_calificacion', 'contacto').prefetch_related(
                 'contacto__bd_contacto', 'agente__user')
+        self.historico_calificaciones_qs = campana.obtener_historico_calificaciones() \
+            .select_related(
+            'opcion_calificacion', 'contacto').prefetch_related(
+                'contacto__bd_contacto', 'agente__user')
 
     def crea_reporte_csv(self):
         archivo_de_reporte = ArchivoDeReporteCsv(self.campana)

@@ -30,8 +30,9 @@ from django.contrib import messages
 from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _
 
+
 from ominicontacto_app.forms import ReporteCampanaForm
-from ominicontacto_app.models import Campana, AgenteProfile
+from ominicontacto_app.models import AgenteProfile, Campana, RespuestaFormularioGestion
 from ominicontacto_app.services.estadisticas_campana import EstadisticasService
 from ominicontacto_app.services.reporte_agente import EstadisticasAgenteService
 from ominicontacto_app.services.reporte_campana_calificacion import ReporteCampanaService
@@ -72,6 +73,8 @@ class CampanaReporteCalificacionListView(ListView):
 
         service = ReporteCampanaService(self.campana)
         calificaciones_qs = service.calificaciones_qs
+        historico_calidficaciones = self._procesa_historico_calificaciones(
+            service.historico_calificaciones_qs)
         service.crea_reporte_csv()
 
         service_formulario = ReporteRespuestaFormularioGestionService()
@@ -79,7 +82,51 @@ class CampanaReporteCalificacionListView(ListView):
 
         context['campana'] = self.campana
         context['calificaciones'] = calificaciones_qs
+        context['historico_calificaciones'] = historico_calidficaciones.values()
         return context
+
+    def _procesa_historico_calificaciones(self, historico_calificaciones_qs):
+        res = {}
+        for hc in list(historico_calificaciones_qs):
+            if hc.id not in res:
+                res[hc.id] = {}
+                res[hc.id]['id'] = hc.id
+                res[hc.id]['telefono'] = hc.contacto.telefono
+                res[hc.id]['datos'] = hc.contacto.datos
+                res[hc.id]['cals'] = {}
+                res[hc.id]['calif_actual'] = {}
+                res[hc.id]['tiene_historico'] = False
+
+            res[hc.id]['cals'][hc.history_id] = {
+                'nombre': hc.opcion_calificacion.nombre,
+                'observaciones': hc.observaciones,
+                'fecha_hora': timezone.localtime(hc.history_date).strftime("%Y/%m/%d %H:%M:%S"),
+                'history_id': hc.history_id,
+            }
+
+            if res[hc.id]['calif_actual'] == {}:
+                res[hc.id]['calif_actual'] = res[hc.id]['cals'][hc.history_id]
+            else:
+                res[hc.id]['tiene_historico'] = True
+
+        historico_formulario_gestion = RespuestaFormularioGestion.history.filter(
+            calificacion__in=res.keys())
+
+        for gestion in historico_formulario_gestion:
+            if gestion.metadata is not None:
+                calificacion_historica_id = gestion.history_change_reason
+                if calificacion_historica_id is not None and str(calificacion_historica_id).isdigit:
+                    try:
+                        gestiones_list = res[gestion.calificacion.id]['cals'][int(
+                            calificacion_historica_id)]['gestiones']
+                    except Exception:
+                        gestiones_list = []
+                    gestiones_list.append(gestion.metadata.replace('\r\n', ' '))
+                    res[gestion.calificacion.id]['cals'][int(calificacion_historica_id)].update({
+                        'gestiones': gestiones_list
+                    })
+                    res[gestion.calificacion.id]['tiene_historico'] = True
+        return res
 
 
 class ExportaCampanaReporteCalificacionView(View):
