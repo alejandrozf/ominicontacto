@@ -161,7 +161,8 @@ class FiltrosBusquedaGrabacionesSupervisorTests(BaseGrabacionesTests):
     def test_buscar_grabaciones_por_duracion(self):
         url = reverse('grabacion_buscar', kwargs={'pagina': 1})
         post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'agente': '',
-                     'campana': '', 'marcadas': '', 'duracion': '1'}
+                     'campana': '', 'marcadas': '', 'duracion': '1',
+                     'grabaciones_x_pagina': '10'}
 
         response = self.client.post(url, post_data, follow=True)
         self.assertContains(response, self.llamada_log1.numero_marcado)
@@ -214,7 +215,7 @@ class FiltrosBusquedaGrabacionesSupervisorTests(BaseGrabacionesTests):
             time=hoy, numero_marcado='43333333')
         url = reverse('grabacion_buscar', kwargs={'pagina': 1})
         post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'agente': '',
-                     'campana': '', 'marcadas': '', 'duracion': '0'}
+                     'campana': '', 'marcadas': '', 'duracion': '0', 'grabaciones_x_pagina': '10'}
 
         rango_hace_mucho = hace_mucho.date().strftime('%d/%m/%Y') + ' - ' + \
             ahora.date().strftime('%d/%m/%Y')
@@ -234,7 +235,8 @@ class FiltrosBusquedaGrabacionesSupervisorTests(BaseGrabacionesTests):
     def test_filtro_grabaciones_calificadas_gestion_muestra_gestionadas(self):
         url = reverse('grabacion_buscar', kwargs={'pagina': 1})
         post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'agente': '',
-                     'campana': '', 'marcadas': '', 'duracion': '0', 'gestion': True}
+                     'campana': '', 'marcadas': '', 'duracion': '0', 'gestion': True,
+                     'grabaciones_x_pagina': '10'}
         response = self.client.post(url, post_data, follow=True)
         self.assertContains(response, self.llamada_log1.numero_marcado)
         self.assertNotContains(response, self.llamada_log2.numero_marcado)
@@ -243,7 +245,8 @@ class FiltrosBusquedaGrabacionesSupervisorTests(BaseGrabacionesTests):
     def test_filtro_grabaciones_calificadas_gestion_excluye_no_gestionadas(self):
         url = reverse('grabacion_buscar', kwargs={'pagina': 1})
         post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'agente': '',
-                     'campana': '', 'marcadas': '', 'duracion': '0', 'gestion': False}
+                     'campana': '', 'marcadas': '', 'duracion': '0', 'gestion': False,
+                     'grabaciones_x_pagina': '10'}
         response = self.client.post(url, post_data, follow=True)
         self.assertContains(response, self.llamada_log1.numero_marcado)
         self.assertContains(response, self.llamada_log2.numero_marcado)
@@ -253,7 +256,8 @@ class FiltrosBusquedaGrabacionesSupervisorTests(BaseGrabacionesTests):
         LlamadaLog.objects.filter(id=self.llamada_log1.id).update(callid='1')
         url = reverse('grabacion_buscar', kwargs={'pagina': 1})
         post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'agente': '',
-                     'campana': '', 'marcadas': '', 'duracion': '', 'callid': '1'}
+                     'campana': '', 'marcadas': '', 'duracion': '', 'callid': '1',
+                     'grabaciones_x_pagina': '10'}
         response = self.client.post(url, post_data, follow=True)
         self.assertContains(response, self.llamada_log1.numero_marcado)
         self.assertNotContains(response, self.llamada_log2.numero_marcado)
@@ -262,7 +266,8 @@ class FiltrosBusquedaGrabacionesSupervisorTests(BaseGrabacionesTests):
     def test_buscar_grabaciones_por_id_contacto_externo(self):
         url = reverse('grabacion_buscar', kwargs={'pagina': 1})
         post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '', 'agente': '',
-                     'campana': '', 'marcadas': '', 'duracion': '', 'id_contacto_externo': 'id_ext'}
+                     'campana': '', 'marcadas': '', 'duracion': '', 'id_contacto_externo': 'id_ext',
+                     'grabaciones_x_pagina': '10'}
         response = self.client.post(url, post_data, follow=True)
         self.assertContains(response, self.llamada_log3_1.numero_marcado)
         self.assertNotContains(response, self.llamada_log1.numero_marcado)
@@ -278,8 +283,7 @@ class FiltrosBusquedaGrabacionesAgenteTests(BaseGrabacionesTests):
     def test_ve_solamente_grabaciones_propias(self):
         url = reverse('grabacion_agente_buscar', kwargs={'pagina': 1})
         post_data = {'fecha': '', 'tipo_llamada': '', 'tel_cliente': '',
-                     'campana': '', 'marcadas': '', 'duracion': '0'}
-        response = self.client.post(url, post_data, follow=True)
+                     'campana': '', 'marcadas': '', 'duracion': '1', 'grabaciones_x_pagina': '10'}
 
         response = self.client.post(url, post_data, follow=True)
         self.assertContains(response, self.llamada_log1.numero_marcado)
