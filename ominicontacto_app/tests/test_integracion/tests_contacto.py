@@ -75,7 +75,7 @@ class ContactoTests(unittest.TestCase):
         # Crear nueva base de datos
         try:
             csv_path = "/home/{0}/ominicontacto/ominicontacto_app/static/ominicontacto"\
-                "/oml-example-db.csv".format(USER)
+                "/example-db.csv".format(USER)
             BD_nueva = 'BD' + uuid.uuid4().hex[:5]
             multinum = False
             crear_BD(self.browser, csv_path, BD_nueva, multinum)
@@ -112,7 +112,7 @@ class ContactoTests(unittest.TestCase):
         # Editar Lista de Contacto
         try:
             csv_path = "/home/{0}/ominicontacto/ominicontacto_app/static/ominicontacto"\
-                "/oml-example-db.csv".format(USER)
+                "/example-db.csv".format(USER)
             BD_nueva = 'BD' + uuid.uuid4().hex[:5]
             multinum = False
             crear_BD(self.browser, csv_path, BD_nueva, multinum)

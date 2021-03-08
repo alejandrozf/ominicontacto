@@ -235,7 +235,7 @@ class IVRForm(forms.ModelForm):
 
     AUDIO_OML = '1'
     AUDIO_EXTERNO = '2'
-    AUDIO_TIPO_CHOICES = ((AUDIO_OML, _('Archivo de OML')), (AUDIO_EXTERNO, _('Archivo externo')))
+    AUDIO_TIPO_CHOICES = ((AUDIO_OML, _('Archivo interno')), (AUDIO_EXTERNO, _('Archivo externo')))
 
     audio_ppal_escoger = forms.ChoiceField(
         choices=AUDIO_TIPO_CHOICES, widget=forms.RadioSelect(
@@ -354,7 +354,7 @@ class IVRForm(forms.ModelForm):
                 code='invalid')
         if obligatorio and valor_escoger_audio == self.AUDIO_OML and valor_audio_oml is None:
             raise forms.ValidationError(
-                _('Debe escoger un archivo de OML'), code='invalid')
+                _('Debe escoger un archivo'), code='invalid')
 
     def clean_audio_principal(self):
         audio_ppal_escoger = self.cleaned_data['audio_ppal_escoger']
@@ -362,7 +362,7 @@ class IVRForm(forms.ModelForm):
             audio_principal = self.cleaned_data.get('audio_principal', None)
             if audio_principal is None:
                 raise forms.ValidationError(
-                    _('Debe escoger un archivo de OML'))
+                    _('Debe escoger un archivo'))
             return audio_principal
         return None
 

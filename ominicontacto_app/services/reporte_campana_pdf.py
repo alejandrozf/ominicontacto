@@ -119,7 +119,9 @@ class ArchivoDeReportePDF(object):
         # Establecemos el tamaño de letra en 16 y el tipo de letra Helvetica
         pdf.setFont("Helvetica", 16)
         # Dibujamos una cadena en la ubicación X,Y especificada
-        pdf.drawString(he / 2, we + 300, "Omnileads")
+
+        # pdf.drawString(he / 2, we + 300, "Omnileads")
+
         pdf.setFont("Helvetica", 13)
         nombre_reporte = "Reporte de campana: {0}".format(self._campana.nombre)
         pdf.drawString(he / 4, we + 280, nombre_reporte)
