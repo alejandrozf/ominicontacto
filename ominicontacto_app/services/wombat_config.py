@@ -187,6 +187,10 @@ class EndPointCreator(object):
             "dialReplace": ""
         }
 
+        # Si ya tiene enpoint_id, es para edición
+        if (campana.queue_campana.ep_id_wombat):
+            dict_endpoint['epId'] = campana.queue_campana.ep_id_wombat
+
         return json.dumps(dict_endpoint)
 
     def create_json(self, campana):
