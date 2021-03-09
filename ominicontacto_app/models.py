@@ -3253,24 +3253,31 @@ class AgenteEnContacto(models.Model):
         # a partir los numeros de orden superiores o iguales a este
         numero_agentes_contacto = AgenteEnContacto.objects.filter(campana_id=campana_id).count()
         orden = (orden + 1) % (numero_agentes_contacto + 1)
-
         try:
             qs_agentes_contactos_no_orden = cls.objects.activos(
                 campana_id=campana_id).filter(
-                    agente_id__in=[-1, agente.pk], estado=AgenteEnContacto.ESTADO_INICIAL,
-                    campana_id=campana_id)
-            qs_agentes_contactos = qs_agentes_contactos_no_orden.filter(orden__gte=orden)
-            qs_agentes_contactos = qs_agentes_contactos.select_for_update()
+                    agente_id__in=[-1, agente.pk], estado=AgenteEnContacto.ESTADO_INICIAL)
+
+            # encuentra y devuelve el contacto a asignar al
+            # de acuerdo al orden definido en el atributo 'orden'
+            # desde la lista de los contactos disponibles para el agente
+            qs_agentes_contactos = qs_agentes_contactos_no_orden \
+                .filter(orden__gte=orden) \
+                .select_for_update(skip_locked=True) \
+                .first()
+
+            if not qs_agentes_contactos:
+                qs_agentes_contactos = qs_agentes_contactos_no_orden \
+                    .select_for_update(skip_locked=True) \
+                    .first()
         except DatabaseError:
             return {'result': 'Error',
                     'code': 'error-concurrencia',
                     'data': 'Contacto siendo accedido por más de un agente'}
 
-        if qs_agentes_contactos.exists():
-            # encuentra y devuelve el contacto a asignar al
-            # de acuerdo al orden definido en el atributo 'orden'
-            # desde la lista de los contactos disponibles para el agente
-            agente_en_contacto = qs_agentes_contactos.first()
+        if qs_agentes_contactos:
+
+            agente_en_contacto = qs_agentes_contactos
             agente_en_contacto.estado = AgenteEnContacto.ESTADO_ENTREGADO
             agente_en_contacto.agente_id = agente.id
             agente_en_contacto.save()
@@ -3279,19 +3286,7 @@ class AgenteEnContacto(models.Model):
             data['result'] = 'OK'
             data['code'] = 'contacto-entregado'
             return data
-        elif qs_agentes_contactos_no_orden.select_for_update().exists():
-            # significa que no se encontro contacto porque se llego al final del
-            # orden, asi que tomamos el primero recibido sin tener en cuenta el orden
-            # en el filtro ()
-            agente_en_contacto = qs_agentes_contactos_no_orden.first()
-            agente_en_contacto.estado = AgenteEnContacto.ESTADO_ENTREGADO
-            agente_en_contacto.agente_id = agente.id
-            agente_en_contacto.save()
-            data = model_to_dict(agente_en_contacto)
-            data['datos_contacto'] = literal_eval(data['datos_contacto'])
-            data['result'] = 'OK'
-            data['code'] = 'contacto-entregado'
-            return data
+
         else:
             return {'result': 'Error',
                     'code': 'error-no-contactos',
