@@ -77,6 +77,7 @@ class ArchivoDeReporteCsv(object):
 
             encabezado.append(_("Agente"))
             encabezado.append(_("Tiempo de sesion"))
+            encabezado.append(_("Tiempo de hold"))
             encabezado.append(_("Tiempo de pausa"))
             encabezado.append(_("Tiempos en llamada"))
             encabezado.append(_("Porcentaje en llamada"))
@@ -104,6 +105,10 @@ class ArchivoDeReporteCsv(object):
                 if agente.get_string_tiempo_sesion():
                     tiempo_sesion = agente.get_string_tiempo_sesion() + "hs"
                 lista_opciones.append(tiempo_sesion)
+                tiempo_hold = "0hs"
+                if agente.get_string_tiempo_hold():
+                    tiempo_hold = agente.get_string_tiempo_hold() + "hs"
+                lista_opciones.append(tiempo_hold)
                 tiempo_pausa = "Ohs"
                 if agente.get_string_tiempo_pausa():
                     tiempo_pausa = agente.get_string_tiempo_pausa() + "hs"
@@ -112,15 +117,15 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(tiempo_llamada)
                 porcentaje_llamada = "O%"
                 if agente.tiempo_porcentaje_llamada:
-                    porcentaje_llamada = str(agente.tiempo_porcentaje_llamada) + "%"
+                    porcentaje_llamada = str(round(agente.tiempo_porcentaje_llamada, 2)) + "%"
                 lista_opciones.append(porcentaje_llamada)
                 porcentaje_pausa = "O%"
                 if agente.tiempo_porcentaje_pausa:
-                    porcentaje_pausa = str(agente.tiempo_porcentaje_pausa) + "%"
+                    porcentaje_pausa = str(round(agente.tiempo_porcentaje_pausa, 2)) + "%"
                 lista_opciones.append(porcentaje_pausa)
                 porcentaje_wait = "O%"
                 if agente.tiempo_porcentaje_wait:
-                    porcentaje_wait = str(agente.tiempo_porcentaje_wait) + "%"
+                    porcentaje_wait = str(round(agente.tiempo_porcentaje_wait, 2)) + "%"
                 lista_opciones.append(porcentaje_wait)
                 lista_opciones.append(agente.cantidad_llamadas_procesadas)
                 lista_opciones.append(str(agente.get_promedio_llamadas()) + "s")
