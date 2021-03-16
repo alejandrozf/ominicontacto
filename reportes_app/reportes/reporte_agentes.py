@@ -282,8 +282,7 @@ class ActividadAgente(object):
                 sesion_anterior.establecer_finalizacion(time)
             self.sesiones.append(SesionAgente(fecha_inicio=time))
 
-        if pausa_id != '':
-            self._procesa_pausa_log(event, time, pausa_id)
+        self._procesa_pausa_log(event, time, pausa_id)
 
     def calcula_totales(self):
         self._totaliza_pausas()
