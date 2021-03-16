@@ -27,7 +27,7 @@ import datetime
 from django.views.generic import FormView, UpdateView, TemplateView, View
 from django.views.generic.base import RedirectView
 from django.shortcuts import redirect
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.contrib import messages
 from django.contrib.sessions.models import Session
 from django.db.models import F, Value
@@ -179,25 +179,39 @@ class DashboardAgenteView(TemplateView):
 class LlamarContactoView(RedirectView):
     """
     Esta vista realiza originate hacia Asterisk para llamar dentro de una campaña
+    TODO: Eliminar esta vista y utilizar la API actualizandola para tener en cuenta todos los casos.
     """
 
     pattern_name = 'view_blanco'
 
     def post(self, request, *args, **kwargs):
         # TODO: Analizar bien el caso de que se este agregando un contacto
-        agente = AgenteProfile.objects.get(pk=request.POST['pk_agente'])
+        # TODO: DEJAR DE MANDAR pk_agente
+        # TODO: DEJAR DE MANDAR tipo_campana
+        agente = self.request.user.get_agente_profile()
         click2call_type = request.POST.get('click2call_type', 'false')
-        tipo_campana = request.POST.get('tipo_campana')
         campana_id = request.POST.get('pk_campana')
         telefono = request.POST.get('telefono', '')
+
+        # Patch: Para deectar que hubo un error cuando se le pega por AJAX...
+        self.no_redirect = request.POST.get('404_on_error')
 
         # Si el pk es 0 es porque no se quiere identificar al contacto.
         # El tipo de click2call no será "preview".
         contacto_id = request.POST['pk_contacto']
         if not contacto_id == '-1':
-            contacto = Contacto.objects.get(pk=contacto_id)
+            try:
+                contacto = Contacto.objects.get(pk=contacto_id)
+            except Contacto.DoesNotExist:
+                message = _(
+                    u'No es posible llamar al contacto. No se pudo identificar al contacto.')
+                return self.error_return_value('view_blanco', message)
 
         if not telefono:
+            if not contacto:
+                message = _(
+                    u'No es posible llamar al contacto. No se pudo identificar un teléfono.')
+                return self.error_return_value('view_blanco', message)
             telefono = contacto.telefono
 
         if campana_id == '':
@@ -207,22 +221,37 @@ class LlamarContactoView(RedirectView):
                 campana = calificacion_cliente[0].campana
                 campana_id = str(campana.pk)
                 tipo_campana = str(campana.type)
+        else:
+            try:
+                campana = Campana.objects.obtener_activas().get(id=campana_id)
+            except Campana.DoesNotExist:
+                message = _(
+                    u'No es posible llamar al contacto.'
+                    ' La campaña no se encuentra activa o no existe en el sistema.')
+                return self.error_return_value('view_blanco', message)
+            campana_id = str(campana.pk)
+            tipo_campana = str(campana.type)
 
-        elif click2call_type == 'preview':
-            asignado = AgenteEnContacto.asignar_contacto(contacto.id, campana_id, agente)
-            if not asignado:
-                message = _(u'No es posible llamar al contacto.'
-                            ' Para poder llamar un contacto debe obtenerlo'
-                            ' desde el menu de Campañas Preview.'
-                            ' Asegurese de no haber perdido la reserva')
-                messages.warning(self.request, message)
-                return HttpResponseRedirect(
-                    reverse('campana_preview_activas_miembro'))
+            if click2call_type == 'preview':
+                asignado = AgenteEnContacto.asignar_contacto(contacto.id, campana.pk, agente)
+                if not asignado:
+                    message = _(u'No es posible llamar al contacto.'
+                                ' Para poder llamar un contacto debe obtenerlo'
+                                ' desde el menu de Campañas Preview.'
+                                ' Asegurese de no haber perdido la reserva')
+                    return self.error_return_value('campana_preview_activas_miembro', message)
 
         originator = Click2CallOriginator()
         originator.call_originate(
             agente, campana_id, tipo_campana, contacto_id, telefono, click2call_type)
         return HttpResponseRedirect(reverse('view_blanco'))
+
+    def error_return_value(self, view_name, message):
+        if self.no_redirect:
+            raise Http404(message)
+        else:
+            messages.warning(self.request, message)
+            return HttpResponseRedirect(reverse(view_name))
 
 
 class LlamarFueraDeCampanaView(RedirectView):
