@@ -79,7 +79,7 @@
     - regenerar_asterisk
     - actualizar_permisos
   become: true
-  become_method: sudo
+  become_method: su
   become_user: "{{ usuario }}"
   tags: postinstall
 
@@ -117,7 +117,7 @@
     PGPASSWORD: "{{ postgres_password }}"
   become: true
   become_user: "{{ usuario }}"
-  become_method: sudo
+  become_method: su
   tags: ['never','postinstall']
 
 # Se sube el script de backup-restore
