@@ -65,8 +65,16 @@ class RedisGearsService(object):
         AGENTE_KEY = 'OML:AGENT:*'
         EVENT_DESC = 'sup_agent'
         SCRIPT_NAME = 'registrar_evento_agente_change.py'
+
+        total_agentes = self._total_registros_x_clave(AGENTE_KEY)
+        total_stream_buffer = total_agentes * 5
+
+        if total_stream_buffer < 100:
+            total_stream_buffer = 100
+
         if not self.__existe_evento_key_change(AGENTE_KEY, EVENT_DESC):
-            script = open(f'{settings.BASE_DIR}/{self.SCRIPT_PATH}/{SCRIPT_NAME}', 'r').read()
+            script = open(f'{settings.BASE_DIR}/{self.SCRIPT_PATH}/{SCRIPT_NAME}', 'r') \
+                .read() % total_stream_buffer
             self.conn.execute_command("RG.PYEXECUTE", script)
 
     def __registra_evento_supervision_entrantes_change(self):
@@ -130,3 +138,12 @@ class RedisGearsService(object):
             if evento[REGISTRATION_DATA][ARGS][REGEX] == redis_key and evento[DESCRIPTION] == desc:
                 return True
         return False
+
+    def _total_registros_x_clave(self, clave):
+        command = f'GearsBuilder().count().run("{clave}")'
+        res = self.conn.execute_command("RG.PYEXECUTE", command)
+        try:
+            total = int(res[0][0])
+        except Exception:
+            total = 0
+        return total
