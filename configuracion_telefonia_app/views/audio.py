@@ -201,6 +201,8 @@ class MusicaDeEsperaCreateView(ArchivoDeAudioMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super(MusicaDeEsperaCreateView, self).get_context_data()
         context['playlist'] = self.playlist
+        context['base_url'] = "%s://%s" % (self.request.scheme,
+                                           self.request.get_host())
         # TODO: Ver como hacer para que este form tenga info de is_valid.
         if context['form'].is_valid():
             pass

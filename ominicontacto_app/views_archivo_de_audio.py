@@ -121,6 +121,13 @@ class ArchivoAudioUpdateView(ArchivoDeAudioMixin, UpdateView):
     Esta vista edita un objeto ArchivoDeAudio.
     """
 
+    def get_context_data(self, **kwargs):
+        context = super(ArchivoAudioUpdateView, self).get_context_data(
+            **kwargs)
+        context['base_url'] = "%s://%s" % (self.request.scheme,
+                                           self.request.get_host())
+        return context
+
     template_name = 'archivo_audio/nuevo_edita_archivo_audio.html'
     model = ArchivoDeAudio
     form_class = ArchivoDeAudioForm
