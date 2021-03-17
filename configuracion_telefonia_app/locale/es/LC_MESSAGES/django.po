@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-05 17:57-0300\n"
+"POT-Creation-Date: 2021-03-17 17:40-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -325,8 +325,8 @@ msgid "Los troncales deben ser distintos"
 msgstr ""
 
 #: configuracion_telefonia_app/forms.py:193
-#: configuracion_telefonia_app/forms.py:449
-#: configuracion_telefonia_app/forms.py:504
+#: configuracion_telefonia_app/forms.py:459
+#: configuracion_telefonia_app/forms.py:514
 msgid "Tipo de destino"
 msgstr ""
 
@@ -345,13 +345,13 @@ msgid "Idioma"
 msgstr ""
 
 #: configuracion_telefonia_app/forms.py:214
-#: configuracion_telefonia_app/forms.py:457
-#: configuracion_telefonia_app/forms.py:511
+#: configuracion_telefonia_app/forms.py:467
+#: configuracion_telefonia_app/forms.py:521
 msgid "Destino"
 msgstr ""
 
 #: configuracion_telefonia_app/forms.py:238
-msgid "Archivo de OML"
+msgid "Archivo interno"
 msgstr ""
 
 #: configuracion_telefonia_app/forms.py:238
@@ -388,135 +388,139 @@ msgstr ""
 
 #: configuracion_telefonia_app/forms.py:357
 #: configuracion_telefonia_app/forms.py:365
-msgid "Debe escoger un archivo de OML"
+msgid "Debe escoger un archivo"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:440
+#: configuracion_telefonia_app/forms.py:375
+msgid "Debe escoger un audio."
+msgstr ""
+
+#: configuracion_telefonia_app/forms.py:450
 msgid "Los valores de DTMF deben ser distintos"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:456
+#: configuracion_telefonia_app/forms.py:466
 msgid "DTMF"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:476
+#: configuracion_telefonia_app/forms.py:486
 msgid "El valor del DTMF debe ser un dígito o alguno de: #, -, *"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:497
+#: configuracion_telefonia_app/forms.py:507
 msgid "Debe indicar una url."
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:546
+#: configuracion_telefonia_app/forms.py:556
 msgid "Los destinos deben ser distintos"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:570
 #: configuracion_telefonia_app/forms.py:580
+#: configuracion_telefonia_app/forms.py:590
 #: configuracion_telefonia_app/models.py:452
 msgid "Español"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:571
 #: configuracion_telefonia_app/forms.py:581
+#: configuracion_telefonia_app/forms.py:591
 #: configuracion_telefonia_app/models.py:451
 msgid "Inglés"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:572
 #: configuracion_telefonia_app/forms.py:582
+#: configuracion_telefonia_app/forms.py:592
 msgid "Francés"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:573
 #: configuracion_telefonia_app/forms.py:583
+#: configuracion_telefonia_app/forms.py:593
 msgid "Italiano"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:574
 #: configuracion_telefonia_app/forms.py:584
+#: configuracion_telefonia_app/forms.py:594
 msgid "Japonés"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:575
 #: configuracion_telefonia_app/forms.py:585
+#: configuracion_telefonia_app/forms.py:595
 msgid "Ruso"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:576
 #: configuracion_telefonia_app/forms.py:586
+#: configuracion_telefonia_app/forms.py:596
 msgid "Sueco"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:592
+#: configuracion_telefonia_app/forms.py:602
 msgid "Escoger idioma del paquete de audios a instalar"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:646
+#: configuracion_telefonia_app/forms.py:656
 msgid "Silencio inicial (ms)"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:647
+#: configuracion_telefonia_app/forms.py:657
 msgid "Saludo (ms)"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:648
+#: configuracion_telefonia_app/forms.py:658
 msgid "Silencio post saludo (ms)"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:649
+#: configuracion_telefonia_app/forms.py:659
 msgid "Tiempo de análisis (ms)"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:650
+#: configuracion_telefonia_app/forms.py:660
 msgid "Duración mínima de cada palabra (ms)"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:651
+#: configuracion_telefonia_app/forms.py:661
 msgid "Silencio entre palabras (ms)"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:652
+#: configuracion_telefonia_app/forms.py:662
 msgid "Número máximo de palabras"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:653
+#: configuracion_telefonia_app/forms.py:663
 msgid "Largo máximo de cada palabra (ms)"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:654
+#: configuracion_telefonia_app/forms.py:664
 msgid "Nivel de ruido"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:673
+#: configuracion_telefonia_app/forms.py:683
 msgid "Id contacto"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:674
+#: configuracion_telefonia_app/forms.py:684
 msgid "Fecha"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:675
+#: configuracion_telefonia_app/forms.py:685
 msgid "Teléfono contacto"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:676
+#: configuracion_telefonia_app/forms.py:686
 msgid "Id Campana"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:677
+#: configuracion_telefonia_app/forms.py:687
 msgid "Id externo contacto"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:678
+#: configuracion_telefonia_app/forms.py:688
 msgid "Id externo campana"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:679
+#: configuracion_telefonia_app/forms.py:689
 msgid "Id agente"
 msgstr ""
 
-#: configuracion_telefonia_app/forms.py:694
+#: configuracion_telefonia_app/forms.py:704
 msgid "Seleccione el archivo .wav que desea para la Musica de Espera."
 msgstr ""
 
@@ -1256,12 +1260,12 @@ msgid "Destino si NO cumple la condición de tiempo"
 msgstr ""
 
 #: configuracion_telefonia_app/tests/tests_restriccion_eliminacion.py:65
-#: configuracion_telefonia_app/views/base.py:690
+#: configuracion_telefonia_app/views/base.py:697
 msgid "Se ha eliminado el Grupo Horario."
 msgstr ""
 
 #: configuracion_telefonia_app/tests/tests_restriccion_eliminacion.py:80
-#: configuracion_telefonia_app/views/base.py:682
+#: configuracion_telefonia_app/views/base.py:689
 msgid ""
 "No se puede eliminar un Grupo Horario utilizado en una Validacion Fecha Hora"
 msgstr ""
@@ -1324,7 +1328,7 @@ msgstr ""
 msgid "Playlist eliminada con éxito"
 msgstr ""
 
-#: configuracion_telefonia_app/views/audio.py:257
+#: configuracion_telefonia_app/views/audio.py:259
 msgid "Musica de Espera eliminada con éxito"
 msgstr ""
 
@@ -1335,10 +1339,10 @@ msgstr ""
 #: configuracion_telefonia_app/views/base.py:137
 #: configuracion_telefonia_app/views/base.py:152
 #: configuracion_telefonia_app/views/base.py:170
-#: configuracion_telefonia_app/views/base.py:452
-#: configuracion_telefonia_app/views/base.py:624
-#: configuracion_telefonia_app/views/base.py:678
-#: configuracion_telefonia_app/views/base.py:858
+#: configuracion_telefonia_app/views/base.py:459
+#: configuracion_telefonia_app/views/base.py:631
+#: configuracion_telefonia_app/views/base.py:685
+#: configuracion_telefonia_app/views/base.py:865
 #, python-brace-format
 msgid "<strong>¡Cuidado!</strong> con el siguiente error: {0} ."
 msgstr ""
@@ -1372,97 +1376,97 @@ msgstr ""
 msgid "No está permitido eliminar una Ruta Saliente asociado a una campaña"
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:438
+#: configuracion_telefonia_app/views/base.py:445
 msgid ""
 "No está permitido eliminar una Ruta Entrante asociadacon una campaña que "
 "tiene una Ruta Saliente."
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:460
+#: configuracion_telefonia_app/views/base.py:467
 msgid "Se ha eliminado la Ruta Entrante."
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:499
+#: configuracion_telefonia_app/views/base.py:506
 msgid "Se ha creado el IVR con éxito"
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:546
+#: configuracion_telefonia_app/views/base.py:553
 msgid "Se ha modificado el IVR con éxito"
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:640
+#: configuracion_telefonia_app/views/base.py:647
 msgid "Se ha creado el grupo horario con éxito"
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:654
+#: configuracion_telefonia_app/views/base.py:661
 msgid "Se ha modificado el grupo horario con éxito"
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:719
+#: configuracion_telefonia_app/views/base.py:726
 msgid "Se ha creado la validacion horaria con éxito"
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:755
+#: configuracion_telefonia_app/views/base.py:762
 msgid "Se ha modificado la validacion horaria con éxito"
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:794
+#: configuracion_telefonia_app/views/base.py:801
 msgid "No se puede eliminar un objeto que es destino en un flujo de llamada."
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:795
+#: configuracion_telefonia_app/views/base.py:802
 msgid "Se ha eliminado el Nodo."
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:823
-#: configuracion_telefonia_app/views/base.py:847
+#: configuracion_telefonia_app/views/base.py:830
+#: configuracion_telefonia_app/views/base.py:854
 #, python-brace-format
 msgid ""
 "No se puede eliminar la campaña. Es usada como destino failover de las "
 "campañas: {0}"
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:878
+#: configuracion_telefonia_app/views/base.py:885
 msgid "No se puede eliminar un IVR que es destino en un flujo de llamada."
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:879
+#: configuracion_telefonia_app/views/base.py:886
 msgid "Se ha eliminado el IVR."
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:887
+#: configuracion_telefonia_app/views/base.py:894
 msgid ""
 "No se puede eliminar una Validación Fecha Hora mientras sea destino en un "
 "flujo de llamada."
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:889
+#: configuracion_telefonia_app/views/base.py:896
 msgid "Se ha eliminado la Validación Fecha Hora."
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:916
+#: configuracion_telefonia_app/views/base.py:923
 msgid "Se ha creado el Identificador de clientes con éxito"
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:976
+#: configuracion_telefonia_app/views/base.py:983
 msgid "Se ha modificado el Identificador de clientes con éxito"
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:1055
+#: configuracion_telefonia_app/views/base.py:1062
 msgid ""
 "No se puede eliminar un Identificador de clientes que es destino en un flujo "
 "de llamada."
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:1057
+#: configuracion_telefonia_app/views/base.py:1064
 msgid "Se ha eliminado el Identificador de Clientes."
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:1084
+#: configuracion_telefonia_app/views/base.py:1091
 msgid "Se ha creado el nodo de Destino Personalizado con éxito"
 msgstr ""
 
-#: configuracion_telefonia_app/views/base.py:1117
+#: configuracion_telefonia_app/views/base.py:1124
 msgid "Se ha modificado el nodo de Destino Personalizado con éxito"
 msgstr ""
 
