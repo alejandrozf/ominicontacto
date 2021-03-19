@@ -20,7 +20,7 @@ django-sass==1.0.0
 django-sendfile2==0.6.0
 django-simple-history==2.7.3
 django-widget-tweaks==1.4.1
-djangorestframework==3.10.3
+djangorestframework==3.11.2
 enum34==1.1.6
 factory-boy==2.9.2
 ipython==6.5.0
