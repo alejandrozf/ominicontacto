@@ -485,7 +485,8 @@ class ReglasDeIncidenciaDeCalificacionesDeleteView(DeleteView, VerificarPremisoE
                 message,
             )
         else:
-            service.reload_campana_wombat(self.campana)
+            if self.campana.estado == Campana.ESTADO_ACTIVA:
+                service.reload_campana_wombat(self.campana)
             super(ReglasDeIncidenciaDeCalificacionesDeleteView, self).delete(
                 request, *args, **kwargs)
             messages.success(request, _('Regla de incidencia eliminada.'))
@@ -524,7 +525,8 @@ class ReglasDeIncidenciaDeCalificacionesCreateView(CreateView, VerificarPremisoE
             campana_service = CampanaService()
             campana_service.crear_reschedule_por_calificacion_wombat(
                 self.campana, regla, ReglaIncidenciaPorCalificacion.ESTADO_WOMBAT)
-            campana_service.reload_campana_wombat(self.campana)
+            if self.campana.estado == Campana.ESTADO_ACTIVA:
+                campana_service.reload_campana_wombat(self.campana)
         except WombatDialerError as e:
             error_message = _("Error al registrar regla de incidencia: ") + "{0} .".format(e)
             logger.error(error_message)
@@ -570,7 +572,8 @@ class ReglasDeIncidenciaDeCalificacionesUpdateView(UpdateView, VerificarPremisoE
             if not editado:
                 messages.error(_('No se pudo guardar la regla de incidencia.'))
                 return self.form_invalid(form)
-            campana_service.reload_campana_wombat(self.campana)
+            if self.campana.estado == Campana.ESTADO_ACTIVA:
+                campana_service.reload_campana_wombat(self.campana)
         except WombatDialerError as e:
             error_message = _("Error al editar regla de incidencia: ") + "{0} .".format(e)
             logger.error(error_message)

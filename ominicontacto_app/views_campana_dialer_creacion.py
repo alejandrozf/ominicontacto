@@ -151,9 +151,6 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
         # asocia lista a campana en wombat
         campana_service.crear_lista_asociacion_campana_wombat(campana)
 
-        # recarga campaña en wombat
-        campana_service.reload_campana_wombat(campana)
-
     def _save_forms(self, form_list, estado):
         campana_form = list(form_list)[int(self.INICIAL)]
         queue_form = list(form_list)[int(self.COLA)]
@@ -269,7 +266,8 @@ class CampanaDialerUpdateView(CampanaDialerMixin, SessionWizardView):
                 if not service_ok:
                     raise Exception('No se ha podico crear la campaña en Wombat.')
                 # recarga campaña en wombat
-                campana_service.reload_campana_wombat(campana)
+                if campana.estado == Campana.ESTADO_ACTIVA:
+                    campana_service.reload_campana_wombat(campana)
 
             success = True
 
