@@ -149,6 +149,7 @@ class PhoneJSController {
 
         this.view.hangUpButton.click(function() {
             self.hangUp();
+            self.view.holdButton.html('hold');
         });
 
         this.view.tagCallButton.click(function() {
@@ -160,10 +161,12 @@ class PhoneJSController {
                 self.phone_fsm.startOnHold();
                 self.phone.putOnHold();
                 self.view.holdButton.html('unhold');
+                self.oml_api.eventHold();
             } else if (self.phone_fsm.state == 'OnHold') {
                 self.phone_fsm.releaseHold();
                 self.phone.releaseHold();
                 self.view.holdButton.html('hold');
+                self.oml_api.eventHold();
             } else {
                 phone_logger.log('Error');
             }
@@ -294,6 +297,7 @@ class PhoneJSController {
                 self.view.setStateInputStatus('Ready');
                 self.click_2_call_dispatcher.enable();
                 self.keep_alive_sender.deactivate();
+                self.callOfCampPrivilege();
             },
             onPaused: function() {
                 phone_logger.log('FSM: onPaused');
@@ -302,6 +306,7 @@ class PhoneJSController {
                 self.view.setStateInputStatus('Paused');
                 self.click_2_call_dispatcher.enable();
                 self.keep_alive_sender.deactivate();
+                self.callOfCampPrivilege();
             },
             onChangePause: function() {
                 phone_logger.log('FSM: onChangePause');
@@ -500,6 +505,7 @@ class PhoneJSController {
             self.timers.llamada.restart();
             self.callEndTransition();
             self.updateCallHistory();
+            self.view.holdButton.html('hold');
             // mostramos al botón de grabación bajo demanda de llamada
             // como listo para grabar (aunque en este punto va a estar
             // deshabilitado)
@@ -885,6 +891,15 @@ class PhoneJSController {
         this.loadVideoInFrame();
     }
 
+    callOfCampPrivilege(){
+        if (this.agent_config.call_off_camp){
+            this.view.callOffCampaignMenuButton.prop('disabled', true);
+        }
+        else {
+            this.view.callOffCampaignMenuButton.prop('disabled', false);
+        }
+    }
+
 }
 
 class PauseManager {
@@ -965,6 +980,7 @@ class AgentConfig {
         this.auto_unpause = Number($('#auto_unpause').val());
         this.auto_attend_DIALER = $('#auto_attend_DIALER').val() == 'True';
         this.auto_attend_IN = $('#auto_attend_IN').val() == 'True';
+        this.call_off_camp = $('#call_off_camp').val() == 'False';
     }
 }
 

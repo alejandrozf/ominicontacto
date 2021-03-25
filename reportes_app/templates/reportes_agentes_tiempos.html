@@ -87,6 +87,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <tr>
                         <th>{% trans "Agente" %}</th>
                         <th>{% trans "Tiempo de session" %}</th>
+                        <th>{% trans "Tiempo de hold" %}</th>
                         <th>{% trans "Porcentaje en llamada" %}</th>
                         <th>{% trans "Llamadas procesadas" %}</th>
                         <th>{% trans "Tiempo promedio" %}</th>
@@ -120,6 +121,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 {{agente.tiempo_llamada}}{% trans 'hs' %}
                                 <span class="label">{% trans "llamada" %}</span>
                             </div>
+                        </td>
+                        <td>
+                            {% if agente.get_string_tiempo_hold %}
+                                {{agente.get_string_tiempo_hold}}{% trans 'hs' %}
+                            {% else %}
+                                0{% trans 'hs' %}
+                            {% endif %}
                         </td>
                         <td>
                             {% if agente.tiempo_porcentaje_llamada %}
@@ -279,6 +287,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <tr>
                         <td>{% trans "Fecha" %}</td>
                         <td>{% trans "Sesión" %}</td>
+                        <td>{% trans "Hold "%}</td>
                         <td>{% trans "Pausa" %}</td>
                         <td>{% trans "Llamada" %}</td>
                         <td>{% trans "% En llamada" %}</td>

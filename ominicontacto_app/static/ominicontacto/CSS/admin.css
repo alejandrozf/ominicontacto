@@ -491,8 +491,8 @@ input.form-control[type=file] {
 }
 
 #sidebar {
-  min-width: 220px;
-  max-width: 220px;
+  min-width: 230px;
+  max-width: 230px;
   min-height: 100vh;
   background-color: #ECEEEA;
   /* transition: 0.3s;*/
@@ -1033,12 +1033,12 @@ body.wrapper-page-error {
   display: flex;
 }
 
-.add_supervisor li, #id_supervisors li{
+.add_supervisor li {
   display: inline-block !important;
-  width: 310px;
+  width: 240px;
 }
 
-.add_supervisor ul, #id_supervisors ul{
+.add_supervisor ul {
   padding: 10px;
 }
 

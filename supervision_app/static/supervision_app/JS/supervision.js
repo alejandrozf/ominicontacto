@@ -23,6 +23,7 @@
 
 var table_agentes;
 var table_data = [];
+const MENSAJE_CONEXION_WEBSOCKET = 'Stream subscribed!';
 
 $(function() {
     createDataTable();
@@ -38,23 +39,25 @@ $(function() {
     );
 
     contactadosSocket.onmessage = function(e) {
-        try {
-            var data = JSON.parse(e.data);
-            var arrData = {};
-            for (let index = 0; index < data.length; index++) {
-                var element = JSON.parse(data[index]
-                    .replaceAll('\'', '"')
-                    .replaceAll('"[', '[')
-                    .replaceAll(']"', ']'));
-                processStreamRow(element, arrData);
-            }
+        if (e.data != MENSAJE_CONEXION_WEBSOCKET) {
+            try {
+                var data = JSON.parse(e.data);
+                var arrData = {};
+                for (let index = 0; index < data.length; index++) {
+                    var element = JSON.parse(data[index]
+                        .replaceAll('\'', '"')
+                        .replaceAll('"[', '[')
+                        .replaceAll(']"', ']'));
+                    processStreamRow(element, arrData);
+                }
 
-            var newData = crossData(table_agentes.data().toArray(), arrData);
-            table_agentes.clear();
-            table_agentes.rows.add(newData).draw();
-            table_data = newData;
-        } catch (err) {
-            console.log(err);
+                var newData = crossData(table_agentes.data().toArray(), arrData);
+                table_agentes.clear();
+                table_agentes.rows.add(newData).draw();
+                table_data = newData;
+            } catch (err) {
+                console.log(err);
+            }
         }
     };
 });
@@ -71,13 +74,17 @@ function crossData(tableData, newData) {
     for (let key in newData) {
         var found = false;
         for (let index = 0; index < resData.length; index++) {
-            if (resData[index].id == newData[key].id) {
-                if (newData[key].status == '' || newData[key].status == 'OFFLINE') {
-                    resData.splice(index, 1);
-                } else {
-                    resData[index] = newData[key];
+            try {
+                if (resData[index].id == newData[key].id) {
+                    if (newData[key].status == '' || newData[key].status == 'OFFLINE') {
+                        resData.splice(index, 1);
+                    } else {
+                        resData[index] = newData[key];
+                    }
+                    found = true;
                 }
-                found = true;
+            } catch (err) {
+                continue;
             }
         }
         if (!found && newData[key].status != '' && newData[key].status != 'OFFLINE') {

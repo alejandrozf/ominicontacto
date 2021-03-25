@@ -99,16 +99,6 @@ $(function() {
                 // alert(data, textStatus);
                 $('#output').html(data.tbody); // append to inner html
                 $('#nombre_agente').html(data.nombre_agente);
-                if (data.error){
-                    var mensaje = gettext('Advertencia: se detectan cierres de sesión incorrectos para este agente. Por favor instruya al mísmo a efectuar el deslogueo correctamente. Gracias');
-                    var txt = '<div id="error" class="alert alert-warning" role="alert">';
-                    txt +=  $('<div>').text(mensaje).html() + '</div>';
-                    $('#error').html(txt);
-                }
-                else
-                {
-                    $('#error').html('');
-                }
             },
             error: function(xhr, status, e) {
                 alert(status, e);

@@ -476,6 +476,10 @@ class GrabacionBusquedaForm(forms.Form):
                                   label=_('Duración mínima'),
                                   widget=forms.NumberInput(attrs={'class': 'form-control'}))
     gestion = forms.BooleanField(required=False, label=_('Calificada como gestión'))
+    grabaciones_x_pagina = forms.ChoiceField(required=True,
+                                             choices=([(10, 10), (25, 25), (50, 50), (100, 100)]),
+                                             label=_('Grabaciones por página'),
+                                             widget=forms.Select(attrs={'class': 'form-control'}),)
 
     def __init__(self, campana_choice, *args, **kwargs):
         super(GrabacionBusquedaForm, self).__init__(*args, **kwargs)
@@ -492,7 +496,7 @@ class GrabacionBusquedaSupervisorForm(GrabacionBusquedaForm):
 
     field_order = ['fecha', 'tipo_llamada_choice', 'tipo_llamada', 'tel_cliente', 'callid',
                    'agente', 'campana', 'pagina', 'id_contacto_externo', 'duracion',
-                   'marcadas', 'gestion']
+                   'marcadas', 'gestion', 'grabaciones_x_pagina']
 
 
 class AuditoriaBusquedaForm(forms.Form):
@@ -1787,7 +1791,7 @@ class GrupoForm(forms.ModelForm):
     class Meta:
         model = Grupo
         fields = ('nombre', 'auto_unpause', 'auto_attend_inbound',
-                  'auto_attend_dialer', 'obligar_calificacion')
+                  'auto_attend_dialer', 'obligar_calificacion', 'call_off_camp')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
         }

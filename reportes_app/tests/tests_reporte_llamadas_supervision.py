@@ -181,11 +181,6 @@ class ReporteDeLLamadasSalientesDeSupervisionTest(TestCase):
                                             supervisors=[self.supervisor.user])
         self.opcion_calificacion_m1 = OpcionCalificacionFactory(campana=self.manual,
                                                                 tipo=OpcionCalificacion.GESTION)
-        self.dialer = CampanaFactory.create(type=Campana.TYPE_DIALER, nombre='camp-dialer-1',
-                                            estado=Campana.ESTADO_ACTIVA,
-                                            supervisors=[self.supervisor.user])
-        self.opcion_calificacion_d1 = OpcionCalificacionFactory(campana=self.dialer,
-                                                                tipo=OpcionCalificacion.GESTION)
         self.preview = CampanaFactory.create(type=Campana.TYPE_PREVIEW, nombre='camp-preview-1',
                                              estado=Campana.ESTADO_ACTIVA,
                                              supervisors=[self.supervisor.user])
@@ -195,19 +190,17 @@ class ReporteDeLLamadasSalientesDeSupervisionTest(TestCase):
         # Campañas que no deben estar en los reportes por no ser del supervisor
         self.manual2 = CampanaFactory.create(type=Campana.TYPE_MANUAL, nombre='camp-manual-2',
                                              estado=Campana.ESTADO_ACTIVA)
-        self.dialer2 = CampanaFactory.create(type=Campana.TYPE_DIALER, nombre='camp-dialer-2',
-                                             estado=Campana.ESTADO_ACTIVA)
         self.preview2 = CampanaFactory.create(type=Campana.TYPE_PREVIEW, nombre='camp-preview-2',
                                               estado=Campana.ESTADO_ACTIVA)
 
-    def _obtener_estadisticas_redis(self, campana):
-        return {
-            'efectuadas': 0,
-            'conectadas': 0,
-            'no_conectadas': 0,
-            'gestiones': 1,
-            'nombre': campana.nombre,
-        }
+        # Campañas que no deben estar en los reportes por no ser MANUAL o PREVIEW
+        self.dialer = CampanaFactory.create(type=Campana.TYPE_DIALER, nombre='camp-dialer-1',
+                                            estado=Campana.ESTADO_ACTIVA,
+                                            supervisors=[self.supervisor.user])
+        self.opcion_calificacion_d1 = OpcionCalificacionFactory(campana=self.dialer,
+                                                                tipo=OpcionCalificacion.GESTION)
+        self.dialer2 = CampanaFactory.create(type=Campana.TYPE_DIALER, nombre='camp-dialer-2',
+                                             estado=Campana.ESTADO_ACTIVA)
 
     def test_reporte_vacio(self):
         reporte = ReporteDeLLamadasSalientesDeSupervision(self.supervisor.user)
@@ -224,9 +217,10 @@ class ReporteDeLLamadasSalientesDeSupervisionTest(TestCase):
         self.generador.generar_log(self.preview, False, 'COMPLETEAGENT', '35100001112',
                                    agente=self.agente1, contacto=None, bridge_wait_time=-1,
                                    duracion_llamada=10, archivo_grabacion='', time=None)
-        self.generador.generar_log(self.dialer, False, 'COMPLETEAGENT', '35100001113',
+        self.generador.generar_log(self.preview, False, 'COMPLETEAGENT', '35100001113',
                                    agente=self.agente1, contacto=None, bridge_wait_time=-1,
                                    duracion_llamada=10, archivo_grabacion='', time=None)
+        # No contabiliza dialers
         self.generador.generar_log(self.dialer, True, 'COMPLETEAGENT', '35100001113',
                                    agente=self.agente1, contacto=None, bridge_wait_time=-1,
                                    duracion_llamada=10, archivo_grabacion='', time=None)
@@ -237,17 +231,13 @@ class ReporteDeLLamadasSalientesDeSupervisionTest(TestCase):
             reporte.estadisticas[self.manual.id]['no_conectadas'], 0)
         self.assertEqual(reporte.estadisticas[self.manual.id]['gestiones'], 0)
         self.assertEqual(
-            reporte.estadisticas[self.preview.id]['efectuadas'], 1)
+            reporte.estadisticas[self.preview.id]['efectuadas'], 2)
         self.assertEqual(
-            reporte.estadisticas[self.preview.id]['conectadas'], 1)
+            reporte.estadisticas[self.preview.id]['conectadas'], 2)
         self.assertEqual(
             reporte.estadisticas[self.preview.id]['no_conectadas'], 0)
         self.assertEqual(reporte.estadisticas[self.preview.id]['gestiones'], 0)
-        self.assertEqual(reporte.estadisticas[self.dialer.id]['efectuadas'], 2)
-        self.assertEqual(reporte.estadisticas[self.dialer.id]['conectadas'], 2)
-        self.assertEqual(
-            reporte.estadisticas[self.dialer.id]['no_conectadas'], 0)
-        self.assertEqual(reporte.estadisticas[self.dialer.id]['gestiones'], 0)
+        self.assertNotIn(self.dialer.id, reporte.estadisticas)
 
     def test_contabiliza_efectuadas_no_conectadas(self):
         self.generador.generar_log(self.manual, False, 'BUSY', '35100001111',
@@ -256,9 +246,10 @@ class ReporteDeLLamadasSalientesDeSupervisionTest(TestCase):
         self.generador.generar_log(self.preview, False, 'NOANSWER', '35100001112',
                                    agente=self.agente1, contacto=None, bridge_wait_time=-1,
                                    duracion_llamada=10, archivo_grabacion='', time=None)
-        self.generador.generar_log(self.dialer, False, 'BLACKLIST', '35100001113',
+        self.generador.generar_log(self.preview, False, 'BLACKLIST', '35100001113',
                                    agente=self.agente1, contacto=None, bridge_wait_time=-1,
                                    duracion_llamada=10, archivo_grabacion='', time=None)
+        # No contabiliza Dialers
         self.generador.generar_log(self.dialer, True, 'CONGESTION', '35100001113',
                                    agente=self.agente1, contacto=None, bridge_wait_time=-1,
                                    duracion_llamada=10, archivo_grabacion='', time=None)
@@ -269,32 +260,30 @@ class ReporteDeLLamadasSalientesDeSupervisionTest(TestCase):
             reporte.estadisticas[self.manual.id]['no_conectadas'], 1)
         self.assertEqual(reporte.estadisticas[self.manual.id]['gestiones'], 0)
         self.assertEqual(
-            reporte.estadisticas[self.preview.id]['efectuadas'], 1)
+            reporte.estadisticas[self.preview.id]['efectuadas'], 2)
         self.assertEqual(
             reporte.estadisticas[self.preview.id]['conectadas'], 0)
         self.assertEqual(
-            reporte.estadisticas[self.preview.id]['no_conectadas'], 1)
+            reporte.estadisticas[self.preview.id]['no_conectadas'], 2)
         self.assertEqual(reporte.estadisticas[self.preview.id]['gestiones'], 0)
-        self.assertEqual(reporte.estadisticas[self.dialer.id]['efectuadas'], 2)
-        self.assertEqual(reporte.estadisticas[self.dialer.id]['conectadas'], 0)
-        self.assertEqual(
-            reporte.estadisticas[self.dialer.id]['no_conectadas'], 2)
-        self.assertEqual(reporte.estadisticas[self.dialer.id]['gestiones'], 0)
+        self.assertNotIn(self.dialer.id, reporte.estadisticas)
 
     def test_contabiliza_gestiones(self):
         CalificacionClienteFactory(opcion_calificacion=self.opcion_calificacion_m1,
                                    agente=self.agente1)
-        CalificacionClienteFactory(opcion_calificacion=self.opcion_calificacion_d1,
-                                   agente=self.agente1)
         CalificacionClienteFactory(opcion_calificacion=self.opcion_calificacion_p1,
                                    agente=self.agente1)
+        CalificacionClienteFactory(opcion_calificacion=self.opcion_calificacion_d1,
+                                   agente=self.agente1)
         reporte = ReporteDeLLamadasSalientesDeSupervision(self.supervisor.user)
-        for id_campana in [self.manual.id, self.dialer.id, self.preview.id]:
+        self.assertNotIn(self.dialer.id, reporte.estadisticas)
+        for id_campana in [self.manual.id, self.preview.id]:
             self.assertIn(id_campana, reporte.estadisticas)
             self.assertEqual(reporte.estadisticas[id_campana]['efectuadas'], 0)
             self.assertEqual(reporte.estadisticas[id_campana]['conectadas'], 0)
             self.assertEqual(
                 reporte.estadisticas[id_campana]['no_conectadas'], 0)
+            self.assertEqual(reporte.estadisticas[id_campana]['gestiones'], 1)
 
     def test_supervision_saliente_redis_family(self):
         CalificacionClienteFactory(opcion_calificacion=self.opcion_calificacion_m1,
@@ -305,11 +294,10 @@ class ReporteDeLLamadasSalientesDeSupervisionTest(TestCase):
                                    agente=self.agente1)
         reporte = ReporteDeLLamadasSalientesDeSupervision(self.supervisor.user)
         redis_saliente = ReporteLlamadasSalienteFamily()
-        for id_campana in [self.manual.id, self.dialer.id, self.preview.id]:
-            campana = Campana.objects.get(pk=id_campana)
-            datos_saliente = self._obtener_estadisticas_redis(campana)
-            redis_saliente._create_family(campana, datos_saliente)
-            datos_redis = redis_saliente.get_value(campana, 'ESTADISTICAS')
+        self.assertEqual(len(reporte.estadisticas.keys()), 2)
+        for id_campana in [self.manual.id, self.preview.id]:
             self.assertIn(id_campana, reporte.estadisticas)
-            self.assertEqual(reporte.estadisticas[id_campana], datos_saliente)
-            self.assertEqual(reporte.estadisticas[id_campana], json.loads(datos_redis))
+            datos_redis = redis_saliente._create_dict(reporte.estadisticas[id_campana])
+            self.assertEqual(datos_redis['NOMBRE'], reporte.estadisticas[id_campana]['nombre'])
+            self.assertEqual(
+                datos_redis['ESTADISTICAS'], json.dumps(reporte.estadisticas[id_campana]))

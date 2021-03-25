@@ -22,6 +22,7 @@ Servicio para generar reporte csv de las gestiones realizada por una campana
 """
 
 from __future__ import unicode_literals
+from ominicontacto_app.utiles import crear_archivo_en_media_root
 
 import csv
 import logging
@@ -33,8 +34,8 @@ from django.utils.encoding import force_text
 from django.utils.timezone import localtime
 from django.utils.translation import ugettext as _
 
-from ominicontacto_app.models import RespuestaFormularioGestion, OpcionCalificacion
-from ominicontacto_app.utiles import crear_archivo_en_media_root
+from ominicontacto_app.models import CalificacionCliente, OpcionCalificacion,\
+    RespuestaFormularioGestion
 
 
 logger = logging.getLogger(__name__)
@@ -110,7 +111,7 @@ class ArchivoDeReporteRespuestaFormularioCsv(object):
             csvwiter.writerow(lista_encabezados_utf8)
 
             # Iteramos cada una de las respuestas de la gestion del formulario
-            respuestas = RespuestaFormularioGestion.objects.filter(
+            respuestas = RespuestaFormularioGestion.history.filter(
                 calificacion__opcion_calificacion__campana=campana).select_related(
                     'calificacion').prefetch_related(
                         'calificacion__contacto', 'calificacion__agente',
@@ -121,7 +122,7 @@ class ArchivoDeReporteRespuestaFormularioCsv(object):
                 lista_opciones = []
 
                 # --- Buscamos datos
-                metadata_fecha_local = localtime(respuesta.fecha)
+                metadata_fecha_local = localtime(respuesta.history_date)
                 lista_opciones.append(metadata_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
                 lista_opciones.append(respuesta.calificacion.agente)
                 lista_opciones.append(respuesta.calificacion.contacto.telefono)
@@ -137,8 +138,17 @@ class ArchivoDeReporteRespuestaFormularioCsv(object):
 
                 # Datos de la respuesta
                 datos = json.loads(respuesta.metadata)
-                id_opcion = respuesta.calificacion.opcion_calificacion_id
-                posicion = posicion_opciones[id_opcion]
+                if respuesta.history_change_reason is not None:
+                    calif = CalificacionCliente.history.get(
+                        pk=respuesta.history_change_reason)
+                    id_opcion = calif.opcion_calificacion_id
+                    lista_opciones[len(lista_opciones) - 1] = calif.opcion_calificacion.nombre
+                else:
+                    id_opcion = respuesta.calificacion.opcion_calificacion_id
+                try:
+                    posicion = posicion_opciones[id_opcion]
+                except Exception:
+                    continue
                 # Relleno las posiciones vacias anteriores (de columnas de otro formulario)
                 posiciones_vacias = posicion - len(lista_opciones)
                 lista_opciones = lista_opciones + [''] * posiciones_vacias

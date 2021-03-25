@@ -168,7 +168,7 @@ class AuditoriaCalificacionFormView(FormView):
             if historica.callid:
                 callids.add(historica.callid)
 
-        grabaciones = LlamadaLog.objects.filter(callid__in=callids)
+        grabaciones = LlamadaLog.objects.filter(callid__in=callids, duracion_llamada__gt=0)
         grabaciones_por_callid = {}
         for grabacion in grabaciones:
             grabaciones_por_callid[grabacion.callid] = grabacion

@@ -17,105 +17,102 @@
      along with this program.  If not, see http://www.gnu.org/licenses/.
 
    -->
-{% extends 'base_create_update_form.html' %}
-{% load i18n %}
-{% load static %}
-{% block titles %}
-    <div class="row">
-        <div class="col-md-8">
-            <h1>{% trans 'Auditar calificación' %}</h1>
-        </div>
-        <div class="col-md-4">
-            <a href="#" data-toggle="modal" data-target="#modalContacto">
-                {% trans "Ver datos de Contacto" %}
-            </a>        
-        </div>
+{% extends 'base_create_update_form.html' %} {% load i18n %} {% load static %} {% block titles %}
+<div class="row">
+    <div class="col-md-8">
+        <h1>{% trans 'Auditar calificación' %}</h1>
     </div>
-    <div class="col-md-12">
-        <div class="panel panel-primary" id="result_panel">
-            <div class="panel-body">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>{% trans 'Calificación' %}</th>
-                            <th>{% trans 'Fecha' %}</th>
-                            <th>{% trans 'Observaciones' %}</th>
-                            <th>{% trans 'Grabación' %}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for historica in historia %}
-                            <tr>
-                                <td>{{ historica.calificacion.opcion_calificacion.nombre }}</td>
-                                <td>{{ historica.calificacion.history_date }}</td>
-                                <td>{{ historica.calificacion.observaciones }}</td>
-                                <td>
-                                    {% if historica.grabacion %}
-                                        <audio controls>
-                                            <source src="{{ historica.grabacion.url }}" type='audio/mpeg'>
+    <div class="col-md-4">
+        <a href="#" data-toggle="modal" data-target="#modalContacto">
+                {% trans "Ver datos de Contacto" %}
+            </a>
+    </div>
+</div>
+<div class="col-md-12">
+    <div class="panel panel-primary" id="result_panel">
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>{% trans 'Calificación' %}</th>
+                        <th>{% trans 'Fecha' %}</th>
+                        <th>{% trans 'Observaciones' %}</th>
+                        <th>{% trans 'Grabación' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for historica in historia %}
+                    <tr>
+                        <td>{{ historica.calificacion.opcion_calificacion.nombre }}</td>
+                        <td>{{ historica.calificacion.history_date }}</td>
+                        <td>{{ historica.calificacion.observaciones }}</td>
+                        <td>
+                            {% if historica.grabacion %}
+                            <audio controls>
+                                            <source src="{{base_url}}{{ historica.grabacion.url_archivo_grabacion }}" type='audio/mpeg'>
                                                 {% trans 'Escuchar' %}
                                         </audio>
-                                        <a href="{{ historica.grabacion.url }}" target="_blank">
-                                            <span class="glyphicon glyphicon-download-alt" aria-hidden="true" title="{% trans 'Descargar' %}"></span>
-                                        </a>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td>{% trans 'No tiene calificaciones anteriores' %}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+                            <a href="{{base_url}}{{ historica.grabacion.url_archivo_grabacion}}" target="_blank">
+                                <span class="glyphicon glyphicon-download-alt" aria-hidden="true" title="{% trans 'Descargar' %}"></span>
+                            </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td>{% trans 'No tiene calificaciones anteriores' %}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
 
-    <div class="modal fade" id="modalContacto" role="dialog">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title">{% trans 'Datos de Contacto' %}</h1>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<div class="modal fade" id="modalContacto" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title">{% trans 'Datos de Contacto' %}</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <table class="table table-striped">
-                                {% for key, values in datos_contacto.items %}
-                                <tr>
-                                    <td><strong>{{key|title}}</strong></td>
-                                    <td>{{values}}</td>
-                                </tr>
-                            {% endfor %}
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                {% if respuesta_formulario %}
-                <div class="modal-header">
-                    <h1 class="modal-title">{% trans 'Formulario de gestión' %}</h1>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <table class="table table-striped">
-                                {% for key, values in respuesta_formulario.items %}
-                                <tr>
-                                    <td><strong>{{key|title}}</strong></td>
-                                    <td>{{values}}</td>
-                                </tr>
-                            {% endfor %}
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
             </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-striped">
+                            {% for key, values in datos_contacto.items %}
+                            <tr>
+                                <td><strong>{{key|title}}</strong></td>
+                                <td>{{values}}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% if respuesta_formulario %}
+            <div class="modal-header">
+                <h1 class="modal-title">{% trans 'Formulario de gestión' %}</h1>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-striped">
+                            {% for key, values in respuesta_formulario.items %}
+                            <tr>
+                                <td><strong>{{key|title}}</strong></td>
+                                <td>{{values}}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
-    </div> 
+    </div>
+</div>
 
 {% endblock %}

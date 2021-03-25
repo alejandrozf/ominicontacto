@@ -49,19 +49,27 @@ function toggleRevision(audit_id) {
                     $('#toggle_revision').addClass('btn-primary');
                     $('#toggle_revision').html('Revisada');
                     message = gettext('Auditoría marcada como revisada');
+
+                    $('#toggle_revision').attr('revised', audit_status);
+                    $('#toggle_revision').show();
+                    $.growl.notice({
+                        'title': gettext('Revisada'),
+                        'message': message,
+                        'duration': 5000});
                 }
                 else {
                     audit_status = 'False';
                     $('#toggle_revision').addClass('btn-warning');
                     $('#toggle_revision').html('No revisada');
                     message = gettext('Auditoría marcada como no revisada');
+
+                    $('#toggle_revision').attr('revised', audit_status);
+                    $('#toggle_revision').show();
+                    $.growl.notice({
+                        'title': gettext('No revisada'),
+                        'message': message,
+                        'duration': 5000});
                 }
-                $('#toggle_revision').attr('revised', audit_status);
-                $('#toggle_revision').show();
-                $.growl.notice({
-                    'title': gettext('Agenda reasignada'),
-                    'message': message,
-                    'duration': 5000});
             }
             else {
                 // Show error message

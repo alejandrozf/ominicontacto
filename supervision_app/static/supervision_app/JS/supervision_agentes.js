@@ -20,9 +20,11 @@
 /* global Urls */
 /* global gettext */
 /* global PhoneJSController */
+/* global table_data */
 /* exported executeSupervisorAction */
 
 var phone_controller;
+var spied_agent_name;
 
 $(function (){
     var supervisor_id = $('#supervisor_id').val();
@@ -34,10 +36,19 @@ $(function (){
     window.addEventListener('beforeunload', preventLeaveOnCall);
 });
 
+function getSpiedAgentName(agent_id) {
+    $.map(table_data, function(agent) {
+        if(agent.id == agent_id.toString()) {
+            spied_agent_name = agent.nombre;
+        }
+    });
+}
+
 function executeSupervisorAction(pk_agent, action) {
+    getSpiedAgentName(pk_agent);
     // Ignoro acciones mientras este en llamada
     if (phone_controller.is_on_call()) {
-        $.growl.warning({ 
+        $.growl.warning({
             title: gettext('Atención!'),
             message: gettext('Debe finalizar la acción actual antes de realizar otra.')});
         return;
@@ -49,19 +60,19 @@ function executeSupervisorAction(pk_agent, action) {
         dataType: 'json',
         data: {'accion': action},
         success: function() {   // function(data)
-            
+
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
         },
-    });    
+    });
 }
 
 function preventLeaveOnCall(event) {
     if (phone_controller.is_on_call()) {
         phone_controller.phone.hangUp();
 
-        $.growl.warning({ 
+        $.growl.warning({
             title: gettext('Atención!'),
             message: gettext('Se ha registrado un intento de salir de esta pantalla. Su llamado ha finalizado.')});
 

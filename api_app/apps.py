@@ -97,8 +97,12 @@ class ApiAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'api_grabacion_archivo',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
+            {'nombre': 'api_grabacion_descarga_masiva',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Agente']},
             {'nombre': 'api_contactos_asignados_campana_preview',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_evento_hold',
+             'roles': ['Agente', ]},
         ]
 
     informacion_de_permisos = {
@@ -132,7 +136,8 @@ class ApiAppConfig(AppConfig):
         'api_supervision_campanas_entrantes':
             {'descripcion': _('Reporte de llamadas entrantes de supervisión.'), 'version': '1.7.0'},
         'api_supervision_campanas_salientes':
-            {'descripcion': _('Reporte de llamadas salientes de supervisión.'), 'version': '1.7.0'},
+            {'descripcion': _('Reporte de llamadas salientes no dialer de supervisión.'),
+             'version': '1.7.0'},
         'api_accion_sobre_agente':
             {'descripcion':
              _('Ejecuta acciones de supervisión sobre agente (Deslogueo, pausas, etc..)'),
@@ -186,7 +191,13 @@ class ApiAppConfig(AppConfig):
         'api_grabacion_archivo':
             {'descripcion': _('Retorna el archivo de grabación especificado'),
              'version': '1.11.0'},
+        'api_grabacion_descarga_masiva':
+            {'descripcion': _('Retorna Zip con archivos de grabación especificados'),
+             'version': '1.14.0'},
         'api_contactos_asignados_campana_preview':
             {'descripcion': _('Devuelve los contactos asignados de una campaña preview'),
              'version': '1.8.0'},
+        'api_evento_hold':
+            {'descripcion': _('Loggea el evento hold o unhold'),
+             'version': '1.13.0'},
     }

@@ -38,7 +38,7 @@ class AgenteTiemposReporte(object):
 
     def __init__(self, agente, tiempo_sesion, tiempo_pausa, tiempo_llamada,
                  cantidad_llamadas_procesadas, cantidad_intentos_fallidos,
-                 tiempo_llamada_saliente, cantidad_llamadas_saliente):
+                 tiempo_llamada_saliente, cantidad_llamadas_saliente, tiempo_hold):
 
         self._agente = agente
         self._tiempo_sesion = tiempo_sesion
@@ -48,6 +48,7 @@ class AgenteTiemposReporte(object):
         self._cantidad_intentos_fallidos = cantidad_intentos_fallidos
         self._tiempo_llamada_saliente = tiempo_llamada_saliente
         self._cantidad_llamadas_saliente = cantidad_llamadas_saliente
+        self._tiempo_hold = tiempo_hold
 
     @property
     def agente(self):
@@ -118,6 +119,10 @@ class AgenteTiemposReporte(object):
             return self.tiempo_wait / self.tiempo_sesion.total_seconds() * 100
         return None
 
+    @property
+    def tiempo_hold(self):
+        return self._tiempo_hold
+
     def _get_string(self, delta):
         if delta:
             dias = ''
@@ -139,6 +144,9 @@ class AgenteTiemposReporte(object):
         if self.tiempo_llamada:
             return datetime.timedelta(0, self.tiempo_llamada)
         return self.tiempo_llamada
+
+    def get_string_tiempo_hold(self):
+        return self._get_string(self.tiempo_hold)
 
     def get_promedio_llamadas(self):
         tiempo_llamada = self.tiempo_llamada.total_seconds()

@@ -1,5 +1,6 @@
 
 def process_event(x):
+    STREAM_LENGHT = %d
     value = x['value']
     try:
         streams = value['STREAMS'].split(',')
@@ -7,7 +8,7 @@ def process_event(x):
         streams = []
     for stream in streams:
         if execute('exists', stream) == 1:
-            execute('XADD', stream, 'MAXLEN', '~', 100, '*', 'value', value)
+            execute('XADD', stream, 'MAXLEN', '~', STREAM_LENGHT, '*', 'value', value)
 
 
 GearsBuilder(desc='sup_agent') \

@@ -120,6 +120,33 @@ class CampanaService():
                     break
         return dato_campana
 
+    def obtener_datos_campanas_json_de_wombat(self, salida, campanas_por_id_wombat):
+        """
+        Obtiene los datos del json obtenido en wombat formateando los datos que me interesan
+        para las campanas pasada por parametro
+        :param salida: salida del comando de la campanas corriendo en wombat
+        :param campanas_por_id_wombat: dict con campanas indexadas por id_wombat
+        :return: dict con los datos de las campanas indexados por id de campaña
+        """
+        results = salida['result']
+        campanas = results['campaigns']
+        ids_wombat = campanas_por_id_wombat.keys()
+        datos_campanas = {}
+        for campaign in campanas:
+            if campaign['campaignId'] in ids_wombat:
+                campana = campanas_por_id_wombat[campaign['campaignId']]
+                if campana.ESTADO_ACTIVA and campaign['state'] == 'RUNNING':
+                    datos_campanas[campana.id] = campaign
+                elif campana.ESTADO_PAUSADA and campaign['state'] == 'PAUSED':
+                    datos_campanas[campana.id] = campaign
+                elif campaign['state'] == 'COMPLETED':
+                    datos_campanas[campana.id] = campaign
+                elif campaign['state'] == 'WRONG_TIME':
+                    datos_campanas[campana.id] = campaign
+                elif campaign['state'] == 'IDLE':
+                    datos_campanas[campana.id] = campaign
+        return datos_campanas
+
     def obtener_datos_calls(self, salida):
         results = salida['result']
         llamadas = results['hopperState']
@@ -233,7 +260,7 @@ class CampanaService():
 
     def crear_endpoint_campana_wombat(self, campana):
         """
-        Crea endpoint para campaign en wombat via curl
+        Crea o edita endpoint para campaign en wombat via curl
         :param campana: campana para la cual se le creara endpoint
         :return: True si se guardo el ep_id en la queue_campana
         False si no lo guardo
@@ -243,7 +270,7 @@ class CampanaService():
         service_wombat_config = EndPointCreator()
         service_wombat_config.create_json(campana)
         url_edit = "api/edit/ep/?mode=E"
-        # crea endpoint en wombat
+        # crea o edita endpoint en wombat
         salida = service_wombat.update_config_wombat(
             "newep.json", url_edit)
         results = salida['results']
@@ -403,6 +430,20 @@ class CampanaService():
         else:
             return None
 
+    def obtener_datos_campanas_run(self, campanas_por_id_wombat):
+        """
+        obtiene los datos de las campanas pasada por parametro
+        :param campana: diccionario con campanas (por wombat_id) a la cual deseo obtener sus datos
+        :return: dict con los datos de la campanas indexado por id de campaña
+        """
+        service_wombat = WombatService()
+        url_edit = "api/live/runs/"
+        salida = service_wombat.list_config_wombat(url_edit)
+        if salida:
+            return self.obtener_datos_campanas_json_de_wombat(salida, campanas_por_id_wombat)
+        else:
+            return None
+
     def cambiar_base(self, campana, telefonos, evitar_duplicados, evitar_sin_telefono,
                      prefijo_discador):
         """
@@ -472,24 +513,6 @@ class CampanaService():
                 error = error_msg
         return error
 
-    def desasociacion_endpoint_campana_wombat(self, campana):
-        """
-        Desasocia endpoint de campana wombat
-        :param campana: campana a la caul se desaciociara el endpoint
-        """
-        url_delete = "api/edit/campaign/ep/?mode=D&parent={0}".format(
-            campana.campaign_id_wombat)
-        # crear json para eliminar lista de la campana en wombat
-        ep_association_object = {
-            "epId": {
-                "epId": campana.queue_campana.ep_id_wombat
-            }
-        }
-        service_wombat = WombatService()
-        service_wombat.post_json(url_delete, ep_association_object)
-        ep_object = {"epId": campana.queue_campana.ep_id_wombat}
-        service_wombat.post_json('api/edit/ep/?mode=D', ep_object)
-
     def update_endpoint(self, campana):
         """
         Cambiar endpoint cuando se actualiza una queue
@@ -497,12 +520,9 @@ class CampanaService():
 
         """
 
-        # elimina el end point de la campana en wombat
-        self.desasociacion_endpoint_campana_wombat(campana)
         # crea endpoint en wombat
         self.crear_endpoint_campana_wombat(campana)
-        # asocio endpoint a la campana en wombat
-        self.crear_endpoint_asociacion_campana_wombat(campana)
+
         # TODO: Deuda tecnica: Controlar posibles errores de las funciones llamadas.
         # actualiza boost_factor
         boost_factor = int(campana.queue_campana.initial_boost_factor * 100)

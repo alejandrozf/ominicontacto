@@ -75,7 +75,7 @@ class ContactoTests(unittest.TestCase):
         # Crear nueva base de datos
         try:
             csv_path = "/home/{0}/ominicontacto/ominicontacto_app/static/ominicontacto"\
-                "/oml-example-db.csv".format(USER)
+                "/example-db.csv".format(USER)
             BD_nueva = 'BD' + uuid.uuid4().hex[:5]
             multinum = False
             crear_BD(self.browser, csv_path, BD_nueva, multinum)
@@ -99,8 +99,7 @@ class ContactoTests(unittest.TestCase):
             self.browser.find_element_by_xpath('//a[@onclick]').click()
             sleep(1)
             self.browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
-            desocultar = '//tr[@id=\'{0}\']//td//a[contains(@href, "/desocultar/")]'.format(
-                BD_nueva)
+            desocultar = '//tr[@id=\'{0}\']//td//a[4]'.format(BD_nueva)
             get_href(self.browser, desocultar)
             self.assertTrue(self.browser.find_elements_by_xpath('//tr[@id=\'{0}\']'.format(
                 BD_nueva)))
@@ -113,7 +112,7 @@ class ContactoTests(unittest.TestCase):
         # Editar Lista de Contacto
         try:
             csv_path = "/home/{0}/ominicontacto/ominicontacto_app/static/ominicontacto"\
-                "/oml-example-db.csv".format(USER)
+                "/example-db.csv".format(USER)
             BD_nueva = 'BD' + uuid.uuid4().hex[:5]
             multinum = False
             crear_BD(self.browser, csv_path, BD_nueva, multinum)

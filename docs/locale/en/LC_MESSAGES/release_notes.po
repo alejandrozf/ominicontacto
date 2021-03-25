@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-12 15:49-0300\n"
+"POT-Creation-Date: 2021-03-25 11:12-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.7.0\n"
 
 # 1295f99c6c17472cbba8a404ebdb7332
 #: ../../release_notes.rst:2
@@ -23,190 +23,106 @@ msgstr "Release Notes"
 
 # f858723273b843d6adff9b0990d544ca
 #: ../../release_notes.rst:4
-#, fuzzy
-msgid "*Febrero 12, 2021*"
-msgstr "February 12, 2021"
+msgid "*Marzo 25, 2021*"
+msgstr "*March 25, 2021*"
 
 # 72c1e09fba78482f89fc614620d6fb02
 #: ../../release_notes.rst:7
-#, fuzzy
-msgid "Detalles de Release 1.13.0"
-msgstr "Release 1.13.0 details"
+msgid "Detalles de Release 1.14.0"
+msgstr "Release 1.14.0 details"
 
 # 9c1b5cbfd55146468aa76dfd30678120
 #: ../../release_notes.rst:10
 msgid "Nuevas funcionalidades"
 msgstr "New features"
 
-# 6c77510a01954c46b1e33e259e4b2983
+# f52afc06faf44a0fb9e1a8c900e7440f
 #: ../../release_notes.rst:11
 msgid ""
-"Una nueva interfaz para configurar el formato del nombre de los archivos "
-"de grabaciones fue implementada"
+"Llamadas fuera de campaña ahora es un permiso configurable a nivel "
+"Groupos de Agente."
 msgstr ""
-"A new interface for configure recording call filename format was added"
+"Call outside Campaign is now a permission and can be configured at Agent "
+"Group level."
 
-# 87243c7e31274eaa84d3c1b99eb8e2f4
+# e44c1b0990e04b82be9e51a8c19ee01c
 #: ../../release_notes.rst:12
-msgid "Se realizaron mejoras de performance para las vistas de supervision"
-msgstr "Supervision realtime pages were improved for better performance"
+msgid "El tiempo On Hold ahora se refleja en reportes."
+msgstr "On Hold time is now reflected on reports."
 
-# 2f5da4c65eb34f3f896bdd3aad9d2bb4
+# 8a000fca284846d1b6b03dd3cd921a84
 #: ../../release_notes.rst:13
-msgid "Se adicionaron alertas en tiempo real para agendas de agentes"
-msgstr "Realtime alerts for agent agendas were implemented"
+msgid ""
+"El historial de Respuestas de Calificaciones de Gestion esta ahora "
+"disponible en Reportes de calificaciones."
+msgstr "Engaged Dispositions History is now available in Disposition Reports."
 
-# 8c6db54475124bb2bea94c62084f3193
+# 2e28ea14441b4cf3a5da65871ee41e43
 #: ../../release_notes.rst:14
-msgid "Se implementó una nueva interfaz para configurar el comportamiento de los agentes por campaña"
-msgstr "A new interface to configure agents behaviour on a campaign was added"
-
-# 67c74502971b4bc78d2cfdfab276db44
-#: ../../release_notes.rst:15
-msgid "Se actualizó el componente Asterisk a la versión 16.16"
-msgstr "Asterisk component was updated to version 16.16"
-
-# df77dd9085fe491db8ee3caeeb8d8c47
-#: ../../release_notes.rst:16
-msgid "Una nueva interfaz para configurar el modulo AMD fue adicionada"
-msgstr "A new interface for configure AMD module was implemented"
-
-# 253cb46859134c96976259568cf8ac59
-#: ../../release_notes.rst:17
-msgid ""
-"La posibilidad de configurar un audio personalizado para que se "
-"reproducido en llamadas entrantes fue adicionada"
+msgid "Las grabaciones pueden seleccionarse y ser descargadas en un archivo ZIP."
 msgstr ""
-"The ability to configure a personalize audio file to be played before an inbound "
-"calls enters was added"
-
-# bc56cf18e6ad4a83bf70b1de1fadb00d
-#: ../../release_notes.rst:18
-msgid ""
-"La funcionalidad de seleccionar contacto en la consola de agente para una"
-" campaña preview fue mejorada"
-msgstr ""
-"Preview campaign contact selection for agent process was improved for usability"
-
-# b2da8a080b57492ab03bd78cf7dbb8c9
-#: ../../release_notes.rst:19
-msgid "El reporte general de agentes fue optimizado para mejor performance"
-msgstr "Agents general report was improved for performance"
-
-# b6f517f78b664d119a483879a82b585d
-#: ../../release_notes.rst:20
-msgid ""
-"Ahora se muestra información de los ids de campañas y formularios en sus "
-"respectivas vistas de listado"
-msgstr ""
-"Information about database ids was included in campaign and forms lists pages"
-
-# 09907e5ea21f44a49b794c72c0d41955
-#: ../../release_notes.rst:21
-msgid "La vista de 'Ver contactos asignados' para campañas preview fue mejorada"
-msgstr "Page 'View assigned contacts' for preview campaign was improved"
-
-# 4e71c48855b64b7095d7bbdbf56f17fd
-#: ../../release_notes.rst:22
-msgid ""
-"En el paso de asignar supervisores a campañas preview ahora se muestra "
-"información sobre el nombre y apellido del supervisor"
-msgstr ""
-"Name & surname information were added to assign supervisors to campaign step page"
-
-# ab0498089f4146248214fcdf6b1699d9
-#: ../../release_notes.rst:23
-msgid ""
-"Ahora es posible filtrar archivos de grabación de campañas eliminadas en "
-"la vista de búsqueda de grabaciones"
-msgstr ""
-"Now is possible to see recording call filenames for deleted campaings in "
-" recordings report"
-
-# 4b16890c6b5846528c2861844c0544a1
-#: ../../release_notes.rst:24
-msgid ""
-"El sistema ahora permite pasar variables de canal de Asterisk como "
-"parámetros en la interacción con un sitio externo"
-msgstr ""
-"Ability to pass Asterisk channel variables as parameters when interacting"
-" with an external CRM"
+"Audio Recordings can be  selected and downloaded in ZIP format for "
+"delivering purposes."
 
 # 0d03616757444df38b1cad07d4ee719f
-#: ../../release_notes.rst:30
+#: ../../release_notes.rst:20
 msgid "Fixes y mejoras"
 msgstr "Fixes and improvements"
 
-# d252cc06e5c542d99e062e13016b08ce
-#: ../../release_notes.rst:31
-msgid "Solucionado error en dialplan relacionado con AMD en llamadas dialer"
-msgstr "Fixed inconsistency error in dialplan when handling AMD in dialer calls"
-
-# 2f5da4c65eb34f3f896bdd3aad9d2bb4
-#: ../../release_notes.rst:32
-msgid "Solucionado error en dialplan al transferir una llamada a un agente"
-msgstr "Fixed inconsistency error in dialplan when transfer call to agent"
-
-# 10b95cafb4524bcabe046ca276d7b06c
-#: ../../release_notes.rst:33
-msgid "Solucionadas inconsistencias en el reporte de contactados de una campaña"
-msgstr "Fixed inconsistencies in campaign contacted calls report"
-
-# 9bca907606484e69913422e0b53218ab
-#: ../../release_notes.rst:34
+# 663825fcdf194badbbe38e6b02d16dc9
+#: ../../release_notes.rst:21
 msgid ""
-"Las campañas dialer son recargadas en Wombat luego de su "
-"creación/modificación."
+"Mejoras en Vista de Supervisión: Se usan componentes Redis y Websockets "
+"para mejorar rendimiento."
 msgstr ""
-"Dialer campaign are now reloaded in Wombat after create/update process"
+"Improvements in Supervision View: Redis and websockets componentes are "
+"used for better performance."
 
-# 6db5438ddf4a46169c3d55d5ff8d3670
-#: ../../release_notes.rst:35
+# 0e269fdf7c0e47368d139b06107d480c
+#: ../../release_notes.rst:22
+msgid "Reportes de campañas eliminadas quedan disponibles para supervisores."
+msgstr "Reports for Deleted campaigns are still available for supervisors."
+
+# f1c122152b694e888923c9e45fd64c99
+#: ../../release_notes.rst:23
+msgid "Manejo de posibles inconsistencias en logs de agentes mejorado."
+msgstr "Better handling of possible inconsistences in agent event logs."
+
+# 0b795fe260d34a9496c91d5b692967bc
+#: ../../release_notes.rst:24
+msgid "La lista de rutas entrantes ahora mantiene un orden fijo."
+msgstr "Inbound routes list keeps a defined order."
+
+# aea3036d1bd94964a77469ab12af63a3
+#: ../../release_notes.rst:25
+msgid "Nuevos tests de integración."
+msgstr "New integration tests are added."
+
+# 64791bbf06234501a78f0c43d1393f13
+#: ../../release_notes.rst:26
+msgid "Mejoras en la configuracion de campañas Dialer al editar campañas activas."
+msgstr "Improvements added on Dialer configuration when editing active campaigns."
+
+# 6cdc1c0427954a48a704b24ae46c140b
+#: ../../release_notes.rst:27
 msgid ""
-"Solucionada condición de carrera cuando un agente recibía una llamada "
-"entrante/dialer en medio de una transition de cierre a pausa"
+"El nombre del Agente ahora esta disponible al establecer acciones de "
+"spy/whisper en Supervisión."
 msgstr ""
-"Fixed race condition error when agent received inbound/dialer calls in a "
-"middle of transition from hangup to pause"
+"Agent name is now available in Supervisor View when establishing a "
+"whisper action."
 
-# fce2e6d9a59f4747a9e131bb0c615e0c
-#: ../../release_notes.rst:36
+# 99ac2e45828543e0ac92616b31701522
+#: ../../release_notes.rst:28
 msgid ""
-"Solucionado problema de compatibilidad con Excel al importar archivos "
-".csv en la funcionalidad de reordenar contactos en campañas preview"
+"Mejoras en la base de datos al bloquear contactos para las campañas "
+"Preview."
 msgstr ""
-"Fixed compatibility with Excel issue when importing .csv files in reorder"
-" contacts feature for preview campaigns"
+"Improvements in Preview campaigns for race conditions when locking "
+"contacts in database."
 
-# 4649f93f12bc4915b225f24e7d0ad51a
-#: ../../release_notes.rst:37
-msgid ""
-"El componente Ansible fue dockerizado para permitir realizar "
-"instalaciones remotes desde SO diferentes a Ubuntu-18.04"
-msgstr ""
-"Ansible component was dockerized to allow remote installation "
-"with other OS than Ubuntu-18.04"
+# 7388d4205cb548a69ff54e7f2163f190
+#: ../../release_notes.rst:29
+msgid "Actualización del componente Websockets."
+msgstr "Websockets component is updated."
 
-# 0c021852b98e4ea3ae1c5a77bb60fb56
-#: ../../release_notes.rst:38
-msgid ""
-"Ahora se muestran caracteres Unicode en la lista de calificaciones de la "
-"consola de agente y en la creación de formularios"
-msgstr ""
-"Unicode chars are now visualized in disposition list on agent console "
-"and form creation"
-
-# 7b7d4412dadf4b97999b3035317601c4
-#: ../../release_notes.rst:39
-msgid "Se mejoró el diseño del reporte general de llamadas"
-msgstr "Design of general calls report was improved"
-
-# 6330bc67cf1f48b4aba9385a987a6e5d
-#: ../../release_notes.rst:40
-msgid "Se solucionó error al mostrar node de destino personalizado"
-msgstr "Fix of custom destination node UI"
-
-# 413fb38189bf44c28447bb36c82c5eb4
-#: ../../release_notes.rst:41
-msgid "Se mejoró el script de coverage para hacerlo mas sencillo"
-msgstr "Coverage script was improved for simplicity"

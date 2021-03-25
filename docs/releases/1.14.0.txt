@@ -1,0 +1,24 @@
+===================================
+Omnileads (OML) 1.14.0 release notes
+===================================
+
+*March 25, 2021*
+
+What's new
+=========================
+- Call outside Campaign is now a permission and can be configured at Agent Group level.
+- On Hold time is now reflected on reports.
+- Engaged Dispositions History is now available in Disposition Reports.
+- Audio Recordings can be  selected and downloaded in ZIP format for delivering purposes.
+
+Fixes and improvements
+--------------------
+- Improvements in Supervision View: Redis and websockets componentes are used for better performance.
+- Reports for Deleted campaigns are still available for supervisors.
+- Better handling of possible inconsistences in agent event logs.
+- Inbound routes list keeps a defined order.
+- New integration tests are added.
+- Improvements added on Dialer configuration when editing active campaigns.
+- Agent name is now available in Supervisor View when establishing a whisper action.
+- Improvements in Preview campaigns for race conditions when locking contacts in database.
+- Websockets component is updated.

@@ -31,6 +31,7 @@ try:
     from pyvirtualdisplay import Display
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.common.by import By
     from integracion_metodos import (login, get_href, crear_campos_formulario, ADMIN_USERNAME,
                                      ADMIN_PASSWORD)
 except ImportError:
@@ -77,44 +78,44 @@ class FormularioTests(unittest.TestCase):
             get_href(self.browser, nuevo_formulario)
             nombre_form = 'form' + uuid.uuid4().hex[:5]
             descripcion = 'Este form fue generado para tests'
-            self.browser.find_element_by_id('id_nombre').send_keys(nombre_form)
-            self.browser.find_element_by_id('id_descripcion').send_keys(descripcion)
-            self.browser.find_element_by_xpath("//button[@type='submit']").click()
-            sleep(1)
+            self.browser.find_element(By.NAME, 'nombre').send_keys(nombre_form)
+            self.browser.find_element(By.NAME, 'descripcion').send_keys(descripcion)
+            self.browser.find_element(By.CSS_SELECTOR, ".btn-primary").click()
+            self.browser.implicitly_wait(3)
+
             nombre_campos = ['Nombre', 'Fecha_nacimiento', 'Opciones', 'Comentarios']
             crear_campos_formulario(self.browser, nombre_campos)
-            continuar = '//a[contains(@href, "/vista_previa/")]'
-            get_href(self.browser, continuar)
+            self.browser.find_element(By.CSS_SELECTOR, ".btn-primary").click()
+            self.browser.implicitly_wait(3)
             self.browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
-            self.browser.find_element_by_xpath("//button[@id='finalizar']").click()
-            sleep(1)
-            lista_form = '//a[contains(@href, "/formulario/list/")]'
-            get_href(self.browser, lista_form)
+            self.browser.find_element(By.CSS_SELECTOR, ".btn-primary").click()
+            self.browser.implicitly_wait(3)
+            self.browser.find_element(By.LINK_TEXT, "YES").click()
+            self.browser.implicitly_wait(3)
             self.browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
-            vista_previa = '//tr[@id = \'{0}\']//a[contains(@href, "/vista/")]'.format(
-                nombre_form)
-            get_href(self.browser, vista_previa)
+            self.browser.find_element(By.XPATH, '//tr[@id = \'{0}\']/td[4]/a'.format(nombre_form)
+                                      ).click()
             for items in nombre_campos:
-                self.assertTrue(self.browser.find_elements_by_name(items))
+                self.assertTrue(self.browser.find_elements(By.NAME, items))
                 print('--Se pudo crear un Formulario con un campo \'{0}\'.--'.format(items))
         except Exception as e:
             print('--ERROR: No se pudo crear un Formulario.-- \n{0}' .format(e))
             raise e
         # Ocultar y Mostrar Formulario.
         try:
-            get_href(self.browser, lista_form)
-            self.browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
-            self.browser.find_element_by_xpath(
-                '//tr[@id=\'{0}\']//span[@id="ocultar"]'.format(nombre_form)).click()
-            sleep(1)
-            self.browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
-            self.assertFalse(self.browser.find_elements_by_xpath(
-                '//tr[@id=\'{0}\']'.format(nombre_form)))
+            self.browser.find_element(By.CSS_SELECTOR, ".btn-outline-primary").click()
+            self.browser.implicitly_wait(3)
+            self.browser.find_element(By.XPATH, '//tr[@id=\'{0}\']/td[5]'.format(nombre_form)
+                                      ).click()  # oculto form
+            sleep(3)
+            self.assertFalse(self.browser.find_elements(By.XPATH, '//tr[@id=\'{0}\']'.format(
+                nombre_form)))
             mostrar_ocultos = '//a[contains(@href, "formulario/list/mostrar_ocultos/")]'
             get_href(self.browser, mostrar_ocultos)
-            self.browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
-            self.assertTrue(self.browser.find_elements_by_xpath(
-                '//tr[@id=\'{0}\']'.format(nombre_form)))
+            self.browser.find_element(By.XPATH, '//tr[@id=\'{0}\']/td[5]'.format(nombre_form)
+                                      ).click()  # muestro form
+            self.assertTrue(self.browser.find_elements(By.XPATH, '//tr[@id=\'{0}\']'.format(
+                nombre_form)))
             print('--Se pudo ocultar y mostrar un formulario.--')
         except Exception as e:
             print('--ERROR: No se pudo ocultar y mostrar un formulario.-- \n{0}'.format(e))

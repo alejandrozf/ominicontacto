@@ -151,23 +151,19 @@ def crear_blacklist(browser, path, base_datos):
 
 def crear_campos_formulario(browser, campos):
     for items in campos:
-        browser.find_element_by_name('nombre_campo').send_keys(items)
+        browser.find_element(By.NAME, 'nombre_campo').send_keys(items)
         if items == 'Nombre':
-            browser.find_elements_by_xpath(
-                '//select[@id=\'id_tipo\']/option')[1].click()
+            browser.find_element(By.XPATH, "//option[. = 'Text']").click()
         elif items == 'Fecha_nacimiento':
-            browser.find_elements_by_xpath(
-                '//select[@id=\'id_tipo\']/option')[2].click()
+            browser.find_element(By.XPATH, "//option[. = 'Date']").click()
         elif items == 'Opciones':
-            browser.find_elements_by_xpath(
-                '//select[@id=\'id_tipo\']/option')[3].click()
+            browser.find_element(By.XPATH, "//option[. = 'List']").click()
             for i in range(10):
-                browser.find_element_by_id('id_value_item').send_keys(i)
-                browser.find_element_by_id('agregar_lista').click()
+                browser.find_element(By.NAME, "value_item").send_keys(i)
+                browser.find_element(By.ID, "agregar_lista").click()
                 sleep(1)
         elif items == 'Comentarios':
-            browser.find_elements_by_xpath(
-                '//select[@id=\'id_tipo\']/option')[4].click()
+            browser.find_element(By.XPATH, "//option[. = 'Text area box']").click()
         browser.find_element_by_xpath("//button[@type='submit']").click()
         sleep(1)
 

@@ -57,7 +57,13 @@ class BusquedaGrabacionFormView(FormView):
         page = self.kwargs['pagina']
         if context['pagina']:
             page = context['pagina']
-        result_paginator = django_paginator.Paginator(qs, 40)
+
+        if 'grabaciones_x_pagina' in context:
+            grabaciones_x_pagina = context['grabaciones_x_pagina']
+        else:
+            grabaciones_x_pagina = 10
+
+        result_paginator = django_paginator.Paginator(qs, grabaciones_x_pagina)
         try:
             qs = result_paginator.page(page)
         except django_paginator.PageNotAnInteger:
@@ -70,6 +76,7 @@ class BusquedaGrabacionFormView(FormView):
         context['calificaciones'] = self._get_calificaciones(qs)
         context['base_url'] = "%s://%s" % (self.request.scheme,
                                            self.request.get_host())
+        context['user_id'] = self.request.user.id
         return context
 
     def _get_campanas(self):
@@ -118,6 +125,7 @@ class BusquedaGrabacionFormView(FormView):
         gestion = form.cleaned_data.get('gestion', False)
         campanas = self._get_campanas()
         pagina = form.cleaned_data.get('pagina')
+        grabaciones_x_pagina = form.cleaned_data.get('grabaciones_x_pagina')
         listado_de_grabaciones = self._get_grabaciones_por_filtro(fecha_desde, fecha_hasta,
                                                                   tipo_llamada, tel_cliente,
                                                                   callid, id_contacto_externo,
@@ -125,7 +133,8 @@ class BusquedaGrabacionFormView(FormView):
                                                                   marcadas, duracion, gestion)
 
         return self.render_to_response(self.get_context_data(
-            listado_de_grabaciones=listado_de_grabaciones, pagina=pagina))
+            listado_de_grabaciones=listado_de_grabaciones, pagina=pagina,
+            grabaciones_x_pagina=grabaciones_x_pagina))
 
     def _get_grabaciones_por_filtro(self, fecha_desde, fecha_hasta, tipo_llamada, tel_cliente,
                                     callid, id_contacto_externo, agente, campana, campanas,

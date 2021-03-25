@@ -185,6 +185,7 @@ class OMLAPI {
             'pk_contacto': contact_id,
             'telefono': phone,
             'click2call_type': click2call_type,
+            '404_on_error': true,
         };
         $.ajax({
             url: URL,
@@ -195,7 +196,7 @@ class OMLAPI {
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
-                alert(gettext('No se pudo iniciar la llamada. Intente Nuevamente.'));
+                alert(gettext('No se pudo iniciar la llamada. Consulte con su Administrador.'));
             }
         });
     }
@@ -257,5 +258,20 @@ class OMLAPI {
 
         });
         
+    }
+
+    eventHold(){
+        var URL = Urls.api_evento_hold();
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            dataType: 'json',
+            success: function(msg){
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
+            }
+        });
+
     }
 }

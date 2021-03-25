@@ -18,12 +18,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
 {% extends "base.html" %} {% load static %} {% load i18n %} {% block head_js %}
+<script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/select2.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/busqueda_grabacion.js' %}"></script>
 {% endblock %} {% block content %} {% load calificacion_grabacion %}
 
 <h1>{% trans 'Buscar grabación' %}</h1>
-
+<input id="user_id" type="hidden" value="{{user_id}}">
 <div id="wrapper-search">
     <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span>
         {% trans 'Buscar' %}</button>
@@ -36,11 +37,26 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </form>
     </div>
 </div>
-
 <div class="wrapper-results">
+    <div class="row ml-2">
+        <div class="col-md-3">
+            <div class="row">
+                <input type="button" class="btn btn-outline-primary btn-sm mb-2" value="{% trans 'Generar zip de grabaciones' %}" id="zipGrabaciones"></input>
+                <a class="hidden mb-2" id="zipDescargaLink">{% trans "Descargar archivo de grabaciones (ZIP)" %}</a>
+            </div>
+            <div id="barraProgresoZip" class="hidden mt-1">
+                <div class="progress ">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+    </div>
     <table class="table table-stripped">
         <thead>
             <tr>
+                <th>
+                    <input class=" ml-0 mt-0" type="checkbox" value="" id="check-general">
+                </th>
                 <th></th>
                 <th>{% trans 'Fecha' %}</th>
                 <th>{% trans 'Tipo de llamada' %}</th>
@@ -54,7 +70,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </thead>
         <tbody>
             {% for grabacion in listado_de_grabaciones %}
-            <tr>
+            <tr id="tr-{{grabacion.origen.id}}">
+                <td> <input class="form-check-input ml-0 check-grabacion" type="checkbox" value="{{grabacion.origen.id}}"></td>
                 <td>
                     {% if grabacion.transfer %}
                     <a class="btn btn-primary p-1" data-toggle="collapse" href="#grab{{grabacion.origen.id}}" role="button" aria-expanded="false" aria-controls="collapseExample">
@@ -102,7 +119,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </tr>
             {% if grabacion.transfer %}
             <tr class="collapse grab" id="grab{{grabacion.origen.id}}">
-                <td></td>
+                <td colspan="2"></td>
                 <td>{{ grabacion.transfer.time|date:"Y-m-d H:i"}}</td>
                 <td>{{ grabacion.transfer.tipo_llamada_show}}</td>
                 <td>{{ grabacion.transfer.numero_marcado}}</td>
@@ -222,7 +239,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script>
     /* se activa en todos los campos de selección un plugin para
-                                                                                                                                                                                                                                                                                                                                                                                                                                                       JQuery que permite una mejor búsqueda */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       JQuery que permite una mejor búsqueda */
     $(document).ready(function() {
 
         $('select.form-control').each(function() {

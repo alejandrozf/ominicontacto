@@ -17,56 +17,97 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
-{% extends "base.html" %}
-{% load i18n %}
-{% load static %}
+{% extends "base.html" %} {% load i18n %} {% load static %} {% block content %}
 
-{% block content %}
+<h1>{% trans 'Campaña' %} {{ campana.nombre }}</h1>
 
-               <h1>{% trans 'Campaña' %} {{ campana.nombre }}</h1>
-
-                {% if campana.fecha_inicio %}
-                    <h3>{% trans 'Desde:' %} {{ campana.fecha_inicio|date:"d/m/Y" }}</h3>
-                    <h3>{% trans 'Hasta:' %} {{ campana.fecha_fin|date:"d/m/Y" }}</h3>
+{% if campana.fecha_inicio %}
+<h3>{% trans 'Desde:' %} {{ campana.fecha_inicio|date:"d/m/Y" }}</h3>
+<h3>{% trans 'Hasta:' %} {{ campana.fecha_fin|date:"d/m/Y" }}</h3>
+{% endif %}
+<h3>{% trans 'Base Datos:' %} {{ campana.bd_contacto }}</h3>
+<br>
+<a class="btn btn-outline-primary" href="{% url 'exporta_campana_reporte_calificacion' campana.pk %}">{% trans 'Exportar Calificación(CSV)' %}</a>
+<a class="btn btn-outline-primary" href="{% url 'exporta_reporte_calificaciones_gestion' campana.pk %}">{% trans 'Exportar Gestión:' %} (CSV)</a>
+<table class="table">
+    <thead>
+        <tr class="fts-table-bg">
+            <th></th>
+            <th>{% trans 'Teléfono' %}</th>
+            <th>{% trans 'Datos' %}</th>
+            <th>{% trans 'Calificación' %}</th>
+            <th>{% trans 'Observaciones' %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for calificacion in historico_calificaciones %}
+        <tr>
+            <td>
+                {% if calificacion.tiene_historico %}
+                <a class="btn btn-primary p-1" data-toggle="collapse" href="#cal{{calificacion.id}}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                    <i class="fa fa-chevron-circle-up"></i>
+                    <i class="fa fa-chevron-circle-down"></i>
+                </a>
                 {% endif %}
-                <h3>{% trans 'Base Datos:' %} {{ campana.bd_contacto }}</h3>
-                <br>
-                <a class="btn btn-outline-primary" href="{% url 'exporta_campana_reporte_calificacion' campana.pk %}">{% trans 'Exportar Calificación(CSV)' %}</a>
-                <a class="btn btn-outline-primary" href="{% url 'exporta_reporte_calificaciones_gestion' campana.pk %}">{% trans 'Exportar Gestión:' %} (CSV)</a>
-                <table class="table">
-                    <thead>
-                      <tr class="fts-table-bg">
-                          <th>{% trans 'Teléfono' %}</th>
-                          <th>{% trans 'Datos' %}</th>
-                          <th>{% trans 'Calificación' %}</th>
-                          <th>{% trans 'Observaciones' %}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                        {% for calificacion in calificaciones %}
+            </td>
+            <td>
+                {{ calificacion.telefono }}
+            </td>
+            <td>
+                {{ calificacion.datos}}
+            </td>
+            <td>
+                {{ calificacion.calif_actual.nombre}}
+            </td>
+            <td>
+                {{ calificacion.calif_actual.observaciones}}
+            </td>
+        </tr>
+        <tr class="collapse grab" id="cal{{calificacion.id}}">
+            <td></td>
+            <td colspan="4">
+                <div>
+                    <h3>{% trans 'Histórico de calificaciones' %}</h3>
+                </div>
+                <div>
+                    <table class="table">
+                        <thead>
+                            <tr class="fts-table-bg">
+                                <th>{% trans 'Fecha' %}-{% trans 'Hora' %}</th>
+                                <th>{% trans 'Calificación' %}</th>
+                                <th>{% trans 'Observaciones' %}</th>
+                                <th>{% trans 'Gestiones' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for calif_historica in calificacion.cals.values %}
                             <tr>
+                                <td>{{calif_historica.fecha_hora}}</td>
+                                <td>{{calif_historica.nombre}}</td>
+                                <td>{{calif_historica.observaciones}}</td>
                                 <td>
-                                    {{ calificacion.contacto.telefono }}
-                                </td>
-                                <td>
-                                    {{ calificacion.contacto.datos}}
-                                </td>
-                                 <td>
-                                    {{ calificacion.opcion_calificacion.nombre }}
-                                </td>
-                                <td>
-                                    {% if calificacion.observaciones %}
-                                        {{calificacion.observaciones}}
-                                    {% endif %}
+                                    {% for gestion in calif_historica.gestiones %} {{gestion}}
+                                    <br/> {% endfor %}
                                 </td>
                             </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="16">
-                                    <p>{% trans 'No se encontraron Calificaciones para esta campaña.' %}</p>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                            {%endfor%}
+                        </tbody>
+                    </table>
+
+                </div>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="16">
+                <p>{% trans 'No se encontraron Calificaciones para esta campaña.' %}</p>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %} {% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'ominicontacto/CSS/listado_calificaciones.css' %}">
+</link>
 {% endblock %}

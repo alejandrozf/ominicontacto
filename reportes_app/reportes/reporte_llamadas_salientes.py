@@ -36,12 +36,10 @@ class ReporteDeLLamadasSalientesDeSupervision(object):
         'no_conectadas': 0,
         'gestiones': 0,
     }
-    EVENTOS_LLAMADA = ('DIAL', 'CONNECT', 'ANSWER') + \
-        LlamadaLog.EVENTOS_NO_CONEXION
+    EVENTOS_LLAMADA = ('DIAL', 'ANSWER') + LlamadaLog.EVENTOS_NO_CONEXION
 
     def __init__(self):
-        query_campanas = Campana.objects.obtener_actuales().filter(type__in=[Campana.TYPE_DIALER,
-                                                                             Campana.TYPE_PREVIEW,
+        query_campanas = Campana.objects.obtener_actuales().filter(type__in=[Campana.TYPE_PREVIEW,
                                                                              Campana.TYPE_MANUAL])
         self.campanas = {}
         for campana in query_campanas:
@@ -98,13 +96,6 @@ class ReporteDeLLamadasSalientesDeSupervision(object):
 
         elif log.event in LlamadaLog.EVENTOS_NO_CONEXION:
             datos_campana['no_conectadas'] += 1
-        # Si es DIALER:
-        elif log.tipo_campana == Campana.TYPE_DIALER:
-            # Si es CONNECT en DIALER
-            if log.event == 'CONNECT':
-                datos_campana['conectadas'] += 1
-            elif log.event == 'ANSWER' and log.tipo_llamada == Campana.TYPE_MANUAL:
-                datos_campana['conectadas'] += 1
         # Si es MANUAL o PREVIEW
         elif log.event == 'ANSWER':
             datos_campana['conectadas'] += 1
@@ -119,9 +110,9 @@ class ReporteLlamadasSalienteFamily(AbstractRedisFamily):
         }
         return dict_saliente
 
-    def _create_family(self, campana, datos_saliente):
+    def _create_family(self, campana_id, datos_saliente):
         redis_connection = self.get_redis_connection()
-        family = self._get_nombre_family(campana)
+        family = self._get_nombre_family(campana_id)
         variables = self._create_dict(datos_saliente)
         try:
             redis_crea_family = redis_connection.hset(family, mapping=variables)
@@ -139,8 +130,8 @@ class ReporteLlamadasSalienteFamily(AbstractRedisFamily):
             modelos = self._obtener_todos()
 
         for familia_member in modelos:
-            campana = Campana.objects.get(pk=familia_member[0])
-            self._create_family(campana, familia_member[1])
+            campana_id = familia_member[0]
+            self._create_family(campana_id, familia_member[1])
 
     def _obtener_todos(self):
         reporte = ReporteDeLLamadasSalientesDeSupervision()
@@ -148,22 +139,22 @@ class ReporteLlamadasSalienteFamily(AbstractRedisFamily):
 
     def get_value(self, campana, key):
         redis_connection = self.get_redis_connection()
-        family = self._get_nombre_family(campana)
+        family = self._get_nombre_family(campana.id)
         try:
             value = redis_connection.hget(family, key)
             return value
         except (RedisError) as e:
             raise e
 
-    def _get_nombre_family(self, campana):
-        return "{0}:{1}".format(self.get_nombre_families(), campana.id)
+    def _get_nombre_family(self, campana_id):
+        return "{0}:{1}".format(self.get_nombre_families(), campana_id)
 
     def get_nombre_families(self):
         return "OML:SUPERVISION_SALIENTE"
 
     def get_family(self, campana):
         redis_connection = self.get_redis_connection()
-        family = self._get_nombre_family(campana)
+        family = self._get_nombre_family(campana.id)
         try:
             value = redis_connection.hgetall(family)
             return value
@@ -175,7 +166,8 @@ class ReporteLlamadasSalienteFamily(AbstractRedisFamily):
         self._delete_tree_family()
         self._create_families()
 
-    def regenerar_family(self, campana):
-        """regenera una family"""
-        self.delete_family(campana.id)
-        self._create_family(campana.id)
+    # def regenerar_family(self, campana):
+    # Necesitaria correr el reporte para regenerarla
+    #     """regenera una family"""
+    #     self.delete_family(campana.id)
+    #     self._create_family(campana.id)
