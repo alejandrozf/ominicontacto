@@ -15,20 +15,12 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: reportes_app/static/reportes_app/JS/reporte_grafico_campana.js:30
-msgid "Descargar Reporte de "
+#: configuracion_telefonia_app/static/configuracion_telefonia_app/JS/esquema_grabacion.js:25
+msgid ""
+"Atención: el ID de Agente como variable no está disponible para campañas "
+"Entrantes ni Salientes de Discador"
 msgstr ""
-
-#: reportes_app/static/reportes_app/JS/reporte_grafico_campana.js:48
-msgid "Error al ejecutar => "
-msgstr ""
-
-#: reportes_app/static/reportes_app/JS/reporte_grafico_campana.js:92
-msgid "Exportación completa"
-msgstr ""
-
-#: reportes_app/static/reportes_app/JS/reporte_grafico_campana.js:94
-msgid "La exportación a .csv del reporte de "
-msgstr ""
+"Atention: the Agent ID as a variable is not available for Inbound or "
+"Dialer campaigns"

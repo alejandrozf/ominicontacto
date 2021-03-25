@@ -205,6 +205,7 @@ class Click2CallView(APIView):
             form = Click2CallOMLParametersForm(request.data)
 
         if form.is_valid():
+            # TODO: Verificar que el agente que dispara la llamada es el mismo de la autenticación
             agente = form.get_agente()
             campana = form.get_campana()
             contacto_id = form.get_contacto_id()

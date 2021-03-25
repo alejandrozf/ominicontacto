@@ -254,8 +254,9 @@ class TiemposAgente(object):
                 time_actual = log.time
             if log.event == 'UNPAUSEALL' or log.event == 'REMOVEMEMBER':
                 time_actual = log.time
+
+        datos_de_pausa = self._obtener_datos_de_pausa(str(pausa_id))
         for item in tiempos_pausa:
-            datos_de_pausa = self._obtener_datos_de_pausa(str(pausa_id))
             tiempo = str(timedelta(seconds=tiempos_pausa[item].seconds))
             tiempo_agente = {
                 'fecha': item,

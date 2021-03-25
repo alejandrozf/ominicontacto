@@ -36,7 +36,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <tr>
             <td>{{ musica.nombre }}</td>
             <td>
-                <audio id="audio" preload="metadata" src="{{ musica.audio_original.url }}" controls></audio>
+                <audio id="audio" preload="metadata" src="{{base_url}}{{ musica.audio_original.url }}" controls></audio>
             </td>
             <td>
                 <a class="dropdown-item" href="{% url 'eliminar_musica_de_espera' musica.pk %}">

@@ -34,6 +34,7 @@ from django.utils.timezone import localtime
 from django.utils.translation import ugettext_lazy as _
 
 from ominicontacto_app.utiles import crear_archivo_en_media_root
+from ominicontacto_app.models import CalificacionCliente
 
 
 logger = logging.getLogger(__name__)
@@ -69,7 +70,6 @@ class ArchivoDeReporteCsv(object):
             self.sufijo_nombre_de_archivo)
 
     def escribir_archivo_csv(self, calificaciones_qs):
-
         with open(self.ruta, 'w', encoding='utf-8') as csvfile:
             # Creamos encabezado
             encabezado = []
@@ -95,9 +95,14 @@ class ArchivoDeReporteCsv(object):
             # Iteramos cada uno de las calificaciones de la campana
             for calificacion in calificaciones_qs:
                 lista_opciones = []
-
+                ultima_calif_contacto = CalificacionCliente.history.filter(
+                    contacto__id=calificacion.contacto_id).order_by('history_date').last()
                 # --- Buscamos datos
-                calificacion_fecha_local = localtime(calificacion.fecha)
+
+                if ultima_calif_contacto.history_date > calificacion.fecha:
+                    calificacion_fecha_local = localtime(ultima_calif_contacto.history_date)
+                else:
+                    calificacion_fecha_local = localtime(calificacion.fecha)
                 lista_opciones.append(calificacion_fecha_local.strftime("%Y/%m/%d %H:%M:%S"))
                 lista_opciones.append(calificacion.agente)
                 lista_opciones.append(_("Contactado"))
