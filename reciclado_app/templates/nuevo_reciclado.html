@@ -22,28 +22,40 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 
 {% block content %}
+
 <div clas="row">
     <form action = "" method = "post" enctype="multipart/form-data" role="form">
         {% csrf_token %}
         {{ form.non_field_errors }}
-        {% for pk, choice in form.reciclado_calificacion.field.widget.choices %}
-            <div class="form-row">
-                <label  for="id_{{ forloop.counter0 }}"><input id="id_{{ forloop.counter0 }}" name="reciclado_calificacion" type="checkbox" value="{{pk}}" />
-                {{ choice }}
-                </label>
-            </div>
-        {% endfor %}
-        {% for pk, choice in form.reciclado_no_contactacion.field.widget.choices %}
-        <div class="form-row">
+        <table class="table" style="width:500px">
+            <thead>
+                <tr>
+                    <th>{% trans 'Nombre' %}</th>
+                    <th style="text-align: center">{% trans 'Cantidad' %}</th>
+                    <th style="text-align: center">{% trans 'Seleccionar' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pk, nombre, numero in contactados %}
+                    <tr>
+                        <td width="55%">{{ nombre }}</td>
+                        <td width="25%" style="text-align: center">{{ numero }}</td>
+                        <td width="20%" style="text-align: center"><input id="id_{{ forloop.counter0 }}" name="reciclado_calificacion" type="checkbox" value="{{pk}}" /></td>
+                    </tr>
+                {% endfor %}
+                {% for pk, nombre, numero in no_contactados %}
+                <div class="form-row">
+                    <tr>
+                        <td width="55%">{{ nombre }}</td>
+                        <td width="25%" style="text-align: center">{{ numero }}</td>
+                        <td width="20%" style="text-align: center"><input id="id_no_{{ forloop.counter0 }}" name="reciclado_no_contactacion" type="checkbox" value="{{pk}}" /></td>
+                    </tr>
+                </div>
+                {% endfor %}
+            </tbody>
+        </table>
 
-            <label  for="id_no_{{ forloop.counter0 }}"><input id="id_no_{{ forloop.counter0 }}" name="reciclado_no_contactacion" type="checkbox" value="{{pk}}" />
-                {{ choice }}
-            </label>
-        </div>
-
-         {% endfor %}
-
-        <h3>{% trans 'Como desea reciclar esta campana' %}</h3>
+        <h2>{% trans 'Como desea reciclar esta campana' %}</h2>
         <div class="form-row">
                     {{ form.reciclado_radio.0 }}
         </div>

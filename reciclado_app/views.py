@@ -104,6 +104,20 @@ class ReciclarCampanaMixin(object):
             update_campana = self._reciclar_misma_campana(campana)
             return HttpResponseRedirect(reverse(update_campana, kwargs={"pk_campana": campana.pk}))
 
+    def get_context_data(self, **kwargs):
+        context = super(ReciclarCampanaMixin, self).get_context_data(**kwargs)
+        estadisticas = EstadisticasContactacion()
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        contactados = estadisticas.obtener_cantidad_calificacion(campana)
+        contactados_choice = [(contactacion.id, contactacion.nombre, contactacion.cantidad)
+                              for contactacion in contactados]
+        no_contactados = estadisticas.obtener_cantidad_no_contactados(campana)
+        no_contactados_choice = [(value.id, value.nombre, value.cantidad)
+                                 for key, value in no_contactados.items()]
+        context['contactados'] = contactados_choice
+        context['no_contactados'] = no_contactados_choice
+        return context
+
 
 class ReciclarCampanaDialerFormView(ReciclarCampanaMixin, FormView):
     """
