@@ -79,6 +79,9 @@ function crossData(tableData, newData) {
                     if (newData[key].status == '' || newData[key].status == 'OFFLINE') {
                         resData.splice(index, 1);
                     } else {
+                        if (newData[key].status == 'UNAVAILABLE') {
+                            newData[key].status = resData[index].status + '-' + newData[key].status;
+                        }
                         resData[index] = newData[key];
                     }
                     found = true;
