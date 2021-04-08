@@ -1062,6 +1062,7 @@ class Campana(models.Model):
     outcid = models.CharField(max_length=128, null=True, blank=True)
     outr = models.ForeignKey('configuracion_telefonia_app.RutaSaliente', blank=True, null=True,
                              on_delete=models.CASCADE)
+    speech = models.TextField(blank=True, null=True)
 
     # TODO: 'supervisors' debería referenciar a SupervisorProfile no a User
     supervisors = models.ManyToManyField(User, related_name="campanasupervisors")

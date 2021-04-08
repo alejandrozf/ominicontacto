@@ -113,6 +113,7 @@ class CampanaTemplateCreateCampanaMixin(object):
                 'objetivo': campana_template.objetivo,
                 'outr': campana_template.outr,
                 'outcid': campana_template.outcid,
+                'speech': campana_template.speech,
                 'es_template': False}
         elif step == self.COLA:
             step_cleaned_data = self.get_cleaned_data_for_step(self.INICIAL)
