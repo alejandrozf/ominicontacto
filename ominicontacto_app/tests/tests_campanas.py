@@ -1285,7 +1285,7 @@ class SupervisorCampanaTests(CampanasTests):
     @patch.object(CampanaService, 'crear_campana_wombat')
     @patch.object(CampanaService, 'crear_trunk_campana_wombat')
     @patch.object(CampanaService, 'crear_reschedule_campana_wombat')
-    @patch.object(CampanaService, 'crear_endpoint_campana_wombat')
+    @patch.object(CampanaService, 'guardar_endpoint_campana_wombat')
     @patch.object(CampanaService, 'crear_endpoint_asociacion_campana_wombat')
     @patch.object(CampanaService, 'crear_lista_contactos_wombat')
     @patch.object(CampanaService, 'crear_lista_asociacion_campana_wombat')
@@ -1298,7 +1298,7 @@ class SupervisorCampanaTests(CampanasTests):
     def test_usuario_logueado_puede_crear_campana_dialer(
             self, adicionar_agente_activo_cola, obtener_sip_agentes_sesiones_activas,
             crear_campana_wombat, crear_trunk_campana_wombat, crear_reschedule_campana_wombat,
-            crear_endpoint_campana_wombat, crear_endpoint_asociacion_campana_wombat,
+            guardar_endpoint_campana_wombat, crear_endpoint_asociacion_campana_wombat,
             crear_lista_contactos_wombat, reload_campana_wombat,
             crear_lista_asociacion_campana_wombat,
             chequear_campanas_finalizada_eliminarlas, crear_lista,
@@ -1563,7 +1563,7 @@ class SupervisorCampanaTests(CampanasTests):
     @patch.object(CampanaService, 'crear_campana_wombat')
     @patch.object(CampanaService, 'crear_trunk_campana_wombat')
     @patch.object(CampanaService, 'crear_reschedule_campana_wombat')
-    @patch.object(CampanaService, 'crear_endpoint_campana_wombat')
+    @patch.object(CampanaService, 'guardar_endpoint_campana_wombat')
     @patch.object(CampanaService, 'crear_endpoint_asociacion_campana_wombat')
     @patch.object(CampanaService, 'crear_lista_contactos_wombat')
     @patch.object(CampanaService, 'crear_lista_asociacion_campana_wombat')
@@ -1576,7 +1576,7 @@ class SupervisorCampanaTests(CampanasTests):
     def test_usuario_logueado_puede_crear_campana_dialer_desde_template(
             self, adicionar_agente_cola, obtener_sip_agentes_sesiones_activas,
             reload_campana_wombat, crear_campana_wombat, crear_trunk_campana_wombat,
-            crear_reschedule_campana_wombat, crear_endpoint_campana_wombat,
+            crear_reschedule_campana_wombat, guardar_endpoint_campana_wombat,
             crear_endpoint_asociacion_campana_wombat, crear_lista_contactos_wombat,
             crear_lista_asociacion_campana_wombat, crear_lista,
             _generar_y_recargar_configuracion_asterisk, chequear_campanas_finalizada_eliminarlas,

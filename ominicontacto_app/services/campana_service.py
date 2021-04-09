@@ -258,7 +258,7 @@ class CampanaService():
             dialer_call_id, regla.wombat_id)
         service_wombat.set_call_ext_status(url_notify)
 
-    def crear_endpoint_campana_wombat(self, campana):
+    def guardar_endpoint_campana_wombat(self, campana):
         """
         Crea o edita endpoint para campaign en wombat via curl
         :param campana: campana para la cual se le creara endpoint
@@ -271,8 +271,7 @@ class CampanaService():
         service_wombat_config.create_json(campana)
         url_edit = "api/edit/ep/?mode=E"
         # crea o edita endpoint en wombat
-        salida = service_wombat.update_config_wombat(
-            "newep.json", url_edit)
+        salida = service_wombat.update_config_wombat("newep.json", url_edit)
         results = salida['results']
         # obtengo ep_id del endpoint recientemente creado
         ep_id = results[0]['epId']
@@ -370,6 +369,9 @@ class CampanaService():
         url_edit = "api/campaigns/?op=unpause&campaign={0}".format(nombre_campana)
         url = '/'.join([settings.OML_WOMBAT_URL, url_edit])
         self._requests_post_wombat(url)
+
+        # Actualizo el boost actual por si fue editado mientras estaba en pausa
+        self.update_campaign_boost_wombat(campana)
 
     def desasociacion_campana_wombat(self, campana):
         """
@@ -521,16 +523,21 @@ class CampanaService():
         """
 
         # crea endpoint en wombat
-        self.crear_endpoint_campana_wombat(campana)
+        self.guardar_endpoint_campana_wombat(campana)
 
+        if campana.estado == campana.ESTADO_ACTIVA:
+            self.update_campaign_boost_wombat(campana)
+
+        return True
+
+    def update_campaign_boost_wombat(self, campana):
         # TODO: Deuda tecnica: Controlar posibles errores de las funciones llamadas.
         # actualiza boost_factor
         boost_factor = int(campana.queue_campana.initial_boost_factor * 100)
         id_campana_wombat = '{0}_{1}'.format(campana.pk, campana.nombre)
         url_api = '{0}/api/campaigns/?op=boost&campaign={1}&factor={2}'.format(
             settings.OML_WOMBAT_URL, id_campana_wombat, boost_factor)
-        requests.get(url_api)
-        return True
+        self._requests_post_wombat(url_api)
 
     def translate_state_wombat(self, status):
         """

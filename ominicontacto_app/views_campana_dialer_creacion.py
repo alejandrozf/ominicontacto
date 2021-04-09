@@ -142,7 +142,7 @@ class CampanaDialerCreateView(CampanaDialerMixin, SessionWizardView):
                           regla.get_en_modo_wombat()]
             campana_service.crear_reschedule_campana_wombat(campana, parametros)
         # crea endpoint en wombat
-        campana_service.crear_endpoint_campana_wombat(campana)
+        campana_service.guardar_endpoint_campana_wombat(campana)
         # asocia endpoint en wombat a campana
         campana_service.crear_endpoint_asociacion_campana_wombat(
             campana)
