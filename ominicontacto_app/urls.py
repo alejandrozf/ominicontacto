@@ -30,7 +30,7 @@ from ominicontacto_app import (
     views_black_list, views_sitio_externo, views_queue_member,
     views_campana_dialer_template, views_campana_manual_creacion, views_campana_manual,
     views_campana_preview, views_archivo_de_audio, views_user_profiles, views_sistema_externo,
-    views_auditorias
+    views_auditorias, views_lista_rapida
 )
 
 from ominicontacto_app.views_utils import (
@@ -320,7 +320,30 @@ urlpatterns = [
         login_required(views_contacto.ContactoUpdateView.as_view()),
         name='contacto_update',
         ),
-
+    # ==========================================================================
+    # Listas rapidas
+    # ==========================================================================
+    url(r'^lista_rapida/list/$',
+        login_required(views_lista_rapida.ListaRapidaListView.as_view()),
+        name='listas_rapidas',
+        ),
+    url(r'^lista_rapida/nueva/$',
+        login_required(views_lista_rapida.ListaRapidaCreateView.as_view()),
+        name='nueva_lista_rapida',
+        ),
+    url(r'^lista_rapida/(?P<pk>\d+)/validacion/$',
+        login_required(
+            views_lista_rapida.DefineListaRapidaView.as_view()),
+        name='define_lista_rapida',
+        ),
+    url(r'^lista_rapida/(?P<pk_lista_rapida>\d+)/actualizar/$',
+        login_required(views_lista_rapida.ListaRapidaUpdateView.as_view()),
+        name='update_lista_rapida',
+        ),
+    url(r'^lista_rapida/(?P<pk_lista_rapida>\d+)/eliminar/$',
+        login_required(views_lista_rapida.ListaRapidaDeleteView.as_view()),
+        name='eliminar_lista_rapida',
+        ),
     # ==========================================================================
     #  Vistas de manipulación de contactos de una campaña / Para agente
     # ==========================================================================

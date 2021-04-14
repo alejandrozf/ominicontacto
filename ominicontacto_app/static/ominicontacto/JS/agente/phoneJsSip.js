@@ -282,7 +282,7 @@ class PhoneJS {
                         self.eventsCallbacks.onTransferDialed.fire(transfer);
                     }, 2500);
                 }
-            } else if (transfer.is_to_number) {
+            } else if (transfer.is_to_number || transfer.is_quick_contact) {
                 if (transfer.destination) {
                     var i = 0;
                     this.transferTimeoutHandler = setTimeout(function() {
@@ -308,7 +308,7 @@ class PhoneJS {
                         self.eventsCallbacks.onTransferDialed.fire(transfer);
                     }, 2500);
                 }
-            } else if (transfer.is_to_number) {
+            } else if (transfer.is_to_number || transfer.is_quick_contact) {
                 if (transfer.destination) {
                     i = 0;
                     this.transferTimeoutHandler = setTimeout(function() {

@@ -313,6 +313,16 @@ class OminicontactoAppConfig(AppConfig):
                 'label': _('Nueva base de datos de contactos'),
                 'url': reverse('nueva_base_datos_contacto')
             })
+        if 'listas_rapidas' in permissions:
+            contactos.append({
+                'label': _('Listas rápidas'),
+                'url': reverse('listas_rapidas')
+            })
+        if 'nueva_lista_rapida' in permissions:
+            contactos.append({
+                'label': _('Nueva lista rápida'),
+                'url': reverse('nueva_lista_rapida')
+            })
         if contactos:
             contactos.append({'line': True})
 
@@ -723,6 +733,16 @@ class OminicontactoAppConfig(AppConfig):
             {'nombre': 'configurar_agentes_en_campana',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'finalizar_campana_dialer',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'listas_rapidas',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'nueva_lista_rapida',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'update_lista_rapida',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'eliminar_lista_rapida',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'define_lista_rapida',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
         ]
 
@@ -1153,4 +1173,14 @@ class OminicontactoAppConfig(AppConfig):
              'version': '1.12.0'},
         'finalizar_campana_dialer':
             {'descripcion': _('Finalizar una campana dialer activa'), 'version': '1.7.0'},
+        'nueva_lista_rapida':
+            {'descripcion': _('Crear una nueva lista rapida de contactos'), 'version': '1.13.0'},
+        'listas_rapidas':
+            {'descripcion': _('Ver la lista de listas rapidas de contactos'), 'version': '1.13.0'},
+        'update_lista_rapida':
+            {'descripcion': _('Actualiza una lista rapida de contactos'), 'version': '1.13.0'},
+        'eliminar_lista_rapida':
+            {'descripcion': _('Elimina una lista rapida de contactos'), 'version': '1.13.0'},
+        'define_lista_rapida':
+            {'descripcion': _('Define una lista rapida de contactos'), 'version': '1.13.0'},
     }
