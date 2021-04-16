@@ -214,6 +214,8 @@ class Grupo(models.Model):
     obligar_calificacion = models.BooleanField(default=False, verbose_name=_(
         'Forzar calificación'))
     call_off_camp = models.BooleanField(default=False, verbose_name=_('Llamada fuera de campaña'))
+    acceso_grabaciones_agente = models.BooleanField(default=True, verbose_name=_(
+        'Acceso grabaciones agentes'))
 
     def __str__(self):
         return self.nombre
