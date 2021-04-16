@@ -149,6 +149,15 @@ def crear_blacklist(browser, path, base_datos):
     sleep(1)
 
 
+def crear_lista_rapida(browser, path, nombre_lista):
+    link_create = '//a[contains(@href,"/lista_rapida/nueva/")]'
+    get_href(browser, link_create)
+    browser.find_element(By.NAME, 'nombre').send_keys(nombre_lista)
+    browser.find_element(By.NAME, 'archivo_importacion').send_keys(path)
+    browser.find_element(By.CSS_SELECTOR, ".btn-primary").click()
+    sleep(1)
+
+
 def crear_campos_formulario(browser, campos):
     for items in campos:
         browser.find_element(By.NAME, 'nombre_campo').send_keys(items)

@@ -52,7 +52,7 @@ from defender import config
 
 from ominicontacto_app.models import (
     User, AgenteProfile, Grupo, Pausa, AgendaContacto,
-    Chat, MensajeChat, ClienteWebPhoneProfile
+    Chat, MensajeChat, ClienteWebPhoneProfile, ContactoListaRapida
 )
 from ominicontacto_app.forms import PausaForm, GrupoForm, RegistroForm
 from ominicontacto_app.services.kamailio_service import KamailioService
@@ -350,6 +350,7 @@ class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
         context['max_session_age'] = settings.SESSION_COOKIE_AGE
         context['video_domain'] = video_domain
         context['fechas_agendas_json'] = json.dumps(fechas_agendas)
+        context['listas_rapidas'] = ContactoListaRapida.objects.all()
 
         return context
 

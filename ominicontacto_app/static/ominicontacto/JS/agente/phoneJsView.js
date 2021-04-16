@@ -43,6 +43,7 @@ class PhoneJSView {
         this.callOffCampaignMenuButton = $('#call_off_campaign_menu');
         this.callAgentButton = $('#call_agent');
         this.callPhoneOffCampaignButton = $('#call_phone_off_campaign');
+        this.callQuickOffCampaignButton = $('#call_quick_contact');
         this.numberDisplay = $('#numberToCall');
         this.redialButton = $('#redial');
         this.holdButton = $('#onHold');
@@ -98,6 +99,7 @@ class PhoneJSView {
         var self = this;
         var transfToCamp = document.getElementById('transfToCamp');
         var transfToNum = document.getElementById('transfToNum');
+        var transfToQuickNum = document.getElementById('transfToQuickNum');
 
         this.transferButton.click(function() {
             $('#blindTransf').prop('checked', false);
@@ -106,10 +108,13 @@ class PhoneJSView {
             $('#transfToNum').prop('disabled', true);
             $('#transfToAgent').prop('disabled', true);
             $('#transfToCamp').prop('disabled', true);
+            $('#transfToQuickNum').prop('disabled', true);
 
             $('#campToTransfer').prop('disabled', true);
             $('#numberToTransfer').prop('disabled', true);
             $('#agentToTransfer').prop('disabled', true);
+            $('#quickNumToTransfer').prop('disabled', true);
+
             self.transferOutMenu.modal('show');
         });
 
@@ -120,6 +125,7 @@ class PhoneJSView {
                 $('#transfToCamp').prop('disabled', false);
                 $('#campToTransfer').prop('disabled', false);
                 $('#transfToCamp').prop('checked', true);
+                $('#transfToQuickNum').prop('disabled', false);
             }
         });
 
@@ -130,6 +136,7 @@ class PhoneJSView {
                 $('#transfToCamp').prop('disabled', true);
                 $('#campToTransfer').prop('disabled', true);
                 $('#transfToCamp').prop('checked', false);
+                $('#transfToQuickNum').prop('disabled', false);
             }
         });
 
@@ -138,6 +145,8 @@ class PhoneJSView {
                 $('#numberToTransfer').prop('disabled', false);
                 $('#campToTransfer').prop('disabled', true);
                 $('#agentToTransfer').prop('disabled', true);
+                $('#quickNumToTransfer').prop('disabled', true);
+                $('#transfToQuickNum').prop('checked', false);
             }
         });
 
@@ -146,6 +155,7 @@ class PhoneJSView {
                 $('#campToTransfer').prop('disabled', false);
                 $('#numberToTransfer').prop('disabled', true);
                 $('#agentToTransfer').prop('disabled', true);
+                $('#quickNumToTransfer').prop('disabled', true);
             }
         });
 
@@ -154,6 +164,18 @@ class PhoneJSView {
                 $('#agentToTransfer').prop('disabled', false);
                 $('#campToTransfer').prop('disabled', true);
                 $('#numberToTransfer').prop('disabled', true);
+                $('#quickNumToTransfer').prop('disabled', true);
+                $('#transfToQuickNum').prop('checked', false);
+            }
+        });
+
+        $('#transfToQuickNum').change(function() {
+            if (this.checked) {
+                $('#agentToTransfer').prop('disabled', true);
+                $('#campToTransfer').prop('disabled', true);
+                $('#numberToTransfer').prop('disabled', true);
+                $('#quickNumToTransfer').prop('disabled', false);
+                $('#transfToNum').prop('checked', false);
             }
         });
     }

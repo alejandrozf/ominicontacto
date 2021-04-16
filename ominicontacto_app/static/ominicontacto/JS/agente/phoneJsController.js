@@ -190,6 +190,11 @@ class PhoneJSController {
             click2call.call_external(phone);
         });
 
+        this.view.callQuickOffCampaignButton.click(function() {
+            var phone = $('#lista_rapida_off_camp').val();
+            click2call.call_external(phone);
+        });
+
         $('#SaveSignedCall').click(function() {
             if (self.phone.session_data.remote_call) {
                 var descripcion = $('#SignDescription').val(); // sign subject
@@ -953,6 +958,7 @@ class OutTransferData {
         var transfToAgent = document.getElementById('transfToAgent');
         var transfToCamp = document.getElementById('transfToCamp');
         var transfToNum = document.getElementById('transfToNum');
+        var transfToQuickNum = document.getElementById('transfToQuickNum');
 
         this.is_blind = blindTransf.checked;
         this.is_consultative = consultTransf.checked;
@@ -966,11 +972,14 @@ class OutTransferData {
         this.is_to_number = transfToNum.checked;
         if (this.is_to_number)
             this.destination = $('#numberToTransfer').val();
+        this.is_quick_contact = transfToQuickNum.checked;
+        if (this.is_quick_contact)
+            this.destination = $('select[id=quickNumToTransfer]').val();
     }
 
     get is_valid() {
         return (this.is_blind || (this.is_consultative && !this.is_to_campaign)) &&
-            (this.is_to_agent || this.is_to_number || this.is_to_campaign) &&
+            (this.is_to_agent || this.is_to_number || this.is_to_campaign || this.is_quick_contact) &&
             this.destination != '' && this.destination != undefined;
     }
 }

@@ -343,15 +343,16 @@ ul.errorlist li {
 }
 
 .typetransf-secondcolumn-number {
-  margin-left: 29px;
+  margin-left: 33px;
+  width: 250px !important;
 }
 
 .typetransf-secondcolumn-agent {
-  margin-left: 34px;
+  margin-left: 45px;
 }
 
 .typetransf-firstcolumn {
-  margin-left: 80px;
+  margin-left: 50px;
 }
 
 /* Select widget */
@@ -496,10 +497,6 @@ ul.errorlist li {
   }
   #nav-logo {
     margin-right: 30px;
-  }
-  .btn-warning-agenda {
-    background-color: #FF9A3C;
-    border-radius: 6px;
   }
 }
 

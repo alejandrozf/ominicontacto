@@ -1,0 +1,40 @@
+<!--
+Copyright (C) 2018 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+
+<h1>{% trans 'Nueva lista rapida de contacto' %}</h1>
+
+<form role="form" method="post" enctype="multipart/form-data" >
+    {% include "base_form_fields.html" with form=form %}
+    <hr>
+    <button type="submit" id="id_registrar" class="btn btn-primary">
+        {% trans 'Definir lista rapida' %}
+    </button>
+</form>
+<br>
+<div>
+    <a class="btn btn-outline-primary" href="/static/ominicontacto/ejemplo_lista_rapida.csv" target="_blank">{% trans 'bajar lista rapida de ejemplo' %}</a>
+</div>
+
+{% endblock %}
