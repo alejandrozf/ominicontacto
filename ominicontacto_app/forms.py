@@ -1610,6 +1610,9 @@ class QueueDialerForm(forms.ModelForm):
         if initial_boost_factor and initial_boost_factor < 1.0:
             raise forms.ValidationError('El factor boost inicial no debe ser'
                                         ' menor a 1.0')
+        if initial_boost_factor and initial_boost_factor > 5.0:
+            raise forms.ValidationError('El factor boost inicial no debe ser'
+                                        ' mayor a 5.0')
 
         initial_predictive_model = self.cleaned_data.get('initial_predictive_model')
         if initial_predictive_model and not initial_boost_factor:
