@@ -393,14 +393,11 @@ class PhoneJSController {
         this.phone.eventsCallbacks.onUserAgentRegistered.add(function () {
             self.view.setSipStatus('REGISTERED');
             self.view.setCallStatus(gettext('Conectando a asterisk  ..'), 'yellowgreen');
-            var login_ok = function(){
-                self.phone_fsm.registered();
-                self.view.setCallStatus(gettext('Agente conectado a asterisk'), 'orange');
-                self.phone.Sounds('Welcome', 'play');
-            };
+            self.phone_fsm.registered();
+            var login_ok = function(){self.goToReadyAfterLogin();};
             var login_error = function(){
                 self.view.setCallStatus(gettext('Agente no conectado a asterisk, contacte a su administrador'), 'red');
-                self.phone_fsm.failedRegistration();
+                self.phone_fsm.logToAsteriskError();
             };
             self.oml_api.asteriskLogin(login_ok, login_error);
         });
@@ -432,12 +429,14 @@ class PhoneJSController {
             $('#modalReceiveCalls').modal('show');
         });
         this.phone.eventsCallbacks.onCallReceipt.add(function(session_data) {
-            if (self.phone_fsm.state == 'Initial'){
-                // Delay to allow registration to complete
+            if (self.phone_fsm.state == 'LoggingToAsterisk'){
+                // Assume logged ok.
+                self.goToReadyAfterLogin();
+                // Delay to allow going to Ready State
                 setTimeout(function(){
                     self.phone_fsm.receiveCall();
                     self.manageCallReceipt(session_data);
-                }, 1000);
+                }, 100);
             }
             else {
                 self.phone_fsm.receiveCall();
@@ -519,6 +518,16 @@ class PhoneJSController {
             self.markRecordCallButtonReady(self, $img, $recordCallButton);
             self.unloadVideo();
         });
+    }
+
+    goToReadyAfterLogin() {
+        // If state is not LoggingToAsterisk I assume agent already went to ready
+        if (this.phone_fsm.state == 'LoggingToAsterisk') {
+            this.view.setSipStatus('REGISTERED');
+            this.phone_fsm.logToAsteriskOk();
+            this.view.setCallStatus(gettext('Agente conectado a asterisk'), 'orange');
+            this.phone.Sounds('Welcome', 'play');
+        }
     }
 
     callEndTransition() {

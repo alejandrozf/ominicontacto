@@ -317,6 +317,11 @@ var PHONE_STATUS_CONFIGS = {
         enabled_buttons: [],
         color: '#888888',
     },
+    'LoggingToAsterisk': {
+        keypad_enabled: false,
+        enabled_buttons: [],
+        color: '#888888',
+    },
     'Ready': {
         keypad_enabled: true,
         enabled_buttons: ['Pause', 'changeCampAssocManualCall', 'call', 'numberToCall', 'redial',

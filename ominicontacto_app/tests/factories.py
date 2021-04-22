@@ -189,7 +189,7 @@ class NombreCalificacionFactory(DjangoModelFactory):
     class Meta:
         model = NombreCalificacion
 
-    nombre = lazy_attribute(lambda a: "nombre_calificacion_{0}".format(faker.text(10)))
+    nombre = lazy_attribute(lambda a: "calificacion_{0}".format(uuid4()))
 
 
 class CampanaFactory(DjangoModelFactory):
