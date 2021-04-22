@@ -19,21 +19,18 @@
 
 from __future__ import unicode_literals
 
-import os
 import re
 
 from django import forms
-from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.forms.models import (inlineformset_factory, modelformset_factory, BaseInlineFormSet,
                                  BaseModelFormSet)
 from django.utils.translation import ugettext_lazy as _
 
-from configuracion_telefonia_app.models import (PatronDeDiscado, RutaSaliente, RutaEntrante,
-                                                TroncalSIP, OrdenTroncal, DestinoEntrante, IVR,
-                                                OpcionDestino, ValidacionTiempo, GrupoHorario,
-                                                IdentificadorCliente, Playlist, MusicaDeEspera,
-                                                AmdConf, EsquemaGrabaciones)
+from configuracion_telefonia_app.models import AmdConf, AudiosAsteriskConf, DestinoEntrante, \
+    EsquemaGrabaciones, GrupoHorario, IVR, IdentificadorCliente, MusicaDeEspera, OpcionDestino, \
+    OrdenTroncal, PatronDeDiscado, Playlist, RutaEntrante, RutaSaliente, TroncalSIP, \
+    ValidacionTiempo
 from ominicontacto_app.models import ArchivoDeAudio
 from ominicontacto_app.views_archivo_de_audio import convertir_archivo_audio
 
@@ -568,32 +565,14 @@ class OpcionDestinoPersonalizadoForm(OpcionDestinoValidacionFechaHoraForm):
 
 class AudiosAsteriskForm(forms.Form):
 
-    ES = 'es'
-    EN = 'en'
-    FR = 'fr'
-    IT = 'it'
-    JA = 'ja'
-    RU = 'ru'
-    SV = 'sv'
-
-    AUDIO_IDIOMA_CHOICES = (
-        (ES, _('Español')),
-        (EN, _('Inglés')),
-        (FR, _('Francés')),
-        (IT, _('Italiano')),
-        (JA, _('Japonés')),
-        (RU, _('Ruso')),
-        (SV, _('Sueco')),
-    )
-
     AUDIO_IDIOMA_CHOICES_DICT = {
-        ES: _('Español'),
-        EN: _('Inglés'),
-        FR: _('Francés'),
-        IT: _('Italiano'),
-        JA: _('Japonés'),
-        RU: _('Ruso'),
-        SV: _('Sueco'),
+        AudiosAsteriskConf.ES: _('Español'),
+        AudiosAsteriskConf.EN: _('Inglés'),
+        AudiosAsteriskConf.FR: _('Francés'),
+        AudiosAsteriskConf.IT: _('Italiano'),
+        AudiosAsteriskConf.JA: _('Japonés'),
+        AudiosAsteriskConf.RU: _('Ruso'),
+        AudiosAsteriskConf.SV: _('Sueco'),
     }
 
     idiomas_instalados = [EMPTY_CHOICE]
@@ -613,18 +592,16 @@ class AudiosAsteriskForm(forms.Form):
         self.fields['audio_idioma'].choices = [EMPTY_CHOICE] + self.idiomas_no_instalados
 
     def _obtener_idiomas_instalados(self):
-        directorios_idiomas = os.listdir(settings.ASTERISK_AUDIO_PATH)
-        try:
-            directorios_idiomas.remove('oml')
-        except ValueError:
-            pass
-        try:
-            directorios_idiomas.remove('moh')
-        except ValueError:
-            pass
-        idiomas_instalados = [(valor, self.AUDIO_IDIOMA_CHOICES_DICT[valor])
-                              for valor in directorios_idiomas]
-        idiomas_no_instalados = list(set(self.AUDIO_IDIOMA_CHOICES) - set(idiomas_instalados))
+        instalados_list = AudiosAsteriskConf \
+            .objects \
+            .all() \
+            .filter(esta_instalado=True)
+
+        idiomas_instalados = [(valor.paquete_idioma,
+                               self.AUDIO_IDIOMA_CHOICES_DICT[valor.paquete_idioma])
+                              for valor in instalados_list]
+        idiomas_no_instalados = list(
+            set(AudiosAsteriskConf.AUDIO_IDIOMA_CHOICES) - set(idiomas_instalados))
         idiomas_instalados_mostrar = [str(choice) for valor, choice in idiomas_instalados]
         return (idiomas_instalados_mostrar, idiomas_no_instalados)
 

@@ -25,12 +25,12 @@ from __future__ import unicode_literals
 
 import datetime
 import os
-import shutil
-import subprocess
 import tempfile
 import traceback
 import time
 import json
+import base64
+from pathlib import Path
 
 from django.conf import settings
 from django.utils.translation import ugettext as _
@@ -727,9 +727,8 @@ class AsteriskMOHConfigReloader(object):
 
 
 class ConfigFile(object):
-    def __init__(self, filename, remote_path):
+    def __init__(self, filename):
         self._filename = filename
-        self._remote_path = remote_path
 
     def write(self, contenidos):
         tmp_fd, tmp_filename = tempfile.mkstemp()
@@ -744,14 +743,12 @@ class ConfigFile(object):
 
             tmp_file_obj.close()
 
-            # logger.info(_("Copiando file config a {0}".format(self._filename)))
-            # shutil.copy(tmp_filename, self._filename)
-            # os.chmod(self._filename, 0o644)
             redis_stream = RedisStreams()
             __, nombre_archivo = os.path.split(self._filename)
             content = {
                 'archivo': nombre_archivo,
-                'content': contenidos_str
+                'content': contenidos_str,
+                'type': 'CONF_FILE'
             }
             redis_stream.write_stream('asterisk_conf_updater', json.dumps(content))
 
@@ -762,83 +759,95 @@ class ConfigFile(object):
                 logger.exception(_("Error {0} al intentar borrar temporal {1}".format(
                     e, tmp_filename)))
 
-    def copy_asterisk(self):
-        pass
-        # subprocess.call(['cp', self._filename, self._remote_path])
-
 
 class SipConfigFile(ConfigFile):
     def __init__(self):
         filename = settings.OML_SIP_FILENAME.strip()
-        remote_path = settings.OML_ASTERISK_REMOTEPATH
-        super(SipConfigFile, self).__init__(filename, remote_path)
+        super(SipConfigFile, self).__init__(filename)
 
 
 class QueuesConfigFile(ConfigFile):
     def __init__(self):
         filename = settings.OML_QUEUES_FILENAME.strip()
-        remote_path = settings.OML_ASTERISK_REMOTEPATH
-        super(QueuesConfigFile, self).__init__(filename, remote_path)
+        super(QueuesConfigFile, self).__init__(filename)
 
 
 class RutasSalientesConfigFile(ConfigFile):
     def __init__(self):
         filename = settings.OML_RUTAS_SALIENTES_FILENAME.strip()
-        remote_path = settings.OML_ASTERISK_REMOTEPATH
-        super(RutasSalientesConfigFile, self).__init__(filename, remote_path)
+        super(RutasSalientesConfigFile, self).__init__(filename)
 
 
 class ChanSipTrunksConfigFile(ConfigFile):
     def __init__(self):
-        filename = os.path.join(settings.OML_ASTERISK_REMOTEPATH,
-                                "oml_sip_trunks.conf")
-        remote_path = settings.OML_ASTERISK_REMOTEPATH
-        super(ChanSipTrunksConfigFile, self).__init__(filename, remote_path)
+        filename = "oml_sip_trunks.conf"
+        super(ChanSipTrunksConfigFile, self).__init__(filename)
 
 
 class PJSipTrunksConfigFile(ConfigFile):
     def __init__(self):
-        filename = os.path.join(settings.OML_ASTERISK_REMOTEPATH,
-                                "oml_pjsip_trunks.conf")
-        remote_path = settings.OML_ASTERISK_REMOTEPATH
-        super(PJSipTrunksConfigFile, self).__init__(filename, remote_path)
+        filename = "oml_pjsip_trunks.conf"
+        super(PJSipTrunksConfigFile, self).__init__(filename)
 
 
 class SipRegistrationsConfigFile(ConfigFile):
     def __init__(self):
-        filename = os.path.join(settings.OML_ASTERISK_REMOTEPATH,
-                                "oml_sip_registrations.conf")
-        remote_path = settings.OML_ASTERISK_REMOTEPATH
-        super(SipRegistrationsConfigFile, self).__init__(filename, remote_path)
+        filename = "oml_sip_registrations.conf"
+        super(SipRegistrationsConfigFile, self).__init__(filename)
 
 
 class BlackListConfigFile(ConfigFile):
     def __init__(self):
         filename = os.path.join(settings.OML_BACKLIST_REMOTEPATH,
                                 "oml_backlist.txt")
-        remote_path = settings.OML_BACKLIST_REMOTEPATH
-        super(BlackListConfigFile, self).__init__(filename, remote_path)
+        super(BlackListConfigFile, self).__init__(filename)
 
 
 class PlaylistsConfigFile(ConfigFile):
     def __init__(self):
-        filename = os.path.join(settings.OML_ASTERISK_REMOTEPATH,
-                                "oml_moh.conf")
-        remote_path = settings.OML_ASTERISK_REMOTEPATH
-        super(PlaylistsConfigFile, self).__init__(filename, remote_path)
+        filename = "oml_moh.conf"
+        super(PlaylistsConfigFile, self).__init__(filename)
 
 
 class AudioConfigFile(object):
+    PLAYLIST_LOCAL_FOLDER = 'musicas_asterisk'
+    ASTERISK_MOH_FOLDER = 'moh'
+
     def __init__(self, audio):
         filename = audio.audio_asterisk.name
         self._filename = os.path.join(settings.MEDIA_ROOT, filename)
-        self._remote_path = audio.OML_AUDIO_PATH_ASTERISK
+        self.es_archivo_playlist = False
+        if self.PLAYLIST_LOCAL_FOLDER in filename:
+            self.es_archivo_playlist = True
+            self.nombre_archivo = filename.replace(
+                self.PLAYLIST_LOCAL_FOLDER, self.ASTERISK_MOH_FOLDER)
+        else:
+            __, self.nombre_archivo = os.path.split(self._filename)
+        self.redis_stream = RedisStreams()
 
     def copy_asterisk(self):
-        subprocess.call(['cp', self._filename, self._remote_path])
+        # por el momento usar el mismo método pero cambiar la funcionalidad
+        # hasta posterior refactor
+        self._filename = self._filename.replace('//', '/')
+        content = {
+            'archivo': self.nombre_archivo,
+            'type': 'AUDIO_CUSTOM',
+            'action': 'COPY',
+            'content': self._encode_audio_base64_str()
+        }
+        self.redis_stream.write_stream('asterisk_conf_updater', json.dumps(content))
 
     def delete_asterisk(self):
-        # TODO: Obtener el nombre del archivo y agregarlo al path!!!
-        filename = os.path.basename(self._filename)
-        full_path = os.path.join(self._remote_path, filename)
-        subprocess.call(['rm', full_path])
+        self._filename = self._filename.replace('//', '/')
+        content = {
+            'archivo': self.nombre_archivo,
+            'type': 'AUDIO_CUSTOM',
+            'action': 'DELETE',
+            'content': ''
+        }
+        self.redis_stream.write_stream('asterisk_conf_updater', json.dumps(content))
+
+    def _encode_audio_base64_str(self):
+        data = Path(self._filename).read_bytes()
+        res = base64.b64encode(data)
+        return res.decode('utf-8')

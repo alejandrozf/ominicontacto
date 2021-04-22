@@ -9,6 +9,7 @@ services:
       - AMI_USER=${AMI_USER}
       - AMI_PASSWORD=${AMI_PASSWORD}
       - DOCKER_IP=${DOCKER_IP}
+      - OMNILEADS_HOSTNAME=${OMNILEADS_HOSTNAME}
       - PGHOST=${PGHOST}
       - PGPORT=${PGPORT}
       - PGDATABASE=${PGDATABASE}
@@ -31,6 +32,7 @@ services:
       - ../../../modules/asterisk/source/agis/:/var/lib/asterisk/agi-bin/
       - ../../../modules/asterisk/source/sounds:/var/lib/asterisk/sounds/
       - ../../../modules/asterisk/blacklist:/var/spool/asterisk/blacklist
+      - ../../../modules/asterisk/source/scripts:/opt/omnileads/asterisk/virtualenv/scripts
     working_dir: /etc/asterisk
 
   app:
@@ -49,6 +51,7 @@ services:
     stop_grace_period: 1m30s
     tty: true
     volumes:
+      - ./media_root:/opt/omnileads/media_root
       - ../../../:/opt/omnileads/ominicontacto/
       - ../../../modules/asterisk/grabaciones:/var/spool/asterisk/monitor
       - ../../../modules/asterisk/source/astconf/:/etc/asterisk/

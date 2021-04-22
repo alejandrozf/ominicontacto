@@ -1,5 +1,6 @@
 install/docker/devenv/.env
 install/docker/prodenv/.env
+install/docker/devenv/media_root
 *.vagrant
 /docs/_build
 .idea/
