@@ -282,7 +282,7 @@ class QueuesCreator(object):
             announce = os.path.join(
                 settings.OML_AUDIO_FOLDER, audio_entrada.get_filename_audio_asterisk())
         else:
-            announce = ""
+            announce = "beep"
 
         partes = []
         param_generales = {
