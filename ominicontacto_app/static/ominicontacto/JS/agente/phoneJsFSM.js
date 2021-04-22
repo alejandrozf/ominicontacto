@@ -28,9 +28,14 @@ var PhoneFSM = new StateMachine.factory({
         // Inactive
         { name: 'start',                  from: 'Inactive',           to: 'Initial' },
         // Initial
-        { name: 'registered',             from: 'Initial',            to: 'Ready' },
+        { name: 'registered',             from: 'Initial',            to: 'LoggingToAsterisk' },
         { name: 'disconnected',           from: 'Initial',            to: 'End' },
         { name: 'failedRegistration',     from: 'Initial',            to: 'End' },
+
+        // LoggingToAsterisk
+        { name: 'logToAsteriskOk',       from: 'LoggingToAsterisk',  to: 'Ready' },
+        { name: 'logToAsteriskError',       from: 'LoggingToAsterisk',  to: 'End' },
+
         // Ready
         { name: 'startCall',              from: 'Ready',              to: 'Calling' },
         { name: 'receiveCall',            from: 'Ready',              to: 'ReceivingCall' },
