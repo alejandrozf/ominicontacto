@@ -328,6 +328,11 @@ var PHONE_STATUS_CONFIGS = {
             'call_off_campaign_menu'],
         color: '#ECEEEA',
     },
+    'Pausing': {
+        keypad_enabled: false,
+        enabled_buttons: [],
+        color: '#e0b93d',
+    },
     'Paused': {
         keypad_enabled: true,
         enabled_buttons: ['Pause', 'Resume', 'changeCampAssocManualCall', 'call', 'numberToCall',

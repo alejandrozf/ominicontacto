@@ -295,6 +295,9 @@ class PhoneJSController {
                 self.click_2_call_dispatcher.disable();
                 self.keep_alive_sender.deactivate();
             },
+            onLoggingtoasterisk: function() {
+                phone_logger.log('FSM: onLoggingToAsterisk');
+            },
             onReady: function() {
                 phone_logger.log('FSM: onReady');
                 self.view.setUserStatus('label label-success', gettext('Conectado'));
@@ -303,6 +306,12 @@ class PhoneJSController {
                 self.click_2_call_dispatcher.enable();
                 self.keep_alive_sender.deactivate();
                 self.callOfCampPrivilege();
+            },
+            onPausing: function() {
+                phone_logger.log('FSM: onPausing');
+                self.view.closeAllModalMenus();
+                self.view.setStateInputStatus('Pausing');
+                self.keep_alive_sender.deactivate();
             },
             onPaused: function() {
                 phone_logger.log('FSM: onPaused');
@@ -428,6 +437,7 @@ class PhoneJSController {
             $('#extraInfo').html(session_data.transfer_type_str);
             $('#modalReceiveCalls').modal('show');
         });
+
         this.phone.eventsCallbacks.onCallReceipt.add(function(session_data) {
             if (self.phone_fsm.state == 'LoggingToAsterisk'){
                 // Assume logged ok.
@@ -438,12 +448,24 @@ class PhoneJSController {
                     self.manageCallReceipt(session_data);
                 }, 100);
             }
+            else if (self.phone_fsm.state == 'Pausing') {
+                self.phone.refuseCall();
+            }
             else {
                 self.phone_fsm.receiveCall();
                 self.manageCallReceipt(session_data);
             }
         });
+
         this.phone.eventsCallbacks.onSessionFailed.add(function() {
+
+            // La call session puede haber fallado al hacer un refuseCall
+            if (self.phone_fsm.state == 'Pausing') {
+                // Elimino la callData de la llamada rechazada
+                self.phone.cleanLastCallData();
+                return;
+            }
+
             // Se dispara al fallar Call Sessions
             phone_logger.log('Volviendo a Ready o a Pause:');
             if (self.phone_fsm.state == 'ReceivingCall') {
@@ -548,6 +570,7 @@ class PhoneJSController {
                     m_seconds
                 );
             }
+            // else { Stay in ACW Pause }:
         }
         else if (this.agent_config.auto_unpause > 0) {
             let m_seconds = this.agent_config.auto_unpause * 1000;
@@ -555,9 +578,8 @@ class PhoneJSController {
                 function() {self.autoLeaveACWPause(return_to_pause, pause_id, pause_name);},
                 m_seconds
             );
-        } else {
-            this.phone.cleanLastCallData();
         }
+        // else { Stay in ACW Pause }:
     }
 
     autoLeaveACWPause(return_to_pause, pause_id, pause_name) {
@@ -587,12 +609,13 @@ class PhoneJSController {
 
         var self = this;
         var pause_ok = function(){
+            self.phone_fsm.pauseSet();
             self.view.setCallStatus(gettext('Agente en pausa'), 'orange');
         };
         var pause_error = function(){
             var message = gettext('No se puede realizar la pausa, contacte a su administrador');
             self.view.setCallStatus(message, 'red');
-            self.phone_fsm.unpause();
+            self.phone_fsm.pauseAborted();
             // Arrancar de nuevo timer de operacion
             self.timers.pausa.stop();
             self.timers.operacion.start();

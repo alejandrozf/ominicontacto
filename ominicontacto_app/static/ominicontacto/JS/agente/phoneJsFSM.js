@@ -33,23 +33,23 @@ var PhoneFSM = new StateMachine.factory({
         { name: 'failedRegistration',     from: 'Initial',            to: 'End' },
 
         // LoggingToAsterisk
-        { name: 'logToAsteriskOk',       from: 'LoggingToAsterisk',  to: 'Ready' },
-        { name: 'logToAsteriskError',       from: 'LoggingToAsterisk',  to: 'End' },
+        { name: 'logToAsteriskOk',        from: 'LoggingToAsterisk',  to: 'Ready' },
+        { name: 'logToAsteriskError',     from: 'LoggingToAsterisk',  to: 'End' },
 
         // Ready
-        { name: 'startCall',              from: 'Ready',              to: 'Calling' },
         { name: 'receiveCall',            from: 'Ready',              to: 'ReceivingCall' },
-        { name: 'startPause',             from: 'Ready',              to: 'Paused' },
+        { name: 'startPause',             from: 'Ready',              to: 'Pausing' },
         { name: 'logout',                 from: 'Ready',              to: 'End' },
-        // Calling
-        { name: 'endCall',                from: 'Calling',            to: 'Ready' },
-        { name: 'connectCall',            from: 'Calling',            to: 'OnCall' },
+        
+        // Pausing
+        { name: 'pauseSet',               from: 'Pausing',            to: 'Paused' },
+        { name: 'pauseAborted',           from: 'Pausing',            to: 'Ready' },
+
         // Paused
         { name: 'unpause',                from: 'Paused',             to: 'Ready' },
-        { name: 'startCall',              from: 'Paused',             to: 'Calling' },
         { name: 'receiveCall',            from: 'Paused',             to: 'ReceivingCall' },
         { name: 'logout',                 from: 'Paused',             to: 'End' },
-        { name: 'changePause',            from: 'Paused',             to: 'Paused' },
+        { name: 'changePause',            from: 'Paused',             to: 'Pausing' },
         // OnCall
         { name: 'endCall',                from: 'OnCall',             to: 'Ready' },
         { name: 'dialTransfer',           from: 'OnCall',             to: 'DialingTransfer' },
@@ -72,6 +72,15 @@ var PhoneFSM = new StateMachine.factory({
         // OnHold
         { name: 'releaseHold',            from: 'OnHold',             to: 'OnCall' },
         { name: 'endCall',                from: 'OnHold',             to: 'Ready' },
+
+
+        /*/ DEPRECATED: All calls are started from Asterisk.
+        // Calling
+        { name: 'startCall',              from: 'Ready',              to: 'Calling' },
+        { name: 'endCall',                from: 'Calling',            to: 'Ready' },
+        { name: 'connectCall',            from: 'Calling',            to: 'OnCall' },
+        { name: 'startCall',              from: 'Paused',             to: 'Calling' },
+        /**/
     ],
 
 });
