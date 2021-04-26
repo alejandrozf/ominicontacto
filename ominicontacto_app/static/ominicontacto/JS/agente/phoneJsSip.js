@@ -182,16 +182,6 @@ class PhoneJS {
                 self.invite_request,
                 e.originator);
 
-            if (self.session_data.is_remote) {
-                self.Sounds('In', 'play');
-                if (self.session_data.is_transfered) {
-                    self.eventsCallbacks.onTransferReceipt.fire(self.session_data); // Pasar un TransferData?
-                }
-                else {
-                    self.eventsCallbacks.onCallReceipt.fire(self.session_data); // Pasar un ReceivedCallData?
-                }
-            }
-
             // Session Events
             self.currentSession.on('failed', function(e) {
                 phone_logger.log('session: failed');
@@ -232,6 +222,17 @@ class PhoneJS {
             // TODO: SACAR ESTO, SOLO ESTA PARA DEBUG
             self.currentSession.on('addstream', function() {phone_logger.log('session: addstream');});
             self.currentSession.on('succeeded', function() {phone_logger.log('session: succeeded');});
+
+            if (self.session_data.is_remote) {
+                self.Sounds('In', 'play');
+                if (self.session_data.is_transfered) {
+                    self.eventsCallbacks.onTransferReceipt.fire(self.session_data); // Pasar un TransferData?
+                }
+                else {
+                    self.eventsCallbacks.onCallReceipt.fire(self.session_data); // Pasar un ReceivedCallData?
+                }
+            }
+
         });
     }
 
