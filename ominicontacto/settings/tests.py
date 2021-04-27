@@ -52,6 +52,8 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 COMPRESS_ENABLED = False
 
+INSTALLED_APPS += ADDONS_APPS
+
 ALLOWED_HOSTS = [
     "*",
 ]
@@ -193,9 +195,9 @@ CALIFICACION_REAGENDA = 'Agenda'
 LOCAL_APPS = []
 
 OML_QUEUE_FILENAME = ""
-OML_BRANCH=""
-OML_COMMIT=""
-OML_BUILD_DATE=""
+OML_BRANCH = ""
+OML_COMMIT = ""
+OML_BUILD_DATE = ""
 
 OML_RUTAS_SALIENTES_FILENAME = "/opt/omnileads/asterisk/etc/asterisk/oml_extensions_outr.conf"
 
@@ -248,6 +250,7 @@ class DisableMigrations(object):
         return None
 
 # MIGRATION_MODULES = DisableMigrations()
+
 
 INSTALL_PREFIX = os.getenv('INSTALL_PREFIX')
 # configuraciones de django_sendfile para grabaciones
