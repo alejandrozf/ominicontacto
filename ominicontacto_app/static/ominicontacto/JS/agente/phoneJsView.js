@@ -317,11 +317,21 @@ var PHONE_STATUS_CONFIGS = {
         enabled_buttons: [],
         color: '#888888',
     },
+    'LoggingToAsterisk': {
+        keypad_enabled: false,
+        enabled_buttons: [],
+        color: '#888888',
+    },
     'Ready': {
         keypad_enabled: true,
         enabled_buttons: ['Pause', 'changeCampAssocManualCall', 'call', 'numberToCall', 'redial',
             'call_off_campaign_menu'],
         color: '#ECEEEA',
+    },
+    'Pausing': {
+        keypad_enabled: false,
+        enabled_buttons: [],
+        color: '#e0b93d',
     },
     'Paused': {
         keypad_enabled: true,
