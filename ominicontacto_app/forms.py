@@ -44,7 +44,7 @@ from ominicontacto_app.models import (
     RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Blacklist, SitioExterno,
     SistemaExterno, ReglasIncidencia, ReglaIncidenciaPorCalificacion, SupervisorProfile,
     ArchivoDeAudio, NombreCalificacion, OpcionCalificacion, ParametrosCrm, AgenteEnSistemaExterno,
-    AuditoriaCalificacion, ConfiguracionDeAgentesDeCampana,
+    AuditoriaCalificacion, ConfiguracionDeAgentesDeCampana, ListasRapidas
 )
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
@@ -448,6 +448,43 @@ class BusquedaContactoForm(forms.Form):
             attrs={'class': 'form-control', 'placeholder': _('texto a buscar')}
         )
     )
+
+
+class ListaRapidaForm(forms.ModelForm):
+
+    def clean_nombre(self):
+        # controlamos que el nombre no tenga espacios y caracteres no ascii
+        nombre = self.cleaned_data.get('nombre')
+        validar_solo_ascii_y_sin_espacios(nombre)
+        validar_longitud_nombre_base_de_contactos(nombre)
+        return nombre
+
+    class Meta:
+        model = ListasRapidas
+        fields = ('nombre', 'archivo_importacion')
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control'}),
+            'archivo_importacion': forms.FileInput(attrs={'class': 'form-control'}),
+        }
+
+
+class CamposListaRapidaForm(forms.Form):
+    """ Formulario para identificar campos especiales de la base de datos """
+    campos_telefonicos = forms.MultipleChoiceField(
+        required=True,
+        label=_('Campos de teléfono'),
+        widget=forms.CheckboxSelectMultiple())
+
+    def __init__(self, nombres_campos, *args, **kwargs):
+        super(CamposListaRapidaForm, self).__init__(*args, **kwargs)
+        self.nombres_campos = nombres_campos
+        self.fields['campos_telefonicos'].choices = tuple([(x, x) for x in nombres_campos])
+
+    @property
+    def columnas_de_telefonos(self):
+        # Guardo los indices de los nombres de las columnas que tienen telefonos
+        seleccionados = self.cleaned_data.get('campos_telefonicos', [])
+        return [i for i, x in enumerate(self.nombres_campos) if x in seleccionados]
 
 
 class GrabacionBusquedaForm(forms.Form):
@@ -1573,6 +1610,9 @@ class QueueDialerForm(forms.ModelForm):
         if initial_boost_factor and initial_boost_factor < 1.0:
             raise forms.ValidationError('El factor boost inicial no debe ser'
                                         ' menor a 1.0')
+        if initial_boost_factor and initial_boost_factor > 5.0:
+            raise forms.ValidationError('El factor boost inicial no debe ser'
+                                        ' mayor a 5.0')
 
         initial_predictive_model = self.cleaned_data.get('initial_predictive_model')
         if initial_predictive_model and not initial_boost_factor:

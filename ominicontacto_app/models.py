@@ -2449,6 +2449,49 @@ class Contacto(models.Model):
         return '{0} >> {1}'.format(
             self.bd_contacto, self.datos)
 
+# ==============================================================================
+# Listas Rapidas de Contacto
+# ==============================================================================
+
+
+class ListasRapidas(models.Model):
+    nombre = models.CharField(
+        max_length=128, unique=True, verbose_name=_('Nombre')
+    )
+    fecha_alta = models.DateTimeField(
+        auto_now_add=True, verbose_name=_('Fecha alta')
+    )
+    archivo_importacion = models.FileField(
+        upload_to=upload_to,
+        max_length=256,
+        verbose_name=_('Archivo de importación')
+    )
+    nombre_archivo_importacion = models.CharField(
+        max_length=256, verbose_name=_('Nombre Archivo de importación')
+    )
+    cantidad_contactos = models.PositiveIntegerField(
+        default=0)
+    metadata = models.TextField(null=True, blank=True)
+
+    def get_cantidad_contactos(self):
+        """
+        Devuelve la cantidad de contactos de la lista rapida.
+        """
+
+        return self.cantidad_contactos
+
+    def get_metadata(self):
+        return MetadataBaseDatosContacto(self)
+
+
+class ContactoListaRapida(models.Model):
+
+    telefono = models.CharField(max_length=128)
+    nombre = models.CharField(max_length=128)
+    lista_rapida = models.ForeignKey(
+        ListasRapidas, related_name='contactoslistarapida', blank=True, null=True,
+        on_delete=models.CASCADE)
+
 
 class GrabacionMarca(models.Model):
     """

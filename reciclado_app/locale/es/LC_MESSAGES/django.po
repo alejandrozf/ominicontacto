@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-05 17:57-0300\n"
+"POT-Creation-Date: 2021-04-28 16:49-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -77,11 +77,23 @@ msgstr ""
 msgid "Agente no califico"
 msgstr ""
 
-#: reciclado_app/templates/nuevo_reciclado.html:46
+#: reciclado_app/templates/nuevo_reciclado.html:33
+msgid "Nombre"
+msgstr ""
+
+#: reciclado_app/templates/nuevo_reciclado.html:34
+msgid "Cantidad"
+msgstr ""
+
+#: reciclado_app/templates/nuevo_reciclado.html:35
+msgid "Seleccionar"
+msgstr ""
+
+#: reciclado_app/templates/nuevo_reciclado.html:58
 msgid "Como desea reciclar esta campana"
 msgstr ""
 
-#: reciclado_app/templates/nuevo_reciclado.html:55
+#: reciclado_app/templates/nuevo_reciclado.html:67
 msgid "Reciclar"
 msgstr ""
 
@@ -97,6 +109,6 @@ msgid ""
 "Campana."
 msgstr ""
 
-#: reciclado_app/views.py:119
+#: reciclado_app/views.py:133
 msgid "Esta campaña no se puede reciclar."
 msgstr ""

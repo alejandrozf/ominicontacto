@@ -20,7 +20,7 @@ COPY omniapp/conversor.sh omniapp/*.py {{ install_prefix }}/bin/
 COPY requirements/* $INSTALL_LOCATION/requirements/
 {% endif %}
 
-RUN pip3 install -r $INSTALL_LOCATION/requirements/requirements.txt \
+RUN pip3 install wheel && pip3 install -r $INSTALL_LOCATION/requirements/requirements.txt \
     && apk del .build-deps build-base python3-dev libxslt-dev jpeg-dev libffi-dev libxml2-dev zlib-dev freetype-dev lcms2-dev tcl-dev tiff-dev tk-dev\
     && mkdir /etc/asterisk && chown omnileads. /etc/asterisk \
     && chown -R omnileads.omnileads {{ install_prefix }}/ /var/spool/cron/ /var/spool/cron/crontabs/ \

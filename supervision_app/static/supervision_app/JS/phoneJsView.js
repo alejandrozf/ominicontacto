@@ -104,6 +104,7 @@ var CALL_STATUSES = ['Calling', 'OnCall', 'Transfering', 'OnHold']
 var STATUS_COLOR = {
     'Initial': '#888888',
     'End':  '#888888',
+    'LoggingToAsterisk':  '#888888',
     'Ready': '#ECEEEA',
     'Paused': '#e0b93d',
     'Calling': '#bfef7a',

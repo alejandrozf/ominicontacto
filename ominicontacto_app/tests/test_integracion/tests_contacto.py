@@ -31,8 +31,9 @@ try:
     from pyvirtualdisplay import Display
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.common.by import By
     from integracion_metodos import (login, get_href, crear_BD, crear_blacklist, ADMIN_USERNAME,
-                                     ADMIN_PASSWORD, USER)
+                                     ADMIN_PASSWORD, USER, crear_lista_rapida)
 except ImportError:
     pass
 
@@ -247,6 +248,82 @@ class ContactoTests(unittest.TestCase):
         except Exception as e:
             print('--ERROR: No se pudo verificar que solo se'
                   'muestra la ultima Blacklist.--\n{0}'.format(e))
+            raise e
+
+    def test_crear_elimina_lista_rapida(self):
+        try:
+            login(self.browser, ADMIN_USERNAME, ADMIN_PASSWORD)
+            csv_path = "/home/{0}/ominicontacto/ominicontacto_app/static/ominicontacto"\
+                       "/ejemplo_lista_rapida.csv".format(USER)
+            Lista_rapida = 'listaRapida' + uuid.uuid4().hex[:5]
+            crear_lista_rapida(self.browser, csv_path, Lista_rapida)
+            self.browser.find_element_by_xpath('//label/input[@value = "Telefono"]').click()
+            self.browser.find_element(By.CSS_SELECTOR, ".btn-success").click()
+            sleep(1)
+            self.assertTrue(self.browser.find_elements_by_xpath('//td[contains(text(), \'{0}\')]'
+                            .format(Lista_rapida)))
+            print('--Se pudo crear una lista rapida. --')
+        except Exception as e:
+            print('--ERROR: No se pudo crear una Lista Rapida. --\n{0}'.format(e))
+            raise e
+        # eliminar lista rapida
+        try:
+            eliminar_lista = '//tr[@id=\'{0}\']//td//a[contains(@href, "/eliminar/")]'.format(
+                Lista_rapida)
+            get_href(self.browser, eliminar_lista)
+            self.browser.find_element(By.CSS_SELECTOR, ".btn-danger").click()
+            sleep(1)
+            self.assertFalse(self.browser.find_elements_by_xpath('//td[contains(text(), \'{0}\')]'
+                             .format(Lista_rapida)))
+            print('--Se pudo eliminar la lista rapida.--')
+        except Exception as e:
+            print('--ERROR: No se pudo eliminar una lista rapida. --\n{0}'.format(e))
+            raise e
+
+    def test_agregar_csv_lista_rapida(self):
+        # agregar contactos a una lista rapida
+        try:
+            login(self.browser, ADMIN_USERNAME, ADMIN_PASSWORD)
+            Lista_rapida = 'listaRapida' + uuid.uuid4().hex[:5]
+            csv_path = "/home/{0}/ominicontacto/ominicontacto_app/static/ominicontacto"\
+                       "/ejemplo_lista_rapida.csv".format(USER)
+            crear_lista_rapida(self.browser, csv_path, Lista_rapida)
+            self.browser.find_element_by_xpath('//label/input[@value = "Telefono"]').click()
+            self.browser.find_element(By.CSS_SELECTOR, ".btn-success").click()
+            sleep(1)
+            editar_lista = '//tr[@id=\'{0}\']//td//a[contains(@href, "/actualizar/")]'.format(
+                Lista_rapida)
+            get_href(self.browser, editar_lista)
+            nueva_lista = 'listaRapida' + uuid.uuid4().hex[:5]
+            self.browser.find_element(By.NAME, 'nombre').clear()
+            sleep(1)
+            self.browser.find_element(By.NAME, 'nombre').send_keys(nueva_lista)
+            self.browser.find_element(By.NAME, 'archivo_importacion').send_keys(csv_path)
+            self.browser.find_element(By.CSS_SELECTOR, ".btn-primary").click()
+            sleep(1)
+            self.browser.find_element_by_xpath('//label/input[@value = "Telefono"]').click()
+            self.browser.find_element(By.CSS_SELECTOR, ".btn-success").click()
+            sleep(1)
+            self.assertTrue(self.browser.find_elements_by_xpath('//td[contains(text(), \'{0}\')]'
+                            .format(nueva_lista)))
+            print('--Se pudo agregar contacto desde un CSV a una la lista rapida.--')
+        except Exception as e:
+            print('--ERROR: No se pudo agregar contactos desde un CSV a una lista rapida. --\n{0}'
+                  .format(e))
+            raise e
+
+    def test_no_permite_crear_lista_rapida_sin_formato_adecuado(self):
+        try:
+            login(self.browser, ADMIN_USERNAME, ADMIN_PASSWORD)
+            lista_erronea = 'lista_error'
+            csv_path = "/home/{0}/ominicontacto/test/planilla-ejemplo-0.csv".format(USER)
+            crear_lista_rapida(self.browser, csv_path, lista_erronea)
+            texto_error = self.browser.find_element_by_xpath('//div/p').text
+            error = 'Las lineas no poseen 2 columnas'
+            self.assertEqual(texto_error, error)
+            print('--No se creo una lista rapida que no tenga las columnas Nombre y Telefono --')
+        except Exception as e:
+            print('--ERROR: Se pudo crear una lista rapida erronea. --\n{0}'.format(e))
             raise e
 
 

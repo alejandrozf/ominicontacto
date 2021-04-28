@@ -190,6 +190,11 @@ class PhoneJSController {
             click2call.call_external(phone);
         });
 
+        this.view.callQuickOffCampaignButton.click(function() {
+            var phone = $('#lista_rapida_off_camp').val();
+            click2call.call_external(phone);
+        });
+
         $('#SaveSignedCall').click(function() {
             if (self.phone.session_data.remote_call) {
                 var descripcion = $('#SignDescription').val(); // sign subject
@@ -290,6 +295,9 @@ class PhoneJSController {
                 self.click_2_call_dispatcher.disable();
                 self.keep_alive_sender.deactivate();
             },
+            onLoggingtoasterisk: function() {
+                phone_logger.log('FSM: onLoggingToAsterisk');
+            },
             onReady: function() {
                 phone_logger.log('FSM: onReady');
                 self.view.setUserStatus('label label-success', gettext('Conectado'));
@@ -298,6 +306,12 @@ class PhoneJSController {
                 self.click_2_call_dispatcher.enable();
                 self.keep_alive_sender.deactivate();
                 self.callOfCampPrivilege();
+            },
+            onPausing: function() {
+                phone_logger.log('FSM: onPausing');
+                self.view.closeAllModalMenus();
+                self.view.setStateInputStatus('Pausing');
+                self.keep_alive_sender.deactivate();
             },
             onPaused: function() {
                 phone_logger.log('FSM: onPaused');
@@ -388,14 +402,11 @@ class PhoneJSController {
         this.phone.eventsCallbacks.onUserAgentRegistered.add(function () {
             self.view.setSipStatus('REGISTERED');
             self.view.setCallStatus(gettext('Conectando a asterisk  ..'), 'yellowgreen');
-            var login_ok = function(){
-                self.phone_fsm.registered();
-                self.view.setCallStatus(gettext('Agente conectado a asterisk'), 'orange');
-                self.phone.Sounds('Welcome', 'play');
-            };
+            self.phone_fsm.registered();
+            var login_ok = function(){self.goToReadyAfterLogin();};
             var login_error = function(){
                 self.view.setCallStatus(gettext('Agente no conectado a asterisk, contacte a su administrador'), 'red');
-                self.phone_fsm.failedRegistration();
+                self.phone_fsm.logToAsteriskError();
             };
             self.oml_api.asteriskLogin(login_ok, login_error);
         });
@@ -426,20 +437,35 @@ class PhoneJSController {
             $('#extraInfo').html(session_data.transfer_type_str);
             $('#modalReceiveCalls').modal('show');
         });
+
         this.phone.eventsCallbacks.onCallReceipt.add(function(session_data) {
-            if (self.phone_fsm.state == 'Initial'){
-                // Delay to allow registration to complete
+            if (self.phone_fsm.state == 'LoggingToAsterisk'){
+                // Assume logged ok.
+                self.goToReadyAfterLogin();
+                // Delay to allow going to Ready State
                 setTimeout(function(){
                     self.phone_fsm.receiveCall();
                     self.manageCallReceipt(session_data);
-                }, 1000);
+                }, 100);
+            }
+            else if (self.phone_fsm.state == 'Pausing') {
+                self.phone.refuseCall();
             }
             else {
                 self.phone_fsm.receiveCall();
                 self.manageCallReceipt(session_data);
             }
         });
+
         this.phone.eventsCallbacks.onSessionFailed.add(function() {
+
+            // La call session puede haber fallado al hacer un refuseCall
+            if (self.phone_fsm.state == 'Pausing') {
+                // Elimino la callData de la llamada rechazada
+                self.phone.cleanLastCallData();
+                return;
+            }
+
             // Se dispara al fallar Call Sessions
             phone_logger.log('Volviendo a Ready o a Pause:');
             if (self.phone_fsm.state == 'ReceivingCall') {
@@ -516,6 +542,16 @@ class PhoneJSController {
         });
     }
 
+    goToReadyAfterLogin() {
+        // If state is not LoggingToAsterisk I assume agent already went to ready
+        if (this.phone_fsm.state == 'LoggingToAsterisk') {
+            this.view.setSipStatus('REGISTERED');
+            this.phone_fsm.logToAsteriskOk();
+            this.view.setCallStatus(gettext('Agente conectado a asterisk'), 'orange');
+            this.phone.Sounds('Welcome', 'play');
+        }
+    }
+
     callEndTransition() {
         var return_to_pause = this.pause_manager.pause_enabled && !this.pause_manager.in_ACW_pause;
         var pause_id = return_to_pause? this.pause_manager.pause_id: undefined;
@@ -534,6 +570,7 @@ class PhoneJSController {
                     m_seconds
                 );
             }
+            // else { Stay in ACW Pause }:
         }
         else if (this.agent_config.auto_unpause > 0) {
             let m_seconds = this.agent_config.auto_unpause * 1000;
@@ -541,9 +578,8 @@ class PhoneJSController {
                 function() {self.autoLeaveACWPause(return_to_pause, pause_id, pause_name);},
                 m_seconds
             );
-        } else {
-            this.phone.cleanLastCallData();
         }
+        // else { Stay in ACW Pause }:
     }
 
     autoLeaveACWPause(return_to_pause, pause_id, pause_name) {
@@ -573,12 +609,13 @@ class PhoneJSController {
 
         var self = this;
         var pause_ok = function(){
+            self.phone_fsm.pauseSet();
             self.view.setCallStatus(gettext('Agente en pausa'), 'orange');
         };
         var pause_error = function(){
             var message = gettext('No se puede realizar la pausa, contacte a su administrador');
             self.view.setCallStatus(message, 'red');
-            self.phone_fsm.unpause();
+            self.phone_fsm.pauseAborted();
             // Arrancar de nuevo timer de operacion
             self.timers.pausa.stop();
             self.timers.operacion.start();
@@ -953,6 +990,7 @@ class OutTransferData {
         var transfToAgent = document.getElementById('transfToAgent');
         var transfToCamp = document.getElementById('transfToCamp');
         var transfToNum = document.getElementById('transfToNum');
+        var transfToQuickNum = document.getElementById('transfToQuickNum');
 
         this.is_blind = blindTransf.checked;
         this.is_consultative = consultTransf.checked;
@@ -966,11 +1004,14 @@ class OutTransferData {
         this.is_to_number = transfToNum.checked;
         if (this.is_to_number)
             this.destination = $('#numberToTransfer').val();
+        this.is_quick_contact = transfToQuickNum.checked;
+        if (this.is_quick_contact)
+            this.destination = $('select[id=quickNumToTransfer]').val();
     }
 
     get is_valid() {
         return (this.is_blind || (this.is_consultative && !this.is_to_campaign)) &&
-            (this.is_to_agent || this.is_to_number || this.is_to_campaign) &&
+            (this.is_to_agent || this.is_to_number || this.is_to_campaign || this.is_quick_contact) &&
             this.destination != '' && this.destination != undefined;
     }
 }

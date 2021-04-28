@@ -119,6 +119,7 @@ class PhoneJSController {
         /** User Agent **/
         this.phone.eventsCallbacks.onUserAgentRegistered.add(function () {
             self.phone_fsm.registered();
+            self.phone_fsm.logToAsteriskOk();
             self.view.setSipStatus('REGISTERED');
             self.view.setCallStatus(gettext('Supervisor registrado'), 'orange');
         });

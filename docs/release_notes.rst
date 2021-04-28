@@ -1,29 +1,26 @@
 Release Notes
 *************
 
-*Marzo 25, 2021*
+*Abril 28, 2021*
 
-Detalles de Release 1.14.0
+Detalles de Release 1.15.0
 =============================
 
 Nuevas funcionalidades
 --------------------------
-- Llamadas fuera de campaña ahora es un permiso configurable a nivel Groupos de Agente.
-- El tiempo On Hold ahora se refleja en reportes.
-- El historial de Respuestas de Calificaciones de Gestion esta ahora disponible en Reportes de calificaciones.
-- Las grabaciones pueden seleccionarse y ser descargadas en un archivo ZIP.
-
-
-
-
+- Se agrega la opción de exportar el histórico de calificaciones desde las Calificaciones de Campaña.
+- Se añaden listas rápidas para realizar llamados o transferencias a números predefinidos.
+- En supervisión de agentes se muestra el estado previo de un agente antes de pasar a UNAVAILABLE.
+ 
 Fixes y mejoras
 --------------------------
-- Mejoras en Vista de Supervisión: Se usan componentes Redis y Websockets para mejorar rendimiento.
-- Reportes de campañas eliminadas quedan disponibles para supervisores.
-- Manejo de posibles inconsistencias en logs de agentes mejorado.
-- La lista de rutas entrantes ahora mantiene un orden fijo.
-- Nuevos tests de integración.
-- Mejoras en la configuracion de campañas Dialer al editar campañas activas.
-- El nombre del Agente ahora esta disponible al establecer acciones de spy/whisper en Supervisión.
-- Mejoras en la base de datos al bloquear contactos para las campañas Preview.
-- Actualización del componente Websockets.
+- Mejoras de control de tráfico en Webphone para escenarios de conectividad limitada.
+- Se agrega por default un anuncio tipo beep para campañas entrantes.
+- Correcciones en el job de creación de imagenes de docker.
+- Se mejora tratamiento de CallerID en transferencias ciegas.
+- Se mejora el parseo de CallerID para transferencias consultativas entre agentes.
+- Se mejora el tratamiento de Boost en Tiempo Real para Campañas Predictivas.
+- Se mejora el tratamiento de estados telefónicos para su reciclado en Campañas Predictivdas.
+- Los estados de agente en Vistas de Supervisión en llamadas internas se reflejan correctamente.
+- Se mejora la consistencia en Reportes de Llamadas para eventos de Transferencia Ciega fallidas.
+- Mejora estética en Reciclado de Campañas.
