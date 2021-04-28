@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OMniLeads \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-25 11:12-0300\n"
+"POT-Creation-Date: 2021-04-28 16:39-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,106 +23,109 @@ msgstr "Release Notes"
 
 # f858723273b843d6adff9b0990d544ca
 #: ../../release_notes.rst:4
-msgid "*Marzo 25, 2021*"
-msgstr "*March 25, 2021*"
+msgid "*Abril 28, 2021*"
+msgstr "*April 28, 2021*"
 
 # 72c1e09fba78482f89fc614620d6fb02
 #: ../../release_notes.rst:7
-msgid "Detalles de Release 1.14.0"
-msgstr "Release 1.14.0 details"
+msgid "Detalles de Release 1.15.0"
+msgstr "Release 1.15.0 details"
 
 # 9c1b5cbfd55146468aa76dfd30678120
 #: ../../release_notes.rst:10
 msgid "Nuevas funcionalidades"
 msgstr "New features"
 
-# f52afc06faf44a0fb9e1a8c900e7440f
+# fd95e20f88d54e6cbd6f85500cfc81ee
 #: ../../release_notes.rst:11
 msgid ""
-"Llamadas fuera de campaña ahora es un permiso configurable a nivel "
-"Groupos de Agente."
+"Se agrega la opción de exportar el histórico de calificaciones desde las "
+"Calificaciones de Campaña."
 msgstr ""
-"Call outside Campaign is now a permission and can be configured at Agent "
-"Group level."
+"Historical Dispositions are now available in the Campaign Disposition Reports."
 
-# e44c1b0990e04b82be9e51a8c19ee01c
+# 1240d8d187e047cbbbba6a76a5e7ec45
 #: ../../release_notes.rst:12
-msgid "El tiempo On Hold ahora se refleja en reportes."
-msgstr "On Hold time is now reflected on reports."
+msgid ""
+"Se añaden listas rápidas para realizar llamados o transferencias a "
+"números predefinidos."
+msgstr ""
+"Speed Dial Lists feature are added to the Contact menu, useful for traansfering "
+"or calling to predefined telephone numbers."
 
-# 8a000fca284846d1b6b03dd3cd921a84
+# 35f87d1c02c84acd8bda5b16fec2fc29
 #: ../../release_notes.rst:13
 msgid ""
-"El historial de Respuestas de Calificaciones de Gestion esta ahora "
-"disponible en Reportes de calificaciones."
-msgstr "Engaged Dispositions History is now available in Disposition Reports."
-
-# 2e28ea14441b4cf3a5da65871ee41e43
-#: ../../release_notes.rst:14
-msgid "Las grabaciones pueden seleccionarse y ser descargadas en un archivo ZIP."
+"En supervisión de agentes se muestra el estado previo de un agente antes "
+"de pasar a UNAVAILABLE."
 msgstr ""
-"Audio Recordings can be  selected and downloaded in ZIP format for "
-"delivering purposes."
+"Last status is available for Supervision View, once Agent goes to Unavailable "
+"due to connection issues."
 
 # 0d03616757444df38b1cad07d4ee719f
-#: ../../release_notes.rst:20
+#: ../../release_notes.rst:16
 msgid "Fixes y mejoras"
 msgstr "Fixes and improvements"
 
-# 663825fcdf194badbbe38e6b02d16dc9
+# 33909d2ce1a14becbcca05532eb80215
+#: ../../release_notes.rst:17
+msgid ""
+"Mejoras de control de tráfico en Webphone para escenarios de conectividad"
+" limitada."
+msgstr ""
+"Improvements in Webphone Machine States transitions.""
+
+# 70ac7b59523242d3ba1e294aad32e798
+#: ../../release_notes.rst:18
+msgid "Se agrega por default un anuncio tipo beep para campañas entrantes."
+msgstr "Default beep message is added for Inbound Campaigns."
+
+# 7a8e6aef77a74375a79c5855034c75fd
+#: ../../release_notes.rst:19
+msgid "Correcciones en el job de creación de imagenes de docker."
+msgstr "Better task handling in CI/CD Jobs for Docker images and containers."
+
+# b7180bacf23a4956a3db2bf1c3eeb8ba
+#: ../../release_notes.rst:20
+msgid "Se mejora tratamiento de CallerID en transferencias ciegas."
+msgstr "Improvement in CallerID labels for blind transfers."
+
+# b7180bacf23a4956a3db2bf1c3eeb8ba
 #: ../../release_notes.rst:21
 msgid ""
-"Mejoras en Vista de Supervisión: Se usan componentes Redis y Websockets "
-"para mejorar rendimiento."
-msgstr ""
-"Improvements in Supervision View: Redis and websockets componentes are "
-"used for better performance."
+"Se mejora el parseo de CallerID para transferencias consultativas entre "
+"agentes."
+msgstr "Better CallerID parsing for consultative transfers between agents."
 
-# 0e269fdf7c0e47368d139b06107d480c
+# 70ac7b59523242d3ba1e294aad32e798
 #: ../../release_notes.rst:22
-msgid "Reportes de campañas eliminadas quedan disponibles para supervisores."
-msgstr "Reports for Deleted campaigns are still available for supervisors."
+msgid ""
+"Se mejora el tratamiento de Boost en Tiempo Real para Campañas "
+"Predictivas."
+msgstr "Better Real Time performance in Dialer Campaigns when adjusting boost factor."
 
-# f1c122152b694e888923c9e45fd64c99
+# 1480eedbf8a54b2794be9fd7f06eb555
 #: ../../release_notes.rst:23
-msgid "Manejo de posibles inconsistencias en logs de agentes mejorado."
-msgstr "Better handling of possible inconsistences in agent event logs."
+msgid ""
+"Se mejora el tratamiento de estados telefónicos para su reciclado en "
+"Campañas Predictivdas."
+msgstr "Improvements in call statuses for database recycle tasks in Predictive Dialers."
 
-# 0b795fe260d34a9496c91d5b692967bc
+# ee42c8d57b4b4e57be6d16abd26a2444
 #: ../../release_notes.rst:24
-msgid "La lista de rutas entrantes ahora mantiene un orden fijo."
-msgstr "Inbound routes list keeps a defined order."
+msgid ""
+"Los estados de agente en Vistas de Supervisión en llamadas internas se "
+"reflejan correctamente."
+msgstr "Agent status improved in Supervision Views when making internal calls."
 
-# aea3036d1bd94964a77469ab12af63a3
+# de03d9ab0a8a4ca1b64a885d3ef56020
 #: ../../release_notes.rst:25
-msgid "Nuevos tests de integración."
-msgstr "New integration tests are added."
+msgid ""
+"Se mejora la consistencia en Reportes de Llamadas para eventos de "
+"Transferencia Ciega fallidas."
+msgstr "Better event handling in Call Reports for failed blind transfers."
 
 # 64791bbf06234501a78f0c43d1393f13
 #: ../../release_notes.rst:26
-msgid "Mejoras en la configuracion de campañas Dialer al editar campañas activas."
-msgstr "Improvements added on Dialer configuration when editing active campaigns."
-
-# 6cdc1c0427954a48a704b24ae46c140b
-#: ../../release_notes.rst:27
-msgid ""
-"El nombre del Agente ahora esta disponible al establecer acciones de "
-"spy/whisper en Supervisión."
-msgstr ""
-"Agent name is now available in Supervisor View when establishing a "
-"whisper action."
-
-# 99ac2e45828543e0ac92616b31701522
-#: ../../release_notes.rst:28
-msgid ""
-"Mejoras en la base de datos al bloquear contactos para las campañas "
-"Preview."
-msgstr ""
-"Improvements in Preview campaigns for race conditions when locking "
-"contacts in database."
-
-# 7388d4205cb548a69ff54e7f2163f190
-#: ../../release_notes.rst:29
-msgid "Actualización del componente Websockets."
-msgstr "Websockets component is updated."
-
+msgid "Mejora estética en Reciclado de Campañas."
+msgstr "Cosmetic changes in Dialer Campaings during database recycle."
