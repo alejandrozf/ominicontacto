@@ -319,7 +319,7 @@ class ContactoTests(unittest.TestCase):
             csv_path = "/home/{0}/ominicontacto/test/planilla-ejemplo-0.csv".format(USER)
             crear_lista_rapida(self.browser, csv_path, lista_erronea)
             texto_error = self.browser.find_element_by_xpath('//div/p').text
-            error = 'Las lineas no poseen 2 columnas'
+            error = 'Rows does not have 2 columns'
             self.assertEqual(texto_error, error)
             print('--No se creo una lista rapida que no tenga las columnas Nombre y Telefono --')
         except Exception as e:
