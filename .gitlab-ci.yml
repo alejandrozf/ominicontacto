@@ -22,6 +22,39 @@ stages:
   - build
   - deploy
 
+test:
+  stage: test
+  image: freetechsolutions/python-flake8:3.6
+  services:
+    - name: freetechsolutions/omlpgsql:develop
+      alias: plpython
+    - redis
+  cache:
+    paths:
+      - /root/.cache/pip/
+      - /usr/lib/python3.7/site-packages/
+  before_script:
+    - mkdir -p /opt/omnileads/ominicontacto/
+    - touch /opt/omnileads/ominicontacto/django.log
+    - mkdir -p /opt/omnileads/static
+    - mkdir -p /opt/omnileads/media_root
+    - pip install -r requirements/requirements.txt
+  variables:
+    POSTGRES_DB: omnileads
+    POSTGRES_USER: omnileads
+    POSTGRES_PASSWORD: omnileadsrw
+    DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
+    DJANGO_SETTINGS_MODULE: "ominicontacto.settings.gitlab"
+  script:
+    - bash check-js.sh
+    - flake8
+    - python manage.py test --failfast
+    - python manage.py compilemessages
+  only:
+    - merge_requests
+    - schedules
+    - web
+
 build-image:
   stage: build
   services:
@@ -38,7 +71,9 @@ build-image:
   script:
     - cd install/docker && bash build_image.sh
   only:
+    - merge_request
     - web
+    - schedules
 
 build-rpm:
   stage: build
@@ -49,33 +84,6 @@ build-rpm:
   only:
     - /.*build-all.*$/
     - /.*build-aio.*$/
-    - schedules
-    - web
-
-test:
-  stage: test
-  image: freetechsolutions/omlapp-builder:develop
-  services:
-    - name: freetechsolutions/omlpgsql:develop
-      alias: plpython
-    - redis
-  before_script:
-    - apk add npm nodejs git bash
-    - npm install eslint --global
-  variables:
-    POSTGRES_DB: omnileads
-    POSTGRES_USER: omnileads
-    POSTGRES_PASSWORD: omnileadsrw
-    DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
-    DJANGO_SETTINGS_MODULE: "ominicontacto.settings.gitlab"
-  script:
-    - python checks.py
-    - bash -x check-js.sh
-    - flake8
-    - python manage.py test --failfast
-    - python manage.py compilemessages
-  only:
-    - merge_requests
     - schedules
     - web
 
@@ -124,20 +132,17 @@ upgrade-aio:
     - deploy-aio
   only:
     - web
+    - schedules
 
 deploy-docker-devenv:
   stage: deploy
   script:
-    - bash ~/git_cleanup.sh
-    - if [ -d  ~/omnileads/devenv ]; then cd ~/omnileads/devenv/omnileads-websockets/deploy && docker-compose down && cd ~/omnileads/devenv && docker-compose down || true; docker volume rm devenv_postgresql_data; fi
-    - cd ~/ominicontacto/ansible/deploy
-    - python edit_inventory.py --docker_deploy=yes --devenv=yes
-    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh --docker-deploy --iface=$CICD_SERVER_IFACE
-    - cd ~/omnileads/devenv && if [ ! -d omnileads-websockets ]; then git clone https://gitlab.com/omnileads/omnileads-websockets.git; fi
-    - cd ~/omnileads/devenv && docker-compose up -d
-    - cd ~/omnileads/devenv/omnileads-websockets/deploy && docker-compose up -d
+    - cd ~/ominicontacto/install/docker/devenv
+    - if [ -d  ~/omnileads/devenv ]; then docker-compose down || true; docker volume rm devenv_postgresql_data; fi
+    - cp -a .env.gitlab .env
+    - docker-compose up -d
     - until curl -sk --head  --request GET https://localhost |grep "302" > /dev/null; do echo "Environment still being installed, sleeping 80 seconds"; sleep 80; done; echo "Environment is up"
-    - docker exec -u omnileads -d oml-omniapp-devenv python3 manage.py cambiar_admin_password && sleep 10
+    - docker exec -u omnileads -d omlapp python3 manage.py cambiar_admin_password && sleep 10
     - TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=localhost ADMIN_USERNAME=admin ADMIN_PASSWORD=admin LOGIN_FAILURE_LIMIT=10 python ~/ominicontacto/ominicontacto_app/tests/test_integracion/test_all.py
   tags:
     - deploy-docker
@@ -147,3 +152,16 @@ deploy-docker-devenv:
     - /.*deploy.*$/
     - schedules
     - web
+
+#deploy-docker-prodenv:
+#  stage: deploy
+#  image: nodefactory/dind-with-compose
+#  script:
+#    - cd install/docker/prodenv
+#    - docker-compose up -d
+#    - until curl -sk --head  --request GET https://localhost |grep "302" > /dev/null; do echo "Environment still being installed, sleeping 80 seconds"; sleep 80; done; echo "Environment is up"
+#  only:
+#    - merge_requests
+#    - /.*release.*$/
+#    - schedules
+#    - web

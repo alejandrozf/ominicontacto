@@ -203,4 +203,4 @@ class AMIManagerConnectorError(OmlError):
         self.message = message
 
     def __str__(self):
-        return ('Error al utilizar AMIManagerConnector: {1}').format(self.message)
+        return (f'Error al utilizar AMIManagerConnector: {self.message}')
