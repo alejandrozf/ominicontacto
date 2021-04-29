@@ -48,6 +48,7 @@ services:
     stop_grace_period: 1m30s
     tty: true
     volumes:
+      - media_root:/opt/omnileads/media_root
       - recordings:/var/spool/asterisk/monitor
       - sounds:/var/lib/asterisk/sounds/
     working_dir: /opt/omnileads/ominicontacto
@@ -147,6 +148,7 @@ networks:
 
 volumes:
   ast_conf_files:
+  media_root:
   recordings:
   redis_data:
   sounds:
