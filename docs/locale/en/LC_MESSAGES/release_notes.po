@@ -73,7 +73,7 @@ msgid ""
 "Mejoras de control de tráfico en Webphone para escenarios de conectividad"
 " limitada."
 msgstr ""
-"Improvements in Webphone Machine States transitions.""
+"Improvements in Webphone Machine States transitions."
 
 # 70ac7b59523242d3ba1e294aad32e798
 #: ../../release_notes.rst:18
