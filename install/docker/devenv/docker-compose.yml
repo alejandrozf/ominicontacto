@@ -245,6 +245,17 @@ services:
     volumes:
       - ../../../modules/websockets/source/:/opt/services/webapp/src/
 
+  vue-cli:
+    tty: true
+    container_name: omlvuejscli
+    image: freetechsolutions/vue-cli:develop
+    ports:
+      - 8081:8081
+    networks:
+      - devenv
+    volumes:
+      - ../../../omnileads_ui/:/home/app
+
 networks:
   devenv:
     ipam:
