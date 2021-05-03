@@ -3,8 +3,8 @@ Vagrant.configure("2") do |config|
     nodo1.vm.box = "centos-release-" + ENV['RELEASE_TO_UPGRADE']
     nodo1.ssh.private_key_path = "/home/ftsinfra/oml-boxes/centos_private_key_release-" + ENV['RELEASE_TO_UPGRADE']
     nodo1.vm.network "public_network", bridge: "eth1", ip: ENV['UPGRADE_IP_CENTOS'], use_dhcp_assigned_default_route: true
-    nodo1.vm.network "forwarded_port", guest: 443, host: 8082
-    nodo1.vm.network "forwarded_port", guest: 8080, host: 8083
+    nodo1.vm.network "forwarded_port", guest: 443, host: 8085
+    nodo1.vm.network "forwarded_port", guest: 8080, host: 8086
 
     nodo1.ssh.forward_agent = true
     nodo1.vm.synced_folder '.', '/vagrant', disabled: true

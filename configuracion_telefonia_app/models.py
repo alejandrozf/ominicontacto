@@ -590,7 +590,7 @@ class EsquemaGrabaciones(models.Model):
 
 class AudiosAsteriskConf(models.Model):
     """
-      Controla listado de audios de Asterisk así como si están 
+      Controla listado de audios de Asterisk así como si están
       instalados o no
     """
     ES = 'es'

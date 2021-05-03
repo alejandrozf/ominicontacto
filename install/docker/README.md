@@ -7,9 +7,9 @@ In this folder is the Dockerfile to install the dependencies that will need OMni
 To build the image `omlappbuilder` use the script `build_image.sh`:
 
 ```sh
-  DOCKER_USER=$USER DOCKER_PASSWORD=$PASSWORD ./build_image.sh $TAG
+  DOCKER_USER=$USER DOCKER_PASSWORD=$PASSWORD ./build_image.sh latest
 ```
-Change $USER and $PASSWORD with the credentials of docker hub and change $TAG with the tag of the image you want.
+Change $USER and $PASSWORD with the credentials of docker hub
 
 ## Omlapp
 

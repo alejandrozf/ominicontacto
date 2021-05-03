@@ -54,13 +54,17 @@ You will have the trunk with the pbxemulator and an agent with this credentials:
   PGPASSWORD=the one you used in inventory
   PGPORT=4444
 ```
-* Third, Wombat Dialer web server. To access it: **http://YOUR_HOSTNAME:4442**
+* Third, Wombat Dialer web server. To access it: **http://YOUR_HOSTNAME:4442/wombat**
 
 ## Configuring wombat dialer
 
 You only need to do this if you are going to work with Predictive Dialer campaigns
 
 When you enter to **http://YOUR_HOSTNAME:4442** you go to Wombat Dialer to begin its configuration. Check our official documentation to check this: https://documentacion-omnileads.readthedocs.io/es/stable/maintance.html#configuracion-del-modulo-de-discador-predictivo
+
+---
+**Note:** when configuring AMI connection in Wombat Dialer, the server address is `acd`.
+---
 
 ## Updating images
 
@@ -94,17 +98,11 @@ From **docker ps** command you can take the container name that is assigned for 
 ## Adding a package to project requirements
 
 1. Add package to requirements.txt file
-2. Go to `Dockerfile` in `install/docker/omlappbuilder` and run the `build_image.sh` script as follow:
+2. Go to omlappbuilder container and install the requirements packages:
 ```sh
-  $ ./build_image.sh latest
-```
-This will build the omlappbuilder with latest tag in your machine.
-3. After building the image `freetechsolutions/omlapp-builder:develop` locally, build omlapp image locally:
-```sh
-  $ docker build -f Dockerfile -t freetechsolutions/omlapp:develop ../..
-```
-4. Execute `docker-compose down` and `docker-compose up -d` to raise up omlapp container with new omlapp image.
-5. Push the image of omlappbuilder
+  $ docker exec -it omlappbuilder sh
+  $ pip3 install -r requirements.txt
+```  
 
 ## Changing code
 
