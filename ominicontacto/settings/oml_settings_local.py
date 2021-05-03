@@ -62,7 +62,6 @@ OML_SIP_FILENAME = "{0}/etc/asterisk/oml_pjsip_agents.conf".format(ASTERISK_LOCA
 OML_QUEUES_FILENAME = "{0}/etc/asterisk/oml_queues.conf".format(ASTERISK_LOCATION)
 OML_RUTAS_SALIENTES_FILENAME = "{0}/etc/asterisk/oml_extensions_outr.conf".format(ASTERISK_LOCATION)
 OML_ASTERISK_REMOTEPATH = "{0}/etc/asterisk/".format(ASTERISK_LOCATION)
-OML_BACKLIST_REMOTEPATH = "{0}/var/spool/asterisk/blacklist/".format(ASTERISK_LOCATION)
 OML_WOMBAT_FILENAME = "{0}/wombat-json/".format(INSTALL_PREFIX)
 
 OML_KAMAILIO_HOSTNAME = "root@{0}".format(KAMAILIO_HOSTNAME)
