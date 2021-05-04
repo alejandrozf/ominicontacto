@@ -31,7 +31,6 @@ services:
       - ../../../../omlacd/source/astconf:/etc/asterisk/
       - ../../../../omlacd/source/agis:/var/lib/asterisk/agi-bin/
       - ../../../../omlacd/source/sounds:/var/lib/asterisk/sounds/
-      - ../../../modules/asterisk/blacklist:/var/spool/asterisk/blacklist
       - ../../../../omlacd/source/scripts:/opt/omnileads/asterisk/virtualenv/scripts
     working_dir: /etc/asterisk
 
@@ -75,7 +74,6 @@ services:
       - ../../../:/opt/omnileads/ominicontacto/
       - ../../../modules/asterisk/grabaciones:/var/spool/asterisk/monitor
       - ../../../modules/asterisk/source/astconf/:/etc/asterisk/
-      - ../../../modules/asterisk/blacklist:/var/spool/asterisk/blacklist
     working_dir: /opt/omnileads/ominicontacto
 
   dialer:
