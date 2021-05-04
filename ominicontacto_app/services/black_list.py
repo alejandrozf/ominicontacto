@@ -36,7 +36,6 @@ from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError, \
     OmlError, OmlParserMaxRowError, OmlParserCsvImportacionError
 from ominicontacto_app.models import ContactoBlacklist
 from ominicontacto_app.parser import ParserCsv
-from ominicontacto_app.asterisk_config import BlackListConfigFile
 
 from utiles_globales import validar_estructura_csv
 
@@ -105,19 +104,6 @@ class CreacionBlacklistService(object):
 
         blacklist.cantidad_contactos = cantidad_contactos
         blacklist.save()
-
-    def crear_archivo_blacklist(self, black_list):
-        """ Crear archivo de blacklist para ser importado al discador para tener en
-        en cuenta y no llamar a estos contactos
-        """
-        contactos = ContactoBlacklist.objects.filter(black_list=black_list)
-        lista_contacto = []
-        for contacto in contactos:
-            telefono = contacto.telefono + "\n"
-            lista_contacto.append(telefono)
-        blacklist_config_file = BlackListConfigFile()
-        blacklist_config_file.write(lista_contacto)
-        blacklist_config_file.copy_asterisk()
 
 
 class NoSePuedeInferirMetadataErrorFormatoFilas(OmlError):

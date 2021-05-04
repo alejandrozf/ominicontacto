@@ -796,13 +796,6 @@ class SipRegistrationsConfigFile(ConfigFile):
         super(SipRegistrationsConfigFile, self).__init__(filename)
 
 
-class BlackListConfigFile(ConfigFile):
-    def __init__(self):
-        filename = os.path.join(settings.OML_BACKLIST_REMOTEPATH,
-                                "oml_backlist.txt")
-        super(BlackListConfigFile, self).__init__(filename)
-
-
 class PlaylistsConfigFile(ConfigFile):
     def __init__(self):
         filename = "oml_moh.conf"
