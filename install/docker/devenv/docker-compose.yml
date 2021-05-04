@@ -245,8 +245,7 @@ services:
   vue-cli:
     tty: true
     container_name: omlvuejscli
-    image: node:10-alpine
-    command: npm install -g @vue/cli
+    image: freetechsolutions/vue-cli:develop
     ports:
       - 8081:8081
     networks:
