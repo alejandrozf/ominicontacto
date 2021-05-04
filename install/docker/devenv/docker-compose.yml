@@ -28,11 +28,11 @@ services:
     stop_grace_period: 1m30s
     volumes:
       - ../../../modules/asterisk/grabaciones:/var/spool/asterisk/monitor/
-      - ../../../modules/asterisk/source/astconf/:/etc/asterisk/
-      - ../../../modules/asterisk/source/agis/:/var/lib/asterisk/agi-bin/
-      - ../../../modules/asterisk/source/sounds:/var/lib/asterisk/sounds/
+      - ../../../../omlacd/source/astconf:/etc/asterisk/
+      - ../../../../omlacd/source/agis:/var/lib/asterisk/agi-bin/
+      - ../../../../omlacd/source/sounds:/var/lib/asterisk/sounds/
       - ../../../modules/asterisk/blacklist:/var/spool/asterisk/blacklist
-      - ../../../modules/asterisk/source/scripts:/opt/omnileads/asterisk/virtualenv/scripts
+      - ../../../../omlacd/source/scripts:/opt/omnileads/asterisk/virtualenv/scripts
     working_dir: /etc/asterisk
 
   app-builder:
@@ -75,7 +75,6 @@ services:
       - ../../../:/opt/omnileads/ominicontacto/
       - ../../../modules/asterisk/grabaciones:/var/spool/asterisk/monitor
       - ../../../modules/asterisk/source/astconf/:/etc/asterisk/
-      - ../../../modules/asterisk/source/sounds:/var/lib/asterisk/sounds/
       - ../../../modules/asterisk/blacklist:/var/spool/asterisk/blacklist
     working_dir: /opt/omnileads/ominicontacto
 
@@ -123,7 +122,7 @@ services:
     restart: on-failure
     stop_grace_period: 1m30s
     volumes:
-      - ../../../modules/kamailio/source/conf/:/etc/kamailio/
+      - ../../../../omlkamailio/source/conf:/etc/kamailio/
 
   mariadb:
     container_name: omlmariadb
@@ -163,7 +162,7 @@ services:
     restart: on-failure
     stop_grace_period: 1m30s
     volumes:
-      - ../../../modules/nginx/source/conf:/etc/nginx/
+      - ../../../../omlnginx/source/conf:/etc/nginx/
       - ../../../modules/asterisk/grabaciones:/var/spool/asterisk/monitor
 
   postgresql:
@@ -243,7 +242,7 @@ services:
     networks:
       - devenv
     volumes:
-      - ../../../modules/websockets/source/:/opt/services/webapp/src/
+      - ../../../../omnileads-websockets/source/:/opt/services/webapp/src/
 
   vue-cli:
     tty: true
