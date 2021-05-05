@@ -137,6 +137,7 @@ upgrade-aio:
 deploy-docker-devenv:
   stage: deploy
   script:
+    - bash ~/git_cleanup.sh
     - cd ~/ominicontacto/install/docker/devenv
     - if [ -d  ~/omnileads/devenv ]; then docker-compose down || true; docker volume rm devenv_postgresql_data; fi
     - cp -a .env.gitlab .env
