@@ -27,7 +27,7 @@ services:
     restart: on-failure
     stop_grace_period: 1m30s
     volumes:
-      - ../../../modules/asterisk/grabaciones:/var/spool/asterisk/monitor/
+      - ../../../../omlacd/grabaciones:/var/spool/asterisk/monitor/
       - ../../../../omlacd/source/astconf:/etc/asterisk/
       - ../../../../omlacd/source/agis:/var/lib/asterisk/agi-bin/
       - ../../../../omlacd/source/sounds:/var/lib/asterisk/sounds/
@@ -72,7 +72,7 @@ services:
       - pyst2:/src/pyst2/
       - ./media_root:/opt/omnileads/media_root
       - ../../../:/opt/omnileads/ominicontacto/
-      - ../../../modules/asterisk/grabaciones:/var/spool/asterisk/monitor
+      - ../../../../omlacd/grabaciones:/var/spool/asterisk/monitor
       - ../../../modules/asterisk/source/astconf/:/etc/asterisk/
     working_dir: /opt/omnileads/ominicontacto
 
@@ -161,7 +161,7 @@ services:
     stop_grace_period: 1m30s
     volumes:
       - ../../../../omlnginx/source/conf:/etc/nginx/
-      - ../../../modules/asterisk/grabaciones:/var/spool/asterisk/monitor
+      - ../../../../omlacd/grabaciones:/var/spool/asterisk/monitor
 
   postgresql:
     container_name: omlpostgresql
