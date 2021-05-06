@@ -41,7 +41,7 @@ class TroncalSIPFactory(DjangoModelFactory):
     nombre = Sequence(lambda n: "TroncalSIP{0}".format(n))
     canales_maximos = lazy_attribute(lambda a: faker.random_int(1, 10))
     caller_id = Sequence(lambda n: "CallID{0}".format(n))
-    register_string = Sequence(lambda n: "Register{0}@localhost:11443".format(n))
+    tecnologia = lazy_attribute(lambda a: faker.random_int(0, 1))
     text_config = ""
 
 

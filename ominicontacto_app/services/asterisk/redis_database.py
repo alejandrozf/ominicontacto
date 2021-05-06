@@ -25,7 +25,8 @@ import sys
 from django.conf import settings
 from django.utils.translation import ugettext as _
 
-from ominicontacto_app.models import AgenteProfile, Pausa, Campana, ConfiguracionDeAgentesDeCampana
+from ominicontacto_app.models import (
+    AgenteProfile, Pausa, Campana, Blacklist, ConfiguracionDeAgentesDeCampana)
 from ominicontacto_app.utiles import convert_audio_asterisk_path_astdb
 from configuracion_telefonia_app.models import (
     RutaSaliente, IVR, DestinoEntrante, ValidacionFechaHora, GrupoHorario, IdentificadorCliente,
@@ -653,6 +654,24 @@ class DestinoPersonalizadoFamily(AbstractRedisFamily):
         return "OML:CUSTOMDST"
 
 
+class BlacklistFamily(object):
+    BLACKLIST_KEY = 'OML:BLACKLIST'
+
+    def regenerar_families(self, blacklist=None):
+        self.redis_connection = redis.Redis(
+            host=settings.REDIS_HOSTNAME,
+            port=settings.CONSTANCE_REDIS_CONNECTION['port'],
+            decode_responses=True)
+        self.redis_connection.delete(self.BLACKLIST_KEY)
+
+        if blacklist is None:
+            blacklist = Blacklist.objects.first()
+            if blacklist is None:
+                return
+        telefonos = blacklist.contactosblacklist.values_list('telefono', flat=True)
+        self.redis_connection.sadd(self.BLACKLIST_KEY, *telefonos)
+
+
 class RegenerarAsteriskFamilysOML(object):
     """
     Regenera las Families en Asterisk para los objetos que no tienen un Sincronizador como los de
@@ -663,8 +682,10 @@ class RegenerarAsteriskFamilysOML(object):
         self.campana_family = CampanaFamily()
         self.agente_family = AgenteFamily()
         self.pausa_family = PausaFamily()
+        self.blacklist_family = BlacklistFamily()
 
     def regenerar_asterisk(self):
         self.campana_family.regenerar_families()
         self.agente_family.regenerar_families()
         self.pausa_family.regenerar_families()
+        self.blacklist_family.regenerar_families()

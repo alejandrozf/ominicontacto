@@ -22,23 +22,25 @@ from __future__ import unicode_literals
 import logging
 import os
 import requests
-import tarfile
 import tempfile
+import base64
+import json
 
 from django.urls import reverse
-from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import FormView, ListView, CreateView, DeleteView
 
 from configuracion_telefonia_app.forms import AudiosAsteriskForm, PlaylistForm, MusicaDeEsperaForm
-from configuracion_telefonia_app.models import Playlist, MusicaDeEspera
+from configuracion_telefonia_app.models import AudiosAsteriskConf, MusicaDeEspera, Playlist
 
 from ominicontacto_app.services.asterisk.playlist import PlaylistDirectoryManager
 from ominicontacto_app.views_archivo_de_audio import ArchivoDeAudioMixin
 from ominicontacto_app.asterisk_config import (
     AudioConfigFile, PlaylistsConfigCreator, AsteriskConfigReloader)
+from pathlib import Path
+from ominicontacto_app.services.redis.redis_streams import RedisStreams
 
 logger = logging.getLogger(__name__)
 
@@ -50,6 +52,7 @@ class AdicionarAudioAsteriskView(FormView):
     template_name = 'adicionar_audios_asterisk.html'
     form_class = AudiosAsteriskForm
 
+    # TODO: Sacar esto a un servicio
     ASTERISK_SOUNDS_URL = 'https://downloads.asterisk.org/pub/telephony/sounds/'
 
     def _download_asterisk_sound(self, language):
@@ -66,16 +69,35 @@ class AdicionarAudioAsteriskView(FormView):
     def form_valid(self, form):
         try:
             # download asterisk file
+            # TODO: Sacar esto a un servicio
             language = form.cleaned_data['audio_idioma']
             filename_full_path = self._download_asterisk_sound(language)
 
-            # uncompress asterisk file and copy to its location
-            tar = tarfile.open(filename_full_path)
-            destination = os.path.join(settings.ASTERISK_AUDIO_PATH, language)
-            if not os.path.exists(destination):
-                os.makedirs(destination)
-                tar.extractall(destination)
-                tar.close()
+            __, nombre_archivo = os.path.split(filename_full_path)
+            sound_tar_data = Path(filename_full_path).read_bytes()
+            res = base64.b64encode(sound_tar_data)
+            res = res.decode('utf-8')
+            redis_stream = RedisStreams()
+            content = {
+                'archivo': nombre_archivo,
+                'type': 'ASTERISK_SOUNDS',
+                'action': 'COPY',
+                'language': language,
+                'content': res
+            }
+            try:
+                audio_asterisk_conf = AudiosAsteriskConf \
+                    .objects \
+                    .filter(paquete_idioma=language)[:1] \
+                    .get()
+                audio_asterisk_conf.esta_instalado = True
+                audio_asterisk_conf.save()
+            except AudiosAsteriskConf.DoesNotExist:
+                AudiosAsteriskConf.objects.create(
+                    paquete_idioma=language,
+                    esta_instalado=True)
+
+            redis_stream.write_stream('asterisk_conf_updater', json.dumps(content))
             messages.add_message(
                 self.request, messages.SUCCESS,
                 _('Se ha instalado el paquete de idioma satisfactoriamente.'))
@@ -100,17 +122,10 @@ class PlaylistCreateView(CreateView):
     template_name = 'playlist/crear_playlist.html'
 
     def form_valid(self, form):
-        # TODO: Crear carpeta en Asterisk
-        playlist_directory = PlaylistDirectoryManager()
-        nombre = form.cleaned_data.get('nombre')
-        creacion_ok = playlist_directory.generar_directorio(nombre)
-        if creacion_ok:
-            self.object = form.save()
-            playlist_config_creator = PlaylistsConfigCreator()
-            playlist_config_creator.create_config_asterisk()
-            return redirect(self.get_success_url())
-        else:
-            return redirect('lista_playlist')
+        self.object = form.save()
+        playlist_config_creator = PlaylistsConfigCreator()
+        playlist_config_creator.create_config_asterisk()
+        return redirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse('editar_playlist', kwargs={'pk': self.object.pk})
@@ -153,6 +168,7 @@ class PlaylistDeleteView(DeleteView):
         playlist = self.get_object()
         playlist_directory = PlaylistDirectoryManager()
         eliminacion_ok = playlist_directory.eliminar_directorio(playlist.nombre)
+
         if not eliminacion_ok:
             message = (_('Hubo un problema al eliminar la Playlist.'
                          ' Por Favor notifique a su Administrador.'))
@@ -204,8 +220,7 @@ class MusicaDeEsperaCreateView(ArchivoDeAudioMixin, CreateView):
         context['base_url'] = "%s://%s" % (self.request.scheme,
                                            self.request.get_host())
         # TODO: Ver como hacer para que este form tenga info de is_valid.
-        if context['form'].is_valid():
-            pass
+
         return context
 
     def form_valid(self, form):
@@ -244,9 +259,6 @@ class MusicaDeEsperaDeleteView(DeleteView):
         if musica.audio_original:
             if os.path.isfile(musica.audio_original.path):
                 os.remove(musica.audio_original.path)
-        if musica.audio_asterisk:
-            if os.path.isfile(musica.audio_asterisk.path):
-                os.remove(musica.audio_asterisk.path)
 
         # Si esta musica es la última que había en la playlist:
         if musica.playlist.musicas.count() == 1:

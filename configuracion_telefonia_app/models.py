@@ -586,3 +586,34 @@ class EsquemaGrabaciones(models.Model):
     id_externo_contacto = models.BooleanField(default=False)
     id_externo_campana = models.BooleanField(default=False)
     id_agente = models.BooleanField(default=False)
+
+
+class AudiosAsteriskConf(models.Model):
+    """
+      Controla listado de audios de Asterisk así como si están
+      instalados o no
+    """
+    ES = 'es'
+    EN = 'en'
+    FR = 'fr'
+    IT = 'it'
+    JA = 'ja'
+    RU = 'ru'
+    SV = 'sv'
+
+    AUDIO_IDIOMA_CHOICES = (
+        (ES, _('Español')),
+        (EN, _('Inglés')),
+        (FR, _('Francés')),
+        (IT, _('Italiano')),
+        (JA, _('Japonés')),
+        (RU, _('Ruso')),
+        (SV, _('Sueco')),
+    )
+
+    paquete_idioma = models.CharField(
+        max_length=2,
+        choices=AUDIO_IDIOMA_CHOICES,
+        help_text=_('Paquete de idioma'))
+
+    esta_instalado = models.BooleanField(default=False)

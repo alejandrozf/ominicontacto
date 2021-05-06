@@ -25,15 +25,10 @@ stages:
 test:
   stage: test
   image: freetechsolutions/python-flake8:3.6
-  # Pick zero or more services to be used on all builds.
-  # Only needed when using a docker container to run your tests in.
-  # Check out: http://docs.gitlab.com/ce/ci/docker/using_docker_images.html#what-is-a-service
   services:
-    - name: freetechsolutions/postgresql:11
+    - name: freetechsolutions/omlpgsql:develop
       alias: plpython
     - redis
-  # This folder is cached between builds
-  # http://docs.gitlab.com/ce/ci/yaml/README.html#cache
   cache:
     paths:
       - /root/.cache/pip/
@@ -51,7 +46,6 @@ test:
     DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
     DJANGO_SETTINGS_MODULE: "ominicontacto.settings.gitlab"
   script:
-    # - python checks.py
     - bash check-js.sh
     - flake8
     - python manage.py test --failfast
@@ -61,27 +55,32 @@ test:
     - schedules
     - web
 
-build-docker-devenv:
+build-image:
   stage: build
+  services:
+    - name: docker:dind
+      entrypoint: ["env", "-u", "DOCKER_HOST"]
+      command: ["dockerd-entrypoint.sh"]
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+    # See https://github.com/docker-library/docker/pull/166
+    DOCKER_TLS_CERTDIR: ""
+  image: gitlab/dind
   script:
-    - bash ~/git_cleanup.sh
-    - python ansible/build/edit_inventory.py --docker_build=yes -dle=$DOCKER_LOGIN_EMAIL -dlp=$DOCKER_LOGIN_PASSWORD
-    - cd ansible/build
-    - echo "$FTSINFRA_PASS" | sudo -S ./build.sh --docker-de-build
-  tags:
-    - build-docker
+  script:
+    - cd install/docker && bash build_image.sh
   only:
-    - /.*build-all.*$/
-    - /.*build-docker.*$/
-    - schedules
+    - merge_request
     - web
+    - schedules
 
-build-aio:
+build-rpm:
   stage: build
+  variables:
   image: freetechsolutions/fpm-ansible:centos7
   script:
-    - python2 ansible/build/edit_inventory.py --aio_build=yes
-    - cd ansible/build && ./build.sh --aio-build
+    - cd install/onpremise/build/ && bash build_rpm.sh
   only:
     - /.*build-all.*$/
     - /.*build-aio.*$/
@@ -93,18 +92,17 @@ deploy-aio-host-node:
   environment: FTS-CENTOS7
   script:
     - bash ~/git_cleanup.sh
-    - cd ~/ominicontacto/vagrant/deploy/host_node/
+    - cd ~/ominicontacto/install/onpremise/deploy/vagrant/deploy/host_node/
     - vagrant halt centos
     - vagrant destroy centos -f
     - ./vagrantup.sh centos
-    - cd ../../../
-    - python ansible/deploy/edit_inventory.py --internal_ip=$STAGING_IP_CENTOS --host_node=yes
-    - cd ansible/deploy
+    - python ~/ominicontacto/install/onpremise/deploy/ansible/edit_inventory.py --internal_ip=$STAGING_IP_CENTOS --host_node=yes
+    - cd ~/ominicontacto/install/onpremise/deploy/ansible
     - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
     - sleep 180
     - TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=$STAGING_IP_CENTOS ADMIN_USERNAME=admin ADMIN_PASSWORD=admin LOGIN_FAILURE_LIMIT=10 python ~/ominicontacto/ominicontacto_app/tests/test_integracion/test_all.py
-    - ~/ominicontacto/vagrant/deploy/releases/package.sh
-    - cd ~/ominicontacto/vagrant/deploy/host_node/
+    - ~/ominicontacto/install/onpremise/deploy/vagrant/deploy/releases/package.sh
+    - cd ~/ominicontacto/install/onpremise/deploy/vagrant/deploy/host_node/
     - sleep 20 && vagrant halt centos
   tags:
     - deploy-aio
@@ -121,34 +119,31 @@ upgrade-aio:
     - bash ~/git_cleanup.sh
     - cd ~/oml-boxes
     - vagrant box add centos-release-$RELEASE_TO_UPGRADE.box --name centos-release-$RELEASE_TO_UPGRADE --force
-    - cd ~/ominicontacto/vagrant/deploy/releases
+    - cd ~/ominicontacto/install/onpremise/deploy/vagrant/deploy/releases
     - vagrant halt
     - vagrant destroy -f
     - ./vagrantup.sh centos
-    - cd ../../../
-    - python ansible/deploy/edit_inventory.py --internal_ip=$UPGRADE_IP_CENTOS --host_node=yes
-    - cd ansible/deploy
+    - python ~/ominicontacto/install/onpremise/deploy/ansible/edit_inventory.py --internal_ip=$UPGRADE_IP_CENTOS --host_node=yes
+    - cd ~/ominicontacto/install/onpremise/deploy/ansible
     - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -u
-    - cd ~/ominicontacto/vagrant/deploy/releases
+    - cd ~/ominicontacto/install/onpremise/deploy/vagrant/deploy/releases
     - vagrant halt centos
   tags:
     - deploy-aio
   only:
     - web
+    - schedules
 
 deploy-docker-devenv:
   stage: deploy
   script:
     - bash ~/git_cleanup.sh
-    - if [ -d  ~/omnileads/devenv ]; then cd ~/omnileads/devenv/omnileads-websockets/deploy && docker-compose down && cd ~/omnileads/devenv && docker-compose down || true; docker volume rm devenv_postgresql_data; fi
-    - cd ~/ominicontacto/ansible/deploy
-    - python edit_inventory.py --docker_deploy=yes --devenv=yes
-    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh --docker-deploy --iface=$CICD_SERVER_IFACE
-    - cd ~/omnileads/devenv && if [ ! -d omnileads-websockets ]; then git clone https://gitlab.com/omnileads/omnileads-websockets.git; fi
-    - cd ~/omnileads/devenv && docker-compose up -d
-    - cd ~/omnileads/devenv/omnileads-websockets/deploy && docker-compose up -d
+    - cd ~/ominicontacto/install/docker/devenv
+    - if [ -d  ~/omnileads/devenv ]; then docker-compose down || true; docker volume rm devenv_postgresql_data; fi
+    - cp -a .env.gitlab .env
+    - docker-compose up -d
     - until curl -sk --head  --request GET https://localhost |grep "302" > /dev/null; do echo "Environment still being installed, sleeping 80 seconds"; sleep 80; done; echo "Environment is up"
-    - docker exec -u omnileads -d oml-omniapp-devenv python3 manage.py cambiar_admin_password && sleep 10
+    - docker exec -u omnileads -d omlapp python3 manage.py cambiar_admin_password && sleep 10
     - TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=localhost ADMIN_USERNAME=admin ADMIN_PASSWORD=admin LOGIN_FAILURE_LIMIT=10 python ~/ominicontacto/ominicontacto_app/tests/test_integracion/test_all.py
   tags:
     - deploy-docker
@@ -158,3 +153,16 @@ deploy-docker-devenv:
     - /.*deploy.*$/
     - schedules
     - web
+
+#deploy-docker-prodenv:
+#  stage: deploy
+#  image: nodefactory/dind-with-compose
+#  script:
+#    - cd install/docker/prodenv
+#    - docker-compose up -d
+#    - until curl -sk --head  --request GET https://localhost |grep "302" > /dev/null; do echo "Environment still being installed, sleeping 80 seconds"; sleep 80; done; echo "Environment is up"
+#  only:
+#    - merge_requests
+#    - /.*release.*$/
+#    - schedules
+#    - web

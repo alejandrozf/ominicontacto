@@ -166,7 +166,7 @@ class Command(BaseCommand):
         agente = AgenteProfileFactory(grupo=grupo, reported_by=self.admin)
         agente.user.username = self.agent_username
         agente.user.set_password(self.agent_password)
-        agente.sip_extension = 1000 + agente.id
+        agente.sip_extension = 1000 + agente.user.id
         agente.user.is_agente = True
         agente.user.save()
         agente.save()
@@ -202,18 +202,25 @@ class Command(BaseCommand):
         activacion_queue_service.activar()
 
         # crea un troncal y con este una ruta entrante hacia el pbx-emulator
-        text_config = ("type=friend\n"
-                       "host=pbx-emulator\n"
-                       "defaultuser=01177660010\n"
-                       "secret=OMLtraining72\n"
-                       "qualify=yes\n"
-                       "insecure=invite\n"
-                       "context=from-pstn\n"
-                       "disallow=all\n"
-                       "allow=alaw\n")
-        register_string = "01177660010:OMLtraining72@pbx-emulator"
+        text_config = ("type=wizard\n"
+                       "transport=trunk-transport\n"
+                       "accepts_registrations=no\n"
+                       "accepts_auth=no\n"
+                       "sends_registrations=yes\n"
+                       "sends_auth=yes\n"
+                       "endpoint/rtp_symmetric=no\n"
+                       "endpoint/force_rport=no\n"
+                       "endpoint/rewrite_contact=yes\n"
+                       "endpoint/timers=yes\n"
+                       "aor/qualify_frequency=60\n"
+                       "endpoint/allow=alaw,ulaw\n"
+                       "endpoint/dtmf_mode=rfc4733\n"
+                       "endpoint/context=from-pstn\n"
+                       "remote_hosts=pbxemulator:5060\n"
+                       "outbound_auth/username=01177660010\n"
+                       "outbound_auth/password=OMLtraining72\n")
         troncal_pbx_emulator = TroncalSIPFactory(
-            text_config=text_config, register_string=register_string, canales_maximos=1000,
+            text_config=text_config, canales_maximos=1000, tecnologia=1,
             caller_id='')
         sincronizador_troncal = SincronizadorDeConfiguracionTroncalSipEnAsterisk()
         sincronizador_troncal.regenerar_troncales(troncal_pbx_emulator)

@@ -17,12 +17,9 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 from __future__ import unicode_literals
+from ominicontacto_app.services.redis.redis_streams import RedisStreams
 
-
-from django.conf import settings
-import os
-
-from django.utils.translation import ugettext as _
+import json
 import logging as _logging
 
 logger = _logging.getLogger(__name__)
@@ -30,42 +27,12 @@ logger = _logging.getLogger(__name__)
 
 class PlaylistDirectoryManager(object):
 
-    def _get_path(self, nombre):
-        return os.path.join(settings.OML_PLAYLIST_PATH_ASTERISK, nombre)
-
-    def generar_directorio(self, nombre):
-        # Me aseguro que exista el directorio para las playlists
-        if not os.path.exists(settings.OML_PLAYLIST_PATH_ASTERISK):
-            try:
-                os.mkdir(settings.OML_PLAYLIST_PATH_ASTERISK)
-            except OSError:
-                logger.info(_('Error creando directorio: {0}').format(
-                    settings.OML_PLAYLIST_PATH_ASTERISK))
-                return False
-
-        directory = self._get_path(nombre)
-        if os.path.exists(directory):
-            return True
-        try:
-            os.mkdir(directory)
-        except OSError:
-            logger.info(_('Error creando directorio: {0}').format(directory))
-            return False
-        else:
-            logger.info(_('Se creo el directorio: {0}').format(directory))
-        return True
-
     def eliminar_directorio(self, nombre):
-        directory = self._get_path(nombre)
-        if not os.path.exists(directory):
-            logger.info(_('Error eliminando directorio. El directorio no existe: {0}').format(
-                directory))
-            return False
-
-        try:
-            os.rmdir(directory)
-        except OSError:
-            logger.info(_('Error al eliminar directorio: {0}').format(
-                directory))
-            return False
+        redis_stream = RedisStreams()
+        content = {
+            'archivo': nombre,
+            'type': 'ASTERISK_PLAY_LIST_DIR',
+            'action': 'DELETE',
+        }
+        redis_stream.write_stream('asterisk_conf_updater', json.dumps(content))
         return True
