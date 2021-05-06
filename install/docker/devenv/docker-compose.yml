@@ -240,7 +240,7 @@ services:
     networks:
       - devenv
     volumes:
-      - ../../../../omnileads-websockets/source/:/opt/services/webapp/src/
+      - ../../../../omlwebsockets/source/:/opt/services/webapp/src/
 
   vue-cli:
     tty: true
