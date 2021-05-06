@@ -71,6 +71,15 @@
       until: s3_download is success
       when: postgres_host != "localhost"
 
+    # Se crea el archivo .pgpass para manejar las conexiones a postgresql desde consola
+    - name: Create of .pgpass file
+      template: src=roles/prerequisitos/templates/.pgpass dest={{ item }}.pgpass mode=0600 owner={{ usuario }} group={{ usuario }}
+      with_items:
+        - "{{ install_prefix }}"
+        - /root/
+      when: postgres_host != "localhost"
+      tags: postinstall
+
     # Se crea usuario, base de datos y extension plperl
     - name: Creating extension plperl
       shell: psql -c "CREATE EXTENSION plperl;"
@@ -109,12 +118,3 @@
       register: s3_download
       failed_when:
         - "s3_download.rc != 0 or 'scriptlet failure' in s3_download.stderr"
-
-    # Se crea el archivo .pgpass para manejar las conexiones a postgresql desde consola
-    - name: Create of .pgpass file
-      template: src=roles/prerequisitos/templates/.pgpass dest={{ item }}.pgpass mode=0600 owner={{ usuario }} group={{ usuario }}
-      with_items:
-        - "{{ install_prefix }}"
-        - /root/
-      when: postgres_host != "localhost"
-      tags: postinstall
