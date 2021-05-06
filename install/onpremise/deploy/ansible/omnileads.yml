@@ -71,6 +71,13 @@
       until: s3_download is success
       when: postgres_host != "localhost"
 
+    # Se crea usuario, base de datos y extension plperl
+    - name: Creating extension plperl
+      shell: psql -c "CREATE EXTENSION plperl;"
+      args:
+        executable: /bin/bash
+      when: ansible_distribution == "Amazon" and postgres_host != "localhost"
+
     # Chequeo si la version de virtualenv instalada es {{ virtualenv_version }}
     - name: Check if virtualenv {{ virtualenv_version }} is installed
       shell:  yum list installed |grep virtualenv| awk -F " " '{print $2}' |awk -F "-" '{print $1}'
