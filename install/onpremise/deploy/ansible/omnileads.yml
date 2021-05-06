@@ -82,7 +82,7 @@
 
     # Se crea usuario, base de datos y extension plperl
     - name: Creating extension plperl
-      shell: psql -c "CREATE EXTENSION plperl;"
+      shell: PGUSER={{ postgres_user }} PGDATABASE={{ postgres_database }} PGHOST={{ postgres_host }} PGPASSWORD={{ postgres_password }} psql -c "CREATE EXTENSION plperl;"
       args:
         executable: /bin/bash
       when: ansible_distribution == "Amazon" and postgres_host != "localhost"
