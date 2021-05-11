@@ -194,3 +194,5 @@ if [[ "$RTPENGINE_HOST" != "NULL" ]]; then
 
   systemctl start rtpengine
 fi
+
+source /etc/profile.d/omnileads_envars.sh
