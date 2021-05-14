@@ -27,8 +27,8 @@ PG_HOST=NULL #${pg_host}
 PG_PORT=NULL #${pg_port}
 
 RTPENGINE_HOST=NULL #${rtpengine_host}
-#RTPENGINE_UDP_INI=20000
-#RTPENGINE_UDP_END=30000
+RTPENGINE_UDP_INI=20000
+RTPENGINE_UDP_END=30000
 
 REDIS_HOST=NULL
 DIALER_HOST=NULL #${dialer_host}
@@ -185,14 +185,12 @@ if [[ "$ENVIRONMENT_INIT" == "true" ]]; then
 fi
 
 
-echo "********************************** Task if RTP run AIO *********************************"
-echo "********************************** Task if RTP run AIO *********************************"
-if [[ "$RTPENGINE_HOST" != "NULL" ]]; then
-
+echo "********************************** Exec task if RTP run AIO *********************************"
+echo "********************************** Exec task if RTP run AIO *********************************"
+if [[ "$RTPENGINE_HOST" != "NULL" && "$CLOUD" != "onpremise" ]]; then
   echo -n "CLOUD rtpengine"
-  echo "OPTIONS="-i $PUBLIC_IPV4 -o 60 -a 3600 -d 30 -s 120 -n localhost:22222 -m $RTPENGINE_UDP_INI -M $RTPENGINE_UDP_END -L 7 --log-facility=local1""  > /etc/rtpengine-config.conf
-
+  echo "OPTIONS="-i $PUBLIC_IPV4 -o 60 -a 3600 -d 30 -s 120 -n 127.0.0.1:22222 -m $RTPENGINE_UDP_INI -M $RTPENGINE_UDP_END -L 7 --log-facility=local1""  > /etc/rtpengine-config.conf
   systemctl start rtpengine
 fi
 
-source /etc/profile.d/omnileads_envars.sh
+reboot
