@@ -126,6 +126,7 @@ echo "***************************** git clone omnileads repo *******************
 cd $SRC
 git clone --recurse-submodules --branch $COMPONENT_RELEASE $COMPONENT_REPO
 cd ominicontacto
+git submodule update --remote
 
 echo "***************************** inventory setting *************************************"
 echo "***************************** inventory setting *************************************"
