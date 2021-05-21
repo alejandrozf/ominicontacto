@@ -8,7 +8,7 @@ This environment can be deployed in any linux distro. Linux distro tested by our
 2. Install docker-compose
     As docker CE follow the installation steps: https://docs.docker.com/compose/install/
 3. Follow docker post-installations steps: https://docs.docker.com/install/linux/linux-postinstall/
-4. PostgreSQL, RTPengine and MariaDB installed and configured to be accessed by the containers.
+4. PostgreSQL, RTPengine, MariaDB and Wombat Dialer installed and configured to be accessed by the containers.
 
 ## Deploy of stack
 
