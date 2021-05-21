@@ -20,7 +20,7 @@ Init() {
     exec $COMMAND runserver 0.0.0.0:8099
   else
     echo "Iniciando Django uWSGI"
-    exec /usr/bin/uwsgi --ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini
+    exec /usr/local/bin/uwsgi --ini ${INSTALL_PREFIX}/run/oml_uwsgi.ini
   fi
 }
 

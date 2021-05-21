@@ -12,16 +12,6 @@
 #localhost ansible_connection=local ansible_user=root #(this line is for self-hosted installation)
 #X.X.X.X ansible_ssh_port=22 ansible_user=root #(this line is for node-host installation)
 
-##############################################################################
-# Uncomment the line if you want to deploy DE or PE                          #
-##############################################################################
-# If you are installing a devenv (PE) uncomment
-[prodenv-container]
-#X.X.X.X ansible_ssh_port=22 ansible_user=root #(for node-host installation, replace X.X.X.X with the IP of Docker Host)
-# If you are installing a devenv (DE) uncomment
-[devenv-container]
-#localhost ansible_connection=local ansible_user=root
-
 ###############################################################
 ###############################################################
 # Below are the variables used for every kind of installation #
@@ -36,22 +26,23 @@
 
 #####################################################################
 #                           Database                                #
-#   Set PostgreSQL password, if you will install PostgreSQL in a    #
-#      separate server, edit postgres_host and postgres_port        #
+#   Set PostgreSQL password. If you have a PostgreSQL instance in a #
+#      standalone Linux Host edit postgres_host and postgres_port   #
+#   in order to tell OML Django App the location of this component  #
 #####################################################################
 postgres_database=omnileads
 #postgres_user=omnileads
 #postgres_password=my_very_strong_pass
 #postgres_host=
 #postgres_port=
-#######################################
-# AMI for wombat dialer and OMniLeads #
-#######################################
+##################################################
+# AMI for wombat dialer and OMniLeads Web App    #
+##################################################
 #ami_user=omnileadsami
 #ami_password=5_MeO_DMT
-#############################
-# Wombat dialer credentials #
-#############################
+###############################################################
+# Tell to OMniLeads Web App the Wombat dialer API credentials #
+###############################################################
 #dialer_user=demoadmin
 #dialer_password=demo
 #################################################################################################
@@ -95,9 +86,9 @@ schedule=Agenda
 #extern_ip=auto
 
 #######################################################################################
-# Variables when you have OMniLeads Websocket installed in other host 		      #
-# websocket_host=IP or domain of that host. Default: websockets			      #
-# websocket_port=the port configured in the app in that host. Default: 8000	      #
+# Variables when you have OMniLeads Websocket component installed in other host 		  #
+# websocket_host=IP or domain of that host. Default: websockets			                  #
+# websocket_port=the port configured in the app in that host. Default: 8000	          #
 #######################################################################################
 websocket_host=websockets
 websocket_port=8000
@@ -109,19 +100,17 @@ shm_size=64
 pkg_size=8
 
 ##############################################################################################
-# Variables below are used when you have postgresql, mysql , wombat dialer or rtpengine      #
-# in diferent servers. Uncomment the variables and place the hostnames of these servers      #
+# Variables below are used when you have asterisk, mysql , redis, Redis, rtpengine, dialer   #
+# or kamailio in diferent servers.                                                           #
+# Uncomment the variables and place the hostnames of these servers                           #
 ##############################################################################################
 #asterisk_host=
-### If you need to setup glusterfs between asterisk and OMniLeads ####
-gluster_enabled=true
 #mysql_host=
 #redis_host=
 #rtpengine_host=
 #dialer_host=
 #kamailio_host=
 
-#
 # WARNING!!! ATENCION!!! WAARSCHUWING!!! WARNUNG!!! AVIS!!!
 # WARNING!!! ATENCION!!! WAARSCHUWING!!! WARNUNG!!! AVIS!!!
 # WARNING!!! ATENCION!!! WAARSCHUWING!!! WARNUNG!!! AVIS!!!
@@ -157,36 +146,6 @@ gluster_enabled=true
 # WARNING!!! ATENCION!!! WAARSCHUWING!!! WARNUNG!!! AVIS!!!
 # WARNING!!! ATENCION!!! WAARSCHUWING!!! WARNUNG!!! AVIS!!!
 # WARNING!!! ATENCION!!! WAARSCHUWING!!! WARNUNG!!! AVIS!!!
-#
-
-[docker:vars]
-registry_username='{{ lookup("env","REGISTRY_USERNAME") }}'
-registry_email='{{ lookup("env","REGISTRY_EMAIL") }}'
-registry_password='{{ lookup("env","REGISTRY_PASSWORD") }}'
-subnet='{{ lookup("env","DOCKER_SUBNET") }}'
-is_docker=true
-docker_user='{{ lookup("env","SUDO_USER") }}'
-
-[devenv-container:vars]
-devenv=1
-prodenv=0
-
-[prodenv-container:vars]
-devenv=0
-prodenv=1
-
-[prodenv-aio:vars]
-ssh_port="{{ ansible_ssh_port }}"
-omni_ip="{{ inventory_hostname }}"
-devenv=0
-prodenv=1
-is_docker=false
-
-[docker:children]
-devenv-container
-prodenv-container
 
 [everyone:children]
 prodenv-aio
-devenv-container
-prodenv-container

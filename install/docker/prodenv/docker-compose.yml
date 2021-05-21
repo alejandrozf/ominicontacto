@@ -18,7 +18,7 @@ services:
       - REDIS_HOSTNAME=${REDIS_HOSTNAME}
       - TZ=${TZ}
       - ASTERISK_LOCATION=
-    image: freetechsolutions/omlacd:latest
+    image: freetechsolutions/omlacd:${OMLACD_VERSION}
     networks:
       - prodenv
     ports:
@@ -39,7 +39,7 @@ services:
     dns: 8.8.8.8
     env_file:
       - .env
-    image: freetechsolutions/omlapp:latest
+    image: freetechsolutions/omlapp:${OMLAPP_VERSION}
     networks:
       - prodenv
     privileged: true
@@ -52,23 +52,6 @@ services:
       - recordings:/var/spool/asterisk/monitor
       - sounds:/var/lib/asterisk/sounds/
     working_dir: /opt/omnileads/ominicontacto
-
-  dialer:
-    command: >
-      bash -c "sed -i '/JDBC_URL/c\JDBC_URL=jdbc:mariadb:\/\/${MYSQL_HOST}\/${WOMBAT_DB}?user=${WOMBAT_DB_USER}&password=${WOMBAT_DB_PASS}&autoReconnect=true' /usr/local/tomcat/webapps/wombat/WEB-INF/tpf.properties && catalina.sh run"
-    container_name: omldialer
-    dns: 8.8.8.8
-    environment:
-      - TZ=${TZ}
-      - MYSQL_PWD=${MYSQL_ROOT_PASS}
-    image: freetechsolutions/omldialer:latest
-    networks:
-      - prodenv
-    ports:
-      - ${WD_EXT_PORT}:8080/tcp
-    privileged: true
-    restart: on-failure
-    stop_grace_period: 1m30s
 
   kamailio:
     command:
@@ -88,7 +71,7 @@ services:
       - SHM_SIZE=${SHM_SIZE}
       - PKG_SIZE=${PKG_SIZE}
       - KAMAILIO_CERTS_LOCATION=${KAMAILIO_CERTS_LOCATION}
-    image: freetechsolutions/omlkam:latest
+    image: freetechsolutions/omlkam:${OMLKAM_VERSION}
     networks:
       - prodenv
     privileged: true
@@ -105,7 +88,7 @@ services:
       - TZ=${TZ}
       - ENV=prodenv
       - INFRA=docker
-    image: freetechsolutions/omlnginx:latest
+    image: freetechsolutions/omlnginx:${OMLNGINX_VERSION}
     networks:
       - prodenv
     privileged: true
@@ -133,7 +116,7 @@ services:
   websockets:
     tty: true
     container_name: omlwebsockets
-    image: freetechsolutions/omlwebsockets:latest
+    image: freetechsolutions/omlwebsockets:${OMLWS_VERSION}
     ports:
       - "${WEBSOCKET_EXT_PORT}:8000"
     networks:
