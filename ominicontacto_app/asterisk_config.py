@@ -235,6 +235,13 @@ class QueuesCreator(object):
         if campana.queue_campana.retry:
             retry = campana.queue_campana.retry
 
+        audio_entrada = campana.queue_campana.audio_previo_conexion_llamada
+        if audio_entrada:
+            announce = os.path.join(
+                settings.OML_AUDIO_FOLDER, audio_entrada.get_filename_audio_asterisk())
+        else:
+            announce = "beep"
+
         partes = []
         param_generales = {
             'oml_queue_name': "{0}_{1}".format(campana.id, campana.nombre),
@@ -245,7 +252,8 @@ class QueuesCreator(object):
             'oml_weight': campana.queue_campana.weight,
             'oml_wrapuptime': campana.queue_campana.wrapuptime,
             'oml_maxlen': campana.queue_campana.maxlen,
-            'oml_retry': retry
+            'oml_retry': retry,
+            'oml_announce': announce,
         }
 
         # QUEUE: Creamos la porción inicial del Queue.

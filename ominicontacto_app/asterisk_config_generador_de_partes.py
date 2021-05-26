@@ -275,7 +275,7 @@ class GeneradorParaQueue(GeneradorDePedazoDeQueue):
         return """
 
         [{oml_queue_name}]
-        announce=beep
+        announce={oml_announce}
         announce-frequency=0
         announce-holdtime=no
         announce-position=no
