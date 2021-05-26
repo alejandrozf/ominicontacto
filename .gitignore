@@ -1,5 +1,7 @@
 install/docker/devenv/.env
 install/docker/prodenv/.env
+install/onpremise/deploy/vagrant/deploy/host_node/.env
+install/onpremise/build/builder/.env
 install/docker/devenv/media_root
 *.vagrant
 /docs/_build

@@ -59,7 +59,7 @@ services:
     dns: 8.8.8.8
     env_file:
       - .env
-    image: freetechsolutions/omlapp:develop
+    image: freetechsolutions/omlapp:${OMLAPP_VERSION}
     networks:
       - devenv
     privileged: true
@@ -156,7 +156,7 @@ services:
       - devenv
     privileged: true
     ports:
-      - 443:443/tcp
+      - ${NGINX_EXT_PORT}:443/tcp
     restart: on-failure
     stop_grace_period: 1m30s
     volumes:

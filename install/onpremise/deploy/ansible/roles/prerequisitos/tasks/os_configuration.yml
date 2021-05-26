@@ -63,9 +63,9 @@
     - result.rc != 0
     - result.rc != 1
 
-- name: Install of epel-repository for amazon linux
+- name: Install of epel-repository
   command: yum install epel-release -y
-  when: ansible_distribution == "Amazon"
+  #when: ansible_distribution == "Amazon"
 
 - name: Remove python3 default installation (amazon linux 2)
   shell: yum remove python3 -y

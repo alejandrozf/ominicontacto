@@ -1,54 +1,59 @@
 #!/bin/bash
 
 COMPONENT_REPO=https://gitlab.com/omnileads/ominicontacto.git
-COMPONENT_RELEASE=master
 SRC=/usr/src
 PATH_DEPLOY=install/onpremise/deploy/ansible
 
-# Set your Cloud Provider
-#CLOUD=digitalocean
-#CLOUD=onpremise
-#CLOUD=linode
-#CLOUD=vultr
+COMPONENT_RELEASE=${omnileads_release}
 
-# Set the variable or user_data terraform parameter like ${TZ}
+STAGE=${STAGE}
+#STAGE=digitalocean
+#STAGE=linode
+#STAGE=vultr
+#STAGE=centos7
+#STAGE=vagrant
+
 NIC=${NIC} #eth1
 TZ=${TZ} #America/Argentina/Cordoba
+ENVIRONMENT_INIT=${init_env}
+
+# *********************** ACD Asterisk VARS
 ami_user=${ami_user} #omnileadami
 ami_password=${ami_password} #5_MeO_DMT
-dialer_user=${dialer_user} #demo
-dialer_password=${dialer_password} #demoadmin
+ACD_HOST=NULL #${asterisk_host}
+
+# ***********************  PGSQL Vars
 pg_database=${pg_database} #omnileads
 pg_username=${pg_username} #omnileads
 pg_password=${pg_password} #098098ZZZ
-extern_ip=none
-
 PG_HOST=NULL #${pg_host}
 PG_PORT=NULL #${pg_port}
 
-RTPENGINE_HOST=NULL #${rtpengine_host}
+# ***********************  Dialer VARS
+dialer_user=${dialer_user} #demo
+dialer_password=${dialer_password} #demoadmin
+DIALER_HOST=NULL    #${dialer_host}
+MYSQL_HOST=NULL     #${mysql_host}
+
+# ***********************  RTPEngine VARS
+extern_ip=none
 RTPENGINE_UDP_INI=20000
 RTPENGINE_UDP_END=30000
+RTPENGINE_HOST=NULL  #${rtpengine_host}
 
-REDIS_HOST=NULL
-DIALER_HOST=NULL #${dialer_host}
-MYSQL_HOST=NULL #${mysql_host}
-NGINX_HOST=NULL #${nginx_host}
+# ***********************  Components HOST
+REDIS_HOST=NULL     #${redis_host}
+NGINX_HOST=NULL     #${nginx_host}
 WEBSOCKET_HOST=NULL #${websocket_host}
 
-ENVIRONMENT_INIT=true #${init_env}
-
-# KAMAILIO_BRANCH=develop
-# ASTERISK_BRANCH=develop
-# RTPENGINE_BRANCH=develop
-# NGINX_BRANCH=develop
-# REDIS_BRANCH=develop
-# POSTGRES_BRANCH=develop
-# WEBSOCKET_BRANCH=develop
+echo "****** ${omnileads_release} -- ${STAGE} -- ${NIC} *********"
+echo "****** ${omnileads_release} -- ${STAGE} -- ${NIC} *********"
+echo "****** ${omnileads_release} -- ${STAGE} -- ${NIC} *********"
+sleep 30
 
 echo "******************** IPV4 address config ***************************"
 echo "******************** IPV4 address config ***************************"
-case $CLOUD in
+case $STAGE in
   digitalocean)
     echo -n "DigitalOcean"
     export PUBLIC_IPV4=$(curl -s http://169.254.169.254/metadata/v1/interfaces/public/0/ipv4/address)
@@ -59,7 +64,7 @@ case $CLOUD in
     export PRIVATE_IPV4=$(ip addr show $NIC |grep "inet 192.168" |awk '{print $2}' | cut -d/ -f1)
     export PUBLIC_IPV4=$(curl checkip.amazonaws.com)
     ;;
-  onpremise)
+  centos7)
     echo -n "Onpremise CentOS7 Minimal"
     export PRIVATE_IPV4=$(ip addr show $PRIVATE_NIC | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
     if [ $PUBLIC_NIC ]; then
@@ -68,14 +73,19 @@ case $CLOUD in
       export PUBLIC_IPV4=$(curl ifconfig.co)
     fi
     ;;
+  vagrant)
+    echo -n "Vagrant CentOS7 Minimal CI/CD"
+    PRIVATE_IPV4=$STAGING_IP_CENTOS
+    PUBLIC_IPV4=$(curl -s http://169.254.169.254/metadata/v1/interfaces/public/0/ipv4/address)
+    ;;
   *)
-    echo -n "you must to declare CLOUD variable"
+    echo -n "you must to declare STAGE variable\n"
     ;;
 esac
 
-echo "******************** Cloud fix /etc/hosts ***************************"
-echo "******************** Cloud fix /etc/hosts ***************************"
-case $CLOUD in
+echo "******************** STAGE fix /etc/hosts ***************************"
+echo "******************** STAGE fix /etc/hosts ***************************"
+case $STAGE in
 
   digitalocean)
     echo -n "DigitalOcean"
@@ -89,7 +99,7 @@ case $CLOUD in
     sed -i 's/::1       '$TEMP_HOSTNAME'/#::1 '$TEMP_HOSTNAME'/' /etc/hosts
     ;;
   *)
-    echo -n "you must to declare CLOUD variable"
+    echo -n "your stage is clean\n"
     ;;
 esac
 
@@ -188,10 +198,14 @@ fi
 
 echo "********************************** Exec task if RTP run AIO *********************************"
 echo "********************************** Exec task if RTP run AIO *********************************"
-if [[ "$RTPENGINE_HOST" != "NULL" && "$CLOUD" != "onpremise" ]]; then
-  echo -n "CLOUD rtpengine"
+if [[ "$RTPENGINE_HOST" != "NULL" && "$STAGE" != "centos7" ]]; then
+  echo -n "STAGE rtpengine"
   echo "OPTIONS="-i $PUBLIC_IPV4 -o 60 -a 3600 -d 30 -s 120 -n 127.0.0.1:22222 -m $RTPENGINE_UDP_INI -M $RTPENGINE_UDP_END -L 7 --log-facility=local1""  > /etc/rtpengine-config.conf
   systemctl start rtpengine
 fi
+
+echo "********************************** WA issue #172 *********************************"
+echo "********************************** WA issue #172 *********************************"
+chown omnileads.omnileads -R /opt/omnileads/media_root
 
 reboot

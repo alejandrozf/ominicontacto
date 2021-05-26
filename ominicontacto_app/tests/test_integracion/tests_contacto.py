@@ -229,8 +229,8 @@ class ContactoTests(unittest.TestCase):
             blacklist = 'blacklist' + uuid.uuid4().hex[:5]
             csv_path = "/home/{0}/ominicontacto/test/planilla-ejemplo-0.csv".format(USER)
             crear_blacklist(self.browser, csv_path, blacklist)
-            self.assertTrue(self.browser.find_elements_by_xpath('//td[contains(text(), \'{0}\')]'
-                            .format(blacklist)))
+            self.assertTrue(self.browser.find_elements(
+                By.XPATH, '//td[contains(text(), \'{0}\')]'.format(blacklist)))
             print('--Se pudo crear un Blacklist.--')
         except Exception as e:
             print('--ERROR: No se pudo crear un Blacklist.--\n{0}'.format(e))
@@ -240,10 +240,10 @@ class ContactoTests(unittest.TestCase):
             nueva_blacklist = 'blacklist' + uuid.uuid4().hex[:5]
             csv_nueva = "/home/{0}/ominicontacto/test/planilla-ejemplo-0.csv".format(USER)
             crear_blacklist(self.browser, csv_nueva, nueva_blacklist)
-            self.assertFalse(self.browser.find_elements_by_xpath('//td[contains(text(), \'{0}\')]'
-                             .format(blacklist)))
-            self.assertTrue(self.browser.find_elements_by_xpath('//td[contains(text(), \'{0}\')]'
-                            .format(nueva_blacklist)))
+            self.assertFalse(self.browser.find_elements(
+                By.XPATH, '//td[contains(text(), \'{0}\')]'.format(blacklist)))
+            self.assertTrue(self.browser.find_elements(
+                By.XPATH, '//td[contains(text(), \'{0}\')]'.format(nueva_blacklist)))
             print('--Se verifico que solo muestra la ultima Blacklist.--')
         except Exception as e:
             print('--ERROR: No se pudo verificar que solo se'
