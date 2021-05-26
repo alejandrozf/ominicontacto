@@ -22,7 +22,7 @@ RUN apk add bash \
         sox \
         tzdata \
         postgresql-client \
-        pcre pcre-dev \ 
+        pcre pcre-dev \
     && addgroup -g 1000 -S omnileads &&  adduser -u 1000 -S omnileads -G omnileads -h $INSTALL_PREFIX -s /bin/bash \
     && cd $INSTALL_PREFIX \
     && mkdir -p wombat-json bin backup media_root/reporte_campana static log run \

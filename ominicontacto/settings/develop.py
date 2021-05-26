@@ -38,7 +38,7 @@ TOKEN_EXPIRED_AFTER_SECONDS = 6 * 60  # 6 minutos
 
 
 def show_toolbar(request):
-    return True
+    return False
 
 
 DEBUG_TOOLBAR_CONFIG = {

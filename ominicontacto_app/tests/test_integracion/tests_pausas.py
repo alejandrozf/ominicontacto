@@ -31,6 +31,7 @@ try:
     from pyvirtualdisplay import Display
     from selenium import webdriver
     from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.common.by import By
     from integracion_metodos import (login, get_href, ADMIN_USERNAME, ADMIN_PASSWORD)
 except ImportError:
     pass
@@ -139,12 +140,12 @@ class PausaTests(unittest.TestCase):
             link_create_pausa = '//a[contains(@href,"/pausa/nuevo")]'
             get_href(self.browser, link_create_pausa)
             pausa_nueva = 'pausa_rec' + uuid.uuid4().hex[:5]
-            self.browser.find_element_by_id('id_nombre').send_keys(pausa_nueva)
-            self.browser.find_element_by_xpath("//select/option[@value = 'R']").click()
+            self.browser.find_element(By.NAME, 'nombre').send_keys(pausa_nueva)
+            self.browser.find_element(By.XPATH, "//select/option[@value = 'R']").click()
             sleep(1)
-            self.browser.find_element_by_xpath("//button[@type='submit']").click()
+            self.browser.find_element(By.CSS_SELECTOR, ".btn-primary").click()
             sleep(1)
-            self.assertTrue(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            self.assertTrue(self.browser.find_elements(By.XPATH, '//td[text()=\'{0}\']'.format(
                 pausa_nueva)))
             print('--Se pudo crear una pausa recreativa.--')
         except Exception as e:
@@ -156,14 +157,14 @@ class PausaTests(unittest.TestCase):
                 pausa_nueva)
             get_href(self.browser, link_edit)
             pausa_productiva = 'pausa_pro' + uuid.uuid4().hex[:5]
-            self.browser.find_element_by_id('id_nombre').clear()
+            self.browser.find_element(By.NAME, 'nombre').clear()
             sleep(1)
-            self.browser.find_element_by_id('id_nombre').send_keys(pausa_productiva)
-            self.browser.find_element_by_xpath("//select/option[@value = 'P']").click()
+            self.browser.find_element(By.NAME, 'nombre').send_keys(pausa_productiva)
+            self.browser.find_element(By.XPATH, "//select/option[@value = 'P']").click()
             sleep(1)
-            self.browser.find_element_by_xpath("//button[@type='submit']").click()
+            self.browser.find_element(By.CSS_SELECTOR, ".btn-primary").click()
             sleep(1)
-            self.assertTrue(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            self.assertTrue(self.browser.find_elements(By.XPATH, '//td[text()=\'{0}\']'.format(
                 pausa_productiva)))
             print('--Se pudo modificar una pausa recreativa.--')
         except Exception as e:
@@ -174,10 +175,10 @@ class PausaTests(unittest.TestCase):
             link_delete = "//tr[@id=\'{0}\']//a[contains(@href, '/pausa/delete/')]".format(
                 pausa_productiva)
             get_href(self.browser, link_delete)
-            self.browser.find_element_by_xpath("//button[@type='submit']").click()
+            self.browser.find_element(By.XPATH, "//button[@type='submit']").click()
             sleep(1)
-            self.assertTrue(self.browser.find_elements_by_xpath(
-                "//tr[@id='pausa_eliminada']//td[contains(text(), \'{0}\')]".format(
+            self.assertTrue(self.browser.find_elements(
+                By.XPATH, "//tr[@id='pausa_eliminada']//td[contains(text(), \'{0}\')]".format(
                     pausa_productiva)))
             print('--Se pudo eliminar una pausa productiva.--')
         except Exception as e:
@@ -188,9 +189,9 @@ class PausaTests(unittest.TestCase):
             link_reactivate = "//tr[@id='pausa_eliminada']//td[@id=\'{0}\']//"\
                 "a[contains(@href, '/pausa/delete/')]".format(pausa_productiva)
             get_href(self.browser, link_reactivate)
-            self.browser.find_element_by_xpath("//button[@type='submit']").click()
+            self.browser.find_element(By.XPATH, "//button[@type='submit']").click()
             sleep(1)
-            self.assertTrue(self.browser.find_elements_by_xpath('//td[text()=\'{0}\']'.format(
+            self.assertTrue(self.browser.find_elements(By.XPATH, '//td[text()=\'{0}\']'.format(
                 pausa_productiva)))
             print('--Se pudo reactivar una pausa productiva.--')
         except Exception as e:

@@ -37,7 +37,7 @@ fpm -s dir -d cairo -d crontabs -d cronie -d cronie-anacron -d which -d vim \
   omnileads.service=/etc/systemd/system/omnileads.service \
   scripts/cron/omnileads=/var/spool/cron/omnileads
 
-mv virtualenv-${OMNILEADS_VERSION}* /root
+mv virtualenv-* /root
 cd /root/
 echo "Uploading RPM to AWS repository"
 aws s3 cp virtualenv* s3://${AWS_BUCKET}/virtualenv/virtualenv-${OMNILEADS_VERSION}.x86_64.rpm
