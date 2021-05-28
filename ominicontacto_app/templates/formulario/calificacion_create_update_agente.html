@@ -83,7 +83,7 @@
             </div>
             <div class="col-md-6">
                 <div {% if llamada_entrante %}class="hidden"{% endif %} data="toHide">
-                    {{calificacion_form.as_table}}  
+                    {{calificacion_form.as_table}}
                 </div>
                     {% with auditoria=calificacion_form.instance.obtener_auditoria %}
                         {% if auditoria%}
@@ -107,13 +107,16 @@
                             </div>
                         {% endif %}
                     {% endwith %}
-                <br>
+                {% if campana.speech %}
+                    <div>
+                      <p><label>{% trans "Speech:" %}</label><textarea class="form-control" rows="10" cols="40" readonly>{{ campana.speech }}</textarea></p>
+                    </div>
+                {% endif %}
                 <div {% if llamada_entrante %}class="hidden"{% endif %} data="toHide">
                     {% if calificacion_form.historico_calificaciones %}
                         {% include 'historico_calificaciones.html' with calificaciones=calificacion_form.instance.history.all %}
                     {% endif %}
                 </div>
-                
             </div>
         </div>
     </form>

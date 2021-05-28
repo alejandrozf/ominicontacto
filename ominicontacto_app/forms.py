@@ -708,7 +708,7 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
         model = Campana
         fields = ('nombre', 'bd_contacto', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
-                  'outcid', 'outr', 'videocall_habilitada')
+                  'outcid', 'outr', 'videocall_habilitada', 'speech')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -723,6 +723,7 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
             'tipo_interaccion': forms.RadioSelect(),
             'outcid': forms.TextInput(attrs={'class': 'form-control'}),
             'outr': forms.Select(attrs={'class': 'form-control'}),
+            'speech': forms.Textarea(attrs={'class': 'form-control'})
         }
 
 
@@ -1370,7 +1371,7 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         fields = ('nombre', 'fecha_inicio', 'fecha_fin',
                   'bd_contacto', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
-                  'outcid', 'outr')
+                  'outcid', 'outr', 'speech')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -1384,6 +1385,7 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
             'outcid': forms.TextInput(attrs={'class': 'form-control'}),
             'outr': forms.Select(attrs={'class': 'form-control'}),
+            'speech': forms.Textarea(attrs={'class': 'form-control'})
         }
 
 
@@ -1708,7 +1710,8 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'bd_contacto', 'sistema_externo', 'id_externo',
-                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'outcid', 'outr')
+                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'outcid', 'outr',
+                  'speech')
 
         widgets = {
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
@@ -1718,7 +1721,8 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
             'outcid': forms.TextInput(attrs={'class': 'form-control'}),
-            'outr': forms.Select(attrs={'class': 'form-control'})
+            'outr': forms.Select(attrs={'class': 'form-control'}),
+            'speech': forms.Textarea(attrs={'class': 'form-control'})
         }
 
     def requiere_bd_contacto(self):
@@ -1742,7 +1746,7 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
         model = Campana
         fields = ('nombre', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'bd_contacto',
-                  'tiempo_desconexion', 'outr', 'outcid')
+                  'tiempo_desconexion', 'outr', 'outcid', 'speech')
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
@@ -1753,7 +1757,8 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
             'tiempo_desconexion': forms.NumberInput(attrs={'class': 'form-control'}),
             'outcid': forms.TextInput(attrs={'class': 'form-control'}),
-            'outr': forms.Select(attrs={'class': 'form-control'})
+            'outr': forms.Select(attrs={'class': 'form-control'}),
+            'speech': forms.Textarea(attrs={'class': 'form-control'})
         }
 
     def requiere_bd_contacto(self):
