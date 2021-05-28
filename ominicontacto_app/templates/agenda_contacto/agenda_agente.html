@@ -61,6 +61,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <thead>
             <tr>
                 <th>{% trans 'Contacto' %}</th>
+                <th>{% trans 'Campaña' %}</th>
                 <th>{% trans 'Datos' %}</th>
                 <th>{% trans 'Fecha' %}</th>
                 <th>{% trans 'Hora' %}</th>
@@ -77,6 +78,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                        name="click2call">
                        {{ agenda.contacto.telefono }}
                     </a>
+                </td>
+                <td>
+                    {{ agenda.campana.nombre }}
                 </td>
                 <td>
                     {{ agenda.contacto.obtener_datos}}
