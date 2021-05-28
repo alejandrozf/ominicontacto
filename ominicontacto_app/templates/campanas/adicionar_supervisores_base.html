@@ -21,13 +21,20 @@
 {% load i18n %}
 {% load static %}
 
+{% block extra_js %}
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/adicionar_supervisores_base.js' %}"></script>
+{% endblock %}
+
 {% block form_render %}
     {{ form.non_field_errors }}
     <div class="form-row add_supervisor">
         <div class="col-md-12">
-            <h3 for="{{ form.bd_contacto.id_for_label }}">{% trans 'Agregar Supervisores: ' %}</h3>
+            <h3 for="{{ form.bd_contacto.id_for_label }}">{% trans 'Agregar Supervisores: ' %}</h3><br>
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" value="0" id="addAllSupervisors">
+                <label class="form-check-label" for="addAllSupervisors">{% trans 'Selecionar Todos' %}</label>
+            </div>
             {{ form.supervisors}}
-            
             {{ form.supervisors.errors }}
         </div>
     </div>
