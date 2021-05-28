@@ -222,6 +222,7 @@ class PhoneJSController {
             else {
                 self.phone_fsm.dialTransfer();
                 self.phone.dialTransfer(transfer);
+                $('#numberToTransfer').val('');
             }
         });
 
