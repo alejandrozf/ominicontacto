@@ -67,7 +67,8 @@ class EstadisticasContactacion():
     def _contabilizar_llamados_no_calificados(self, count_estados, campana, contactados):
         # Calculo cantidad de Llamados Contactados No Calificados
         id_calificados = CalificacionCliente.objects.filter(
-            opcion_calificacion__campana_id=campana.id).values_list('contacto_id', flat=True)
+            opcion_calificacion__campana_id=campana.id,
+            contacto__bd_contacto=campana.bd_contacto).values_list('contacto_id', flat=True)
         no_calificados = contactados.exclude(contacto_id__in=id_calificados).count()
         if no_calificados > 0:
             estado = _(u"Agente no califico")
@@ -75,27 +76,26 @@ class EstadisticasContactacion():
             cantidad_contactacion = CantidadContactacion(id_estado, estado, no_calificados)
             count_estados.update({id_estado: cantidad_contactacion})
 
-    def _contabilizar_llamados_no_contactados(self, count_estados, campana, contactados):
+    def _contabilizar_llamados_no_contactados(self, count_estados, campana, contactados,
+                                              ids_contactos_base_actual):
         # Cantidades de llamados no contactados por EVENTO FINAL
         # Asumo que Los logs con mayor id son los mas nuevos
-        filtro_contactados = ""
-        filtro_contactados_r1 = ""
-        if len(contactados) > 0:
-            filtro_contactados = "AND contacto_id NOT in ('"
-            filtro_contactados += "','".join([str(x) for x in contactados])
-            filtro_contactados += "')"
-            filtro_contactados_r1 = "AND r1.contacto_id NOT in ('"
-            filtro_contactados_r1 += "','".join([str(x) for x in contactados])
-            filtro_contactados_r1 += "')"
-
+        # Solo filtrar logs de contactos de la base actual no contactados
+        contactos_ids = set(ids_contactos_base_actual).difference(set(contactados))
+        filtro_contactos = "AND contacto_id in ('"
+        filtro_contactos += "','".join([str(x) for x in contactos_ids])
+        filtro_contactos += "')"
+        filtro_contactos_r1 = "AND r1.contacto_id in ('"
+        filtro_contactos_r1 += "','".join([str(x) for x in contactos_ids])
+        filtro_contactos_r1 += "')"
         if campana.type == Campana.TYPE_DIALER:
             campana_tipo = Campana.TYPE_DIALER
         if campana.type == Campana.TYPE_PREVIEW:
             campana_tipo = Campana.TYPE_PREVIEW
 
         params = {'campana_id': campana.id, 'tipo_dialer': campana_tipo,
-                  'filtro_contactados': filtro_contactados,
-                  'filtro_contactados_r1': filtro_contactados_r1, }
+                  'filtro_contactos': filtro_contactos,
+                  'filtro_contactos_r1': filtro_contactos_r1, }
         sql = """
         SELECT r1.event, COUNT(r1.event)
             FROM "reportes_app_llamadalog" r1
@@ -104,13 +104,13 @@ class EstadisticasContactacion():
                 FROM "reportes_app_llamadalog"
                 WHERE campana_id = {campana_id} AND
                       tipo_llamada = {tipo_dialer} AND
-                      tipo_campana = {tipo_dialer} {filtro_contactados}
+                      tipo_campana = {tipo_dialer} {filtro_contactos}
                 GROUP BY contacto_id
             ) r2
             ON r1.id = r2.id__max
             WHERE r1.campana_id = {campana_id} AND
                   r1.tipo_llamada = {tipo_dialer} AND
-                  r1.tipo_campana = {tipo_dialer} {filtro_contactados_r1}
+                  r1.tipo_campana = {tipo_dialer} {filtro_contactos_r1}
             GROUP BY r1.event
         """.format(**params)
 
@@ -127,7 +127,7 @@ class EstadisticasContactacion():
 
     def obtener_cantidad_no_contactados(self, campana):
         """
-        Obtiene los llamados no contactados por campana
+        Obtiene los llamados no contactados por campana de contactos de la base actual
         :param campana: campana a la cual se van obtener los llamados no contactados
         :return: un dicionario con la cantidad por eventos de no contactados
         """
@@ -141,25 +141,30 @@ class EstadisticasContactacion():
         if campana.type == Campana.TYPE_PREVIEW:
             campana_tipo = Campana.TYPE_PREVIEW
 
+        ids_contactos_base_actual = campana.bd_contacto.contactos.values_list('id', flat=True)
         contactados = LlamadaLog.objects.filter(campana_id=campana.id,
                                                 tipo_campana=campana_tipo,
                                                 tipo_llamada=campana_tipo,
+                                                contacto_id__in=ids_contactos_base_actual,
                                                 event='CONNECT').values_list('contacto_id',
                                                                              flat=True)
 
         self._contabilizar_llamados_no_calificados(count_estados, campana, contactados)
-        self._contabilizar_llamados_no_contactados(count_estados, campana, contactados)
+        self._contabilizar_llamados_no_contactados(
+            count_estados, campana, contactados, ids_contactos_base_actual)
 
         return count_estados
 
     def obtener_cantidad_calificacion(self, campana):
         """
-        Obtiene las cantidad de llamadas por calificacion de la campana
+        Obtiene las cantidad de llamadas por calificacion de la campana de
+        contactos de la base actual
         :param campana: campana la cual se van obtiene las calificaciones
         :return: cantidad por calificacion
         """
 
-        calificaciones_query = campana.obtener_calificaciones().values(
+        calificaciones_query = campana.obtener_calificaciones().filter(
+            contacto__bd_contacto=campana.bd_contacto).values(
             'opcion_calificacion__nombre', 'opcion_calificacion__id').annotate(
                 Count('opcion_calificacion')).filter(opcion_calificacion__count__gt=0).order_by()
 
@@ -208,6 +213,8 @@ class RecicladorContactosCampanaDIALER():
     """
     Este manager se encarga de obtener los contactos según los tipo de
     reciclado de campana de dialer que se realice.
+    Únicamente reciclará contactos de la base de datos de contactos actual
+    (si fue reciclada sobre la misma campaña no será la original)
     """
 
     def obtener_contactos_reciclados(self, campana, reciclado_calificacion,
@@ -239,10 +246,11 @@ class RecicladorContactosCampanaDIALER():
         """
             Este metodo se encarga obtener los contactos calificados por las
             calificaciones seleccionada
-
+            Sólo contactos que pertenecen a la base de datos de contacto actual.
         """
         calificaciones_query = campana.obtener_calificaciones().filter(
-            opcion_calificacion__in=reciclado_calificacion).distinct()
+            opcion_calificacion__in=reciclado_calificacion,
+            contacto__bd_contacto=campana.bd_contacto).distinct()
 
         contactos = [calificacion.contacto for calificacion in calificaciones_query]
         return contactos
@@ -253,6 +261,7 @@ class RecicladorContactosCampanaDIALER():
              acuerdo a los estados seleccionados
 
         """
+        ids_contactos_base_actual = campana.bd_contacto.contactos.values_list('id', flat=True)
         id_contactos = []
         filtrar_no_calificados = False
         filtro_eventos = ''
@@ -274,31 +283,31 @@ class RecicladorContactosCampanaDIALER():
         contactados = LlamadaLog.objects.filter(campana_id=campana.id,
                                                 tipo_campana=campana_tipo,
                                                 tipo_llamada=campana_tipo,
+                                                contacto_id__in=ids_contactos_base_actual,
                                                 event='CONNECT').values_list('contacto_id',
                                                                              flat=True)
 
         # Filtrar los contactos Llamados no Calificados
         if filtrar_no_calificados:
             id_calificados = CalificacionCliente.objects.filter(
-                opcion_calificacion__campana_id=campana.id).values_list('contacto_id', flat=True)
+                opcion_calificacion__campana_id=campana.id,
+                contacto__bd_contacto=campana.bd_contacto).values_list('contacto_id', flat=True)
             no_calificados = contactados.exclude(contacto_id__in=id_calificados)
             id_contactos += no_calificados
 
-        # Filtrar los llamados no contactados
+        # Filtrar los llamados no contactados (solo contactos de la base actual)
         if filtro_eventos:
-            filtro_contactados = ""
-            filtro_contactados_r1 = ""
-            if len(contactados) > 0:
-                filtro_contactados_r1 = "AND r1.contacto_id NOT in ('"
-                filtro_contactados_r1 += "','".join([str(x) for x in contactados])
-                filtro_contactados_r1 += "')"
-                filtro_contactados = "AND contacto_id NOT in ('"
-                filtro_contactados += "','".join([str(x) for x in contactados])
-                filtro_contactados += "')"
+            contactos_no_contactados = set(ids_contactos_base_actual).difference(set(contactados))
+            filtro_contactos = "AND contacto_id in ('"
+            filtro_contactos += "','".join([str(x) for x in contactos_no_contactados])
+            filtro_contactos += "')"
+            filtro_contactos_r1 = "AND r1.contacto_id in ('"
+            filtro_contactos_r1 += "','".join([str(x) for x in contactos_no_contactados])
+            filtro_contactos_r1 += "')"
 
             params = {'campana_id': campana.id, 'tipo_dialer': campana_tipo,
-                      'filtro_contactados': filtro_contactados,
-                      'filtro_contactados_r1': filtro_contactados_r1,
+                      'filtro_contactos': filtro_contactos,
+                      'filtro_contactos_r1': filtro_contactos_r1,
                       'filtro_eventos': filtro_eventos}
             sql = """
             SELECT r1.contacto_id
@@ -308,13 +317,13 @@ class RecicladorContactosCampanaDIALER():
                     FROM "reportes_app_llamadalog"
                     WHERE campana_id = {campana_id} AND
                           tipo_llamada = {tipo_dialer} AND
-                          tipo_campana = {tipo_dialer} {filtro_contactados}
+                          tipo_campana = {tipo_dialer} {filtro_contactos}
                     GROUP BY contacto_id
                 ) r2
                 ON r1.id = r2.id__max
                 WHERE r1.campana_id = {campana_id} AND
                       r1.tipo_llamada = {tipo_dialer} AND
-                      r1.tipo_campana = {tipo_dialer} {filtro_contactados_r1}
+                      r1.tipo_campana = {tipo_dialer} {filtro_contactos_r1}
                       AND event IN ({filtro_eventos})
             """.format(**params)
 
