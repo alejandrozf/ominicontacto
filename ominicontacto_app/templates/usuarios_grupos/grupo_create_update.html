@@ -56,6 +56,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {{ form.call_off_camp.label_tag}} {{ form.call_off_camp}}
             {{ form.call_off_camp.errors }}
         </div>
+        <div class="col-md-3">
+            {{ form.acceso_grabaciones_agente.label_tag }} {{ form.acceso_grabaciones_agente }}
+            {{ form.acceso_grabaciones_agente.errors }}
+        </div>
     </div>
     <button type="submit" id="id_registrar" class="btn btn-primary">
         {% trans 'Guardar' %}

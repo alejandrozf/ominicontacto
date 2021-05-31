@@ -31,6 +31,7 @@ from django.db.models import Q
 from django.views.generic import FormView, View
 from django.core import paginator as django_paginator
 from django.http import JsonResponse
+from django.core.exceptions import PermissionDenied
 
 from ominicontacto_app.forms import GrabacionBusquedaForm, GrabacionBusquedaSupervisorForm
 from ominicontacto_app.models import (
@@ -244,6 +245,15 @@ class BusquedaGrabacionAgenteFormView(BusquedaGrabacionFormView):
         grabaciones = LlamadaLog.objects.obtener_grabaciones_by_fecha_intervalo_campanas(
             hoy, hoy, campanas_id)
         return grabaciones.filter(agente_id=self.request.user.get_agente_profile().id)
+
+    def dispatch(self, request, *args, **kwargs):
+        agent_profile = request.user.get_agente_profile()
+        agent_group = agent_profile.grupo
+        if agent_group.acceso_grabaciones_agente:
+            return super(BusquedaGrabacionAgenteFormView, self).dispatch(
+                request, *args, **kwargs)
+        else:
+            raise PermissionDenied
 
 
 class MarcarGrabacionView(View):
