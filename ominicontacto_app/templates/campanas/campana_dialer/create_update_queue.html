@@ -129,6 +129,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{ form.dial_timeout.errors }}
             </div>
             <div class="col-md-6">
+                <label for="{{ form.audio_previo_conexion_llamada.id_for_label }}">{% trans 'Anuncio de entrada para el agente:'%}</label>
+                {{ form.audio_previo_conexion_llamada }}
+                {{ form.audio_previo_conexion_llamada.errors }}
+            </div>
+            <div class="col-md-6">
+                <label>{% trans 'Musica de espera:' %}</label>
+                {{ form.musiconhold }}
+                {{ form.musiconhold.errors }}
+            </div>
+            <div class="col-md-6">
                 <label >{% trans 'Destino en caso de timeout' %}</label>
                 <div class="col-md-12">
                     <label for="{{ form.tipo_destino.id_for_label }}">{% trans 'Tipo destino:' %}</label>
