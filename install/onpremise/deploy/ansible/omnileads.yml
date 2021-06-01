@@ -80,12 +80,12 @@
       when: postgres_host != "localhost"
       tags: postinstall
 
-    # Se crea usuario, base de datos y extension plperl
+    # Se crea extension plperl cuando no se usa el RPM PGSQL de OML
     - name: Creating extension plperl
-      shell: PGUSER={{ postgres_user }} PGDATABASE={{ postgres_database }} PGHOST={{ postgres_host }} PGPASSWORD={{ postgres_password }} psql -c "CREATE EXTENSION plperl;"
+      shell: PGUSER={{ postgres_user }} PGDATABASE={{ postgres_database }} PGHOST={{ postgres_host }} PGPORT={{ postgres_port }} PGPASSWORD={{ postgres_password }} psql -c "CREATE EXTENSION plperl;"
       args:
         executable: /bin/bash
-      when: ansible_distribution == "Amazon" and postgres_host != "localhost"
+      when: postgres_cloud == "true"
 
     # Chequeo si la version de virtualenv instalada es {{ virtualenv_version }}
     - name: Check if virtualenv {{ virtualenv_version }} is installed

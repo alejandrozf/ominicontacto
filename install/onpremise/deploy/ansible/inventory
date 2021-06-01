@@ -35,6 +35,7 @@ postgres_database=omnileads
 #postgres_password=my_very_strong_pass
 #postgres_host=
 #postgres_port=
+#postgres_cloud=true
 ##################################################
 # AMI for wombat dialer and OMniLeads Web App    #
 ##################################################
