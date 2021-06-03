@@ -118,3 +118,12 @@
       register: s3_download
       failed_when:
         - "s3_download.rc != 0 or 'scriptlet failure' in s3_download.stderr"
+
+    # Se genera la pass admin/admin cuando es un fresh-install
+    - name: reset web-user admin password
+      shell: sudo -u omnileads bash -c "/opt/omnileads/bin/manage.sh cambiar_admin_password"
+      args:
+        executable: /bin/bash
+
+
+        
