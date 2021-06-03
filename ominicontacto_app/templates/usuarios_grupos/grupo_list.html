@@ -34,6 +34,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <th>{% trans 'Auto unpause' %}</th>
             <th>{% trans 'Forzar Calificación' %}</th>
             <th>{% trans 'Llamada fuera de campaña' %}</th>
+            <th>{% trans 'Ver grabaciones' %}</th>
             {% if user.get_es_administrador_o_supervisor_normal %}
                 <th>{% trans 'acciones' %}</th>
             {% endif %}
@@ -68,6 +69,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </td>
             <td>
                 {% if grupo.call_off_camp %}
+                    <span class="icon icon-check" aria-hidden="true"></span>
+                {% else %}
+                    <span class="icon icon-cancel" aria-hidden="true"><span>
+                {% endif %}
+            </td>
+            <td>
+                {% if grupo.acceso_grabaciones_agente %}
                     <span class="icon icon-check" aria-hidden="true"></span>
                 {% else %}
                     <span class="icon icon-cancel" aria-hidden="true"><span>
