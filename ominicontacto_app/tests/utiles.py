@@ -527,7 +527,7 @@ class OMLTestUtilsMixin(object):
     def _hacer_miembro(self, agente, campana):
         QueueMemberFactory.create(
             member=agente, queue_name=campana.queue_campana,
-            id_campana='{0}_{1}'.format(campana.pk, campana.nombre))
+            id_campana=campana.get_queue_id_name())
 
 
 class OMLBaseTest(TestCase, OMLTestUtilsMixin):

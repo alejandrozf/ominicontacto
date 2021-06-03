@@ -203,7 +203,7 @@ class CampanaFamilyTest(RedisDatabaseTest):
 
     def test_devuelve_diccionario_con_datos_correctos_entrante(self):
         dict = {
-            'QNAME': "{0}_{1}".format(self.campana_entrante.id, self.campana_entrante.nombre),
+            'QNAME': self.campana_entrante.get_queue_id_name(),
             'TYPE': self.campana_entrante.type,
             'REC': str(self.campana_entrante.queue_campana.auto_grabacion),
             'AMD': str(self.campana_entrante.queue_campana.detectar_contestadores),
@@ -228,7 +228,7 @@ class CampanaFamilyTest(RedisDatabaseTest):
 
     def test_devuelve_diccionario_con_datos_correctos_dialer(self):
         dict = {
-            'QNAME': "{0}_{1}".format(self.campana_dialer.id, self.campana_dialer.nombre),
+            'QNAME': self.campana_dialer.get_queue_id_name(),
             'TYPE': self.campana_dialer.type,
             'REC': str(self.campana_dialer.queue_campana.auto_grabacion),
             'AMD': str(self.campana_dialer.queue_campana.detectar_contestadores),
@@ -253,7 +253,7 @@ class CampanaFamilyTest(RedisDatabaseTest):
 
     def test_devuelve_diccionario_con_datos_correctos_manual(self):
         dict = {
-            'QNAME': "{0}_{1}".format(self.campana_manual.id, self.campana_manual.nombre),
+            'QNAME': self.campana_manual.get_queue_id_name(),
             'TYPE': self.campana_manual.type,
             'REC': str(self.campana_manual.queue_campana.auto_grabacion),
             'AMD': str(self.campana_manual.queue_campana.detectar_contestadores),
@@ -278,7 +278,7 @@ class CampanaFamilyTest(RedisDatabaseTest):
 
     def test_devuelve_diccionario_con_datos_correctos_preview(self):
         dict = {
-            'QNAME': "{0}_{1}".format(self.campana_preview.id, self.campana_preview.nombre),
+            'QNAME': self.campana_preview.get_queue_id_name(),
             'TYPE': self.campana_preview.type,
             'REC': str(self.campana_preview.queue_campana.auto_grabacion),
             'AMD': str(self.campana_preview.queue_campana.detectar_contestadores),

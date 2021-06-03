@@ -1267,9 +1267,13 @@ class Campana(models.Model):
             estado=AgenteEnContacto.ESTADO_INICIAL,
             es_originario=es_originario, orden=orden)
 
-    def get_string_queue_asterisk(self):
-        if self.queue_campana:
-            return self.queue_campana.get_string_queue_asterisk()
+    def get_queue_id_name(self):
+        """ Devuelve un nombre único para identificar la queue en Asterisk/Wombat """
+        queue_id_name = "{0}_{1}".format(self.id, self.nombre)
+        if self.es_dialer:
+            # Limito a 45 caracteres por limitaciones de modelos de Wombat
+            return queue_id_name[:45]
+        return queue_id_name
 
     def gestionar_opcion_calificacion_agenda(self):
         """
@@ -1638,7 +1642,7 @@ class QueueMember(models.Model):
                     agente.sip_extension),
                 'penalty': 0,
                 'paused': 0,
-                'id_campana': "{0}_{1}".format(campana.id, campana.nombre)}
+                'id_campana': campana.get_queue_id_name()}
 
     class Meta:
         db_table = 'queue_member_table'
