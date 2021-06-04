@@ -3,7 +3,8 @@
 /* ---Color que no hay que modificar para los rebrands---*/
 /* Gris oscuro */
 /* Gris claro */
-/*Gris muy clarito*/
+/* Gris muy clarito */
+/* naranja clarito */
 /* General */
 body {
   font-family: 'Asap', sans-serif;
@@ -1101,4 +1102,10 @@ body > h1 {
   right: 360px;
   z-index: 1001;
   background-color: white;
+}
+
+/* Agendas */
+.btn-warning-agenda {
+  background-color: #FF9A3C;
+  border-radius: 6px;
 }
