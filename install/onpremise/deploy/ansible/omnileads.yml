@@ -86,6 +86,7 @@
       args:
         executable: /bin/bash
       when: postgres_cloud == "true"
+      ignore_errors: yes
 
     # Chequeo si la version de virtualenv instalada es {{ virtualenv_version }}
     - name: Check if virtualenv {{ virtualenv_version }} is installed
