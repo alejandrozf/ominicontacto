@@ -30,12 +30,12 @@
 #      standalone Linux Host edit postgres_host and postgres_port   #
 #   in order to tell OML Django App the location of this component  #
 #####################################################################
+postgres_cloud=false
 postgres_database=omnileads
 #postgres_user=omnileads
 #postgres_password=my_very_strong_pass
 #postgres_host=
 #postgres_port=
-#postgres_cloud=true
 ##################################################
 # AMI for wombat dialer and OMniLeads Web App    #
 ##################################################
