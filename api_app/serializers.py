@@ -26,8 +26,8 @@ from django.forms import ValidationError
 from rest_framework import serializers
 
 from ominicontacto_app.forms import FormularioNuevoContacto
-from ominicontacto_app.models import (Campana, AgenteProfile, CalificacionCliente,
-                                      OpcionCalificacion, User, Contacto, AgenteEnContacto)
+from ominicontacto_app.models import AgenteEnContacto, AgenteProfile, ArchivoDeAudio, \
+    CalificacionCliente, Campana, Contacto, OpcionCalificacion, User
 
 
 class CalificacionClienteSerializerMixin(object):
@@ -242,3 +242,14 @@ class CalificacionClienteNuevoContactoSerializer(
             'opcion_calificacion': opcion_calificacion,
             'callid': data.get('callid')
         }
+
+
+class AudioSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = ArchivoDeAudio
+        fields = ('id', 'name')
+
+    def get_name(self, audio):
+        return audio.__str__()
