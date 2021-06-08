@@ -244,7 +244,7 @@ class QueuesCreator(object):
 
         partes = []
         param_generales = {
-            'oml_queue_name': "{0}_{1}".format(campana.id, campana.nombre),
+            'oml_queue_name': campana.get_queue_id_name(),
             'oml_queue_type': campana.type,
             'oml_strategy': campana.queue_campana.strategy,
             'oml_timeout': campana.queue_campana.timeout,
@@ -296,7 +296,7 @@ class QueuesCreator(object):
 
         partes = []
         param_generales = {
-            'oml_queue_name': "{0}_{1}".format(campana.id, campana.nombre),
+            'oml_queue_name': campana.get_queue_id_name(),
             'oml_queue_type': campana.type,
             'oml_strategy': campana.queue_campana.strategy,
             'oml_timeout': campana.queue_campana.timeout,

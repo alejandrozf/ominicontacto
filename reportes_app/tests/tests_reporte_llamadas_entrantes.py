@@ -149,15 +149,15 @@ class ReporteDeLLamadasEntrantesDeSupervisionTest(OMLBaseTest):
             reporte.estadisticas[self.entrante1.id]['gestiones'], 0)
 
     def _generar_ami_response_llamadas_espera(self, campana_entrante):
-        return ('Event: QueueEntry\r\nQueue: {0}_{1}\r\nMax: 5\r\nStrategy: '
+        return ('Event: QueueEntry\r\nQueue: {0}\r\nMax: 5\r\nStrategy: '
                 'rrmemory\r\nCalls: 0\r\nHoldtime: 0\r\nTalkTime: 0\r\n'
                 'Completed: 0\r\nAbandoned: 0\r\n'
                 'ServiceLevel: 30\r\nServicelevelPerf: 0.0\r\nServicelevelPerf2: 0.0\r\n'
                 'Weight: 0\r\n'
                 'ActionID: d9555aefdc48-00000001\r\n\r\nEvent: QueueStatusComplete\r\nActionID: '
                 'd9555aefdc48-00000001\r\n'
-                'EventList: Complete\r\nListItems: 31\r\n').format(campana_entrante.id,
-                                                                   campana_entrante.nombre)
+                'EventList: Complete\r\nListItems: 31\r\n').format(
+                    campana_entrante.get_queue_id_name())
 
     @patch.object(ReporteDeLLamadasEntrantesDeSupervision, '_obtener_llamadas_en_espera_raw')
     def test_contabilizar_llamadas_en_espera(self, _obtener_llamadas_en_espera_raw):
