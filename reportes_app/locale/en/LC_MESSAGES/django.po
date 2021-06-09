@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-28 16:49-0300\n"
+"POT-Creation-Date: 2021-06-09 12:32-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -156,43 +156,43 @@ msgstr "Invalid format"
 msgid "Formato JSON invalido"
 msgstr "Invalid JSON format"
 
-#: reportes_app/models.py:134 reportes_app/models.py:146
+#: reportes_app/models.py:135 reportes_app/models.py:147
 msgid "No se encontraron llamadas "
 msgstr "Calls not found"
 
-#: reportes_app/models.py:280
+#: reportes_app/models.py:281
 msgid "No se encontraron holds "
 msgstr "Holds not found "
 
-#: reportes_app/models.py:410
+#: reportes_app/models.py:424
 msgid "Llamada manual"
 msgstr "Manual call"
 
-#: reportes_app/models.py:411
+#: reportes_app/models.py:425
 msgid "Llamada dialer"
 msgstr "Dialer call"
 
-#: reportes_app/models.py:412
+#: reportes_app/models.py:426
 msgid "Llamada entrante"
 msgstr "Inbound call"
 
-#: reportes_app/models.py:413
+#: reportes_app/models.py:427
 msgid "Llamada preview"
 msgstr "Preview call"
 
-#: reportes_app/models.py:414
+#: reportes_app/models.py:428
 msgid "Llamada click2call"
 msgstr "click2call"
 
-#: reportes_app/models.py:415
+#: reportes_app/models.py:429
 msgid "Llamada transferencia interna"
 msgstr "Internal transfer"
 
-#: reportes_app/models.py:416
+#: reportes_app/models.py:430
 msgid "Llamada transferencia externa"
 msgstr "External transfer"
 
-#: reportes_app/models.py:458
+#: reportes_app/models.py:472
 msgid "No se encontraron pausas "
 msgstr "Pauses not found"
 
