@@ -41,6 +41,7 @@ from api_app.views.agente import (
     SetEstadoRevisionAuditoria, ApiStatusCalificacionLlamada, ApiEventoHold
 )
 from api_app.views.grabaciones import ObtenerArchivoGrabacionView, ObtenerArchivosGrabacionView
+from api_app.views.audios import ListadoAudiosView
 
 router = routers.DefaultRouter()
 
@@ -168,5 +169,8 @@ urlpatterns = [
         ObtenerArchivoGrabacionView.as_view(), name='api_grabacion_archivo'),
     url(r'^api/v1/grabacion/descarga_masiva',
         ObtenerArchivosGrabacionView.as_view(), name='api_grabacion_descarga_masiva'),
+    # ###########  AUDIOS ASTERISK    ############ #
+    url(r'^api/v1/audio/list',
+        ListadoAudiosView.as_view({'get': 'list'}), name='api_audios_listado'),
 
 ]

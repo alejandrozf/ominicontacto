@@ -103,6 +103,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_evento_hold',
              'roles': ['Agente', ]},
+            {'nombre': 'api_audios_listado',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
     informacion_de_permisos = {
@@ -200,4 +202,7 @@ class ApiAppConfig(AppConfig):
         'api_evento_hold':
             {'descripcion': _('Loggea el evento hold o unhold'),
              'version': '1.13.0'},
+        'api_audios_listado':
+            {'descripcion': _('Lista audios de asterisk'),
+             'version': '1.16.0'},
     }
