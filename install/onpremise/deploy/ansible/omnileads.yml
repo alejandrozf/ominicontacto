@@ -58,7 +58,7 @@
   hosts: prodenv-aio
   tasks:
 
-    # Se instalan los paquetes de postgresql
+    # Se instalan utilizades de postgresql ya que el motor se ejcuta en otro host
     - name: Install postgresql {{ postgresql_version }} packages (from s3 source)
       yum: name={{ packages_url }}/postgresql/postgresql{{ postgresql_version}}{{ item }}.rpm state=latest update_cache=yes
       with_items:
@@ -125,6 +125,14 @@
       shell: sudo -u omnileads bash -c "/opt/omnileads/bin/manage.sh cambiar_admin_password"
       args:
         executable: /bin/bash
+      when: reset_admin_password == "true"
 
+    # Permiso de usuario a la carpeta de omnileads 
+    - name: Set up permissions of omnileads dir
+      file: state=directory path={{ install_prefix }} owner={{ usuario }} group={{ usuario }} recurse=yes
+      tags: postinstall
 
-        
+    # Se inicia y habilita el servicio
+    - name: Start the omnileads services
+      systemd: name=omnileads state=restarted enabled=yes daemon_reload=yes
+      tags: postinstall  
