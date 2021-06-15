@@ -51,7 +51,7 @@ def adicionar_agente_cola(agente, queue_member, campana, client):
     interface = "PJSIP/{0}".format(agente.sip_extension)
     penalty = queue_member.penalty
     paused = queue_member.paused
-    member_name = "{0}_{1}_{2}".format(agente.id, agente.user.first_name, agente.user.last_name)
+    member_name = agente.get_asterisk_caller_id()
 
     try:
         client.queue_add(queue, interface, penalty, paused, member_name)

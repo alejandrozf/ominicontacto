@@ -309,13 +309,9 @@ class AgenteProfile(models.Model):
     def esta_asignado_a_campana(self, campana):
         return self.campana_member.filter(queue_name__campana_id=campana.id).exists()
 
-    # TODO verificar si se puede eliminar esta funcion
-    def get_id_nombre_agente(self):
-        return "{0}_{1}".format(self.id, self.user.get_full_name())
-
     def get_asterisk_caller_id(self):
-        nombre_agente = remplace_espacio_por_guion(self.user.get_full_name())
-        return "{0}_{1}".format(self.id, nombre_agente)
+        nombre = remplace_espacio_por_guion(self.user.get_full_name())
+        return "{0}_{1}".format(self.id, nombre)
 
     def desactivar(self):
         self.is_inactive = True
@@ -366,6 +362,10 @@ class SupervisorProfile(models.Model):
 
         self.borrado = True
         self.save()
+
+    def get_asterisk_caller_id(self):
+        nombre = remplace_espacio_por_guion(self.user.get_full_name())
+        return "{0}_{1}".format(self.id, nombre)
 
     def campanas_asignadas_actuales(self):
         """

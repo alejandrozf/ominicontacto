@@ -36,7 +36,6 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 
 from configuracion_telefonia_app.models import RutaSaliente, TroncalSIP, Playlist
-from ominicontacto_app.utiles import remplace_espacio_por_guion
 from ominicontacto_app.models import (
     AgenteProfile, SupervisorProfile, ClienteWebPhoneProfile, Campana
 )
@@ -78,9 +77,8 @@ class SipConfigCreator(object):
         assert agente.sip_extension is not None, "agente.sip_extension  == None"
 
         partes = []
-        nombre_agente = remplace_espacio_por_guion(agente.user.get_full_name())
         param_generales = {
-            'oml_agente_name': "{0}_{1}".format(agente.id, nombre_agente),
+            'oml_agente_name': agente.get_asterisk_caller_id(),
             'oml_agente_sip': agente.sip_extension,
             'oml_context': context,
         }
