@@ -100,6 +100,7 @@ OMLAPP_LOGIN_FAILURE_LIMIT=NULL
 ENVIRONMENT_INIT=true
 RESET_ADMIN_PASS=true
 
+hostnamectl set-hostname cicd-aio.oml --static
 
 echo "***************** STAGE = ${STAGE} -- ${NIC} ****************************"
 echo "***************** STAGE = ${STAGE} -- ${NIC} ****************************"

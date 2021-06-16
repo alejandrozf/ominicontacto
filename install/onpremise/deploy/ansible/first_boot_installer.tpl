@@ -32,7 +32,7 @@ if [[ $CALLREC_DEVICE_TYPE == "s3" ]]; then
   S3_ACCESS_KEY=${s3_access_key}
   S3_SECRET_KEY=${s3_secret_key} 
   S3URL=${s3url}
-  BUCKET_NAME=${spaces_bucket_name}
+  BUCKET_NAME=${s3_bucket_name}
 fi
 
 # NFS host netaddr
@@ -99,10 +99,10 @@ OMLAPP_LOGIN_FAILURE_LIMIT=${omlapp_login_fail_limit}
 
 ENVIRONMENT_INIT=${init_env}
 RESET_ADMIN_PASS=${reset_admin_pass}
+SNGREP=${install_sngrep}
 
-
-echo "***************** STAGE = ${STAGE} -- ${NIC} ****************************"
-echo "***************** STAGE = ${STAGE} -- ${NIC} ****************************"
+echo "***************** STAGE = STAGE -- NIC **********************************"
+echo "***************** STAGE = STAGE -- NIC **********************************"
 echo "***************** OML RELEASE = $COMPONENT_RELEASE **********************"
 echo "***************** OML RELEASE = $COMPONENT_RELEASE **********************"
 
@@ -256,13 +256,13 @@ if [[ "$PGSQL_DB"  != "NULL" ]]; then
   sed -i "s/postgres_database=omnileads/postgres_database=$PGSQL_DB/g" $PATH_DEPLOY/inventory
 fi
 if [[ "$PGSQL_USER"  != "NULL" ]]; then
-  sed -i "s/postgres_user=omnileads/postgres_user=$PGSQL_USER/g" $PATH_DEPLOY/inventory
+  sed -i "s/#postgres_user=omnileads/postgres_user=$PGSQL_USER/g" $PATH_DEPLOY/inventory
 fi
 if [[ "$PGSQL_PASS"  != "NULL" ]]; then
-  sed -i "s/postgres_password=my_very_strong_pass/postgres_password=$PGSQL_PASS/g" $PATH_DEPLOY/inventory
+  sed -i "s/#postgres_password=my_very_strong_pass/postgres_password=$PGSQL_PASS/g" $PATH_DEPLOY/inventory
 fi
 if [[ "$PGSQL_HOST"  != "NULL" ]]; then
-  sed -i "s/#postgres_host=omnileads/postgres_host=$PGSQL_HOST/g" $PATH_DEPLOY/inventory
+  sed -i "s/#postgres_host=/postgres_host=$PGSQL_HOST/g" $PATH_DEPLOY/inventory
 fi
 if [[ "$PGSQL_PORT"  != "NULL" ]]; then
   sed -i "s/#postgres_port=/postgres_port=$PGSQL_PORT/g" $PATH_DEPLOY/inventory
@@ -271,10 +271,10 @@ fi
 # Asterisk ACD parameters *********************************************************
 # Asterisk ACD parameters *********************************************************
 if [[ "$ACD_AMI_USER"  != "NULL" ]]; then
-  sed -i "s/ami_user=omnileadsami/ami_user=$ACD_AMI_USER/g" $PATH_DEPLOY/inventory
+  sed -i "s/#ami_user=omnileadsami/ami_user=$ACD_AMI_USER/g" $PATH_DEPLOY/inventory
 fi
 if [[ "$ACD_AMI_PASS"  != "NULL" ]]; then
-  sed -i "s/ami_password=5_MeO_DMT/ami_password=$ACD_AMI_PASS/g" $PATH_DEPLOY/inventory
+  sed -i "s/#ami_password=5_MeO_DMT/ami_password=$ACD_AMI_PASS/g" $PATH_DEPLOY/inventory
 fi
 if [[ "$ACD_HOST"  != "NULL" ]]; then
   sed -i "s/#asterisk_host=/asterisk_host=$ACD_HOST/g" $PATH_DEPLOY/inventory
@@ -283,10 +283,10 @@ fi
 # Wombat Dialer parameters ******************************************************
 # Wombat Dialer parameters ******************************************************
 if [[ "$DIALER_API_USER"  != "NULL" ]]; then
-  sed -i "s/dialer_user=/dialer_user=$DIALER_API_USER/g" $PATH_DEPLOY/inventory
+  sed -i "s/#dialer_user=/dialer_user=$DIALER_API_USER/g" $PATH_DEPLOY/inventory
 fi
 if [[ "$DIALER_API_PASS"  != "NULL" ]]; then
-  sed -i "s/dialer_password=/dialer_password=$DIALER_API_PASS/g" $PATH_DEPLOY/inventory
+  sed -i "s/#dialer_password=/dialer_password=$DIALER_API_PASS/g" $PATH_DEPLOY/inventory
 fi
 if [[ "$DIALER_HOST" != "NULL" ]]; then
   sed -i "s/#dialer_host=/dialer_host=$DIALER_HOST/g" $PATH_DEPLOY/inventory
@@ -324,7 +324,7 @@ fi
 
 # Others App params *************************************************************************
 # Others App params *************************************************************************
-sed -i "s/#TZ=/TZ=$TZ/g" $PATH_DEPLOY/inventory
+sed -i "s%\#TZ=%TZ=$TZ%g" $PATH_DEPLOY/inventory
 
 if [[ "$OMLAPP_SCA" != "NULL" ]]; then
   sed -i "s/sca=3600/sca=$OMLAPP_SCA/g" $PATH_DEPLOY/inventory
@@ -335,8 +335,8 @@ fi
 if [[ "$OMLAPP_LOGIN_FAILURE_LIMIT" != "NULL" ]]; then
   sed -i "s/LOGIN_FAILURE_LIMIT=10/LOGIN_FAILURE_LIMIT=$OMLAPP_LOGIN_FAILURE_LIMIT/g" $PATH_DEPLOY/inventory
 fi
-if [[ "$RESET_ADMIN_PASS" == "false" ]]; then
-  sed -i "s/reset_admin_password=true/reset_admin_password=false/g" $PATH_DEPLOY/inventory
+if [[ "$RESET_ADMIN_PASS" == "true" ]]; then
+  sed -i "s/reset_admin_password=false/reset_admin_password=true/g" $PATH_DEPLOY/inventory
 fi
 
 sleep 5
@@ -367,6 +367,7 @@ case $CALLREC_DEVICE_TYPE in
     chmod 600 ~/.passwd-s3fs
     if [ ! -d $CALLREC_DIR_DST ]; then 
       mkdir -p $CALLREC_DIR_DST
+      chown omnileads.omnileads -R $CALLREC_DIR_DST
     fi  
     echo "$BUCKET_NAME:/$TENANT_NAME $CALLREC_DIR_DST fuse.s3fs _netdev,allow_other,use_path_request_style,url=$S3URL 0 0" >> /etc/fstab
     mount -a
@@ -374,7 +375,10 @@ case $CALLREC_DEVICE_TYPE in
   nfs)
     echo "NFS callrec device \n"
     yum install -y nfs-utils nfs-utils-lib
-    mkdir -p $CALLREC_DIR_DST
+    if [ ! -d $CALLREC_DIR_DST ]; then 
+      mkdir -p $CALLREC_DIR_DST
+      chown omnileads.omnileads -R $CALLREC_DIR_DST
+    fi  
     echo "$NFS_NETADDR:$CALLREC_DIR_DST $CALLREC_DIR_DST nfs auto,nofail,noatime,nolock,intr,tcp,actimeo=1800 0 0" >> /etc/fstab
     mount -a
     ;;
@@ -442,10 +446,12 @@ echo "********************************** sngrep SIP sniffer install ************
 echo "********************************** sngrep SIP sniffer install *********************************"
 echo "********************************** sngrep SIP sniffer install *********************************"
 
-yum install ncurses-devel make libpcap-devel pcre-devel \
-    openssl-devel git gcc autoconf automake -y
-cd /root && git clone https://github.com/irontec/sngrep
-cd sngrep && ./bootstrap.sh && ./configure && make && make install
-ln -s /usr/local/bin/sngrep /usr/bin/sngrep
+if [[ "$SNGREP" == "true" ]]; then
+  yum install ncurses-devel make libpcap-devel pcre-devel \
+      openssl-devel git gcc autoconf automake -y
+  cd /root && git clone https://github.com/irontec/sngrep
+  cd sngrep && ./bootstrap.sh && ./configure && make && make install
+  ln -s /usr/local/bin/sngrep /usr/bin/sngrep
+fi
 
 reboot

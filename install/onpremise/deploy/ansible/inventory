@@ -28,23 +28,23 @@
 #####################################################################
 postgres_cloud=false
 postgres_database=omnileads
-postgres_user=omnileads
-postgres_password=my_very_strong_pass
+#postgres_user=omnileads
+#postgres_password=my_very_strong_pass
 #postgres_host=
 #postgres_port=
 
 ##########################################################
 # Tell to OMniLeads Web App  the Asterisk ACD parameters #
 ##########################################################
-ami_user=omnileadsami
-ami_password=5_MeO_DMT
+#ami_user=omnileadsami
+#ami_password=5_MeO_DMT
 #asterisk_host=
 
 ###############################################################
 # Tell to OMniLeads Web App the Wombat dialer params          #
 ###############################################################
-dialer_user=demoadmin
-dialer_password=demo
+#dialer_user=demoadmin
+#dialer_password=demo
 #dialer_host=
 #mysql_host=
 
@@ -59,8 +59,8 @@ shm_size=64
 pkg_size=8
 
 #######################################################################################
-# Variables when you have OMniLeads Websocket component installed in other host 		  #
-# websocket_host=IP or domain of that host. Default: websockets			                  #
+# Variables when you have OMniLeads Websocket component installed in other host 	  #
+# websocket_host=IP or domain of that host. Default: websockets			              #
 # websocket_port=the port configured in the app in that host. Default: 8000	          #
 #######################################################################################
 websocket_host=websockets
@@ -84,7 +84,7 @@ websocket_port=8000
 ########################################################################################
 # turn to false this parameter in order to deactivate the webadmin pass-reset          #
 ########################################################################################
-reset_admin_password=true
+reset_admin_password=false
 #################################################################################################
 # Set the timezone where the nodes are. UNCOMMENT and set this if you are doing a fresh install #
 #################################################################################################
@@ -119,18 +119,22 @@ LOGIN_FAILURE_LIMIT=10
 schedule=Agenda
 
 
-
-
-
-
-
-
 # Do not change the variables below or you will experience
 # bad things
-#
+
 # WARNING!!! ATENCION!!! WAARSCHUWING!!! WARNUNG!!! AVIS!!!
 # WARNING!!! ATENCION!!! WAARSCHUWING!!! WARNUNG!!! AVIS!!!
 # WARNING!!! ATENCION!!! WAARSCHUWING!!! WARNUNG!!! AVIS!!!
+# WARNING!!! ATENCION!!! WAARSCHUWING!!! WARNUNG!!! AVIS!!!
+# WARNING!!! ATENCION!!! WAARSCHUWING!!! WARNUNG!!! AVIS!!!
+# WARNING!!! ATENCION!!! WAARSCHUWING!!! WARNUNG!!! AVIS!!!
+# WARNING!!! ATENCION!!! WAARSCHUWING!!! WARNUNG!!! AVIS!!!
+# WARNING!!! ATENCION!!! WAARSCHUWING!!! WARNUNG!!! AVIS!!!
+# WARNING!!! ATENCION!!! WAARSCHUWING!!! WARNUNG!!! AVIS!!!
+# WARNING!!! ATENCION!!! WAARSCHUWING!!! WARNUNG!!! AVIS!!!
+# WARNING!!! ATENCION!!! WAARSCHUWING!!! WARNUNG!!! AVIS!!!
+# WARNING!!! ATENCION!!! WAARSCHUWING!!! WARNUNG!!! AVIS!!!
+
 
 [everyone:children]
 prodenv-aio
