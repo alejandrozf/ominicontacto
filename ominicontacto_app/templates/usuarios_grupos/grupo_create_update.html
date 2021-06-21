@@ -60,6 +60,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {{ form.acceso_grabaciones_agente.label_tag }} {{ form.acceso_grabaciones_agente }}
             {{ form.acceso_grabaciones_agente.errors }}
         </div>
+        <div class="col-md-3">
+            {{ form.acceso_dashboard_agente.label_tag }} {{ form.acceso_dashboard_agente }}
+            {{ form.acceso_dashboard_agente.errors }}
+        </div>
     </div>
     <button type="submit" id="id_registrar" class="btn btn-primary">
         {% trans 'Guardar' %}

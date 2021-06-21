@@ -1842,7 +1842,7 @@ class GrupoForm(forms.ModelForm):
         model = Grupo
         fields = ('nombre', 'auto_unpause', 'auto_attend_inbound',
                   'auto_attend_dialer', 'obligar_calificacion', 'call_off_camp',
-                  'acceso_grabaciones_agente')
+                  'acceso_grabaciones_agente', 'acceso_dashboard_agente')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
         }
@@ -1850,7 +1850,8 @@ class GrupoForm(forms.ModelForm):
             'auto_unpause': _('En segundos'),
         }
         labels = {
-            'acceso_grabaciones_agente': _('Permitir el acceso a las grabaciones')
+            'acceso_grabaciones_agente': _('Permitir el acceso a las grabaciones'),
+            'acceso_dashboard_agente': _('Permitir el acceso al dashboard')
         }
 
     def __init__(self, *args, **kwargs):
