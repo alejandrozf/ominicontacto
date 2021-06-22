@@ -48,7 +48,7 @@ class LoginTests(OMLBaseTest):
         self.supervisor.user.save()
         is_already_locked.return_value = False
         check_request.return_value = True
-        next_url = reverse('agente_list')
+        next_url = reverse('agente_list', kwargs={"page": 1})
         login_url = reverse('login') + '?next=' + next_url
         login_data = {'username': self.supervisor.user.username, 'password': PASSWORD}
         response = self.client.post(login_url, login_data, follow=True)
@@ -61,7 +61,7 @@ class LoginTests(OMLBaseTest):
             self, add_login_attempt_to_db, check_request, is_already_locked):
         is_already_locked.return_value = False
         check_request.return_value = True
-        next_url = reverse('agente_list')
+        next_url = reverse('agente_list', kwargs={"page": 1})
         login_url = reverse('login') + '?next=' + next_url
         login_data = {'username': self.supervisor.user.username, 'password': PASSWORD}
         response = self.client.post(login_url, login_data, follow=True)
