@@ -18,7 +18,7 @@ services:
       - REDIS_HOSTNAME=${REDIS_HOSTNAME}
       - TZ=${TZ}
       - ASTERISK_LOCATION=
-    image: freetechsolutions/omlacd:develop
+    image: freetechsolutions/omlacd:${OMLACD_VERSION}
     networks:
       - devenv
     ports:
