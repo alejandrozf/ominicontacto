@@ -118,7 +118,7 @@ deploy-aio-digitalocean:
     - bash ~/git_cleanup.sh
     - bash ~/.env_do
     - sleep 60
-    - doctl compute droplet create --image $DIGITAL_OCEAN_AIO_IMG --size $DIGITAL_OCEAN_AIO_SIZE --region $DIGITAL_OCEAN_REGION --ssh-keys $TF_VAR_ssh_key_fingerprint --user-data-file ~/ominicontacto/install/onpremise/deploy/ansible/first_boot_installer.tpl omlgitlab-cicd-aio.$CI_JOB_ID
+    - doctl compute droplet create --image $DIGITAL_OCEAN_AIO_IMG --size $DIGITAL_OCEAN_AIO_SIZE --region $DIGITAL_OCEAN_REGION --ssh-keys $TF_VAR_ssh_key_fingerprint --user-data-file ~/ominicontacto/install/onpremise/deploy/ansible/.cicd_aio omlgitlab-cicd-aio.$CI_JOB_ID
     - sleep 60
     - IP=$(doctl compute droplet list |grep omlgitlab-cicd-aio.$CI_JOB_ID |awk '{print $3}') && echo "$IP 2 run tests"
     - until curl -sk --head  --request GET https://$IP |grep "302" > /dev/null; do echo "Environment still being installed, sleeping 80 seconds"; sleep 80; done; echo "Environment is up"

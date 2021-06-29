@@ -86,10 +86,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <td>{{ grabacion.origen.campana}}</td>
                 <td>
                     <audio controls>
-                        <source src="{{base_url}}{{ grabacion.origen.url_archivo_grabacion }}" type='audio/mpeg'>
+                        <source src="{{base_url}}{{ grabacion.origen.url_archivo_grabacion_url_encoded }}" type='audio/mpeg'>
                         {% trans 'Escuchar' %}
                     </audio>
-                    <a href="{{base_url}}{{ grabacion.origen.url_archivo_grabacion }}" target="_blank">
+                    <a href="{{base_url}}{{ grabacion.origen.url_archivo_grabacion_url_encoded }}" target="_blank">
                         <span class="glyphicon glyphicon-download-alt" aria-hidden="true" title="{% trans 'Descargar' %}"></span>
                     </a>
                 </td>
@@ -127,10 +127,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <td>{{ grabacion.transfer.campana}}</td>
                 <td>
                     <audio controls>
-                        <source src="{{base_url}}{{ grabacion.transfer.url_archivo_grabacion }}" type='audio/mpeg'>
+                        <source src="{{base_url}}{{ grabacion.transfer.url_archivo_grabacion_url_encoded }}" type='audio/mpeg'>
                         {% trans 'Escuchar' %}
                     </audio>
-                    <a href="{{base_url}}{{ grabacion.transfer.url_archivo_grabacion }}" target="_blank">
+                    <a href="{{base_url}}{{ grabacion.transfer.url_archivo_grabacion_url_encoded }}" target="_blank">
                         <span class="glyphicon glyphicon-download-alt" aria-hidden="true" title="{% trans 'Descargar' %}"></span>
                     </a>
                 </td>
@@ -239,7 +239,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script>
     /* se activa en todos los campos de selección un plugin para
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       JQuery que permite una mejor búsqueda */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               JQuery que permite una mejor búsqueda */
     $(document).ready(function() {
 
         $('select.form-control').each(function() {

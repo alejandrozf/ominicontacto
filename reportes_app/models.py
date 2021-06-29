@@ -18,10 +18,11 @@
 #
 
 from __future__ import unicode_literals
+
 from django.utils.timezone import now
 from ominicontacto_app.utiles import crear_segmento_grabaciones_url, datetime_hora_maxima_dia, \
     datetime_hora_minima_dia, fecha_local
-
+import urllib.parse
 from django.db import models, connection
 from django.db.models import Count, Q, Sum
 from django.db.models.functions import TruncDate
@@ -395,6 +396,19 @@ class LlamadaLog(models.Model):
         filename = "/".join([crear_segmento_grabaciones_url(),
                              dia_grabacion.strftime("%Y-%m-%d"),
                              self.archivo_grabacion])
+        if dia_grabacion < hoy:
+            return filename + '.' + settings.MONITORFORMAT
+        else:
+            return filename + '.wav'
+
+    @property
+    def url_archivo_grabacion_url_encoded(self):
+        # TODO: Refactorizar junto con url_archivo_grabacion para eliminar duplicidad de código
+        hoy = fecha_local(now())
+        dia_grabacion = fecha_local(self.time)
+        filename = "/".join([crear_segmento_grabaciones_url(),
+                             dia_grabacion.strftime("%Y-%m-%d"),
+                             urllib.parse.quote(self.archivo_grabacion)])
         if dia_grabacion < hoy:
             return filename + '.' + settings.MONITORFORMAT
         else:

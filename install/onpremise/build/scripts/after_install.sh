@@ -17,9 +17,8 @@ if [ -f /etc/profile.d/omnileads_envars.sh ]; then
   echo "Create admin superuser"
   sudo -u omnileads bash -c "$MANAGE_SCRIPT createsuperuser --noinput --username=admin --email=admin@example.com" || true
   echo "Set admin superuser default password"
-  sudo -u omnileads bash -c "$MANAGE_SCRIPT cambiar_admin_password"
   sudo -u omnileads bash -c "$MANAGE_SCRIPT adicionar_perfil_supervisor_admin"
-  chown -R omnileads. /opt/omnileads/ /var/lib/nginx/tmp/
+  chown -R omnileads. /opt/omnileads/ominicontacto/ /opt/omnileads/media_root/ /var/lib/nginx/tmp/
   sudo -u omnileads bash -c "$MANAGE_SCRIPT populate_history"
   sudo -u omnileads bash -c "$MANAGE_SCRIPT compilemessages"
   sudo -u omnileads bash -c "$MANAGE_SCRIPT collectstatic --noinput"
@@ -34,7 +33,6 @@ if [ -f /etc/profile.d/omnileads_envars.sh ]; then
   psql -c "\i ${INSTALL_PREFIX}/ominicontacto/reportes_app/sql/plperl/replace_insert_queue_log_ominicontacto_queue_log.sql"
   echo "Restarting and enabling omnileads"
   systemctl enable omnileads
-  systemctl restart omnileads
 else
   echo "OMniLeads envars file not found, exiting"
   exit 1

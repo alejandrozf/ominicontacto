@@ -49,10 +49,10 @@
                         <td>
                             {% if historica.grabacion %}
                             <audio controls>
-                                            <source src="{{base_url}}{{ historica.grabacion.url_archivo_grabacion }}" type='audio/mpeg'>
+                                            <source src="{{base_url}}{{ historica.grabacion.url_archivo_grabacion_url_encoded }}" type='audio/mpeg'>
                                                 {% trans 'Escuchar' %}
                                         </audio>
-                            <a href="{{base_url}}{{ historica.grabacion.url_archivo_grabacion}}" target="_blank">
+                            <a href="{{base_url}}{{ historica.grabacion.url_archivo_grabacion_url_encoded}}" target="_blank">
                                 <span class="glyphicon glyphicon-download-alt" aria-hidden="true" title="{% trans 'Descargar' %}"></span>
                             </a>
                             {% endif %}

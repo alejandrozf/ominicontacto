@@ -19,15 +19,12 @@
 
 /* global Urls */
 /* global gettext */
-var agentes = {};
-var campanas = {};
 var campanas_supervisor = [];
 var campanas_id_supervisor = [];
-var resumen_agentes_campanas = {};
 var table_entrantes;
 var table_data = [];
-var inicio = true;
 const MENSAJE_CONEXION_WEBSOCKET = 'Stream subscribed!';
+
 
 $(function() {
     campanas_supervisor = $('input#campanas_list').val().split(',');
@@ -48,14 +45,6 @@ $(function() {
             try {
                 var data = JSON.parse(e.data);
                 processData(data);
-
-                var dataAux = [];
-                for (let i in campanas) {
-                    dataAux.push(campanas[i]);
-                }
-                table_entrantes.clear();
-                table_entrantes.rows.add(dataAux).draw();
-                table_data = dataAux;
             } catch (err) {
                 console.log(err);
             }
@@ -63,143 +52,70 @@ $(function() {
     };
 
     function processData(data) {
-        var hay_agentes = false;
-        if (inicio && data.length > 1) {
-            data = data.reverse();
-        }
-        for (let index = 0; index < data.length; index++) {
-            var row = JSON.parse(data[index]
+        let haveAgentsData = false;
+        let fistCallStats = {};
+        data.forEach(info => {
+            let row = JSON.parse(info
                 .replaceAll('\'', '"')
                 .replaceAll('"[', '[')
                 .replaceAll(']"', ']'));
             if (row['NAME']) {
-                processAgent(row);
-                hay_agentes = true;
-            } else if (row['nombre']) {
-                processCampaign(row);
+                agents.updateAgent(row);
+                haveAgentsData = true;
+            } else if (row['nombre'] && !fistCallStats[row['nombre']]) {
+                fistCallStats[row['nombre']] = row;
             }
+        });
 
+        for (const campaign in fistCallStats) {
+            let row = table_entrantes
+                .row('#' + campaign);
+            let dataRow = row.data();
+            if (dataRow == null) {
+                let newDataRow = new InboundStats(campanas_id_supervisor[campanas_supervisor.indexOf(campaign)], campaign);
+                newDataRow.updateCallStats(fistCallStats[campaign]);
+                table_entrantes.row.add(newDataRow);
+            } else {
+                dataRow.updateCallStats(fistCallStats[campaign]);
+                row.data(dataRow);
+            }
         }
-        if (hay_agentes) {
-            consolidaInfoAgentes();
-        }
-        inicio = false;
-    }
 
-    function consolidaInfoAgentes() {
-        resumen_agentes_campanas = {};
-        for (let i in agentes) {
-            for (let j in agentes[i].campanas) {
-                for (let k in campanas_id_supervisor) {
-                    if (agentes[i].campanas[j] == campanas_supervisor[k]) {
-                        if (!resumen_agentes_campanas[campanas_id_supervisor[k]]) {
-                            resumen_agentes_campanas[campanas_id_supervisor[k]] = {
-                                'agentes_online': 0,
-                                'agentes_pausa': 0,
-                                'agentes_llamada': 0,
-                                'nombre_campana': campanas_supervisor[k]
-                            };
-                        }
-                        if (agentes[i].status.indexOf('PAUSE') == 0) {
-                            resumen_agentes_campanas[campanas_id_supervisor[k]]['agentes_pausa']++;
-                        } else if (agentes[i].status.indexOf('ONCALL') == 0) {
-                            resumen_agentes_campanas[campanas_id_supervisor[k]]['agentes_llamada']++;
-                        }
-                        if (agentes[i].status != '' &&
-                            agentes[i].status != 'OFFLINE') {
-                            resumen_agentes_campanas[campanas_id_supervisor[k]]['agentes_online']++;
-                        }
-
-                    }
+        if (haveAgentsData) {
+            let newAgentStats = agents.calculateStats(campanas_supervisor);
+            console.log(newAgentStats);
+            for (const campaign in newAgentStats) {
+                const statsEmpty = emptyStats(newAgentStats[campaign]);
+                let row = table_entrantes
+                    .row('#' + campaign);
+                let dataRow = row.data();
+                if (dataRow == null && !statsEmpty) {
+                    let newDataRow = new InboundStats(campanas_id_supervisor[campanas_supervisor.indexOf(campaign)], campaign);
+                    newDataRow.updateAgentStats(newAgentStats[campaign]);
+                    table_entrantes.row.add(newDataRow);
+                } else if (dataRow && dataRow.isEmpty() && statsEmpty) {
+                    row.remove();
+                } else if (dataRow) {
+                    dataRow.updateAgentStats(newAgentStats[campaign]);
+                    row.data(dataRow);
                 }
             }
         }
-        for (let i in resumen_agentes_campanas) {
-            if (!campanas[i] && (resumen_agentes_campanas[i]['agentes_pausa'] > 0 ||
-                    resumen_agentes_campanas[i]['agentes_llamada'] > 0 ||
-                    resumen_agentes_campanas[i]['agentes_online'] > 0)) {
-                inicializaCampaign(resumen_agentes_campanas[i]['nombre_campana'], i);
-            }
-            if (campanas[i] && (resumen_agentes_campanas[i]['agentes_pausa'] > 0 ||
-                    resumen_agentes_campanas[i]['agentes_llamada'] > 0 ||
-                    resumen_agentes_campanas[i]['agentes_online'] > 0)) {
-                campanas[i]['agentes_pausa'] = resumen_agentes_campanas[i]['agentes_pausa'];
-                campanas[i]['agentes_llamada'] = resumen_agentes_campanas[i]['agentes_llamada'];
-                campanas[i]['agentes_online'] = resumen_agentes_campanas[i]['agentes_online'];
-            } else if (campanas[i] && campanaVacia(campanas[i])) {
-                delete campanas[i];
-            } else if (campanas[i]) {
-                campanas[i]['agentes_pausa'] = 0;
-                campanas[i]['agentes_llamada'] = 0;
-                campanas[i]['agentes_online'] = 0;
-            }
-        }
-
+        table_entrantes.draw();
     }
 
-    function campanaVacia(campana) {
-        if (campana['llamadas_en_espera'] > 0) return false;
-        if (campana['atendidas'] > 0) return false;
-        if (campana['abandonadas'] > 0) return false;
-        if (campana['expiradas'] > 0) return false;
-        if (campana['gestiones'] > 0) return false;
-
-        return true;
+    function emptyStats(stats) {
+        return stats.agentes_online == 0 &&
+            stats.agentes_llamada == 0 &&
+            stats.agentes_pausa == 0;
     }
 
-    function processAgent(agente) {
-        var agente_id = agente.id;
-        agentes[agente_id] = agentes[agente_id] ? agentes[agente_id] : {};
-        agentes[agente_id]['status'] = agente.STATUS;
-        agentes[agente_id]['campanas'] = agente.CAMPANAS;
-        agentes[agente_id]['timestamp'] = agente.TIMESTAMP;
-    }
-
-    function processCampaign(row) {
-        var campana_id = row.id;
-        if (!campanas[campana_id]) {
-            inicializaCampaign(row['nombre'], campana_id);
-        }
-
-        campanas[campana_id]['nombre'] = row['nombre'];
-        campanas[campana_id]['llamadas_en_espera'] = row['llamadas_en_espera'];
-        campanas[campana_id]['atendidas'] = row['llamadas_atendidas'];
-        campanas[campana_id]['abandonadas'] = row['llamadas_abandonadas'];
-        campanas[campana_id]['expiradas'] = row['llamadas_expiradas'];
-        campanas[campana_id]['gestiones'] = row['gestiones'];
-
-        var abandonadas = parseInt(row['llamadas_abandonadas']);
-        if (abandonadas > 0) {
-            campanas[campana_id]['t_promedio_abandono'] = parseFloat(row['tiempo_acumulado_abandonadas']) / abandonadas;
-        }
-
-        var atendidas = parseInt(row['llamadas_atendidas']);
-        if (atendidas > 0) {
-            campanas[campana_id]['t_promedio_espera'] = parseFloat(row['tiempo_acumulado_espera']) / atendidas;
-        }
-
-    }
-
-    function inicializaCampaign(name, id) {
-        campanas[id] = {};
-        campanas[id]['id'] = id;
-        campanas[id]['nombre'] = name;
-        campanas[id]['llamadas_en_espera'] = 0;
-        campanas[id]['atendidas'] = 0;
-        campanas[id]['abandonadas'] = 0;
-        campanas[id]['expiradas'] = 0;
-        campanas[id]['t_promedio_abandono'] = 0;
-        campanas[id]['t_promedio_espera'] = 0;
-        campanas[id]['gestiones'] = 0;
-        campanas[id]['agentes_online'] = 0;
-        campanas[id]['agentes_llamada'] = 0;
-        campanas[id]['agentes_pausa'] = 0;
-    }
 });
 
 function createDataTable() {
     table_entrantes = $('#tableEntrantes').DataTable({
         data: table_data,
+        rowId: 'nombre',
         columns: [
             { 'data': 'nombre' },
             { 'data': 'agentes_online' },
@@ -238,3 +154,110 @@ function createDataTable() {
         }
     });
 }
+
+class InboundStats {
+
+    constructor(id, nombre) {
+        this.id = id;
+        this.nombre = nombre;
+        this.llamadas_en_espera = 0;
+        this.atendidas = 0;
+        this.abandonadas = 0;
+        this.expiradas = 0;
+        this.t_promedio_abandono = 0;
+        this.t_promedio_espera = 0;
+        this.gestiones = 0;
+        this.agentes_online = 0;
+        this.agentes_llamada = 0;
+        this.agentes_pausa = 0;
+    }
+
+    isEmpty() {
+        if (this.llamadas_en_espera != 0 ||
+            this.atendidas != 0 ||
+            this.abandonadas != 0 ||
+            this.expiradas != 0 ||
+            this.gestiones != 0) return false;
+        return true;
+    }
+
+    updateCallStats(newStats) {
+        this.llamadas_en_espera = newStats['llamadas_en_espera'];
+        this.atendidas = newStats['llamadas_atendidas'];
+        this.abandonadas = newStats['llamadas_abandonadas'];
+        this.expiradas = newStats['llamadas_expiradas'];
+        this.gestiones = newStats['gestiones'];
+
+        var abandonadas = parseInt(newStats['llamadas_abandonadas']);
+        if (abandonadas > 0) {
+            this.t_promedio_abandono = parseFloat(newStats['tiempo_acumulado_abandonadas']) / abandonadas;
+        }
+
+        var atendidas = parseInt(newStats['llamadas_atendidas']);
+        if (atendidas > 0) {
+            this.t_promedio_espera = parseFloat(newStats['tiempo_acumulado_espera']) / atendidas;
+        }
+    }
+
+    updateAgentStats(agentStats) {
+        this.agentes_online = agentStats.agentes_online;
+        this.agentes_llamada = agentStats.agentes_llamada;
+        this.agentes_pausa = agentStats.agentes_pausa;
+    }
+
+}
+
+class Agents {
+    constructor() {
+        this.agentList = {};
+    }
+
+    calculateStats(campaignList) {
+        let stats = {};
+        campaignList.forEach(campaign => {
+            stats[campaign] = {
+                'agentes_online': 0,
+                'agentes_llamada': 0,
+                'agentes_pausa': 0
+            };
+            Object.values(this.agentList).forEach(agent => {
+                if (agent.campanas.includes(campaign) && agent.status != '') {
+                    stats[campaign]['agentes_online']++;
+                    if (agent.status.indexOf('PAUSE') == 0) {
+                        stats[campaign]['agentes_pausa']++;
+                    } else if (agent.status.indexOf('ONCALL') == 0) {
+                        stats[campaign]['agentes_llamada']++;
+                    }
+                }
+            });
+        });
+        return stats;
+    }
+
+    updateAgent(newAgentData) {
+        const agentId = newAgentData.id;
+        this.agentList[agentId] = (this.agentList[agentId]) ? this.agentList[agentId] : {};
+
+        if (this.agentList[agentId]['timestamp'] &&
+            this.agentList[agentId]['timestamp'] > newAgentData.TIMESTAMP) {
+            return;
+        }
+
+        this.agentList[agentId]['campanas'] = newAgentData.CAMPANAS;
+        this.agentList[agentId]['timestamp'] = newAgentData.TIMESTAMP;
+        this.agentList[agentId]['campaign'] = newAgentData.CAMPAIGN;
+
+        if (newAgentData.STATUS != '' &&
+            newAgentData.STATUS != 'OFFLINE' &&
+            newAgentData.STATUS != 'UNAVAILABLE') {
+            this.agentList[agentId]['status'] = newAgentData.STATUS;
+
+        } else {
+            this.agentList[agentId]['status'] = '';
+        }
+
+    }
+
+}
+
+var agents = new Agents();

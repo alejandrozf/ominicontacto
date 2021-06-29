@@ -13,7 +13,7 @@ def process_event(x):
         for stream in streams:
             if execute('exists', stream) == 1 and value is not None:
                 value['id'] = campaign_id
-                execute('XADD', stream, 'MAXLEN', '~', 20, '*', 'value', value)
+                execute('XADD', stream, '*', 'value', value)
 
 
 GearsBuilder(desc='sup_entrantes') \

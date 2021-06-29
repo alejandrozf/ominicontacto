@@ -79,8 +79,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         servicio = CampanaFamily()
         dict_campana = servicio._create_dict(self.campana_entrante)
 
-        nombre_campana = "{0}_{1}".format(self.campana_entrante.id,
-                                          self.campana_entrante.nombre)
+        nombre_campana = self.campana_entrante.get_queue_id_name()
         self.assertEqual(dict_campana['QNAME'], nombre_campana)
         self.assertEqual(dict_campana['TYPE'], self.campana_entrante.type)
         self.assertEqual(dict_campana['REC'], str(
@@ -118,8 +117,7 @@ class AsteriskDatabaseTest(OMLBaseTest):
         servicio = CampanaFamily()
         dict_campana = servicio._create_dict(self.campana_dialer)
 
-        nombre_campana = "{0}_{1}".format(self.campana_dialer.id,
-                                          self.campana_dialer.nombre)
+        nombre_campana = self.campana_dialer.get_queue_id_name()
         self.assertEqual(dict_campana['QNAME'], nombre_campana)
         self.assertEqual(dict_campana['TYPE'], self.campana_dialer.type)
         self.assertEqual(dict_campana['REC'], str(self.campana_dialer.queue_campana.auto_grabacion))

@@ -54,7 +54,7 @@ class CampanaCreator(object):
 
         dict_campana = {
             "campaignId": campana_id_wombat,
-            "name": "{0}_{1}".format(campana.id, campana.nombre),
+            "name": campana.get_queue_id_name(),
 
             "priority": 10,
             "pace": "RUNNABLE",
@@ -167,7 +167,7 @@ class EndPointCreator(object):
 
         dict_endpoint = {
             "type": "QUEUE",
-            "queueName": "{0}_{1}".format(campana.id, campana.nombre),
+            "queueName": campana.get_queue_id_name(),
             "name": "",
             "astId": {
                 "id": 1
@@ -182,7 +182,7 @@ class EndPointCreator(object):
             "reverseDialing": False,
             "stepwiseReverse": False,
             "securityKey": "",
-            "description": "{0}_{1}".format(campana.id, campana.nombre),
+            "description": campana.get_queue_id_name(),
             "dialFind": "",
             "dialReplace": ""
         }

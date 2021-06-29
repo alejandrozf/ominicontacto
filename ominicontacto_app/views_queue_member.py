@@ -47,11 +47,11 @@ logger = logging_.getLogger(__name__)
 
 def adicionar_agente_cola(agente, queue_member, campana, client):
     """Adiciona agente a la cola de su respectiva campaña"""
-    queue = "{0}_{1}".format(campana.id, campana.nombre)
+    queue = campana.get_queue_id_name()
     interface = "PJSIP/{0}".format(agente.sip_extension)
     penalty = queue_member.penalty
     paused = queue_member.paused
-    member_name = "{0}_{1}_{2}".format(agente.id, agente.user.first_name, agente.user.last_name)
+    member_name = agente.get_asterisk_caller_id()
 
     try:
         client.queue_add(queue, interface, penalty, paused, member_name)
@@ -266,7 +266,7 @@ class QueueMemberCampanaView(TemplateView):
 
 
 def remover_agente_cola_asterisk(campana, agente, client):
-    queue = "{0}_{1}".format(campana.id, campana.nombre)
+    queue = campana.get_queue_id_name()
     interface = "PJSIP/{0}".format(agente.sip_extension)
     sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
     if agente.sip_extension in sip_agentes_logueados:

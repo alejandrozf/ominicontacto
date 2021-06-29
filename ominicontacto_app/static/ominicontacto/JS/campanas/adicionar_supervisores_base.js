@@ -18,19 +18,10 @@
 */
 
 $('#addAllSupervisors').change(function() {
-    if(this.value == 1){
-        // Update campaign
-        if(this.checked) {
-            $('input[name="supervisors"]').each( function () { this.checked = true; });
-        }else{
-            $('input[name="supervisors"]').each( function () { this.checked = false; });
-        }
+    var selector = 'input[name$="supervisors"]';
+    if(this.checked) {
+        $(selector).each( function () { this.checked = true; });
     }else{
-        // Create campaign
-        if(this.checked) {
-            $('input[name="4-supervisors"]').each( function () { this.checked = true; });
-        }else{
-            $('input[name="4-supervisors"]').each( function () { this.checked = false; });
-        }
+        $(selector).each( function () { this.checked = false; });
     }
 });

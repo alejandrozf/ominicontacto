@@ -67,7 +67,7 @@ class AgentesContactosTests(OMLBaseTest):
         queue = QueueFactory.create(campana=campana)
         QueueMemberFactory.create(
             member=agente, queue_name=queue,
-            id_campana='{0}_{1}'.format(campana.pk, campana.nombre))
+            id_campana=campana.get_queue_id_name())
 
     def test_contacto_list_muestra_campanas_entrantes_agente(self):
         self.client.login(username=self.usuario_agente.username, password=self.DEFAULT_PASSWORD)

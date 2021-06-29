@@ -17,25 +17,17 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
-{% extends "agente/frame/base_frame.html" %}
-{% load compress %}
-{% load static %}
-{% load i18n %}
-
-{% block head_js %}
+{% extends "agente/frame/base_frame.html" %} {% load compress %} {% load static %} {% load i18n %} {% block head_js %}
 <script type="text/javascript" src="{% static 'ominicontacto/JS/select2.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'ominicontacto/JS/busqueda_grabacion.js' %}"></script>
 <link rel="stylesheet" href="{% static 'ominicontacto/CSS/select2.min.css' %}">
 </link>
-{% endblock head_js %}
-
-{% block content %}
+{% endblock head_js %} {% block content %}
 <div class="container-fluid">
     <h1>{% trans 'Buscar grabación' %}</h1>
 
     <div id="wrapper-search">
-        <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse"
-            data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span
+        <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span
                 class="icon icon-search"></span> {% trans 'Buscar' %}</button>
         <div id="wrapperSearchForm" class="show">
             <form id="form-buscar-grabacion" role="form" method="post" enctype="multipart/form-data">
@@ -68,17 +60,14 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <td>{{ grabacion.campana}}</td>
                     <td>
                         <audio controls>
-                            <source src="{{base_url}}{{ grabacion.url_archivo_grabacion }}" type='audio/mpeg'>
+                            <source src="{{base_url}}{{ grabacion.url_archivo_grabacion_url_encoded }}" type='audio/mpeg'>
                             {% trans 'Escuchar' %}
                         </audio>
-                        <a href="{{base_url}}{{ grabacion.url_archivo_grabacion }}" target="_blank">
-                            <span class="glyphicon glyphicon-download-alt" aria-hidden="true"
-                                title="{% trans 'Descargar' %}"></span>
+                        <a href="{{base_url}}{{ grabacion.url_archivo_grabacion_url_encoded }}" target="_blank">
+                            <span class="glyphicon glyphicon-download-alt" aria-hidden="true" title="{% trans 'Descargar' %}"></span>
                         </a>
                     </td>
-                    <td><button type="button" class="btn btn-light btn-sm" data-toggle="modal"
-                            data-target="#descripcionModal"
-                            data-uid="{{ grabacion.callid }}">{% trans 'Descripción' %}</button></td>
+                    <td><button type="button" class="btn btn-light btn-sm" data-toggle="modal" data-target="#descripcionModal" data-uid="{{ grabacion.callid }}">{% trans 'Descripción' %}</button></td>
                 </tr>
                 {% empty %}
                 <tr>
@@ -92,22 +81,16 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <ul class="pagination">
                 {% if listado_de_grabaciones.has_previous %}
                 <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous"
-                        onclick="javascript:filtrar_pagina({{listado_de_grabaciones.previous_page_number}})">
+                    <a class="page-link" href="#" aria-label="Previous" onclick="javascript:filtrar_pagina({{listado_de_grabaciones.previous_page_number}})">
                         <span aria-hidden="true">&laquo;</span>
                         <span class="sr-only">{% trans 'Anterior' %}</span>
                     </a>
                 </li>
-                {% endif %}
-                {% for page in listado_de_grabaciones.paginator.page_range %}
-                <li class="page-item {% if listado_de_grabaciones.number == page  %}active{% endif %}"><a
-                        class="page-link" href="#" onclick="javascript:filtrar_pagina({{page}})">{{ page }}</a></li>
-                {% endfor %}
-
-                {% if listado_de_grabaciones.has_next %}
+                {% endif %} {% for page in listado_de_grabaciones.paginator.page_range %}
+                <li class="page-item {% if listado_de_grabaciones.number == page  %}active{% endif %}"><a class="page-link" href="#" onclick="javascript:filtrar_pagina({{page}})">{{ page }}</a></li>
+                {% endfor %} {% if listado_de_grabaciones.has_next %}
                 <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next"
-                        onclick="javascript:filtrar_pagina({{listado_de_grabaciones.next_page_number}})">
+                    <a class="page-link" href="#" aria-label="Next" onclick="javascript:filtrar_pagina({{listado_de_grabaciones.next_page_number}})">
                         <span aria-hidden="true">&raquo;</span>
                         <span class="sr-only">{% trans 'Siguiente' %}</span>
                     </a>
@@ -141,27 +124,27 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <script>
     /* se activa en todos los campos de selección un plugin para
-       JQuery que permite una mejor búsqueda */
-    $(document).ready(function () {
+               JQuery que permite una mejor búsqueda */
+    $(document).ready(function() {
 
-        $('select.form-control').each(function () {
+        $('select.form-control').each(function() {
             $(this).select2();
         });
 
 
         /* $('#id_campana').attr('class', 'select2-hidden-accessible');*/
 
-        $('#descripcionModal').on('show.bs.modal', function (event) {
+        $('#descripcionModal').on('show.bs.modal', function(event) {
             var button = $(event.relatedTarget)
             var uid_val = button.data('uid');
             var modal = $(this);
             var URL = Urls.grabacion_descripcion(uid_val);
-            $.get(URL, function (data) {
-                $('#descripcionModalLabel').text(data.result);
-                $('#descripcion-text').text(data.descripcion);
-                console.log(data);
-            })
-                .fail(function (data) {
+            $.get(URL, function(data) {
+                    $('#descripcionModalLabel').text(data.result);
+                    $('#descripcion-text').text(data.descripcion);
+                    console.log(data);
+                })
+                .fail(function(data) {
                     $('#descripcionModalLabel').text("{% trans 'Error' %}");
                     $('#descripcion-text').text("{% trans 'Ha ocurrido un error al intentar conectarse' %}");
                     console.log(data);

@@ -71,6 +71,12 @@ class CampanaService():
 
         return error
 
+    def obtener_nombre_lista_ascii(self, campana):
+        nombre_lista = '_'.join([str(campana.id), str(campana.bd_contacto.id),
+                                 remplace_espacio_por_guion(campana.bd_contacto.nombre)])
+        nombre_lista_ascii = unicodedata.normalize('NFKD', nombre_lista)
+        return nombre_lista_ascii[:45]
+
     def obtener_list_id_wombat(self, salida_comando, campana):
         """
         Retorna el id de la lista para la campana pasada por parametro
@@ -78,13 +84,13 @@ class CampanaService():
         :param campana: campana la cual deseo encontrar el id de su lista
         :return: id_lista - el id de la lista en wombat
         """
-        nombre_lista = '_'.join([str(campana.id), str(campana.bd_contacto.id),
-                                 remplace_espacio_por_guion(campana.bd_contacto.nombre)])
-        nombre_lista_ascii = unicodedata.normalize('NFKD', nombre_lista)
+        nombre_lista_ascii = self.obtener_nombre_lista_ascii(campana)
         id_lista = None
         results = salida_comando['results']
         for lista in results:
-            if lista["name"] == nombre_lista_ascii:
+            # Uso startswith porque antes se el nombre no se truncaba a 40 chars
+            # Y como el prefijo es con los ids no debería repetirse esa primer parte.
+            if lista["name"].startswith(nombre_lista_ascii):
                 id_lista = lista["listId"]
                 break
 
@@ -302,9 +308,7 @@ class CampanaService():
         :param campana: campana de la cual se creara la lista
         """
         service_wombat = WombatService()
-        nombre_lista = '_'.join([str(campana.id), str(campana.bd_contacto.id),
-                                 remplace_espacio_por_guion(campana.bd_contacto.nombre)])
-        nombre_lista_ascii = unicodedata.normalize('NFKD', nombre_lista)
+        nombre_lista_ascii = self.obtener_nombre_lista_ascii(campana)
         url_edit = "api/lists/?op=addToList&list={0}".format(nombre_lista_ascii)
         # crea lista de contactos en wombat
         service_wombat.update_lista_wombat("newcampaign_list_contacto.txt", url_edit)
@@ -345,7 +349,7 @@ class CampanaService():
         Da inicio a una campana en wombat via post
         Lanza error si no se hizo correctamente
         """
-        nombre_campana = "{0}_{1}".format(campana.id, campana.nombre)
+        nombre_campana = campana.get_queue_id_name()
         url_edit = "api/campaigns/?op=start&campaign={0}".format(nombre_campana)
         url = '/'.join([settings.OML_WOMBAT_URL, url_edit])
         self._requests_post_wombat(url)
@@ -355,7 +359,7 @@ class CampanaService():
         Pausa a una campana en wombat via post
         Lanza error si no se hizo correctamente
         """
-        nombre_campana = "{0}_{1}".format(campana.id, campana.nombre)
+        nombre_campana = campana.get_queue_id_name()
         url_edit = "api/campaigns/?op=pause&campaign={0}".format(nombre_campana)
         url = '/'.join([settings.OML_WOMBAT_URL, url_edit])
         self._requests_post_wombat(url)
@@ -365,7 +369,7 @@ class CampanaService():
         DesPausa a una campana en wombat via post
         Lanza error si no se hizo correctamente
         """
-        nombre_campana = "{0}_{1}".format(campana.id, campana.nombre)
+        nombre_campana = campana.get_queue_id_name()
         url_edit = "api/campaigns/?op=unpause&campaign={0}".format(nombre_campana)
         url = '/'.join([settings.OML_WOMBAT_URL, url_edit])
         self._requests_post_wombat(url)
@@ -404,7 +408,7 @@ class CampanaService():
         :return: True si accion se ejecuto correctamente, False si tuvo algun
         inconveniente
         """
-        nombre_campana = "{0}_{1}".format(campana.id, campana.nombre)
+        nombre_campana = campana.get_queue_id_name()
         url_edit = "api/campaigns/?op=remove&campaign={0}".format(nombre_campana)
         url = '/'.join([settings.OML_WOMBAT_URL, url_edit])
 
@@ -534,7 +538,7 @@ class CampanaService():
         # TODO: Deuda tecnica: Controlar posibles errores de las funciones llamadas.
         # actualiza boost_factor
         boost_factor = int(campana.queue_campana.initial_boost_factor * 100)
-        id_campana_wombat = '{0}_{1}'.format(campana.pk, campana.nombre)
+        id_campana_wombat = campana.get_queue_id_name()
         url_api = '{0}/api/campaigns/?op=boost&campaign={1}&factor={2}'.format(
             settings.OML_WOMBAT_URL, id_campana_wombat, boost_factor)
         self._requests_post_wombat(url_api)
@@ -565,7 +569,7 @@ class CampanaService():
         return status
 
     def reload_campana_wombat(self, campana):
-        id_campana_wombat = '{0}_{1}'.format(campana.pk, campana.nombre)
+        id_campana_wombat = campana.get_queue_id_name()
         url_api = '{0}/api/campaigns/?op=reload&campaign={1}'.format(
             settings.OML_WOMBAT_URL, id_campana_wombat)
         requests.get(url_api)

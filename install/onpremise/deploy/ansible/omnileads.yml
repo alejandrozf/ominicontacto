@@ -58,7 +58,7 @@
   hosts: prodenv-aio
   tasks:
 
-    # Se instalan los paquetes de postgresql
+    # Se instalan utilizades de postgresql ya que el motor se ejcuta en otro host
     - name: Install postgresql {{ postgresql_version }} packages (from s3 source)
       yum: name={{ packages_url }}/postgresql/postgresql{{ postgresql_version}}{{ item }}.rpm state=latest update_cache=yes
       with_items:
@@ -80,12 +80,13 @@
       when: postgres_host != "localhost"
       tags: postinstall
 
-    # Se crea usuario, base de datos y extension plperl
+    # Se crea extension plperl cuando no se usa el RPM PGSQL de OML
     - name: Creating extension plperl
-      shell: PGUSER={{ postgres_user }} PGDATABASE={{ postgres_database }} PGHOST={{ postgres_host }} PGPASSWORD={{ postgres_password }} psql -c "CREATE EXTENSION plperl;"
+      shell: PGUSER={{ postgres_user }} PGDATABASE={{ postgres_database }} PGHOST={{ postgres_host }} PGPORT={{ postgres_port }} PGPASSWORD={{ postgres_password }} psql -c "CREATE EXTENSION plperl;"
       args:
         executable: /bin/bash
-      when: ansible_distribution == "Amazon" and postgres_host != "localhost"
+      when: postgres_cloud == "true"
+      ignore_errors: yes
 
     # Chequeo si la version de virtualenv instalada es {{ virtualenv_version }}
     - name: Check if virtualenv {{ virtualenv_version }} is installed
@@ -118,3 +119,20 @@
       register: s3_download
       failed_when:
         - "s3_download.rc != 0 or 'scriptlet failure' in s3_download.stderr"
+
+    # Se genera la pass admin/admin cuando es un fresh-install
+    - name: reset web-user admin password
+      shell: sudo -u omnileads bash -c "/opt/omnileads/bin/manage.sh cambiar_admin_password"
+      args:
+        executable: /bin/bash
+      when: reset_admin_password == "true"
+
+    # Permiso de usuario a la carpeta de omnileads 
+    - name: Set up permissions of omnileads dir
+      file: state=directory path={{ install_prefix }} owner={{ usuario }} group={{ usuario }} recurse=yes
+      tags: postinstall
+
+    # Se inicia y habilita el servicio
+    - name: Start the omnileads services
+      systemd: name=omnileads state=restarted enabled=yes daemon_reload=yes
+      tags: postinstall  

@@ -156,7 +156,7 @@ class CampanaFamily(AbstractRedisFamily):
     def _create_dict(self, campana):
 
         dict_campana = {
-            'QNAME': "{0}_{1}".format(campana.id, campana.nombre),
+            'QNAME': campana.get_queue_id_name(),
             'TYPE': campana.type,
             'REC': str(campana.queue_campana.auto_grabacion),
             'AMD': str(campana.queue_campana.detectar_contestadores),
