@@ -1,0 +1,138 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
+# Playbook de instalacion de Omnileads
+# Utilza como variables de entorno el archivo group_vars/all y el archivo de inventario hosts
+# Utiliza como archivo de configuracion /var/tmp/ansible/ansible.cfg
+# Cositas a tener en cuenta:
+# https://docs.ansible.com/ansible/2.9/user_guide/playbooks_conditionals.html
+# https://docs.ansible.com/ansible/2.9/user_guide/playbooks_loops.html
+# https://docs.ansible.com/ansible/2.9/intro_configuration.html
+---
+
+# hosts: le decimos que seccion del hosts se va  usar: [prodenv-aio]
+- name: OMniLeads AIO installation
+  hosts: prodenv-aio
+
+# el gather_facts es para obtener valores de variables predeterminadas de ansible, la mas usada es ansible_os_family.
+# Esta variable te dice que familia de OS es el servidor a deployar
+  gather_facts: True
+
+  roles:
+    - prerequisitos
+    - dialer
+
+- import_playbook: modules/redis/deploy/redis.yml
+  when: redis_host == "localhost"
+- import_playbook: modules/postgresql/deploy/postgresql.yml
+  when: postgres_host == "localhost"
+- import_playbook: modules/rtpengine/deploy/rtpengine.yml
+  when: rtpengine_host == "127.0.0.1"
+- import_playbook: modules/kamailio/deploy/kamailio.yml
+  when: kamailio_host == omni_fqdn
+- import_playbook: modules/nginx/deploy/nginx.yml
+- import_playbook: modules/websockets/deploy/websockets.yml
+  when: websocket_host == "websockets"
+- import_playbook: modules/asterisk/deploy/asterisk.yml
+  when: asterisk_host == omni_ip
+
+# Aca comienza la ejecucion de tasks. Las tasks se agrupan en roles, los roles se agrupan dependiendo del componente del sistema
+# https://docs.ansible.com/ansible/2.5/user_guide/playbooks_reuse_roles.html
+
+# hosts: le decimos que seccion del hosts se va  usar: [prodenv-aio]
+- name: Omniapp installation
+  hosts: prodenv-aio
+  tasks:
+
+    # Se instalan utilizades de postgresql ya que el motor se ejcuta en otro host
+    - name: Install postgresql {{ postgresql_version }} packages (from s3 source)
+      yum: name={{ packages_url }}/postgresql/postgresql{{ postgresql_version}}{{ item }}.rpm state=latest update_cache=yes
+      with_items:
+        - -libs.x86_64
+        - -odbc.x86_64
+        - .x86_64
+      retries: 3
+      delay: 3
+      register: s3_download
+      until: s3_download is success
+      when: postgres_host != "localhost"
+
+    # Se crea el archivo .pgpass para manejar las conexiones a postgresql desde consola
+    - name: Create of .pgpass file
+      template: src=roles/prerequisitos/templates/.pgpass dest={{ item }}.pgpass mode=0600 owner={{ usuario }} group={{ usuario }}
+      with_items:
+        - "{{ install_prefix }}"
+        - /root/
+      when: postgres_host != "localhost"
+      tags: postinstall
+
+    # Se crea extension plperl cuando no se usa el RPM PGSQL de OML
+    - name: Creating extension plperl
+      shell: PGUSER={{ postgres_user }} PGDATABASE={{ postgres_database }} PGHOST={{ postgres_host }} PGPORT={{ postgres_port }} PGPASSWORD={{ postgres_password }} psql -c "CREATE EXTENSION plperl;"
+      args:
+        executable: /bin/bash
+      when: postgres_cloud == "true"
+      ignore_errors: yes
+
+    # Chequeo si la version de virtualenv instalada es {{ virtualenv_version }}
+    - name: Check if virtualenv {{ virtualenv_version }} is installed
+      shell:  yum list installed |grep virtualenv| awk -F " " '{print $2}' |awk -F "-" '{print $1}'
+      register: virtualenv_installed
+      changed_when: false
+      tags: postinstall
+
+    # Se imprime que el virtualenv no esta instalado si la version actual es inferior a la requerida
+    - debug: msg="Virtualenv {{ virtualenv_version }} is not installed, proceeding to install"
+      when: virtualenv_installed.stdout != virtualenv_version
+      tags: postinstall
+
+    # Por lo contrario se imprime que ya está instalada la version mas actual
+    - debug: msg="virtualenv is already installed in version {{ virtualenv_version }}, skipping installation steps"
+      when: virtualenv_installed.stdout == virtualenv_version
+      tags: postinstall
+
+    # Esta tarea es para eliminar paquete viejo de virtualenv generar inconsistencia de binarios
+    - name: Delete old virtualenv package
+      command: yum remove -y virtualenv
+      tags: postinstall
+      when: "virtualenv_installed.stdout != virtualenv_version"
+
+    # Se instala el paquete de virtualenv
+    - name: Install virtualenv-{{ virtualenv_version }} package (from s3 source)
+      command: yum install -y {{ virtualenv_package }}
+      when: virtualenv_installed.stdout != virtualenv_version
+      tags: postinstall
+      register: s3_download
+      failed_when:
+        - "s3_download.rc != 0 or 'scriptlet failure' in s3_download.stderr"
+
+    # Se genera la pass admin/admin cuando es un fresh-install
+    - name: reset web-user admin password
+      shell: sudo -u omnileads bash -c "/opt/omnileads/bin/manage.sh cambiar_admin_password"
+      args:
+        executable: /bin/bash
+      when: reset_admin_password == "true"
+
+    # Permiso de usuario a la carpeta de omnileads 
+    - name: Set up permissions of omnileads dir
+      file: state=directory path={{ install_prefix }} owner={{ usuario }} group={{ usuario }} recurse=yes
+      tags: postinstall
+
+    # Se inicia y habilita el servicio
+    - name: Start the omnileads services
+      systemd: name=omnileads state=restarted enabled=yes daemon_reload=yes
+      tags: postinstall  

@@ -25,15 +25,10 @@ stages:
 test:
   stage: test
   image: freetechsolutions/python-flake8:3.6
-  # Pick zero or more services to be used on all builds.
-  # Only needed when using a docker container to run your tests in.
-  # Check out: http://docs.gitlab.com/ce/ci/docker/using_docker_images.html#what-is-a-service
   services:
-    - name: freetechsolutions/postgresql:11
+    - name: freetechsolutions/omlpgsql:develop
       alias: plpython
     - redis
-  # This folder is cached between builds
-  # http://docs.gitlab.com/ce/ci/yaml/README.html#cache
   cache:
     paths:
       - /root/.cache/pip/
@@ -51,7 +46,6 @@ test:
     DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
     DJANGO_SETTINGS_MODULE: "ominicontacto.settings.gitlab"
   script:
-    # - python checks.py
     - bash check-js.sh
     - flake8
     - python manage.py test --failfast
@@ -61,51 +55,75 @@ test:
     - schedules
     - web
 
-build-docker-devenv:
+build-img:
   stage: build
+  services:
+    - name: docker:dind
+      entrypoint: ["env", "-u", "DOCKER_HOST"]
+      command: ["dockerd-entrypoint.sh"]
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+    # See https://github.com/docker-library/docker/pull/166
+    DOCKER_TLS_CERTDIR: ""
+  image: gitlab/dind
   script:
-    - bash ~/git_cleanup.sh
-    - python ansible/build/edit_inventory.py --docker_build=yes -dle=$DOCKER_LOGIN_EMAIL -dlp=$DOCKER_LOGIN_PASSWORD
-    - cd ansible/build
-    - echo "$FTSINFRA_PASS" | sudo -S ./build.sh --docker-de-build
-  tags:
-    - build-docker
+  script:
+    - cd install/docker && bash build_image.sh
   only:
-    - /.*build-all.*$/
-    - /.*build-docker.*$/
-    - schedules
+    - merge_request
     - web
+    - schedules
+    - /\[verificacion\]/
 
-build-aio:
+build-rpm:
   stage: build
+  variables:
   image: freetechsolutions/fpm-ansible:centos7
   script:
-    - python2 ansible/build/edit_inventory.py --aio_build=yes
-    - cd ansible/build && ./build.sh --aio-build
+    - cd install/onpremise/build/ && bash build_rpm.sh
   only:
     - /.*build-all.*$/
     - /.*build-aio.*$/
     - schedules
     - web
 
-deploy-aio-host-node:
+# deploy-aio-self-hosted:
+#   stage: deploy
+#   environment: VAGRANT_CENTOS7
+#   script:
+#     - bash ~/git_cleanup.sh
+#     - cd ~/ominicontacto/install/onpremise/deploy/vagrant/deploy/host_node/
+#     - cp .env_template .env
+#     - sed -i "s/develop/$CI_COMMIT_REF_NAME/g" .env
+#     - vagrant halt centos
+#     - vagrant destroy centos -f
+#     - vagrant up centos
+#     - sleep 120
+#     - TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=$STAGING_IP_CENTOS ADMIN_USERNAME=admin ADMIN_PASSWORD=admin LOGIN_FAILURE_LIMIT=5 python3 ~/ominicontacto/ominicontacto_app/tests/test_integracion/test_all.py
+#     - cd ~/ominicontacto/install/onpremise/deploy/vagrant/deploy/host_node/
+#     - sleep 20 && vagrant halt centos
+#   tags:
+#     - deploy-aio
+#   only:
+#     - /.*test-de-integracion.*$/
+#     - /.*deploy.*$/
+#     - schedules
+#     - web
+
+deploy-aio-digitalocean:
   stage: deploy
-  environment: FTS-CENTOS7
+  environment: DOCTL_DIGITALOCEAN_AIO
   script:
     - bash ~/git_cleanup.sh
-    - cd ~/ominicontacto/vagrant/deploy/host_node/
-    - vagrant halt centos
-    - vagrant destroy centos -f
-    - ./vagrantup.sh centos
-    - cd ../../../
-    - python ansible/deploy/edit_inventory.py --internal_ip=$STAGING_IP_CENTOS --host_node=yes
-    - cd ansible/deploy
-    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -i
-    - sleep 180
-    - TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=$STAGING_IP_CENTOS ADMIN_USERNAME=admin ADMIN_PASSWORD=admin LOGIN_FAILURE_LIMIT=10 python ~/ominicontacto/ominicontacto_app/tests/test_integracion/test_all.py
-    - ~/ominicontacto/vagrant/deploy/releases/package.sh
-    - cd ~/ominicontacto/vagrant/deploy/host_node/
-    - sleep 20 && vagrant halt centos
+    - bash ~/.env_do
+    - sleep 60
+    - doctl compute droplet create --image $DIGITAL_OCEAN_AIO_IMG --size $DIGITAL_OCEAN_AIO_SIZE --region $DIGITAL_OCEAN_REGION --ssh-keys $TF_VAR_ssh_key_fingerprint --user-data-file ~/ominicontacto/install/onpremise/deploy/ansible/.cicd_aio omlgitlab-cicd-aio.$CI_JOB_ID
+    - sleep 60
+    - IP=$(doctl compute droplet list |grep omlgitlab-cicd-aio.$CI_JOB_ID |awk '{print $3}') && echo "$IP 2 run tests"
+    - until curl -sk --head  --request GET https://$IP |grep "302" > /dev/null; do echo "Environment still being installed, sleeping 80 seconds"; sleep 80; done; echo "Environment is up"
+    - TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=$IP ADMIN_USERNAME=admin ADMIN_PASSWORD=admin LOGIN_FAILURE_LIMIT=10 python3 ~/ominicontacto/ominicontacto_app/tests/test_integracion/test_all.py
+    - doctl compute droplet delete -f omlgitlab-cicd-aio.$CI_JOB_ID
   tags:
     - deploy-aio
   only:
@@ -114,42 +132,67 @@ deploy-aio-host-node:
     - schedules
     - web
 
-upgrade-aio:
-  stage: deploy
-  script:
-    - export CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME RELEASE_TO_UPGRADE=$RELEASE_TO_UPGRADE
-    - bash ~/git_cleanup.sh
-    - cd ~/oml-boxes
-    - vagrant box add centos-release-$RELEASE_TO_UPGRADE.box --name centos-release-$RELEASE_TO_UPGRADE --force
-    - cd ~/ominicontacto/vagrant/deploy/releases
-    - vagrant halt
-    - vagrant destroy -f
-    - ./vagrantup.sh centos
-    - cd ../../../
-    - python ansible/deploy/edit_inventory.py --internal_ip=$UPGRADE_IP_CENTOS --host_node=yes
-    - cd ansible/deploy
-    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -u
-    - cd ~/ominicontacto/vagrant/deploy/releases
-    - vagrant halt centos
-  tags:
-    - deploy-aio
-  only:
-    - web
+# deploy-terra-digitalocean-aio:
+#   stage: deploy
+#   environment: TERRA_DIGITALOCEAN_AIO
+#   script:
+#     - bash ~/git_cleanup.sh
+#     - cd ~/terraform-digitalocean
+#     - DIGITALOCEAN_TOKEN=$DIGITALOCEAN_TOKEN TF_VAR_ssh_key_fingerprint=$TF_VAR_ssh_key_fingerprint TF_VAR_spaces_secret_key=$TF_VAR_spaces_secret_key TF_VAR_spaces_bucket_name=$TF_VAR_spaces_bucket_name TF_VAR_domain_name=$TF_VAR_domain_name TF_VAR_spaces_key=$TF_VAR_spaces_key make init ENV=cicd-$CI_JOB_ID RELEASE=$CI_COMMIT_REF_NAME TYPE=AIO DIALER=no
+#     - make plan ENV=cicd-$CI_JOB_ID
+#     - make apply ENV=cicd-$CI_JOB_ID AUTO=--auto-approve
+#     - until curl -sk --head  --request GET https://cicd-$CI_JOB_ID-omlapp.sefirot.cloud |grep "302" > /dev/null; do echo "Environment still being installed, sleeping 80 seconds"; sleep 80; done; echo "Environment is up"
+# #    - TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=cicd-$CI_JOB_ID-omlapp.sefirot.cloud ADMIN_USERNAME=admin ADMIN_PASSWORD=admin LOGIN_FAILURE_LIMIT=10 python3 ~/ominicontacto/ominicontacto_app/tests/test_integracion/test_all.py
+#     - echo "deploy exitoso !!!"
+#     - sleep 60
+#     - make destroy ENV=cicd AUTO=--auto-approve
+#     - sleep 30
+#     - make destroy ENV=cicd AUTO=--auto-approve
+#     - sleep 30
+#     - make delete ENV=cicd
+#   tags:
+#     - deploy-aio
+#   only:
+#     - /.*test-de-integracion.*$/
+#     - /.*deploy.*$/
+#     - schedules
+#     - web
+
+# upgrade-aio:
+#   stage: deploy
+#   script:
+#     - export CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME RELEASE_TO_UPGRADE=$RELEASE_TO_UPGRADE
+#     - bash ~/git_cleanup.sh
+#     - cd ~/oml-boxes
+#     - vagrant box add centos-release-$RELEASE_TO_UPGRADE.box --name centos-release-$RELEASE_TO_UPGRADE --force
+#     - cd ~/ominicontacto/install/onpremise/deploy/vagrant/deploy/releases
+#     - vagrant halt
+#     - vagrant destroy -f
+#     - ./vagrantup.sh centos
+#     - python ~/ominicontacto/install/onpremise/deploy/ansible/edit_inventory.py --internal_ip=$UPGRADE_IP_CENTOS --host_node=yes
+#     - cd ~/ominicontacto/install/onpremise/deploy/ansible
+#     - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh -u
+#     - cd ~/ominicontacto/install/onpremise/deploy/vagrant/deploy/releases
+#     - vagrant halt centos
+#   tags:
+#     - deploy-aio
+#   only:
+#     - web
+#     - schedules
+#
 
 deploy-docker-devenv:
   stage: deploy
   script:
     - bash ~/git_cleanup.sh
-    - if [ -d  ~/omnileads/devenv ]; then cd ~/omnileads/devenv/omnileads-websockets/deploy && docker-compose down && cd ~/omnileads/devenv && docker-compose down || true; docker volume rm devenv_postgresql_data; fi
-    - cd ~/ominicontacto/ansible/deploy
-    - python edit_inventory.py --docker_deploy=yes --devenv=yes
-    - echo "$FTSINFRA_PASS" | sudo -S IS_CICD=$IS_CICD ./deploy.sh --docker-deploy --iface=$CICD_SERVER_IFACE
-    - cd ~/omnileads/devenv && if [ ! -d omnileads-websockets ]; then git clone https://gitlab.com/omnileads/omnileads-websockets.git; fi
-    - cd ~/omnileads/devenv && docker-compose up -d
-    - cd ~/omnileads/devenv/omnileads-websockets/deploy && docker-compose up -d
-    - until curl -sk --head  --request GET https://localhost |grep "302" > /dev/null; do echo "Environment still being installed, sleeping 80 seconds"; sleep 80; done; echo "Environment is up"
-    - docker exec -u omnileads -d oml-omniapp-devenv python3 manage.py cambiar_admin_password && sleep 10
-    - TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=localhost ADMIN_USERNAME=admin ADMIN_PASSWORD=admin LOGIN_FAILURE_LIMIT=10 python ~/ominicontacto/ominicontacto_app/tests/test_integracion/test_all.py
+    - sed -i "s/\${omnileads_release}/$CI_COMMIT_REF_NAME/g" ~/ominicontacto/install/docker/devenv/gitlab_cicd_deploy.sh
+    - doctl compute droplet create --image $DIGITAL_OCEAN_DEVENV_IMG --size $DIGITAL_OCEAN_DEVENV_SIZE --region $DIGITAL_OCEAN_REGION --ssh-keys $TF_VAR_ssh_key_fingerprint --user-data-file ~/ominicontacto/install/docker/devenv/gitlab_cicd_deploy.sh omlgitlab-cicd-devenv.$CI_JOB_ID
+    - sleep 90
+    - IP=$(doctl compute droplet list |grep omlgitlab-cicd-devenv.$CI_JOB_ID |awk '{print $3}') && echo "devenv-IP is $IP"
+    - until curl -sk --head  --request GET https://$IP |grep "302" > /dev/null; do echo "Environment still being installed, sleeping 80 seconds"; sleep 80; done; echo "Environment is up"
+    - sleep 180
+    #- TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=$IP ADMIN_USERNAME=admin ADMIN_PASSWORD=admin LOGIN_FAILURE_LIMIT=10 python3 ~/ominicontacto/ominicontacto_app/tests/test_integracion/test_all.py
+    - doctl compute droplet delete -f omlgitlab-cicd-devenv.$CI_JOB_ID
   tags:
     - deploy-docker
   only:
@@ -158,3 +201,53 @@ deploy-docker-devenv:
     - /.*deploy.*$/
     - schedules
     - web
+
+deploy-docker-prodenv:
+  stage: deploy
+  environment: DOCKER_PE_DIGITALOCEAN
+  script:
+    - bash ~/git_cleanup.sh
+    - bash ~/.env_do_docker RTPENGINE
+    - doctl compute droplet create --image $DIGITAL_OCEAN_AIO_IMG --size $DIGITAL_OCEAN_AIO_SIZE --region $DIGITAL_OCEAN_REGION --ssh-keys $TF_VAR_ssh_key_fingerprint --user-data-file ~/ominicontacto/modules/rtpengine/deploy/first_boot_installer.sh omlgitlab-cicd-rtpengine.$CI_JOB_ID
+    - sleep 90
+    - IP_RTPENGINE=$(doctl compute droplet list |grep omlgitlab-cicd-rtpengine.$CI_JOB_ID |awk '{print $4}')
+    - echo "******** RTPENGINE-IP is $IP_RTPENGINE"
+    - bash ~/.env_do_docker PGSQL
+    - doctl compute droplet create --image $DIGITAL_OCEAN_AIO_IMG --size $DIGITAL_OCEAN_AIO_SIZE --region $DIGITAL_OCEAN_REGION --ssh-keys $TF_VAR_ssh_key_fingerprint --user-data-file ~/ominicontacto/modules/postgresql/deploy/first_boot_installer.sh omlgitlab-cicd-pgsql.$CI_JOB_ID
+    - sleep 60
+    - IP_PGSQL=$(doctl compute droplet list |grep omlgitlab-cicd-pgsql.$CI_JOB_ID |awk '{print $4}')
+    - echo "******** PGSQL-IP is $IP_PGSQL"
+    - bash ~/.env_do_docker OMLAPP $IP_PGSQL $IP_RTPENGINE
+    - doctl compute droplet create --image $DIGITAL_OCEAN_DEVENV_IMG --size $DIGITAL_OCEAN_DEVENV_SIZE --region $DIGITAL_OCEAN_REGION --ssh-keys $TF_VAR_ssh_key_fingerprint --user-data-file ~/ominicontacto/install/docker/prodenv/first_boot_installer.tpl omlgitlab-cicd-prodenv.$CI_JOB_ID
+    - sleep 180
+    - IP=$(doctl compute droplet list |grep omlgitlab-cicd-prodenv.$CI_JOB_ID |awk '{print $3}')
+    - echo "******** Docker Prod Env IP is $IP"
+    - until curl -sk --head  --request GET https://$IP |grep "302" > /dev/null; do echo "Environment still being installed, sleeping 80 seconds"; sleep 80; done; echo "Environment is up"
+    - sleep 120
+    #- TESTS_INTEGRACION=True TESTS_INTEGRACION_HOSTNAME=$IP ADMIN_USERNAME=admin ADMIN_PASSWORD=admin LOGIN_FAILURE_LIMIT=10 python3 ~/ominicontacto/ominicontacto_app/tests/test_integracion/test_all.py
+    - doctl compute droplet delete -f omlgitlab-cicd-rtpengine.$CI_JOB_ID
+    - sleep 30
+    - doctl compute droplet delete -f omlgitlab-cicd-pgsql.$CI_JOB_ID
+    - sleep 30
+    - doctl compute droplet delete -f omlgitlab-cicd-prodenv.$CI_JOB_ID
+  tags:
+    - deploy-docker
+  only:
+    - merge_requests
+    - /.*test-de-integracion.*$/
+    - /.*deploy.*$/
+    - schedules
+    - web
+
+#deploy-docker-prodenv:
+#  stage: deploy
+#  image: nodefactory/dind-with-compose
+#  script:
+#    - cd install/docker/prodenv
+#    - docker-compose up -d
+#    - until curl -sk --head  --request GET https://localhost |grep "302" > /dev/null; do echo "Environment still being installed, sleeping 80 seconds"; sleep 80; done; echo "Environment is up"
+#  only:
+#    - merge_requests
+#    - /.*release.*$/
+#    - schedules
+#    - web

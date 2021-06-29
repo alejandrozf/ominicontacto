@@ -214,6 +214,8 @@ class Grupo(models.Model):
     obligar_calificacion = models.BooleanField(default=False, verbose_name=_(
         'Forzar calificación'))
     call_off_camp = models.BooleanField(default=False, verbose_name=_('Llamada fuera de campaña'))
+    acceso_grabaciones_agente = models.BooleanField(default=True, verbose_name=_(
+        'Acceso grabaciones agentes'))
 
     def __str__(self):
         return self.nombre
@@ -307,13 +309,9 @@ class AgenteProfile(models.Model):
     def esta_asignado_a_campana(self, campana):
         return self.campana_member.filter(queue_name__campana_id=campana.id).exists()
 
-    # TODO verificar si se puede eliminar esta funcion
-    def get_id_nombre_agente(self):
-        return "{0}_{1}".format(self.id, self.user.get_full_name())
-
     def get_asterisk_caller_id(self):
-        nombre_agente = remplace_espacio_por_guion(self.user.get_full_name())
-        return "{0}_{1}".format(self.id, nombre_agente)
+        nombre = remplace_espacio_por_guion(self.user.get_full_name())
+        return "{0}_{1}".format(self.id, nombre)
 
     def desactivar(self):
         self.is_inactive = True
@@ -364,6 +362,10 @@ class SupervisorProfile(models.Model):
 
         self.borrado = True
         self.save()
+
+    def get_asterisk_caller_id(self):
+        nombre = remplace_espacio_por_guion(self.user.get_full_name())
+        return "{0}_{1}".format(self.id, nombre)
 
     def campanas_asignadas_actuales(self):
         """
@@ -1062,6 +1064,7 @@ class Campana(models.Model):
     outcid = models.CharField(max_length=128, null=True, blank=True)
     outr = models.ForeignKey('configuracion_telefonia_app.RutaSaliente', blank=True, null=True,
                              on_delete=models.CASCADE)
+    speech = models.TextField(blank=True, null=True)
 
     # TODO: 'supervisors' debería referenciar a SupervisorProfile no a User
     supervisors = models.ManyToManyField(User, related_name="campanasupervisors")
@@ -1264,9 +1267,13 @@ class Campana(models.Model):
             estado=AgenteEnContacto.ESTADO_INICIAL,
             es_originario=es_originario, orden=orden)
 
-    def get_string_queue_asterisk(self):
-        if self.queue_campana:
-            return self.queue_campana.get_string_queue_asterisk()
+    def get_queue_id_name(self):
+        """ Devuelve un nombre único para identificar la queue en Asterisk/Wombat """
+        queue_id_name = "{0}_{1}".format(self.id, self.nombre)
+        if self.es_dialer:
+            # Limito a 45 caracteres por limitaciones de modelos de Wombat
+            return queue_id_name[:45]
+        return queue_id_name
 
     def gestionar_opcion_calificacion_agenda(self):
         """
@@ -1635,7 +1642,7 @@ class QueueMember(models.Model):
                     agente.sip_extension),
                 'penalty': 0,
                 'paused': 0,
-                'id_campana': "{0}_{1}".format(campana.id, campana.nombre)}
+                'id_campana': campana.get_queue_id_name()}
 
     class Meta:
         db_table = 'queue_member_table'

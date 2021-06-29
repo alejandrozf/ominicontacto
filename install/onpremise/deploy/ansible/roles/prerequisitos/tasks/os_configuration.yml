@@ -1,0 +1,76 @@
+# Copyright (C) 2018 Freetech Solutions
+
+# This file is part of OMniLeads
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
+#
+---
+
+# Se setea el archivo de template de environment variables, según lo que se haya ingresado en el inventory
+- name: Set environment variables for this installation
+  template: src=templates/omnileads_envars.sh dest=/etc/profile.d/ mode=644 owner=root group=root
+  tags: postinstall
+
+# Se escribe en archivo de hosts relacion IP fqdn
+- name: Write the /etc/hosts of server
+  blockinfile:
+    path: /etc/hosts
+    insertafter: EOF
+    state: present
+    block: |
+      {{ omni_ip }} {{ omni_fqdn }}
+      {% if websocket_host == "websockets" %}
+      {{ omni_ip }} websockets
+      {% else %}
+      {{ websocket_host }} websockets
+      {% endif %}
+  tags: postinstall
+
+# Se setea el timezone
+- name: Set timezone of server
+  timezone: name={{ TZ }}
+
+##################################
+###        Centos tasks         ##
+##################################
+
+# Se descarga e instala el repositorio epel-release
+- name: Install of epel-release repo (centos)
+  command: yum install {{ epel_repository }} -y
+  when: ansible_distribution != "Amazon"
+  register: result
+  failed_when:
+    - result.rc != 0
+    - result.rc != 1
+
+# Se descarga e instala el repositorio epel-release
+- name: Enable epel repository (amazon linux)
+  shell: amazon-linux-extras enable epel
+  when: ansible_distribution == "Amazon"
+  register: result
+  failed_when:
+    - result.rc != 0
+    - result.rc != 1
+
+- name: Install of epel-repository
+  command: yum install epel-release -y
+  #when: ansible_distribution == "Amazon"
+
+- name: Remove python3 default installation (amazon linux 2)
+  shell: yum remove python3 -y
+  when: ansible_distribution == "Amazon"
+
+- name: Install python3.6 (amazon linux 2)
+  shell: amazon-linux-extras install python3
+  when: ansible_distribution == "Amazon"

@@ -143,10 +143,10 @@ def crear_BD(browser, path, base_datos, multinum):
 def crear_blacklist(browser, path, base_datos):
     link_create_blacklist = '//a[contains(@href,"/blacklist/nueva")]'
     get_href(browser, link_create_blacklist)
-    browser.find_element_by_id('id_nombre').send_keys(base_datos)
-    browser.find_element_by_id('id_archivo_importacion').send_keys(path)
-    browser.find_element_by_xpath("//button[@type='submit']").click()
-    sleep(1)
+    browser.find_element(By.NAME, 'nombre').send_keys(base_datos)
+    browser.find_element(By.NAME, 'archivo_importacion').send_keys(path)
+    browser.find_element(By.CSS_SELECTOR, ".btn-primary").click()
+    browser.implicitly_wait(3)
 
 
 def crear_lista_rapida(browser, path, nombre_lista):

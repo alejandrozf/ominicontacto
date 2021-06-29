@@ -708,7 +708,7 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
         model = Campana
         fields = ('nombre', 'bd_contacto', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
-                  'outcid', 'outr', 'videocall_habilitada')
+                  'outcid', 'outr', 'videocall_habilitada', 'speech')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -723,6 +723,7 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
             'tipo_interaccion': forms.RadioSelect(),
             'outcid': forms.TextInput(attrs={'class': 'form-control'}),
             'outr': forms.Select(attrs={'class': 'form-control'}),
+            'speech': forms.Textarea(attrs={'class': 'form-control'})
         }
 
 
@@ -1370,7 +1371,7 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
         fields = ('nombre', 'fecha_inicio', 'fecha_fin',
                   'bd_contacto', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'mostrar_nombre',
-                  'outcid', 'outr')
+                  'outcid', 'outr', 'speech')
         labels = {
             'bd_contacto': 'Base de Datos de Contactos',
         }
@@ -1384,6 +1385,7 @@ class CampanaDialerForm(CampanaMixinForm, forms.ModelForm):
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
             'outcid': forms.TextInput(attrs={'class': 'form-control'}),
             'outr': forms.Select(attrs={'class': 'form-control'}),
+            'speech': forms.Textarea(attrs={'class': 'form-control'})
         }
 
 
@@ -1578,9 +1580,9 @@ class QueueDialerForm(forms.ModelForm):
     class Meta:
         model = Queue
         fields = ('name', 'maxlen', 'wrapuptime', 'servicelevel', 'strategy', 'weight',
-                  'wait', 'auto_grabacion', 'campana', 'detectar_contestadores',
+                  'wait', 'auto_grabacion', 'campana', 'detectar_contestadores', 'musiconhold',
                   'audio_para_contestadores', 'initial_predictive_model', 'initial_boost_factor',
-                  'dial_timeout', 'tipo_destino', 'destino')
+                  'dial_timeout', 'tipo_destino', 'destino', 'audio_previo_conexion_llamada')
 
         widgets = {
             'campana': forms.HiddenInput(),
@@ -1596,6 +1598,8 @@ class QueueDialerForm(forms.ModelForm):
             "dial_timeout": forms.NumberInput(attrs={'class': 'form-control'}),
             'tipo_destino': forms.Select(attrs={'class': 'form-control'}),
             'destino': forms.Select(attrs={'class': 'form-control', 'id': 'destino'}),
+            'musiconhold': forms.Select(attrs={'class': 'form-control'}),
+            'audio_previo_conexion_llamada': forms.Select(attrs={'class': 'form-control'}),
         }
 
         help_texts = {
@@ -1640,6 +1644,9 @@ class QueueDialerForm(forms.ModelForm):
         tipo_destino_choices = [EMPTY_CHOICE]
         tipo_destino_choices.extend(DestinoEntrante.TIPOS_DESTINOS)
         self.fields['tipo_destino'].choices = tipo_destino_choices
+        self.fields['audio_previo_conexion_llamada'].queryset = ArchivoDeAudio.objects.all()
+        self.fields['musiconhold'].queryset = Playlist.objects.annotate(
+            Count('musicas')).filter(musicas__count__gte=1)
         instance = getattr(self, 'instance', None)
         if instance.pk is not None and instance.destino:
             tipo = instance.destino.tipo
@@ -1708,7 +1715,8 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
     class Meta:
         model = Campana
         fields = ('nombre', 'bd_contacto', 'sistema_externo', 'id_externo',
-                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'outcid', 'outr')
+                  'tipo_interaccion', 'sitio_externo', 'objetivo', 'outcid', 'outr',
+                  'speech')
 
         widgets = {
             'sistema_externo': forms.Select(attrs={'class': 'form-control'}),
@@ -1718,7 +1726,8 @@ class CampanaManualForm(CampanaMixinForm, forms.ModelForm):
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
             'outcid': forms.TextInput(attrs={'class': 'form-control'}),
-            'outr': forms.Select(attrs={'class': 'form-control'})
+            'outr': forms.Select(attrs={'class': 'form-control'}),
+            'speech': forms.Textarea(attrs={'class': 'form-control'})
         }
 
     def requiere_bd_contacto(self):
@@ -1742,7 +1751,7 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
         model = Campana
         fields = ('nombre', 'sistema_externo', 'id_externo',
                   'tipo_interaccion', 'sitio_externo', 'objetivo', 'bd_contacto',
-                  'tiempo_desconexion', 'outr', 'outcid')
+                  'tiempo_desconexion', 'outr', 'outcid', 'speech')
 
         widgets = {
             'bd_contacto': forms.Select(attrs={'class': 'form-control'}),
@@ -1753,7 +1762,8 @@ class CampanaPreviewForm(CampanaMixinForm, forms.ModelForm):
             'objetivo': forms.NumberInput(attrs={'class': 'form-control'}),
             'tiempo_desconexion': forms.NumberInput(attrs={'class': 'form-control'}),
             'outcid': forms.TextInput(attrs={'class': 'form-control'}),
-            'outr': forms.Select(attrs={'class': 'form-control'})
+            'outr': forms.Select(attrs={'class': 'form-control'}),
+            'speech': forms.Textarea(attrs={'class': 'form-control'})
         }
 
     def requiere_bd_contacto(self):
@@ -1831,12 +1841,16 @@ class GrupoForm(forms.ModelForm):
     class Meta:
         model = Grupo
         fields = ('nombre', 'auto_unpause', 'auto_attend_inbound',
-                  'auto_attend_dialer', 'obligar_calificacion', 'call_off_camp')
+                  'auto_attend_dialer', 'obligar_calificacion', 'call_off_camp',
+                  'acceso_grabaciones_agente')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
         }
         help_texts = {
             'auto_unpause': _('En segundos'),
+        }
+        labels = {
+            'acceso_grabaciones_agente': _('Permitir el acceso a las grabaciones')
         }
 
     def __init__(self, *args, **kwargs):

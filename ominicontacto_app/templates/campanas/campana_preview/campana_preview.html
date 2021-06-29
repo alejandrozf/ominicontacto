@@ -23,7 +23,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load widget_tweaks %}
 
 {% block head_js %}
-   <script type="text/javascript" 
+   <script type="text/javascript"
           src="{% static 'ominicontacto/JS/agente/formularioNuevaEditaCampana.js' %}">
    </script>
    <script type="text/javascript" src="{% static 'ominicontacto/JS/interaccion.js' %}">
@@ -132,6 +132,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <small class="form-text text-muted">
                 {% trans 'A partir de este tiempo en minutos, un agente será desconectado de cualquier contacto que tenga asignado y no haya atendido.' %}
             </small>
+        </div>
+        <div class="col-md-6">
+            <label for="{{ form.speech.id_for_label }}">{% trans 'Speech:' %}</label>
+            {{ form.speech }}
+            {{ form.speech.errors }}
         </div>
     {% endwith %}
 {% endblock %}

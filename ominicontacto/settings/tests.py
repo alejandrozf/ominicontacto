@@ -52,6 +52,8 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 COMPRESS_ENABLED = False
 
+INSTALLED_APPS += ADDONS_APPS
+
 ALLOWED_HOSTS = [
     "*",
 ]
@@ -88,7 +90,6 @@ ASTERISK_HOSTNAME = "172.16.20.222"
 OML_ASTERISK_REMOTEPATH = "/etc/asterisk/"
 OML_SIP_FILENAME = "/opt/omnileads/sip_fts.conf"
 OML_QUEUES_FILENAME = "/opt/omnileads/queues_fts.conf"
-OML_BACKLIST_REMOTEPATH = "/var/spool/asterisk/"
 # parametros de conexion con base de datos mysql de asterisk
 DATABASE_MYSQL_ASTERISK = {
     'BASE': 'asterisk',
@@ -193,9 +194,9 @@ CALIFICACION_REAGENDA = 'Agenda'
 LOCAL_APPS = []
 
 OML_QUEUE_FILENAME = ""
-OML_BRANCH=""
-OML_COMMIT=""
-OML_BUILD_DATE=""
+OML_BRANCH = ""
+OML_COMMIT = ""
+OML_BUILD_DATE = ""
 
 OML_RUTAS_SALIENTES_FILENAME = "/opt/omnileads/asterisk/etc/asterisk/oml_extensions_outr.conf"
 
@@ -248,6 +249,7 @@ class DisableMigrations(object):
         return None
 
 # MIGRATION_MODULES = DisableMigrations()
+
 
 INSTALL_PREFIX = os.getenv('INSTALL_PREFIX')
 # configuraciones de django_sendfile para grabaciones

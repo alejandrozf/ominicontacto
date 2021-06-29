@@ -1,3 +1,0 @@
-{
-  "data-root": "{{ install_prefix }}/"
-}

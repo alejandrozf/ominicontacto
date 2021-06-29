@@ -222,6 +222,7 @@ class PhoneJSController {
             else {
                 self.phone_fsm.dialTransfer();
                 self.phone.dialTransfer(transfer);
+                $('#numberToTransfer').val('');
             }
         });
 
@@ -547,7 +548,7 @@ class PhoneJSController {
         if (this.phone_fsm.state == 'LoggingToAsterisk') {
             this.view.setSipStatus('REGISTERED');
             this.phone_fsm.logToAsteriskOk();
-            this.view.setCallStatus(gettext('Agente conectado a asterisk'), 'orange');
+            this.view.setCallStatus(gettext('Agente conectado'), 'yellowgreen');
             this.phone.Sounds('Welcome', 'play');
         }
     }

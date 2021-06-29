@@ -119,7 +119,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 {{form.outcid}}
                 {{form.outcid.errors}}
             </div>
-            
+            <div class="col-md-6">
+                <label for="{{ form.speech.id_for_label }}">{% trans 'Speech:' %}</label>
+                {{ form.speech }}
+                {{ form.speech.errors }}
+            </div>
+
         </div>
     {% endwith %}
 {% endblock %}

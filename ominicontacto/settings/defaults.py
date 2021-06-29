@@ -214,7 +214,6 @@ OML_OMNILEADS_HOSTNAME = None
 OML_ASTERISK_REMOTEPATH = None
 OML_SIP_FILENAME = None
 OML_QUEUES_FILENAME = None
-OML_BACKLIST_REMOTEPATH = None
 OML_RUTAS_SALIENTES_FILENAME = None
 """Path completo (absoluto) al archivo donde se debe generar queues
 
@@ -225,7 +224,6 @@ Ejemplos:
     OML_ASTERISK_REMOTEPATH = "/etc/asterisk/"
     OML_SIP_FILENAME = "/etc/asterisk/sip_fts.conf"
     OML_QUEUES_FILENAME = "/etc/asterisk/queues_fts.conf"
-    OML_BACKLIST_REMOTEPATH  = "/var/spool/asterisk/"
     OML_RUTAS_SALIENTES_FILENAME = "/etc/asterisk/oml_extensions_outr.conf"
 """
 

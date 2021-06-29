@@ -1,5 +1,0 @@
-FROM {{ nginx_image }}
-
-COPY nginx/ /etc/nginx/
-
-EXPOSE 443/tcp

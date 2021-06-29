@@ -1,0 +1,34 @@
+Vagrant.configure("2") do |config|
+  config.env.enable
+  config.vm.define "centos" do |nodo1|
+    nodo1.vm.box = "centos/7"
+    nodo1.vm.box_version = ENV['CENTOS_VERSION']
+    nodo1.vm.hostname = ENV['BOX_HOSTNAME']
+    nodo1.vm.network "public_network", bridge: ENV['BOX_NIC'], ip: ENV['BOX_IPV4'], use_dhcp_assigned_default_route: true
+    nodo1.vm.network "forwarded_port", guest: 443, host: 8080
+    nodo1.vm.network "forwarded_port", guest: 8080, host: 8081
+    nodo1.vm.provision "shell" do |s|
+      s.env   = { 'CICD_ROOT_PUBLIC_KEY' => ENV['CICD_ROOT_PUBLIC_KEY'],
+                  'omnileads_release' => ENV['omnileads_release'],
+                  'STAGE' => ENV['STAGE'],
+                  'NIC' => ENV['NIC'],
+                  'TZ' => ENV['TZ'],
+                  'ami_user' => ENV['ami_user'],
+                  'ami_password' => ENV['ami_password'],
+                  'dialer_user' => ENV['dialer_user'],
+                  'dialer_password' => ENV['dialer_password'],
+                  'pg_database' => ENV['pg_database'],
+                  'pg_username' => ENV['pg_username'],
+                  'pg_password' => ENV['pg_password'],
+                  'init_env' => ENV['init_env']
+                }
+      s.path  = "../../../ansible/first_boot_installer.tpl"
+      end
+    nodo1.vm.provider "virtualbox" do |vb|
+      vb.name = "Staging"
+      vb.memory = "2048"
+      vb.cpus = "2"
+    end
+    nodo1.vm.synced_folder ".", "/vagrant", type: "rsync"
+  end
+end

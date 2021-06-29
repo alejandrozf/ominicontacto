@@ -31,7 +31,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import View, ListView, CreateView, UpdateView, DeleteView
-from django.db.models import Case, When, Max, Min
+from django.db.models import Case, When, Max, Min, Q
 
 from configuracion_telefonia_app.forms import (
     RutaSalienteForm, TroncalSIPForm, RutaEntranteForm, PatronDeDiscadoFormset, OrdenTroncalFormset,
@@ -393,11 +393,21 @@ class RutaEntranteListView(ListView):
     context_object_name = 'rutas_entrantes'
 
     def get_context_data(self, **kwargs):
-        context = super(RutaEntranteListView, self).get_context_data(
-            **kwargs)
-        ruta_entrante = RutaEntrante.objects.all()
-        context['rutas_entrantes'] = ruta_entrante.order_by('id')
+        context = super(RutaEntranteListView, self).get_context_data(**kwargs)
+        context['search_url'] = self.search_url
         return context
+
+    def get_queryset(self):
+        """Returns rutas_entrantes ordernado por id"""
+        rutas_entrantes = RutaEntrante.objects.all().order_by('id')
+        self.search_url = ''
+        if 'search' in self.request.GET:
+            search = self.request.GET.get('search')
+            self.search_url = '?search=' + search
+            rutas_entrantes = rutas_entrantes.filter(Q(nombre__contains=search) |
+                                                     Q(telefono__contains=search) |
+                                                     Q(id__contains=search))
+        return rutas_entrantes
 
 
 class RutaEntranteMixin(object):

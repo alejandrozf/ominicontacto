@@ -38,6 +38,7 @@ from ominicontacto_app.parser import ParserCsv
 from ominicontacto_app.services.black_list import (
     CreacionBlacklistService, ValidaDataService, NoSePuedeInferirMetadataError,
     NoSePuedeInferirMetadataErrorEncabezado, NoSePuedeInferirMetadataErrorFormatoFilas)
+from ominicontacto_app.services.asterisk.redis_database import BlacklistFamily
 
 import logging as logging_
 
@@ -184,7 +185,8 @@ class BlacklistCreateView(CreateView):
         self.object.save()
         creacion_black_list = CreacionBlacklistService()
         creacion_black_list.importa_contactos(self.object)
-        creacion_black_list.crear_archivo_blacklist(self.object)
+        blacklist_family = BlacklistFamily()
+        blacklist_family.regenerar_families(self.object)
         return redirect(self.get_success_url())
 
     def get_success_url(self):

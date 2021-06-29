@@ -169,6 +169,8 @@ class ArchivoAudioDeleteView(DeleteView):
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.object.borrar()
+        audio_file_asterisk = AudioConfigFile(self.object)
+        audio_file_asterisk.delete_asterisk()
         message = _('<strong>Operación Exitosa!</strong> '
                     'Se llevó a cabo con éxito la eliminación del Archivo de Audio.')
 
