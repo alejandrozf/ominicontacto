@@ -54,11 +54,19 @@ class APITest(OMLBaseTest):
         self.supervisor = self.crear_supervisor_profile(rol=User.SUPERVISOR)
         self.agente_profile = self.crear_agente_profile()
 
-        self.campana_activa = CampanaFactory.create(estado=Campana.ESTADO_ACTIVA)
-        self.campana_activa_supervisor = CampanaFactory.create(estado=Campana.ESTADO_ACTIVA)
+        self.campana_activa = CampanaFactory.create(estado=Campana.ESTADO_ACTIVA,
+                                                    type=Campana.TYPE_MANUAL,
+                                                    nombre='activa uno')
+        self.campana_activa_2 = CampanaFactory.create(estado=Campana.ESTADO_ACTIVA,
+                                                      type=Campana.TYPE_PREVIEW,
+                                                      nombre='activa dos')
+        self.campana_activa_supervisor = CampanaFactory.create(estado=Campana.ESTADO_ACTIVA,
+                                                               type=Campana.TYPE_ENTRANTE,
+                                                               nombre='activa supervisor uno')
         self.campana_activa_supervisor.supervisors.add(self.supervisor.user)
         self.campana_finalizada = CampanaFactory(estado=Campana.ESTADO_FINALIZADA)
         self.queue = QueueFactory.create(campana=self.campana_activa)
+        self.queue1 = QueueFactory.create(campana=self.campana_activa_2)
         self.queue2 = QueueFactory.create(campana=self.campana_activa_supervisor)
         self.queue3 = QueueFactory.create(campana=self.campana_finalizada)
         QueueMemberFactory.create(member=self.agente_profile, queue_name=self.queue)
@@ -76,28 +84,62 @@ class APITest(OMLBaseTest):
     def test_api_campanas_supervisor_usuario_supervisor_admin_obtiene_todas_campanas_activas(
             self):
         self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
-        url = reverse('api_campanas_de_supervisor-list', kwargs={'format': 'json'})
+        url = reverse('api_campanas_de_supervisor')
         response = self.client.get(url)
         ids_campanas_esperadas = set(Campana.objects.obtener_activas().values_list('id', flat=True))
         ids_campanas_devueltas = set([campana['id'] for campana in response.data])
         self.assertEqual(ids_campanas_esperadas, ids_campanas_devueltas)
 
-    def test_api_campanas_supervisor_usuario_supervisor_no_admin_obtiene_campanas_activas_asignadas(
+    def test_api_campanas_supervisor_admin_filtro_nombre(self):
+        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
+        url = reverse('api_campanas_de_supervisor')
+        response = self.client.get(url, {'name': 'uno'})
+        ids_campanas_esperadas = set((self.campana_activa.id, self.campana_activa_supervisor.id))
+        ids_campanas_devueltas = set([campana['id'] for campana in response.data])
+        self.assertEqual(ids_campanas_esperadas, ids_campanas_devueltas)
+
+    def test_api_campanas_supervisor_admin_filtro_tipo(self):
+        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
+        url = reverse('api_campanas_de_supervisor')
+        response = self.client.get(url, {'type': Campana.TYPE_MANUAL})
+        ids_campanas_esperadas = set([self.campana_activa.id])
+        ids_campanas_devueltas = set([campana['id'] for campana in response.data])
+        self.assertEqual(ids_campanas_esperadas, ids_campanas_devueltas)
+
+    def test_api_campanas_supervisor_admin_filtro_tipos(self):
+        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
+        url = reverse('api_campanas_de_supervisor')
+        response = self.client.get(url, {'type': str([Campana.TYPE_MANUAL, Campana.TYPE_PREVIEW])})
+        ids_campanas_esperadas = set([self.campana_activa.id, self.campana_activa_2.id])
+        ids_campanas_devueltas = set([campana['id'] for campana in response.data])
+        self.assertEqual(ids_campanas_esperadas, ids_campanas_devueltas)
+
+    def test_api_campanas_supervisor_admin_filtro_agente(self):
+        self.client.login(username=self.supervisor_admin.user.username, password=PASSWORD)
+        url = reverse('api_campanas_de_supervisor')
+        QueueMemberFactory.create(member=self.agente_profile,
+                                  queue_name=self.campana_activa_supervisor.queue_campana)
+        response = self.client.get(url, {'agent': self.agente_profile.id})
+        ids_campanas_esperadas = set((self.campana_activa.id, self.campana_activa_supervisor.id))
+        ids_campanas_devueltas = set([campana['id'] for campana in response.data])
+        self.assertEqual(ids_campanas_esperadas, ids_campanas_devueltas)
+
+    def test_api_campanas_supervisor_usr_supervisor_no_admin_obtiene_campanas_activas_asignadas(
             self):
         self.client.login(username=self.supervisor.user.username, password=PASSWORD)
-        url = reverse('api_campanas_de_supervisor-list', kwargs={'format': 'json'})
+        url = reverse('api_campanas_de_supervisor')
         response = self.client.get(url)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['id'], self.campana_activa_supervisor.id)
 
     def test_servicio_campanas_supervisor_usuario_agente_no_accede_a_servicio(self):
         self.client.login(username=self.agente_profile.user.username, password=PASSWORD)
-        url = reverse('api_campanas_de_supervisor-list', kwargs={'format': 'json'})
+        url = reverse('api_campanas_de_supervisor')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
 
     def test_servicio_campanas_supervisor_usuario_no_logueado_no_accede_a_servicio(self):
-        url = reverse('api_campanas_de_supervisor-list', kwargs={'format': 'json'})
+        url = reverse('api_campanas_de_supervisor')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
 

@@ -18,6 +18,7 @@
 #
 
 from __future__ import unicode_literals
+from json.decoder import JSONDecodeError
 
 import logging as _logging
 
@@ -35,15 +36,17 @@ from django.http import JsonResponse
 from django.db.models import Count
 from django.conf import settings
 
-from rest_framework import viewsets
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.authentication import SessionAuthentication
 
 from simple_history.utils import update_change_reason
 
+from api_app.authentication import ExpiringTokenAuthentication
 from api_app.views.permissions import TienePermisoOML
 from api_app.serializers import (CampanaSerializer, )
+
 from ominicontacto_app.models import (
     Campana, CalificacionCliente, AgenteProfile, AgendaContacto, AgenteEnContacto)
 from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorActivityAmiManager
@@ -58,20 +61,78 @@ from ominicontacto_app.utiles import datetime_hora_minima_dia, convert_fecha_dat
 logger = _logging.getLogger(__name__)
 
 
-class SupervisorCampanasActivasViewSet(viewsets.ModelViewSet):
+class SupervisorCampanasActivasViewSet(APIView):
     """Servicio que devuelve las campañas activas relacionadas a un supervisor
     si este no es admin y todas las campañas activas en el caso de sí lo sea
     """
-    serializer_class = CampanaSerializer
     permission_classes = (TienePermisoOML, )
-    queryset = Campana.objects.obtener_activas()
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+    serializer_class = CampanaSerializer
     http_method_names = ['get']
+    renderer_classes = (JSONRenderer, )
+    TIPOS_VALIDOS = [x[0] for x in Campana.TYPES_CAMPANA]
 
-    def get_queryset(self):
+    def procesar_filtros(self):
+        self.filtro_tipo = None
+        self.filtro_tipo_lista = None
+        self.filtro_nombre = None
+        self.filtro_campanas_agente = None
+
+        if 'type' in self.request.GET:
+            try:
+                tipo = json.loads(self.request.GET.get('type'))
+                if isinstance(tipo, list):
+                    for x in tipo:
+                        if x not in self.TIPOS_VALIDOS:
+                            return _('Filtro "type" inválido')
+                    self.filtro_tipo_lista = tipo
+                else:
+                    if tipo not in self.TIPOS_VALIDOS:
+                        return _('Filtro "type" inválido')
+                    self.filtro_tipo = tipo
+            except JSONDecodeError:
+                return _('Filtro "type" inválido')
+
+        if 'name' in self.request.GET:
+            self.filtro_nombre = self.request.GET.get('name')
+        if 'agent' in self.request.GET:
+            agente_id = self.request.GET.get('agent')
+            try:
+                agente_id = int(agente_id)
+            except ValueError:
+                return _('Filtro "agent" inválido')
+            try:
+                agente = AgenteProfile.objects.get(id=agente_id)
+            except AgenteProfile.DoesNotExist:
+                return _('Agente inexistente')
+            # TODO: Verificar que el supervisor sea responsable del agente.
+            self.filtro_campanas_agente = agente.get_campanas_activas_miembro().values_list(
+                'queue_name__campana_id', flat=True)
+
+        return None
+
+    def get(self, request):
+        error = self.procesar_filtros()
+        if error:
+            return Response(data={'status': 'ERROR', 'message': error})
+
         superv_profile = self.request.user.get_supervisor_profile()
         if superv_profile.is_administrador:
-            return super(SupervisorCampanasActivasViewSet, self).get_queryset()
-        return superv_profile.obtener_campanas_asignadas_activas()
+            campanas = Campana.objects.obtener_activas()
+        else:
+            campanas = superv_profile.obtener_campanas_asignadas_activas()
+
+        if self.filtro_tipo:
+            campanas = campanas.filter(type=self.filtro_tipo)
+        if self.filtro_tipo_lista:
+            campanas = campanas.filter(type__in=self.filtro_tipo_lista)
+        if self.filtro_nombre:
+            campanas = campanas.filter(nombre__contains=self.filtro_nombre)
+        if self.filtro_campanas_agente is not None:
+            if self.filtro_campanas_agente == []:
+                return Response([])
+            campanas = campanas.filter(id__in=self.filtro_campanas_agente)
+        return Response([CampanaSerializer(campana).data for campana in campanas])
 
 
 class AgentesStatusAPIView(APIView):

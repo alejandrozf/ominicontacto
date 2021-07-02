@@ -55,10 +55,6 @@ router.register(
     r'api/v1/grupo/(?P<pk_grupo>\d+)/agentes_activos', AgentesActivosGrupoViewSet,
     base_name='api_agentes_activos_de_grupo')
 
-# ###########   SUPERVISOR    ############ #
-router.register(
-    r'api/v1/supervisor/campanas', SupervisorCampanasActivasViewSet,
-    base_name='api_campanas_de_supervisor')
 
 # ###########     AGENTE      ############ #
 router.register(
@@ -101,6 +97,9 @@ urlpatterns = [
         EnviarKeyRegistro.as_view(),
         name='reenviar_key_registro'),
     # ###########   SUPERVISOR    ############ #
+    url(r'api/v1/supervisor/campanas',
+        SupervisorCampanasActivasViewSet.as_view(),
+        name='api_campanas_de_supervisor'),
     url(r'api/v1/supervision/agentes',
         login_required(AgentesStatusAPIView.as_view()),
         name='api_agentes_activos'),
