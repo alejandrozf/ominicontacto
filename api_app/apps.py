@@ -105,6 +105,10 @@ class ApiAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'api_audios_listado',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_grupos',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_agentes',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
     informacion_de_permisos = {
@@ -205,4 +209,10 @@ class ApiAppConfig(AppConfig):
         'api_audios_listado':
             {'descripcion': _('Lista audios de asterisk'),
              'version': '1.16.0'},
+        'api_grupos':
+            {'descripcion': _('Lista de grupos de agentes'),
+             'version': '1.17.0'},
+        'api_agentes':
+            {'descripcion': _('Lista de Agentes'),
+             'version': '1.17.0'},
     }
