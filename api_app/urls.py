@@ -18,6 +18,7 @@
 #
 
 from __future__ import unicode_literals
+from api_app.views.usuarios import ListadoAgentes, ListadoGrupos
 
 from django.conf.urls import url, include
 from rest_framework import routers
@@ -172,5 +173,10 @@ urlpatterns = [
     # ###########  AUDIOS ASTERISK    ############ #
     url(r'^api/v1/audio/list',
         ListadoAudiosView.as_view({'get': 'list'}), name='api_audios_listado'),
+    # ###########  USUARIOS    ############ #
+    url(r'^api/v1/group/list',
+        ListadoGrupos.as_view({'get': 'list'}), name='api_grupos'),
+    url(r'^api/v1/agent/list',
+        ListadoAgentes.as_view({'get': 'list'}), name='api_agentes'),
 
 ]
