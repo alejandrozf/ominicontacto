@@ -216,6 +216,8 @@ class Grupo(models.Model):
     call_off_camp = models.BooleanField(default=False, verbose_name=_('Llamada fuera de campaña'))
     acceso_grabaciones_agente = models.BooleanField(default=True, verbose_name=_(
         'Acceso grabaciones agentes'))
+    acceso_dashboard_agente = models.BooleanField(default=True, verbose_name=_(
+        'Acceso dashboard agentes'))
 
     def __str__(self):
         return self.nombre
