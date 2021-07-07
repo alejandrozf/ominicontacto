@@ -129,4 +129,26 @@ var LogsLlamadas = {
     },
 };
 
-export { InfoNumerica, LogsLlamadas };
+var InfoPausas = {
+    template: `
+
+<div v-if="!hiddenPausas">
+   <v-list dense>
+        <v-list-item
+          v-for="(item, i) in valores_pausas"
+          :key="i"
+        >
+          <v-list-item-content>
+            <v-list-item-title v-text="item.nombre"></v-list-item-title>
+          </v-list-item-content>
+          <v-list-item-content>
+            <v-list-item-title v-text="item.valor + ' hs'"></v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+    </v-list>
+</div>
+    `,
+    props: ['valores_pausas', 'hiddenPausas'],
+};
+
+export { InfoNumerica, LogsLlamadas, InfoPausas };

@@ -104,9 +104,14 @@ class ReporteEstadisticasDiariaAgente(object):
         for agente in AgenteProfile.objects.obtener_activos():
             self.estadisticas[agente.pk] = copy.deepcopy(self.estadisticas_dict_base.copy())
             self.estadisticas[agente.pk]['tiempos'] = ReporteActividadAgente()
+            self.estadisticas[agente.pk]['pausas'] = []
 
-    def _calcular_pausas_recreativas(self, info_agente):
+    def _calcular_pausas(self, info_agente):
         tipo_pausa = info_agente['tipo_de_pausa']
+        self.estadisticas[info_agente['id']]['pausas'].append(
+            {'nombre': info_agente['pausa'].nombre,
+             'valor': info_agente['tiempo']})
+
         if tipo_pausa == Pausa.CHOICE_RECREATIVA:
             tiempo_datetime = datetime.datetime.strptime(info_agente['tiempo'], "%H:%M:%S")
             tiempo_pausa = timedelta(
@@ -126,7 +131,7 @@ class ReporteEstadisticasDiariaAgente(object):
             self.estadisticas[reporte_agente.agente.pk]['tiempos'].pausa += \
                 reporte_agente.tiempo_pausa
         for reporte_pausas_agente in reporte_agentes['agente_pausa']:
-            self._calcular_pausas_recreativas(reporte_pausas_agente)
+            self._calcular_pausas(reporte_pausas_agente)
 
     def adicionar_log(
             self, numero_marcado, callid, agente_id, campana_id, tipo_campana, contacto_id):
@@ -225,6 +230,7 @@ class ReporteDiarioAgentesFamily(AbstractRedisChanelPublisher):
             datos['conectadas'] = json.dumps(datos['conectadas'])
             datos['logs'] = json.dumps(datos['logs'])
             datos['venta'] = json.dumps(datos['venta'])
+            datos['pausas'] = json.dumps(datos['pausas'])
             reporte_resultados.append((agente_id, datos))
         return reporte_resultados
 

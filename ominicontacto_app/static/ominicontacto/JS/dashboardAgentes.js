@@ -73,6 +73,7 @@ contactadosSocket.onmessage = function(e) {
         var pausaData = JSON.parse(data.tiempos);
         var ventaData = JSON.parse(data.venta);
         var logsData = JSON.parse(data.logs);
+        var pausasInfo = JSON.parse(data.pausas);
 
         var graficoConectadas = {
             tooltip: {
@@ -173,6 +174,10 @@ contactadosSocket.onmessage = function(e) {
                         actions: gettext('Acciones'),
                     },
                     values: logsData,
+                },
+                pausas: {
+                    valores_pausas: pausasInfo,
+                    hiddenPausas: true
                 }
             }
         };
