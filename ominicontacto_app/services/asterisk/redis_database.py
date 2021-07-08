@@ -43,6 +43,9 @@ logger = _logging.getLogger(__name__)
 class AbstractRedisFamily(object):
     redis_connection = None
 
+    def __init__(self, redis_connection=None):
+        self.redis_connection = redis_connection
+
     def get_redis_connection(self):
         if not self.redis_connection:
             self.redis_connection = redis.Redis(
@@ -233,6 +236,12 @@ class CampanaFamily(AbstractRedisFamily):
         except ConfiguracionDeAgentesDeCampana.DoesNotExist:
             pass
 
+        if campana.type == Campana.TYPE_ENTRANTE:
+            if hasattr(campana, 'encuesta') and campana.encuesta.filter(activa=True):
+                encuesta_camp = campana.encuesta.get(activa=True)
+                dict_campana.update({'SURVEY': str(encuesta_camp.encuesta_id)})
+            else:
+                dict_campana.update({'SURVEY': ''})
         return dict_campana
 
     def _obtener_todos(self):
