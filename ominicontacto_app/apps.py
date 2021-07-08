@@ -50,12 +50,12 @@ class OminicontactoAppConfig(AppConfig):
         if 'agente_list' in permissions:
             usuarios.append({
                 'label': _('Agentes'),
-                'url': reverse('agente_list')
+                'url': reverse('agente_list', args=(1, ))
             })
         if 'supervisor_list' in permissions:
             usuarios.append({
                 'label': _('Supervisores'),
-                'url': reverse('supervisor_list')
+                'url': reverse('supervisor_list', args=(1, ))
             })
         if config.WEBPHONE_CLIENT_ENABLED and 'cliente_webphone_list' in permissions:
             usuarios.append({
