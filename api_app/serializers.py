@@ -51,6 +51,7 @@ class CalificacionClienteSerializerMixin(object):
 
 
 class CampanaSerializer(serializers.HyperlinkedModelSerializer):
+    # TODO: Pasar al inglés
     class Meta:
         model = Campana
         fields = ('nombre', 'id', 'objetivo')
