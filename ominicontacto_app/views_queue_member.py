@@ -28,10 +28,10 @@ from django.contrib import messages
 from django.urls import reverse
 from django.db import transaction
 from django.http import HttpResponseRedirect
-from django.views.generic import FormView, TemplateView
+from django.views.generic import FormView
 from django.utils.translation import ugettext as _
 
-from ominicontacto_app.forms import QueueMemberForm, GrupoAgenteForm
+from ominicontacto_app.forms import QueueMemberForm, GrupoAgenteForm, QueueMemberFormset
 from ominicontacto_app.models import Campana, QueueMember, Grupo, AgenteProfile
 from ominicontacto_app.services.creacion_queue import ActivacionQueueService
 
@@ -223,33 +223,33 @@ class GrupoAgenteCreateView(FormView):
             kwargs={"pk_campana": self.kwargs['pk_campana']})
 
 
-class QueueMemberCampanaView(TemplateView):
-    """Vista template despliega el template de cual se van agregar agente o grupos de
-    agentes a la campana"""
+class QueueMemberCampanaView(FormView):
+    """Vista para agregar agentes a una campana"""
+    model = QueueMember
+    form_class = QueueMemberFormset
     template_name = 'queue/queue_member.html'
+
+    def get_form(self):
+        return self.form_class(self.request.POST, **self.get_form_kwargs())
 
     def get_object(self, queryset=None):
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         return campana.queue_campana
 
+    def get_form_kwargs(self):
+        members = AgenteProfile.objects.obtener_activos()
+        return {'form_kwargs': {'members': members}}
+
     def get_context_data(self, **kwargs):
         context = super(QueueMemberCampanaView, self).get_context_data(**kwargs)
         campana = self.get_object().campana
-        agentes = AgenteProfile.objects.filter(is_inactive=False)
-        queue_member_form = QueueMemberForm(data=self.request.GET or None,
-                                            members=agentes)
         grupo_agente_form = GrupoAgenteForm(self.request.GET or None)
         context['campana'] = campana
-        context['queue_member_form'] = queue_member_form
-        context['grupo_agente_form'] = grupo_agente_form
-        if campana.type is Campana.TYPE_ENTRANTE:
-            context['url_finalizar'] = 'campana_list'
-        elif campana.type is Campana.TYPE_DIALER:
-            context['url_finalizar'] = 'campana_dialer_list'
-        elif campana.type is Campana.TYPE_MANUAL:
-            context['url_finalizar'] = 'campana_manual_list'
-        elif campana.type is Campana.TYPE_PREVIEW:
-            context['url_finalizar'] = 'campana_preview_list'
+        context['grupos_form'] = grupo_agente_form
+        if not context.get('queue_member_form'):
+            queue_member_form = QueueMemberFormset(
+                instance=campana.queue_campana, **self.get_form_kwargs())
+            context['queue_member_form'] = queue_member_form
 
         if campana.sistema_externo:
             agentes_sin_id_externo = campana.queue_campana.members.exclude(
@@ -263,6 +263,70 @@ class QueueMemberCampanaView(TemplateView):
                 messages.warning(self.request, msg)
 
         return context
+
+    def form_valid(self, form):
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        queue_member_formset = QueueMemberFormset(
+            self.request.POST, instance=campana.queue_campana, **self.get_form_kwargs())
+        if queue_member_formset.is_valid():
+            try:
+                client = AmiManagerClient()
+                client.connect()
+                with transaction.atomic():
+                    for queue_form in queue_member_formset.forms:
+                        if queue_form.cleaned_data != {}:
+                            self.object = queue_form.save(commit=False)
+                            agente = self.object.member
+                            if queue_form.cleaned_data['DELETE']:
+                                self.object.delete()
+                                remover_agente_cola_asterisk(campana, agente, client)
+                            else:
+                                queue_member_defaults = QueueMember.get_defaults(agente, campana)
+                                self.object.queue_name = campana.queue_campana
+                                self.object.id_campana = queue_member_defaults['id_campana']
+                                self.object.membername = queue_member_defaults['membername']
+                                self.object.interface = queue_member_defaults['interface']
+                                # por ahora no definimos 'paused'
+                                self.object.paused = queue_member_defaults['paused']
+                                self.object.save()
+                                # adicionamos el agente a la cola actual que esta corriendo
+                                existe_member = QueueMember.objects.\
+                                    existe_member_queue(self.object.member, campana.queue_campana)
+
+                                if not existe_member:
+                                    sip_agentes_logueados = obtener_sip_agentes_sesiones_activas()
+                                    adicionar_agente_activo_cola(
+                                        self.object, campana, sip_agentes_logueados, client)
+                    activar_cola()
+                client.disconnect()
+                queue_member_formset.save()
+            except Exception as e:
+                message = _("<strong>Operación Errónea!</strong> "
+                            "No se pudo confirmar la creación del dialplan debido "
+                            "al siguiente error: {0}".format(e))
+                messages.add_message(
+                    self.request,
+                    messages.ERROR,
+                    message,
+                )
+            return super(QueueMemberCampanaView, self).form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_invalid(self, form):
+        return self.render_to_response(
+            self.get_context_data(queue_member_form=form))
+
+    def get_success_url(self):
+        campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
+        if campana.type is Campana.TYPE_ENTRANTE:
+            return reverse('campana_list')
+        elif campana.type is Campana.TYPE_DIALER:
+            return reverse('campana_dialer_list')
+        elif campana.type is Campana.TYPE_MANUAL:
+            return reverse('campana_manual_list')
+        elif campana.type is Campana.TYPE_PREVIEW:
+            return reverse('campana_preview_list')
 
 
 def remover_agente_cola_asterisk(campana, agente, client):
