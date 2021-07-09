@@ -734,7 +734,7 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
 class OpcionCalificacionForm(forms.ModelForm):
     class Meta:
         model = OpcionCalificacion
-        fields = ('tipo', 'nombre', 'formulario', 'campana', 'oculta')
+        fields = ('tipo', 'nombre', 'formulario', 'campana', 'oculta', 'positiva')
 
         widgets = {
             'nombre': forms.Select(),

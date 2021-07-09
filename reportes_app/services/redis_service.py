@@ -49,6 +49,7 @@ class RedisService(object):
         abandonadas = int(campana_info.get('llamadas_abandonadas', 0))
         expiradas = int(campana_info.get('llamadas_expiradas', 0))
         gestiones = int(campana_info.get('gestiones', 0))
+        porcentaje_objetivo = int(campana_info.get('porcentaje_objetivo', 0))
         llamadas_en_espera = campana_info.get('llamadas_en_espera', 0)
         t_promedio_abandono = 0
         if abandonadas > 0:
@@ -60,13 +61,15 @@ class RedisService(object):
             t_promedio_espera = int(t_espera / atendidas)
 
         if atendidas != 0 or abandonadas != 0 or expiradas != 0 or llamadas_en_espera != 0 \
-                or gestiones != 0 or t_promedio_abandono != 0 or t_promedio_espera != 0:
+                or gestiones != 0 or porcentaje_objetivo != 0 or t_promedio_abandono != 0 \
+                or t_promedio_espera != 0:
 
             estadistica_campana[campana_id] = {}
             estadistica_campana[campana_id]['atendidas'] = atendidas
             estadistica_campana[campana_id]['abandonadas'] = abandonadas
             estadistica_campana[campana_id]['expiradas'] = expiradas
             estadistica_campana[campana_id]['gestiones'] = gestiones
+            estadistica_campana[campana_id]['porcentaje_objetivo'] = porcentaje_objetivo
             estadistica_campana[campana_id]['llamadas_en_espera'] = llamadas_en_espera
             estadistica_campana[campana_id]['t_promedio_abandono'] = t_promedio_abandono
             estadistica_campana[campana_id]['t_promedio_espera'] = t_promedio_espera

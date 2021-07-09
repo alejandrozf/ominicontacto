@@ -42,6 +42,7 @@ class ReporteDeLLamadasEntrantesDeSupervision(object):
         'tiempo_acumulado_espera': 0,
         'gestiones': 0,
         'llamadas_en_espera': 0,
+        'porcentaje_objetivo': 0,
     }
     EVENTOS_LLAMADA = ['ENTERQUEUE', 'ENTERQUEUE-TRANSFER', 'CONNECT', 'EXITWITHTIMEOUT', 'ABANDON',
                        'ABANDONWEL']
@@ -59,6 +60,7 @@ class ReporteDeLLamadasEntrantesDeSupervision(object):
         self._contabilizar_estadisticas_de_llamadas()
         self._contabilizar_gestiones()
         self._contabilizar_llamadas_en_espera_por_campana()
+        self._calcular_porcentaje_objetivo()
 
     def _contabilizar_estadisticas_de_llamadas(self):
         logs = self._obtener_logs_de_llamadas()
@@ -108,6 +110,25 @@ class ReporteDeLLamadasEntrantesDeSupervision(object):
             if campana_id not in self.estadisticas:
                 self._inicializar_conteo_de_campana(self.campanas[campana_id])
             self.estadisticas[campana_id]['gestiones'] = cantidad['cantidad']
+
+    def _calcular_porcentaje_objetivo(self):
+        # Contabilizo las gestiones
+        calificaciones = CalificacionCliente.objects.filter(
+            opcion_calificacion__campana_id__in=self.campanas.keys(),
+            opcion_calificacion__positiva=True
+        ).values('opcion_calificacion__campana_id').annotate(
+            cantidad=Count('opcion_calificacion__campana_id')).order_by()
+
+        for cantidad in calificaciones:
+            campana_id = cantidad['opcion_calificacion__campana_id']
+            if campana_id not in self.estadisticas:
+                self._inicializar_conteo_de_campana(self.campanas[campana_id])
+            if self.campanas[campana_id].objetivo == 0:
+                self.estadisticas[campana_id]['porcentaje_objetivo'] = 0
+            else:
+                porcentaje_objetivo = cantidad['cantidad'] / self.campanas[campana_id].objetivo
+                self.estadisticas[campana_id]['porcentaje_objetivo'] = "{:.1%}".format(
+                    porcentaje_objetivo)
 
     def _parsear_queue_status_pasada_1(self, queue_status_raw):
         # almacenamos una lista de pares con la información del tipo de evento
