@@ -156,8 +156,8 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         pausa.id = 0
         pausa1.id = 1
         genera_info_pausas.return_value = {
-            0: Pausa(id=0, nombre=pausa.nombre),
-            1: pausa1
+            '0': Pausa(id=0, nombre=pausa.nombre),
+            '1': pausa1
         }
 
         inicio_pausa = self.inicio_sesion_agente.time + timezone.timedelta(
@@ -277,8 +277,8 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         pausa1 = PausaFactory.create()
         pausa1.id = 1
         genera_info_pausas.return_value = {
-            0: Pausa(id=0, nombre=pausa.nombre),
-            1: Pausa(id=1, nombre=pausa1.nombre)
+            '0': Pausa(id=0, nombre=pausa.nombre),
+            '1': Pausa(id=1, nombre=pausa1.nombre)
         }
         inicio_pausa = self.inicio_sesion_agente.time + timezone.timedelta(
             hours=2)
@@ -433,8 +433,8 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         pausa1 = PausaFactory.create()
         pausa1.id = 1
         genera_info_pausas.return_value = {
-            0: pausa,
-            1: pausa1
+            '0': pausa,
+            '1': pausa1
         }
         inicio_pausa = self.inicio_sesion_agente.time + timezone.timedelta(
             hours=2)

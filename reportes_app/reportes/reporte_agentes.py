@@ -262,9 +262,10 @@ class ActividadAgente(object):
         if lista_pausas_oml is None:
             lista_pausas_oml = Pausa.objects.all()
 
-        res = {0: Pausa(id=0, nombre=_(u'ACW'))}
+        res = {'0': Pausa(id='0', nombre=_(u'ACW')),
+               '00': Pausa(id='00', nombre=_(u'Pausa-Supervisión'))}
         for pausa in lista_pausas_oml:
-            res[pausa.id] = pausa
+            res[str(pausa.id)] = pausa
         return res
 
     def procesa_log(self, event, time, pausa_id):
@@ -343,7 +344,7 @@ class ActividadAgente(object):
                 and self.pausas != []:
             if not self.pausas[-1].establecer_finalizacion(time, pausa_id):
                 self.pausas.append(PausaAgente(
-                    pausa_id, self.pausas_por_id[int(pausa_id)],
+                    pausa_id, self.pausas_por_id[str(pausa_id)],
                     fecha_inicio=self.pausas[-1].fecha_inicio))
                 self.pausas[-1].establecer_finalizacion(time, pausa_id)
             self.tiempo_pausa += self.pausas[-1].calcular_duracion()
@@ -353,7 +354,7 @@ class ActividadAgente(object):
                 self.tiempo_pausa += self.pausas[-1].calcular_duracion()
 
             self.pausas.append(PausaAgente(
-                pausa_id, self.pausas_por_id[int(pausa_id)], fecha_inicio=time))
+                pausa_id, self.pausas_por_id[str(pausa_id)], fecha_inicio=time))
 
     def _procesa_tiempo_hold(self, fecha_inicio, fecha_fin):
         fecha_superior = datetime_hora_maxima_dia(fecha_fin)
