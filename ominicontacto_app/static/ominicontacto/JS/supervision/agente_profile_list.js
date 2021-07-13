@@ -21,17 +21,18 @@
 
 function obtener_campanas_agente(pk_agent) {
     var $campanasAgenteModal = $('#campanasAgenteModal');
-    table = $('#campanasAgenteTable').DataTable( {
-      ajax: {
-          url: Urls.api_campanas_de_supervisor() + '?agent=' + pk_agent,
-          dataSrc: '',
-      },
-      columns: [
-          { 'data': 'nombre',},
-          { 'data': 'id'},
-          { 'data': 'objetivo'},
-      ],
+    var filter = '?status=[2,5,6]&agent=' + pk_agent;
+    var table = $('#campanasAgenteTable').DataTable( {
+        ajax: {
+            url: Urls.api_campanas_de_supervisor() + filter,
+            dataSrc: '',
+        },
+        columns: [
+            { 'data': 'nombre',},
+            { 'data': 'id'},
+            { 'data': 'objetivo'},
+        ],
     } );
     $campanasAgenteModal.modal('show');
     table.destroy();
-};
+}
