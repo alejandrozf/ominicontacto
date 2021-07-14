@@ -36,10 +36,17 @@ logger = logging.getLogger(__name__)
 
 class ReporteDeResultadosCSV(object):
     """Generador de archivo CSV para el Reporte de Resultados"""
-    def __init__(self, campana):
+
+    def __init__(self, campana, todos_contactos=False):
         self.campana = campana
         self.nombre_del_directorio = 'reporte_campana'
-        self.prefijo_nombre_de_archivo = "{0}-reporte_resultados".format(self.campana.id)
+        if todos_contactos:
+            sufijo_nombre = "_todos"
+        else:
+            sufijo_nombre = ""
+
+        self.prefijo_nombre_de_archivo = "{0}-reporte_resultados{1}".format(
+            self.campana.id, sufijo_nombre)
         self.sufijo_nombre_de_archivo = ".csv"
         self.nombre_de_archivo = "{0}{1}".format(
             self.prefijo_nombre_de_archivo, self.sufijo_nombre_de_archivo)
