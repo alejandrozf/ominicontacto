@@ -21,79 +21,74 @@
 
 # The infrastructure environment:
 # onpremise | digitalocean | linode | vultr
-#export oml_infras_stage=onpremise
+export oml_infras_stage=digitalocean
 
 # Component gitlab branch
-#export oml_app_release=release-1.16.0
-#export oml_app_img=latest
-#export oml_acd_img=latest
-#export oml_kamailio_img=latest
-#export oml_ws_img=latest
-#export oml_redis_img=latest
-#export oml_nginx_img=latest
+export oml_app_release=oml-1972-dev-1st-boot-installer-envvars
+export oml_app_img=develop
+export oml_acd_img=latest
+export oml_kamailio_img=latest
+export oml_ws_img=latest
+export oml_redis_img=1.0.3
+export oml_nginx_img=develop
 
 # OMniLeads tenant NAME
-#export oml_tenant_name=onpremise
+export oml_tenant_name=jade
 
 # BLOCK DEVICE or S3 BUCKET 
 # values: local | s3 | nfs | disk
-#export oml_callrec_device=s3
+export oml_callrec_device=s3
 
 # S3 params when you select S3 like store for callrec
-#export s3_access_key=
-#export s3_secret_key=
-#export s3url=
-#export s3_bucket_name=
+export s3_access_key=J76I5GYZES5EDG4KZP5B
+export s3_secret_key=w4r7H1p1WX+nfPo0/tr/Eme2FjypGYExFVgtxDynrug
+export s3url=https://sfo3.digitaloceanspaces.com
+export s3_bucket_name=omnileads
 
 # NFS host netaddr
 #export nfs_host=
 
-#export oml_nic=enp0s3
+export oml_nic=eth1
 
 # ******* ACD Asterisk VARS *******
 # AMI conection from omlapp
-#export oml_ami_user=omnileadsami
-#export oml_ami_password=098098ZZZ
+export oml_ami_user=omnileadsami
+export oml_ami_password=098098ZZZ
 
 # ***********************  PGSQL Vars
 # POSTGRESQL netaddr and port
 # Values: NULL | IPADDR or FQDN
-#export oml_pgsql_host=192.168.95.131
-#export oml_pgsql_port=5432
+export oml_pgsql_host=10.10.10.11
+export oml_pgsql_port=5432
 # POSTGRESQL user, pass & DB params
-#export oml_pgsql_db=omnileads
-#export oml_pgsql_user=omnileads
-#export oml_pgsql_password=098098ZZZ
+export oml_pgsql_db=omnileads
+export oml_pgsql_user=omnileads
+export oml_pgsql_password=098098ZZZ
 # IF PGSQL run on cloud cluster set this to true
-#export oml_pgsql_cloud=NULL
+export oml_pgsql_cloud=NULL
 
 # ***********************  Dialer VARS
-#export api_dialer_user=demoadmin
-#export api_dialer_password=demo
+export api_dialer_user=demoadmin
+export api_dialer_password=demo
 # Values: NULL | IPADDR or FQDN
-#export oml_dialer_host=NULL
+export oml_dialer_host=10.10.10.13
 
 # ***********************  WebRTC Bridge VARS
 # Values: NULL | IPADDR or FQDN
-#export oml_rtpengine_host=NULL
+export oml_rtpengine_host=10.10.10.10
 
 
 # Tell OMLApp web some params ******************************************************************************
-#export oml_tz=America/Argentina/Cordoba
+export oml_tz=America/Argentina/Cordoba
 # Session Cookie Age (SCA) is the time in seconds that will last the https session when inactivity 
 # is detected in the session (by default is 1 hour)                                                
-#export oml_app_sca=3600
+export oml_app_sca=3600
 # Ephemeral Credentials TTL (ECTTL) is the time in seconds that will last the SIP credentials      
 # used to authenticate a SIP user in the telephony system (by default 8 hours)                     
-#export oml_app_ecctl=3600
+export oml_app_ecctl=3600
 # Login failure limit (LFM) is the attempts a user has to enter an incorrect password in login     
 # Decrease it if paranoic reasons                                                                  
-#export oml_app_login_fail_limit=10
-
-# Values true | false
-#export oml_app_init_env=true
-#export oml_app_reset_admin_pass=true
-#export oml_app_install_sngrep=true
+export oml_app_login_fail_limit=10
 
 # ************************************************************ SET ENV VARS **********************************************************************
 # ************************************************************ SET ENV VARS **********************************************************************
@@ -161,27 +156,27 @@ git checkout ${oml_app_release}
 cd install/docker/prodenv
 cp .env.template .env
 
-sed -i "s/DOCKER_IP=X.X.X.X/DOCKER_IP=$PRIVATE_IPV4/g" .env
+sed -i "s/DOCKER_IP=X.X.X.X/DOCKER_IP=$PUBLIC_IPV4/g" .env
 sed -i "s%\TZ=your_timezone_here%TZ=${oml_tz}%g" .env
 sed -i "s/PGPASSWORD=my_very_strong_pass/PGPASSWORD=${oml_pgsql_password}/g" .env
 
 if [ "${oml_app_img}" != "NULL" ]; then
-  sed -i "s/^OMLAPP_VERSION=latest/OMLAPP_VERSION=${oml_app_img}/g" .env
+  sed -i "s/^OMLAPP_VERSION=.*/OMLAPP_VERSION=${oml_app_img}/g" .env
 fi
 if [ "${oml_acd_img}" != "NULL" ]; then
-  sed -i "s/^OMLACD_VERSION=latest/OMLACD_VERSION=${oml_acd_img}/g" .env
+  sed -i "s/^OMLACD_VERSION=.*/OMLACD_VERSION=${oml_acd_img}/g" .env
 fi
 if [ "${oml_redis_img}" != "NULL" ]; then
-  sed -i "s/^REDISGEARS_VERSION=1.0.3/REDISGEARS_VERSION=${oml_redis_img}/g" .env
+  sed -i "s/^REDISGEARS_VERSION=.*/REDISGEARS_VERSION=${oml_redis_img}/g" .env
 fi
 if [ "${oml_kamailio_img}" != "NULL" ]; then
-  sed -i "s/^OMLKAM_VERSION=latest/OMLKAM_VERSION=${oml_kamailio_img}/g" .env
+  sed -i "s/^OMLKAM_VERSION=.*/OMLKAM_VERSION=${oml_kamailio_img}/g" .env
 fi
 if [ "${oml_nginx_img}" != "NULL" ]; then
   sed -i "s/^OMLNGINX_VERSION=.*/OMLNGINX_VERSION=${oml_nginx_img}/g" .env
 fi
 if [ "${oml_ws_img}" != "NULL" ]; then
-  sed -i "s/^OMLWS_VERSION=latest/OMLWS_VERSION=${oml_ws_img}/g" .env
+  sed -i "s/^OMLWS_VERSION=.*/OMLWS_VERSION=${oml_ws_img}/g" .env
 fi
 
 if [[ "${oml_dialer_host}" != "NULL" ]]; then
@@ -206,7 +201,6 @@ fi
 if [[ "${oml_pgsql_cloud}" == "NULL" ]]; then
   sed -i "s/PGCLOUD=yes/PGCLOUD=no/g" .env
 fi
-
 
 cp daemon.json /etc/docker
 cp omnileads.service /etc/systemd/system/

@@ -236,7 +236,7 @@ class RecicladorContactosCampanaDIALER():
         return contactos_reciclados
 
     def _obtener_contactos_no_llamados(self, campana):
-        llamadas = LlamadaLog.objects.filter(campana_id=campana.id)
+        llamadas = LlamadaLog.objects.filter(campana_id=campana.id, contacto_id__isnull=False)
         contacto_ids = llamadas.values_list('contacto_id', flat=True).distinct()
         queryset_no_llamados = campana.bd_contacto.contactos.exclude(id__in=contacto_ids)
         contactos_no_llamados = [no_llamado for no_llamado in queryset_no_llamados]

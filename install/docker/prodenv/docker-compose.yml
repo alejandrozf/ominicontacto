@@ -28,7 +28,7 @@ services:
     stop_grace_period: 1m30s
     volumes:
       - ast_conf_files:/etc/asterisk
-      - recordings:/var/spool/asterisk/monitor/
+      - ${CALLREC_DIR_TMP}:/var/spool/asterisk/monitor
       - sounds:/var/lib/asterisk/sounds/
     working_dir: /etc/asterisk
 
@@ -49,7 +49,6 @@ services:
     tty: true
     volumes:
       - media_root:/opt/omnileads/media_root
-      - recordings:/var/spool/asterisk/monitor
       - sounds:/var/lib/asterisk/sounds/
     working_dir: /opt/omnileads/ominicontacto
 
@@ -97,7 +96,7 @@ services:
     restart: on-failure
     stop_grace_period: 1m30s
     volumes:
-      - recordings:/var/spool/asterisk/monitor
+      - ${CALLREC_DIR_DST}:/var/spool/asterisk/monitor
 
   redis:
     container_name: omlredis

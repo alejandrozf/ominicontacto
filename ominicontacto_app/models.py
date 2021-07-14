@@ -428,6 +428,10 @@ class ClienteWebPhoneProfile(models.Model):
         self.borrado = True
         self.save()
 
+    def get_asterisk_caller_id(self):
+        nombre = remplace_espacio_por_guion(self.user.get_full_name())
+        return "{0}_{1}".format(self.id, nombre)
+
 
 class NombreCalificacionManager(models.Manager):
     def usuarios(self):
