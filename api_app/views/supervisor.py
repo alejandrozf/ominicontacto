@@ -71,12 +71,15 @@ class SupervisorCampanasActivasViewSet(APIView):
     http_method_names = ['get']
     renderer_classes = (JSONRenderer, )
     TIPOS_VALIDOS = [x[0] for x in Campana.TYPES_CAMPANA]
+    ESTADOS_VALIDOS = [x[0] for x in Campana.ESTADOS]
 
     def procesar_filtros(self):
         self.filtro_tipo = None
         self.filtro_tipo_lista = None
         self.filtro_nombre = None
         self.filtro_campanas_agente = None
+        self.filtro_estado = Campana.ESTADO_ACTIVA
+        self.filtro_estado_lista = None
 
         if 'type' in self.request.GET:
             try:
@@ -106,8 +109,24 @@ class SupervisorCampanasActivasViewSet(APIView):
             except AgenteProfile.DoesNotExist:
                 return _('Agente inexistente')
             # TODO: Verificar que el supervisor sea responsable del agente.
-            self.filtro_campanas_agente = agente.get_campanas_activas_miembro().values_list(
+            self.filtro_campanas_agente = agente.campana_member.values_list(
                 'queue_name__campana_id', flat=True)
+
+        if 'status' in self.request.GET:
+            try:
+                estado = json.loads(self.request.GET.get('status'))
+                if isinstance(estado, list):
+                    for x in estado:
+                        if x not in self.ESTADOS_VALIDOS:
+                            return _('Filtro "status" inválido')
+                    self.filtro_estado_lista = estado
+                    self.filtro_estado = None
+                else:
+                    if estado not in self.ESTADOS_VALIDOS:
+                        return _('Filtro "status" inválido')
+                    self.filtro_estado = estado
+            except JSONDecodeError:
+                return _('Filtro "status" inválido')
 
         return None
 
@@ -118,10 +137,14 @@ class SupervisorCampanasActivasViewSet(APIView):
 
         superv_profile = self.request.user.get_supervisor_profile()
         if superv_profile.is_administrador:
-            campanas = Campana.objects.obtener_activas()
+            campanas = Campana.objects.all()
         else:
-            campanas = superv_profile.obtener_campanas_asignadas_activas()
+            campanas = self.request.user.campanasupervisors.all()
 
+        if self.filtro_estado:
+            campanas = campanas.filter(estado=self.filtro_estado)
+        if self.filtro_estado_lista:
+            campanas = campanas.filter(estado__in=self.filtro_estado_lista)
         if self.filtro_tipo:
             campanas = campanas.filter(type=self.filtro_tipo)
         if self.filtro_tipo_lista:

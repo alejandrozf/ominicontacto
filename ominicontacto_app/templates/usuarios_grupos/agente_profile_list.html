@@ -21,6 +21,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 {% load i18n %}
 
+{% block head_js %}
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/supervision/agente_profile_list.js' %}"></script>
+    <script src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 <div class="form-row">
     <div class="col-md-9">
@@ -53,9 +58,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <td>{{ agente.sip_extension }}</td>
             <td>{{ agente.grupo}}</td>
             <td>
-                {% for queue in agente.campana_member.all %}
-                    {{ queue.queue_name.campana.nombre }}
-                {% endfor %}
+                <a class="btn btn-light btn-sm" href="#" onclick="obtener_campanas_agente({{ agente.id }})" >
+                    {% trans 'Mostrar Campañas' %}
+                </a>
             </td>
             <td>
                 {% if agente.is_inactive %}
@@ -104,4 +109,31 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% endif %}
     </ul>
 </nav>
+<div class="modal" id="campanasAgenteModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title">{% trans 'Campañas' %}</h1>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                  <table class="table" id="campanasAgenteTable">
+                      <thead>
+                          <tr>
+                              <th>{% trans 'Nombre' %}</th>
+                              <th>{% trans 'ID' %}</th>
+                              <th>{% trans 'Objetivo' %}</th>
+                          </tr>
+                      </thead>
+                  </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Cerrar'  %}</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
 {% endblock %}
