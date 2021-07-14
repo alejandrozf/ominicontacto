@@ -17,42 +17,42 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
-{% extends "base.html" %}
-{% load i18n %}
-
-{% block content %}
-	<h1>{% trans 'Estado de contactaciones de la Campaña: ' %}{{ campana.nombre }}</h1>
-    <a class="btn btn-outline-primary" href="{% url 'reporte_de_resultados_csv' campana.pk %}">{% trans "Exportar Contactaciones" %} (CSV)</a>
-    <table class="table">
-        <thead>
-          <tr class="fts-table-bg">
+{% extends "base.html" %} {% load i18n %} {% block content %}
+<h1>{% trans 'Estado de contactaciones de la Campaña: ' %}{{ campana.nombre }}</h1>
+<a class="btn btn-outline-primary" href="{% url 'reporte_de_resultados_csv' campana.pk %}">
+    {% trans "Exportar Contactaciones" %} (CSV)</a> 
+{% if mostrar_export_todos %}
+    <a class="btn btn-outline-primary" href="{% url 'reporte_de_resultados_todos_csv' campana.pk %}">{% trans "Contabilizar todos los contactados" %} (CSV)</a> 
+{% endif %}
+<table class="table">
+    <thead>
+        <tr class="fts-table-bg">
             <th>{% trans "Teléfono" %}</th>
             {% for columna in columnas_datos %}
-                <th>{{ columna }}</th>
+            <th>{{ columna }}</th>
             {% endfor %}
             <th>{% trans "Calificación" %}</th>
             <th>{% trans "Contactación" %}</th>
-          </tr>
-        </thead>
-        <tbody>
-            {% for contactacion in reporte.contactaciones.values %}
-                <tr>
-                    <td>{{ contactacion.contacto.telefono }}</td>
-                    {% for dato in contactacion.contacto.lista_de_datos %}
-                        <td>{{ dato }}</td>
-                    {% endfor %}
-                    <td>{{ contactacion.calificacion|default_if_none:'' }}</td>
-                    <td>{{ contactacion.contactacion|default_if_none:'' }}</td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="16">
-                        <p>{% trans "No se encontraron Contactaciones para esta campaña." %}</p>
-                    </td>
-                </tr>
+        </tr>
+    </thead>
+    <tbody>
+        {% for contactacion in reporte.contactaciones.values %}
+        <tr>
+            <td>{{ contactacion.contacto.telefono }}</td>
+            {% for dato in contactacion.contacto.lista_de_datos %}
+            <td>{{ dato }}</td>
             {% endfor %}
-        </tbody>
-    </table>
+            <td>{{ contactacion.calificacion|default_if_none:'' }}</td>
+            <td>{{ contactacion.contactacion|default_if_none:'' }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="16">
+                <p>{% trans "No se encontraron Contactaciones para esta campaña." %}</p>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 {% endblock %}
-

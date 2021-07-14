@@ -192,6 +192,11 @@ class ReporteDeResultadosView(TemplateView):
         context['columnas_datos'] = metadata.nombres_de_columnas_de_datos
         context['reporte'] = reporte
 
+        if self.campana.type in [Campana.TYPE_ENTRANTE, Campana.TYPE_MANUAL]:
+            context['mostrar_export_todos'] = True
+        else:
+            context['mostrar_export_todos'] = False
+
         # Crear el archivo ahora para no repetir los cálculos.
         reporte_csv = ReporteDeResultadosCSV(self.campana)
         reporte_csv.generar_archivo_descargable(reporte)
@@ -203,6 +208,7 @@ class ReporteDeResultadosCSVView(View):
     """ Una vez generado en ReporteDeResultadosView, se puede
         descargar el archivo csv usando esta vista.
     """
+
     def dispatch(self, request, *args, **kwargs):
         # TODO: [PERMISOS] Verificar que el supervisor tenga acceso a la campaña
         try:
@@ -212,6 +218,27 @@ class ReporteDeResultadosCSVView(View):
             return redirect('index')
 
         reporte_csv = ReporteDeResultadosCSV(self.campana)
+        if reporte_csv.archivo_ya_generado():
+            url = reporte_csv.obtener_url_reporte_csv_descargar()
+            return redirect(url)
+        else:
+            messages.warning(self.request, _(u"Por favor, intente nuevamente."))
+            return redirect('reporte_de_resultados', pk_campana=kwargs['pk_campana'])
+
+
+class ReporteDeTodosResultadosCSVView(View):
+
+    def dispatch(self, request, *args, **kwargs):
+        # TODO: [PERMISOS] Verificar que el supervisor tenga acceso a la campaña
+        try:
+            self.campana = Campana.objects.get(id=kwargs['pk_campana'])
+        except Campana.DoesNotExist:
+            messages.error(self.request, _(u"No existe la campaña."))
+            return redirect('index')
+
+        reporte = ReporteDeResultadosDeCampana(self.campana, True)
+        reporte_csv = ReporteDeResultadosCSV(self.campana, True)
+        reporte_csv.generar_archivo_descargable(reporte)
         if reporte_csv.archivo_ya_generado():
             url = reporte_csv.obtener_url_reporte_csv_descargar()
             return redirect(url)
