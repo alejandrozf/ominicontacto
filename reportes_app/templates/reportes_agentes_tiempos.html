@@ -240,10 +240,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <th>{% trans "INBOUND" %}</th>
                 <th>{% trans "MANUAL" %}</th>
                 <th>{% trans "TRANSFERIDAS" %}</th>
+                <th>{% trans "FUERA DE CAMPAÑA" %}</th>
             </tr>
             </thead>
             <tbody>
-                {% for agente, total_campana, total_preview, total_dialer, total_inbound, total_manual, total_transferidas in graficos_estadisticas.dict_agente_counter %}
+                {% for agente, total_campana, total_preview, total_dialer, total_inbound, total_manual, total_transferidas, total_fuera_campana in graficos_estadisticas.dict_agente_counter %}
                     <tr>
                         <td>{{ agente }}</td>
                         <td>{{ total_campana }}</td>
@@ -252,6 +253,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <td>{{ total_inbound }}</td>
                         <td>{{ total_manual }}</td>
                         <td>{{ total_transferidas }}</td>
+                        <td>{{ total_fuera_campana }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
