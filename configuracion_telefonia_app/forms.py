@@ -363,16 +363,6 @@ class IVRForm(forms.ModelForm):
             return audio_principal
         return None
 
-    def clean_time_out_audio(self):
-        time_out_audio_escoger = self.cleaned_data['time_out_audio_escoger']
-        if time_out_audio_escoger == '1':
-            time_out_audio = self.cleaned_data.get('time_out_audio', None)
-            if time_out_audio is None:
-                raise forms.ValidationError(
-                    _('Debe escoger un audio.'))
-            return time_out_audio
-        return None
-
     def clean(self):
         cleaned_data = super(IVRForm, self).clean()
         audio_ppal_escoger = cleaned_data['audio_ppal_escoger']
