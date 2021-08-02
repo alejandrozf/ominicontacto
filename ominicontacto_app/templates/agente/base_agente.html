@@ -76,6 +76,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <input type="hidden" value="{{ agente_profile.grupo.auto_attend_dialer }}" id="auto_attend_DIALER"/>
     <input type="hidden" value="{{ agente_profile.grupo.auto_unpause }}" id="auto_unpause"/>
     <input type="hidden" value="{{ agente_profile.grupo.call_off_camp }}" id="call_off_camp">
+    <input type="hidden" value="{{ agente_profile.grupo.on_hold }}" id="on_hold">
 
   <!-- Hidden Data -->
     <input type="hidden" value="{{ fechas_agendas_json }}" id='agendas_dates_json'>
@@ -805,7 +806,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                                 </div>
                                 <div class="btn-group" data-toggle="buttons">
                                     <button id="EndTransfer" class="btn btn-outline-secondary" disabled="disabled">{% trans 'Cancel Transfer' %}</button>
-                                    <button id="onHold" value="*198" class="btn btn-outline-secondary" disabled="disabled">{% trans 'Hold' %}</button>
+                                    {% if agente_profile.grupo.on_hold %}
+                                        <button id="onHold" value="*198" class="btn btn-outline-secondary" disabled="disabled">{% trans 'Hold' %}</button>
+                                    {% else %}
+                                        <button id="onHold" value="*198" class="btn btn-outline-secondary" disabled="disabled" hidden>{% trans 'Hold' %}</button>
+                                    {% endif %}
                                 </div>
                                 <button id="changeCampAssocManualCall" class="btn btn-outline-secondary btn-sm">
                                     {% trans 'Campaña: ' %}<span id="campAssocManualCall"></span>

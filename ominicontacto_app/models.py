@@ -218,6 +218,7 @@ class Grupo(models.Model):
         'Acceso grabaciones agentes'))
     acceso_dashboard_agente = models.BooleanField(default=True, verbose_name=_(
         'Acceso dashboard agentes'))
+    on_hold = models.BooleanField(default=True, verbose_name=_('On-Hold'))
 
     def __str__(self):
         return self.nombre
