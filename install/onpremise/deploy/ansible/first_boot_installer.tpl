@@ -54,12 +54,12 @@
 #export oml_ami_user=omnileadsami
 #export oml_ami_password=098098ZZZ
 # Values: NULL | IP address or FQDN
-#export oml_acd_host=192.168.95.138
+#export oml_acd_host=NULL
 
 # ******* Variables for PGSQL *******
 # POSTGRESQL network address and port
 # Values: NULL | IP address or FQDN
-#export oml_pgsql_host=192.168.95.131
+#export oml_pgsql_host=NULL
 #export oml_pgsql_port=5432
 # POSTGRESQL user, password and DB parameters
 #export oml_pgsql_db=omnileads
@@ -150,6 +150,11 @@ mount
 echo "******************** IPV4 address config ********************"
 
 case ${oml_infras_stage} in
+  aws)
+    echo -n "AWS"
+    PRIVATE_IPV4=$(ip addr show ${oml_nic} | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
+    PUBLIC_IPV4=$(curl ifconfig.co)
+    ;;
   digitalocean)
     echo -n "DigitalOcean"
     PUBLIC_IPV4=$(curl -s http://169.254.169.254/metadata/v1/interfaces/public/0/ipv4/address)
@@ -411,7 +416,7 @@ chown omnileads.omnileads -R /opt/omnileads/media_root
 echo "******************** setting demo environment ********************"
 
 if [[ "${oml_app_init_env}" == "true" ]];then
-  /opt/omnileads/bin/manage.sh inicializar_entorno
+  su -c "/opt/omnileads/bin/manage.sh inicializar_entorno" --login omnileads
 fi
 
 echo "******************** sngrep SIP sniffer install ********************"

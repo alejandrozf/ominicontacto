@@ -1,154 +1,203 @@
 #!/bin/bash
-# Script para realizar backup/restore de la herramienta
+# Backup and restore script for OMniLeads
 
-# Inicialización de variables
-FECHA=`date +%Y%m%d`
+# Variables initialization
+BinDate="`which date`"
+BinPgDump="`which pg_dump`"
+BinPgRestore="`which pg_restore`"
+Date="`${BinDate} +%y%m%d`"
+Hour="`${BinDate} +%H%M%S`"
+InstallationPrefix="`cat /etc/profile.d/omnileads_envars.sh|grep 'INSTALL_PREFIX='|awk -F'=' '{print $2}'`"
+AsteriskLocation="${InstallationPrefix}/asterisk"
+KamailioLocation="${InstallationPrefix}/kamailio"
+##########################
 
-PG_DUMP=$(which pg_dump)
-PG_RESTORE=$(which pg_restore)
-INSTALL_PREFIX="/opt/omnileads"
-ASTERISK_LOCATION="$INSTALL_PREFIX/asterisk"
-KAMAILIO_LOCATION="$INSTALL_PREFIX/kamailio"
+# Functions definition
 
+# Function for creating backup
 Backup() {
+  TmpDirectory="/tmp/${Date}-${Hour}-oml-backup/${Date}-${Hour}-oml-backup"
+  mkdir -p ${TmpDirectory}
+  cd ${TmpDirectory}
 
-    mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup
-
-    #Asterisk Files
-    echo "Making backup of asterisk files"
-    mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/etc
-    mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/agi-bin
-    mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/sounds
-    cp -a --preserve=links $ASTERISK_LOCATION/etc/asterisk/oml_extensions* /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/etc
-    cp $ASTERISK_LOCATION/var/lib/asterisk/agi-bin/*.py /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/agi-bin
-    cp -a $ASTERISK_LOCATION/var/lib/asterisk/sounds/* /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/sounds
-    tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/* > /dev/null 2>&1
-    rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/asterisk/
-    sleep 3
-
-    #Omniapp files
-    echo "Making backup of csv's and system audios"
-    mkdir -p /tmp/omnileads-backup/$FECHA-omnileads-backup/omniapp
-    cp -a $INSTALL_PREFIX/media_root/ /tmp/omnileads-backup/$FECHA-omnileads-backup/omniapp/
-    if [ -f $INSTALL_PREFIX/bin/addons_installed.sh ]; then
-       source $INSTALL_PREFIX/bin/addons_installed.sh;
-       cp -a $INSTALL_PREFIX/bin/addons_installed.sh /tmp/omnileads-backup/$FECHA-omnileads-backup/omniapp/
-       echo "Making backup of addons installed"
-       for i in "${ADDONS_INSTALLED[@]}"; do
-         cp -a $INSTALL_PREFIX/addons/$i /tmp/omnileads-backup/$FECHA-omnileads-backup/omniapp/
-      done
-    fi
-    echo "Making backup of omnileads_envars.sh file"
-    cp -a /etc/profile.d/omnileads_envars.sh /tmp/omnileads-backup/$FECHA-omnileads-backup/omniapp/omnileads_envars.backup
-    tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/omniapp.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/omniapp/* > /dev/null 2>&1
-    rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/omniapp/
-    sleep 3
-
-    #Kamailio Files
-    echo "Making backup of kamailio configuration file"
-    mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio
-    cp -a --preserve=links $KAMAILIO_LOCATION/etc/ /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio
-    tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio/* > /dev/null 2>&1
-    rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/kamailio/
-    sleep 3
-
-    #Databases
-    if [ "$NO_DATABASE" != "True" ]; then
-      echo "Making dump of omnileads database"
-      mkdir /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database
-      $PG_DUMP -F t -f /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/base_backup
-      tar czvf /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database.tgz /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/* > /dev/null 2>&1
-      rm -rf /tmp/omnileads-backup/$FECHA-omnileads-backup/postgres_database/
-    fi
-
-    # Tar the last directory
-    cd /tmp/omnileads-backup
-    tar czvf $FECHA-omnileads-backup.tgz $FECHA-omnileads-backup/ > /dev/null 2>&1
-    mv /tmp/omnileads-backup/$FECHA-omnileads-backup.tgz $INSTALL_PREFIX/backup
-    rm -rf /tmp/omnileads-backup/
-
-    backup_location="`basename $INSTALL_PREFIX/backup/${FECHA}*`"
-    echo -e "\n Backup made in this file: $backup_location "
-    echo -e "Now you can restore doing: ./backup-restore.sh --restore=$backup_location"
-}
-
-Restore() {
-    set -e
-    tar_backup=$FILE
-    tar_directory=`echo $FILE | awk -F "." '{print $1}'`
-    cd $INSTALL_PREFIX/backup
-    tar xzvf $tar_backup > /dev/null 2>&1
-    cd $tar_directory
-    ARRAY=($(ls -d *.tgz))
-    for i in "${ARRAY[@]}"; do
-        tar xzvf $i > /dev/null 2>&1
+  # OMniLeads application backup
+  echo "Creating backup: OMniLeads application..."
+  mkdir -p ${TmpDirectory}/omniapp
+  cp -a ${InstallationPrefix}/media_root/ ${TmpDirectory}/omniapp
+  if [ -f ${InstallationPrefix}/bin/addons_installed.sh ];then
+    source ${InstallationPrefix}/bin/addons_installed.sh
+    cp -a ${InstallationPrefix}/bin/addons_installed.sh ${TmpDirectory}/omniapp
+    echo "Creating backup: OMniLeads addons..."
+    for Addon in "${ADDONS_INSTALLED[@]}";do
+      cp -a ${InstallationPrefix}/addons/${Addon} ${TmpDirectory}/omniapp
     done
-    cd tmp/omnileads-backup/$tar_directory/
+  fi
+  echo "Creating backup: File omnileads_envars.sh..."
+  cp -a /etc/profile.d/omnileads_envars.sh ${TmpDirectory}/omniapp/omnileads_envars.sh.backup
+  tar czvf ${TmpDirectory}/omniapp.tar.gz omniapp > /dev/null 2>&1
+  rm -rf ${TmpDirectory}/omniapp/
+  sleep 3
 
-    #Restore of asterisk files
-    echo "Restoring asterisk files and audios"
-    cd asterisk
-    cp -a agi-bin/* $ASTERISK_LOCATION/var/lib/asterisk/agi-bin/
-    cp -a --preserve=links etc/oml_extensions* $ASTERISK_LOCATION/etc/asterisk/
-    cp -a sounds/* $ASTERISK_LOCATION/var/lib/asterisk/sounds/
+  # Asterisk backup
+  echo "Creating backup: Asterisk..."
+  mkdir -p ${TmpDirectory}/asterisk
+  mkdir -p ${TmpDirectory}/asterisk/etc
+  mkdir -p ${TmpDirectory}/asterisk/agi-bin
+  mkdir -p ${TmpDirectory}/asterisk/sounds
+  cp -a --preserve=links ${AsteriskLocation}/etc/asterisk/*custom* ${TmpDirectory}/asterisk/etc
+  cp -a --preserve=links ${AsteriskLocation}/etc/asterisk/*override* ${TmpDirectory}/asterisk/etc
+  cp -a ${AsteriskLocation}/var/lib/asterisk/agi-bin/*.py ${TmpDirectory}/asterisk/agi-bin
+  cp -a ${AsteriskLocation}/var/lib/asterisk/sounds/* ${TmpDirectory}/asterisk/sounds
+  tar czvf ${TmpDirectory}/asterisk.tar.gz asterisk > /dev/null 2>&1
+  rm -rf ${TmpDirectory}/asterisk/
+  sleep 3
 
-    #Restore of omniapp files
-    echo "Restoring omniapp csv's and system audios"
-    cd ../omniapp
-    cp -a media_root/* $INSTALL_PREFIX/media_root
-    cp -a omnileads_envars.backup /opt/omnileads/bin
-    if [ -f addons_installed.sh ]; then
-      cp -a addons_installed.sh $INSTALL_PREFIX/bin/
-      cp -a *_app $INSTALL_PREFIX/addons/
-      ARRAY_ADDONS=($(ls -d $INSTALL_PREFIX/addons/*_app))
-      for i in "${ARRAY_ADDONS[@]}"; do
-        echo "Reinstalling addon $i"
-        cd $i && ./install.sh
-      done
-    fi
+  # Kamailio backup
+  echo "Creating backup: Kamailio..."
+  mkdir ${TmpDirectory}/kamailio
+  cp -a --preserve=links ${KamailioLocation}/etc/ ${TmpDirectory}/kamailio
+  tar czvf ${TmpDirectory}/kamailio.tar.gz kamailio > /dev/null 2>&1
+  rm -rf ${TmpDirectory}/kamailio/
+  sleep 3
 
-    #Restore of kamailio files
-    echo "Restoring kamailio files"
-    cd $INSTALL_PREFIX/backup/${tar_directory}/tmp/omnileads-backup/${tar_directory}/kamailio/etc
-    cp -a --preserve=links kamailio $KAMAILIO_LOCATION/etc/kamailio > /dev/null 2>&1
+  # Database backup, if it's included
+  if [ "${NoDatabase}" != "True" ];then
+    echo "Creating backup: Database..."
+    Database="`cat /etc/profile.d/omnileads_envars.sh|grep 'PGDATABASE='|awk -F'=' '{print $2}'`"
+    mkdir ${TmpDirectory}/postgresql
+    ${BinPgDump} -F t ${Database} -f ${TmpDirectory}/postgresql/database_backup
+    tar czvf ${TmpDirectory}/postgresql.tar.gz postgresql > /dev/null 2>&1
+    rm -rf ${TmpDirectory}/postgresql/
+    sleep 3
+  fi
 
-    #Restore of Database
-    if [[ " ${ARRAY[@]} " =~ "postgres_database" ]]; then
-      echo "Restoring omnileads database"
-      cd ../../postgres_database
-      $PG_RESTORE -F t base_backup -c
-    fi
-    rm -rf $INSTALL_PREFIX/backup/$tar_directory
+  # Creation of final backup file
+  cd /tmp/${Date}-${Hour}-oml-backup/
+  tar czvf ${Date}-${Hour}-oml-backup.tar.gz ${Date}-${Hour}-oml-backup > /dev/null 2>&1
+  mv ${Date}-${Hour}-oml-backup.tar.gz ${InstallationPrefix}/backup
+  rm -rf /tmp/${Date}-${Hour}-oml-backup/
 
-    echo "Restore sucessfull a copy file of your envars were made in $INSTALL_PREFIX/bin/omnileads_envars.backup"
+  BackupFile="`basename ${InstallationPrefix}/backup/${Date}-${Hour}*`"
+  echo -e "Backup done!"
+  echo -e "Backup file created: ${InstallationPrefix}/backup/${BackupFile}"
+  echo -e "To restore this backup file: ./backup-restore.sh --restore=${BackupFile}"
 }
 
-for i in "$@"
-do
-  case $i in
-		--restore=*) # Opcion para realizar restore, argumento: Nombre del tgz
-      FILE="${i#*=}"
-      RESTORE="True"
+# Function for restoring backup
+Restore() {
+  set -e
+  BackupFile=${File}
+  BackupDirectory="`echo ${BackupFile}|awk -F "." '{print $1}'`"
+  cd ${InstallationPrefix}/backup
+  tar xzvf ${BackupFile} > /dev/null 2>&1
+  cd ${BackupDirectory}
+  Components=($(ls -d *.tar.gz))
+  for Component in "${Components[@]}";do
+    tar xzvf ${Component} > /dev/null 2>&1
+  done
+
+  # OMniLeads application restore
+  echo "Restoring backup: OMniLeads application..."
+  cd omniapp
+  cp omnileads_envars.sh.backup ${InstallationPrefix}/backup/omnileads_envars.sh.bkp.${BackupDirectory}
+  cp -a media_root/* ${InstallationPrefix}/media_root
+  if [ -f addons_installed.sh ];then
+    cp -a addons_installed.sh ${InstallationPrefix}/bin/
+    cp -a *_app ${InstallationPrefix}/addons/
+    Addons=($(ls -d ${InstallationPrefix}/addons/*_app))
+    for Addon in "${Addons[@]}";do
+      echo "Reinstalling addon ${Addon}..."
+      cd ${Addon} && ./install.sh > /dev/null 2>&1
+    done
+  fi
+  cd ${InstallationPrefix}/backup/${BackupDirectory}/
+
+  # Asterisk restore
+  echo "Restoring backup: Asterisk..."
+  cd asterisk
+  cp -a agi-bin/* ${AsteriskLocation}/var/lib/asterisk/agi-bin/
+  cp -a --preserve=links etc/*custom* ${AsteriskLocation}/etc/asterisk/
+  cp -a --preserve=links etc/*override* ${AsteriskLocation}/etc/asterisk/
+  cp -a sounds/* ${AsteriskLocation}/var/lib/asterisk/sounds/
+  cd ..
+
+  # Kamailio restore
+  echo "Restoring backup: Kamailio..."
+  cd kamailio
+  cp -a --preserve=links etc/* ${KamailioLocation}/etc/ > /dev/null 2>&1
+  cd ..
+
+  # Database restore, if it's included
+  if [[ "${Components[@]}" =~ "postgresql" ]];then
+    echo "Restoring backup: Database..."
+    cd postgresql
+    Database="`cat ${InstallationPrefix}/backup/${BackupDirectory}/omniapp/omnileads_envars.sh.backup|grep 'PGDATABASE='|awk -F'=' '{print $2}'`"
+    ${BinPgRestore} -F t -d ${Database} database_backup -c
+    sudo sed -i "s/^PGDATABASE=.*/PGDATABASE=${Database}/g" /etc/profile.d/omnileads_envars.sh
+    source /etc/profile.d/omnileads_envars.sh
+  fi
+
+  # Final task: regenerar_asterisk
+  echo "Running 'regenerar_asterisk'..."
+  /opt/omnileads/bin/manage.sh regenerar_asterisk > /dev/null 2>&1
+
+  rm -rf ${InstallationPrefix}/backup/${BackupDirectory}/
+
+  echo -e "The file 'omnileads_envars.sh.backup' was found on your backup file, so it was copied to ${InstallationPrefix}/backup, in case you need to check variables from your previous OMniLeads instance."
+  echo -e "Restore done!"
+}
+######################
+
+# Beginning
+
+Options="$@"
+
+if [ "$#" == 0 ];then
+  echo "You must enter a valid option. For more information, execute './backup-restore.sh --help'."
+  exit 0
+fi
+
+for Option in ${Options};do
+  case ${Option} in
+    # Option for creating backup
+    --backup)
+      Backup="True"
       shift
-		;;
-		--backup) #Opcion para realizar backup
-      BACKUP="True"
-      shift
-		;;
+    ;;
+    # Option to exclude database when creating backup
     --no-database)
-      NO_DATABASE="True"
+      NoDatabase="True"
       shift
     ;;
+    # Option for restoring backup
+    --restore=*)
+      Restore="True"
+      File="${Option#*=}"
+      shift
+		;;
+    # Option for printing help information
     --help)
-      verbose=$1
-      shift
+      echo "Usage:
+      To create a full backup file: ./backup-restore.sh --backup
+      To create a backup file, excluding database: ./backup-restore.sh --backup --no-database
+      To restore a backup file: ./backup-restore.sh --restore=BackupFile.tar.gz"
+      exit 0
     ;;
+    # Case for invalid options
     *)
-      echo "One or more invalid options, use ./backup-restore.sh --help"
+      echo "The parameter '${Option}' is not a valid option. For more information, execute './backup-restore.sh --help'."
       exit 1
     ;;
 	esac
 done
 
-if [ "$BACKUP" == "True" ];then Backup; fi
-if [ "$RESTORE" == "True" ];then Restore; fi
+if [ "${Backup}" == "True" ];then
+  Backup
+  exit 0
+fi
+if [ "${Restore}" == "True" ];then
+  Restore
+  exit 0
+fi
+
+# End
