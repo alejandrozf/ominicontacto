@@ -1225,21 +1225,31 @@ class Campana(models.Model):
         # insertamos las instancias en la BD
         AgenteEnContacto.objects.bulk_create(agente_en_contacto_list)
 
-    def gestionar_finalizacion_relacion_agente_contacto(self, contacto_pk):
+    def gestionar_finalizacion_relacion_agente_contacto(self, calificacion_cliente):
         """
         Marca como finalizada la relación entre un agente y un contacto de una campaña
         preview
         """
         try:
             agente_en_contacto = AgenteEnContacto.objects \
-                .exclude(estado=AgenteEnContacto.ESTADO_FINALIZADO) \
-                .get(contacto_id=contacto_pk, campana_id=self.pk)
+                .get(contacto_id=calificacion_cliente.contacto_id, campana_id=self.pk)
         except AgenteEnContacto.DoesNotExist:
+            if self.estado == self.ESTADO_FINALIZADA:
+                return
+            # Si la campaña no finalizó No puede quedar calificacion sin AgenteEnContacto
+            self.adicionar_agente_en_contacto(
+                calificacion_cliente.contacto, calificacion_cliente.agente.id,
+                es_originario=calificacion_cliente.contacto.es_originario)
+            agente_en_contacto = AgenteEnContacto.objects \
+                .get(contacto_id=calificacion_cliente.contacto_id, campana_id=self.pk)
+            agente_en_contacto.estado = AgenteEnContacto.ESTADO_FINALIZADO
+            agente_en_contacto.save()
+        else:
             # Si el contacto ya esta FINALIZADO, no hace falta actualizar.
             # para el caso cuando se llama al procedimiento luego de añadir un
             # nuevo contacto desde la consola de agentes
-            pass
-        else:
+            if agente_en_contacto.estado == AgenteEnContacto.ESTADO_FINALIZADO:
+                return
             agente_en_contacto.estado = AgenteEnContacto.ESTADO_FINALIZADO
             agente_en_contacto.save()
             self.gestionar_finalizacion_por_contactos_calificados()
@@ -1267,7 +1277,7 @@ class Campana(models.Model):
         datos_contacto = dict(zip(campos_contacto, datos_contacto))
         datos_contacto_json = json.dumps(datos_contacto)
         orden = AgenteEnContacto.ultimo_id() + 1
-        AgenteEnContacto.objects.create(
+        return AgenteEnContacto.objects.create(
             agente_id=agente_id, contacto_id=contacto.pk, datos_contacto=datos_contacto_json,
             telefono_contacto=contacto.telefono, campana_id=self.pk,
             estado=AgenteEnContacto.ESTADO_INICIAL,
@@ -2647,7 +2657,7 @@ class CalificacionCliente(TimeStampedModel, models.Model):
         # Optimizacion: si ya hay calificacion ya se termino la relacion agente contacto antes.
         campana = self.opcion_calificacion.campana
         if campana.type == Campana.TYPE_PREVIEW and self.pk is None:
-            campana.gestionar_finalizacion_relacion_agente_contacto(self.contacto.id)
+            campana.gestionar_finalizacion_relacion_agente_contacto(self)
         # gestionamos las agendas
         if self.opcion_calificacion.tipo != OpcionCalificacion.AGENDA:
             # eliminamos las agendas existentes (si hubiera alguna)
