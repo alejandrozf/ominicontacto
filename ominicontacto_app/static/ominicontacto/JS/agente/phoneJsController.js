@@ -557,12 +557,17 @@ class PhoneJSController {
         var return_to_pause = this.pause_manager.pause_enabled && !this.pause_manager.in_ACW_pause;
         var pause_id = return_to_pause? this.pause_manager.pause_id: undefined;
         var pause_name = return_to_pause? this.pause_manager.pause_name: undefined;
-
-        // Al finalizar la llamda se manda el agente a Pausa forzada.
+        
+        // Al finalizar la llamada se manda el agente a Pausa forzada.
         var self = this;
         var call_auto_unpause = this.phone.session_data.remote_call.auto_unpause;
         this.phone.cleanLastCallData();
         this.setPause(ACW_PAUSE_ID, ACW_PAUSE_NAME);
+
+        // Si se fuerza la calificación no se sale automaticamente de Pausa forzada
+        if (this.click_2_call_dispatcher.disposition_forced){
+            return;
+        }
         if (call_auto_unpause != undefined) {
             if (call_auto_unpause > 0) {
                 let m_seconds = call_auto_unpause * 1000;

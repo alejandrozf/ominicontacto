@@ -34,7 +34,7 @@
     <div id="wrapper-search">
         <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span> {% trans 'Buscar' %}</button>
         <div id="wrapperSearchForm" class="show">
-            <form id="form-buscar-gestiones" role="form" method="post" enctype="multipart/form-data" >
+            <form id="form-buscar-gestiones" role="form" method="post" enctype="multipart/form-data">
                 {% include "base_form_fields.html" with form=form %}
                 <button type="submit" id="id_buscar_btn" class="btn btn-primary">
                     {% trans 'Buscar' %}
@@ -42,7 +42,7 @@
             </form>
         </div>
     </div>
-
+    {% if no_renderizar == False %}
     <div class="wrapper-results">
         <table class="table table-stripped">
             <thead>
@@ -111,6 +111,8 @@
                 {% endif %}
             </ul>
         </nav>
+    </div>
+    {% endif %}
 {% endblock %}
 
 {% block extra_css %}

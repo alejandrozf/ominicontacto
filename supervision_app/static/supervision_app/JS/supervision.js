@@ -178,7 +178,7 @@ function createDataTable() {
         'searchCols': [
             null,
             { 'search': filtro_grupo(), },
-            { 'search': filtro_campana(), },
+            { 'search': filtro_campana(), 'regex': true},
             null,
             null,
             null,
@@ -272,9 +272,15 @@ function filtro_grupo() {
     return grupo;
 }
 
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+
 function filtro_campana() {
     var campana = $('#filter_campana option:selected').html();
-    return campana;
+    if (campana == '') return '';
+    var campana_rgx = escapeRegExp(campana);
+    return '(' + campana_rgx + ',|' + campana_rgx + '$)';
 }
 
 function subcribeFilterChange() {

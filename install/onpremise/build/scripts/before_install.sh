@@ -17,6 +17,13 @@ else
   echo "omnileads ALL=(ALL:ALL)  ALL" >> /etc/sudoers
   echo "omnileads ALL=(ALL) NOPASSWD: /usr/sbin/asterisk" >> /etc/sudoers
 fi
+# Line for adding cp command on sudoers file, used by backup/restore script
+if grep -Fxq "omnileads ALL=(ALL) NOPASSWD: /usr/sbin/asterisk" /etc/sudoers; then
+  sed -i "s/omnileads ALL=(ALL) NOPASSWD: \/usr\/sbin\/asterisk/omnileads ALL=(ALL) NOPASSWD: \/usr\/bin\/rsync, \/usr\/sbin\/asterisk, \/usr\/bin\/sed/g" /etc/sudoers
+fi
+if grep -Fxq "omnileads ALL=(ALL) NOPASSWD: /usr/bin/rsync, /usr/sbin/asterisk" /etc/sudoers; then
+  sed -i "s/omnileads ALL=(ALL) NOPASSWD: \/usr\/bin\/rsync, \/usr\/sbin\/asterisk/omnileads ALL=(ALL) NOPASSWD: \/usr\/bin\/rsync, \/usr\/sbin\/asterisk, \/usr\/bin\/sed/g" /etc/sudoers
+fi
 echo "Applying sysctl optimizations for OMniLeads"
 sysctl -w net.core.somaxconn=2048
 sysctl vm.overcommit_memory=1
