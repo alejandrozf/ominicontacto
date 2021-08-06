@@ -97,6 +97,8 @@ class ReportesAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'reporte_de_resultados_csv',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
+            {'nombre': 'reporte_de_resultados_todos_csv',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
         ]
 
     informacion_de_permisos = {
@@ -158,4 +160,7 @@ class ReportesAppConfig(AppConfig):
         'reporte_de_resultados_csv':
             {'descripcion': _('Descargar reporte de resultado de contactaciones en una Campaña'),
              'version': '1.7.0'},
+        'reporte_de_resultados_todos_csv':
+            {'descripcion': _('Descargar reporte de todas las contactaciones en una Campaña'),
+             'version': '1.17.0'},
     }

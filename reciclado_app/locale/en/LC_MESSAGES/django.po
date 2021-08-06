@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-09 12:32-0300\n"
+"POT-Creation-Date: 2021-08-05 10:37-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -113,5 +113,9 @@ msgstr ""
 "recycled "
 
 #: reciclado_app/views.py:133
+msgid "Solo se pueden reciclar campañas activas o finalizadas."
+msgstr "Only Active or Ended campaigns can be recycled."
+
+#: reciclado_app/views.py:137
 msgid "Esta campaña no se puede reciclar."
 msgstr "This campaign cannot be recycled."

@@ -32,11 +32,13 @@ class ReporteDeResultadosDeCampana(object):
     Reporte sobre los resultados de las contactaciones de los contactos ORIGINIARIOS.
     """
 
-    def __init__(self, campana):
+    def __init__(self, campana, todos_contactos=False):
         self.campana = campana
 
         self.contactaciones = OrderedDict()
-        contactos = self.campana.bd_contacto.contactos.filter(es_originario=True)
+        contactos = self.campana.bd_contacto.contactos.all()
+        if todos_contactos is False:
+            contactos = contactos.filter(es_originario=True)
         contactos_ids = self._inicializar_datos_de_contactacion(contactos)
         # Si no hay contactos originarios el reporte quedará vacío.
         if len(contactos_ids) > 0:

@@ -19,21 +19,26 @@
 
 
 $(function() {
-
-    let input = 'auto_unpause';
-    let setter_id = $(`#id_set_${input}`);
-    let input_id = $(`#id_${input}`);
-    $(setter_id).click(() => {setDisabledStatusNumber(setter_id, input_id);});
-    setDisabledStatusNumber(setter_id, input_id);
-
-    const inputs = ['obligar_calificacion', 'auto_attend_inbound', 'auto_attend_dialer'];
+    const inputs = [
+        'auto_unpause', 'obligar_calificacion', 'auto_attend_inbound', 'auto_attend_dialer'];
     for(let i in inputs) {
         let input = inputs[i];
         let setter_id = $(`#id_set_${input}`);
         let input_id = $(`#id_${input}`);
-        $(setter_id).click(() => {setDisabledStatusCheckBox(setter_id, input_id);});
-        setDisabledStatusCheckBox(setter_id, input_id);
+        if (input == 'auto_unpause'){
+            $(setter_id).click(() => {setDisabledStatusNumber(setter_id, input_id);});
+            setDisabledStatusNumber(setter_id, input_id);
+        }
+        else{
+            $(setter_id).click(() => {setDisabledStatusCheckBox(setter_id, input_id);});
+            setDisabledStatusCheckBox(setter_id, input_id);
+        }
     }
+
+    $('#id_obligar_calificacion').on('change', actualizarEstadoAutoUnpause);
+    $('#id_set_obligar_calificacion').on('change', actualizarEstadoAutoUnpause);
+    actualizarEstadoAutoUnpause();
+
 });
 
 function setDisabledStatusNumber(setter_id, input_id) {
@@ -51,5 +56,19 @@ function setDisabledStatusCheckBox(setter_id, input_id) {
     }
     else{
         input_id.prop('disabled', true);
+    }
+}
+
+function actualizarEstadoAutoUnpause() {
+    var disable_unpause = $('#id_set_obligar_calificacion').is(':checked');
+    disable_unpause = disable_unpause && $('#id_obligar_calificacion').is(':checked');
+    if (disable_unpause){
+        $('#id_auto_unpause').attr('readonly', 'readonly');
+        $('#id_set_auto_unpause').prop('disabled', true);
+    }
+    else{
+        $('#id_auto_unpause').removeAttr('readonly');
+        $('#id_set_auto_unpause').prop('disabled', false);
+        setDisabledStatusNumber($('#id_set_auto_unpause'), $('#id_auto_unpause'));
     }
 }

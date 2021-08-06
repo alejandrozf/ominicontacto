@@ -21,6 +21,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load static %}
 {% load i18n %}
 
+{% block head_js %}
+  <script type="text/javascript" src="{% static 'ominicontacto/JS/supervision/grupo.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 <h1>{% trans 'Nuevo grupo de agentes'%}</h1>
 <form action = "" method = "post">
@@ -59,6 +63,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <div class="col-md-3">
             {{ form.acceso_grabaciones_agente.label_tag }} {{ form.acceso_grabaciones_agente }}
             {{ form.acceso_grabaciones_agente.errors }}
+        </div>
+        <div class="col-md-3">
+            {{ form.acceso_dashboard_agente.label_tag }} {{ form.acceso_dashboard_agente }}
+            {{ form.acceso_dashboard_agente.errors }}
         </div>
     </div>
     <button type="submit" id="id_registrar" class="btn btn-primary">

@@ -71,7 +71,8 @@ class ReporteAgentes(object):
                                             dict_agentes_llamadas['total_agente_dialer'],
                                             dict_agentes_llamadas['total_agente_inbound'],
                                             dict_agentes_llamadas['total_agente_manual'],
-                                            dict_agentes_llamadas['total_agente_transferidas'])),
+                                            dict_agentes_llamadas['total_agente_transferidas'],
+                                            dict_agentes_llamadas['total_agente_fuera_campana'])),
             'barra_agente_total': self._generar_grafico_agentes_llamadas(dict_agentes_llamadas),
 
         }
@@ -187,7 +188,8 @@ class ReporteAgentes(object):
         for datos_agente in self.datos_agentes.values():
             dict_agentes_llamadas['nombres_agentes'].append(
                 datos_agente.agente.user.get_full_name())
-            dict_agentes_llamadas['total_agentes'].append(datos_agente.llamadas_procesadas)
+            dict_agentes_llamadas['total_agentes'].append(
+                self._total_llamadas(datos_agente.agente.pk, fecha_inicio, fecha_fin))
         dict_agentes_llamadas['total_agente_dialer'] = self. \
             _obtener_cantidad_por_tipo_de_llamada(
             agentes_tipo_llamadas, agente_ids, Campana.TYPE_DIALER)
@@ -196,13 +198,16 @@ class ReporteAgentes(object):
             agentes_tipo_llamadas, agente_ids, Campana.TYPE_ENTRANTE)
         dict_agentes_llamadas['total_agente_manual'] = self. \
             _obtener_cantidad_por_tipo_de_llamada(
-            agentes_tipo_llamadas, agente_ids, Campana.TYPE_MANUAL)
+            agentes_tipo_llamadas.exclude(campana_id=0), agente_ids, Campana.TYPE_MANUAL)
         dict_agentes_llamadas['total_agente_preview'] = self. \
             _obtener_cantidad_por_tipo_de_llamada(
             agentes_tipo_llamadas, agente_ids, Campana.TYPE_PREVIEW)
         dict_agentes_llamadas['total_agente_transferidas'] = self. \
             _obtener_cantidad_por_tipo_de_llamada(
             agentes_tipo_llamadas, agente_ids, LLAMADA_TRANSF_INTERNA)
+        dict_agentes_llamadas['total_agente_fuera_campana'] = self. \
+            _obtener_cantidad_por_tipo_de_llamada(
+            agentes_tipo_llamadas.filter(campana_id=0), agente_ids, Campana.TYPE_MANUAL)
 
         return dict_agentes_llamadas
 
@@ -239,6 +244,21 @@ class ReporteAgentes(object):
 
         return adicionar_render_unicode(barra_agente_total)
 
+    def _total_llamadas(self, agente_id, fecha_inferior, fecha_superior):
+        fecha_inferior = datetime_hora_minima_dia(fecha_inferior)
+        fecha_superior = datetime_hora_maxima_dia(fecha_superior)
+
+        eventos_llamadas = list(LlamadaLog.EVENTOS_INICIO_CONEXION)
+
+        llamadas = LlamadaLog.objects.obtener_count_agente().filter(
+            time__range=(fecha_inferior, fecha_superior),
+            agente_id=agente_id,
+            event__in=eventos_llamadas)
+        total = 0
+        for llamada in llamadas:
+            total = llamada['cantidad']
+        return total
+
 
 class ActividadAgente(object):
 
@@ -262,9 +282,10 @@ class ActividadAgente(object):
         if lista_pausas_oml is None:
             lista_pausas_oml = Pausa.objects.all()
 
-        res = {0: Pausa(id=0, nombre=_(u'ACW'))}
+        res = {'0': Pausa(id='0', nombre=_(u'ACW')),
+               '00': Pausa(id='00', nombre=_(u'Pausa-Supervisión'))}
         for pausa in lista_pausas_oml:
-            res[pausa.id] = pausa
+            res[str(pausa.id)] = pausa
         return res
 
     def procesa_log(self, event, time, pausa_id):
@@ -343,7 +364,7 @@ class ActividadAgente(object):
                 and self.pausas != []:
             if not self.pausas[-1].establecer_finalizacion(time, pausa_id):
                 self.pausas.append(PausaAgente(
-                    pausa_id, self.pausas_por_id[int(pausa_id)],
+                    pausa_id, self.pausas_por_id[str(pausa_id)],
                     fecha_inicio=self.pausas[-1].fecha_inicio))
                 self.pausas[-1].establecer_finalizacion(time, pausa_id)
             self.tiempo_pausa += self.pausas[-1].calcular_duracion()
@@ -353,7 +374,7 @@ class ActividadAgente(object):
                 self.tiempo_pausa += self.pausas[-1].calcular_duracion()
 
             self.pausas.append(PausaAgente(
-                pausa_id, self.pausas_por_id[int(pausa_id)], fecha_inicio=time))
+                pausa_id, self.pausas_por_id[str(pausa_id)], fecha_inicio=time))
 
     def _procesa_tiempo_hold(self, fecha_inicio, fecha_fin):
         fecha_superior = datetime_hora_maxima_dia(fecha_fin)

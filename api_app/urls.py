@@ -18,6 +18,7 @@
 #
 
 from __future__ import unicode_literals
+from api_app.views.usuarios import ListadoAgentes, ListadoGrupos
 
 from django.conf.urls import url, include
 from rest_framework import routers
@@ -41,6 +42,7 @@ from api_app.views.agente import (
     SetEstadoRevisionAuditoria, ApiStatusCalificacionLlamada, ApiEventoHold
 )
 from api_app.views.grabaciones import ObtenerArchivoGrabacionView, ObtenerArchivosGrabacionView
+from api_app.views.audios import ListadoAudiosView
 
 router = routers.DefaultRouter()
 
@@ -53,10 +55,6 @@ router.register(
     r'api/v1/grupo/(?P<pk_grupo>\d+)/agentes_activos', AgentesActivosGrupoViewSet,
     base_name='api_agentes_activos_de_grupo')
 
-# ###########   SUPERVISOR    ############ #
-router.register(
-    r'api/v1/supervisor/campanas', SupervisorCampanasActivasViewSet,
-    base_name='api_campanas_de_supervisor')
 
 # ###########     AGENTE      ############ #
 router.register(
@@ -99,6 +97,9 @@ urlpatterns = [
         EnviarKeyRegistro.as_view(),
         name='reenviar_key_registro'),
     # ###########   SUPERVISOR    ############ #
+    url(r'api/v1/supervisor/campanas',
+        SupervisorCampanasActivasViewSet.as_view(),
+        name='api_campanas_de_supervisor'),
     url(r'api/v1/supervision/agentes',
         login_required(AgentesStatusAPIView.as_view()),
         name='api_agentes_activos'),
@@ -168,5 +169,13 @@ urlpatterns = [
         ObtenerArchivoGrabacionView.as_view(), name='api_grabacion_archivo'),
     url(r'^api/v1/grabacion/descarga_masiva',
         ObtenerArchivosGrabacionView.as_view(), name='api_grabacion_descarga_masiva'),
+    # ###########  AUDIOS ASTERISK    ############ #
+    url(r'^api/v1/audio/list',
+        ListadoAudiosView.as_view({'get': 'list'}), name='api_audios_listado'),
+    # ###########  USUARIOS    ############ #
+    url(r'^api/v1/group/list',
+        ListadoGrupos.as_view({'get': 'list'}), name='api_grupos'),
+    url(r'^api/v1/agent/list',
+        ListadoAgentes.as_view({'get': 'list'}), name='api_agentes'),
 
 ]

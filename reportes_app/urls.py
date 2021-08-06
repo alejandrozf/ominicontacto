@@ -23,7 +23,8 @@ from django.contrib.auth.decorators import login_required
 from reportes_app import views_reportes_agentes
 from reportes_app.views import (ReporteLlamadasFormView, ExportarReporteLlamadasFormView,
                                 ExportarZipReportesLlamadasFormView,
-                                ReporteDeResultadosView, ReporteDeResultadosCSVView)
+                                ReporteDeResultadosView, ReporteDeResultadosCSVView,
+                                ReporteDeTodosResultadosCSVView)
 from reportes_app import (views_campanas_preview_reportes, views_campanas_dialer_reportes,
                           views_reportes, )
 
@@ -138,5 +139,10 @@ urlpatterns = [
         login_required(
             ReporteDeResultadosCSVView.as_view()),
         name='reporte_de_resultados_csv',
+        ),
+    url(r'^reporte_de_resultados_todos_csv/(?P<pk_campana>\d+)/$',
+        login_required(
+            ReporteDeTodosResultadosCSVView.as_view()),
+        name='reporte_de_resultados_todos_csv',
         ),
 ]

@@ -26,8 +26,8 @@ from django.forms import ValidationError
 from rest_framework import serializers
 
 from ominicontacto_app.forms import FormularioNuevoContacto
-from ominicontacto_app.models import (Campana, AgenteProfile, CalificacionCliente,
-                                      OpcionCalificacion, User, Contacto, AgenteEnContacto)
+from ominicontacto_app.models import AgenteEnContacto, AgenteProfile, ArchivoDeAudio, \
+    CalificacionCliente, Campana, Contacto, Grupo, OpcionCalificacion, User
 
 
 class CalificacionClienteSerializerMixin(object):
@@ -51,6 +51,7 @@ class CalificacionClienteSerializerMixin(object):
 
 
 class CampanaSerializer(serializers.HyperlinkedModelSerializer):
+    # TODO: Pasar al inglés
     class Meta:
         model = Campana
         fields = ('nombre', 'id', 'objetivo')
@@ -61,12 +62,27 @@ class UserRelatedField(serializers.RelatedField):
         return value.get_full_name()
 
 
-class AgenteProfileSerializer(serializers.HyperlinkedModelSerializer):
+class AgenteProfileIDSerializer(serializers.HyperlinkedModelSerializer):
     user = UserRelatedField(read_only=True)
 
     class Meta:
         model = AgenteProfile
         fields = ('id', 'user')
+
+
+class AgenteProfileNameSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField(read_only=True)
+    full_name = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Grupo
+        fields = ('id', 'username', 'full_name')
+
+    def get_username(self, agente_profile):
+        return agente_profile.user.username
+
+    def get_full_name(self, agente_profile):
+        return agente_profile.user.get_full_name()
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -242,3 +258,22 @@ class CalificacionClienteNuevoContactoSerializer(
             'opcion_calificacion': opcion_calificacion,
             'callid': data.get('callid')
         }
+
+
+class AudioSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = ArchivoDeAudio
+        fields = ('id', 'name')
+
+    def get_name(self, audio):
+        return audio.__str__()
+
+
+class GrupoSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(source='nombre')
+
+    class Meta:
+        model = Grupo
+        fields = ('id', 'name')

@@ -17,12 +17,19 @@
 
 */
 
-import { InfoNumerica, LogsLlamadas } from './estadisticas.js';
+import { InfoNumerica, LogsLlamadas, InfoPausas } from './estadisticas.js';
+
 
 var DashboardAgente = {
     components: {
         'info-numerica': InfoNumerica,
-        'logs-llamadas': LogsLlamadas
+        'logs-llamadas': LogsLlamadas,
+        'info-pausas': InfoPausas
+    },
+    methods: {
+        onClick() {
+            this.pausas.hiddenPausas = !this.pausas.hiddenPausas;
+        }
     },
     template: `
 <div v-if="pausa">
@@ -32,7 +39,8 @@ var DashboardAgente = {
                 <info-numerica v-bind="conectadas"></info-numerica>
             </div>
             <div class="col-md-4">
-                <info-numerica v-bind="pausa"></info-numerica>
+                <info-numerica v-on:click.native="onClick" v-bind="pausa"></info-numerica>
+                <info-pausas v-bind="pausas"></info-pausas>
             </div>
             <div class="col-md-4">
                 <info-numerica v-bind="venta"></info-numerica>
@@ -53,7 +61,7 @@ var DashboardAgente = {
     ></v-progress-circular>
 </div>
 `,
-    props: ['conectadas', 'pausa', 'venta', 'logs', 'mensajeEspera'],
+    props: ['conectadas', 'pausa', 'venta', 'logs', 'mensajeEspera', 'pausas'],
 };
 
 export { DashboardAgente };

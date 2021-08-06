@@ -36,6 +36,7 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
 from django.http import HttpResponseRedirect
+from django.core.exceptions import PermissionDenied
 
 from ominicontacto_app.models import (
     AgenteProfile, Contacto, CalificacionCliente, Campana, AgenteEnContacto
@@ -174,6 +175,15 @@ class DashboardAgenteView(TemplateView):
         context = super(DashboardAgenteView, self).get_context_data(**kwargs)
         context['agente_id'] = self.request.user.get_agente_profile().pk
         return context
+
+    def dispatch(self, request, *args, **kwargs):
+        agent_profile = request.user.get_agente_profile()
+        agent_group = agent_profile.grupo
+        if agent_group.acceso_dashboard_agente:
+            return super(DashboardAgenteView, self).dispatch(
+                request, *args, **kwargs)
+        else:
+            raise PermissionDenied
 
 
 class LlamarContactoView(RedirectView):

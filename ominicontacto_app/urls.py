@@ -111,7 +111,7 @@ urlpatterns = [
         name='user_change_password', kwargs={'change_password': ''}
         ),
     # Perfil Agente  ==========================================================
-    url(r'^agente/list/$',
+    url(r'^agente/list/(?P<page>[0-9]+)/$',
         login_required(views_user_profiles.AgenteListView.as_view()),
         name='agente_list',
         ),
@@ -126,7 +126,7 @@ urlpatterns = [
         login_required(views_user_profiles.DesactivarAgenteView.as_view()),
         name="agente_desactivar"),
     # Perfil Supervisor  =======================================================
-    url(r'^supervisor/list/$',
+    url(r'^supervisor/list/(?P<page>[0-9]+)/$',
         login_required(views_user_profiles.SupervisorListView.as_view()),
         name='supervisor_list',
         ),

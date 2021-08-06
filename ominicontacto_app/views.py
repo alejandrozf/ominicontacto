@@ -316,6 +316,7 @@ class ConsolaAgenteView(AddSettingsContextMixin, TemplateView):
                         " su supervisor")
             messages.warning(request, message)
             logout(request)
+            return redirect('login')
 
         return super(ConsolaAgenteView, self).dispatch(request, *args, **kwargs)
 

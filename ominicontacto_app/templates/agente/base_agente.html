@@ -563,10 +563,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                   <img src="{% static 'ominicontacto/Img/ic_logo.png' %}" id="nav-logo">
                 </div>
             </div>
-            <li class="main-menu-li">
-                <span class="icon icon-agenda"></span>
-                <a class="menu-link" href="{% url 'agente_dashboard' %}" target="crm">{% trans 'Dashboard' %}</a>
-            </li>
+            {% if agente_profile.grupo.acceso_dashboard_agente %}
+              <li class="main-menu-li">
+                  <span class="icon icon-agenda"></span>
+                  <a class="menu-link" href="{% url 'agente_dashboard' %}" target="crm">{% trans 'Dashboard' %}</a>
+              </li>
+            {% endif %}
             <li class="main-menu-li">
                 <span class="icon icon-notebook"></span>
                 <a class="menu-header" href="#menuContacts" role="button" data-toggle="collapse" aria-expanded="false">{% trans 'Contactos' %}</a>
@@ -703,7 +705,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
                 </div>
                 <div class="wrapper-info">
-                    <iframe src="{% url 'agente_dashboard' %}" id="dataView" class="crm" name="crm"></iframe>
+                    {% if agente_profile.grupo.acceso_dashboard_agente %}
+                        <iframe src="{% url 'agente_dashboard' %}" id="dataView" class="crm" name="crm"></iframe>
+                    {% else %}
+                        <iframe src="{% url 'agenda_contacto_listado' %}" id="dataView" class="crm" name="crm"></iframe>
+                    {% endif %}
                 </div>
             </div>
 

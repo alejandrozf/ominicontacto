@@ -442,23 +442,38 @@ class SupervisorProfileUpdateView(FormView):
         return super(SupervisorProfileUpdateView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('supervisor_list')
+        return reverse('supervisor_list', kwargs={"page": 1})
 
 
 class SupervisorListView(ListView):
     """Vista lista los supervisores """
     model = SupervisorProfile
     template_name = 'usuarios_grupos/supervisor_profile_list.html'
+    paginate_by = 40
+
+    def get_context_data(self, **kwargs):
+        context = super(SupervisorListView, self).get_context_data(
+            **kwargs)
+        supervisores = SupervisorProfile.objects.exclude(borrado=True)
+        context['supervisores'] = supervisores
+        return context
 
     def get_queryset(self):
-        """Returns Supervisor excluyendo los borrados"""
-        return SupervisorProfile.objects.exclude(borrado=True)
+        """Returns user ordernado por id"""
+        supervisores = SupervisorProfile.objects.exclude(borrado=True).order_by('id')
+        if 'search' in self.request.GET:
+            search = self.request.GET.get('search')
+            supervisores = supervisores.annotate(
+                user__full_name=Concat('user__first_name', V(' '), 'user__last_name')).\
+                filter(Q(user__full_name__icontains=search) | Q(user__username__icontains=search))
+        return supervisores
 
 
 class AgenteListView(ListView):
     """Vista para listar los agentes"""
     model = AgenteProfile
     template_name = 'usuarios_grupos/agente_profile_list.html'
+    paginate_by = 40
 
     def get_context_data(self, **kwargs):
         context = super(AgenteListView, self).get_context_data(
@@ -472,6 +487,16 @@ class AgenteListView(ListView):
 
         context['agentes'] = agentes
         return context
+
+    def get_queryset(self):
+        """Returns user ordernado por id"""
+        agentes = AgenteProfile.objects.exclude(borrado=True).order_by('id')
+        if 'search' in self.request.GET:
+            search = self.request.GET.get('search')
+            agentes = agentes.annotate(
+                user__full_name=Concat('user__first_name', V(' '), 'user__last_name')).\
+                filter(Q(user__full_name__icontains=search) | Q(user__username__icontains=search))
+        return agentes
 
 
 class AgenteProfileUpdateView(UpdateView):
@@ -519,7 +544,7 @@ class DesactivarAgenteView(RedirectView):
     def get(self, request, *args, **kwargs):
         agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
         agente.desactivar()
-        return HttpResponseRedirect(reverse('agente_list'))
+        return HttpResponseRedirect(reverse('agente_list', kwargs={"page": 1}))
 
 
 class ActivarAgenteView(RedirectView):
@@ -532,7 +557,7 @@ class ActivarAgenteView(RedirectView):
     def get(self, request, *args, **kwargs):
         agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
         agente.activar()
-        return HttpResponseRedirect(reverse('agente_list'))
+        return HttpResponseRedirect(reverse('agente_list', kwargs={"page": 1}))
 
 
 class ClienteWebPhoneListView(ListView):
