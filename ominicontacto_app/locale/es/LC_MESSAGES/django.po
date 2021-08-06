@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-09 12:32-0300\n"
+"POT-Creation-Date: 2021-08-05 10:37-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,18 +31,16 @@ msgstr ""
 msgid "Nuevo usuario Agente"
 msgstr ""
 
-#: ominicontacto_app/apps.py:52 ominicontacto_app/models.py:3066
+#: ominicontacto_app/apps.py:52 ominicontacto_app/models.py:3082
 #: ominicontacto_app/templates/campanas/campana_entrante/queue_member.html:32
 #: ominicontacto_app/templates/campanas/campana_preview/contactos_asignados.html:90
-#: ominicontacto_app/templates/queue/queue_member.html:32
 #: ominicontacto_app/templates/sistema_externo/sistema_externo.html:44
-#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:25
+#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:32
 msgid "Agentes"
 msgstr ""
 
 #: ominicontacto_app/apps.py:57
 #: ominicontacto_app/templates/campanas/campana_dialer/campana_supervisors.html:41
-#: ominicontacto_app/templates/usuarios_grupos/supervisor_profile_list.html:25
 msgid "Supervisores"
 msgstr ""
 
@@ -98,7 +96,7 @@ msgid "Campañas dialer"
 msgstr ""
 
 #: ominicontacto_app/apps.py:147
-#: ominicontacto_app/templates/agente/base_agente.html:594
+#: ominicontacto_app/templates/agente/base_agente.html:596
 #: ominicontacto_app/templates/campanas/campana_preview/campana_list.html:30
 msgid "Campañas preview"
 msgstr ""
@@ -122,7 +120,7 @@ msgid "Nueva Calificación"
 msgstr ""
 
 #: ominicontacto_app/apps.py:221
-#: ominicontacto_app/templates/agente/base_agente.html:589
+#: ominicontacto_app/templates/agente/base_agente.html:591
 #: ominicontacto_app/templates/calificacion/calificacion_list.html:26
 #: ominicontacto_app/templates/campanas/campana_dialer/campana_list.html:103
 #: ominicontacto_app/templates/campanas/campana_dialer/campana_list.html:197
@@ -185,6 +183,7 @@ msgid "Sistemas Externos"
 msgstr ""
 
 #: ominicontacto_app/apps.py:281
+#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:116
 msgid "Campañas"
 msgstr ""
 
@@ -228,7 +227,7 @@ msgid "Nueva Blacklist"
 msgstr ""
 
 #: ominicontacto_app/apps.py:341
-#: ominicontacto_app/templates/agente/base_agente.html:572
+#: ominicontacto_app/templates/agente/base_agente.html:574
 #: ominicontacto_app/templates/agente/contacto_list.html:53
 msgid "Contactos"
 msgstr ""
@@ -985,131 +984,131 @@ msgstr ""
 msgid "Define una lista rapida de contactos"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:118
+#: ominicontacto_app/asterisk_config.py:116
 #, python-brace-format
 msgid "Creando config sip para agente {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:121
+#: ominicontacto_app/asterisk_config.py:119
 #, python-brace-format
 msgid "Config sip generado OK para agente {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:125
+#: ominicontacto_app/asterisk_config.py:123
 #, python-brace-format
 msgid ""
 "Error {0}: No se pudo generar configuracion de Asterisk para la quene {1}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:134
-#: ominicontacto_app/asterisk_config.py:169
-#: ominicontacto_app/asterisk_config.py:202
-#: ominicontacto_app/asterisk_config.py:408
+#: ominicontacto_app/asterisk_config.py:132
+#: ominicontacto_app/asterisk_config.py:167
+#: ominicontacto_app/asterisk_config.py:200
+#: ominicontacto_app/asterisk_config.py:406
 #, python-brace-format
 msgid "Error {0} al intentar generar traceback"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:135
+#: ominicontacto_app/asterisk_config.py:133
 msgid "Error al intentar generar traceback"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:151
+#: ominicontacto_app/asterisk_config.py:149
 #, python-brace-format
 msgid "Creando config sip para supervisor {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:155
+#: ominicontacto_app/asterisk_config.py:153
 #, python-brace-format
 msgid "Config sip generado OK para supervisor {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:159
-#: ominicontacto_app/asterisk_config.py:192
-#: ominicontacto_app/asterisk_config.py:399
+#: ominicontacto_app/asterisk_config.py:157
+#: ominicontacto_app/asterisk_config.py:190
+#: ominicontacto_app/asterisk_config.py:397
 #, python-brace-format
 msgid ""
 "Error {0}: no se pudo generar configuracion de Asterisk para la queue {1}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:184
+#: ominicontacto_app/asterisk_config.py:182
 #, python-brace-format
 msgid "Creando config sip para cliente {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:188
+#: ominicontacto_app/asterisk_config.py:186
 #, python-brace-format
 msgid "Config sip generado OK para cliente {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:362
-#: ominicontacto_app/asterisk_config.py:393
+#: ominicontacto_app/asterisk_config.py:360
+#: ominicontacto_app/asterisk_config.py:391
 #, python-brace-format
 msgid "Creando dialplan para queue {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:365
-#: ominicontacto_app/asterisk_config.py:396
+#: ominicontacto_app/asterisk_config.py:363
+#: ominicontacto_app/asterisk_config.py:394
 #, python-brace-format
 msgid "Dialplan generado OK para queue {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:368
+#: ominicontacto_app/asterisk_config.py:366
 #, python-brace-format
 msgid ""
 "Error {0}: No se pudo generar configuracion de Asterisk para la queue {1}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:377
-#: ominicontacto_app/asterisk_config.py:522
-#: ominicontacto_app/asterisk_config.py:668
+#: ominicontacto_app/asterisk_config.py:375
+#: ominicontacto_app/asterisk_config.py:520
+#: ominicontacto_app/asterisk_config.py:666
 #, python-brace-format
 msgid "Error {0}: al intentar generar traceback"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:505
+#: ominicontacto_app/asterisk_config.py:503
 #, python-brace-format
 msgid "Creando config sip para ruta saliente {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:510
+#: ominicontacto_app/asterisk_config.py:508
 #, python-brace-format
 msgid "Config generado OK para ruta saliente {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:513
+#: ominicontacto_app/asterisk_config.py:511
 #, python-brace-format
 msgid ""
 "Error {0}: No se pudo generar configuracion de Asterisk para la ruta {1}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:575
-#: ominicontacto_app/asterisk_config.py:619
+#: ominicontacto_app/asterisk_config.py:573
+#: ominicontacto_app/asterisk_config.py:617
 #, python-brace-format
 msgid "Creando config troncal sip {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:654
+#: ominicontacto_app/asterisk_config.py:652
 #, python-brace-format
 msgid "Creando config para playlist {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:657
+#: ominicontacto_app/asterisk_config.py:655
 #, python-brace-format
 msgid "Config generado OK para playlist {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:660
+#: ominicontacto_app/asterisk_config.py:658
 #, python-brace-format
 msgid ""
 "Error {0}: No se pudo generar configuracion de Asterisk para la playlist {1}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:748
+#: ominicontacto_app/asterisk_config.py:746
 #, python-brace-format
 msgid "Objeto NO es unicode: {0}"
 msgstr ""
 
-#: ominicontacto_app/asterisk_config.py:767
+#: ominicontacto_app/asterisk_config.py:765
 #, python-brace-format
 msgid "Error {0} al intentar borrar temporal {1}"
 msgstr ""
@@ -1126,7 +1125,7 @@ msgstr ""
 msgid "---- Todas ----"
 msgstr ""
 
-#: ominicontacto_app/forms.py:81 ominicontacto_app/forms.py:1673
+#: ominicontacto_app/forms.py:81 ominicontacto_app/forms.py:1677
 msgid "Rol del usuario"
 msgstr ""
 
@@ -1157,8 +1156,8 @@ msgstr ""
 #: ominicontacto_app/forms.py:229 ominicontacto_app/forms.py:230
 #: ominicontacto_app/forms.py:231 ominicontacto_app/forms.py:232
 #: ominicontacto_app/forms.py:233 ominicontacto_app/forms.py:234
-#: ominicontacto_app/forms.py:527 ominicontacto_app/forms.py:1608
-#: ominicontacto_app/forms.py:1609 ominicontacto_app/forms.py:1850
+#: ominicontacto_app/forms.py:531 ominicontacto_app/forms.py:1612
+#: ominicontacto_app/forms.py:1613 ominicontacto_app/forms.py:1854
 #: ominicontacto_app/templates/campanas/campana_dialer/reglas_incidencia.html:103
 msgid "En segundos"
 msgstr ""
@@ -1171,7 +1170,7 @@ msgstr ""
 msgid "Debe definir un Anuncio Periódico para esta frecuencia"
 msgstr ""
 
-#: ominicontacto_app/forms.py:282 ominicontacto_app/forms.py:1638
+#: ominicontacto_app/forms.py:282 ominicontacto_app/forms.py:1642
 msgid "Debe seleccionar un destino"
 msgstr ""
 
@@ -1187,26 +1186,26 @@ msgstr ""
 msgid "Debe ingresar una frecuencia de anuncios de espera/posición"
 msgstr ""
 
-#: ominicontacto_app/forms.py:407 ominicontacto_app/forms.py:475
+#: ominicontacto_app/forms.py:411 ominicontacto_app/forms.py:479
 msgid "Campos de teléfono"
 msgstr ""
 
-#: ominicontacto_app/forms.py:425
+#: ominicontacto_app/forms.py:429
 msgid "No se puede elegir un campo telefónico como id_externo"
 msgstr ""
 
-#: ominicontacto_app/forms.py:448
+#: ominicontacto_app/forms.py:452
 msgid "texto a buscar"
 msgstr ""
 
-#: ominicontacto_app/forms.py:496 ominicontacto_app/forms.py:548
-#: ominicontacto_app/forms.py:2013 ominicontacto_app/models.py:494
-#: ominicontacto_app/models.py:2142
+#: ominicontacto_app/forms.py:500 ominicontacto_app/forms.py:552
+#: ominicontacto_app/forms.py:2018 ominicontacto_app/models.py:500
+#: ominicontacto_app/models.py:2158
 #: ominicontacto_app/templates/agenda_contacto/agenda_agente.html:66
 #: ominicontacto_app/templates/agenda_contacto/listar_agendas_campana.html:53
 #: ominicontacto_app/templates/agente/agenda_agente.html:76
 #: ominicontacto_app/templates/agente/base_agente.html:436
-#: ominicontacto_app/templates/agente/base_agente.html:823
+#: ominicontacto_app/templates/agente/base_agente.html:829
 #: ominicontacto_app/templates/agente/frame/agenda_contacto/agenda_detalle.html:49
 #: ominicontacto_app/templates/agente/frame/busqueda_grabacion.html:46
 #: ominicontacto_app/templates/auditoria/crear_editar_auditoria.html:38
@@ -1215,25 +1214,25 @@ msgstr ""
 msgid "Fecha"
 msgstr ""
 
-#: ominicontacto_app/forms.py:500
+#: ominicontacto_app/forms.py:504
 #: ominicontacto_app/templates/agente/frame/busqueda_grabacion.html:47
 #: ominicontacto_app/templates/busqueda_grabacion.html:62
 msgid "Tipo de llamada"
 msgstr ""
 
-#: ominicontacto_app/forms.py:502 ominicontacto_app/forms.py:562
+#: ominicontacto_app/forms.py:506 ominicontacto_app/forms.py:566
 msgid "Teléfono Cliente"
 msgstr ""
 
-#: ominicontacto_app/forms.py:504 ominicontacto_app/forms.py:564
+#: ominicontacto_app/forms.py:508 ominicontacto_app/forms.py:568
 msgid "Call ID"
 msgstr ""
 
-#: ominicontacto_app/forms.py:506 ominicontacto_app/forms.py:558
+#: ominicontacto_app/forms.py:510 ominicontacto_app/forms.py:562
 msgid "ID de contacto externo"
 msgstr ""
 
-#: ominicontacto_app/forms.py:508 ominicontacto_app/forms.py:552
+#: ominicontacto_app/forms.py:512 ominicontacto_app/forms.py:556
 #: ominicontacto_app/templates/agenda_contacto/agenda_agente.html:64
 #: ominicontacto_app/templates/agente/campanas_preview.html:66
 #: ominicontacto_app/templates/agente/frame/busqueda_grabacion.html:49
@@ -1275,29 +1274,31 @@ msgstr ""
 msgid "Campaña"
 msgstr ""
 
-#: ominicontacto_app/forms.py:510 ominicontacto_app/forms.py:554
+#: ominicontacto_app/forms.py:514 ominicontacto_app/forms.py:558
 #: ominicontacto_app/templates/user/user_list.html:147
+#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:99
+#: ominicontacto_app/templates/usuarios_grupos/supervisor_profile_list.html:80
 msgid "Página"
 msgstr ""
 
-#: ominicontacto_app/forms.py:511
+#: ominicontacto_app/forms.py:515
 msgid "Marcadas"
 msgstr ""
 
-#: ominicontacto_app/forms.py:513
+#: ominicontacto_app/forms.py:517
 msgid "Duración mínima"
 msgstr ""
 
-#: ominicontacto_app/forms.py:515
+#: ominicontacto_app/forms.py:519
 msgid "Calificada como gestión"
 msgstr ""
 
-#: ominicontacto_app/forms.py:518
+#: ominicontacto_app/forms.py:522
 msgid "Grabaciones por página"
 msgstr ""
 
-#: ominicontacto_app/forms.py:532 ominicontacto_app/forms.py:550
-#: ominicontacto_app/forms.py:2015 ominicontacto_app/models.py:2965
+#: ominicontacto_app/forms.py:536 ominicontacto_app/forms.py:554
+#: ominicontacto_app/forms.py:2020 ominicontacto_app/models.py:2981
 #: ominicontacto_app/services/reporte_campana_calificacion.py:77
 #: ominicontacto_app/services/reporte_respuestas_formulario.py:81
 #: ominicontacto_app/templates/agenda_contacto/listar_agendas_campana.html:52
@@ -1311,47 +1312,47 @@ msgstr ""
 msgid "Agente"
 msgstr ""
 
-#: ominicontacto_app/forms.py:544
+#: ominicontacto_app/forms.py:548
 #: ominicontacto_app/templates/busqueda_auditorias.html:77
 msgid "Pendiente"
 msgstr ""
 
-#: ominicontacto_app/forms.py:556
+#: ominicontacto_app/forms.py:560
 msgid "Grupo de agentes"
 msgstr ""
 
-#: ominicontacto_app/forms.py:560
+#: ominicontacto_app/forms.py:564
 msgid "Id del contacto"
 msgstr ""
 
-#: ominicontacto_app/forms.py:567
+#: ominicontacto_app/forms.py:571
 msgid "Status de auditoría"
 msgstr ""
 
-#: ominicontacto_app/forms.py:571
+#: ominicontacto_app/forms.py:575
 msgid "Únicamente revisadas por Agente"
 msgstr ""
 
-#: ominicontacto_app/forms.py:604
+#: ominicontacto_app/forms.py:608
 msgid "Revisada por Agente"
 msgstr ""
 
-#: ominicontacto_app/forms.py:623
+#: ominicontacto_app/forms.py:627
 msgid ""
 "Una campaña asignada a un sistema externo debe usar una base de contactos "
 "con campo de id externo definido"
 msgstr ""
 
-#: ominicontacto_app/forms.py:628
+#: ominicontacto_app/forms.py:632
 msgid ""
 "Debe cargar una base de datos antes de comenzar a configurar una campana"
 msgstr ""
 
-#: ominicontacto_app/forms.py:634
+#: ominicontacto_app/forms.py:638
 msgid "Debe seleccionar un sitio externo"
 msgstr ""
 
-#: ominicontacto_app/forms.py:647 ominicontacto_app/models.py:1311
+#: ominicontacto_app/forms.py:651 ominicontacto_app/models.py:1327
 #: ominicontacto_app/tests/tests_campanas.py:239
 #: ominicontacto_app/tests/tests_campanas.py:251
 #: ominicontacto_app/tests/tests_campanas.py:263
@@ -1359,60 +1360,60 @@ msgstr ""
 msgid "No se puede elegir un URL externo si selecciono un formulario."
 msgstr ""
 
-#: ominicontacto_app/forms.py:660
+#: ominicontacto_app/forms.py:664
 msgid ""
 "Ya existe una Campaña con ese id externo para el Sistema Externo elegido"
 msgstr ""
 
-#: ominicontacto_app/forms.py:663
+#: ominicontacto_app/forms.py:667
 msgid "No puede indicar un id externo sin elegir un Sistema Externo"
 msgstr ""
 
-#: ominicontacto_app/forms.py:671
+#: ominicontacto_app/forms.py:675
 msgid "No se puede indicar una Ruta Saliente sin un CID de Ruta Saliente."
 msgstr ""
 
-#: ominicontacto_app/forms.py:702
+#: ominicontacto_app/forms.py:706
 msgid ""
 "Los nombres de las columnas de la nueva base de datos no coinciden con la "
 "anterior"
 msgstr ""
 
-#: ominicontacto_app/forms.py:768
+#: ominicontacto_app/forms.py:772
 #, python-brace-format
 msgid ""
 "El nombre de la opción de calificación '{0}' está reservado para uso interno "
 "del sistema, por favor use otro"
 msgstr ""
 
-#: ominicontacto_app/forms.py:792
+#: ominicontacto_app/forms.py:796
 #: ominicontacto_app/tests/tests_campanas.py:1997
 msgid "Debe elegir un formulario para la gestión."
 msgstr ""
 
-#: ominicontacto_app/forms.py:814
+#: ominicontacto_app/forms.py:818
 #, python-brace-format
 msgid "Debe ingresar al menos {0} opción de calificación"
 msgstr ""
 
-#: ominicontacto_app/forms.py:817
+#: ominicontacto_app/forms.py:821
 #, python-brace-format
 msgid "Debe ingresar al menos {0} opciones de calificación"
 msgstr ""
 
-#: ominicontacto_app/forms.py:840
+#: ominicontacto_app/forms.py:844
 msgid "Rellene los campos en blanco"
 msgstr ""
 
-#: ominicontacto_app/forms.py:843
+#: ominicontacto_app/forms.py:847
 msgid "Los nombres de las opciones de calificación deben ser distintos"
 msgstr ""
 
-#: ominicontacto_app/forms.py:850
+#: ominicontacto_app/forms.py:854
 msgid "Debe escoger una opción de calificación de tipo gestión por campaña"
 msgstr ""
 
-#: ominicontacto_app/forms.py:879
+#: ominicontacto_app/forms.py:883
 #: ominicontacto_app/services/reporte_respuestas_formulario.py:87
 #: ominicontacto_app/templates/agente/reporte_agente_calificaciones.html:110
 #: ominicontacto_app/templates/agente/reporte_agente_calificaciones.html:165
@@ -1421,15 +1422,15 @@ msgstr ""
 msgid "Calificación"
 msgstr ""
 
-#: ominicontacto_app/forms.py:900
+#: ominicontacto_app/forms.py:904
 msgid "Sólo el Agente puede cambiar la calificacion a Agenda."
 msgstr ""
 
-#: ominicontacto_app/forms.py:904
+#: ominicontacto_app/forms.py:908
 msgid "No puede elegir una opción de calificacion oculta."
 msgstr ""
 
-#: ominicontacto_app/forms.py:914
+#: ominicontacto_app/forms.py:918
 #: ominicontacto_app/services/reporte_agente_calificacion.py:81
 #: ominicontacto_app/services/reporte_campana_calificacion.py:84
 #: ominicontacto_app/templates/agenda_contacto/agenda_agente.html:69
@@ -1440,124 +1441,128 @@ msgstr ""
 msgid "Observaciones"
 msgstr ""
 
-#: ominicontacto_app/forms.py:953
+#: ominicontacto_app/forms.py:957
 #: ominicontacto_app/templates/agente/reporte_agente_calificaciones.html:112
 msgid "Auditoria"
 msgstr ""
 
-#: ominicontacto_app/forms.py:954
+#: ominicontacto_app/forms.py:958
 msgid "Todas"
 msgstr ""
 
-#: ominicontacto_app/forms.py:992 ominicontacto_app/tests/test_formulario.py:74
+#: ominicontacto_app/forms.py:996 ominicontacto_app/tests/test_formulario.py:74
 msgid "No se puede crear un campo ya existente"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1001 ominicontacto_app/forms.py:1009
+#: ominicontacto_app/forms.py:1005 ominicontacto_app/forms.py:1013
 #: ominicontacto_app/tests/test_formulario.py:54
 msgid "La lista no puede estar vacía"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1005 ominicontacto_app/forms.py:1007
-#: ominicontacto_app/forms.py:1468 ominicontacto_app/forms.py:1472
+#: ominicontacto_app/forms.py:1009 ominicontacto_app/forms.py:1011
+#: ominicontacto_app/forms.py:1472 ominicontacto_app/forms.py:1476
 msgid "Formato inválido"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1166
+#: ominicontacto_app/forms.py:1170
 msgid "Ya existe un contacto con ese id externo en la base de datos"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1202
+#: ominicontacto_app/forms.py:1206
 msgid "Todos los campos ocultos deben marcarse como bloqueados"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1212
+#: ominicontacto_app/forms.py:1216
 msgid "Demasiados campos bloqueados seleccionados."
 msgstr ""
 
-#: ominicontacto_app/forms.py:1366 ominicontacto_app/forms.py:1783
+#: ominicontacto_app/forms.py:1370 ominicontacto_app/forms.py:1787
 #: ominicontacto_app/tests/tests_campanas.py:288
 #: ominicontacto_app/tests/tests_campanas.py:299
 msgid "No puede seleccionar una BD vacia"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1406
+#: ominicontacto_app/forms.py:1410
 msgid "Debe seleccionar algun día"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1480
+#: ominicontacto_app/forms.py:1484
 msgid "Si el disparador es el servidor, no puede haber un objetivo."
 msgstr ""
 
-#: ominicontacto_app/forms.py:1484
+#: ominicontacto_app/forms.py:1488
 msgid "Si el formato es JSON, no puede haber un objetivo."
 msgstr ""
 
-#: ominicontacto_app/forms.py:1487
+#: ominicontacto_app/forms.py:1491
 msgid "Debe indicar un objetivo."
 msgstr ""
 
-#: ominicontacto_app/forms.py:1495
+#: ominicontacto_app/forms.py:1499
 msgid "Si el método es GET, no debe indicarse formato."
 msgstr ""
 
-#: ominicontacto_app/forms.py:1498
+#: ominicontacto_app/forms.py:1502
 msgid "Si el método es POST, debe seleccionar un formato válido."
 msgstr ""
 
-#: ominicontacto_app/forms.py:1537
+#: ominicontacto_app/forms.py:1541
 msgid "Los nombres de los estados de las reglas deben ser distintos"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1606
+#: ominicontacto_app/forms.py:1610
 msgid ""
 " Es recomendable que este valor sea menor al dial timeout\n"
 "            definido en la ruta saliente. En segundos"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1628
+#: ominicontacto_app/forms.py:1632
 msgid ""
 "El valor de dial timeout deberá estar comprendido entre 10 y 90 segundos"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1665
+#: ominicontacto_app/forms.py:1669
 msgid "Supervisor Gerente"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1666
+#: ominicontacto_app/forms.py:1670
 msgid "Administrador"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1667
+#: ominicontacto_app/forms.py:1671
 msgid "Cliente"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1795
+#: ominicontacto_app/forms.py:1799
 msgid "Esta calificación está reservada para el sistema"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1810
+#: ominicontacto_app/forms.py:1814
 msgid ""
 "Seleccione el archivo de audio que desea para la Campaña. Si ya existe uno y "
 "guarda otro, el audio será reemplazado."
 msgstr ""
 
-#: ominicontacto_app/forms.py:1829
+#: ominicontacto_app/forms.py:1833
 msgid "Escoja una campaña"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1853
+#: ominicontacto_app/forms.py:1857
 msgid "Permitir el acceso a las grabaciones"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1874
+#: ominicontacto_app/forms.py:1858
+msgid "Permitir el acceso al dashboard"
+msgstr ""
+
+#: ominicontacto_app/forms.py:1879
 msgid "Valor"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1875 ominicontacto_app/models.py:209
-#: ominicontacto_app/models.py:440 ominicontacto_app/models.py:1671
-#: ominicontacto_app/models.py:2160 ominicontacto_app/models.py:2466
-#: ominicontacto_app/models.py:2917 ominicontacto_app/models.py:3419
+#: ominicontacto_app/forms.py:1880 ominicontacto_app/models.py:209
+#: ominicontacto_app/models.py:446 ominicontacto_app/models.py:1687
+#: ominicontacto_app/models.py:2176 ominicontacto_app/models.py:2482
+#: ominicontacto_app/models.py:2933 ominicontacto_app/models.py:3435
 #: ominicontacto_app/templates/calificacion/calificacion_list.html:31
 #: ominicontacto_app/templates/campanas/campana_dialer/campana_list.html:50
 #: ominicontacto_app/templates/campanas/campana_dialer/campana_list.html:149
@@ -1580,70 +1585,71 @@ msgstr ""
 #: ominicontacto_app/templates/pausa_list.html:32
 #: ominicontacto_app/templates/pausa_list.html:73
 #: ominicontacto_app/templates/user/user_list.html:45
+#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:124
 #: ominicontacto_app/templates/usuarios_grupos/grupo_list.html:31
 msgid "Nombre"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1883
+#: ominicontacto_app/forms.py:1888
 msgid "El valor debe corresponder a un campo de la base de datos de contactos"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1886
+#: ominicontacto_app/forms.py:1891
 msgid "El valor debe corresponder a un campo válido de la campaña"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1889
+#: ominicontacto_app/forms.py:1894
 msgid "El valor debe corresponder a un dato válido de la llamada"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1895
+#: ominicontacto_app/forms.py:1900
 #, python-brace-format
 msgid "El valor debe tener el prefijo {0}"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1903
+#: ominicontacto_app/forms.py:1908
 msgid "Debe definir un nombre para el parámetro"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1921
+#: ominicontacto_app/forms.py:1926
 msgid "Los agentes deben ser distintos"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1938
+#: ominicontacto_app/forms.py:1943
 msgid "Inserte su nombre o empresa"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1941
+#: ominicontacto_app/forms.py:1946
 msgid "Inserte su contraseña de acceso"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1944
+#: ominicontacto_app/forms.py:1949
 msgid "Inserte su correo electrónico"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1947
+#: ominicontacto_app/forms.py:1952
 msgid "Inserte su teléfono"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1962
+#: ominicontacto_app/forms.py:1967
 msgid "Asignar proporcionalmente"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1964
+#: ominicontacto_app/forms.py:1969
 msgid "En orden aleatorio"
 msgstr ""
 
-#: ominicontacto_app/forms.py:1975
+#: ominicontacto_app/forms.py:1980
 msgid ""
 "Debe seleccionar la asignación proporcional si quiere escogerla asignación "
 "en orden aleatorio"
 msgstr ""
 
-#: ominicontacto_app/forms.py:2003
+#: ominicontacto_app/forms.py:2008
 msgid "Campo desactivación"
 msgstr ""
 
-#: ominicontacto_app/forms.py:2025
+#: ominicontacto_app/forms.py:2030
 msgid "La fecha inicial debe ser anterior a la final"
 msgstr ""
 
@@ -1707,7 +1713,7 @@ msgstr ""
 msgid "Seteando Usuario {0} como BORRADO"
 msgstr ""
 
-#: ominicontacto_app/models.py:211 ominicontacto_app/models.py:3484
+#: ominicontacto_app/models.py:211 ominicontacto_app/models.py:3500
 msgid "Auto atender entrantes"
 msgstr ""
 
@@ -1715,11 +1721,11 @@ msgstr ""
 msgid "Auto atender dailer"
 msgstr ""
 
-#: ominicontacto_app/models.py:213 ominicontacto_app/models.py:3491
+#: ominicontacto_app/models.py:213 ominicontacto_app/models.py:3507
 msgid "Despausar automaticamente"
 msgstr ""
 
-#: ominicontacto_app/models.py:215 ominicontacto_app/models.py:3495
+#: ominicontacto_app/models.py:215 ominicontacto_app/models.py:3511
 msgid "Forzar calificación"
 msgstr ""
 
@@ -1732,154 +1738,157 @@ msgstr ""
 msgid "Acceso grabaciones agentes"
 msgstr ""
 
-#: ominicontacto_app/models.py:224 ominicontacto_app/models.py:282
+#: ominicontacto_app/models.py:220
+msgid "Acceso dashboard agentes"
+msgstr ""
+
+#: ominicontacto_app/models.py:226 ominicontacto_app/models.py:284
 msgid "Grupo"
 msgstr ""
 
-#: ominicontacto_app/models.py:225
+#: ominicontacto_app/models.py:227
 #: ominicontacto_app/templates/campanas/campana_entrante/queue_member.html:44
-#: ominicontacto_app/templates/queue/queue_member.html:44
 msgid "Grupos"
 msgstr ""
 
-#: ominicontacto_app/models.py:332
+#: ominicontacto_app/models.py:330
 #, python-brace-format
 msgid "Seteando Agente {0} como BORRADO"
 msgstr ""
 
-#: ominicontacto_app/models.py:365
+#: ominicontacto_app/models.py:363
 #, python-brace-format
 msgid "Seteando Supervisor {0} como BORRADO"
 msgstr ""
 
-#: ominicontacto_app/models.py:423
+#: ominicontacto_app/models.py:425
 #, python-brace-format
 msgid "Seteando Cliente Webphone {0} como BORRADO"
 msgstr ""
 
-#: ominicontacto_app/models.py:493
+#: ominicontacto_app/models.py:499
 msgid "Texto"
 msgstr ""
 
-#: ominicontacto_app/models.py:495
+#: ominicontacto_app/models.py:501
 msgid "Lista"
 msgstr ""
 
-#: ominicontacto_app/models.py:496
+#: ominicontacto_app/models.py:502
 msgid "Caja de Texto de Area"
 msgstr ""
 
-#: ominicontacto_app/models.py:511
+#: ominicontacto_app/models.py:517
 #, python-brace-format
 msgid "campo {0} del formulario {1}"
 msgstr ""
 
-#: ominicontacto_app/models.py:591
+#: ominicontacto_app/models.py:597
 #, python-brace-format
 msgid "(Eliminado) {0}"
 msgstr ""
 
-#: ominicontacto_app/models.py:599
+#: ominicontacto_app/models.py:605
 msgid "No se puede borrar un Archivo de Audio en uso por IVR"
 msgstr ""
 
-#: ominicontacto_app/models.py:601
+#: ominicontacto_app/models.py:607
 #: ominicontacto_app/views_archivo_de_audio.py:163
 msgid "No se puede borrar un Archivo de Audio en uso en Campañas"
 msgstr ""
 
-#: ominicontacto_app/models.py:603
+#: ominicontacto_app/models.py:609
 #, python-format
 msgid "Seteando ArchivoDeAudio %s como BORRADO"
 msgstr ""
 
-#: ominicontacto_app/models.py:990
+#: ominicontacto_app/models.py:996
 msgid "Activa"
 msgstr ""
 
-#: ominicontacto_app/models.py:991
+#: ominicontacto_app/models.py:997
 msgid "Finalizada"
 msgstr ""
 
-#: ominicontacto_app/models.py:992 ominicontacto_app/views_grabacion.py:105
+#: ominicontacto_app/models.py:998 ominicontacto_app/views_grabacion.py:105
 msgid "Borrada"
 msgstr ""
 
-#: ominicontacto_app/models.py:993
+#: ominicontacto_app/models.py:999
 msgid "Pausada"
 msgstr ""
 
-#: ominicontacto_app/models.py:994
+#: ominicontacto_app/models.py:1000
 msgid "Inactiva"
 msgstr ""
 
-#: ominicontacto_app/models.py:996
+#: ominicontacto_app/models.py:1002
 msgid "Template Activo"
 msgstr ""
 
-#: ominicontacto_app/models.py:997
+#: ominicontacto_app/models.py:1003
 msgid "Template Borrado"
 msgstr ""
 
-#: ominicontacto_app/models.py:1001
+#: ominicontacto_app/models.py:1007
 msgid "Manual"
 msgstr ""
 
-#: ominicontacto_app/models.py:1003
+#: ominicontacto_app/models.py:1009
 msgid "Dialer"
 msgstr ""
 
-#: ominicontacto_app/models.py:1005
+#: ominicontacto_app/models.py:1011
 msgid "Entrante"
 msgstr ""
 
-#: ominicontacto_app/models.py:1007
+#: ominicontacto_app/models.py:1013
 msgid "Preview"
 msgstr ""
 
-#: ominicontacto_app/models.py:1022
+#: ominicontacto_app/models.py:1028
 #: ominicontacto_app/templates/formulario/elimina_field_formulario.html:26
 msgid "Formulario"
 msgstr ""
 
-#: ominicontacto_app/models.py:1023
+#: ominicontacto_app/models.py:1029
 msgid "Url externa"
 msgstr ""
 
-#: ominicontacto_app/models.py:1092 ominicontacto_app/models.py:1106
+#: ominicontacto_app/models.py:1098 ominicontacto_app/models.py:1112
 #, python-brace-format
 msgid "Seteando campana {0} como ESTADO_ACTIVA"
 msgstr ""
 
-#: ominicontacto_app/models.py:1113
+#: ominicontacto_app/models.py:1119
 #, python-brace-format
 msgid "Seteando campana {0} como ESTADO_BORRADA"
 msgstr ""
 
-#: ominicontacto_app/models.py:1123
+#: ominicontacto_app/models.py:1129
 #, python-brace-format
 msgid "Seteando campana {0} como ESTADO_FINALIZADA"
 msgstr ""
 
-#: ominicontacto_app/models.py:1157
+#: ominicontacto_app/models.py:1163
 #, python-brace-format
 msgid "Seteando campana-->template {0} como BORRADA"
 msgstr ""
 
-#: ominicontacto_app/models.py:1381 ominicontacto_app/models.py:1386
+#: ominicontacto_app/models.py:1397 ominicontacto_app/models.py:1402
 #: ominicontacto_app/templates/agente/reporte_agente_calificaciones.html:169
 msgid "Gestión"
 msgstr ""
 
-#: ominicontacto_app/models.py:1382 ominicontacto_app/models.py:1387
+#: ominicontacto_app/models.py:1398 ominicontacto_app/models.py:1403
 msgid "Sin acción"
 msgstr ""
 
-#: ominicontacto_app/models.py:1383
+#: ominicontacto_app/models.py:1399
 msgid "Agenda"
 msgstr ""
 
-#: ominicontacto_app/models.py:1394
+#: ominicontacto_app/models.py:1410
 #: ominicontacto_app/templates/base_datos_contacto/base_datos_ocultas.html:53
 #: ominicontacto_app/templates/base_datos_contacto/lista_base_datos_contacto.html:77
 #: ominicontacto_app/templates/campanas/campana_dialer/campana_list.html:435
@@ -1895,139 +1904,139 @@ msgstr ""
 msgid "Ocultar"
 msgstr ""
 
-#: ominicontacto_app/models.py:1397
+#: ominicontacto_app/models.py:1413
 #, python-brace-format
 msgid "Opción \"{0}\" para campaña \"{1}\" de tipo \"{2}\""
 msgstr ""
 
-#: ominicontacto_app/models.py:1451
+#: ominicontacto_app/models.py:1467
 msgid "Sí"
 msgstr ""
 
-#: ominicontacto_app/models.py:1452
+#: ominicontacto_app/models.py:1468
 msgid "No"
 msgstr ""
 
-#: ominicontacto_app/models.py:1453
+#: ominicontacto_app/models.py:1469
 msgid "Una sola vez"
 msgstr ""
 
-#: ominicontacto_app/models.py:1632
+#: ominicontacto_app/models.py:1648
 #, python-brace-format
 msgid "agente: {0} para la campana {1} "
 msgstr ""
 
-#: ominicontacto_app/models.py:1667
+#: ominicontacto_app/models.py:1683
 msgid "Productiva"
 msgstr ""
 
-#: ominicontacto_app/models.py:1669
+#: ominicontacto_app/models.py:1685
 msgid "Recreativa"
 msgstr ""
 
-#: ominicontacto_app/models.py:1673
+#: ominicontacto_app/models.py:1689
 #: ominicontacto_app/templates/agenda_contacto/agenda_agente.html:68
-#: ominicontacto_app/templates/agente/base_agente.html:817
+#: ominicontacto_app/templates/agente/base_agente.html:823
 #: ominicontacto_app/templates/agente/frame/agenda_contacto/agenda_detalle.html:57
 #: ominicontacto_app/templates/formulario/formulario_field.html:98
 msgid "Tipo"
 msgstr ""
 
-#: ominicontacto_app/models.py:1723 ominicontacto_app/models.py:1749
+#: ominicontacto_app/models.py:1739 ominicontacto_app/models.py:1765
 msgid "No se encontro base datos en estado ESTADO_EN_DEFINICION"
 msgstr ""
 
-#: ominicontacto_app/models.py:1736
+#: ominicontacto_app/models.py:1752
 msgid "No se encontro base datos en estado ESTADO_EN_DEFINICION o ACTULIZADA"
 msgstr ""
 
-#: ominicontacto_app/models.py:1775
+#: ominicontacto_app/models.py:1791
 msgid "La cantidad de columnas no ha sido seteada"
 msgstr ""
 
-#: ominicontacto_app/models.py:1794
+#: ominicontacto_app/models.py:1810
 msgid "No se ha seteado 'columna_con_telefono'"
 msgstr ""
 
-#: ominicontacto_app/models.py:1976
+#: ominicontacto_app/models.py:1992
 msgid "No se ha seteado si primer fila es encabezado"
 msgstr ""
 
-#: ominicontacto_app/models.py:1995
+#: ominicontacto_app/models.py:2011
 #, python-brace-format
 msgid "Error: {0} detectada al desserializar datos extras. Datos extras: '{1}'"
 msgstr ""
 
-#: ominicontacto_app/models.py:2111
+#: ominicontacto_app/models.py:2127
 #, python-brace-format
 msgid "Error: {0} detectada al desserializar metadata de la bd {1}"
 msgstr ""
 
-#: ominicontacto_app/models.py:2128
+#: ominicontacto_app/models.py:2144
 #, python-brace-format
 msgid "Error: {0} detectada al serializar metadata de la bd {1}"
 msgstr ""
 
-#: ominicontacto_app/models.py:2136
+#: ominicontacto_app/models.py:2152
 msgid "GENERICO"
 msgstr ""
 
-#: ominicontacto_app/models.py:2137
+#: ominicontacto_app/models.py:2153
 msgid "FECHA"
 msgstr ""
 
-#: ominicontacto_app/models.py:2138
+#: ominicontacto_app/models.py:2154
 msgid "HORA"
 msgstr ""
 
-#: ominicontacto_app/models.py:2141
+#: ominicontacto_app/models.py:2157
 msgid "Dato Genérico"
 msgstr ""
 
-#: ominicontacto_app/models.py:2143
+#: ominicontacto_app/models.py:2159
 #: ominicontacto_app/templates/agenda_contacto/agenda_agente.html:67
 #: ominicontacto_app/templates/agente/agenda_agente.html:77
-#: ominicontacto_app/templates/agente/base_agente.html:823
+#: ominicontacto_app/templates/agente/base_agente.html:829
 #: ominicontacto_app/templates/agente/frame/agenda_contacto/agenda_detalle.html:53
 msgid "Hora"
 msgstr ""
 
-#: ominicontacto_app/models.py:2152
+#: ominicontacto_app/models.py:2168
 msgid "En Definición"
 msgstr ""
 
-#: ominicontacto_app/models.py:2153
+#: ominicontacto_app/models.py:2169
 msgid "Definida"
 msgstr ""
 
-#: ominicontacto_app/models.py:2154
+#: ominicontacto_app/models.py:2170
 msgid "En Depuracion"
 msgstr ""
 
-#: ominicontacto_app/models.py:2155
+#: ominicontacto_app/models.py:2171
 msgid "Depurada"
 msgstr ""
 
-#: ominicontacto_app/models.py:2156
+#: ominicontacto_app/models.py:2172
 msgid "Definida en actualizacion"
 msgstr ""
 
-#: ominicontacto_app/models.py:2163 ominicontacto_app/models.py:2469
-#: ominicontacto_app/models.py:2920
+#: ominicontacto_app/models.py:2179 ominicontacto_app/models.py:2485
+#: ominicontacto_app/models.py:2936
 msgid "Fecha alta"
 msgstr ""
 
-#: ominicontacto_app/models.py:2168 ominicontacto_app/models.py:2474
-#: ominicontacto_app/models.py:2925
+#: ominicontacto_app/models.py:2184 ominicontacto_app/models.py:2490
+#: ominicontacto_app/models.py:2941
 msgid "Archivo de importación"
 msgstr ""
 
-#: ominicontacto_app/models.py:2171 ominicontacto_app/models.py:2477
-#: ominicontacto_app/models.py:2928
+#: ominicontacto_app/models.py:2187 ominicontacto_app/models.py:2493
+#: ominicontacto_app/models.py:2944
 msgid "Nombre Archivo de importación"
 msgstr ""
 
-#: ominicontacto_app/models.py:2187 ominicontacto_app/models.py:2188
+#: ominicontacto_app/models.py:2203 ominicontacto_app/models.py:2204
 #: ominicontacto_app/templates/campanas/campana_dialer/campana_list.html:53
 #: ominicontacto_app/templates/campanas/campana_dialer/campana_list.html:152
 #: ominicontacto_app/templates/campanas/campana_dialer/campana_list.html:234
@@ -2040,159 +2049,159 @@ msgstr ""
 msgid "Base de datos"
 msgstr ""
 
-#: ominicontacto_app/models.py:2205
+#: ominicontacto_app/models.py:2221
 #, python-brace-format
 msgid "Seteando base datos contacto {0} como definida"
 msgstr ""
 
-#: ominicontacto_app/models.py:2368
+#: ominicontacto_app/models.py:2384
 msgid "No se encontro contactos con este base de datos de contactos"
 msgstr ""
 
-#: ominicontacto_app/models.py:2375
+#: ominicontacto_app/models.py:2391
 msgid "No se encontraron contactos con esas bases de datos de contactos"
 msgstr ""
 
-#: ominicontacto_app/models.py:2526
+#: ominicontacto_app/models.py:2542
 msgid "No se encontro calificaciones "
 msgstr ""
 
-#: ominicontacto_app/models.py:2620
+#: ominicontacto_app/models.py:2636
 msgid "Ya existe una calificación para este contacto en la campaña"
 msgstr ""
 
-#: ominicontacto_app/models.py:2735
+#: ominicontacto_app/models.py:2751
 msgid "Aprobada"
 msgstr ""
 
-#: ominicontacto_app/models.py:2736
+#: ominicontacto_app/models.py:2752
 msgid "Rechazada"
 msgstr ""
 
-#: ominicontacto_app/models.py:2737
+#: ominicontacto_app/models.py:2753
 msgid "Observada"
 msgstr ""
 
-#: ominicontacto_app/models.py:2763
+#: ominicontacto_app/models.py:2779
 #, python-brace-format
 msgid "Auditoría de calificacion con id={0} fue {1}"
 msgstr ""
 
-#: ominicontacto_app/models.py:2791
+#: ominicontacto_app/models.py:2807
 msgid "No se encontraron eventos en el dia de la fecha"
 msgstr ""
 
-#: ominicontacto_app/models.py:2966
+#: ominicontacto_app/models.py:2982
 msgid "Automático"
 msgstr ""
 
-#: ominicontacto_app/models.py:2967
+#: ominicontacto_app/models.py:2983
 msgid "Servidor"
 msgstr ""
 
-#: ominicontacto_app/models.py:2974
+#: ominicontacto_app/models.py:2990
 msgid "GET"
 msgstr ""
 
-#: ominicontacto_app/models.py:2975
+#: ominicontacto_app/models.py:2991
 msgid "POST"
 msgstr ""
 
-#: ominicontacto_app/models.py:2994
+#: ominicontacto_app/models.py:3010
 msgid "Embebido"
 msgstr ""
 
-#: ominicontacto_app/models.py:2995
+#: ominicontacto_app/models.py:3011
 msgid "Nueva pestaña"
 msgstr ""
 
-#: ominicontacto_app/models.py:3108
+#: ominicontacto_app/models.py:3124
 #: ominicontacto_app/services/estadisticas_campana.py:52
 #: ominicontacto_app/services/estadisticas_campana.py:298
 #: ominicontacto_app/services/estadisticas_campana.py:323
 msgid "Ocupado"
 msgstr ""
 
-#: ominicontacto_app/models.py:3109
+#: ominicontacto_app/models.py:3125
 #: ominicontacto_app/services/estadisticas_campana.py:56
 msgid "Contestador"
 msgstr ""
 
-#: ominicontacto_app/models.py:3110
+#: ominicontacto_app/models.py:3126
 msgid "No atendido"
 msgstr ""
 
-#: ominicontacto_app/models.py:3111
+#: ominicontacto_app/models.py:3127
 msgid "Rechazado"
 msgstr ""
 
-#: ominicontacto_app/models.py:3112
+#: ominicontacto_app/models.py:3128
 msgid "Timeout"
 msgstr ""
 
-#: ominicontacto_app/models.py:3115
+#: ominicontacto_app/models.py:3131
 msgid "CONTESTADOR"
 msgstr ""
 
-#: ominicontacto_app/models.py:3175
+#: ominicontacto_app/models.py:3191
 msgid "Opción de calificación"
 msgstr ""
 
-#: ominicontacto_app/models.py:3176
+#: ominicontacto_app/models.py:3192
 #: ominicontacto_app/templates/campanas/campana_dialer/reglas_incidencia_calificacion_list.html:34
 msgid "Cantidad de reintentos"
 msgstr ""
 
-#: ominicontacto_app/models.py:3177
+#: ominicontacto_app/models.py:3193
 msgid "Tiempo entre reintentos (seg)"
 msgstr ""
 
-#: ominicontacto_app/models.py:3179
+#: ominicontacto_app/models.py:3195
 msgid "Modo"
 msgstr ""
 
-#: ominicontacto_app/models.py:3182
+#: ominicontacto_app/models.py:3198
 msgid "Regla de incidencia por calificación"
 msgstr ""
 
-#: ominicontacto_app/models.py:3410
+#: ominicontacto_app/models.py:3426
 msgid "Dato de Campaña"
 msgstr ""
 
-#: ominicontacto_app/models.py:3411
+#: ominicontacto_app/models.py:3427
 msgid "Dato de Contacto"
 msgstr ""
 
-#: ominicontacto_app/models.py:3412
+#: ominicontacto_app/models.py:3428
 msgid "Dato de Llamada"
 msgstr ""
 
-#: ominicontacto_app/models.py:3413
+#: ominicontacto_app/models.py:3429
 msgid "Fijo"
 msgstr ""
 
-#: ominicontacto_app/models.py:3414
+#: ominicontacto_app/models.py:3430
 msgid "Dato de Dialplan"
 msgstr ""
 
-#: ominicontacto_app/models.py:3418
+#: ominicontacto_app/models.py:3434
 msgid "ID de Campaña"
 msgstr ""
 
-#: ominicontacto_app/models.py:3420
+#: ominicontacto_app/models.py:3436
 msgid "Tipo de Campaña"
 msgstr ""
 
-#: ominicontacto_app/models.py:3425
+#: ominicontacto_app/models.py:3441
 msgid "ID de Llamada"
 msgstr ""
 
-#: ominicontacto_app/models.py:3426
+#: ominicontacto_app/models.py:3442
 msgid "ID de Agente"
 msgstr ""
 
-#: ominicontacto_app/models.py:3427
-#: ominicontacto_app/templates/agente/base_agente.html:717
+#: ominicontacto_app/models.py:3443
+#: ominicontacto_app/templates/agente/base_agente.html:723
 #: ominicontacto_app/templates/agente/contactos_content.html:60
 #: ominicontacto_app/templates/agente/contactos_telefonos_repetidos.html:59
 #: ominicontacto_app/templates/agente/identificar_contacto.html:75
@@ -2204,35 +2213,35 @@ msgstr ""
 msgid "Teléfono"
 msgstr ""
 
-#: ominicontacto_app/models.py:3428
+#: ominicontacto_app/models.py:3444
 msgid "ID de Cliente"
 msgstr ""
 
-#: ominicontacto_app/models.py:3429
+#: ominicontacto_app/models.py:3445
 msgid "Archivo de Grabación"
 msgstr ""
 
-#: ominicontacto_app/models.py:3430
+#: ominicontacto_app/models.py:3446
 msgid "Tiempo de espera"
 msgstr ""
 
-#: ominicontacto_app/models.py:3482
+#: ominicontacto_app/models.py:3498
 msgid "Configurar auto atender entrantes"
 msgstr ""
 
-#: ominicontacto_app/models.py:3486
+#: ominicontacto_app/models.py:3502
 msgid "Configurar auto atender dialer"
 msgstr ""
 
-#: ominicontacto_app/models.py:3487
+#: ominicontacto_app/models.py:3503
 msgid "Auto atender dialer"
 msgstr ""
 
-#: ominicontacto_app/models.py:3489
+#: ominicontacto_app/models.py:3505
 msgid "Configurar despausar automaticamente"
 msgstr ""
 
-#: ominicontacto_app/models.py:3493
+#: ominicontacto_app/models.py:3509
 msgid "Configurar forzar calificación"
 msgstr ""
 
@@ -2284,7 +2293,7 @@ msgstr ""
 msgid "El archivo CSV posee menos de 2 filas"
 msgstr ""
 
-#: ominicontacto_app/services/asterisk/redis_database.py:107
+#: ominicontacto_app/services/asterisk/redis_database.py:110
 #, python-brace-format
 msgid "Error al intentar Eliminar families de {0}. Error: {1}"
 msgstr ""
@@ -3114,6 +3123,8 @@ msgstr ""
 #: ominicontacto_app/templates/agente/agenda_agente.html:65
 #: ominicontacto_app/templates/agente/reporte_agente_calificaciones.html:96
 #: ominicontacto_app/templates/user/user_list.html:35
+#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:37
+#: ominicontacto_app/templates/usuarios_grupos/supervisor_profile_list.html:32
 msgid "Filtrar"
 msgstr ""
 
@@ -3188,7 +3199,7 @@ msgid "Reasignar Agenda"
 msgstr ""
 
 #: ominicontacto_app/templates/agente/agenda_agente.html:49
-#: ominicontacto_app/templates/agente/base_agente.html:585
+#: ominicontacto_app/templates/agente/base_agente.html:587
 msgid "Agendas"
 msgstr ""
 
@@ -3277,7 +3288,7 @@ msgstr ""
 #: ominicontacto_app/templates/sitio_externo/create_update_form.html:74
 #: ominicontacto_app/templates/user/force_password_change.html:89
 #: ominicontacto_app/templates/user/user_create_update_form.html:31
-#: ominicontacto_app/templates/usuarios_grupos/grupo_create_update.html:65
+#: ominicontacto_app/templates/usuarios_grupos/grupo_create_update.html:73
 msgid "Guardar"
 msgstr ""
 
@@ -3403,7 +3414,7 @@ msgid "Mensajes"
 msgstr ""
 
 #: ominicontacto_app/templates/agente/base_agente.html:424
-#: ominicontacto_app/templates/agente/base_agente.html:720
+#: ominicontacto_app/templates/agente/base_agente.html:726
 msgid "Registro"
 msgstr ""
 
@@ -3448,6 +3459,7 @@ msgstr ""
 #: ominicontacto_app/templates/campanas/campana_manual/campana_list_base.html:91
 #: ominicontacto_app/templates/campanas/campana_preview/campana_list.html:220
 #: ominicontacto_app/templates/campanas/campana_preview/campana_list.html:236
+#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:133
 msgid "Cerrar"
 msgstr ""
 
@@ -3467,123 +3479,123 @@ msgstr ""
 msgid "Fin"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:568
+#: ominicontacto_app/templates/agente/base_agente.html:569
 msgid "Dashboard"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:576
+#: ominicontacto_app/templates/agente/base_agente.html:578
 msgid "Nuevo contacto"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:579
+#: ominicontacto_app/templates/agente/base_agente.html:581
 #: ominicontacto_app/templates/base_datos_contacto/base_datos_ocultas.html:42
 #: ominicontacto_app/templates/base_datos_contacto/lista_base_datos_contacto.html:66
 msgid "Lista de contactos"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:600
+#: ominicontacto_app/templates/agente/base_agente.html:602
 msgid "Grabaciones"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:655
+#: ominicontacto_app/templates/agente/base_agente.html:657
 #: ominicontacto_app/templates/base.html:86
 #: ominicontacto_app/templates/user/force_password_change.html:74
 msgid "Salir"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:665
+#: ominicontacto_app/templates/agente/base_agente.html:667
 msgid "video"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:676
+#: ominicontacto_app/templates/agente/base_agente.html:678
 msgid "Operación:"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:680
+#: ominicontacto_app/templates/agente/base_agente.html:682
 msgid "Pausa:"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:691
+#: ominicontacto_app/templates/agente/base_agente.html:693
 msgid "Obtener contacto preview"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:697
+#: ominicontacto_app/templates/agente/base_agente.html:699
 #: ominicontacto_app/templates/campanas/campana_dialer/campana_list.html:90
 msgid "Pausar"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:700
+#: ominicontacto_app/templates/agente/base_agente.html:702
 msgid "Reaundar"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:764
+#: ominicontacto_app/templates/agente/base_agente.html:770
 #: ominicontacto_app/templates/agente/identificar_contacto.html:95
 #: ominicontacto_app/templates/contactos/busqueda_contacto.html:78
 msgid "Llamar"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:767
+#: ominicontacto_app/templates/agente/base_agente.html:773
 msgid "Finalizar llamada"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:770
+#: ominicontacto_app/templates/agente/base_agente.html:776
 msgid "Rellamar"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:773
+#: ominicontacto_app/templates/agente/base_agente.html:779
 msgid "Marcar Llamada"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:776
+#: ominicontacto_app/templates/agente/base_agente.html:782
 msgid "Grabar Llamada"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:797
+#: ominicontacto_app/templates/agente/base_agente.html:803
 msgid "Transfer"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:798
+#: ominicontacto_app/templates/agente/base_agente.html:804
 msgid "Confer"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:801
+#: ominicontacto_app/templates/agente/base_agente.html:807
 msgid "Cancel Transfer"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:802
+#: ominicontacto_app/templates/agente/base_agente.html:808
 msgid "Hold"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:805
+#: ominicontacto_app/templates/agente/base_agente.html:811
 msgid "Campaña: "
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:808
+#: ominicontacto_app/templates/agente/base_agente.html:814
 msgid "Llamar Fuera de Campaña: "
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:820
+#: ominicontacto_app/templates/agente/base_agente.html:826
 #: ominicontacto_app/templates/campanas/campana_entrante/llamadas_activas.html:34
 msgid "Número"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:862
+#: ominicontacto_app/templates/agente/base_agente.html:868
 msgid "Webphone"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:868
+#: ominicontacto_app/templates/agente/base_agente.html:874
 msgid "SMS"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:874
+#: ominicontacto_app/templates/agente/base_agente.html:880
 msgid "Webchat"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:880
+#: ominicontacto_app/templates/agente/base_agente.html:886
 msgid "Social chat"
 msgstr ""
 
-#: ominicontacto_app/templates/agente/base_agente.html:887
+#: ominicontacto_app/templates/agente/base_agente.html:893
 msgid "Email"
 msgstr ""
 
@@ -3724,6 +3736,8 @@ msgstr ""
 #: ominicontacto_app/templates/busqueda_auditorias.html:96
 #: ominicontacto_app/templates/busqueda_grabacion.html:194
 #: ominicontacto_app/templates/user/user_list.html:141
+#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:93
+#: ominicontacto_app/templates/usuarios_grupos/supervisor_profile_list.html:74
 msgid "Anterior"
 msgstr ""
 
@@ -3732,6 +3746,8 @@ msgstr ""
 #: ominicontacto_app/templates/busqueda_grabacion.html:203
 #: ominicontacto_app/templates/queue/create_update_queue.html:42
 #: ominicontacto_app/templates/user/user_list.html:154
+#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:106
+#: ominicontacto_app/templates/usuarios_grupos/supervisor_profile_list.html:87
 msgid "Siguiente"
 msgstr ""
 
@@ -4178,7 +4194,7 @@ msgstr ""
 
 #: ominicontacto_app/templates/campanas/adicionar_agentes_base.html:41
 #: ominicontacto_app/templates/campanas/campana_entrante/queue_member.html:61
-#: ominicontacto_app/templates/queue/queue_member.html:61
+#: ominicontacto_app/templates/queue/queue_member.html:60
 msgid "Penalty"
 msgstr ""
 
@@ -4516,7 +4532,7 @@ msgstr ""
 #: ominicontacto_app/templates/campanas/campana_manual/create_update_queue.html:97
 #: ominicontacto_app/templates/campanas/wizard_base.html:54
 #: ominicontacto_app/templates/formulario/formulario_preview.html:40
-#: ominicontacto_app/templates/queue/queue_member.html:85
+#: ominicontacto_app/templates/queue/queue_member.html:97
 msgid "Finalizar"
 msgstr ""
 
@@ -5285,19 +5301,17 @@ msgid "Campaña Entrante: Interacción con Sitio Externo"
 msgstr ""
 
 #: ominicontacto_app/templates/campanas/campana_entrante/queue_member.html:26
-#: ominicontacto_app/templates/queue/queue_member.html:26
 #, python-format
 msgid "Campaña %(campana_nombre)s"
 msgstr ""
 
 #: ominicontacto_app/templates/campanas/campana_entrante/queue_member.html:37
-#: ominicontacto_app/templates/queue/queue_member.html:37
 msgid "Agregar agente"
 msgstr ""
 
 #: ominicontacto_app/templates/campanas/campana_entrante/queue_member.html:49
 #: ominicontacto_app/templates/grupo_agentes.html:11
-#: ominicontacto_app/templates/queue/queue_member.html:49
+#: ominicontacto_app/templates/queue/queue_member.html:48
 msgid "Agregar grupo"
 msgstr ""
 
@@ -5306,12 +5320,10 @@ msgid "interface"
 msgstr ""
 
 #: ominicontacto_app/templates/campanas/campana_entrante/queue_member.html:71
-#: ominicontacto_app/templates/queue/queue_member.html:71
 msgid "Remover"
 msgstr ""
 
 #: ominicontacto_app/templates/campanas/campana_entrante/queue_member.html:76
-#: ominicontacto_app/templates/queue/queue_member.html:76
 msgid "No hay agentes agreados en está cola."
 msgstr ""
 
@@ -5572,6 +5584,7 @@ msgid "prev step"
 msgstr ""
 
 #: ominicontacto_app/templates/campanas/wizard_base.html:50
+#: ominicontacto_app/templates/queue/queue_member.html:96
 msgid "Cargando..."
 msgstr ""
 
@@ -5822,6 +5835,7 @@ msgid "Addons"
 msgstr ""
 
 #: ominicontacto_app/templates/grupo_agentes.html:7
+#: ominicontacto_app/templates/queue/queue_member.html:44
 msgid "Agregar grupo de agentes"
 msgstr ""
 
@@ -5879,9 +5893,9 @@ msgstr ""
 #: ominicontacto_app/templates/pausa_list.html:72
 #: ominicontacto_app/templates/user/cliente_webphone_list.html:37
 #: ominicontacto_app/templates/user/user_list.html:43
-#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:30
+#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:45
 #: ominicontacto_app/templates/usuarios_grupos/grupo_list.html:30
-#: ominicontacto_app/templates/usuarios_grupos/supervisor_profile_list.html:30
+#: ominicontacto_app/templates/usuarios_grupos/supervisor_profile_list.html:40
 msgid "id"
 msgstr ""
 
@@ -5891,10 +5905,6 @@ msgstr ""
 
 #: ominicontacto_app/templates/queue/create_update_queue.html:29
 msgid "Datos Básicos de la cola"
-msgstr ""
-
-#: ominicontacto_app/templates/queue/queue_member.html:60
-msgid "SIP id"
 msgstr ""
 
 #: ominicontacto_app/templates/registration/login.html:24
@@ -5922,6 +5932,7 @@ msgid "Reenviar llave"
 msgstr ""
 
 #: ominicontacto_app/templates/sistema_externo/sistema_externo_list.html:31
+#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:125
 msgid "ID"
 msgstr ""
 
@@ -5987,6 +5998,7 @@ msgid "Formato"
 msgstr ""
 
 #: ominicontacto_app/templates/sitio_externo/sitio_externo_list.html:43
+#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:126
 msgid "Objetivo"
 msgstr ""
 
@@ -6000,8 +6012,8 @@ msgid "nombre del cliente"
 msgstr ""
 
 #: ominicontacto_app/templates/user/cliente_webphone_list.html:39
-#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:32
-#: ominicontacto_app/templates/usuarios_grupos/supervisor_profile_list.html:32
+#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:47
+#: ominicontacto_app/templates/usuarios_grupos/supervisor_profile_list.html:42
 msgid "sip_extension"
 msgstr ""
 
@@ -6014,7 +6026,7 @@ msgid "Cliente Inactivo"
 msgstr ""
 
 #: ominicontacto_app/templates/user/cliente_webphone_list.html:53
-#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:54
+#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:69
 msgid "activar"
 msgstr ""
 
@@ -6023,7 +6035,7 @@ msgid "Cliente Activo"
 msgstr ""
 
 #: ominicontacto_app/templates/user/cliente_webphone_list.html:58
-#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:59
+#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:74
 msgid "desactivar"
 msgstr ""
 
@@ -6071,6 +6083,7 @@ msgid "Modificar perfil Supervisor"
 msgstr ""
 
 #: ominicontacto_app/templates/user/user_list.html:71
+#: ominicontacto_app/templates/usuarios_grupos/supervisor_profile_list.html:27
 msgid "Supervisor"
 msgstr ""
 
@@ -6083,6 +6096,8 @@ msgid "No existen usuarios"
 msgstr ""
 
 #: ominicontacto_app/templates/user/user_list.html:147
+#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:99
+#: ominicontacto_app/templates/usuarios_grupos/supervisor_profile_list.html:80
 msgid "de"
 msgstr ""
 
@@ -6123,27 +6138,31 @@ msgstr ""
 msgid "Borrar"
 msgstr ""
 
-#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:31
+#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:46
 msgid "nombre del agente"
 msgstr ""
 
-#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:33
+#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:48
 msgid "grupo"
 msgstr ""
 
-#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:34
+#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:49
 msgid "campañas"
 msgstr ""
 
-#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:52
+#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:62
+msgid "Mostrar Campañas"
+msgstr ""
+
+#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:67
 msgid "Agente Inactivo"
 msgstr ""
 
-#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:57
+#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:72
 msgid "Agente Activo"
 msgstr ""
 
-#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:66
+#: ominicontacto_app/templates/usuarios_grupos/agente_profile_list.html:81
 msgid "No existen agentes"
 msgstr ""
 
@@ -6156,7 +6175,7 @@ msgstr ""
 msgid "¿Está seguro que desea eliminar este grupo?"
 msgstr ""
 
-#: ominicontacto_app/templates/usuarios_grupos/grupo_create_update.html:25
+#: ominicontacto_app/templates/usuarios_grupos/grupo_create_update.html:29
 msgid "Nuevo grupo de agentes"
 msgstr ""
 
@@ -6188,15 +6207,15 @@ msgstr ""
 msgid "No existen grupos"
 msgstr ""
 
-#: ominicontacto_app/templates/usuarios_grupos/supervisor_profile_list.html:31
+#: ominicontacto_app/templates/usuarios_grupos/supervisor_profile_list.html:41
 msgid "nombre del supervisor"
 msgstr ""
 
-#: ominicontacto_app/templates/usuarios_grupos/supervisor_profile_list.html:33
+#: ominicontacto_app/templates/usuarios_grupos/supervisor_profile_list.html:43
 msgid "Es administrador"
 msgstr ""
 
-#: ominicontacto_app/templates/usuarios_grupos/supervisor_profile_list.html:52
+#: ominicontacto_app/templates/usuarios_grupos/supervisor_profile_list.html:62
 msgid "No existen supervisores"
 msgstr ""
 
@@ -6248,18 +6267,18 @@ msgid "No tiene permiso para editar al usuario {}"
 msgstr ""
 
 #: ominicontacto_app/tests/tests_auditorias_de_gestiones.py:62
-#: ominicontacto_app/views_auditorias.py:151
+#: ominicontacto_app/views_auditorias.py:157
 msgid "Sólo pueden auditarse calificaciones de gestión."
 msgstr ""
 
 #: ominicontacto_app/tests/tests_auditorias_de_gestiones.py:80
-#: ominicontacto_app/views_auditorias.py:143
+#: ominicontacto_app/views_auditorias.py:149
 msgid "No tiene permiso para auditar calificaciones de esta campaña."
 msgstr ""
 
 #: ominicontacto_app/tests/tests_auditorias_de_gestiones.py:98
 #: ominicontacto_app/tests/tests_auditorias_de_gestiones.py:117
-#: ominicontacto_app/views_auditorias.py:201
+#: ominicontacto_app/views_auditorias.py:207
 msgid "Auditoría de calificación guardada."
 msgstr ""
 
@@ -6304,7 +6323,7 @@ msgstr ""
 msgid "La longitud del nombre no debe exceder los {0} caracteres"
 msgstr ""
 
-#: ominicontacto_app/utiles.py:419 ominicontacto_app/views.py:475
+#: ominicontacto_app/utiles.py:419 ominicontacto_app/views.py:476
 #, python-brace-format
 msgid "No se pudo acceder a la url debido a: {0}"
 msgstr ""
@@ -6342,16 +6361,16 @@ msgid ""
 "supervisor"
 msgstr ""
 
-#: ominicontacto_app/views.py:408
+#: ominicontacto_app/views.py:409
 msgid "No tiene settings de conexion configurados"
 msgstr ""
 
-#: ominicontacto_app/views.py:416
+#: ominicontacto_app/views.py:417
 #, python-brace-format
 msgid "Error en el intento de conexion a: {0} debido {1}"
 msgstr ""
 
-#: ominicontacto_app/views.py:427
+#: ominicontacto_app/views.py:428
 msgid "Registro exitoso, se le ha enviado un e-mail con su llave de registro."
 msgstr ""
 
@@ -6363,21 +6382,21 @@ msgstr ""
 msgid "No tiene permiso para ver las agendas de esta campaña."
 msgstr ""
 
-#: ominicontacto_app/views_agente.py:207
+#: ominicontacto_app/views_agente.py:217
 msgid "No es posible llamar al contacto. No se pudo identificar al contacto."
 msgstr ""
 
-#: ominicontacto_app/views_agente.py:213
+#: ominicontacto_app/views_agente.py:223
 msgid "No es posible llamar al contacto. No se pudo identificar un teléfono."
 msgstr ""
 
-#: ominicontacto_app/views_agente.py:229
+#: ominicontacto_app/views_agente.py:239
 msgid ""
 "No es posible llamar al contacto. La campaña no se encuentra activa o no "
 "existe en el sistema."
 msgstr ""
 
-#: ominicontacto_app/views_agente.py:238
+#: ominicontacto_app/views_agente.py:248
 msgid ""
 "No es posible llamar al contacto. Para poder llamar un contacto debe "
 "obtenerlo desde el menu de Campañas Preview. Asegurese de no haber perdido "
@@ -6441,7 +6460,7 @@ msgid ""
 "del Archivo de Audio."
 msgstr ""
 
-#: ominicontacto_app/views_auditorias.py:135
+#: ominicontacto_app/views_auditorias.py:141
 msgid "Calificación Inexistente"
 msgstr ""
 
@@ -6863,6 +6882,7 @@ msgstr ""
 
 #: ominicontacto_app/views_queue_member.py:127
 #: ominicontacto_app/views_queue_member.py:195
+#: ominicontacto_app/views_queue_member.py:304
 #, python-brace-format
 msgid ""
 "<strong>Operación Errónea!</strong> No se pudo confirmar la creación del "
@@ -6873,12 +6893,12 @@ msgstr ""
 msgid "Los siguientes agentes no tienen identificador externo:<ul>"
 msgstr ""
 
-#: ominicontacto_app/views_queue_member.py:276
+#: ominicontacto_app/views_queue_member.py:340
 #, python-brace-format
 msgid "QueueRemove failed - agente: {0} de la campana: {1} "
 msgstr ""
 
-#: ominicontacto_app/views_queue_member.py:292
+#: ominicontacto_app/views_queue_member.py:356
 #: ominicontacto_app/views_user_profiles.py:354
 msgid "QueueRemove failed "
 msgstr ""
@@ -6903,7 +6923,7 @@ msgstr ""
 #: ominicontacto_app/views_user_profiles.py:158
 #: ominicontacto_app/views_user_profiles.py:175
 #: ominicontacto_app/views_user_profiles.py:281
-#: ominicontacto_app/views_user_profiles.py:499
+#: ominicontacto_app/views_user_profiles.py:524
 #, python-brace-format
 msgid "<strong>¡Cuidado!</strong> con el siguiente error{0} ."
 msgstr ""
@@ -6919,10 +6939,10 @@ msgstr ""
 msgid "El usuario fue actualizado correctamente"
 msgstr ""
 
-#: ominicontacto_app/views_user_profiles.py:570
+#: ominicontacto_app/views_user_profiles.py:595
 msgid "El Cliente WebPhone fue desactivado"
 msgstr ""
 
-#: ominicontacto_app/views_user_profiles.py:572
+#: ominicontacto_app/views_user_profiles.py:597
 msgid "El Cliente WebPhone fue activado"
 msgstr ""
