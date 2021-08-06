@@ -16,7 +16,7 @@ echo "Installing the requirements packages"
 pip3 install wheel
 pip3 install -r ../../../requirements/requirements.txt --exists-action 'w'
 echo "Creating additional folders"
-mkdir -p $INSTALL_PREFIX/{wombat-json,backup,bin,nginx_certs,media_root/reporte_campana,static,log,run,addons,ominicontacto}
+mkdir -p $INSTALL_PREFIX/{wombat-json,backup,bin,media_root/reporte_campana,static,log,run,addons,ominicontacto}
 echo "Copying code"
 cp -a ../../../{api_app,configuracion_telefonia_app,manage.py,ominicontacto,ominicontacto_app,reciclado_app,reportes_app,requirements,supervision_app,test,tests,utiles_globales.py} $INSTALL_PREFIX/ominicontacto
 echo "Copying scripts used by system"
