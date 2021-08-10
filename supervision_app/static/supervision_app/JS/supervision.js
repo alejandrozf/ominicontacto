@@ -41,20 +41,7 @@ $(function() {
     contactadosSocket.onmessage = function(e) {
         if (e.data != MENSAJE_CONEXION_WEBSOCKET) {
             try {
-                var data = JSON.parse(e.data);
-                var arrData = {};
-                for (let index = 0; index < data.length; index++) {
-                    var element = JSON.parse(data[index]
-                        .replaceAll('\'', '"')
-                        .replaceAll('"[', '[')
-                        .replaceAll(']"', ']'));
-                    processStreamRow(element, arrData);
-                }
-
-                var newData = crossData(table_agentes.data().toArray(), arrData);
-                table_agentes.clear();
-                table_agentes.rows.add(newData).draw();
-                table_data = newData;
+                processData(e.data);
             } catch (err) {
                 console.log(err);
             }
@@ -62,42 +49,49 @@ $(function() {
     };
 });
 
-function processStreamRow(row, resultSet) {
-    var id = row.id;
-    if (id && !resultSet[id]) {
-        resultSet[id] = normalizaRow(row);
+function processData(rawData) {
+    const data = JSON.parse(rawData);
+    let arrData = {};
+    data.forEach(element => {
+        const agent = JSON.parse(element
+            .replaceAll('\'', '"')
+            .replaceAll('"[', '[')
+            .replaceAll(']"', ']'));
+        const rowData = normalizaRow(agent);
+        const previousData = arrData[rowData.id];
+        if (rowData.id != null && ((previousData != null && previousData.tiempo < arrData.tiempo) || !previousData)) {
+            arrData[rowData.id] = rowData;
+        }
+    });
+    if (arrData != {}) {
+        updateTable(arrData);
     }
 }
 
-function crossData(tableData, newData) {
-    var resData = [...tableData];
-    for (let key in newData) {
-        var found = false;
-        for (let index = 0; index < resData.length; index++) {
-            try {
-                if (resData[index].id == newData[key].id) {
-                    if (newData[key].status == '' || newData[key].status == 'OFFLINE') {
-                        resData.splice(index, 1);
-                    } else {
-                        if (newData[key].status == 'UNAVAILABLE' && resData[index].status.search('UNAVAILABLE') == -1) {
-                            newData[key].status = resData[index].status + '-' + newData[key].status;
-                        } else if (newData[key].status == 'UNAVAILABLE' && resData[index].status.search('UNAVAILABLE') != -1) {
-                            newData[key].status = resData[index].status;
-                        }
-                        resData[index] = newData[key];
-                    }
-                    found = true;
-                }
-            } catch (err) {
-                continue;
-            }
-        }
-        if (!found && newData[key].status != '' && newData[key].status != 'OFFLINE') {
-            resData.push(newData[key]);
-        }
-
+function updateTable(newData) {
+    for (const agent in newData) {
+        updateRow(newData[agent]);
     }
-    return resData;
+    table_agentes.draw();
+}
+
+function updateRow(data) {
+    let row = table_agentes
+        .row('#' + data.id);
+    let dataRow = row.data();
+    if (dataRow == null && checkStatus2Show(data.status)) {
+        table_agentes.row.add(data);
+    } else if (dataRow != null) {
+        const prefixStatus = (data.status.search('UNAVAILABLE') != -1 && dataRow.status.search('UNAVAILABLE') == -1) ? dataRow.status : '';
+        const prefixSeparator = (prefixStatus != '') ? '-' : '';
+        data.status = prefixStatus + prefixSeparator + data.status;
+        row.data(data);
+    }
+
+}
+
+function checkStatus2Show(status) {
+    return !(['OFFLINE', ''].includes(status));
 }
 
 function normalizaRow(row) {
@@ -106,12 +100,12 @@ function normalizaRow(row) {
     normalRow.status = row.STATUS;
     normalRow.sip = row.SIP;
     normalRow.pause_id = row.PAUSE_ID;
-    normalRow.campana_llamada = (row.CAMPAIGN != null) ? row.CAMPAIGN : '';
-    normalRow.contacto = (row.CONTACT_NUMBER != null) ? row.CONTACT_NUMBER : '';
+    normalRow.campana_llamada = row.CAMPAIGN || '';
+    normalRow.contacto = row.CONTACT_NUMBER || '';
     normalRow.tiempo = parseInt(row.TIMESTAMP);
     normalRow.grupo = row.GROUP;
     normalRow.campana = row.CAMPANAS;
-    normalRow.id = row.id;
+    normalRow.id = row.id || null;
 
     return normalRow;
 }
@@ -128,6 +122,8 @@ function createDataTable() {
             }, 2000);
         },
         data: table_data,
+        stateSave: true,
+        rowId: 'id',
         columns: [
             { 'data': 'nombre' },
             { 'data': 'grupo', 'visible': false },
