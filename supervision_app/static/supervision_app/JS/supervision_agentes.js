@@ -26,7 +26,7 @@
 var phone_controller;
 var spied_agent_name;
 
-$(function (){
+$(function() {
     var supervisor_id = $('#supervisor_id').val();
     var sipExtension = $('#sipExt').val();
     var sipSecret = $('#sipSec').val();
@@ -37,11 +37,11 @@ $(function (){
 });
 
 function getSpiedAgentName(agent_id) {
-    $.map(table_data, function(agent) {
-        if(agent.id == agent_id.toString()) {
-            spied_agent_name = agent.nombre;
-        }
-    });
+    spied_agent_name = $('#tableAgentes')
+        .DataTable()
+        .row('#' + agent_id)
+        .data()
+        .nombre;
 }
 
 function executeSupervisorAction(pk_agent, action) {
@@ -50,7 +50,8 @@ function executeSupervisorAction(pk_agent, action) {
     if (phone_controller.is_on_call()) {
         $.growl.warning({
             title: gettext('Atención!'),
-            message: gettext('Debe finalizar la acción actual antes de realizar otra.')});
+            message: gettext('Debe finalizar la acción actual antes de realizar otra.')
+        });
         return;
     }
 
@@ -58,8 +59,8 @@ function executeSupervisorAction(pk_agent, action) {
         url: Urls.api_accion_sobre_agente(pk_agent),
         type: 'POST',
         dataType: 'json',
-        data: {'accion': action},
-        success: function() {   // function(data)
+        data: { 'accion': action },
+        success: function() { // function(data)
 
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -74,7 +75,8 @@ function preventLeaveOnCall(event) {
 
         $.growl.warning({
             title: gettext('Atención!'),
-            message: gettext('Se ha registrado un intento de salir de esta pantalla. Su llamado ha finalizado.')});
+            message: gettext('Se ha registrado un intento de salir de esta pantalla. Su llamado ha finalizado.')
+        });
 
         // Cancel the event as stated by the standard.
         event.preventDefault();
