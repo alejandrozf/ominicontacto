@@ -72,7 +72,7 @@ function updateTable(newData) {
     for (const agent in newData) {
         updateRow(newData[agent]);
     }
-    table_agentes.draw();
+    table_agentes.draw(false);
 }
 
 function updateRow(data) {
@@ -81,11 +81,13 @@ function updateRow(data) {
     let dataRow = row.data();
     if (dataRow == null && checkStatus2Show(data.status)) {
         table_agentes.row.add(data);
-    } else if (dataRow != null) {
+    } else if (dataRow != null && checkStatus2Show(data.status)) {
         const prefixStatus = (data.status.search('UNAVAILABLE') != -1 && dataRow.status.search('UNAVAILABLE') == -1) ? dataRow.status : '';
         const prefixSeparator = (prefixStatus != '') ? '-' : '';
         data.status = prefixStatus + prefixSeparator + data.status;
         row.data(data);
+    } else if (!checkStatus2Show(data.status)) {
+        row.remove(false);
     }
 
 }
@@ -174,7 +176,7 @@ function createDataTable() {
         'searchCols': [
             null,
             { 'search': filtro_grupo(), },
-            { 'search': filtro_campana(), 'regex': true},
+            { 'search': filtro_campana(), 'regex': true },
             null,
             null,
             null,
@@ -285,15 +287,13 @@ function subcribeFilterChange() {
         var selection = $('#filter_group').find('option:selected');
         $('#filter_group option').not(selection).removeAttr('selected');
         selection.attr('selected', true);
-        $('#tableAgentes').DataTable().destroy();
-        createDataTable();
+        table_agentes.columns(1).search(selection.html()).draw();
     });
 
     $('#filter_campana').change(function() {
         var selection = $('#filter_campana').find('option:selected');
         $('#filter_campana option').not(selection).removeAttr('selected');
         selection.attr('selected', true);
-        $('#tableAgentes').DataTable().destroy();
-        createDataTable();
+        table_agentes.columns(2).search(selection.html()).draw();
     });
 }
