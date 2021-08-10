@@ -28,9 +28,19 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block content %}
 
 <h1>{% trans 'Base de datos de contactos' %}</h1>
-<a href="#" class="btn btn-light btn-sm" onclick="mostrar_bases_datos_ocultas()" >
-    {% trans 'Mostrar ocultas' %}
-</a>
+<div class="form-row">
+    <div class="col-md-9">
+        <a href="#" class="btn btn-light btn-sm" onclick="mostrar_bases_datos_ocultas()" >
+            {% trans 'Mostrar ocultas' %}
+        </a>
+    </div>
+    <div class="col-md-3">
+        <form method="GET" action="{% url 'lista_base_datos_contacto' page=1 %}" class="filter-flex">
+            <input type="text" class="form-control" name="search" value="{{ search }}">
+            <input type="submit" class="btn btn-primary" value="{% trans 'Filtrar' %}">
+        </form>
+    </div>
+</div>
 <hr>
 <table class="table">
     <thead>
@@ -90,5 +100,31 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% endfor %}
     </tbody>
 </table>
+
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="{% url 'lista_base_datos_contacto' page=page_obj.previous_page_number%}{{ search_url }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">{% trans 'Anterior' %}</span>
+                </a>
+            </li>
+        {% endif %}
+
+        <li class="page-item current">
+            {% trans 'Página' %} {{ page_obj.number }} {% trans 'de' %} {{ paginator.num_pages }}.
+        </li>
+
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="{% url 'lista_base_datos_contacto' page=page_obj.next_page_number %}{{ search_url }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">{% trans 'Siguiente' %}</span>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
 
 {% endblock %}

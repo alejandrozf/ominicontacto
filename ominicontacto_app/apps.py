@@ -306,7 +306,7 @@ class OminicontactoAppConfig(AppConfig):
         if 'lista_base_datos_contacto' in permissions:
             contactos.append({
                 'label': _('Base de datos de contactos'),
-                'url': reverse('lista_base_datos_contacto')
+                'url': reverse('lista_base_datos_contacto', args=(1, ))
             })
         if 'nueva_base_datos_contacto' in permissions:
             contactos.append({
