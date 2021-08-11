@@ -133,6 +133,7 @@ function createDataTable() {
             { 'data': 'conectadas_perdidas' },
             { 'data': 'gestiones' },
             { 'data': 'pendientes' },
+            { 'data': 'porcentaje_objetivo' },
         ],
 
         language: {
@@ -165,6 +166,7 @@ class DialerStats {
         this.agentes_online = 0;
         this.agentes_llamada = 0;
         this.agentes_pausa = 0;
+        this.porcentaje_objetivo = 0;
     }
 
     isEmpty() {
@@ -176,6 +178,7 @@ class DialerStats {
         if (this.gestiones > 0) return false;
         if (this.pendientes > 0) return false;
         if (this.canales_discando > 0) return false;
+        if (this.porcentaje_objetivo > 0) return false;
         return true;
     }
 
@@ -189,6 +192,7 @@ class DialerStats {
         this.gestiones = newStats['gestiones'];
         this.pendientes = newStats['pendientes'];
         this.canales_discando = newStats['canales_discando'];
+        this.porcentaje_objetivo = newStats['porcentaje_objetivo'];
     }
 
     updateAgentStats(agentStats) {

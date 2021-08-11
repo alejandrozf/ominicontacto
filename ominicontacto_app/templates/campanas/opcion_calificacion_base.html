@@ -84,6 +84,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             {{ form.formulario|add_class:"form-control fieldsFormset" }}
                         </td>
                     {% endif %}
+                    <td class="positiva" style="padding:10px">
+                        {{ form.positiva.label }}
+                        {{ form.positiva.errors }}
+                        {{ form.positiva|add_class:"form-control" }}
+                    </td>
                     <td>
                     {% if not form.instance.es_agenda %}
                         {{ form.oculta.label }}
@@ -99,4 +104,3 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </table>
     {{ wizard.form.management_form }}
 {% endblock %}
-

@@ -91,6 +91,7 @@ function createDataTable() {
             { 'data': 'conectadas' },
             { 'data': 'no_conectadas' },
             { 'data': 'gestiones' },
+            { 'data': 'porcentaje_objetivo' },
 
         ],
 

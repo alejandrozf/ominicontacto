@@ -24,9 +24,11 @@ from django.test import TestCase
 import json
 
 from reportes_app.reportes.reporte_llamadas_supervision import (
-    ReporteDeLLamadasEntrantesDeSupervision, ReporteDeLLamadasSalientesDeSupervision
+    ReporteDeLLamadasEntrantesDeSupervision
 )
-from reportes_app.reportes.reporte_llamadas_salientes import ReporteLlamadasSalienteFamily
+from reportes_app.reportes.reporte_llamadas_salientes import (
+    ReporteLlamadasSalienteFamily, ReporteDeLLamadasSalientesDeSupervision
+)
 from reportes_app.services.redis_service import RedisService
 from reportes_app.tests.utiles import GeneradorDeLlamadaLogs
 from ominicontacto_app.tests.factories import AgenteProfileFactory, CalificacionClienteFactory, \
@@ -203,7 +205,7 @@ class ReporteDeLLamadasSalientesDeSupervisionTest(TestCase):
                                              estado=Campana.ESTADO_ACTIVA)
 
     def test_reporte_vacio(self):
-        reporte = ReporteDeLLamadasSalientesDeSupervision(self.supervisor.user)
+        reporte = ReporteDeLLamadasSalientesDeSupervision()
         for id_campana in [self.manual.id, self.dialer.id, self.preview.id]:
             self.assertNotIn(id_campana, reporte.estadisticas)
         self.assertNotIn(self.manual2.id, reporte.estadisticas)
@@ -224,7 +226,7 @@ class ReporteDeLLamadasSalientesDeSupervisionTest(TestCase):
         self.generador.generar_log(self.dialer, True, 'COMPLETEAGENT', '35100001113',
                                    agente=self.agente1, contacto=None, bridge_wait_time=-1,
                                    duracion_llamada=10, archivo_grabacion='', time=None)
-        reporte = ReporteDeLLamadasSalientesDeSupervision(self.supervisor.user)
+        reporte = ReporteDeLLamadasSalientesDeSupervision()
         self.assertEqual(reporte.estadisticas[self.manual.id]['efectuadas'], 1)
         self.assertEqual(reporte.estadisticas[self.manual.id]['conectadas'], 1)
         self.assertEqual(
@@ -253,7 +255,7 @@ class ReporteDeLLamadasSalientesDeSupervisionTest(TestCase):
         self.generador.generar_log(self.dialer, True, 'CONGESTION', '35100001113',
                                    agente=self.agente1, contacto=None, bridge_wait_time=-1,
                                    duracion_llamada=10, archivo_grabacion='', time=None)
-        reporte = ReporteDeLLamadasSalientesDeSupervision(self.supervisor.user)
+        reporte = ReporteDeLLamadasSalientesDeSupervision()
         self.assertEqual(reporte.estadisticas[self.manual.id]['efectuadas'], 1)
         self.assertEqual(reporte.estadisticas[self.manual.id]['conectadas'], 0)
         self.assertEqual(
@@ -275,7 +277,7 @@ class ReporteDeLLamadasSalientesDeSupervisionTest(TestCase):
                                    agente=self.agente1)
         CalificacionClienteFactory(opcion_calificacion=self.opcion_calificacion_d1,
                                    agente=self.agente1)
-        reporte = ReporteDeLLamadasSalientesDeSupervision(self.supervisor.user)
+        reporte = ReporteDeLLamadasSalientesDeSupervision()
         self.assertNotIn(self.dialer.id, reporte.estadisticas)
         for id_campana in [self.manual.id, self.preview.id]:
             self.assertIn(id_campana, reporte.estadisticas)
@@ -292,7 +294,7 @@ class ReporteDeLLamadasSalientesDeSupervisionTest(TestCase):
                                    agente=self.agente1)
         CalificacionClienteFactory(opcion_calificacion=self.opcion_calificacion_p1,
                                    agente=self.agente1)
-        reporte = ReporteDeLLamadasSalientesDeSupervision(self.supervisor.user)
+        reporte = ReporteDeLLamadasSalientesDeSupervision()
         redis_saliente = ReporteLlamadasSalienteFamily()
         self.assertEqual(len(reporte.estadisticas.keys()), 2)
         for id_campana in [self.manual.id, self.preview.id]:
