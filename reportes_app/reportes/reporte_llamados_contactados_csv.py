@@ -159,6 +159,8 @@ class ReporteContactadosCSV(EstadisticasBaseCampana, ReporteCSV):
         encabezado.append(_("Observaciones"))
         encabezado.append(_("Agente"))
         encabezado.append(_("base de datos"))
+        encabezado.append(_("Callid"))
+        encabezado.append(_("Tipo llamada"))
 
         # agrego el encabezado para los campos de los formularios
         if self.campana.tipo_interaccion is Campana.FORMULARIO:
@@ -236,6 +238,8 @@ class ReporteContactadosCSV(EstadisticasBaseCampana, ReporteCSV):
         registro.append(tel_status)
         registro.extend(datos_calificacion)
         registro.append(bd_contacto)
+        registro.append(llamada_log.callid)
+        registro.append(llamada_log.tipo_llamada)
         registro.extend(datos_gestion)
 
         lista_datos_utf8 = [force_text(item) for item in registro]
@@ -293,6 +297,8 @@ class ReporteCalificadosCSV(EstadisticasBaseCampana, ReporteCSV):
         encabezado.append(_("Observaciones"))
         encabezado.append(_("Agente"))
         encabezado.append(_("base de datos"))
+        encabezado.append(_("Callid"))
+        encabezado.append(_("Tipo llamada"))
         # agrego el encabezado para los campos de los formularios
         if self.campana.tipo_interaccion is Campana.FORMULARIO:
             for opcion in self.opciones_calificacion_campana.values():
@@ -336,6 +342,9 @@ class ReporteCalificadosCSV(EstadisticasBaseCampana, ReporteCSV):
             lista_opciones.append(calificacion.contacto.bd_contacto)
         else:
             lista_opciones.append(_("Fuera de base"))
+        lista_opciones.append(log_llamada.callid)
+        lista_opciones.append(log_llamada.tipo_llamada)
+
         if isinstance(calificacion_val, HistoricalCalificacionCliente) and \
            calificacion_val.history_date == calificacion.modified:
             # Es una calificacion historica que no es la ultima sobre el contacto
@@ -343,7 +352,7 @@ class ReporteCalificadosCSV(EstadisticasBaseCampana, ReporteCSV):
             respuesta_formulario_gestion = None
         else:
             respuesta_formulario_gestion = self.respuestas_formulario_gestion_dict.get(
-                calificacion.pk)
+                calificacion.history_object.pk)
         if (calificacion.opcion_calificacion.es_gestion() and
             self.campana.tipo_interaccion is Campana.FORMULARIO and
                 respuesta_formulario_gestion is not None):
@@ -400,6 +409,9 @@ class ReporteNoAtendidosCSV(EstadisticasBaseCampana, ReporteCSV):
         encabezado.append(_("Fecha-Hora Contacto"))
         encabezado.append(_("Tel status"))
         encabezado.append(_("Agente"))
+        encabezado.append(_("Callid"))
+        encabezado.append(_("Tipo llamada"))
+
         lista_datos_utf8 = [force_text(item) for item in encabezado]
         self.datos.append(lista_datos_utf8)
 
@@ -424,6 +436,9 @@ class ReporteNoAtendidosCSV(EstadisticasBaseCampana, ReporteCSV):
             else:
                 agente_info = agentes_dict.get(log_no_contactado.agente_id, -1)
             lista_opciones.append(agente_info)
+            lista_opciones.append(log_no_contactado.callid)
+            lista_opciones.append(log_no_contactado.tipo_llamada)
+
             # --- Finalmente, escribimos la linea
             lista_datos_utf8 = [force_text(item) for item in lista_opciones]
             self.datos.append(lista_datos_utf8)
