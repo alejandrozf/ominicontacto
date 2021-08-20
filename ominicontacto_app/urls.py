@@ -799,6 +799,10 @@ urlpatterns = [
         login_required(
             views_campana_preview.DescargarOrdenAgentesEnContactosView.as_view()),
         name="descargar_orden_contactos_actual_preview"),
+    url(r'^campana_preview/finalizar/$',
+        login_required(
+            views_campana_preview.FinalizarCampanaPreviewView.as_view()),
+        name="finalizar_campana_preview"),
     # ==========================================================================
     # Campana Entrante
     # ==========================================================================

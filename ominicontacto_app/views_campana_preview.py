@@ -112,6 +112,18 @@ class CampanaPreviewCreateView(CampanaPreviewMixin, CampanaManualCreateView):
         return HttpResponseRedirect(reverse('campana_preview_list'))
 
 
+class FinalizarCampanaPreviewView(View):
+    """
+    Esta vista actualiza la campañana finalizandola.
+    """
+
+    def post(self, request, *args, **kwargs):
+        campana_id = request.POST.get('campana_pk')
+        campana = Campana.objects.get(pk=campana_id)
+        campana.finalizar()
+        return HttpResponseRedirect(reverse('campana_preview_list'))
+
+
 class CampanaPreviewUpdateView(CampanaPreviewMixin, CampanaManualUpdateView):
     """
     Modifica una campaña de tipo Preview
