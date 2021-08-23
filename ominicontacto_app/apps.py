@@ -370,6 +370,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Supervisor', ]},
             {'nombre': 'user_list',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'descargar_usuarios_csv',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'user_delete',
              'roles': ['Administrador', 'Gerente', ]},
             {'nombre': 'user_update',
@@ -760,6 +762,8 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Crear un Usuario con rol Agente'), 'version': '1.11.0'},
         'user_list':
             {'descripcion': _('Ver lista de Usuarios'), 'version': '1.7.0'},
+        'descargar_usuarios_csv':
+            {'descripcion': _('Descargar lista de usuarios a CSV'), 'version': '1.7.0'},
         'user_delete':
             {'descripcion': _('Borrar Usuario (no agente)'), 'version': '1.7.0'},
         'user_update':
