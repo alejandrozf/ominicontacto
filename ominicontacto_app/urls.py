@@ -90,6 +90,10 @@ urlpatterns = [
         login_required(views_user_profiles.UserListView.as_view()),
         name='user_list'
         ),
+    url(r'^user/list/download_csv/$',
+        login_required(views_user_profiles.ExportCsvUsuariosView.as_view()),
+        name='descargar_usuarios_csv'
+        ),
     url(r'^user/delete/(?P<pk>\d+)/$',
         login_required(views_user_profiles.UserDeleteView.as_view()),
         name='user_delete',
