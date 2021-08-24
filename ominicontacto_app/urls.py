@@ -240,7 +240,7 @@ urlpatterns = [
     # ==========================================================================
     # Base Datos Contacto
     # ==========================================================================
-    url(r'^base_datos_contacto/$',
+    url(r'^base_datos_contacto/(?P<page>[0-9]+)/$',
         login_required(
             views_base_de_datos_contacto.BaseDatosContactoListView.as_view()),
         name='lista_base_datos_contacto',

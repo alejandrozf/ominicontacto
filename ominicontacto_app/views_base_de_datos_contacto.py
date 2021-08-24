@@ -31,6 +31,7 @@ from django.views.generic.edit import (
 from django.views.generic.list import ListView
 from django.views.generic.base import RedirectView
 from django.utils.translation import ugettext as _
+from django.db.models import Q
 
 from ominicontacto_app.errors import (
     OmlParserCsvDelimiterError, OmlParserMinRowError, OmlParserOpenFileError,
@@ -67,10 +68,16 @@ class BaseDatosContactoListView(ListView):
     template_name = 'base_datos_contacto/lista_base_datos_contacto.html'
     context_object_name = 'bases_datos_contacto'
     model = BaseDatosContacto
+    paginate_by = 40
 
     def get_queryset(self):
         queryset = BaseDatosContacto.objects.obtener_definidas()
-        return queryset
+        if 'search' in self.request.GET:
+            search = self.request.GET.get('search')
+            bases_contacto = queryset.filter(Q(nombre__icontains=search))
+            return bases_contacto
+        else:
+            return queryset
 
 
 class BaseDatosContactoCreateView(CreateView):
@@ -450,7 +457,7 @@ class DefineBaseDatosContactoView(UpdateView):
                 messages.ERROR,
                 message,
             )
-            return redirect(reverse('lista_base_datos_contacto'))
+            return redirect(reverse('lista_base_datos_contacto', kwargs={"page": 1}))
         else:
             message = _('<strong>Operación Exitosa!</strong> ') +\
                 _('Se llevó a cabo con éxito la creación de '
@@ -484,7 +491,7 @@ class DefineBaseDatosContactoView(UpdateView):
         return redirect(reverse('nueva_base_datos_contacto'))
 
     def get_success_url(self):
-        return reverse('lista_base_datos_contacto')
+        return reverse('lista_base_datos_contacto', kwargs={"page": 1})
 
 
 class DepuraBaseDatosContactoView(DeleteView):
@@ -799,7 +806,7 @@ class ActualizaBaseDatosContactoView(UpdateView):
                 messages.ERROR,
                 message,
             )
-            return redirect(reverse('lista_base_datos_contacto'))
+            return redirect(reverse('lista_base_datos_contacto', kwargs={"page": 1}))
         else:
             message = _('<strong>Operación Exitosa!</strong> ') +\
                 _('Se llevó a cabo con éxito la creación de la Base de Datos de Contactos.')
@@ -849,7 +856,7 @@ class ActualizaBaseDatosContactoView(UpdateView):
 
     def get_success_url(self):
         if self.campana is None:
-            return reverse('lista_base_datos_contacto')
+            return reverse('lista_base_datos_contacto', kwargs={"page": 1})
         else:
             url_por_tipo = {
                 Campana.TYPE_ENTRANTE: 'campana_list',
@@ -870,7 +877,7 @@ class OcultarBaseView(RedirectView):
     def get(self, request, *args, **kwargs):
         base = BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
         base.ocultar()
-        return HttpResponseRedirect(reverse('lista_base_datos_contacto'))
+        return HttpResponseRedirect(reverse('lista_base_datos_contacto', kwargs={"page": 1}))
 
 
 class DesOcultarBaseView(RedirectView):
@@ -883,7 +890,7 @@ class DesOcultarBaseView(RedirectView):
     def get(self, request, *args, **kwargs):
         base = BaseDatosContacto.objects.get(pk=self.kwargs['bd_contacto'])
         base.desocultar()
-        return HttpResponseRedirect(reverse('lista_base_datos_contacto'))
+        return HttpResponseRedirect(reverse('lista_base_datos_contacto', kwargs={"page": 1}))
 
 
 def mostrar_bases_datos_borradas_ocultas_view(request):

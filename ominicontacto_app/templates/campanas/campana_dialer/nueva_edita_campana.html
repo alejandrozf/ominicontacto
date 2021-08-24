@@ -24,13 +24,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% block head_js %}
   <script type="text/javascript"
-          src="{% static 'ominicontacto/JS/agente/formularioNuevaEditaCampana.js' %}">
+          src="{% static 'ominicontacto/JS/campanas/formularioNuevaEditaCampana.js' %}">
   </script>
   <script type="text/javascript" src="{% static 'ominicontacto/JS/interaccion.js' %}"></script>
   {% get_current_language as LANGUAGE_CODE %}
   <input class="hidden" value="{{ LANGUAGE_CODE }}" id="languageCode">
   <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/campana_dialer/nueva_edita_campana.js' %}">
   </script>
+  <script type="text/javascript" src="{% static 'ominicontacto/JS/select2.min.js' %}"></script>
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/select2.min.css' %}"></link>
 {% endblock %}
 
 {% block nav %}
