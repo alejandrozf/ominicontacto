@@ -28,6 +28,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 {% block titulo_lista_campanas %}
     <h1>{% trans 'Campañas preview' %}</h1>
+    <form role="form" id="option_preview" action="" method="POST">
+        {% csrf_token %}
+        <input type="hidden" id="campana_pk" name="campana_pk">
+    </form>
 {% endblock %}
 
 {% block campanas_activas %}
@@ -84,6 +88,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         </a>
                         <a class="dropdown-item" href="{% url 'configurar_agentes_en_campana' campana.pk %}">
                             <span class="icon icon-pencil"></span>{% trans 'Configuraciones para agentes' %}
+                        </a>
+                        <a class="dropdown-item action_for_campaign" value="{% url 'finalizar_campana_preview' %}" href="#" camp-id="{{ campana.pk }}">
+                            <span class="icon icon-cancel"></span>{% trans 'Finalizar' %}
                         </a>
                         <a class="dropdown-item" href="{% url 'campana_preview_delete' campana.pk %}">
                             <span class="icon icon-trash"></span>{% trans 'Eliminar' %}

@@ -746,6 +746,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'define_lista_rapida',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'finalizar_campana_preview',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
         ]
 
     informacion_de_permisos = {
@@ -1187,4 +1189,6 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Elimina una lista rapida de contactos'), 'version': '1.13.0'},
         'define_lista_rapida':
             {'descripcion': _('Define una lista rapida de contactos'), 'version': '1.13.0'},
+        'finalizar_campana_preview':
+            {'descripcion': _('Finalizar una campana preview activa'), 'version': '1.17.0'},
     }
