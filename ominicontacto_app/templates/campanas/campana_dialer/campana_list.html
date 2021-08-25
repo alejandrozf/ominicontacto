@@ -91,9 +91,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             <a class="dropdown-item action_for_campaign" value="{% url 'pausar_campana_dialer' %}" href="#" camp-id="{{ campana.pk }}">
                                 <span class="icon icon-control-pause"></span>{% trans 'Pausar' %}
                             </a>
-                            <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">
-                                <span class="icon icon-refresh"></span>{% trans 'Reciclar' %}
-                            </a>
                             <a class="dropdown-item action_for_campaign" value="{% url 'finalizar_campana_dialer' %}" href="#" camp-id="{{ campana.pk }}">
                                 <span class="icon icon-cancel"></span>{% trans 'Finalizar' %}
                             </a>
@@ -190,6 +187,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             </a>
                             <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
                                 <span class="icon icon-plus"></span>{% trans 'Agregar agentes' %}
+                            </a>
+                            <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">
+                                <span class="icon icon-refresh"></span>{% trans 'Reciclar' %}
                             </a>
                             <a class="dropdown-item action_for_campaign" value="{% url 'finalizar_campana_dialer' %}" href="#" camp-id="{{ campana.pk }}">
                                 <span class="icon icon-cancel"></span>{% trans 'Finalizar' %}
