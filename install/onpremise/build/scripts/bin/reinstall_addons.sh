@@ -1,14 +1,15 @@
 #!/bin/bash
 
-OML_PATH="/opt/omnileads"
+INSTALL_PREFIX="/opt/omnileads"
 
-if [ -f $OML_PATH/bin/addons_installed.sh ]; then
-  source $OML_PATH/bin/addons_installed.sh
+if [ -f ${INSTALL_PREFIX}/bin/addons_installed.sh ];then
+  source ${INSTALL_PREFIX}/bin/addons_installed.sh
 else
-  echo "There is no addon installed, exiting"
-  echo 0
+  echo "There is no addon installed. Exiting."
+  exit 0
 fi
-for addon in "${ADDONS_INSTALLED[@]}"; do
-    cd ${OML_PATH}/addons/${addon}
+
+for Addon in "${ADDONS_INSTALLED[@]}";do
+    cd ${INSTALL_PREFIX}/addons/${Addon}
     ./install.sh
 done
