@@ -133,7 +133,7 @@
 
   # Solution to issue OML-214: Re-setting backed up addons after installation
   - name: Re-setting addons after installation
-    when: addons_installed.rc == 1
+    when: addons_installed.rc is defined and addons_installed.rc == 1
     shell: >
       if [ ! -f {{ install_prefix }}/bin/addons_installed.sh ];then
         mv /tmp/addons_installed.sh {{ install_prefix }}/bin
