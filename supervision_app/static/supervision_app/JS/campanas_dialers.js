@@ -31,6 +31,9 @@ const MENSAJE_CONEXION_WEBSOCKET = 'Stream subscribed!';
 
 $(function() {
     campanas_supervisor = $('input#campanas_list').val().split(',');
+    if (campanas_supervisor.length == 1 && campanas_supervisor[0] == '') {
+        campanas_supervisor = [];
+    }
     campanas_id_supervisor = $('input#campanas_list_id').val().split(',');
     createDataTable();
 
@@ -47,7 +50,11 @@ $(function() {
         if (e.data != MENSAJE_CONEXION_WEBSOCKET) {
             try {
                 var data = JSON.parse(e.data);
-                processData(data);
+                if (campanas_supervisor.length > 0) {
+                    processData(data);
+                } else {
+                    table_dialers.clear().draw();
+                }
             } catch (err) {
                 console.log(err);
             }
@@ -61,20 +68,25 @@ $(function() {
             let row = JSON.parse(info
                 .replaceAll('\'', '"')
                 .replaceAll('"[', '[')
-                .replaceAll(']"', ']'));
+                .replaceAll(']"', ']')
+                .replaceAll('"{', '{')
+                .replaceAll('}"', '}'));
             if (row['NAME']) {
                 agents.updateAgent(row);
                 haveAgentsData = true;
-            } else if (row['nombre'] && !fistCallStats[row['nombre']]) {
-                fistCallStats[row['nombre']] = row;
+            } else if (row['NOMBRE'] && !fistCallStats[row['NOMBRE']]) {
+                fistCallStats[row['NOMBRE']] = row;
             }
         });
 
         for (const campaign in fistCallStats) {
+            const nombre_saneado = campaign
+                .replaceAll('(', '')
+                .replaceAll(')', '');
             let row = table_dialers
-                .row('#' + campaign);
+                .row('#' + nombre_saneado);
             let dataRow = row.data();
-            if (dataRow == null) {
+            if (!dataRow) {
                 let newDataRow = new DialerStats(campanas_id_supervisor[campanas_supervisor.indexOf(campaign)], campaign);
                 newDataRow.updateCallStats(fistCallStats[campaign]);
                 table_dialers.row.add(newDataRow);
@@ -86,13 +98,15 @@ $(function() {
 
         if (haveAgentsData) {
             let newAgentStats = agents.calculateStats(campanas_supervisor);
-            console.log(newAgentStats);
             for (const campaign in newAgentStats) {
+                const nombre_saneado = campaign
+                    .replaceAll('(', '')
+                    .replaceAll(')', '');
                 const statsEmpty = emptyStats(newAgentStats[campaign]);
                 let row = table_dialers
-                    .row('#' + campaign);
+                    .row('#' + nombre_saneado);
                 let dataRow = row.data();
-                if (dataRow == null && !statsEmpty) {
+                if (!dataRow && !statsEmpty) {
                     let newDataRow = new DialerStats(campanas_id_supervisor[campanas_supervisor.indexOf(campaign)], campaign);
                     newDataRow.updateAgentStats(newAgentStats[campaign]);
                     table_dialers.row.add(newDataRow);
@@ -118,7 +132,7 @@ $(function() {
 function createDataTable() {
     table_dialers = $('#tableDialers').DataTable({
         data: table_data,
-        rowId: 'nombre',
+        rowId: 'nombre_saneado',
         stateSave: true,
         columns: [
             { 'data': 'nombre' },
@@ -155,6 +169,9 @@ class DialerStats {
     constructor(id, nombre) {
         this.id = id;
         this.nombre = nombre;
+        this.nombre_saneado = nombre
+            .replaceAll('(', '')
+            .replaceAll(')', '');
         this.efectuadas = 0;
         this.atendidas = 0;
         this.no_atendidas = 0;
@@ -183,16 +200,19 @@ class DialerStats {
     }
 
     updateCallStats(newStats) {
-        this.nombre = newStats['nombre'];
-        this.efectuadas = newStats['efectuadas'];
-        this.atendidas = newStats['atendidas'];
-        this.no_atendidas = newStats['no_atendidas'];
-        this.contestadores = newStats['contestadores'];
-        this.conectadas_perdidas = newStats['conectadas_perdidas'];
-        this.gestiones = newStats['gestiones'];
-        this.pendientes = newStats['pendientes'];
-        this.canales_discando = newStats['canales_discando'];
-        this.porcentaje_objetivo = newStats['porcentaje_objetivo'];
+        this.nombre = newStats['NOMBRE'];
+        this.nombre_saneado = this.nombre
+            .replaceAll('(', '')
+            .replaceAll(')', '');
+        this.efectuadas = newStats['ESTADISTICAS']['efectuadas'];
+        this.atendidas = newStats['ESTADISTICAS']['atendidas'];
+        this.no_atendidas = newStats['ESTADISTICAS']['no_atendidas'];
+        this.contestadores = newStats['ESTADISTICAS']['contestadores'];
+        this.conectadas_perdidas = newStats['ESTADISTICAS']['conectadas_perdidas'];
+        this.gestiones = newStats['ESTADISTICAS']['gestiones'];
+        this.pendientes = newStats['ESTADISTICAS']['pendientes'];
+        this.canales_discando = newStats['ESTADISTICAS']['canales_discando'];
+        this.porcentaje_objetivo = newStats['ESTADISTICAS']['porcentaje_objetivo'];
     }
 
     updateAgentStats(agentStats) {
@@ -232,6 +252,7 @@ class Agents {
 
     updateAgent(newAgentData) {
         const agentId = newAgentData.id;
+        if (!agentId) return;
         this.agentList[agentId] = (this.agentList[agentId]) ? this.agentList[agentId] : {};
 
         if (this.agentList[agentId]['timestamp'] &&
