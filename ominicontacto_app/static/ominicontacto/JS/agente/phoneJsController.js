@@ -610,7 +610,6 @@ class PhoneJSController {
             {pause_name: pause_name}, true);
         this.view.setCallStatus(message, 'yellowgreen');
 
-        this.oml_api.changeStatus(USER_STATUS_PAUSE, this.agent_id);
         this.timers.pausa.start();
         this.timers.operacion.stop();
 
@@ -669,7 +668,7 @@ class PhoneJSController {
         clearTimeout(this.ACW_pause_timeout_handler);
         var pause_id = this.pause_manager.pause_id;
         this.pause_manager.leavePause();
-        this.oml_api.changeStatus(USER_STATUS_ONLINE, this.agent_id);
+
         /** Pauses **/
         var self = this;
         var unpause_ok = function(){

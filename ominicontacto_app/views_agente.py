@@ -154,18 +154,6 @@ class ExportaReporteCalificacionView(UpdateView):
         return redirect(url)
 
 
-def cambiar_estado_agente_view(request):
-    # TODO: Debería ser por POST
-    """Vista GET para cambiar el estado del agente"""
-    pk_agente = request.GET['pk_agente']
-    estado = request.GET['estado']
-    agente = AgenteProfile.objects.get(pk=int(pk_agente))
-    agente.estado = int(estado)
-    agente.save()
-    response = JsonResponse({'status': 'OK'})
-    return response
-
-
 class DashboardAgenteView(TemplateView):
     """Vista que renderiza el dashboard con los datos diarios del agente
     """
