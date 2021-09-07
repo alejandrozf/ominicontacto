@@ -26,6 +26,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     <script src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
 {% endblock %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/jquery.dataTables.min.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="form-row">
     <div class="col-md-9">
@@ -121,8 +125,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                   <table class="table" id="campanasAgenteTable">
                       <thead>
                           <tr>
-                              <th>{% trans 'Nombre' %}</th>
                               <th>{% trans 'ID' %}</th>
+                              <th>{% trans 'Nombre' %}</th>
                               <th>{% trans 'Objetivo' %}</th>
                           </tr>
                       </thead>
