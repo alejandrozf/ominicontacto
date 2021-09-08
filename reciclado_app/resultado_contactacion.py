@@ -82,6 +82,8 @@ class EstadisticasContactacion():
         # Asumo que Los logs con mayor id son los mas nuevos
         # Solo filtrar logs de contactos de la base actual no contactados
         contactos_ids = set(ids_contactos_base_actual).difference(set(contactados))
+        if len(contactos_ids) == 0:
+            return
         filtro_contactos = "AND contacto_id in ('"
         filtro_contactos += "','".join([str(x) for x in contactos_ids])
         filtro_contactos += "')"
