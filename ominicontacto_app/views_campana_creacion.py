@@ -254,7 +254,11 @@ class CampanaWizardMixin(object):
             return {'supervisors_choices': supervisors_choices}
         if step == self.ADICION_AGENTES:
             members = AgenteProfile.objects.obtener_activos()
-            return {'form_kwargs': {'members': members}}
+            members = AgenteProfile.objects.obtener_activos().prefetch_related('user')
+            empty = (('', '-----'), )
+            choices = ((member.id, member.user.get_full_name()) for member in members)
+            choices = list(empty) + list(choices)
+            return {'form_kwargs': {'members': choices}}
         if step == self.OPCIONES_CALIFICACION:
             cleaned_data = self.get_cleaned_data_for_step(self.INICIAL)
             con_formulario = cleaned_data.get('tipo_interaccion') == Campana.FORMULARIO

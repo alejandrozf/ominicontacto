@@ -313,7 +313,7 @@ class QueueMemberForm(forms.ModelForm):
 
         super(QueueMemberForm, self).__init__(*args, **kwargs)
 
-        self.fields['member'].queryset = members.prefetch_related('user')
+        self.fields['member'].choices = members
 
     class Meta:
         model = QueueMember
