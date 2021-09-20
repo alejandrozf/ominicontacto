@@ -34,16 +34,52 @@ ANSIBLE=`which ansible`
 TMP_ANSIBLE='/var/tmp/ansible'
 TMP_OMINICONTACTO='/var/tmp/ominicontacto-build/ominicontacto'
 REPO_LOCATION="`git rev-parse --show-toplevel`"
+REPO_NAME="`echo $REPO_LOCATION | awk -F"/" '{print $NF}'`"
 USER_HOME=$(eval echo ~${SUDO_USER})
 export ANSIBLE_CONFIG=$TMP_ANSIBLE
 arg1=$1
+
+TagCheck() {
+  if [ "$arg1" == "--asterisk" ] || [ "$arg1" == "-a" ];then
+    tag="asterisk"
+  elif [ "$arg1" == "--install" ] || [ "$arg1" == "-i" ];then
+    tag="all"
+  elif [ "$arg1" == "--upgrade" ] || [ "$arg1" == "-u" ];then
+    tag="postinstall"
+  elif [ "$arg1" == "--kamailio" ] || [ "$arg1" == "-k" ];then
+    tag="kamailio"
+  elif [ "$arg1" == "--omniapp" ] || [ "$arg1" == "-o" ];then
+    tag="omniapp"
+  elif [ "$arg1" == "--dialer" ] || [ "$arg1" == "-di" ];then
+    tag="dialer"
+  elif [ "$arg1" == "--database" ] || [ "$arg1" == "-da" ];then
+    tag="database"
+  elif [ "$arg1" == "--docker-deploy" ];then
+    tag="docker_deploy"
+  fi
+}
+
+UserValidation() {
+  echo -e "\n"
+  echo "##########################################################"
+  echo "#         Welcome to OMniLeads deployment script         #"
+  echo "##########################################################"
+  echo ""
+  WhoAamI="`whoami`"
+  if [ "${WhoAamI}" == "root" ];then
+  printf "$GREEN*** [OMniLeads] You have permission to run the script. Continuing. $NC\n"
+  else
+    printf "$RED*** [OMniLeads] You need to be root or have sudo permission to run this script. Exiting. $NC\n"
+    exit 1
+  fi
+}
 
 AnsibleValidation() {
   CertsValidation
   if [ -z $INTERFACE ];then INTERFACE=none;fi
   os=`awk -F= '/^NAME/{print $2}' /etc/os-release`
   if [ "$os" == '"Amazon Linux"' ];then
-    echo "Habilitating epel repository"
+    echo "Enabling epel repository"
     amazon-linux-extras enable epel
     echo "Installing python2-pip"
     yum install python-pip patch libedit-devel libuuid-devel -y
@@ -77,38 +113,38 @@ AnsibleValidation() {
   fi
 }
 
-UserValidation() {
-  echo -e "\n"
-  echo "##########################################################"
-  echo "#         Welcome to OMniLeads deployment script         #"
-  echo "##########################################################"
-  echo ""
-  WhoAamI="`whoami`"
-  if [ "${WhoAamI}" == "root" ];then
-  printf "$GREEN*** [OMniLeads] You have permission to run the script. Continuing. $NC\n"
-  else
-    printf "$RED*** [OMniLeads] You need to be root or have sudo permission to run this script. Exiting. $NC\n"
-    exit 1
+CertsValidation() {
+  certs_location="$REPO_LOCATION/install/onpremise/deploy/ansible/certs"
+  if [ $(ls -l $certs_location/*.pem 2>/dev/null | wc -l) -gt 0 ];then
+    if [ $(ls -l $certs_location/*key* 2>/dev/null | wc -l) -eq 1 ] && [ $(ls -l $certs_location/*.pem 2>/dev/null | wc -l) -eq 2 ];then
+      if [ ! -f $certs_location/key.pem ];then
+        key=$(basename $certs_location/*key*)
+        cp $certs_location/$key $certs_location/key.pem
+      fi
+      if [ ! -f $certs_location/cert.pem ];then
+        cert=$(ls $certs_location/*.pem |grep -v key)
+        cp $cert $certs_location/cert.pem
+      fi
+      # Copy user certs to Kamailio and Nginx modules
+      cp -f $certs_location/key.pem $REPO_LOCATION/modules/kamailio/deploy/certs/key.pem
+      cp -f $certs_location/cert.pem $REPO_LOCATION/modules/kamailio/deploy/certs/cert.pem
+      cp -f $certs_location/key.pem $REPO_LOCATION/modules/nginx/deploy/certs/key.pem
+      cp -f $certs_location/cert.pem $REPO_LOCATION/modules/nginx/deploy/certs/cert.pem
+    else
+      printf "$RED*** [OMniLeads] A pair of trusted cert/key pem files weren't found on $REPO_LOCATION/install/onpremise/deploy/ansible/certs. Maybe:
+1. You didn't include the string "key" in your .pem file related to private key.
+2. You put more or less than two .pem files in the certs folder.
+Try removing .pem files from certs location to continue with default certs, or try putting both specific files (key.pem and cert.pem) to continue with your certs.$NC\n"
+      exit 1
+    fi
   fi
 }
 
-TagCheck() {
-  if [ "$arg1" == "--asterisk" ] || [ "$arg1" == "-a" ];then
-    tag="asterisk"
-  elif [ "$arg1" == "--install" ] || [ "$arg1" == "-i" ];then
-    tag="all"
-  elif [ "$arg1" == "--upgrade" ] || [ "$arg1" == "-u" ];then
-    tag="postinstall"
-  elif [ "$arg1" == "--kamailio" ] || [ "$arg1" == "-k" ];then
-    tag="kamailio"
-  elif [ "$arg1" == "--omniapp" ] || [ "$arg1" == "-o" ];then
-    tag="omniapp"
-  elif [ "$arg1" == "--dialer" ] || [ "$arg1" == "-di" ];then
-    tag="dialer"
-  elif [ "$arg1" == "--database" ] || [ "$arg1" == "-da" ];then
-    tag="database"
-  elif [ "$arg1" == "--docker-deploy" ];then
-    tag="docker_deploy"
+RebrandValidation() {
+  if [ $REPO_NAME == "ominicontacto" ];then
+    Rebrand="false"
+  else
+    Rebrand="true"
   fi
 }
 
@@ -156,33 +192,6 @@ CodeCopy() {
   sleep 2
 }
 
-CertsValidation() {
-  certs_location="$REPO_LOCATION/install/onpremise/deploy/ansible/certs"
-  if [ $(ls -l $certs_location/*.pem 2>/dev/null | wc -l) -gt 0 ];then
-    if [ $(ls -l $certs_location/*key* 2>/dev/null | wc -l) -eq 1 ] && [ $(ls -l $certs_location/*.pem 2>/dev/null | wc -l) -eq 2 ];then
-      if [ ! -f $certs_location/key.pem ];then
-        key=$(basename $certs_location/*key*)
-        cp $certs_location/$key $certs_location/key.pem
-      fi
-      if [ ! -f $certs_location/cert.pem ];then
-        cert=$(ls $certs_location/*.pem |grep -v key)
-        cp $cert $certs_location/cert.pem
-      fi
-      # Copy user certs to Kamailio and Nginx modules
-      cp -f $certs_location/key.pem $REPO_LOCATION/modules/kamailio/deploy/certs/key.pem
-      cp -f $certs_location/cert.pem $REPO_LOCATION/modules/kamailio/deploy/certs/cert.pem
-      cp -f $certs_location/key.pem $REPO_LOCATION/modules/nginx/deploy/certs/key.pem
-      cp -f $certs_location/cert.pem $REPO_LOCATION/modules/nginx/deploy/certs/cert.pem
-    else
-      printf "$RED*** [OMniLeads] A pair of trusted cert/key pem files weren't found on $REPO_LOCATION/install/onpremise/deploy/ansible/certs. Maybe:
-1. You didn't include the string "key" in your .pem file related to private key.
-2. You put more or less than two .pem files in the certs folder.
-Try removing .pem files from certs location to continue with default certs, or try putting both specific files (key.pem and cert.pem) to continue with your certs.$NC\n"
-      exit 1
-    fi
-  fi
-}
-
 AnsibleExec() {
   printf "$GREEN*** [OMniLeads] Checking if there are hosts to deploy from inventory file. $NC\n"
   if ${ANSIBLE} all --list-hosts -i $TMP_ANSIBLE/inventory | grep -q '(0)' 2>/dev/null;then
@@ -197,6 +206,7 @@ AnsibleExec() {
     --extra-vars "iface=$INTERFACE \
                   build_dir=$TMP_OMINICONTACTO \
                   repo_location=$REPO_LOCATION \
+                  rebrand=$Rebrand \
                   docker_root=$USER_HOME \
                   build_images=$BUILD_IMAGES \
                   oml_release=$release_name \
@@ -325,7 +335,9 @@ ResultadoKeyTransfer=`echo $?`
     echo "##############################################################"
     exit 1
   fi
+
 UserValidation
 AnsibleValidation
+RebrandValidation
 CodeCopy
 AnsibleExec
