@@ -31,6 +31,9 @@ const MENSAJE_CONEXION_WEBSOCKET = 'Stream subscribed!';
 
 $(function() {
     campanas_supervisor = $('input#campanas_list').val().split(',');
+    if (campanas_supervisor.length == 1 && campanas_supervisor[0] == '') {
+        campanas_supervisor = [];
+    }
     campanas_id_supervisor = $('input#campanas_list_id').val().split(',');
     createDataTable();
 
@@ -47,15 +50,11 @@ $(function() {
         if (e.data != MENSAJE_CONEXION_WEBSOCKET) {
             try {
                 var data = JSON.parse(e.data);
-                processData(data);
-
-                var dataAux = [];
-                for (let i in campanas) {
-                    dataAux.push(campanas[i]);
+                if (campanas_supervisor.length > 0) {
+                    processData(data);
+                } else {
+                    table_dialers.clear().draw();
                 }
-                table_dialers.clear();
-                table_dialers.rows.add(dataAux).draw();
-                table_data = dataAux;
             } catch (err) {
                 console.log(err);
             }
@@ -63,140 +62,78 @@ $(function() {
     };
 
     function processData(data) {
-        var hay_agentes = false;
-        if (inicio && data.length > 1) {
-            data = data.reverse();
-        }
-        for (let index = 0; index < data.length; index++) {
-            var row = JSON.parse(data[index]
+        let haveAgentsData = false;
+        let fistCallStats = {};
+        data.forEach(info => {
+            let row = JSON.parse(info
                 .replaceAll('\'', '"')
                 .replaceAll('"[', '[')
                 .replaceAll(']"', ']')
                 .replaceAll('"{', '{')
                 .replaceAll('}"', '}'));
             if (row['NAME']) {
-                processAgent(row);
-                hay_agentes = true;
-            } else if (row['NOMBRE']) {
-                processCampaign(row['id'], row['ESTADISTICAS']);
+                agents.updateAgent(row);
+                haveAgentsData = true;
+            } else if (row['NOMBRE'] && !fistCallStats[row['NOMBRE']]) {
+                fistCallStats[row['NOMBRE']] = row;
             }
+        });
 
+        for (const campaign in fistCallStats) {
+            const nombre_saneado = campaign
+                .replaceAll('(', '')
+                .replaceAll(')', '');
+            let row = table_dialers
+                .row('#' + nombre_saneado);
+            let dataRow = row.data();
+            if (!dataRow) {
+                let newDataRow = new DialerStats(campanas_id_supervisor[campanas_supervisor.indexOf(campaign)], campaign);
+                newDataRow.updateCallStats(fistCallStats[campaign]);
+                table_dialers.row.add(newDataRow);
+            } else {
+                dataRow.updateCallStats(fistCallStats[campaign]);
+                row.data(dataRow);
+            }
         }
-        if (hay_agentes) {
-            consolidaInfoAgentes();
-        }
-        inicio = false;
-    }
 
-    function consolidaInfoAgentes() {
-        resumen_agentes_campanas = {};
-        for (let i in agentes) {
-            for (let j in agentes[i].campanas) {
-                for (let k in campanas_id_supervisor) {
-                    if (agentes[i].campanas[j] == campanas_supervisor[k]) {
-                        if (!resumen_agentes_campanas[campanas_id_supervisor[k]]) {
-                            resumen_agentes_campanas[campanas_id_supervisor[k]] = {
-                                'agentes_online': 0,
-                                'agentes_pausa': 0,
-                                'agentes_llamada': 0,
-                                'nombre_campana': campanas_supervisor[k]
-                            };
-                        }
-                        if (agentes[i].status.indexOf('PAUSE') == 0) {
-                            resumen_agentes_campanas[campanas_id_supervisor[k]]['agentes_pausa']++;
-                        } else if (agentes[i].status.indexOf('ONCALL') == 0) {
-                            resumen_agentes_campanas[campanas_id_supervisor[k]]['agentes_llamada']++;
-                        }
-                        if (agentes[i].status != '' &&
-                            agentes[i].status != 'OFFLINE') {
-                            resumen_agentes_campanas[campanas_id_supervisor[k]]['agentes_online']++;
-                        }
-
-                    }
+        if (haveAgentsData) {
+            let newAgentStats = agents.calculateStats(campanas_supervisor);
+            for (const campaign in newAgentStats) {
+                const nombre_saneado = campaign
+                    .replaceAll('(', '')
+                    .replaceAll(')', '');
+                const statsEmpty = emptyStats(newAgentStats[campaign]);
+                let row = table_dialers
+                    .row('#' + nombre_saneado);
+                let dataRow = row.data();
+                if (!dataRow && !statsEmpty) {
+                    let newDataRow = new DialerStats(campanas_id_supervisor[campanas_supervisor.indexOf(campaign)], campaign);
+                    newDataRow.updateAgentStats(newAgentStats[campaign]);
+                    table_dialers.row.add(newDataRow);
+                } else if (dataRow && dataRow.isEmpty() && statsEmpty) {
+                    row.remove();
+                } else if (dataRow) {
+                    dataRow.updateAgentStats(newAgentStats[campaign]);
+                    row.data(dataRow);
                 }
             }
         }
-        for (let i in resumen_agentes_campanas) {
-            if (!campanas[i] && (resumen_agentes_campanas[i]['agentes_pausa'] > 0 ||
-                    resumen_agentes_campanas[i]['agentes_llamada'] > 0 ||
-                    resumen_agentes_campanas[i]['agentes_online'] > 0)) {
-                inicializaCampaign(resumen_agentes_campanas[i]['nombre_campana'], i);
-            }
-            if (campanas[i] && (resumen_agentes_campanas[i]['agentes_pausa'] > 0 ||
-                    resumen_agentes_campanas[i]['agentes_llamada'] > 0 ||
-                    resumen_agentes_campanas[i]['agentes_online'] > 0)) {
-                campanas[i]['agentes_pausa'] = resumen_agentes_campanas[i]['agentes_pausa'];
-                campanas[i]['agentes_llamada'] = resumen_agentes_campanas[i]['agentes_llamada'];
-                campanas[i]['agentes_online'] = resumen_agentes_campanas[i]['agentes_online'];
-            } else if (campanas[i] && campanaVacia(campanas[i])) {
-                delete campanas[i];
-            } else if (campanas[i]) {
-                campanas[i]['agentes_pausa'] = 0;
-                campanas[i]['agentes_llamada'] = 0;
-                campanas[i]['agentes_online'] = 0;
-            }
-        }
-
+        table_dialers.draw();
     }
 
-    function campanaVacia(campana) {
-        if (campana['efectuadas'] > 0) return false;
-        if (campana['atendidas'] > 0) return false;
-        if (campana['no_atendidas'] > 0) return false;
-        if (campana['contestadores'] > 0) return false;
-        if (campana['conectadas_perdidas'] > 0) return false;
-        if (campana['gestiones'] > 0) return false;
-        if (campana['pendientes'] > 0) return false;
-        if (campana['canales_discando'] > 0) return false;
-
-        return true;
+    function emptyStats(stats) {
+        return stats.agentes_online == 0 &&
+            stats.agentes_llamada == 0 &&
+            stats.agentes_pausa == 0;
     }
 
-    function processAgent(agente) {
-        var agente_id = agente.id;
-        agentes[agente_id] = agentes[agente_id] ? agentes[agente_id] : {};
-        agentes[agente_id]['status'] = agente.STATUS;
-        agentes[agente_id]['campanas'] = agente.CAMPANAS;
-        agentes[agente_id]['timestamp'] = agente.TIMESTAMP;
-    }
-
-    function processCampaign(campana_id, row) {
-        if (!campanas[campana_id]) {
-            inicializaCampaign(row['nombre'], campana_id);
-        }
-        campanas[campana_id]['nombre'] = row['nombre'];
-        campanas[campana_id]['efectuadas'] = row['efectuadas'];
-        campanas[campana_id]['atendidas'] = row['atendidas'];
-        campanas[campana_id]['no_atendidas'] = row['no_atendidas'];
-        campanas[campana_id]['contestadores'] = row['contestadores'];
-        campanas[campana_id]['conectadas_perdidas'] = row['conectadas_perdidas'];
-        campanas[campana_id]['gestiones'] = row['gestiones'];
-        campanas[campana_id]['pendientes'] = row['pendientes'];
-        campanas[campana_id]['canales_discando'] = row['canales_discando'];
-
-    }
-
-    function inicializaCampaign(name, id) {
-        campanas[id] = {};
-        campanas[id]['id'] = id;
-        campanas[id]['nombre'] = name;
-        campanas[id]['efectuadas'] = 0;
-        campanas[id]['atendidas'] = 0;
-        campanas[id]['no_atendidas'] = 0;
-        campanas[id]['contestadores'] = 0;
-        campanas[id]['conectadas_perdidas'] = 0;
-        campanas[id]['gestiones'] = 0;
-        campanas[id]['pendientes'] = 0;
-        campanas[id]['canales_discando'] = 0;
-        campanas[id]['agentes_online'] = 0;
-        campanas[id]['agentes_llamada'] = 0;
-        campanas[id]['agentes_pausa'] = 0;
-    }
 });
 
 function createDataTable() {
     table_dialers = $('#tableDialers').DataTable({
         data: table_data,
+        rowId: 'nombre_saneado',
+        stateSave: true,
         columns: [
             { 'data': 'nombre' },
             { 'data': 'agentes_online' },
@@ -210,6 +147,7 @@ function createDataTable() {
             { 'data': 'conectadas_perdidas' },
             { 'data': 'gestiones' },
             { 'data': 'pendientes' },
+            { 'data': 'porcentaje_objetivo' },
         ],
 
         language: {
@@ -226,3 +164,117 @@ function createDataTable() {
         }
     });
 }
+class DialerStats {
+
+    constructor(id, nombre) {
+        this.id = id;
+        this.nombre = nombre;
+        this.nombre_saneado = nombre
+            .replaceAll('(', '')
+            .replaceAll(')', '');
+        this.efectuadas = 0;
+        this.atendidas = 0;
+        this.no_atendidas = 0;
+        this.contestadores = 0;
+        this.conectadas_perdidas = 0;
+        this.gestiones = 0;
+        this.pendientes = 0;
+        this.canales_discando = 0;
+        this.agentes_online = 0;
+        this.agentes_llamada = 0;
+        this.agentes_pausa = 0;
+        this.porcentaje_objetivo = 0;
+    }
+
+    isEmpty() {
+        if (this.efectuadas > 0) return false;
+        if (this.atendidas > 0) return false;
+        if (this.no_atendidas > 0) return false;
+        if (this.contestadores > 0) return false;
+        if (this.conectadas_perdidas > 0) return false;
+        if (this.gestiones > 0) return false;
+        if (this.pendientes > 0) return false;
+        if (this.canales_discando > 0) return false;
+        if (this.porcentaje_objetivo > 0) return false;
+        return true;
+    }
+
+    updateCallStats(newStats) {
+        this.nombre = newStats['NOMBRE'];
+        this.nombre_saneado = this.nombre
+            .replaceAll('(', '')
+            .replaceAll(')', '');
+        this.efectuadas = newStats['ESTADISTICAS']['efectuadas'];
+        this.atendidas = newStats['ESTADISTICAS']['atendidas'];
+        this.no_atendidas = newStats['ESTADISTICAS']['no_atendidas'];
+        this.contestadores = newStats['ESTADISTICAS']['contestadores'];
+        this.conectadas_perdidas = newStats['ESTADISTICAS']['conectadas_perdidas'];
+        this.gestiones = newStats['ESTADISTICAS']['gestiones'];
+        this.pendientes = newStats['ESTADISTICAS']['pendientes'];
+        this.canales_discando = newStats['ESTADISTICAS']['canales_discando'];
+        this.porcentaje_objetivo = newStats['ESTADISTICAS']['porcentaje_objetivo'];
+    }
+
+    updateAgentStats(agentStats) {
+        this.agentes_online = agentStats.agentes_online;
+        this.agentes_llamada = agentStats.agentes_llamada;
+        this.agentes_pausa = agentStats.agentes_pausa;
+    }
+
+}
+
+class Agents {
+    constructor() {
+        this.agentList = {};
+    }
+
+    calculateStats(campaignList) {
+        let stats = {};
+        campaignList.forEach(campaign => {
+            stats[campaign] = {
+                'agentes_online': 0,
+                'agentes_llamada': 0,
+                'agentes_pausa': 0
+            };
+            Object.values(this.agentList).forEach(agent => {
+                if (agent.campanas.includes(campaign) && agent.status != '') {
+                    stats[campaign]['agentes_online']++;
+                    if (agent.status.indexOf('PAUSE') == 0) {
+                        stats[campaign]['agentes_pausa']++;
+                    } else if (agent.status.indexOf('ONCALL') == 0) {
+                        stats[campaign]['agentes_llamada']++;
+                    }
+                }
+            });
+        });
+        return stats;
+    }
+
+    updateAgent(newAgentData) {
+        const agentId = newAgentData.id;
+        if (!agentId) return;
+        this.agentList[agentId] = (this.agentList[agentId]) ? this.agentList[agentId] : {};
+
+        if (this.agentList[agentId]['timestamp'] &&
+            this.agentList[agentId]['timestamp'] > newAgentData.TIMESTAMP) {
+            return;
+        }
+
+        this.agentList[agentId]['campanas'] = newAgentData.CAMPANAS;
+        this.agentList[agentId]['timestamp'] = newAgentData.TIMESTAMP;
+        this.agentList[agentId]['campaign'] = newAgentData.CAMPAIGN;
+
+        if (newAgentData.STATUS != '' &&
+            newAgentData.STATUS != 'OFFLINE' &&
+            newAgentData.STATUS != 'UNAVAILABLE') {
+            this.agentList[agentId]['status'] = newAgentData.STATUS;
+
+        } else {
+            this.agentList[agentId]['status'] = '';
+        }
+
+    }
+
+}
+
+var agents = new Agents();

@@ -313,7 +313,7 @@ class QueueMemberForm(forms.ModelForm):
 
         super(QueueMemberForm, self).__init__(*args, **kwargs)
 
-        self.fields['member'].queryset = members
+        self.fields['member'].choices = members
 
     class Meta:
         model = QueueMember
@@ -734,7 +734,7 @@ class CampanaEntranteForm(CampanaMixinForm, forms.ModelForm):
 class OpcionCalificacionForm(forms.ModelForm):
     class Meta:
         model = OpcionCalificacion
-        fields = ('tipo', 'nombre', 'formulario', 'campana', 'oculta')
+        fields = ('tipo', 'nombre', 'formulario', 'campana', 'oculta', 'positiva')
 
         widgets = {
             'nombre': forms.Select(),
@@ -1846,7 +1846,8 @@ class GrupoForm(forms.ModelForm):
         model = Grupo
         fields = ('nombre', 'auto_unpause', 'auto_attend_inbound',
                   'auto_attend_dialer', 'obligar_calificacion', 'call_off_camp',
-                  'acceso_grabaciones_agente', 'acceso_dashboard_agente')
+                  'acceso_grabaciones_agente', 'acceso_dashboard_agente',
+                  'on_hold')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
         }
@@ -1855,7 +1856,8 @@ class GrupoForm(forms.ModelForm):
         }
         labels = {
             'acceso_grabaciones_agente': _('Permitir el acceso a las grabaciones'),
-            'acceso_dashboard_agente': _('Permitir el acceso al dashboard')
+            'acceso_dashboard_agente': _('Permitir el acceso al dashboard'),
+            'on_hold': _('Permitir la activación de On-Hold')
         }
 
     def __init__(self, *args, **kwargs):

@@ -35,6 +35,7 @@ class ReporteDeLLamadasSalientesDeSupervision(object):
         'conectadas': 0,
         'no_conectadas': 0,
         'gestiones': 0,
+        'porcentaje_objetivo': 0,
     }
     EVENTOS_LLAMADA = ('DIAL', 'ANSWER') + LlamadaLog.EVENTOS_NO_CONEXION
 
@@ -50,6 +51,7 @@ class ReporteDeLLamadasSalientesDeSupervision(object):
         self.estadisticas = {}
         self._contabilizar_estadisticas_de_llamadas()
         self._contabilizar_gestiones()
+        self._calcular_porcentaje_objetivo()
 
     def _obtener_logs_de_llamadas(self):
         return LlamadaLog.objects.filter(time__gte=self.desde,
@@ -77,6 +79,25 @@ class ReporteDeLLamadasSalientesDeSupervision(object):
             if campana_id not in self.estadisticas:
                 self._inicializar_conteo_de_campana(self.campanas[campana_id])
             self.estadisticas[campana_id]['gestiones'] = cantidad['cantidad']
+
+    def _calcular_porcentaje_objetivo(self):
+        # Contabilizo el porcentaje alcanzado del objetivo
+        calificaciones = CalificacionCliente.objects.filter(
+            opcion_calificacion__campana_id__in=self.campanas.keys(),
+            opcion_calificacion__positiva=True
+        ).values('opcion_calificacion__campana_id').annotate(
+            cantidad=Count('opcion_calificacion__campana_id')).order_by()
+
+        for cantidad in calificaciones:
+            campana_id = cantidad['opcion_calificacion__campana_id']
+            if campana_id not in self.estadisticas:
+                self._inicializar_conteo_de_campana(self.campanas[campana_id])
+            if self.campanas[campana_id].objetivo == 0:
+                self.estadisticas[campana_id]['porcentaje_objetivo'] = 0
+            else:
+                porcentaje_objetivo = cantidad['cantidad'] / self.campanas[campana_id].objetivo
+                self.estadisticas[campana_id]['porcentaje_objetivo'] = "{:.1%}".format(
+                    porcentaje_objetivo)
 
     def _contabilizar_estadisticas_de_llamadas(self):
 

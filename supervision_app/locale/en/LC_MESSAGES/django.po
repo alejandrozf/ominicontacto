@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-09 12:32-0300\n"
+"POT-Creation-Date: 2021-09-08 11:57-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -71,8 +71,8 @@ msgid "Finalizar"
 msgstr "End Call"
 
 #: supervision_app/templates/supervision_agentes.html:104
-#: supervision_app/templates/supervision_campanas_dialers.html:45
-#: supervision_app/templates/supervision_campanas_entrantes.html:45
+#: supervision_app/templates/supervision_campanas_dialers.html:46
+#: supervision_app/templates/supervision_campanas_entrantes.html:46
 #: supervision_app/templates/supervision_campanas_salientes.html:35
 msgid "Nombre"
 msgstr "Name"
@@ -102,88 +102,95 @@ msgstr "Actions"
 msgid "Llamadas"
 msgstr "Calls"
 
-#: supervision_app/templates/supervision_campanas_dialers.html:46
+#: supervision_app/templates/supervision_campanas_dialers.html:47
 msgid "Agentes Online"
 msgstr "Online Agents"
 
-#: supervision_app/templates/supervision_campanas_dialers.html:47
+#: supervision_app/templates/supervision_campanas_dialers.html:48
 msgid "Agentes en llamada"
 msgstr "Agents in Call"
 
-#: supervision_app/templates/supervision_campanas_dialers.html:48
+#: supervision_app/templates/supervision_campanas_dialers.html:49
 msgid "Agentes en pausa"
 msgstr "Paused Agents"
 
-#: supervision_app/templates/supervision_campanas_dialers.html:49
+#: supervision_app/templates/supervision_campanas_dialers.html:50
 #: supervision_app/templates/supervision_campanas_salientes.html:36
 msgid "Llamadas discadas"
 msgstr "Dialed calls"
 
-#: supervision_app/templates/supervision_campanas_dialers.html:50
-#: supervision_app/templates/supervision_campanas_entrantes.html:50
+#: supervision_app/templates/supervision_campanas_dialers.html:51
+#: supervision_app/templates/supervision_campanas_entrantes.html:51
 #: supervision_app/templates/supervision_campanas_salientes.html:37
 msgid "Atendidas"
 msgstr "Attended"
 
-#: supervision_app/templates/supervision_campanas_dialers.html:51
+#: supervision_app/templates/supervision_campanas_dialers.html:52
 #: supervision_app/templates/supervision_campanas_salientes.html:38
 msgid "No atendidas"
 msgstr "Unattended"
 
-#: supervision_app/templates/supervision_campanas_dialers.html:52
+#: supervision_app/templates/supervision_campanas_dialers.html:53
 msgid "Contestadores"
 msgstr "Answering machines"
 
-#: supervision_app/templates/supervision_campanas_dialers.html:53
+#: supervision_app/templates/supervision_campanas_dialers.html:54
 msgid "Canales discando"
 msgstr "Channels dialing"
 
-#: supervision_app/templates/supervision_campanas_dialers.html:54
+#: supervision_app/templates/supervision_campanas_dialers.html:55
 msgid "Llamadas conectadas perdidas"
 msgstr "Connected calls lost"
 
-#: supervision_app/templates/supervision_campanas_dialers.html:55
-#: supervision_app/templates/supervision_campanas_entrantes.html:55
+#: supervision_app/templates/supervision_campanas_dialers.html:56
+#: supervision_app/templates/supervision_campanas_entrantes.html:56
 #: supervision_app/templates/supervision_campanas_salientes.html:39
 msgid "Gestiones"
 msgstr "Engagements"
 
-#: supervision_app/templates/supervision_campanas_dialers.html:56
+#: supervision_app/templates/supervision_campanas_dialers.html:57
 msgid "Llamadas pendientes"
 msgstr "Pending calls"
+
+#: supervision_app/templates/supervision_campanas_dialers.html:58
+#: supervision_app/templates/supervision_campanas_entrantes.html:57
+#: supervision_app/templates/supervision_campanas_salientes.html:40
+#, python-format
+msgid "%% Objetivo"
+msgstr "%% Target"
 
 #: supervision_app/templates/supervision_campanas_entrantes.html:41
 msgid "T. promedio"
 msgstr "Average T."
 
-#: supervision_app/templates/supervision_campanas_entrantes.html:46
+#: supervision_app/templates/supervision_campanas_entrantes.html:47
 msgid "Online"
 msgstr "Online"
 
-#: supervision_app/templates/supervision_campanas_entrantes.html:47
+#: supervision_app/templates/supervision_campanas_entrantes.html:48
 msgid "En llamada"
 msgstr "In Call"
 
-#: supervision_app/templates/supervision_campanas_entrantes.html:48
+#: supervision_app/templates/supervision_campanas_entrantes.html:49
 msgid "En pausa"
 msgstr "In Pause"
 
-#: supervision_app/templates/supervision_campanas_entrantes.html:49
+#: supervision_app/templates/supervision_campanas_entrantes.html:50
 msgid "En espera"
 msgstr "On queue"
 
-#: supervision_app/templates/supervision_campanas_entrantes.html:51
+#: supervision_app/templates/supervision_campanas_entrantes.html:52
 msgid "Abandonadas"
 msgstr "Abandoned"
 
-#: supervision_app/templates/supervision_campanas_entrantes.html:52
+#: supervision_app/templates/supervision_campanas_entrantes.html:53
 msgid "Expiradas"
 msgstr "Expired"
 
-#: supervision_app/templates/supervision_campanas_entrantes.html:53
+#: supervision_app/templates/supervision_campanas_entrantes.html:54
 msgid "Abandono"
 msgstr "Abandoned"
 
-#: supervision_app/templates/supervision_campanas_entrantes.html:54
+#: supervision_app/templates/supervision_campanas_entrantes.html:55
 msgid "Espera"
 msgstr "On queue"

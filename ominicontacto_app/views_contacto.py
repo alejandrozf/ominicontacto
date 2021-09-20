@@ -182,7 +182,7 @@ class ContactoBDContactoCreateView(CreateView):
             except BaseDatosContacto.DoesNotExist:
                 message = _('La base de datos no existe')
                 messages.warning(request, message)
-                return redirect('lista_base_datos_contacto')
+                return redirect('lista_base_datos_contacto', 1)
         if 'pk_campana' in kwargs:
             try:
                 self.campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
@@ -235,7 +235,7 @@ class ContactoBDContactoCreateView(CreateView):
 
     def get_success_url(self):
         if self.campana is None:
-            return reverse('lista_base_datos_contacto')
+            return reverse('lista_base_datos_contacto', kwargs={"page": 1})
         else:
             return reverse(URL_LISTA_CAMPANAS_POR_TIPO[self.campana.type])
 

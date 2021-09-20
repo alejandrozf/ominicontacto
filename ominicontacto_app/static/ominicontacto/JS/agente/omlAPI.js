@@ -46,23 +46,6 @@ class OMLAPI {
         });
     }
 
-    changeStatus(status, id_agente) {
-        var URL = Urls.agente_cambiar_estado(status, id_agente);
-        // TODO: Este request debería ser por POST
-        $.ajax({
-            type: 'get',
-            url: URL,
-            //url: "/agente/cambiar_estado?estado=" + status + "&pk_agente=" + idagente,
-            contentType: 'text/html',
-            success: function(msg) {
-
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
-            }
-        });
-    }
-
     getCampanasActivas(callback) {
         var URL = Urls.service_campanas_activas();
         $.ajax({

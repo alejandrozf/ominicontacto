@@ -18,6 +18,9 @@
 */
 $(function () {
   inicializarCampoSitioExterno();
+
+  $('#id_0-bd_contacto').each(function() {
+      $(this).select2();});
 });
 
 function inicializarCampoSitioExterno() {

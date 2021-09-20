@@ -57,6 +57,7 @@ class ReporteDeLlamadasDeSupervision(object):
         self.estadisticas = {}
         self._contabilizar_estadisticas_de_llamadas()
         self._contabilizar_gestiones()
+        self._calcular_porcentaje_objetivo()
 
     def _inicializar_conteo_de_campana(self, campana_id):
         campana = self.campanas[campana_id]
@@ -88,6 +89,25 @@ class ReporteDeLlamadasDeSupervision(object):
             estadisticas_campana = self.estadisticas[log.campana_id]
             self._contabilizar_tipos_de_llamada_por_campana(
                 estadisticas_campana, log)
+
+    def _calcular_porcentaje_objetivo(self):
+        # Contabilizo las gestiones
+        calificaciones = CalificacionCliente.objects.filter(
+            opcion_calificacion__campana_id__in=self.campanas.keys(),
+            opcion_calificacion__positiva=True
+        ).values('opcion_calificacion__campana_id').annotate(
+            cantidad=Count('opcion_calificacion__campana_id')).order_by()
+
+        for cantidad in calificaciones:
+            campana_id = cantidad['opcion_calificacion__campana_id']
+            if campana_id not in self.estadisticas:
+                self._inicializar_conteo_de_campana(self.campanas[campana_id])
+            if self.campanas[campana_id].objetivo == 0:
+                self.estadisticas[campana_id]['porcentaje_objetivo'] = 0
+            else:
+                porcentaje_objetivo = cantidad['cantidad'] / self.campanas[campana_id].objetivo
+                self.estadisticas[campana_id]['porcentaje_objetivo'] = "{:.1%}".format(
+                    porcentaje_objetivo)
 
     @property
     def INICIALES(self):
@@ -193,40 +213,40 @@ class ReporteDeLLamadasEntrantesDeSupervision(ReporteStatusDeAgentesEnCampanasMi
         return campanas
 
 
-class ReporteDeLLamadasSalientesDeSupervision(ReporteDeLlamadasDeSupervision):
-    INICIALES = {
-        'efectuadas': 0,
-        'conectadas': 0,
-        'no_conectadas': 0,
-        'gestiones': 0,
-    }
-    EVENTOS_LLAMADA = ('DIAL', 'ANSWER') + LlamadaLog.EVENTOS_NO_CONEXION
-
-    def _obtener_campanas(self, user_supervisor):
-        if user_supervisor.get_is_administrador():
-            campanas = Campana.objects.obtener_actuales()
-        else:
-            supervisor = user_supervisor.get_supervisor_profile()
-            campanas = supervisor.campanas_asignadas_actuales()
-
-        campanas = campanas.filter(type__in=[Campana.TYPE_PREVIEW,
-                                             Campana.TYPE_MANUAL])
-        return campanas
-
-    def _obtener_logs_de_llamadas(self):
-        return LlamadaLog.objects.filter(time__gte=self.desde,
-                                         time__lte=self.hasta,
-                                         campana_id__in=self.campanas.keys(),
-                                         event__in=self.EVENTOS_LLAMADA)
-
-    def _contabilizar_tipos_de_llamada_por_campana(self, datos_campana, log):
-        if log.event == 'DIAL':
-            datos_campana['efectuadas'] += 1
-        elif log.event in LlamadaLog.EVENTOS_NO_CONEXION:
-            datos_campana['no_conectadas'] += 1
-        # Si es MANUAL o PREVIEW
-        elif log.event == 'ANSWER':
-            datos_campana['conectadas'] += 1
+# class ReporteDeLLamadasSalientesDeSupervision(ReporteDeLlamadasDeSupervision):
+#     INICIALES = {
+#         'efectuadas': 0,
+#         'conectadas': 0,
+#         'no_conectadas': 0,
+#         'gestiones': 0,
+#     }
+#     EVENTOS_LLAMADA = ('DIAL', 'ANSWER') + LlamadaLog.EVENTOS_NO_CONEXION
+#
+#     def _obtener_campanas(self, user_supervisor):
+#         if user_supervisor.get_is_administrador():
+#             campanas = Campana.objects.obtener_actuales()
+#         else:
+#             supervisor = user_supervisor.get_supervisor_profile()
+#             campanas = supervisor.campanas_asignadas_actuales()
+#
+#         campanas = campanas.filter(type__in=[Campana.TYPE_PREVIEW,
+#                                              Campana.TYPE_MANUAL])
+#         return campanas
+#
+#     def _obtener_logs_de_llamadas(self):
+#         return LlamadaLog.objects.filter(time__gte=self.desde,
+#                                          time__lte=self.hasta,
+#                                          campana_id__in=self.campanas.keys(),
+#                                          event__in=self.EVENTOS_LLAMADA)
+#
+#     def _contabilizar_tipos_de_llamada_por_campana(self, datos_campana, log):
+#         if log.event == 'DIAL':
+#             datos_campana['efectuadas'] += 1
+#         elif log.event in LlamadaLog.EVENTOS_NO_CONEXION:
+#             datos_campana['no_conectadas'] += 1
+#         # Si es MANUAL o PREVIEW
+#         elif log.event == 'ANSWER':
+#             datos_campana['conectadas'] += 1
 
 
 class ReporteDeLLamadasDialerDeSupervision(ReporteDeLlamadasDeSupervision):
@@ -239,6 +259,7 @@ class ReporteDeLLamadasDialerDeSupervision(ReporteDeLlamadasDeSupervision):
         'gestiones': 0,             # _contabilizar_gestiones()
         'pendientes': 0,            # _contabilizar_llamadas_pendientes()
         'canales_discando': 0,      # _contabilizar_llamadas_en_curso
+        'porcentaje_objetivo': 0,
     }
     EVENTOS_LLAMADA = ('DIAL', 'CONNECT', 'ANSWER') + LlamadaLog.EVENTOS_NO_CONEXION
 
@@ -248,7 +269,10 @@ class ReporteDeLLamadasDialerDeSupervision(ReporteDeLlamadasDeSupervision):
         self._contabilizar_llamadas_en_curso()
 
     def _obtener_campanas(self):
-        return Campana.objects.obtener_actuales().filter(type=Campana.TYPE_DIALER)
+        return Campana.objects \
+            .obtener_actuales() \
+            .filter(type=Campana.TYPE_DIALER) \
+            .filter(estado__in=[Campana.ESTADO_ACTIVA, Campana.ESTADO_PAUSADA])
 
     def _obtener_logs_de_llamadas(self):
         return LlamadaLog.objects.filter(time__gte=self.desde,

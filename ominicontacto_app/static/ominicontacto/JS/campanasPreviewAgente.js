@@ -142,7 +142,10 @@ Por favor intente solicitar uno nuevo');
                             var url_parameters = [idCampana, data['contacto_id'], data['agente_id']];
                             var call_data_json = data['calldata'];
                             var calificar_contacto_url = Urls.calificacion_formulario_update_or_create(
-                                '0000', '1111') + encodeURIComponent(call_data_json);
+                                '0000', '1111');
+                            if (call_data_json !== undefined){
+                                calificar_contacto_url = calificar_contacto_url + encodeURIComponent(call_data_json);
+                            }
                             var calificar_url = set_url_parameters(calificar_contacto_url, url_parameters);
                             $('#calificar_contacto').attr('href', calificar_url);
                         }

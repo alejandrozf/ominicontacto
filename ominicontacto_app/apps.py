@@ -306,7 +306,7 @@ class OminicontactoAppConfig(AppConfig):
         if 'lista_base_datos_contacto' in permissions:
             contactos.append({
                 'label': _('Base de datos de contactos'),
-                'url': reverse('lista_base_datos_contacto')
+                'url': reverse('lista_base_datos_contacto', args=(1, ))
             })
         if 'nueva_base_datos_contacto' in permissions:
             contactos.append({
@@ -369,6 +369,8 @@ class OminicontactoAppConfig(AppConfig):
             {'nombre': 'user_new_agent',
              'roles': ['Supervisor', ]},
             {'nombre': 'user_list',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'descargar_usuarios_csv',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'user_delete',
              'roles': ['Administrador', 'Gerente', ]},
@@ -550,8 +552,6 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'auditar_formulario_venta',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'agente_cambiar_estado',
-             'roles': ['Agente', ]},
             {'nombre': 'agente_dashboard',
              'roles': ['Agente', ]},
             {'nombre': 'llamadas_activas',
@@ -744,6 +744,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'define_lista_rapida',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'finalizar_campana_preview',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
         ]
 
     informacion_de_permisos = {
@@ -760,6 +762,8 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Crear un Usuario con rol Agente'), 'version': '1.11.0'},
         'user_list':
             {'descripcion': _('Ver lista de Usuarios'), 'version': '1.7.0'},
+        'descargar_usuarios_csv':
+            {'descripcion': _('Descargar lista de usuarios a CSV'), 'version': '1.7.0'},
         'user_delete':
             {'descripcion': _('Borrar Usuario (no agente)'), 'version': '1.7.0'},
         'user_update':
@@ -969,8 +973,6 @@ class OminicontactoAppConfig(AppConfig):
         'auditar_formulario_venta':
             {'descripcion': _('Editar la respuesta de un formulario de gestión al auditarla'),
              'version': '1.7.0'},
-        'agente_cambiar_estado':
-            {'descripcion': _('Modificar el estado de un Agente en Asterisk'), 'version': '1.7.0'},
         'agente_dashboard':
         {'descripcion': _('Vista del dashboard de un agente'), 'version': '1.11.7'},
         'llamadas_activas':
@@ -1183,4 +1185,6 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Elimina una lista rapida de contactos'), 'version': '1.13.0'},
         'define_lista_rapida':
             {'descripcion': _('Define una lista rapida de contactos'), 'version': '1.13.0'},
+        'finalizar_campana_preview':
+            {'descripcion': _('Finalizar una campana preview activa'), 'version': '1.17.0'},
     }

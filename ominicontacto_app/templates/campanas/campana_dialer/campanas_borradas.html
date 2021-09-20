@@ -26,8 +26,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <a href="{% url 'campana_dialer_detalle' campana.pk %}">
                         <span class="glyphicon glyphicon-zoom-in" aria-hidden="true" title="ver detalles"></span>
                     </a>
-                </td>
-                <td>
+               </td>
+               <td>{{ campana.queue_campana.maxlen }}</td>
+               <td>
                     {{ campana.fecha_inicio|date:"d/m/Y" }}
                 </td>
                 <td>{{ campana.fecha_fin|date:"d/m/Y" }}</td>

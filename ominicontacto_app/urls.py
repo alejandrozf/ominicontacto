@@ -90,6 +90,10 @@ urlpatterns = [
         login_required(views_user_profiles.UserListView.as_view()),
         name='user_list'
         ),
+    url(r'^user/list/download_csv/$',
+        login_required(views_user_profiles.ExportCsvUsuariosView.as_view()),
+        name='descargar_usuarios_csv'
+        ),
     url(r'^user/delete/(?P<pk>\d+)/$',
         login_required(views_user_profiles.UserDeleteView.as_view()),
         name='user_delete',
@@ -236,7 +240,7 @@ urlpatterns = [
     # ==========================================================================
     # Base Datos Contacto
     # ==========================================================================
-    url(r'^base_datos_contacto/$',
+    url(r'^base_datos_contacto/(?P<page>[0-9]+)/$',
         login_required(
             views_base_de_datos_contacto.BaseDatosContactoListView.as_view()),
         name='lista_base_datos_contacto',
@@ -589,11 +593,6 @@ urlpatterns = [
     # ==========================================================================
     # Agente
     # ==========================================================================
-    url(r'^agente/cambiar_estado/$',
-        login_required(views_agente.cambiar_estado_agente_view),
-        name='agente_cambiar_estado',
-        ),
-
     url(r'^agente/dashboard/$',
         login_required(views_agente.DashboardAgenteView.as_view()),
         name='agente_dashboard',
@@ -795,6 +794,10 @@ urlpatterns = [
         login_required(
             views_campana_preview.DescargarOrdenAgentesEnContactosView.as_view()),
         name="descargar_orden_contactos_actual_preview"),
+    url(r'^campana_preview/finalizar/$',
+        login_required(
+            views_campana_preview.FinalizarCampanaPreviewView.as_view()),
+        name="finalizar_campana_preview"),
     # ==========================================================================
     # Campana Entrante
     # ==========================================================================

@@ -16,7 +16,7 @@
      You should have received a copy of the GNU General Public License
      along with this program.  If not, see http://www.gnu.org/licenses/.
 
-   -->
+-->
 {% extends 'base.html'  %}
 
 {% load i18n %}
@@ -24,25 +24,27 @@
 {% block content %}
     <h1>{% trans 'Addons comerciales disponibles' %}</h1>
     {% for addon_name, addon_url, description, author, author_url, release_version, icon in addons_info %}
-        <div class="card border-success mb-3" style="max-width: 540px;">
-            <div class="row no-gutters">
-                <div class="col-md-4">
-                    <img src="{{ icon }}" class="card-img" alt="...">
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body text-primary">
-                        <h5 class="card-title"><a href="{{ addon_url }}" target="_blank">{{ addon_name }}</a></h5>
-                        <p class="card-text text-secondary">{{ description }}</p>
-                        {% if release_version  %}
-                            <p class="card-text"><small class="text-muted">{{ release_version }}</small></p>
-                        {% endif %}
+        {% if release_version %}
+            <div class="card border-success mb-3" style="max-width: 540px;">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src="{{ icon }}" class="card-img" alt="...">
                     </div>
-                    <div class="card-footer bg-transparent border-success">
-                        <h5 class="card-title">{{ author }}</h5>
-                        <p class="card-text text-secondary"><a href="{{ author_url }}" target="_blank">{{ author_url }}</a></p>
+                    <div class="col-md-8">
+                        <div class="card-body text-primary">
+                            <h5 class="card-title"><a href="{{ addon_url }}" target="_blank">{{ addon_name }}</a></h5>
+                            <p class="card-text text-secondary">{{ description }}</p>
+                            {% if release_version  %}
+                                <p class="card-text"><small class="text-muted">{{ release_version }}</small></p>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer bg-transparent border-success">
+                            <h5 class="card-title">{{ author }}</h5>
+                            <p class="card-text text-secondary"><a href="{{ author_url }}" target="_blank">{{ author_url }}</a></p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        {% endif %}
     {% endfor %}
 {% endblock %}

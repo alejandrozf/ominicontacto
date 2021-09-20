@@ -24,6 +24,9 @@ from __future__ import unicode_literals
 import json
 from formtools.wizard.views import SessionWizardView
 
+from import_export import resources
+from import_export.fields import Field
+
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.contrib.auth.models import Group
@@ -32,9 +35,9 @@ from django.db.models import Q
 from django.db.models import Value as V
 from django.db.models.functions import Concat
 from django.urls import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.views.generic import (
-    UpdateView, ListView, DeleteView, RedirectView, FormView, TemplateView, )
+    View, UpdateView, ListView, DeleteView, RedirectView, FormView, TemplateView, )
 
 from constance import config
 
@@ -56,6 +59,7 @@ from ominicontacto_app.services.asterisk.asterisk_ami import AMIManagerConnector
 
 import logging as logging_
 import os
+import csv
 
 logger = logging_.getLogger(__name__)
 
@@ -623,3 +627,39 @@ class UserRoleManagementView(TemplateView):
         context['roles'] = json.dumps(self._get_informacion_de_roles())
         context['permisos'] = json.dumps(dict(PermisoOML.objects.values_list('id', 'name')))
         return context
+
+
+class UserResourceExport(resources.ModelResource):
+
+    profile = Field()
+
+    def dehydrate_profile(self, user):
+        return user.rol.name
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'first_name', 'last_name', 'profile')
+        export_order = ('id', 'username', 'first_name', 'last_name', 'profile')
+
+
+class ExportCsvUsuariosView(View):
+
+    def post(self, request, *args, **kwargs):
+        filtro = request.POST.get('nombre_usuario', False)
+        # ID, username, first name, last name,
+        # Profile (Agente / Supervisor / Administrador o nombre del perfil custom)
+        usuarios_activos = User.objects.filter(borrado=False)
+        if filtro:
+            usuarios_activos = usuarios_activos.annotate(
+                full_name=Concat('first_name', V(' '), 'last_name')).\
+                filter(Q(full_name__icontains=filtro) | Q(username__icontains=filtro))
+        response = HttpResponse(content_type='text/csv')
+        content_disposition = 'attachment; filename="active_users.csv"'
+        response['Content-Disposition'] = content_disposition
+        dataset = UserResourceExport().export(usuarios_activos)
+        writer = csv.writer(response)
+        columnas_headers = ('Id', 'Username', 'First Name', 'Last Name', 'Profile')
+        writer.writerow(columnas_headers)
+        for row in dataset:
+            writer.writerow(row)
+        return response

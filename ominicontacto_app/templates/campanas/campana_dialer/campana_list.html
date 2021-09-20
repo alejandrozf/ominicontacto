@@ -48,6 +48,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <tr>
                 <th width="5%">{% trans 'Id' %}</th>
                 <th>{% trans 'Nombre' %}</th>
+                <th>{% trans 'Canales asignados' %}</th>
                 <th>{% trans 'Fecha Ini' %}</th>
                 <th>{% trans 'Fecha Fin' %}</th>
                 <th>{% trans 'Base de datos' %}</th>
@@ -66,6 +67,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         &nbsp;<span class="icon icon-search" aria-hidden="true" title="ver detalles"></span>
                     </a>
                 </td>
+                <td>{{ campana.queue_campana.maxlen }}</td>
                 <td>
                     {{ campana.fecha_inicio|date:"d/m/Y" }}
                 </td>
@@ -88,9 +90,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             </a>
                             <a class="dropdown-item action_for_campaign" value="{% url 'pausar_campana_dialer' %}" href="#" camp-id="{{ campana.pk }}">
                                 <span class="icon icon-control-pause"></span>{% trans 'Pausar' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">
-                                <span class="icon icon-refresh"></span>{% trans 'Reciclar' %}
                             </a>
                             <a class="dropdown-item action_for_campaign" value="{% url 'finalizar_campana_dialer' %}" href="#" camp-id="{{ campana.pk }}">
                                 <span class="icon icon-cancel"></span>{% trans 'Finalizar' %}
@@ -147,6 +146,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <tr>
                 <th width="5%">{% trans 'Id' %}</th>
                 <th>{% trans 'Nombre' %}</th>
+                <th>{% trans 'Canales asignados' %}</th>
                 <th>{% trans 'Fecha Ini' %}</th>
                 <th>{% trans 'Fecha Fin' %}</th>
                 <th>{% trans 'Base de datos' %}</th>
@@ -164,6 +164,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         &nbsp;<span class="icon icon-search" aria-hidden="true" title="ver detalles"></span>
                     </a>
                 </td>
+                <td>{{ campana.queue_campana.maxlen }}</td>
                 <td>
                     {{ campana.fecha_inicio|date:"d/m/Y" }}
                 </td>
@@ -186,6 +187,9 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             </a>
                             <a class="dropdown-item" href="{% url 'queue_member_campana' campana.pk %}">
                                 <span class="icon icon-plus"></span>{% trans 'Agregar agentes' %}
+                            </a>
+                            <a class="dropdown-item" href="{% url 'reciclar_campana_dialer' campana.pk %}">
+                                <span class="icon icon-refresh"></span>{% trans 'Reciclar' %}
                             </a>
                             <a class="dropdown-item action_for_campaign" value="{% url 'finalizar_campana_dialer' %}" href="#" camp-id="{{ campana.pk }}">
                                 <span class="icon icon-cancel"></span>{% trans 'Finalizar' %}
@@ -229,6 +233,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <tr>
                 <th width="5%">{% trans 'Id' %}</th>
                 <th>{% trans 'Nombre' %}</th>
+                <th>{% trans 'Canales asignados' %}</th>
                 <th>{% trans 'Fecha Ini' %}</th>
                 <th>{% trans 'Fecha Fin' %}</th>
                 <th>{% trans 'Base de datos' %}</th>
@@ -246,6 +251,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         &nbsp;<span class="icon icon-search" aria-hidden="true" title="ver detalles"></span>
                     </a>
                 </td>
+                <td>{{ campana.queue_campana.maxlen }}</td>
                 <td>
                     {{ campana.fecha_inicio|date:"d/m/Y" }}
                 </td>
@@ -314,6 +320,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <tr>
                 <th width="5%">{% trans 'Id' %}</th>
                 <th>{% trans 'Nombre' %}</th>
+                <th>{% trans 'Canales asignados' %}</th>
                 <th>{% trans 'Fecha Ini' %}</th>
                 <th>{% trans 'Fecha Fin' %}</th>
                 <th>{% trans 'Base de datos' %}</th>
@@ -331,6 +338,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         &nbsp;<span class="icon icon-search" aria-hidden="true" title="ver detalles"></span>
                     </a>
                 </td>
+                <td>{{ campana.queue_campana.maxlen }}</td>
                 <td>
                     {{ campana.fecha_inicio|date:"d/m/Y" }}
                 </td>
@@ -391,6 +399,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             <tr>
                 <th width="5%">{% trans 'Id' %}</th>
                 <th>{% trans 'Nombre' %}</th>
+                <th>{% trans 'Canales asignados' %}</th>
                 <th>{% trans 'Fecha Ini' %}</th>
                 <th>{% trans 'Fecha Fin' %}</th>
                 <th>{% trans 'Estado' %}</th>
@@ -406,6 +415,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         &nbsp;<span class="icon icon-search" aria-hidden="true" title="ver detalles"></span>
                     </a>
                 </td>
+                <td>{{ campana.queue_campana.maxlen }}</td>
                 <td>
                     {{ campana.fecha_inicio|date:"d/m/Y" }}
                 </td>

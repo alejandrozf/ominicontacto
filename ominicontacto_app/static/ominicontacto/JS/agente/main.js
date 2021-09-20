@@ -78,7 +78,6 @@ function startPhoneJs() {
     subscribirEventosBotonesOtrosMedios(oml_api);
 
     timers.operacion.start();
-    oml_api.changeStatus(USER_STATUS_ONLINE, agent_id);
 
     window.addEventListener('beforeunload', preventLeaveWithoutLogoff);
 }
@@ -87,7 +86,6 @@ function subscribirEventosBotonesGenerales(oml_api, agent_id) {
 
     $('#logout').click(function () {
         window.removeEventListener('beforeunload', preventLeaveWithoutLogoff);
-        oml_api.changeStatus(3, agent_id);
     });
 }
 

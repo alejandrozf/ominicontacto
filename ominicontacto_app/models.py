@@ -218,6 +218,7 @@ class Grupo(models.Model):
         'Acceso grabaciones agentes'))
     acceso_dashboard_agente = models.BooleanField(default=True, verbose_name=_(
         'Acceso dashboard agentes'))
+    on_hold = models.BooleanField(default=True, verbose_name=_('On-Hold'))
 
     def __str__(self):
         return self.nombre
@@ -1408,6 +1409,7 @@ class OpcionCalificacion(models.Model):
     nombre = models.CharField(max_length=50)
     formulario = models.ForeignKey(Formulario, null=True, blank=True, on_delete=models.CASCADE)
     oculta = models.BooleanField(default=False, verbose_name=_('Ocultar'))
+    positiva = models.BooleanField(default=False, verbose_name=_('Positiva'))
 
     def __str__(self):
         return str(_('Opción "{0}" para campaña "{1}" de tipo "{2}"'.format(

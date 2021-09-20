@@ -138,6 +138,7 @@ function createDataTable() {
                 },
             },
             { 'data': 'gestiones' },
+            { 'data': 'porcentaje_objetivo' },
         ],
 
         language: {
@@ -170,6 +171,7 @@ class InboundStats {
         this.agentes_online = 0;
         this.agentes_llamada = 0;
         this.agentes_pausa = 0;
+        this.porcentaje_objetivo = 0;
     }
 
     isEmpty() {
@@ -177,7 +179,8 @@ class InboundStats {
             this.atendidas != 0 ||
             this.abandonadas != 0 ||
             this.expiradas != 0 ||
-            this.gestiones != 0) return false;
+            this.gestiones != 0 ||
+            this.porcentaje_objetivo != 0) return false;
         return true;
     }
 
@@ -187,6 +190,7 @@ class InboundStats {
         this.abandonadas = newStats['llamadas_abandonadas'];
         this.expiradas = newStats['llamadas_expiradas'];
         this.gestiones = newStats['gestiones'];
+        this.porcentaje_objetivo = newStats['porcentaje_objetivo'];
 
         var abandonadas = parseInt(newStats['llamadas_abandonadas']);
         if (abandonadas > 0) {
