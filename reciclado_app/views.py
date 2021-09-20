@@ -126,7 +126,7 @@ class ReciclarCampanaDialerFormView(ReciclarCampanaMixin, FormView):
     """
     def dispatch(self, request, *args, **kwargs):
         form = self.get_form_kwargs()
-        contactados = form.get('reciclado_choise')
+        contactados = form.get('reciclado_choice')
         no_contactados = form.get('no_contactados_choice')
         campana = Campana.objects.get(pk=self.kwargs['pk_campana'])
         if campana.estado not in [Campana.ESTADO_FINALIZADA, Campana.ESTADO_PAUSADA]:

@@ -28,10 +28,11 @@ function obtener_campanas_agente(pk_agent) {
             dataSrc: '',
         },
         columns: [
-            { 'data': 'nombre',},
             { 'data': 'id'},
+            { 'data': 'nombre',},
             { 'data': 'objetivo'},
         ],
+        paging: false,
     } );
     $campanasAgenteModal.modal('show');
     table.destroy();

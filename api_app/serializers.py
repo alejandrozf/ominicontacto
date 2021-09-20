@@ -73,16 +73,20 @@ class AgenteProfileIDSerializer(serializers.HyperlinkedModelSerializer):
 class AgenteProfileNameSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField(read_only=True)
     full_name = serializers.SerializerMethodField(read_only=True)
+    group = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
-        model = Grupo
-        fields = ('id', 'username', 'full_name')
+        model = AgenteProfile
+        fields = ('id', 'username', 'full_name', 'group')
 
     def get_username(self, agente_profile):
         return agente_profile.user.username
 
     def get_full_name(self, agente_profile):
         return agente_profile.user.get_full_name()
+
+    def get_group(self, agente_profile):
+        return agente_profile.grupo_id
 
 
 class UserSerializer(serializers.ModelSerializer):

@@ -272,7 +272,7 @@ class ReporteDeLLamadasDialerDeSupervision(ReporteDeLlamadasDeSupervision):
         return Campana.objects \
             .obtener_actuales() \
             .filter(type=Campana.TYPE_DIALER) \
-            .filter(estado__in=[Campana.ESTADO_ACTIVA, Campana.ESTADO_INACTIVA])
+            .filter(estado__in=[Campana.ESTADO_ACTIVA, Campana.ESTADO_PAUSADA])
 
     def _obtener_logs_de_llamadas(self):
         return LlamadaLog.objects.filter(time__gte=self.desde,

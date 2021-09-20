@@ -33,10 +33,12 @@ class SupervisionAgentesView(AddSettingsContextMixin, TemplateView):
     form_class = GrupoAgenteForm
 
     def get_context_data(self, **kwargs):
-        context = super(SupervisionAgentesView, self).get_context_data(**kwargs)
+        context = super(SupervisionAgentesView,
+                        self).get_context_data(**kwargs)
         supervisor = self.request.user.get_supervisor_profile()
         kamailio_service = KamailioService()
-        sip_usuario = kamailio_service.generar_sip_user(supervisor.sip_extension)
+        sip_usuario = kamailio_service.generar_sip_user(
+            supervisor.sip_extension)
         sip_password = kamailio_service.generar_sip_password(sip_usuario)
         if self.request.user.get_is_administrador():
             campanas = Campana.objects.obtener_all_dialplan_asterisk()
@@ -62,7 +64,8 @@ class SupervisionCampanasEntrantesView(TemplateView):
     template_name = 'supervision_campanas_entrantes.html'
 
     def get_context_data(self, **kwargs):
-        context = super(SupervisionCampanasEntrantesView, self).get_context_data(**kwargs)
+        context = super(SupervisionCampanasEntrantesView,
+                        self).get_context_data(**kwargs)
         supervisor = self.request.user.get_supervisor_profile()
         context['supervisor_id'] = supervisor.id
         if self.request.user.get_is_administrador():
@@ -81,7 +84,8 @@ class SupervisionCampanasSalientesView(TemplateView):
     template_name = 'supervision_campanas_salientes.html'
 
     def get_context_data(self, **kwargs):
-        context = super(SupervisionCampanasSalientesView, self).get_context_data(**kwargs)
+        context = super(SupervisionCampanasSalientesView,
+                        self).get_context_data(**kwargs)
         supervisor = self.request.user.get_supervisor_profile()
         context['supervisor_id'] = supervisor.id
         if self.request.user.get_is_administrador():
@@ -102,14 +106,18 @@ class SupervisionCampanasDialerView(TemplateView):
     template_name = 'supervision_campanas_dialers.html'
 
     def get_context_data(self, **kwargs):
-        context = super(SupervisionCampanasDialerView, self).get_context_data(**kwargs)
+        context = super(SupervisionCampanasDialerView,
+                        self).get_context_data(**kwargs)
         supervisor = self.request.user.get_supervisor_profile()
         context['supervisor_id'] = supervisor.id
         if self.request.user.get_is_administrador():
             campanas = Campana.objects.obtener_actuales()
         else:
             campanas = supervisor.campanas_asignadas_actuales()
-        campanas = campanas.filter(type=Campana.TYPE_DIALER).order_by('id')
+        campanas = campanas \
+            .filter(type=Campana.TYPE_DIALER) \
+            .filter(estado__in=[Campana.ESTADO_ACTIVA, Campana.ESTADO_PAUSADA]) \
+            .order_by('id')
         context['campanas'] = ",".join([x.nombre for x in campanas])
         context['campanas_ids'] = ",".join([str(x.id) for x in campanas])
         RedisGearsService().registra_stream_supervisor_dialers(

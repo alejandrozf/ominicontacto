@@ -237,8 +237,11 @@ class QueueMemberCampanaView(FormView):
         return campana.queue_campana
 
     def get_form_kwargs(self):
-        members = AgenteProfile.objects.obtener_activos()
-        return {'form_kwargs': {'members': members}}
+        members = AgenteProfile.objects.obtener_activos().prefetch_related('user')
+        empty = (('', '-----'), )
+        choices = ((member.id, member.user.get_full_name()) for member in members)
+        choices = list(empty) + list(choices)
+        return {'form_kwargs': {'members': choices}}
 
     def get_context_data(self, **kwargs):
         context = super(QueueMemberCampanaView, self).get_context_data(**kwargs)

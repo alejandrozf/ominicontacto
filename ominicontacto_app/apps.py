@@ -552,8 +552,6 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'auditar_formulario_venta',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
-            {'nombre': 'agente_cambiar_estado',
-             'roles': ['Agente', ]},
             {'nombre': 'agente_dashboard',
              'roles': ['Agente', ]},
             {'nombre': 'llamadas_activas',
@@ -975,8 +973,6 @@ class OminicontactoAppConfig(AppConfig):
         'auditar_formulario_venta':
             {'descripcion': _('Editar la respuesta de un formulario de gestión al auditarla'),
              'version': '1.7.0'},
-        'agente_cambiar_estado':
-            {'descripcion': _('Modificar el estado de un Agente en Asterisk'), 'version': '1.7.0'},
         'agente_dashboard':
         {'descripcion': _('Vista del dashboard de un agente'), 'version': '1.11.7'},
         'llamadas_activas':
