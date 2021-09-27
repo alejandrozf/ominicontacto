@@ -17,36 +17,41 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-"""
-Vista relacionada al Agente
-"""
+# Vista relacionada al Agente
 
 from __future__ import unicode_literals
 
 import datetime
-from django.views.generic import FormView, UpdateView, TemplateView, View
-from django.views.generic.base import RedirectView
-from django.shortcuts import redirect
-from django.http import JsonResponse, Http404
+import logging as _logging
+
 from django.contrib import messages
 from django.contrib.sessions.models import Session
+from django.core.exceptions import PermissionDenied
 from django.db.models import F, Value
 from django.db.models.functions import Concat
+from django.http import Http404, HttpResponseRedirect, JsonResponse
+from django.shortcuts import redirect
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from django.urls import reverse
-from django.http import HttpResponseRedirect
-from django.core.exceptions import PermissionDenied
 
-from ominicontacto_app.models import (
-    AgenteProfile, Contacto, CalificacionCliente, Campana, AgenteEnContacto
-)
+from django.views.generic import FormView, TemplateView, UpdateView, View
+
+from django.views.generic.base import RedirectView
+
 from ominicontacto_app.forms import ReporteForm
-from ominicontacto_app.services.reporte_agente_calificacion import ReporteAgenteService
-from ominicontacto_app.services.reporte_agente_venta import ReporteFormularioVentaService
-from ominicontacto_app.utiles import convert_fecha_datetime
+from ominicontacto_app.models import (
+    AgenteEnContacto, AgenteProfile, CalificacionCliente, Campana, Contacto
+)
+
 from ominicontacto_app.services.click2call import Click2CallOriginator
-import logging as _logging
+
+from ominicontacto_app.services.reporte_agente_calificacion import ReporteAgenteService
+
+from ominicontacto_app.services.reporte_agente_venta import ReporteFormularioVentaService
+
+
+from ominicontacto_app.utiles import convert_fecha_datetime, fecha_hora_local
 
 
 logger = _logging.getLogger(__name__)
@@ -80,8 +85,8 @@ class AgenteReporteCalificaciones(FormView):
         # Crear reporte csv para las calficaciones no interesada(no gestion) y gestion
         service.crea_reporte_csv(agente, hoy, hoy_ahora)
         service_formulario.crea_reporte_csv(agente, hoy, hoy_ahora)
-        fecha_desde = datetime.datetime.combine(hoy, datetime.time.min)
-        fecha_hasta = datetime.datetime.combine(hoy_ahora, datetime.time.max)
+        fecha_desde = fecha_hora_local(datetime.datetime.combine(hoy, datetime.time.min))
+        fecha_hasta = fecha_hora_local(datetime.datetime.combine(hoy_ahora, datetime.time.max))
         listado_calificaciones = agente.calificaciones.filter(fecha__range=(
             fecha_desde, fecha_hasta))
         return self.render_to_response(self.get_context_data(
@@ -105,8 +110,8 @@ class AgenteReporteCalificaciones(FormView):
             service.crea_reporte_csv(agente, fecha_desde, fecha_hasta, resultado=resultado)
             service_formulario.crea_reporte_csv(agente, fecha_desde, fecha_hasta,
                                                 resultado=resultado)
-        fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
-        fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
+        fecha_desde = fecha_hora_local(datetime.datetime.combine(fecha_desde, datetime.time.min))
+        fecha_hasta = fecha_hora_local(datetime.datetime.combine(fecha_hasta, datetime.time.max))
         listado_calificaciones = agente.calificaciones.filter(fecha__range=(
             fecha_desde, fecha_hasta))
         if not resultado == ReporteForm.TODOS_RESULTADOS:

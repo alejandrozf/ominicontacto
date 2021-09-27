@@ -19,17 +19,19 @@
 
 from __future__ import unicode_literals
 
-from django.template import loader
 from django.http import JsonResponse
-from django.views.generic import FormView, TemplateView
 from django.shortcuts import redirect, render
+from django.template import loader
 from django.utils.timezone import now
+from django.views.generic import FormView, TemplateView
+
 from ominicontacto_app.models import AgenteProfile, Grupo
-from reportes_app.forms import ReporteAgentesForm
 from ominicontacto_app.utiles import convert_fecha_datetime, fecha_local
+
+from reportes_app.forms import ReporteAgentesForm
+from reportes_app.models import LlamadaLog
 from reportes_app.reportes.reporte_agente_tiempos import TiemposAgente
 from reportes_app.reportes.reporte_agente_tiempos_csv import ReporteAgenteCSVService
-from reportes_app.models import LlamadaLog
 from reportes_app.reportes.reporte_agentes import ReporteAgentes
 
 
