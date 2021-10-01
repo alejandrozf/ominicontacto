@@ -145,6 +145,12 @@
       fi
     tags: postinstall
 
+  # Se reinstalan los archivos de rebrand, si corresponde
+  - name: Re-install rebrand
+    shell: "{{ install_prefix }}/bin/reinstall_rebrand.sh {{ repo_location }}"
+    when: rebrand == "true"
+    tags: always
+
   # Reset password for user "admin", if it was requested
   - name: Reset password for user "admin", if it was requested
     shell: sudo -u omnileads bash -c "/opt/omnileads/bin/manage.sh cambiar_admin_password"
