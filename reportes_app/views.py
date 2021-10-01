@@ -31,7 +31,8 @@ from django.shortcuts import redirect
 from django.contrib import messages
 
 from ominicontacto_app.models import Campana
-from ominicontacto_app.utiles import datetime_hora_minima_dia, UnicodeWriter
+from ominicontacto_app.utiles import (
+    fecha_local, fecha_hora_local, datetime_hora_minima_dia, UnicodeWriter)
 from ominicontacto_app.views_utils import handler400
 
 from reportes_app.forms import (ReporteLlamadasForm, ExportarReporteLlamadasForm,
@@ -48,12 +49,12 @@ class ReporteLlamadasFormView(FormView):
 
     def get_initial(self):
         initial = super(ReporteLlamadasFormView, self).get_initial()
-        hoy = now().date().strftime('%d/%m/%Y')
+        hoy = fecha_local(now()).strftime('%d/%m/%Y')
         initial['fecha'] = ' - '.join([hoy] * 2)
         return initial
 
     def get(self, request, *args, **kwargs):
-        hoy_ahora = now()
+        hoy_ahora = fecha_hora_local(now())
         hoy_inicio = datetime_hora_minima_dia(hoy_ahora)
         reporte = ReporteDeLlamadas(hoy_inicio, hoy_ahora, False, request.user)
         return self.render_to_response(self.get_context_data(

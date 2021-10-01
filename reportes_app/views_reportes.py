@@ -23,24 +23,30 @@ from __future__ import unicode_literals
 
 import datetime
 
-from django.shortcuts import redirect
-from django.views.generic import FormView, ListView, View
-from django.utils import timezone
 from django.contrib import messages
+from django.shortcuts import redirect
+from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _
+from django.views.generic import FormView, ListView, View
 
 
 from ominicontacto_app.forms import ReporteCampanaForm
+
 from ominicontacto_app.models import AgenteProfile, Campana, RespuestaFormularioGestion
+
 from ominicontacto_app.services.estadisticas_campana import EstadisticasService
+
 from ominicontacto_app.services.reporte_agente import EstadisticasAgenteService
 from ominicontacto_app.services.reporte_campana_calificacion import ReporteCampanaService
 from ominicontacto_app.services.reporte_campana_pdf import ReporteCampanaPDFService
-from reportes_app.reportes.reporte_llamados_contactados_csv import ExportacionCampanaCSV
+
 from ominicontacto_app.services.reporte_respuestas_formulario import (
     ReporteRespuestaFormularioGestionService)
+
 from ominicontacto_app.utiles import convert_fecha_datetime, fecha_hora_local
+
+from reportes_app.reportes.reporte_llamados_contactados_csv import ExportacionCampanaCSV
 
 
 class CampanaReporteCalificacionListView(ListView):
@@ -198,8 +204,8 @@ class CampanaReporteGraficoView(FormView):
             return redirect('index')
         hoy_ahora = fecha_hora_local(timezone.now())
         hoy = hoy_ahora.date()
-        fecha_desde = datetime.datetime.combine(hoy, datetime.time.min)
-        fecha_hasta = datetime.datetime.combine(hoy_ahora, datetime.time.max)
+        fecha_desde = fecha_hora_local(datetime.datetime.combine(hoy, datetime.time.min))
+        fecha_hasta = fecha_hora_local(datetime.datetime.combine(hoy_ahora, datetime.time.max))
         service = EstadisticasService(campana, fecha_desde, fecha_hasta)
         # genera los reportes grafico de la campana
         graficos_estadisticas = service.general_campana()
