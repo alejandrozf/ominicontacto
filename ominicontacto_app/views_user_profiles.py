@@ -61,6 +61,8 @@ import logging as logging_
 import os
 import csv
 
+from utiles_globales import obtener_paginas
+
 logger = logging_.getLogger(__name__)
 
 
@@ -394,6 +396,8 @@ class UserListView(ListView):
         if 'search' in self.request.GET:
             context['search'] = self.request.GET.get('search')
             context['search_url'] = '?search=' + context['search']
+
+        obtener_paginas(context, 7)
         return context
 
     def get_queryset(self):
@@ -460,6 +464,8 @@ class SupervisorListView(ListView):
             **kwargs)
         supervisores = SupervisorProfile.objects.exclude(borrado=True)
         context['supervisores'] = supervisores
+
+        obtener_paginas(context, 7)
         return context
 
     def get_queryset(self):
@@ -490,6 +496,8 @@ class AgenteListView(ListView):
         #     agentes = agentes.filter(reported_by=user)
 
         context['agentes'] = agentes
+
+        obtener_paginas(context, 7)
         return context
 
     def get_queryset(self):

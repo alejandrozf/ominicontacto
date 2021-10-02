@@ -51,6 +51,8 @@ from api_app.services.base_datos_contacto_service import BaseDatosContactoServic
 
 import logging as logging_
 
+from utiles_globales import obtener_paginas
+
 
 logger = logging_.getLogger(__name__)
 
@@ -69,6 +71,11 @@ class BaseDatosContactoListView(ListView):
     context_object_name = 'bases_datos_contacto'
     model = BaseDatosContacto
     paginate_by = 40
+
+    def get_context_data(self, **kwargs):
+        context = super(BaseDatosContactoListView, self).get_context_data(**kwargs)
+        obtener_paginas(context, 7)
+        return context
 
     def get_queryset(self):
         queryset = BaseDatosContacto.objects.obtener_definidas()
