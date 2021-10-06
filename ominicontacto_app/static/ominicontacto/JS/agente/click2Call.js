@@ -78,6 +78,10 @@ class Click2CallDispatcher {
                     self.make_disposition(call_data);
                     self.verificando_calificacion = false;
                 },
+                function(idcalificacion){
+                    self.make_sales_form(idcalificacion);
+                    self.verificando_calificacion = false;
+                },
                 function(){
                     alert(gettext('Error al intentar ejecutar el llamado.'));
                     self.verificando_calificacion = false;
@@ -108,6 +112,15 @@ class Click2CallDispatcher {
             var url = Urls.calificar_llamada(encodeURIComponent(call_data_json));
             $('#dataView').attr('src', url);
             $('#obligarCalificarCall').modal('hide');
+        });
+    }
+    make_sales_form(id_calification){
+        $('#obligarGestionForm').modal('show');
+        $('#obligarGestionForm_submit').click(function(){
+            var id_calification_json = JSON.stringify(id_calification);
+            var url = Urls.formulario_venta(encodeURIComponent(id_calification_json));
+            $('#dataView').attr('src', url);
+            $('#obligarGestionForm').modal('hide');
         });
     }
 

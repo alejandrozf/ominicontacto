@@ -652,6 +652,16 @@ class PhoneJSController {
                     });
                     self.verificando_calificacion_por_pausa = false;
                 },
+                function(idcalificacion){
+                    $('#obligarGestionForm').modal('show');
+                    $('#obligarGestionForm_submit').click(function(){
+                        var id_calification_json = JSON.stringify(idcalificacion);
+                        var url = Urls.formulario_venta(encodeURIComponent(id_calification_json));
+                        $('#dataView').attr('src', url);
+                        $('#obligarGestionForm').modal('hide');
+                    });
+                    self.verificando_calificacion_por_pausa = false;
+                },
                 function(){
                     self.verificando_calificacion_por_pausa = false;
                     alert(gettext('No se pudo salir de la pausa.'));
