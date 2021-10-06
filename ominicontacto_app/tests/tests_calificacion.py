@@ -604,7 +604,7 @@ class CalificacionTests(OMLBaseTest):
         url = reverse('calificar_llamada', kwargs={'call_data_json': call_data_json})
         self.client.get(url)
         create_family.assert_called_with(self.agente_profile, call_data, call_data_json,
-                                         calificado=False)
+                                         calificado=False, gestion=False, id_calificacion=None)
 
     @patch('api_app.services.calificacion_llamada.CalificacionLLamada.create_family')
     def test_campana_fuerza_calificar_llamada_impacta_en_redis_post(self, create_family):
@@ -617,4 +617,4 @@ class CalificacionTests(OMLBaseTest):
         post_data['opcion_calificacion'] = self.opcion_calificacion_no_accion.pk
         self.client.post(url, post_data, follow=True)
         create_family.assert_called_with(self.agente_profile, call_data, call_data_json,
-                                         calificado=True)
+                                         calificado=True, gestion=False, id_calificacion=None)

@@ -42,13 +42,21 @@ class CalificacionLLamada(object):
     def get_nombre_family(self):
         return "OML:CALIFICACION:LLAMADA"
 
-    def create_family(self, agente, call_data, json_calldata, calificado):
+    def create_family(self, agente, call_data, json_calldata, calificado, gestion, id_calificacion):
         redis_connection = self.get_redis_connection()
         family = self._get_nombre_family(agente)
         if calificado is True:
             llamada_calificada = 'TRUE'
         else:
             llamada_calificada = 'FALSE'
+        if gestion is True:
+            formulario_gestion = 'TRUE'
+        else:
+            formulario_gestion = 'FALSE'
+        if id_calificacion is None:
+            id_calificacion = 'NONE'
+        if json_calldata is None:
+            json_calldata = 'None'
 
         variables = {
             'NAME': agente.user.get_full_name(),
@@ -58,6 +66,8 @@ class CalificacionLLamada(object):
             'TELEFONO': call_data['telefono'],
             'CALIFICADA': llamada_calificada,
             'CALLDATA': json_calldata,
+            'GESTION': formulario_gestion,
+            'IDCALIFICACION': id_calificacion,
         }
         try:
             redis_connection.hset(family, mapping=variables)
