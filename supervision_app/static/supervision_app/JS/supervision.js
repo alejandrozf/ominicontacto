@@ -53,14 +53,19 @@ function processData(rawData) {
     const data = JSON.parse(rawData);
     let arrData = {};
     data.forEach(element => {
-        const agent = JSON.parse(element
-            .replaceAll('\'', '"')
-            .replaceAll('"[', '[')
-            .replaceAll(']"', ']'));
-        const rowData = normalizaRow(agent);
-        const previousData = arrData[rowData.id];
-        if (rowData.id != null && ((previousData != null && previousData.tiempo < arrData.tiempo) || !previousData)) {
-            arrData[rowData.id] = rowData;
+        try {
+            const agent = JSON.parse(element
+                .replaceAll('\'', '"')
+                .replaceAll('"[', '[')
+                .replaceAll(']"', ']'));
+            const rowData = normalizaRow(agent);
+            const previousData = arrData[rowData.id];
+            if (rowData.id != null && ((previousData != null && previousData.tiempo < arrData.tiempo) || !previousData)) {
+                arrData[rowData.id] = rowData;
+            }
+        } catch(err) {
+            console.log('Error parsing data');
+            console.log(err);
         }
     });
     if (arrData != {}) {
