@@ -150,6 +150,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 2000
+
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 600
 SESSION_SAVE_EVERY_REQUEST = True
@@ -262,7 +264,8 @@ OML_KAMAILIO_HOSTNAME = None
 
 Ejemplo:
 
-    OML_KAMAILIO_CMD = "kamcmd -s /opt/omnileads/kamailio/run/kamailio/kamailio_ctl autheph.dump_secrets"
+    OML_KAMAILIO_CMD = \
+        "kamcmd -s /opt/omnileads/kamailio/run/kamailio/kamailio_ctl autheph.dump_secrets"
 
 """
 
