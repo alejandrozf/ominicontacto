@@ -351,14 +351,10 @@ class QueueMemberForm(forms.ModelForm):
     """
 
     def __init__(self, members, *args, **kwargs):
-        if 'instance' not in kwargs:
-            initial = kwargs.get('initial', {})
-            initial['penalty'] = 0
-            kwargs['initial'] = initial
-
         super(QueueMemberForm, self).__init__(*args, **kwargs)
 
-        self.fields['member'].choices = members
+        self.fields['member'].queryset = members.prefetch_related('user')
+        self.initial['penalty'] = 0
 
     class Meta:
         model = QueueMember
