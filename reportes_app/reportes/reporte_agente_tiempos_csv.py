@@ -84,6 +84,7 @@ class ArchivoDeReporteCsv(object):
             encabezado.append(_("Porcentaje en pausa"))
             encabezado.append(_("Porcentaje en espera"))
             encabezado.append(_("Cantidad de llamadas procesadas"))
+            encabezado.append(_("Transferidas a Agente"))
             encabezado.append(_("Tiempo promedio de llamadas"))
             encabezado.append(_("Cantidad de intentos fallidos"))
 
@@ -128,6 +129,7 @@ class ArchivoDeReporteCsv(object):
                     porcentaje_wait = str(round(agente.tiempo_porcentaje_wait, 2)) + "%"
                 lista_opciones.append(porcentaje_wait)
                 lista_opciones.append(agente.cantidad_llamadas_procesadas)
+                lista_opciones.append(agente.transferidas_a_agente)
                 lista_opciones.append(str(agente.get_promedio_llamadas()) + "s")
                 lista_opciones.append(agente.cantidad_intentos_fallidos)
 
@@ -178,6 +180,7 @@ class ArchivoDeReporteCsv(object):
             encabezado.append(_("Cola"))
             encabezado.append(_("Tiempo de llamadas"))
             encabezado.append(_("Cantidad de llamadas procesadas"))
+            encabezado.append(_("Transferidas a agente"))
 
             # Creamos csvwriter
             csvwiter = csv.writer(csvfile)
@@ -192,10 +195,11 @@ class ArchivoDeReporteCsv(object):
 
                 # --- Buscamos datos
 
-                lista_opciones.append(agente[0])
-                lista_opciones.append(agente[1])
-                lista_opciones.append(agente[2] + "hs")
-                lista_opciones.append(agente[3])
+                lista_opciones.append(agente['agente'])
+                lista_opciones.append(agente['campana'])
+                lista_opciones.append(agente['tiempo_llamadas'] + "hs")
+                lista_opciones.append(agente['llamadas_procesadas'])
+                lista_opciones.append(agente['transferidas_a_agente'])
 
                 # --- Finalmente, escribimos la linea
                 lista_opciones_utf8 = [force_text(item) for item in lista_opciones]
@@ -213,7 +217,8 @@ class ArchivoDeReporteCsv(object):
             encabezado.append(_("DIALER"))
             encabezado.append(_("INBOUND"))
             encabezado.append(_("MANUAL"))
-            encabezado.append(_("TRANSFERIDAS"))
+            encabezado.append(_("TRANSFERIDAS A AGENTE"))
+            encabezado.append(_("TRANSFERIDAS A CAMPAÑA"))
             encabezado.append(_("FUERA DE CAMPAÑA"))
 
             # Creamos csvwriter
@@ -225,7 +230,8 @@ class ArchivoDeReporteCsv(object):
 
             # Iteramos cada uno de las metadata de la gestion del formulario
             for (agente, total_campana, total_ics, total_dialer, total_inbound,
-                 total_manual, total_transferidas, total_fuera_campana
+                 total_manual, total_transferidas_agente, total_transferidas_campana,
+                 total_fuera_campana
                  ) in estadisticas["dict_agente_counter"]:
                 lista_opciones = []
 
@@ -237,7 +243,8 @@ class ArchivoDeReporteCsv(object):
                 lista_opciones.append(total_dialer)
                 lista_opciones.append(total_inbound)
                 lista_opciones.append(total_manual)
-                lista_opciones.append(total_transferidas)
+                lista_opciones.append(total_transferidas_agente)
+                lista_opciones.append(total_transferidas_campana)
                 lista_opciones.append(total_fuera_campana)
 
                 # --- Finalmente, escribimos la linea

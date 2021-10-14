@@ -54,6 +54,8 @@ class ReporteAgentes(object):
         self.user = user
 
     def devuelve_reporte_agentes(self, agentes, fecha_inicio, fecha_fin):
+        fecha_inicio = datetime_hora_minima_dia(fecha_inicio)
+        fecha_fin = datetime_hora_maxima_dia(fecha_fin)
         self.genera_tiempos_pausa(agentes, fecha_inicio, fecha_fin)
         self.genera_tiempos_campana_agentes(agentes, fecha_inicio, fecha_fin)
         self.calcula_total_intentos_fallidos(agentes, fecha_inicio, fecha_fin)
@@ -71,7 +73,8 @@ class ReporteAgentes(object):
                                             dict_agentes_llamadas['total_agente_dialer'],
                                             dict_agentes_llamadas['total_agente_inbound'],
                                             dict_agentes_llamadas['total_agente_manual'],
-                                            dict_agentes_llamadas['total_agente_transferidas'],
+                                            dict_agentes_llamadas['total_transferidas_agente'],
+                                            dict_agentes_llamadas['total_transferidas_campana'],
                                             dict_agentes_llamadas['total_agente_fuera_campana'])),
             'barra_agente_total': self._generar_grafico_agentes_llamadas(dict_agentes_llamadas),
 
@@ -85,14 +88,19 @@ class ReporteAgentes(object):
         logs_time = LlamadaLog.objects.obtener_agentes_campanas_total(
             eventos_llamadas, fecha_inicio, fecha_fin, [agente.id],
             [campana])
+        cantidades_transferencias = LlamadaLog.objects. \
+            obtener_cantidades_de_transferencias_recibidas(
+                fecha_inicio, fecha_fin, [agente.id], [campana.id])
         for log in logs_time:
             agente_id = int(log[0])
+            transferencias = cantidades_transferencias.get(agente_id, {}).get(campana.id, 0)
             if agente_id in self.datos_agentes:
-                self.datos_agentes[agente_id].obtener_tiempo_total_llamada_campana(campana, log)
+                self.datos_agentes[agente_id].obtener_tiempo_total_llamada_campana(
+                    campana, log, transferencias)
 
         self._genera_tiempos_totales_agentes()
         if len(self.tiempos) == 0:
-            return AgenteTiemposReporte(agente.id, 0, 0, 0, 0, 0, 0, 0, 0)
+            return AgenteTiemposReporte(agente.id, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
         return self.tiempos[0]
 
@@ -119,17 +127,25 @@ class ReporteAgentes(object):
 
         campanas_dict = {campana.id: campana for campana in campanas}
         agentes_dict = {agente.id: agente for agente in agentes}
-        logs_time = LlamadaLog.objects.obtener_agentes_campanas_total(
+        totales_llamadas = LlamadaLog.objects.obtener_agentes_campanas_total(
             eventos_llamadas, fecha_inferior, fecha_superior, list(agentes_dict.keys()),
             campanas)
         lista_pausas = list(Pausa.objects.all())
-        for log in logs_time:
-            agente_id = int(log[0])
+        campanas_ids = campanas.values_list('id', flat=True)
+        cantidades_transferencias = LlamadaLog.objects. \
+            obtener_cantidades_de_transferencias_recibidas(
+                fecha_inferior, fecha_superior, list(agentes_dict.keys()), campanas_ids)
+        ID_AGENTE = 0
+        ID_CAMPANA = 1
+        for log in totales_llamadas:
+            agente_id = int(log[ID_AGENTE])
+            campana_id = int(log[ID_CAMPANA])
+            transferencias = cantidades_transferencias.get(agente_id, {}).get(campana_id, 0)
             if agente_id not in self.datos_agentes:
                 self.datos_agentes.setdefault(
                     agente_id, ActividadAgente(agentes_dict[agente_id], lista_pausas=lista_pausas))
             self.datos_agentes[agente_id].obtener_tiempo_total_llamada_campana(
-                campanas_dict[int(log[1])], log)
+                campanas_dict[campana_id], log, transferencias)
 
     def calcula_total_intentos_fallidos(self, agentes, fecha_inferior, fecha_superior):
         eventos_llamadas = list(LlamadaLog.EVENTOS_NO_CONTACTACION)
@@ -152,7 +168,7 @@ class ReporteAgentes(object):
                 agente.agente, agente.tiempo_sesion,
                 agente.tiempo_pausa,
                 agente.tiempo_llamada, agente.llamadas_procesadas, agente.intentos_fallidos, 0, 0,
-                agente.tiempo_hold))
+                agente.tiempo_hold, agente.transferidas_a_agente))
 
     def _genera_tiempo_total_llamada_campana(self):
         res = []
@@ -202,9 +218,15 @@ class ReporteAgentes(object):
         dict_agentes_llamadas['total_agente_preview'] = self. \
             _obtener_cantidad_por_tipo_de_llamada(
             agentes_tipo_llamadas, agente_ids, Campana.TYPE_PREVIEW)
-        dict_agentes_llamadas['total_agente_transferidas'] = self. \
+        dict_agentes_llamadas['total_transferidas_agente'] = self. \
             _obtener_cantidad_por_tipo_de_llamada(
-            agentes_tipo_llamadas, agente_ids, LLAMADA_TRANSF_INTERNA)
+            agentes_tipo_llamadas.filter(
+                event__in=['BT-ANSWER', 'CT-ACCEPT']).exclude(campana_id=0),
+            agente_ids, LLAMADA_TRANSF_INTERNA)
+        dict_agentes_llamadas['total_transferidas_campana'] = self. \
+            _obtener_cantidad_por_tipo_de_llamada(
+            agentes_tipo_llamadas.filter(event='CONNECT'),
+            agente_ids, LLAMADA_TRANSF_INTERNA)
         dict_agentes_llamadas['total_agente_fuera_campana'] = self. \
             _obtener_cantidad_por_tipo_de_llamada(
             agentes_tipo_llamadas.filter(campana_id=0), agente_ids, Campana.TYPE_MANUAL)
@@ -212,9 +234,6 @@ class ReporteAgentes(object):
         return dict_agentes_llamadas
 
     def _obtener_llamadas_agente(self, agente_ids, fecha_inferior, fecha_superior):
-
-        fecha_inferior = datetime_hora_minima_dia(fecha_inferior)
-        fecha_superior = datetime_hora_maxima_dia(fecha_superior)
 
         eventos_llamadas = list(LlamadaLog.EVENTOS_INICIO_CONEXION)
         dict_agentes = LlamadaLog.objects.obtener_count_agente().filter(
@@ -240,20 +259,20 @@ class ReporteAgentes(object):
         barra_agente_total.add('DIALER', dict_agentes_llamadas['total_agente_dialer'])
         barra_agente_total.add('INBOUND', dict_agentes_llamadas['total_agente_inbound'])
         barra_agente_total.add('MANUAL', dict_agentes_llamadas['total_agente_manual'])
-        barra_agente_total.add('TRANSFERIDAS', dict_agentes_llamadas['total_agente_transferidas'])
+        barra_agente_total.add('TRANS. AGENTE',
+                               dict_agentes_llamadas['total_transferidas_agente'])
+        barra_agente_total.add('TRANS. CAMPAÑA',
+                               dict_agentes_llamadas['total_transferidas_campana'])
 
         return adicionar_render_unicode(barra_agente_total)
 
     def _total_llamadas(self, agente_id, fecha_inferior, fecha_superior):
-        fecha_inferior = datetime_hora_minima_dia(fecha_inferior)
-        fecha_superior = datetime_hora_maxima_dia(fecha_superior)
-
         eventos_llamadas = list(LlamadaLog.EVENTOS_INICIO_CONEXION)
 
         llamadas = LlamadaLog.objects.obtener_count_agente().filter(
             time__range=(fecha_inferior, fecha_superior),
             agente_id=agente_id,
-            event__in=eventos_llamadas)
+            event__in=eventos_llamadas).exclude(campana_id=0, event__in=('BT-ANSWER', 'CT-ACCEPT'))
         total = 0
         for llamada in llamadas:
             total = llamada['cantidad']
@@ -268,6 +287,7 @@ class ActividadAgente(object):
         self.sesiones = []
         self.tiempos_llamada_campana = []
         self.llamadas_procesadas = 0
+        self.transferidas_a_agente = 0
         self.intentos_fallidos = 0
 
         self.tiempo_sesion = timedelta()
@@ -311,15 +331,24 @@ class ActividadAgente(object):
         if self.sesiones != []:
             self._procesa_tiempo_hold(self.sesiones[0].fecha_inicio, self.sesiones[-1].fecha_fin)
 
-    def obtener_tiempo_total_llamada_campana(self, campana, log):
-        tiempo_agente = []
-        tiempo_agente.append(self.agente.user.get_full_name())
-        tiempo_agente.append(campana.nombre)
-        tiempo_agente.append(str(timedelta(seconds=log[2])))
-        tiempo_agente.append(log[3])
+    def obtener_tiempo_total_llamada_campana(self, campana, log, transferencias):
+        DURACION = 2
+        CANTIDAD_LLAMADAS = 3
+        # log Tiene los datos de 1 query q sumariza tiempos de llamada y cantidad de llamadas.
+        # Se resta cantidad de transferidas a agente a la cantidad de llamadas procesadas
+        tiempo_agente = {
+            'agente': self.agente.user.get_full_name(),
+            'campana': campana.nombre,
+            'tiempo_llamadas': str(timedelta(seconds=log[DURACION])),
+            'llamadas_procesadas': log[CANTIDAD_LLAMADAS] - transferencias,
+            'transferidas_a_agente': transferencias
+        }
         self.tiempos_llamada_campana.append(tiempo_agente)
-        self.tiempo_llamada += timedelta(seconds=log[2])
-        self.llamadas_procesadas += int(log[3])
+
+        # Sumarizacion para "reporte de tiempos"
+        self.tiempo_llamada += timedelta(seconds=log[DURACION])
+        self.llamadas_procesadas += int(log[CANTIDAD_LLAMADAS]) - transferencias
+        self.transferidas_a_agente += transferencias
 
     def _totaliza_sesiones(self):
         t = timedelta()

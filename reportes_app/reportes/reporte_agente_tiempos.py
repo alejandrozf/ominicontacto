@@ -132,7 +132,7 @@ class TiemposAgente(object):
                 else:
                     agente_nuevo = AgenteTiemposReporte(
                         fecha_local(time_actual), timedelta(0), resta, timedelta(0), 0, 0, 0, 0,
-                        timedelta(0))
+                        timedelta(0), 0)
                     agente_fecha.append(agente_nuevo)
                 time_actual = log[TIME]
 
@@ -151,10 +151,11 @@ class TiemposAgente(object):
             eventos_llamadas,
             fecha_inferior,
             fecha_superior,
-            agente.id)
+            agente.id).exclude(campana_id=0)
 
+        campanas_ids = set()
         for log in logs_time:
-
+            campanas_ids.add(log.campana_id)
             date_time_actual = fecha_local(log.time)
             agente_en_lista = list(filter(lambda x: x.agente == date_time_actual,
                                           agente_fecha))
@@ -166,8 +167,22 @@ class TiemposAgente(object):
             else:
                 agente_nuevo = AgenteTiemposReporte(
                     date_time_actual, timedelta(0), timedelta(0), duracion_llamada, 1, 0, 0, 0,
-                    timedelta(0))
+                    timedelta(0), 0)
                 agente_fecha.append(agente_nuevo)
+
+        for datos_fecha in agente_fecha:
+            fecha = datos_fecha.agente
+            fecha_inicial = datetime_hora_minima_dia(fecha)
+            fecha_final = datetime_hora_maxima_dia(fecha)
+            transferencias = LlamadaLog.objects.obtener_cantidades_de_transferencias_recibidas(
+                fecha_inicial, fecha_final, [agente.id], campanas_ids)
+            cant_transfers = 0
+            transferencias_por_camp = transferencias.get(agente.id, {})
+            for cant in transferencias_por_camp.values():
+                cant_transfers += cant
+            datos_fecha._cantidad_llamadas_procesadas -= cant_transfers
+            datos_fecha._transferidas_a_agente = cant_transfers
+
         return agente_fecha
 
     def calcular_intentos_fallidos_fecha_agente(self, agente, fecha_inferior,
@@ -182,7 +197,7 @@ class TiemposAgente(object):
             eventos_llamadas,
             fecha_inferior,
             fecha_superior,
-            agente.id)
+            agente.id).exclude(campana_id=0)
         for log in logs_time:
             date_time_actual = log['fecha']
             agente_en_lista = list(filter(lambda x: x.agente == date_time_actual,
@@ -193,7 +208,7 @@ class TiemposAgente(object):
             else:
                 agente_nuevo = AgenteTiemposReporte(
                     date_time_actual, timedelta(0), timedelta(0), timedelta(0),
-                    0, int(log['cantidad']), 0, 0, timedelta(0))
+                    0, int(log['cantidad']), 0, 0, timedelta(0), 0)
                 agente_fecha.append(agente_nuevo)
         return agente_fecha
 
@@ -320,7 +335,7 @@ class TiemposAgente(object):
 
                 agente_nuevo = AgenteTiemposReporte(fecha_local(fecha_inferior), timedelta(0),
                                                     timedelta(0), timedelta(0), 0, 0, 0, 0,
-                                                    tiempo_hold)
+                                                    tiempo_hold, 0)
                 agente_fecha.append(agente_nuevo)
         return agente_fecha
 
@@ -333,7 +348,8 @@ class TiemposAgente(object):
             tiempos = tiempos_fechas[-1]
         else:
             tiempos = AgenteTiemposReporte(
-                fecha_inicio, timedelta(0), timedelta(0), timedelta(0), 0, 0, 0, 0, timedelta(0))
+                fecha_inicio, timedelta(0), timedelta(0), timedelta(0),
+                0, 0, 0, 0, timedelta(0), 0)
             tiempos_fechas.append(tiempos)
 
         if fecha_fin == tiempos.agente:
@@ -344,7 +360,7 @@ class TiemposAgente(object):
             inicio_dia = datetime_hora_minima_dia(fecha_fin)
             duracion = fin - inicio_dia
             tiempos = AgenteTiemposReporte(
-                fecha_fin, duracion, timedelta(0), timedelta(0), 0, 0, 0, 0, timedelta(0))
+                fecha_fin, duracion, timedelta(0), timedelta(0), 0, 0, 0, 0, timedelta(0), 0)
             tiempos_fechas.append(tiempos)
 
     def _obtener_datos_de_pausa(self, id_pausa):

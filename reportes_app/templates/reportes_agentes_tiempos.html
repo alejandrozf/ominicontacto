@@ -109,6 +109,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <th>{% trans "Tiempo de hold" %}</th>
                         <th>{% trans "Porcentaje en llamada" %}</th>
                         <th>{% trans "Llamadas procesadas" %}</th>
+                        <th>{% trans "Transferidas a Agente" %}</th>
                         <th>{% trans "Tiempo promedio" %}</th>
                         <th>{% trans "Intentos fallidos" %}</th>
                     </tr>
@@ -173,6 +174,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                             </div>
                         </td>
                         <td>{{agente.cantidad_llamadas_procesadas}}</td>
+                        <td>{{agente.transferidas_a_agente}}</td>
                         <td>{{agente.tiempo_promedio_llamadas|default_if_none:0}}{% trans 's' %}</td>
                         <td>{{agente.cantidad_intentos_fallidos}}</td>
                     </tr>
@@ -225,15 +227,17 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <th>{% trans "Cola" %}</th>
                     <th>{% trans "Tiempo de llamadas" %}</th>
                     <th>{% trans "Llamadas procesadas" %}</th>
+                    <th>{% trans "Transferidas a Agente" %}</th>
 
                 </tr>
             </thead>
             {% for agente in graficos_estadisticas.count_llamada_campana %}
                 <tr>
-                    <td>{{agente.0}}</td>
-                    <td>{{agente.1}}</td>
-                    <td>{{agente.2}}{% trans 'hs' %}</td>
-                    <td>{{agente.3}}</td>
+                    <td>{{agente.agente}}</td>
+                    <td>{{agente.campana}}</td>
+                    <td>{{agente.tiempo_llamadas}}{% trans 'hs' %}</td>
+                    <td>{{agente.llamadas_procesadas}}</td>
+                    <td>{{agente.transferidas_a_agente}}</td>
 
                 </tr>
             {% endfor %}
@@ -258,12 +262,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <th>{% trans "DIALER" %}</th>
                 <th>{% trans "INBOUND" %}</th>
                 <th>{% trans "MANUAL" %}</th>
-                <th>{% trans "TRANSFERIDAS" %}</th>
+                <th>{% trans "TRANSFERIDAS A AGENTE" %}</th>
+                <th>{% trans "TRANSFERIDAS A CAMPAÑA" %}</th>
                 <th>{% trans "FUERA DE CAMPAÑA" %}</th>
             </tr>
             </thead>
             <tbody>
-                {% for agente, total_campana, total_preview, total_dialer, total_inbound, total_manual, total_transferidas, total_fuera_campana in graficos_estadisticas.dict_agente_counter %}
+                {% for agente, total_campana, total_preview, total_dialer, total_inbound, total_manual, total_transferidas_agente, total_transferidas_campana, total_fuera_campana in graficos_estadisticas.dict_agente_counter %}
                     <tr>
                         <td>{{ agente }}</td>
                         <td>{{ total_campana }}</td>
@@ -271,7 +276,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                         <td>{{ total_dialer }}</td>
                         <td>{{ total_inbound }}</td>
                         <td>{{ total_manual }}</td>
-                        <td>{{ total_transferidas }}</td>
+                        <td>{{ total_transferidas_agente }}</td>
+                        <td>{{ total_transferidas_campana }}</td>
                         <td>{{ total_fuera_campana }}</td>
                     </tr>
                 {% endfor %}
@@ -316,6 +322,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                           <td>{% trans "% En pausa" %}</td>
                           <td>{% trans "% En espera" %}</td>
                           <td>{% trans "Llamadas procesadas" %}</td>
+                          <td>{% trans "Transferidas a Agente" %}</td>
                           <td>{% trans "Tiempo promedio" %}</td>
                           <td>{% trans "Intentos fallidos" %}</td>
                       </tr>
