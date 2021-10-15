@@ -39,7 +39,7 @@ from django.views.generic import FormView, TemplateView, UpdateView, View
 
 from django.views.generic.base import RedirectView
 
-from ominicontacto_app.forms import ReporteForm
+from ominicontacto_app.forms import ReporteForm, UpdateAgentPasswordForm
 from ominicontacto_app.models import (
     AgenteEnContacto, AgenteProfile, CalificacionCliente, Campana, Contacto
 )
@@ -373,3 +373,27 @@ class AgentesDeGrupoPropioView(View):
             full_name=Concat(F('user__first_name'), Value(' '), F('user__last_name'))) \
             .values('id', 'full_name', 'sip_extension')
         return JsonResponse(data={'agentes': list(data_agentes)})
+
+
+class UpdateAgentPasswordView(UpdateView):
+    """Vista para actualizar la contrasena de un agente"""
+    model = AgenteProfile
+    form_class = UpdateAgentPasswordForm
+    template_name = 'agente/update_agent_password.html'
+
+    def get_object(self):
+        agente_profile = self.request.user.get_agente_profile()
+        return agente_profile
+
+    def form_valid(self, form):
+        self.object = form.save()
+        if form['password1'].value():
+            agente = self.request.user.get_agente_profile()
+            agente.user.set_password(form['password1'].value())
+            agente.user.save()
+        messages.success(self.request,
+                         _('El usuario fue actualizado correctamente'))
+        return super(UpdateAgentPasswordView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('consola_de_agente')
