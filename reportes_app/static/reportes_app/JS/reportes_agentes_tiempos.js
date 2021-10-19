@@ -99,6 +99,16 @@ $(function() {
                 // alert(data, textStatus);
                 $('#output').html(data.tbody); // append to inner html
                 $('#nombre_agente').html(data.nombre_agente);
+                var rep_table = $('#reporteFechaModalTable').DataTable({
+                    buttons: [{
+                        extend: 'csv',
+                        text: 'Exportar reporte de tiempos detallado (CSV)',
+                        className: 'btn btn-outline-primary'
+                    }],
+                    searching: false,
+                    paging: false
+                });
+                rep_table.buttons().container().appendTo( $('#exportButtonCol'));
             },
             error: function(xhr, status, e) {
                 alert(status, e);
@@ -131,6 +141,10 @@ $(function() {
                 alert(status, e);
             }
         });
+    });
+
+    $('#reporteFechaModal').on('hidden.bs.modal', function(event){
+        $('#reporteFechaModalTable').DataTable().destroy();
     });
 
 });

@@ -23,6 +23,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block head_js %}
 <script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
 <script type="text/javascript" src="{% static 'reportes_app/JS/reportes_agentes_tiempos.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'JS/ext/dataTables.buttons-1.6.1.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'JS/ext/buttons.html5-1.6.1.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'JS/ext/buttons.bootstrap4.min.js' %}"></script>
 
 <style>
 .modal-lg {
@@ -30,6 +34,10 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 }
 </style>
 
+{% endblock %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'CSS/ext/buttons.dataTables-1.6.1.min.css' %}"></link>
+    <link rel="stylesheet" href="{% static 'CSS/ext/buttons.bootstrap4.min.css' %}"></link>
 {% endblock %}
 {% block content %}
 
@@ -285,27 +293,32 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
       <div class="modal-body">
             <div id="error"></div>
             <div class="table-responsive">
-                <table class="table">
-                    <tr>
-                        <td>{% trans "Fecha" %}</td>
-                        <td>{% trans "Sesión" %}</td>
-                        <td>{% trans "Hold "%}</td>
-                        <td>{% trans "Pausa" %}</td>
-                        <td>{% trans "Llamada" %}</td>
-                        <td>{% trans "% En llamada" %}</td>
-                        <td>{% trans "% En pausa" %}</td>
-                        <td>{% trans "% En espera" %}</td>
-                        <td>{% trans "Llamadas procesadas" %}</td>
-                        <td>{% trans "Tiempo promedio" %}</td>
-                        <td>{% trans "Intentos fallidos" %}</td>
-                    </tr>
+                <table class="table" id="reporteFechaModalTable">
+                    <thead>
+                      <tr>
+                          <td>{% trans "Fecha" %}</td>
+                          <td>{% trans "Sesión" %}</td>
+                          <td>{% trans "Hold "%}</td>
+                          <td>{% trans "Pausa" %}</td>
+                          <td>{% trans "Llamada" %}</td>
+                          <td>{% trans "% En llamada" %}</td>
+                          <td>{% trans "% En pausa" %}</td>
+                          <td>{% trans "% En espera" %}</td>
+                          <td>{% trans "Llamadas procesadas" %}</td>
+                          <td>{% trans "Tiempo promedio" %}</td>
+                          <td>{% trans "Intentos fallidos" %}</td>
+                      </tr>
+                    </thead>
                     <tbody id="output">
                     </tbody>
                 </table>
             </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Cerrar" %}</button>
+        <div class="col" id="exportButtonCol"></div>
+        <div class="col text-right">
+          <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Cerrar" %}</button>
+        </div>
       </div>
     </div>
   </div>
