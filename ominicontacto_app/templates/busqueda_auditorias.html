@@ -91,21 +91,33 @@
             <ul class="pagination">
                 {% if calificaciones.has_previous %}
                     <li class="page-item">
+                      <a class="page-link" href="#" aria-label="First" onclick="javascript:filtrar_pagina({{calificaciones.first}})">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">{% trans 'Principio' %}</span>
+                      </a>
+                    </li>
+                    <li class="page-item">
                         <a class="page-link" href="#" aria-label="Previous" onclick="javascript:filtrar_pagina({{calificaciones.previous_page_number}})">
-                            <span aria-hidden="true">&laquo;</span>
+                            <span aria-hidden="true">&lt;</span>
                             <span class="sr-only">{% trans 'Anterior' %}</span>
                         </a>
                     </li>
                 {% endif %}
-                {% for page in calificaciones.paginator.page_range %}
+                {% for page in pages %}
                     <li class="page-item {% if calificaciones.number == page  %}active{% endif %}"><a class="page-link" href="#" onclick="javascript:filtrar_pagina({{page}})">{{ page }}</a></li>
                 {% endfor %}
 
                 {% if calificaciones.has_next %}
                     <li class="page-item">
                         <a class="page-link" href="#" aria-label="Next" onclick="javascript:filtrar_pagina({{calificaciones.next_page_number}})">
-                            <span aria-hidden="true">&raquo;</span>
+                            <span aria-hidden="true">&gt;</span>
                             <span class="sr-only">{% trans 'Siguiente' %}</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Last" onclick="javascript:filtrar_pagina({{calificaciones.paginator.num_pages}})">
+                            <span aria-hidden="true">&raquo;</span>
+                            <span class="sr-only">{% trans 'Final' %}</span>
                         </a>
                     </li>
                 {% endif %}

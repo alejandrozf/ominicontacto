@@ -61,6 +61,16 @@ class AuditarCalificacionesFormView(FormView):
             qs = result_paginator.page(1)
         except django_paginator.EmptyPage:
             qs = result_paginator.page(result_paginator.num_pages)
+
+        num_pages = result_paginator.num_pages
+        page_no = int(page)
+        if num_pages <= 7 or page_no <= 4:  # case 1 and 2
+            pages = [x for x in range(1, min(num_pages + 1, 8))]
+        elif page_no > num_pages - 4:  # case 4
+            pages = [x for x in range(num_pages - 6, num_pages + 1)]
+        else:  # case 3
+            pages = [x for x in range(page_no - 3, page_no + 4)]
+        context.update({'pages': pages})
         # ----- </Paginate> -----
 
         context['calificaciones'] = qs

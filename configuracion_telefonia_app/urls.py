@@ -156,7 +156,7 @@ urlpatterns = [
         login_required(audio.AdicionarAudioAsteriskView.as_view()),
         name='adicionar_audios_asterisk',
         ),
-    url(r'^configuracion_telefonia/playlist/lista/$',
+    url(r'^configuracion_telefonia/playlist/lista/(?P<page>[0-9]+)/$',
         login_required(audio.PlaylistListView.as_view()),
         name='lista_playlist',
         ),

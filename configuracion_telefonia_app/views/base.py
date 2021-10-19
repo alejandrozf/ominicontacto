@@ -52,6 +52,8 @@ from configuracion_telefonia_app.regeneracion_configuracion_telefonia import (
     SincronizadorDeConfiguracionDestinoPersonalizadoAsterisk
 )
 
+from utiles_globales import obtener_paginas
+
 logger = logging.getLogger(__name__)
 
 
@@ -186,6 +188,11 @@ class TroncalSIPListView(ListView):
     model = TroncalSIP
     paginate_by = 40
     template_name = 'lista_troncal_sip.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(TroncalSIPListView, self).get_context_data(**kwargs)
+        obtener_paginas(context, 7)
+        return context
 
 
 class TroncalSIPCreateView(TroncalSIPMixin, CreateView):
@@ -395,6 +402,8 @@ class RutaEntranteListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(RutaEntranteListView, self).get_context_data(**kwargs)
         context['search_url'] = self.search_url
+
+        obtener_paginas(context, 7)
         return context
 
     def get_queryset(self):
@@ -506,6 +515,11 @@ class IVRListView(ListView):
     model = IVR
     paginate_by = 40
     context_object_name = 'ivrs'
+
+    def get_context_data(self, **kwargs):
+        context = super(IVRListView, self).get_context_data(**kwargs)
+        obtener_paginas(context, 7)
+        return context
 
 
 class IVRCreateView(IVRMixin, CreateView):
@@ -624,6 +638,11 @@ class GrupoHorarioListView(ListView):
     paginate_by = 40
     ordering = ['id']
 
+    def get_context_data(self, **kwargs):
+        context = super(GrupoHorarioListView, self).get_context_data(**kwargs)
+        obtener_paginas(context, 7)
+        return context
+
 
 class GrupoHorarioMixin(object):
 
@@ -716,6 +735,11 @@ class ValidacionFechaHoraListView(ListView):
     context_object_name = 'validaciones_fecha_hora'
     paginate_by = 40
     ordering = ['id']
+
+    def get_context_data(self, **kwargs):
+        context = super(ValidacionFechaHoraListView, self).get_context_data(**kwargs)
+        obtener_paginas(context, 7)
+        return context
 
 
 class ValidacionFechaHoraMixin(object):
@@ -914,6 +938,11 @@ class IdentificadorClienteListView(ListView):
     paginate_by = 40
     ordering = ['id']
 
+    def get_context_data(self, **kwargs):
+        context = super(IdentificadorClienteListView, self).get_context_data(**kwargs)
+        obtener_paginas(context, 7)
+        return context
+
 
 class IdentificadorClienteMixin(object):
 
@@ -1081,6 +1110,11 @@ class DestinoPersonalizadoListView(ListView):
     paginate_by = 40
     ordering = ['id']
     context_object_name = 'destinos_personalizados'
+
+    def get_context_data(self, **kwargs):
+        context = super(DestinoPersonalizadoListView, self).get_context_data(**kwargs)
+        obtener_paginas(context, 7)
+        return context
 
 
 class DestinoPersonalizadoMixin(object):

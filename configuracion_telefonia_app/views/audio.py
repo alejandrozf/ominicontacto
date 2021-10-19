@@ -42,6 +42,8 @@ from ominicontacto_app.asterisk_config import (
 from pathlib import Path
 from ominicontacto_app.services.redis.redis_streams import RedisStreams
 
+from utiles_globales import obtener_paginas
+
 logger = logging.getLogger(__name__)
 
 
@@ -114,6 +116,11 @@ class PlaylistListView(ListView):
     model = Playlist
     paginate_by = 40
     template_name = 'playlist/lista_playlists.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(PlaylistListView, self).get_context_data(**kwargs)
+        obtener_paginas(context, 7)
+        return context
 
 
 class PlaylistCreateView(CreateView):
