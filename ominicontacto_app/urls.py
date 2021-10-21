@@ -443,6 +443,11 @@ urlpatterns = [
             views_agente.LlamarFueraDeCampanaView.as_view()),
         name='agente_llamar_sin_campana',
         ),
+    url(r'^agente/update_password/$',
+        login_required(
+            views_agente.UpdateAgentPasswordView.as_view()),
+        name='update_agent_password',
+        ),
     # ==========================================================================
     # Calificacion
     # ==========================================================================
