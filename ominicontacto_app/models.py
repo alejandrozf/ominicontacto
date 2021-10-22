@@ -233,6 +233,11 @@ class AgenteProfileManager(models.Manager):
     def obtener_activos(self):
         return self.filter(is_inactive=False, borrado=False, user__borrado=False)
 
+    def obtener_inactivos_eliminados(self):
+        inactivos = self.filter(is_inactive=True)
+        eliminados = self.filter(borrado=True, user__borrado=True)
+        return inactivos | eliminados
+
     def obtener_agentes_campana(self, campana):
         """
         Obtiene todos los agentes que estan asignados a una campana
@@ -260,6 +265,25 @@ class AgenteProfileManager(models.Manager):
                 Q(reported_by=supervisor.user) | Q(supervisors__in=[supervisor.user, ]))
 
         return self.obtener_activos().filter(queue__campana__in=campanas).distinct()
+
+    def obtener_inactivos_eliminados_supervisor(self, supervisor):
+        """
+        Obtiene todos los agentes que estan asignados a las campanas
+        que un supervisor tiene asignadas
+        """
+        if supervisor.is_administrador:
+            return self.obtener_inactivos_eliminados()
+        elif supervisor.is_customer:
+            campanas = supervisor.user.campanasupervisors.all()
+        # TODO: Definir cuando se diferencie el rol de Gerente del de Supervisor Normal.
+        # elif supervisor.is_gerente:
+        # Agentes en: Campañas propias + Campañas asignadas + Campañas de sus supervisores
+        else:
+            # Supervisor Normal / Comun: Agentes en campañas propias y asignadas.
+            campanas = Campana.objects.filter(
+                Q(reported_by=supervisor.user) | Q(supervisors__in=[supervisor.user, ]))
+
+        return self.obtener_inactivos_eliminados().filter(queue__campana__in=campanas).distinct()
 
 
 class AgenteProfile(models.Model):

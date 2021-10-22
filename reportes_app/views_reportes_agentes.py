@@ -50,8 +50,11 @@ class ReportesTiemposAgente(FormView):
         kwargs = super(ReportesTiemposAgente, self).get_form_kwargs()
         supervisor = self.request.user.get_supervisor_profile()
         if supervisor:
-            agentes_asociados = AgenteProfile.objects.obtener_agentes_supervisor(
+            agentes_asociados_activos = AgenteProfile.objects.obtener_agentes_supervisor(
                 supervisor).select_related('user')
+            agentes_asociados_inactivos = AgenteProfile.objects.\
+                obtener_inactivos_eliminados_supervisor(supervisor).select_related('user')
+            agentes_asociados = agentes_asociados_activos | agentes_asociados_inactivos
             kwargs['agentes_asociados'] = agentes_asociados
             id_grupos = agentes_asociados.values_list('grupo_id', flat=True)
             kwargs['grupos_asociados'] = Grupo.objects.filter(id__in=id_grupos)
@@ -81,11 +84,23 @@ class ReportesTiemposAgente(FormView):
         if todos_agentes or (agentes == [] and not grupo_id):
             supervisor = self.request.user.get_supervisor_profile()
             if supervisor:
-                agentes = AgenteProfile.objects.obtener_agentes_supervisor(
-                    supervisor)
+                if agentes:
+                    agentes_inactivos = agentes.filter(is_inactive=True)
+                    agentes_eliminados = agentes.filter(borrado=True, user__borrado=True)
+                    agentes = AgenteProfile.objects.obtener_agentes_supervisor(
+                        supervisor) | agentes_eliminados | agentes_inactivos
+                else:
+                    agentes = AgenteProfile.objects.obtener_agentes_supervisor(
+                        supervisor)
             else:
                 # Asumo es Administrador
-                agentes = AgenteProfile.objects.obtener_activos()
+                if agentes:
+                    agentes_inactivos = agentes.filter(is_inactive=True)
+                    agentes_eliminados = agentes.filter(borrado=True, user__borrado=True)
+                    agentes = AgenteProfile.objects.\
+                        obtener_activos() | agentes_eliminados | agentes_inactivos
+                else:
+                    agentes = AgenteProfile.objects.obtener_activos()
 
         agentes = agentes.select_related('user')
 
@@ -99,6 +114,17 @@ class ReportesTiemposAgente(FormView):
 
         return self.render_to_response(self.get_context_data(
             graficos_estadisticas=graficos_estadisticas))
+
+    def get_context_data(self, **kwargs):
+        context = super(ReportesTiemposAgente, self).get_context_data(**kwargs)
+        supervisor = self.request.user.get_supervisor_profile()
+        agentes_activos = AgenteProfile.objects.obtener_agentes_supervisor(
+            supervisor).select_related('user')
+        agentes_inactivos = AgenteProfile.objects.obtener_inactivos_eliminados_supervisor(
+            supervisor).select_related('user')
+        context['agentes_activos'] = agentes_activos
+        context['agentes_eliminados'] = agentes_inactivos
+        return context
 
 
 def exporta_reporte_agente_llamada_view(request, tipo_reporte):

@@ -58,14 +58,25 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     {{ form.fecha.errors }}
                 </div>
                 <div class="col-md-6">
-                    <label for="{{ form.agente.id_for_label }}">{% trans "Agente" %}: </label>
-                      {{ form.agente }}
-                      {{ form.agente.errors }}
+                    <label for="{{ form.agente.id_for_label }}">{% trans "Agentes" %}: </label>
+                      <select name="agente" id="id_agente" multiple="" class="form-control">
+                          {% for agente in agentes_activos %}
+                              <option value="{{ agente.pk }}">{{agente.user.get_full_name}}</option>
+                          {% endfor %}
+                      </select>
                 </div>
                 <div class="col-md-6">
                     <label for="{{ form.todos_agentes.id_for_label }}">{% trans "Todos los agentes" %}: </label>
                       {{ form.todos_agentes }}
                       {{ form.todos_agentes.errors }}
+                </div>
+                <div class="col-md-6">
+                    <label for="{{ form.agente.id_for_label }}">{% trans "Agentes eliminados/inactivos" %}: </label>
+                      <select name="agente" id="id_agente" multiple="" class="form-control">
+                          {% for agente in agentes_eliminados %}
+                              <option value="{{ agente.pk }}">{{agente.user.get_full_name}}</option>
+                          {% endfor %}
+                      </select>
                 </div>
                 <div class="col-md-6">
                     <label for="{{ form.agente.id_for_label }}">{% trans "Grupo de agentes" %}: </label>

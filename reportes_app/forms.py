@@ -51,6 +51,15 @@ class ReporteAgentesForm(forms.Form):
         grupo_choice.insert(0, EMPTY_CHOICE)
         self.fields['grupo_agente'].choices = grupo_choice
 
+    def clean(self):
+        agentes = self.cleaned_data.get('agente')
+        todos_agentes = self.cleaned_data.get('todos_agentes')
+        grupos = self.cleaned_data.get('grupo_agente')
+        if not agentes and not todos_agentes and not grupos:
+            msg = _('Es necesario elegir un agente mínimo')
+            raise forms.ValidationError(msg)
+        return super(ReporteAgentesForm, self).clean()
+
 
 class ReporteLlamadasForm(forms.Form):
     """
