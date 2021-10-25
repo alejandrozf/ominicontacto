@@ -50,6 +50,7 @@ from api_app.serializers import (CampanaSerializer, )
 from ominicontacto_app.models import (
     Campana, CalificacionCliente, AgenteProfile, AgendaContacto, AgenteEnContacto)
 from ominicontacto_app.services.asterisk.supervisor_activity import SupervisorActivityAmiManager
+from reportes_app.models import LlamadaLog
 from reportes_app.reportes.reporte_llamadas_supervision import (
     ReporteDeLLamadasEntrantesDeSupervision, )
 from reportes_app.reportes.reporte_llamadas import ReporteTipoDeLlamadasDeCampana
@@ -793,3 +794,68 @@ class ExportarCSVFormularioGestionCampana(ExportarCSVMixin, APIView):
             'msg': _('Exportación de Formularios de Gestiones a .csv en proceso'),
             'id': task_id,
         })
+class DashboardSupervision(APIView):
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['get']
+
+    def _get_campana_activas(self, tipo_campana):
+        campanas = Campana.objects.all()
+        total_campana = campanas.filter(type=tipo_campana)
+        if tipo_campana == Campana.TYPE_DIALER:
+            campana_activa = total_campana.filter(estado__in=[Campana.ESTADO_ACTIVA,
+                                                              Campana.ESTADO_PAUSADA,
+                                                              Campana.ESTADO_INACTIVA]).count()
+        else:
+            campana_activa = total_campana.filter(estado=Campana.ESTADO_ACTIVA).count()
+
+        campana_no_activa = total_campana.count() - campana_activa
+        datos_campana = [campana_activa, campana_no_activa]
+
+        return datos_campana
+
+    def _get_estado_agentes(self):
+        redis_connection = redis.Redis(
+            host=settings.REDIS_HOSTNAME, port=settings.CONSTANCE_REDIS_CONNECTION['port'],
+            decode_responses=True)
+        keys_agentes = redis_connection.keys('OML:AGENT*')
+        agentes_pausados = 0
+        agentes_online = 0
+        agentes_oncall = 0
+        for key in keys_agentes:
+            agente_info = redis_connection.hgetall(key)
+            if agente_info['STATUS'] == "AGENTPAUSE":
+                agentes_pausados += 1
+            if agente_info['STATUS'] == "CHANTAKECALL":
+                agentes_oncall += 1
+            if agente_info['STATUS'] == "READY" or agente_info['STATUS'] == "AGENTUNPAUSE":
+                agentes_online += 1
+
+        return agentes_online, agentes_oncall, agentes_pausados
+
+    def _get_llamadas_atendidas_fallidas(self):
+        atendidas = LlamadaLog.objects.filter(
+            event__in=LlamadaLog.EVENTOS_INICIO_CONEXION_AGENTE).count()
+        fallidas = LlamadaLog.objects.filter(
+            event__in=LlamadaLog.EVENTOS_NO_CONEXION).count()
+
+        pie_data = [atendidas, fallidas]
+
+        return pie_data
+
+    def get(self, request):
+        data = {}
+        data["preview"] = self._get_campana_activas(Campana.TYPE_PREVIEW)
+        data["dialer"] = self._get_campana_activas(Campana.TYPE_DIALER)
+        data["manual"] = self._get_campana_activas(Campana.TYPE_MANUAL)
+        data["entrante"] = self._get_campana_activas(Campana.TYPE_ENTRANTE)
+
+        agente_online, agente_oncall, agente_pause = self._get_estado_agentes()
+
+        data["agente_online"] = agente_online
+        data["agente_pause"] = agente_pause
+        data["agente_oncall"] = agente_oncall
+
+        data["atendidas-fallidas"] = self._get_llamadas_atendidas_fallidas()
+        return Response(data={'datos': data})
