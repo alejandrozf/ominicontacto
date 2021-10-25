@@ -77,6 +77,7 @@ class PhoneJSView {
         this.setPauseButton = $('#setPause');
         this.tagCallMenu = $('#modalSignCall');
         this.makeTransferButton = $('#makeTransfer');
+        this.makeTransferToSurveyButton = $('#makeTransferToSurvey');
         this.callOffCampaignMenu = $('#modalCallOffCamp');
         this.reload_video_button = $('#reload_video_id');
         this.buttonVideo = $('#buttonVideo');
@@ -84,6 +85,12 @@ class PhoneJSView {
 
         this.startKeypad();
         this.startTransferMenu();
+
+        this.session_data = undefined;
+    }
+
+    setCallSessionData(session_data) {
+        this.session_data = session_data;
     }
 
     startKeypad() {
@@ -116,15 +123,29 @@ class PhoneJSView {
             $('#quickNumToTransfer').prop('disabled', true);
 
             self.transferOutMenu.modal('show');
+
+            if (self.session_data.survey) {
+                $('#transferToSurveyContainer').show();
+            }
+            else {
+                $('#transferToSurveyContainer').hide();
+            }
         });
 
         $('#blindTransf').change(function() {
             if (this.checked) {
                 $('#transfToNum').prop('disabled', false);
                 $('#transfToAgent').prop('disabled', false);
-                $('#transfToCamp').prop('disabled', false);
-                $('#campToTransfer').prop('disabled', false);
-                $('#transfToCamp').prop('checked', true);
+                if (self.session_data.is_off_campaign) {
+                    $('#transfToCamp').prop('disabled', true);
+                    $('#campToTransfer').prop('disabled', true);
+                    $('#transfToCamp').prop('checked', false);
+                }
+                else {
+                    $('#transfToCamp').prop('disabled', false);
+                    $('#campToTransfer').prop('disabled', false);
+                    $('#transfToCamp').prop('checked', true);
+                }
                 $('#transfToQuickNum').prop('disabled', false);
             }
         });

@@ -237,8 +237,8 @@ class CampanaFamily(AbstractRedisFamily):
             pass
 
         if campana.type == Campana.TYPE_ENTRANTE:
-            if hasattr(campana, 'encuesta') and campana.encuesta.filter(activa=True):
-                encuesta_camp = campana.encuesta.get(activa=True)
+            if hasattr(campana, 'encuestas') and campana.encuestas.filter(activa=True):
+                encuesta_camp = campana.encuestas.get(activa=True)
                 dict_campana.update({'SURVEY': str(encuesta_camp.encuesta_id)})
             else:
                 dict_campana.update({'SURVEY': ''})
