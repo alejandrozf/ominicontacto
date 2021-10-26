@@ -167,6 +167,10 @@
            // Add active class to sidebar icon
            $("a[href='" + currentPath + "']").closest('.main-menu-li').find('.icon').addClass('active');
 
+           // Add * to required fields
+           $('input,textarea,select').filter('[required]').each(function (){
+             $('label[for=' + this.id + ']').append("<b style=\"color:red\"> *</b>");
+           });
 
          });
         </script>
