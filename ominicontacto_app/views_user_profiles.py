@@ -50,6 +50,7 @@ from ominicontacto_app.models import (
     SupervisorProfile, AgenteProfile, ClienteWebPhoneProfile, User, QueueMember, Grupo,
 )
 from ominicontacto_app.permisos import PermisoOML
+from ominicontacto_app.services.asterisk.redis_database import AgenteFamily
 
 from ominicontacto_app.views_queue_member import activar_cola, remover_agente_cola_asterisk
 
@@ -569,6 +570,8 @@ class ActivarAgenteView(RedirectView):
     def get(self, request, *args, **kwargs):
         agente = AgenteProfile.objects.get(pk=self.kwargs['pk_agente'])
         agente.activar()
+        agente_family = AgenteFamily()
+        agente_family.regenerar_family(agente)
         return HttpResponseRedirect(reverse('agente_list', kwargs={"page": 1}))
 
 
