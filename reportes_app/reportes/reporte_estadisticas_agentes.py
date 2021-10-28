@@ -175,6 +175,9 @@ class ReporteEstadisticasDiariaAgente(object):
     def contabilizar_estadisticas_conectadas(
             self, tipo_campana, tipo_llamada, numero_marcado, callid, evento, agente_id,
             campana_id, contacto_id):
+        # Si el log no corresponde a un agente activo lo ignoro.
+        if agente_id not in self.estadisticas:
+            return
         if evento == 'ANSWER' and tipo_campana != Campana.TYPE_DIALER:
             if len(self.estadisticas[agente_id]['logs']) < self.CANTIDAD_LOGS:
                 self.adicionar_log(numero_marcado, callid, agente_id, campana_id, tipo_campana,
@@ -193,10 +196,15 @@ class ReporteEstadisticasDiariaAgente(object):
 
     def contabilizar_estadisticas_calificaciones(self, calificacion):
         self.calificaciones_dict[calificacion.callid] = calificacion
+        agente_id = calificacion.agente.pk
         if calificacion.opcion_calificacion.es_gestion():
-            self.estadisticas[calificacion.agente.pk]['venta']['total'] += 1
+            if agente_id not in self.estadisticas:
+                return
+            self.estadisticas[agente_id]['venta']['total'] += 1
         if calificacion.obtener_auditoria() and calificacion.tiene_auditoria_observada():
-            self.estadisticas[calificacion.agente.pk]['venta']['observadas'] += 1
+            if agente_id not in self.estadisticas:
+                return
+            self.estadisticas[agente_id]['venta']['observadas'] += 1
 
     def calcular_estadisticas(self):
         self.contabilizar_estadisticas_actividad()
