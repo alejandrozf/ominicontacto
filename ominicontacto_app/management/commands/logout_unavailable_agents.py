@@ -43,7 +43,7 @@ class Command(BaseCommand):
         agent_activity = AgentActivityAmiManager()
         conectado = False
         hora_actual = now()
-        for agente_profile in AgenteProfile.objects.all():
+        for agente_profile in AgenteProfile.objects.obtener_activos():
             session = None
             if agente_profile.user.last_session_key:
                 try:
