@@ -15,7 +15,15 @@ This environment can be deployed in any linux distro. Linux distro tested by our
 ```sh
   $ cp .env.template .env
 ```
-**Note:** Check the network assigned to devenv in SUBNET variable. By default the subnet 192.168.15.0/24 is assgined to the environment. Change the subnet if it clashes with your WLAN o LAN subnet
+
+**Note:** Check your workstation IPADDR and change with it the *DOCKER_IP* parameter of the .env file. 
+
+2. Run the get_modules.sh script in order to downloads all componentes repositories
+```sh
+  $ ./get_modules.sh
+```
+
+**Note:** Check the network assigned to devenv in SUBNET variable. By default the subnet 192.168.99.0/24 is assgined to the environment. Change the subnet if it clashes with your WLAN o LAN subnet
 3. Raise up the environment
 ```sh
   $ docker-compose up -d
@@ -27,8 +35,7 @@ This will take some time while it download the docker images. Once finished you 
 **Note:** the next command must be run only once, when environment is raised up at first time
 
 ```sh
-  $ docker-compose exec app bash or docker exec -it omlapp bash
-  $ python3 manage.py cambiar_admin_password
+  $ docker exec -it omlapp python3 manage.py cambiar_admin_password
 ```
 This will set the admin password to default value: 'admin'. So you can login using that credentials: `admin/admin`
 
@@ -37,11 +44,11 @@ This will set the admin password to default value: 'admin'. So you can login usi
 You can also use the command inicializar_entorno to have some data written in your environment.
 
 ```sh
-  $ docker-compose exec app bash or docker exec -it omlapp bash
-  $ python3 manage.py inicializar_entorno
+  $ docker exec -it omlapp python3 manage.py inicializar_entorno
 ```
-You will have the trunk with the pbxemulator and an agent with this credentials:
+You will have a SIP trunk with the pstn-emulator and an agent with this credentials:
 `agent/agent1*`
+in order to place telephone calls to any destination number to pstn-emulator
 
 ## Services you can access
 
