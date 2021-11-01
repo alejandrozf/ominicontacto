@@ -32,7 +32,8 @@ class ReporteSupervisores(object):
 
     def calcular_datos_de_agentes_asignados_por_supervisor(self):
 
-        nombres_campanas = dict(Campana.objects.values_list('id', 'nombre'))
+        nombres_campanas = dict(Campana.objects.obtener_all_dialplan_asterisk().values_list(
+            'id', 'nombre'))
         agentes_por_campana = {}
         for id_campana in nombres_campanas.keys():
             agentes_por_campana[id_campana] = set()
@@ -40,7 +41,7 @@ class ReporteSupervisores(object):
         # Obtengo los datos de cada agente
         datos_por_agente = {}
         # Grupo
-        grupos_de_agentes = AgenteProfile.objects.all().values('id', 'grupo__nombre')
+        grupos_de_agentes = AgenteProfile.objects.obtener_activos().values('id', 'grupo__nombre')
         for grupo_de_agente in grupos_de_agentes:
             datos_por_agente[grupo_de_agente['id']] = {
                 'grupo': grupo_de_agente['grupo__nombre'],
@@ -51,20 +52,23 @@ class ReporteSupervisores(object):
         for asignacion in asignaciones_agentes:
             id_campana = asignacion['queue_name__campana_id']
             id_agente = asignacion['member_id']
-            datos_por_agente[id_agente]['campana'].append(nombres_campanas[id_campana])
-            agentes_por_campana[id_campana].add(id_agente)
+            if id_campana in nombres_campanas and id_agente in datos_por_agente:
+                datos_por_agente[id_agente]['campana'].append(nombres_campanas[id_campana])
+                agentes_por_campana[id_campana].add(id_agente)
 
         # Los administradores tendran asignados a todos los agentes
         administradores = []
         agentes_por_supervisor = {}
-        for supervisor in SupervisorProfile.objects.all():
+        supervisores = SupervisorProfile.objects.filter(
+            borrado=False, user__is_active=True, user__borrado=False)
+        for supervisor in supervisores:
             if supervisor.is_administrador:
                 administradores.append(supervisor.id)
             else:
                 agentes_por_supervisor[supervisor.id] = set()
 
         # Calculo ids de agentes asociados a supervisores a traves de campañas
-        asignaciones_campanas = Campana.objects.obtener_actuales().values(
+        asignaciones_campanas = Campana.objects.obtener_all_dialplan_asterisk().values(
             'id', 'supervisors__supervisorprofile')
         for asignacion in asignaciones_campanas:
             id_campana = asignacion['id']
