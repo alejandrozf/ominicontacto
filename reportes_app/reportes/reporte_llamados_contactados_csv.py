@@ -355,8 +355,11 @@ class ReporteCalificadosCSV(EstadisticasBaseCampana, ReporteCSV):
             # (campaña entrante)
             respuesta_formulario_gestion = None
         else:
+            calificacion_id = calificacion.pk
+            if isinstance(calificacion, HistoricalCalificacionCliente):
+                calificacion_id = calificacion.history_object.pk
             respuesta_formulario_gestion = self.respuestas_formulario_gestion_dict.get(
-                calificacion.history_object.pk)
+                calificacion_id)
         if (calificacion.opcion_calificacion.es_gestion() and
             self.campana.tipo_interaccion is Campana.FORMULARIO and
                 respuesta_formulario_gestion is not None):
