@@ -226,7 +226,7 @@ class LlamarContactoView(RedirectView):
                 tipo_campana = str(campana.type)
         else:
             try:
-                campana = Campana.objects.obtener_activas().get(id=campana_id)
+                campana = Campana.objects.obtener_actuales().get(id=campana_id)
             except Campana.DoesNotExist:
                 message = _(
                     u'No es posible llamar al contacto.'
