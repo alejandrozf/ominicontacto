@@ -122,7 +122,7 @@ class ReporteEstadisticasDiariaAgente(object):
     def contabilizar_estadisticas_actividad(self):
         hoy_ahora = datetime.datetime.today()
         hoy = hoy_ahora.date()
-        agentes = AgenteProfile.objects.obtener_activos()
+        agentes = AgenteProfile.objects.obtener_activos().prefetch_related('user')
         admin = User.objects.filter(is_staff=True).first()
         reporte_agentes = ReporteAgentes(user=admin).devuelve_reporte_agentes(agentes, hoy, hoy)
         for reporte_agente in reporte_agentes['agentes_tiempos']:
@@ -146,7 +146,7 @@ class ReporteEstadisticasDiariaAgente(object):
         if calificacion:
             actions = {
                 'calificacionId': calificacion.pk,
-                'contactoId': calificacion.contacto.pk,
+                'contactoId': calificacion.contacto_id,
                 'campanaId': campana_id
             }
             datos = calificacion.contacto.datos

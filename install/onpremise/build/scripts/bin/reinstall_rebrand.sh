@@ -10,9 +10,6 @@ cp -rf ${RepositoryLocation}/ominicontacto_app/ ${InstallationPrefix}/ominiconta
 cp -rf ${RepositoryLocation}/supervision_app/ ${InstallationPrefix}/ominicontacto/
 cp -rf ${RepositoryLocation}/configuracion_telefonia_app/ ${InstallationPrefix}/ominicontacto/
 
-# Removing specific logos
-rm -rf ${InstallationPrefix}/ominicontacto/ominicontacto_app/static/ominicontacto/Img/ic_logo_full.png
-
 # Applying changes
 sudo -u omnileads bash -c "${ManageScript} compilemessages"
 sudo -u omnileads bash -c "${ManageScript} collectstatic --noinput"
