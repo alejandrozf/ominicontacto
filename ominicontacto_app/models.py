@@ -2385,7 +2385,7 @@ class ContactoManager(models.Manager):
     def contactos_by_filtro_bd_contacto(self, bd_contacto, filtro):
         """ Busqueda en todos los campos relevantes """
         try:
-            contactos = self.filter(Q(telefono__contains=filtro) | Q(datos__contains=filtro))
+            contactos = self.filter(Q(telefono__icontains=filtro) | Q(datos__icontains=filtro))
             return contactos.filter(bd_contacto=bd_contacto)
         except Contacto.DoesNotExist:
             raise (SuspiciousOperation("No se encontro contactos con este "
