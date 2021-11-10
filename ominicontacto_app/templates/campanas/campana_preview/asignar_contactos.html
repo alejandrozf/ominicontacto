@@ -46,6 +46,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% block form_render %}
     {% with form as form %}
         {{ form.non_field_errors }}
+        <fieldset {% if is_disabled_add_contacts %}disabled="disabled"{% endif %}>
         <div class="form-row">
             <div class="col-md-6">
                 <label for="{{ form.proporcionalmente.id_for_label }}">{% trans 'Proporcionalmente:' %}</label>
@@ -60,5 +61,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 </div>
             </div>
         </div>
+        </fieldset>
     {% endwith %}
 {% endblock %}
