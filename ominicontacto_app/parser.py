@@ -317,6 +317,16 @@ def validate_telefono(number):
     return False
 
 
+def validate_telefono_or_ext(number):
+    """
+    Esta función valida el numero telefónico tenga  entre 3 y 13 dígitos.
+    """
+    number = REGEX_NON_DIGITS.sub("", smart_text(number))
+    if settings.OL_NRO_EXT_BPX_LARGO_MIN <= len(number) <= \
+            settings.OL_NRO_TELEFONO_LARGO_MAX:
+        return True
+
+
 PATTERN_SANITIZE_NUMBER = re.compile("[^0-9]")
 
 
