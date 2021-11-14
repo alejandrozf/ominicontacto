@@ -219,6 +219,10 @@ class Grupo(models.Model):
     acceso_dashboard_agente = models.BooleanField(default=True, verbose_name=_(
         'Acceso dashboard agentes'))
     on_hold = models.BooleanField(default=True, verbose_name=_('On-Hold'))
+    limitar_agendas_personales = models.BooleanField(default=False, verbose_name=_(
+        'Limitar agendas personales'))
+    cantidad_agendas_personales = models.PositiveIntegerField(blank=True, null=True, verbose_name=_(
+        'Cantidad agendas personales'))
 
     def __str__(self):
         return self.nombre
@@ -360,6 +364,15 @@ class AgenteProfile(models.Model):
 
     def force_logout(self):
         self.user.force_logout()
+
+    def permite_agenda_personal(self, contacto, campana):
+        if self.grupo.limitar_agendas_personales:
+            cant_agendas = len(self.agendacontacto.filter(tipo_agenda=AgendaContacto.TYPE_PERSONAL)
+                                                  .exclude(contacto=contacto, campana=campana))
+            cant_permitidas = self.grupo.cantidad_agendas_personales or 0
+            if cant_agendas >= cant_permitidas:
+                return False
+        return True
 
 
 class SupervisorProfile(models.Model):
@@ -2682,15 +2695,20 @@ class CalificacionCliente(TimeStampedModel, models.Model):
         # Finalizar relacion de contacto con agente
         # Optimizacion: si ya hay calificacion ya se termino la relacion agente contacto antes.
         campana = self.opcion_calificacion.campana
+        contacto = self.contacto
         if campana.type == Campana.TYPE_PREVIEW and self.pk is None:
             campana.gestionar_finalizacion_relacion_agente_contacto(self)
         # gestionamos las agendas
         if self.opcion_calificacion.tipo != OpcionCalificacion.AGENDA:
             # eliminamos las agendas existentes (si hubiera alguna)
             AgendaContacto.objects.filter(
-                agente=self.agente, contacto=self.contacto,
-                campana=self.opcion_calificacion.campana,
+                agente=self.agente, contacto=contacto,
+                campana=campana,
                 tipo_agenda=AgendaContacto.TYPE_PERSONAL).delete()
+        elif campana.type != Campana.TYPE_DIALER and \
+                not self.agente.permite_agenda_personal(contacto, campana):
+            raise ValidationError(_('Ud. ya ha alcanzado el número límite de Agendas Personales.'
+                                    'Consulte con su Administrador'))
         super(CalificacionCliente, self).save(*args, **kwargs)
 
     def get_venta(self):
@@ -2879,6 +2897,14 @@ class AgendaContacto(models.Model):
         return "Agenda para el contacto {0} agendado por el agente {1} " \
                "para la fecha {2} a la hora {3}hs ".format(
                    self.contacto, self.agente, self.fecha, self.hora)
+
+    def save(self, *args, **kwargs):
+        if self.tipo_agenda == AgendaContacto.TYPE_PERSONAL and \
+                not self.agente.permite_agenda_personal(self.contacto, self.campana):
+            raise ValidationError(_('Ud. ya ha alcanzado el número límite de Agendas Personales.'
+                                    'Consulte con su Administrador'))
+        else:
+            super(AgendaContacto, self).save(*args, **kwargs)
 
 
 # ==============================================================================

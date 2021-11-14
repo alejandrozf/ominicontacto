@@ -72,6 +72,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {{ form.on_hold.label_tag }} {{ form.on_hold }}
             {{ form.on_hold.errors }}
         </div>
+        <div class="col-md-3">
+            {{ form.limitar_agendas_personales.label_tag }} {{ form.limitar_agendas_personales }} 
+            {{form.cantidad_agendas_personales}}
+            {{ form.limitar_agendas_personales.errors }}{{ form.cantidad_agendas_personales.errors }}
+        </div>
     </div>
     <button type="submit" id="id_registrar" class="btn btn-primary">
         {% trans 'Guardar' %}

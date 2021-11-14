@@ -25,6 +25,7 @@ from __future__ import unicode_literals
 
 import json
 import logging as logging_
+from django.core.exceptions import ValidationError
 
 from django.utils.translation import ugettext as _
 from django.contrib import messages
@@ -366,41 +367,47 @@ class CalificacionClienteFormView(FormView):
             return redirect(self.get_success_url())
 
     def form_valid(self, contacto_form, calificacion_form=None):
-        nuevo_contacto = False
-        if self.contacto is None:
-            nuevo_contacto = True
-        self.contacto = contacto_form.save(commit=False)
-        if nuevo_contacto:
-            self.contacto.bd_contacto = self.campana.bd_contacto
-        self.contacto.datos = contacto_form.get_datos_json()
-        # TODO: OML-1016 Verificar bien que hacer aca (Hace falta hacer algo si ya se calificó?)
-        if nuevo_contacto:
-            self.contacto.es_originario = False
-        self.contacto.save()
+        try:
+            nuevo_contacto = False
+            if self.contacto is None:
+                nuevo_contacto = True
+            self.contacto = contacto_form.save(commit=False)
+            if nuevo_contacto:
+                self.contacto.bd_contacto = self.campana.bd_contacto
+            self.contacto.datos = contacto_form.get_datos_json()
+            # TODO: OML-1016 Verificar bien que hacer aca (Hace falta hacer algo si ya se calificó?)
+            if nuevo_contacto:
+                self.contacto.es_originario = False
+            self.contacto.save()
 
-        force_disposition = False
-        if self.call_data:
-            force_disposition = self.agente.grupo.obligar_calificacion
-            if 'force_disposition' in self.call_data:
-                force_disposition = self.call_data['force_disposition']
-        if force_disposition:
-            calificacion_llamada = CalificacionLLamada()
-            calificacion_llamada.create_family(self.agente, self.call_data,
-                                               self.kwargs['call_data_json'], calificado=True,
-                                               gestion=False, id_calificacion=None)
-        if calificacion_form is not None:
-            # el formulario de calificación no es generado por una llamada entrante
-            return self._calificar_form(calificacion_form)
-        else:
-            # en el caso de una campaña entrante que el usuario no desea calificar
-            message = _('Operación Exitosa! '
-                        'Se llevó a cabo con éxito la creación del contacto')
-            self.call_data['id_contacto'] = self.contacto.pk
-            self.call_data['telefono'] = self.contacto.telefono
-            url_calificar_llamada_entrante = reverse(
-                'calificar_llamada', kwargs={'call_data_json': json.dumps(self.call_data)})
-            messages.success(self.request, message)
-            return redirect(url_calificar_llamada_entrante)
+            force_disposition = False
+            if self.call_data:
+                force_disposition = self.agente.grupo.obligar_calificacion
+                if 'force_disposition' in self.call_data:
+                    force_disposition = self.call_data['force_disposition']
+            if force_disposition:
+                calificacion_llamada = CalificacionLLamada()
+                calificacion_llamada.create_family(self.agente, self.call_data,
+                                                   self.kwargs['call_data_json'], calificado=True,
+                                                   gestion=False, id_calificacion=None)
+            if calificacion_form is not None:
+                # el formulario de calificación no es generado por una llamada entrante
+                return self._calificar_form(calificacion_form)
+            else:
+                # en el caso de una campaña entrante que el usuario no desea calificar
+                message = _('Operación Exitosa! '
+                            'Se llevó a cabo con éxito la creación del contacto')
+                self.call_data['id_contacto'] = self.contacto.pk
+                self.call_data['telefono'] = self.contacto.telefono
+                url_calificar_llamada_entrante = reverse(
+                    'calificar_llamada', kwargs={'call_data_json': json.dumps(self.call_data)})
+                messages.success(self.request, message)
+                return redirect(url_calificar_llamada_entrante)
+        except ValidationError as e:
+            messages.error(self.request, e.message)
+            return self.render_to_response(self.get_context_data(
+                contacto_form=contacto_form,
+                calificacion_form=calificacion_form))
 
     def form_invalid(self, contacto_form, calificacion_form):
         """
