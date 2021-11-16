@@ -260,7 +260,7 @@ class AgenteFamily(AbstractRedisFamily):
 
     def _create_dict(self, agente, status='', timestamp=''):
         dict_agente = {
-            'NAME': agente.user.get_full_name(),
+            'NAME': agente.user.get_full_name().replace("'", "’"),
             'SIP': agente.sip_extension,
             'STATUS': status,
             'TIMESTAMP': timestamp
