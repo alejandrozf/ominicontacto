@@ -776,6 +776,15 @@ body > h1 {
   height: 140px;
 }
 
+#transferToSurveyContainer {
+  border-top: #e9ecef solid 1px;
+}
+
+#makeTransferToSurvey {
+  position: relative;
+  left: 50px;
+}
+
 /* Modal webchat */
 #modalwebChat .modal-body {
   display: -webkit-box;

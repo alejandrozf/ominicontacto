@@ -592,4 +592,11 @@ class SessionData {
     get is_call() {
         return this.is_off_campaign || this.is_remote;
     }
+
+    get survey() {
+        if (this.invite_request.headers.Omlsurvey){
+            return this.invite_request.headers.Omlsurvey[0].raw;
+        }
+        return false;
+    }
 }

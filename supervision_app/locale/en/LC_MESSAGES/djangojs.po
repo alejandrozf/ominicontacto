@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-08 11:57-0300\n"
+"POT-Creation-Date: 2021-11-17 11:22-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,7 +19,7 @@ msgstr ""
 #: supervision_app/static/supervision_app/JS/campanas_dialers.js:154
 #: supervision_app/static/supervision_app/JS/campanas_entrantes.js:145
 #: supervision_app/static/supervision_app/JS/campanas_salientes.js:99
-#: supervision_app/static/supervision_app/JS/supervision.js:188
+#: supervision_app/static/supervision_app/JS/supervision.js:193
 msgid "Buscar: "
 msgstr "Search:"
 
@@ -30,42 +30,42 @@ msgstr "(filtering a total of _MAX_ campaigns)"
 #: supervision_app/static/supervision_app/JS/campanas_dialers.js:157
 #: supervision_app/static/supervision_app/JS/campanas_entrantes.js:148
 #: supervision_app/static/supervision_app/JS/campanas_salientes.js:102
-#: supervision_app/static/supervision_app/JS/supervision.js:191
+#: supervision_app/static/supervision_app/JS/supervision.js:196
 msgid "Primero "
 msgstr "First"
 
 #: supervision_app/static/supervision_app/JS/campanas_dialers.js:158
 #: supervision_app/static/supervision_app/JS/campanas_entrantes.js:149
 #: supervision_app/static/supervision_app/JS/campanas_salientes.js:103
-#: supervision_app/static/supervision_app/JS/supervision.js:192
+#: supervision_app/static/supervision_app/JS/supervision.js:197
 msgid "Anterior "
 msgstr "Previous"
 
 #: supervision_app/static/supervision_app/JS/campanas_dialers.js:159
 #: supervision_app/static/supervision_app/JS/campanas_entrantes.js:150
 #: supervision_app/static/supervision_app/JS/campanas_salientes.js:104
-#: supervision_app/static/supervision_app/JS/supervision.js:193
+#: supervision_app/static/supervision_app/JS/supervision.js:198
 msgid " Siguiente"
 msgstr "Next"
 
 #: supervision_app/static/supervision_app/JS/campanas_dialers.js:160
 #: supervision_app/static/supervision_app/JS/campanas_entrantes.js:151
 #: supervision_app/static/supervision_app/JS/campanas_salientes.js:105
-#: supervision_app/static/supervision_app/JS/supervision.js:194
+#: supervision_app/static/supervision_app/JS/supervision.js:199
 msgid " Último"
 msgstr "Last"
 
 #: supervision_app/static/supervision_app/JS/campanas_dialers.js:162
 #: supervision_app/static/supervision_app/JS/campanas_entrantes.js:153
 #: supervision_app/static/supervision_app/JS/campanas_salientes.js:107
-#: supervision_app/static/supervision_app/JS/supervision.js:196
+#: supervision_app/static/supervision_app/JS/supervision.js:201
 msgid "Mostrar _MENU_ entradas"
 msgstr "Show _MENU_ entries"
 
 #: supervision_app/static/supervision_app/JS/campanas_dialers.js:163
 #: supervision_app/static/supervision_app/JS/campanas_entrantes.js:154
 #: supervision_app/static/supervision_app/JS/campanas_salientes.js:108
-#: supervision_app/static/supervision_app/JS/supervision.js:197
+#: supervision_app/static/supervision_app/JS/supervision.js:202
 msgid "Mostrando _START_ a _END_ de _TOTAL_ entradas"
 msgstr "Showing _START_ to _END_ of _TOTAL_ entries"
 
@@ -76,7 +76,7 @@ msgstr " seconds"
 
 #: supervision_app/static/supervision_app/JS/campanas_entrantes.js:146
 #: supervision_app/static/supervision_app/JS/campanas_salientes.js:100
-#: supervision_app/static/supervision_app/JS/supervision.js:189
+#: supervision_app/static/supervision_app/JS/supervision.js:194
 msgid "(filtrando de un total de _MAX_ contactos)"
 msgstr "(filtering a total of _MAX_ contacts)"
 
@@ -184,15 +184,15 @@ msgstr "SIP Proxy not responding, contact your Administrator"
 msgid "Fallo en la registración, contacte a su administrador"
 msgstr "Registration Failed, contact your Administrator"
 
-#: supervision_app/static/supervision_app/JS/supervision.js:213
+#: supervision_app/static/supervision_app/JS/supervision.js:218
 msgid "Susurrar"
 msgstr "Whisper"
 
-#: supervision_app/static/supervision_app/JS/supervision.js:226
+#: supervision_app/static/supervision_app/JS/supervision.js:231
 msgid "Espiar"
 msgstr "Spy"
 
-#: supervision_app/static/supervision_app/JS/supervision.js:255
+#: supervision_app/static/supervision_app/JS/supervision.js:260
 msgid "Logout"
 msgstr "Logout"
 

@@ -40,8 +40,8 @@ class ReporteDeLLamadasSalientesDeSupervision(object):
     EVENTOS_LLAMADA = ('DIAL', 'ANSWER') + LlamadaLog.EVENTOS_NO_CONEXION
 
     def __init__(self):
-        query_campanas = Campana.objects.obtener_actuales().filter(type__in=[Campana.TYPE_PREVIEW,
-                                                                             Campana.TYPE_MANUAL])
+        query_campanas = Campana.objects.obtener_all_dialplan_asterisk().filter(
+            type__in=[Campana.TYPE_PREVIEW, Campana.TYPE_MANUAL])
         self.campanas = {}
         for campana in query_campanas:
             self.campanas[campana.id] = campana
