@@ -217,7 +217,7 @@ class OMLAPI {
         });
     }
 
-    llamadaCalificada(callback_calificada, callback_no_calificada, callback_error) {
+    llamadaCalificada(callback_calificada, callback_no_calificada, callback_gestion_form, callback_error) {
         var URL = Urls.api_status_calificacion_llamada();
         $.ajax({
             url: URL,
@@ -228,6 +228,10 @@ class OMLAPI {
                 }
                 else if (data['calldata'] == undefined){
                     callback_calificada();
+                }
+                else if (data['gestion'] == 'True'){
+                    var id_calificacion = JSON.parse(data['id_calificacion']);
+                    callback_gestion_form(id_calificacion);
                 }
                 else{
                     var call_data = JSON.parse(data['calldata']);

@@ -103,7 +103,7 @@ class ConfiguracionTelefoniaAppConfig(AppConfig):
         if 'lista_playlist' in permissions:
             audios.append({
                 'label': _('Listas de Musica de Espera'),
-                'url': reverse('lista_playlist')
+                'url': reverse('lista_playlist', args=(1, ))
             })
         if audios:
             items.append({

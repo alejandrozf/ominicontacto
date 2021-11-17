@@ -636,6 +636,8 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'validar_contacto_asignado',
              'roles': ['Agente', ]},
+            {'nombre': 'update_agent_password',
+             'roles': ['Agente', ]},
             {'nombre': 'contactos_preview_asignados',
              'roles': ['Administrador', 'Gerente', 'Supervisor', 'Referente', ]},
             {'nombre': 'liberar_reservar_contacto_asignado',
@@ -1187,4 +1189,6 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Define una lista rapida de contactos'), 'version': '1.13.0'},
         'finalizar_campana_preview':
             {'descripcion': _('Finalizar una campana preview activa'), 'version': '1.17.0'},
+        'update_agent_password':
+            {'descripcion': _('Actualizar la contrasena de un agente'), 'version': '1.18.1'},
     }

@@ -88,7 +88,7 @@ class CampanaListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(CampanaListView, self).get_context_data(
             **kwargs)
-        campanas = Campana.objects.obtener_campanas_entrantes().select_related('queue_campana')
+        campanas = Campana.objects.obtener_campanas_entrantes().select_related('bd_contacto')
         # Filtra las campanas de acuerdo al usuario logeado si tiene permiso sobre
         # las mismas
         if self.request.user.is_authenticated and self.request.user and \

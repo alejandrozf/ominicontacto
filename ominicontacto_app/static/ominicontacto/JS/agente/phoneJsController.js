@@ -227,6 +227,11 @@ class PhoneJSController {
             }
         });
 
+        this.view.makeTransferToSurveyButton.click(function() {
+            self.phone_fsm.dialTransfer();
+            self.phone.dialTransfer(new SurveyTransferData());
+        });
+
         this.view.endTransferButton.click(function() {
             self.phone_fsm.endTransfer();
             self.phone.endTransfer();
@@ -348,6 +353,8 @@ class PhoneJSController {
                 self.view.setStateInputStatus('OnCall');
                 self.view.toogleVisibilityRecordButtons(self.phone.session_data);
                 self.click_2_call_dispatcher.disable();
+
+                self.view.setCallSessionData(self.phone.session_data);
 
                 if (self.phone.session_data.remote_call &&
                     self.phone.session_data.remote_call.force_disposition) {
@@ -649,6 +656,16 @@ class PhoneJSController {
                         var url = Urls.calificar_llamada(encodeURIComponent(call_data_json));
                         $('#dataView').attr('src', url);
                         $('#obligarCalificarCall').modal('hide');
+                    });
+                    self.verificando_calificacion_por_pausa = false;
+                },
+                function(idcalificacion){
+                    $('#obligarGestionForm').modal('show');
+                    $('#obligarGestionForm_submit').click(function(){
+                        var id_calification_json = JSON.stringify(idcalificacion);
+                        var url = Urls.formulario_venta(encodeURIComponent(id_calification_json));
+                        $('#dataView').attr('src', url);
+                        $('#obligarGestionForm').modal('hide');
                     });
                     self.verificando_calificacion_por_pausa = false;
                 },
@@ -1032,6 +1049,14 @@ class OutTransferData {
         return (this.is_blind || (this.is_consultative && !this.is_to_campaign)) &&
             (this.is_to_agent || this.is_to_number || this.is_to_campaign || this.is_quick_contact) &&
             this.destination != '' && this.destination != undefined;
+    }
+}
+
+class SurveyTransferData {
+    constructor() {
+        this.is_blind = true;
+        this.is_to_number = true;
+        this.destination = '098*';
     }
 }
 

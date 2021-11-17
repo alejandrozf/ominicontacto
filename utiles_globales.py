@@ -114,6 +114,24 @@ def crear_grabaciones_url(host, port):
     return grabaciones_url
 
 
+def obtener_paginas(context, range_size):
+    if not context.get('is_paginated', False):
+        return context
+    paginator = context.get('paginator')
+    num_pages = paginator.num_pages
+    current_page = context.get('page_obj')
+    page_no = current_page.number
+    if num_pages <= range_size or page_no <= int((range_size + 1) / 2):  # case 1 and 2
+        pages = [x for x in range(1, min(num_pages + 1, range_size + 1))]
+    elif page_no > num_pages - int((range_size + 1) / 2):  # case 4
+        pages = [x for x in range(num_pages - (range_size - 1), num_pages + 1)]
+    else:  # case 3
+        pages = [x for x in range(
+            page_no - int((range_size + 1) / 2 - 1),
+            page_no + int((range_size + 1) / 2))]
+    context.update({'pages': pages})
+
+
 class AddSettingsContextMixin(object):
 
     def get_context_data(self, *args, **kwargs):

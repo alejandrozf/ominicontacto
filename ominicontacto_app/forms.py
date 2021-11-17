@@ -174,6 +174,51 @@ class AgenteProfileForm(forms.ModelForm):
         self.fields['grupo'].queryset = grupos_queryset
 
 
+class UpdateAgentPasswordForm(forms.ModelForm):
+    """A form for updating users. Includes all the fields on
+    the user, but replaces the password field with admin's
+    password hash display field.
+    """
+
+    password1 = forms.CharField(max_length=128,
+                                required=False,
+                                # will be overwritten by __init__()
+                                help_text=_('Ingrese la nueva contraseña '
+                                            '(sólo si desea cambiarla)'),
+                                # will be overwritten by __init__()
+                                widget=forms.PasswordInput(),
+                                label=_('Contraseña'))
+
+    password2 = forms.CharField(
+        max_length=128,
+        required=False,  # will be overwritten by __init__()
+        # will be overwritten by __init__()
+        help_text=_('Ingrese la nueva contraseña (sólo si desea cambiarla)'),
+        widget=forms.PasswordInput(),
+        label=_('Contraseña (otra vez)'))
+
+    def clean(self):
+        cleaned_data = super(UpdateAgentPasswordForm, self).clean()
+        password1 = cleaned_data.get('password1')
+        password2 = cleaned_data.get('password2')
+        if password1 != '':
+            validate_password(password1)
+        if password1 != password2:
+            raise forms.ValidationError(_('Las contraseñas no coinciden'))
+        return self.cleaned_data
+
+    class Meta:
+        model = AgenteProfile
+        fields = ('password1', 'password2')
+
+    def __init__(self, *args, **kwargs):
+        super(UpdateAgentPasswordForm, self).__init__(*args, **kwargs)
+        self.fields['password1'].required = True
+        self.fields['password2'].required = True
+        self.fields['password1'].help_text = _('Ingrese la nueva contraseña')
+        self.fields['password2'].help_text = _('Ingrese la nueva contraseña')
+
+
 class QueueEntranteForm(forms.ModelForm):
     """
     El form de cola para las colas
@@ -306,14 +351,10 @@ class QueueMemberForm(forms.ModelForm):
     """
 
     def __init__(self, members, *args, **kwargs):
-        if 'instance' not in kwargs:
-            initial = kwargs.get('initial', {})
-            initial['penalty'] = 0
-            kwargs['initial'] = initial
-
         super(QueueMemberForm, self).__init__(*args, **kwargs)
 
-        self.fields['member'].choices = members
+        self.fields['member'].queryset = members.prefetch_related('user')
+        self.initial['penalty'] = 0
 
     class Meta:
         model = QueueMember

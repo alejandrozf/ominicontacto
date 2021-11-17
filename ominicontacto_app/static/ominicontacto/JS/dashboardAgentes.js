@@ -155,7 +155,7 @@ contactadosSocket.onmessage = function(e) {
                 },
                 pausa: {
                     statistics: pausaData.tiempo_pausa,
-                    title: gettext('Tiempo de pausa recreativa'),
+                    title: gettext('Tiempos de pausa'),
                     graphic: graficoPausa,
                 },
                 venta: {

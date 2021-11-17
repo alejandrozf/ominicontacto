@@ -257,7 +257,8 @@ class CalificacionClienteFormView(FormView):
         if force_disposition:
             calificacion_llamada = CalificacionLLamada()
             calificacion_llamada.create_family(self.agente, self.call_data,
-                                               self.kwargs['call_data_json'], calificado=False)
+                                               self.kwargs['call_data_json'], calificado=False,
+                                               gestion=False, id_calificacion=None)
 
         return self.render_to_response(self.get_context_data(
             contacto=self.contacto,
@@ -337,6 +338,12 @@ class CalificacionClienteFormView(FormView):
 
         if self.object_calificacion.es_gestion() and \
                 not self.campana.tiene_interaccion_con_sitio_externo:
+            if self.agente.grupo.obligar_calificacion:
+                calificacion_llamada = CalificacionLLamada()
+                calificacion_llamada.create_family(self.agente, self.call_data,
+                                                   self.kwargs['call_data_json'], calificado=False,
+                                                   gestion=True,
+                                                   id_calificacion=calificacion_form.instance.pk)
             return redirect(self.get_success_url_venta())
         else:
             message = _('Operación Exitosa! '
@@ -379,7 +386,8 @@ class CalificacionClienteFormView(FormView):
         if force_disposition:
             calificacion_llamada = CalificacionLLamada()
             calificacion_llamada.create_family(self.agente, self.call_data,
-                                               self.kwargs['call_data_json'], calificado=True)
+                                               self.kwargs['call_data_json'], calificado=True,
+                                               gestion=False, id_calificacion=None)
         if calificacion_form is not None:
             # el formulario de calificación no es generado por una llamada entrante
             return self._calificar_form(calificacion_form)
@@ -574,6 +582,17 @@ class RespuestaFormularioCreateUpdateFormView(CreateView):
         self.object.metadata = metadata
         self.object.calificacion = self.calificacion
         self.object.save()
+        self.agente = self.request.user.get_agente_profile()
+        if self.agente.grupo.obligar_calificacion:
+            calificacion_llamada = CalificacionLLamada()
+            call_data = {}
+            call_data['call_id'] = self.calificacion.callid
+            call_data['id_campana'] = self.calificacion.opcion_calificacion.campana_id
+            call_data['telefono'] = self.contacto.telefono
+            calificacion_llamada.create_family(self.agente, call_data,
+                                               None, calificado=True,
+                                               gestion=False, id_calificacion=None)
+
         message = _('Operación Exitosa!'
                     'Se llevó a cabo con éxito el llenado del formulario del'
                     ' cliente')

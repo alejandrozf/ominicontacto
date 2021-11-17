@@ -42,8 +42,6 @@ from reportes_app.models import LlamadaLog
 
 class BusquedaGrabacionFormView(FormView):
     """Vista abstracta para subclasear para agente o supervisor"""
-    form_class = GrabacionBusquedaSupervisorForm
-    template_name = 'busqueda_grabacion.html'
 
     def get_context_data(self, **kwargs):
         context = super(BusquedaGrabacionFormView, self).get_context_data(
@@ -71,6 +69,16 @@ class BusquedaGrabacionFormView(FormView):
             qs = result_paginator.page(1)
         except django_paginator.EmptyPage:
             qs = result_paginator.page(result_paginator.num_pages)
+
+        num_pages = result_paginator.num_pages
+        page_no = int(page)
+        if num_pages <= 7 or page_no <= 4:  # case 1 and 2
+            pages = [x for x in range(1, min(num_pages + 1, 8))]
+        elif page_no > num_pages - 4:  # case 4
+            pages = [x for x in range(num_pages - 6, num_pages + 1)]
+        else:  # case 3
+            pages = [x for x in range(page_no - 3, page_no + 4)]
+        context.update({'pages': pages})
         # ----- </Paginate> -----
         context['listado_de_grabaciones'] = qs
 
@@ -168,6 +176,8 @@ class BusquedaGrabacionFormView(FormView):
 
 
 class BusquedaGrabacionSupervisorFormView(BusquedaGrabacionFormView):
+    form_class = GrabacionBusquedaSupervisorForm
+    template_name = 'busqueda_grabacion.html'
 
     def _get_campanas(self):
         campanas = Campana.objects.all()
@@ -181,15 +191,8 @@ class BusquedaGrabacionSupervisorFormView(BusquedaGrabacionFormView):
         return form.cleaned_data.get('agente', None)
 
     def _get_grabaciones_del_dia(self):
-        hoy = fecha_local(timezone.now())
-        campanas = self._get_campanas()
-        campanas_id = []
-        for campana in campanas:
-            if campana.estado != Campana.ESTADO_BORRADA:
-                campanas_id.append(campana.id)
-        logs = LlamadaLog.objects.obtener_grabaciones_by_fecha_intervalo_campanas(hoy, hoy,
-                                                                                  campanas_id)
-        return self._procesa_formato_transferencias(logs)
+        # No muestro grabaciones sin que el usuario envíe parámetros de filtrado
+        return []
 
     def _get_grabaciones_por_filtro(self, fecha_desde, fecha_hasta, tipo_llamada, tel_cliente,
                                     callid, id_contacto_externo, agente, campana, campanas,

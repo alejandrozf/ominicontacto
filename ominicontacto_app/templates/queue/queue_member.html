@@ -20,82 +20,87 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
-{% load widget_tweaks %}
+
+{% block head_js %}
+  <script type="text/javascript"
+        src="{% static 'ominicontacto/JS/campanas/queue_member.js' %}">
+  </script>
+  <script type="text/javascript" src="{% static 'ominicontacto/JS/select2.min.js' %}"></script>
+{% endblock head_js %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/opcion-calificacion.css' %}"></link>
-{% endblock %}
-
-{% block extra_js %}
-    <script src="{% static 'ominicontacto/JS/adicionarGruposAgentes.js' %}"></script>
-    <script src="{% static 'ominicontacto/JS/jquery.formset.js' %}"></script>
-    <script type="text/javascript" src="{% static 'ominicontacto/JS/campanas/adicionar_agentes_base.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'ominicontacto/CSS/select2.min.css' %}"></link>
 {% endblock %}
 
 {% block content %}
-    <br>
-    <div>
-        <form action="{%  url 'queue_member_campana' campana.pk %}" role="form" method="post">
-            {% csrf_token %}
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card" id="gruposAgentes">
-                        <div class="card-header">
-                            {% trans 'Agregar grupo de agentes' %}
-                        </div>
-                        <div class="card-body">
-                            {{ grupos_form.as_table }}
-                            <a href="#" class="btn btn-outline-primary" id="adicionarAgente">{% trans 'Agregar grupo' %}</a>
-                        </div>
+         {% if campana%}
+            <h1>{% blocktrans with campana_nombre=campana.nombre %}Campaña {{ campana_nombre }}{% endblocktrans %}</h1>
+                {% endif %}
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <form action="{%  url 'queue_member_add' campana.pk %}" role="form" method="post">
+                                {% csrf_token %}
+                                <h2>{% trans 'Agentes' %}</h2>
+                                <table class="table">
+                                     {{queue_member_form.as_table}}
+                                </table>
+                                <button type="submit" id="id_guardar" class="btn btn-outline-primary">
+                                    {% trans 'Agregar agente' %}
+                                </button>
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                        <form action="{%  url 'queue_member_grupo_agente' campana.pk %}" role="form" method="post">
+                                {% csrf_token %}
+                                <h2>{% trans 'Grupos' %}</h2>
+                                <table class="table">
+                                     {{grupo_agente_form.as_table}}
+                                </table>
+                                <button type="submit" class="btn btn-outline-primary">
+                                    {% trans 'Agregar grupo' %}
+                                </button>
+                        </form>
                     </div>
                 </div>
-            </div>
-            <table>
-                {% block formset_render %}
-                    <input class="hidden" value="{{ queue_member_form.prefix }}" id="wizard">
-                    <table border="0" cellpadding="0" cellspacing="0">
-                        <thead>
+            <hr>
+            {% if campana %}
+                <div class="col-md-3 float-right">
+                    <form method="GET" action="{% url 'queue_member_campana' campana.pk %}" class="filter-flex">
+                        <input type="text" id="filtroUsuarios" class="form-control" name="search" value="{{ search }}">
+                        <input type="submit" class="btn btn-primary" value="{% trans 'Filtrar' %}">
+                    </form>
+                </div>
+                <br>
+                <br>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>{% trans 'Agente' %}</th>
+                            <th>{% trans 'SIP id' %}</th>
+                            <th>{% trans 'Penalty' %}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for agente in queue_member_list %}
                             <tr>
-                                <th>{% trans 'Agente' %}</th>
-                                <th>{% trans 'Penalty' %}</th>
+                                <td>{{ agente.member}}</td>
+                                <td>SIP/{{ agente.member.sip_extension }}</td>
+                                <td>{{ agente.penalty }}</td>
+                                <td><a class="btn btn-light" href="{% url 'queue_member_elimina' agente.pk campana.pk %}">{% trans 'Remover' %}</a></td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% if queue_member_form.non_form_errors %}
-                                {% for error in queue_member_form.non_form_errors %}
-                                    <div class="alert alert-warning">{{ error|escape }}</div>
-                                {% endfor %}
-                            {% endif %}
-                            {% for queue_form in queue_member_form.forms %}
-                                <tr class="linkFormset">
-                                    {% if queue_form.errors %}
-                                        <div class="alert alert-warning">{{ queue_form.errors|escape }}</div>
-                                    {% endif %}
-                                    <td class="member">
-                                        {{ queue_form.member.errors }}
-                                        {{ queue_form.member|add_class:"form-control" }}
-                                    </td>
-                                    <td class="penalty">
-                                        {{ queue_form.penalty.errors  }}
-                                        {{ queue_form.penalty|add_class:"form-control" }}
-                                    </td>
-                                    <td class="id">{{ queue_form.id }}</td>
-                                    <td></td>
-                                    <td>
-                                        {% if queue_form.instance.pk %}
-                                            {{ queue_form.DELETE }}
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                              {% endfor %}
-                        </tbody>
-                    </table>
-                    {{ queue_member_form.management_form }}
-                {% endblock %}
-            </table>
-            <button class='btn btn-primary' type='submit' data-loading-text={% trans 'Cargando...' %}>
-                {% trans "Finalizar" %}
-            </button>
-        </form>
-    </div>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4">
+                                    <p>{% trans 'No se encontraron agentes en está cola.' %}</p>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+            <hr>
+            <a href="{% url url_finalizar %}" class="btn btn-primary" role="button">
+                {% trans 'Finalizar' %}
+            </a>
 {% endblock %}

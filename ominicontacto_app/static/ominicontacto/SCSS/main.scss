@@ -687,6 +687,13 @@ body > h1 {
   overflow: scroll;
   height: 140px;
 }
+#transferToSurveyContainer{
+    border-top: #e9ecef solid 1px;
+}
+#makeTransferToSurvey{
+    position: relative;
+    left: 50px;
+}
 
 /* Modal webchat */
 

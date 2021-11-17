@@ -62,7 +62,8 @@ class StatusCalificacionLlamadaTest(OMLBaseTest):
         call_data = self.get_call_data()
         json_call_data = json.dumps(call_data)
         nombre_family = service._get_nombre_family(self.agente)
-        service.create_family(self.agente, call_data, json_call_data, calificado=True)
+        service.create_family(self.agente, call_data, json_call_data, calificado=True,
+                              gestion=False, id_calificacion=None)
         variables = {
             'NAME': self.agente.user.get_full_name(),
             'ID': self.agente.id,
@@ -71,6 +72,8 @@ class StatusCalificacionLlamadaTest(OMLBaseTest):
             'TELEFONO': call_data['telefono'],
             'CALIFICADA': 'TRUE',
             'CALLDATA': json_call_data,
+            'GESTION': 'FALSE',
+            'IDCALIFICACION': 'NONE'
         }
         expire.assert_called_with(nombre_family, 3600 * 24 * 4)
         hset.assert_called_with(nombre_family, mapping=variables)
@@ -104,7 +107,8 @@ class StatusCalificacionLlamadaTest(OMLBaseTest):
         url = reverse('api_status_calificacion_llamada')
         service = CalificacionLLamada()
         nombre_family = service._get_nombre_family(self.agente)
-        hgetall.return_value = {'CALIFICADA': 'FALSE', 'CALLDATA': 'SOME CALL DATA'}
+        hgetall.return_value = {'CALIFICADA': 'FALSE', 'CALLDATA': 'SOME CALL DATA',
+                                'GESTION': 'FALSE', 'IDCALIFICACION': 'NONE'}
         response = self.client.post(url)
         hgetall.assert_called_with(nombre_family)
         self.assertEqual(response.json(), {'calificada': 'False', 'calldata': 'SOME CALL DATA'})
