@@ -35,8 +35,8 @@ from ominicontacto_app.errors import OmlArchivoImportacionInvalidoError, \
     OmlError, OmlParserMaxRowError, OmlParserCsvImportacionError
 from ominicontacto_app.models import BaseDatosContacto, \
     MetadataBaseDatosContactoDTO, Contacto
-from ominicontacto_app.parser import ParserCsv, validate_telefono, validate_fechas, \
-    validate_horas
+from ominicontacto_app.parser import ParserCsv, validate_telefono, validate_telefono_or_ext, \
+    validate_fechas, validate_horas
 from ominicontacto_app.utiles import elimina_tildes
 
 
@@ -292,7 +292,7 @@ class PredictorMetadataService(object):
         nombre = elimina_tildes(nombre)
         return nombre
 
-    def inferir_metadata_desde_lineas(self, lineas_unsafe):
+    def inferir_metadata_desde_lineas(self, lineas_unsafe, permitir_ext_pbx=False):
         """Infiere los metadatos desde las lineas pasadas por parametros.
 
         Devuelve instancias de MetadataBaseDatosContactoDTO.
@@ -347,7 +347,7 @@ class PredictorMetadataService(object):
         # ======================================================================
 
         columnas_con_telefonos = self._inferir_columnas(
-            otras_lineas, validate_telefono)
+            otras_lineas, validate_telefono if not permitir_ext_pbx else validate_telefono_or_ext)
 
         logger.debug(_("columnas_con_telefonos: {0}".format(columnas_con_telefonos)))
 

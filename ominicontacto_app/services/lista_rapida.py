@@ -32,7 +32,7 @@ class ListaRapidaService(object):
     def inferir_metadata(self, estructura_archivo):
         predictor_metadata = PredictorMetadataService()
         return predictor_metadata.inferir_metadata_desde_lineas(
-            estructura_archivo)
+            estructura_archivo, permitir_ext_pbx=True)
 
     def _existe_lista_rapida(self, nombre) -> bool:
         return ListasRapidas.objects.filter(nombre=nombre).exists()
