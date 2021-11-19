@@ -92,6 +92,12 @@ class CampanaPreviewCreateView(CampanaPreviewMixin, CampanaManualCreateView):
     def get_context_data(self, form, *args, **kwargs):
         context = super(CampanaPreviewCreateView, self).get_context_data(form, *args, **kwargs)
         context['create'] = True
+        if context["wizard"]["steps"].current == self.ASIGNACION_CONTACTOS:
+            agentes_adicionados_temp = self.get_cleaned_data_for_step(self.ADICION_AGENTES)
+            if not any(agentes_adicionados_temp):
+                context["is_disabled_add_contacts"] = True
+                message = _(u'No se han seleccionado agentes para esta campaña')
+                messages.warning(self.request, message)
         return context
 
     def done(self, form_list, **kwargs):
