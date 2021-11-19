@@ -1,0 +1,127 @@
+<!--
+Copyright (C) 2018 Freetech Solutions
+
+This file is part of OMniLeads
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+    <!-- Button back -->
+    <nav>
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" href="{% url 'listas_rapidas' %}" >
+                    <span aria-hidden="true">&laquo;</span>
+                    {% trans 'Atras' %}
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <!-- Header (filter and title) -->
+    <div class="d-flex justify-content-end form-row">
+        <div class="col-md-9">
+            <h1>Lista rápida: {{ lista_rapida.nombre }}</h1>
+        </div>
+        <div class="col-md-3">
+            <form method="GET" action="{% url 'contactos_lista_rapida' pk_lista_rapida=lista_rapida.pk %}" class="filter-flex">
+                <input type="text" class="form-control" name="search" placeholder="Busca por nombre" value="{{ search }}">
+                <input type="submit" class="btn btn-primary" value="{% trans 'Filtrar' %}">
+            </form>
+        </div>
+    </div>
+    <hr>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>{% trans 'ID' %}</th>
+                <th>{% trans 'Nombre' %}</th>
+                <th class="text-center">{% trans 'Teléfono' %}</th>
+                <th class="text-center">{% trans 'Acciones' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for contacto in contactos_lista_rapida %}
+            <tr>
+                <td>{{ contacto.pk }}</td>
+                <td>{{ contacto.nombre }}</td>
+                <td class="text-center">{{ contacto.telefono }}</td>
+                <td class="text-center">
+                    <div class="dropdown">
+                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% trans 'Opciones' %}
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
+                            <a class="dropdown-item" href="{% url 'editar_contacto_lista_rapida' pk_lista_rapida=lista_rapida.pk pk=contacto.pk %}">
+                                <span class="icon icon-pencil"></span>{% trans 'Modificar' %}
+                            </a>
+                            <a class="dropdown-item" href="{% url 'eliminar_contacto_lista_rapida' pk_lista_rapida=lista_rapida.pk pk=contacto.pk %}">
+                                <span class="icon icon-trash"></span>{% trans 'Eliminar' %}
+                            </a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+       {% empty %}
+        <tr>
+            <td colspan="3">{% trans 'No existen contactos' %}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <a class="btn btn-light btn-sm" href="{% url 'nuevo_contacto_lista_rapida' lista_rapida.pk %}" >{% trans 'Nuevo contacto' %}</a>
+    {% if is_paginated %}
+        <nav class="mt-5" aria-label="Page navigation">
+            <ul class="pagination pagination-centered">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                    <a class="page-link" aria-label="First" href="{{request.path}}?page={{ 1 }}">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">{% trans 'Principio' %}</span>
+                    </a>
+                    </li>
+                    <li class="page-item">
+                    <a class="page-link" aria-label="Previous" href="{{request.path}}?page={{ page_obj.previous_page_number }}">
+                        <span aria-hidden="true">&lt;</span>
+                        <span class="sr-only">{% trans 'Anterior' %}</span>
+                    </a>
+                    </li>
+                {% endif %}
+                {% for i in pages %}
+                    <li class="page-item {% if page_obj.number == i %}active{% endif %}">
+                    <a class="page-link" href="{{request.path}}?page={{ i }}"> {{i}} </a>
+                    </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                    <a class="page-link" aria-label="Next" href="{{request.path}}?page={{ page_obj.next_page_number }}">
+                        <span aria-hidden="true">&gt;</span>
+                        <span class="sr-only">{% trans 'Siguiente' %}</span>
+                    </a>
+                    </li>
+                    <li class="page-item">
+                    <a class="page-link" aria-label="Last" href="{{request.path}}?page={{ page_obj.paginator.num_pages }}">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">{% trans 'Final' %}</span>
+                    </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+{% endblock %}

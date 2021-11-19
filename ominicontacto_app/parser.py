@@ -327,6 +327,20 @@ def validate_telefono_or_ext(number):
         return True
 
 
+def is_valid_length(field, min, max):
+    """
+    Esta función valida longitud entre NIM y MAX.
+    """
+    return min <= len(field) <= max
+
+
+def get_digits_from_field(field):
+    """
+    Esta función obtiene los digitos de una cadena.
+    """
+    return REGEX_NON_DIGITS.sub("", smart_text(field))
+
+
 PATTERN_SANITIZE_NUMBER = re.compile("[^0-9]")
 
 
