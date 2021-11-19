@@ -34,7 +34,7 @@ from api_app.views.supervisor import (
     CalificacionesDeCampanaView, ReasignarAgendaContactoView, DataAgendaContactoView,
     ExportarCSVContactados, ExportarCSVCalificados, ExportarCSVNoAtendidos,
     ContactosAsignadosCampanaPreviewView, ExportarCSVCalificacionesCampana,
-    ExportarCSVFormularioGestionCampana)
+    ExportarCSVFormularioGestionCampana, ExportarCSVResultadosBaseContactados)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
@@ -145,6 +145,9 @@ urlpatterns = [
     url(r'api/v1/exportar_csv_formulario_gestion_campana/$',
         ExportarCSVFormularioGestionCampana.as_view(),
         name='api_exportar_csv_formulario_gestion_campana'),
+    url(r'api/v1/exportar_csv_resultados_base_contactados/$',
+        ExportarCSVResultadosBaseContactados.as_view(),
+        name='api_exportar_csv_resultados_base_contactados'),
 
 
     # ###########     AGENTE      ############ #

@@ -55,6 +55,13 @@ from reportes_app.reportes.reporte_llamadas_supervision import (
 from reportes_app.reportes.reporte_llamadas import ReporteTipoDeLlamadasDeCampana
 from reportes_app.reportes.reporte_llamados_contactados_csv import (
     ExportacionCampanaCSV, ReporteCalificadosCSV, ReporteContactadosCSV, ReporteNoAtendidosCSV)
+from ominicontacto_app.services.reporte_resultados_de_base_csv import (
+    ExportacionReporteCSV
+)
+from ominicontacto_app.services.reporte_resultados_de_base import (
+    ReporteContactacionesCSV
+)
+
 from reportes_app.reportes.reporte_llamadas_salientes import ReporteLlamadasSalienteFamily
 from ominicontacto_app.services.reporte_respuestas_formulario import (
     ReporteFormularioGestionCampanaCSV)
@@ -431,6 +438,75 @@ class ExportarCSVMixin:
                 tipo, campana_id, supervisor_nombre)) + \
             "Date filter: from {0} to {1}".format(fecha_hasta, fecha_desde)
         logger.info(cadena_inicio_exportacion_info)
+
+
+class ExportarCSVResultadosBaseContactados(ExportarCSVMixin, APIView):
+    permission_classes = (TienePermisoOML, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['post', ]
+
+    def generar_csv(self, key_task, campana, all_data):
+        reporte_csv = ReporteContactacionesCSV(
+            campana,
+            key_task,
+            all_data
+        )
+        datos_reporte = reporte_csv.datos
+        service_csv = ExportacionReporteCSV()
+        if all_data:
+            service_csv.exportar_reportes_csv(
+                campana,
+                datos_contactaciones_todos=datos_reporte
+            )
+        else:
+            service_csv.exportar_reportes_csv(
+                campana,
+                datos_contactaciones=datos_reporte
+            )
+
+    def post(self, request):
+        campana_id = request.data.get('campana_id')
+        task_id = request.data.get('task_id')
+        all_data = bool(int(request.data.get('all_data')))
+        campana = Campana.objects.get(pk=campana_id)
+        sufijo_canal = 'ALL_CONTACTED' if all_data else 'CONTACTED'
+        key_task = "OML:BASE_RESULTS_REPORT:{0}:{1}:{2}".format(
+            sufijo_canal,
+            campana_id,
+            task_id
+        )
+
+        # Hilo para generación de reporte
+        thread_exportacion = threading.Thread(
+            target=self.generar_csv,
+            args=[
+                key_task,
+                campana,
+                all_data
+            ]
+        )
+        thread_exportacion.setDaemon(True)
+        thread_exportacion.start()
+
+        if all_data:
+            log_info = 'resultados_de_base_contactaciones_todos'
+        else:
+            log_info = 'resultados_de_base_contactaciones'
+        self.loguear_inicio_exportacion(
+            log_info,
+            campana_id,
+            request.user.username,
+            fecha_desde=None,
+            fecha_hasta=None
+        )
+
+        return Response(
+            data={
+                'status': 'OK',
+                'msg': _('Exportación de CSV en proceso'),
+                'id': task_id,
+            }
+        )
 
 
 class ExportarCSVContactados(ExportarCSVMixin, APIView):

@@ -21,12 +21,15 @@ from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 
 from reportes_app import views_reportes_agentes
-from reportes_app.views import (ReporteLlamadasFormView, ExportarReporteLlamadasFormView,
-                                ExportarZipReportesLlamadasFormView,
-                                ReporteDeResultadosView, ReporteDeResultadosCSVView,
-                                ReporteDeTodosResultadosCSVView)
-from reportes_app import (views_campanas_preview_reportes, views_campanas_dialer_reportes,
-                          views_reportes, )
+from reportes_app.views import (
+    ReporteLlamadasFormView, ExportarReporteLlamadasFormView,
+    ExportarZipReportesLlamadasFormView,
+    ReporteDeResultadosView)
+from reportes_app import (
+    views_campanas_preview_reportes,
+    views_campanas_dialer_reportes,
+    views_reportes
+)
 
 urlpatterns = [
     # ==========================================================================
@@ -135,14 +138,9 @@ urlpatterns = [
             ReporteDeResultadosView.as_view()),
         name='reporte_de_resultados',
         ),
-    url(r'^reporte_de_resultados_csv/(?P<pk_campana>\d+)/$',
+    url(r'^resultados_de_base_campana/(?P<pk_campana>\d+)/(?P<all_data>\d+)/$',
         login_required(
-            ReporteDeResultadosCSVView.as_view()),
-        name='reporte_de_resultados_csv',
-        ),
-    url(r'^reporte_de_resultados_todos_csv/(?P<pk_campana>\d+)/$',
-        login_required(
-            ReporteDeTodosResultadosCSVView.as_view()),
-        name='reporte_de_resultados_todos_csv',
+            views_reportes.ExportaReporteResultadosDeBaseView.as_view()),
+        name='exporta_reporte_resultados_de_base_contactaciones',
         ),
 ]

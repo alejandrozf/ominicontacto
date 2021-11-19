@@ -24,13 +24,44 @@ from __future__ import unicode_literals
 from mock import patch
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
+from django.utils.crypto import get_random_string
 
-from reportes_app.reportes.reporte_llamados_contactados_csv import NO_CONECTADO_DESCRIPCION
+# Reportes APP
+from reportes_app.reportes.reporte_llamados_contactados_csv import (
+    NO_CONECTADO_DESCRIPCION)
+from reportes_app.reportes.reporte_resultados import (
+    ReporteDeResultadosDeCampana)
 from reportes_app.tests.tests_reportes_campanas import BaseTestDeReportes
-from reportes_app.reportes.reporte_resultados import ReporteDeResultadosDeCampana
+# Ominicontacto APP
+from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
+from ominicontacto_app.models import Campana
 
 
-class ReporteDeResultadosTests(BaseTestDeReportes):
+class APITest(OMLBaseTest):
+    """API para generacion de CSV"""
+
+    def setUp(self):
+        super(APITest, self).setUp()
+        self.campana = Campana.objects.first()
+        usr_sup = self.crear_user_supervisor(username='sup1')
+        self.client.login(username=usr_sup.username, password=PASSWORD)
+        self.taskId = get_random_string(8)
+        self.response_ok = {
+            u'status': u'OK',
+            u'msg': _(u'Exportación de CSV en proceso'),
+            u'id': self.taskId,
+        }
+        self.post_data = {
+            'campanaId': self.campana.pk,
+            'taskId': self.taskId,
+        }
+
+    def tearDown(self):
+        super(APITest, self).tearDown()
+        self.client.logout()
+
+
+class ReporteDeResultadosTests(APITest, BaseTestDeReportes):
 
     def test_usuario_no_logueado_no_accede_reporte_de_resultados(self):
         self.client.logout()
@@ -38,33 +69,78 @@ class ReporteDeResultadosTests(BaseTestDeReportes):
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed(response, 'registration/login.html')
 
-    @patch('reportes_app.archivos_de_reporte.reporte_de_resultados.ReporteDeResultadosCSV.'
-           'generar_archivo_descargable')
-    def test_usuario_logueado_accede_reporte_de_resultados(self, generar_archivo_descargable):
+    def test_usuario_logueado_accede_reporte_de_resultados(self):
         url = reverse('reporte_de_resultados', args=[self.campana_activa.pk])
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed(response, 'reporte_de_resultados.html')
-        self.assertTrue(generar_archivo_descargable.called)
 
-    @patch('reportes_app.archivos_de_reporte.reporte_de_resultados.ReporteDeResultadosCSV.'
-           'generar_archivo_descargable')
-    def test_contactos_en_reporte_de_resultados(self, generar_archivo_descargable):
+    def test_contactos_en_reporte_de_resultados(self):
         reporte = ReporteDeResultadosDeCampana(self.campana_activa)
+        self.assertTrue(
+            self.contacto_calificado_gestion.id in reporte.contactaciones)
+        contactacion = reporte.contactaciones[
+            self.contacto_calificado_gestion.id]
+        self.assertEqual(
+            contactacion['calificacion'],
+            self.opcion_calificacion_gestion.nombre)
 
-        self.assertTrue(self.contacto_calificado_gestion.id in reporte.contactaciones)
-        contactacion = reporte.contactaciones[self.contacto_calificado_gestion.id]
-        self.assertEqual(contactacion['calificacion'], self.opcion_calificacion_gestion.nombre)
+        self.assertTrue(
+            self.contacto_calificado_no_accion.id in reporte.contactaciones)
+        contactacion = reporte.contactaciones[
+            self.contacto_calificado_no_accion.id]
+        self.assertEqual(
+            contactacion['calificacion'],
+            self.opcion_calificacion_noaccion.nombre)
 
-        self.assertTrue(self.contacto_calificado_no_accion.id in reporte.contactaciones)
-        contactacion = reporte.contactaciones[self.contacto_calificado_no_accion.id]
-        self.assertEqual(contactacion['calificacion'], self.opcion_calificacion_noaccion.nombre)
-
-        self.assertTrue(self.contacto_no_calificado.id in reporte.contactaciones)
+        self.assertTrue(
+            self.contacto_no_calificado.id in reporte.contactaciones)
         contactacion = reporte.contactaciones[self.contacto_no_calificado.id]
         self.assertIsNone(contactacion['calificacion'])
         self.assertEqual(contactacion['contactacion'], _('Contactado'))
-
         self.assertTrue(self.contacto_no_atendido.id in reporte.contactaciones)
         contactacion = reporte.contactaciones[self.contacto_no_atendido.id]
         self.assertIsNone(contactacion['calificacion'])
-        self.assertEqual(contactacion['contactacion'], NO_CONECTADO_DESCRIPCION['NOANSWER'])
+        self.assertEqual(
+            contactacion['contactacion'], NO_CONECTADO_DESCRIPCION['NOANSWER'])
+
+    @patch('threading.Thread')
+    def test_generar_resultados_de_base_csv(self, Thread):
+        self.client.login(username='sup1', password=PASSWORD)
+        url = reverse('api_exportar_csv_resultados_base_contactados')
+        taskId = self.post_data['taskId']
+        campanaId = self.post_data['campanaId']
+        response = self.client.post(
+            url,
+            {
+                'task_id': taskId,
+                'campana_id': campanaId,
+                'all_data': 0
+            },
+            follow=True,
+            format='json'
+        )
+        Thread.assert_called()
+        self.assertEqual(response.status_code, 200)
+        response_json = response.json()
+        self.assertEqual(response_json, self.response_ok)
+
+    @patch('threading.Thread')
+    def test_generar_todos_resultados_de_base_csv(self, Thread):
+        self.client.login(username='sup1', password=PASSWORD)
+        url = reverse('api_exportar_csv_resultados_base_contactados')
+        taskId = self.post_data['taskId']
+        campanaId = self.post_data['campanaId']
+        response = self.client.post(
+            url,
+            {
+                'task_id': taskId,
+                'campana_id': campanaId,
+                'all_data': 1
+            },
+            follow=True,
+            format='json'
+        )
+        Thread.assert_called()
+        self.assertEqual(response.status_code, 200)
+        response_json = response.json()
+        self.assertEqual(response_json, self.response_ok)

@@ -24,22 +24,32 @@ from io import BytesIO
 from zipfile import ZipFile
 
 from django.utils.timezone import now
-from django.utils.translation import ugettext_lazy as _
-from django.views.generic import View, FormView, TemplateView
+from django.utils.crypto import get_random_string
+from django.views.generic import FormView, TemplateView
 from django.http import HttpResponse
 from django.shortcuts import redirect
-from django.contrib import messages
 
+# Ominicontacto App
 from ominicontacto_app.models import Campana
 from ominicontacto_app.utiles import (
-    fecha_local, fecha_hora_local, datetime_hora_minima_dia, UnicodeWriter)
+    fecha_local, fecha_hora_local,
+    datetime_hora_minima_dia, UnicodeWriter
+)
 from ominicontacto_app.views_utils import handler400
 
-from reportes_app.forms import (ReporteLlamadasForm, ExportarReporteLlamadasForm,
-                                EstadisticasJSONForm)
-from reportes_app.reportes.reporte_llamadas import ReporteDeLlamadas, GeneradorReportesLlamadasCSV
-from reportes_app.reportes.reporte_resultados import ReporteDeResultadosDeCampana
-from reportes_app.archivos_de_reporte.reporte_de_resultados import ReporteDeResultadosCSV
+# Reportes App
+from reportes_app.forms import (
+    ReporteLlamadasForm,
+    ExportarReporteLlamadasForm,
+    EstadisticasJSONForm
+)
+from reportes_app.reportes.reporte_llamadas import (
+    ReporteDeLlamadas,
+    GeneradorReportesLlamadasCSV
+)
+from reportes_app.reportes.reporte_resultados import (
+    ReporteDeResultadosDeCampana
+)
 
 
 class ReporteLlamadasFormView(FormView):
@@ -177,18 +187,25 @@ class ReporteDeResultadosView(TemplateView):
     template_name = 'reporte_de_resultados.html'
 
     def dispatch(self, request, *args, **kwargs):
-        # TODO: [PERMISOS] Verificar que el supervisor tenga acceso a la campaña
+        # TODO: [PERMISOS] Verificar que
+        # el supervisor tenga acceso a la campaña
         try:
             self.campana = Campana.objects.get(id=kwargs['pk_campana'])
         except Campana.DoesNotExist:
             return redirect('index')
-        return super(ReporteDeResultadosView, self).dispatch(request, *args, **kwargs)
+        return super(
+            ReporteDeResultadosView,
+            self
+        ).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super(ReporteDeResultadosView, self).get_context_data(**kwargs)
+        context = super(
+            ReporteDeResultadosView,
+            self
+        ).get_context_data(**kwargs)
         reporte = ReporteDeResultadosDeCampana(self.campana)
-
         context['campana'] = self.campana
+        context['task_id'] = get_random_string(8)
         metadata = self.campana.bd_contacto.get_metadata()
         context['columnas_datos'] = metadata.nombres_de_columnas_de_datos
         context['reporte'] = reporte
@@ -198,51 +215,4 @@ class ReporteDeResultadosView(TemplateView):
         else:
             context['mostrar_export_todos'] = False
 
-        # Crear el archivo ahora para no repetir los cálculos.
-        reporte_csv = ReporteDeResultadosCSV(self.campana)
-        reporte_csv.generar_archivo_descargable(reporte)
-
         return context
-
-
-class ReporteDeResultadosCSVView(View):
-    """ Una vez generado en ReporteDeResultadosView, se puede
-        descargar el archivo csv usando esta vista.
-    """
-
-    def dispatch(self, request, *args, **kwargs):
-        # TODO: [PERMISOS] Verificar que el supervisor tenga acceso a la campaña
-        try:
-            self.campana = Campana.objects.get(id=kwargs['pk_campana'])
-        except Campana.DoesNotExist:
-            messages.error(self.request, _(u"No existe la campaña."))
-            return redirect('index')
-
-        reporte_csv = ReporteDeResultadosCSV(self.campana)
-        if reporte_csv.archivo_ya_generado():
-            url = reporte_csv.obtener_url_reporte_csv_descargar()
-            return redirect(url)
-        else:
-            messages.warning(self.request, _(u"Por favor, intente nuevamente."))
-            return redirect('reporte_de_resultados', pk_campana=kwargs['pk_campana'])
-
-
-class ReporteDeTodosResultadosCSVView(View):
-
-    def dispatch(self, request, *args, **kwargs):
-        # TODO: [PERMISOS] Verificar que el supervisor tenga acceso a la campaña
-        try:
-            self.campana = Campana.objects.get(id=kwargs['pk_campana'])
-        except Campana.DoesNotExist:
-            messages.error(self.request, _(u"No existe la campaña."))
-            return redirect('index')
-
-        reporte = ReporteDeResultadosDeCampana(self.campana, True)
-        reporte_csv = ReporteDeResultadosCSV(self.campana, True)
-        reporte_csv.generar_archivo_descargable(reporte)
-        if reporte_csv.archivo_ya_generado():
-            url = reporte_csv.obtener_url_reporte_csv_descargar()
-            return redirect(url)
-        else:
-            messages.warning(self.request, _(u"Por favor, intente nuevamente."))
-            return redirect('reporte_de_resultados', pk_campana=kwargs['pk_campana'])
