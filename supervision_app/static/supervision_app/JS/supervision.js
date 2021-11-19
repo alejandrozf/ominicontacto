@@ -56,6 +56,7 @@ function processData(rawData) {
         try {
             const agent = JSON.parse(element
                 .replaceAll('\'', '"')
+                .replaceAll('’', '\'')
                 .replaceAll('"[', '[')
                 .replaceAll(']"', ']'));
             const rowData = normalizaRow(agent);
