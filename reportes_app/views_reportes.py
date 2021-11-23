@@ -28,7 +28,7 @@ from django.shortcuts import redirect
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import FormView, ListView, View
+from django.views.generic import FormView, View
 
 
 from ominicontacto_app.forms import ReporteCampanaForm
@@ -41,21 +41,31 @@ from ominicontacto_app.services.reporte_agente import EstadisticasAgenteService
 from ominicontacto_app.services.reporte_campana_calificacion import ReporteCampanaService
 from ominicontacto_app.services.reporte_campana_pdf import ReporteCampanaPDFService
 
-from ominicontacto_app.services.reporte_respuestas_formulario import (
-    ReporteRespuestaFormularioGestionService)
-
 from ominicontacto_app.utiles import convert_fecha_datetime, fecha_hora_local
 
 from reportes_app.reportes.reporte_llamados_contactados_csv import ExportacionCampanaCSV
+from ominicontacto_app.services.reporte_campana_csv import ExportacionArchivoCampanaCSV
 
 
-class CampanaReporteCalificacionListView(ListView):
+class CampanaReporteCalificacionListView(FormView):
     """
     Muestra un listado de contactos a los cuales se los calificaron en la campana
     """
     template_name = 'calificaciones_campana.html'
     context_object_name = 'campana'
     model = Campana
+    form_class = ReporteCampanaForm
+    campana = None
+
+    def get_object(self, queryset=None):
+        if self.campana is None:
+            user = self.request.user
+            asignadas = Campana.objects.all()
+            if not user.get_is_administrador():
+                supervisor = user.get_supervisor_profile()
+                asignadas = supervisor.campanas_asignadas()
+            self.campana = asignadas.get(pk=self.kwargs['pk_campana'])
+        return self.campana
 
     def get(self, request, *args, **kwargs):
         user = request.user
@@ -76,19 +86,9 @@ class CampanaReporteCalificacionListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(CampanaReporteCalificacionListView, self).get_context_data(
             **kwargs)
-
-        service = ReporteCampanaService(self.campana)
-        calificaciones_qs = service.calificaciones_qs
-        historico_calidficaciones = self._procesa_historico_calificaciones(
-            service.historico_calificaciones_qs)
-        service.crea_reporte_csv()
-
-        service_formulario = ReporteRespuestaFormularioGestionService()
-        service_formulario.crea_reporte_csv(self.campana)
-
-        context['campana'] = self.campana
-        context['calificaciones'] = calificaciones_qs
-        context['historico_calificaciones'] = historico_calidficaciones.values()
+        context['campana'] = self.get_object()
+        context['calificaciones_task_id'] = get_random_string(8)
+        context['formulario_gestion_task_id'] = get_random_string(8)
         return context
 
     def _procesa_historico_calificaciones(self, historico_calificaciones_qs):
@@ -134,6 +134,25 @@ class CampanaReporteCalificacionListView(ListView):
                     res[gestion.calificacion.id]['tiene_historico'] = True
         return res
 
+    def form_valid(self, form):
+        fecha = form.cleaned_data.get('fecha')
+        fecha_desde, fecha_hasta = fecha.split('-')
+        fecha_desde = convert_fecha_datetime(fecha_desde)
+        fecha_hasta = convert_fecha_datetime(fecha_hasta)
+        service = ReporteCampanaService(self.get_object())
+        service.calificaciones_por_fechas(fecha_desde, fecha_hasta)
+        calificaciones_qs = service.calificaciones_qs
+        historico_calificaciones_qs = service.historico_calificaciones_qs
+        historico_calidficaciones = self._procesa_historico_calificaciones(
+            historico_calificaciones_qs)
+        return self.render_to_response(self.get_context_data(
+            calificaciones=calificaciones_qs,
+            historico_calificaciones=historico_calidficaciones.values(),
+            reporte_fecha_desde_elegida=fecha_desde.strftime("%m/%d/%Y"),
+            reporte_fecha_hasta_elegida=fecha_hasta.strftime("%m/%d/%Y"),
+            pk_campana=self.kwargs['pk_campana']
+        ))
+
 
 class ExportaCampanaReporteCalificacionView(View):
     """
@@ -148,10 +167,8 @@ class ExportaCampanaReporteCalificacionView(View):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-
-        service = ReporteCampanaService(self.object)
+        service = ExportacionArchivoCampanaCSV(self.object, "calificados")
         url = service.obtener_url_reporte_csv_descargar()
-
         return redirect(url)
 
 
@@ -168,10 +185,8 @@ class ExportaReporteFormularioVentaView(View):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-
-        service = ReporteRespuestaFormularioGestionService()
-        url = service.obtener_url_reporte_csv_descargar(self.object)
-
+        service = ExportacionArchivoCampanaCSV(self.object, "formulario_gestion")
+        url = service.obtener_url_reporte_csv_descargar()
         return redirect(url)
 
 

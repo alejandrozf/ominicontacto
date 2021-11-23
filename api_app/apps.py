@@ -73,6 +73,10 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'api_exportar_csv_no_atendidos',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'api_exportar_csv_calificaciones_campana',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'api_exportar_csv_formulario_gestion_campana',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'api_contactos_campana',
              'roles': ['Agente', ]},
             {'nombre': 'api_click2call',
@@ -168,6 +172,12 @@ class ApiAppConfig(AppConfig):
              'version': '1.11.6'},
         'api_exportar_csv_no_atendidos':
             {'descripcion': _('Exportar reporte de no atendidos de una campaña a csv'),
+             'version': '1.11.6'},
+        'api_exportar_csv_calificaciones_campana':
+            {'descripcion': _('Exportar reporte de calificaciones de una campaña a csv'),
+             'version': '1.11.6'},
+        'api_exportar_csv_formulario_gestion_campana':
+            {'descripcion': _('Exportar reporte de calificaciones de una campaña a csv'),
              'version': '1.11.6'},
         'api_contactos_campana':
             {'descripcion': _('Contactos de una campaña'), 'version': '1.7.0'},
