@@ -71,13 +71,7 @@ class AgentActivityAmiManager(object):
         return insert_redis_error
 
     def pause_agent(self, agente_profile, pause_id, manage_connection=False):
-        if manage_connection:
-            self.connect_manager()
         pause_name = ''
-        queue_pause_error = self._queue_pause_unpause(agente_profile, pause_id, 'pause')
-        if manage_connection:
-            self.disconnect_manager()
-
         if pause_id == '0':
             pause_name = 'ACW'
         elif pause_id == '00':
@@ -85,12 +79,22 @@ class AgentActivityAmiManager(object):
         else:
             pause_name = Pausa.objects.activa_by_pauseid(pause_id).nombre
 
+        if manage_connection:
+            self.connect_manager()
+        queue_pause_error = self._queue_pause_unpause(agente_profile, pause_id, 'pause')
+        if manage_connection:
+            self.disconnect_manager()
+
         insert_redis_error = self._set_agent_pause_redis_status(
             agente_profile, pause_name, pause_id)
 
         return queue_pause_error, insert_redis_error
 
     def unpause_agent(self, agente_profile, pause_id, manage_connection=False):
+        # Me aseguro q exista la pausa activa:
+        if pause_id not in ('0', '00'):
+            pause_id = Pausa.objects.activa_by_pauseid(pause_id).id
+
         if manage_connection:
             self.connect_manager()
         queue_unpause_error = self._queue_pause_unpause(agente_profile, pause_id, 'unpause')
