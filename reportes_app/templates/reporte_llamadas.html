@@ -67,7 +67,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
   <div>
       <div class="jumbotron">
         <h1 class="display-2">{{estadisticas.total_llamadas_procesadas}}</h1>
-        <h3>{% trans 'Llamadas procesadas' %}</h3>
+        <h3>{% trans 'Llamadas' %}</h3>
       </div>
 
     {% with llamadas_por_tipo=estadisticas.llamadas_por_tipo %}
@@ -117,10 +117,18 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <td width="10%">{{ llamadas_por_tipo.3.abandonadas }}</td>
               </tr>
               <tr>
-                  <td>{% trans 'Abandonadas durante anuncio' %}</td>
-                  <td width="10%">{{ llamadas_por_tipo.3.abandonadas_anuncio }}</td>
-              </tr>
-            </table>
+                <td>{% trans 'Abandonadas durante anuncio' %}</td>
+                <td width="10%">{{ llamadas_por_tipo.3.abandonadas_anuncio }}</td>
+            </tr>
+            <tr>
+              <td>{% trans 'Transferidas Atendidas' %}</td>
+              <td width="10%">{{ llamadas_por_tipo.3.transferidas_atendidas }}</td>
+          </tr>
+          <tr>
+            <td>{% trans 'Transferidas No Atendidas' %}</td>
+            <td width="10%">{{ llamadas_por_tipo.3.transferidas_no_atendidas }}</td>
+        </tr>
+</table>
             {% if estadisticas_por_fecha.llamadas_por_tipo.3 %}
               <button class="btn btn-light" onclick="mostrarLlamadasPorFecha('Entrante');">
                 {% trans 'Desglosar por fecha' %}
@@ -172,28 +180,7 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             {% endif %}
             <hr class="hr-space">
         </div>
-        <div class="col-md-6">
-            <table class="table table-bordered table-sm">
-              <tr>
-                <td><strong>{% trans 'Llamadas Transferidas a Campañas' %}</strong></td>
-                <td width="10%">{{ llamadas_por_tipo.transferencia.total }}</td>
-              </tr>
-              <tr>
-                <td>{% trans 'Conectadas' %}</td>
-                <td width="10%">{{ llamadas_por_tipo.transferencia.conectadas }}</td>
-              </tr>
-              <tr>
-                <td>{% trans 'no conec.' %}</td>
-                <td width="10%">{{ llamadas_por_tipo.transferencia.no_conectadas }}</td>
-              </tr>
-            </table>
-            {% if estadisticas_por_fecha.llamadas_por_tipo.transferencia %}
-              <button class="btn btn-light" onclick="mostrarLlamadasPorFecha('Transferencia');">
-                {% trans 'Desglosar por fecha' %}
-              </button>
-            {% endif %}
-            <hr class="hr-space">
-        </div>
+
     </div>
     {% endwith %}
     <div class="row">
@@ -745,6 +732,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                     <td>{% trans 'Expiradas' %}</td>
                     <td>{% trans 'Abandonadas' %}</td>
                     <td>{% trans 'Abandonadas durante anuncio' %}</td>
+                    <td>{% trans 'Transferidas Atendidas' %}</td>
+                    <td>{% trans 'Transferidas No Atendidas' %}</td>
                     <td><strong>{% trans 'Total' %}</strong></td>
                   </tr>
                   {% for fecha, llamadas in llamadas_por_tipo.3.items %}
@@ -754,6 +743,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                       <td>{{ llamadas.expiradas }}</td>
                       <td>{{ llamadas.abandonadas }}</td>
                       <td>{{ llamadas.abandonadas_anuncio }}</td>
+                      <td>{{ llamadas.transferidas_atendidas }}</td>
+                      <td>{{ llamadas.transferidas_no_atendidas }}</td>
                       <td>{{ llamadas.total }}</td>
                     </tr>
                   {% endfor %}

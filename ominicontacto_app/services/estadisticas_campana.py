@@ -256,7 +256,6 @@ class ReporteDetalleLlamadasEntrantes:
         # se cuentan todos los eventos para cada caso
         self.reporte = OrderedDict(
             [(_('Recibidas'), 0),
-             (_('Transferencias recibidas'), 0),
              (_('Atendidas'), 0),
              (_('Expiradas'), 0),
              (_('Abandonadas'), 0),
@@ -267,7 +266,7 @@ class ReporteDetalleLlamadasEntrantes:
 
         self.eventos_headers = {
             'ENTERQUEUE': _('Recibidas'),
-            'ENTERQUEUE-TRANSFER': _('Transferencias recibidas'),
+            'ENTERQUEUE-TRANSFER': _('Recibidas'),
             'CONNECT': _('Atendidas'),
             'EXITWITHTIMEOUT': _('Expiradas'),
             'ABANDON': _('Abandonadas'),
