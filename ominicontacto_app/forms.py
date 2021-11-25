@@ -1239,6 +1239,16 @@ class FormularioNuevoContacto(forms.ModelForm):
                 return True
         return False
 
+    def clean_telefono(self):
+        telefono = str(self.cleaned_data.get('telefono'))
+        if not telefono.isdigit():
+            msg = _('Debe ser en formato "999999999" y solo numérico.')
+            raise forms.ValidationError(msg)
+        if not 3 <= len(telefono) <= 20:
+            msg = _('Solo se permiten de 3-20 dígitos.')
+            raise forms.ValidationError(msg)
+        return telefono
+
     def clean_id_externo(self):
         id_externo = self.cleaned_data.get('id_externo')
         # Si el campo no esta vacío
@@ -1255,7 +1265,23 @@ class FormularioNuevoContacto(forms.ModelForm):
     def clean(self):
         if not self.instance.id:
             self.instance.bd_contacto = self.base_datos
+        self.validate_phone_fields()
         return super(FormularioNuevoContacto, self).clean()
+
+    def validate_phone_fields(self):
+        db_metadata = self.base_datos.get_metadata()
+        for field_phone in db_metadata.nombres_de_columnas_de_telefonos[1:]:
+            self.validate_field(field_phone)
+
+    def validate_field(self, field_name):
+        field = str(self.cleaned_data.get(field_name))
+        if field:
+            if not field.isdigit():
+                msg = _('Debe ser en formato "999999999" y solo numérico.')
+                self.add_error(field_name, forms.ValidationError(msg))
+            if not 3 <= len(field) <= 20:
+                msg = _('Solo se permiten de 3-20 dígitos.')
+                self.add_error(field_name, forms.ValidationError(msg))
 
 
 class BloquearCamposParaAgenteForm(forms.Form):
