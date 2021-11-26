@@ -299,7 +299,7 @@ class TiemposAgente(object):
                                                                      ).first()
         if hold_fecha:
             primer_hold = hold_fecha[0]
-            if primer_unhold.callid != primer_hold.callid:
+            if primer_unhold and primer_unhold.time < primer_hold.time:
                 tiempo_hold += primer_unhold.time - fecha_inferior
 
         for log in hold_fecha:
@@ -322,10 +322,12 @@ class TiemposAgente(object):
                 log_llamada = LlamadaLog.objects.filter(agente_id=agente.id, callid=callid,
                                                         time__range=(fecha_desde, fecha_hasta)
                                                         ).last()
-                if log_llamada.event == 'HOLD':
-                    fin_hold = now()
-                else:
+                if log_llamada and log_llamada.event != 'HOLD':
                     fin_hold = log_llamada.time
+                else:
+                    fin_hold = now() \
+                        if datetime_hora_maxima_dia(fecha_superior) >= now() else fecha_superior
+
             tiempo_hold += fin_hold - inicio_hold
 
             if agente_en_lista:
