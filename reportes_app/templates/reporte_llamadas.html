@@ -63,8 +63,8 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 <h2>{% trans 'Período' %}: {{desde|date:"d/m/Y"}} - {{hasta|date:"d/m/Y"}}</h2>
 <hr>
-{% if user.get_is_administrador %}
-  <div>
+
+<div>
       <div class="jumbotron">
         <h1 class="display-2">{{estadisticas.total_llamadas_procesadas}}</h1>
         <h3>{% trans 'Llamadas' %}</h3>
@@ -199,7 +199,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         </div>
     </div>
 </div>
-{% endif %}
 
   <hr>
   <div>
