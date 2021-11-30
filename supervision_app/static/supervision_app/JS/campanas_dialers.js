@@ -149,7 +149,7 @@ function createDataTable() {
             { 'data': 'pendientes' },
             { 'data': 'porcentaje_objetivo' },
         ],
-
+        lengthMenu: [[10, 25, 50, 100, 200, 500, -1], [10, 25, 50, 100, 200, 500 , gettext('Todos')]],
         language: {
             search: gettext('Buscar: '),
             infoFiltered: gettext('(filtrando de un total de _MAX_ campañas)'),
