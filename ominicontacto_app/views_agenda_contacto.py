@@ -30,6 +30,7 @@ import json
 
 from django.conf import settings
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import ugettext as _
@@ -48,6 +49,14 @@ class AgendaContactoUpdateView(UpdateView):
     model = AgendaContacto
     context_object_name = 'agendacontacto'
     form_class = AgendaContactoForm
+
+    def form_valid(self, form):
+        try:
+            super(AgendaContactoUpdateView, self).form_valid(form)
+            return redirect(self.get_success_url())
+        except ValidationError as e:
+            messages.error(self.request, e.message)
+            return self.render_to_response(self.get_context_data(form=form))
 
     def get_success_url(self):
         return reverse(
@@ -78,26 +87,30 @@ class AgendaContactoCreateView(CreateView):
         return context
 
     def form_valid(self, form):
-        self.object = form.save(commit=False)
-        self.object.agente = self.request.user.get_agente_profile()
-        campana = form.instance.campana
-        if self.object.tipo_agenda == AgendaContacto.TYPE_GLOBAL and \
-           campana.type == Campana.TYPE_DIALER:
-            url_wombat = '/'.join(
-                [settings.OML_WOMBAT_URL,
-                 'api/calls/?op=addcall&campaign={3}_{0}&number={1}&schedule={2}&'
-                 'attrs=ID_CAMPANA:{3},ID_CLIENTE:{4},CAMPANA:{0}'])
-            fecha_hora = '.'.join([str(self.object.fecha), str(self.object.hora)])
-            requests.post(
-                url_wombat.format(
-                    campana.nombre, self.object.contacto.telefono, fecha_hora,
-                    campana.pk, self.object.contacto.pk))
-        self.object.save()
-        # Después de agendado el contacto se marca como agendado en la calificación
-        CalificacionCliente.objects.filter(
-            opcion_calificacion__campana=campana, contacto__pk=self.kwargs['pk_contacto'],
-            agente__pk=self.object.agente.id).update(agendado=True)
-        return super(AgendaContactoCreateView, self).form_valid(form)
+        try:
+            self.object = form.save(commit=False)
+            self.object.agente = self.request.user.get_agente_profile()
+            campana = form.instance.campana
+            if self.object.tipo_agenda == AgendaContacto.TYPE_GLOBAL and \
+                    campana.type == Campana.TYPE_DIALER:
+                url_wombat = '/'.join(
+                    [settings.OML_WOMBAT_URL,
+                        'api/calls/?op=addcall&campaign={3}_{0}&number={1}&schedule={2}&'
+                        'attrs=ID_CAMPANA:{3},ID_CLIENTE:{4},CAMPANA:{0}'])
+                fecha_hora = '.'.join([str(self.object.fecha), str(self.object.hora)])
+                requests.post(
+                    url_wombat.format(
+                        campana.nombre, self.object.contacto.telefono, fecha_hora,
+                        campana.pk, self.object.contacto.pk))
+                self.object.save()
+            # Después de agendado el contacto se marca como agendado en la calificación
+            CalificacionCliente.objects.filter(
+                opcion_calificacion__campana=campana, contacto__pk=self.kwargs['pk_contacto'],
+                agente__pk=self.object.agente.id).update(agendado=True)
+            return super(AgendaContactoCreateView, self).form_valid(form)
+        except ValidationError as e:
+            messages.error(self.request, e.message)
+            return self.render_to_response(self.get_context_data(form=form))
 
     def get_success_url(self):
         return reverse(

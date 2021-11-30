@@ -1888,9 +1888,11 @@ class GrupoForm(forms.ModelForm):
         fields = ('nombre', 'auto_unpause', 'auto_attend_inbound',
                   'auto_attend_dialer', 'obligar_calificacion', 'call_off_camp',
                   'acceso_grabaciones_agente', 'acceso_dashboard_agente',
-                  'on_hold')
+                  'on_hold', 'limitar_agendas_personales', 'cantidad_agendas_personales')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
+            'cantidad_agendas_personales': forms.NumberInput(attrs={
+                'class': 'form-control', 'style': 'display:inline; width:8ch'})
         }
         help_texts = {
             'auto_unpause': _('En segundos'),
@@ -1904,6 +1906,18 @@ class GrupoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(GrupoForm, self).__init__(*args, **kwargs)
         self.fields['auto_unpause'].required = False
+
+    def validate_required_field(self, cleaned_data, field_name,
+                                message=_('Este campo es requerido')):
+        if(field_name in cleaned_data and
+                cleaned_data[field_name] is None):
+            self._errors[field_name] = self.error_class([message])
+            del cleaned_data[field_name]
+
+    def clean(self):
+        cleaned_data = super(GrupoForm, self).clean()
+        if cleaned_data.get('limitar_agendas_personales', None):
+            self.validate_required_field(cleaned_data, 'cantidad_agendas_personales')
 
 
 class ParametrosCrmForm(forms.ModelForm):
