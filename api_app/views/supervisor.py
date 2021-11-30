@@ -68,7 +68,8 @@ from ominicontacto_app.services.reporte_respuestas_formulario import (
     ReporteFormularioGestionCampanaCSV)
 from ominicontacto_app.services.reporte_campana_calificacion import ReporteCalificacionesCampanaCSV
 from ominicontacto_app.services.reporte_campana_csv import ExportacionArchivoCampanaCSV
-from ominicontacto_app.utiles import datetime_hora_minima_dia, convert_fecha_datetime
+from ominicontacto_app.utiles import (
+    datetime_hora_minima_dia, datetime_hora_maxima_dia, convert_fecha_datetime)
 
 logger = _logging.getLogger(__name__)
 
@@ -794,68 +795,64 @@ class ExportarCSVFormularioGestionCampana(ExportarCSVMixin, APIView):
             'msg': _('Exportación de Formularios de Gestiones a .csv en proceso'),
             'id': task_id,
         })
+
+
 class DashboardSupervision(APIView):
     permission_classes = (TienePermisoOML, )
     authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
     renderer_classes = (JSONRenderer, )
     http_method_names = ['get']
 
-    def _get_campana_activas(self, tipo_campana):
-        campanas = Campana.objects.all()
-        total_campana = campanas.filter(type=tipo_campana)
+    def _cantidad_campanas_activas(self, tipo_campana):
+        campana_qs = Campana.objects.filter(type=tipo_campana)
+        campana_activas = campana_qs.filter(estado=Campana.ESTADO_ACTIVA).count()
         if tipo_campana == Campana.TYPE_DIALER:
-            campana_activa = total_campana.filter(estado__in=[Campana.ESTADO_ACTIVA,
-                                                              Campana.ESTADO_PAUSADA,
-                                                              Campana.ESTADO_INACTIVA]).count()
-        else:
-            campana_activa = total_campana.filter(estado=Campana.ESTADO_ACTIVA).count()
+            total = campana_qs.filter(estado__in=[
+                Campana.ESTADO_ACTIVA, Campana.ESTADO_PAUSADA, Campana.ESTADO_INACTIVA]
+            ).count()
+            campana_activas = round(campana_activas / total, 2) if total else 0
+        return campana_activas
 
-        campana_no_activa = total_campana.count() - campana_activa
-        datos_campana = [campana_activa, campana_no_activa]
+    def _get_campanas_activas(self):
+        data = dict(
+            zip(['inbound', 'dialer', 'manual', 'preview'],
+                [key[0] for key in Campana.TYPES_CAMPANA])
+        )
+        for key, value in data.items():
+            data[key] = self._cantidad_campanas_activas(value)
+        return data
 
-        return datos_campana
-
-    def _get_estado_agentes(self):
+    def _get_agentes_estados(self):
+        data = dict.fromkeys(['ready', 'oncall', 'pause'], 0)
         redis_connection = redis.Redis(
             host=settings.REDIS_HOSTNAME, port=settings.CONSTANCE_REDIS_CONNECTION['port'],
             decode_responses=True)
         keys_agentes = redis_connection.keys('OML:AGENT*')
-        agentes_pausados = 0
-        agentes_online = 0
-        agentes_oncall = 0
         for key in keys_agentes:
             agente_info = redis_connection.hgetall(key)
-            if agente_info['STATUS'] == "AGENTPAUSE":
-                agentes_pausados += 1
-            if agente_info['STATUS'] == "CHANTAKECALL":
-                agentes_oncall += 1
-            if agente_info['STATUS'] == "READY" or agente_info['STATUS'] == "AGENTUNPAUSE":
-                agentes_online += 1
+            if agente_info['STATUS'].startswith('PAUSE'):
+                data['pause'] += 1
+            if agente_info['STATUS'] == 'ONCALL':
+                data['oncall'] += 1
+            if agente_info['STATUS'] == 'READY':
+                data['ready'] += 1
+        return data
 
-        return agentes_online, agentes_oncall, agentes_pausados
-
-    def _get_llamadas_atendidas_fallidas(self):
-        atendidas = LlamadaLog.objects.filter(
+    def _llamadas_contactadas(self):
+        data = dict.fromkeys(['attended', 'failed'], 0)
+        hoy = now()
+        fecha_inicio = datetime_hora_minima_dia(hoy)
+        fecha_fin = datetime_hora_maxima_dia(hoy)
+        llamada_qs = LlamadaLog.objects.filter(time__range=(fecha_inicio, fecha_fin))
+        data['attended'] = llamada_qs.filter(
             event__in=LlamadaLog.EVENTOS_INICIO_CONEXION_AGENTE).count()
-        fallidas = LlamadaLog.objects.filter(
+        data['failed'] = llamada_qs.filter(
             event__in=LlamadaLog.EVENTOS_NO_CONEXION).count()
-
-        pie_data = [atendidas, fallidas]
-
-        return pie_data
+        return data
 
     def get(self, request):
         data = {}
-        data["preview"] = self._get_campana_activas(Campana.TYPE_PREVIEW)
-        data["dialer"] = self._get_campana_activas(Campana.TYPE_DIALER)
-        data["manual"] = self._get_campana_activas(Campana.TYPE_MANUAL)
-        data["entrante"] = self._get_campana_activas(Campana.TYPE_ENTRANTE)
-
-        agente_online, agente_oncall, agente_pause = self._get_estado_agentes()
-
-        data["agente_online"] = agente_online
-        data["agente_pause"] = agente_pause
-        data["agente_oncall"] = agente_oncall
-
-        data["atendidas-fallidas"] = self._get_llamadas_atendidas_fallidas()
-        return Response(data={'datos': data})
+        data['active_campaigns'] = self._get_campanas_activas()
+        data['state_agents'] = self._get_agentes_estados()
+        data['contacted_calls'] = self._llamadas_contactadas()
+        return Response(data)
