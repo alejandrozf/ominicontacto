@@ -113,15 +113,23 @@
 #export oml_app_reset_admin_pass=true
 #export oml_app_install_sngrep=true
 
+# In case of infrastructure as code deploy set the omlapp-backup-filename
+# Onpremise deploy all "NULL"
+# Values: backup file name (without .tar.gz) or NULL
+#export oml_backup_filename=NULL
+# Values: true | NULL
+#export oml_auto_restore=NULL
+
 # ******************** SET ENV VARS ******************** #
 
-COMPONENT_REPO=https://gitlab.com/omnileads/ominicontacto.git
+oml_app_repo_url=https://gitlab.com/omnileads/ominicontacto.git
 SRC=/usr/src
 PATH_DEPLOY=install/onpremise/deploy/ansible
 CALLREC_DIR_DST=/opt/omnileads/asterisk/var/spool/asterisk/monitor
 SSM_AGENT_URL="https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm"
 S3FS="/bin/s3fs"
-PATH_CERTS="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)/certs"
+PATH_CERTS="$(cd "$(dirname "$BASH_SOURCE")" &> /dev/null && pwd)/certs"
+
 
 # if callrec device like DISK BLOCK DEVICE
 if [[ ${oml_callrec_device} == "disk" ]];then
@@ -130,7 +138,7 @@ fi
 
 echo "******************** OML RELEASE = ${oml_app_release} ********************"
 
-sleep 20
+sleep 5
 
 echo "******************** block_device mount ********************"
 
@@ -212,29 +220,29 @@ echo "******************** yum update and install packages ********************"
 
 case ${oml_infras_stage} in
   aws)
-    amazon-linux-extras install epel
-    yum install -y $SSM_AGENT_URL kernel-devel git
-    yum install -y python3-pip patch libedit-devel libuuid-devel
+    yum remove -y python3 python3-pip
+    yum install -y $SSM_AGENT_URL 
+    yum install -y patch libedit-devel libuuid-devel git
+    amazon-linux-extras install -y epel
+    amazon-linux-extras install python3 -y
     systemctl start amazon-ssm-agent
-    systemctl enable amazon-ssm-agent
     ;;
   *)
-    yum update -y
-    yum -y install git python3 python3-pip kernel-devel
+    #yum update -y
+    yum -y install git python3 python3-pip kernel-devel epel-release libselinux-python3
     ;;
 esac
 
 echo "******************** Ansible installation ********************"
 
-sleep 5
 pip3 install --upgrade pip
-pip3 install --user 'ansible==2.9.2'
+pip3 install boto boto3 botocore 'ansible==2.9.2'
 export PATH="$HOME/.local/bin/:$PATH"
 
 echo "******************** git clone omnileads repo ********************"
 
 cd $SRC
-git clone --recurse-submodules --branch ${oml_app_release} $COMPONENT_REPO
+git clone --recurse-submodules --branch ${oml_app_release} ${oml_app_repo_url}
 cd ominicontacto
 git submodule update --remote
 
@@ -319,7 +327,7 @@ fi
 sed -i "s%\#TZ=%TZ=${oml_tz}%g" $PATH_DEPLOY/inventory
 
 if [[ "$${oml_app_sca}" != "NULL" ]];then
-  sed -i "s/sca=3600/sca=$${oml_app_sca}/g" $PATH_DEPLOY/inventory
+  sed -i "s/sca=3600/sca=${oml_app_sca}/g" $PATH_DEPLOY/inventory
 fi
 if [[ "${oml_app_ecctl}" != "NULL" ]];then
   sed -i "s/sca=28800/sca=${oml_app_ecctl}/g" $PATH_DEPLOY/inventory
@@ -331,6 +339,25 @@ if [[ "${oml_app_reset_admin_pass}" == "true" ]];then
   sed -i "s/reset_admin_password=false/reset_admin_password=true/g" $PATH_DEPLOY/inventory
 fi
 
+if [[ "${oml_backup_filename}" != "NULL" ]];then
+sed -i "s%\#backup_file_name=%backup_file_name=${oml_backup_filename}%g" $PATH_DEPLOY/inventory
+fi
+if [[ "${s3_access_key}" != "NULL" ]];then
+sed -i "s%\#s3_access_key=%s3_access_key=${s3_access_key}%g" $PATH_DEPLOY/inventory
+fi
+if [[ "${s3_secret_key}" != "NULL" ]];then
+sed -i "s%\#s3_secret_key=%s3_secret_key=${s3_secret_key}%g" $PATH_DEPLOY/inventory
+fi
+if [[ "${ast_bucket_name}" != "NULL" ]];then
+sed -i "s%\#backup_bucket_name=%backup_bucket_name=${ast_bucket_name}%g" $PATH_DEPLOY/inventory
+fi
+if [[ "${s3url}" != "NULL" ]];then
+sed -i "s%\#s3url=%s3url=${s3url}%g" $PATH_DEPLOY/inventory
+fi
+if [[ "${oml_auto_restore}" != "NULL" ]];then
+sed -i "s/auto_restore=false/auto_restore=${oml_auto_restore}/g" $PATH_DEPLOY/inventory
+fi
+
 # User certs verification *******
 
 if [ -f $PATH_CERTS/key.pem ] && [ -f $PATH_CERTS/cert.pem ];then
@@ -338,8 +365,7 @@ if [ -f $PATH_CERTS/key.pem ] && [ -f $PATH_CERTS/cert.pem ];then
         cp $PATH_CERTS/cert.pem $SRC/ominicontacto/install/onpremise/deploy/ansible/certs
 fi
 
-sleep 35
-
+sleep 4
 echo "******************** deploy.sh execution ********************"
 
 cd $PATH_DEPLOY
@@ -361,24 +387,16 @@ case ${oml_callrec_device} in
     mount -a
     ;;
   s3-aws)
-    echo "Callrec device: S3-AWS \n"
+    echo "Callrec device: S3-DigitalOcean \n"
     yum install -y s3fs-fuse
-    if [ ${aws_region} == "us-east-1" ];then
-      URL_OPTION=""
-    else
-      URL_OPTION="-o url=https://s3-${aws_region}.amazonaws.com"
+    echo "${s3_access_key}:${s3_secret_key} " > ~/.passwd-s3fs
+    chmod 600 ~/.passwd-s3fs
+    if [ ! -d $CALLREC_DIR_DST ];then
+      mkdir -p $CALLREC_DIR_DST
+      chown omnileads.omnileads -R $CALLREC_DIR_DST
     fi
-    S3FS_OPTIONS="${ast_bucket_name} $CALLREC_DIR_DST -o iam_role=${iam_role_name} $URL_OPTION -o umask=0007 -o allow_other -o nonempty -o uid=$(id -u omnileads) -o gid=$(id -g omnileads) -o kernel_cache -o max_background=1000 -o max_stat_cache_size=100000 -o multipart_size=52 -o parallel_count=30 -o multireq_max=30 -o dbglevel=warn"
-    echo "*** Comprobando que se tiene acceso al bucket"
-    BUCKETS_LIST=$(aws s3 ls ${ast_bucket_name})
-    until [ $? -eq 0 ];do
-      >&2  echo "*** No se ha podido acceder al bucket"
-      BUCKETS_LIST=$(aws s3 ls ${ast_bucket_name})
-    done
-    echo "*** Se pudo acceder al bucket!, siguiendo"
-    echo "*** Montando bucket ${ast_bucket_name}"
-    $S3FS $S3FS_OPTIONS
-    echo "$S3FS $S3FS_OPTIONS" >> /etc/rc.local
+    echo "${ast_bucket_name} $CALLREC_DIR_DST fuse.s3fs _netdev,allow_other 0 0" >> /etc/fstab
+    mount -a
     ;;
   nfs)
     echo "Callrec device: NFS \n"
@@ -401,7 +419,7 @@ case ${oml_callrec_device} in
     ;;
  esac
 
-sleep 30
+sleep 10
 
 echo "******************** Exec task if RTP run AIO ********************"
 
@@ -426,6 +444,11 @@ echo "******************** setting demo environment ********************"
 if [[ "${oml_app_init_env}" == "true" ]];then
   su -c "/opt/omnileads/bin/manage.sh inicializar_entorno" --login omnileads
 fi
+
+if [[ "${oml_auto_restore}" != "NULL" ]];then
+echo "59 23 * * * /opt/omnileads/bin/backup-restore.sh --backup --omniapp --target=/opt/omnileads/asterisk/var/spool/asterisk/monitor" >> /var/spool/cron/omnileads
+fi
+
 
 echo "******************** sngrep SIP sniffer install ********************"
 

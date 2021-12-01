@@ -25,12 +25,11 @@
 # https://docs.ansible.com/ansible/2.9/intro_configuration.html
 # https://docs.ansible.com/ansible/2.5/user_guide/playbooks_reuse_roles.html
 
-- name: OMniLeads AIO installation
+- name: OMniLeads installation
   hosts: prodenv-aio
   gather_facts: True
   roles:
     - prerequisitos
-    - dialer
 
 - import_playbook: modules/redis/deploy/redis.yml
   when: redis_host == "localhost"
@@ -52,7 +51,8 @@
 
   # Install PostgreSQL utilities
   - name: Install PostgreSQL utilities {{ postgresql_version }} (from s3 source)
-    yum: name={{ packages_url }}/postgresql/postgresql{{ postgresql_version}}{{ item }}.rpm state=latest update_cache=yes
+    command: yum install -y {{ packages_url }}/postgresql/postgresql{{ postgresql_version}}{{ item }}.rpm	    
+#yum: name={{ packages_url }}/postgresql/postgresql{{ postgresql_version}}{{ item }}.rpm state=latest update_cache=yes
     with_items:
       - -libs.x86_64
       - -odbc.x86_64
@@ -62,6 +62,7 @@
     register: s3_download
     until: s3_download is success
     when: postgres_host != "localhost"
+    ignore_errors: yes
 
   # Create file .pgpass
   - name: Create file .pgpass
@@ -121,6 +122,67 @@
     command: yum remove -y virtualenv
     tags: postinstall
     when: "virtualenv_installed.stdout != virtualenv_version"
+
+  # Restore media_root in case of IaC deploy 
+  - name: Restore backup when use infrasctructure as code - 1/4
+    vars:
+      ansible_python_interpreter: /usr/bin/python3 
+    aws_s3:
+        s3_url: "{{ s3url }}"
+        aws_secret_key: "{{ s3_secret_key }}"
+        aws_access_key: "{{ s3_access_key }}"
+        bucket: "{{ backup_bucket_name }}"
+        object: "{{ backup_file_name }}.tar.gz"
+        dest: "/var/tmp/{{ backup_file_name }}.tar.gz"
+        mode: get
+    delegate_to: localhost
+    register: backup_s3_download
+    when: 
+      - postgres_host != "localhost"
+      - backup_file_name is defined
+      - auto_restore == "true"
+      - ansible_distribution != "Amazon"
+
+  # Restore media_root in case of IaC deploy 
+  - name: Restore backup when use infrasctructure as code - 1/4
+    vars:
+      ansible_python_interpreter: /usr/bin/python3 
+    aws_s3:
+        aws_secret_key: "{{ s3_secret_key }}"
+        aws_access_key: "{{ s3_access_key }}"
+        bucket: "{{ backup_bucket_name }}"
+        object: "{{ backup_file_name }}.tar.gz"
+        dest: "/var/tmp/{{ backup_file_name }}.tar.gz"
+        mode: get
+    delegate_to: localhost
+    register: backup_s3_download
+    when: 
+      - postgres_host != "localhost"
+      - backup_file_name is defined
+      - auto_restore == "true"
+      - ansible_distribution == "Amazon"   
+
+  - name: Restore backup when use infrasctructure as code - 2/4
+    command: tar xzvf /var/tmp/{{ backup_file_name }}.tar.gz -C /var/tmp
+    when: 
+      - postgres_host != "localhost"
+      - backup_file_name is defined
+      - auto_restore == "true"
+  
+  - name: Restore backup when use infrasctructure as code 3/4
+    command: tar xzvf /var/tmp/{{ backup_file_name }}/omniapp.tar.gz -C /var/tmp
+    when: 
+      - postgres_host != "localhost"
+      - backup_file_name is defined
+      - auto_restore == "true"
+
+  - name: Restore backup when use infrasctructure as code 4/4
+    command: mv /var/tmp/omniapp/media_root /opt/omnileads/
+    when: 
+      - postgres_host != "localhost"
+      - backup_file_name is defined
+      - auto_restore == "true"
+  
 
   # Install Virtualenv package {{ virtualenv_version }}
   - name: Install Virtualenv package {{ virtualenv_version }} (from s3 source)
