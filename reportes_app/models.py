@@ -302,6 +302,15 @@ class LlamadaLogManager(models.Manager):
             cantidades[resultado['agente_id']][resultado['campana_id']] = resultado['cant']
         return cantidades
 
+    def cantidad_contactos_llamados(self, campana):
+        return self.filter(
+            campana_id=campana.id,
+            contacto_id__in=Contacto.objects.filter(
+                bd_contacto=campana.bd_contacto,
+                es_originario=True,
+            ),
+        ).only("id").distinct("contacto_id").count()
+
 
 class LlamadaLog(models.Model):
     """
