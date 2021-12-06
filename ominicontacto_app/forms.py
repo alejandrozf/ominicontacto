@@ -44,13 +44,14 @@ from ominicontacto_app.models import (
     RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Blacklist, SitioExterno,
     SistemaExterno, ReglasIncidencia, ReglaIncidenciaPorCalificacion, SupervisorProfile,
     ArchivoDeAudio, NombreCalificacion, OpcionCalificacion, ParametrosCrm, AgenteEnSistemaExterno,
-    AuditoriaCalificacion, ConfiguracionDeAgentesDeCampana, ListasRapidas
+    AuditoriaCalificacion, ConfiguracionDeAgentesDeCampana, ListasRapidas, ContactoListaRapida
 )
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
                                       validar_solo_ascii_y_sin_espacios, remplace_espacio_por_guion,
                                       validar_longitud_nombre_base_de_contactos)
 from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSaliente
+from ominicontacto_app.parser import is_valid_length
 
 from utiles_globales import validar_extension_archivo_audio
 from .utiles import convert_fecha_datetime
@@ -511,6 +512,45 @@ class ListaRapidaForm(forms.ModelForm):
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'archivo_importacion': forms.FileInput(attrs={'class': 'form-control'}),
         }
+
+
+class ContactoListaRapidaForm(forms.ModelForm):
+    # Campos del formulario
+    nombre = forms.CharField(
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': _('Nombre de contacto')
+            }
+        )
+    )
+
+    telefono = forms.CharField(
+        required=True,
+        max_length=25,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': _('Teléfono de contacto')
+            }
+        )
+    )
+
+    # Fields cleanners
+    def clean_telefono(self):
+        telefono = self.cleaned_data.get('telefono')
+        if not telefono.isdigit():
+            msg = _("Debe ser en formato '99999999' y numérico.")
+            raise forms.ValidationError(msg)
+        if not is_valid_length(telefono, 3, 25):
+            msg = _("Solo se permiten de 3-25 dígitos.")
+            raise forms.ValidationError(msg)
+        return telefono
+
+    class Meta:
+        model = ContactoListaRapida
+        fields = ('nombre', 'telefono')
 
 
 class CamposListaRapidaForm(forms.Form):

@@ -26,30 +26,182 @@ from django.views.generic.edit import (
     CreateView, UpdateView, DeleteView
 )
 from django.shortcuts import redirect
-from ominicontacto_app.errors import (OmlArchivoImportacionInvalidoError, OmlError,
-                                      OmlParserCsvImportacionError)
 from django.contrib import messages
 from django.views.generic.list import ListView
+from django.db.models import Q
+from utiles_globales import obtener_paginas
+
+from ominicontacto_app.errors import (
+    OmlArchivoImportacionInvalidoError,
+    OmlError,
+    OmlParserCsvImportacionError
+)
+from ominicontacto_app.models import ListasRapidas, ContactoListaRapida
+from ominicontacto_app.forms import (
+    ListaRapidaForm,
+    PrimerLineaEncabezadoForm,
+    CamposListaRapidaForm,
+    ContactoListaRapidaForm,
+)
+
+from ominicontacto_app.services.lista_rapida import (
+    ListaRapidaService, ValidaListaRapidaService,
+    NoSePuedeInferirMetadataError,
+    NoSePuedeInferirMetadataErrorEncabezado,
+    ContactoExistenteError
+)
 
 
-from ominicontacto_app.models import ListasRapidas
-from ominicontacto_app.forms import (ListaRapidaForm, PrimerLineaEncabezadoForm,
-                                     CamposListaRapidaForm)
+class ListaRapidaContactosView(ListView):
+    """
+        Vista de contactos de una lista rapida
+    """
+    template_name = 'lista_rapida/contactos/index.html'
+    context_object_name = 'contactos_lista_rapida'
+    model = ListasRapidas
+    paginate_by = 30
 
-from ominicontacto_app.services.lista_rapida import (ListaRapidaService, ValidaListaRapidaService,
-                                                     NoSePuedeInferirMetadataError,
-                                                     NoSePuedeInferirMetadataErrorEncabezado,
-                                                     ContactoExistenteError)
+    def get_context_data(self, **kwargs):
+        context = super(
+            ListaRapidaContactosView,
+            self
+        ).get_context_data(**kwargs)
+        context['lista_rapida'] = ListasRapidas.objects.get(
+            pk=self.kwargs['pk_lista_rapida']
+        )
+        obtener_paginas(context, 7)
+        return context
+
+    def get_queryset(self):
+        queryset = ListasRapidas.objects.get(
+            pk=self.kwargs['pk_lista_rapida']
+        ).contactoslistarapida.all().order_by('id')
+        if 'search' in self.request.GET:
+            search = self.request.GET.get('search')
+            return queryset.filter(Q(nombre__icontains=search))
+        else:
+            return queryset
+
+
+class ListaRapidaEditaContactoView(UpdateView):
+    """
+        Vista para editar un contacto de una lista rapida
+    """
+    model = ContactoListaRapida
+    form_class = ContactoListaRapidaForm
+    template_name = 'lista_rapida/contactos/edit.html'
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.save()
+        message = _("Operación Exitosa:\
+            Se llevó a cabo con éxito la actualización del contacto.")
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
+
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse(
+            'contactos_lista_rapida',
+            args=(self.kwargs['pk_lista_rapida'],)
+        )
+
+
+class ListaRapidaEliminaContactoView(DeleteView):
+    """
+        Vista para eliminar un contacto de una lista rapida
+    """
+    model = ContactoListaRapida
+    template_name = 'lista_rapida/contactos/delete.html'
+    context_object_name = 'contacto_lista_rapida'
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        lista = self.object.lista_rapida
+        lista.cantidad_contactos -= 1
+        lista.save()
+        self.object.delete()
+        message = _("Operación Exitosa:\
+            Se llevó a cabo con éxito la eliminación del contacto.")
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse(
+            'contactos_lista_rapida',
+            args=(self.kwargs['pk_lista_rapida'],)
+        )
+
+
+class ListaRapidaNuevoContactoView(CreateView):
+    """
+        Vista para crear un contacto de una lista rapida
+    """
+    template_name = 'lista_rapida/contactos/new.html'
+    model = ContactoListaRapida
+    form_class = ContactoListaRapidaForm
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            ListaRapidaNuevoContactoView,
+            self
+        ).get_context_data(**kwargs)
+        context['lista_rapida'] = ListasRapidas.objects.get(
+            pk=self.kwargs['pk_lista_rapida']
+        )
+        return context
+
+    def form_valid(self, form):
+        lista = ListasRapidas.objects.get(pk=self.kwargs['pk_lista_rapida'])
+        self.object = form.save(commit=False)
+        self.object.lista_rapida = lista
+        lista.cantidad_contactos += 1
+        self.object.save()
+        lista.save()
+
+        message = _("Operación Exitosa:\
+            Se llevó a cabo con éxito la creación del contacto.")
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            message,
+        )
+
+        return redirect(self.get_success_url(lista.pk))
+
+    def get_success_url(self, pk):
+        return reverse('contactos_lista_rapida', args=(pk,))
 
 
 class ListaRapidaListView(ListView):
+    """
+        Vistas index de listas rapidas
+    """
     template_name = 'lista_rapida/listas_rapidas.html'
     model = ListasRapidas
     context_object_name = 'lista_rapida'
+    paginate_by = 30
+
+    def get_context_data(self, **kwargs):
+        context = super(ListaRapidaListView, self).get_context_data(**kwargs)
+        obtener_paginas(context, 7)
+        return context
 
     def get_queryset(self):
         queryset = ListasRapidas.objects.all()
-        return queryset
+        if 'search' in self.request.GET:
+            search = self.request.GET.get('search')
+            return queryset.filter(Q(nombre__icontains=search))
+        else:
+            return queryset
 
 
 class ListaRapidaCreateView(CreateView):
