@@ -87,6 +87,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Agente', ]},
             {'nombre': 'api_make_unpause',
              'roles': ['Agente', ]},
+            {'nombre': 'api_make_ringing',
+             'roles': ['Agente', ]},
             {'nombre': 'api_credenciales_sip_agente',
              'roles': ['Agente', ]},
             {'nombre': 'api_set_estado_revision',
@@ -181,6 +183,8 @@ class ApiAppConfig(AppConfig):
             {'descripcion': _('Pone al agente en una pausa'), 'version': '1.7.0'},
         'api_make_unpause':
             {'descripcion': _('Saca al agente de una pausa'), 'version': '1.7.0'},
+        'api_make_ringing':
+            {'descripcion': _('Saca al agente en estado Ringing'), 'version': '1.7.0'},
         'api_credenciales_sip_agente':
             {'descripcion': _('Devuelve credenciales SIP de un agente'), 'version': '1.7.0'},
         'api_set_estado_revision':

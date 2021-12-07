@@ -37,6 +37,15 @@
     padding: 0px 5px;
     text-align: center;
 }
+
+.ringing {
+    color: black;
+    background: rgb(243, 247, 15);
+    border-radius: 50px;
+    padding: 0px 5px;
+    text-align: center;
+}
+
 .filter_group {
     display: flex;
     align-items: center;
