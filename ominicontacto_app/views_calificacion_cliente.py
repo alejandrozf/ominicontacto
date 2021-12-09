@@ -285,9 +285,9 @@ class CalificacionClienteFormView(FormView):
         # calificar al contacto, solo validamos el formulario del contacto, ya que el de
         # calificación permanece oculto (en las dos siguientes validaciones)
         if formulario_llamada_entrante and not self.usuario_califica and contacto_form_valid:
-            return self.form_valid(contacto_form)
+            return self.form_valid(contacto_form, calificacion_form)
         if formulario_llamada_entrante and not self.usuario_califica and not contacto_form_valid:
-            return self.form_invalid(contacto_form)
+            return self.form_invalid(contacto_form, calificacion_form)
         if contacto_form_valid and calificacion_form_valid:
             return self.form_valid(contacto_form, calificacion_form)
         else:
