@@ -98,6 +98,8 @@ class PhoneJS {
 
             onSessionFailed: $.Callbacks(),
 
+            onRingingEnd: $.Callbacks(),
+
         };
     }
 
@@ -188,6 +190,7 @@ class PhoneJS {
                 self.Sounds('', 'stop');
                 if (self.session_data.is_call) {
                     self.eventsCallbacks.onSessionFailed.fire();
+                    self.eventsCallbacks.onRingingEnd.fire();
                 }
             });
 

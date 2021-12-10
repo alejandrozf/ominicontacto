@@ -285,6 +285,28 @@ class AgentLogoutAsterisk(APIView):
             })
 
 
+class AgentRingingAsterisk(APIView):
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        agente_profile = self.request.user.get_agente_profile()
+        agent_login_manager = AgentActivityAmiManager()
+        ringing = request.POST.get('ringing') == 'true'
+        insert_redis_error = agent_login_manager.set_agent_ringing(
+            agente_profile, ringing)
+        if insert_redis_error:
+            return Response(data={
+                'status': 'ERROR',
+            })
+        else:
+            return Response(data={
+                'status': 'OK',
+            })
+
+
 class AgentLogoutView(View):
     """
         Vista para ejecutar el logout de agente a asterisk, realizando las acciones

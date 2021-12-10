@@ -61,6 +61,15 @@ class AgentActivityAmiManager(object):
         insert_redis_error = self._set_agent_redis_status(agente_profile, 'logout')
         return queue_remove_error, insert_redis_error
 
+    def set_agent_ringing(self, agente_profile, ringing, manage_connection=False):
+        if manage_connection:
+            self.connect_manager()
+        if ringing:
+            insert_redis_error = self._set_agent_redis_status(agente_profile, 'RINGING')
+        else:
+            insert_redis_error = self._set_agent_redis_status(agente_profile, 'READY')
+        return insert_redis_error
+
     def pause_agent(self, agente_profile, pause_id, manage_connection=False):
         if manage_connection:
             self.connect_manager()
@@ -101,6 +110,7 @@ class AgentActivityAmiManager(object):
         return agente_family._get_nombre_family(agente_profile)
 
     def _get_redis_status_data(self, action):
+        status = action
         if action == 'login' or action == 'unpause':
             status = 'READY'
         elif action == 'logout':
