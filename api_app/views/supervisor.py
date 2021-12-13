@@ -56,6 +56,10 @@ from reportes_app.reportes.reporte_llamadas import ReporteTipoDeLlamadasDeCampan
 from reportes_app.reportes.reporte_llamados_contactados_csv import (
     ExportacionCampanaCSV, ReporteCalificadosCSV, ReporteContactadosCSV, ReporteNoAtendidosCSV)
 from reportes_app.reportes.reporte_llamadas_salientes import ReporteLlamadasSalienteFamily
+from ominicontacto_app.services.reporte_respuestas_formulario import (
+    ReporteFormularioGestionCampanaCSV)
+from ominicontacto_app.services.reporte_campana_calificacion import ReporteCalificacionesCampanaCSV
+from ominicontacto_app.services.reporte_campana_csv import ExportacionArchivoCampanaCSV
 from ominicontacto_app.utiles import datetime_hora_minima_dia, convert_fecha_datetime
 
 logger = _logging.getLogger(__name__)
@@ -621,3 +625,95 @@ class ContactosAsignadosCampanaPreviewView(APIView):
             data_contacto.append(datos)
 
         return Response(data=data_contacto)
+
+
+class ExportarCSVCalificacionesCampana(ExportarCSVMixin, APIView):
+    permission_classes = (TienePermisoOML, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['post', ]
+
+    def generar_csv_calificaciones(sself, key_task, campana, desde, hasta):
+        reporte_calificados_csv = ReporteCalificacionesCampanaCSV(
+            campana, key_task, desde, hasta)
+        datos_calificados = reporte_calificados_csv.datos
+        service_csv = ExportacionArchivoCampanaCSV(campana, "calificados")
+        service_csv.exportar_reportes_csv(datos=datos_calificados)
+
+    def post(self, request):
+        campana_id = request.data.get('campana_id')
+        task_id = request.data.get('task_id')
+        desde = request.data.get('desde')
+        hasta = request.data.get('hasta')
+        fecha_desde = convert_fecha_datetime(desde)
+        fecha_hasta = convert_fecha_datetime(hasta)
+        fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
+        fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
+        campana = Campana.objects.get(pk=campana_id)
+        # generar id para la operacion de acuerdo a (timestamp, campana, supervisor)
+        # obtener de request
+
+        key_task = 'OML:STATUS_CSV_REPORT:DISPOSITIONED:{0}:{1}'.format(campana_id, task_id)
+
+        # chequear si el supervisor esta asignado a la campaña
+        # chequear si la campaña existe
+
+        thread_exportacion = threading.Thread(
+            target=self.generar_csv_calificaciones, args=[key_task, campana,
+                                                          fecha_desde, fecha_hasta])
+        thread_exportacion.setDaemon(True)
+        thread_exportacion.start()
+
+        self.loguear_inicio_exportacion(
+            'calificaciones', campana_id, request.user.username, fecha_hasta.strftime("%m/%d/%Y"),
+            fecha_desde.strftime("%m/%d/%Y"))
+
+        return Response(data={
+            'status': 'OK',
+            'msg': _('Exportación de calificaciones a .csv en proceso'),
+            'id': task_id,
+        })
+
+
+class ExportarCSVFormularioGestionCampana(ExportarCSVMixin, APIView):
+    permission_classes = (TienePermisoOML, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['post', ]
+
+    def generar_csv_gestion(sself, key_task, campana, desde, hasta):
+        reporte_gestion_csv = ReporteFormularioGestionCampanaCSV(
+            campana, key_task, desde, hasta)
+        datos_formulario_gestion = reporte_gestion_csv.datos
+        service_csv = ExportacionArchivoCampanaCSV(campana, "formulario_gestion")
+        service_csv.exportar_reportes_csv(datos=datos_formulario_gestion)
+
+    def post(self, request):
+        campana_id = request.data.get('campana_id')
+        task_id = request.data.get('task_id')
+        desde = request.data.get('desde')
+        hasta = request.data.get('hasta')
+        fecha_desde = convert_fecha_datetime(desde)
+        fecha_hasta = convert_fecha_datetime(hasta)
+        fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
+        fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
+        campana = Campana.objects.get(pk=campana_id)
+        # generar id para la operacion de acuerdo a (timestamp, campana, supervisor)
+        # obtener de request
+        key_task = 'OML:STATUS_CSV_REPORT:ENGAGED_DISPOSITIONS:{0}:{1}'.format(campana_id, task_id)
+
+        # chequear si el supervisor esta asignado a la campaña
+        # chequear si la campaña existe
+
+        thread_exportacion = threading.Thread(
+            target=self.generar_csv_gestion, args=[key_task, campana, fecha_desde, fecha_hasta])
+        thread_exportacion.setDaemon(True)
+        thread_exportacion.start()
+
+        self.loguear_inicio_exportacion(
+            'gestion_calificaciones', campana_id, request.user.username,
+            fecha_hasta.strftime("%m/%d/%Y"), fecha_desde.strftime("%m/%d/%Y"))
+
+        return Response(data={
+            'status': 'OK',
+            'msg': _('Exportación de Formularios de Gestiones a .csv en proceso'),
+            'id': task_id,
+        })

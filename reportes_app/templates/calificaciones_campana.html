@@ -17,95 +17,163 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 
 -->
-{% extends "base.html" %} {% load i18n %} {% load static %} {% block content %}
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block head_js %}
+<script type="text/javascript" src="{% static 'ominicontacto/JS/csrf.js' %}"></script>
+<script type="text/javascript" src="{% static 'ominicontacto/JS/supervision/reporte_calificaciones_campana.js' %}"></script>
+{% endblock %}
+{% block content %}
 
 <h1>{% trans 'Campaña' %} {{ campana.nombre }}</h1>
 
 {% if campana.fecha_inicio %}
 <h3>{% trans 'Desde:' %} {{ campana.fecha_inicio|date:"d/m/Y" }}</h3>
 <h3>{% trans 'Hasta:' %} {{ campana.fecha_fin|date:"d/m/Y" }}</h3>
+<input id="calificaciones_task_id" type="hidden" value="{{calificaciones_task_id}}">
+<input id="formulario_gestion_task_id" type="hidden" value="{{formulario_gestion_task_id}}">
+<input id="campana_id" type="hidden" value="{{campana.pk}}">
+<input id="reporte_fecha_desde_elegida" type="hidden" value="{{reporte_fecha_desde_elegida}}">
+<input id="reporte_fecha_hasta_elegida" type="hidden" value="{{reporte_fecha_hasta_elegida}}">
+<div id="wrapper-search">
+    <button id="btnCollapse" class="btn btn-block" type="button" data-toggle="collapse" data-target="#wrapperSearchForm" aria-expanded="true" aria-controls="wrapperSearchForm"><span class="icon icon-search"></span>{% trans 'Buscar' %}</button>
+    <div id="wrapperSearchForm" class="show">
+        <form role="form" method="post" enctype="multipart/form-data" >
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="col-md-6">
+                    {{form.fecha}}
+                </div>
+            </div>
+            <button type="submit" id="id_buscar_btn" class="btn btn-primary">
+                {% trans "Filtrar por esa fecha" %}
+            </button>
+        </form>
+    </div>
+</div>
+
 {% endif %}
 <h3>{% trans 'Base Datos:' %} {{ campana.bd_contacto }}</h3>
 <br>
-<a class="btn btn-outline-primary" href="{% url 'exporta_campana_reporte_calificacion' campana.pk %}">{% trans 'Exportar Calificación(CSV)' %}</a>
-<a class="btn btn-outline-primary" href="{% url 'exporta_reporte_calificaciones_gestion' campana.pk %}">{% trans 'Exportar Gestión:' %} (CSV)</a>
-<table class="table">
-    <thead>
-        <tr class="fts-table-bg">
-            <th></th>
-            <th>{% trans 'Teléfono' %}</th>
-            <th>{% trans 'Datos' %}</th>
-            <th>{% trans 'Calificación' %}</th>
-            <th>{% trans 'Observaciones' %}</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for calificacion in historico_calificaciones %}
-        <tr>
-            <td>
-                {% if calificacion.tiene_historico %}
-                <a class="btn btn-primary p-1" data-toggle="collapse" href="#cal{{calificacion.id}}" role="button" aria-expanded="false" aria-controls="collapseExample">
-                    <i class="fa fa-chevron-circle-up"></i>
-                    <i class="fa fa-chevron-circle-down"></i>
-                </a>
-                {% endif %}
-            </td>
-            <td>
-                {{ calificacion.telefono }}
-            </td>
-            <td>
-                {{ calificacion.datos}}
-            </td>
-            <td>
-                {{ calificacion.calif_actual.nombre}}
-            </td>
-            <td>
-                {{ calificacion.calif_actual.observaciones}}
-            </td>
-        </tr>
-        <tr class="collapse grab" id="cal{{calificacion.id}}">
-            <td></td>
-            <td colspan="4">
-                <div>
-                    <h3>{% trans 'Histórico de calificaciones' %}</h3>
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-3">
+            <input type="button" class="btn btn-outline-primary btn-sm" value="{% trans 'Generar Reporte de Calificaciones (CSV)' %}" id="csvCalificacionesCampanaDescarga"></input>
+            <a class="hidden" id="csvCalificacionesCampanaDescargaLink" href="{% url 'exporta_campana_reporte_calificacion' campana.pk %}">{% trans "Descargar Reporte de calificados (CSV)" %}</a>
+            <div data-toggle="tooltip" data-placement="top"
+                    title="{% trans 'ADVERTENCIA: generar un CSV de mas de un mes mientras estan operando los agentes puede generar lentitud en el sistema' %}">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-question" fill="currentColor" title="sfsdfsd"  xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                </svg>
+            </div>
+            <div id="barraProgresoCSVCalificacionesCampana" class="hidden">
+                <div class="progress">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
-                <div>
-                    <table class="table">
-                        <thead>
-                            <tr class="fts-table-bg">
-                                <th>{% trans 'Fecha' %}-{% trans 'Hora' %}</th>
-                                <th>{% trans 'Calificación' %}</th>
-                                <th>{% trans 'Observaciones' %}</th>
-                                <th>{% trans 'Gestiones' %}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for calif_historica in calificacion.cals.values %}
-                            <tr>
-                                <td>{{calif_historica.fecha_hora}}</td>
-                                <td>{{calif_historica.nombre}}</td>
-                                <td>{{calif_historica.observaciones}}</td>
-                                <td>
-                                    {% for gestion in calif_historica.gestiones %} {{gestion}}
-                                    <br/> {% endfor %}
-                                </td>
-                            </tr>
-                            {%endfor%}
-                        </tbody>
-                    </table>
+            </div>
+        </div>
+        <div class="col-md-3"></div>
+        <div class="col-md-3">
+            <input type="button" class="btn btn-outline-primary btn-sm" value="{% trans 'Generar Reporte de Gestión (CSV)' %}" id="csvFormularioGestionCampanaDescarga"></input>
+            <a class="hidden" id="csvFormularioGestionCampanaDescargaLink" href="{% url 'exporta_reporte_calificaciones_gestion' campana.pk %}">{% trans "Descargar Reporte de Gestión (CSV)" %}</a>
+            <div data-toggle="tooltip" data-placement="top"
+                    title="{% trans 'ADVERTENCIA: generar un CSV de mas de un mes mientras estan operando los agentes puede generar lentitud en el sistema' %}">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-question" fill="currentColor" title="sfsdfsd"  xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                </svg>
+            </div>
+            <div id="barraProgresoCSVFormularioGestionCampana" class="hidden">
+                <div class="progress">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="col-md-12">
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr class="fts-table-bg">
+                    <th></th>
+                    <th>{% trans 'Teléfono' %}</th>
+                    <th>{% trans 'Datos' %}</th>
+                    <th>{% trans 'Calificación' %}</th>
+                    <th>{% trans 'Observaciones' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for calificacion in historico_calificaciones %}
+                <tr>
+                    <td>
+                        {% if calificacion.tiene_historico %}
+                        <a class="btn btn-primary p-1" data-toggle="collapse" href="#cal{{calificacion.id}}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                            <i class="fa fa-chevron-circle-up"></i>
+                            <i class="fa fa-chevron-circle-down"></i>
+                        </a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ calificacion.telefono }}
+                    </td>
+                    <td>
+                        {{ calificacion.datos}}
+                    </td>
+                    <td>
+                        {{ calificacion.calif_actual.nombre}}
+                    </td>
+                    <td>
+                        {{ calificacion.calif_actual.observaciones}}
+                    </td>
+                </tr>
+                <tr class="collapse grab" id="cal{{calificacion.id}}">
+                    <td></td>
+                    <td colspan="4">
+                        <div>
+                            <h3>{% trans 'Histórico de calificaciones' %}</h3>
+                        </div>
+                        <div>
+                            <table class="table">
+                                <thead>
+                                    <tr class="fts-table-bg">
+                                        <th>{% trans 'Fecha' %}-{% trans 'Hora' %}</th>
+                                        <th>{% trans 'Calificación' %}</th>
+                                        <th>{% trans 'Observaciones' %}</th>
+                                        <th>{% trans 'Gestiones' %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for calif_historica in calificacion.cals.values %}
+                                    <tr>
+                                        <td>{{calif_historica.fecha_hora}}</td>
+                                        <td>{{calif_historica.nombre}}</td>
+                                        <td>{{calif_historica.observaciones}}</td>
+                                        <td>
+                                            {% for gestion in calif_historica.gestiones %} {{gestion}}
+                                            <br/> {% endfor %}
+                                        </td>
+                                    </tr>
+                                    {%endfor%}
+                                </tbody>
+                            </table>
 
-                </div>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="16">
-                <p>{% trans 'No se encontraron Calificaciones para esta campaña.' %}</p>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="16">
+                        <p>{% trans 'No se encontraron Calificaciones para esta campaña.' %}</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %} {% block extra_css %}
 
 <link rel="stylesheet" href="{% static 'ominicontacto/CSS/listado_calificaciones.css' %}">

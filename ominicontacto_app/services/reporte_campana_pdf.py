@@ -131,7 +131,7 @@ class ArchivoDeReportePDF(object):
         # Definimos la coordenada donde se dibujará la tabla
         detalle_orden.drawOn(pdf, 50, 250)
         archivo_imagen = settings.MEDIA_ROOT + \
-            '/reporte_campana/barra_campana_calificacion.png'
+            '/reporte_campana/barra_campana_calificacion_{}.png'.format(self._campana.id)
 
         pdf.drawImage(archivo_imagen, he + 51, 251, 250, 200,
                       preserveAspectRatio=True, mask="auto")
@@ -167,7 +167,7 @@ class ArchivoDeReportePDF(object):
         # 6.75 mas cercano del margen TOP
         detalle_orden.drawOn(pdf, 0.75 * inch, 270)
         archivo_imagen = settings.MEDIA_ROOT + \
-            '/reporte_campana/barra_campana_no_atendido.png'
+            '/reporte_campana/barra_campana_no_atendido_{}.png'.format(self._campana.id)
 
         pdf.drawImage(archivo_imagen, 4 * inch, 4.5 * inch, 250, 200,
                       preserveAspectRatio=True, mask="auto")

@@ -32,14 +32,13 @@ from django.urls import reverse
 from django.utils import timezone
 
 from ominicontacto_app.models import Campana, CalificacionCliente, OpcionCalificacion
-from ominicontacto_app.services.reporte_campana_calificacion import ReporteCampanaService
 from ominicontacto_app.services.estadisticas_campana import (
     EstadisticasService, CampanaService)
 from ominicontacto_app.services.reporte_campana_pdf import ReporteCampanaPDFService
 from reportes_app.reportes.reporte_llamados_contactados_csv import (
     ReporteContactadosCSV, ExportacionCampanaCSV)
-from ominicontacto_app.services.reporte_respuestas_formulario import (
-    ReporteRespuestaFormularioGestionService)
+from ominicontacto_app.services.reporte_campana_csv import (
+    ExportacionArchivoCampanaCSV, CrearArchivoDeReporteCsv)
 from ominicontacto_app.tests.utiles import OMLBaseTest, PASSWORD
 from ominicontacto_app.tests.factories import ActividadAgenteLogFactory, AgenteProfileFactory, \
     CalificacionClienteFactory, CampanaFactory, ContactoFactory, LlamadaLogFactory, \
@@ -128,23 +127,23 @@ class ReportesCampanasTests(BaseTestDeReportes):
         response = self.client.get(url, follow=True)
         self.assertTemplateUsed(response, 'calificaciones_campana.html')
 
-    def test_reporte_calificaciones_campana_coincide_con_estadisticas_sistema(self):
-        url = reverse('campana_reporte_calificacion', args=[self.campana_activa.pk])
-        response = self.client.get(url, follow=True)
-        self.assertContains(response, self.calif_gestion.contacto.telefono)
-        self.assertContains(response, self.calif_no_accion.contacto.telefono)
-
-    @patch.object(ReporteCampanaService, 'crea_reporte_csv')
-    def test_reporte_calificaciones_campana_exporta_archivo_csv_calificados(self, crea_reporte_csv):
-        url = reverse('campana_reporte_calificacion', args=[self.campana_activa.pk])
+    @patch.object(ExportacionArchivoCampanaCSV, "exportar_reportes_csv")
+    @patch.object(CrearArchivoDeReporteCsv, "ya_existe")
+    def test_reporte_calificaciones_campana_exporta_archivo_csv_calificados(self,
+                                                                            exportar_reportes_csv,
+                                                                            ya_existe):
+        url = reverse('exporta_campana_reporte_calificacion', args=[self.campana_activa.pk])
         self.client.get(url, follow=True)
-        self.assertTrue(crea_reporte_csv.called)
+        self.assertTrue(exportar_reportes_csv.called)
 
-    @patch.object(ReporteRespuestaFormularioGestionService, 'crea_reporte_csv')
-    def test_reporte_calificaciones_campana_exporta_archivo_csv_gestionados(self, crea_reporte_csv):
-        url = reverse('campana_reporte_calificacion', args=[self.campana_activa.pk])
+    @patch.object(ExportacionArchivoCampanaCSV, "exportar_reportes_csv")
+    @patch.object(CrearArchivoDeReporteCsv, "ya_existe")
+    def test_reporte_calificaciones_campana_exporta_archivo_csv_gestionados(self,
+                                                                            exportar_reportes_csv,
+                                                                            ya_existe):
+        url = reverse('exporta_reporte_calificaciones_gestion', args=[self.campana_activa.pk])
         self.client.get(url, follow=True)
-        self.assertTrue(crea_reporte_csv.called)
+        self.assertTrue(exportar_reportes_csv.called)
 
     def test_usuario_no_logueado_no_accede_reporte_grafico_campana(self):
         self.client.logout()
