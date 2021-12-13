@@ -77,6 +77,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'api_exportar_csv_formulario_gestion_campana',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'api_exportar_csv_resultados_base_contactados',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'api_contactos_campana',
              'roles': ['Agente', ]},
             {'nombre': 'api_click2call',
@@ -179,6 +181,9 @@ class ApiAppConfig(AppConfig):
         'api_exportar_csv_formulario_gestion_campana':
             {'descripcion': _('Exportar reporte de calificaciones de una campaña a csv'),
              'version': '1.11.6'},
+        'api_exportar_csv_resultados_base_contactados':
+            {'descripcion': _('API para exportar resultados de base contactados a csv'),
+             'version': '1.19.0'},
         'api_contactos_campana':
             {'descripcion': _('Contactos de una campaña'), 'version': '1.7.0'},
         'api_click2call':

@@ -42,9 +42,14 @@ from ominicontacto_app.services.reporte_campana_calificacion import ReporteCampa
 from ominicontacto_app.services.reporte_campana_pdf import ReporteCampanaPDFService
 
 from ominicontacto_app.utiles import convert_fecha_datetime, fecha_hora_local
-
-from reportes_app.reportes.reporte_llamados_contactados_csv import ExportacionCampanaCSV
-from ominicontacto_app.services.reporte_campana_csv import ExportacionArchivoCampanaCSV
+from ominicontacto_app.services.reporte_campana_csv import (
+    ExportacionArchivoCampanaCSV)
+from reportes_app.reportes.reporte_llamados_contactados_csv import (
+    ExportacionCampanaCSV
+)
+from ominicontacto_app.services.reporte_resultados_de_base_csv import (
+    ExportacionReporteCSV
+)
 
 
 class CampanaReporteCalificacionListView(FormView):
@@ -335,6 +340,34 @@ class ExportaReporteCalificadosView(View):
         service_csv = ExportacionCampanaCSV()
         url = service_csv.obtener_url_reporte_csv_descargar(
             self.object, "calificados")
+
+        return redirect(url)
+
+
+class ExportaReporteResultadosDeBaseView(View):
+    """
+    Esta vista invoca un servicio para descargar
+    un csv del reporte de la campana.
+    """
+
+    model = Campana
+    context_object_name = 'campana'
+
+    def get_object(self, queryset=None):
+        return Campana.objects.get(pk=self.kwargs['pk_campana'])
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        all_data = bool(self.kwargs['all_data'])
+        service_csv = ExportacionReporteCSV()
+        if all_data:
+            name_report = "reporte_resultados_todos"
+        else:
+            name_report = "reporte_resultados"
+        url = service_csv.obtener_url_reporte_csv_descargar(
+            self.object,
+            name_report
+        )
 
         return redirect(url)
 
