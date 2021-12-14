@@ -30,10 +30,13 @@ from rest_framework.views import APIView
 from api_app.views.permissions import TienePermisoOML
 from api_app.authentication import ExpiringTokenAuthentication
 from rest_framework.response import Response
+from django.http import HttpResponseRedirect
 import threading
 from ominicontacto_app.services.grabaciones.generacion_zip_grabaciones \
     import GeneracionZipGrabaciones
 import json
+from constance import config as config_constance
+import boto3
 
 
 class ObtenerArchivoGrabacionView(APIView):
@@ -45,7 +48,24 @@ class ObtenerArchivoGrabacionView(APIView):
 
     def get(self, request):
         filename = request.query_params.get("filename")
+        # Si es el comprimido de grabaciones no se busca en S3
+        iszip = filename.find("/zip/", 0)
+
+        if (config_constance.S3_STORAGE_ENABLED and iszip == -1):
+            return self._get_s3_url(filename)
+
         return sendfile(request, settings.SENDFILE_ROOT + filename)
+
+    def _get_s3_url(self, filename):
+        client = boto3.client("s3",
+                              aws_access_key_id=os.getenv('API_CLOUD_ACCESS_KEY'),
+                              aws_secret_access_key=os.getenv('API_CLOUD_SECRET_KEY'))
+        url = client.generate_presigned_url('get_object',
+                                            Params={'Bucket': config_constance.S3_BUCKET_NAME,
+                                                    'Key': filename[1:]
+                                                    },
+                                            ExpiresIn=3600)
+        return HttpResponseRedirect(url)
 
 
 class ObtenerArchivosGrabacionView(APIView):

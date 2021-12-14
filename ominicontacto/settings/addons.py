@@ -36,6 +36,24 @@ CONSTANCE_CONFIG = {
     'WEBPHONE_VIDEO_DOMAIN': ('meet.jit.si', 'WEBPHONE_VIDEO_DOMAIN', str),
     'LIMIT_USERS_TO': (2, 'LIMIT_USERS_TO', int),
     'LIMIT_AGENTS_CONCURRENT_NUMBER': (1, 'LIMIT_AGENTS_CONCURRENT_NUMBER', int),
+    'S3_STORAGE_ENABLED': (False, 'S3_STORAGE_ENABLED', bool),
+    'S3_BUCKET_NAME': ('', 'S3_BUCKET_NAME', str),
+}
+
+CONSTANCE_CONFIG_FIELDSETS = {
+    'Addons Options': {
+        'fields': ('KEYS_SERVER_HOST', 'SSL_CERT_FILE','CLIENT_NAME',
+                    'CLIENT_KEY','CLIENT_PASSWORD','CLIENT_EMAIL',
+                    'CLIENT_PHONE','WEBPHONE_CLIENT_ENABLED',
+                    'WEBPHONE_CLIENT_TTL','WEBPHONE_VIDEO_DOMAIN','LIMIT_USERS_TO',
+                    'LIMIT_AGENTS_CONCURRENT_NUMBER',
+                ),
+        'collapse': True
+    },
+    'S3 Storage Options': {
+        'fields': ('S3_STORAGE_ENABLED','S3_BUCKET_NAME'),
+        'collapse': True
+    }
 }
 
 ADDONS_APPS = []
