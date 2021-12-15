@@ -33,6 +33,8 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import (ListView, CreateView, UpdateView, FormView, DeleteView,
                                   TemplateView)
 from django.utils.translation import ugettext as _
+from django.db.models import Q
+from utiles_globales import obtener_paginas
 
 from ominicontacto_app.forms import (BusquedaContactoForm, FormularioCampanaContacto,
                                      FormularioNuevoContacto, EscogerCampanaForm,
@@ -142,9 +144,19 @@ class ContactoListView(FormView):
         total_contactos = campana.bd_contacto.contactos.count()
         total_no_calificados = campana.obtener_contactos_no_calificados().count()
         total_calificados = total_contactos - total_no_calificados
-        return self.render_to_response(self.get_context_data(
-            form=form, campana=campana, total_contactos=total_contactos,
-            total_no_calificados=total_no_calificados, total_calificados=total_calificados))
+        bd_contacto = campana.bd_contacto
+        bd_metadata = bd_contacto.get_metadata()
+        bd_metadata_cols = " ".join(
+            bd_metadata.nombres_de_columnas_de_datos)
+        return self.render_to_response(
+            self.get_context_data(
+                form=form, campana=campana, total_contactos=total_contactos,
+                total_no_calificados=total_no_calificados,
+                total_calificados=total_calificados,
+                bd_contacto=bd_contacto, bd_metadata=bd_metadata,
+                bd_metadata_cols=bd_metadata_cols
+            )
+        )
 
 
 class ContactosTelefonosRepetidosView(TemplateView):
@@ -244,17 +256,29 @@ class ContactoBDContactoListView(ListView):
     """Vista que lista los contactos de una base de datos"""
     model = Contacto
     template_name = 'base_datos_contacto/contacto_list_bd_contacto.html'
+    paginate_by = 30
 
     def get_context_data(self, **kwargs):
         context = super(ContactoBDContactoListView, self).get_context_data(
             **kwargs)
-        context['basedatoscontacto'] = BaseDatosContacto.objects.get(
+        bd_contactos = BaseDatosContacto.objects.get(
             pk=self.kwargs['bd_contacto'])
+        context['basedatoscontacto'] = bd_contactos
+        metadata = bd_contactos.get_metadata()
+        context['db_metadata'] = metadata
+        context['db_metadata_cols'] = " ".join(
+            metadata.nombres_de_columnas_de_datos)
+        obtener_paginas(context, 7)
         return context
 
     def get_queryset(self):
-        return Contacto.objects.contactos_by_bd_contacto(
-            self.kwargs['bd_contacto'])
+        queryset = Contacto.objects.contactos_by_bd_contacto(
+            self.kwargs['bd_contacto']).order_by('id')
+        if 'search' in self.request.GET:
+            search = self.request.GET.get('search')
+            return queryset.filter(Q(telefono__icontains=search))
+        else:
+            return queryset
 
 
 class ContactoBDContactoUpdateView(UpdateView):

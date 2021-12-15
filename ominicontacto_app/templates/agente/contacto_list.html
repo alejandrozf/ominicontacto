@@ -46,9 +46,11 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         <script type="text/javascript" src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
         <script src="{% static 'ominicontacto/JS/utiles.js' %}"></script>
         <script src="{% static 'ominicontacto/JS/contactosList.js' %}"></script>
+        <script type="text/javascript" src="{% static 'ominicontacto/JS/base_datos_contacto.js' %}"></script>
         {% endcompress %}
     </head>
     <body>
+        <input type="hidden" id="db_metadata_columnas" value="{{bd_metadata_cols}}">
         <div class="container-fluid">
             <h1>{% trans 'Contactos' %}</h1>
                 {% include 'messages.html' %}

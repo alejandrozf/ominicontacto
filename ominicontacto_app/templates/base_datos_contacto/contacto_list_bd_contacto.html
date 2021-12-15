@@ -20,24 +20,107 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
+{% block head_js %}
+  <script type="text/javascript" src="{% static 'ominicontacto/JS/base_datos_contacto.js' %}"></script>
+{% endblock head_js %}
 
 {% block content %}
-    <h1>Base Datos: {{ basedatoscontacto.nombre }}</h1>
+    <!-- Button back -->
+    <nav>
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" href="{% url 'lista_base_datos_contacto' 1 %}" >
+                    <span aria-hidden="true">&laquo;</span>
+                    {% trans 'Atras' %}
+                </a>
+            </li>
+        </ul>
+    </nav>
 
+    <!-- Header (filter and title) -->
+    <div class="d-flex justify-content-end form-row">
+        <div class="col-md-9">
+            <h1> {% trans 'Contactos de la base datos' %}: {{ basedatoscontacto.nombre }}</h1>
+        </div>
+        <div class="col-md-3">
+            <form method="GET" action="{% url 'contacto_list_bd_contacto' bd_contacto=basedatoscontacto.pk %}" class="filter-flex">
+                <input type="text" class="form-control" name="search" placeholder="Busca por teléfono" value="{{ search }}">
+                <input type="submit" class="btn btn-primary" value="{% trans 'Filtrar' %}">
+            </form>
+        </div>
+    </div>
+
+    <input type="hidden" id="db_metadata_columnas" value="{{db_metadata_cols}}">
+
+    <!-- Button trigger modal -->
+    <div class="d-flex justify-content-end form-row">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalToShowMoreDBInfo">
+            <span class="icon icon-info"></span> Mostrar más
+        </button>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalToShowMoreDBInfo" tabindex="-1" role="dialog" aria-labelledby="modalToShowMoreDBInfoTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header text-white" style="background-color: #8FC641;" >
+                    <h5 class="modal-title" id="exampleModalLongTitle">Campos extra para mostrar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="text-white">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% for col_metadata in db_metadata.nombres_de_columnas_de_datos %}
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="check_{{col_metadata}}">
+                            <label class="custom-control-label" for="check_{{col_metadata}}">{{ col_metadata|title }}</label>
+                        </div>
+                    {% endfor %}
+                    <br>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="selectAllData">
+                        <label class="custom-control-label" for="selectAllData">Selecciona todos</label>
+                    </div>
+                    <div class="mt-3" style="border-left: #8FC641 5px solid;">
+                        <div class="pl-3">
+                            <small><b>NOTA:</b> Los campos que se seleccionen apareceran en la tabla de información.</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="btnToShowBDInfo">Aplicar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
     <table class="table">
         <thead>
             <tr>
-                <th>{% trans 'Teléfono' %}</th>
                 <th>{% trans 'ID de Contacto' %}</th>
-                <th>{% trans 'Acciones' %}</th>
+                <th>{% trans 'Teléfono' %}</th>
+                {% for col_metadata in db_metadata.nombres_de_columnas_de_datos %}
+                    <th class="d-none" id="db_metadata_head_{{col_metadata}}">{{ col_metadata|title }}</th>
+                {% endfor %}
+                <th class="text-center">{% trans 'Acciones' %}</th>
             </tr>
         </thead>
         <tbody>
         {% for contacto in object_list %}
             <tr id="{{ contacto.telefono}}">
-                <td>{{ contacto.telefono }}</td>
                 <td>{{ contacto.pk }}</td>
-                <td>
+                <td>{{ contacto.telefono }}</td>
+                {% for k,v in contacto.obtener_datos.items %}
+                    <td class="d-none db_metadata_body_{{k}}">
+                        {% if v %}
+                            {{v}}
+                        {% else %}
+                            ---
+                        {% endif %}
+                    </td>
+                {% endfor %}
+                <td class="text-center">
                     <div class="dropdown">
                         <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {% trans 'Opciones' %}
@@ -60,4 +143,44 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% endfor %}
         </tbody>
     </table>
+
+    {% if is_paginated %}
+        <nav class="mt-5" aria-label="Page navigation">
+            <ul class="pagination pagination-centered">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                    <a class="page-link" aria-label="First" href="{{request.path}}?page={{ 1 }}">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">{% trans 'Principio' %}</span>
+                    </a>
+                    </li>
+                    <li class="page-item">
+                    <a class="page-link" aria-label="Previous" href="{{request.path}}?page={{ page_obj.previous_page_number }}">
+                        <span aria-hidden="true">&lt;</span>
+                        <span class="sr-only">{% trans 'Anterior' %}</span>
+                    </a>
+                    </li>
+                {% endif %}
+                {% for i in pages %}
+                    <li class="page-item {% if page_obj.number == i %}active{% endif %}">
+                    <a class="page-link" href="{{request.path}}?page={{ i }}"> {{i}} </a>
+                    </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                    <a class="page-link" aria-label="Next" href="{{request.path}}?page={{ page_obj.next_page_number }}">
+                        <span aria-hidden="true">&gt;</span>
+                        <span class="sr-only">{% trans 'Siguiente' %}</span>
+                    </a>
+                    </li>
+                    <li class="page-item">
+                    <a class="page-link" aria-label="Last" href="{{request.path}}?page={{ page_obj.paginator.num_pages }}">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">{% trans 'Final' %}</span>
+                    </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
 {% endblock %}
