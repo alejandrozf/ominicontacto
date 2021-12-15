@@ -35,6 +35,7 @@
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/bootstrap-datetimepicker.min.css' %}"></link>
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/daterangepicker.css' %}"></link>
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/admin.css' %}">
+        <link rel="stylesheet" href="{% static 'ominicontacto/CSS/main.css' %}">
         {% block extra_css %}{% endblock %}
         <!-- Fonts -->
         <link rel="stylesheet" href="{% static 'ominicontacto/CSS/google-font.css' %}">
@@ -95,7 +96,8 @@
                         {% if user.get_tiene_permiso_administracion  %}
                             {% block content %}
                                 {% if user.get_es_administrador_o_supervisor_normal %}
-                                    <div class="row">
+                                    <iframe src="{% static 'omnileads-ui-supervision/index.html' %}" class="crm" name="crm"></iframe>
+                                    <!-- <div class="row">
                                         <div class="col-md-6 col-md-offset-3">
                                             <div id="mostrarInfoRelease">
                                                 {% advertencia_release_desactualizado as messages %}
@@ -104,7 +106,7 @@
                                                 {% endfor %}
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 {% endif %}
                             {% endblock %}
                         {% else %}
