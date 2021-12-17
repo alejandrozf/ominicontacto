@@ -54,7 +54,7 @@ class BusquedaGrabacionFormView(FormView):
         qs = listado_de_grabaciones
         # ----- <Paginate> -----
         page = self.kwargs['pagina']
-        if context['pagina']:
+        if 'pagina' in context and context['pagina']:
             page = context['pagina']
 
         if 'grabaciones_x_pagina' in context:

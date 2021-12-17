@@ -576,7 +576,7 @@ class GrabacionBusquedaForm(forms.Form):
     """
     El form para la busqueda de grabaciones
     """
-    fecha = forms.CharField(required=False,
+    fecha = forms.CharField(required=True,
                             widget=forms.TextInput(attrs={'class': 'form-control'}),
                             label=_('Fecha'))
     tipo_llamada_choice = list(LlamadaLog.TYPE_LLAMADA_CHOICES)
@@ -1705,7 +1705,8 @@ class QueueDialerForm(forms.ModelForm):
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
             "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
-            "initial_boost_factor": forms.NumberInput(attrs={'class': 'form-control'}),
+            "initial_boost_factor": forms.NumberInput(
+                attrs={'class': 'form-control', 'min': 0.1, 'max': 5}),
             "dial_timeout": forms.NumberInput(attrs={'class': 'form-control'}),
             'tipo_destino': forms.Select(attrs={'class': 'form-control'}),
             'destino': forms.Select(attrs={'class': 'form-control', 'id': 'destino'}),
@@ -1722,9 +1723,9 @@ class QueueDialerForm(forms.ModelForm):
 
     def clean(self):
         initial_boost_factor = self.cleaned_data.get('initial_boost_factor')
-        if initial_boost_factor and initial_boost_factor < 1.0:
+        if initial_boost_factor and initial_boost_factor < 0.1:
             raise forms.ValidationError('El factor boost inicial no debe ser'
-                                        ' menor a 1.0')
+                                        ' menor a 0.1')
         if initial_boost_factor and initial_boost_factor > 5.0:
             raise forms.ValidationError('El factor boost inicial no debe ser'
                                         ' mayor a 5.0')
