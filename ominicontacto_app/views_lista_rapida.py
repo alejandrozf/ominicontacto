@@ -264,11 +264,13 @@ class DefineListaRapidaView(UpdateView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         estructura_archivo = self.valida_lista_rapida._obtiene_previsualizacion_archivo(self.object)
+        estructura_para_validar = self.valida_lista_rapida.\
+            _obtiene_previsualizacion_archivo(self.object, previsualizacion=False)
         if estructura_archivo:
             try:
                 error_predictor = False
                 error_predictor_encabezado = False
-                metadata = self.lista_rapida_service.inferir_metadata(estructura_archivo)
+                metadata = self.lista_rapida_service.inferir_metadata(estructura_para_validar)
 
             except NoSePuedeInferirMetadataError:
                 initial_predecido_encabezado = {}
