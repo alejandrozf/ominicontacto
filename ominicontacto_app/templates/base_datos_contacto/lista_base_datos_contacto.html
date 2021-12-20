@@ -22,125 +22,121 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 
 {% block head_js %}
-<script type="text/javascript" src="{% static 'ominicontacto/JS/base_datos_contacto_ocultos.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ominicontacto/JS/base_datos_contacto_ocultos.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-
-<h1>{% trans 'Base de datos de contactos' %}</h1>
-<div class="form-row">
-    <div class="col-md-9">
-        <a href="#" class="btn btn-light btn-sm" onclick="mostrar_bases_datos_ocultas()" >
-            {% trans 'Mostrar ocultas' %}
-        </a>
+    <h1>{% trans 'Base de datos de contactos' %}</h1>
+    <div class="form-row">
+        <div class="col-md-9">
+            <a href="#" class="btn btn-light btn-sm" onclick="mostrar_bases_datos_ocultas()" >
+                {% trans 'Mostrar ocultas' %}
+            </a>
+        </div>
+        <div class="col-md-3">
+            <form method="GET" action="{% url 'lista_base_datos_contacto' page=1 %}" class="filter-flex">
+                <input type="text" class="form-control" name="search" value="{{ search }}" placeholder="Busca por nombre">
+                <input type="submit" class="btn btn-primary" value="{% trans 'Filtrar' %}">
+            </form>
+        </div>
     </div>
-    <div class="col-md-3">
-        <form method="GET" action="{% url 'lista_base_datos_contacto' page=1 %}" class="filter-flex">
-            <input type="text" class="form-control" name="search" value="{{ search }}">
-            <input type="submit" class="btn btn-primary" value="{% trans 'Filtrar' %}">
-        </form>
-    </div>
-</div>
-<hr>
-<table class="table">
-    <thead>
-      <tr class="fts-table-bg">
-        <th>{% trans 'Base Datos Contactos' %}</th>
-        <th>{% trans 'Creada' %}</th>
-        <th>{% trans 'Cantidad Contactos' %}</th>
-        <th>{% trans 'Acciones' %}</th>
-      </tr>
-    </thead>
-    <tbody id="t_body_ocultas">
-        {% for base_datos_contacto in bases_datos_contacto %}
-            <tr id="{{ base_datos_contacto.nombre }}">
-                <td>
-                    {{ base_datos_contacto.nombre }}
-                </td>
-                <td>
-                    {{ base_datos_contacto.fecha_alta|date:"d/m/Y" }}
-                </td>
-                <td>
-                    {{ base_datos_contacto.get_cantidad_contactos }}
-                </td>
-                <td>
-                    <div class="dropdown">
-                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {% trans 'Opciones' %}
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
-                            <a class="dropdown-item" href="{% url 'agregar_contacto' base_datos_contacto.pk %}">
-                                <span class="icon icon-plus"></span>{% trans 'Agregar contacto' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'contacto_list_bd_contacto' base_datos_contacto.pk %}">
-                                <span class="icon icon-list"></span>{% trans 'Lista de contactos' %}
-                            </a>
-                            <a class="dropdown-item" href="{% url 'update_base_datos_contacto' base_datos_contacto.pk %}">
-                                <span class="icon icon-plus"></span>{% trans 'Agregar contactos' %}
-                            </a>
-                            {% if base_datos_contacto.oculto %}
-                            <a class="dropdown-item" href="{% url 'desoculta_base_datos' base_datos_contacto.pk %}">
-                                <span class="icon icon-eye"></span>{% trans 'Hacer visible' %}
-                            </a>
-                            {% else %}
-                            <a class="dropdown-item" href="{% url 'oculta_base_dato' base_datos_contacto.pk %}">
-                                <span class="icon icon-eye-slash"></span>{% trans 'Ocultar' %}
-                            </a>
-                            {% endif %}
+    <hr>
+    <table class="table">
+        <thead>
+        <tr class="fts-table-bg">
+            <th>{% trans 'Base Datos Contactos' %}</th>
+            <th class="text-center">{% trans 'Creada' %}</th>
+            <th class="text-center">{% trans 'Cantidad Contactos' %}</th>
+            <th class="text-center">{% trans 'Acciones' %}</th>
+        </tr>
+        </thead>
+        <tbody id="t_body_ocultas">
+            {% for base_datos_contacto in bases_datos_contacto %}
+                <tr id="{{ base_datos_contacto.nombre }}">
+                    <td>
+                        {{ base_datos_contacto.nombre }}
+                    </td>
+                    <td class="text-center">
+                        {{ base_datos_contacto.fecha_alta|date:"d/m/Y" }}
+                    </td>
+                    <td class="text-center">
+                        {{ base_datos_contacto.get_cantidad_contactos }}
+                    </td>
+                    <td class="text-center">
+                        <div class="dropdown">
+                            <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {% trans 'Opciones' %}
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
+                                <a class="dropdown-item" href="{% url 'agregar_contacto' base_datos_contacto.pk %}">
+                                    <span class="icon icon-plus"></span>{% trans 'Agregar contacto' %}
+                                </a>
+                                <a class="dropdown-item" href="{% url 'contacto_list_bd_contacto' base_datos_contacto.pk %}">
+                                    <span class="icon icon-list"></span>{% trans 'Lista de contactos' %}
+                                </a>
+                                <a class="dropdown-item" href="{% url 'update_base_datos_contacto' base_datos_contacto.pk %}">
+                                    <span class="icon icon-plus"></span>{% trans 'Agregar contactos' %}
+                                </a>
+                                {% if base_datos_contacto.oculto %}
+                                <a class="dropdown-item" href="{% url 'desoculta_base_datos' base_datos_contacto.pk %}">
+                                    <span class="icon icon-eye"></span>{% trans 'Hacer visible' %}
+                                </a>
+                                {% else %}
+                                <a class="dropdown-item" href="{% url 'oculta_base_dato' base_datos_contacto.pk %}">
+                                    <span class="icon icon-eye-slash"></span>{% trans 'Ocultar' %}
+                                </a>
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
-                </td>
-            </tr>
-        {% empty %}
-            <tr>
-                <td colspan="6">
-                    <p>{% trans 'No se encontraron Bases de Datos de Contactos creadas.' %}</p>
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-{% if is_paginated %}
-    <br>
-    <br>
-    <nav aria-label="Page navigation">
-        <ul class="pagination pagination-centered">
-            {% if page_obj.has_previous %}
-                <li class="page-item">
-                  <a class="page-link" aria-label="First" href="{% url 'lista_base_datos_contacto' page=1 %}">
-                    <span aria-hidden="true">&laquo;</span>
-                    <span class="sr-only">{% trans 'Principio' %}</span>
-                  </a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link" aria-label="Previous" href="{% url 'lista_base_datos_contacto' page=page_obj.previous_page_number%}">
-                    <span aria-hidden="true">&lt;</span>
-                    <span class="sr-only">{% trans 'Anterior' %}</span>
-                  </a>
-                </li>
-            {% endif %}
-            {% for i in pages %}
-                <li class="page-item {% if page_obj.number == i %}active{% endif %}">
-                  <a class="page-link" href="{% url 'lista_base_datos_contacto' page=i %}"> {{i}} </a>
-                </li>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6">
+                        <p>{% trans 'No se encontraron Bases de Datos de Contactos creadas.' %}</p>
+                    </td>
+                </tr>
             {% endfor %}
-            {% if page_obj.has_next %}
-                <li class="page-item">
-                  <a class="page-link" aria-label="Next" href="{% url 'lista_base_datos_contacto' page=page_obj.next_page_number %}">
-                    <span aria-hidden="true">&gt;</span>
-                    <span class="sr-only">{% trans 'Siguiente' %}</span>
-                  </a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link" aria-label="Last" href="{% url 'lista_base_datos_contacto' page=page_obj.paginator.num_pages %}">
-                    <span aria-hidden="true">&raquo;</span>
-                    <span class="sr-only">{% trans 'Final' %}</span>
-                  </a>
-                </li>
-            {% endif %}
-        </ul>
-    </nav>
-{% endif %}
-
+        </tbody>
+    </table>
+    <a class="btn btn-light btn-sm" href="{% url 'nueva_base_datos_contacto' %}" >{% trans 'Nueva base de datos de contactos' %}</a>
+    {% if is_paginated %}
+        <nav aria-label="Page navigation" class="mt-5">
+            <ul class="pagination pagination-centered">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                    <a class="page-link" aria-label="First" href="{% url 'lista_base_datos_contacto' page=1 %}">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">{% trans 'Principio' %}</span>
+                    </a>
+                    </li>
+                    <li class="page-item">
+                    <a class="page-link" aria-label="Previous" href="{% url 'lista_base_datos_contacto' page=page_obj.previous_page_number%}">
+                        <span aria-hidden="true">&lt;</span>
+                        <span class="sr-only">{% trans 'Anterior' %}</span>
+                    </a>
+                    </li>
+                {% endif %}
+                {% for i in pages %}
+                    <li class="page-item {% if page_obj.number == i %}active{% endif %}">
+                    <a class="page-link" href="{% url 'lista_base_datos_contacto' page=i %}"> {{i}} </a>
+                    </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                    <a class="page-link" aria-label="Next" href="{% url 'lista_base_datos_contacto' page=page_obj.next_page_number %}">
+                        <span aria-hidden="true">&gt;</span>
+                        <span class="sr-only">{% trans 'Siguiente' %}</span>
+                    </a>
+                    </li>
+                    <li class="page-item">
+                    <a class="page-link" aria-label="Last" href="{% url 'lista_base_datos_contacto' page=page_obj.paginator.num_pages %}">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">{% trans 'Final' %}</span>
+                    </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
 {% endblock %}
