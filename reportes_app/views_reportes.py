@@ -82,11 +82,22 @@ class CampanaReporteCalificacionListView(FormView):
 
         try:
             self.campana = asignadas.get(pk=self.kwargs['pk_campana'])
+            hoy_ahora = fecha_hora_local(timezone.now())
+            hoy = hoy_ahora.date()
+            fecha_desde = fecha_hora_local(datetime.datetime.combine(hoy, datetime.time.min))
+            fecha_hasta = fecha_hora_local(datetime.datetime.combine(hoy_ahora, datetime.time.max))
+            service = ReporteCampanaService(self.get_object())
+            service.calificaciones_por_fechas(fecha_desde, fecha_hasta)
+            calificaciones_qs = service.calificaciones_qs
+            historico_calificaciones_qs = service.historico_calificaciones_qs
+            historico_calidficaciones = self._procesa_historico_calificaciones(
+                historico_calificaciones_qs)
+            return self.render_to_response(self.get_context_data(
+                calificaciones=calificaciones_qs,
+                historico_calificaciones=historico_calidficaciones.values()))
         except Campana.DoesNotExist:
             messages.warning(self.request, _(u"Usted no puede acceder a esta campaña."))
             return redirect('index')
-
-        return super(CampanaReporteCalificacionListView, self).get(self, request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super(CampanaReporteCalificacionListView, self).get_context_data(
@@ -144,6 +155,8 @@ class CampanaReporteCalificacionListView(FormView):
         fecha_desde, fecha_hasta = fecha.split('-')
         fecha_desde = convert_fecha_datetime(fecha_desde)
         fecha_hasta = convert_fecha_datetime(fecha_hasta)
+        fecha_desde = datetime.datetime.combine(fecha_desde, datetime.time.min)
+        fecha_hasta = datetime.datetime.combine(fecha_hasta, datetime.time.max)
         service = ReporteCampanaService(self.get_object())
         service.calificaciones_por_fechas(fecha_desde, fecha_hasta)
         calificaciones_qs = service.calificaciones_qs
