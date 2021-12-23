@@ -358,7 +358,7 @@ class ExportaReporteResultadosDeBaseView(View):
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        all_data = bool(self.kwargs['all_data'])
+        all_data = bool(int(self.kwargs['all_data']))
         service_csv = ExportacionReporteCSV()
         if all_data:
             name_report = "reporte_resultados_todos"
