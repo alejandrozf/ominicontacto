@@ -1156,6 +1156,7 @@ class FormularioNuevoContacto(forms.ModelForm):
         campos_a_ocultar = campos_ocultos  # Son los campos a bloquear para la edicion Y creación.
         self.campos_a_bloquear = campos_a_bloquear
         self.campos_a_ocultar = campos_a_ocultar
+        self.es_campana_entrante = kwargs.pop('es_campana_entrante', False)
         if 'instance' in kwargs and kwargs['instance'] is not None:
             campos_a_bloquear = campos_bloqueados
             contacto = kwargs['instance']
@@ -1169,6 +1170,8 @@ class FormularioNuevoContacto(forms.ModelForm):
             bd_metadata = base_datos.get_metadata()
 
         super(FormularioNuevoContacto, self).__init__(*args, **kwargs)
+        if self.es_campana_entrante:
+            self.fields['telefono'].required = False
         nombre_campo_telefono = bd_metadata.nombre_campo_telefono
         nombre_campo_id_externo = bd_metadata.nombre_campo_id_externo
         for campo in bd_metadata.nombres_de_columnas:
@@ -1229,6 +1232,7 @@ class FormularioNuevoContacto(forms.ModelForm):
                 datos_contacto_dict = self.instance.obtener_datos()
                 campo = datos_contacto_dict.get(self.get_nombre_input(nombre), '')
             datos.append(campo)
+
         return json.dumps(datos)
 
     def es_campo_telefonico(self, nombre_input):
@@ -1240,11 +1244,11 @@ class FormularioNuevoContacto(forms.ModelForm):
         return False
 
     def clean_telefono(self):
-        telefono = str(self.cleaned_data.get('telefono'))
-        if not telefono.isdigit():
+        telefono = str(self.cleaned_data.get('telefono')) if not self.es_campana_entrante else ""
+        if telefono and not telefono.isdigit():
             msg = _('Debe ser en formato "999999999" y solo numérico.')
             raise forms.ValidationError(msg)
-        if not 3 <= len(telefono) <= 20:
+        if telefono and not 3 <= len(telefono) <= 20:
             msg = _('Solo se permiten de 3-20 dígitos.')
             raise forms.ValidationError(msg)
         return telefono
