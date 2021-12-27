@@ -245,7 +245,6 @@ class PhoneJSController {
 
         // TODO: a variables de instancia
         var answerCallButton = document.getElementById('answer');
-        var refuseCallButton = document.getElementById('doNotAnswer');
         answerCallButton.onclick = function() {
             clearTimeout(self.ACW_pause_timeout_handler); // Por las dudas
             self.phone_fsm.acceptCall();
@@ -256,11 +255,12 @@ class PhoneJSController {
             self.view.setCallStatus(message, 'orange');
             self.manageContact(self.phone.session_data);
         };
-
-        refuseCallButton.onclick = function() {
+        
+        // filters doNotAnswer and doNotAnswerX
+        $('[id^=doNotAnswer]').click(function() {
             $('#modalReceiveCalls').modal('hide');
             self.phone.refuseCall();
-        };
+        });
 
         this.view.reload_video_button.click(function() {
             self.reloadVideo();
