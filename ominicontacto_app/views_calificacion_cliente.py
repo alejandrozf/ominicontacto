@@ -230,8 +230,11 @@ class CalificacionClienteFormView(FormView):
         return kwargs
 
     def get_contacto_form(self):
-        return FormularioNuevoContacto(base_datos=self.campana.bd_contacto,
-                                       **self.get_contacto_form_kwargs())
+        return FormularioNuevoContacto(
+            base_datos=self.campana.bd_contacto,
+            **self.get_contacto_form_kwargs(),
+            es_campana_entrante=self.campana.type == Campana.TYPE_ENTRANTE
+        )
 
     def _formulario_llamada_entrante(self):
         """Determina si estamos en presencia de un formulario
@@ -285,9 +288,9 @@ class CalificacionClienteFormView(FormView):
         # calificar al contacto, solo validamos el formulario del contacto, ya que el de
         # calificación permanece oculto (en las dos siguientes validaciones)
         if formulario_llamada_entrante and not self.usuario_califica and contacto_form_valid:
-            return self.form_valid(contacto_form, calificacion_form)
+            return self.form_valid(contacto_form)
         if formulario_llamada_entrante and not self.usuario_califica and not contacto_form_valid:
-            return self.form_invalid(contacto_form, calificacion_form)
+            return self.form_invalid(contacto_form)
         if contacto_form_valid and calificacion_form_valid:
             return self.form_valid(contacto_form, calificacion_form)
         else:
@@ -409,7 +412,7 @@ class CalificacionClienteFormView(FormView):
                 contacto_form=contacto_form,
                 calificacion_form=calificacion_form))
 
-    def form_invalid(self, contacto_form, calificacion_form):
+    def form_invalid(self, contacto_form, calificacion_form=None):
         """
         Re-renders the context data with the data-filled forms and errors.
         """
