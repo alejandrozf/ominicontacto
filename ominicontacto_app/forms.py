@@ -628,7 +628,7 @@ class AuditoriaBusquedaForm(forms.Form):
     AUDITORIA_PENDIENTE = 3
     AUDITORIA_PENDIENTE_CHOICE = (AUDITORIA_PENDIENTE, _('Pendiente'))
 
-    fecha = forms.CharField(required=False,
+    fecha = forms.CharField(required=True,
                             widget=forms.TextInput(attrs={'class': 'form-control'}),
                             label=_('Fecha'))
     agente = forms.ModelChoiceField(queryset=AgenteProfile.objects.none(),
