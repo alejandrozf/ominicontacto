@@ -94,8 +94,11 @@ class AuditoriasCalificacionesTests(OMLBaseTest):
     def test_supervisor_simple_no_tiene_accesso_vista_gestion(self):
         self.client.logout()
         self.client.login(username=self.supervisor3.user, password=self.DEFAULT_PASSWORD)
+        today = now().date()
+        rango_today = today.strftime('%d/%m/%Y') + ' - ' + today.strftime(
+            '%d/%m/%Y')
         url = reverse('buscar_auditorias_gestion', kwargs={'pagina': 1})
-        post_data = {'fecha': '', 'agente': '', 'campana': '', 'grupo_agente': '',
+        post_data = {'fecha': rango_today, 'agente': '', 'campana': '', 'grupo_agente': '',
                      'id_contacto': '', 'telefono': '', 'callid': '', 'status_auditoria': ''}
         response = self.client.post(url, post_data, follow=True)
         self.assertEqual(response.status_code, 403)
@@ -103,23 +106,32 @@ class AuditoriasCalificacionesTests(OMLBaseTest):
     def test_supervisor_referente_no_tiene_accesso_vista_gestion(self):
         self.client.logout()
         self.client.login(username=self.supervisor4.user, password=self.DEFAULT_PASSWORD)
+        today = now().date()
+        rango_today = today.strftime('%d/%m/%Y') + ' - ' + today.strftime(
+            '%d/%m/%Y')
         url = reverse('buscar_auditorias_gestion', kwargs={'pagina': 1})
-        post_data = {'fecha': '', 'agente': '', 'campana': '', 'grupo_agente': '',
+        post_data = {'fecha': rango_today, 'agente': '', 'campana': '', 'grupo_agente': '',
                      'id_contacto': '', 'telefono': '', 'callid': '', 'status_auditoria': ''}
         response = self.client.post(url, post_data, follow=True)
         self.assertEqual(response.status_code, 403)
 
     def test_solo_muestra_las_calificaciones_gestion_campanas_asignadas_al_supervisor(self):
+        today = now().date()
+        rango_today = today.strftime('%d/%m/%Y') + ' - ' + today.strftime(
+            '%d/%m/%Y')
         url = reverse('buscar_auditorias_gestion', kwargs={'pagina': 1})
-        post_data = {'fecha': '', 'agente': '', 'campana': '', 'grupo_agente': '',
+        post_data = {'fecha': rango_today, 'agente': '', 'campana': '', 'grupo_agente': '',
                      'id_contacto': '', 'telefono': '', 'callid': '', 'status_auditoria': ''}
         response = self.client.post(url, post_data, follow=True)
         calificaciones = response.context_data['listado_de_calificaciones']
         self.assertFalse(calificaciones.filter(opcion_calificacion__campana=self.campana1).exists())
 
     def test_inicialmente_se_muestran_calificaciones_auditadas_o_gestion(self):
+        today = now().date()
+        rango_today = today.strftime('%d/%m/%Y') + ' - ' + today.strftime(
+            '%d/%m/%Y')
         url = reverse('buscar_auditorias_gestion', kwargs={'pagina': 1})
-        post_data = {'fecha': '', 'agente': '', 'campana': '', 'grupo_agente': '',
+        post_data = {'fecha': rango_today, 'agente': '', 'campana': '', 'grupo_agente': '',
                      'id_contacto': '', 'telefono': '', 'callid': '', 'status_auditoria': ''}
         response = self.client.post(url, post_data, follow=True)
         calificaciones = response.context_data['listado_de_calificaciones']
@@ -130,8 +142,11 @@ class AuditoriasCalificacionesTests(OMLBaseTest):
 
     def test_filtro_telefono_se_muestra_correctamente(self):
         telefono = self.calificacion22.contacto.telefono
+        today = now().date()
+        rango_today = today.strftime('%d/%m/%Y') + ' - ' + today.strftime(
+            '%d/%m/%Y')
         url = reverse('buscar_auditorias_gestion', kwargs={'pagina': 1})
-        post_data = {'fecha': '', 'agente': '', 'campana': '', 'grupo_agente': '',
+        post_data = {'fecha': rango_today, 'agente': '', 'campana': '', 'grupo_agente': '',
                      'id_contacto': '', 'telefono': telefono, 'callid': '', 'status_auditoria': ''}
         response = self.client.post(url, post_data, follow=True)
         calificaciones = response.context_data['listado_de_calificaciones']
@@ -141,8 +156,11 @@ class AuditoriasCalificacionesTests(OMLBaseTest):
 
     def test_filtro_callid_se_muestra_correctamente(self):
         callid = self.calificacion23.callid
+        today = now().date()
+        rango_today = today.strftime('%d/%m/%Y') + ' - ' + today.strftime(
+            '%d/%m/%Y')
         url = reverse('buscar_auditorias_gestion', kwargs={'pagina': 1})
-        post_data = {'fecha': '', 'agente': '', 'campana': '', 'grupo_agente': '',
+        post_data = {'fecha': rango_today, 'agente': '', 'campana': '', 'grupo_agente': '',
                      'id_contacto': '', 'telefono': '', 'callid': callid, 'status_auditoria': ''}
         response = self.client.post(url, post_data, follow=True)
         calificaciones = response.context_data['listado_de_calificaciones']
@@ -151,8 +169,11 @@ class AuditoriasCalificacionesTests(OMLBaseTest):
             list(calificaciones.values_list('callid', flat=True)), [callid])
 
     def test_filtro_tipo_auditoria_se_muestra_correctamente(self):
+        today = now().date()
+        rango_today = today.strftime('%d/%m/%Y') + ' - ' + today.strftime(
+            '%d/%m/%Y')
         url = reverse('buscar_auditorias_gestion', kwargs={'pagina': 1})
-        post_data = {'fecha': '', 'agente': '', 'campana': '', 'grupo_agente': '',
+        post_data = {'fecha': rango_today, 'agente': '', 'campana': '', 'grupo_agente': '',
                      'id_contacto': '', 'telefono': '', 'callid': '',
                      'status_auditoria': AuditoriaCalificacion.APROBADA}
         response = self.client.post(url, post_data, follow=True)
@@ -162,9 +183,12 @@ class AuditoriasCalificacionesTests(OMLBaseTest):
                          AuditoriaCalificacion.APROBADA)
 
     def test_filtro_id_contacto_se_muestra_correctamente(self):
+        today = now().date()
+        rango_today = today.strftime('%d/%m/%Y') + ' - ' + today.strftime(
+            '%d/%m/%Y')
         id_contacto = self.calificacion24.contacto.pk
         url = reverse('buscar_auditorias_gestion', kwargs={'pagina': 1})
-        post_data = {'fecha': '', 'agente': '', 'campana': '', 'grupo_agente': '',
+        post_data = {'fecha': rango_today, 'agente': '', 'campana': '', 'grupo_agente': '',
                      'id_contacto': id_contacto, 'telefono': '', 'callid': '',
                      'status_auditoria': ''}
         response = self.client.post(url, post_data, follow=True)
@@ -177,9 +201,11 @@ class AuditoriasCalificacionesTests(OMLBaseTest):
         contacto = self.calificacion24.contacto
         contacto.id_externo = id_contacto_externo
         contacto.save()
-
+        today = now().date()
+        rango_today = today.strftime('%d/%m/%Y') + ' - ' + today.strftime(
+            '%d/%m/%Y')
         url = reverse('buscar_auditorias_gestion', kwargs={'pagina': 1})
-        post_data = {'fecha': '', 'agente': '', 'campana': '', 'grupo_agente': '',
+        post_data = {'fecha': rango_today, 'agente': '', 'campana': '', 'grupo_agente': '',
                      'id_contacto_externo': id_contacto_externo, 'telefono': '', 'callid': '',
                      'status_auditoria': ''}
         response = self.client.post(url, post_data, follow=True)
@@ -189,8 +215,11 @@ class AuditoriasCalificacionesTests(OMLBaseTest):
 
     def test_filtro_campana_se_muestra_correctamente(self):
         url = reverse('buscar_auditorias_gestion', kwargs={'pagina': 1})
-        post_data = {'fecha': '', 'agente': '', 'campana': self.campana3.pk, 'grupo_agente': '',
-                     'id_contacto': '', 'telefono': '', 'callid': '',
+        today = now().date()
+        rango_today = today.strftime('%d/%m/%Y') + ' - ' + today.strftime(
+            '%d/%m/%Y')
+        post_data = {'fecha': rango_today, 'agente': '', 'campana': self.campana3.pk,
+                     'grupo_agente': '', 'id_contacto': '', 'telefono': '', 'callid': '',
                      'status_auditoria': ''}
         response = self.client.post(url, post_data, follow=True)
         calificaciones = response.context_data['listado_de_calificaciones']
@@ -200,7 +229,10 @@ class AuditoriasCalificacionesTests(OMLBaseTest):
     def test_filtro_agente_se_muestra_correctamente(self):
         agente = self.calificacion25.agente
         url = reverse('buscar_auditorias_gestion', kwargs={'pagina': 1})
-        post_data = {'fecha': '', 'agente': agente.pk, 'campana': '', 'grupo_agente': '',
+        today = now().date()
+        rango_today = today.strftime('%d/%m/%Y') + ' - ' + today.strftime(
+            '%d/%m/%Y')
+        post_data = {'fecha': rango_today, 'agente': agente.pk, 'campana': '', 'grupo_agente': '',
                      'id_contacto': '', 'telefono': '', 'callid': '',
                      'status_auditoria': ''}
         response = self.client.post(url, post_data, follow=True)
@@ -225,8 +257,11 @@ class AuditoriasCalificacionesTests(OMLBaseTest):
 
     def test_filtro_grupo_agentes_se_muestra_correctamente(self):
         grupo_id = self.calificacion25.agente.grupo.pk
+        today = now().date()
+        rango_today = today.strftime('%d/%m/%Y') + ' - ' + today.strftime(
+            '%d/%m/%Y')
         url = reverse('buscar_auditorias_gestion', kwargs={'pagina': 1})
-        post_data = {'fecha': '', 'agente': '', 'campana': '', 'grupo_agente': grupo_id,
+        post_data = {'fecha': rango_today, 'agente': '', 'campana': '', 'grupo_agente': grupo_id,
                      'id_contacto': '', 'telefono': '', 'callid': '',
                      'status_auditoria': ''}
         response = self.client.post(url, post_data, follow=True)
@@ -237,8 +272,11 @@ class AuditoriasCalificacionesTests(OMLBaseTest):
         self.assertEqual(calificaciones.first().pk, self.calificacion25.pk)
 
     def test_filtro_revisadas_se_muestra_correctamente(self):
+        today = now().date()
+        rango_today = today.strftime('%d/%m/%Y') + ' - ' + today.strftime(
+            '%d/%m/%Y')
         url = reverse('buscar_auditorias_gestion', kwargs={'pagina': 1})
-        post_data = {'fecha': '', 'agente': '', 'campana': '', 'grupo_agente': '',
+        post_data = {'fecha': rango_today, 'agente': '', 'campana': '', 'grupo_agente': '',
                      'id_contacto': '', 'telefono': '', 'callid': '',
                      'status_auditoria': '', 'revisadas': '1'}
         response = self.client.post(url, post_data, follow=True)
