@@ -199,7 +199,7 @@ class ApiAppConfig(AppConfig):
         'api_make_unpause':
             {'descripcion': _('Saca al agente de una pausa'), 'version': '1.7.0'},
         'api_make_ringing':
-            {'descripcion': _('Saca al agente en estado Ringing'), 'version': '1.7.0'},
+            {'descripcion': _('Establece el estado Ringing del Agente'), 'version': '1.7.0'},
         'api_credenciales_sip_agente':
             {'descripcion': _('Devuelve credenciales SIP de un agente'), 'version': '1.7.0'},
         'api_set_estado_revision':

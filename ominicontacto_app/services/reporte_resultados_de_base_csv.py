@@ -115,7 +115,7 @@ class ExportacionReporteCSV(object):
             return archivo_de_reporte.url_descarga
         # Esto no debería suceder.
         logger.error(_("obtener_url_reporte_csv_descargar():"
-                       "NO existe archivo CSV de descarga"
+                       "NO existe archivo CSV de descarga "
                        "para la campana {0}".format(campana.nombre)))
         assert os.path.exists(archivo_de_reporte.url_descarga)
 

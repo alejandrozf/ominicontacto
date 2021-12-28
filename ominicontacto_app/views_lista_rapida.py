@@ -94,8 +94,8 @@ class ListaRapidaEditaContactoView(UpdateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.save()
-        message = _("Operación Exitosa:\
-            Se llevó a cabo con éxito la actualización del contacto.")
+        message = _("Operación Exitosa: "
+                    "Se llevó a cabo con éxito la actualización del contacto.")
         messages.add_message(
             self.request,
             messages.SUCCESS,
@@ -125,8 +125,8 @@ class ListaRapidaEliminaContactoView(DeleteView):
         lista.cantidad_contactos -= 1
         lista.save()
         self.object.delete()
-        message = _("Operación Exitosa:\
-            Se llevó a cabo con éxito la eliminación del contacto.")
+        message = _("Operación Exitosa: "
+                    "Se llevó a cabo con éxito la eliminación del contacto.")
         messages.add_message(
             self.request,
             messages.SUCCESS,
@@ -167,8 +167,8 @@ class ListaRapidaNuevoContactoView(CreateView):
         self.object.save()
         lista.save()
 
-        message = _("Operación Exitosa:\
-            Se llevó a cabo con éxito la creación del contacto.")
+        message = _("Operación Exitosa: "
+                    "Se llevó a cabo con éxito la creación del contacto.")
         messages.add_message(
             self.request,
             messages.SUCCESS,
