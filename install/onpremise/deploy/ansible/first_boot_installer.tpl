@@ -103,7 +103,7 @@
 #export oml_app_sca=3600
 # Ephemeral Credentials TTL (ECTTL): It's the time in seconds that will last the SIP credentials
 # used to authenticate a SIP user in the telephony system (by default 8 hours)
-#export oml_app_ecctl=3600
+#export oml_app_ecctl=28800
 # Login failure limit (LFM): It's the number of attempts a user has to enter an incorrect password in login
 # Decrease it if paranoic reasons
 #export oml_app_login_fail_limit=10
@@ -119,6 +119,10 @@
 #export oml_backup_filename=NULL
 # Values: true | NULL
 #export oml_auto_restore=NULL
+
+# Above 200 users enable this
+# Values: true | NULL
+#export oml_high_load=NULL
 
 # ******************** SET ENV VARS ******************** #
 
@@ -356,6 +360,9 @@ sed -i "s%\#s3url=%s3url=${s3url}%g" $PATH_DEPLOY/inventory
 fi
 if [[ "${oml_auto_restore}" != "NULL" ]];then
 sed -i "s/auto_restore=false/auto_restore=${oml_auto_restore}/g" $PATH_DEPLOY/inventory
+fi
+if [[ "${oml_high_load}" != "NULL" ]];then
+sed -i "s/high_load=false/high_load=${oml_high_load}/g" $PATH_DEPLOY/inventory
 fi
 
 # User certs verification *******
