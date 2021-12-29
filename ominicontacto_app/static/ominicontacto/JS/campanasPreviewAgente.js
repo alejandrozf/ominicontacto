@@ -82,10 +82,22 @@ $(document).ready(function(){
                 // llamada
                 if (data['obligar_calificacion'] == true){
                     var oml_api = new OMLAPI();
-                    oml_api.llamadaCalificada(function(){
-                        $('#llamar_contacto').trigger('click');}, function(call_data){
-                        var click2call = window.parent.click2call;
-                        click2call.make_disposition(call_data);});
+                    oml_api.llamadaCalificada(
+                        function(){
+                            $('#llamar_contacto').trigger('click');
+                        },
+                        function(call_data){
+                            var click2call = window.parent.click2call;
+                            click2call.make_disposition(call_data);
+                        },
+                        function(idcalificacion){
+                            var click2call = window.parent.click2call;
+                            click2call.make_sales_form(idcalificacion);
+                        },
+                        function(){
+                            alert(gettext('Error al intentar ejecutar el llamado.'));
+                        }
+                    );
                 }
                 else {
                     $('#llamar_contacto').trigger('click');
