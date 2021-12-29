@@ -657,23 +657,11 @@ class PhoneJSController {
                     self.verificando_calificacion_por_pausa = false;
                 },
                 function(calldata){
-                    $('#obligarCalificarCall').modal('show');
-                    $('#obligarCalificarCall_submit').click(function(){
-                        var call_data_json = JSON.stringify(calldata);
-                        var url = Urls.calificar_llamada(encodeURIComponent(call_data_json));
-                        $('#dataView').attr('src', url);
-                        $('#obligarCalificarCall').modal('hide');
-                    });
+                    click2call.make_disposition(calldata);
                     self.verificando_calificacion_por_pausa = false;
                 },
                 function(idcalificacion){
-                    $('#obligarGestionForm').modal('show');
-                    $('#obligarGestionForm_submit').click(function(){
-                        var id_calification_json = JSON.stringify(idcalificacion);
-                        var url = Urls.formulario_venta(encodeURIComponent(id_calification_json));
-                        $('#dataView').attr('src', url);
-                        $('#obligarGestionForm').modal('hide');
-                    });
+                    click2call.make_sales_form(idcalificacion);
                     self.verificando_calificacion_por_pausa = false;
                 },
                 function(){
