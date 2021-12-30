@@ -1,24 +1,15 @@
 <template>
  <div>
-    <Splitter style="height: 300px" layout="vertical">
-        <SplitterPanel>
-        <div class="row"> 
-            <div class="col-md-2" v-for="(item, index) in reportData.active_campaigns"  :key="item">
-                <CampaingActiveChart :chartName="index" :chartData="item"></CampaingActiveChart>
-            </div>
-        </div>
-        </SplitterPanel>
-        <SplitterPanel>
-        <div class="row"> 
-            <div class="col-md-4">
-                <StateAgentsChart :chartName="state_agents" :chartData="reportData.state_agents"></StateAgentsChart>
-            </div>
-            <div class="col-md-2">
-                <ContactedCallsChart :chartName="contacted_calls" :chartData="reportData.contacted_calls"></ContactedCallsChart>
-            </div>
-        </div>
-        </SplitterPanel>
-    </Splitter>
+    <div class="p-grid">
+        <div v-for="(item, index) in reportData.active_campaigns" :key="item" class="p-col-12 p-md-6 p-lg-3">
+            <CampaingActiveChart :chartName="index" :chartData="item"></CampaingActiveChart>
+        </div >
+    </div>
+    <br>
+    <div class="p-grid">
+        <StateAgentsChart :chartName="state_agents" :chartData="reportData.state_agents" class="p-col-12 p-md-6 p-lg-6" />
+        <ContactedCallsChart :chartName="contacted_calls" :chartData="reportData.contacted_calls" class="p-col-12 p-md-6 p-lg-3 p-lg-offset-2" />
+    </div>
 </div>
 </template>
 <script>

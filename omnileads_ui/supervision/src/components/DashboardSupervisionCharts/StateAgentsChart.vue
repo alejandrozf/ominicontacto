@@ -1,12 +1,12 @@
 <template>
-    <div class="card">
-            <div  class="p-grid" >
-                <div class="p-col-9"> 
-                </div>
-        </div>
-            <h5>Agent Status</h5>
-        <Chart type="bar" :data="basicData" :options="chartOptions" />
-    </div>
+    <Card>
+        <template #title>
+            <h5 class='p-text-center'>Agent Status</h5>
+        </template>
+        <template #content>
+            <Chart type="bar" :data="basicData" :options="chartOptions" />
+        </template>
+    </Card>
 </template>
 <script>
 import { ref, watch } from 'vue'
@@ -25,7 +25,7 @@ export default {
                 plugins: {
                     legend: {
                         labels: {
-                            color: '#495057'
+                            color: '#495057',
                         }
                     }
                 },
@@ -33,16 +33,11 @@ export default {
         );
 
         const basicData = ref({
-            labels: [''],
+            labels: ['Ready', 'Oncall', 'Pause'],
             datasets: [
                 {    
-                    label: '',
-                    backgroundColor: [
-                        "#5AF9A3",
-                        "#3D786A",
-                        "#5AF9F4"
-                    ],
-                    data: []
+                    data: [],
+                    backgroundColor: ["#42A5F5","#66BB6A","#FFA726"]
                 },
             ]
         });

@@ -1,10 +1,14 @@
 <template>
-    <div class="card">
-        <div class="p-field p-col-12 p-md-4">
-            <h5>Active {{chartName}} Campaigns</h5>
-            <Knob v-model="basicData" disabled :min="0" :max="1000" alueColor="SlateGray" rangeColor="MediumTurquoise"/>
-        </div>
-    </div>
+    <Card>
+        <template #title>
+            <h5 class='p-text-center'>Active {{titleize(chartName)}} Campaigns</h5>
+        </template>
+        <template #content>
+            <div class="p-d-flex p-jc-center">
+                <Knob v-model="basicData" readonly :min="0" :max="500" :size="150" alueColor="#fffff" rangeColor="#8FC641"/>
+            </div>
+        </template>
+    </Card>
 </template>
 <script>
 import { ref, watch } from 'vue'
@@ -16,6 +20,11 @@ export default {
     },
     components: {
         Knob,
+    },
+    methods: {
+        titleize(txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+        }
     },
     setup(props) {
         const basicData = ref({

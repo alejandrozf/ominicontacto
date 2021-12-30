@@ -1,12 +1,12 @@
 <template>
-     <div class="card">
-             <div  class="p-grid" >
-                 <div class="p-col-9"> 
-                 </div>
-            </div>
-             <h5>Calls Summary</h5>
+    <Card>
+        <template #title>
+            <h5 class='p-text-center'>Call Summary</h5>
+        </template>
+        <template #content>
             <Chart type="pie" :data="basicData" :options="chartOptions" />
-        </div>
+        </template>
+    </Card>
 </template>
 <script>
 import { ref, watch } from 'vue'
@@ -41,8 +41,8 @@ export default {
                 {
                     data: [],
                     backgroundColor: [
-                        "#5AF9A3",
-                        "#3D786A",
+                        "#8FC641",
+                        "#196F3D",
                     ],
                 },
             ]
