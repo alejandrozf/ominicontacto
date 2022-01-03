@@ -456,6 +456,10 @@ if [[ "${oml_auto_restore}" != "NULL" ]];then
 echo "59 23 * * * /opt/omnileads/bin/backup-restore.sh --backup --omniapp --target=/opt/omnileads/asterisk/var/spool/asterisk/monitor" >> /var/spool/cron/omnileads
 fi
 
+echo "********************* Deactivate cron callrec convert to mp3 *****************"
+if [[ "${oml_acd_host}"  != "NULL" ]];then
+sed -i "s/0 1 \* \* \* source/#0 1 \* \* \* source/g" /var/spool/cron/omnileads
+fi 
 
 echo "******************** sngrep SIP sniffer install ********************"
 
@@ -467,4 +471,3 @@ if [[ "${oml_app_install_sngrep}" == "true" ]];then
   ln -s /usr/local/bin/sngrep /usr/bin/sngrep
 fi
 
-reboot

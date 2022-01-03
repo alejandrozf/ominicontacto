@@ -225,6 +225,7 @@
     file: state=directory path={{ install_prefix }} owner={{ usuario }} group={{ usuario }} recurse=yes
     tags: postinstall
 
+  # Some Tweeks for Hight Load over 200 simultaneus users
   - name: Add high load UWSGI params
     lineinfile:
       path: /opt/omnileads/run/oml_uwsgi.ini
@@ -235,6 +236,42 @@
     - 'reload-on-as = 2048'
     - 'evil-reload-on-rss = 3096'
     - 'max-requests = 2000'
+    when: high_load == "true"
+
+  - name: Edit oml_uwsgi.ini High Load params
+    lineinfile:
+      path: /opt/omnileads/run/oml_uwsgi.ini
+      regexp: "processes = 30" 
+      line: "processes = 50"
+      state: present
+      backup: yes
+    when: high_load == "true"  
+
+  - name: Edit oml_uwsgi.ini High Load params
+    lineinfile:
+      path: /opt/omnileads/run/oml_uwsgi.ini
+      regexp: "harakiri = 600" 
+      line: "harakiri = 3600"
+      state: present
+      backup: yes      
+    when: high_load == "true"
+
+  - name: Edit oml_uwsgi.ini High Load params
+    lineinfile:
+      path: /opt/omnileads/run/oml_uwsgi.ini
+      regexp: "socket-timeout = 600" 
+      line: "socket-timeout = 3600"
+      state: present
+      backup: yes      
+    when: high_load == "true"   
+
+  - name: Edit oml_uwsgi.ini High Load params
+    lineinfile:
+      path: /opt/omnileads/run/oml_uwsgi.ini
+      regexp: "max-worker-lifetime = 10800" 
+      line: "max-worker-lifetime = 7200"
+      state: present
+      backup: yes      
     when: high_load == "true"
 
   # OMniLeads restart
