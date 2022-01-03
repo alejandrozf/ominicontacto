@@ -117,6 +117,8 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_agentes',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_dashboard_supervision',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
     informacion_de_permisos = {
@@ -234,4 +236,7 @@ class ApiAppConfig(AppConfig):
         'api_agentes':
             {'descripcion': _('Lista de Agentes'),
              'version': '1.17.0'},
+        'api_dashboard_supervision':
+            {'descripcion': _('Dashboard de supervision'),
+             'version': '1.18.0'}
     }
