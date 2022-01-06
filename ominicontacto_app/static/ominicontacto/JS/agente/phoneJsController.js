@@ -445,7 +445,7 @@ class PhoneJSController {
             $('#callerid').html(session_data.from_agent_name);
             $('#extraInfo').html(session_data.transfer_type_str);
             $('#modalReceiveCalls').modal('show');
-            this.oml_api.eventRinging();
+            self.oml_api.eventRinging();
         });
 
         this.phone.eventsCallbacks.onCallReceipt.add(function(session_data) {
