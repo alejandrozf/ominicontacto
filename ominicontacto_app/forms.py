@@ -1959,14 +1959,19 @@ class GrupoForm(forms.ModelForm):
         fields = ('nombre', 'auto_unpause', 'auto_attend_inbound',
                   'auto_attend_dialer', 'obligar_calificacion', 'call_off_camp',
                   'acceso_grabaciones_agente', 'acceso_dashboard_agente',
-                  'on_hold', 'limitar_agendas_personales', 'cantidad_agendas_personales')
+                  'on_hold', 'limitar_agendas_personales', 'cantidad_agendas_personales',
+                  'limitar_agendas_personales_en_dias', 'tiempo_maximo_para_agendar')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
             'cantidad_agendas_personales': forms.NumberInput(attrs={
+                'class': 'form-control', 'style': 'display:inline; width:8ch'}),
+            'tiempo_maximo_para_agendar': forms.NumberInput(attrs={
                 'class': 'form-control', 'style': 'display:inline; width:8ch'})
         }
         help_texts = {
             'auto_unpause': _('En segundos'),
+            'cantidad_agendas_personales': _('Cantidad máxima de agendas'),
+            'tiempo_maximo_para_agendar': _('Cantidad máxima de días para agendar'),
         }
         labels = {
             'acceso_grabaciones_agente': _('Permitir el acceso a las grabaciones'),
@@ -1989,6 +1994,14 @@ class GrupoForm(forms.ModelForm):
         cleaned_data = super(GrupoForm, self).clean()
         if cleaned_data.get('limitar_agendas_personales', None):
             self.validate_required_field(cleaned_data, 'cantidad_agendas_personales')
+        if cleaned_data.get('limitar_agendas_personales_en_dias', None):
+            self.validate_required_field(cleaned_data, 'tiempo_maximo_para_agendar')
+
+    def clean_tiempo_maximo_para_agendar(self):
+        data = self.cleaned_data['tiempo_maximo_para_agendar']
+        if data and data > 30:
+            raise forms.ValidationError(_('Permitir agendar a no más de 30 días'))
+        return data
 
 
 class ParametrosCrmForm(forms.ModelForm):
