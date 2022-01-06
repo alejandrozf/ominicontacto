@@ -56,6 +56,7 @@ function processData(rawData) {
         try {
             const agent = JSON.parse(element
                 .replaceAll('\'', '"')
+                .replaceAll('’', '\'')
                 .replaceAll('"[', '[')
                 .replaceAll(']"', ']'));
             const rowData = normalizaRow(agent);
@@ -160,6 +161,9 @@ function createDataTable() {
                     if (data.search('UNAVAILABLE') != -1) {
                         $status.attr('class', 'unavailable');
                     }
+                    if (data.search('RINGING') != -1) {
+                        $status.attr('class', 'ringing');
+                    }
                     return $status.prop('outerHTML');
                 },
             },
@@ -188,7 +192,7 @@ function createDataTable() {
             null,
             null,
         ],
-
+        lengthMenu: [[10, 25, 50, 100, 200, 500, -1], [10, 25, 50, 100, 200, 500 , gettext('Todos')]],
         language: {
             search: gettext('Buscar: '),
             infoFiltered: gettext('(filtrando de un total de _MAX_ contactos)'),

@@ -343,7 +343,7 @@ class RecicladorContactosCampanaDIALER():
             campana, reciclado_calificacion, reciclado_no_contactacion)
 
         # Si quiero reciclar una campana activa puede existir contactos que no fueron llamados
-        if campana.estado == Campana.ESTADO_ACTIVA:
+        if campana.estado == Campana.ESTADO_PAUSADA:
             contactos_no_llamados = self._obtener_contactos_no_llamados(campana)
             contactos_reciclados.update(contactos_no_llamados)
 

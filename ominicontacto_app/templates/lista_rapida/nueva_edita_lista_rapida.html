@@ -22,19 +22,25 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 {% load i18n %}
 
 {% block content %}
+    <!-- Button back -->
+    <nav>
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link" href="{% url 'listas_rapidas' %}" >
+                    <span aria-hidden="true">&laquo;</span>
+                    {% trans 'Atras' %}
+                </a>
+            </li>
+        </ul>
+    </nav>
 
-<h1>{% trans 'Nueva lista rapida de contacto' %}</h1>
-
-<form role="form" method="post" enctype="multipart/form-data" >
-    {% include "base_form_fields.html" with form=form %}
-    <hr>
-    <button type="submit" id="id_registrar" class="btn btn-primary">
-        {% trans 'Definir lista rapida' %}
-    </button>
-</form>
-<br>
-<div>
-    <a class="btn btn-outline-primary" href="/static/ominicontacto/ejemplo_lista_rapida.csv" target="_blank">{% trans 'bajar lista rapida de ejemplo' %}</a>
-</div>
-
+    <h1>{% trans 'Nueva lista rapida de contacto' %}</h1>
+    <form role="form" method="post" enctype="multipart/form-data" >
+        {% include "base_form_fields.html" with form=form %}
+        <hr>
+        <button type="submit" id="id_registrar" class="btn btn-primary">
+            {% trans 'Definir lista rapida' %}
+        </button>
+    </form>
+    <a class="btn btn-outline-primary mt-3" href="/static/ominicontacto/ejemplo_lista_rapida.csv" target="_blank">{% trans 'bajar lista rapida de ejemplo' %}</a>
 {% endblock %}

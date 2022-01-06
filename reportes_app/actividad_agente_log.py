@@ -38,7 +38,8 @@ class AgenteTiemposReporte(object):
 
     def __init__(self, agente, tiempo_sesion, tiempo_pausa, tiempo_llamada,
                  cantidad_llamadas_procesadas, cantidad_intentos_fallidos,
-                 tiempo_llamada_saliente, cantidad_llamadas_saliente, tiempo_hold):
+                 tiempo_llamada_saliente, cantidad_llamadas_saliente, tiempo_hold,
+                 transferidas_a_agente):
 
         self._agente = agente
         self._tiempo_sesion = tiempo_sesion
@@ -49,6 +50,7 @@ class AgenteTiemposReporte(object):
         self._tiempo_llamada_saliente = tiempo_llamada_saliente
         self._cantidad_llamadas_saliente = cantidad_llamadas_saliente
         self._tiempo_hold = tiempo_hold
+        self._transferidas_a_agente = transferidas_a_agente
 
     @property
     def agente(self):
@@ -123,6 +125,10 @@ class AgenteTiemposReporte(object):
     def tiempo_hold(self):
         return self._tiempo_hold
 
+    @property
+    def transferidas_a_agente(self):
+        return self._transferidas_a_agente
+
     def _get_string(self, delta):
         if delta:
             dias = ''
@@ -150,8 +156,9 @@ class AgenteTiemposReporte(object):
 
     def get_promedio_llamadas(self):
         tiempo_llamada = self.tiempo_llamada.total_seconds()
+        cantidad_llamadas = self.cantidad_llamadas_procesadas + self._transferidas_a_agente
         if tiempo_llamada > 0:
-            promedio_llamadas = tiempo_llamada / self.cantidad_llamadas_procesadas
+            promedio_llamadas = tiempo_llamada / cantidad_llamadas
             return float('%.2f' % promedio_llamadas)
         return 0
 

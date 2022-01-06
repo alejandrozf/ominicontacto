@@ -327,7 +327,7 @@ urlpatterns = [
     # ==========================================================================
     # Listas rapidas
     # ==========================================================================
-    url(r'^lista_rapida/list/$',
+    url(r'^listas_rapidas/$',
         login_required(views_lista_rapida.ListaRapidaListView.as_view()),
         name='listas_rapidas',
         ),
@@ -347,6 +347,22 @@ urlpatterns = [
     url(r'^lista_rapida/(?P<pk_lista_rapida>\d+)/eliminar/$',
         login_required(views_lista_rapida.ListaRapidaDeleteView.as_view()),
         name='eliminar_lista_rapida',
+        ),
+    url(r'^lista_rapida/(?P<pk_lista_rapida>\d+)/contactos/$',
+        login_required(views_lista_rapida.ListaRapidaContactosView.as_view()),
+        name='contactos_lista_rapida',
+        ),
+    url(r'^lista_rapida/(?P<pk_lista_rapida>\d+)/contacto/(?P<pk>\d+)/editar/$',
+        login_required(views_lista_rapida.ListaRapidaEditaContactoView.as_view()),
+        name='editar_contacto_lista_rapida',
+        ),
+    url(r'^lista_rapida/(?P<pk_lista_rapida>\d+)/contacto/(?P<pk>\d+)/eliminar/$',
+        login_required(views_lista_rapida.ListaRapidaEliminaContactoView.as_view()),
+        name='eliminar_contacto_lista_rapida',
+        ),
+    url(r'^lista_rapida/(?P<pk_lista_rapida>\d+)/contacto/nuevo/$',
+        login_required(views_lista_rapida.ListaRapidaNuevoContactoView.as_view()),
+        name='nuevo_contacto_lista_rapida',
         ),
     # ==========================================================================
     #  Vistas de manipulación de contactos de una campaña / Para agente

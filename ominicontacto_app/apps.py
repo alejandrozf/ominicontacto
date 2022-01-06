@@ -746,6 +746,14 @@ class OminicontactoAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'define_lista_rapida',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'contactos_lista_rapida',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'editar_contacto_lista_rapida',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'eliminar_contacto_lista_rapida',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'nuevo_contacto_lista_rapida',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'finalizar_campana_preview',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
         ]
@@ -1191,4 +1199,12 @@ class OminicontactoAppConfig(AppConfig):
             {'descripcion': _('Finalizar una campana preview activa'), 'version': '1.17.0'},
         'update_agent_password':
             {'descripcion': _('Actualizar la contrasena de un agente'), 'version': '1.18.1'},
+        'contactos_lista_rapida':
+            {'descripcion': _('Muestra los contactos de una lista rápida'), 'version': '1.19.0'},
+        'editar_contacto_lista_rapida':
+            {'descripcion': _('Edita un contacto de una lista rapida'), 'version': '1.19.0'},
+        'eliminar_contacto_lista_rapida':
+            {'descripcion': _('Elimina un contacto de una lista rapida'), 'version': '1.19.0'},
+        'nuevo_contacto_lista_rapida':
+            {'descripcion': _('Crea un contacto a lista rapida'), 'version': '1.19.0'},
     }

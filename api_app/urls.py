@@ -33,13 +33,15 @@ from api_app.views.supervisor import (
     StatusCampanasSalientesView, InteraccionDeSupervisorSobreAgenteView, LlamadasDeCampanaView,
     CalificacionesDeCampanaView, ReasignarAgendaContactoView, DataAgendaContactoView,
     ExportarCSVContactados, ExportarCSVCalificados, ExportarCSVNoAtendidos,
-    ContactosAsignadosCampanaPreviewView)
+    ContactosAsignadosCampanaPreviewView, ExportarCSVCalificacionesCampana,
+    ExportarCSVFormularioGestionCampana, ExportarCSVResultadosBaseContactados,
+    DashboardSupervision)
 from api_app.views.agente import (
     ObtenerCredencialesSIPAgenteView,
     OpcionesCalificacionViewSet, ApiCalificacionClienteView, ApiCalificacionClienteCreateView,
     API_ObtenerContactosCampanaView, Click2CallView, AgentLogoutView,
     AgentLoginAsterisk, AgentLogoutAsterisk, AgentPauseAsterisk, AgentUnpauseAsterisk,
-    SetEstadoRevisionAuditoria, ApiStatusCalificacionLlamada, ApiEventoHold
+    SetEstadoRevisionAuditoria, ApiStatusCalificacionLlamada, ApiEventoHold, AgentRingingAsterisk
 )
 from api_app.views.grabaciones import ObtenerArchivoGrabacionView, ObtenerArchivosGrabacionView
 from api_app.views.audios import ListadoAudiosView
@@ -138,6 +140,18 @@ urlpatterns = [
     url(r'api/vi/supervision/contactos_asignados_preview/(?P<pk_campana>\d+)/$',
         ContactosAsignadosCampanaPreviewView.as_view(),
         name='api_contactos_asignados_campana_preview'),
+    url(r'api/v1/exportar_csv_calificaciones_campana/$',
+        ExportarCSVCalificacionesCampana.as_view(),
+        name='api_exportar_csv_calificaciones_campana'),
+    url(r'api/v1/exportar_csv_formulario_gestion_campana/$',
+        ExportarCSVFormularioGestionCampana.as_view(),
+        name='api_exportar_csv_formulario_gestion_campana'),
+    url(r'api/v1/exportar_csv_resultados_base_contactados/$',
+        ExportarCSVResultadosBaseContactados.as_view(),
+        name='api_exportar_csv_resultados_base_contactados'),
+    url(r'api/v1/dashboard_supervision/$',
+        DashboardSupervision.as_view(),
+        name='api_dashboard_supervision'),
 
 
     # ###########     AGENTE      ############ #
@@ -156,6 +170,8 @@ urlpatterns = [
         AgentPauseAsterisk.as_view(), name='api_make_pause'),
     url(r'^api/v1/asterisk_unpause/$',
         AgentUnpauseAsterisk.as_view(), name='api_make_unpause'),
+    url(r'^api/v1/asterisk_ringing/$',
+        AgentRingingAsterisk.as_view(), name='api_make_ringing'),
     url(r'api/v1/sip/credentials/agent/', ObtenerCredencialesSIPAgenteView.as_view(),
         name='api_credenciales_sip_agente'),
     url(r'api/v1/audit/set_revision_status/', SetEstadoRevisionAuditoria.as_view(),

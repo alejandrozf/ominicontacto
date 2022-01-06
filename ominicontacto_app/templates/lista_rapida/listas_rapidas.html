@@ -23,14 +23,26 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
 
 
 {% block content %}
-<h1>{% trans 'Listas rápidas' %}</h1>
+
+<div class="d-flex justify-content-end form-row">
+    <div class="col-md-9">
+        <h1>{% trans 'Listas rápidas' %}</h1>
+    </div>
+    <div class="col-md-3">
+        <form method="GET" action="{% url 'listas_rapidas' %}" class="filter-flex">
+            <input type="text" class="form-control" name="search" placeholder="Busca por nombre" value="{{ search }}">
+            <input type="submit" class="btn btn-primary" value="{% trans 'Filtrar' %}">
+        </form>
+    </div>
+</div>
+<hr>
 <table class="table">
     <thead>
       <tr class="fts-table-bg">
         <th>{% trans 'Lista rápida' %}</th>
         <th>{% trans 'Creada' %}</th>
-        <th>{% trans 'Cantidad Contactos' %}</th>
-        <th>{% trans 'Acciones' %}</th>
+        <th class="text-center">{% trans 'Cantidad Contactos' %}</th>
+        <th class="text-center">{% trans 'Acciones' %}</th>
       </tr>
     </thead>
         <tbody id="t_body_ocultas">
@@ -42,15 +54,21 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
                 <td>
                     {{ lista.fecha_alta|date:"d/m/Y" }}
                 </td>
-                <td>
+                <td class="text-center">
                     {{ lista.get_cantidad_contactos }}
                 </td>
-                <td>
+                <td class="text-center">
                     <div class="dropdown">
                         <button class="btn btn-light dropdown-toggle" type="button" id="dropdownActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {% trans 'Opciones' %}
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownActions">
+                            <a class="dropdown-item" href="{% url 'nuevo_contacto_lista_rapida' lista.pk %}">
+                                <span class="icon icon-plus"></span>{% trans 'Agregar contacto' %}
+                            </a>
+                            <a class="dropdown-item" href="{% url 'contactos_lista_rapida' pk_lista_rapida=lista.pk %}">
+                                <span class="icon icon-list"></span>{% trans 'Lista de contactos' %}
+                            </a>
                             <a class="dropdown-item" href="{% url 'update_lista_rapida' lista.pk %}">
                                 <span class="icon icon-plus"></span>{% trans 'Agregar contactos' %}
                             </a>
@@ -70,5 +88,47 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
         {% endfor %}
     </tbody>
 </table>
+
+<a class="btn btn-light btn-sm" href="{% url 'nueva_lista_rapida' %}" >{% trans 'Nueva lista rápida' %}</a>
+
+{% if is_paginated %}
+    <nav class="mt-5" aria-label="Page navigation">
+        <ul class="pagination pagination-centered">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                  <a class="page-link" aria-label="First" href="{{request.path}}?page={{1}}">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">{% trans 'Principio' %}</span>
+                  </a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" aria-label="Previous" href="{{request.path}}?page={{page_obj.previous_page_number}}">
+                    <span aria-hidden="true">&lt;</span>
+                    <span class="sr-only">{% trans 'Anterior' %}</span>
+                  </a>
+                </li>
+            {% endif %}
+            {% for i in pages %}
+                <li class="page-item {% if page_obj.number == i %}active{% endif %}">
+                  <a class="page-link" href="{{request.path}}?page={{i}}"> {{i}} </a>
+                </li>
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                  <a class="page-link" aria-label="Next" href="{{request.path}}?page={{page_obj.next_page_number}}">
+                    <span aria-hidden="true">&gt;</span>
+                    <span class="sr-only">{% trans 'Siguiente' %}</span>
+                  </a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" aria-label="Last" href="{{request.path}}?page={{page_obj.paginator.num_pages}}">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">{% trans 'Final' %}</span>
+                  </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endif %}
 
 {% endblock %}

@@ -975,3 +975,60 @@ class ReportesAgenteTiemposTest(OMLBaseTest):
         for agente in agentes_tiempo:
             self.assertEqual((t_unhold2 - fecha_inferior).total_seconds() + (10 * 60),
                              agente.tiempo_hold.total_seconds())
+
+    def test_genera_tiempos_hold_sin_unhold(self):
+        # Evento de Hold terminando la llamada sin hacer UNHOLD
+        t_hold1 = self.inicio_sesion_agente.time + timezone.timedelta(minutes=15)
+        t_fin_conexion = self.inicio_sesion_agente.time + timezone.timedelta(minutes=30)
+        self.hold1 = LlamadaLogFactory(agente_id=self.agente.id, event='HOLD', time=t_hold1)
+        self.fin_conexion = LlamadaLogFactory(agente_id=self.agente.id, event="COMPLETEAGENT",
+                                              time=t_fin_conexion, callid=self.hold1.callid)
+        reportes_agente = ActividadAgente(self.agente)
+        reportes_agente._procesa_tiempo_hold(t_hold1, t_fin_conexion)
+        self.assertEqual(reportes_agente.tiempo_hold.seconds, 15 * 60)
+
+    def test_genera_tiempos_hold_sin_unhold_en_filtro(self):
+        # Eventos de Hold terminando sin UNHOLD
+        t_hold1 = self.inicio_sesion_agente1.time + timezone.timedelta(minutes=30)
+        t_unhold1 = self.inicio_sesion_agente1.time + timezone.timedelta(minutes=40)
+        t_hold2 = self.inicio_sesion_agente1.time + timezone.timedelta(minutes=50)
+        t_fin_conexion = self.inicio_sesion_agente1.time + timezone.timedelta(minutes=60)
+        evento_hold_1 = LlamadaLogFactory(
+            time=t_hold1, event='HOLD', campana_id=self.preview.id,
+            numero_marcado='456892344', tipo_campana=self.preview.type,
+            tipo_llamada=self.preview.type, agente_id=self.agente1.id)
+        LlamadaLogFactory(
+            time=t_unhold1, event='UNHOLD', campana_id=self.preview.id,
+            numero_marcado='456892344', tipo_campana=self.preview.type,
+            tipo_llamada=self.preview.type, agente_id=self.agente1.id, callid=evento_hold_1.callid)
+        LlamadaLogFactory(
+            time=t_hold2, event='HOLD', campana_id=self.preview.id,
+            numero_marcado='456892344', tipo_campana=self.preview.type,
+            tipo_llamada=self.preview.type, agente_id=self.agente1.id, callid=evento_hold_1.callid)
+        self.fin_conexion = LlamadaLogFactory(agente_id=self.agente1.id, event="COMPLETEAGENT",
+                                              time=t_fin_conexion, callid=evento_hold_1.callid)
+        reportes_agente = ActividadAgente(self.agente1)
+        reportes_agente._procesa_tiempo_hold(t_hold1, t_fin_conexion)
+        self.assertEqual(reportes_agente.tiempo_hold.seconds, 20 * 60)
+
+    def test_genera_tiempos_unhold_fecha_fuera_rango_filtro(self):
+        # Evento de UNHold fuera del filtro
+        fecha_inferior = self.inicio_sesion_agente1.time - timezone.timedelta(days=1)
+        fecha_superior = timezone.now() - timezone.timedelta(days=1)
+        t_hold = fecha_inferior + timezone.timedelta(minutes=20)
+        t_unhold = fecha_superior + timezone.timedelta(minutes=20)
+        evento_hold_2 = LlamadaLogFactory(
+            time=t_hold, event='HOLD', campana_id=self.preview.id,
+            numero_marcado='456892344', tipo_campana=self.preview.type,
+            tipo_llamada=self.preview.type, agente_id=self.agente1.id)
+        LlamadaLogFactory(
+            time=t_unhold, event='UNHOLD', campana_id=self.preview.id,
+            numero_marcado='456892344', tipo_campana=self.preview.type,
+            tipo_llamada=self.preview.type, agente_id=self.agente1.id, callid=evento_hold_2.callid)
+        reportes_estadisticas = TiemposAgente()
+        fecha_inferior = self.inicio_sesion_agente1.time
+        agentes_tiempo, error = reportes_estadisticas.generar_por_fecha_agente(
+            self.agente1, fecha_inferior, fecha_superior)
+        for agente in agentes_tiempo:
+            self.assertEqual((fecha_superior - t_hold).total_seconds(),
+                             agente.tiempo_hold.total_seconds())

@@ -53,7 +53,8 @@ class LlamadaLogFactory(DjangoModelFactory):
     tipo_campana = lazy_attribute(lambda a: faker.random_int(1, 4))
     agente_id = Sequence(lambda n: n)
     event = Sequence(lambda n: "evento_{0}".format(n))
-    numero_marcado = lazy_attribute(lambda a: faker.phone_number())
+    numero_marcado = lazy_attribute(lambda a: str(
+        faker.random_number(10, fix_len=True)))
     contacto_id = Sequence(lambda n: n)
     bridge_wait_time = lazy_attribute(lambda a: faker.random_number(3))
     duracion_llamada = lazy_attribute(lambda a: faker.random_number(3))
@@ -156,11 +157,18 @@ class ContactoFactory(DjangoModelFactory):
     class Meta:
         model = Contacto
 
-    telefono = lazy_attribute(lambda a: str(faker.random_number(10)))
+    telefono = lazy_attribute(lambda a: str(
+        faker.random_number(10, fix_len=True)))
     id_externo = None
-    datos = lazy_attribute(lambda a: '["{0}", "{1}", "{2}", "{3}", "{4}"]'.format(
-        faker.name(), faker.name(), faker.random_number(7), faker.phone_number(),
-        faker.phone_number()))
+    datos = lazy_attribute(
+        lambda a: '["{0}", "{1}", "{2}", "{3}", "{4}"]'.format(
+            faker.name(),
+            faker.name(),
+            faker.random_number(7),
+            str(faker.random_number(10, fix_len=True)),
+            str(faker.random_number(10, fix_len=True))
+        )
+    )
     bd_contacto = SubFactory(BaseDatosContactoFactory)
 
 
@@ -347,9 +355,15 @@ class RespuestaFormularioGestionFactory(DjangoModelFactory):
         model = RespuestaFormularioGestion
 
     calificacion = SubFactory(CalificacionClienteFactory)
-    metadata = lazy_attribute(lambda a: '["{0}", "{1}", "{2}", "{3}", "{4}"]'.format(
-        faker.name(), faker.name(), faker.random_number(7), faker.phone_number(),
-        faker.phone_number()))
+    metadata = lazy_attribute(
+        lambda a: '["{0}", "{1}", "{2}", "{3}", "{4}"]'.format(
+            faker.name(),
+            faker.name(),
+            faker.random_number(7),
+            str(faker.random_number(10, fix_len=True)),
+            str(faker.random_number(10, fix_len=True))
+        )
+    )
 
 
 class AgendaContactoFactory(DjangoModelFactory):

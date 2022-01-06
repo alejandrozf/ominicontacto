@@ -174,9 +174,9 @@ STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 
-# STATICFILES_DIRS = [
-#   os.path.join(BASE_DIR, "static"),
-# ]
+STATICFILES_DIRS = [
+  ("omnileads-ui-supervision", os.path.join(BASE_DIR, "omnileads_ui/supervision/dist")),
+]
 
 AUTH_USER_MODEL = 'ominicontacto_app.User'
 
@@ -188,6 +188,8 @@ LOGIN_REDIRECT_URL = 'index'
 OL_SIP_LIMITE_INFERIOR = 1000
 OL_SIP_LIMITE_SUPERIOR = 3000
 
+OL_NRO_EXT_BPX_LARGO_MIN = 3
+"""Largo minimo permitido de nros de extensiones BPX"""
 
 OL_NRO_TELEFONO_LARGO_MIN = 5
 """Largo minimo permitido de nros telefonicos"""

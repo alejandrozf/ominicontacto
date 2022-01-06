@@ -44,13 +44,14 @@ from ominicontacto_app.models import (
     RespuestaFormularioGestion, AgendaContacto, ActuacionVigente, Blacklist, SitioExterno,
     SistemaExterno, ReglasIncidencia, ReglaIncidenciaPorCalificacion, SupervisorProfile,
     ArchivoDeAudio, NombreCalificacion, OpcionCalificacion, ParametrosCrm, AgenteEnSistemaExterno,
-    AuditoriaCalificacion, ConfiguracionDeAgentesDeCampana, ListasRapidas
+    AuditoriaCalificacion, ConfiguracionDeAgentesDeCampana, ListasRapidas, ContactoListaRapida
 )
 from ominicontacto_app.services.campana_service import CampanaService
 from ominicontacto_app.utiles import (convertir_ascii_string, validar_nombres_campanas,
                                       validar_solo_ascii_y_sin_espacios, remplace_espacio_por_guion,
                                       validar_longitud_nombre_base_de_contactos)
 from configuracion_telefonia_app.models import DestinoEntrante, Playlist, RutaSaliente
+from ominicontacto_app.parser import is_valid_length
 
 from utiles_globales import validar_extension_archivo_audio
 from .utiles import convert_fecha_datetime
@@ -513,6 +514,45 @@ class ListaRapidaForm(forms.ModelForm):
         }
 
 
+class ContactoListaRapidaForm(forms.ModelForm):
+    # Campos del formulario
+    nombre = forms.CharField(
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': _('Nombre de contacto')
+            }
+        )
+    )
+
+    telefono = forms.CharField(
+        required=True,
+        max_length=25,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': _('Teléfono de contacto')
+            }
+        )
+    )
+
+    # Fields cleanners
+    def clean_telefono(self):
+        telefono = self.cleaned_data.get('telefono')
+        if not telefono.isdigit():
+            msg = _("Debe ser en formato '99999999' y numérico.")
+            raise forms.ValidationError(msg)
+        if not is_valid_length(telefono, 3, 25):
+            msg = _("Solo se permiten de 3-25 dígitos.")
+            raise forms.ValidationError(msg)
+        return telefono
+
+    class Meta:
+        model = ContactoListaRapida
+        fields = ('nombre', 'telefono')
+
+
 class CamposListaRapidaForm(forms.Form):
     """ Formulario para identificar campos especiales de la base de datos """
     campos_telefonicos = forms.MultipleChoiceField(
@@ -536,7 +576,7 @@ class GrabacionBusquedaForm(forms.Form):
     """
     El form para la busqueda de grabaciones
     """
-    fecha = forms.CharField(required=False,
+    fecha = forms.CharField(required=True,
                             widget=forms.TextInput(attrs={'class': 'form-control'}),
                             label=_('Fecha'))
     tipo_llamada_choice = list(LlamadaLog.TYPE_LLAMADA_CHOICES)
@@ -588,7 +628,7 @@ class AuditoriaBusquedaForm(forms.Form):
     AUDITORIA_PENDIENTE = 3
     AUDITORIA_PENDIENTE_CHOICE = (AUDITORIA_PENDIENTE, _('Pendiente'))
 
-    fecha = forms.CharField(required=False,
+    fecha = forms.CharField(required=True,
                             widget=forms.TextInput(attrs={'class': 'form-control'}),
                             label=_('Fecha'))
     agente = forms.ModelChoiceField(queryset=AgenteProfile.objects.none(),
@@ -1116,6 +1156,7 @@ class FormularioNuevoContacto(forms.ModelForm):
         campos_a_ocultar = campos_ocultos  # Son los campos a bloquear para la edicion Y creación.
         self.campos_a_bloquear = campos_a_bloquear
         self.campos_a_ocultar = campos_a_ocultar
+        self.es_campana_entrante = kwargs.pop('es_campana_entrante', False)
         if 'instance' in kwargs and kwargs['instance'] is not None:
             campos_a_bloquear = campos_bloqueados
             contacto = kwargs['instance']
@@ -1129,6 +1170,8 @@ class FormularioNuevoContacto(forms.ModelForm):
             bd_metadata = base_datos.get_metadata()
 
         super(FormularioNuevoContacto, self).__init__(*args, **kwargs)
+        if self.es_campana_entrante:
+            self.fields['telefono'].required = False
         nombre_campo_telefono = bd_metadata.nombre_campo_telefono
         nombre_campo_id_externo = bd_metadata.nombre_campo_id_externo
         for campo in bd_metadata.nombres_de_columnas:
@@ -1189,6 +1232,7 @@ class FormularioNuevoContacto(forms.ModelForm):
                 datos_contacto_dict = self.instance.obtener_datos()
                 campo = datos_contacto_dict.get(self.get_nombre_input(nombre), '')
             datos.append(campo)
+
         return json.dumps(datos)
 
     def es_campo_telefonico(self, nombre_input):
@@ -1198,6 +1242,16 @@ class FormularioNuevoContacto(forms.ModelForm):
             if nombre_input == self.get_nombre_input(nombre_campo):
                 return True
         return False
+
+    def clean_telefono(self):
+        telefono = str(self.cleaned_data.get('telefono')) if not self.es_campana_entrante else ""
+        if telefono and not telefono.isdigit():
+            msg = _('Debe ser en formato "999999999" y solo numérico.')
+            raise forms.ValidationError(msg)
+        if telefono and not 3 <= len(telefono) <= 20:
+            msg = _('Solo se permiten de 3-20 dígitos.')
+            raise forms.ValidationError(msg)
+        return telefono
 
     def clean_id_externo(self):
         id_externo = self.cleaned_data.get('id_externo')
@@ -1215,7 +1269,23 @@ class FormularioNuevoContacto(forms.ModelForm):
     def clean(self):
         if not self.instance.id:
             self.instance.bd_contacto = self.base_datos
+        self.validate_phone_fields()
         return super(FormularioNuevoContacto, self).clean()
+
+    def validate_phone_fields(self):
+        db_metadata = self.base_datos.get_metadata()
+        for field_phone in db_metadata.nombres_de_columnas_de_telefonos[1:]:
+            self.validate_field(field_phone)
+
+    def validate_field(self, field_name):
+        field = str(self.cleaned_data.get(field_name))
+        if field:
+            if not field.isdigit():
+                msg = _('Debe ser en formato "999999999" y solo numérico.')
+                self.add_error(field_name, forms.ValidationError(msg))
+            if not 3 <= len(field) <= 20:
+                msg = _('Solo se permiten de 3-20 dígitos.')
+                self.add_error(field_name, forms.ValidationError(msg))
 
 
 class BloquearCamposParaAgenteForm(forms.Form):
@@ -1639,7 +1709,8 @@ class QueueDialerForm(forms.ModelForm):
             "weight": forms.TextInput(attrs={'class': 'form-control'}),
             "wait": forms.TextInput(attrs={'class': 'form-control'}),
             "audio_para_contestadores": forms.Select(attrs={'class': 'form-control'}),
-            "initial_boost_factor": forms.NumberInput(attrs={'class': 'form-control'}),
+            "initial_boost_factor": forms.NumberInput(
+                attrs={'class': 'form-control', 'min': 0.1, 'max': 5}),
             "dial_timeout": forms.NumberInput(attrs={'class': 'form-control'}),
             'tipo_destino': forms.Select(attrs={'class': 'form-control'}),
             'destino': forms.Select(attrs={'class': 'form-control', 'id': 'destino'}),
@@ -1656,9 +1727,9 @@ class QueueDialerForm(forms.ModelForm):
 
     def clean(self):
         initial_boost_factor = self.cleaned_data.get('initial_boost_factor')
-        if initial_boost_factor and initial_boost_factor < 1.0:
+        if initial_boost_factor and initial_boost_factor < 0.1:
             raise forms.ValidationError('El factor boost inicial no debe ser'
-                                        ' menor a 1.0')
+                                        ' menor a 0.1')
         if initial_boost_factor and initial_boost_factor > 5.0:
             raise forms.ValidationError('El factor boost inicial no debe ser'
                                         ' mayor a 5.0')
@@ -1888,9 +1959,11 @@ class GrupoForm(forms.ModelForm):
         fields = ('nombre', 'auto_unpause', 'auto_attend_inbound',
                   'auto_attend_dialer', 'obligar_calificacion', 'call_off_camp',
                   'acceso_grabaciones_agente', 'acceso_dashboard_agente',
-                  'on_hold')
+                  'on_hold', 'limitar_agendas_personales', 'cantidad_agendas_personales')
         widgets = {
             'auto_unpause': forms.NumberInput(attrs={'class': 'form-control'}),
+            'cantidad_agendas_personales': forms.NumberInput(attrs={
+                'class': 'form-control', 'style': 'display:inline; width:8ch'})
         }
         help_texts = {
             'auto_unpause': _('En segundos'),
@@ -1904,6 +1977,18 @@ class GrupoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(GrupoForm, self).__init__(*args, **kwargs)
         self.fields['auto_unpause'].required = False
+
+    def validate_required_field(self, cleaned_data, field_name,
+                                message=_('Este campo es requerido')):
+        if(field_name in cleaned_data and
+                cleaned_data[field_name] is None):
+            self._errors[field_name] = self.error_class([message])
+            del cleaned_data[field_name]
+
+    def clean(self):
+        cleaned_data = super(GrupoForm, self).clean()
+        if cleaned_data.get('limitar_agendas_personales', None):
+            self.validate_required_field(cleaned_data, 'cantidad_agendas_personales')
 
 
 class ParametrosCrmForm(forms.ModelForm):

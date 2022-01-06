@@ -35,13 +35,13 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </div>-->
 
             {% if error_predictor %}
-                <div class="bs-callout bs-callout-danger">
+                <div class="text-danger">
                     <h4>{% trans 'Falló predictor de CSV.' %}</h4>
                     <p>{% trans 'No se pudo predecir el formato del archivo csv subido.' %}</p>
                 </div>
             {% endif %}
             {% if error_predictor_encabezado %}
-                <div class="bs-callout bs-callout-danger">
+                <div class="text-danger">
                     <h4>{% trans 'Falló predictor de CSV.' %}</h4>
                     <p>{% trans 'No se pudo predecir el formato del archivo csv subido.' %}</p>
                 </div>
@@ -97,12 +97,12 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
             </div>
 
             <br>
-            <a href="{% url 'nueva_base_datos_contacto' %}">
-                <button type="button" class="btn btn-danger btn-sm">
-                    {% trans 'Volver a nueva lista rapida' %}
+            <a href="{% url 'nueva_lista_rapida' %}">
+                <button type="button" class="btn btn-danger btn-md">
+                    {% trans 'Volver' %}
                 </button>
             </a>
-            <button type="submit" id="id_guardar" class="btn btn-success btn-lg modal_proceso_grande">
+            <button type="submit" id="id_guardar" class="btn btn-success btn-md modal_proceso_grande"{% if error_predictor %}disabled{% endif %}>
                 {% trans 'Guardar lista rapida' %}
             </button>
 

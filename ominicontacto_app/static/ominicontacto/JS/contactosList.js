@@ -18,13 +18,61 @@
 */
 
 /* global Urls gettext create_node PREVIEW DIALER */
-$(document).ready(function(){
+$(document).ready(function () {
 
     var $inputContacto = $('#pk_contacto');
     var pk_campana = $('#pk_campana').attr('value');
     var tipo_campana = $('#campana_tipo').attr('value');
+    var length_row_data = 0;
 
-    function obtener_nodos_acciones (row, data, index) {
+    function getColumsNameOfDBContactos() {
+        return $('#db_metadata_columnas').val().split(' ');
+    }
+
+    function getTargets(size_data) {
+        var targets = [];
+        for (let i = 2; i < (2 + size_data); i++) {
+            targets.push(i);
+        }
+        return targets;
+    }
+
+    function getColumnDefsByMetadata() {
+        var columnDefs = [];
+        var columnNames = getColumsNameOfDBContactos();
+        var targets = getTargets(columnNames.length);
+        columnDefs.push({
+            'className': 'text-center',
+            'targets': [length_row_data - 1]
+        });
+        for (let i = 0; i < targets.length; i++) {
+            columnDefs.push({
+                'className': `d-none db_metadata_body_${columnNames[i]}`,
+                'targets': targets[i]
+            });
+        }
+        return columnDefs;
+    }
+
+    function setInfoWhenChangePage() {
+        getColumsNameOfDBContactos().forEach(element => {
+            var headElement = document.getElementById(`db_metadata_head_${element}`);
+            var elementsByClass = document.getElementsByClassName(`db_metadata_body_${element}`);
+            if (document.getElementById(`check_${element}`).checked) {
+                headElement.classList.remove('d-none');
+                for (const e of elementsByClass) {
+                    e.classList.remove('d-none');
+                }
+            } else {
+                headElement.classList.add('d-none');
+                for (const e of elementsByClass) {
+                    e.classList.add('d-none');
+                }
+            }
+        });
+    }
+
+    function obtener_nodos_acciones(row, data, index) {
         var pk_contacto = data[0];
         var nodos_acciones = [];
 
@@ -54,7 +102,7 @@ $(document).ready(function(){
             });
             $llamar_contacto.append($span_llamar_contacto);
             $llamar_contacto
-                .on('click', function() {
+                .on('click', function () {
                     $inputContacto.attr('value', pk_contacto);
                     $('#lista_llamar_contacto').trigger('click');
                 });
@@ -84,17 +132,27 @@ $(document).ready(function(){
 
         return nodos_acciones;
     }
+
     $('#agenteContactosTable')
-        .DataTable( {
+        .DataTable({
             // Convierte a datatable la tabla de contactos
-            'createdRow': function ( row, data, index ) {
+            'createdRow': function (row, data, index) {
                 var nodo_acciones = obtener_nodos_acciones(row, data, index);
                 $(row).find('td').last().append(nodo_acciones);
+                length_row_data = data.length;
             },
+            'columnDefs': [
+                ...getColumnDefsByMetadata()
+            ],
             serverSide: true,
             processing: true,
-            // {% url 'api_contactos_campana' %}
-            ajax: Urls.api_contactos_campana(pk_campana),
+            lengthChange: true,
+            ajax: {
+                url: Urls.api_contactos_campana(pk_campana),
+                data: function(data) {
+                    delete data.columns;
+                }
+            },
             ordering: false,
             paging: true,
             language: {
@@ -110,4 +168,9 @@ $(document).ready(function(){
                 info: gettext('Mostrando _START_ a _END_ de _TOTAL_ entradas'),
             }
         });
+    // Evento para pintar la información que se
+    // quedó seleccionada al momento de pintar el datatable
+    $('#agenteContactosTable').on('draw.dt', () => {
+        setInfoWhenChangePage();
+    });
 });

@@ -261,4 +261,22 @@ class OMLAPI {
         });
 
     }
+
+    eventRinging(ringing=true){
+        var URL = Urls.api_make_ringing();
+        var post_data = {
+            'ringing': ringing,
+        };
+        $.ajax({
+            url: URL,
+            type: 'POST',
+            data: post_data,
+            success: function(msg){
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(gettext('Error al ejecutar => ') + textStatus + ' - ' + errorThrown);
+            }
+        });
+
+    }
 }

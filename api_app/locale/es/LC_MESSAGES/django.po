@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-05 10:37-0300\n"
+"POT-Creation-Date: 2021-12-28 14:31-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,167 +17,179 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: api_app/apps.py:116
+#: api_app/apps.py:124
 msgid "Lista de agentes activos de un Grupo"
 msgstr ""
 
-#: api_app/apps.py:118
+#: api_app/apps.py:126
 msgid "Campañas relacionadas a un supervisor"
 msgstr ""
 
-#: api_app/apps.py:120
+#: api_app/apps.py:128
 msgid "Opciones de calificacion de una campaña (id campaña externo)"
 msgstr ""
 
-#: api_app/apps.py:123
+#: api_app/apps.py:131
 msgid "Opciones de calificacion de una campaña (id campaña oml)"
 msgstr ""
 
-#: api_app/apps.py:126
+#: api_app/apps.py:134
 msgid "Ver/editar calificación cliente"
 msgstr ""
 
-#: api_app/apps.py:128
+#: api_app/apps.py:136
 msgid "Crear calificacion cliente"
 msgstr ""
 
-#: api_app/apps.py:130
+#: api_app/apps.py:138
 msgid "Crear contacto"
 msgstr ""
 
-#: api_app/apps.py:132
+#: api_app/apps.py:140
 msgid "Metadata de la base de datos de una campaña"
 msgstr ""
 
-#: api_app/apps.py:134
+#: api_app/apps.py:142
 msgid "Crear nuevo rol"
 msgstr ""
 
-#: api_app/apps.py:136
+#: api_app/apps.py:144
 msgid "Eliminar rol"
 msgstr ""
 
-#: api_app/apps.py:138
+#: api_app/apps.py:146
 msgid "Actualizar permisos de Rol"
 msgstr ""
 
-#: api_app/apps.py:140
+#: api_app/apps.py:148
 msgid "Devuelve información de los agentes en el sistema"
 msgstr ""
 
-#: api_app/apps.py:143
+#: api_app/apps.py:151
 msgid "Reporte de llamadas entrantes de supervisión."
 msgstr ""
 
-#: api_app/apps.py:145
+#: api_app/apps.py:153
 msgid "Reporte de llamadas salientes no dialer de supervisión."
 msgstr ""
 
-#: api_app/apps.py:149
+#: api_app/apps.py:157
 msgid "Ejecuta acciones de supervisión sobre agente (Deslogueo, pausas, etc..)"
 msgstr ""
 
-#: api_app/apps.py:152
+#: api_app/apps.py:160
 msgid "Cantidades por tipos de llamada en una campaña"
 msgstr ""
 
-#: api_app/apps.py:155
+#: api_app/apps.py:163
 msgid "Cantidades por tipo de calificación en una campaña"
 msgstr ""
 
-#: api_app/apps.py:158
+#: api_app/apps.py:166
 msgid "Reasignar una Agenda a otro Agente"
 msgstr ""
 
-#: api_app/apps.py:160
+#: api_app/apps.py:168
 msgid "Información de contacto de una  Agenda"
 msgstr ""
 
-#: api_app/apps.py:162
+#: api_app/apps.py:170
 msgid "Exportar reporte de contactados de una campaña a csv"
 msgstr ""
 
-#: api_app/apps.py:165
+#: api_app/apps.py:173
 msgid "Exportar reporte de calificados de una campaña a csv"
 msgstr ""
 
-#: api_app/apps.py:168
+#: api_app/apps.py:176
 msgid "Exportar reporte de no atendidos de una campaña a csv"
 msgstr ""
 
-#: api_app/apps.py:171
-msgid "Contactos de una campaña"
-msgstr ""
-
-#: api_app/apps.py:173
-msgid "Ejecuta un click 2 call"
-msgstr ""
-
-#: api_app/apps.py:175
-msgid "Ejecuta el login del agente en Asterisk."
-msgstr ""
-
-#: api_app/apps.py:177
-msgid "Ejecuta el logout del agente en Asterisk"
-msgstr ""
-
-#: api_app/apps.py:179
-msgid "Logout del agente en OML"
-msgstr ""
-
-#: api_app/apps.py:181
-msgid "Pone al agente en una pausa"
-msgstr ""
-
-#: api_app/apps.py:183
-msgid "Saca al agente de una pausa"
+#: api_app/apps.py:179 api_app/apps.py:182
+msgid "Exportar reporte de calificaciones de una campaña a csv"
 msgstr ""
 
 #: api_app/apps.py:185
-msgid "Devuelve credenciales SIP de un agente"
+msgid "API para exportar resultados de base contactados a csv"
 msgstr ""
 
-#: api_app/apps.py:187
-msgid "Establece el estado de revisión de una Auditoría"
+#: api_app/apps.py:188
+msgid "Contactos de una campaña"
 msgstr ""
 
 #: api_app/apps.py:190
-msgid "Almacena en la base de datos los contactos subidos en archivo csv"
+msgid "Ejecuta un click 2 call"
 msgstr ""
 
-#: api_app/apps.py:193
-msgid "Detecta si una llamada esta calificada."
+#: api_app/apps.py:192
+msgid "Ejecuta el login del agente en Asterisk."
+msgstr ""
+
+#: api_app/apps.py:194
+msgid "Ejecuta el logout del agente en Asterisk"
 msgstr ""
 
 #: api_app/apps.py:196
-msgid "Reenvía la llave de la instancia registrada por email"
+msgid "Logout del agente en OML"
 msgstr ""
 
 #: api_app/apps.py:198
-msgid "Retorna el archivo de grabación especificado"
+msgid "Pone al agente en una pausa"
 msgstr ""
 
-#: api_app/apps.py:201
-msgid "Retorna Zip con archivos de grabación especificados"
+#: api_app/apps.py:200
+msgid "Saca al agente de una pausa"
+msgstr ""
+
+#: api_app/apps.py:202
+msgid "Establece el estado Ringing del Agente"
 msgstr ""
 
 #: api_app/apps.py:204
+msgid "Devuelve credenciales SIP de un agente"
+msgstr ""
+
+#: api_app/apps.py:206
+msgid "Establece el estado de revisión de una Auditoría"
+msgstr ""
+
+#: api_app/apps.py:209
+msgid "Almacena en la base de datos los contactos subidos en archivo csv"
+msgstr ""
+
+#: api_app/apps.py:212
+msgid "Detecta si una llamada esta calificada."
+msgstr ""
+
+#: api_app/apps.py:215
+msgid "Reenvía la llave de la instancia registrada por email"
+msgstr ""
+
+#: api_app/apps.py:217
+msgid "Retorna el archivo de grabación especificado"
+msgstr ""
+
+#: api_app/apps.py:220
+msgid "Retorna Zip con archivos de grabación especificados"
+msgstr ""
+
+#: api_app/apps.py:223
 msgid "Devuelve los contactos asignados de una campaña preview"
 msgstr ""
 
-#: api_app/apps.py:207
+#: api_app/apps.py:226
 msgid "Loggea el evento hold o unhold"
 msgstr ""
 
-#: api_app/apps.py:210
+#: api_app/apps.py:229
 msgid "Lista audios de asterisk"
 msgstr ""
 
-#: api_app/apps.py:213
+#: api_app/apps.py:232
 msgid "Lista de grupos de agentes"
 msgstr ""
 
-#: api_app/apps.py:216
+#: api_app/apps.py:235
 msgid "Lista de Agentes"
 msgstr ""
 
@@ -229,7 +241,7 @@ msgstr ""
 
 #: api_app/tests/tests_api_click2call.py:158
 #: api_app/tests/tests_api_contactos.py:170
-#: api_app/tests/tests_api_contactos.py:262 api_app/views/agente.py:200
+#: api_app/tests/tests_api_contactos.py:262 api_app/views/agente.py:220
 #: api_app/views/base.py:86 api_app/views/base.py:214
 msgid "Sistema externo inexistente."
 msgstr ""
@@ -357,139 +369,151 @@ msgstr ""
 msgid "Error al generar sip password"
 msgstr ""
 
-#: api_app/views/agente.py:199 api_app/views/agente.py:234
+#: api_app/views/agente.py:219 api_app/views/agente.py:254
 #: api_app/views/base.py:75 api_app/views/base.py:203
 msgid "Hubo errores en los datos recibidos"
 msgstr ""
 
-#: api_app/views/agente.py:225
+#: api_app/views/agente.py:245
 msgid "Error al ejecutar la llamada"
 msgstr ""
 
-#: api_app/views/agente.py:370
+#: api_app/views/agente.py:412
 msgid "Auditoría inexistente"
 msgstr ""
 
-#: api_app/views/agente.py:375
+#: api_app/views/agente.py:417
 msgid "No tiene permiso para modificar la auditoría"
 msgstr ""
 
-#: api_app/views/grabaciones.py:78
+#: api_app/views/grabaciones.py:98
 msgid "Exportación de grabaciones Zip en proceso"
 msgstr ""
 
-#: api_app/views/supervisor.py:90 api_app/views/supervisor.py:94
-#: api_app/views/supervisor.py:97
+#: api_app/views/supervisor.py:101 api_app/views/supervisor.py:105
+#: api_app/views/supervisor.py:108
 msgid "Filtro \"type\" inválido"
 msgstr ""
 
-#: api_app/views/supervisor.py:106
+#: api_app/views/supervisor.py:117
 msgid "Filtro \"agent\" inválido"
 msgstr ""
 
-#: api_app/views/supervisor.py:110
+#: api_app/views/supervisor.py:121
 msgid "Agente inexistente"
 msgstr ""
 
-#: api_app/views/supervisor.py:121 api_app/views/supervisor.py:126
-#: api_app/views/supervisor.py:129
+#: api_app/views/supervisor.py:132 api_app/views/supervisor.py:137
+#: api_app/views/supervisor.py:140
 msgid "Filtro \"status\" inválido"
 msgstr ""
 
-#: api_app/views/supervisor.py:282 api_app/views/supervisor.py:328
+#: api_app/views/supervisor.py:293 api_app/views/supervisor.py:339
 msgid "ID Agenda incorrecto"
 msgstr ""
 
-#: api_app/views/supervisor.py:289
+#: api_app/views/supervisor.py:300
 msgid "ID Agente incorrecto"
 msgstr ""
 
-#: api_app/views/supervisor.py:297 api_app/views/supervisor.py:335
+#: api_app/views/supervisor.py:308 api_app/views/supervisor.py:346
 msgid "No tiene permiso para editar esta Agenda"
 msgstr ""
 
-#: api_app/views/supervisor.py:354
+#: api_app/views/supervisor.py:365
 msgid "Recibidas"
 msgstr ""
 
-#: api_app/views/supervisor.py:355
+#: api_app/views/supervisor.py:366
 msgid "Efectuadas"
 msgstr ""
 
-#: api_app/views/supervisor.py:356
+#: api_app/views/supervisor.py:367
 msgid "Atendidas"
 msgstr ""
 
-#: api_app/views/supervisor.py:357
+#: api_app/views/supervisor.py:368
 msgid "Conectadas"
 msgstr ""
 
-#: api_app/views/supervisor.py:358
+#: api_app/views/supervisor.py:369
 msgid "No Conectadas"
 msgstr ""
 
-#: api_app/views/supervisor.py:359
+#: api_app/views/supervisor.py:370
 msgid "Abandonadas"
 msgstr ""
 
-#: api_app/views/supervisor.py:360
+#: api_app/views/supervisor.py:371
 msgid "Expiradas"
 msgstr ""
 
-#: api_app/views/supervisor.py:361
+#: api_app/views/supervisor.py:372
 msgid "Tiempo de Espera de Conexión(prom.)"
 msgstr ""
 
-#: api_app/views/supervisor.py:362
+#: api_app/views/supervisor.py:373
 msgid "Tiempo de Espera de Atención(prom.)"
 msgstr ""
 
-#: api_app/views/supervisor.py:363
+#: api_app/views/supervisor.py:374
 msgid "Tiempo de Abandono(prom.)"
 msgstr ""
 
-#: api_app/views/supervisor.py:366
+#: api_app/views/supervisor.py:377
 msgid "Efectuadas Manuales"
 msgstr ""
 
-#: api_app/views/supervisor.py:367
+#: api_app/views/supervisor.py:378
 msgid "Conectadas Manuales"
 msgstr ""
 
-#: api_app/views/supervisor.py:368
+#: api_app/views/supervisor.py:379
 msgid "No Conectadas Manuales"
 msgstr ""
 
-#: api_app/views/supervisor.py:369
+#: api_app/views/supervisor.py:380
 msgid "Tiempo de Espera de Conexión Manuales(prom.)"
 msgstr ""
 
-#: api_app/views/supervisor.py:389 api_app/views/supervisor.py:404
+#: api_app/views/supervisor.py:400 api_app/views/supervisor.py:415
 msgid "No existe la campaña"
 msgstr ""
 
-#: api_app/views/supervisor.py:474
+#: api_app/views/supervisor.py:506
+msgid "Exportación de CSV en proceso"
+msgstr ""
+
+#: api_app/views/supervisor.py:554
 msgid "Exportación de contactados a .csv en proceso"
 msgstr ""
 
-#: api_app/views/supervisor.py:521
+#: api_app/views/supervisor.py:601
 msgid "Exportación de calificados a .csv en proceso"
 msgstr ""
 
-#: api_app/views/supervisor.py:568
+#: api_app/views/supervisor.py:648
 msgid "Exportación de no atendidos a .csv en proceso"
 msgstr ""
 
-#: api_app/views/supervisor.py:580
+#: api_app/views/supervisor.py:660
 msgid "Finalizado"
 msgstr ""
 
-#: api_app/views/supervisor.py:582
+#: api_app/views/supervisor.py:662
 msgid "Liberado"
 msgstr ""
 
-#: api_app/views/supervisor.py:584
+#: api_app/views/supervisor.py:664
 msgid "Reservado"
+msgstr ""
+
+#: api_app/views/supervisor.py:748
+msgid "Exportación de calificaciones a .csv en proceso"
+msgstr ""
+
+#: api_app/views/supervisor.py:793
+msgid "Exportación de Formularios de Gestiones a .csv en proceso"
 msgstr ""
 
 #: utiles_globales.py:37

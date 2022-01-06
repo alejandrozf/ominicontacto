@@ -259,7 +259,7 @@ class BorrarUsuariosTest(ABMUsuariosTest):
 
     @patch('ominicontacto_app.services.asterisk.asterisk_ami.AmiManagerClient.connect')
     @patch('ominicontacto_app.services.creacion_queue.ActivacionQueueService.activar')
-    @patch('ominicontacto_app.views_queue_member.remover_agente_cola_asterisk')
+    @patch('ominicontacto_app.views_user_profiles.remover_agente_cola_asterisk')
     def test_supevisor_puede_borrar_agentes_asignados_a_sus_campanas(
             self, remover_agente_cola_asterisk, activar, connect):
         self.client.login(username=self.supervisor.user.username, password=PASSWORD)
@@ -268,6 +268,9 @@ class BorrarUsuariosTest(ABMUsuariosTest):
         url = reverse('agent_delete', kwargs={'pk': user_agente.id})
         response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 200)
+        remover_agente_cola_asterisk.assert_called()
+        activar.assert_called()
+        connect.assert_called()
         self.assertRedirects(response, reverse('user_list', kwargs={"page": 1}))
 
         user_agente.refresh_from_db()

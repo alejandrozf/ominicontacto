@@ -16,11 +16,7 @@
  along with this program.  If not, see http://www.gnu.org/licenses/.
 
 */
+/* global Urls */
 function mostrar_bases_datos_ocultas() {
-
-    $.get(Urls.mostrar_bases_datos_ocultas(),
-            function (data) {
-                $('#t_body_ocultas').html(data);
-
-            });
+    $.get(Urls.mostrar_bases_datos_ocultas(), (data) => { $('#t_body_ocultas').html(data); });
 }

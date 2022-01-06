@@ -217,13 +217,12 @@ class ParserCsv(object):
                                                   "repetidos."))
         return nombres_saneados
 
-    def previsualiza_archivo(self, base_datos_contactos):
+    def previsualiza_archivo(self, base_datos_contactos, previsualizacion=True):
         """
         Lee un archivo CSV y devuelve contenidos de
         las primeras tres filas.
         """
-
-        return self._get_contenido_de_archivo(base_datos_contactos, True)
+        return self._get_contenido_de_archivo(base_datos_contactos, previsualizacion)
 
     def get_estructura_archivo(self, base_datos_contactos):
         """
@@ -315,6 +314,32 @@ def validate_telefono(number):
         return True
 
     return False
+
+
+def validate_telefono_or_ext(number):
+    """
+    Esta función valida el numero telefónico tenga  entre 3 y 13 dígitos.
+    """
+    number = REGEX_NON_DIGITS.sub("", smart_text(number))
+    if settings.OL_NRO_EXT_BPX_LARGO_MIN <= len(number) <= \
+            settings.OL_NRO_TELEFONO_LARGO_MAX:
+        return True
+
+    return False
+
+
+def is_valid_length(field, min, max):
+    """
+    Esta función valida longitud entre NIM y MAX.
+    """
+    return min <= len(field) <= max
+
+
+def get_digits_from_field(field):
+    """
+    Esta función obtiene los digitos de una cadena.
+    """
+    return REGEX_NON_DIGITS.sub("", smart_text(field))
 
 
 PATTERN_SANITIZE_NUMBER = re.compile("[^0-9]")

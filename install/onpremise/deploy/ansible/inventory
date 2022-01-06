@@ -114,10 +114,25 @@ MONITORFORMAT=mp3
 #################################################################################################
 LOGIN_FAILURE_LIMIT=10
 ####################################
-# Language of schedule disposition #
+# Name of schedule disposition     #
 ####################################
 schedule=Agenda
 
+###########################################################
+# Restore File in case of Infrastructura as a code deploy #
+###########################################################
+#backup_file_name=
+#backup_file_path=
+#s3_access_key=
+#s3_secret_key=
+#backup_bucket_name=
+#s3url=
+auto_restore=false
+
+#####################################
+# In case of high load > 200 usuers #
+#####################################
+high_load=false
 
 # Do not change the variables below or you will experience
 # bad things

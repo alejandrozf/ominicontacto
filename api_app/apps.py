@@ -73,6 +73,12 @@ class ApiAppConfig(AppConfig):
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'api_exportar_csv_no_atendidos',
              'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'api_exportar_csv_calificaciones_campana',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'api_exportar_csv_formulario_gestion_campana',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
+            {'nombre': 'api_exportar_csv_resultados_base_contactados',
+             'roles': ['Administrador', 'Gerente', 'Supervisor', ]},
             {'nombre': 'api_contactos_campana',
              'roles': ['Agente', ]},
             {'nombre': 'api_click2call',
@@ -86,6 +92,8 @@ class ApiAppConfig(AppConfig):
             {'nombre': 'api_make_pause',
              'roles': ['Agente', ]},
             {'nombre': 'api_make_unpause',
+             'roles': ['Agente', ]},
+            {'nombre': 'api_make_ringing',
              'roles': ['Agente', ]},
             {'nombre': 'api_credenciales_sip_agente',
              'roles': ['Agente', ]},
@@ -108,6 +116,8 @@ class ApiAppConfig(AppConfig):
             {'nombre': 'api_grupos',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
             {'nombre': 'api_agentes',
+             'roles': ['Administrador', 'Gerente', 'Supervisor']},
+            {'nombre': 'api_dashboard_supervision',
              'roles': ['Administrador', 'Gerente', 'Supervisor']},
         ]
 
@@ -167,6 +177,15 @@ class ApiAppConfig(AppConfig):
         'api_exportar_csv_no_atendidos':
             {'descripcion': _('Exportar reporte de no atendidos de una campaña a csv'),
              'version': '1.11.6'},
+        'api_exportar_csv_calificaciones_campana':
+            {'descripcion': _('Exportar reporte de calificaciones de una campaña a csv'),
+             'version': '1.11.6'},
+        'api_exportar_csv_formulario_gestion_campana':
+            {'descripcion': _('Exportar reporte de calificaciones de una campaña a csv'),
+             'version': '1.11.6'},
+        'api_exportar_csv_resultados_base_contactados':
+            {'descripcion': _('API para exportar resultados de base contactados a csv'),
+             'version': '1.19.0'},
         'api_contactos_campana':
             {'descripcion': _('Contactos de una campaña'), 'version': '1.7.0'},
         'api_click2call':
@@ -181,6 +200,8 @@ class ApiAppConfig(AppConfig):
             {'descripcion': _('Pone al agente en una pausa'), 'version': '1.7.0'},
         'api_make_unpause':
             {'descripcion': _('Saca al agente de una pausa'), 'version': '1.7.0'},
+        'api_make_ringing':
+            {'descripcion': _('Establece el estado Ringing del Agente'), 'version': '1.7.0'},
         'api_credenciales_sip_agente':
             {'descripcion': _('Devuelve credenciales SIP de un agente'), 'version': '1.7.0'},
         'api_set_estado_revision':
@@ -215,4 +236,7 @@ class ApiAppConfig(AppConfig):
         'api_agentes':
             {'descripcion': _('Lista de Agentes'),
              'version': '1.17.0'},
+        'api_dashboard_supervision':
+            {'descripcion': _('Dashboard de supervision'),
+             'version': '1.18.0'}
     }

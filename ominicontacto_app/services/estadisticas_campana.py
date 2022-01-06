@@ -256,7 +256,6 @@ class ReporteDetalleLlamadasEntrantes:
         # se cuentan todos los eventos para cada caso
         self.reporte = OrderedDict(
             [(_('Recibidas'), 0),
-             (_('Transferencias recibidas'), 0),
              (_('Atendidas'), 0),
              (_('Expiradas'), 0),
              (_('Abandonadas'), 0),
@@ -267,7 +266,7 @@ class ReporteDetalleLlamadasEntrantes:
 
         self.eventos_headers = {
             'ENTERQUEUE': _('Recibidas'),
-            'ENTERQUEUE-TRANSFER': _('Transferencias recibidas'),
+            'ENTERQUEUE-TRANSFER': _('Recibidas'),
             'CONNECT': _('Atendidas'),
             'EXITWITHTIMEOUT': _('Expiradas'),
             'ABANDON': _('Abandonadas'),
@@ -673,6 +672,12 @@ class EstadisticasService(EstadisticasBaseCampana):
         if estadisticas:
             logger.info(_("Generando grafico calificaciones de campana por cliente "))
 
+        reporte_campana_dir = os.path.join(settings.MEDIA_ROOT, "reporte_campana")
+        try:
+            os.stat(reporte_campana_dir)
+        except IOError:
+            os.mkdir(reporte_campana_dir)
+
         # Barra: Cantidad de calificacion de cliente
         barra_campana_calificacion = pygal.Bar(  # @UndefinedVariable
             show_legend=False, style=LightGreenStyle)
@@ -682,9 +687,9 @@ class EstadisticasService(EstadisticasBaseCampana):
             estadisticas['calificaciones_nombre']
         barra_campana_calificacion.add('cantidad',
                                        estadisticas['calificaciones_cantidad'])
-        barra_campana_calificacion.render_to_png(os.path.join(
-            settings.MEDIA_ROOT,
-            "reporte_campana", "barra_campana_calificacion.png"))
+        barra_campana_calificacion.render_to_png(
+            os.path.join(reporte_campana_dir, "barra_campana_calificacion_{}.png"
+                                              .format(self.campana.id)))
 
         barra_campana_calificacion = adicionar_render_unicode(barra_campana_calificacion)
 
@@ -699,8 +704,8 @@ class EstadisticasService(EstadisticasBaseCampana):
         barra_campana_no_atendido.add('cantidad',
                                       estadisticas['resultado_cantidad'])
         barra_campana_no_atendido.render_to_png(
-            os.path.join(settings.MEDIA_ROOT,
-                         "reporte_campana", "barra_campana_no_atendido.png"))
+            os.path.join(reporte_campana_dir, "barra_campana_no_atendido_{}.png"
+                                              .format(self.campana.id)))
 
         barra_campana_no_atendido = adicionar_render_unicode(barra_campana_no_atendido)
 

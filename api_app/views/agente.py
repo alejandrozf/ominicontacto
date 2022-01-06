@@ -137,34 +137,53 @@ class ApiCalificacionClienteCreateView(viewsets.ModelViewSet):
 class API_ObtenerContactosCampanaView(APIView):
 
     permission_classes = (TienePermisoOML, )
-    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication)
+    authentication_classes = (
+        SessionAuthentication, ExpiringTokenAuthentication)
+
+    def _get_qualified_contacts(self, campana):
+        return list(
+            campana.obtener_calificaciones().values_list(
+                'contacto__pk', flat=True))
 
     def _procesar_api(self, request, campana):
         search = request.GET['search[value]']
-        contactos_calificados_ids = list(campana.obtener_calificaciones().values_list(
-            'contacto__pk', flat=True))
+        contactos_calificados_ids = self._get_qualified_contacts(campana)
         if search != '':
             contactos = Contacto.objects.contactos_by_filtro_bd_contacto(
                 campana.bd_contacto, filtro=search)
             contactos = contactos.exclude(pk__in=contactos_calificados_ids)
         else:
-            contactos = campana.bd_contacto.contactos.exclude(pk__in=contactos_calificados_ids)
+            contactos = campana.bd_contacto.contactos.exclude(
+                pk__in=contactos_calificados_ids)
 
         return contactos
 
-    def _procesar_contactos_salida(self, request, campana, contactos_filtrados):
+    def _procesar_contactos_salida(
+        self, request, campana, contactos_filtrados
+    ):
         total_contactos = campana.bd_contacto.contactos.count()
         total_contactos_filtrados = contactos_filtrados.count()
         start = int(request.GET['start'])
         length = int(request.GET['length'])
         draw = int(request.GET['draw'])
-        data = [[pk, telefono, ''] for pk, telefono
-                in contactos_filtrados.values_list('pk', 'telefono')]
+        data = []
+        for contact in contactos_filtrados:
+            contact_data = []
+            contact_data.append(contact.pk)
+            contact_data.append(contact.telefono)
+            for (k, v) in contact.obtener_datos().items():
+                if k != 'telefono':
+                    if v:
+                        contact_data.append(v)
+                    else:
+                        contact_data.append('---')
+            contact_data.append('')
+            data.append(contact_data)
         result_dict = {
             'draw': draw,
             'recordsTotal': total_contactos,
             'recordsFiltered': total_contactos_filtrados,
-            'data': data[start:start + length],
+            'data': data[start:(start + length)],
         }
         return result_dict
 
@@ -172,7 +191,8 @@ class API_ObtenerContactosCampanaView(APIView):
         pk_campana = kwargs.get('pk_campana')
         campana = Campana.objects.get(pk=pk_campana)
         contactos = self._procesar_api(request, campana)
-        result_dict = self._procesar_contactos_salida(request, campana, contactos)
+        result_dict = self._procesar_contactos_salida(
+            request, campana, contactos)
         return Response(result_dict)
 
 
@@ -276,6 +296,28 @@ class AgentLogoutAsterisk(APIView):
         queue_remove_error, insert_redis_error = agent_login_manager.logout_agent(
             agente_profile, manage_connection=True)
         if insert_redis_error or queue_remove_error:
+            return Response(data={
+                'status': 'ERROR',
+            })
+        else:
+            return Response(data={
+                'status': 'OK',
+            })
+
+
+class AgentRingingAsterisk(APIView):
+    permission_classes = (TienePermisoOML, )
+    authentication_classes = (SessionAuthentication, ExpiringTokenAuthentication, )
+    renderer_classes = (JSONRenderer, )
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        agente_profile = self.request.user.get_agente_profile()
+        agent_login_manager = AgentActivityAmiManager()
+        ringing = request.POST.get('ringing') == 'true'
+        insert_redis_error = agent_login_manager.set_agent_ringing(
+            agente_profile, ringing)
+        if insert_redis_error:
             return Response(data={
                 'status': 'ERROR',
             })

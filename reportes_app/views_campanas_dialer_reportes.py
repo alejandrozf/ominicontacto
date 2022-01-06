@@ -27,6 +27,7 @@ from django.shortcuts import render
 from ominicontacto_app.models import Campana, OpcionCalificacion
 from django.views.generic.detail import DetailView
 from ominicontacto_app.services.campana_service import CampanaService
+from reportes_app.models import LlamadaLog
 
 
 class CampanaDialerDetailView(DetailView):
@@ -55,6 +56,8 @@ class CampanaDialerDetailView(DetailView):
                 context['terminadas'] = dato_campana['n_calls_completed']
                 context['estimadas'] = dato_campana['n_est_remaining_calls']
                 context['reintentos_abiertos'] = dato_campana['n_open_retries']
+                context['cant_contactos_llamados'] = \
+                    LlamadaLog.objects.cantidad_contactos_llamados(campana)
                 context['status'] = status
                 context['resultado'] = True
             else:
@@ -81,6 +84,7 @@ def detalle_campana_dialer_view(request):
             'terminadas': dato_campana['n_calls_completed'],
             'estimadas': dato_campana['n_est_remaining_calls'],
             'reintentos_abiertos': dato_campana['n_open_retries'],
+            'cant_contactos_llamados': LlamadaLog.objects.cantidad_contactos_llamados(campana),
             'status': status
 
         }

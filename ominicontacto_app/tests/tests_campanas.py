@@ -122,7 +122,9 @@ class CampanasThreadsTests(OMLTransaccionBaseTest):
 
         self.client.login(username=self.usuario_admin_supervisor.username, password=self.PWD)
 
-    def test_no_se_devuelve_un_mismo_contacto_a_mas_de_un_agente_en_campanas_preview(self):
+    @patch('redis.Redis.hgetall')
+    def test_no_se_devuelve_un_mismo_contacto_a_mas_de_un_agente_en_campanas_preview(self, hgetall):
+        hgetall.return_value = {}
         user1 = UserFactory(username='user1', is_agente=True)
         user2 = UserFactory(username='user2', is_agente=True)
         user1.set_password(self.PWD)
@@ -623,7 +625,9 @@ class SupervisorCampanaTests(CampanasTests):
         response = self.client.post(url, follow=True)
         self.assertEqual(response.status_code, 403)
 
-    def test_agente_logueado_contacto_obtiene_contacto_campana_preview(self):
+    @patch('redis.Redis.hgetall')
+    def test_agente_logueado_contacto_obtiene_contacto_campana_preview(self, hgetall):
+        hgetall.return_value = {}
         self.client.logout()
         user = UserFactory(is_agente=True)
         user.set_password(self.PWD)
@@ -637,6 +641,7 @@ class SupervisorCampanaTests(CampanasTests):
 
         url = reverse('campana_preview_dispatcher', args=[self.campana_activa.pk])
         response = self.client.post(url, follow=True)
+        hgetall.assert_called_with('OML:CALIFICACION:LLAMADA:{0}'.format(agente.pk))
         data = json.loads(response.content)
         self.assertEqual(data['agente_id'], agente.pk)
         self.assertEqual(data['telefono_contacto'], str(agente_en_contacto.telefono_contacto))

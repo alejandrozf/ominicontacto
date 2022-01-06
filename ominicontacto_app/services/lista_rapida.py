@@ -30,9 +30,12 @@ class ListaRapidaService(object):
         self.legacy_parser = ParserCsv()
 
     def inferir_metadata(self, estructura_archivo):
-        predictor_metadata = PredictorMetadataService()
-        return predictor_metadata.inferir_metadata_desde_lineas(
-            estructura_archivo)
+        try:
+            predictor_metadata = PredictorMetadataService()
+            return predictor_metadata.inferir_metadata_desde_lineas(
+                estructura_archivo, permitir_ext_pbx=True)
+        except Exception as e:
+            raise(NoSePuedeInferirMetadataError(e))
 
     def _existe_lista_rapida(self, nombre) -> bool:
         return ListasRapidas.objects.filter(nombre=nombre).exists()
@@ -153,7 +156,7 @@ class ContactoExistenteError(OmlError):
 
 class ValidaListaRapidaService(object):
 
-    def _obtiene_previsualizacion_archivo(self, lista_rapida):
+    def _obtiene_previsualizacion_archivo(self, lista_rapida, previsualizacion=True):
         """
         Instancia el servicio ParserCsv e intenta obtener un resumen de las
         primeras 3 lineas del csv.
@@ -161,7 +164,7 @@ class ValidaListaRapidaService(object):
         try:
             parser = ParserCsv()
             estructura_archivo = parser.previsualiza_archivo(
-                lista_rapida)
+                lista_rapida, previsualizacion)
 
         except OmlParserCsvDelimiterError:
             message = _('<strong>Operación Errónea!</strong> '

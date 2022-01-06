@@ -75,6 +75,7 @@ class LlamadaLogManager(models.Manager):
                                    .filter(time__gte=fecha_desde, time__lte=fecha_hasta) \
                                    .filter(event__in=eventos) \
                                    .filter(agente_id__in=agentes) \
+                                   .exclude(campana_id=0) \
                                    .order_by('agente_id')
 
         return result
@@ -88,6 +89,7 @@ class LlamadaLogManager(models.Manager):
         sql = """select agente_id, count(*)
                  from reportes_app_llamadalog where time between %(fecha_desde)s and
                  %(fecha_hasta)s and event = ANY(%(eventos)s) and agente_id = ANY(%(agentes)s)
+                 AND NOT campana_id = '0'
                  GROUP BY agente_id order by agente_id
         """
         params = {
@@ -103,6 +105,10 @@ class LlamadaLogManager(models.Manager):
 
     def obtener_agentes_campanas_total(self, eventos, fecha_desde, fecha_hasta, agentes,
                                        campanas):
+        """
+        Query que sumariza por agente y campaña la cantidad y duración de
+        llamadas para los eventos indicados.
+        """
 
         if fecha_desde and fecha_hasta:
             fecha_desde = datetime_hora_minima_dia(fecha_desde)
@@ -153,8 +159,9 @@ class LlamadaLogManager(models.Manager):
             fecha_hasta = datetime_hora_maxima_dia(fecha_hasta)
 
         return LlamadaLog.objects.filter(event__in=eventos, agente_id=agente_id,
-                                         time__range=(fecha_desde, fecha_hasta)).annotate(
-            fecha=TruncDate('time')).values('fecha').annotate(cantidad=Count('fecha'))
+                                         time__range=(fecha_desde, fecha_hasta)).exclude(
+            campana_id=0).annotate(
+                fecha=TruncDate('time')).values('fecha').annotate(cantidad=Count('fecha'))
 
     def obtener_llamadas_finalizadas_del_dia(self, agente_id, fecha):
         fecha_desde = datetime_hora_minima_dia(fecha)
@@ -280,6 +287,30 @@ class LlamadaLogManager(models.Manager):
         except LlamadaLog.DoesNotExist:
             raise (SuspiciousOperation(_("No se encontraron holds ")))
 
+    def obtener_cantidades_de_transferencias_recibidas(
+            self, fecha_inicial, fecha_final, agentes, campanas_ids):
+        """
+            Contabiliza Transferencias directas A AGENTE. Agrupa por agente y por campaña
+        """
+        resultados = self.filter(
+            time__range=(fecha_inicial, fecha_final),
+            agente_id__in=agentes, campana_id__in=campanas_ids,
+            event__in=['BT-ANSWER', 'CT-ACCEPT']).values('agente_id', 'campana_id').annotate(
+                cant=Count('id')).order_by('agente_id', 'campana_id')
+        cantidades = {agente_id: {} for agente_id in agentes}
+        for resultado in resultados:
+            cantidades[resultado['agente_id']][resultado['campana_id']] = resultado['cant']
+        return cantidades
+
+    def cantidad_contactos_llamados(self, campana):
+        return self.filter(
+            campana_id=campana.id,
+            contacto_id__in=Contacto.objects.filter(
+                bd_contacto=campana.bd_contacto,
+                es_originario=True,
+            ),
+        ).only("id").distinct("contacto_id").count()
+
 
 class LlamadaLog(models.Model):
     """
@@ -324,7 +355,7 @@ class LlamadaLog(models.Model):
     EVENTOS_FIN_CONEXION = ['COMPLETEAGENT', 'COMPLETEOUTNUM',
                             'BT-TRY', 'COMPLETE-BT',
                             'CAMPT-COMPLETE', 'CAMPT-FAIL', 'COMPLETE-CAMPT',
-                            'CT-COMPLETE', 'COMPLETE-CT',
+                            'CT-COMPLETE', 'COMPLETE-CT', 'ABANDON-CT',
                             'BTOUT-TRY',
                             'CTOUT-COMPLETE', ]
 
